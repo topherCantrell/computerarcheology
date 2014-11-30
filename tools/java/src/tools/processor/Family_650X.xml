@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ProcessorFamily name="650x" endian="little">
+
+       <printSpacing>
+            <set name="6502"   dataFieldSize="10" mnemonicFieldSize="20"/>
+            <set name="65C02"  dataFieldSize="10" mnemonicFieldSize="20"/>
+            <set name="65C816" dataFieldSize="10" mnemonicFieldSize="20"/>
+            <set name="Cish"   dataFieldSize="10" mnemonicFieldSize="20"/> 
+        </printSpacing>
+
+		<processors>
+			<processor name="6502" />
+			<processor name="65C02" />
+			<processor name="65C816" />
+		</processors>
+		
+		<blends jump="JMP $DEST$">
+		
+		    <!-- CARRY and BORROW are the same flag, but in this family C=0 means borrow -->
+		
+		    <!-- Simple one-flag tests. These have equally-short alternate forms -->
+            <blend left="A" op="=="    right="*"     branchPass="CMP $RIGHT$;BEQ $PASS$"   branchFail="CMP $RIGHT$;BNE $FAIL$"/>
+            <blend left="A" op="!="    right="*"     branchPass="CMP $RIGHT$;BNE $PASS$"   branchFail="CMP $RIGHT$;BEQ $FAIL$"/>  
+            <blend left="A" op="&lt;"  right="*"     branchPass="CMP $RIGHT$;BCC $PASS$"   branchFail="CMP $RIGHT$;BCS $FAIL$"/> 
+            <blend left="A" op="&gt;=" right="*"     branchPass="CMP $RIGHT$;BCS $PASS$"   branchFail="CMP $RIGHT$;BCC $FAIL$" /> 
+            
+            <blend left="X" op="=="    right="*"     branchPass="CPX $RIGHT$;BEQ $PASS$"   branchFail="CPX $RIGHT$;BNE $FAIL$"/>
+            <blend left="X" op="!="    right="*"     branchPass="CPX $RIGHT$;BNE $PASS$"   branchFail="CPX $RIGHT$;BEQ $FAIL$"/>  
+            <blend left="X" op="&lt;"  right="*"     branchPass="CPX $RIGHT$;BCC $PASS$"   branchFail="CPX $RIGHT$;BCS $FAIL$"/> 
+            <blend left="X" op="&gt;=" right="*"     branchPass="CPX $RIGHT$;BCS $PASS$"   branchFail="CPX $RIGHT$;BCC $FAIL$" />
+            
+            <blend left="Y" op="=="    right="*"     branchPass="CPY $RIGHT$;BEQ $PASS$"   branchFail="CPY $RIGHT$;BNE $FAIL$"/>
+            <blend left="Y" op="!="    right="*"     branchPass="CPY $RIGHT$;BNE $PASS$"   branchFail="CPY $RIGHT$;BEQ $FAIL$"/>  
+            <blend left="Y" op="&lt;"  right="*"     branchPass="CPY $RIGHT$;BCC $PASS$"   branchFail="CPY $RIGHT$;BCS $FAIL$"/> 
+            <blend left="Y" op="&gt;=" right="*"     branchPass="CPY $RIGHT$;BCS $PASS$"   branchFail="CPY $RIGHT$;BCC $FAIL$" />
+  
+            <!-- These can't be tested with one flag ... the alternate form is needlessly complicated -->
+            <blend left="A" op="&gt;"  right="*"     branchFail="CMP $RIGHT$;BEQ $FAIL$;BCC $FAIL$" />  
+            <blend left="A" op="&lt;=" right="*"     branchPass="CMP $RIGHT$;BEQ $PASS$;BCC $PASS$" />
+            
+            <blend left="X" op="&gt;"  right="*"     branchFail="CPX $RIGHT$;BEQ $FAIL$;BCC $FAIL$" />  
+            <blend left="X" op="&lt;=" right="*"     branchPass="CPX $RIGHT$;BEQ $PASS$;BCC $PASS$" /> 
+            
+            <blend left="Y" op="&gt;"  right="*"     branchFail="CPY $RIGHT$;BEQ $FAIL$;BCC $FAIL$" />  
+            <blend left="Y" op="&lt;=" right="*"     branchPass="CPY $RIGHT$;BEQ $PASS$;BCC $PASS$" />  
+  
+            <!-- No operation ... just use the existing flags -->
+            <blend left="ZERO"       op="" right=""  branchPass="BEQ $PASS$"  branchFail="BNE $FAIL$"/>
+            <blend left="NOT_ZERO"   op="" right=""  branchPass="BNE $PASS$"  branchFail="BEQ $FAIL$"/>  
+            <blend left="CARRY"      op="" right=""  branchPass="BCS $PASS$"  branchFail="BCC $FAIL$"/>
+            <blend left="NOT_BORROW" op="" right=""  branchPass="BCS $PASS$"  branchFail="BCC $FAIL$"/>
+            <blend left="NOT_CARRY"  op="" right=""  branchPass="BCC $PASS$"  branchFail="BCS $FAIL$"/>
+            <blend left="BORROW"     op="" right=""  branchPass="BCC $PASS$"  branchFail="BCS $FAIL$"/>
+		
+		    <!--  TRUE and FALSE -->
+            <blend left="true"       op="" right=""  branchPass="JMP $PASS$"   branchFail=""/>
+            <blend left="false"      op="" right=""  branchPass=""             branchFail="JMP $FAIL$"/>
+		 
+		</blends>
+		
+		<opcodes>
+		
+  <op m6502="BRK"        m65C02="BRK"       m65C816="BRK"          code="00"      clocks="7"     flags="-------"           />
+  <op m6502="ORA (p,X)"  m65C02="ORA (p,X)" m65C816="ORA (p,X)"    code="01pp"    clocks="6"     flags="-------"  bus="r"  mCish="A = A | BYTE[WORD[>p+X]]"/>
+  <op                                       m65C816="COP b"        code="02"      clocks=""      flags="-------"           />
+  <op                                       m65C816="ORA d,S"      code="03"      clocks=""      flags="-------"           />
+  <op                    m65C02="TSB d"     m65C816="TSB d"        code="04"      clocks=""      flags="-------"           />
+  <op m6502="ORA >p"     m65C02="ORA >p"    m65C816="ORA >p"       code="05pp"    clocks="3"     flags="-------"  bus="r"  mCish="A = A | BYTE[>p]"/>
+  <op m6502="ASL >p"     m65C02="ASL >p"    m65C816="ASL >p"       code="06pp"    clocks="5"     flags="-------"  bus="r"  />
+  <op                                       m65C816="ORA [d]"      code="07"      clocks=""      flags="-------"           />
+  <op m6502="PHP"        m65C02="PHP"       m65C816="PHP"          code="08"      clocks="3"     flags="-------"  bus="w"  />
+  <op m6502="ORA #b"     m65C02="ORA #b"    m65C816="ORA #b"       code="09bb"    clocks="2"     flags="-------"           mCish="A = A | b"/>
+  <op m6502="ASL A"      m65C02="ASL A"     m65C816="ASL A"        code="0A"      clocks="2"     flags="-------"           />
+  <op                                       m65C816="PHD"          code="0B"      clocks=""      flags="-------"           />
+  <op                    m65C02="TSB a"     m65C816="TSB a"        code="0C"      clocks=""      flags="-------"           />
+  <op m6502="ORA t"      m65C02="ORA t"     m65C816="ORA t"        code="0Dtltm"  clocks="4"     flags="-------"  bus="r"  mCish="A = A | BYTE[t]"/>
+  <op m6502="ASL t"      m65C02="ASL t"     m65C816="ASL t"        code="0Etltm"  clocks="6"     flags="-------"  bus="r"  />
+  <op                                       m65C816="ORA al"       code="0F"      clocks=""      flags="-------"           />
+  <op m6502="BPL r"      m65C02="BPL r"     m65C816="BPL r"        code="10rr"    clocks="2/3/4" flags="-------"           />
+  <op m6502="ORA (p),Y"  m65C02="ORA (p),Y" m65C816="ORA (p),Y"    code="11pp"    clocks="5"     flags="-------"  bus="r"  mCish="A = A | BYTE[WORD[>p]+Y]"/>
+  <op                    m65C02="ORA (d)"   m65C816="ORA (d)"      code="12"      clocks=""      flags="-------"           />
+  <op                                       m65C816="ORA (d,S),Y"  code="13"      clocks=""      flags="-------"           />
+  <op                    m65C02="TRB d"     m65C816="TRB d"        code="14"      clocks=""      flags="-------"           />
+  <op m6502="ORA p,X"    m65C02="ORA p,X"   m65C816="ORA p,X"      code="15pp"    clocks="4"     flags="-------"  bus="r"  mCish="A = A | BYTE[>p+X]"/>
+  <op m6502="ASL p,X"    m65C02="ASL p,X"   m65C816="ASL p,X"      code="16pp"    clocks="6"     flags="-------"  bus="r"  />
+  <op                                       m65C816="ORA [d],Y"    code="17"      clocks=""      flags="-------"           />
+  <op m6502="CLC"        m65C02="CLC"       m65C816="CLC"          code="18"      clocks="2"     flags="-------"           mCish="CARRY = 0"/>
+  <op m6502="ORA t,Y"    m65C02="ORA t,Y"   m65C816="ORA t,Y"      code="19tltm"  clocks="4"     flags="-------"  bus="r"  mCish="A = A | BYTE[t+Y]"/>
+  <op                    m65C02="INC A"     m65C816="INC A"        code="1A"      clocks=""      flags="-------"           />
+  <op                                       m65C816="TCS"          code="1B"      clocks=""      flags="-------"           />
+  <op                    m65C02="TRB a"     m65C816="TRB a"        code="1C"      clocks=""      flags="-------"           />
+  <op m6502="ORA t,X"    m65C02="ORA t,X"   m65C816="ORA t,X"      code="1Dtltm"  clocks="4"     flags="-------"  bus="r"  mCish="A = A | BYTE[t+X]"/>
+  <op m6502="ASL t,X"    m65C02="ASL t,X"   m65C816="ASL t,X"      code="1Etltm"  clocks="7"     flags="-------"  bus="r"  />
+  <op                                       m65C816="ORA al,X"     code="1F"      clocks=""      flags="-------"           />
+  <op m6502="JSR t"      m65C02="JSR t"     m65C816="JSR t"        code="20tltm"  clocks="6"     flags="-------"           mCish="t()"/>
+  <op m6502="AND (p,X)"  m65C02="AND (p,X)" m65C816="AND (p,X)"    code="21pp"    clocks="6"     flags="-------"  bus="r"  mCish="A = A &amp; BYTE[WORD[>p+X]]"/>
+  <op                                       m65C816="JSL al"       code="22"      clocks=""      flags="-------"           />
+  <op                                       m65C816="AND d,S"      code="23"      clocks=""      flags="-------"           />
+  <op m6502="BIT >p"     m65C02="BIT >p"    m65C816="BIT >p"       code="24pp"    clocks="3"     flags="-------"  bus="r"  mCish="A &amp; BYTE[>p]"/>
+  <op m6502="AND >p"     m65C02="AND >p"    m65C816="AND >p"       code="25pp"    clocks="3"     flags="-------"  bus="r"  mCish="A = A &amp; BYTE[>p]"/>
+  <op m6502="ROL >p"     m65C02="ROL >p"    m65C816="ROL >p"       code="26pp"    clocks="5"     flags="-------"  bus="rw" />
+  <op                                       m65C816="AND [d]"      code="27"      clocks=""      flags="-------"           />
+  <op m6502="PLP"        m65C02="PLP"       m65C816="PLP"          code="28"      clocks="4"     flags="-------"  bus="r"  />
+  <op m6502="AND #b"     m65C02="AND #b"    m65C816="AND #b"       code="29bb"    clocks="2"     flags="-------"           mCish="A = A &amp; b"/>
+  <op m6502="ROL A"      m65C02="ROL A"     m65C816="ROL A"        code="2A"      clocks="2"     flags="-------"           />
+  <op                                       m65C816="PLD"          code="2B"      clocks=""      flags="-------"           />
+  <op m6502="BIT t"      m65C02="BIT t"     m65C816="BIT t"        code="2Ctltm"  clocks="4"     flags="-------"  bus="r"  mCish="A &amp; BYTE[t]"/>
+  <op m6502="AND t"      m65C02="AND t"     m65C816="AND t"        code="2Dtltm"  clocks="4"     flags="-------"  bus="r"  mCish="A = A &amp; BYTE[t]"/>
+  <op m6502="ROL t"      m65C02="ROL t"     m65C816="ROL t"        code="2Etltm"  clocks="6"     flags="-------"  bus="r"  />
+  <op                                       m65C816="AND al"       code="2F"      clocks=""      flags="-------"           />
+  <op m6502="BMI r"      m65C02="BMI r"     m65C816="BMI r"        code="30rr"    clocks="2/3/4" flags="-------"           />
+  <op m6502="AND (p),Y"  m65C02="AND (p),Y" m65C816="AND (p),Y"    code="31pp"    clocks="5"     flags="-------"  bus="r"  mCish="A = A &amp; BYTE[WORD[>p]+Y]"/>
+  <op                    m65C02="AND (d)"   m65C816="AND (d)"      code="32"      clocks=""      flags="-------"           />
+  <op                                       m65C816="AND (d,S),Y"  code="33"      clocks=""      flags="-------"           />
+  <op                    m65C02="BIT d,X"   m65C816="BIT d,X"      code="34"      clocks=""      flags="-------"           />
+  <op m6502="AND p,X"    m65C02="AND p,X"   m65C816="AND p,X"      code="35pp"    clocks="4"     flags="-------"  bus="r"  mCish="A = A &amp; BYTE[>p+X]"/>
+  <op m6502="ROL p,X"    m65C02="ROL p,X"   m65C816="ROL p,X"      code="36pp"    clocks="6"     flags="-------"  bus="r"  />
+  <op                                       m65C816="AND [d],Y"    code="37"      clocks=""      flags="-------"           />
+  <op m6502="SEC"        m65C02="SEC"       m65C816="SEC"          code="38"      clocks="2"     flags="-------"           mCish="CARRY = 1"/>
+  <op m6502="AND t,Y"    m65C02="AND t,Y"   m65C816="AND t,Y"      code="39tltm"  clocks="4"     flags="-------"  bus="r"  mCish="A = A &amp; BYTE[t+Y]" />
+  <op                    m65C02="DEC A"     m65C816="DEC A"        code="3A"      clocks=""      flags="-------"           />
+  <op                                       m65C816="TSC"          code="3B"      clocks=""      flags="-------"           />
+  <op                    m65C02="BIT a,X"   m65C816="BIT a,X"      code="3C"      clocks=""      flags="-------"           />
+  <op m6502="AND t,X"    m65C02="AND t,X"   m65C816="AND t,X"      code="3Dtltm"  clocks="4"     flags="-------"  bus="r"  mCish="A = A &amp; BYTE[t+X]"/>
+  <op m6502="ROL t,X"    m65C02="ROL t,X"   m65C816="ROL t,X"      code="3Etltm"  clocks="7"     flags="-------"  bus="rw" />
+  <op                                       m65C816="AND al,X"     code="3F"      clocks=""      flags="-------"           />
+  <op m6502="RTI"        m65C02="RTI"       m65C816="RTI"          code="40"      clocks="6"     flags="-------"           />
+  <op m6502="EOR (p,X)"  m65C02="EOR (p,X)" m65C816="EOR (p,X)"    code="41pp"    clocks="6"     flags="-------"  bus="r"  mCish="A = A ^ BYTE[WORD[>p+X]]"/>
+  <op                                       m65C816="WDM"          code="42"      clocks=""      flags="-------"           />
+  <op                                       m65C816="EOR d,S"      code="43"      clocks=""      flags="-------"           />
+  <op                                       m65C816="MVP s,d"      code="44"      clocks=""      flags="-------"           />
+  <op m6502="EOR >p"     m65C02="EOR >p"    m65C816="EOR >p"       code="45pp"    clocks="3"     flags="-------"  bus="r"  mCish="A = A ^  BYTE[>p]"/>
+  <op m6502="LSR >p"     m65C02="LSR >p"    m65C816="LSR >p"       code="46pp"    clocks="5"     flags="-------"  bus="rw" />
+  <op                                       m65C816="EOR [d]"      code="47"      clocks=""      flags="-------"           />
+  <op m6502="PHA"        m65C02="PHA"       m65C816="PHA"          code="48"      clocks="3"     flags="-------"  bus="w"  />
+  <op m6502="EOR #b"     m65C02="EOR #b"    m65C816="EOR #b"       code="49bb"    clocks="2"     flags="-------"           mCish="A = A ^ b"/>
+  <op m6502="LSR A"      m65C02="LSR A"     m65C816="LSR A"        code="4A"      clocks="2"     flags="-------"           />
+  <op                                       m65C816="PHK"          code="4B"      clocks=""      flags="-------"           />
+  <op m6502="JMP t"      m65C02="JMP t"     m65C816="JMP t"        code="4Ctltm"  clocks="3"     flags="-------"           mCish="GOTO t"  />
+  <op m6502="EOR t"      m65C02="EOR t"     m65C816="EOR t"        code="4Dtltm"  clocks="4"     flags="-------"           mCish="A = A ^ BYTE[t]"/>
+  <op m6502="LSR t"      m65C02="LSR t"     m65C816="LSR t"        code="4Etltm"  clocks="6"     flags="-------"           />
+  <op                                       m65C816="EOR al"       code="4F"      clocks=""      flags="-------"           />
+  <op m6502="BVC r"      m65C02="BVC r"     m65C816="BVC r"        code="50rr"    clocks="2/3/4" flags="-------"           />
+  <op m6502="EOR (p),Y"  m65C02="EOR (p),Y" m65C816="EOR (p),Y"    code="51pp"    clocks="5"     flags="-------"  bus="r"  mCish="A = A ^ BYTE[WORD[>p]+Y]"/>
+  <op                    m65C02="EOR (d)"   m65C816="EOR (d)"      code="52"      clocks=""      flags="-------"           />
+  <op                                       m65C816="EOR (d,S),Y"  code="53"      clocks=""      flags="-------"           />
+  <op                                       m65C816="MVN s,d"      code="54"      clocks=""      flags="-------"           />   
+  <op m6502="EOR p,X"    m65C02="EOR p,X"   m65C816="EOR p,X"      code="55pp"    clocks="4"     flags="-------"  bus="r"  mChish="A = A ^ BYTE[>p+X]"/>
+  <op m6502="LSR p,X"    m65C02="LSR p,X"   m65C816="LSR p,X"      code="56pp"    clocks="6"     flags="-------"  bus="rw" />
+  <op                                       m65C816="EOR [d],Y"    code="57"      clocks=""      flags="-------"           />
+  <op m6502="CLI"        m65C02="CLI"       m65C816="CLI"          code="58"      clocks="2"     flags="-------"           />
+  <op m6502="EOR t,Y"    m65C02="EOR t,Y"   m65C816="EOR t,Y"      code="59tltm"  clocks="4"     flags="-------"  bus="r"  mCish="A = A ^ BYTE[t+Y]"/>
+  <op                    m65C02="PHY"       m65C816="PHY"          code="5A"      clocks=""      flags="-------"           />
+  <op                                       m65C816="TCD"          code="5B"      clocks=""      flags="-------"           />
+  <op                                       m65C816="JMP al"       code="5C"      clocks=""      flags="-------"           />
+  <op m6502="EOR t,X"    m65C02="EOR t,X"   m65C816="EOR t,X"      code="5Dtltm"  clocks="4"     flags="-------"  bus="r"  mCish="A = A ^ BYTE[t+X]"/>
+  <op m6502="LSR t,X"    m65C02="LSR t,X"   m65C816="LSR t,X"      code="5Etltm"  clocks="7"     flags="-------"  bus="rw" />
+  <op                                       m65C816="EOR al,X"     code="5F"      clocks=""      flags="-------"           />
+  <op m6502="RTS"        m65C02="RTS"       m65C816="RTS"          code="60"      clocks="6"     flags="-------"           />
+  <op m6502="ADC (p,X)"  m65C02="ADC (p,X)" m65C816="ADC (p,X)"    code="61pp"    clocks="6"     flags="-------"  bus="r"  mCish="A = A + CARRY + BYTE[WORD[>p+X]]"/>
+  
+  <op                                       m65C816="PER rl"       code="62"      clocks=""      flags="-------"           />
+  <op                                       m65C816="ADC d,S"      code="63"      clocks=""      flags="-------"           />
+  <op                    m65C02="STZ d"     m65C816="STZ d"        code="64"      clocks=""      flags="-------"           />
+  <op m6502="ADC >p"     m65C02="ADC >p"    m65C816="ADC >p"       code="65pp"    clocks="3"     flags="-------"  bus="r"  mCish="A = A + CARRY + BYTE[>p]"/>
+  <op m6502="ROR >p"     m65C02="ROR >p"    m65C816="ROR >p"       code="66pp"    clocks="5"     flags="-------"  bus="rw" />
+  <op                                       m65C816="ADC [d]"      code="67"      clocks=""      flags="-------"           />
+  <op m6502="PLA"        m65C02="PLA"       m65C816="PLA"          code="68"      clocks="4"     flags="-------"  bus="r"  />
+  <op m6502="ADC #b"     m65C02="ADC #b"    m65C816="ADC #b"       code="69bb"    clocks="2"     flags="-------"           mCish="A = A + CARRY + b"/>
+  <op m6502="ROR A"      m65C02="ROR A"     m65C816="ROR A"        code="6A"      clocks="2"     flags="-------"           />
+  <op                                       m65C816="RTL"          code="6B"      clocks=""      flags="-------"           />
+  <op m6502="JMP (m)"    m65C02="JMP (m)"   m65C816="JMP (m)"      code="6Cmlmm"  clocks="5"     flags="-------"           mCish="GOTO WORD[m]"/>
+  <op m6502="ADC t"      m65C02="ADC t"     m65C816="ADC t"        code="6Dtltm"  clocks="4"     flags="-------"  bus="r"  mCish="A = A + CARRY + BYTE[t]"/>
+  <op m6502="ROR t"      m65C02="ROR t"     m65C816="ROR t"        code="6Etltm"  clocks="6"     flags="-------"  bus="r"  />
+  <op                                       m65C816="ADC al"       code="6F"      clocks=""      flags="-------"           />
+  <op m6502="BVS r"      m65C02="BVS r"     m65C816="BVS r"        code="70rr"    clocks="2/3/4" flags="-------"           />
+  <op m6502="ADC (p),Y"  m65C02="ADC (p),Y" m65C816="ADC (p),Y"    code="71pp"    clocks="5"     flags="-------"  bus="r"  mCish="A = A + CARRY + BYTE[WORD[>p]+Y]"/>
+  <op                    m65C02="ADC (d)"   m65C816="ADC (d)"      code="72"      clocks=""      flags="-------"           />
+  <op                                       m65C816="ADC (d,S),Y"  code="73"      clocks=""      flags="-------"           />
+  <op                    m65C02="STZ d,X"   m65C816="STZ d,X"      code="74"      clocks=""      flags="-------"           />
+  <op m6502="ADC >p,X"   m65C02="ADC >p,X"  m65C816="ADC >p,X"     code="75pp"    clocks="4"     flags="-------"  bus="r"  mCish="A = A + CARRY + BYTE[>p]"/>
+  <op m6502="ROR >p,X"   m65C02="ROR >p,X"  m65C816="ROR >p,X"     code="76pp"    clocks="6"     flags="-------"  bus="r"  />
+  <op                                       m65C816="ADC [d],Y"    code="77"      clocks=""      flags="-------"           />
+  <op m6502="SEI"        m65C02="SEI"       m65C816="SEI"          code="78"      clocks="2"     flags="-------"           />
+  <op m6502="ADC t,Y"    m65C02="ADC t,Y"   m65C816="ADC t,Y"      code="79tltm"  clocks="4"     flags="-------"  bus="r"  mCish="A = A + CARRY + BYTE[t+Y]"/>
+  <op                    m65C02="PLY"       m65C816="PLY"          code="7A"      clocks=""      flags="-------"           />
+  <op                                       m65C816="TDC"          code="7B"      clocks=""      flags="-------"           />
+  <op                    m65C02="JMP (a,X)" m65C816="JMP (a,X)"    code="7C"      clocks=""      flags="-------"           />
+  <op m6502="ADC t,X"    m65C02="ADC t,X"   m65C816="ADC t,X"      code="7Dtltm"  clocks="4"     flags="-------"  bus="r"  mCish="A = A + CARRY + BYTE[t+X]"/>
+  <op m6502="ROR t,X"    m65C02="ROR t,X"   m65C816="ROR t,X"      code="7Etltm"  clocks="7"     flags="-------"  bus="r"  />
+  <op                                       m65C816="ADC al,X"     code="7F"      clocks=""      flags="-------"           />
+  <op                    m65C02="BRA r"     m65C816="BRA r"        code="80"      clocks=""      flags="-------"           />
+  <op m6502="STA (p,X)"  m65C02="STA (p,X)" m65C816="STA (p,X)"    code="81pp"    clocks="6"     flags="-------"  bus="w"  mCish="BYTE[WORD[>p+X]] = A"/>
+  <op                                       m65C816="BRL rl"       code="82"      clocks=""      flags="-------"           />
+  <op                                       m65C816="STA d,S"      code="83"      clocks=""      flags="-------"           />
+  <op m6502="STY >p"     m65C02="STY >p"    m65C816="STY >p"       code="84pp"    clocks="3"     flags="-------"  bus="w"  mCish="BYTE[>p] = Y"/>
+  <op m6502="STA >p"     m65C02="STA >p"    m65C816="STA >p"       code="85pp"    clocks="3"     flags="-------"  bus="w"  mCish="BYTE[>p] = A"/>
+  <op m6502="STX >p"     m65C02="STX >p"    m65C816="STX >p"       code="86pp"    clocks="3"     flags="-------"  bus="w"  mCish="BYTE[>p] = X"/>
+  <op                                       m65C816="STA [d]"      code="87"      clocks=""      flags="-------"           />
+  <op m6502="DEY"        m65C02="DEY"       m65C816="DEY"          code="88"      clocks="2"     flags="-------"           mCish="--Y"/>
+  <op                    m65C02="BIT #"     m65C816="BIT #"        code="89"      clocks=""      flags="-------"           />
+  <op m6502="TXA"        m65C02="TXA"       m65C816="TXA"          code="8A"      clocks="2"     flags="-------"           mCish="A = X"/>
+  <op                                       m65C816="PHB"          code="8B"      clocks=""      flags="-------"           />
+  <op m6502="STY t"      m65C02="STY t"     m65C816="STY t"        code="8Ctltm"  clocks="4"     flags="-------"  bus="w"  mCish="BYTE[t] = Y"/>
+  <op m6502="STA t"      m65C02="STA t"     m65C816="STA t"        code="8Dtltm"  clocks="4"     flags="-------"  bus="w"  mCish="BYTE[t] = A"/>
+  <op m6502="STX t"      m65C02="STX t"     m65C816="STX t"        code="8Etltm"  clocks="4"     flags="-------"  bus="w"  mCish="BYTE[t] = X"/>
+  <op                                       m65C816="STA al"       code="8F"      clocks=""      flags="-------"           />
+  <op m6502="BCC r"      m65C02="BCC r"     m65C816="BCC r"        code="90rr"    clocks="2/3/4" flags="-------"           />
+  <op m6502="STA (p),Y"  m65C02="STA (p),Y" m65C816="STA (p),Y"    code="91pp"    clocks="6"     flags="-------"  bus="w"  mCish="BYTE[WORD[>p]+Y] = A"/>
+  <op                    m65C02="STA (d)"   m65C816="STA (d)"      code="92"      clocks=""      flags="-------"           />
+  <op                                       m65C816="STA (d,S),Y"  code="93"      clocks=""      flags="-------"           />
+  <op m6502="STY p,X"    m65C02="STY p,X"   m65C816="STY p,X"      code="94pp"    clocks="4"     flags="-------"  bus="w"  mCish="BYTE[>p+X] = Y"/>
+  <op m6502="STA p,X"    m65C02="STA p,X"   m65C816="STA p,X"      code="95pp"    clocks="4"     flags="-------"  bus="w"  mCish="BYTE[>p+X] = A"/>
+  <op m6502="STX p,Y"    m65C02="STX p,Y"   m65C816="STX p,Y"      code="96pp"    clocks="4"     flags="-------"  bus="w"  mCish="BYTE[>p+Y] = X"/>
+  <op                                       m65C816="STA [d],Y"    code="97"      clocks=""      flags="-------"           />
+  <op m6502="TYA"        m65C02="TYA"       m65C816="TYA"          code="98"      clocks="2"     flags="-------"           mCish="A = Y"/>
+  <op m6502="STA t,Y"    m65C02="STA t,Y"   m65C816="STA t,Y"      code="99tltm"  clocks="5"     flags="-------"  bus="w"  mCish="BYTE[t+Y] = A"/>
+  <op m6502="TXS"        m65C02="TXS"       m65C816="TXS"          code="9A"      clocks="2"     flags="-------"           mCish="S = X"/>
+  <op                                       m65C816="TXY"          code="9B"      clocks=""      flags="-------"           />
+  <op                    m65C02="STZ a"     m65C816="STZ a"        code="9C"      clocks=""      flags="-------"           />
+  <op m6502="STA t,X"    m65C02="STA t,X"   m65C816="STA t,X"      code="9Dtltm"  clocks="5"     flags="-------"  bus="w"  mCish="BYTE[t+X] = A"/>
+  <op                    m65C02="STZ a,X"   m65C816="STZ a,X"      code="9E"      clocks=""      flags="-------"           />
+  <op                                       m65C816="STA al,X"     code="9F"      clocks=""      flags="-------"           />
+  <op m6502="LDY #b"     m65C02="LDY #b"    m65C816="LDY #b"       code="A0bb"    clocks="2"     flags="-------"           mCish="Y = b"/>
+  <op m6502="LDA (p,X)"  m65C02="LDA (p,X)" m65C816="LDA (p,X)"    code="A1pp"    clocks="6"     flags="-------"  bus="r"  mCish="A = BYTE[WORD[>p+X]]"/>
+  <op m6502="LDX #b"     m65C02="LDX #b"    m65C816="LDX #b"       code="A2bb"    clocks="2"     flags="-------"           mCish="X = b"/>
+  <op                                       m65C816="LDA d,S"      code="A3"      clocks=""      flags="-------"           />
+  <op m6502="LDY >p"     m65C02="LDY >p"    m65C816="LDY >p"       code="A4pp"    clocks="3"     flags="-------"  bus="r"  mCish="Y = BYTE[>p]"/>
+  <op m6502="LDA >p"     m65C02="LDA >p"    m65C816="LDA >p"       code="A5pp"    clocks="3"     flags="-------"  bus="r"  mCish="A = BYTE[>p]"/>
+  <op m6502="LDX >p"     m65C02="LDX >p"    m65C816="LDX >p"       code="A6pp"    clocks="3"     flags="-------"  bus="r"  mCish="X = BYTE[>p]"/>
+  <op                                       m65C816="LDA [d]"      code="A7"      clocks=""      flags="-------"           />
+  <op m6502="TAY"        m65C02="TAY"       m65C816="TAY"          code="A8"      clocks="2"     flags="-------"           mCish="Y = A"/>
+  <op m6502="LDA #b"     m65C02="LDA #b"    m65C816="LDA #b"       code="A9bb"    clocks="2"     flags="-------"           mCish="A = b"/>
+  <op m6502="TAX"        m65C02="TAX"       m65C816="TAX"          code="AA"      clocks="2"     flags="-------"           mCish="X = A"/>
+  <op                                       m65C816="PLB"          code="AB"      clocks=""      flags="-------"           />
+  <op m6502="LDY t"      m65C02="LDY t"     m65C816="LDY t"        code="ACtltm"  clocks="4"     flags="-------"  bus="r"  mCish="Y = BYTE[t]"/>
+  <op m6502="LDA t"      m65C02="LDA t"     m65C816="LDA t"        code="ADtltm"  clocks="4"     flags="-------"  bus="r"  mCish="A = BYTE[t]"/>
+  <op m6502="LDX t"      m65C02="LDX t"     m65C816="LDX t"        code="AEtltm"  clocks="4"     flags="-------"  bus="r"  mCish="X = BYTE[t]"/>
+  <op                                       m65C816="LDA al"       code="AF"      clocks=""      flags="-------"           />
+  <op m6502="BCS r"      m65C02="BCS r"     m65C816="BCS r"        code="B0rr"    clocks="2/3/4" flags="-------"           />
+  <op m6502="LDA (p),Y"  m65C02="LDA (p),Y" m65C816="LDA (p),Y"    code="B1pp"    clocks="5"     flags="-------"  bus="r"  mCish="A = BYTE[WORD[>p]+Y]"/>
+  <op                    m65C02="LDA (d)"   m65C816="LDA (d)"      code="B2"      clocks=""      flags="-------"           />
+  <op                                       m65C816="LDA (d,S),Y"  code="B3"      clocks=""      flags="-------"           />
+  <op m6502="LDY p,X"    m65C02="LDY p,X"   m65C816="LDY p,X"      code="B4pp"    clocks="4"     flags="-------"  bus="r"  mCish="Y = BYTE[>p+X]"/>
+  <op m6502="LDA p,X"    m65C02="LDA p,X"   m65C816="LDA p,X"      code="B5pp"    clocks="4"     flags="-------"  bus="r"  mCish="A = BYTE[>p+X]"/>
+  <op m6502="LDX p,Y"    m65C02="LDX p,Y"   m65C816="LDX p,Y"      code="B6pp"    clocks="4"     flags="-------"  bus="r"  mCish="X = BYTE[>p+Y]"/>
+  <op                                       m65C816="LDA [d],Y"    code="B7"      clocks=""      flags="-------"           />
+  <op m6502="CLV"        m65C02="CLV"       m65C816="CLV"          code="B8"      clocks="2"     flags="-------"           />
+  <op m6502="LDA t,Y"    m65C02="LDA t,Y"   m65C816="LDA t,Y"      code="B9tltm"  clocks="4"     flags="-------"  bus="r"  mCish="A = BYTE[t+Y]"/>
+  <op m6502="TSX"        m65C02="TSX"       m65C816="TSX"          code="BA"      clocks="2"     flags="-------"           mCish="X = S"/>
+  <op                                       m65C816="TYX"          code="BB"      clocks=""      flags="-------"           />
+  <op m6502="LDY t,X"    m65C02="LDY t,X"   m65C816="LDY t,X"      code="BCtltm"  clocks="4"     flags="-------"  bus="r"  mCish="Y = BYTE[t+X]"/>
+  <op m6502="LDA t,X"    m65C02="LDA t,X"   m65C816="LDA t,X"      code="BDtltm"  clocks="4"     flags="-------"  bus="r"  mCish="A = BYTE[t+X]"/>
+  <op m6502="LDX t,Y"    m65C02="LDX t,Y"   m65C816="LDX t,Y"      code="BEtltm"  clocks="4"     flags="-------"  bus="r"  mCish="X = BYTE[t+Y]"/>
+  <op                                       m65C816="LDA al,X"     code="BF"      clocks=""      flags="-------"           />
+  <op m6502="CPY #b"     m65C02="CPY #b"    m65C816="CPY #b"       code="C0bb"    clocks="2"     flags="-------"           />
+  <op m6502="CMP (p,X)"  m65C02="CMP (p,X)" m65C816="CMP (p,X)"    code="C1pp"    clocks="6"     flags="-------"  bus="r"  mCish="A - BYTE[WORD[>p+X]]"/>
+  <op                                       m65C816="REP #"        code="C2"      clocks=""      flags="-------"           />
+  <op                                       m65C816="CMP d,S"      code="C3"      clocks=""      flags="-------"           />
+  <op m6502="CPY >p"     m65C02="CPY >p"    m65C816="CPY >p"       code="C4pp"    clocks="3"     flags="-------"  bus="r"  mCish="Y - BYTE[>p]"/>
+  <op m6502="CMP >p"     m65C02="CMP >p"    m65C816="CMP >p"       code="C5pp"    clocks="3"     flags="-------"  bus="r"  mCish="A - BYTE[>p]"/>
+  <op m6502="DEC >p"     m65C02="DEC >p"    m65C816="DEC >p"       code="C6pp"    clocks="5"     flags="-------"  bus="rw" mCish="--BYTE[>p]"/>
+  <op                                       m65C816="CMP [d]"      code="C7"      clocks=""      flags="-------"           />
+  <op m6502="INY"        m65C02="INY"       m65C816="INY"          code="C8"      clocks="2"     flags="-------"           mCish="++Y"/>
+  <op m6502="CMP #b"     m65C02="CMP #b"    m65C816="CMP #b"       code="C9bb"    clocks="2"     flags="-------"           mCish="A - b"/>
+  <op m6502="DEX"        m65C02="DEX"       m65C816="DEX"          code="CA"      clocks="2"     flags="-------"           mCish="--X"/>
+  <op                                       m65C816="WAI"          code="CB"      clocks=""      flags="-------"           />
+  <op m6502="CPY t"      m65C02="CPY t"     m65C816="CPY t"        code="CCtltm"  clocks="4"     flags="-------"  bus="r"  mCish="Y - BYTE[t]"/>
+  <op m6502="CMP t"      m65C02="CMP t"     m65C816="CMP t"        code="CDtltm"  clocks="4"     flags="-------"  bus="r"  mCish="A - BYTE[t]"/>
+  <op m6502="DEC t"      m65C02="DEC t"     m65C816="DEC t"        code="CEtltm"  clocks="6"     flags="-------"  bus="rw" mCish="--BYTE[t]"/>
+  <op                                       m65C816="CMP al"       code="CF"      clocks=""      flags="-------"           />
+  <op m6502="BNE r"      m65C02="BNE r"     m65C816="BNE r"        code="D0rr"    clocks="2/3/4" flags="-------"           />
+  <op m6502="CMP (p),Y"  m65C02="CMP (p),Y" m65C816="CMP (p),Y"    code="D1pp"    clocks="5"     flags="-------"  bus="r"  mCish="A - BYTE[WORD[>p]+Y]"/>
+  <op                    m65C02="CMP (d)"   m65C816="CMP (d)"      code="D2"      clocks=""      flags="-------"           />
+  <op                                       m65C816="CMP (d,S),Y"  code="D3"      clocks=""      flags="-------"           />
+  <op                                       m65C816="PEI d"        code="D4"      clocks=""      flags="-------"           />
+  <op m6502="CMP p,X"    m65C02="CMP p,X"   m65C816="CMP p,X"      code="D5pp"    clocks="4"     flags="-------"  bus="r"  mCish="A - BYTE[>p+X]"/>
+  <op m6502="DEC p,X"    m65C02="DEC p,X"   m65C816="DEC p,X"      code="D6pp"    clocks="6"     flags="-------"  bus="rw" mCish="--BYTE[>p+X]"/>
+  <op                                       m65C816="CMP [d],Y"    code="D7"      clocks=""      flags="-------"           />
+  <op m6502="CLD"        m65C02="CLD"       m65C816="CLD"          code="D8"      clocks="2"     flags="-------"           />
+  <op m6502="CMP t,Y"    m65C02="CMP t,Y"   m65C816="CMP t,Y"      code="D9tltm"  clocks="4"     flags="-------"  bus="r"  mCish="A - BYTE[t+Y]"/>
+  <op                    m65C02="PHX"       m65C816="PHX"          code="DA"      clocks=""      flags="-------"           />
+  <op                                       m65C816="STP"          code="DB"      clocks=""      flags="-------"           />
+  <op                                       m65C816="JML (a)"      code="DC"      clocks=""      flags="-------"           />
+  <op m6502="CMP t,X"    m65C02="CMP t,X"   m65C816="CMP t,X"      code="DDtltm"  clocks="4"     flags="-------"  bus="r"  mCish="A - BYTE[t+X]"/>
+  <op m6502="DEC t,X"    m65C02="DEC t,X"   m65C816="DEC t,X"      code="DEtltm"  clocks="7"     flags="-------"  bus="rw" mCish="--BYTE[t+X]"/>
+  <op                                       m65C816="CMP al,X"     code="DF"      clocks=""      flags="-------"           />
+  <op m6502="CPX #b"     m65C02="CPX #b"    m65C816="CPX #b"       code="E0bb"    clocks="2"     flags="-------"           mCish="X - b"/>
+  <op m6502="SBC (p,X)"  m65C02="SBC (p,X)" m65C816="SBC (p,X)"    code="E1pp"    clocks=""      flags="-------"  bus="r"  mCish="A = A - BORROW - BYTE[WORD[>p+X]]"/>
+  <op                                       m65C816="SEP #"        code="E2"      clocks=""      flags="-------"           />
+  <op                                       m65C816="SBC d,S"      code="E3"      clocks=""      flags="-------"           />
+  <op m6502="CPX >p"     m65C02="CPX >p"    m65C816="CPX >p"       code="E4pp"    clocks="3"     flags="-------"  bus="r"  mCish="X - BYTE[>p]"/>
+  <op m6502="SBC >p"     m65C02="SBC >p"    m65C816="SBC >p"       code="E5pp"    clocks=""      flags="-------"  bus="r"  mCish="A = A - BORROW - BYTE[>p]"/>
+  <op m6502="INC >p"     m65C02="INC >p"    m65C816="INC >p"       code="E6pp"    clocks="5"     flags="-------"  bus="rw" mCish="++BYTE[>p]"/>
+  <op                                       m65C816="SBC [d]"      code="E7"      clocks=""      flags="-------"           />
+  <op m6502="INX"        m65C02="INX"       m65C816="INX"          code="E8"      clocks="2"     flags="-------"           mCish="++X"/>
+  <op m6502="SBC #b"     m65C02="SBC #b"    m65C816="SBC #b"       code="E9bb"    clocks=""      flags="-------"           mCish="A = A - BORROW - b"/>
+  <op m6502="NOP"        m65C02="NOP"       m65C816="NOP"          code="EA"      clocks="2"     flags="-------"           />
+  <op                                       m65C816="XBA"          code="EB"      clocks=""      flags="-------"           />
+  <op m6502="CPX t"      m65C02="CPX t"     m65C816="CPX t"        code="ECtltm"  clocks="4"     flags="-------"  bus="r"  mCish="X - BYTE[t]"/>
+  <op m6502="SBC t"      m65C02="SBC t"     m65C816="SBC t"        code="EDtltm"  clocks=""      flags="-------"  bus="r"  mCish="A = A - BORROW - BYTE[t]"/>
+  <op m6502="INC t"      m65C02="INC t"     m65C816="INC t"        code="EEtltm"  clocks="6"     flags="-------"  bus="rw" mCish="++BYTE[t]"/>
+  <op                                       m65C816="SBC al"       code="EF"      clocks=""      flags="-------"           />
+  <op m6502="BEQ r"      m65C02="BEQ r"     m65C816="BEQ r"        code="F0rr"    clocks="2/3/4" flags="-------"           />
+  <op m6502="SBC (p),Y"  m65C02="SBC (p),Y" m65C816="SBC (p),Y"    code="F1pp"    clocks=""      flags="-------"  bus="r"  mCish="A = A - BORROW - BYTE[WORD[>p]+Y]"/>
+  <op                    m65C02="SBC (d)"   m65C816="SBC (d)"      code="F2"      clocks=""      flags="-------"           />
+  <op                                       m65C816="SBC (d,S),Y"  code="F3"      clocks=""      flags="-------"           />
+  <op                                       m65C816="PEA a"        code="F4"      clocks=""      flags="-------"           />
+  <op m6502="SBC p,X"    m65C02="SBC p,X"   m65C816="SBC p,X"      code="F5pp"    clocks=""      flags="-------"  bus="r"  mCish="A = A - BORROW - BYTE[>p+X]"/>
+  <op m6502="INC p,X"    m65C02="INC p,X"   m65C816="INC p,X"      code="F6pp"    clocks="6"     flags="-------"  bus="rw" mCish="++BYTE[>p+X]"/>
+  <op                                       m65C816="SBC [d],Y"    code="F7"      clocks=""      flags="-------"           />
+  <op m6502="SED"        m65C02="SED"       m65C816="SED"          code="F8"      clocks="2"     flags="-------"           />
+  <op m6502="SBC t,Y"    m65C02="SBC t,Y"   m65C816="SBC t,Y"      code="F9tltm"  clocks=""      flags="-------"  bus="r"  mCish="A = A - BORROW - BYTE[t+Y]"/>
+  <op                    m65C02="PLX"       m65C816="PLX"          code="FA"      clocks=""      flags="-------"           />
+  <op                                       m65C816="XCE"          code="FB"      clocks=""      flags="-------"           />
+  <op                                       m65C816="JSR (a,X)"    code="FC"      clocks=""      flags="-------"           />
+  <op m6502="SBC t,X"    m65C02="SBC t,X"   m65C816="SBC t,X"      code="FDtltm"  clocks=""      flags="-------"  bus="r"  mCish="A = A - BORROW - BYTE[t+X]"/>
+  <op m6502="INC t,X"    m65C02="INC t,X"   m65C816="INC t,X"      code="FEtltm"  clocks="7"     flags="-------"  bus="rw" mCish="++BYTE[t+X]"/>
+  <op                                       m65C816="SBC al,X"     code="FF"      clocks=""      flags="-------"           />
+		</opcodes>
+		
+</ProcessorFamily>
+
