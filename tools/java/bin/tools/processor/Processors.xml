@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Processors>
+
+    <processor name="Z80"    family="Family_Z80_8080.xml" />
+    <processor name="8080"   family="Family_Z80_8080.xml" />
+    
+	<processor name="6502"   family="Family_650X.xml" />
+	<processor name="65C02"  family="Family_650X.xml" />
+	<processor name="65C816" family="Family_650X.xml" />	
+	
+	<processor name="6809"   family="Family_6809.xml" class="Processor_6809"/>
+		
+	<processor name="6801"   family="Family_6801_6803.xml" />
+	<processor name="6803"   family="Family_6801_6803.xml" />
+
+</Processors>
