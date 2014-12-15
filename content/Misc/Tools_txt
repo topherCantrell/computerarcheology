@@ -1,0 +1,33 @@
+[[PageOutline()]]
+
+= Lines of Code =
+
+Assembly and Disassembly lines are nearly identical. A line in each represents a computer instruction. The disassembly includes the address and opcodes that the assembler generates.
+
+Typical assembly:
+{{{
+8000: ; Origin
+; Clear memory
+      LDA   #35
+HERE: STA   ,X+  ; Clear the screen
+      DECB
+      BNE   HERE
+DONE: BRA DONE
+9000: 00 01 02 03 04
+      05 06 07 08 09
+}}}
+
+Typical disassembly:
+{{{
+DF6F: E1 DD 1C 96    CMPB    [$1C96,PC]  ; Have we reached the end?
+}}}
+
+The "ca.code.!CodeLine" class encapsulates all the fields for a single line of assembly/disassembly.
+
+Comments begin with ";". The rest of the line is the comment. Entire lines can be comment-only.
+
+The first token on the line is a single label or address followed by a colon. This token is optional. If the value is a pure hex number then the value is taken as the address of the line of code. Otherwise the token is a label for the line's address that can be used in other lines of code. In assembly, an address is used to set the origin of the following statements.
+
+The next field on the line is a series of 2-digit hex values that are the opcodes for the instruction. In assembly these are calculated by the assembler, but they can be given in assembly to create data fields. There are assembly mnemonics to create data structures beyond hex-bytes.
+
+The next field on the line is the mnemonic. Anything left after the opcode bytes (except for any comments) is the mnemonic.

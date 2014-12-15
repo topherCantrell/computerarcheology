@@ -1,0 +1,88 @@
+[[PageOutline()]]
+
+= RAM Usage =
+
+== Variables Kept Outside of Code (Not Saved) ==
+
+|| 0088..0089 || cursor || Screen cursor used by BASIC routines ||
+
+|| 01B0 || || ||
+|| 01B1 || || ||
+|| 01B2 || || ||
+|| 01B3 || || ||
+|| 01B4 || || ||
+|| 01B5 || || ||
+|| 01B6 || || ||
+|| 01B7 || || ||
+|| 01B8 || || ||
+|| 01B9 || || ||
+|| 01BA || || ||
+|| 01BB || || ||
+|| 01BC || || ||
+|| 01BD || || ||
+|| 01BE || || ||
+|| 01BF || || ||
+|| 01C0 || || ||
+|| 01C1 || || ||
+|| 01C2 || || ||
+|| 01C3 || || ||
+|| 01C4 || || ||
+|| 01C5 || || ||
+|| 01C6 || || ||
+|| 01C7 || || ||
+|| 01C8 || || ||
+|| 01C9 || || ||
+|| 01CA || || ||
+|| 01CB || || ||
+|| 01CC || || ||
+|| 01CD || || ||
+|| 01CE || || ||
+|| 01CF || || ||
+|| 01D0 || || ||
+|| 01D1 || || ||
+|| 01D2 || || ||
+|| 01D3 || || ||
+|| 01D4 || || ||
+|| 01D5 || || ||
+|| 01D6 || || ||
+|| 01D7 || || ||
+|| 01D8 || || ||
+|| 01D9 || || ||
+|| 01DA || || ||
+|| 01DB || || ||
+|| 01DC || || ||
+|| 01DD || || ||
+|| 01DE || || ||
+|| 01DF || || ||
+|| 01E0 || || ||
+|| 01E1 || || ||
+|| 01E2 || || ||
+|| 01E3 || || ||
+|| 01E4 || || ||
+|| 01E5 || || ||
+|| 01E6 || || ||
+|| 01E7 || || ||
+|| 01E8 || || ||
+|| 01E9 || || ||
+|| 01EA || || ||
+|| 01EB || || ||
+|| 01EC || || ||
+|| 01ED || || ||
+|| 01EE || || ||
+|| 01EF || || ||
+|| 01F0 || || ||
+
+; The game uses 65 bytes of memory in low memory beginning at 0x01B0 for temporaries.
+; These temporaries are NOT persisted in a SAVE.
+;
+
+== Variables Kept in the Code (Saved) ==
+|| '''Address''' || '''Init''' || '''Description''' ||
+|| 18E5 || 01 || !RoomNumber (starts in 1) ||
+|| 18E6 || 00 || TurnCountMSB (BCD format) ||
+|| 18E7 || 00 || TurnCountLSB (BCD format) ||
+|| 18E8 || 00 || !LampTime ||
+|| 18E9 || 00 || * NOT USED * ||
+|| 18EA || 00 || !LastRoomNumber ||
+|| 18EB || 00 || !NumInPack ||
+|| 18EC || 00 || * NOT USED * || 

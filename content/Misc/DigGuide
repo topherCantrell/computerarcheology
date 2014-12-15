@@ -1,0 +1,207 @@
+[[PageOutline()]]
+
+= Basic Structure of a Dig Site =
+
+Use the [wiki:Arcade/SpaceInvaders/CodeAsZ80 Space Invaders] site as an example of the macros and guidelines described here.
+
+A disassembly "dig" is usually multiple pages. The "top" page of a dig is a write-up that references the disassembly with links and included snippets. The disassembly itself is one long page ... thousands of lines of commented opcodes with wiki-markup sprinkled throughout. There are !JavaScript tools you can use to render pixel images on canvasses in the browser window. These are discussed below.
+
+The disassembly usually links to a "RAM Usage" page that contains a long table of RAM addresses and the descriptions of what they do. This is a separate page so that the viewer can open it in a separate window and view the information side-by-side with the code. The !AssemblyCode macro discussed below allows you to link lines of disassembly to the entries in the RAM usage table.
+
+The disassembly usually links to a "Hardware" page that describes the hardware of the system. This usually includes a "Register Usage" or "Port Usage" table similar to the RAM Usage. The !AssemblyCode macro discussed below allows you to link the disassembly to the entries in this table.
+
+Arcade games often used multiple CPUs. There should be a "top" page for the game and multiple disassembly pages. These individual pages should reference a shared hardware page and shared RAM page where appropriate. They might also reference their own private RAM usage table.
+
+Some systems used bank switching. Each bank might have its own disassembly page. The !AssemblyCode macro allows code-jump links between pages.
+
+This site uses sub-pages for major systems. The [wiki:CoCo TRS-80 Color Computer] sub-page, for instance, has several sub-sub-pages ... one for each game. The "Arcade" sub-page is a catch-all for all free-standing arcade games. 
+
+Please preserve this directory structure so that a viewer can click the "Index" tab and see the tree of games at a glance:[[br]]
+[[Image(subpages.jpg)]]
+
+= !AssemblyCode Processor Macro =
+
+[source:tools/TRACMacros/assemblycode.py assemblycode.py]
+
+Disassembly fragments are wrapped in the !AssemblyCode processor macro like this:
+{{{
+{{{#!AssemblyCode
+0057: CD BF 0A        CALL    $0ABF               ; Process ISR tasks for splash screens
+005A: C3 82 00        JP      $0082               ; Restore registers and out
+;
+; At this point no game is going and there are credits
+005D: 3A 93 20        LD      A,($2093)           ; Are we in the ...
+0060: A7              AND     A                   ; ... "press start" loop?
+0061: C2 82 00        JP      NZ,$0082            ; Yes ... restore registers and out
+0064: C3 65 07        JP      $0765               ; Start the "press start" loop
+}}}
+}}}
+
+This macro formats lines of disassembly for viewing through the browser. You can insert links between code snippets allowing the viewer to quickly surf from routine to routine and from code to the RAM usage write-up.
+
+I wanted to make this macro as fast as possible since it must process thousands of lines of disassembly on a single page. The macro *could* automatically find code labels across multiple wiki-pages, but that would take time. Instead, the author must provide the link labels in the disassembly. There are tools in the "tools.wiki" java code to automate these links.
+
+All instructions to the !AssemblyCode macro are defined within "{...}". These are buried in the comments so as not to clutter the disassembly in the editor view. The entire instruction is removed from the line in the final rendering.
+
+== Inserting Anchors (Targets) ==
+
+To insert an anchor (link target) into the assembly use the "{*label}" instruction. This will insert an html span at the beginning of the line. This span can be used as a link target from assembly or wiki write-up on this or other pages. 
+
+Code targets have a name and a code address. The address is taken from the code line. If the line doesn't have an address (a label or a pure comment) then the address of the next valid code line is used.
+
+The name is used as a target in referencing links. If no name is given then any code label on the line is used as the name. If there is no code label then the 4-digit hex address is used as the name.
+
+TODO fix python code for pure label.
+
+Here is an example of adding two anchors ... one named and the other using the address for the name:
+{{{
+{{{#!AssemblyCode
+MyRoutine: ;{*}
+004D: C2 6F 00        JP      NZ,$006F            ; {*goHere} Yes ... go process game-play things and out
+0050: 3A EB 20        LD      A,($20EB)           ; {*} Number of credits
+}}}
+}}}
+{{{#!AssemblyCode
+MyRoutine: ;{*}
+004D: C2 6F 00        JP      NZ,$006F            ; {*goHere} Yes ... go process game-play things and out
+0050: 3A EB 20        LD      A,($20EB)           ; {*} Number of credits
+}}}
+
+[#here Test jump to "#goHere"][[BR]]
+[#0050 Test jump to "#0050"][[BR]]
+[#MyRoutine Test jump to "#MyRoutine"]
+
+== Linking to Anchors ==
+
+To insert a link to an anchor use the "{-%/destination:label}" instruction. The "-" and "%" and "/" and ":label" are all optional.
+
+One or more "-" at the very front select the coloring (type) of the link. Use no "-" for links between code. Use one "-" for RAM references. Use two "-" for hardware register and port references.
+
+The macro will look on the line for a hex number to replace with the link. If there is no hex number then the link will be added to the end of the opcode. You can add the "%" flag to force the link to the end of the opcode even if there is a number in the opcode.
+
+The generated link will use the "destination" as the href target and the "label" as the text shown on the page. If the "/" flag is used then the destination is used as is. Otherwise a "#" is prepended. This is a shortcut for same-page-links, which are more common.
+
+If the ":label" is given then "label" will be used as the link's text. Otherwise the "destination" will be used. If the destination is not given then the replaced number is used as the destination. If the label is blank -- just a ":" on the end -- then the link is just a colored reference that doesn't go anywhere when clicked on. Use these for RAM and Hardware references.
+
+{{{
+{{{#!AssemblyCode
+0001: C2 4D 00        JP      NZ,$004D            ; {goHere} Replace the jump address with the known routine name
+0002: C2 4D 00        JP      NZ,$004D            ; {goHere:GOHERE} Jump to the named routine, but use different text in the link
+0003: C2 50 00        JP      NZ,$0050            ; {} The address $0050 is named with its address
+0004: E9              JP      (HL)                ; {goHere} I know we are going to routine "goHere"
+0005: C2 4D 00        JP      NZ,$004D            ; {%goHere:HERE} Just add the link next to the opcode
+0006: C2 4D 00        JP      NZ,$004D            ; {%//wiki/wiki/NES/Zelda:SEE ZELDA} Quick link to another page
+}}}
+}}}
+{{{#!AssemblyCode
+0001: C2 4D 00        JP      NZ,$004D            ; {goHere} Replace the jump address with the known routine name
+0002: C2 4D 00        JP      NZ,$004D            ; {goHere:GOHERE} Jump to the named routine, but use different text in the link
+0003: C2 50 00        JP      NZ,$0050            ; {} The address $0050 is named with its address
+0004: E9              JP      (HL)                ; {goHere} I know we are going to routine "goHere"
+0005: C2 4D 00        JP      NZ,$004D            ; {%goHere:HERE} Just add the link next to the opcode
+0006: C2 4D 00        JP      NZ,$004D            ; {%//wiki/wiki/NES/Zelda:SEE ZELDA} Quick link to another page
+}}}
+
+TODO talk about -- and blank labels ":"
+
+= !JavaScript Rendering =
+
+There are several javascript tools checked into SVN that you can reference from your embedded script tags like this:
+
+{{{
+<script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/CANVAS.js?format=raw" type="text/javascript"></script>
+<script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/pixelUI.js?format=raw" type="text/javascript"></script>
+<script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/bytes.js?format=raw" type="text/javascript"></script>
+}}}
+
+It takes a little bit longer to load these from the SVN repository than from a static directory, but having them in SVN allows anyone to edit the existing files and add new ones.
+
+== CANVAS.js ==
+
+[source:tools/TRACJavaScript/CANVAS.js CANVAS.js]
+
+This script has one function that runs when the page loads. It looks for all {{{<canvas>}}} elements on the page and runs each ones "data-canvasFunction". The last "data-canvasFunction" specified is cached so that later canvas elements don't have to specify one. They will use the last one given. This is convenient if all canvas elements on the page use the same function.
+
+This script also sets the "htmlUpper" variable to the html content of the page (for data extractions).
+
+== pixelUI.js ==
+
+[source:tools/TRACJavaScript/pixelUI.js pixelUI.js]
+
+This file contains functions for graphing grids of pixels (sprites and such).
+
+ * '''handleTileCanvas(can)''' process the tile commands from one canvas
+
+This calls a function specified by "data-getTileDataFunction", and the function is cached for later calls that do not specify directly. Each disassembly site should define its own function to return pixel data appropriately.
+
+From the function's javadocs:
+
+{{{
+* This function processes the attributes and drawing for a single canvas. The
+* attributes specify drawing parameters that are preserved until changed
+* by a later canvas.
+*   
+*   data-colors                array of color values to map to pixel values -- or the name of a defined set
+*   data-colorsName            if given, the name of this color set for later reference in data-colors
+*   data-pixWidth              the width of a pixel square drawn on the canvas
+*   data-pixHeight             the height of a pixel square drawn on the canvas
+*   data-gridX                 number of pixels across a tile
+*   data-gridY                 number of pixels down a tile
+*   data-gap                   gap between pixels in a tile drawing
+*   data-labelColor            color of the tile label ("" for no label)
+*   data-address               disassembly address for the data for this canvas
+*   data-gridPad               gap between tiles in a matrix of tiles
+*   data-file                  name of disassembly file to load from the server
+*   data-showBorder            true to show the border around the canvas (for sizing)
+*   data-getTileDataFunction   name of the function used to get data for the tile commands
+*   
+*   data-command               list of tile commands separated with a ","
+*     VH20               draw tile 20 with vertical and horizontal mirroring (V and H are optional)
+*                        the next tile is drawn to the right of this one unless changed (see below)
+*     :2x3:1,2,3,4,5,6   draw a 2x3 (2 across, 3 down) matrix of tiles given
+*     :2x3:1,2           automatic increment to get 3,4,5, and 6
+*     :2x3:1,2,,4,,6     empty tile values are left empty on the screen
+*     #NewSet            change the color set to a predefined color set
+*     +x                 skip a pixel to the right (for spacing)
+*     +y                 skip a pixel down (for spacing)
+*     *                  set X to 0 and Y to the next row (for spacing)
+}}}
+
+== bytes.js ==
+
+[source:tools/TRACJavaScript/bytes.js bytes.js]
+
+This file contains functions for reading data bytes from the text of a disassembly page. These functions are used by hardware-specific functions to fetch pixel data for rendering.
+
+ * '''setDataCursor(address)''' sets the data cursor to the given address
+ * '''readNextByte()''' returns the next byte and advances the data cursor
+ * '''getData(start,size)''' reads "size" bytes of data beginning at address "start"
+ * '''getLineOfData(addres,ret)''' reads all of the data from a line of disassembly starting with "address" and adds to array "ret"
+
+== siUI.js ==
+
+[source:tools/TRACJavaScript/siUI.js siUI.js]
+
+This file contains Space Invaders specific tile-data functions specified in a canvas's "data-getTileDataFunction". All of these functions rotate the data to match the rotated arcade monitor. The program writes bit patterns to memory manually, and there are many image sizes written out.
+
+ * '''get8x8Data(tile)''' read 8x8 pixel data from address "tile"
+ * '''get8x3Data(tile)''' read 8x3 pixel data from address "tile"
+ * '''get1x8Data(tile)''' read 1x8 pixel data from address "tile"
+ * '''get6x8Data(tile)''' read 6x8 pixel data from address "tile"
+ * '''get8x16Data(tile)''' read 8x16 pixel data from address "tile"
+ * '''get8x24Data(tile)''' read 8x24 pixel data from address "tile"
+ * '''get16x22Data(tile)''' read 16x22 pixel data from address "tile"
+
+== zelda.js ==
+
+[source:tools/TRACJavaScript/zelda.js zelda.js]
+
+This file contains Zelda specific tile-data functions specified in a canvas's "data-getTileDataFunction". The Zelda hardware uses 16-byte with 8-byte bit-planes. The data function merges the bit-planes together into pixels.
+
+ * '''getMergedData(tile)''' read an 8x8 pixel tile merged from two bit-planes
+
+== DVG.js ==
+
+[source:tools/TRACJavaScript/DVG.js DVG.js]
+
+This file contains a vector-generator module that draws vector descriptions for the Atari Digital Vector Generator used in Asteroids and Omega Race.

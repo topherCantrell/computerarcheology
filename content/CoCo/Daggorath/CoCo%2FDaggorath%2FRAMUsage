@@ -1,0 +1,176 @@
+[[PageOutline()]]
+
+= Memory Usage =
+
+The first 256 bytes of RAM (DP=0) are needed by BASIC function calls made by Daggorath. The second
+256 bytes of RAM (DP=1) contain the BASIC interrupt vectors.
+
+Daggorath uses the third 256 bytes of memory (DP=2 from 0200 to 02FF) for its frequently used game variables.
+
+RAM from 0300 to 1000 is used for various arrays of structures. The stack grows down from 0FFF.
+
+The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two screen buffers. 
+
+||= Memory =||= Function =||
+||0000-01FF||DP=0, DP=1 for BASIC function calls and interrupts||
+||0200-02FF||DP=1 for game variables (named in table below)||
+||0300-03D3||?? Text area descriptors ??||
+||03D4-05F4||Creature objects (32 creatures, 17 bytes each). See description below.||
+||05F4-09F3||Current level maze, one byte per room (32*32 bytes)||
+||09F4-09FC||?? Used in maze drawing ??||
+||09FD-0B14||?? Game tasks ??||
+||0B15-????||Game objects (14 bytes each).  020F points to 1-entry-past-last game object. See description below.||
+||????-0FFF||Stack space (grows downwards towards 0000 from 1000)
+||1000-27FF||First screen buffer||
+||2800-3FFF||Second screen buffer||
+
+= DP=2 Game Variables =
+||= Address =||= Name =||= Description =||
+||2_02||??202||Initialized to 01||
+||2_03||??203||Initialized to FF||
+||2_04||??204||Initialized to FF||
+||2_05||??205||Initialized to 00||
+||2_06||??206||Initialized to 80||
+||2_07||??207||Initialized to 00||
+||2_08||??208||Initialized to 4C||
+||2_09:2||activeScreen||Initialized to D8_70 Pointer to visible screen descriptor||
+||2_0B:2||backScreen||Initialized to D8_76 Pointer to drawing screen descriptor||
+||2_0D||??20D||Initialized to D9||
+||2_0E||??20E||Initialized to 88||
+||2_0F:2||endOfObjsM||Initialized to 0B_15 Pointer to one object slot past end of list||
+||2_11||??211||Initialized to 02||
+||2_12||??212||Initialized to F1||
+||2_13||playerY||Initialized to 0C Player's Y coordinate||
+||2_14||playerX||Initialized to 16 Player's X coordinate||
+||2_15||??215||Initialized to 00 Player's direction ??||
+||2_16||??216||Initialized to 23||
+||2_17||??217||Initialized to 17||
+||2_18||??218||Initialized to A0||
+||2_B9||nextTask||Next available game-task slot||
+
+{{{
+;##+26B    rndSeedA        Random number generator seed value
+;##+26C    rndSeedB        Random number generator seed value
+;##+26D    rndSeedC        Random number generator seed value
+
+;##+27C    drwMazeY        Maze drawing ... current Y
+;##+27D    drwMazeX        Maze drawing ... current X
+;##+27E    drwMazeCross    Maze drawings ... number of crossings for current run
+
+;##+28A    drwMazeDir      Maze drawing ... current direction
+
+;##+281    currentLevel    Current maze level number (0-4)
+
+;##+286    currentHolesM   Pointer to ceiling hole/ladder table for current level
+;##+287    currentHolesL   ^
+
+
+;##+288    drwMazeTmp      Temporary for maze drawing
+
+;##+291    restartFind     1 to restart "FindNextObject" at top of list, 0 to continue find
+;##+292    currentObjM     Pointer to last object found
+;##+293    currentObjL     ^
+
+;##+294    scrollType      0 means "vision", not-0 means "seer"
+
+;##+297    ??297           Used at CD65 to advance random number
+
+;##+29C    beamSound       Not-0 if wizard-beam sound
+;##+29D    beamSoundVal    wizard sound value
+;   29E
+
+;   29F
+;   29A
+;   29B
+;   29C
+;   29D
+;   29E
+;   29F
+;   2A0
+;   2A1
+;   2A2
+;   2A3
+;   2A4
+;   2A5
+;   2A6
+;   2A7
+;   2A8
+;   2A9
+;   2AA
+;   2AB
+;   2AC
+
+;   2AD
+;   2AE
+;   2AF
+;   2B0
+;   2B1
+;   2B2
+;   2B3
+;##+2B4    flipScreens     Not-0 to flip screens then ack to 0
+;   2B5
+;   2B6
+;   2B7
+;   2B8
+;##+2B9    ??nextTask      ??Pointer to next available task slot
+;   2BA
+;   2BB    ??
+;   2BC    head index (next read) of the 32 byte input ring buffer at 2D1
+;   2BD    tail index (next write) of the 32 byte input ring buffer at 2D1
+
+;##+02D1..02F0 32 byte input ring buffer
+
+
+; ------------------------------------------------------------------------------------------
+
+; Screen Descriptor
+; aabbccdd eeff
+;
+; eeff : SAM settings for screen
+;
+; Creatures are 17 byte structures as follows:
+;   00
+;   01
+;   02
+;   03
+;   04
+;   05
+;   06
+;   07
+;   08
+;   09
+;   0A
+;   0B
+;   0C 0 if inactive, FF if alive
+;   0D Type
+;   0E Direction
+;   0F Y coordinate
+;   10 X coordinate
+;
+;
+; Objects are 14 byte structures as follows:
+;   00
+;   01
+;   02 Y coordinate
+;   03 X coordinate
+;   04 Maze level
+;   05 ?? 0 if on floor
+;   06 Special data 1 -+
+;   07 Special data 2  | Copied from entry in DA64
+;   08 Special data 3 -+ 
+;   09 Object type        
+;   0A Object class        -+
+;   0B Strength to reveal   | Copied from entry in DA00
+;   0C Magic power          |
+;   0D Physical power      -+
+; 
+
+; Tasks are 7 byte structures as follows:
+;   00
+;   01
+;   02
+;   03 MSB Handler code entry
+;   04 LSB ^
+;   05
+;   06
+}}}

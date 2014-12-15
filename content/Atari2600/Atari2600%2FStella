@@ -1,0 +1,103 @@
+{{{
+;##TIA
+
+; The address decoding for the 2600 is very simple. The TIA is accessed
+; if A12 is 0 and A7 is 0. The TIA is selected if (address&1080 == 0000).
+;
+; The TIA chip uses the 6 lower address lines A0-A5 thus the 003F mask
+; below. The reads seem to ignore A4 and A5 thus the 000F mask on reads.
+;
+; The addresses have different read/write definitions and many of them
+; are strobes that are triggered by writing any value.
+
+; Read addresses
+;
+;##+1080:0000:000F:0000r    CXM0P               Collisions M0/P1   M0/P0
+;##+1080:0000:000F:0001r    CXM1P               Collisions M1/P0   M1/P1
+;##+1080:0000:000F:0002r    CXP0FB              Collisions M0/PF   P0/BL
+;##+1080:0000:000F:0003r    CXP1FB              Collisions P1/PF   P1/BL
+;##+1080:0000:000F:0004r    CXM0FB              Collisions M0/PF   M0/BL
+;##+1080:0000:000F:0005r    CXM1FB              Collisions M1/PF   M1/BL
+;##+1080:0000:000F:0006r    CXBLPF              Collisions BL/PF
+;##+1080:0000:000F:0007r    CXPPMM              COllisions P0/P1   M0/M1
+;##+1080:0000:000F:0008r    INPT0               Paddle input 0
+;##+1080:0000:000F:0009r    INPT1               Paddle input 1
+;##+1080:0000:000F:000Ar    INPT2               Paddle input 2
+;##+1080:0000:000F:000Br    INPT3               Paddle input 3
+;##+1080:0000:000F:000Cr    INPT4               Latched inputs (joystick buttons)
+;##+1080:0000:000F:000Dr    INPT5               Latched inputs (joystick buttons)
+;
+; Write addresses
+;
+;##+1080:0000:003F:0000w    VSYNC               D1=1 starts the vertical sync
+;##+1080:0000:003F:0001w    VBLANK              D1=1 starts the vertical blank (D6 and D7 config INPT0-5)
+;##+1080:0000:003F:0002w    WSYNC               Halts processor until leading edge of horizontal blank
+;##+1080:0000:003F:0003w    RSYNC               Resets sync counter (used in chip testing)
+;##+1080:0000:003F:0004w    NUSIZ0              Number and size of player/missile P0
+;##+1080:0000:003F:0005w    NUSIZ1              Number and size of player/missile P0
+;##+1080:0000:003F:0006w    COLUP0              Color-luminance of player 0
+;##+1080:0000:003F:0007w    COLUP1              Color-luminance of player 1
+;##+1080:0000:003F:0008w    COLUPF              Color-luminance of play filed
+;##+1080:0000:003F:0009w    COLUBK              Color-luminance of background
+;##+1080:0000:003F:000Aw    CTRLPF              Control playfield, priorities, and ball size
+;##+1080:0000:003F:000Bw    REFP0               D3=1 reflects player 0
+;##+1080:0000:003F:000Cw    PEFP1               D3=1 reflects player 1
+;##+1080:0000:003F:000Dw    PF0                 Playfield 0 bits (upper 4 bits)
+;##+1080:0000:003F:000Ew    PF1                 Playfield 1 bits
+;##+1080:0000:003F:000Fw    PF2                 Playfield 2 bits
+;##+1080:0000:003F:0010w    RESP0               Set horizontal position of player 0
+;##+1080:0000:003F:0011w    RESP1               Set horizontal position of player 1
+;##+1080:0000:003F:0012w    RESM0               Set horizontal position of missile 0
+;##+1080:0000:003F:0013w    RESM1               Set horizontal position of missile 1
+;##+1080:0000:003F:0014w    RESBL               Set horizontal position of ball
+;##+1080:0000:003F:0015w    AUDC0               Noise, tone, division control channel 0
+;##+1080:0000:003F:0016w    AUDC1               Noise, tone, division control channel 1
+;##+1080:0000:003F:0017w    AUDF0               Frequency divider channel 0
+;##+1080:0000:003F:0018w    AUDF1               Frequency divider channel 1
+;##+1080:0000:003F:0019w    AUDV0               Volume channel 0
+;##+1080:0000:003F:001Aw    AUDV1               Volume channel 1
+;##+1080:0000:003F:001Bw    GRP0                Player 0 graphics
+;##+1080:0000:003F:001Cw    GRP1                Player 1 graphics
+;##+1080:0000:003F:001Dw    ENAM0               D1=1 to enable missile 0
+;##+1080:0000:003F:001Ew    ENAM1               D1=1 to enable missile 1
+;##+1080:0000:003F:001Fw    ENABL               D1=1 to enable ball
+;##+1080:0000:003F:0020w    HMP0                Horizontal motion offset for player 0
+;##+1080:0000:003F:0021w    HMP1                Horizontal motion offset for player 1
+;##+1080:0000:003F:0022w    HMM0                Horizontal motion offset for missile 0
+;##+1080:0000:003F:0023w    HMM1                Horizontal motion offset for missile 1
+;##+1080:0000:003F:0024w    HMBL                Horizontal motion offset for ball
+;##+1080:0000:003F:0025w    VDELP0              D0=1 to delay player 0 one vertical line
+;##+1080:0000:003F:0026w    VDELP1              D0=1 to delay player 1 one vertical line
+;##+1080:0000:003F:0027w    VDELBL              D0=1 to delay ball one vertical line
+;##+1080:0000:003F:0028w    RESMP0              D1=1 to reset missile 0 to player 0
+;##+1080:0000:003F:0029w    RESMP1              D1=1 to reset missile 1 to player 1
+;##+1080:0000:003F:002Aw    HMOVE               Executes horizontal motions
+;##+1080:0000:003F:002Bw    HMCLR               Clears all horizonal motion registers
+;##+1080:0000:003F:002Cw    CXCLR               Clears all collision registers
+
+;##PIA
+
+; The PIA (R.I.O.T.) is accessed if A12 is 0 and A7 is 1. If A9 is 0 then the 128 bytes 
+; of RAM are selected. If A9 is 1 then the PIA timer registers are selected.
+;
+; The TIA REGS are selected if (address&1280 == 0280).
+; The TIA RAM is selected if (address&1280 == 0080).
+;
+; The PIA chip uses the lower 7 address lines A0-A6. Thus the 007F mask below.
+
+;##+1280:0280:007F:0280rw   SWCHA               Port A Hand controllers
+;##+1280:0280:007F:0281rw   SWACNT              Port A DDR
+;##+1280:0280:007F:0282rw   SWCHB               Port B Console switches
+;##+1280:0280:007F:0283rw   SWBCNT              Port B DDR
+;##+1280:0280:007F:0284r    INTIM               Timer output (read only)
+;##+1280:0280:007F:0294w    TIM1T               Set 1 clock interval (write only)
+;##+1280:0280:007F:0295w    TIM8T               Set 8 clock interval (write only)
+;##+1280:0280:007F:0296w    TIM64T              Set 64 clock interval (write only)
+;##+1280:0280:007F:0297w    TIM1024T            Set 1024 clock interval (write only)
+
+;##RAM
+
+; Note that the 6502 has an 8-bit stack pointer. The CPU automatically sets the upper
+; byte of the address to 01. The RIOT chip RAM ghosts from 00xx to 01xx putting the stack
+; in RAM.
+}}}

@@ -1,0 +1,1569 @@
+[[PageOutline()]]
+
+= Vector ROM =
+
+{{{#!html
+<script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/DVG.js?format=raw"></script>
+<script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/CANVAS.js?format=raw" type="text/javascript"></script>
+<script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/pixelUI.js?format=raw" type="text/javascript"></script>
+<script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/bytes.js?format=raw" type="text/javascript"></script>
+}}}
+
+|| [#ShipsA First set of ship images] ||
+|| [#enemyTri Circle-enemy with triangle ] ||
+|| [#enemyNoTri Circle-enemy with no triangle] ||
+|| [#enemyChase Triangle (chasing) enemy] ||
+|| [#lasers Lasers at different angles] ||
+|| [#triangles Single and double triangles] ||
+|| [#explosion Multi-line explosion] ||
+|| [#letters Letters of the alphabet] ||
+|| [#numbers Numbers and white-space] ||
+|| [#special Punctuation and specials] ||
+|| [#shipsB Second set of ship images] ||
+
+{{{#!AssemblyCode
+; The main OmegaRace page on this site describes the workings of the Digital Vector Generator 
+; in greater detail. When the DVG gets the "GO" signal from the main CPU it begins reading 
+; vector commands beginning at main memory 8000. This memory is RAM that the main CPU fills out.
+; The main CPU fills this RAM with JSR commands to the picture sequences in the ROM (see below)
+; that appears in the map at 9000.
+
+; The images below are rendered by a DVG emulator written in JavaScript that draws the
+; vectors on an HTML canvas.
+
+; The player ship sprites are first and last in the ROM. Each picture draws the player just a 
+; little rotated CCW from the original position (facing right). Pictures come in pairs. The first
+; picture is the thrust stream for the ship. The second picture is the ship. The thrust stream
+; is drawn right where the ship picture ends.
+;
+; Note that there is no perfectly vertical picture. In the game you can't point perfectly vertical.
+; ShipsA {*ShipsA}
+; The first ship image below shows the thrust pattern.
+
+<canvas width="1225" height="100"
+  data-canvasFunction="handleDVGCanvas"
+  data-colors='["#FFFFFF","#FFE55C","#FFE55C","#FFE55C","#FFE55C","#635629","#FFE55C","#FFE55C","#FFE55C","#FFE55C","#FFE55C","#FFE55C","#FFE55C","#FFE55C","#FFE55C","#FFE55C"]'
+  data-origin="8000"
+  data-command="globalScale=2,x=50,y=50,900E,9000,x=125,y=50,904E,x=200,y=50,9090,x=275,y=50,90D2,x=350,y=50,9116,x=425,y=50,9156,x=500,y=50,9192,x=575,y=50,91D2,x=650,y=50,9212,x=725,y=50,9250,x=800,y=50,9290,x=875,y=50,92D0,x=950,y=50,930C,x=1025,y=50,934C,x=1100,y=50,9390,x=1175,y=50,93D2">
+</canvas>
+
+; Thrust fragment
+9000: BF 30 FF 07     ; (800) 30BF 07FF     VCTR scale=3(/64) x=-3FF y=BF   int=0   (-15.98 ,   2.98 )
+9004: BF 34 3F F6     ; (802) 34BF F63F     VCTR scale=3(/64) x=-23F y=-BF  int=15  ( -8.98 ,  -2.98 )
+9008: 7F 34 3F F2     ; (804) 347F F23F     VCTR scale=3(/64) x=23F  y=-7F  int=15  (  8.98 ,  -1.98 )
+900C: 00 D0           ; (806) D000          RTSL
+; Player facing right
+900E: 00 20 7F 02     ; (807) 2000 027F     VCTR scale=2(/128)x=27F  y=0    int=0   (  4.99 ,   0.00 )
+9012: 3F 41 7F F6     ; (809) 413F F67F     VCTR scale=4(/32) x=-27F y=13F  int=15  (-19.96 ,   9.96 )
+9016: 9F 46 5F F1     ; (80B) 469F F15F     VCTR scale=4(/32) x=15F  y=-29F int=15  ( 10.96 , -20.96 )
+901A: F2 F8           ; (80D) F8F2          SVEC scale=1(/64) x=200  y=0    int=15  (  8.00 ,   0.00 )
+901C: 7F 34 7F F6     ; (80E) 347F F67F     VCTR scale=3(/64) x=-27F y=-7F  int=15  ( -9.98 ,  -1.98 )
+9020: FF 41 1F F2     ; (810) 41FF F21F     VCTR scale=4(/32) x=21F  y=1FF  int=15  ( 16.96 ,  15.96 )
+9024: 7F 25 7F F2     ; (812) 257F F27F     VCTR scale=2(/128)x=27F  y=-17F int=15  (  4.99 ,  -2.99 )
+9028: FF 24 7F F6     ; (814) 24FF F67F     VCTR scale=2(/128)x=-27F y=-FF  int=15  ( -4.99 ,  -1.99 )
+902C: FF 41 1F F6     ; (816) 41FF F61F     VCTR scale=4(/32) x=-21F y=1FF  int=15  (-16.96 ,  15.96 )
+9030: 7F 34 7F F2     ; (818) 347F F27F     VCTR scale=3(/64) x=27F  y=-7F  int=15  (  9.98 ,  -1.98 )
+9034: F6 F8           ; (81A) F8F6          SVEC scale=1(/64) x=-200 y=0    int=15  ( -8.00 ,   0.00 )
+9036: 9F 46 5F F5     ; (81B) 469F F55F     VCTR scale=4(/32) x=-15F y=-29F int=15  (-10.96 , -20.96 )
+903A: 1F 41 7F F2     ; (81D) 411F F27F     VCTR scale=4(/32) x=27F  y=11F  int=15  ( 19.96 ,   8.96 )
+903E: 00 D0           ; (81F) D000          RTSL
+;
+9040: 3F 30 FF 07     ; (820) 303F 07FF     VCTR scale=3(/64) x=-3FF y=3F   int=0   (-15.98 ,   0.98 )
+9044: BF 34 3F F6     ; (822) 34BF F63F     VCTR scale=3(/64) x=-23F y=-BF  int=15  ( -8.98 ,  -2.98 )
+9048: 7F 34 3F F2     ; (824) 347F F23F     VCTR scale=3(/64) x=23F  y=-7F  int=15  (  8.98 ,  -1.98 )
+904C: 00 D0           ; (826) D000          RTSL
+;
+904E: 00 20 7F 02     ; (827) 2000 027F     VCTR scale=2(/128)x=27F  y=0    int=0   (  4.99 ,   0.00 )
+9052: FF 40 9F F6     ; (829) 40FF F69F     VCTR scale=4(/32) x=-29F y=FF   int=15  (-20.96 ,   7.96 )
+9056: 5F 46 9F F1     ; (82B) 465F F19F     VCTR scale=4(/32) x=19F  y=-25F int=15  ( 12.96 , -18.96 )
+905A: F2 F8           ; (82D) F8F2          SVEC scale=1(/64) x=200  y=0    int=15  (  8.00 ,   0.00 )
+905C: BF 34 7F F6     ; (82E) 34BF F67F     VCTR scale=3(/64) x=-27F y=-BF  int=15  ( -9.98 ,  -2.98 )
+9060: 3F 42 FF F1     ; (830) 423F F1FF     VCTR scale=4(/32) x=1FF  y=23F  int=15  ( 15.96 ,  17.96 )
+9064: FF 24 7F F2     ; (832) 24FF F27F     VCTR scale=2(/128)x=27F  y=-FF  int=15  (  4.99 ,  -1.99 )
+9068: 7F 25 7F F6     ; (834) 257F F67F     VCTR scale=2(/128)x=-27F y=-17F int=15  ( -4.99 ,  -2.99 )
+906C: BF 41 3F F6     ; (836) 41BF F63F     VCTR scale=4(/32) x=-23F y=1BF  int=15  (-17.96 ,  13.96 )
+9070: 3F 34 7F F2     ; (838) 343F F27F     VCTR scale=3(/64) x=27F  y=-3F  int=15  (  9.98 ,  -0.98 )
+9074: 7F 24 FF F7     ; (83A) 247F F7FF     VCTR scale=2(/128)x=-3FF y=-7F  int=15  ( -7.99 ,  -0.99 )
+9078: BF 46 1F F5     ; (83C) 46BF F51F     VCTR scale=4(/32) x=-11F y=-2BF int=15  ( -8.96 , -21.96 )
+907C: 5F 41 5F F2     ; (83E) 415F F25F     VCTR scale=4(/32) x=25F  y=15F  int=15  ( 18.96 ,  10.96 )
+9080: 00 D0           ; (840) D000          RTSL
+;
+9082: 00 30 FF 07     ; (841) 3000 07FF     VCTR scale=3(/64) x=-3FF y=0    int=0   (-15.98 ,   0.00 )
+9086: FF 25 FF F7     ; (843) 25FF F7FF     VCTR scale=2(/128)x=-3FF y=-1FF int=15  ( -7.99 ,  -3.99 )
+908A: 3F 34 3F F2     ; (845) 343F F23F     VCTR scale=3(/64) x=23F  y=-3F  int=15  (  8.98 ,  -0.98 )
+908E: 00 D0           ; (847) D000          RTSL
+;
+9090: 7F 20 7F 02     ; (848) 207F 027F     VCTR scale=2(/128)x=27F  y=7F   int=0   (  4.99 ,   0.99 )
+9094: BF 40 BF F6     ; (84A) 40BF F6BF     VCTR scale=4(/32) x=-2BF y=BF   int=15  (-21.96 ,   5.96 )
+9098: 5F 46 DF F1     ; (84C) 465F F1DF     VCTR scale=4(/32) x=1DF  y=-25F int=15  ( 14.96 , -18.96 )
+909C: FF 20 FF F3     ; (84E) 20FF F3FF     VCTR scale=2(/128)x=3FF  y=FF   int=15  (  7.99 ,   1.99 )
+90A0: FF 34 3F F6     ; (850) 34FF F63F     VCTR scale=3(/64) x=-23F y=-FF  int=15  ( -8.98 ,  -3.98 )
+90A4: 5F 42 9F F1     ; (852) 425F F19F     VCTR scale=4(/32) x=19F  y=25F  int=15  ( 12.96 ,  18.96 )
+90A8: F3 F5           ; (854) F5F3          SVEC scale=0(/128)x=200  y=0    int=15  (  4.00 ,   0.00 )
+90AA: 7F 25 7F F6     ; (855) 257F F67F     VCTR scale=2(/128)x=-27F y=-17F int=15  ( -4.99 ,  -2.99 )
+90AE: 7F 41 7F F6     ; (857) 417F F67F     VCTR scale=4(/32) x=-27F y=17F  int=15  (-19.96 ,  11.96 )
+90B2: 3F 30 BF F2     ; (859) 303F F2BF     VCTR scale=3(/64) x=2BF  y=3F   int=15  ( 10.98 ,   0.98 )
+90B6: FF 24 FF F7     ; (85B) 24FF F7FF     VCTR scale=2(/128)x=-3FF y=-FF  int=15  ( -7.99 ,  -1.99 )
+90BA: DF 46 DF F4     ; (85D) 46DF F4DF     VCTR scale=4(/32) x=-DF  y=-2DF int=15  ( -6.96 , -22.96 )
+90BE: 9F 41 3F F2     ; (85F) 419F F23F     VCTR scale=4(/32) x=23F  y=19F  int=15  ( 17.96 ,  12.96 )
+90C2: 00 D0           ; (861) D000          RTSL
+;
+90C4: 3F 34 FF 07     ; (862) 343F 07FF     VCTR scale=3(/64) x=-3FF y=-3F  int=0   (-15.98 ,  -0.98 )
+90C8: FF 26 FF F7     ; (864) 26FF F7FF     VCTR scale=2(/128)x=-3FF y=-2FF int=15  ( -7.99 ,  -5.99 )
+90CC: 00 30 7F F2     ; (866) 3000 F27F     VCTR scale=3(/64) x=27F  y=0    int=15  (  9.98 ,   0.00 )
+90D0: 00 D0           ; (868) D000          RTSL
+;
+90D2: 7F 20 7F 02     ; (869) 207F 027F     VCTR scale=2(/128)x=27F  y=7F   int=0   (  4.99 ,   0.99 )
+90D6: 7F 40 BF F6     ; (86B) 407F F6BF     VCTR scale=4(/32) x=-2BF y=7F   int=15  (-21.96 ,   3.96 )
+90DA: 1F 46 1F F2     ; (86D) 461F F21F     VCTR scale=4(/32) x=21F  y=-21F int=15  ( 16.96 , -16.96 )
+90DE: 7F 21 7F F3     ; (86F) 217F F37F     VCTR scale=2(/128)x=37F  y=17F  int=15  (  6.99 ,   2.99 )
+90E2: 3F 35 3F F6     ; (871) 353F F63F     VCTR scale=3(/64) x=-23F y=-13F int=15  ( -8.98 ,  -4.98 )
+90E6: 7F 42 7F F1     ; (873) 427F F17F     VCTR scale=4(/32) x=17F  y=27F  int=15  ( 11.96 ,  19.96 )
+90EA: 7F 24 7F F2     ; (875) 247F F27F     VCTR scale=2(/128)x=27F  y=-7F  int=15  (  4.99 ,  -0.99 )
+90EE: 7F 26 FF F5     ; (877) 267F F5FF     VCTR scale=2(/128)x=-1FF y=-27F int=15  ( -3.99 ,  -4.99 )
+90F2: 5F 41 9F F6     ; (879) 415F F69F     VCTR scale=4(/32) x=-29F y=15F  int=15  (-20.96 ,  10.96 )
+90F6: 7F 30 7F F2     ; (87B) 307F F27F     VCTR scale=3(/64) x=27F  y=7F   int=15  (  9.98 ,   1.98 )
+90FA: 7F 25 7F F7     ; (87D) 257F F77F     VCTR scale=2(/128)x=-37F y=-17F int=15  ( -6.99 ,  -2.99 )
+90FE: DF 46 7F F4     ; (87F) 46DF F47F     VCTR scale=4(/32) x=-7F  y=-2DF int=15  ( -3.96 , -22.96 )
+9102: 7F 33 FF F3     ; (881) 337F F3FF     VCTR scale=3(/64) x=3FF  y=37F  int=15  ( 15.98 ,  13.98 )
+9106: 00 D0           ; (883) D000          RTSL
+;
+9108: BF 34 FF 07     ; (884) 34BF 07FF     VCTR scale=3(/64) x=-3FF y=-BF  int=0   (-15.98 ,  -2.98 )
+910C: FF 26 7F F7     ; (886) 26FF F77F     VCTR scale=2(/128)x=-37F y=-2FF int=15  ( -6.99 ,  -5.99 )
+9110: 3F 30 7F F2     ; (888) 303F F27F     VCTR scale=3(/64) x=27F  y=3F   int=15  (  9.98 ,   0.98 )
+9114: 00 D0           ; (88A) D000          RTSL
+;
+9116: FF 20 7F 02     ; (88B) 20FF 027F     VCTR scale=2(/128)x=27F  y=FF   int=0   (  4.99 ,   1.99 )
+911A: 1F 40 DF F6     ; (88D) 401F F6DF     VCTR scale=4(/32) x=-2DF y=1F   int=15  (-22.96 ,   0.96 )
+911E: DF 45 3F F2     ; (88F) 45DF F23F     VCTR scale=4(/32) x=23F  y=-1DF int=15  ( 17.96 , -14.96 )
+9122: F2 F9           ; (891) F9F2          SVEC scale=1(/64) x=200  y=0    int=15  (  8.00 ,   0.00 )
+9124: 7F 27 FF F7     ; (892) 277F F7FF     VCTR scale=2(/128)x=-3FF y=-37F int=15  ( -7.99 ,  -6.99 )
+9128: BF 42 1F F1     ; (894) 42BF F11F     VCTR scale=4(/32) x=11F  y=2BF  int=15  (  8.96 ,  21.96 )
+912C: 7F 24 FF F2     ; (896) 247F F2FF     VCTR scale=2(/128)x=2FF  y=-7F  int=15  (  5.99 ,  -0.99 )
+9130: 7F 26 FF F5     ; (898) 267F F5FF     VCTR scale=2(/128)x=-1FF y=-27F int=15  ( -3.99 ,  -4.99 )
+9134: 1F 41 BF F6     ; (89A) 411F F6BF     VCTR scale=4(/32) x=-2BF y=11F  int=15  (-21.96 ,   8.96 )
+9138: BF 30 BF F2     ; (89C) 30BF F2BF     VCTR scale=3(/64) x=2BF  y=BF   int=15  ( 10.98 ,   2.98 )
+913C: F6 FD           ; (89E) FDF6          SVEC scale=1(/64) x=-200 y=0    int=15  ( -8.00 ,   0.00 )
+913E: DF 46 3F F4     ; (89F) 46DF F43F     VCTR scale=4(/32) x=-3F  y=-2DF int=15  ( -1.96 , -22.96 )
+9142: FF 33 BF F3     ; (8A1) 33FF F3BF     VCTR scale=3(/64) x=3BF  y=3FF  int=15  ( 14.98 ,  15.98 )
+9146: 00 D0           ; (8A3) D000          RTSL
+;
+9148: FF 34 BF 07     ; (8A4) 34FF 07BF     VCTR scale=3(/64) x=-3BF y=-FF  int=0   (-14.98 ,  -3.98 )
+914C: 7F 27 7F F7     ; (8A6) 277F F77F     VCTR scale=2(/128)x=-37F y=-37F int=15  ( -6.99 ,  -6.99 )
+9150: 3F 30 3F F2     ; (8A8) 303F F23F     VCTR scale=3(/64) x=23F  y=3F   int=15  (  8.98 ,   0.98 )
+9154: 00 D0           ; (8AA) D000          RTSL
+;
+9156: 02 F1           ; (8AB) F102          SVEC scale=0(/128)x=200  y=0    int=0   (  4.00 ,   0.00 )
+9158: 1F 44 BF F6     ; (8AC) 441F F6BF     VCTR scale=4(/32) x=-2BF y=-1F  int=15  (-21.96 ,  -0.96 )
+915C: 9F 45 5F F2     ; (8AE) 459F F25F     VCTR scale=4(/32) x=25F  y=-19F int=15  ( 18.96 , -12.96 )
+9160: F2 F9           ; (8B0) F9F2          SVEC scale=1(/64) x=200  y=0    int=15  (  8.00 ,   0.00 )
+9162: BF 35 3F F6     ; (8B1) 35BF F63F     VCTR scale=3(/64) x=-23F y=-1BF int=15  ( -8.98 ,  -6.98 )
+9166: DF 42 FF F0     ; (8B3) 42DF F0FF     VCTR scale=4(/32) x=FF   y=2DF  int=15  (  7.96 ,  22.96 )
+916A: F3 F0           ; (8B5) F0F3          SVEC scale=0(/128)x=200  y=0    int=15  (  4.00 ,   0.00 )
+916C: 7F 26 7F F5     ; (8B6) 267F F57F     VCTR scale=2(/128)x=-17F y=-27F int=15  ( -2.99 ,  -4.99 )
+9170: BF 40 DF F6     ; (8B8) 40BF F6DF     VCTR scale=4(/32) x=-2DF y=BF   int=15  (-22.96 ,   5.96 )
+9174: BF 30 BF F2     ; (8BA) 30BF F2BF     VCTR scale=3(/64) x=2BF  y=BF   int=15  ( 10.98 ,   2.98 )
+9178: F6 FD           ; (8BC) FDF6          SVEC scale=1(/64) x=-200 y=0    int=15  ( -8.00 ,   0.00 )
+917A: DF 46 1F F0     ; (8BD) 46DF F01F     VCTR scale=4(/32) x=1F   y=-2DF int=15  (  0.96 , -22.96 )
+917E: 1F 42 7F F1     ; (8BF) 421F F17F     VCTR scale=4(/32) x=17F  y=21F  int=15  ( 11.96 ,  16.96 )
+9182: 00 D0           ; (8C1) D000          RTSL
+;
+9184: 7F 35 BF 07     ; (8C2) 357F 07BF     VCTR scale=3(/64) x=-3BF y=-17F int=0   (-14.98 ,  -5.98 )
+9188: 7F 27 FF F6     ; (8C4) 277F F6FF     VCTR scale=2(/128)x=-2FF y=-37F int=15  ( -5.99 ,  -6.99 )
+918C: 7F 30 7F F2     ; (8C6) 307F F27F     VCTR scale=3(/64) x=27F  y=7F   int=15  (  9.98 ,   1.98 )
+9190: 00 D0           ; (8C8) D000          RTSL
+;
+9192: FF 12 FF 03     ; (8C9) 12FF 03FF     VCTR scale=1(/256)x=3FF  y=2FF  int=0   (  3.99 ,   2.99 )
+9196: 5F 44 BF F6     ; (8CB) 445F F6BF     VCTR scale=4(/32) x=-2BF y=-5F  int=15  (-21.96 ,  -2.96 )
+919A: 7F 45 7F F2     ; (8CD) 457F F27F     VCTR scale=4(/32) x=27F  y=-17F int=15  ( 19.96 , -11.96 )
+919E: 7F 22 FF F3     ; (8CF) 227F F3FF     VCTR scale=2(/128)x=3FF  y=27F  int=15  (  7.99 ,   4.99 )
+91A2: F6 FE           ; (8D1) FEF6          SVEC scale=1(/64) x=-200 y=-200 int=15  ( -8.00 ,  -8.00 )
+91A4: FF 42 9F F0     ; (8D2) 42FF F09F     VCTR scale=4(/32) x=9F   y=2FF  int=15  (  4.96 ,  23.96 )
+91A8: F3 F0           ; (8D4) F0F3          SVEC scale=0(/128)x=200  y=0    int=15  (  4.00 ,   0.00 )
+91AA: 7F 26 FF F4     ; (8D5) 267F F4FF     VCTR scale=2(/128)x=-FF  y=-27F int=15  ( -1.99 ,  -4.99 )
+91AE: 7F 40 FF F6     ; (8D7) 407F F6FF     VCTR scale=4(/32) x=-2FF y=7F   int=15  (-23.96 ,   3.96 )
+91B2: FF 30 BF F2     ; (8D9) 30FF F2BF     VCTR scale=3(/64) x=2BF  y=FF   int=15  ( 10.98 ,   3.98 )
+91B6: 7F 26 FF F7     ; (8DB) 267F F7FF     VCTR scale=2(/128)x=-3FF y=-27F int=15  ( -7.99 ,  -4.99 )
+91BA: DF 46 5F F0     ; (8DD) 46DF F05F     VCTR scale=4(/32) x=5F   y=-2DF int=15  (  2.96 , -22.96 )
+91BE: 5F 42 5F F1     ; (8DF) 425F F15F     VCTR scale=4(/32) x=15F  y=25F  int=15  ( 10.96 ,  18.96 )
+91C2: 00 D0           ; (8E1) D000          RTSL
+;
+91C4: BF 35 7F 07     ; (8E2) 35BF 077F     VCTR scale=3(/64) x=-37F y=-1BF int=0   (-13.98 ,  -6.98 )
+91C8: FF 27 7F F6     ; (8E4) 27FF F67F     VCTR scale=2(/128)x=-27F y=-3FF int=15  ( -4.99 ,  -7.99 )
+91CC: BF 30 3F F2     ; (8E6) 30BF F23F     VCTR scale=3(/64) x=23F  y=BF   int=15  (  8.98 ,   2.98 )
+91D0: 00 D0           ; (8E8) D000          RTSL
+;
+91D2: FF 12 FF 03     ; (8E9) 12FF 03FF     VCTR scale=1(/256)x=3FF  y=2FF  int=0   (  3.99 ,   2.99 )
+91D6: 7F 44 BF F6     ; (8EB) 447F F6BF     VCTR scale=4(/32) x=-2BF y=-7F  int=15  (-21.96 ,  -3.96 )
+91DA: 3F 45 BF F2     ; (8ED) 453F F2BF     VCTR scale=4(/32) x=2BF  y=-13F int=15  ( 21.96 ,  -9.96 )
+91DE: 7F 22 7F F3     ; (8EF) 227F F37F     VCTR scale=2(/128)x=37F  y=27F  int=15  (  6.99 ,   4.99 )
+91E2: F6 FE           ; (8F1) FEF6          SVEC scale=1(/64) x=-200 y=-200 int=15  ( -8.00 ,  -8.00 )
+91E4: DF 42 7F F0     ; (8F2) 42DF F07F     VCTR scale=4(/32) x=7F   y=2DF  int=15  (  3.96 ,  22.96 )
+91E8: 7F 20 7F F2     ; (8F4) 207F F27F     VCTR scale=2(/128)x=27F  y=7F   int=15  (  4.99 ,   0.99 )
+91EC: 7F 26 FF F4     ; (8F6) 267F F4FF     VCTR scale=2(/128)x=-FF  y=-27F int=15  ( -1.99 ,  -4.99 )
+91F0: 1F 40 DF F6     ; (8F8) 401F F6DF     VCTR scale=4(/32) x=-2DF y=1F   int=15  (-22.96 ,   0.96 )
+91F4: 7F 31 3F F2     ; (8FA) 317F F23F     VCTR scale=3(/64) x=23F  y=17F  int=15  (  8.98 ,   5.98 )
+91F8: F7 F7           ; (8FC) F7F7          SVEC scale=0(/128)x=-200 y=-200 int=15  ( -4.00 ,  -4.00 )
+91FA: DF 46 9F F0     ; (8FD) 46DF F09F     VCTR scale=4(/32) x=9F   y=-2DF int=15  (  4.96 , -22.96 )
+91FE: 7F 42 1F F1     ; (8FF) 427F F11F     VCTR scale=4(/32) x=11F  y=27F  int=15  (  8.96 ,  19.96 )
+9202: 00 D0           ; (901) D000          RTSL
+;
+9204: 3F 36 3F 07     ; (902) 363F 073F     VCTR scale=3(/64) x=-33F y=-23F int=0   (-12.98 ,  -8.98 )
+9208: FF 27 FF F5     ; (904) 27FF F5FF     VCTR scale=2(/128)x=-1FF y=-3FF int=15  ( -3.99 ,  -7.99 )
+920C: FF 21 FF F3     ; (906) 21FF F3FF     VCTR scale=2(/128)x=3FF  y=1FF  int=15  (  7.99 ,   3.99 )
+9210: 00 D0           ; (908) D000          RTSL
+;
+9212: 02 F2           ; (909) F202          SVEC scale=0(/128)x=200  y=200  int=0   (  4.00 ,   4.00 )
+9214: DF 44 9F F6     ; (90A) 44DF F69F     VCTR scale=4(/32) x=-29F y=-DF  int=15  (-20.96 ,  -6.96 )
+9218: FF 44 BF F2     ; (90C) 44FF F2BF     VCTR scale=4(/32) x=2BF  y=-FF  int=15  ( 21.96 ,  -7.96 )
+921C: F3 F3           ; (90E) F3F3          SVEC scale=0(/128)x=200  y=200  int=15  (  4.00 ,   4.00 )
+921E: 3F 36 7F F5     ; (90F) 363F F57F     VCTR scale=3(/64) x=-17F y=-23F int=15  ( -5.98 ,  -8.98 )
+9222: FF 42 1F F0     ; (911) 42FF F01F     VCTR scale=4(/32) x=1F   y=2FF  int=15  (  0.96 ,  23.96 )
+9226: 7F 20 7F F2     ; (913) 207F F27F     VCTR scale=2(/128)x=27F  y=7F   int=15  (  4.99 ,   0.99 )
+922A: 7F 26 7F F4     ; (915) 267F F47F     VCTR scale=2(/128)x=-7F  y=-27F int=15  ( -0.99 ,  -4.99 )
+922E: 1F 44 FF F6     ; (917) 441F F6FF     VCTR scale=4(/32) x=-2FF y=-1F  int=15  (-23.96 ,  -0.96 )
+9232: 7F 31 3F F2     ; (919) 317F F23F     VCTR scale=3(/64) x=23F  y=17F  int=15  (  8.98 ,   5.98 )
+9236: F7 F7           ; (91B) F7F7          SVEC scale=0(/128)x=-200 y=-200 int=15  ( -4.00 ,  -4.00 )
+9238: BF 46 FF F0     ; (91C) 46BF F0FF     VCTR scale=4(/32) x=FF   y=-2BF int=15  (  7.96 , -21.96 )
+923C: 9F 42 DF F0     ; (91E) 429F F0DF     VCTR scale=4(/32) x=DF   y=29F  int=15  (  6.96 ,  20.96 )
+9240: 00 D0           ; (920) D000          RTSL
+;
+9242: 7F 36 FF 06     ; (921) 367F 06FF     VCTR scale=3(/64) x=-2FF y=-27F int=0   (-11.98 ,  -9.98 )
+9246: 3F 36 BF F4     ; (923) 363F F4BF     VCTR scale=3(/64) x=-BF  y=-23F int=15  ( -2.98 ,  -8.98 )
+924A: 7F 22 FF F3     ; (925) 227F F3FF     VCTR scale=2(/128)x=3FF  y=27F  int=15  (  7.99 ,   4.99 )
+924E: 00 D0           ; (927) D000          RTSL
+;
+9250: FF 13 FF 02     ; (928) 13FF 02FF     VCTR scale=1(/256)x=2FF  y=3FF  int=0   (  2.99 ,   3.99 )
+9254: 1F 45 7F F6     ; (92A) 451F F67F     VCTR scale=4(/32) x=-27F y=-11F int=15  (-19.96 ,  -8.96 )
+9258: 9F 44 DF F2     ; (92C) 449F F2DF     VCTR scale=4(/32) x=2DF  y=-9F  int=15  ( 22.96 ,  -4.96 )
+925C: F3 F3           ; (92E) F3F3          SVEC scale=0(/128)x=200  y=200  int=15  (  4.00 ,   4.00 )
+925E: 3F 36 7F F5     ; (92F) 363F F57F     VCTR scale=3(/64) x=-17F y=-23F int=15  ( -5.98 ,  -8.98 )
+9262: DF 42 1F F4     ; (931) 42DF F41F     VCTR scale=4(/32) x=-1F  y=2DF  int=15  ( -0.96 ,  22.96 )
+9266: FF 20 7F F2     ; (933) 20FF F27F     VCTR scale=2(/128)x=27F  y=FF   int=15  (  4.99 ,   1.99 )
+926A: 7F 26 7F F4     ; (935) 267F F47F     VCTR scale=2(/128)x=-7F  y=-27F int=15  ( -0.99 ,  -4.99 )
+926E: 7F 44 DF F6     ; (937) 447F F6DF     VCTR scale=4(/32) x=-2DF y=-7F  int=15  (-22.96 ,  -3.96 )
+9272: F2 FA           ; (939) FAF2          SVEC scale=1(/64) x=200  y=200  int=15  (  8.00 ,   8.00 )
+9274: 7F 27 7F F6     ; (93A) 277F F67F     VCTR scale=2(/128)x=-27F y=-37F int=15  ( -4.99 ,  -6.99 )
+9278: BF 46 3F F1     ; (93C) 46BF F13F     VCTR scale=4(/32) x=13F  y=-2BF int=15  (  9.96 , -21.96 )
+927C: BF 42 7F F0     ; (93E) 42BF F07F     VCTR scale=4(/32) x=7F   y=2BF  int=15  (  3.96 ,  21.96 )
+9280: 00 D0           ; (940) D000          RTSL
+;
+9282: BF 36 BF 06     ; (941) 36BF 06BF     VCTR scale=3(/64) x=-2BF y=-2BF int=0   (-10.98 , -10.98 )
+9286: 7F 36 7F F4     ; (943) 367F F47F     VCTR scale=3(/64) x=-7F  y=-27F int=15  ( -1.98 ,  -9.98 )
+928A: FF 22 7F F3     ; (945) 22FF F37F     VCTR scale=2(/128)x=37F  y=2FF  int=15  (  6.99 ,   5.99 )
+928E: 00 D0           ; (947) D000          RTSL
+;
+9290: FF 13 FF 02     ; (948) 13FF 02FF     VCTR scale=1(/256)x=2FF  y=3FF  int=0   (  2.99 ,   3.99 )
+9294: 5F 45 5F F6     ; (94A) 455F F65F     VCTR scale=4(/32) x=-25F y=-15F int=15  (-18.96 , -10.96 )
+9298: 5F 44 DF F2     ; (94C) 445F F2DF     VCTR scale=4(/32) x=2DF  y=-5F  int=15  ( 22.96 ,  -2.96 )
+929C: FF 23 7F F2     ; (94E) 23FF F27F     VCTR scale=2(/128)x=27F  y=3FF  int=15  (  4.99 ,   7.99 )
+92A0: BF 36 FF F4     ; (950) 36BF F4FF     VCTR scale=3(/64) x=-FF  y=-2BF int=15  ( -3.98 , -10.98 )
+92A4: FF 42 7F F4     ; (952) 42FF F47F     VCTR scale=4(/32) x=-7F  y=2FF  int=15  ( -3.96 ,  23.96 )
+92A8: FF 20 7F F2     ; (954) 20FF F27F     VCTR scale=2(/128)x=27F  y=FF   int=15  (  4.99 ,   1.99 )
+92AC: F0 F7           ; (956) F7F0          SVEC scale=0(/128)x=0    y=-200 int=15  (  0.00 ,  -4.00 )
+92AE: 9F 44 FF F6     ; (957) 449F F6FF     VCTR scale=4(/32) x=-2FF y=-9F  int=15  (-23.96 ,  -4.96 )
+92B2: F2 FA           ; (959) FAF2          SVEC scale=1(/64) x=200  y=200  int=15  (  8.00 ,   8.00 )
+92B4: FF 27 7F F6     ; (95A) 27FF F67F     VCTR scale=2(/128)x=-27F y=-3FF int=15  ( -4.99 ,  -7.99 )
+92B8: 7F 46 7F F1     ; (95C) 467F F17F     VCTR scale=4(/32) x=17F  y=-27F int=15  ( 11.96 , -19.96 )
+92BC: BF 42 5F F0     ; (95E) 42BF F05F     VCTR scale=4(/32) x=5F   y=2BF  int=15  (  2.96 ,  21.96 )
+92C0: 00 D0           ; (960) D000          RTSL
+;
+92C2: 3F 37 7F 06     ; (961) 373F 067F     VCTR scale=3(/64) x=-27F y=-33F int=0   ( -9.98 , -12.98 )
+92C6: 3F 36 3F F4     ; (963) 363F F43F     VCTR scale=3(/64) x=-3F  y=-23F int=15  ( -0.98 ,  -8.98 )
+92CA: 7F 23 7F F3     ; (965) 237F F37F     VCTR scale=2(/128)x=37F  y=37F  int=15  (  6.99 ,   6.99 )
+92CE: 00 D0           ; (967) D000          RTSL
+;
+92D0: 01 F2           ; (968) F201          SVEC scale=0(/128)x=0    y=200  int=0   (  0.00 ,   4.00 )
+92D2: 7F 45 1F F6     ; (969) 457F F61F     VCTR scale=4(/32) x=-21F y=-17F int=15  (-16.96 , -11.96 )
+92D6: 1F 44 DF F2     ; (96B) 441F F2DF     VCTR scale=4(/32) x=2DF  y=-1F  int=15  ( 22.96 ,  -0.96 )
+92DA: F1 FA           ; (96D) FAF1          SVEC scale=1(/64) x=0    y=200  int=15  (  0.00 ,   8.00 )
+92DC: BF 36 BF F4     ; (96E) 36BF F4BF     VCTR scale=3(/64) x=-BF  y=-2BF int=15  ( -2.98 , -10.98 )
+92E0: DF 42 BF F4     ; (970) 42DF F4BF     VCTR scale=4(/32) x=-BF  y=2DF  int=15  ( -5.96 ,  22.96 )
+92E4: 7F 21 7F F2     ; (972) 217F F27F     VCTR scale=2(/128)x=27F  y=17F  int=15  (  4.99 ,   2.99 )
+92E8: F0 F7           ; (974) F7F0          SVEC scale=0(/128)x=0    y=-200 int=15  (  0.00 ,  -4.00 )
+92EA: FF 44 DF F6     ; (975) 44FF F6DF     VCTR scale=4(/32) x=-2DF y=-FF  int=15  (-22.96 ,  -7.96 )
+92EE: 3F 32 BF F1     ; (977) 323F F1BF     VCTR scale=3(/64) x=1BF  y=23F  int=15  (  6.98 ,   8.98 )
+92F2: F5 FE           ; (979) FEF5          SVEC scale=1(/64) x=0    y=-200 int=15  (  0.00 ,  -8.00 )
+92F4: 5F 46 9F F1     ; (97A) 465F F19F     VCTR scale=4(/32) x=19F  y=-25F int=15  ( 12.96 , -18.96 )
+92F8: BF 42 1F F0     ; (97C) 42BF F01F     VCTR scale=4(/32) x=1F   y=2BF  int=15  (  0.96 ,  21.96 )
+92FC: 00 D0           ; (97E) D000          RTSL
+;
+92FE: 3F 37 FF 05     ; (97F) 373F 05FF     VCTR scale=3(/64) x=-1FF y=-33F int=0   ( -7.98 , -12.98 )
+9302: 7F 36 3F F4     ; (981) 367F F43F     VCTR scale=3(/64) x=-3F  y=-27F int=15  ( -0.98 ,  -9.98 )
+9306: 7F 23 FF F2     ; (983) 237F F2FF     VCTR scale=2(/128)x=2FF  y=37F  int=15  (  5.99 ,   6.99 )
+930A: 00 D0           ; (985) D000          RTSL
+;
+930C: 7F 22 FF 00     ; (986) 227F 00FF     VCTR scale=2(/128)x=FF   y=27F  int=0   (  1.99 ,   4.99 )
+9310: BF 37 FF F7     ; (988) 37BF F7FF     VCTR scale=3(/64) x=-3FF y=-3BF int=15  (-15.98 , -14.98 )
+9314: 3F 40 DF F2     ; (98A) 403F F2DF     VCTR scale=4(/32) x=2DF  y=3F   int=15  ( 22.96 ,   1.96 )
+9318: F1 FA           ; (98C) FAF1          SVEC scale=1(/64) x=0    y=200  int=15  (  0.00 ,   8.00 )
+931A: BF 36 BF F4     ; (98D) 36BF F4BF     VCTR scale=3(/64) x=-BF  y=-2BF int=15  ( -2.98 , -10.98 )
+931E: BF 42 1F F5     ; (98F) 42BF F51F     VCTR scale=4(/32) x=-11F y=2BF  int=15  ( -8.96 ,  21.96 )
+9322: FF 21 7F F2     ; (991) 21FF F27F     VCTR scale=2(/128)x=27F  y=1FF  int=15  (  4.99 ,   3.99 )
+9326: FF 26 7F F0     ; (993) 26FF F07F     VCTR scale=2(/128)x=7F   y=-2FF int=15  (  0.99 ,  -5.99 )
+932A: 1F 45 BF F6     ; (995) 451F F6BF     VCTR scale=4(/32) x=-2BF y=-11F int=15  (-21.96 ,  -8.96 )
+932E: FF 23 7F F3     ; (997) 23FF F37F     VCTR scale=2(/128)x=37F  y=3FF  int=15  (  6.99 ,   7.99 )
+9332: F5 FE           ; (999) FEF5          SVEC scale=1(/64) x=0    y=-200 int=15  (  0.00 ,  -8.00 )
+9334: 3F 46 DF F1     ; (99A) 463F F1DF     VCTR scale=4(/32) x=1DF  y=-23F int=15  ( 14.96 , -17.96 )
+9338: DF 42 1F F4     ; (99C) 42DF F41F     VCTR scale=4(/32) x=-1F  y=2DF  int=15  ( -0.96 ,  22.96 )
+933C: 00 D0           ; (99E) D000          RTSL
+;
+933E: 7F 37 BF 05     ; (99F) 377F 05BF     VCTR scale=3(/64) x=-1BF y=-37F int=0   ( -6.98 , -13.98 )
+9342: 7F 36 00 F0     ; (9A1) 367F F000     VCTR scale=3(/64) x=0    y=-27F int=15  (  0.00 ,  -9.98 )
+9346: FF 23 FF F2     ; (9A3) 23FF F2FF     VCTR scale=2(/128)x=2FF  y=3FF  int=15  (  5.99 ,   7.99 )
+934A: 00 D0           ; (9A5) D000          RTSL
+;
+934C: 7F 22 7F 00     ; (9A6) 227F 007F     VCTR scale=2(/128)x=7F   y=27F  int=0   (  0.99 ,   4.99 )
+9350: FF 37 7F F7     ; (9A8) 37FF F77F     VCTR scale=3(/64) x=-37F y=-3FF int=15  (-13.98 , -15.98 )
+9354: 7F 40 DF F2     ; (9AA) 407F F2DF     VCTR scale=4(/32) x=2DF  y=7F   int=15  ( 22.96 ,   3.96 )
+9358: 7F 23 7F F1     ; (9AC) 237F F17F     VCTR scale=2(/128)x=17F  y=37F  int=15  (  2.99 ,   6.99 )
+935C: 7F 36 7F F4     ; (9AE) 367F F47F     VCTR scale=3(/64) x=-7F  y=-27F int=15  ( -1.98 ,  -9.98 )
+9360: 9F 42 5F F5     ; (9B0) 429F F55F     VCTR scale=4(/32) x=-15F y=29F  int=15  (-10.96 ,  20.96 )
+9364: FF 21 7F F2     ; (9B2) 21FF F27F     VCTR scale=2(/128)x=27F  y=1FF  int=15  (  4.99 ,   3.99 )
+9368: 7F 26 7F F0     ; (9B4) 267F F07F     VCTR scale=2(/128)x=7F   y=-27F int=15  (  0.99 ,  -4.99 )
+936C: 7F 45 7F F6     ; (9B6) 457F F67F     VCTR scale=4(/32) x=-27F y=-17F int=15  (-19.96 , -11.96 )
+9370: 3F 32 3F F1     ; (9B8) 323F F13F     VCTR scale=3(/64) x=13F  y=23F  int=15  (  4.98 ,   8.98 )
+9374: 7F 27 7F F5     ; (9BA) 277F F57F     VCTR scale=2(/128)x=-17F y=-37F int=15  ( -2.99 ,  -6.99 )
+9378: 1F 46 1F F2     ; (9BC) 461F F21F     VCTR scale=4(/32) x=21F  y=-21F int=15  ( 16.96 , -16.96 )
+937C: BF 42 7F F4     ; (9BE) 42BF F47F     VCTR scale=4(/32) x=-7F  y=2BF  int=15  ( -3.96 ,  21.96 )
+9380: 00 D0           ; (9C0) D000          RTSL
+;
+9382: BF 37 3F 05     ; (9C1) 37BF 053F     VCTR scale=3(/64) x=-13F y=-3BF int=0   ( -4.98 , -14.98 )
+9386: 3F 36 3F F0     ; (9C3) 363F F03F     VCTR scale=3(/64) x=3F   y=-23F int=15  (  0.98 ,  -8.98 )
+938A: FF 23 FF F1     ; (9C5) 23FF F1FF     VCTR scale=2(/128)x=1FF  y=3FF  int=15  (  3.99 ,   7.99 )
+;
+938E: 00 D0           ; (9C7) D000          RTSL
+9390: 7F 22 7F 00     ; (9C8) 227F 007F     VCTR scale=2(/128)x=7F   y=27F  int=0   (  0.99 ,   4.99 )
+9394: 3F 46 9F F5     ; (9CA) 463F F59F     VCTR scale=4(/32) x=-19F y=-23F int=15  (-12.96 , -17.96 )
+9398: DF 40 DF F2     ; (9CC) 40DF F2DF     VCTR scale=4(/32) x=2DF  y=DF   int=15  ( 22.96 ,   6.96 )
+939C: FF 23 FF F0     ; (9CE) 23FF F0FF     VCTR scale=2(/128)x=FF   y=3FF  int=15  (  1.99 ,   7.99 )
+93A0: BF 36 3F F4     ; (9D0) 36BF F43F     VCTR scale=3(/64) x=-3F  y=-2BF int=15  ( -0.98 , -10.98 )
+93A4: 7F 42 7F F5     ; (9D2) 427F F57F     VCTR scale=4(/32) x=-17F y=27F  int=15  (-11.96 ,  19.96 )
+93A8: 7F 22 7F F1     ; (9D4) 227F F17F     VCTR scale=2(/128)x=17F  y=27F  int=15  (  2.99 ,   4.99 )
+93AC: F1 F7           ; (9D6) F7F1          SVEC scale=0(/128)x=0    y=-200 int=15  (  0.00 ,  -4.00 )
+93AE: 9F 45 5F F6     ; (9D7) 459F F65F     VCTR scale=4(/32) x=-25F y=-19F int=15  (-18.96 , -12.96 )
+93B2: 3F 32 FF F0     ; (9D9) 323F F0FF     VCTR scale=3(/64) x=FF   y=23F  int=15  (  3.98 ,   8.98 )
+93B6: FF 27 FF F4     ; (9DB) 27FF F4FF     VCTR scale=2(/128)x=-FF  y=-3FF int=15  ( -1.99 ,  -7.99 )
+93BA: DF 45 5F F2     ; (9DD) 45DF F25F     VCTR scale=4(/32) x=25F  y=-1DF int=15  ( 18.96 , -14.96 )
+93BE: BF 42 BF F4     ; (9DF) 42BF F4BF     VCTR scale=4(/32) x=-BF  y=2BF  int=15  ( -5.96 ,  21.96 )
+93C2: 00 D0           ; (9E1) D000          RTSL
+;
+93C4: FF 37 FF 04     ; (9E2) 37FF 04FF     VCTR scale=3(/64) x=-FF  y=-3FF int=0   ( -3.98 , -15.98 )
+93C8: 3F 36 7F F0     ; (9E4) 363F F07F     VCTR scale=3(/64) x=7F   y=-23F int=15  (  1.98 ,  -8.98 )
+93CC: 3F 32 BF F0     ; (9E6) 323F F0BF     VCTR scale=3(/64) x=BF   y=23F  int=15  (  2.98 ,   8.98 )
+93D0: 00 D0           ; (9E8) D000          RTSL
+;
+93D2: 7F 22 00 00     ; (9E9) 227F 0000     VCTR scale=2(/128)x=0    y=27F  int=0   (  0.00 ,   4.99 )
+93D6: 5F 46 5F F5     ; (9EB) 465F F55F     VCTR scale=4(/32) x=-15F y=-25F int=15  (-10.96 , -18.96 )
+93DA: 1F 41 BF F2     ; (9ED) 411F F2BF     VCTR scale=4(/32) x=2BF  y=11F  int=15  ( 21.96 ,   8.96 )
+93DE: FF 23 7F F0     ; (9EF) 23FF F07F     VCTR scale=2(/128)x=7F   y=3FF  int=15  (  0.99 ,   7.99 )
+93E2: 7F 36 3F F0     ; (9F1) 367F F03F     VCTR scale=3(/64) x=3F   y=-27F int=15  (  0.98 ,  -9.98 )
+93E6: 3F 42 BF F5     ; (9F3) 423F F5BF     VCTR scale=4(/32) x=-1BF y=23F  int=15  (-13.96 ,  17.96 )
+93EA: 7F 22 7F F1     ; (9F5) 227F F17F     VCTR scale=2(/128)x=17F  y=27F  int=15  (  2.99 ,   4.99 )
+93EE: 7F 26 FF F0     ; (9F7) 267F F0FF     VCTR scale=2(/128)x=FF   y=-27F int=15  (  1.99 ,  -4.99 )
+93F2: FF 45 3F F6     ; (9F9) 45FF F63F     VCTR scale=4(/32) x=-23F y=-1FF int=15  (-17.96 , -15.96 )
+93F6: 7F 32 BF F0     ; (9FB) 327F F0BF     VCTR scale=3(/64) x=BF   y=27F  int=15  (  2.98 ,   9.98 )
+93FA: F0 FE           ; (9FD) FEF0          SVEC scale=1(/64) x=0    y=-200 int=15  (  0.00 ,  -8.00 )
+93FC: 9F 45 5F F2     ; (9FE) 459F F25F     VCTR scale=4(/32) x=25F  y=-19F int=15  ( 18.96 , -12.96 )
+9400: 9F 42 FF F4     ; (A00) 429F F4FF     VCTR scale=4(/32) x=-FF  y=29F  int=15  ( -7.96 ,  20.96 )
+9404: 00 D0           ; (A02) D000          RTSL
+
+; ?? not used
+9406: 3C FF           ; (A03) FF3C          SVEC scale=3(/16) x=0    y=-200 int=3   (  0.00 , -32.00 )
+
+;enemyTri {*enemyTri}
+; Circle enemy with triangle (just one picture)
+
+<canvas width="100" height="100"
+  data-command="globalScale=2,x=50,y=50,9408">
+</canvas>
+
+9408: 00 FA           ; (A04) FA00          SVEC scale=1(/64) x=0    y=200  int=0   (  0.00 ,   8.00 )
+940A: BF 36 BF F1     ; (A05) 36BF F1BF     VCTR scale=3(/64) x=1BF  y=-2BF int=15  (  6.98 , -10.98 )
+940E: 00 30 3F F7     ; (A07) 3000 F73F     VCTR scale=3(/64) x=-33F y=0    int=15  (-12.98 ,   0.00 )
+9412: BF 32 7F F1     ; (A09) 32BF F17F     VCTR scale=3(/64) x=17F  y=2BF  int=15  (  5.98 ,  10.98 )
+9416: 7F 34 FF 03     ; (A0B) 347F 03FF     VCTR scale=3(/64) x=3FF  y=-7F  int=0   ( 15.98 ,  -1.98 )
+941A: 7F 32 7F A6     ; (A0D) 327F A67F     VCTR scale=3(/64) x=-27F y=27F  int=10  ( -9.98 ,   9.98 )
+941E: 00 30 BF A6     ; (A0F) 3000 A6BF     VCTR scale=3(/64) x=-2BF y=0    int=10  (-10.98 ,   0.00 )
+9422: 7F 36 7F A6     ; (A11) 367F A67F     VCTR scale=3(/64) x=-27F y=-27F int=10  ( -9.98 ,  -9.98 )
+9426: BF 36 00 A0     ; (A13) 36BF A000     VCTR scale=3(/64) x=0    y=-2BF int=10  (  0.00 , -10.98 )
+942A: 7F 36 7F A2     ; (A15) 367F A27F     VCTR scale=3(/64) x=27F  y=-27F int=10  (  9.98 ,  -9.98 )
+942E: 00 30 BF A2     ; (A17) 3000 A2BF     VCTR scale=3(/64) x=2BF  y=0    int=10  ( 10.98 ,   0.00 )
+9432: 7F 32 7F A2     ; (A19) 327F A27F     VCTR scale=3(/64) x=27F  y=27F  int=10  (  9.98 ,   9.98 )
+9436: 9F 42 3F C5     ; (A1B) 429F C53F     VCTR scale=4(/32) x=-13F y=29F  int=12  ( -9.96 ,  20.96 )
+943A: 3F 45 9F C6     ; (A1D) 453F C69F     VCTR scale=4(/32) x=-29F y=-13F int=12  (-20.96 ,  -9.96 )
+943E: 9F 46 3F C1     ; (A1F) 469F C13F     VCTR scale=4(/32) x=13F  y=-29F int=12  (  9.96 , -20.96 )
+9442: 3F 41 9F C2     ; (A21) 413F C29F     VCTR scale=4(/32) x=29F  y=13F  int=12  ( 20.96 ,   9.96 )
+9446: BF 32 00 A0     ; (A23) 32BF A000     VCTR scale=3(/64) x=0    y=2BF  int=10  (  0.00 ,  10.98 )
+944A: 3F 41 9F C6     ; (A25) 413F C69F     VCTR scale=4(/32) x=-29F y=13F  int=12  (-20.96 ,   9.96 )
+944E: 9F 46 3F C5     ; (A27) 469F C53F     VCTR scale=4(/32) x=-13F y=-29F int=12  ( -9.96 , -20.96 )
+9452: 3F 45 9F C2     ; (A29) 453F C29F     VCTR scale=4(/32) x=29F  y=-13F int=12  ( 20.96 ,  -9.96 )
+9456: 9F 42 3F C1     ; (A2B) 429F C13F     VCTR scale=4(/32) x=13F  y=29F  int=12  (  9.96 ,  20.96 )
+945A: 00 D0           ; (A2D) D000          RTSL
+
+;enemyNoTri {*enemyNoTri}
+; Circle enemy (no triangle). There are three pictures for animation.
+
+<canvas width="250" height="100"
+  data-command="globalScale=2,x=50,y=50,945C,x=125,y=50,94A2,x=200,y=50,94E8">
+</canvas>
+
+945C: 7F 31 FF 03     ; (A2E) 317F 03FF     VCTR scale=3(/64) x=3FF  y=17F  int=0   ( 15.98 ,   5.98 )
+9460: 7F 32 7F 66     ; (A30) 327F 667F     VCTR scale=3(/64) x=-27F y=27F  int=6   ( -9.98 ,   9.98 )
+9464: 00 30 BF 66     ; (A32) 3000 66BF     VCTR scale=3(/64) x=-2BF y=0    int=6   (-10.98 ,   0.00 )
+9468: 7F 36 7F 66     ; (A34) 367F 667F     VCTR scale=3(/64) x=-27F y=-27F int=6   ( -9.98 ,  -9.98 )
+946C: BF 36 00 60     ; (A36) 36BF 6000     VCTR scale=3(/64) x=0    y=-2BF int=6   (  0.00 , -10.98 )
+9470: 7F 36 7F 62     ; (A38) 367F 627F     VCTR scale=3(/64) x=27F  y=-27F int=6   (  9.98 ,  -9.98 )
+9474: 00 30 BF 62     ; (A3A) 3000 62BF     VCTR scale=3(/64) x=2BF  y=0    int=6   ( 10.98 ,   0.00 )
+9478: 7F 32 7F 62     ; (A3C) 327F 627F     VCTR scale=3(/64) x=27F  y=27F  int=6   (  9.98 ,   9.98 )
+947C: 9F 42 3F 85     ; (A3E) 429F 853F     VCTR scale=4(/32) x=-13F y=29F  int=8   ( -9.96 ,  20.96 )
+9480: 3F 45 9F 86     ; (A40) 453F 869F     VCTR scale=4(/32) x=-29F y=-13F int=8   (-20.96 ,  -9.96 )
+9484: 9F 46 3F 81     ; (A42) 469F 813F     VCTR scale=4(/32) x=13F  y=-29F int=8   (  9.96 , -20.96 )
+9488: 3F 41 9F 82     ; (A44) 413F 829F     VCTR scale=4(/32) x=29F  y=13F  int=8   ( 20.96 ,   9.96 )
+948C: BF 32 00 60     ; (A46) 32BF 6000     VCTR scale=3(/64) x=0    y=2BF  int=6   (  0.00 ,  10.98 )
+9490: 3F 41 9F 86     ; (A48) 413F 869F     VCTR scale=4(/32) x=-29F y=13F  int=8   (-20.96 ,   9.96 )
+9494: 9F 46 3F 85     ; (A4A) 469F 853F     VCTR scale=4(/32) x=-13F y=-29F int=8   ( -9.96 , -20.96 )
+9498: 3F 45 9F 82     ; (A4C) 453F 829F     VCTR scale=4(/32) x=29F  y=-13F int=8   ( 20.96 ,  -9.96 )
+949C: 9F 42 3F 81     ; (A4E) 429F 813F     VCTR scale=4(/32) x=13F  y=29F  int=8   (  9.96 ,  20.96 )
+94A0: 00 D0           ; (A50) D000          RTSL
+;
+94A2: 7F 32 7F 03     ; (A51) 327F 037F     VCTR scale=3(/64) x=37F  y=27F  int=0   ( 13.98 ,   9.98 )
+94A6: BF 31 3F 67     ; (A53) 31BF 673F     VCTR scale=3(/64) x=-33F y=1BF  int=6   (-12.98 ,   6.98 )
+94AA: BF 34 7F 66     ; (A55) 34BF 667F     VCTR scale=3(/64) x=-27F y=-BF  int=6   ( -9.98 ,  -2.98 )
+94AE: 3F 37 BF 65     ; (A57) 373F 65BF     VCTR scale=3(/64) x=-1BF y=-33F int=6   ( -6.98 , -12.98 )
+94B2: 7F 36 BF 60     ; (A59) 367F 60BF     VCTR scale=3(/64) x=BF   y=-27F int=6   (  2.98 ,  -9.98 )
+94B6: BF 35 3F 63     ; (A5B) 35BF 633F     VCTR scale=3(/64) x=33F  y=-1BF int=6   ( 12.98 ,  -6.98 )
+94BA: BF 30 7F 62     ; (A5D) 30BF 627F     VCTR scale=3(/64) x=27F  y=BF   int=6   (  9.98 ,   2.98 )
+94BE: 3F 33 BF 61     ; (A5F) 333F 61BF     VCTR scale=3(/64) x=1BF  y=33F  int=6   (  6.98 ,  12.98 )
+94C2: 1F 42 FF 85     ; (A61) 421F 85FF     VCTR scale=4(/32) x=-1FF y=21F  int=8   (-15.96 ,  16.96 )
+94C6: FF 45 1F 86     ; (A63) 45FF 861F     VCTR scale=4(/32) x=-21F y=-1FF int=8   (-16.96 , -15.96 )
+94CA: 1F 46 FF 81     ; (A65) 461F 81FF     VCTR scale=4(/32) x=1FF  y=-21F int=8   ( 15.96 , -16.96 )
+94CE: FF 41 1F 82     ; (A67) 41FF 821F     VCTR scale=4(/32) x=21F  y=1FF  int=8   ( 16.96 ,  15.96 )
+94D2: 7F 32 BF 64     ; (A69) 327F 64BF     VCTR scale=3(/64) x=-BF  y=27F  int=6   ( -2.98 ,   9.98 )
+94D6: 7F 40 DF 86     ; (A6B) 407F 86DF     VCTR scale=4(/32) x=-2DF y=7F   int=8   (-22.96 ,   3.96 )
+94DA: DF 46 7F 84     ; (A6D) 46DF 847F     VCTR scale=4(/32) x=-7F  y=-2DF int=8   ( -3.96 , -22.96 )
+94DE: 7F 44 DF 82     ; (A6F) 447F 82DF     VCTR scale=4(/32) x=2DF  y=-7F  int=8   ( 22.96 ,  -3.96 )
+94E2: DF 42 7F 80     ; (A71) 42DF 807F     VCTR scale=4(/32) x=7F   y=2DF  int=8   (  3.96 ,  22.96 )
+94E6: 00 D0           ; (A73) D000          RTSL
+;
+94E8: 7F 33 BF 02     ; (A74) 337F 02BF     VCTR scale=3(/64) x=2BF  y=37F  int=0   ( 10.98 ,  13.98 )
+94EC: BF 30 3F 67     ; (A76) 30BF 673F     VCTR scale=3(/64) x=-33F y=BF   int=6   (-12.98 ,   2.98 )
+94F0: 7F 35 BF 66     ; (A78) 357F 66BF     VCTR scale=3(/64) x=-2BF y=-17F int=6   (-10.98 ,  -5.98 )
+94F4: 3F 37 BF 64     ; (A7A) 373F 64BF     VCTR scale=3(/64) x=-BF  y=-33F int=6   ( -2.98 , -12.98 )
+94F8: BF 36 7F 61     ; (A7C) 36BF 617F     VCTR scale=3(/64) x=17F  y=-2BF int=6   (  5.98 , -10.98 )
+94FC: BF 34 3F 63     ; (A7E) 34BF 633F     VCTR scale=3(/64) x=33F  y=-BF  int=6   ( 12.98 ,  -2.98 )
+9500: 7F 31 BF 62     ; (A80) 317F 62BF     VCTR scale=3(/64) x=2BF  y=17F  int=6   ( 10.98 ,   5.98 )
+9504: 3F 33 BF 60     ; (A82) 333F 60BF     VCTR scale=3(/64) x=BF   y=33F  int=6   (  2.98 ,  12.98 )
+9508: BF 41 5F 86     ; (A84) 41BF 865F     VCTR scale=4(/32) x=-25F y=1BF  int=8   (-18.96 ,  13.96 )
+950C: 5F 46 BF 85     ; (A86) 465F 85BF     VCTR scale=4(/32) x=-1BF y=-25F int=8   (-13.96 , -18.96 )
+9510: BF 45 5F 82     ; (A88) 45BF 825F     VCTR scale=4(/32) x=25F  y=-1BF int=8   ( 18.96 , -13.96 )
+9514: 5F 42 BF 81     ; (A8A) 425F 81BF     VCTR scale=4(/32) x=1BF  y=25F  int=8   ( 13.96 ,  18.96 )
+9518: BF 32 7F 65     ; (A8C) 32BF 657F     VCTR scale=3(/64) x=-17F y=2BF  int=6   ( -5.98 ,  10.98 )
+951C: 5F 44 FF 86     ; (A8E) 445F 86FF     VCTR scale=4(/32) x=-2FF y=-5F  int=8   (-23.96 ,  -2.96 )
+9520: FF 46 5F 80     ; (A90) 46FF 805F     VCTR scale=4(/32) x=5F   y=-2FF int=8   (  2.96 , -23.96 )
+9524: 5F 40 FF 82     ; (A92) 405F 82FF     VCTR scale=4(/32) x=2FF  y=5F   int=8   ( 23.96 ,   2.96 )
+9528: FF 42 5F 84     ; (A94) 42FF 845F     VCTR scale=4(/32) x=-5F  y=2FF  int=8   ( -2.96 ,  23.96 )
+952C: 00 D0           ; (A96) D000          RTSL
+
+;enemyChase {*enemyChase}
+; Triangle, chasing ememy in different positions
+
+<canvas width="350" height="100"
+  data-command="globalScale=2,x=50,y=50,952E,x=125,y=50,9554,x=200,y=50,957C,x=275,y=50,95A4">
+</canvas>
+
+952E: FF 12 FF D2     ; (A97) 12FF D2FF     VCTR scale=1(/256)x=2FF  y=2FF  int=13  (  2.99 ,   2.99 )
+9532: BF 34 3F D3     ; (A99) 34BF D33F     VCTR scale=3(/64) x=33F  y=-BF  int=13  ( 12.98 ,  -2.98 )
+9536: 00 40 DF D7     ; (A9B) 4000 D7DF     VCTR scale=4(/32) x=-3DF y=0    int=13  (-30.96 ,   0.00 )
+953A: 7F 34 3F D3     ; (A9D) 347F D33F     VCTR scale=3(/64) x=33F  y=-7F  int=13  ( 12.98 ,  -1.98 )
+953E: D1 F1           ; (A9F) F1D1          SVEC scale=0(/128)x=0    y=0    int=13  (  0.00 ,   0.00 )
+9540: D8 F2           ; (AA0) F2D8          SVEC scale=2(/32) x=0    y=200  int=13  (  0.00 ,  16.00 )
+9542: 3F 37 7F D4     ; (AA1) 373F D47F     VCTR scale=3(/64) x=-7F  y=-33F int=13  ( -1.98 , -12.98 )
+9546: 7F 26 7F D2     ; (AA3) 267F D27F     VCTR scale=2(/128)x=27F  y=-27F int=13  (  4.99 ,  -4.99 )
+954A: 3F 37 BF D4     ; (AA5) 373F D4BF     VCTR scale=3(/64) x=-BF  y=-33F int=13  ( -2.98 , -12.98 )
+954E: BF 33 00 D0     ; (AA7) 33BF D000     VCTR scale=3(/64) x=0    y=3BF  int=13  (  0.00 ,  14.98 )
+9552: A7 EB           ; (AA9) EBA7          JMPL $BA7(974E)
+;
+9554: D1 F2           ; (AAA) F2D1          SVEC scale=0(/128)x=0    y=200  int=13  (  0.00 ,   4.00 )
+9556: 7F 30 3F D3     ; (AAB) 307F D33F     VCTR scale=3(/64) x=33F  y=7F   int=13  ( 12.98 ,   1.98 )
+955A: 5F 45 9F D7     ; (AAD) 455F D79F     VCTR scale=4(/32) x=-39F y=-15F int=13  (-28.96 , -10.96 )
+955E: 7F 30 3F D3     ; (AAF) 307F D33F     VCTR scale=3(/64) x=33F  y=7F   int=13  ( 12.98 ,   1.98 )
+9562: FF 12 FF D0     ; (AB1) 12FF D0FF     VCTR scale=1(/256)x=FF   y=2FF  int=13  (  0.99 ,   2.99 )
+9566: BF 33 3F D5     ; (AB3) 33BF D53F     VCTR scale=3(/64) x=-13F y=3BF  int=13  ( -4.98 ,  14.98 )
+956A: 3F 37 7F D0     ; (AB5) 373F D07F     VCTR scale=3(/64) x=7F   y=-33F int=13  (  1.98 , -12.98 )
+956E: 7F 25 7F D3     ; (AB7) 257F D37F     VCTR scale=2(/128)x=37F  y=-17F int=13  (  6.99 ,  -2.99 )
+9572: 3F 37 7F D0     ; (AB9) 373F D07F     VCTR scale=3(/64) x=7F   y=-33F int=13  (  1.98 , -12.98 )
+9576: 7F 33 7F D5     ; (ABB) 337F D57F     VCTR scale=3(/64) x=-17F y=37F  int=13  ( -5.98 ,  13.98 )
+957A: A7 EB           ; (ABD) EBA7          JMPL $BA7(974E)
+;
+957C: D0 F2           ; (ABE) F2D0          SVEC scale=0(/128)x=0    y=200  int=13  (  0.00 ,   4.00 )
+957E: BF 31 BF D2     ; (ABF) 31BF D2BF     VCTR scale=3(/64) x=2BF  y=1BF  int=13  ( 10.98 ,   6.98 )
+9582: 9F 46 9F D6     ; (AC1) 469F D69F     VCTR scale=4(/32) x=-29F y=-29F int=13  (-20.96 , -20.96 )
+9586: BF 31 7F D2     ; (AC3) 31BF D27F     VCTR scale=3(/64) x=27F  y=1BF  int=13  (  9.98 ,   6.98 )
+958A: FF 12 00 D0     ; (AC5) 12FF D000     VCTR scale=1(/256)x=0    y=2FF  int=13  (  0.00 ,   2.99 )
+958E: BF 32 7F D6     ; (AC7) 32BF D67F     VCTR scale=3(/64) x=-27F y=2BF  int=13  ( -9.98 ,  10.98 )
+9592: BF 36 BF D1     ; (AC9) 36BF D1BF     VCTR scale=3(/64) x=1BF  y=-2BF int=13  (  6.98 , -10.98 )
+9596: 00 20 7F D3     ; (ACB) 2000 D37F     VCTR scale=2(/128)x=37F  y=0    int=13  (  6.99 ,   0.00 )
+959A: 7F 36 BF D1     ; (ACD) 367F D1BF     VCTR scale=3(/64) x=1BF  y=-27F int=13  (  6.98 ,  -9.98 )
+959E: 7F 32 BF D6     ; (ACF) 327F D6BF     VCTR scale=3(/64) x=-2BF y=27F  int=13  (-10.98 ,   9.98 )
+95A2: A7 EB           ; (AD1) EBA7          JMPL $BA7(974E)
+;
+95A4: FF 13 FF D4     ; (AD2) 13FF D4FF     VCTR scale=1(/256)x=-FF  y=3FF  int=13  ( -0.99 ,   3.99 )
+95A8: BF 32 BF D1     ; (AD4) 32BF D1BF     VCTR scale=3(/64) x=1BF  y=2BF  int=13  (  6.98 ,  10.98 )
+95AC: 9F 47 5F D5     ; (AD6) 479F D55F     VCTR scale=4(/32) x=-15F y=-39F int=13  (-10.96 , -28.96 )
+95B0: BF 32 BF D1     ; (AD8) 32BF D1BF     VCTR scale=3(/64) x=1BF  y=2BF  int=13  (  6.98 ,  10.98 )
+95B4: FF 12 FF D5     ; (ADA) 12FF D5FF     VCTR scale=1(/256)x=-1FF y=2FF  int=13  ( -1.99 ,   2.99 )
+95B8: 7F 31 7F D7     ; (ADC) 317F D77F     VCTR scale=3(/64) x=-37F y=17F  int=13  (-13.98 ,   5.98 )
+95BC: BF 35 BF D2     ; (ADE) 35BF D2BF     VCTR scale=3(/64) x=2BF  y=-1BF int=13  ( 10.98 ,  -6.98 )
+95C0: 7F 21 7F D3     ; (AE0) 217F D37F     VCTR scale=2(/128)x=37F  y=17F  int=13  (  6.99 ,   2.99 )
+95C4: BF 35 BF D2     ; (AE2) 35BF D2BF     VCTR scale=3(/64) x=2BF  y=-1BF int=13  ( 10.98 ,  -6.98 )
+95C8: 3F 31 BF D7     ; (AE4) 313F D7BF     VCTR scale=3(/64) x=-3BF y=13F  int=13  (-14.98 ,   4.98 )
+95CC: A7 EB           ; (AE6) EBA7          JMPL $BA7(974E)
+
+;lasers {*lasers}
+; Laser shots at different angles (just single vectors)
+;
+95CE: 00 30 BF F7     ; (AE7) 3000 F7BF     VCTR scale=3(/64) x=-3BF y=0    int=15  (-14.98 ,   0.00 )
+95D2: 00 D0           ; (AE9) D000          RTSL
+95D4: 3F 34 7F F7     ; (AEA) 343F F77F     VCTR scale=3(/64) x=-37F y=-3F  int=15  (-13.98 ,  -0.98 )
+95D8: 00 D0           ; (AEC) D000          RTSL
+95DA: 7F 34 7F F7     ; (AED) 347F F77F     VCTR scale=3(/64) x=-37F y=-7F  int=15  (-13.98 ,  -1.98 )
+95DE: 00 D0           ; (AEF) D000          RTSL
+95E0: FF 34 3F F7     ; (AF0) 34FF F73F     VCTR scale=3(/64) x=-33F y=-FF  int=15  (-12.98 ,  -3.98 )
+95E4: 00 D0           ; (AF2) D000          RTSL
+95E6: 3F 35 3F F7     ; (AF3) 353F F73F     VCTR scale=3(/64) x=-33F y=-13F int=15  (-12.98 ,  -4.98 )
+95EA: 00 D0           ; (AF5) D000          RTSL
+95EC: BF 35 FF F6     ; (AF6) 35BF F6FF     VCTR scale=3(/64) x=-2FF y=-1BF int=15  (-11.98 ,  -6.98 )
+95F0: 00 D0           ; (AF8) D000          RTSL
+95F2: FF 35 BF F6     ; (AF9) 35FF F6BF     VCTR scale=3(/64) x=-2BF y=-1FF int=15  (-10.98 ,  -7.98 )
+95F6: 00 D0           ; (AFB) D000          RTSL
+95F8: FF 35 7F F6     ; (AFC) 35FF F67F     VCTR scale=3(/64) x=-27F y=-1FF int=15  ( -9.98 ,  -7.98 )
+95FC: 00 D0           ; (AFE) D000          RTSL
+95FE: 3F 36 3F F6     ; (AFF) 363F F63F     VCTR scale=3(/64) x=-23F y=-23F int=15  ( -8.98 ,  -8.98 )
+9602: 00 D0           ; (B01) D000          RTSL
+9604: 7F 36 FF F5     ; (B02) 367F F5FF     VCTR scale=3(/64) x=-1FF y=-27F int=15  ( -7.98 ,  -9.98 )
+9608: 00 D0           ; (B04) D000          RTSL
+960A: BF 36 BF F5     ; (B05) 36BF F5BF     VCTR scale=3(/64) x=-1BF y=-2BF int=15  ( -6.98 , -10.98 )
+960E: 00 D0           ; (B07) D000          RTSL
+9610: FF 36 3F F5     ; (B08) 36FF F53F     VCTR scale=3(/64) x=-13F y=-2FF int=15  ( -4.98 , -11.98 )
+9614: 00 D0           ; (B0A) D000          RTSL
+9616: 3F 37 FF F4     ; (B0B) 373F F4FF     VCTR scale=3(/64) x=-FF  y=-33F int=15  ( -3.98 , -12.98 )
+961A: 00 D0           ; (B0D) D000          RTSL
+961C: 7F 37 7F F4     ; (B0E) 377F F47F     VCTR scale=3(/64) x=-7F  y=-37F int=15  ( -1.98 , -13.98 )
+9620: 00 D0           ; (B10) D000          RTSL
+9622: 7F 37 3F F4     ; (B11) 377F F43F     VCTR scale=3(/64) x=-3F  y=-37F int=15  ( -0.98 , -13.98 )
+9626: 00 D0           ; (B13) D000          RTSL
+9628: BF 37 00 F0     ; (B14) 37BF F000     VCTR scale=3(/64) x=0    y=-3BF int=15  (  0.00 , -14.98 )
+962C: 00 D0           ; (B16) D000          RTSL
+962E: BF 37 3F F0     ; (B17) 37BF F03F     VCTR scale=3(/64) x=3F   y=-3BF int=15  (  0.98 , -14.98 )
+9632: 00 D0           ; (B19) D000          RTSL
+9634: 7F 37 7F F0     ; (B1A) 377F F07F     VCTR scale=3(/64) x=7F   y=-37F int=15  (  1.98 , -13.98 )
+9638: 00 D0           ; (B1C) D000          RTSL
+963A: 7F 37 BF F0     ; (B1D) 377F F0BF     VCTR scale=3(/64) x=BF   y=-37F int=15  (  2.98 , -13.98 )
+963E: 00 D0           ; (B1F) D000          RTSL
+9640: 3F 37 3F F1     ; (B20) 373F F13F     VCTR scale=3(/64) x=13F  y=-33F int=15  (  4.98 , -12.98 )
+9644: 00 D0           ; (B22) D000          RTSL
+9646: FF 36 7F F1     ; (B23) 36FF F17F     VCTR scale=3(/64) x=17F  y=-2FF int=15  (  5.98 , -11.98 )
+964A: 00 D0           ; (B25) D000          RTSL
+964C: BF 36 FF F1     ; (B26) 36BF F1FF     VCTR scale=3(/64) x=1FF  y=-2BF int=15  (  7.98 , -10.98 )
+9650: 00 D0           ; (B28) D000          RTSL
+9652: 7F 36 3F F2     ; (B29) 367F F23F     VCTR scale=3(/64) x=23F  y=-27F int=15  (  8.98 ,  -9.98 )
+9656: 00 D0           ; (B2B) D000          RTSL
+9658: 3F 36 7F F2     ; (B2C) 363F F27F     VCTR scale=3(/64) x=27F  y=-23F int=15  (  9.98 ,  -8.98 )
+965C: 00 D0           ; (B2E) D000          RTSL
+965E: FF 35 BF F2     ; (B2F) 35FF F2BF     VCTR scale=3(/64) x=2BF  y=-1FF int=15  ( 10.98 ,  -7.98 )
+9662: 00 D0           ; (B31) D000          RTSL
+9664: FF 35 FF F2     ; (B32) 35FF F2FF     VCTR scale=3(/64) x=2FF  y=-1FF int=15  ( 11.98 ,  -7.98 )
+9668: 00 D0           ; (B34) D000          RTSL
+966A: BF 35 3F F3     ; (B35) 35BF F33F     VCTR scale=3(/64) x=33F  y=-1BF int=15  ( 12.98 ,  -6.98 )
+966E: 00 D0           ; (B37) D000          RTSL
+9670: 3F 35 7F F3     ; (B38) 353F F37F     VCTR scale=3(/64) x=37F  y=-13F int=15  ( 13.98 ,  -4.98 )
+9674: 00 D0           ; (B3A) D000          RTSL
+9676: FF 34 7F F3     ; (B3B) 34FF F37F     VCTR scale=3(/64) x=37F  y=-FF  int=15  ( 13.98 ,  -3.98 )
+967A: 00 D0           ; (B3D) D000          RTSL
+967C: 7F 34 BF F3     ; (B3E) 347F F3BF     VCTR scale=3(/64) x=3BF  y=-7F  int=15  ( 14.98 ,  -1.98 )
+9680: 00 D0           ; (B40) D000          RTSL
+9682: 3F 34 BF F3     ; (B41) 343F F3BF     VCTR scale=3(/64) x=3BF  y=-3F  int=15  ( 14.98 ,  -0.98 )
+9686: 00 D0           ; (B43) D000          RTSL
+9688: 00 30 FF F3     ; (B44) 3000 F3FF     VCTR scale=3(/64) x=3FF  y=0    int=15  ( 15.98 ,   0.00 )
+968C: 00 D0           ; (B46) D000          RTSL
+968E: 00 30 FF F3     ; (B47) 3000 F3FF     VCTR scale=3(/64) x=3FF  y=0    int=15  ( 15.98 ,   0.00 )
+9692: 00 D0           ; (B49) D000          RTSL
+9694: 7F 30 BF F3     ; (B4A) 307F F3BF     VCTR scale=3(/64) x=3BF  y=7F   int=15  ( 14.98 ,   1.98 )
+9698: 00 D0           ; (B4C) D000          RTSL
+969A: BF 30 BF F3     ; (B4D) 30BF F3BF     VCTR scale=3(/64) x=3BF  y=BF   int=15  ( 14.98 ,   2.98 )
+969E: 00 D0           ; (B4F) D000          RTSL
+96A0: 3F 31 7F F3     ; (B50) 313F F37F     VCTR scale=3(/64) x=37F  y=13F  int=15  ( 13.98 ,   4.98 )
+96A4: 00 D0           ; (B52) D000          RTSL
+96A6: 7F 31 7F F3     ; (B53) 317F F37F     VCTR scale=3(/64) x=37F  y=17F  int=15  ( 13.98 ,   5.98 )
+96AA: 00 D0           ; (B55) D000          RTSL
+96AC: FF 31 3F F3     ; (B56) 31FF F33F     VCTR scale=3(/64) x=33F  y=1FF  int=15  ( 12.98 ,   7.98 )
+96B0: 00 D0           ; (B58) D000          RTSL
+96B2: 3F 32 FF F2     ; (B59) 323F F2FF     VCTR scale=3(/64) x=2FF  y=23F  int=15  ( 11.98 ,   8.98 )
+96B6: 00 D0           ; (B5B) D000          RTSL
+96B8: 3F 32 BF F2     ; (B5C) 323F F2BF     VCTR scale=3(/64) x=2BF  y=23F  int=15  ( 10.98 ,   8.98 )
+96BC: 00 D0           ; (B5E) D000          RTSL
+96BE: 7F 32 7F F2     ; (B5F) 327F F27F     VCTR scale=3(/64) x=27F  y=27F  int=15  (  9.98 ,   9.98 )
+96C2: 00 D0           ; (B61) D000          RTSL
+96C4: BF 32 3F F2     ; (B62) 32BF F23F     VCTR scale=3(/64) x=23F  y=2BF  int=15  (  8.98 ,  10.98 )
+96C8: 00 D0           ; (B64) D000          RTSL
+96CA: FF 32 FF F1     ; (B65) 32FF F1FF     VCTR scale=3(/64) x=1FF  y=2FF  int=15  (  7.98 ,  11.98 )
+96CE: 00 D0           ; (B67) D000          RTSL
+96D0: 3F 33 7F F1     ; (B68) 333F F17F     VCTR scale=3(/64) x=17F  y=33F  int=15  (  5.98 ,  12.98 )
+96D4: 00 D0           ; (B6A) D000          RTSL
+96D6: 7F 33 3F F1     ; (B6B) 337F F13F     VCTR scale=3(/64) x=13F  y=37F  int=15  (  4.98 ,  13.98 )
+96DA: 00 D0           ; (B6D) D000          RTSL
+96DC: BF 33 BF F0     ; (B6E) 33BF F0BF     VCTR scale=3(/64) x=BF   y=3BF  int=15  (  2.98 ,  14.98 )
+96E0: 00 D0           ; (B70) D000          RTSL
+96E2: BF 33 7F F0     ; (B71) 33BF F07F     VCTR scale=3(/64) x=7F   y=3BF  int=15  (  1.98 ,  14.98 )
+96E6: 00 D0           ; (B73) D000          RTSL
+96E8: FF 33 00 F0     ; (B74) 33FF F000     VCTR scale=3(/64) x=0    y=3FF  int=15  (  0.00 ,  15.98 )
+96EC: 00 D0           ; (B76) D000          RTSL
+96EE: FF 33 00 F0     ; (B77) 33FF F000     VCTR scale=3(/64) x=0    y=3FF  int=15  (  0.00 ,  15.98 )
+96F2: 00 D0           ; (B79) D000          RTSL
+96F4: BF 33 3F F4     ; (B7A) 33BF F43F     VCTR scale=3(/64) x=-3F  y=3BF  int=15  ( -0.98 ,  14.98 )
+96F8: 00 D0           ; (B7C) D000          RTSL
+96FA: BF 33 7F F4     ; (B7D) 33BF F47F     VCTR scale=3(/64) x=-7F  y=3BF  int=15  ( -1.98 ,  14.98 )
+96FE: 00 D0           ; (B7F) D000          RTSL
+9700: 7F 33 FF F4     ; (B80) 337F F4FF     VCTR scale=3(/64) x=-FF  y=37F  int=15  ( -3.98 ,  13.98 )
+9704: 00 D0           ; (B82) D000          RTSL
+9706: 3F 33 3F F5     ; (B83) 333F F53F     VCTR scale=3(/64) x=-13F y=33F  int=15  ( -4.98 ,  12.98 )
+970A: 00 D0           ; (B85) D000          RTSL
+970C: FF 32 BF F5     ; (B86) 32FF F5BF     VCTR scale=3(/64) x=-1BF y=2FF  int=15  ( -6.98 ,  11.98 )
+9710: 00 D0           ; (B88) D000          RTSL
+9712: BF 32 FF F5     ; (B89) 32BF F5FF     VCTR scale=3(/64) x=-1FF y=2BF  int=15  ( -7.98 ,  10.98 )
+9716: 00 D0           ; (B8B) D000          RTSL
+9718: 7F 32 3F F6     ; (B8C) 327F F63F     VCTR scale=3(/64) x=-23F y=27F  int=15  ( -8.98 ,   9.98 )
+971C: 00 D0           ; (B8E) D000          RTSL
+971E: 3F 32 7F F6     ; (B8F) 323F F67F     VCTR scale=3(/64) x=-27F y=23F  int=15  ( -9.98 ,   8.98 )
+9722: 00 D0           ; (B91) D000          RTSL
+9724: 3F 32 BF F6     ; (B92) 323F F6BF     VCTR scale=3(/64) x=-2BF y=23F  int=15  (-10.98 ,   8.98 )
+9728: 00 D0           ; (B94) D000          RTSL
+972A: FF 31 FF F6     ; (B95) 31FF F6FF     VCTR scale=3(/64) x=-2FF y=1FF  int=15  (-11.98 ,   7.98 )
+972E: 00 D0           ; (B97) D000          RTSL
+9730: 7F 31 3F F7     ; (B98) 317F F73F     VCTR scale=3(/64) x=-33F y=17F  int=15  (-12.98 ,   5.98 )
+9734: 00 D0           ; (B9A) D000          RTSL
+9736: 3F 31 3F F7     ; (B9B) 313F F73F     VCTR scale=3(/64) x=-33F y=13F  int=15  (-12.98 ,   4.98 )
+973A: 00 D0           ; (B9D) D000          RTSL
+973C: BF 30 7F F7     ; (B9E) 30BF F77F     VCTR scale=3(/64) x=-37F y=BF   int=15  (-13.98 ,   2.98 )
+9740: 00 D0           ; (BA0) D000          RTSL
+9742: 7F 30 7F F7     ; (BA1) 307F F77F     VCTR scale=3(/64) x=-37F y=7F   int=15  (-13.98 ,   1.98 )
+9746: 00 D0           ; (BA3) D000          RTSL
+9748: 00 30 BF F7     ; (BA4) 3000 F7BF     VCTR scale=3(/64) x=-3BF y=0    int=15  (-14.98 ,   0.00 )
+974C: 00 D0           ; (BA6) D000          RTSL
+
+;triangles {*triangles}
+; Single and double
+
+<canvas width="200" height="100"
+  data-command="globalScale=2,x=50,y=50,974E,x=125,y=50,975E">
+</canvas>
+
+; Triangle (up)
+974E: 7F 35 FF 02     ; (BA7) 357F 02FF     VCTR scale=3(/64) x=2FF  y=-17F int=0   ( 11.98 ,  -5.98 )
+9752: FF 33 FF F6     ; (BA9) 33FF F6FF     VCTR scale=3(/64) x=-2FF y=3FF  int=15  (-11.98 ,  15.98 )
+9756: FF 37 FF F6     ; (BAB) 37FF F6FF     VCTR scale=3(/64) x=-2FF y=-3FF int=15  (-11.98 , -15.98 )
+975A: FB F0           ; (BAD) F0FB          SVEC scale=2(/32) x=200  y=0    int=15  ( 16.00 ,   0.00 )
+975C: 00 D0           ; (BAE) D000          RTSL
+
+; Triangles (up and down)
+975E: 03 F8           ; (BAF) F803          SVEC scale=1(/64) x=200  y=0    int=0   (  8.00 ,   0.00 )
+9760: FF 33 FF F6     ; (BB0) 33FF F6FF     VCTR scale=3(/64) x=-2FF y=3FF  int=15  (-11.98 ,  15.98 )
+9764: FF 37 FF F6     ; (BB2) 37FF F6FF     VCTR scale=3(/64) x=-2FF y=-3FF int=15  (-11.98 , -15.98 )
+9768: FF 37 FF F2     ; (BB4) 37FF F2FF     VCTR scale=3(/64) x=2FF  y=-3FF int=15  ( 11.98 , -15.98 )
+976C: FF 33 FF F2     ; (BB6) 33FF F2FF     VCTR scale=3(/64) x=2FF  y=3FF  int=15  ( 11.98 ,  15.98 )
+9770: FF F0           ; (BB8) F0FF          SVEC scale=2(/32) x=-200 y=0    int=15  (-16.00 ,   0.00 )
+9772: 00 D0           ; (BB9) D000          RTSL
+
+;explosion {*explosion}
+; Multi-line explosion ... three pictures for animation
+
+<canvas width="400" height="200"
+  data-command="globalScale=2,x=50,y=100,9774,x=150,y=100,97B0,x=300,y=100,9824">
+</canvas>
+
+9774: BF 32 00 F0     ; (BBA) 32BF F000     VCTR scale=3(/64) x=0    y=2BF  int=15  (  0.00 ,  10.98 )
+9778: BF 46 00 F0     ; (BBC) 46BF F000     VCTR scale=4(/32) x=0    y=-2BF int=15  (  0.00 , -21.96 )
+977C: FF 21 7F 06     ; (BBE) 21FF 067F     VCTR scale=2(/128)x=-27F y=1FF  int=0   ( -4.99 ,   3.99 )
+9780: BF 33 3F F2     ; (BC0) 33BF F23F     VCTR scale=3(/64) x=23F  y=3BF  int=15  (  8.98 ,  14.98 )
+9784: 00 F6           ; (BC2) F600          SVEC scale=0(/128)x=0    y=-200 int=0   (  0.00 ,  -4.00 )
+9786: F6 FE           ; (BC3) FEF6          SVEC scale=1(/64) x=-200 y=-200 int=15  ( -8.00 ,  -8.00 )
+9788: FF 20 7F 06     ; (BC4) 20FF 067F     VCTR scale=2(/128)x=-27F y=FF   int=0   ( -4.99 ,   1.99 )
+978C: DF 40 5F F2     ; (BC6) 40DF F25F     VCTR scale=4(/32) x=25F  y=DF   int=15  ( 18.96 ,   6.96 )
+9790: 7F 26 FF 00     ; (BC8) 267F 00FF     VCTR scale=2(/128)x=FF   y=-27F int=0   (  1.99 ,  -4.99 )
+9794: 00 40 BF F6     ; (BCA) 4000 F6BF     VCTR scale=4(/32) x=-2BF y=0    int=15  (-21.96 ,   0.00 )
+9798: FF 13 FF 04     ; (BCC) 13FF 04FF     VCTR scale=1(/256)x=-FF  y=3FF  int=0   ( -0.99 ,   3.99 )
+979C: FF 44 9F F2     ; (BCE) 44FF F29F     VCTR scale=4(/32) x=29F  y=-FF  int=15  ( 20.96 ,  -7.96 )
+97A0: 00 F7           ; (BD0) F700          SVEC scale=0(/128)x=0    y=-200 int=0   (  0.00 ,  -4.00 )
+97A2: 7F 33 7F F7     ; (BD1) 337F F77F     VCTR scale=3(/64) x=-37F y=37F  int=15  (-13.98 ,  13.98 )
+97A6: 7F 22 00 00     ; (BD3) 227F 0000     VCTR scale=2(/128)x=0    y=27F  int=0   (  0.00 ,   4.99 )
+97AA: FF 37 BF F1     ; (BD5) 37FF F1BF     VCTR scale=3(/64) x=1BF  y=-3FF int=15  (  6.98 , -15.98 )
+97AE: 00 D0           ; (BD7) D000          RTSL
+;
+97B0: BF 32 00 00     ; (BD8) 32BF 0000     VCTR scale=3(/64) x=0    y=2BF  int=0   (  0.00 ,  10.98 )
+97B4: 7F 32 00 50     ; (BDA) 327F 5000     VCTR scale=3(/64) x=0    y=27F  int=5   (  0.00 ,   9.98 )
+97B8: 7F 26 FF 03     ; (BDC) 267F 03FF     VCTR scale=2(/128)x=3FF  y=-27F int=0   (  7.99 ,  -4.99 )
+97BC: 55 FE           ; (BDE) FE55          SVEC scale=1(/64) x=0    y=-200 int=5   (  0.00 ,  -8.00 )
+97BE: 00 F6           ; (BDF) F600          SVEC scale=0(/128)x=0    y=-200 int=0   (  0.00 ,  -4.00 )
+97C0: 53 FB           ; (BE0) FB53          SVEC scale=1(/64) x=200  y=200  int=5   (  8.00 ,   8.00 )
+97C2: BF 36 7F 05     ; (BE1) 36BF 057F     VCTR scale=3(/64) x=-17F y=-2BF int=0   ( -5.98 , -10.98 )
+97C6: 7F 31 FF 52     ; (BE3) 317F 52FF     VCTR scale=3(/64) x=2FF  y=17F  int=5   ( 11.98 ,   5.98 )
+97CA: BF 36 7F 04     ; (BE5) 36BF 047F     VCTR scale=3(/64) x=-7F  y=-2BF int=0   ( -1.98 , -10.98 )
+97CE: 56 F8           ; (BE7) F856          SVEC scale=1(/64) x=-200 y=0    int=5   ( -8.00 ,   0.00 )
+97D0: 05 F6           ; (BE8) F605          SVEC scale=0(/128)x=0    y=-200 int=0   (  0.00 ,  -4.00 )
+97D2: 7F 25 FF 53     ; (BE9) 257F 53FF     VCTR scale=2(/128)x=3FF  y=-17F int=5   (  7.99 ,  -2.99 )
+97D6: 3F 37 7F 00     ; (BEB) 373F 007F     VCTR scale=3(/64) x=7F   y=-33F int=0   (  1.98 , -12.98 )
+97DA: 7F 32 7F 56     ; (BED) 327F 567F     VCTR scale=3(/64) x=-27F y=27F  int=5   ( -9.98 ,   9.98 )
+97DE: 7F 21 7F 07     ; (BEF) 217F 077F     VCTR scale=2(/128)x=-37F y=17F  int=0   ( -6.99 ,   2.99 )
+97E2: 3F 36 FF 50     ; (BF1) 363F 50FF     VCTR scale=3(/64) x=FF   y=-23F int=5   (  3.98 ,  -8.98 )
+97E6: FF 25 7F 07     ; (BF3) 25FF 077F     VCTR scale=2(/128)x=-37F y=-1FF int=0   ( -6.99 ,  -3.99 )
+97EA: 50 FA           ; (BF5) FA50          SVEC scale=1(/64) x=0    y=200  int=5   (  0.00 ,   8.00 )
+97EC: 7F 22 7F 06     ; (BF6) 227F 067F     VCTR scale=2(/128)x=-27F y=27F  int=0   ( -4.99 ,   4.99 )
+97F0: 7F 27 7F 56     ; (BF8) 277F 567F     VCTR scale=2(/128)x=-27F y=-37F int=5   ( -4.99 ,  -6.99 )
+97F4: 7F 21 FF 07     ; (BFA) 217F 07FF     VCTR scale=2(/128)x=-3FF y=17F  int=0   ( -7.99 ,   2.99 )
+97F8: FF 31 3F 53     ; (BFC) 31FF 533F     VCTR scale=3(/64) x=33F  y=1FF  int=5   ( 12.98 ,   7.98 )
+97FC: FF 10 FF 07     ; (BFE) 10FF 07FF     VCTR scale=1(/256)x=-3FF y=FF   int=0   ( -3.99 ,   0.99 )
+9800: FF 24 7F 57     ; (C00) 24FF 577F     VCTR scale=2(/128)x=-37F y=-FF  int=5   ( -6.99 ,  -1.99 )
+9804: FF 21 7F 07     ; (C02) 21FF 077F     VCTR scale=2(/128)x=-37F y=1FF  int=0   ( -6.99 ,   3.99 )
+9808: 00 30 3F 53     ; (C04) 3000 533F     VCTR scale=3(/64) x=33F  y=0    int=5   ( 12.98 ,   0.00 )
+980C: FF 13 FF 04     ; (C06) 13FF 04FF     VCTR scale=1(/256)x=-FF  y=3FF  int=0   ( -0.99 ,   3.99 )
+9810: 7F 21 FF 57     ; (C08) 217F 57FF     VCTR scale=2(/128)x=-3FF y=17F  int=5   ( -7.99 ,   2.99 )
+9814: 01 FA           ; (C0A) FA01          SVEC scale=1(/64) x=0    y=200  int=0   (  0.00 ,   8.00 )
+9816: BF 36 BF 52     ; (C0B) 36BF 52BF     VCTR scale=3(/64) x=2BF  y=-2BF int=5   ( 10.98 , -10.98 )
+981A: 7F 22 00 00     ; (C0D) 227F 0000     VCTR scale=2(/128)x=0    y=27F  int=0   (  0.00 ,   4.99 )
+981E: 7F 23 7F 55     ; (C0F) 237F 557F     VCTR scale=2(/128)x=-17F y=37F  int=5   ( -2.99 ,   6.99 )
+9822: 00 D0           ; (C11) D000          RTSL
+;
+9824: 9F 42 00 00     ; (C12) 429F 0000     VCTR scale=4(/32) x=0    y=29F  int=0   (  0.00 ,  20.96 )
+9828: BF 32 00 F0     ; (C14) 32BF F000     VCTR scale=3(/64) x=0    y=2BF  int=15  (  0.00 ,  10.98 )
+982C: 03 FE           ; (C16) FE03          SVEC scale=1(/64) x=200  y=-200 int=0   (  8.00 ,  -8.00 )
+982E: F5 FE           ; (C17) FEF5          SVEC scale=1(/64) x=0    y=-200 int=15  (  0.00 ,  -8.00 )
+9830: 02 F8           ; (C18) F802          SVEC scale=1(/64) x=200  y=0    int=0   (  8.00 ,   0.00 )
+9832: FF 32 7F F2     ; (C19) 32FF F27F     VCTR scale=3(/64) x=27F  y=2FF  int=15  (  9.98 ,  11.98 )
+9836: FF 36 7F 01     ; (C1B) 36FF 017F     VCTR scale=3(/64) x=17F  y=-2FF int=0   (  5.98 , -11.98 )
+983A: 3F 35 7F F6     ; (C1D) 353F F67F     VCTR scale=3(/64) x=-27F y=-13F int=15  ( -9.98 ,  -4.98 )
+983E: BF 36 7F 04     ; (C1F) 36BF 047F     VCTR scale=3(/64) x=-7F  y=-2BF int=0   ( -1.98 , -10.98 )
+9842: 00 20 7F F3     ; (C21) 2000 F37F     VCTR scale=2(/128)x=37F  y=0    int=15  (  6.99 ,   0.00 )
+9846: 01 FF           ; (C23) FF01          SVEC scale=1(/64) x=0    y=-200 int=0   (  0.00 ,  -8.00 )
+9848: 3F 31 3F F7     ; (C24) 313F F73F     VCTR scale=3(/64) x=-33F y=13F  int=15  (-12.98 ,   4.98 )
+984C: FF 36 3F 00     ; (C26) 36FF 003F     VCTR scale=3(/64) x=3F   y=-2FF int=0   (  0.98 , -11.98 )
+9850: 7F 26 7F F2     ; (C28) 267F F27F     VCTR scale=2(/128)x=27F  y=-27F int=15  (  4.99 ,  -4.99 )
+9854: 7F 35 BF 06     ; (C2A) 357F 06BF     VCTR scale=3(/64) x=-2BF y=-17F int=0   (-10.98 ,  -5.98 )
+9858: 7F 33 7F F5     ; (C2C) 337F F57F     VCTR scale=3(/64) x=-17F y=37F  int=15  ( -5.98 ,  13.98 )
+985C: FF 25 7F 07     ; (C2E) 25FF 077F     VCTR scale=2(/128)x=-37F y=-1FF int=0   ( -6.99 ,  -3.99 )
+9860: F0 FF           ; (C30) FFF0          SVEC scale=1(/64) x=0    y=-200 int=15  (  0.00 ,  -8.00 )
+9862: 3F 42 3F 05     ; (C31) 423F 053F     VCTR scale=4(/32) x=-13F y=23F  int=0   ( -9.96 ,  17.96 )
+9866: 7F 27 7F F6     ; (C33) 277F F67F     VCTR scale=2(/128)x=-27F y=-37F int=15  ( -4.99 ,  -6.99 )
+986A: FF 30 3F 07     ; (C35) 30FF 073F     VCTR scale=3(/64) x=-33F y=FF   int=0   (-12.98 ,   3.98 )
+986E: 7F 31 BF F2     ; (C37) 317F F2BF     VCTR scale=3(/64) x=2BF  y=17F  int=15  ( 10.98 ,   5.98 )
+9872: 7F 23 7F 00     ; (C39) 237F 007F     VCTR scale=2(/128)x=7F   y=37F  int=0   (  0.99 ,   6.99 )
+9876: FF 34 FF F7     ; (C3B) 34FF F7FF     VCTR scale=3(/64) x=-3FF y=-FF  int=15  (-15.98 ,  -3.98 )
+987A: 01 FA           ; (C3D) FA01          SVEC scale=1(/64) x=0    y=200  int=0   (  0.00 ,   8.00 )
+987C: F3 F0           ; (C3E) F0F3          SVEC scale=0(/128)x=200  y=0    int=15  (  4.00 ,   0.00 )
+987E: 7F 23 7F 01     ; (C3F) 237F 017F     VCTR scale=2(/128)x=17F  y=37F  int=0   (  2.99 ,   6.99 )
+9882: F7 F1           ; (C41) F1F7          SVEC scale=0(/128)x=-200 y=0    int=15  ( -4.00 ,   0.00 )
+9884: 7F 42 7F 04     ; (C42) 427F 047F     VCTR scale=4(/32) x=-7F  y=27F  int=0   ( -3.96 ,  19.96 )
+9888: 7F 37 7F F3     ; (C44) 377F F37F     VCTR scale=3(/64) x=37F  y=-37F int=15  ( 13.98 , -13.98 )
+988C: 7F 20 FF 03     ; (C46) 207F 03FF     VCTR scale=2(/128)x=3FF  y=7F   int=0   (  7.99 ,   0.99 )
+9890: 7F 32 3F F5     ; (C48) 327F F53F     VCTR scale=3(/64) x=-13F y=27F  int=15  ( -4.98 ,   9.98 )
+9894: 3F 47 7F 01     ; (C4A) 473F 017F     VCTR scale=4(/32) x=17F  y=-33F int=0   ( 11.96 , -25.96 )
+9898: 00 D0           ; (C4C) D000          RTSL
+
+;letters {*letters}
+; Letters of the alphabet
+
+<canvas width="850" height="40"
+  data-command="globalScale=2,x=20,y=30,989A,*,*,*,*,98EE,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*">
+</canvas>
+
+; A
+;
+989A: 90 FA           ; (C4D) FA90          SVEC scale=1(/64) x=0    y=200  int=9   (  0.00 ,   8.00 )
+989C: 91 F1           ; (C4E) F191          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+989E: 92 F0           ; (C4F) F092          SVEC scale=0(/128)x=200  y=0    int=9   (  4.00 ,   0.00 )
+98A0: 91 F5           ; (C50) F591          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+98A2: 90 FE           ; (C51) FE90          SVEC scale=1(/64) x=0    y=-200 int=9   (  0.00 ,  -8.00 )
+98A4: FF 22 FF 07     ; (C52) 22FF 07FF     VCTR scale=2(/128)x=-3FF y=2FF  int=0   ( -7.99 ,   5.99 )
+98A8: 92 F8           ; (C54) F892          SVEC scale=1(/64) x=200  y=0    int=9   (  8.00 ,   0.00 )
+98AA: FF 26 FF 03     ; (C55) 26FF 03FF     VCTR scale=2(/128)x=3FF  y=-2FF int=0   (  7.99 ,  -5.99 )
+98AE: 00 D0           ; (C57) D000          RTSL
+
+; B
+;
+98B0: 7F 32 00 90     ; (C58) 327F 9000     VCTR scale=3(/64) x=0    y=27F  int=9   (  0.00 ,   9.98 )
+98B4: 93 F0           ; (C5A) F093          SVEC scale=0(/128)x=200  y=0    int=9   (  4.00 ,   0.00 )
+98B6: 91 F5           ; (C5B) F591          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+98B8: 95 F5           ; (C5C) F595          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+98BA: 97 F0           ; (C5D) F097          SVEC scale=0(/128)x=-200 y=0    int=9   ( -4.00 ,   0.00 )
+98BC: 03 F0           ; (C5E) F003          SVEC scale=0(/128)x=200  y=0    int=0   (  4.00 ,   0.00 )
+98BE: 91 F6           ; (C5F) F691          SVEC scale=0(/128)x=0    y=-200 int=9   (  0.00 ,  -4.00 )
+98C0: 95 F5           ; (C60) F595          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+98C2: 97 F0           ; (C61) F097          SVEC scale=0(/128)x=-200 y=0    int=9   ( -4.00 ,   0.00 )
+98C4: 0A F0           ; (C62) F00A          SVEC scale=2(/32) x=200  y=0    int=0   ( 16.00 ,   0.00 )
+98C6: 00 D0           ; (C63) D000          RTSL
+
+; C
+;
+98C8: 7F 32 00 90     ; (C64) 327F 9000     VCTR scale=3(/64) x=0    y=27F  int=9   (  0.00 ,   9.98 )
+98CC: 92 F8           ; (C66) F892          SVEC scale=1(/64) x=200  y=0    int=9   (  8.00 ,   0.00 )
+98CE: 7F 36 00 00     ; (C67) 367F 0000     VCTR scale=3(/64) x=0    y=-27F int=0   (  0.00 ,  -9.98 )
+98D2: 96 F8           ; (C69) F896          SVEC scale=1(/64) x=-200 y=0    int=9   ( -8.00 ,   0.00 )
+98D4: 0A F0           ; (C6A) F00A          SVEC scale=2(/32) x=200  y=0    int=0   ( 16.00 ,   0.00 )
+98D6: 00 D0           ; (C6B) D000          RTSL
+
+; D
+;
+98D8: 7F 32 00 90     ; (C6C) 327F 9000     VCTR scale=3(/64) x=0    y=27F  int=9   (  0.00 ,   9.98 )
+98DC: 93 F0           ; (C6E) F093          SVEC scale=0(/128)x=200  y=0    int=9   (  4.00 ,   0.00 )
+98DE: 91 F5           ; (C6F) F591          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+98E0: 90 F7           ; (C70) F790          SVEC scale=0(/128)x=0    y=-200 int=9   (  0.00 ,  -4.00 )
+98E2: 95 F5           ; (C71) F595          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+98E4: 97 F0           ; (C72) F097          SVEC scale=0(/128)x=-200 y=0    int=9   ( -4.00 ,   0.00 )
+98E6: 0A F0           ; (C73) F00A          SVEC scale=2(/32) x=200  y=0    int=0   ( 16.00 ,   0.00 )
+98E8: 00 D0           ; (C74) D000          RTSL
+
+; E
+;
+98EA: 92 F8           ; (C75) F892          SVEC scale=1(/64) x=200  y=0    int=9   (  8.00 ,   0.00 )
+98EC: 06 F8           ; (C76) F806          SVEC scale=1(/64) x=-200 y=0    int=0   ( -8.00 ,   0.00 )
+;
+; F
+98EE: 7F 32 00 90     ; (C77) 327F 9000     VCTR scale=3(/64) x=0    y=27F  int=9   (  0.00 ,   9.98 )
+98F2: 92 F8           ; (C79) F892          SVEC scale=1(/64) x=200  y=0    int=9   (  8.00 ,   0.00 )
+98F4: 05 F6           ; (C7A) F605          SVEC scale=0(/128)x=0    y=-200 int=0   (  0.00 ,  -4.00 )
+98F6: 97 F0           ; (C7B) F097          SVEC scale=0(/128)x=-200 y=0    int=9   ( -4.00 ,   0.00 )
+98F8: 7F 35 FF 03     ; (C7C) 357F 03FF     VCTR scale=3(/64) x=3FF  y=-17F int=0   ( 15.98 ,  -5.98 )
+98FC: 00 D0           ; (C7E) D000          RTSL
+
+; G
+; 
+98FE: 7F 32 00 90     ; (C7F) 327F 9000     VCTR scale=3(/64) x=0    y=27F  int=9   (  0.00 ,   9.98 )
+9902: 92 F8           ; (C81) F892          SVEC scale=1(/64) x=200  y=0    int=9   (  8.00 ,   0.00 )
+9904: 05 F6           ; (C82) F605          SVEC scale=0(/128)x=0    y=-200 int=0   (  0.00 ,  -4.00 )
+9906: 91 F0           ; (C83) F091          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+9908: 90 F7           ; (C84) F790          SVEC scale=0(/128)x=0    y=-200 int=9   (  0.00 ,  -4.00 )
+990A: 96 F8           ; (C85) F896          SVEC scale=1(/64) x=-200 y=0    int=9   ( -8.00 ,   0.00 )
+990C: 0A F0           ; (C86) F00A          SVEC scale=2(/32) x=200  y=0    int=0   ( 16.00 ,   0.00 )
+990E: 00 D0           ; (C87) D000          RTSL
+
+; H
+;
+9910: 7F 32 00 90     ; (C88) 327F 9000     VCTR scale=3(/64) x=0    y=27F  int=9   (  0.00 ,   9.98 )
+9914: 00 F6           ; (C8A) F600          SVEC scale=0(/128)x=0    y=-200 int=0   (  0.00 ,  -4.00 )
+9916: 92 F8           ; (C8B) F892          SVEC scale=1(/64) x=200  y=0    int=9   (  8.00 ,   0.00 )
+9918: 00 F2           ; (C8C) F200          SVEC scale=0(/128)x=0    y=200  int=0   (  0.00 ,   4.00 )
+991A: 7F 36 00 90     ; (C8D) 367F 9000     VCTR scale=3(/64) x=0    y=-27F int=9   (  0.00 ,  -9.98 )
+991E: 02 F8           ; (C8F) F802          SVEC scale=1(/64) x=200  y=0    int=0   (  8.00 ,   0.00 )
+9920: 00 D0           ; (C90) D000          RTSL
+
+; I
+;
+9922: 01 F0           ; (C91) F001          SVEC scale=0(/128)x=0    y=0    int=0   (  0.00 ,   0.00 )
+9924: 92 F0           ; (C92) F092          SVEC scale=0(/128)x=200  y=0    int=9   (  4.00 ,   0.00 )
+9926: 05 F0           ; (C93) F005          SVEC scale=0(/128)x=0    y=0    int=0   (  0.00 ,   0.00 )
+9928: 7F 32 00 90     ; (C94) 327F 9000     VCTR scale=3(/64) x=0    y=27F  int=9   (  0.00 ,   9.98 )
+992C: 05 F0           ; (C96) F005          SVEC scale=0(/128)x=0    y=0    int=0   (  0.00 ,   0.00 )
+992E: 92 F0           ; (C97) F092          SVEC scale=0(/128)x=200  y=0    int=9   (  4.00 ,   0.00 )
+9930: 7F 36 7F 02     ; (C98) 367F 027F     VCTR scale=3(/64) x=27F  y=-27F int=0   (  9.98 ,  -9.98 )
+9934: 00 D0           ; (C9A) D000          RTSL
+
+; J
+;
+9936: 00 F1           ; (C9B) F100          SVEC scale=0(/128)x=0    y=0    int=0   (  0.00 ,   0.00 )
+9938: 91 F5           ; (C9C) F591          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+993A: 93 F0           ; (C9D) F093          SVEC scale=0(/128)x=200  y=0    int=9   (  4.00 ,   0.00 )
+993C: 7F 32 00 90     ; (C9E) 327F 9000     VCTR scale=3(/64) x=0    y=27F  int=9   (  0.00 ,   9.98 )
+9940: 7F 36 FF 01     ; (CA0) 367F 01FF     VCTR scale=3(/64) x=1FF  y=-27F int=0   (  7.98 ,  -9.98 )
+9944: 00 D0           ; (CA2) D000          RTSL
+
+; K
+;
+9946: 7F 32 00 90     ; (CA3) 327F 9000     VCTR scale=3(/64) x=0    y=27F  int=9   (  0.00 ,   9.98 )
+994A: 02 F8           ; (CA5) F802          SVEC scale=1(/64) x=200  y=0    int=0   (  8.00 ,   0.00 )
+994C: 96 FD           ; (CA6) FD96          SVEC scale=1(/64) x=-200 y=0    int=9   ( -8.00 ,   0.00 )
+994E: FF 26 FF 93     ; (CA7) 26FF 93FF     VCTR scale=2(/128)x=3FF  y=-2FF int=9   (  7.99 ,  -5.99 )
+9952: 02 F8           ; (CA9) F802          SVEC scale=1(/64) x=200  y=0    int=0   (  8.00 ,   0.00 )
+9954: 00 D0           ; (CAA) D000          RTSL
+
+; L
+;
+9956: 7F 32 00 00     ; (CAB) 327F 0000     VCTR scale=3(/64) x=0    y=27F  int=0   (  0.00 ,   9.98 )
+995A: 7F 36 00 90     ; (CAD) 367F 9000     VCTR scale=3(/64) x=0    y=-27F int=9   (  0.00 ,  -9.98 )
+995E: 92 F8           ; (CAF) F892          SVEC scale=1(/64) x=200  y=0    int=9   (  8.00 ,   0.00 )
+9960: 02 F8           ; (CB0) F802          SVEC scale=1(/64) x=200  y=0    int=0   (  8.00 ,   0.00 )
+9962: 00 D0           ; (CB1) D000          RTSL
+
+; M
+;
+9964: 7F 32 00 90     ; (CB2) 327F 9000     VCTR scale=3(/64) x=0    y=27F  int=9   (  0.00 ,   9.98 )
+9968: 92 F6           ; (CB4) F692          SVEC scale=0(/128)x=200  y=-200 int=9   (  4.00 ,  -4.00 )
+996A: 92 F2           ; (CB5) F292          SVEC scale=0(/128)x=200  y=200  int=9   (  4.00 ,   4.00 )
+996C: 7F 36 00 90     ; (CB6) 367F 9000     VCTR scale=3(/64) x=0    y=-27F int=9   (  0.00 ,  -9.98 )
+9970: 02 F8           ; (CB8) F802          SVEC scale=1(/64) x=200  y=0    int=0   (  8.00 ,   0.00 )
+9972: 00 D0           ; (CB9) D000          RTSL
+
+; N
+;
+9974: 7F 32 00 90     ; (CBA) 327F 9000     VCTR scale=3(/64) x=0    y=27F  int=9   (  0.00 ,   9.98 )
+9978: 92 FE           ; (CBC) FE92          SVEC scale=1(/64) x=200  y=-200 int=9   (  8.00 ,  -8.00 )
+997A: 00 FA           ; (CBD) FA00          SVEC scale=1(/64) x=0    y=200  int=0   (  0.00 ,   8.00 )
+997C: 7F 36 00 90     ; (CBE) 367F 9000     VCTR scale=3(/64) x=0    y=-27F int=9   (  0.00 ,  -9.98 )
+9980: 02 F8           ; (CC0) F802          SVEC scale=1(/64) x=200  y=0    int=0   (  8.00 ,   0.00 )
+9982: 00 D0           ; (CC1) D000          RTSL
+
+; O
+;
+9984: 7F 32 00 90     ; (CC2) 327F 9000     VCTR scale=3(/64) x=0    y=27F  int=9   (  0.00 ,   9.98 )
+9988: 92 F8           ; (CC4) F892          SVEC scale=1(/64) x=200  y=0    int=9   (  8.00 ,   0.00 )
+998A: 7F 36 00 90     ; (CC5) 367F 9000     VCTR scale=3(/64) x=0    y=-27F int=9   (  0.00 ,  -9.98 )
+998E: 96 F8           ; (CC7) F896          SVEC scale=1(/64) x=-200 y=0    int=9   ( -8.00 ,   0.00 )
+9990: 0A F0           ; (CC8) F00A          SVEC scale=2(/32) x=200  y=0    int=0   ( 16.00 ,   0.00 )
+9992: 00 D0           ; (CC9) D000          RTSL
+
+; P
+;
+9994: 7F 32 00 90     ; (CCA) 327F 9000     VCTR scale=3(/64) x=0    y=27F  int=9   (  0.00 ,   9.98 )
+9998: 92 F8           ; (CCC) F892          SVEC scale=1(/64) x=200  y=0    int=9   (  8.00 ,   0.00 )
+999A: 90 F6           ; (CCD) F690          SVEC scale=0(/128)x=0    y=-200 int=9   (  0.00 ,  -4.00 )
+999C: 96 F8           ; (CCE) F896          SVEC scale=1(/64) x=-200 y=0    int=9   ( -8.00 ,   0.00 )
+999E: 7F 35 FF 03     ; (CCF) 357F 03FF     VCTR scale=3(/64) x=3FF  y=-17F int=0   ( 15.98 ,  -5.98 )
+99A2: 00 D0           ; (CD1) D000          RTSL
+
+; Q
+;
+99A4: 7F 32 00 90     ; (CD2) 327F 9000     VCTR scale=3(/64) x=0    y=27F  int=9   (  0.00 ,   9.98 )
+99A8: 92 F8           ; (CD4) F892          SVEC scale=1(/64) x=200  y=0    int=9   (  8.00 ,   0.00 )
+99AA: 90 FE           ; (CD5) FE90          SVEC scale=1(/64) x=0    y=-200 int=9   (  0.00 ,  -8.00 )
+99AC: 95 F5           ; (CD6) F595          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+99AE: 97 F0           ; (CD7) F097          SVEC scale=0(/128)x=-200 y=0    int=9   ( -4.00 ,   0.00 )
+99B0: 03 F1           ; (CD8) F103          SVEC scale=0(/128)x=200  y=0    int=0   (  4.00 ,   0.00 )
+99B2: 91 F5           ; (CD9) F591          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+99B4: 02 F8           ; (CDA) F802          SVEC scale=1(/64) x=200  y=0    int=0   (  8.00 ,   0.00 )
+99B6: 00 D0           ; (CDB) D000          RTSL
+
+; R
+;
+99B8: 7F 32 00 90     ; (CDC) 327F 9000     VCTR scale=3(/64) x=0    y=27F  int=9   (  0.00 ,   9.98 )
+99BC: 92 F8           ; (CDE) F892          SVEC scale=1(/64) x=200  y=0    int=9   (  8.00 ,   0.00 )
+99BE: 7F 26 00 90     ; (CDF) 267F 9000     VCTR scale=2(/128)x=0    y=-27F int=9   (  0.00 ,  -4.99 )
+99C2: 96 F8           ; (CE1) F896          SVEC scale=1(/64) x=-200 y=0    int=9   ( -8.00 ,   0.00 )
+99C4: 7F 26 FF 93     ; (CE2) 267F 93FF     VCTR scale=2(/128)x=3FF  y=-27F int=9   (  7.99 ,  -4.99 )
+99C8: 02 F8           ; (CE4) F802          SVEC scale=1(/64) x=200  y=0    int=0   (  8.00 ,   0.00 )
+99CA: 00 D0           ; (CE5) D000          RTSL
+
+; S
+;
+99CC: 92 F8           ; (CE6) F892          SVEC scale=1(/64) x=200  y=0    int=9   (  8.00 ,   0.00 )
+99CE: 7F 22 00 90     ; (CE7) 227F 9000     VCTR scale=2(/128)x=0    y=27F  int=9   (  0.00 ,   4.99 )
+99D2: 96 F8           ; (CE9) F896          SVEC scale=1(/64) x=-200 y=0    int=9   ( -8.00 ,   0.00 )
+99D4: 7F 22 00 90     ; (CEA) 227F 9000     VCTR scale=2(/128)x=0    y=27F  int=9   (  0.00 ,   4.99 )
+99D8: 92 F8           ; (CEC) F892          SVEC scale=1(/64) x=200  y=0    int=9   (  8.00 ,   0.00 )
+99DA: 7F 36 FF 01     ; (CED) 367F 01FF     VCTR scale=3(/64) x=1FF  y=-27F int=0   (  7.98 ,  -9.98 )
+99DE: 00 D0           ; (CEF) D000          RTSL
+
+; T
+;
+99E0: 7F 32 00 00     ; (CF0) 327F 0000     VCTR scale=3(/64) x=0    y=27F  int=0   (  0.00 ,   9.98 )
+99E4: 92 F8           ; (CF2) F892          SVEC scale=1(/64) x=200  y=0    int=9   (  8.00 ,   0.00 )
+99E6: 06 F0           ; (CF3) F006          SVEC scale=0(/128)x=-200 y=0    int=0   ( -4.00 ,   0.00 )
+99E8: 7F 36 00 90     ; (CF4) 367F 9000     VCTR scale=3(/64) x=0    y=-27F int=9   (  0.00 ,  -9.98 )
+99EC: 03 F8           ; (CF6) F803          SVEC scale=1(/64) x=200  y=0    int=0   (  8.00 ,   0.00 )
+99EE: 00 D0           ; (CF7) D000          RTSL
+
+; U
+;
+99F0: 7F 32 00 00     ; (CF8) 327F 0000     VCTR scale=3(/64) x=0    y=27F  int=0   (  0.00 ,   9.98 )
+99F4: 7F 36 00 90     ; (CFA) 367F 9000     VCTR scale=3(/64) x=0    y=-27F int=9   (  0.00 ,  -9.98 )
+99F8: 92 F8           ; (CFC) F892          SVEC scale=1(/64) x=200  y=0    int=9   (  8.00 ,   0.00 )
+99FA: 7F 32 00 90     ; (CFD) 327F 9000     VCTR scale=3(/64) x=0    y=27F  int=9   (  0.00 ,   9.98 )
+99FE: 7F 36 FF 01     ; (CFF) 367F 01FF     VCTR scale=3(/64) x=1FF  y=-27F int=0   (  7.98 ,  -9.98 )
+9A02: 00 D0           ; (D01) D000          RTSL
+
+; V
+;
+9A04: 7F 32 00 00     ; (D02) 327F 0000     VCTR scale=3(/64) x=0    y=27F  int=0   (  0.00 ,   9.98 )
+9A08: 90 F7           ; (D04) F790          SVEC scale=0(/128)x=0    y=-200 int=9   (  0.00 ,  -4.00 )
+9A0A: 92 F6           ; (D05) F692          SVEC scale=0(/128)x=200  y=-200 int=9   (  4.00 ,  -4.00 )
+9A0C: 92 F2           ; (D06) F292          SVEC scale=0(/128)x=200  y=200  int=9   (  4.00 ,   4.00 )
+9A0E: 90 F3           ; (D07) F390          SVEC scale=0(/128)x=0    y=200  int=9   (  0.00 ,   4.00 )
+9A10: 7F 36 FF 01     ; (D08) 367F 01FF     VCTR scale=3(/64) x=1FF  y=-27F int=0   (  7.98 ,  -9.98 )
+9A14: 00 D0           ; (D0A) D000          RTSL
+
+; W
+;
+9A16: 7F 32 00 00     ; (D0B) 327F 0000     VCTR scale=3(/64) x=0    y=27F  int=0   (  0.00 ,   9.98 )
+9A1A: 7F 36 00 90     ; (D0D) 367F 9000     VCTR scale=3(/64) x=0    y=-27F int=9   (  0.00 ,  -9.98 )
+9A1E: 92 F2           ; (D0F) F292          SVEC scale=0(/128)x=200  y=200  int=9   (  4.00 ,   4.00 )
+9A20: 92 F6           ; (D10) F692          SVEC scale=0(/128)x=200  y=-200 int=9   (  4.00 ,  -4.00 )
+9A22: 7F 32 00 90     ; (D11) 327F 9000     VCTR scale=3(/64) x=0    y=27F  int=9   (  0.00 ,   9.98 )
+9A26: 7F 36 FF 01     ; (D13) 367F 01FF     VCTR scale=3(/64) x=1FF  y=-27F int=0   (  7.98 ,  -9.98 )
+9A2A: 00 D0           ; (D15) D000          RTSL
+
+; X
+;
+9A2C: 7F 32 FF 91     ; (D16) 327F 91FF     VCTR scale=3(/64) x=1FF  y=27F  int=9   (  7.98 ,   9.98 )
+9A30: 06 F8           ; (D18) F806          SVEC scale=1(/64) x=-200 y=0    int=0   ( -8.00 ,   0.00 )
+9A32: 7F 36 FF 91     ; (D19) 367F 91FF     VCTR scale=3(/64) x=1FF  y=-27F int=9   (  7.98 ,  -9.98 )
+9A36: 02 F8           ; (D1B) F802          SVEC scale=1(/64) x=200  y=0    int=0   (  8.00 ,   0.00 )
+9A38: 00 D0           ; (D1C) D000          RTSL
+
+; Y
+;
+9A3A: 7F 32 00 00     ; (D1D) 327F 0000     VCTR scale=3(/64) x=0    y=27F  int=0   (  0.00 ,   9.98 )
+9A3E: 7F 26 FF 91     ; (D1F) 267F 91FF     VCTR scale=2(/128)x=1FF  y=-27F int=9   (  3.99 ,  -4.99 )
+9A42: 7F 22 FF 91     ; (D21) 227F 91FF     VCTR scale=2(/128)x=1FF  y=27F  int=9   (  3.99 ,   4.99 )
+9A46: 06 F6           ; (D23) F606          SVEC scale=0(/128)x=-200 y=-200 int=0   ( -4.00 ,  -4.00 )
+9A48: 90 F7           ; (D24) F790          SVEC scale=0(/128)x=0    y=-200 int=9   (  0.00 ,  -4.00 )
+9A4A: 03 F8           ; (D25) F803          SVEC scale=1(/64) x=200  y=0    int=0   (  8.00 ,   0.00 )
+9A4C: 00 D0           ; (D26) D000          RTSL
+
+; Z
+;
+9A4E: 7F 32 00 00     ; (D27) 327F 0000     VCTR scale=3(/64) x=0    y=27F  int=0   (  0.00 ,   9.98 )
+9A52: 92 F8           ; (D29) F892          SVEC scale=1(/64) x=200  y=0    int=9   (  8.00 ,   0.00 )
+9A54: 7F 36 FF 95     ; (D2A) 367F 95FF     VCTR scale=3(/64) x=-1FF y=-27F int=9   ( -7.98 ,  -9.98 )
+9A58: 92 F8           ; (D2C) F892          SVEC scale=1(/64) x=200  y=0    int=9   (  8.00 ,   0.00 )
+9A5A: 02 F8           ; (D2D) F802          SVEC scale=1(/64) x=200  y=0    int=0   (  8.00 ,   0.00 )
+9A5C: 00 D0           ; (D2E) D000          RTSL
+
+;numbers {*numbers}
+; Numbers and the "space" character
+
+<canvas width="350" height="40"
+  data-command="globalScale=2,x=20,y=30,9A5E,*,*,*,*,*,*,*,*,*">
+</canvas>
+
+; 0
+;
+9A5E: 01 F0           ; (D2F) F001          SVEC scale=0(/128)x=0    y=0    int=0   (  0.00 ,   0.00 )
+9A60: 95 F1           ; (D30) F195          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+9A62: 90 F3           ; (D31) F390          SVEC scale=0(/128)x=0    y=200  int=9   (  0.00 ,   4.00 )
+9A64: 91 F1           ; (D32) F191          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+9A66: 92 F0           ; (D33) F092          SVEC scale=0(/128)x=200  y=0    int=9   (  4.00 ,   0.00 )
+9A68: 91 F5           ; (D34) F591          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+9A6A: 90 F7           ; (D35) F790          SVEC scale=0(/128)x=0    y=-200 int=9   (  0.00 ,  -4.00 )
+9A6C: 95 F5           ; (D36) F595          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+9A6E: 96 F0           ; (D37) F096          SVEC scale=0(/128)x=-200 y=0    int=9   ( -4.00 ,   0.00 )
+9A70: 00 30 7F 03     ; (D38) 3000 037F     VCTR scale=3(/64) x=37F  y=0    int=0   ( 13.98 ,   0.00 )
+9A74: 00 D0           ; (D3A) D000          RTSL
+
+; 1
+;
+9A76: 7F 23 FF 00     ; (D3B) 237F 00FF     VCTR scale=2(/128)x=FF   y=37F  int=0   (  1.99 ,   6.99 )
+9A7A: FF 12 FF 91     ; (D3D) 12FF 91FF     VCTR scale=1(/256)x=1FF  y=2FF  int=9   (  1.99 ,   2.99 )
+9A7E: 7F 36 00 90     ; (D3F) 367F 9000     VCTR scale=3(/64) x=0    y=-27F int=9   (  0.00 ,  -9.98 )
+9A82: 05 F0           ; (D41) F005          SVEC scale=0(/128)x=0    y=0    int=0   (  0.00 ,   0.00 )
+9A84: 92 F0           ; (D42) F092          SVEC scale=0(/128)x=200  y=0    int=9   (  4.00 ,   0.00 )
+9A86: 00 30 7F 02     ; (D43) 3000 027F     VCTR scale=3(/64) x=27F  y=0    int=0   (  9.98 ,   0.00 )
+9A8A: 00 D0           ; (D45) D000          RTSL
+
+; 2
+;
+9A8C: 00 FA           ; (D46) FA00          SVEC scale=1(/64) x=0    y=200  int=0   (  0.00 ,   8.00 )
+9A8E: 91 F1           ; (D47) F191          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+9A90: 92 F0           ; (D48) F092          SVEC scale=0(/128)x=200  y=0    int=9   (  4.00 ,   0.00 )
+9A92: 91 F5           ; (D49) F591          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+9A94: FF 16 00 90     ; (D4A) 16FF 9000     VCTR scale=1(/256)x=0    y=-2FF int=9   (  0.00 ,  -2.99 )
+9A98: 96 FD           ; (D4C) FD96          SVEC scale=1(/64) x=-200 y=0    int=9   ( -8.00 ,   0.00 )
+9A9A: FF 05 00 90     ; (D4D) 05FF 9000     VCTR scale=0(/512)x=0    y=-1FF int=9   (  0.00 ,  -0.99 )
+9A9E: 92 F8           ; (D4F) F892          SVEC scale=1(/64) x=200  y=0    int=9   (  8.00 ,   0.00 )
+9AA0: 02 F8           ; (D50) F802          SVEC scale=1(/64) x=200  y=0    int=0   (  8.00 ,   0.00 )
+9AA2: 00 D0           ; (D51) D000          RTSL
+
+; 3
+;
+9AA4: 00 FA           ; (D52) FA00          SVEC scale=1(/64) x=0    y=200  int=0   (  0.00 ,   8.00 )
+9AA6: 91 F1           ; (D53) F191          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+9AA8: 92 F0           ; (D54) F092          SVEC scale=0(/128)x=200  y=0    int=9   (  4.00 ,   0.00 )
+9AAA: 91 F5           ; (D55) F591          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+9AAC: 90 F5           ; (D56) F590          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+9AAE: FF 05 FF 97     ; (D57) 05FF 97FF     VCTR scale=0(/512)x=-3FF y=-1FF int=9   ( -1.99 ,  -0.99 )
+9AB2: 95 F0           ; (D59) F095          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+9AB4: 01 F0           ; (D5A) F001          SVEC scale=0(/128)x=0    y=0    int=0   (  0.00 ,   0.00 )
+9AB6: FF 05 FF 93     ; (D5B) 05FF 93FF     VCTR scale=0(/512)x=3FF  y=-1FF int=9   (  1.99 ,  -0.99 )
+9ABA: 90 F5           ; (D5D) F590          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+9ABC: 95 F5           ; (D5E) F595          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+9ABE: 96 F0           ; (D5F) F096          SVEC scale=0(/128)x=-200 y=0    int=9   ( -4.00 ,   0.00 )
+9AC0: 95 F1           ; (D60) F195          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+9AC2: 7F 34 FF 03     ; (D61) 347F 03FF     VCTR scale=3(/64) x=3FF  y=-7F  int=0   ( 15.98 ,  -1.98 )
+9AC6: 00 D0           ; (D63) D000          RTSL
+
+; 4
+;
+9AC8: 7F 32 00 00     ; (D64) 327F 0000     VCTR scale=3(/64) x=0    y=27F  int=0   (  0.00 ,   9.98 )
+9ACC: 7F 26 00 90     ; (D66) 267F 9000     VCTR scale=2(/128)x=0    y=-27F int=9   (  0.00 ,  -4.99 )
+9AD0: 92 F8           ; (D68) F892          SVEC scale=1(/64) x=200  y=0    int=9   (  8.00 ,   0.00 )
+9AD2: 7F 22 00 00     ; (D69) 227F 0000     VCTR scale=2(/128)x=0    y=27F  int=0   (  0.00 ,   4.99 )
+9AD6: 7F 36 00 90     ; (D6B) 367F 9000     VCTR scale=3(/64) x=0    y=-27F int=9   (  0.00 ,  -9.98 )
+9ADA: 02 F8           ; (D6D) F802          SVEC scale=1(/64) x=200  y=0    int=0   (  8.00 ,   0.00 )
+9ADC: 00 D0           ; (D6E) D000          RTSL
+
+; 5
+;
+9ADE: 7F 32 FF 01     ; (D6F) 327F 01FF     VCTR scale=3(/64) x=1FF  y=27F  int=0   (  7.98 ,   9.98 )
+9AE2: 96 F8           ; (D71) F896          SVEC scale=1(/64) x=-200 y=0    int=9   ( -8.00 ,   0.00 )
+9AE4: 7F 26 00 90     ; (D72) 267F 9000     VCTR scale=2(/128)x=0    y=-27F int=9   (  0.00 ,  -4.99 )
+9AE8: FF 01 FF 93     ; (D74) 01FF 93FF     VCTR scale=0(/512)x=3FF  y=1FF  int=9   (  1.99 ,   0.99 )
+9AEC: 92 F0           ; (D76) F092          SVEC scale=0(/128)x=200  y=0    int=9   (  4.00 ,   0.00 )
+9AEE: FF 05 FF 93     ; (D77) 05FF 93FF     VCTR scale=0(/512)x=3FF  y=-1FF int=9   (  1.99 ,  -0.99 )
+9AF2: FF 16 00 90     ; (D79) 16FF 9000     VCTR scale=1(/256)x=0    y=-2FF int=9   (  0.00 ,  -2.99 )
+9AF6: 95 F5           ; (D7B) F595          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+9AF8: 96 F0           ; (D7C) F096          SVEC scale=0(/128)x=-200 y=0    int=9   ( -4.00 ,   0.00 )
+9AFA: 95 F1           ; (D7D) F195          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+9AFC: 7F 34 FF 03     ; (D7E) 347F 03FF     VCTR scale=3(/64) x=3FF  y=-7F  int=0   ( 15.98 ,  -1.98 )
+9B00: 00 D0           ; (D80) D000          RTSL
+
+; 6
+;
+9B02: 7F 32 FF 01     ; (D81) 327F 01FF     VCTR scale=3(/64) x=1FF  y=27F  int=0   (  7.98 ,   9.98 )
+9B06: 97 F0           ; (D83) F097          SVEC scale=0(/128)x=-200 y=0    int=9   ( -4.00 ,   0.00 )
+9B08: 95 F5           ; (D84) F595          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+9B0A: 90 FE           ; (D85) FE90          SVEC scale=1(/64) x=0    y=-200 int=9   (  0.00 ,  -8.00 )
+9B0C: 92 F8           ; (D86) F892          SVEC scale=1(/64) x=200  y=0    int=9   (  8.00 ,   0.00 )
+9B0E: 7F 22 00 90     ; (D87) 227F 9000     VCTR scale=2(/128)x=0    y=27F  int=9   (  0.00 ,   4.99 )
+9B12: 96 F8           ; (D89) F896          SVEC scale=1(/64) x=-200 y=0    int=9   ( -8.00 ,   0.00 )
+9B14: 3F 35 FF 03     ; (D8A) 353F 03FF     VCTR scale=3(/64) x=3FF  y=-13F int=0   ( 15.98 ,  -4.98 )
+9B18: 00 D0           ; (D8C) D000          RTSL
+
+; 7
+;
+9B1A: 7F 32 00 00     ; (D8D) 327F 0000     VCTR scale=3(/64) x=0    y=27F  int=0   (  0.00 ,   9.98 )
+9B1E: 92 F8           ; (D8F) F892          SVEC scale=1(/64) x=200  y=0    int=9   (  8.00 ,   0.00 )
+9B20: 90 F5           ; (D90) F590          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+9B22: 96 FE           ; (D91) FE96          SVEC scale=1(/64) x=-200 y=-200 int=9   ( -8.00 ,  -8.00 )
+;
+; space
+9B24: 0A F0           ; (D92) F00A          SVEC scale=2(/32) x=200  y=0    int=0   ( 16.00 ,   0.00 )
+9B26: 00 D0           ; (D93) D000          RTSL
+
+; 8
+;
+9B28: 7F 32 00 90     ; (D94) 327F 9000     VCTR scale=3(/64) x=0    y=27F  int=9   (  0.00 ,   9.98 )
+9B2C: 92 F8           ; (D96) F892          SVEC scale=1(/64) x=200  y=0    int=9   (  8.00 ,   0.00 )
+9B2E: 7F 36 00 90     ; (D97) 367F 9000     VCTR scale=3(/64) x=0    y=-27F int=9   (  0.00 ,  -9.98 )
+9B32: 96 F8           ; (D99) F896          SVEC scale=1(/64) x=-200 y=0    int=9   ( -8.00 ,   0.00 )
+9B34: 7F 22 00 00     ; (D9A) 227F 0000     VCTR scale=2(/128)x=0    y=27F  int=0   (  0.00 ,   4.99 )
+9B38: 92 F8           ; (D9C) F892          SVEC scale=1(/64) x=200  y=0    int=9   (  8.00 ,   0.00 )
+9B3A: 7F 26 FF 03     ; (D9D) 267F 03FF     VCTR scale=2(/128)x=3FF  y=-27F int=0   (  7.99 ,  -4.99 )
+9B3E: 00 D0           ; (D9F) D000          RTSL
+
+; 9
+;
+9B40: 02 F8           ; (DA0) F802          SVEC scale=1(/64) x=200  y=0    int=0   (  8.00 ,   0.00 )
+9B42: 7F 32 00 90     ; (DA1) 327F 9000     VCTR scale=3(/64) x=0    y=27F  int=9   (  0.00 ,   9.98 )
+9B46: 96 F8           ; (DA3) F896          SVEC scale=1(/64) x=-200 y=0    int=9   ( -8.00 ,   0.00 )
+9B48: 7F 26 00 90     ; (DA4) 267F 9000     VCTR scale=2(/128)x=0    y=-27F int=9   (  0.00 ,  -4.99 )
+9B4C: 92 F8           ; (DA6) F892          SVEC scale=1(/64) x=200  y=0    int=9   (  8.00 ,   0.00 )
+9B4E: 7F 26 FF 03     ; (DA7) 267F 03FF     VCTR scale=2(/128)x=3FF  y=-27F int=0   (  7.99 ,  -4.99 )
+9B52: 00 D0           ; (DA9) D000          RTSL
+
+;special {*special}
+; Punctuation and special characters
+
+<canvas width="350" height="100"
+  data-command="globalScale=2,x=20,y=30,9B54,9B66,9B84,9B94,9B9A,9BA6">
+</canvas>
+
+; .
+;
+9B54: FF 01 FF 91     ; (DAA) 01FF 91FF     VCTR scale=0(/512)x=1FF  y=1FF  int=9   (  0.99 ,   0.99 )
+9B58: 00 00 FF 05     ; (DAC) 0000 05FF     VCTR scale=0(/512)x=-1FF y=0    int=0   ( -0.99 ,   0.00 )
+9B5C: FF 05 FF 91     ; (DAE) 05FF 91FF     VCTR scale=0(/512)x=1FF  y=-1FF int=9   (  0.99 ,  -0.99 )
+9B60: 00 30 BF 03     ; (DB0) 3000 03BF     VCTR scale=3(/64) x=3BF  y=0    int=0   ( 14.98 ,   0.00 )
+9B64: 00 D0           ; (DB2) D000          RTSL
+
+; ,
+;
+9B66: 00 00 FF 01     ; (DB3) 0000 01FF     VCTR scale=0(/512)x=1FF  y=0    int=0   (  0.99 ,   0.00 )
+9B6A: 00 00 FF 95     ; (DB5) 0000 95FF     VCTR scale=0(/512)x=-1FF y=0    int=9   ( -0.99 ,   0.00 )
+9B6E: FF 01 00 90     ; (DB7) 01FF 9000     VCTR scale=0(/512)x=0    y=1FF  int=9   (  0.00 ,   0.99 )
+9B72: 00 00 FF 91     ; (DB9) 0000 91FF     VCTR scale=0(/512)x=1FF  y=0    int=9   (  0.99 ,   0.00 )
+9B76: 90 F5           ; (DBB) F590          SVEC scale=0(/128)x=0    y=0    int=9   (  0.00 ,   0.00 )
+9B78: 3F 30 BF 03     ; (DBC) 303F 03BF     VCTR scale=3(/64) x=3BF  y=3F   int=0   ( 14.98 ,   0.98 )
+9B7C: 00 D0           ; (DBE) D000          RTSL
+
+; CR/LF
+;
+9B7E: 7F 46 FF 05     ; (DBF) 467F 05FF     VCTR scale=4(/32) x=-1FF y=-27F int=0   (-15.96 , -19.96 )
+9B82: 00 D0           ; (DC1) D000          RTSL
+
+; Triangle (left)
+;
+9B84: 02 F8           ; (DC2) F802          SVEC scale=1(/64) x=200  y=0    int=0   (  8.00 ,   0.00 )
+9B86: 7F 22 FF C7     ; (DC3) 227F C7FF     VCTR scale=2(/128)x=-3FF y=27F  int=12  ( -7.99 ,   4.99 )
+9B8A: 7F 22 FF C3     ; (DC5) 227F C3FF     VCTR scale=2(/128)x=3FF  y=27F  int=12  (  7.99 ,   4.99 )
+9B8E: 7F 36 00 C0     ; (DC7) 367F C000     VCTR scale=3(/64) x=0    y=-27F int=12  (  0.00 ,  -9.98 )
+9B92: 00 D0           ; (DC9) D000          RTSL
+
+; =
+;
+9B94: 7F 23 7F 00     ; (DCA) 237F 007F     VCTR scale=2(/128)x=7F   y=37F  int=0   (  0.99 ,   6.99 )
+9B98: 93 F0           ; (DCC) F093          SVEC scale=0(/128)x=200  y=0    int=9   (  4.00 ,   0.00 )
+
+; _
+9B9A: FF 16 00 00     ; (DCD) 16FF 0000     VCTR scale=1(/256)x=0    y=-2FF int=0   (  0.00 ,  -2.99 )
+9B9E: 97 F0           ; (DCF) F097          SVEC scale=0(/128)x=-200 y=0    int=9   ( -4.00 ,   0.00 )
+9BA0: FF 34 BF 03     ; (DD0) 34FF 03BF     VCTR scale=3(/64) x=3BF  y=-FF  int=0   ( 14.98 ,  -3.98 )
+9BA4: 00 D0           ; (DD2) D000          RTSL
+
+; Player (as character)
+;
+9BA6: 4F 54 1F 03     ; (DD3) 544F 031F     VCTR scale=5(/16) x=31F  y=-4F  int=0   ( 49.93 ,  -4.93 )
+9BAA: E9 C9           ; (DD5) C9E9          JSRL $9E9(93D2)
+9BAC: 00 D0           ; (DD6) D000          RTSL
+
+
+; ?? Perhaps ROM padding for some reason
+
+9BAE: 00 00 00 00     ; (DD7) 0000 0000     VCTR scale=0(/512)x=0    y=0    int=0   (  0.00 ,   0.00 )
+9BB2: 00 00 2D 00     ; (DD9) 0000 002D     VCTR scale=0(/512)x=2D   y=0    int=0   (  0.08 ,   0.00 )
+9BB6: 00 00 00 00     ; (DDB) 0000 0000     VCTR scale=0(/512)x=0    y=0    int=0   (  0.00 ,   0.00 )
+9BBA: 00 00 00 00     ; (DDD) 0000 0000     VCTR scale=0(/512)x=0    y=0    int=0   (  0.00 ,   0.00 )
+9BBE: 00 00 00 00     ; (DDF) 0000 0000     VCTR scale=0(/512)x=0    y=0    int=0   (  0.00 ,   0.00 )
+9BC2: 00 00 00 00     ; (DE1) 0000 0000     VCTR scale=0(/512)x=0    y=0    int=0   (  0.00 ,   0.00 )
+9BC6: 00 00 00 00     ; (DE3) 0000 0000     VCTR scale=0(/512)x=0    y=0    int=0   (  0.00 ,   0.00 )
+9BCA: 00 00 00 00     ; (DE5) 0000 0000     VCTR scale=0(/512)x=0    y=0    int=0   (  0.00 ,   0.00 )
+9BCE: 00 00 00 00     ; (DE7) 0000 0000     VCTR scale=0(/512)x=0    y=0    int=0   (  0.00 ,   0.00 )
+9BD2: 00 00 00 00     ; (DE9) 0000 0000     VCTR scale=0(/512)x=0    y=0    int=0   (  0.00 ,   0.00 )
+9BD6: 00 00 00 00     ; (DEB) 0000 0000     VCTR scale=0(/512)x=0    y=0    int=0   (  0.00 ,   0.00 )
+9BDA: 00 00 00 00     ; (DED) 0000 0000     VCTR scale=0(/512)x=0    y=0    int=0   (  0.00 ,   0.00 )
+9BDE: 00 00 00 00     ; (DEF) 0000 0000     VCTR scale=0(/512)x=0    y=0    int=0   (  0.00 ,   0.00 )
+9BE2: 00 00 00 00     ; (DF1) 0000 0000     VCTR scale=0(/512)x=0    y=0    int=0   (  0.00 ,   0.00 )
+9BE6: 00 00 00 00     ; (DF3) 0000 0000     VCTR scale=0(/512)x=0    y=0    int=0   (  0.00 ,   0.00 )
+9BEA: 00 00 00 00     ; (DF5) 0000 0000     VCTR scale=0(/512)x=0    y=0    int=0   (  0.00 ,   0.00 )
+9BEE: 00 00 00 00     ; (DF7) 0000 0000     VCTR scale=0(/512)x=0    y=0    int=0   (  0.00 ,   0.00 )
+9BF2: 00 00 00 00     ; (DF9) 0000 0000     VCTR scale=0(/512)x=0    y=0    int=0   (  0.00 ,   0.00 )
+9BF6: 00 00 BF 30     ; (DFB) 0000 30BF     VCTR scale=0(/512)x=BF   y=0    int=3   (  0.37 ,   0.00 )
+
+
+;shipsB {*shipsB}
+; More ship/thrust pictures like at start
+
+<canvas width="1225" height="100"
+  data-command="globalScale=2,x=50,y=50,9C06,x=125,y=50,9C46,x=200,y=50,9C88,x=275,y=50,9CCA,x=350,y=50,9D0E,x=425,y=50,9D4E,x=500,y=50,9D8A,x=575,y=50,9DCA,x=650,y=50,9E0A,x=725,y=50,9E48,x=800,y=50,9E88,x=875,y=50,9EC8,x=950,y=50,9F04,x=1025,y=50,9F44,x=1100,y=50,9F88,x=1175,y=50,9FCA">
+</canvas>
+
+; Thrust pattern
+9BFA: FF 03 BF 34     ; (DFD) 03FF 34BF     VCTR scale=0(/512)x=-BF  y=3FF  int=3   ( -0.37 ,   1.99 )
+9BFE: 3F F2           ; (DFF) F23F          SVEC scale=2(/32) x=-200 y=200  int=3   (-16.00 ,  16.00 )
+9C00: 7F 34 3F F6     ; (E00) 347F F63F     VCTR scale=3(/64) x=-23F y=-7F  int=15  ( -8.98 ,  -1.98 )
+9C04: 00 D0           ; (E02) D000          RTSL
+; Player facing left
+9C06: 00 20 7F 06     ; (E03) 2000 067F     VCTR scale=2(/128)x=-27F y=0    int=0   ( -4.99 ,   0.00 )
+9C0A: 3F 41 7F F2     ; (E05) 413F F27F     VCTR scale=4(/32) x=27F  y=13F  int=15  ( 19.96 ,   9.96 )
+9C0E: 9F 46 5F F5     ; (E07) 469F F55F     VCTR scale=4(/32) x=-15F y=-29F int=15  (-10.96 , -20.96 )
+9C12: F6 F8           ; (E09) F8F6          SVEC scale=1(/64) x=-200 y=0    int=15  ( -8.00 ,   0.00 )
+9C14: 7F 34 7F F2     ; (E0A) 347F F27F     VCTR scale=3(/64) x=27F  y=-7F  int=15  (  9.98 ,  -1.98 )
+9C18: FF 41 1F F6     ; (E0C) 41FF F61F     VCTR scale=4(/32) x=-21F y=1FF  int=15  (-16.96 ,  15.96 )
+9C1C: 7F 25 7F F6     ; (E0E) 257F F67F     VCTR scale=2(/128)x=-27F y=-17F int=15  ( -4.99 ,  -2.99 )
+9C20: FF 24 7F F2     ; (E10) 24FF F27F     VCTR scale=2(/128)x=27F  y=-FF  int=15  (  4.99 ,  -1.99 )
+9C24: FF 41 1F F2     ; (E12) 41FF F21F     VCTR scale=4(/32) x=21F  y=1FF  int=15  ( 16.96 ,  15.96 )
+9C28: 7F 34 7F F6     ; (E14) 347F F67F     VCTR scale=3(/64) x=-27F y=-7F  int=15  ( -9.98 ,  -1.98 )
+9C2C: F2 F8           ; (E16) F8F2          SVEC scale=1(/64) x=200  y=0    int=15  (  8.00 ,   0.00 )
+9C2E: 9F 46 5F F1     ; (E17) 469F F15F     VCTR scale=4(/32) x=15F  y=-29F int=15  ( 10.96 , -20.96 )
+9C32: 1F 41 7F F6     ; (E19) 411F F67F     VCTR scale=4(/32) x=-27F y=11F  int=15  (-19.96 ,   8.96 )
+9C36: 00 D0           ; (E1B) D000          RTSL
+;
+9C38: 3F 30 FF 03     ; (E1C) 303F 03FF     VCTR scale=3(/64) x=3FF  y=3F   int=0   ( 15.98 ,   0.98 )
+9C3C: BF 34 3F F2     ; (E1E) 34BF F23F     VCTR scale=3(/64) x=23F  y=-BF  int=15  (  8.98 ,  -2.98 )
+9C40: 7F 34 3F F6     ; (E20) 347F F63F     VCTR scale=3(/64) x=-23F y=-7F  int=15  ( -8.98 ,  -1.98 )
+9C44: 00 D0           ; (E22) D000          RTSL
+;
+9C46: 00 20 7F 06     ; (E23) 2000 067F     VCTR scale=2(/128)x=-27F y=0    int=0   ( -4.99 ,   0.00 )
+9C4A: FF 40 9F F2     ; (E25) 40FF F29F     VCTR scale=4(/32) x=29F  y=FF   int=15  ( 20.96 ,   7.96 )
+9C4E: 5F 46 9F F5     ; (E27) 465F F59F     VCTR scale=4(/32) x=-19F y=-25F int=15  (-12.96 , -18.96 )
+9C52: F6 F8           ; (E29) F8F6          SVEC scale=1(/64) x=-200 y=0    int=15  ( -8.00 ,   0.00 )
+9C54: BF 34 7F F2     ; (E2A) 34BF F27F     VCTR scale=3(/64) x=27F  y=-BF  int=15  (  9.98 ,  -2.98 )
+9C58: 3F 42 FF F5     ; (E2C) 423F F5FF     VCTR scale=4(/32) x=-1FF y=23F  int=15  (-15.96 ,  17.96 )
+9C5C: FF 24 7F F6     ; (E2E) 24FF F67F     VCTR scale=2(/128)x=-27F y=-FF  int=15  ( -4.99 ,  -1.99 )
+9C60: 7F 25 7F F2     ; (E30) 257F F27F     VCTR scale=2(/128)x=27F  y=-17F int=15  (  4.99 ,  -2.99 )
+9C64: BF 41 3F F2     ; (E32) 41BF F23F     VCTR scale=4(/32) x=23F  y=1BF  int=15  ( 17.96 ,  13.96 )
+9C68: 3F 34 7F F6     ; (E34) 343F F67F     VCTR scale=3(/64) x=-27F y=-3F  int=15  ( -9.98 ,  -0.98 )
+9C6C: 7F 24 FF F3     ; (E36) 247F F3FF     VCTR scale=2(/128)x=3FF  y=-7F  int=15  (  7.99 ,  -0.99 )
+9C70: BF 46 1F F1     ; (E38) 46BF F11F     VCTR scale=4(/32) x=11F  y=-2BF int=15  (  8.96 , -21.96 )
+9C74: 5F 41 5F F6     ; (E3A) 415F F65F     VCTR scale=4(/32) x=-25F y=15F  int=15  (-18.96 ,  10.96 )
+9C78: 00 D0           ; (E3C) D000          RTSL
+;
+9C7A: 00 30 FF 03     ; (E3D) 3000 03FF     VCTR scale=3(/64) x=3FF  y=0    int=0   ( 15.98 ,   0.00 )
+9C7E: FF 25 FF F3     ; (E3F) 25FF F3FF     VCTR scale=2(/128)x=3FF  y=-1FF int=15  (  7.99 ,  -3.99 )
+9C82: 3F 34 3F F6     ; (E41) 343F F63F     VCTR scale=3(/64) x=-23F y=-3F  int=15  ( -8.98 ,  -0.98 )
+9C86: 00 D0           ; (E43) D000          RTSL
+;
+9C88: 7F 20 7F 06     ; (E44) 207F 067F     VCTR scale=2(/128)x=-27F y=7F   int=0   ( -4.99 ,   0.99 )
+9C8C: BF 40 BF F2     ; (E46) 40BF F2BF     VCTR scale=4(/32) x=2BF  y=BF   int=15  ( 21.96 ,   5.96 )
+9C90: 5F 46 DF F5     ; (E48) 465F F5DF     VCTR scale=4(/32) x=-1DF y=-25F int=15  (-14.96 , -18.96 )
+9C94: FF 20 FF F7     ; (E4A) 20FF F7FF     VCTR scale=2(/128)x=-3FF y=FF   int=15  ( -7.99 ,   1.99 )
+9C98: FF 34 3F F2     ; (E4C) 34FF F23F     VCTR scale=3(/64) x=23F  y=-FF  int=15  (  8.98 ,  -3.98 )
+9C9C: 5F 42 9F F5     ; (E4E) 425F F59F     VCTR scale=4(/32) x=-19F y=25F  int=15  (-12.96 ,  18.96 )
+9CA0: F7 F5           ; (E50) F5F7          SVEC scale=0(/128)x=-200 y=0    int=15  ( -4.00 ,   0.00 )
+9CA2: 7F 25 7F F2     ; (E51) 257F F27F     VCTR scale=2(/128)x=27F  y=-17F int=15  (  4.99 ,  -2.99 )
+9CA6: 7F 41 7F F2     ; (E53) 417F F27F     VCTR scale=4(/32) x=27F  y=17F  int=15  ( 19.96 ,  11.96 )
+9CAA: 3F 30 BF F6     ; (E55) 303F F6BF     VCTR scale=3(/64) x=-2BF y=3F   int=15  (-10.98 ,   0.98 )
+9CAE: FF 24 FF F3     ; (E57) 24FF F3FF     VCTR scale=2(/128)x=3FF  y=-FF  int=15  (  7.99 ,  -1.99 )
+9CB2: DF 46 DF F0     ; (E59) 46DF F0DF     VCTR scale=4(/32) x=DF   y=-2DF int=15  (  6.96 , -22.96 )
+9CB6: 9F 41 3F F6     ; (E5B) 419F F63F     VCTR scale=4(/32) x=-23F y=19F  int=15  (-17.96 ,  12.96 )
+9CBA: 00 D0           ; (E5D) D000          RTSL
+;
+9CBC: 3F 34 FF 03     ; (E5E) 343F 03FF     VCTR scale=3(/64) x=3FF  y=-3F  int=0   ( 15.98 ,  -0.98 )
+9CC0: FF 26 FF F3     ; (E60) 26FF F3FF     VCTR scale=2(/128)x=3FF  y=-2FF int=15  (  7.99 ,  -5.99 )
+9CC4: 00 30 7F F6     ; (E62) 3000 F67F     VCTR scale=3(/64) x=-27F y=0    int=15  ( -9.98 ,   0.00 )
+9CC8: 00 D0           ; (E64) D000          RTSL
+;
+9CCA: 7F 20 7F 06     ; (E65) 207F 067F     VCTR scale=2(/128)x=-27F y=7F   int=0   ( -4.99 ,   0.99 )
+9CCE: 7F 40 BF F2     ; (E67) 407F F2BF     VCTR scale=4(/32) x=2BF  y=7F   int=15  ( 21.96 ,   3.96 )
+9CD2: 1F 46 1F F6     ; (E69) 461F F61F     VCTR scale=4(/32) x=-21F y=-21F int=15  (-16.96 , -16.96 )
+9CD6: 7F 21 7F F7     ; (E6B) 217F F77F     VCTR scale=2(/128)x=-37F y=17F  int=15  ( -6.99 ,   2.99 )
+9CDA: 3F 35 3F F2     ; (E6D) 353F F23F     VCTR scale=3(/64) x=23F  y=-13F int=15  (  8.98 ,  -4.98 )
+9CDE: 7F 42 7F F5     ; (E6F) 427F F57F     VCTR scale=4(/32) x=-17F y=27F  int=15  (-11.96 ,  19.96 )
+9CE2: 7F 24 7F F6     ; (E71) 247F F67F     VCTR scale=2(/128)x=-27F y=-7F  int=15  ( -4.99 ,  -0.99 )
+9CE6: 7F 26 FF F1     ; (E73) 267F F1FF     VCTR scale=2(/128)x=1FF  y=-27F int=15  (  3.99 ,  -4.99 )
+9CEA: 5F 41 9F F2     ; (E75) 415F F29F     VCTR scale=4(/32) x=29F  y=15F  int=15  ( 20.96 ,  10.96 )
+9CEE: 7F 30 7F F6     ; (E77) 307F F67F     VCTR scale=3(/64) x=-27F y=7F   int=15  ( -9.98 ,   1.98 )
+9CF2: 7F 25 7F F3     ; (E79) 257F F37F     VCTR scale=2(/128)x=37F  y=-17F int=15  (  6.99 ,  -2.99 )
+9CF6: DF 46 7F F0     ; (E7B) 46DF F07F     VCTR scale=4(/32) x=7F   y=-2DF int=15  (  3.96 , -22.96 )
+9CFA: 7F 33 FF F7     ; (E7D) 337F F7FF     VCTR scale=3(/64) x=-3FF y=37F  int=15  (-15.98 ,  13.98 )
+9CFE: 00 D0           ; (E7F) D000          RTSL
+;
+9D00: BF 34 FF 03     ; (E80) 34BF 03FF     VCTR scale=3(/64) x=3FF  y=-BF  int=0   ( 15.98 ,  -2.98 )
+9D04: FF 26 7F F3     ; (E82) 26FF F37F     VCTR scale=2(/128)x=37F  y=-2FF int=15  (  6.99 ,  -5.99 )
+9D08: 3F 30 7F F6     ; (E84) 303F F67F     VCTR scale=3(/64) x=-27F y=3F   int=15  ( -9.98 ,   0.98 )
+9D0C: 00 D0           ; (E86) D000          RTSL
+;
+9D0E: FF 20 7F 06     ; (E87) 20FF 067F     VCTR scale=2(/128)x=-27F y=FF   int=0   ( -4.99 ,   1.99 )
+9D12: 1F 40 DF F2     ; (E89) 401F F2DF     VCTR scale=4(/32) x=2DF  y=1F   int=15  ( 22.96 ,   0.96 )
+9D16: DF 45 3F F6     ; (E8B) 45DF F63F     VCTR scale=4(/32) x=-23F y=-1DF int=15  (-17.96 , -14.96 )
+9D1A: F6 F9           ; (E8D) F9F6          SVEC scale=1(/64) x=-200 y=0    int=15  ( -8.00 ,   0.00 )
+9D1C: 7F 27 FF F3     ; (E8E) 277F F3FF     VCTR scale=2(/128)x=3FF  y=-37F int=15  (  7.99 ,  -6.99 )
+9D20: BF 42 1F F5     ; (E90) 42BF F51F     VCTR scale=4(/32) x=-11F y=2BF  int=15  ( -8.96 ,  21.96 )
+9D24: 7F 24 FF F6     ; (E92) 247F F6FF     VCTR scale=2(/128)x=-2FF y=-7F  int=15  ( -5.99 ,  -0.99 )
+9D28: 7F 26 FF F1     ; (E94) 267F F1FF     VCTR scale=2(/128)x=1FF  y=-27F int=15  (  3.99 ,  -4.99 )
+9D2C: 1F 41 BF F2     ; (E96) 411F F2BF     VCTR scale=4(/32) x=2BF  y=11F  int=15  ( 21.96 ,   8.96 )
+9D30: BF 30 BF F6     ; (E98) 30BF F6BF     VCTR scale=3(/64) x=-2BF y=BF   int=15  (-10.98 ,   2.98 )
+9D34: F2 FD           ; (E9A) FDF2          SVEC scale=1(/64) x=200  y=0    int=15  (  8.00 ,   0.00 )
+9D36: DF 46 3F F0     ; (E9B) 46DF F03F     VCTR scale=4(/32) x=3F   y=-2DF int=15  (  1.96 , -22.96 )
+9D3A: FF 33 BF F7     ; (E9D) 33FF F7BF     VCTR scale=3(/64) x=-3BF y=3FF  int=15  (-14.98 ,  15.98 )
+9D3E: 00 D0           ; (E9F) D000          RTSL
+;
+9D40: FF 34 BF 03     ; (EA0) 34FF 03BF     VCTR scale=3(/64) x=3BF  y=-FF  int=0   ( 14.98 ,  -3.98 )
+9D44: 7F 27 7F F3     ; (EA2) 277F F37F     VCTR scale=2(/128)x=37F  y=-37F int=15  (  6.99 ,  -6.99 )
+9D48: 3F 30 3F F6     ; (EA4) 303F F63F     VCTR scale=3(/64) x=-23F y=3F   int=15  ( -8.98 ,   0.98 )
+9D4C: 00 D0           ; (EA6) D000          RTSL
+;
+9D4E: 06 F1           ; (EA7) F106          SVEC scale=0(/128)x=-200 y=0    int=0   ( -4.00 ,   0.00 )
+9D50: 1F 44 BF F2     ; (EA8) 441F F2BF     VCTR scale=4(/32) x=2BF  y=-1F  int=15  ( 21.96 ,  -0.96 )
+9D54: 9F 45 5F F6     ; (EAA) 459F F65F     VCTR scale=4(/32) x=-25F y=-19F int=15  (-18.96 , -12.96 )
+9D58: F6 F9           ; (EAC) F9F6          SVEC scale=1(/64) x=-200 y=0    int=15  ( -8.00 ,   0.00 )
+9D5A: BF 35 3F F2     ; (EAD) 35BF F23F     VCTR scale=3(/64) x=23F  y=-1BF int=15  (  8.98 ,  -6.98 )
+9D5E: DF 42 FF F4     ; (EAF) 42DF F4FF     VCTR scale=4(/32) x=-FF  y=2DF  int=15  ( -7.96 ,  22.96 )
+9D62: F7 F0           ; (EB1) F0F7          SVEC scale=0(/128)x=-200 y=0    int=15  ( -4.00 ,   0.00 )
+9D64: 7F 26 7F F1     ; (EB2) 267F F17F     VCTR scale=2(/128)x=17F  y=-27F int=15  (  2.99 ,  -4.99 )
+9D68: BF 40 DF F2     ; (EB4) 40BF F2DF     VCTR scale=4(/32) x=2DF  y=BF   int=15  ( 22.96 ,   5.96 )
+9D6C: BF 30 BF F6     ; (EB6) 30BF F6BF     VCTR scale=3(/64) x=-2BF y=BF   int=15  (-10.98 ,   2.98 )
+9D70: F2 FD           ; (EB8) FDF2          SVEC scale=1(/64) x=200  y=0    int=15  (  8.00 ,   0.00 )
+9D72: DF 46 1F F4     ; (EB9) 46DF F41F     VCTR scale=4(/32) x=-1F  y=-2DF int=15  ( -0.96 , -22.96 )
+9D76: 1F 42 7F F5     ; (EBB) 421F F57F     VCTR scale=4(/32) x=-17F y=21F  int=15  (-11.96 ,  16.96 )
+9D7A: 00 D0           ; (EBD) D000          RTSL
+;
+9D7C: 7F 35 BF 03     ; (EBE) 357F 03BF     VCTR scale=3(/64) x=3BF  y=-17F int=0   ( 14.98 ,  -5.98 )
+9D80: 7F 27 FF F2     ; (EC0) 277F F2FF     VCTR scale=2(/128)x=2FF  y=-37F int=15  (  5.99 ,  -6.99 )
+9D84: 7F 30 7F F6     ; (EC2) 307F F67F     VCTR scale=3(/64) x=-27F y=7F   int=15  ( -9.98 ,   1.98 )
+9D88: 00 D0           ; (EC4) D000          RTSL
+;
+9D8A: FF 12 FF 07     ; (EC5) 12FF 07FF     VCTR scale=1(/256)x=-3FF y=2FF  int=0   ( -3.99 ,   2.99 )
+9D8E: 5F 44 BF F2     ; (EC7) 445F F2BF     VCTR scale=4(/32) x=2BF  y=-5F  int=15  ( 21.96 ,  -2.96 )
+9D92: 7F 45 7F F6     ; (EC9) 457F F67F     VCTR scale=4(/32) x=-27F y=-17F int=15  (-19.96 , -11.96 )
+9D96: 7F 22 FF F7     ; (ECB) 227F F7FF     VCTR scale=2(/128)x=-3FF y=27F  int=15  ( -7.99 ,   4.99 )
+9D9A: F2 FE           ; (ECD) FEF2          SVEC scale=1(/64) x=200  y=-200 int=15  (  8.00 ,  -8.00 )
+9D9C: FF 42 9F F4     ; (ECE) 42FF F49F     VCTR scale=4(/32) x=-9F  y=2FF  int=15  ( -4.96 ,  23.96 )
+9DA0: F7 F0           ; (ED0) F0F7          SVEC scale=0(/128)x=-200 y=0    int=15  ( -4.00 ,   0.00 )
+9DA2: 7F 26 FF F0     ; (ED1) 267F F0FF     VCTR scale=2(/128)x=FF   y=-27F int=15  (  1.99 ,  -4.99 )
+9DA6: 7F 40 FF F2     ; (ED3) 407F F2FF     VCTR scale=4(/32) x=2FF  y=7F   int=15  ( 23.96 ,   3.96 )
+9DAA: FF 30 BF F6     ; (ED5) 30FF F6BF     VCTR scale=3(/64) x=-2BF y=FF   int=15  (-10.98 ,   3.98 )
+9DAE: 7F 26 FF F3     ; (ED7) 267F F3FF     VCTR scale=2(/128)x=3FF  y=-27F int=15  (  7.99 ,  -4.99 )
+9DB2: DF 46 5F F4     ; (ED9) 46DF F45F     VCTR scale=4(/32) x=-5F  y=-2DF int=15  ( -2.96 , -22.96 )
+9DB6: 5F 42 5F F5     ; (EDB) 425F F55F     VCTR scale=4(/32) x=-15F y=25F  int=15  (-10.96 ,  18.96 )
+9DBA: 00 D0           ; (EDD) D000          RTSL
+;
+9DBC: BF 35 7F 03     ; (EDE) 35BF 037F     VCTR scale=3(/64) x=37F  y=-1BF int=0   ( 13.98 ,  -6.98 )
+9DC0: FF 27 7F F2     ; (EE0) 27FF F27F     VCTR scale=2(/128)x=27F  y=-3FF int=15  (  4.99 ,  -7.99 )
+9DC4: BF 30 3F F6     ; (EE2) 30BF F63F     VCTR scale=3(/64) x=-23F y=BF   int=15  ( -8.98 ,   2.98 )
+9DC8: 00 D0           ; (EE4) D000          RTSL
+;
+9DCA: FF 12 FF 07     ; (EE5) 12FF 07FF     VCTR scale=1(/256)x=-3FF y=2FF  int=0   ( -3.99 ,   2.99 )
+9DCE: 7F 44 BF F2     ; (EE7) 447F F2BF     VCTR scale=4(/32) x=2BF  y=-7F  int=15  ( 21.96 ,  -3.96 )
+9DD2: 3F 45 BF F6     ; (EE9) 453F F6BF     VCTR scale=4(/32) x=-2BF y=-13F int=15  (-21.96 ,  -9.96 )
+9DD6: 7F 22 7F F7     ; (EEB) 227F F77F     VCTR scale=2(/128)x=-37F y=27F  int=15  ( -6.99 ,   4.99 )
+9DDA: F2 FE           ; (EED) FEF2          SVEC scale=1(/64) x=200  y=-200 int=15  (  8.00 ,  -8.00 )
+9DDC: DF 42 7F F4     ; (EEE) 42DF F47F     VCTR scale=4(/32) x=-7F  y=2DF  int=15  ( -3.96 ,  22.96 )
+9DE0: 7F 20 7F F6     ; (EF0) 207F F67F     VCTR scale=2(/128)x=-27F y=7F   int=15  ( -4.99 ,   0.99 )
+9DE4: 7F 26 FF F0     ; (EF2) 267F F0FF     VCTR scale=2(/128)x=FF   y=-27F int=15  (  1.99 ,  -4.99 )
+9DE8: 1F 40 DF F2     ; (EF4) 401F F2DF     VCTR scale=4(/32) x=2DF  y=1F   int=15  ( 22.96 ,   0.96 )
+9DEC: 7F 31 3F F6     ; (EF6) 317F F63F     VCTR scale=3(/64) x=-23F y=17F  int=15  ( -8.98 ,   5.98 )
+9DF0: F3 F7           ; (EF8) F7F3          SVEC scale=0(/128)x=200  y=-200 int=15  (  4.00 ,  -4.00 )
+9DF2: DF 46 9F F4     ; (EF9) 46DF F49F     VCTR scale=4(/32) x=-9F  y=-2DF int=15  ( -4.96 , -22.96 )
+9DF6: 7F 42 1F F5     ; (EFB) 427F F51F     VCTR scale=4(/32) x=-11F y=27F  int=15  ( -8.96 ,  19.96 )
+9DFA: 00 D0           ; (EFD) D000          RTSL
+;
+9DFC: 3F 36 3F 03     ; (EFE) 363F 033F     VCTR scale=3(/64) x=33F  y=-23F int=0   ( 12.98 ,  -8.98 )
+9E00: FF 27 FF F1     ; (F00) 27FF F1FF     VCTR scale=2(/128)x=1FF  y=-3FF int=15  (  3.99 ,  -7.99 )
+9E04: FF 21 FF F7     ; (F02) 21FF F7FF     VCTR scale=2(/128)x=-3FF y=1FF  int=15  ( -7.99 ,   3.99 )
+9E08: 00 D0           ; (F04) D000          RTSL
+;
+9E0A: 06 F2           ; (F05) F206          SVEC scale=0(/128)x=-200 y=200  int=0   ( -4.00 ,   4.00 )
+9E0C: DF 44 9F F2     ; (F06) 44DF F29F     VCTR scale=4(/32) x=29F  y=-DF  int=15  ( 20.96 ,  -6.96 )
+9E10: FF 44 BF F6     ; (F08) 44FF F6BF     VCTR scale=4(/32) x=-2BF y=-FF  int=15  (-21.96 ,  -7.96 )
+9E14: F7 F3           ; (F0A) F3F7          SVEC scale=0(/128)x=-200 y=200  int=15  ( -4.00 ,   4.00 )
+9E16: 3F 36 7F F1     ; (F0B) 363F F17F     VCTR scale=3(/64) x=17F  y=-23F int=15  (  5.98 ,  -8.98 )
+9E1A: FF 42 1F F4     ; (F0D) 42FF F41F     VCTR scale=4(/32) x=-1F  y=2FF  int=15  ( -0.96 ,  23.96 )
+9E1E: 7F 20 7F F6     ; (F0F) 207F F67F     VCTR scale=2(/128)x=-27F y=7F   int=15  ( -4.99 ,   0.99 )
+9E22: 7F 26 7F F0     ; (F11) 267F F07F     VCTR scale=2(/128)x=7F   y=-27F int=15  (  0.99 ,  -4.99 )
+9E26: 1F 44 FF F2     ; (F13) 441F F2FF     VCTR scale=4(/32) x=2FF  y=-1F  int=15  ( 23.96 ,  -0.96 )
+9E2A: 7F 31 3F F6     ; (F15) 317F F63F     VCTR scale=3(/64) x=-23F y=17F  int=15  ( -8.98 ,   5.98 )
+9E2E: F3 F7           ; (F17) F7F3          SVEC scale=0(/128)x=200  y=-200 int=15  (  4.00 ,  -4.00 )
+9E30: BF 46 FF F4     ; (F18) 46BF F4FF     VCTR scale=4(/32) x=-FF  y=-2BF int=15  ( -7.96 , -21.96 )
+9E34: 9F 42 DF F4     ; (F1A) 429F F4DF     VCTR scale=4(/32) x=-DF  y=29F  int=15  ( -6.96 ,  20.96 )
+9E38: 00 D0           ; (F1C) D000          RTSL
+;
+9E3A: 7F 36 FF 02     ; (F1D) 367F 02FF     VCTR scale=3(/64) x=2FF  y=-27F int=0   ( 11.98 ,  -9.98 )
+9E3E: 3F 36 BF F0     ; (F1F) 363F F0BF     VCTR scale=3(/64) x=BF   y=-23F int=15  (  2.98 ,  -8.98 )
+9E42: 7F 22 FF F7     ; (F21) 227F F7FF     VCTR scale=2(/128)x=-3FF y=27F  int=15  ( -7.99 ,   4.99 )
+9E46: 00 D0           ; (F23) D000          RTSL
+;
+9E48: FF 13 FF 06     ; (F24) 13FF 06FF     VCTR scale=1(/256)x=-2FF y=3FF  int=0   ( -2.99 ,   3.99 )
+9E4C: 1F 45 7F F2     ; (F26) 451F F27F     VCTR scale=4(/32) x=27F  y=-11F int=15  ( 19.96 ,  -8.96 )
+9E50: 9F 44 DF F6     ; (F28) 449F F6DF     VCTR scale=4(/32) x=-2DF y=-9F  int=15  (-22.96 ,  -4.96 )
+9E54: F7 F3           ; (F2A) F3F7          SVEC scale=0(/128)x=-200 y=200  int=15  ( -4.00 ,   4.00 )
+9E56: 3F 36 7F F1     ; (F2B) 363F F17F     VCTR scale=3(/64) x=17F  y=-23F int=15  (  5.98 ,  -8.98 )
+9E5A: DF 42 1F F0     ; (F2D) 42DF F01F     VCTR scale=4(/32) x=1F   y=2DF  int=15  (  0.96 ,  22.96 )
+9E5E: FF 20 7F F6     ; (F2F) 20FF F67F     VCTR scale=2(/128)x=-27F y=FF   int=15  ( -4.99 ,   1.99 )
+9E62: 7F 26 7F F0     ; (F31) 267F F07F     VCTR scale=2(/128)x=7F   y=-27F int=15  (  0.99 ,  -4.99 )
+9E66: 7F 44 DF F2     ; (F33) 447F F2DF     VCTR scale=4(/32) x=2DF  y=-7F  int=15  ( 22.96 ,  -3.96 )
+9E6A: F6 FA           ; (F35) FAF6          SVEC scale=1(/64) x=-200 y=200  int=15  ( -8.00 ,   8.00 )
+9E6C: 7F 27 7F F2     ; (F36) 277F F27F     VCTR scale=2(/128)x=27F  y=-37F int=15  (  4.99 ,  -6.99 )
+9E70: BF 46 3F F5     ; (F38) 46BF F53F     VCTR scale=4(/32) x=-13F y=-2BF int=15  ( -9.96 , -21.96 )
+9E74: BF 42 7F F4     ; (F3A) 42BF F47F     VCTR scale=4(/32) x=-7F  y=2BF  int=15  ( -3.96 ,  21.96 )
+9E78: 00 D0           ; (F3C) D000          RTSL
+;
+9E7A: BF 36 BF 02     ; (F3D) 36BF 02BF     VCTR scale=3(/64) x=2BF  y=-2BF int=0   ( 10.98 , -10.98 )
+9E7E: 7F 36 7F F0     ; (F3F) 367F F07F     VCTR scale=3(/64) x=7F   y=-27F int=15  (  1.98 ,  -9.98 )
+9E82: FF 22 7F F7     ; (F41) 22FF F77F     VCTR scale=2(/128)x=-37F y=2FF  int=15  ( -6.99 ,   5.99 )
+9E86: 00 D0           ; (F43) D000          RTSL
+;
+9E88: FF 13 FF 06     ; (F44) 13FF 06FF     VCTR scale=1(/256)x=-2FF y=3FF  int=0   ( -2.99 ,   3.99 )
+9E8C: 5F 45 5F F2     ; (F46) 455F F25F     VCTR scale=4(/32) x=25F  y=-15F int=15  ( 18.96 , -10.96 )
+9E90: 5F 44 DF F6     ; (F48) 445F F6DF     VCTR scale=4(/32) x=-2DF y=-5F  int=15  (-22.96 ,  -2.96 )
+9E94: FF 23 7F F6     ; (F4A) 23FF F67F     VCTR scale=2(/128)x=-27F y=3FF  int=15  ( -4.99 ,   7.99 )
+9E98: BF 36 FF F0     ; (F4C) 36BF F0FF     VCTR scale=3(/64) x=FF   y=-2BF int=15  (  3.98 , -10.98 )
+9E9C: FF 42 7F F0     ; (F4E) 42FF F07F     VCTR scale=4(/32) x=7F   y=2FF  int=15  (  3.96 ,  23.96 )
+9EA0: FF 20 7F F6     ; (F50) 20FF F67F     VCTR scale=2(/128)x=-27F y=FF   int=15  ( -4.99 ,   1.99 )
+9EA4: F4 F7           ; (F52) F7F4          SVEC scale=0(/128)x=0    y=-200 int=15  (  0.00 ,  -4.00 )
+9EA6: 9F 44 FF F2     ; (F53) 449F F2FF     VCTR scale=4(/32) x=2FF  y=-9F  int=15  ( 23.96 ,  -4.96 )
+9EAA: F6 FA           ; (F55) FAF6          SVEC scale=1(/64) x=-200 y=200  int=15  ( -8.00 ,   8.00 )
+9EAC: FF 27 7F F2     ; (F56) 27FF F27F     VCTR scale=2(/128)x=27F  y=-3FF int=15  (  4.99 ,  -7.99 )
+9EB0: 7F 46 7F F5     ; (F58) 467F F57F     VCTR scale=4(/32) x=-17F y=-27F int=15  (-11.96 , -19.96 )
+9EB4: BF 42 5F F4     ; (F5A) 42BF F45F     VCTR scale=4(/32) x=-5F  y=2BF  int=15  ( -2.96 ,  21.96 )
+9EB8: 00 D0           ; (F5C) D000          RTSL
+;
+9EBA: 3F 37 7F 02     ; (F5D) 373F 027F     VCTR scale=3(/64) x=27F  y=-33F int=0   (  9.98 , -12.98 )
+9EBE: 3F 36 3F F0     ; (F5F) 363F F03F     VCTR scale=3(/64) x=3F   y=-23F int=15  (  0.98 ,  -8.98 )
+9EC2: 7F 23 7F F7     ; (F61) 237F F77F     VCTR scale=2(/128)x=-37F y=37F  int=15  ( -6.99 ,   6.99 )
+9EC6: 00 D0           ; (F63) D000          RTSL
+;
+9EC8: 05 F2           ; (F64) F205          SVEC scale=0(/128)x=0    y=200  int=0   (  0.00 ,   4.00 )
+9ECA: 7F 45 1F F2     ; (F65) 457F F21F     VCTR scale=4(/32) x=21F  y=-17F int=15  ( 16.96 , -11.96 )
+9ECE: 1F 44 DF F6     ; (F67) 441F F6DF     VCTR scale=4(/32) x=-2DF y=-1F  int=15  (-22.96 ,  -0.96 )
+9ED2: F5 FA           ; (F69) FAF5          SVEC scale=1(/64) x=0    y=200  int=15  (  0.00 ,   8.00 )
+9ED4: BF 36 BF F0     ; (F6A) 36BF F0BF     VCTR scale=3(/64) x=BF   y=-2BF int=15  (  2.98 , -10.98 )
+9ED8: DF 42 BF F0     ; (F6C) 42DF F0BF     VCTR scale=4(/32) x=BF   y=2DF  int=15  (  5.96 ,  22.96 )
+9EDC: 7F 21 7F F6     ; (F6E) 217F F67F     VCTR scale=2(/128)x=-27F y=17F  int=15  ( -4.99 ,   2.99 )
+9EE0: F4 F7           ; (F70) F7F4          SVEC scale=0(/128)x=0    y=-200 int=15  (  0.00 ,  -4.00 )
+9EE2: FF 44 DF F2     ; (F71) 44FF F2DF     VCTR scale=4(/32) x=2DF  y=-FF  int=15  ( 22.96 ,  -7.96 )
+9EE6: 3F 32 BF F5     ; (F73) 323F F5BF     VCTR scale=3(/64) x=-1BF y=23F  int=15  ( -6.98 ,   8.98 )
+9EEA: F1 FE           ; (F75) FEF1          SVEC scale=1(/64) x=0    y=-200 int=15  (  0.00 ,  -8.00 )
+9EEC: 5F 46 9F F5     ; (F76) 465F F59F     VCTR scale=4(/32) x=-19F y=-25F int=15  (-12.96 , -18.96 )
+9EF0: BF 42 1F F4     ; (F78) 42BF F41F     VCTR scale=4(/32) x=-1F  y=2BF  int=15  ( -0.96 ,  21.96 )
+9EF4: 00 D0           ; (F7A) D000          RTSL
+;
+9EF6: 3F 37 FF 01     ; (F7B) 373F 01FF     VCTR scale=3(/64) x=1FF  y=-33F int=0   (  7.98 , -12.98 )
+9EFA: 7F 36 3F F0     ; (F7D) 367F F03F     VCTR scale=3(/64) x=3F   y=-27F int=15  (  0.98 ,  -9.98 )
+9EFE: 7F 23 FF F6     ; (F7F) 237F F6FF     VCTR scale=2(/128)x=-2FF y=37F  int=15  ( -5.99 ,   6.99 )
+9F02: 00 D0           ; (F81) D000          RTSL
+;
+9F04: 7F 22 FF 04     ; (F82) 227F 04FF     VCTR scale=2(/128)x=-FF  y=27F  int=0   ( -1.99 ,   4.99 )
+9F08: BF 37 FF F3     ; (F84) 37BF F3FF     VCTR scale=3(/64) x=3FF  y=-3BF int=15  ( 15.98 , -14.98 )
+9F0C: 3F 40 DF F6     ; (F86) 403F F6DF     VCTR scale=4(/32) x=-2DF y=3F   int=15  (-22.96 ,   1.96 )
+9F10: F5 FA           ; (F88) FAF5          SVEC scale=1(/64) x=0    y=200  int=15  (  0.00 ,   8.00 )
+9F12: BF 36 BF F0     ; (F89) 36BF F0BF     VCTR scale=3(/64) x=BF   y=-2BF int=15  (  2.98 , -10.98 )
+9F16: BF 42 1F F1     ; (F8B) 42BF F11F     VCTR scale=4(/32) x=11F  y=2BF  int=15  (  8.96 ,  21.96 )
+9F1A: FF 21 7F F6     ; (F8D) 21FF F67F     VCTR scale=2(/128)x=-27F y=1FF  int=15  ( -4.99 ,   3.99 )
+9F1E: FF 26 7F F4     ; (F8F) 26FF F47F     VCTR scale=2(/128)x=-7F  y=-2FF int=15  ( -0.99 ,  -5.99 )
+9F22: 1F 45 BF F2     ; (F91) 451F F2BF     VCTR scale=4(/32) x=2BF  y=-11F int=15  ( 21.96 ,  -8.96 )
+9F26: FF 23 7F F7     ; (F93) 23FF F77F     VCTR scale=2(/128)x=-37F y=3FF  int=15  ( -6.99 ,   7.99 )
+9F2A: F1 FE           ; (F95) FEF1          SVEC scale=1(/64) x=0    y=-200 int=15  (  0.00 ,  -8.00 )
+9F2C: 3F 46 DF F5     ; (F96) 463F F5DF     VCTR scale=4(/32) x=-1DF y=-23F int=15  (-14.96 , -17.96 )
+9F30: DF 42 1F F0     ; (F98) 42DF F01F     VCTR scale=4(/32) x=1F   y=2DF  int=15  (  0.96 ,  22.96 )
+9F34: 00 D0           ; (F9A) D000          RTSL
+;
+9F36: 7F 37 BF 01     ; (F9B) 377F 01BF     VCTR scale=3(/64) x=1BF  y=-37F int=0   (  6.98 , -13.98 )
+9F3A: 7F 36 00 F4     ; (F9D) 367F F400     VCTR scale=3(/64) x=0    y=-27F int=15  (  0.00 ,  -9.98 )
+9F3E: FF 23 FF F6     ; (F9F) 23FF F6FF     VCTR scale=2(/128)x=-2FF y=3FF  int=15  ( -5.99 ,   7.99 )
+9F42: 00 D0           ; (FA1) D000          RTSL
+;
+9F44: 7F 22 7F 04     ; (FA2) 227F 047F     VCTR scale=2(/128)x=-7F  y=27F  int=0   ( -0.99 ,   4.99 )
+9F48: FF 37 7F F3     ; (FA4) 37FF F37F     VCTR scale=3(/64) x=37F  y=-3FF int=15  ( 13.98 , -15.98 )
+9F4C: 7F 40 DF F6     ; (FA6) 407F F6DF     VCTR scale=4(/32) x=-2DF y=7F   int=15  (-22.96 ,   3.96 )
+9F50: 7F 23 7F F5     ; (FA8) 237F F57F     VCTR scale=2(/128)x=-17F y=37F  int=15  ( -2.99 ,   6.99 )
+9F54: 7F 36 7F F0     ; (FAA) 367F F07F     VCTR scale=3(/64) x=7F   y=-27F int=15  (  1.98 ,  -9.98 )
+9F58: 9F 42 5F F1     ; (FAC) 429F F15F     VCTR scale=4(/32) x=15F  y=29F  int=15  ( 10.96 ,  20.96 )
+9F5C: FF 21 7F F6     ; (FAE) 21FF F67F     VCTR scale=2(/128)x=-27F y=1FF  int=15  ( -4.99 ,   3.99 )
+9F60: 7F 26 7F F4     ; (FB0) 267F F47F     VCTR scale=2(/128)x=-7F  y=-27F int=15  ( -0.99 ,  -4.99 )
+9F64: 7F 45 7F F2     ; (FB2) 457F F27F     VCTR scale=4(/32) x=27F  y=-17F int=15  ( 19.96 , -11.96 )
+9F68: 3F 32 3F F5     ; (FB4) 323F F53F     VCTR scale=3(/64) x=-13F y=23F  int=15  ( -4.98 ,   8.98 )
+9F6C: 7F 27 7F F1     ; (FB6) 277F F17F     VCTR scale=2(/128)x=17F  y=-37F int=15  (  2.99 ,  -6.99 )
+9F70: 1F 46 1F F6     ; (FB8) 461F F61F     VCTR scale=4(/32) x=-21F y=-21F int=15  (-16.96 , -16.96 )
+9F74: BF 42 7F F0     ; (FBA) 42BF F07F     VCTR scale=4(/32) x=7F   y=2BF  int=15  (  3.96 ,  21.96 )
+9F78: 00 D0           ; (FBC) D000          RTSL
+;
+9F7A: BF 37 3F 01     ; (FBD) 37BF 013F     VCTR scale=3(/64) x=13F  y=-3BF int=0   (  4.98 , -14.98 )
+9F7E: 3F 36 3F F4     ; (FBF) 363F F43F     VCTR scale=3(/64) x=-3F  y=-23F int=15  ( -0.98 ,  -8.98 )
+9F82: FF 23 FF F5     ; (FC1) 23FF F5FF     VCTR scale=2(/128)x=-1FF y=3FF  int=15  ( -3.99 ,   7.99 )
+9F86: 00 D0           ; (FC3) D000          RTSL
+;
+9F88: 7F 22 7F 04     ; (FC4) 227F 047F     VCTR scale=2(/128)x=-7F  y=27F  int=0   ( -0.99 ,   4.99 )
+9F8C: 3F 46 9F F1     ; (FC6) 463F F19F     VCTR scale=4(/32) x=19F  y=-23F int=15  ( 12.96 , -17.96 )
+9F90: DF 40 DF F6     ; (FC8) 40DF F6DF     VCTR scale=4(/32) x=-2DF y=DF   int=15  (-22.96 ,   6.96 )
+9F94: FF 23 FF F4     ; (FCA) 23FF F4FF     VCTR scale=2(/128)x=-FF  y=3FF  int=15  ( -1.99 ,   7.99 )
+9F98: BF 36 3F F0     ; (FCC) 36BF F03F     VCTR scale=3(/64) x=3F   y=-2BF int=15  (  0.98 , -10.98 )
+9F9C: 7F 42 7F F1     ; (FCE) 427F F17F     VCTR scale=4(/32) x=17F  y=27F  int=15  ( 11.96 ,  19.96 )
+9FA0: 7F 22 7F F5     ; (FD0) 227F F57F     VCTR scale=2(/128)x=-17F y=27F  int=15  ( -2.99 ,   4.99 )
+9FA4: F5 F7           ; (FD2) F7F5          SVEC scale=0(/128)x=0    y=-200 int=15  (  0.00 ,  -4.00 )
+9FA6: 9F 45 5F F2     ; (FD3) 459F F25F     VCTR scale=4(/32) x=25F  y=-19F int=15  ( 18.96 , -12.96 )
+9FAA: 3F 32 FF F4     ; (FD5) 323F F4FF     VCTR scale=3(/64) x=-FF  y=23F  int=15  ( -3.98 ,   8.98 )
+9FAE: FF 27 FF F0     ; (FD7) 27FF F0FF     VCTR scale=2(/128)x=FF   y=-3FF int=15  (  1.99 ,  -7.99 )
+9FB2: DF 45 5F F6     ; (FD9) 45DF F65F     VCTR scale=4(/32) x=-25F y=-1DF int=15  (-18.96 , -14.96 )
+9FB6: BF 42 BF F0     ; (FDB) 42BF F0BF     VCTR scale=4(/32) x=BF   y=2BF  int=15  (  5.96 ,  21.96 )
+9FBA: 00 D0           ; (FDD) D000          RTSL
+;
+9FBC: FF 37 FF 00     ; (FDE) 37FF 00FF     VCTR scale=3(/64) x=FF   y=-3FF int=0   (  3.98 , -15.98 )
+9FC0: 3F 36 7F F4     ; (FE0) 363F F47F     VCTR scale=3(/64) x=-7F  y=-23F int=15  ( -1.98 ,  -8.98 )
+9FC4: 3F 32 BF F4     ; (FE2) 323F F4BF     VCTR scale=3(/64) x=-BF  y=23F  int=15  ( -2.98 ,   8.98 )
+9FC8: 00 D0           ; (FE4) D000          RTSL
+;
+9FCA: 7F 22 00 04     ; (FE5) 227F 0400     VCTR scale=2(/128)x=0    y=27F  int=0   (  0.00 ,   4.99 )
+9FCE: 5F 46 5F F1     ; (FE7) 465F F15F     VCTR scale=4(/32) x=15F  y=-25F int=15  ( 10.96 , -18.96 )
+9FD2: 1F 41 BF F6     ; (FE9) 411F F6BF     VCTR scale=4(/32) x=-2BF y=11F  int=15  (-21.96 ,   8.96 )
+9FD6: FF 23 7F F4     ; (FEB) 23FF F47F     VCTR scale=2(/128)x=-7F  y=3FF  int=15  ( -0.99 ,   7.99 )
+9FDA: 7F 36 3F F4     ; (FED) 367F F43F     VCTR scale=3(/64) x=-3F  y=-27F int=15  ( -0.98 ,  -9.98 )
+9FDE: 3F 42 BF F1     ; (FEF) 423F F1BF     VCTR scale=4(/32) x=1BF  y=23F  int=15  ( 13.96 ,  17.96 )
+9FE2: 7F 22 7F F5     ; (FF1) 227F F57F     VCTR scale=2(/128)x=-17F y=27F  int=15  ( -2.99 ,   4.99 )
+9FE6: 7F 26 FF F4     ; (FF3) 267F F4FF     VCTR scale=2(/128)x=-FF  y=-27F int=15  ( -1.99 ,  -4.99 )
+9FEA: FF 45 3F F2     ; (FF5) 45FF F23F     VCTR scale=4(/32) x=23F  y=-1FF int=15  ( 17.96 , -15.96 )
+9FEE: 7F 32 BF F4     ; (FF7) 327F F4BF     VCTR scale=3(/64) x=-BF  y=27F  int=15  ( -2.98 ,   9.98 )
+9FF2: F4 FE           ; (FF9) FEF4          SVEC scale=1(/64) x=0    y=-200 int=15  (  0.00 ,  -8.00 )
+9FF4: 9F 45 5F F6     ; (FFA) 459F F65F     VCTR scale=4(/32) x=-25F y=-19F int=15  (-18.96 , -12.96 )
+9FF8: 9F 42 FF F0     ; (FFC) 429F F0FF     VCTR scale=4(/32) x=FF   y=29F  int=15  (  7.96 ,  20.96 )
+9FFC: 00 D0           ; (FFE) D000          RTSL
+
+; ?? not used
+9FFE: FB FF           ; (FFF) FFFB          SVEC scale=3(/16) x=200  y=-200 int=15  ( 32.00 , -32.00 )
+}}}

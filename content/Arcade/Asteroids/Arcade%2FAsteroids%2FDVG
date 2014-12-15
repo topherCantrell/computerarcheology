@@ -1,0 +1,997 @@
+[[PageOutline()]]
+
+= Asteroids DVG Vector ROM =
+
+{{{#!AssemblyCode
+;##$CPU none
+;##$OriginalBinary 035127.02
+
+; The DVG sees the RAM/ROM as a single 8K bank with 4000-5FFF mapping
+; to 0000-1FFF. The first half of this space is reserved for RAM, but
+; only 2K is used. The second half of this space is ROM, but only 2K
+; is used. Thus the DVG reads 0000-07FF as RAM and 1000-17FF as ROM.
+
+; The DVG reads this memory area as words. Thus RAM extends from word
+; address 0000-03FE and ROM extends from word address 0800-0BFE.
+
+; DVCTR(x,y,b,sf)     VVVV -sYY YYYY YYYY | BBBB -sXX XXXX XXXX
+;   EffectiveScale = scale + VVVV, can be global+1 to global+9
+;   b is the brightness ... from 0 to 15
+
+; DSVEC(x,y,b,sf)     ---- msYY BBBB MsXX
+;   EffectiveScale = scale + 2 +Mm, can be global+2 to gloabl+5
+
+; The effective scale is calculated from the global scale and an offset at
+; each vector. The DVCTR command allows the offset 1-9 to be added to the
+; global scale.
+; The DSVEC command allows the offset 2-5 to be added to the global scale.
+; 
+; The effective scale is then chopped to 4 bits, and if the result is greater
+; than 9 (10-15) the max scale divisor is chosen.
+
+; Internally, X and Y are kept as 32 bit numbers with
+; the lower 16 being the fractional part. Thus the effective
+; scale value maps as follows:
+;   0 Xo = Xo /  512
+;   1 Xo = Xo /  256
+;   2 Xo = Xo /  128
+;   3 Xo = Xo /   64
+;   ...
+;   7 Xo = Xo /    4
+;   8 Xo = Xo /    2
+;   9 Xo = Xo
+;  10,11,12,13,14,15 Xo = Xo / 1024
+
+; In the CPU hardware, we need the ability to specify mirrors on both axis
+
+; DLABS(x,y,scale)       ---- xxxx xxxx xxxx | MMMM yyyy yyyy yyyy
+;   2's comp x, y
+;   MMMM -> global scale
+;
+; DJMPL(location)    ---- nnnn nnnn nnnn
+; DJSRL(location)    ---- nnnn nnnn nnnn
+; DRTSL()            ---- 0000 0000 0000
+; DHALT()            ---- 0000 0000 0000
+
+
+; Words are stored little endian so first line is really:
+;0800 80 a0 00 00  ; A080 0000   DLABS(0,128,0)
+
+; Diamond pattern across screen with a parallel
+; line pattern in the center.
+0800 a080 0000    DLABS(0,128,  0)
+0802 7000 0000    DVCTR(0,0,0,7)
+0804 9000 73ff    DVCTR(1023,0,7,9)
+0806 92ff 7000    DVCTR(0,767,7,9)
+0808 9000 77ff    DVCTR(-1023,0,7,9)
+080a 96ff 7000    DVCTR(0,-767,7,9)
+080c 92ff 72ff    DVCTR(767,767,7,9)
+080e 8600 7200    DVCTR(512,-512,7,8)
+0810 87fe 77fe    DVCTR(-1022,-1022,7,8)
+0812 9200 7600    DVCTR(-512,512,7,9)
+0814 81fe 7200    DVCTR(512,510,7,8)
+0816 96ff 72ff    DVCTR(767,-767,7,9)
+0818 a37f 03ff    DLABS(1023,895,  0)
+081a 7000 0000    DVCTR(0,0,0,7)
+081c 96ff 76ff    DVCTR(-767,-767,7,9)
+081e 81fe 7600    DVCTR(-512,510,7,8)
+0820 9200 7200    DVCTR(512,512,7,9)
+0822 87fe 73fe    DVCTR(1022,-1022,7,8)
+0824 8600 7600    DVCTR(-512,-512,7,8)
+0826 92ff 76ff    DVCTR(-767,767,7,9)
+0828 a1fc 01f4    DLABS(500,508,  0)
+082a 7000 0000    DVCTR(0,0,0,7)
+082c f0db         DSVEC(768,0,13,4)
+082d f900         DSVEC(0,256,0,3)
+082e f0cf         DSVEC(-768,0,12,4)
+082f f900         DSVEC(0,256,0,3)
+0830 f0bb         DSVEC(768,0,11,4)
+0831 f900         DSVEC(0,256,0,3)
+0832 f0af         DSVEC(-768,0,10,4)
+0833 f900         DSVEC(0,256,0,3)
+0834 f09b         DSVEC(768,0,9,4)
+0835 f900         DSVEC(0,256,0,3)
+0836 f08f         DSVEC(-768,0,8,4)
+0837 f900         DSVEC(0,256,0,3)
+0838 f07b         DSVEC(768,0,7,4)
+0839 f900         DSVEC(0,256,0,3)
+083a f06f         DSVEC(-768,0,6,4)
+083b f900         DSVEC(0,256,0,3)
+083c f05b         DSVEC(768,0,5,4)
+083d f900         DSVEC(0,256,0,3)
+083e f04f         DSVEC(-768,0,4,4)
+083f f900         DSVEC(0,256,0,3)
+0840 f03b         DSVEC(768,0,3,4)
+0841 f900         DSVEC(0,256,0,3)
+0842 f02f         DSVEC(-768,0,2,4)
+0843 d04c       DRTSL ?? 0x4c
+
+; "PAGE SELECT ERROR"
+0844 a0e4 112c    DLABS(300,228,  1)
+0846 7000 0000    DVCTR(0,0,0,7)
+0848 cae4       DJSRL(0xae4) ; P
+0849 ca79       DJSRL(0xa79) ; A
+084a caab       DJSRL(0xaab) ; G
+084b ca9c       DJSRL(0xa9c) ; E
+084c cb2d       DJSRL(0xb2d) ; SPACE
+084d cafc       DJSRL(0xafc) ; S
+084e ca9c       DJSRL(0xa9c) ; E
+084f cace       DJSRL(0xace) ; L
+0850 ca9c       DJSRL(0xa9c) ; E
+0851 ca8e       DJSRL(0xa8e) ; C
+0852 cb03       DJSRL(0xb03) ; T
+0853 cb2d       DJSRL(0xb2d) ; SPACE
+0854 ca9c       DJSRL(0xa9c) ; E
+0855 caf4       DJSRL(0xaf4) ; R
+0856 caf4       DJSRL(0xaf4) ; R
+0857 cade       DJSRL(0xade) ; O
+0858 caf4       DJSRL(0xaf4) ; R
+0859 d000       DRTSL()
+
+; "ASTEROIDS BY ATARI"
+085a a080 017c    DLABS(380,128,  0)
+085c 7000 0000    DVCTR(0,0,0,7)
+085e ca79       DJSRL(0xa79) ; A
+085f cafc       DJSRL(0xafc) ; S
+0860 cb03       DJSRL(0xb03) ; T
+0861 ca9c       DJSRL(0xa9c) ; E
+0862 caf4       DJSRL(0xaf4) ; R
+0863 cade       DJSRL(0xade) ; O
+0864 cabb       DJSRL(0xabb) ; I
+0865 ca94       DJSRL(0xa94) ; D
+0866 cafc       DJSRL(0xafc) ; S
+0867 cb2d       DJSRL(0xb2d) ; SPACE
+0868 ca81       DJSRL(0xa81) ; B
+0869 cb20       DJSRL(0xb20) ; Y
+086a cb2d       DJSRL(0xb2d) ; SPACE
+086b ca79       DJSRL(0xa79) ; A
+086c cb03       DJSRL(0xb03) ; T
+086d ca79       DJSRL(0xa79) ; A
+086e caf4       DJSRL(0xaf4) ; R
+086f cabb       DJSRL(0xabb) ; I
+0870 d000       DRTSL()
+
+; ??
+0871 ffc6         DSVEC(-512,-768,12,3)
+0872 fec1         DSVEC(256,-512,12,3)
+0873 f1c3         DSVEC(768,256,12,2)
+0874 f1cd         DSVEC(-256,256,12,4)
+0875 f1c7         DSVEC(-768,256,12,2)
+0876 fdc1         DSVEC(256,-256,12,3)
+0877 1ed8 ec32    DVCTR(-50,-728,14,1)
+0879 c400       DJSRL(0x400)
+087a 143c 460a    DVCTR(-522,-60,4,1)
+087c d8d8       DRTSL ?? 0x8d8
+
+; Looks like shrapnel
+087d c8d1       DJSRL(0x8d1)
+087e c8b6       DJSRL(0x8b6)
+087f c897       DJSRL(0x897)
+0880 c881       DJSRL(0x881)
+0881 f80d         DSVEC(-256,0,0,5)
+0882 f878         DSVEC(0,0,7,5)
+0883 fd0d         DSVEC(-256,-256,0,5)
+0884 f878         DSVEC(0,0,7,5)
+0885 fd09         DSVEC(256,-256,0,5)
+0886 f878         DSVEC(0,0,7,5)
+0887 f10b         DSVEC(768,256,0,4)
+0888 f878         DSVEC(0,0,7,5)
+0889 f50a         DSVEC(512,-256,0,4)
+088a f878         DSVEC(0,0,7,5)
+088b f908         DSVEC(0,256,0,5)
+088c f878         DSVEC(0,0,7,5)
+088d f309         DSVEC(256,768,0,4)
+088e f878         DSVEC(0,0,7,5)
+088f f30d         DSVEC(-256,768,0,4)
+0890 f878         DSVEC(0,0,7,5)
+0891 5480 0600    DVCTR(-512,-128,0,5)
+0893 f878         DSVEC(0,0,7,5)
+0894 f10f         DSVEC(-768,256,0,4)
+0895 f878         DSVEC(0,0,7,5)
+0896 d000       DRTSL()
+
+; Shrapnel pattern
+0897 3000 0780    DVCTR(-896,0,0,3)
+0899 f878         DSVEC(0,0,7,5)
+089a 3780 0780    DVCTR(-896,-896,0,3)
+089c f878         DSVEC(0,0,7,5)
+089d 3780 0380    DVCTR(896,-896,0,3)
+089f f878         DSVEC(0,0,7,5)
+08a0 40e0 02a0    DVCTR(672,224,0,4)
+08a2 f878         DSVEC(0,0,7,5)
+08a3 35c0 0380    DVCTR(896,-448,0,3)
+08a5 f878         DSVEC(0,0,7,5)
+08a6 3380 0000    DVCTR(0,896,0,3)
+08a8 f878         DSVEC(0,0,7,5)
+08a9 42a0 00e0    DVCTR(224,672,0,4)
+08ab f878         DSVEC(0,0,7,5)
+08ac 42a0 04e0    DVCTR(-224,672,0,4)
+08ae f878         DSVEC(0,0,7,5)
+08af 44e0 0780    DVCTR(-896,-224,0,4)
+08b1 f878         DSVEC(0,0,7,5)
+08b2 40e0 06a0    DVCTR(-672,224,0,4)
+08b4 f878         DSVEC(0,0,7,5)
+08b5 d000       DRTSL()
+
+; Shrapnel pattern
+08b6 f807         DSVEC(-768,0,0,3)
+08b7 f878         DSVEC(0,0,7,5)
+08b8 ff07         DSVEC(-768,-768,0,3)
+08b9 f878         DSVEC(0,0,7,5)
+08ba ff03         DSVEC(768,-768,0,3)
+08bb f878         DSVEC(0,0,7,5)
+08bc 40c0 0240    DVCTR(576,192,0,4)
+08be f878         DSVEC(0,0,7,5)
+08bf 3580 0300    DVCTR(768,-384,0,3)
+08c1 f878         DSVEC(0,0,7,5)
+08c2 fb00         DSVEC(0,768,0,3)
+08c3 f878         DSVEC(0,0,7,5)
+08c4 4240 00c0    DVCTR(192,576,0,4)
+08c6 f878         DSVEC(0,0,7,5)
+08c7 4240 04c0    DVCTR(-192,576,0,4)
+08c9 f878         DSVEC(0,0,7,5)
+08ca 44c0 0700    DVCTR(-768,-192,0,4)
+08cc f878         DSVEC(0,0,7,5)
+08cd 40c0 0640    DVCTR(-576,192,0,4)
+08cf f878         DSVEC(0,0,7,5)
+08d0 d000       DRTSL()
+
+; Shrapnel pattern
+08d1 3000 0680    DVCTR(-640,0,0,3)
+08d3 f878         DSVEC(0,0,7,5)
+08d4 3680 0680    DVCTR(-640,-640,0,3)
+08d6 f878         DSVEC(0,0,7,5)
+08d7 3680 0280    DVCTR(640,-640,0,3)
+08d9 f878         DSVEC(0,0,7,5)
+08da 3140 03c0    DVCTR(960,320,0,3)
+08dc f878         DSVEC(0,0,7,5)
+08dd 3540 0280    DVCTR(640,-320,0,3)
+08df f878         DSVEC(0,0,7,5)
+08e0 3280 0000    DVCTR(0,640,0,3)
+08e2 f878         DSVEC(0,0,7,5)
+08e3 33c0 0140    DVCTR(320,960,0,3)
+08e5 f878         DSVEC(0,0,7,5)
+08e6 33c0 0540    DVCTR(-320,960,0,3)
+08e8 f878         DSVEC(0,0,7,5)
+08e9 44a0 0680    DVCTR(-640,-160,0,4)
+08eb f878         DSVEC(0,0,7,5)
+08ec 3140 07c0    DVCTR(-960,320,0,3)
+08ee f878         DSVEC(0,0,7,5)
+08ef d000       DRTSL()
+
+; Jumbled up rock (after hit?)
+08f0 c8f4       DJSRL(0x8f4)
+08f1 c900       DJSRL(0x900)
+08f2 c90e       DJSRL(0x90e)
+08f3 c91b       DJSRL(0x91b)
+08f4 f908         DSVEC(0,256,0,5)
+08f5 f979         DSVEC(256,256,7,5)
+08f6 fd79         DSVEC(256,-256,7,5)
+08f7 f67d         DSVEC(-256,-512,7,4)
+08f8 f679         DSVEC(256,-512,7,4)
+08f9 f68f         DSVEC(-768,-512,8,4)
+08fa f08f         DSVEC(-768,0,8,4)
+08fb f97d         DSVEC(-256,256,7,5)
+08fc fa78         DSVEC(0,512,7,5)
+08fd f979         DSVEC(256,256,7,5)
+08fe fd79         DSVEC(256,-256,7,5)
+08ff d000       DRTSL()
+
+; Rock pattern
+0900 f10a         DSVEC(512,256,0,4)
+0901 f17a         DSVEC(512,256,7,4)
+0902 f97d         DSVEC(-256,256,7,5)
+0903 f57e         DSVEC(-512,-256,7,4)
+0904 f17e         DSVEC(-512,256,7,4)
+0905 fd7d         DSVEC(-256,-256,7,5)
+0906 f679         DSVEC(256,-512,7,4)
+0907 f67d         DSVEC(-256,-512,7,4)
+0908 fd79         DSVEC(256,-256,7,5)
+0909 f179         DSVEC(256,256,7,4)
+090a f58b         DSVEC(768,-256,8,4)
+090b f38a         DSVEC(512,768,8,4)
+090c f97d         DSVEC(-256,256,7,5)
+090d d000       DRTSL()
+
+; Rock pattern
+090e f80d         DSVEC(-256,0,0,5)
+090f f57e         DSVEC(-512,-256,7,4)
+0910 f77a         DSVEC(512,-768,7,4)
+0911 f37a         DSVEC(512,768,7,4)
+0912 f778         DSVEC(0,-768,7,4)
+0913 f879         DSVEC(256,0,7,5)
+0914 f37a         DSVEC(512,768,7,4)
+0915 f978         DSVEC(0,256,7,5)
+0916 f37e         DSVEC(-512,768,7,4)
+0917 f07f         DSVEC(-768,0,7,4)
+0918 f77f         DSVEC(-768,-768,7,4)
+0919 f57a         DSVEC(512,-256,7,4)
+091a d000       DRTSL()
+
+; Rock pattern
+091b f009         DSVEC(256,0,0,4)
+091c f17b         DSVEC(768,256,7,4)
+091d f168         DSVEC(0,256,6,4)
+091e f27f         DSVEC(-768,512,7,4)
+091f f07f         DSVEC(-768,0,7,4)
+0920 f669         DSVEC(256,-512,6,4)
+0921 f07f         DSVEC(-768,0,7,4)
+0922 f778         DSVEC(0,-768,7,4)
+0923 f77a         DSVEC(512,-768,7,4)
+0924 f17b         DSVEC(768,256,7,4)
+0925 f569         DSVEC(256,-256,6,4)
+0926 f969         DSVEC(256,256,6,5)
+0927 f27f         DSVEC(-768,512,7,4)
+0928 d000       DRTSL()
+
+; Flying Saucer
+0929 c92a       DJSRL(0x92a)
+092a f10e         DSVEC(-512,256,0,4)
+092b f8ca         DSVEC(512,0,12,5)
+092c f60b         DSVEC(768,-512,0,4)
+092d 6000 d680    DVCTR(-640,0,13,6)
+092f f6db         DSVEC(768,-512,13,4)
+0930 f8ca         DSVEC(512,0,12,5)
+0931 f2db         DSVEC(768,512,13,4)
+0932 f2df         DSVEC(-768,512,13,4)
+0933 f2cd         DSVEC(-256,512,12,4)
+0934 f8cd         DSVEC(-256,0,12,5)
+0935 f6cd         DSVEC(-256,-512,12,4)
+0936 f6df         DSVEC(-768,-512,13,4)
+0937 d000       DRTSL()
+
+; ??
+0938 5292 52aa    DVCTR(682,658,5,5)
+093a 52ce 52f2    DVCTR(754,718,5,5)
+093c 5316 5338    DVCTR(824,790,5,5)
+093e 535c 5380    DVCTR(896,860,5,5)
+0940 53a4 53c8    DVCTR(968,932,5,5)
+0942 53ec 5410    DVCTR(-16,1004,5,5)
+0944 5434 5458    DVCTR(-88,-52,5,5)
+0946 547c 54a0    DVCTR(-160,-124,5,5)
+0948 54c4 f60f    DVCTR(-527,-196,15,5)
+094a fac8         DSVEC(0,512,12,5)
+094b f9bd         DSVEC(-256,256,11,5)
+094c 6500 c300    DVCTR(768,-256,12,6)
+094e 6500 c700    DVCTR(-768,-256,12,6)
+0950 f9b9         DSVEC(256,256,11,5)
+0951 d000       DRTSL()
+
+; Arrow head pointing left
+0952 f9ce         DSVEC(-512,256,12,5)
+0953 f9ca         DSVEC(512,256,12,5)
+0954 d000       DRTSL()
+
+; Ship pattern pointing right and up a tad
+0955 4640 06c0    DVCTR(-704,-576,0,4)
+0957 5200 c430    DVCTR(-48,512,12,5)
+0959 41c0 c620    DVCTR(-544,448,12,4)
+095b 64b0 c318    DVCTR(792,-176,12,6)
+095d 6548 c6e0    DVCTR(-736,-328,12,6)
+095f 4220 c1c0    DVCTR(448,544,12,4)
+0961 d000       DRTSL()
+
+0962 50d0 c610    DVCTR(-528,208,12,5)
+0964 4260 c3c0    DVCTR(960,608,12,4)
+0966 d000       DRTSL()
+
+; Ship pattern pointing right and up a tad more
+0967 4680 0680    DVCTR(-640,-640,0,4)
+0969 43e0 c4c0    DVCTR(-192,992,12,4)
+096b 41a0 c660    DVCTR(-608,416,12,4)
+096d 6468 c320    DVCTR(800,-104,12,6)
+096f 6590 c6c0    DVCTR(-704,-400,12,6)
+0971 4260 c1a0    DVCTR(416,608,12,4)
+0973 d000       DRTSL()
+
+0974 5090 c630    DVCTR(-560,144,12,5)
+0976 42c0 c380    DVCTR(896,704,12,4)
+0978 d000       DRTSL()
+
+0979 46c0 0640    DVCTR(-576,-704,0,4)
+097b 43e0 c520    DVCTR(-288,992,12,4)
+097d 4160 c680    DVCTR(-640,352,12,4)
+097f 6418 c328    DVCTR(808,-24,12,6)
+0981 65d0 c698    DVCTR(-664,-464,12,6)
+0983 4280 c160    DVCTR(352,640,12,4)
+0985 d000       DRTSL()
+
+0986 5060 c630    DVCTR(-560,96,12,5)
+0988 4320 c340    DVCTR(832,800,12,4)
+098a d000       DRTSL()
+
+098b f70e         DSVEC(-512,-768,0,4)
+098c 43c0 c580    DVCTR(-384,960,12,4)
+098e 4120 c6a0    DVCTR(-672,288,12,4)
+0990 6038 c328    DVCTR(808,56,12,6)
+0992 6610 c660    DVCTR(-608,-528,12,6)
+0994 42a0 c120    DVCTR(288,672,12,4)
+0996 d000       DRTSL()
+
+0997 5030 c640    DVCTR(-576,48,12,5)
+0999 4360 c2e0    DVCTR(736,864,12,4)
+099b d000       DRTSL()
+
+099c 4720 05c0    DVCTR(-448,-800,0,4)
+099e 4380 c5e0    DVCTR(-480,896,12,4)
+09a0 40e0 c6c0    DVCTR(-704,224,12,4)
+09a2 6088 c320    DVCTR(800,136,12,6)
+09a4 6648 c630    DVCTR(-560,-584,12,6)
+09a6 42c0 c0e0    DVCTR(224,704,12,4)
+09a8 d000       DRTSL()
+
+09a9 5410 c640    DVCTR(-576,-16,12,5)
+09ab 43a0 c2a0    DVCTR(672,928,12,4)
+09ad d000       DRTSL()
+
+09ae 4760 0560    DVCTR(-352,-864,0,4)
+09b0 4360 c640    DVCTR(-576,864,12,4)
+09b2 4080 c6c0    DVCTR(-704,128,12,4)
+09b4 60d8 c310    DVCTR(784,216,12,6)
+09b6 6680 c5f0    DVCTR(-496,-640,12,6)
+09b8 42c0 c080    DVCTR(128,704,12,4)
+09ba d000       DRTSL()
+
+09bb 5440 c630    DVCTR(-560,-64,12,5)
+09bd 43e0 c240    DVCTR(576,992,12,4)
+09bf d000       DRTSL()
+
+09c0 4780 0500    DVCTR(-256,-896,0,4)
+09c2 4320 c680    DVCTR(-640,800,12,4)
+09c4 4040 c6e0    DVCTR(-736,64,12,4)
+09c6 6120 c2f8    DVCTR(760,288,12,6)
+09c8 66b0 c5b0    DVCTR(-432,-688,12,6)
+09ca 42e0 c040    DVCTR(64,736,12,4)
+09cc d000       DRTSL()
+
+09cd 5480 c630    DVCTR(-560,-128,12,5)
+09cf 5210 c0f0    DVCTR(240,528,12,5)
+09d1 d000       DRTSL()
+
+09d2 4780 04c0    DVCTR(-192,-896,0,4)
+09d4 42e0 c6e0    DVCTR(-736,736,12,4)
+09d6 4000 c6e0    DVCTR(-736,0,12,4)
+09d8 6168 c2d8    DVCTR(728,360,12,6)
+09da 66d8 c568    DVCTR(-360,-728,12,6)
+09dc 42e0 c000    DVCTR(0,736,12,4)
+09de d000       DRTSL()
+
+09df 54b0 c620    DVCTR(-544,-176,12,5)
+09e1 5220 c0b0    DVCTR(176,544,12,5)
+09e3 d000       DRTSL()
+
+09e4 47a0 0460    DVCTR(-96,-928,0,4)
+09e6 4280 c720    DVCTR(-800,640,12,4)
+09e8 4440 c6e0    DVCTR(-736,-64,12,4)
+09ea 61b0 c2b0    DVCTR(688,432,12,6)
+09ec 66f8 c520    DVCTR(-288,-760,12,6)
+09ee 42e0 c440    DVCTR(-64,736,12,4)
+09f0 d000       DRTSL()
+
+09f1 54f0 c610    DVCTR(-528,-240,12,5)
+09f3 5230 c080    DVCTR(128,560,12,5)
+09f5 d000       DRTSL()
+
+09f6 47a0 0000    DVCTR(0,-928,0,4)
+09f8 4240 c760    DVCTR(-864,576,12,4)
+09fa 4480 c6c0    DVCTR(-704,-128,12,4)
+09fc 61f0 c280    DVCTR(640,496,12,6)
+09fe 6710 c4d8    DVCTR(-216,-784,12,6)
+0a00 42c0 c480    DVCTR(-128,704,12,4)
+0a02 d000       DRTSL()
+
+0a03 4640 c7e0    DVCTR(-992,-576,12,4)
+0a05 5230 c040    DVCTR(64,560,12,5)
+0a07 d000       DRTSL()
+
+0a08 47a0 0060    DVCTR(96,-928,0,4)
+0a0a 41e0 c780    DVCTR(-896,480,12,4)
+0a0c 44e0 c6c0    DVCTR(-704,-224,12,4)
+0a0e 6230 c248    DVCTR(584,560,12,6)
+0a10 6720 c488    DVCTR(-136,-800,12,6)
+0a12 42c0 c4e0    DVCTR(-224,704,12,4)
+0a14 d000       DRTSL()
+
+0a15 46a0 c7a0    DVCTR(-928,-672,12,4)
+0a17 5240 c010    DVCTR(16,576,12,5)
+0a19 d000       DRTSL()
+
+0a1a 4780 00c0    DVCTR(192,-896,0,4)
+0a1c 4180 c7c0    DVCTR(-960,384,12,4)
+0a1e 4520 c6a0    DVCTR(-672,-288,12,4)
+0a20 6260 c210    DVCTR(528,608,12,6)
+0a22 6728 c438    DVCTR(-56,-808,12,6)
+0a24 42a0 c520    DVCTR(-288,672,12,4)
+0a26 d000       DRTSL()
+
+0a27 46e0 c760    DVCTR(-864,-736,12,4)
+0a29 5240 c430    DVCTR(-48,576,12,5)
+0a2b d000       DRTSL()
+
+0a2c 4780 0100    DVCTR(256,-896,0,4)
+0a2e 4120 c7e0    DVCTR(-992,288,12,4)
+0a30 4560 c680    DVCTR(-640,-352,12,4)
+0a32 6298 c1d0    DVCTR(464,664,12,6)
+0a34 6728 c018    DVCTR(24,-808,12,6)
+0a36 4280 c560    DVCTR(-352,640,12,4)
+0a38 d000       DRTSL()
+
+0a39 4740 c720    DVCTR(-800,-832,12,4)
+0a3b 5230 c460    DVCTR(-96,560,12,5)
+0a3d d000       DRTSL()
+
+0a3e 4760 0160    DVCTR(352,-864,0,4)
+0a40 40c0 c7e0    DVCTR(-992,192,12,4)
+0a42 45a0 c660    DVCTR(-608,-416,12,4)
+0a44 62c0 c190    DVCTR(400,704,12,6)
+0a46 6720 c068    DVCTR(104,-800,12,6)
+0a48 4260 c5a0    DVCTR(-416,608,12,4)
+0a4a d000       DRTSL()
+
+0a4b 4780 c6c0    DVCTR(-704,-896,12,4)
+0a4d 5230 c490    DVCTR(-144,560,12,5)
+0a4f d000       DRTSL()
+
+0a50 4720 01c0    DVCTR(448,-800,0,4)
+0a52 5030 c600    DVCTR(-512,48,12,5)
+0a54 45c0 c620    DVCTR(-544,-448,12,4)
+0a56 62e0 c148    DVCTR(328,736,12,6)
+0a58 6718 c0b0    DVCTR(176,-792,12,6)
+0a5a 4220 c5c0    DVCTR(-448,544,12,4)
+0a5c d000       DRTSL()
+
+0a5d 47c0 c660    DVCTR(-608,-960,12,4)
+0a5f 5210 c4d0    DVCTR(-208,528,12,5)
+0a61 d000       DRTSL()
+
+0a62 f70a         DSVEC(512,-768,0,4)
+0a63 f8ce         DSVEC(-512,0,12,5)
+0a64 fdcd         DSVEC(-256,-256,12,5)
+0a65 6300 c100    DVCTR(256,768,12,6)
+0a67 6700 c100    DVCTR(256,-768,12,6)
+0a69 f9cd         DSVEC(-256,256,12,5)
+0a6a d000       DRTSL()
+
+0a6b fecd         DSVEC(-256,-512,12,5)
+0a6c facd         DSVEC(-256,512,12,5)
+0a6d d000       DRTSL()
+
+; Sip pattern pointing up
+0a6e f70e         DSVEC(-512,-768,0,4)
+0a6f f87a         DSVEC(512,0,7,5)
+0a70 fd79         DSVEC(256,-256,7,5)
+0a71 6300 7500    DVCTR(-256,768,7,6)
+0a73 6700 7500    DVCTR(-256,-768,7,6)
+0a75 f979         DSVEC(256,256,7,5)
+0a76 60c0 0280    DVCTR(640,192,0,6)
+0a78 d032       DRTSL ?? 0x32
+
+; "A"
+0a79 fa70         DSVEC(0,512,7,3)
+0a7a f272         DSVEC(512,512,7,2)
+0a7b f672         DSVEC(512,-512,7,2)
+0a7c fe70         DSVEC(0,-512,7,3)
+0a7d f906         DSVEC(-512,256,0,3)
+0a7e f872         DSVEC(512,0,7,3)
+0a7f f602         DSVEC(512,-512,0,2)
+0a80 d000       DRTSL()
+
+; "B"
+0a81 fb70         DSVEC(0,768,7,3)
+0a82 f073         DSVEC(768,0,7,2)
+0a83 f561         DSVEC(256,-256,6,2)
+0a84 f560         DSVEC(0,-256,6,2)
+0a85 f565         DSVEC(-256,-256,6,2)
+0a86 f077         DSVEC(-768,0,7,2)
+0a87 f003         DSVEC(768,0,0,2)
+0a88 f561         DSVEC(256,-256,6,2)
+0a89 f560         DSVEC(0,-256,6,2)
+0a8a f565         DSVEC(-256,-256,6,2)
+0a8b f077         DSVEC(-768,0,7,2)
+0a8c f803         DSVEC(768,0,0,3)
+0a8d d000       DRTSL()
+
+; "C"
+0a8e fb70         DSVEC(0,768,7,3)
+0a8f f872         DSVEC(512,0,7,3)
+0a90 ff06         DSVEC(-512,-768,0,3)
+0a91 f872         DSVEC(512,0,7,3)
+0a92 f002         DSVEC(512,0,0,2)
+0a93 d000       DRTSL()
+
+; "D"
+0a94 fb70         DSVEC(0,768,7,3)
+0a95 f072         DSVEC(512,0,7,2)
+0a96 f672         DSVEC(512,-512,7,2)
+0a97 f670         DSVEC(0,-512,7,2)
+0a98 f676         DSVEC(-512,-512,7,2)
+0a99 f076         DSVEC(-512,0,7,2)
+0a9a f803         DSVEC(768,0,0,3)
+0a9b d000       DRTSL()
+
+; "E"
+0a9c fb70         DSVEC(0,768,7,3)
+0a9d f872         DSVEC(512,0,7,3)
+0a9e f705         DSVEC(-256,-768,0,2)
+0a9f f077         DSVEC(-768,0,7,2)
+0aa0 f700         DSVEC(0,-768,0,2)
+0aa1 f872         DSVEC(512,0,7,3)
+0aa2 f002         DSVEC(512,0,0,2)
+0aa3 d000       DRTSL()
+
+; "F"
+0aa4 fb70         DSVEC(0,768,7,3)
+0aa5 f872         DSVEC(512,0,7,3)
+0aa6 f705         DSVEC(-256,-768,0,2)
+0aa7 f077         DSVEC(-768,0,7,2)
+0aa8 f700         DSVEC(0,-768,0,2)
+0aa9 f803         DSVEC(768,0,0,3)
+0aaa d000       DRTSL()
+
+; "G"
+0aab fb70         DSVEC(0,768,7,3)
+0aac f872         DSVEC(512,0,7,3)
+0aad f670         DSVEC(0,-512,7,2)
+0aae f606         DSVEC(-512,-512,0,2)
+0aaf f072         DSVEC(512,0,7,2)
+0ab0 f670         DSVEC(0,-512,7,2)
+0ab1 f876         DSVEC(-512,0,7,3)
+0ab2 f803         DSVEC(768,0,0,3)
+0ab3 d000       DRTSL()
+
+; "H"
+0ab4 fb70         DSVEC(0,768,7,3)
+0ab5 f700         DSVEC(0,-768,0,2)
+0ab6 f872         DSVEC(512,0,7,3)
+0ab7 f300         DSVEC(0,768,0,2)
+0ab8 ff70         DSVEC(0,-768,7,3)
+0ab9 f002         DSVEC(512,0,0,2)
+0aba d000       DRTSL()
+
+; "I"
+0abb f872         DSVEC(512,0,7,3)
+0abc f006         DSVEC(-512,0,0,2)
+0abd fb70         DSVEC(0,768,7,3)
+0abe f002         DSVEC(512,0,0,2)
+0abf f876         DSVEC(-512,0,7,3)
+0ac0 ff03         DSVEC(768,-768,0,3)
+0ac1 d000       DRTSL()
+
+; "J"
+0ac2 f200         DSVEC(0,512,0,2)
+0ac3 f672         DSVEC(512,-512,7,2)
+0ac4 f072         DSVEC(512,0,7,2)
+0ac5 fb70         DSVEC(0,768,7,3)
+0ac6 ff01         DSVEC(256,-768,0,3)
+0ac7 d000       DRTSL()
+
+; "K"
+0ac8 fb70         DSVEC(0,768,7,3)
+0ac9 f003         DSVEC(768,0,0,2)
+0aca f777         DSVEC(-768,-768,7,2)
+0acb f773         DSVEC(768,-768,7,2)
+0acc f003         DSVEC(768,0,0,2)
+0acd d000       DRTSL()
+
+; "L"
+0ace fb00         DSVEC(0,768,0,3)
+0acf ff70         DSVEC(0,-768,7,3)
+0ad0 f872         DSVEC(512,0,7,3)
+0ad1 f002         DSVEC(512,0,0,2)
+0ad2 d000       DRTSL()
+
+; "M"
+0ad3 fb70         DSVEC(0,768,7,3)
+0ad4 f672         DSVEC(512,-512,7,2)
+0ad5 f272         DSVEC(512,512,7,2)
+0ad6 ff70         DSVEC(0,-768,7,3)
+0ad7 f002         DSVEC(512,0,0,2)
+0ad8 d000       DRTSL()
+
+; "N"
+0ad9 fb70         DSVEC(0,768,7,3)
+0ada ff72         DSVEC(512,-768,7,3)
+0adb fb70         DSVEC(0,768,7,3)
+0adc ff01         DSVEC(256,-768,0,3)
+0add d000       DRTSL()
+
+; "O"
+0ade fb70         DSVEC(0,768,7,3)
+0adf f872         DSVEC(512,0,7,3)
+0ae0 ff70         DSVEC(0,-768,7,3)
+0ae1 f876         DSVEC(-512,0,7,3)
+0ae2 f803         DSVEC(768,0,0,3)
+0ae3 d000       DRTSL()
+
+; "P"
+0ae4 fb70         DSVEC(0,768,7,3)
+0ae5 f872         DSVEC(512,0,7,3)
+0ae6 f770         DSVEC(0,-768,7,2)
+0ae7 f876         DSVEC(-512,0,7,3)
+0ae8 f703         DSVEC(768,-768,0,2)
+0ae9 f003         DSVEC(768,0,0,2)
+0aea d000       DRTSL()
+
+; "Q"
+0aeb fb70         DSVEC(0,768,7,3)
+0aec f872         DSVEC(512,0,7,3)
+0aed fe70         DSVEC(0,-512,7,3)
+0aee f676         DSVEC(-512,-512,7,2)
+0aef f076         DSVEC(-512,0,7,2)
+0af0 f202         DSVEC(512,512,0,2)
+0af1 f672         DSVEC(512,-512,7,2)
+0af2 f002         DSVEC(512,0,0,2)
+0af3 d000       DRTSL()
+
+; "R"
+0af4 fb70         DSVEC(0,768,7,3)
+0af5 f872         DSVEC(512,0,7,3)
+0af6 f770         DSVEC(0,-768,7,2)
+0af7 f876         DSVEC(-512,0,7,3)
+0af8 f001         DSVEC(256,0,0,2)
+0af9 f773         DSVEC(768,-768,7,2)
+0afa f002         DSVEC(512,0,0,2)
+0afb d000       DRTSL()
+
+; "S"
+0afc f872         DSVEC(512,0,7,3)
+0afd f370         DSVEC(0,768,7,2)
+0afe f876         DSVEC(-512,0,7,3)
+0aff f370         DSVEC(0,768,7,2)
+0b00 f872         DSVEC(512,0,7,3)
+0b01 ff01         DSVEC(256,-768,0,3)
+0b02 d000       DRTSL()
+
+; "T"
+0b03 f002         DSVEC(512,0,0,2)
+0b04 fb70         DSVEC(0,768,7,3)
+0b05 f006         DSVEC(-512,0,0,2)
+0b06 f872         DSVEC(512,0,7,3)
+0b07 ff01         DSVEC(256,-768,0,3)
+0b08 d000       DRTSL()
+
+; "U"
+0b09 fb00         DSVEC(0,768,0,3)
+0b0a ff70         DSVEC(0,-768,7,3)
+0b0b f872         DSVEC(512,0,7,3)
+0b0c fb70         DSVEC(0,768,7,3)
+0b0d ff01         DSVEC(256,-768,0,3)
+0b0e d000       DRTSL()
+
+; "V"
+0b0f fb00         DSVEC(0,768,0,3)
+0b10 ff71         DSVEC(256,-768,7,3)
+0b11 fb71         DSVEC(256,768,7,3)
+0b12 ff01         DSVEC(256,-768,0,3)
+0b13 d000       DRTSL()
+
+; "W"
+0b14 fb00         DSVEC(0,768,0,3)
+0b15 ff70         DSVEC(0,-768,7,3)
+0b16 f272         DSVEC(512,512,7,2)
+0b17 f672         DSVEC(512,-512,7,2)
+0b18 fb70         DSVEC(0,768,7,3)
+0b19 ff01         DSVEC(256,-768,0,3)
+0b1a d000       DRTSL()
+
+; "X"
+0b1b fb72         DSVEC(512,768,7,3)
+0b1c f806         DSVEC(-512,0,0,3)
+0b1d ff72         DSVEC(512,-768,7,3)
+0b1e f002         DSVEC(512,0,0,2)
+0b1f d000       DRTSL()
+
+; "Y"
+0b20 f002         DSVEC(512,0,0,2)
+0b21 fa70         DSVEC(0,512,7,3)
+0b22 f276         DSVEC(-512,512,7,2)
+0b23 f802         DSVEC(512,0,0,3)
+0b24 f676         DSVEC(-512,-512,7,2)
+0b25 fe02         DSVEC(512,-512,0,3)
+0b26 d000       DRTSL()
+
+; "Z"
+0b27 fb00         DSVEC(0,768,0,3)
+0b28 f872         DSVEC(512,0,7,3)
+0b29 ff76         DSVEC(-512,-768,7,3)
+0b2a f872         DSVEC(512,0,7,3)
+0b2b f002         DSVEC(512,0,0,2)
+0b2c d000       DRTSL()
+
+; SPACE
+0b2d f803         DSVEC(768,0,0,3)
+0b2e d000       DRTSL()
+
+; "1"
+0b2f f002         DSVEC(512,0,0,2)
+0b30 fb70         DSVEC(0,768,7,3)
+0b31 ff02         DSVEC(512,-768,0,3)
+0b32 d000       DRTSL()
+
+; "2"
+0b33 fb00         DSVEC(0,768,0,3)
+0b34 f872         DSVEC(512,0,7,3)
+0b35 f770         DSVEC(0,-768,7,2)
+0b36 f876         DSVEC(-512,0,7,3)
+0b37 f770         DSVEC(0,-768,7,2)
+0b38 f872         DSVEC(512,0,7,3)
+0b39 f002         DSVEC(512,0,0,2)
+0b3a d000       DRTSL()
+
+"3"
+0b3b f872         DSVEC(512,0,7,3)
+0b3c fb70         DSVEC(0,768,7,3)
+0b3d f876         DSVEC(-512,0,7,3)
+0b3e f700         DSVEC(0,-768,0,2)
+0b3f f872         DSVEC(512,0,7,3)
+0b40 f702         DSVEC(512,-768,0,2)
+0b41 d000       DRTSL()
+
+; "4"
+0b42 fb00         DSVEC(0,768,0,3)
+0b43 f770         DSVEC(0,-768,7,2)
+0b44 f872         DSVEC(512,0,7,3)
+0b45 f300         DSVEC(0,768,0,2)
+0b46 ff70         DSVEC(0,-768,7,3)
+0b47 f002         DSVEC(512,0,0,2)
+0b48 d000       DRTSL()
+
+; "5"
+0b49 f872         DSVEC(512,0,7,3)
+0b4a f370         DSVEC(0,768,7,2)
+0b4b f876         DSVEC(-512,0,7,3)
+0b4c f370         DSVEC(0,768,7,2)
+0b4d f872         DSVEC(512,0,7,3)
+0b4e ff01         DSVEC(256,-768,0,3)
+0b4f d000       DRTSL()
+
+; "6"
+0b50 f300         DSVEC(0,768,0,2)
+0b51 f872         DSVEC(512,0,7,3)
+0b52 f770         DSVEC(0,-768,7,2)
+0b53 f876         DSVEC(-512,0,7,3)
+0b54 fb70         DSVEC(0,768,7,3)
+0b55 ff03         DSVEC(768,-768,0,3)
+0b56 d000       DRTSL()
+
+; "7"
+0b57 fb00         DSVEC(0,768,0,3)
+0b58 f872         DSVEC(512,0,7,3)
+0b59 ff70         DSVEC(0,-768,7,3)
+0b5a f002         DSVEC(512,0,0,2)
+0b5b d000       DRTSL()
+
+; "8"
+0b5c f872         DSVEC(512,0,7,3)
+0b5d fb70         DSVEC(0,768,7,3)
+0b5e f876         DSVEC(-512,0,7,3)
+0b5f ff70         DSVEC(0,-768,7,3)
+0b60 f300         DSVEC(0,768,0,2)
+0b61 f872         DSVEC(512,0,7,3)
+0b62 f702         DSVEC(512,-768,0,2)
+0b63 d000       DRTSL()
+
+; "9"
+0b64 f802         DSVEC(512,0,0,3)
+0b65 fb70         DSVEC(0,768,7,3)
+0b66 f876         DSVEC(-512,0,7,3)
+0b67 f770         DSVEC(0,-768,7,2)
+0b68 f872         DSVEC(512,0,7,3)
+0b69 f702         DSVEC(512,-768,0,2)
+0b6a d000       DRTSL()
+
+; Cross reference table for character data
+0b6b cb2d       DJSRL(0xb2d) ; SPACE
+0b6c cade       DJSRL(0xade) ; O and 0 ... same pattern
+0b6d cb2f       DJSRL(0xb2f) ; 1
+0b6e cb33       DJSRL(0xb33) ; 2
+0b6f cb3b       DJSRL(0xb3b) ; 3
+0b70 cb42       DJSRL(0xb42) ; 4
+0b71 cb49       DJSRL(0xb49) ; 5
+0b72 cb50       DJSRL(0xb50) ; 6
+0b73 cb57       DJSRL(0xb57) ; 7
+0b74 cb5c       DJSRL(0xb5c) ; 8
+0b75 cb64       DJSRL(0xb64) ; 9
+0b76 ca79       DJSRL(0xa79) ; A
+0b77 ca81       DJSRL(0xa81) ; B
+0b78 ca8e       DJSRL(0xa8e) ; C
+0b79 ca94       DJSRL(0xa94) ; D
+0b7a ca9c       DJSRL(0xa9c) ; E
+0b7b caa4       DJSRL(0xaa4) ; F  
+0b7c caab       DJSRL(0xaab) ; G  
+0b7d cab4       DJSRL(0xab4) ; H
+0b7e cabb       DJSRL(0xabb) ; I
+0b7f cac2       DJSRL(0xac2) ; J
+0b80 cac8       DJSRL(0xac8) ; K
+0b81 cace       DJSRL(0xace) ; L
+0b82 cad3       DJSRL(0xad3) ; M
+0b83 cad9       DJSRL(0xad9) ; N
+0b84 cade       DJSRL(0xade) ; O
+0b85 cae4       DJSRL(0xae4) ; P
+0b86 caeb       DJSRL(0xaeb) ; Q
+0b87 caf4       DJSRL(0xaf4) ; R
+0b88 cafc       DJSRL(0xafc) ; S
+0b89 cb03       DJSRL(0xb03) ; T
+0b8a cb09       DJSRL(0xb09) ; U
+0b8b cb0f       DJSRL(0xb0f) ; V
+0b8c cb14       DJSRL(0xb14) ; W
+0b8d cb1b       DJSRL(0xb1b) ; X
+0b8e cb20       DJSRL(0xb20) ; Y
+0b8f cb27       DJSRL(0xb27) ; Z
+
+; ====== Not valid commands from here down ... cross reference table of some kind?
+; How are ship/rock/etc objects referenced? Surely not hard-coded ...
+
+0b90 130b 2f19    DVCTR(-793,779,2,1)
+0b92 5541 776f    DVCTR(-879,-321,7,5)
+0b94 877d 6391    DVCTR(913,-893,6,8)
+0b96 6056 3c6e    DVCTR(-110,86,3,6)
+0b98 4dec a4c0    DVCTR(-192,-492,10,4)
+0b9a ea0a       DJMPL(0xa0a)
+0b9b 086c       ???? 86c
+0b9c ec00       DJMPL(0xc00)
+0b9d b0f2       HALT ?? 0xf2
+0b9e 3c6e 48ec    DVCTR(236,-110,4,3)
+0ba0 b85a       HALT ?? 0x85a
+0ba1 9266 9a42    DVCTR(578,614,9,9)
+0ba3 c382       DJSRL(0x382)
+0ba4 0e12       ???? e12
+0ba5 9012 4d4c    DVCTR(-332,18,4,9)
+0ba7 a4f1 2d12    DLABS(-750,1265,  2)
+0ba9 0ad2       ???? ad2
+0baa c264       DJSRL(0x264)
+0bab 0f6c       ???? f6c
+0bac cd66       DJSRL(0xd66)
+0bad 6c82 c39a    DVCTR(922,-130,12,6)
+0baf 854a a6c0    DVCTR(-704,-330,10,8)
+0bb1 606e 9e6c    DVCTR(-620,110,9,6)
+0bb3 c20a       DJSRL(0x20a)
+0bb4 c442       DJSRL(0x442)
+0bb5 bac2       HALT ?? 0xac2
+0bb6 4960 0cf0    DVCTR(-240,352,0,4)
+0bb8 c612       DJSRL(0x612)
+0bb9 b012       HALT ?? 0x12
+0bba a600 606e    DLABS(110,1536,  6)
+0bbc ed58       DJMPL(0xd58)
+0bbd b512       HALT ?? 0x512
+0bbe 29e8 0ed2    DVCTR(-722,488,0,2)
+0bc0 4cd8 8282    DVCTR(642,-216,8,4)
+0bc2 c270       DJSRL(0x270)
+0bc3 0b6c       ???? b6c
+0bc4 096e       ???? 96e
+0bc5 b5e6       HALT ?? 0x5e6
+0bc6 3e92 a600    DVCTR(-512,-658,10,3)
+0bc8 606e c16e    DVCTR(366,110,12,6)
+0bca c06c       DJSRL(0x6c)
+0bcb 5900 4862    DVCTR(98,256,4,5)
+0bcd d266       DRTSL ?? 0x266
+0bce 186d 9b4e    DVCTR(846,109,9,1)
+0bd0 0964       ???? 964
+0bd1 a402 ed0a    DLABS(-758,1026,  14)
+0bd3 18c0 9b4e    DVCTR(846,192,9,1)
+0bd5 0864       ???? 864
+0bd6 a4c2 e80a    DLABS(-2038,1218,  14)
+0bd8 2000 9b4e    DVCTR(846,0,9,2)
+0bda b864       HALT ?? 0x864
+0bdb 0d46       ???? d46
+0bdc 2f20 0040    DVCTR(64,-800,0,2)
+0bde 0603       ???? 603
+0bdf 0c09       ???? c09
+0be0 1310 1916    DVCTR(278,784,1,1)
+0be2 1f1c 2522    DVCTR(-290,-796,2,1)
+0be4 2b28 312e    DVCTR(302,808,3,2)
+0be6 3633 3c39    DVCTR(-57,-563,3,3)
+0be8 413f 4744    DVCTR(-836,319,4,4)
+0bea 4c49 514e    DVCTR(334,-73,5,4)
+0bec 5553 5a58    DVCTR(600,-339,5,5)
+0bee 5e5c 6260    DVCTR(608,-604,6,5)
+0bf0 6664 6a68    DVCTR(616,-612,6,6)
+0bf2 6d6b 706f    DVCTR(111,-363,7,6)
+0bf4 7371 7574    DVCTR(-372,881,7,7)
+0bf6 7876 7a79    DVCTR(633,118,7,7)
+0bf8 7b7a 7d7c    DVCTR(-380,890,7,7)
+0bfa 7e7d 7e7e    DVCTR(-638,-637,7,7)
+0bfc 7f7f 7f7f    DVCTR(-895,-895,7,7)
+0bfe 0000       ???? 0
+0bff 0000       ???? 0
+}}}
