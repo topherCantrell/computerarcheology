@@ -1,5 +1,5 @@
-
-[[PageOutline(1-100,Page Contents)]]
+%%template master.template
+%%title Computer Archeology
 
 == Corrections and Comments ==
 
@@ -11,7 +11,7 @@ After decades of evolution computers still only understand the myopic language o
 subtract five from it, store it back to memory, and jump to another part of the program if the new value is zero. They see only the next 
 instruction or two. They have no concern over "where this is going".
 
-We rarely program in assembly anymore. Now we have (arguably) human-friendly languages to speak in. The compiler takes over the mundane tasks of assembly 
+We rarely program in assembly anysmore. Now we have (arguably) human-friendly languages to speak in. The compiler takes over the mundane tasks of assembly 
 programming: decomposing algebraic expressions into pieces, managing complex memory organization, and producing tedious jump code for flow constructs like 
 IF, DO, and WHILE.
 
@@ -28,10 +28,10 @@ The computer archeologist digs these out and dusts them off and puts them on dis
 We are the nerdy Indiana Jones. Welcome to our museum!
 
 == Digs ==
-||= Platform =||= Discussion =||= Code =||
-|| [wiki:NES] || [wiki:/NES/Zelda Zelda] ||  See Discussion ||
+|| Platform || Discussion || Code ||
+|| [wiki:NES NES] || [wiki:NES/Zelda Zelda] ||  See Discussion ||
 || || || ||
-|| [wiki:Arcade] || [wiki:Arcade/Asteroids Asteroids] || See Discussion ||
+|| [wiki:Arcade Arcade] || [wiki:Arcade/Asteroids Asteroids] || See Discussion ||
 || || [wiki:Arcade/Defender Defender] || See Discussion ||
 || || [wiki:Arcade/Frogger Frogger (Sound)] || See Discussion ||
 || || [wiki:Arcade/Galaga Galaga] || See Discussion ||
@@ -46,7 +46,7 @@ We are the nerdy Indiana Jones. Welcome to our museum!
 || || [wiki:CoCo/Bedlam Bedlam] || See Discussion ||
 || || [wiki:CoCo/Madness Madness and the Minotaur] || See Discussion ||
 || || || ||
-|| [wiki:Atari2600] || [wiki:Atari2600/BattleZone Battle Zone] || See Discussion ||
+|| [wiki:Atari2600 Atari 2600] || [wiki:Atari2600/BattleZone Battle Zone] || See Discussion ||
 || || [wiki:Atari2600/Asteroids Asteroids] || See Discussion ||
 || || [wiki:Atari2600/MissileCommand Missile Command] || See Discussion ||
 || || [wiki:Atari2600/Combat Combat] || See Discussion ||
@@ -55,11 +55,11 @@ We are the nerdy Indiana Jones. Welcome to our museum!
 || || [wiki:Atari2600/ET E.T] || See Discussion ||
 || || || ||
 || Virus || [wiki:Virus/Stoned Stoned Virus (PC)] ||  See Discussion ||
-|| || [wiki:/Virus/Worm Morris Worm (Vax)] || See Discussion ||
+|| || [wiki:Virus/Worm Morris Worm (Vax)] || See Discussion ||
 || || || ||
-|| Misc || [wiki:/Misc/Blend Blend] ||  See Discussion ||
+|| Misc || [wiki:Misc/Blend Blend] ||  See Discussion ||
 || || || ||
-|| [wiki:Amiga] || [wiki:/Amiga/Rainbow Rainbow Islands] ||  See Discussion ||
+|| [wiki:Amiga Amiga] || [wiki:Amiga/Rainbow Rainbow Islands] ||  See Discussion ||
 
 == One Quarter at a Time ==
 
@@ -113,13 +113,13 @@ The [wiki:NES/Zelda Legend of Zelda] for the NES started a long series of wonder
 == Viruses ==
 
 Computer viruses are an intriguing part of our computer culture. Let me take you into the assembly workings of two famous but defunct 
-viruses. First I'll show you the [wiki:/Virus/Worm Morris Worm] VAX assembly snippet written into a buffer overrun to forge a root shell. Then 
-we'll look at the PC [wiki:/Virus/Stoned Stoned] boot sector infector. As tiny and efficient as it is, there is always room for improvement. 
+viruses. First I'll show you the [wiki:Virus/Worm Morris Worm] VAX assembly snippet written into a buffer overrun to forge a root shell. Then 
+we'll look at the PC [wiki:Virus/Stoned Stoned] boot sector infector. As tiny and efficient as it is, there is always room for improvement. 
 Let me show you!
 
 == Tools ==
 
-Detailed discussion of the tools: [wiki:Tools]
+Detailed discussion of the tools: (TODO point to github)
 
 Click on "Browse Source" on the top wiki toolbar to browse the tools source code.
 
@@ -127,7 +127,7 @@ Rather than learn the syntax of several different tool chains, I built my own to
 The source code is all here for you to enhance: assemblers, disassemblers, tools to transform code into web pages. 
 
 Each processor family used on this site has an XML file that defines its opcodes and mnemonics. 
-See [browser:tools/src/tools/processor/Processors.xml Processors.xml].
+See TODO point to github.
 
 There is also a directory of tools specific to each dig site. These tools extract data and generated 
 formatted data sections for disassembly and such.
