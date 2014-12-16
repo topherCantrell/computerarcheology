@@ -45,26 +45,33 @@ def loadDeployTree(root):
     
     return ret
 
-def processDeploy(curdir,deploy):
+def processDeploy(curdir,deploy):    
     lines = deploy['deploy']
     if lines==['*']:
         for f in deploy['files']:
-            # Copy file
-            pass
+            shutil.copy(rootDir+curdir+"/"+f, deployDir+curdir+"/"+f) 
+    else:
+        for line in lines:
+            i = line.index(' ')
+            dst = line[0:i]
+            src = line[i+1:].strip()
+            print ":"+dst+":"+src       
+            
 
 def makeDeployDirectory(parent,deploy):
     for (key,val) in deploy.iteritems():
-        curdir = parent+key+"/"
-        os.makedirs(curdir)
-        processDeploy(curdir,val)
+        curDeployDir = deployDir + parent + key + "/"
+        curContentDir = rootDir + parent + key + "/"        
+        os.makedirs(curDeployDir)
+        processDeploy(parent+key+"/", val)
         for deps in val['dirs']:
-            makeDeployDirectory(curdir,deps)
+            makeDeployDirectory(parent+key+"/",deps)
         
 
 def makeDeployDirectories(deploy):
     if os.path.exists(deployDir):
         shutil.rmtree(deployDir)    
-    makeDeployDirectory(deployDir[0:-1],deploy)    
+    makeDeployDirectory('',deploy)    
 
 if __name__=="__main__":
     

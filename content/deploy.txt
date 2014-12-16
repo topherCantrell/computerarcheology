@@ -1,4 +1,4 @@
 
 ; Testing
 
-index.html <- markup(index.template) ; The main index
+index.html     markup(index.template) ; The main index
