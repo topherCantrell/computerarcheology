@@ -3,7 +3,8 @@
 
 == Corrections and Comments ==
 
-If you spot an error, or if you want to share a thought then select the "Contact" link on the main wiki navigation toolbar above.
+If you spot an error, if you want to share a thought, if you want to ask a question, or if you want to contribute then select the "Contact" link above
+and send me an email. 
 
 == Some Assembly Required ==
 
@@ -29,116 +30,102 @@ We are the nerdy Indiana Jones. Welcome to our museum!
 
 == Digs ==
 || Platform || Discussion || Code ||
-|| [wiki:NES NES] || [wiki:NES/Zelda Zelda] ||  See Discussion ||
+|| [NES NES] || [NES/Zelda Zelda] ||  See Discussion ||
 || || || ||
-|| [wiki:Arcade Arcade] || [wiki:Arcade/Asteroids Asteroids] || See Discussion ||
-|| || [wiki:Arcade/Defender Defender] || See Discussion ||
-|| || [wiki:Arcade/Frogger Frogger (Sound)] || See Discussion ||
-|| || [wiki:Arcade/Galaga Galaga] || See Discussion ||
-|| || [wiki:Arcade/MoonPatrol Moon Patrol (Main)] || See Discussion ||
-|| || [wiki:Arcade/MoonPatrolSound Moon Patrol (Sound) ] || See Discussion ||
-|| || [wiki:Arcade/OmegaRace Omega Race] || See Discussion ||
-|| || [wiki:Arcade/SpaceInvaders Space Invaders] || [wiki:Arcade/SpaceInvaders/CodeAsZ80] ||
-|| || [wiki:Arcade/TimePilot Time Pilot (Sound)] || See Discussion ||
+|| [Arcade Arcade] || [Arcade/Asteroids Asteroids] || See Discussion ||
+|| || [Arcade/Defender Defender] || See Discussion ||
+|| || [Arcade/Frogger Frogger (Sound)] || See Discussion ||
+|| || [Arcade/Galaga Galaga] || See Discussion ||
+|| || [Arcade/MoonPatrol Moon Patrol (Main)] || See Discussion ||
+|| || [Arcade/MoonPatrolSound Moon Patrol (Sound) ] || See Discussion ||
+|| || [Arcade/OmegaRace Omega Race] || See Discussion ||
+|| || [Arcade/SpaceInvaders Space Invaders] || [Arcade/SpaceInvaders/CodeAsZ80 CodeAsZ80] ||
+|| || [Arcade/TimePilot Time Pilot (Sound)] || See Discussion ||
 || || || ||
-|| CoCo || [wiki:CoCo/Pyramid Pyramid] || See Discussion ||
-|| || [wiki:CoCo/RaakaTu Raaka Tu] || See Discussion ||
-|| || [wiki:CoCo/Bedlam Bedlam] || See Discussion ||
-|| || [wiki:CoCo/Madness Madness and the Minotaur] || See Discussion ||
+|| CoCo || [CoCo/Pyramid Pyramid] || See Discussion ||
+|| || [CoCo/RaakaTu Raaka Tu] || See Discussion ||
+|| || [CoCo/Bedlam Bedlam] || See Discussion ||
+|| || [CoCo/Madness Madness and the Minotaur] || See Discussion ||
 || || || ||
-|| [wiki:Atari2600 Atari 2600] || [wiki:Atari2600/BattleZone Battle Zone] || See Discussion ||
-|| || [wiki:Atari2600/Asteroids Asteroids] || See Discussion ||
-|| || [wiki:Atari2600/MissileCommand Missile Command] || See Discussion ||
-|| || [wiki:Atari2600/Combat Combat] || See Discussion ||
-|| || [wiki:Atari2600/Chess Chess] || See Discussion ||
-|| || [wiki:Atari2600/DoubleGap Double-Gap] || See Discussion ||
-|| || [wiki:Atari2600/ET E.T] || See Discussion ||
+|| [Atari2600 Atari 2600] || [Atari2600/BattleZone Battle Zone] || See Discussion ||
+|| || [Atari2600/Asteroids Asteroids] || See Discussion ||
+|| || [Atari2600/MissileCommand Missile Command] || See Discussion ||
+|| || [Atari2600/Combat Combat] || See Discussion ||
+|| || [Atari2600/Chess Chess] || See Discussion ||
+|| || [Atari2600/DoubleGap Double-Gap] || See Discussion ||
+|| || [Atari2600/ET E.T] || See Discussion ||
 || || || ||
-|| Virus || [wiki:Virus/Stoned Stoned Virus (PC)] ||  See Discussion ||
-|| || [wiki:Virus/Worm Morris Worm (Vax)] || See Discussion ||
+|| Virus || [Virus/Stoned Stoned Virus (PC)] ||  See Discussion ||
+|| || [Virus/Worm Morris Worm (Vax)] || See Discussion ||
 || || || ||
-|| Misc || [wiki:Misc/Blend Blend] ||  See Discussion ||
+|| Misc || [Misc/Blend Blend] ||  See Discussion ||
 || || || ||
-|| [wiki:Amiga Amiga] || [wiki:Amiga/Rainbow Rainbow Islands] ||  See Discussion ||
+|| [Amiga Amiga] || [Amiga/Rainbow Rainbow Islands] ||  See Discussion ||
 
 == One Quarter at a Time ==
 
 There is a famous bug in the arcade game Galaga. Shoot everything in the game except the lower left bee. Then dodge it for fifteen minutes. Eventually 
 it will stop firing, and none of the bees will fire at you again for the rest of the game. Let me lead you into the tomb of Z80 opcodes and show you 
-the mistake in [wiki:Arcade/Galaga Galaga].
+the mistake in [Arcade/Galaga Galaga].
 
 Space Invaders was one of (if not the) first arcade games. The 8080 code is littered with "questionable code design". There is a hidden message 
-Easter egg in the code, and I found a subtle bug. Check it out here in [wiki:Arcade/SpaceInvaders SpaceInvaders].
+Easter egg in the code, and I found a subtle bug. Check it out here in [Arcade/SpaceInvaders SpaceInvaders].
 
 Many early video games used vector-graphics. The display hardware reads a long list of lines from memory and then drives the electron gun from point 
-to point. The technology is all but lost today. Check out the line-list programming in [wiki:Arcade/Asteroids Asteroids] and 
-in [wiki:Arcade/OmegaRace Omega Race].
+to point. The technology is all but lost today. Check out the line-list programming in [Arcade/Asteroids Asteroids] and 
+in [Arcade/OmegaRace Omega Race].
 
 == Sounds of the 80s ==
 
-Remember the songs of Frogger? There is actually a snippet of hidden music buried until now. See and hear it here in [wiki:Arcade/Frogger Frogger].
+Remember the songs of Frogger? There is actually a snippet of hidden music buried until now. See and hear it here in [Arcade/Frogger Frogger].
 
 I grew up with the AY38910 sound chip. I still have a couple dozen of them! They were used in several arcade games, and it is fun to 
 see how different sound boards scheduled long-running effects over multiple channel resources. Check out the sound-board 
-disassemblies of [wiki:Arcade/MoonPatrol Moon Patrol] and [wiki:Arcade/TimePilot Time Pilot] and [wiki:Arcade/Frogger Frogger]. The running 
+disassemblies of [Arcade/MoonPatrol Moon Patrol] and [Arcade/TimePilot Time Pilot] and [Arcade/Frogger Frogger]. The running 
 base line in Moon Patrol is a nugget in itself. You can see the beginnings of Domain Specific Languages in these boards that define their own 
 sound-script languages.
 
 == Adventures in Text ==
 
 The TRS-80 Color Computer hosted a series of text adventure games from Robert Arnstein. Follow the fascinating evolution of 
-his adventure engine from [wiki:CoCo/Pyramid Pyramid] to [wiki:CoCo/RaakaTu Raaka Tu] to [wiki:CoCo/Bedlam Bedlam].
+his adventure engine from [CoCo/Pyramid Pyramid] to [CoCo/RaakaTu Raaka Tu] to [CoCo/Bedlam Bedlam].
 
-Spectral Associates produced a complex text adventure game with real-time features in [wiki:CoCo/Madness Madness and the Minotaur]. 
+Spectral Associates produced a complex text adventure game with real-time features in [CoCo/Madness Madness and the Minotaur]. 
 It is not impossible to solve the game, but it is extremely difficult without knowing the secrets. They are all described here.
 
 == TV Console Systems ==
 
 If you were a child in the 70s chances are you had an Atari2600. The hardware seems designed with the included 
-game [wiki:Atari2600/Combat Combat] in mind. But game developers squeezed out ingenious games using the simple hardware objects. 
-In [wiki:Atari2600/MissileCommand Missile Command] the player-duplication feature creates the parallel falling missiles.
+game [Atari2600/Combat Combat] in mind. But game developers squeezed out ingenious games using the simple hardware objects. 
+In [Atari2600/MissileCommand Missile Command] the player-duplication feature creates the parallel falling missiles.
 
 The 2600 was limited to a direct access of 4K bytes in the cartridge. Many games included several banks of ROM that were swapped in and out 
-through cartridge circuitry. See bank switching in action in [wiki:Atari2600/Asteroids Asteroids].
+through cartridge circuitry. See bank switching in action in [Atari2600/Asteroids Asteroids].
 
-The [wiki:Atari2600/Chess Chess] cartridge is a complete chess playing program for the Atari2600 with multiple difficulty levels. 
+The [Atari2600/Chess Chess] cartridge is a complete chess playing program for the Atari2600 with multiple difficulty levels. 
 The entire game fits in a 4K cartridge and uses only the system’s 128 bytes of memory.
 
 == Zelda ==
 
-The [wiki:NES/Zelda Legend of Zelda] for the NES started a long series of wonderful Zelda games spanning all the different Nintendo game systems.
+The [NES/Zelda Legend of Zelda] for the NES started a long series of wonderful Zelda games spanning all the different Nintendo game systems.
 
 {{{Patrik, add whatever you want to the description here.}}}
 
 == Viruses ==
 
 Computer viruses are an intriguing part of our computer culture. Let me take you into the assembly workings of two famous but defunct 
-viruses. First I'll show you the [wiki:Virus/Worm Morris Worm] VAX assembly snippet written into a buffer overrun to forge a root shell. Then 
-we'll look at the PC [wiki:Virus/Stoned Stoned] boot sector infector. As tiny and efficient as it is, there is always room for improvement. 
+viruses. First I'll show you the [Virus/Worm Morris Worm] VAX assembly snippet written into a buffer overrun to forge a root shell. Then 
+we'll look at the PC [Virus/Stoned Stoned] boot sector infector. As tiny and efficient as it is, there is always room for improvement. 
 Let me show you!
 
 == Tools ==
 
 Detailed discussion of the tools: (TODO point to github)
 
-Click on "Browse Source" on the top wiki toolbar to browse the tools source code.
-
-Rather than learn the syntax of several different tool chains, I built my own tools for my archeology work. 
-The source code is all here for you to enhance: assemblers, disassemblers, tools to transform code into web pages. 
-
-Each processor family used on this site has an XML file that defines its opcodes and mnemonics. 
-See TODO point to github.
-
-There is also a directory of tools specific to each dig site. These tools extract data and generated 
-formatted data sections for disassembly and such.
-
-This TRAC wiki has several custom macros to help format disassembly and write-ups. If you are a contributor then look through the 
-DigGuide. And share your own ideas and macros with the rest of us!
-
 == Archeologists ==
- * [wiki:ChrisCantrell Chris Cantrell]
- * [wiki:HarryHurst Harry Hurst]
- * [wiki:PatrikSevallius Patrick Sevallius]
+ * [People/ChrisCantrell Chris Cantrell]
+ * [People/HarryHurst Harry Hurst]
+ * [People/PatrikSevallius Patrick Sevallius]
 
 If you like Computer Archeology you must visit [http://donhodges.com/ Don Hodges amazing site]. He has a series of digs into 
 Pac Man, Ms Pac Man, Dig Dug, Donkey Kong, and Defender to name a few. Visit his [http://donhodges.com/archive.htm Archive] for most of the series.

@@ -48,6 +48,26 @@ def markDownHeaders(bodyLines):
                 s = s[0:-1]
             s = "<h"+str(i)+">"+s+"</h"+str(i)+">"
             bodyLines[x] = s
+            
+def markDownBullets(bodyLines):
+    x = 0
+    while(x<len(bodyLines)):
+        line = bodyLines[x]
+        
+        if line.startswith(" *"):
+            i = x + 1
+            while bodyLines[i].startswith(" *"):
+                i = i + 1
+            s = '<ul><li>' + bodyLines[x][2:] + '</li>'
+            bodyLines[x] = s
+            x=x+1
+            while x<i:
+                s = '<li>'+bodyLines[x][2:]+'</li>'
+                bodyLines[x]=s
+                x=x+1
+            bodyLines[x-1] = bodyLines[x-1]+'</ul>'
+        
+        x=x+1
 
 def markDownTables(bodyLines):
     x = 0
@@ -89,9 +109,9 @@ def markDownBraces(bodyLines):
         line = bodyLines[x]
         while "[" in line:
             i = line.index("[")
-            j = line.index("]",i)    
-            print line[i+1:j]
-            line = line[0:i]+" CHANGED "+line[j+1:]  
+            j = line.index("]",i)
+            k = line.index(" ",i)  
+            line = line[0:i]+'<a href="'+line[i+1:k].strip()+'">'+line[k+1:j].strip()+'</a>'+line[j+1:]  
         bodyLines[x] = line      
         
     
@@ -101,6 +121,7 @@ def markDown(bodyLines):
     markDownHeaders(bodyLines)
     markDownTables(bodyLines)
     markDownBraces(bodyLines)
+    markDownBullets(bodyLines)
     
 
 def translate(inName, outName, breadCrumbs,siteTree,pageTree):
