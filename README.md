@@ -1,4 +1,4 @@
-computerarcheology
+Computer Archeology
 ==================
 
 This project contains the content and tools to generate my [Computer Archeology](http://computerarcheology.com) website.
