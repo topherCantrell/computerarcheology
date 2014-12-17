@@ -7,4 +7,4 @@ It also contains the archeology tools (disassemblers, assemblers, formatters, et
 
 # Website Format
 
-!()[https://github.com/topherCantrell/computerarcheology/blob/master/art/NewLayout.jpg]
+![](https://github.com/topherCantrell/computerarcheology/blob/master/art/NewLayout.jpg)
