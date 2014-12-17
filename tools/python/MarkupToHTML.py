@@ -6,20 +6,8 @@ breadCrumbs = \
     '        <li><a href="#">Arcade</a></li>'\
     '        <li class="active">Space Invaders</li>'
     
-siteTree = \
-    '<li class="sn1"><a class="sna">Site Area 1</a>'\
-    '            <ul>'\
-    '              <li class="snn"><a class="sna">Area 1</a>'\
-    '                <ul>'\
-    '                  <li class="snn"><a class="sna">Way 1</a></li>'\
-    '                  <li class="snn"><a class="sna">Way 2</a></li>'\
-    '                </ul>'\
-    '              </li>'\
-    '              <li class="snn"><a class="sna">Area 2</a></li>'\
-    '            </ul>'\
-    '          </li>'\
-    '          <li class="sn1"><a class="sna">Area 2</a></li>'
-    
+siteTree = '<li class="sn1"><a class="sna"><strong>Home</strong></a><ul><li class="snn"><a href="/CoCo" class="sna">CoCo</a><ul><li class="snn"><a href="/CoCo/Bedlam" class="sna">Bedlam</a><ul><li class="snn"><a href="/CoCo/Bedlam/Code.html" class="sna">Code</a></li><li class="snn"><a href="/CoCo/Bedlam/RAMTable.html" class="sna">RAM Table</a></li></ul></li><li class="snn"><a href="/CoCo/MadnessMinotaur" class="sna">MadnessMinotaur</a></li></ul></li></ul></li>'
+
 pageTree = \
     '<li class="sn1"><a class="sna">Page Header 1</a>'\
     '            <ul>'\
