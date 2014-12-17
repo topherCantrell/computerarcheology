@@ -1,4 +1,9 @@
 computerarcheology
 ==================
 
-All of the code and resources backing computerarcheology.com (moving from SVN there)
+This project contains the content and tools to generate the [Computer Archeology](www.computerarcheology.com) website.
+
+It also contains the archeology tools (disassemblers, assemblers, formatters, etc).
+
+# Website Format
+
