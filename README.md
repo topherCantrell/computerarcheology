@@ -15,3 +15,12 @@ There are two types of pages on the site: "code" and "discussion". They both hav
 
 ![](https://github.com/topherCantrell/computerarcheology/blob/master/art/NewLayout.jpg)
 
+The "Constant links" provide contact and help information and anything else I might think of.
+
+The left area of the page is a navigation tree of links. There are two tabs. The "Site" tab shows the navigation tree for the entire web site. This allows you to quickly jump to any page. The "Page" tab shows the navigation tree for the current page. This allows you to quickly jump to any section on a page. The navigation tree area has its own scroll bar.
+
+The archeology site is very hierarchical. The "Bread Crumbs" show your current level in the hierarchy and gives you a quick path back up the chain.
+
+There is an area in the page header for optional images that might distinguish a particular page. Space Invaders, for instance, might have a graphic of one of the invaders.
+
+The "Page Content" is the main area of the page. This area has its own scrollbar. The page header is always visible.
