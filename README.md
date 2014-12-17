@@ -24,3 +24,11 @@ The archeology site is very hierarchical. The "Bread Crumbs" show your current l
 There is an area in the page header for optional images that might distinguish a particular page. Space Invaders, for instance, might have a graphic of one of the invaders.
 
 The "Page Content" is the main area of the page. This area has its own scrollbar. The page header is always visible.
+
+# Content and Code
+
+The "Content" directory here contains the resource files that go into making the website pages. This includes
+the disassembly and the discussion about the disassembly.
+
+The "Code" directory here contains the tools for deploying the "Content" to the web. It also includes the 
+dig-tools (disassemblers, assemblers, etc) along with individualized tools for specific dig sites.
