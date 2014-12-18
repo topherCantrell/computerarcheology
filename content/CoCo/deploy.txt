@@ -1,2 +1,3 @@
+CoCo ; The display name of this directory
 
 index.html     : markup(CoCo.mark) ; The main entry point to the site
