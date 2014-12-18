@@ -1,3 +1,0 @@
-Home ; The display name of this directory
-
-index.html    : markup(index.mark) ; The main entry point to the site

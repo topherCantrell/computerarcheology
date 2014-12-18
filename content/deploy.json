@@ -1,0 +1,20 @@
+
+{
+  "files" : [
+               "index.html : markup(index.mark)"
+            ],
+            
+  "dirList": [
+               {"dirName": "CoCo",   "displayName": "Color Computer"},
+               {"dirName": "Arcade", "displayName": "Arcade"}
+             ],
+
+
+          
+          
+   "dirName":     "Filled-in from parent",
+   "displayName": "Filled-in from parent",
+   "dirPath":     "Filled-in from parent",
+   "displayPath": "Filled-in from parent",          
+   "dirs": []
+}
