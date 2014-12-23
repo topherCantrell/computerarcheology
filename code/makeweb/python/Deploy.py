@@ -1,73 +1,56 @@
 import os
 import pprint
 import shutil
+import json
 
 rootDir = "../../../content/"
 deployDir = "../../../deploy/"
 
-def loadDeployFileLines(filename):   
-    """Load the 'deploy.tx' lines
+def _loadContentTreeRecurse(parent,path,displayName):
+    # This recursive helper function loads and "deploy.json" file
+    # from the "path" and appends the information to the the
+    # "parent" dirs. This "path" is given the "displayName".
+            
+    ret = {} # Base object to append for this directory "path"
+               
+    if not os.path.isfile(path+"deploy.json"):
+        return # Noting in this directory
     
-    This method loads the lines from a file and trims out any
-    comments and blank lines.
-    
-    Args:
-        filename (string): the name of the file to load
-      
-    Returns:
-        list of lines
-    """
-    
-    with open(filename) as f:
-        lines = f.readlines()
-    ret = []
-    for line in lines:
-        if ";" in line:
-            line = line[0:line.index(";")]
-        line = line.strip()
-        if len(line)>0:
-            ret.append(line)
-    return ret
+    parent["dirs"].append(ret) # Add us to the parent
+        
+    # Load the JSON object
+    with open(path+"deploy.json") as f:
+        obj = json.load(f)
+        ret["deploy"] = obj
+        
+    # Some basics
+    ret["dirs"] = []    
+    ret["dirPath"] = path[len(rootDir):]
+    ret["displayPath"] = parent["displayPath"]+"/"+displayName
+     
+    # Run any "dirList" and append those recursively
+    if "dirList" in obj:       
+        for dpath in obj["dirList"]:
+            _loadContentTreeRecurse(ret,path+dpath["dirName"]+"/",dpath["displayName"])    
 
-def loadContentTree(root):
+def loadContentTree():
     """Load all content information
     
     This function loads the content information from the given directory
-    and all subdirectories. Only directories with a 'deploy.txt' are 
-    included.
+    and all subdirectories. Only directories with a 'deploy.json' are 
+    included.    
     
-    Args:
-        root (string): directory path
-        
     Returns:
-        dictionary/tree data structure for all subdirectories
+        The tree object
+    
     """
     
-    ret = {"dirs":[], "files":[]}
+    root = rootDir
+    parent = {'displayPath':'', 'dirPath':'', 'dirs':[]}
     
-    conts = os.listdir(root)
-    for c in conts:
-        cc = root+c
-        if os.path.isfile(cc):
-            if c=="deploy.txt":
-                ret["deploy"] = loadDeployFileLines(cc)
-            else:
-                ret["files"].append(c)
-        if os.path.isdir(cc):            
-            sub = loadContentTree(cc+"/")
-            if sub!=None: 
-                ret["dirs"].append(sub)
-                
-    if not "deploy" in ret:
-        return None
-            
-    pcomps = root[len(rootDir):].split("/")
-    if len(pcomps)>1:
-        ret = {pcomps[-2]: ret}
-    else:
-        ret = {pcomps[-1]: ret}         
+    _loadContentTreeRecurse(parent,root,"Home")
     
-    return ret
+    return parent["dirs"][0]       
 
 def makeDeployDirectories(content):
     """Remove and recreate the entire deployment directory
@@ -78,48 +61,43 @@ def makeDeployDirectories(content):
     """
     if os.path.exists(deployDir):
         shutil.rmtree(deployDir)    
-    makeDeployDirectory('',content) 
+    _makeDeployDirectory(content["dirs"]) 
     
-def makeDeployDirectory(parent,content):
-    """Create deploy directory structure
+def _makeDeployDirectory(contentDirs):
+    # Recursive function to create directories and subdirectories   
     
-    This recursive method creates the directories and subdirectories for all 
-    entries in the deploy information
+    for dinfo in contentDirs:
+        os.makedirs(deployDir+dinfo["dirPath"])
+        _makeDeployDirectory(dinfo["dirs"])
+        
+def processDeploys(content):   
+    """Process a tree of deploy.json commands
+    
+    This processes all the lines from the given deploy.json info. This
+    creates files in the target deploy directory and subdirectories
     
     Args:
-        parent (string): the parent directory
-        deploy (dictionary): the deployment info for the given directory
+        content (content object): the content directory object
         
     """
-    for (key,val) in content.iteritems():
-        curDeployDir = deployDir + parent + key + "/"
-        curContentDir = rootDir + parent + key + "/"        
-        os.makedirs(curDeployDir)
-        processDeploy(parent+key+"/", val)
-        for deps in val['dirs']:
-            makeDeployDirectory(parent+key+"/",deps)
-
-def processDeploy(curdir,deploy):   
-    """Process a single deploy.txt file
-    
-    This processes all the lines from the given deploy.txt info. This
-    creates files in the target deploy directory.
-    
-    Args:
-        curdir (string): the current directory path off of the root
-        deploy (list): list of lines from deploy.txt
-        
-    """
-    lines = deploy['deploy']
+    lines = content['deploy']['files']
     if lines==['*']:
-        for f in deploy['files']:
-            shutil.copy(rootDir+curdir+"/"+f, deployDir+curdir+"/"+f) 
+        for f in os.listdir(rootDir+content["dirPath"]):
+            if (os.path.isfile(rootDir+content["dirPath"]+f)) and (f != "deploy.json"):    
+                shutil.copy(rootDir+content["dirPath"]+f, deployDir+content["dirPath"]+f)        
+             
     else:
         for line in lines:
-            i = line.index(' ')
-            dst = line[0:i]
-            src = line[i+1:].strip()
-            #print ":"+dst+":"+src       
+            #print "#"+str(line)+"#"
+            #i = line.index(' ')
+            #dst = line[0:i]
+            #src = line[i+1:].strip()
+            #print ":"+dst+":"+src  
+            pass
+    
+    for d in content["dirs"]:
+        processDeploys(d)        
+         
 
 def getSiteTreeFiles(content):
     """Get list of files to be deployed
@@ -148,50 +126,82 @@ def getSiteTreeFiles(content):
             ret.append((fn[0:i].strip(),fn[i+1:j].strip()))
     return ret
 
-def getBreadCrumbs(curPage):
+def getBreadCrumbs(content,fname=None):
     """Get HTML bread-crumbs for page
     
     This method returns the HTML lines for the bread-crumbs to the given page.
     
     Args:
-        curPage : the path to the desired page
-        
+        content : the desired directory content object        
         
     Returns:
         (string) the HTML for the bread-crumbs
         
-    """ 
-    lnks = curPage.split("/")
-    ret = ''
-    curdir = ''
-    for lnk in lnks[0:-1]:
-        curdir=curdir+lnk+"/"
-        l = lnk
-        if l=="":
-            l = "Home"
-        ret = ret + '<li><a href="'+curdir+'">'+l+'</a></li>'
-    ret = ret + '<li><a class="active">'+lnks[-1]+'</li>'
-    return ret
-            
-def getSiteNav(content,lines,curDir,curPage):
-    """Returns the site-tree for a given page
-    
-    This method returns the HTML for the site-tree for a given
-    page in the content hierarchy.
-    
-    Args:
-        content (string): the content info for the current directory
-        lines (list): the growing list of lines to write to
-        curDir (string): the current directory (this is recursive)
-        curPage (string): the page this navigation is for (affects 'active' in the tree)
-        
-    Returns:
-        list of HTML lines
-        
     """
     
+    pathLinks = ["/"] + content["dirPath"].split("/")[0:-1]
+    dispLinks = content["displayPath"].split("/")[1:]
+    
+    fo = None
+    if fname!=None:
+        for fi in content["deploy"]["files"]:
+            if fi["displayName"]==fname:
+                fo = fi
+                break
+        pathLinks = pathLinks + [fi["outputName"]]
+        dispLinks = dispLinks + [fi["displayName"]]
+    
+    ret = ''
+    for x in xrange(len(pathLinks)-1):
+        href = "/"+"/".join(pathLinks[1:x+1])
+        ret = ret + '<li><a href="'+href+'">'+dispLinks[x]+'</a></li>'
+    ret = ret + '<li class="active"><strong>'+dispLinks[-1]+'</strong></li>'
+    
+    return ret
+   
+def getSiteNav(content,curContent,fname=None):
+    lines = []
+    _getSiteNav(content,lines,curContent,fname)
+    return "".join(lines)
+    
+            
+def _getSiteNav(content,lines,curContent,fname):
+        
     # TODO: This doesn't handle the 'curPage' correctly
     
+    sn = "snn"
+    href = content["dirPath"]
+    if content["dirPath"]=="":
+        sn = "sn1"
+        href = "/"    
+    
+    dispLinks = content["displayPath"].split("/")[1:]   
+        
+    if curContent == content and fname==None:
+        lines.append('<li class="'+sn+'"><strong>'+dispLinks[-1]+"</strong>")
+    else:        
+        lines.append('<li class="'+sn+'"><a class="sna" href="'+href+'">'+dispLinks[-1]+'</a>')
+        
+    if len(content["deploy"]["files"])>0:
+        ifs = content["deploy"]["files"][1:]
+        if len(ifs)>0:
+            lines.append("<ul>")
+            for fi in ifs:
+                if curContent == content and fname==fi['displayName']:
+                    lines.append('<li class="'+sn+'"><strong>'+fi["displayName"]+"</strong>")
+                else:
+                    lines.append('<li class="'+sn+'"><a class="sna" href="'+href+fi["outputName"]+'">'+fi["displayName"]+'</a>')
+            lines.append("</ul>")
+    
+    if len(content["dirs"])>0:
+        lines.append("<ul>")
+        for sub in content["dirs"]:
+            if sub["displayPath"][-1]!='*':
+                _getSiteNav(sub,lines,curContent,fname)
+        lines.append("</ul>")
+    lines.append('</li>')
+    
+    """
     for (key,val) in content.iteritems():        
         if key=="css" or key=="js" or key=="img":
             continue
@@ -229,22 +239,29 @@ def getSiteNav(content,lines,curDir,curPage):
             lines.append('</ul>')
         
         lines.append("</li>")
-
+"""
 
 
 if __name__=="__main__":
     
-    d = loadContentTree(rootDir)
-    
+    d = loadContentTree()
     #pprint.pprint(d)
+    makeDeployDirectories(d)
+    processDeploys(d)
     
-    siteLines = []
-    siteTree = getSiteNav(d,siteLines,'','')
-    siteTreeHTML = "".join(siteLines)
+    crumbs = getBreadCrumbs(d)
+    print "'"+crumbs+"'"
     
-    crumbs = getBreadCrumbs('/CoCo/Bedlam/Code')
-    print crumbs
+    nav = getSiteNav(d,d)
+    print "'"+nav+"'"
+    
+    
+    #siteLines = []
+    #siteTree = getSiteNav(d,siteLines,'','')
+    #siteTreeHTML = "".join(siteLines)
+    
+    
     
     #pprint.pprint(siteTreeHTML)
     
-    #makeDeployDirectories(d)
+    

@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.DEBUG,
     format='%(asctime)-15s %(levelname)-8s %(name)-8s %(message)s')
 
 # Directory for "index.html" and "SNAP.js"
-STATIC_PATH = "../../deploy" # Current working directory
+STATIC_PATH = "../../../deploy" # Current working directory
 
 # The HTTP port being served
 WEBPORT = 80

@@ -1,26 +1,23 @@
 
-rootDir = "../../content/"
+rootDir = "../../../content/"
 
-breadCrumbs = \
-    '<li><a href="#">Home</a></li>'\
-    '        <li><a href="#">Arcade</a></li>'\
-    '        <li class="active">Space Invaders</li>'
+breadCrumbs = '<li class="active"><strong>Home</strong></li>'
+
     
-siteTree = '<li class="sn1"><a class="sna"><strong>Home</strong></a><ul><li class="snn"><a href="/CoCo" class="sna">CoCo</a><ul><li class="snn"><a href="/CoCo/Bedlam" class="sna">Bedlam</a><ul><li class="snn"><a href="/CoCo/Bedlam/Code.html" class="sna">Code</a></li><li class="snn"><a href="/CoCo/Bedlam/RAMTable.html" class="sna">RAM Table</a></li></ul></li><li class="snn"><a href="/CoCo/MadnessMinotaur" class="sna">MadnessMinotaur</a></li></ul></li></ul></li>'
+siteTree = '<li class="sn1"><strong>Home</strong><ul><li class="snn"><a class="sna" href="CoCo/">Color Computer</a><ul><li class="snn"><a class="sna" href="CoCo/MadnessMinotaur/">Madness & Minotaur</a><ul><li class="snn"><a class="sna" href="CoCo/MadnessMinotaur/code.html">Code</a></ul></li></ul></li></ul></li>'
 
 pageTree = \
     '<li class="sn1"><a class="sna">Page Header 1</a>'\
-    '            <ul>'\
-    '              <li class="snn"><a class="sna">Inner 1</a>'\
-    '                <ul>'\
-    '                  <li class="snn"><a class="sna">Way In 1</a></li>'\
-    '                  <li class="snn"><a class="sna">Way In 2</a></li>'\
-    '                </ul>'\
-    '              </li>'\
-    '              <li class="snn"><a class="sna">Inner 2</a></li>'\
-    '            </ul>'\
-    '          </li>'\
-    '          <li class="sn1"><a class="sna">Header 2</a></li>'
+    '  <ul>'\
+    '    <li class="snn"><a class="sna">Inner 1</a>'\
+    '      <ul>'\
+    '        <li class="snn"><a class="sna">Way In 1</a></li>'\
+    '        <li class="snn"><a class="sna">Way In 2</a></li>'\
+    '      </ul>'\
+    '    </li>'\
+    '    <li class="snn"><a class="sna">Inner 2</a></li>'\
+    '  </ul>'\
+    '</li>'    
     
 def markDownHeaders(bodyLines):    
     for x in xrange(len(bodyLines)):
@@ -162,4 +159,4 @@ def translate(inName, outName, breadCrumbs,siteTree,pageTree):
         f.write(oput)    
     
 if __name__ == "__main__":
-    translate("../../content/index.mark","../../deploy/index.html", breadCrumbs, siteTree, pageTree)
+    translate("../../../content/index.mark","../../../deploy/index.html", breadCrumbs, siteTree, pageTree)
