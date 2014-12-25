@@ -2,8 +2,8 @@
 
 "files" : 
 [
-  {"outputName":"index.html", "displayName":"",     "command":"markup(Mdness.mark)"},
-  {"outputName":"code.html",  "displayName":"Code", "command":"markup(Code.mark)"}
+  {"outputName":"index.html", "displayName":"",     "command":"markup Madness.mark"},
+  {"outputName":"code.html",  "displayName":"Code", "command":"markup Code.mark"}
 ]
 
 }

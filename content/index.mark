@@ -12,7 +12,7 @@ After decades of evolution computers still only understand the myopic language o
 subtract five from it, store it back to memory, and jump to another part of the program if the new value is zero. They see only the next 
 instruction or two. They have no concern over "where this is going".
 
-We rarely program in assembly anysmore. Now we have (arguably) human-friendly languages to speak in. The compiler takes over the mundane tasks of assembly 
+We rarely program in assembly anymore. Now we have (arguably) human-friendly languages to speak in. The compiler takes over the mundane tasks of assembly 
 programming: decomposing algebraic expressions into pieces, managing complex memory organization, and producing tedious jump code for flow constructs like 
 IF, DO, and WHILE.
 
@@ -103,13 +103,13 @@ The 2600 was limited to a direct access of 4K bytes in the cartridge. Many games
 through cartridge circuitry. See bank switching in action in [Atari2600/Asteroids Asteroids].
 
 The [Atari2600/Chess Chess] cartridge is a complete chess playing program for the Atari2600 with multiple difficulty levels. 
-The entire game fits in a 4K cartridge and uses only the system’s 128 bytes of memory.
+The entire game fits in a 4K cartridge and uses only the system's 128 bytes of memory.
 
 == Zelda ==
 
 The [NES/Zelda Legend of Zelda] for the NES started a long series of wonderful Zelda games spanning all the different Nintendo game systems.
 
-{{{Patrik, add whatever you want to the description here.}}}
+Patrik, add whatever you want to the description here.
 
 == Viruses ==
 
@@ -131,7 +131,7 @@ If you like Computer Archeology you must visit [http://donhodges.com/ Don Hodges
 Pac Man, Ms Pac Man, Dig Dug, Donkey Kong, and Defender to name a few. Visit his [http://donhodges.com/archive.htm Archive] for most of the series.
 
 Vecoven Frederic has disassembled the Galaga sound processor. See his awesome work here: 
-[http://www.vecoven.com/elec/galaga/galaga.html Vecoven Frederic – Galaga Sound]. Hopefully he will tackle the entire code base!
+[http://www.vecoven.com/elec/galaga/galaga.html Vecoven Frederic - Galaga Sound]. Hopefully he will tackle the entire code base!
 
 Dr. Stefan Holtgen in Berlin is working on a project investigating the nexus of hardware and programming languages of the early 
 micro computer era. Check out his blog at [http://www.simulationsraum.de Dr. Stefan Holtgen]. Google-translate does a great job if you don't read German.

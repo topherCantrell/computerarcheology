@@ -14,3 +14,9 @@ function switchTab(name) {
 		$("#siteTree").removeClass("hidden");
 	}
 }
+
+function pageScrollTo(name) {
+	$('html, body').animate({
+        scrollTop: $("#"+name).offset().top-150
+    }, 200);
+}

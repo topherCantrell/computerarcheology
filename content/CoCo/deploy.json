@@ -2,7 +2,7 @@
 
 "files" : 
 [
-   {"outputName":"index.html", "displayName":"", "command":"markup(index.mark)"}
+   {"outputName":"index.html", "displayName":"", "command":"markup CoCo.mark"}
 ],
 
 "dirList" :

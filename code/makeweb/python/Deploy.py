@@ -3,6 +3,8 @@ import pprint
 import shutil
 import json
 
+import MarkupToHTML
+
 rootDir = "../../../content/"
 deployDir = "../../../deploy/"
 
@@ -70,7 +72,7 @@ def _makeDeployDirectory(contentDirs):
         os.makedirs(deployDir+dinfo["dirPath"])
         _makeDeployDirectory(dinfo["dirs"])
         
-def processDeploys(content):   
+def processDeploys(rootContent,content):   
     """Process a tree of deploy.json commands
     
     This processes all the lines from the given deploy.json info. This
@@ -88,15 +90,29 @@ def processDeploys(content):
              
     else:
         for line in lines:
+           coms = line["command"].strip().split(" ")
+           if coms[0] == "markup":                
+               n = line["displayName"]
+               if n == "":
+                   n = None
+               breadCrumbs = getBreadCrumbs(content,n)
+               siteNav = getSiteNav(rootContent,content,n)
+                              
+               MarkupToHTML.translate(rootDir+content["dirPath"]+coms[1], 
+                                      deployDir+content["dirPath"]+line["outputName"], 
+                                      breadCrumbs,siteNav)               
+                           
+           else:
+               raise Exception("Unknown command:"+line["command"])
             #print "#"+str(line)+"#"
             #i = line.index(' ')
             #dst = line[0:i]
             #src = line[i+1:].strip()
             #print ":"+dst+":"+src  
-            pass
+            #def translate(inName, outName, breadCrumbs,siteTree,pageTree):
     
     for d in content["dirs"]:
-        processDeploys(d)        
+        processDeploys(rootContent,d)        
          
 
 def getSiteTreeFiles(content):
@@ -170,17 +186,16 @@ def _getSiteNav(content,lines,curContent,fname):
     # TODO: This doesn't handle the 'curPage' correctly
     
     sn = "snn"
-    href = content["dirPath"]
-    if content["dirPath"]=="":
-        sn = "sn1"
-        href = "/"    
+    href = "/"+content["dirPath"]
+    if href=="/":
+        sn = "sn1"       
     
     dispLinks = content["displayPath"].split("/")[1:]   
         
     if curContent == content and fname==None:
-        lines.append('<li class="'+sn+'"><strong>'+dispLinks[-1]+"</strong>")
+        lines.append('<li class="'+sn+'"><span class="sna"><strong>'+dispLinks[-1]+"</strong></span>")
     else:        
-        lines.append('<li class="'+sn+'"><a class="sna" href="'+href+'">'+dispLinks[-1]+'</a>')
+        lines.append('<li class="'+sn+'"><a class="sna" href="'+href+'">'+dispLinks[-1]+'</a>')        
         
     if len(content["deploy"]["files"])>0:
         ifs = content["deploy"]["files"][1:]
@@ -188,9 +203,9 @@ def _getSiteNav(content,lines,curContent,fname):
             lines.append("<ul>")
             for fi in ifs:
                 if curContent == content and fname==fi['displayName']:
-                    lines.append('<li class="'+sn+'"><strong>'+fi["displayName"]+"</strong>")
+                    lines.append('<li class="'+sn+'"><span class="sna"><strong>'+fi["displayName"]+"</strong></span>")
                 else:
-                    lines.append('<li class="'+sn+'"><a class="sna" href="'+href+fi["outputName"]+'">'+fi["displayName"]+'</a>')
+                    lines.append('<li class="'+sn+'"><a class="sna" href="'+href+fi["outputName"]+'">'+fi["displayName"]+'</a>')                    
             lines.append("</ul>")
     
     if len(content["dirs"])>0:
@@ -247,13 +262,13 @@ if __name__=="__main__":
     d = loadContentTree()
     #pprint.pprint(d)
     makeDeployDirectories(d)
-    processDeploys(d)
+    processDeploys(d,d)
     
     crumbs = getBreadCrumbs(d)
-    print "'"+crumbs+"'"
+    #print "'"+crumbs+"'"
     
     nav = getSiteNav(d,d)
-    print "'"+nav+"'"
+    #print "'"+nav+"'"
     
     
     #siteLines = []

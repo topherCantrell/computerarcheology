@@ -1,17 +1,17 @@
-[[PageOutline()]]
-
-= Madness and the Minotaur =
+%%template master.template
+%%title Madness
+%%image Madness.jpg
 
 [wiki:CoCo/Madness/Code Madness and the Minotaur Code]
 
-For more information on Madness and the Minotaur check out Sean Murphy’s wonderful site:[[br]]
+For more information on Madness and the Minotaur check out Sean Murphy's wonderful site:[[br]]
 [http://www.figmentfly.com] 
 
 == ZCode Translation (for iPod) ==
 
-I am working on translating the original source into ZCode for play with Frotz. Frotz is an interpreter for Infocom games and other Z-machine games. It compiles for many platforms including Windows and the iPod. You can download Frotz from the apple app-store for free and then upload “Madness.z5” to your iPod and play madness on the go.
+I am working on translating the original source into ZCode for play with Frotz. Frotz is an interpreter for Infocom games and other Z-machine games. It compiles for many platforms including Windows and the iPod. You can download Frotz from the apple app-store for free and then upload "Madness.z5" to your iPod and play madness on the go.
 
-Currently you can explore the game’s rooms through their natural passages (no jumps). The spells, objects, and creatures are placed. The “protected” lists work. You can learn spells and score points. I am working now on the passage-actions and the room-actions.
+Currently you can explore the game's rooms through their natural passages (no jumps). The spells, objects, and creatures are placed. The "protected" lists work. You can learn spells and score points. I am working now on the passage-actions and the room-actions.
 
  * [attachment:madness.inf madness.inf (top)]
  * [attachment:MadGameLoop.inf MadGameLoop.inf (main game flow)]
@@ -27,17 +27,17 @@ Currently you can explore the game’s rooms through their natural passages (no 
 
 == Text Adventure and Real Time Strategy ==
 
-Madness and the Minotaur is a text adventure game that includes elements of a D&D game and a non-turn-based action game. You have “hit points” (physical condition) and you will die when they run out. There are creatures that move from room to room once a minute. If you sit still long enough a creature will find you and kill you. Your pack has bulk and weight. The more you carry and the lower your hit-points the harder it is for you to jump.
+Madness and the Minotaur is a text adventure game that includes elements of a D&D game and a non-turn-based action game. You have "hit points" (physical condition) and you will die when they run out. There are creatures that move from room to room once a minute. If you sit still long enough a creature will find you and kill you. Your pack has bulk and weight. The more you carry and the lower your hit-points the harder it is for you to jump.
 
-To win the game you have to learn all 8 spells and drop all 16 treasure objects in the forest (room 202). The spells are sprinkled around the rooms at random. Some objects are “protected” and require you have a set of other objects to release (see below). Some object are “carried” by creatures. Some objects are attached to special room-actions.
+To win the game you have to learn all 8 spells and drop all 16 treasure objects in the forest (room 202). The spells are sprinkled around the rooms at random. Some objects are "protected" and require you have a set of other objects to release (see below). Some object are "carried" by creatures. Some objects are attached to special room-actions.
 
 == Cheats ==
 
-You type “CLOADM” to load the game. Then you type “EXEC” to run the game. Between these commands you can make patches to the code with BASIC POKE commands. Here are some useful cheats:
+You type "CLOADM" to load the game. Then you type "EXEC" to run the game. Between these commands you can make patches to the code with BASIC POKE commands. Here are some useful cheats:
 
 {{{
 39->1A2F    POKE 6703,57    Invulnerable to damage
-21->78D     POKE 1933,33    Lamp doesn’t burn oil
+21->78D     POKE 1933,33    Lamp doesn't burn oil
 21->11CD    POKE 4557,33    ASK ORACLE any time
 20->E0E     POKE 3598,32    Move in any direction
 
@@ -50,11 +50,11 @@ You type “CLOADM” to load the game. Then you type “EXEC” to run the game
             POKE 2061,18
 }}}
 
-In making the ZCode port I wrote a debug system that loads from virtual tape to memory at 7000. The system allows you to read and write any memory location from inside the game. The system hooks into the “EAT” and the “TIE” commands.
+In making the ZCode port I wrote a debug system that loads from virtual tape to memory at 7000. The system allows you to read and write any memory location from inside the game. The system hooks into the "EAT" and the "TIE" commands.
 
-The command “EAT 0000” will print the value at memory location 0000 (hex). The command “TIE 0000:50” will set memory location 0000 to 50 (hex). The disassembly describes location 0000 as the “current room”. This debug command thus allows you to set the room number to anything letting you teleport around the dungeon at will.
+The command "EAT 0000" will print the value at memory location 0000 (hex). The command "TIE 0000:50" will set memory location 0000 to 50 (hex). The disassembly describes location 0000 as the "current room". This debug command thus allows you to set the room number to anything letting you teleport around the dungeon at will.
 
-You load the debug system into memory first with the CLOADM BASIC command. Then you load Madness. Then you make 6 pokes to tie the system to the game’s commands. As shown in the comments below.
+You load the debug system into memory first with the CLOADM BASIC command. Then you load Madness. Then you make 6 pokes to tie the system to the game's commands. As shown in the comments below.
 
 {{{
 ; cload (instbas.cas) basic poker
@@ -112,25 +112,25 @@ Here is the virtual COCO tape that contains the debug system: [attachment:inst.c
 
 == Game Room Geometry ==
 
-There are 256 rooms in the game -- 4 floors of 64 rooms each. Each floor is a square grid of 8x8 rooms. Rooms are numbered from 0 to 255. Room 0 is the upper left of the first floor and room 255 is the lower right of the last floor. Going EAST adds 1 to the room number. WEST subtracts one. NORTH subtracts 8. SOUTH adds 8. UP subtracts 64. DOWN adds 64. If the room number becomes less than 0 or greater than 255 it “wraps around”.
+There are 256 rooms in the game -- 4 floors of 64 rooms each. Each floor is a square grid of 8x8 rooms. Rooms are numbered from 0 to 255. Room 0 is the upper left of the first floor and room 255 is the lower right of the last floor. Going EAST adds 1 to the room number. WEST subtracts one. NORTH subtracts 8. SOUTH adds 8. UP subtracts 64. DOWN adds 64. If the room number becomes less than 0 or greater than 255 it "wraps around".
 
-There is a table in the game that defines the “natural” passages between rooms. Most of these passages are two way, but some are one way. The map below shows the natural passages as a line between the rooms. If the line touches the room with a “+” then the passage can be entered from the room. If there is no “+” then the passage is one way from the adjoining room. For instance, you can take the passage from room 7 to 6 but not from 6 to 7. This map is NOT randomized between games. The natural passages are the same for all games.
+There is a table in the game that defines the "natural" passages between rooms. Most of these passages are two way, but some are one way. The map below shows the natural passages as a line between the rooms. If the line touches the room with a "+" then the passage can be entered from the room. If there is no "+" then the passage is one way from the adjoining room. For instance, you can take the passage from room 7 to 6 but not from 6 to 7. This map is NOT randomized between games. The natural passages are the same for all games.
 
 Every room has a single one-sentence description (see the code). There are eight different messages to describe a passage leading from a room in any one direction. The game builds the description of passages by selecting a random description for each open direction. Thus a room is described a little bit differently every time you see it.
 
-The game keeps a list of “blocked” passages. Randomly (on the average of once every 4 minutes) the ground will begin to shake and three passages are blocked somewhere in the dungeon. The game keeps a list of the last 12 rooms it has blocked. It pulls the oldest rooms from this list and unblocks them as it blocks new ones. Thus only 12 can be blocked up by the shaking ground and the dungeon doesn’t get clogged up completely over time. You can use the CROM spell to unblock all passages in a room. If you have the POWERRING in your pack you can walk through blocked passages. Otherwise just wait around (with your lamp off to save oil) and the passages will eventually unblock.
+The game keeps a list of "blocked" passages. Randomly (on the average of once every 4 minutes) the ground will begin to shake and three passages are blocked somewhere in the dungeon. The game keeps a list of the last 12 rooms it has blocked. It pulls the oldest rooms from this list and unblocks them as it blocks new ones. Thus only 12 can be blocked up by the shaking ground and the dungeon doesn't get clogged up completely over time. You can use the CROM spell to unblock all passages in a room. If you have the POWERRING in your pack you can walk through blocked passages. Otherwise just wait around (with your lamp off to save oil) and the passages will eventually unblock.
 
-The last three rows (40 rooms) of the every floor is the “maze of tunnels stretching in all directions”. These behave like normal rooms, but they all share the same room description and they all have full connectivity to their neighboring maze rooms. There is also limited entry and exit to the maze. Note that all the rooms on the 4th floor (except the treasure room) are a “maze of tunnels” even though the first 5 rows are not laid out like the maze.
+The last three rows (40 rooms) of the every floor is the "maze of tunnels stretching in all directions". These behave like normal rooms, but they all share the same room description and they all have full connectivity to their neighboring maze rooms. There is also limited entry and exit to the maze. Note that all the rooms on the 4th floor (except the treasure room) are a "maze of tunnels" even though the first 5 rows are not laid out like the maze.
 
 == Jumps ==
 
-There are 24 places in the dungeon where you can jump. The map shows these jump locations and where they go. The map also shows landing points for jumps so you can quickly reference back to the starting room. For instance, “j:102” in room 38 means that you can jump into room 38 from room 102.
+There are 24 places in the dungeon where you can jump. The map shows these jump locations and where they go. The map also shows landing points for jumps so you can quickly reference back to the starting room. For instance, "j:102" in room 38 means that you can jump into room 38 from room 102.
 
 All jumps check your dexterity ... your physical-condition minus the weight of your pack. Each jump has a dexterity requirement to succeed. If your dexterity is less than this value you fail, and each jump has its own description of what to do for a failure.
 
 You start the game with the maximum physical condition of 255. The maximum for weight is 255. The maximum for bulk is 255.
 
-A failed jump can end in instant “death”. Or a failed jump can end in a “fumble” in which case you actually make the jump but you drop the heaviest object you are carrying in the room you jumped from. Or a failed jump can end in a “stumble” where you don’t make the jump and you take a specific amount of damage. Here is the jump table:
+A failed jump can end in instant "death". Or a failed jump can end in a "fumble" in which case you actually make the jump but you drop the heaviest object you are carrying in the room you jumped from. Or a failed jump can end in a "stumble" where you don't make the jump and you take a specific amount of damage. Here is the jump table:
 
 {{{
 3BE1: 8F 80 00 97 6D; From 143 "JUMP PIT"   to 151. Required=128 or DEATH
@@ -168,7 +168,7 @@ A failed jump can end in instant “death”. Or a failed jump can end in a “f
 3C59: 10 8C 80 27 06; From 16  "JUMP DOWN"  to 39.  Required=140 or FUMBLE
 }}}
 
-For instance, the jump description in room 16 says “J:POOL:17:128F”. That means you “JUMP POOL” to get to room 17. The jump requires a dexterity of 128 and if you fail you “fumble” an object. All of these jumps except the last are NOT randomized. They are same every game. The last jump in the table is dynamically assigned to the room with the “SMALL PIT IN THE CORNER”. If this jump is placed in a room that already has a jump then it is never seen.
+For instance, the jump description in room 16 says "J:POOL:17:128F". That means you "JUMP POOL" to get to room 17. The jump requires a dexterity of 128 and if you fail you "fumble" an object. All of these jumps except the last are NOT randomized. They are same every game. The last jump in the table is dynamically assigned to the room with the "SMALL PIT IN THE CORNER". If this jump is placed in a room that already has a jump then it is never seen.
 
 == Passage Actions ==
 
@@ -198,11 +198,11 @@ There are several passages that have action triggers associated with them. You c
 ; We flag the main routine to skip movement.
 }}}
 
-I believe the designers had intended for these to be randomizable. The data table is stored in the area that is saved to tape along with the other randomizable things. Also note that action A is applied to the EAST/WEST passage between room 74 and 75. But action A specifically checks to see that it is used in an up/down passage or nothing happens. Perhaps these were randomized once and then “locked down” in the code.
+I believe the designers had intended for these to be randomizable. The data table is stored in the area that is saved to tape along with the other randomizable things. Also note that action A is applied to the EAST/WEST passage between room 74 and 75. But action A specifically checks to see that it is used in an up/down passage or nothing happens. Perhaps these were randomized once and then "locked down" in the code.
 
 == Enter-Room Actions ==
 
-There are 36 rooms that are given random “enter actions” at the start of the game. There are only 28 different actions … some are used multiple times. The first 30 action are placed at random. The “room with the music” is also placed at random. The other 5 are fixed.
+There are 36 rooms that are given random "enter actions" at the start of the game. There are only 28 different actions - some are used multiple times. The first 30 action are placed at random. The "room with the music" is also placed at random. The other 5 are fixed.
 
 {{{
 ; The first 30 entering-room-actions are placed using this table. The first two
@@ -299,11 +299,11 @@ The actions themselves are described below:
 
 == Objects ==
 
-There are 40 objects in the game. 16 of those are treasures. 8 objects are “protected”, which requires you to have a combination of other objects in your pack in order to pick them up. Once you have released a protected object it remains unprotected the rest of the game. The 6 creatures are also “protected”. You have to have the combination to kill them.
+There are 40 objects in the game. 16 of those are treasures. 8 objects are "protected", which requires you to have a combination of other objects in your pack in order to pick them up. Once you have released a protected object it remains unprotected the rest of the game. The 6 creatures are also "protected". You have to have the combination to kill them.
 
 Every object has a weight and every object has a bulk. In order to pick up an object your combined pack weight (including the new object) must be less than your physical condition. The new combined bulk must be less than your physical condition.
 
-Objects are randomly placed using a combination of random ranges, masks, and a table of target rooms. Most objects are placed outside the maze. The lamp is placed near the starting point so you don’t have to search far for it. Objects that are marked PROTECTED are described shortly.
+Objects are randomly placed using a combination of random ranges, masks, and a table of target rooms. Most objects are placed outside the maze. The lamp is placed near the starting point so you don't have to search far for it. Objects that are marked PROTECTED are described shortly.
 
 {{{
 ; This script controls how objects are placed and how the flags are initialized.
@@ -383,17 +383,17 @@ Some of the objects have special abilities:
 
 LAMP - The first 40 rooms of level one and the treasure room (202) are naturally lit. The rest of the rooms need lamp light for you to see. You can LAMP ON and LAMP OFF to turn the lamp on and off.
 
-SCARAB - The AKHIROM spell makes you invulnerable for 3 minutes IF you have the scarab in your pack. Once you are invulnerable you will see the scarab glowing if you “LOOK SCARAB”. At the end of three minutes the scarab moves to a random room.
+SCARAB - The AKHIROM spell makes you invulnerable for 3 minutes IF you have the scarab in your pack. Once you are invulnerable you will see the scarab glowing if you "LOOK SCARAB". At the end of three minutes the scarab moves to a random room.
 
 FOOD - The foods adds 30 to your physical condition (no more than 95). Then the food moves to a random room to be eaten again. You can EAT FOOD.
 
 POWDER - If you EAT POWDER then the URN and BOTTLE (fillable things) come to your current room and the POWDER moves to a random room.
 
-MUSHROOM – Most of the time eating the mushroom adds 60 to your physical condition. Then the mushroom moves to a random room. But be careful: the mushroom has a 1/32 chance of killing you instantly. Save your game before you eat it. You can EAT MUSHROOM.
+MUSHROOM - Most of the time eating the mushroom adds 60 to your physical condition. Then the mushroom moves to a random room. But be careful: the mushroom has a 1/32 chance of killing you instantly. Save your game before you eat it. You can EAT MUSHROOM.
 
 BOTTLE - The bottle can be filled up with water in several rooms. Drinking the water from the bottle heals your physical condition by 32 points and starts a 16 minute timer. You can only heal up by drinking water once every 16 minutes. You can DRINK WATER. The bottle starts full of water.
 
-You can also attempt to DRINK SPRITE … a pun on the soda drink. You’ll get a “YOU MUST BE JOKING” message.
+You can also attempt to DRINK SPRITE - a pun on the soda drink. You'll get a "YOU MUST BE JOKING" message.
 
 URN - The urn holds oil to refill the lamp. There is a pool of oil that moves every time you fill from it. You can fill the lamp directly from the pool of oil or you can fill the urn from the pool. In fact, the urn will hold four fills. The number of refills in the pool of oil is randomized at the start of the game from 4 to 7. You can only see the pool of oil when you know ISHTAR. You can FILL URN or FILL LAMP. The URN starts with 4 refills of oils.
 
@@ -403,25 +403,25 @@ ROPE - You need the rope to climb the ledge for its treasure. You also need the 
 
 TABLET - If you in room 19 (with the ancient carvings on the wall) you can LOOK TABLET to bring the Oracle to the room. The tablet then moves to a random room.
 
-POWERRING - If you have the tablet you can walk through blocked passages. You can also OPEN CRYPT in the “crypt of the ancient king” with the powering. Otherwise your physical condition must be greater than 250 to open it.
+POWERRING - If you have the tablet you can walk through blocked passages. You can also OPEN CRYPT in the "crypt of the ancient king" with the powering. Otherwise your physical condition must be greater than 250 to open it.
 
-SCEPTER - In the room with action “_h” you have to know VETRA or have the SCEPTER or you get pushed out.
+SCEPTER - In the room with action "_h" you have to know VETRA or have the SCEPTER or you get pushed out.
 
 POTION - If you DRINK POTION you heal by adding 200 to your physical condition and the potion moves to a random room. There is also a 7/8 chance of curing the scorpion sting if you have been stung. If fact, this is the only way to cure the scorpion sting so keep it on you until you have killed the scorpion.
 
-There is a bug in the code for “DRINK POTION”. If you enter the command but don’t have potion you’ll see “THE BOTTLE IS EMPTY” … even if you don’t have the potion or the bottle.
+There is a bug in the code for "DRINK POTION". If you enter the command but don't have potion you'll see "THE BOTTLE IS EMPTY" - even if you don't have the potion or the bottle.
 
 PENDANT - If you are carrying the PENDANT and enter room 232 from the south then you are moved to a random room near the start (room 10) and the PENDANT drops in a random room.
 
 SCROLL - If you have the scroll you can OPEN SCROLL anywhere on the 3rd or 4th floor to bring the Troglodyte to you.
 
-JEWLBOX - If you open the JEWLBOX in room 158 (the Minotaur’s lair) the Minotaur will appear in the room.
+JEWLBOX - If you open the JEWLBOX in room 158 (the Minotaur's lair) the Minotaur will appear in the room.
 
 DRAPES - If you OPEN DRAPES in room 9 there is a 1 in 4 chance of opening the passage to the south. You only get one chance at this.
 
 == Protected Objects ==
 
-Object marked with a “*” in the table above are protected. You must have a specific set of objects in your pack in order to GET these objects. You can have other objects in your pack too, but you must have all of the combo objects. Once you have freed a protected object it remains free. You can DROP and GET it back without the specific combo on objects in your pack.
+Object marked with a "*" in the table above are protected. You must have a specific set of objects in your pack in order to GET these objects. You can have other objects in your pack too, but you must have all of the combo objects. Once you have freed a protected object it remains free. You can DROP and GET it back without the specific combo on objects in your pack.
 
 There is potential here for a deadlock. Protected object A could require you to have object B but B might be protected and require you have object A. The developers went to great lengths to keep this from happening. Instead of making the trigger-lists at random, they created a handful of possible lists for each object. At startup the game picks a random list from the possible lists for each protected object.
 
@@ -500,11 +500,11 @@ The lists were carefully constructed to avoid a deadlock. Here are the possible 
 1DE8: FF 
 }}}
 
-For instance, to get the POWERRING you might only need to have learned BELROG. Or you might need the SHIELD, SWORD, and AKHIROM. The Oracle will tell you (one object at a time) the required objects for each protected item except the SPELLBOOK. You get the combination for the SPELLBOOK by “LOOK POOL” in room 0.
+For instance, to get the POWERRING you might only need to have learned BELROG. Or you might need the SHIELD, SWORD, and AKHIROM. The Oracle will tell you (one object at a time) the required objects for each protected item except the SPELLBOOK. You get the combination for the SPELLBOOK by "LOOK POOL" in room 0.
 
 == Spells ==
 
-The “AIR IS CRACKLING WITH ENCHANTMENT” if you enter a room with a spell (or multiple spells). If you have the right item in your backpack you will automatically learn the spell. You have to learn the spells in order. You have to have the MUSHROOM and the FOOD to learn VETAR. You have to know VETAR and have the PARCHMENT to learn MITRA. The following table shows what you have to have to learn a spell and the rooms that the spells may appear in (random pick between the first and second room number inclusively).
+The "AIR IS CRACKLING WITH ENCHANTMENT" if you enter a room with a spell (or multiple spells). If you have the right item in your backpack you will automatically learn the spell. You have to learn the spells in order. You have to have the MUSHROOM and the FOOD to learn VETAR. You have to know VETAR and have the PARCHMENT to learn MITRA. The following table shows what you have to have to learn a spell and the rooms that the spells may appear in (random pick between the first and second room number inclusively).
 
 {{{
 3BC1: 09 01 00 00    ; VETRA:   MUSHROOM and FOOD                   
@@ -555,31 +555,31 @@ Using a spell costs hit points (physical condition). The more powerful the spell
 ; number of uses (randomized at start to 1-4) so use it wisely.
 }}}
 
-There are several places in the dungeon where the lamp gets blown out of your hands. You can use VETAR on your next turn to get it back. If you take a step, VETAR won’t work.
+There are several places in the dungeon where the lamp gets blown out of your hands. You can use VETAR on your next turn to get it back. If you take a step, VETAR won't work.
 
 ISHTAR moves you to the exit room. At the beginning of the game the number of uses is randomized from 1 to 4. The room with the oil in it (to refill the URN or LAMP) will not appear until you know ISHTAR.
 
 == Creatures ==
 
-There are six “real” creatures in the game that move around and attack you. The Oracle moves like a creature but gives you advice if you ASK ORACLE. Once the oracle gives advice it moves to a random room in the dungeon and continues walking around. The ORACLE starts in a random room on the 1st two floors. Once a minute the oracle picks a random direction from its current room and moves to the target room. It is not stopped by blocked passages or even missing passages.
+There are six "real" creatures in the game that move around and attack you. The Oracle moves like a creature but gives you advice if you ASK ORACLE. Once the oracle gives advice it moves to a random room in the dungeon and continues walking around. The ORACLE starts in a random room on the 1st two floors. Once a minute the oracle picks a random direction from its current room and moves to the target room. It is not stopped by blocked passages or even missing passages.
 
-There is an interesting bug in the code involving the Oracle. If you KILL ORACLE you will get the message THE URN IS FILLED WITH OIL, which doesn’t make much sense. Then the oracle moves to a random room.
+There is an interesting bug in the code involving the Oracle. If you KILL ORACLE you will get the message THE URN IS FILLED WITH OIL, which doesn't make much sense. Then the oracle moves to a random room.
 
 The Hydra is placed in a random room and caries a treasure. When you try to enter the room with the Hydra it will push you back. As soon as it pushes you back you can TIE HYDRA if you have the rope. This binds the Hydra allowing you to enter the room with it. Then you STAB HYDRA to kill it. If you have the SWORD in your pack your physical condition must be at least 200 to kill it. If instead you have the DAGGER, your physical condition must be at least 240. All other stabs miss. The AKHIROM spell (makes you invulnerable) will also kill the Hydra no matter what your condition. When the Hydra dies it drops its treasure and the rope.
 
-At the beginning of the game the packrat is given a random treasure and notes a random treasure to watch for. It is placed in a random room. If you enter the room carrying the trigger treasure then the packrat will drop its own treasure for you. If you don’t have the trigger then the rat runs into hiding. And if the rat happens to be carrying its own trigger? The designers coded for that. If the rat is carrying its own trigger it immediately drops the treasure for you.
+At the beginning of the game the packrat is given a random treasure and notes a random treasure to watch for. It is placed in a random room. If you enter the room carrying the trigger treasure then the packrat will drop its own treasure for you. If you don't have the trigger then the rat runs into hiding. And if the rat happens to be carrying its own trigger? The designers coded for that. If the rat is carrying its own trigger it immediately drops the treasure for you.
 
-The six “real” creatures all move once a minute. Once they are in the room with you they go into a second-by-second attack phase described below. If you are still alive when the minute tick comes along, the creature moves on.
+The six "real" creatures all move once a minute. Once they are in the room with you they go into a second-by-second attack phase described below. If you are still alive when the minute tick comes along, the creature moves on.
 
-To kill a creature you use the KILL command: KILL MINOTAR for example. The creatures have combinations-of-objects you must possess just like the protected objects in order for the KILL to take them down. If you don’t have the right combination you miss and take 50 damage to your physical condition.
+To kill a creature you use the KILL command: KILL MINOTAR for example. The creatures have combinations-of-objects you must possess just like the protected objects in order for the KILL to take them down. If you don't have the right combination you miss and take 50 damage to your physical condition.
 
-Like the protected objects the creatures have “possible” lists that are chosen at random at the start of the game. The oracle will tell you what the combinations are.
+Like the protected objects the creatures have "possible" lists that are chosen at random at the start of the game. The oracle will tell you what the combinations are.
 
 === Sprite ===
 
 The SPRITE starts in a random room on the 1st two floors (not the maze). Once a minute the SPRITE moves in a random direction. It may only move in a valid, unblocked direction. It may not move to the 4th floor except for the treasure room.
 
-When the SPRITE enters a room it moves all objects on the floor to a random room anywhere in the dungeon. To protected dropped objects there are some rooms the SPRITE may not go. The SPRITE may not move to the room with the music on the 1st floor (enter-action “_z”).
+When the SPRITE enters a room it moves all objects on the floor to a random room anywhere in the dungeon. To protected dropped objects there are some rooms the SPRITE may not go. The SPRITE may not move to the room with the music on the 1st floor (enter-action "_z").
 
 The SPRITE may not move to the room with the VIAL in it (whether the vial is protected or free). Thus you can drop the vial anywhere you want to protect them from the SPRITE.
 
@@ -609,7 +609,7 @@ If the TROGLODYTE is in the room with you it attacks on a twelve second cycle. T
 
 The SCORPION starts in a random room on the 2nd or 3rd floor (not the maze). Once a minute the SCORPTION moves in a random direction. It does not check for passages or blocks. It may move to any floor.
 
-If the SCORPION is in a room with attacks on a random second. The attack does one of two things. Half the time it does nothing and the SCORPION vanishes for 16 seconds. Other half of the time it increases the sting count. Once stung, you take damage once a minute from the accumulated stings at a rate of 5 times number-of-stings to your physical condition. The only cure for the SCORPION sting is the POTION, and even it doesn’t work 1/8th of the time. If it doesn’t work you have to find the POTION and try again before you die.
+If the SCORPION is in a room with attacks on a random second. The attack does one of two things. Half the time it does nothing and the SCORPION vanishes for 16 seconds. Other half of the time it increases the sting count. Once stung, you take damage once a minute from the accumulated stings at a rate of 5 times number-of-stings to your physical condition. The only cure for the SCORPION sting is the POTION, and even it doesn't work 1/8th of the time. If it doesn't work you have to find the POTION and try again before you die.
 
 In order to KILL SCORPION, you must have one of the following combination of objects (the list is chosen at random at the start of the game):
 
@@ -651,7 +651,7 @@ In order to KILL SATYR, you must have one of the following combination of object
 
 The MINOTAUR starts in a random room on the 3rd floor (not the maze). Once a minute the MINOTAUR moves in a random direction. It may only move in a valid, unblocked direction. It may not move to the 1st floor.
 
-If the MINOTAUR is in the room with you it attacks on a ten second cycle. The 1st second it prints “THE MINOTAUR IS HERE”. On the 10th second it hits with 0 to 70 points of damage to your physical condition.
+If the MINOTAUR is in the room with you it attacks on a ten second cycle. The 1st second it prints "THE MINOTAUR IS HERE". On the 10th second it hits with 0 to 70 points of damage to your physical condition.
 
 In order to KILL MINOTAUR you must have one of the following combinations of objects (the list is chosen at random at the start of the game):
 
@@ -677,50 +677,50 @@ Entering room with aura adds 40 (must wait 10 minutes before it will heal again)
 
 There are 16 treasure objects you must get to the ground in room 202: GOLD, SILVER, DIAMNOD, SPELLBOOK, RUBY, FLEECE, TIARA, POWDER, AMULET, POTION, POWERRING, LIGHTRIGHT, TRUTHRING, CROWN, OPAL, and SAPPHIRE. These are the last 16 objects in the object table above.
 
-Four of these treasures are “protected”, and you’ll see them as you walk around the dungeon. The other 12 are “carried” and will be assigned randomly to the following 17 “containers”. There are 4 other carried objects too that are not treasures: SCROLL, SCARAB, JEWELBOX, and TABLET. Thus 16 of the 17 containers described next will have an object, but remember not all of them are treasures.
+Four of these treasures are "protected", and you'll see them as you walk around the dungeon. The other 12 are "carried" and will be assigned randomly to the following 17 "containers". There are 4 other carried objects too that are not treasures: SCROLL, SCARAB, JEWELBOX, and TABLET. Thus 16 of the 17 containers described next will have an object, but remember not all of them are treasures.
 
-Five of the six moving creatures are given objects. You will have to KILL them: SPRITE, TROGLODYTE, SCORPION, NYMPH, SATYR, and MINOTAUR. One of these creatures is chosen to be “empty” when the carried objects are passed out. But it is never the MINOTAUR. Killing the MINOTAUR will always produce a reward, though it may not be a treasure.
+Five of the six moving creatures are given objects. You will have to KILL them: SPRITE, TROGLODYTE, SCORPION, NYMPH, SATYR, and MINOTAUR. One of these creatures is chosen to be "empty" when the carried objects are passed out. But it is never the MINOTAUR. Killing the MINOTAUR will always produce a reward, though it may not be a treasure.
 
-The “EnterRoomAction_t” is the packrat. It is placed at random on the last 2 floors. You must be carrying the object it wants to see. Then it will drop its own object.
+The "EnterRoomAction_t" is the packrat. It is placed at random on the last 2 floors. You must be carrying the object it wants to see. Then it will drop its own object.
 
-The “EnterRoomAction_g” is the HYDRA. It is placed at random outside the maze on the 2nd floor. The HYDRA holds an object. When it pushes you back you must immediately “TIE HYDRA” with the rope in your pack. Then you can enter the room with it and STAB HYDRA with the sword or dagger in your pack. Or you can kill it with the AKHIROM spell (you must have the SCARAB in your pack).
+The "EnterRoomAction_g" is the HYDRA. It is placed at random outside the maze on the 2nd floor. The HYDRA holds an object. When it pushes you back you must immediately "TIE HYDRA" with the rope in your pack. Then you can enter the room with it and STAB HYDRA with the sword or dagger in your pack. Or you can kill it with the AKHIROM spell (you must have the SCARAB in your pack).
 
-The “EnterRoomAction_203a” is a “SMALL PIT IN THE CORNER OF THE ROOM”. This room is placed at random anywhere on the last floor. If you LOOK PIT you will get the object. You may have to look several times as there is a 50/50 chance of seeing it each time.
+The "EnterRoomAction_203a" is a "SMALL PIT IN THE CORNER OF THE ROOM". This room is placed at random anywhere on the last floor. If you LOOK PIT you will get the object. You may have to look several times as there is a 50/50 chance of seeing it each time.
 
-The “EnterRoomAction_e” is a room with music playing. It is placed at random anywhere on the last floor. If you have the PARCHMENT in your pack and PLAY FLUTE then a ledge will appear. If you have the rope in your pack you can CLIMB LEDGE to get the object.
+The "EnterRoomAction_e" is a room with music playing. It is placed at random anywhere on the last floor. If you have the PARCHMENT in your pack and PLAY FLUTE then a ledge will appear. If you have the rope in your pack you can CLIMB LEDGE to get the object.
 
-The “EnterRoomAction_d” is a “PILE OF ROCKS”. It is placed at random anywhere on the last floor. You will only see the rocks once you have learned the VETAR spell. Then the OKKAN spell will get the treasure from the rocks.
+The "EnterRoomAction_d" is a "PILE OF ROCKS". It is placed at random anywhere on the last floor. You will only see the rocks once you have learned the VETAR spell. Then the OKKAN spell will get the treasure from the rocks.
 
-The “EnterRoomAction_33” is in room 33. Walk in with the lamp on and get the object.
+The "EnterRoomAction_33" is in room 33. Walk in with the lamp on and get the object.
 
-The “EnterRoomAction_u” has a free object. Walk in with the lamp on and get the object. This action is placed outside the maze on the first floor.
+The "EnterRoomAction_u" has a free object. Walk in with the lamp on and get the object. This action is placed outside the maze on the first floor.
 
-The “EnterRoomAction_s” is the room with the eerie glow and strange color walls. It is placed at random outside the maze on the second floor. If you LAMP OFF in this room you’ll get the object.
+The "EnterRoomAction_s" is the room with the eerie glow and strange color walls. It is placed at random outside the maze on the second floor. If you LAMP OFF in this room you'll get the object.
 
-The “EnterRoomAction_r” has an object. It is placed at random on the first two floors. The object is “free”, but you have to enter the room three times for it to be released. There is no way to know when you have entered this room. You just have to drift around until you enter it 3 times.
+The "EnterRoomAction_r" has an object. It is placed at random on the first two floors. The object is "free", but you have to enter the room three times for it to be released. There is no way to know when you have entered this room. You just have to drift around until you enter it 3 times.
 
-There is a crypt in room 67. If you OPEN CRYPT in this room then the object will fall out. Your physical condition minus your pack-weight must be 250 or better. You’ll probably have to drop everything before you can open the crypt.
+There is a crypt in room 67. If you OPEN CRYPT in this room then the object will fall out. Your physical condition minus your pack-weight must be 250 or better. You'll probably have to drop everything before you can open the crypt.
 
 There is a crypt in room 102. If you OPEN CRYPT in this room then the object will fall out. If you have the POWERRING you will automatically open it. Otherwise your physical condition minus your pack-bulk must be 250 or better.
 
 == The Save-Game Viewer ==
 
-The map and info at the end of this write-up was created by my save-game viewer. Download the code JAR from the “Tools” page on my site to your machine and play the game online using the signed-version of the [http://members.cox.net/javacoco/signedmocha.html online Mocha emulator]. The signed version will allow you to save your game to your local machine.
+The map and info at the end of this write-up was created by my save-game viewer. Download the code JAR from the "Tools" page on my site to your machine and play the game online using the signed-version of the [http://members.cox.net/javacoco/signedmocha.html online Mocha emulator]. The signed version will allow you to save your game to your local machine.
 
-In the emulator’s “SETUP” click on “MOUNT LOCAL”. When you save your game you will be prompted for a local CAS file. Remember to click on MOUNT LOCAL every time you want a new save file. Otherwise your save will be appended to the end of the first file.
+In the emulator's "SETUP" click on "MOUNT LOCAL". When you save your game you will be prompted for a local CAS file. Remember to click on MOUNT LOCAL every time you want a new save file. Otherwise your save will be appended to the end of the first file.
 
 To run the save-game viewer, enter the following command:
 
 java -classpath TOOLS.JAR ca.madness.SaveGameViewer NAME.CAS
-Where “NAME.CAS” is the name of your saved game.
+Where "NAME.CAS" is the name of your saved game.
 
 == Corrections ==
 
-Thanks to Joe Hagan for pointing out some mistakes in the original disassembly (now corrected here and in the code). The original comments at 09C5 said the Sprite can’t move to the treasure room, but it can. The original comments at 1125 said that OPEN SCROLL would bring the LAMP to us on the 4th floor. Actually it brings the Troglodyte to us on floors 3 and 4. And the original comments misinterpreted the VETAR flag. They said the flag temporarily disables VETAR. Actually it temporarily enables it.
+Thanks to Joe Hagan for pointing out some mistakes in the original disassembly (now corrected here and in the code). The original comments at 09C5 said the Sprite can't move to the treasure room, but it can. The original comments at 1125 said that OPEN SCROLL would bring the LAMP to us on the 4th floor. Actually it brings the Troglodyte to us on floors 3 and 4. And the original comments misinterpreted the VETAR flag. They said the flag temporarily disables VETAR. Actually it temporarily enables it.
 
 Joe fixed a couple of typos here and in the Frogger dig.
 
-Joe found a code bug in Madness at 0D51. The message “YOUR SIGHT IS DIM” is stored as a packed string. But the code to print it calls “PrintMess” instead of “PrintPacked”. The message never appears on the screen. Joe fixed the code and verified it in the emulator.
+Joe found a code bug in Madness at 0D51. The message "YOUR SIGHT IS DIM" is stored as a packed string. But the code to print it calls "PrintMess" instead of "PrintPacked". The message never appears on the screen. Joe fixed the code and verified it in the emulator.
 
 Thanks again, Joe.
 
