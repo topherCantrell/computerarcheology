@@ -7,7 +7,7 @@
 For more information on Madness and the Minotaur check out Sean Murphy's wonderful site:[[br]]
 [http://www.figmentfly.com] 
 
-== ZCode Translation (for iPod) ==
+== ZCode Translation (for iPod) == ZCode
 
 I am working on translating the original source into ZCode for play with Frotz. Frotz is an interpreter for Infocom games and other Z-machine games. It compiles for many platforms including Windows and the iPod. You can download Frotz from the apple app-store for free and then upload "Madness.z5" to your iPod and play madness on the go.
 
@@ -25,7 +25,7 @@ Currently you can explore the game's rooms through their natural passages (no ju
  * [attachment:MadDebug.inf MadDebug.inf (debug functions)]
  * [attachment:Madness.z5 Madness.z5 (playable zcode)]
 
-== Text Adventure and Real Time Strategy ==
+== Text Adventure and Real Time Strategy == Text + RTS
 
 Madness and the Minotaur is a text adventure game that includes elements of a D&D game and a non-turn-based action game. You have "hit points" (physical condition) and you will die when they run out. There are creatures that move from room to room once a minute. If you sit still long enough a creature will find you and kill you. Your pack has bulk and weight. The more you carry and the lower your hit-points the harder it is for you to jump.
 

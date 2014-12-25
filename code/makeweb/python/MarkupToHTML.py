@@ -22,11 +22,24 @@ def markDownHeaders(proc,pageNav):
     while(proc[i]=='='):
         i=i+1                
     s = proc[i:].strip()
+    
+    lid = None
+    j = s.rindex('=')
+    if j!=(len(s)-1) and (j!=i):
+        lid = s[j+1:].strip()
+        s = s[0:j+1]
+    
     while(s[-1]=='='):
         s = s[0:-1]
-    lid = makeHeaderLink(s)
-    t = '<h'+str(i)+' id="'+lid+'">'+s+'</h'+str(i)+'>'
-    pageNav.append({'level':i, 'text':s, 'link':lid})
+        
+    if lid == None:
+        lid = s 
+    
+    
+    lidLink = makeHeaderLink(lid)
+    
+    t = '<h'+str(i)+' id="'+lidLink+'">'+s+'</h'+str(i)+'>'
+    pageNav.append({'level':i, 'text':lid, 'link':lidLink})
     return t            
 
 def markDownBraces(proc):
