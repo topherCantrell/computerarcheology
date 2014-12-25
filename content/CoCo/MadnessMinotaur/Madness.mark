@@ -2,7 +2,7 @@
 %%title Madness
 %%image Madness.jpg
 
-[wiki:CoCo/Madness/Code Madness and the Minotaur Code]
+[Code.html Madness and the Minotaur Code]
 
 For more information on Madness and the Minotaur check out Sean Murphy's wonderful site:[[br]]
 [http://www.figmentfly.com] 
@@ -13,17 +13,17 @@ I am working on translating the original source into ZCode for play with Frotz. 
 
 Currently you can explore the game's rooms through their natural passages (no jumps). The spells, objects, and creatures are placed. The "protected" lists work. You can learn spells and score points. I am working now on the passage-actions and the room-actions.
 
- * [attachment:madness.inf madness.inf (top)]
- * [attachment:MadGameLoop.inf MadGameLoop.inf (main game flow)]
- * [attachment:MadRooms.inf MadRooms.inf (rooms)]
- * [attachment:MadRoomActions.inf MadRoomActions.inf (room actions)]
- * [attachment:MadPassages.inf MadPassages.inf (passage actions)]
- * [attachment:MadItems.inf MadItems.inf (items)]
- * [attachment:MadSpells.inf MadSpells.inf (spells)]
- * [attachment:MadBlocks.inf MadBlocks.inf (blockages)]
- * [attachment:MadBanner.inf MadBanner.inf (tape-banner)]
- * [attachment:MadDebug.inf MadDebug.inf (debug functions)]
- * [attachment:Madness.z5 Madness.z5 (playable zcode)]
+ * [madness.inf madness.inf (top)]
+ * [MadGameLoop.inf MadGameLoop.inf (main game flow)]
+ * [MadRooms.inf MadRooms.inf (rooms)]
+ * [MadRoomActions.inf MadRoomActions.inf (room actions)]
+ * [MadPassages.inf MadPassages.inf (passage actions)]
+ * [MadItems.inf MadItems.inf (items)]
+ * [MadSpells.inf MadSpells.inf (spells)]
+ * [MadBlocks.inf MadBlocks.inf (blockages)]
+ * [MadBanner.inf MadBanner.inf (tape-banner)]
+ * [MadDebug.inf MadDebug.inf (debug functions)]
+ * [Madness.z5 Madness.z5 (playable zcode)]
 
 == Text Adventure and Real Time Strategy == Text + RTS
 
@@ -108,7 +108,7 @@ You load the debug system into memory first with the CLOADM BASIC command. Then 
 703F: 39       RTS               ; Done
 }}}
 
-Here is the virtual COCO tape that contains the debug system: [attachment:inst.cas inst.cas].
+Here is the virtual COCO tape that contains the debug system: [inst.cas inst.cas].
 
 == Game Room Geometry ==
 
@@ -761,7 +761,7 @@ DROP FOOD
 DROP MUSHROOM
 DROP GOLD
 }}}
-[attachment:s_one.cas s_one.cas]
+[s_one.cas s_one.cas]
 
 === TASK 2: LEARN MITRA ===
 
@@ -784,7 +784,7 @@ DOWN NORTH NORTH EAST
 NORTH WEST UP SOUTH EAST EAST SOUTH
 DROP PARCHMENT
 }}}
-[attachment:s_two.cas s_two.cas]
+[s_two.cas s_two.cas]
 
 === TASK 3: LEARN OKKAN ===
 
@@ -803,7 +803,7 @@ UP EAST EAST SOUTH EAST NORTH NORTH NORTH WEST WEST SOUTH
 
 DROP TALISMAN
 }}}
-[attachment:s_three.cas s_three.cas]
+[s_three.cas s_three.cas]
 
 === TASK 4: Get the SWORD and SHIELD ===
 
@@ -822,7 +822,7 @@ NORTH NORTH EAST EAST EAST
 
 GET SHIELD
 }}}
-[attachment:s_four.cas s_four.cas]
+[s_four.cas s_four.cas]
 
 === TASK 5: Get the ROPE and learn AKHIROM ===
 
@@ -846,7 +846,7 @@ NORTH         ; Now know AKHIROM
 SOUTH WEST WEST WEST NORTH NORTH NORTH NORTH UP SOUTH EAST EAST SOUTH
 DROP ROPE
 }}}
-[attachment:s_five.cas s_five.cas]
+[s_five.cas s_five.cas]
 
 === TASK 6: Get the SCEPTER and learn NERGAL ===
 
@@ -880,7 +880,7 @@ JUMP PIT      ; Jumping into the treasure room
 DOWN
 SOUTH
 }}}
-[attachment:s_six.cas s_six.cas]
+[s_six.cas s_six.cas]
 
 === TASK 7: Get VIAL, BELROG, and CROM ===
 
@@ -921,13 +921,13 @@ DROP PENDANT
 JUMP PIT
 DOWN SOUTH
 }}}
-[attachment:s_seven.cas s_seven.cas]
+[s_seven.cas s_seven.cas]
 
 === TASK 8: Learn ISHTAR ===
 TO BE DONE
 
 {{{
-Save-game analysis for 'c:/projects/computerarcheology/madness//first.cas'                                                                                                                                        
+Save-game analysis for 'first.cas'                                                                                                                                        
                                                                                                                                                                                                                    
 Floor 1                                                                                                                                                                                                            
                                                                                                                                                                                                                    

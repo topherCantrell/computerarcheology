@@ -91,7 +91,11 @@ def processDeploys(rootContent,content):
     else:
         for line in lines:
            coms = line["command"].strip().split(" ")
-           if coms[0] == "markup":                
+           
+           if coms[0] == "copy":
+               shutil.copy(rootDir+content["dirPath"]+line["outputName"], deployDir+content["dirPath"]+line["outputName"])
+           
+           elif coms[0] == "markup":                
                n = line["displayName"]
                if n == "":
                    n = None
@@ -103,13 +107,7 @@ def processDeploys(rootContent,content):
                                       breadCrumbs,siteNav)               
                            
            else:
-               raise Exception("Unknown command:"+line["command"])
-            #print "#"+str(line)+"#"
-            #i = line.index(' ')
-            #dst = line[0:i]
-            #src = line[i+1:].strip()
-            #print ":"+dst+":"+src  
-            #def translate(inName, outName, breadCrumbs,siteTree,pageTree):
+               raise Exception("Unknown command:"+line["command"])           
     
     for d in content["dirs"]:
         processDeploys(rootContent,d)        
@@ -202,6 +200,8 @@ def _getSiteNav(content,lines,curContent,fname):
         if len(ifs)>0:
             lines.append("<ul>")
             for fi in ifs:
+                if not "displayName" in fi:
+                    continue
                 if curContent == content and fname==fi['displayName']:
                     lines.append('<li class="'+sn+'"><span class="sna"><strong>'+fi["displayName"]+"</strong></span>")
                 else:

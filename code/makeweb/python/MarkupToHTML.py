@@ -241,7 +241,7 @@ def translate(inName, outName, breadCrumbs,siteTree):
         
     im = ""    
     if "image" in fills:
-        im = '<img src="/img/'+fills["image"] +'" height="90" style="PADDING-LEFT: 40px"/>'
+        im = '<img src="'+fills["image"] +'" height="90" style="PADDING-LEFT: 40px"/>'
             
     # To a single string
     body = "".join(bodyLines)

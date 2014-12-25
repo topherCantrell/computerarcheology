@@ -3,7 +3,30 @@
 "files" : 
 [
   {"outputName":"index.html", "displayName":"",     "command":"markup Madness.mark"},
-  {"outputName":"code.html",  "displayName":"Code", "command":"markup Code.mark"}
+  {"outputName":"Code.html",  "displayName":"Code", "command":"markup Code.mark"},
+  
+  {"outputName":"Madness.jpg",                  "command":"copy"},
+                 
+  {"outputName":"madness.inf",                  "command":"copy"},
+  {"outputName":"MadGameLoop.inf",              "command":"copy"},
+  {"outputName":"MadRooms.inf",                 "command":"copy"},
+  {"outputName":"MadRoomActions.inf",           "command":"copy"},
+  {"outputName":"MadPassages.inf",              "command":"copy"},
+  {"outputName":"MadItems.inf",                 "command":"copy"},
+  {"outputName":"MadSpells.inf",                "command":"copy"},
+  {"outputName":"MadBlocks.inf",                "command":"copy"},
+  {"outputName":"MadBanner.inf",                "command":"copy"},
+  {"outputName":"MadDebug.inf",                 "command":"copy"},
+  {"outputName":"Madness.z5",                   "command":"copy"},     
+  
+  {"outputName":"inst.cas ",                    "command":"copy"}, 
+  {"outputName":"s_one.cas",                    "command":"copy"}, 
+  {"outputName":"s_two.cas",                    "command":"copy"}, 
+  {"outputName":"s_three.cas",                  "command":"copy"}, 
+  {"outputName":"s_four.cas",                   "command":"copy"}, 
+  {"outputName":"s_five.cas",                   "command":"copy"}, 
+  {"outputName":"s_six.cas",                    "command":"copy"}, 
+  {"outputName":"s_seven.cas",                  "command":"copy"} 
 ]
 
 }
