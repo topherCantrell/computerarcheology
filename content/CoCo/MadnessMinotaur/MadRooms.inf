@@ -1,0 +1,3310 @@
+! Included from "Madness.inf"
+
+Attribute canToSouth;
+Attribute canToWest;
+Attribute canToEast;
+Attribute canToNorth;
+Attribute canToDown;
+Attribute canToUp;
+
+!TODO the air crackles with enchantment even if you can't see
+
+[ findRoomAt i j x;
+    if(i>255) i=i-256;
+    if(i<0) i=i+256;
+    j=0;
+    objectloop(x ofclass Room) {
+      if(j == i) return x;
+      ++j;
+    }
+];
+
+[ getRoomNumber x i y;
+    i = 0;
+    objectloop(y ofclass Room) {
+       if(y == x) return i;
+       ++i;
+    }
+];
+
+[ MadRandomDirection r x y rn;
+   rn = getRoomNumber(r);
+   for(y=0:y<30:y=y+1) {
+     x = random(0,1,2,3,4,5);     
+     switch(x) {
+       0: if(r has canToSouth) return findRoomAt(rn+8);
+       1: if(r has canToWest)  return findRoomAt(rn-1);
+       2: if(r has canToEast)  return findRoomAt(rn+1);
+       3: if(r has canToNorth) return findRoomAt(rn-8);
+       4: if(r has canToDown)  return findRoomAt(rn+64);
+       5: if(r has canToUp)    return findRoomAt(rn-64);
+     }
+   }
+   return r;
+];
+
+! For now all rooms "has light" just to have a look around
+
+Class Room has light,
+  with blockMask,
+
+    ! Madness does not have "short names" to print above the room description.
+    ! By overriding the message, we skip the feature.
+    !short_name [;
+    !  rtrue;
+    !],
+        
+    crackle [x;
+      objectloop(x ofclass MadSpell) {
+        if(x in self) {
+          print "The air is crackling with enchantment. ";
+          rtrue;
+        }
+      }
+    ],
+
+    directs [x;
+
+      print " ";
+
+      
+! 1 2 4 8 16 32 ... the direction bits in the original 
+! s,w,e,n, d, u ... the description order in the original
+
+      if(self has canToSouth) {
+         print (string) random(
+            "A small opening winds out of sight to the south",
+            "A great doorway is on the south wall",
+            "A gently sloping trail winds south",
+            "There is a passage way to the south",
+            "A large doorway is recessed into the south wall",
+            "A doorway to the south winds into a chamber",
+            "A sloping passage leads to the south",
+            "A winding passage disappears to the south");
+         if(self.blockMask & 1) {
+           print " but it is blocked. ";
+         } else {
+           print ". ";
+         }
+      }
+
+      if(self has canToNorth) {
+         print (string) random(
+            "A great doorway is on the west wall",
+            "There is a narrow passage way to the west",
+            "There is a passage way to the west",
+            "A broken trail leads west",
+            "A doorway to the west winds into a chamber",
+            "Swirling mist winds out of a doorway to the west",
+            "A winding passage disappears to the west",
+            "A twisting trail leads west");
+         if(self.blockMask & 2) {
+           print " but it is blocked. ";
+         } else {
+           print ". ";
+         }
+      }
+
+      if(self has canToEast) {
+         print (string) random(
+            "There is a narrow passage way to the east",
+            "There is a great hole in the east wall",
+            "A broken trail leads east",
+            "A wide opening on the east wall disappears into the dark",
+            "Swirling mist winds out of a doorway to the east",
+            "A great hall disappears to the east",
+            "A twisting trail leads east",
+            "A sunken trail leads east");
+         if(self.blockMask & 4) {
+           print " but it is blocked. ";
+         } else {
+           print ". ";
+         }
+      }
+
+      if(self has canToNorth) {
+         print (string) random(
+            "A small opening winds out of sight to the north",
+            "There is a great hole in the north wall",
+            "A gently sloping trail winds north",
+            "A wide opening on the north wall disappears into the dark",
+            "A large doorway is recessed into the north wall",
+            "A great hall disappears to the north",
+            "A sloping passage leads to the north",
+            "A sunken trail leads north");
+         if(self.blockMask & 8) {
+           print " but it is blocked. ";
+         } else {
+           print ". ";
+         }
+      }
+
+      if(self has canToDown) {
+         print (string) random(
+            "A swirling mist winds up a stair way",
+            "There is a hole in the floor",
+            "There is a large opening in the floor",
+            "A large opening leads down",
+            "You are at the top of a twisting stair way",
+            "A stair way leads down",
+            "You are at the top of a pit",
+            "A twisting trail leads down");
+         if(self.blockMask & 16) {
+           print " but it is blocked. ";
+         } else {
+           print ". ";
+         }
+      }      
+
+      if(self has canToUp) {
+         print (string) random(
+            "A swirling mist winds down a stair way",
+            "There is a hole in the ceiling",
+            "There is a large opening in the ceiling",
+            "A large opening leads up",
+            "You are at the bottom of a twisting stair way",
+            "A stair way leads up",
+            "You are at the bottom of a pit",
+            "A twisting trail leads up");
+         if(self.blockMask & 32) {
+           print " but it is blocked. ";
+         } else {
+           print ". ";
+         }
+      }
+
+      ! M&M prints objects in-line with the room description. The "Item" base
+      ! class returns "false" for "describe", which ignores all objects. This
+      ! loop prints out the object descriptions like in the original;
+      !
+      objectloop(x in self && x ofclass Item) {
+          x.description(); 
+          print " ";
+      }      
+      
+      ! TODO make sure of this.
+      ! Enter-room actions are always processed when the description is
+      ! printed.
+      objectloop(x in self && x ofclass RoomAction) {
+          x.doAction();
+      }
+      
+      
+      
+      rtrue;
+    ],
+
+! The original does not error if you try and go in a way you can't. Instead
+! it just prints the room description again. The rooms are in a grid, and 
+! the directions are constant offsets in the grids.
+
+! ALL movement commands come to these handlers. The rooms have attributes that
+! define whether a direction is legal or not. If the room has a natural passage
+! in the requested direction then we first run any room action handler. If the
+! handler aborts movement we stop. Otherwise we THEN look for blocked passages
+! and move.
+
+    s_to [ r;     
+      lastRoom = real_location;           
+      r = getRoomNumber(real_location);
+      if(self has canToSouth) {  
+          if(location provides(s_toAction)) {
+            if(location.s_toAction()) rtrue;        
+          }
+          if((POWERRING in player) || ((self.blockMask & 1)==0)) {                   
+            r = r + 8;                       
+          }         
+      }      
+      PlayerTo(findRoomAt(r));      
+      rtrue;
+    ],    
+    w_to [ r;
+      lastRoom = real_location; 
+      r = getRoomNumber(real_location);
+      if(self has canToWest) {   
+          if(location provides(w_toAction)) {
+            if(location.w_toAction()) rtrue;
+          }
+          if((POWERRING in player) || ((self.blockMask & 2)==0)) {       
+            r = r - 1;                            
+          }
+      }
+      PlayerTo(findRoomAt(r));      
+      rtrue;
+    ],
+    e_to [ r;
+      lastRoom = real_location;
+      r = getRoomNumber(real_location);
+      if(self has canToEast) {   
+          if(location provides(e_toAction)) {
+            if(location.e_toAction()) rtrue;
+          }
+          if((POWERRING in player) || ((self.blockMask & 4)==0)) {       
+            r = r + 1;                               
+          }
+      }
+      PlayerTo(findRoomAt(r));      
+      rtrue;
+    ],
+    n_to [ r;
+      lastRoom = real_location;
+      r = getRoomNumber(real_location);
+      if(self has canToNorth) {    
+          if(location provides(n_toAction)) {
+            if(location.n_toAction()) rtrue;
+          }
+          if((POWERRING in player) || ((self.blockMask & 8)==0)) {      
+            r = r - 8;                        
+          }
+      }
+      PlayerTo(findRoomAt(r));      
+      rtrue;
+    ],
+    d_to [ r;
+      lastRoom = real_location;
+      r = getRoomNumber(real_location);
+      if(self has canToDown) {   
+          if(location provides(d_toAction)) {
+            if(location.d_toAction()) rtrue;
+          }
+          if((POWERRING in player) || ((self.blockMask & 16)==0)) {       
+            r = r + 64;                    
+          } 
+      }
+      PlayerTo(findRoomAt(r));      
+      rtrue;
+    ],
+    u_to [ r;
+      lastRoom = real_location;
+      r = getRoomNumber(real_location);
+      if(self has canToUp) {   
+          if(location provides(u_toAction)) {
+            if(location.u_toAction()) rtrue;
+          }
+          if((POWERRING in player) || ((self.blockMask & 32)==0)) {      
+            r = r - 64;                         
+          }
+      }
+      PlayerTo(findRoomAt(r));      
+      rtrue;
+    ],    
+    
+;
+
+! These are the 256 room descriptions with "natural" connections to the adjoining
+! rooms. This file was generated from the original disassembled code.
+
+! TODO check capitalization
+
+  ! .D...S  
+Room Room_0 has canToSouth canToDown, with  
+  description [; self.crackle();
+    print "@01 in a great stone tower with a low broken ceiling and a pool of water in the corner.";
+    self.directs();  
+  ],
+  d_toAction[;return PassageActionD();],
+  !s_to Room_8,
+  !d_to Room_64,  
+  has light,
+  ;
+  
+
+  ! ...E..  
+Room Room_1 has canToEast, with
+  description [; self.crackle(); self.crackle();
+    print "@01 in a small empty room with a broken floor.";
+    self.directs();
+  ],
+  !e_to Room_2,
+  has light,
+  ;
+
+  ! ...EWS  
+Room Room_2 has canToSouth canToWest canToEast, with
+  description [; self.crackle(); self.crackle();
+    print "@01 in the guard room with a great wood pile.";
+    self.directs();
+  ],
+  d_toAction[;return PassageActionA();],
+  !s_to Room_10,
+  !w_to Room_1,
+  !e_to Room_3,
+  has light,
+  ;
+
+  ! ...EW.  
+Room Room_3 has canToWest canToEast, with
+  description [; self.crackle(); self.crackle();
+    print "@01 in the center of a narrow hall way and there is a pile of bones on the floor.";
+    self.directs();
+  ],
+  !w_to Room_2,
+  !e_to Room_4,
+  has light,
+  ;
+
+  ! ...EW.  
+Room Room_4 has canToWest canToEast, with
+  description [; self.crackle();
+    print "@01 in a small clean room with a torch high on the wall.";
+    self.directs();
+  ],
+  d_toAction[;return PassageActionD();],
+  !w_to Room_3,
+  !e_to Room_5,
+  has light,
+  ;
+
+  ! ....WS  
+Room Room_5 has canToSouth canToWest, with
+  description [; self.crackle();
+    print "@01 in the trophy room with a large wood pile in the corner.";
+    self.directs();
+  ],
+  !s_to Room_13,
+  !w_to Room_4,
+  has light,
+  ;
+
+  ! .....S  
+Room Room_6 has canToSouth, with
+  description [; self.crackle();
+    print "@01 in an empty closet.";
+    self.directs();
+  ],
+  !s_to Room_14,
+  has light,
+  ;
+
+  ! .D..W.  
+Room Room_7 has canToWest canToDown, with
+  description [; self.crackle();
+    print "@01 in a great sloping shaft.";
+    self.directs();
+  ],
+  d_toAction[;return PassageActionA();],
+  !w_to Room_6,
+  !d_to Room_71,
+  has light,
+  ;
+
+  ! ..NE..  
+Room Room_8 has canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 on a narrow passage way with a marble floor.";
+    self.directs();
+  ],
+  !e_to Room_9,
+  !n_to Room_0,
+  has light,
+  ;
+
+  ! ...EW.  
+Room Room_9 has canToWest canToEast, with
+  description [; self.crackle();
+    print "@01 in a small room with drapes on the south wall and narcissus plants in the corner.";
+    self.directs();
+  ],
+  !w_to Room_8,
+  !e_to Room_10,
+  has light,
+  ;
+
+  ! U.NEWS  
+Room Room_10 has canToSouth canToWest canToEast canToNorth canToUp, with
+  description [; self.crackle();
+    print "@01 in a narrow hall way with a table and chair.";
+    self.directs();
+  ],
+  u_toAction[;return PassageActionC();],
+  !s_to Room_18,
+  !w_to Room_9,
+  !e_to Room_11,
+  !n_to Room_2,
+  !u_to Room_202,
+  has light,
+  ;
+
+  ! ...EW.  
+Room Room_11 has canToWest canToEast, with
+  description [; self.crackle();
+    print "@01 in a passage way with a great painting on the north wall.";
+    self.directs();
+  ],
+  !w_to Room_10,
+  !e_to Room_12,
+  has light,
+  ;
+
+  ! ...EWS  
+Room Room_12 has canToSouth canToWest canToEast, with
+  description [; self.crackle();
+    print "@01 in a musty room filled with rats and broken glass.";
+    self.directs();
+  ],
+  !s_to Room_20,
+  !w_to Room_11,
+  !e_to Room_13,
+  has light,
+  ;
+
+  ! ..NEW.  
+Room Room_13 has canToWest canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in a glass hall way with broken tiles on the floor.";
+    self.directs();
+  ],
+  !w_to Room_12,
+  !e_to Room_14,
+  !n_to Room_5,
+  has light,
+  ;
+
+  ! ..N.WS  
+Room Room_14 has canToSouth canToWest canToNorth, with
+  description [; self.crackle();
+    print "@01 in the royal bed room with a shallow ceiling.";
+    self.directs();
+  ],
+  !s_to Room_22,
+  !w_to Room_13,
+  !n_to Room_6,
+  has light,
+  ;
+
+  ! .....S  
+Room Room_15 has canToSouth, with
+  description [; self.crackle();
+    print "@01 in a small dark chamber with no windows.";
+    self.directs();
+  ],
+  !s_to Room_23,
+  has light,
+  ;
+
+  ! .....S  
+Room Room_16 has canToSouth, with
+  description [; self.crackle();
+    print "@01 at the west end of a great pool of water.";
+    self.directs();
+  ],
+  !s_to Room_24,
+  has light,
+  ;
+
+  ! ..N...  
+Room Room_17 has canToNorth, with
+  description [; self.crackle();
+    print "@01 at the east end of a great pool of water.";
+    self.directs();
+  ],
+  !n_to Room_9,
+  has light,
+  ;
+
+  ! ..N..S  
+Room Room_18 has canToSouth canToNorth, with
+  description [; self.crackle();
+    print "@01 in a small library.";
+    self.directs();
+  ],
+  s_toAction[;return PassageActionF();],
+  !s_to Room_26,
+  !n_to Room_10,
+  has light,
+  ;
+
+  ! ...E..  
+Room Room_19 has canToEast, with
+  description [; self.crackle();
+    print "@01 in a narrow damp musty chamber with ancient carvings high on the wall.";
+    self.directs();
+  ],
+  d_toAction[;return PassageActionE();],
+  !e_to Room_20,
+  has light,
+  ;
+
+  ! ..N.WS  
+Room Room_20 has canToSouth canToWest canToNorth, with
+  description [; self.crackle();
+    print "@01 in a green marble hall.";
+    self.directs();
+  ],
+  !s_to Room_28,
+  !w_to Room_19,
+  !n_to Room_12,
+  has light,
+  ;
+
+  ! .....S  
+Room Room_21 has canToSouth, with
+  description [; self.crackle();
+    print "@01 in a wine cellar.";
+    self.directs();
+  ],
+  !s_to Room_29,
+  has light,
+  ;
+
+  ! ..NE.S  
+Room Room_22 has canToSouth canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in the center of the chamber of the king.";
+    self.directs();
+  ],
+  !s_to Room_30,
+  !e_to Room_23,
+  !n_to Room_14,
+  has light,
+  ;
+
+  ! ..N.WS  
+Room Room_23 has canToSouth canToWest canToNorth, with
+  description [; self.crackle();
+    print "@01 in a damp chill hall way with mist swirling on the floor.";
+    self.directs();
+  ],
+  !s_to Room_31,
+  !w_to Room_22,
+  !n_to Room_15,
+  has light,
+  ;
+
+  ! .DN..S  
+Room Room_24 has canToSouth canToNorth canToDown, with
+  description [; self.crackle();
+    print "@01 in a wide hall way with a great wood table and a glass of wine.";
+    self.directs();
+  ],
+  !s_to Room_32,
+  !n_to Room_16,
+  !d_to Room_88,
+  has light,
+  ;
+
+  ! .D.E..  
+Room Room_25 has canToEast canToDown, with
+  description [; self.crackle();
+    print "@01 at the east end of a great marble portal.";
+    self.directs();
+  ],
+  d_toAction[;return PassageActionA();],
+  !e_to Room_26,
+  !d_to Room_89,
+  has light,
+  ;
+
+  ! ...EW.  
+Room Room_26 has canToWest canToEast, with
+  description [; self.crackle();
+    print "@01 in a great royal court yard.";
+    self.directs();
+  ],
+  n_toAction[;return PassageActionF();],
+  !w_to Room_25,
+  !e_to Room_27,
+  has light,
+  ;
+
+  ! ....WS  
+Room Room_27 has canToSouth canToWest, with
+  description [; self.crackle();
+    print "@01 in a cloister hall and the voices of the dead are near.";
+    self.directs();
+  ],
+  !s_to Room_35,
+  !w_to Room_26,
+  has light,
+  ;
+
+  ! ..NE.S  
+Room Room_28 has canToSouth canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in a small dark chamber.";
+    self.directs();
+  ],
+  !s_to Room_36,
+  !e_to Room_29,
+  !n_to Room_20,
+  has light,
+  ;
+
+  ! ..NEW.  
+Room Room_29 has canToWest canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in a damp passage way with green mist swirling down the wall.";
+    self.directs();
+  ],
+  !w_to Room_28,
+  !e_to Room_30,
+  !n_to Room_21,
+  has light,
+  ;
+
+  ! ..N.W.  
+Room Room_30 has canToWest canToNorth, with
+  description [; self.crackle();
+    print "@01 in a large bed room with a long broken shadow stretching across the floor.";
+    self.directs();
+  ],
+  !w_to Room_29,
+  !n_to Room_22,
+  has light,
+  ;
+
+  ! ..N..S  
+Room Room_31 has canToSouth canToNorth, with
+  description [; self.crackle();
+    print "@01 in a large passage way and the ceiling is gently sloping out of sight.";
+    self.directs();
+  ],
+  !s_to Room_39,
+  !n_to Room_23,
+  has light,
+  ;
+
+  ! ..NE..  
+Room Room_32 has canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in a narrow twisting stair way with no windows.";
+    self.directs();
+  ],
+  !e_to Room_33,
+  !n_to Room_24,
+  has light,
+  ;
+
+  ! ...EW.  
+Room Room_33 has canToWest canToEast, with
+  description [; self.crackle();
+    print "@01 in a dark small tower room with no windows.";
+    self.directs();
+  ],
+  !w_to Room_32,
+  !e_to Room_34,
+  has light,
+  ;
+
+  ! ....WS  
+Room Room_34 has canToSouth canToWest, with
+  description [; self.crackle();
+    print "@01 in a room with a low sloping ceiling and a dark sunken pit at the east end.";
+    self.directs();
+  ],
+  !s_to Room_42,
+  !w_to Room_33,
+  has light,
+  ;
+
+  ! ..NE..  
+Room Room_35 has canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in a dark servant chamber with a low ceiling and a shallow hole at the west end.";
+    self.directs();
+  ],
+  !e_to Room_36,
+  !n_to Room_27,
+  has light,
+  ;
+
+  ! ..NEW.  
+Room Room_36 has canToWest canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in a pantry filled with rats and broken glass.";
+    self.directs();
+  ],
+  !w_to Room_35,
+  !e_to Room_37,
+  !n_to Room_28,
+  has light,
+  ;
+
+  ! ...EW.  
+Room Room_37 has canToWest canToEast, with
+  description [; self.crackle();
+    print "@01 in the great beer hall.";
+    self.directs();
+  ],
+  !w_to Room_36,
+  !e_to Room_38,
+  has light,
+  ;
+
+  ! .D..W.  
+Room Room_38 has canToWest canToDown, with
+  description [; self.crackle();
+    print "@01 in a large empty chamber and the wall disappears into the mist.";
+    self.directs();
+  ],
+  !w_to Room_37,
+  !d_to Room_102,
+  has light,
+  ;
+
+  ! ..N...  
+Room Room_39 has canToNorth, with
+  description [; self.crackle();
+    print "@01 in the temple of zeus.";
+    self.directs();
+  ],
+  !n_to Room_31,
+  has light,
+  ;
+
+  ! UD.E.S  
+Room Room_40 has canToSouth canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_48,
+  !e_to Room_41,
+  !d_to Room_104,
+  !u_to Room_232,
+  ;
+
+  ! UD.EWS  
+Room Room_41 has canToSouth canToWest canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_49,
+  !w_to Room_40,
+  !e_to Room_42,
+  !d_to Room_105,
+  !u_to Room_233,
+  ;
+
+  ! UD.EWS  
+Room Room_42 has canToSouth canToWest canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_50,
+  !w_to Room_41,
+  !e_to Room_43,
+  !d_to Room_106,
+  !u_to Room_234,
+  ;
+
+  ! UD.EWS  
+Room Room_43 has canToSouth canToWest canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_51,
+  !w_to Room_42,
+  !e_to Room_44,
+  !d_to Room_107,
+  !u_to Room_235,
+  ;
+
+  ! UD.EWS  
+Room Room_44 has canToSouth canToWest canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions and there is a small pit which disappears into the mist.";
+    self.directs();
+  ],
+  !s_to Room_52,
+  !w_to Room_43,
+  !e_to Room_45,
+  !d_to Room_108,
+  !u_to Room_236,
+  ;
+
+  ! UD.EWS  
+Room Room_45 has canToSouth canToWest canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_53,
+  !w_to Room_44,
+  !e_to Room_46,
+  !d_to Room_109,
+  !u_to Room_237,
+  ;
+
+  ! UD.EWS  
+Room Room_46 has canToSouth canToWest canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_54,
+  !w_to Room_45,
+  !e_to Room_47,
+  !d_to Room_110,
+  !u_to Room_238,
+  ;
+
+  ! UD.EWS  
+Room Room_47 has canToSouth canToWest canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_55,
+  !w_to Room_46,
+  !e_to Room_48,
+  !d_to Room_111,
+  !u_to Room_239,
+  ;
+
+  ! UDNEWS  
+Room Room_48 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_56,
+  !w_to Room_47,
+  !e_to Room_49,
+  !n_to Room_40,
+  !d_to Room_112,
+  !u_to Room_240,
+  ;
+
+  ! UDNEWS  
+Room Room_49 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_57,
+  !w_to Room_48,
+  !e_to Room_50,
+  !n_to Room_41,
+  !d_to Room_113,
+  !u_to Room_241,
+  ;
+
+  ! UDNEWS  
+Room Room_50 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_58,
+  !w_to Room_49,
+  !e_to Room_51,
+  !n_to Room_42,
+  !d_to Room_114,
+  !u_to Room_242,
+  ;
+
+  ! UDNEWS  
+Room Room_51 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  u_toAction[;return PassageActionF();],
+  !s_to Room_59,
+  !w_to Room_50,
+  !e_to Room_52,
+  !n_to Room_43,
+  !d_to Room_115,
+  !u_to Room_243,
+  ;
+
+  ! UDNEWS  
+Room Room_52 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_60,
+  !w_to Room_51,
+  !e_to Room_53,
+  !n_to Room_44,
+  !d_to Room_116,
+  !u_to Room_244,
+  ;
+
+  ! UDNEWS  
+Room Room_53 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_61,
+  !w_to Room_52,
+  !e_to Room_54,
+  !n_to Room_45,
+  !d_to Room_117,
+  !u_to Room_245,
+  ;
+
+  ! UDNEWS  
+Room Room_54 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_62,
+  !w_to Room_53,
+  !e_to Room_55,
+  !n_to Room_46,
+  !d_to Room_118,
+  !u_to Room_246,
+  ;
+
+  ! UDNEWS  
+Room Room_55 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_63,
+  !w_to Room_54,
+  !e_to Room_56,
+  !n_to Room_47,
+  !d_to Room_119,
+  !u_to Room_247,
+  ;
+
+  ! UDNEW.  
+Room Room_56 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_55,
+  !e_to Room_57,
+  !n_to Room_48,
+  !d_to Room_120,
+  !u_to Room_248,
+  ;
+
+  ! UDNEW.  
+Room Room_57 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_56,
+  !e_to Room_58,
+  !n_to Room_49,
+  !d_to Room_121,
+  !u_to Room_249,
+  ;
+
+  ! UDNEW.  
+Room Room_58 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_57,
+  !e_to Room_59,
+  !n_to Room_50,
+  !d_to Room_122,
+  !u_to Room_250,
+  ;
+
+  ! UDNEW.  
+Room Room_59 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_58,
+  !e_to Room_60,
+  !n_to Room_51,
+  !d_to Room_123,
+  !u_to Room_251,
+  ;
+
+  ! UDNEW.  
+Room Room_60 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_59,
+  !e_to Room_61,
+  !n_to Room_52,
+  !d_to Room_124,
+  !u_to Room_252,
+  ;
+
+  ! UDNEW.  
+Room Room_61 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_60,
+  !e_to Room_62,
+  !n_to Room_53,
+  !d_to Room_125,
+  !u_to Room_253,
+  ;
+
+  ! UDNEW.  
+Room Room_62 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_61,
+  !e_to Room_63,
+  !n_to Room_54,
+  !d_to Room_126,
+  !u_to Room_254,
+  ;
+
+  ! UDN.W.  
+Room Room_63 has canToWest canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_62,
+  !n_to Room_55,
+  !d_to Room_127,
+  !u_to Room_255,
+  ;
+
+  ! U..E..  
+Room Room_64 has canToEast canToUp, with
+  description [; self.crackle();
+    print "@01 in a large chamber with a great pit stretching across the south wall.";
+    self.directs();
+  ],
+  u_toAction[;return PassageActionD();],
+  !e_to Room_65,
+  !u_to Room_0,
+  ;
+
+  ! ....WS  
+Room Room_65 has canToSouth canToWest, with
+  description [; self.crackle();
+    print "@01 in a narrow corridor with a stone wall.";
+    self.directs();
+  ],
+  !s_to Room_73,
+  !w_to Room_64,
+  ;
+
+  ! U..E..  
+Room Room_66 has canToEast canToUp, with
+  description [; self.crackle();
+    print "@01 in a small room with a high ceiling.";
+    self.directs();
+  ],
+  d_toAction[;return PassageActionD();],
+  u_toAction[;return PassageActionA();],
+  !e_to Room_67,
+  !u_to Room_2,
+  ;
+
+  ! ....WS  
+Room Room_67 has canToSouth canToWest, with
+  description [; self.crackle();
+    print "@01 in a damp room with a wood floor and a great crypt in the center.";
+    self.directs();
+  ],
+  !s_to Room_75,
+  !w_to Room_66,
+  ;
+
+  ! U..E.S  
+Room Room_68 has canToSouth canToEast canToUp, with
+  description [; self.crackle();
+    print "@01 in a stone passage way with bones in the wall.";
+    self.directs();
+  ],
+  u_toAction[;return PassageActionD();],
+  !s_to Room_76,
+  !e_to Room_69,
+  !u_to Room_4,
+  ;
+
+  ! ...EW.  
+Room Room_69 has canToWest canToEast, with
+  description [; self.crackle();
+    print "@01 in a great long hall with a chill mist flowing down the east wall.";
+    self.directs();
+  ],
+  s_toAction[;return PassageActionC();],
+  !w_to Room_68,
+  !e_to Room_70,
+  ;
+
+  ! ....WS  
+Room Room_70 has canToSouth canToWest, with
+  description [; self.crackle();
+    print "@01 in a large room with a foul smelling sunken pit at the north end.";
+    self.directs();
+  ],
+  !s_to Room_78,
+  !w_to Room_69,
+  ;
+
+  ! UDN...  
+Room Room_71 has canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 at the edge of a great stone shaft.";
+    self.directs();
+  ],
+  d_toAction[;return PassageActionD();],
+  u_toAction[;return PassageActionA();],
+  !n_to Room_63,
+  !d_to Room_135,
+  !u_to Room_7,
+  ;
+
+  ! ..NE.S  
+Room Room_72 has canToSouth canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in the hall of the royal court.";
+    self.directs();
+  ],
+  !s_to Room_80,
+  !e_to Room_73,
+  !n_to Room_64,
+  ;
+
+  ! ..NEW.  
+Room Room_73 has canToWest canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in a great empty chamber.";
+    self.directs();
+  ],
+  !w_to Room_72,
+  !e_to Room_74,
+  !n_to Room_65,
+  ;
+
+  ! ...EW.  
+Room Room_74 has canToWest canToEast, with
+  description [; self.crackle();
+    print "@01 in a room with a large pool of water.";
+    self.directs();
+  ],
+  
+  e_toAction[;return PassageActionA();],
+  !w_to Room_73,
+  !e_to Room_75,
+  ;
+
+  ! ..NEW.  
+Room Room_75 has canToWest canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in a large cavern with a chill mist swirling on the floor.";
+    self.directs();
+  ],
+  
+  w_toAction[;return PassageActionA();],
+  !w_to Room_74,
+  !e_to Room_76,
+  !n_to Room_67,
+  ;
+
+  ! ..N.W.  
+Room Room_76 has canToWest canToNorth, with
+  description [; self.crackle();
+    print "@01 in a narrow twisting passage which gently winds into a great cavern.";
+    self.directs();
+  ],
+  !w_to Room_75,
+  !n_to Room_68,
+  ;
+
+  ! ..N..S  
+Room Room_77 has canToSouth canToNorth, with
+  description [; self.crackle();
+    print "@01 in a small room with a shallow hole.";
+    self.directs();
+  ],
+  n_toAction[;return PassageActionC();],
+  !s_to Room_85,
+  !n_to Room_69,
+  ;
+
+  ! ..N...  
+Room Room_78 has canToNorth, with
+  description [; self.crackle();
+    print "@01 in a damp sunken room with a dark stone wall and a chasm at the south end.";
+    self.directs();
+  ],
+  !n_to Room_70,
+  ;
+
+  ! .....S  
+Room Room_79 has canToSouth, with
+  description [; self.crackle();
+    print "@01 in a chamber with a high stone ceiling and carvings on the east wall.";
+    self.directs();
+  ],
+  !s_to Room_87,
+  ;
+
+  ! ..N..S  
+Room Room_80 has canToSouth canToNorth, with
+  description [; self.crackle();
+    print "@01 in a twisting musty corridor.";
+    self.directs();
+  ],
+  !s_to Room_88,
+  !n_to Room_72,
+  ;
+
+  ! ...E..  
+Room Room_81 has canToEast, with
+  description [; self.crackle();
+    print "@01 in a sunken room with great a stone table.";
+    self.directs();
+  ],
+  !e_to Room_82,
+  ;
+
+  ! ...EW.  
+Room Room_82 has canToWest canToEast, with
+  description [; self.crackle();
+    print "@01 in a large corridor with a broken stone wall and a chill damp floor.";
+    self.directs();
+  ],
+  !w_to Room_81,
+  !e_to Room_83,
+  ;
+
+  ! U..EWS  
+Room Room_83 has canToSouth canToWest canToEast canToUp, with
+  description [; self.crackle();
+    print "@01 in a cavern with a low stone ceiling.";
+    self.directs();
+  ],
+  u_toAction[;return PassageActionE();],
+  e_toAction[;return PassageActionA();],
+  !s_to Room_91,
+  !w_to Room_82,
+  !e_to Room_84,
+  !u_to Room_19,
+  ;
+
+  ! ...EWS  
+Room Room_84 has canToSouth canToWest canToEast, with
+  description [; self.crackle();
+    print "@01 in a narrow winding passage.";
+    self.directs();
+  ],
+  w_toAction[;return PassageActionA();],
+  !s_to Room_92,
+  !w_to Room_83,
+  !e_to Room_85,
+  ;
+
+  ! ..N.WS  
+Room Room_85 has canToSouth canToWest canToNorth, with
+  description [; self.crackle();
+    print "@01 in a twisting winding passage.";
+    self.directs();
+  ],
+  !s_to Room_93,
+  !w_to Room_84,
+  !n_to Room_77,
+  ;
+
+  ! ...E.S  
+Room Room_86 has canToSouth canToEast, with
+  description [; self.crackle();
+    print "@01 in a small chamber with a chasm at the north end.";
+    self.directs();
+  ],
+  d_toAction[;return PassageActionA();],
+  !s_to Room_94,
+  !e_to Room_87,
+  ;
+
+  ! ..N.WS  
+Room Room_87 has canToSouth canToWest canToNorth, with
+  description [; self.crackle();
+    print "@01 in a cave with a large shallow pit in the center.";
+    self.directs();
+  ],
+  !s_to Room_95,
+  !w_to Room_86,
+  !n_to Room_79,
+  ;
+
+  ! ..N..S  
+Room Room_88 has canToSouth canToNorth, with
+  description [; self.crackle();
+    print "@01 in a musty twisting corridor.";
+    self.directs();
+  ],
+  !s_to Room_96,
+  !n_to Room_80,
+  ;
+
+  ! UD....  
+Room Room_89 has canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 on a twisting passage way on the edge of a great shaft.";
+    self.directs();
+  ],
+  d_toAction[;return PassageActionA();],
+  u_toAction[;return PassageActionA();],
+  !d_to Room_153,
+  !u_to Room_25,
+  ;
+
+  ! ...E..  
+Room Room_90 has canToEast, with
+  description [; self.crackle();
+    print "@01 in a tomb of the skull.";
+    self.directs();
+  ],
+  !e_to Room_91,
+  ;
+
+  ! ..N.WS  
+Room Room_91 has canToSouth canToWest canToNorth, with
+  description [; self.crackle();
+    print "@01 in a passage of stone tiles.";
+    self.directs();
+  ],
+  !s_to Room_99,
+  !w_to Room_90,
+  !n_to Room_83,
+  ;
+
+  ! ..N...  
+Room Room_92 has canToNorth, with
+  description [; self.crackle();
+    print "@01 in a wide room with a small pit in the center.";
+    self.directs();
+  ],
+  d_toAction[;return PassageActionC();],
+  !n_to Room_84,
+  ;
+
+  ! ..NE..  
+Room Room_93 has canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in a wood passage way.";
+    self.directs();
+  ],
+  !e_to Room_94,
+  !n_to Room_85,
+  ;
+
+  ! ..N.W.  
+Room Room_94 has canToWest canToNorth, with
+  description [; self.crackle();
+    print "@01 in a wide hall way with a small pit in the corner.";
+    self.directs();
+  ],
+  !w_to Room_93,
+  !n_to Room_86,
+  ;
+
+  ! ..N..S  
+Room Room_95 has canToSouth canToNorth, with
+  description [; self.crackle();
+    print "@01 in the center of a winding stone tunnel.";
+    self.directs();
+  ],
+  !s_to Room_103,
+  !n_to Room_87,
+  ;
+
+  ! ..NE..  
+Room Room_96 has canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in a twisting musty passage way.";
+    self.directs();
+  ],
+  !e_to Room_97,
+  !n_to Room_88,
+  ;
+
+  ! .D.EW.  
+Room Room_97 has canToWest canToEast canToDown, with
+  description [; self.crackle();
+    print "@01 in a musty twisting passage way.";
+    self.directs();
+  ],
+  s_toAction[;return PassageActionH();],
+  !w_to Room_96,
+  !e_to Room_98,
+  !d_to Room_161,
+  ;
+
+  ! ...EW.  
+Room Room_98 has canToWest canToEast, with
+  description [; self.crackle();
+    print "@01 in a twisting musty broken passage.";
+    self.directs();
+  ],
+  !w_to Room_97,
+  !e_to Room_99,
+  ;
+
+  ! ..NEW.  
+Room Room_99 has canToWest canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in a great cavern with broken stone everywhere.";
+    self.directs();
+  ],
+  !w_to Room_98,
+  !e_to Room_100,
+  !n_to Room_91,
+  ;
+
+  ! ...EW.  
+Room Room_100 has canToWest canToEast, with
+  description [; self.crackle();
+    print "@01 in a long damp twisting passage with a stone chapel on the south wall.";
+    self.directs();
+  ],
+  !w_to Room_99,
+  !e_to Room_101,
+  ;
+
+  ! ...EW.  
+Room Room_101 has canToWest canToEast, with
+  description [; self.crackle();
+    print "@01 in a long passage way.";
+    self.directs();
+  ],
+  !w_to Room_100,
+  !e_to Room_102,
+  ;
+
+  ! .D....  
+Room Room_102 has canToDown, with
+  description [; self.crackle();
+    print "@01 in a crypt of the ancient king and the voices of the dead are here.";
+    self.directs();
+  ],
+  !d_to Room_166,
+  ;
+
+  ! .DN...  
+Room Room_103 has canToNorth canToDown, with
+  description [; self.crackle();
+    print "@01 in a small cave filled with voices.";
+    self.directs();
+  ],
+  !n_to Room_95,
+  !d_to Room_167,
+  ;
+
+  ! UD.E.S  
+Room Room_104 has canToSouth canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  e_toAction[;return PassageActionI();],
+  !s_to Room_112,
+  !e_to Room_105,
+  !d_to Room_168,
+  !u_to Room_40,
+  ;
+
+  ! UDNEWS  
+Room Room_105 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  e_toAction[;return PassageActionI();],
+  w_toAction[;return PassageActionI();],
+  n_toAction[;return PassageActionH();],
+  !s_to Room_113,
+  !w_to Room_104,
+  !e_to Room_106,
+  !n_to Room_97,
+  !d_to Room_169,
+  !u_to Room_41,
+  ;
+
+  ! UD.EWS  
+Room Room_106 has canToSouth canToWest canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  w_toAction[;return PassageActionI();],
+  !s_to Room_114,
+  !w_to Room_105,
+  !e_to Room_107,
+  !d_to Room_170,
+  !u_to Room_42,
+  ;
+
+  ! UD.EWS  
+Room Room_107 has canToSouth canToWest canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_115,
+  !w_to Room_106,
+  !e_to Room_108,
+  !d_to Room_171,
+  !u_to Room_43,
+  ;
+
+  ! UD.EWS  
+Room Room_108 has canToSouth canToWest canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_116,
+  !w_to Room_107,
+  !e_to Room_109,
+  !d_to Room_172,
+  !u_to Room_44,
+  ;
+
+  ! UD.EWS  
+Room Room_109 has canToSouth canToWest canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_117,
+  !w_to Room_108,
+  !e_to Room_110,
+  !d_to Room_173,
+  !u_to Room_45,
+  ;
+
+  ! UD.EWS  
+Room Room_110 has canToSouth canToWest canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_118,
+  !w_to Room_109,
+  !e_to Room_111,
+  !d_to Room_174,
+  !u_to Room_46,
+  ;
+
+  ! UD.EWS  
+Room Room_111 has canToSouth canToWest canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_119,
+  !w_to Room_110,
+  !e_to Room_112,
+  !d_to Room_175,
+  !u_to Room_47,
+  ;
+
+  ! UDNEWS  
+Room Room_112 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_120,
+  !w_to Room_111,
+  !e_to Room_113,
+  !n_to Room_104,
+  !d_to Room_176,
+  !u_to Room_48,
+  ;
+
+  ! UDNEWS  
+Room Room_113 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_121,
+  !w_to Room_112,
+  !e_to Room_114,
+  !n_to Room_105,
+  !d_to Room_177,
+  !u_to Room_49,
+  ;
+
+  ! UDNEWS  
+Room Room_114 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_122,
+  !w_to Room_113,
+  !e_to Room_115,
+  !n_to Room_106,
+  !d_to Room_178,
+  !u_to Room_50,
+  ;
+
+  ! UDNEWS  
+Room Room_115 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_123,
+  !w_to Room_114,
+  !e_to Room_116,
+  !n_to Room_107,
+  !d_to Room_179,
+  !u_to Room_51,
+  ;
+
+  ! UDNEWS  
+Room Room_116 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_124,
+  !w_to Room_115,
+  !e_to Room_117,
+  !n_to Room_108,
+  !d_to Room_180,
+  !u_to Room_52,
+  ;
+
+  ! UDNEWS  
+Room Room_117 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_125,
+  !w_to Room_116,
+  !e_to Room_118,
+  !n_to Room_109,
+  !d_to Room_181,
+  !u_to Room_53,
+  ;
+
+  ! UDNEWS  
+Room Room_118 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_126,
+  !w_to Room_117,
+  !e_to Room_119,
+  !n_to Room_110,
+  !d_to Room_182,
+  !u_to Room_54,
+  ;
+
+  ! UDNEWS  
+Room Room_119 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_127,
+  !w_to Room_118,
+  !e_to Room_120,
+  !n_to Room_111,
+  !d_to Room_183,
+  !u_to Room_55,
+  ;
+
+  ! UDNEW.  
+Room Room_120 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_119,
+  !e_to Room_121,
+  !n_to Room_112,
+  !d_to Room_184,
+  !u_to Room_56,
+  ;
+
+  ! UDNEW.  
+Room Room_121 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_120,
+  !e_to Room_122,
+  !n_to Room_113,
+  !d_to Room_185,
+  !u_to Room_57,
+  ;
+
+  ! UDNEW.  
+Room Room_122 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_121,
+  !e_to Room_123,
+  !n_to Room_114,
+  !d_to Room_186,
+  !u_to Room_58,
+  ;
+
+  ! UDNEW.  
+Room Room_123 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_122,
+  !e_to Room_124,
+  !n_to Room_115,
+  !d_to Room_187,
+  !u_to Room_59,
+  ;
+
+  ! UDNEW.  
+Room Room_124 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_123,
+  !e_to Room_125,
+  !n_to Room_116,
+  !d_to Room_188,
+  !u_to Room_60,
+  ;
+
+  ! UDNEW.  
+Room Room_125 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_124,
+  !e_to Room_126,
+  !n_to Room_117,
+  !d_to Room_189,
+  !u_to Room_61,
+  ;
+
+  ! UDNEW.  
+Room Room_126 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_125,
+  !e_to Room_127,
+  !n_to Room_118,
+  !d_to Room_190,
+  !u_to Room_62,
+  ;
+
+  ! UDN.W.  
+Room Room_127 has canToWest canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_126,
+  !n_to Room_119,
+  !d_to Room_191,
+  !u_to Room_63,
+  ;
+
+  ! .....S  
+Room Room_128 has canToSouth, with
+  description [; self.crackle();
+    print "@01 in a narrow tunnel.";
+    self.directs();
+  ],
+  !s_to Room_136,
+  ;
+
+  ! ...E..  
+Room Room_129 has canToEast, with
+  description [; self.crackle();
+    print "@01 in a small chamber with a smooth marble wall.";
+    self.directs();
+  ],
+  !e_to Room_130,
+  ;
+
+  ! U..EWS  
+Room Room_130 has canToSouth canToWest canToEast canToUp, with
+  description [; self.crackle();
+    print "@01 in a great hall with a pool of water in the corner.";
+    self.directs();
+  ],
+  u_toAction[;return PassageActionD();],
+  !s_to Room_138,
+  !w_to Room_129,
+  !e_to Room_131,
+  !u_to Room_66,
+  ;
+
+  ! ...EW.  
+Room Room_131 has canToWest canToEast, with
+  description [; self.crackle();
+    print "@01 in a stone corridor.";
+    self.directs();
+  ],
+  !w_to Room_130,
+  !e_to Room_132,
+  ;
+
+  ! ...EW.  
+Room Room_132 has canToWest canToEast, with
+  description [; self.crackle();
+    print "@01 in a damp tunnel with a path of tracks which disappears into mist on the east wall.";
+    self.directs();
+  ],
+  !w_to Room_131,
+  !e_to Room_133,
+  ;
+
+  ! ....W.  
+Room Room_133 has canToWest, with
+  description [; self.crackle();
+    print "@01 on the west edge of a deep pit filled with mist.";
+    self.directs();
+  ],
+  !w_to Room_132,
+  ;
+
+  ! ...E.S  
+Room Room_134 has canToSouth canToEast, with
+  description [; self.crackle();
+    print "@01 in a dead end chamber.";
+    self.directs();
+  ],
+  !s_to Room_142,
+  !e_to Room_135,
+  ;
+
+  ! U.....  
+Room Room_135 has canToUp, with
+  description [; self.crackle();
+    print "@01 in a small cave filled with minotaur tracks.";
+    self.directs();
+  ],
+  u_toAction[;return PassageActionD();],
+  !u_to Room_71,
+  ;
+
+  ! ..N..S  
+Room Room_136 has canToSouth canToNorth, with
+  description [; self.crackle();
+    print "@01 in a small cavern.";
+    self.directs();
+  ],
+  !s_to Room_144,
+  !n_to Room_128,
+  ;
+
+  ! ...E.S  
+Room Room_137 has canToSouth canToEast, with
+  description [; self.crackle();
+    print "@01 in a great stone tunnel.";
+    self.directs();
+  ],
+  !s_to Room_145,
+  !e_to Room_138,
+  ;
+
+  ! ...EWS  
+Room Room_138 has canToSouth canToWest canToEast, with
+  description [; self.crackle();
+    print "@01 in a dark chamber.";
+    self.directs();
+  ],
+  e_toAction[;return PassageActionG();],
+  !s_to Room_146,
+  !w_to Room_137,
+  !e_to Room_139,
+  ;
+
+  ! ...EW.  
+Room Room_139 has canToWest canToEast, with
+  description [; self.crackle();
+    print "@01 in a twisting winding narrow tunnel.";
+    self.directs();
+  ],
+  w_toAction[;return PassageActionG();],
+  !w_to Room_138,
+  !e_to Room_140,
+  ;
+
+  ! ...EW.  
+Room Room_140 has canToWest canToEast, with
+  description [; self.crackle();
+    print "@01 in a winding narrow twisting tunnel.";
+    self.directs();
+  ],
+  !w_to Room_139,
+  !e_to Room_141,
+  ;
+
+  ! ....WS  
+Room Room_141 has canToSouth canToWest, with
+  description [; self.crackle();
+    print "@01 in a narrow twisting winding tunnel.";
+    self.directs();
+  ],
+  !s_to Room_149,
+  !w_to Room_140,
+  ;
+
+  ! ..N.WS  
+Room Room_142 has canToSouth canToWest canToNorth, with
+  description [; self.crackle();
+    print "@01 in a musty chamber with a pile of bones everywhere.";
+    self.directs();
+  ],
+  !s_to Room_150,
+  !w_to Room_141,
+  !n_to Room_134,
+  ;
+
+  ! ....W.  
+Room Room_143 has canToWest, with
+  description [; self.crackle();
+    print "@01 in a small cave on the north side of a deep pit.";
+    self.directs();
+  ],
+  !w_to Room_142,
+  ;
+
+  ! ..N...  
+Room Room_144 has canToNorth, with
+  description [; self.crackle();
+    print "@01 on a high narrow path and there is mist everywhere.";
+    self.directs();
+  ],
+  !n_to Room_136,
+  ;
+
+  ! ..N..S  
+Room Room_145 has canToSouth canToNorth, with
+  description [; self.crackle();
+    print "@01 in a foul smelling musty passage.";
+    self.directs();
+  ],
+  !s_to Room_153,
+  !n_to Room_137,
+  ;
+
+  ! ..N..S  
+Room Room_146 has canToSouth canToNorth, with
+  description [; self.crackle();
+    print "@01 in a narrow tunnel with mist flowing down the wall.";
+    self.directs();
+  ],
+  !s_to Room_154,
+  !n_to Room_138,
+  ;
+
+  ! ...E.S  
+Room Room_147 has canToSouth canToEast, with
+  description [; self.crackle();
+    print "@01 in a narrow twisting corridor.";
+    self.directs();
+  ],
+  !s_to Room_155,
+  !e_to Room_148,
+  ;
+
+  ! ....WS  
+Room Room_148 has canToSouth canToWest, with
+  description [; self.crackle();
+    print "@01 in a twisting winding tunnel.";
+    self.directs();
+  ],
+  !s_to Room_156,
+  !w_to Room_147,
+  ;
+
+  ! ..N..S  
+Room Room_149 has canToSouth canToNorth, with
+  description [; self.crackle();
+    print "@01 in a narrow winding twisting tunnel.";
+    self.directs();
+  ],
+  !s_to Room_157,
+  !n_to Room_141,
+  ;
+
+  ! U.N...  
+Room Room_150 has canToNorth canToUp, with
+  description [; self.crackle();
+    print "@01 in the lair of the dead.";
+    self.directs();
+  ],
+  u_toAction[;return PassageActionA();],
+  !n_to Room_142,
+  !u_to Room_86,
+  ;
+
+  ! .....S  
+Room Room_151 has canToSouth, with
+  description [; self.crackle();
+    print "@01 in a twisting hall way on the south side of a deep pit.";
+    self.directs();
+  ],
+  !s_to Room_159,
+  ;
+
+  ! ...E.S  
+Room Room_152 has canToSouth canToEast, with
+  description [; self.crackle();
+    print "@01 in a great tunnel.";
+    self.directs();
+  ],
+  !s_to Room_160,
+  !e_to Room_153,
+  ;
+
+  ! U.NEWS  
+Room Room_153 has canToSouth canToWest canToEast canToNorth canToUp, with
+  description [; self.crackle();
+    print "@01 in a large cavern.";
+    self.directs();
+  ],
+  u_toAction[;return PassageActionA();],
+  !s_to Room_161,
+  !w_to Room_152,
+  !e_to Room_154,
+  !n_to Room_145,
+  !u_to Room_89,
+  ;
+
+  ! ..N.WS  
+Room Room_154 has canToSouth canToWest canToNorth, with
+  description [; self.crackle();
+    print "@01 in a great stone hall way.";
+    self.directs();
+  ],
+  !s_to Room_162,
+  !w_to Room_153,
+  !n_to Room_146,
+  ;
+
+  ! ..NE..  
+Room Room_155 has canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in a wide twisting corridor.";
+    self.directs();
+  ],
+  !e_to Room_156,
+  !n_to Room_147,
+  ;
+
+  ! U.NEWS  
+Room Room_156 has canToSouth canToWest canToEast canToNorth canToUp, with
+  description [; self.crackle();
+    print "@01 in a large cavern with bones everywhere.";
+    self.directs();
+  ],
+  u_toAction[;return PassageActionC();],
+  !s_to Room_164,
+  !w_to Room_155,
+  !e_to Room_157,
+  !n_to Room_148,
+  !u_to Room_92,
+  ;
+
+  ! ..NEW.  
+Room Room_157 has canToWest canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in a winding twisting narrow tunnel.";
+    self.directs();
+  ],
+  !w_to Room_156,
+  !e_to Room_158,
+  !n_to Room_149,
+  ;
+
+  ! .D....  
+Room Room_158 has canToDown, with
+  description [; self.crackle();
+    print "@01 in the lair of the minotaur.";
+    self.directs();
+  ],
+  !d_to Room_222,
+  ;
+
+  ! ..N..S  
+Room Room_159 has canToSouth canToNorth, with
+  description [; self.crackle();
+    print "@01 on a gently sloping trail.";
+    self.directs();
+  ],
+  !s_to Room_167,
+  !n_to Room_151,
+  ;
+
+  ! ..NE..  
+Room Room_160 has canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in a great tunnel with broken bones everywhere.";
+    self.directs();
+  ],
+  !e_to Room_161,
+  !n_to Room_152,
+  ;
+
+  ! ..NEWS  
+Room Room_161 has canToSouth canToWest canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in a large stone chamber.";
+    self.directs();
+  ],
+  !s_to Room_169,
+  !w_to Room_160,
+  !e_to Room_162,
+  !n_to Room_153,
+  ;
+
+  ! ..NEWS  
+Room Room_162 has canToSouth canToWest canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in a hall with a large stone cross in the center.";
+    self.directs();
+  ],
+  !s_to Room_170,
+  !w_to Room_161,
+  !e_to Room_163,
+  !n_to Room_154,
+  ;
+
+  ! ...EWS  
+Room Room_163 has canToSouth canToWest canToEast, with
+  description [; self.crackle();
+    print "@01 in a large wide cavern.";
+    self.directs();
+  ],
+  !s_to Room_171,
+  !w_to Room_162,
+  !e_to Room_164,
+  ;
+
+  ! ...EWS  
+Room Room_164 has canToSouth canToWest canToEast, with
+  description [; self.crackle();
+    print "@01 on a narrow path overlooking a great pit.";
+    self.directs();
+  ],
+  !s_to Room_172,
+  !w_to Room_163,
+  !e_to Room_165,
+  ;
+
+  ! ....WS  
+Room Room_165 has canToSouth canToWest, with
+  description [; self.crackle();
+    print "@01 at the edge of a great buried temple.";
+    self.directs();
+  ],
+  !s_to Room_173,
+  !w_to Room_164,
+  ;
+
+  ! ....W.  
+Room Room_166 has canToWest, with
+  description [; self.crackle();
+    print "@01 in a shallow dark cavern.";
+    self.directs();
+  ],
+  !w_to Room_165,
+  ;
+
+  ! ..N..S  
+Room Room_167 has canToSouth canToNorth, with
+  description [; self.crackle();
+    print "@01 in a great cavern filled with mist.";
+    self.directs();
+  ],
+  s_toAction[;return PassageActionH();],
+  !s_to Room_175,
+  !n_to Room_159,
+  ;
+
+  ! UD.E.S  
+Room Room_168 has canToSouth canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_176,
+  !e_to Room_169,
+  !d_to Room_232,
+  !u_to Room_104,
+  ;
+
+  ! UD.EWS  
+Room Room_169 has canToSouth canToWest canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_177,
+  !w_to Room_168,
+  !e_to Room_170,
+  !d_to Room_233,
+  !u_to Room_105,
+  ;
+
+  ! UD.EWS  
+Room Room_170 has canToSouth canToWest canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_178,
+  !w_to Room_169,
+  !e_to Room_171,
+  !d_to Room_234,
+  !u_to Room_106,
+  ;
+
+  ! UD.EWS  
+Room Room_171 has canToSouth canToWest canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_179,
+  !w_to Room_170,
+  !e_to Room_172,
+  !d_to Room_235,
+  !u_to Room_107,
+  ;
+
+  ! UD.EWS  
+Room Room_172 has canToSouth canToWest canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_180,
+  !w_to Room_171,
+  !e_to Room_173,
+  !d_to Room_236,
+  !u_to Room_108,
+  ;
+
+  ! UD.EWS  
+Room Room_173 has canToSouth canToWest canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_181,
+  !w_to Room_172,
+  !e_to Room_174,
+  !d_to Room_237,
+  !u_to Room_109,
+  ;
+
+  ! UD.EWS  
+Room Room_174 has canToSouth canToWest canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  e_toAction[;return PassageActionI();],
+  !s_to Room_182,
+  !w_to Room_173,
+  !e_to Room_175,
+  !d_to Room_238,
+  !u_to Room_110,
+  ;
+
+  ! UDNEWS  
+Room Room_175 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  e_toAction[;return PassageActionI();],
+  w_toAction[;return PassageActionI();],
+  n_toAction[;return PassageActionH();],
+  !s_to Room_183,
+  !w_to Room_174,
+  !e_to Room_176,
+  !n_to Room_167,
+  !d_to Room_239,
+  !u_to Room_111,
+  ;
+
+  ! UDNEWS  
+Room Room_176 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  w_toAction[;return PassageActionI();],
+  !s_to Room_184,
+  !w_to Room_175,
+  !e_to Room_177,
+  !n_to Room_168,
+  !d_to Room_240,
+  !u_to Room_112,
+  ;
+
+  ! UDNEWS  
+Room Room_177 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_185,
+  !w_to Room_176,
+  !e_to Room_178,
+  !n_to Room_169,
+  !d_to Room_241,
+  !u_to Room_113,
+  ;
+
+  ! UDNEWS  
+Room Room_178 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_186,
+  !w_to Room_177,
+  !e_to Room_179,
+  !n_to Room_170,
+  !d_to Room_242,
+  !u_to Room_114,
+  ;
+
+  ! UDNEWS  
+Room Room_179 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  d_toAction[;return PassageActionF();],
+  !s_to Room_187,
+  !w_to Room_178,
+  !e_to Room_180,
+  !n_to Room_171,
+  !d_to Room_243,
+  !u_to Room_115,
+  ;
+
+  ! UDNEWS  
+Room Room_180 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_188,
+  !w_to Room_179,
+  !e_to Room_181,
+  !n_to Room_172,
+  !d_to Room_244,
+  !u_to Room_116,
+  ;
+
+  ! UDNEWS  
+Room Room_181 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_189,
+  !w_to Room_180,
+  !e_to Room_182,
+  !n_to Room_173,
+  !d_to Room_245,
+  !u_to Room_117,
+  ;
+
+  ! UDNEWS  
+Room Room_182 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_190,
+  !w_to Room_181,
+  !e_to Room_183,
+  !n_to Room_174,
+  !d_to Room_246,
+  !u_to Room_118,
+  ;
+
+  ! UDNEWS  
+Room Room_183 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_191,
+  !w_to Room_182,
+  !e_to Room_184,
+  !n_to Room_175,
+  !d_to Room_247,
+  !u_to Room_119,
+  ;
+
+  ! UDNEW.  
+Room Room_184 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_183,
+  !e_to Room_185,
+  !n_to Room_176,
+  !d_to Room_248,
+  !u_to Room_120,
+  ;
+
+  ! UDNEW.  
+Room Room_185 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_184,
+  !e_to Room_186,
+  !n_to Room_177,
+  !d_to Room_249,
+  !u_to Room_121,
+  ;
+
+  ! UDNEW.  
+Room Room_186 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_185,
+  !e_to Room_187,
+  !n_to Room_178,
+  !d_to Room_250,
+  !u_to Room_122,
+  ;
+
+  ! UDNEW.  
+Room Room_187 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_186,
+  !e_to Room_188,
+  !n_to Room_179,
+  !d_to Room_251,
+  !u_to Room_123,
+  ;
+
+  ! UDNEW.  
+Room Room_188 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_187,
+  !e_to Room_189,
+  !n_to Room_180,
+  !d_to Room_252,
+  !u_to Room_124,
+  ;
+
+  ! UDNEW.  
+Room Room_189 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_188,
+  !e_to Room_190,
+  !n_to Room_181,
+  !d_to Room_253,
+  !u_to Room_125,
+  ;
+
+  ! UDNEW.  
+Room Room_190 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_189,
+  !e_to Room_191,
+  !n_to Room_182,
+  !d_to Room_254,
+  !u_to Room_126,
+  ;
+
+  ! UDNEW.  
+Room Room_191 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_190,
+  !e_to Room_192,
+  !n_to Room_183,
+  !d_to Room_255,
+  !u_to Room_127,
+  ;
+
+  ! ...E.S  
+Room Room_192 has canToSouth canToEast, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_200,
+  !e_to Room_193,
+  ;
+
+  ! ...EW.  
+Room Room_193 has canToWest canToEast, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_192,
+  !e_to Room_194,
+  ;
+
+  ! ...EW.  
+Room Room_194 has canToWest canToEast, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_193,
+  !e_to Room_195,
+  ;
+
+  ! ...EW.  
+Room Room_195 has canToWest canToEast, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_194,
+  !e_to Room_196,
+  ;
+
+  ! ...EW.  
+Room Room_196 has canToWest canToEast, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_195,
+  !e_to Room_197,
+  ;
+
+  ! ....WS  
+Room Room_197 has canToSouth canToWest, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_205,
+  !w_to Room_196,
+  ;
+
+  ! ...E.S  
+Room Room_198 has canToSouth canToEast, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_206,
+  !e_to Room_199,
+  ;
+
+  ! ....WS  
+Room Room_199 has canToSouth canToWest, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_207,
+  !w_to Room_198,
+  ;
+
+  ! ..NE.S  
+Room Room_200 has canToSouth canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_208,
+  !e_to Room_201,
+  !n_to Room_192,
+  ;
+
+  ! ....WS  
+Room Room_201 has canToSouth canToWest, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_209,
+  !w_to Room_200,
+  ;
+
+  ! .D....  
+Room Room_202 has canToDown, with
+  description [; self.crackle();
+    print "@01 near a great forest.";
+    self.directs();
+  ],
+  d_toAction[;return PassageActionB();],
+  !d_to Room_10,
+  has light,
+  ;
+
+  ! ...E..  
+Room Room_203 has canToEast, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !e_to Room_204,
+  ;
+
+  ! ....WS  
+Room Room_204 has canToSouth canToWest, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  s_toAction[;return PassageActionE();],
+  !s_to Room_212,
+  !w_to Room_203,
+  ;
+
+  ! ..NE..  
+Room Room_205 has canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !e_to Room_206,
+  !n_to Room_197,
+  ;
+
+  ! ..N.W.  
+Room Room_206 has canToWest canToNorth, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_205,
+  !n_to Room_198,
+  ;
+
+  ! ..N..S  
+Room Room_207 has canToSouth canToNorth, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_215,
+  !n_to Room_199,
+  ;
+
+  ! ..NE.S  
+Room Room_208 has canToSouth canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_216,
+  !e_to Room_209,
+  !n_to Room_200,
+  ;
+
+  ! ..N.WS  
+Room Room_209 has canToSouth canToWest canToNorth, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_217,
+  !w_to Room_208,
+  !n_to Room_201,
+  ;
+
+  ! ...E.S  
+Room Room_210 has canToSouth canToEast, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_218,
+  !e_to Room_211,
+  ;
+
+  ! ...EW.  
+Room Room_211 has canToWest canToEast, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_210,
+  !e_to Room_212,
+  ;
+
+  ! ..N.W.  
+Room Room_212 has canToWest canToNorth, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  n_toAction[;return PassageActionE();],
+  !w_to Room_211,
+  !n_to Room_204,
+  ;
+
+  ! ...E.S  
+Room Room_213 has canToSouth canToEast, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_221,
+  !e_to Room_214,
+  ;
+
+  ! ...EWS  
+Room Room_214 has canToSouth canToWest canToEast, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_222,
+  !w_to Room_213,
+  !e_to Room_215,
+  ;
+
+  ! ..N.WS  
+Room Room_215 has canToSouth canToWest canToNorth, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_223,
+  !w_to Room_214,
+  !n_to Room_207,
+  ;
+
+  ! ..NE..  
+Room Room_216 has canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !e_to Room_217,
+  !n_to Room_208,
+  ;
+
+  ! ..N.WS  
+Room Room_217 has canToSouth canToWest canToNorth, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  s_toAction[;return PassageActionA();],
+  !s_to Room_225,
+  !w_to Room_216,
+  !n_to Room_209,
+  ;
+
+  ! ..N..S  
+Room Room_218 has canToSouth canToNorth, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_226,
+  !n_to Room_210,
+  ;
+
+  ! ...E.S  
+Room Room_219 has canToSouth canToEast, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_227,
+  !e_to Room_220,
+  ;
+
+  ! ...EWS  
+Room Room_220 has canToSouth canToWest canToEast, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_228,
+  !w_to Room_219,
+  !e_to Room_221,
+  ;
+
+  ! ..NEWS  
+Room Room_221 has canToSouth canToWest canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_229,
+  !w_to Room_220,
+  !e_to Room_222,
+  !n_to Room_213,
+  ;
+
+  ! ..NEWS  
+Room Room_222 has canToSouth canToWest canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_230,
+  !w_to Room_221,
+  !e_to Room_223,
+  !n_to Room_214,
+  ;
+
+  ! ..N.WS  
+Room Room_223 has canToSouth canToWest canToNorth, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_231,
+  !w_to Room_222,
+  !n_to Room_215,
+  ;
+
+  ! ...E.S  
+Room Room_224 has canToSouth canToEast, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  s_toAction[;return PassageActionG();],
+  !s_to Room_232,
+  !e_to Room_225,
+  ;
+
+  ! ..NEW.  
+Room Room_225 has canToWest canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  n_toAction[;return PassageActionA();],
+  !w_to Room_224,
+  !e_to Room_226,
+  !n_to Room_217,
+  ;
+
+  ! ..N.W.  
+Room Room_226 has canToWest canToNorth, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_225,
+  !n_to Room_218,
+  ;
+
+  ! ..NE..  
+Room Room_227 has canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !e_to Room_228,
+  !n_to Room_219,
+  ;
+
+  ! ..NEW.  
+Room Room_228 has canToWest canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_227,
+  !e_to Room_229,
+  !n_to Room_220,
+  ;
+
+  ! ..NEW.  
+Room Room_229 has canToWest canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_228,
+  !e_to Room_230,
+  !n_to Room_221,
+  ;
+
+  ! ..NEW.  
+Room Room_230 has canToWest canToEast canToNorth, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_229,
+  !e_to Room_231,
+  !n_to Room_222,
+  ;
+
+  ! ..N.W.  
+Room Room_231 has canToWest canToNorth, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_230,
+  !n_to Room_223,
+  ;
+
+  ! UD.E.S  
+Room Room_232 has canToSouth canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  n_toAction[;return PassageActionG();],
+  !s_to Room_240,
+  !e_to Room_233,
+  !d_to Room_40,
+  !u_to Room_168,
+  ;
+
+  ! UD.EWS  
+Room Room_233 has canToSouth canToWest canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_241,
+  !w_to Room_232,
+  !e_to Room_234,
+  !d_to Room_41,
+  !u_to Room_169,
+  ;
+
+  ! UD.EWS  
+Room Room_234 has canToSouth canToWest canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_242,
+  !w_to Room_233,
+  !e_to Room_235,
+  !d_to Room_42,
+  !u_to Room_170,
+  ;
+
+  ! UDNEWS  
+Room Room_235 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_243,
+  !w_to Room_234,
+  !e_to Room_236,
+  !n_to Room_227,
+  !d_to Room_43,
+  !u_to Room_171,
+  ;
+
+  ! UD.EWS  
+Room Room_236 has canToSouth canToWest canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_244,
+  !w_to Room_235,
+  !e_to Room_237,
+  !d_to Room_44,
+  !u_to Room_172,
+  ;
+
+  ! UD.EWS  
+Room Room_237 has canToSouth canToWest canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_245,
+  !w_to Room_236,
+  !e_to Room_238,
+  !d_to Room_45,
+  !u_to Room_173,
+  ;
+
+  ! UD.EWS  
+Room Room_238 has canToSouth canToWest canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_246,
+  !w_to Room_237,
+  !e_to Room_239,
+  !d_to Room_46,
+  !u_to Room_174,
+  ;
+
+  ! UD.EWS  
+Room Room_239 has canToSouth canToWest canToEast canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_247,
+  !w_to Room_238,
+  !e_to Room_240,
+  !d_to Room_47,
+  !u_to Room_175,
+  ;
+
+  ! UDNEWS  
+Room Room_240 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_248,
+  !w_to Room_239,
+  !e_to Room_241,
+  !n_to Room_232,
+  !d_to Room_48,
+  !u_to Room_176,
+  ;
+
+  ! UDNEWS  
+Room Room_241 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_249,
+  !w_to Room_240,
+  !e_to Room_242,
+  !n_to Room_233,
+  !d_to Room_49,
+  !u_to Room_177,
+  ;
+
+  ! UDNEWS  
+Room Room_242 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_250,
+  !w_to Room_241,
+  !e_to Room_243,
+  !n_to Room_234,
+  !d_to Room_50,
+  !u_to Room_178,
+  ;
+
+  ! UDNEWS  
+Room Room_243 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  d_toAction[;return PassageActionF();],
+  u_toAction[;return PassageActionF();],
+  !s_to Room_251,
+  !w_to Room_242,
+  !e_to Room_244,
+  !n_to Room_235,
+  !d_to Room_51,
+  !u_to Room_179,
+  ;
+
+  ! UDNEWS  
+Room Room_244 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_252,
+  !w_to Room_243,
+  !e_to Room_245,
+  !n_to Room_236,
+  !d_to Room_52,
+  !u_to Room_180,
+  ;
+
+  ! UDNEWS  
+Room Room_245 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_253,
+  !w_to Room_244,
+  !e_to Room_246,
+  !n_to Room_237,
+  !d_to Room_53,
+  !u_to Room_181,
+  ;
+
+  ! UDNEWS  
+Room Room_246 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_254,
+  !w_to Room_245,
+  !e_to Room_247,
+  !n_to Room_238,
+  !d_to Room_54,
+  !u_to Room_182,
+  ;
+
+  ! UDNEWS  
+Room Room_247 has canToSouth canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !s_to Room_255,
+  !w_to Room_246,
+  !e_to Room_248,
+  !n_to Room_239,
+  !d_to Room_55,
+  !u_to Room_183,
+  ;
+
+  ! UDNEW.  
+Room Room_248 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_247,
+  !e_to Room_249,
+  !n_to Room_240,
+  !d_to Room_56,
+  !u_to Room_184,
+  ;
+
+  ! UDNEW.  
+Room Room_249 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_248,
+  !e_to Room_250,
+  !n_to Room_241,
+  !d_to Room_57,
+  !u_to Room_185,
+  ;
+
+  ! UDNEW.  
+Room Room_250 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_249,
+  !e_to Room_251,
+  !n_to Room_242,
+  !d_to Room_58,
+  !u_to Room_186,
+  ;
+
+  ! UDNEW.  
+Room Room_251 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_250,
+  !e_to Room_252,
+  !n_to Room_243,
+  !d_to Room_59,
+  !u_to Room_187,
+  ;
+
+  ! UDNEW.  
+Room Room_252 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_251,
+  !e_to Room_253,
+  !n_to Room_244,
+  !d_to Room_60,
+  !u_to Room_188,
+  ;
+
+  ! UDNEW.  
+Room Room_253 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_252,
+  !e_to Room_254,
+  !n_to Room_245,
+  !d_to Room_61,
+  !u_to Room_189,
+  ;
+
+  ! UDNEW.  
+Room Room_254 has canToWest canToEast canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_253,
+  !e_to Room_255,
+  !n_to Room_246,
+  !d_to Room_62,
+  !u_to Room_190,
+  ;
+
+  ! UDN.W.  
+Room Room_255 has canToWest canToNorth canToDown canToUp, with
+  description [; self.crackle();
+    print "@01 in a maze of tunnels stretching out of sight in all directions.";
+    self.directs();
+  ],
+  !w_to Room_254,
+  !n_to Room_247,
+  !d_to Room_63,
+  !u_to Room_191,
+  ;
+

@@ -1,0 +1,414 @@
+! Include from Madness.inf
+
+! These actions are executed whenever the containing room's description
+! is printed (usually when you enter). Multiple actions may be in the
+! same room. They are executed in the alphabetical order below. The player
+! may be moved in the middle of running the list. The list then continues 
+! to run to the end checking the player in the new room.
+
+! The room baseclass's description routine calls these "doActions".
+
+Class RoomAction with
+  doAction[;
+  ],
+  describe[;
+    rtrue;
+  ],
+  randomPlace[a b mask x;
+    x = random(b - a + 1) - 1;
+    x = x & mask;
+    x = x + a;        
+    move self to findRoomAt(x);
+  ],
+;
+
+! If pack weight > 192 then: drop to next floor, take 32 damage, and drop heaviest object.
+RoomAction RoomAction_a with
+  place[;
+    self.randomPlace($00,$7F,$FF);
+  ],
+  
+  doAction[ v;
+    print "RoomAction_a ";
+    if(getPackWeight()<192) {
+      v = getRoomNumber(real_location) + 64;
+      v = v & 255;
+      print "The floor under you has just caved in!! ";
+      lastRoom = findRoomAt(v);
+      PlayerTo(lastRoom);
+      MadDropHeaviest();      
+    }
+  ],  
+;
+
+! If pack weight > 128 then: drop to next floor, take 32 damage, and drop heaviest object.
+RoomAction RoomAction_b with
+  place[;
+    self.randomPlace($00,$7F,$FF);
+  ],
+  
+  doAction[ v;
+    print "RoomAction_b ";
+    if(getPackWeight()<128) {
+      v = getRoomNumber(real_location) + 64;
+      v = v & 255;
+      print "The floor under you has just caved in!! ";
+      lastRoom = findRoomAt(v);
+      PlayerTo(lastRoom);
+      MadDropHeaviest();      
+    }
+  ],    
+;
+
+! If pack weight > 95 then: drop to next floor, take 32 damage, and drop heaviest object.
+RoomAction RoomAction_c with
+  place[;
+    self.randomPlace($00,$7F ,$FF);
+  ],
+  
+  doAction[ v;
+    print "RoomAction_c ";
+    if(getPackWeight()<95) {
+      v = getRoomNumber(real_location) + 64;
+      v = v & 255;
+      print "The floor under you has just caved in!! ";
+      lastRoom = findRoomAt(v);
+      PlayerTo(lastRoom);
+      MadDropHeaviest();      
+    }
+  ],    
+;
+
+! This action is a pile of rocks. If we have VETAR then we describe the
+! rocks once and only once.
+RoomAction RoomAction_d with
+  place[;
+    self.randomPlace($C0 ,$FF ,$FF);
+  ],
+  
+  doAction[;
+    print "RoomAction_d ";
+    if(parent(VETAR)==GameLoop) {
+      if(VETAR.shownRocks==0) {
+        VETAR.shownRocks=1;
+        print "A dull, eerie glow is emanating from behind a pile of rocks. ";
+      }
+    }
+  ],  
+;
+
+! Music is playing. This is the room where the ledge appears if you play
+! the flute. But all this action does is play music.
+RoomAction RoomAction_e with
+  place[;
+    self.randomPlace($C0 ,$FF ,$FF);
+  ],
+  
+  doAction[;
+    ! TODO if there
+    print "(music is playing) ";
+  ],  
+;
+
+
+
+
+
+! TODO to here
+
+RoomAction RoomAction_f1 with
+  place[;
+    self.randomPlace($40 ,$7F ,$FF);
+  ],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_g with
+  place[;
+    self.randomPlace($40 ,$7F ,$DF);
+  ],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_h with
+  place[;
+    self.randomPlace($40 ,$7F ,$DF);
+  ],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_i with
+  place[;
+    self.randomPlace($E0 ,$FF ,$DF);
+  ],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_j with
+  place[;
+    self.randomPlace($C0 ,$DF ,$DF);
+  ],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_k with
+  place[;
+    self.randomPlace($A0 ,$BF ,$DF);
+  ],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_l with
+  place[;
+    self.randomPlace($80 ,$9F ,$DF);
+  ],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_m with
+  place[;
+    self.randomPlace($60 ,$7F ,$DF);
+  ],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_n with
+  place[;
+    self.randomPlace($40 ,$5F ,$DF);
+  ],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_o with
+  place[;
+    self.randomPlace($20 ,$3F ,$DF);
+  ],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_p with
+  place[;
+    self.randomPlace($00 ,$1F ,$DF);
+  ],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_q1 with
+  place[;
+    self.randomPlace($00 ,$FF ,$DF);
+  ],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_r with
+  place[;
+    self.randomPlace($00 ,$7F ,$FF);
+  ],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_q2 with
+  place[;
+    self.randomPlace($00 ,$FF ,$FF);
+  ],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_q3 with
+  place[;
+    self.randomPlace($00 ,$FF ,$FF);
+  ],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_s with
+  place[;
+    self.randomPlace($40 ,$BF ,$DF);
+  ],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_t with
+  place[;
+    self.randomPlace($80 ,$FF ,$FF);
+  ],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_q4 with
+  place[;
+    self.randomPlace($80 ,$FF ,$FF);
+  ],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_u with
+  place[;
+    self.randomPlace($00 ,$3F ,$DF);
+  ],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_v with
+  place[;
+    self.randomPlace($40 ,$FF ,$FF);
+  ],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_f2 with
+  place[;
+    self.randomPlace($80 ,$BF ,$FF);
+  ],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_32a with
+  place[;
+    self.randomPlace($C0 ,$FF ,$FF);
+  ],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_x1 with
+  place[;
+    self.randomPlace($40 ,$7F ,$FF);
+  ],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_x2 with
+  place[;
+    self.randomPlace($80 ,$BF ,$FF);
+  ],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_203a with
+  place[;
+    self.randomPlace($C0 ,$FF ,$FF);
+  ],
+  
+  doAction[;
+  ],  
+;
+
+
+
+! TODO look at the jump at 3C59 ... the code actually sets the "16" at random and might
+! or might not place a duplicate (shadowed)
+
+
+RoomAction RoomAction_z with
+  place[ x;
+    ! Room_16 through Room_39
+    x = random(24) - 1 + 16;
+    move self to findRoomAt(x);  
+  ],
+  
+  doAction[;
+  ],  
+;
+
+
+
+
+
+
+!
+RoomAction RoomAction_213 with
+  place[;move self to Room_213;],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_32b with
+  place[;move self to Room_32;],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_33 with
+  place[;move self to Room_33;],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_203b with
+  place[;move self to Room_203;],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_232 with
+  place[;move self to Room_232;],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_67 with
+  place[;move self to Room_67;],
+  
+  doAction[;
+  ],  
+;
+
+RoomAction RoomAction_102 with
+  place[;move self to Room_102;],
+  
+  doAction[;
+  ],  
+;

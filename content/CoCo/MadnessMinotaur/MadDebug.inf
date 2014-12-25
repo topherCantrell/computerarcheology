@@ -1,0 +1,44 @@
+! Included from Madness.inf
+
+[ MadDebObjectsSub x;  
+  objectloop(x ofclass Item) {
+    print (name) x, ":", (name) parent(x), " ";
+  }
+  print "^";
+];
+
+[ MadDebSpellsSub x;
+  objectloop(x ofclass MadSpell) {
+    print (name) x, ":", (name) parent(x), " ";
+  }
+  print "^";
+];
+
+[ MadDebActionsSub x;
+  objectloop(x ofclass RoomAction) {
+    print (name) x, ":", (name) parent(x), " ";
+  }
+];
+
+[ MadDebMoveSub s;
+
+  s = findRoomAt(noun);
+  PlayerTo(s);
+  
+];
+
+[ MadDebGetSub;
+  move noun to player;
+];
+
+[ MadDebStatsSub;
+  print "Condition:",physicalCondition," weight:",getPackWeight()," bulk:",getPackBulk(),"^";
+];
+
+[ MadDebOracleSub;
+   ORACLE.giveAdvice();
+];
+
+[ MadDebDamageSub;
+  MadTakeDamage(noun);
+];

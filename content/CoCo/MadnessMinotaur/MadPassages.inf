@@ -1,0 +1,153 @@
+! Included from Madness.inf
+
+! Room actions are executed in a movement command. If there is a natural passage
+! (even if it is blocked) then any passage action is performed. If the action
+! returns TRUE then the movement is aborted. Otherwise the blocked-status is
+! checked and the movement continues.
+
+! The table below from the M&M shows which actions are on which passages. If a room
+! has a passage action for a direction then it has a "x_toAction" function (where "x" 
+! is the direction) that calls the global functions below.
+
+! The room baseclass "x_to" functions call the room's "x_toAction" which calls the
+! global functions.
+    
+! 3B4A: 74:EAST    75:WEST      4A 04 1A FB ; 1:2:1 --EAST:WEST-- 1:3:1    ; A  If excess physical condition is less than random 40-BF then a climb-up fails.
+! 3B4E: 83:EAST    84:WEST      53 04 1A FB ; 1:3:2 --EAST:WEST-- 1:4:2    ; A  see above
+! 3B52: 202:DOWN    *           CA 10 1B 20 ; 3:2:1 --DOWN:UP-- 0:2:1      ; B  Moves us to start room 10 (or infrequently in a room near the start).
+! 3B56: 10:UP       *           0A 20 1B 03 ; 0:2:1 --UP:DOWN-- 3:2:1      ; C  If excess physical condition is less than 192 then a climb-up fails.
+! 3B5A: 64:UP    0:DOWN         40 20 1B 06 ; 1:0:0 --UP:DOWN-- 0:0:0      ; D  If excess physical condition is less than 64 then a climb-up fails.
+! 3B5E: 217:SOUTH    225:NORTH  D9 01 1A FB ; 3:1:3 --SOUTH:NORTH-- 3:1:4  ; A  see above
+! 3B62: 68:UP    4:DOWN         44 20 1B 06 ; 1:4:0 --UP:DOWN-- 0:4:0      ; D  see above
+! 3B66: 71:UP    7:DOWN         47 20 1A FB ; 1:7:0 --UP:DOWN-- 0:7:0      ; A  see above
+! 3B6A: 83:UP    19:DOWN        53 20 1B 09 ; 1:3:2 --UP:DOWN-- 0:3:2      ; E  If excess physical condition is less than 128 then a climb-up fails.
+! 3B6E: 18:SOUTH    26:NORTH    12 01 1B 34 ; 0:2:2 --SOUTH:NORTH-- 0:2:3  ; F  If the lamp is in our pack this moves us to a totally random room. 
+! 3B72: 89:UP    25:DOWN        59 20 1A FB ; 1:1:3 --UP:DOWN-- 0:1:3      ; A  see above
+! 3B76: 66:UP    2:DOWN         42 20 1A FB ; 1:2:0 --UP:DOWN-- 0:2:0      ; A  see above
+! 3B7A: 130:UP    66:DOWN       82 20 1B 06 ; 2:2:0 --UP:DOWN-- 1:2:0      ; D  see above
+! 3B7E: 135:UP    71:DOWN       87 20 1B 06 ; 2:7:0 --UP:DOWN-- 1:7:0      ; D  see above
+! 3B82: 150:UP    86:DOWN       96 20 1A FB ; 2:6:2 --UP:DOWN-- 1:6:2      ; A  see above
+! 3B86: 153:UP    89:DOWN       99 20 1A FB ; 2:1:3 --UP:DOWN-- 1:1:3      ; A  see above
+! 3B8A: 156:UP    92:DOWN       9C 20 1B 03 ; 2:4:3 --UP:DOWN-- 1:4:3      ; C  see above
+! 3B8E: 138:EAST    139:WEST    8A 04 1B 5F ; 2:2:1 --EAST:WEST-- 2:3:1    ; G  There is a 50/50 chance of moving to a random room in the first half of the last two floors.
+! 3B92: 212:NORTH    204:SOUTH  D4 08 1B 09 ; 3:4:2 --NORTH:SOUTH-- 3:4:1  ; E  see above
+! 3B96: 77:NORTH    69:SOUTH    4D 08 1B 03 ; 1:5:1 --NORTH:SOUTH-- 1:5:0  ; C  see above
+! 3B9A: 243:UP    179:DOWN      F3 20 1B 34 ; 3:3:6 --UP:DOWN-- 2:3:6      ; F  see above
+! 3B9E: 243:DOWN    51:UP       F3 10 1B 34 ; 3:3:6 --DOWN:UP-- 0:3:6      ; F  see above
+! 3BA2: 175:NORTH    167:SOUTH  AF 08 1B 43 ; 2:7:5 --NORTH:SOUTH-- 2:7:4  ; H  There is a 50/50 chance of going to a random room in the maze on a random floor.
+! 3BA6: 105:NORTH    97:SOUTH   69 08 1B 43 ; 1:1:5 --NORTH:SOUTH-- 1:1:4  ; H  see above
+! 3BAA: 174:EAST    175:WEST    AE 04 1B 4A ; 2:6:5 --EAST:WEST-- 2:7:5    ; I  Move to a random room in the maze on a random floor (1 in 36 chance of doing nothing).
+! 3BAE: 104:EAST    105:WEST    68 04 1B 4A ; 1:0:5 --EAST:WEST-- 1:1:5    ; I  see above
+! 3BB2: 106:WEST    105:EAST    6A 02 1B 4A ; 1:2:5 --WEST:EAST-- 1:1:5    ; I  see above
+! 3BB6: 176:WEST    175:EAST    B0 02 1B 4A ; 2:0:6 --WEST:EAST-- 2:7:5    ; I  see above
+! 3BBA: 224:SOUTH    232:NORTH  E0 01 1B 5F ; 3:0:4 --SOUTH:NORTH-- 3:0:5  ; G  see above
+
+
+! A,C,D, and E are all similar. If the player's (phys-weight) is less than a specific value
+! then an "UP" fails. For A the value is random 64-192. For the others it is fixed.
+!
+[passageActionA v i;
+  print "passageActionA^";
+  v = (random($80)-1)+64;  ! 64-192
+  i = physicalCondition - getPackWeight();
+  if((noun==u_to) && (i<v)) rtrue;
+  rfalse;
+];    
+[passageActionC v i;
+  print "passageActionC^";  
+  v = 192;
+  i = physicalCondition - getPackWeight();
+  if((noun==u_to) && (i<v)) rtrue;   
+  rfalse;      
+];    
+[passageActionD v i;
+  print "passageActionD^";
+  v = 64;
+  i = physicalCondition - getPackWeight();
+  if((noun==u_to) && (i<v)) rtrue;
+  rfalse;
+];    
+[passageActionE v i;
+  print "passageActionE^";
+  v = 128;
+  i = physicalCondition - getPackWeight();
+  if((noun==u_to) && (i<v)) rtrue;
+  rfalse;
+];
+
+! This is only used when climbing down from the treasure room. Most of the time
+! the "DOWN" lands you as expected in room 10. There is a small chance (roughly 20%)
+! that you will be dropped in a random room numbered from 0-15.
+!
+[passageActionB v;
+  print "passageActionB^";
+  v = random(256)-1;
+  if(v<$D0) {
+    lastRoom = Room_10;
+    PlayerTo(Room_10);              
+  } else {
+    v = random(16)-1;
+    lastRoom = findRoomAt(v);
+    PlayerTo(lastRoom);        
+  }      
+  rtrue;
+];
+    
+! If the lamp is in our pack then move to a totally random room.
+!
+[passageActionF v;
+  print "passageActionF^";
+  if(LAMP in player) {    
+    v = random(256)-1;
+    lastRoom = findRoomAt(v);
+    PlayerTo(lastRoom);
+    rtrue;
+  }
+  rfalse;
+];
+    
+! 50/50 (50%) chance of moving to a random room in the first half of the
+! last floor.
+! 
+[passageActionG v;
+  print "passageActionG^";
+  if(random(0,1)) {
+    v = random(256)-1;
+    v = v | $C0;
+    lastRoom = findRoomAt(v);
+    PlayerTo(lastRoom);
+  }
+  rfalse;
+];
+    
+    
+!   21/32 (66%) chance of moving to a random room in the maze on any floor.
+[passageActionH v;
+  print "passageActionH^";
+  v = random(256)-1;
+  v = v & $1F;
+  if(v>$0B) {
+    v = random(256)-1;
+    v = v & $CF;
+    v = v | $30;
+    lastRoom = findRoomAt(v);
+    PlayerTo(lastRoom);
+  }
+  rfalse;
+];
+    
+!   244/255 (96%) chance of moving to a random room in the maze on any floor.
+[passageActionI v;
+  print "passageActionI^";
+  v = random(256)-1;
+  if(v>$0B) {
+    v = random(256)-1;
+    v = v & $CF;
+    v = v | $30;
+    lastRoom = findRoomAt(v);
+    PlayerTo(lastRoom);
+  }
+  rfalse;
+];
+    
+    

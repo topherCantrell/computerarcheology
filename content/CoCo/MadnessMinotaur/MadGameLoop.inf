@@ -1,0 +1,397 @@
+! Included from Madness.inf
+
+! M&M Game Loop
+!   Get input and tokenize
+!   **BEFORE-PARSING**
+!   If verb error
+!     Print error message
+!     CONTINUE 
+!   Calculate score (check for win)
+!   Print CR
+!   EXECUTE COMMAND (returns back)
+!   **AFTER-COMMAND**
+!   if physCond<40 print "YOUR SIGHT IS DIM" (bug in M&M hid this)
+!   Learn spells in room
+!   Calculate score (check for win)
+!   CONTINUE
+
+! Print Description
+!   Print "CRACKLING" if a spell is here (even if dark)
+!   Check for darkness (maybe die)
+!   if light
+!     Print room description and blocked passages
+!     Print objects in room
+!     Process EnterRoom actions
+
+! Regular movement
+!   Clear VETAR-will-work flag
+!   Clear mysterious-fog flag
+!   Clear hydra-just-tied flag
+!   If there is no natural passage in direction
+!     set last room to current room
+!     Print Description
+!     RETURN
+!   Execute any PassageAction
+!   If PassageAction bypassed
+!     RETURN
+!   If passage unblocked or wearing powerring
+!     Set last room to current room
+!     Move to new room
+!     Reset BACK counter
+!     Print Description
+!     RETURN
+
+![ BeforeParsing;
+  ! Technically for M&M this should come AFTER parsing the verb and should not
+  ! happen if the verb fails. We need to hook in BEFORE the command execution.
+  ! But all that really happens in M&M is a win-check, which is done after
+  ! each command anyway. Skipping this doesn't seem to affect much.
+!];
+
+Object GameLoop with
+  
+  ! This runs at the end of every turn (after whatever command executed)
+  
+  daemon [ x;
+    !   if physCond<40 print "YOUR SIGHT IS DIM"
+    !   Learn spells in room
+    !   Calculate score (check for win)
+    
+    if(physicalCondition<40) {
+      print "Your sight is dim. ";
+    }
+    
+    objectloop(x in real_location && x ofclass MadSpell) {
+      x.learn();
+    }
+    
+    if(MadnessCalculateScore()==240) {
+      StopDaemon(GameLoop);
+      print "^^Congratulations!! You win!^";
+      ! TODO Sound Effect
+      PressAnyKey();
+      print "^^^^^";
+      Initialise();
+      PlayerTo(Room_10);
+    }
+    
+  ],  
+;
+
+[ MadTakeDamage d;
+
+  ! If we are invulnerable ignore damage
+  if(AKHIROM.invulnerable) rfalse;
+  
+  physicalCondition = physicalCondition - d;
+  
+  if(physicalCondition<0) {
+    print "You have died from exhaustion and wounds.^";
+    MadUncleSub();
+    rtrue;
+  }
+  
+  d = getPackWeight();
+  if(d>physicalCondition) {
+    MadDropHeaviest();
+  }
+  
+  rfalse;
+  
+];
+
+[ MadDropHeaviest x d;
+
+  ! Find the heaviest object (if any) in the pack
+  d = nothing;
+  objectloop(x in player) {
+    if(player==parent(x)) {
+      if(d==nothing) {
+        d = x;
+      } else {
+        if(x.weight > d.weight) {
+          d = x;
+        }
+      }
+    }
+  }
+  
+  ! TODO if this is a non-essential then 1/8th chance of getting lost forever
+  
+  ! If there is an object, drop it
+  if(d~=nothing) {
+    move d to real_location;
+  }
+];
+
+[ MadInvSub x b;
+  b = false; 
+  print "You are holding:";  
+  
+  objectloop(x in player && player==parent(x)) {
+    b = true;
+    print " ", (name) x;
+  }   
+  
+  if(b==false) " nothing";
+  
+];
+
+! In Inform the SCORE is a meta command that takes no game-time. In
+! M&M it is regular old command. TODO make SCORE not a META verb.
+!
+! You score 10 points for every (16) treasure on the ground in 202.
+! You score  5 points for every treasure in your pack.
+! You score 10 points for every (8) spell you learned.
+! 10*(16+8) = 240 max.
+!
+[ MadnessCalculateScore t x;
+
+   t = 0;
+   objectloop(x in Player) {      
+     if(x provides treasure && x.treasure==1) {
+       t = t + 5;
+     }
+   };   
+   objectloop(x in GameLoop) {      
+     t = t + 10;     
+   };
+   
+   x = child(Room_202);
+   while(x) {
+     if(x provides treasure && x.treasure==1) t=t+10;
+     x = sibling(x);
+   }
+   
+   return t;
+];
+
+[ MadnessPrintScoreSub;
+   print "You have scored ",MadnessCalculateScore(),
+     " points out of a total of 240 points.^Phys cond = ",
+     physicalCondition;
+];
+
+[ MadUncleSub;
+    StopDaemon(GameLoop);
+    print "^^You put up a good fight, better luck next time.^";  
+    MadnessPrintScoreSub();  
+    PressAnyKey();
+    print "^^^^^";
+    Initialise();
+    PlayerTo(Room_10);    
+];
+
+[ PressAnyKey k; @read_char 1 -> k; return k; ];
+
+[ ParserError ; !error_type;
+ 
+  "I don't understand that.";
+  ! TODO we need to see this when pressing enter for a blank input
+];
+
+[ MadDropSub;
+   if(noun in player) {
+     move noun to real_location;
+     print "OK^";
+     rfalse;
+   }
+   print "You don't have that.^";
+   rtrue;
+];
+
+! GET/TAKE/GRAB noun
+! GET/TAKE/GRAB ?
+! GET/TAKE/GRAB -nothing-
+!
+[ MadTakeSub x;
+
+! IF -nothing-
+!  print "GET/TAKE/GRAB WHAT?"
+!  return
+!
+! IF ?
+!   print "DON'T BE RIDICULOUS."
+!   return
+!
+! In M&M there was no way to assign an object to a non-existent room.
+! Thus when you pick up an object it keeps its previous room number
+! in its data structure. If you are in that room (like if you GET twice)
+! and the object is in your pack then you get the "DON'T BE RIDICULOUS."
+! message instead of "I DO NOT SEE ANY *".
+! 
+! IF noun is in room AND noun is in pack (see comments above)
+!   print "DON'T BE RIDICULOUS."
+!   return
+!
+! IF noun is spell OR noun is creature
+!   print "DON'T BE RIDICULOUS."
+!   return
+!
+! IF noun is carried OR noun is dead creature
+!   print "I DO NOT SEE ANY "+noun
+!   return
+!
+! IF protected
+!   make sure the correct key objects are in pack
+!   print object-pickup-fail if not and return
+!
+! IF playerWeight+noun.weight>255 OR playerWeight+noun.weight>playerCondition
+!   print "IT'S TOO HEAVY."
+!   return
+! 
+! IF playerBulk+noun.bulk>255 OR playerBulk+noun.bulk>playerCondition
+!   print "IT'S TOO BULKY."
+!   return
+!
+! IF noun is spell
+!   print "DON'T BE REDICULOUS."
+!   return
+! 
+! put object in pack
+! update playerBulk and playerWeight
+! unprotect the object
+! print "OK"
+  
+  if(noun == nothing) {
+     ! TODO use the actual word (capitalized) instead of 'Get'
+     print "Get what?^";
+     rtrue;
+  }
+   
+  if(noun ofclass MadSpell || noun has madCreature) {
+     print "Don't be ridiculous.^";
+     rtrue;
+  }
+
+  ! In case we already have it.
+  if(noun in player) {
+     print "Don't be ridiculous.^";
+     rtrue;
+  }
+  
+  ! If the object is here but not directly (carried by a creature or room action).  
+  if(parent(noun)~=real_location) {
+     print "I do not see any ",(name)noun,"^";
+     rtrue;
+  }
+  
+  ! If the object is protected (and we don't have the key) then print 
+  ! noun-specific error message and out
+  if(noun.isProtected()) rtrue;
+    
+  x = getPackWeight()+noun.weight;
+  if(x>255 || x>physicalCondition) {
+    print "It's too heavy.";
+    rtrue;
+  }
+  
+  x = getPackBulk()+noun.bulk;
+  if(x>255 || x>physicalCondition) {
+    print "It's too bulky.";
+    rtrue;
+  }
+    
+  noun.protected = 0; ! We have it now ... no longer protected
+  move noun to player;
+  
+  print "OK^";
+  
+];
+
+[ MadAskSub;
+  if(ORACLE notin real_location) {
+    print "Ask who?^";
+    rtrue;
+  }
+  ORACLE.giveAdvice();
+];
+
+[ MadLookSub;
+  PlayerTo(real_location);
+];
+
+[ MadKillCreatureSub x r;
+
+  ! If the creature is not in the room or creature is not visible
+  if(noun == nothing || real_location ~= parent(noun)) {
+    print "Kill what?^";
+    rtrue;
+  }
+  
+  if(noun provides canKill) {    
+  } else {
+    print "Kill what?^";
+    rtrue;
+  }
+  
+  if(noun.canKill()) {
+    x = child(noun);
+    if(x==nothing) {
+      print "Nothing special happens.^";
+      rtrue;
+    } else {    
+      print "In his dying effort the ",(name)noun," pulls the ",(name)x,
+        " from a bag and throws it before he disappears in a puff of purple smoke.";
+      r = MadRandomDirection(real_location);
+      move x to r;
+      remove noun;
+      rtrue;
+    }
+  } else {
+    if(MadTakeDamage(50)) rtrue;
+    print "You missed.^";
+    rtrue;
+  }
+  
+];
+
+
+
+
+
+[ MadLookScarabSub;];
+[ MadLookTabletSub;];
+[ MadLookPoolSub;];
+[ MadLookParchmentSub;];
+[ MadLookPitSub;];
+[ MadLookUrnSub;];
+[ MadLookBottleSub;];
+
+[ MadQuietSub;];
+
+[ MadHelpSub;];
+[ MadBackSub;];
+[ MadClimbSub;];
+[ MadJumpSub;];
+
+[ MadLampOnSub;];
+[ MadLampOffSub;]; 
+
+[ MadOpenCryptSub;];
+[ MadOpenDrapesSub;];
+[ MadOpenScrollSub;];
+[ MadOpenJewelboxSub;];
+  
+[ MadEatFoodSub;];
+[ MadEatMushroomSub;];
+[ MadEatPowderSub;];
+  
+[ MadDrinkSpriteSub;];
+[ MadDrinkPotionSub;];
+[ MadDrinkWaterSub;];
+    
+[ MadRunSub;];
+
+[ MadFillLampSub;];
+[ MadFillBottleSub;];
+[ MadFillUrnSub;];
+   
+[ MadPlayFluteSub;];
+  
+[ MadKillHydraSub;];
+[ MadKillOracleSub;];
+  
+[ MadTieSub;];
+
+[ MadStabSub;];

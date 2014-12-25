@@ -1,0 +1,877 @@
+! Included from "Madness.inf"
+
+Attribute madCreature;
+
+! There are 16 carried objects and 17 carriers. On carrier is thus empty. It is always
+! a creature, but never the MINOTAUR. Each carried object is given an index (0-15).
+! The carriers are numbered 0 through 16 and are added to the array. The empty creature
+! is left out of the array. Then the array is shuffled. The value in the array at
+! a specific index is thus that object's carrier.
+!
+Array objectCarriers --> 16;
+[ InitCarry x i j a;
+  for(x=0:x<16:x=x+1) {
+    objectCarriers-->x = x;
+  }  
+  ! Now a shuffle
+  for(x=0:x<1000:x=x+1) {
+    i = random(16)-1;
+    j = random(16)-1;
+    a = objectCarriers-->i;
+    objectCarriers-->i = objectCarriers-->j;
+    objectCarriers-->j = a;
+  }
+  ! Random empty creature (never MINOTAUR)
+  x = random(5)-1;
+  objectCarriers-->x=16;
+];
+
+Array adviceSlots --> 13;
+[ InitAdvice x i j a;
+  for(x=0:x<13:x=x+1) {
+    adviceSlots-->x = x;
+  }  
+  ! Now a shuffle
+  for(x=0:x<1000:x=x+1) {
+    i = random(13)-1;
+    j = random(13)-1;
+    a = adviceSlots-->i;
+    adviceSlots-->i =adviceSlots-->j;
+    adviceSlots-->j = a;
+  }  
+];
+
+! treasure   true if this object is a treasure
+! weight     weight of the object
+! bulk       bulk of the object
+! protected  protection list number (or 0 if not protected)
+!
+Class Item with weight, bulk, spell, protected, treasure,
+  placeRandom [ a b mask x;
+    x = random(b - a + 1) - 1;
+    x = x & mask;
+    x = x + a;        
+    move self to findRoomAt(x);
+  ],
+  placeProtected[;
+    move self to random(Room_100, Room_150, Room_90, Room_77, Room_162, Room_16, 
+        Room_115, Room_144, Room_56, Room_25, Room_44, Room_135, Room_222, 
+        Room_79, Room_133, Room_158);
+  ],
+  
+  placeCarried[ x y;
+  
+    y = objectCarriers-->x;
+    switch(y) {
+       0: move self to SPRITE;
+       1: move self to TROGLODYTE;
+       2: move self to SCORPION;         ! One of these creatures will be empty (never MINOTAUR)
+       3: move self to NYMPH;
+       4: move self to SATYR;
+       !
+       5: move self to MINOTAUR;
+       6: move self to RoomAction_67;    ! Crypt room
+       7: move self to RoomAction_102;   ! Crypt of the ancient king
+       8: move self to RoomAction_u;     ! Free treasure
+       9: move self to RoomAction_33;    ! Free treasure
+      10: move self to RoomAction_203a;  ! Small pit (keep LOOKing until treasure pops out)
+      11: move self to RoomAction_e;     ! Music ... play flute to bring ledge then climb the ledge
+      12: move self to RoomAction_g;     ! Tie the hydra then stab it
+      13: move self to RoomAction_d;     ! Pile-of-rocks appears if you have learned VETAR
+      14: move self to RoomAction_s;     ! Eerie glow ... turn the lamp off to get the treasure
+      15: move self to RoomAction_t;     ! Packrat ... if you have his trigger he drops his treasure
+      16: move self to RoomAction_r;     ! Enter this room 3 times to get treasure
+    }  
+  ],
+  
+  isProtected [;
+    rfalse;
+  ],
+
+  describe[;
+    rtrue;
+  ],
+;
+
+
+Item ORACLE "Oracle" has madCreature with name "oracle" ,
+  adviceGiven 13,
+  description [;
+    print "The oracle is here.";
+    rfalse;
+  ],
+  placeObject [;
+    self.placeRandom($00, $7F, $DF);
+  ],
+  giveAdvice [ x;
+    if(self.adviceGiven==13) {
+      InitAdvice();
+      self.adviceGiven = 0;
+    }
+    x = adviceSlots-->self.adviceGiven;
+    self.adviceGiven = self.adviceGiven+1;
+    print "A mysterious clam settles over the room as the oracle speaks...^";
+    print "To learn the secret of the ";
+    switch(x) {
+      0:  print "Sprite you must possess the ";     SPRITE.tellAbout();
+      1:  print "Troglodyte you must possess the "; TROGLODYTE.tellAbout();
+      2:  print "Scorpion you must possess the ";   SCORPION.tellAbout();
+      3:  print "Nymph you must possess the ";      NYMPH.tellAbout();
+      4:  print "Satyr you must possess the ";      SATYR.tellAbout();
+      5:  print "Minotaur you must possess the ";   MINOTAUR.tellAbout();      
+      6:  print "sword you must possess the ";      SWORD.tellAbout();
+      7:  print "shield you must possess the ";     SHIELD.tellAbout();
+      8:  print "vial you must possess the ";       VIAL.tellAbout();
+      9:  print "skull you must possess the ";      SKULL.tellAbout();
+      10: print "Powerring you must possess the ";  POWERRING.tellAbout();
+      11: print "Lightring you must possess the ";  LIGHTRING.tellAbout();
+      12: print "Truthring you must possess the ";  TRUTHRING.tellAbout();
+      ! No SPELLBOOK here. You get that by LOOK POOL in Room_0.
+    }
+    print ". ^The Oracle vanishes.^";
+    
+    x = random(256)-1;
+    x = x & $DF;
+    move oracle to findRoomAt(x);
+  ],
+;
+
+
+
+
+
+
+Item FOOD "Food" with name "food" ,weight $07, bulk $07, 
+  description [;
+    print "There is food here.";
+    rfalse;
+  ],
+  invent "Food",
+  placeObject [;
+    self.placeRandom($00, $3F, $1F);
+  ],
+;
+
+Item BOTTLE "Bottle" with name "bottle" ,weight $07, bulk $07, 
+  description [;
+    print "A bottle is resting on the floor.";
+    rfalse;
+  ],
+  placeObject [;
+    self.placeRandom($00, $3F, $1F);
+  ],
+;
+
+Item DAGGER "Dagger" with name "dagger" ,weight $28, bulk $14, 
+  description [;
+    print "A small dagger is on the floor.";
+    rfalse;
+  ],  
+  placeObject [;
+    self.placeRandom($00, $3F, $1F);
+  ],
+;
+
+Item MACE "Mace" with name "mace" ,weight $3C, bulk $3C, 
+  description [;
+    print "A mace is in the center of the path.";
+    rfalse;
+  ],
+  placeObject [;
+    self.placeRandom($80, $BF, $1F);
+  ],
+;
+
+Item AX "Ax" with name "ax" ,weight $3C, bulk $3C, 
+  description [;
+    print "A great ax is stuck in the floor.";
+    rfalse;
+  ],
+  placeObject [;
+    self.placeRandom($80, $BF, $1F);
+  ],
+;
+
+Item FLUTE "Flute" with name "flute" ,weight $1E, bulk $14, 
+  description [;
+    print "A gold flute sits in the corner.";
+    rfalse;
+  ],
+  placeObject [;
+    self.placeRandom($40, $7F, $1F);
+  ],
+;
+
+Item MUSHROOM "Mushroom" with name "mushroom" ,weight $32, bulk $1E, 
+  description [;
+    print "There is a mushroom on the floor.";
+    rfalse;
+  ],
+  placeObject [;
+    self.placeRandom($80, $BF, $1F);
+  ],
+;
+
+Item PENDANT "Pendant" with name "pendant" ,weight $1E, bulk $28, 
+  description [;
+    print "A pendant is in a small hole recessed into the wall.";
+    rfalse;
+  ],
+  placeObject [;
+    self.placeRandom($80, $BF, $1F);
+  ],
+;
+
+Item SCEPTER "Scepter" with name "scepter" ,weight $32, bulk $41, 
+  description [;
+    print "There is a scepter on the floor.";
+    rfalse;
+  ],
+  placeObject [;
+    self.placeRandom($C0, $FF, $FF);
+  ],
+;
+
+Item LAMP "Lamp" with name "lamp" ,weight $06, bulk $06, 
+  description [;
+    print "There is a small lamp resting against the wall.";
+    rfalse;
+  ],
+  placeObject [;
+    self.placeRandom($00, $0C, $0B);
+  ],
+;
+
+Item BASKET "Basket" with name "basket" ,weight $14, bulk $00, 
+  description [;
+    print "A basket is in the center of the floor.";
+    rfalse;
+  ],
+  placeObject [;
+    self.placeRandom($80, $BF, $1F);
+  ],
+;
+
+Item PARCHMENT "Parchment" with name "parchment" ,weight $23, bulk $28, 
+  description [;
+    print "An ancient parchment is resting on a stone.";
+    rfalse;
+  ],
+  placeObject [;
+    self.placeRandom($C0, $FF, $FF);
+  ],
+;
+
+Item URN "Urn" with name "urn" ,weight $32, bulk $6E, 
+  description [;
+    print "An urn is resting on a large smooth stone.";
+    rfalse;
+  ],
+  placeObject [;
+    self.placeRandom($40, $7F, $1F);
+  ],
+;
+
+Item TALISMAN "Talisman" with name "talisman" ,weight $28, bulk $28, 
+  description [;
+    print "A magic talisman sits on the edge of the path.";
+    rfalse;
+  ],
+  placeObject [;
+    self.placeRandom($C0, $FF, $FF);
+  ],
+;
+
+Item GOBLET "Goblet" with name "goblet" ,weight $28, bulk $46, 
+  description [;
+    print "There is a goblet on the floor.";
+    rfalse;
+  ],
+  placeObject [;
+    self.placeRandom($C0, $FF, $FF);
+  ],
+;
+
+Item ROPE "Rope" with name "rope" ,weight $28, bulk $3C, 
+  description [;
+    print "A long rope is on the floor.";
+    rfalse;
+  ],
+  placeObject [;
+    self.placeRandom($C0, $FF, $DF);
+  ],
+;
+
+
+
+
+
+
+Item SPRITE "Sprite" has madCreature with name "sprite" ,
+  description [;
+    print "A sprite sits on a chair in the corner of the room.";
+    rfalse;
+  ],
+  placeObject [;
+    self.placeRandom($00, $7F, $DF);
+    self.protected=random(0,1,2);
+  ],
+  canKill [;
+      switch(self.protected) {
+        0: if(SKULL in Player && POWERRING in Player) rtrue;
+        1: if(FOOD in Player && NERGAL in Player) rtrue; 
+        2: if(DAGGER in Player && AKHIROM in Player) rtrue;        
+      }    
+      rfalse;  
+  ],
+  tellAbout [;
+    switch(self.protected) {
+        0: print "skull and Powerring";
+        1: print "food and Nergal";
+        2: print "dagger and Akhirom";
+    }
+  ],
+;
+
+Item TROGLODYTE "Troglodyte" has madCreature with name "troglodyte" ,
+  description [;
+    print "A large troglodyte is in the room.";
+    rfalse;
+  ],
+  placeObject [;
+    self.placeRandom($80, $BF, $1F);
+  ],  
+  canKill [;
+      switch(self.protected) {
+        0: if(AX in Player && SCEPTER in Player && MITRA  in Player) rtrue;
+        1: if(SPELLBOOK in Player && CROM in Player) rtrue;
+        2: if(DAGGER in Player && SHIELD in Player && NERGAL in Player) rtrue;        
+      }    
+      rfalse;  
+  ],
+  tellAbout [;
+    switch(self.protected) {
+        0: print "ax and scepter and Mitra";
+        1: print "spellbook and Crom";
+        2: print "dagger and shield and Nergal";
+    }
+  ],
+;
+
+Item SCORPION "Scorpion" has madCreature with name "scorpion" ,
+  description [;
+    print "The scorpion is here.";
+    rfalse;
+  ],
+  placeObject [;
+    self.placeRandom($40, $BF, $DF);
+  ],
+  canKill [;
+      switch(self.protected) {
+        0: if(FLUTE in Player && NERGAL in Player) rtrue;
+        1: if(SKULL in Player && CROM in Player) rtrue;
+        2: if(TALISMAN in Player && POWERRING in Player) rtrue;        
+      }    
+      rfalse;  
+  ],
+  tellAbout [;
+    switch(self.protected) {
+        0: print "flute and Nergal";
+        1: print "skull and Crom";
+        2: print "talisman and Powerring";
+    }
+  ],
+;
+
+Item NYMPH "Nymph" has madCreature with name "nymph" ,
+  description [;
+    print "The nymph is here.";
+    rfalse;
+  ],
+  placeObject [;
+    self.placeRandom($40, $7F, $1F);
+  ],
+  canKill [;
+      switch(self.protected) {
+        0: if(MUSHROOM in Player && TRUTHRING in Player) rtrue;
+        1: if(FOOD in Player && PENDANT in Player) rtrue;
+        2: if(FLUTE in Player && OKKAN in Player) rtrue;        
+      }    
+      rfalse;  
+  ],
+  tellAbout [;
+    switch(self.protected) {
+        0: print "mushroom and Truthring";
+        1: print "food and pendant";
+        2: print "flute and Okkan";
+    }
+  ],
+;
+
+Item SATYR "Satyr" has madCreature with name "satyr" ,
+  description [;
+    print "The satyr is here.";
+    rfalse;
+  ],
+  placeObject [;
+    self.placeRandom($80, $BF, $1F);
+  ],
+  canKill [;
+      switch(self.protected) {
+        0: if(SWORD in Player && NERGAL in Player) rtrue;
+        1: if(MACE in Player && LIGHTRING in Player && MITRA in Player) rtrue;
+        2: if(SPELLBOOK in Player && VETAR in Player) rtrue;        
+      }    
+      rfalse;  
+  ],
+  tellAbout [;
+    switch(self.protected) {
+        0: print "sword and Nergal";
+        1: print "mace and Lightring and Mitra";
+        2: print "spellbook and Vetar";
+    }
+  ],
+;
+
+Item MINOTAUR "Minotaur" has madCreature with name "minotaur" ,
+  description [;
+    print "The minotaur is here.";
+    rfalse;
+  ],
+  placeObject [;
+    self.placeRandom($80, $BF, $1F);
+  ],
+  canKill [;
+      switch(self.protected) {
+        0: if(SWORD in Player && SHIELD in Player && POWERRING in Player) rtrue;
+        1: if(MACE in Player && VIAL in Player && SCEPTER in Player && MITRA in Player) rtrue;
+        2: if(AX in Player && NERGAL in Player) rtrue;        
+      }    
+      rfalse;  
+  ],
+  tellAbout [;
+    switch(self.protected) {
+        0: print "sword and shield and Powerring";
+        1: print "mace and vial and scepter and Mitra";
+        2: print "ax and Nergal";
+    }
+  ],
+;
+
+
+
+
+
+
+! These are the 16 "carried" objects. Most are also treasures. There are 17 "things" that
+! can carry objects: 6 creatures and 11 special room-actions (like the packrat and hydra).
+! One of the creatures is chosen to be empty -- but never the Minotaur. You have to kill
+! the Minotaur to win the game. The carried objects are randomly distributed to the 
+! carriers.
+
+Item SCROLL "Scroll" with name "scroll" ,weight $28, bulk $32, 
+  description [;
+    print "A musty scroll is resting against the wall.";
+    rfalse;
+  ],
+  placeObject [;self.placeCarried(0);],
+;
+
+Item SCARAB "Scarab" with name "scarab" ,weight $1E, bulk $32, 
+  description [;
+    print "A gold scarab is sparkling in the dim light.";
+    rfalse;
+  ],
+  placeObject [;self.placeCarried(1);],
+;
+
+Item JEWELBOX "Jewelbox" with name "jewelbox" ,weight $1E, bulk $46, 
+  description [;
+    print "An ancient jewelbox lays to the side of a path.";
+    rfalse;
+  ],
+  placeObject [;self.placeCarried(2);],
+;
+
+Item TABLET "Tablet" with name "tablet" ,weight $32, bulk $55, 
+  description [;
+    print "A broken marble tablet is gently resting against a stone.";
+    rfalse;
+  ],
+  placeObject [;self.placeCarried(3);],
+;
+
+Item GOLD "Gold" with name "gold" ,weight $64, bulk $1E, treasure 1,
+  description [;
+    print "There is gold on the floor.";
+    rfalse;
+  ],
+  placeObject [;self.placeCarried(4);],
+;
+
+Item SILVER "Silver" with name "silver" ,weight $46, bulk $32, treasure 1, 
+  description [;
+    print "A bag of silver is here.";
+    rfalse;
+  ],
+  placeObject [;self.placeCarried(5);],
+;
+
+Item DIAMOND "Diamond" with name "diamond" ,weight $28, bulk $32, treasure 1, 
+  description [;
+    print "A sparkling diamond is in a small hole in the wall.";
+    rfalse;
+  ],
+  placeObject [;self.placeCarried(6);],
+;
+
+Item RUBY "Ruby" with name "ruby" ,weight $28, bulk $3C, treasure 1,
+  description [;
+    print "A large ruby lays to the side of the path in the dirt.";
+    rfalse;
+  ],
+  placeObject [;self.placeCarried(7);],
+;
+
+Item FLEECE "Fleece" with name "fleece" ,weight $5A, bulk $50, treasure 1, 
+  description [;
+    print "A gold fleece lays on a small table.";
+    rfalse;
+  ],
+  placeObject [;self.placeCarried(8);],
+;
+
+Item TIARA "Tiara" with name "tiara" ,weight $32, bulk $37, treasure 1, 
+  description [;
+    print "A small silver tiara lays on the floor.";
+    rfalse;
+  ],
+  placeObject [;self.placeCarried(9);],
+;
+
+Item POWDER "Powder" with name "powder" ,weight $3C, bulk $28, treasure 1, 
+  description [;
+    print "A bag of magic powder is on a table.";
+    rfalse;
+  ],
+  placeObject [;self.placeCarried(10);],
+;
+
+Item AMULET "Amulet" with name "amulet" ,weight $5A, bulk $2D, treasure 1, 
+  description [;
+    print "A small amulet is on the floor.";
+    rfalse;
+  ],
+  placeObject [;self.placeCarried(11);],
+;
+
+Item POTION "Potion" with name "potion" ,weight $46, bulk $46, treasure 1, 
+  description [;
+    print "A small bottle with a magic potion in it is here.";
+    rfalse;
+  ],
+  placeObject [;self.placeCarried(12);],
+;
+
+Item CROWN "Crown" with name "crown" ,weight $50, bulk $32, treasure 1, 
+  description [;
+    print "A gold crown is resting in a pile of dirt.";
+    rfalse;
+  ],
+  placeObject [;self.placeCarried(13);],
+;
+
+Item OPAL "Opal" with name "opal" ,weight $28, bulk $28, treasure 1, 
+  description [;
+    print "A large opal is sparkling in the light.";
+    rfalse;
+  ],
+  placeObject [;self.placeCarried(14);],
+;
+
+Item SAPPHIRE "Sapphire" with name "sapphire" ,weight $3C, bulk $3C, treasure 1, 
+  description [;
+    print "A large sapphire lays against the edge of a stone.";
+    rfalse;
+  ],
+  placeObject [;self.placeCarried(15);],
+;
+
+
+
+
+
+! These are the 8 "protected" objects. Many are also treasures. A protected
+! object is placed either with a random min/max/mask (like the other objects)
+! or from a random pick of a hardcoded list of 16 rooms.
+!
+! At initialization each object is assigned a list of "key" objects that the
+! player must be carying in order to release the protected object. Most of these
+! objects have 3 lists to pick from ... some have 4. The lists are hardcoded and 
+! were carefully chosen to avoid deadlocks (object A requires B and B requires A).
+!
+! Each object has two descriptions. The first is printed when the object is
+! in its protected state. The second is printed when it has been released. Once
+! and object has been released it remains released even if the key objects are
+! no longer carried.
+!
+
+Item SWORD "Sword" with name "sword" ,weight $46, bulk $28,
+  description [;
+    switch(self.protected) {
+       0: print "A bronze sword is here. ";
+       rfalse;
+    }
+    print "A magic sword is stuck in a large stone.";rfalse;
+  ],
+  
+  placeObject [;
+    self.placeProtected();
+    self.protected=random(1,2,3);
+  ],
+  
+  isProtected [;  
+      switch(self.protected) {
+        0: rfalse;
+        1: if(ROPE in Player) {rfalse;}
+        2: if(MITRA in Player) {rfalse;}
+        3: if(PARCHMENT in Player) {rfalse;} 
+      }    
+      print "The sword will not move."; 
+      rtrue; 
+  ],
+  tellAbout [;
+    switch(self.protected) {
+        1: print "rope";
+        2: print "Mitra";
+        3: print "parchment";
+    }
+  ],
+  
+;
+
+Item VIAL "Vial" with name "vial" ,weight $2D, bulk $32, 
+  description [;
+    switch(self.protected) {
+       0: print "A small vial sits in the corner.";
+       rfalse;
+    }
+    print "A glass vial is suspended in the air.";rfalse;
+  ],
+  placeObject [;
+    self.placeProtected();
+    self.protected=random(1,2,3);
+  ],
+  
+  isProtected [;
+      switch(self.protected) {
+        0: rfalse;
+        1: if(MUSHROOM in Player && VETAR in Player) {rfalse;} 
+        2: if(PARCHMENT in Player && MITRA in Player) {rfalse;}
+        3: if(TALISMAN in Player && MITRA in Player) {rfalse;}
+      }    
+      print "The vial is out of reach."; 
+      rtrue;  
+  ],
+  tellAbout [;
+    switch(self.protected) {
+        1: print "mushroom and Vetar";
+        2: print "parchment and Mitra";
+        3: print "talisman and Mitra";
+    }
+  ],
+;
+
+Item SHIELD "Shield" with name "shield" ,weight $3C, bulk $32, 
+  description [;
+    switch(self.protected) {
+       0: print "A leather shield is at your feet.";
+       rfalse;
+    }
+    print "A leather shield is hanging on the wall.";rfalse;
+  ],
+  placeObject [;
+    self.placeRandom($00, $3F, $DF);
+    self.protected=random(1,2,3);
+  ],
+  isProtected [;
+      switch(self.protected) {
+        0: rfalse;
+        1: if(SWORD in Player) {rfalse;}
+        2: if(MACE in Player) {rfalse;}
+        3: if(DAGGER in Player) {rfalse;}
+      }
+      print "You can not reach the shield."; 
+      rtrue;
+    ],  
+  tellAbout [;
+    switch(self.protected) {
+        1: print "sword";
+        2: print "mace";
+        3: print "dagger";
+    }
+  ],
+;
+
+Item SKULL "Skull" with name "skull" ,weight $28, bulk $28, 
+  description [;
+    switch(self.protected) {
+       0: print "A skull sits in a small hole in the floor.";
+       rfalse;
+    }
+    print "A skull is resting in the center of a skull table.";rfalse;
+  ],
+  placeObject [;
+    self.placeRandom($40, $7F, $DF);
+    self.protected=random(1,2,3);
+  ],
+  isProtected [;
+      switch(self.protected) {
+        0: rfalse;
+        1: if(TALISMAN in Player && PENDANT in Player) {rfalse;}
+        2: if(OKKAN in Player) {rfalse;}
+        3: if(SCEPTER in Player) {rfalse;}
+      }    
+      print "A magic force keeps you from the skull."; 
+      rtrue; 
+    ],
+  tellAbout [;
+    switch(self.protected) {
+        1: print "talisman and pendant";
+        2: print "Okkan";
+        3: print "scepter";
+    }
+  ],
+;
+
+Item POWERRING "Powerring" with name "powerring" ,weight $5A, bulk $5A, treasure 1, 
+  description [;
+    switch(self.protected) {
+       0: print "The powerring is sparkling on the trail.";
+       rfalse;
+    }
+    print "The powerring is on a velvet chair.";rfalse;
+  ],
+  placeObject [;
+    self.placeRandom($80, $BF, $DF);
+    self.protected=random(1,2,3,4);
+  ],
+  isProtected [;
+      switch(self.protected) {
+        0: rfalse;
+        1: if(BELROG  in Player) {rfalse;}
+        2: if(SHIELD in Player && SCEPTER in Player && PARCHMENT in Player && OKKAN in Player) {rfalse;}
+        3: if(SHIELD in Player && MACE in Player && SKULL in Player && MITRA in Player) {rfalse;}
+        4: if(SHIELD in Player && SWORD in Player && AKHIROM in Player ) {rfalse;}
+      }
+      print "The powerring disappears when you move near it."; 
+      rtrue;
+    ], 
+  tellAbout [;
+    switch(self.protected) {
+        0: print "Belrog";
+        1: print "shield and scepter and parchment and Okkan";
+        2: print "shield and mace and skull and Mitra";
+        3: print "shield and sword and Akhirom";
+    }
+  ], 
+;
+
+Item LIGHTRING "Lightring" with name "lightring" ,weight $5A, bulk $5A, treasure 1, 
+  description [;
+    switch(self.protected) {
+       0: print "The lightring is sparkling on the path.";
+       rfalse;
+    }
+    print "The lightring sits on a pile of bones.";rfalse;
+  ],
+  placeObject [;
+    self.placeProtected();
+    self.protected=random(1,2,3);
+  ],
+  isProtected [;
+      switch(self.protected) {
+        0: rfalse;
+        1: if(POWERRING in Player && CROM in Player  && TALISMAN in Player) {rfalse;}
+        2: if(POWERRING in Player && AX in Player && OKKAN in Player) {rfalse;}
+        3: if(POWERRING in Player && ROPE in Player && NERGAL in Player) {rfalse;}
+      }
+      print "A skeleton springs up from the bones and keeps you from the lightring."; 
+      rtrue;
+    ],
+  tellAbout [;
+    switch(self.protected) {
+        1: print "Powerring and Crom and talisman";
+        2: print "Powerring and ax and Okkan";
+        3: print "Powerring and rope and Nergal";
+    }
+  ],  
+;
+
+Item TRUTHRING "Truthring" with name "truthring" ,weight $5A, bulk $5A, treasure 1, 
+  description [;
+    switch(self.protected) {
+       0: print "The truthring is sparkling on the floor.";
+       rfalse;
+    }
+    print "The truthring is buried in the center of a glass stone.";rfalse;
+  ],
+  placeObject [;
+    self.placeProtected();
+    self.protected=random(1,2,3);
+  ],
+ isProtected [;
+      switch(self.protected) {
+        0: rfalse;
+        1: if(LIGHTRING in Player && CROM in Player && BASKET in Player) {rfalse;}
+        2: if(LIGHTRING in Player && AX in Player && OKKAN in Player) {rfalse;}
+        3: if(LIGHTRING in Player && FLUTE in Player && AKHIROM in Player) {rfalse;}
+      }
+      print "The glass stone is protected by magic."; 
+      rtrue;
+    ],  
+  tellAbout [;
+    switch(self.protected) {
+        1: print "Lightring and Crom and basket";
+        2: print "Lightring and ax and Okkan";
+        3: print "Lightring and flute and Akhirom";
+    }
+  ],
+;
+
+Item SPELLBOOK "Spellbook" with name "spellbook" ,weight $46, bulk $50, treasure 1, 
+  description [;
+    switch(self.protected) {
+       0: print "The spellbook is here.";
+       rfalse;
+    }
+    print "A magic spellbook sits on the edge of a shallow table.";rfalse;
+  ],
+  placeObject [;
+    self.placeRandom($00, $FF, $FF);
+    self.protected=random(1,2,3,4);
+  ],
+  isProtected [;
+      switch(self.protected) {
+        0: rfalse;
+        1: if(SKULL in Player && FLUTE in Player) {rfalse;}
+        2: if(PENDANT in Player && CROM in Player) {rfalse;}
+        3: if(MUSHROOM in Player && GOBLET in Player && BELROG in Player) {rfalse;}
+        4: if(POWERRING in Player && NERGAL in Player) {rfalse;}
+      }
+      print "The spellbook floats out of reach when you move near it."; 
+      rtrue;
+    ],  
+  tellAbout [;
+    switch(self.protected) {
+        1: print "skull and flute";
+        2: print "pendant and Crom";
+        3: print "mushroom and goblet and Belrog";
+        4: print "Powerring and Nergal";
+    }
+  ],
+;
+
+
+
+

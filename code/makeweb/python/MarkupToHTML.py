@@ -33,8 +33,7 @@ def markDownHeaders(proc,pageNav):
         s = s[0:-1]
         
     if lid == None:
-        lid = s 
-    
+        lid = s     
     
     lidLink = makeHeaderLink(lid)
     

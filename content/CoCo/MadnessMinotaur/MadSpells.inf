@@ -1,0 +1,151 @@
+! Included from Madness.inf
+
+[ MadSpellVETARSub;   if(VETAR in GameLoop)   VETAR.doSpell();   else print "Nothing special happens.";];
+[ MadSpellMITRASub;   if(MITRA in GameLoop)   MITRA.doSpell();   else print "Nothing special happens.";];
+[ MadSpellOKKANSub;   if(OKKAN in GameLoop)   OKKAN.doSpell();   else print "Nothing special happens.";];
+[ MadSpellAKHIROMSub; if(AKHIROM in GameLoop) AKHIROM.doSpell(); else print "Nothing special happens.";];
+[ MadSpellNERGALSub;  if(NERGAL in GameLoop)  NERGAL.doSpell();  else print "Nothing special happens.";];
+[ MadSpellBELROGSub;  if(BELROG in GameLoop)  BELROG.doSpell();  else print "Nothing special happens.";];
+[ MadSpellCROMSub;    if(CROM in GameLoop)    CROM.doSpell();    else print "Nothing special happens.";];
+[ MadSpellISHTARSub;  if(ISHTAR in GameLoop)  ISHTAR.doSpell();  else print "Nothing special happens.";];
+
+Class MadSpell with cost,
+  placeSpell[a b x;
+    x = random(b - a + 1) - 1;
+    x = x + a;        
+    move self to findRoomAt(x);
+  ],
+  
+  describe[;
+    rtrue;
+  ],
+    
+;
+
+MadSpell VETAR "Vetar" with cost 10, shownRocks 0,
+  place[;
+    self.placeSpell($0,$27);
+  ],
+  learn[;
+    if(MUSHROOM in Player && FOOD in Player) {
+        print "You now know the secret of the magic spell Vetar 
+        - you will discover the secret of the next spell if you possess the parchment. ";
+        move self to GameLoop;
+    }
+  ],
+  doSpell[;
+    print "DID SOMETHING!";
+  ],
+;
+                   
+MadSpell MITRA "Mitra" with cost 12,
+  place[;
+    self.placeSpell($40, $67);
+  ],
+  learn[;
+    if(PARCHMENT in Player && VETAR in GameLoop) {
+        print "You now know the secret of the magic spell Mitra 
+        - you will discover the secret of the next spell if you possess the talisman. ";
+        move self to GameLoop;
+    }
+  ],
+  doSpell[;
+    print "DID SOMETHING!";
+  ],
+;
+                   
+MadSpell OKKAN "Okkan" with cost 14,
+  place[;
+    self.placeSpell($40, $67);
+  ],
+  learn[;
+    if(TALISMAN  in Player && MITRA in GameLoop) {
+        print "You now know the secret of the magic spell Okkan 
+        - you will discover the secret of the next spell if you possess the rope. ";
+        move self to GameLoop;
+    }
+  ],
+  doSpell[;
+    print "DID SOMETHING!";
+  ],
+;
+              
+MadSpell AKHIROM "Akhirom" with cost 16, invulnerable false,
+  place[;
+    self.placeSpell($40, $67);
+  ],
+  learn[;
+    if(ROPE      in Player && OKKAN in GameLoop) {
+        print "You now know the secret of the magic spell Akhirom 
+        - you will discover the secret of the next spell if you possess the scepter. ";
+        move self to GameLoop;
+    }
+  ],
+  doSpell[;
+    print "DID SOMETHING!";
+  ],
+;
+                   
+MadSpell NERGAL "Nergal" with cost 18,
+  place[;
+    self.placeSpell($80, $A7);
+  ],
+  learn[;
+    if(SCEPTER   in Player && AKHIROM in GameLoop) {
+        print "You now know the secret of the magic spell Nergal 
+        - you will discover the secret of the next spell if you possess the vial. ";
+        move self to GameLoop;
+    }
+  ],
+  doSpell[;
+    print "DID SOMETHING!";
+  ],
+;
+               
+MadSpell BELROG "Belrog" with cost 20,
+  place[;
+    self.placeSpell($80, $A7);
+  ],
+  learn[;
+    if(VIAL      in Player && NERGAL in GameLoop) {
+        print "You now know the secret of the magic spell Belrog 
+        - you will discover the secret of the next spell if you possess the pendant. ";
+        move self to GameLoop;
+    }
+  ],
+  doSpell[;
+    print "DID SOMETHING!";
+  ],
+;
+               
+MadSpell CROM "Crom" with cost 22,
+  place[;
+    self.placeSpell($80, $FF);
+  ],
+  learn[;
+    if(PENDANT   in Player && BELROG in GameLoop) {
+        print "You now know the secret of the magic spell Crom 
+        - you will discover the secret of the next spell if you possess the spellbook. ";
+        move self to GameLoop;
+    }
+  ],
+  doSpell[;
+    print "DID SOMETHING!";
+  ],
+;
+             
+MadSpell ISHTAR "Ishtar" with cost 24,
+  place[;
+    self.placeSpell($80, $FF);
+  ],
+  learn[;
+    if(SPELLBOOK in Player && CROM in GameLoop) {
+        print "You now know the secret of the magic spell Ishtar. ";
+        move self to GameLoop;
+    }
+  ],
+  doSpell[;
+    print "DID SOMETHING!";
+  ],
+;
+

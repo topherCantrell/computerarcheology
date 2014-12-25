@@ -1,0 +1,43 @@
+
+!Included from Madness.inf
+
+[ MadBannerSub;
+
+  font off;
+  print "  g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g^";
+  print "  g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g^";
+  print "  g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g^";
+  print "  g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g^";
+  print "                                                                 ^";
+  print "  g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g^";
+  print "                                                                 ^";
+  print "  ddd ddd    dddd   dddddd   dd     d ddddddd   dddddd   dddddd  ^";
+  print " d   d   d  d    d  d     d  d d    d d        d      d d      d ^";
+  print " d   d   d d      d d      d d  dd  d d        d        d        ^";
+  print " d       d dddddddd d      d d   d  d ddddd     dddddd   dddddd  ^";
+  print " d       d d      d d      d d   d  d d               d        d ^";
+  print " d       d d      d d     d  d    d d d        d      d d      d ^";
+  print " d       d d      d dddddd   d     dd dddddddd  dddddd   dddddd  ^";
+  print "                                                                 ^";
+  print "              bbb  b   b bbbb       hhhhh h   h hhhh             ^";
+  print "             b   b bb  b b   b        h   h   h h                ^";
+  print "             bbbbb b b b b   b        h   hhhhh hhh              ^";
+  print "             b   b b  bb b   b        h   h   h h                ^";
+  print "             b   b b   b bbbb         h   h   h hhhhh            ^";
+  print "                                                                 ^";
+  print " c     c  ccccc  c     c  ccccc  ccccccc   ccc   c     c cccccc  ^";
+  print " cc   cc    c    cc    c c     c    c     c   c  c     c c     c ^";
+  print " c c c c    c    c c   c c     c    c    c     c c     c c     c ^";
+  print " c  c  c    c    c  c  c c     c    c    ccccccc c     c cccccc  ^";
+  print " c     c    c    c   c c c     c    c    c     c c     c c   c   ^";
+  print " c     c    c    c    cc c     c    c    c     c  c   c  c    c  ^";
+  print " c     c  ccccc  c     c  ccccc     c    c     c   ccc   c     c ^";
+  print "                                                                 ^";
+  print " COPR. 1981 SPECTRAL ASSOCIATES                                  ^";
+  print "  LICENSED TO TANDY CORPORATION                                  ^";
+  print "                                                                 ^";  
+
+  
+  font on;
+
+];
