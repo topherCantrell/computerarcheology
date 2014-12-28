@@ -1,0 +1,21 @@
+= PIA 0 =
+
+|| FF00     || PIA0_DA || I/O data or direction (depends on control setting) ||
+|| FF01     || PIA0_CA || Control ||
+|| FF02     || PIA0_DB || I/O data or direction (depends on control setting) ||
+|| FF03     || PIA0_CB || Control ||
+
+= PIA 1 =
+
+|| FF20     || PIA1_DA || I/O data or direction (depends on control setting) ||
+|| FF21     || PIA1_CA || Control ||
+|| FF22     || PIA1_DB || I/O data or direction (depends on control setting) ||
+|| FF23     || PIA1_CB || Control ||
+
+= PIA Bit Definitions =
+
+Image taken from the Color Computer Technical Reference Manual pages 6 and 7.
+
+{{{html
+<img src="PIAs.jpg"></img>
+}}}

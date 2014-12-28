@@ -5,6 +5,24 @@ import pprint
 headers = []
 rawMode = None
 
+# {% means append the link to the opcode. Without means replace the number.
+# : means alternate text for destination
+# Now we can look up labels, but allow for manual labels
+#0001: C2 4D 00        JP      NZ,$004D            ; {goHere} Replace the jump address with the known routine name
+#0002: C2 4D 00        JP      NZ,$004D            ; {goHere:GOHERE} Jump to the named routine, but use different text in the link
+#0003: C2 50 00        JP      NZ,$0050            ; {} The address $0050 is named with its address
+#0004: E9              JP      (HL)                ; {goHere} I know we are going to routine "goHere"
+#0005: C2 4D 00        JP      NZ,$004D            ; {%goHere:HERE} Just add the link next to the opcode
+#0006: C2 4D 00        JP      NZ,$004D            ; {%//wiki/wiki/NES/Zelda:SEE ZELDA} Quick link to another page
+
+# RAM reference
+# 0042: 3A E9 20        LD      A,($20E9)          ; {-suspendPlay:} Are we moving ...
+
+# Link to hardware definition. Can be shortened to {--}
+# E57A: 8D 00 20      STA   $2000                  ; {--_P_CNTRL_1:} ... VBLANK NMIs
+
+# {-} and {--} link names are given in the defines
+
 def makeHeaderLink(text):
     ret = ""
     for t in text:
@@ -55,7 +73,7 @@ def markDownBraces(proc):
 
 def markDownStartRaw(proc,bodyLines):
     global rawMode
-    if(proc.startswith("{{{html")):
+    if(proc.startswith("{{{html") or proc.startswith("{{{code")):
         rawMode = "html"
         return
     bodyLines.append("<pre>")
@@ -63,7 +81,7 @@ def markDownStartRaw(proc,bodyLines):
     
 def markDownContinueRaw(proc,bodyLines):
     global rawMode
-    if proc.startswith("}}}"):
+    if proc.startswith("}}}") or proc.startswith(";}}}"):
         if rawMode=="pre":
             bodyLines.append("</pre>")
         return True
@@ -80,10 +98,17 @@ def markDownEndBullets(bodyLines):
 
 def markDownStartTable(proc):
     hdrs = proc.split("||")[1:-1]  
-    s = '<table class="table table-bordered"><thead><tr>'
-    for h in hdrs:
-        s = s + '<th>'+h.strip()+'</th>'
-    s = s + '</tr></thead><tbody>'
+    if hdrs[0].startswith("="):
+        hdrs[0] = hdrs[0][1:].strip()        
+        s = '<table class="table table-condensed"><thead><tr>'
+        for h in hdrs:
+            s = s + '<th>'+h.strip()+'</th>'
+        s = s + '</tr></thead>'
+    else:
+        s = '<table class="table table-condensed"><tr>'
+        for h in hdrs:
+            s = s + '<td>'+h.strip()+'</td>'
+        s = s + '</tr>' 
     return s
 def markDownContinueTable(proc):
     cells = proc.split("||")[1:-1]
@@ -93,7 +118,7 @@ def markDownContinueTable(proc):
     s = s + '</tr>'
     return s
 def markDownEndTable(bodyLines):
-    bodyLines.append("</tbody></table>")
+    bodyLines.append("</table>")
     
 
 def markDown(raw,fills,pageNav):
@@ -111,6 +136,10 @@ def markDown(raw,fills,pageNav):
             if nm:
                 mode = "none"
             continue
+        
+        # In case we are in a code file
+        if proc.startswith(";"):
+            proc = proc[1:]
 
         # This is how you get into raw mode
         if proc.startswith("{{{"):
@@ -170,7 +199,7 @@ def markDown(raw,fills,pageNav):
                 continue
                 
         # If we get here we have a line to add
-        bodyLines.append(proc)
+        bodyLines.append(proc+" ")
         
     # All done
     return bodyLines
@@ -221,10 +250,10 @@ def _makePageNavRecurse(parent,lev,pos,pageNav):
             raise Exception("Missing header level")
         pos = _makePageNavRecurse(ret,lev+1,pos,pageNav)    
     
-def translate(inName, outName, breadCrumbs,siteTree):
+def translate(inName, outName, breadCrumbs, siteTree, title):
     
-    template = "<!-- %%BODY%% -->"    # Default (body-only) template 
-    fills = {}                        # Fill-ins dictionary (with defaults)
+    template = "<!-- %%BODY%% -->"           # Default (body-only) template 
+    fills = {"template":"master.template", "title":title}   # Fill-ins dictionary (with defaults)
     pageNav = []
         
     # Read the markup

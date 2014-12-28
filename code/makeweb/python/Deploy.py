@@ -104,7 +104,7 @@ def processDeploys(rootContent,content):
                               
                MarkupToHTML.translate(rootDir+content["dirPath"]+coms[1], 
                                       deployDir+content["dirPath"]+line["outputName"], 
-                                      breadCrumbs,siteNav)               
+                                      breadCrumbs,siteNav, line["displayName"])               
                            
            else:
                raise Exception("Unknown command:"+line["command"])           

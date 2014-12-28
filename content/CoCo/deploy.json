@@ -2,7 +2,9 @@
 
 "files" : 
 [
-   {"outputName":"index.html", "displayName":"", "command":"markup CoCo.mark"}
+   {"outputName":"index.html", "displayName":"", "command":"markup CoCo.mark"},
+   {"outputName":"Hardware.html", "displayName":"Hardware", "command":"markup Hardware.mark"},
+   {"outputName":"PIAs.jpg", "command":"copy"}
 ],
 
 "dirList" :
