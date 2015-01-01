@@ -94,7 +94,9 @@ protected object.
 
 This area of BASIC's memory includes tape and cursor information
 that the ROM calls use. 
-|| 67:F2    ||      || NEVER USED ||
+|| 67:87    ||           || BASIC vars ||
+|| 88:89    || scrCursor || Screen cursor ||
+|| 67:F2    ||           || NEVER USED ||
 
 = Blocked Rooms =
 
@@ -108,15 +110,15 @@ time.
 
 = Random Number Seeds =
 
-|| 0186:018D ||      || Random-number bytes (in BASIC's extension vectors) ||
+|| 0186:018D || || Random-number bytes (in BASIC's extension vectors) ||
 
 = Stack = 
-|| 01FF:???? ||      || Stack builds towards 0 (in BASIC's cassette file data buffer) ||
+|| 01FF      || Stack builds towards 0 (in BASIC's cassette file data buffer) ||
 
 = Screen Memory =
 
-|| 0200:03FF ||      || Screen 0 (in some buffers used by BASIC) ||
-|| 0400:05FF ||      || Screen 1 ||
+|| 0200:03FF || Screen 0 (in some buffers used by BASIC) ||
+|| 0400:05FF || Screen 1 ||
 
 = Game code =
 
@@ -124,8 +126,8 @@ time.
 
 = Blocked Passages =
 
-|| 3EB8:3FB7 || Block passage table ||
+|| 3EB8:3FB7 || || Block passage table ||
 
 = Protected Objects Lists =
 
-|| 3FB8:3FFF || Protected object lists ||
+|| 3FB8:3FFF || || Protected object lists ||

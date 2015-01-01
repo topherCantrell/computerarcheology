@@ -3,10 +3,12 @@ import pprint
 import shutil
 import json
 
-import MarkupToHTML
+from MarkupToHTML import MarkupToHTML
+from AddressToHTML import AddressToHTML
+from CodeToHTML import CodeToHTML
 
-rootDir = "../../../content/"
-deployDir = "../../../deploy/"
+from Config import rootDir
+from Config import deployDir
 
 def _loadContentTreeRecurse(parent,path,displayName):
     # This recursive helper function loads and "deploy.json" file
@@ -95,16 +97,25 @@ def processDeploys(rootContent,content):
            if coms[0] == "copy":
                shutil.copy(rootDir+content["dirPath"]+line["outputName"], deployDir+content["dirPath"]+line["outputName"])
            
-           elif coms[0] == "markup":                
+           elif coms[0].startswith("markup"):                
                n = line["displayName"]
                if n == "":
                    n = None
                breadCrumbs = getBreadCrumbs(content,n)
                siteNav = getSiteNav(rootContent,content,n)
-                              
-               MarkupToHTML.translate(rootDir+content["dirPath"]+coms[1], 
-                                      deployDir+content["dirPath"]+line["outputName"], 
-                                      breadCrumbs,siteNav, line["displayName"])               
+               
+               if coms[0] == "markupAddress":
+                   mu = AddressToHTML()
+               elif coms[0] == "markupCode":
+                   mu = CodeToHTML()
+               else:              
+                   mu = MarkupToHTML()
+                                             
+               mu.translate(rootDir+content["dirPath"]+coms[1], 
+                            deployDir+content["dirPath"]+line["outputName"], 
+                            breadCrumbs,
+                            siteNav, 
+                            line["displayName"])  
                            
            else:
                raise Exception("Unknown command:"+line["command"])           

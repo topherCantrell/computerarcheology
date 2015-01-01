@@ -2,10 +2,11 @@
 
 "files" : 
 [
-  {"outputName":"index.html", "displayName":"",        "command":"markup Madness.mark"},
-  {"outputName":"RAMUse",     "displayName":"RAM Use", "command":"markup RAMUse.mark"},
-  {"outputName":"Code.html",  "displayName":"Code",    "command":"markup Code.mark"},
+  {"outputName":"RAMUse.html", "displayName":"RAM Use", "command":"markupAddress RAMUse.mark"},
+  {"outputName":"Code.html",   "displayName":"Code",    "command":"markupCode Code.mark"},
   
+  {"outputName":"index.html",  "displayName":"",        "command":"markup Madness.mark"},
+    
   {"outputName":"Madness.jpg",                  "command":"copy"},
                  
   {"outputName":"madness.inf",                  "command":"copy"},

@@ -1,0 +1,2 @@
+rootDir = "../../../content/"
+deployDir = "../../../deploy/"

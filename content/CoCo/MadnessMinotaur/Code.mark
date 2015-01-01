@@ -1,5 +1,8 @@
 ;%%image Madness.jpg
 
+;%%ramMap Coco/MadnessMinotaur/RAMUse.mark /CoCo/MadnessMinotaur/RAMUse.html
+;%%hardwareMap Coco/Hardware.mark /CoCo/Hardware.html
+
 ;= Madness and the Minotaur =
 
 ;|| [#CodeBug1          "Error message with POTION"] ||
@@ -182,7 +185,7 @@ START:
 030B: A6 80               LDA     ,X+         ; Copy ...
 030D: A7 C0               STA     ,U+         ; ... the ...
 030F: 8C 03 75            CMPX    #$0375      ; ... print character ...
-0312: 25 F7               BCS     $30B        ; ... routine
+0312: 25 F7               BCS     $30B        ;{} ... routine
 0314: CE 01 1D            LDU     #$011D      ; Tape-write routine
 0317: A6 80               LDA     ,X+         ; Copy ...
 0319: A7 C0               STA     ,U+         ; ... the ...
@@ -201,7 +204,7 @@ PrintChar:
 ; A6 -- Print character in A with autowrap. This screen is TWO screens long
 ; so that the user can use UP and DOWN to switch between screens. Nice.
 032E: 34 16               PSHS    X,B,A       ; Save parameters
-0330: 9E 88               LDX     >$88        ; Cursor
+0330: 9E 88               LDX     >$88        ; {-} Cursor
 0332: 81 08               CMPA    #$08        ; Printing a backspace?
 0334: 26 0B               BNE     $341        ; No ... move on
 0336: 8C 02 00            CMPX    #$0200      ; Already at top of screen (double screen)
@@ -455,7 +458,7 @@ RandB:
 069C: 49                  ROLA                
 069D: 27 0E               BEQ     $6AD        
 069F: 24 F9               BCC     $69A        
-06A1: 8D BE               BSR     $661        ;{Random} Get random number
+06A1: 8D BE               BSR     $661        ;{} Get random number
 06A3: E4 84               ANDB    ,X          
 06A5: D1 3D               CMPB    >$3D        
 06A7: 23 04               BLS     $6AD        
@@ -1130,7 +1133,7 @@ SCORPIONAttack:
 0B22: 34 06               PSHS    B,A         ; Save params
 0B24: A6 E4               LDA     ,S          ; Delay
 0B26: E6 61               LDB     1,S         ; Sound value
-0B28: F7 FF 20            STB     $FF20       ; Store sound
+0B28: F7 FF 20            STB     $FF20       ; {--} Store sound
 0B2B: 4A                  DECA                ; Do ...
 0B2C: 26 FD               BNE     $B2B        ; ... delay
 0B2E: A6 E4               LDA     ,S          ; Delay value again
@@ -1411,8 +1414,8 @@ GameInit:
 0CFD: 26 FB               BNE     $CFA        ; ... table
 ;
 0CFF: BD A9 A2            JSR     $A9A2       ; SNDSEL ... sound source is DAC
-0D02: 0F 68               CLR     >$68        ; ? Never used ?
-0D04: 0F 78               CLR     >$78        ; ? Never used ?
+0D02: 0F 68               CLR     >$68        ; Current line # of BASIC program. Don't know why we are setting this.
+0D04: 0F 78               CLR     >$78        ; BASIC file status flag (set to closed). Don't know why we are setting this.
 0D06: 0A 18               DEC     >$18        ; Force random number to reseed
 0D08: 8E 2A D7            LDX     #$2AD7      ; "WELCOME TO THE LABYRINTH!! BEWARE OF THE MINOTAUR AND GOOD LUCK."
 0D0B: BD 10 66            JSR     $1066       ;{PrintMess} Print the message
@@ -1424,7 +1427,7 @@ GameInit:
 0D1C: BD 0C 22            JSR     $0C22       ; Init lamp oil (0708)
 0D1F: BD 0C 51            JSR     $0C51       ; Assign treasures to holders
 0D22: BD 0C A0            JSR     $0CA0       ; Place the enter-room-actions
-0D25: 0A 05               DEC     >$05        ; Physical condition at max
+0D25: 0A 05               DEC     >$05        ; {-} Physical condition at max
 0D27: 86 0A               LDA     #$0A        ; Start in ...
 0D29: 97 00               STA     >$00        ; ... Room 10
 0D2B: 97 01               STA     >$01        ; Last room is Room 10
@@ -2570,7 +2573,7 @@ CommandISHTAR:
 14CB: 86 CA               LDA     #$CA        ; Move to treasure room 202 ...
 14CD: 97 00               STA     >$00        ; ... "NEAR A GREAT FOREST"
 14CF: 97 01               STA     >$01        ; Back as well
-CodeBug3
+CodeBug3:
 ; All the other leave-room commands reset the MYSTERIOUS FOG counters. This does not.
 ; If you use ISHTAR to leave the poison fog the count goes on as if you are there.
 14D1: 7E 10 17            JMP     $1017       ; "OK"

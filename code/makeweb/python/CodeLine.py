@@ -9,13 +9,15 @@ class CodeLine:
     # (int)     printedOpcodeLen
     # (string)  comment
     # (string)  original
-    
+   
     def __init__(self):
         self.labels = []
         self.bytes = []
         self.comment = None
         self.opcode = None
-        self.address = None       
+        self.address = None      
+        self.target = None
+        self.numbers = None 
     
     def isFourDigitHex(self,str):
         if len(str)!=4:
@@ -35,14 +37,65 @@ class CodeLine:
         except:
             return False
          
+    def decodeTargetLink(self,str):
+        ret = {}
+        str = str.strip()
+        if str.startswith(">>"):
+            ret["placement"] = 'comment'
+            str = str[2:].strip()
+        elif str.startswith(">"):
+            ret["placement"] = 'side'
+            str = str[2:].strip()
+        else:
+            ret["placement"] = 'inline'
+            
+        if str.startswith("--"):
+            ret["map"] = "hardware"
+            str = str[2:].strip()
+        elif str.startswith("-"):
+            ret["map"] = "ram"
+            str = str[1:].strip()
+        else:
+            ret["map"] = ""
+        
+        if ":" in str:
+            i = str.index(":")
+            ret["target"] = str[0:i].strip()
+            ret["text"] = str[i+1:].strip()
+        else:
+            ret["target"] = str
+            ret["text"] = str
+            
+        
+        return ret
+    
+    def getNumbersFromOpcode(self):
+        ret = []
+        pos = 0
+        while True:
+            if not "$" in self.opcode[pos:]:
+                break
+            numEntry = {}
+            pos = self.opcode.index("$",pos)
+            numEntry["startPos"] = pos
+            i = pos+1
+            while i<len(self.opcode) and self.opcode[i] in '0123456789ABCDEF':
+                i = i + 1
+            numEntry["textLen"]=i-pos
+            numEntry["value"]=int(self.opcode[pos+1:i],16)
+            numEntry["text"]= self.opcode[pos:i]
+            pos = i+1
+            ret.append(numEntry)
+        return ret
     
     def parse(self,str):
         self.original = str
         str = str.strip()
         if ';' in str:
+            self.originalCommentPos = self.original.index(";")
             i = str.index(';')
             self.comment = str[i+1:]
-            str = str[0:i].strip()
+            str = str[0:i].strip()  
         
         first = str        
         if ' ' in first:
@@ -51,7 +104,7 @@ class CodeLine:
         if first.endswith(":"):
             first = first[0:-1]
             if self.isFourDigitHex(first):
-                address = int(first,16)
+                self.address = int(first,16)
             else:
                 self.labels.append(first)
                 
@@ -72,3 +125,15 @@ class CodeLine:
         if len(str)>0:
             self.opcode = str
             self.printedOpcodeLen = len(self.opcode)
+            self.originalOpcodePos = self.original.index(str)
+            
+        if self.comment and "{" in self.comment:
+            i = self.comment.index("{")
+            j = self.comment.index("}")              
+            self.target = self.decodeTargetLink(self.comment[i+1:j])
+            self.numbers = self.getNumbersFromOpcode()
+            h = self.comment[0:i]+self.comment[j+1:]
+            self.comment = h
+            
+                        
+            

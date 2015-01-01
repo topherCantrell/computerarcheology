@@ -34,3 +34,22 @@ body {
   list-style-type: none;
   margin-left: -30px;
 }
+
+.codeAddressLink {  
+	font-weight: bold;
+}
+
+.ramAddressLink {
+  color:#00C000;
+  font-weight: bold;
+}
+
+.hardwareAddressLink {
+  color:#00C0C0;
+  font-weight: bold;
+}
+
+.codePreStyle {
+	background-color: #FFFFFF;
+	border: 0px solid;
+}
