@@ -34,3 +34,13 @@ the disassembly and the discussion about the disassembly.
 
 The "Code" directory here contains the tools for deploying the "Content" to the web. It also includes the 
 dig-tools (disassemblers, assemblers, etc) along with individualized tools for specific dig sites.
+
+# TODO #
+
+ - Fix the 3-area layout
+ - Collapsible trees in the nav area
+ - Movable separator between code and nav
+ - Add an example page showing all the markup syntax (markup, code, address-files, etc)
+ - Fix content on MadnessAndMinotaur
+ - Rewrite entry text
+ 
