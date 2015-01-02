@@ -147,7 +147,7 @@ class CodeToHTML(MarkupToHTML):
                     
             # Now for any ID
             if hasattr(line,"linkID"):
-                line.original = '<span id="'+line.linkID+'"></span>'+line.original 
+                line.original = '<span class="siteTarget" id="'+line.linkID+'">'+line.original[0]+'</span>'+line.original[1:] 
                 
                 
     def translate(self, inName, outName, breadCrumbs, siteTree, title):

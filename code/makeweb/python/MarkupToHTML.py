@@ -42,7 +42,7 @@ class MarkupToHTML:
         
         lidLink = self.makeHeaderLink(lid)
         
-        t = '<h'+str(i)+' id="'+lidLink+'">'+s+'</h'+str(i)+'>'
+        t = '<h'+str(i)+' id="'+lidLink+'" class="siteTarget">'+s+'</h'+str(i)+'>'
         pageNav.append({'level':i, 'text':lid, 'link':lidLink})
         return t            
     

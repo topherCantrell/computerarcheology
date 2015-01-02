@@ -12,17 +12,27 @@ class AddressToHTML(MarkupToHTML):
                 s = s + '<th>'+h.strip()+'</th>'
             s = s + '</tr></thead>'
         else:
-            s = '<table class="table table-condensed"><tr id="'+self.getFirstAddress(hdrs[0])+'">'
+            first = True
+            s = '<table class="table table-condensed"><tr>'
             for h in hdrs:
-                s = s + '<td>'+h.strip()+'</td>'
+                if first:
+                    first = False
+                    s = s + '<td><span class="siteTarget" id="'+self.getFirstAddress(hdrs[0])+'">'+h.strip()+'</span></td>'                    
+                else:
+                    s = s + '<td>'+h.strip()+'</td>'
             s = s + '</tr>' 
         return s
     
     def markDownContinueTable(self,proc):
         cells = proc.split("||")[1:-1]
-        s = '<tr id="'+self.getFirstAddress(cells[0])+'">'
+        s = '<tr>'
+        first = True
         for c in cells:
-            s = s + '<td>'+c.strip()+'</td>'
+            if first:
+                first = False
+                s = s + '<td><span class="siteTarget" id="'+self.getFirstAddress(cells[0])+'">'+c.strip()+'</span></td>'
+            else:
+                s = s + '<td>'+c.strip()+'</td>'
         s = s + '</tr>'
         return s
     

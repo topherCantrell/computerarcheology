@@ -17,6 +17,6 @@ function switchTab(name) {
 
 function pageScrollTo(name) {
 	$('html, body').animate({
-        scrollTop: $("#"+name).offset().top-150
+        scrollTop: $("#"+name).offset().top
     }, 200);
 }

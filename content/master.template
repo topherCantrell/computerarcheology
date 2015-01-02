@@ -58,7 +58,7 @@
 				</div> <!-- End of sidebar -->		
 								      
 			    <div class="col-md-10 col-md-offset-2 main">
-				    <h1 class="page-header"><!-- %%CONTENT_TITLE%% --></h1>
+				    <h1 class="page-header siteTarget"><!-- %%CONTENT_TITLE%% --></h1>
 
 				    <!-- %%CONTENT%% -->
           
