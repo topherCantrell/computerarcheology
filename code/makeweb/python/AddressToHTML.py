@@ -62,9 +62,12 @@ class AddressToHTML(MarkupToHTML):
                     i = e1.index(':')
                     entry["endAddress"] = int(e1[i+1:],16)                    
                     entry["address"] = int(e1[0:i],16)
+                    entry["target"] = e1[0:i]
                 else:
                     entry["endAddress"] = int(e1,16)                    
                     entry["address"] = int(e1,16)
+                    entry["target"] = e1
+                    
                 if len(ens)==2:
                     entry["name"]=None
                     entry["description"]=ens[1].strip()
@@ -88,6 +91,11 @@ class AddressToHTML(MarkupToHTML):
                 
 if __name__ == "__main__":
     ad = AddressToHTML()    
-    ad.loadMap("../../../content/CoCo/MadnessMinotaur/RAMUse.mark")
+    ad.loadMap("../../../content/CoCo/MadnessMinotaur/RAMUse.mark WOW")
+    
+    ent = ad.getEntry(0x8A)
+    print ent
+    
+    
         
    

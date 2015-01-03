@@ -78,11 +78,13 @@ class CodeToHTML(MarkupToHTML):
         
         if line.target["map"]=="ram":
             if tar=="":
-                ad = maps["ramMap"]
+                ad = maps["ramMap"]                
                 entry = ad.getEntry(line.numbers[0]["value"])
                 if txt=="":
                     txt = entry["name"]
-                tar = ad.mapURL+"#"+line.numbers[0]["text"][1:]
+                    if txt=="":
+                        txt = line.numbers[0]["text"]                        
+                tar = ad.mapURL+"#"+entry["target"]
                 aClass = "ramAddressLink"
         elif line.target["map"]=="hardware":
             if tar=="":
@@ -90,16 +92,20 @@ class CodeToHTML(MarkupToHTML):
                 entry = ad.getEntry(line.numbers[0]["value"])
                 if txt=="":
                     txt = entry["name"]
-                tar = ad.mapURL+"#"+line.numbers[0]["text"][1:]
+                    if txt=="":
+                        txt = line.numbers[0]["text"]
+                tar = ad.mapURL+"#"+entry["target"]
                 aClass = "hardwareAddressLink"                     
         else:
             if tar=="":
                 tar = line.numbers[0]["text"][1:]
+                while len(tar)<4:
+                    tar = "0"+tar
             if not "/" in tar:
                 tar = "#" + tar
             if txt=="":
-                txt = line.numbers[0]["text"]
-                
+                txt = line.numbers[0]["text"]               
+               
         rep = '<a class="'+aClass+'" href="'+tar+'" title="'+line.numbers[0]["text"]+'">'+txt+"</a>"
         return (len(txt),rep)
                     
@@ -147,7 +153,10 @@ class CodeToHTML(MarkupToHTML):
                     
             # Now for any ID
             if hasattr(line,"linkID"):
-                line.original = '<span class="siteTarget" id="'+line.linkID+'">'+line.original[0]+'</span>'+line.original[1:] 
+                n = line.linkID
+                while len(n)<4:
+                    n = "0"+n
+                line.original = '<span class="siteTarget" id="'+n+'">'+line.original[0]+'</span>'+line.original[1:] 
                 
                 
     def translate(self, inName, outName, breadCrumbs, siteTree, title):
@@ -195,6 +204,10 @@ class CodeToHTML(MarkupToHTML):
                 raw.append(r.original)
             else:
                 raw.append(r)
+                
+        for x in xrange(len(raw)):
+            if not raw[x].endswith("\n"):
+                raw[x] = raw[x] + "\n"
                         
         MarkupToHTML.translate(self,inName,outName,breadCrumbs,siteTree,title,raw)
         
@@ -258,7 +271,7 @@ class CodeToHTML(MarkupToHTML):
             bodyLines.append(line)
             
         # All done
-        bodyLines.append("</pre>")
+        bodyLines.append("</pre>")       
         return bodyLines
 
 if __name__ == "__main__":    

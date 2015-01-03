@@ -7,8 +7,8 @@ can overwrite this area without interfering with the BASIC calls it uses.
 ||= Address || Name             || Description ||
 || 00       || curRoom          || current room ||
 || 01       || lastRoom         || last room ||
-|| 02       ||                  || direction command bit pattern ||
-|| 03       ||                  || length of user input ||
+|| 02       || dirBits          || direction command bit pattern ||
+|| 03       || inpLen           || length of user input ||
 || 04       || weight           || weight of pack ||
 || 05       || condition        || physical condition ||
 || 06       || bulk             || bulk of pack ||
@@ -16,21 +16,21 @@ can overwrite this area without interfering with the BASIC calls it uses.
 || 08       || fallOdds         || Accumulated odds of falling (0, 1/8, 2/8, 3/8 ... with each step in the dark) ||
 || 09       || stingCount       || Scorpion sting (0=not, not-zero=number of times) ||
 || 0A       || lampOn           || 0 if lamp is off, not 0 is on ||
-|| 0B       ||      || Count of spaces at the end of the row in print routine ||
-|| 0C       ||      || Set by BetweenRoomACDE if a climb-down failed ... abort the movement ||
-|| 0D       ||      || pushed back flag (nobody reads this) ||
-|| 0E       ||      || HydraStatus: AA = tied up, 1 = dead, 0 = free ||
-|| 0F       ||      || HydraPushedUsBack (must be set to TIE HYDRA)  0 = not, 1 = hydra blocked last move (cleared every direction command) ||
-|| 10       ||      || 1 if "pile of rocks" has been moved to us ||
-|| 11       ||      || 1 if "pile of rocks" has been exposed with OKKAN ||
-|| 12       ||      || 1 if south passage in room 9 is open. 0 if closed. (open with drapes) ||
-|| 13       ||      || Count down timer until we can walk through aura and heal again (10 seconds each time) ||
-|| 14       ||      || 1 if lamp has been blown from pack by entering room routine or failed jump ||
-|| 15       ||      || 1 if treasure "$0B" has been released ||
-|| 16       ||      || NEVER USED ||
-|| 17       ||      || Random number for passage-description printing ||
-|| 18:19    ||      || Rolling pointer to BASIC rom for random numbers ||
-|| 1A       ||      || Number of times advice has been given 0-13 ||
+|| 0B       || spacesOnEnd      || Count of spaces at the end of the row in print routine ||
+|| 0C       || downFail         || Set by BetweenRoomACDE if a climb-down failed ... abort the movement ||
+|| 0D       || pushedBack       || pushed back flag (nobody reads this) ||
+|| 0E       || hydraStatus      || HydraStatus: AA = tied up, 1 = dead, 0 = free ||
+|| 0F       || hydraPushed      || HydraPushedUsBack (must be set to TIE HYDRA)  0 = not, 1 = hydra blocked last move (cleared every direction command) ||
+|| 10       || rocksMoved       || 1 if "pile of rocks" has been moved to us ||
+|| 11       || rocksExposed     || 1 if "pile of rocks" has been exposed with OKKAN ||
+|| 12       || drapesOpen       || 1 if south passage in room 9 is open. 0 if closed. (open with drapes) ||
+|| 13       || auraTimer        || Count down timer until we can walk through aura and heal again (10 seconds each time) ||
+|| 14       || lampStripped     || 1 if lamp has been blown from pack by entering room routine or failed jump ||
+|| 15       || treas0BReleased  || 1 if treasure "$0B" has been released ||
+|| 16       ||                  || NEVER USED ||
+|| 17       || randPass         || Random number for passage-description printing ||
+|| 18:19    || randPoint        || Rolling pointer to BASIC rom for random numbers ||
+|| 1A       || numAdviceGiven   || Number of times advice has been given 0-13 ||
 
 Oracle advice table. Object number is stored here. Upper bit set if advice has already been given for this
 protected object.
@@ -48,55 +48,57 @@ protected object.
 || 26       ||      || Oracle advice object 11 ||
 || 27       ||      || Oracle advice object 12 ||
 
-|| 28       ||      || Calculated score ||
-|| 29       ||      || NEVER USED ||
-|| 2A       ||      || Verb command number ||
-|| 2B       ||      || Noun word number ||
-|| 2C       ||      || Trigger object to make packrat drop treasure ||
-|| 2D       ||      || NEVER USED ||
-|| 2E       ||      || Holder value for BetweenRoomACDE ||
-|| 2F       ||      || General use lots of places ||
-|| 30       ||      || Used in InPack ||
-|| 31       ||      || Used in InPack ||
-|| 32       ||      || Set by EnteringRoomAction_q (MYSTERIOUS FOG) ||
-|| 33       ||      || Current room of HYDRA ||
-|| 34       ||      || Number of times more ISHTAR can be used. Random init to 1-4. ||
-|| 35       ||      || Room for small pit in corner of room ||
-|| 36       ||      || Room of LEDGE ||
-|| 37       ||      || Room of "pile of rocks" (OKKAN spell) ||
-|| 38:39    ||      || Oil level of lamp (0 is empty) ||
-|| 3A       ||      || Number of times lamp can be filled (init to $34 + 4) ||
-|| 3B:3C    ||      || Pointer to start of input on screen ||
-|| 3D       ||      || Used in Random-between-0-and-B ||
-|| 3E       ||      || Time until we can drink from bottle to heal again (16 seconds) ||
-|| 3F       ||      || Interrupt divisor count (seconds) ||
-|| 40       ||      || Interrupt sub divisor (minutes) ||
-|| 41       ||      || Minotaur state timer ||
-|| 42       ||      || Troglodyte state timer ||
-|| 43       ||      || Satyr state timer ||
-|| 44       ||      || Scorpion state timer ||
-|| 45       ||      || Fog clock runs in room MYSTERIOUS FOG. At 6 seconds we get warned. At 10 we die. ||
-|| 46       ||      || Minutes of immunity left (AKHIROM gives 3 minutes) ||
-|| 47       ||      || Count of times entering room with EnteringRoomAction_r. 3 times and treasure drops. ||
-|| 48       ||      || NEVER USED ||
-|| 49       ||      || NEVER USED ||
-|| 4A:4B    ||      || Continual second counter (nobody uses it) ||
-|| 4C:4D    ||      || Counts the time in a room. Once 15, no going BACK ||
-|| 4E       ||      || NEVER USED ||
-|| 4F       ||      || NEVER USED ||
-|| 50       ||      || NEVER USED ||
-|| 51       ||      || Used in Oracle advice ||
-|| 52       ||      || Used in killing Hydra ||
-|| 53       ||      || Used in sound effects ||
-|| 54:55    ||      || Used in tape-write ||
-|| 56:65    ||      || 16 byte buffer for decode and auto-word wrap ||
-|| 66       ||      || NEVER USED ||
+|| 28       || score            || Calculated score ||
+|| 29       ||                  || NEVER USED ||
+|| 2A       || verbNum          || Verb command number ||
+|| 2B       || nounNum          || Noun word number ||
+|| 2C       || ratObject        || Trigger object to make packrat drop treasure ||
+|| 2D       ||                  || NEVER USED ||
+|| 2E       || holderACDE       || Holder value for BetweenRoomACDE ||
+|| 2F       || temporary        || General use lots of places ||
+|| 30       ||                  || Used in InPack ||
+|| 31       ||                  || Used in InPack ||
+|| 32       || enteredFog       || Set by EnteringRoomAction_q (MYSTERIOUS FOG) ||
+|| 33       || hydraRoom        || Current room of HYDRA ||
+|| 34       || ishtarUses       || Number of times more ISHTAR can be used. Random init to 1-4. ||
+|| 35       || smallPitRoom     || Room for small pit in corner of room ||
+|| 36       || ledgeRoom        || Room of LEDGE ||
+|| 37       || rocksRoom        || Room of "pile of rocks" (OKKAN spell) ||
+|| 38:39    || lampOil          || Oil level of lamp (0 is empty) ||
+|| 3A       || lampFills        || Number of times lamp can be filled (init to $34 + 4) ||
+|| 3B:3C    ||                  || Pointer to start of input on screen ||
+|| 3D       ||                  || Used in Random-between-0-and-B ||
+|| 3E       || drinkTimer       || Time until we can drink from bottle to heal again (16 seconds) ||
+|| 3F       || ticksTillSec     || Interrupt divisor count (60 ticks till one seconds) ||
+|| 40       || secsTillMin      || Interrupt divisor count (60 ticks till one minute) ||
+|| 41       || minotaurTimer    || Minotaur state timer ||
+|| 42       || trogTimer        || Troglodyte state timer ||
+|| 43       || satyrTimer       || Satyr state timer ||
+|| 44       || scorpTimer       || Scorpion state timer ||
+|| 45       || fogClock         || Fog clock runs in room MYSTERIOUS FOG. At 6 seconds we get warned. At 10 we die. ||
+|| 46       || akhiromMins      || Minutes of immunity left (AKHIROM gives 3 minutes) ||
+|| 47       || enterRcount      || Count of times entering room with EnteringRoomAction_r. 3 times and treasure drops. ||
+|| 48       ||                  || NEVER USED ||
+|| 49       ||                  || NEVER USED ||
+|| 4A:4B    || seconds          || Continual second counter (nobody uses it) ||
+|| 4C:4D    || secsInRoom       || Counts the time in a room. Once 15, no going BACK ||
+|| 4E       ||                  || NEVER USED ||
+|| 4F       ||                  || NEVER USED ||
+|| 50       ||                  || NEVER USED ||
+|| 51       ||                  || Used in Oracle advice ||
+|| 52       ||                  || Used in killing Hydra ||
+|| 53       ||                  || Used in sound effects ||
+|| 54:55    ||                  || Used in tape-write ||
+|| 56:65    ||                  || 16 byte buffer for decode and auto-word wrap ||
+|| 66       ||                  || NEVER USED ||
 
 This area of BASIC's memory includes tape and cursor information
 that the ROM calls use. 
 || 67:87    ||           || BASIC vars ||
 || 88:89    || scrCursor || Screen cursor ||
-|| 67:F2    ||           || NEVER USED ||
+|| 8A:8B    || zeroWord  || BASIC always 0 ||
+
+|| 8C:F3    ||           || BASIC vars ||
 
 = Blocked Rooms =
 
