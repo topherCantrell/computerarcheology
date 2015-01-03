@@ -1544,19 +1544,19 @@ CROWN TROGLODYTE
   07  : 17	Random number for passage-description printing
 A6BE  : 18:19	Rolling pointer to BASIC rom for random numbers
   00  : 1A	Number of times advice has been given 0-13
-  1A  : 1B 	[0] 
-  1D  : 1C	[1]
-  1E  : 1D	[2]
-  1B  : 1E	[3]    Advice table. Object number is stored here. Upper
-  1C  : 1F	[4]    bit set if advice has already been given for this
-  19  : 20	[5]    protected object.
-  06  : 21	[6]
-  0F  : 22	[7]
-  07  : 23	[8]
-  14  : 24	[9]
-  2A  : 25	[10]
-  2B  : 26	[11]
-  2C  : 27	[12]
+  1A  : 1B 	Object 0 
+  1D  : 1C	Object 1
+  1E  : 1D	Object 2
+  1B  : 1E	Object 3    Advice table. Object number is stored here. Upper
+  1C  : 1F	Object 4    bit set if advice has already been given for this
+  19  : 20	Object 5    protected object.
+  06  : 21	Object 6
+  0F  : 22	Object 7
+  07  : 23	Object 8
+  14  : 24	Object 9
+  2A  : 25	Object 10
+  2B  : 26	Object 11
+  2C  : 27	Object 12
   00  : 28	Calculated score
   00  : 29	NEVER USED
   2B  : 2A	Verb command number
@@ -1613,3 +1613,175 @@ A6BE  : 18:19	Rolling pointer to BASIC rom for random numbers
   00  : FD
   00  : FE
 }}}
+
+= Places to See =
+
+|| [#CodeBug1          "Error message with POTION"] ||
+|| [#CodeBug2          "Error when KILL ORACLE"] ||
+|| [#CodeBug3          "ISHTAR does not clear fog poison"] ||
+|| [#CodeBug4          "Should fail if overburdeoned"] ||
+|| [#CodeBug5          "Missing word WATER from message"] ||
+|| [#CodeBug6          "Shadowed jump"] ||
+|| [#CodeBug7          "Invisible Oil hides the URN"] ||
+|| [#CodeBug8          "YOUR SIGHT IS DIM never gets printed (Joe Hagan)"] ||
+|| [#MemoryMap         "Memory Map"] ||
+|| [#START             "Program Entry"] ||
+|| [#PrintChar         "Print Character"] ||
+|| [#SaveToTape        "Save Game to Tape"] ||
+|| [#Splash            "Loading Splash Screen"] ||
+|| [#PrintWrap         "Print + auto-wrap"] ||
+|| [#Random            "Get Next Random Number"] ||
+|| [#InterruptService  "60Hz Interrupt Service"] ||
+|| [#UserInput         "User Input Routine"] ||
+|| [#GameInit          "Initialize Game"] ||
+|| [#PrintMess         "Print a Message"] ||
+|| [#CalculateScore    "Calculate Score"] ||
+|| [#Win               "Player Wins"] ||
+|| [#RandB             "Random from 0 to B"] ||
+|| [#IsObjInRoom       "Check if object is in room"] ||
+|| [#DropHeldObj       "Drop held (managed) object"] ||
+|| [#PrintPacked       "Print a packed message"] ||
+|| [#PrintWord         "Print a word"] ||
+|| [#PrintCR           "Print CR"] ||
+|| [#ComWHAT           "Print command+WHAT?"] ||
+|| [#InPack            "See if object is in pack"] ||
+|| [#GetObject         "Pick up object"] ||
+|| [#ActionWhenEnteringRoom  "Enter-room routines"] ||
+|| [#InitializeObjects "Initialize Objects"] ||
+|| [#PrintObjectsInRoom "Print Object in Room"] ||
+|| [#ConfigureProtected  "Configure required-object lists"] ||
+|| [#AssignHolders       "Assign treasures"] ||
+|| [#PlaceSpells           "Place spells in rooms"] ||
+|| [#PlaceEnterRoomActions "Place enter-room-actions in rooms"] ||
+|| [#CreaturesAttack "Creatures that attack"] ||
+|| [#MINOTAURAttack     "Minotaur"] ||
+|| [#TROGLODYTEAttack  "Troglodyte"] ||
+|| [#SATYRAttack       "Satyr"] ||
+|| [#SCORPIONAttack    "Scorpion"] ||
+|| [#MoveCreatures "Move Creatures"] ||
+|| [#MoveMinotaur "Move Minotaur"] ||
+|| [#MoveOracle "Move Oracle"] ||
+|| [#MoveTroglodyte "Move Troglodyte"] ||
+|| [#MoveSatyr "Move Satyr"] ||
+|| [#MoveSprite "Move Sprite"] ||
+|| [#MoveScorpion "Move Scorpion"] ||
+|| [#MoveMymph "Move Numph"] ||
+|| [#CommandLOOK       "LOOK"] ||
+|| [#LookScarab "LOOK SCARAB"] ||
+|| [#LookTablet "LOOK TABLET"] ||
+|| [#LookPool "LOOK POOL"] ||
+|| [#LookParchment "LOOK PARCHMENT"] ||
+|| [#LookPit "LOOK PIT"] ||
+|| [#LookUrn "LOOK URN"] ||
+|| [#LookBottle "LOOK BOTTLE"] ||
+|| [#CommandSCORE      "SCORE"] ||
+|| [#CommandQUIET      "QUIET"] ||
+|| [#CommandUNCLE      "UNCLE"] ||
+|| [#CommandHELP       "HELP"] ||
+|| [#CommandBACK       "BACK"] ||
+|| [#CommandUP         "UP"] ||
+|| [#CommandDOWN       "DOWN"] ||
+|| [#CommandNORTH      "NORTH"] ||
+|| [#CommandEAST       "EAST"] ||
+|| [#CommandSOUTH      "SOUTH"] ||
+|| [#CommandWEST       "WEST"] ||
+|| [#CommandCLIMB      "CLIMB"] ||
+|| [#CommandJUMP       "JUMP"] ||
+|| [#CommandINV        "INVENTORY"] ||
+|| [#CommandGETTAKEGRAB "GET,TAKE,GRAB"] ||
+|| [#CommandDROPTHROW  "DROP,THROW"] ||
+|| [#CommandLAMP        "LAMP"] ||
+|| [#CommandOPEN       "OPEN"] ||
+|| [#OpenCrypt "OPEN CRYPT"] ||
+|| [#OpenDrapes "OPEN DRAPES"] ||
+|| [#OpenCryptKing "OPEN CRYPT (king)"] ||
+|| [#CommandASK        "ASK"] ||
+|| [#CommandEAT        "EAT"] ||
+|| [#EatPowder "EAT POWDER"] ||
+|| [#EatFood "EAT FOOD"] ||
+|| [#EatMushroom "EAT MUSHROOM"] ||
+|| [#CommandDRINK      "DRINK"] ||
+|| [#DrinkSPRITE "DRINK SPRITE"] ||
+|| [#DirnkPotion "DRINK POTION"] ||
+|| [#DrinkWater "DRINK WATER"] ||
+|| [#CommandRUN        "RUN"] ||
+|| [#CommandFILL       "FILL"] ||
+|| [#FillLamp "FILL LAMP"] ||
+|| [#FillBottle "FILL BOTTLE"] ||
+|| [#FillURN "FILL URN"] ||
+|| [#CommandPLAY       "PLAY"] ||
+|| [#CommandKILL       "KILL"] ||
+|| [#KillCreature "KILL creature"] ||
+|| [#KillHydra "KILL HYDRA"] ||
+|| [#CommandTIE        "TIE"] ||
+|| [#CommandSTAB       "STAB"] ||
+|| [#CommandVETAR      "VETAR Take 10 damage. GET LAMP immediately after it has been blown away."] ||
+|| [#CommandMITRA      "MITRA Take 12 damnage. Remove scorpion sting."] ||
+|| [#CommandOKKAN      "OKKAN Take 14 damage. Get treasure from 'pile of rocks' if it is here."] ||
+|| [#CommandAKHIROM    "AKHIROM Take 16 damage. Kill Hydra. If SCARAB is in pack, make us invulnerable for 3 minutes."] ||
+|| [#CommandNERGAL     "NERGAL Take 18 damage. Allows us to stay in poison room."] ||
+|| [#CommandBELROG     "BELROG Take 20 damage. Make JUMP from this room without failing."] ||
+|| [#CommandCROM       "CROM Take 22 damage. Ublocks all passages."] ||
+|| [#CommandISHTAR     "ISHTAR Take 24 damage. Move to "exit" point where we drop treasure. (limited uses)."] ||
+|| [#BetweenRoomHandler "Between Room handler"] ||
+|| [#BetweenRoomA       "A If phys minus weight is less than random 64-191 then a climb-up fails."] ||
+|| [#BetweenRoomB       "B Move us to room 10 (start) or 20% random room 0-15."] ||
+|| [#BetweenRoomC       "C If phys minus weight is less than 192 then a climb-up fails."] ||
+|| [#BetweenRoomD       "D If phys minus weight is less than 64 then a climb-up fails."] ||
+|| [#BetweenRoomE       "E If phys minus weight is less than 128 then a climb-up fails."] ||
+|| [#BetweenRoomF       "F If the lamp is in our pack this moves us to a totally random room."] ||
+|| [#BetweenRoomG       "G There is a 50/50 chance of moving to a random room in the first half of the last floor."] ||
+|| [#BetweenRoomH       "H There is a 21/32 chance of going to a random room in the maze on a random floor."] ||
+|| [#BetweenRoomI       "I There is a 244/256 chance of moving to a random room in the maze on a random floor."] ||
+|| [#EnteringRoomAction_a "_a Cave in to next floor (32 damage) if pack heavier than 192. If so move a and b to random rooms."] ||
+|| [#EnteringRoomAction_b "_b Cave in to next floor (32 damage) if pack heavier than 128. If so move a and b to random rooms."] ||
+|| [#EnteringRoomAction_c "_c Cave in to next floor (32 damage) if pack heavier than 95. If so move a and b to random rooms."] ||
+|| [#EnteringRoomAction_d "_d If we have VETAR make the pile-of-rocks appear in this room (it stays here)."] ||
+|| [#EnteringRoomAction_e "_e # Play sound effect (same as bb). If we play the flute and have the parchment then the LEDGE appears here."] ||
+|| [#EnteringRoomAction_f "_f 1/2 the time a powerful gust blows lamp out of grasp."] ||
+|| [#EnteringRoomAction_g "_g # Hydra is here. If it is free it pushes us back to last room."] ||
+|| [#EnteringRoomAction_h "_h If we know VETAR or have the SCEPTER, nothing happens. Otherwise we do a RUN."] ||
+|| [#EnteringRoomAction_i "_i Do nothing if we have VETAR. If random number > phys condition or 1/2 the time we RUN and take 5 damage."] ||
+|| [#EnteringRoomAction_j "_j Do nothing if we have MITRA. If random number > phys condition or 1/2 the time we RUN and take 5 damage."] ||
+|| [#EnteringRoomAction_k "_k Do nothing if we have OKKAN. If random number > phys condition or 1/2 the time we RUN and take 5 damage."] ||
+|| [#EnteringRoomAction_l "_l Do nothing if we have AKHIROM. If random number > phys condition or 1/2 the time we RUN and take 5 damage."] ||
+|| [#EnteringRoomAction_m "_m Do nothing if we have NERGAL. If random number > phys condition or 1/2 the time we RUN and take 5 damage."] ||
+|| [#EnteringRoomAction_n "_n Do nothing if we have BELROG. If random number > phys condition or 1/2 the time we RUN and take 5 damage."] ||
+|| [#EnteringRoomAction_o "_o Do nothing if we have CROM. If random number > phys condition or 1/2 the time we RUN and take 5 damage."] ||
+|| [#EnteringRoomAction_p "_p Do nothing if we have ISHTAR. If random number > phys condition or 1/2 the time we RUN and take 5 damage."] ||
+|| [#EnteringRoomAction_q "_q Start the poison clock (we can't stay here long). 1/3 of the time we give the clock an extra tick."] ||
+|| [#EnteringRoomAction_r "_r # When we enter this room 3 times the treasure is released."] ||
+|| [#EnteringRoomAction_s "_s # If we have the lamp and it is off then the room drops its treasure. (Strange color walls)"] ||
+|| [#EnteringRoomAction_t "_t # If we are holding the packrat's trigger treasure (randomized at start) then the packrat drops his treasure."] ||
+|| [#EnteringRoomAction_u "_u # If we can see you instantly get the treasure."] ||
+|| [#EnteringRoomAction_v "_v Print POOL OF OIL if the pool has oil in it and we know ISHTAR."] ||
+|| [#EnteringRoomAction_x "_x Add 40 to health and move us a short distance away. 10 minutes must pass before again."] ||
+|| [#EnteringRoomAction_z "_z Room with music (init to room 16 to 39). The sprite can't move objects here."] ||
+|| [#EnteringRoomAction_33 "_33 # If lamp is off we instantly get the treasure."] ||
+|| [#EnteringRoomAction_32 "_32 If we can't see we take 30 damage."] ||
+|| [#EnteringRoomAction_203  "_203 # Print SMALL PIT IN CORNER OF ROOM."] ||
+|| [#EnteringRoomAction_213  "_213 Print LAYER OF MIST EAST WALL."] ||
+|| [#EnteringRoomAction_232  "_232 If we came south to this room and carrying pendant move us near start and random room for pendant."] ||
+|| [#TapeSavePoint "Tape Save Point"] ||
+|| [#BaseRoomDescriptions       "256 room descriptions"] ||
+|| [#CommandWords               "Verb words"] ||
+|| [#CommandTable               "Verb commands table"] ||
+|| [#PhraseList                 "General Phrases"] ||
+|| [#WordList                   "Sentence Fragments"] ||
+|| [#ItemDescriptions           "Item Descriptions"] ||
+|| [#ItemProtectedMessages      "Item-is-protected Messages"] ||
+|| [#PassageDescriptions        "Descriptions of passages"] ||
+|| [#MiscStrings                "Misc. Strings"] ||
+|| [#DirectionDescriptionTable  "Tabe of Direction Descriptions"] ||
+|| [#SpellData                  "Spell Obejects Table"] ||
+|| [#PassageConfigurations      "Room Passage Configurations"] ||
+|| [#ObjectToNameMap            "Object to Name Map"] ||
+|| [#ObjectWeightAndBulk        "Object Weight and Bulk"] ||
+|| [#ObjectData                 "Object Data"] ||
+|| [#SpellLocationLimits           "Table of limits on spell locations"] ||
+|| [#ProtectedObjectConfiguration  "Lists of possible required objects"] ||
+|| [#EnteringRoomActionPlacment    "Table of limits on enter-room-action locations"] ||
+|| [#OracleAdviceTable             "List of 13 advices Oracle gives"] ||
+|| [#JumpInfoTable                 "Table of information about JUMPs"] ||
+|| [#PossibleProtectedObjectLocations "Possible Protected Object Locations"] ||
+|| [#ObjectPlacementScript "Object Placement Script"] ||

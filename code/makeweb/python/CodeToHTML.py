@@ -34,7 +34,7 @@ class CodeToHTML(MarkupToHTML):
         return ad
     
     def addCodeLinkTargetIDs(self,lines):        
-        for line in lines:              
+        for line in lines:
             
             if not isinstance(line,CodeLine): # only looking at CodeLines
                 continue 
@@ -153,13 +153,13 @@ class CodeToHTML(MarkupToHTML):
     def translate(self, inName, outName, breadCrumbs, siteTree, title):
         # Read the code
         with open(inName) as f:
-            raw = f.readlines()   
+            raw = f.readlines()
             
         maps = {}
         ret = []
-        for r in raw:
-            
-            t = r.strip()
+        for r in raw:                        
+                        
+            t = r.strip() 
                            
             if t.startswith(";%%ramMap"):
                 maps["ramMap"] = self.getAddressMap(t[9:].strip()) #;%%ramMap RAMUse.mark 
@@ -170,7 +170,7 @@ class CodeToHTML(MarkupToHTML):
             
             # Keep comment lines as-is
             if t.startswith(";"):
-                ret.append(r)
+                ret.append(self.entizeString(r))
                 continue
             
             # Keep blank lines as-is
@@ -197,6 +197,69 @@ class CodeToHTML(MarkupToHTML):
                 raw.append(r)
                         
         MarkupToHTML.translate(self,inName,outName,breadCrumbs,siteTree,title,raw)
+        
+    def markDown(self,raw,fills,pageNav):
+        self.headers = []
+        
+        mode="none" 
+        
+        bodyLines = ['<pre class="codePreStyle">']  # List of lines for the body
+        for line in raw:    
+            
+            if not line.startswith(";"):
+                bodyLines.append(line)
+                continue  
+            
+            # -- Markup processing on full-line comments --          
+            
+            # Handle defines
+            if line.startswith(";%%"):
+                i = line.index(" ")
+                fills[line[3:i]] = line[i+1:].strip()
+                continue
+                                        
+            # Handle quick headers
+            if line.startswith(";="):
+                line = self.markDownHeaders(line[1:],pageNav)
+                
+            # Handle quick links
+            #if "[" in line:
+            #    line = self.markDownBraces(line)
+                
+            # If we are making a list of bullets
+            if mode == "bullets":
+                if line.startswith(";*"):
+                    line = self.markDownContinueBullets(line[1:])
+                else:
+                    self.markDownEndBullets(bodyLines)
+                    mode = "none"
+            else:
+                if line.startswith(";*"):
+                    proc = self.markDownStartBullets(line[1:])
+                    mode = "bullets"        
+                    bodyLines.append(line)
+                    continue
+            
+            # If we are making a table
+            if mode == "table":
+                if line.startswith(";||"):
+                    line = self.markDownContinueTable(line[1:])
+                else:
+                    self.markDownEndTable(bodyLines)
+                    mode = "none"
+            else:
+                if line.startswith(";||"):
+                    line = self.markDownStartTable(line[1:])
+                    mode = "table"
+                    bodyLines.append(line)
+                    continue
+                    
+            # If we get here we have a line to add
+            bodyLines.append(line)
+            
+        # All done
+        bodyLines.append("</pre>")
+        return bodyLines
 
 if __name__ == "__main__":    
     ch = CodeToHTML()

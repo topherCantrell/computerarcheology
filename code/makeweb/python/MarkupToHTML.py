@@ -18,7 +18,7 @@ class MarkupToHTML:
         if len(ret)==0:
             ret = "header"
         if ret in self.headers:
-            ret = ret +str(len(headers))
+            ret = ret +str(len(self.headers))
         self.headers.append(ret)
         return ret
             
@@ -119,6 +119,19 @@ class MarkupToHTML:
     def markDownEndTable(self,bodyLines):
         bodyLines.append("</table>")
         
+    def entizeString(self,str):        
+        ret = ""
+        # Eventually we want to escape stretches of text.
+        for c in str:
+            if c=='<':
+                ret = ret + "&lt;"
+            elif c=='>':
+                ret = ret + "&gt;"                
+            elif c=='&':
+                ret = ret + "&amp;"
+            else:
+                ret = ret + c
+        return ret   
     
     def markDown(self,raw,fills,pageNav):
         self.rawMode = None
@@ -136,18 +149,16 @@ class MarkupToHTML:
                 if nm:
                     mode = "none"
                 continue
-            
-            # In case we are in a code file
-            if proc.startswith(";"):
-                proc = proc[1:]
-    
+                            
             # This is how you get into raw mode
             if proc.startswith("{{{"):
                 self.markDownStartRaw(proc,bodyLines)
                 mode = "raw"
                 continue    
             
-            # -- Markup Processing --          
+            # -- Markup Processing --
+            
+            proc = self.entizeString(proc)          
             
             # Handle defines
             if proc.startswith("%%"):
