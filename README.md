@@ -37,10 +37,9 @@ dig-tools (disassemblers, assemblers, etc) along with individualized tools for s
 
 # TODO #
 
- - Fix the 3-area layout
+ - Add an example page showing all the markup syntax (markup, code, address-files, etc)
+ - Rest of CoCo pages (Pyramid, Rakatu, Bedlam)
  - Collapsible trees in the nav area
  - Movable separator between code and nav
- - Add an example page showing all the markup syntax (markup, code, address-files, etc)
- - Fix content on MadnessAndMinotaur
  - Rewrite entry text
  
