@@ -192,31 +192,36 @@ def getSiteNav(content,curContent,fname=None):
             
 def _getSiteNav(content,lines,curContent,fname):
         
-    # TODO: This doesn't handle the 'curPage' correctly
-    
     sn = "snn"
     href = "/"+content["dirPath"]
     if href=="/":
         sn = "sn1"       
     
     dispLinks = content["displayPath"].split("/")[1:]   
+    
+    p1 = '<li class="%s"><span class="sna"><strong>%s</strong></span>'
+    p2 = '<li class="%s"><a class="sna" href="%s">%s</a>'    
         
-    if curContent == content and fname==None:
-        lines.append('<li class="'+sn+'"><span class="sna"><strong>'+dispLinks[-1]+"</strong></span>")
-    else:        
-        lines.append('<li class="'+sn+'"><a class="sna" href="'+href+'">'+dispLinks[-1]+'</a>')        
+    if curContent == content and fname==None:  
+        li = p1 % (sn,dispLinks[-1])        
+        lines.append(li)
+    else:
+        li = p2 % (sn,href,dispLinks[-1])
+        lines.append(li)        
         
     if len(content["deploy"]["files"])>0:
-        ifs = content["deploy"]["files"][1:]
+        ifs = content["deploy"]["files"]
         if len(ifs)>0:
             lines.append("<ul>")
             for fi in ifs:
                 if not "displayName" in fi:
                     continue
                 if curContent == content and fname==fi['displayName']:
-                    lines.append('<li class="'+sn+'"><span class="sna"><strong>'+fi["displayName"]+"</strong></span>")
+                    li = p1 % (sn, fi["displayName"] )
+                    lines.append(li)
                 else:
-                    lines.append('<li class="'+sn+'"><a class="sna" href="'+href+fi["outputName"]+'">'+fi["displayName"]+'</a>')                    
+                    li = p2 % (sn,href+fi["outputName"],fi["displayName"]) 
+                    lines.append(li)                    
             lines.append("</ul>")
     
     if len(content["dirs"])>0:
@@ -226,47 +231,6 @@ def _getSiteNav(content,lines,curContent,fname):
                 _getSiteNav(sub,lines,curContent,fname)
         lines.append("</ul>")
     lines.append('</li>')
-    
-    """
-    for (key,val) in content.iteritems():        
-        if key=="css" or key=="js" or key=="img":
-            continue
-        
-        href = curDir+"/"+key
-        href = href.replace("//","/")
-        
-        k = key
-        if k=="":
-            k="Home"
-                
-        if curDir==curPage:
-            #print "::"+curDir+"::"+curPage+"::"
-            lnk = k
-        else:
-            lnk = '<a href="'+href+'" class="sna">'+k+'</a>'
-                
-        if key=="":
-            lines.append('<li class="sn1">'+lnk)
-        else:
-            lines.append('<li class="snn">'+lnk)
-            
-        sf = getSiteTreeFiles(val)     
-                  
-        if len(sf)>0:
-            lines.append('<ul>')
-            for (targ,name) in sf:
-                lines.append('<li class="snn"><a href="'+href+"/"+targ+'" class="sna">'+name+'</a></li>')
-            lines.append('</ul>')    
-            
-        if len(val['dirs'])>0:
-            lines.append('<ul>')            
-            for d in val['dirs']:
-                getSiteNav(d,lines,href,curPage)
-            lines.append('</ul>')
-        
-        lines.append("</li>")
-"""
-
 
 if __name__=="__main__":
     

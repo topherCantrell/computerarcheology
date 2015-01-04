@@ -1,3 +1,5 @@
+%%image Madness.jpg
+
 Init clears 00-66 inclusive. The area is in BASIC's memory usage. The code uses some of
 BASIC's routines, but this first area of memory is for the BASIC interpreter. The code
 can overwrite this area without interfering with the BASIC calls it uses. 

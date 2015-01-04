@@ -1,14 +1,15 @@
 ;%%image Madness.jpg
-
 ;%%ramMap Coco/MadnessMinotaur/RAMUse.mark /CoCo/MadnessMinotaur/RAMUse.html
 ;%%hardwareMap Coco/Hardware.mark /CoCo/Hardware.html
+; The game's RAM usage is detailed here: 
+; [RAMUse.html RAM Usage]
 
 ;= Patch BASIC =
 
 ; Patch BASIC for our own use
 START:
 0300: 1A 50               ORCC    #$50        ; Disable IRQ, FIRQ
-0302: BD A7 EB            JSR     $A7EB       ;{} Turns motor off (leave IRQ and FIRQ off)
+0302: BD A7 EB            JSR     $A7EB       ; Turns motor off (leave IRQ and FIRQ off) (BASIC)
 0305: 8E 03 2D            LDX     #$032D      ; Print character code (relocatable)
 0308: CE 00 A5            LDU     #$00A5      ; Destination (over BASIC's GETCCH routine)
 030B: A6 80               LDA     ,X+         ; Copy ...
@@ -24,7 +25,7 @@ START:
 0323: EF E3               STU     ,--S        ; To stack
 0325: C6 60               LDB     #$60        ; Space character
 0327: 8E 02 00            LDX     #$0200      ; Start of screen
-032A: 7E A9 2F            JMP     $A92F       ;{} Clear screen (leave cursor alone) and to 0CE0
+032A: 7E A9 2F            JMP     $A92F       ; Clear screen (leave cursor alone) and to 0CE0 (BASIC)
 ;
 ; BASIC's GETCCH routine ... do nothing (lets call to CLOADM succeed)
 032D: 39                  RTS                 ; To A5
@@ -69,7 +70,7 @@ PrintChar:
 0368: 8C 05 FF            CMPX    #$05FF      ; At the end of the line?
 036B: 23 06               BLS     $373        ;{} No ... out
 036D: 8E 02 00            LDX     #$0200      ; Scroll both ...
-0370: 7E A3 4E            JMP     $A34E       ;{} ... screens and out (sets cursor to last line)
+0370: 7E A3 4E            JMP     $A34E       ; ... screens and out (sets cursor to last line) (BASIC)
 0373: 35 96               PULS    A,B,X,PC    ; Done
 
 ;= Save to Tape =
@@ -106,10 +107,10 @@ SaveToTape:
 ;
 039A: 86 02               LDA     #$02        ; 0142: File type: machine
 039C: 9E 8A               LDX     >$8A        ;{-} 0144: ASCII flag and mode (00 00)
-039E: BD A6 5F            JSR     $A65F       ;{} 0146: Write header block to tape
+039E: BD A6 5F            JSR     $A65F       ; 0146: Write header block to tape (BASIC)
 03A1: 0F 78               CLR     >$78        ;{-} 0149: File closed
 03A3: 0C 7C               INC     >$7C        ;{-} 014B: Bump block type (from HEADER to DATA)
-03A5: BD A7 D8            JSR     $A7D8       ;{} 014D: Send 55s to tape
+03A5: BD A7 D8            JSR     $A7D8       ; 014D: Send 55s to tape (BASIC)
 03A8: 20 08               BRA     $3B2        ;{} 0150: Skip over keyboard buffer
 
 03AA: 00 00 00 00 00 00 00 00        ; 0152: 8 bytes of keyboard buffer used by BASIC ... skip that
@@ -123,14 +124,14 @@ SaveToTape:
 03BF: 24 0A               BCC     $3CB        ;{} 0167: More to do ... go write another block
 03C1: 00 7C               NEG     >$7C        ;{-} 0169: Block type FF ... EOF
 03C3: 0F 7D               CLR     >$7D        ;{-} 016B: Block length 0
-03C5: BD A7 F4            JSR     $A7F4       ;{} 016D: BLKOUT ... write EOF
-03C8: 7E A7 EB            JMP     $A7EB       ;{} 0170: Turn off motor (leave IRQ and FIRQ alone) and out
+03C5: BD A7 F4            JSR     $A7F4       ; 016D: BLKOUT ... write EOF (BASIC)
+03C8: 7E A7 EB            JMP     $A7EB       ; 0170: Turn off motor (leave IRQ and FIRQ alone) and out (BASIC)
 ;
 03CB: 10 83 00 FF         CMPD    #$00FF      ; 0173: More than 255 bytes remaining
 03CF: 24 03               BCC     $3D4        ;{} 0177: Yes ... use 255
 03D1: 5C                  INCB                ; 0179: Remainder ...
 03D2: D7 7D               STB     >$7D        ;{-} 017A: ... data size
-03D4: BD A7 F4            JSR     $A7F4       ;{} 017C: BLKOUT
+03D4: BD A7 F4            JSR     $A7F4       ; 017C: BLKOUT (BASIC)
 03D7: 20 DC               BRA     $3B5        ;{} 017F: Do all blocks
 
 03D9: 00 00 00 00 00 FF 7F 3F 1F 0F 07 03 01 ; 0181: 
@@ -267,7 +268,7 @@ Random:
 0665: 30 01               LEAX    1,X         ; Next byte in ROM
 0667: 8C C0 00            CMPX    #$C000      ; Reached the end of ROM?
 066A: 25 03               BCS     $66F        ;{} No ... use this
-066C: 8E A0 00            LDX     #$A000      ; Restart at the top of ROM
+066C: 8E A0 00            LDX     #$A000      ; Restart at the top of ROM (BASIC)
 066F: 9F 18               STX     >$18        ;{-} New pointer
 0671: E6 84               LDB     ,X          ; Get byte
 0673: E8 04               EORB    4,X         ; Mangle it with a later byte
@@ -383,7 +384,7 @@ PickUpObject:
 072C: B7 01 0C            STA     $010C       ; ... to ...
 072F: CC 07 45            LDD     #$0745      ; ... IRQ service ...
 0732: FD 01 0D            STD     $010D       ; ... routine
-0735: 8E FF 01            LDX     #$FF01      ; HSYNC interrupt control
+0735: 8E FF 01            LDX     #$FF01      ;{--} HSYNC interrupt control
 0738: A6 84               LDA     ,X          ; Disable ...
 073A: 84 FC               ANDA    #$FC        ; ... HSYNC (fast) ...
 073C: A7 81               STA     ,X++        ; ... interrupt
@@ -395,7 +396,7 @@ PickUpObject:
 ;= Interrupt Service Routine =
 
 InterruptService:
-0745: B6 FF 02            LDA     $FF02       ; Strobe hardware to reenable interrupt
+0745: B6 FF 02            LDA     $FF02       ;{--} Strobe hardware to reenable interrupt
 0748: 0C 3F               INC     >$3F        ;{-} Interrupt ...
 074A: 96 3F               LDA     >$3F        ;{-} ... divisor
 074C: 81 3C               CMPA    #$3C        ; Once ...
@@ -560,9 +561,9 @@ UserInput:
 085E: DC 88               LDD     >$88        ;{-} Current cursor
 0860: DD 3B               STD     >$3B        ;{-} Hold it for now
 0862: 1C EF               ANDCC   #$EF        ; Interrupts on while waiting
-0864: BD A1 B1            JSR     $A1B1       ;{} Blink cursor and wait for key
+0864: BD A1 B1            JSR     $A1B1       ; Blink cursor and wait for key (BASIC)
 0867: 1A 50               ORCC    #$50        ; Interrupts off while processing
-0869: 8E FF C6            LDX     #$FFC6      ; Graphics offset register
+0869: 8E FF C6            LDX     #$FFC6      ;{--} Graphics offset register
 086C: 81 5E               CMPA    #$5E        ; UP ARROW
 086E: 27 09               BEQ     $879        ;{} Yes ... switch to upper page
 0870: 81 0A               CMPA    #$0A        ; DOWN ARROW
@@ -727,7 +728,7 @@ IsObjInRoom:
 
 MoveCreatures:
 ;All the creatures move once every minute.
-;
+
 ;== Minotaur ==
 MoveMinotaur:   
 ; Moves to a random room from current position ignoring passages. May not
@@ -738,7 +739,7 @@ MoveMinotaur:
 0977: 81 40               CMPA    #$40        ; Minotaur moving to 1st floor?
 0979: 25 03               BCS     $97E        ;{} Yes ... don't let it
 097B: B7 3D 53            STA     $3D53       ; New room
-;
+
 ;== Oracle ==
 MoveOracle:
 ; Moves to a random room from current position ignoring passages.
@@ -746,9 +747,9 @@ MoveOracle:
 0981: B6 3D 56            LDA     $3D56       ; Oracle room
 0984: BD 0F 71            JSR     $0F71       ;{} Calculate target room
 0987: B7 3D 56            STA     $3D56       ; New room
-;
-MoveTroglodyte:
+
 ;== Troglodyte ==
+MoveTroglodyte:
 ; Moves to a random room from current position but must follow unblocked passages.
 ; May not move to 4th floor.
 098A: F6 3D 47            LDB     $3D47       ; Troglodyte room
@@ -758,9 +759,9 @@ MoveTroglodyte:
 0996: 81 C0               CMPA    #$C0        ; Troglodyte moving to 4th floor?
 0998: 24 03               BCC     $99D        ;{} Yes ... don't let it
 099A: B7 3D 47            STA     $3D47       ; New room
-;
+
+;== Satyr ==
 MoveSatyr:
-; == Satyr ==
 ; Moves to a random room from current position but must follow unblocked passages.
 ; May not move to 1st floor.
 099D: F6 3D 50            LDB     $3D50       ; Satyr room
@@ -770,9 +771,9 @@ MoveSatyr:
 09A9: 81 40               CMPA    #$40        ; Satyr moving to 1st floor?
 09AB: 25 03               BCS     $9B0        ;{} Yes ... don't let it
 09AD: B7 3D 50            STA     $3D50       ; New room
-;
-MoveSprite:
+
 ;== Sprite ==
+MoveSprite:
 ; Does not move if dead (since it slings objects). Moves to random room from current position
 ; but must follow unblocked passages. It moves all movable objects in the new room to random
 ; rooms. It may NOT move to the 4th floor except for the treasure room (where it will redistribute 
@@ -804,17 +805,17 @@ MoveSprite:
 09EA: 30 03               LEAX    3,X         ; Next object
 09EC: 8C 3D 8C            CMPX    #$3D8C      ; All done (not spells)?
 09EF: 25 EA               BCS     $9DB        ;{} No ... keep going
-;
-MoveScorpion:
+
 ;== Scorpion ==
+MoveScorpion:
 ; Moves to random room from current position ignoring passages.
 09F1: BD 06 AF            JSR     $06AF       ;{} Random direction
 09F4: B6 3D 4A            LDA     $3D4A       ; Scorpion room
 09F7: BD 0F 71            JSR     $0F71       ;{} Calculate target room
 09FA: B7 3D 4A            STA     $3D4A       ; New room
-;
-MoveNymph:
+
 ;== Nymph ==
+MoveNymph:
 ; Moves to random room from current position but must follow unblocked passages.
 09FD: F6 3D 4D            LDB     $3D4D       ; Nymph room
 0A00: BD 06 77            JSR     $0677       ;{} Random direction (following passages)
@@ -835,10 +836,11 @@ MoveNymph:
 0A1D: 35 96               PULS    A,B,X,PC    ; Out
     
 ;= Creatures Attack =
+
 CreaturesAttack:
 ; Only the Minotaur, Troglodyte, Satyr, and Scorpion.
 ; The Nymph and Sprite do not attack.
-;
+
 ;== Minotaur ==
 MINOTAURAttack:
 ; Minotaur attack is on a 10 second count. 
@@ -996,12 +998,12 @@ SCORPIONAttack:
 0B22: 34 06               PSHS    B,A         ; Save params
 0B24: A6 E4               LDA     ,S          ; Delay
 0B26: E6 61               LDB     1,S         ; Sound value
-0B28: F7 FF 20            STB     $FF20       ; {--} Store sound
+0B28: F7 FF 20            STB     $FF20       ;{--} Store sound
 0B2B: 4A                  DECA                ; Do ...
 0B2C: 26 FD               BNE     $B2B        ;{} ... delay
 0B2E: A6 E4               LDA     ,S          ; Delay value again
 0B30: C6 02               LDB     #$02        ; Minimum ...
-0B32: F7 FF 20            STB     $FF20       ; ... sound level
+0B32: F7 FF 20            STB     $FF20       ;{--} ... sound level
 0B35: 4A                  DECA                ; Do ...
 0B36: 26 FD               BNE     $B35        ;{} ... delay
 0B38: 30 1F               LEAX    -1,X        ; Cycle count
@@ -1258,6 +1260,7 @@ PlaceEnterRoomActions:
 0CDF: 39                  RTS                 ; Done
 
 ;= Game Entry Point =
+
 GameInit:
 ; Game starts here ...
 
@@ -1265,8 +1268,8 @@ GameInit:
 0CE2: FF                                    ; ... when debugging, I bet.
 
 0CE3: 10 CE 01 FF         LDS     #$01FF      ; Stack
-0CE7: BD A9 28            JSR     $A928       ;{} Clear screen
-0CEA: BD A9 76            JSR     $A976       ;{} Enables sound
+0CE7: BD A9 28            JSR     $A928       ; Clear screen (BASIC)
+0CEA: BD A9 76            JSR     $A976       ; Enables sound (BASIC)
 0CED: 5F                  CLRB                ; 0
 0CEE: 9E 8A               LDX     >$8A        ;{-} Always 0
 0CF0: 6F 80               CLR     ,X+         ; Clear out ...
@@ -1278,14 +1281,14 @@ GameInit:
 0CFC: 5A                  DECB                ; ... pasasge ...
 0CFD: 26 FB               BNE     $CFA        ;{} ... table
 ;
-0CFF: BD A9 A2            JSR     $A9A2       ;{} SNDSEL ... sound source is DAC
+0CFF: BD A9 A2            JSR     $A9A2       ; SNDSEL ... sound source is DAC (BASIC)
 0D02: 0F 68               CLR     >$68        ;{-} Current line # of BASIC program. Don't know why we are setting this.
 0D04: 0F 78               CLR     >$78        ;{-} BASIC file status flag (set to closed). Don't know why we are setting this.
 0D06: 0A 18               DEC     >$18        ;{-} Force random number to reseed
 0D08: 8E 2A D7            LDX     #$2AD7      ; "WELCOME TO THE LABYRINTH!! BEWARE OF THE MINOTAUR AND GOOD LUCK."
 0D0B: BD 10 66            JSR     $1066       ;{PrintMess} Print the message
 0D0E: BD 06 61            JSR     $0661       ;{Random} Advance random number
-0D11: BD A1 C1            JSR     $A1C1       ;{} Get a key
+0D11: BD A1 C1            JSR     $A1C1       ; Get a key (BASIC)
 0D14: 27 F8               BEQ     $D0E        ;{} Keep waiting
 0D16: BD 0B 8C            JSR     $0B8C       ;{} Configure protected objects
 0D19: BD 0B CC            JSR     $0BCC       ;{} Initialize all objects
@@ -1296,11 +1299,12 @@ GameInit:
 0D27: 86 0A               LDA     #$0A        ; Start in ...
 0D29: 97 00               STA     >$00        ;{-} ... Room 10
 0D2B: 97 01               STA     >$01        ;{-} Last room is Room 10
-0D2D: BD A9 28            JSR     $A928       ;{} Clear screen
+0D2D: BD A9 28            JSR     $A928       ; Clear screen (BASIC)
 0D30: BD 0E 27            JSR     $0E27       ;{} Print room description
 0D33: BD 07 2A            JSR     $072A       ;{} Init ISR
 
 ;= Main Loop =
+
 MainGameLoop:
 0D36: 10 CE 01 FF         LDS     #$01FF      ; Reset stack
 0D3A: BD 08 59            JSR     $0859       ;{} Get user input (3B points to screen where it starts)
@@ -1324,12 +1328,13 @@ CodeBug8:
 
 ;= Individual Commands =
 ;== UNCLE ==
+
 CommandUNCLE:
 ; Print score and start a new game.
 0D5C: 8E 34 D8            LDX     #$34D8      ; "YOU PUT UP A GOOD FIGHT, BETTER LUCK NEXT TIME."
 0D5F: BD 10 66            JSR     $1066       ;{PrintMess} Print message
 0D62: BD 16 F8            JSR     $16F8       ;{} Print score
-0D65: BD A1 B1            JSR     $A1B1       ;{} Blink cursor and wait for key
+0D65: BD A1 B1            JSR     $A1B1       ; Blink cursor and wait for key (BASIC)
 0D68: 7E 0C E0            JMP     $0CE0       ;{} Start game
 
 0D6B: 8E 27 D4            LDX     #$27D4      ; Command table
@@ -2332,7 +2337,6 @@ CommandSTAB:
 140F: 7E 0E 80            JMP     $0E80       ;{DropHeldObj} ... 7th object (Hydra was carying in)
 
 ;== Use Spell ==
-
 ;=== VETAR ===
 CommandVETAR:
 ; Take 10 damage. GET LAMP immediately after it has been blown away. 
@@ -2358,8 +2362,8 @@ CommandMITR:
 ;
 1431: 39                  RTS                 ; Done
 
-CommandOKKAN:
 ;=== OKKAN ==
+CommandOKKAN:
 ; Take 14 damage. Get treasure from "pile of rocks" if it is here.             
 1432: 8D 1F               BSR     $1453       ;{} Make sure spell has been learned
 1434: 24 1B               BCC     $1451       ;{} "NOTHING SPECIAL HAPPENS"
@@ -2784,7 +2788,7 @@ CalculateScore:
 16E1: 25 0E               BCS     $16F1       ;{} Less than ... keep going
 
 Win:
-16E3: BD A9 28            JSR     $A928       ;{} Clear screen
+16E3: BD A9 28            JSR     $A928       ; Clear screen (BASIC)
 16E6: 8E 33 FF            LDX     #$33FF      ; "CONGRATULATIONS!!! YOU WIN!"
 16E9: 8D B6               BSR     $16A1       ;{} Short way to JSR PrintMessage
 16EB: BD 0B 3E            JSR     $0B3E       ;{} Sound effect
@@ -2832,13 +2836,13 @@ CommandSCORE:
 ; This is the QUIET command.
 1737: C0 20               SUBB    #$20        ; Should be inverse H (IO error) or other
 1739: F7 04 1F            STB     $041F       ; Upper right corner of screen
-173C: BD A7 EB            JSR     $A7EB       ;{} CASOFF ... Motor off
+173C: BD A7 EB            JSR     $A7EB       ; CASOFF ... Motor off (BASIC)
 
 ;== QUIET ==
 CommandQUIET:
 ; Remember ... interrupts are only turned on during regular user input. They are off now.
 ; This allows us to just pause the game or SAVE or LOAD.
-173F: BD A1 B1            JSR     $A1B1       ;{} Blink cursor and wait for keystroke
+173F: BD A1 B1            JSR     $A1B1       ; Blink cursor and wait for keystroke (BASIC)
 1742: 10 CE 02 37         LDS     #$0237      ; Need to relocate stack while we work with the area
 1746: 0F 78               CLR     >$78        ;{-} File status: CLOSED
 1748: 81 57               CMPA    #$57        ; 'W'
@@ -2848,8 +2852,8 @@ CommandQUIET:
 1750: 81 29               CMPA    #$29        ; ' ')' ... reload game data
 1752: 26 EB               BNE     $173F       ;{} Unknown action ... go back and get a valid one
 ;
-1754: BD A5 00            JSR     $A500       ;{} CLOADM Load engine state
-1757: BD A5 00            JSR     $A500       ;{} CLOADM Load game state
+1754: BD A5 00            JSR     $A500       ; CLOADM Load engine state (BASIC)
+1757: BD A5 00            JSR     $A500       ; CLOADM Load game state (BASIC)
 175A: 8E 02 40            LDX     #$0240      ; Restore 1st 256 bytes
 175D: DE 8A               LDU     >$8A        ;{-} PV DUMMY - THESE TWO BYTES ARE ALWAYS ZERO
 175F: 5F                  CLRB                ; Move ...
@@ -3394,6 +3398,7 @@ CommandLAMP:
 1AF9: 20 FB               BRA     $1AF6       ;{} Done
      
 ;= Between Room Actions =
+
 BetweenRoomA:
 ; If phys minus weight is less than random 64-191 then a climb-up fails.
 
@@ -3786,7 +3791,6 @@ EnteringRoomAction_232:
 1D3C: 39                  RTS                 ; Done
 
 ;= DATA SECTION =
-
 ;== Spell Placement =
          
 SpellLocationLimits:
@@ -5778,6 +5782,7 @@ PhraseList:
 34D8:  59 4F 55 20 50 55 54 20 55 50 20 41 20 47 4F 4F 44 20 46 49 47 48 54 2C 20 42 45 54 54 45 52 20 4C 55 43 4B 20 4E 45 58 54 20 54 49 4D 45 2E 8D  ; 75 "YOU PUT UP A GOOD FIGHT, BETTER LUCK NEXT TIME.*"
 
 ;== Object Info ==
+
 ObjectToNameMap:
 ; Object to name map
 ;
@@ -6363,6 +6368,7 @@ CodeBug6:
 3C8D: 00 2D  ; 45 "CROWN"           
 
 ;== Enter Room Table ==
+
 ActionWhenEnteringRoom:
 3C8F: 00 1B 6D  ; 0    _a     ; Cave in to next floor if pack heavier than 192. If so move a nd b to random rooms.
 3C92: 00 1B 70  ; 0    _b     ; Cave in to next floor if pack heavier than 128. If so move a nd b to random rooms.
@@ -6405,6 +6411,7 @@ ActionWhenEnteringRoom:
 3CFB: 00
 
 ;== Object Data ==
+
 ObjectData:
 ; AA BB bsdp_PPxy
 ;  A = Current room number
@@ -6486,7 +6493,7 @@ ObjectData:
 ;
 3DB6: 00 FF     ; End of list marker
 
-;== Passave Configuration ==
+;== Passage Configuration ==
 
 PassageConfigurations:
 ; Room door paths for 256 rooms
@@ -6534,9 +6541,11 @@ PassageConfigurations:
 3EB0: 3E 3E 3E 3E 3E 3E 3E 3A ; UDNEW.  UDNEW.  UDNEW.  UDNEW.  UDNEW.  UDNEW.  UDNEW.  UDN.W.
 
 ;== Blocked Passages ==
+
 ; 3EB8 - 3FB7 ... blocked table (same pattern as natural-passage). Cleared at init.
              
 ;== Protection Lists ==
+
 ; 3FB8 the lists of things needed for protected objects is built here. The form is protected
 ; object number followed by a list of required items (FF ends list). Then next protected
 ; number and so on until FF ends the list.

@@ -1,12 +1,25 @@
-%%template master.template
-%%title CoCo
 
-Spectral Associates (the people who made [wiki:CoCo/Madness Madness and the Minotaur]) produced a series of disassemblies of the !CoCo ROMs. The PDFs are attached to this page.
+%%image CoCo.jpg
 
-[attachment:color-basic-unravelled.pdf Color Basic Unravelled]
+= Technical Reference =
 
-[attachment:extended-basic-unravelled.pdf Extended Basic Unravelled]
+The [http://sparksandflames.com/files/Color%20Computer%20Technical%20Reference%20Manual%20%28Tandy%29.pdf Color Computer Reference Manual]
+contains schematics and detailed hardware information.
 
-[attachment:disk-basic-unravelled.pdf Disk Basic Unravelled]
+See the [Hardware.html CoCo Hardware Reference] on this site.
 
-[attachment:super-extended-basic-unravelled.pdf Super Extended Basic Unravelled]
+= ROM Disassembly =
+
+Spectral Associates (the people who made [/CoCo/MadnessMinotaur Madness and the Minotaur]) produced a series of 
+disassemblies of the CoCo ROMs! Here are those awesome PDFs:
+
+[color-basic-unravelled.pdf Color Basic Unravelled]
+
+[extended-basic-unravelled.pdf Extended Basic Unravelled]
+
+[disk-basic-unravelled.pdf Disk Basic Unravelled]
+
+[super-extended-basic-unravelled.pdf Super Extended Basic Unravelled]
+
+= Disassembled Code =
+* [MadnessMinotaur Minotaur and the Minotaur]

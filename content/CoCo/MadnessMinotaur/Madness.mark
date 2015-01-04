@@ -1,136 +1,121 @@
-%%template master.template
-%%title Madness
+%%title Madness and the Minotaur
 %%image Madness.jpg
 
-[Code.html Madness and the Minotaur Code]
+* [Code.html Disassembled Code]
+* [RAMUse.html RAM Usage]
+
+= Text Adventure and Real Time Strategy = Text + RTS
+
+Madness and the Minotaur is a text adventure game that includes elements of a D&D game and a non-turn-based action game. 
+You have "hit points" (physical condition) and you will die when they run out. There are creatures that move from room 
+to room once a minute. If you sit still long enough a creature will find you and kill you. Your pack has bulk and weight. 
+The more you carry and the lower your hit-points the harder it is for you to jump.
+
+To win the game you have to learn all 8 spells and drop all 16 treasure objects in the forest (room 202). The spells are 
+sprinkled around the rooms at random. Some objects are "protected" and require you have a set of other objects to release 
+(see below). Some object are "carried" by creatures. Some objects are attached to special room-actions.
+
+{{{html
+<div class="tourGuide">
+<div style="padding-left: 20px">
+}}}
+= Tour Guide =
+
+Code bugs are always fun to explore. You should visit these:
+* [Code.html#CodeBug1  Error message with POTION]
+* [Code.html#CodeBug2  Error when KILL ORACLE]
+* [Code.html#CodeBug3  ISHTAR does not clear fog poison]
+* [Code.html#CodeBug4  Should fail if overburdeoned]
+* [Code.html#CodeBug5  Missing word WATER from message]
+* [Code.html#CodeBug6  Shadowed jump]
+* [Code.html#CodeBug7  Invisible Oil hides the URN]
+* [Code.html#CodeBug8  YOUR SIGHT IS DIM never gets printed (Joe Hagan)]
+
+You should see the routines that [Code.html#MoveCreatures Move each Creature] and the
+routines that [Code.html#CreaturesAttack Make Each Creature Attack].
+
+Have a look at the [Code.html#IndividualCommands Individual User Commands] -- especially the
+[Code.html#UseSpell Spell Commands].
+
+Check out the routines that run [Code.html#BetweenRoomActions Between Certain Rooms] and when you [Code.html#EnteringRoomActions Enter Certain Rooms].
+
+Read through the text messages of the game:
+* [Code.html#ItemDescriptions Item Descriptions]
+* [Code.html#RoomDescriptions Room Descriptions]
+* [Code.html#MiscStrings Game Messages] 
+
+Here is the map of all the passages between all 256 rooms: [Code.html#PassageConfigurations Dungeon Map]
+
+{{{html
+</div>
+</div>
+}}}
+
+= References =
 
 For more information on Madness and the Minotaur check out Sean Murphy's wonderful site:[[br]]
 [http://www.figmentfly.com] 
 
-== ZCode Translation (for iPod) == ZCode
+John Layman has translated the 6809 opcodes to x86 to run on a LINUX, BSD, and OSX. Follow his awesome work:[[br]]
+[http://www.frijid.net/madness.html]
 
-I am working on translating the original source into ZCode for play with Frotz. Frotz is an interpreter for Infocom games and other Z-machine games. It compiles for many platforms including Windows and the iPod. You can download Frotz from the apple app-store for free and then upload "Madness.z5" to your iPod and play madness on the go.
+= Corrections =
 
-Currently you can explore the game's rooms through their natural passages (no jumps). The spells, objects, and creatures are placed. The "protected" lists work. You can learn spells and score points. I am working now on the passage-actions and the room-actions.
+Thanks to Joe Hagan for pointing out some mistakes in the original disassembly (now corrected here and in the code). 
+The original comments at 09C5 said the Sprite can't move to the treasure room, but it can. The original comments at 1125 
+said that OPEN SCROLL would bring the LAMP to us on the 4th floor. Actually it brings the Troglodyte to us on floors 3 
+and 4. And the original comments misinterpreted the VETAR flag. They said the flag temporarily disables VETAR. Actually it 
+temporarily enables it.
 
- * [madness.inf madness.inf (top)]
- * [MadGameLoop.inf MadGameLoop.inf (main game flow)]
- * [MadRooms.inf MadRooms.inf (rooms)]
- * [MadRoomActions.inf MadRoomActions.inf (room actions)]
- * [MadPassages.inf MadPassages.inf (passage actions)]
- * [MadItems.inf MadItems.inf (items)]
- * [MadSpells.inf MadSpells.inf (spells)]
- * [MadBlocks.inf MadBlocks.inf (blockages)]
- * [MadBanner.inf MadBanner.inf (tape-banner)]
- * [MadDebug.inf MadDebug.inf (debug functions)]
- * [Madness.z5 Madness.z5 (playable zcode)]
+Joe fixed a couple of typos here and in the Frogger dig.
 
-== Text Adventure and Real Time Strategy == Text + RTS
+Joe found a code bug in Madness at 0D51. The message "YOUR SIGHT IS DIM" is stored as a packed string. But the code to print 
+it calls "PrintMess" instead of "PrintPacked". The message never appears on the screen. Joe fixed the code and verified it 
+in the emulator.
 
-Madness and the Minotaur is a text adventure game that includes elements of a D&D game and a non-turn-based action game. You have "hit points" (physical condition) and you will die when they run out. There are creatures that move from room to room once a minute. If you sit still long enough a creature will find you and kill you. Your pack has bulk and weight. The more you carry and the lower your hit-points the harder it is for you to jump.
+Thanks again, Joe.
 
-To win the game you have to learn all 8 spells and drop all 16 treasure objects in the forest (room 202). The spells are sprinkled around the rooms at random. Some objects are "protected" and require you have a set of other objects to release (see below). Some object are "carried" by creatures. Some objects are attached to special room-actions.
+= Game Room Geometry =
 
-== Cheats ==
+There are 256 rooms in the game -- 4 floors of 64 rooms each. Each floor is a square grid of 8x8 rooms. Rooms are numbered from 0 
+to 255. Room 0 is the upper left of the first floor and room 255 is the lower right of the last floor. Going EAST adds 1 to the 
+room number. WEST subtracts one. NORTH subtracts 8. SOUTH adds 8. UP subtracts 64. DOWN adds 64. If the room number becomes less 
+than 0 or greater than 255 it "wraps around".
 
-You type "CLOADM" to load the game. Then you type "EXEC" to run the game. Between these commands you can make patches to the code with BASIC POKE commands. Here are some useful cheats:
+There is a table in the game that defines the "natural" passages between rooms. Most of these passages are two way, but some are one way. 
+The map below shows the natural passages as a line between the rooms. If the line touches the room with a "+" then the passage can be 
+entered from the room. If there is no "+" then the passage is one way from the adjoining room. For instance, you can take the passage 
+from room 7 to 6 but not from 6 to 7. This map is NOT randomized between games. The natural passages are the same for all games.
 
-{{{
-39->1A2F    POKE 6703,57    Invulnerable to damage
-21->78D     POKE 1933,33    Lamp doesn't burn oil
-21->11CD    POKE 4557,33    ASK ORACLE any time
-20->E0E     POKE 3598,32    Move in any direction
+Every room has a single one-sentence description (see the code). There are eight different messages to describe a passage leading from 
+a room in any one direction. The game builds the description of passages by selecting a random description for each open direction. Thus 
+a room is described a little bit differently every time you see it.
 
-12->751(3)  POKE 1873,18    Skip creatures moving
-            POKE 1874,18
-            POKE 1875,18
+The game keeps a list of "blocked" passages. Randomly (on the average of once every 4 minutes) the ground will begin to shake and three 
+passages are blocked somewhere in the dungeon. The game keeps a list of the last 12 rooms it has blocked. It pulls the oldest rooms from 
+this list and unblocks them as it blocks new ones. Thus only 12 can be blocked up by the shaking ground and the dungeon doesn't get clogged 
+up completely over time. You can use the CROM spell to unblock all passages in a room. If you have the POWERRING in your pack you can walk 
+through blocked passages. Otherwise just wait around (with your lamp off to save oil) and the passages will eventually unblock.
 
-12->80B(3)  POKE 2059,18    Skip creatures attacking
-            POKE 2060,18
-            POKE 2061,18
-}}}
+The last three rows (40 rooms) of the every floor is the "maze of tunnels stretching in all directions". These behave like normal rooms, but 
+they all share the same room description and they all have full connectivity to their neighboring maze rooms. There is also limited entry 
+and exit to the maze. Note that all the rooms on the 4th floor (except the treasure room) are a "maze of tunnels" even though the first 5 rows 
+are not laid out like the maze.
 
-In making the ZCode port I wrote a debug system that loads from virtual tape to memory at 7000. The system allows you to read and write any memory location from inside the game. The system hooks into the "EAT" and the "TIE" commands.
+= Jumps =
 
-The command "EAT 0000" will print the value at memory location 0000 (hex). The command "TIE 0000:50" will set memory location 0000 to 50 (hex). The disassembly describes location 0000 as the "current room". This debug command thus allows you to set the room number to anything letting you teleport around the dungeon at will.
+There are 24 places in the dungeon where you can jump. The map shows these jump locations and where they go. The map also shows landing 
+points for jumps so you can quickly reference back to the starting room. For instance, "j:102" in room 38 means that you can jump into 
+room 38 from room 102.
 
-You load the debug system into memory first with the CLOADM BASIC command. Then you load Madness. Then you make 6 pokes to tie the system to the game's commands. As shown in the comments below.
-
-{{{
-; cload (instbas.cas) basic poker
-; cloadm (inst.cas) loads debug to 7000
- 
-;    1253: 7E 70 0D  JMP $700D ; EAT 1234:56         POKE 4691,   126 112 13
-;    137D: 7E 70 00  JMP $7000 ; TIE 1234	     POKE 4989,   126 112 0
-	 
-;doPeek
-7000: 8E 05 C4 LDX #05C4
-7003: 8D 16    BSR fromhexword
-7005: E6 A4    LDB ,Y
-7007: BD 17 15 JSR 1715
-700A: 7E 10 17 JMP $1017
-	 
-;doPoke
-700D: 8E 05 C4 LDX #05C4         ; Start of 4-digit address on screen
-7010: 8D 09    BSR fromhexword   ; Convert to word in Y
-7012: A6 80    LDA ,X+           ; Skip the ':' on the screen
-7014: 8D 11    BSR fromhexbyte   ; Get the value
-7016: A7 A4    STA ,Y            ; Store the value to the address
-7018: 7E 10 17 JMP $1017         ; Done with command
-
-;fromHexWord
-701B: 8D 0A    BSR fromHexByte   ; Get the left byte  
-701D: 97 54    STA >$54          ; Store left byte (used by tape-write)
-701F: 8D 06    BSR fromHexByte   ; Get the right byte
-7021: 97 55    STA >$55          ; Store right byte
-7023: 10 9E 54 LDY >$54          ; Read 16-bit value
-7026: 39       RTS               ; Done
-	   
-;fromHexByte
-7027: 8D 0B    BSR fromHexDigit  ; Get the left digit
-7029: 48       ASLA              ; Shfit ...
-702A: 48       ASLA              ; ... it ...
-702B: 48       ASLA              ; ... one ...
-702C: 48       ASLA	             ; ... nibble
-702D: 97 28    STA >$28          ; Store upper nibble (calculated score)	    
-702F: 8D 03    BSR fromHexDigit  ; Get the right digit
-7031: 9A 28    ORA >$28          ; OR in the upper nibble
-7033: 39       RTS               ; Done
-	 
-;fromHexDigit:
-7034: A6 80    LDA ,X+           ; Get character from screen and bump
-7036: 81 70    CMPA #$70         ; '0'
-7038: 24 03    BCC isnumber      ; It is a number
-703A: 80 37    SUBA #$37         ; It is 'A'-'F' ... subtract 55 ('A' becomes 10)
-703C: 39       RTS               ; Done
-;isnumber:
-703D: 80 70    SUBA #$70         ; '0' becomes 0
-703F: 39       RTS               ; Done
-}}}
-
-Here is the virtual COCO tape that contains the debug system: [inst.cas inst.cas].
-
-== Game Room Geometry ==
-
-There are 256 rooms in the game -- 4 floors of 64 rooms each. Each floor is a square grid of 8x8 rooms. Rooms are numbered from 0 to 255. Room 0 is the upper left of the first floor and room 255 is the lower right of the last floor. Going EAST adds 1 to the room number. WEST subtracts one. NORTH subtracts 8. SOUTH adds 8. UP subtracts 64. DOWN adds 64. If the room number becomes less than 0 or greater than 255 it "wraps around".
-
-There is a table in the game that defines the "natural" passages between rooms. Most of these passages are two way, but some are one way. The map below shows the natural passages as a line between the rooms. If the line touches the room with a "+" then the passage can be entered from the room. If there is no "+" then the passage is one way from the adjoining room. For instance, you can take the passage from room 7 to 6 but not from 6 to 7. This map is NOT randomized between games. The natural passages are the same for all games.
-
-Every room has a single one-sentence description (see the code). There are eight different messages to describe a passage leading from a room in any one direction. The game builds the description of passages by selecting a random description for each open direction. Thus a room is described a little bit differently every time you see it.
-
-The game keeps a list of "blocked" passages. Randomly (on the average of once every 4 minutes) the ground will begin to shake and three passages are blocked somewhere in the dungeon. The game keeps a list of the last 12 rooms it has blocked. It pulls the oldest rooms from this list and unblocks them as it blocks new ones. Thus only 12 can be blocked up by the shaking ground and the dungeon doesn't get clogged up completely over time. You can use the CROM spell to unblock all passages in a room. If you have the POWERRING in your pack you can walk through blocked passages. Otherwise just wait around (with your lamp off to save oil) and the passages will eventually unblock.
-
-The last three rows (40 rooms) of the every floor is the "maze of tunnels stretching in all directions". These behave like normal rooms, but they all share the same room description and they all have full connectivity to their neighboring maze rooms. There is also limited entry and exit to the maze. Note that all the rooms on the 4th floor (except the treasure room) are a "maze of tunnels" even though the first 5 rows are not laid out like the maze.
-
-== Jumps ==
-
-There are 24 places in the dungeon where you can jump. The map shows these jump locations and where they go. The map also shows landing points for jumps so you can quickly reference back to the starting room. For instance, "j:102" in room 38 means that you can jump into room 38 from room 102.
-
-All jumps check your dexterity ... your physical-condition minus the weight of your pack. Each jump has a dexterity requirement to succeed. If your dexterity is less than this value you fail, and each jump has its own description of what to do for a failure.
+All jumps check your dexterity ... your physical-condition minus the weight of your pack. Each jump has a dexterity requirement to succeed. 
+If your dexterity is less than this value you fail, and each jump has its own description of what to do for a failure.
 
 You start the game with the maximum physical condition of 255. The maximum for weight is 255. The maximum for bulk is 255.
 
-A failed jump can end in instant "death". Or a failed jump can end in a "fumble" in which case you actually make the jump but you drop the heaviest object you are carrying in the room you jumped from. Or a failed jump can end in a "stumble" where you don't make the jump and you take a specific amount of damage. Here is the jump table:
+A failed jump can end in instant "death". Or a failed jump can end in a "fumble" in which case you actually make the jump but you drop the 
+heaviest object you are carrying in the room you jumped from. Or a failed jump can end in a "stumble" where you don't make the jump and you 
+take a specific amount of damage. Here is the jump table:
 
 {{{
 3BE1: 8F 80 00 97 6D; From 143 "JUMP PIT"   to 151. Required=128 or DEATH
@@ -168,11 +153,16 @@ A failed jump can end in instant "death". Or a failed jump can end in a "fumble"
 3C59: 10 8C 80 27 06; From 16  "JUMP DOWN"  to 39.  Required=140 or FUMBLE
 }}}
 
-For instance, the jump description in room 16 says "J:POOL:17:128F". That means you "JUMP POOL" to get to room 17. The jump requires a dexterity of 128 and if you fail you "fumble" an object. All of these jumps except the last are NOT randomized. They are same every game. The last jump in the table is dynamically assigned to the room with the "SMALL PIT IN THE CORNER". If this jump is placed in a room that already has a jump then it is never seen.
+For instance, the jump description in room 16 says "J:POOL:17:128F". That means you "JUMP POOL" to get to room 17. The jump 
+requires a dexterity of 128 and if you fail you "fumble" an object. All of these jumps except the last are NOT randomized. 
+They are same every game. The last jump in the table is dynamically assigned to the room with the "SMALL PIT IN THE CORNER". 
+If this jump is placed in a room that already has a jump then it is never seen.
 
-== Passage Actions ==
+= Passage Actions =
 
-There are several passages that have action triggers associated with them. You can see these triggers as letters on the passage lines between the rooms. The same triggers are used for multiple passages. Like the passage configurations and the jumps, these triggers are NOT randomized. They are the same for every game:
+There are several passages that have action triggers associated with them. You can see these triggers as letters on the passage 
+lines between the rooms. The same triggers are used for multiple passages. Like the passage configurations and the jumps, these 
+triggers are NOT randomized. They are the same for every game:
 
 {{{
 ;##BetweenRoomA
@@ -198,11 +188,15 @@ There are several passages that have action triggers associated with them. You c
 ; We flag the main routine to skip movement.
 }}}
 
-I believe the designers had intended for these to be randomizable. The data table is stored in the area that is saved to tape along with the other randomizable things. Also note that action A is applied to the EAST/WEST passage between room 74 and 75. But action A specifically checks to see that it is used in an up/down passage or nothing happens. Perhaps these were randomized once and then "locked down" in the code.
+I believe the designers had intended for these to be randomizable. The data table is stored in the area that is saved to tape 
+along with the other randomizable things. Also note that action A is applied to the EAST/WEST passage between room 74 and 75. 
+But action A specifically checks to see that it is used in an up/down passage or nothing happens. Perhaps these were randomized 
+once and then "locked down" in the code.
 
-== Enter-Room Actions ==
+= Enter-Room Actions =
 
-There are 36 rooms that are given random "enter actions" at the start of the game. There are only 28 different actions - some are used multiple times. The first 30 action are placed at random. The "room with the music" is also placed at random. The other 5 are fixed.
+There are 36 rooms that are given random "enter actions" at the start of the game. There are only 28 different actions - some are
+used multiple times. The first 30 action are placed at random. The "room with the music" is also placed at random. The other 5 are fixed.
 
 {{{
 ; The first 30 entering-room-actions are placed using this table. The first two
@@ -297,13 +291,18 @@ The actions themselves are described below:
 ;      pendant to a random room and move us to (or near) the start.
 }}}
 
-== Objects ==
+= Objects =
 
-There are 40 objects in the game. 16 of those are treasures. 8 objects are "protected", which requires you to have a combination of other objects in your pack in order to pick them up. Once you have released a protected object it remains unprotected the rest of the game. The 6 creatures are also "protected". You have to have the combination to kill them.
+There are 40 objects in the game. 16 of those are treasures. 8 objects are "protected", which requires you to have a combination 
+of other objects in your pack in order to pick them up. Once you have released a protected object it remains unprotected the rest 
+of the game. The 6 creatures are also "protected". You have to have the combination to kill them.
 
-Every object has a weight and every object has a bulk. In order to pick up an object your combined pack weight (including the new object) must be less than your physical condition. The new combined bulk must be less than your physical condition.
+Every object has a weight and every object has a bulk. In order to pick up an object your combined pack weight (including the new 
+object) must be less than your physical condition. The new combined bulk must be less than your physical condition.
 
-Objects are randomly placed using a combination of random ranges, masks, and a table of target rooms. Most objects are placed outside the maze. The lamp is placed near the starting point so you don't have to search far for it. Objects that are marked PROTECTED are described shortly.
+Objects are randomly placed using a combination of random ranges, masks, and a table of target rooms. Most objects are placed 
+outside the maze. The lamp is placed near the starting point so you don't have to search far for it. Objects that are marked 
+PROTECTED are described shortly.
 
 {{{
 ; This script controls how objects are placed and how the flags are initialized.
@@ -381,37 +380,53 @@ Objects are randomly placed using a combination of random ranges, masks, and a t
      
 Some of the objects have special abilities:
 
-LAMP - The first 40 rooms of level one and the treasure room (202) are naturally lit. The rest of the rooms need lamp light for you to see. You can LAMP ON and LAMP OFF to turn the lamp on and off.
+LAMP - The first 40 rooms of level one and the treasure room (202) are naturally lit. The rest of the rooms need lamp light for you to see. 
+You can LAMP ON and LAMP OFF to turn the lamp on and off.
 
-SCARAB - The AKHIROM spell makes you invulnerable for 3 minutes IF you have the scarab in your pack. Once you are invulnerable you will see the scarab glowing if you "LOOK SCARAB". At the end of three minutes the scarab moves to a random room.
+SCARAB - The AKHIROM spell makes you invulnerable for 3 minutes IF you have the scarab in your pack. Once you are invulnerable you will 
+see the scarab glowing if you "LOOK SCARAB". At the end of three minutes the scarab moves to a random room.
 
-FOOD - The foods adds 30 to your physical condition (no more than 95). Then the food moves to a random room to be eaten again. You can EAT FOOD.
+FOOD - The foods adds 30 to your physical condition (no more than 95). Then the food moves to a random room to be eaten again. 
+You can EAT FOOD.
 
 POWDER - If you EAT POWDER then the URN and BOTTLE (fillable things) come to your current room and the POWDER moves to a random room.
 
-MUSHROOM - Most of the time eating the mushroom adds 60 to your physical condition. Then the mushroom moves to a random room. But be careful: the mushroom has a 1/32 chance of killing you instantly. Save your game before you eat it. You can EAT MUSHROOM.
+MUSHROOM - Most of the time eating the mushroom adds 60 to your physical condition. Then the mushroom moves to a random room. But be 
+careful: the mushroom has a 1/32 chance of killing you instantly. Save your game before you eat it. You can EAT MUSHROOM.
 
-BOTTLE - The bottle can be filled up with water in several rooms. Drinking the water from the bottle heals your physical condition by 32 points and starts a 16 minute timer. You can only heal up by drinking water once every 16 minutes. You can DRINK WATER. The bottle starts full of water.
+BOTTLE - The bottle can be filled up with water in several rooms. Drinking the water from the bottle heals your physical condition by 
+32 points and starts a 16 minute timer. You can only heal up by drinking water once every 16 minutes. You can DRINK WATER. The bottle 
+starts full of water.
 
 You can also attempt to DRINK SPRITE - a pun on the soda drink. You'll get a "YOU MUST BE JOKING" message.
 
-URN - The urn holds oil to refill the lamp. There is a pool of oil that moves every time you fill from it. You can fill the lamp directly from the pool of oil or you can fill the urn from the pool. In fact, the urn will hold four fills. The number of refills in the pool of oil is randomized at the start of the game from 4 to 7. You can only see the pool of oil when you know ISHTAR. You can FILL URN or FILL LAMP. The URN starts with 4 refills of oils.
+URN - The urn holds oil to refill the lamp. There is a pool of oil that moves every time you fill from it. You can fill the lamp directly 
+from the pool of oil or you can fill the urn from the pool. In fact, the urn will hold four fills. The number of refills in the pool of 
+oil is randomized at the start of the game from 4 to 7. You can only see the pool of oil when you know ISHTAR. You can FILL URN or FILL LAMP. 
+The URN starts with 4 refills of oils.
 
-FLUTE and PARCHMENT - There is a room in the dungeon (placed at random) that plays music when you enter it. If you PLAY FLUTE and have the parchment in your pack a ledge will appear. You climb the ledge with the rope to get the treasure. You can PLAY FLUTE.
+FLUTE and PARCHMENT - There is a room in the dungeon (placed at random) that plays music when you enter it. If you PLAY FLUTE and have 
+the parchment in your pack a ledge will appear. You climb the ledge with the rope to get the treasure. You can PLAY FLUTE.
 
-ROPE - You need the rope to climb the ledge for its treasure. You also need the rope to tie up the Hydra before stabbing it. You can TIE HYDRA and CLIMB LEDGE.
+ROPE - You need the rope to climb the ledge for its treasure. You also need the rope to tie up the Hydra before stabbing it. You can 
+TIE HYDRA and CLIMB LEDGE.
 
-TABLET - If you in room 19 (with the ancient carvings on the wall) you can LOOK TABLET to bring the Oracle to the room. The tablet then moves to a random room.
+TABLET - If you in room 19 (with the ancient carvings on the wall) you can LOOK TABLET to bring the Oracle to the room. The tablet 
+then moves to a random room.
 
-POWERRING - If you have the tablet you can walk through blocked passages. You can also OPEN CRYPT in the "crypt of the ancient king" with the powering. Otherwise your physical condition must be greater than 250 to open it.
+POWERRING - If you have the tablet you can walk through blocked passages. You can also OPEN CRYPT in the "crypt of the ancient king" 
+with the powering. Otherwise your physical condition must be greater than 250 to open it.
 
 SCEPTER - In the room with action "_h" you have to know VETRA or have the SCEPTER or you get pushed out.
 
-POTION - If you DRINK POTION you heal by adding 200 to your physical condition and the potion moves to a random room. There is also a 7/8 chance of curing the scorpion sting if you have been stung. If fact, this is the only way to cure the scorpion sting so keep it on you until you have killed the scorpion.
+POTION - If you DRINK POTION you heal by adding 200 to your physical condition and the potion moves to a random room. There is also 
+a 7/8 chance of curing the scorpion sting if you have been stung. If fact, this is the only way to cure the scorpion sting so keep it on you until you have killed the scorpion.
 
-There is a bug in the code for "DRINK POTION". If you enter the command but don't have potion you'll see "THE BOTTLE IS EMPTY" - even if you don't have the potion or the bottle.
+There is a bug in the code for "DRINK POTION". If you enter the command but don't have potion you'll see "THE BOTTLE IS EMPTY" - even 
+if you don't have the potion or the bottle.
 
-PENDANT - If you are carrying the PENDANT and enter room 232 from the south then you are moved to a random room near the start (room 10) and the PENDANT drops in a random room.
+PENDANT - If you are carrying the PENDANT and enter room 232 from the south then you are moved to a random room near the start (room 10) 
+and the PENDANT drops in a random room.
 
 SCROLL - If you have the scroll you can OPEN SCROLL anywhere on the 3rd or 4th floor to bring the Troglodyte to you.
 
@@ -419,11 +434,15 @@ JEWLBOX - If you open the JEWLBOX in room 158 (the Minotaur's lair) the Minotaur
 
 DRAPES - If you OPEN DRAPES in room 9 there is a 1 in 4 chance of opening the passage to the south. You only get one chance at this.
 
-== Protected Objects ==
+= Protected Objects =
 
-Object marked with a "*" in the table above are protected. You must have a specific set of objects in your pack in order to GET these objects. You can have other objects in your pack too, but you must have all of the combo objects. Once you have freed a protected object it remains free. You can DROP and GET it back without the specific combo on objects in your pack.
+Object marked with a "*" in the table above are protected. You must have a specific set of objects in your pack in order to GET these 
+objects. You can have other objects in your pack too, but you must have all of the combo objects. Once you have freed a protected object 
+it remains free. You can DROP and GET it back without the specific combo on objects in your pack.
 
-There is potential here for a deadlock. Protected object A could require you to have object B but B might be protected and require you have object A. The developers went to great lengths to keep this from happening. Instead of making the trigger-lists at random, they created a handful of possible lists for each object. At startup the game picks a random list from the possible lists for each protected object.
+There is potential here for a deadlock. Protected object A could require you to have object B but B might be protected and require you 
+have object A. The developers went to great lengths to keep this from happening. Instead of making the trigger-lists at random, they 
+created a handful of possible lists for each object. At startup the game picks a random list from the possible lists for each protected object.
 
 The lists were carefully constructed to avoid a deadlock. Here are the possible protected-object requirements for each object:
 
@@ -500,11 +519,16 @@ The lists were carefully constructed to avoid a deadlock. Here are the possible 
 1DE8: FF 
 }}}
 
-For instance, to get the POWERRING you might only need to have learned BELROG. Or you might need the SHIELD, SWORD, and AKHIROM. The Oracle will tell you (one object at a time) the required objects for each protected item except the SPELLBOOK. You get the combination for the SPELLBOOK by "LOOK POOL" in room 0.
+For instance, to get the POWERRING you might only need to have learned BELROG. Or you might need the SHIELD, SWORD, and AKHIROM. 
+The Oracle will tell you (one object at a time) the required objects for each protected item except the SPELLBOOK. You get the combination 
+for the SPELLBOOK by "LOOK POOL" in room 0.
 
-== Spells ==
+= Spells =
 
-The "AIR IS CRACKLING WITH ENCHANTMENT" if you enter a room with a spell (or multiple spells). If you have the right item in your backpack you will automatically learn the spell. You have to learn the spells in order. You have to have the MUSHROOM and the FOOD to learn VETAR. You have to know VETAR and have the PARCHMENT to learn MITRA. The following table shows what you have to have to learn a spell and the rooms that the spells may appear in (random pick between the first and second room number inclusively).
+The "AIR IS CRACKLING WITH ENCHANTMENT" if you enter a room with a spell (or multiple spells). If you have the right item in your backpack 
+you will automatically learn the spell. You have to learn the spells in order. You have to have the MUSHROOM and the FOOD to learn VETAR. 
+You have to know VETAR and have the PARCHMENT to learn MITRA. The following table shows what you have to have to learn a spell and the rooms 
+that the spells may appear in (random pick between the first and second room number inclusively).
 
 {{{
 3BC1: 09 01 00 00    ; VETRA:   MUSHROOM and FOOD                   
@@ -530,7 +554,8 @@ The "AIR IS CRACKLING WITH ENCHANTMENT" if you enter a room with a spell (or mul
 1D4B: 80 FF ; ISHTAR  128 - 255  anywhere on 3rd or 4th floor        
 }}}
     
-Using a spell costs hit points (physical condition). The more powerful the spell, the more it costs. Here are the details of what they cost and what they do:
+Using a spell costs hit points (physical condition). The more powerful the spell, the more it costs. Here are the details of what they 
+cost and what they do:
 {{{
 ;##CommandVETAR
 ; Take 10 damage. GET LAMP immediately after it has been blown away. 
@@ -555,33 +580,53 @@ Using a spell costs hit points (physical condition). The more powerful the spell
 ; number of uses (randomized at start to 1-4) so use it wisely.
 }}}
 
-There are several places in the dungeon where the lamp gets blown out of your hands. You can use VETAR on your next turn to get it back. If you take a step, VETAR won't work.
+There are several places in the dungeon where the lamp gets blown out of your hands. You can use VETAR on your next turn to get it 
+back. If you take a step, VETAR won't work.
 
-ISHTAR moves you to the exit room. At the beginning of the game the number of uses is randomized from 1 to 4. The room with the oil in it (to refill the URN or LAMP) will not appear until you know ISHTAR.
+ISHTAR moves you to the exit room. At the beginning of the game the number of uses is randomized from 1 to 4. The room with the oil 
+in it (to refill the URN or LAMP) will not appear until you know ISHTAR.
 
-== Creatures ==
+= Creatures =
 
-There are six "real" creatures in the game that move around and attack you. The Oracle moves like a creature but gives you advice if you ASK ORACLE. Once the oracle gives advice it moves to a random room in the dungeon and continues walking around. The ORACLE starts in a random room on the 1st two floors. Once a minute the oracle picks a random direction from its current room and moves to the target room. It is not stopped by blocked passages or even missing passages.
+There are six "real" creatures in the game that move around and attack you. The Oracle moves like a creature but gives you advice if 
+you ASK ORACLE. Once the oracle gives advice it moves to a random room in the dungeon and continues walking around. The ORACLE starts 
+in a random room on the 1st two floors. Once a minute the oracle picks a random direction from its current room and moves to the 
+target room. It is not stopped by blocked passages or even missing passages.
 
-There is an interesting bug in the code involving the Oracle. If you KILL ORACLE you will get the message THE URN IS FILLED WITH OIL, which doesn't make much sense. Then the oracle moves to a random room.
+There is an interesting bug in the code involving the Oracle. If you KILL ORACLE you will get the message THE URN IS FILLED WITH OIL, 
+which doesn't make much sense. Then the oracle moves to a random room.
 
-The Hydra is placed in a random room and caries a treasure. When you try to enter the room with the Hydra it will push you back. As soon as it pushes you back you can TIE HYDRA if you have the rope. This binds the Hydra allowing you to enter the room with it. Then you STAB HYDRA to kill it. If you have the SWORD in your pack your physical condition must be at least 200 to kill it. If instead you have the DAGGER, your physical condition must be at least 240. All other stabs miss. The AKHIROM spell (makes you invulnerable) will also kill the Hydra no matter what your condition. When the Hydra dies it drops its treasure and the rope.
+The Hydra is placed in a random room and caries a treasure. When you try to enter the room with the Hydra it will push you back. As soon 
+as it pushes you back you can TIE HYDRA if you have the rope. This binds the Hydra allowing you to enter the room with it. Then you 
+STAB HYDRA to kill it. If you have the SWORD in your pack your physical condition must be at least 200 to kill it. If instead you have 
+the DAGGER, your physical condition must be at least 240. All other stabs miss. The AKHIROM spell (makes you invulnerable) will also 
+kill the Hydra no matter what your condition. When the Hydra dies it drops its treasure and the rope.
 
-At the beginning of the game the packrat is given a random treasure and notes a random treasure to watch for. It is placed in a random room. If you enter the room carrying the trigger treasure then the packrat will drop its own treasure for you. If you don't have the trigger then the rat runs into hiding. And if the rat happens to be carrying its own trigger? The designers coded for that. If the rat is carrying its own trigger it immediately drops the treasure for you.
+At the beginning of the game the packrat is given a random treasure and notes a random treasure to watch for. It is placed in a random 
+room. If you enter the room carrying the trigger treasure then the packrat will drop its own treasure for you. If you don't have the 
+trigger then the rat runs into hiding. And if the rat happens to be carrying its own trigger? The designers coded for that. If the rat 
+is carrying its own trigger it immediately drops the treasure for you.
 
-The six "real" creatures all move once a minute. Once they are in the room with you they go into a second-by-second attack phase described below. If you are still alive when the minute tick comes along, the creature moves on.
+The six "real" creatures all move once a minute. Once they are in the room with you they go into a second-by-second attack phase 
+described below. If you are still alive when the minute tick comes along, the creature moves on.
 
-To kill a creature you use the KILL command: KILL MINOTAR for example. The creatures have combinations-of-objects you must possess just like the protected objects in order for the KILL to take them down. If you don't have the right combination you miss and take 50 damage to your physical condition.
+To kill a creature you use the KILL command: KILL MINOTAR for example. The creatures have combinations-of-objects you must possess 
+just like the protected objects in order for the KILL to take them down. If you don't have the right combination you miss and take 
+50 damage to your physical condition.
 
-Like the protected objects the creatures have "possible" lists that are chosen at random at the start of the game. The oracle will tell you what the combinations are.
+Like the protected objects the creatures have "possible" lists that are chosen at random at the start of the game. The oracle will 
+tell you what the combinations are.
 
-=== Sprite ===
+== Sprite ==
 
-The SPRITE starts in a random room on the 1st two floors (not the maze). Once a minute the SPRITE moves in a random direction. It may only move in a valid, unblocked direction. It may not move to the 4th floor except for the treasure room.
+The SPRITE starts in a random room on the 1st two floors (not the maze). Once a minute the SPRITE moves in a random direction. It 
+may only move in a valid, unblocked direction. It may not move to the 4th floor except for the treasure room.
 
-When the SPRITE enters a room it moves all objects on the floor to a random room anywhere in the dungeon. To protected dropped objects there are some rooms the SPRITE may not go. The SPRITE may not move to the room with the music on the 1st floor (enter-action "_z").
+When the SPRITE enters a room it moves all objects on the floor to a random room anywhere in the dungeon. To protected dropped objects 
+there are some rooms the SPRITE may not go. The SPRITE may not move to the room with the music on the 1st floor (enter-action "_z").
 
-The SPRITE may not move to the room with the VIAL in it (whether the vial is protected or free). Thus you can drop the vial anywhere you want to protect them from the SPRITE.
+The SPRITE may not move to the room with the VIAL in it (whether the vial is protected or free). Thus you can drop the vial anywhere 
+you want to protect them from the SPRITE.
 
 The SPRITE does not attack.
 
@@ -593,11 +638,14 @@ In order to KILL SPRITE, you must have one of the following combinations of obje
 1D8C: 43 3A FF        ;   DAGGER, AKHIROM
 }}}
 
-=== Troglodyte ===
+== Troglodyte ==
 
-The TROGLODYTE starts in a random room on the 3rd floor (not the maze). Once a minute the TROGLODYTE moves in a random direction. It may only move in a valid, unblocked direction. It may not move to the 4th floor.
+The TROGLODYTE starts in a random room on the 3rd floor (not the maze). Once a minute the TROGLODYTE moves in a random direction. It may 
+only move in a valid, unblocked direction. It may not move to the 4th floor.
 
-If the TROGLODYTE is in the room with you it attacks on a twelve second cycle. The 1st second it has a random chance of hitting with 60 damage to your physical condition. The chance depends on your room number. In low room numbers (like on the 1st floor) the chance of hitting is low. Try to take it on there!
+If the TROGLODYTE is in the room with you it attacks on a twelve second cycle. The 1st second it has a random chance of hitting with 60 
+damage to your physical condition. The chance depends on your room number. In low room numbers (like on the 1st floor) the chance of hitting 
+is low. Try to take it on there!
 
 {{{
 1D4E: 45 0B 38 80     ;   AX, SCEPTER, MITRA
@@ -605,11 +653,15 @@ If the TROGLODYTE is in the room with you it attacks on a twelve second cycle. T
 1D55: 43 07 3B FF     ;   DAGGER, SHIELD, NERGAL
 }}}
 
-=== Scorpion ===
+== Scorpion ==
 
-The SCORPION starts in a random room on the 2nd or 3rd floor (not the maze). Once a minute the SCORPTION moves in a random direction. It does not check for passages or blocks. It may move to any floor.
+The SCORPION starts in a random room on the 2nd or 3rd floor (not the maze). Once a minute the SCORPTION moves in a random direction. It 
+does not check for passages or blocks. It may move to any floor.
 
-If the SCORPION is in a room with attacks on a random second. The attack does one of two things. Half the time it does nothing and the SCORPION vanishes for 16 seconds. Other half of the time it increases the sting count. Once stung, you take damage once a minute from the accumulated stings at a rate of 5 times number-of-stings to your physical condition. The only cure for the SCORPION sting is the POTION, and even it doesn't work 1/8th of the time. If it doesn't work you have to find the POTION and try again before you die.
+If the SCORPION is in a room with attacks on a random second. The attack does one of two things. Half the time it does nothing and the 
+SCORPION vanishes for 16 seconds. Other half of the time it increases the sting count. Once stung, you take damage once a minute from the 
+accumulated stings at a rate of 5 times number-of-stings to your physical condition. The only cure for the SCORPION sting is the POTION, 
+and even it doesn't work 1/8th of the time. If it doesn't work you have to find the POTION and try again before you die.
 
 In order to KILL SCORPION, you must have one of the following combination of objects (the list is chosen at random at the start of the game):
 
@@ -619,9 +671,10 @@ In order to KILL SCORPION, you must have one of the following combination of obj
 1D78: 51 2A FF        ;   TALISMAN, POWERRING
 }}}
 
-=== Nymph ===
+== Nymph ==
 
-The NYMPH starts in a random room on the 2nd floor (not the maze). Once a minute the NYMPH moves in a random direction. It may only move in a valid, unblocked direction. It may move to any floor.
+The NYMPH starts in a random room on the 2nd floor (not the maze). Once a minute the NYMPH moves in a random direction. It may only move 
+in a valid, unblocked direction. It may move to any floor.
 
 The NYMPH does not attack.
 
@@ -633,9 +686,10 @@ In order to KILL NYMPH, you must have one of the following combination of object
 1D82: 48 39 FF        ;   FLUTE, OKKAN
 }}}
 
-=== Satyr ===
+== Satyr ==
 
-The SATYR starts in a random room on the 3rd floor (not the maze). Once a minute the SATYR moves in a random direction. It may only move in a valid, unblocked direction. It may not move to the 1st floor.
+The SATYR starts in a random room on the 3rd floor (not the maze). Once a minute the SATYR moves in a random direction. It may only 
+move in a valid, unblocked direction. It may not move to the 1st floor.
 
 If the SATYR is in the room with you it attacks on a 15 second cycle. On the 1st second it attacks with 30 damage to your physical condition.
 
@@ -647,11 +701,13 @@ In order to KILL SATYR, you must have one of the following combination of object
 1D61: 23 77 FF        ;   SPELLBOOK, VETAR
 }}}
 
-=== Minotaur ===
+== Minotaur ==
 
-The MINOTAUR starts in a random room on the 3rd floor (not the maze). Once a minute the MINOTAUR moves in a random direction. It may only move in a valid, unblocked direction. It may not move to the 1st floor.
+The MINOTAUR starts in a random room on the 3rd floor (not the maze). Once a minute the MINOTAUR moves in a random direction. It may 
+only move in a valid, unblocked direction. It may not move to the 1st floor.
 
-If the MINOTAUR is in the room with you it attacks on a ten second cycle. The 1st second it prints "THE MINOTAUR IS HERE". On the 10th second it hits with 0 to 70 points of damage to your physical condition.
+If the MINOTAUR is in the room with you it attacks on a ten second cycle. The 1st second it prints "THE MINOTAUR IS HERE". On the 10th 
+second it hits with 0 to 70 points of damage to your physical condition.
 
 In order to KILL MINOTAUR you must have one of the following combinations of objects (the list is chosen at random at the start of the game):
 
@@ -661,7 +717,7 @@ In order to KILL MINOTAUR you must have one of the following combinations of obj
 1D6E: 45 3B FF        ;   AX, NERGAL
 }}}
 
-== Healing ==
+= Healing =
 
 EAT FOOD adds 30. Food moves to random room.
 
@@ -673,62 +729,181 @@ DRINK WATER adds 32 (must wait 16 minutes before drinking again).
 
 Entering room with aura adds 40 (must wait 10 minutes before it will heal again). You are moved to a nearby room.
 
-== Getting Treasures ==
+= Getting Treasures =
 
-There are 16 treasure objects you must get to the ground in room 202: GOLD, SILVER, DIAMNOD, SPELLBOOK, RUBY, FLEECE, TIARA, POWDER, AMULET, POTION, POWERRING, LIGHTRIGHT, TRUTHRING, CROWN, OPAL, and SAPPHIRE. These are the last 16 objects in the object table above.
+There are 16 treasure objects you must get to the ground in room 202: GOLD, SILVER, DIAMNOD, SPELLBOOK, RUBY, FLEECE, TIARA, POWDER, 
+AMULET, POTION, POWERRING, LIGHTRIGHT, TRUTHRING, CROWN, OPAL, and SAPPHIRE. These are the last 16 objects in the object table above.
 
-Four of these treasures are "protected", and you'll see them as you walk around the dungeon. The other 12 are "carried" and will be assigned randomly to the following 17 "containers". There are 4 other carried objects too that are not treasures: SCROLL, SCARAB, JEWELBOX, and TABLET. Thus 16 of the 17 containers described next will have an object, but remember not all of them are treasures.
+Four of these treasures are "protected", and you'll see them as you walk around the dungeon. The other 12 are "carried" and will be 
+assigned randomly to the following 17 "containers". There are 4 other carried objects too that are not treasures: SCROLL, SCARAB, JEWELBOX, 
+and TABLET. Thus 16 of the 17 containers described next will have an object, but remember not all of them are treasures.
 
-Five of the six moving creatures are given objects. You will have to KILL them: SPRITE, TROGLODYTE, SCORPION, NYMPH, SATYR, and MINOTAUR. One of these creatures is chosen to be "empty" when the carried objects are passed out. But it is never the MINOTAUR. Killing the MINOTAUR will always produce a reward, though it may not be a treasure.
+Five of the six moving creatures are given objects. You will have to KILL them: SPRITE, TROGLODYTE, SCORPION, NYMPH, SATYR, and MINOTAUR. 
+One of these creatures is chosen to be "empty" when the carried objects are passed out. But it is never the MINOTAUR. Killing the MINOTAUR 
+will always produce a reward, though it may not be a treasure.
 
-The "EnterRoomAction_t" is the packrat. It is placed at random on the last 2 floors. You must be carrying the object it wants to see. Then it will drop its own object.
+The "EnterRoomAction_t" is the packrat. It is placed at random on the last 2 floors. You must be carrying the object it wants to see. 
+Then it will drop its own object.
 
-The "EnterRoomAction_g" is the HYDRA. It is placed at random outside the maze on the 2nd floor. The HYDRA holds an object. When it pushes you back you must immediately "TIE HYDRA" with the rope in your pack. Then you can enter the room with it and STAB HYDRA with the sword or dagger in your pack. Or you can kill it with the AKHIROM spell (you must have the SCARAB in your pack).
+The "EnterRoomAction_g" is the HYDRA. It is placed at random outside the maze on the 2nd floor. The HYDRA holds an object. When it pushes 
+you back you must immediately "TIE HYDRA" with the rope in your pack. Then you can enter the room with it and STAB HYDRA with the sword or 
+dagger in your pack. Or you can kill it with the AKHIROM spell (you must have the SCARAB in your pack).
 
-The "EnterRoomAction_203a" is a "SMALL PIT IN THE CORNER OF THE ROOM". This room is placed at random anywhere on the last floor. If you LOOK PIT you will get the object. You may have to look several times as there is a 50/50 chance of seeing it each time.
+The "EnterRoomAction_203a" is a "SMALL PIT IN THE CORNER OF THE ROOM". This room is placed at random anywhere on the last floor. If you 
+LOOK PIT you will get the object. You may have to look several times as there is a 50/50 chance of seeing it each time.
 
-The "EnterRoomAction_e" is a room with music playing. It is placed at random anywhere on the last floor. If you have the PARCHMENT in your pack and PLAY FLUTE then a ledge will appear. If you have the rope in your pack you can CLIMB LEDGE to get the object.
+The "EnterRoomAction_e" is a room with music playing. It is placed at random anywhere on the last floor. If you have the PARCHMENT in your 
+pack and PLAY FLUTE then a ledge will appear. If you have the rope in your pack you can CLIMB LEDGE to get the object.
 
-The "EnterRoomAction_d" is a "PILE OF ROCKS". It is placed at random anywhere on the last floor. You will only see the rocks once you have learned the VETAR spell. Then the OKKAN spell will get the treasure from the rocks.
+The "EnterRoomAction_d" is a "PILE OF ROCKS". It is placed at random anywhere on the last floor. You will only see the rocks once you have 
+learned the VETAR spell. Then the OKKAN spell will get the treasure from the rocks.
 
 The "EnterRoomAction_33" is in room 33. Walk in with the lamp on and get the object.
 
-The "EnterRoomAction_u" has a free object. Walk in with the lamp on and get the object. This action is placed outside the maze on the first floor.
+The "EnterRoomAction_u" has a free object. Walk in with the lamp on and get the object. This action is placed outside the maze on the 
+first floor.
 
-The "EnterRoomAction_s" is the room with the eerie glow and strange color walls. It is placed at random outside the maze on the second floor. If you LAMP OFF in this room you'll get the object.
+The "EnterRoomAction_s" is the room with the eerie glow and strange color walls. It is placed at random outside the maze on the second 
+floor. If you LAMP OFF in this room you'll get the object.
 
-The "EnterRoomAction_r" has an object. It is placed at random on the first two floors. The object is "free", but you have to enter the room three times for it to be released. There is no way to know when you have entered this room. You just have to drift around until you enter it 3 times.
+The "EnterRoomAction_r" has an object. It is placed at random on the first two floors. The object is "free", but you have to enter the 
+room three times for it to be released. There is no way to know when you have entered this room. You just have to drift around until you 
+enter it 3 times.
 
-There is a crypt in room 67. If you OPEN CRYPT in this room then the object will fall out. Your physical condition minus your pack-weight must be 250 or better. You'll probably have to drop everything before you can open the crypt.
+There is a crypt in room 67. If you OPEN CRYPT in this room then the object will fall out. Your physical condition minus your pack-weight 
+must be 250 or better. You'll probably have to drop everything before you can open the crypt.
 
-There is a crypt in room 102. If you OPEN CRYPT in this room then the object will fall out. If you have the POWERRING you will automatically open it. Otherwise your physical condition minus your pack-bulk must be 250 or better.
+There is a crypt in room 102. If you OPEN CRYPT in this room then the object will fall out. If you have the POWERRING you will 
+automatically open it. Otherwise your physical condition minus your pack-bulk must be 250 or better.
 
-== The Save-Game Viewer ==
+= The Save-Game Viewer =
 
-The map and info at the end of this write-up was created by my save-game viewer. Download the code JAR from the "Tools" page on my site to your machine and play the game online using the signed-version of the [http://members.cox.net/javacoco/signedmocha.html online Mocha emulator]. The signed version will allow you to save your game to your local machine.
+The map and info at the end of this write-up was created by my save-game viewer. Download the code JAR from the "Tools" page on my site 
+to your machine and play the game online using the signed-version of the [http://members.cox.net/javacoco/signedmocha.html online Mocha emulator]. 
+The signed version will allow you to save your game to your local machine.
 
-In the emulator's "SETUP" click on "MOUNT LOCAL". When you save your game you will be prompted for a local CAS file. Remember to click on MOUNT LOCAL every time you want a new save file. Otherwise your save will be appended to the end of the first file.
+In the emulator's "SETUP" click on "MOUNT LOCAL". When you save your game you will be prompted for a local CAS file. 
+Remember to click on MOUNT LOCAL every time you want a new save file. Otherwise your save will be appended to the 
+end of the first file.
 
 To run the save-game viewer, enter the following command:
 
 java -classpath TOOLS.JAR ca.madness.SaveGameViewer NAME.CAS
 Where "NAME.CAS" is the name of your saved game.
 
-== Corrections ==
+= ZCode Translation (for iPod) = ZCode
 
-Thanks to Joe Hagan for pointing out some mistakes in the original disassembly (now corrected here and in the code). The original comments at 09C5 said the Sprite can't move to the treasure room, but it can. The original comments at 1125 said that OPEN SCROLL would bring the LAMP to us on the 4th floor. Actually it brings the Troglodyte to us on floors 3 and 4. And the original comments misinterpreted the VETAR flag. They said the flag temporarily disables VETAR. Actually it temporarily enables it.
+I started working on translating the original source into ZCode for play with Frotz. Frotz is an interpreter for Infocom games 
+and other Z-machine games. It compiles for many platforms including Windows and the iPod. You can download Frotz from the 
+apple app-store for free and then upload "Madness.z5" to your iPod and play madness on the go.
 
-Joe fixed a couple of typos here and in the Frogger dig.
+I abandoned the effort when I realized that JavaScript on a web-site (or in NodeJS) is a better platform than ZCode.
 
-Joe found a code bug in Madness at 0D51. The message "YOUR SIGHT IS DIM" is stored as a packed string. But the code to print it calls "PrintMess" instead of "PrintPacked". The message never appears on the screen. Joe fixed the code and verified it in the emulator.
+Here is the ZCode as far as I got. Currently you can explore the game's rooms through their natural passages (no jumps). 
+The spells, objects, and creatures are placed. The "protected" lists work. You can learn spells and score points. 
 
-Thanks again, Joe.
+ * [madness.inf madness.inf (top)]
+ * [MadGameLoop.inf MadGameLoop.inf (main game flow)]
+ * [MadRooms.inf MadRooms.inf (rooms)]
+ * [MadRoomActions.inf MadRoomActions.inf (room actions)]
+ * [MadPassages.inf MadPassages.inf (passage actions)]
+ * [MadItems.inf MadItems.inf (items)]
+ * [MadSpells.inf MadSpells.inf (spells)]
+ * [MadBlocks.inf MadBlocks.inf (blockages)]
+ * [MadBanner.inf MadBanner.inf (tape-banner)]
+ * [MadDebug.inf MadDebug.inf (debug functions)]
+ * [Madness.z5 Madness.z5 (playable zcode)]
 
-== Walkthrough of my Game ==
+= Cheats =
 
-This is the description of my game experience played using the saved-game info below. You can duplicate my steps with my FIRST.CAS file.
+You type "CLOADM" to load the game. Then you type "EXEC" to run the game. Between these commands you can make patches to the 
+code with BASIC POKE commands. Here are some useful cheats:
 
-=== TASK 1: LEARN VETAR ===
+{{{
+39->1A2F    POKE 6703,57    Invulnerable to damage
+21->78D     POKE 1933,33    Lamp doesn't burn oil
+21->11CD    POKE 4557,33    ASK ORACLE any time
+20->E0E     POKE 3598,32    Move in any direction
+
+12->751(3)  POKE 1873,18    Skip creatures moving
+            POKE 1874,18
+            POKE 1875,18
+
+12->80B(3)  POKE 2059,18    Skip creatures attacking
+            POKE 2060,18
+            POKE 2061,18
+}}}
+
+In making the ZCode port I wrote a debug system that loads from virtual tape to memory at 7000. The system allows you to read
+ and write any memory location from inside the game. The system hooks into the "EAT" and the "TIE" commands.
+
+The command "EAT 0000" will print the value at memory location 0000 (hex). The command "TIE 0000:50" will set memory 
+location 0000 to 50 (hex). The disassembly describes location 0000 as the "current room". This debug command thus allows 
+you to set the room number to anything letting you teleport around the dungeon at will.
+
+You load the debug system into memory first with the CLOADM BASIC command. Then you load Madness. 
+Then you make 6 pokes to tie the system to the game's commands. As shown in the comments below:
+
+{{{
+; cload (instbas.cas) basic poker
+; cloadm (inst.cas) loads debug to 7000
+ 
+;    1253: 7E 70 0D  JMP $700D ; EAT 1234:56         POKE 4691,   126 112 13
+;    137D: 7E 70 00  JMP $7000 ; TIE 1234	     POKE 4989,   126 112 0
+	 
+;doPeek
+7000: 8E 05 C4 LDX #05C4
+7003: 8D 16    BSR fromhexword
+7005: E6 A4    LDB ,Y
+7007: BD 17 15 JSR 1715
+700A: 7E 10 17 JMP $1017
+	 
+;doPoke
+700D: 8E 05 C4 LDX #05C4         ; Start of 4-digit address on screen
+7010: 8D 09    BSR fromhexword   ; Convert to word in Y
+7012: A6 80    LDA ,X+           ; Skip the ':' on the screen
+7014: 8D 11    BSR fromhexbyte   ; Get the value
+7016: A7 A4    STA ,Y            ; Store the value to the address
+7018: 7E 10 17 JMP $1017         ; Done with command
+
+;fromHexWord
+701B: 8D 0A    BSR fromHexByte   ; Get the left byte  
+701D: 97 54    STA >$54          ; Store left byte (used by tape-write)
+701F: 8D 06    BSR fromHexByte   ; Get the right byte
+7021: 97 55    STA >$55          ; Store right byte
+7023: 10 9E 54 LDY >$54          ; Read 16-bit value
+7026: 39       RTS               ; Done
+	   
+;fromHexByte
+7027: 8D 0B    BSR fromHexDigit  ; Get the left digit
+7029: 48       ASLA              ; Shfit ...
+702A: 48       ASLA              ; ... it ...
+702B: 48       ASLA              ; ... one ...
+702C: 48       ASLA	             ; ... nibble
+702D: 97 28    STA >$28          ; Store upper nibble (calculated score)	    
+702F: 8D 03    BSR fromHexDigit  ; Get the right digit
+7031: 9A 28    ORA >$28          ; OR in the upper nibble
+7033: 39       RTS               ; Done
+	 
+;fromHexDigit:
+7034: A6 80    LDA ,X+           ; Get character from screen and bump
+7036: 81 70    CMPA #$70         ; '0'
+7038: 24 03    BCC isnumber      ; It is a number
+703A: 80 37    SUBA #$37         ; It is 'A'-'F' ... subtract 55 ('A' becomes 10)
+703C: 39       RTS               ; Done
+;isnumber:
+703D: 80 70    SUBA #$70         ; '0' becomes 0
+703F: 39       RTS               ; Done
+}}}
+
+Here is the virtual COCO tape that contains the debug system: [inst.cas inst.cas].
+
+= Walkthrough of my Game =
+
+This is the description of my game experience played using the saved-game info below. 
+You can duplicate my steps with my FIRST.CAS file.
+
+== TASK 1: LEARN VETAR == 1. Learn VETAR
 
 {{{
 SOUTH         ; This is room with music where SPRITE can't go
@@ -763,7 +938,7 @@ DROP GOLD
 }}}
 [s_one.cas s_one.cas]
 
-=== TASK 2: LEARN MITRA ===
+== TASK 2: LEARN MITRA == 2. Learn MITRA
 
 {{{
 NORTH EAST EAST SOUTH SOUTH SOUTH WEST
@@ -786,7 +961,7 @@ DROP PARCHMENT
 }}}
 [s_two.cas s_two.cas]
 
-=== TASK 3: LEARN OKKAN ===
+== TASK 3: LEARN OKKAN == 3. Learn OKKAN
 
 {{{
 NORTH EAST EAST SOUTH SOUTH SOUTH WEST
@@ -805,7 +980,7 @@ DROP TALISMAN
 }}}
 [s_three.cas s_three.cas]
 
-=== TASK 4: Get the SWORD and SHIELD ===
+== TASK 4: Get the SWORD and SHIELD == 4. SWORD and SHIELD
 
 {{{
 GET PARCHMENT
@@ -824,7 +999,7 @@ GET SHIELD
 }}}
 [s_four.cas s_four.cas]
 
-=== TASK 5: Get the ROPE and learn AKHIROM ===
+== TASK 5: Get the ROPE and learn AKHIROM == 5. ROPE and AKHIROM
 
 {{{
 WEST WEST WEST SOUTH SOUTH
@@ -848,7 +1023,7 @@ DROP ROPE
 }}}
 [s_five.cas s_five.cas]
 
-=== TASK 6: Get the SCEPTER and learn NERGAL ===
+== TASK 6: Get the SCEPTER and learn NERGAL == 6. SCEPTER and NERGAL
 
 {{{
 NORTH EAST EAST SOUTH SOUTH SOUTH WEST
@@ -882,7 +1057,7 @@ SOUTH
 }}}
 [s_six.cas s_six.cas]
 
-=== TASK 7: Get VIAL, BELROG, and CROM ===
+== TASK 7: Get VIAL, BELROG, and CROM == 7. VIAL, BELROG, CROM
 
 {{{
 GET MUSHROOM
@@ -923,12 +1098,19 @@ DOWN SOUTH
 }}}
 [s_seven.cas s_seven.cas]
 
-=== TASK 8: Learn ISHTAR ===
+== TASK 8: Learn ISHTAR == 8. ISHTAR
+
 TO BE DONE
 
-{{{
-Save-game analysis for 'first.cas'                                                                                                                                        
-                                                                                                                                                                                                                   
+= Save-Game Analysis =
+
+Save-game analysis for 'first.cas' 
+
+== Map ==
+
+{{{html
+<pre>
+<span style="font-size: 8px">                                                                                                                                                                                   
 Floor 1                                                                                                                                                                                                            
                                                                                                                                                                                                                    
                                                                                                                                                                                                                    
@@ -1028,21 +1210,7 @@ Floor 1
         +-------------------+   +-------------------+   +-------------------+   +-------------------+   +-------------------+   +-------------------+   +-------------------+   +-------------------+              
                                                                                                                                                                                                                    
                                                                                                                                                                                                                    
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
+
                                                                                                                                                                                                                    
 Floor 2                                                                                                                                                                                  63                        
                                                                                                                                                                                           |                        
@@ -1141,23 +1309,9 @@ Floor 2                                                                         
         |                   |   |                   |   |                   |   |                   |   |                   |   |                   |   |                   |   |                   |              
         |                   |   |                   |   |                   |   |                   |   |                   |   |                   |   |                   |   |                   |              
         +-------------------+   +-------------------+   +-------------------+   +-------------------+   +-------------------+   +-------------------+   +-------------------+   +-------------------+              
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
+
+
+
                                                                                                                                                                                                                    
 Floor 3                                                                                                                                                                                                            
                                                                                                                                                                                                                    
@@ -1256,23 +1410,9 @@ Floor 3
         |                   |   |                   |   |                   |   |                   |   |                   |   |                   |   |                   |   |                   |              
         |                   |   |                   |   |                   |   |                   |   |                   |   |                   |   |                   |   |                   |              
         +-------------------+   +-------------------+   +-------------------+   +-------------------+   +-------------------+   +-------------------+   +-------------------+   +-------------------+              
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
+ 
+ 
+                                                                                                                                                                                                                 
                                                                                                                                                                                                                    
 Floor 4                                                                                                                                                                                                            
                                                                                                                                                                                                                    
@@ -1371,21 +1511,15 @@ Floor 4
         |                   |   |                   |   |                   |   |                   |   |                   |   |                   |   |                   |   |                   |              
         |                   |   |                   |   |                   |   |                   |   |                   |   | GOBLET            |   |                   |   |                   |              
         +-------------------+   +-------------------+   +-------------------+   +-------------------+   +-------------------+   +-------------------+   +-------------------+   +-------------------+              
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
+    
+</pre>                                                                                                                                                                                                               
+</span>
 
+}}}                                                                                                                                                                                                                   
+                                                                                                                                                                                                                   
+== Configuration ==                                                                                                                                                                                                               
+                                                                                                                                                                                                                   
+{{{
 ***** Object Data *****
 FOOD in room 18
 BOTTLE in room 16
@@ -1613,175 +1747,3 @@ A6BE  : 18:19	Rolling pointer to BASIC rom for random numbers
   00  : FD
   00  : FE
 }}}
-
-= Places to See =
-
-|| [#CodeBug1          "Error message with POTION"] ||
-|| [#CodeBug2          "Error when KILL ORACLE"] ||
-|| [#CodeBug3          "ISHTAR does not clear fog poison"] ||
-|| [#CodeBug4          "Should fail if overburdeoned"] ||
-|| [#CodeBug5          "Missing word WATER from message"] ||
-|| [#CodeBug6          "Shadowed jump"] ||
-|| [#CodeBug7          "Invisible Oil hides the URN"] ||
-|| [#CodeBug8          "YOUR SIGHT IS DIM never gets printed (Joe Hagan)"] ||
-|| [#MemoryMap         "Memory Map"] ||
-|| [#START             "Program Entry"] ||
-|| [#PrintChar         "Print Character"] ||
-|| [#SaveToTape        "Save Game to Tape"] ||
-|| [#Splash            "Loading Splash Screen"] ||
-|| [#PrintWrap         "Print + auto-wrap"] ||
-|| [#Random            "Get Next Random Number"] ||
-|| [#InterruptService  "60Hz Interrupt Service"] ||
-|| [#UserInput         "User Input Routine"] ||
-|| [#GameInit          "Initialize Game"] ||
-|| [#PrintMess         "Print a Message"] ||
-|| [#CalculateScore    "Calculate Score"] ||
-|| [#Win               "Player Wins"] ||
-|| [#RandB             "Random from 0 to B"] ||
-|| [#IsObjInRoom       "Check if object is in room"] ||
-|| [#DropHeldObj       "Drop held (managed) object"] ||
-|| [#PrintPacked       "Print a packed message"] ||
-|| [#PrintWord         "Print a word"] ||
-|| [#PrintCR           "Print CR"] ||
-|| [#ComWHAT           "Print command+WHAT?"] ||
-|| [#InPack            "See if object is in pack"] ||
-|| [#GetObject         "Pick up object"] ||
-|| [#ActionWhenEnteringRoom  "Enter-room routines"] ||
-|| [#InitializeObjects "Initialize Objects"] ||
-|| [#PrintObjectsInRoom "Print Object in Room"] ||
-|| [#ConfigureProtected  "Configure required-object lists"] ||
-|| [#AssignHolders       "Assign treasures"] ||
-|| [#PlaceSpells           "Place spells in rooms"] ||
-|| [#PlaceEnterRoomActions "Place enter-room-actions in rooms"] ||
-|| [#CreaturesAttack "Creatures that attack"] ||
-|| [#MINOTAURAttack     "Minotaur"] ||
-|| [#TROGLODYTEAttack  "Troglodyte"] ||
-|| [#SATYRAttack       "Satyr"] ||
-|| [#SCORPIONAttack    "Scorpion"] ||
-|| [#MoveCreatures "Move Creatures"] ||
-|| [#MoveMinotaur "Move Minotaur"] ||
-|| [#MoveOracle "Move Oracle"] ||
-|| [#MoveTroglodyte "Move Troglodyte"] ||
-|| [#MoveSatyr "Move Satyr"] ||
-|| [#MoveSprite "Move Sprite"] ||
-|| [#MoveScorpion "Move Scorpion"] ||
-|| [#MoveMymph "Move Numph"] ||
-|| [#CommandLOOK       "LOOK"] ||
-|| [#LookScarab "LOOK SCARAB"] ||
-|| [#LookTablet "LOOK TABLET"] ||
-|| [#LookPool "LOOK POOL"] ||
-|| [#LookParchment "LOOK PARCHMENT"] ||
-|| [#LookPit "LOOK PIT"] ||
-|| [#LookUrn "LOOK URN"] ||
-|| [#LookBottle "LOOK BOTTLE"] ||
-|| [#CommandSCORE      "SCORE"] ||
-|| [#CommandQUIET      "QUIET"] ||
-|| [#CommandUNCLE      "UNCLE"] ||
-|| [#CommandHELP       "HELP"] ||
-|| [#CommandBACK       "BACK"] ||
-|| [#CommandUP         "UP"] ||
-|| [#CommandDOWN       "DOWN"] ||
-|| [#CommandNORTH      "NORTH"] ||
-|| [#CommandEAST       "EAST"] ||
-|| [#CommandSOUTH      "SOUTH"] ||
-|| [#CommandWEST       "WEST"] ||
-|| [#CommandCLIMB      "CLIMB"] ||
-|| [#CommandJUMP       "JUMP"] ||
-|| [#CommandINV        "INVENTORY"] ||
-|| [#CommandGETTAKEGRAB "GET,TAKE,GRAB"] ||
-|| [#CommandDROPTHROW  "DROP,THROW"] ||
-|| [#CommandLAMP        "LAMP"] ||
-|| [#CommandOPEN       "OPEN"] ||
-|| [#OpenCrypt "OPEN CRYPT"] ||
-|| [#OpenDrapes "OPEN DRAPES"] ||
-|| [#OpenCryptKing "OPEN CRYPT (king)"] ||
-|| [#CommandASK        "ASK"] ||
-|| [#CommandEAT        "EAT"] ||
-|| [#EatPowder "EAT POWDER"] ||
-|| [#EatFood "EAT FOOD"] ||
-|| [#EatMushroom "EAT MUSHROOM"] ||
-|| [#CommandDRINK      "DRINK"] ||
-|| [#DrinkSPRITE "DRINK SPRITE"] ||
-|| [#DirnkPotion "DRINK POTION"] ||
-|| [#DrinkWater "DRINK WATER"] ||
-|| [#CommandRUN        "RUN"] ||
-|| [#CommandFILL       "FILL"] ||
-|| [#FillLamp "FILL LAMP"] ||
-|| [#FillBottle "FILL BOTTLE"] ||
-|| [#FillURN "FILL URN"] ||
-|| [#CommandPLAY       "PLAY"] ||
-|| [#CommandKILL       "KILL"] ||
-|| [#KillCreature "KILL creature"] ||
-|| [#KillHydra "KILL HYDRA"] ||
-|| [#CommandTIE        "TIE"] ||
-|| [#CommandSTAB       "STAB"] ||
-|| [#CommandVETAR      "VETAR Take 10 damage. GET LAMP immediately after it has been blown away."] ||
-|| [#CommandMITRA      "MITRA Take 12 damnage. Remove scorpion sting."] ||
-|| [#CommandOKKAN      "OKKAN Take 14 damage. Get treasure from 'pile of rocks' if it is here."] ||
-|| [#CommandAKHIROM    "AKHIROM Take 16 damage. Kill Hydra. If SCARAB is in pack, make us invulnerable for 3 minutes."] ||
-|| [#CommandNERGAL     "NERGAL Take 18 damage. Allows us to stay in poison room."] ||
-|| [#CommandBELROG     "BELROG Take 20 damage. Make JUMP from this room without failing."] ||
-|| [#CommandCROM       "CROM Take 22 damage. Ublocks all passages."] ||
-|| [#CommandISHTAR     "ISHTAR Take 24 damage. Move to "exit" point where we drop treasure. (limited uses)."] ||
-|| [#BetweenRoomHandler "Between Room handler"] ||
-|| [#BetweenRoomA       "A If phys minus weight is less than random 64-191 then a climb-up fails."] ||
-|| [#BetweenRoomB       "B Move us to room 10 (start) or 20% random room 0-15."] ||
-|| [#BetweenRoomC       "C If phys minus weight is less than 192 then a climb-up fails."] ||
-|| [#BetweenRoomD       "D If phys minus weight is less than 64 then a climb-up fails."] ||
-|| [#BetweenRoomE       "E If phys minus weight is less than 128 then a climb-up fails."] ||
-|| [#BetweenRoomF       "F If the lamp is in our pack this moves us to a totally random room."] ||
-|| [#BetweenRoomG       "G There is a 50/50 chance of moving to a random room in the first half of the last floor."] ||
-|| [#BetweenRoomH       "H There is a 21/32 chance of going to a random room in the maze on a random floor."] ||
-|| [#BetweenRoomI       "I There is a 244/256 chance of moving to a random room in the maze on a random floor."] ||
-|| [#EnteringRoomAction_a "_a Cave in to next floor (32 damage) if pack heavier than 192. If so move a and b to random rooms."] ||
-|| [#EnteringRoomAction_b "_b Cave in to next floor (32 damage) if pack heavier than 128. If so move a and b to random rooms."] ||
-|| [#EnteringRoomAction_c "_c Cave in to next floor (32 damage) if pack heavier than 95. If so move a and b to random rooms."] ||
-|| [#EnteringRoomAction_d "_d If we have VETAR make the pile-of-rocks appear in this room (it stays here)."] ||
-|| [#EnteringRoomAction_e "_e # Play sound effect (same as bb). If we play the flute and have the parchment then the LEDGE appears here."] ||
-|| [#EnteringRoomAction_f "_f 1/2 the time a powerful gust blows lamp out of grasp."] ||
-|| [#EnteringRoomAction_g "_g # Hydra is here. If it is free it pushes us back to last room."] ||
-|| [#EnteringRoomAction_h "_h If we know VETAR or have the SCEPTER, nothing happens. Otherwise we do a RUN."] ||
-|| [#EnteringRoomAction_i "_i Do nothing if we have VETAR. If random number > phys condition or 1/2 the time we RUN and take 5 damage."] ||
-|| [#EnteringRoomAction_j "_j Do nothing if we have MITRA. If random number > phys condition or 1/2 the time we RUN and take 5 damage."] ||
-|| [#EnteringRoomAction_k "_k Do nothing if we have OKKAN. If random number > phys condition or 1/2 the time we RUN and take 5 damage."] ||
-|| [#EnteringRoomAction_l "_l Do nothing if we have AKHIROM. If random number > phys condition or 1/2 the time we RUN and take 5 damage."] ||
-|| [#EnteringRoomAction_m "_m Do nothing if we have NERGAL. If random number > phys condition or 1/2 the time we RUN and take 5 damage."] ||
-|| [#EnteringRoomAction_n "_n Do nothing if we have BELROG. If random number > phys condition or 1/2 the time we RUN and take 5 damage."] ||
-|| [#EnteringRoomAction_o "_o Do nothing if we have CROM. If random number > phys condition or 1/2 the time we RUN and take 5 damage."] ||
-|| [#EnteringRoomAction_p "_p Do nothing if we have ISHTAR. If random number > phys condition or 1/2 the time we RUN and take 5 damage."] ||
-|| [#EnteringRoomAction_q "_q Start the poison clock (we can't stay here long). 1/3 of the time we give the clock an extra tick."] ||
-|| [#EnteringRoomAction_r "_r # When we enter this room 3 times the treasure is released."] ||
-|| [#EnteringRoomAction_s "_s # If we have the lamp and it is off then the room drops its treasure. (Strange color walls)"] ||
-|| [#EnteringRoomAction_t "_t # If we are holding the packrat's trigger treasure (randomized at start) then the packrat drops his treasure."] ||
-|| [#EnteringRoomAction_u "_u # If we can see you instantly get the treasure."] ||
-|| [#EnteringRoomAction_v "_v Print POOL OF OIL if the pool has oil in it and we know ISHTAR."] ||
-|| [#EnteringRoomAction_x "_x Add 40 to health and move us a short distance away. 10 minutes must pass before again."] ||
-|| [#EnteringRoomAction_z "_z Room with music (init to room 16 to 39). The sprite can't move objects here."] ||
-|| [#EnteringRoomAction_33 "_33 # If lamp is off we instantly get the treasure."] ||
-|| [#EnteringRoomAction_32 "_32 If we can't see we take 30 damage."] ||
-|| [#EnteringRoomAction_203  "_203 # Print SMALL PIT IN CORNER OF ROOM."] ||
-|| [#EnteringRoomAction_213  "_213 Print LAYER OF MIST EAST WALL."] ||
-|| [#EnteringRoomAction_232  "_232 If we came south to this room and carrying pendant move us near start and random room for pendant."] ||
-|| [#TapeSavePoint "Tape Save Point"] ||
-|| [#BaseRoomDescriptions       "256 room descriptions"] ||
-|| [#CommandWords               "Verb words"] ||
-|| [#CommandTable               "Verb commands table"] ||
-|| [#PhraseList                 "General Phrases"] ||
-|| [#WordList                   "Sentence Fragments"] ||
-|| [#ItemDescriptions           "Item Descriptions"] ||
-|| [#ItemProtectedMessages      "Item-is-protected Messages"] ||
-|| [#PassageDescriptions        "Descriptions of passages"] ||
-|| [#MiscStrings                "Misc. Strings"] ||
-|| [#DirectionDescriptionTable  "Tabe of Direction Descriptions"] ||
-|| [#SpellData                  "Spell Obejects Table"] ||
-|| [#PassageConfigurations      "Room Passage Configurations"] ||
-|| [#ObjectToNameMap            "Object to Name Map"] ||
-|| [#ObjectWeightAndBulk        "Object Weight and Bulk"] ||
-|| [#ObjectData                 "Object Data"] ||
-|| [#SpellLocationLimits           "Table of limits on spell locations"] ||
-|| [#ProtectedObjectConfiguration  "Lists of possible required objects"] ||
-|| [#EnteringRoomActionPlacment    "Table of limits on enter-room-action locations"] ||
-|| [#OracleAdviceTable             "List of 13 advices Oracle gives"] ||
-|| [#JumpInfoTable                 "Table of information about JUMPs"] ||
-|| [#PossibleProtectedObjectLocations "Possible Protected Object Locations"] ||
-|| [#ObjectPlacementScript "Object Placement Script"] ||

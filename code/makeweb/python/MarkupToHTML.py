@@ -42,27 +42,30 @@ class MarkupToHTML:
         
         lidLink = self.makeHeaderLink(lid)
         
-        t = '<h'+str(i)+' id="'+lidLink+'" class="siteTarget">'+s+'</h'+str(i)+'>'
+        h = '<h%d id="%s" class="siteTarget">%s</h%d>'
+        t = h % (i, lidLink,s,i)
+                
         pageNav.append({'level':i, 'text':lid, 'link':lidLink})
         return t            
     
     def markDownBraces(self,proc):
+        p1 = '<a href="%s">%s</a>'
+        p2 = '<img src="%s">%s</img>'
         while "[" in proc:
             #print proc
             i = proc.index("[")
             ii=i
             j = proc.index("]",i)
-            tag = "a"
-            attr = "href"
+            
+            tmp = p1
             if proc[i+1]=='!':
-                tag = "img"
-                attr = "src"
+                tmp = p2
                 ii = i + 1
             if " " in proc:
                 k = proc.index(" ",i)  
-                proc = proc[0:i]+'<'+tag+" "+attr+'="'+proc[ii+1:k].strip()+'">'+proc[k+1:j].strip()+'</'+tag+'>'+proc[j+1:]
+                proc = proc[0:i] + tmp % (proc[ii+1:k].strip(),proc[k+1:j].strip()) + proc[j+1:]                
             else:
-                proc = proc[0:i]+'<'+tag+" "+attr+'="'+proc[ii+1:j].strip()+'">'+proc[ii+1:j].strip()+'</'+tag+'>'+proc[j+1:]  
+                proc = proc[0:i] + tmp % (proc[ii+1:j].strip(),proc[ii+1:j].strip()) + proc[j+1:]  
         return proc   
     
     def markDownStartRaw(self,proc,bodyLines):
@@ -145,14 +148,14 @@ class MarkupToHTML:
             
             # In raw mode, we don't process any markup at all
             if mode == "raw":
-                nm = self.markDownContinueRaw(proc,bodyLines)
+                nm = self.markDownContinueRaw(line[0:-1],bodyLines)
                 if nm:
                     mode = "none"
                 continue
                             
             # This is how you get into raw mode
             if proc.startswith("{{{"):
-                self.markDownStartRaw(proc,bodyLines)
+                self.markDownStartRaw(line[0:-1],bodyLines)
                 mode = "raw"
                 continue    
             
@@ -240,7 +243,10 @@ class MarkupToHTML:
             cl = "n"
             if c["level"]==1:
                 cl = "1"
-            lines.append('<li class="sn'+cl+'"><a class="sna" onclick="pageScrollTo(\''+c["link"]+'\');return false;">'+c["text"]+'</a>')                   
+            #li = '<li class="sn%s"><a class="sna" onclick="pageScrollTo(\'%s\');return false;">%s</a>'
+            li = '<li class="sn%s"><a class="sna" href="#%s">%s</a>'
+            li = li % (        cl,                c["link"], c["text"])
+            lines.append(li)                   
             if 'sub' in c:            
                 lines.append('<ul>')
                 self._makePageNavHTMLRecurse(c['sub'],lines)

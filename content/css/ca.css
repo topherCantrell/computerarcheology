@@ -59,3 +59,26 @@ body {
 	padding-top: 152px;
     margin-top: -152px;
 }
+
+.tourGuide {
+	border: 1px solid;
+    border-radius: 10px;
+    background-color: rgba(12,247,238,0.03)
+}
+
+.tourGuideHeader {
+	padding-left: 10px;
+	font-size: 30px;
+	color: #337ab7
+}
+
+.tourGuideSubHeader {
+	padding-left: 16px;
+	font-size: 12px;
+	margin-top: 0;
+	color: #337ab7
+}
+
+.tourGuideHeaderLine {
+	margin-top: 0px;
+}

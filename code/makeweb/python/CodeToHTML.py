@@ -86,6 +86,7 @@ class CodeToHTML(MarkupToHTML):
                         txt = line.numbers[0]["text"]                        
                 tar = ad.mapURL+"#"+entry["target"]
                 aClass = "ramAddressLink"
+                trg = "TAB_RAM"
         elif line.target["map"]=="hardware":
             if tar=="":
                 ad = maps["hardwareMap"]
@@ -95,8 +96,10 @@ class CodeToHTML(MarkupToHTML):
                     if txt=="":
                         txt = line.numbers[0]["text"]
                 tar = ad.mapURL+"#"+entry["target"]
-                aClass = "hardwareAddressLink"                     
+                aClass = "hardwareAddressLink"
+                trg="TAB_HARDWARE"                     
         else:
+            trg = "_self"
             if tar=="":
                 tar = line.numbers[0]["text"][1:]
                 while len(tar)<4:
@@ -105,8 +108,9 @@ class CodeToHTML(MarkupToHTML):
                 tar = "#" + tar
             if txt=="":
                 txt = line.numbers[0]["text"]               
-               
-        rep = '<a class="'+aClass+'" href="'+tar+'" title="'+line.numbers[0]["text"]+'">'+txt+"</a>"
+             
+        a = '<a class="%s" href="%s" title="%s" target="%s">%s</a>'  
+        rep = a % (aClass,tar,line.numbers[0]["text"],trg,txt )
         return (len(txt),rep)
                     
     def modifyCodeLines(self,lines,maps):        
@@ -236,8 +240,8 @@ class CodeToHTML(MarkupToHTML):
                 line = self.markDownHeaders(line[1:],pageNav)
                 
             # Handle quick links
-            #if "[" in line:
-            #    line = self.markDownBraces(line)
+            if line.startswith(";") and "[" in line:
+                line = self.markDownBraces(line)
                 
             # If we are making a list of bullets
             if mode == "bullets":

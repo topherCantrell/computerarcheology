@@ -1,7 +1,9 @@
 
 from MarkupToHTML import MarkupToHTML
 
-class AddressToHTML(MarkupToHTML):
+p1 = '<td><span class="siteTarget" id="%s">%s</span></td>'
+
+class AddressToHTML(MarkupToHTML):   
     
     def markDownStartTable(self,proc):
         hdrs = proc.split("||")[1:-1]  
@@ -17,7 +19,7 @@ class AddressToHTML(MarkupToHTML):
             for h in hdrs:
                 if first:
                     first = False
-                    s = s + '<td><span class="siteTarget" id="'+self.getFirstAddress(hdrs[0])+'">'+h.strip()+'</span></td>'                    
+                    s = s + p1 % (self.getFirstAddress(hdrs[0]),h.strip())                    
                 else:
                     s = s + '<td>'+h.strip()+'</td>'
             s = s + '</tr>' 
@@ -30,7 +32,7 @@ class AddressToHTML(MarkupToHTML):
         for c in cells:
             if first:
                 first = False
-                s = s + '<td><span class="siteTarget" id="'+self.getFirstAddress(cells[0])+'">'+c.strip()+'</span></td>'
+                s = s + p1 % (self.getFirstAddress(cells[0]),c.strip())
             else:
                 s = s + '<td>'+c.strip()+'</td>'
         s = s + '</tr>'
