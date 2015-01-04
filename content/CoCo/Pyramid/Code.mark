@@ -40,7 +40,6 @@ Packed messages
 [#GameVariables Game Variables][[BR]]
 [wiki:CoCo/Pyramid/RAMUsage RAM Usage][[br]]
 
-{{{#!AssemblyCode
 ; Loaded from cassette at 0x600 (right after text screen memory). {*Start}
 ; Executed at 0x0600.
 ;
@@ -79,11 +78,9 @@ Packed messages
 062D: 86 01               LDA     #$01                      ; Starting ...
 062F: B7 18 E5            STA     $18E5                     ; ... room number
 0632: BD 0B D2            JSR     $0BD2                     ;{PrintRoomDescription} Print room description
-}}}
 
 = Main Loop = 
 
-{{{#!AssemblyCode
 ;MainLoop
 0635: 7F 01 E7            CLR     $01E7                     ; Clear noun (object within reach)
 0638: 7F 01 E8            CLR     $01E8                     ; Clear verb (thorw, north, rub, etc)
@@ -103,7 +100,7 @@ Packed messages
 065E: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage} Print message
 0661: BD 0A 51            JSR     $0A51                     ;{AfterEveryStep} Do this stuff after every step{*}
 0664: 20 CF               BRA     $0635                     ;{MainLoop} Back to top of loop
-}}}
+
 
 = Get Object Info =
 
@@ -117,7 +114,7 @@ Return object's location (or location of container) in B[[BR]]
 Return pointer to object's data (or container's data) in X [[BR]] 
 Return Z as comparison between object's location and $01BC
 
-{{{#!AssemblyCode
+
 ;GetObjectInfo
 0666: 8E 18 8D            LDX     #$188D                    ; Object location table
 0669: BD 06 7C            JSR     $067C                     ;{TwoTableOffset} A is location
@@ -129,13 +126,13 @@ Return Z as comparison between object's location and $01BC
 0676: 30 1F               LEAX    -1,X                      ; Point to start of object
 0678: B1 01 BC            CMPA    $01BC                     ; Compare object's location to test location
 067B: 39                  RTS                               ; Done
-}}}
+
 
 = Table Offset Routines =
 
 Objects and rooms are numbered beginning with 1. These routines look up two-byte and four-byte values from a table with A as the begins-with-1 offset.
 
-{{{#!AssemblyCode
+
 ;TwoTableOffset {*TwoTableOffset}
 ; X = X + (A-1)*2
 ;
@@ -159,7 +156,7 @@ Objects and rooms are numbered beginning with 1. These routines look up two-byte
 068C: 49                  ROLA                              ; ... * 2
 068D: 30 8B               LEAX    D,X                       ; Add D to X
 068F: 39                  RTS                               ; Done
-}}}
+
 
 = Move Object =
 
@@ -170,7 +167,7 @@ New location is in $01BC
 
 Return object pointer in X
 
-{{{#!AssemblyCode
+
 ;MoveObject
 0690: BD 06 66            JSR     $0666                     ;{GetObjectInfo} Find object (or object's container)
 0693: 30 01               LEAX    1,X                       ; Object's location
@@ -178,7 +175,7 @@ Return object pointer in X
 0698: A7 84               STA     ,X                        ; Move object to new location
 069A: 30 1F               LEAX    -1,X                      ; Restore object pointer
 069C: 39                  RTS                               ; Done{*}
-}}}
+
 
 = Process Room Script =
 
@@ -196,9 +193,9 @@ Format of word/script description list:
   AA LL N0 N1 N2   ; First word AA and script comands (N) for AA. LL is size of command list.
   BB LL N0 N1      ; Second word BB and script commands (N) for BB. LL is size of command list.
   00               ; End of list
-}}}
 
-{{{#!AssemblyCode
+
+
 ;ProcessRoomScript
 069D: E6 84               LDB     ,X                        ; Get command verb
 069F: 27 FB               BEQ     $069C                     ;{} End of list ... out (Z SET (EQ) no matching script)
@@ -212,7 +209,7 @@ Format of word/script description list:
 06AD: BD 06 B4            JSR     $06B4                     ;{ProcessCommandList} Run script (Z CLEAR (NE) all passed, Z SET (EQ) a command failed){*}
 06B0: 26 EA               BNE     $069C                     ;{} If script passed then return Z CLEAR (NE)
 06B2: 20 E9               BRA     $069D                     ;{ProcessRoomScript} Script failed ... try next word/script
-}}}
+
 
 = Process Command List =
 
@@ -225,7 +222,7 @@ If all commands pass then the script "passes".
 List format:
 {{{
     LL A0 A1 B0 B1 B2 B3 C0 C1 ...   ; LL is length followed by commands A, B, and C ...
-}}}
+
 
 X = start of script[[BR]]
 
@@ -233,7 +230,7 @@ Returns
  - Z SET (EQ) failed
  - Z CLEAR (NE) passed
 
-{{{#!AssemblyCode
+
 ;ProcessCommandList
 06B4: 1F 13               TFR     X,U                       ; Hold start of script{*}
 06B6: E6 84               LDB     ,X                        ; Length of script
@@ -270,7 +267,7 @@ Returns
 06E1: 35 10               PULS    X                         ; End=of-script position
 06E3: 4F                  CLRA                              ; Z SET (a script command failed)
 06E4: 39                  RTS                               ; Done
-}}}
+
 
 = Command 7: Subscript Abort If Pass = #SubScriptAbortIfPass 
 
@@ -280,7 +277,7 @@ The GET script, for instance, is a list of subscripts that attempt to process sp
 
 If the second subscript passes (like the SERPENT is here) then the entire script aborts with a "pass".
 
-{{{#!AssemblyCode
+
 ;SubScriptAbortIfPass 
 ;
 06E5: 35 10               PULS    X                         ; Script pointer
@@ -292,7 +289,7 @@ If the second subscript passes (like the SERPENT is here) then the entire script
 06F2: 8A 01               ORA     #$01                      ; Script passed ... completely abort processing (with Z CLEAR (NE) all passed)
 06F4: 39                  RTS                               ; Done{*}
 
-}}}
+
 
 = Get Input And Parse =
 
@@ -303,7 +300,7 @@ Returns
  - 01E8 - object number (noun)
  - 01E9 - gramar type
 
-{{{#!AssemblyCode
+
 ;GetInputAndParse
 
 06F5: BD 09 B3            JSR     $09B3                     ;{PromptAndReadLine} Fill input buffer
@@ -545,7 +542,7 @@ Returns
 08D2: 5A                  DECB                              ; ... rest of ...
 08D3: 26 F9               BNE     $08CE                     ;{} ... destination buffer
 08D5: 39                  RTS                               ; Done{*}
-}}}
+
 
 = Print Packed Message = #PrintPackedMessage
 
@@ -553,7 +550,7 @@ Unpack a message (or multiple packed messages) and print.
 
 X = pointer to message structure
 
-{{{#!AssemblyCode
+
 ;PrintPackedMessage
 08D6: A6 84               LDA     ,X                        ; Get the length
 08D8: 27 FB               BEQ     $08D5                     ;{} None ... out
@@ -572,7 +569,7 @@ X = pointer to message structure
 08F6: 81 0A               CMPA    #$0A                      ; Mark for another packing?
 08F8: 27 DC               BEQ     $08D6                     ;{PrintPackedMessage} Yes ... start again
 08FA: 20 E7               BRA     $08E3                     ;{} No ... continue this packing
-}}}
+
 
 = Print an Unpacked Message = #PrintUnpacked
 
@@ -582,7 +579,7 @@ Any '@' characters are ignored (allows for padding of words added into a message
 
 The messages is terminated by either a 0 or a 1. If the terminator is a 0 then a CR is added. If the terminator is a 1 then no CR is added.
 
-{{{#!AssemblyCode
+
 ;PrintUnpacked
 08FC: A6 84               LDA     ,X                        ; Get byte{*}
 08FE: 27 13               BEQ     $0913                     ;{} End with CR
@@ -602,13 +599,13 @@ The messages is terminated by either a 0 or a 1. If the terminator is a 0 then a
 0918: 7A 01 B0            DEC     $01B0                     ; Rows left before more
 091B: 2B 01               BMI     $091E                     ;{MorePrompt} Pause print out with MORE
 091D: 39                  RTS                               ; Done
-}}}
+
 
 = !MorePrompt =
 
 Print MORE and wait for key
 
-{{{#!AssemblyCode
+
 ;MorePrompt
 091E: 34 74               PSHS    U,Y,X,B                   ;
 0920: 86 0D               LDA     #$0D                      ; Reset MORE ...
@@ -737,7 +734,7 @@ Print MORE and wait for key
 0A12: 39                  RTS                               ; Done
 0A13: 86 CF               LDA     #$CF                      ; White-ish block{*}
 0A15: 20 F7               BRA     $0A0E                     ;{} Store to cursor and done
-}}}
+
 
 = Script Commands =
 
@@ -750,7 +747,7 @@ Script Command Table
  -   e = 2 bytes ... target object and container object 
  -   f = 2 bytes ... target object and room number
 
-{{{#!AssemblyCode
+
 ;ScriptCommands
 ;    Address   Number Bytes Type Name
 0A17: 0B 05   ;   1     1    d   MoveToRoomX
@@ -782,7 +779,7 @@ Script Command Table
 0A4B: 0E BB   ;  27     0        LoadGame  
 0A4D: 0E 81   ;  28     0        SaveGame
 0A4F: 0F 1D   ;  29     0        JumpToTopOfGameLoop
-}}}
+
 
 = After Every Step =
 
@@ -790,7 +787,7 @@ This processing takes place after every user input.
  1. Increment the count on the lamp and the number of turns.
  2.  Warn the player if the lamp is going dim and change the batteries automatically.
 
-{{{#!AssemblyCode
+
 0A51: 86 0F               LDA     #$0F                      ; Lamp (lit version)
 0A53: 8E 18 8D            LDX     #$188D                    ; Object table
 0A56: BD 06 7C            JSR     $067C                     ;{TwoTableOffset} Get lamp's data
@@ -873,7 +870,7 @@ This processing takes place after every user input.
 0B00: 19                  DAA                               ; Adjust BCD after addition
 0B01: B7 18 E6            STA     $18E6                     ; New MSB
 0B04: 39                  RTS                               ; Done
-}}}
+
 
 = Command 1: Move To Room X = #MoveToRoomX
 
@@ -885,7 +882,7 @@ After every move the code checks the pack for treasures. If there are 2 or more 
 
 Once the chest is in a room (any room) the Mummy no longer appears. You only see the Mummy once.
 
-{{{#!AssemblyCode
+
 ; MoveToRoomX
 0B05: 35 10               PULS    X                         ; Processing cursor
 0B07: E6 80               LDB     ,X+                       ; Get room number
@@ -1032,13 +1029,13 @@ Once the chest is in a room (any room) the Mummy no longer appears. You only see
 0C32: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage} Print the object description
 0C35: 35 04               PULS    B                         ; Restore count
 0C37: 20 D7               BRA     $0C10                     ;{} Do all objects
-}}}
+
 
 = Command 24: Move Object X To Current Room = #MoveObjectXToCurrentRoom
 
 Move the specified object to the current room.
 
-{{{#!AssemblyCode
+
 ;MoveObjectXToCurrentRoom
 0C39: 35 10               PULS    X                         ; Current action
 0C3B: B6 18 E5            LDA     $18E5                     ; Current room
@@ -1047,13 +1044,13 @@ Move the specified object to the current room.
 0C43: 34 10               PSHS    X                         ; New action cursor
 0C45: BD 06 90            JSR     $0690                     ;{MoveObject} Move object to new location
 0C48: 7E 06 CB            JMP     $06CB                     ;{} Continue processing
-}}}
+
 
 = Command 25: Move Object X Into Container Y = #MoveObjectXIntoContainerY
 
 Move the specified object into the specified container object.
 
-{{{#!AssemblyCode
+
 ;MoveObjectXIntoContainerY
 0C4B: 35 10               PULS    X                         ; Get object number and container object number
 0C4D: EC 81               LDD     ,X++                      ; ... from cursor
@@ -1067,13 +1064,13 @@ Move the specified object into the specified container object.
 0C60: F6 01 BB            LDB     $01BB                     ; Container object
 0C63: E7 84               STB     ,X                        ; Set object's container
 0C65: 7E 0D E8            JMP     $0DE8                     ;{PrintOK} Print "OK" and pass.
-}}}
+
 
 = Command 2: Assert Object X Is In Pack = #AssertObjectXIsInPack
 
 Make sure the specified object is in the pack. The object may be contained by another object in the pack.
 
-{{{#!AssemblyCode
+
 ;AssertObjectXIsInPack
 0C68: 35 10               PULS    X                         ; Action cursor
 0C6A: A6 80               LDA     ,X+                       ; Get value
@@ -1084,7 +1081,7 @@ Make sure the specified object is in the pack. The object may be contained by an
 0C76: 27 03               BEQ     $0C7B                     ;{} Got it
 0C78: 7E 06 DF            JMP     $06DF                     ;{} Invalid
 0C7B: 7E 06 CB            JMP     $06CB                     ;{} Valid{*}
-}}}
+
 
 = Command 3: Assert Object X Is In Current Room Or Pack = #AssertObjectXIsInCurrentRoomOrPack
 
@@ -1092,7 +1089,7 @@ Make sure the specified object is in the current room or in the pack. If so then
 
 The object may be contained by another object in the room or pack.
 
-{{{#!AssemblyCode
+
 ;AssertObjectXIsInCurrentRoomOrPack
 0C7E: 35 10               PULS    X                         ; Action cursor
 0C80: A6 80               LDA     ,X+                       ; Get target object
@@ -1104,13 +1101,13 @@ The object may be contained by another object in the room or pack.
 0C90: 27 E9               BEQ     $0C7B                     ;{} Found it
 0C92: B6 01 BB            LDA     $01BB                     ; Try ...
 0C95: 20 D7               BRA     $0C6E                     ;{} ... backpack
-}}}
+
 
 = Command 26: Assert Object X Is In Current Room = #AssertObjectXIsInCurrentRoom
 
 Make sure the specified object is in the current room (either directly or in a container in the room).
 
-{{{#!AssemblyCode
+
 ;AssertObjectXIsInCurrentRoom
 0C97: 35 10               PULS    X                         ; Action cursor
 0C99: B6 18 E5            LDA     $18E5                     ; Current room
@@ -1120,13 +1117,13 @@ Make sure the specified object is in the current room (either directly or in a c
 0CA3: BD 06 66            JSR     $0666                     ;{GetObjectInfo} Check for object in room
 0CA6: 27 D3               BEQ     $0C7B                     ;{} OK ... it's here
 0CA8: 7E 06 DF            JMP     $06DF                     ;{} Invalid{*}
-}}}
+
 
 = Command 13: Assert Pack Is Empty Except For Emerald = #AssertPackIsEmptyExceptForEmerald
 
 Make sure pack is completely empty except for the emerald. In order to get the emerald through a "tight squeeze" everything else must be out of the pack.
 
-{{{#!AssemblyCode
+
 ;AssertPackIsEmptyExceptForEmerald
 0CAB: 8E 18 8D            LDX     #$188D                    ; Object data
 0CAE: C6 01               LDB     #$01                      ; First object
@@ -1141,7 +1138,7 @@ Make sure pack is completely empty except for the emerald. In order to get the e
 0CBF: C1 2D               CMPB    #$2D                      ; Done them all?
 0CC1: 26 ED               BNE     $0CB0                     ;{} No ... go back
 0CC3: 7E 06 CB            JMP     $06CB                     ;{} 
-}}}
+
 
 = Command 10: Assert Random Is Greater Than X = #AssertRoomIsGreaterThanX
 
@@ -1149,7 +1146,7 @@ Assert that the random count is greater than the specified value. If so then pri
 
 This is used for rooms that have random movement paths.
 
-{{{#!AssemblyCode
+
 ;AssertRandomIsGreaterThanX
 0CC6: 35 10               PULS    X                         ; Cursor
 0CC8: E6 80               LDB     ,X+                       ; Comparrison threshold
@@ -1163,7 +1160,7 @@ This is used for rooms that have random movement paths.
 0CD7: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage} Print message
 0CDA: BD 0B D2            JSR     $0BD2                     ;{PrintRoomDescription} Print room description
 0CDD: 7E 06 CB            JMP     $06CB                     ;{} OK
-}}}
+
 
 = Command 12: Move To Room X If It Was Last Room = #MoveToRoomXIfItWasLastRoom
 
@@ -1171,7 +1168,7 @@ This is used for rooms that have random movement paths.
 
 Move player to the specified room, but only if that room was the last room. This is for when you can only go back the way you came.
 
-{{{#!AssemblyCode
+
 ;MoveToRoomXIfItWasLastRoom
 0CE0: 35 10               PULS    X                         ; Get cursor
 0CE2: E6 80               LDB     ,X+                       ; Target room
@@ -1182,7 +1179,7 @@ Move player to the specified room, but only if that room was the last room. This
 0CED: 30 1F               LEAX    -1,X                      ; Back it ..
 0CEF: 34 10               PSHS    X                         ; ... up
 0CF1: 7E 0B 05            JMP     $0B05                     ;{MoveToRoomX} Move to room N
-}}}
+
 
 = Command 22: Get User Input Object = #GetUserInputObject
 
@@ -1192,7 +1189,7 @@ This is the last script in the general GET handler.
 
 Note that "You are already carying it" is already being checked in the general input routine.
 
-{{{#!AssemblyCode
+
 ;GetUserInputObject
 0CF4: 86 FF               LDA     #$FF                      ; Pack value
 0CF6: B7 01 BC            STA     $01BC                     ; For find
@@ -1204,26 +1201,26 @@ Note that "You are already carying it" is already being checked in the general i
 0D07: 7E 06 CB            JMP     $06CB                     ;{} Passed
 0D0A: F6 01 E7            LDB     $01E7                     ; Requested object{*}
 0D0D: 7E 0D AC            JMP     $0DAC                     ;{} Pick up object
-}}}
+
 
 = Command 4: Print Message X = #PrintMessageX
 
 Print the specified message (packed message).
 
-{{{#!AssemblyCode
+
 ;PrintMessageX
 0D10: 35 20               PULS    Y                         ; Get cursor
 0D12: AE A1               LDX     ,Y++                      ; Get address of message
 0D14: 34 20               PSHS    Y                         ; Update cursor
 0D16: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage} Print message
 0D19: 7E 06 CB            JMP     $06CB                     ;{} Pass
-}}}
+
 
 = Command 11: Drop Object X = #DropObjectX
 
 Move the specified object from the pack to the current room. This does assume the objectt is in the pack.
 
-{{{#!AssemblyCode
+
 ;DropObjectX
 0D1C: 35 10               PULS    X                         ; Get object ...
 0D1E: E6 80               LDB     ,X+                       ; ... from cursor
@@ -1234,7 +1231,7 @@ Move the specified object from the pack to the current room. This does assume th
 0D2B: 1F 98               TFR     B,A                       ; FOr the move
 0D2D: BD 06 90            JSR     $0690                     ;{MoveObject} Drop object in current room
 0D30: 7E 0D E8            JMP     $0DE8                     ;{PrintOK} OK and out
-}}}
+
 
 = Command 14: Move To Last Room = #MoveToLastRoom
 
@@ -1242,7 +1239,7 @@ Move the player to the "last" room. If there is no "last" room then print an err
 
 This command always passes.
 
-{{{#!AssemblyCode
+
 ;MoveToLastRoom
 0D33: F6 18 EA            LDB     $18EA                     ; Last room number
 0D36: 27 0C               BEQ     $0D44                     ;{} There was no last ... error message
@@ -1253,7 +1250,7 @@ This command always passes.
 0D44: 8E 33 DE            LDX     #$33DE                    ; "I don't remember how you got here ..."{*}
 0D47: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage} Print message
 0D4A: 7E 06 CB            JMP     $06CB                     ;{} Pass{*}
-}}}
+
 
 = Command 15: Print Inventory = #PrintInventory
 
@@ -1261,7 +1258,7 @@ List all the objects in the pack. Object that are contained by objects in the pa
 
 This command always passes.
 
-{{{#!AssemblyCode
+
 ;PrintInventory
 0D4D: B6 18 EB            LDA     $18EB                     ; Do we even have anything?
 0D50: 26 09               BNE     $0D5B                     ;{} Yes ... there is something
@@ -1294,7 +1291,7 @@ This command always passes.
 0D8B: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage} Print object description
 0D8E: 35 04               PULS    B                         ; Restore object number
 0D90: 20 D0               BRA     $0D62                     ;{} Do all objects
-}}}
+
 
 = Command 16: Print Room Description = #PrintRoomDescription
 
@@ -1302,17 +1299,17 @@ Print the current room description and contained objects. If the room is dark th
 
 This command always passes.
 
-{{{#!AssemblyCode
+
 ;PrintRoomDescription
 0D92: BD 0B D2            JSR     $0BD2                     ;{PrintRoomDescription} Print room description
 0D95: 7E 06 CB            JMP     $06CB                     ;{} {*}
-}}}
+
 
 = Command 17: Assert Object X Matches User Input = #AssertObjectXMatchesUserInput
 
 Make sure the input noun matches the specified object.
 
-{{{#!AssemblyCode
+
 ;AssertObjectXMatchesUserInput
 0D98: 35 10               PULS    X                         ; Get the object ...
 0D9A: E6 80               LDB     ,X+                       ; ... from the cursor
@@ -1320,7 +1317,7 @@ Make sure the input noun matches the specified object.
 0D9E: F1 01 E7            CMPB    $01E7                     ; Same as user input?
 0DA1: 27 F2               BEQ     $0D95                     ;{} Yes ... pass
 0DA3: 7E 06 DF            JMP     $06DF                     ;{} Fail
-}}}
+
 
 = Command 18: Get Object From Room = #GetObjectFromRoom
 
@@ -1328,7 +1325,7 @@ Get the specified object from the current room if there is space in the pack and
  - Pack only holds 8 things.
  - Some objects are flagged as "non pick-up-able"
 
-{{{#!AssemblyCode
+
 ;GetObjectFromRoom
 0DA6: 35 10               PULS    X                         ; Get the object's description from the ...
 0DA8: E6 80               LDB     ,X+                       ; ... cursor
@@ -1354,34 +1351,34 @@ Get the specified object from the current room if there is space in the pack and
 0DDA: B6 01 BB            LDA     $01BB                     ; Object number
 0DDD: BD 06 90            JSR     $0690                     ;{MoveObject} Move object
 0DE0: 20 06               BRA     $0DE8                     ;{PrintOK} Print "OK" and out
-}}}
+
 
 = Command 23: Drop User Input Object = #DropUserInputObject
 
 Drop the object the user requested from the pack.
 
-{{{#!AssemblyCode
+
 ;DropUserInputObject
 0DE2: F6 01 E7            LDB     $01E7                     ; Value from user word
 0DE5: 7E 0D 22            JMP     $0D22                     ;{} Drop object
-}}}
+
 
 = Command 20: Print OK = #PrintOK
 
 Print "OK".
 
-{{{#!AssemblyCode
+
 ;PrintOK
 0DE8: 8E 33 DA            LDX     #$33DA                    ; "OK"
 0DEB: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage} Print message
 0DEE: 7E 06 CB            JMP     $06CB                     ;{} {*}
-}}}
+
 
 = Command 21: Move Object X To Room Y = #MoveObjectXToRoomY
 
 Move the specified object to the specified room. This removes the target object from any container it might be in.
 
-{{{#!AssemblyCode
+
 ;MoveObjectXToRoomY
 0DF1: 35 10               PULS    X                         ; Cursor
 0DF3: EC 81               LDD     ,X++                      ; Get object number and room number
@@ -1395,11 +1392,11 @@ Move the specified object to the specified room. This removes the target object 
 0E06: B6 01 BC            LDA     $01BC                     ; New location
 0E09: A7 84               STA     ,X                        ; Update object location
 0E0B: 20 E1               BRA     $0DEE                     ;{} Pass
-}}}
+
 
 = Print Score =
 
-{{{#!AssemblyCode
+
 ;Printscore
 0E0D: 7F 02 08            CLR     $0208                     ; Calculated score LSB
 0E10: 7F 02 09            CLR     $0209                     ; Calculated score MSB
@@ -1453,13 +1450,13 @@ Move the specified object to the specified room. This removes the target object 
 0E7C: 8B 30               ADDA    #$30                      ; Convert to ASCII number
 0E7E: A7 80               STA     ,X+                       ; Store character in buffer
 0E80: 39                  RTS                               ; Done
-}}}
+
 
 = Command 28: Save Game = #SaveGame
 
 Save the current state of the game to tape.
 
-{{{#!AssemblyCode
+
 ;SaveGame
 0E81: 8E 3C 27            LDX     #$3C27                    ; "Ready Cassette"
 0E84: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage} Print message
@@ -1484,13 +1481,13 @@ Save the current state of the game to tape.
 0EB1: AD 9F A0 08         JSR     [$A008]                   ; Write to tape
 0EB5: BD 0F 0C            JSR     $0F0C                     ;{} Turn motor off
 0EB8: 7E 06 CB            JMP     $06CB                     ;{} {*}
-}}}
+
 
 = Command 27: Load Game = #LoadGame
 
 Load the state of the game from tape.
 
-{{{#!AssemblyCode
+
 ;LoadGame
 0EBB: 8E 3C 27            LDX     #$3C27                    ; "Ready Cassette"
 0EBE: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage} Print message
@@ -1526,54 +1523,54 @@ Load the state of the game from tape.
 0F0C: 86 34               LDA     #$34                      ; Motor ...{*}
 0F0E: B7 FF 21            STA     $FF21                     ; ... off
 0F11: 39                  RTS                               ;
-}}}
+
 
 = Command 8: Print Score = #PrintScore
 
 Print the current score.
 
-{{{#!AssemblyCode
+
 ;PrintScore
 0F12: BD 0E 0D            JSR     $0E0D                     ;{PrintScore} Print score
 0F15: 7E 06 CB            JMP     $06CB                     ;{} 
-}}}
+
 
 = Command 5: Print Score And Stop = #PrintScoreAndStop
 = Command 9: Print Score And Stop = #PrintScoreAndStop
 
 Print the score and go into an endless loop. When the player dies the scripts use command 5. When the player quits the scripts use command 9.
 
-{{{#!AssemblyCode
+
 ;PrintScoreAndStop
 0F18: BD 0E 0D            JSR     $0E0D                     ;{PrintScore} Print score
 0F1B: 20 FE               BRA     $0F1B                     ;{} Endless loop{*}
-}}}
+
 
 = Command 29: Jump To Top Of Game Loop = #JumpToTopOfLoop
 
 This is what the old PLUGH command does.
 
-{{{#!AssemblyCode
+
 ;JumpToTopOfGameLoop
 0F1D: 10 CE 03 FF         LDS     #$03FF                    ; Forget where we came from ...
 0F21: 7E 06 35            JMP     $0635                     ;{MainLoop} ... and go back to top of game loop
-}}}
+
 
 = General Error Messages =
 
 The code alternates these for general input failures. The first one used is the second message.
 
-{{{#!AssemblyCode
+
 ; Alternating messages
 0F24: 0F CA  ; Pointer to "WHAT?"
 0F26: 0F D1  ; Pointer to "I DON'T KNOW THAT WORD."
 0F28: 0F E9  ; Pointer to "I DON'T UNDERSTAND."
 0F2A: 0F FD  ; Pointer to "I DON'T KNOW WHAT YOU MEAN."
-}}}
+
 
 = Specific Error Messages =
 
-{{{#!AssemblyCode
+
 ; "I SEE NO ",1
 0F2C:  49 20 53 45 45 20 4E 4F 20 01 
 
@@ -1609,11 +1606,11 @@ The code alternates these for general input failures. The first one used is the 
 
 ; "I DON'T KNOW WHAT YOU MEAN.",0
 0FFD:  49 20 44 4F 4E 27 54 20 4B 4E 4F 57 20 57 48 41 54 20 59 4F 55 20 4D 45 41 4E 2E 00 
-}}}
+
 
 = General Messages =
 
-{{{#!AssemblyCode
+
 ;  " &lt;MORE&gt;",1
 1019:  20 3C 4D 4F 52 45 3E 01 
 
@@ -1628,7 +1625,7 @@ The code alternates these for general input failures. The first one used is the 
 
 ; "**** TURNS.",0
 105A:  20 20 20 20 20 54 55 52 4E 53 2E 00 
-}}}
+
 
 = Unpack Message = 
 
@@ -1640,7 +1637,7 @@ Every 2 bytes holds 3 characters. Each character can be from 0 to 39.
 
 TODO Decode this
 
-{{{#!AssemblyCode
+
 ;UnpackMessage
 1066: B7 01 C1            STA     $01C1                     ;
 1069: 86 01               LDA     #$01                      ;
@@ -1712,7 +1709,7 @@ TODO Decode this
 10FE: 10 26 FF 6C         LBNE    $106E                     ;{} ... pairs of bytes
 1102: FC 01 BA            LDD     $01BA                     ;
 1105: 39                  RTS                               ; Done
-}}}
+
 
 
 
@@ -1723,7 +1720,7 @@ TODO Decode this
 
 The packed messages in the game are limited to these characters.
 
-{{{#!AssemblyCode
+
 ; Character translation table
 ;     ?  !  2  .  "  '  &lt;  &gt;  /  0  3  A  B  C  D  E
 1106: 3F 21 32 20 22 27 3C 3E 2F 30 33 41 42 43 44 45
@@ -1731,13 +1728,13 @@ The packed messages in the game are limited to these characters.
 1116: 46 47 48 49 4A 4B 4C 4D 4E 4F 50 51 52 53 54 55
 ;     V  W  X  Y  Z  -  ,  .
 1126: 56 57 58 59 5A 2D 2C 2E 
-}}}
+
 
 = Room Table =
 
 Each entry is 4 bytes. The first word is the packed room description. The second word is the room's command script.
 
-{{{#!AssemblyCode
+
 ;RoomTable
 ;
 ; 81 rooms numbered starting at 1
@@ -1823,7 +1820,7 @@ Each entry is 4 bytes. The first word is the packed room description. The second
 1266:   29 42          17 4E  ; 79
 126A:   29 6C          17 57  ; 80
 126E:   29 BC          17 64  ; 81
-}}}
+
 
 = Room Scripts =
 
@@ -3019,7 +3016,7 @@ These are the specific room scripts. The user input is tried against the room sc
 ; },
 
 17EA: FF        
-}}}
+
 
 = Ambient Light Table =
 
@@ -3027,7 +3024,7 @@ These are the specific room scripts. The user input is tried against the room sc
  - 0x4000 means there is light in the room (no need for a lamp)
  - 0x0000 means you better have a lamp
 
-{{{#!AssemblyCode
+
 
 17EB:   40 00  ;  1
 17ED:   40 00  ;  2
@@ -3110,7 +3107,7 @@ These are the specific room scripts. The user input is tried against the room sc
 1887: 00 00    ; 79
 1889: 00 00    ; 80
 188B: 00 00    ; 81
-}}}
+
 
 = Object Data =
 
@@ -3128,9 +3125,9 @@ The format of the two bytes are:
  T - if set, object is treasure.
 
  RRRRRRRR - Second byte is the object's location (containing object or room number).
-}}}
 
-{{{#!AssemblyCode
+
+
 
 ;ObjectData {*ObjectData}
 ; Object data table (2 bytes)
@@ -3179,11 +3176,11 @@ The format of the two bytes are:
 18DF: 60 00  ; 011_00000 00  ; 42 #CHEST              0
 18E1: 60 47  ; 011_00000 47  ; 43 #NEST             Room 71
 18E3: 40 00  ; 010_00000 00  ; 44 #LAMP_dead          0
-}}}
+
 
 = Game Variables =
 
-{{{#!AssemblyCode
+
 ;GameVariables {*GameVariables}
 18E5: 01 ; RoomNumber (start in room 1)
 18E6: 00 ; TurnCountMSB (BCD format)
@@ -3193,11 +3190,11 @@ The format of the two bytes are:
 18EA: 00 ; LastRoomNumber
 18EB: 00 ; NumInPack
 18EC: 00 ; * NOT USED *   
-}}}
+
 
 = Object Table =
 
-{{{#!AssemblyCode
+
 ;ObjectDescriptions {*ObjectDescriptions}
 ; Object descriptions (44 objects)
 ; For packable objects each slot points to a message pair. The first is the long
@@ -3247,7 +3244,7 @@ The format of the two bytes are:
 193F: 2F 44     ; 42 #CHEST            Chest
 1941: 2F 6B     ; 43 #NEST             Nest of golden eggs
 1943: 2B 46     ; 44 #LAMP_dead        Lamp (dead)
-}}}
+
 
 = General Command Handler =
 
@@ -3490,10 +3487,10 @@ This script is used when the room doesn't have a script for the input command.
 1B62: 3B 01     ; _save : [
 1B64: 1C        ;    "SaveGame"]
 1B65: 00
-}}}
+
 = Room Descriptions =
 
-{{{#!AssemblyCode
+
 ;Description for room: 1
 ; YOU ARE STANDING BEFORE THE ENTRANCE OF A PYRAMID. AROUND YOU IS A DESERT.[CR]
 1B66: 18 C7 DE 94 14 55 5E 50 BD 90 5A C4 6A 59 60 5B B1 5F BE 30 15 EB BF 17 98 B8 16 7B 14 14 A8 6B
@@ -3834,13 +3831,13 @@ This script is used when the room doesn't have a script for the input command.
 2AEE: 2B C7 DE 94 14 4B 5E 96 96 DB 72 1B 54 AF 91 91 AF 90 64 1A 61 AF 5F 73 C1 59 45 E3 9F 99 96 82
 2B0E: 7B 82 17 4A 5E 86 5F B8 16 7B 14 EE CC 74 C0 B3 63 A3 D0 10 B2 D6 6A DB 72 B9 55 03 D2 C3 9E 8B
 2B2E: 60 57 A7 7B 14 55 A4 09 B7 47 5E 96 D7 D6 B5 D6 9C DB 72 47 B9 77 BE 00
-}}}
+
 
 = Object Descriptions =
 
 These are the long (in a room description) and short (in the inventory) strings for each object.
 
-{{{#!AssemblyCode
+
 ;Description for objects: 14 "Lamp (not lit)",44 "Lamp (dead)"
 ; THERE IS A SHINY BRASS LAMP NEARBY.[CR]
 2B46: 0B 5F BE 5B B1 4B 7B 55 45 90 73 44 DB D5 B0 CE B5 72 48 8F 16 2C 49 59 2E 00
@@ -4059,11 +4056,11 @@ These are the long (in a room description) and short (in the inventory) strings 
 
 ; GLISTENING PEARL[CR]
 307D: 05 C3 6D FF B9 10 99 D2 6A 94 5F 4C 00
-}}}
+
 
 = Game Specific Messages =
 
-{{{#!AssemblyCode
+
 ; YOU ARE AT THE BOTTOM OF THE PIT WITH A BROKEN NECK.[CR]
 308A: 11 C7 DE 94 14 43 5E 16 BC DB 72 06 4F 7F BF B8 16 82 17 52 5E 73 7B 56 D1 03 71 BC 14 97 9F 90
 30AA: 96 DD 5F 2E 00
@@ -4362,7 +4359,7 @@ These are the long (in a room description) and short (in the inventory) strings 
 3C33: 04 1F 54 A5 54 5B C5 3C 62 4F 52 00
 
 3C3F: 00
-}}}
+
 
 = Word Table =
 
@@ -4376,7 +4373,7 @@ The code in the game refers to objects and words by numeric ID, but I have given
 
 The input routine parses the user input and returns a VERB and a NOUN based on the grammar of the words. The game scripts are assured that the grammar is correct and the noun is something the user has access to (in the pack or room).
 
-{{{#!AssemblyCode
+
 ;WordTable {*WordTable}
 ; Info + text + data
 ;   Info byte:
@@ -4519,4 +4516,3 @@ The input routine parses the user input and returns a VERB and a NOUN based on t
 ; Unused data on end of program
 3F16: 0D 00 02 88 88 80 FA 00 00 4F 88
 
-}}}

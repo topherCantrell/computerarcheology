@@ -1,6 +1,5 @@
 = Pyramid 2000 for the TRS-80 =
 
-{{{#!AssemblyCode
 4200: 31 5C 47    LD    SP,$475C           
 4203: 21 1F 47    LD    HL,$471F           ; WELCOME TO PYRAMID!
 4206: CD CB 44    CALL  $44CB              ; Print message
@@ -3984,4 +3983,3 @@
 7F7D: D5 15 99 16 C2 B3 21 00 39 00 39 00
 7F89: 39 00 39 00 39 00 39 00 39 00 39 00
 7F95: 39 00 39 00 47 78 00 43 FF FF                             
-}}}

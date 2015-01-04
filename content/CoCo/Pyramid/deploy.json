@@ -1,0 +1,16 @@
+{
+
+"files" : 
+[
+  {"outputName":"RAMUse.html",    "displayName":"RAM Use",    "command":"markupAddress RAMUse.mark"},
+  {"outputName":"Code.html",      "displayName":"Code",       "command":"markupCode Code.mark"},
+  {"outputName":"CodeTRS80.html", "displayName":"Code TRS80", "command":"markupCode CodeTRS80.mark"},
+  
+  {"outputName":"index.html",     "displayName":"",           "command":"markup Pyramid.mark"},
+    
+  {"outputName":"Pyramid.jpg", "command":"copy"}
+                   
+]
+
+}
+     

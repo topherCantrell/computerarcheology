@@ -1,10 +1,9 @@
-[[PageOutline()]]
 
 = RAM Usage =
 
 == Variables Kept Outside of Code (Not Saved) ==
 
-|| 0088..0089 || cursor || Screen cursor used by BASIC routines ||
+|| 0088:0089 || cursor || Screen cursor used by BASIC routines ||
 
 || 01B0 || || ||
 || 01B1 || || ||

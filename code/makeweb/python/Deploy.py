@@ -105,10 +105,13 @@ def processDeploys(rootContent,content):
                siteNav = getSiteNav(rootContent,content,n)
                
                if coms[0] == "markupAddress":
+                   print "Markup Address '"+rootDir+content["dirPath"]+coms[1]
                    mu = AddressToHTML()
                elif coms[0] == "markupCode":
+                   print "Markup Code '"+rootDir+content["dirPath"]+coms[1]
                    mu = CodeToHTML()
                else:              
+                   print "Markup '"+rootDir+content["dirPath"]+coms[1]
                    mu = MarkupToHTML()
                                              
                mu.translate(rootDir+content["dirPath"]+coms[1], 
@@ -121,6 +124,7 @@ def processDeploys(rootContent,content):
                raise Exception("Unknown command:"+line["command"])           
     
     for d in content["dirs"]:
+        #print d
         processDeploys(rootContent,d)        
          
 
