@@ -168,6 +168,8 @@ class CodeToHTML(MarkupToHTML):
         with open(inName) as f:
             raw = f.readlines()
             
+        self.labels = []
+            
         maps = {}
         ret = []
         for r in raw:                        
@@ -195,6 +197,11 @@ class CodeToHTML(MarkupToHTML):
             c = CodeLine()
             c.parse(r)
             ret.append(c)
+            
+            for a in c.labels:
+                if a in self.labels:
+                    raise Exception("Duplicate label '"+a+"'")
+                self.labels.append(a)
             
         # These are all the code lines that need to have "id" added to them
         self.addCodeLinkTargetIDs(ret) 

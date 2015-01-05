@@ -51,6 +51,7 @@ class MarkupToHTML:
     def markDownBraces(self,proc):
         p1 = '<a href="%s">%s</a>'
         p2 = '<img src="%s">%s</img>'
+        #print proc
         while "[" in proc:
             #print proc
             i = proc.index("[")
@@ -61,7 +62,7 @@ class MarkupToHTML:
             if proc[i+1]=='!':
                 tmp = p2
                 ii = i + 1
-            if " " in proc:
+            if " " in proc[i:j]:
                 k = proc.index(" ",i)  
                 proc = proc[0:i] + tmp % (proc[ii+1:k].strip(),proc[k+1:j].strip()) + proc[j+1:]                
             else:

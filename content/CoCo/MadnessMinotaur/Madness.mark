@@ -4,16 +4,12 @@
 * [Code.html Disassembled Code]
 * [RAMUse.html RAM Usage]
 
-= Text Adventure and Real Time Strategy = Text + RTS
+= The Labyrinth of King Minos = The Labyrinth 
 
-Madness and the Minotaur is a text adventure game that includes elements of a D&D game and a non-turn-based action game. 
-You have "hit points" (physical condition) and you will die when they run out. There are creatures that move from room 
-to room once a minute. If you sit still long enough a creature will find you and kill you. Your pack has bulk and weight. 
-The more you carry and the lower your hit-points the harder it is for you to jump.
-
-To win the game you have to learn all 8 spells and drop all 16 treasure objects in the forest (room 202). The spells are 
-sprinkled around the rooms at random. Some objects are "protected" and require you have a set of other objects to release 
-(see below). Some object are "carried" by creatures. Some objects are attached to special room-actions.
+"Rumor has it that there are treasures hidden in the vicinity of the Labyrinth.
+Are these treasures worth risking life or sanity? If your answer to this question
+is negative or you are plagued with skepticism, it is suggested that you re-evaluate
+your priorities and establish some healthy materialism." - From the game manual introduction
 
 {{{html
 <div class="tourGuide">
@@ -74,6 +70,17 @@ it calls "PrintMess" instead of "PrintPacked". The message never appears on the 
 in the emulator.
 
 Thanks again, Joe.
+
+= Text Adventure and Real Time Strategy = Text + RTS
+
+Madness and the Minotaur is a text adventure game that includes elements of a D&D game and a non-turn-based action game. 
+You have "hit points" (physical condition) and you will die when they run out. There are creatures that move from room 
+to room once a minute. If you sit still long enough a creature will find you and kill you. Your pack has bulk and weight. 
+The more you carry and the lower your hit-points the harder it is for you to jump.
+
+To win the game you have to learn all 8 spells and drop all 16 treasure objects in the forest (room 202). The spells are 
+sprinkled around the rooms at random. Some objects are "protected" and require you have a set of other objects to release 
+(see below). Some object are "carried" by creatures. Some objects are attached to special room-actions.
 
 = Game Room Geometry =
 

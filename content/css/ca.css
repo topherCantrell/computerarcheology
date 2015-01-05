@@ -82,3 +82,11 @@ body {
 .tourGuideHeaderLine {
 	margin-top: 0px;
 }
+
+.cocoScreen {
+	background: #00FF01; 
+	color: #000; 
+	font-family: 'Courier New', Courier, monospace; 
+	font-size: 12px; 
+	width: 32ch;
+}

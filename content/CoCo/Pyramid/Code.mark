@@ -1,46 +1,10 @@
+;%%image Pyramid.jpg
+; % % ramMap Coco/Pyramid/RAMUse.mark /CoCo/Pyramid/RAMUse.html
+; % % hardwareMap Coco/Hardware.mark /CoCo/Hardware.html
+; The game's RAM usage is detailed here: 
+; [RAMUse.html RAM Usage]
 
-Script Functions
-
-|| [#MoveToRoomX Command 1: Move To Room X] || [#AssertObjectXIsInPack Command 2: Assert Object X Is In Pack] ||
-|| [#AssertObjectXIsInCurrentRoomOrPack Command 3: Assert Object X Is In Current Room Or Pack] || [#PrintMessageX Command 4: Print Message X] ||
-|| [#PrintScoreAndStop Command 5: Print Score And Stop] || Command 6: UNUSED ||
-|| [#SubScriptAbortIfPass Command 7: Subscript Abort If Pass] || [#PrintScore Command 8: Print Score] ||
-|| [#PrintScoreAndStop Command 9: Print Score And Stop] || [#AssertRoomIsGreaterThanX Command 10: Assert Random Is Greater Than X] ||
-|| [#DropObjectX Command 11: Drop Object X] || [#MoveToRoomXIfItWasLastRoom Command 12: Move To Room X If It Was Last Room] ||
-|| [#AssertPackIsEmptyExceptForEmerald Command 13: Assert Pack Is Empty Except For Emerald] || [#MoveToLastRoom Command 14: Move To Last Room] ||
-|| [#PrintInventory Command 15: Print Inventory] || [#PrintRoomDescription Command 16: Print Room Description] ||
-|| [#AssertObjectXMatchesUserInput Command 17: Assert Object X Matches User Input] || [#GetObjectFromRoom Command 18: Get Object From Room] ||
-|| Command 19: UNUSED || [#PrintOK Command 20: Print OK] ||
-|| [#MoveObjectXToRoomY Command 21: Move Object X To Room Y] || [#GetUserInputObject Command 22: Get User Input Object] ||
-|| [#DropUserInputObject Command 23: Drop User Input Object] || [#MoveObjectXToCurrentRoom Command 24: Move Object X To Current Room] ||
-|| [#MoveObjectXIntoContainerY Command 25: Move Object X Into Container Y] || [#AssertObjectXIsInCurrentRoom Command 26: Assert Object X Is In Current Room] ||
-|| [#LoadGame Command 27: Load Game] || [#SaveGame Command 28: Save Game] ||
-|| [#JumpToTopOfLoop Command 29: Jump To Top Of Game Loop] || ||
-
-Game functions
-|| [#MainLoop Main Loop] || [#GetObjectInfo Get Object Info] || [#TableOffsetRoutines Table Offset Routines] || [#MoveObject Move Object] ||
-|| [#ProcessRoomScript Process Room Script] || [#ProcessCommandList Process Command List] || [#GetInputAndParse Get Input And Parse] || [#PrintPackedMessage Print Packed Message] ||
-|| [#PrintUnpacked Print an Unpacked Message] || [#MorePrompt More Prompt] || [#ScriptCommands Script Commands] || [#AfterEveryStep After Every Step] ||
-|| [#PrintScore Print Score] || [#UnpackMessage Unpack Message] || || ||
-
-Data about rooms
-|| [#RoomTable Room Table] || [#RoomScripts Room Scripts] ||
-|| [#RoomDescriptions Room Descriptions] || [#AmbientLightTable Ambient Light Table] || 
-
-Data about objects
-|| [#ObjectTable Object Table] || [#ObjectData Object Data] ||
-|| [#ObjectDescriptions Object Descriptions] || [#GeneralCommandHandler General Command Handler] || 
-
-Packed messages
-|| [#GameSpecificMessages Game Specific Messages] || [#GeneralErrorMessages General Error Messages] ||
-|| [#SpecificErrorMessages Specific Error Messages] || [#GeneralMessages General Messages] ||
-
-[#CharacterTranslationTable Character Translation Table][[BR]]
-[#WordTable Word Table][[BR]]
-[#GameVariables Game Variables][[BR]]
-[wiki:CoCo/Pyramid/RAMUsage RAM Usage][[br]]
-
-; Loaded from cassette at 0x600 (right after text screen memory). {*Start}
+; Loaded from cassette at 0x600 (right after text screen memory).
 ; Executed at 0x0600.
 ;
 ; Binary size is 14625 bytes.
@@ -53,18 +17,25 @@ Packed messages
 ; program's loaded space. Thus the data structures are initialized at loading. The
 ; game must be reloaded to start over. 
 
+; TODO. Things to check.
+; Look for lines that start with "; ="
+; Make sure "{" is first in a comment 
+; If a line is a code-line make sure it is "XXXX: " (disassembly only)
+; Make sure labels are unique
+; Make sure all {xxx} refer to valid labels
+
 0600: 10 CE 03 FF         LDS     #$03FF                    ; Stack
 
 0604: 8E 01 B1            LDX     #$01B1                    ; Temporaries (not 1B0 ... interesting)
 0607: C6 64               LDB     #$64                      ; 0x64 bytes
-0609: 6F 80               CLR     ,X+                       ; clear ...{*}
+0609: 6F 80               CLR     ,X+                       ; clear ...
 060B: 5A                  DECB                              ; ... the ...
 060C: 26 FB               BNE     $0609                     ;{} ... temporaries
 
 060E: 4F                  CLRA                
 060F: 8E 04 00            LDX     #$0400                    ; Start of screen
 0612: CE 60 60            LDU     #$6060                    ; Space - Space
-0615: EF 81               STU     ,X++                      ; Clear ...{*}
+0615: EF 81               STU     ,X++                      ; Clear ...
 0617: 4A                  DECA                              ; ... the ...
 0618: 26 FB               BNE     $0615                     ;{} ... screen
 
@@ -79,9 +50,9 @@ Packed messages
 062F: B7 18 E5            STA     $18E5                     ; ... room number
 0632: BD 0B D2            JSR     $0BD2                     ;{PrintRoomDescription} Print room description
 
-= Main Loop = 
+;= Main Loop = 
 
-;MainLoop
+MainLoop:
 0635: 7F 01 E7            CLR     $01E7                     ; Clear noun (object within reach)
 0638: 7F 01 E8            CLR     $01E8                     ; Clear verb (thorw, north, rub, etc)
 063B: 7F 01 E9            CLR     $01E9                     ; Grammar type (verb, verb+nounInReach, verb+nounInPack)
@@ -98,24 +69,23 @@ Packed messages
 0659: 26 06               BNE     $0661                     ;{} It was handled ... move on
 065B: 8E 33 87            LDX     #$3387                    ; "I DON'T KNOW HOW TO APPLY THAT WORD HERE."
 065E: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage} Print message
-0661: BD 0A 51            JSR     $0A51                     ;{AfterEveryStep} Do this stuff after every step{*}
+0661: BD 0A 51            JSR     $0A51                     ;{AfterEveryStep} Do this stuff after every step
 0664: 20 CF               BRA     $0635                     ;{MainLoop} Back to top of loop
 
+;= Get Object Info =
 
-= Get Object Info =
+; An object has a location -- either because it is directly "there" or because it is 
+; contained by another object that is "there". This method looks up the object data of 
+; the object or the container and returns the location in B and the object 
+; pointer (or container pointer) in X.
+;
+; Object number is in A
+;
+; Return object's location (or location of container) in B
+; Return pointer to object's data (or container's data) in X 
+; Return Z as comparison between object's location and $01BC
 
-An object has a location -- either because it is directly "there" or because it is contained by another object that is "there".
-
-This method looks up the object data of the object or the container and returns the location in B and the object pointer (or container pointer) in X.
-
-Object number is in A
-
-Return object's location (or location of container) in B[[BR]]
-Return pointer to object's data (or container's data) in X [[BR]] 
-Return Z as comparison between object's location and $01BC
-
-
-;GetObjectInfo
+GetObjectInfo:
 0666: 8E 18 8D            LDX     #$188D                    ; Object location table
 0669: BD 06 7C            JSR     $067C                     ;{TwoTableOffset} A is location
 066C: A6 80               LDA     ,X+                       ; Get object data
@@ -128,12 +98,12 @@ Return Z as comparison between object's location and $01BC
 067B: 39                  RTS                               ; Done
 
 
-= Table Offset Routines =
+;= Table Offset Routines =
 
-Objects and rooms are numbered beginning with 1. These routines look up two-byte and four-byte values from a table with A as the begins-with-1 offset.
+; Objects and rooms are numbered beginning with 1. These routines look up two-byte 
+; and four-byte values from a table with A as the begins-with-1 offset.
 
-
-;TwoTableOffset {*TwoTableOffset}
+TwoTableOffset:
 ; X = X + (A-1)*2
 ;
 067C: 1F 89               TFR     A,B                       ; A extended ...
@@ -144,10 +114,10 @@ Objects and rooms are numbered beginning with 1. These routines look up two-byte
 0682: 30 8B               LEAX    D,X                       ; Add D to X
 0684: 39                  RTS                               ; Done
 
-;FourTableOffset {*FourTableOffset}
+FourTableOffset:
 ; X = X + (A-1)*4
 ;
-0685: 1F 89               TFR     A,B                       ; A extended ...{*}
+0685: 1F 89               TFR     A,B                       ; A extended ...
 0687: 4F                  CLRA                              ; ... to D
 0688: 5A                  DECB                              ; Room table is 1 based
 0689: 58                  ASLB                              ; D = D ...
@@ -158,45 +128,43 @@ Objects and rooms are numbered beginning with 1. These routines look up two-byte
 068F: 39                  RTS                               ; Done
 
 
-= Move Object =
+;= Move Object =
 
-This routine moves an object (or its container) to a new location.
+; This routine moves an object (or its container) to a new location.
+;
+; Object number is in B
+; New location is in $01BC
+;
+; Return object pointer in X
 
-Object number is in B[[BR]]
-New location is in $01BC
-
-Return object pointer in X
-
-
-;MoveObject
+MoveObject:
 0690: BD 06 66            JSR     $0666                     ;{GetObjectInfo} Find object (or object's container)
 0693: 30 01               LEAX    1,X                       ; Object's location
 0695: B6 01 BC            LDA     $01BC                     ; New value
 0698: A7 84               STA     ,X                        ; Move object to new location
 069A: 30 1F               LEAX    -1,X                      ; Restore object pointer
-069C: 39                  RTS                               ; Done{*}
+069C: 39                  RTS                               ; Done
 
+;= Process Room Script =
 
-= Process Room Script =
+; A room script is a list of verbs with the commands that go with each. This function 
+; looks for the one script that matches the verb in $01E8. Then it runs the script. If 
+; the script "passes" then this function returns Z=0.
+;
+; If there is no script to match the verb or if the script "fails" then this function returns Z=1.
+;
+; X points to a list of choices for first-word tokens.
+; Return with
+;  - Z SET (EQ)   ... no script found OR script was found but it failed
+;  - Z CLEAR (NE) ... script was found and all commands passed 
+;
+;Format of word/script description list:
+;
+;  AA LL N0 N1 N2   ; First word AA and script comands (N) for AA. LL is size of command list.
+;  BB LL N0 N1      ; Second word BB and script commands (N) for BB. LL is size of command list.
+;  00               ; End of list
 
-A room script is a list of verbs with the commands that go with each. This function looks for the one script that matches the verb in $01E8. Then it runs the script. If the script "passes" then this function returns Z=0.
-
-If there is no script to match the verb or if the script "fails" then this function returns Z=1.
-
-X points to a list of choices for first-word tokens.[[BR]]
-Return with
- - Z SET (EQ)   ... no script found OR script was found but it failed
- - Z CLEAR (NE) ... script was found and all commands passed 
-
-Format of word/script description list:
-{{{
-  AA LL N0 N1 N2   ; First word AA and script comands (N) for AA. LL is size of command list.
-  BB LL N0 N1      ; Second word BB and script commands (N) for BB. LL is size of command list.
-  00               ; End of list
-
-
-
-;ProcessRoomScript
+ProcessRoomScript:
 069D: E6 84               LDB     ,X                        ; Get command verb
 069F: 27 FB               BEQ     $069C                     ;{} End of list ... out (Z SET (EQ) no matching script)
 06A1: F6 01 E8            LDB     $01E8                     ; User's verb
@@ -206,39 +174,39 @@ Format of word/script description list:
 06AA: 3A                  ABX                               ; Skip this list
 06AB: 20 F0               BRA     $069D                     ;{ProcessRoomScript} Keep trying lists
 ;
-06AD: BD 06 B4            JSR     $06B4                     ;{ProcessCommandList} Run script (Z CLEAR (NE) all passed, Z SET (EQ) a command failed){*}
+06AD: BD 06 B4            JSR     $06B4                     ;{ProcessCommandList} Run script (Z CLEAR (NE) all passed, Z SET (EQ) a command failed)
 06B0: 26 EA               BNE     $069C                     ;{} If script passed then return Z CLEAR (NE)
 06B2: 20 E9               BRA     $069D                     ;{ProcessRoomScript} Script failed ... try next word/script
 
 
-= Process Command List =
+;= Process Command List =
 
-This routine processes a list of commands. The list begins with the size of the list (bytes) followed by all the command bytes. The command addresses are looked up from a jump table. Each command returns to either the "!FuncPassed" or the "!FuncFailed".
+; This routine processes a list of commands. The list begins with the size of the list (bytes) 
+; followed by all the command bytes. The command addresses are looked up from a jump table. Each 
+; command returns to either the "!FuncPassed" or the "!FuncFailed".
+;
+; If a command fails then the processing starts and this script "fails". Otherwise all commands 
+; are executed one after the other.
+;
+; If all commands pass then the script "passes".
+;
+; List format:
+;     LL A0 A1 B0 B1 B2 B3 C0 C1 ...   ; LL is length followed by commands A, B, and C ...
+;
+; X = start of script
+;
+; Returns 
+;  - Z SET (EQ) failed
+;  - Z CLEAR (NE) passed
 
-If a command fails then the processing starts and this script "fails". Otherwise all commands are executed one after the other.
-
-If all commands pass then the script "passes".
-
-List format:
-{{{
-    LL A0 A1 B0 B1 B2 B3 C0 C1 ...   ; LL is length followed by commands A, B, and C ...
-
-
-X = start of script[[BR]]
-
-Returns 
- - Z SET (EQ) failed
- - Z CLEAR (NE) passed
-
-
-;ProcessCommandList
-06B4: 1F 13               TFR     X,U                       ; Hold start of script{*}
+ProcessCommandList:
+06B4: 1F 13               TFR     X,U                       ; Hold start of script
 06B6: E6 84               LDB     ,X                        ; Length of script
 06B8: 3A                  ABX                               ; Turn into pointer
 06B9: 34 10               PSHS    X                         ; Save pointer to end-of-script position
 06BB: 1F 31               TFR     U,X                       ; Start of script back to X
 06BD: 30 01               LEAX    1,X                       ; Skip over script length
-06BF: A6 80               LDA     ,X+                       ; Get command number{*}
+06BF: A6 80               LDA     ,X+                       ; Get command number
 06C1: 34 10               PSHS    X                         ; Hold current script pointer
 06C3: 8E 0A 17            LDX     #$0A17                    ; Jump table
 06C6: BD 06 7C            JSR     $067C                     ;{TwoTableOffset} Offest
@@ -250,7 +218,7 @@ Returns
 ;
 ; FuncPassed
 ;
-06CB: 35 10               PULS    X                         ; Script pointer{*}
+06CB: 35 10               PULS    X                         ; Script pointer
 06CD: 35 20               PULS    Y                         ; End-of-script position
 06CF: 10 BF 01 BF         STY     $01BF                     ; Have we reached ...
 06D3: BC 01 BF            CMPX    $01BF                     ; ... the end of current script?
@@ -258,27 +226,31 @@ Returns
 06D8: 8A 01               ORA     #$01                      ; Z CLEAR (all script commands passed)
 06DA: 39                  RTS                               ; Done
 ;
-06DB: 34 20               PSHS    Y                         ; Put the end-of-script position back on the stack{*}
+06DB: 34 20               PSHS    Y                         ; Put the end-of-script position back on the stack
 06DD: 20 E0               BRA     $06BF                     ;{} Next routine
 ;
 ; FuncFailed
 ;
-06DF: 35 10               PULS    X                         ; Script pointer{*}
+06DF: 35 10               PULS    X                         ; Script pointer
 06E1: 35 10               PULS    X                         ; End=of-script position
 06E3: 4F                  CLRA                              ; Z SET (a script command failed)
 06E4: 39                  RTS                               ; Done
 
 
-= Command 7: Subscript Abort If Pass = #SubScriptAbortIfPass 
+;= Command 7: Subscript Abort If Pass = 
 
-This game command runs a subscript. If the subscript passes then the entire script (no matter how many subscripts-deep) ends with a "pass". If the subscript fails then the subscript returns "pass" and the next command in the script is executed.
+; This game command runs a subscript. If the subscript passes then the entire script (no 
+; matter how many subscripts-deep) ends with a "pass". If the subscript fails then the subscript 
+; returns "pass" and the next command in the script is executed.
+;
+; The GET script, for instance, is a list of subscripts that attempt to process specific gets one 
+; at a time. Like GET WATER then GET SERPENT then GET PLANT and so on. If the first fails (like WATER 
+; is not in the room) then the subscript ends and the script continues with the next command (the 
+; next subscript). 
+;
+; If the second subscript passes (like the SERPENT is here) then the entire script aborts with a "pass".
 
-The GET script, for instance, is a list of subscripts that attempt to process specific gets one at a time. Like GET WATER then GET SERPENT then GET PLANT and so on. If the first fails (like WATER is not in the room) then the subscript ends and the script continues with the next command (the next subscript). 
-
-If the second subscript passes (like the SERPENT is here) then the entire script aborts with a "pass".
-
-
-;SubScriptAbortIfPass 
+SubScriptAbortIfPass: 
 ;
 06E5: 35 10               PULS    X                         ; Script pointer
 06E7: BD 06 B4            JSR     $06B4                     ;{} Run script (Z CLEAR (NE) all passed, Z SET (EQ) a command failed)
@@ -287,22 +259,19 @@ If the second subscript passes (like the SERPENT is here) then the entire script
 06EE: 35 10               PULS    X                         ; Pop script pointer
 06F0: 35 10               PULS    X                         ; Pop end-of-script pointer
 06F2: 8A 01               ORA     #$01                      ; Script passed ... completely abort processing (with Z CLEAR (NE) all passed)
-06F4: 39                  RTS                               ; Done{*}
+06F4: 39                  RTS                               ; Done
 
+;= Get Input And Parse =
 
+; This function prompts the user for a command line and parses it. This function 
+; does not return until a usable command line has been entered. 
+;
+; Returns
+;  - 01E7 - verb
+;  - 01E8 - object number (noun)
+;  - 01E9 - gramar type
 
-= Get Input And Parse =
-
-This function prompts the user for a command line and parses it. This function does not return until a usable command line has been entered. 
-
-Returns
- - 01E7 - verb
- - 01E8 - object number (noun)
- - 01E9 - gramar type
-
-
-;GetInputAndParse
-
+GetInputAndParse:
 06F5: BD 09 B3            JSR     $09B3                     ;{PromptAndReadLine} Fill input buffer
 06F8: 86 0D               LDA     #$0D                      ; Rows left ...
 06FA: B7 01 B0            STA     $01B0                     ; ... until MORE
@@ -329,7 +298,7 @@ Returns
 0727: BD 08 FC            JSR     $08FC                     ;{} Print the error
 072A: 20 C9               BRA     $06F5                     ;{GetInputAndParse} Back for more
 ;
-072C: B6 01 E9            LDA     $01E9                     ; Action word type{*}
+072C: B6 01 E9            LDA     $01E9                     ; Action word type
 072F: 81 C0               CMPA    #$C0                      ; 11_000_000 means single word command
 0731: 27 C1               BEQ     $06F4                     ;{} Done
 0733: 8E 0F A2            LDX     #$0FA2                    ; "**verb** WHAT?"
@@ -337,10 +306,10 @@ Returns
 0739: 20 BA               BRA     $06F5                     ;{GetInputAndParse} Try input again
 ;
 ; Validate noun
-073B: BF 01 B4            STX     $01B4                     ; Save pointer to noun word data{*}
+073B: BF 01 B4            STX     $01B4                     ; Save pointer to noun word data
 073E: B6 01 B1            LDA     $01B1                     ; Was the last input an object and we asked for a verb?
 0741: 26 6F               BNE     $07B2                     ;{} Yes ... skip checking the noun (use what we have)
-0743: 86 FF               LDA     #$FF                      ; Location: backpack{*}
+0743: 86 FF               LDA     #$FF                      ; Location: backpack
 0745: B7 01 BC            STA     $01BC                     ; Parameter for GetObjectInfo compare
 0748: A6 80               LDA     ,X+                       ; Get object number
 074A: BF 01 B4            STX     $01B4                     ; Hold noun word data pointer
@@ -360,7 +329,7 @@ Returns
 076C: BD 06 66            JSR     $0666                     ;{GetObjectInfo} Find object
 076F: 35 04               PULS    B                         ; Restore B
 0771: 27 35               BEQ     $07A8                     ;{} Yes ... object is in room. Use it.
-0773: BE 01 B4            LDX     $01B4                     ; Restore word data pointer{*}
+0773: BE 01 B4            LDX     $01B4                     ; Restore word data pointer
 0776: 5A                  DECB                              ; All objects of this name tried?
 0777: 26 CA               BNE     $0743                     ;{} No ... keep looking for matching object
 ;
@@ -371,7 +340,7 @@ Returns
 0780: 8E 0F 3D            LDX     #$0F3D                    ; "YOU AREN'T CARRYING IT." (can't find noun in pack)
 0783: 20 19               BRA     $079E                     ;{} Print and back to try again
 ;
-0785: 8E 0F 2C            LDX     #$0F2C                    ; " I SEE NO "{*}
+0785: 8E 0F 2C            LDX     #$0F2C                    ; " I SEE NO "
 0788: BD 08 FC            JSR     $08FC                     ;{} Print it
 078B: 86 01               LDA     #$01                      ; Replace '?' with ...
 078D: B7 0F A0            STA     $0FA0                     ; ... no-CR terminator
@@ -380,41 +349,41 @@ Returns
 0796: 86 3F               LDA     #$3F                      ; Restore the ...
 0798: B7 0F A0            STA     $0FA0                     ; ... '?' at the end of the message
 079B: 8E 0F 36            LDX     #$0F36                    ; " HERE."
-079E: BD 08 FC            JSR     $08FC                     ;{} Print it{*}
+079E: BD 08 FC            JSR     $08FC                     ;{} Print it
 07A1: 4F                  CLRA                              ; Zero out ...
 07A2: B7 01 E7            STA     $01E7                     ; ... object
 07A5: 7E 06 F5            JMP     $06F5                     ;{GetInputAndParse} Back to try input again
 ;
 ; Found object
-07A8: BE 01 B4            LDX     $01B4                     ; Object data pointer{*}
+07A8: BE 01 B4            LDX     $01B4                     ; Object data pointer
 07AB: 30 1F               LEAX    -1,X                      ; Back up to start
 07AD: A6 84               LDA     ,X                        ; Get object number
 07AF: B7 01 E7            STA     $01E7                     ; Noun
-07B2: B6 01 E8            LDA     $01E8                     ; Verb{*}
+07B2: B6 01 E8            LDA     $01E8                     ; Verb
 07B5: 27 01               BEQ     $07B8                     ;{} Noun but no verb ... prompt for the verb
 07B7: 39                  RTS                               ; Got verb and noun. Done
 ;
-07B8: 8E 0F 55            LDX     #$0F55                    ; "WHAT DO YOU WANT ME TO DO WITH THE *****?"{*}
+07B8: 8E 0F 55            LDX     #$0F55                    ; "WHAT DO YOU WANT ME TO DO WITH THE *****?"
 07BB: BD 08 FC            JSR     $08FC                     ;{} Print message
 07BE: 86 01               LDA     #$01                      ; We got the object ....
 07C0: B7 01 B1            STA     $01B1                     ; ... will take just verb
 07C3: 7E 06 F5            JMP     $06F5                     ;{GetInputAndParse} Get user input and parse
 ;
 ; Parse the input line
-07C6: 8E 01 C6            LDX     #$01C6                    ; Start of input buffer{*}
+07C6: 8E 01 C6            LDX     #$01C6                    ; Start of input buffer
 07C9: 7F 01 B3            CLR     $01B3                     ; Nothing in buffer to start with
 07CC: 7F 01 E9            CLR     $01E9                     ; Grammar type
-07CF: 10 8E 3C 40         LDY     #$3C40                    ; Word table{*}
+07CF: 10 8E 3C 40         LDY     #$3C40                    ; Word table
 07D3: 10 BF 01 F0         STY     $01F0                     ; Hold pointer
 ;
 ; Skip spaces before a word
-07D7: A6 84               LDA     ,X                        ; Next in input{*}
+07D7: A6 84               LDA     ,X                        ; Next in input
 07D9: 81 20               CMPA    #$20                      ; Skip ...
 07DB: 26 04               BNE     $07E1                     ;{} ... over ...
 07DD: 30 01               LEAX    1,X                       ; ... white ...
 07DF: 20 F6               BRA     $07D7                     ;{} ... space
 ;
-07E1: BF 01 F2            STX     $01F2                     ; Start of token{*}
+07E1: BF 01 F2            STX     $01F2                     ; Start of token
 07E4: 4D                  TSTA                              ; End of buffer?
 07E5: 10 27 00 A2         LBEQ    $088B                     ;{} Yes ... done
 07E9: 86 01               LDA     #$01                      ; Flag that something ...
@@ -435,7 +404,7 @@ Returns
 080D: 31 21               LEAY    1,Y                       ; Next byte
 ;
 ; Check input against current word-table ptr
-080F: A6 A4               LDA     ,Y                        ; Get character{*}
+080F: A6 A4               LDA     ,Y                        ; Get character
 0811: A1 84               CMPA    ,X                        ; Matches?
 0813: 26 65               BNE     $087A                     ;{} Nope ... go to next
 0815: 30 01               LEAX    1,X                       ; Next in input
@@ -451,7 +420,7 @@ Returns
 082B: 4D                  TSTA                              ; End of user input?
 082C: 26 53               BNE     $0881                     ;{} No ... skip token data and try next token
 ;
-082E: A6 84               LDA     ,X                        ; Get character{*}
+082E: A6 84               LDA     ,X                        ; Get character
 0830: 81 20               CMPA    #$20                      ; A space?
 0832: 27 07               BEQ     $083B                     ;{} Yes ... found the end
 0834: 4D                  TSTA                              ; End of buffer?
@@ -460,7 +429,7 @@ Returns
 0839: 20 F3               BRA     $082E                     ;{} Until space or end
 ;
 ; Input word matches word-table
-083B: B6 01 F8            LDA     $01F8                     ; Original word data{*}
+083B: B6 01 F8            LDA     $01F8                     ; Original word data
 083E: 84 C0               ANDA    #$C0                      ; Upper two bits
 0840: 27 14               BEQ     $0856                     ;{} Go handle object data
 ;
@@ -475,7 +444,7 @@ Returns
 0854: 20 19               BRA     $086F                     ;{} Continue with next token if there is a space next
 ;
 ; Word is a noun (store info)
-0856: A6 A4               LDA     ,Y                        ; Get word data{*}
+0856: A6 A4               LDA     ,Y                        ; Get word data
 0858: B7 01 E7            STA     $01E7                     ; Store object number
 085B: 10 BF 01 B4         STY     $01B4                     ; Store pointer to word data
 085F: F7 01 B2            STB     $01B2                     ; Store size of object data (number of objects)
@@ -484,39 +453,39 @@ Returns
 0867: 8E 0F 78            LDX     #$0F78                    ; "WHAT DO YOU WANT ME TO DO WITH THE ***** ?"
 086A: BD 08 B6            JSR     $08B6                     ;{} Make the error message in case
 086D: 35 10               PULS    X                         ; Restore the pointer
-086F: A6 84               LDA     ,X                        ; Next in input buffer{*}
+086F: A6 84               LDA     ,X                        ; Next in input buffer
 0871: 81 20               CMPA    #$20                      ; A space means more to process
 0873: 35 20               PULS    Y                         ; Drop stacked word pointer
 0875: 10 27 FF 56         LBEQ    $07CF                     ;{} Parse next token
-0879: 39                  RTS                               ; Done{*}
+0879: 39                  RTS                               ; Done
 ;
 ; Skip over current entry in token table
-087A: 31 21               LEAY    1,Y                       ; Skip to ...{*}
+087A: 31 21               LEAY    1,Y                       ; Skip to ...
 087C: 7A 01 BA            DEC     $01BA                     ; ... end of ...
 087F: 26 F9               BNE     $087A                     ;{} ... token text
-0881: 31 21               LEAY    1,Y                       ; Skip to ...{*}
+0881: 31 21               LEAY    1,Y                       ; Skip to ...
 0883: 5A                  DECB                              ; ... end of ...
 0884: 26 FB               BNE     $0881                     ;{} ... token data
 0886: 35 10               PULS    X                         ; Restore pointer to start of input word
 0888: 7E 07 D7            JMP     $07D7                     ;{} Keep trying
 ;
-088B: B6 01 B3            LDA     $01B3                     ; Something in the buffer?{*}
+088B: B6 01 B3            LDA     $01B3                     ; Something in the buffer?
 088E: 26 E9               BNE     $0879                     ;{} Yes ... go handle it
 0890: 86 03               LDA     #$03                      ; Grammar type 3 means ...
 0892: B7 01 E9            STA     $01E9                     ; ... nothing in buffer
-0895: 39                  RTS                               ; Done{*}
+0895: 39                  RTS                               ; Done
 
 ; Skip leading space in front of token and then skip to next token.
 ; If there is another token go back and decode. Otherwise return.
-0896: 35 10               PULS    X                         ; Restore pointer to token{*}
+0896: 35 10               PULS    X                         ; Restore pointer to token
 0898: 7F 01 E8            CLR     $01E8                     ; Clear action word
 089B: 7F 01 E7            CLR     $01E7                     ; Clear object number
-089E: A6 84               LDA     ,X                        ; Character from token{*}
+089E: A6 84               LDA     ,X                        ; Character from token
 08A0: 81 20               CMPA    #$20                      ; Space?
 08A2: 26 04               BNE     $08A8                     ;{} No ... we found the token
 08A4: 30 01               LEAX    1,X                       ; Yes space. Skip ...
 08A6: 20 F6               BRA     $089E                     ;{} ... to start of token
-08A8: A6 84               LDA     ,X                        ; Character from token{*}
+08A8: A6 84               LDA     ,X                        ; Character from token
 08AA: 27 E9               BEQ     $0895                     ;{} End of buffer ... done
 08AC: 81 20               CMPA    #$20                      ; Space?
 08AE: 10 27 FF 1D         LBEQ    $07CF                     ;{} Yes ... start decoding next token
@@ -525,10 +494,10 @@ Returns
 
 ; Copy input word to 40-byte destination buffer. Fill end of the buffer
 ; with '@' characters which are ignored by printer routine.
-08B6: 1E 12               EXG     X,Y                       ; Destination to Y{*}
+08B6: 1E 12               EXG     X,Y                       ; Destination to Y
 08B8: BE 01 F2            LDX     $01F2                     ; Current word in parse buffer
 08BB: C6 28               LDB     #$28                      ; Max size
-08BD: A6 84               LDA     ,X                        ; Character from input word{*}
+08BD: A6 84               LDA     ,X                        ; Character from input word
 08BF: 27 0D               BEQ     $08CE                     ;{} End of buffer ... end of word
 08C1: 81 20               CMPA    #$20                      ; Space is end ...
 08C3: 27 09               BEQ     $08CE                     ;{} ... of word
@@ -537,27 +506,26 @@ Returns
 08C9: 5A                  DECB                              ; All room ...
 08CA: C1 01               CMPB    #$01                      ; ... taken?
 08CC: 26 EF               BNE     $08BD                     ;{} No ... keep going
-08CE: 86 40               LDA     #$40                      ; '@' characters are ignored by printing{*}
+08CE: 86 40               LDA     #$40                      ; '@' characters are ignored by printing
 08D0: A7 A0               STA     ,Y+                       ; Fill out ...
 08D2: 5A                  DECB                              ; ... rest of ...
 08D3: 26 F9               BNE     $08CE                     ;{} ... destination buffer
-08D5: 39                  RTS                               ; Done{*}
+08D5: 39                  RTS                               ; Done
 
 
-= Print Packed Message = #PrintPackedMessage
+;= Print Packed Message =
 
-Unpack a message (or multiple packed messages) and print.
+; Unpack a message (or multiple packed messages) and print.
+;
+; X = pointer to message structure
 
-X = pointer to message structure
-
-
-;PrintPackedMessage
+PrintPackedMessage:
 08D6: A6 84               LDA     ,X                        ; Get the length
 08D8: 27 FB               BEQ     $08D5                     ;{} None ... out
 08DA: 30 01               LEAX    1,X                       ; Skip over length
 08DC: 10 8E 01 C6         LDY     #$01C6                    ; Reuse input buffer
 08E0: BD 10 66            JSR     $1066                     ;{UnpackMessage} Unpack and print
-08E3: E6 84               LDB     ,X                        ; Get byte{*}
+08E3: E6 84               LDB     ,X                        ; Get byte
 08E5: 27 2C               BEQ     $0913                     ;{} 0 ... do CR
 08E7: C1 01               CMPB    #$01                      ; 1 ...
 08E9: 27 EA               BEQ     $08D5                     ;{} ... no CR
@@ -571,17 +539,17 @@ X = pointer to message structure
 08FA: 20 E7               BRA     $08E3                     ;{} No ... continue this packing
 
 
-= Print an Unpacked Message = #PrintUnpacked
+;= Print an Unpacked Message = #PrintUnpacked
 
-Print an uncompressed message pointed to by X.
+;Print an uncompressed message pointed to by X.
+;
+; Any '@' characters are ignored (allows for padding of words added into a message string).
+;
+; The messages is terminated by either a 0 or a 1. If the terminator is a 0 then a CR is 
+; added. If the terminator is a 1 then no CR is added.
 
-Any '@' characters are ignored (allows for padding of words added into a message string).
-
-The messages is terminated by either a 0 or a 1. If the terminator is a 0 then a CR is added. If the terminator is a 1 then no CR is added.
-
-
-;PrintUnpacked
-08FC: A6 84               LDA     ,X                        ; Get byte{*}
+PrintUnpacked:
+08FC: A6 84               LDA     ,X                        ; Get byte
 08FE: 27 13               BEQ     $0913                     ;{} End with CR
 0900: 81 01               CMPA    #$01                      ; Just stop printing ...
 0902: 27 D1               BEQ     $08D5                     ;{} ... with no CR
@@ -590,23 +558,22 @@ The messages is terminated by either a 0 or a 1. If the terminator is a 0 then a
 0908: 34 10               PSHS    X                         ; Save X
 090A: BD 09 45            JSR     $0945                     ;{PrintCharacterAutoWrap} A to screen
 090D: 35 10               PULS    X                         ; Restore X
-090F: 30 01               LEAX    1,X                       ; Next in message{*}
+090F: 30 01               LEAX    1,X                       ; Next in message
 0911: 20 E9               BRA     $08FC                     ;{} Keep going
 ;
 ; Print a CR
-0913: 86 0D               LDA     #$0D                      ; CR{*}
+0913: 86 0D               LDA     #$0D                      ; CR
 0915: BD 09 45            JSR     $0945                     ;{PrintCharacterAutoWrap} Print a CR
 0918: 7A 01 B0            DEC     $01B0                     ; Rows left before more
 091B: 2B 01               BMI     $091E                     ;{MorePrompt} Pause print out with MORE
 091D: 39                  RTS                               ; Done
 
 
-= !MorePrompt =
+;= MorePrompt =
 
-Print MORE and wait for key
+; Print MORE and wait for key
 
-
-;MorePrompt
+MorePrompt:
 091E: 34 74               PSHS    U,Y,X,B                   ;
 0920: 86 0D               LDA     #$0D                      ; Reset MORE ...
 0922: B7 01 B0            STA     $01B0                     ; ... row count
@@ -619,17 +586,17 @@ Print MORE and wait for key
 0934: 35 74               PULS    B,X,Y,U                   ;
 0936: 39                  RTS                               ;
 
-;ReadKey {*ReadKey}
+ReadKey:
 ; Read a key from keyboard
 ;
 0937: 34 20               PSHS    Y                         ; Save Y
-0939: 7C 01 EB            INC     $01EB                     ; Counter{*}
+0939: 7C 01 EB            INC     $01EB                     ; Counter
 093C: AD 9F A0 00         JSR     [$A000]                   ; Get a key
 0940: 27 F7               BEQ     $0939                     ;{} Keep going till we get one
 0942: 35 20               PULS    Y                         ; Restore
 0944: 39                  RTS                               ; Out
 
-;PrintCharacterAutoWrap {*PrintCharacterAutoWrap}
+PrintCharacterAutoWrap:
 ; Print character in A to screen. This handles auto word-wrapping and
 ; auto MORE prompting.
 ;
@@ -645,11 +612,11 @@ Print MORE and wait for key
 0958: 81 21               CMPA    #$21                      ; A '!' ?
 095A: 26 06               BNE     $0962                     ;{} No. Don't ignore space.
 ;
-095C: DE 88               LDU     >$88                      ; Back screen ...{*}
+095C: DE 88               LDU     >$88                      ; Back screen ...
 095E: 33 5F               LEAU    -1,U                      ; ... pointer up ...
 0960: DF 88               STU     >$88                      ; ... over ignored space
 ;
-0962: B7 02 07            STA     $0207                     ; Store last printed character{*}
+0962: B7 02 07            STA     $0207                     ; Store last printed character
 0965: AD 9F A0 02         JSR     [$A002]                   ; Print A to screen
 0969: 96 89               LDA     >$89                      ; LSB of screen position (we know MSB is a 4 or 5)
 096B: 81 FE               CMPA    #$FE                      ; Have we reached the end of the screen?
@@ -659,13 +626,13 @@ Print MORE and wait for key
 0974: 86 0D               LDA     #$0D                      ; CR ...
 0976: AD 9F A0 02         JSR     [$A002]                   ; ... to screen
 097A: 7A 01 B0            DEC     $01B0                     ; Rows left until MORE is needed
-097D: A6 C4               LDA     ,U                        ; Find the ...{*}
+097D: A6 C4               LDA     ,U                        ; Find the ...
 097F: 81 60               CMPA    #$60                      ; ... space before ...
 0981: 27 04               BEQ     $0987                     ;{} ... the last ...
 0983: 33 5F               LEAU    -1,U                      ; ... word ...
 0985: 20 F6               BRA     $097D                     ;{} ... on the line
 ;
-0987: 33 41               LEAU    1,U                       ; Now pointing to the last word on the line{*}
+0987: 33 41               LEAU    1,U                       ; Now pointing to the last word on the line
 0989: A6 C4               LDA     ,U                        ; Get next character in buffer
 098B: 81 60               CMPA    #$60                      ; Is it a space?
 098D: 27 1C               BEQ     $09AB                     ;{} Yes ... all done
@@ -674,27 +641,27 @@ Print MORE and wait for key
 0993: 81 60               CMPA    #$60                      ; Make sure ...
 0995: 25 02               BCS     $0999                     ;{} ... upper ...
 0997: 80 40               SUBA    #$40                      ; ... case
-0999: B7 02 07            STA     $0207                     ; Store last printed character{*}
+0999: B7 02 07            STA     $0207                     ; Store last printed character
 099C: AD 9F A0 02         JSR     [$A002]                   ; Print A to screen on new line
 09A0: 20 E5               BRA     $0987                     ;{} Move overhang to next line
 ;
-09A2: 34 20               PSHS    Y                         ; Send character ...{*}
+09A2: 34 20               PSHS    Y                         ; Send character ...
 09A4: AD 9F A0 02         JSR     [$A002]                   ; ... to ...
 09A8: 35 20               PULS    Y                         ; ... screen
 09AA: 39                  RTS                               ; Done
 ;
-09AB: 7D 01 B0            TST     $01B0                     ; Time for a MORE prompt?{*}
+09AB: 7D 01 B0            TST     $01B0                     ; Time for a MORE prompt?
 09AE: 10 2B FF 6C         LBMI    $091E                     ;{MorePrompt} Yes ... do it and out
 09B2: 39                  RTS                               ; Done
 
-;PromptAndReadLine {*PromptAndReadLine}
+PromptAndReadLine:
 ; Fill input buffer at 1C6 with user input line
 09B3: 86 3A               LDA     #$3A                      ; A ':'
 09B5: BD 09 A2            JSR     $09A2                     ;{} Print character without processing
 09B8: BD 0A 13            JSR     $0A13                     ;{} Print white-ish block
-09BB: 8E 01 C6            LDX     #$01C6                    ; Input buffer{*}
+09BB: 8E 01 C6            LDX     #$01C6                    ; Input buffer
 09BE: 7F 01 BA            CLR     $01BA                     ; Input buffer is empty
-09C1: 34 34               PSHS    Y,X,B                     ; Get ...{*}
+09C1: 34 34               PSHS    Y,X,B                     ; Get ...
 09C3: BD 09 37            JSR     $0937                     ;{ReadKey} ... key from ...
 09C6: 35 34               PULS    B,X,Y                     ; ... player
 09C8: 1F 89               TFR     A,B                       ; Hold original key
@@ -719,7 +686,7 @@ Print MORE and wait for key
 09F6: 20 C9               BRA     $09C1                     ;{} Take next key
 ;
 ; Backspace
-09F8: 30 1F               LEAX    -1,X                      ; Back the buffer up one{*}
+09F8: 30 1F               LEAX    -1,X                      ; Back the buffer up one
 09FA: 8C 01 C6            CMPX    #$01C6                    ; Already at the beginning?
 09FD: 25 BC               BCS     $09BB                     ;{} Yes ... ignore the backspace
 09FF: 8D 0B               BSR     $0A0C                     ;{} Store space character to cursor
@@ -728,27 +695,28 @@ Print MORE and wait for key
 0A06: 8D 0B               BSR     $0A13                     ;{} Show white-ish block cursor
 0A08: 20 B7               BRA     $09C1                     ;{} Loop back for next key
 ;
-0A0A: 6F 84               CLR     ,X                        ; New end of the input buffer{*}
-0A0C: 86 60               LDA     #$60                      ; Space character{*}
-0A0E: A7 9F 00 88         STA     [$0088]                   ; Store to cursor{*}
+0A0A: 6F 84               CLR     ,X                        ; New end of the input buffer
+0A0C: 86 60               LDA     #$60                      ; Space character
+0A0E: A7 9F 00 88         STA     [$0088]                   ; Store to cursor
 0A12: 39                  RTS                               ; Done
-0A13: 86 CF               LDA     #$CF                      ; White-ish block{*}
+0A13: 86 CF               LDA     #$CF                      ; White-ish block
 0A15: 20 F7               BRA     $0A0E                     ;{} Store to cursor and done
 
 
-= Script Commands =
+;= Script Commands =
 
-This lookup table holds the pointers to the individual script commands. Each command reads 1 or 2 bytes of data from the script. The number of extra bytes read is show for reference in the table.
+; This lookup table holds the pointers to the individual script commands. Each command 
+; reads 1 or 2 bytes of data from the script. The number of extra bytes read is show 
+; for reference in the table.
+;
+; Script Command Table
+;  -   b = 2 bytes ... message address
+;  -   c = 1 byte  ... object number
+;  -   d = 1 byte  ... room number
+;  -   e = 2 bytes ... target object and container object 
+;  -   f = 2 bytes ... target object and room number
 
-Script Command Table
- -   b = 2 bytes ... message address
- -   c = 1 byte  ... object number
- -   d = 1 byte  ... room number
- -   e = 2 bytes ... target object and container object 
- -   f = 2 bytes ... target object and room number
-
-
-;ScriptCommands
+ScriptCommands:
 ;    Address   Number Bytes Type Name
 0A17: 0B 05   ;   1     1    d   MoveToRoomX
 0A19: 0C 68   ;   2     1    c   AssertObjectXIsInPack
@@ -781,12 +749,11 @@ Script Command Table
 0A4F: 0F 1D   ;  29     0        JumpToTopOfGameLoop
 
 
-= After Every Step =
+;= After Every Step =
 
-This processing takes place after every user input.
- 1. Increment the count on the lamp and the number of turns.
- 2.  Warn the player if the lamp is going dim and change the batteries automatically.
-
+; This processing takes place after every user input.
+;  1. Increment the count on the lamp and the number of turns.
+;  2.  Warn the player if the lamp is going dim and change the batteries automatically.
 
 0A51: 86 0F               LDA     #$0F                      ; Lamp (lit version)
 0A53: 8E 18 8D            LDX     #$188D                    ; Object table
@@ -807,7 +774,7 @@ This processing takes place after every user input.
 0A73: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage} Print message
 0A76: 20 7A               BRA     $0AF2                     ;{} Continue
 ;
-0A78: C1 36               CMPB    #$36                      ; Really getting dim now?{*}
+0A78: C1 36               CMPB    #$36                      ; Really getting dim now?
 0A7A: 26 37               BNE     $0AB3                     ;{} No ... move on
 0A7C: 86 0F               LDA     #$0F                      ; Find ...
 0A7E: 8E 18 8D            LDX     #$188D                    ; ... lamp ...
@@ -833,7 +800,7 @@ This processing takes place after every user input.
 0AB1: 20 3F               BRA     $0AF2                     ;{} Continue
 ;
 ; Attempt to change batteries
-0AB3: BE 18 E8            LDX     $18E8                     ; Current lamp time{*}
+0AB3: BE 18 E8            LDX     $18E8                     ; Current lamp time
 0AB6: 8C 01 2C            CMPX    #$012C                    ; Time to change batteries?
 0AB9: 25 37               BCS     $0AF2                     ;{} No ... keep going
 0ABB: 86 FF               LDA     #$FF                      ; Pack
@@ -861,7 +828,7 @@ This processing takes place after every user input.
 0AEF: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage} Print message
 ;
 ; Bump the turn-counter in BCD format
-0AF2: B6 18 E7            LDA     $18E7                     ; Number of turns LSB{*}
+0AF2: B6 18 E7            LDA     $18E7                     ; Number of turns LSB
 0AF5: 8B 01               ADDA    #$01                      ; Add one
 0AF7: 19                  DAA                               ; Adjust BCD after addition
 0AF8: B7 18 E7            STA     $18E7                     ; New LSB
@@ -872,18 +839,21 @@ This processing takes place after every user input.
 0B04: 39                  RTS                               ; Done
 
 
-= Command 1: Move To Room X = #MoveToRoomX
+;= Command 1: Move To Room X = 
 
-This routine moves the player to a new room. If there is light in the new room or light in the old room then the move always works. Otherwise there is a 60% chance the move kills you.
+; This routine moves the player to a new room. If there is light in the new room or light 
+; in the old room then the move always works. Otherwise there is a 60% chance the move kills you.
+;
+; If there is light in the new room then the room description is printed.
+;
+; After every move the code checks the pack for treasures. If there are 2 or more treasures then 
+; the Mummy moves them all to room 53 (the hard-to-find room in the maze). Then the code moves the 
+; chest to room 53. Up till now the chest has been in room 0 (out of play). The only way to make the 
+; chest appear in the maze is to encounter the Mummy!
+;
+; Once the chest is in a room (any room) the Mummy no longer appears. You only see the Mummy once.
 
-If there is light in the new room then the room description is printed.
-
-After every move the code checks the pack for treasures. If there are 2 or more treasures then the Mummy moves them all to room 53 (the hard-to-find room in the maze). Then the code moves the chest to room 53. Up till now the chest has been in room 0 (out of play). The only way to make the chest appear in the maze is to encounter the Mummy!
-
-Once the chest is in a room (any room) the Mummy no longer appears. You only see the Mummy once.
-
-
-; MoveToRoomX
+MoveToRoomX:
 0B05: 35 10               PULS    X                         ; Processing cursor
 0B07: E6 80               LDB     ,X+                       ; Get room number
 0B09: 34 10               PSHS    X                         ; Update cursor
@@ -924,9 +894,9 @@ Once the chest is in a room (any room) the Mummy no longer appears. You only see
 0B5C: 7E 0F 18            JMP     $0F18                     ;{PrintScoreAndStop} Endless loop
 ;
 ; The move was successful
-0B5F: B6 18 E5            LDA     $18E5                     ; Current room ...{*}
+0B5F: B6 18 E5            LDA     $18E5                     ; Current room ...
 0B62: B7 18 EA            STA     $18EA                     ; ... is now the last room
-0B65: B6 01 BB            LDA     $01BB                     ; New ...{*}
+0B65: B6 01 BB            LDA     $01BB                     ; New ...
 0B68: B7 18 E5            STA     $18E5                     ; ... current room
 0B6B: BD 0B D2            JSR     $0BD2                     ;{PrintRoomDescription} Print room description
 0B6E: 86 2A               LDA     #$2A                      ; Object number for "Chest"
@@ -941,14 +911,14 @@ Once the chest is in a room (any room) the Mummy no longer appears. You only see
 0B7E: B7 01 BA            STA     $01BA                     ; Counter
 0B81: 8E 18 8D            LDX     #$188D                    ; Object table
 0B84: 5F                  CLRB                              ; Count
-0B85: A6 80               LDA     ,X+                       ; Get object data{*}
+0B85: A6 80               LDA     ,X+                       ; Get object data
 0B87: 84 20               ANDA    #$20                      ; Is this treasure?
 0B89: 27 07               BEQ     $0B92                     ;{} No ... skip this object
 0B8B: A6 84               LDA     ,X                        ; Is object ...
 0B8D: 81 FF               CMPA    #$FF                      ; ... in pack?
 0B8F: 26 01               BNE     $0B92                     ;{} No skip
 0B91: 5C                  INCB                              ; Increment the count
-0B92: 30 01               LEAX    1,X                       ; Next object{*}
+0B92: 30 01               LEAX    1,X                       ; Next object
 0B94: 7A 01 BA            DEC     $01BA                     ; Do ...
 0B97: 26 EC               BNE     $0B85                     ;{} ... all objects
 ;
@@ -959,7 +929,7 @@ Once the chest is in a room (any room) the Mummy no longer appears. You only see
 0B9D: 8E 18 8D            LDX     #$188D                    ; Object data
 0BA0: 86 2C               LDA     #$2C                      ; 44 to do
 0BA2: B7 01 BA            STA     $01BA                     ; Temporary counter
-0BA5: A6 80               LDA     ,X+                       ; Get object data{*}
+0BA5: A6 80               LDA     ,X+                       ; Get object data
 0BA7: 84 20               ANDA    #$20                      ; Is this treasure?
 0BA9: 27 0D               BEQ     $0BB8                     ;{} No ... skip it
 0BAB: A6 84               LDA     ,X                        ; Object location
@@ -968,7 +938,7 @@ Once the chest is in a room (any room) the Mummy no longer appears. You only see
 0BB1: 86 35               LDA     #$35                      ; Treasure room in the maze
 0BB3: A7 84               STA     ,X                        ; Move treasure there
 0BB5: 7A 18 EB            DEC     $18EB                     ; Minus one object in pack
-0BB8: 30 01               LEAX    1,X                       ; Next object{*}
+0BB8: 30 01               LEAX    1,X                       ; Next object
 0BBA: 7A 01 BA            DEC     $01BA                     ; All done?
 0BBD: 26 E6               BNE     $0BA5                     ;{} No ... go back
 ;
@@ -979,9 +949,9 @@ Once the chest is in a room (any room) the Mummy no longer appears. You only see
 0BC6: BD 06 90            JSR     $0690                     ;{MoveObject} ... treasure room
 0BC9: 8E 39 D6            LDX     #$39D6                    ; "Mummy steals your treasure ..."
 0BCC: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage} Print message
-0BCF: 7E 06 CB            JMP     $06CB                     ;{} OK{*}
+0BCF: 7E 06 CB            JMP     $06CB                     ;{} OK
 
-;PrintRoomDescription {*PrintRoomDescription}
+PrintRoomDescription:
 ; Print room description
 0BD2: B6 18 E5            LDA     $18E5                     ; Current room
 0BD5: 8E 17 EB            LDX     #$17EB                    ; Ambient light table
@@ -1001,9 +971,9 @@ Once the chest is in a room (any room) the Mummy no longer appears. You only see
 0BF8: 27 07               BEQ     $0C01                     ;{PrintObjectsInRoom} Yes ... print room contents
 0BFA: 8E 38 0C            LDX     #$380C                    ; "It is now pitch black ..."
 0BFD: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage} Print message
-0C00: 39                  RTS                               ; Done{*}
+0C00: 39                  RTS                               ; Done
 ; 
-;PrintObjectsInRoom {*PrintObjectsInRoom}
+PrintObjectsInRoom:
 ; Print object descriptions
 0C01: B6 18 E5            LDA     $18E5                     ; Current room
 0C04: 8E 11 2E            LDX     #$112E                    ; Room structures
@@ -1011,7 +981,7 @@ Once the chest is in a room (any room) the Mummy no longer appears. You only see
 0C0A: AE 84               LDX     ,X                        ; Get description text
 0C0C: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage} Unpack and print message
 0C0F: 5F                  CLRB                              ; Start with ...
-0C10: 5C                  INCB                              ; ... object 1{*}
+0C10: 5C                  INCB                              ; ... object 1
 0C11: B6 18 E5            LDA     $18E5                     ; Current room
 0C14: B7 01 BC            STA     $01BC                     ; For find routine
 0C17: C1 2C               CMPB    #$2C                      ; Done all objects?
@@ -1030,13 +1000,11 @@ Once the chest is in a room (any room) the Mummy no longer appears. You only see
 0C35: 35 04               PULS    B                         ; Restore count
 0C37: 20 D7               BRA     $0C10                     ;{} Do all objects
 
+;= Command 24: Move Object X To Current Room =
 
-= Command 24: Move Object X To Current Room = #MoveObjectXToCurrentRoom
+;Move the specified object to the current room.
 
-Move the specified object to the current room.
-
-
-;MoveObjectXToCurrentRoom
+MoveObjectXToCurrentRoom:
 0C39: 35 10               PULS    X                         ; Current action
 0C3B: B6 18 E5            LDA     $18E5                     ; Current room
 0C3E: B7 01 BC            STA     $01BC                     ; For find
@@ -1046,12 +1014,11 @@ Move the specified object to the current room.
 0C48: 7E 06 CB            JMP     $06CB                     ;{} Continue processing
 
 
-= Command 25: Move Object X Into Container Y = #MoveObjectXIntoContainerY
+;= Command 25: Move Object X Into Container Y =
 
-Move the specified object into the specified container object.
+; Move the specified object into the specified container object.
 
-
-;MoveObjectXIntoContainerY
+MoveObjectXIntoContainerY:
 0C4B: 35 10               PULS    X                         ; Get object number and container object number
 0C4D: EC 81               LDD     ,X++                      ; ... from cursor
 0C4F: 34 10               PSHS    X                         ; New cursor
@@ -1066,31 +1033,31 @@ Move the specified object into the specified container object.
 0C65: 7E 0D E8            JMP     $0DE8                     ;{PrintOK} Print "OK" and pass.
 
 
-= Command 2: Assert Object X Is In Pack = #AssertObjectXIsInPack
+;= Command 2: Assert Object X Is In Pack =
 
-Make sure the specified object is in the pack. The object may be contained by another object in the pack.
+; Make sure the specified object is in the pack. The object may be contained by 
+; another object in the pack.
 
-
-;AssertObjectXIsInPack
+AssertObjectXIsInPack:
 0C68: 35 10               PULS    X                         ; Action cursor
 0C6A: A6 80               LDA     ,X+                       ; Get value
 0C6C: 34 10               PSHS    X                         ; Update cursor
-0C6E: C6 FF               LDB     #$FF                      ; Backpack value{*}
+0C6E: C6 FF               LDB     #$FF                      ; Backpack value
 0C70: F7 01 BC            STB     $01BC                     ; For find
 0C73: BD 06 66            JSR     $0666                     ;{GetObjectInfo} Get object
 0C76: 27 03               BEQ     $0C7B                     ;{} Got it
 0C78: 7E 06 DF            JMP     $06DF                     ;{} Invalid
-0C7B: 7E 06 CB            JMP     $06CB                     ;{} Valid{*}
+0C7B: 7E 06 CB            JMP     $06CB                     ;{} Valid
 
 
-= Command 3: Assert Object X Is In Current Room Or Pack = #AssertObjectXIsInCurrentRoomOrPack
+;= Command 3: Assert Object X Is In Current Room Or Pack =
 
-Make sure the specified object is in the current room or in the pack. If so then it is something that player can "see".
+; Make sure the specified object is in the current room or in the pack. 
+; If so then it is something that player can "see".
+; 
+; The object may be contained by another object in the room or pack.
 
-The object may be contained by another object in the room or pack.
-
-
-;AssertObjectXIsInCurrentRoomOrPack
+AssertObjectXIsInCurrentRoomOrPack:
 0C7E: 35 10               PULS    X                         ; Action cursor
 0C80: A6 80               LDA     ,X+                       ; Get target object
 0C82: 34 10               PSHS    X                         ; Update cursor
@@ -1103,12 +1070,12 @@ The object may be contained by another object in the room or pack.
 0C95: 20 D7               BRA     $0C6E                     ;{} ... backpack
 
 
-= Command 26: Assert Object X Is In Current Room = #AssertObjectXIsInCurrentRoom
+;= Command 26: Assert Object X Is In Current Room =
 
-Make sure the specified object is in the current room (either directly or in a container in the room).
+; Make sure the specified object is in the current room (either directly or 
+; in a container in the room).
 
-
-;AssertObjectXIsInCurrentRoom
+AssertObjectXIsInCurrentRoom:
 0C97: 35 10               PULS    X                         ; Action cursor
 0C99: B6 18 E5            LDA     $18E5                     ; Current room
 0C9C: B7 01 BC            STA     $01BC                     ; For find routine
@@ -1116,60 +1083,57 @@ Make sure the specified object is in the current room (either directly or in a c
 0CA1: 34 10               PSHS    X                         ; Update cursor
 0CA3: BD 06 66            JSR     $0666                     ;{GetObjectInfo} Check for object in room
 0CA6: 27 D3               BEQ     $0C7B                     ;{} OK ... it's here
-0CA8: 7E 06 DF            JMP     $06DF                     ;{} Invalid{*}
+0CA8: 7E 06 DF            JMP     $06DF                     ;{} Invalid
 
 
-= Command 13: Assert Pack Is Empty Except For Emerald = #AssertPackIsEmptyExceptForEmerald
+;= Command 13: Assert Pack Is Empty Except For Emerald =
 
-Make sure pack is completely empty except for the emerald. In order to get the emerald through a "tight squeeze" everything else must be out of the pack.
+; Make sure pack is completely empty except for the emerald. In order to get 
+; the emerald through a "tight squeeze" everything else must be out of the pack.
 
-
-;AssertPackIsEmptyExceptForEmerald
+AssertPackIsEmptyExceptForEmerald:
 0CAB: 8E 18 8D            LDX     #$188D                    ; Object data
 0CAE: C6 01               LDB     #$01                      ; First object
-0CB0: 30 01               LEAX    1,X                       ; Point to room location{*}
+0CB0: 30 01               LEAX    1,X                       ; Point to room location
 0CB2: C1 1F               CMPB    #$1F                      ; This is the "emerald" object
 0CB4: 27 06               BEQ     $0CBC                     ;{} Don't check that object
 0CB6: A6 84               LDA     ,X                        ; Get location
 0CB8: 81 FF               CMPA    #$FF                      ; In backpack?
 0CBA: 27 EC               BEQ     $0CA8                     ;{} Yes ... fail
-0CBC: 30 01               LEAX    1,X                       ; Next object pointer{*}
+0CBC: 30 01               LEAX    1,X                       ; Next object pointer
 0CBE: 5C                  INCB                              ; Next object
 0CBF: C1 2D               CMPB    #$2D                      ; Done them all?
 0CC1: 26 ED               BNE     $0CB0                     ;{} No ... go back
 0CC3: 7E 06 CB            JMP     $06CB                     ;{} 
 
+;= Command 10: Assert Random Is Greater Than X = #AssertRoomIsGreaterThanX
 
-= Command 10: Assert Random Is Greater Than X = #AssertRoomIsGreaterThanX
+; Assert that the random count is greater than the specified value. 
+; If so then print "You have crawled around in some little holes ...".
+;
+; This is used for rooms that have random movement paths.
 
-Assert that the random count is greater than the specified value. If so then print "You have crawled around in some little holes ...".
-
-This is used for rooms that have random movement paths.
-
-
-;AssertRandomIsGreaterThanX
+AssertRandomIsGreaterThanX:
 0CC6: 35 10               PULS    X                         ; Cursor
 0CC8: E6 80               LDB     ,X+                       ; Comparrison threshold
 0CCA: 34 10               PSHS    X                         ; Update cursor
 0CCC: F1 01 EB            CMPB    $01EB                     ; Random number
 0CCF: 23 03               BLS     $0CD4                     ;{} Crossed threshold ... success!
-0CD1: 7E 06 DF            JMP     $06DF                     ;{} Didn't cross threshold ... failure!{*}
-0CD4: 8E 31 AC            LDX     #$31AC                    ; "You have crawled around in some little holes 
-
-..."{*}
+0CD1: 7E 06 DF            JMP     $06DF                     ;{} Didn't cross threshold ... failure!
+0CD4: 8E 31 AC            LDX     #$31AC                    ; "You have crawled around in some little holes ..."
 0CD7: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage} Print message
 0CDA: BD 0B D2            JSR     $0BD2                     ;{PrintRoomDescription} Print room description
 0CDD: 7E 06 CB            JMP     $06CB                     ;{} OK
 
 
-= Command 12: Move To Room X If It Was Last Room = #MoveToRoomXIfItWasLastRoom
+;= Command 12: Move To Room X If It Was Last Room =
 
-?? TODO is this ever used?
+; ?? TODO is this ever used?
+;
+; Move player to the specified room, but only if that room was the last room. 
+; This is for when you can only go back the way you came.
 
-Move player to the specified room, but only if that room was the last room. This is for when you can only go back the way you came.
-
-
-;MoveToRoomXIfItWasLastRoom
+MoveToRoomXIfItWasLastRoom:
 0CE0: 35 10               PULS    X                         ; Get cursor
 0CE2: E6 80               LDB     ,X+                       ; Target room
 0CE4: 34 10               PSHS    X                         ; Update cursor
@@ -1181,16 +1145,17 @@ Move player to the specified room, but only if that room was the last room. This
 0CF1: 7E 0B 05            JMP     $0B05                     ;{MoveToRoomX} Move to room N
 
 
-= Command 22: Get User Input Object = #GetUserInputObject
+;= Command 22: Get User Input Object =
 
-Move the specified object to the pack. If the object is already in the pack then print "You are already carying it". Either way this command ALWAYS passes.
+; Move the specified object to the pack. If the object is already in the 
+; pack then print "You are already carying it". 
+; Either way this command ALWAYS passes.
+;
+; This is the last script in the general GET handler.
+;
+; Note that "You are already carying it" is already being checked in the general input routine.
 
-This is the last script in the general GET handler.
-
-Note that "You are already carying it" is already being checked in the general input routine.
-
-
-;GetUserInputObject
+GetUserInputObject:
 0CF4: 86 FF               LDA     #$FF                      ; Pack value
 0CF6: B7 01 BC            STA     $01BC                     ; For find
 0CF9: B6 01 E7            LDA     $01E7                     ; Object from input (noun)
@@ -1199,16 +1164,15 @@ Note that "You are already carying it" is already being checked in the general i
 0D01: 8E 34 0B            LDX     #$340B                    ; "You are already carying it"
 0D04: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage} Print message
 0D07: 7E 06 CB            JMP     $06CB                     ;{} Passed
-0D0A: F6 01 E7            LDB     $01E7                     ; Requested object{*}
+0D0A: F6 01 E7            LDB     $01E7                     ; Requested object
 0D0D: 7E 0D AC            JMP     $0DAC                     ;{} Pick up object
 
 
-= Command 4: Print Message X = #PrintMessageX
+;= Command 4: Print Message X =
 
-Print the specified message (packed message).
+; Print the specified message (packed message).
 
-
-;PrintMessageX
+PrintMessageX:
 0D10: 35 20               PULS    Y                         ; Get cursor
 0D12: AE A1               LDX     ,Y++                      ; Get address of message
 0D14: 34 20               PSHS    Y                         ; Update cursor
@@ -1216,16 +1180,16 @@ Print the specified message (packed message).
 0D19: 7E 06 CB            JMP     $06CB                     ;{} Pass
 
 
-= Command 11: Drop Object X = #DropObjectX
+;= Command 11: Drop Object X =
 
-Move the specified object from the pack to the current room. This does assume the objectt is in the pack.
+; Move the specified object from the pack to the current room. 
+; This does assume the object is in the pack.
 
-
-;DropObjectX
+DropObjectX:
 0D1C: 35 10               PULS    X                         ; Get object ...
 0D1E: E6 80               LDB     ,X+                       ; ... from cursor
 0D20: 34 10               PSHS    X                         ; Restore cursor
-0D22: 7A 18 EB            DEC     $18EB                     ; No longer in our pack{*}
+0D22: 7A 18 EB            DEC     $18EB                     ; No longer in our pack
 0D25: B6 18 E5            LDA     $18E5                     ; Where the object is going
 0D28: B7 01 BC            STA     $01BC                     ; For the move
 0D2B: 1F 98               TFR     B,A                       ; FOr the move
@@ -1233,43 +1197,43 @@ Move the specified object from the pack to the current room. This does assume th
 0D30: 7E 0D E8            JMP     $0DE8                     ;{PrintOK} OK and out
 
 
-= Command 14: Move To Last Room = #MoveToLastRoom
+;= Command 14: Move To Last Room =
 
-Move the player to the "last" room. If there is no "last" room then print an error message.
+; Move the player to the "last" room. If there is no "last" 
+; room then print an error message.
+;
+; This command always passes.
 
-This command always passes.
-
-
-;MoveToLastRoom
+MoveToLastRoom:
 0D33: F6 18 EA            LDB     $18EA                     ; Last room number
 0D36: 27 0C               BEQ     $0D44                     ;{} There was no last ... error message
 0D38: F7 01 BB            STB     $01BB                     ; Hold this
 0D3B: B6 18 E5            LDA     $18E5                     ; Current room ...
 0D3E: B7 18 EA            STA     $18EA                     ; ... is now last-room-number
 0D41: 7E 0B 65            JMP     $0B65                     ;{} MoveToRoom ... past the room-number-update
-0D44: 8E 33 DE            LDX     #$33DE                    ; "I don't remember how you got here ..."{*}
+0D44: 8E 33 DE            LDX     #$33DE                    ; "I don't remember how you got here ..."
 0D47: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage} Print message
-0D4A: 7E 06 CB            JMP     $06CB                     ;{} Pass{*}
+0D4A: 7E 06 CB            JMP     $06CB                     ;{} Pass
 
 
-= Command 15: Print Inventory = #PrintInventory
+;= Command 15: Print Inventory =
 
-List all the objects in the pack. Object that are contained by objects in the pack are printed too.
+; List all the objects in the pack. Object that are contained by 
+; objects in the pack are printed too.
+;
+; This command always passes.
 
-This command always passes.
-
-
-;PrintInventory
+PrintInventory:
 0D4D: B6 18 EB            LDA     $18EB                     ; Do we even have anything?
 0D50: 26 09               BNE     $0D5B                     ;{} Yes ... there is something
 0D52: 8E 34 4F            LDX     #$344F                    ; "You're not carrying anything."
 0D55: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage} Print message
 0D58: 7E 06 CB            JMP     $06CB                     ;{} pass
 ;
-0D5B: 8E 34 65            LDX     #$3465                    ; "You are currently holding the following:"{*}
+0D5B: 8E 34 65            LDX     #$3465                    ; "You are currently holding the following:"
 0D5E: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage} Print message
 0D61: 5F                  CLRB                              ; Starting before object 1
-0D62: 86 FF               LDA     #$FF                      ; Pack value{*}
+0D62: 86 FF               LDA     #$FF                      ; Pack value
 0D64: B7 01 BC            STA     $01BC                     ; For find
 0D67: 5C                  INCB                              ; Next object
 0D68: 1F 98               TFR     B,A                       ; To A
@@ -1285,7 +1249,7 @@ This command always passes.
 0D7E: BD 06 7C            JSR     $067C                     ;{TwoTableOffset} Offset to object description
 0D81: 35 04               PULS    B                         ; Restore
 0D83: AE 84               LDX     ,X                        ; Pointer to 1st in message pair
-0D85: A6 80               LDA     ,X+                       ; Find second ...{*}
+0D85: A6 80               LDA     ,X+                       ; Find second ...
 0D87: 26 FC               BNE     $0D85                     ;{} ... message
 0D89: 34 04               PSHS    B                         ; Hold object number
 0D8B: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage} Print object description
@@ -1293,24 +1257,22 @@ This command always passes.
 0D90: 20 D0               BRA     $0D62                     ;{} Do all objects
 
 
-= Command 16: Print Room Description = #PrintRoomDescription
+; = Command 16: Print Room Description =
 
-Print the current room description and contained objects. If the room is dark then print "it is dark".
+; Print the current room description and contained objects. If the room is dark then print "it is dark".
+;
+; This command always passes.
 
-This command always passes.
-
-
-;PrintRoomDescription
+C_PrintRoomDescription:
 0D92: BD 0B D2            JSR     $0BD2                     ;{PrintRoomDescription} Print room description
-0D95: 7E 06 CB            JMP     $06CB                     ;{} {*}
+0D95: 7E 06 CB            JMP     $06CB                     ;{} 
 
 
-= Command 17: Assert Object X Matches User Input = #AssertObjectXMatchesUserInput
+;= Command 17: Assert Object X Matches User Input =
 
-Make sure the input noun matches the specified object.
+; Make sure the input noun matches the specified object.
 
-
-;AssertObjectXMatchesUserInput
+AssertObjectXMatchesUserInput:
 0D98: 35 10               PULS    X                         ; Get the object ...
 0D9A: E6 80               LDB     ,X+                       ; ... from the cursor
 0D9C: 34 10               PSHS    X                         ; Update cursor
@@ -1319,18 +1281,17 @@ Make sure the input noun matches the specified object.
 0DA3: 7E 06 DF            JMP     $06DF                     ;{} Fail
 
 
-= Command 18: Get Object From Room = #GetObjectFromRoom
+;= Command 18: Get Object From Room =
 
-Get the specified object from the current room if there is space in the pack and the object is packable.
- - Pack only holds 8 things.
- - Some objects are flagged as "non pick-up-able"
+; Get the specified object from the current room if there is space in the pack and the object is packable.
+;  - Pack only holds 8 things.
+;  - Some objects are flagged as "non pick-up-able"
 
-
-;GetObjectFromRoom
+GetObjectFromRoom:
 0DA6: 35 10               PULS    X                         ; Get the object's description from the ...
 0DA8: E6 80               LDB     ,X+                       ; ... cursor
 0DAA: 34 10               PSHS    X                         ; Update the cursor
-0DAC: 1F 98               TFR     B,A                       ; Needed here by GetObjectInfo{*}
+0DAC: 1F 98               TFR     B,A                       ; Needed here by GetObjectInfo
 0DAE: F7 01 BB            STB     $01BB                     ; Need again in a moment
 0DB1: BD 06 66            JSR     $0666                     ;{GetObjectInfo} Find the object
 0DB4: A6 84               LDA     ,X                        ; Object info
@@ -1338,14 +1299,14 @@ Get the specified object from the current room if there is space in the pack and
 0DB8: 26 09               BNE     $0DC3                     ;{} Yes ... keep going
 0DBA: 8E 34 82            LDX     #$3482                    ; "Don't be rediculous."
 0DBD: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage} Print message
-0DC0: 7E 06 CB            JMP     $06CB                     ;{} Done{*}
-0DC3: B6 18 EB            LDA     $18EB                     ; How many do we have?{*}
+0DC0: 7E 06 CB            JMP     $06CB                     ;{} Done
+0DC3: B6 18 EB            LDA     $18EB                     ; How many do we have?
 0DC6: 81 08               CMPA    #$08                      ; Already got 8 things?
 0DC8: 25 08               BCS     $0DD2                     ;{} We got less ... go on and take it
 0DCA: 8E 34 20            LDX     #$3420                    ; "You can't carry anything more."
 0DCD: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage} Print message
 0DD0: 20 EE               BRA     $0DC0                     ;{} And out
-0DD2: 7C 18 EB            INC     $18EB                     ; Got another one{*}
+0DD2: 7C 18 EB            INC     $18EB                     ; Got another one
 0DD5: 86 FF               LDA     #$FF                      ; Pack value
 0DD7: B7 01 BC            STA     $01BC                     ; For function
 0DDA: B6 01 BB            LDA     $01BB                     ; Object number
@@ -1353,33 +1314,31 @@ Get the specified object from the current room if there is space in the pack and
 0DE0: 20 06               BRA     $0DE8                     ;{PrintOK} Print "OK" and out
 
 
-= Command 23: Drop User Input Object = #DropUserInputObject
+;= Command 23: Drop User Input Object =
 
-Drop the object the user requested from the pack.
+; Drop the object the user requested from the pack.
 
-
-;DropUserInputObject
+DropUserInputObject:
 0DE2: F6 01 E7            LDB     $01E7                     ; Value from user word
 0DE5: 7E 0D 22            JMP     $0D22                     ;{} Drop object
 
 
-= Command 20: Print OK = #PrintOK
+;= Command 20: Print OK =
 
-Print "OK".
+; Print "OK".
 
-
-;PrintOK
+PrintOK:
 0DE8: 8E 33 DA            LDX     #$33DA                    ; "OK"
 0DEB: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage} Print message
-0DEE: 7E 06 CB            JMP     $06CB                     ;{} {*}
+0DEE: 7E 06 CB            JMP     $06CB                     ;{} 
 
 
-= Command 21: Move Object X To Room Y = #MoveObjectXToRoomY
+;= Command 21: Move Object X To Room Y =
 
-Move the specified object to the specified room. This removes the target object from any container it might be in.
+; Move the specified object to the specified room. This removes 
+; the target object from any container it might be in.
 
-
-;MoveObjectXToRoomY
+MoveObjectXToRoomY:
 0DF1: 35 10               PULS    X                         ; Cursor
 0DF3: EC 81               LDD     ,X++                      ; Get object number and room number
 0DF5: 34 10               PSHS    X                         ; Update cursor
@@ -1394,16 +1353,15 @@ Move the specified object to the specified room. This removes the target object 
 0E0B: 20 E1               BRA     $0DEE                     ;{} Pass
 
 
-= Print Score =
+;= Print Score =
 
-
-;Printscore
+Printscore:
 0E0D: 7F 02 08            CLR     $0208                     ; Calculated score LSB
 0E10: 7F 02 09            CLR     $0209                     ; Calculated score MSB
 0E13: 8E 18 8D            LDX     #$188D                    ; Object data
 0E16: C6 2C               LDB     #$2C                      ; Object ...
 0E18: F7 01 BA            STB     $01BA                     ; ... count
-0E1B: E6 80               LDB     ,X+                       ; Get object data{*}
+0E1B: E6 80               LDB     ,X+                       ; Get object data
 0E1D: C4 20               ANDB    #$20                      ; Is it a treasure object?
 0E1F: 27 1E               BEQ     $0E3F                     ;{} No ... skip
 0E21: 86 20               LDA     #$20                      ; 20 points (BCD) ...
@@ -1413,14 +1371,14 @@ Move the specified object to the specified room. This removes the target object 
 0E29: C1 FF               CMPB    #$FF                      ; 5 points ...
 0E2B: 26 12               BNE     $0E3F                     ;{} ... if object ...
 0E2D: 86 05               LDA     #$05                      ; ... is in pack
-0E2F: BB 02 08            ADDA    $0208                     ; Add to ...{*}
+0E2F: BB 02 08            ADDA    $0208                     ; Add to ...
 0E32: 19                  DAA                               ; ... BCD ...
 0E33: B7 02 08            STA     $0208                     ; ... score
 0E36: B6 02 09            LDA     $0209                     ; Extend ...
 0E39: 89 00               ADCA    #$00                      ; ... overflow ...
 0E3B: 19                  DAA                               ; ... into ...
 0E3C: B7 02 09            STA     $0209                     ; ... MSB
-0E3F: 30 01               LEAX    1,X                       ; Next obect{*}
+0E3F: 30 01               LEAX    1,X                       ; Next obect
 0E41: 7A 01 BA            DEC     $01BA                     ; All tested?
 0E44: 26 D5               BNE     $0E1B                     ;{} Keep testing
 0E46: 86 20               LDA     #$20                      ; Space ..
@@ -1439,28 +1397,27 @@ Move the specified object to the specified room. This removes the target object 
 0E6C: 7E 08 FC            JMP     $08FC                     ;{} Print message and return
 ;
 ; Two digit BCD to ASCII
-0E6F: 1F 89               TFR     A,B                       ; Value to A{*}
+0E6F: 1F 89               TFR     A,B                       ; Value to A
 0E71: 47                  ASRA                              ; First ...
 0E72: 47                  ASRA                              ; ... the ...
 0E73: 47                  ASRA                              ; ... upper ...
 0E74: 47                  ASRA                              ; Digit
 0E75: BD 0E 7A            JSR     $0E7A                     ;{} Convert it
 0E78: 1F 98               TFR     B,A                       ; Original back ... do lower digit
-0E7A: 84 0F               ANDA    #$0F                      ; Only lower 4 bits{*}
+0E7A: 84 0F               ANDA    #$0F                      ; Only lower 4 bits
 0E7C: 8B 30               ADDA    #$30                      ; Convert to ASCII number
 0E7E: A7 80               STA     ,X+                       ; Store character in buffer
 0E80: 39                  RTS                               ; Done
 
 
-= Command 28: Save Game = #SaveGame
+;= Command 28: Save Game =
 
-Save the current state of the game to tape.
+; Save the current state of the game to tape.
 
-
-;SaveGame
+SaveGame:
 0E81: 8E 3C 27            LDX     #$3C27                    ; "Ready Cassette"
 0E84: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage} Print message
-0E87: BD 09 37            JSR     $0937                     ;{ReadKey} Get a key{*}
+0E87: BD 09 37            JSR     $0937                     ;{ReadKey} Get a key
 0E8A: 81 08               CMPA    #$08                      ; Backspace ...
 0E8C: 27 2A               BEQ     $0EB8                     ;{} ... abort
 0E8E: 81 0D               CMPA    #$0D                      ; Wait ...
@@ -1480,18 +1437,17 @@ Save the current state of the game to tape.
 0EAF: 97 7D               STA     >$7D                      ; ... 0x82 bytes
 0EB1: AD 9F A0 08         JSR     [$A008]                   ; Write to tape
 0EB5: BD 0F 0C            JSR     $0F0C                     ;{} Turn motor off
-0EB8: 7E 06 CB            JMP     $06CB                     ;{} {*}
+0EB8: 7E 06 CB            JMP     $06CB                     ;{} 
 
 
-= Command 27: Load Game = #LoadGame
+; = Command 27: Load Game =
 
-Load the state of the game from tape.
+; Load the state of the game from tape.
 
-
-;LoadGame
+LoadGame:
 0EBB: 8E 3C 27            LDX     #$3C27                    ; "Ready Cassette"
 0EBE: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage} Print message
-0EC1: BD 09 37            JSR     $0937                     ;{ReadKey} Wait on a key{*}
+0EC1: BD 09 37            JSR     $0937                     ;{ReadKey} Wait on a key
 0EC4: 81 08               CMPA    #$08                      ; Backspace ...
 0EC6: 27 F0               BEQ     $0EB8                     ;{} ... abort
 0EC8: 81 0D               CMPA    #$0D                      ; Wait ...
@@ -1516,51 +1472,50 @@ Load the state of the game from tape.
 0EF6: BD 0B D2            JSR     $0BD2                     ;{PrintRoomDescription} Print room description
 0EF9: 10 CE 03 FF         LDS     #$03FF                    ; Reset stack ...
 0EFD: 7E 06 35            JMP     $0635                     ;{MainLoop} ... and pickup at top of game loop
-0F00: BD 0F 0C            JSR     $0F0C                     ;{} Turn motor off{*}
+0F00: BD 0F 0C            JSR     $0F0C                     ;{} Turn motor off
 0F03: 8E 3C 33            LDX     #$3C33                    ; "Checksum Error"
 0F06: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage} Print messagge
 0F09: 7E 0E BB            JMP     $0EBB                     ;{LoadGame} Try again
-0F0C: 86 34               LDA     #$34                      ; Motor ...{*}
+0F0C: 86 34               LDA     #$34                      ; Motor ...
 0F0E: B7 FF 21            STA     $FF21                     ; ... off
 0F11: 39                  RTS                               ;
 
 
-= Command 8: Print Score = #PrintScore
+;= Command 8: Print Score =
 
-Print the current score.
+; Print the current score.
 
 
-;PrintScore
+PrintScore:
 0F12: BD 0E 0D            JSR     $0E0D                     ;{PrintScore} Print score
 0F15: 7E 06 CB            JMP     $06CB                     ;{} 
 
+;= Command 5: Print Score And Stop =
+;= Command 9: Print Score And Stop =
 
-= Command 5: Print Score And Stop = #PrintScoreAndStop
-= Command 9: Print Score And Stop = #PrintScoreAndStop
+; Print the score and go into an endless loop. When the player dies 
+; the scripts use command 5. When the player quits the scripts 
+; use command 9.
 
-Print the score and go into an endless loop. When the player dies the scripts use command 5. When the player quits the scripts use command 9.
-
-
-;PrintScoreAndStop
+PrintScoreAndStop:
 0F18: BD 0E 0D            JSR     $0E0D                     ;{PrintScore} Print score
-0F1B: 20 FE               BRA     $0F1B                     ;{} Endless loop{*}
+0F1B: 20 FE               BRA     $0F1B                     ;{} Endless loop
 
+;= Command 29: Jump To Top Of Game Loop =
 
-= Command 29: Jump To Top Of Game Loop = #JumpToTopOfLoop
+; This is what the old PLUGH command does.
 
-This is what the old PLUGH command does.
-
-
-;JumpToTopOfGameLoop
+JumpToTopOfGameLoop:
 0F1D: 10 CE 03 FF         LDS     #$03FF                    ; Forget where we came from ...
 0F21: 7E 06 35            JMP     $0635                     ;{MainLoop} ... and go back to top of game loop
 
 
-= General Error Messages =
+;= General Error Messages =
 
-The code alternates these for general input failures. The first one used is the second message.
+; The code alternates these for general input failures. The first 
+; one used is the second message.
 
-
+AlternatingErrors:
 ; Alternating messages
 0F24: 0F CA  ; Pointer to "WHAT?"
 0F26: 0F D1  ; Pointer to "I DON'T KNOW THAT WORD."
@@ -1568,8 +1523,7 @@ The code alternates these for general input failures. The first one used is the 
 0F2A: 0F FD  ; Pointer to "I DON'T KNOW WHAT YOU MEAN."
 
 
-= Specific Error Messages =
-
+;= Specific Error Messages =
 
 ; "I SEE NO ",1
 0F2C:  49 20 53 45 45 20 4E 4F 20 01 
@@ -1608,10 +1562,9 @@ The code alternates these for general input failures. The first one used is the 
 0FFD:  49 20 44 4F 4E 27 54 20 4B 4E 4F 57 20 57 48 41 54 20 59 4F 55 20 4D 45 41 4E 2E 00 
 
 
-= General Messages =
+;= General Messages =
 
-
-;  " &lt;MORE&gt;",1
+;  " <MORE>",1
 1019:  20 3C 4D 4F 52 45 3E 01 
 
 ; "WELCOME TO PYRAMID!!",0
@@ -1627,23 +1580,23 @@ The code alternates these for general input failures. The first one used is the 
 105A:  20 20 20 20 20 54 55 52 4E 53 2E 00 
 
 
-= Unpack Message = 
+; = Unpack Message = 
 
-Unpack message pointed to by X and print to screen. A = loop count (number of 2 bytes).
+; Unpack message pointed to by X and print to screen. 
+; A = loop count (number of 2 bytes).
+;
+; Every 2 bytes holds 3 characters. Each character can be from 0 to 39.
+;
+; 40*40*40 = 64000 ... totally ingenious.
+;
+; TODO Decode this
 
-Every 2 bytes holds 3 characters. Each character can be from 0 to 39.
-
-40*40*40 = 64000 ... totally ingenious.
-
-TODO Decode this
-
-
-;UnpackMessage
+UnpackMessage:
 1066: B7 01 C1            STA     $01C1                     ;
 1069: 86 01               LDA     #$01                      ;
 106B: B7 01 C5            STA     $01C5                     ;
 ;
-106E: 10 8E 02 04         LDY     #$0204                    ;{*}
+106E: 10 8E 02 04         LDY     #$0204                    ;
 1072: C6 03               LDB     #$03                      ;
 1074: F7 01 C2            STB     $01C2                     ;
 1077: A6 80               LDA     ,X+                       ; Next in message
@@ -1652,14 +1605,14 @@ TODO Decode this
 107E: B7 01 FD            STA     $01FD                     ; Save it
 1081: 31 23               LEAY    3,Y                       ;
 ;
-1083: CE 00 28            LDU     #$0028                    ; Number of characters in map{*}
+1083: CE 00 28            LDU     #$0028                    ; Number of characters in map
 1086: FF 01 C3            STU     $01C3                     ;
 1089: 86 11               LDA     #$11                      ; 17 passes
 108B: B7 02 03            STA     $0203                     ;
 108E: 7F 01 FF            CLR     $01FF                     ;
 1091: 7F 02 00            CLR     $0200                     ;
 ;
-1094: 79 01 FE            ROL     $01FE                     ;{*}
+1094: 79 01 FE            ROL     $01FE                     ;
 1097: 79 01 FD            ROL     $01FD                     ;
 109A: 7A 02 03            DEC     $0203                     ; All 17 shifts done? (Doesn't change C)
 109D: 27 39               BEQ     $10D8                     ;{} Yes ... done with next character
@@ -1679,17 +1632,17 @@ TODO Decode this
 10C3: FD 01 FF            STD     $01FF                     ;
 10C6: 20 06               BRA     $10CE                     ;{} 
 ;
-10C8: FC 02 01            LDD     $0201                     ;{*}
+10C8: FC 02 01            LDD     $0201                     ;
 10CB: FD 01 FF            STD     $01FF                     ;
 ; Compliment C flag and continue
-10CE: 25 04               BCS     $10D4                     ;{} {*}
+10CE: 25 04               BCS     $10D4                     ;{} 
 10D0: 1A 01               ORCC    #$01                      ; Clear carry ...
 10D2: 20 C0               BRA     $1094                     ;{} ... and continue
-10D4: 1C FE               ANDCC   #$FE                      ; Set carry ...{*}
+10D4: 1C FE               ANDCC   #$FE                      ; Set carry ...
 10D6: 20 BC               BRA     $1094                     ;{} ... and continue
 
 ; Add the character in 0200 to the buffer
-10D8: FC 01 FF            LDD     $01FF                     ; Character (0 in MSB){*}
+10D8: FC 01 FF            LDD     $01FF                     ; Character (0 in MSB)
 10DB: C3 11 06            ADDD    #$1106                    ; Offset into character map
 10DE: 1F 03               TFR     D,U                       ; Get character ...
 10E0: A6 C4               LDA     ,U                        ; ... from map
@@ -1699,7 +1652,7 @@ TODO Decode this
 ;
 10E9: 10 8E 02 04         LDY     #$0204                    ; Expansion buffer
 10ED: C6 03               LDB     #$03                      ; 3 characters
-10EF: A6 A0               LDA     ,Y+                       ; Get next byte{*}
+10EF: A6 A0               LDA     ,Y+                       ; Get next byte
 10F1: 34 04               PSHS    B                         ; Save B
 10F3: BD 09 45            JSR     $0945                     ;{PrintCharacterAutoWrap} Print A to screen
 10F6: 35 04               PULS    B                         ; Restore B
@@ -1711,15 +1664,13 @@ TODO Decode this
 1105: 39                  RTS                               ; Done
 
 
+= Data Section =
 
+; Data from here down (no code).
 
-----
-''' Data from here down (no code). '''
+;== Character Translation Table ==
 
-= Character Translation Table =
-
-The packed messages in the game are limited to these characters.
-
+; The packed messages in the game are limited to these characters.
 
 ; Character translation table
 ;     ?  !  2  .  "  '  &lt;  &gt;  /  0  3  A  B  C  D  E
@@ -1729,13 +1680,13 @@ The packed messages in the game are limited to these characters.
 ;     V  W  X  Y  Z  -  ,  .
 1126: 56 57 58 59 5A 2D 2C 2E 
 
+;== Room Table ==
 
-= Room Table =
+; Each entry is 4 bytes. The first word is the packed room description. 
+; The second word is the room's command script.
 
-Each entry is 4 bytes. The first word is the packed room description. The second word is the room's command script.
 
-
-;RoomTable
+RoomTable:
 ;
 ; 81 rooms numbered starting at 1
 ;      Description   Script
@@ -1822,12 +1773,12 @@ Each entry is 4 bytes. The first word is the packed room description. The second
 126E:   29 BC          17 64  ; 81
 
 
-= Room Scripts =
+;== Room Scripts ==
 
-These are the specific room scripts. The user input is tried against the room script first and then the general handler script.
+; These are the specific room scripts. The user input is tried against 
+; the room script first and then the general handler script.
 
-{{{#!DataBlock
-;RoomScripts
+RoomScripts:
 
 ; room_1 : {
 ;   desc : "YOU ARE STANDING BEFORE THE ENTRANCE OF A PYRAMID. AROUND YOU IS A DESERT.",
@@ -3018,13 +2969,11 @@ These are the specific room scripts. The user input is tried against the room sc
 17EA: FF        
 
 
-= Ambient Light Table =
+;== Ambient Light Table ==
 
-2 bytes per room
- - 0x4000 means there is light in the room (no need for a lamp)
- - 0x0000 means you better have a lamp
-
-
+; 2 bytes per room
+;  - 0x4000 means there is light in the room (no need for a lamp)
+;  - 0x0000 means you better have a lamp
 
 17EB:   40 00  ;  1
 17ED:   40 00  ;  2
@@ -3109,27 +3058,26 @@ These are the specific room scripts. The user input is tried against the room sc
 188B: 00 00    ; 81
 
 
-= Object Data =
+;== Object Data ==
 
-This two-byte table contains the object's attributes ("isTreasure" and "isGettable") and the object's current location (a room or inside another object).
+; This two-byte table contains the object's attributes ("isTreasure" and "isGettable") 
+; and the object's current location (a room or inside another object).
+;
+; The code references the objects by numeric id, but I have given them unique names 
+; in the table below. All object names begin with "#". All word names begin with "_".
+;
+; The format of the two bytes are:
+;
+;   MCT----- RRRRRRRR
+;
+;   M - if set, the second byte is an object number (container).
+;       if clear, the second byte is a room number. 
+;   C - if set, object can be picked up.
+;   T - if set, object is treasure.
+;
+;   RRRRRRRR - Second byte is the object's location (containing object or room number).
 
-The code references the objects by numeric id, but I have given them unique names in the table below. All object names begin with "#". All word names begin with "_".
-
-The format of the two bytes are:
-{{{
- MCT----- RRRRRRRR
-
- M - if set, the second byte is an object number (container).
-     if clear, the second byte is a room number. 
- C - if set, object can be picked up.
- T - if set, object is treasure.
-
- RRRRRRRR - Second byte is the object's location (containing object or room number).
-
-
-
-
-;ObjectData {*ObjectData}
+ObjectData:
 ; Object data table (2 bytes)
 ;              MCT              # Name             Start location
 188D: 00 00  ; 000_00000 00  ;  1 #bridge_15          0 (nowhere)
@@ -3177,11 +3125,9 @@ The format of the two bytes are:
 18E1: 60 47  ; 011_00000 47  ; 43 #NEST             Room 71
 18E3: 40 00  ; 010_00000 00  ; 44 #LAMP_dead          0
 
+;== Game Variables ==
 
-= Game Variables =
-
-
-;GameVariables {*GameVariables}
+GameVariables:
 18E5: 01 ; RoomNumber (start in room 1)
 18E6: 00 ; TurnCountMSB (BCD format)
 18E7: 00 ; TurnCountLSB (BCD format)
@@ -3192,10 +3138,9 @@ The format of the two bytes are:
 18EC: 00 ; * NOT USED *   
 
 
-= Object Table =
+;== Object Table ==
 
-
-;ObjectDescriptions {*ObjectDescriptions}
+ObjectDescriptions:
 ; Object descriptions (44 objects)
 ; For packable objects each slot points to a message pair. The first is the long
 ; description and the second is the short (if any).
@@ -3245,13 +3190,11 @@ The format of the two bytes are:
 1941: 2F 6B     ; 43 #NEST             Nest of golden eggs
 1943: 2B 46     ; 44 #LAMP_dead        Lamp (dead)
 
+;== General Command Handler ==
 
-= General Command Handler =
+; This script is used when the room doesn't have a script for the input command.
 
-This script is used when the room doesn't have a script for the input command.
-
-{{{#!DataBlock
-;GeneralCommandHandler
+GeneralCommandHandler:
 1945: 01 03     ; _n : [
 1947: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION."],
 194A: 02 03     ; _e : [
@@ -3488,8 +3431,7 @@ This script is used when the room doesn't have a script for the input command.
 1B64: 1C        ;    "SaveGame"]
 1B65: 00
 
-= Room Descriptions =
-
+;== Room Descriptions ==
 
 ;Description for room: 1
 ; YOU ARE STANDING BEFORE THE ENTRANCE OF A PYRAMID. AROUND YOU IS A DESERT.[CR]
@@ -3833,10 +3775,9 @@ This script is used when the room doesn't have a script for the input command.
 2B2E: 60 57 A7 7B 14 55 A4 09 B7 47 5E 96 D7 D6 B5 D6 9C DB 72 47 B9 77 BE 00
 
 
-= Object Descriptions =
+;== Object Descriptions ==
 
-These are the long (in a room description) and short (in the inventory) strings for each object.
-
+; These are the long (in a room description) and short (in the inventory) strings for each object.
 
 ;Description for objects: 14 "Lamp (not lit)",44 "Lamp (dead)"
 ; THERE IS A SHINY BRASS LAMP NEARBY.[CR]
@@ -4058,8 +3999,7 @@ These are the long (in a room description) and short (in the inventory) strings 
 307D: 05 C3 6D FF B9 10 99 D2 6A 94 5F 4C 00
 
 
-= Game Specific Messages =
-
+;== Game Specific Messages ==
 
 ; YOU ARE AT THE BOTTOM OF THE PIT WITH A BROKEN NECK.[CR]
 308A: 11 C7 DE 94 14 43 5E 16 BC DB 72 06 4F 7F BF B8 16 82 17 52 5E 73 7B 56 D1 03 71 BC 14 97 9F 90
@@ -4361,20 +4301,30 @@ These are the long (in a room description) and short (in the inventory) strings 
 3C3F: 00
 
 
-= Word Table =
+;== Word Table ==
 
-Pyramid has a table of known words. Every word has a grammar that describes how it can be used. For instance, LAMP is a noun. The verb NORTH is a single-word command that requires no noun (in fact it is an error to give one). The verb DROP requires a noun that is in the inventory, but the verb DRINK works on a noun that is in the room or the pack.
+; Pyramid has a table of known words. Every word has a grammar that describes how it can be used. 
+; For instance, LAMP is a noun. The verb NORTH is a single-word command that requires no noun 
+; (in fact it is an error to give one). The verb DROP requires a noun that is in the inventory, 
+; but the verb DRINK works on a noun that is in the room or the pack.
+;
+; Multiple words can refer to the same thing. LAMP and LANTERN, for instance, mean the same 
+; thing. So do GET and STEAL.
+;
+; Since multiple nouns can have the same word for a name the game logic must be careful not to 
+; ever have two nouns with the same noun in the same place. The "dead lamp", for instance, is never 
+; around when the "lit lamp" is. When checking to see if a noun is accessible the code must check 
+; every noun since multiple nouns can have the same name.
+;
+; The code in the game refers to objects and words by numeric ID, but I have given them unique names 
+; for code reference. The word names are listed in the table below. All word names begin with "_". 
+; All object names begin with "#".
+;
+; The input routine parses the user input and returns a VERB and a NOUN based on the grammar of the 
+; words. The game scripts are assured that the grammar is correct and the noun is something the user 
+; has access to (in the pack or room).
 
-Multiple words can refer to the same thing. LAMP and LANTERN, for instance, mean the same thing. So do GET and STEAL.
-
-Since multiple nouns can have the same word for a name the game logic must be careful not to ever have two nouns with the same noun in the same place. The "dead lamp", for instance, is never around when the "lit lamp" is. When checking to see if a noun is accessible the code must check every noun since multiple nouns can have the same name.
-
-The code in the game refers to objects and words by numeric ID, but I have given them unique names for code reference. The word names are listed in the table below. All word names begin with "_". All object names begin with "#".
-
-The input routine parses the user input and returns a VERB and a NOUN based on the grammar of the words. The game scripts are assured that the grammar is correct and the noun is something the user has access to (in the pack or room).
-
-
-;WordTable {*WordTable}
+WordTable:
 ; Info + text + data
 ;   Info byte:
 ;   AA_BBB_CCC
@@ -4512,7 +4462,6 @@ The input routine parses the user input and returns a VERB and a NOUN based on t
 3F0E: CD 50 4C 55 47 48         39        ; 11_001_101 PLUGH    _plugh
 3F15: 00
 
-;Unused {*Unused}
+Unused:
 ; Unused data on end of program
 3F16: 0D 00 02 88 88 80 FA 00 00 4F 88
-

@@ -1,8 +1,34 @@
+%%title Pyramid 2000
 %%image Pyramid.jpg
 
 * [Code.html Disassembled Code]
 * [CodeTRS80.html Disassembled TRS80 Code]
 * [RAMUse.html RAM Usage]
+
+= The Great Lost Pyramid =
+
+"The seal on the entrance is still unbroken -- perhaps the tomb is still intact,
+untouched by the passage of time, impervious to the elements, still settled in
+quiet repose. There must be treasures. If even half of the stories about the Lost
+Pyramid are true, ... But why dwell on that now -- you are here, and adventure
+awaits just a step away." - From the game manual introduction
+
+{{{html
+<div class="tourGuide">
+<div style="padding-left: 20px">
+}}}
+= Tour Guide =
+
+The JavaScript port of this game is running at the bottom of the page. [#PlayMe Play it now!]
+
+Check out a [#TRS80Nugget snippet of the original source code] caught in an uninitialized buffer.
+
+TODO More here
+
+{{{html
+</div>
+</div>
+}}}
 
 = References =
 
@@ -30,7 +56,7 @@ All things Colossal Cave Adventure:
 David Platt's A-code version of Adventure550:
 [http://www.mipmip.org/adv550/src550a.shtml]
 
-== TRS-80 and CoCo ==
+= TRS-80 and CoCo =
  
 In 1979 Radio Shack released Robert Arnstein's Pyramid 2000 for the TRS-80 Model I. The game is basically a port of David Platt's A-code 
 Adventure550 with the setting changed to a pyramid instead of a cave. The dungeon layout and error messages are almost identical. Arnstein's 
@@ -51,34 +77,44 @@ language become game participants themselves. The player must give Napoleon, X-R
 
 I will follow Arnstein's adventure language and interpreter as it evolved from Pyramid 2000 to Raaka-Tu and finally to Bedlam. Be sure to 
 visit those pages as well:
- - [wiki:CoCo/RaakaTu Raaka Tu]
- - [wiki:CoCo/Bedlam Bedlam]
+* Pyramid 2000
+* [wiki:CoCo/RaakaTu Raaka Tu]
+* [wiki:CoCo/Bedlam Bedlam]
 
-== Pyramid 2000 Implementation ==
-
-(See the bottom of this page for a really, really cool nugget -- a snippet of the original source code caught in an uninitialized buffer area 
-in the TRS-80 version).
+= Pyramid 2000 Implementation =
 
 The game includes colorful responses to certain command requests -- like rubbing the lamp:
 
-{{{RUBBING THE ELECTRIC LAMP IS NOT PARTICULARLY REWARDING. ANYWAY, NOTHING EXCITING HAPPENS.[CR]}}}
+{{{html
+<div class="cocoScreen"> 
+}}}
+RUBBING THE ELECTRIC LAMP IS NOT[[br]]PARTICULARLY REWARDING. ANYWAY,[[br]]NOTHING EXCITING HAPPENS.
+{{{html
+</div>
+}}}
 
 Colossal Cave is based on an actual section of Mammoth Cave in Kentucky. Pyramid 2000 changes the setting from a cave to a pyramid, but the original 
 flow and most of the descriptions are still based on Mammoth Cave.
 
 In Adventure, the description for the place labeled "WENDMISTS" is:
 
-{{{You are at the west end of Hall of Mists. A low wide crawl continues west and another goes north.  To the south is a little passage 6 feet off the floor.}}}
+"You are at the west end of Hall of Mists. A low wide crawl continues west and another goes north.  To the south is a little passage 6 feet off the floor."
 
 In Pyramid 2000, the description for Room 19 is almost identical:
 
-{{{YOU ARE AT THE WEST END OF THE HALL OF GODS. A LOW WIDE PASS CONTINUES WEST AND ANOTHER GOES NORTH. TO THE SOUTH IS A LITTLE PASSAGE SIX FEET OFF THE FLOOR.[CR]}}}
+{{{html
+<div class="cocoScreen"> 
+}}}
+YOU ARE AT THE WEST END OF THE[[br]]
+HALL OF GODS. A LOW WIDE PASS[[br]]
+CONTINUES WEST AND ANOTHER GOES[[br]]
+NORTH. TO THE SOUTH IS A LITTLE[[br]]
+ PASSAGE SIX FEET OFF THE FLOOR.
+{{{html
+</div>
+}}}
 
-Please note my own contribution to the Pyramid 2000 universe. In August 2007 my article 
-on [http://www.cc-webshop.com/Circuit-Cellar-Issue-205-August-2007-PDF-FI-2007-205.htm Text Adventure Gaming] was published in Circuit Cellar magazine. 
-I ported the game to play on a Propeller microcontroller via an SD card.
-
-== The Engine ==
+= The Engine =
 
 When you turn on the 16K TRS-80 Color Computer, the first 1K of memory is reserved for the BASIC interpreter. The next 512 bytes is reserved for the 
 text mode screen map (32 characters per line * 16 rows = 512 bytes). That leaves 0x4000 - 0x600 = 14848 bytes of memory in the system for the Pyramid 
@@ -115,7 +151,7 @@ That's almost a perfect fit, and it compresses strings by 33%.
 I wrote a Java utility to uncompress the strings in the code listing. You'll find all the packed strings uncompressed near the bottom of the code. 
 Take a few moments to read through them! It's a great trip down memory lane.
 
-== Adventure Language ==
+= Adventure Language =
 
 The data area of the game is made of several data tables, the room scripts, the common-script, the packed strings, and the vocabulary. I wrote a java 
 program to parse this data area and make great comments in the data section of the game.
@@ -141,7 +177,7 @@ SYNON    6,H20HERE     {Water is available here}
 SYNON    7,INMAZE      {This room is in one of the mazes}
 SYNON    8,ONE.EXIT    {Only one exit out of room - dwarves can block your way and force you to fight them.}
 SYNON    9,THROWER     {Throwing objects here will send them elsewhere, unless you're throwing them at something special (like a troll or dwarf).}
-SYNON    12,DAMP        {the ground is damp here because he poured water or oil from the bottle}
+SYNON    12,DAMP       {The ground is damp here because he poured water or oil from the bottle}
 }}}
 
 The Pyramid 2000 code carries the storage for these attributes even though only one bit is used. 
@@ -221,17 +257,26 @@ I compared the Adventure code to the Pyramid code and found that Room 26 in Pyra
 
 Room Y2 in Adventure is:
 
-{{{You are in a large room, with a passage to the south, a passage to the west, and a wall of broken rock to the east.  There is a large "Y2" on a 
-rock in the room's center.}}}
+You are in a large room, with a passage to the south, a passage to the west, and a wall of broken rock to the east.  There is a large "Y2" on a 
+rock in the room's center.
 
 Room 26 in Pyramid is:
 
-{{{YOU ARE IN A LARGE ROOM, WITH A PASSAGE TO THE SOUTH, AND A WALL OF BROKEN ROCK TO THE EAST. THERE IS A PANEL ON THE NORTH WALL.[CR]}}}
+{{{html
+<div class="cocoScreen"> 
+}}}
+YOU ARE IN A LARGE ROOM, WITH A [[br]]
+PASSAGE TO THE SOUTH, AND A WALL[[br]]
+OF BROKEN ROCK TO THE EAST.[[br]]
+THERE IS A PANEL ON THE NORTH WALL.
+{{{html
+</div>
+}}}
 
 Then I compared the GOTOs to Room 26 in Pyramid to the GOTOs to Room Y2 in Adventure. Sure enough -- they line up perfectly. So the missing direction 
 command in Pyramid is the "Y2" command from Adventure.
 
-== TRS-80 Nugget ==
+= TRS-80 Nugget =
 
 I looked briefly at the TRS-80 version of the Pyramid code. The game objects are the same. The descriptions are all the same except for double spaces 
 after periods in the TRS80 version. The scripts are the same too, but the TRS80 vocabulary includes one extra word: "HELP".
@@ -306,75 +351,86 @@ the NORTH, SOUTH, EAST, and WEST directions by a random offset! You type NORTH b
 This PLUGH routine is such a cool segment of code, and I only found it because it happened to be a snippet of the original assembly text that 
 accidentally made it into the binary image.
 
+= The Game Still Lives =
+
+== Propeller Port ==
+
+In August 2007 my article on 
+[http://www.cc-webshop.com/Circuit-Cellar-Issue-205-August-2007-PDF-FI-2007-205.htm Text Adventure Gaming] 
+was published in Circuit Cellar magazine. I ported the game to play on a Propeller microcontroller.
+
 == JavaScript Port ==
 
-I made !JavaScript version of the game that you can play on this page below. It is a faithful reproduction of the game's scripting engine, 
+I made a JavaScript version of the game that you can play on this page below. It is a faithful reproduction of the game's scripting engine, 
 and it uses the game's scripts as-is.
 
 A few features in the port:
- - SAVE produces a line of text you must copy/paste on your own. LOAD takes that line of text.
- - You can enter a sequence of commands separated by ";". For instance "n;get lamp;on;d".
- - The random number generator produces the same sequence every game allowing for scripted walk-throughs.
+* SAVE produces a line of text you must copy/paste on your own. LOAD takes that line of text.
+* You can enter a sequence of commands separated by ";". For instance "n;get lamp;on;d".
+* The random number generator produces the same sequence every game allowing for scripted walk-throughs.
 
+=== JavaScript Source ===
 You can view the source from the repository here: 
- - [browser:digs/pyramid/src/JSPort/PARSE.js] Words and parsing routine
- - [browser:digs/pyramid/src/JSPort/SCRIPTER.js] Scripting engine
- - [browser:digs/pyramid/src/JSPort/ROOMS.js] Specific room scripts
- - [browser:digs/pyramid/src/JSPort/DEFAULT.js] Default word handling
- - [browser:digs/pyramid/src/JSPort/OBJS.js] The objects of the game
- - [browser:digs/pyramid/src/JSPort/GAME.js] Game logic
- - [browser:digs/pyramid/src/JSPort/MAIN.js] Wrapper to pick between NODEJS and BROWSER environments
+* [PARSE.js] Words and parsing routine
+* [SCRIPTER.js] Scripting engine
+* [ROOMS.js] Specific room scripts
+* [DEFAULT.js] Default word handling
+* [OBJS.js] The objects of the game
+* [GAME.js] Game logic
+* [MAIN.js] Wrapper to pick between NODEJS and BROWSER environments
 
 The files are broken out into separate modules for easier maintenance. 
 
 === Play Me! ===
-
 {{{html
-    <div style="width:500px;height:320px;">
-        <textarea id="con_stdout" readonly style="width:100%;height:260px;background-color: #FCFCFC;"></textarea>
-        <label for="stdin">Enter command : <input id="con_stdin" style="width: 250px;"
+    <div>
+        <textarea class="cocoScreen" id="con_stdout" readonly style="height: 280px"></textarea>
+        <p>
+        <label for="stdin">Enter command :<br><input id="con_stdin" style="width: 32ch;"
            onkeypress="doBrowserInput(event);"/></label>
     </div>
-    <script src="http://www.computerarcheology.com/wiki/browser/digs/pyramid/src/JSPort/PARSE.js?format=raw" type="text/javascript"></script>
-    <script src="http://www.computerarcheology.com/wiki/browser/digs/pyramid/src/JSPort/SCRIPTER.js?format=raw" type="text/javascript"></script>
-    <script src="http://www.computerarcheology.com/wiki/browser/digs/pyramid/src/JSPort/ROOMS.js?format=raw" type="text/javascript"></script>
-    <script src="http://www.computerarcheology.com/wiki/browser/digs/pyramid/src/JSPort/OBJS.js?format=raw" type="text/javascript"></script>
-    <script src="http://www.computerarcheology.com/wiki/browser/digs/pyramid/src/JSPort/DEFAULT.js?format=raw" type="text/javascript"></script>
-    <script src="http://www.computerarcheology.com/wiki/browser/digs/pyramid/src/JSPort/GAME.js?format=raw" type="text/javascript"></script>
-    <script src="http://www.computerarcheology.com/wiki/browser/digs/pyramid/src/JSPort/MAIN.js?format=raw" type="text/javascript"></script>
+    <script src="PARSE.js" type="text/javascript"></script>
+    <script src="SCRIPTER.js" type="text/javascript"></script>
+    <script src="ROOMS.js" type="text/javascript"></script>
+    <script src="OBJS.js" type="text/javascript"></script>
+    <script src="DEFAULT.js" type="text/javascript"></script>
+    <script src="GAME.js" type="text/javascript"></script>
+    <script src="MAIN.js" type="text/javascript"></script>
 }}}
 
 === Walk Through ===
 
 Paste these lines into the game input above.
 
-1. Get into the pyramid. You have to get the bird into the box before picking up the scepter.
-{{{n;get lamp;lamp on;get bottle;eat food;d;w;get box;w;w;w;get bird;e;e;get scepter;w;w;w;d;d}}}
+1. Get into the pyramid. You have to get the bird into the box before picking up the scepter.[[br]]
+* n;get lamp;lamp on;get bottle;eat food;d;w;get box;w;w;w;get bird;e;e;get scepter;w;w;w;d;d
 
-2. Drive the serpent away with the bird.
-{{{throw bird;drop box}}}
+2. Drive the serpent away with the bird.[[br]]
+* throw bird;drop box
 
-3. Get the diamonds, gold, and jewelry. The mummy takes them all (the mummy must appear to make the chest appear).
-{{{s;get diamonds;n;e;s;get gold;n;w;wave scepter;drop scepter;w;get jewelry;e}}}
+3. Get the diamonds, gold, and jewelry. The mummy takes them all (the mummy must appear to make the chest appear).[[br]]
+* s;get diamonds;n;e;s;get gold;n;w;wave scepter;drop scepter;w;get jewelry;e
 
-4. Get the coins and silver to the entrance.
-{{{e;n;w;get coins;e;n;get silver;n;panel;drop coins;drop silver;drop jewelry;score}}}
+4. Get the coins and silver to the entrance.[[br]]
+* e;n;w;get coins;e;n;get silver;n;panel;drop coins;drop silver;drop jewelry;score
 
-5. Pour water on the plant twice to get it to grow into the ceiling.
-{{{panel;s;d;w;d;w;w;w;d;pour water;u;e;e;e;u;e;e;d;fill bottle;u;w;w;d;w;w;w;d;pour water;drop bottle}}}
+5. Pour water on the plant twice to get it to grow into the ceiling.[[br]]
+* panel;s;d;w;d;w;w;w;d;pour water;u;e;e;e;u;e;e;d;fill bottle;u;w;w;d;w;w;w;d;pour water;drop bottle
 
-6. Get the nest and the key. The key opens the sarcophagus.
-{{{climb plant;w;n;get key;s;get nest}}}
+6. Get the nest and the key. The key opens the sarcophagus.[[br]]
+* climb plant;w;n;get key;s;get nest
 
 7. Get the pearl out of the sarcophagus and drop treasures at the entrance.
-{{{s;d;u;e;e;e;n;open sarcophagus;d;d;get pearl;u;u;s;u;e;u;n;panel;drop nest;drop pearl;drop key;score}}}
+* s;d;u;e;e;e;n;open sarcophagus;d;d;get pearl;u;u;s;u;e;u;n;panel;drop nest;drop pearl;drop key;score[[br]]
 
 8. Get the emerald, vase, and pillow. The "Chamber of Horus" is somewhat random. You may have to go "north" and "up" repeatedly to get to the
- vase and pillow. The "n" and "u" are shown with spaces below.
-{{{panel;s;d;w;d;w;   n   ;drop lamp;w;get emerald;e;get lamp;get vase;se;   u   ;get pillow}}}
+vase and pillow.[[br]]
+* panel;s;d;w;d;w;   n   ;drop lamp;w;get emerald;e;get lamp;get vase;se;   u   ;get pillow
 
-9. Take these treasures to the entrance.
-{{{w;e;u;e;u;n;panel;drop pillow;drop vase;drop emerald;score}}}
+9. Take these treasures to the entrance.[[br]]
+* w;e;u;e;u;n;panel;drop pillow;drop vase;drop emerald;score
 
-10. Get the chest from the maze.
-{{{panel;s;s;u;w;w;n;s;e;s;s;s;n;e;e;nw;get chest;get gold;get diamonds;se;n;d;e;e;e;e;u;drop chest;drop gold; drop diamonds;score}}}
+10. Get the chest from the maze.[[br]]
+* panel;s;s;u;w;w;n;s;e;s;s;s;n;e;e;nw;get chest;get gold;get diamonds;se;n;d;e;e;e;e;u;drop chest;drop gold; drop diamonds;score
+
+
