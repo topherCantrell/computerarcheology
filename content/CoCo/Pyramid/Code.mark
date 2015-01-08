@@ -755,6 +755,7 @@ ScriptCommands:
 ;  1. Increment the count on the lamp and the number of turns.
 ;  2.  Warn the player if the lamp is going dim and change the batteries automatically.
 
+AfterEveryStep:
 0A51: 86 0F               LDA     #$0F                      ; Lamp (lit version)
 0A53: 8E 18 8D            LDX     #$188D                    ; Object table
 0A56: BD 06 7C            JSR     $067C                     ;{TwoTableOffset} Get lamp's data
@@ -1355,7 +1356,7 @@ MoveObjectXToRoomY:
 
 ;= Print Score =
 
-Printscore:
+PrintScore:
 0E0D: 7F 02 08            CLR     $0208                     ; Calculated score LSB
 0E10: 7F 02 09            CLR     $0209                     ; Calculated score MSB
 0E13: 8E 18 8D            LDX     #$188D                    ; Object data
@@ -1486,7 +1487,7 @@ LoadGame:
 ; Print the current score.
 
 
-PrintScore:
+C_PrintScore:
 0F12: BD 0E 0D            JSR     $0E0D                     ;{PrintScore} Print score
 0F15: 7E 06 CB            JMP     $06CB                     ;{} 
 

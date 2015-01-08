@@ -1,0 +1,83 @@
+%%TITLE Markup Guide 
+
+= Text =
+
+TODO: talk about the text markups
+
+= Code =
+
+For example:
+
+{{{
+;; = Print a Character = :
+;; A6 -- Print character in A with scrolling. This screen is TWO screens long
+;; so that the user can use UP and DOWN to switch between screens. This replaces
+;; BASIC's one-screen print.
+;;
+PrintChar:
+;
+032E: 34 16               PSHS    X,B,A       ; Save parameters
+0330: 9E 88               LDX     >$88        ; {-} Cursor
+0332: 81 08               CMPA    #$08        ; Printing a backspace?
+0334: 26 0B               BNE     $341        ; {} No ... move on
+0336: 8C 02 00            CMPX    #$0200      ; Already at top of screen (double screen)
+0339: 27 38               BEQ     $373        ; {} Yes ... ignore it (done)
+033B: 86 60               LDA     #$60        ; Space
+033D: A7 82               STA     ,-X         ; Over last in buffer
+033F: 20 25               BRA     $366        ; {} Store new cursor and out
+}}}
+
+Code (assembly and disassembly) is processed a line at a time. A line is either:
+* A blank line (used for visual spacing)
+* A comment line (beginning with a ";")
+* A code line (anything else)
+
+Lines that begin with ";;" are passed to the markup processor without the leading ";;". The processor
+closes the current <pre> and reopens it at the next line that does not begin with ";;".
+
+The code contains numeric constants that begin with "$". These often refer to code addresses
+(jumps) or RAM addresses (variables) or even Hardware Addresses (memory-mapped devices).
+
+The processor can trace these numbers starting with "$" to their destination and insert links
+in the opcode. If the destination has a label then that text is used in the link. This makes
+it easy for a reader to follow the jumps in the code and quickly reference the RAM and Hardware.
+
+You must tell the processor which opcode numbers are to become links by using the "{}" in
+the code line's comment. 
+
+The first part of the "{}" indicates the placement:
+* {} No ">". Replace the number directly in the opcode.
+* {>} One ">". Place the link to the right of the opcode.
+* {>>} Two ">". Replace the "{}" in the comment.
+
+The second part indicates the address mapping:
+* {} No "-". The reference is to part of the code.
+* {-} One "-". The reference is to the RAM Usage.
+* {--} Two "-". The reference is to the Hardware Usage.
+
+The rest of the "{}" indicates the target and text of the reference in the form {target:text}. 
+The "target" and "text" and the ":" are all optional.
+
+If the "target" contains a "/" then it is treated as an HTML URL. 
+
+If the "target" is just a word then it is treated as a reference to a code label in the current file. 
+
+If the "target" is empty then the processor uses the number (starts with $) in the opcode and finds the 
+reference in the code. The text is the label if the line has a label or the plain number if not.
+
+If "text" is given then it is used as the text in the link instead of the target.
+
+Examples:
+* {} Lookup the label or address and insert the link in place of the "$" in the opcode.
+* {:HERE} Lookup the reference and insert a link in place of the "$". Use "HERE" as the link text.
+* {http:/nowhere:HERE} Replace the "$" with the link to "http:/nowhere". Use "HERE" as the link text.
+* {PrintChar} Replace the "$" with a link to the "PrintChar" label in the current code
+* {-} Lookup the number (starts with "$") as a RAM address and insert the link in place of the "$" in the opcode.
+* {--FF20:PIA1} Lookup
+ 
+Usually a major routine has a comment section before it (as in the example above). You want to keep the
+label (PrintChar) close to the code. But you want links to this routine to land at the comment instead
+of the label itself.
+
+The ":" placed on the end of the header ";; = Print a Character = :" tells the processor to use this
+header as the target destination for the very next label in the code. 

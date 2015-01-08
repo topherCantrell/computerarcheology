@@ -6,32 +6,30 @@ from MarkupToHTML import MarkupToHTML
 from Config import rootDir
 from Config import deployDir
 
-# {% means append the link to the opcode. Without means replace the number.
-# : means alternate text for destination
-# Now we can look up labels, but allow for manual labels
-#0001: C2 4D 00        JP      NZ,$004D            ; {goHere} Replace the jump address with the known routine name
-#0002: C2 4D 00        JP      NZ,$004D            ; {goHere:GOHERE} Jump to the named routine, but use different text in the link
-#0003: C2 50 00        JP      NZ,$0050            ; {} The address $0050 is named with its address
-#0004: E9              JP      (HL)                ; {goHere} I know we are going to routine "goHere"
-#0005: C2 4D 00        JP      NZ,$004D            ; {%goHere:HERE} Just add the link next to the opcode
-#0006: C2 4D 00        JP      NZ,$004D            ; {%//wiki/wiki/NES/Zelda:SEE ZELDA} Quick link to another page
-
-# RAM reference
-# 0042: 3A E9 20        LD      A,($20E9)          ; {-suspendPlay:} Are we moving ...
-
-# Link to hardware definition. Can be shortened to {--}
-# E57A: 8D 00 20      STA   $2000                  ; {--_P_CNTRL_1:} ... VBLANK NMIs
-
-# {-} and {--} link names are given in the defines
-
-# {%--goHere:altText}
-
 class CodeToHTML(MarkupToHTML):
     
     def getAddressMap(self,filename):
         ad = AddressToHTML()
         ad.loadMap(rootDir+filename)
         return ad
+    
+    def collectLabels(self,lines):
+        cur = []
+        for x in xrange(len(lines)):
+            r = lines[x]
+            if isinstance(r,CodeLine):
+                if len(r.bytes)==0 and not r.opcode:
+                    # This is a label. Save it for the next real line of code.
+                    for i in r.labels:
+                        cur.append(i)
+                    lines[x].collected = True
+                else:
+                    # This is a line of code. Add all the free labels before it.
+                    lines[x].collected = False
+                    if len(cur)>0:
+                        for i in cur:
+                            lines[x].labels.append(i)
+                        cur = []
     
     def addCodeLinkTargetIDs(self,lines):        
         for line in lines:
@@ -48,20 +46,28 @@ class CodeToHTML(MarkupToHTML):
                 continue
             if not line.target["map"]=="":    # and only if that target is in code
                 continue
-            if not line.target["target"]=="": # and only if we need to lookup the address
-                continue            
+            
+            if not line.target["target"]=="": # Could be an explicit target
+                if not line.target["target"] in self.labels:
+                    print "COULD NOT FIND '"+line.target["target"]+"'"                            
+            
+            # This an empty {} ... look up the label
             
             for x in xrange(len(lines)):
                 g = lines[x]
                 if isinstance(g,CodeLine) and g.address==line.numbers[0]["value"]:                    
                     g.linkID = line.numbers[0]["text"][1:]
                     # This line of code might also have a preceding label. Let's look for that.
-                    y = x-1
+                    y = x
                     while y>=0:
                         if not isinstance(lines[y],CodeLine):
                             y = y - 1
                             continue
                         if lines[y].labels:
+                            if (line.target["target"]!="") and (line.collected==False) and (not line.target["target"] in lines[y].labels):
+                                print "TARGET SAYS '"+line.target["target"]+"' BUT I THINK IT SHOULD BE '"+lines[y].labels[0]+"'"
+                                print lines[y-5].labels
+                                print lines[y].labels
                             line.target["target"] = lines[y].labels[0]
                             if line.target["text"] == "":
                                 line.target["text"] = lines[y].labels[0]
@@ -176,11 +182,11 @@ class CodeToHTML(MarkupToHTML):
                         
             t = r.strip() 
                            
-            if t.startswith(";%%ramMap"):
-                maps["ramMap"] = self.getAddressMap(t[9:].strip()) #;%%ramMap RAMUse.mark 
+            if t.startswith(";;%%ramMap"):
+                maps["ramMap"] = self.getAddressMap(t[10:].strip()) #;%%ramMap RAMUse.mark 
                 continue
-            elif t.startswith(";%%hardwareMap"):
-                maps["hardwareMap"] = self.getAddressMap(t[14:].strip()) #;%%hardwareMap /Coco/Hardware.mark
+            elif t.startswith(";;%%hardwareMap"):
+                maps["hardwareMap"] = self.getAddressMap(t[15:].strip()) #;%%hardwareMap /Coco/Hardware.mark
                 continue
             
             # Keep comment lines as-is
@@ -202,7 +208,10 @@ class CodeToHTML(MarkupToHTML):
                 if a in self.labels:
                     raise Exception("Duplicate label '"+a+"'")
                 self.labels.append(a)
-            
+                
+        # Get all the labels together
+        self.collectLabels(ret)
+                
         # These are all the code lines that need to have "id" added to them
         self.addCodeLinkTargetIDs(ret) 
         

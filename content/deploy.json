@@ -1,7 +1,10 @@
 
 {
   "files" : [
+               {"outputName":"MarkupGuide.html", "displayName":"", "command":"markup MarkupGuide.mark"},
+               
                {"outputName":"index.html", "displayName":"", "command":"markup index.mark"}
+               
             ],
             
   "dirList": [
