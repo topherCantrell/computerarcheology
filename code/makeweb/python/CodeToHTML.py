@@ -6,7 +6,12 @@ from MarkupToHTML import MarkupToHTML
 from Config import rootDir
 from Config import deployDir
 
+from TextLine import TextLine
+
 class CodeToHTML(MarkupToHTML):
+    
+    def markDownNonString(self,obj,bodyLines,pageNav):
+        pageNav.append(obj)        
     
     def getAddressMap(self,filename):
         ad = AddressToHTML()
@@ -40,6 +45,12 @@ class CodeToHTML(MarkupToHTML):
              # Always id the labels
             if not line.opcode and not line.bytes:
                 line.linkID = line.labels[0]
+                if line.comment:
+                    s = line.comment.strip()
+                    if s.startswith("="):                        
+                        line.navLabel = {'level':len(s), 'text':line.labels[0], 'link':line.linkID}
+                        line.comment = None
+                        #print line.navLabel                           
             
             # A "{}" means we have to lookup the code address
             if not line.target:               # and only if they have a target in the comment
@@ -76,8 +87,6 @@ class CodeToHTML(MarkupToHTML):
                         
                     
     def makeAddressAnchor(self,line,maps):
-        # TODO: handle RAM and Hardware
-        
         tar = line.target["target"]
         txt = line.target["text"]
         aClass = "codeAddressLink"
@@ -167,12 +176,33 @@ class CodeToHTML(MarkupToHTML):
                 while len(n)<4:
                     n = "0"+n
                 line.original = '<span class="siteTarget" id="'+n+'">'+line.original[0]+'</span>'+line.original[1:] 
-                
+     
+    def relocateLabelLinks(self, lines):        
+        for x in xrange(len(lines)):
+            if isinstance(lines[x],TextLine):
+                t = lines[x].text
+                while(t.startswith(";")):
+                    t = t[1:]
+                t = t.strip()
+                if t.startswith("=") and t.endswith("#"):
+                    y = x
+                    while not isinstance(lines[y],CodeLine):
+                        y += 1
+                    lines[x].text = ";; "+t+lines[y].linkID
+                    del lines[y].linkID          
+                    
+    def handleNavLabels(self, lines):
+        for x in xrange(len(lines)):
+            if isinstance(lines[x],CodeLine):
+                if hasattr(lines[x],"navLabel"):
+                    #print "INSERTING "+lines[x].original+":"+str(lines[x].navLabel)
+                    lines.insert(x+1, lines[x].navLabel)
+                    i = lines[x].original.index(";")
+                    lines[x].original = lines[x].original[0:i].strip()
                 
     def translate(self, inName, outName, breadCrumbs, siteTree, title):
         # Read the code
-        with open(inName) as f:
-            raw = f.readlines()
+        raw = MarkupToHTML.readTextLines(inName)        
             
         self.labels = []
             
@@ -180,7 +210,7 @@ class CodeToHTML(MarkupToHTML):
         ret = []
         for r in raw:                        
                         
-            t = r.strip() 
+            t = r.text.strip() 
                            
             if t.startswith(";;%%ramMap"):
                 maps["ramMap"] = self.getAddressMap(t[10:].strip()) #;%%ramMap RAMUse.mark 
@@ -188,10 +218,10 @@ class CodeToHTML(MarkupToHTML):
             elif t.startswith(";;%%hardwareMap"):
                 maps["hardwareMap"] = self.getAddressMap(t[15:].strip()) #;%%hardwareMap /Coco/Hardware.mark
                 continue
-            
-            # Keep comment lines as-is
+                                 
+            # Keep comment lines as-is. This includes ";;" markup spec
             if t.startswith(";"):
-                ret.append(self.entizeString(r))
+                ret.append(r)
                 continue
             
             # Keep blank lines as-is
@@ -215,84 +245,60 @@ class CodeToHTML(MarkupToHTML):
         # These are all the code lines that need to have "id" added to them
         self.addCodeLinkTargetIDs(ret) 
         
+        # Some labels would prefer their target links to include the markup description
+        self.relocateLabelLinks(ret)
+                
         # Change the code line to include the HTML spans and anchors
-        self.modifyCodeLines(ret,maps)
+        self.modifyCodeLines(ret,maps) 
+        
+        # Some labels might want to contribute to the page navigation
+        self.handleNavLabels(ret)
+        
+        # Now the conversion to plain-old MarkupToHTML style
         
         raw = []
+        mode = "markup"
         for r in ret:
-            if isinstance(r,CodeLine):
-                raw.append(r.original)
-            else:
+            
+            # Contributions to the page-nav
+            if isinstance(r,dict):
                 raw.append(r)
-                
-        for x in xrange(len(raw)):
-            if not raw[x].endswith("\n"):
-                raw[x] = raw[x] + "\n"
-                        
-        MarkupToHTML.translate(self,inName,outName,breadCrumbs,siteTree,title,raw)
-        
-    def markDown(self,raw,fills,pageNav):
-        self.headers = []
-        
-        mode="none" 
-        
-        bodyLines = ['<pre class="codePreStyle">']  # List of lines for the body
-        for line in raw:    
-            
-            if not line.startswith(";"):
-                bodyLines.append(line)
-                continue  
-            
-            # -- Markup processing on full-line comments --          
-            
-            # Handle defines
-            if line.startswith(";%%"):
-                i = line.index(" ")
-                fills[line[3:i]] = line[i+1:].strip()
                 continue
-                                        
-            # Handle quick headers
-            if line.startswith(";="):
-                line = self.markDownHeaders(line[1:],pageNav)
-                
-            # Handle quick links
-            if line.startswith(";") and "[" in line:
-                line = self.markDownBraces(line)
-                
-            # If we are making a list of bullets
-            if mode == "bullets":
-                if line.startswith(";*"):
-                    line = self.markDownContinueBullets(line[1:])
-                else:
-                    self.markDownEndBullets(bodyLines)
-                    mode = "none"
-            else:
-                if line.startswith(";*"):
-                    proc = self.markDownStartBullets(line[1:])
-                    mode = "bullets"        
-                    bodyLines.append(line)
-                    continue
             
-            # If we are making a table
-            if mode == "table":
-                if line.startswith(";||"):
-                    line = self.markDownContinueTable(line[1:])
+            # Add blank line to whatever mode we are in
+            if isinstance(r,TextLine) and r.text=="":
+                raw.append(r)
+                continue
+                
+            if mode=="markup":
+                if isinstance(r,CodeLine):
+                    raw.append(TextLine("{{{code"))
+                    mode = "code"
+                    r.line.text = r.original
+                    raw.append(r.line)
                 else:
-                    self.markDownEndTable(bodyLines)
-                    mode = "none"
-            else:
-                if line.startswith(";||"):
-                    line = self.markDownStartTable(line[1:])
-                    mode = "table"
-                    bodyLines.append(line)
-                    continue
-                    
-            # If we get here we have a line to add
-            bodyLines.append(line)
+                    if r.text.startswith(";;"):
+                        r.text = r.text[2:].strip()
+                        raw.append(r)
+                    else:
+                        mode = "code"
+                        raw.append(TextLine("{{{code"))
+                        raw.append(r)                    
             
-        # All done
-        bodyLines.append("</pre>")       
-        return bodyLines
+            else: # mode=="code"
+                if isinstance(r,CodeLine):
+                    r.line.text = r.original
+                    raw.append(r.line)
+                else:
+                    if r.text.startswith(";;"):
+                        mode = "markup"
+                        raw.append(TextLine("}}}"))
+                        r.text = r.text[2:].strip()
+                        raw.append(r)
+                    else:
+                        raw.append(r)               
+                        
+        MarkupToHTML.translate(self,inName,outName,breadCrumbs,siteTree,title,raw)    
 
 if __name__ == "__main__":    
     ch = CodeToHTML()

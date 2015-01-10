@@ -88,7 +88,9 @@ class CodeLine:
             ret.append(numEntry)
         return ret
     
-    def parse(self,str):
+    def parse(self,line):
+        self.line = line
+        str = line.text
         self.original = str
         str = str.strip()
         if ';' in str:

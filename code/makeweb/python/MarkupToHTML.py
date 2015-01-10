@@ -165,7 +165,11 @@ class MarkupToHTML:
         return s
     def markDownEndTable(self,bodyLines):
         bodyLines.append("</table>")
-    
+        
+    def markDownNonString(self,obj,bodyLines,pageNav):
+        #print "WHAT THE HECK IS THIS "+str(obj)
+        pass
+ 
     def markDown(self,raw,fills,pageNav):
         self.rawMode = None
         self.headers = []
@@ -175,6 +179,10 @@ class MarkupToHTML:
         bodyLines = []  # List of lines for the body
         for line in raw:             
             try:
+                
+                if not isinstance(line,TextLine):
+                    self.markDownNonString(line,bodyLines,pageNav)
+                    continue
                 
                 proc = line.text.strip()
             

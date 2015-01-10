@@ -8,7 +8,7 @@
 ;; = Patch BASIC = #
 ;; Patch BASIC for our own use
 ;;
-START:
+START: ; =
 0300: 1A 50               ORCC    #$50        ; Disable IRQ, FIRQ
 0302: BD A7 EB            JSR     $A7EB       ; Turns motor off (leave IRQ and FIRQ off) (BASIC)
 0305: 8E 03 2D            LDX     #$032D      ; Print character code (relocatable)
