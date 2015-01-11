@@ -126,6 +126,23 @@ You may use links (see above) in bullet lists.
 
 ### Defines ###
 
+Defines allow you to pass information to the processor itself. These usually appear at the beginning of the text.
 
+Defines begin with "%%". For instance:
+
+```
+%%title Pyramid
+%%template SpecialShort.template
+
+Welcome to the Pyramid site!
+```
+
+The key is the first word after the "%%". The rest of the line is the value.
+
+Defines and their use:
+ - %%title - gives the text used in the browser tab. The default is the page title from the deployment description.
+ - %%template - gives the page's master HTML template. The default is "master.template". This is ?never? used.
+ - %%ramMap - used in code markup. Defines the file containing ram-usage information.
+ - %%hardwareMap - used in code markup. Defines the file containing hardware-usage information.
 
 ## Code ##
