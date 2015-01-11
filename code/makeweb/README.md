@@ -26,5 +26,17 @@ The "code" and "(nothing)" are identical except for CSS styling. The "code" sect
 CSS class allowing for different fonts and background colors. The default (nothing), for example,
 has a gray background while "code" is white.
 
+Examples:
+{{{
+This is
+preformatted
+text
+}}}
+    
+
+    
+    
+    
+
 
 ## Code ##
