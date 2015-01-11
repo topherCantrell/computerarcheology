@@ -33,9 +33,20 @@ This is
 preformatted
 text
 }}}
+
+{{{html
+<span class="flashing">Important Text</span>
+}}}
+
+{{{code
+0308: CE 00 A5            LDU     #$00A5      ; Destination (over BASIC's GETCCH routine)
+030B: A6 80               LDA     ,X+         ; Copy ...
+030D: A7 C0               STA     ,U+         ; ... the ...
+030F: 8C 03 75            CMPX    #$0375      ; ... print character ...
+}}}
 ```
     
-
+## Entizing ##
     
     
     
