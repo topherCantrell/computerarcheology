@@ -27,11 +27,13 @@ CSS class allowing for different fonts and background colors. The default (nothi
 has a gray background while "code" is white.
 
 Examples:
+```
 {{{
 This is
 preformatted
 text
 }}}
+```
     
 
     
