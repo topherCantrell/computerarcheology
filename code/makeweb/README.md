@@ -46,7 +46,11 @@ text
 }}}
 ```
     
-## Entizing ##
+### Entizing ###
+
+Some characters like "&lt;" and the " itself have meaning in the broswer rendering the HTML. These must be replaced
+with entities like "&amp;lt;" and "&amp;quot;". This is done automatically for all lines EXCEPT lines in an "html"
+raw section.
     
     
     
