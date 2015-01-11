@@ -3,7 +3,8 @@
   "files" : [
                {"outputName":"MarkupGuide.html", "displayName":"", "command":"markup MarkupGuide.mark"},
                
-               {"outputName":"index.html", "displayName":"", "command":"markup index.mark"}
+               {"outputName":"index.html", "displayName":"", "command":"markup index.mark"},
+               {"outputName":"rawExample.jpg", "command":"copy"}
                
             ],
             
