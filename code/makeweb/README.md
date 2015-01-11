@@ -11,6 +11,14 @@ Blank lines are treated as paragraph separators. They become &lt;p&gt; in the re
 
 You can insert HTML line breaks in the text with "[[br]]".
 
+For instance:
+
+```
+These three lines[[br]]
+are close[[br]
+together.
+```
+
 ### Raw Format ###
 
 You can tell the processor not to process a section of text. The "{{{" at the 
@@ -61,9 +69,9 @@ page's navigation tree on the left.
 You might want the entry in the navigation tree to have a different (shorter)
 text. Any text following the ending "=" is used in the nav tree. For instance:
 
-{{{
+```
 == Finding all the Spell Containers == Spells
-}}}
+```
 
 This creates a level-two subheading with the given text. In the navigation tree
 the shorter "Spells" is used.    
@@ -85,5 +93,39 @@ For instance:
 ```
 
 The "||=" on the first line indicates that the line is a table header. Tables may be defined without a header row.
+
+### Links ###
+
+You can define HTML links to other pages or sites with the "[url text]" syntax. The "url" is the destination
+of the link. The "text" is the text of the link. If you omit the "text" then the "url" is used as the text.
+
+```
+For more information see [http://https://www.wikipedia.org/].
+For more information see [https://www.wikipedia.org/ The Wikipedia].
+```
+
+If the URL begins with a '!' then the URL is treated as an image dropped inline.
+
+```
+Here are the schematics:
+[!http:/somePicture.jpg]
+```
+
+### Bullet Lists ###
+
+Bullet lists are created with a series of lines that begin with a '*'. For instance:
+
+```
+This section of code is:
+* Well written
+* Fast
+* Fun to look at
+```
+
+You may use links (see above) in bullet lists.
+
+### Defines ###
+
+
 
 ## Code ##
