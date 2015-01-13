@@ -4,7 +4,7 @@
 * [Code.html Disassembled Code]
 * [RAMUse.html RAM Usage]
 
-= The Labyrinth of King Minos = The Labyrinth #myLab
+= The Labyrinth of King Minos = The Labyrinth
 
 "Rumor has it that there are treasures hidden in the vicinity of the Labyrinth.
 Are these treasures worth risking life or sanity? If your answer to this question
@@ -54,22 +54,6 @@ For more information on Madness and the Minotaur check out Sean Murphy's wonderf
 
 John Layman has translated the 6809 opcodes to x86 to run on a LINUX, BSD, and OSX. Follow his awesome work:[[br]]
 [http://www.frijid.net/madness.html]
-
-= Corrections =
-
-Thanks to Joe Hagan for pointing out some mistakes in the original disassembly (now corrected here and in the code). 
-The original comments at 09C5 said the Sprite can't move to the treasure room, but it can. The original comments at 1125 
-said that OPEN SCROLL would bring the LAMP to us on the 4th floor. Actually it brings the Troglodyte to us on floors 3 
-and 4. And the original comments misinterpreted the VETAR flag. They said the flag temporarily disables VETAR. Actually it 
-temporarily enables it.
-
-Joe fixed a couple of typos here and in the Frogger dig.
-
-Joe found a code bug in Madness at 0D51. The message "YOUR SIGHT IS DIM" is stored as a packed string. But the code to print 
-it calls "PrintMess" instead of "PrintPacked". The message never appears on the screen. Joe fixed the code and verified it 
-in the emulator.
-
-Thanks again, Joe.
 
 = Text Adventure and Real Time Strategy = Text + RTS
 
@@ -782,6 +766,22 @@ must be 250 or better. You'll probably have to drop everything before you can op
 
 There is a crypt in room 102. If you OPEN CRYPT in this room then the object will fall out. If you have the POWERRING you will 
 automatically open it. Otherwise your physical condition minus your pack-bulk must be 250 or better.
+
+= Corrections =
+
+Thanks to Joe Hagan for pointing out some mistakes in the original disassembly (now corrected here and in the code). 
+The original comments at 09C5 said the Sprite can't move to the treasure room, but it can. The original comments at 1125 
+said that OPEN SCROLL would bring the LAMP to us on the 4th floor. Actually it brings the Troglodyte to us on floors 3 
+and 4. And the original comments misinterpreted the VETAR flag. They said the flag temporarily disables VETAR. Actually it 
+temporarily enables it.
+
+Joe fixed a couple of typos here and in the Frogger dig.
+
+Joe found a code bug in Madness at 0D51. The message "YOUR SIGHT IS DIM" is stored as a packed string. But the code to print 
+it calls "PrintMess" instead of "PrintPacked". The message never appears on the screen. Joe fixed the code and verified it 
+in the emulator.
+
+Thanks again, Joe.
 
 = The Save-Game Viewer =
 

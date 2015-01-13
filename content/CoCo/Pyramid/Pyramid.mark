@@ -23,7 +23,23 @@ The JavaScript port of this game is running at the bottom of the page. [#PlayMe 
 
 Check out a [#TRS80Nugget snippet of the original source code] caught in an uninitialized buffer.
 
-TODO More here
+Have a look at the [Code.html#MainLoop game's main loop]. It is really short.
+
+The code is code-within-code. The adventure language processor commands are [Code.html#ScriptCommands here].
+
+The spooky mummy is given life as part of the [Code.html#MoveToRoomX Move to Room X] code.
+
+Have a look at all the unpacked messages in the game:
+* [Code.html#AlternatingErrors General Messages]
+* [Code.html#RoomDescriptions Room Descriptions]
+* [Code.html#ObjectDescriptions Object Descriptions]
+* [Code.html#GameSpecificMessages More General Messages]
+
+Visit the [Code.html#RoomScripts Room Scripts] to see what you can do in each room. Then visit the 
+[Code.html#GeneralCommandHandler General Command Handler] script that runs after the current room
+has a chance to take the command. These "adventure language scripts" are interpreted by the [Code.html#ProcessCommandList Script Processor].
+
+Read through all words that the game understands in the [Code.html#WordTable Word table].
 
 {{{html
 </div>

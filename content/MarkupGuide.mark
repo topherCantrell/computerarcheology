@@ -70,9 +70,7 @@ TODO: how to define the RAM Usage and Hardware files
 
 Assembly/Code is automatically wrapped in a PRE section.
 
-Lines that begin with ";;" are unwrapped and handled as is by the markdown processor.
-This allows markdown discussion sections to be included in the code yet still like
-leading-semicolon comments to the assembler.
+
 
 == Labels in the nav-tree ==
 
