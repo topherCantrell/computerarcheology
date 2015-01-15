@@ -188,14 +188,14 @@ class MarkupToHTML:
             
                 # In raw mode, we don't process any markup at all
                 if mode == "raw":
-                    nm = self.markDownContinueRaw(proc,bodyLines)
+                    nm = self.markDownContinueRaw(line.text,bodyLines)
                     if nm:
                         mode = "none"
                     continue               
                                 
                 # This is how you get into raw mode
                 if proc.startswith("{{{"):
-                    self.markDownStartRaw(proc,bodyLines)
+                    self.markDownStartRaw(line.text,bodyLines)
                     mode = "raw"
                     continue    
                 

@@ -1,0 +1,14 @@
+{
+
+"files" : 
+[
+  {"outputName":"RAMUse.html",   "displayName":"RAM Use",  "command":"markupAddress RAMUse.mark"},
+  {"outputName":"Code.html",     "displayName":"Code",     "command":"markupCode Code.mark"},
+  {"outputName":"index.html",    "displayName":"",         "command":"markup Bedlam.mark"},
+    
+  {"outputName":"Bedlam.jpg", "command":"copy"}
+                   
+]
+
+}
+     

@@ -88,7 +88,12 @@ class AddressToHTML(MarkupToHTML):
                 return entry
             
         # Nope ... not in this map
-        return None             
+        return None     
+    
+    def getEntryForName(self,name):
+        for entry in self.entries.values():
+            if entry["name"] == name:
+                return entry
                        
                 
 if __name__ == "__main__":

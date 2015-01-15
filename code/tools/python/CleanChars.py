@@ -1,10 +1,12 @@
-with open("../../../content/CoCo/Pyramid/Pyramid.mark") as f:
+with open("../../../content/CoCo/Bedlam/Bedlam.mark") as f:
     raw = f.readlines()  
     
 REPS = [
         
         {'utf8':"\xE2\x80\x9C", 'rep':'"'},
         {'utf8':"\xE2\x80\x9D", 'rep':'"'},
+        {'utf8':"\xE2\x80\x93", 'rep':'--'},
+        {'utf8':"\xE2\x80\xA6", 'rep':'...'},
         
         {'utf8':"\xE2\x80\x99", 'rep':"'"}
         

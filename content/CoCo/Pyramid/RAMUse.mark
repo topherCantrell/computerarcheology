@@ -1,4 +1,3 @@
-
 = RAM Usage =
 
 == Variables Kept Outside of Code (Not Saved) ==
@@ -71,17 +70,18 @@
 || 01EF || || ||
 || 01F0 || || ||
 
-; The game uses 65 bytes of memory in low memory beginning at 0x01B0 for temporaries.
-; These temporaries are NOT persisted in a SAVE.
-;
+ The game uses 65 bytes of memory in low memory beginning at 0x01B0 for temporaries.
+ These temporaries are NOT persisted in a SAVE.
 
 == Variables Kept in the Code (Saved) ==
-|| '''Address''' || '''Init''' || '''Description''' ||
-|| 18E5 || 01 || !RoomNumber (starts in 1) ||
+
+||= Address || Init || Description ||
+|| 18E5 || 01 || RoomNumber (starts in 1) ||
 || 18E6 || 00 || TurnCountMSB (BCD format) ||
 || 18E7 || 00 || TurnCountLSB (BCD format) ||
-|| 18E8 || 00 || !LampTime ||
+|| 18E8 || 00 || LampTime ||
 || 18E9 || 00 || * NOT USED * ||
-|| 18EA || 00 || !LastRoomNumber ||
-|| 18EB || 00 || !NumInPack ||
-|| 18EC || 00 || * NOT USED * || 
+|| 18EA || 00 || LastRoomNumber ||
+|| 18EB || 00 || NumInPack ||
+|| 18EC || 00 || * NOT USED * ||
+ 

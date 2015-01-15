@@ -1,6 +1,8 @@
 %%title Pyramid 2000
 %%image Pyramid.jpg
 
+= Code Links =
+
 * [Code.html Disassembled Code]
 * [CodeTRS80.html Disassembled TRS80 Code]
 * [RAMUse.html RAM Usage]
@@ -94,8 +96,8 @@ language become game participants themselves. The player must give Napoleon, X-R
 I will follow Arnstein's adventure language and interpreter as it evolved from Pyramid 2000 to Raaka-Tu and finally to Bedlam. Be sure to 
 visit those pages as well:
 * Pyramid 2000
-* [wiki:CoCo/RaakaTu Raaka Tu]
-* [wiki:CoCo/Bedlam Bedlam]
+* [/CoCo/RaakaTu Raaka Tu]
+* [/CoCo/Bedlam Bedlam]
 
 = Pyramid 2000 Implementation =
 
@@ -404,6 +406,8 @@ The files are broken out into separate modules for easier maintenance.
         <p>
         <label for="stdin">Enter command :<br><input id="con_stdin" style="width: 32ch;"
            onkeypress="doBrowserInput(event);"/></label>
+           <br>
+           (grab the bottom right corner of the game window to resize it)
     </div>
     <script src="PARSE.js" type="text/javascript"></script>
     <script src="SCRIPTER.js" type="text/javascript"></script>

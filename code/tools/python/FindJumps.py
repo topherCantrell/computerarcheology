@@ -1,15 +1,15 @@
 
 from CodeLine import CodeLine
 
-with open("../../../content/CoCo/MadnessMinotaur/Code.mark.bak") as f:
+with open("../../../content/CoCo/Bedlam/Code.mark.bak") as f:
     raw = f.readlines()   
     
 CODE_OPS = ["JSR","BCS","BLS","JMP","BNE","BEQ","BRA","BCS","BMI","BCC","LBCS","BSR","BHI","BPL","LBNE","BRN","LBSR","LBEQ","LBCC"]
 RAM_OPS  = ["LDX","STX"]
     
 newLines = []
-for r in raw:                      
-                        
+for r in raw:               
+    
     t = r.strip()   
                 
     # Keep comment lines as-is

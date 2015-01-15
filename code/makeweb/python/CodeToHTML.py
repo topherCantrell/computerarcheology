@@ -92,7 +92,16 @@ class CodeToHTML(MarkupToHTML):
         aClass = "codeAddressLink"
         
         if line.target["map"]=="ram":
-            if tar=="":
+            if tar!="":
+                ad = maps["ramMap"]
+                entry = ad.getEntryForName(tar)
+                if txt=="":
+                    txt = entry["name"]
+                    if txt=="":
+                        txt = line.numbers[0]["text"]                        
+                tar = ad.mapURL+"#"+entry["target"]
+                aClass = "ramAddressLink"
+            else:
                 ad = maps["ramMap"]                
                 entry = ad.getEntry(line.numbers[0]["value"])
                 if txt=="":
@@ -101,7 +110,7 @@ class CodeToHTML(MarkupToHTML):
                         txt = line.numbers[0]["text"]                        
                 tar = ad.mapURL+"#"+entry["target"]
                 aClass = "ramAddressLink"
-                trg = "TAB_RAM"
+            trg = "TAB_RAM"
         elif line.target["map"]=="hardware":
             if tar=="":
                 ad = maps["hardwareMap"]
@@ -112,7 +121,7 @@ class CodeToHTML(MarkupToHTML):
                         txt = line.numbers[0]["text"]
                 tar = ad.mapURL+"#"+entry["target"]
                 aClass = "hardwareAddressLink"
-                trg="TAB_HARDWARE"                     
+            trg="TAB_HARDWARE"                     
         else:
             trg = "_self"
             if tar=="":

@@ -18,9 +18,10 @@
 "dirList" :
 [
   {"dirName":"MadnessMinotaur", "displayName":"Madness & Minotaur"},
-  {"dirName":"Pyramid",         "displayName":"Pyramid"}
+  {"dirName":"Pyramid",         "displayName":"Pyramid"},
+  {"dirName":"RaakaTu",         "displayName":"Raaka Tu"},
+  {"dirName":"Bedlam",          "displayName":"Bedlam"}
 ]
 
 }
      
-

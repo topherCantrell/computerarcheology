@@ -1,10 +1,17 @@
 
 {
-  "files" : [
-               {"outputName":"MarkupGuide.html", "displayName":"", "command":"markup MarkupGuide.mark"},
+  "files" : [ 
                
-               {"outputName":"index.html", "displayName":"", "command":"markup index.mark"},
-               {"outputName":"rawExample.jpg", "command":"copy"}
+               {"outputName":"index.html",   "displayName":"", "command":"markup index.mark"},
+               {"outputName":"Contact.html", "displayName":"", "command":"markup Contact.mark"},
+               {"outputName":"Help.html",    "displayName":"", "command":"markup Help.mark"},
+               
+               {"outputName":"Help.jpg",         "command":"copy"},
+               {"outputName":"HelpExample1.jpg", "command":"copy"},
+               {"outputName":"HelpExample2.jpg", "command":"copy"},
+               {"outputName":"HelpExample3.jpg", "command":"copy"},
+               {"outputName":"HelpExample4.jpg", "command":"copy"},
+               {"outputName":"Contact.jpg",      "command":"copy"}               
                
             ],
             

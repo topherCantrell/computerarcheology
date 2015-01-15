@@ -43,17 +43,12 @@
           
 				<div class="col-md-2 sidebar">
 					<ul class="nav nav-tabs" style="margin-bottom:16px;">
-						<li id="siteTab" role="presentation" onclick="switchTab('site');"><a>Site</a></li>
-						<li id="pageTab" role="presentation" class="active" onclick="switchTab('page');"><a>Page</a></li>
+						<li id="siteTab" class="active" role="presentation"><a>Site</a></li>						
 					</ul>
 						
-					<ul id="siteTree" class="hidden">
+					<ul id="siteTree">
 						<!-- %%SITE_TREE%% -->
-					</ul>
-		
-					<ul id="pageTree">
-						<!-- %%PAGE_TREE%% -->
-					</ul>		
+					</ul>					
 
 				</div> <!-- End of sidebar -->		
 								      
