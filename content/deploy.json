@@ -11,6 +11,7 @@
                {"outputName":"HelpExample2.jpg", "command":"copy"},
                {"outputName":"HelpExample3.jpg", "command":"copy"},
                {"outputName":"HelpExample4.jpg", "command":"copy"},
+               {"outputName":"Arch.jpg", "command":"copy"},
                {"outputName":"Contact.jpg",      "command":"copy"}               
                
             ],

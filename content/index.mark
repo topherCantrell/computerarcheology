@@ -1,11 +1,54 @@
+%%image Arch.jpg
 %%template master.template
 %%title Computer Archeology
 
-== The Wiki ==
+= The Wiki =
 
 [http://www.computerarcheology.com/wiki/wiki http://www.computerarcheology.com/wiki/wiki]
 
 I am changing the format of this site away from TRAC. Until everything is moved over, visit the original wiki at the link above.
+
+= Some Assembly Required =
+
+You can learn the rules of chess in an afternoon. Becoming GOOD at chess could take a lifetime. Programming is similar: the
+instructions the computer can execute are simple and few. But learning to combine the instructions into a sequence that
+does something -- something creative an engaging -- is more of an art than a science. It takes learning and practice and 
+discipline. It takes talent.
+
+Maybe Legos are a better metaphor. There are relatively few TYPES of pieces you have to work with. You have the 4x4 and the 4x8
+and the 1x8 and so on. Some very creative people have written out sequenced instructions (a program) for combining pieces
+to make castles and starships and a replica of the Death Star. You (the computer) can easily follow the simple instructions
+and snap the pieces together to build these marvels. But designing the thing and writing the instructions to implement it? 
+Well that takes a Master Builder who works with Legos on a higher plane.
+
+After decades of evolution computers still only understand the myopic language of opcodes. Their moment-by-moment life is simple: 
+read a value from memory, subtract five from it, store it back to memory, and jump to another part of the program if the new 
+value is zero. They see only the current instruction. They have no internal inspiration of "Ah ha! I see what this code is doing!"
+
+The programmer, on the other hand, starts at a higher level. He thinks about "alien ships" and "scrolling screens" and "collision detection".
+Where the computer sees "read location 100" the programmer sees "get the coordinates of QBert".
+
+The programmer stitches sequences of instructions together to form routines that perform tasks like "draw a line from (a,b) to (c,d)".
+Then these routines are building blocks used to build more complicated building blocks like "draw a rectangle". These are combined to
+make more powerful blocks. Eventually the building blocks are all combined to form a working program. And other programs can reuse
+the crafted building blocks.
+
+Humans think in labels and symbols. But the computer instructions use only numbers and addresses. The assembler is a tool that 
+translates the programmer's label-filled instructions into the same instructions with numbers the computer can use.
+
+The label "DrawLine" becomes "address $1577". And the label "QBertObjectStructure" becomes "address $8000". The labels and precious
+comments and drawings all get lost in the assembly process. All that remains is a list of very, very crude instructions that
+the computer follows one by one.
+
+= Disassembly =  
+
+
+
+
+
+
+
+
 
 == Corrections and Comments ==
 
@@ -14,9 +57,7 @@ and send me an email.
 
 == Some Assembly Required ==
 
-After decades of evolution computers still only understand the myopic language of opcodes. Their moment-by-moment life is simple: read a value from memory, 
-subtract five from it, store it back to memory, and jump to another part of the program if the new value is zero. They see only the next 
-instruction or two. They have no concern over "where this is going".
+
 
 We rarely program in assembly anymore. Now we have (arguably) human-friendly languages to speak in. The compiler takes over the mundane tasks of assembly 
 programming: decomposing algebraic expressions into pieces, managing complex memory organization, and producing tedious jump code for flow constructs like 
