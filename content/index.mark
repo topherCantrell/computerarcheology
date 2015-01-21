@@ -8,6 +8,129 @@
 
 I am changing the format of this site away from TRAC. Until everything is moved over, visit the original wiki at the link above.
 
+= The Museum =
+
+Electronics were simpler when I was growing up. Printed circuit boards had only two layers (front and back) and all
+the components were large, through-hole critters you could see and solder or plug into a solderless breadboard. You could 
+go to Radio Shack and by chips that had real metal legs on them. Once a month you could get a free battery with your Radio Shack
+battery-of-the-month-club card. 
+
+Computers were simpler when I was growing up. Most of them were in places we called "arcades" where people stood around
+for hours feeding quarters into video game cabinets. Computers worked their way into the homes with the Atari2600
+game console. Then came the hook-to-the-TV computers like the Commodore 64 and the TRS80 Color Computer. These were
+mostly gaming systems too with special slots for game cartridges. But you could also write your own code in BASIC. 
+Or you could learn assembly -- a mystical programming voodoo language with seemingly endless power.
+
+You rarely see these game cabinets or TV computers anymore. They are dusty relics of an age quickly forgotten.
+
+This web site is about digging up these old systems and cracking open the code that ran on them. Think of each
+program as a different "dig site". I am a nerdy Indiana Jones. My goal is to find the original programmer's spirit, 
+ideas, and ingenuity in the code -- the programmer's "flavor". There are code gems and wise idea-nuggets in the old 
+programs buried in the ancient (decades past) ROMs of old. My goal is to dust them off and put them on
+display for all to share.
+
+Welcome to the museum!
+
+= Archeologists =
+
+If you would like to contribute your own disassemblies to this site then press "Contact" above drop me an email. 
+If you would like me to add a link here to your own site then send me the information. 
+
+The contributors to this site:
+ * [People/ChrisCantrell Chris Cantrell]
+ * [People/HarryHurst Harry Hurst]
+ * [People/PatrikSevallius Patrick Sevallius]
+ 
+= References =
+
+If you like Computer Archeology you must visit [http://donhodges.com/ Don Hodges amazing site]. He has a series 
+of digs into Pac Man, Ms Pac Man, Dig Dug, Donkey Kong, and Defender to name a few. Visit his 
+[http://donhodges.com/archive.htm Archive] for most of the series.
+
+Vecoven Frederic has disassembled the Galaga sound processor. See his awesome work here: 
+[http://www.vecoven.com/elec/galaga/galaga.html Vecoven Frederic - Galaga Sound]. 
+Hopefully he will tackle the entire code base!
+
+Dr. Stefan Holtgen in Berlin is working on a project investigating the nexus of hardware and programming languages 
+of the early micro computer era. Check out his blog at [http://www.simulationsraum.de Dr. Stefan Holtgen]. 
+Google-translate does a great job if you don't read German.
+
+= Dig Sites =
+
+Use the "Site" tab on the navigation tree to the left to go straight to a particular page.
+
+== One Quarter at a Time ==
+
+There is a famous bug in the arcade game Galaga. Shoot everything in the game except the lower left bee. Then dodge it for 
+fifteen minutes. Eventually it will stop firing, and none of the bees will fire at you again for the rest of the game. 
+Let me lead you into the tomb of Z80 opcodes and show you the mistake in [/Arcade/Galaga Galaga].
+
+Space Invaders was one of (if not the) first arcade games. The 8080 code is littered with "questionable code design". 
+There is a hidden message Easter egg in the code, and I found a subtle bug. 
+Check it out here in [/Arcade/SpaceInvaders SpaceInvaders].
+
+Many early video games used vector-graphics. The display hardware reads a long list of lines from memory and then 
+drives the electron gun from point to point. The technology is all but lost today. Check out the line-list 
+programming in [/Arcade/Asteroids Asteroids] and in [/Arcade/OmegaRace Omega Race].
+
+TODO blurb here about defender
+
+== Sounds of the 80s ==
+
+Remember the songs of Frogger? There is actually a snippet of hidden music buried until now. See and hear it here 
+in [/Arcade/Frogger Frogger].
+
+I grew up with the AY38910 sound chip. I still have a couple dozen of them! They were used in several arcade games, 
+and it is fun to see how different sound boards scheduled long-running effects over multiple channel resources. 
+Check out the sound-board disassemblies of [/Arcade/MoonPatrol Moon Patrol] and [/Arcade/TimePilot Time Pilot] and 
+[/Arcade/Frogger Frogger]. 
+
+The running base line in Moon Patrol is a nugget in itself. You can see the beginnings of Domain Specific Languages 
+in these boards that define their own sound-script languages.
+
+== Adventures in Text ==
+
+The TRS-80 Color Computer hosted a series of text adventure games from Robert Arnstein. Follow the fascinating 
+evolution of his adventure engine from [/CoCo/Pyramid Pyramid] to [/CoCo/RaakaTu Raaka Tu] to [/CoCo/Bedlam Bedlam].
+
+Spectral Associates produced a complex text adventure game with real-time features in 
+[/CoCo/MadnessMinotaur Madness and the Minotaur]. It is possible to win the game, but it is extremely difficult 
+without knowing the secrets. They are all described here.
+
+== TV Console Systems ==
+
+If you were a child in the 70s chances are you had an Atari2600. The hardware seems designed with the included 
+game [/Atari2600/Combat Combat] in mind. But game developers squeezed out ingenious games using the simple hardware objects. 
+In [/Atari2600/MissileCommand Missile Command] the player-duplication feature creates the parallel falling missiles.
+
+The 2600 was limited to a direct access of 4K bytes in the cartridge. Many games included several banks of ROM that were 
+swapped in and out through cartridge circuitry. See bank switching in action in [/Atari2600/Asteroids Asteroids].
+
+The [/Atari2600/Chess Chess] cartridge is a complete chess playing program for the Atari2600 with multiple difficulty levels. 
+The entire game fits in a 4K cartridge and uses only the system's 128 bytes of memory.
+
+== Zelda ==
+
+The [/NES/Zelda Legend of Zelda] for the NES started a long series of wonderful Zelda games spanning all the different
+ Nintendo game systems.
+
+Patrik, add whatever you want to the description here.
+
+== Viruses ==
+
+Computer viruses are an intriguing part of our computer culture. Let me take you into the assembly workings of two famous but defunct 
+viruses. First I'll show you the [Virus/Worm Morris Worm] VAX assembly snippet written into a buffer overrun to forge a root shell. Then 
+we'll look at the PC [Virus/Stoned Stoned] boot sector infector. As tiny and efficient as it is, there is always room for improvement. 
+Let me show you!
+
+== Amiga ==
+
+TODO blurb here about this
+
+== Tools ==
+
+Detailed discussion of the tools: (TODO point to github)
+
 = Some Assembly Required =
 
 You can learn the rules of chess in an afternoon. Becoming GOOD at chess could take a lifetime. Programming is similar: the
@@ -40,147 +163,17 @@ The label "DrawLine" becomes "address $1577". And the label "QBertObjectStructur
 comments and drawings all get lost in the assembly process. All that remains is a list of very, very crude instructions that
 the computer follows one by one.
 
-= Disassembly =  
+= Disassembly =
 
+If the computer can read the instructions, then you can too! A "disassembler" reads a binary program image and produces human
+readable mnemonics for each instruction.
 
+It isn't always easy to tell what is data and what is code. Tables and data objects are often scattered between
+routines in the code. The disassembler will generate "???" for invalid opcodes -- markers for data sections.
 
+Separating the code from the data is just the beginning. What does the code do? What is the data? How is RAM being used? This
+is where the archeologist studies the code and ponders and begins to write comments on how the system works. He begins to
+assign labels to code and data. He begins to decipher what the data structures are. 
 
-
-
-
-
-
-== Corrections and Comments ==
-
-If you spot an error, if you want to share a thought, if you want to ask a question, or if you want to contribute then select the "Contact" link above
-and send me an email. 
-
-== Some Assembly Required ==
-
-
-
-We rarely program in assembly anymore. Now we have (arguably) human-friendly languages to speak in. The compiler takes over the mundane tasks of assembly 
-programming: decomposing algebraic expressions into pieces, managing complex memory organization, and producing tedious jump code for flow constructs like 
-IF, DO, and WHILE.
-
-If the computer can read it, you can too! The binary form of a program has lost its human-given naming, but it is still a list of opcodes. 
-A disassembler will turn the binary sequence of bytes into a human readable list of opcodes. 
-
-And that is where the computer-archeologist comes in! His job is to trace through the program and figure out what it is doing. He gives symbolic names to
-memory and code routines and begins unraveling how and what the program does.
-
-This is not piracy! The goal of the archeologist is to find the original programmer's spirit, ideas, and ingenuity in the code ... 
-the programmer's "flavor". There are code gems and idea nuggets in the old programs buried in the ancient (decades past) ROMs of old. 
-The computer archeologist digs these out and dusts them off and puts them on display in a museum for all to share.
-
-We are the nerdy Indiana Jones. Welcome to our museum!
-
-== Digs ==
-|| Platform || Discussion || Code ||
-|| [NES NES] || [NES/Zelda Zelda] ||  See Discussion ||
-|| || || ||
-|| [Arcade Arcade] || [Arcade/Asteroids Asteroids] || See Discussion ||
-|| || [Arcade/Defender Defender] || See Discussion ||
-|| || [Arcade/Frogger Frogger (Sound)] || See Discussion ||
-|| || [Arcade/Galaga Galaga] || See Discussion ||
-|| || [Arcade/MoonPatrol Moon Patrol (Main)] || See Discussion ||
-|| || [Arcade/MoonPatrolSound Moon Patrol (Sound) ] || See Discussion ||
-|| || [Arcade/OmegaRace Omega Race] || See Discussion ||
-|| || [Arcade/SpaceInvaders Space Invaders] || [Arcade/SpaceInvaders/CodeAsZ80 CodeAsZ80] ||
-|| || [Arcade/TimePilot Time Pilot (Sound)] || See Discussion ||
-|| || || ||
-|| CoCo || [CoCo/Pyramid Pyramid] || See Discussion ||
-|| || [CoCo/RaakaTu Raaka Tu] || See Discussion ||
-|| || [CoCo/Bedlam Bedlam] || See Discussion ||
-|| || [CoCo/Madness Madness and the Minotaur] || See Discussion ||
-|| || || ||
-|| [Atari2600 Atari 2600] || [Atari2600/BattleZone Battle Zone] || See Discussion ||
-|| || [Atari2600/Asteroids Asteroids] || See Discussion ||
-|| || [Atari2600/MissileCommand Missile Command] || See Discussion ||
-|| || [Atari2600/Combat Combat] || See Discussion ||
-|| || [Atari2600/Chess Chess] || See Discussion ||
-|| || [Atari2600/DoubleGap Double-Gap] || See Discussion ||
-|| || [Atari2600/ET E.T] || See Discussion ||
-|| || || ||
-|| Virus || [Virus/Stoned Stoned Virus (PC)] ||  See Discussion ||
-|| || [Virus/Worm Morris Worm (Vax)] || See Discussion ||
-|| || || ||
-|| Misc || [Misc/Blend Blend] ||  See Discussion ||
-|| || || ||
-|| [Amiga Amiga] || [Amiga/Rainbow Rainbow Islands] ||  See Discussion ||
-
-== One Quarter at a Time ==
-
-There is a famous bug in the arcade game Galaga. Shoot everything in the game except the lower left bee. Then dodge it for fifteen minutes. Eventually 
-it will stop firing, and none of the bees will fire at you again for the rest of the game. Let me lead you into the tomb of Z80 opcodes and show you 
-the mistake in [Arcade/Galaga Galaga].
-
-Space Invaders was one of (if not the) first arcade games. The 8080 code is littered with "questionable code design". There is a hidden message 
-Easter egg in the code, and I found a subtle bug. Check it out here in [Arcade/SpaceInvaders SpaceInvaders].
-
-Many early video games used vector-graphics. The display hardware reads a long list of lines from memory and then drives the electron gun from point 
-to point. The technology is all but lost today. Check out the line-list programming in [Arcade/Asteroids Asteroids] and 
-in [Arcade/OmegaRace Omega Race].
-
-== Sounds of the 80s ==
-
-Remember the songs of Frogger? There is actually a snippet of hidden music buried until now. See and hear it here in [Arcade/Frogger Frogger].
-
-I grew up with the AY38910 sound chip. I still have a couple dozen of them! They were used in several arcade games, and it is fun to 
-see how different sound boards scheduled long-running effects over multiple channel resources. Check out the sound-board 
-disassemblies of [Arcade/MoonPatrol Moon Patrol] and [Arcade/TimePilot Time Pilot] and [Arcade/Frogger Frogger]. The running 
-base line in Moon Patrol is a nugget in itself. You can see the beginnings of Domain Specific Languages in these boards that define their own 
-sound-script languages.
-
-== Adventures in Text ==
-
-The TRS-80 Color Computer hosted a series of text adventure games from Robert Arnstein. Follow the fascinating evolution of 
-his adventure engine from [CoCo/Pyramid Pyramid] to [CoCo/RaakaTu Raaka Tu] to [CoCo/Bedlam Bedlam].
-
-Spectral Associates produced a complex text adventure game with real-time features in [/CoCo/MadnessMinotaur Madness and the Minotaur]. 
-It is not impossible to solve the game, but it is extremely difficult without knowing the secrets. They are all described here.
-
-== TV Console Systems ==
-
-If you were a child in the 70s chances are you had an Atari2600. The hardware seems designed with the included 
-game [Atari2600/Combat Combat] in mind. But game developers squeezed out ingenious games using the simple hardware objects. 
-In [Atari2600/MissileCommand Missile Command] the player-duplication feature creates the parallel falling missiles.
-
-The 2600 was limited to a direct access of 4K bytes in the cartridge. Many games included several banks of ROM that were swapped in and out 
-through cartridge circuitry. See bank switching in action in [Atari2600/Asteroids Asteroids].
-
-The [Atari2600/Chess Chess] cartridge is a complete chess playing program for the Atari2600 with multiple difficulty levels. 
-The entire game fits in a 4K cartridge and uses only the system's 128 bytes of memory.
-
-== Zelda ==
-
-The [/NES/Zelda Legend of Zelda] for the NES started a long series of wonderful Zelda games spanning all the different Nintendo game systems.
-
-Patrik, add whatever you want to the description here.
-
-== Viruses ==
-
-Computer viruses are an intriguing part of our computer culture. Let me take you into the assembly workings of two famous but defunct 
-viruses. First I'll show you the [Virus/Worm Morris Worm] VAX assembly snippet written into a buffer overrun to forge a root shell. Then 
-we'll look at the PC [Virus/Stoned Stoned] boot sector infector. As tiny and efficient as it is, there is always room for improvement. 
-Let me show you!
-
-== Tools ==
-
-Detailed discussion of the tools: (TODO point to github)
-
-== Archeologists ==
- * [People/ChrisCantrell Chris Cantrell]
- * [People/HarryHurst Harry Hurst]
- * [People/PatrikSevallius Patrick Sevallius]
-
-If you like Computer Archeology you must visit [http://donhodges.com/ Don Hodges amazing site]. He has a series of digs into 
-Pac Man, Ms Pac Man, Dig Dug, Donkey Kong, and Defender to name a few. Visit his [http://donhodges.com/archive.htm Archive] for most of the series.
-
-Vecoven Frederic has disassembled the Galaga sound processor. See his awesome work here: 
-[http://www.vecoven.com/elec/galaga/galaga.html Vecoven Frederic - Galaga Sound]. Hopefully he will tackle the entire code base!
-
-Dr. Stefan Holtgen in Berlin is working on a project investigating the nexus of hardware and programming languages of the early 
-micro computer era. Check out his blog at [http://www.simulationsraum.de Dr. Stefan Holtgen]. Google-translate does a great job if you don't read German.
-
-If you want to contribute to this wiki then select the "Contact" link in the main wiki toolbar at the top of the page and send me an email.
+There is no science to this part of the disassembly. This is where your own experience, insight, luck, and long staring result
+in that "ah ha!" moment of understanding.
