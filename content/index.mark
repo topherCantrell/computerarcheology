@@ -60,7 +60,7 @@ Many early video games used vector-graphics. The display hardware reads a long l
 drives the electron gun from point to point. The technology is all but lost today. Check out the line-list 
 programming in [/Arcade/Asteroids Asteroids] and in [/Arcade/OmegaRace Omega Race].
 
-TODO blurb here about defender
+Harry Hurst has dug into the multi-bank ROMs of [/Arcade/Defender Defender]. Have a look at his ongoing work.
 
 == Sounds of the 80s ==
 
@@ -106,17 +106,14 @@ Patrik, add whatever you want to the description here.
 == Viruses ==
 
 Computer viruses are an intriguing part of our computer culture. Let me take you into the assembly workings of two famous but defunct 
-viruses. First I'll show you the [Virus/Worm Morris Worm] VAX assembly snippet written into a buffer overrun to forge a root shell. Then 
-we'll look at the PC [Virus/Stoned Stoned] boot sector infector. As tiny and efficient as it is, there is always room for improvement. 
+viruses. First I'll show you the [/Virus/Worm Morris Worm] VAX assembly snippet written into a buffer overrun to forge a root shell. Then 
+we'll look at the PC [/Virus/Stoned Stoned] boot sector infector. As tiny and efficient as it is, there is always room for improvement. 
 Let me show you!
 
 == Amiga ==
 
-TODO blurb here about this
-
-== Tools ==
-
-Detailed discussion of the tools: (TODO point to github)
+Patrik Sevallius is tackling [/Amiga/Rainbow Rainbow Islands]. He is especially focused on the
+[http://en.wikipedia.org/wiki/Rob_Northen_copylock Rob Northen copylock] disk protection.
 
 = Some Assembly Required =
 
@@ -164,3 +161,26 @@ assign labels to code and data. He begins to decipher what the data structures a
 
 There is no science to this part of the disassembly. This is where your own experience, insight, luck, and long staring result
 in that "ah ha!" moment of understanding.
+
+= Tools =
+
+There are lots of tools support the archeology efforts. They are all in the 
+[https://github.com/topherCantrell/computerarcheology computerarcheology repository on github].
+
+== Raw Content ==
+
+The [https://github.com/topherCantrell/computerarcheology/tree/master/content Raw Content] includes the
+markup files for discussion and code. If you want the clean disassembly file for a particular
+dig site, then look here.
+
+== Web Builder Tools ==
+
+The web pages on this site are built from markup files. The 
+[https://github.com/topherCantrell/computerarcheology/tree/master/code/makeweb Web Site Builder]
+process the Raw Content into HTML deployed to this web site.
+
+== Archeology Tools ==
+
+These are my 
+[https://github.com/topherCantrell/computerarcheology/tree/master/code/tools Assemblers, Disassemblers, Cleaners, etc]
+used to dig into the code. There are several site-specific tools here as well.
