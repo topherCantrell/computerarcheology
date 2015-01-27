@@ -1,0 +1,92 @@
+%%title Harry Hurst
+
+= Who am I =
+
+I am a 56 year old meter reader for the city of Goodland, KS. That may surprise you because you probably expected me to be a software 
+engineer, "the IT guy", or some other such techie. I'm not one of those guys by vocation, but I've had computers as one of my hobbies 
+since 1979, when I bought a TRS-80 model 1 with 4K of RAM. I upgraded that to 16K and Level II BASIC before long. I still have that 
+computer, it works and once about every decade or two I get an upgrade for it.
+
+Also, I did work in electronics for roughly 20 years. I started out my techie background in the Northwest Kansas Area Vocational 
+Technical School in Goodland, KS. I took Communications and signed up for every extra course I could get. One of them was a self 
+taught training program on logic gates. I didn't finish that, unfortunately, but I feel it gave me a pretty good foundation for 
+reading a computer schematic, and determining what should be happening in this machine.
+
+Going out of NWKAVTS I went into microwave communications and stayed at that for almost 3 years. In the course of troubleshooting 
+an alarm system, for a network I was setting up for Tri-State Generation & Transmission in Thornton, CO, I was briefly, and 
+peripherally, introduced to Z80 assembly language. After that I started to dabble with programming, at first just with programmable 
+calculators of the time, and then with the Model 1 when I was at home in Lakewood, CO. Whenever I was home I would play at BASIC 
+programming, or buy a cassette tape with a machine language game on it. My BASIC programs were just too SLOW, so I eventually 
+learned Z80 machine language, and bought my first assembler, EDTASM, from Radio Shack.
+
+I wrote a number of programs in assemtbly language, but the only one I remember is my Morse code trainer. I also wrote the worst 
+chess player ever. I had had so much trouble with EDTASM not writing its output properly to cassette, that I hand assembled that 
+using HTBUG(TBUG modified to run in high memory, I did that myself) to enter it into memory and test it. It's incredible to me 
+now to look back and remember that. How many hours did I put into that without ever making it really work properly? I know I went 
+through a lot of pencil lead and erasers. I wish I still had all those pages of code so I could perhaps find the problems that 
+program had. Sigh. Some mice made a nest of those pages and a chapter from a TRS-80 programming book. All I might have left of it 
+is the display routines, maybe. The chapter in the book was on BCD programming. 
+
+But I digress. 
+
+I changed jobs then, and to go with the new job I got a Color Computer from Radio Shack. I soon upgraded to 16K myself, and then 
+had a tech at RS take it up to 64K. I got a disk drive system, Disk EDTASM, and some diskettes and started to work on a better DOS 
+for that platform.  Then I discovered Microware's OS9, and so I never finished that. Mine would never have been so good as theirs was.
+
+I eventually moved on to MSDOS machines, working in assembly language mostly, until I tried out dBaseIII. Then I bought a clone of 
+that, dBXL 1.3, and a true compiler for that language, Quicksilver 1.3. I did a good bit of programming in dBXL/Quicksilver for 
+several years. 
+
+When I was in a Radio Shack in the early 90s I saw a Color Computer 3 was for sale so I bought it, two copies of the Level 2 OS9 
+operating system, and a windowing operating system which I have never used.
+
+When I had gotten a little familiar with it I felt an old desire to write a game program for it, specifically, Sinistar. I had made 
+a half hearted attempt at it long before on my original CoCo1, but when I saw the similarities in the screen resolution and colors 
+to the arcade game I thought I would have to give it a try again. I've been thinking about it, now and then, ever since. In about 2004 
+I started looking for ROM images, schematics, circuit theory, etc. so I could make my game as much like the original as I was able.
+It was surprisingly easy to find all of that on-line. Disappointingly, I was not able to make much sense of the disassembly for Sinistar, 
+so I eventually decided to try a simpler target by the same company.  There were only three possibles on my list, Defender, Robotron and 
+Joust. I think Robotron and Joust both had about 48K of ROMs + sound. Defender has 26K + sound. Defender was the smallest game that I was 
+familiar with, so here I am working on it, and making considerably more progress with it than I did with Sinistar, though there does seem 
+to be some gibberish shortly after a RESET that I can't seem to make any sense of.
+
+I will return to Sinistar when I feel I've made enough progress on Defender, and feel like my disassemble "muscles" are 
+sufficiently developed.
+
+So, what qualifies me to be a computer archeologist? For one thing, I find it relaxing whenever I'm not too tired to concentrate, so 
+it's not a chore for me. The short answer, though, is that I want to be. Also, Chris was kind enough to let me have this little 
+corner in cyberworld. :)
+
+= Progress so far =
+
+== 08/02/2014 ==
+I'm just very good at this journal keeping, but I haven't found anything major in this disassembly so far. The jibberish that had 
+me confused in the cold boot process turned out to be a memory test, followed by tests for most of the ROMs. Some of the stuff I 
+have found that comes to mind includes:
+
+* FixedROM: routine to call subroutines from one $C000-$CFFF ROM page to another ROM that occupies the same space n the memory map.
+
+* ROMbank2?: Defender's vocabulary, or at least a large part of it.
+
+* ROMbank2?: Text painting routine(s). These could conceivably be used for other purposes, but so far I haven't seen them 
+used for anything else.
+
+I have disconnected from the internet for the summer so I probably won't be very active in here until I select a new, or old, IP, 
+but I no doubt will be doing some work occasionally via free WIFI  providers.
+
+== 01/31/2014 ==
+I thought I had found a problem with my disassembler's output of the indexed form of the JSR opcode. Consequently, I wasted 
+some time trying to fix it just to find that I had done it right in the first place. :} Added a few comments, and 
+changed some others.
+
+== 01/29/2014 ==
+Did some analysis of Defender sound board schematic. Updated the Memory Map to reflect what I found there.
+
+== 01/26/2014 ==
+Added disassembly for sound board, identified a few subroutines in same. Put in preliminary labels and changed a few to 
+permanent symbolic labels in Sound ROM.
+
+== 01/25/2014 ==
+I've neglected to keep a journal up to this point. Fortunately?, :{ I haven't gotten terribly far without documenting anything. 
+I have been identifying subroutines, and I have commented a few. I've recently started to give them descriptive names, as I 
+identify what they do, to make the task a little easier.

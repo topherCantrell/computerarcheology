@@ -16,7 +16,9 @@
             ],
             
   "dirList": [
-               {"dirName": "CoCo",   "displayName": "Color Computer"},   
+               {"dirName": "CoCo",   "displayName": "Color Computer"},
+               {"dirName": "People", "displayName": "People"},
+                  
                {"dirName": "js",     "displayName": "*"},
                {"dirName": "css",    "displayName": "*"},
                {"dirName": "img",    "displayName": "*"}            
