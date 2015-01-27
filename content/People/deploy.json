@@ -1,0 +1,16 @@
+{
+
+"files" : 
+[
+   {"outputName":"index.html",           "displayName":"", "command":"markup People.mark"},
+   {"outputName":"ChrisCantrell.html",   "displayName":"", "command":"markup ChrisCantrell.mark"},
+   {"outputName":"HarryHurst.html",      "displayName":"", "command":"markup HarryHurst.mark"},
+   {"outputName":"PatrikSevallius.html", "displayName":"", "command":"markup PatrikSevallius.mark"},   
+   
+   {"outputName":"cc-187_t.JPG", "command":"copy"}
+],
+
+"dirList" : [ ]
+
+}
+     
