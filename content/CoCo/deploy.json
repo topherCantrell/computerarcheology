@@ -17,6 +17,7 @@
 
 "dirList" :
 [
+  {"dirName":"EarlyWork",       "displayName":"My Early Work"},
   {"dirName":"MadnessMinotaur", "displayName":"Madness & Minotaur"},
   {"dirName":"Pyramid",         "displayName":"Pyramid"},
   {"dirName":"RaakaTu",         "displayName":"Raaka Tu"},
