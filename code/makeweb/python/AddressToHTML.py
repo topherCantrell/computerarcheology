@@ -43,6 +43,10 @@ class AddressToHTML(MarkupToHTML):
             str = str[0:str.index(":")]
         return str.strip()
     
+    def hexInt(self,s):
+        s = s.replace("_","")
+        return int(s,16)
+    
     def loadMap(self,inName):
         
         i = inName.index(" ")
@@ -62,12 +66,12 @@ class AddressToHTML(MarkupToHTML):
                 e1 = ens[0].strip()
                 if ":" in e1:
                     i = e1.index(':')
-                    entry["endAddress"] = int(e1[i+1:],16)                    
-                    entry["address"] = int(e1[0:i],16)
+                    entry["endAddress"] = self.hexInt(e1[i+1:])                    
+                    entry["address"] = self.hexInt(e1[0:i])
                     entry["target"] = e1[0:i]
                 else:
-                    entry["endAddress"] = int(e1,16)                    
-                    entry["address"] = int(e1,16)
+                    entry["endAddress"] = self.hexInt(e1)                    
+                    entry["address"] = self.hexInt(e1,)
                     entry["target"] = e1
                     
                 if len(ens)==2:

@@ -21,7 +21,9 @@
   {"dirName":"MadnessMinotaur", "displayName":"Madness & Minotaur"},
   {"dirName":"Pyramid",         "displayName":"Pyramid"},
   {"dirName":"RaakaTu",         "displayName":"Raaka Tu"},
-  {"dirName":"Bedlam",          "displayName":"Bedlam"}
+  {"dirName":"Bedlam",          "displayName":"Bedlam"},
+  
+  {"dirName":"Daggorath",       "displayName":"Daggorath"}
 ]
 
 }

@@ -18,6 +18,7 @@ class CodeLine:
         self.address = None      
         self.target = None
         self.numbers = None 
+        self.originalCommentPos = -1
     
     def isFourDigitHex(self,str):
         if len(str)!=4:

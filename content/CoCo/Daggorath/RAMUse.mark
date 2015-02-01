@@ -1,0 +1,195 @@
+= RAM Usage =
+
+= Overview =
+The first 256 bytes of RAM (DP=0) are needed by BASIC function calls made by Daggorath. The second
+256 bytes of RAM (DP=1) contain the BASIC interrupt vectors.
+
+Daggorath uses the third 256 bytes of memory (DP=2 from 0200 to 02FF) for its frequently used game variables.
+
+RAM from 0300 to 1000 is used for various arrays of structures. The stack grows down from 0FFF.
+
+The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two screen buffers. 
+
+* 0000-01FF DP=0, DP=1 for BASIC function calls and interrupts
+* 0200-02FF DP=1 for game variables (named in table below)
+* 0300-03D3 ?? Text area descriptors ??
+* 03D4-05F4 Creature objects (32 creatures, 17 bytes each). See description below.
+* 05F4-09F3 Current level maze, one byte per room (32*32 bytes)
+* 09F4-09FC ?? Used in maze drawing ??
+* 09FD-0B14 ?? Game tasks ??
+* 0B15-???? Game objects (14 bytes each).  020F points to 1-entry-past-last game object. See description below.
+* ????-0FFF Stack space (grows downwards towards 0000 from 1000)
+* 1000-27FF First screen buffer
+* 2800-3FFF Second screen buffer
+
+||=Address     || Name                 || Description || 
+|| 2_00        || || ||
+|| 2_01 || || ||
+|| 2_02        ||                      || '01'        ||
+|| 2_03        ||                      || 'FF'            ||
+|| 2_04        ||                      || 'FF'            ||
+|| 2_05        ||                      || '00'            ||
+|| 2_06        ||                      || '80'            ||
+|| 2_07        ||                      || '00'            ||
+|| 2_08        ||                      || '4C'            ||
+|| 2_09:2_0A   || activeScreen         || 'D870' Pointer to visible screen descriptor ||
+|| 2_0B:2_0C   || backScreen           || 'D876' Pointer to drawing screen descriptor ||
+|| 2_0D        ||                      || 'D9'            ||
+|| 2_0E        ||                      || 'D8'            ||
+|| 2_0F:2_10   || endOfObjsM           || '0B15' Pointer to one object slot past end of list ||
+|| 2_11        ||                      || '02'            ||
+|| 2_12        ||                      || 'F1'            ||
+|| 2_13        || playerY              || '0C' Player's Y coordinate   ||
+|| 2_14        || playerX              || '16' Player's X coordinate   ||
+|| 2_15        || playerDir            || '00' Player's direction      ||
+|| 2_16        ||                      || '23'            ||
+|| 2_17        ||                      || '17'            ||
+|| 2_18        ||                      || 'A0'            ||
+|| 2_19:2_6A   || || ||
+|| 2_6B        || rndSeedA             || Random number generator seed value ||
+|| 2_6C        || rndSeedB             || Random number generator seed value ||
+|| 2_6D        || rndSeedC             || Random number generator seed value ||
+|| 2_6E || || ||
+|| 2_6F || || ||
+|| 2_70 || || ||
+|| 2_71 || || ||
+|| 2_72 || || ||
+|| 2_73 || || ||
+|| 2_74 || || ||
+|| 2_75 || || ||
+|| 2_76 || || ||
+|| 2_77        ||                      || ||
+|| 2_78 || || ||
+|| 2_79 || || ||
+|| 2_7A || || ||
+|| 2_7B || || ||
+|| 2_7C        || drwMazeY             || Maze drawing ... current Y ||
+|| 2_7D        || drwMazeX             || Maze drawing ... current X ||
+|| 2_7E        || drwMazeCross         || Maze drawings ... number of crossings for current run ||
+|| 2_7F        ||                      || ||
+|| 2_80        ||                      || ||
+|| 2_81        || currentLevel         || Current maze level number (0-4) ||
+|| 2_82        ||                      || ||
+|| 2_83        ||                      || ||
+|| 2_84        ||                      || ||
+|| 2_85        ||                      || ||
+|| 2_86        || currentHolesM        || Pointer to ceiling hole/ladder table for current level ||
+|| 2_87        || currentHolesL        || ^ ||
+|| 2_88        || drwMazeTmp           || Temporary for maze drawing ||
+|| 2_89        ||                      || ||
+|| 2_8A        || drwMazeDir           || Maze drawing ... current direction ||
+|| 2_8B        ||                      || ||
+|| 2_8C        ||                      || ||
+|| 2_8D        ||                      || ||
+|| 2_8E        ||                      || ||
+|| 2_8F        ||                      || ||
+|| 2_90        ||                      || ||
+|| 2_91        || restartFind          || 1 to restart "FindNextObject" at top of list, 0 to continue find ||
+|| 2_92        || currentObjM          || Pointer to last object found ||
+|| 2_93        || currentObjL          || ^ ||
+|| 2_94        || scrollType           || 0 means "vision", not-0 means "seer" ||
+|| 2_95        ||                      || ||
+|| 2_96        ||                      || ||
+|| 2_97        ||                      || Used at CD65 to advance random number ||
+|| 2_98        ||                      || ||
+|| 2_99        ||                      || ||
+|| 2_9A        ||                      || ||
+|| 2_9B        ||                      || ||
+|| 2_9C        || beamSound            || Not-0 if wizard-beam sound ||
+|| 2_9D        || beamSoundVal         || wizard sound value ||
+|| 2_9E        ||                      || ||
+|| 2_9F        ||                      || ||
+|| 2_A0        ||                      || ||
+|| 2_A1        ||                      || ||
+|| 2_A2        ||                      || ||
+|| 2_A3        ||                      || ||
+|| 2_A4        ||                      || ||
+|| 2_A5        ||                      || ||
+|| 2_A6        ||                      || ||
+|| 2_A7        ||                      || ||
+|| 2_A8        ||                      || ||
+|| 2_A9        ||                      || ||
+|| 2_AA        ||                      || ||
+|| 2_AB        ||                      || ||
+|| 2_AC        ||                      || ||
+|| 2_AD        ||                      || ||
+|| 2_AE        ||                      || ||
+|| 2_AF        ||                      || ||
+|| 2_B0        ||                      || ||
+|| 2_B1        ||                      || ||
+|| 2_B2        ||                      || ||
+|| 2_B3        ||                      || ||
+|| 2_B4        || flipScreens          || Not-0 to flip screens then ack to 0 ||
+|| 2_B5        ||                      || ||
+|| 2_B6        ||                      || ||
+|| 2_B7        ||                      || ||
+|| 2_B8        ||                      || ||
+|| 2_B9        || nextTask             || Next available game-task slot ||
+|| 2_BA        ||                      || ||
+|| 2_BB        ||                      || ||
+|| 2_BC        || inputHead            || head index (next read) of the 32 byte input ring buffer at 2D1  ||
+|| 2_BD        || inputTail            || tail index (next write) of the 32 byte input ring buffer at 2D1 ||
+|| 2_BE:2_CB   || || ||
+|| 2_CC || || ||
+|| 2_CD:2_D0   || || ||
+|| 2_D1:2_F0   || inputBuf             || 32 byte input ring buffer ||
+
+= Screen Descriptor =
+{{{
+ aabbccdd eeff
+
+ eeff : SAM settings for screen
+}}}
+
+= Creatures =
+{{{
+ Creatures are 17 byte structures as follows:
+   00
+   01
+   02
+   03
+   04
+   05
+   06
+   07
+   08
+   09
+   0A
+   0B
+   0C 0 if inactive, FF if alive
+   0D Type
+   0E Direction
+   0F Y coordinate
+   10 X coordinate
+}}}
+
+= Objects =
+{{{
+ Objects are 14 byte structures as follows:
+   00
+   01
+   02 Y coordinate
+   03 X coordinate
+   04 Maze level
+   05 ?? 0 if on floor
+   06 Special data 1 -+
+   07 Special data 2  | Copied from entry in DA64
+   08 Special data 3 -+ 
+   09 Object type        
+   0A Object class        -+
+   0B Strength to reveal   | Copied from entry in DA00
+   0C Magic power          |
+   0D Physical power      -+
+}}
+
+= Tasks =
+{{{
+ Tasks are 7 byte structures as follows:
+   00
+   01
+   02
+   03 MSB Handler code entry
+   04 LSB ^
+   05
+   06
+}}}

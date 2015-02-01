@@ -43,6 +43,7 @@ class CodeToHTML(MarkupToHTML):
                 continue 
             
              # Always id the labels
+            #print line.original
             if not line.opcode and not line.bytes:
                 line.linkID = line.labels[0]
                 if line.comment:
@@ -91,6 +92,7 @@ class CodeToHTML(MarkupToHTML):
         txt = line.target["text"]
         aClass = "codeAddressLink"
         
+        #print line.original
         if line.target["map"]=="ram":
             if tar!="":
                 ad = maps["ramMap"]
@@ -103,7 +105,7 @@ class CodeToHTML(MarkupToHTML):
                 aClass = "ramAddressLink"
             else:
                 ad = maps["ramMap"]                
-                entry = ad.getEntry(line.numbers[0]["value"])
+                entry = ad.getEntry(line.numbers[0]["value"]+self.dp)
                 if txt=="":
                     txt = entry["name"]
                     if txt=="":
@@ -214,6 +216,7 @@ class CodeToHTML(MarkupToHTML):
         raw = MarkupToHTML.readTextLines(inName)        
             
         self.labels = []
+        self.dp = 0
             
         maps = {}
         ret = []
@@ -227,6 +230,8 @@ class CodeToHTML(MarkupToHTML):
             elif t.startswith(";;%%hardwareMap"):
                 maps["hardwareMap"] = self.getAddressMap(t[15:].strip()) #;%%hardwareMap /Coco/Hardware.mark
                 continue
+            elif t.startswith(";;%%directPage"):
+                self.dp = int(t[15:].strip(),16)
                                  
             # Keep comment lines as-is. This includes ";;" markup spec
             if t.startswith(";"):
