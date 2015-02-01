@@ -1,4 +1,4 @@
-= RAM Usage =
+%%image Daggorath.jpg
 
 = Overview =
 The first 256 bytes of RAM (DP=0) are needed by BASIC function calls made by Daggorath. The second
