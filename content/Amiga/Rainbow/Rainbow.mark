@@ -1,8 +1,9 @@
+%%title Rainbow Islands
+%%image Rainbow.jpg
 
-== Rainbow Islands ==
-
-''Archeologist: PatrikSevallius''
-
+{{{html
+<b>Archeologist: PatrikSevallius</b>
+}}}
 
 One of my favorite games as a kid.
 
@@ -10,8 +11,8 @@ I will reverse engineer the copy protection, [http://en.wikipedia.org/wiki/Rob_N
 
 Copylock uses a TVD, trace vector decoder. Every instruction is decrypted, run and then encrypted again before moving on to the next instruction.
 
-|| Parts ||
-|| [wiki:Rainbow/boot Boot block] ||
-|| [wiki:Rainbow/1loader First loader] ||
-|| [wiki:Rainbow/1loader_dec First loader Decrypted] ||
-|| [wiki:Rainbow/orig_boot Original bootloader] ||
+Parts:
+* [boot.html Boot block] 
+* [1loader.html First loader] 
+* [1loader_dec.html First loader Decrypted] 
+* [orig_boot.html Original bootloader] 

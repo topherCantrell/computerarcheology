@@ -1,3 +1,6 @@
+%%title boot
+%%image Rainbow.jpg
+
 The first part that's loaded is the boot block, it's located on the first sector of the first track,
 
 it looks like this (taken from the [http://lclevy.free.fr/adflib/adf_info.html#p41 ADF-faq]):

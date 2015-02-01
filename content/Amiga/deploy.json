@@ -1,0 +1,16 @@
+{
+
+"files" : 
+[
+   {"outputName":"index.html", "displayName":"", "command":"markup Amiga.mark"},   
+   {"outputName":"Amiga.jpg" , "command":"copy"}
+],
+
+"dirList" :
+[
+  {"dirName":"Rainbow",       "displayName":"Rainbow Islands"}
+  
+]
+
+}
+     

@@ -17,6 +17,7 @@
             ],
             
   "dirList": [
+               {"dirName": "Amiga",  "displayName": "Amiga"},
                {"dirName": "CoCo",   "displayName": "Color Computer"},
                {"dirName": "People", "displayName": "People"},
                   
