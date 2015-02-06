@@ -1,4 +1,5 @@
-;;= Vector ROM =
+%%image OmegaRace.jpg
+%%title Omega Race DVG Vector ROM 
 
 ;;{{{#!html
 ;;<script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/DVG.js?format=raw"></script>
@@ -44,8 +45,8 @@ ShipsA:
 ;;  data-command="globalScale=2,x=50,y=50,900E,9000,x=125,y=50,904E,x=200,y=50,9090,x=275,y=50,90D2,x=350,y=50,9116,x=425,y=50,9156,x=500,y=50,9192,x=575,y=50,91D2,x=650,y=50,9212,x=725,y=50,9250,x=800,y=50,9290,x=875,y=50,92D0,x=950,y=50,930C,x=1025,y=50,934C,x=1100,y=50,9390,x=1175,y=50,93D2">
 ;;</canvas>
 
-; Thrust fragment
-9000: BF 30 FF 07     VCTR scale=3(/64) x=-3FF y=BF   i=0   (-15.98 ,   2.98 )
+; Thrust fragment                                                                            VVVV -SYY YYYY YYYY   BBBB -sXX XXXX XXXX
+9000: BF 30 FF 07     VCTR scale=3(/64) x=-3FF y=BF   i=0   (-15.98 ,   2.98 )  30BF 07FF == 0011 0000 1011 1111   0000 0111 1111 1111
 9004: BF 34 3F F6     VCTR scale=3(/64) x=-23F y=-BF  i=15  ( -8.98 ,  -2.98 )
 9008: 7F 34 3F F2     VCTR scale=3(/64) x=23F  y=-7F  i=15  (  8.98 ,  -1.98 )
 900C: 00 D0           RTS
