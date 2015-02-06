@@ -1,10 +1,6 @@
+;;%%image Asteroids.jpg
 
-[[PageOutline()]]
-
-= Asteroids =
-
-{{{#!AssemblyCode
-;##-MachineInfo
+;MachineInfo
 ; 8K RAM, 2K VRAM, 2K VROM, 6K ROM
 ;
 ; 0000 - 01FF  RAM
@@ -2578,7 +2574,7 @@
 7B64: 60         RTS                 
 
 
-;##-NMI
+;NMI
 ; 250Hz interrupt
 ;
 7B65: 48         PHA                 ; Save A (flags and PC already saved)
@@ -2811,7 +2807,7 @@
 7CEE: 91 02      STA ($02),Y         
 7CF0: 4C 39 7C   JMP $7C39      
 
-;##-Start
+;Start
 ;
 ; Set stack and clear decimal-mode     
 7CF3: A2 FE      LDX #$FE            ; Set stack to ...
@@ -3213,8 +3209,8 @@
 7FF7: 05 06      ORA >$06            
 7FF9: 4E 
 
-;##-Vectors
+;Vectors
 7FFA: 65 7B ; NMI vector
 7FFC: F3 7C ; RESET vector
 7FFE: F3 7C ; IRQ/BRK (unused ... points to start)                     
-}}}
+

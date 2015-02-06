@@ -1,0 +1,15 @@
+{
+
+"files" : 
+[
+   {"outputName":"index.html", "displayName":"", "command":"markup Arcade.mark"},   
+   {"outputName":"Arcade.jpg" , "command":"copy"}
+],
+
+"dirList" :
+[
+  {"dirName":"Asteroids",       "displayName":"Asteroids"}
+]
+
+}
+     

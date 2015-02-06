@@ -1,0 +1,1990 @@
+%%image Asteroids.jpg
+%%title Asteroids DVG Vector ROM 
+
+;;= Asteroids DVG Vector ROM =
+
+;; OriginalBinary 035127.02
+
+; The DVG sees the RAM/ROM as a single 8K bank with 4000-5FFF mapping
+; to 0000-1FFF. The first half of this space is reserved for RAM, but
+; only 2K is used. The second half of this space is ROM, but only 2K
+; is used. Thus the DVG reads 0000-07FF as RAM and 1000-17FF as ROM.
+
+; The DVG reads this memory area as words. Thus RAM extends from word
+; address 0000-03FE and ROM extends from word address 0800-0BFE.
+
+; VCTR(x,y,b,sf)     VVVV -sYY YYYY YYYY | BBBB -sXX XXXX XXXX
+;   EffectiveScale = scale + VVVV, can be global+1 to global+9
+;   b is the brightness ... from 0 to 15
+
+; SVEC(x,y,b,sf)     ---- msYY BBBB MsXX
+;   EffectiveScale = scale + 2 +Mm, can be global+2 to gloabl+5
+
+; The effective scale is calculated from the global scale and an offset at
+; each vector. The VCTR command allows the offset 1-9 to be added to the
+; global scale.
+; The SVEC command allows the offset 2-5 to be added to the global scale.
+;
+; The effective scale is then chopped to 4 bits, and if the result is greater
+; than 9 (10-15) the max scale divisor is chosen.
+
+; Internally, X and Y are kept as 32 bit numbers with
+; the lower 16 being the fractional part. Thus the effective
+; scale value maps as follows:
+;   0 Xo = Xo /  512
+;   1 Xo = Xo /  256
+;   2 Xo = Xo /  128
+;   3 Xo = Xo /   64
+;   ...
+;   7 Xo = Xo /    4
+;   8 Xo = Xo /    2
+;   9 Xo = Xo
+;  10,11,12,13,14,15 Xo = Xo / 1024
+
+; In the CPU hardware, we need the ability to specify mirrors on both axis
+
+; LABS(x,y,scale)       ---- xxxx xxxx xxxx | MMMM yyyy yyyy yyyy
+;   2's comp x, y
+;   MMMM -> global scale
+;
+; JMP(location)    ---- nnnn nnnn nnnn
+; JSR(location)    ---- nnnn nnnn nnnn
+; RTS              ---- 0000 0000 0000
+; HALT()           ---- 0000 0000 0000
+
+
+; Words are stored little endian so first line is really:
+;0800 80 a0 00 00  ; A080 0000   LABS(0,128,0)
+
+; Diamond pattern across screen with a parallel
+; line pattern in the center.
+0800: 80 a0 00 00   LABS(0,128,0)                
+0804: 00 70 00 00   VCTR(0,0,0,7)                
+0808: 00 90 ff 73   VCTR(1023,0,7,9)             
+080C: ff 92 00 70   VCTR(0,767,7,9)              
+0810: 00 90 ff 77   VCTR(-1023,0,7,9)            
+0814: ff 96 00 70   VCTR(0,-767,7,9)             
+0818: ff 92 ff 72   VCTR(767,767,7,9)            
+081C: 00 86 00 72   VCTR(512,-512,7,8)           
+0820: fe 87 fe 77   VCTR(-1022,-1022,7,8)        
+0824: 00 92 00 76   VCTR(-512,512,7,9)           
+0828: fe 81 00 72   VCTR(512,510,7,8)            
+082C: ff 96 ff 72   VCTR(767,-767,7,9)           
+0830: 7f a3 ff 03   LABS(1023,895,0)             
+0834: 00 70 00 00   VCTR(0,0,0,7)                
+0838: ff 96 ff 76   VCTR(-767,-767,7,9)          
+083C: fe 81 00 76   VCTR(-512,510,7,8)           
+0840: 00 92 00 72   VCTR(512,512,7,9)            
+0844: fe 87 fe 73   VCTR(1022,-1022,7,8)         
+0848: 00 86 00 76   VCTR(-512,-512,7,8)          
+084C: ff 92 ff 76   VCTR(-767,767,7,9)           
+0850: fc a1 f4 01   LABS(500,508,0)              
+0854: 00 70 00 00   VCTR(0,0,0,7)                
+0858: db f0         SVEC(768,0,13,4)             
+085A: 00 f9         SVEC(0,256,0,3)              
+085C: cf f0         SVEC(-768,0,12,4)            
+085E: 00 f9         SVEC(0,256,0,3)              
+0860: bb f0         SVEC(768,0,11,4)             
+0862: 00 f9         SVEC(0,256,0,3)              
+0864: af f0         SVEC(-768,0,10,4)            
+0866: 00 f9         SVEC(0,256,0,3)              
+0868: 9b f0         SVEC(768,0,9,4)              
+086A: 00 f9         SVEC(0,256,0,3)              
+086C: 8f f0         SVEC(-768,0,8,4)             
+086E: 00 f9         SVEC(0,256,0,3)              
+0870: 7b f0         SVEC(768,0,7,4)              
+0872: 00 f9         SVEC(0,256,0,3)              
+0874: 6f f0         SVEC(-768,0,6,4)             
+0876: 00 f9         SVEC(0,256,0,3)              
+0878: 5b f0         SVEC(768,0,5,4)              
+087A: 00 f9         SVEC(0,256,0,3)              
+087C: 4f f0         SVEC(-768,0,4,4)             
+087E: 00 f9         SVEC(0,256,0,3)              
+0880: 3b f0         SVEC(768,0,3,4)              
+0882: 00 f9         SVEC(0,256,0,3)              
+0884: 2f f0         SVEC(-768,0,2,4)             
+0886: 4c d0         RTS                         ; ?? 0x4c
+
+; "PAGE SELECT ERROR"
+0888: e4 a0 2c 11   LABS(300,228,1)              
+088C: 00 70 00 00   VCTR(0,0,0,7)                
+0890: e4 ca         JSR($0DC8)                  ; {} P
+0892: 79 ca         JSR($0CF2)                  ; {} A
+0894: ab ca         JSR($0D56)                  ; {} G
+0896: 9c ca         JSR($0D38)                  ; {} E
+0898: 2d cb         JSR($0E5A)                  ; {} SPACE
+089A: fc ca         JSR($0DF8)                  ; {} S
+089C: 9c ca         JSR($0D38)                  ; {} E
+089E: ce ca         JSR($0D9C)                  ; {} L
+08A0: 9c ca         JSR($0D38)                  ; {} E
+08A2: 8e ca         JSR($0D1C)                  ; {} C
+08A4: 03 cb         JSR($0E06)                  ; {} T
+08A6: 2d cb         JSR($0E5A)                  ; {} SPACE
+08A8: 9c ca         JSR($0D38)                  ; {} E
+08AA: f4 ca         JSR($0DE8)                  ; {} R
+08AC: f4 ca         JSR($0DE8)                  ; {} R
+08AE: de ca         JSR($0DBC)                  ; {} O
+08B0: f4 ca         JSR($0DE8)                  ; {} R
+08B2: 00 d0         RTS                       
+
+; "ASTEROIDS BY ATARI"
+08B4: 80 a0 7c 01   LABS(380,128,0)              
+08B8: 00 70 00 00   VCTR(0,0,0,7)                
+08BC: 79 ca         JSR($0CF2)                  ; {} A
+08BE: fc ca         JSR($0DF8)                  ; {} S
+08C0: 03 cb         JSR($0E06)                  ; {} T
+08C2: 9c ca         JSR($0D38)                  ; {} E
+08C4: f4 ca         JSR($0DE8)                  ; {} R
+08C6: de ca         JSR($0DBC)                  ; {} O
+08C8: bb ca         JSR($0D76)                  ; {} I
+08CA: 94 ca         JSR($0D28)                  ; {} D
+08CC: fc ca         JSR($0DF8)                  ; {} S
+08CE: 2d cb         JSR($0E5A)                  ; {} SPACE
+08D0: 81 ca         JSR($0D02)                  ; {} B
+08D2: 20 cb         JSR($0E40)                  ; {} Y
+08D4: 2d cb         JSR($0E5A)                  ; {} SPACE
+08D6: 79 ca         JSR($0CF2)                  ; {} A
+08D8: 03 cb         JSR($0E06)                  ; {} T
+08DA: 79 ca         JSR($0CF2)                  ; {} A
+08DC: f4 ca         JSR($0DE8)                  ; {} R
+08DE: bb ca         JSR($0D76)                  ; {} I
+08E0: 00 d0         RTS                       
+
+; ??
+08E2: c6 ff         SVEC(-512,-768,12,3)         
+08E4: c1 fe         SVEC(256,-512,12,3)          
+08E6: c3 f1         SVEC(768,256,12,2)           
+08E8: cd f1         SVEC(-256,256,12,4)          
+08EA: c7 f1         SVEC(-768,256,12,2)          
+08EC: c1 fd         SVEC(256,-256,12,3)          
+08EE: d8 1e 32 ec   VCTR(-50,-728,14,1)          
+08F2: 00 c4         JSR($0000)                  ; Do routine at start of vector RAM
+08F4: 3c 14 0a 46   VCTR(-522,-60,4,1)           
+08F8: d8 d8         RTS                         ; ?? 0x8d8
+
+; Looks like shrapnel
+08FA: d1 c8         JSR($09A2)                  ; {} 
+08FC: b6 c8         JSR($096C)                  ; {} 
+08FE: 97 c8         JSR($092E)                  ; {} 
+0900: 81 c8         JSR($0902)                  ; {} 
+0902: 0d f8         SVEC(-256,0,0,5)             
+0904: 78 f8         SVEC(0,0,7,5)                
+0906: 0d fd         SVEC(-256,-256,0,5)          
+0908: 78 f8         SVEC(0,0,7,5)                
+090A: 09 fd         SVEC(256,-256,0,5)           
+090C: 78 f8         SVEC(0,0,7,5)                
+090E: 0b f1         SVEC(768,256,0,4)            
+0910: 78 f8         SVEC(0,0,7,5)                
+0912: 0a f5         SVEC(512,-256,0,4)           
+0914: 78 f8         SVEC(0,0,7,5)                
+0916: 08 f9         SVEC(0,256,0,5)              
+0918: 78 f8         SVEC(0,0,7,5)                
+091A: 09 f3         SVEC(256,768,0,4)            
+091C: 78 f8         SVEC(0,0,7,5)                
+091E: 0d f3         SVEC(-256,768,0,4)           
+0920: 78 f8         SVEC(0,0,7,5)                
+0922: 80 54 00 06   VCTR(-512,-128,0,5)          
+0926: 78 f8         SVEC(0,0,7,5)                
+0928: 0f f1         SVEC(-768,256,0,4)           
+092A: 78 f8         SVEC(0,0,7,5)                
+092C: 00 d0         RTS                       
+
+; Shrapnel pattern
+092E: 00 30 80 07   VCTR(-896,0,0,3)             
+0932: 78 f8         SVEC(0,0,7,5)                
+0934: 80 37 80 07   VCTR(-896,-896,0,3)          
+0938: 78 f8         SVEC(0,0,7,5)                
+093A: 80 37 80 03   VCTR(896,-896,0,3)           
+093E: 78 f8         SVEC(0,0,7,5)                
+0940: e0 40 a0 02   VCTR(672,224,0,4)            
+0944: 78 f8         SVEC(0,0,7,5)                
+0946: c0 35 80 03   VCTR(896,-448,0,3)           
+094A: 78 f8         SVEC(0,0,7,5)                
+094C: 80 33 00 00   VCTR(0,896,0,3)              
+0950: 78 f8         SVEC(0,0,7,5)                
+0952: a0 42 e0 00   VCTR(224,672,0,4)            
+0956: 78 f8         SVEC(0,0,7,5)                
+0958: a0 42 e0 04   VCTR(-224,672,0,4)           
+095C: 78 f8         SVEC(0,0,7,5)                
+095E: e0 44 80 07   VCTR(-896,-224,0,4)          
+0962: 78 f8         SVEC(0,0,7,5)                
+0964: e0 40 a0 06   VCTR(-672,224,0,4)           
+0968: 78 f8         SVEC(0,0,7,5)                
+096A: 00 d0         RTS                       
+
+; Shrapnel pattern
+096C: 07 f8         SVEC(-768,0,0,3)             
+096E: 78 f8         SVEC(0,0,7,5)                
+0970: 07 ff         SVEC(-768,-768,0,3)          
+0972: 78 f8         SVEC(0,0,7,5)                
+0974: 03 ff         SVEC(768,-768,0,3)           
+0976: 78 f8         SVEC(0,0,7,5)                
+0978: c0 40 40 02   VCTR(576,192,0,4)            
+097C: 78 f8         SVEC(0,0,7,5)                
+097E: 80 35 00 03   VCTR(768,-384,0,3)           
+0982: 78 f8         SVEC(0,0,7,5)                
+0984: 00 fb         SVEC(0,768,0,3)              
+0986: 78 f8         SVEC(0,0,7,5)                
+0988: 40 42 c0 00   VCTR(192,576,0,4)            
+098C: 78 f8         SVEC(0,0,7,5)                
+098E: 40 42 c0 04   VCTR(-192,576,0,4)           
+0992: 78 f8         SVEC(0,0,7,5)                
+0994: c0 44 00 07   VCTR(-768,-192,0,4)          
+0998: 78 f8         SVEC(0,0,7,5)                
+099A: c0 40 40 06   VCTR(-576,192,0,4)           
+099E: 78 f8         SVEC(0,0,7,5)                
+09A0: 00 d0         RTS                       
+
+; Shrapnel pattern
+09A2: 00 30 80 06   VCTR(-640,0,0,3)             
+09A6: 78 f8         SVEC(0,0,7,5)                
+09A8: 80 36 80 06   VCTR(-640,-640,0,3)          
+09AC: 78 f8         SVEC(0,0,7,5)                
+09AE: 80 36 80 02   VCTR(640,-640,0,3)           
+09B2: 78 f8         SVEC(0,0,7,5)                
+09B4: 40 31 c0 03   VCTR(960,320,0,3)            
+09B8: 78 f8         SVEC(0,0,7,5)                
+09BA: 40 35 80 02   VCTR(640,-320,0,3)           
+09BE: 78 f8         SVEC(0,0,7,5)                
+09C0: 80 32 00 00   VCTR(0,640,0,3)              
+09C4: 78 f8         SVEC(0,0,7,5)                
+09C6: c0 33 40 01   VCTR(320,960,0,3)            
+09CA: 78 f8         SVEC(0,0,7,5)                
+09CC: c0 33 40 05   VCTR(-320,960,0,3)           
+09D0: 78 f8         SVEC(0,0,7,5)                
+09D2: a0 44 80 06   VCTR(-640,-160,0,4)          
+09D6: 78 f8         SVEC(0,0,7,5)                
+09D8: 40 31 c0 07   VCTR(-960,320,0,3)           
+09DC: 78 f8         SVEC(0,0,7,5)                
+09DE: 00 d0         RTS                       
+
+; Jumbled up rock (after hit?)
+09E0: f4 c8         JSR($09E8)             ; {}      
+09E2: 00 c9         JSR($0A00)              ; {}     
+09E4: 0e c9         JSR($0A1C)                ;{}   
+09E6: 1b c9         JSR($0A36)                {}   
+09E8: 08 f9         SVEC(0,256,0,5)              
+09EA: 79 f9         SVEC(256,256,7,5)            
+09EC: 79 fd         SVEC(256,-256,7,5)           
+09EE: 7d f6         SVEC(-256,-512,7,4)          
+09F0: 79 f6         SVEC(256,-512,7,4)           
+09F2: 8f f6         SVEC(-768,-512,8,4)          
+09F4: 8f f0         SVEC(-768,0,8,4)             
+09F6: 7d f9         SVEC(-256,256,7,5)           
+09F8: 78 fa         SVEC(0,512,7,5)              
+09FA: 79 f9         SVEC(256,256,7,5)            
+09FC: 79 fd         SVEC(256,-256,7,5)           
+09FE: 00 d0         RTS                       
+
+; Rock pattern
+0A00: 0a f1         SVEC(512,256,0,4)            
+0A02: 7a f1         SVEC(512,256,7,4)            
+0A04: 7d f9         SVEC(-256,256,7,5)           
+0A06: 7e f5         SVEC(-512,-256,7,4)          
+0A08: 7e f1         SVEC(-512,256,7,4)           
+0A0A: 7d fd         SVEC(-256,-256,7,5)          
+0A0C: 79 f6         SVEC(256,-512,7,4)           
+0A0E: 7d f6         SVEC(-256,-512,7,4)          
+0A10: 79 fd         SVEC(256,-256,7,5)           
+0A12: 79 f1         SVEC(256,256,7,4)            
+0A14: 8b f5         SVEC(768,-256,8,4)           
+0A16: 8a f3         SVEC(512,768,8,4)            
+0A18: 7d f9         SVEC(-256,256,7,5)           
+0A1A: 00 d0         RTS                       
+
+; Rock pattern
+0A1C: 0d f8         SVEC(-256,0,0,5)             
+0A1E: 7e f5         SVEC(-512,-256,7,4)          
+0A20: 7a f7         SVEC(512,-768,7,4)           
+0A22: 7a f3         SVEC(512,768,7,4)            
+0A24: 78 f7         SVEC(0,-768,7,4)             
+0A26: 79 f8         SVEC(256,0,7,5)              
+0A28: 7a f3         SVEC(512,768,7,4)            
+0A2A: 78 f9         SVEC(0,256,7,5)              
+0A2C: 7e f3         SVEC(-512,768,7,4)           
+0A2E: 7f f0         SVEC(-768,0,7,4)             
+0A30: 7f f7         SVEC(-768,-768,7,4)          
+0A32: 7a f5         SVEC(512,-256,7,4)           
+0A34: 00 d0         RTS                       
+
+; Rock pattern
+0A36: 09 f0         SVEC(256,0,0,4)              
+0A38: 7b f1         SVEC(768,256,7,4)            
+0A3A: 68 f1         SVEC(0,256,6,4)              
+0A3C: 7f f2         SVEC(-768,512,7,4)           
+0A3E: 7f f0         SVEC(-768,0,7,4)             
+0A40: 69 f6         SVEC(256,-512,6,4)           
+0A42: 7f f0         SVEC(-768,0,7,4)             
+0A44: 78 f7         SVEC(0,-768,7,4)             
+0A46: 7a f7         SVEC(512,-768,7,4)           
+0A48: 7b f1         SVEC(768,256,7,4)            
+0A4A: 69 f5         SVEC(256,-256,6,4)           
+0A4C: 69 f9         SVEC(256,256,6,5)            
+0A4E: 7f f2         SVEC(-768,512,7,4)           
+0A50: 00 d0         RTS                       
+
+; Flying Saucer
+0A52: 2a c9         JSR($0A54)                  {} 
+0A54: 0e f1         SVEC(-512,256,0,4)           
+0A56: ca f8         SVEC(512,0,12,5)             
+0A58: 0b f6         SVEC(768,-512,0,4)           
+0A5A: 00 60 80 d6   VCTR(-640,0,13,6)            
+0A5E: db f6         SVEC(768,-512,13,4)          
+0A60: ca f8         SVEC(512,0,12,5)             
+0A62: db f2         SVEC(768,512,13,4)           
+0A64: df f2         SVEC(-768,512,13,4)          
+0A66: cd f2         SVEC(-256,512,12,4)          
+0A68: cd f8         SVEC(-256,0,12,5)            
+0A6A: cd f6         SVEC(-256,-512,12,4)         
+0A6C: df f6         SVEC(-768,-512,13,4)         
+0A6E: 00 d0         RTS                       
+
+; ??
+0A70: 92 52 aa 52   VCTR(682,658,5,5)            
+0A74: ce 52 f2 52   VCTR(754,718,5,5)            
+0A78: 16 53 38 53   VCTR(824,790,5,5)            
+0A7C: 5c 53 80 53   VCTR(896,860,5,5)            
+0A80: a4 53 c8 53   VCTR(968,932,5,5)            
+0A84: ec 53 10 54   VCTR(-16,1004,5,5)           
+0A88: 34 54 58 54   VCTR(-88,-52,5,5)            
+0A8C: 7c 54 a0 54   VCTR(-160,-124,5,5)          
+0A90: c4 54 0f f6   VCTR(-527,-196,15,5)         
+0A94: c8 fa         SVEC(0,512,12,5)             
+0A96: bd f9         SVEC(-256,256,11,5)          
+0A98: 00 65 00 c3   VCTR(768,-256,12,6)          
+0A9C: 00 65 00 c7   VCTR(-768,-256,12,6)         
+0AA0: b9 f9         SVEC(256,256,11,5)           
+0AA2: 00 d0         RTS                       
+
+; Arrow head pointing left
+0AA4: ce f9         SVEC(-512,256,12,5)          
+0AA6: ca f9         SVEC(512,256,12,5)           
+0AA8: 00 d0         RTS                       
+
+; Ship pattern pointing right and up a tad
+0AAA: 40 46 c0 06   VCTR(-704,-576,0,4)          
+0AAE: 00 52 30 c4   VCTR(-48,512,12,5)           
+0AB2: c0 41 20 c6   VCTR(-544,448,12,4)          
+0AB6: b0 64 18 c3   VCTR(792,-176,12,6)          
+0ABA: 48 65 e0 c6   VCTR(-736,-328,12,6)         
+0ABE: 20 42 c0 c1   VCTR(448,544,12,4)           
+0AC2: 00 d0         RTS                       
+
+0AC4: d0 50 10 c6   VCTR(-528,208,12,5)          
+0AC8: 60 42 c0 c3   VCTR(960,608,12,4)           
+0ACC: 00 d0         RTS                       
+
+; Ship pattern pointing right and up a tad more
+0ACE: 80 46 80 06   VCTR(-640,-640,0,4)          
+0AD2: e0 43 c0 c4   VCTR(-192,992,12,4)          
+0AD6: a0 41 60 c6   VCTR(-608,416,12,4)          
+0ADA: 68 64 20 c3   VCTR(800,-104,12,6)          
+0ADE: 90 65 c0 c6   VCTR(-704,-400,12,6)         
+0AE2: 60 42 a0 c1   VCTR(416,608,12,4)           
+0AE6: 00 d0         RTS                       
+
+0AE8: 90 50 30 c6   VCTR(-560,144,12,5)          
+0AEC: c0 42 80 c3   VCTR(896,704,12,4)           
+0AF0: 00 d0         RTS                       
+
+0AF2: c0 46 40 06   VCTR(-576,-704,0,4)          
+0AF6: e0 43 20 c5   VCTR(-288,992,12,4)          
+0AFA: 60 41 80 c6   VCTR(-640,352,12,4)          
+0AFE: 18 64 28 c3   VCTR(808,-24,12,6)           
+0B02: d0 65 98 c6   VCTR(-664,-464,12,6)         
+0B06: 80 42 60 c1   VCTR(352,640,12,4)           
+0B0A: 00 d0         RTS                       
+
+0B0C: 60 50 30 c6   VCTR(-560,96,12,5)           
+0B10: 20 43 40 c3   VCTR(832,800,12,4)           
+0B14: 00 d0         RTS                       
+
+0B16: 0e f7         SVEC(-512,-768,0,4)          
+0B18: c0 43 80 c5   VCTR(-384,960,12,4)          
+0B1C: 20 41 a0 c6   VCTR(-672,288,12,4)          
+0B20: 38 60 28 c3   VCTR(808,56,12,6)            
+0B24: 10 66 60 c6   VCTR(-608,-528,12,6)         
+0B28: a0 42 20 c1   VCTR(288,672,12,4)           
+0B2C: 00 d0         RTS                       
+
+0B2E: 30 50 40 c6   VCTR(-576,48,12,5)           
+0B32: 60 43 e0 c2   VCTR(736,864,12,4)           
+0B36: 00 d0         RTS                       
+
+0B38: 20 47 c0 05   VCTR(-448,-800,0,4)          
+0B3C: 80 43 e0 c5   VCTR(-480,896,12,4)          
+0B40: e0 40 c0 c6   VCTR(-704,224,12,4)          
+0B44: 88 60 20 c3   VCTR(800,136,12,6)           
+0B48: 48 66 30 c6   VCTR(-560,-584,12,6)         
+0B4C: c0 42 e0 c0   VCTR(224,704,12,4)           
+0B50: 00 d0         RTS                       
+
+0B52: 10 54 40 c6   VCTR(-576,-16,12,5)          
+0B56: a0 43 a0 c2   VCTR(672,928,12,4)           
+0B5A: 00 d0         RTS                       
+
+0B5C: 60 47 60 05   VCTR(-352,-864,0,4)          
+0B60: 60 43 40 c6   VCTR(-576,864,12,4)          
+0B64: 80 40 c0 c6   VCTR(-704,128,12,4)          
+0B68: d8 60 10 c3   VCTR(784,216,12,6)           
+0B6C: 80 66 f0 c5   VCTR(-496,-640,12,6)         
+0B70: c0 42 80 c0   VCTR(128,704,12,4)           
+0B74: 00 d0         RTS                       
+
+0B76: 40 54 30 c6   VCTR(-560,-64,12,5)          
+0B7A: e0 43 40 c2   VCTR(576,992,12,4)           
+0B7E: 00 d0         RTS                       
+
+0B80: 80 47 00 05   VCTR(-256,-896,0,4)          
+0B84: 20 43 80 c6   VCTR(-640,800,12,4)          
+0B88: 40 40 e0 c6   VCTR(-736,64,12,4)           
+0B8C: 20 61 f8 c2   VCTR(760,288,12,6)           
+0B90: b0 66 b0 c5   VCTR(-432,-688,12,6)         
+0B94: e0 42 40 c0   VCTR(64,736,12,4)            
+0B98: 00 d0         RTS                       
+
+0B9A: 80 54 30 c6   VCTR(-560,-128,12,5)         
+0B9E: 10 52 f0 c0   VCTR(240,528,12,5)           
+0BA2: 00 d0         RTS                       
+
+0BA4: 80 47 c0 04   VCTR(-192,-896,0,4)          
+0BA8: e0 42 e0 c6   VCTR(-736,736,12,4)          
+0BAC: 00 40 e0 c6   VCTR(-736,0,12,4)            
+0BB0: 68 61 d8 c2   VCTR(728,360,12,6)           
+0BB4: d8 66 68 c5   VCTR(-360,-728,12,6)         
+0BB8: e0 42 00 c0   VCTR(0,736,12,4)             
+0BBC: 00 d0         RTS                       
+
+0BBE: b0 54 20 c6   VCTR(-544,-176,12,5)         
+0BC2: 20 52 b0 c0   VCTR(176,544,12,5)           
+0BC6: 00 d0         RTS                       
+
+0BC8: a0 47 60 04   VCTR(-96,-928,0,4)           
+0BCC: 80 42 20 c7   VCTR(-800,640,12,4)          
+0BD0: 40 44 e0 c6   VCTR(-736,-64,12,4)          
+0BD4: b0 61 b0 c2   VCTR(688,432,12,6)           
+0BD8: f8 66 20 c5   VCTR(-288,-760,12,6)         
+0BDC: e0 42 40 c4   VCTR(-64,736,12,4)           
+0BE0: 00 d0         RTS                       
+
+0BE2: f0 54 10 c6   VCTR(-528,-240,12,5)         
+0BE6: 30 52 80 c0   VCTR(128,560,12,5)           
+0BEA: 00 d0         RTS                       
+
+0BEC: a0 47 00 00   VCTR(0,-928,0,4)             
+0BF0: 40 42 60 c7   VCTR(-864,576,12,4)          
+0BF4: 80 44 c0 c6   VCTR(-704,-128,12,4)         
+0BF8: f0 61 80 c2   VCTR(640,496,12,6)           
+0BFC: 10 67 d8 c4   VCTR(-216,-784,12,6)         
+0C00: c0 42 80 c4   VCTR(-128,704,12,4)          
+0C04: 00 d0         RTS                       
+
+0C06: 40 46 e0 c7   VCTR(-992,-576,12,4)         
+0C0A: 30 52 40 c0   VCTR(64,560,12,5)            
+0C0E: 00 d0         RTS                       
+
+0C10: a0 47 60 00   VCTR(96,-928,0,4)            
+0C14: e0 41 80 c7   VCTR(-896,480,12,4)          
+0C18: e0 44 c0 c6   VCTR(-704,-224,12,4)         
+0C1C: 30 62 48 c2   VCTR(584,560,12,6)           
+0C20: 20 67 88 c4   VCTR(-136,-800,12,6)         
+0C24: c0 42 e0 c4   VCTR(-224,704,12,4)          
+0C28: 00 d0         RTS                       
+
+0C2A: a0 46 a0 c7   VCTR(-928,-672,12,4)         
+0C2E: 40 52 10 c0   VCTR(16,576,12,5)            
+0C32: 00 d0         RTS                       
+
+0C34: 80 47 c0 00   VCTR(192,-896,0,4)           
+0C38: 80 41 c0 c7   VCTR(-960,384,12,4)          
+0C3C: 20 45 a0 c6   VCTR(-672,-288,12,4)         
+0C40: 60 62 10 c2   VCTR(528,608,12,6)           
+0C44: 28 67 38 c4   VCTR(-56,-808,12,6)          
+0C48: a0 42 20 c5   VCTR(-288,672,12,4)          
+0C4C: 00 d0         RTS                       
+
+0C4E: e0 46 60 c7   VCTR(-864,-736,12,4)         
+0C52: 40 52 30 c4   VCTR(-48,576,12,5)           
+0C56: 00 d0         RTS                       
+
+0C58: 80 47 00 01   VCTR(256,-896,0,4)           
+0C5C: 20 41 e0 c7   VCTR(-992,288,12,4)          
+0C60: 60 45 80 c6   VCTR(-640,-352,12,4)         
+0C64: 98 62 d0 c1   VCTR(464,664,12,6)           
+0C68: 28 67 18 c0   VCTR(24,-808,12,6)           
+0C6C: 80 42 60 c5   VCTR(-352,640,12,4)          
+0C70: 00 d0         RTS                       
+
+0C72: 40 47 20 c7   VCTR(-800,-832,12,4)         
+0C76: 30 52 60 c4   VCTR(-96,560,12,5)           
+0C7A: 00 d0         RTS                       
+
+0C7C: 60 47 60 01   VCTR(352,-864,0,4)           
+0C80: c0 40 e0 c7   VCTR(-992,192,12,4)          
+0C84: a0 45 60 c6   VCTR(-608,-416,12,4)         
+0C88: c0 62 90 c1   VCTR(400,704,12,6)           
+0C8C: 20 67 68 c0   VCTR(104,-800,12,6)          
+0C90: 60 42 a0 c5   VCTR(-416,608,12,4)          
+0C94: 00 d0         RTS                       
+
+0C96: 80 47 c0 c6   VCTR(-704,-896,12,4)         
+0C9A: 30 52 90 c4   VCTR(-144,560,12,5)          
+0C9E: 00 d0         RTS                       
+
+0CA0: 20 47 c0 01   VCTR(448,-800,0,4)           
+0CA4: 30 50 00 c6   VCTR(-512,48,12,5)           
+0CA8: c0 45 20 c6   VCTR(-544,-448,12,4)         
+0CAC: e0 62 48 c1   VCTR(328,736,12,6)           
+0CB0: 18 67 b0 c0   VCTR(176,-792,12,6)          
+0CB4: 20 42 c0 c5   VCTR(-448,544,12,4)          
+0CB8: 00 d0         RTS                       
+
+0CBA: c0 47 60 c6   VCTR(-608,-960,12,4)         
+0CBE: 10 52 d0 c4   VCTR(-208,528,12,5)          
+0CC2: 00 d0         RTS                       
+
+0CC4: 0a f7         SVEC(512,-768,0,4)           
+0CC6: ce f8         SVEC(-512,0,12,5)            
+0CC8: cd fd         SVEC(-256,-256,12,5)         
+0CCA: 00 63 00 c1   VCTR(256,768,12,6)           
+0CCE: 00 67 00 c1   VCTR(256,-768,12,6)          
+0CD2: cd f9         SVEC(-256,256,12,5)          
+0CD4: 00 d0         RTS                       
+
+0CD6: cd fe         SVEC(-256,-512,12,5)         
+0CD8: cd fa         SVEC(-256,512,12,5)          
+0CDA: 00 d0         RTS                       
+
+; Sip pattern pointing up
+0CDC: 0e f7         SVEC(-512,-768,0,4)          
+0CDE: 7a f8         SVEC(512,0,7,5)              
+0CE0: 79 fd         SVEC(256,-256,7,5)           
+0CE2: 00 63 00 75   VCTR(-256,768,7,6)           
+0CE6: 00 67 00 75   VCTR(-256,-768,7,6)          
+0CEA: 79 f9         SVEC(256,256,7,5)            
+0CEC: c0 60 80 02   VCTR(640,192,0,6)            
+0CF0: 32 d0         RTS                         ; ?? 0x32
+
+; "A"
+0CF2: 70 fa         SVEC(0,512,7,3)              
+0CF4: 72 f2         SVEC(512,512,7,2)            
+0CF6: 72 f6         SVEC(512,-512,7,2)           
+0CF8: 70 fe         SVEC(0,-512,7,3)             
+0CFA: 06 f9         SVEC(-512,256,0,3)           
+0CFC: 72 f8         SVEC(512,0,7,3)              
+0CFE: 02 f6         SVEC(512,-512,0,2)           
+0D00: 00 d0         RTS                       
+
+; "B"
+0D02: 70 fb         SVEC(0,768,7,3)              
+0D04: 73 f0         SVEC(768,0,7,2)              
+0D06: 61 f5         SVEC(256,-256,6,2)           
+0D08: 60 f5         SVEC(0,-256,6,2)             
+0D0A: 65 f5         SVEC(-256,-256,6,2)          
+0D0C: 77 f0         SVEC(-768,0,7,2)             
+0D0E: 03 f0         SVEC(768,0,0,2)              
+0D10: 61 f5         SVEC(256,-256,6,2)           
+0D12: 60 f5         SVEC(0,-256,6,2)             
+0D14: 65 f5         SVEC(-256,-256,6,2)          
+0D16: 77 f0         SVEC(-768,0,7,2)             
+0D18: 03 f8         SVEC(768,0,0,3)              
+0D1A: 00 d0         RTS                       
+
+; "C"
+0D1C: 70 fb         SVEC(0,768,7,3)              
+0D1E: 72 f8         SVEC(512,0,7,3)              
+0D20: 06 ff         SVEC(-512,-768,0,3)          
+0D22: 72 f8         SVEC(512,0,7,3)              
+0D24: 02 f0         SVEC(512,0,0,2)              
+0D26: 00 d0         RTS                       
+
+; "D"
+0D28: 70 fb         SVEC(0,768,7,3)              
+0D2A: 72 f0         SVEC(512,0,7,2)              
+0D2C: 72 f6         SVEC(512,-512,7,2)           
+0D2E: 70 f6         SVEC(0,-512,7,2)             
+0D30: 76 f6         SVEC(-512,-512,7,2)          
+0D32: 76 f0         SVEC(-512,0,7,2)             
+0D34: 03 f8         SVEC(768,0,0,3)              
+0D36: 00 d0         RTS                       
+
+; "E"
+0D38: 70 fb         SVEC(0,768,7,3)              
+0D3A: 72 f8         SVEC(512,0,7,3)              
+0D3C: 05 f7         SVEC(-256,-768,0,2)          
+0D3E: 77 f0         SVEC(-768,0,7,2)             
+0D40: 00 f7         SVEC(0,-768,0,2)             
+0D42: 72 f8         SVEC(512,0,7,3)              
+0D44: 02 f0         SVEC(512,0,0,2)              
+0D46: 00 d0         RTS                       
+
+; "F"
+0D48: 70 fb         SVEC(0,768,7,3)              
+0D4A: 72 f8         SVEC(512,0,7,3)              
+0D4C: 05 f7         SVEC(-256,-768,0,2)          
+0D4E: 77 f0         SVEC(-768,0,7,2)             
+0D50: 00 f7         SVEC(0,-768,0,2)             
+0D52: 03 f8         SVEC(768,0,0,3)              
+0D54: 00 d0         RTS                       
+
+; "G"
+0D56: 70 fb         SVEC(0,768,7,3)              
+0D58: 72 f8         SVEC(512,0,7,3)              
+0D5A: 70 f6         SVEC(0,-512,7,2)             
+0D5C: 06 f6         SVEC(-512,-512,0,2)          
+0D5E: 72 f0         SVEC(512,0,7,2)              
+0D60: 70 f6         SVEC(0,-512,7,2)             
+0D62: 76 f8         SVEC(-512,0,7,3)             
+0D64: 03 f8         SVEC(768,0,0,3)              
+0D66: 00 d0         RTS                       
+
+; "H"
+0D68: 70 fb         SVEC(0,768,7,3)              
+0D6A: 00 f7         SVEC(0,-768,0,2)             
+0D6C: 72 f8         SVEC(512,0,7,3)              
+0D6E: 00 f3         SVEC(0,768,0,2)              
+0D70: 70 ff         SVEC(0,-768,7,3)             
+0D72: 02 f0         SVEC(512,0,0,2)              
+0D74: 00 d0         RTS                       
+
+; "I"
+0D76: 72 f8         SVEC(512,0,7,3)              
+0D78: 06 f0         SVEC(-512,0,0,2)             
+0D7A: 70 fb         SVEC(0,768,7,3)              
+0D7C: 02 f0         SVEC(512,0,0,2)              
+0D7E: 76 f8         SVEC(-512,0,7,3)             
+0D80: 03 ff         SVEC(768,-768,0,3)           
+0D82: 00 d0         RTS                       
+
+; "J"
+0D84: 00 f2         SVEC(0,512,0,2)              
+0D86: 72 f6         SVEC(512,-512,7,2)           
+0D88: 72 f0         SVEC(512,0,7,2)              
+0D8A: 70 fb         SVEC(0,768,7,3)              
+0D8C: 01 ff         SVEC(256,-768,0,3)           
+0D8E: 00 d0         RTS                       
+
+; "K"
+0D90: 70 fb         SVEC(0,768,7,3)              
+0D92: 03 f0         SVEC(768,0,0,2)              
+0D94: 77 f7         SVEC(-768,-768,7,2)          
+0D96: 73 f7         SVEC(768,-768,7,2)           
+0D98: 03 f0         SVEC(768,0,0,2)              
+0D9A: 00 d0         RTS                       
+
+; "L"
+0D9C: 00 fb         SVEC(0,768,0,3)              
+0D9E: 70 ff         SVEC(0,-768,7,3)             
+0DA0: 72 f8         SVEC(512,0,7,3)              
+0DA2: 02 f0         SVEC(512,0,0,2)              
+0DA4: 00 d0         RTS                       
+
+; "M"
+0DA6: 70 fb         SVEC(0,768,7,3)              
+0DA8: 72 f6         SVEC(512,-512,7,2)           
+0DAA: 72 f2         SVEC(512,512,7,2)            
+0DAC: 70 ff         SVEC(0,-768,7,3)             
+0DAE: 02 f0         SVEC(512,0,0,2)              
+0DB0: 00 d0         RTS                       
+
+; "N"
+0DB2: 70 fb         SVEC(0,768,7,3)              
+0DB4: 72 ff         SVEC(512,-768,7,3)           
+0DB6: 70 fb         SVEC(0,768,7,3)              
+0DB8: 01 ff         SVEC(256,-768,0,3)           
+0DBA: 00 d0         RTS                       
+
+; "O"
+0DBC: 70 fb         SVEC(0,768,7,3)              
+0DBE: 72 f8         SVEC(512,0,7,3)              
+0DC0: 70 ff         SVEC(0,-768,7,3)             
+0DC2: 76 f8         SVEC(-512,0,7,3)             
+0DC4: 03 f8         SVEC(768,0,0,3)              
+0DC6: 00 d0         RTS                       
+
+; "P"
+0DC8: 70 fb         SVEC(0,768,7,3)              
+0DCA: 72 f8         SVEC(512,0,7,3)              
+0DCC: 70 f7         SVEC(0,-768,7,2)             
+0DCE: 76 f8         SVEC(-512,0,7,3)             
+0DD0: 03 f7         SVEC(768,-768,0,2)           
+0DD2: 03 f0         SVEC(768,0,0,2)              
+0DD4: 00 d0         RTS                       
+
+; "Q"
+0DD6: 70 fb         SVEC(0,768,7,3)              
+0DD8: 72 f8         SVEC(512,0,7,3)              
+0DDA: 70 fe         SVEC(0,-512,7,3)             
+0DDC: 76 f6         SVEC(-512,-512,7,2)          
+0DDE: 76 f0         SVEC(-512,0,7,2)             
+0DE0: 02 f2         SVEC(512,512,0,2)            
+0DE2: 72 f6         SVEC(512,-512,7,2)           
+0DE4: 02 f0         SVEC(512,0,0,2)              
+0DE6: 00 d0         RTS                       
+
+; "R"
+0DE8: 70 fb         SVEC(0,768,7,3)              
+0DEA: 72 f8         SVEC(512,0,7,3)              
+0DEC: 70 f7         SVEC(0,-768,7,2)             
+0DEE: 76 f8         SVEC(-512,0,7,3)             
+0DF0: 01 f0         SVEC(256,0,0,2)              
+0DF2: 73 f7         SVEC(768,-768,7,2)           
+0DF4: 02 f0         SVEC(512,0,0,2)              
+0DF6: 00 d0         RTS                       
+
+; "S"
+0DF8: 72 f8         SVEC(512,0,7,3)              
+0DFA: 70 f3         SVEC(0,768,7,2)              
+0DFC: 76 f8         SVEC(-512,0,7,3)             
+0DFE: 70 f3         SVEC(0,768,7,2)              
+0E00: 72 f8         SVEC(512,0,7,3)              
+0E02: 01 ff         SVEC(256,-768,0,3)           
+0E04: 00 d0         RTS                       
+
+; "T"
+0E06: 02 f0         SVEC(512,0,0,2)              
+0E08: 70 fb         SVEC(0,768,7,3)              
+0E0A: 06 f0         SVEC(-512,0,0,2)             
+0E0C: 72 f8         SVEC(512,0,7,3)              
+0E0E: 01 ff         SVEC(256,-768,0,3)           
+0E10: 00 d0         RTS                       
+
+; "U"
+0E12: 00 fb         SVEC(0,768,0,3)              
+0E14: 70 ff         SVEC(0,-768,7,3)             
+0E16: 72 f8         SVEC(512,0,7,3)              
+0E18: 70 fb         SVEC(0,768,7,3)              
+0E1A: 01 ff         SVEC(256,-768,0,3)           
+0E1C: 00 d0         RTS                       
+
+; "V"
+0E1E: 00 fb         SVEC(0,768,0,3)              
+0E20: 71 ff         SVEC(256,-768,7,3)           
+0E22: 71 fb         SVEC(256,768,7,3)            
+0E24: 01 ff         SVEC(256,-768,0,3)           
+0E26: 00 d0         RTS                       
+
+; "W"
+0E28: 00 fb         SVEC(0,768,0,3)              
+0E2A: 70 ff         SVEC(0,-768,7,3)             
+0E2C: 72 f2         SVEC(512,512,7,2)            
+0E2E: 72 f6         SVEC(512,-512,7,2)           
+0E30: 70 fb         SVEC(0,768,7,3)              
+0E32: 01 ff         SVEC(256,-768,0,3)           
+0E34: 00 d0         RTS                       
+
+; "X"
+0E36: 72 fb         SVEC(512,768,7,3)            
+0E38: 06 f8         SVEC(-512,0,0,3)             
+0E3A: 72 ff         SVEC(512,-768,7,3)           
+0E3C: 02 f0         SVEC(512,0,0,2)              
+0E3E: 00 d0         RTS                       
+
+; "Y"
+0E40: 02 f0         SVEC(512,0,0,2)              
+0E42: 70 fa         SVEC(0,512,7,3)              
+0E44: 76 f2         SVEC(-512,512,7,2)           
+0E46: 02 f8         SVEC(512,0,0,3)              
+0E48: 76 f6         SVEC(-512,-512,7,2)          
+0E4A: 02 fe         SVEC(512,-512,0,3)           
+0E4C: 00 d0         RTS                       
+
+; "Z"
+0E4E: 00 fb         SVEC(0,768,0,3)              
+0E50: 72 f8         SVEC(512,0,7,3)              
+0E52: 76 ff         SVEC(-512,-768,7,3)          
+0E54: 72 f8         SVEC(512,0,7,3)              
+0E56: 02 f0         SVEC(512,0,0,2)              
+0E58: 00 d0         RTS                       
+
+; SPACE
+0E5A: 03 f8         SVEC(768,0,0,3)              
+0E5C: 00 d0         RTS                       
+
+; "1"
+0E5E: 02 f0         SVEC(512,0,0,2)              
+0E60: 70 fb         SVEC(0,768,7,3)              
+0E62: 02 ff         SVEC(512,-768,0,3)           
+0E64: 00 d0         RTS                       
+
+; "2"
+0E66: 00 fb         SVEC(0,768,0,3)              
+0E68: 72 f8         SVEC(512,0,7,3)              
+0E6A: 70 f7         SVEC(0,-768,7,2)             
+0E6C: 76 f8         SVEC(-512,0,7,3)             
+0E6E: 70 f7         SVEC(0,-768,7,2)             
+0E70: 72 f8         SVEC(512,0,7,3)              
+0E72: 02 f0         SVEC(512,0,0,2)              
+0E74: 00 d0         RTS                       
+
+; "3"
+0E76: 72 f8         SVEC(512,0,7,3)              
+0E78: 70 fb         SVEC(0,768,7,3)              
+0E7A: 76 f8         SVEC(-512,0,7,3)             
+0E7C: 00 f7         SVEC(0,-768,0,2)             
+0E7E: 72 f8         SVEC(512,0,7,3)              
+0E80: 02 f7         SVEC(512,-768,0,2)           
+0E82: 00 d0         RTS                       
+
+; "4"
+0E84: 00 fb         SVEC(0,768,0,3)              
+0E86: 70 f7         SVEC(0,-768,7,2)             
+0E88: 72 f8         SVEC(512,0,7,3)              
+0E8A: 00 f3         SVEC(0,768,0,2)              
+0E8C: 70 ff         SVEC(0,-768,7,3)             
+0E8E: 02 f0         SVEC(512,0,0,2)              
+0E90: 00 d0         RTS                       
+
+; "5"
+0E92: 72 f8         SVEC(512,0,7,3)              
+0E94: 70 f3         SVEC(0,768,7,2)              
+0E96: 76 f8         SVEC(-512,0,7,3)             
+0E98: 70 f3         SVEC(0,768,7,2)              
+0E9A: 72 f8         SVEC(512,0,7,3)              
+0E9C: 01 ff         SVEC(256,-768,0,3)           
+0E9E: 00 d0         RTS                       
+
+; "6"
+0EA0: 00 f3         SVEC(0,768,0,2)              
+0EA2: 72 f8         SVEC(512,0,7,3)              
+0EA4: 70 f7         SVEC(0,-768,7,2)             
+0EA6: 76 f8         SVEC(-512,0,7,3)             
+0EA8: 70 fb         SVEC(0,768,7,3)              
+0EAA: 03 ff         SVEC(768,-768,0,3)           
+0EAC: 00 d0         RTS                       
+
+; "7"
+0EAE: 00 fb         SVEC(0,768,0,3)              
+0EB0: 72 f8         SVEC(512,0,7,3)              
+0EB2: 70 ff         SVEC(0,-768,7,3)             
+0EB4: 02 f0         SVEC(512,0,0,2)              
+0EB6: 00 d0         RTS                       
+
+; "8"
+0EB8: 72 f8         SVEC(512,0,7,3)              
+0EBA: 70 fb         SVEC(0,768,7,3)              
+0EBC: 76 f8         SVEC(-512,0,7,3)             
+0EBE: 70 ff         SVEC(0,-768,7,3)             
+0EC0: 00 f3         SVEC(0,768,0,2)              
+0EC2: 72 f8         SVEC(512,0,7,3)              
+0EC4: 02 f7         SVEC(512,-768,0,2)           
+0EC6: 00 d0         RTS                       
+
+; "9"
+0EC8: 02 f8         SVEC(512,0,0,3)              
+0ECA: 70 fb         SVEC(0,768,7,3)              
+0ECC: 76 f8         SVEC(-512,0,7,3)             
+0ECE: 70 f7         SVEC(0,-768,7,2)             
+0ED0: 72 f8         SVEC(512,0,7,3)              
+0ED2: 02 f7         SVEC(512,-768,0,2)           
+0ED4: 00 d0         RTS                       
+
+; Cross reference table for character data
+0ED6: 2d cb         JSR($0E5A)                  ; {} SPACE
+0ED8: de ca         JSR($0DBC)                  ; {} O and 0 ... same pattern
+0EDA: 2f cb         JSR($0E5E)                  ; {} 1
+0EDC: 33 cb         JSR($0E66)                  ; {} 2
+0EDE: 3b cb         JSR($0E76)                  ; {} 3
+0EE0: 42 cb         JSR($0E84)                  ; {} 4
+0EE2: 49 cb         JSR($0E92)                  ; {} 5
+0EE4: 50 cb         JSR($0EA0)                  ; {} 6
+0EE6: 57 cb         JSR($0EAE)                  ; {} 7
+0EE8: 5c cb         JSR($0EB8)                  ; {} 8
+0EEA: 64 cb         JSR($0EC8)                  ; {} 9
+0EEC: 79 ca         JSR($0CF2)                  ; {} A
+0EEE: 81 ca         JSR($0D02)                  ; {} B
+0EF0: 8e ca         JSR($0D1C)                  ; {} C
+0EF2: 94 ca         JSR($0D28)                  ; {} D
+0EF4: 9c ca         JSR($0D38)                  ; {} E
+0EF6: a4 ca         JSR($0D48)                  ; {} F
+0EF8: ab ca         JSR($0D56)                  ; {} G
+0EFA: b4 ca         JSR($0D68)                  ; {} H
+0EFC: bb ca         JSR($0D76)                  ; {} I
+0EFE: c2 ca         JSR($0D84)                  ; {} J
+0F00: c8 ca         JSR($0D90)                  ; {} K
+0F02: ce ca         JSR($0D9C)                  ; {} L
+0F04: d3 ca         JSR($0DA6)                  ; {} M
+0F06: d9 ca         JSR($0DB2)                  ; {} N
+0F08: de ca         JSR($0DBC)                  ; {} O
+0F0A: e4 ca         JSR($0DC8)                  ; {} P
+0F0C: eb ca         JSR($0DD6)                  ; {} Q
+0F0E: f4 ca         JSR($0DE8)                  ; {} R
+0F10: fc ca         JSR($0DF8)                  ; {} S
+0F12: 03 cb         JSR($0E06)                  ; {} T
+0F14: 09 cb         JSR($0E12)                  ; {} U
+0F16: 0f cb         JSR($0E1E)                  ; {} V
+0F18: 14 cb         JSR($0E28)                  ; {} W
+0F1A: 1b cb         JSR($0E36)                  ; {} X
+0F1C: 20 cb         JSR($0E40)                  ; {} Y
+0F1E: 27 cb         JSR($0E4E)                  ; {} Z
+
+; ====== Not valid commands from here down ... cross reference table of some kind?
+; How are ship/rock/etc objects referenced? Surely not hard-coded ...
+
+0F20: 0b 13 19 2f   VCTR(-793,779,2,1)           
+0F24: 41 55 6f 77   VCTR(-879,-321,7,5)          
+0F28: 7d 87 91 63   VCTR(913,-893,6,8)           
+0F2C: 56 60 6e 3c   VCTR(-110,86,3,6)            
+0F30: ec 4d c0 a4   VCTR(-192,-492,10,4)         
+0F34: 0a ea         JMP($0C14)                  
+0F36: 6c 08         ????                          ; 86c
+0F38: 00 ec         JMP($1000)                  
+0F3A: f2 b0         HALT                          ; ?? 0xf2
+0F3C: 6e 3c ec 48   VCTR(236,-110,4,3)           
+0F40: 5a b8         HALT                          ; ?? 0x85a
+0F42: 66 92 42 9a   VCTR(578,614,9,9)            
+0F46: 82 c3         JSR($-0FC)                  
+0F48: 12 0e         ????                          ; e12
+0F4A: 12 90 4c 4d   VCTR(-332,18,4,9)            
+0F4E: f1 a4 12 2d   LABS(-750,1265,2)            
+0F52: d2 0a         ????                          ; ad2
+0F54: 64 c2         JSR($-338)                  
+0F56: 6c 0f         ????                          ; f6c
+0F58: 66 cd         JSR($12CC)                  
+0F5A: 82 6c 9a c3   VCTR(922,-130,12,6)          
+0F5E: 4a 85 c0 a6   VCTR(-704,-330,10,8)         
+0F62: 6e 60 6c 9e   VCTR(-620,110,9,6)           
+0F66: 0a c2         JSR($-3EC)                  
+0F68: 42 c4         JSR($0084)                  
+0F6A: c2 ba         HALT                          ; ?? 0xac2
+0F6C: 60 49 f0 0c   VCTR(-240,352,0,4)           
+0F70: 12 c6         JSR($0424)                  
+0F72: 12 b0         HALT                          ; ?? 0x12
+0F74: 00 a6 6e 60   LABS(110,1536,6)             
+0F78: 58 ed         JMP($12B0)                  
+0F7A: 12 b5         HALT                          ; ?? 0x512
+0F7C: e8 29 d2 0e   VCTR(-722,488,0,2)           
+0F80: d8 4c 82 82   VCTR(642,-216,8,4)           
+0F84: 70 c2         JSR($-320)                  
+0F86: 6c 0b         ????                          ; b6c
+0F88: 6e 09         ????                          ; 96e
+0F8A: e6 b5         HALT                          ; ?? 0x5e6
+0F8C: 92 3e 00 a6   VCTR(-512,-658,10,3)         
+0F90: 6e 60 6e c1   VCTR(366,110,12,6)           
+0F94: 6c c0         JSR($-728)                  
+0F96: 00 59 62 48   VCTR(98,256,4,5)             
+0F9A: 66 d2         RTS                         ; ?? 0x266
+0F9C: 6d 18 4e 9b   VCTR(846,109,9,1)            
+0FA0: 64 09         ????                          ; 964
+0FA2: 02 a4 0a ed   LABS(-758,1026,14)           
+0FA6: c0 18 4e 9b   VCTR(846,192,9,1)            
+0FAA: 64 08         ????                          ; 864
+0FAC: c2 a4 0a e8   LABS(-2038,1218,14)          
+0FB0: 00 20 4e 9b   VCTR(846,0,9,2)              
+0FB4: 64 b8         HALT                          ; ?? 0x864
+0FB6: 46 0d         ????                          ; d46
+0FB8: 20 2f 40 00   VCTR(64,-800,0,2)            
+0FBC: 03 06         ????                          ; 603
+0FBE: 09 0c         ????                          ; c09
+0FC0: 10 13 16 19   VCTR(278,784,1,1)            
+0FC4: 1c 1f 22 25   VCTR(-290,-796,2,1)          
+0FC8: 28 2b 2e 31   VCTR(302,808,3,2)            
+0FCC: 33 36 39 3c   VCTR(-57,-563,3,3)           
+0FD0: 3f 41 44 47   VCTR(-836,319,4,4)           
+0FD4: 49 4c 4e 51   VCTR(334,-73,5,4)            
+0FD8: 53 55 58 5a   VCTR(600,-339,5,5)           
+0FDC: 5c 5e 60 62   VCTR(608,-604,6,5)           
+0FE0: 64 66 68 6a   VCTR(616,-612,6,6)           
+0FE4: 6b 6d 6f 70   VCTR(111,-363,7,6)           
+0FE8: 71 73 74 75   VCTR(-372,881,7,7)           
+0FEC: 76 78 79 7a   VCTR(633,118,7,7)            
+0FF0: 7a 7b 7c 7d   VCTR(-380,890,7,7)           
+0FF4: 7d 7e 7e 7e   VCTR(-638,-637,7,7)          
+0FF8: 7f 7f 7f 7f   VCTR(-895,-895,7,7)          
+0FFC: 00 00         ????                          ; 0
+0FFE: 00 00         ????                          ; 0
+
+
+On Thu, Feb 5, 2015 at 12:50 PM, Christopher Cantrell <tophercantrell@gmail.com> wrote:
+;;= Asteroids DVG Vector ROM =
+
+;; OriginalBinary 035127.02
+
+; The DVG sees the RAM/ROM as a single 8K bank with 4000-5FFF mapping
+; to 0000-1FFF. The first half of this space is reserved for RAM, but
+; only 2K is used. The second half of this space is ROM, but only 2K
+; is used. Thus the DVG reads 0000-07FF as RAM and 1000-17FF as ROM.
+
+; The DVG reads this memory area as words. Thus RAM extends from word
+; address 0000-03FE and ROM extends from word address 0800-0BFE.
+
+; VCTR(x,y,b,sf)     VVVV -sYY YYYY YYYY | BBBB -sXX XXXX XXXX
+;   EffectiveScale = scale + VVVV, can be global+1 to global+9
+;   b is the brightness ... from 0 to 15
+
+; SVEC(x,y,b,sf)     ---- msYY BBBB MsXX
+;   EffectiveScale = scale + 2 +Mm, can be global+2 to gloabl+5
+
+; The effective scale is calculated from the global scale and an offset at
+; each vector. The VCTR command allows the offset 1-9 to be added to the
+; global scale.
+; The SVEC command allows the offset 2-5 to be added to the global scale.
+;
+; The effective scale is then chopped to 4 bits, and if the result is greater
+; than 9 (10-15) the max scale divisor is chosen.
+
+; Internally, X and Y are kept as 32 bit numbers with
+; the lower 16 being the fractional part. Thus the effective
+; scale value maps as follows:
+;   0 Xo = Xo /  512
+;   1 Xo = Xo /  256
+;   2 Xo = Xo /  128
+;   3 Xo = Xo /   64
+;   ...
+;   7 Xo = Xo /    4
+;   8 Xo = Xo /    2
+;   9 Xo = Xo
+;  10,11,12,13,14,15 Xo = Xo / 1024
+
+; In the CPU hardware, we need the ability to specify mirrors on both axis
+
+; LABS(x,y,scale)       ---- xxxx xxxx xxxx | MMMM yyyy yyyy yyyy
+;   2's comp x, y
+;   MMMM -> global scale
+;
+; JMP(location)    ---- nnnn nnnn nnnn
+; JSR(location)    ---- nnnn nnnn nnnn
+; RTS              ---- 0000 0000 0000
+; HALT()            ---- 0000 0000 0000
+
+
+; Words are stored little endian so first line is really:
+;0800 80 a0 00 00  ; A080 0000   LABS(0,128,0)
+
+; Diamond pattern across screen with a parallel
+; line pattern in the center.
+0800: 80 a0 00 00   LABS(0,128,0)                
+0804: 00 70 00 00   VCTR(0,0,0,7)                
+0808: 00 90 ff 73   VCTR(1023,0,7,9)             
+080C: ff 92 00 70   VCTR(0,767,7,9)              
+0810: 00 90 ff 77   VCTR(-1023,0,7,9)            
+0814: ff 96 00 70   VCTR(0,-767,7,9)             
+0818: ff 92 ff 72   VCTR(767,767,7,9)            
+081C: 00 86 00 72   VCTR(512,-512,7,8)           
+0820: fe 87 fe 77   VCTR(-1022,-1022,7,8)        
+0824: 00 92 00 76   VCTR(-512,512,7,9)           
+0828: fe 81 00 72   VCTR(512,510,7,8)            
+082C: ff 96 ff 72   VCTR(767,-767,7,9)           
+0830: 7f a3 ff 03   LABS(1023,895,0)             
+0834: 00 70 00 00   VCTR(0,0,0,7)                
+0838: ff 96 ff 76   VCTR(-767,-767,7,9)          
+083C: fe 81 00 76   VCTR(-512,510,7,8)           
+0840: 00 92 00 72   VCTR(512,512,7,9)            
+0844: fe 87 fe 73   VCTR(1022,-1022,7,8)         
+0848: 00 86 00 76   VCTR(-512,-512,7,8)          
+084C: ff 92 ff 76   VCTR(-767,767,7,9)           
+0850: fc a1 f4 01   LABS(500,508,0)              
+0854: 00 70 00 00   VCTR(0,0,0,7)                
+0858: db f0         SVEC(768,0,13,4)             
+085A: 00 f9         SVEC(0,256,0,3)              
+085C: cf f0         SVEC(-768,0,12,4)            
+085E: 00 f9         SVEC(0,256,0,3)              
+0860: bb f0         SVEC(768,0,11,4)             
+0862: 00 f9         SVEC(0,256,0,3)              
+0864: af f0         SVEC(-768,0,10,4)            
+0866: 00 f9         SVEC(0,256,0,3)              
+0868: 9b f0         SVEC(768,0,9,4)              
+086A: 00 f9         SVEC(0,256,0,3)              
+086C: 8f f0         SVEC(-768,0,8,4)             
+086E: 00 f9         SVEC(0,256,0,3)              
+0870: 7b f0         SVEC(768,0,7,4)              
+0872: 00 f9         SVEC(0,256,0,3)              
+0874: 6f f0         SVEC(-768,0,6,4)             
+0876: 00 f9         SVEC(0,256,0,3)              
+0878: 5b f0         SVEC(768,0,5,4)              
+087A: 00 f9         SVEC(0,256,0,3)              
+087C: 4f f0         SVEC(-768,0,4,4)             
+087E: 00 f9         SVEC(0,256,0,3)              
+0880: 3b f0         SVEC(768,0,3,4)              
+0882: 00 f9         SVEC(0,256,0,3)              
+0884: 2f f0         SVEC(-768,0,2,4)             
+0886: 4c d0         RTS                         ; ?? 0x4c
+
+; "PAGE SELECT ERROR"
+0888: e4 a0 2c 11   LABS(300,228,1)              
+088C: 00 70 00 00   VCTR(0,0,0,7)                
+0890: e4 ca         JSR($0DC8)                  ; P
+0892: 79 ca         JSR($0CF2)                  ; A
+0894: ab ca         JSR($0D56)                  ; G
+0896: 9c ca         JSR($0D38)                  ; E
+0898: 2d cb         JSR($0E5A)                  ; SPACE
+089A: fc ca         JSR($0DF8)                  ; S
+089C: 9c ca         JSR($0D38)                  ; E
+089E: ce ca         JSR($0D9C)                  ; L
+08A0: 9c ca         JSR($0D38)                  ; E
+08A2: 8e ca         JSR($0D1C)                  ; C
+08A4: 03 cb         JSR($0E06)                  ; T
+08A6: 2d cb         JSR($0E5A)                  ; SPACE
+08A8: 9c ca         JSR($0D38)                  ; E
+08AA: f4 ca         JSR($0DE8)                  ; R
+08AC: f4 ca         JSR($0DE8)                  ; R
+08AE: de ca         JSR($0DBC)                  ; O
+08B0: f4 ca         JSR($0DE8)                  ; R
+08B2: 00 d0         RTS                       
+
+; "ASTEROIDS BY ATARI"
+08B4: 80 a0 7c 01   LABS(380,128,0)              
+08B8: 00 70 00 00   VCTR(0,0,0,7)                
+08BC: 79 ca         JSR($0CF2)                  ; A
+08BE: fc ca         JSR($0DF8)                  ; S
+08C0: 03 cb         JSR($0E06)                  ; T
+08C2: 9c ca         JSR($0D38)                  ; E
+08C4: f4 ca         JSR($0DE8)                  ; R
+08C6: de ca         JSR($0DBC)                  ; O
+08C8: bb ca         JSR($0D76)                  ; I
+08CA: 94 ca         JSR($0D28)                  ; D
+08CC: fc ca         JSR($0DF8)                  ; S
+08CE: 2d cb         JSR($0E5A)                  ; SPACE
+08D0: 81 ca         JSR($0D02)                  ; B
+08D2: 20 cb         JSR($0E40)                  ; Y
+08D4: 2d cb         JSR($0E5A)                  ; SPACE
+08D6: 79 ca         JSR($0CF2)                  ; A
+08D8: 03 cb         JSR($0E06)                  ; T
+08DA: 79 ca         JSR($0CF2)                  ; A
+08DC: f4 ca         JSR($0DE8)                  ; R
+08DE: bb ca         JSR($0D76)                  ; I
+08E0: 00 d0         RTS                       
+
+; ??
+08E2: c6 ff         SVEC(-512,-768,12,3)         
+08E4: c1 fe         SVEC(256,-512,12,3)          
+08E6: c3 f1         SVEC(768,256,12,2)           
+08E8: cd f1         SVEC(-256,256,12,4)          
+08EA: c7 f1         SVEC(-768,256,12,2)          
+08EC: c1 fd         SVEC(256,-256,12,3)          
+08EE: d8 1e 32 ec   VCTR(-50,-728,14,1)          
+08F2: 00 c4         JSR($0000)                  
+08F4: 3c 14 0a 46   VCTR(-522,-60,4,1)           
+08F8: d8 d8         RTS                         ; ?? 0x8d8
+
+; Looks like shrapnel
+08FA: d1 c8         JSR($09A2)                  
+08FC: b6 c8         JSR($096C)                  
+08FE: 97 c8         JSR($092E)                  
+0900: 81 c8         JSR($0902)                  
+0902: 0d f8         SVEC(-256,0,0,5)             
+0904: 78 f8         SVEC(0,0,7,5)                
+0906: 0d fd         SVEC(-256,-256,0,5)          
+0908: 78 f8         SVEC(0,0,7,5)                
+090A: 09 fd         SVEC(256,-256,0,5)           
+090C: 78 f8         SVEC(0,0,7,5)                
+090E: 0b f1         SVEC(768,256,0,4)            
+0910: 78 f8         SVEC(0,0,7,5)                
+0912: 0a f5         SVEC(512,-256,0,4)           
+0914: 78 f8         SVEC(0,0,7,5)                
+0916: 08 f9         SVEC(0,256,0,5)              
+0918: 78 f8         SVEC(0,0,7,5)                
+091A: 09 f3         SVEC(256,768,0,4)            
+091C: 78 f8         SVEC(0,0,7,5)                
+091E: 0d f3         SVEC(-256,768,0,4)           
+0920: 78 f8         SVEC(0,0,7,5)                
+0922: 80 54 00 06   VCTR(-512,-128,0,5)          
+0926: 78 f8         SVEC(0,0,7,5)                
+0928: 0f f1         SVEC(-768,256,0,4)           
+092A: 78 f8         SVEC(0,0,7,5)                
+092C: 00 d0         RTS                       
+
+; Shrapnel pattern
+092E: 00 30 80 07   VCTR(-896,0,0,3)             
+0932: 78 f8         SVEC(0,0,7,5)                
+0934: 80 37 80 07   VCTR(-896,-896,0,3)          
+0938: 78 f8         SVEC(0,0,7,5)                
+093A: 80 37 80 03   VCTR(896,-896,0,3)           
+093E: 78 f8         SVEC(0,0,7,5)                
+0940: e0 40 a0 02   VCTR(672,224,0,4)            
+0944: 78 f8         SVEC(0,0,7,5)                
+0946: c0 35 80 03   VCTR(896,-448,0,3)           
+094A: 78 f8         SVEC(0,0,7,5)                
+094C: 80 33 00 00   VCTR(0,896,0,3)              
+0950: 78 f8         SVEC(0,0,7,5)                
+0952: a0 42 e0 00   VCTR(224,672,0,4)            
+0956: 78 f8         SVEC(0,0,7,5)                
+0958: a0 42 e0 04   VCTR(-224,672,0,4)           
+095C: 78 f8         SVEC(0,0,7,5)                
+095E: e0 44 80 07   VCTR(-896,-224,0,4)          
+0962: 78 f8         SVEC(0,0,7,5)                
+0964: e0 40 a0 06   VCTR(-672,224,0,4)           
+0968: 78 f8         SVEC(0,0,7,5)                
+096A: 00 d0         RTS                       
+
+; Shrapnel pattern
+096C: 07 f8         SVEC(-768,0,0,3)             
+096E: 78 f8         SVEC(0,0,7,5)                
+0970: 07 ff         SVEC(-768,-768,0,3)          
+0972: 78 f8         SVEC(0,0,7,5)                
+0974: 03 ff         SVEC(768,-768,0,3)           
+0976: 78 f8         SVEC(0,0,7,5)                
+0978: c0 40 40 02   VCTR(576,192,0,4)            
+097C: 78 f8         SVEC(0,0,7,5)                
+097E: 80 35 00 03   VCTR(768,-384,0,3)           
+0982: 78 f8         SVEC(0,0,7,5)                
+0984: 00 fb         SVEC(0,768,0,3)              
+0986: 78 f8         SVEC(0,0,7,5)                
+0988: 40 42 c0 00   VCTR(192,576,0,4)            
+098C: 78 f8         SVEC(0,0,7,5)                
+098E: 40 42 c0 04   VCTR(-192,576,0,4)           
+0992: 78 f8         SVEC(0,0,7,5)                
+0994: c0 44 00 07   VCTR(-768,-192,0,4)          
+0998: 78 f8         SVEC(0,0,7,5)                
+099A: c0 40 40 06   VCTR(-576,192,0,4)           
+099E: 78 f8         SVEC(0,0,7,5)                
+09A0: 00 d0         RTS                       
+
+; Shrapnel pattern
+09A2: 00 30 80 06   VCTR(-640,0,0,3)             
+09A6: 78 f8         SVEC(0,0,7,5)                
+09A8: 80 36 80 06   VCTR(-640,-640,0,3)          
+09AC: 78 f8         SVEC(0,0,7,5)                
+09AE: 80 36 80 02   VCTR(640,-640,0,3)           
+09B2: 78 f8         SVEC(0,0,7,5)                
+09B4: 40 31 c0 03   VCTR(960,320,0,3)            
+09B8: 78 f8         SVEC(0,0,7,5)                
+09BA: 40 35 80 02   VCTR(640,-320,0,3)           
+09BE: 78 f8         SVEC(0,0,7,5)                
+09C0: 80 32 00 00   VCTR(0,640,0,3)              
+09C4: 78 f8         SVEC(0,0,7,5)                
+09C6: c0 33 40 01   VCTR(320,960,0,3)            
+09CA: 78 f8         SVEC(0,0,7,5)                
+09CC: c0 33 40 05   VCTR(-320,960,0,3)           
+09D0: 78 f8         SVEC(0,0,7,5)                
+09D2: a0 44 80 06   VCTR(-640,-160,0,4)          
+09D6: 78 f8         SVEC(0,0,7,5)                
+09D8: 40 31 c0 07   VCTR(-960,320,0,3)           
+09DC: 78 f8         SVEC(0,0,7,5)                
+09DE: 00 d0         RTS                       
+
+; Jumbled up rock (after hit?)
+09E0: f4 c8         JSR($09E8)                  
+09E2: 00 c9         JSR($0A00)                  
+09E4: 0e c9         JSR($0A1C)                  
+09E6: 1b c9         JSR($0A36)                  
+09E8: 08 f9         SVEC(0,256,0,5)              
+09EA: 79 f9         SVEC(256,256,7,5)            
+09EC: 79 fd         SVEC(256,-256,7,5)           
+09EE: 7d f6         SVEC(-256,-512,7,4)          
+09F0: 79 f6         SVEC(256,-512,7,4)           
+09F2: 8f f6         SVEC(-768,-512,8,4)          
+09F4: 8f f0         SVEC(-768,0,8,4)             
+09F6: 7d f9         SVEC(-256,256,7,5)           
+09F8: 78 fa         SVEC(0,512,7,5)              
+09FA: 79 f9         SVEC(256,256,7,5)            
+09FC: 79 fd         SVEC(256,-256,7,5)           
+09FE: 00 d0         RTS                       
+
+; Rock pattern
+0A00: 0a f1         SVEC(512,256,0,4)            
+0A02: 7a f1         SVEC(512,256,7,4)            
+0A04: 7d f9         SVEC(-256,256,7,5)           
+0A06: 7e f5         SVEC(-512,-256,7,4)          
+0A08: 7e f1         SVEC(-512,256,7,4)           
+0A0A: 7d fd         SVEC(-256,-256,7,5)          
+0A0C: 79 f6         SVEC(256,-512,7,4)           
+0A0E: 7d f6         SVEC(-256,-512,7,4)          
+0A10: 79 fd         SVEC(256,-256,7,5)           
+0A12: 79 f1         SVEC(256,256,7,4)            
+0A14: 8b f5         SVEC(768,-256,8,4)           
+0A16: 8a f3         SVEC(512,768,8,4)            
+0A18: 7d f9         SVEC(-256,256,7,5)           
+0A1A: 00 d0         RTS                       
+
+; Rock pattern
+0A1C: 0d f8         SVEC(-256,0,0,5)             
+0A1E: 7e f5         SVEC(-512,-256,7,4)          
+0A20: 7a f7         SVEC(512,-768,7,4)           
+0A22: 7a f3         SVEC(512,768,7,4)            
+0A24: 78 f7         SVEC(0,-768,7,4)             
+0A26: 79 f8         SVEC(256,0,7,5)              
+0A28: 7a f3         SVEC(512,768,7,4)            
+0A2A: 78 f9         SVEC(0,256,7,5)              
+0A2C: 7e f3         SVEC(-512,768,7,4)           
+0A2E: 7f f0         SVEC(-768,0,7,4)             
+0A30: 7f f7         SVEC(-768,-768,7,4)          
+0A32: 7a f5         SVEC(512,-256,7,4)           
+0A34: 00 d0         RTS                       
+
+; Rock pattern
+0A36: 09 f0         SVEC(256,0,0,4)              
+0A38: 7b f1         SVEC(768,256,7,4)            
+0A3A: 68 f1         SVEC(0,256,6,4)              
+0A3C: 7f f2         SVEC(-768,512,7,4)           
+0A3E: 7f f0         SVEC(-768,0,7,4)             
+0A40: 69 f6         SVEC(256,-512,6,4)           
+0A42: 7f f0         SVEC(-768,0,7,4)             
+0A44: 78 f7         SVEC(0,-768,7,4)             
+0A46: 7a f7         SVEC(512,-768,7,4)           
+0A48: 7b f1         SVEC(768,256,7,4)            
+0A4A: 69 f5         SVEC(256,-256,6,4)           
+0A4C: 69 f9         SVEC(256,256,6,5)            
+0A4E: 7f f2         SVEC(-768,512,7,4)           
+0A50: 00 d0         RTS                       
+
+; Flying Saucer
+0A52: 2a c9         JSR($0A54)                  
+0A54: 0e f1         SVEC(-512,256,0,4)           
+0A56: ca f8         SVEC(512,0,12,5)             
+0A58: 0b f6         SVEC(768,-512,0,4)           
+0A5A: 00 60 80 d6   VCTR(-640,0,13,6)            
+0A5E: db f6         SVEC(768,-512,13,4)          
+0A60: ca f8         SVEC(512,0,12,5)             
+0A62: db f2         SVEC(768,512,13,4)           
+0A64: df f2         SVEC(-768,512,13,4)          
+0A66: cd f2         SVEC(-256,512,12,4)          
+0A68: cd f8         SVEC(-256,0,12,5)            
+0A6A: cd f6         SVEC(-256,-512,12,4)         
+0A6C: df f6         SVEC(-768,-512,13,4)         
+0A6E: 00 d0         RTS                       
+
+; ??
+0A70: 92 52 aa 52   VCTR(682,658,5,5)            
+0A74: ce 52 f2 52   VCTR(754,718,5,5)            
+0A78: 16 53 38 53   VCTR(824,790,5,5)            
+0A7C: 5c 53 80 53   VCTR(896,860,5,5)            
+0A80: a4 53 c8 53   VCTR(968,932,5,5)            
+0A84: ec 53 10 54   VCTR(-16,1004,5,5)           
+0A88: 34 54 58 54   VCTR(-88,-52,5,5)            
+0A8C: 7c 54 a0 54   VCTR(-160,-124,5,5)          
+0A90: c4 54 0f f6   VCTR(-527,-196,15,5)         
+0A94: c8 fa         SVEC(0,512,12,5)             
+0A96: bd f9         SVEC(-256,256,11,5)          
+0A98: 00 65 00 c3   VCTR(768,-256,12,6)          
+0A9C: 00 65 00 c7   VCTR(-768,-256,12,6)         
+0AA0: b9 f9         SVEC(256,256,11,5)           
+0AA2: 00 d0         RTS                       
+
+; Arrow head pointing left
+0AA4: ce f9         SVEC(-512,256,12,5)          
+0AA6: ca f9         SVEC(512,256,12,5)           
+0AA8: 00 d0         RTS                       
+
+; Ship pattern pointing right and up a tad
+0AAA: 40 46 c0 06   VCTR(-704,-576,0,4)          
+0AAE: 00 52 30 c4   VCTR(-48,512,12,5)           
+0AB2: c0 41 20 c6   VCTR(-544,448,12,4)          
+0AB6: b0 64 18 c3   VCTR(792,-176,12,6)          
+0ABA: 48 65 e0 c6   VCTR(-736,-328,12,6)         
+0ABE: 20 42 c0 c1   VCTR(448,544,12,4)           
+0AC2: 00 d0         RTS                       
+
+0AC4: d0 50 10 c6   VCTR(-528,208,12,5)          
+0AC8: 60 42 c0 c3   VCTR(960,608,12,4)           
+0ACC: 00 d0         RTS                       
+
+; Ship pattern pointing right and up a tad more
+0ACE: 80 46 80 06   VCTR(-640,-640,0,4)          
+0AD2: e0 43 c0 c4   VCTR(-192,992,12,4)          
+0AD6: a0 41 60 c6   VCTR(-608,416,12,4)          
+0ADA: 68 64 20 c3   VCTR(800,-104,12,6)          
+0ADE: 90 65 c0 c6   VCTR(-704,-400,12,6)         
+0AE2: 60 42 a0 c1   VCTR(416,608,12,4)           
+0AE6: 00 d0         RTS                       
+
+0AE8: 90 50 30 c6   VCTR(-560,144,12,5)          
+0AEC: c0 42 80 c3   VCTR(896,704,12,4)           
+0AF0: 00 d0         RTS                       
+
+0AF2: c0 46 40 06   VCTR(-576,-704,0,4)          
+0AF6: e0 43 20 c5   VCTR(-288,992,12,4)          
+0AFA: 60 41 80 c6   VCTR(-640,352,12,4)          
+0AFE: 18 64 28 c3   VCTR(808,-24,12,6)           
+0B02: d0 65 98 c6   VCTR(-664,-464,12,6)         
+0B06: 80 42 60 c1   VCTR(352,640,12,4)           
+0B0A: 00 d0         RTS                       
+
+0B0C: 60 50 30 c6   VCTR(-560,96,12,5)           
+0B10: 20 43 40 c3   VCTR(832,800,12,4)           
+0B14: 00 d0         RTS                       
+
+0B16: 0e f7         SVEC(-512,-768,0,4)          
+0B18: c0 43 80 c5   VCTR(-384,960,12,4)          
+0B1C: 20 41 a0 c6   VCTR(-672,288,12,4)          
+0B20: 38 60 28 c3   VCTR(808,56,12,6)            
+0B24: 10 66 60 c6   VCTR(-608,-528,12,6)         
+0B28: a0 42 20 c1   VCTR(288,672,12,4)           
+0B2C: 00 d0         RTS                       
+
+0B2E: 30 50 40 c6   VCTR(-576,48,12,5)           
+0B32: 60 43 e0 c2   VCTR(736,864,12,4)           
+0B36: 00 d0         RTS                       
+
+0B38: 20 47 c0 05   VCTR(-448,-800,0,4)          
+0B3C: 80 43 e0 c5   VCTR(-480,896,12,4)          
+0B40: e0 40 c0 c6   VCTR(-704,224,12,4)          
+0B44: 88 60 20 c3   VCTR(800,136,12,6)           
+0B48: 48 66 30 c6   VCTR(-560,-584,12,6)         
+0B4C: c0 42 e0 c0   VCTR(224,704,12,4)           
+0B50: 00 d0         RTS                       
+
+0B52: 10 54 40 c6   VCTR(-576,-16,12,5)          
+0B56: a0 43 a0 c2   VCTR(672,928,12,4)           
+0B5A: 00 d0         RTS                       
+
+0B5C: 60 47 60 05   VCTR(-352,-864,0,4)          
+0B60: 60 43 40 c6   VCTR(-576,864,12,4)          
+0B64: 80 40 c0 c6   VCTR(-704,128,12,4)          
+0B68: d8 60 10 c3   VCTR(784,216,12,6)           
+0B6C: 80 66 f0 c5   VCTR(-496,-640,12,6)         
+0B70: c0 42 80 c0   VCTR(128,704,12,4)           
+0B74: 00 d0         RTS                       
+
+0B76: 40 54 30 c6   VCTR(-560,-64,12,5)          
+0B7A: e0 43 40 c2   VCTR(576,992,12,4)           
+0B7E: 00 d0         RTS                       
+
+0B80: 80 47 00 05   VCTR(-256,-896,0,4)          
+0B84: 20 43 80 c6   VCTR(-640,800,12,4)          
+0B88: 40 40 e0 c6   VCTR(-736,64,12,4)           
+0B8C: 20 61 f8 c2   VCTR(760,288,12,6)           
+0B90: b0 66 b0 c5   VCTR(-432,-688,12,6)         
+0B94: e0 42 40 c0   VCTR(64,736,12,4)            
+0B98: 00 d0         RTS                       
+
+0B9A: 80 54 30 c6   VCTR(-560,-128,12,5)         
+0B9E: 10 52 f0 c0   VCTR(240,528,12,5)           
+0BA2: 00 d0         RTS                       
+
+0BA4: 80 47 c0 04   VCTR(-192,-896,0,4)          
+0BA8: e0 42 e0 c6   VCTR(-736,736,12,4)          
+0BAC: 00 40 e0 c6   VCTR(-736,0,12,4)            
+0BB0: 68 61 d8 c2   VCTR(728,360,12,6)           
+0BB4: d8 66 68 c5   VCTR(-360,-728,12,6)         
+0BB8: e0 42 00 c0   VCTR(0,736,12,4)             
+0BBC: 00 d0         RTS                       
+
+0BBE: b0 54 20 c6   VCTR(-544,-176,12,5)         
+0BC2: 20 52 b0 c0   VCTR(176,544,12,5)           
+0BC6: 00 d0         RTS                       
+
+0BC8: a0 47 60 04   VCTR(-96,-928,0,4)           
+0BCC: 80 42 20 c7   VCTR(-800,640,12,4)          
+0BD0: 40 44 e0 c6   VCTR(-736,-64,12,4)          
+0BD4: b0 61 b0 c2   VCTR(688,432,12,6)           
+0BD8: f8 66 20 c5   VCTR(-288,-760,12,6)         
+0BDC: e0 42 40 c4   VCTR(-64,736,12,4)           
+0BE0: 00 d0         RTS                       
+
+0BE2: f0 54 10 c6   VCTR(-528,-240,12,5)         
+0BE6: 30 52 80 c0   VCTR(128,560,12,5)           
+0BEA: 00 d0         RTS                       
+
+0BEC: a0 47 00 00   VCTR(0,-928,0,4)             
+0BF0: 40 42 60 c7   VCTR(-864,576,12,4)          
+0BF4: 80 44 c0 c6   VCTR(-704,-128,12,4)         
+0BF8: f0 61 80 c2   VCTR(640,496,12,6)           
+0BFC: 10 67 d8 c4   VCTR(-216,-784,12,6)         
+0C00: c0 42 80 c4   VCTR(-128,704,12,4)          
+0C04: 00 d0         RTS                       
+
+0C06: 40 46 e0 c7   VCTR(-992,-576,12,4)         
+0C0A: 30 52 40 c0   VCTR(64,560,12,5)            
+0C0E: 00 d0         RTS                       
+
+0C10: a0 47 60 00   VCTR(96,-928,0,4)            
+0C14: e0 41 80 c7   VCTR(-896,480,12,4)          
+0C18: e0 44 c0 c6   VCTR(-704,-224,12,4)         
+0C1C: 30 62 48 c2   VCTR(584,560,12,6)           
+0C20: 20 67 88 c4   VCTR(-136,-800,12,6)         
+0C24: c0 42 e0 c4   VCTR(-224,704,12,4)          
+0C28: 00 d0         RTS                       
+
+0C2A: a0 46 a0 c7   VCTR(-928,-672,12,4)         
+0C2E: 40 52 10 c0   VCTR(16,576,12,5)            
+0C32: 00 d0         RTS                       
+
+0C34: 80 47 c0 00   VCTR(192,-896,0,4)           
+0C38: 80 41 c0 c7   VCTR(-960,384,12,4)          
+0C3C: 20 45 a0 c6   VCTR(-672,-288,12,4)         
+0C40: 60 62 10 c2   VCTR(528,608,12,6)           
+0C44: 28 67 38 c4   VCTR(-56,-808,12,6)          
+0C48: a0 42 20 c5   VCTR(-288,672,12,4)          
+0C4C: 00 d0         RTS                       
+
+0C4E: e0 46 60 c7   VCTR(-864,-736,12,4)         
+0C52: 40 52 30 c4   VCTR(-48,576,12,5)           
+0C56: 00 d0         RTS                       
+
+0C58: 80 47 00 01   VCTR(256,-896,0,4)           
+0C5C: 20 41 e0 c7   VCTR(-992,288,12,4)          
+0C60: 60 45 80 c6   VCTR(-640,-352,12,4)         
+0C64: 98 62 d0 c1   VCTR(464,664,12,6)           
+0C68: 28 67 18 c0   VCTR(24,-808,12,6)           
+0C6C: 80 42 60 c5   VCTR(-352,640,12,4)          
+0C70: 00 d0         RTS                       
+
+0C72: 40 47 20 c7   VCTR(-800,-832,12,4)         
+0C76: 30 52 60 c4   VCTR(-96,560,12,5)           
+0C7A: 00 d0         RTS                       
+
+0C7C: 60 47 60 01   VCTR(352,-864,0,4)           
+0C80: c0 40 e0 c7   VCTR(-992,192,12,4)          
+0C84: a0 45 60 c6   VCTR(-608,-416,12,4)         
+0C88: c0 62 90 c1   VCTR(400,704,12,6)           
+0C8C: 20 67 68 c0   VCTR(104,-800,12,6)          
+0C90: 60 42 a0 c5   VCTR(-416,608,12,4)          
+0C94: 00 d0         RTS                       
+
+0C96: 80 47 c0 c6   VCTR(-704,-896,12,4)         
+0C9A: 30 52 90 c4   VCTR(-144,560,12,5)          
+0C9E: 00 d0         RTS                       
+
+0CA0: 20 47 c0 01   VCTR(448,-800,0,4)           
+0CA4: 30 50 00 c6   VCTR(-512,48,12,5)           
+0CA8: c0 45 20 c6   VCTR(-544,-448,12,4)         
+0CAC: e0 62 48 c1   VCTR(328,736,12,6)           
+0CB0: 18 67 b0 c0   VCTR(176,-792,12,6)          
+0CB4: 20 42 c0 c5   VCTR(-448,544,12,4)          
+0CB8: 00 d0         RTS                       
+
+0CBA: c0 47 60 c6   VCTR(-608,-960,12,4)         
+0CBE: 10 52 d0 c4   VCTR(-208,528,12,5)          
+0CC2: 00 d0         RTS                       
+
+0CC4: 0a f7         SVEC(512,-768,0,4)           
+0CC6: ce f8         SVEC(-512,0,12,5)            
+0CC8: cd fd         SVEC(-256,-256,12,5)         
+0CCA: 00 63 00 c1   VCTR(256,768,12,6)           
+0CCE: 00 67 00 c1   VCTR(256,-768,12,6)          
+0CD2: cd f9         SVEC(-256,256,12,5)          
+0CD4: 00 d0         RTS                       
+
+0CD6: cd fe         SVEC(-256,-512,12,5)         
+0CD8: cd fa         SVEC(-256,512,12,5)          
+0CDA: 00 d0         RTS                       
+
+; Sip pattern pointing up
+0CDC: 0e f7         SVEC(-512,-768,0,4)          
+0CDE: 7a f8         SVEC(512,0,7,5)              
+0CE0: 79 fd         SVEC(256,-256,7,5)           
+0CE2: 00 63 00 75   VCTR(-256,768,7,6)           
+0CE6: 00 67 00 75   VCTR(-256,-768,7,6)          
+0CEA: 79 f9         SVEC(256,256,7,5)            
+0CEC: c0 60 80 02   VCTR(640,192,0,6)            
+0CF0: 32 d0         RTS                         ; ?? 0x32
+
+; "A"
+0CF2: 70 fa         SVEC(0,512,7,3)              
+0CF4: 72 f2         SVEC(512,512,7,2)            
+0CF6: 72 f6         SVEC(512,-512,7,2)           
+0CF8: 70 fe         SVEC(0,-512,7,3)             
+0CFA: 06 f9         SVEC(-512,256,0,3)           
+0CFC: 72 f8         SVEC(512,0,7,3)              
+0CFE: 02 f6         SVEC(512,-512,0,2)           
+0D00: 00 d0         RTS                       
+
+; "B"
+0D02: 70 fb         SVEC(0,768,7,3)              
+0D04: 73 f0         SVEC(768,0,7,2)              
+0D06: 61 f5         SVEC(256,-256,6,2)           
+0D08: 60 f5         SVEC(0,-256,6,2)             
+0D0A: 65 f5         SVEC(-256,-256,6,2)          
+0D0C: 77 f0         SVEC(-768,0,7,2)             
+0D0E: 03 f0         SVEC(768,0,0,2)              
+0D10: 61 f5         SVEC(256,-256,6,2)           
+0D12: 60 f5         SVEC(0,-256,6,2)             
+0D14: 65 f5         SVEC(-256,-256,6,2)          
+0D16: 77 f0         SVEC(-768,0,7,2)             
+0D18: 03 f8         SVEC(768,0,0,3)              
+0D1A: 00 d0         RTS                       
+
+; "C"
+0D1C: 70 fb         SVEC(0,768,7,3)              
+0D1E: 72 f8         SVEC(512,0,7,3)              
+0D20: 06 ff         SVEC(-512,-768,0,3)          
+0D22: 72 f8         SVEC(512,0,7,3)              
+0D24: 02 f0         SVEC(512,0,0,2)              
+0D26: 00 d0         RTS                       
+
+; "D"
+0D28: 70 fb         SVEC(0,768,7,3)              
+0D2A: 72 f0         SVEC(512,0,7,2)              
+0D2C: 72 f6         SVEC(512,-512,7,2)           
+0D2E: 70 f6         SVEC(0,-512,7,2)             
+0D30: 76 f6         SVEC(-512,-512,7,2)          
+0D32: 76 f0         SVEC(-512,0,7,2)             
+0D34: 03 f8         SVEC(768,0,0,3)              
+0D36: 00 d0         RTS                       
+
+; "E"
+0D38: 70 fb         SVEC(0,768,7,3)              
+0D3A: 72 f8         SVEC(512,0,7,3)              
+0D3C: 05 f7         SVEC(-256,-768,0,2)          
+0D3E: 77 f0         SVEC(-768,0,7,2)             
+0D40: 00 f7         SVEC(0,-768,0,2)             
+0D42: 72 f8         SVEC(512,0,7,3)              
+0D44: 02 f0         SVEC(512,0,0,2)              
+0D46: 00 d0         RTS                       
+
+; "F"
+0D48: 70 fb         SVEC(0,768,7,3)              
+0D4A: 72 f8         SVEC(512,0,7,3)              
+0D4C: 05 f7         SVEC(-256,-768,0,2)          
+0D4E: 77 f0         SVEC(-768,0,7,2)             
+0D50: 00 f7         SVEC(0,-768,0,2)             
+0D52: 03 f8         SVEC(768,0,0,3)              
+0D54: 00 d0         RTS                       
+
+; "G"
+0D56: 70 fb         SVEC(0,768,7,3)              
+0D58: 72 f8         SVEC(512,0,7,3)              
+0D5A: 70 f6         SVEC(0,-512,7,2)             
+0D5C: 06 f6         SVEC(-512,-512,0,2)          
+0D5E: 72 f0         SVEC(512,0,7,2)              
+0D60: 70 f6         SVEC(0,-512,7,2)             
+0D62: 76 f8         SVEC(-512,0,7,3)             
+0D64: 03 f8         SVEC(768,0,0,3)              
+0D66: 00 d0         RTS                       
+
+; "H"
+0D68: 70 fb         SVEC(0,768,7,3)              
+0D6A: 00 f7         SVEC(0,-768,0,2)             
+0D6C: 72 f8         SVEC(512,0,7,3)              
+0D6E: 00 f3         SVEC(0,768,0,2)              
+0D70: 70 ff         SVEC(0,-768,7,3)             
+0D72: 02 f0         SVEC(512,0,0,2)              
+0D74: 00 d0         RTS                       
+
+; "I"
+0D76: 72 f8         SVEC(512,0,7,3)              
+0D78: 06 f0         SVEC(-512,0,0,2)             
+0D7A: 70 fb         SVEC(0,768,7,3)              
+0D7C: 02 f0         SVEC(512,0,0,2)              
+0D7E: 76 f8         SVEC(-512,0,7,3)             
+0D80: 03 ff         SVEC(768,-768,0,3)           
+0D82: 00 d0         RTS                       
+
+; "J"
+0D84: 00 f2         SVEC(0,512,0,2)              
+0D86: 72 f6         SVEC(512,-512,7,2)           
+0D88: 72 f0         SVEC(512,0,7,2)              
+0D8A: 70 fb         SVEC(0,768,7,3)              
+0D8C: 01 ff         SVEC(256,-768,0,3)           
+0D8E: 00 d0         RTS                       
+
+; "K"
+0D90: 70 fb         SVEC(0,768,7,3)              
+0D92: 03 f0         SVEC(768,0,0,2)              
+0D94: 77 f7         SVEC(-768,-768,7,2)          
+0D96: 73 f7         SVEC(768,-768,7,2)           
+0D98: 03 f0         SVEC(768,0,0,2)              
+0D9A: 00 d0         RTS                       
+
+; "L"
+0D9C: 00 fb         SVEC(0,768,0,3)              
+0D9E: 70 ff         SVEC(0,-768,7,3)             
+0DA0: 72 f8         SVEC(512,0,7,3)              
+0DA2: 02 f0         SVEC(512,0,0,2)              
+0DA4: 00 d0         RTS                       
+
+; "M"
+0DA6: 70 fb         SVEC(0,768,7,3)              
+0DA8: 72 f6         SVEC(512,-512,7,2)           
+0DAA: 72 f2         SVEC(512,512,7,2)            
+0DAC: 70 ff         SVEC(0,-768,7,3)             
+0DAE: 02 f0         SVEC(512,0,0,2)              
+0DB0: 00 d0         RTS                       
+
+; "N"
+0DB2: 70 fb         SVEC(0,768,7,3)              
+0DB4: 72 ff         SVEC(512,-768,7,3)           
+0DB6: 70 fb         SVEC(0,768,7,3)              
+0DB8: 01 ff         SVEC(256,-768,0,3)           
+0DBA: 00 d0         RTS                       
+
+; "O"
+0DBC: 70 fb         SVEC(0,768,7,3)              
+0DBE: 72 f8         SVEC(512,0,7,3)              
+0DC0: 70 ff         SVEC(0,-768,7,3)             
+0DC2: 76 f8         SVEC(-512,0,7,3)             
+0DC4: 03 f8         SVEC(768,0,0,3)              
+0DC6: 00 d0         RTS                       
+
+; "P"
+0DC8: 70 fb         SVEC(0,768,7,3)              
+0DCA: 72 f8         SVEC(512,0,7,3)              
+0DCC: 70 f7         SVEC(0,-768,7,2)             
+0DCE: 76 f8         SVEC(-512,0,7,3)             
+0DD0: 03 f7         SVEC(768,-768,0,2)           
+0DD2: 03 f0         SVEC(768,0,0,2)              
+0DD4: 00 d0         RTS                       
+
+; "Q"
+0DD6: 70 fb         SVEC(0,768,7,3)              
+0DD8: 72 f8         SVEC(512,0,7,3)              
+0DDA: 70 fe         SVEC(0,-512,7,3)             
+0DDC: 76 f6         SVEC(-512,-512,7,2)          
+0DDE: 76 f0         SVEC(-512,0,7,2)             
+0DE0: 02 f2         SVEC(512,512,0,2)            
+0DE2: 72 f6         SVEC(512,-512,7,2)           
+0DE4: 02 f0         SVEC(512,0,0,2)              
+0DE6: 00 d0         RTS                       
+
+; "R"
+0DE8: 70 fb         SVEC(0,768,7,3)              
+0DEA: 72 f8         SVEC(512,0,7,3)              
+0DEC: 70 f7         SVEC(0,-768,7,2)             
+0DEE: 76 f8         SVEC(-512,0,7,3)             
+0DF0: 01 f0         SVEC(256,0,0,2)              
+0DF2: 73 f7         SVEC(768,-768,7,2)           
+0DF4: 02 f0         SVEC(512,0,0,2)              
+0DF6: 00 d0         RTS                       
+
+; "S"
+0DF8: 72 f8         SVEC(512,0,7,3)              
+0DFA: 70 f3         SVEC(0,768,7,2)              
+0DFC: 76 f8         SVEC(-512,0,7,3)             
+0DFE: 70 f3         SVEC(0,768,7,2)              
+0E00: 72 f8         SVEC(512,0,7,3)              
+0E02: 01 ff         SVEC(256,-768,0,3)           
+0E04: 00 d0         RTS                       
+
+; "T"
+0E06: 02 f0         SVEC(512,0,0,2)              
+0E08: 70 fb         SVEC(0,768,7,3)              
+0E0A: 06 f0         SVEC(-512,0,0,2)             
+0E0C: 72 f8         SVEC(512,0,7,3)              
+0E0E: 01 ff         SVEC(256,-768,0,3)           
+0E10: 00 d0         RTS                       
+
+; "U"
+0E12: 00 fb         SVEC(0,768,0,3)              
+0E14: 70 ff         SVEC(0,-768,7,3)             
+0E16: 72 f8         SVEC(512,0,7,3)              
+0E18: 70 fb         SVEC(0,768,7,3)              
+0E1A: 01 ff         SVEC(256,-768,0,3)           
+0E1C: 00 d0         RTS                       
+
+; "V"
+0E1E: 00 fb         SVEC(0,768,0,3)              
+0E20: 71 ff         SVEC(256,-768,7,3)           
+0E22: 71 fb         SVEC(256,768,7,3)            
+0E24: 01 ff         SVEC(256,-768,0,3)           
+0E26: 00 d0         RTS                       
+
+; "W"
+0E28: 00 fb         SVEC(0,768,0,3)              
+0E2A: 70 ff         SVEC(0,-768,7,3)             
+0E2C: 72 f2         SVEC(512,512,7,2)            
+0E2E: 72 f6         SVEC(512,-512,7,2)           
+0E30: 70 fb         SVEC(0,768,7,3)              
+0E32: 01 ff         SVEC(256,-768,0,3)           
+0E34: 00 d0         RTS                       
+
+; "X"
+0E36: 72 fb         SVEC(512,768,7,3)            
+0E38: 06 f8         SVEC(-512,0,0,3)             
+0E3A: 72 ff         SVEC(512,-768,7,3)           
+0E3C: 02 f0         SVEC(512,0,0,2)              
+0E3E: 00 d0         RTS                       
+
+; "Y"
+0E40: 02 f0         SVEC(512,0,0,2)              
+0E42: 70 fa         SVEC(0,512,7,3)              
+0E44: 76 f2         SVEC(-512,512,7,2)           
+0E46: 02 f8         SVEC(512,0,0,3)              
+0E48: 76 f6         SVEC(-512,-512,7,2)          
+0E4A: 02 fe         SVEC(512,-512,0,3)           
+0E4C: 00 d0         RTS                       
+
+; "Z"
+0E4E: 00 fb         SVEC(0,768,0,3)              
+0E50: 72 f8         SVEC(512,0,7,3)              
+0E52: 76 ff         SVEC(-512,-768,7,3)          
+0E54: 72 f8         SVEC(512,0,7,3)              
+0E56: 02 f0         SVEC(512,0,0,2)              
+0E58: 00 d0         RTS                       
+
+; SPACE
+0E5A: 03 f8         SVEC(768,0,0,3)              
+0E5C: 00 d0         RTS                       
+
+; "1"
+0E5E: 02 f0         SVEC(512,0,0,2)              
+0E60: 70 fb         SVEC(0,768,7,3)              
+0E62: 02 ff         SVEC(512,-768,0,3)           
+0E64: 00 d0         RTS                       
+
+; "2"
+0E66: 00 fb         SVEC(0,768,0,3)              
+0E68: 72 f8         SVEC(512,0,7,3)              
+0E6A: 70 f7         SVEC(0,-768,7,2)             
+0E6C: 76 f8         SVEC(-512,0,7,3)             
+0E6E: 70 f7         SVEC(0,-768,7,2)             
+0E70: 72 f8         SVEC(512,0,7,3)              
+0E72: 02 f0         SVEC(512,0,0,2)              
+0E74: 00 d0         RTS                       
+
+; "3"
+0E76: 72 f8         SVEC(512,0,7,3)              
+0E78: 70 fb         SVEC(0,768,7,3)              
+0E7A: 76 f8         SVEC(-512,0,7,3)             
+0E7C: 00 f7         SVEC(0,-768,0,2)             
+0E7E: 72 f8         SVEC(512,0,7,3)              
+0E80: 02 f7         SVEC(512,-768,0,2)           
+0E82: 00 d0         RTS                       
+
+; "4"
+0E84: 00 fb         SVEC(0,768,0,3)              
+0E86: 70 f7         SVEC(0,-768,7,2)             
+0E88: 72 f8         SVEC(512,0,7,3)              
+0E8A: 00 f3         SVEC(0,768,0,2)              
+0E8C: 70 ff         SVEC(0,-768,7,3)             
+0E8E: 02 f0         SVEC(512,0,0,2)              
+0E90: 00 d0         RTS                       
+
+; "5"
+0E92: 72 f8         SVEC(512,0,7,3)              
+0E94: 70 f3         SVEC(0,768,7,2)              
+0E96: 76 f8         SVEC(-512,0,7,3)             
+0E98: 70 f3         SVEC(0,768,7,2)              
+0E9A: 72 f8         SVEC(512,0,7,3)              
+0E9C: 01 ff         SVEC(256,-768,0,3)           
+0E9E: 00 d0         RTS                       
+
+; "6"
+0EA0: 00 f3         SVEC(0,768,0,2)              
+0EA2: 72 f8         SVEC(512,0,7,3)              
+0EA4: 70 f7         SVEC(0,-768,7,2)             
+0EA6: 76 f8         SVEC(-512,0,7,3)             
+0EA8: 70 fb         SVEC(0,768,7,3)              
+0EAA: 03 ff         SVEC(768,-768,0,3)           
+0EAC: 00 d0         RTS                       
+
+; "7"
+0EAE: 00 fb         SVEC(0,768,0,3)              
+0EB0: 72 f8         SVEC(512,0,7,3)              
+0EB2: 70 ff         SVEC(0,-768,7,3)             
+0EB4: 02 f0         SVEC(512,0,0,2)              
+0EB6: 00 d0         RTS                       
+
+; "8"
+0EB8: 72 f8         SVEC(512,0,7,3)              
+0EBA: 70 fb         SVEC(0,768,7,3)              
+0EBC: 76 f8         SVEC(-512,0,7,3)             
+0EBE: 70 ff         SVEC(0,-768,7,3)             
+0EC0: 00 f3         SVEC(0,768,0,2)              
+0EC2: 72 f8         SVEC(512,0,7,3)              
+0EC4: 02 f7         SVEC(512,-768,0,2)           
+0EC6: 00 d0         RTS                       
+
+; "9"
+0EC8: 02 f8         SVEC(512,0,0,3)              
+0ECA: 70 fb         SVEC(0,768,7,3)              
+0ECC: 76 f8         SVEC(-512,0,7,3)             
+0ECE: 70 f7         SVEC(0,-768,7,2)             
+0ED0: 72 f8         SVEC(512,0,7,3)              
+0ED2: 02 f7         SVEC(512,-768,0,2)           
+0ED4: 00 d0         RTS                       
+
+; Cross reference table for character data
+0ED6: 2d cb         JSR($0E5A)                  ; SPACE
+0ED8: de ca         JSR($0DBC)                  ; O and 0 ... same pattern
+0EDA: 2f cb         JSR($0E5E)                  ; 1
+0EDC: 33 cb         JSR($0E66)                  ; 2
+0EDE: 3b cb         JSR($0E76)                  ; 3
+0EE0: 42 cb         JSR($0E84)                  ; 4
+0EE2: 49 cb         JSR($0E92)                  ; 5
+0EE4: 50 cb         JSR($0EA0)                  ; 6
+0EE6: 57 cb         JSR($0EAE)                  ; 7
+0EE8: 5c cb         JSR($0EB8)                  ; 8
+0EEA: 64 cb         JSR($0EC8)                  ; 9
+0EEC: 79 ca         JSR($0CF2)                  ; A
+0EEE: 81 ca         JSR($0D02)                  ; B
+0EF0: 8e ca         JSR($0D1C)                  ; C
+0EF2: 94 ca         JSR($0D28)                  ; D
+0EF4: 9c ca         JSR($0D38)                  ; E
+0EF6: a4 ca         JSR($0D48)                  ; F
+0EF8: ab ca         JSR($0D56)                  ; G
+0EFA: b4 ca         JSR($0D68)                  ; H
+0EFC: bb ca         JSR($0D76)                  ; I
+0EFE: c2 ca         JSR($0D84)                  ; J
+0F00: c8 ca         JSR($0D90)                  ; K
+0F02: ce ca         JSR($0D9C)                  ; L
+0F04: d3 ca         JSR($0DA6)                  ; M
+0F06: d9 ca         JSR($0DB2)                  ; N
+0F08: de ca         JSR($0DBC)                  ; O
+0F0A: e4 ca         JSR($0DC8)                  ; P
+0F0C: eb ca         JSR($0DD6)                  ; Q
+0F0E: f4 ca         JSR($0DE8)                  ; R
+0F10: fc ca         JSR($0DF8)                  ; S
+0F12: 03 cb         JSR($0E06)                  ; T
+0F14: 09 cb         JSR($0E12)                  ; U
+0F16: 0f cb         JSR($0E1E)                  ; V
+0F18: 14 cb         JSR($0E28)                  ; W
+0F1A: 1b cb         JSR($0E36)                  ; X
+0F1C: 20 cb         JSR($0E40)                  ; Y
+0F1E: 27 cb         JSR($0E4E)                  ; Z
+
+; ====== Not valid commands from here down ... cross reference table of some kind?
+; How are ship/rock/etc objects referenced? Surely not hard-coded ...
+
+0F20: 0b 13 19 2f   VCTR(-793,779,2,1)           
+0F24: 41 55 6f 77   VCTR(-879,-321,7,5)          
+0F28: 7d 87 91 63   VCTR(913,-893,6,8)           
+0F2C: 56 60 6e 3c   VCTR(-110,86,3,6)            
+0F30: ec 4d c0 a4   VCTR(-192,-492,10,4)         
+0F34: 0a ea         JMP($0C14)                  
+0F36: 6c 08         ????                          ; 86c
+0F38: 00 ec         JMP($1000)                  
+0F3A: f2 b0         HALT                          ; ?? 0xf2
+0F3C: 6e 3c ec 48   VCTR(236,-110,4,3)           
+0F40: 5a b8         HALT                          ; ?? 0x85a
+0F42: 66 92 42 9a   VCTR(578,614,9,9)            
+0F46: 82 c3         JSR($-0FC)                  
+0F48: 12 0e         ????                          ; e12
+0F4A: 12 90 4c 4d   VCTR(-332,18,4,9)            
+0F4E: f1 a4 12 2d   LABS(-750,1265,2)            
+0F52: d2 0a         ????                          ; ad2
+0F54: 64 c2         JSR($-338)                  
+0F56: 6c 0f         ????                          ; f6c
+0F58: 66 cd         JSR($12CC)                  
+0F5A: 82 6c 9a c3   VCTR(922,-130,12,6)          
+0F5E: 4a 85 c0 a6   VCTR(-704,-330,10,8)         
+0F62: 6e 60 6c 9e   VCTR(-620,110,9,6)           
+0F66: 0a c2         JSR($-3EC)                  
+0F68: 42 c4         JSR($0084)                  
+0F6A: c2 ba         HALT                          ; ?? 0xac2
+0F6C: 60 49 f0 0c   VCTR(-240,352,0,4)           
+0F70: 12 c6         JSR($0424)                  
+0F72: 12 b0         HALT                          ; ?? 0x12
+0F74: 00 a6 6e 60   LABS(110,1536,6)             
+0F78: 58 ed         JMP($12B0)                  
+0F7A: 12 b5         HALT                          ; ?? 0x512
+0F7C: e8 29 d2 0e   VCTR(-722,488,0,2)           
+0F80: d8 4c 82 82   VCTR(642,-216,8,4)           
+0F84: 70 c2         JSR($-320)                  
+0F86: 6c 0b         ????                          ; b6c
+0F88: 6e 09         ????                          ; 96e
+0F8A: e6 b5         HALT                          ; ?? 0x5e6
+0F8C: 92 3e 00 a6   VCTR(-512,-658,10,3)         
+0F90: 6e 60 6e c1   VCTR(366,110,12,6)           
+0F94: 6c c0         JSR($-728)                  
+0F96: 00 59 62 48   VCTR(98,256,4,5)             
+0F9A: 66 d2         RTS                         ; ?? 0x266
+0F9C: 6d 18 4e 9b   VCTR(846,109,9,1)            
+0FA0: 64 09         ????                          ; 964
+0FA2: 02 a4 0a ed   LABS(-758,1026,14)           
+0FA6: c0 18 4e 9b   VCTR(846,192,9,1)            
+0FAA: 64 08         ????                          ; 864
+0FAC: c2 a4 0a e8   LABS(-2038,1218,14)          
+0FB0: 00 20 4e 9b   VCTR(846,0,9,2)              
+0FB4: 64 b8         HALT                          ; ?? 0x864
+0FB6: 46 0d         ????                          ; d46
+0FB8: 20 2f 40 00   VCTR(64,-800,0,2)            
+0FBC: 03 06         ????                          ; 603
+0FBE: 09 0c         ????                          ; c09
+0FC0: 10 13 16 19   VCTR(278,784,1,1)            
+0FC4: 1c 1f 22 25   VCTR(-290,-796,2,1)          
+0FC8: 28 2b 2e 31   VCTR(302,808,3,2)            
+0FCC: 33 36 39 3c   VCTR(-57,-563,3,3)           
+0FD0: 3f 41 44 47   VCTR(-836,319,4,4)           
+0FD4: 49 4c 4e 51   VCTR(334,-73,5,4)            
+0FD8: 53 55 58 5a   VCTR(600,-339,5,5)           
+0FDC: 5c 5e 60 62   VCTR(608,-604,6,5)           
+0FE0: 64 66 68 6a   VCTR(616,-612,6,6)           
+0FE4: 6b 6d 6f 70   VCTR(111,-363,7,6)           
+0FE8: 71 73 74 75   VCTR(-372,881,7,7)           
+0FEC: 76 78 79 7a   VCTR(633,118,7,7)            
+0FF0: 7a 7b 7c 7d   VCTR(-380,890,7,7)           
+0FF4: 7d 7e 7e 7e   VCTR(-638,-637,7,7)          
+0FF8: 7f 7f 7f 7f   VCTR(-895,-895,7,7)          
+0FFC: 00 00         ????                          ; 0
+0FFE: 00 00         ????                          ; 0

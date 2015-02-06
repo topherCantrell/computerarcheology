@@ -1,0 +1,14 @@
+{
+
+"files" : 
+[ 
+  {"outputName":"index.html",    "displayName":"",           "command":"markup Asteroids.mark"}, 
+  {"outputName":"Code.html",     "displayName":"Code",       "command":"markupCode Code.mark"},
+  {"outputName":"DVG.html",      "displayName":"DVG",        "command":"markup DVG.mark"},
+    
+  {"outputName":"Asteroids.jpg", "command":"copy"}
+                   
+]
+
+}
+     
