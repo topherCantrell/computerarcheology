@@ -1,0 +1,13 @@
+{
+
+"files" : 
+[ 
+  {"outputName":"index.html",     "displayName":"",           "command":"markup OmegaRace.mark"}, 
+  {"outputName":"VectorROM.html",    "displayName":"Vector ROM",        "command":"markupCode VectorROM.mark"},
+    
+  {"outputName":"ORace.jpg", "command":"copy"}
+                   
+]
+
+}
+     

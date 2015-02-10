@@ -49,6 +49,24 @@ function getData(start,size) {
 	return ret;
 }
 
+function isTwoDigitHex(s) {
+	if (s.length<2) {
+		return false;
+	}
+	if(s.length>2 && s.charAt(2)!=" ") {
+		return false;
+	}
+	var c = s.charAt(0);
+	if ( !((c>='0' && c<='9') || (c>='A' && c<='F')) ){
+		return false;
+	}
+	c = s.charAt(1);
+	if ( !((c>='0' && c<='9') || (c>='A' && c<='F')) ){
+		return false;
+	}
+	return true;
+}
+
 /**
  * This function reads a single line of disassembly data starting with the
  * address and a ":".
@@ -71,12 +89,17 @@ function getLineOfData(address,ret) {
 	
 	text = text.substring(ind+addrHex.length+1,j).trim();
 		
-	var sizeAdded = 0;
-	for(var x=0;x<text.length;x=x+3) {
+	var sizeAdded = 0;	
+	while(text.length>0) {
+		text = text.trim()
+		if (!isTwoDigitHex(text)) {
+			break;
+		}
 		++sizeAdded;
-		ret.push(parseInt(text.substring(x,x+2),16));
+		ret.push(parseInt(text.substring(0,2),16));
+		text = text.substring(2);
 	}
-	
+			
 	return sizeAdded;
 	
 }

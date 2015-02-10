@@ -1,4 +1,4 @@
-with open("../../../content/CoCo/Bedlam/Bedlam.mark") as f:
+with open("../../../content/Arcade/OmegaRace/OmegaRace.mark") as f:
     raw = f.readlines()  
     
 REPS = [
@@ -7,6 +7,7 @@ REPS = [
         {'utf8':"\xE2\x80\x9D", 'rep':'"'},
         {'utf8':"\xE2\x80\x93", 'rep':'--'},
         {'utf8':"\xE2\x80\xA6", 'rep':'...'},
+        {'utf8':"\xE2\x80\x98", 'rep':"'"},
         
         {'utf8':"\xE2\x80\x99", 'rep':"'"}
         

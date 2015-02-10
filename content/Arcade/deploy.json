@@ -2,13 +2,16 @@
 
 "files" : 
 [
-   {"outputName":"index.html", "displayName":"", "command":"markup Arcade.mark"},   
+   {"outputName":"index.html", "displayName":"",     "command":"markup Arcade.mark"},   
+   {"outputName":"DVG.html",   "displayName":"DVG",  "command":"markup DVG.mark"},
+   {"outputName":"DVG.jpg" , "command":"copy"},
    {"outputName":"Arcade.jpg" , "command":"copy"}
 ],
 
 "dirList" :
 [
-  {"dirName":"Asteroids",       "displayName":"Asteroids"}
+  {"dirName":"Asteroids",       "displayName":"Asteroids"},
+  {"dirName":"OmegaRace",       "displayName":"Omega Race"}
 ]
 
 }
