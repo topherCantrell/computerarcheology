@@ -1,0 +1,28 @@
+{
+
+"files" : 
+[ 
+  {"outputName":"index.html",       "displayName":"",         "command":"markup Defender.mark"},
+  {"outputName":"MemoryMap.html",   "displayName":"",         "command":"markup MemoryMap.mark"},  
+  
+  {"outputName":"BankFixed.html",    "displayName":"Code",    "command":"markupCode BankFixed.mark"},
+  {"outputName":"Bank1.html",        "displayName":"Code",    "command":"markupCode Bank1.mark"},
+  {"outputName":"Bank2.html",        "displayName":"Code",    "command":"markupCode Bank2.mark"},
+  {"outputName":"Bank3.html",        "displayName":"Code",    "command":"markupCode Bank3.mark"},
+  {"outputName":"Bank7.html",        "displayName":"Code",    "command":"markupCode Bank7.mark"},
+  
+  {"outputName":"Sound.html",        "displayName":"Code",    "command":"markupCode Sound.mark"},
+  {"outputName":"SoundROM.html",     "displayName":"Code",    "command":"markupCode SoundROM.mark"},
+    
+  {"outputName":"Defender.jpg",              "command":"copy"},
+  
+  {"outputName":"Defender-Theory-Early.pdf", "command":"copy"},
+  {"outputName":"Defender-Theory-Later.pdf", "command":"copy"},
+  
+  {"outputName":"Defender.CPU.jpg",          "command":"copy"},
+  {"outputName":"Defender.ROM.B&W.jpg",      "command":"copy"},
+  {"outputName":"Defender.Vid.B&W.jpg",      "command":"copy"}                   
+]
+
+}
+     

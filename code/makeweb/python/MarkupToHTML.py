@@ -8,223 +8,224 @@ from Config import deployDir
 from TextLine import TextLine
 
 class MarkupToHTML:
-    
+
     def __init__(self):
         self.headers = []
         self.rawMode = None
-        
+
     @staticmethod
     def readTextLines(fileName):
         ret = []
         with open(fileName) as f:
             raw = f.readlines()
-            
+
         num = 1
         for r in raw:
-            if r[-1]=='\n':
-                ret.append(TextLine(r[0:-1],fileName,num))
+            if r[-1] == '\n':
+                ret.append(TextLine(r[0:-1], fileName, num))
             else:
-                ret.append(TextLine(r,fileName,num))
+                ret.append(TextLine(r, fileName, num))
             num += 1
-        
-        return ret  
-    
+
+        return ret
+
     @staticmethod
-    def entizeString(str):        
+    def entizeString(str):
         ret = ""
         # Eventually we want to escape stretches of text.
         for c in str:
-            if c=='<':
+            if c == '<':
                 ret = ret + "&lt;"
-            elif c=='>':
-                ret = ret + "&gt;"                
-            elif c=='&':
+            elif c == '>':
+                ret = ret + "&gt;"
+            elif c == '&':
                 ret = ret + "&amp;"
             else:
                 ret = ret + c
-        return ret   
-        
+        return ret
 
-    def makeHeaderLink(self,text):
+
+    def makeHeaderLink(self, text):
         ret = ""
         for t in text:
             if t in string.ascii_letters or t in string.digits:
                 ret = ret + t
-        if len(ret)==0:
+        if len(ret) == 0:
             ret = "header"
         if ret in self.headers:
-            ret = ret +str(len(self.headers))
+            ret = ret + str(len(self.headers))
         self.headers.append(ret)
         return ret
-            
-    def markDownHeaders(self,proc,pageNav):
-        
+
+    def markDownHeaders(self, proc, pageNav):
+
         #     text        lid   id
-        # == This is it == it #thisIt  
-        
+        # == This is it == it #thisIt
+
         # Count the leading "=". This is the
-        # header number.  
+        # header number.
         i = 0
-        while(proc[i]=='='):
-            i=i+1
-            
+        while(proc[i] == '='):
+            i = i + 1
+
         # Find the end of the text
-        j = proc.index('=',i)
-                        
-        text = proc[i:j].strip()        
-        altText = proc[j+i:].strip()
-        
+        j = proc.index('=', i)
+
+        text = proc[i:j].strip()
+        altText = proc[j + i:].strip()
+
         # The link ID might be explicitly given
         if '#' in altText:
             x = altText.index('#')
-            id = altText[x+1:].strip()            
+            id = altText[x + 1:].strip()
             altText = altText[0:x].strip()
         else:
-            id = self.makeHeaderLink(text) 
-        
+            id = self.makeHeaderLink(text)
+
         # There might be alternate text just for the navigation pane
-        if altText=="":
+        if altText == "":
             altText = text
-        
+
         h = '<h%d id="%s" class="siteTarget">%s</h%d>'
-        t = h % (i, id,text,i)
-                
+        t = h % (i, id, text, i)
+
         pageNav.append({'level':i, 'text':altText, 'link':id})
-        return t            
-    
-    def markDownBraces(self,proc):
+        return t
+
+    def markDownBraces(self, proc):
         p1 = '<a href="%s">%s</a>'
         p2 = '<img src="%s">%s</img>'
-        #print proc
+        # print proc
         while "[" in proc:
             i = proc.index("[")
-            ii=i
-            j = proc.index("]",i)
-            
+            ii = i
+            j = proc.index("]", i)
+
             tmp = p1
-            if proc[i+1]=='!':
+            if proc[i + 1] == '!':
                 tmp = p2
                 ii = i + 1
             if " " in proc[i:j]:
-                k = proc.index(" ",i)  
-                proc = proc[0:i] + tmp % (proc[ii+1:k].strip(),proc[k+1:j].strip()) + proc[j+1:]                
+                k = proc.index(" ", i)
+                proc = proc[0:i] + tmp % (proc[ii + 1:k].strip(), proc[k + 1:j].strip()) + proc[j + 1:]
             else:
-                proc = proc[0:i] + tmp % (proc[ii+1:j].strip(),proc[ii+1:j].strip()) + proc[j+1:]  
-        return proc   
-    
-    def markDownStartRaw(self,proc,bodyLines):
+                proc = proc[0:i] + tmp % (proc[ii + 1:j].strip(), proc[ii + 1:j].strip()) + proc[j + 1:]
+        return proc
+
+    def markDownStartRaw(self, proc, bodyLines):
         if proc.startswith("{{{code"):
             self.rawMode = "pre"
             bodyLines.append('<pre class="codePreStyle">')
             self.rawMode = "pre"
             return
-        
+
         if proc.startswith("{{{html"):
             self.rawMode = "html"
             return
-        
+
         bodyLines.append("<pre>")
         self.rawMode = "pre"
-        
-    def markDownContinueRaw(self,proc,bodyLines):        
+
+    def markDownContinueRaw(self, proc, bodyLines):
         if proc.startswith("}}}"):
-            if self.rawMode=="pre":
+            if self.rawMode == "pre":
                 bodyLines.append("</pre>")
             return True
-        
-        bodyLines.append(proc+"\n")
+
+        bodyLines.append(proc + "\n")
         return False
-    
-    def markDownStartBullets(self,proc):
-        return '<ul><li>'+proc[1:].strip()+'</li>'
-    def markDownContinueBullets(self,proc):
-        return '<li>'+proc[1:].strip()+'</li>'
-    def markDownEndBullets(self,bodyLines):
+
+    def markDownStartBullets(self, proc):
+        return '<ul><li>' + proc[1:].strip() + '</li>'
+    def markDownContinueBullets(self, proc):
+        return '<li>' + proc[1:].strip() + '</li>'
+    def markDownEndBullets(self, bodyLines):
         bodyLines.append('</ul>')
-    
-    def markDownStartTable(self,proc):
-        hdrs = proc.split("||")[1:-1]  
+
+    def markDownStartTable(self, proc):
+        hdrs = proc.split("||")[1:-1]
         if hdrs[0].startswith("="):
-            hdrs[0] = hdrs[0][1:].strip()        
+            hdrs[0] = hdrs[0][1:].strip()
             s = '<table class="table table-condensed"><thead><tr>'
             for h in hdrs:
-                s = s + '<th>'+h.strip()+'</th>'
+                s = s + '<th>' + h.strip() + '</th>'
             s = s + '</tr></thead>'
         else:
             s = '<table class="table table-condensed"><tr>'
             for h in hdrs:
-                s = s + '<td>'+h.strip()+'</td>'
-            s = s + '</tr>' 
+                s = s + '<td>' + h.strip() + '</td>'
+            s = s + '</tr>'
         return s
-    def markDownContinueTable(self,proc):
+    def markDownContinueTable(self, proc):
         cells = proc.split("||")[1:-1]
         s = '<tr>'
         for c in cells:
-            s = s + '<td>'+c.strip()+'</td>'
+            s = s + '<td>' + c.strip() + '</td>'
         s = s + '</tr>'
         return s
-    def markDownEndTable(self,bodyLines):
+    def markDownEndTable(self, bodyLines):
         bodyLines.append("</table>")
-        
-    def markDownNonString(self,obj,bodyLines,pageNav):
-        #print "WHAT THE HECK IS THIS "+str(obj)
+
+    def markDownNonString(self, obj, bodyLines, pageNav):
+        # print "WHAT THE HECK IS THIS "+str(obj)
         pass
- 
-    def markDown(self,raw,fills,pageNav):
+
+    def markDown(self, raw, fills, pageNav):
         self.rawMode = None
         self.headers = []
-        
+
         mode = "none"
-        
+
         bodyLines = []  # List of lines for the body
-        for line in raw:             
+        for line in raw:
             try:
-                
-                if not isinstance(line,TextLine):
-                    self.markDownNonString(line,bodyLines,pageNav)
+
+                if not isinstance(line, TextLine):
+                    self.markDownNonString(line, bodyLines, pageNav)
                     continue
-                
+
                 proc = line.text.strip()
-            
+
                 # In raw mode, we don't process any markup at all
                 if mode == "raw":
-                    nm = self.markDownContinueRaw(line.text,bodyLines)
+                    nm = self.markDownContinueRaw(line.text, bodyLines)
                     if nm:
                         mode = "none"
-                    continue               
-                                
+                    continue
+
                 # This is how you get into raw mode
                 if proc.startswith("{{{"):
-                    self.markDownStartRaw(line.text,bodyLines)
+                    self.markDownStartRaw(line.text, bodyLines)
                     mode = "raw"
-                    continue    
-                
-                
+                    continue
+
+
                 # -- Markup Processing --
-                
-                proc = MarkupToHTML.entizeString(proc)          
-                                
+
+                proc = MarkupToHTML.entizeString(proc)
+
                 # Handle defines
                 if proc.startswith("%%"):
                     i = proc.index(" ")
-                    fills[proc[2:i]] = proc[i+1:].strip()
+                    fills[proc[2:i]] = proc[i + 1:].strip()
                     continue
-                            
+
                 # Handle line breaks
-                proc = proc.replace("[[br]]","<br>")
-                
+                proc = proc.replace("[[br]]", "<br>")
+
                 # Handle paragraph breaks
-                if proc=="":
+                if proc == "":
                     proc = '<p />'
-                    
+
                 # Handle quick headers
                 if proc.startswith("="):
-                    proc = self.markDownHeaders(proc,pageNav)
-                    
+                    proc = self.markDownHeaders(proc, pageNav)
+
                 # Handle quick links
                 if "[" in proc:
+                    # print "::" + proc + "::"
                     proc = self.markDownBraces(proc)
-                    
+
                 # If we are making a list of bullets
                 if mode == "bullets":
                     if proc.startswith("*"):
@@ -235,10 +236,10 @@ class MarkupToHTML:
                 else:
                     if proc.startswith("*"):
                         proc = self.markDownStartBullets(proc)
-                        mode = "bullets"        
+                        mode = "bullets"
                         bodyLines.append(proc)
                         continue
-                
+
                 # If we are making a table
                 if mode == "table":
                     if proc.startswith("||"):
@@ -252,120 +253,120 @@ class MarkupToHTML:
                         mode = "table"
                         bodyLines.append(proc)
                         continue
-                        
+
                 # If we get here we have a line to add
-                bodyLines.append(proc+" ")
+                bodyLines.append(proc + " ")
             except Exception, e:
-                print "Error on line "+str(line.lineNumber)+" in file '"+line.fileName+"'"
+                print "Error on line " + str(line.lineNumber) + " in file '" + line.fileName + "'"
                 traceback.print_exc()
-                
-            
+
+
         # All done
         return bodyLines
-    
-    def makePageNav(self,pageNav):
-        if len(pageNav)<1:
+
+    def makePageNav(self, pageNav):
+        if len(pageNav) < 1:
             return ""
-        
+
         # Normalize for pages that start at "2"
         tlev = pageNav[0]["level"]
-        if tlev!=1:
+        if tlev != 1:
             tlev = tlev - 1
             for p in pageNav:
-                p["level"]=p["level"] - tlev
-        
-        pret = [{'level':0}]    
-        self._makePageNavRecurse(pret,1,0,pageNav)      
-        
-        #pprint.pprint(pret)
-        
+                p["level"] = p["level"] - tlev
+
+        pret = [{'level':0}]
+        self._makePageNavRecurse(pret, 1, 0, pageNav)
+
+        # pprint.pprint(pret)
+
         lines = []
-        self._makePageNavHTMLRecurse(pret[0]['sub'],lines)  
+        self._makePageNavHTMLRecurse(pret[0]['sub'], lines)
         return "".join(lines)
-       
-    def _makePageNavHTMLRecurse(self,cur,lines):  
-        for c in cur:    
+
+    def _makePageNavHTMLRecurse(self, cur, lines):
+        for c in cur:
             cl = "n"
-            if c["level"]==1:
+            if c["level"] == 1:
                 cl = "1"
-            #li = '<li class="sn%s"><a class="sna" onclick="pageScrollTo(\'%s\');return false;">%s</a>'
+            # li = '<li class="sn%s"><a class="sna" onclick="pageScrollTo(\'%s\');return false;">%s</a>'
             li = '<li class="sn%s"><a class="sna" href="#%s">%s</a>'
-            li = li % (        cl,                c["link"], c["text"])
-            lines.append(li)                   
-            if 'sub' in c:            
+            li = li % (cl, c["link"], c["text"])
+            lines.append(li)
+            if 'sub' in c:
                 lines.append('<ul>')
-                self._makePageNavHTMLRecurse(c['sub'],lines)
+                self._makePageNavHTMLRecurse(c['sub'], lines)
                 lines.append('</ul>')
             lines.append('</li>')
-    
-    def _makePageNavRecurse(self,parent,lev,pos,pageNav):
+
+    def _makePageNavRecurse(self, parent, lev, pos, pageNav):
         ret = []
         while True:
-            if pos==len(pageNav) or pageNav[pos]["level"]<lev:
-                parent[len(parent)-1]["sub"] = ret
-                return pos        
-            if pageNav[pos]["level"]==lev:
+            if pos == len(pageNav) or pageNav[pos]["level"] < lev:
+                parent[len(parent) - 1]["sub"] = ret
+                return pos
+            if pageNav[pos]["level"] == lev:
                 ret.append(pageNav[pos])
                 pos = pos + 1
                 continue
-            if pageNav[pos]["level"]!=(lev+1):
+            if pageNav[pos]["level"] != (lev + 1):
                 raise Exception("Missing header level")
-            pos = self._makePageNavRecurse(ret,lev+1,pos,pageNav)    
-        
+            pos = self._makePageNavRecurse(ret, lev + 1, pos, pageNav)
+
     def translate(self, inName, outName, breadCrumbs, siteTree, title, raw=None):
-        
-        template = "<!-- %%BODY%% -->"   # Default (body-only) template
-         
-        fills = {"template":"master.template", "title":title}   # Fill-ins dictionary (with defaults)
+
+        template = "<!-- %%BODY%% -->"  # Default (body-only) template
+
+        fills = {"template":"master.template", "title":title}  # Fill-ins dictionary (with defaults)
         pageNav = []
-            
+
         # Read the markup (if it wasn't passed in)
-        if raw==None:
+        if raw == None:
             raw = MarkupToHTML.readTextLines(inName)
-                     
+
         # Process the mark down on the content
-        bodyLines = self.markDown(raw,fills,pageNav)
-                        
+        bodyLines = self.markDown(raw, fills, pageNav)
+
         # Page template
         if "template" in fills:
-            with open(rootDir+fills["template"]) as f:
-                template = f.read()    
-            
-        im = ""    
+            with open(rootDir + fills["template"]) as f:
+                template = f.read()
+
+        im = ""
         if "image" in fills:
-            im = '<img src="'+fills["image"] +'" height="90" style="PADDING-LEFT: 40px"/>'
-                
+            im = '<img src="' + fills["image"] + '" height="90" style="PADDING-LEFT: 40px"/>'
+
         # To a single string
         body = "".join(bodyLines)
-        #body = "TESTING"
-            
-        pageTree = self.makePageNav(pageNav)    
-                
+        # body = "TESTING"
+
+        pageTree = self.makePageNav(pageNav)
+
         # Substitute pieces into the template
-        oput = template.replace("<!-- %%TITLE%% -->",fills["title"])
+        oput = template.replace("<!-- %%TITLE%% -->", fills["title"])
         oput = oput.replace("<!-- %%CONTENT_TITLE%% -->", fills["title"])
         oput = oput.replace("<!-- %%BREAD_CRUMBS%% -->", breadCrumbs)
         oput = oput.replace("<!-- %%PAGE_TREE%% -->", pageTree)
-        oput = oput.replace("<!-- %%SITE_TREE%% -->", siteTree)          
-        oput = oput.replace("<!-- %%CONTENT%% -->",body)
-        oput = oput.replace("<!-- %%IMAGE%% -->",im)
-            
+        oput = oput.replace("<!-- %%SITE_TREE%% -->", siteTree)
+        oput = oput.replace("<!-- %%CONTENT%% -->", body)
+        oput = oput.replace("<!-- %%IMAGE%% -->", im)
+
         # Remove any un-filled parts of the template
         while("<!-- %%") in oput:
             i = oput.index("<!-- %%")
-            j = oput.index("-->",i)
-            oput = oput[0:i]+oput[j+3:]          
-       
+            j = oput.index("-->", i)
+            oput = oput[0:i] + oput[j + 3:]
+
         # Write the HTML
-        with open(outName,'w') as f:
-            f.write(oput)    
-    
+        with open(outName, 'w') as f:
+            f.write(oput)
+
 if __name__ == "__main__":
-    
+
     mu = MarkupToHTML()
-    
+
     breadCrumbs = '<li class="active"><strong>Home</strong></li>'
-    
+
     siteTree = '<li class="sn1"><strong>Home</strong></li>'
 
     pageTree = \
@@ -379,6 +380,6 @@ if __name__ == "__main__":
         '    </li>'\
         '    <li class="snn"><a class="sna">Inner 2</a></li>'\
         '  </ul>'\
-        '</li>'    
-    
-    mu.translate("../../../content/CoCo/MadnessMinotaur/Madness.mark","../../../deploy/CoCo/MadnessMinotaur/index.html", breadCrumbs, siteTree,None)
+        '</li>'
+
+    mu.translate("../../../content/CoCo/MadnessMinotaur/Madness.mark", "../../../deploy/CoCo/MadnessMinotaur/index.html", breadCrumbs, siteTree, None)

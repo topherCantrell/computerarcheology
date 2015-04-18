@@ -1,0 +1,96 @@
+%%image Asteroids.jpg
+
+= Game Variables = 
+
+||= Address  || Name                  || Description ||
+|| 00        ||                       ||             ||
+|| 01        ||                       ||             ||
+|| 02        ||                       ||             ||
+|| 03        ||                       ||             ||
+|| 04        ||                       ||             ||
+|| 05        ||                       ||             ||
+|| 06        ||                       ||             ||
+|| 07        ||                       ||             ||
+|| 08        ||                       ||             ||
+|| 09        ||                       ||             ||
+|| 0A        ||                       ||             ||
+|| 0B        ||                       ||             ||
+|| 0C        ||                       ||             ||
+|| 0D        ||                       ||             ||
+|| 0E        ||                       ||             ||
+|| 0F        ||                       ||             ||
+|| 10        ||                       ||             ||
+|| 11        ||                       ||             ||
+|| 12        ||                       ||             ||
+|| 13        ||                       ||             ||
+|| 14        ||                       ||             ||
+|| 15        ||                       ||             ||
+|| 16        ||                       ||             ||
+|| 17        ||                       ||             || 
+|| 18        ||                       || Current Player (0 = Player 1, 1 = Player 2) ||
+|| 19        ||                       ||             ||
+|| 1A        ||                       ||             ||
+|| 1C        ||                       || Number Of Players In Current Game ||
+|| 1D:30     ||                       || High Score Table (Scores) 2 Byte Format In Decimal. Byte 1 Tens, Byte 2 Thousands (In Decimal) ||
+|| 31        ||                       ||             ||
+|| 32        ||                       ||             ||
+|| 33        ||                       ||             ||
+|| 34:51     ||                       || High Score Table (Initials) 3 Byte Format ||
+|| 52        ||                       || Player 1 Score Tens (In Decimal) ||
+|| 53        ||                       || Player 1 Score Thousands (In Decimal) ||
+|| 54        ||                       || Player 2 Score Tens (In Decimal) ||
+|| 55        ||                       || Player 2 Score Thousands (In Decimal) ||
+|| 56        ||                       || Number Of Starting Ships Per Game ||
+|| 57        ||                       || Current Number Of Ships, Player 1 ||
+|| 58        ||                       || Current Number Of Ships, Player 2 ||
+|| 59        ||                       || Hyperspace Flag: 1 = Successful Hyperspace Jump, $80 = Unsuccessful Hyperspace Jump (DEATH), 0 = Hyperspace Not Currently Active ||
+|| 5A        ||                       || Time before game starts/time in 2 player game before it switches from current player to next after current player death. Starts at #$80 and counts down to 0 ||
+|| 5B        ||                       || Appears to be a timeout for the code. Game will lock up if this goes above 3. Checked in the NMI ||
+|| 5C        ||                       || Fast Timer ||
+|| 5D        ||                       || Slow Timer ||
+|| 5E        ||                       ||             ||
+|| 5F        ||                       ||             ||
+|| 60        ||                       ||             ||
+|| 61        ||                       || Ship Direction ||
+|| 62        ||                       || Direction Shot Is Fired From Saucer (?) ||
+|| 63        ||                       ||             ||
+|| 64        ||                       ||             ||
+|| 65        ||                       ||             ||
+|| 66        ||                       ||             ||
+|| 67        ||                       ||             ||
+|| 68        ||                       || TIMER: Length Of Time To Play Bonus Ship Sound ||
+|| 69        ||                       ||             ||
+|| 6A        ||                       || Fire Sound Flag For Player ||
+|| 6B        ||                       || Fire Sound Flag For Saucer ||
+|| 6C        ||                       || Current Volume & Frequency Settings For THUMP Sound ||
+|| 6D        ||                       || TIMER: Time THUMP Sound Remains On ||
+|| 6E        ||                       || TIMER: Time THUMP Sound Remains Off (Speeds Up As Game Progresses) ||
+|| 6F        ||                       || Bitmap Of Changes To Be Made In $3200 ||
+|| 70        ||                       || Current Number Of Credits ||
+|| 71        ||                       || Bitmap Of DIP Switches 4-8 ||
+|| 72        ||                       || Slam Switch Flag ||
+|| 73        ||                       || Total Coins (After Multiplyers) To Be Converted To Credits ||
+|| 74        ||                       ||             ||
+|| 75        ||                       ||             ||
+|| 76        ||                       ||             ||
+|| 77        ||                       ||             ||
+|| 78        ||                       ||             ||
+|| 79        ||                       ||             ||
+|| 7A        ||                       ||             ||
+|| 7B        ||                       ||             ||
+|| 7C        ||                       ||             ||
+|| 7D        ||                       ||             ||
+|| 7E        ||                       ||             ||
+|| 7F        ||                       ||             ||
+|| 80:FF     ||                       ||             ||
+|| 0100:01FF ||                       || Stack Space ||
+|| 021B      ||                       || Player Flag, 1 = Player Alive And Active, #$A0+ = Player Currently Exploding ||
+|| 021C      ||                       || Saucer Flag, 0 = No Saucer, 1 = Small Saucer, 2 = Large Saucer #$A0+(?) Saucer currently exploding ||
+|| 021D:021E ||                       || Countdown Timers For Saucer Shots 0 - 1 (only 2 shots allowed at a time) ||
+|| 021F:0222 ||                       || Countdown Timers For Ship Shots 0 - 3 (only 4 shots allowed at a time) ||
+|| 02F7      ||                       || Countdown Timer For Saucer, At 0, Saucer Appears. Possibly A Dual Purpose Timer ||
+|| 02F8      ||                       || Starting Value For Timer @ 02F7 ||
+|| 02FC      ||                       || Starting Value For Timer @ 6E ||
+|| 0300:03FF ||                       || Player 2 RAM
+
+

@@ -2,6 +2,8 @@
 
 "files" : 
 [ 
+  {"outputName":"RAMUse.html",      "displayName":"RAM Use",     "command":"markupAddress RAMUse.mark"},
+  {"outputName":"Hardware.html",    "displayName":"Hardware",    "command":"markupAddress Hardware.mark"},
   {"outputName":"index.html",       "displayName":"",            "command":"markup Asteroids.mark"}, 
   {"outputName":"Code.html",        "displayName":"Code",        "command":"markupCode Code.mark"},
   {"outputName":"VectorROM.html",   "displayName":"Vector ROM",  "command":"markupCode VectorROM.mark"},

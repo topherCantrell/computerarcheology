@@ -11,7 +11,8 @@
 "dirList" :
 [
   {"dirName":"Asteroids",       "displayName":"Asteroids"},
-  {"dirName":"OmegaRace",       "displayName":"Omega Race"}
+  {"dirName":"OmegaRace",       "displayName":"Omega Race"},
+  {"dirName":"Defender",        "displayName":"Defender"}
 ]
 
 }
