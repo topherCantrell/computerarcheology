@@ -1,5 +1,5 @@
 
-from CodeLine import CodeLine
+from code_line import CodeLine
 
 with open("../../../content/Arcade/Asteroids/Code.mark") as f:
     raw = f.readlines()
@@ -8,6 +8,7 @@ CODE_OPS = ["JSR", "BCS", "BLS", "JMP", "BNE", "BEQ", "BRA", "BCS", "BMI", "BCC"
 RAM_OPS = ["LDX", "STX"]
 
 commentPos = 0
+
 
 def addComment(original, commentPos):
     original = original[:-1]  # Strip line feed
@@ -43,9 +44,9 @@ for r in raw:
         continue
 
     ow = c.opcode.split(" ")
-    if ow[-1].startswith("$") and not "," in ow[-1]:
+    if ow[-1].startswith("$") and "," not in ow[-1]:
         if ow[0] in CODE_OPS:
-            if not ";" in c.original:
+            if ";" not in c.original:
                 c.original = addComment(c.original, commentPos)
                 r = c.original
             i = c.original.index(";")
@@ -61,7 +62,7 @@ for r in raw:
             continue
 
     if(ow[-1].startswith(">")):
-        if not ";" in c.original:
+        if ";" not in c.original:
             c.original = addComment(c.original, commentPos)
             r = c.original
         i = c.original.index(";")
@@ -82,4 +83,3 @@ for x in xrange(len(newLines)):
 
 with open("Code.mark", "w") as f:
     f.writelines(newLines)
-

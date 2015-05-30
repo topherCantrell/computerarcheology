@@ -1,12 +1,10 @@
-from CodeLine import CodeLine
+from code_line import CodeLine
 
-from AddressToHTML import AddressToHTML
-from MarkupToHTML import MarkupToHTML
+from address_to_html import AddressToHTML
+from markup_to_html import MarkupToHTML
 
-from Config import rootDir
-from Config import deployDir
+from text_line import TextLine
 
-from TextLine import TextLine
 
 class CodeToHTML(MarkupToHTML):
 
@@ -15,7 +13,7 @@ class CodeToHTML(MarkupToHTML):
 
     def getAddressMap(self, filename):
         ad = AddressToHTML()
-        ad.loadMap(rootDir + filename)
+        ad.loadMap("TODO:" + filename)
         return ad
 
     def collectLabels(self, lines):
@@ -42,14 +40,14 @@ class CodeToHTML(MarkupToHTML):
             if not isinstance(line, CodeLine):  # only looking at CodeLines
                 continue
 
-             # Always id the labels
+            # Always id the labels
             # print line.original
             if not line.opcode and not line.bytes:
                 line.linkID = line.labels[0]
                 if line.comment:
                     s = line.comment.strip()
                     if s.startswith("="):
-                        line.navLabel = {'level':len(s), 'text':line.labels[0], 'link':line.linkID}
+                        line.navLabel = {'level': len(s), 'text': line.labels[0], 'link': line.linkID}
                         line.comment = None
                         # print line.navLabel
 
@@ -76,7 +74,7 @@ class CodeToHTML(MarkupToHTML):
                             y = y - 1
                             continue
                         if lines[y].labels:
-                            if (line.target["target"] != "") and (line.collected == False) and (not line.target["target"] in lines[y].labels):
+                            if (line.target["target"] != "") and (not line.collected) and (line.target["target"] not in lines[y].labels):
                                 print "TARGET SAYS '" + line.target["target"] + "' BUT I THINK IT SHOULD BE '" + lines[y].labels[0] + "'"
                                 print lines[y - 5].labels
                                 print lines[y].labels
@@ -85,7 +83,6 @@ class CodeToHTML(MarkupToHTML):
                                 line.target["text"] = lines[y].labels[0]
                             del g.linkID
                         break
-
 
     def makeAddressAnchor(self, line, maps):
         tar = line.target["target"]
@@ -136,7 +133,7 @@ class CodeToHTML(MarkupToHTML):
                 tar = line.numbers[0]["text"][1:]
                 while len(tar) < 4:
                     tar = "0" + tar
-            if not "/" in tar:
+            if "/" not in tar:
                 tar = "#" + tar
             if txt == "":
                 txt = line.numbers[0]["text"]

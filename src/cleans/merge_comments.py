@@ -56,6 +56,3 @@ for o in oldLines:
 
 with open("Code.mark", "w") as f:
     f.writelines(newLines)
-
-
-
