@@ -10,8 +10,8 @@ from TextLine import TextLine
 
 class CodeToHTML(MarkupToHTML):
 
-    def markDownNonString(self, obj, bodyLines, pageNav):
-        pageNav.append(obj)
+    def mark_down_non_string(self, obj, body_lines, page_nav):
+        page_nav.append(obj)
 
     def getAddressMap(self, filename):
         ad = AddressToHTML()
@@ -217,9 +217,9 @@ class CodeToHTML(MarkupToHTML):
                     i = lines[x].original.index(";")
                     lines[x].original = lines[x].original[0:i].strip()
 
-    def translate(self, inName, outName, breadCrumbs, siteTree, title):
+    def translate(self, in_name, out_name, bread_crumbs, site_tree, title):
         # Read the code
-        raw = MarkupToHTML.readTextLines(inName)
+        raw = MarkupToHTML.read_text_lines(in_name)
 
         self.labels = []
         self.dp = 0
@@ -318,7 +318,7 @@ class CodeToHTML(MarkupToHTML):
                     else:
                         raw.append(r)
 
-        MarkupToHTML.translate(self, inName, outName, breadCrumbs, siteTree, title, raw)
+        MarkupToHTML.translate(self, in_name, out_name, bread_crumbs, site_tree, title, raw)
 
 if __name__ == "__main__":
     ch = CodeToHTML()

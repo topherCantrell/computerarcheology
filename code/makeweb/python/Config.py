@@ -1,2 +1,0 @@
-rootDir = "../../../content/"
-deployDir = "../../../deploy/"
