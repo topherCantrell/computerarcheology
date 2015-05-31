@@ -53,7 +53,12 @@
 	             {"mark": "Bank3.mark", "out": "Bank3.html", "nav":"Bank 3"},
 	             {"mark": "Bank7.mark", "out": "Bank7.html", "nav":"Bank 7"},
 	             {"mark": "MemoryMap.mark", "out": "MemoryMap.html", "nav":"MemoryMap"},
-	             {"mark": "Sound.mark", "out": "Sound.html", "nav":"Sound"}
+	             {"mark": "Sound.mark", "out": "Sound.html", "nav":"Sound"},
+	             {"copy": "Defender-Theory-Early.pdf"},
+	             {"copy": "Defender-Theory-Later.pdf"},
+	             {"copy": "Defender.ROM.B&W.jpg"},
+	             {"copy": "Defender.CPU.jpg"},
+	             {"copy": "Defender.Vid.B&W.jpg"}
 	             ]
 	         }	         
 	         ]
