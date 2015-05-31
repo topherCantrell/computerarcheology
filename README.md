@@ -5,11 +5,33 @@ This project contains the content and tools to generate my [Computer Archeology]
 
 It also contains the archeology tools (disassemblers, assemblers, formatters, etc).
 
+First clone this project. The "art" directory contains images for the READMEs here. The "java" directory contains assemblers and disassemblers and various older tools that need translating to Python.
+
+The "content" directory contains the raw files that make up the Computer Archeology website.
+
+The "src" directory contains the Python source files. You should run command line tools with this as your current working directory.
+
+Once you have cloned the project open a command line to the "src" directory. 
+
+```
+python make_web.py
+```
+
+This command creates a "deploy" directory. This is a local copy of the webserver root directory.
+
+```
+python local_web_server.py
+```
+
+This command starts a local web server. Point your browser to "localhost".
+
+The "site.js" file in the "src" directory is the JSON file that describes the content directories and the process to create the website. If you add new digs or files then you'll edit this description.
+
 # Website Format
 
 The old website format was a TRAC wiki. I created several TRAC plugins that formatted disassembly markups. The goal was to make a multi-user site where lots of people could contribute. But TRAC is much more than a wiki. It has links for bug tracking and code browsing, none of which make sense in the archeology context.
 
-The archeology site is all static pages. I decided to revert it to a plain website and run formatting tools on the code and text as part of the deployment-to-web process. These tools will process some TRAC-like markup in the text, and they will add links to the disassembly code.
+The new archeology site is all static pages. I decided to revert it to a plain website and run formatting tools on the code and text as part of the deployment-to-web process. These tools will process some TRAC-like markup in the text, and they will add links to the disassembly code.
 
 There are two types of pages on the site: "code" and "discussion". They both have the same format shown here:
 
@@ -25,9 +47,7 @@ There is an area in the page header for optional images that might distinguish a
 
 The "Page Content" is the main area of the page. This area has its own scrollbar. The page header is always visible.
 
-# Art, Content, and Code
-
-The "Art" directory contains pictures used in the README files in this project.
+# Content and Code
 
 The "Content" directory here contains the resource files that go into making the website pages. This includes
 the disassembly and the discussion about the disassembly.
@@ -43,15 +63,7 @@ dig-tools (disassemblers, assemblers, etc) along with individualized tools for s
  - Movable separator between code and nav
  - Rewrite entry text
  
-# Creating the Web Site #
-
-The "makeweb" code generates the HTML files ...
-
-How to run using "Deploy.py"
-
-## Deployment JSON ##
-
-TODO: discuss the "deploment" tool and its JSON format. Disuss directory structure.
+# Markup Syntax (.mark files)
 
 ## Text ##
 
@@ -193,7 +205,7 @@ Defines and their use:
  - %%ramMap - used in code markdown. Defines the file containing ram-usage information.
  - %%hardwareMap - used in code markdown. Defines the file containing hardware-usage information.
 
-## Code ##
+## Code Markup ##
 
 Code files are processed with a tool designed for assembly/disassembly code.
 
