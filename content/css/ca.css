@@ -90,3 +90,22 @@ body {
 	font-size: 12px; 
 	width: 32ch;
 }
+
+#siteTree li {
+    line-height:140%;
+    text-indent:0px;
+    background-position: 0px 5px;
+    padding-left: 12px;
+    background-repeat: no-repeat;
+}
+
+
+/* Collapsed state for list element */
+#siteTree .collapsed {
+    background-image: url(/img/plusbox.gif);
+}
+/* Expanded state for list element
+/* NOTE: This class must be located UNDER the collapsed one */
+#siteTree .expanded {
+    background-image: url(/img/minusbox.gif);
+}

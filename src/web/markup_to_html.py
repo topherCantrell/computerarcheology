@@ -85,7 +85,7 @@ class MarkupToHTML:
             alt_text = text
 
         h = '<h%d id="%s" class="siteTarget">%s</h%d>'
-        t = h % (i, id, text, i)
+        t = h % (i, lid, text, i)
 
         page_nav.append({'level': i, 'text': alt_text, 'link': lid})
         return t

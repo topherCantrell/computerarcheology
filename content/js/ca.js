@@ -20,3 +20,29 @@ function pageScrollTo(name) {
         scrollTop: $("#"+name).offset().top
     }, 200);
 }
+
+function prepareList() {
+    $('#siteTree').find('li:has(ul)')
+      .click( function(event) {
+          
+          //if (this == event.target) {
+              //alert("clicked");
+              $(this).toggleClass('expanded');
+              $(this).children('ul').toggle('medium');
+          //}
+          return false;
+      })
+    
+      //.addClass('collapsed expanded')
+      //.children('ul').hide();
+      
+      //Hack to add links inside the cv
+      $('#siteTree a').unbind('click').click(function() {
+          window.open($(this).attr('href'),"_self");
+          return false;
+      });
+    };
+   
+$(document).ready( function() {
+    prepareList();
+});

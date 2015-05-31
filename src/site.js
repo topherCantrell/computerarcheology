@@ -18,14 +18,14 @@
                  {"copy": "HelpExample2.jpg"},
                  {"copy": "HelpExample3.jpg"},
                  {"copy": "HelpExample4.jpg"},
-                 {"mark": "Help.mark", "out": "Help.html"}
+                 {"mark": "Help.mark", "out": "index.html"}
 	    	 ]	    	 
 	     },
 	     
 	     {"dir": "Contact",
 	    	 "entries": [
 	    	     {"copy": "Contact.jpg"},
-	    	     {"mark": "Contact.mark", "out": "Contact.html"}
+	    	     {"mark": "Contact.mark", "out": "index.html"}
 	    	 ]	    	 
 	     },
 	     

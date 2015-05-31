@@ -27,8 +27,8 @@
 				<!-- %%IMAGE%% -->          
         
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="/Contact.html">Contact</a></li>            
-					<li><a href="/Help.html">Help</a></li>
+					<li><a href="/Contact/">Contact</a></li>            
+					<li><a href="/Help/">Help</a></li>
 				</ul>
           
 				<ol class="breadcrumb">

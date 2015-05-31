@@ -16,13 +16,16 @@ def process_entry_address(e, dep, cont):
     raise Exception("TODO")
 
 
-def process_entry_mark(e, dep, cont):
+def process_entry_mark(nodes, dep, cont):
+
+    e = nodes[-1]
 
     nav = None
     if "nav" in e and e["nav"] is not "":
         nav = e["nav"]
 
-    bread_crumbs, site_nav = web.navigation.get_navigation(desc, cont, nav)
+    bread_crumbs, active_node = web.navigation.get_bread_crumbs(nodes)
+    site_nav = web.navigation.get_site_nav(desc, nodes, active_node)
 
     mu = web.markup_to_html.MarkupToHTML()
 
@@ -32,13 +35,6 @@ def process_entry_mark(e, dep, cont):
                  bread_crumbs,
                  site_nav,
                  nav)
-
-
-def process_entry_dir(e, dep, cont):
-    ents = e["entries"]
-    directory = e["dir"]
-    os.makedirs(dep + directory)
-    process_entries(ents, dep + directory + "/", cont + directory + "/")
 
 
 def process_entry_copy(e, dep, cont):
@@ -54,17 +50,21 @@ def process_entry_copy_dir(e, dep, cont):
             shutil.copy(cont + fname + "/" + f, dep + fname + "/" + f)
 
 
-def process_entries(ents, dep, cont):
+def process_entries(nodes, dep, cont):
+
+    ents = nodes[-1]["entries"]
 
     for e in ents:
         if "mark" in e:
-            process_entry_mark(e, dep, cont)
+            process_entry_mark(nodes + [e], dep, cont)
         elif "copy" in e:
             process_entry_copy(e, dep, cont)
         elif "copyDir" in e:
             process_entry_copy_dir(e, dep, cont)
         elif "dir" in e:
-            process_entry_dir(e, dep, cont)
+            directory = e["dir"]
+            os.makedirs(dep + directory)
+            process_entries(nodes + [e], dep + directory + "/", cont + directory + "/")
         else:
             raise Exception("Unknown deployment entry:" + str(e))
 
@@ -82,7 +82,7 @@ os.makedirs(deploy_root)
 
 try:
 
-    process_entries(desc["entries"], deploy_root, content_root)
+    process_entries([desc], deploy_root, content_root)
 
 except MakeWebError, e:
 
