@@ -70,7 +70,10 @@ def _get_site_nav_recurse(node, nodes, link, level, active_node):
             opened = True
         if "dir" in ent:
             if "nav" in ent:
-                ret = ret + _get_site_nav_html(link + ent["dir"] + "/", ent["nav"], level, active, False, opened)
+                leaf = False
+                if "leaf" in ent and ent["leaf"]:
+                    leaf = True
+                ret = ret + _get_site_nav_html(link + ent["dir"] + "/", ent["nav"], level, active, leaf, opened)
                 if opened:
                     ret = ret + '<ul>'
                 else:

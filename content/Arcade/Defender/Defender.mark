@@ -1,17 +1,19 @@
-[[PageOutline()]]
+%%title Defender
 
-[wiki:Arcade/Defender/MemoryMap Memory Map]
+* [MemoryMap.html Memory Map]
 
-[wiki:Arcade/Defender/Bank1 Bank 1][[br]]
-[wiki:Arcade/Defender/Bank2 Bank 2][[br]]
-[wiki:Arcade/Defender/Bank3 Bank 3][[br]]
-[wiki:Arcade/Defender/Bank7 Bank 7][[br]]
-[wiki:Arcade/Defender/BankFixed Fixed ROM][[br]]
-[wiki:Arcade/Defender/Sound Sound board] [[br]]
+* [Bank1.html Bank 1]
+* [Bank2.html Bank 2]
+* [Bank3.html Bank 3]
+* [Bank7.html Bank 7]
+* [BankFixed.html Fixed ROM]
+* [Sound.html Sound board]
 
 = Defender =
 
-Archeologist: [wiki:HarryHurst Harry Hurst]
+{{{html
+<b>Archeologist: <a href="/People/HarryHurst.html">Harry Hurst</a></b>
+}}}
 
 == Memory and ROM Banks ==
 

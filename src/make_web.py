@@ -4,16 +4,52 @@ import shutil
 
 import web.navigation
 import web.markup_to_html
+import web.address_to_html
+import web.code_to_html
 
 from web.make_web_error import MakeWebError
 
 
-def process_entry_code(e, dep, cont):
-    raise Exception("TODO")
+def process_entry_code(nodes, dep, cont):
+
+    e = nodes[-1]
+
+    nav = None
+    if "nav" in e and e["nav"] is not "":
+        nav = e["nav"]
+
+    bread_crumbs, active_node = web.navigation.get_bread_crumbs(nodes)
+    site_nav = web.navigation.get_site_nav(desc, nodes, active_node)
+
+    mu = web.code_to_html.CodeToHTML()
+
+    mu.translate(content_root,
+                 cont + e["code"],
+                 dep + e["out"],
+                 bread_crumbs,
+                 site_nav,
+                 nav)
 
 
-def process_entry_address(e, dep, cont):
-    raise Exception("TODO")
+def process_entry_address(nodes, dep, cont):
+
+    e = nodes[-1]
+
+    nav = None
+    if "nav" in e and e["nav"] is not "":
+        nav = e["nav"]
+
+    bread_crumbs, active_node = web.navigation.get_bread_crumbs(nodes)
+    site_nav = web.navigation.get_site_nav(desc, nodes, active_node)
+
+    mu = web.address_to_html.AddressToHTML()
+
+    mu.translate(content_root,
+                 cont + e["address"],
+                 dep + e["out"],
+                 bread_crumbs,
+                 site_nav,
+                 nav)
 
 
 def process_entry_mark(nodes, dep, cont):
@@ -65,6 +101,11 @@ def process_entries(nodes, dep, cont):
             directory = e["dir"]
             os.makedirs(dep + directory)
             process_entries(nodes + [e], dep + directory + "/", cont + directory + "/")
+        elif "address" in e:
+            process_entry_address(nodes + [e], dep, cont)
+        elif "code" in e:
+            process_entry_code(nodes + [e], dep, cont)
+
         else:
             raise Exception("Unknown deployment entry:" + str(e))
 

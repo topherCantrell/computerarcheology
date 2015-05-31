@@ -41,7 +41,7 @@ class AddressToHTML(MarkupToHTML):
 
     def getFirstAddress(self, s):
         if ":" in s:
-            s = s[0:str.index(":")]
+            s = s[0:s.index(":")]
         return s.strip()
 
     def hexInt(self, s):
@@ -99,11 +99,3 @@ class AddressToHTML(MarkupToHTML):
         for entry in self.entries.values():
             if entry["name"] == name:
                 return entry
-
-
-if __name__ == "__main__":
-    ad = AddressToHTML()
-    ad.loadMap("../../../content/CoCo/MadnessMinotaur/RAMUse.mark WOW")
-
-    ent = ad.getEntry(0x8A)
-    print ent

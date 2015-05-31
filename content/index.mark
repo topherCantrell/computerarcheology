@@ -20,13 +20,20 @@ Welcome to the museum!
 
 = Archeologists =
 
-If you would like to contribute your own disassemblies to this site then press "Contact" above drop me an email. 
-If you would like me to add a link here to your own site then send me the information. 
-
 The contributors to this site:
  * [People/ChrisCantrell.html Chris Cantrell]
  * [People/HarryHurst.html Harry Hurst]
  * [People/PatrikSevallius.html Patrick Sevallius]
+ 
+= Join the Team =
+
+All of the web content and tools are on github: [https://github.com/topherCantrell/computerarcheology]
+
+You can submit merge requests to add your own work. The README file in the repository describes the tools and process.
+
+You can click the "Contact" button at the top and send me corrections and additions. 
+
+If you would like me to add a link here to your own site then send me the information.
  
 = References =
 
@@ -172,12 +179,6 @@ There are lots of tools support the archeology efforts. They are all in the
 The [https://github.com/topherCantrell/computerarcheology/tree/master/content Raw Content] includes the
 markup files for discussion and code. If you want the clean disassembly file for a particular
 dig site, then look here.
-
-== Web Builder Tools ==
-
-The web pages on this site are built from markup files. The 
-[https://github.com/topherCantrell/computerarcheology/tree/master/code/makeweb Web Site Builder]
-process the Raw Content into HTML deployed to this web site.
 
 == Archeology Tools ==
 

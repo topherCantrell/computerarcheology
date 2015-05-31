@@ -13,7 +13,7 @@ class CodeToHTML(MarkupToHTML):
 
     def getAddressMap(self, filename):
         ad = AddressToHTML()
-        ad.loadMap("TODO:" + filename)
+        ad.loadMap(filename)
         return ad
 
     def collectLabels(self, lines):
@@ -214,7 +214,7 @@ class CodeToHTML(MarkupToHTML):
                     i = lines[x].original.index(";")
                     lines[x].original = lines[x].original[0:i].strip()
 
-    def translate(self, in_name, out_name, bread_crumbs, site_tree, title):
+    def translate(self, root_dir, in_name, out_name, bread_crumbs, site_tree, title):
         # Read the code
         raw = MarkupToHTML.read_text_lines(in_name)
 
@@ -228,10 +228,10 @@ class CodeToHTML(MarkupToHTML):
             t = r.text.strip()
 
             if t.startswith(";;%%ramMap"):
-                maps["ramMap"] = self.getAddressMap(t[10:].strip())  # ;%%ramMap RAMUse.mark
+                maps["ramMap"] = self.getAddressMap(root_dir + t[10:].strip())  # ;%%ramMap RAMUse.mark
                 continue
             elif t.startswith(";;%%hardwareMap"):
-                maps["hardwareMap"] = self.getAddressMap(t[15:].strip())  # ;%%hardwareMap /Coco/Hardware.mark
+                maps["hardwareMap"] = self.getAddressMap(root_dir + t[15:].strip())  # ;%%hardwareMap /Coco/Hardware.mark
                 continue
             elif t.startswith(";;%%directPage"):
                 self.dp = int(t[15:].strip(), 16)
@@ -315,10 +315,4 @@ class CodeToHTML(MarkupToHTML):
                     else:
                         raw.append(r)
 
-        MarkupToHTML.translate(self, in_name, out_name, bread_crumbs, site_tree, title, raw)
-
-if __name__ == "__main__":
-    ch = CodeToHTML()
-    ch.translate("../../../content/CoCo/MadnessMinotaur/Code.mark",
-                 "../../../deploy/CoCo/MadnessMinotaur/Code.html",
-                 "TODO", "TODO", "TODO")
+        MarkupToHTML.translate(self, root_dir, in_name, out_name, bread_crumbs, site_tree, title, raw)
