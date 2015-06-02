@@ -50,7 +50,7 @@
 	             {"mark": "Asteroids.mark", "out": "index.html"},
 	             {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
 	             {"mark": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware"},
-	             {"mark": "Code.mark", "out": "Code.html", "nav": "Code"},
+	             {"code": "Code.mark", "out": "Code.html", "nav": "Code"},
 	             {"mark": "DVG.mark", "out": "DVG.html", "nav": "DVG"},
 	             {"code": "VectorROM.mark", "out": "VectorROM.html", "nav": "Vector ROM"},
 	             {"copy": "DVG.jpg"},
@@ -71,7 +71,15 @@
 	             {"copy": "Defender.CPU.jpg"},
 	             {"copy": "Defender.Vid.B&W.jpg"}
 	             ]
-	         }	         
+	         },
+	         {"dir": "Frogger", "nav": "Frogger", "entries": [
+	             {"mark": "Frogger.mark", "out": "index.html"},
+	             {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
+	             {"code": "SoundCode.mark", "out": "SoundCode.html", "nav": "Sound Code"},
+	             {"copy": "Frogger.jpg"},
+	             {"copy": "FroggerFix.mp3"}
+	             ]
+	         }
 	         ]
 	     },
 	     
