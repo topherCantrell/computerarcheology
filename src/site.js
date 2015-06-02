@@ -46,6 +46,17 @@
 	     {"dir": "Arcade", "nav": "Arcade", "entries": [
 	         {"mark": "Arcade.mark", "out": "index.html"},
 	         {"copy": "Arcade.jpg"},
+	         {"dir": "Asteroids", "nav": "Asteroids", "entries": [
+	             {"mark": "Asteroids.mark", "out": "index.html"},
+	             {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
+	             {"mark": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware"},
+	             {"mark": "Code.mark", "out": "Code.html", "nav": "Code"},
+	             {"mark": "DVG.mark", "out": "DVG.html", "nav": "DVG"},
+	             {"code": "VectorROM.mark", "out": "VectorROM.html", "nav": "Vector ROM"},
+	             {"copy": "DVG.jpg"},
+	             {"copy": "Asteroids.jpg"}
+	             ]
+	         },
 	         {"dir": "Defender", "nav": "Defender", "entries": [	         
 	             {"mark": "Defender.mark", "out": "index.html"},
 	             {"mark": "Bank1.mark", "out": "Bank1.html", "nav":"Bank 1"},
