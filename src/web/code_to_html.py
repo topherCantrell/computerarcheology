@@ -2,6 +2,7 @@ from code_line import CodeLine
 
 from address_to_html import AddressToHTML
 from markup_to_html import MarkupToHTML
+from web.make_web_error import MakeWebError
 
 from text_line import TextLine
 
@@ -14,6 +15,7 @@ class CodeToHTML(MarkupToHTML):
     def getAddressMap(self, filename):
         ad = AddressToHTML()
         ad.loadMap(filename)
+        self.ram_map_file = filename
         return ad
 
     def collectLabels(self, lines):
@@ -106,7 +108,7 @@ class CodeToHTML(MarkupToHTML):
                 ad = maps["ramMap"]
                 entry = ad.getEntry(line.numbers[0]["value"] + self.dp)
                 if entry is None:
-                    print "::" + line.original + "::"
+                    raise MakeWebError("No RAM map entry for {:02X}".format(line.numbers[0]["value"]), self.ram_map_file)
                 if txt == "":
                     txt = entry["name"]
                     if txt == "":
