@@ -2,21 +2,81 @@
  * This module contains access methods for reading bytes of data from a disassembly file.
  */
 
-// Tracks a data cursor for byte-at-a-time access
-var lineArray = null;
-var lineAddress = 0;
-var linePos = 0;
+var dataCache = null;
+var dataOrigin = null;
+
+//Tracks a data cursor for byte-at-a-time access
+var cursor = null;
+
+function loadDataCache() {
+    var lines = htmlUpper.split("\n");
+    dataCache = new Array();
+    for (var x=0;x<lines.length;x=x+1) {
+        var line = lines[x].trim();
+        var i = line.indexOf(";");
+        if (i>=0) {
+            line = line.substring(0,i).trim();
+        }
+        
+        while (true) {
+            i = line.indexOf("<");
+            if (i<0) {
+                line = line.trim();
+                break;
+            }
+            j = line.indexOf(">",i);
+            if(j<0) {
+                break;
+            }
+            line = line.substring(0,i)+line.substring(j+1)
+        }
+        
+        if (line.length<5 || line[4]!=':') {
+            continue;
+        }
+        var adr = parseInt(line.substring(0,5),16);
+        if (dataOrigin==null) {
+            dataOrigin = adr;
+        }
+        
+        if (adr-dataOrigin != dataCache.length) {
+            alert("Data continuency error: "+adr);
+        }
+        
+        line = line.substring(5).trim();
+        
+        while(true) {        
+            if (line.length<3) {
+                if (isTwoDigitHex(line)) {
+                    dataCache.append(parseInt(line,16));
+                }
+                break;
+            }
+            if(line[2]!=' ') {
+                break;
+            }
+            var a = line.substring(0,2);
+            line = line.substring(2).trim();
+            if (!isTwoDigitHex(a)) {
+                break;
+            }
+            dataCache.push(parseInt(a,16));
+            
+        }
+    }
+    
+}
 
 /**
  * This function sets the data cursor to the given address. Once set, callers
  * can use "getNextByte" to fetch bytes one at a time.
  * @param address the address to start reading from
  */
-function setDataCursor(address) {
-	lineAddress = address;
-	lineArray = new Array();
-	getLineOfData(lineAddress,lineArray);
-	linePos = 0;
+function setDataCursor(address) {    
+    if (dataCache==null) {
+        loadDataCache()
+    }
+	cursor = address - dataOrigin;	
 }
 
 /**
@@ -24,12 +84,8 @@ function setDataCursor(address) {
  * the cursor.
  * @returns the next byte
  */
-function getNextByte() {
-	if(linePos>=lineArray.length) {
-		setDataCursor(lineAddress);
-	}
-	++lineAddress;
-	return lineArray[linePos++];
+function getNextByte() {    
+    return dataCache[cursor++];
 }
 
 /**
@@ -39,13 +95,14 @@ function getNextByte() {
  */
 function getData(start,size) {		
 	var ret = new Array();
-	while(size>ret.length) {
-		var nr = getLineOfData(start+ret.length,ret);
-		if(nr==0) {
-			// ERROR
-			return null;
-		}
-	}		
+	
+	if (dataCache == null) {
+	    loadDataCache();
+	}
+	
+	for (var x=0;x<size;x=x+1) {
+	    ret.push(dataCache[start - dataOrigin + x])
+	}
 	return ret;
 }
 
@@ -69,7 +126,8 @@ function isTwoDigitHex(s) {
 
 /**
  * This function reads a single line of disassembly data starting with the
- * address and a ":".
+ * address and a ":". This is old and slow. Callers should use the cached
+ * data functions above.
  * @param address the address of data to get
  * @param ret the data array to append to
  * @return number of bytes parsed

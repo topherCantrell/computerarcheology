@@ -103,7 +103,7 @@ function handleDVGCanvas(can) {
 				} else if(op==11) { // HALT
 					break; // Just stop the sequence
 				} else if(op==12) { // JSRL
-					callStack.push(lineAddress);
+					callStack.push(cursor);
 					b = ((b&15)<<8)+a;
 					b = b - origin;
 					setDataCursor(b*2+origin);
