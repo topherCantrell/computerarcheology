@@ -1,0 +1,76 @@
+[[PageOutline()]]
+
+== RAM ==
+
+||= Address =||= Name =||= Description =||
+|| 0000 ||     GP_00           || usually used as a two-byte pointer for indirection ||
+|| 0001 ||     GP_01           ||  ||
+|| 0002 ||     GP_02           || often used as a two-byte counter ||
+|| 0003 ||     GP_03           ||  ||
+|| || ||  ||
+|| 005C  ||    !FlipFlag        || non zero to cause interrupt to flip name tables ||
+|| || ||  ||
+|| 0066  ||    SND_PtrA        || pointer to current music ||
+|| 0067  ||    SND_PtrB        || pointer to current music ||
+|| || ||  ||
+|| 006A ||     SND_Sq1Fine     || current value of square 1 fine ||
+|| 006B ||     SND_Sq2Fine     || current value of square 2 fine ||
+|| || ||  ||
+|| 006D ||     SND_MusEffBell  || music effect bell-curve envelope counter ||
+|| 006E ||     SND_MusEffRel   || music effect count reload ||
+|| 006F ||     SND_MusEffCnt   || music effect current count ||
+|| || ||  ||
+|| 00E0 ||     ??SND_E0??      || ?? Set to non-0 to ?? <0:9825 ||
+|| || ||  ||
+|| 00F4 ||     ??!BatRamInit??  || ??set to 1 when bat-ram has been inited?? ||
+|| 00F5 ||     TileFlagA       || set to 5A when scrolling text tiles have been written to VRAM ||
+|| 00F6 ||     TileFlagB       || set to 5A when splash tiles have been written to VRAM ||
+|| || ||  ||
+|| 00FC ||     CUR_VScroll     || current contents of PPU 2005.2nd  ||
+|| 00FD ||     CUR_HScroll     || current contents of PPU 2005.1st ||
+|| 00FE ||     CUR_2001        || current contents of PPU 2001 (a write-only register) ||
+|| 00FF ||     CUR_2000        || current contents of PPU 2000 (a write-only register) ||
+|| || ||  ||
+|| 0305 ||     !BckGndBuf       || 32 holds a background treasure info being built ||
+|| || ||  ||
+|| 041A ||     !SeqCount        || running count within a splash function ||
+|| 042C ||     !SplashMode      || 0 if on splash LOGO, not-0 if on splash treasure-info ||
+|| 042D ||     !SplashSeq       || Sequence function of splash (lookup for function in tables) ||
+|| || ||  ||
+|| 05F0 ||     SND_TriFine     || current value of triangle fine ||
+|| || ||  ||
+|| 051D ||     !SetCount        || used as a "set count" to count multiple vram copy sets by 2:8012 ||
+|| || ||  ||
+|| 05F5 ||     SND_DrumRep     || ?? point to start of drum track for repeat ||
+|| ||  ||
+|| 0600 ||     SND_ReqMusic    || Request song ||
+|| 0601 ||    ??SND_601??      || ?? something to do with sound ||
+|| 0602 ||     SND_ReqMusEff   || Music effect request (long music continues to play) ||
+|| 0603 ||     ??SND_603??     || ?? something to do with sound ||
+|| 0604 ||     SND_Request     || Sound effect request (near-death-beep will not preempt another sound). Set upper bit to suspend sounds. ||
+|| 0605 ||     SND_CurEffect   || current playing sound effect ||
+|| ||  ||
+|| 0607 ||     SND_CurMusEff   || current playing music effect ||
+|| 0608 ||     SND_DMod1       || parameter in delta-mod effect ||
+|| 0609 ||     SND_CurSong     || current playing song ||
+|| || ||  ||
+|| 060A ||     SND_SongPC_A    || offset within current song for voice A ||
+|| 060B ||     SND_SongPC_B    || offset within current song for voice B ||
+|| 060C ||     SND_SongPC_C    || offset within current song for voice C ||
+|| 060D ||     SND_SongPC_D    || offset within current song for voice D ||
+|| || ||  ||
+|| 0610 ||     SND_LenReload   || music event timer reload ||
+|| 0611 ||     SND_Timer       || music event timer ||
+|| || ||  ||
+|| 0618 ||     SND_MusEffDel   || script pointer for music effect ||
+
+== Battery-Backed RAM==
+6530-7FFF cleared on startup if BBR is not valid
+
+||= Address =||= Name =||= Description =||
+|| 6001 ||    MARK_A           || must be 5A for ram to be valid ||
+|| 652A ||    Q_SG1            || ?? save-game 1 flag? set to FF if BBR is not valid ||
+|| 652B ||    Q_SG2            || ?? save-game 2 flag? set to FF if BBR is not valid ||
+|| 652C ||    Q_SQ3            || ?? save-game 3 flag? set to FF if BBR is not valid ||
+|| || || ||
+|| 7FFF ||    MARK_B           || must be 5A for ram to be valid ||

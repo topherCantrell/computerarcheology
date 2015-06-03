@@ -1,0 +1,119 @@
+[[PageOutline()]]
+
+= Evolution =
+
+TODO: Andy, what do you want me to say here about you and your work? He has contributed a lot to the MAME project? Links to MAME and to the 8080bw? What page do you want me to reference when your page is ready. For now [http://www.andys-arcade.com].
+
+Andy sent me several ROM sets and lots of information on them. He challenged me to follow the changes to the code from set to set.
+
+The following picture shows the flow of changes from one set to another. The name of the set in upper case is what the MAME driver uses. The name in lower case is what Andy calls each set.
+
+[[Image(Chronology.jpg)]]
+
+The SITV1 set contains the oldest code. All other sets are enhancements from this set.
+
+The code was written by TAITO in Japan. Later it was licensed to Midway for distribution in the US. The Midway version of the code removes the "*TAITO CORPORATION*" message, and it doesn't have the diagnostics routine. The Midway code includes an aesthetic change "Check 23" (see below) that got pulled back into TAITO's mainline in SISV2.
+
+The SITV set adds a small delay when flipping the screen between players in a cocktail cabinet. It also includes an aesthetic change to the "alive logic" (see below).
+
+With SISV2 the code moved to 1K ROM chips. The SISV2 ROM includes the changes from SITV and the changes that went into the Midway set (except for dropping the TAITO message).
+
+The original game used 4-digit scoring, which players soon rolled over. The SISV code adds an extra score digit. The "cvnew" set Andy sent me is identical to this set -- just packed into EPROMs a bit differently.
+
+The SICV ROM set is a complete code-cleanup from SISV. The logic appears to be the same but optimized and beautified here and there. The data area from 1A95 on is the same (except for re-originated code pointers).
+
+= Description of Individual Changes =
+
+The following sections describe each change referenced in the figure above.
+
+== Flip Delay ==
+
+With a cocktail cabinet the game is a table (where you set your cocktails) with the two players sitting at each end. In a two-player game the screen flips around to face the active player.
+
+The hardware to control the screen flip is connected to bit 5 of output port 5. (This port also contains several sound effect triggers.) If the bit is set to 0 then the screen faces player 1. If the bit is set to 1 then the screen flips to face player 2.
+
+The original code wrote to the control bit and immediately moved on. The patch jumps to a routine that writes to the bit, and this routine makes a short delay. Maybe it takes the hardware a moment to make the switch and this keeps the game from starting until everything is stable.
+
+[[Image(Flip.jpg)]]
+== Alive Logic ==
+
+The game keeps the status of the aliens in a 55-byte array. The code at 01C5 writes a 1 to each byte to bring the aliens to life. The code at 154B sets a byte to 0 to remove the shot alien from play.
+
+Most places in the game treat any non-zero value in these flags as "alive" by using an "AND A" to set the Z flag if the value is 0. In the original ROM at 015C the code checked for the exact value 1 by decrementing the value and checking the zero flag.
+
+This patch changes the check at 015C to be like all the other places. This is just for consistency. It is an aesthetic change -- not a bug fix. The code as it was worked just fine since the only values ever written to the flag bytes is 0 and 1.
+
+Note that the change in logic actually requires one more byte of code. The difference is made up later in the code by changing "LDA $01" to "INCA", which also produces a non-zero value since there will never be 255 rows of aliens.
+
+[[Image(Alive.jpg)]]
+
+== No TAITO ==
+
+This is a two-byte change. 1985 changed from C3 to C9 (JP to RET). 1988 changed from CD to C3 (CALL to JP).
+
+The Midway version of the code does not print "*TAITO CORPORATION*". Two bytes were changed to skip this message. The two byte jump address at 1986 was left intact (it is never fetched in the modified version). The data for the message was also left intact.
+
+[[Image(NoTAITO.jpg)]]
+== No Diagnostics ==
+
+The two byte jump destination at 0004 is changed to skip checking the diagnostic switch. The check-switch routine is 00ed out from 00E2 to 00EA. The diagnostic routine is 00ed out from 1000 to 13FF.
+
+In the original game code there is a 2K block of code from 0C00 to 13FF reserved for a diagnostics routine. The actual routine in the ROM only needs half of that -- from 1000 to 13FF. The diagnostic routine begins at 1000.
+
+In the original game code the first instruction is a jump to a short segment of code that checks the "diagnostic switch" of DIP4 (bit 0 of input port 0). If the switch is flipped then the code jumps to the diagnostic routine at 1000. Otherwise it starts up normally at 18D4.
+
+This patch changes the initial jump to go straight to 18D4 without checking the diagnostic switch. The small check-routine at 00E2 and the 1K diagnostic routine at 1000 are completely 00ed out (NOP) removing them from the code.
+
+[[Image(Diag.jpg)]]
+
+Later versions of the code (SISV2 and SISV) use 8 1K ROM chips instead of 4 2K ROM chips. In these versions, the two chips that would hold the 2K diagnostic code area at 0C00 and 1000 are simply missing. And the code continues to skip checking the diagnostic DIP switch. There is no way to get to the code even if the missing ROM chips were plugged in.
+
+=== The Diagnostics Routine ===
+
+Interestingly, the diagnostics routine is written for the monitor in non-rotated position. Maybe it was useful at the factory. Maybe this non-rotation is what prompted the designers to begin leaving it out.
+
+[[Image(DiagRun.jpg)]]
+== Check 23 ==
+
+[wiki:Arcade/SpaceInvaders/CodeAsZ80#15C5 One-byte change at 15C6]. The old code has value 0x16. The new code has value 0x17.
+
+The alien rack "bounces" on the left and right of the screen. When the edge-most alien reaches the edge then the entire rack changes directions.
+
+The code checks for the "bounce" by looking at a line up the side (left or right) of screen memory. Only the aliens travel out to the edge of the play field. If there are any pixels set in this "check line" then it has to mean that the aliens have reached the end of the screen and they need to change directions.
+
+The "check line" is shown below running from left to right near the top of the picture (remember, the monitor is rotated in the arcade cabinet). The original code checks 22 bytes of memory shown as the short line. The patched code checks 23 bytes of memory shown as the long line.
+
+[[Image(SideCheck.jpg)]]
+
+The check-23-bytes is technically more correct since it covers the entire play-field except for the saucer row. But there is no problem with the original code. The aliens never start up high enough to need the extra byte of checking. The change is purely cosmetic.
+
+[[Image(Check23.jpg)]]
+== Extra Score Digit ==
+
+This change was easy because the right-most digit in the original game never changed. All scoring was a multiple of 10 points. The fix was to divide all points-awarded by 10, slide the four digit scoring to the left, and put a hardcoded 0 on the screen beside it.
+
+TODO show some code examples.
+== Restructure ==
+
+The "flip delay" is a good example of the code cleanup made in this version. The early patch added the delay to a section of unused memory and modified the code flow to call the delay. In the cleanup the delay is moved "in line" with the using code. And the logic of the delay is cleaned up a bit.
+
+The original delay loaded B and C separately. The cleaned version loads BC up front and takes advantage of the fact that the inner count wraps back to 0.
+
+{{{
+; Original (SISV2)
+00EF: 06 0A        LD    B,$0A              ; Outer count
+00F1: 0E 00        LD    C,$00              ; Inner count
+00F3: 0D           DEC   C                  ; Do ...
+00F4: C2 F3 00     JP    NZ,$00F3           ; ... inner count
+00F7: 05           DEC   B                  ; Do outer count
+00F8: C2 F1 00     JP    NZ,$00F1           ; Could go to F3 since C must be 0 here
+}}}
+
+{{{
+; Cleaned (SICV)
+0307: 01 0A 00     LD    BC,$000A           ; Outer/inner count
+030A: 05           DEC   B                  ; Do ...
+030B: C2 0A 03     JP    NZ,$030A           ; ... inner count
+030E: 0D           DEC   C                  ; Do ...
+030F: C2 0A 03     JP    NZ,$030A           ; ... outer count
+}}}

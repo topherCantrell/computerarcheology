@@ -1,0 +1,15 @@
+[[PageOutline()]]
+
+{{{
+0000: 4E 45 53 1A ; "NES" and DOS end-of-file
+0004: 08 ; 8*16K PRG ROM size
+0005: 00 ; 0*8K CHR ROM size (0 means board uses CHR RAM)
+0006: 12 ; 0001_0010 : xxxx0xx0 = vertical arrangement/horizontal mirroring (CIRAM A10 = PPU A11) 
+;                      xxxxxx1x = Battery-backed SRAM from 6000-7FFF 
+;                      0001xxxx = Lower nibble of mapper number
+0007: 00 ; 0000_0000 : 0000xxxx = Upper nibble of mapper number
+0008: 00 ; 0*8K PRG RAM size (0 means 8K)
+0009: 00 ; 0000000_0 : xxxxxxx0 = NTSC TV system
+000A: 00 ; Unofficial flags
+000B: 00 00 00 00 00 ; Unused
+}}}
