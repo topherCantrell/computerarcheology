@@ -107,7 +107,7 @@ class MarkupToHTML:
                 k = proc.index(" ", i)
                 proc = proc[0:i] + tmp % (proc[ii + 1:k].strip(), proc[k + 1:j].strip()) + proc[j + 1:]
             else:
-                proc = proc[0:i] + tmp % (proc[ii + 1:j].strip(), proc[ii + 1:j].strip()) + proc[j + 1:]
+                proc = proc[0:i] + tmp % (proc[ii + 1:j].strip(), "") + proc[j + 1:]
         return proc
 
     def mark_down_start_raw(self, proc, body_lines):

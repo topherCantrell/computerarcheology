@@ -1,7 +1,8 @@
 from code_line import CodeLine
 
 # Dig specifics
-IN_FILE = "../../content/Arcade/Frogger/SoundCode.mark"
+DO_RAM = True
+IN_FILE = "../../content/Arcade/OmegaRace/SoundBoard.mark"
 OUT_FILE = "New.mark"
 CODE_SPACE = (0x0000, 0x17FF)
 RAM_SPACE = (0x4000, 0x43FF)
@@ -107,7 +108,8 @@ for r in raw:
             ram_hits.append(v)
 
         # This must be a RAM reference
-        r = add_spec(r, "{-}", last_comment_pos)
+        if DO_RAM:
+            r = add_spec(r, "{-}", last_comment_pos)
         newLines.append(r)
         continue
 
@@ -140,4 +142,4 @@ for x in xrange(len(newLines)):
 with open(OUT_FILE, "w") as f:
     f.writelines(newLines)
 
-# print_ram_hits()
+print_ram_hits()

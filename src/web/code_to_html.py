@@ -45,6 +45,8 @@ class CodeToHTML(MarkupToHTML):
             # Always id the labels
             # print line.original
             if not line.opcode and not line.bytes:
+                if len(line.labels) == 0:
+                    print line.original
                 line.linkID = line.labels[0]
                 if line.comment:
                     s = line.comment.strip()

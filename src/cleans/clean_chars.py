@@ -1,4 +1,8 @@
-with open("../../content/Arcade/Frogger/Frogger.mark") as f:
+import sys
+
+print sys.argv[1]
+
+with open(sys.argv[1]) as f:
     raw = f.readlines()
 
 REPS = [{'utf8': "\xE2\x80\x9C", 'rep': '"'},
@@ -32,5 +36,5 @@ for x in xrange(len(raw)):
         print "::" + r + "::"
         break
 
-with open("t.mark", "w") as f:
+with open("New.mark", "w") as f:
     f.writelines(raw)

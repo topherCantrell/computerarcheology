@@ -79,6 +79,26 @@
 	             {"copy": "Frogger.jpg"},
 	             {"copy": "FroggerFix.mp3"}
 	             ]
+	         },
+	         {"dir": "Galaga", "nav": "Galaga", "entries": [
+                 {"mark": "Galaga.mark", "out": "index.html"},
+                 {"code": "CPU1.mark", "out":"CPU1.html","nav":"CPU1"},
+                 {"code": "CPU2.mark", "out":"CPU2.html","nav":"CPU2"},
+                 {"code": "CPU3.mark", "out":"CPU3.html","nav":"CPU3"},
+                 {"copy": "Galaga.jpg"},
+                 {"copy": "galaga1.jpg"},
+                 {"copy": "galaga2.jpg"}
+	             ]
+	         },
+	         {"dir": "OmegaRace", "nav": "Omega Race", "entries": [
+                 {"mark": "MainRAMUse.mark", "out": "MainRAMUse.html", "nav": "RAM Use (Main)"},
+                 {"mark": "SoundRAMUse.mark", "out": "SoundRAMUse.html", "nav": "RAM Use (Sound)"},
+	             {"mark": "OmegaRace.mark", "out":"index.html"},
+	             {"code": "VectorROM.mark", "out":"VectorROM.html", "nav": "Vector ROM"},
+	             {"code": "MainBoard.mark", "out":"MainBoard.html", "nav": "Main Board"},
+	             {"code": "SoundBoard.mark", "out":"SoundBoard.html", "nav": "Sound Board"},	             
+	             {"copy": "ORace.jpg"}
+	             ]
 	         }
 	         ]
 	     },

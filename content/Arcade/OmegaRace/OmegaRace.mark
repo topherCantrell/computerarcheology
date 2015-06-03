@@ -1,10 +1,10 @@
+%%title Omega Race
+%%image ORace.jpg
 
-= Omega Race =
-
-[wiki:Arcade/OmegaRace/MainBoard Main Board][[br]]
-[wiki:Arcade/OmegaRace/SoundBoard Sound Board][[br]]
-[wiki:Arcade/OmegaRace/VectorROM Vector ROM][[br]]
-[wiki:Arcade/OmegaRace/DVGPROM DVG PROM]
+* [MainBoard Main Board]
+* [SoundBoard Sound Board]
+* [VectorROM Vector ROM]
+* [DVGPROM DVG PROM]
 
 == Diagnostics ==
 
