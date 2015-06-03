@@ -6,9 +6,9 @@
 
 == The Arcade Game ==
 
-Moon Patrol is a classic arcade shoot‘em-up side scroller. The player drives a moon buggy that jumps pits and shoots rocks and flying saucers. The game itself was a bit boring, but the background bass groove was worth the quarter to play. Anyone walking past that game would leave the mall arcade with that classic riff stuck in his head. That bass groove is the target of this dig, but I’ll also show you three bugs I found in the code.
+Moon Patrol is a classic arcade shoot'em-up side scroller. The player drives a moon buggy that jumps pits and shoots rocks and flying saucers. The game itself was a bit boring, but the background bass groove was worth the quarter to play. Anyone walking past that game would leave the mall arcade with that classic riff stuck in his head. That bass groove is the target of this dig, but I'll also show you three bugs I found in the code.
 
-But first I’ll compare the code of three different sound boards and see how each approached sound in a slightly different way. All three boards are disassembled on this site: [wiki:Arcade/Frogger Froger], [wiki:Arcade/TimePilot Time Pilot] (both by Konami), and Moon Patrol.
+But first I'll compare the code of three different sound boards and see how each approached sound in a slightly different way. All three boards are disassembled on this site: [wiki:Arcade/Frogger Froger], [wiki:Arcade/TimePilot Time Pilot] (both by Konami), and Moon Patrol.
 
 == The Mechanics of Sound ==
 
@@ -28,15 +28,15 @@ There are usually limited sound resources. Only so many effects can be playing a
 
 Most arcade games use a dedicated sound board with its own CPU and sound-effect code. The main game board sends requests to the sound board to start/stop effects. The sound board decides which effects have what priority and how to schedule simultaneous sounds. The sound board manages all the simultaneous effects as the sounds evolve over time. The sound board processes music scripts.
 
-Early arcade sound hardware provided a number of channels – one channel for single playing sound effect. The hardware allowed the code to change the frequency and the volume of the channels independently.
+Early arcade sound hardware provided a number of channels -- one channel for single playing sound effect. The hardware allowed the code to change the frequency and the volume of the channels independently.
 
-The [http://en.wikipedia.org/wiki/YM2149 General Instruments AY-3-8910] sound chip was popular in arcade games and computers in the 80’s. A single chip provides three independent channels. A sound board often used multiple AY chips. You have heard the AY voices in classics like 1942, Frogger, burger Time, Journey, Jungle Hunt, Scramble, Spy Hunter, Time Pilot, Tron, and Two Tigers to name a few.
+The [http://en.wikipedia.org/wiki/YM2149 General Instruments AY-3-8910] sound chip was popular in arcade games and computers in the 80's. A single chip provides three independent channels. A sound board often used multiple AY chips. You have heard the AY voices in classics like 1942, Frogger, burger Time, Journey, Jungle Hunt, Scramble, Spy Hunter, Time Pilot, Tron, and Two Tigers to name a few.
 
 The AY chip provides three independent voices labeled A, B, and C. A mixer register configures each voice as either a TONE, or NOISE, or off. Each voice has a 12-bit frequency control for its tone.
 
 The voices have independently controlled frequencies. But the NOISE base frequency is controlled with a separate register. NOISE can thus be played through multiple voices, but the frequency is the same on all of them.
 
-Each voice has an independent volume control register. The chip also has one complex volume (envelope) control circuit that can be configured to control a voice’s volume. There is only one of these circuits to share among the three voices.
+Each voice has an independent volume control register. The chip also has one complex volume (envelope) control circuit that can be configured to control a voice's volume. There is only one of these circuits to share among the three voices.
 
 The envelope control has three registers to control is pattern, period, and repeating nature. A fast on/off warble that repeats is great for a firing laser sound. An envelope that dies off once is great for a gunshot (a NOISE effect). Since there is only one envelope control, it is impossible to have two sound effects using separate envelope controls at the same time.
 
@@ -58,25 +58,25 @@ Frogger and Time Pilot use a common approach. For Time Pilot there are six possi
 
 Moon Patrol has six voices but only four threads. As we will see shortly, Frogger and !TimePilot map threads to channels with each thread having one channel. !MoonPatrol maps individual sound effects to individual channels with a thread. A thread manages several channels.
 
-All three sound boards are time-driven. A main loop “ticks” at regular intervals and runs all threads for a brief time. Then the loop waits for the next tick and processes all threads again. The main board interrupts the loop briefly to request a new sound command. The interrupt service looks for an available thread to start the new sound on (see below).
+All three sound boards are time-driven. A main loop "ticks" at regular intervals and runs all threads for a brief time. Then the loop waits for the next tick and processes all threads again. The main board interrupts the loop briefly to request a new sound command. The interrupt service looks for an available thread to start the new sound on (see below).
 
-The Moon Patrol main thread loop “ticks” at 250Hz. Time Pilot ticks at 175Hz. Frogger ticks at a blazing 700Hz (but only has three threads to process).
+The Moon Patrol main thread loop "ticks" at 250Hz. Time Pilot ticks at 175Hz. Frogger ticks at a blazing 700Hz (but only has three threads to process).
 
-In Frogger and Time Pilot, the individual threads are implemented as Z80 code. Each sound effect has two routines: an initializer and a player. On the first tick of an effect the initialzer sets up the capacitors and initial states of the sound. From then on the thread calls the “player” routine on every tick. The player routine returns a flag to tell the main loop if the sound has ended or if it should continue next tick.
+In Frogger and Time Pilot, the individual threads are implemented as Z80 code. Each sound effect has two routines: an initializer and a player. On the first tick of an effect the initialzer sets up the capacitors and initial states of the sound. From then on the thread calls the "player" routine on every tick. The player routine returns a flag to tell the main loop if the sound has ended or if it should continue next tick.
 
 Moon Patrol, on the other hand, uses an interpreted language to implement the threads. Sound scripts are written in a domain-specific-language that contains jumps and subroutine calls and complex commands dedicated to sound. Why the trouble?
 
-The pure-Z80 code requires the sound effect code to be aware of the threading. Instead of designing a sound effect from start to finish the developer has to build in return-and-come-back points in the algorithm to “give up the ball” for the other threads.
+The pure-Z80 code requires the sound effect code to be aware of the threading. Instead of designing a sound effect from start to finish the developer has to build in return-and-come-back points in the algorithm to "give up the ball" for the other threads.
 
 With the domain specific language, however, the sound script is developed from start to finish in a straight line without any knowledge of how/when the CPU breaks away to service the other threads. The sound algorithm is more straight-forward, but it requires the developer to learn a new (invented) language.
 
-With the domain specific language the developer gets to focus on sound effects. The commands in the language are sound-specific. Sound developers don’t have to be experts in Z80 programming. But the domain specific language requires an interpreter which eats up code space in ROM and CPU cycles when running.
+With the domain specific language the developer gets to focus on sound effects. The commands in the language are sound-specific. Sound developers don't have to be experts in Z80 programming. But the domain specific language requires an interpreter which eats up code space in ROM and CPU cycles when running.
 
 === Moon Patrol Sound Language (MPSL) ===
 
-I’m sure that’s not what the designers called it – MPSL. The Moon Patrol page describes these commands in great deal, but a quick overview will aid the discussion here.
+I'm sure that's not what the designers called it -- MPSL. The Moon Patrol page describes these commands in great deal, but a quick overview will aid the discussion here.
 
-There are “simple” commands and “complex” commands and commands to control program “flow”. The flow commands are STOP, CALL subroutine, and RETURN from subroutine.
+There are "simple" commands and "complex" commands and commands to control program "flow". The flow commands are STOP, CALL subroutine, and RETURN from subroutine.
 
 The simple commands allow the MPSL program to write to a value to any register on either chip with the REGISTER. The MPSL program gives the register number and the new value. There is a command to SET_VOLUME of a voice (voices 1-6). There is a command to set the automatic DECAY_SPEED of a voice.
 
@@ -86,15 +86,15 @@ There are three complex commands implemented in the code. REGISTER_SAMPLES plays
 
 There are usually multiple sound effects playing at the same time. Sound effects and music come and go independently of one another. Scheduling is the process of deciding which sound effects should be started on which threads. Sound effects have priorities. The coin-inserted sound, for instance, might be more important than a missile sound. If a missile sound is playing and a coin is inserted the scheduler can stop the missile sound and start the higher priority coin sound.
 
-Frogger has 24 different sound effects that the main game board can request by number. The sound board uses a table to look up the priority of a sound. The higher the priority value in the table the more important the sound is. The frog-hopping sound, for instance, has the highest priority – it will always be played. The scheduler will stop the lowest priority command and start the highest priority.
+Frogger has 24 different sound effects that the main game board can request by number. The sound board uses a table to look up the priority of a sound. The higher the priority value in the table the more important the sound is. The frog-hopping sound, for instance, has the highest priority -- it will always be played. The scheduler will stop the lowest priority command and start the highest priority.
 
 The separate music voices are handled as separate sound effects. The main board starts them one right after the other. The support (or harmony) voices have a lower priority, and if a lot of sounds are played the background voices will drop out.
 
 Time Pilot has 28 different sounds that map to the six threads. Like in Frogger, each sound has a priority. But instead of looking up the command number in a table, the command number IS the priority. Thus if all six threads are playing sounds then command 11 (Squad Appears) will preempt command 3 (1910 bomb).
 
-Letting the command number be the priority makes the sound board simpler. But it means that the priorities can’t be changed without changing the main code. In Frogger, the priorities are in a table in the sound board. They can be changed without modifying the main code.
+Letting the command number be the priority makes the sound board simpler. But it means that the priorities can't be changed without changing the main code. In Frogger, the priorities are in a table in the sound board. They can be changed without modifying the main code.
 
-The Moon Patrol scheduling is radically different. Voices 1, 2, and 3 are dedicated to 3-voice music on thread 0. When the player’s car explodes thread 0 stops the music and plays a 3 voice complex explosion effect.
+The Moon Patrol scheduling is radically different. Voices 1, 2, and 3 are dedicated to 3-voice music on thread 0. When the player's car explodes thread 0 stops the music and plays a 3 voice complex explosion effect.
 
 During game play, the music is only 2 voices running on thread 0. The music plays on voices 1 and 2. Thread 1 is used to play continuous-alien-sounds on voice 3. Continuous sounds are the space-plant and the UFO-flying.
 
@@ -104,23 +104,23 @@ Thread 2 has full control of voice 4. There are four sounds that share that thre
 
 === Music ===
 
-Designing music is an artistic process that involves a starving composer and a piano. Rendering that music is the programmer’s job and involves managing precise musical frequencies, precise musical timing, and note envelopes for starting and stopping.
+Designing music is an artistic process that involves a starving composer and a piano. Rendering that music is the programmer's job and involves managing precise musical frequencies, precise musical timing, and note envelopes for starting and stopping.
 
-Most modern pianos have 88 keys, each with a very specific frequency. The MIDI electronic music standard defines 128 note numbers. Note 60 maps to “Middle C”, which has a frequency of 261.63Hz. The AY uses two registers to define a frequency value. But there are far fewer possible frequencies in music.
+Most modern pianos have 88 keys, each with a very specific frequency. The MIDI electronic music standard defines 128 note numbers. Note 60 maps to "Middle C", which has a frequency of 261.63Hz. The AY uses two registers to define a frequency value. But there are far fewer possible frequencies in music.
 
 Frogger and Time Pilot use a note table to map a note number to a two-byte frequency. Remember the Time Pilot code is an evolved form of Frogger. Music processing is nearly identical, but Time Pilot adds some new features.
 
-A song doesn’t generally bounce all over the list of possible notes. The notes of a song are usually all with the same two or three octaves. Frogger and Time Pilot take advantage of this by defining a note as a five bit number (0 – 31) added to a base note number. The base note number is set at the beginning of the song. This defines whether the music is a low instrument (like a base groove) or a higher main melody.
+A song doesn't generally bounce all over the list of possible notes. The notes of a song are usually all with the same two or three octaves. Frogger and Time Pilot take advantage of this by defining a note as a five bit number (0 -- 31) added to a base note number. The base note number is set at the beginning of the song. This defines whether the music is a low instrument (like a base groove) or a higher main melody.
 
 Moon Patrol in stark contrast has no note table at all. In fact it has absolutely no music processing at all. Music is coded just like all other sound effects. The notes are played by stuffing a two-byte value into the AY frequency registers for each note with the REGISTER command. This seems inefficient, but the upper byte of the two-byte value rarely changes. The music script ends up setting the AYs upper byte once and then changing the lower byte for each new note. Like Frogger and Time Pilot, the upper byte ends up defining the base note value and the lower byte ends up defining the individual notes.
 
-Frogger and Time Pilot use 5-bit note numbers 0 – 31. The upper three bits define the note length. The note length is converted to a power of two. For instance, a note length value of 1 is the shortest note. A value of 2 is twice as long as the shortest value (1*2 times longer). A value of 3 is twice as long again (1*2*2=4 times longer). A value of 4 is twice longer still (1*2*2*2=8 times longer).
+Frogger and Time Pilot use 5-bit note numbers 0 -- 31. The upper three bits define the note length. The note length is converted to a power of two. For instance, a note length value of 1 is the shortest note. A value of 2 is twice as long as the shortest value (1*2 times longer). A value of 3 is twice as long again (1*2*2=4 times longer). A value of 4 is twice longer still (1*2*2*2=8 times longer).
 
-This notation maps well to music, which is defined mostly in notes with power-of-two lengths like whole-notes, half-notes, quarter-notes, eighth-notes, etc. Music does allow for dotted notes and ties between notes that can’t be represented as a power of two. But most music encodes nicely.
+This notation maps well to music, which is defined mostly in notes with power-of-two lengths like whole-notes, half-notes, quarter-notes, eighth-notes, etc. Music does allow for dotted notes and ties between notes that can't be represented as a power of two. But most music encodes nicely.
 
-The base music interval – the shortest note – is configurable for the song. This is simply a count of the base ticks. This value defines the base tempo of the song. The Frogger code decrements the volume of the playing note automatically. The Time Pilot code decrements the volume too, but the rate is configurable on a per-voice basis.
+The base music interval -- the shortest note -- is configurable for the song. This is simply a count of the base ticks. This value defines the base tempo of the song. The Frogger code decrements the volume of the playing note automatically. The Time Pilot code decrements the volume too, but the rate is configurable on a per-voice basis.
 
-Again, Moon Patrol doesn’t have any specific music handling at all. The sound effect scripts delay the proper note length before playing the next note. In Frogger and Time Pilot, music timing is coded more naturally in powers-of-two. In Moon Patrol the timing is code manually in tick counts.
+Again, Moon Patrol doesn't have any specific music handling at all. The sound effect scripts delay the proper note length before playing the next note. In Frogger and Time Pilot, music timing is coded more naturally in powers-of-two. In Moon Patrol the timing is code manually in tick counts.
 
 Frogger and Time Pilot treat note number 0 as a rest (silence) no matter what the base note adds in. They treat the value 31 as a flag that the upper 3 bits represent a special command. Thus there can be 8 special commands.
 
@@ -128,16 +128,16 @@ For Frogger the special commands look like this:
 {{{
 0 Set the base note value to the next byte in the music data
 1 Set the base tempo value to the next byte in the music data
-2 Set the voice’s volume to the next byte in the music data
-3 – 7 Turn voice off and end music processing on the voice (frees the thread for other sounds)
+2 Set the voice's volume to the next byte in the music data
+3 -- 7 Turn voice off and end music processing on the voice (frees the thread for other sounds)
 }}}
 
 For Time Pilot the special commands look like this:
 {{{
 0 Set the base note value to the next byte in the music data
 1 Set the base tempo for the voice to the next byte in the music data
-2 Set the voice’s volume to the next byte in the music data
-3 Reset current note’s amplitude
+2 Set the voice's volume to the next byte in the music data
+3 Reset current note's amplitude
 4,5,7 Turn voice off and end the music process on the voice (frees the thread for other sounds)
 6 Jump to new music address (next two bytes in the music data are absolute address)
 }}}
@@ -148,19 +148,19 @@ Moon Patrol on the Wiki: [http://en.wikipedia.org/wiki/Moon_Patrol]
 
 The heart of the sound software is a scripting language used to describe sound effects in a language that is more, well, sound-effect-ish. Specific details follow, but there are three basic types of commands in the language: simple commands (like set-a-register-on-a-chip), flow commands (CALL, RETURN), and complex commands that change a single voice frequency over a longer period of time.
 
-The sound processor maintains four separate script “sequencers”. Each sequencer maintains its own script pointer (or program counter) along with two bytes of state information. The software is driven by a 4000Hz clock on the non-maskable-interrupt of the processor. This clock is generated by the MSM5205 as it requests samples from the CPU. The software divides the clock by 16 and calls all four sequencers, one at a time, every 4Ms.
+The sound processor maintains four separate script "sequencers". Each sequencer maintains its own script pointer (or program counter) along with two bytes of state information. The software is driven by a 4000Hz clock on the non-maskable-interrupt of the processor. This clock is generated by the MSM5205 as it requests samples from the CPU. The software divides the clock by 16 and calls all four sequencers, one at a time, every 4Ms.
 
 Each sequencer pulls its next command from its script, advances its script pointer, and processes the command. The command returns the number of ticks to wait before processing the next command.
 
-The sequencers are like separate threads – separate processors working on their own programs independently of each other. The scripting “virtual machine” takes care of twiddling the hardware and scheduling time for each script. Developers are free to focus on single sound scripts in isolation. They are free to use a scripting language more natural to sound effects instead of the more tedious general purpose 6803 instruction set. The concepts of “Domain Specific Languages” and “virtual machines” were rooted in these early arcade systems.
+The sequencers are like separate threads -- separate processors working on their own programs independently of each other. The scripting "virtual machine" takes care of twiddling the hardware and scheduling time for each script. Developers are free to focus on single sound scripts in isolation. They are free to use a scripting language more natural to sound effects instead of the more tedious general purpose 6803 instruction set. The concepts of "Domain Specific Languages" and "virtual machines" were rooted in these early arcade systems.
 
-The NMI interrupt handler also writes bytes to the two 4-bit DACs to reproduce pre-recorded sounds. Moon Patrol only uses one of these DACs and only for one effect: a pre-recorded explosion sound. Even though the explosion lasts half a second, the samples eat up the 1st 1K of ROM in the sound processor – that’s 1/4th of the ROM.
+The NMI interrupt handler also writes bytes to the two 4-bit DACs to reproduce pre-recorded sounds. Moon Patrol only uses one of these DACs and only for one effect: a pre-recorded explosion sound. Even though the explosion lasts half a second, the samples eat up the 1st 1K of ROM in the sound processor -- that's 1/4th of the ROM.
 
 == Sound Commands ==
 
 === Flow Commands ===
 
-There are three commands that control the flow of the script. The STOP command puts the sequencer in an idle state making it available for another sound script. The CALL command stores the current script address and jumps to a new target location in the script. The current script address is not stacked … just stored in a single memory word. Thus the “call stack” is only one level deep, but you can just ignore the return address making the CALL a GOTO. Very clever. The RETURN command returns the script to the next command after the last executed CALL statement.
+There are three commands that control the flow of the script. The STOP command puts the sequencer in an idle state making it available for another sound script. The CALL command stores the current script address and jumps to a new target location in the script. The current script address is not stacked ... just stored in a single memory word. Thus the "call stack" is only one level deep, but you can just ignore the return address making the CALL a GOTO. Very clever. The RETURN command returns the script to the next command after the last executed CALL statement.
 
 {{{
 ;  FF        - STOP  
@@ -172,7 +172,7 @@ The sound processor can be configured to decrease the volume of each of the 6 vo
 
 === Simple Commands ===
 
-The “simple commands” are five “quick” commands that poke single values into registers and configure the programmatic volume decay of each voice. Bit 6 of these commands is a “continue” bit. If the bit is set, the next command is executed on the same clock tick. This allows you to poke several registers at once with no delay between the writes. If the bit is clear, the next byte from the script is returned as the “delay until next command” value.
+The "simple commands" are five "quick" commands that poke single values into registers and configure the programmatic volume decay of each voice. Bit 6 of these commands is a "continue" bit. If the bit is set, the next command is executed on the same clock tick. This allows you to poke several registers at once with no delay between the writes. If the bit is clear, the next byte from the script is returned as the "delay until next command" value.
 
 {{{
 ;  For all following commands, bit 6 is the multi-bit. If set, the parser is run again and again
@@ -194,7 +194,7 @@ The “simple commands” are five “quick” commands that poke single values 
 ;   0m1c_11vv NN     *RV    Set volume counter to reload value NN
 }}}
 
-The REGISTER command sets the value of a single 8-bit register on one of the two AY chips. The THREETONE command creates a tone-and-harmony effect on a single chip. Voice A gets the value CCFF. Voice B gets the value CCFF/2. And Voice C gets the value (CCFF/2 + 1). This generates a cool sound for the music effects like “Reaching Goal” and “Congratulations”.
+The REGISTER command sets the value of a single 8-bit register on one of the two AY chips. The THREETONE command creates a tone-and-harmony effect on a single chip. Voice A gets the value CCFF. Voice B gets the value CCFF/2. And Voice C gets the value (CCFF/2 + 1). This generates a cool sound for the music effects like "Reaching Goal" and "Congratulations".
 
 Each chip has a mixer that defines whether the individual voices are enabled and whether they map to tone or noise. The MIXER command modifies individual bits by first reading the current value from the chip then modifying the bits (AND or OR) and then writing the new value back.
 
@@ -204,9 +204,9 @@ The SET_VOLUME_AND_RESET_DECAY command sets the volume level of the given voice 
 
 === Complex Commands ===
 
-Finally, there are three “complex” commands. These commands modify AY registers over a longer period of time.
+Finally, there are three "complex" commands. These commands modify AY registers over a longer period of time.
 
-The C_REGISTER_SAMPLES command reads a list of samples and writes them to a target AY register every N ticks. The “UFO Explosion” is the only effect to use this command. It plays out 24 samples, one sample every 14 ticks, to the noise period register.
+The C_REGISTER_SAMPLES command reads a list of samples and writes them to a target AY register every N ticks. The "UFO Explosion" is the only effect to use this command. It plays out 24 samples, one sample every 14 ticks, to the noise period register.
 
 {{{
 ;##C_REGISTER_SAMPLES
@@ -225,7 +225,7 @@ The C_TOGGLE_REGISTER command writes two alternating values to a target register
 ;  A0 - BF   101_r_rrrr CNT I94 I98 RVAL
 }}}
 
-The C_SWEEP_VOICE command adds (or subtracts) a delta value to a voice over a period of time. This allows you sweep a voice frequency from a start value to an end value by a defined increment (or decrement). The “Player Missile”, for instance, is a single sweep starting at 0020 decrementing by one for 11 steps. There are 4 ticks (16Ms) between each change.
+The C_SWEEP_VOICE command adds (or subtracts) a delta value to a voice over a period of time. This allows you sweep a voice frequency from a start value to an end value by a defined increment (or decrement). The "Player Missile", for instance, is a single sweep starting at 0020 decrementing by one for 11 steps. There are 4 ticks (16Ms) between each change.
 
 There are actually two flavors of the sweep command. The first sweeps a single register value. The second sweeps a two-byte voice-pair (fine and coarse). The two-byte form is never used, which is a good thing since there is a bug in the code.
 
@@ -274,9 +274,9 @@ FD82: A6 94       LDA     $94,X                   ;  Coarse value (SHOULD BE $98
 FD84: 20 4B       BRA     $FDD1                   ;  Write coarse value to register B and return 4,x
 }}}
 
-At FD73 the code adds the delta to the fine value store in $94,X. At FD7C the code increments $98,X if there was an overflow from the fine value. It would appear that $94,X is the “fine” register and $98,X is the “coarse” register. The JSR at FD7E should write the fine-value from $94,X to the fine-register on the chip. Instead it writes the DELTA value. The code at FD82 and FD84 should write the coarse-value form $98,X to the coarse-register on the chip. Instead it writes the fine-value to the coarse-register.
+At FD73 the code adds the delta to the fine value store in $94,X. At FD7C the code increments $98,X if there was an overflow from the fine value. It would appear that $94,X is the "fine" register and $98,X is the "coarse" register. The JSR at FD7E should write the fine-value from $94,X to the fine-register on the chip. Instead it writes the DELTA value. The code at FD82 and FD84 should write the coarse-value form $98,X to the coarse-register on the chip. Instead it writes the fine-value to the coarse-register.
 
-I found two more bugs in the code that are really “potential problems”. They don’t cause errors for the current code but could cause problems in future reuse. Since this code is over 30 years old and nobody uses it anymore, the point is moot.
+I found two more bugs in the code that are really "potential problems". They don't cause errors for the current code but could cause problems in future reuse. Since this code is over 30 years old and nobody uses it anymore, the point is moot.
 
 {{{
 FF74: BD FC AD    JSR     $FCAD                   ;  Stop all sounds
@@ -290,11 +290,11 @@ FF87: 97 BA       STA     $BA                     ;  ... AY0 tone A (THIS DOESN'
 
 The routine FCAD sets the value of $00BA to all 10_111_111. The code at FF83 ORs a value with a zero bit. Thus we know this OR does not change anything. Whatever the developer intended to do here is not getting done.
 
-The last bug I found is in the FCAD function called above to stop all sounds. As we will see next, sequencer 0 and 1 are tied to the first AY chip. Sequencer 2 and 3 are tied to the second AY chip. In disabling sounds, this code also sets all of the sequencers to idle – all sequencers except for sequencer 3, which handles the jumping effect. Since the mixer values are set to 1s (disable sound) the background jump is silenced even though sequencer 3 continues to write values to the chip.
+The last bug I found is in the FCAD function called above to stop all sounds. As we will see next, sequencer 0 and 1 are tied to the first AY chip. Sequencer 2 and 3 are tied to the second AY chip. In disabling sounds, this code also sets all of the sequencers to idle -- all sequencers except for sequencer 3, which handles the jumping effect. Since the mixer values are set to 1s (disable sound) the background jump is silenced even though sequencer 3 continues to write values to the chip.
 
 == Sound Scripts, Sequencers, and Scheduling ==
 
-The main CPU controls the sound processor by writing a command byte to one of the AY38910’s input ports and triggering the IRQ interrupt on the 6803. The sound processor reads the byte, a value from 0 to 31, to request sound functions.
+The main CPU controls the sound processor by writing a command byte to one of the AY38910's input ports and triggering the IRQ interrupt on the 6803. The sound processor reads the byte, a value from 0 to 31, to request sound functions.
 
 {{{
 ;##ExplosionCommands
@@ -337,7 +337,7 @@ F460: F8 EC            ;   1E Congratulations (test 13)   AY0:ABC Force sequence
 F462: F9 5F            ;   1F Car explosion (test 14)     AY0:abc Force sequencer0
 }}}
 
-During game play, AY0 (chip 0) is very busy. The background music is dedicated to channels B (with tone) and C (with drum noise), and the effect is dedicated to sequencer 0. Channel A of AY0 handles the “continuous” sound effects: the flying saucers swirling above or the space plant.
+During game play, AY0 (chip 0) is very busy. The background music is dedicated to channels B (with tone) and C (with drum noise), and the effect is dedicated to sequencer 0. Channel A of AY0 handles the "continuous" sound effects: the flying saucers swirling above or the space plant.
 
 AY1 handles the other come-and-go effects. Channels B and C are dedicated to the car jumping, and sequencer 3 is dedicated to the effect. Channel A on AY1 handles everything else: coin inserts, missiles from the car, UFO explosions, and passing strategic points in the game.
 
@@ -351,7 +351,7 @@ I wrote a Java program to read the binary data from F464 to F986 and generate te
 
 == The Bass Groove ==
 
-We started out looking for the code for the background music of the game. Let’s dig into the actual script. Refer to the script line numbers in the actual code.
+We started out looking for the code for the background music of the game. Let's dig into the actual script. Refer to the script line numbers in the actual code.
 
 On line 1 the VOLUME_DECAY_SPEED sets the volume decay value for voice 1 to 16.
 
@@ -359,19 +359,19 @@ In this case the volume of voice 1 (AY0:A) will be decreased by one every 16 tic
 
 Line 2 sets the base frequency of the noise generator. The higher the number the deeper the noise. The value 0 makes the drum sound a very high pitch.
 
-Lines 3 and 4 set the AY chip’s envelope generator period. The background music does use the onboard generator to ramp down the volume on the drum sound. The higher the number, the slower the envelope evolves (in this case decays).
+Lines 3 and 4 set the AY chip's envelope generator period. The background music does use the onboard generator to ramp down the volume on the drum sound. The higher the number, the slower the envelope evolves (in this case decays).
 
 Line 5 sets the volume of the drum voice to use the envelope generator. Line 6 enables tone on channel B and noise on channel C.
 
 If you listen to the background music you will notice that there are patterns in the song. It is actually composed of six different fragments. Lines 7 through 18 stitch these fragments together into the song. Line 19 jumps back to the top of the song.
 
-Lines 20 – 54 are the first fragment of the song. The background drum beats every 32 ticks (almost 8 beats a second). If we make this beat an eighth-note, then the notes themselves are entirely quarter-notes always lining up with the eighth-notes – sometimes on the beat and sometimes off.
+Lines 20 -- 54 are the first fragment of the song. The background drum beats every 32 ticks (almost 8 beats a second). If we make this beat an eighth-note, then the notes themselves are entirely quarter-notes always lining up with the eighth-notes -- sometimes on the beat and sometimes off.
 
-Lines 20 – 23 are all executed on the same tick (utilizing the simple-commands “continue” bit). Line 20 and 21 writes the value 02A7 to the fine/coarse registers for voice B. Line 22 gets the tone started with automatic decay. Line 23 sets the noise period thus restarting the drum beat.
+Lines 20 -- 23 are all executed on the same tick (utilizing the simple-commands "continue" bit). Line 20 and 21 writes the value 02A7 to the fine/coarse registers for voice B. Line 22 gets the tone started with automatic decay. Line 23 sets the noise period thus restarting the drum beat.
 
 I modified the script-disassembler Java program to show the actual frequencies being played in the song. The asterisks show the drum beats. Where a tone is played, you see the actual produced frequency and the closest note on the piano keyboard.
 
 == Corrections ==
 
-Tony G. pointed out that the company name is “Konami” and not “Kanomi”. Thanks Tony.
+Tony G. pointed out that the company name is "Konami" and not "Kanomi". Thanks Tony.
 

@@ -32,13 +32,13 @@ Moon Patrol has a complex, configurable pricing scheme. The DIP switches allow t
 
 The owner can even configure two different currency slots. One slot could take quarters while another could take pesos. Each slot would have its own pricing scheme thus allowing the owner to configure his or her own conversion rate between quarters and pesos.
 
-I can’t imagine this dual slot mode was used very often. Arcades solved the currency problem on their own by selling tokens. Most of the games in the arcade lacked this fine-grain level of price configuration, and certainly there was no standard. The usual standard was one-coin-for-one-game with a few popular/expensive games requiring two coins to play.
+I can't imagine this dual slot mode was used very often. Arcades solved the currency problem on their own by selling tokens. Most of the games in the arcade lacked this fine-grain level of price configuration, and certainly there was no standard. The usual standard was one-coin-for-one-game with a few popular/expensive games requiring two coins to play.
 
 == State Machines ==
 
 The entire code is driven by two state machines. The ISR state machine processes 32 fixed game objects with every vertical blank. These are the obvious game objects: the moon-buggy, the alien ships, and the shots.
 
-The main-loop state machine processes a dynamic list of up to 63 “text” commands. These are always “text” commands that affect the background tile memory.
+The main-loop state machine processes a dynamic list of up to 63 "text" commands. These are always "text" commands that affect the background tile memory.
 
 The game loop begins at 026E with a number of regular function calls made every pass. Then at 0283 all (if any) text-objects run. Meanwhile, the ISR tasks interrupt the main loop and run every vertical blank. The main loop, which is free running, uses the ISR counters for timing.
 
@@ -66,13 +66,13 @@ The game loop begins at 026E with a number of regular function calls made every 
 
 == Text Commands (Main loop objects) ==
 
-The dynamic “main loop” objects are kept in memory from E300 to E3FF. Objects are added to the tail of a circular list and removed from the head as they finish. Each object structure is four bytes.
+The dynamic "main loop" objects are kept in memory from E300 to E3FF. Objects are added to the tail of a circular list and removed from the head as they finish. Each object structure is four bytes.
 
 The first byte selects the code to run to handle this object. The byte is an index into a jump table of 11 possible routines. The first routine is numbered 1, and 0 means the object is finished and will be removed from the list.
 
-The second byte of the object structure is a parameter value. Some of the handler routines need additional information. For instance, the first routine (Adjust Score) needs to know what value to add to the player’s score.
+The second byte of the object structure is a parameter value. Some of the handler routines need additional information. For instance, the first routine (Adjust Score) needs to know what value to add to the player's score.
 
-The third and fourth bytes are a pointer to a text string to draw or erase by the handler routine. This “string” is much more than a simple copy-to-memory list of characters. There are special command bytes that set the color and add repeated characters (used for spacing). The text system is discussed below.
+The third and fourth bytes are a pointer to a text string to draw or erase by the handler routine. This "string" is much more than a simple copy-to-memory list of characters. There are special command bytes that set the color and add repeated characters (used for spacing). The text system is discussed below.
 
 {{{
 ;##-TxtCmdTable
@@ -102,10 +102,10 @@ Most objects are not one sprite but a collection of sprites drawn in a grid. The
 
 The ISRObjects do not encapsulate the sprite geometry. Instead, the byte at index 0D of each ISRObject indexes into a table 2E18 that describes the graphics. Each entry in this graphics-object table is 4 bytes.
 
-The first byte of each graphics object is the base tile number for the graphics. The second byte is the flip-bits and color-set applied to each tile in the grid. The third byte is yet another pointer … this one to a drawing function for the graphics object. Graphics objects with similar geometry share drawing functions. For instance, all of the objects that ride the ground (boulders, rocks, and exploding versions of each) all use the same drawing function.
+The first byte of each graphics object is the base tile number for the graphics. The second byte is the flip-bits and color-set applied to each tile in the grid. The third byte is yet another pointer ... this one to a drawing function for the graphics object. Graphics objects with similar geometry share drawing functions. For instance, all of the objects that ride the ground (boulders, rocks, and exploding versions of each) all use the same drawing function.
 
-Most sprites change over time. The player’s forward shot, for instance, flips between two tile pictures giving it animation as it crosses the screen. The buggy wheel flips between two images making it look like it is spinning.
+Most sprites change over time. The player's forward shot, for instance, flips between two tile pictures giving it animation as it crosses the screen. The buggy wheel flips between two images making it look like it is spinning.
 
-There is no common strategy for animating sprites. Sometimes the different animations have different graphics-objects and the ISRObject switches among them. This is how the player’s forward shot works. ISRObject 20 switches between graphics objects 09 and 0A as it moves the shot forward.
+There is no common strategy for animating sprites. Sometimes the different animations have different graphics-objects and the ISRObject switches among them. This is how the player's forward shot works. ISRObject 20 switches between graphics objects 09 and 0A as it moves the shot forward.
 
 The buggy wheel, however, is animated by the drawing routine instead of the ISRObject. Graphics object 16 (the wheel) picks the tile number to draw based on the timer value.
