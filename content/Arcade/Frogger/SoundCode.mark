@@ -1,5 +1,5 @@
 ;;%%image Frogger.jpg
-;;%%ramMap Arcade/Frogger/RAMUse.mark RAMUse.html
+;;%%- Arcade/Frogger/RAMUse.mark RAMUse.html
 
 ;; The board's RAM usage is detailed here: 
 ;; [RAMUse.html RAM Usage]

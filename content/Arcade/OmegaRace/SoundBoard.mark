@@ -1,6 +1,6 @@
 ;;%%image ORace.jpg
 ;;%%title Omega Race (Sound Board)
-;;%%ramMap Arcade/OmegaRace/SoundRAMUse.mark SoundRAMUse.html
+;;%%- Arcade/OmegaRace/SoundRAMUse.mark SoundRAMUse.html
 
 ;Sound Z80 Memory Map
 ;

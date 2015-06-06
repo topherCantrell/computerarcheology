@@ -231,11 +231,11 @@ class CodeToHTML(MarkupToHTML):
 
             t = r.text.strip()
 
-            if t.startswith(";;%%ramMap"):
-                maps["ramMap"] = self.getAddressMap(root_dir + t[10:].strip())  # ;%%ramMap RAMUse.mark
+            if t.startswith(";;%%- "):
+                maps["ramMap"] = self.getAddressMap(root_dir + t[6:].strip())  # ;%%ramMap RAMUse.mark
                 continue
-            elif t.startswith(";;%%hardwareMap"):
-                maps["hardwareMap"] = self.getAddressMap(root_dir + t[15:].strip())  # ;%%hardwareMap /Coco/Hardware.mark
+            elif t.startswith(";;%%-- "):
+                maps["hardwareMap"] = self.getAddressMap(root_dir + t[7:].strip())  # ;%%hardwareMap /Coco/Hardware.mark
                 continue
             elif t.startswith(";;%%directPage"):
                 self.dp = int(t[15:].strip(), 16)

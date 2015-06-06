@@ -1,6 +1,6 @@
 ;;%%image Daggorath.jpg
-;;%%ramMap Coco/Daggorath/RAMUse.mark /CoCo/Daggorath/RAMUse.html
-;;%%hardwareMap Coco/Hardware.mark /CoCo/Hardware.html
+;;%%- Coco/Daggorath/RAMUse.mark /CoCo/Daggorath/RAMUse.html
+;;%%-- Coco/Hardware.mark /CoCo/Hardware.html
 ;;%%directPage 200
 ;; The game's RAM usage is detailed here: 
 ;; [RAMUse.html RAM Usage]

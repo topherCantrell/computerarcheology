@@ -1,6 +1,6 @@
 ;;%%image RaakaTu.jpg
-;;%%ramMap CoCo/RaakaTu/RAMUse.mark /CoCo/RaakaTu/RAMUse.html
-;;%%hardwareMap CoCo/Hardware.mark /CoCo/Hardware.html
+;;%%- CoCo/RaakaTu/RAMUse.mark /CoCo/RaakaTu/RAMUse.html
+;;%%-- CoCo/Hardware.mark /CoCo/Hardware.html
 ;; The game's RAM usage is detailed here: 
 ;; [RAMUse.html RAM Usage]
 

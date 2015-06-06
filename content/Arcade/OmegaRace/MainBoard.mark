@@ -1,6 +1,6 @@
 ;;%%image ORace.jpg
 ;;%%title Omega Race (Main Board)
-;;%%ramMap Arcade/OmegaRace/MainRAMUse.mark MainRAMUse.html
+;;%%- Arcade/OmegaRace/MainRAMUse.mark MainRAMUse.html
 
 ; Comments from MAME source omegrace.c
 ;    0000 - 3fff PROM

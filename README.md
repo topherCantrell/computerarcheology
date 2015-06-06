@@ -202,8 +202,8 @@ The key is the first word after the "%%". The rest of the line is the value.
 Defines and their use:
  - %%title - gives the text used in the browser tab. The default is the page title from the deployment description.
  - %%template - gives the page's master HTML template. The default is "master.template". This is ?never? used.
- - %%ramMap - used in code markdown. Defines the file containing ram-usage information.
- - %%hardwareMap - used in code markdown. Defines the file containing hardware-usage information.
+ - %%- - used in code markdown. Defines the file containing ram-usage information.
+ - %%-- - used in code markdown. Defines the file containing hardware-usage information.
 
 ## Code Markup ##
 
@@ -237,8 +237,8 @@ a semicolon as shown in the last entry in the table above.
 You link the code to the description files with a define. For instance:
 
 ```
-;;%%ramMap Coco/MadnessMinotaur/RAMUse.mark /CoCo/MadnessMinotaur/RAMUse.html
-;;%%hardwareMap Coco/Hardware.mark /CoCo/Hardware.html
+;;%%- Coco/MadnessMinotaur/RAMUse.mark /CoCo/MadnessMinotaur/RAMUse.html
+;;%%-- Coco/Hardware.mark /CoCo/Hardware.html
 ```
 
 The defines include the name of the markdown file (needed to parse the info) and the name of the
