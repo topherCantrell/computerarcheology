@@ -50,9 +50,18 @@ class AddressToHTML(MarkupToHTML):
 
     def loadMap(self, inName):
 
+        ps = inName.split()
+
         i = inName.index(" ")
-        self.mapFile = inName[0:i]
-        self.mapURL = inName[i + 1:].strip()
+        self.mapFile = ps[0]
+        self.mapURL = ps[1]
+
+        if len(ps) > 2:
+            print ps
+            i = ps[2].index(":")
+            a = int(ps[2][0:i], 16)
+            b = int(ps[2][i + 1], 16)
+            self.limits = (a, b)
 
         with open(self.mapFile) as f:
             raw = f.readlines()

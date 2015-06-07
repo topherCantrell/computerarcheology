@@ -1,22 +1,37 @@
-[[PageOutline()]]
+%%title Moon Patrol
+%%image MoonPatrol.jpg
 
-= Moon Patrol =
+[/Arcade/MoonPatrolSound.html See the discussion of the sound board]
 
-[wiki:Arcade/MoonPatrolSound See the discussion of the sound board]
+= Code Links =
 
-[wiki:Arcade/MoonPatrol/Hardware Hardware][[br]]
-[wiki:Arcade/MoonPatrol/RAMTable RAM Usage]
+* [Code.html Main Board Code]
+* [GFX1.html GFX1]
+* [GFX2.html GFX2]
+* [GFX3.html GFX3]
+* [GFX4.html GFX4]
+* [GFX.html5 GFX5]
+* [TextColor.htmls Text Color Sets]
+* [ImageBackgroundColors.html Image Background Colors]
+* [SpriteColors.html Sprite Colors]
+* [SpriteColorSets.html Sprite Color Sets]
+* [Hardware.html Hardware]
+* [RAMTable.html RAM Usage]
 
-[wiki:Arcade/MoonPatrol/Code Main Board Code][[br]]
-[wiki:Arcade/MoonPatrol/GFX1 GFX1][[br]]
-[wiki:Arcade/MoonPatrol/GFX2 GFX2][[br]]
-[wiki:Arcade/MoonPatrol/GFX3 GFX3][[br]]
-[wiki:Arcade/MoonPatrol/GFX4 GFX4][[br]]
-[wiki:Arcade/MoonPatrol/GFX5 GFX5][[br]]
-[wiki:Arcade/MoonPatrol/TextColors Text Color Sets][[br]]
-[wiki:Arcade/MoonPatrol/ImageBackgroundColors Image Background Colors][[br]]
-[wiki:Arcade/MoonPatrol/SpriteColors Sprite Colors][[br]]
-[wiki:Arcade/MoonPatrol/SpriteColorSets Sprite Color Sets]
+= Luna City =
+
+You are a police officer patrolling Luna City's Sector Nine -- home of the "toughest thugs in the galaxy".
+
+{{{html
+<div class="tourGuide">
+<div style="padding-left: 20px">
+}}}
+= Tour Guide =
+
+{{{html
+</div>
+</div>
+}}}
 
 == The Service Mode ==
 

@@ -1,6 +1,6 @@
 ;;%%image Pyramid.jpg
 ;;%%- CoCo/Pyramid/RAMUse.mark /CoCo/Pyramid/RAMUse.html
-;;%%-- CoCo/Hardware.mark /CoCo/Hardware.html
+;;%%-2 CoCo/Hardware.mark /CoCo/Hardware.html
 ;; The game's RAM usage is detailed here: 
 ;; [RAMUse.html RAM Usage]
 

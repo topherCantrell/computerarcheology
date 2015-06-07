@@ -232,10 +232,10 @@ class CodeToHTML(MarkupToHTML):
             t = r.text.strip()
 
             if t.startswith(";;%%- "):
-                maps["ramMap"] = self.getAddressMap(root_dir + t[6:].strip())  # ;%%ramMap RAMUse.mark
+                maps["ramMap"] = self.getAddressMap(root_dir + t[6:].strip())  # ;%%- RAMUse.mark
                 continue
-            elif t.startswith(";;%%-- "):
-                maps["hardwareMap"] = self.getAddressMap(root_dir + t[7:].strip())  # ;%%hardwareMap /Coco/Hardware.mark
+            elif t.startswith(";;%%-2 "):
+                maps["hardwareMap"] = self.getAddressMap(root_dir + t[7:].strip())  # ;%%-2 /Coco/Hardware.mark
                 continue
             elif t.startswith(";;%%directPage"):
                 self.dp = int(t[15:].strip(), 16)

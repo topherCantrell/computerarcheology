@@ -1,0 +1,7 @@
+The link finder should also insert/update the names too. That way the raw disassembly file has
+labels that assist with the commenting process.
+
+Hardware files can have READ and WRITE labels (same address ... different functions). "IN" means read and
+"OUT" means write. Easy for Z80.
+
+Calculate limits from %%-? file. We have to load these anyway.

@@ -1,0 +1,42 @@
+Each dig has a Dig.jpg file for the top bar.
+
+Each dig has a Dig.mark that becomes the directories index.html.
+
+Code.cmark files pair with RAMUse.mark
+
+Like:
+ - Code.cmark, RAMUse.mark, Hardware.mark
+ - SoundCode.cmark, SoundRAMUse.mark, SoundHardware.mark
+
+=============================================================================
+
+The main dig mark has the following:
+
+- code links
+- introduction paragraph
+- tour guide
+- discussion
+
+See CoCo/RaakaTu/RaakaTu.mark for an example
+
+=============================================================================
+
+The code cmark has the following:
+
+;;%%image RaakaTu.jpg
+;;%%- CoCo/RaakaTu/RAMUse.mark /CoCo/RaakaTu/RAMUse.html
+;;%%-2 CoCo/Hardware.mark /CoCo/Hardware.html
+;;%%CPU Z80
+;; The game's RAM usage is detailed here: 
+;; [RAMUse.html RAM Usage]
+;; [Hardware.html Hardware]
+
+Labels that are also navigation:
+START: ;=
+
+Labels that shouls appear in the code but not the navigation:
+START:
+
+Use the "find_links_" program to update/insert the link names for {} and {-}
+
+Talk about HTML scripts for graphics

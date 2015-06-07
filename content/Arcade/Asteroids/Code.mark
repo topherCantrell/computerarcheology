@@ -1,6 +1,6 @@
 ;;%%image Asteroids.jpg
 ;;%%- Arcade/Asteroids/RAMUse.mark /Arcade/Asteroids/RAMUse.html
-;;%%--  Arcade/Asteroids/Hardware.mark  Arcade/Asteroids/Hardware.html
+;;%%-2  Arcade/Asteroids/Hardware.mark  Arcade/Asteroids/Hardware.html
 
 ;; The game's RAM usage is detailed here: 
 ;; [RAMUse.html RAM Usage]

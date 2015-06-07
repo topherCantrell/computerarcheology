@@ -90,6 +90,15 @@
                  {"copy": "galaga2.jpg"}
 	             ]
 	         },
+	         
+	         {"dir": "MoonPatrol", "nav": "Moon Patrol", "entries": [
+	             {"mark": "MoonPatrol.mark", "out": "index.html"},
+	             {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
+	             {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
+	             {"copy": "MoonPatrol.jpg"}
+	             ]
+	         },
+	         
 	         {"dir": "OmegaRace", "nav": "Omega Race", "entries": [
                  {"mark": "MainRAMUse.mark", "out": "MainRAMUse.html", "nav": "RAM Use (Main)"},
                  {"mark": "SoundRAMUse.mark", "out": "SoundRAMUse.html", "nav": "RAM Use (Sound)"},

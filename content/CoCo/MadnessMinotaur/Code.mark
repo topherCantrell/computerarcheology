@@ -1,6 +1,6 @@
 ;;%%image Madness.jpg
 ;;%%- Coco/MadnessMinotaur/RAMUse.mark /CoCo/MadnessMinotaur/RAMUse.html
-;;%%-- Coco/Hardware.mark /CoCo/Hardware.html
+;;%%-2 Coco/Hardware.mark /CoCo/Hardware.html
 
 ;; The game's RAM usage is detailed here: 
 ;; [RAMUse.html RAM Usage]
