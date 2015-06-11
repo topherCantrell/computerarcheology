@@ -52,10 +52,10 @@ Here is the map of all the passages between all 256 rooms: [Code.html#PassageCon
 = References =
 
 For more information on Madness and the Minotaur check out Sean Murphy's wonderful site:[[br]]
-[http://www.figmentfly.com] 
+[http://www.figmentfly.com http://www.figmentfly.com] 
 
 John Layman has translated the 6809 opcodes to x86 to run on a LINUX, BSD, and OSX. Follow his awesome work:[[br]]
-[http://www.frijid.net/madness.html]
+[http://www.frijid.net/madness/madness.html http://www.frijid.net/madness/madness.html]
 
 = Text Adventure and Real Time Strategy = Text + RTS
 

@@ -5,3 +5,5 @@ Hardware files can have READ and WRITE labels (same address ... different functi
 "OUT" means write. Easy for Z80.
 
 Calculate limits from %%-? file. We have to load these anyway.
+
+[ ] http links currently require both link and text. If you ommit the text it should use the link.
