@@ -209,11 +209,11 @@ Defines and their use:
 
 Code files are processed with a tool designed for assembly/disassembly code.
 
-Lines that begin with ";;" are unwrapped and handled as is by the markdown processor.
-This allows markdown discussion sections to be included in the code yet still like
-leading-semicolon comments to the assembler.
+Lines that begin with ";;" are unwrapped and handled as-is by the markdown processor.
+This allows markdown discussion sections to be included in the code yet still use
+leading-semicolon comments to the assembler/disassembler tools.
 
-Code may be linked two markdown files that describe ram-address-usage and hardware-address-definitions.
+Code may be linked to markdown files that describe ram-address-usage and hardware-address-definitions.
 
 These separate files contain one or more tables of the format:
 
@@ -221,7 +221,8 @@ These separate files contain one or more tables of the format:
 ||= Address || Name             || Description ||
 || 00       || curRoom          || current room ||
 || 01       || lastRoom         || last room ||
-|| 02       || dirBits          || direction command bit pattern ||
+|| 02w      || WSYNC            || start VSYNC ||
+|| 02r      || COLP1PF          || check collision between player and field ||
 || 03       || inpLen           || length of user input ||
 || 04       || weight           || weight of pack ||
 || 05       || condition        || physical condition ||  
@@ -229,9 +230,12 @@ These separate files contain one or more tables of the format:
 ```
 
 The first column is the numeric address referenced in the code. The second column contains the symbolic name for the address.
-This can be left blank and the number address will be shown instead. The third column describes how the location is used
+This can be left blank and the number address will be shown instead. The third column describes how the location is used.
 
-The address actually be a stretch of addresses. You can give the start address and the end address (inclusive) separated by
+Note the "w" and "r" on address "02". Hardware addresses often have different functions for reading and writing. You may give
+addresses a "w" or "r" to indiciate which label is for which direction.
+
+The address can actually be a stretch of addresses. You can give the start address and the end address (inclusive) separated by
 a semicolon as shown in the last entry in the table above.
 
 You link the code to the description files with a define. For instance:
@@ -246,11 +250,11 @@ resulting file (needed in HTML links placed in the code).
 
 ### Labels in the nav-tree ###
 
-Code label lines are of the form "SomeLabel:". These are processed as plain code lines.
+Code label lines are of the form "SomeLabel:". These are processed as plain code lines by the code tools and by the markdown
+processor.
 
-Code labels can be added to the page-navigation tree by adding a comment on the end with
-one or more "=" marks. Use the desired number of "=" to pick the heading level in the
-navigation tree. For instance:
+Code labels can be added to the page-navigation tree by adding a comment on the end with one or more "=" marks. Use the 
+desired number of "=" to pick the heading level in the navigation tree. For instance:
 
 ```
 PrintChar: ; ==
@@ -308,14 +312,14 @@ For example:
 ```
 PrintChar:
 032E: 34 16               PSHS    X,B,A       ; Save parameters
-0330: 9E 88               LDX     >$88        ; {-} Cursor
+0330: 9E 88               LDX     >$88        ; {-88} Cursor
 0332: 81 08               CMPA    #$08        ; Printing a backspace?
-0334: 26 0B               BNE     $341        ; {} No ... move on
+0334: 26 0B               BNE     $341        ; {341} No ... move on
 0336: 8C 02 00            CMPX    #$0200      ; Already at top of screen (double screen)
-0339: 27 38               BEQ     $373        ; {} Yes ... ignore it (done)
+0339: 27 38               BEQ     $373        ; {373:IgnoreIt} Yes ... ignore it (done)
 033B: 86 60               LDA     #$60        ; Space
 033D: A7 82               STA     ,-X         ; Over last in buffer
-033F: 20 25               BRA     $366        ; {} Store new cursor and out
+033F: 20 25               BRA     $366        ; {366} Store new cursor and out
 ```
 
 In this case the number "$88" is replaced with an HTML link to the RAM file that defines the 
@@ -326,38 +330,33 @@ the "RAM usage" file.
 A double "--" tells the processor to link to the "Hardware usage" file.
 
 In this case the number "$366" in the last line is replaced with a link back to the middle line
-in the snippet that begins with "0336:". If this line had a preceding label then the text of that
-label would be used in the link. Since it does not, the link text is just "$366".
-
-There are several options with the "{...}" syntax. All are optional.
+in the snippet that begins with "0336:". The number "$373" is replaced with "IgnoreIt".
 
 The link can be placed in one of three places on the code line:
- - {} No ">". Replace the number directly in the opcode.
- - {>} One ">". Place the link to the right of the opcode.
- - {>>} Two ">". Replace the "{}" in the comment. 
+ - {...} No ">". Replace the number directly in the opcode.
+ - {>...} One ">". Place the link to the right of the opcode.
+ - {>>...} Two ">". Replace the "{}" in the comment. 
 
 The second part indicates the address mapping:
- - {} No "-". The reference is to part of the code.
- - {-} One "-". The reference is to the RAM Usage.
- - {--} Two "-". The reference is to the Hardware Usage.
+ - {...} No "-". The reference is to part of the code.
+ - {-}... One "-". The reference is to the RAM Usage.
+ - {--...} Two "-". The reference is to the Hardware Usage.
 
 The rest of the "{}" indicates the target and text of the reference in the form {target:text}. 
 
-If the "target" contains a "/" then it is treated as an HTML URL. 
+If the "target" contains a "/" then it is treated as an HTML URL. Otherwise (most often) it is treated as a numeric value
+to be looked up in the code or address mapping file.
 
-If the "target" is just a word then it is treated as a reference to a code label in the current file. 
+The "text" is the label at the numeric destination. It might be a label in the code or a name from a mapping file.
 
-If the "target" is empty then the processor uses the number (starts with $) in the opcode and finds the 
-reference in the code. The text is the label if the line has a label or the plain number if not.
+If the text is not given then the number itself is used as the text.
 
-If "text" is given then it is used as the text in the link instead of the target.
+The "link" tool updates the "{...}" entries in the raw markup. You run this periodically to update the text labels (you
+want to see these labels when you are working on the disassembly).
 
-Complete Examples:
- - {} Lookup the label or address and insert the link in place of the "$" in the opcode.
- - {>:HERE} Lookup the reference and insert a link at the end of the opcode. Use "HERE" as the link text.
- - {http:/nowhere:HERE} Replace the "$" with the link to "http:/nowhere". Use "HERE" as the link text.
- - {PrintChar} Replace the "$" with a link to the "PrintChar" label in the current code
- - {>>-} Lookup the number (starts with "$") as a RAM address and insert the link in place of the "{...}" in the comment.
- - {--FF20:PIA1} Lookup "FF20" in the hardware reference and insert a link in place of the "$" in the opcode.
- 
- 
+The link tool will add or update the "target:text" completely. Thus you can initially use "{}" or "{-}" as a placeholder
+for the tool to process. If you do not want the link tool to update an entry then use the "{{...}}" syntax. It functions
+the same but is ignored by the link tool.
+
+The link tool uses the opcode to decide on "read" or "write" versions of the label from the hardware map file. For instance
+"IN" and "OUT".
