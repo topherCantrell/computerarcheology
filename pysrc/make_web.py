@@ -110,7 +110,7 @@ def process_entries(nodes, dep, cont):
             raise Exception("Unknown deployment entry:" + str(e))
 
 
-with open('site.js') as data_file:
+with open('../content/site.js') as data_file:
     desc = json.load(data_file)
 
 content_root = desc["content_root"]
@@ -125,9 +125,9 @@ try:
 
     process_entries([desc], deploy_root, content_root)
 
-except MakeWebError, e:
+except MakeWebError as e:
 
     if e.line:
-        print "ERROR: " + e.message + " in " + e.fname + " at line " + str(e.line)
+        print ("ERROR: " + e.message + " in " + e.fname + " at line " + str(e.line))
     else:
-        print "ERROR: " + e.message + " in " + e.fname
+        print ("ERROR: " + e.message + " in " + e.fname)

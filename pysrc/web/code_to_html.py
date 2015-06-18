@@ -1,10 +1,10 @@
-from code_line import CodeLine
+from web.code_line import CodeLine
 
-from address_to_html import AddressToHTML
-from markup_to_html import MarkupToHTML
+from web.address_to_html import AddressToHTML
+from web.markup_to_html import MarkupToHTML
 from web.make_web_error import MakeWebError
 
-from text_line import TextLine
+from web.text_line import TextLine
 
 
 class CodeToHTML(MarkupToHTML):
@@ -20,7 +20,7 @@ class CodeToHTML(MarkupToHTML):
 
     def collectLabels(self, lines):
         cur = []
-        for x in xrange(len(lines)):
+        for x in iter(range(len(lines))):
             r = lines[x]
             if isinstance(r, CodeLine):
                 if len(r.bytes) == 0 and not r.opcode:
@@ -46,7 +46,7 @@ class CodeToHTML(MarkupToHTML):
             # print line.original
             if not line.opcode and not line.bytes:
                 if len(line.labels) == 0:
-                    print line.original
+                    print (line.original)
                 line.linkID = line.labels[0]
                 if line.comment:
                     s = line.comment.strip()
@@ -63,11 +63,11 @@ class CodeToHTML(MarkupToHTML):
 
             if not line.target["target"] == "":  # Could be an explicit target
                 if not line.target["target"] in self.labels:
-                    print "COULD NOT FIND '" + line.target["target"] + "'"
+                    print ("COULD NOT FIND '" + line.target["target"] + "'")
 
             # This an empty {} ... look up the label
 
-            for x in xrange(len(lines)):
+            for x in iter(range(len(lines))):
                 g = lines[x]
                 if isinstance(g, CodeLine) and g.address == line.numbers[0]["value"]:
                     g.linkID = line.numbers[0]["text"][1:]
@@ -79,9 +79,9 @@ class CodeToHTML(MarkupToHTML):
                             continue
                         if lines[y].labels:
                             if (line.target["target"] != "") and (not line.collected) and (line.target["target"] not in lines[y].labels):
-                                print "TARGET SAYS '" + line.target["target"] + "' BUT I THINK IT SHOULD BE '" + lines[y].labels[0] + "'"
-                                print lines[y - 5].labels
-                                print lines[y].labels
+                                print ("TARGET SAYS '" + line.target["target"] + "' BUT I THINK IT SHOULD BE '" + lines[y].labels[0] + "'")
+                                print (lines[y - 5].labels)
+                                print (lines[y].labels)
                             line.target["target"] = lines[y].labels[0]
                             if line.target["text"] == "":
                                 line.target["text"] = lines[y].labels[0]
@@ -99,7 +99,7 @@ class CodeToHTML(MarkupToHTML):
                 ad = maps["ramMap"]
                 entry = ad.getEntryForName(tar)
                 if entry is None:
-                    print "::" + line + "::"
+                    print ("::" + line + "::")
                 if txt == "":
                     txt = entry["name"]
                     if txt == "":
@@ -123,7 +123,7 @@ class CodeToHTML(MarkupToHTML):
                 ad = maps["hardwareMap"]
                 entry = ad.getEntry(line.numbers[0]["value"])
                 if entry is None:
-                    print "::" + line + "::"
+                    print ("::" + line + "::")
                 if txt == "":
                     txt = entry["name"]
                     if txt == "":
@@ -196,7 +196,7 @@ class CodeToHTML(MarkupToHTML):
                 line.original = '<span class="siteTarget" id="' + n + '">' + line.original[0] + '</span>' + line.original[1:]
 
     def relocateLabelLinks(self, lines):
-        for x in xrange(len(lines)):
+        for x in iter(range(len(lines))):
             if isinstance(lines[x], TextLine):
                 t = lines[x].text
                 while(t.startswith(";")):
@@ -210,7 +210,7 @@ class CodeToHTML(MarkupToHTML):
                     del lines[y].linkID
 
     def handleNavLabels(self, lines):
-        for x in xrange(len(lines)):
+        for x in iter(range(len(lines))):
             if isinstance(lines[x], CodeLine):
                 if hasattr(lines[x], "navLabel"):
                     # print "INSERTING "+lines[x].original+":"+str(lines[x].navLabel)

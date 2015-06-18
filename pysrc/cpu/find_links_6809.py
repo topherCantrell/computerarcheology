@@ -77,7 +77,7 @@ for r in raw:
 
 # print len(raw),len(newLines)
 
-for x in xrange(len(newLines)):
+for x in iter(range(len(newLines))):
     if not newLines[x].endswith("\n"):
         print ":" + newLines[x] + ":"
 

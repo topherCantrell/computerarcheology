@@ -1,9 +1,9 @@
 import string
 import traceback
 
-from text_line import TextLine
+from web.text_line import TextLine
 
-from make_web_error import MakeWebError
+from web.make_web_error import MakeWebError
 
 
 class MarkupToHTML:
@@ -257,8 +257,8 @@ class MarkupToHTML:
 
                 # If we get here we have a line to add
                 bodyLines.append(proc + " ")
-            except Exception, _:
-                print "Error on line " + str(line.lineNumber) + " in file '" + line.fileName + "'"
+            except Exception:
+                print ("Error on line " + str(line.lineNumber) + " in file '" + line.fileName + "'")
                 traceback.print_exc()
 
         # All done

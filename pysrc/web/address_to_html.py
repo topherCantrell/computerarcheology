@@ -1,5 +1,5 @@
 
-from markup_to_html import MarkupToHTML
+from web.markup_to_html import MarkupToHTML
 
 p1 = '<td><span class="siteTarget" id="%s">%s</span></td>'
 
@@ -57,7 +57,7 @@ class AddressToHTML(MarkupToHTML):
         self.mapURL = ps[1]
 
         if len(ps) > 2:
-            print ps
+            print (ps)
             i = ps[2].index(":")
             a = int(ps[2][0:i], 16)
             b = int(ps[2][i + 1], 16)

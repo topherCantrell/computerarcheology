@@ -20,9 +20,9 @@ def get_bread_crumbs(nodes):
     else:
         crumbs = _make_crumb("/", "Home", True)
 
-    for x in xrange(len(nodes)):
+    for x in iter(range(len(nodes))):
         link = "/"
-        for y in xrange(x + 1):
+        for y in iter(range(x + 1)):
             if "dir" in nodes[y]:
                 link = link + nodes[y]["dir"] + "/"
         node = nodes[x]

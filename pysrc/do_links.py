@@ -27,7 +27,7 @@ if proc == "Z80":
 new_lines = proc.process(raw, DO_RAM)
 
 # Some sanity checking
-for x in xrange(len(new_lines)):
+for x in iter(range(len(new_lines))):
     if not new_lines[x].endswith("\n"):
         print ":" + new_lines[x] + ":"
 

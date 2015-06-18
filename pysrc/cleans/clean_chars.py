@@ -17,14 +17,14 @@ REPS = [{'utf8': "\xE2\x80\x9C", 'rep': '"'},
 
 
 def checkString(s):
-    for x in xrange(len(s)):
+    for x in iter(range(len(s))):
         if ord(s[x]) > 127:
-            for y in xrange(5):
+            for y in iter(range(5)):
                 print ord(s[x + y])
             return False
     return True
 
-for x in xrange(len(raw)):
+for x in iter(range(len(raw))):
     # if '\xE2\x80\x73' in raw[x]:
     #    print raw[x]
     r = raw[x]
