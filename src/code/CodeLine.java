@@ -1,13 +1,14 @@
 package code;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+
+import files.FU;
+
 
 public class CodeLine {
 	
@@ -46,23 +47,8 @@ public class CodeLine {
 			}
 		}		
 		return ret;
-	}
+	}	
 	
-	/**
-	 * This function does a simple checksum over the bytes in a file.
-	 * @param file path to the data file
-	 * @return the simple checksum
-	 * @throws IOException
-	 */
-	public static long simpleBinaryFileChecksum(Path file) throws IOException {
-		long ret = 0;		
-		InputStream is = new FileInputStream(file.toString());
-		while(is.available()>0) {
-			ret = ret + is.read();
-		}
-		is.close();
-		return ret;
-	}
 	
 	String originalText;
 	String filename;
@@ -151,8 +137,7 @@ public class CodeLine {
 		// opcode
 		this.opcode = originalText.substring(pos).trim();
 		if(this.opcode.length()>0) {
-			this.opcodePos = pos;
-			System.out.println(this.opcode);
+			this.opcodePos = pos;			
 		} else {
 			this.opcode = null;
 		}		
@@ -166,7 +151,8 @@ public class CodeLine {
 		List<CodeLine> lines = CodeLine.loadLines(p);
 		
 		System.out.println(CodeLine.simpleDataChecksum(lines));
-		System.out.println(CodeLine.simpleBinaryFileChecksum(pd));
+		System.out.println(FU.simpleBinaryFileChecksum(pd));
+
 		
 	}
 
