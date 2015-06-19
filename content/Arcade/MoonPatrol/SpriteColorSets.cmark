@@ -1,4 +1,4 @@
-{{{#!AssemblyCode
+
 ; The lower 6 bits of the 2nd byte of the sprite structure contains a color-set value.
 ; Thus there could be 64 color-set's (00..3F). The Moon Patrol hardware appears to
 ; mask off the upper bit making 32 color-sets (00..1F) with set 0x20 masking to 0x00.
@@ -49,5 +49,3 @@
 00E8: 00 00 00 00 00 00 00 00 ; 1D
 00F0: 00 00 00 00 00 00 00 00 ; 1E
 00F8: 00 00 00 00 00 00 00 00 ; 1F
-
-}}}

@@ -1,48 +1,6 @@
-[[PageOutline()]]
 
-= Moon Patrol Sound =
+;= Moon Patrol Sound =
 
-|| [#BackgroundMusic   "Background Music"] ||
-|| [#StartMusic        "Start Music"] ||
-|| [#Congratulations   "Congrats Music"] ||
-|| [#EndMusic          "End Music"] ||
-|| [#ReachingGoal      "Goal Music"] ||
-|| [#SpacePlant        "Space Plant"] ||
-|| [#UFOFlying         "UFO Flying"] ||
-|| [#UFOExplosion      "UFO Explosion"] ||
-|| [#Missile           "Missile from Buggy"] ||
-|| [#Jump              "Buggy Jump"] ||
-|| [#CarExplosion      "Buggy Explosion"] ||
-|| [#PassPoint         "Passing a Point"] ||
-|| [#Coin              "Insert Coin"] ||
-|| [#MemoryMap            "Memory Map"] ||
-|| [#DACExplosionSamples  "DAC Explosion Samples"] ||
-|| [#ExplosionCommands    "Explosion Command Table"] ||
-|| [#CommandScripts       "Script Command Table"] ||
-|| [#START                "Start of code"] ||
-|| [#SoundLoop            "Main sound loop"] ||
-|| [#NMITimer             "NMI clock handler"] ||
-|| [#IRQ1CommandRequest   "Command request IRQ"] ||
-|| [#Vectors              "6803 vectors"] ||
-|| [#BUG1    "Sweep voice pair"] ||
-|| [#BUG2    "Useless OR"] ||
-|| [#BUG3    "Disable sounds"] ||
-|| [#SimpleCommands            "Simple Commands"] ||
-|| [#STOP                      "STOP"] ||
-|| [#CALL                      "CALL"] ||
-|| [#RETURN                    "RETURN"] ||
-|| [#C_REGISTER_SAMPLES        "C_REGISTER_SAMPLES"] ||
-|| [#C_TOGGLE_REGISTER         "C_TOGGLE_REGISTER"] ||
-|| [#C_SWEEP_VOICE_REGISTER    "C_SWEEP_VOICE_REGISTER"] ||
-|| [#C_SWEEP_VOICE_PAIR        "C_SWEEP_VOICE_PAIR"] ||
-|| [#ProcessCommand0           "Command  00"] ||
-|| [#ProcessCommands01-0F      "Commands 01 - 0F"] ||
-|| [#ProcessCommands10-13      "Commands 10 - 13"] ||
-|| [#ProcessCommand14          "Command  14"] ||
-|| [#ProcessCommands15-17      "Commands 15 - 17"] ||
-|| [#ProcessCommands18-1F      "Commands 18 - 1F"] ||
-
-{{{#!AssemblyCode
 ; Dissassembly comments by Chris Cantrell 2009
 ; For detailed discussion of code visit http://www.computerarcheology.com
 
@@ -1637,4 +1595,4 @@ FFF8: FC 8B                            ;  IRQ1 interrupt strobe 3 vector
 FFFA: FB 00                            ;  SWI vector
 FFFC: FB D9                            ;  Non-maskable (NMI) vector
 FFFE: FB 00                            ;  RESET vector
-}}}
+

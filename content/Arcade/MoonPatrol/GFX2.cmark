@@ -1,9 +1,3 @@
-[[PageOutline()]]
-
-{{{#!AssemblyCode
-
-;##$CPU none
-;##$OriginalBinary 0000~mpb-2.3m+mpb-1.3n
 
 ; The image data is dumped here with ROM mpb-1.3n following mb-2.3m as an 8K block
 ; of bytes. In reality the display generator hardware reads both ROMs as a single
@@ -29,222 +23,260 @@
 ; are grouped together to create larger objects. The rendering below shows the image 
 ; numbers in patterns as they are used in the game. The rendering below uses the 
 ; color sets for each object as used in the game.
-}}}
 
-= Blank Tile =
-{{{#!AssemblyCode
-<script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/mpUI.js?format=raw"></script><script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/CANVAS.js?format=raw" type="text/javascript"></script><script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/pixelUI.js?format=raw" type="text/javascript"></script><script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/bytes.js?format=raw" type="text/javascript"></script>
-<canvas width="150" 
-        data-canvasFunction="handleTileCanvas"
-        data-getTileDataFunction="getSprite16x16Data"
-        height="150"
-        data-pixWidth="8"
-        data-gridX="16"
-        data-gridY="16"
-        data-pixHeight="8"
-        data-gap="0.25"
-        data-gridPad="1"
-        data-colorsName="CS0"
-        data-colors='["#808080","#00001A","#C100AE","#00AEC8"]'
-        data-command="0">
-</canvas>
-}}}
+;;= Blank Tile =
+;;{{{html
+;;<script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/mpUI.js?format=raw"></script><script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/CANVAS.js?format=raw" type="text/javascript"></script><script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/pixelUI.js?format=raw" type="text/javascript"></script><script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/bytes.js?format=raw" type="text/javascript"></script>
+;;<canvas width="150" 
+;;        data-canvasFunction="handleTileCanvas"
+;;        data-getTileDataFunction="getSprite16x16Data"
+;;        height="150"
+;;        data-pixWidth="8"
+;;        data-gridX="16"
+;;        data-gridY="16"
+;;        data-pixHeight="8"
+;;        data-gap="0.25"
+;;        data-gridPad="1"
+;;        data-colorsName="CS0"
+;;        data-colors='["#808080","#00001A","#C100AE","#00AEC8"]'
+;;        data-command="0">
+;;</canvas>
+;;}}}
 
-= Moon Buggy and 2 Wheel Sizes (2 pictures each) =
-{{{#!AssemblyCode
-<canvas width="900" 
-        height="275"
-        data-colors="CS0"
-        data-command=":2x2:1,2,3,4,+x,+y,+y,+y,+y,+y,+y,+y,+y,5,+x,6,+x,7,+x,8">
-</canvas>
-}}}
+;;= Moon Buggy and 2 Wheel Sizes (2 pictures each) =
+;;{{{html
+;;<canvas width="900" 
+;;        height="275"
+;;        data-colors="CS0"
+;;        data-command=":2x2:1,2,3,4,+x,+y,+y,+y,+y,+y,+y,+y,+y,5,+x,6,+x,7,+x,8">
+;;</canvas>
+;;}}}
 
-= Moon Buggy Crashing =
-{{{#!AssemblyCode
-<canvas width="900" 
-        height="275"
-        data-colors="CS0"
-        data-command=":2x2:9,A,B,C,+x,:2x2:D,E,F,10">
-</canvas>
-}}}
+;;= Moon Buggy Crashing =
+;;{{{html
+;;<canvas width="900" 
+;;        height="275"
+;;        data-colors="CS0"
+;;        data-command=":2x2:9,A,B,C,+x,:2x2:D,E,F,10">
+;;</canvas>
+;;}}}
 
-= Moon Buggy Explosion =
-{{{#!AssemblyCode
-<canvas width="1200" 
-        height="275"
-        data-colorsName="CS1"
-        data-colors='["#808080","#84C800","#C100AE","#C10000"]'
-        data-command=":3x2:11,12,13,14,15,16,+x,:3x2:17,18,19,1A,1B,1C,+x,:3x2:1D,1E,1F,20,21,22">
-</canvas><br>
-<canvas width="900" 
-        height="150"         
-        data-command=":2x1:23,24,+x,:2x1:25,26,+x,27">
-</canvas>
+;;= Moon Buggy Explosion =
+;;{{{html
+;;<canvas width="1200" 
+;;        height="275"
+;;        data-colorsName="CS1"
+;;        data-colors='["#808080","#84C800","#C100AE","#C10000"]'
+;;        data-command=":3x2:11,12,13,14,15,16,+x,:3x2:17,18,19,1A,1B,1C,+x,:3x2:1D,1E,1F,20,21,22">
+;;</canvas><br>
+;;<canvas width="900" 
+;;        height="150"         
+;;        data-command=":2x1:23,24,+x,:2x1:25,26,+x,27">
+;;</canvas>
+;;}}}
 
-;##Player Forward Shot
-<canvas width="900" 
-        height="150"         
-        data-command="28,+x,29,+x,2A,+x,2B,+x,2C">
-</canvas>
+;;=Player Forward Shot =
+;;{{{html
+;;<canvas width="900" 
+;;        height="150"         
+;;        data-command="28,+x,29,+x,2A,+x,2B,+x,2C">
+;;</canvas>
+;;}}}
 
-;##Rocks
-<canvas width="900" 
-        height="150"    
-        data-colorsName="CS4"
-        data-colors='["#808080","#845100","#808080","#3E3700"]'     
-        data-command="2D,+x,2E,+x,2F,+x,30">
-</canvas>
+;;= Rocks =
+;;{{{html
+;;<canvas width="900" 
+;;        height="150"    
+;;        data-colorsName="CS4"
+;;        data-colors='["#808080","#845100","#808080","#3E3700"]'     
+;;        data-command="2D,+x,2E,+x,2F,+x,30">
+;;</canvas>
+;;}}}
 
-;##Boulders
-<canvas width="900" 
-        height="150"    
-        data-colorsName="CS4"
-        data-colors='["#808080","#845100","#808080","#3E3700"]'     
-        data-command="31,+x,32,+x,33,+x,34,+x,36,+x,37">
-</canvas>
+;;= Boulders =
+;;<canvas width="900" 
+;;        height="150"    
+;;        data-colorsName="CS4"
+;;        data-colors='["#808080","#845100","#808080","#3E3700"]'     
+;;        data-command="31,+x,32,+x,33,+x,34,+x,36,+x,37">
+;;</canvas>
+;;}}}
 
-;##Tank-Shot and Tank
-<canvas width="150" 
-        height="150"    
-        data-colors="CS0"
-        data-command="39">
-</canvas>
-<canvas width="900" 
-        height="150"    
-        data-colorsName="CS9"
-        data-colors='["#808080","#C1C800","#00001A","#C10000"]'    
-        data-command="38">
-</canvas>
+;;= Tank-Shot and Tank =
+;;{{{html
+;;<canvas width="150" 
+;;        height="150"    
+;;        data-colors="CS0"
+;;        data-command="39">
+;;</canvas>
+;;<canvas width="900" 
+;;        height="150"    
+;;        data-colorsName="CS9"
+;;        data-colors='["#808080","#C1C800","#00001A","#C10000"]'    
+;;        data-command="38">
+;;</canvas>
+;;}}}
 
-;##Alien Speeder (and 2 thrust patterns)
-<canvas width="900" 
-        height="150"
-        data-command="7C,+x,7B,+x,:2x1:3A,3B">
-</canvas>
+;;= Alien Speeder (and 2 thrust patterns) =
+;;{{{html
+;;<canvas width="900" 
+;;        height="150"
+;;        data-command="7C,+x,7B,+x,:2x1:3A,3B">
+;;</canvas>
+;;}}}
 
-;##?? Unknown
-<canvas width="150" 
-        height="150"
-        data-colors="CS0"
-        data-command="3C">
-</canvas>
+;;= ?? Unknown =
+;;{{{html
+;;<canvas width="150" 
+;;        height="150"
+;;        data-colors="CS0"
+;;        data-command="3C">
+;;</canvas>
+;;}}}
 
-;##Ground Mine
-<canvas width="150" 
-        height="150"
-        data-colorsName="CSA"
-        data-colors='["#808080","#00001A","#C1C8C8","#808080"]'    
-        data-command="3D">
-</canvas>
+;;= Ground Mine =
+;;{{{html
+;;<canvas width="150" 
+;;        height="150"
+;;        data-colorsName="CSA"
+;;        data-colors='["#808080","#00001A","#C1C8C8","#808080"]'    
+;;        data-command="3D">
+;;</canvas>
+;;}}}
 
-;##Exploding Rocks/Boulders
-<canvas width="900" 
-        height="150"
-        data-colors="CS1"    
-        data-command="3E,+x,3F,+x,40,+x,41">
-</canvas>
+;;= Exploding Rocks/Boulders =
+;;{{{html
+;;<canvas width="900" 
+;;        height="150"
+;;        data-colors="CS1"    
+;;        data-command="3E,+x,3F,+x,40,+x,41">
+;;</canvas>
+;;}}}
 
-;##Alien Ships (3 kinds with rotations)
-<canvas width="900" 
-        height="150"
-        data-colorsName="CS7"
-        data-colors='["#808080","#C1C800","#6290C8","#C10000"]'    
-        data-command="42,+x,+x,+x,43,+x,44,+x,+x,+x,45,+x,46,+x,47">
-</canvas>
+;;= Alien Ships (3 kinds with rotations) =
+;;{{{html
+;;<canvas width="900" 
+;;        height="150"
+;;        data-colorsName="CS7"
+;;        data-colors='["#808080","#C1C800","#6290C8","#C10000"]'    
+;;        data-command="42,+x,+x,+x,43,+x,44,+x,+x,+x,45,+x,46,+x,47">
+;;</canvas>
+;;}}}
 
-;##Alien Ship Explosion
-<canvas width="900" 
-        height="150"
-        data-colors="CS1"    
-        data-command="48,+x,49,+x,4A">
-</canvas>
+;;= Alien Ship Explosion =
+;;{{{html
+;;<canvas width="900" 
+;;        height="150"
+;;        data-colors="CS1"    
+;;        data-command="48,+x,49,+x,4A">
+;;</canvas>
+;;}}}
 
-;##Alien Ship Shot (bubble alien)
-<canvas width="900" 
-        height="150"
-        data-colors="CS0"    
-        data-command="35">
-</canvas>
+;;= Alien Ship Shot (bubble alien) =
+;;{{{html
+;;<canvas width="900" 
+;;        height="150"
+;;        data-colors="CS0"    
+;;        data-command="35">
+;;</canvas>
+;;}}}
 
-;##Alien Ship Shots (fin alien and saucer alien, 3 rotations)
-<canvas width="900" 
-        height="150"
-        data-colors="CS1"    
-        data-command="4B,+x,4C,+x,4D">
-</canvas>
+;;= Alien Ship Shots (fin alien and saucer alien, 3 rotations) =
+;;<canvas width="900" 
+;;        height="150"
+;;        data-colors="CS1"    
+;;        data-command="4B,+x,4C,+x,4D">
+;;</canvas>
+;;}}}
 
-;##Crater-Opening Ground Explosion
-<canvas width="1200" 
-        height="375"
-        data-colors="CS1"    
-        data-command="4E,+x,:2x2:4F,50,51,52,+x,:2x2:53,54,55,56,+x,:2x2:57,58,59,5A,+x,:2x3:5B,5C,5D,5E,5F,60">
-</canvas>
+;;= Crater-Opening Ground Explosion =
+;;{{{html
+;;<canvas width="1200" 
+;;        height="375"
+;;        data-colors="CS1"    
+;;        data-command="4E,+x,:2x2:4F,50,51,52,+x,:2x2:53,54,55,56,+x,:2x2:57,58,59,5A,+x,:2x3:5B,5C,5D,5E,5F,60">
+;;</canvas>
+;;}}}
 
-;##Alien Shot Hitting Ground
-<canvas width="1000" 
-        height="275"    
-        data-colorsName="CS3"
-        data-colors='["#808080","#840000","#C1C8C8","#C1C800"]'     
-        data-command="61,+x,62,+x,63,+x,:2x2:64,65,66,67,+x,:2x2:68,69,6A,6B">
-</canvas>
+;;= Alien Shot Hitting Ground =
+;;{{{html
+;;<canvas width="1000" 
+;;        height="275"    
+;;        data-colorsName="CS3"
+;;        data-colors='["#808080","#840000","#C1C8C8","#C1C800"]'     
+;;        data-command="61,+x,62,+x,63,+x,:2x2:64,65,66,67,+x,:2x2:68,69,6A,6B">
+;;</canvas>
+;;}}}
 
-;##?? Rubble
-<canvas width="900" 
-        height="275"
-        data-colors="CS3"    
-        data-command=":1x2:6C,6D,+x,:1x2:6E,6F">
-</canvas>
+;;= ?? Rubble =
+;;{{{html
+;;<canvas width="900" 
+;;        height="275"
+;;        data-colors="CS3"    
+;;        data-command=":1x2:6C,6D,+x,:1x2:6E,6F">
+;;</canvas>
+;;}}}
 
-;##Space Plant (3 bases and 4 leaves)
-<canvas width="265" 
-        height="150"    
-        data-colorsName="CS8"
-        data-colors='["#808080","#C10000","00AEC8","#005100"]'     
-        data-command=":2x1:78,79">
-</canvas>
-<canvas width="600" 
-        height="150"    
-        data-colors="CS8"     
-        data-command=":2x1:71,72,+x,:2x1:76,77">
-</canvas><br>
-<canvas width="600" 
-        height="150"    
-        data-colorsName="CS2"
-        data-colors='["#808080","#C10000","00C800","#840000"]'     
-        data-command="70,+x,73,+x,74,+x,75">
-</canvas>
+;;= Space Plant (3 bases and 4 leaves) =
+;;{{{html
+;;<canvas width="265" 
+;;        height="150"    
+;;        data-colorsName="CS8"
+;;        data-colors='["#808080","#C10000","00AEC8","#005100"]'     
+;;        data-command=":2x1:78,79">
+;;</canvas>
+;;<canvas width="600" 
+;;        height="150"    
+;;        data-colors="CS8"     
+;;        data-command=":2x1:71,72,+x,:2x1:76,77">
+;;</canvas><br>
+;;<canvas width="600" 
+;;        height="150"    
+;;        data-colorsName="CS2"
+;;        data-colors='["#808080","#C10000","00C800","#840000"]'     
+;;        data-command="70,+x,73,+x,74,+x,75">
+;;</canvas>
+;;}}}
 
-;##Shot Hitting Shot
-<canvas width="500" 
-        height="150"
-        data-colors="CS1"    
-        data-command="7A">
-</canvas>
+;;= Shot Hitting Shot =
+;;{{{html
+;;<canvas width="500" 
+;;        height="150"
+;;        data-colors="CS1"    
+;;        data-command="7A">
+;;</canvas>
+;;}}}
 
-;##Score Indicators
+;;= Score Indicators =
 ; Changing color sets changes value. Very clever.
 ; Shown here will all pixels visible.
-<canvas width="500" 
-        height="150"
-        data-colors="CS0"
-        data-command="7D,+x,7E">
-</canvas>
+;;{{{html
+;;<canvas width="500" 
+;;        height="150"
+;;        data-colors="CS0"
+;;        data-command="7D,+x,7E">
+;;</canvas>
+;;}}}
 
-;##Score Indicators (Color Set 0E)
-<canvas width="500" 
-        height="150"
-        data-colorsName="CSE"
-        data-colors='["#808080","#C10000","#808080","#C10000"]'
-        data-command="7D,+x,7E">
-</canvas>
+;;= Score Indicators (Color Set 0E) =
+;;{{{html
+;;<canvas width="500" 
+;;        height="150"
+;;        data-colorsName="CSE"
+;;        data-colors='["#808080","#C10000","#808080","#C10000"]'
+;;        data-command="7D,+x,7E">
+;;</canvas>
+;;}}}
 
-;##Score Indicators (Color Set 0F)
-<canvas width="500" 
-        height="150"
-        data-colorsName="CSF"
-        data-colors='["#808080","#808080","#C10000","#C10000"]'
-        data-command="7D,+x,7E">
-</canvas>
+;;= Score Indicators (Color Set 0F) =
+;;{{{html
+;;<canvas width="500" 
+;;        height="150"
+;;        data-colorsName="CSF"
+;;        data-colors='["#808080","#808080","#C10000","#C10000"]'
+;;        data-command="7D,+x,7E">
+;;</canvas>
+;;}}}
 
 ; Each sprite is laid out in 32 bytes (256 pixels, 16*16=256) in each of the two ROMs.
 ; The data is organized as four 8x8 pixel blocks. The first 8 bytes define the upper
@@ -1341,4 +1373,3 @@
 1FE8: 00 00 00 00 00 00 00 00 ; 
 1FF0: 00 00 00 00 00 00 00 00 ; 
 1FF8: 00 00 00 00 00 00 00 00 ; 
-}}}

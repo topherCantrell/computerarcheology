@@ -48,7 +48,7 @@ function loadDataCache() {
         while(true) {        
             if (line.length<3) {
                 if (isTwoDigitHex(line)) {
-                    dataCache.append(parseInt(line,16));
+                    dataCache.push(parseInt(line,16));
                 }
                 break;
             }

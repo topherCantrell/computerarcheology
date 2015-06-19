@@ -1,6 +1,4 @@
-[[PageOutline()]]
 
-{{{#!AssemblyCode
 ; This PROM lists a set of colors (16) used in Moon Patrol sprites. The
 ; first color is "transparent" allowing the background to show through.
 ;
@@ -37,4 +35,3 @@
 0014: 00 00 00 00 
 0018: 00 00 00 00 
 001C: 00 00 00 00 
-}}}

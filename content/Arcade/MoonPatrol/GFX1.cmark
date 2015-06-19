@@ -1,14 +1,7 @@
-
-{{{#!AssemblyCode
-
-;##$CPU none
-;##$OriginalBinary 0000~mpe-5.3e+mpe-4.3f
-
 ; This image data is dumped here with mpe-4.3f following mpe-5.3e as
 ; an 8K block of bytes. In reality the display generator hardware
 ; reads both ROMs at the same time as a 4K block of words. This data
-; is only accessed by the display generator. Any representation here
-; will do.
+; is only accessed by the display generator. 
 ;
 ; Background tiles are 8x8 pixels with 2 bits per pixel. The
 ; first bit of the pair comes from mpe-5.3e (0000-0FFF here).
@@ -17,22 +10,24 @@
 ; are 512 tile patterns defined here.
 
 ;BackgroundTiles
-<script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/mpUI.js?format=raw"></script>
-<script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/CANVAS.js?format=raw" type="text/javascript"></script>
-<script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/pixelUI.js?format=raw" type="text/javascript"></script>
-<script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/bytes.js?format=raw" type="text/javascript"></script>
-<canvas width="1200" height="2100"  
-        data-canvasFunction="handleTileCanvas"
-    data-getTileDataFunction="getBackground8x8Data"
-    data-pixWidth="8"
-    data-gridX="8"
-    data-gridY="8"
-    data-pixHeight="8"
-    data-gap="0.25"
-    data-gridPad="1"
-    data-colors='["#808080","#000000","#0000DE","#009694"]'
-    data-command=":16x32:0">
-</canvas>
+;;{{{html
+;;<script src="/js/mpUI.js"></script>
+;;<script src="/js/CANVAS.js"></script>
+;;<script src="/js/pixelUI.js"></script>
+;;<script src="/js/bytes.js"></script>
+;;<canvas width="1200" height="2100"  
+;;    data-canvasFunction="handleTileCanvas"
+;;    data-getTileDataFunction="getBackground8x8Data"
+;;    data-pixWidth="8"
+;;    data-gridX="8"
+;;    data-gridY="8"
+;;    data-pixHeight="8"
+;;    data-gap="0.25"
+;;    data-gridPad="1"
+;;    data-colors='["#808080","#000000","#0000DE","#009694"]'
+;;    data-command=":16x32:0">
+;;</canvas>
+;;}}}
 
 0000: 00 00 00 00 00 00 00 00 ; 
 0008: 00 10 10 10 00 63 F7 63 ; 
@@ -1061,4 +1056,3 @@
 1FE8: 87 9F BF FF FF FF C0 00 ; 
 1FF0: 80 80 81 03 07 07 07 07 ; 
 1FF8: FE FE FE FE FC FC FC FC ; 
-}}}

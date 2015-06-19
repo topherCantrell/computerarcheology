@@ -1,5 +1,4 @@
 
-{{{#!AssemblyCode
 ; This ROM defines the colors used for the image backgrounds (not the text background).
 
 ; The comments in MAME say:
@@ -34,4 +33,3 @@
 0018: 00 00 77 70 ; ---- ---- <FONT style="BACKGROUND-COLOR:#FFDE51">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#00DE51">&nbsp;&nbsp;&nbsp;&nbsp;</FONT>
 001C: A0 00 77 70 ; <FONT style="BACKGROUND-COLOR:#0097AE">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> ---- <FONT style="BACKGROUND-COLOR:#FFDE51">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#00DE51">&nbsp;&nbsp;&nbsp;&nbsp;</FONT>
 
-}}}

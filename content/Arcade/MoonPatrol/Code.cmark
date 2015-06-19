@@ -5562,16 +5562,19 @@ BUG2: ; This doesn't appear to be used anywhere. Free-play is implemented by alw
 2D2C: D2 06 E3 E3 EF C7 F7 B0 FC 9E 00 8E 03 82 06 77 
 2D3C: 07 6E 08 66 09 5F 0A 59 
 
-<script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/mpUI.js?format=raw"></script>
-<script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/CANVAS.js?format=raw" type="text/javascript"></script>
-<script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/pixelUI.js?format=raw" type="text/javascript"></script>
-<script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/bytes.js?format=raw" type="text/javascript"></script>
+;;{{{html
+;;<script src="/js/mpUI.js"></script>
+;;<script src="/js/CANVAS.js"></script>
+;;<script src="/js/pixelUI.js"></script>
+;;<script src="/js/bytes.js"></script>
+;;}}}
 
 Splash:
 ; Text printing for MOON PATROL on the splash
 ;;{{{html
 ;;<canvas width="1000" height="330"
-;;data-file="gfx1.txt.html"
+;;data-canvasFunction="handleTileCanvas"
+;;data-file="GFX1.html"
 ;;data-getTileDataFunction="getBackground8x8Data"
 ;;data-pixWidth="8"
 ;;data-gridX="8"

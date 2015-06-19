@@ -1,10 +1,4 @@
 
-{{{#!AssemblyCode
-
-
-;##$CPU none
-;##$OriginalBinary 0000~mpe-3.3h
-
 ; This background is a giant 256x64 pixel image. Each pixel is one of 4 colors.
 ; 256*64*2/8 = 4K
 ;
@@ -23,24 +17,26 @@
 ; City:       --    00     77     70 
 
 ; City (far background)
-<script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/mpUI.js?format=raw"></script>
-<script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/CANVAS.js?format=raw" type="text/javascript"></script>
-<script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/pixelUI.js?format=raw" type="text/javascript"></script>
-<script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/bytes.js?format=raw" type="text/javascript"></script>
-<canvas width="2304" height="576"
-        data-canvasFunction="handleTileCanvas"
-        data-getTileDataFunction="getBackgroundImage"
-        height="150"
-        data-pixWidth="8"
-        data-gridX="256"
-        data-gridY="64"
-        data-pixHeight="8"
-        data-gap="0.25"
-        data-gridPad="1"
-        data-colorsName="CS0"
-        data-colors='["#808080","#000000","#FFDE51","#00DE51"]'
-        data-command="0">
-</canvas>
+;;{{{html
+;;<script src="/js/mpUI.js"></script>
+;;<script src="/js/CANVAS.js"></script>
+;;<script src="/js/pixelUI.js"></script>
+;;<script src="/js/bytes.js"></script>
+;;<canvas width="2304" height="576"
+;;        data-canvasFunction="handleTileCanvas"
+;;        data-getTileDataFunction="getBackgroundImage"
+;;        height="150"
+;;        data-pixWidth="8"
+;;        data-gridX="256"
+;;        data-gridY="64"
+;;        data-pixHeight="8"
+;;        data-gap="0.25"
+;;        data-gridPad="1"
+;;        data-colorsName="CS0"
+;;        data-colors='["#808080","#000000","#FFDE51","#00DE51"]'
+;;        data-command="0">
+;;</canvas>
+;;}}}
 
 ; For instance, first colored pixel at 0003:
 ; 40    1000_1000 -> 11 00 00 00  Light green
@@ -302,5 +298,3 @@
 0FD0: 00 00 FF FF FF FF FF FF FF FF FF FF FF CF 00 00 
 0FE0: FF FF FF CF 0F 0F 00 00 FF FF FF FF FF FF FF FF 
 0FF0: FF EF 0F 0C 00 FF FF FF FF FF FF FF FF 0F 0F 00 
-
-}}}
