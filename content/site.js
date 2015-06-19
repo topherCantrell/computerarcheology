@@ -141,6 +141,13 @@
 	             {"mark": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware Info"},
 	             {"code": "Code.cmark", "out": "Code.html", "nav": "Code"}
 	             ]
+	         },
+	         
+	         {"dir": "TimePilot", "nav": "Time Pilot", "entries": [
+	             {"copy": "TimePilot.jpg"},
+	             {"mark": "TimePilot.mark", "out": "index.html"},
+	             {"code": "SoundCode.cmark", "out": "SoundCode.html", "nav": "Sound Code"}
+	             ]
 	         }
 	         	         
 	         ]

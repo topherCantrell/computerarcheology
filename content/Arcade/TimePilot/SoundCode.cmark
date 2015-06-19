@@ -1,53 +1,7 @@
-[[PageOutline()]]
+;;%%image TimePilot.jpg
 
-= Time Pilot Sound =
-
-|| [#SoundCommands      "Command List"] ||
-|| [#MemoryMap          "Memory Map"] ||
-|| [#Start              "START"] ||
-|| [#AYChipIO           "AY Chip IO"] ||
-|| [#InterruptService   "Interrupt"] ||
-|| [#CommandBuffer      "Command Buffer"] ||
-|| [#MainLoop           "Main Loop"] ||
-|| [#FilterCaps         "Filter Caps"] ||
-|| [#MusicProcessing    "Music Processing"] ||
-|| [#CommandTable       "Command Tables"] ||
-|| [#MusicData          "Music Data"] ||
-|| [#Command00          "00 Clear Buffer"] ||
-|| [#Command01          "01 Coin"] ||
-|| [#Command02          "02 Enemy Shot"] ||
-|| [#Command03          "03 1910 Bomb"] ||
-|| [#Command04          "04 Missile Launch"] ||
-|| [#Command05          "05 UFO Shot"] ||
-|| [#Command06          "06 Missile (continuous)"] ||
-|| [#Command07          "07 Player Shot"] ||
-|| [#Command08          "08 Enemy Explosion (thud)"] ||
-|| [#Command09          "09 Enemy Explosion (noise)"] ||
-|| [#Command0A          "0A Tracker or Bomb Explosion"] ||
-|| [#Command0B          "0B Squad Appears"] ||
-|| [#Command0C          "0C 1st boss - blimp (continuous)"] ||
-|| [#Command0D          "0D 2nd boss - jest (continuous)"] ||
-|| [#Command0E          "0E 3rd boss - helicopter (continuous)"] ||
-|| [#Command0F          "0F 4th boss - super jet (continuous)"] ||
-|| [#Command10          "10 5th boss - mother ship (continuous)"] ||
-|| [#Command11          "11 User Explosion Component"] ||
-|| [#Command12          "12 User Explosion Component"] ||
-|| [#Command13          "13 User Explosion Component"] ||
-|| [#Command14          "14 User Explosion Component"] ||
-|| [#Command15          "15 User Explosion Component"] ||
-|| [#Command16          "16 Pickup Parachute"] ||
-|| [#Command17          "17 Free Man"] ||
-|| [#Command18          "18 Time Jump 1"] ||
-|| [#Command19          "19 Time Jump 2"] ||
-|| [#Command1A          "1A Play Song 1"] ||
-|| [#Command1B          "1B Play Song 2"] ||
-
-{{{#!AssemblyCode
 ; Sound processor for the arcade game "Time Pilot"
 ; 1982 by Centuri/Konami
-
-; Dissassembly comments by Chris Cantrell 1998
-; For detailed discussion of code visit http://www.computerarcheology.com
 
 ; TO DO
 ; - Decompose music script into command text
@@ -65,7 +19,7 @@
 ;
 ; Processing loop = 1.789772MHz / 10240 = 174.782421875Hz (0.005721399 sec per tick)
 
-;SoundCommands {*SoundCommands}
+SoundCommands: ; =
 ;
 ; First number is command number
 ; Second is filter-capacitor configuration
@@ -104,7 +58,7 @@
 ; 1F 0 Initialize music D4
 ; 20 0 Initialize music D5
 
-;MemoryMap {*MemoryMap}
+MemoryMap: ; =
 ; Memory usage starts at 3000
 ; 3000-0B Command Buffer (see COMMAND BUFFER)
 ; 300C,0D Current cap-filter settings
@@ -119,13 +73,13 @@
 
 ; Individual sound routines use some memory above 3040
 
-;Start {*Start}
+Start: ; =
 ; Reset/Startup
 0000: 21 00 30        LD      HL,$3000            ; Command buffer
 0003: 06 00           LD      B,$00               ; Fill value
 0005: C3 9B 00        JP      $009B               ; Continue initialization
 
-;AYChipIO {*AYChipIO}
+AYChipIO: ; =
 ; Read CHIP0 register. A=register, return in A
 0008: 32 00 50        LD      ($5000),A           ; Store the register number
 000B: 3A 00 40        LD      A,($4000)           ; Read the value
@@ -169,7 +123,7 @@
 0036: FF              RST     $38                 ; ...
 0037: FF              RST     $38                 ; ...
 
-;InterruptService {*InterruptService}
+InterruptService: ; =
 ; # #### Interrupt Service Routine #######################################
 ; Called when the main CPU signals a new sound command.
 ; Switch banks and call the command fetch routine
@@ -180,7 +134,7 @@
 003E: D9              EXX                         ; Set the B-L banks back
 003F: C9              RET                         ; Done
 
-;CommandBuffer {*CommandBuffer}
+CommandBuffer: ; =
 ; # #### COMMAND BUFFER########################################
 ;
 ; COMMAND BUFFER
@@ -303,7 +257,7 @@
 00BC: 3E 07           LD      A,$07               ; "Enable" register again
 00BE: E7              RST     $20                 ; Configure AY38910 chip 1
 
-;MainLoop {*MainLoop}
+MainLoop: ; =
 ; == MAIN PROCESSING LOOP ==
 00BF: FB              EI                          ; Enable interrupts
 00C0: 3E 0F           LD      A,$0F               ; Port B
@@ -444,7 +398,7 @@
 0195: 70              LD      (HL),B              ; Clear second byte
 0196: C9              RET                         ; Done
 
-;Command00 {*Command00}
+Command00: ; =
 ; Initialize Routine Vector 00 (Silence the channel)
 
 0197: 0E 00           LD      C,$00               ; Silence the voice
@@ -481,7 +435,7 @@
 01C4: 4C              LD      C,H                 ; ...
 01C5: C3 20 00        JP      $0020               ; Done
 
-;FilterCaps {*FilterCaps}
+FilterCaps: ; =
 ; There are two capacitors that can be switched onto each audio channel
 ; to ground. The MSB bit set to one selects a 0.22 and the LSB bit set selects
 ; a 0.047 cap. Most effects just switch out the caps (writing 00), but the
@@ -537,7 +491,7 @@
 01FA: 77              LD      (HL),A              ; Any write will do (using the ...
 01FB: C9              RET                         ; ... address lines as data.)
 
-;MusicProcessing {*MusicProcessing}
+MusicProcessing: ; =
 ; # ### MUSIC PROCESSING #######################################
 ;
 ; Bytes are loaded from the music pointer. The upper three bits
@@ -861,7 +815,7 @@
 ; the game code ROM to play a single sound and go into an infinite
 ; loop. The modified code was run through the MAME emulator.
 
-;Command01 {*Command01}
+Command01: ; =
 ; Initialize Routine Vector 01 (Coin Drop)
 03E7: AF              XOR     A                   ;
 03E8: CD C8 01        CALL    $01C8               ;
@@ -914,7 +868,7 @@
 0430: 55              LD      D,L                 ;
 0431: 6B              LD      L,E                 ;
 
-;Command02 {*Command02}
+Command02: ; =
 ; Initialization Vector Routine 02 (Plane Fire)
 0432: AF              XOR     A                   ; A=0
 0433: CD C8 01        CALL    $01C8               ; No filter caps on channel
@@ -942,7 +896,7 @@
 0460: 3D              DEC     A                   ; Return ...
 0461: C9              RET                         ; ... -1 (finished)
 
-;Command03 {*Command03}
+Command03: ; =
 ; Initialization Routine Vector 03 (1910 Bomb)
 0462: AF              XOR     A                   ; No filter ...
 0463: CD C8 01        CALL    $01C8               ; ... caps on channel
@@ -975,7 +929,7 @@
 0497: 3E FF           LD      A,$FF               ; Done
 0499: C9              RET                         ;
 
-;Command04 {*Command04}
+Command04: ; =
 ; Initialization Routine Vector 04 (Missile Launch)
 049A: 3E 01           LD      A,$01               ;
 049C: CD C8 01        CALL    $01C8               ;
@@ -1013,7 +967,7 @@
 04D7: 3D              DEC     A                   ;
 04D8: C9              RET                         ;
 
-;Command05 {*Command05}
+Command05: ; =
 ; Initialization Routine Vector 05 (Missile - continuous)
 04D9: AF              XOR     A                   ;
 04DA: CD C8 01        CALL    $01C8               ;
@@ -1048,7 +1002,7 @@
 0508: 3D              DEC     A                   ;
 0509: C9              RET                         ;
 
-;Command06 {*Command06}
+Command06: ; =
 ; Initialization Routine Vector 06 (UFO shot)
 050A: AF              XOR     A                   ;
 050B: CD C8 01        CALL    $01C8               ;
@@ -1093,7 +1047,7 @@
 054B: AF              XOR     A                   ;
 054C: C9              RET                         ;
 
-;Command07 {*Command07}
+Command07: ; =
 ; Initialization Routine Vector 07 (User Fire)
 054D: AF              XOR     A                   ;
 054E: CD C8 01        CALL    $01C8               ;
@@ -1129,7 +1083,7 @@
 0586: 3D              DEC     A                   ;
 0587: C9              RET                         ;
 
-;Command08 {*Command08}
+Command08: ; =
 ; Initialization Routine Vector 08 (Enemy Explosion Component - thud)
 0588: 3E 01           LD      A,$01               ;
 058A: CD C8 01        CALL    $01C8               ;
@@ -1168,7 +1122,7 @@
 05C6: 3D              DEC     A                   ;
 05C7: C9              RET                         ;
 
-;Command09 {*Command09}
+Command09: ; =
 ; Initialization Routine Vector 09 (Enemy Explosion Component white-noise)
 05C8: 3E 01           LD      A,$01               ;
 05CA: CD C8 01        CALL    $01C8               ;
@@ -1224,7 +1178,7 @@
 0619: 3D              DEC     A                   ;
 061A: C9              RET                         ;
 
-;Command0A {*Command0A}
+Command0A: ; =
 ; Initialization Routine Vector 0A (Traker or Bomb Explosion)
 061B: AF              XOR     A                   ;
 061C: CD C8 01        CALL    $01C8               ;
@@ -1266,7 +1220,7 @@
 065C: 3D              DEC     A                   ;
 065D: C9              RET                         ;
 
-;Command0B {*Command0B}
+Command0B: ; =
 ; Initialization Routine Vector 0B (Squad appears)
 065E: AF              XOR     A                   ; No filter ...
 065F: CD C8 01        CALL    $01C8               ; ... caps on channel
@@ -1302,7 +1256,7 @@
 0693: 3D              DEC     A                   ;
 0694: C9              RET                         ;
 
-;Command0C {*Command0C}
+Command0C: ; =
 ; Initialization Routine Vector 0C (1st boss - blimp)
 0695: 3E 01           LD      A,$01               ;
 0697: CD C8 01        CALL    $01C8               ;
@@ -1348,7 +1302,7 @@
 06D7: AF              XOR     A                   ;
 06D8: C9              RET                         ;
 
-;Command0D {*Command0D}
+Command0D: ; =
 ; Initialization Routine Vector 0D (2nd boss - jet)
 06D9: 3E 01           LD      A,$01               ;
 06DB: CD C8 01        CALL    $01C8               ;
@@ -1387,7 +1341,7 @@
 0713: AF              XOR     A                   ;
 0714: C9              RET                         ;
 
-;Command0E {*Command0E}
+Command0E: ; =
 ; Initialization Routine Vector 0E (3rd boss - helicopter)
 0715: 3E 01           LD      A,$01               ;
 0717: CD C8 01        CALL    $01C8               ;
@@ -1436,7 +1390,7 @@
 075A: AF              XOR     A                   ;
 075B: C9              RET                         ;
 
-;Command0F {*Command0F}
+Command0F: ; =
 ; Initialization Routine Vector 0F (4th boss - super jet)
 075C: 3E 01           LD      A,$01               ;
 075E: CD C8 01        CALL    $01C8               ;
@@ -1467,7 +1421,7 @@
 0788: AF              XOR     A                   ;
 0789: C9              RET                         ;
 
-;Command10 {*Command10}
+Command10: ; =
 ; Initialization Routine Vector 10 (5th boss - mother ship)
 078A: 3E 01           LD      A,$01               ;
 078C: CD C8 01        CALL    $01C8               ;
@@ -1508,7 +1462,7 @@
 07C1: D6 20           SUB     $20                 ;
 07C3: C3 9F 07        JP      $079F               ;
 
-;Command11 {*Command11}
+Command11: ; =
 ; Initialization Routine Vector 11 (User Explosion Component)
 07C6: 3E 01           LD      A,$01               ;
 07C8: CD C8 01        CALL    $01C8               ;
@@ -1555,7 +1509,7 @@
 0809: 3D              DEC     A                   ;
 080A: C9              RET                         ;
 
-;Command12 {*Command12}
+Command12: ; =
 ; Initialization Routine Vector 12 (User Explosion Component)
 080B: 3E 01           LD      A,$01               ;
 080D: CD C8 01        CALL    $01C8               ;
@@ -1604,7 +1558,7 @@
 0855: 3D              DEC     A                   ;
 0856: C9              RET                         ;
 
-;Command13 {*Command13}
+Command13: ; =
 ; Initialization Routine Vector 13 (User Explosion Component)
 0857: 3E 02           LD      A,$02               ;
 0859: CD C8 01        CALL    $01C8               ;
@@ -1676,7 +1630,7 @@
 08CE: 3D              DEC     A                   ;
 08CF: C9              RET                         ;
 
-;Command14 {*Command14}
+Command14: ; =
 ; Initialization Routine Vector 14 (User Explosion Component)
 08D0: 3E 02           LD      A,$02               ;
 08D2: CD C8 01        CALL    $01C8               ;
@@ -1744,7 +1698,7 @@
 0942: 3D              DEC     A                   ;
 0943: C9              RET                         ;
 
-;Command15 {*Command15}
+Command15: ; =
 ; Initialization Routine Vector 15 (User Explosion Component)
 0944: 3E 01           LD      A,$01               ;
 0946: CD C8 01        CALL    $01C8               ;
@@ -1803,7 +1757,7 @@
 099A: 3D              DEC     A                   ;
 099B: C9              RET                         ;
 
-;Command16 {*Command16}
+Command16: ; =
 ; Initialization Routine Vector 16 (Pickup Parachute)
 099C: AF              XOR     A                   ;
 099D: CD C8 01        CALL    $01C8               ;
@@ -1838,7 +1792,7 @@
 09CF: 3D              DEC     A                   ;
 09D0: C9              RET                         ;
 
-;Command17 {*Command17}
+Command17: ; =
 ; Initialization Routine Vector 17 (Free Man)
 09D1: 3E 01           LD      A,$01               ;
 09D3: CD C8 01        CALL    $01C8               ;
@@ -1873,7 +1827,7 @@
 0A00: 3D              DEC     A                   ;
 0A01: C9              RET                         ;
 
-;Command18 {*Command18}
+Command18: ; =
 ; Initialization Routine Vector 18 (Time Jump 1)
 0A02: AF              XOR     A                   ;
 0A03: CD C8 01        CALL    $01C8               ;
@@ -1919,7 +1873,7 @@
 0A48: 3E FF           LD      A,$FF               ;
 0A4A: C9              RET                         ;
 
-;Command19 {*Command19}
+Command19: ; =
 ; Initialization Routine Vector 19 (Time Jump 2)
 0A4B: AF              XOR     A                   ;
 0A4C: CD C8 01        CALL    $01C8               ;
@@ -1968,7 +1922,7 @@
 0A90: 3D              DEC     A                   ;
 0A91: C9              RET                         ;
 
-;CommandTable {*CommandTable}
+CommandTable: ; =
 ; Initialize sound routines
 0A92: 97 01 ; 0   Write 0 to voice
 0A94: E7 03 ; 1  0 Coin Drop
@@ -2039,12 +1993,12 @@
 0B12: 5C 0B ; 1F Continue music D4
 0B14: 65 0B ; 20 Continue music D5
 
-;Command1A {*Command1A}
+Command1A: ; =
 ; Initialization Routine Vector 1A
 0B16: AF              XOR     A                   ; Play song 0
 0B17: C3 1C 0B        JP      $0B1C               ; Play it
 
-;Command1B {*Command1B}
+Command1B: ; =
 ; Initialization Routine Vector 1B
 0B1A: 3E 01           LD      A,$01               ; Play song 1
 0B1C: CD 7E 03        CALL    $037E               ; Initialize music descriptors
@@ -2101,7 +2055,7 @@
 0B6C: AF              XOR     A                   ; Continue flag
 0B6D: C9              RET                         ; Done
 
-;MusicData {*MusicData}
+MusicData: ; =
 ; Descriptor pointers for songs (10 bytes each)
 ; Song 0
 0B6E: 82 0B 
@@ -2220,4 +2174,4 @@
 0FD0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 0FE0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 0FF0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
-}}}
+

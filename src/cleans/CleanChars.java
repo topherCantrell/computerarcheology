@@ -11,7 +11,7 @@ public class CleanChars {
 	
 	public static void main(String [] args) throws Exception {
 		
-		String fname = "content/Arcade/SpaceInvaders/SpaceInvaders.mark";
+		String fname = "content/Arcade/TimePilot/TimePilot.mark";
 		
 		InputStream is = new FileInputStream(fname);
 		int [] data = new int[is.available()];
@@ -33,16 +33,19 @@ public class CleanChars {
 						newData.add((int) '"');
 						break;
 					case 0x93:
-						newData.add((int) '"');
+						newData.add((int) '-');
+						newData.add((int) '-');
 						break;
 					case 0xA6:
-						newData.add((int) '"');
+						newData.add((int) '.');
+						newData.add((int) '.');
+						newData.add((int) '.');
 						break;
 					case 0x98:
-						newData.add((int) '"');
+						newData.add((int) '\'');
 						break;
 					case 0x99:
-						newData.add((int) '"');
+						newData.add((int) '\'');
 						break;
 					default:
 						throw new Exception("Unknown "+data[x+2]);
