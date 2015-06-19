@@ -1,20 +1,6 @@
-= RAM Usage =
+%%image SpaceInvaders.jpg
 
-
-
-{{{#!html
-<table class="wiki">
-<tr><th width="50"> Address </th><th width="150"> Name </th><th style="text-align: left">Description</th></tr>
-<tr><td>2000</td><td>waitOnDraw</td><td>Cleared by alien-draw and set by next-alien. This ensures no alien gets missed while drawing.</td></tr>
-<tr id="2002"><td>2002</td><td>alienIsExploding</td><td>Not-0 if an alien is exploding, 0 if not exploting</td></tr>
-<tr><td>2003</td><td>expAlienTimer</td><td>Time (ISR ticks) left in alien-explosion</td></tr>
-<tr><td>2004</td><td>alienRow</td><td>Row number of current alien (cursor)</td></tr>
-<tr><td>2005</td><td>alienFrame</td><td>Animation frame number (0 or 1) for current alien (cursor)</td></tr>
-</table>
-
-}}}
-
-||= Address =||= Name =||=Description =||
+||= Address  || Name                  || Description                                  ||
 ||2000||waitOnDraw||Cleared by alien-draw and set by next-alien. This ensures no alien gets missed while drawing.||
 ||2001|| || ||
 ||2002||alienIsExploding||Not-0 if an alien is exploding, 0 if not exploting||
@@ -293,10 +279,10 @@
 ||20FF||P2ScorLoM||Hi-score descriptor ... location MSB||
 
 == Player 1 specific data ==
-|| 2100 - 2136 || || Player 1 alien ship indicators (0=dead) 11*5 = 55 ||
-|| 2137 - 2141 || || Unused 11 bytes (room for another row of aliens?) ||
-|| 2142 - 21F1 || || Player 1 shields remembered between rounds 44 bytes * 4 shields ($B0 bytes) ||
-|| 21F2 - 21FA || || Unused 9 bytes
+|| 2100:2136 || || Player 1 alien ship indicators (0=dead) 11*5 = 55 ||
+|| 2137:2141 || || Unused 11 bytes (room for another row of aliens?) ||
+|| 2142:21F1 || || Player 1 shields remembered between rounds 44 bytes * 4 shields ($B0 bytes) ||
+|| 21F2:21FA || || Unused 9 bytes
 || 21FB || p1RefAlienDX || Player 1 reference-alien delta X  ||
 || 21FC || p1RefAlienY  || Player 1 reference-alien Y coordinate ||
 || 21FD || p1RefAlienX  || Player 1 reference-alien X coordiante ||
@@ -304,10 +290,10 @@
 || 21FF || p1ShipsRem   || Ships remaining after current dies  ||
 
 == Player 2 specific data ==
-|| 2200 - 2236 || || Player 2 alien ship indicators (0=dead) 11*5 = 55 ||
-|| 2237 - 2241 || || Unused 11 bytes (room for another row of aliens?) ||
-|| 2242 - 22F1 || || Player 2 shields remembered between rounds 44 bytes * 4 shields ($B0 bytes) ||
-|| 22F2 - 22FA || || Unused 9 bytes ||
+|| 2200:2236 || || Player 2 alien ship indicators (0=dead) 11*5 = 55 ||
+|| 2237:2241 || || Unused 11 bytes (room for another row of aliens?) ||
+|| 2242:22F1 || || Player 2 shields remembered between rounds 44 bytes * 4 shields ($B0 bytes) ||
+|| 22F2:22FA || || Unused 9 bytes ||
 || 22FB || p2RefAlienDX || Player 2 reference-alien delta X ||
 || 22FC || p2RefAlienYr || Player 2 reference-alien Y coordinate ||
 || 22FD || p2RefAlienXr || Player 2 reference-alien X coordinate ||
@@ -315,5 +301,5 @@
 || 22FF || p2ShipsRem   || Ships remaining after current dies ||
 
 == Stack ==
-|| 2300 - 23DD || || Unused (stack space) ||
-|| 23DE - 23FF || || In the emulator the stack consumes this area (roughly 16 levels) ||
+|| 2300:23DD || || Unused (stack space) ||
+|| 23DE:23FF || || In the emulator the stack consumes this area (roughly 16 levels) ||

@@ -132,6 +132,15 @@
 	             {"copy": "Robotron.jpg"},
 	             {"code": "SoundCode.cmark", "out": "SoundCode.html", "nav": "Sound Code"}	                                                            
 	             ]
+	         },
+	         
+	         {"dir": "SpaceInvaders", "nav": "Space Invaders", "entries": [
+	             {"mark": "SpaceInvaders.mark", "out": "index.html"},
+	             {"copy": "SpaceInvaders.jpg"},
+	             {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
+	             {"mark": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware Info"},
+	             {"code": "Code.cmark", "out": "Code.html", "nav": "Code"}
+	             ]
 	         }
 	         	         
 	         ]

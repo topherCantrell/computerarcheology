@@ -69,24 +69,28 @@ class CodeToHTML(MarkupToHTML):
 
             for x in iter(range(len(lines))):
                 g = lines[x]
-                if isinstance(g, CodeLine) and g.address == line.numbers[0]["value"]:
-                    g.linkID = line.numbers[0]["text"][1:]
-                    # This line of code might also have a preceding label. Let's look for that.
-                    y = x
-                    while y >= 0:
-                        if not isinstance(lines[y], CodeLine):
-                            y = y - 1
-                            continue
-                        if lines[y].labels:
-                            if (line.target["target"] != "") and (not line.collected) and (line.target["target"] not in lines[y].labels):
-                                print ("TARGET SAYS '" + line.target["target"] + "' BUT I THINK IT SHOULD BE '" + lines[y].labels[0] + "'")
-                                print (lines[y - 5].labels)
-                                print (lines[y].labels)
-                            line.target["target"] = lines[y].labels[0]
-                            if line.target["text"] == "":
-                                line.target["text"] = lines[y].labels[0]
-                            del g.linkID
-                        break
+                
+                if isinstance(g, CodeLine):
+                    if len(line.numbers)==0:
+                        print ("HERE") 
+                    if g.address == line.numbers[0]["value"]:
+                        g.linkID = line.numbers[0]["text"][1:]
+                        # This line of code might also have a preceding label. Let's look for that.
+                        y = x
+                        while y >= 0:
+                            if not isinstance(lines[y], CodeLine):
+                                y = y - 1
+                                continue
+                            if lines[y].labels:
+                                if (line.target["target"] != "") and (not line.collected) and (line.target["target"] not in lines[y].labels):
+                                    print ("TARGET SAYS '" + line.target["target"] + "' BUT I THINK IT SHOULD BE '" + lines[y].labels[0] + "'")
+                                    print (lines[y - 5].labels)
+                                    print (lines[y].labels)
+                                line.target["target"] = lines[y].labels[0]
+                                if line.target["text"] == "":
+                                    line.target["text"] = lines[y].labels[0]
+                                del g.linkID
+                            break
 
     def makeAddressAnchor(self, line, maps):
         tar = line.target["target"]

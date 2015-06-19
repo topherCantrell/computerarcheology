@@ -49,6 +49,8 @@ class AddressToHTML(MarkupToHTML):
         return int(s, 16)
 
     def loadMap(self, inName):
+        
+        # print (inName)
 
         ps = inName.split()
 
@@ -74,6 +76,8 @@ class AddressToHTML(MarkupToHTML):
                 entry = {}
                 ens = line.split("||")[1:-1]
                 e1 = ens[0].strip()
+                if e1=="":
+                    continue
                 if ":" in e1:
                     i = e1.index(':')
                     entry["endAddress"] = self.hexInt(e1[i + 1:])

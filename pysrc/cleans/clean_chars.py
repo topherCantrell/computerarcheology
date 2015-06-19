@@ -1,8 +1,8 @@
 import sys
 
-print sys.argv[1]
+fname = "../../content/Arcade/SpaceInvaders/SpaceInvaders.mark"
 
-with open(sys.argv[1]) as f:
+with open(fname) as f:
     raw = f.readlines()
 
 REPS = [{'utf8': "\xE2\x80\x9C", 'rep': '"'},
@@ -20,7 +20,7 @@ def checkString(s):
     for x in iter(range(len(s))):
         if ord(s[x]) > 127:
             for y in iter(range(5)):
-                print ord(s[x + y])
+                print (ord(s[x + y]))
             return False
     return True
 
@@ -32,8 +32,8 @@ for x in iter(range(len(raw))):
         r = r.replace(o["utf8"], o["rep"])
     raw[x] = r
     if not checkString(r):
-        print "OOPS"
-        print "::" + r + "::"
+        print ("OOPS")
+        print ("::" + r + "::")
         break
 
 with open("New.mark", "w") as f:
