@@ -1,6 +1,9 @@
+%%title Atari 2600 Asteroids
+%%image A2600Asteroids.jpg
+
 = Atari 2600 Asteroids =
 
-[wiki:Atari2600/Asteroids/Code Code]
+[Code.html Code]
 
 {{{
 Z26Frame: Loading Z26 log file 'asteroidrun.log' ...
