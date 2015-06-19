@@ -139,7 +139,18 @@
 	             {"copy": "SpaceInvaders.jpg"},
 	             {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
 	             {"mark": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware Info"},
-	             {"code": "Code.cmark", "out": "Code.html", "nav": "Code"}
+	             {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
+	             
+	             {"mark": "Chronology.mark", "out": "Chronology.html", "nav": "Chronology"},
+	             
+	             {"copy": "Alive.jpg"},
+	             {"copy": "Check23.jpg"},
+	             {"copy": "Chronology.jpg"},
+	             {"copy": "Diag.jpg"},
+	             {"copy": "DiagRun.jpg"},
+	             {"copy": "Flip.jpg"},
+	             {"copy": "NoTAITO.jpg"},
+	             {"copy": "SideCheck.jpg"}
 	             ]
 	         },
 	         

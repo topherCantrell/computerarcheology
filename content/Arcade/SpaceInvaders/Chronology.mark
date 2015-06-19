@@ -1,4 +1,5 @@
-[[PageOutline()]]
+%%title ROM Chronology
+%%image SpaceInvaders.jpg
 
 = Evolution =
 
@@ -8,7 +9,7 @@ Andy sent me several ROM sets and lots of information on them. He challenged me 
 
 The following picture shows the flow of changes from one set to another. The name of the set in upper case is what the MAME driver uses. The name in lower case is what Andy calls each set.
 
-[[Image(Chronology.jpg)]]
+[!Chronology.jpg]
 
 The SITV1 set contains the oldest code. All other sets are enhancements from this set.
 
@@ -34,7 +35,7 @@ The hardware to control the screen flip is connected to bit 5 of output port 5. 
 
 The original code wrote to the control bit and immediately moved on. The patch jumps to a routine that writes to the bit, and this routine makes a short delay. Maybe it takes the hardware a moment to make the switch and this keeps the game from starting until everything is stable.
 
-[[Image(Flip.jpg)]]
+[!Flip.jpg]
 == Alive Logic ==
 
 The game keeps the status of the aliens in a 55-byte array. The code at 01C5 writes a 1 to each byte to bring the aliens to life. The code at 154B sets a byte to 0 to remove the shot alien from play.
@@ -45,7 +46,7 @@ This patch changes the check at 015C to be like all the other places. This is ju
 
 Note that the change in logic actually requires one more byte of code. The difference is made up later in the code by changing "LDA $01" to "INCA", which also produces a non-zero value since there will never be 255 rows of aliens.
 
-[[Image(Alive.jpg)]]
+[!Alive.jpg]
 
 == No TAITO ==
 
@@ -53,7 +54,7 @@ This is a two-byte change. 1985 changed from C3 to C9 (JP to RET). 1988 changed 
 
 The Midway version of the code does not print "*TAITO CORPORATION*". Two bytes were changed to skip this message. The two byte jump address at 1986 was left intact (it is never fetched in the modified version). The data for the message was also left intact.
 
-[[Image(NoTAITO.jpg)]]
+[!NoTAITO.jpg]
 == No Diagnostics ==
 
 The two byte jump destination at 0004 is changed to skip checking the diagnostic switch. The check-switch routine is 00ed out from 00E2 to 00EA. The diagnostic routine is 00ed out from 1000 to 13FF.
@@ -64,7 +65,7 @@ In the original game code the first instruction is a jump to a short segment of 
 
 This patch changes the initial jump to go straight to 18D4 without checking the diagnostic switch. The small check-routine at 00E2 and the 1K diagnostic routine at 1000 are completely 00ed out (NOP) removing them from the code.
 
-[[Image(Diag.jpg)]]
+[!Diag.jpg]
 
 Later versions of the code (SISV2 and SISV) use 8 1K ROM chips instead of 4 2K ROM chips. In these versions, the two chips that would hold the 2K diagnostic code area at 0C00 and 1000 are simply missing. And the code continues to skip checking the diagnostic DIP switch. There is no way to get to the code even if the missing ROM chips were plugged in.
 
@@ -72,10 +73,10 @@ Later versions of the code (SISV2 and SISV) use 8 1K ROM chips instead of 4 2K R
 
 Interestingly, the diagnostics routine is written for the monitor in non-rotated position. Maybe it was useful at the factory. Maybe this non-rotation is what prompted the designers to begin leaving it out.
 
-[[Image(DiagRun.jpg)]]
+[!DiagRun.jpg]
 == Check 23 ==
 
-[wiki:Arcade/SpaceInvaders/CodeAsZ80#15C5 One-byte change at 15C6]. The old code has value 0x16. The new code has value 0x17.
+[Code.html#15C5 One-byte change at 15C6]. The old code has value 0x16. The new code has value 0x17.
 
 The alien rack "bounces" on the left and right of the screen. When the edge-most alien reaches the edge then the entire rack changes directions.
 
@@ -83,11 +84,11 @@ The code checks for the "bounce" by looking at a line up the side (left or right
 
 The "check line" is shown below running from left to right near the top of the picture (remember, the monitor is rotated in the arcade cabinet). The original code checks 22 bytes of memory shown as the short line. The patched code checks 23 bytes of memory shown as the long line.
 
-[[Image(SideCheck.jpg)]]
+[!SideCheck.jpg]
 
 The check-23-bytes is technically more correct since it covers the entire play-field except for the saucer row. But there is no problem with the original code. The aliens never start up high enough to need the extra byte of checking. The change is purely cosmetic.
 
-[[Image(Check23.jpg)]]
+[!Check23.jpg]
 == Extra Score Digit ==
 
 This change was easy because the right-most digit in the original game never changed. All scoring was a multiple of 10 points. The fix was to divide all points-awarded by 10, slide the four digit scoring to the left, and put a hardcoded 0 on the screen beside it.
