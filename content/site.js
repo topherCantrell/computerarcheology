@@ -164,6 +164,14 @@
 	         ]
 	     },
 	     
+	     {"dir": "Atari2600", "nav": "Atari 2600", "entries": [
+	         {"mark": "Atari2600.mark", "out": "index.html"},
+	         {"copy": "Atari2600.jpg"},
+	         {"copy": "Hardware.jpg"},
+	         {"mark": "Stella.mark", "out": "Stella.html", "nav": "Stella"}
+	         ]
+	     },
+	     
 	     {"dir": "CoCo", "nav": "CoCo", "entries": [
              {"mark": "CoCo.mark", "out": "index.html"},
              {"address": "Hardware.mark", "out": "Hardware.html", "nav":"Hardware"},
