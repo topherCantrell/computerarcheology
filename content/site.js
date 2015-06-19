@@ -125,7 +125,15 @@
 	             {"code": "SoundBoard.mark", "out":"SoundBoard.html", "nav": "Sound Board"},	             
 	             {"copy": "ORace.jpg"}
 	             ]
+	         },
+	         
+	         {"dir": "Robotron", "nav": "Robotron", "entries": [
+	             {"mark": "Robotron.mark", "out": "index.html"},
+	             {"copy": "Robotron.jpg"},
+	             {"code": "SoundCode.cmark", "out": "SoundCode.html", "nav": "Sound Code"}	                                                            
+	             ]
 	         }
+	         	         
 	         ]
 	     },
 	     
