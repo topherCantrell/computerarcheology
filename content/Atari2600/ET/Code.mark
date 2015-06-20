@@ -1,11 +1,12 @@
-[[PageOutline]]
+;;%%image A2600ET.jpg
 
-This cartridge uses the "F8" bank-switching hardware. This is a single 8K ROM with the switching built into it. You read location FFF8 to switch to bank 0. You read location FFF9 to switch to bank 1.
+; This cartridge uses the "F8" bank-switching hardware. This is a single 8K ROM 
+; with the switching built into it. You read location FFF8 to switch to bank 0. 
+; You read location FFF9 to switch to bank 1.
 
-The upper bits of the ROM address do not matter. But based on the assembly code I can tell that bank 0 was origined at B000 and bank 1 was origined at F000.
+; The upper bits of the ROM address do not matter. But based on the assembly code 
+; I can tell that bank 0 was origined at B000 and bank 1 was origined at F000.
 
-= ROM Bank 0 =
-{{{#!AssemblyCode
 B000: AD F8 FF   LDA $FFF8           ; Switch to bank 0 (this bank ... interesting)
 B003: 4C 7F BC   JMP $BC7F           ; Continue startup
 
@@ -30,14 +31,12 @@ B024: AA         TAX                 ;
 B025: BD 00 BC   LDA $BC00,X         ; 
 B028: 85 D5      STA >$D5            ; 
 B02A: 4C AB BC   JMP $BCAB           ; 
-}}}
 
-= Game Logic =
+;; = Game Logic =
 
-The code comes here from F4CE after the switch from bank 1. This is the
-vertical retrace period.
+; The code comes here from F4CE after the switch from bank 1. This is the
+; vertical retrace period.
 
-{{{#!AssemblyCode
 ; Near the end of scanline 223
 B02D: A5 E2      LDA >$E2            ; 
 B02F: 10 09      BPL $B03A           ; 
@@ -1679,20 +1678,21 @@ BCAE: D0 FB      BNE $BCAB           ;
 BCB0: 85 02      STA >$02            ; WSYNC wait for end of scanline 38
 BCB2: 85 02      STA >$02            ; WSYNC wait for end of scanline 39
 ; Scanline 40 begins here
-}}}
 
-= Bank Switch (to bank 1) =
+;; = Bank Switch (to bank 1) =
 
-Asteroids uses a different scheme to switch banks. It uses overlapping code in both banks so that when a switch happens the code continues on to the next instruction, but in a different bank.
+; Asteroids uses a different scheme to switch banks. It uses overlapping code in 
+; both banks so that when a switch happens the code continues on to the next 
+; instruction, but in a different bank.
 
-ET writes the six byte switch-then-jump code to RAM and executes it there.
+; ET writes the six byte switch-then-jump code to RAM and executes it there.
 
-There are only two switch-points in the code. Bank 1 is called upon to handle the visible part of the screen. Bank 0 handles the invisible part of the screen.
+; There are only two switch-points in the code. Bank 1 is called upon to handle 
+; the visible part of the screen. Bank 0 handles the invisible part of the screen.
 
- - BCCC (bank 0) to F548 (bank 1) ... when the screen is being drawn
- - F4EC (bank 1) to B02D (bank 0) ... when the screen is not being drawn
+; - BCCC (bank 0) to F548 (bank 1) ... when the screen is being drawn
+; - F4EC (bank 1) to B02D (bank 0) ... when the screen is not being drawn
 
-{{{#!AssemblyCode
 ; 0083: AD F9 FF   LDA $FFF9  ; Bank switch to bank 1
 ; 0086: 4C 48 F5   JMP $F548  ; Start of visible part of screen
 
@@ -2229,10 +2229,9 @@ BFF9: 00         BRK                 ;
 BFFA: 7F BC  ; NMI vector to BC7F
 BFFC: 7F BC  ; Reset vector to BC7F (Only vector that is used in the Atari2600)
 BFFE: 7F BC  ; IRQ/BRK vector to BC7F
-}}}
 
-= ROM Bank 1 =
-{{{#!AssemblyCode
+;; = ROM Bank 1 =
+
 F000: AD F8 FF   LDA $FFF8           ; Switch to bank 0
 F003: 4C 7F BC   JMP $BC7F           ; We are now in bank 0. This is a shadow of what's in bank 0 (easier to read but never executed)
 ;
@@ -2867,20 +2866,20 @@ F4CE: A9 40      LDA #$40            ;
 F4D0: 05 E3      ORA >$E3            ; 
 F4D2: 85 E3      STA >$E3            ; 
 ; Near the beginning of scanline 223
-}}}
 
-= Bank Switch (to bank 0) =
+;; = Bank Switch (to bank 0) =
 
-Asteroids uses a different scheme to switch banks. It uses overlapping code in both banks so that when a switch happens the code continues on to the next instruction, but in a different bank.
+; Asteroids uses a different scheme to switch banks. It uses overlapping code in 
+; both banks so that when a switch happens the code continues on to the next 
+; instruction, but in a different bank.
 
-ET writes the six byte switch-then-jump code to RAM and executes it there.
+; ET writes the six byte switch-then-jump code to RAM and executes it there.
 
-There are only two switch-points in the code. Bank 1 is called upon to handle the visible part of the screen. Bank 0 handles the invisible part of the screen.
+; There are only two switch-points in the code. Bank 1 is called upon to handle 
+; the visible part of the screen. Bank 0 handles the invisible part of the screen.
 
- - BCCC (bank 0) to F548 (bank 1) ... when the screen is being drawn
- - F4EC (bank 1) to B02D (bank 0) ... when the screen is not being drawn
-
-{{{#!AssemblyCode
+; - BCCC (bank 0) to F548 (bank 1) ... when the screen is being drawn
+; - F4EC (bank 1) to B02D (bank 0) ... when the screen is not being drawn
 
 ; 0083: AD F8 FF    LDA $FFF8  ; Switch to Bank 0
 ; 0086: 4C 2D B0    JMP $B02D  ; Jump to B02D
@@ -2949,13 +2948,11 @@ F541: 85 25      STA >$25            ;
 F543: 85 26      STA >$26            ; 
 F545: 85 02      STA >$02            ; 
 F547: 60         RTS                 ; 
-}}}
 
-= Visible Screen =
+;; = Visible Screen =
 
-The code comes here from BCCC after the switch from bank 0.
+; The code comes here from BCCC after the switch from bank 0.
 
-{{{#!AssemblyCode
 ; Near the middle of scanline 40
 F548: A9 06      LDA #$06            ; 
 F54A: 85 05      STA >$05            ; 
@@ -4948,4 +4945,3 @@ FFFA: 00         BRK                 ;
 FFFB: F0 00      ; NMI vector to 00F0
 FFFD: F0 00      ; Reset vector to 00F0 (Only vector that is used in the Atari2600)
 FFFF: F0 FF      ; IRQ/BRK vector to FF00
-}}}

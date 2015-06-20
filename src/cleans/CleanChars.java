@@ -11,7 +11,7 @@ public class CleanChars {
 	
 	public static void main(String [] args) throws Exception {
 		
-		String fname = "content/Arcade/TimePilot/TimePilot.mark";
+		String fname = "content/Atari2600/BattleZone/BattleZone.mark";
 		
 		InputStream is = new FileInputStream(fname);
 		int [] data = new int[is.available()];

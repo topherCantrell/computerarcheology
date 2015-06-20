@@ -1,17 +1,5 @@
-[[PageOutline()]]
+;;%%image A2600Battlezone.jpg
 
-= Atari 2600 Battle Zone =
-
-|| [#Bank0 Bank 0 "D000"] ||
-|| [#Reset0 Reset (if bank 0 active)] ||
-|| [#SwitchToBank1 Swtich to bank 1 (goto F019)] ||
-|| [#Vectors0  Vectors (if bank 0 active)] ||
-|| [#Bank1 Bank 1 "F000"] ||
-|| [#Reset1 Reset (if bank 1 active)] ||
-|| [#SwitchToBank0 Swtich to bank 0 (goto D003)] ||
-|| [#Vectors1 Vectors (if bank 1 active)] ||
-
-{{{#!AssemblyCode
 ; C1 is set to $80 when the player is hit and decrements on eac screen draw until 0.
 ; While C1 is >=$58 the screen kernel alternates Hit/Normal based on the lower bit.
 ; A lower bit of 0 is HIT and a lower bit of 1 is Normal.
@@ -19,20 +7,18 @@
 
 ; Bank 0 is the video kernel. The code switches to it at scanline 39. The code switches
 ; to Bank 1 at scanline 234 for "non-visible" processing.
-}}}
 
-== Bank 0 ==
+;;= Bank 0 =
 
-{{{#!AssemblyCode
-;Bank0 {*Bank0}
-;Reset0 {*Reset0}
+Bank0: ; =
+Reset0: ; =
 
 ; We switch to Bank1 here and then fall through to F003. So both
 ; banks reset by switching to bank 1 and executing F003.
 ;
 D000: 8D F9 FF   STA $FFF9           ; Switch to bank 1 (goto F003)
 
-;Bank0Entry {*Bank0Entry}
+Bank0Entry: ; =
 ;
 ; This draws the visible part of the screen (starting scanline 40)
 ;
@@ -2587,29 +2573,27 @@ DFED: F9 FF 4C   SBC $4CFF,Y         ;
 DFF0: D3 
 DFF1: D7 
 
-;SwitchToBank1 {*SwitchToBank1)
+SwitchToBank1: ; =
 ; Switch to bank 1 then goto F019.
 DFF2: 8D F9 FF   STA $FFF9           ; Switch to Bank 0 (goto DFF5 then to F019)
 DFF5: 4C 03 D0   JMP $D003           ; We get here after switching to bank 0
 
 DFF8: 88 00
 
-;Vectors0 {*Vectors0}
+Vectors0: ; =
 DFFA: 12 A5     ; NMI vector to A512 (no interrupts on 2600)
 DFFC: 00 D0     ; Reset vector to D000
 DFFE: F6 7C     ; IRQ/BRK to 7CF6 (no interrupts on 2600)
-}}}
 
-== Bank 1 ==
+;;= Bank 1 =
 
-{{{#!AssemblyCode
 ;----------------------------------------------------------------------------------------------
-;Bank1 {*Bank1}
+Bank1: ; =
 ; Second 2K bank of ROM.
 
 F000: 00 28 50 
 
-;Reset1 {*Reset1}
+Reset1: ; =
 F003: 78         SEI                 ; 
 F004: D8         CLD                 ; 
 F005: A2 FF      LDX #$FF            ; 
@@ -2624,7 +2608,7 @@ F014: 95 82      STA $82,X           ;
 F016: CA         DEX                 ; 
 F017: 10 F8      BPL $F011           ; 
 
-;Bank1Entry {*Bank1Entry}
+Bank1Entry: ; =
 F019: A9 24      LDA #$24            ; 
 F01B: 8D 96 02   STA $0296           ; 
 F01E: E6 80      INC >$80            ; 
@@ -4811,15 +4795,14 @@ FFEF: 60         RTS                 ;
 FFF0: 40         RTI                 ; 
 FFF1: 80 
 
-;SwitchToBank0 {*SwitchToBank0}
+SwitchToBank0: ; =
 ; Switch to bank 0 and goto D003.
 FFF2: 8D F8 FF   STA $FFF8           ; Switch to Bank 0 (goto DFF5 then to D003)
 FFF5: 4C 19 F0   JMP $F019           ; We get here after switching to bank 1
 
 FFF8: 88 00
 
-;Vectors1 {*Vectors1}
+Vectors1: ; =
 FFFA: 03 02   ; NMI vector to 0203 (no interrupts on 2600)
 FFFC: 03 F0   ; Reset to F003
 FFFE: DB D5   ; IRQ/BRK to D5DB (no interrupts on 2600)
-}}}

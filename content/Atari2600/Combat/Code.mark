@@ -1,10 +1,5 @@
-[[PageOutline()]]
+;;%%image A2600Combat.jpg
 
-= Atari 2600 Combat =
-
-[wiki:Atari2600/Stella Hardware (Stella)]
-
-{{{#!AssemblyCode
 F000: 78            SEI                       ; Turn off interrupts 
 F001: D8            CLD                       ; Binary mode (not BCD)
 F002: A2 FF         LDX   #$FF                ; Stack pointer to 1_FF ...
@@ -1176,4 +1171,3 @@ F7FA: 00            BRK
 F7FB: 00            BRK                       
 F7FC: 00            BRK                       
 F7FD: F0 0F 11           
-}}}

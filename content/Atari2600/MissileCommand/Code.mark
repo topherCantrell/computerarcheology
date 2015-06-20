@@ -1,6 +1,4 @@
-= Atari 2600 Missile Command =
-
-{{{#!AssemblyCode
+;;%%image A2600MissileCommand.jpg
 
 ; 86 P0
 ; 87 P1 
@@ -9,7 +7,6 @@
 ; 90 Ball (cursor)
 
 ; A1 !0 position-rountine only does object number X
-
 
 F000: 4C 3F F0      JMP   $F03F       
         
@@ -51,7 +48,7 @@ F03C: 85 02         STA   $02                 ; Wait another line ;*WSYNC:lots
 F03E: 60            RTS                       ; Done
 
 
-;##Init
+Init: ; =
 F03F: 78            SEI                       ; Disable interrupts
 F040: D8            CLD                       ; Binary mode (not BCD)
 F041: A2 00         LDX   #$00                ; All port A pins ...
@@ -2248,4 +2245,3 @@ FFFA: 00            BRK
 FFFB: F0 00         BEQ   $FFFD               
 FFFD: F0 00         BEQ   $FFFF               
 FFFF: F0 FF         BEQ   $10000              
-}}}

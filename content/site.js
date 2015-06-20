@@ -168,7 +168,57 @@
 	         {"mark": "Atari2600.mark", "out": "index.html"},
 	         {"copy": "Atari2600.jpg"},
 	         {"copy": "Hardware.jpg"},
-	         {"mark": "Stella.mark", "out": "Stella.html", "nav": "Stella"}
+	         {"mark": "Stella.mark", "out": "Stella.html", "nav": "Stella"},
+	         
+	         {"dir": "Asteroids", "nav": "Asteroids", "entries": [
+	             {"copy": "A2600Asteroids.jpg"},
+	             {"mark": "Asteroids.mark", "out": "index.html"},
+	             {"code": "Code.mark", "out": "Code.html", "nav": "Code"}
+	             ]
+	         },
+	         
+	         {"dir": "BattleZone", "nav": "BattleZone", "entries": [
+	             {"copy": "A2600Battlezone.jpg"},
+	             {"mark": "BattleZone.mark", "out": "index.html"},
+	             {"code": "Code.mark", "out": "Code.html", "nav": "Code"}
+	             ]
+	         },
+	         
+	         {"dir": "Chess", "nav": "Chess", "entries": [
+	             {"copy": "A2600Chess.jpg"},
+	             {"mark": "Chess.mark", "out": "index.html"},
+	             {"code": "Code.mark", "out": "Code.html", "nav": "Code"}
+	             ]
+	         },
+	         
+	         {"dir": "Combat", "nav": "Combat", "entries": [
+	             {"copy": "A2600Combat.jpg"},
+	             {"mark": "Combat.mark", "out": "index.html"},
+	             {"code": "Code.mark", "out": "Code.html", "nav": "Code"}
+	             ]
+	         },
+	         
+	         {"dir": "DoubleGap", "nav": "Double Gap", "entries": [
+	             {"copy": "DoubleGap.jpg"},
+	             {"mark": "DoubleGap.mark", "out": "index.html"},
+	             {"mark": "Code.mark", "out": "Code.html", "nav": "Code"}
+	             ]
+	         },
+	         
+	         {"dir": "ET", "nav": "ET", "entries": [
+	             {"copy": "A2600ET.jpg"},
+	             {"mark": "ET.mark", "out": "index.html"},
+	             {"code": "Code.mark", "out": "Code.html", "nav": "Code"}
+	             ]
+	         },
+	         
+	         {"dir": "MissileCommand", "nav": "Missile Command", "entries": [
+	             {"copy": "A2600MissileCommand.jpg"},
+	             {"mark": "MissileCommand.mark", "out": "index.html"},
+	             {"code": "Code.mark", "out": "Code.html", "nav": "Code"}
+	             ]
+	         }
+	         
 	         ]
 	     },
 	     
