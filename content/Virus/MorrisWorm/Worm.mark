@@ -1,8 +1,5 @@
-[[PageOutline()]]
-
-= Morris Internet Worm =
-
-''Archeologist: [ChrisCantrell Chris Cantrell]''
+%%title Morris Internet Worm
+%%image Worm.jpg
 
 ''TO DO: I want to get the EXACT layout of the buffer contents byte for byte.''
 
@@ -28,9 +25,9 @@ A program downloaded like this is very machine-dependant. The author could have 
 
 In the end, the guard against the gets() hole was easy to make. Fingerd was simply re-written using fgets(), which allows the length of the buffer to be passed in. How a function like gets() made it into the standardized C library is a mystery.
 
-== Code Walkthrough ==
+= Code Walkthrough =
 
-{{{#!AssemblyCode
+{{{
 ; VAX binary code fragment from the Morris Internet Worm.
 ; Downloaded to the fingerd serving process via the gets() hole.
 ; Performs execve("/bin/sh",0,0)
@@ -58,6 +55,6 @@ The last instruction is the software-exception. It is similar to the PC software
 
 Remember the filename string that got pushed onto the stack first? Where does it get removed? Normally, the instructions following the CHMK would have to clean the stack. However, this system call is an execve() call, which starts a new program. There is no next-instruction for this program! The string is cleaned when the original process is torn down.
 
-== Preliminary work on the VAX stack frame ==
+= Preliminary work on the VAX stack frame =
 
-[[Image(wormvax.gif)]]
+[!wormvax.gif]

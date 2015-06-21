@@ -341,6 +341,25 @@
 	             ]
 	         }
 	         ]
+	     },
+	     
+	     {"dir": "Virus", "nav": "Viruses", "entries": [
+	         {"mark": "Virus.mark", "out": "index.html"},
+	         {"copy": "Virus.jpg"},
+	                                          	                                              	         
+	         {"dir": "MorrisWorm", "nav": "Morris Worm", "entries": [
+	              {"copy": "Worm.jpg"},
+	              {"copy": "wormvax.gif"},
+	              {"mark": "Worm.mark", "out": "index.html"}
+	              ]
+	         },
+	         
+	         {"dir": "Stoned", "nav": "Stoned", "entries": [
+	              {"copy": "Stoned.jpg"},
+	              {"mark": "Stoned.mark", "out": "index.html"}
+	              ]
+	         }
+	         ]
 	     }
 	             
 	 ]

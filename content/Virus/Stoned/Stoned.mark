@@ -1,12 +1,9 @@
-[[PageOutline()]]
-
-= Stoned Bootsector Virus =
-
-''Archeologist: [ChrisCantrell Chris Cantrell]''
+%%title Stoned Bootsector Virus
+%%image Stoned.jpg
 
 A condensed and nicely edited version of this material can be found in my article [http://www.cc-webshop.com/Circuit-Cellar-Issue-152-March-2003-PDF-FI-2003-152.htm A Look at Computer Viruses in Circuit Cellar magazine March 2003].
 
-== Viruses ==
+= Viruses =
 
 Civilization is the biological virus's best friend. Now that humans live closely and move around freely the biological virus has a better chance of spreading. The internet has done the same thing for the computer virus. Now that every computer is connected through the internet, the computer virus has more options to spread.
 
@@ -20,7 +17,7 @@ Some viruses are humorous; the Green Caterpillar virus (called the 1591 virus be
 
 Before we look at the complete disassembly of the Stoned virus, I must remind you that Federal law provides severe penalties for computer crimes – crimes like releasing a computer virus into the computing community. But we are computer archeologists, right? We are only interested in seeing how a virus works, and the Stoned virus is an intriguing archeological find.
 
-== The PC Virus ==
+= The PC Virus =
 
 PCs seem especially susceptible to computer viruses. The PC was designed for home use, which meant IBM had to cut certain corners to keep the price down. These cutbacks opened the door for viruses.
 
@@ -32,7 +29,7 @@ Application vendors were also restricted to the floppy. Floppies are very portab
 
 But the heart of the computer viruses is the 8086 interrupt structure. As we will see, this scheme invites future upgrades to extend the base operating system by overriding system calls (a powerful object-oriented concept). Thus viruses are simply malicious OS upgrades!
 
-== The 8086 Interrupt Structure ==
+= The 8086 Interrupt Structure =
 
 The Intel 8086 CPU takes software interrupts to a new level. Instead of the eight interrupt levels supported by its predecessors, the 8086 supports 256! Interrupts are stilled mapped into the first chunk of memory, but now interrupt handler routines are "pointed to" by 256, four-byte far-pointers. The first four bytes of memory point to the service routine for interrupt 0. The next four bytes point to the service routine for interrupt 1 and so on filling the entire first 1K of memory. Why four bytes for a pointer? The 8086 uses a segmented memory scheme with a 2-byte segment address and a 2-byte offset address.
 
@@ -52,7 +49,7 @@ To encourage others to design hardware for their computers, IBM published the sp
 
 There is an obvious disadvantage to "hanging" system calls on indirect software interrupt hooks: any program is free to change any of the vectors at any time. For instance, a program could remember the destination of a specific interrupt, say INT 13, and change the vector to point to a new routine. This new routine could perform some meaningful task (say, infecting a floppy disk) before calling the original handler routine. This is how a virus gets CPU time, but what does it mean to infect a floppy?
 
-== Bootsector Viruses ==
+= Bootsector Viruses =
 
 When you turn on the power to a PC or hit its reset button, the processor jumps to location FFFF:0000 in the memory map (physical address FFFF0).That means at least part of the ROM must be mapped into the end of the address space with the last sixteen being the first thing the processor executes.
 
@@ -84,7 +81,7 @@ The really complex viruses (the Green Caterpillar for instance) operate a little
 
 There is something charming about the compact-simplicity of the bootsector viruses, especially the classic example: Stoned. Without further adieu, let's dig in.
 
-== Overview ==
+= Overview =
 
 The Stoned virus has two basic parts: a Loader that gets called when the bootsector is loaded, and an Infector that replaces the INT13 vector. The virus jumps from the entry point at location 0000 to the Loader at 00A1.
 
@@ -96,7 +93,7 @@ Locations 00A1 through 01B7 hold the Loader routine – the code fragment that m
 
 The code at 00E4 loads the original bootsector from either the floppy or hard-disk depending on how the machine is booting. The Stoned message is printed from the code at 0118. The jump at 0154 executes the original bootsector. The code at 0159 infects the hard-drive being careful to preserve the partition table, and two ASCII strings are tagged onto the end of the virus beginning at 0189.
 
-== Code Walkthrough ==
+= Code Walkthrough =
 
 Here is the commented disassembly of the Stoned virus in its entirety without regard for any copyrights! Actually, a virus is the ultimate in shareware – it's free, and you get it whether you want it or not.
 
@@ -106,7 +103,7 @@ When the program starts, it is in memory at 0000:7C00. As we saw earlier, the RO
 
 The virus will eventually move itself around in memory and copy itself to disk. The math for these operations is much easier if the offset is 0000. The program's first action is to re-align the CS register so that the virus is at the beginning of segment 07C0. The far jump at location 0000 does nothing more than jump to the very next instruction changing the CS and IP registers along the way. The second instruction is a short (relative) jump over the Infector code and some storage to the Loader at 00A1.
 
-{{{#!AssemblyCode
+{{{
 ; STONED PC COMPUTER VIRUS 
 ; (BOOTSECTOR INFECTOR)
 ;
@@ -134,7 +131,7 @@ The four bytes at 000D are used as an indirect reference to transfer control to 
 
 == The Infector ==
 
-{{{#!AssemblyCode
+{{{
 ;-----------------------------------------------------------------
 ; Infector
 ;-----------------------------------------------------------------
@@ -167,7 +164,7 @@ The virus passes all functions except reading or writing a sector on the floppy 
 
 This bit represents the state of the floppy-drive's motor. If the bit is one, the drive is running. If the bit is zero, the drive is off. This is really a clever check that keeps the virus from taking action with every single sector read or write. Data is usually accessed as a stream of sectors. The first sector requested gets the motor going, and the motor continues to run while the remaining data is transferred. (Actually the motor continues to run for a few seconds after the last sector is accessed.) By watching the motor, the virus only takes effect on the first sector in a stream of sectors. Otherwise, the user would notice a terrible drop in performance for disk access. Again, this check is quite clever.
 
-{{{#!AssemblyCode
+{{{
 ; Try to infect Drive A
 ;
 003A: 53                PUSH    BX                      ;{*} Save all ...
@@ -189,7 +186,7 @@ This bit represents the state of the floppy-drive's motor. If the bit is one, th
 
 The infection process first preserves all the incoming parameters and sets up a call to the original INT13 to load the bootsector of the floppy into memory just after the virus. Note the PUSHF instruction at 0050. The original INT13 is an interrupt handler, and its last instruction is an RETI – RETurn from Interrupt. Since the virus will be CALLing the routine, it must push the flags onto the stack to simulate an INT. Otherwise, too much information is popped off the stack with the RETI, and the CPU crashes.
 
-{{{#!AssemblyCode
+{{{
 0051: 2E FF 1E 09 00    CALL    FAR [CS:$0009]          ; Read boot sector with INT 13
 0056: 73 0E             JNB     $0066                   ;{} Got it ... move on.
 0058: 33 C0             XOR     AX,AX                   ; Reset drive command
@@ -219,7 +216,7 @@ Most assemblers provide a way to force a JMP instance to single-byte-offset form
 
 Searching the code for forward jumps reveals only two: this one and the one at the one at 0105. Closing up these wasted bytes frees two more bytes of memory – five so far.
 
-{{{#!AssemblyCode
+{{{
 ; At this point the drive is responding - load the boot sector into virus memory segment
 ; and check if it has been infected.
 0066: 33 F6             XOR     SI,SI                   ;{*} Virus starting point
@@ -267,7 +264,7 @@ On fixed-disks, the holding place is cylinder 0, sector 7, head 0, which is near
 
 == The Loader ==
 
-{{{#!AssemblyCode
+{{{
 ;-----------------------------------------------------------------
 ; Loader
 ;-----------------------------------------------------------------
@@ -316,7 +313,7 @@ This is a clever but confusing jump. If we think about it, all the virus is doin
 
 There is still an easier way to make the jump, however. The JMP instruction at 00DF can be changed to a direct FAR jump like this: 00DF: EA E4 00 RRRR (JMP RRRR:00E4). The segment value RRRR is not know until run time, but the MOV at location 00CF could be changed to write the segment value in ES into the code memory at offset 00E1. Then when the CPU gets to the instruction a few cycles later, it will know exactly where to go! This is called "self-modifying" code since the program actually writes its own instructions as it executes. Changing the JMP eliminates the four bytes of data at 000D. That brings our savings up to 9 bytes.
 
-{{{#!AssemblyCode
+{{{
 ; At this point virus is running in its new 2K home at the end of RAM.
 00E4: B8 00 00          MOV     AX,$0000                ; Reset disk system (prepare for IO)
 00E7: CD 13             INT     $13                     ; Disk now ready
@@ -339,7 +336,7 @@ If the virus is booting from a floppy, it does the extra work of infecting any f
 
 Notice the instruction at 00E4. AX is used to pass information into the INT13; AH contains the sub-command and AL contains some additional data. Using immediate MOVs to load parameters into registers for INT calls is second nature to 8x86 programmers, and we generally find immediate MOVs before any INTx instruction. However, at 00E4 the programmer could have saved a byte by doing an "XOR AX,AX" (which results in 0000). That brings our code savings up to 10 bytes.
 
-{{{#!AssemblyCode
+{{{
 ; We are booting up from a floppy - have a look at any local fixed-disks.
 0106: B9 03 00          MOV     CX,$0003                ;{*} Cyl 0, Sec 3 
 0109: BA 00 01          MOV     DX,$0100                ; Head 1, Drive 0
@@ -355,7 +352,7 @@ Error checking is only useful if you have the ability to recover from the error.
 
 If booting from a floppy, the virus checks the low byte of the ever-changing clock-tick in memory at 0000:046C. A hardware clock interrupts the CPU several times a second, and the clock-handler routine increments the word at 0000:046C. There is no way to know what the clock-tick will be at this point – this is essentially a random number. The test at 0116 will fall through to the next section of code if the lower three bits of the timer are all 0's. If you boot your PC from an infected floppy, you will see the famous "Your PC is now stoned!" message on average of once every eight boot-ups.
 
-{{{#!AssemblyCode
+{{{
 ; 1 out of every 8 infected hard drives will see this message at the boot up where
 ; they are infected.
 0118: BE 89 01          MOV     SI,$0189                ; Message
@@ -393,7 +390,7 @@ Once the message is printed (or skipped), the virus continues at 012A. Here the 
 
 If the first four bytes of the loaded bootsector match the virus, the disk is already infected and the original bootsector is executed with the following section of code. Otherwise, the hard-disk infection continues at 0159.
 
-{{{#!AssemblyCode
+{{{
 ; No matter how virus loaded, it infects only floppy disks that get a copy of the
 ; memory-resident copy of the virus. We want floppies to have media type = 0.
 014E: 2E C6 06 08 00 00 MOV     BYTE PTR [CS:$0008],$00 ;{*} Media type = floppy.
@@ -404,7 +401,7 @@ This is how the virus finishes its loading by executing the original bootsector,
 
 The very last thing the virus does before turning control over to the original bootsector is change the media-type flag to 0 (floppy) no matter how the virus booted. Once it is loaded into memory, the virus only infects floppies. To infect a floppy, the virus copies the entire memory-resident virus to the bootsector of the disk – the media-type flag is set to zero for once and for all.
 
-{{{#!AssemblyCode
+{{{
 ; Infect hard-drive
 0159: 2E C6 06 08 00 02 MOV     BYTE PTR [CS:$0008],$02 ;{*} Store virus on C: with flag set
 015F: B8 01 03          MOV     AX,$0301                ; Write 1 sector
@@ -469,7 +466,7 @@ One variation of this virus, the famous Michelangelo virus, contains a malicious
 
 Space is a problem for bootsector viruses – a floppy bootsector is only 512 bytes long, and on a fixed-disk, the partition-table begins at offset 01BE. This gives the virus only 1BE bytes to work with, yet the Stoned virus does quite a lot with several bytes to spare. If you want to make modifications to the virus, you can re-compile it with the recommended changes and squeeze out an extra 16 bytes. You could even ditch the message (and printing routine) completely if you need space for more code.
 
-== The First Case ==
+= The First Case =
 
 We have seen how the Stoned virus spreads from one infected disk to another, but how did the first floppy get infected? The procedure is actually very easy – you already have all the tools you need to bring this virus back to life!
 
