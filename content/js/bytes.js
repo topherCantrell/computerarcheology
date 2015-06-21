@@ -35,6 +35,9 @@ function loadDataCache() {
             continue;
         }
         var adr = parseInt(line.substring(0,5),16);
+        if (isNaN(adr)) {
+        	continue;
+        } 
         if (dataOrigin==null) {
             dataOrigin = adr;
         }

@@ -1,14 +1,12 @@
-[[PageOutline()]]
-[wiki:/NES/Zelda/RAM RAM Use][[BR]]
-[wiki:/NES/Zelda/Hardware Hardware]
+;;%%image Zelda.jpg
 
-{{{#!html
-<script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/CANVAS.js?format=raw" type="text/javascript"></script>
-<script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/pixelUI.js?format=raw" type="text/javascript"></script>
-<script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/bytes.js?format=raw" type="text/javascript"></script>
-<script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/zelda.js?format=raw" type="text/javascript"></script>
-}}}
-{{{#!AssemblyCode
+;;{{{html
+;;<script src="/js/CANVAS.js"></script>
+;;<script src="/js/pixelUI.js"></script>
+;;<script src="/js/bytes.js"></script>
+;;<script src="/js/zelda.js"></script>
+;;}}}
+
 ; Zelda screens come in two main flavors: surface (overworld) and dungeon. There are 10
 ; different dungeons (levels 1-9). In the code level 0 is the surface.
 ;
@@ -78,7 +76,7 @@
 8040: 02 20 ; Size of "normal" creatures
 8042: 04 00 ; Size of bosses
 
-;ConfigureTiles {*ConfigureTiles}
+ConfigureTiles: ; =
 ;
 ; Configure tiles based on the level from 0 (surface) to 9 (Ganon).
 ; Level is in $10.
@@ -90,7 +88,7 @@
 ;         8014[>$10]->8030[#3] (803C[#3])
 ;      Note that >$10 is non-0 here. First entry in tables 8000,8014 is never used.
 ;         
-8044: 20 25 E6      JSR   $E625               ;{/Bank7#DisableVideo:7.DisableVideo} %% Turn off all video
+8044: 20 25 E6      JSR   $E625               ; Turn off all video
 8047: AD 02 20      LDA   $2002               ; Clear address latch (and scroll)
 804A: 20 5E 80      JSR   $805E               ; Initialize set-count to 0
 804D: A5 10         LDA   >$10                ; Get the level
@@ -98,16 +96,16 @@
 ;
 8051: 20 91 80      JSR   $8091               ; Tiles_B_Surface->1700(820) then Tiles_S_Surface->08E0(720) 2nd pass
 8054: 20 DC 80      JSR   $80DC               ; Set VRAM address and copy
-8057: AD 1D 05      LDA   $051D               ;{-SetCount:} Done ...
+8057: AD 1D 05      LDA   $051D               ; Done ...
 805A: C9 02         CMP   #$02                ; ... both sets?
 805C: D0 F3         BNE   $8051               ; No ... go back for the second one
 805E: A9 00         LDA   #$00                ; Set-count to ...
-8060: 8D 1D 05      STA   $051D               ;{-SetCount:} ... zero
+8060: 8D 1D 05      STA   $051D               ; ... zero
 8063: 60            RTS                       ; Done
 
 8064: 20 80 80      JSR   $8080               ; Tiles_B_Dungeon->1700(820) then Tiles_S_Dungeon->08E0(100)
 8067: 20 CC 80      JSR   $80CC               ; Set VRAM address, length, and copy
-806A: AD 1D 05      LDA   $051D               ;{-SetCount:} Done ...
+806A: AD 1D 05      LDA   $051D               ; Done ...
 806D: C9 02         CMP   #$02                ; ... both sets?
 806F: D0 F3         BNE   $8064               ; No ... go back for the second one
 ;
@@ -120,11 +118,11 @@
 807D: 4C 5E 80      JMP   $805E               ; Set-count to 0 and out
 
 ; Set ROM (source) pointer from table 8028. Table has 2 entries.
-8080: AD 1D 05      LDA   $051D               ;{-SetCount:} Set count
+8080: AD 1D 05      LDA   $051D               ; Set count
 8083: 0A            ASL   A                   ; *2 bytes per structure per set
 8084: AA            TAX                       ; Index register
 8085: BD 28 80      LDA   $8028,X             ; Get LSB ...
-8088: 85 00         STA   >$00                ;{-GP_00:} ... of ROM pointer
+8088: 85 00         STA   >$00                ; ... of ROM pointer
 808A: E8            INX                       ; Next byte
 808B: BD 28 80      LDA   $8028,X             ; Get MSB ...
 808E: 85 01         STA   >$01                ; ... of ROM pointer
@@ -132,13 +130,13 @@
 
 ; Set ROM (source) pointer and length from tables 802C and 8038. Tables
 ; have 2 entries each.
-8091: AD 1D 05      LDA   $051D               ;{-SetCount:} Set count
+8091: AD 1D 05      LDA   $051D               ; Set count
 8094: 0A            ASL   A                   ; *2 bytes per structure per set
 8095: AA            TAX                       ; Index register
 8096: BD 2C 80      LDA   $802C,X             ; Get MSB ...
-8099: 85 00         STA   >$00                ;{-GP_00:} ... of pointer
+8099: 85 00         STA   >$00                ; ... of pointer
 809B: BD 38 80      LDA   $8038,X             ; Get LSB ...
-809E: 85 02         STA   >$02                ;{-GP_02:} ... of count
+809E: 85 02         STA   >$02                ; ... of count
 80A0: E8            INX                       ; Next byte
 80A1: BD 2C 80      LDA   $802C,X             ; Get LSB ...
 80A4: 85 01         STA   >$01                ; ... of pointer
@@ -151,7 +149,7 @@
 80AE: 0A            ASL   A                   ; *2 (word offset)
 80AF: AA            TAX                       ; To index
 80B0: BD 00 80      LDA   $8000,X             ; Get MSB ...
-80B3: 85 00         STA   >$00                ;{-GP_00:} ... of ROM pointer
+80B3: 85 00         STA   >$00                ; ... of ROM pointer
 80B5: E8            INX                       ; Next byte
 80B6: BD 00 80      LDA   $8000,X             ; GET LSB ...
 80B9: 85 01         STA   >$01                ; ... of ROM pointer
@@ -162,7 +160,7 @@
 80BE: 0A            ASL   A                   ; *2 (word offset)
 80BF: AA            TAX                       ; To index
 80C0: BD 14 80      LDA   $8014,X             ; Get MSB ...
-80C3: 85 00         STA   >$00                ;{-GP_00:} ... of ROM pointer
+80C3: 85 00         STA   >$00                ; ... of ROM pointer
 80C5: E8            INX                       ; Next byte
 80C6: BD 14 80      LDA   $8014,X             ; Get LSB ...
 80C9: 85 01         STA   >$01                ; ... of ROM pointer
@@ -171,16 +169,16 @@
 ; Copy set of tiles to VRAM. 051D is the set pointer ... 0,1,2, or 3
 ; in table (803C is table of lengths, 8030 is table of VRAM address).
 ; Tile pattern ROM (source) pointer in 00:01.
-80CC: AD 1D 05      LDA   $051D               ;{-SetCount:} Get set number
+80CC: AD 1D 05      LDA   $051D               ; Get set number
 80CF: 0A            ASL   A                   ; *2 bytes per structure
 80D0: AA            TAX                       ; To index register
 80D1: BD 3C 80      LDA   $803C,X             ; Get LSB ...
-80D4: 85 02         STA   >$02                ;{-GP_02:} ... of count
+80D4: 85 02         STA   >$02                ; ... of count
 80D6: E8            INX                       ; Get ...
 80D7: BD 3C 80      LDA   $803C,X             ; ... MSB ...
 80DA: 85 03         STA   >$03                ; ... of count
 ;
-80DC: AD 1D 05      LDA   $051D               ;{-SetCount:} Set number
+80DC: AD 1D 05      LDA   $051D               ; Set number
 80DF: 0A            ASL   A                   ; *2 bytes per structure
 80E0: AA            TAX                       ; To index register
 80E1: BD 30 80      LDA   $8030,X             ; Get MSB of ...
@@ -188,19 +186,19 @@
 80E7: E8            INX                       ; Get LSB ...
 80E8: BD 30 80      LDA   $8030,X             ; ... of VRAM address
 
-;CopyToVRAM {*CopyToVRAM}
+CopyToVRAM: ; =
 ;
 ; Block copy from (00:01) to VRAM (address MSB in A, latch LSB is 0).
 ; Length in (03:02)
 ;
 80EB: 8D 06 20      STA   $2006               ; VRAM address MSB (or LSB if already written MSB)
 80EE: A0 00         LDY   #$00                ; Straight offset from Y coming up
-80F0: B1 00         LDA   ($00),Y             ;{-GP_00:} Byte from pointer ...
+80F0: B1 00         LDA   ($00),Y             ; Byte from pointer ...
 80F2: 8D 07 20      STA   $2007               ; ... to next VRAM address
-80F5: A5 00         LDA   >$00                ;{-GP_00:} Increment ...
+80F5: A5 00         LDA   >$00                ; Increment ...
 80F7: 18            CLC                       ; ... two ..
 80F8: 69 01         ADC   #$01                ; ... byte ...
-80FA: 85 00         STA   >$00                ;{-GP_00:} ... pointer ...
+80FA: 85 00         STA   >$00                ; ... pointer ...
 80FC: A5 01         LDA   >$01                ; ... at ...
 80FE: 69 00         ADC   #$00                ; ... 00 and ...
 8100: 85 01         STA   >$01                ; ... 01
@@ -209,22 +207,20 @@
 8104: 38            SEC                       ; ... two ...
 8105: E9 01         SBC   #$01                ; ... byte ...
 8107: 85 03         STA   >$03                ; ... count ...
-8109: A5 02         LDA   >$02                ;{-GP_02:} ... at ...
+8109: A5 02         LDA   >$02                ; ... at ...
 810B: E9 00         SBC   #$00                ; ... 02 and ...
-810D: 85 02         STA   >$02                ;{-GP_02:} ... 03
+810D: 85 02         STA   >$02                ; ... 03
 ;
-810F: A5 02         LDA   >$02                ;{-GP_02:} More to do?
+810F: A5 02         LDA   >$02                ; More to do?
 8111: D0 DD         BNE   $80F0               ; Yes ... go move all
 8113: A5 03         LDA   >$03                ; More to do?
 8115: D0 D9         BNE   $80F0               ; Yes ... go move all
 8117: EE 1D 05      INC   $051D               ; Next set
 811A: 60            RTS                       ; Done
 
-<div style="background-color:#E0E0FF">
-;Tiles_B_Dungeon {*Tiles_B_Dungeon}
+Tiles_B_Dungeon: ; =
 ;
 ; Underworld background 130 tiles beginning at $1700 (second bank). Starting with tile number $70
-</div>
 
 ;    70        71        72        73        74        75        76        77        78        79        7A        7B        7C        7D        7E        7F
 ; 33333333  32212221  33333333  22212223  23333333  32222222  33333332  2222222.  22222222  322.....  22322111  .....221  11122122  22222222  222.322.  22322111  
@@ -456,11 +452,9 @@
 892B: 00 00 00 00 00 00 00 00 E7 81 81 00 00 81 81 E7 
 
 
-<div style="background-color:#E0E0FF">
-;Tiles_B_Surface {*Tiles_B_Surface}
+Tiles_B_Surface: ; =
 ;
 ; Overworld background tiles 130 tiles beginning at $1700 (second bank). Starting with tile number $70
-</div>
 
 ;    70        71        72        73        74        75        76        77        78        79        7A        7B        7C        7D        7E        7F
 ; 11111111  12212221  11111111  22212221  2..11111  1111112.  11111113  1111111.  33313333  32222222  22222222  22222222  33333133  222222.3  22222222  3.222222  
@@ -691,29 +685,29 @@
 913B: 80 00 00 00 00 00 00 FF 80 00 00 00 00 00 00 FF 
 914B: FF 00 00 00 00 00 00 FF FF 00 00 00 00 00 00 FF 
 
-<div style="background-color:#E0E0FF">
-;Tiles_S_Surface {*Tiles_S_Surface}
+
+Tiles_S_Surface: ; =
 ;
 ; Overworld sprite tiles 114 tiles beginning at $08E0 (first bank). Starting with tile number $8E.
 ;
-</div>
 
-<div style="background-color:#FFC0C0">
-;Unknown1 {*Unknown1}
+Unknown1: ; =
 
-<canvas width="150" height="150"
-data-canvasFunction="handleTileCanvas"
-data-getTileDataFunction="getMergedData"
-data-labelColor="#00C0FF"
-data-pixWidth="8"
-data-pixHeight="8"
-data-gap="0.25"
-data-colorsName="RedOrangeWhite"
-data-colors='["#606060","#B53120","#F9BC22","#F0F0F0"]'
-data-gridPad="1"
-data-address="887B"
-data-command=":1x2:8E,8F">
-</canvas>
+;;{{{html
+;;<canvas width="150" height="150"
+;;data-canvasFunction="handleTileCanvas"
+;;data-getTileDataFunction="getMergedData"
+;;data-labelColor="#00C0FF"
+;;data-pixWidth="8"
+;;data-pixHeight="8"
+;;data-gap="0.25"
+;;data-colorsName="RedOrangeWhite"
+;;data-colors='["#606060","#B53120","#F9BC22","#F0F0F0"]'
+;;data-gridPad="1"
+;;data-address="887B"
+;;data-command=":1x2:8E,8F">
+;;</canvas>
+;;}}}
 
  ;   22333333    8E
  ;   23332333
@@ -734,15 +728,16 @@ data-command=":1x2:8E,8F">
  ;   23333323
  ;   23333323
 916b: CF C7 C7 EF 6F 6D 7D 7D FF FF FF FF FF FF FF FF
-</div>
 
-<div style="background-color:#C0C0C0">
-;Rock1 {*Rock1}
 
-<canvas width="150" height="133"
-data-colors='RedOrangeWhite'
-data-command=":2x2:90,92,91,93">
-</canvas>
+Rock1: ; =
+
+;;{{{html
+;;<canvas width="150" height="133"
+;;data-colors='RedOrangeWhite'
+;;data-command=":2x2:90,92,91,93">
+;;</canvas>
+;;}}}
 
  ;   .......1    90
  ;   ......33
@@ -783,15 +778,15 @@ data-command=":2x2:90,92,91,93">
  ;   1221....
  ;   111.....
 91ab: 9E B6 A2 A4 08 08 90 E0 60 58 7C 78 F0 F0 60 00
-</div>
 
-<div style="background-color:#FFC0C0">
-;Unknown2 {*Unknown2}
+Unknown2: ; =
 
-<canvas width="300" height="150"
-data-colors='RedOrangeWhite'
-data-command=":1x2:94,95,+x,:1x2:96,97">
-</canvas>
+;;{{{html
+;;<canvas width="300" height="150"
+;;data-colors='RedOrangeWhite'
+;;data-command=":1x2:94,95,+x,:1x2:96,97">
+;;</canvas>
+;;}}}
 
  ;   ........    94
  ;   ........
@@ -832,15 +827,15 @@ data-command=":1x2:94,95,+x,:1x2:96,97">
  ;   2233....
  ;   ..2.....
 91eb: 00 E0 04 30 00 88 30 00 82 E4 C4 3C 90 A8 F0 20
-</div>
 
-<div style="background-color:#C0C0C0">
-;OldMan {*OldMan}
+OldMan: ; =
 
-<canvas width="150" height="133"
-data-colors='RedOrangeWhite'
-data-command=":2x2:98,H98,99,H99">
-</canvas>
+;;{{{html
+;;<canvas width="150" height="133"
+;;data-colors='RedOrangeWhite'
+;;data-command=":2x2:98,H98,99,H99">
+;;</canvas>
+;;}}}
 
  ;   .....222    98
  ;   ....3232
@@ -861,15 +856,15 @@ data-command=":2x2:98,H98,99,H99">
  ;   ....1111
  ;   ...11221
 920b: 7F 7F 77 77 77 2F 0F 19 93 83 81 00 00 00 00 06
-</div>
 
-<div style="background-color:#E0E0E0">
-;OldWoman {*OldWoman}
+OldWoman: ; =
 
-<canvas width="150" height="133"
-data-colors='RedOrangeWhite'
-data-command=":2x2:9A,H9A,9B,H9B">
-</canvas>
+;;{{{html
+;;<canvas width="150" height="133"
+;;data-colors='RedOrangeWhite'
+;;data-command=":2x2:9A,H9A,9B,H9B">
+;;</canvas>
+;;}}}
 
  ;   .....111    9A
  ;   ....1133
@@ -890,16 +885,16 @@ data-command=":2x2:9A,H9A,9B,H9B">
  ;   ..1.1111
  ;   ..1.2221
 922b: 7E 5E 5F 5F 57 6F 2F 21 09 29 20 01 01 00 00 0E
-</div>
 
-<div style="background-color:#C0C0C0">
-;Merchant {*Merchant}
+Merchant: ; =
 
-<canvas width="150" height="133"
-data-colorsName="OrangeGreenBrown"
-data-colors='["#606060","#B0FF18","#FFAD41","#E66410"]'
-data-command=":2x2:9C,H9C,9D,H9D">
-</canvas>
+;;{{{html
+;;<canvas width="150" height="133"
+;;data-colorsName="OrangeGreenBrown"
+;;data-colors='["#606060","#B0FF18","#FFAD41","#E66410"]'
+;;data-command=":2x2:9C,H9C,9D,H9D">
+;;</canvas>
+;;}}}
 
  ;   ....3333    9C
  ;   ...33333
@@ -920,15 +915,15 @@ data-command=":2x2:9C,H9C,9D,H9D">
  ;   ...3333.
  ;   ....33..
 924b: 7F 4F 47 0F 1F 1F 1E 0C 70 70 79 7F 61 18 1E 0C
-</div>
 
-<div style="background-color:#E0E0E0">
-;OctoRockShot {*OctoRockShot}
+OctoRockShot: ; =
 
-<canvas width="150" height="133"
-data-colors='RedOrangeWhite'
-data-command=":1x2:9E,9F">
-</canvas>
+;;{{{html
+;;<canvas width="150" height="133"
+;;data-colors='RedOrangeWhite'
+;;data-command=":1x2:9E,9F">
+;;</canvas>
+;;}}}
 
  ;   ........    9E
  ;   ........
@@ -950,15 +945,14 @@ data-command=":1x2:9E,9F">
  ;   ........
 926b: 0F 4E 7E 18 00 00 00 00 FF FE 7E 18 00 00 00 00
 
-</div>
+ArmosNight: ; =
 
-<div style="background-color:#C0C0C0">
-;ArmosNight {*ArmosNight}
-
-<canvas width="600" height="133"
-data-colors='RedOrangeWhite'
-data-command=":2x2:A0,A2,A1,A3,+x,:2x2:A4,A6,A5,A7,+x,:2x2:A8,AA,A9,AB,+x,:2x2:AC,AE,AD,AF">
-</canvas>
+;;{{{html
+;;<canvas width="600" height="133"
+;;data-colors='RedOrangeWhite'
+;;data-command=":2x2:A0,A2,A1,A3,+x,:2x2:A4,A6,A5,A7,+x,:2x2:A8,AA,A9,AB,+x,:2x2:AC,AE,AD,AF">
+;;</canvas>
+;;}}}
 
  ;   ...21.22    A0
  ;   ...21221
@@ -1119,15 +1113,15 @@ data-command=":2x2:A0,A2,A1,A3,+x,:2x2:A4,A6,A5,A7,+x,:2x2:A8,AA,A9,AB,+x,:2x2:A
  ;   .2221111
  ;   ........
 936b: 3D 3F FF 3F 3F 7F 0F 00 C2 C2 02 C2 C6 86 70 00
-</div>
 
-<div style="background-color:#E0E0E0">
-;Octorok {*Octorok}
+Octorok: ; =
 
-<canvas width="600" height="133"
-data-colors='RedOrangeWhite'
-data-command=":2x2:B0,HB0,B1,HB1,+x,:2x2:B2,HB2,B3,HB3,+x,:2x2:B4,B6,B5,B7,+x,:2x2:B8,BA,B9,BB">
-</canvas>
+;;{{{html
+;;<canvas width="600" height="133"
+;;data-colors='RedOrangeWhite'
+;;data-command=":2x2:B0,HB0,B1,HB1,+x,:2x2:B2,HB2,B3,HB3,+x,:2x2:B4,B6,B5,B7,+x,:2x2:B8,BA,B9,BB">
+;;</canvas>
+;;}}}
 
  ;   .....112    B0
  ;   ...11211
@@ -1248,15 +1242,15 @@ data-command=":2x2:B0,HB0,B1,HB1,+x,:2x2:B2,HB2,B3,HB3,+x,:2x2:B4,B6,B5,B7,+x,:2
  ;   1.11.11.
  ;   ...1..1.
 942b: FE F7 FD EE FE FC B6 12 C1 48 22 F0 C0 00 00 00
-</div>
 
-<div style="background-color:#C0C0C0">
-;Leever {*Leever}
+Leever: ; =
 
-<canvas width="900" height="133"
-data-colors='RedOrangeWhite'
-data-command=":2x2:BC,HBC,BD,HBD,+x,:2x2:BE,HBE,BF,HBF,+x,:2x2:C0,HC0,C1,HC1,+x,:2x2:C2,HC2,C3,HC3,+x,:2x2:C4,HC4,C5,HC5">
-</canvas>
+;;{{{html
+;;<canvas width="900" height="133"
+;;data-colors='RedOrangeWhite'
+;;data-command=":2x2:BC,HBC,BD,HBD,+x,:2x2:BE,HBE,BF,HBF,+x,:2x2:C0,HC0,C1,HC1,+x,:2x2:C2,HC2,C3,HC3,+x,:2x2:C4,HC4,C5,HC5">
+;;</canvas>
+;;}}}
 
  ;   ........    BC
  ;   ........
@@ -1357,15 +1351,15 @@ data-command=":2x2:BC,HBC,BD,HBD,+x,:2x2:BE,HBE,BF,HBF,+x,:2x2:C0,HC0,C1,HC1,+x,
  ;   ..211121
  ;   ....1..1
 94cb: 0F 37 3D 6F BE F7 1D 09 01 09 02 10 41 08 22 00
-</div>
 
-<div style="background-color:#E0E0E0">
-;Peahat {*Peahat}
+Peahat: ; =
 
-<canvas width="600" height="133"
-data-colors='RedOrangeWhite'
-data-command=":2x2:C6,HC6,C7,HC7,+x,:2x2:C8,HC8,C9,HC9">
-</canvas>
+;;{{{html
+;;<canvas width="600" height="133"
+;;data-colors='RedOrangeWhite'
+;;data-command=":2x2:C6,HC6,C7,HC7,+x,:2x2:C8,HC8,C9,HC9">
+;;</canvas>
+;;}}}
 
  ;   .......3    C6
  ;   ......33
@@ -1406,15 +1400,15 @@ data-command=":2x2:C6,HC6,C7,HC7,+x,:2x2:C8,HC8,C9,HC9">
  ;   ....11.1
  ;   .......1
 950b: 3C 78 00 10 30 08 0D 01 3F 7F 1F 0F 0F 07 00 00
-</div>
 
-<div style="background-color:#C0C0C0">
-;Tektike {*Tektike}
+Tektike: ; =
 
-<canvas width="600" height="133"
-data-colors='RedOrangeWhite'
-data-command=":2x2:CA,HCA,CB,HCB,+x,:2x2:CC,HCC,CD,HCD">
-</canvas>
+;;{{{html
+;;<canvas width="600" height="133"
+;;data-colors='RedOrangeWhite'
+;;data-command=":2x2:CA,HCA,CB,HCB,+x,:2x2:CC,HCC,CD,HCD">
+;;</canvas>
+;;}}}
 
  ;   ........    CA
  ;   ........
@@ -1455,15 +1449,15 @@ data-command=":2x2:CA,HCA,CB,HCB,+x,:2x2:CC,HCC,CD,HCD">
  ;   .1......
  ;   1.......
 954b: 97 33 70 42 40 40 40 80 0E 0F 07 42 00 00 00 00
-</div>
 
-<div style="background-color:#E0E0E0">
-;Lynel {*Lynel}
+Lynel: ; =
 
-<canvas width="900" height="133"
-data-colors='RedOrangeWhite'
-data-command=":2x2:CE,D0,CF,D1,+x,:2x2:D2,D4,D3,D5,+x,:2x2:D6,D8,D7,D9,+x,:2x2:DA,DC,DB,DD">
-</canvas>
+;;{{{html
+;;<canvas width="900" height="133"
+;;data-colors='RedOrangeWhite'
+;;data-command=":2x2:CE,D0,CF,D1,+x,:2x2:D2,D4,D3,D5,+x,:2x2:D6,D8,D7,D9,+x,:2x2:DA,DC,DB,DD">
+;;</canvas>
+;;}}}
 
  ;   ...11121    CE
  ;   .....122
@@ -1624,15 +1618,15 @@ data-command=":2x2:CE,D0,CF,D1,+x,:2x2:D2,D4,D3,D5,+x,:2x2:D6,D8,D7,D9,+x,:2x2:D
  ;   .1111...
  ;   .111....
 964b: A0 B0 78 F8 F8 F8 78 70 58 40 80 00 00 00 00 00
-</div>
 
-<div style="background-color:#FFC0C0">
-;Unknown3 Shot for something {*Unknown3 Shot for something}
+Unknown3: ; =
 
-<canvas width="300" height="133"
-data-colors='RedOrangeWhite'
-data-command=":1x2:DE,DF">
-</canvas>
+;;{{{html
+;;<canvas width="300" height="133"
+;;data-colors='RedOrangeWhite'
+;;data-command=":1x2:DE,DF">
+;;</canvas>
+;;}}}
 
  ;   ........    DE
  ;   ........
@@ -1653,16 +1647,16 @@ data-command=":1x2:DE,DF">
  ;   ........
  ;   ........
 966b: 37 3F 1E 0C 00 00 00 00 FF FF 7E 1C 00 00 00 00
-</div>
 
-<div style="background-color:#C0C0C0">
-;Ghini {*Ghini}
+Ghini: ; =
 
-<canvas width="600" height="133"
-data-colorsName="BlueBlueWhite"
-data-colors='["#606060","0000BC","#6B8EFF","#FFFFFF"]'
-data-command=":2x2:E0,E2,E1,E3,+x,:2x2:E4,E6,E5,E7">
-</canvas>
+;;{{{html
+;;<canvas width="600" height="133"
+;;data-colorsName="BlueBlueWhite"
+;;data-colors='["#606060","#0000BC","#6B8EFF","#FFFFFF"]'
+;;data-command=":2x2:E0,E2,E1,E3,+x,:2x2:E4,E6,E5,E7">
+;;</canvas>
+;;}}}
 
  ;   .....333    E0
  ;   3..22222
@@ -1743,15 +1737,15 @@ data-command=":2x2:E0,E2,E1,E3,+x,:2x2:E4,E6,E5,E7">
  ;   11111...
  ;   1111....
 96eb: F0 E0 E0 C0 00 F0 F8 F0 F8 F0 F0 E0 C0 00 00 00
-</div>
 
-<div style="background-color:#E0E0E0">
-;Rock2 {*Rock2}
+Rock2: ; =
 
-<canvas width="300" height="133"
-data-colors='RedOrangeWhite'
-data-command=":2x2:E8,EA,E9,EB">
-</canvas>
+;;{{{html
+;;<canvas width="300" height="133"
+;;data-colors='RedOrangeWhite'
+;;data-command=":2x2:E8,EA,E9,EB">
+;;</canvas>
+;;}}}
 
  ;   ......22    E8
  ;   ....3223
@@ -1792,15 +1786,15 @@ data-command=":2x2:E8,EA,E9,EB">
  ;   111.....
  ;   11......
 972b: 86 C6 46 4C 4C 78 E0 C0 78 38 B8 B0 B0 80 00 00
-</div>
 
-<div style="background-color:#C0C0C0">
-;Zola {*Zola}
+Zola: ; =
 
-<canvas width="600" height="133"
-data-colors='RedOrangeWhite'
-data-command=":2x2:EC,HEC,ED,HED,+x,+x,+x,:2x2:EE,HEE,EF,HEF">
-</canvas>
+;;{{{html
+;;<canvas width="600" height="133"
+;;data-colors='RedOrangeWhite'
+;;data-command=":2x2:EC,HEC,ED,HED,+x,+x,+x,:2x2:EE,HEE,EF,HEF">
+;;</canvas>
+;;}}}
 
  ;   31....13    EC
  ;   131..113
@@ -1841,15 +1835,15 @@ data-command=":2x2:EC,HEC,ED,HED,+x,+x,+x,:2x2:EE,HEE,EF,HEF">
  ;   ..122.11
  ;   ...11222
 976b: FD FD F3 E3 D3 4F 23 18 F5 75 6D DD 2D 21 18 07
-</div>
 
-<div style="background-color:#E0E0E0">
-;Moblin {*Moblin}
+Moblin: ; =
 
-<canvas width="600" height="133"
-data-colors='RedOrangeWhite'
-data-command=":2x2:F0,F2,F1,F3,+x,:2x2:F4,F6,F5,F7,+x,:2x2:F8,FA,F9,FB,+x,:2x2:FC,FE,FD,FF">
-</canvas>
+;;{{{html
+;;<canvas width="600" height="133"
+;;data-colors='RedOrangeWhite'
+;;data-command=":2x2:F0,F2,F1,F3,+x,:2x2:F4,F6,F5,F7,+x,:2x2:F8,FA,F9,FB,+x,:2x2:FC,FE,FD,FF">
+;;</canvas>
+;;}}}
 
  ;   ......22    F0
  ;   .......2
@@ -2010,22 +2004,20 @@ data-command=":2x2:F0,F2,F1,F3,+x,:2x2:F4,F6,F5,F7,+x,:2x2:F8,FA,F9,FB,+x,:2x2:F
  ;   1111222.
  ;   ........
 986b: F0 F8 FA FE FE FA F0 00 0E 06 36 C2 02 06 0E 00
-</div>
 
-<div style="background-color:#E0E0FF">
-;Tiles_S_358 {*Tiles_S_358}
+;Tiles_S_358: ; =
 ;
 ; Creatures levels 3,5, and 8. 34 tiles beginning at $09E0 (first bank). Starting with tile number $9E.
-</div>
 
-<div style="background-color:#C0C0C0">
-;Blank {*Blank}
+Blank: ; =
 
-<canvas width="600" height="66"
-data-address="8E9B"
-data-colors='["#606060","#B8B8F8","#FFA044","#E45C10"]'
-data-command="9E,+x,9F">
-</canvas>
+;;{{{html
+;;<canvas width="600" height="66"
+;;data-address="8E9B"
+;;data-colors='["#606060","#B8B8F8","#FFA044","#E45C10"]'
+;;data-command="9E,+x,9F">
+;;</canvas>
+;;}}}
 
  ;   ........    9E
  ;   ........
@@ -2046,16 +2038,16 @@ data-command="9E,+x,9F">
  ;   ........
  ;   ........
 988b: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-</div>
 
-<div style="background-color:#E0E0E0">
-;PolsVoice {*PolsVoice}
+PolsVoice: ; =
 
-<canvas width="600" height="133"
-data-address="8E9B"
-data-colors='["#606060","#B8B8F8","#FFA044","#E45C10"]'
-data-command=":2x2:A0,HA0,A1,HA1,+x,:2x2:A2,HA2,A3,HA3">
-</canvas>
+;;{{{html
+;;<canvas width="600" height="133"
+;;data-address="8E9B"
+;;data-colors='["#606060","#B8B8F8","#FFA044","#E45C10"]'
+;;data-command=":2x2:A0,HA0,A1,HA1,+x,:2x2:A2,HA2,A3,HA3">
+;;</canvas>
+;;}}}
 
  ;   ........    A0
  ;   .22.....
@@ -2096,16 +2088,16 @@ data-command=":2x2:A0,HA0,A1,HA1,+x,:2x2:A2,HA2,A3,HA3">
  ;   .3222222
  ;   .222..22
 98cb: 00 22 FA 02 F8 20 40 00 7F 3F 07 1F 07 3F 7F 73
-</div>
 
-<div style="background-color:#C0C0C0">
-;Gibdo {*Gibdo}
+Gibdo: ; =
 
-<canvas width="600" height="133"
-data-address="8E9B"
-data-colors='BlueBlueWhite'
-data-command=":2x2:A4,A6,A5,A7">
-</canvas>
+;;{{{html
+;;<canvas width="600" height="133"
+;;data-address="8E9B"
+;;data-colors='BlueBlueWhite'
+;;data-command=":2x2:A4,A6,A5,A7">
+;;</canvas>
+;;}}}
 
  ;   ......23    A4
  ;   22...211
@@ -2146,16 +2138,17 @@ data-command=":2x2:A4,A6,A5,A7">
  ;   ........
  ;   ........
 990b: 30 C0 18 F0 0E 10 00 00 F0 F0 F8 F8 7E 1E 00 00
-</div>
 
-<div style="background-color:#E0E0E0">
-;Zol {*Zol}
 
-<canvas width="600" height="133"
-data-address="8E9B"
-data-colors='["#606060","#005800","#F9BC22","#FFFFFF"]'
-data-command=":2x2:A8,HA8,A9,HA9,+x,:2x2:AA,HAA,AB,HAB">
-</canvas>
+Zol: ; =
+
+;;{{{html
+;;<canvas width="600" height="133"
+;;data-address="8E9B"
+;;data-colors='["#606060","#005800","#F9BC22","#FFFFFF"]'
+;;data-command=":2x2:A8,HA8,A9,HA9,+x,:2x2:AA,HAA,AB,HAB">
+;;</canvas>
+;;}}}
 
  ;   ......11    A8
  ;   .....111
@@ -2196,18 +2189,18 @@ data-command=":2x2:A8,HA8,A9,HA9,+x,:2x2:AA,HAA,AB,HAB">
  ;   ..111111
  ;   ...11111
 994b: 1F 3F 7F 7F 7F 7F 3F 1F 00 00 00 00 00 00 00 00
-</div>
-}}}
-== Darknut ==
-{{{#!AssemblyCode
-<div style="background-color:#C0C0C0">
-;Darknut {*Darknut}
 
-<canvas width="900" height="133"
-data-address="8E9B"
-data-colors='BlueBlueWhite'
-data-command=":2x2:AC,AE,AD,AF,+x,:2x2:B0,B2,B1,B3,+x,:2x2:B4,B6,B5,B7,+x,:2x2:B8,BA,B9,BB,+x,:2x2:BC,BE,BD,BF">
-</canvas>
+;;= Darknut =
+
+Darknut: ; =
+
+;;{{{html
+;;<canvas width="900" height="133"
+;;data-address="8E9B"
+;;data-colors='BlueBlueWhite'
+;;data-command=":2x2:AC,AE,AD,AF,+x,:2x2:B0,B2,B1,B3,+x,:2x2:B4,B6,B5,B7,+x,:2x2:B8,BA,B9,BB,+x,:2x2:BC,BE,BD,BF">
+;;</canvas>
+;;}}}
 
  ;   ....3..1    AC
  ;   ....3221
@@ -2408,22 +2401,20 @@ data-command=":2x2:AC,AE,AD,AF,+x,:2x2:B0,B2,B1,B3,+x,:2x2:B4,B6,B5,B7,+x,:2x2:B
  ;   1111....
  ;   .11.....
 9a8b: F4 FE FF FE 44 3C F0 60 08 3E 3F 3E A8 C0 00 00
-</div>
 
-<div style="background-color:#E0E0FF">
-;Tiles_S_469 {*Tiles_S_469}
+Tiles_S_469: ; =
 ;
 ; Creatures levels 4,6, and 9. 34 tiles beginning at $09E0 (first bank). Starting with tile number $9E.
-</div>
 
-<div style="background-color:#E0E0E0">
-;Lanmola {*Lanmola}
+Lanmola: ; =
 
-<canvas width="600" height="133"
-data-address="90bb"
-data-colors='RedOrangeWhite'
-data-command=":1x2:9E,9F,+x,:1x2:A0,A1">
-</canvas>
+;;{{{html
+;;<canvas width="600" height="133"
+;;data-address="90bb"
+;;data-colors='RedOrangeWhite'
+;;data-command=":1x2:9E,9F,+x,:1x2:A0,A1">
+;;</canvas>
+;;}}}
 
  ;   ........    9E
  ;   33....33
@@ -2464,15 +2455,15 @@ data-command=":1x2:9E,9F,+x,:1x2:A0,A1">
  ;   ........
  ;   ........
 9acb: C3 62 C7 6A 7E 34 00 00 3C 1C 38 14 00 00 00 00
-</div>
 
-<div style="background-color:#C0C0C0">
-;LikeLike {*LikeLike}
+LikeLike: ; =
 
-<canvas width="600" height="133"
-data-colors='RedOrangeWhite'
-data-command=":2x2:A2,HA2,A3,HA3,+x,:2x2:A4,HA4,A5,HA5,+x,:2x2:A6,HA6,A7,HA7">
-</canvas>
+;;{{{html
+;;<canvas width="600" height="133"
+;;data-colors='RedOrangeWhite'
+;;data-command=":2x2:A2,HA2,A3,HA3,+x,:2x2:A4,HA4,A5,HA5,+x,:2x2:A6,HA6,A7,HA7">
+;;</canvas>
+;;}}}
 
  ;   ....2222    A2
  ;   ..221111
@@ -2533,16 +2524,16 @@ data-command=":2x2:A2,HA2,A3,HA3,+x,:2x2:A4,HA4,A5,HA5,+x,:2x2:A6,HA6,A7,HA7">
  ;   ........
  ;   ........
 9b2b: 20 8C 73 20 00 00 00 00 FF 73 8C 78 00 00 00 00
-</div>
 
-<div style="background-color:#E0E0E0">
-;Zol2 {*Zol2}
+Zol2: ; =
 
-<canvas width="600" height="133"
-data-colorsName="GreenGreenWhite"
-data-colors='["#606060","#005800","#F9BC22","#FFFFFF"]'
-data-command=":2x2:A8,HA8,A9,HA9,+x,:2x2:AA,HAA,AB,HAB">
-</canvas>
+;;{{{html
+;;<canvas width="600" height="133"
+;;data-colorsName="GreenGreenWhite"
+;;data-colors='["#606060","#005800","#F9BC22","#FFFFFF"]'
+;;data-command=":2x2:A8,HA8,A9,HA9,+x,:2x2:AA,HAA,AB,HAB">
+;;</canvas>
+;;}}}
 
  ;   ......11    A8
  ;   .....111
@@ -2583,15 +2574,15 @@ data-command=":2x2:A8,HA8,A9,HA9,+x,:2x2:AA,HAA,AB,HAB">
  ;   ..111111
  ;   ...11111
 9b6b: 1F 3F 7F 7F 7F 7F 3F 1F 00 00 00 00 00 00 00 00
-</div>
 
-<div style="background-color:#C0C0C0">
-;Vire {*Vire}
+Vire: ; =
 
-<canvas width="600" height="133"
-data-colors='BlueBlueWhite'
-data-command=":2x2:AC,HAC,AD,HAD,+x,:2x2:AE,HAE,AF,HAF,+x,:2x2:B0,HB0,B1,HB1,+x,:2x2:B2,HB2,B3,HB3">
-</canvas>
+;;{{{html
+;;<canvas width="600" height="133"
+;;data-colors='BlueBlueWhite'
+;;data-command=":2x2:AC,HAC,AD,HAD,+x,:2x2:AE,HAE,AF,HAF,+x,:2x2:B0,HB0,B1,HB1,+x,:2x2:B2,HB2,B3,HB3">
+;;</canvas>
+;;}}}
 
  ;   ..1.22..    AC
  ;   ..11.222
@@ -2672,15 +2663,15 @@ data-command=":2x2:AC,HAC,AD,HAD,+x,:2x2:AE,HAE,AF,HAF,+x,:2x2:B0,HB0,B1,HB1,+x,
  ;   ....222.
  ;   ...2222.
 9beb: 00 00 10 10 00 00 00 00 3F 3F 2F 0F 0F 0F 0E 1E
-</div>
 
-<div style="background-color:#E0E0E0">
-;Wizzrobe {*Wizzrobe}
+Wizzrobe: ; =
 
-<canvas width="600" height="133"
-data-colors='BlueBlueWhite'
-data-command=":2x2:B4,B6,B5,B7,+x,:2x2:B8,BA,B9,BB,+x,:2x2:BC,HBC,BD,HBD,+x,:2x2:BE,HBE,BF,HBF">
-</canvas>
+;;{{{html
+;;<canvas width="600" height="133"
+;;data-colors='BlueBlueWhite'
+;;data-command=":2x2:B4,B6,B5,B7,+x,:2x2:B8,BA,B9,BB,+x,:2x2:BC,HBC,BD,HBD,+x,:2x2:BE,HBE,BF,HBF">
+;;</canvas>
+;;}}}
 
  ;   .....222    B4
  ;   ...22222
@@ -2801,22 +2792,20 @@ data-command=":2x2:B4,B6,B5,B7,+x,:2x2:B8,BA,B9,BB,+x,:2x2:BC,HBC,BD,HBD,+x,:2x2
  ;   ...22222
  ;   .2222222
 9cab: 08 04 02 01 10 10 00 00 37 3B 3D 3E 2F 2F 1F 7F
-</div>
 
-<div style="background-color:#E0E0FF">
-;Tiles_S_Dungeon {*Tiles_S_Dungeon}
+Tiles_S_Dungeon: ; =
 ;
 ; Common underworld creatures (there aren't many).  16 tiles beginning at $08E0 (first bank). Starting with tile number $8E.
-</div>
 
-<div style="background-color:#E0E0E0">
-;Bubble {*Bubble}
+Bubble: ; =
 
-<canvas width="600" height="133"
-data-address="93db"
-data-colors='RedOrangeWhite'
-data-command=":2x2:8E,90,8F,91">
-</canvas>
+;;{{{html
+;;<canvas width="600" height="133"
+;;data-address="93db"
+;;data-colors='RedOrangeWhite'
+;;data-command=":2x2:8E,90,8F,91">
+;;</canvas>
+;;}}}
 
  ;   ......12    8E
  ;   ....3122
@@ -2857,15 +2846,15 @@ data-command=":2x2:8E,90,8F,91">
  ;   3233....
  ;   21......
 9ceb: F6 D4 DA E0 BC 80 B0 40 7E EA EC 7C CC 78 F0 80
-</div>
 
-<div style="background-color:#C0C0C0">
-;Gel {*Gel}
+Gel: ; =
 
-<canvas width="600" height="133"
-data-colors='["#606060","#004058","#008585","#00FFFF"]'
-data-command=":1x2:92,93,+x,:1x2:94,95">
-</canvas>
+;;{{{html
+;;<canvas width="600" height="133"
+;;data-colors='["#606060","#004058","#008585","#00FFFF"]'
+;;data-command=":1x2:92,93,+x,:1x2:94,95">
+;;</canvas>
+;;}}}
 
  ;   ........    92
  ;   ........
@@ -2906,15 +2895,15 @@ data-command=":1x2:92,93,+x,:1x2:94,95">
  ;   ........
  ;   ........
 9d2b: 7E 7E 7E 7E 3C 00 00 00 00 00 00 00 00 00 00 00
-</div>
 
-<div style="background-color:#E0E0E0">
-;Trap {*Trap}
+Trap: ; =
 
-<canvas width="600" height="133"
-data-colors='BlueBlueWhite'
-data-command=":2x2:96,H96,97,H97">
-</canvas>
+;;{{{html
+;;<canvas width="600" height="133"
+;;data-colors='BlueBlueWhite'
+;;data-command=":2x2:96,H96,97,H97">
+;;</canvas>
+;;}}}
 
  ;   ......3.    96
  ;   ......3.
@@ -2935,15 +2924,15 @@ data-command=":2x2:96,H96,97,H97">
  ;   ......3.
  ;   ......3.
 9d4b: 0C FC 0B 07 02 02 02 02 03 F3 04 08 02 02 02 02
-</div>
 
-<div style="background-color:#C0C0C0">
-;OldMan2 {*OldMan2}
+OldMan2: ; =
 
-<canvas width="600" height="133"
-data-colors='RedOrangeWhite'
-data-command=":2x2:98,H98,99,H99">
-</canvas>
+;;{{{html
+;;<canvas width="600" height="133"
+;;data-colors='RedOrangeWhite'
+;;data-command=":2x2:98,H98,99,H99">
+;;</canvas>
+;;}}}
 
  ;   .....222    98
  ;   ...23232
@@ -2964,15 +2953,15 @@ data-command=":2x2:98,H98,99,H99">
  ;   ....1111
  ;   ...11221
 9d6b: 3F 3F 77 77 67 2F 0F 19 D3 C3 81 00 00 00 00 06
-</div>
 
-<div style="background-color:#E0E0E0">
-;Keese {*Keese}
+Keese: ; =
 
-<canvas width="600" height="133"
-data-colors='BlueBlueWhite'
-data-command=":2x2:9A,H9A,9B,H9B,+x,:2x2:9C,H9C,9D,H9D">
-</canvas>
+;;{{{html
+;;<canvas width="600" height="133"
+;;data-colors='BlueBlueWhite'
+;;data-command=":2x2:9A,H9A,9B,H9B,+x,:2x2:9C,H9C,9D,H9D">
+;;</canvas>
+;;}}}
 
  ;   ........    9A
  ;   ........
@@ -3013,22 +3002,20 @@ data-command=":2x2:9A,H9A,9B,H9B,+x,:2x2:9C,H9C,9D,H9D">
  ;   ........
  ;   ........
 9dab: 1F 1F 1F 0E 0C 04 00 00 00 00 00 00 00 00 00 00
-</div>
 
-<div style="background-color:#E0E0FF">
-;Tiles_S_127 {*Tiles_S_127}
+Tiles_S_127: ; =
 ;
 ; Creatures levels 1,2, and 7.  34 tiles beginning at $09E0 (first bank). Starting with tile number $9E.
-</div>
 
-<div style="background-color:#E0E0E0">
-;WallMaster1 {*WallMaster1}
+WallMaster1: ; =
 
-<canvas width="600" height="133"
-data-address="93DB"
-data-colors='BlueBlueWhite'
-data-command=":2x2:AC,AE,AD,AF,+x,:2x2:AC,9E,AD,9F">
-</canvas>
+;;{{{html
+;;<canvas width="600" height="133"
+;;data-address="93DB"
+;;data-colors='BlueBlueWhite'
+;;data-command=":2x2:AC,AE,AD,AF,+x,:2x2:AC,9E,AD,9F">
+;;</canvas>
+;;}}}
 
  ;   ........    9E
  ;   2.......
@@ -3049,16 +3036,16 @@ data-command=":2x2:AC,AE,AD,AF,+x,:2x2:AC,9E,AD,9F">
  ;   111.....
  ;   11......
 9dcb: 64 44 8C 08 18 30 E0 C0 98 B8 70 F0 E0 C0 00 00
-</div>
 
-<div style="background-color:#E0E0E0">
-;Rope {*Rope}
+Rope: ; =
 
-<canvas width="600" height="133"
-data-address="93DB"
-data-colors='RedOrangeWhite'
-data-command=":2x2:A0,A2,A1,A3,+x,:2x2:A4,A6,A5,A7">
-</canvas>
+;;{{{html
+;;<canvas width="600" height="133"
+;;data-address="93DB"
+;;data-colors='RedOrangeWhite'
+;;data-command=":2x2:A0,A2,A1,A3,+x,:2x2:A4,A6,A5,A7">
+;;</canvas>
+;;}}}
 
  ;   .......2    A0
  ;   ......22
@@ -3139,16 +3126,16 @@ data-command=":2x2:A0,A2,A1,A3,+x,:2x2:A4,A6,A5,A7">
  ;   .22211..
  ;   ........
 9e4b: 00 00 18 0C 0E 06 0C 00 FE 78 20 3C F0 FE 70 00
-</div>
 
-<div style="background-color:#C0C0C0">
-;Stalfos {*Stalfos}
+Stalfos: ; =
 
-<canvas width="600" height="133"
-data-address="93DB"
-data-colors='RedOrangeWhite'
-data-command=":2x2:A8,AA,A9,AB">
-</canvas>
+;;{{{html
+;;<canvas width="600" height="133"
+;;data-address="93DB"
+;;data-colors='RedOrangeWhite'
+;;data-command=":2x2:A8,AA,A9,AB">
+;;</canvas>
+;;}}}
 
  ;   .....333    A8
  ;   ....3113
@@ -3189,10 +3176,8 @@ data-command=":2x2:A8,AA,A9,AB">
  ;   ..33....
  ;   ..3333..
 9e8b: 06 C6 40 80 60 30 30 3C 06 C0 40 80 60 30 30 3C
-</div>
 
-<div style="background-color:#E0E0E0">
-;WallMaster2 {*WallMaster2}
+WallMaster2: ; =
 ;
 ; See WallMaster1 above
 
@@ -3235,16 +3220,16 @@ data-command=":2x2:A8,AA,A9,AB">
  ;   1111....
  ;   11......
 9ecb: C1 81 83 82 06 18 F0 C0 0E 0E 1C 7C F8 E0 00 00
-</div>
 
-<div style="background-color:#C0C0C0">
-;Goriya {*Goriya}
+Goriya: ; =
 
-<canvas width="600" height="133"
-data-address="93DB"
-data-colors='RedOrangeWhite'
-data-command=":2x2:B0,B2,B1,B3,+x,:2x2:B4,B6,B5,B7,+x,:2x2:B8,BA,B9,BB,+x,:2x2:BC,BE,BD,BF">
-</canvas>
+;;{{{html
+;;<canvas width="600" height="133"
+;;data-address="93DB"
+;;data-colors='RedOrangeWhite'
+;;data-command=":2x2:B0,B2,B1,B3,+x,:2x2:B4,B6,B5,B7,+x,:2x2:B8,BA,B9,BB,+x,:2x2:BC,BE,BD,BF">
+;;</canvas>
+;;}}}
 
  ;   ..2222..    B0
  ;   ....2211
@@ -3405,22 +3390,20 @@ data-command=":2x2:B0,B2,B1,B3,+x,:2x2:B4,B6,B5,B7,+x,:2x2:B8,BA,B9,BB,+x,:2x2:B
  ;   2222211.
  ;   ...11111
 9fcb: 70 FF FF FE E0 00 06 1F 88 07 07 06 1C FC F8 00
-</div>
 
-<div style="background-color:#E0E0FF">
-;Tiles_S_Boss_1257 {*Tiles_S_Boss_1257}
+Tiles_S_Boss_1257: ; =
 ;
 ; Bosses for levels 1,2,5, and 7. 64 tiles beginning at $0C00 (first bank). Starting with tile number $C0.
-</div>
 
-<div style="background-color:#C0C0C0">
-;Aquamentus {*Aquamentus}
+Aquamentus: ; =
 
-<canvas width="600" height="280"
-data-address="93db"
-data-colors='["#606060","#005400","#C0FF00","#FFFFFF"]'
-data-command=":3x4:C0,C4,C8,C1,C5,C9,C2,C6,CA,C3,C7,CB,+x,+x,:3x4:CC,C4,C8, CD,C5,C9,CE,D0,D2,CF,D1,D3">
-</canvas>
+;;{{{html
+;;<canvas width="600" height="280"
+;;data-address="93db"
+;;data-colors='["#606060","#005400","#C0FF00","#FFFFFF"]'
+;;data-command=":3x4:C0,C4,C8,C1,C5,C9,C2,C6,CA,C3,C7,CB,+x,+x,:3x4:CC,C4,C8, CD,C5,C9,CE,D0,D2,CF,D1,D3">
+;;</canvas>
+;;}}}
 
  ;   3.......    C0
  ;   .3......
@@ -3621,15 +3604,15 @@ a0fb: D8 E0 F0 FC FF 00 00 00 DF 1F 0F 03 00 FF FF FF
  ;   222222..
  ;   22222...
 a10b: 00 80 00 00 00 00 00 00 FE 7E FE FE FC FC FC F8
-</div>
 
-<div style="background-color:#E0E0E0">
-;Digdogger {*Digdogger}
+Digdogger: ; =
 
-<canvas width="600" height="280"
-data-colors='RedOrangeWhite'
-data-command=":4x4:D4,D6,HD6,HD4,D5,D7,HD7,HD5,VD5,VD7,VHD7,VHD5,VD4,VD6,VHD6,VHD4,+x,:2x2:D8,HD8,D9,HD9,+x,:2x2:DA,HDA,DB,HDB">
-</canvas>
+;;{{{html
+;;<canvas width="600" height="280"
+;;data-colors='RedOrangeWhite'
+;;data-command=":4x4:D4,D6,HD6,HD4,D5,D7,HD7,HD5,VD5,VD7,VHD7,VHD5,VD4,VD6,VHD6,VHD4,+x,:2x2:D8,HD8,D9,HD9,+x,:2x2:DA,HDA,DB,HDB">
+;;</canvas>
+;;}}}
 
 ; The large version is drawn with DA,DB and HDA,HDB (alternating) overlapping to give 
 ; animation to the disk.
@@ -3713,20 +3696,20 @@ a17b: 01 18 10 03 67 4F 0F 5F 00 03 0F 1C 1B 37 36 2C
  ;   .....122
  ;   .....11.
 a18b: DF 0F 4F C7 23 30 04 06 2C 36 37 1B 1C 0F 03 00
-</div>
 
-<div style="background-color:#C0C0C0">
-;Dodongo {*Dodongo}
+Dodongo: ; =
 
-<canvas width="900" height="140"
-data-colors='RedOrangeWhite'
-data-command=":4x2:DC,DE,E0,E2,DD,DF,E1,E3,+x,:4x2:E4,E6,E8,EA,E5,E7,E9,EB,+x,:4x2:EC,EE,F0,F2,ED,EF,F1,F3">
-</canvas>
-<br>
-<canvas width="900" height="140"
-data-colors='RedOrangeWhite'
-data-command=":2x2:F4,F6,F5,F7,+x,:2x2:F8,HF8,F9,HF9,+x,:2x2:FA,FC,FB,FD,+x,:2x2:FE,HFE,FF,HFF">
-</canvas>
+;;{{{html
+;;<canvas width="900" height="140"
+;;data-colors='RedOrangeWhite'
+;;data-command=":4x2:DC,DE,E0,E2,DD,DF,E1,E3,+x,:4x2:E4,E6,E8,EA,E5,E7,E9,EB,+x,:4x2:EC,EE,F0,F2,ED,EF,F1,F3">
+;;</canvas>
+;;<br>
+;;<canvas width="900" height="140"
+;;data-colors='RedOrangeWhite'
+;;data-command=":2x2:F4,F6,F5,F7,+x,:2x2:F8,HF8,F9,HF9,+x,:2x2:FA,FC,FB,FD,+x,:2x2:FE,HFE,FF,HFF">
+;;</canvas>
+;;}}}
 
  ;   ........    DC
  ;   ........
@@ -4087,31 +4070,29 @@ a3bb: 00 00 00 00 00 00 00 00 07 1F 7F 7F 7F FF FF FF
  ;   22221222
  ;   .222.122
 a3cb: 00 80 80 40 20 10 08 04 FF 7F 7F BF DF EF F7 73
-</div>
 
-<div style="background-color:#E0E0FF">
-;Tiles_S_Boss_3468 {*Tiles_S_Boss_3468}
+Tiles_S_Boss_3468: ; =
 ;
 ; Bosses levels 3,4,6, and 8.64 tiles beginning at $0C00 (first bank). Starting with tile number $C0.
-</div>
 
-<div style="background-color:#C0C0C0">
-;Gleeok {*Gleeok}
+Gleeok: ; =
 
-<canvas width="900" height="280"
-data-address="97DB"
-data-colors='["#606060","#60C040","#00A000","#004040"]'
-data-command=":3x4:C0,C4,C8,C1,C5,C9,C2,C6,CA,C3,C7,CB,+x,:3x4:CC,C4,CE,CD,C5,CF,D4,C6,D0,D5,C7,D1">
-</canvas>
-<br>
-<canvas width="900" height="160"
-data-command=":1x2:D2,D3,+x,:1x2:D6,D7,+x,:1x2:D8,D9,+x,+x,+x,:1x2:DA,DB,+x,:1x2:DC,DD">
-</canvas>
-<br>
-<canvas width="900" height="160"
-data-colors="RedOrangeWhite"
-data-command=":2x2:DE,HDE,DF,HDF,+x,:2x2:EE,HEE,EF,HEF">
-</canvas>
+;;{{{html
+;;<canvas width="900" height="280"
+;;data-address="97DB"
+;;data-colors='["#606060","#60C040","#00A000","#004040"]'
+;;data-command=":3x4:C0,C4,C8,C1,C5,C9,C2,C6,CA,C3,C7,CB,+x,:3x4:CC,C4,CE,CD,C5,CF,D4,C6,D0,D5,C7,D1">
+;;</canvas>
+;;<br>
+;;<canvas width="900" height="160"
+;;data-command=":1x2:D2,D3,+x,:1x2:D6,D7,+x,:1x2:D8,D9,+x,+x,+x,:1x2:DA,DB,+x,:1x2:DC,DD">
+;;</canvas>
+;;<br>
+;;<canvas width="900" height="160"
+;;data-colors="RedOrangeWhite"
+;;data-command=":2x2:DE,HDE,DF,HDF,+x,:2x2:EE,HEE,EF,HEF">
+;;</canvas>
+;;}}}
 
 ; The second head tiles (EE and EF) are defined later
 
@@ -4434,19 +4415,19 @@ a5bb: 0E 0F 07 07 0F 0F 0F 07 23 12 B8 58 34 16 30 18
  ;   .....131
  ;   ......11
 a5cb: 03 03 03 03 03 07 07 03 1C 2C 0C 14 0C 08 02 00
-</div>
 
-<div style="background-color:#E0E0E0">
-;Manhandla {*Manhandla}
+Manhandla: ; =
 
-<canvas width="900" height="160"
-data-colors="BlueBlueWhite"
-data-command=":2x2:E0,E2,E1,E3,+x,:2x2:E4,E6,E5,E7,+x,:2x2:E8,HE8,E9,HE9,+x,:2x2:EA,HEA,EB,HEB">
-</canvas>
-<br>
-<canvas width="900" height="160"
-data-command=":2x2:EC,HEC,ED,HED">
-</canvas>
+;;{{{html
+;;<canvas width="900" height="160"
+;;data-colors="BlueBlueWhite"
+;;data-command=":2x2:E0,E2,E1,E3,+x,:2x2:E4,E6,E5,E7,+x,:2x2:E8,HE8,E9,HE9,+x,:2x2:EA,HEA,EB,HEB">
+;;</canvas>
+;;<br>
+;;<canvas width="900" height="160"
+;;data-command=":2x2:EC,HEC,ED,HED">
+;;</canvas>
+;;}}}
 
  ;   .....222    E0
  ;   ...22222
@@ -4587,10 +4568,8 @@ a69b: 0F 1F 3F 3F 7F 7F 7F 7F 00 01 19 10 00 01 B1 A0
  ;   11111222
  ;   .1112222
 a6ab: 7E 7C 7C 78 FB FC F8 70 81 83 63 47 04 03 07 0F
-</div>
 
-<div style="background-color:#C0C0C0">
-;GleeokHead shown above {*GleeokHead shown above}
+GleeokHead: ; =
 
  ;   2..31133    EE
  ;   ..3.1131
@@ -4611,19 +4590,19 @@ a6bb: 1F 2F 5F 2F 1F 1F 0F 0F 93 22 58 28 14 56 00 08
  ;   ....3131
  ;   .....311
 a6cb: 0F 1F 17 0F 07 07 0F 07 2C 1C 14 0C 14 10 0A 04
-</div>
 
-<div style="background-color:#E0E0E0">
-;Gohma {*Gohma}
+Gohma: ; =
 
-<canvas width="900" height="140"
-data-colors="RedOrangeWhite"
-data-command=":6x2:F0,F2,F4,HF4,F8,FA,F1,F3,F5,HF5,F9,FB">
-</canvas>
-<br>
-<canvas width="900" height="140"
-data-command=":1x2:F6,F7,+x,+x,+x,:2x2:FC,HFC,FD,HFD,+x,+x,+x,:1x2:FE,FF">
-</canvas>
+;;{{{html
+;;<canvas width="900" height="140"
+;;data-colors="RedOrangeWhite"
+;;data-command=":6x2:F0,F2,F4,HF4,F8,FA,F1,F3,F5,HF5,F9,FB">
+;;</canvas>
+;;<br>
+;;<canvas width="900" height="140"
+;;data-command=":1x2:F6,F7,+x,+x,+x,:2x2:FC,HFC,FD,HFD,+x,+x,+x,:1x2:FE,FF">
+;;</canvas>
+;;}}}
 
  ;   ........    F0
  ;   .......3
@@ -4784,24 +4763,22 @@ a7bb: 00 20 30 80 C0 90 98 00 00 00 0C 7F 3F 6F 67 FF
  ;   ..333222
  ;   ..3.....
 a7cb: 00 70 7F 3F 0F 17 38 20 FF FF F8 FC FF 7F 3F 20
-</div>
 
-<div style="background-color:#E0E0FF">
-;Tiles_S_Boss_9 {*Tiles_S_Boss_9}
+Tiles_S_Boss_9: ; =
 ;
 ; Ganon (Level 9). 64 tiles beginning at $0C00 (first bank). Starting with tile number $C0.
-</div>
 
-<div style="background-color:#E0E0E0">
-;Ganon {*Ganon}
+Ganon: ; =
 
 ; These are the "Ganon" tiles drawn in a grid. I am still working on
 ; putting them together into pictures.
 
-<canvas width="800" height="560"
-data-address="9BDB"
-data-command=":1x2:C0,C1,+x,:1x2:C2,C3,+x,:1x2:C4,C5,+x,:1x2:C6,C7,+x,:1x2:C8,C9,+x,:1x2:CA,CB,+x,:1x2:CC,CD,+x,:1x2:CE,CF,+x,*,+y,:1x2:D0,D1,+x,:1x2:D2,D3,+x,:1x2:D4,D5,+x,:1x2:D6,D7,+x,:1x2:D8,D9,+x,:1x2:DA,DB,+x,:1x2:DC,DD,+x,:1x2:DE,DF,+x,*,+y,:1x2:E0,E1,+x,:1x2:E2,E3,+x,:1x2:E4,E5,+x,:1x2:E6,E7,+x,:1x2:E8,E9,+x,:1x2:EA,EB,+x,:1x2:EC,ED,+x,:1x2:EE,EF,+x,*,+y,:1x2:F0,F1,+x,:1x2:F2,F3,+x,:1x2:F4,F5,+x,:1x2:F6,F7">
-</canvas>
+;;{{{html
+;;<canvas width="800" height="560"
+;;data-address="9BDB"
+;;data-command=":1x2:C0,C1,+x,:1x2:C2,C3,+x,:1x2:C4,C5,+x,:1x2:C6,C7,+x,:1x2:C8,C9,+x,:1x2:CA,CB,+x,:1x2:CC,CD,+x,:1x2:CE,CF,+x,*,+y,:1x2:D0,D1,+x,:1x2:D2,D3,+x,:1x2:D4,D5,+x,:1x2:D6,D7,+x,:1x2:D8,D9,+x,:1x2:DA,DB,+x,:1x2:DC,DD,+x,:1x2:DE,DF,+x,*,+y,:1x2:E0,E1,+x,:1x2:E2,E3,+x,:1x2:E4,E5,+x,:1x2:E6,E7,+x,:1x2:E8,E9,+x,:1x2:EA,EB,+x,:1x2:EC,ED,+x,:1x2:EE,EF,+x,*,+y,:1x2:F0,F1,+x,:1x2:F2,F3,+x,:1x2:F4,F5,+x,:1x2:F6,F7">
+;;</canvas>
+;;}}}
 
  ;   ........    C0
  ;   ........
@@ -5362,19 +5339,19 @@ ab3b: 07 06 07 1C 18 18 1D 1E 07 0F 0F 1D 1D 1F 1F 19
  ;   ..311111
  ;   .1111111
 ab4b: 37 33 36 0F 3F 3F 3F 7F 38 3C 3B 30 30 20 20 00
-</div>
 
-<div style="background-color:#C0C0C0">
-;Patra {*Patra}
+Patra: ; =
 
-<canvas width="150" height="140"
-data-colors="BlueBlueWhite"
-data-command=":2x2:F8,FA,F9,FB">
-</canvas>
-<canvas width="900" height="140"
-data-colors="RedOrangeWhite"
-data-command=":1x2:FC,FD,+x,:1x2:FE,FF">
-</canvas>
+;;{{{html
+;;<canvas width="150" height="140"
+;;data-colors="BlueBlueWhite"
+;;data-command=":2x2:F8,FA,F9,FB">
+;;</canvas>
+;;<canvas width="900" height="140"
+;;data-colors="RedOrangeWhite"
+;;data-command=":1x2:FC,FD,+x,:1x2:FE,FF">
+;;</canvas>
+;;}}}
 
  ;   ........    F8
  ;   ........
@@ -5455,7 +5432,6 @@ abbb: 00 00 00 00 08 04 C7 C7 00 00 00 00 10 38 FB FB
  ;   ........
  ;   ........
 abcb: 02 3E 3E 04 00 00 00 00 7C 64 7C 38 00 00 00 00
-</div>
 
 ABDB: FF FF FF FF FF
 ABE0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
@@ -5618,14 +5594,14 @@ BF40: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 ; From here down is the same in all banks (except for the origin
 ; difference in bank 7). 
 
-;RESET {*RESET}
+RESET: ; =
 ;
 ; Configure the MMC1 and jump to E440 (Bank 7) for startup.
 ;
 BF50: 78            SEI                       ; Disable interrupts
 BF51: D8            CLD                       ; Clear decimal flag
 BF52: A9 00         LDA   #$00                ; Clear the PPU control register ...
-BF54: 8D 00 20      STA   $2000               ;{--_P_CNTRL_1:} ... truns off NMIs
+BF54: 8D 00 20      STA   $2000               ; ... truns off NMIs
 BF57: A2 FF         LDX   #$FF                ; Stack to ...
 BF59: 9A            TXS                       ; ... 01FF
 BF5A: AD 02 20      LDA   $2002               ; Wait ...
@@ -5640,7 +5616,7 @@ BF6D: 8D 00 A0      STA   $A000               ; ... all ...
 BF70: 8D 00 C0      STA   $C000               ; ... four ...
 BF73: 8D 00 E0      STA   $E000               ; ... MMC1 registers
 BF76: A9 0F         LDA   #$0F                ; Set MMC control to 8K CHR ROM, fixed/bank 16K PRG pages, ...
-BF78: 20 98 BF      JSR   $BF98               ;{MMC_Control} ... and horizontal mirroring (vertical scrolling)
+BF78: 20 98 BF      JSR   $BF98               ; ... and horizontal mirroring (vertical scrolling)
 BF7B: A9 00         LDA   #$00                ; Set MMC reg1 VROM bank
 BF7D: 8D 00 A0      STA   $A000               ; The cartridge doesn't ...
 BF80: 4A            LSR   A                   ; ... swap VROM pages. ...
@@ -5652,8 +5628,8 @@ BF89: 8D 00 A0      STA   $A000               ; ...
 BF8C: 4A            LSR   A                   ; ...
 BF8D: 8D 00 A0      STA   $A000               ; ... --00000
 BF90: A9 07         LDA   #$07                ; Interesting! Put bank 7 ...
-BF92: 20 AC BF      JSR   $BFAC               ;{MMC_Bank} ... in the low ROM bank
-BF95: 4C 40 E4      JMP   $E440               ;{/Bank7#Startup:7.Startup} %% Start of game
+BF92: 20 AC BF      JSR   $BFAC               ; ... in the low ROM bank
+BF95: 4C 40 E4      JMP   $E440               ; Start of game
 
 ; MMC1 Info
 ; R0 - Control ***CPPMM
@@ -5668,7 +5644,7 @@ BF95: 4C 40 E4      JMP   $E440               ;{/Bank7#Startup:7.Startup} %% Sta
 ;  R PRG RAM enabled. Zelda sends 0, but battery-backed RAM is always enabled.
 ;  PPPP bank select. Zelda switches banks 0-6.
 
-;MMC_Control {*MMC_Control}
+MMC_Control: ; =
 ; Set the MMC Control register (0) to value in A
 BF98: 8D 00 80      STA   $8000               ; MMC Register 0 (control): --edcba ...
 BF9B: 4A            LSR   A                   ;  ... mirroring 
@@ -5681,7 +5657,7 @@ BFA7: 4A            LSR   A                   ; .. has no affect anyway).
 BFA8: 8D 00 80      STA   $8000               ; Bits are written from LSB to MSB ...
 BFAB: 60            RTS                       ; ... only 5 bits
 
-;MMC_Bank {*MMC_Bank}
+MMC_Bank: ; =
 ; Set the MMC Bank register (3) to value in A
 BFAC: 8D 00 E0      STA   $E000               ; MMC Register 3 (ROM page switching): --edcba ...
 BFAF: 4A            LSR   A                   ; ...
@@ -5702,4 +5678,3 @@ BFF0: FF FF FF FF FF FF FF FF FF FF
 BFFA: 84 E4       ; NMI to E484
 BFFC: 50 BF       ; RESET to BF50
 BFFE: F0 BF       ; IRQ to BFF0 (this bank should never be at end)
-}}}

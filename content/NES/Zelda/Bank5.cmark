@@ -1,8 +1,5 @@
+;;%%image Zelda.jpg
 
-[wiki:/NES/Zelda/RAM RAM Use][[BR]]
-[wiki:/NES/Zelda/Hardware Hardware]
-
-{{{#!AssemblyCode
 8000: 20 06 80      JSR   $8006               ;
 8003: 4C 89 ED      JMP   $ED89               ;
 8006: A5 E1         LDA   >$E1                ;
@@ -43,8 +40,8 @@
 803C: DE 71 20      DEC   $2071,X             ;
 803F: 79 E6 A9      ADC   $A9E6,Y             ;
 8042: EF                              ;
-8043: 85 FC         STA   >$FC                ;{-CUR_VScroll:}
-8045: 85 5C         STA   >$5C                ;{-FlipFlag:}
+8043: 85 FC         STA   >$FC                ;CUR_VScroll
+8045: 85 5C         STA   >$5C                ;FlipFlag
 8047: A9 01         LDA   #$01                ;
 8049: 20 30 81      JSR   $8130               ;
 804C: E6 E1         INC   >$E1                ;
@@ -70,10 +67,10 @@
 8076: 20 3A B2      JSR   $B23A               ;
 8079: A9 03         LDA   #$03                ;
 807B: 20 30 81      JSR   $8130               ;
-807E: A5 FC         LDA   >$FC                ;{-CUR_VScroll:}
+807E: A5 FC         LDA   >$FC                ;CUR_VScroll
 8080: 38            SEC                       ;
 8081: E9 03         SBC   #$03                ;
-8083: 85 FC         STA   >$FC                ;{-CUR_VScroll:}
+8083: 85 FC         STA   >$FC                ;CUR_VScroll
 8085: C9 41         CMP   #$41                ;
 8087: D0 4A         BNE   $80D3               ;
 8089: E6 E1         INC   >$E1                ;
@@ -87,7 +84,7 @@
 8099: 0A            ASL   A                   ;
 809A: 0A            ASL   A                   ;
 809B: 0A            ASL   A                   ;
-809C: 85 00         STA   >$00                ;{-GP_00:}
+809C: 85 00         STA   >$00                ;GP_00
 809E: AD AB 6B      LDA   $6BAB               ;
 80A1: C9 08         CMP   #$08                ;
 80A3: 90 0E         BCC   $80B3               ;
@@ -102,7 +99,7 @@
 80B4: 0A            ASL   A                   ;
 80B5: 0A            ASL   A                   ;
 80B6: 18            CLC                       ;
-80B7: 65 00         ADC   >$00                ;{-GP_00:}
+80B7: 65 00         ADC   >$00                ;GP_00
 80B9: 18            CLC                       ;
 80BA: 69 62         ADC   #$62                ;
 80BC: 8D 53 02      STA   $0253               ;
@@ -145,26 +142,26 @@
 810E: 60            RTS                       ;
 810F: A9 FD         LDA   #$FD                ;
 8111: 20 30 81      JSR   $8130               ;
-8114: A5 FC         LDA   >$FC                ;{-CUR_VScroll:}
+8114: A5 FC         LDA   >$FC                ;CUR_VScroll
 8116: 18            CLC                       ;
 8117: 69 03         ADC   #$03                ;
-8119: 85 FC         STA   >$FC                ;{-CUR_VScroll:}
+8119: 85 FC         STA   >$FC                ;CUR_VScroll
 811B: C9 F0         CMP   #$F0                ;
 811D: 90 32         BCC   $8151               ;
-811F: 85 5C         STA   >$5C                ;{-FlipFlag:}
+811F: 85 5C         STA   >$5C                ;FlipFlag
 8121: A5 10         LDA   >$10                ;
 8123: F0 03         BEQ   $8128               ;
 8125: 20 12 75      JSR   $7512               ;
 8128: A9 00         LDA   #$00                ;
-812A: 85 FC         STA   >$FC                ;{-CUR_VScroll:}
+812A: 85 FC         STA   >$FC                ;CUR_VScroll
 812C: 85 E1         STA   >$E1                ;
 812E: A9 02         LDA   #$02                ;
-8130: 85 00         STA   >$00                ;{-GP_00:}
+8130: 85 00         STA   >$00                ;GP_00
 8132: AD 54 02      LDA   $0254               ;
 8135: C9 F8         CMP   #$F8                ;
 8137: F0 06         BEQ   $813F               ;
 8139: 18            CLC                       ;
-813A: 65 00         ADC   >$00                ;{-GP_00:}
+813A: 65 00         ADC   >$00                ;GP_00
 813C: 8D 54 02      STA   $0254               ;
 813F: A5 10         LDA   >$10                ;
 8141: F0 0E         BEQ   $8151               ;
@@ -172,7 +169,7 @@
 8146: F0 09         BEQ   $8151               ;
 8148: AD 58 02      LDA   $0258               ;
 814B: 18            CLC                       ;
-814C: 65 00         ADC   >$00                ;{-GP_00:}
+814C: 65 00         ADC   >$00                ;GP_00
 814E: 8D 58 02      STA   $0258               ;
 8151: 60            RTS                       ;
 8152: 00            BRK                       ;
@@ -198,7 +195,7 @@
 8171: E7                              ;
 8172: F5 E8         SBC   $E8,X               ;
 8174: F5 E8         SBC   $E8,X               ;
-8176: E5 F5         SBC   >$F5                ;{-TileFlagA:}
+8176: E5 F5         SBC   >$F5                ;TileFlagA
 8178: E5 E8         SBC   >$E8                ;
 817A: F5 E8         SBC   $E8,X               ;
 817C: F5 E6         SBC   $E6,X               ;
@@ -316,7 +313,7 @@
 825B: D0 03         BNE   $8260               ;
 825D: 0A            ASL   A                   ;
 825E: A2 FC         LDX   #$FC                ;
-8260: 85 00         STA   >$00                ;{-GP_00:}
+8260: 85 00         STA   >$00                ;GP_00
 8262: 86 01         STX   >$01                ;
 8264: A9 02         LDA   #$02                ;
 8266: 24 98         BIT   >$98                ;
@@ -325,12 +322,12 @@
 826C: A5 70         LDA   >$70                ;
 826E: C9 F0         CMP   #$F0                ;
 8270: B0 04         BCS   $8276               ;
-8272: 65 00         ADC   >$00                ;{-GP_00:}
+8272: 65 00         ADC   >$00                ;GP_00
 8274: 85 70         STA   >$70                ;
-8276: A5 FD         LDA   >$FD                ;{-CUR_HScroll:}
+8276: A5 FD         LDA   >$FD                ;CUR_HScroll
 8278: 38            SEC                       ;
-8279: E5 00         SBC   >$00                ;{-GP_00:}
-827B: 85 FD         STA   >$FD                ;{-CUR_HScroll:}
+8279: E5 00         SBC   >$00                ;GP_00
+827B: 85 FD         STA   >$FD                ;CUR_HScroll
 827D: F0 A6         BEQ   $8225               ;
 827F: C5 01         CMP   >$01                ;
 8281: D0 04         BNE   $8287               ;
@@ -344,12 +341,12 @@
 828F: A5 70         LDA   >$70                ;
 8291: C9 01         CMP   #$01                ;
 8293: 90 04         BCC   $8299               ;
-8295: E5 00         SBC   >$00                ;{-GP_00:}
+8295: E5 00         SBC   >$00                ;GP_00
 8297: 85 70         STA   >$70                ;
-8299: A5 FD         LDA   >$FD                ;{-CUR_HScroll:}
+8299: A5 FD         LDA   >$FD                ;CUR_HScroll
 829B: 18            CLC                       ;
-829C: 65 00         ADC   >$00                ;{-GP_00:}
-829E: 85 FD         STA   >$FD                ;{-CUR_HScroll:}
+829C: 65 00         ADC   >$00                ;GP_00
+829E: 85 FD         STA   >$FD                ;CUR_HScroll
 82A0: D0 E5         BNE   $8287               ;
 82A2: 20 83 82      JSR   $8283               ;
 82A5: 4C 25 82      JMP   $8225               ;
@@ -492,11 +489,11 @@
 83C2: A5 98         LDA   >$98                ;
 83C4: 4A            LSR   A                   ;
 83C5: 29 05         AND   #$05                ;
-83C7: 85 00         STA   >$00                ;{-GP_00:}
+83C7: 85 00         STA   >$00                ;GP_00
 83C9: A5 98         LDA   >$98                ;
 83CB: 0A            ASL   A                   ;
 83CC: 29 0A         AND   #$0A                ;
-83CE: 05 00         ORA   >$00                ;{-GP_00:}
+83CE: 05 00         ORA   >$00                ;GP_00
 83D0: 85 EE         STA   >$EE                ;
 83D2: 60            RTS                       ;
 83D3: 00            BRK                       ;
@@ -530,10 +527,10 @@
 8409: 60            RTS                       ;
 840A: BD D3 83      LDA   $83D3,X             ;
 840D: 29 0F         AND   #$0F                ;
-840F: 85 00         STA   >$00                ;{-GP_00:}
+840F: 85 00         STA   >$00                ;GP_00
 8411: B9 30 05      LDA   $0530,Y             ;
 8414: 29 F0         AND   #$F0                ;
-8416: 05 00         ORA   >$00                ;{-GP_00:}
+8416: 05 00         ORA   >$00                ;GP_00
 8418: 99 30 05      STA   $0530,Y             ;
 841B: 4C 04 84      JMP   $8404               ;
 841E: 20 24 84      JSR   $8424               ;
@@ -550,7 +547,7 @@
 8438: 84 A9         STY   >$A9                ;
 843A: 00            BRK                       ;
 843B: 85 E2         STA   >$E2                ;
-843D: 85 FD         STA   >$FD                ;{-CUR_HScroll:}
+843D: 85 FD         STA   >$FD                ;CUR_HScroll
 843F: A9 08         LDA   #$08                ;
 8441: 24 98         BIT   >$98                ;
 8443: D0 2C         BNE   $8471               ;
@@ -716,12 +713,12 @@
 8573: EA            NOP                       ;
 8574: EA            NOP                       ;
 8575: EA            NOP                       ;
-8576: A5 FF         LDA   >$FF                ;{-CUR_2000:}
+8576: A5 FF         LDA   >$FF                ;CUR_2000
 8578: 29 FE         AND   #$FE                ;
 857A: 05 5F         ORA   >$5F                ;
-857C: 85 FF         STA   >$FF                ;{-CUR_2000:}
-857E: 8D 00 20      STA   $2000               ;{--_P_CNTRL_1:} [NES] PPU setup #1
-8581: A5 FD         LDA   >$FD                ;{-CUR_HScroll:}
+857C: 85 FF         STA   >$FF                ;CUR_2000
+857E: 8D 00 20      STA   $2000               ;-_P_CNTRL_1 [NES] PPU setup #1
+8581: A5 FD         LDA   >$FD                ;CUR_HScroll
 8583: 8D 05 20      STA   $2005               ; [NES] PPU scroll
 8586: A9 00         LDA   #$00                ;
 8588: 8D 05 20      STA   $2005               ; [NES] PPU scroll
@@ -729,10 +726,10 @@
 858C: C9 11         CMP   #$11                ;
 858E: B0 03         BCS   $8593               ;
 8590: 4C 25 E6      JMP   $E625               ;
-8593: A5 FF         LDA   >$FF                ;{-CUR_2000:}
+8593: A5 FF         LDA   >$FF                ;CUR_2000
 8595: 09 01         ORA   #$01                ;
-8597: 85 FF         STA   >$FF                ;{-CUR_2000:}
-8599: 8D 00 20      STA   $2000               ;{--_P_CNTRL_1:} [NES] PPU setup #1
+8597: 85 FF         STA   >$FF                ;CUR_2000
+8599: 8D 00 20      STA   $2000               ;-_P_CNTRL_1 [NES] PPU setup #1
 859C: 60            RTS                       ;
 859D: FF                              ;
 859E: FF                              ;
@@ -844,7 +841,7 @@
 8615: 85 14         STA   >$14                ;
 8617: 4C 90 6C      JMP   $6C90               ;
 861A: 20 6D E4      JSR   $E46D               ;
-861D: 20 AC B4      JSR   $B4AC               ;{FormatBBR}
+861D: 20 AC B4      JSR   $B4AC               ;
 8620: B0 03         BCS   $8625               ;
 8622: 4C 90 6C      JMP   $6C90               ;
 8625: 4C 50 FF      JMP   $FF50               ;
@@ -855,7 +852,7 @@
 8631: A9 00         LDA   #$00                ;
 8633: 8D 19 06      STA   $0619               ;
 8636: A9 08         LDA   #$08                ;
-8638: 8D 03 06      STA   $0603               ;{-??SND_603??:}
+8638: 8D 03 06      STA   $0603               ;??SND_603??
 863B: A5 84         LDA   >$84                ;
 863D: 18            CLC                       ;
 863E: 69 10         ADC   #$10                ;
@@ -902,10 +899,10 @@
 867F: 1A                              ;
 8680: 1A                              ;
 8681: 02                              ;
-8682: 01 02         ORA   ($02,X)             ;{-GP_02:}
+8682: 01 02         ORA   ($02,X)             ;GP_02
 8684: 01 01         ORA   ($01,X)             ;
 8686: 02                              ;
-8687: 01 02         ORA   ($02,X)             ;{-GP_02:}
+8687: 01 02         ORA   ($02,X)             ;GP_02
 8689: 01 0F         ORA   ($0F,X)             ;
 868B: 02                              ;
 868C: 01 10         ORA   ($10,X)             ;
@@ -964,7 +961,7 @@
 86C6: 16 30         ASL   $30,X               ;
 86C8: 30 1B         BMI   $86E5               ;
 86CA: 1B                              ;
-86CB: 16 00         ASL   $00,X               ;{-GP_00:}
+86CB: 16 00         ASL   $00,X               ;GP_00
 86CD: 00            BRK                       ;
 86CE: 2B                              ;
 86CF: 2B                              ;
@@ -1073,8 +1070,8 @@
 8760: 86 DE         STX   >$DE                ;
 8762: 86 E4         STX   >$E4                ;
 8764: 86 EC         STX   >$EC                ;
-8766: 86 F4         STX   >$F4                ;{-??BatRamInit??:}
-8768: 86 FC         STX   >$FC                ;{-CUR_VScroll:}
+8766: 86 F4         STX   >$F4                ;??BatRamInit??
+8768: 86 FC         STX   >$FC                ;CUR_VScroll
 876A: 86 04         STX   >$04                ;
 876C: 87                              ;
 876D: 0A            ASL   A                   ;
@@ -1164,7 +1161,7 @@
 880C: 69 10         ADC   #$10                ;
 880E: 85 84         STA   >$84                ;
 8810: A9 08         LDA   #$08                ;
-8812: 8D 03 06      STA   $0603               ;{-??SND_603??:}
+8812: 8D 03 06      STA   $0603               ;??SND_603??
 8815: A9 04         LDA   #$04                ;
 8817: 85 98         STA   >$98                ;
 8819: A9 00         LDA   #$00                ;
@@ -1217,14 +1214,14 @@
 8880: B9 7E 69      LDA   $697E,Y             ;
 8883: 48            PHA                       ;
 8884: 29 3F         AND   #$3F                ;
-8886: 85 02         STA   >$02                ;{-GP_02:}
+8886: 85 02         STA   >$02                ;GP_02
 8888: B9 FE 69      LDA   $69FE,Y             ;
 888B: 0A            ASL   A                   ;
 888C: 90 07         BCC   $8895               ;
-888E: A5 02         LDA   >$02                ;{-GP_02:}
+888E: A5 02         LDA   >$02                ;GP_02
 8890: 18            CLC                       ;
 8891: 69 40         ADC   #$40                ;
-8893: 85 02         STA   >$02                ;{-GP_02:}
+8893: 85 02         STA   >$02                ;GP_02
 8895: 68            PLA                       ;
 8896: 29 C0         AND   #$C0                ;
 8898: 18            CLC                       ;
@@ -1233,7 +1230,7 @@
 889B: 2A            ROL   A                   ;
 889C: A8            TAY                       ;
 889D: B9 A2 6B      LDA   $6BA2,Y             ;
-88A0: A4 02         LDY   >$02                ;{-GP_02:}
+88A0: A4 02         LDY   >$02                ;GP_02
 88A2: C0 62         CPY   #$62                ;
 88A4: B0 06         BCS   $88AC               ;
 88A6: C0 32         CPY   #$32                ;
@@ -1249,23 +1246,23 @@
 88BD: C9 09         CMP   #$09                ;
 88BF: D0 06         BNE   $88C7               ;
 88C1: A9 00         LDA   #$00                ;
-88C3: 85 02         STA   >$02                ;{-GP_02:}
+88C3: 85 02         STA   >$02                ;GP_02
 88C5: 85 03         STA   >$03                ;
 88C7: A5 03         LDA   >$03                ;
 88C9: 8D 4E 03      STA   $034E               ;
 88CC: F0 3B         BEQ   $8909               ;
-88CE: A5 02         LDA   >$02                ;{-GP_02:}
+88CE: A5 02         LDA   >$02                ;GP_02
 88D0: F0 37         BEQ   $8909               ;
 88D2: C9 62         CMP   #$62                ;
 88D4: B0 0F         BCS   $88E5               ;
 88D6: A2 00         LDX   #$00                ;
-88D8: A5 02         LDA   >$02                ;{-GP_02:}
+88D8: A5 02         LDA   >$02                ;GP_02
 88DA: 9D 50 03      STA   $0350,X             ;
 88DD: E8            INX                       ;
 88DE: C6 03         DEC   >$03                ;
 88E0: D0 F6         BNE   $88D8               ;
 88E2: 4C 03 89      JMP   $8903               ;
-88E5: A5 02         LDA   >$02                ;{-GP_02:}
+88E5: A5 02         LDA   >$02                ;GP_02
 88E7: 38            SEC                       ;
 88E8: E9 62         SBC   #$62                ;
 88EA: 0A            ASL   A                   ;
@@ -1327,7 +1324,7 @@
 8969: D0 9D         BNE   $8908               ;
 896B: 5D 7D 9D      EOR   $9D7D,X             ;
 896E: AC 4E 03      LDY   $034E               ;
-8971: A5 02         LDA   >$02                ;{-GP_02:}
+8971: A5 02         LDA   >$02                ;GP_02
 8973: F0 4F         BEQ   $89C4               ;
 8975: C9 37         CMP   #$37                ;
 8977: F0 4B         BEQ   $89C4               ;
@@ -1438,7 +1435,7 @@
 8A44: 20 8A E7      JSR   $E78A               ;
 8A47: 20 59 B5      JSR   $B559               ;
 8A4A: A9 00         LDA   #$00                ;
-8A4C: 85 E0         STA   >$E0                ;{-??SND_E0??:}
+8A4C: 85 E0         STA   >$E0                ;??SND_E0??
 8A4E: 8D 70 06      STA   $0670               ;
 8A51: 20 00 6D      JSR   $6D00               ;
 8A54: E6 13         INC   >$13                ;
@@ -1469,18 +1466,18 @@
 8A8A: 85 98         STA   >$98                ;
 8A8C: E6 11         INC   >$11                ;
 8A8E: A9 80         LDA   #$80                ;
-8A90: 8D 04 06      STA   $0604               ;{-SND_Request:}
-8A93: 8D 03 06      STA   $0603               ;{-??SND_603??:}
+8A90: 8D 04 06      STA   $0604               ;SND_Request
+8A93: 8D 03 06      STA   $0603               ;??SND_603??
 8A96: 60            RTS                       ;
 8A97: 20 CE E6      JSR   $E6CE               ;
 8A9A: 1D BE E6      ORA   $E6BE,X             ;
-8A9D: 91 00         STA   ($00),Y             ;{-GP_00:}
+8A9D: 91 00         STA   ($00),Y             ;GP_00
 8A9F: 60            RTS                       ;
 8AA0: 20 CE E6      JSR   $E6CE               ;
 8AA3: BD BE E6      LDA   $E6BE,X             ;
 8AA6: 49 FF         EOR   #$FF                ;
-8AA8: 31 00         AND   ($00),Y             ;{-GP_00:}
-8AAA: 91 00         STA   ($00),Y             ;{-GP_00:}
+8AA8: 31 00         AND   ($00),Y             ;GP_00
+8AAA: 91 00         STA   ($00),Y             ;GP_00
 8AAC: 60            RTS                       ;
 8AAD: AD CE 04      LDA   $04CE               ;
 8AB0: F0 10         BEQ   $8AC2               ;
@@ -1496,13 +1493,13 @@
 8AC4: 8D CE 04      STA   $04CE               ;
 8AC7: 60            RTS                       ;
 8AC8: A5 0E         LDA   >$0E                ;
-8ACA: 85 02         STA   >$02                ;{-GP_02:}
+8ACA: 85 02         STA   >$02                ;GP_02
 8ACC: 20 F6 A3      JSR   $A3F6               ;
 8ACF: C9 07         CMP   #$07                ;
 8AD1: D0 E9         BNE   $8ABC               ;
 8AD3: AD 54 00      LDA   $0054               ;
 8AD6: D0 0A         BNE   $8AE2               ;
-8AD8: A5 02         LDA   >$02                ;{-GP_02:}
+8AD8: A5 02         LDA   >$02                ;GP_02
 8ADA: 8D 55 00      STA   $0055               ;
 8ADD: A9 06         LDA   #$06                ;
 8ADF: 8D 54 00      STA   $0054               ;
@@ -1532,7 +1529,7 @@
 8B01: 29 20         AND   #$20                ;
 8B03: F0 11         BEQ   $8B16               ;
 8B05: A9 01         LDA   #$01                ;
-8B07: 8D 04 06      STA   $0604               ;{-SND_Request:}
+8B07: 8D 04 06      STA   $0604               ;SND_Request
 8B0A: E6 13         INC   >$13                ;
 8B0C: A5 13         LDA   >$13                ;
 8B0E: C9 03         CMP   #$03                ;
@@ -1571,7 +1568,7 @@
 8B53: 29 04         AND   #$04                ;
 8B55: F0 02         BEQ   $8B59               ;
 8B57: A0 55         LDY   #$55                ;
-8B59: 8C 05 03      STY   $0305               ;{-BckGndBuf:}
+8B59: 8C 05 03      STY   $0305               ;BckGndBuf
 8B5C: 60            RTS                       ;
 8B5D: A5 13         LDA   >$13                ;
 8B5F: 29 03         AND   #$03                ;
@@ -1631,7 +1628,7 @@
 8BDD: A9 00         LDA   #$00                ;
 8BDF: 85 BF         STA   >$BF                ;
 8BE1: A9 02         LDA   #$02                ;
-8BE3: 8D 02 06      STA   $0602               ;{-SND_ReqMusEff:}
+8BE3: 8D 02 06      STA   $0602               ;SND_ReqMusEff
 8BE6: 60            RTS                       ;
 8BE7: 20 E2 E5      JSR   $E5E2               ;
 8BEA: E6 8B         INC   >$8B                ;
@@ -1722,7 +1719,7 @@
 8C96: 0D 8D 56      ORA   $568D               ;
 8C99: 8D 63 8D      STA   $8D63               ;
 8C9C: A9 80         LDA   #$80                ;
-8C9E: 8D 02 06      STA   $0602               ;{-SND_ReqMusEff:}
+8C9E: 8D 02 06      STA   $0602               ;SND_ReqMusEff
 8CA1: 20 84 84      JSR   $8484               ;
 8CA4: A2 2B         LDX   #$2B                ;
 8CA6: 20 E1 B0      JSR   $B0E1               ;
@@ -1744,9 +1741,9 @@
 8CCA: 85 E3         STA   >$E3                ;
 8CCC: A9 5E         LDA   #$5E                ;
 8CCE: 4C C0 8C      JMP   $8CC0               ;
-8CD1: A5 FF         LDA   >$FF                ;{-CUR_2000:}
+8CD1: A5 FF         LDA   >$FF                ;CUR_2000
 8CD3: 29 FE         AND   #$FE                ;
-8CD5: 85 FF         STA   >$FF                ;{-CUR_2000:}
+8CD5: 85 FF         STA   >$FF                ;CUR_2000
 8CD7: E6 13         INC   >$13                ;
 8CD9: 60            RTS                       ;
 8CDA: A5 E5         LDA   >$E5                ;
@@ -1799,7 +1796,7 @@
 8D3E: C6 E5         DEC   >$E5                ;
 8D40: D0 13         BNE   $8D55               ;
 8D42: A9 10         LDA   #$10                ;
-8D44: 8D 04 06      STA   $0604               ;{-SND_Request:}
+8D44: 8D 04 06      STA   $0604               ;SND_Request
 8D47: A9 F8         LDA   #$F8                ;
 8D49: 8D 48 02      STA   $0248               ;
 8D4C: 8D 4C 02      STA   $024C               ;
@@ -1819,7 +1816,7 @@
 8D6A: A9 08         LDA   #$08                ;
 8D6C: 85 12         STA   >$12                ;
 8D6E: A9 40         LDA   #$40                ;
-8D70: 8D 02 06      STA   $0602               ;{-SND_ReqMusEff:}
+8D70: 8D 02 06      STA   $0602               ;SND_ReqMusEff
 8D73: A6 16         LDX   >$16                ;
 8D75: BD 30 06      LDA   $0630,X             ;
 8D78: C9 FF         CMP   #$FF                ;
@@ -1834,13 +1831,13 @@
 8D8A: D1 1F         CMP   ($1F),Y             ;
 8D8C: A5 98         LDA   >$98                ;
 8D8E: 20 13 70      JSR   $7013               ;
-8D91: 85 00         STA   >$00                ;{-GP_00:}
+8D91: 85 00         STA   >$00                ;GP_00
 8D93: 20 13 70      JSR   $7013               ;
 8D96: A5 70         LDA   >$70                ;
 8D98: C0 02         CPY   #$02                ;
 8D9A: B0 02         BCS   $8D9E               ;
 8D9C: A5 84         LDA   >$84                ;
-8D9E: 85 02         STA   >$02                ;{-GP_02:}
+8D9E: 85 02         STA   >$02                ;GP_02
 8DA0: 98            TYA                       ;
 8DA1: 48            PHA                       ;
 8DA2: 18            CLC                       ;
@@ -1854,7 +1851,7 @@
 8DAF: C9 FF         CMP   #$FF                ;
 8DB1: D0 07         BNE   $8DBA               ;
 8DB3: A5 98         LDA   >$98                ;
-8DB5: 85 00         STA   >$00                ;{-GP_00:}
+8DB5: 85 00         STA   >$00                ;GP_00
 8DB7: 20 13 70      JSR   $7013               ;
 8DBA: A5 10         LDA   >$10                ;
 8DBC: F0 05         BEQ   $8DC3               ;
@@ -1864,10 +1861,10 @@
 8DC2: A8            TAY                       ;
 8DC3: A9 00         LDA   #$00                ;
 8DC5: 85 01         STA   >$01                ;
-8DC7: A5 00         LDA   >$00                ;{-GP_00:}
+8DC7: A5 00         LDA   >$00                ;GP_00
 8DC9: 29 0A         AND   #$0A                ;
 8DCB: F0 27         BEQ   $8DF4               ;
-8DCD: A5 02         LDA   >$02                ;{-GP_02:}
+8DCD: A5 02         LDA   >$02                ;GP_02
 8DCF: D9 80 8D      CMP   $8D80,Y             ;
 8DD2: 90 27         BCC   $8DFB               ;
 8DD4: A5 F8         LDA   >$F8                ;
@@ -1886,7 +1883,7 @@
 8DED: 2D F8 03      AND   $03F8               ;
 8DF0: 8D F8 03      STA   $03F8               ;
 8DF3: 60            RTS                       ;
-8DF4: A5 02         LDA   >$02                ;{-GP_02:}
+8DF4: A5 02         LDA   >$02                ;GP_02
 8DF6: D9 80 8D      CMP   $8D80,Y             ;
 8DF9: 90 D9         BCC   $8DD4               ;
 8DFB: A9 FF         LDA   #$FF                ;
@@ -1903,7 +1900,7 @@
 8E12: 20 8F 8E      JSR   $8E8F               ;
 8E15: A9 01         LDA   #$01                ;
 8E17: 4C 80 6D      JMP   $6D80               ;
-8E1A: 31 FF         AND   ($FF),Y             ;{-CUR_2000:}
+8E1A: 31 FF         AND   ($FF),Y             ;CUR_2000
 8E1C: AD 56 06      LDA   $0656               ;
 8E1F: C9 0F         CMP   #$0F                ;
 8E21: F0 4E         BEQ   $8E71               ;
@@ -1982,7 +1979,7 @@
 8EBE: A9 01         LDA   #$01                ;
 8EC0: 85 63         STA   >$63                ;
 8EC2: A9 02         LDA   #$02                ;
-8EC4: 85 E0         STA   >$E0                ;{-??SND_E0??:}
+8EC4: 85 E0         STA   >$E0                ;??SND_E0??
 8EC6: 60            RTS                       ;
 8EC7: A2 12         LDX   #$12                ;
 8EC9: B5 AC         LDA   $AC,X               ;
@@ -2048,7 +2045,7 @@
 8F3D: C8            INY                       ;
 8F3E: C9 B0         CMP   #$B0                ;
 8F40: D0 30         BNE   $8F72               ;
-8F42: 84 00         STY   >$00                ;{-GP_00:}
+8F42: 84 00         STY   >$00                ;GP_00
 8F44: A0 FF         LDY   #$FF                ;
 8F46: A5 EB         LDA   >$EB                ;
 8F48: C8            INY                       ;
@@ -2056,7 +2053,7 @@
 8F4C: D0 FA         BNE   $8F48               ;
 8F4E: 98            TYA                       ;
 8F4F: 18            CLC                       ;
-8F50: 65 00         ADC   >$00                ;{-GP_00:}
+8F50: 65 00         ADC   >$00                ;GP_00
 8F52: 29 03         AND   #$03                ;
 8F54: A8            TAY                       ;
 8F55: B9 B2 6B      LDA   $6BB2,Y             ;
@@ -2102,7 +2099,7 @@
 8FA5: 38            SEC                       ;
 8FA6: F5 70         SBC   $70,X               ;
 8FA8: 20 1F 70      JSR   $701F               ;
-8FAB: 85 00         STA   >$00                ;{-GP_00:}
+8FAB: 85 00         STA   >$00                ;GP_00
 8FAD: C9 10         CMP   #$10                ;
 8FAF: 90 18         BCC   $8FC9               ;
 8FB1: C9 10         CMP   #$10                ;
@@ -2122,7 +2119,7 @@
 8FCD: AD F8 03      LDA   $03F8               ;
 8FD0: F0 3F         BEQ   $9011               ;
 8FD2: A5 98         LDA   >$98                ;
-8FD4: A4 00         LDY   >$00                ;{-GP_00:}
+8FD4: A4 00         LDY   >$00                ;GP_00
 8FD6: F0 04         BEQ   $8FDC               ;
 8FD8: D5 98         CMP   $98,X               ;
 8FDA: F0 35         BEQ   $9011               ;
@@ -2200,7 +2197,7 @@
 906A: 4A            LSR   A                   ;
 906B: 4A            LSR   A                   ;
 906C: A8            TAY                       ;
-906D: B1 00         LDA   ($00),Y             ;{-GP_00:}
+906D: B1 00         LDA   ($00),Y             ;GP_00
 906F: C9 84         CMP   #$84                ;
 9071: 90 07         BCC   $907A               ;
 9073: A5 0A         LDA   >$0A                ;
@@ -2243,9 +2240,9 @@
 90BD: 29 07         AND   #$07                ;
 90BF: C9 07         CMP   #$07                ;
 90C1: D0 07         BNE   $90CA               ;
-90C3: B1 00         LDA   ($00),Y             ;{-GP_00:}
+90C3: B1 00         LDA   ($00),Y             ;GP_00
 90C5: 29 F8         AND   #$F8                ;
-90C7: 91 00         STA   ($00),Y             ;{-GP_00:}
+90C7: 91 00         STA   ($00),Y             ;GP_00
 90C9: 60            RTS                       ;
 90CA: 20 CE E6      JSR   $E6CE               ;
 90CD: 29 07         AND   #$07                ;
@@ -2258,26 +2255,26 @@
 90DA: E5 04         SBC   >$04                ;
 90DC: 10 04         BPL   $90E2               ;
 90DE: A9 00         LDA   #$00                ;
-90E0: 85 02         STA   >$02                ;{-GP_02:}
+90E0: 85 02         STA   >$02                ;GP_02
 90E2: 85 03         STA   >$03                ;
 90E4: 60            RTS                       ;
 90E5: 20 CE E6      JSR   $E6CE               ;
 90E8: 29 07         AND   #$07                ;
-90EA: 85 02         STA   >$02                ;{-GP_02:}
-90EC: B1 00         LDA   ($00),Y             ;{-GP_00:}
+90EA: 85 02         STA   >$02                ;GP_02
+90EC: B1 00         LDA   ($00),Y             ;GP_00
 90EE: 29 F8         AND   #$F8                ;
-90F0: 91 00         STA   ($00),Y             ;{-GP_00:}
+90F0: 91 00         STA   ($00),Y             ;GP_00
 90F2: AD 4F 03      LDA   $034F               ;
 90F5: CD 4E 03      CMP   $034E               ;
 90F8: B0 09         BCS   $9103               ;
 90FA: 29 07         AND   #$07                ;
 90FC: 18            CLC                       ;
-90FD: 65 02         ADC   >$02                ;{-GP_02:}
+90FD: 65 02         ADC   >$02                ;GP_02
 90FF: C9 07         CMP   #$07                ;
 9101: 90 02         BCC   $9105               ;
 9103: A9 07         LDA   #$07                ;
-9105: 11 00         ORA   ($00),Y             ;{-GP_00:}
-9107: 91 00         STA   ($00),Y             ;{-GP_00:}
+9105: 11 00         ORA   ($00),Y             ;GP_00
+9107: 91 00         STA   ($00),Y             ;GP_00
 9109: 60            RTS                       ;
 910A: A5 13         LDA   >$13                ;
 910C: 20 E2 E5      JSR   $E5E2               ;
@@ -2339,7 +2336,7 @@
 9180: A5 98         LDA   >$98                ;
 9182: 20 0F 92      JSR   $920F               ;
 9185: A0 03         LDY   #$03                ;
-9187: A5 00         LDA   >$00                ;{-GP_00:}
+9187: A5 00         LDA   >$00                ;GP_00
 9189: D9 68 91      CMP   $9168,Y             ;
 918C: D0 0C         BNE   $919A               ;
 918E: A5 01         LDA   >$01                ;
@@ -2365,7 +2362,7 @@
 91B8: C5 98         CMP   >$98                ;
 91BA: F0 C4         BEQ   $9180               ;
 91BC: A0 03         LDY   #$03                ;
-91BE: A5 00         LDA   >$00                ;{-GP_00:}
+91BE: A5 00         LDA   >$00                ;GP_00
 91C0: D9 68 91      CMP   $9168,Y             ;
 91C3: D0 0C         BNE   $91D1               ;
 91C5: A5 01         LDA   >$01                ;
@@ -2379,7 +2376,7 @@
 91D6: 84 0E         STY   >$0E                ;
 91D8: AD F8 03      LDA   $03F8               ;
 91DB: 29 0F         AND   #$0F                ;
-91DD: 85 02         STA   >$02                ;{-GP_02:}
+91DD: 85 02         STA   >$02                ;GP_02
 91DF: 85 0C         STA   >$0C                ;
 91E1: D9 C3 6D      CMP   $6DC3,Y             ;
 91E4: D0 25         BNE   $920B               ;
@@ -2408,7 +2405,7 @@
 9215: F0 04         BEQ   $921B               ;
 9217: A4 70         LDY   >$70                ;
 9219: A6 84         LDX   >$84                ;
-921B: 86 00         STX   >$00                ;{-GP_00:}
+921B: 86 00         STX   >$00                ;GP_00
 921D: 84 01         STY   >$01                ;
 921F: 60            RTS                       ;
 9220: 29 07         AND   #$07                ;
@@ -2481,7 +2478,7 @@
 92A2: 29 C0         AND   #$C0                ;
 92A4: C9 C0         CMP   #$C0                ;
 92A6: D0 1E         BNE   $92C6               ;
-92A8: A5 02         LDA   >$02                ;{-GP_02:}
+92A8: A5 02         LDA   >$02                ;GP_02
 92AA: C9 32         CMP   #$32                ;
 92AC: 90 0C         BCC   $92BA               ;
 92AE: C9 3A         CMP   #$3A                ;
@@ -2490,9 +2487,9 @@
 92B4: F0 04         BEQ   $92BA               ;
 92B6: C9 49         CMP   #$49                ;
 92B8: 90 16         BCC   $92D0               ;
-92BA: B1 00         LDA   ($00),Y             ;{-GP_00:}
+92BA: B1 00         LDA   ($00),Y             ;GP_00
 92BC: 29 3F         AND   #$3F                ;
-92BE: 91 00         STA   ($00),Y             ;{-GP_00:}
+92BE: 91 00         STA   ($00),Y             ;GP_00
 92C0: A9 00         LDA   #$00                ;
 92C2: 99 60 05      STA   $0560,Y             ;
 92C5: 60            RTS                       ;
@@ -2502,12 +2499,12 @@
 92CB: F9 60 05      SBC   $0560,Y             ;
 92CE: 10 04         BPL   $92D4               ;
 92D0: A9 00         LDA   #$00                ;
-92D2: 85 02         STA   >$02                ;{-GP_02:}
+92D2: 85 02         STA   >$02                ;GP_02
 92D4: 85 03         STA   >$03                ;
 92D6: 60            RTS                       ;
 92D7: 20 CE E6      JSR   $E6CE               ;
 92DA: 29 3F         AND   #$3F                ;
-92DC: 91 00         STA   ($00),Y             ;{-GP_00:}
+92DC: 91 00         STA   ($00),Y             ;GP_00
 92DE: AD 4E 03      LDA   $034E               ;
 92E1: F0 33         BEQ   $9316               ;
 92E3: AD 4F 03      LDA   $034F               ;
@@ -2539,15 +2536,15 @@
 9318: A9 0F         LDA   #$0F                ;
 931A: 99 60 05      STA   $0560,Y             ;
 931D: A9 C0         LDA   #$C0                ;
-931F: 11 00         ORA   ($00),Y             ;{-GP_00:}
-9321: 91 00         STA   ($00),Y             ;{-GP_00:}
+931F: 11 00         ORA   ($00),Y             ;GP_00
+9321: 91 00         STA   ($00),Y             ;GP_00
 9323: 60            RTS                       ;
 9324: 00            BRK                       ;
 9325: 10 20         BPL   $9347               ;
 9327: 40            RTI                       ;
 9328: 20 CE E6      JSR   $E6CE               ;
 932B: AC BC 6B      LDY   $6BBC               ;
-932E: B1 00         LDA   ($00),Y             ;{-GP_00:}
+932E: B1 00         LDA   ($00),Y             ;GP_00
 9330: 29 C0         AND   #$C0                ;
 9332: C9 C0         CMP   #$C0                ;
 9334: F0 17         BEQ   $934D               ;
@@ -2562,7 +2559,7 @@
 9342: BD 24 93      LDA   $9324,X             ;
 9345: F0 06         BEQ   $934D               ;
 9347: 09 80         ORA   #$80                ;
-9349: 8D 01 06      STA   $0601               ;{-??SND_601??:}
+9349: 8D 01 06      STA   $0601               ;??SND_601??
 934C: 60            RTS                       ;
 934D: A9 80         LDA   #$80                ;
 934F: 4C 80 6D      JMP   $6D80               ;
@@ -2747,7 +2744,7 @@
 9408: A8            TAY                       ;
 9409: B9 D5 A5      LDA   $A5D5,Y             ;
 940C: A8            TAY                       ;
-940D: B1 02         LDA   ($02),Y             ;{-GP_02:}
+940D: B1 02         LDA   ($02),Y             ;GP_02
 940F: 9D 02 03      STA   $0302,X             ;
 9412: E8            INX                       ;
 9413: E6 07         INC   >$07                ;
@@ -2805,11 +2802,11 @@
 9468: A9 A8         LDA   #$A8                ;
 946A: A9 03         LDA   #$03                ;
 946C: 05 E4         ORA   >$E4                ;
-946E: 24 02         BIT   >$02                ;{-GP_02:}
+946E: 24 02         BIT   >$02                ;GP_02
 9470: 02                              ;
 9471: 03                              ;
 9472: 05 22         ORA   >$22                ;
-9474: 24 02         BIT   >$02                ;{-GP_02:}
+9474: 24 02         BIT   >$02                ;GP_02
 9476: A8            TAY                       ;
 9477: A6 A7         LDX   >$A7                ;
 9479: A6 A7         LDX   >$A7                ;
@@ -2883,7 +2880,7 @@
 94DA: A8            TAY                       ;
 94DB: F0 F1         BEQ   $94CE               ;
 94DD: A9 A5         LDA   #$A5                ;
-94DF: A4 02         LDY   >$02                ;{-GP_02:}
+94DF: A4 02         LDY   >$02                ;GP_02
 94E1: D2                              ;
 94E2: C8            INY                       ;
 94E3: C7                              ;
@@ -2976,7 +2973,7 @@
 954F: 02                              ;
 9550: 02                              ;
 9551: B7                              ;
-9552: B5 02         LDA   $02,X               ;{-GP_02:}
+9552: B5 02         LDA   $02,X               ;GP_02
 9554: D2                              ;
 9555: B7                              ;
 9556: C8            INY                       ;
@@ -3067,8 +3064,8 @@
 95C6: A6 01         LDX   >$01                ;
 95C8: A7                              ;
 95C9: A9 02         LDA   #$02                ;
-95CB: B5 02         LDA   $02,X               ;{-GP_02:}
-95CD: B6 02         LDX   $02,Y               ;{-GP_02:}
+95CB: B5 02         LDA   $02,X               ;GP_02
+95CD: B6 02         LDX   $02,Y               ;GP_02
 95CF: B7                              ;
 95D0: 02                              ;
 95D1: B7                              ;
@@ -3105,7 +3102,7 @@
 95FA: 64                              ;
 95FB: 66 E5         ROR   >$E5                ;
 95FD: D8            CLD                       ;
-95FE: 65 66         ADC   >$66                ;{-SND_PtrA:}
+95FE: 65 66         ADC   >$66                ;SND_PtrA
 9600: E5 F3         SBC   >$F3                ;
 9602: 64                              ;
 9603: F2                              ;
@@ -3168,7 +3165,7 @@
 9641: 00            BRK                       ;
 9642: A9 02         LDA   #$02                ;
 9644: 02                              ;
-9645: B5 02         LDA   $02,X               ;{-GP_02:}
+9645: B5 02         LDA   $02,X               ;GP_02
 9647: 02                              ;
 9648: 02                              ;
 9649: 02                              ;
@@ -3249,16 +3246,16 @@
 96C5: C4 F9         CPY   >$F9                ;
 96C7: F9 02 02      SBC   $0202,Y             ;
 96CA: 02                              ;
-96CB: B6 02         LDX   $02,Y               ;{-GP_02:}
+96CB: B6 02         LDX   $02,Y               ;GP_02
 96CD: 03                              ;
 96CE: 05 21         ORA   >$21                ;
 96D0: 21 E4         AND   ($E4,X)             ;
-96D2: 24 02         BIT   >$02                ;{-GP_02:}
+96D2: 24 02         BIT   >$02                ;GP_02
 96D4: A0 06         LDY   #$06                ;
 96D6: 06 06         ASL   >$06                ;
 96D8: 06 06         ASL   >$06                ;
 96DA: 83                              ;
-96DB: A1 02         LDA   ($02,X)             ;{-GP_02:}
+96DB: A1 02         LDA   ($02,X)             ;GP_02
 96DD: D2                              ;
 96DE: A2 18         LDX   #$18                ;
 96E0: 18            CLC                       ;
@@ -3335,7 +3332,7 @@
 9742: D2                              ;
 9743: B7                              ;
 9744: 02                              ;
-9745: B6 00         LDX   $00,Y               ;{-GP_00:}
+9745: B6 00         LDX   $00,Y               ;GP_00
 9747: 00            BRK                       ;
 9748: 00            BRK                       ;
 9749: A9 B7         LDA   #$B7                ;
@@ -3380,7 +3377,7 @@
 977C: F2                              ;
 977D: F3                              ;
 977E: 64                              ;
-977F: 65 66         ADC   >$66                ;{-SND_PtrA:}
+977F: 65 66         ADC   >$66                ;SND_PtrA
 9781: E5 D8         SBC   >$D8                ;
 9783: 66 02         ROR   >$02                ;
 9785: 02                              ;
@@ -3399,7 +3396,7 @@
 9793: 17                              ;
 9794: 25 17         AND   >$17                ;
 9796: 17                              ;
-9797: 15 00         ORA   $00,X               ;{-GP_00:}
+9797: 15 00         ORA   $00,X               ;GP_00
 9799: A9 02         LDA   #$02                ;
 979B: 77                              ;
 979C: 02                              ;
@@ -3427,7 +3424,7 @@
 97BF: C6 C6         DEC   >$C6                ;
 97C1: C6 C6         DEC   >$C6                ;
 97C3: C6 C5         DEC   >$C5                ;
-97C5: C5 00         CMP   >$00                ;{-GP_00:}
+97C5: C5 00         CMP   >$00                ;GP_00
 97C7: 00            BRK                       ;
 97C8: 15 76         ORA   $76,X               ;
 97CA: 26 76         ROL   >$76                ;
@@ -3437,7 +3434,7 @@
 97D1: 49 76         EOR   #$76                ;
 97D3: 26 76         ROL   >$76                ;
 97D5: 25 76         AND   >$76                ;
-97D7: 15 00         ORA   $00,X               ;{-GP_00:}
+97D7: 15 00         ORA   $00,X               ;GP_00
 97D9: 00            BRK                       ;
 97DA: D5 08         CMP   $08,X               ;
 97DC: 08            PHP                       ;
@@ -3473,7 +3470,7 @@
 9803: 08            PHP                       ;
 9804: 93                              ;
 9805: 08            PHP                       ;
-9806: B5 02         LDA   $02,X               ;{-GP_02:}
+9806: B5 02         LDA   $02,X               ;GP_02
 9808: 02                              ;
 9809: 02                              ;
 980A: 08            PHP                       ;
@@ -3623,7 +3620,7 @@
 98C4: 17                              ;
 98C5: 17                              ;
 98C6: 28            PLP                       ;
-98C7: 15 00         ORA   $00,X               ;{-GP_00:}
+98C7: 15 00         ORA   $00,X               ;GP_00
 98C9: 00            BRK                       ;
 98CA: E6 A1         INC   >$A1                ;
 98CC: A2 18         LDX   #$18                ;
@@ -3857,7 +3854,7 @@
 9A12: 08            PHP                       ;
 9A13: A4 A5         LDY   >$A5                ;
 9A15: 08            PHP                       ;
-9A16: A4 02         LDY   >$02                ;{-GP_02:}
+9A16: A4 02         LDY   >$02                ;GP_02
 9A18: 02                              ;
 9A19: A5 08         LDA   >$08                ;
 9A1B: E3                              ;
@@ -3871,7 +3868,7 @@
 9A23: 08            PHP                       ;
 9A24: 32                              ;
 9A25: 08            PHP                       ;
-9A26: A4 02         LDY   >$02                ;{-GP_02:}
+9A26: A4 02         LDY   >$02                ;GP_02
 9A28: 02                              ;
 9A29: 02                              ;
 9A2A: 02                              ;
@@ -4172,7 +4169,7 @@
 9BB0: C2                              ;
 9BB1: 95 95         STA   $95,X               ;
 9BB3: 95 95         STA   $95,X               ;
-9BB5: 95 00         STA   $00,X               ;{-GP_00:}
+9BB5: 95 00         STA   $00,X               ;GP_00
 9BB7: 00            BRK                       ;
 9BB8: 00            BRK                       ;
 9BB9: 00            BRK                       ;
@@ -4698,10 +4695,10 @@
 9F9D: 94 D8         STY   $D8,X               ;
 9F9F: 9B                              ;
 9FA0: E0 F5         CPX   #$F5                ;
-9FA2: F5 F5         SBC   $F5,X               ;{-TileFlagA:}
+9FA2: F5 F5         SBC   $F5,X               ;TileFlagA
 9FA4: F5 B8         SBC   $B8,X               ;
 9FA6: F5 D4         SBC   $D4,X               ;
-9FA8: F5 F5         SBC   $F5,X               ;{-TileFlagA:}
+9FA8: F5 F5         SBC   $F5,X               ;TileFlagA
 9FAA: F5 C4         SBC   $C4,X               ;
 9FAC: DE DE BC      DEC   $BCDE,X             ;
 9FAF: C8            INY                       ;
@@ -4773,20 +4770,20 @@ A012: DF                              ;
 A013: DF                              ;
 A014: DF                              ;
 A015: DF                              ;
-A016: F5 F5         SBC   $F5,X               ;{-TileFlagA:}
+A016: F5 F5         SBC   $F5,X               ;TileFlagA
 A018: DF                              ;
 A019: DF                              ;
 A01A: DF                              ;
 A01B: DF                              ;
-A01C: F5 F5         SBC   $F5,X               ;{-TileFlagA:}
+A01C: F5 F5         SBC   $F5,X               ;TileFlagA
 A01E: DF                              ;
 A01F: 24 DF         BIT   >$DF                ;
 A021: 92                              ;
-A022: F5 F5         SBC   $F5,X               ;{-TileFlagA:}
+A022: F5 F5         SBC   $F5,X               ;TileFlagA
 A024: 24 DF         BIT   >$DF                ;
 A026: 93                              ;
 A027: DF                              ;
-A028: F5 F5         SBC   $F5,X               ;{-TileFlagA:}
+A028: F5 F5         SBC   $F5,X               ;TileFlagA
 A02A: 82                              ;
 A02B: 82                              ;
 A02C: 83                              ;
@@ -4810,14 +4807,14 @@ A045: AC 85 AE      LDY   $AE85               ;
 A048: 82                              ;
 A049: 82                              ;
 A04A: AD 84 AF      LDA   $AF84               ;
-A04D: 86 F5         STX   >$F5                ;{-TileFlagA:}
+A04D: 86 F5         STX   >$F5                ;TileFlagA
 A04F: F5 DE         SBC   $DE,X               ;
 A051: DE DE DE      DEC   $DEDE,X             ;
-A054: F5 F5         SBC   $F5,X               ;{-TileFlagA:}
+A054: F5 F5         SBC   $F5,X               ;TileFlagA
 A056: DE DE DE      DEC   $DEDE,X             ;
 A059: DE F5 F5      DEC   $F5F5,X             ;
 A05C: DE 90 DE      DEC   $DE90,X             ;
-A05F: 24 F5         BIT   >$F5                ;{-TileFlagA:}
+A05F: 24 F5         BIT   >$F5                ;TileFlagA
 A061: F5 91         SBC   $91,X               ;
 A063: DE 24 DE      DEC   $DE24,X             ;
 A066: 7E 7F 7D      ROR   $7D7F,X             ;
@@ -4877,7 +4874,7 @@ A0D1: DC                              ;
 A0D2: F5 DC         SBC   $DC,X               ;
 A0D4: DC                              ;
 A0D5: F5 8C         SBC   $8C,X               ;
-A0D7: 24 F5         BIT   >$F5                ;{-TileFlagA:}
+A0D7: 24 F5         BIT   >$F5                ;TileFlagA
 A0D9: 8D 24 F5      STA   $F524               ;
 A0DC: DC                              ;
 A0DD: DC                              ;
@@ -4902,7 +4899,7 @@ A0F0: 00            BRK                       ;
 A0F1: 00            BRK                       ;
 A0F2: 00            BRK                       ;
 A0F3: 23                              ;
-A0F4: 31 00         AND   ($00),Y             ;{-GP_00:}
+A0F4: 31 00         AND   ($00),Y             ;GP_00
 A0F6: 00            BRK                       ;
 A0F7: 00            BRK                       ;
 A0F8: 23                              ;
@@ -4946,7 +4943,7 @@ A121: 17                              ;
 A122: 16 07         ASL   $07,X               ;
 A124: 05 05         ORA   >$05                ;
 A126: 72                              ;
-A127: 31 00         AND   ($00),Y             ;{-GP_00:}
+A127: 31 00         AND   ($00),Y             ;GP_00
 A129: 02                              ;
 A12A: 00            BRK                       ;
 A12B: 00            BRK                       ;
@@ -4990,9 +4987,9 @@ A156: 00            BRK                       ;
 A157: 00            BRK                       ;
 A158: 00            BRK                       ;
 A159: 00            BRK                       ;
-A15A: 31 00         AND   ($00),Y             ;{-GP_00:}
+A15A: 31 00         AND   ($00),Y             ;GP_00
 A15C: 00            BRK                       ;
-A15D: 31 00         AND   ($00),Y             ;{-GP_00:}
+A15D: 31 00         AND   ($00),Y             ;GP_00
 A15F: 00            BRK                       ;
 A160: 00            BRK                       ;
 A161: 00            BRK                       ;
@@ -5013,13 +5010,13 @@ A174: 00            BRK                       ;
 A175: 35 25         AND   $25,X               ;
 A177: 13                              ;
 A178: 33                              ;
-A179: 55 00         EOR   $00,X               ;{-GP_00:}
-A17B: 11 00         ORA   ($00),Y             ;{-GP_00:}
-A17D: 11 00         ORA   ($00),Y             ;{-GP_00:}
+A179: 55 00         EOR   $00,X               ;GP_00
+A17B: 11 00         ORA   ($00),Y             ;GP_00
+A17D: 11 00         ORA   ($00),Y             ;GP_00
 A17F: 11 11         ORA   ($11),Y             ;
 A181: 00            BRK                       ;
-A182: 11 00         ORA   ($00),Y             ;{-GP_00:}
-A184: 11 00         ORA   ($00),Y             ;{-GP_00:}
+A182: 11 00         ORA   ($00),Y             ;GP_00
+A184: 11 00         ORA   ($00),Y             ;GP_00
 A186: 00            BRK                       ;
 A187: 00            BRK                       ;
 A188: 00            BRK                       ;
@@ -5058,7 +5055,7 @@ A1A8: 13                              ;
 A1A9: 00            BRK                       ;
 A1AA: 20 12 21      JSR   $2112               ;
 A1AD: 31 33         AND   ($33),Y             ;
-A1AF: 25 02         AND   >$02                ;{-GP_02:}
+A1AF: 25 02         AND   >$02                ;GP_02
 A1B1: 26 31         ROL   >$31                ;
 A1B3: 30 12         BMI   $A1C7               ;
 A1B5: 17                              ;
@@ -5079,7 +5076,7 @@ A1C6: 00            BRK                       ;
 A1C7: 00            BRK                       ;
 A1C8: 00            BRK                       ;
 A1C9: 00            BRK                       ;
-A1CA: 61 00         ADC   ($00,X)             ;{-GP_00:}
+A1CA: 61 00         ADC   ($00,X)             ;GP_00
 A1CC: 00            BRK                       ;
 A1CD: 00            BRK                       ;
 A1CE: 00            BRK                       ;
@@ -5105,7 +5102,7 @@ A1E7: 70 67         BVS   $A250               ;
 A1E9: 65 73         ADC   >$73                ;
 A1EB: 66 66         ROR   >$66                ;
 A1ED: 73                              ;
-A1EE: 65 67         ADC   >$67                ;{-SND_PtrB:}
+A1EE: 65 67         ADC   >$67                ;SND_PtrB
 A1F0: 70 73         BVS   $A265               ;
 A1F2: 73                              ;
 A1F3: 70 71         BVS   $A266               ;
@@ -5139,7 +5136,7 @@ A218: 00            BRK                       ;
 A219: 00            BRK                       ;
 A21A: 31 23         AND   ($23),Y             ;
 A21C: 10 23         BPL   $A241               ;
-A21E: 31 00         AND   ($00),Y             ;{-GP_00:}
+A21E: 31 00         AND   ($00),Y             ;GP_00
 A220: 00            BRK                       ;
 A221: 00            BRK                       ;
 A222: 00            BRK                       ;
@@ -5161,7 +5158,7 @@ A232: 12                              ;
 A233: 11 11         ORA   ($11),Y             ;
 A235: 15 14         ORA   $14,X               ;
 A237: 02                              ;
-A238: 24 00         BIT   >$00                ;{-GP_00:}
+A238: 24 00         BIT   >$00                ;GP_00
 A23A: 00            BRK                       ;
 A23B: 00            BRK                       ;
 A23C: 22                              ;
@@ -5214,7 +5211,7 @@ A26C: 00            BRK                       ;
 A26D: 95 94         STA   $94,X               ;
 A26F: 96 96         STX   $96,Y               ;
 A271: 98            TYA                       ;
-A272: 95 00         STA   $00,X               ;{-GP_00:}
+A272: 95 00         STA   $00,X               ;GP_00
 A274: 97                              ;
 A275: 00            BRK                       ;
 A276: 00            BRK                       ;
@@ -5222,7 +5219,7 @@ A277: 00            BRK                       ;
 A278: 00            BRK                       ;
 A279: 00            BRK                       ;
 A27A: 00            BRK                       ;
-A27B: 31 00         AND   ($00),Y             ;{-GP_00:}
+A27B: 31 00         AND   ($00),Y             ;GP_00
 A27D: 00            BRK                       ;
 A27E: 00            BRK                       ;
 A27F: 00            BRK                       ;
@@ -5240,7 +5237,7 @@ A28A: 00            BRK                       ;
 A28B: 00            BRK                       ;
 A28C: 00            BRK                       ;
 A28D: 00            BRK                       ;
-A28E: 85 00         STA   >$00                ;{-GP_00:}
+A28E: 85 00         STA   >$00                ;GP_00
 A290: 00            BRK                       ;
 A291: 00            BRK                       ;
 A292: 00            BRK                       ;
@@ -5295,7 +5292,7 @@ A2D2: 45 12         EOR   >$12                ;
 A2D4: 13                              ;
 A2D5: 00            BRK                       ;
 A2D6: E1 80         SBC   ($80,X)             ;
-A2D8: C1 00         CMP   ($00,X)             ;{-GP_00:}
+A2D8: C1 00         CMP   ($00,X)             ;GP_00
 A2DA: 01 A0         ORA   ($A0,X)             ;
 A2DC: 04                              ;
 A2DD: A0 01         LDY   #$01                ;
@@ -5303,38 +5300,38 @@ A2DF: A0 31         LDY   #$31                ;
 A2E1: 90 21         BCC   $A304               ;
 A2E3: 90 21         BCC   $A306               ;
 A2E5: 00            BRK                       ;
-A2E6: 81 00         STA   ($00,X)             ;{-GP_00:}
+A2E6: 81 00         STA   ($00,X)             ;GP_00
 A2E8: 01 04         ORA   ($04,X)             ;
-A2EA: 81 00         STA   ($00,X)             ;{-GP_00:}
-A2EC: 01 00         ORA   ($00,X)             ;{-GP_00:}
-A2EE: 01 00         ORA   ($00,X)             ;{-GP_00:}
-A2F0: 81 00         STA   ($00,X)             ;{-GP_00:}
-A2F2: 21 00         AND   ($00,X)             ;{-GP_00:}
+A2EA: 81 00         STA   ($00,X)             ;GP_00
+A2EC: 01 00         ORA   ($00,X)             ;GP_00
+A2EE: 01 00         ORA   ($00,X)             ;GP_00
+A2F0: 81 00         STA   ($00,X)             ;GP_00
+A2F2: 21 00         AND   ($00,X)             ;GP_00
 A2F4: 81 40         STA   ($40,X)             ;
 A2F6: 81 20         STA   ($20,X)             ;
-A2F8: 01 00         ORA   ($00,X)             ;{-GP_00:}
-A2FA: 81 00         STA   ($00,X)             ;{-GP_00:}
+A2F8: 01 00         ORA   ($00,X)             ;GP_00
+A2FA: 81 00         STA   ($00,X)             ;GP_00
 A2FC: 04                              ;
 A2FD: 00            BRK                       ;
-A2FE: 01 00         ORA   ($00,X)             ;{-GP_00:}
+A2FE: 01 00         ORA   ($00,X)             ;GP_00
 A300: 01 90         ORA   ($90,X)             ;
 A302: 41 80         EOR   ($80,X)             ;
 A304: D1 80         CMP   ($80),Y             ;
-A306: 21 00         AND   ($00,X)             ;{-GP_00:}
+A306: 21 00         AND   ($00,X)             ;GP_00
 A308: 91 20         STA   ($20),Y             ;
-A30A: 91 00         STA   ($00),Y             ;{-GP_00:}
-A30C: 01 00         ORA   ($00,X)             ;{-GP_00:}
+A30A: 91 00         STA   ($00),Y             ;GP_00
+A30C: 01 00         ORA   ($00,X)             ;GP_00
 A30E: 11 D0         ORA   ($D0),Y             ;
-A310: 81 00         STA   ($00,X)             ;{-GP_00:}
+A310: 81 00         STA   ($00,X)             ;GP_00
 A312: 41 B1         EOR   ($B1,X)             ;
 A314: 00            BRK                       ;
-A315: 91 00         STA   ($00),Y             ;{-GP_00:}
-A317: A1 00         LDA   ($00,X)             ;{-GP_00:}
+A315: 91 00         STA   ($00),Y             ;GP_00
+A317: A1 00         LDA   ($00,X)             ;GP_00
 A319: 21 B1         AND   ($B1,X)             ;
 A31B: 06 91         ASL   >$91                ;
 A31D: 00            BRK                       ;
-A31E: B1 00         LDA   ($00),Y             ;{-GP_00:}
-A320: 81 00         STA   ($00,X)             ;{-GP_00:}
+A31E: B1 00         LDA   ($00),Y             ;GP_00
+A320: 81 00         STA   ($00,X)             ;GP_00
 A322: 21 90         AND   ($90,X)             ;
 A324: 17                              ;
 A325: 02                              ;
@@ -5345,10 +5342,10 @@ A32C: B1 07         LDA   ($07),Y             ;
 A32E: 91 06         STA   ($06),Y             ;
 A330: 31 87         AND   ($87),Y             ;
 A332: 31 17         AND   ($17),Y             ;
-A334: 81 00         STA   ($00,X)             ;{-GP_00:}
+A334: 81 00         STA   ($00,X)             ;GP_00
 A336: 01 03         ORA   ($03,X)             ;
-A338: 81 00         STA   ($00,X)             ;{-GP_00:}
-A33A: 01 02         ORA   ($02,X)             ;{-GP_02:}
+A338: 81 00         STA   ($00,X)             ;GP_00
+A33A: 01 02         ORA   ($02,X)             ;GP_02
 A33C: 01 80         ORA   ($80,X)             ;
 A33E: 01 10         ORA   ($10,X)             ;
 A340: 11 83         ORA   ($83),Y             ;
@@ -5363,7 +5360,7 @@ A34D: 11 90         ORA   ($90),Y             ;
 A34F: 17                              ;
 A350: 03                              ;
 A351: 11 C0         ORA   ($C0),Y             ;
-A353: 11 E0         ORA   ($E0),Y             ;{-??SND_E0??:}
+A353: 11 E0         ORA   ($E0),Y             ;??SND_E0??
 A355: E6 81         INC   >$81                ;
 A357: C6 81         DEC   >$81                ;
 A359: 86 01         STX   >$01                ;
@@ -5391,24 +5388,24 @@ A381: 01 10         ORA   ($10,X)             ;
 A383: 11 82         ORA   ($82),Y             ;
 A385: 47                              ;
 A386: 82                              ;
-A387: 41 02         EOR   ($02,X)             ;{-GP_02:}
+A387: 41 02         EOR   ($02,X)             ;GP_02
 A389: 80                              ;
 A38A: 01 10         ORA   ($10,X)             ;
-A38C: A1 02         LDA   ($02,X)             ;{-GP_02:}
+A38C: A1 02         LDA   ($02,X)             ;GP_02
 A38E: A1 03         LDA   ($03,X)             ;
 A390: 21 80         AND   ($80,X)             ;
 A392: 27                              ;
 A393: 21 81         AND   ($81,X)             ;
 A395: 00            BRK                       ;
 A396: 02                              ;
-A397: 11 00         ORA   ($00),Y             ;{-GP_00:}
-A399: 81 00         STA   ($00,X)             ;{-GP_00:}
+A397: 11 00         ORA   ($00),Y             ;GP_00
+A399: 81 00         STA   ($00,X)             ;GP_00
 A39B: 03                              ;
-A39C: 11 00         ORA   ($00),Y             ;{-GP_00:}
-A39E: 81 02         STA   ($02,X)             ;{-GP_02:}
-A3A0: 81 02         STA   ($02,X)             ;{-GP_02:}
-A3A2: 01 02         ORA   ($02,X)             ;{-GP_02:}
-A3A4: 01 02         ORA   ($02,X)             ;{-GP_02:}
+A39C: 11 00         ORA   ($00),Y             ;GP_00
+A39E: 81 02         STA   ($02,X)             ;GP_02
+A3A0: 81 02         STA   ($02,X)             ;GP_02
+A3A2: 01 02         ORA   ($02,X)             ;GP_02
+A3A4: 01 02         ORA   ($02,X)             ;GP_02
 A3A6: 05 C1         ORA   >$C1                ;
 A3A8: 15 B1         ORA   $B1,X               ;
 A3AA: 25 81         AND   >$81                ;
@@ -5419,7 +5416,7 @@ A3B1: 01 03         ORA   ($03,X)             ;
 A3B3: 05 04         ORA   >$04                ;
 A3B5: 04                              ;
 A3B6: 00            BRK                       ;
-A3B7: 01 00         ORA   ($00,X)             ;{-GP_00:}
+A3B7: 01 00         ORA   ($00,X)             ;GP_00
 A3B9: 00            BRK                       ;
 A3BA: 00            BRK                       ;
 A3BB: 00            BRK                       ;
@@ -5427,13 +5424,13 @@ A3BC: 00            BRK                       ;
 A3BD: 00            BRK                       ;
 A3BE: 00            BRK                       ;
 A3BF: 00            BRK                       ;
-A3C0: 01 00         ORA   ($00,X)             ;{-GP_00:}
+A3C0: 01 00         ORA   ($00,X)             ;GP_00
 A3C2: 04                              ;
 A3C3: 04                              ;
 A3C4: 04                              ;
 A3C5: 04                              ;
 A3C6: 00            BRK                       ;
-A3C7: 01 00         ORA   ($00,X)             ;{-GP_00:}
+A3C7: 01 00         ORA   ($00,X)             ;GP_00
 A3C9: 00            BRK                       ;
 A3CA: 00            BRK                       ;
 A3CB: 03                              ;
@@ -5488,7 +5485,7 @@ A405: C0 02         CPY   #$02                ;
 A407: 90 05         BCC   $A40E               ;
 A409: A4 EB         LDY   >$EB                ;
 A40B: B9 FE 68      LDA   $68FE,Y             ;
-A40E: 85 00         STA   >$00                ;{-GP_00:}
+A40E: 85 00         STA   >$00                ;GP_00
 A410: A5 03         LDA   >$03                ;
 A412: 29 01         AND   #$01                ;
 A414: D0 06         BNE   $A41C               ;
@@ -5497,7 +5494,7 @@ A418: 46 00         LSR   >$00                ;
 A41A: 46 00         LSR   >$00                ;
 A41C: 46 00         LSR   >$00                ;
 A41E: 46 00         LSR   >$00                ;
-A420: A5 02         LDA   >$02                ;{-GP_02:}
+A420: A5 02         LDA   >$02                ;GP_02
 A422: 24 01         BIT   >$01                ;
 A424: D0 09         BNE   $A42F               ;
 A426: 06 01         ASL   >$01                ;
@@ -5505,7 +5502,7 @@ A428: C6 03         DEC   >$03                ;
 A42A: 10 D2         BPL   $A3FE               ;
 A42C: A9 08         LDA   #$08                ;
 A42E: 60            RTS                       ;
-A42F: A5 00         LDA   >$00                ;{-GP_00:}
+A42F: A5 00         LDA   >$00                ;GP_00
 A431: 29 07         AND   #$07                ;
 A433: 60            RTS                       ;
 A434: A9 13         LDA   #$13                ;
@@ -5515,11 +5512,11 @@ A43A: D0 48         BNE   $A484               ;
 A43C: 20 98 72      JSR   $7298               ;
 A43F: 4C 8E A4      JMP   $A48E               ;
 A442: A9 A0         LDA   #$A0                ;
-A444: 85 00         STA   >$00                ;{-GP_00:}
+A444: 85 00         STA   >$00                ;GP_00
 A446: A9 9F         LDA   #$9F                ;
 A448: 85 01         STA   >$01                ;
 A44A: A9 47         LDA   #$47                ;
-A44C: 85 02         STA   >$02                ;{-GP_02:}
+A44C: 85 02         STA   >$02                ;GP_02
 A44E: A9 65         LDA   #$65                ;
 A450: 85 03         STA   >$03                ;
 A452: A9 5A         LDA   #$5A                ;
@@ -5529,9 +5526,9 @@ A458: 85 05         STA   >$05                ;
 A45A: A9 0A         LDA   #$0A                ;
 A45C: 85 06         STA   >$06                ;
 A45E: A0 00         LDY   #$00                ;
-A460: B1 00         LDA   ($00),Y             ;{-GP_00:}
+A460: B1 00         LDA   ($00),Y             ;GP_00
 A462: F0 D0         BEQ   $A434               ;
-A464: 91 02         STA   ($02),Y             ;{-GP_02:}
+A464: 91 02         STA   ($02),Y             ;GP_02
 A466: 91 04         STA   ($04),Y             ;
 A468: C9 DE         CMP   #$DE                ;
 A46A: F0 08         BEQ   $A474               ;
@@ -5556,14 +5553,14 @@ A48E: 20 74 72      JSR   $7274               ;
 A491: C9 EE         CMP   #$EE                ;
 A493: D0 CB         BNE   $A460               ;
 A495: A9 30         LDA   #$30                ;
-A497: 85 02         STA   >$02                ;{-GP_02:}
+A497: 85 02         STA   >$02                ;GP_02
 A499: A9 65         LDA   #$65                ;
 A49B: 85 03         STA   >$03                ;
 A49D: A9 EF         LDA   #$EF                ;
 A49F: 85 04         STA   >$04                ;
 A4A1: A9 67         LDA   #$67                ;
 A4A3: 85 05         STA   >$05                ;
-A4A5: B1 02         LDA   ($02),Y             ;{-GP_02:}
+A4A5: B1 02         LDA   ($02),Y             ;GP_02
 A4A7: 91 04         STA   ($04),Y             ;
 A4A9: C9 DD         CMP   #$DD                ;
 A4AB: F0 22         BEQ   $A4CF               ;
@@ -5586,7 +5583,7 @@ A4CC: D0 D7         BNE   $A4A5               ;
 A4CE: 60            RTS                       ;
 A4CF: A9 DC         LDA   #$DC                ;
 A4D1: D0 E9         BNE   $A4BC               ;
-A4D3: 01 02         ORA   ($02,X)             ;{-GP_02:}
+A4D3: 01 02         ORA   ($02,X)             ;GP_02
 A4D5: 04                              ;
 A4D6: 08            PHP                       ;
 A4D7: EE 2A 66      INC   $662A               ;
@@ -5596,7 +5593,7 @@ A4DE: A0 A1         LDY   #$A1                ;
 A4E0: 4F                              ;
 A4E1: 76 65         ROR   >$65,X              ;
 A4E3: 67                              ;
-A4E4: 65 66         ADC   >$66                ;{-SND_PtrA:}
+A4E4: 65 66         ADC   >$66                ;SND_PtrA
 A4E6: 66 14         ROR   >$14                ;
 A4E8: 01 01         ORA   ($01,X)             ;
 A4EA: 02                              ;
@@ -5615,7 +5612,7 @@ A4FC: 8A            TXA                       ;
 A4FD: 48            PHA                       ;
 A4FE: 85 0B         STA   >$0B                ;
 A500: BD D3 A4      LDA   $A4D3,X             ;
-A503: 85 02         STA   >$02                ;{-GP_02:}
+A503: 85 02         STA   >$02                ;GP_02
 A505: 20 F6 A3      JSR   $A3F6               ;
 A508: C9 05         CMP   #$05                ;
 A50A: B0 1C         BCS   $A528               ;
@@ -5626,7 +5623,7 @@ A512: D0 14         BNE   $A528               ;
 A514: A9 09         LDA   #$09                ;
 A516: D0 2F         BNE   $A547               ;
 A518: 48            PHA                       ;
-A519: A5 02         LDA   >$02                ;{-GP_02:}
+A519: A5 02         LDA   >$02                ;GP_02
 A51B: 49 FF         EOR   #$FF                ;
 A51D: 25 EE         AND   >$EE                ;
 A51F: 85 EE         STA   >$EE                ;
@@ -5636,10 +5633,10 @@ A524: B0 02         BCS   $A528               ;
 A526: A9 04         LDA   #$04                ;
 A528: 48            PHA                       ;
 A529: A5 EE         LDA   >$EE                ;
-A52B: 25 02         AND   >$02                ;{-GP_02:}
+A52B: 25 02         AND   >$02                ;GP_02
 A52D: AA            TAX                       ;
 A52E: 68            PLA                       ;
-A52F: E4 02         CPX   >$02                ;{-GP_02:}
+A52F: E4 02         CPX   >$02                ;GP_02
 A531: D0 14         BNE   $A547               ;
 A533: A8            TAY                       ;
 A534: 68            PLA                       ;
@@ -5686,8 +5683,8 @@ A57E: 48            PHA                       ;
 A57F: AA            TAX                       ;
 A580: BD F2 A4      LDA   $A4F2,X             ;
 A583: AA            TAX                       ;
-A584: B1 02         LDA   ($02),Y             ;{-GP_02:}
-A586: 91 00         STA   ($00),Y             ;{-GP_00:}
+A584: B1 02         LDA   ($02),Y             ;GP_02
+A586: 91 00         STA   ($00),Y             ;GP_00
 A588: 20 80 72      JSR   $7280               ;
 A58B: BD E7 A4      LDA   $A4E7,X             ;
 A58E: 20 76 72      JSR   $7276               ;
@@ -5712,11 +5709,11 @@ A5AF: 30 23         BMI   $A5D4               ;
 A5B1: 4C F8 A4      JMP   $A4F8               ;
 A5B4: AA            TAX                       ;
 A5B5: BD D7 A4      LDA   $A4D7,X             ;
-A5B8: 85 02         STA   >$02                ;{-GP_02:}
+A5B8: 85 02         STA   >$02                ;GP_02
 A5BA: BD DB A4      LDA   $A4DB,X             ;
 A5BD: 85 03         STA   >$03                ;
 A5BF: BD DF A4      LDA   $A4DF,X             ;
-A5C2: 85 00         STA   >$00                ;{-GP_00:}
+A5C2: 85 00         STA   >$00                ;GP_00
 A5C4: BD E3 A4      LDA   $A4E3,X             ;
 A5C7: 85 01         STA   >$01                ;
 A5C9: 88            DEY                       ;
@@ -5741,11 +5738,11 @@ A5E6: 0A            ASL   A                   ;
 A5E7: 22                              ;
 A5E8: 22                              ;
 A5E9: 23                              ;
-A5EA: 21 5C         AND   ($5C,X)             ;{-FlipFlag:}
+A5EA: 21 5C         AND   ($5C,X)             ;FlipFlag
 A5EC: 42                              ;
 A5ED: 4F                              ;
 A5EE: 4F                              ;
-A5EF: 01 FF         ORA   ($FF,X)             ;{-CUR_2000:}
+A5EF: 01 FF         ORA   ($FF,X)             ;CUR_2000
 A5F1: 10 F0         BPL   $A5E3               ;
 A5F3: A5 12         LDA   >$12                ;
 A5F5: C9 12         CMP   #$12                ;
@@ -5756,8 +5753,8 @@ A5FD: A5 54         LDA   >$54                ;
 A5FF: F0 D3         BEQ   $A5D4               ;
 A601: 29 07         AND   #$07                ;
 A603: A0 01         LDY   #$01                ;
-A605: 84 02         STY   >$02                ;{-GP_02:}
-A607: 24 02         BIT   >$02                ;{-GP_02:}
+A605: 84 02         STY   >$02                ;GP_02
+A607: 24 02         BIT   >$02                ;GP_02
 A609: F0 01         BEQ   $A60C               ;
 A60B: 4A            LSR   A                   ;
 A60C: C9 02         CMP   #$02                ;
@@ -5773,7 +5770,7 @@ A61D: A5 54         LDA   >$54                ;
 A61F: C9 05         CMP   #$05                ;
 A621: B0 0E         BCS   $A631               ;
 A623: A5 55         LDA   >$55                ;
-A625: 85 02         STA   >$02                ;{-GP_02:}
+A625: 85 02         STA   >$02                ;GP_02
 A627: 20 F6 A3      JSR   $A3F6               ;
 A62A: C9 07         CMP   #$07                ;
 A62C: F0 03         BEQ   $A631               ;
@@ -5781,7 +5778,7 @@ A62E: 4C 82 A6      JMP   $A682               ;
 A631: 20 B1 A6      JSR   $A6B1               ;
 A634: A5 06         LDA   >$06                ;
 A636: 85 04         STA   >$04                ;
-A638: A5 00         LDA   >$00                ;{-GP_00:}
+A638: A5 00         LDA   >$00                ;GP_00
 A63A: 9D 02 03      STA   $0302,X             ;
 A63D: E8            INX                       ;
 A63E: A5 01         LDA   >$01                ;
@@ -5821,7 +5818,7 @@ A682: A9 00         LDA   #$00                ;
 A684: 85 54         STA   >$54                ;
 A686: 4C F6 A4      JMP   $A4F6               ;
 A689: A5 55         LDA   >$55                ;
-A68B: 85 02         STA   >$02                ;{-GP_02:}
+A68B: 85 02         STA   >$02                ;GP_02
 A68D: 20 F6 A3      JSR   $A3F6               ;
 A690: C9 07         CMP   #$07                ;
 A692: F0 16         BEQ   $A6AA               ;
@@ -5834,14 +5831,14 @@ A69E: A8            TAY                       ;
 A69F: 8A            TXA                       ;
 A6A0: 49 01         EOR   #$01                ;
 A6A2: AA            TAX                       ;
-A6A3: B1 00         LDA   ($00),Y             ;{-GP_00:}
+A6A3: B1 00         LDA   ($00),Y             ;GP_00
 A6A5: 1D BE E6      ORA   $E6BE,X             ;
-A6A8: 91 00         STA   ($00),Y             ;{-GP_00:}
+A6A8: 91 00         STA   ($00),Y             ;GP_00
 A6AA: A5 55         LDA   >$55                ;
 A6AC: 05 EE         ORA   >$EE                ;
 A6AE: 4C 80 A6      JMP   $A680               ;
 A6B1: A5 55         LDA   >$55                ;
-A6B3: 85 02         STA   >$02                ;{-GP_02:}
+A6B3: 85 02         STA   >$02                ;GP_02
 A6B5: 20 F6 A3      JSR   $A3F6               ;
 A6B8: C9 05         CMP   #$05                ;
 A6BA: 90 07         BCC   $A6C3               ;
@@ -5871,7 +5868,7 @@ A6E4: 38            SEC                       ;
 A6E5: E5 03         SBC   >$03                ;
 A6E7: 20 B4 A5      JSR   $A5B4               ;
 A6EA: BD E7 A5      LDA   $A5E7,X             ;
-A6ED: 85 00         STA   >$00                ;{-GP_00:}
+A6ED: 85 00         STA   >$00                ;GP_00
 A6EF: BD EB A5      LDA   $A5EB,X             ;
 A6F2: 85 01         STA   >$01                ;
 A6F4: 86 09         STX   >$09                ;
@@ -5903,26 +5900,26 @@ A721: 5A                              ;
 A722: E8            INX                       ;
 A723: 48            PHA                       ;
 A724: A9 DE         LDA   #$DE                ;
-A726: 85 02         STA   >$02                ;{-GP_02:}
+A726: 85 02         STA   >$02                ;GP_02
 A728: A9 A0         LDA   #$A0                ;
 A72A: 85 03         STA   >$03                ;
 A72C: 68            PLA                       ;
 A72D: 0A            ASL   A                   ;
 A72E: 0A            ASL   A                   ;
-A72F: 85 00         STA   >$00                ;{-GP_00:}
+A72F: 85 00         STA   >$00                ;GP_00
 A731: 20 82 72      JSR   $7282               ;
-A734: A5 00         LDA   >$00                ;{-GP_00:}
+A734: A5 00         LDA   >$00                ;GP_00
 A736: 20 82 72      JSR   $7282               ;
-A739: A5 00         LDA   >$00                ;{-GP_00:}
+A739: A5 00         LDA   >$00                ;GP_00
 A73B: 20 82 72      JSR   $7282               ;
 A73E: A9 8C         LDA   #$8C                ;
-A740: 85 00         STA   >$00                ;{-GP_00:}
+A740: 85 00         STA   >$00                ;GP_00
 A742: A9 65         LDA   #$65                ;
 A744: 85 01         STA   >$01                ;
 A746: A0 00         LDY   #$00                ;
 A748: 84 06         STY   >$06                ;
 A74A: A4 06         LDY   >$06                ;
-A74C: B1 02         LDA   ($02),Y             ;{-GP_02:}
+A74C: B1 02         LDA   ($02),Y             ;GP_02
 A74E: 29 F0         AND   #$F0                ;
 A750: 4A            LSR   A                   ;
 A751: 4A            LSR   A                   ;
@@ -5932,7 +5929,7 @@ A754: BD 04 A7      LDA   $A704,X             ;
 A757: 85 04         STA   >$04                ;
 A759: BD 05 A7      LDA   $A705,X             ;
 A75C: 85 05         STA   >$05                ;
-A75E: B1 02         LDA   ($02),Y             ;{-GP_02:}
+A75E: B1 02         LDA   ($02),Y             ;GP_02
 A760: 29 0F         AND   #$0F                ;
 A762: AA            TAX                       ;
 A763: A0 00         LDY   #$00                ;
@@ -5987,33 +5984,33 @@ A7C3: 90 1B         BCC   $A7E0               ;
 A7C5: C9 F3         CMP   #$F3                ;
 A7C7: B0 17         BCS   $A7E0               ;
 A7C9: AA            TAX                       ;
-A7CA: 91 00         STA   ($00),Y             ;{-GP_00:}
+A7CA: 91 00         STA   ($00),Y             ;GP_00
 A7CC: C8            INY                       ;
 A7CD: E8            INX                       ;
 A7CE: 8A            TXA                       ;
-A7CF: 91 00         STA   ($00),Y             ;{-GP_00:}
+A7CF: 91 00         STA   ($00),Y             ;GP_00
 A7D1: 98            TYA                       ;
 A7D2: 18            CLC                       ;
 A7D3: 69 15         ADC   #$15                ;
 A7D5: A8            TAY                       ;
 A7D6: E8            INX                       ;
 A7D7: 8A            TXA                       ;
-A7D8: 91 00         STA   ($00),Y             ;{-GP_00:}
+A7D8: 91 00         STA   ($00),Y             ;GP_00
 A7DA: E8            INX                       ;
 A7DB: 8A            TXA                       ;
 A7DC: C8            INY                       ;
-A7DD: 91 00         STA   ($00),Y             ;{-GP_00:}
+A7DD: 91 00         STA   ($00),Y             ;GP_00
 A7DF: 60            RTS                       ;
-A7E0: 91 00         STA   ($00),Y             ;{-GP_00:}
+A7E0: 91 00         STA   ($00),Y             ;GP_00
 A7E2: C8            INY                       ;
-A7E3: 91 00         STA   ($00),Y             ;{-GP_00:}
+A7E3: 91 00         STA   ($00),Y             ;GP_00
 A7E5: 48            PHA                       ;
 A7E6: 98            TYA                       ;
 A7E7: 18            CLC                       ;
 A7E8: 69 15         ADC   #$15                ;
 A7EA: A8            TAY                       ;
 A7EB: 68            PLA                       ;
-A7EC: 91 00         STA   ($00),Y             ;{-GP_00:}
+A7EC: 91 00         STA   ($00),Y             ;GP_00
 A7EE: 4C DC A7      JMP   $A7DC               ;
 A7F1: A9 00         LDA   #$00                ;
 A7F3: 85 B7         STA   >$B7                ;
@@ -6029,10 +6026,10 @@ A805: 4C 2D A8      JMP   $A82D               ;
 A808: A2 08         LDX   #$08                ;
 A80A: A0 0A         LDY   #$0A                ;
 A80C: BD 00 E4      LDA   $E400,X             ;
-A80F: 85 00         STA   >$00                ;{-GP_00:}
+A80F: 85 00         STA   >$00                ;GP_00
 A811: BD 01 E4      LDA   $E401,X             ;
 A814: 85 01         STA   >$01                ;
-A816: B1 00         LDA   ($00),Y             ;{-GP_00:}
+A816: B1 00         LDA   ($00),Y             ;GP_00
 A818: C9 B0         CMP   #$B0                ;
 A81A: F0 08         BEQ   $A824               ;
 A81C: E8            INX                       ;
@@ -6051,7 +6048,7 @@ A82D: A9 68         LDA   #$68                ;
 A82F: 8D 5A 03      STA   $035A               ;
 A832: 60            RTS                       ;
 A833: A9 04         LDA   #$04                ;
-A835: 8D 00 06      STA   $0600               ;{-SND_ReqMusic:}
+A835: 8D 00 06      STA   $0600               ;SND_ReqMusic
 A838: A9 20         LDA   #$20                ;
 A83A: 85 7C         STA   >$7C                ;
 A83C: A9 01         LDA   #$01                ;
@@ -6113,10 +6110,10 @@ A8AA: 60            RTS                       ;
 A8AB: A5 28         LDA   >$28                ;
 A8AD: D0 FB         BNE   $A8AA               ;
 A8AF: 20 F7 E5      JSR   $E5F7               ;
-A8B2: A5 FF         LDA   >$FF                ;{-CUR_2000:}
+A8B2: A5 FF         LDA   >$FF                ;CUR_2000
 A8B4: 29 FB         AND   #$FB                ;
-A8B6: 85 FF         STA   >$FF                ;{-CUR_2000:}
-A8B8: 8D 00 20      STA   $2000               ;{--_P_CNTRL_1:} [NES] PPU setup #1
+A8B6: 85 FF         STA   >$FF                ;CUR_2000
+A8B8: 8D 00 20      STA   $2000               ;-_P_CNTRL_1 [NES] PPU setup #1
 A8BB: 4C 47 B5      JMP   $B547               ;
 A8BE: 20 F4 A9      JSR   $A9F4               ;
 A8C1: 4C 73 AB      JMP   $AB73               ;
@@ -6131,7 +6128,7 @@ A8D5: 20 42 A4      JSR   $A442               ;
 A8D8: 20 F6 A4      JSR   $A4F6               ;
 A8DB: 4C 20 A7      JMP   $A720               ;
 A8DE: A9 1A         LDA   #$1A                ;
-A8E0: 85 00         STA   >$00                ;{-GP_00:}
+A8E0: 85 00         STA   >$00                ;GP_00
 A8E2: A9 65         LDA   #$65                ;
 A8E4: 85 01         STA   >$01                ;
 A8E6: A6 E8         LDX   >$E8                ;
@@ -6153,8 +6150,8 @@ A906: 98            TYA                       ;
 A907: AA            TAX                       ;
 A908: A0 00         LDY   #$00                ;
 A90A: 84 06         STY   >$06                ;
-A90C: B1 00         LDA   ($00),Y             ;{-GP_00:}
-A90E: 9D 05 03      STA   $0305,X             ;{-BckGndBuf:}
+A90C: B1 00         LDA   ($00),Y             ;GP_00
+A90E: 9D 05 03      STA   $0305,X             ;BckGndBuf
 A911: 20 74 72      JSR   $7274               ;
 A914: E8            INX                       ;
 A915: E6 06         INC   >$06                ;
@@ -6172,7 +6169,7 @@ A928: A5 E9         LDA   >$E9                ;
 A92A: AA            TAX                       ;
 A92B: 18            CLC                       ;
 A92C: 69 30         ADC   #$30                ;
-A92E: 85 00         STA   >$00                ;{-GP_00:}
+A92E: 85 00         STA   >$00                ;GP_00
 A930: 90 02         BCC   $A934               ;
 A932: E6 01         INC   >$01                ;
 A934: A9 20         LDA   #$20                ;
@@ -6192,8 +6189,8 @@ A951: 8D 04 03      STA   $0304               ;
 A954: 8E 25 03      STX   $0325               ;
 A957: A2 00         LDX   #$00                ;
 A959: A0 00         LDY   #$00                ;
-A95B: B1 00         LDA   ($00),Y             ;{-GP_00:}
-A95D: 9D 05 03      STA   $0305,X             ;{-BckGndBuf:}
+A95B: B1 00         LDA   ($00),Y             ;GP_00
+A95D: 9D 05 03      STA   $0305,X             ;BckGndBuf
 A960: A9 16         LDA   #$16                ;
 A962: 20 76 72      JSR   $7276               ;
 A965: E8            INX                       ;
@@ -6205,13 +6202,13 @@ A96F: 60            RTS                       ;
 A970: 62                              ;
 A971: 63                              ;
 A972: 64                              ;
-A973: 65 66         ADC   >$66                ;{-SND_PtrA:}
+A973: 65 66         ADC   >$66                ;SND_PtrA
 A975: 67                              ;
 A976: C8            INY                       ;
 A977: D8            CLD                       ;
 A978: C4 BC         CPY   >$BC                ;
 A97A: C0 C0         CPY   #$C0                ;
-A97C: 24 6F         BIT   >$6F                ;{-SND_MusEffCnt:}
+A97C: 24 6F         BIT   >$6F                ;SND_MusEffCnt
 A97E: F3                              ;
 A97F: FA                              ;
 A980: 98            TYA                       ;
@@ -6245,7 +6242,7 @@ A9B1: DC                              ;
 A9B2: 89                              ;
 A9B3: 84 24         STY   >$24                ;
 A9B5: 24 24         BIT   >$24                ;
-A9B7: 24 6F         BIT   >$6F                ;{-SND_MusEffCnt:}
+A9B7: 24 6F         BIT   >$6F                ;SND_MusEffCnt
 A9B9: 6F                              ;
 A9BA: 6F                              ;
 A9BB: 6F                              ;
@@ -6287,7 +6284,7 @@ A9F1: 88            DEY                       ;
 A9F2: 8B                              ;
 A9F3: 88            DEY                       ;
 A9F4: AD 9C 9F      LDA   $9F9C               ;
-A9F7: 85 02         STA   >$02                ;{-GP_02:}
+A9F7: 85 02         STA   >$02                ;GP_02
 A9F9: AD 9D 9F      LDA   $9F9D               ;
 A9FC: 85 03         STA   >$03                ;
 A9FE: A9 00         LDA   #$00                ;
@@ -6301,8 +6298,8 @@ AA0B: 0A            ASL   A                   ;
 AA0C: 26 06         ROL   >$06                ;
 AA0E: 0A            ASL   A                   ;
 AA0F: 26 06         ROL   >$06                ;
-AA11: 65 02         ADC   >$02                ;{-GP_02:}
-AA13: 85 02         STA   >$02                ;{-GP_02:}
+AA11: 65 02         ADC   >$02                ;GP_02
+AA13: 85 02         STA   >$02                ;GP_02
 AA15: A5 06         LDA   >$06                ;
 AA17: 65 03         ADC   >$03                ;
 AA19: 85 03         STA   >$03                ;
@@ -6315,7 +6312,7 @@ AA28: A9 00         LDA   #$00                ;
 AA2A: 85 0C         STA   >$0C                ;
 AA2C: 85 06         STA   >$06                ;
 AA2E: A4 06         LDY   >$06                ;
-AA30: B1 02         LDA   ($02),Y             ;{-GP_02:}
+AA30: B1 02         LDA   ($02),Y             ;GP_02
 AA32: 29 F0         AND   #$F0                ;
 AA34: 4A            LSR   A                   ;
 AA35: 4A            LSR   A                   ;
@@ -6325,7 +6322,7 @@ AA38: BD 27 68      LDA   $6827,X             ;
 AA3B: 85 04         STA   >$04                ;
 AA3D: BD 28 68      LDA   $6828,X             ;
 AA40: 85 05         STA   >$05                ;
-AA42: B1 02         LDA   ($02),Y             ;{-GP_02:}
+AA42: B1 02         LDA   ($02),Y             ;GP_02
 AA44: 29 0F         AND   #$0F                ;
 AA46: AA            TAX                       ;
 AA47: A0 FF         LDY   #$FF                ;
@@ -6421,40 +6418,40 @@ AAF1: A6 0D         LDX   >$0D                ;
 AAF3: E0 10         CPX   #$10                ;
 AAF5: 90 17         BCC   $AB0E               ;
 AAF7: AA            TAX                       ;
-AAF8: 91 00         STA   ($00),Y             ;{-GP_00:}
+AAF8: 91 00         STA   ($00),Y             ;GP_00
 AAFA: C8            INY                       ;
 AAFB: E8            INX                       ;
 AAFC: 8A            TXA                       ;
-AAFD: 91 00         STA   ($00),Y             ;{-GP_00:}
+AAFD: 91 00         STA   ($00),Y             ;GP_00
 AAFF: 98            TYA                       ;
 AB00: 18            CLC                       ;
 AB01: 69 15         ADC   #$15                ;
 AB03: A8            TAY                       ;
 AB04: E8            INX                       ;
 AB05: 8A            TXA                       ;
-AB06: 91 00         STA   ($00),Y             ;{-GP_00:}
+AB06: 91 00         STA   ($00),Y             ;GP_00
 AB08: E8            INX                       ;
 AB09: 8A            TXA                       ;
 AB0A: C8            INY                       ;
-AB0B: 91 00         STA   ($00),Y             ;{-GP_00:}
+AB0B: 91 00         STA   ($00),Y             ;GP_00
 AB0D: 60            RTS                       ;
 AB0E: 8A            TXA                       ;
 AB0F: 0A            ASL   A                   ;
 AB10: 0A            ASL   A                   ;
 AB11: AA            TAX                       ;
 AB12: BD B4 A9      LDA   $A9B4,X             ;
-AB15: 91 00         STA   ($00),Y             ;{-GP_00:}
+AB15: 91 00         STA   ($00),Y             ;GP_00
 AB17: C8            INY                       ;
 AB18: E8            INX                       ;
 AB19: BD B4 A9      LDA   $A9B4,X             ;
-AB1C: 91 00         STA   ($00),Y             ;{-GP_00:}
+AB1C: 91 00         STA   ($00),Y             ;GP_00
 AB1E: 98            TYA                       ;
 AB1F: 18            CLC                       ;
 AB20: 69 15         ADC   #$15                ;
 AB22: A8            TAY                       ;
 AB23: E8            INX                       ;
 AB24: BD B4 A9      LDA   $A9B4,X             ;
-AB27: 91 00         STA   ($00),Y             ;{-GP_00:}
+AB27: 91 00         STA   ($00),Y             ;GP_00
 AB29: E8            INX                       ;
 AB2A: BD B4 A9      LDA   $A9B4,X             ;
 AB2D: 4C 0A AB      JMP   $AB0A               ;
@@ -6475,7 +6472,7 @@ AB49: B4 A3         LDY   $A3,X               ;
 AB4B: C4 A3         CPY   >$A3                ;
 AB4D: A2 00         LDX   #$00                ;
 AB4F: BD 45 AB      LDA   $AB45,X             ;
-AB52: 85 02         STA   >$02                ;{-GP_02:}
+AB52: 85 02         STA   >$02                ;GP_02
 AB54: BD 46 AB      LDA   $AB46,X             ;
 AB57: 85 03         STA   >$03                ;
 AB59: E6 13         INC   >$13                ;
@@ -6493,7 +6490,7 @@ AB71: D0 DC         BNE   $AB4F               ;
 AB73: 20 CE E6      JSR   $E6CE               ;
 AB76: 0A            ASL   A                   ;
 AB77: B0 42         BCS   $ABBB               ;
-AB79: B1 00         LDA   ($00),Y             ;{-GP_00:}
+AB79: B1 00         LDA   ($00),Y             ;GP_00
 AB7B: 29 20         AND   #$20                ;
 AB7D: F0 3C         BEQ   $ABBB               ;
 AB7F: 20 07 AC      JSR   $AC07               ;
@@ -6502,7 +6499,7 @@ AB85: 4A            LSR   A                   ;
 AB86: 4A            LSR   A                   ;
 AB87: AA            TAX                       ;
 AB88: BD 00 E4      LDA   $E400,X             ;
-AB8B: 85 00         STA   >$00                ;{-GP_00:}
+AB8B: 85 00         STA   >$00                ;GP_00
 AB8D: BD 01 E4      LDA   $E401,X             ;
 AB90: 85 01         STA   >$01                ;
 AB92: 98            TYA                       ;
@@ -6512,7 +6509,7 @@ AB96: 4A            LSR   A                   ;
 AB97: 4A            LSR   A                   ;
 AB98: 4A            LSR   A                   ;
 AB99: A8            TAY                       ;
-AB9A: B1 00         LDA   ($00),Y             ;{-GP_00:}
+AB9A: B1 00         LDA   ($00),Y             ;GP_00
 AB9C: C9 C4         CMP   #$C4                ;
 AB9E: F0 1C         BEQ   $ABBC               ;
 ABA0: C9 BC         CMP   #$BC                ;
@@ -6540,7 +6537,7 @@ ABCA: 4A            LSR   A                   ;
 ABCB: 4A            LSR   A                   ;
 ABCC: AA            TAX                       ;
 ABCD: BD 00 E4      LDA   $E400,X             ;
-ABD0: 85 00         STA   >$00                ;{-GP_00:}
+ABD0: 85 00         STA   >$00                ;GP_00
 ABD2: BD 01 E4      LDA   $E401,X             ;
 ABD5: 85 01         STA   >$01                ;
 ABD7: 68            PLA                       ;
@@ -6572,7 +6569,7 @@ AC04: 68            PLA                       ;
 AC05: AA            TAX                       ;
 AC06: 60            RTS                       ;
 AC07: A9 30         LDA   #$30                ;
-AC09: 85 00         STA   >$00                ;{-GP_00:}
+AC09: 85 00         STA   >$00                ;GP_00
 AC0B: A9 65         LDA   #$65                ;
 AC0D: 85 01         STA   >$01                ;
 AC0F: 60            RTS                       ;
@@ -7610,7 +7607,7 @@ B04A: 85 70         STA   >$70                ;
 B04C: AD A6 6B      LDA   $6BA6               ;
 B04F: 85 84         STA   >$84                ;
 B051: 4C 90 6C      JMP   $6C90               ;
-B054: 11 E0         ORA   ($E0),Y             ;{-??SND_E0??:}
+B054: 11 E0         ORA   ($E0),Y             ;??SND_E0??
 B056: 4E CD 89      LSR   $89CD               ;
 B059: 21 D0         AND   ($D0,X)             ;
 B05B: 5E BD 78      LSR   $78BD,X             ;
@@ -7645,7 +7642,7 @@ B095: 29 07         AND   #$07                ;
 B097: C9 02         CMP   #$02                ;
 B099: D0 05         BNE   $B0A0               ;
 B09B: A9 04         LDA   #$04                ;
-B09D: 8D 02 06      STA   $0602               ;{-SND_ReqMusEff:}
+B09D: 8D 02 06      STA   $0602               ;SND_ReqMusEff
 B0A0: 68            PLA                       ;
 B0A1: 29 07         AND   #$07                ;
 B0A3: C9 02         CMP   #$02                ;
@@ -7674,7 +7671,7 @@ B0D0: A4 12         LDY   >$12                ;
 B0D2: C0 06         CPY   #$06                ;
 B0D4: F0 03         BEQ   $B0D9               ;
 B0D6: 20 13 70      JSR   $7013               ;
-B0D9: 85 02         STA   >$02                ;{-GP_02:}
+B0D9: 85 02         STA   >$02                ;GP_02
 B0DB: 20 F6 A3      JSR   $A3F6               ;
 B0DE: A4 0F         LDY   >$0F                ;
 B0E0: 60            RTS                       ;
@@ -7683,7 +7680,7 @@ B0E4: 8D 03 03      STA   $0303               ;
 B0E7: A2 18         LDX   #$18                ;
 B0E9: 8E 04 03      STX   $0304               ;
 B0EC: A9 FF         LDA   #$FF                ;
-B0EE: 9D 05 03      STA   $0305,X             ;{-BckGndBuf:}
+B0EE: 9D 05 03      STA   $0305,X             ;BckGndBuf
 B0F1: B9 30 05      LDA   $0530,Y             ;
 B0F4: 9D 04 03      STA   $0304,X             ;
 B0F7: 88            DEY                       ;
@@ -7802,7 +7799,7 @@ B1E5: 60            RTS                       ;
 B1E6: A5 63         LDA   >$63                ;
 B1E8: F0 29         BEQ   $B213               ;
 B1EA: A9 10         LDA   #$10                ;
-B1EC: 8D 04 06      STA   $0604               ;{-SND_Request:}
+B1EC: 8D 04 06      STA   $0604               ;SND_Request
 B1EF: AD 70 06      LDA   $0670               ;
 B1F2: C9 F8         CMP   #$F8                ;
 B1F4: B0 07         BCS   $B1FD               ;
@@ -7818,7 +7815,7 @@ B207: CE 70 06      DEC   $0670               ;
 B20A: A9 00         LDA   #$00                ;
 B20C: 8D 2E 05      STA   $052E               ;
 B20F: 85 63         STA   >$63                ;
-B211: 85 E0         STA   >$E0                ;{-??SND_E0??:}
+B211: 85 E0         STA   >$E0                ;??SND_E0??
 B213: 60            RTS                       ;
 B214: EE 6F 06      INC   $066F               ;
 B217: 60            RTS                       ;
@@ -7881,7 +7878,7 @@ B26D: 8D 03 03      STA   $0303               ;
 B270: A9 60         LDA   #$60                ;
 B272: 8D 04 03      STA   $0304               ;
 B275: A9 24         LDA   #$24                ;
-B277: 8D 05 03      STA   $0305               ;{-BckGndBuf:}
+B277: 8D 05 03      STA   $0305               ;BckGndBuf
 B27A: A9 FF         LDA   #$FF                ;
 B27C: 8D 06 03      STA   $0306               ;
 B27F: 4C 58 B2      JMP   $B258               ;
@@ -8000,7 +7997,7 @@ B35F: 86 56         STX   >$56                ;
 B361: 20 A9 B3      JSR   $B3A9               ;
 B364: A2 00         LDX   #$00                ;
 B366: A9 60         LDA   #$60                ;
-B368: 85 00         STA   >$00                ;{-GP_00:}
+B368: 85 00         STA   >$00                ;GP_00
 B36A: A5 10         LDA   >$10                ;
 B36C: D0 19         BNE   $B387               ;
 B36E: AD 9E 04      LDA   $049E               ;
@@ -8009,12 +8006,12 @@ B373: F0 04         BEQ   $B379               ;
 B375: C9 75         CMP   #$75                ;
 B377: D0 0E         BNE   $B387               ;
 B379: A9 30         LDA   #$30                ;
-B37B: 85 00         STA   >$00                ;{-GP_00:}
+B37B: 85 00         STA   >$00                ;GP_00
 B37D: CD BC 03      CMP   $03BC               ;
 B380: F0 05         BEQ   $B387               ;
 B382: A9 00         LDA   #$00                ;
 B384: 8D A8 03      STA   $03A8               ;
-B387: A5 00         LDA   >$00                ;{-GP_00:}
+B387: A5 00         LDA   >$00                ;GP_00
 B389: 8D BC 03      STA   $03BC               ;
 B38C: 60            RTS                       ;
 B38D: AD F8 03      LDA   $03F8               ;
@@ -8111,7 +8108,7 @@ B44C: 85 5B         STA   >$5B                ;
 B44E: C9 09         CMP   #$09                ;
 B450: F0 08         BEQ   $B45A               ;
 B452: 20 E9 6E      JSR   $6EE9               ;
-B455: 8D 02 06      STA   $0602               ;{-SND_ReqMusEff:}
+B455: 8D 02 06      STA   $0602               ;SND_ReqMusEff
 B458: 85 3C         STA   >$3C                ;
 B45A: A9 10         LDA   #$10                ;
 B45C: 85 12         STA   >$12                ;
@@ -8153,34 +8150,34 @@ B4A5: 8D 26 05      STA   $0526               ;
 B4A8: A9 02         LDA   #$02                ;
 B4AA: D0 A0         BNE   $B44C               ;
 
-;FormatBBR {*FormatBBR}
+FormatBBR: ; =
 ; Clear area in battery backed ram if 6001 and 7FFF aren't 5A.
 ; Also store FF to 652A, 652B, and 652C
 ; Return C=1 if formatting was done. Return C=0 if nothing was needed
 ;
-B4AC: AD 01 60      LDA   $6001               ;{-MARK_A:} ?? What about $6000 ?
+B4AC: AD 01 60      LDA   $6001               ;MARK_A ?? What about $6000 ?
 B4AF: C9 5A         CMP   #$5A                ; Format byte?
 B4B1: D0 07         BNE   $B4BA               ; No ... go clear persistent memory
-B4B3: AD FF 7F      LDA   $7FFF               ;{-MARK_B:} End format ...
+B4B3: AD FF 7F      LDA   $7FFF               ;MARK_B End format ...
 B4B6: C9 A5         CMP   #$A5                ; ... byte?
 B4B8: F0 2C         BEQ   $B4E6               ; Yes ... persistent memory is good.
 ;
 B4BA: A9 FF         LDA   #$FF                ;
-B4BC: 8D 2A 65      STA   $652A               ;{-Q_SG1:}
-B4BF: 8D 2B 65      STA   $652B               ;{-Q_SG2:}
-B4C2: 8D 2C 65      STA   $652C               ;{-Q_SQ3:}
+B4BC: 8D 2A 65      STA   $652A               ;Q_SG1
+B4BF: 8D 2B 65      STA   $652B               ;Q_SG2
+B4C2: 8D 2C 65      STA   $652C               ;Q_SQ3
 ;
 B4C5: A9 65         LDA   #$65                ; Clear ...
 B4C7: 85 01         STA   >$01                ; ... battery ...
 B4C9: A9 30         LDA   #$30                ; ... backed ...
-B4CB: 85 00         STA   >$00                ;{-GP_00:} ... RAM ...
+B4CB: 85 00         STA   >$00                ;GP_00 ... RAM ...
 B4CD: A0 00         LDY   #$00                ; ... from ...
 B4CF: A9 00         LDA   #$00                ; ... 6530 to 7FFF
-B4D1: 91 00         STA   ($00),Y             ;{-GP_00:} ...
-B4D3: A5 00         LDA   >$00                ;{-GP_00:} ...
+B4D1: 91 00         STA   ($00),Y             ;GP_00 ...
+B4D3: A5 00         LDA   >$00                ;GP_00 ...
 B4D5: 18            CLC                       ; ...
 B4D6: 69 01         ADC   #$01                ; ...
-B4D8: 85 00         STA   >$00                ;{-GP_00:} ...
+B4D8: 85 00         STA   >$00                ;GP_00 ...
 B4DA: A5 01         LDA   >$01                ; ...
 B4DC: 69 00         ADC   #$00                ; ...
 B4DE: 85 01         STA   >$01                ; ...
@@ -8196,11 +8193,11 @@ B4EA: A0 FE         LDY   #$FE                ;
 B4EC: 20 08 E6      JSR   $E608               ;
 B4EF: A9 00         LDA   #$00                ;
 B4F1: 85 F7         STA   >$F7                ;
-B4F3: 85 F5         STA   >$F5                ;{-TileFlagA:}
-B4F5: 85 F6         STA   >$F6                ;{-TileFlagB:}
+B4F3: 85 F5         STA   >$F5                ;TileFlagA
+B4F5: 85 F6         STA   >$F6                ;TileFlagB
 B4F7: 85 F3         STA   >$F3                ;
 B4F9: A0 EF         LDY   #$EF                ;
-B4FB: 99 00 00      STA   $0000,Y             ;{-GP_00:}
+B4FB: 99 00 00      STA   $0000,Y             ;GP_00
 B4FE: 88            DEY                       ;
 B4FF: C0 FF         CPY   #$FF                ;
 B501: D0 F8         BNE   $B4FB               ;
@@ -8218,14 +8215,14 @@ B516: 01 A9         ORA   ($A9,X)             ;
 B518: 00            BRK                       ;
 B519: 85 E7         STA   >$E7                ;
 B51B: 60            RTS                       ;
-B51C: 06 00         ASL   >$00                ;{-GP_00:}
+B51C: 06 00         ASL   >$00                ;GP_00
 B51E: CA            DEX                       ;
 B51F: 4C 28 B5      JMP   $B528               ;
 B522: A9 01         LDA   #$01                ;
-B524: 85 00         STA   >$00                ;{-GP_00:}
+B524: 85 00         STA   >$00                ;GP_00
 B526: A2 03         LDX   #$03                ;
 B528: A5 E7         LDA   >$E7                ;
-B52A: 24 00         BIT   >$00                ;{-GP_00:}
+B52A: 24 00         BIT   >$00                ;GP_00
 B52C: F0 EE         BEQ   $B51C               ;
 B52E: 20 5A E8      JSR   $E85A               ;
 B531: 8D E4 04      STA   $04E4               ;
@@ -8245,17 +8242,17 @@ B54E: A9 02         LDA   #$02                ;
 B550: 85 12         STA   >$12                ;
 B552: 85 5A         STA   >$5A                ;
 B554: A9 80         LDA   #$80                ;
-B556: 8D 04 06      STA   $0604               ;{-SND_Request:}
-B559: A5 FE         LDA   >$FE                ;{-CUR_2001:}
+B556: 8D 04 06      STA   $0604               ;SND_Request
+B559: A5 FE         LDA   >$FE                ;CUR_2001
 B55B: 29 FE         AND   #$FE                ;
-B55D: 85 FE         STA   >$FE                ;{-CUR_2001:}
+B55D: 85 FE         STA   >$FE                ;CUR_2001
 B55F: 60            RTS                       ;
 B560: A2 01         LDX   #$01                ;
-B562: 86 00         STX   >$00                ;{-GP_00:}
+B562: 86 00         STX   >$00                ;GP_00
 B564: A2 03         LDX   #$03                ;
-B566: 24 00         BIT   >$00                ;{-GP_00:}
+B566: 24 00         BIT   >$00                ;GP_00
 B568: D0 06         BNE   $B570               ;
-B56A: 06 00         ASL   >$00                ;{-GP_00:}
+B56A: 06 00         ASL   >$00                ;GP_00
 B56C: CA            DEX                       ;
 B56D: 4C 66 B5      JMP   $B566               ;
 B570: BD 13 B5      LDA   $B513,X             ;
@@ -8271,7 +8268,7 @@ B57E: 01 A0         ORA   ($A0,X)             ;
 B580: 10 A5         BPL   $B527               ;
 B582: 5E 4A AA      LSR   $AA4A,X             ;
 B585: A9 FF         LDA   #$FF                ;
-B587: 99 05 03      STA   $0305,Y             ;{-BckGndBuf:}
+B587: 99 05 03      STA   $0305,Y             ;BckGndBuf
 B58A: A9 10         LDA   #$10                ;
 B58C: 8D 04 03      STA   $0304               ;
 B58F: A9 28         LDA   #$28                ;
@@ -8299,12 +8296,12 @@ B5B8: F0 17         BEQ   $B5D1               ;
 B5BA: AD 14 03      LDA   $0314               ;
 B5BD: 48            PHA                       ;
 B5BE: A0 0E         LDY   #$0E                ;
-B5C0: B9 05 03      LDA   $0305,Y             ;{-BckGndBuf:}
+B5C0: B9 05 03      LDA   $0305,Y             ;BckGndBuf
 B5C3: 99 06 03      STA   $0306,Y             ;
 B5C6: 88            DEY                       ;
 B5C7: 10 F7         BPL   $B5C0               ;
 B5C9: 68            PLA                       ;
-B5CA: 8D 05 03      STA   $0305               ;{-BckGndBuf:}
+B5CA: 8D 05 03      STA   $0305               ;BckGndBuf
 B5CD: CA            DEX                       ;
 B5CE: 4C B8 B5      JMP   $B5B8               ;
 B5D1: A5 5E         LDA   >$5E                ;
@@ -8317,7 +8314,7 @@ B5DA: B9 BD 6B      LDA   $6BBD,Y             ;
 B5DD: 3D 77 B5      AND   $B577,X             ;
 B5E0: D0 05         BNE   $B5E7               ;
 B5E2: A9 F5         LDA   #$F5                ;
-B5E4: 99 05 03      STA   $0305,Y             ;{-BckGndBuf:}
+B5E4: 99 05 03      STA   $0305,Y             ;BckGndBuf
 B5E7: 88            DEY                       ;
 B5E8: 10 F0         BPL   $B5DA               ;
 B5EA: 60            RTS                       ;
@@ -8349,11 +8346,11 @@ B612: 85 EB         STA   >$EB                ;
 B614: A9 13         LDA   #$13                ;
 B616: 8D 3F 03      STA   $033F               ;
 B619: A4 EB         LDY   >$EB                ;
-B61B: B1 00         LDA   ($00),Y             ;{-GP_00:}
+B61B: B1 00         LDA   ($00),Y             ;GP_00
 B61D: 29 20         AND   #$20                ;
 B61F: F0 11         BEQ   $B632               ;
 B621: A9 08         LDA   #$08                ;
-B623: 85 02         STA   >$02                ;{-GP_02:}
+B623: 85 02         STA   >$02                ;GP_02
 B625: A2 03         LDX   #$03                ;
 B627: 20 F6 A3      JSR   $A3F6               ;
 B62A: 20 41 B6      JSR   $B641               ;
@@ -8398,7 +8395,7 @@ B669: 18            CLC                       ;
 B66A: 90 EE         BCC   $B65A               ;
 B66C: 20 CE E6      JSR   $E6CE               ;
 B66F: A2 03         LDX   #$03                ;
-B671: B1 00         LDA   ($00),Y             ;{-GP_00:}
+B671: B1 00         LDA   ($00),Y             ;GP_00
 B673: 3D BE E6      AND   $E6BE,X             ;
 B676: F0 04         BEQ   $B67C               ;
 B678: 05 EE         ORA   >$EE                ;
@@ -8442,7 +8439,7 @@ B6B3: F0 0D         BEQ   $B6C2               ;
 B6B5: A9 36         LDA   #$36                ;
 B6B7: 85 01         STA   >$01                ;
 B6B9: A9 80         LDA   #$80                ;
-B6BB: 85 00         STA   >$00                ;{-GP_00:}
+B6BB: 85 00         STA   >$00                ;GP_00
 B6BD: 8A            TXA                       ;
 B6BE: A8            TAY                       ;
 B6BF: 20 35 E7      JSR   $E735               ;
@@ -8466,7 +8463,7 @@ B6E6: 8A            TXA                       ;
 B6E7: 48            PHA                       ;
 B6E8: A8            TAY                       ;
 B6E9: BD 97 B6      LDA   $B697,X             ;
-B6EC: 85 00         STA   >$00                ;{-GP_00:}
+B6EC: 85 00         STA   >$00                ;GP_00
 B6EE: A9 36         LDA   #$36                ;
 B6F0: E0 05         CPX   #$05                ;
 B6F2: 90 1C         BCC   $B710               ;
@@ -8479,7 +8476,7 @@ B6FE: A9 1E         LDA   #$1E                ;
 B700: E0 10         CPX   #$10                ;
 B702: 90 0C         BCC   $B710               ;
 B704: A9 2C         LDA   #$2C                ;
-B706: 85 00         STA   >$00                ;{-GP_00:}
+B706: 85 00         STA   >$00                ;GP_00
 B708: A9 9E         LDA   #$9E                ;
 B70A: E0 11         CPX   #$11                ;
 B70C: 90 02         BCC   $B710               ;
@@ -8519,7 +8516,7 @@ B749: 85 04         STA   >$04                ;
 B74B: A9 36         LDA   #$36                ;
 B74D: 85 01         STA   >$01                ;
 B74F: A9 40         LDA   #$40                ;
-B751: 85 00         STA   >$00                ;{-GP_00:}
+B751: 85 00         STA   >$00                ;GP_00
 B753: 20 1C B8      JSR   $B81C               ;
 B756: AC 56 06      LDY   $0656               ;
 B759: C0 0F         CPY   #$0F                ;
@@ -8559,7 +8556,7 @@ B7A2: F0 24         BEQ   $B7C8               ;
 B7A4: E0 04         CPX   #$04                ;
 B7A6: B0 20         BCS   $B7C8               ;
 B7A8: A2 01         LDX   #$01                ;
-B7AA: 8E 02 06      STX   $0602               ;{-SND_ReqMusEff:}
+B7AA: 8E 02 06      STX   $0602               ;SND_ReqMusEff
 B7AD: AA            TAX                       ;
 B7AE: AD 56 06      LDA   $0656               ;
 B7B1: 48            PHA                       ;
@@ -8571,7 +8568,7 @@ B7BA: F0 08         BEQ   $B7C4               ;
 B7BC: AC 56 06      LDY   $0656               ;
 B7BF: B9 57 06      LDA   $0657,Y             ;
 B7C2: D0 03         BNE   $B7C7               ;
-B7C4: 4E 02 06      LSR   $0602               ;{-SND_ReqMusEff:}
+B7C4: 4E 02 06      LSR   $0602               ;SND_ReqMusEff
 B7C7: 60            RTS                       ;
 
 B7C8: 85 EF         STA   >$EF                ;
@@ -8739,14 +8736,14 @@ BF40: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 ; From here down is the same in all banks (except for the origin
 ; difference in bank 7). 
 
-;RESET {*RESET}
+RESET: ; =
 ;
 ; Configure the MMC1 and jump to E440 (Bank 7) for startup.
 ;
 BF50: 78            SEI                       ; Disable interrupts
 BF51: D8            CLD                       ; Clear decimal flag
 BF52: A9 00         LDA   #$00                ; Clear the PPU control register ...
-BF54: 8D 00 20      STA   $2000               ;{--_P_CNTRL_1:} ... truns off NMIs
+BF54: 8D 00 20      STA   $2000               ;-_P_CNTRL_1 ... truns off NMIs
 BF57: A2 FF         LDX   #$FF                ; Stack to ...
 BF59: 9A            TXS                       ; ... 01FF
 BF5A: AD 02 20      LDA   $2002               ; Wait ...
@@ -8761,7 +8758,7 @@ BF6D: 8D 00 A0      STA   $A000               ; ... all ...
 BF70: 8D 00 C0      STA   $C000               ; ... four ...
 BF73: 8D 00 E0      STA   $E000               ; ... MMC1 registers
 BF76: A9 0F         LDA   #$0F                ; Set MMC control to 8K CHR ROM, fixed/bank 16K PRG pages, ...
-BF78: 20 98 BF      JSR   $BF98               ;{MMC_Control} ... and horizontal mirroring (vertical scrolling)
+BF78: 20 98 BF      JSR   $BF98               ; ... and horizontal mirroring (vertical scrolling)
 BF7B: A9 00         LDA   #$00                ; Set MMC reg1 VROM bank
 BF7D: 8D 00 A0      STA   $A000               ; The cartridge doesn't ...
 BF80: 4A            LSR   A                   ; ... swap VROM pages. ...
@@ -8773,8 +8770,8 @@ BF89: 8D 00 A0      STA   $A000               ; ...
 BF8C: 4A            LSR   A                   ; ...
 BF8D: 8D 00 A0      STA   $A000               ; ... --00000
 BF90: A9 07         LDA   #$07                ; Interesting! Put bank 7 ...
-BF92: 20 AC BF      JSR   $BFAC               ;{MMC_Bank} ... in the low ROM bank
-BF95: 4C 40 E4      JMP   $E440               ;{/Bank7#Startup:7.Startup} %% Start of game
+BF92: 20 AC BF      JSR   $BFAC               ; ... in the low ROM bank
+BF95: 4C 40 E4      JMP   $E440               ; Start of game
 
 ; MMC1 Info
 ; R0 - Control ***CPPMM
@@ -8789,7 +8786,7 @@ BF95: 4C 40 E4      JMP   $E440               ;{/Bank7#Startup:7.Startup} %% Sta
 ;  R PRG RAM enabled. Zelda sends 0, but battery-backed RAM is always enabled.
 ;  PPPP bank select. Zelda switches banks 0-6.
 
-;MMC_Control {*MMC_Control}
+MMC_Control: ; =
 ; Set the MMC Control register (0) to value in A
 BF98: 8D 00 80      STA   $8000               ; MMC Register 0 (control): --edcba ...
 BF9B: 4A            LSR   A                   ;  ... mirroring 
@@ -8802,7 +8799,7 @@ BFA7: 4A            LSR   A                   ; .. has no affect anyway).
 BFA8: 8D 00 80      STA   $8000               ; Bits are written from LSB to MSB ...
 BFAB: 60            RTS                       ; ... only 5 bits
 
-;MMC_Bank {*MMC_Bank}
+MMC_Bank: ; =
 ; Set the MMC Bank register (3) to value in A
 BFAC: 8D 00 E0      STA   $E000               ; MMC Register 3 (ROM page switching): --edcba ...
 BFAF: 4A            LSR   A                   ; ...
@@ -8823,4 +8820,4 @@ BFF0: FF FF FF FF FF FF FF FF FF FF
 BFFA: 84 E4       ; NMI to E484
 BFFC: 50 BF       ; RESET to BF50
 BFFE: F0 BF       ; IRQ to BFF0 (this bank should never be at end)
-}}}
+
