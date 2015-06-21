@@ -11,7 +11,7 @@ public class CleanChars {
 	
 	public static void main(String [] args) throws Exception {
 		
-		String fname = "content/NES/Zelda/Zelda.mark";
+		String fname = "content/Tools/Blend/Blend.mark";
 		
 		InputStream is = new FileInputStream(fname);
 		int [] data = new int[is.available()];

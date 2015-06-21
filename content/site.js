@@ -360,6 +360,21 @@
 	              ]
 	         }
 	         ]
+	     },
+	     
+	     {"dir": "Tools", "nav": "Tools", "entries": [
+	         {"mark": "Tools.mark", "out": "index.html"},
+	         {"copy": "Tools.jpg"},
+	                                       	                                          	                                              	         
+	         {"dir": "Blend", "nav": "Blend", "entries": [
+	               {"copy": "Blend.jpg"},
+	               {"copy": "blend.zip"},
+	               {"copy": "Blend1.png"},
+	               {"copy": "photo1.jpg"},
+	               {"mark": "Blend.mark", "out": "index.html"}
+	               ]
+	         }
+	         ]
 	     }
 	             
 	 ]
