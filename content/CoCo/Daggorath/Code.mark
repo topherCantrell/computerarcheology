@@ -138,7 +138,7 @@ C0DB: 14                                         ; SWI 14 Beam subroutine
 C0DC: 3F                  SWI                 
 C0DD: 02                                         ; SWI 02 * Uncompress message m and display
 ;
-00DE: 9F D2 02 06 45 06 4A 02 BA 85 97 BD EF 80 ; "_1F_I DARE YE ENTER..._1F_"
+C0DE: 9F D2 02 06 45 06 4A 02 BA 85 97 BD EF 80 ; "_1F_I DARE YE ENTER..._1F_"
 ;
 C0EC: 3F                  SWI                 
 C0ED: 02                                         ; SWI 02 * Uncompress message m and display
@@ -929,7 +929,7 @@ C5BB: 13                                         ; SWI 13 Beam on picture pointe
 C5BC: 3F                  SWI                 ; Print "Yet Another Does Not Return"
 C5BD: 02                                         ; SWI 02 * Uncompress message m and display
 ;
-05BE: FF C1 92 D0 01 73 E8 82 C8 04 79 66 07 3E 80 91 69 59 3B DE F0 ; "_1F_ YET ANOTHER DOES NOT RETURN..."
+C5BE: FF C1 92 D0 01 73 E8 82 C8 04 79 66 07 3E 80 91 69 59 3B DE F0 ; "_1F_ YET ANOTHER DOES NOT RETURN..."
  ;      
 C5D3: 0F 28               CLR     >$28                               ;{-}       
 C5D5: 0A 77               DEC     >$77                               ;{-}       
@@ -1128,7 +1128,7 @@ C6EC: ED 44               STD     4,U
 C6EE: 3F                  SWI                 
 C6EF: 02                                         ; SWI 02 * Uncompress message m and display
 ;
-06F0: 3C 24 58 06 45 D8 ; "PREPARE!"
+C6F0: 3C 24 58 06 45 D8 ; "PREPARE!"
 ;
 C6F6: 0F B7               CLR     >$B7;{-}       
 C6F8: 0A B4               DEC     >$B4       ;{-}       
@@ -3722,7 +3722,7 @@ D811: 54 03 80 ; Copy 54 bytes to 380
 D814: 10 00    ; ??               
 D816: 02 60 
 D818: 00 00 
-D81B: 00 FF                       
+D81A: 00 FF                       
 ;
 D81C: 23 00                    
 D81E: 00 40                     
@@ -3867,12 +3867,12 @@ D966: 21 48 50 90         ;  [18]  05   "DEAD"
 
 ClassNames:
 D96A: 06     
-196B: 28 0C C0 CD 60  ; 00 "FLASK"
-1970: 20 64 97 1C     ; 01 "RING"
-1974: 30 A6 39 3D 8C  ; 02 "SCROLL"
-1979: 30 E6 84 95 84  ; 03 "SHIELD"
-197E: 29 27 77 C8 80  ; 04 "SWORD"
-1983: 29 68 F9 0D 00  ; 05 "TORCH"                                                    
+D96B: 28 0C C0 CD 60  ; 00 "FLASK"
+D970: 20 64 97 1C     ; 01 "RING"
+D974: 30 A6 39 3D 8C  ; 02 "SCROLL"
+D979: 30 E6 84 95 84  ; 03 "SHIELD"
+D97E: 29 27 77 C8 80  ; 04 "SWORD"
+D983: 29 68 F9 0D 00  ; 05 "TORCH"                                                    
 
 DemoCommands:
 D988: 01           ;

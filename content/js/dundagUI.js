@@ -60,13 +60,11 @@ function processScript(context,pc) {
 		case 0xFA: // Return from graphics subroutine			
 			return;
 		case 0xFB: // Jump to graphics subroutine
-			var tpa = linePos;
-			var tpb = lineAddress;
+			var tpa = cursor;
 			nx = getNextByte();
 			ny = getNextByte();
 			processScript(context,nx<<8 | ny);
-			linePos = tpa;
-			lineAddress = tpb;
+			cursor = tpa;
 			break;
 		case 0xFC: // Multiple short segments
 			while(true) {
