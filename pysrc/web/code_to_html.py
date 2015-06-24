@@ -149,7 +149,7 @@ class CodeToHTML(MarkupToHTML):
         a = '<a class="%s" href="%s" title="%s" target="%s">%s</a>'
         rep = a % (aClass, tar, line.numbers[0]["text"], trg, txt)
         if txt is None:
-            print ("OOPS")
+            print ("OOPS:"+line.original)
         return (len(txt), rep)
 
     def modifyCodeLines(self, lines, maps):

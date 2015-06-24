@@ -56,7 +56,7 @@ public class CodeLine {
 	public String opcode = null;
 	int opcodePos = -1;	
 	public String comment = null;
-	int commentPos = -1;
+	public int commentPos = -1;
 	
 	String label = null;
 	String[] collectedLabels = null;

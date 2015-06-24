@@ -6,4 +6,8 @@ Hardware files can have READ and WRITE labels (same address ... different functi
 
 Calculate limits from %%-? file. We have to load these anyway.
 
-[ ] http links currently require both link and text. If you ommit the text it should use the link.
+The link tool should add full names like {DoPrint} instead of just {}. That helps with disassembly. The link
+tool overwrites these anyway.
+
+Tool expects "--". It should want "-2" and so on.
+

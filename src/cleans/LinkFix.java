@@ -22,7 +22,15 @@ public class LinkFix {
 		
 		notFounds = new ArrayList<Integer>();
 		
-		for(CodeLine c : tabs.code) {			
+		int commentPos = 0;
+		
+		for(CodeLine c : tabs.code) {	
+			
+			// Keep up with where these are in case we have to make one
+			if(c.commentPos>=0) {
+				commentPos = c.commentPos;
+			}
+			
 			if(c.comment!=null && c.comment.contains("{{")) {
 				// Don't change any "fixed" references
 				continue;
@@ -48,10 +56,23 @@ public class LinkFix {
 				++j;
 			}
 			
+			if(tabs.cpu==null) {
+				throw new RuntimeException(";;%%cpu must be valid");
+			}
+			
 			// Check the opcode for read/write/port
 			AddressAccess ac = tabs.cpu.getAccess(c.opcode, i-1, CU.parseInt(c.opcode.substring(i,j),16) );
 			if(ac==null) {
 				continue;
+			}			
+					
+			// If there is no comment then make a blank one.			
+			if(c.comment==null) {
+				while(c.originalText.length()<commentPos) {
+					c.originalText = c.originalText + " ";
+				}
+				c.originalText = c.originalText+";";
+				c.comment = "";
 			}
 			
 			// Remove any existing {...} entry
@@ -63,9 +84,6 @@ public class LinkFix {
 				String a = c.originalText.substring(0,i)+c.originalText.substring(i+exist.length());
 				c.originalText = a;
 			}
-			
-			// TODO			
-			// If there is no comment then make a blank one.					
 			
 			AddressTable table = tabs.getAddressTable(ac.address);
 			String tnam = "";
@@ -93,7 +111,7 @@ public class LinkFix {
 		
 		LinkFix fixer = new LinkFix();
 		
-		Path p = Paths.get("content/NES/Zelda/Bank0.cmark");
+		Path p = Paths.get("content/NES/Zelda/Bank7.cmark");
 		
 		CodeFile tabs = new CodeFile(p);
 		
@@ -103,11 +121,11 @@ public class LinkFix {
 			System.out.println("The following definitions were not found in the address tables:");
 			Collections.sort(fixer.notFounds);
 			for(int ii : fixer.notFounds) {
-				System.out.println("|| "+CU.hex4(ii)+" || "+CU.hex4(ii)+" ||");
+				System.out.println("|| "+CU.hex4(ii)+" || "+CU.hex4(ii)+" || ||");
 			}
 		}
 		
-		PrintWriter pw = new PrintWriter("New.cmark");
+		PrintWriter pw = new PrintWriter(p.toString());
 		for(CodeLine c : tabs.code){
 			pw.println(c.originalText);
 		}
