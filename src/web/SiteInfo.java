@@ -14,10 +14,10 @@ import org.json.simple.parser.ParseException;
 
 public class SiteInfo {
 	
-	Path contentRoot;
-	Path deployRoot;
+	public Path contentRoot;
+	public Path deployRoot;
 	
-	SiteInfoEntry root;
+	public SiteInfoEntry root;
 	
 	/**
 	 * This creates a SiteInfo object parsed from the input JSON file.
@@ -114,7 +114,7 @@ public class SiteInfo {
 	
 	public static void main(String [] args) throws Exception {
 		
-		SiteInfo si = new SiteInfo();
+		//SiteInfo si = new SiteInfo();
 		
 	}
 

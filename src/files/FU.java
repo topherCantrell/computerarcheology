@@ -22,9 +22,5 @@ public class FU {
 		is.close();
 		return ret;
 	}
-	
-	public static void makeBackup(Path file) throws IOException {
-		
-	}
 
 }

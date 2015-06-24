@@ -4,11 +4,11 @@ import java.util.List;
 
 public class SiteInfoEntry {
 	
-	String nav;
-	String command;
-	String arg;
-	String out;
+	public String nav;
+	public String command;
+	public String arg;
+	public String out;
 	
-	List<SiteInfoEntry> entries;
+	public List<SiteInfoEntry> entries;
 
 }
