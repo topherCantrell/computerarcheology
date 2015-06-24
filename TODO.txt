@@ -1,13 +1,14 @@
 The link finder should also insert/update the names too. That way the raw disassembly file has
 labels that assist with the commenting process.
+The link tool should add full names like {DoPrint} instead of just {}. That helps with disassembly. The link
+tool overwrites these anyway.
 
 Hardware files can have READ and WRITE labels (same address ... different functions). "IN" means read and
 "OUT" means write. Easy for Z80.
 
 Calculate limits from %%-? file. We have to load these anyway.
 
-The link tool should add full names like {DoPrint} instead of just {}. That helps with disassembly. The link
-tool overwrites these anyway.
-
 Tool expects "--". It should want "-2" and so on.
+
+Sweep through all links over entire site and make sure they works.
 

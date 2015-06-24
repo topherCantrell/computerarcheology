@@ -7,6 +7,10 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This tool replaces special characters with their "simple" equivalents. These characters creep in when
+ * you paste text from Word.
+ */
 public class CleanChars {
 	
 	public static void main(String [] args) throws Exception {
