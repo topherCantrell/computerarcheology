@@ -2,12 +2,6 @@
 %%template master.template
 %%title Computer Archeology
 
-= The Wiki =
-
-[http://www.computerarcheology.com/wiki/wiki http://www.computerarcheology.com/wiki/wiki]
-
-I am changing the format of this site away from TRAC. Until everything is moved over, visit the original wiki at the link above.
-
 = The Museum =
 
 This web site is about digging up old, forgotten computer systems and cracking open the code that ran on them. Think 

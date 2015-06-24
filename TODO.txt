@@ -12,3 +12,9 @@ Tool expects "--". It should want "-2" and so on.
 
 Sweep through all links over entire site and make sure they works.
 
+-------- Tools ----------
+
+Keep pressing through the process: replace the python tools with Java ones.
+
+-------- Content ----------
+

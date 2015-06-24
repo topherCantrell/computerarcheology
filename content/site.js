@@ -313,7 +313,6 @@
 	     
 	     {"dir": "People",  "nav": "People", "entries": [	         
 	         {"mark": "People.mark", "out": "index.html"},
-	         {"copy": "cc-187_t.JPG"}, 
 	         {"mark": "ChrisCantrell.mark", "out": "ChrisCantrell.html", "nav": "Chris Cantrell"},
 	         {"mark": "HarryHurst.mark", "out": "HarryHurst.html", "nav": "Harry Hurst"},
 	         {"mark": "PatrikSevallius.mark", "out": "PatrikSevallius.html", "nav": "Patrik Sevallius"}
