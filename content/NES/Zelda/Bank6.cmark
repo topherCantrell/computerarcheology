@@ -1,4 +1,6 @@
 ;;%%image Zelda.jpg
+;;%%- NES/Zelda/RAMUse.mark /NES/Zelda/RAMUse.html
+;;%%-2 NES/Zelda/Hardware.mark /NES/Zelda/Hardware.html
 
 8000: 00            BRK                       ;
 8001: 84 00         STY   >$00                ;GP_00

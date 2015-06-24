@@ -26,7 +26,10 @@
 
 ;;= Blank Tile =
 ;;{{{html
-;;<script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/mpUI.js?format=raw"></script><script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/CANVAS.js?format=raw" type="text/javascript"></script><script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/pixelUI.js?format=raw" type="text/javascript"></script><script src="http://computerarcheology.com/wiki/browser/tools/TRACJavaScript/bytes.js?format=raw" type="text/javascript"></script>
+;;<script src="/js/mpUI.js"></script>
+;;<script src="/js/CANVAS.js"></script>
+;;<script src="/js/pixelUI.js"></script>
+;;<script src="/js/bytes.js"></script>
 ;;<canvas width="150" 
 ;;        data-canvasFunction="handleTileCanvas"
 ;;        data-getTileDataFunction="getSprite16x16Data"

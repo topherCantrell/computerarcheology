@@ -1,49 +1,57 @@
 %%image Zelda.jpg
+%%range 4000:401F, 100:200, 8000:FFFF
 
-== Registers ==
+= Registers =
 
-||= Address =||= Name =||= Description =||
-|| 4000  ||    _S_SQR1_A   ||      tt_c_d_vvvv t=duty type, c=decay_looping/length, d=decay disable, v=volume/decay_rate ||
-|| 4001  ||    _S_SQR1_B   ||      e_rrr_o_sss e=sweep enable, r=sweep rate, o=decrease/increase, s=right shift amount ||
-|| 4002  ||    _S_SQR1_C   ||      wwwwwwww LSB of wavelength ||
-|| 4003  ||    _S_SQR1_D   ||      nnnnn_xxx n=length counter reload, x=MSB of wavelength ||
-|| || ||  ||
-|| 4004  ||    _S_SQR2_A   ||      tt_c_d_vvvv t=duty type, c=decay_looping/length, d=decay disable, v=volume/decay_rate ||
-|| 4005  ||    _S_SQR2_B   ||      e_rrr_o_sss e=sweep enable, r=sweep rate, o=decrease/increase, s=right shift amount ||
-|| 4006  ||    _S_SQR2_C   ||      wwwwwwww LSB of wavelength ||
-|| 4007  ||    _S_SQR2_D   ||      nnnnn_xxx n=length counter reload, x=MSB of wavelength ||
-|| || ||  ||
-|| 4008  ||    _S_TRI_A    ||      c_aaaaaaa c=linear counter start, a=linear counter load ||
-|| 4009  ||    _S_TRI_B    ||       ++++++++ unused ||
-|| 400A  ||    _S_TRI_C    ||      wwwwwwww LSB of wavelength ||
-|| 400B  ||    _S_TRI_D    ||      nnnnn_xxx n=length counter reload, x=MSB of wavelength ||
-|| || ||  ||
-|| 400C  ||    _S_NOI_A    ||      ++_c_d_vvvv c=decay_looping/length, d=decay disable, v=volume/decay_rate ||
-|| 400D  ||    _S_NOI_B    ||      ++++++++ unused ||
-|| 400E  ||    _S_NOI_C    ||      g_+++_pppp g=random generation type, p=playback rate ||
-|| 400F  ||    _S_NOI_D    ||      nnnnn_xxx n=length counter reload, x=MSB of wavelength ||
-|| || ||  ||
-|| 4010  ||    _S_DMC_A    ||      mm_++_ffff m=mode, f=frequency ||
-|| 4011  ||    _S_DMC_B    ||      +_vvvvvv_d v=load value of delta counter, d=LSB of DAC ||
-|| 4012  ||    _S_DMC_C    ||      aaaaaaaa DMA start address (shl 6) ||
-|| 4013  ||    _S_DMC_D    ||       cccccccc Length of DMA data (shl 4) ||
-|| || ||  ||
-|| 4014  ||    _P_SPR_DMA  ||       ||
-|| || ||  ||
-|| 4015  ||    _S_Status   ||      i_q_+_d_ntba i=IRQ(ro) status,q=DMC status, d=DMC, ntba=noise/triangle/square2/square1 ||
-|| || ||  ||
-|| 4017  ||    _S_FrameCntr ||     d_s_++++++ d=divider rate, s=frame counter status ||
-|| || ||  ||
-|| 2000  ||    _P_CNTRL_1   ||     n+sbiaa ||
-|| 2001  ||    _P_CNTRL_2   ||      ||
-|| 2002  ||    _P_STATUS    ||      ||
-|| 2003  ||    _P_SPR_ADDR  ||     destination address for port 2004 and 4014 (incremented with write ... not read) ||
-|| 2004  ||    _P_SPR_DATA  ||     read/write data ||
-|| 2005  ||    _P_BKG_SCROLL ||     ||
-|| 2006  ||    _P_VRAM_ADDR   ||    ||
-|| 2007  ||    _P_VRAM_DATA   ||    ||
+||= Address || Name         || Description || Bits ||
+|| 4000     || S_SQR1_A     ||             || tt_c_d_vvvv t=duty type, c=decay_looping/length, d=decay disable, v=volume/decay_rate ||
+|| 4001     || S_SQR1_B     ||             || e_rrr_o_sss e=sweep enable, r=sweep rate, o=decrease/increase, s=right shift amount ||
+|| 4002     || S_SQR1_C     ||             || wwwwwwww LSB of wavelength ||
+|| 4003     || S_SQR1_D     ||             || nnnnn_xxx n=length counter reload, x=MSB of wavelength ||
+|| || ||    || ||
+|| 4004  ||    S_SQR2_A     ||             || tt_c_d_vvvv t=duty type, c=decay_looping/length, d=decay disable, v=volume/decay_rate ||
+|| 4005  ||    S_SQR2_B     ||             || e_rrr_o_sss e=sweep enable, r=sweep rate, o=decrease/increase, s=right shift amount ||
+|| 4006  ||    S_SQR2_C     ||             || wwwwwwww LSB of wavelength ||
+|| 4007  ||    S_SQR2_D     ||             || nnnnn_xxx n=length counter reload, x=MSB of wavelength ||
+|| || ||  || ||
+|| 4008  ||    S_TRI_A      ||             || c_aaaaaaa c=linear counter start, a=linear counter load ||
+|| 4009  ||    S_TRI_B      ||             ||  ++++++++ unused ||
+|| 400A  ||    S_TRI_C      ||             || wwwwwwww LSB of wavelength ||
+|| 400B  ||    S_TRI_D      ||             || nnnnn_xxx n=length counter reload, x=MSB of wavelength ||
+|| || ||  || ||
+|| 400C  ||    S_NOI_A      ||             || ++_c_d_vvvv c=decay_looping/length, d=decay disable, v=volume/decay_rate ||
+|| 400D  ||    S_NOI_B      ||             || ++++++++ unused ||
+|| 400E  ||    S_NOI_C      ||             || g_+++_pppp g=random generation type, p=playback rate ||
+|| 400F  ||    S_NOI_D      ||             || nnnnn_xxx n=length counter reload, x=MSB of wavelength ||
+|| || ||  ||       || 
+|| 4010  ||    S_DMC_A      ||             || mm_++_ffff m=mode, f=frequency ||
+|| 4011  ||    S_DMC_B      ||             || +_vvvvvv_d v=load value of delta counter, d=LSB of DAC ||
+|| 4012  ||    S_DMC_C      ||             || aaaaaaaa DMA start address (shl 6) ||
+|| 4013  ||    S_DMC_D      ||             ||  cccccccc Length of DMA data (shl 4) ||
+|| || ||  ||       || 
+|| 4014  ||    P_SPR_DMA    ||             || ||
+|| || ||  ||       || 
+|| 4015  ||    S_Status     ||             || i_q_+_d_ntba i=IRQ(ro) status,q=DMC status, d=DMC, ntba=noise/triangle/square2/square1 ||
+|| || ||  ||       || 
+|| 4017  ||    S_FrameCntr   ||            || d_s_++++++ d=divider rate, s=frame counter status ||
+|| || ||  ||       || 
+|| 2000  ||    P_CNTRL_1     ||            || n+sbiaa ||
+|| 2001  ||    P_CNTRL_2     ||            || ||
+|| 2002  ||    P_STATUS      ||            || ||
+|| 2003  ||    P_SPR_ADDR    ||            || destination address for port 2004 and 4014 (incremented with write ... not read) ||
+|| 2004  ||    P_SPR_DATA    ||            || read/write data ||
+|| 2005  ||    P_BKG_SCROLL  ||            || ||
+|| 2006  ||    P_VRAM_ADDR   ||            || ||
+|| 2007  ||    P_VRAM_DATA   ||            || ||
 
-== Mapper 1: MMC1 ==
+= Mapper 1: MMC1 =
+
+TODO: These should be "w"
+
+|| 8000:9FFF || MMC1_0 || ||
+|| A000:BFFF || MMC1_1 || ||
+|| C000:EFFF || MMC1_2 || ||
+|| E000:FFFF || MMC1_3 || ||
 
  The Legend of Zelda uses the MMC1 chip to map the RAM/ROM banks for the CPU and PPU.
  MMC1 is controlled by writing to 8000-FFFF (assumes that this area is ROM where

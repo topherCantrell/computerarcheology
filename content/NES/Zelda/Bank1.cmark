@@ -1,4 +1,6 @@
 ;;%%image Zelda.jpg
+;;%%- NES/Zelda/RAMUse.mark /NES/Zelda/RAMUse.html
+;;%%-2 NES/Zelda/Hardware.mark /NES/Zelda/Hardware.html
 
 ;;{{{html
 ;;<script src="/js/CANVAS.js"></script>

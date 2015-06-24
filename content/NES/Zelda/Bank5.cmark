@@ -1,4 +1,6 @@
 ;;%%image Zelda.jpg
+;;%%- NES/Zelda/RAMUse.mark /NES/Zelda/RAMUse.html
+;;%%-2 NES/Zelda/Hardware.mark /NES/Zelda/Hardware.html
 
 8000: 20 06 80      JSR   $8006               ;
 8003: 4C 89 ED      JMP   $ED89               ;

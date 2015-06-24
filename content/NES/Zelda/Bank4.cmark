@@ -1,4 +1,6 @@
 ;;%%image Zelda.jpg
+;;%%- NES/Zelda/RAMUse.mark /NES/Zelda/RAMUse.html
+;;%%-2 NES/Zelda/Hardware.mark /NES/Zelda/Hardware.html
 
 
 8000: BD F0 04      LDA   $04F0,X             ;

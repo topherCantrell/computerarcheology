@@ -21,6 +21,14 @@ public class CU {
 		return Integer.parseInt(s, base);		
 	}
 	
+	public static String hex4(int value) {
+		String ret = Integer.toString(value,16).toUpperCase();
+		while(ret.length()<4) {
+			ret = "0"+ret;
+		}
+		return ret;
+	}
+	
 	public static boolean isNumeric(String s, int base) {
 		try {
 			parseInt(s,base);

@@ -103,7 +103,7 @@ class CodeToHTML(MarkupToHTML):
                 ad = maps["ramMap"]
                 entry = ad.getEntryForName(tar)
                 if entry is None:
-                    print ("::" + line + "::")
+                    print ("::" + line.original + "::")
                 if txt == "":
                     txt = entry["name"]
                     if txt == "":
@@ -148,6 +148,8 @@ class CodeToHTML(MarkupToHTML):
 
         a = '<a class="%s" href="%s" title="%s" target="%s">%s</a>'
         rep = a % (aClass, tar, line.numbers[0]["text"], trg, txt)
+        if txt is None:
+            print ("OOPS")
         return (len(txt), rep)
 
     def modifyCodeLines(self, lines, maps):

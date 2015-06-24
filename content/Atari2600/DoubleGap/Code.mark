@@ -1,6 +1,5 @@
-%%image DoubleGap.jpg
+;;%%image DoubleGap.jpg
 
-{{{
 TMP0        =     128              
 TMP1        =     129              
 TMP2        =     130              
@@ -246,215 +245,204 @@ ShowScore:
     RTS                       ;  Done
     
     
-    ;  ============= END OF VIDEO KERNEL ===================
+    ;  ============= END OF VIDEO KERNEL =================== 
+    
+INIT:
+    ;  This function is called ONCE at power-up/reset to initialize various
+    ;  hardware and temporaries.
+                                           
+    LDA      #64              
+    STA      COLUPF           ; ... redish
+    LDA      #126             
+    STA      COLUP0           ; ... white
+    LDA      #0               ; Player 1 ...
+    STA      COLUP1           ; ... black
+                                           
+    LDA      #5               ; Right half of playfield is reflection of left ...
+    STA      CTRLPF           ; ... and playfield is on top of players
+                                           
+    LDX      #4               ; Player 0 position count
+    LDY      #3               ; Player 1 position count
+    STA      WSYNC            ; Get a fresh scanline
+                                           
+TimeP0Pos:                           
+    DEX                       ; Kill time while the beam moves ... 
+    CPX      #0               ; ... to desired ...
+    BNE      TimeP0Pos        ; ... position
+    STA      RESP0            ; Mark player 0's X position
+                                           
+TimeP1Pos:                           
+    DEY                       ; Kill time while the beam moves ... 
+    CPY      #0               ; ... to desired ...
+    BNE      TimeP1Pos        ; ... position
+    STA      RESP1            ; Mark player 1's X position
+                                          
+    JSR      EXPERTISE        ; Initialize the players' Y positions base on expert-settings
+                                           
+    LDA      #10              ; Wall is ...
+    STA      WALLHEI          ; ... 10 double-scanlines high
+                                           
+    LDA      #0               ; Set score to ...
+    STA      WALLCNT          ; ... 0
+    JSR      MAKE_SCORE       ; Blank the score digits
+    LDA      #0               ; Blank bits ...
+    STA      SCORE_PF2+5      ; ... on the end of each ...
+    STA      SCORE_PF1+5      ; ... digit pattern
+                                           
+    JSR      ADJUST_DIF       ; Initialize the wall parameters
+    JSR      NEW_GAPS         ; Build the wall's initial gap
+                                           
+    LDA      #112             ; Set wall position off bottom ...
+    STA      WALLSTART        ; ... to force a restart on first move
+                                           
+    LDA      #0               ; Zero out ...
+    STA      HMP0             ; ... player 0 motion ...
+    STA      HMP1             ; ... and player 1 motion
+                                           
+    RTS                       ; Done
+
+INIT_PLAYMODE:
+                                           
+    ;  This function initializes the game play mode
+                                           
+    LDA      #192             ; Background is ...
+    STA      COLUBK           ; ... greenish
+    LDA      #1               ; Game mode is ...
+    STA      MODE             ; ... SELECT
+    LDA      #255             ; Restart wall score to ...
+    STA      WALLCNT          ; ... 0 on first move
+    LDA      #112             ; Force wall to start ...
+    STA      WALLSTART        ; ... over on first move
+    JSR      INIT_MUSIC       ; Initialize the music
+    RTS                       ; Done
+                                           
+
+PLAYMODE:
+                                           
+    ;  This function is called once per frame to process the main game play.
                                            
                                            
-                                           ;  ======================================
-                                           ; 
-INIT:                                      ;  --SubroutineContextBegins--
+    JSR      SEL_RESET_CHK    ; Check to see if Reset/Select has changed
                                            
-                                           ;  This function is called ONCE at power-up/reset to initialize various
-                                           ;  hardware and temporaries.
+    CMP      #0               ; Is select pressed?
+    BEQ      NoSelect         ; No ... skip 
+    STX      DEBOUNCE         ; Restore the old value ...
+    JSR      INIT_SELMODE     ; ... and let select-mode process the toggle
+    RTS                       ; Done 
+    
+NoSelect:                                  
+    JSR      PROCESS_MUSIC    ; Process any playing music
+    JSR      MOVE_WALLS       ; Move the walls
                                            
-                 LDA      #64              
-                 STA      COLUPF           ; OLine=281  ... redish
-                 LDA      #126             
-                 STA      COLUP0           ; OLine=283  ... white
-                 LDA      #0               ; OLine=284  Player 1 ...
-                 STA      COLUP1           ; OLine=285  ... black
+    CMP      #1               ; Wall on first row?
+    BNE      NoFirst          ; No ... move on
+    INC      WALLCNT          ; Bump the score
+    JSR      ADJUST_DIF       ; Change the wall parameters based on score
+    LDA      WALLCNT          ; Change the ...
+    JSR      MAKE_SCORE       ; ... score pattern
+    JSR      NEW_GAPS         ; Calculate the new gap position
+    
+NoFirst:                                  
+     LDA      CXP0FB           ; Player 0 collision with playfield
+     STA      TMP0             ; Hold it
+     LDA      CXP1FB           ; Player 1 collision with playfield
+     ORA      TMP0             ; Did either ...
+     AND      #128             ; ... player hit ...                               
+     CMP      #0               ; ... wall?
+     BEQ      NoHit            ; No ... move on 
+     JSR      INIT_GOMODE      ; Go to Game-Over mode
+     RTS                       ; Done
+     
+NoHit:                                     
+     LDA      SWCHA            ; Joystick
+     ADC      ENTROPYB         ; Add to ...  
+     STA      ENTROPYB         ; ... entropy
+                               
+     LDA      SWCHA            ; Joystick
+     AND      #128             ; Player 0 ...
+     CMP      #0               ; ... moving left?
+     BEQ      MoveP0Left       ; Yes ... move left
+     LDA      SWCHA            ; Joystick
+     AND      #64              ; Player 0 ...
+     CMP      #0               ; ... moving right?
+     BEQ      MoveP0Right      ; Yes ... move right
+     LDA      #0               ; Not moving value
+     JMP      SetMoveP0        ; Don't move the player
+MoveP0Right:                           
+     INC      ENTROPYC         ; Yes ... increase entropy
+     LDA      #16              ; +1
+     JMP      SetMoveP0        ; Set HMP0
+MoveP0Left:                           
+     LDA      #240             ; -1
+SetMoveP0:                           
+     STA      HMP0             ; New movement value P0
+                               
+     LDA      SWCHA            ; Joystick
+     AND      #8               ; Player 1 ...
+     CMP      #0               ; ... moving left?
+     BEQ      MoveP1Left       ; Yes ... move left
+     LDA      SWCHA            ; Joystick
+     AND      #4               ; Player 0 ...
+     CMP      #0               ; ... moving right?
+     BEQ      MoveP1Right      ; Yes ... move right
+     INC      ENTROPYC         ; Increase entropy
+     LDA      #0               ; Not moving value
+     JMP      SetMoveP1        ; Don't move the player
+MoveP1Right:                           
+     LDA      #16              ; +1
+     JMP      SetMoveP1        ; Set HMP0
+MoveP1Left:                           
+     LDA      #240             ; -1
+SetMoveP1:                           
+     STA      HMP1             ; New movement value P1
+                               
+     RTS                       ; Done
+
+INIT_SELMODE:
                                            
-                 LDA      #5               ; OLine=287  Right half of playfield is reflection of left ...
-                 STA      CTRLPF           ; OLine=288  ... and playfield is on top of players
+     ;  This function initializes the games SELECT-MODE
+
+     LDA      #0               ; Turn off ...
+     STA      AUDV0            ; ... all ...
+     STA      AUDV1            ; ... sound
+     LDA      #200             
+     STA      COLUBK           ; ... greenish bright
+     LDA      #2               ; Now in ...
+     STA      MODE             ; SELECT game mode
+     RTS                       ; Done
                                            
-                 LDX      #4               ; OLine=290  Player 0 position count
-                 LDY      #3               ; OLine=291  Player 1 position count
-                 STA      WSYNC            ; OLine=292  Get a fresh scanline
+
+SELMODE:
                                            
-FLOW_A_10_OUTPUT_BEGIN:                           
-                 DEX                       ; OLine=295  Kill time while the beam moves 
-                 CPX      #0               
-                 BNE      FLOW_A_10_OUTPUT_BEGIN 
-                 STA      RESP0            ; OLine=297  Mark player 0's X position
+     ;  This function is called once per frame to process the SELECT-MODE.
+     ;  The wall moves here, but doesn't change or collide with players.
+     ;  This function selects between 1 and 2 player game.
                                            
-FLOW_A_11_OUTPUT_BEGIN:                           
-                 DEY                       ; OLine=300  Kill more time
-                 CPY      #0               
-                 BNE      FLOW_A_11_OUTPUT_BEGIN 
-                 STA      RESP1            ; OLine=302  Mark player 1's X position
-                                           
-                 JSR      EXPERTISE        ; OLine=304  Initialize the players' Y positions base on expert-settings
-                                           
-                 LDA      #10              ; OLine=306  Wall is ...
-                 STA      WALLHEI          ; OLine=307  ... 10 double-scanlines high
-                                           
-                 LDA      #0               ; OLine=309  Set score to ...
-                 STA      WALLCNT          ; OLine=310  ... 0
-                 JSR      MAKE_SCORE       ; OLine=311  Blank the score digits
-                 LDA      #0               ; OLine=312  Blank bits ...
-                 STA      SCORE_PF2+5      ; OLine=313  ... on the end of each ...
-                 STA      SCORE_PF1+5      ; OLine=314  ... digit pattern
-                                           
-                 JSR      ADJUST_DIF       ; OLine=316  Initialize the wall parameters
-                 JSR      NEW_GAPS         ; OLine=317  Build the wall's initial gap
-                                           
-                 LDA      #112             ; OLine=319  Set wall position off bottom ...
-                 STA      WALLSTART        ; OLine=320  ... to force a restart on first move
-                                           
-                 LDA      #0               ; OLine=322  Zero out ...
-                 STA      HMP0             ; OLine=323  ... player 0 motion ...
-                 STA      HMP1             ; OLine=324  ... and player 1 motion
-                                           
-                 RTS                       ;  --SubroutineContextEnds--
-                                           ; 
-                                           
-                                           ;  ===================================
-                                           ; 
-INIT_PLAYMODE:                             ;  --SubroutineContextBegins--
-                                           
-                                           ;  This function initializes the game play mode
-                                           
-                 LDA      #192             
-                 STA      COLUBK           ; OLine=336  ... greenish
-                 LDA      #1               ; OLine=337  Game mode is ...
-                 STA      MODE             ; OLine=338  ... SELECT
-                 LDA      #255             ; OLine=339  Restart wall score to ...
-                 STA      WALLCNT          ; OLine=340  ... 0 on first move
-                 LDA      #112             ; OLine=341  Force wall to start ...
-                 STA      WALLSTART        ; OLine=342  ... over on first move
-                 JSR      INIT_MUSIC       ; OLine=343  Initialize the music
-                 RTS                       ;  --SubroutineContextEnds--
-                                           
-                                           ;  ======================================
-PLAYMODE:                                  ;  --SubroutineContextBegins--
-                                           
-                                           ;  This function is called once per frame to process the main game play.
-                                           
-                                           
-                 JSR      SEL_RESET_CHK    ; OLine=352  Check to see if Reset/Select has changed
-                                           
-                 CMP      #0               
-                 BEQ      FLOW_A_12_OUTPUT_FALSE 
-                 STX      DEBOUNCE         ; OLine=355  Restore the old value ...
-                 JSR      INIT_SELMODE     ; OLine=356  ... and let select-mode process the toggle
-                 RTS                       ; OLine=357
-FLOW_A_12_OUTPUT_FALSE:                           
-                                           
-                 JSR      PROCESS_MUSIC    ; OLine=360  Process any playing music
-                 JSR      MOVE_WALLS       ; OLine=361  Move the walls
-                                           
-                 CMP      #1               
-                 BNE      FLOW_A_13_OUTPUT_FALSE 
-                 INC      WALLCNT          ; OLine=364  Bump the score
-                 JSR      ADJUST_DIF       ; OLine=365  Change the wall parameters based on score
-                 LDA      WALLCNT          ; OLine=366  Change the ...
-                 JSR      MAKE_SCORE       ; OLine=367  ... score pattern
-                 JSR      NEW_GAPS         ; OLine=368  Calculate the new gap position
-FLOW_A_13_OUTPUT_FALSE:                           
-                                           
-                 LDA      CXP0FB           ; OLine=371  Player 0 collision with playfield
-                 STA      TMP0             ; OLine=372  Hold it
-                 LDA      CXP1FB           ; OLine=373  Player 1 collision with playfield
-                 ORA      TMP0             ; OLine=374  Did either ...
-                 AND      #128             
-                                           
-                 CMP      #0               
-                 BEQ      FLOW_A_14_OUTPUT_FALSE 
-                 JSR      INIT_GOMODE      ; OLine=378  Go to Game-Over mode
-                 RTS                       ; OLine=379
-FLOW_A_14_OUTPUT_FALSE:                           
-                                           
-                 LDA      SWCHA            ; OLine=382  Joystick
-                 ADC      ENTROPYB         ; OLine=383  Add to ...  
-                 STA      ENTROPYB         ; OLine=384  ... entropy
-                                           
-                 LDA      SWCHA            ; OLine=386  Joystick
-                 AND      #128             
-                 CMP      #0               
-                 BEQ      FLOW_A_15_OUTPUT_TRUE 
-                 LDA      SWCHA            ; OLine=391  Joystick
-                 AND      #64              
-                 CMP      #0               
-                 BEQ      FLOW_A_16_OUTPUT_TRUE 
-                 LDA      #0               ; OLine=397  Not moving value
-                 JMP      FLOW_A_15_OUTPUT_END 
-FLOW_A_16_OUTPUT_TRUE:                           
-                 INC      ENTROPYC         ; OLine=394  Yes ... increase entropy
-                 LDA      #16              
-                 JMP      FLOW_A_15_OUTPUT_END 
-FLOW_A_15_OUTPUT_TRUE:                           
-                 LDA      #240             
-FLOW_A_15_OUTPUT_END:                           
-                 STA      HMP0             ; OLine=400  New movement value P0
-                                           
-                 LDA      SWCHA            ; OLine=402  Joystick
-                 AND      #8               
-                 CMP      #0               
-                 BEQ      FLOW_A_17_OUTPUT_TRUE 
-                 LDA      SWCHA            ; OLine=407  Joystick
-                 AND      #4               
-                 CMP      #0               
-                 BEQ      FLOW_A_18_OUTPUT_TRUE 
-                 INC      ENTROPYC         ; OLine=412  Increase entropy
-                 LDA      #0               ; OLine=413  Not moving value
-                 JMP      FLOW_A_17_OUTPUT_END 
-FLOW_A_18_OUTPUT_TRUE:                           
-                 LDA      #16              
-                 JMP      FLOW_A_17_OUTPUT_END 
-FLOW_A_17_OUTPUT_TRUE:                           
-                 LDA      #240             
-FLOW_A_17_OUTPUT_END:                           
-                 STA      HMP1             ; OLine=416  New movement value P1
-                                           
-                 RTS                       ;  --SubroutineContextEnds--
-                                           ; 
-                                           
-                                           ;  ===================================
-                                           ; 
-INIT_SELMODE:                              ;  --SubroutineContextBegins--
-                                           
-                                           ;  This function initializes the games SELECT-MODE
-                                           ;           
-                 LDA      #0               ; OLine=427  Turn off ...
-                 STA      AUDV0            ; OLine=428  ... all ...
-                 STA      AUDV1            ; OLine=429  ... sound
-                 LDA      #200             
-                 STA      COLUBK           ; OLine=431  ... greenish bright
-                 LDA      #2               ; OLine=432  Now in ...
-                 STA      MODE             ; OLine=433  SELECT game mode
-                 RTS                       ;  --SubroutineContextEnds--
-                                           
-                                           ;  ======================================
-SELMODE:                                   ;  --SubroutineContextBegins--
-                                           
-                                           ;  This function is called once per frame to process the SELECT-MODE.
-                                           ;  The wall moves here, but doesn't change or collide with players.
-                                           ;  This function selects between 1 and 2 player game.
-                                           
-                 JSR      MOVE_WALLS       ; OLine=443  Move the walls
-                 JSR      SEL_RESET_CHK    ; OLine=444  Check the reset/select switches
-                                           
-                 CMP      #1               
-                 BEQ      FLOW_A_19_OUTPUT_TRUE 
-                 CMP      #3               
-                 BEQ      FLOW_A_19_OUTPUT_TRUE 
-                 CMP      #2               
-                 BNE      FLOW_A_19_OUTPUT_END 
-                 LDA      PLAYR1Y          ; OLine=449  Select toggled. Get player 1 Y coordinate
-                 CMP      #255             
-                 BEQ      FLOW_A_21_OUTPUT_TRUE 
-                 LDA      #255             ; OLine=453  Offscreen if it is currently on
-                 JMP      FLOW_A_21_OUTPUT_END 
+     JSR      MOVE_WALLS       ; OLine=443  Move the walls
+     JSR      SEL_RESET_CHK    ; OLine=444  Check the reset/select switches
+                               
+     CMP      #1               
+     BEQ      FLOW_A_19_OUTPUT_TRUE 
+     CMP      #3               
+     BEQ      FLOW_A_19_OUTPUT_TRUE 
+     CMP      #2               
+     BNE      FLOW_A_19_OUTPUT_END 
+     LDA      PLAYR1Y          ; OLine=449  Select toggled. Get player 1 Y coordinate
+     CMP      #255             
+     BEQ      FLOW_A_21_OUTPUT_TRUE 
+     LDA      #255             ; OLine=453  Offscreen if it is currently on
+     JMP      FLOW_A_21_OUTPUT_END 
 FLOW_A_21_OUTPUT_TRUE:                           
-                 LDA      #12              ; OLine=451  Onscreen if it is currently off
+     LDA      #12              ; OLine=451  Onscreen if it is currently off
 FLOW_A_21_OUTPUT_END:                           
-                 STA      PLAYR1Y          ; OLine=455  Toggled Y coordinate
-                 JMP      FLOW_A_19_OUTPUT_END 
+     STA      PLAYR1Y          ; OLine=455  Toggled Y coordinate
+     JMP      FLOW_A_19_OUTPUT_END 
 FLOW_A_19_OUTPUT_TRUE:                           
-                 JSR      INIT_PLAYMODE    ; OLine=447  Reset toggled ... start game
+     JSR      INIT_PLAYMODE    ; OLine=447  Reset toggled ... start game
 FLOW_A_19_OUTPUT_END:                           
                                            
-                 JSR      EXPERTISE        ; OLine=458  Adjust both players for pro settings
-                 RTS                       ;  --SubroutineContextEnds--
+     JSR      EXPERTISE        ; OLine=458  Adjust both players for pro settings
+     RTS                       ;  --SubroutineContextEnds--
                                            ; 
                                            
                                            ;  ======================================
@@ -463,34 +451,34 @@ INIT_GOMODE:                               ;  --SubroutineContextBegins--
                                            
                                            ;  This function initializes the GAME-OVER game mode.
                                            ;    
-                 STA      HMCLR            ; OLine=468  Stop both players from moving
-                 LDA      CXP0FB           ; OLine=469  P0 collision with wall
-                 AND      #128             
-                                           
-                 CMP      #0               
-                 BNE      FLOW_A_22_OUTPUT_FALSE 
-                 LDA      #2               ; OLine=473  No ... move player 0 ...
-                 STA      PLAYR0Y          ; OLine=474  ... up the screen
+     STA      HMCLR            ; OLine=468  Stop both players from moving
+     LDA      CXP0FB           ; OLine=469  P0 collision with wall
+     AND      #128             
+                               
+     CMP      #0               
+     BNE      FLOW_A_22_OUTPUT_FALSE 
+     LDA      #2               ; OLine=473  No ... move player 0 ...
+     STA      PLAYR0Y          ; OLine=474  ... up the screen
 FLOW_A_22_OUTPUT_FALSE:                           
                                            
-                 LDA      CXP1FB           ; OLine=477  P1 collision with wall
-                 AND      #128             
-                                           
-                 CMP      #0               
-                 BNE      FLOW_A_24_OUTPUT_FALSE 
-                 LDA      PLAYR1Y          ; OLine=481
-                 CMP      #255             
-                 BEQ      FLOW_A_24_OUTPUT_FALSE 
-                 LDA      #2               ; OLine=483  Player 1 is onscreen and didn't collide ...
-                 STA      PLAYR1Y          ; OLine=484  ... move up the screen
+     LDA      CXP1FB           ; OLine=477  P1 collision with wall
+     AND      #128             
+                               
+     CMP      #0               
+     BNE      FLOW_A_24_OUTPUT_FALSE 
+     LDA      PLAYR1Y          ; OLine=481
+     CMP      #255             
+     BEQ      FLOW_A_24_OUTPUT_FALSE 
+     LDA      #2               ; OLine=483  Player 1 is onscreen and didn't collide ...
+     STA      PLAYR1Y          ; OLine=484  ... move up the screen
 FLOW_A_24_OUTPUT_FALSE:                           
                                            
-                 LDA      #0               ; OLine=488  Going to ...
-                 STA      MODE             ; OLine=489  ... game-over mode
-                 STA      AUDV0            ; OLine=490  Turn off any ...
-                 STA      AUDV1            ; OLine=491  ... sound
-                 JSR      INIT_GO_FX       ; OLine=492  Initialize sound effects
-                 RTS                       ;  --SubroutineContextEnds--
+     LDA      #0               ; OLine=488  Going to ...
+     STA      MODE             ; OLine=489  ... game-over mode
+     STA      AUDV0            ; OLine=490  Turn off any ...
+     STA      AUDV1            ; OLine=491  ... sound
+     JSR      INIT_GO_FX       ; OLine=492  Initialize sound effects
+     RTS                       ;  --SubroutineContextEnds--
                                            
                                            ;  ======================================
 GOMODE:                                    ;  --SubroutineContextBegins--
@@ -498,13 +486,13 @@ GOMODE:                                    ;  --SubroutineContextBegins--
                                            ;  This function is called every frame to process the game
                                            ;  over sequence. When the sound effect has finished, the
                                            ;  game switches to select mode.
-                                           
-                 JSR      PROCESS_GO_FX    ; OLine=502  Process the sound effects
-                 CMP      #0               
-                 BEQ      FLOW_A_25_OUTPUT_FALSE 
-                 JSR      INIT_SELMODE     ; OLine=504  When effect is over, go to select mode
+                               
+     JSR      PROCESS_GO_FX    ; OLine=502  Process the sound effects
+     CMP      #0               
+     BEQ      FLOW_A_25_OUTPUT_FALSE 
+     JSR      INIT_SELMODE     ; OLine=504  When effect is over, go to select mode
 FLOW_A_25_OUTPUT_FALSE:                           
-                 RTS                       ;  --SubroutineContextEnds--
+     RTS                       ;  --SubroutineContextEnds--
                                            ; 
                                            
                                            ;  ======================================
@@ -515,69 +503,69 @@ MOVE_WALLS:                                ;  --SubroutineContextBegins--
                                            ;  when it reaches (or passes) 112.
                                            
                                            
-                 DEC      WALLDELY         ; OLine=517  Time to move the wall
-                 LDA      WALLDELY         ; OLine=518
-                                           
-                 CMP      #0               
-                 BNE      FLOW_A_26_OUTPUT_TRUE 
-                 LDA      WALLDELYR        ; OLine=523  Reset the ...
-                 STA      WALLDELY         ; OLine=524  ... delay count
-                 LDA      WALLSTART        ; OLine=525  Current wall position
-                 CLC                       ; OLine=526  Increment wall position      
-                 ADC      WALL_INC         
-                 CMP      #112             
-                 BCC      FLOW_A_27_OUTPUT_TRUE 
-                 LDA      #0               ; OLine=531  Else restart ...
-                 STA      WALLSTART        ; OLine=532  ... wall at top of screen
-                 LDA      #1               ; OLine=533  Return flag that wall DID restart
-                 RTS                       
+     DEC      WALLDELY         ; OLine=517  Time to move the wall
+     LDA      WALLDELY         ; OLine=518
+                               
+     CMP      #0               
+     BNE      FLOW_A_26_OUTPUT_TRUE 
+     LDA      WALLDELYR        ; OLine=523  Reset the ...
+     STA      WALLDELY         ; OLine=524  ... delay count
+     LDA      WALLSTART        ; OLine=525  Current wall position
+     CLC                       ; OLine=526  Increment wall position      
+     ADC      WALL_INC         
+     CMP      #112             
+     BCC      FLOW_A_27_OUTPUT_TRUE 
+     LDA      #0               ; OLine=531  Else restart ...
+     STA      WALLSTART        ; OLine=532  ... wall at top of screen
+     LDA      #1               ; OLine=533  Return flag that wall DID restart
+     RTS                       
 FLOW_A_27_OUTPUT_TRUE:                           
-                 STA      WALLSTART        ; OLine=528  Store new wall position
-                 LDA      #0               ; OLine=529  Return flag that wall did NOT restart
-                 RTS                       
+     STA      WALLSTART        ; OLine=528  Store new wall position
+     LDA      #0               ; OLine=529  Return flag that wall did NOT restart
+     RTS                       
 FLOW_A_26_OUTPUT_TRUE:                           
-                 LDA      #0               ; OLine=521  Return flag that wall did NOT restart
-                                           
-                 RTS                       ;  --SubroutineContextEnds--
+     LDA      #0               ; OLine=521  Return flag that wall did NOT restart
+                               
+     RTS                       ;  --SubroutineContextEnds--
                                            
                                            ;  ======================================
 NEW_GAPS:                                  ;  --SubroutineContextBegins--
                                            
-                                           ;  This function builds the PF0, PF1, and PF2 graphics for a wall
-                                           ;  with the gap pattern (GAPBITS) placed at random in the 20 bit
-                                           ;  area.
-                                           
-                 LDA      #255             ; OLine=546  Start with ...
-                 STA      WALLDRELA        ; OLine=547  ... solid wall in PF0 ...
-                 STA      WALLDRELB        ; OLine=548  ... and PF1
-                 LDA      GAPBITS          ; OLine=549  Store the gap pattern ...
-                 STA      WALLDRELC        ; OLine=550  ... in PF2
-                                           
-                 LDA      ENTROPYA         ; OLine=552  Get ...
-                 ADC      ENTROPYB         ; OLine=553  ... a randomish ...
-                 ADC      ENTROPYC         ; OLine=554  ... number ...  
-                 STA      ENTROPYC         ; OLine=555
-                 AND      #15              ; OLine=556  ... 0 to 15
-                                           
-                 CMP      #12              
-                 BEQ      FLOW_A_28_OUTPUT_FALSE 
-                 BCC      FLOW_A_28_OUTPUT_FALSE 
-                                           ; A = A - 9
-                 SBC      #9               ; OLine=560
+                               ;  This function builds the PF0, PF1, and PF2 graphics for a wall
+                               ;  with the gap pattern (GAPBITS) placed at random in the 20 bit
+                               ;  area.
+                               
+     LDA      #255             ; OLine=546  Start with ...
+     STA      WALLDRELA        ; OLine=547  ... solid wall in PF0 ...
+     STA      WALLDRELB        ; OLine=548  ... and PF1
+     LDA      GAPBITS          ; OLine=549  Store the gap pattern ...
+     STA      WALLDRELC        ; OLine=550  ... in PF2
+                               
+     LDA      ENTROPYA         ; OLine=552  Get ...
+     ADC      ENTROPYB         ; OLine=553  ... a randomish ...
+     ADC      ENTROPYC         ; OLine=554  ... number ...  
+     STA      ENTROPYC         ; OLine=555
+     AND      #15              ; OLine=556  ... 0 to 15
+                               
+     CMP      #12              
+     BEQ      FLOW_A_28_OUTPUT_FALSE 
+     BCC      FLOW_A_28_OUTPUT_FALSE 
+                               ; A = A - 9
+     SBC      #9               ; OLine=560
 FLOW_A_28_OUTPUT_FALSE:                           
                                            
-                 CMP      #0               
-                 BEQ      FLOW_A_29_OUTPUT_FALSE 
-                 SEC                       ; OLine=564  Roll gap ...
-                 ROR      WALLDRELC        ; OLine=565  ... left ...
-                 ROL      WALLDRELB        ; OLine=566  ... desired ...
-                 ROR      WALLDRELA        ; OLine=567  ... times ...
-                 SEC                       ; OLine=568
-                 SBC      #1               
-                 JMP      FLOW_A_28_OUTPUT_FALSE 
+     CMP      #0               
+     BEQ      FLOW_A_29_OUTPUT_FALSE 
+     SEC                       ; OLine=564  Roll gap ...
+     ROR      WALLDRELC        ; OLine=565  ... left ...
+     ROL      WALLDRELB        ; OLine=566  ... desired ...
+     ROR      WALLDRELA        ; OLine=567  ... times ...
+     SEC                       ; OLine=568
+     SBC      #1               
+     JMP      FLOW_A_28_OUTPUT_FALSE 
 FLOW_A_29_OUTPUT_FALSE:                           
                                            
-                 RTS                       ;  --SubroutineContextEnds--
+     RTS                       ;  --SubroutineContextEnds--
                                            
                                            ;  ======================================
 MAKE_SCORE:                                ;  --SubroutineContextBegins--
@@ -586,84 +574,84 @@ MAKE_SCORE:                                ;  --SubroutineContextBegins--
                                            ;  the byte value passed in A. The current implementation is
                                            ;  two-digits only ... PF2 is blank.
                                            
-                 LDX      #0               ; OLine=580  100's digit
-                 LDY      #0               ; OLine=581  10's digit
+     LDX      #0               ; OLine=580  100's digit
+     LDY      #0               ; OLine=581  10's digit
                                            
 FLOW_A_30_OUTPUT_BEGIN:                           
-                 CMP      #100             
-                 BCC      FLOW_A_30_OUTPUT_FALSE 
-                 INX                       ; OLine=584  Count ...
-                 SEC                       ; OLine=585  ... value
-                 SBC      #100             
-                 JMP      FLOW_A_30_OUTPUT_BEGIN 
+     CMP      #100             
+     BCC      FLOW_A_30_OUTPUT_FALSE 
+     INX                       ; OLine=584  Count ...
+     SEC                       ; OLine=585  ... value
+     SBC      #100             
+     JMP      FLOW_A_30_OUTPUT_BEGIN 
 FLOW_A_30_OUTPUT_FALSE:                           
                                            
-                 CMP      #10              
-                 BCC      FLOW_A_31_OUTPUT_FALSE 
-                 INY                       ; OLine=589  Count ...
-                 SEC                       ; OLine=590  ... value
-                 SBC      #10              
-                 JMP      FLOW_A_30_OUTPUT_FALSE 
+     CMP      #10              
+     BCC      FLOW_A_31_OUTPUT_FALSE 
+     INY                       ; OLine=589  Count ...
+     SEC                       ; OLine=590  ... value
+     SBC      #10              
+     JMP      FLOW_A_30_OUTPUT_FALSE 
 FLOW_A_31_OUTPUT_FALSE:                           
                                            
-                 ASL      A                ; OLine=593  One's digit ...
-                 ASL      A                ; OLine=594  ... *8 ....
-                 ASL      A                ; OLine=595  ... to find picture
-                 TAX                       ; OLine=596  One's digit picture to X
-                 TYA                       ; OLine=597  Now the 10's digit
-                 ASL      A                ; OLine=598  Multiply ...
-                 ASL      A                ; OLine=599  ... by 8 ...
-                 ASL      A                ; OLine=600  ... to find picture
-                 TAY                       ; OLine=601  10's picture in Y
-                                           
-                 LDA      DIGITS,Y         ; OLine=603  Get the 10's digit
-                 AND      #240             
-                 STA      SCORE_PF1        ; OLine=605  Store left side
-                 LDA      DIGITS,X         ; OLine=606  Get the 1's digit
-                 AND      #15              
-                 ORA      SCORE_PF1        ; OLine=608  Put left and right half together
-                 STA      SCORE_PF1        ; OLine=609  And store image
-                                           
-                 LDA      DIGITS+1,Y       ; OLine=611  Repeat for 2nd line of picture
-                 AND      #240             
-                 STA      SCORE_PF1+1      ; OLine=613
-                 LDA      DIGITS+1,X       ; OLine=614
-                 AND      #15              
-                 ORA      SCORE_PF1+1      ; OLine=616
-                 STA      SCORE_PF1+1      ; OLine=617
-                                           
-                 LDA      DIGITS+2,Y       ; OLine=619  Repeat for 3nd line of picture
-                 AND      #240             
-                 STA      SCORE_PF1+2      ; OLine=621
-                 LDA      DIGITS+2,X       ; OLine=622
-                 AND      #15              
-                 ORA      SCORE_PF1+2      ; OLine=624
-                 STA      SCORE_PF1+2      ; OLine=625
-                                           
-                 LDA      DIGITS+3,Y       ; OLine=627  Repeat for 4th line of picture
-                 AND      #240             
-                 STA      SCORE_PF1+3      ; OLine=629
-                 LDA      DIGITS+3,X       ; OLine=630
-                 AND      #15              
-                 ORA      SCORE_PF1+3      ; OLine=632
-                 STA      SCORE_PF1+3      ; OLine=633
-                                           
-                 LDA      DIGITS+4,Y       ; OLine=635  Repeat for 5th line of picture
-                 AND      #240             
-                 STA      SCORE_PF1+4      ; OLine=637
-                 LDA      DIGITS+4,X       ; OLine=638
-                 AND      #15              
-                 ORA      SCORE_PF1+4      ; OLine=640
-                 STA      SCORE_PF1+4      ; OLine=641
-                                           
-                 LDA      #0               ; OLine=643  For now ...
-                 STA      SCORE_PF2        ; OLine=644  ... there ...
-                 STA      SCORE_PF2+1      ; OLine=645  ... is ...
-                 STA      SCORE_PF2+2      ; OLine=646  ... no ...
-                 STA      SCORE_PF2+3      ; OLine=647  ... 100s ...
-                 STA      SCORE_PF2+4      ; OLine=648  ... digit drawn
-                                           
-                 RTS                       ;  --SubroutineContextEnds--
+     ASL      A                ; OLine=593  One's digit ...
+     ASL      A                ; OLine=594  ... *8 ....
+     ASL      A                ; OLine=595  ... to find picture
+     TAX                       ; OLine=596  One's digit picture to X
+     TYA                       ; OLine=597  Now the 10's digit
+     ASL      A                ; OLine=598  Multiply ...
+     ASL      A                ; OLine=599  ... by 8 ...
+     ASL      A                ; OLine=600  ... to find picture
+     TAY                       ; OLine=601  10's picture in Y
+                               
+     LDA      DIGITS,Y         ; OLine=603  Get the 10's digit
+     AND      #240             
+     STA      SCORE_PF1        ; OLine=605  Store left side
+     LDA      DIGITS,X         ; OLine=606  Get the 1's digit
+     AND      #15              
+     ORA      SCORE_PF1        ; OLine=608  Put left and right half together
+     STA      SCORE_PF1        ; OLine=609  And store image
+                               
+     LDA      DIGITS+1,Y       ; OLine=611  Repeat for 2nd line of picture
+     AND      #240             
+     STA      SCORE_PF1+1      ; OLine=613
+     LDA      DIGITS+1,X       ; OLine=614
+     AND      #15              
+     ORA      SCORE_PF1+1      ; OLine=616
+     STA      SCORE_PF1+1      ; OLine=617
+                               
+     LDA      DIGITS+2,Y       ; OLine=619  Repeat for 3nd line of picture
+     AND      #240             
+     STA      SCORE_PF1+2      ; OLine=621
+     LDA      DIGITS+2,X       ; OLine=622
+     AND      #15              
+     ORA      SCORE_PF1+2      ; OLine=624
+     STA      SCORE_PF1+2      ; OLine=625
+                               
+     LDA      DIGITS+3,Y       ; OLine=627  Repeat for 4th line of picture
+     AND      #240             
+     STA      SCORE_PF1+3      ; OLine=629
+     LDA      DIGITS+3,X       ; OLine=630
+     AND      #15              
+     ORA      SCORE_PF1+3      ; OLine=632
+     STA      SCORE_PF1+3      ; OLine=633
+                               
+     LDA      DIGITS+4,Y       ; OLine=635  Repeat for 5th line of picture
+     AND      #240             
+     STA      SCORE_PF1+4      ; OLine=637
+     LDA      DIGITS+4,X       ; OLine=638
+     AND      #15              
+     ORA      SCORE_PF1+4      ; OLine=640
+     STA      SCORE_PF1+4      ; OLine=641
+                               
+     LDA      #0               ; OLine=643  For now ...
+     STA      SCORE_PF2        ; OLine=644  ... there ...
+     STA      SCORE_PF2+1      ; OLine=645  ... is ...
+     STA      SCORE_PF2+2      ; OLine=646  ... no ...
+     STA      SCORE_PF2+3      ; OLine=647  ... 100s ...
+     STA      SCORE_PF2+4      ; OLine=648  ... digit drawn
+                               
+     RTS                       ;  --SubroutineContextEnds--
                                            
                                            ;  ======================================
 EXPERTISE:                                 ;  --SubroutineContextBegins--
@@ -672,33 +660,33 @@ EXPERTISE:                                 ;  --SubroutineContextBegins--
                                            ;  position of their respective pro/novice switches. The player 1
                                            ;  position is NOT changed if the mode is a single-player game.
                                            
-                 LDA      SWCHB            ; OLine=659  Pro/novice settings
-                 AND      #128             
-                 CMP      #0               
-                 BEQ      FLOW_A_32_OUTPUT_TRUE 
-                 LDA      #8               ; OLine=664  Pro ... near the top
-                 JMP      FLOW_A_32_OUTPUT_END 
+     LDA      SWCHB            ; OLine=659  Pro/novice settings
+     AND      #128             
+     CMP      #0               
+     BEQ      FLOW_A_32_OUTPUT_TRUE 
+     LDA      #8               ; OLine=664  Pro ... near the top
+     JMP      FLOW_A_32_OUTPUT_END 
 FLOW_A_32_OUTPUT_TRUE:                           
-                 LDA      #12              ; OLine=662  Novice ... near the bottom
+     LDA      #12              ; OLine=662  Novice ... near the bottom
 FLOW_A_32_OUTPUT_END:                           
-                 STA      PLAYR0Y          ; OLine=666  ... to Player 0
+     STA      PLAYR0Y          ; OLine=666  ... to Player 0
                                            
-                 LDX      PLAYR1Y          ; OLine=668
-                 CPX      #255             
-                 BEQ      FLOW_A_33_OUTPUT_FALSE 
-                 LDA      SWCHB            ; OLine=670
-                 AND      #64              
-                 CMP      #0               
-                 BEQ      FLOW_A_34_OUTPUT_TRUE 
-                 LDX      #8               ; OLine=675  Pro ... near the top
-                 JMP      FLOW_A_34_OUTPUT_END 
+     LDX      PLAYR1Y          ; OLine=668
+     CPX      #255             
+     BEQ      FLOW_A_33_OUTPUT_FALSE 
+     LDA      SWCHB            ; OLine=670
+     AND      #64              
+     CMP      #0               
+     BEQ      FLOW_A_34_OUTPUT_TRUE 
+     LDX      #8               ; OLine=675  Pro ... near the top
+     JMP      FLOW_A_34_OUTPUT_END 
 FLOW_A_34_OUTPUT_TRUE:                           
-                 LDX      #12              ; OLine=673  Novice ... near the bottom
+     LDX      #12              ; OLine=673  Novice ... near the bottom
 FLOW_A_34_OUTPUT_END:                           
-                 STX      PLAYR1Y          ; OLine=677
+     STX      PLAYR1Y          ; OLine=677
 FLOW_A_33_OUTPUT_FALSE:                           
                                            
-                 RTS                       ;  --SubroutineContextEnds--
+     RTS                       ;  --SubroutineContextEnds--
                                            
                                            ;  ======================================
 ADJUST_DIF:                                ;  --SubroutineContextBegins--
@@ -707,46 +695,46 @@ ADJUST_DIF:                                ;  --SubroutineContextBegins--
                                            ;  current score. The music can also change with the difficulty. A single
                                            ;  table describes the new values and when they take effect.
                                            ;               
-                 LDX      #0               ; OLine=689  Starting at index 0
+     LDX      #0               ; OLine=689  Starting at index 0
                                            
 FLOW_A_35_OUTPUT_BEGIN:                           
                                            
-                 LDA      SKILL_VALUES,X   ; OLine=693  Get the score match
-                 CMP      #255             
-                 BNE      FLOW_A_36_OUTPUT_FALSE 
-                 RTS                       ; OLine=695  End of the table ... leave it alone
+     LDA      SKILL_VALUES,X   ; OLine=693  Get the score match
+     CMP      #255             
+     BNE      FLOW_A_36_OUTPUT_FALSE 
+     RTS                       ; OLine=695  End of the table ... leave it alone
 FLOW_A_36_OUTPUT_FALSE:                           
-                 CMP      WALLCNT          
-                 BNE      FLOW_A_37_OUTPUT_FALSE 
-                 INX                       ; OLine=698  Copy ...
-                 LDA      SKILL_VALUES,X   ; OLine=699  ... new ...
-                 STA      WALL_INC         ; OLine=700  ... wall increment
-                 INX                       ; OLine=701  Copy ...
-                 LDA      SKILL_VALUES,X   ; OLine=702  ... new ...
-                 STA      WALLDELY         ; OLine=703  ... wall ...
-                 STA      WALLDELYR        ; OLine=704  ... delay
-                 INX                       ; OLine=705  Copy ...
-                 LDA      SKILL_VALUES,X   ; OLine=706  ... new ...
-                 STA      GAPBITS          ; OLine=707  ... gap pattern
-                 INX                       ; OLine=708  Copy ...
-                 LDA      SKILL_VALUES,X   ; OLine=709  ... new ...
-                 STA      MUSAIND          ; OLine=710  ... MusicA index
-                 INX                       ; OLine=711  Copy ...
-                 LDA      SKILL_VALUES,X   ; OLine=712  ... new ...
-                 STA      MUSBIND          ; OLine=713  ... MusicB index
-                 LDA      #1               ; OLine=714  Force ...
-                 STA      MUSADEL          ; OLine=715  ... music to ...
-                 STA      MUSBDEL          ; OLine=716  ... start new
-                 RTS                       ; OLine=717
+     CMP      WALLCNT          
+     BNE      FLOW_A_37_OUTPUT_FALSE 
+     INX                       ; OLine=698  Copy ...
+     LDA      SKILL_VALUES,X   ; OLine=699  ... new ...
+     STA      WALL_INC         ; OLine=700  ... wall increment
+     INX                       ; OLine=701  Copy ...
+     LDA      SKILL_VALUES,X   ; OLine=702  ... new ...
+     STA      WALLDELY         ; OLine=703  ... wall ...
+     STA      WALLDELYR        ; OLine=704  ... delay
+     INX                       ; OLine=705  Copy ...
+     LDA      SKILL_VALUES,X   ; OLine=706  ... new ...
+     STA      GAPBITS          ; OLine=707  ... gap pattern
+     INX                       ; OLine=708  Copy ...
+     LDA      SKILL_VALUES,X   ; OLine=709  ... new ...
+     STA      MUSAIND          ; OLine=710  ... MusicA index
+     INX                       ; OLine=711  Copy ...
+     LDA      SKILL_VALUES,X   ; OLine=712  ... new ...
+     STA      MUSBIND          ; OLine=713  ... MusicB index
+     LDA      #1               ; OLine=714  Force ...
+     STA      MUSADEL          ; OLine=715  ... music to ...
+     STA      MUSBDEL          ; OLine=716  ... start new
+     RTS                       ; OLine=717
 FLOW_A_37_OUTPUT_FALSE:                           
                                            
-                 INX                       ; OLine=720  Move ...
-                 INX                       ; OLine=721  ... X ...
-                 INX                       ; OLine=722  ... to ...
-                 INX                       ; OLine=723  ... next ...
-                 INX                       ; OLine=724  ... row of ...
-                 INX                       ; OLine=725  ... table
-                 JMP      FLOW_A_35_OUTPUT_BEGIN 
+     INX                       ; OLine=720  Move ...
+     INX                       ; OLine=721  ... X ...
+     INX                       ; OLine=722  ... to ...
+     INX                       ; OLine=723  ... next ...
+     INX                       ; OLine=724  ... row of ...
+     INX                       ; OLine=725  ... table
+     JMP      FLOW_A_35_OUTPUT_BEGIN 
                                            
                                            ;  ======================================
 SEL_RESET_CHK:                             ;  --SubroutineContextBegins--
@@ -755,21 +743,21 @@ SEL_RESET_CHK:                             ;  --SubroutineContextBegins--
                                            ;  switches and debounces the transitions.
                                            
                                            
-                 LDX      DEBOUNCE         ; OLine=736  Hold onto old value
-                 LDA      SWCHB            ; OLine=737  New value
-                 AND      #3               ; OLine=738  Only need bottom 2 bits
-                                           
-                 CMP      DEBOUNCE         
-                 BEQ      FLOW_A_38_OUTPUT_TRUE 
-                 STA      DEBOUNCE         ; OLine=743  Hold new value
-                 EOR      #255             
-                 AND      #3               ; OLine=745  Only need select/reset
-                 RTS                       
+     LDX      DEBOUNCE         ; OLine=736  Hold onto old value
+     LDA      SWCHB            ; OLine=737  New value
+     AND      #3               ; OLine=738  Only need bottom 2 bits
+                               
+     CMP      DEBOUNCE         
+     BEQ      FLOW_A_38_OUTPUT_TRUE 
+     STA      DEBOUNCE         ; OLine=743  Hold new value
+     EOR      #255             
+     AND      #3               ; OLine=745  Only need select/reset
+     RTS                       
 FLOW_A_38_OUTPUT_TRUE:                           
-                 LDA      #0               ; OLine=741  Return 0 ... nothing changed
-                                           
-                 RTS                       ;  --SubroutineContextEnds--
-                                           ; 
+     LDA      #0               ; OLine=741  Return 0 ... nothing changed
+                               
+     RTS                       ;  --SubroutineContextEnds--
+                                   ; 
                                            
                                            ;  ======================================
                                            ; 
@@ -777,22 +765,22 @@ INIT_MUSIC:                                ;  --SubroutineContextBegins--
                                            
                                            ;  This function initializes the hardware and temporaries
                                            ;  for 2-channel music
-                                           
-                 LDA      #6               
-                 STA      AUDC0            ; OLine=759  ... to pure ...
-                 STA      AUDC1            ; OLine=760  ... tones
-                 LDA      #0               ; OLine=761  Turn off ...
-                 STA      AUDV0            ; OLine=762  ... all ...
-                 STA      AUDV1            ; OLine=763  ... sound
-                 STA      MUSAIND          ; OLine=764  Music pointers ...
-                 STA      MUSBIND          ; OLine=765  ... to top of data
-                 LDA      #1               ; OLine=766  Force ...
-                 STA      MUSADEL          ; OLine=767  ... music ...
-                 STA      MUSBDEL          ; OLine=768  ... reload
-                 LDA      #15              ; OLine=769  Set volume levels ...
-                 STA      MUSAVOL          ; OLine=770  ... to ...
-                 STA      MUSBVOL          ; OLine=771  ... maximum
-                 RTS                       ;  --SubroutineContextEnds--
+                               
+     LDA      #6               
+     STA      AUDC0            ; OLine=759  ... to pure ...
+     STA      AUDC1            ; OLine=760  ... tones
+     LDA      #0               ; OLine=761  Turn off ...
+     STA      AUDV0            ; OLine=762  ... all ...
+     STA      AUDV1            ; OLine=763  ... sound
+     STA      MUSAIND          ; OLine=764  Music pointers ...
+     STA      MUSBIND          ; OLine=765  ... to top of data
+     LDA      #1               ; OLine=766  Force ...
+     STA      MUSADEL          ; OLine=767  ... music ...
+     STA      MUSBDEL          ; OLine=768  ... reload
+     LDA      #15              ; OLine=769  Set volume levels ...
+     STA      MUSAVOL          ; OLine=770  ... to ...
+     STA      MUSBVOL          ; OLine=771  ... maximum
+     RTS                       ;  --SubroutineContextEnds--
                                            
                                            ;  ======================================
 PROCESS_MUSIC:                             ;  --SubroutineContextBegins--
@@ -802,151 +790,151 @@ PROCESS_MUSIC:                             ;  --SubroutineContextBegins--
                                            ;  for individual channels. This function changes the
                                            ;  notes at the right time.
                                            ;            
-                 DEC      MUSADEL          ; OLine=782  Last note ended?
-                 BNE      FLOW_A_39_OUTPUT_FALSE 
+     DEC      MUSADEL          ; OLine=782  Last note ended?
+     BNE      FLOW_A_39_OUTPUT_FALSE 
                                            
 FLOW_A_40_OUTPUT_BEGIN:                           
-                 LDX      MUSAIND          ; OLine=786  Voice-A index
-                 LDA      MUSICA,X         ; OLine=787  Get the next music command
-                 CMP      #0               
-                 BEQ      FLOW_A_41_OUTPUT_TRUE 
-                 CMP      #1               
-                 BEQ      FLOW_A_42_OUTPUT_TRUE 
-                 CMP      #2               
-                 BNE      FLOW_A_41_OUTPUT_END 
-                 INX                       ; OLine=805  Point to volume value
-                 INC      MUSAIND          ; OLine=806  Bump the music pointer
-                 LDA      MUSICA,X         ; OLine=807  Get the volume value
-                 INC      MUSAIND          ; OLine=808  Bump the music pointer
-                 STA      MUSAVOL          ; OLine=809  Store the new volume value
-                 LDA      #0               ; OLine=810  Continue processing
-                 JMP      FLOW_A_41_OUTPUT_END 
+     LDX      MUSAIND          ; OLine=786  Voice-A index
+     LDA      MUSICA,X         ; OLine=787  Get the next music command
+     CMP      #0               
+     BEQ      FLOW_A_41_OUTPUT_TRUE 
+     CMP      #1               
+     BEQ      FLOW_A_42_OUTPUT_TRUE 
+     CMP      #2               
+     BNE      FLOW_A_41_OUTPUT_END 
+     INX                       ; OLine=805  Point to volume value
+     INC      MUSAIND          ; OLine=806  Bump the music pointer
+     LDA      MUSICA,X         ; OLine=807  Get the volume value
+     INC      MUSAIND          ; OLine=808  Bump the music pointer
+     STA      MUSAVOL          ; OLine=809  Store the new volume value
+     LDA      #0               ; OLine=810  Continue processing
+     JMP      FLOW_A_41_OUTPUT_END 
 FLOW_A_42_OUTPUT_TRUE:                           
-                 INX                       ; OLine=798  Point to the control value
-                 INC      MUSAIND          ; OLine=799  Bump the music pointer
-                 LDA      MUSICA,X         ; OLine=800  Get the control value
-                 INC      MUSAIND          ; OLine=801  Bump the music pointer
-                 STA      AUDC0            ; OLine=802  Store the new control value
-                 LDA      #0               ; OLine=803  Continue processing
-                 JMP      FLOW_A_41_OUTPUT_END 
+     INX                       ; OLine=798  Point to the control value
+     INC      MUSAIND          ; OLine=799  Bump the music pointer
+     LDA      MUSICA,X         ; OLine=800  Get the control value
+     INC      MUSAIND          ; OLine=801  Bump the music pointer
+     STA      AUDC0            ; OLine=802  Store the new control value
+     LDA      #0               ; OLine=803  Continue processing
+     JMP      FLOW_A_41_OUTPUT_END 
 FLOW_A_41_OUTPUT_TRUE:                           
-                 INX                       ; OLine=789  Point to jump value
-                 TXA                       ; OLine=790  X to ...
-                 TAY                       ; OLine=791  ... Y (pointer to jump value)
-                 INX                       ; OLine=792  Point one past jump value
-                 TXA                       ; OLine=793  Into A so we can subtract
-                 SEC                       ; OLine=794  New index
-                 SBC      MUSICA,Y         
-                 STA      MUSAIND          ; OLine=795  Store it
-                 LDA      #0               ; OLine=796  Continue processing
+     INX                       ; OLine=789  Point to jump value
+     TXA                       ; OLine=790  X to ...
+     TAY                       ; OLine=791  ... Y (pointer to jump value)
+     INX                       ; OLine=792  Point one past jump value
+     TXA                       ; OLine=793  Into A so we can subtract
+     SEC                       ; OLine=794  New index
+     SBC      MUSICA,Y         
+     STA      MUSAIND          ; OLine=795  Store it
+     LDA      #0               ; OLine=796  Continue processing
 FLOW_A_41_OUTPUT_END:                           
-                 CMP      #0               
-                 BEQ      FLOW_A_40_OUTPUT_BEGIN 
-                                           
-                 LDY      MUSAVOL          ; OLine=814  Get the volume
-                 AND      #31              ; OLine=815  Lower 5 bits are frequency
-                 CMP      #31              
-                 BNE      FLOW_A_44_OUTPUT_FALSE 
-                 LDY      #0               ; OLine=817  Frequency of 31 flags silence
+     CMP      #0               
+     BEQ      FLOW_A_40_OUTPUT_BEGIN 
+                               
+     LDY      MUSAVOL          ; OLine=814  Get the volume
+     AND      #31              ; OLine=815  Lower 5 bits are frequency
+     CMP      #31              
+     BNE      FLOW_A_44_OUTPUT_FALSE 
+     LDY      #0               ; OLine=817  Frequency of 31 flags silence
 FLOW_A_44_OUTPUT_FALSE:                           
-                 STA      AUDF0            ; OLine=819  Store the frequency
-                 STY      AUDV0            ; OLine=820  Store the volume
-                 LDA      MUSICA,X         ; OLine=821  Get the note value again
-                 INC      MUSAIND          ; OLine=822  Bump to the next command
-                 ROR      A                ; OLine=823  The upper ...
-                 ROR      A                ; OLine=824  ... three ...
-                 ROR      A                ; OLine=825  ... bits ...
-                 ROR      A                ; OLine=826  ... hold ...
-                 ROR      A                ; OLine=827  ... the ...
-                 AND      #7               ; OLine=828  ... delay
-                 CLC                       ; OLine=829  No accidental carry
-                 ROL      A                ; OLine=830  Every delay tick ...
-                 ROL      A                ; OLine=831  ... is *4 frames
-                 STA      MUSADEL          ; OLine=832  Store the note delay
+     STA      AUDF0            ; OLine=819  Store the frequency
+     STY      AUDV0            ; OLine=820  Store the volume
+     LDA      MUSICA,X         ; OLine=821  Get the note value again
+     INC      MUSAIND          ; OLine=822  Bump to the next command
+     ROR      A                ; OLine=823  The upper ...
+     ROR      A                ; OLine=824  ... three ...
+     ROR      A                ; OLine=825  ... bits ...
+     ROR      A                ; OLine=826  ... hold ...
+     ROR      A                ; OLine=827  ... the ...
+     AND      #7               ; OLine=828  ... delay
+     CLC                       ; OLine=829  No accidental carry
+     ROL      A                ; OLine=830  Every delay tick ...
+     ROL      A                ; OLine=831  ... is *4 frames
+     STA      MUSADEL          ; OLine=832  Store the note delay
 FLOW_A_39_OUTPUT_FALSE:                           
                                            
-                 DEC      MUSBDEL          ; OLine=835  Repeat Channel A sequence for Channel B
-                 BNE      FLOW_A_45_OUTPUT_FALSE 
+     DEC      MUSBDEL          ; OLine=835  Repeat Channel A sequence for Channel B
+     BNE      FLOW_A_45_OUTPUT_FALSE 
                                            
 FLOW_A_46_OUTPUT_BEGIN:                           
-                 LDX      MUSBIND          ; OLine=839
-                 LDA      MUSICB,X         ; OLine=840
-                 CMP      #0               
-                 BEQ      FLOW_A_47_OUTPUT_TRUE 
-                 CMP      #1               
-                 BEQ      FLOW_A_48_OUTPUT_TRUE 
-                 CMP      #2               
-                 BNE      FLOW_A_47_OUTPUT_END 
-                 INX                       ; OLine=858
-                 INC      MUSBIND          ; OLine=859
-                 LDA      MUSICB,X         ; OLine=860
-                 INC      MUSBIND          ; OLine=861
-                 STA      MUSBVOL          ; OLine=862
-                 LDA      #0               ; OLine=863
-                 JMP      FLOW_A_47_OUTPUT_END 
+     LDX      MUSBIND          ; OLine=839
+     LDA      MUSICB,X         ; OLine=840
+     CMP      #0               
+     BEQ      FLOW_A_47_OUTPUT_TRUE 
+     CMP      #1               
+     BEQ      FLOW_A_48_OUTPUT_TRUE 
+     CMP      #2               
+     BNE      FLOW_A_47_OUTPUT_END 
+     INX                       ; OLine=858
+     INC      MUSBIND          ; OLine=859
+     LDA      MUSICB,X         ; OLine=860
+     INC      MUSBIND          ; OLine=861
+     STA      MUSBVOL          ; OLine=862
+     LDA      #0               ; OLine=863
+     JMP      FLOW_A_47_OUTPUT_END 
 FLOW_A_48_OUTPUT_TRUE:                           
-                 INX                       ; OLine=851
-                 INC      MUSBIND          ; OLine=852
-                 LDA      MUSICB,X         ; OLine=853
-                 INC      MUSBIND          ; OLine=854
-                 STA      AUDC1            ; OLine=855
-                 LDA      #0               ; OLine=856
-                 JMP      FLOW_A_47_OUTPUT_END 
+     INX                       ; OLine=851
+     INC      MUSBIND          ; OLine=852
+     LDA      MUSICB,X         ; OLine=853
+     INC      MUSBIND          ; OLine=854
+     STA      AUDC1            ; OLine=855
+     LDA      #0               ; OLine=856
+     JMP      FLOW_A_47_OUTPUT_END 
 FLOW_A_47_OUTPUT_TRUE:                           
-                 INX                       ; OLine=842
-                 TXA                       ; OLine=843
-                 TAY                       ; OLine=844
-                 INX                       ; OLine=845
-                 TXA                       ; OLine=846
-                 SEC                       ; OLine=847
-                 SBC      MUSICB,Y         
-                 STA      MUSBIND          ; OLine=848
-                 LDA      #0               ; OLine=849
+     INX                       ; OLine=842
+     TXA                       ; OLine=843
+     TAY                       ; OLine=844
+     INX                       ; OLine=845
+     TXA                       ; OLine=846
+     SEC                       ; OLine=847
+     SBC      MUSICB,Y         
+     STA      MUSBIND          ; OLine=848
+     LDA      #0               ; OLine=849
 FLOW_A_47_OUTPUT_END:                           
-                 CMP      #0               
-                 BEQ      FLOW_A_46_OUTPUT_BEGIN 
-                                           
-                 LDY      MUSBVOL          ; OLine=867
-                 AND      #31              ; OLine=868
-                 CMP      #31              
-                 BNE      FLOW_A_50_OUTPUT_FALSE 
-                 LDY      #0               ; OLine=870
+     CMP      #0               
+     BEQ      FLOW_A_46_OUTPUT_BEGIN 
+                               
+     LDY      MUSBVOL          ; OLine=867
+     AND      #31              ; OLine=868
+     CMP      #31              
+     BNE      FLOW_A_50_OUTPUT_FALSE 
+     LDY      #0               ; OLine=870
 FLOW_A_50_OUTPUT_FALSE:                           
-                 STA      AUDF1            ; OLine=872
-                 STY      AUDV1            ; OLine=873
-                 LDA      MUSICB,X         ; OLine=874
-                 INC      MUSBIND          ; OLine=875
-                 ROR      A                ; OLine=876
-                 ROR      A                ; OLine=877
-                 ROR      A                ; OLine=878
-                 ROR      A                ; OLine=879
-                 ROR      A                ; OLine=880
-                 AND      #7               ; OLine=881
-                 CLC                       ; OLine=882
-                 ROL      A                ; OLine=883
-                 ROL      A                ; OLine=884
-                 STA      MUSBDEL          ; OLine=885
+     STA      AUDF1            ; OLine=872
+     STY      AUDV1            ; OLine=873
+     LDA      MUSICB,X         ; OLine=874
+     INC      MUSBIND          ; OLine=875
+     ROR      A                ; OLine=876
+     ROR      A                ; OLine=877
+     ROR      A                ; OLine=878
+     ROR      A                ; OLine=879
+     ROR      A                ; OLine=880
+     AND      #7               ; OLine=881
+     CLC                       ; OLine=882
+     ROL      A                ; OLine=883
+     ROL      A                ; OLine=884
+     STA      MUSBDEL          ; OLine=885
 FLOW_A_45_OUTPUT_FALSE:                           
-                 RTS                       ;  --SubroutineContextEnds--
-                                           
+     RTS                       ;  --SubroutineContextEnds--
+                               
                                            ;  ======================================
 INIT_GO_FX:                                ;  --SubroutineContextBegins--
                                            
                                            ;  This function initializes the hardware and temporaries
                                            ;  to play the soundeffect of a player hitting the wall
                                            
-                 LDA      #5               ; OLine=895  Set counter for frame delay ...
-                 STA      MUS_TMP1         ; OLine=896  ... between frequency change
-                 LDA      #3               ; OLine=897  Tone type ...
-                 STA      AUDC0            ; OLine=898  ... poly tone
-                 LDA      #15              ; OLine=899  Volume A ...
-                 STA      AUDV0            ; OLine=900  ... to max
-                 LDA      #0               ; OLine=901  Volume B ...
-                 STA      AUDV1            ; OLine=902  ... silence
-                 LDA      #240             ; OLine=903  Initial ...
-                 STA      MUS_TMP0         ; OLine=904  ... sound ...
-                 STA      AUDF0            ; OLine=905  ... frequency
-                 RTS                       ;  --SubroutineContextEnds--
+     LDA      #5               ; OLine=895  Set counter for frame delay ...
+     STA      MUS_TMP1         ; OLine=896  ... between frequency change
+     LDA      #3               ; OLine=897  Tone type ...
+     STA      AUDC0            ; OLine=898  ... poly tone
+     LDA      #15              ; OLine=899  Volume A ...
+     STA      AUDV0            ; OLine=900  ... to max
+     LDA      #0               ; OLine=901  Volume B ...
+     STA      AUDV1            ; OLine=902  ... silence
+     LDA      #240             ; OLine=903  Initial ...
+     STA      MUS_TMP0         ; OLine=904  ... sound ...
+     STA      AUDF0            ; OLine=905  ... frequency
+     RTS                       ;  --SubroutineContextEnds--
                                            
                                            ;  ======================================
 PROCESS_GO_FX:                             ;  --SubroutineContextBegins--
@@ -954,52 +942,52 @@ PROCESS_GO_FX:                             ;  --SubroutineContextBegins--
                                            ;  This function is called once per scanline to play the
                                            ;  soundeffects of a player hitting the wall.
                                            ;         
-                 DEC      MUS_TMP1         ; OLine=914  Time to change the frequency?
-                 BNE      FLOW_A_52_OUTPUT_FALSE 
-                 LDA      #5               ; OLine=916  Reload ...
-                 STA      MUS_TMP1         ; OLine=917  ... the frame count
-                 INC      MUS_TMP0         ; OLine=918  Increment ...
-                 LDA      MUS_TMP0         ; OLine=919  ... the frequency divisor
-                 STA      AUDF0            ; OLine=920  Change the frequency
-                 CMP      #0               
-                 BNE      FLOW_A_52_OUTPUT_FALSE 
-                 LDA      #1               ; OLine=922  All done ... return 1
-                 RTS                       ; OLine=923
+     DEC      MUS_TMP1         ; OLine=914  Time to change the frequency?
+     BNE      FLOW_A_52_OUTPUT_FALSE 
+     LDA      #5               ; OLine=916  Reload ...
+     STA      MUS_TMP1         ; OLine=917  ... the frame count
+     INC      MUS_TMP0         ; OLine=918  Increment ...
+     LDA      MUS_TMP0         ; OLine=919  ... the frequency divisor
+     STA      AUDF0            ; OLine=920  Change the frequency
+     CMP      #0               
+     BNE      FLOW_A_52_OUTPUT_FALSE 
+     LDA      #1               ; OLine=922  All done ... return 1
+     RTS                       ; OLine=923
 FLOW_A_52_OUTPUT_FALSE:                           
-                 LDA      #0               ; OLine=926
-                                           
-                 RTS                       ;  --SubroutineContextEnds--
-                                           ; 
-                                           ;  ======================================
-                                           ;  Music commands for Channel A and Channel B
-                                           
-                                           ;  A word on music and wall timing ...
-                                           
-                                           ;  Wall moves between scanlines 0 and 111 (112 total)
-                                           
-                                           ;  Wall-increment   frames-to-top
-                                           ;       3             336
-                                           ;       2             224
-                                           ;       1             112
-                                           ;      0.5             56  ; Ah ... but we are getting one less
-                                           
-                                           ;  Each tick is multiplied by 4 to yield 4 frames per tick
-                                           ;  32 ticks/song = 32*4 = 128 frames / song
-                                           
-                                           ;  We want songs to start with wall at top ...
-                                           
-                                           ;  Find the least-common-multiple
-                                           ;  336 and 128 : 2688 8 walls, 21 musics
-                                           ;  224 and 128 :  896 4 walls,  7 musics
-                                           ;  112 and 128 :  896 8 walls,  7 musics
-                                           ;   56 and 128 :  896 16 walls, 7 musics
-                                           
-                                           ;  Wall moving every other gives us 112*2=224 scanlines
-                                           ;  Song and wall are at start every 4
-                                           ;  1 scanline, every 8
-                                           ;  Wall delay=3 gives us 128*3=336 scanlines 2
-                                           
-                                           ;  MUSIC EQUATES
+     LDA      #0               ; OLine=926
+                               
+     RTS                       ;  --SubroutineContextEnds--
+	   ; 
+	   ;  ======================================
+	   ;  Music commands for Channel A and Channel B
+	   
+	   ;  A word on music and wall timing ...
+	   
+	   ;  Wall moves between scanlines 0 and 111 (112 total)
+	   
+	   ;  Wall-increment   frames-to-top
+	   ;       3             336
+	   ;       2             224
+	   ;       1             112
+	   ;      0.5             56  ; Ah ... but we are getting one less
+	   
+	   ;  Each tick is multiplied by 4 to yield 4 frames per tick
+	   ;  32 ticks/song = 32*4 = 128 frames / song
+	   
+	   ;  We want songs to start with wall at top ...
+	   
+	   ;  Find the least-common-multiple
+	   ;  336 and 128 : 2688 8 walls, 21 musics
+	   ;  224 and 128 :  896 4 walls,  7 musics
+	   ;  112 and 128 :  896 8 walls,  7 musics
+	   ;   56 and 128 :  896 16 walls, 7 musics
+	   
+	   ;  Wall moving every other gives us 112*2=224 scanlines
+	   ;  Song and wall are at start every 4
+	   ;  1 scanline, every 8
+	   ;  Wall delay=3 gives us 128*3=336 scanlines 2
+	   
+	   ;  MUSIC EQUATES
                                            
 MUSCMD_JUMP      .equ     0                ; OLine=963
 MUSCMD_CONTROL   .equ     1                ; OLine=964
@@ -1182,5 +1170,5 @@ F7FA:
 00 00            
 00 F0  ; Reset vector (top of program)
 00 00
-}}}
+
  

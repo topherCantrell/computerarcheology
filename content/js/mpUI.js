@@ -40,7 +40,7 @@ function getSpriteQuadrantData(tileAddress) {
 	
 	var plane1 = getData(tileAddress,8); 
 	//getLineOfData(tileAddress,plane1);
-	var plane2 = getData(tileAddress+0x1000,plane2);
+	var plane2 = getData(tileAddress+0x1000,8);
 	//getLineOfData(tileAddress+0x1000,plane2);
 	
 	for(var x=0;x<8;++x) {

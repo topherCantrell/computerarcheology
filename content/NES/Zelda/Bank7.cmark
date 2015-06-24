@@ -1,4 +1,6 @@
 ;;%%image Zelda.jpg
+;;%%- NES/Zelda/RAMUse.mark /NES/Zelda/RAMUse.html
+;;%%-2 NES/Zelda/Hardware.mark /NES/Zelda/Hardware.html
 
 ; Zelda uses the MMC very simply. Zelda has no VROM ... everything is in RAM.
 ;

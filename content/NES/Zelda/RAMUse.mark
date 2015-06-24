@@ -1,6 +1,7 @@
 %%image Zelda.jpg
+%%range 0000:07FF, 6000:7FFF
 
-== RAM ==
+= RAM =
 
 ||= Address =||= Name =||= Description =||
 || 0000 ||     GP_00           || usually used as a two-byte pointer for indirection ||
@@ -64,7 +65,32 @@
 || || ||  ||
 || 0618 ||     SND_MusEffDel   || script pointer for music effect ||
 
-== Battery-Backed RAM==
+|| 0068 || 0068 || ||
+|| 0069 || 0069 || ||
+|| 006C || 006C || ||
+|| 05F1 || 05F1 || ||
+|| 05F2 || 05F2 || ||
+|| 05F3 || 05F3 || ||
+|| 05F4 || 05F4 || ||
+|| 05F6 || 05F6 || ||
+|| 0606 || 0606 || ||
+|| 060E || 060E || ||
+|| 060F || 060F || ||
+|| 0612 || 0612 || ||
+|| 0613 || 0613 || ||
+|| 0614 || 0614 || ||
+|| 0615 || 0615 || ||
+|| 0616 || 0616 || ||
+|| 0617 || 0617 || ||
+|| 0619 || 0619 || ||
+|| 061A || 061A || ||
+|| 061B || 061B || ||
+|| 061C || 061C || ||
+|| 061D || 061D || ||
+|| 061E || 061E || ||
+|| 061F || 061F || ||
+
+= Battery-Backed RAM =
 6530-7FFF cleared on startup if BBR is not valid
 
 ||= Address =||= Name =||= Description =||

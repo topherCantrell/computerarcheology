@@ -3,11 +3,8 @@ package code;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-
-import files.FU;
 
 
 public class CodeLine {
@@ -50,15 +47,15 @@ public class CodeLine {
 	}	
 	
 	
-	String originalText;
+	public String originalText;
 	String filename;
 	int line;
 	
 	int address = -1;
 	List<Integer> data = null;
-	String opcode = null;
+	public String opcode = null;
 	int opcodePos = -1;	
-	String comment = null;
+	public String comment = null;
 	int commentPos = -1;
 	
 	String label = null;
@@ -144,16 +141,4 @@ public class CodeLine {
 		
 	}	
 	
-	public static void main(String [] args) throws Exception {
-		
-		Path p = Paths.get("content/coco/madnessminotaur/Code.mark");
-		Path pd = Paths.get("content/coco/madnessminotaur/madness.bin");
-		List<CodeLine> lines = CodeLine.loadLines(p);
-		
-		System.out.println(CodeLine.simpleDataChecksum(lines));
-		System.out.println(FU.simpleBinaryFileChecksum(pd));
-
-		
-	}
-
 }
