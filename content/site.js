@@ -1,7 +1,7 @@
 {
 	
-	"content_root" : "../content/",
-	"deploy_root"  : "../deploy/",
+	"content_root" : "content/",
+	"deploy_root"  : "deploy/",
 	
 	"entries": [
 		 {"mark": "index.mark",   "out": "index.html"},	     

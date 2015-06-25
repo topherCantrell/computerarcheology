@@ -97,10 +97,17 @@ public class SiteInfo {
 			
 			k = (String)j.get("dir");
 			if(k!=null) {
+				
+				Boolean le = (Boolean)j.get("leaf");
+				if(le!=null) {
+					ent.leaf = le;
+				}
+				
 				ent.command = "dir";
 				ent.arg = k;
 				ent.nav = (String)j.get("nav");
 				ent.entries = parseEntries((JSONArray) j.get("entries"));
+				ret.add(ent);
 				continue;
 			}
 			
@@ -109,12 +116,6 @@ public class SiteInfo {
 		}
 		
 		return ret;
-		
-	}
-	
-	public static void main(String [] args) throws Exception {
-		
-		//SiteInfo si = new SiteInfo();
 		
 	}
 

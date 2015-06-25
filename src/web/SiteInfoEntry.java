@@ -8,6 +8,7 @@ public class SiteInfoEntry {
 	public String command;
 	public String arg;
 	public String out;
+	public boolean leaf;
 	
 	public List<SiteInfoEntry> entries;
 
