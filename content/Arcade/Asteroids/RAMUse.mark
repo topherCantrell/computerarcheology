@@ -54,8 +54,8 @@
 || 61        ||                       || Ship Direction ||
 || 62        ||                       || Direction Shot Is Fired From Saucer (?) ||
 || 63        ||                       ||             ||
-|| 64        ||                       ||             ||
-|| 65        ||                       ||             ||
+|| 64        ||                       || Ship Horizontal Velocity Low ||
+|| 65        ||                       || Ship Vertical Velocity Low ||
 || 66        ||                       ||             ||
 || 67        ||                       ||             ||
 || 68        ||                       || TIMER: Length Of Time To Play Bonus Ship Sound ||
@@ -84,13 +84,56 @@
 || 7F        ||                       ||             ||
 || 80:FF     ||                       ||             ||
 || 0100:01FF ||                       || Stack Space ||
-|| 021B      ||                       || Player Flag, 1 = Player Alive And Active, #$A0+ = Player Currently Exploding ||
-|| 021C      ||                       || Saucer Flag, 0 = No Saucer, 1 = Small Saucer, 2 = Large Saucer #$A0+(?) Saucer currently exploding ||
-|| 021D:021E ||                       || Countdown Timers For Saucer Shots 0 - 1 (only 2 shots allowed at a time) ||
-|| 021F:0222 ||                       || Countdown Timers For Ship Shots 0 - 3 (only 4 shots allowed at a time) ||
+|| 0200:02FF ||                       || Player 1 RAM ||
+|| 0200:0222 ||                       || Status ||
+|| 0200:021A ||                       || Asteroids 27-1 ||
+|| 021B      ||                       || Ship, 0 = No Ship Or Currently In Hyperspace, 1 = Alive, 0x160+ = Ship Currently Exploding ||
+|| 021C      ||                       || Saucer, 0 = No Saucer, 1 = Small Saucer, 2 = Large Saucer ||
+|| 021D:021E ||                       || Saucer Shots 2-1 Countdown Timer ||
+|| 021F:0222 ||                       || Ship Shots 4-1 Countdown Timer ||
+|| 0223:0245 ||                       || Horizontal Velocity 0-255, (255-192) = Left, 1-63 = Right ||
+|| 0223:023D ||                       || Asteroids 27-1 ||
+|| 023E      ||                       || Ship ||
+|| 023F      ||                       || Saucer ||
+|| 0240:0241 ||                       || Saucer Shots 2-1 ||
+|| 0242:0245 ||                       || Ship Shots 4-1 ||
+|| 0246:0268 ||                       || Vertical Velocity 0-255, (255-192) = Down, 1-63 = Up ||
+|| 0246:0260 ||                       || Asteroids 27-1 ||
+|| 0261      ||                       || Ship ||
+|| 0262      ||                       || Saucer ||
+|| 0263:0264 ||                       || Saucer Shots 2-1 ||
+|| 0265:0268 ||                       || Ship Shots 4-1 ||
+|| 0269:028B ||                       || Horizontal Position High (0-31), 0 = Left, 31 = Right ||
+|| 0269:0283 ||                       || Asteroids 27-1 ||
+|| 0284      ||                       || Ship ||
+|| 0285      ||                       || Saucer ||
+|| 0286:0287 ||                       || Saucer Shots 2-1 ||
+|| 0288:028B ||                       || Ship Shots 4-1 ||
+|| 028C:02AE ||                       || Vertical Position High (0-23), 0 = Bottom, 23 = Top ||
+|| 028C:02A6 ||                       || Asteroids 27-1 ||
+|| 02A7      ||                       || Ship ||
+|| 02A8      ||                       || Saucer ||
+|| 02A9:02AA ||                       || Saucer Shots 2-1 ||
+|| 02AB:02AE ||                       || Ship Shots 4-1 ||
+|| 02AF:02D1 ||                       || Horizontal Position Low (0-255), 0 = Left, 255 = Right ||
+|| 02AF:02C9 ||                       || Asteroids 27-1 ||
+|| 02CA      ||                       || Ship ||
+|| 02CB      ||                       || Saucer ||
+|| 02CC:02CD ||                       || Saucer Shots 2-1 ||
+|| 02CE:02D1 ||                       || Ship Shots 4-1 ||
+|| 02D2:02F4 ||                       || Vertical Position Low (0-255), 0 = Bottom, 255 = Top ||
+|| 02D2:02EC ||                       || Asteroids 27-1 ||
+|| 02ED      ||                       || Ship ||
+|| 02EE      ||                       || Saucer ||
+|| 02EF:02F0 ||                       || Saucer Shots 2-1 ||
+|| 02F1:02F4 ||                       || Ship Shots 4-1 ||
+|| 02F5      ||                       || Starting Asteroids ||
+|| 02F6      ||                       || Current Amount Of Asteroids ||
 || 02F7      ||                       || Countdown Timer For Saucer, At 0, Saucer Appears. Possibly A Dual Purpose Timer ||
-|| 02F8      ||                       || Starting Value For Timer @ 02F7 ||
-|| 02FC      ||                       || Starting Value For Timer @ 6E ||
-|| 0300:03FF ||                       || Player 2 RAM
+|| 02F8      ||                       || Starting Value For Timer At 02F7 ||
+|| 02F8      ||                       || Starting Value For Timer At 6E ||
+|| 02F9      ||                       || Possibly Screen Transition Timer ||
+|| 02FA      ||                       || Timer For Ship Spawning ||
+|| 0300:03FF ||                       || Player 2 RAM ||
 
 
