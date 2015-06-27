@@ -105,7 +105,7 @@ public class MarkupToHTML {
 		n.text = altText;
 		pageNav.add(n);
 		
-		System.out.println(n.level+" "+n.link+" "+n.text);
+		//System.out.println(n.level+" "+n.link+" "+n.text);
 		
 		return ret;
 	}

@@ -8,24 +8,24 @@ import java.util.List;
 
 public class AddressTable {
 	
-	public String name;
 	Path inputFile;
-	Path htmlRef;
+	public String htmlRef;
 	
 	List<Integer> rangeStarts = new ArrayList<Integer>();
 	List<Integer> rangeStops = new ArrayList<Integer>();
 	
 	List<AddressDef> defs = new ArrayList<AddressDef>();
+	public String shortName;	
 	
 	public AddressTable(Path path) throws IOException {
-		this(path,null,null);
+		this(path,null,-1);
 	}
 	
-	public AddressTable(Path path, String name, Path htmlRef) throws IOException {	
+	public AddressTable(Path path, String htmlRef, int index) throws IOException {	
 		
-		this.name = name;
 		this.inputFile = path;
-		this.htmlRef = htmlRef;	
+		this.htmlRef = htmlRef;
+		this.shortName = "-"+(index+1)+"_";
 		
 		List<String> lines = Files.readAllLines(path);
 				

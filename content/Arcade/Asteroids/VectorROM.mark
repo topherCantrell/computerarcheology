@@ -1,5 +1,6 @@
 ;;%%image Asteroids.jpg
 ;;%%title Asteroids DVG Vector ROM
+;;%%cpu DVG
 
 ;;{{{html
 ;;<script src="/js/DVG.js"></script>
@@ -1027,18 +1028,18 @@
 0F3C: 6e 3c ec 48    VEC  scale=03(/64)   bri=04  x=236     y=-110   (3.69, -1.72)
 0F40: 5a b8          HALT                                              ; ?? 0x85a
 0F42: 66 92 42 9a    VEC  scale=09(/1)    bri=09  x=578     y=614    (578.00, 614.00)
-0F46: 82 c3          JSR  $-0FC                                        
+0F46: 82 c3          ; JSR  $-0FC                                        
 0F48: 12 0e          VEC  scale=00(/512)  bri=15  x=-1023   y=-530   (-2.00, -1.04); e12
 0F4A: 12 90 4c 4d    VEC  scale=09(/1)    bri=04  x=-332    y=18     (-332.00, 18.00)
 0F4E: f1 a4 12 2d    CUR  scale=02(/128)  y=1265  x=3346               
 0F52: d2 0a          VEC  scale=00(/512)  bri=15  x=-1023   y=722    (-2.00, 1.41); ad2
-0F54: 64 c2          JSR  $-338                                        
+0F54: 64 c2          ;JSR  $-338                                        
 0F56: 6c 0f          VEC  scale=00(/512)  bri=15  x=-1023   y=-876   (-2.00, -1.71); f6c
 0F58: 66 cd          JSR  $12CC                                        
 0F5A: 82 6c 9a c3    VEC  scale=06(/8)    bri=12  x=922     y=-130   (115.25, -16.25)
 0F5E: 4a 85 c0 a6    VEC  scale=08(/2)    bri=10  x=-704    y=-330   (-352.00, -165.00)
 0F62: 6e 60 6c 9e    VEC  scale=06(/8)    bri=09  x=-620    y=110    (-77.50, 13.75)
-0F66: 0a c2          JSR  $-3EC                                        
+0F66: 0a c2          ;JSR  $-3EC                                        
 0F68: 42 c4          JSR  $0084                                        
 0F6A: c2 ba          HALT                                              ; ?? 0xac2
 0F6C: 60 49 f0 0c    VEC  scale=04(/32)   bri=00  x=-240    y=352    (-7.50, 11.00)
@@ -1049,13 +1050,13 @@
 0F7A: 12 b5          HALT                                              ; ?? 0x512
 0F7C: e8 29 d2 0e    VEC  scale=02(/128)  bri=00  x=-722    y=488    (-5.64, 3.81)
 0F80: d8 4c 82 82    VEC  scale=04(/32)   bri=08  x=642     y=-216   (20.06, -6.75)
-0F84: 70 c2          JSR  $-320                                        
+0F84: 70 c2          ;JSR  $-320                                        
 0F86: 6c 0b          VEC  scale=00(/512)  bri=15  x=-1023   y=876    (-2.00, 1.71); b6c
 0F88: 6e 09          VEC  scale=00(/512)  bri=15  x=-1023   y=366    (-2.00, 0.71); 96e
 0F8A: e6 b5          HALT                                              ; ?? 0x5e6
 0F8C: 92 3e 00 a6    VEC  scale=03(/64)   bri=10  x=-512    y=-658   (-8.00, -10.28)
 0F90: 6e 60 6e c1    VEC  scale=06(/8)    bri=12  x=366     y=110    (45.75, 13.75)
-0F94: 6c c0          JSR  $-728                                        
+0F94: 6c c0          ;JSR  $-728                                        
 0F96: 00 59 62 48    VEC  scale=05(/16)   bri=04  x=98      y=256    (6.12, 16.00)
 0F9A: 66 d2          RTS                                               ; ?? 0x266
 0F9C: 6d 18 4e 9b    VEC  scale=01(/256)  bri=09  x=846     y=109    (3.30, 0.43)

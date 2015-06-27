@@ -3629,4 +3629,3 @@ FFF0: D7 C8 00 00 38 04 01 04 01 BE
 FFFA: 84 E4       ; NMI to E484
 FFFC: 50 FF       ; RESET to FF50
 FFFE: F0 FF       ; IRQ to FFF0 (vectored)
-

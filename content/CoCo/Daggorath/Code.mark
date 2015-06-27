@@ -2325,7 +2325,7 @@ CE4E: 26 0C               BNE     $CE5C       ;{}
 CE50: 30 89 00 01         LEAX    $0001,X     
 CE54: 0D 74               TST     >$74        ;{-}       
 CE56: 26 04               BNE     $CE5C       ;{}       
-CE58: 30 89 FF F5         LEAX    $00-B,X     
+CE58: 30 89 FF F5         ;LEAX    $00-B,X     
 CE5C: 96 8B               LDA     >$8B        ;{-}       
 CE5E: A6 86               LDA     A,X         
 CE60: 97 4F               STA     >$4F        ;{-}       

@@ -13,6 +13,7 @@ import code.AddressTable;
 import code.CU;
 import code.CodeFile;
 import code.CodeLine;
+import cpu.CPU;
 
 /**
  * This class (and tool) manages the "{...}" link specifications in the code comments.
@@ -20,6 +21,19 @@ import code.CodeLine;
  * The others specifications are blindly replaced in the comments.
  * The code also reports on addresses that are accessed but not found in an
  * address table file.
+ * 
+ * There are two versions of link specifications. The "long" version contains everything.
+ * The "short" version is easier to see when looking at a raw disassembly. The "{{...}}"
+ * must be the full "long" specification.
+ * 
+ * {link:label}
+ * {/CoCo/Hardware.html#F00D:diskCntrl}
+ * 
+ * Short version: {-2diskCntrl}
+ * 
+ * Note that the short version is never used as an input. It is purely for the human to
+ * read while disassembling. The web builder always erases the full "{...}" and rebuilds 
+ * it to the current long specification.
  */
 public class LinkFix {
 	
@@ -29,8 +43,8 @@ public class LinkFix {
 	 * Fix up all the links in all comments in the code.
 	 * @param tabs the code and address tables
 	 */
-	public void fix(CodeFile tabs) {
-		
+	public void fix(CodeFile tabs, boolean shortVersion) {
+				
 		notFounds = new ArrayList<Integer>();
 		
 		int commentPos = 0;
@@ -61,14 +75,15 @@ public class LinkFix {
 			int j = i;
 			while(j<c.opcode.length()) {
 				int ch = c.opcode.charAt(j);
-				if( !((ch>='0' && ch<='9') || (ch>='A' && ch<='F')) ) {
+				if( !((ch>='0' && ch<='9') || (ch>='A' && ch<='F') || ch=='-') ) {
 					break;
 				}
 				++j;
 			}
 			
 			if(tabs.cpu==null) {
-				throw new RuntimeException(";;%%cpu must be valid");
+				//throw new RuntimeException(";;%%cpu must be valid");
+				tabs.cpu = CPU.getCPU("None");
 			}
 			
 			// Check the opcode for read/write/port
@@ -99,30 +114,82 @@ public class LinkFix {
 			// Find the table (if any) that goes with this address
 			AddressTable table = tabs.getAddressTable(ac.address);
 			
-			// Get the name (like "-") to go in the specification. Code references are
-			// left blank.
-			String tnam = "";
-			if(!ac.isCode && table!=null) {
-				tnam = table.name;
-			}
-			
 			// Add the specification to the code line
 			i = c.originalText.indexOf(";");
-			c.originalText = c.originalText.substring(0,i+1)+"{"+tnam+"}"+c.originalText.substring(i+1);
-			
-			// Lookup the actual entry in the table. Collect the address for reporting if it 
-			// is not in the table.
-			if(table!=null) {
-				AddressDef en = table.getEntry(ac.address, ac.bus);	
-				if(en == null) {
-					if(!notFounds.contains(ac.address)) {
-						notFounds.add(ac.address);
-					}
-				}
-			}						
+			String tnam = null;
+			if(shortVersion) {
+				tnam = getShortVersion(table,ac,c, tabs);
+			} else {
+				tnam = getLongVersion(table,ac,c, tabs);
+			}
+			if(tnam!=null) {
+				c.originalText = c.originalText.substring(0,i+1)+tnam+c.originalText.substring(i+1);
+			}								
 			
 		}
 		
+	}
+	
+	private String getShortVersion(AddressTable table, AddressAccess ac, CodeLine c, CodeFile code) {
+		// {E277}      - Code (address not labeled)
+		// {printVar}  - Code (address has label)
+		// {-curPtr}   - Table (table has name)
+		// {-60}       - Table (table has no name)
+		
+		if(ac.isCode){
+			String target = code.getCodeLabel(ac.address);
+			if(target!=null) {
+				return "{"+target+"}";
+			} 
+			return null;			
+		} else {
+			if(table==null) {
+				return null;
+			}
+			AddressDef en = table.getEntry(ac.address, ac.bus);	
+			if(en == null) {
+				if(!notFounds.contains(ac.address)) {
+					notFounds.add(ac.address);
+				}
+				return null;
+			}
+			if(en.name==null || en.name.length()==0) {
+				return null;
+			}
+			return "{"+table.shortName+en.name+"}";
+		}
+			
+	}
+	
+	private String getLongVersion(AddressTable table, AddressAccess ac, CodeLine c, CodeFile code) {		
+		// {#E277:E277}            - Code (address not labeled)
+		// {#printVar:printVar}        - Code (address has label)
+		// {RAMUse.html#60:curPtr} - Table (table has name)
+		// {RAMUse.html#60:60}     - Table (table has no name)
+		
+		if(ac.isCode) {
+			String target = code.getCodeLabel(ac.address);
+			if(target!=null) {
+				return "{#"+target+":"+target+"}";
+			} 
+			return null;			
+		} else {
+			if(table==null) {
+				return null;
+			}
+			AddressDef en = table.getEntry(ac.address, ac.bus);	
+			if(en == null) {
+				if(!notFounds.contains(ac.address)) {
+					notFounds.add(ac.address);
+				}
+				return null;
+			}
+			if(en.name==null || en.name.length()==0) {
+				return null;
+			}
+			return "{"+table.htmlRef+"#"+CU.hex4(ac.address)+":"+en.name+"}";
+		}			
+			
 	}
 	
 	/**
@@ -143,7 +210,7 @@ public class LinkFix {
 		CodeFile tabs = new CodeFile(p);
 		
 		// Do the fix up
-		fixer.fix(tabs);		
+		fixer.fix(tabs,true);		
 		
 		// Report on missing entries in the tables
 		if(fixer.notFounds.size()>0) {		

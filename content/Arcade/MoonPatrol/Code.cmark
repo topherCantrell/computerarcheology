@@ -1,10 +1,14 @@
 ;;%%image MoonPatrol.jpg
-;;%%- Arcade/MoonPatrol/RAMUse.mark /Arcade/MoonPatrol/RAMUse.html 8400:87FF
-;;%%-2 Arcade/MoonPatrol/Hardware.mark /Arcade/MoonPatrol/Hardware.html 8800:DFFF
-;;%%CPU Z80
+;;%%- Arcade/MoonPatrol/RAMUse.mark /Arcade/MoonPatrol/RAMUse.html
+;;%%-2 Arcade/MoonPatrol/Hardware.mark /Arcade/MoonPatrol/Hardware.html
+;;%%cpu Z80
 ;; The game's RAM usage is detailed here: 
 ;; [RAMUse.html RAM Usage]
 ;; [Hardware.html Hardware]
+
+;;= Startup Process =
+;;
+;; This is the startup process. This is just a test of markdown in code.
 
 START: ;=
 ; Starts here at power up

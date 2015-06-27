@@ -61,6 +61,8 @@ public class CodeLine {
 	String label = null;
 	String[] collectedLabels = null;
 	
+	public Object flag = null; // Spare data to attach when processing
+		
 	// PrintChar:
 	// 4000: 01 02 03  LDA  $500   ; This is a comment
 	//
@@ -98,7 +100,7 @@ public class CodeLine {
 			if(CU.isNumeric(lab,16)) {
 				this.address = CU.parseInt(lab, 16);
 			} else {
-				this.label = lab;
+				this.label = lab;				
 			}
 		}
 		
@@ -125,6 +127,8 @@ public class CodeLine {
 			if(CU.isNumeric(originalText.substring(pos,pos+2), 16)) {
 				dat.add(CU.parseInt(originalText.substring(pos,pos+2), 16));
 				pos = pos + 2;
+			} else {
+				break;
 			}
 		}
 		if(dat.size()>0) {

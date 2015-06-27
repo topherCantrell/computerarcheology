@@ -1,5 +1,6 @@
 ;;%%image Frogger.jpg
 ;;%%- Arcade/Frogger/RAMUse.mark RAMUse.html
+;;%%cpu Z80
 
 ;; The board's RAM usage is detailed here: 
 ;; [RAMUse.html RAM Usage]

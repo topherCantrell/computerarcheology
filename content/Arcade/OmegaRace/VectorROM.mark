@@ -1,5 +1,6 @@
 ;;%%image ORace.jpg
 ;;%%title Omega Race DVG Vector ROM 
+;;%%cpu DVG
 
 ;;{{{html
 ;;<script src="/js/DVG.js"></script>

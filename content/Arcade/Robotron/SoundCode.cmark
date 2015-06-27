@@ -1,4 +1,5 @@
 ;;%%image Robotron.jpg
+;;%%cpu 6809
 
 F000: 76 28 43   ROR  $2843          ; 
 F003: 29 31      BVS  $F036          ; 
