@@ -6,13 +6,13 @@
 * [VectorROM Vector ROM]
 * [DVGPROM DVG PROM]
 
-== Diagnostics ==
+= Diagnostics =
 
 My friend Gary Dion is repairing his Omega Race board. He was telling me about the diagnostic LED flashes. I dug into the code to figure out what they mean.
 
 Omega Race was a fun vector graphics game. Maybe I'll come back and finish the dig one day. Gary pointed me to a site describing a bug in the game -- a random line that appears. I would look for that. The game uses two AY38910 sound chips like the other sound boards I've spent so much time with. The sound board here is only 2K ROM. It would make a great addition to my collection of sound board digs.
 
-== The DVG Digital Vector Generator ==
+= The DVG Digital Vector Generator =
 
 Most all modern computer displays use a "raster display" made of a grid of tiny dots (pixels). But several early arcade games used a "vector graphics display" instead. In vector graphics, the game creates a list of vectors (lines) and special hardware drives the electron beam in the monitor from points A to points B in order.
 
@@ -30,7 +30,7 @@ Then the main CPU would fill 8004 with a JUMP-SUBROUTINE command (2 bytes) to ca
 
 Finally the main CPU adds a HALT instruction (2 bytes) at the end of the list at 800E and tells the DVG to run the list. The "list" of vectors is really a "program" that the DVG follows, and the main CPU creates displays by writing DVG programs on the fly.
 
-== TODO ==
+= TODO =
 
 Comment out the sound board to identify the sound effects.
 

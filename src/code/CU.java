@@ -1,5 +1,7 @@
 package code;
 
+import java.util.List;
+
 public class CU {
 	
 	/**
@@ -19,6 +21,24 @@ public class CU {
 		s = s.replace("_","");
 		// Throws an exception if not valid
 		return Integer.parseInt(s, base);		
+	}
+	
+	public static String listToString(List<String> strs) {
+		String ret = "";
+		for(String s : strs) {
+			ret = ret + s + "\n";
+		}
+		return ret;
+	}
+	
+	public static String replaceAll(String target, String key, String value) {
+		while(true) {
+			int i = target.indexOf(key);
+			if(i<0) break;
+			String a = target.substring(0,i)+value+(target.substring(i+key.length()));
+			target = a;
+		}
+		return target;
 	}
 	
 	public static String hex4(int value) {

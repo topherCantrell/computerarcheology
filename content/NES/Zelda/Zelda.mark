@@ -1,7 +1,7 @@
 %%title Zelda
 %%image Zelda.jpg
 
-== Code ==
+= Code =
 
 * [Hardware.html Hardware]
 * [RAMUse.html RAM Content]
@@ -14,7 +14,7 @@
 * [Bank6.html Bank 6 ]
 * [Bank7.html Bank 7 - Common code]
 
-== Simulator File Header ==
+= Simulator File Header =
 
 {{{
 0000: 4E 45 53 1A ; "NES" and DOS end-of-file
@@ -30,7 +30,7 @@
 000B: 00 00 00 00 00 ; Unused
 }}}
 
-== Memory Layout ==
+= Memory Layout =
 
 The 6502 processor has a 16-bit address bus, and it can directly address 64K bytes of memory for code and data. The PPU graphics processor has a separate 14-bit address bus, and it can directly address 16K of graphics information. Most games for the NES use a lot more memory than is directly accessible by these two processors. They do this by paging (also called bank-switching) sections of memory in and out of the two address spaces.
 
@@ -48,7 +48,7 @@ The following image shows how binary chunks from the Zelda.nes file map to NES m
 
 [!ZeldaBanks.jpg]
  
-== Tile Images ==
+= Tile Images =
 
 The first bank of VRAM (0000-0FFF) is used for sprites. The second bank of VRAM (1000-1FFF) is used for background tiles.
 
@@ -157,7 +157,7 @@ Note that the dungeon tile sets seem to be different for the second quest. It ma
 </table>
 }}}
 
-== Name Table Layout ==
+= Name Table Layout =
 
 The PPU generates a background on the screen that is 32x30 tiles. Each tile is 8x8 pixels. A pixel can have one of 4 colors (2 bits per pixel). Thus an 8x8 tile definition (pattern) requires 2bits*8*8 = 16 bytes.
 
@@ -177,9 +177,9 @@ If "vertical mirroring" is enabled then the two built in tables are joined horiz
 
 The cartridge provides an electrical signal to the PPU to describe how the name tables should be accessed. Thus the built-in name table layout (mirroring) is controlled by the cartridge hardware and thus the MMC1 registers.
 
-== Extracting the Code ==
+= Extracting the Code =
 
-=== December 7, 2009 ===
+== December 7, 2009 ==
 
 It starts with the NES emulator file ZELDA.NES, which is 128K ROM data plus the 16 byte header that describes the cartridge hardware. Based on the header, Zelda turns out to be a simple configuration. There is only program ROM (no extra video data) organized into 8 16K banks. There is battery-backed RAM from 6000 to 7FFF. I wrote a java tool to extract the header and the individual ROM banks.
 
@@ -197,15 +197,15 @@ The game configures the ROM banks as:
 C000 -- FFFF 16K (Bank 7 always)
 The game starts with the RESET vector in bank 7. Thus the Legend of Zelda begins at FF50 in ROM bank 7.
 
-=== December 10, 2009 ===
+== December 10, 2009 ==
 
 I took a cursory glance through the code and copied the RESET vector comments through all banks. 128K of ROM is quite formidable. I expected to find a lot of data for graphics images, and there are lots of "???" opcodes (data areas). I didn't expect to find the huge empty blocks of FF's in all the banks. I estimate less than 1/4th of the 128K ROM is actual code. That's a good thing!
 
 I wrote a java tool to help me format data and blank areas more densely. This shrunk the size of the disassembly text considerably.
 
-== Image Quest ==
+= Image Quest =
 
-=== December 14, 2009 ===
+== December 14, 2009 ==
 
 I did a little interactive-disassembly. Using the "patch" tool I filled data areas with a pattern of "AA" (alternating pixels) and looked for graphics changes in the emulator. When I got to Bank2 I bumped into the images of the letters and numbers. I wrote a tool to extract images in a text format and applied it to Bank2. There are all the letters, numbers, and lots of misc images like the treasure pictures used in the splash screen explanation.
 
@@ -220,9 +220,9 @@ The massive block of images at the beginning of Bank2 is divided into two large 
 }}}
 With a little more POKEing around I found the letters for the treasure-descriptions in the splash sequence. They are offset exactly as they appear in the 877F area with '0' having a value of 0 and 'A' having a value of 10. The space character is 36 (one after 'Z').
 
-== Game Flow ==
+= Game Flow =
 
-=== December 25, 2009 ===
+== December 25, 2009 ==
 
 Just a few instructions into the startup sequence the program makes it to E45B in bank 7. This is an endless loop where the main program spins for ever more. The game is driven by the NMI interrupt tick.
 
@@ -230,15 +230,15 @@ Just a few instructions into the startup sequence the program makes it to E45B i
 E45B: 4C 5B E4    JMP   $E45B         ; ENDLESS LOOP ... interrupt driven
 }}}
 
-== Battery Backed RAM ==
+= Battery Backed RAM =
 
-=== December 26, 2009 ===
+== December 26, 2009 ==
 
 At startup the program checks locations 6001 and 7FFF (battery backed ram). If the program does not find 5A in both, it clears a large chunk of the RAM.
 
-== Sound ==
+= Sound =
 
-=== December 29, 2009 ===
+== December 29, 2009 ==
 
 The code in Bank 0 is filled with writes to the sound hardware. This bank seems to be exclusively sound. I will patch some of the data areas and hear the changes.
 
@@ -260,7 +260,7 @@ Whenever one of these seven is requested it replaces any other effect being play
 
 It is possible (though rare) that two sound effects will be requested at the exact same time. In this case the table gives the priority. If (1) and (6) are requested at the same time, (1) will play. However, if (1) is requested and then a fraction of a second later (6) is requested then (6) will replace (1). The priority is only for this very rare simultaneous picking, and thus the special preemption logic hardcoded for the near-death beeping.
 
-=== January 24, 2010 ===
+== January 24, 2010 ==
 
 I've been working on the sound code on and off. I just haven't been diligent in updating this journal.
 
@@ -268,6 +268,6 @@ Much thanks to James Vanderhyde for decoding two of the miscellaneous sound effe
 
 I have been focusing on the music data. I wrote a tool to decompose the music sequences into note values and beat counts.
 
-=== January 18, 2011 ===
+== January 18, 2011 ==
 
 Almost a year later. I did beat Zelda: Twilight Princess since last here. Time to continue here. I'll take the next hobby session to reorient myself to the site.

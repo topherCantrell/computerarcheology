@@ -29,17 +29,7 @@ public class MakeWeb {
 		processEntries(si.contentRoot.toString(),si.root,nodes,si.deployRoot.toString(),si.contentRoot.toString());
 		
 	}
-	
-	private static void translateMarkupToHTML(String contentRoot, String inFile, String outFile, 
-			String breadCrumbs, String siteNav, String nav) {
-		
-	}
-	
-	private static void translateCodeToHTML(String contentRoot, String inFile, String outFile, 
-			String breadCrumbs, String siteNav, String nav) {
-		
-	}
-	
+			
 	public static Object[] getBreadCrumbs(List<SiteInfoEntry> nodes) {
 		
 		// Don't include the last node if it has no navigation
@@ -50,6 +40,12 @@ public class MakeWeb {
 		
 		SiteInfoEntry activeNode = null;
 		String crumbs = "";
+		
+		if(end>0) {
+			crumbs = MakeWeb.makeCrumb("/","Home",false);
+		} else {
+			crumbs = MakeWeb.makeCrumb("/","Home",true);
+		}
 				
 		for(int x=1;x<=end;++x) {
 			String link = "/";			
@@ -172,13 +168,15 @@ public class MakeWeb {
 				String breadCrumbs = (String)mr[0];
 				SiteInfoEntry activeNode = (SiteInfoEntry)mr[1];
 				String siteNav = MakeWeb.getSiteNav(root, nodes, activeNode);
-				MakeWeb.translateMarkupToHTML(contentRoot, cont+"/"+ent.arg, ent.out, breadCrumbs, siteNav, nav);
+				MarkupToHTML tr = new MarkupToHTML();
+				tr.translate(contentRoot, cont+"/"+ent.arg, dep+"/"+ent.out, breadCrumbs, siteNav, nav);
 			} else if(ent.command.equals("code")) {
 				Object[] mr = MakeWeb.getBreadCrumbs(nodes);
 				String breadCrumbs = (String)mr[0];
 				SiteInfoEntry activeNode = (SiteInfoEntry)mr[1];
 				String siteNav = MakeWeb.getSiteNav(root, nodes, activeNode);
-				MakeWeb.translateCodeToHTML(contentRoot, cont+"/"+ent.arg, ent.out, breadCrumbs, siteNav, nav);
+				CodeToHTML tr = new CodeToHTML();
+				tr.translate(contentRoot, cont+"/"+ent.arg, dep+"/"+ent.out, breadCrumbs, siteNav, nav);
 			} 
 			
 			else if(ent.command.equals("copy")) {
