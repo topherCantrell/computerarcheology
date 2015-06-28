@@ -18,5 +18,9 @@ The "address" is different from the "markup" in that the addresses in the table 
 
 Implement the Z80 and 6809 link finders.
 
+The link spec should include the style type. Like: {RAMUse.html#00FF:cursor:2}
+
+Some numeric constants are only 2 digits. The length should be preserved in any replacements.
+
 -------- Content ----------
 
