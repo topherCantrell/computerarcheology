@@ -2,19 +2,13 @@
 Hardware files can have READ and WRITE labels (same address ... different functions). "IN" means read and
 "OUT" means write. Easy for Z80.
 
-Calculate limits from %%-? file. We have to load these anyway.
-
 Sweep through all links over entire site and make sure they works.
 
 -------- Tools ----------
 
-The "address" is different from the "markup" in that the addresses in the table become targets.
-
 Implement the Z80 and 6809 link finders.
 
 Some numeric constants are only 2 digits. The length should be preserved in any replacements.
-
-Breadcrumbs are missing last component (see Bank7)
 
 FEATURE: As you click through code links show a stack on the side.
 

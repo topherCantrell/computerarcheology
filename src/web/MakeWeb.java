@@ -28,6 +28,8 @@ public class MakeWeb {
 		nodes.add(si.root);
 		processEntries(si.contentRoot.toString(),si.root,nodes,si.deployRoot.toString(),si.contentRoot.toString());
 		
+		System.out.println("\nDONE");
+		
 	}
 			
 	public static Object[] getBreadCrumbs(List<SiteInfoEntry> nodes) {
@@ -36,7 +38,7 @@ public class MakeWeb {
 		int end = nodes.size()-1;
 		if(nodes.get(end).nav == null) {
 			end = end - 1;
-		}
+		}		
 		
 		SiteInfoEntry activeNode = null;
 		String crumbs = "";
@@ -162,29 +164,48 @@ public class MakeWeb {
 			if(ent.nav!=null && ent.nav.length()>0) {
 				nav = ent.nav;
 			}
-			
-			if(ent.command.equals("mark") || ent.command.equals("address")) {				
+									
+			if(ent.command.equals("mark")) {
+				System.out.println("MARK "+cont+"/"+ent.arg+" "+dep+"/"+ent.out+" "+nav);
+				nodes.add(ent);
 				Object[] mr = MakeWeb.getBreadCrumbs(nodes);
 				String breadCrumbs = (String)mr[0];
+				nodes.remove(nodes.size()-1);
 				SiteInfoEntry activeNode = (SiteInfoEntry)mr[1];
 				String siteNav = MakeWeb.getSiteNav(root, nodes, activeNode);
 				MarkupToHTML tr = new MarkupToHTML();
 				tr.translate(contentRoot, cont+"/"+ent.arg, dep+"/"+ent.out, breadCrumbs, siteNav, nav);
 			} else if(ent.command.equals("code")) {
+				System.out.println("CODE "+cont+"/"+ent.arg+" "+dep+"/"+ent.out+" "+nav);
+				nodes.add(ent);
 				Object[] mr = MakeWeb.getBreadCrumbs(nodes);
 				String breadCrumbs = (String)mr[0];
+				nodes.remove(nodes.size()-1);
 				SiteInfoEntry activeNode = (SiteInfoEntry)mr[1];
 				String siteNav = MakeWeb.getSiteNav(root, nodes, activeNode);
 				CodeToHTML tr = new CodeToHTML();
 				tr.translate(contentRoot, cont+"/"+ent.arg, dep+"/"+ent.out, breadCrumbs, siteNav, nav);
-			} 
+			} else if(ent.command.equals("address")) {
+				System.out.println("ADDRESS "+cont+"/"+ent.arg+" "+dep+"/"+ent.out+" "+nav);
+				nodes.add(ent);
+				Object[] mr = MakeWeb.getBreadCrumbs(nodes);
+				String breadCrumbs = (String)mr[0];
+				nodes.remove(nodes.size()-1);
+				SiteInfoEntry activeNode = (SiteInfoEntry)mr[1];
+				String siteNav = MakeWeb.getSiteNav(root, nodes, activeNode);
+				AddressToHTML tr = new AddressToHTML();
+				tr.translate(contentRoot, cont+"/"+ent.arg, dep+"/"+ent.out, breadCrumbs, siteNav, nav);
+			}
 			
 			else if(ent.command.equals("copy")) {
+				System.out.println("COPY "+cont+"/"+ent.arg);
 				FU.copyFile(new File(cont+"/"+ent.arg), new File(dep+"/"+ent.arg));
 			} else if(ent.command.equals("copyDir")) {
+				System.out.println("COPY_DIR "+cont+"/"+ent.arg);
 				FU.copyDirectory(new File(cont+"/"+ent.arg), new File(dep+"/"+ent.arg));
 			}			
 			else if(ent.command.equals("dir")) {
+				System.out.println("DIR "+cont+"/"+ent.arg);
 				// Make directory
 				File nd = new File(dep+"/"+ent.arg);
 				nd.mkdir();

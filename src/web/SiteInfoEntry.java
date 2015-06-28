@@ -11,5 +11,5 @@ public class SiteInfoEntry {
 	public boolean leaf;
 	
 	public List<SiteInfoEntry> entries;
-
+		
 }

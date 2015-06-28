@@ -190,7 +190,7 @@ public class MarkupToHTML {
 	}
 	
 	
-	private String markDownStartTable(String proc) {
+	protected String markDownStartTable(String proc) {
 		
 		String[] hdrs = proc.split("\\|\\|");		
 		
@@ -204,7 +204,7 @@ public class MarkupToHTML {
 		} else {
 			String s = "<table class=\"table table-condensed\"><tr>";
 			for(int x=1;x<hdrs.length;++x) {
-				s = s + "<th>" + hdrs[x].trim()+ "</th>";
+				s = s + "<td>" + hdrs[x].trim()+ "</td>";
 			}
 			return s + "</tr>";
 		}
@@ -215,7 +215,7 @@ public class MarkupToHTML {
 		ret.add("</table>");
 	}
 
-	private String markDownContinueTable(String proc) {
+	protected String markDownContinueTable(String proc) {
 		String[] cells = proc.split("\\|\\|");
 		String s = "<tr>";
 		for(int x=1;x<cells.length;++x) {
@@ -345,7 +345,7 @@ public class MarkupToHTML {
 		}		
 	}
 	
-	private String makePageNav(String inFile, List<PageNavInfo> pageNav) {
+	protected String makePageNav(String inFile, List<PageNavInfo> pageNav) {
 		if(pageNav.size()<1) {
 			return "";
 		}

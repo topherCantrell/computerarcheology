@@ -16,8 +16,6 @@ public class CodeToHTML extends MarkupToHTML {
 			String breadCrumbs, String siteNav, String nav) throws IOException 
 	{
 		
-		System.out.println("CHERE "+inFile);
-		
 		// Load the code file (and all its address tables)
 		Path ip = Paths.get(inFile);
 		CodeFile code = new CodeFile(ip);
@@ -95,8 +93,12 @@ public class CodeToHTML extends MarkupToHTML {
 			}
 									
 			// Replace the numeric constant with a link
+			String targetWindow = "_self";
+			if(index>0) {
+				targetWindow = "TABLE_"+index;
+			}
 			String toReplace = c.opcode.substring(c.numericConstantStart-1,c.numericConstantEnd);
-			String replaceWith = "<a class=\"addressLink"+index+"\" href=\""+href+"\" title=\""+toReplace+"\" target=\"_self\">"+text+"</a>";			
+			String replaceWith = "<a class=\"addressLink"+index+"\" href=\""+href+"\" title=\""+toReplace+"\" target=\""+targetWindow+"\">"+text+"</a>";			
 			i = ret.indexOf(toReplace);
 			ret = ret.substring(0,i)+replaceWith+ret.substring(i+toReplace.length());
 			
