@@ -18,12 +18,32 @@ public class MarkupToHTML {
 	String rawMode = "none";
 	String mode = "none";
 	
-	private boolean markDownContinueRaw(String line, List<String> ret) {
+	private boolean markDownContinueRaw(String line, List<String> ret, List<PageNavInfo> pageNav) {
 		if(line.trim().startsWith("}}}")) {
 			if(rawMode.equals("pre")) {
 				ret.add("</pre>");
 			}
 			return true;
+		}
+		
+		// Special! Code labels can be headers too!
+		String[] words = line.split(":");
+		if(words.length == 2) {
+			words[0] = words[0].trim();
+			words[1] = words[1].trim();
+			if(words[1].startsWith(";")) {
+				int i = words[0].indexOf("id=");
+				if(i>=0) {
+					words[1] = words[1].substring(1).trim();
+					if(words[1].startsWith("=")) {
+						int j = words[0].indexOf("\"",i+4);
+						words[0] = words[0].substring(i+4,j);
+						markDownHeaders(words[1]+" "+words[0]+" "+words[1]+"#"+words[0],pageNav);
+						i = line.indexOf(";");
+						line = line.substring(0,i);
+					}
+				}
+			}
 		}
 		
 		ret.add(line);
@@ -222,7 +242,7 @@ public class MarkupToHTML {
 				
 				// In raw mode we don't do any processing at all
 				if(mode.equals("raw")) {
-					boolean nm = markDownContinueRaw(line, ret);
+					boolean nm = markDownContinueRaw(line, ret,pageNav);
 					if(nm) {
 						mode = "none";
 					}
@@ -259,7 +279,7 @@ public class MarkupToHTML {
 				if(proc.startsWith("=")) {
 					proc = markDownHeaders(proc,pageNav);
 				}
-				
+								
 				// Links
 				if(proc.contains("[")) {
 					proc = markDownBraces(proc);

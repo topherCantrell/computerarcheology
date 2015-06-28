@@ -51,9 +51,10 @@ public class CodeFile {
 		List<String> current = new ArrayList<String>();
 		
 		for(int x=0;x<code.size();++x) {
-		
+			
 			CodeLine r = code.get(x);
-			if(r.data==null || r.data.size()!=0) {
+			
+			if(r.data==null || r.data.size()==0) {
 				// No data and no opcode. Collect any labels for the next real line.
 				if(r.label!=null) {
 					current.add(r.label);					

@@ -121,12 +121,7 @@ public class LinkFix {
 			}
 			
 			// Find the table (if any) that goes with this address
-			AddressTable table = tabs.getAddressTable(ac.address);
-			if(table==null) {
-				c.addressFileIndex = 0 ;
-			} else {
-				c.addressFileIndex = table.index;
-			}
+			AddressTable table = tabs.getAddressTable(ac.address);			
 			
 			// Add the specification to the code line
 			i = c.originalText.indexOf(";");
@@ -176,15 +171,15 @@ public class LinkFix {
 	}
 	
 	private String getLongVersion(AddressTable table, AddressAccess ac, CodeLine c, CodeFile code) {		
-		// {#E277:E277}            - Code (address not labeled)
-		// {#printVar:printVar}        - Code (address has label)
-		// {RAMUse.html#60:curPtr} - Table (table has name)
-		// {RAMUse.html#60:60}     - Table (table has no name)
+		// {#E277:E277:0}            - Code (address not labeled)
+		// {#printVar:printVar:0}    - Code (address has label)
+		// {RAMUse.html#60:curPtr:1} - Table (table has name)
+		// {RAMUse.html#60:60:1}     - Table (table has no name)
 		
 		if(ac.isCode) {
 			String target = code.getCodeLabel(ac.address);
 			if(target!=null) {
-				return "{#"+target+":"+target+"}";
+				return "{#"+target+":"+target+":0}";
 			} 
 			return null;			
 		} else {
@@ -201,7 +196,7 @@ public class LinkFix {
 			if(en.name==null || en.name.length()==0) {
 				return null;
 			}
-			return "{"+table.htmlRef+"#"+CU.hex4(ac.address)+":"+en.name+"}";
+			return "{"+table.htmlRef+"#"+CU.hex4(ac.address)+":"+en.name+":"+table.index+"}";
 		}			
 			
 	}

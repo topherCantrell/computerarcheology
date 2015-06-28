@@ -1,14 +1,8 @@
-The link finder should also insert/update the names too. That way the raw disassembly file has
-labels that assist with the commenting process.
-The link tool should add full names like {DoPrint} instead of just {}. That helps with disassembly. The link
-tool overwrites these anyway.
 
 Hardware files can have READ and WRITE labels (same address ... different functions). "IN" means read and
 "OUT" means write. Easy for Z80.
 
 Calculate limits from %%-? file. We have to load these anyway.
-
-Tool expects "--". It should want "-2" and so on.
 
 Sweep through all links over entire site and make sure they works.
 
@@ -18,9 +12,11 @@ The "address" is different from the "markup" in that the addresses in the table 
 
 Implement the Z80 and 6809 link finders.
 
-The link spec should include the style type. Like: {RAMUse.html#00FF:cursor:2}
-
 Some numeric constants are only 2 digits. The length should be preserved in any replacements.
+
+Breadcrumbs are missing last component (see Bank7)
+
+FEATURE: As you click through code links show a stack on the side.
 
 -------- Content ----------
 

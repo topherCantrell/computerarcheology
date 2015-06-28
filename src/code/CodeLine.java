@@ -64,7 +64,6 @@ public class CodeLine {
 	public Object flag = null; // Spare data to attach when processing
 	public int numericConstantStart = -1;
 	public int numericConstantEnd = -1;
-	public int addressFileIndex = -1; 
 		
 	// PrintChar:
 	// 4000: 01 02 03  LDA  $500   ; This is a comment

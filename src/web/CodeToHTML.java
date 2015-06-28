@@ -82,9 +82,10 @@ public class CodeToHTML extends MarkupToHTML {
 				throw new RuntimeException("Bad Specification '"+c.originalText+"'");
 			}
 			
-			i = spec.indexOf(":");
-			String href = spec.substring(0,i);
-			String text = spec.substring(i+1);
+			String [] sp = spec.split(":");
+			String href = sp[0];
+			String text = sp[1];
+			int index = Integer.parseInt(sp[2]);
 			if(href.startsWith("#$")) {
 				href = "#"+href.substring(2);
 			}
@@ -92,12 +93,10 @@ public class CodeToHTML extends MarkupToHTML {
 			if(href.length()==0 || text.length()==0) {
 				throw new RuntimeException("Bad Specification '"+c.originalText+"'");
 			}
-			
-			System.out.println(c.addressFileIndex);
-			
+									
 			// Replace the numeric constant with a link
 			String toReplace = c.opcode.substring(c.numericConstantStart-1,c.numericConstantEnd);
-			String replaceWith = "<a class=\"addressLink"+c.addressFileIndex+"\" href=\""+href+"\" title=\""+toReplace+"\" target=\"_self\">"+text+"</a>";			
+			String replaceWith = "<a class=\"addressLink"+index+"\" href=\""+href+"\" title=\""+toReplace+"\" target=\"_self\">"+text+"</a>";			
 			i = ret.indexOf(toReplace);
 			ret = ret.substring(0,i)+replaceWith+ret.substring(i+toReplace.length());
 			
@@ -113,7 +112,7 @@ public class CodeToHTML extends MarkupToHTML {
 					String a = ret.substring(0,i-k)+ret.substring(i);
 					ret = a;
 				} else {
-					throw new RuntimeException(ret+" "+k+" "+(i-j));
+					//throw new RuntimeException(ret+" "+k+" "+(i-j));
 				}
 			}
 												
