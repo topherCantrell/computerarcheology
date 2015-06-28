@@ -14,7 +14,9 @@ Sweep through all links over entire site and make sure they works.
 
 -------- Tools ----------
 
-Keep pressing through the process: replace the python tools with Java ones.
+The "address" is different from the "markup" in that the addresses in the table become targets.
+
+Implement the Z80 and 6809 link finders.
 
 -------- Content ----------
 

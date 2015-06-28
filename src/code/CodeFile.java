@@ -97,7 +97,7 @@ public class CodeFile {
 					return c.collectedLabels[0];
 				}
 				c.flag = true;
-				return CU.hex4(address);
+				return "$"+CU.hex4(address);
 			}
 		}		
 		return null;		

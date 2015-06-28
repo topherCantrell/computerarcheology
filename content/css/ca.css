@@ -36,16 +36,16 @@ body {
   margin-left: -30px;
 }
 
-.codeAddressLink {  
+.addressLink0 {
 	font-weight: bold;
 }
 
-.ramAddressLink {
+.addressLink1 {
   color:#00C000;
   font-weight: bold;
 }
 
-.hardwareAddressLink {
+.addressLink2 {
   color:#00C0C0;
   font-weight: bold;
 }

@@ -3,6 +3,8 @@ package web;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import cleans.LinkFix;
 import code.CodeFile;
@@ -24,31 +26,100 @@ public class CodeToHTML extends MarkupToHTML {
 		LinkFix fixer = new LinkFix();
 		fixer.fix(code, false);			
 		
-		// TODO
-		
-		// Markups and code linking
-		
-		// c.comment.flag != null if we need to insert a raw-address span
-		// c.label != null if we need to insert a label span
-		// c.comment.startsWith(";{") if we need to insert an anchor
-		
-		for(CodeLine c : code.code) {
-			
-			/*
-			if(c.comment!=null && c.comment.startsWith(";{")) {
-				System.out.println(c.originalText+":"+c.comment);
-			}
-			*/
-			
-			/*
-			if(c.flag !=null) {
-				System.out.println(c.originalText);				
-			}
-			*/
+		// Convert to pure markdown		
+		List<String> lines = new ArrayList<String>();
+		boolean inMarkup = true;		
+		for(CodeLine c : code.code) {			
+			if(c.comment!=null && c.comment.startsWith(";")) {
+				if(!inMarkup) {
+					lines.add("}}}");
+					inMarkup = true;
+				}				
+				lines.add(c.originalText.trim().substring(2).trim());
+			} else {
+				if(inMarkup) {
+					lines.add("{{{code");
+					inMarkup = false;
+				}
+				lines.add(codeToHTML(c));
+			}			
 		}
 		
-		//System.exit(0);
+		// Do the markdown
+		super.translate(contentRoot, inFile, outFile, breadCrumbs, siteNav, nav, lines);		
 		
+	}
+
+	private String codeToHTML(CodeLine c) {
+		// c.flag != null if we need to insert a raw-address span
+		// c.label != null if we need to insert a label span		
+		// c.comment.startsWith(";{") if we need to insert an anchor
+		
+		String ret = c.originalText;
+		
+		if(c.flag!=null || c.label!=null) {
+			// This is a target. Give it an id for HREFfing.
+			String targ = c.label;
+			if(targ==null) {
+				targ = ret.substring(0,4);
+			}
+			String a = "<span class=\"siteTarget\" id=\""+targ+"\">" +
+			           ret.charAt(0)+"</span>"+
+					   ret.substring(1);
+			ret = a;			
+		}		
+				
+		int i = ret.indexOf(";{");
+		if(i>=0) {
+			int j = ret.lastIndexOf("}");
+			String spec = ret.substring(i+2,j);
+			if(spec.length()>0 && spec.charAt(0)=='{') {
+				spec = spec.substring(1,spec.length()-1);
+			}
+			ret = ret.substring(0,i+1)+ret.substring(j+1);
+			
+			if(spec.length()<5) {
+				throw new RuntimeException("Bad Specification '"+c.originalText+"'");
+			}
+			
+			i = spec.indexOf(":");
+			String href = spec.substring(0,i);
+			String text = spec.substring(i+1);
+			if(href.startsWith("#$")) {
+				href = "#"+href.substring(2);
+			}
+			
+			if(href.length()==0 || text.length()==0) {
+				throw new RuntimeException("Bad Specification '"+c.originalText+"'");
+			}
+			
+			System.out.println(c.addressFileIndex);
+			
+			// Replace the numeric constant with a link
+			String toReplace = c.opcode.substring(c.numericConstantStart-1,c.numericConstantEnd);
+			String replaceWith = "<a class=\"addressLink"+c.addressFileIndex+"\" href=\""+href+"\" title=\""+toReplace+"\" target=\"_self\">"+text+"</a>";			
+			i = ret.indexOf(toReplace);
+			ret = ret.substring(0,i)+replaceWith+ret.substring(i+toReplace.length());
+			
+			// Fix any spacing issues (the label is likely longer than the original numeric constant)
+			i = ret.indexOf(";") - 1;
+			j = i;
+			while(ret.charAt(j)==' ') {
+				--j;
+			}
+			int k = text.length()-toReplace.length();
+			if(k>0) {
+				if(k<(i-j)) {
+					String a = ret.substring(0,i-k)+ret.substring(i);
+					ret = a;
+				} else {
+					throw new RuntimeException(ret+" "+k+" "+(i-j));
+				}
+			}
+												
+		}
+				
+		return ret;
 	}
 
 }

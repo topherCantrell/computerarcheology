@@ -58,10 +58,13 @@ public class CodeLine {
 	public String comment = null;
 	public int commentPos = -1;
 	
-	String label = null;
+	public String label = null;
 	String[] collectedLabels = null;
 	
 	public Object flag = null; // Spare data to attach when processing
+	public int numericConstantStart = -1;
+	public int numericConstantEnd = -1;
+	public int addressFileIndex = -1; 
 		
 	// PrintChar:
 	// 4000: 01 02 03  LDA  $500   ; This is a comment

@@ -15,7 +15,8 @@ public class AddressTable {
 	List<Integer> rangeStops = new ArrayList<Integer>();
 	
 	List<AddressDef> defs = new ArrayList<AddressDef>();
-	public String shortName;	
+	public String shortName;
+	public int index;	
 	
 	public AddressTable(Path path) throws IOException {
 		this(path,null,-1);
@@ -26,6 +27,7 @@ public class AddressTable {
 		this.inputFile = path;
 		this.htmlRef = htmlRef;
 		this.shortName = "-"+(index+1)+"_";
+		this.index = index+1; // Code is 0
 		
 		List<String> lines = Files.readAllLines(path);
 				

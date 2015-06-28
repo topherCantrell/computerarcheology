@@ -59,11 +59,27 @@ public class LinkFix {
 			if(c.comment!=null && c.comment.contains("{{")) {
 				// Don't change any "fixed" references
 				continue;
-			}			
+			}	
+			
 			if(c.opcode==null) {
 				// Not an opcode ... nothing to reference
 				continue;
 			}
+						
+			if(c.comment!=null) {
+				int i = c.comment.indexOf("{");
+				if(i>=0) {
+					int j = c.comment.indexOf("}",i);
+					if(j<0) {
+						throw new RuntimeException("Bad Specification '"+c.originalText+"'");
+					}
+					String exist = c.comment.substring(i,j+1);
+					i = c.originalText.indexOf(exist);
+					String a = c.originalText.substring(0,i)+c.originalText.substring(i+exist.length());
+					c.originalText = a;					
+				}
+			}
+			
 			int i = c.opcode.indexOf("$");
 			if(i<0) {
 				// No numeric constant ... nothing to reference
@@ -80,6 +96,9 @@ public class LinkFix {
 				}
 				++j;
 			}
+			
+			c.numericConstantStart = i;
+			c.numericConstantEnd = j;
 			
 			if(tabs.cpu==null) {
 				//throw new RuntimeException(";;%%cpu must be valid");
@@ -101,18 +120,13 @@ public class LinkFix {
 				c.comment = "";
 			}
 			
-			// Remove any existing {...} entry
-			i = c.comment.indexOf("{");
-			if(i>=0) {
-				j = c.comment.indexOf("}",i);
-				String exist = c.comment.substring(i,j+1);
-				i = c.originalText.indexOf(exist);
-				String a = c.originalText.substring(0,i)+c.originalText.substring(i+exist.length());
-				c.originalText = a;
-			}
-			
 			// Find the table (if any) that goes with this address
 			AddressTable table = tabs.getAddressTable(ac.address);
+			if(table==null) {
+				c.addressFileIndex = 0 ;
+			} else {
+				c.addressFileIndex = table.index;
+			}
 			
 			// Add the specification to the code line
 			i = c.originalText.indexOf(";");
