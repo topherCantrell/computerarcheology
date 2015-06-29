@@ -210,7 +210,7 @@ public class LinkFix {
 	 */
 	public static void main(String [] args) throws Exception {
 		
-		Path p = Paths.get("content/NES/Zelda/Bank7.cmark");
+		Path p = Paths.get("content/Arcade/Asteroids/Code.cmark");
 		
 		// The worker object
 		LinkFix fixer = new LinkFix();		
@@ -230,6 +230,11 @@ public class LinkFix {
 			}
 		}
 		
+		for(CodeLine c : tabs.code){
+			System.out.println(c.originalText);
+		}	
+		
+		/*
 		// Replace the contents of the file
 		PrintWriter pw = new PrintWriter(p.toString());
 		for(CodeLine c : tabs.code){
@@ -237,6 +242,7 @@ public class LinkFix {
 		}		
 		pw.flush();
 		pw.close();
+		*/
 		
 	}
 

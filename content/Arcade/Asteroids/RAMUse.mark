@@ -1,4 +1,5 @@
 %%image Asteroids.jpg
+%%range 0000:03FF
 
 = Game Variables = 
 
@@ -27,10 +28,10 @@
 || 15        ||                       ||             ||
 || 16        ||                       ||             ||
 || 17        ||                       ||             || 
-|| 18        ||                       || Current Player (0 = Player 1, 1 = Player 2) ||
+|| 18        || curPlayer             || Current Player (0 = Player 1, 1 = Player 2) ||
 || 19        ||                       ||             ||
 || 1A        ||                       ||             ||
-|| 1C        ||                       || Number Of Players In Current Game ||
+|| 1C        || numPlayers            || Number Of Players In Current Game ||
 || 1D:30     ||                       || High Score Table (Scores) 2 Byte Format In Decimal. Byte 1 Tens, Byte 2 Thousands (In Decimal) ||
 || 31        ||                       ||             ||
 || 32        ||                       ||             ||
@@ -41,8 +42,8 @@
 || 54        ||                       || Player 2 Score Tens (In Decimal) ||
 || 55        ||                       || Player 2 Score Thousands (In Decimal) ||
 || 56        ||                       || Number Of Starting Ships Per Game ||
-|| 57        ||                       || Current Number Of Ships, Player 1 ||
-|| 58        ||                       || Current Number Of Ships, Player 2 ||
+|| 57        ||  numShipsP1           || Current Number Of Ships, Player 1 ||
+|| 58        ||  numShipsP2           || Current Number Of Ships, Player 2 ||
 || 59        ||                       || Hyperspace Flag: 1 = Successful Hyperspace Jump, $80 = Unsuccessful Hyperspace Jump (DEATH), 0 = Hyperspace Not Currently Active ||
 || 5A        ||                       || Time before game starts/time in 2 player game before it switches from current player to next after current player death. Starts at #$80 and counts down to 0 ||
 || 5B        ||                       || Appears to be a timeout for the code. Game will lock up if this goes above 3. Checked in the NMI ||
@@ -51,7 +52,7 @@
 || 5E        ||                       ||             ||
 || 5F        ||                       ||             ||
 || 60        ||                       ||             ||
-|| 61        ||                       || Ship Direction ||
+|| 61        ||  direction            || Ship Direction ||
 || 62        ||                       || Direction Shot Is Fired From Saucer (?) ||
 || 63        ||                       ||             ||
 || 64        ||                       || Ship Horizontal Velocity Low ||
