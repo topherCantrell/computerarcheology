@@ -54,7 +54,7 @@ public class CodeLine {
 	int address = -1;
 	List<Integer> data = null;
 	public String opcode = null;
-	int opcodePos = -1;	
+	public int opcodePos = -1;	
 	public String comment = null;
 	public int commentPos = -1;
 	

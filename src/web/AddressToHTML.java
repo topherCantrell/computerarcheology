@@ -33,6 +33,10 @@ public class AddressToHTML  extends MarkupToHTML {
 			tar = tar.substring(0,i).trim();
 		}
 		
+		while(tar.length()<4) {
+			tar = "0"+tar;
+		}
+		
 		return "<td><span class=\"siteTarget\" id=\""+tar+"\">"+org+"</span></td>";
     	
     }

@@ -230,11 +230,13 @@ public class LinkFix {
 			}
 		}
 		
+		/*
 		for(CodeLine c : tabs.code){
 			System.out.println(c.originalText);
-		}	
+		}
+		*/	
 		
-		/*
+		
 		// Replace the contents of the file
 		PrintWriter pw = new PrintWriter(p.toString());
 		for(CodeLine c : tabs.code){
@@ -242,7 +244,7 @@ public class LinkFix {
 		}		
 		pw.flush();
 		pw.close();
-		*/
+		
 		
 	}
 

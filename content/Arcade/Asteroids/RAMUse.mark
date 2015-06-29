@@ -1,7 +1,6 @@
+%%title Asteroids RAM Usage
 %%image Asteroids.jpg
 %%range 0000:03FF
-
-= Game Variables = 
 
 ||= Address  || Name                  || Description ||
 || 00        ||                       ||             ||

@@ -27,7 +27,14 @@ public class CodeToHTML extends MarkupToHTML {
 		// Convert to pure markdown		
 		List<String> lines = new ArrayList<String>();
 		boolean inMarkup = true;		
-		for(CodeLine c : code.code) {			
+		for(CodeLine c : code.code) {	
+			
+			// Add blank lines as-is whatever mode we are in
+			if(c.originalText.trim().length()==0) {
+				lines.add("");
+				continue;
+			}
+			
 			if(c.comment!=null && c.comment.startsWith(";")) {
 				if(!inMarkup) {
 					lines.add("}}}");

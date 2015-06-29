@@ -8,10 +8,9 @@ Sweep through all links over entire site and make sure they works.
 
 Implement the Z80 and 6809 link finders.
 
-Some numeric constants are only 2 digits. The length should be preserved in any replacements.
-The RAM table uses the addresses as-is. 2 digit targets don't make 4 digit requests.
+Should be able to place links in comments of non-opcodes (data) as in jump tables and vectors
 
-The code-to-html is inserting blank lines between mode switches.
+Short-version links to unlabled code should not be added.
 
 FEATURE: As you click through code links show a stack on the side.
 
