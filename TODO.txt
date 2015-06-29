@@ -1,18 +1,10 @@
+-------- Tools ----------
 
 Hardware files can have READ and WRITE labels (same address ... different functions). "IN" means read and
 "OUT" means write. Easy for Z80.
 
-Sweep through all links over entire site and make sure they works.
-
--------- Tools ----------
-
 Implement the Z80 and 6809 link finders.
-
-Should be able to place links in comments of non-opcodes (data) as in jump tables and vectors
-
-Short-version links to unlabled code should not be added.
-
-FEATURE: As you click through code links show a stack on the side.
 
 -------- Content ----------
 
+Sweep through all links over entire site and make sure they works.

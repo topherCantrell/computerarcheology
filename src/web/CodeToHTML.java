@@ -99,11 +99,23 @@ public class CodeToHTML extends MarkupToHTML {
 				throw new RuntimeException("Bad Specification '"+c.originalText+"'");
 			}
 									
-			// Replace the numeric constant with a link
+			// Multiple tabs
 			String targetWindow = "_self";
 			if(index>0) {
 				targetWindow = "TABLE_"+index;
 			}
+			
+			// Replace the numeric constant with a link
+			
+			if(c.numericConstantStart<0) {
+				// This link goes in the comments
+				// TODO this ties in with the "<<" placement process
+				String link = "<a class=\"addressLink"+index+"\" href=\""+href+"\" target=\""+targetWindow+"\">"+text+"</a>";
+				i = ret.indexOf(";");
+				ret = ret.substring(0,i+1)+" "+link+ret.substring(i+1);
+				return ret;				
+			}
+			
 			String toReplace = c.opcode.substring(c.numericConstantStart-1,c.numericConstantEnd);
 			String replaceWith = "<a class=\"addressLink"+index+"\" href=\""+href+"\" title=\""+toReplace+"\" target=\""+targetWindow+"\">"+text+"</a>";			
 			i = ret.indexOf(toReplace);

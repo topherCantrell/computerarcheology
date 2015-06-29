@@ -147,7 +147,7 @@ public class LinkFix {
 		
 		if(ac.isCode){
 			String target = code.getCodeLabel(ac.address);
-			if(target!=null) {
+			if(target!=null && target.charAt(0)!='$') {
 				return "{"+target+"}";
 			} 
 			return null;			
