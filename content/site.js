@@ -82,7 +82,8 @@
 	         },
 	         {"dir": "Frogger", "nav": "Frogger", "entries": [
 	             {"mark": "Frogger.mark", "out": "index.html"},
-	             {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
+	             {"address": "SoundRAMUse.mark", "out": "SoundRAMUse.html", "nav": "Sound RAM Use"},
+	             {"address": "SoundHardware.mark", "out": "SoundHardware.html", "nav": "Sound Hardware"},
 	             {"code": "SoundCode.cmark", "out": "SoundCode.html", "nav": "Sound Code"},
 	             {"copy": "Frogger.jpg"},
 	             {"copy": "FroggerFix.mp3"}

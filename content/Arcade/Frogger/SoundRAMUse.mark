@@ -1,3 +1,4 @@
+%%title Frogger Sound Board RAM Use
 %%image Frogger.jpg
 
 ||= Address || Name             || Description ||
@@ -49,6 +50,5 @@
 || 42C4     ||                  || ||
 || 42C5     ||                  || ||
 || 42C8     ||                  || ||
-
 
 Stack pointer is initialized to 4400. It builds down from there.

@@ -3,19 +3,41 @@
 
 = Code Links =
 
-* [Code.html Disassembled Code]
-* [RAMUse.html RAM Usage]
+* [SoundCode.html Disassembled Sound Code]
+* [SoundRAMUse.html Sound RAM Usage]
+* [SoundHardware.html Sound Hardware Info]
 
 = Music to Hop By =
 
-From the moment you press start [http://en.wikipedia.org/wiki/Frogger Frogger] plays a steady stream of music -- 26 different song fragments in all. You have to beat the first five levels and die to play them all! But even then there is one song you can never hear all the way to finish. The timer runs out before the main game song finishes. And even if you stop the timer (which I'll show you how to do) you still won't hear the complete song. There is a bug in the song data that shuts off the song's harmony voice near the end.
+From the moment you press start [http://en.wikipedia.org/wiki/Frogger Frogger] plays a steady stream of music -- 26 different song 
+fragments in all. You have to beat the first five levels and die to play them all! But even then there is one song you can never 
+hear all the way to finish. The timer runs out before the main game song finishes. And even if you stop the timer (which I'll show 
+you how to do) you still won't hear the complete song. There is a bug in the song data that shuts off the song's harmony voice near 
+the end.
 
-In this dig I'll show you how to fix the song data and unearth music buried deep in the Frogger ROM -- music never before heard since the game's release in 1981. Until now.
+In this dig I'll show you how to fix the song data and unearth music buried deep in the Frogger ROM -- music never before heard 
+since the game's release in 1981. Until now.
 
-But first I'll compare the code of three different sound boards and see how each approached sound in a slightly different way. All three boards are disassembled on this site: 
-Frogger, [/Arcade/TimePilot Time Pilot] (both by Konami), and [/Arcade/MoonPatrol Moon Patrol].
+{{{html
+<div class="tourGuide">
+<div style="padding-left: 20px">
+}}}
+= Tour Guide =
+
+Listen to the hidden music: [#HiddenMusic Hidden Music]
+
+{{{html
+</div>
+</div>
+}}}
 
 == The Mechanics of Sound ==
+
+I'll compare the code of three different sound boards and see how each approached sound in a slightly different way. 
+All three boards are disassembled on this site: 
+* Frogger
+* [/Arcade/TimePilot Time Pilot] (also by Konami)
+* [/Arcade/MoonPatrol Moon Patrol]
 
 Most sound effects fall into one of two categories: one-shot and ongoing. A one-shot sound is the audio record of an event. Examples include a laser firing, a frog jumping, and an alien exploding. These effects take a fraction of a second, and the code simply starts them and lets them run to completion.
 

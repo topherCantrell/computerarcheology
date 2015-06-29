@@ -1,10 +1,11 @@
+;;%%title Frogger Sound Board
 ;;%%image Frogger.jpg
-;;%%- Arcade/Frogger/RAMUse.mark RAMUse.html
+;;%%- Arcade/Frogger/SoundRAMUse.mark SoundRAMUse.html
+;;%%-2 Arcade/Frogger/SoundHardware.mark SoundHardware.html
 ;;%%cpu Z80
 
-;; The board's RAM usage is detailed here: 
-;; [RAMUse.html RAM Usage]
-
+;; * [SoundRAMUse.html RAM Usage]
+;; * [SoundHardware.html Hardware Info]
 
 ; Port space addressing is straightforward:
 ; If upper address bit 7 is set, value is written to chip address register
@@ -32,7 +33,7 @@
 START: ; =
 0000: 06 00           LD      B,$00               ; Fill value of 0
 0002: 21 00 40        LD      HL,$4000            ; First location of RAM
-0005: C3 0B 01        JP      $010B               ;{} Continue init
+0005: C3 0B 01        JP      $010B               ; Continue init
 
 
 WriteToAY: ; =
@@ -43,19 +44,19 @@ WriteToAY: ; =
 000D: C9              RET                         ; Done
 000E: FF FF  
 
-0010: C3 B7 02        JP      $02B7               ;{} Read voice amplitude
+0010: C3 B7 02        JP      $02B7               ; Read voice amplitude
 0013: FF FF FF FF FF                 
 
-0018: C3 7C 02        JP      $027C               ;{} Set voice amplitude
+0018: C3 7C 02        JP      $027C               ; Set voice amplitude
 001B: FF FF FF FF FF                 
 
-0020: C3 C7 02        JP      $02C7               ;{} Remove all voice capacitor filters
+0020: C3 C7 02        JP      $02C7               ; Remove all voice capacitor filters
 0023: FF FF FF FF FF               
 
-0028: C3 3C 02        JP      $023C               ;{} Write to voice tune registers (coarse/fine)
+0028: C3 3C 02        JP      $023C               ; Write to voice tune registers (coarse/fine)
 002B: FF FF FF FF FF                 
 
-0030: C3 60 02        JP      $0260               ;{} Enable tone
+0030: C3 60 02        JP      $0260               ; Enable tone
 
 ;C00 Not used
 0033: 3E FF           LD      A,$FF               ; Return ...
@@ -79,37 +80,37 @@ Interrupt: ; =
 003A: 21 6D 00        LD      HL,$006D            ; Return address
 003D: E5              PUSH    HL                  ; Push return
 003E: 3E 0E           LD      A,$0E               ; Read from ...
-0040: CD C1 02        CALL    $02C1               ;{} ... AY IO port A
+0040: CD C1 02        CALL    $02C1               ; ... AY IO port A
 0043: B7              OR      A                   ; Reset everything?
-0044: 28 2B           JR      Z,$71               ;{} Yes ... go reset all command info and out
+0044: 28 2B           JR      Z,$71               ; Yes ... go reset all command info and out
 0046: 57              LD      D,A                 ; Copy command to D
 0047: FE FF           CP      $FF                 ; Is it a RESET command?
-0049: 20 01           JR      NZ,$4C              ;{} No ... keep going
+0049: 20 01           JR      NZ,$4C              ; No ... keep going
 004B: C7              RST     $00                 ; Software reset (won't come back)
 
 004C: E6 0F           AND     $0F                 ; Lower 4 bits of command ...
 004E: 4F              LD      C,A                 ; ... to C (C is lower 4 bits, D is full)
 004F: 7A              LD      A,D                 ; Original command back to A
 0050: A9              XOR     C                   ; Any of the upper 4 bits set?
-0051: 28 07           JR      Z,$5A               ;{} No ... maybe shuffle
+0051: 28 07           JR      Z,$5A               ; No ... maybe shuffle
 0053: 79              LD      A,C                 ; Are the lower 4 bits ...
 0054: B7              OR      A                   ; ... all 0?
-0055: 28 03           JR      Z,$5A               ;{} Yes ... shuffle
+0055: 28 03           JR      Z,$5A               ; Yes ... shuffle
 0057: 7A              LD      A,D                 ; Original command 
-0058: 18 3D           JR      $97                 ;{} Process original command as-is
+0058: 18 3D           JR      $97                 ; Process original command as-is
 ;
 005A: 7A              LD      A,D                 ; Original command
 005B: E6 0F           AND     $0F                 ; Just the lower bits
-005D: 20 38           JR      NZ,$97              ;{} Lower 4 is not 0 ... processes lower 4 as command
+005D: 20 38           JR      NZ,$97              ; Lower 4 is not 0 ... processes lower 4 as command
 005F: 7A              LD      A,D                 ; Original command
 0060: C6 12           ADD     A,$12               ; shuffle ...
 0062: 07              RLCA                        ; ... the ...
 0063: 07              RLCA                        ; ... bits ...
 0064: 07              RLCA                        ; ... around
 0065: CB 7F           BIT     7,A                 ; Upper bit set?
-0067: 28 2E           JR      Z,$97               ;{} No ... use this as command
+0067: 28 2E           JR      Z,$97               ; No ... use this as command
 0069: CB BF           RES     7,A                 ; Reset the bit
-006B: 18 13           JR      $80                 ;{} Stop the requested command
+006B: 18 13           JR      $80                 ; Stop the requested command
 
 ; Return from interrupt
 006D: D9              EXX                         ; Swap ...
@@ -122,16 +123,16 @@ ClearCommands: ; =
 0073: 21 40 40        LD      HL,$4040            ; Start of command data
 0076: 77              LD      (HL),A              ; Store 0
 0077: 23              INC     HL                  ; Do all ...
-0078: 10 FC           DJNZ    $76                 ;{} ... command structs
+0078: 10 FC           DJNZ    $76                 ; ... command structs
 007A: 3E 07           LD      A,$07               ; Enable register
 007C: 06 3F           LD      B,$3F               ; Turn off all ...
 007E: CF              RST     $08                 ; ... voices (tone and noise)
 007F: C9              RET                         ; back to 6D and out 
 
 StopCommand: ; =
-0080: CD E6 00        CALL    $00E6               ;{} Attempt to reinit running command
+0080: CD E6 00        CALL    $00E6               ; Attempt to reinit running command
 0083: D0              RET     NC                  ; Return if not there
-0084: CD 8C 00        CALL    $008C               ;{} Find command data
+0084: CD 8C 00        CALL    $008C               ; Find command data
 0087: AF              XOR     A                   ; Zero
 0088: 77              LD      (HL),A              ; Clear command
 0089: 23              INC     HL                  ; Clear ...
@@ -145,29 +146,29 @@ FindDat: ; =
 008D: 21 3E 40        LD      HL,$403E            ; Pointer to voice commands
 0090: 11 02 00        LD      DE,$0002            ; 2 bytes each
 0093: 19              ADD     HL,DE               ; Find the ...
-0094: 10 FD           DJNZ    $93                 ;{} ... 2 byte pointer
+0094: 10 FD           DJNZ    $93                 ; ... 2 byte pointer
 0096: C9              RET                         ; Done
 
 CmdRequest: ; =
 ; Process a command request. Request is in A. The lowest priority voice is 
 ; preempted with the request if the request is higher priority. Otherwise th
 ; request is ignored.
-0097: 32 46 40        LD      ($4046),A           ;{-} Hold requested command
-009A: CD E6 00        CALL    $00E6               ;{} Reinit command if running
+0097: 32 46 40        LD      ($4046),A           ; Hold requested command
+009A: CD E6 00        CALL    $00E6               ; Reinit command if running
 009D: D8              RET     C                   ; Command now running ... out
-009E: CD E6 00        CALL    $00E6               ;{} If not found, A=0. So look for a idle voice
-00A1: 38 38           JR      C,$DB               ;{} Found idle voice ... use it
-00A3: 3A 40 40        LD      A,($4040)           ;{-} Voice 1 command
-00A6: CD 02 01        CALL    $0102               ;{} Priority of current ...
+009E: CD E6 00        CALL    $00E6               ; If not found, A=0. So look for a idle voice
+00A1: 38 38           JR      C,$DB               ; Found idle voice ... use it
+00A3: 3A 40 40        LD      A,($4040)           ; Voice 1 command
+00A6: CD 02 01        CALL    $0102               ; Priority of current ...
 00A9: 47              LD      B,A                 ; ... voice 1 command to B
-00AA: 3A 42 40        LD      A,($4042)           ;{-} Priority of  ...
-00AD: CD 02 01        CALL    $0102               ;{} ... current ...
+00AA: 3A 42 40        LD      A,($4042)           ; Priority of  ...
+00AD: CD 02 01        CALL    $0102               ; ... current ...
 00B0: 4F              LD      C,A                 ; ... voice 2 command to C
-00B1: 3A 44 40        LD      A,($4044)           ;{-} Priority of ...
-00B4: CD 02 01        CALL    $0102               ;{} ... current ...
-00B7: 32 49 40        LD      ($4049),A           ;{-} ... voice 3 command to 4049
-00BA: 3A 46 40        LD      A,($4046)           ;{-} Requested command
-00BD: CD 02 01        CALL    $0102               ;{} Priority of requested command ...
+00B1: 3A 44 40        LD      A,($4044)           ; Priority of ...
+00B4: CD 02 01        CALL    $0102               ; ... current ...
+00B7: 32 49 40        LD      ($4049),A           ; ... voice 3 command to 4049
+00BA: 3A 46 40        LD      A,($4046)           ; Requested command
+00BD: CD 02 01        CALL    $0102               ; Priority of requested command ...
 00C0: 5F              LD      E,A                 ; ... to E
 00C1: 21 49 40        LD      HL,$4049            ; Voice 3 priority ...
 00C4: 56              LD      D,(HL)              ; ... E (B=1, C=2, D=3, E=requested)
@@ -175,25 +176,25 @@ CmdRequest: ; =
 ; Find lowest priority command (will be the lowest number) and replace (if request is higher)
 00C5: 78              LD      A,B                 ; Compare ...
 00C6: B9              CP      C                   ; ... voice 1 and 2 (A-C)
-00C7: 38 01           JR      C,$CA               ;{} Voice 1 value is lower than 2 ... continue with 1
+00C7: 38 01           JR      C,$CA               ; Voice 1 value is lower than 2 ... continue with 1
 00C9: 79              LD      A,C                 ; Voice 2 value is lower ... continue with 2
 00CA: BA              CP      D                   ; Comapre lowest so far with voice 3
-00CB: 38 01           JR      C,$CE               ;{} The lowest is still lowest ... continue with it
+00CB: 38 01           JR      C,$CE               ; The lowest is still lowest ... continue with it
 00CD: 7A              LD      A,D                 ; Voice 3 is the lowest ... continue with voice 3
 00CE: BB              CP      E                   ; Compare lowest so far with requested voice
 00CF: D0              RET     NC                  ; All current commands are higher priority ... ignore
 ;
 00D0: 1E 01           LD      E,$01               ; Are we replacing ...
 00D2: B8              CP      B                   ; ... voice 1?
-00D3: 28 05           JR      Z,$DA               ;{} Yes ... E is 1
+00D3: 28 05           JR      Z,$DA               ; Yes ... E is 1
 00D5: 1C              INC     E                   ; Are we replacing ...
 00D6: B9              CP      C                   ; ... voice 2?
-00D7: 28 01           JR      Z,$DA               ;{} Yes ... E is 2
+00D7: 28 01           JR      Z,$DA               ; Yes ... E is 2
 00D9: 1C              INC     E                   ; Must be replacing voice 3
 00DA: 7B              LD      A,E                 
 ;
-00DB: CD 8C 00        CALL    $008C               ;{} Find voice structure
-00DE: 3A 46 40        LD      A,($4046)           ;{-} Store command ...
+00DB: CD 8C 00        CALL    $008C               ; Find voice structure
+00DE: 3A 46 40        LD      A,($4046)           ; Store command ...
 00E1: 77              LD      (HL),A              ; ... in structure
 00E2: 23              INC     HL                  ; Flag init ...
 00E3: 36 00           LD      (HL),$00            ; ... needs doing
@@ -203,17 +204,17 @@ ReinitCommand: ; =
 00E6: 0E 01           LD      C,$01               ; Voice number 1
 00E8: 21 40 40        LD      HL,$4040            ; Voice 1's data
 00EB: BE              CP      (HL)                ; Is this command already running?
-00EC: 28 0E           JR      Z,$FC               ;{} Yes ... just reinit it
+00EC: 28 0E           JR      Z,$FC               ; Yes ... just reinit it
 00EE: 0C              INC     C                   ; ... 
 00EF: 23              INC     HL                  ; Check all 3 voices ...
 00F0: 23              INC     HL                  ; ... and reinit if found
 00F1: BE              CP      (HL)                ; ...
-00F2: 28 08           JR      Z,$FC               ;{} ...
+00F2: 28 08           JR      Z,$FC               ; ...
 00F4: 0C              INC     C                   ; ...
 00F5: 23              INC     HL                  ; ...
 00F6: 23              INC     HL                  ; ...
 00F7: BE              CP      (HL)                ; ...
-00F8: 28 02           JR      Z,$FC               ;{} ...
+00F8: 28 02           JR      Z,$FC               ; ...
 00FA: AF              XOR     A                   ; C=0 ... not found
 00FB: C9              RET                         ; Done
 ;
@@ -237,13 +238,13 @@ GetComPriority: ; =
 010C: 23              INC     HL                  ; ... RAM ...
 010D: 7C              LD      A,H                 ; ... from 4000 ...
 010E: D6 44           SUB     $44                 ; ... to ...
-0110: 20 F9           JR      NZ,$10B             ;{} ... 4400
+0110: 20 F9           JR      NZ,$10B             ; ... 4400
 0112: F9              LD      SP,HL               ; Set SP to 4400
 0113: 3D              DEC     A                   ; FF
-0114: 32 80 42        LD      ($4280),A           ;{-} Disable sound processing
+0114: 32 80 42        LD      ($4280),A           ; Disable sound processing
 0117: ED 56           IM      1                   ; Interrupt mode 1 (everything goes to 0038)
 0119: 11 3F 00        LD      DE,$003F            ; D=0 (all off) then E=3F ...
-011C: CD 6D 02        CALL    $026D               ;{} ... port A and B inputs, all noise and voice off
+011C: CD 6D 02        CALL    $026D               ; ... port A and B inputs, all noise and voice off
 011F: 3E 08           LD      A,$08               ; Amplitude A register
 0121: 06 00           LD      B,$00               ; 0
 0123: CF              RST     $08                 ; Set voice A amplitude to 0
@@ -255,7 +256,7 @@ GetComPriority: ; =
 012C: 06 3F           LD      B,$3F               ; ... in the call to ...
 012E: CF              RST     $08                 ; ... 026D above ?
 012F: 21 00 60        LD      HL,$6000            ; Current capacitor filter value (none)
-0132: 22 4E 40        LD      ($404E),HL          ;{-} Hold current
+0132: 22 4E 40        LD      ($404E),HL          ; Hold current
 0135: 77              LD      (HL),A              ; Set the capacitor network hardware
 
 MainLoop: ; =
@@ -276,24 +277,24 @@ MainLoop: ; =
 0137: 21 3F 40        LD      HL,$403F            ; ?? Counter? Nobody ever looks at this
 013A: 34              INC     (HL)                ; ?? Counter? Nobody ever looks at this
 013B: 3E 0F           LD      A,$0F               ; Register IO port B (timer)
-013D: CD C1 02        CALL    $02C1               ;{} Read IO port B
+013D: CD C1 02        CALL    $02C1               ; Read IO port B
 0140: E6 08           AND     $08                 ; Watch for bit 4
-0142: 20 F7           JR      NZ,$13B             ;{} Not a 0 ... delay until it is 0
+0142: 20 F7           JR      NZ,$13B             ; Not a 0 ... delay until it is 0
 0144: 3E 0F           LD      A,$0F               ; Now wait ...
-0146: CD C1 02        CALL    $02C1               ;{} ... for ...
+0146: CD C1 02        CALL    $02C1               ; ... for ...
 0149: E6 08           AND     $08                 ; ... bit to ...
-014B: 28 F7           JR      Z,$144              ;{} ... go to 1
+014B: 28 F7           JR      Z,$144              ; ... go to 1
 014D: F3              DI                          ; Interrupts off
 ;
 014E: 3E 01           LD      A,$01               ; Start with ...
-0150: 32 4B 40        LD      ($404B),A           ;{-} ... voice 1
+0150: 32 4B 40        LD      ($404B),A           ; ... voice 1
 0153: 21 41 40        LD      HL,$4041            ; Get ...
 0156: 7E              LD      A,(HL)              ; ... init flag
 0157: 2B              DEC     HL                  ; Point to command
 0158: B7              OR      A                   ; This command has been initialized?
-0159: 28 30           JR      Z,$18B              ;{} No ... go do it
+0159: 28 30           JR      Z,$18B              ; No ... go do it
 015B: 7E              LD      A,(HL)              ; Get command number
-015C: CD E8 01        CALL    $01E8               ;{} Do continuation command
+015C: CD E8 01        CALL    $01E8               ; Do continuation command
 015F: FB              EI                          ; Interrupts on
 0160: 00              NOP                         ; For ...
 0161: 00              NOP                         ; ... just ...
@@ -306,9 +307,9 @@ MainLoop: ; =
 016B: 7E              LD      A,(HL)              ; ... init flag
 016C: 2B              DEC     HL                  ; Point to command
 016D: B7              OR      A                   ; This command has been initialized?
-016E: 28 21           JR      Z,$191              ;{} No ... go do it
+016E: 28 21           JR      Z,$191              ; No ... go do it
 0170: 7E              LD      A,(HL)              ; Get command number
-0171: CD E8 01        CALL    $01E8               ;{} Do continuation command
+0171: CD E8 01        CALL    $01E8               ; Do continuation command
 0174: FB              EI                          ; Interrupts on
 0175: 00              NOP                         ; For ...
 0176: 00              NOP                         ; ... just ...
@@ -321,22 +322,22 @@ MainLoop: ; =
 0180: 7E              LD      A,(HL)              ; ... init flag
 0181: 2B              DEC     HL                  ; Point to command
 0182: B7              OR      A                   ; This command has been initialized?
-0183: 28 12           JR      Z,$197              ;{} No ... go do it
+0183: 28 12           JR      Z,$197              ; No ... go do it
 0185: 7E              LD      A,(HL)              ; Get command number
-0186: CD E8 01        CALL    $01E8               ;{} Do continuation command
-0189: 18 AB           JR      $136                ;{} Back to top of loop
+0186: CD E8 01        CALL    $01E8               ; Do continuation command
+0189: 18 AB           JR      $136                ; Back to top of loop
 ;
 018B: 7E              LD      A,(HL)              ; Get command number
-018C: CD D9 01        CALL    $01D9               ;{} Do the initialization command
-018F: 18 CE           JR      $15F                ;{} Back to voice 2
+018C: CD D9 01        CALL    $01D9               ; Do the initialization command
+018F: 18 CE           JR      $15F                ; Back to voice 2
 ;
 0191: 7E              LD      A,(HL)              ; Get command number
-0192: CD D9 01        CALL    $01D9               ;{} Do the initialization command
-0195: 18 DD           JR      $174                ;{} Back to voice 3
+0192: CD D9 01        CALL    $01D9               ; Do the initialization command
+0195: 18 DD           JR      $174                ; Back to voice 3
 ;
 0197: 7E              LD      A,(HL)              ; Get command number
-0198: CD D9 01        CALL    $01D9               ;{} Do the initialization command
-019B: 18 99           JR      $136                ;{} Back to the top of the loop
+0198: CD D9 01        CALL    $01D9               ; Do the initialization command
+019B: 18 99           JR      $136                ; Back to the top of the loop
 
 JumpTabler: ; =
 ; Look up address in jump table and jump to it.
@@ -385,9 +386,9 @@ CommandInit: ; =
 VCommandInit: ; =
 ; Call the initialization function for a voice command
 01D9: 21 A7 01        LD      HL,$01A7            ; Initialization functions
-01DC: CD 9D 01        CALL    $019D               ;{} Do initialization function
-01DF: 3A 4B 40        LD      A,($404B)           ;{-} Voice number
-01E2: CD 8C 00        CALL    $008C               ;{} Get the voice command structure
+01DC: CD 9D 01        CALL    $019D               ; Do initialization function
+01DF: 3A 4B 40        LD      A,($404B)           ; Voice number
+01E2: CD 8C 00        CALL    $008C               ; Get the voice command structure
 01E5: 23              INC     HL                  ; Point to voice's init flag
 01E6: 77              LD      (HL),A              ; Mark initialized (happens to be voice number)
 01E7: C9              RET                         ; Done
@@ -399,7 +400,7 @@ VCommandCont: ; =
 01EA: 21 25 02        LD      HL,$0225            ; Return address right after table
 01ED: E5              PUSH    HL                  ; Push return
 01EE: 21 F3 01        LD      HL,$01F3            ; Jump table of commands
-01F1: 18 AA           JR      $19D                ;{} Take the jump
+01F1: 18 AA           JR      $19D                ; Take the jump
 
 CommandCont: ; =
 ; These functions are called to contine a voice command each pass. They return 0 to continue or
@@ -433,12 +434,12 @@ CommandCont: ; =
 ; All continuation functions RET here
 0225: B7              OR      A                   ; Return "continue"?
 0226: C8              RET     Z                   ; Yes ... out
-0227: CD 9C 02        CALL    $029C               ;{} Not "continue" ... shutdown voice
-022A: 3A 4B 40        LD      A,($404B)           ;{-} Voice number
-022D: C3 84 00        JP      $0084               ;{} Clear out 2-byte voice command (with 0,0)
+0227: CD 9C 02        CALL    $029C               ; Not "continue" ... shutdown voice
+022A: 3A 4B 40        LD      A,($404B)           ; Voice number
+022D: C3 84 00        JP      $0084               ; Clear out 2-byte voice command (with 0,0)
 
 AmplitudeOff: ; =
-0230: 3A 4B 40        LD      A,($404B)           ;{-} Voice number
+0230: 3A 4B 40        LD      A,($404B)           ; Voice number
 0233: E6 03           AND     $03                 ; Is it valid?
 0235: C8              RET     Z                   ; No ... skip
 0236: C6 07           ADD     A,$07               ; Offset to amplitude register
@@ -448,11 +449,11 @@ AmplitudeOff: ; =
 
 WriteTune: ; =
 ; Write HL to voice's coarse/fine reigsters
-023C: 3A 4B 40        LD      A,($404B)           ;{-} Voice number (1,2, or 3)
+023C: 3A 4B 40        LD      A,($404B)           ; Voice number (1,2, or 3)
 023F: 3D              DEC     A                   ; Make it 0 based
 0240: 87              ADD     A,A                 ; Voice * 2
 0241: 47              LD      B,A                 ; To B
-0242: CD 09 03        CALL    $0309               ;{} Write L to voice's fine register
+0242: CD 09 03        CALL    $0309               ; Write L to voice's fine register
 0245: 04              INC     B                   ; Bump to ...
 0246: 78              LD      A,B                 ; ... coarse register
 0247: D3 80           OUT     ($80),A             ; Write register address
@@ -462,7 +463,7 @@ WriteTune: ; =
 
 ReadTune: ; =
 ; Read voice's coarse/fine registers to HL
-024D: 3A 4B 40        LD      A,($404B)           ;{-} Voice number (1,3, or 3)
+024D: 3A 4B 40        LD      A,($404B)           ; Voice number (1,3, or 3)
 0250: 3D              DEC     A                   ; Make it 0 based
 0251: 87              ADD     A,A                 ; Voiced * 2
 0252: 47              LD      B,A                 ; To B
@@ -479,27 +480,27 @@ ReadTune: ; =
 EnableTone: ; =
 ; Sets a voice to TONE and disables NOISE. 
 0260: 11 04 7F        LD      DE,$7F04            ; One 0 in AND and one 1 in OR
-0263: 3A 4B 40        LD      A,($404B)           ;{-} Roll the one target bit ...
+0263: 3A 4B 40        LD      A,($404B)           ; Roll the one target bit ...
 0266: 47              LD      B,A                 ; ... to the propper ...
 0267: CB 02           RLC     D                   ; ... spot
 0269: CB 03           RLC     E                   ; ...
-026B: 10 FA           DJNZ    $267                ;{} ...
+026B: 10 FA           DJNZ    $267                ; ...
 
 AYEnable: ; =
 ; Current value is ANDed with D
 ; and then ORed with E
 026D: 3E 07           LD      A,$07               ; The ENABLE register
 026F: D3 80           OUT     ($80),A             ; Select register in AY chip
-0271: 3A 4C 40        LD      A,($404C)           ;{-} Get current enable value
+0271: 3A 4C 40        LD      A,($404C)           ; Get current enable value
 0274: A2              AND     D                   ; Mask bits off
 0275: B3              OR      E                   ; OR bits on
-0276: 32 4C 40        LD      ($404C),A           ;{-} New enable value
+0276: 32 4C 40        LD      ($404C),A           ; New enable value
 0279: D3 40           OUT     ($40),A             ; Write value to AY chip
 027B: C9              RET                         ; Done
 
 SetAmplitude: ; =
 ; Set the voice's amplitude to B
-027C: 3A 4B 40        LD      A,($404B)           ;{-} Voice number
+027C: 3A 4B 40        LD      A,($404B)           ; Voice number
 027F: C6 07           ADD     A,$07               ; Offset to amplitude register
 0281: CF              RST     $08                 ; Write B to voice's amplitude
 0282: C9              RET                         ; Done
@@ -513,21 +514,21 @@ CommandPriority: ; =
 ShutdownVoice: ; =
 ;I00
 ; Disable TONE and NOISe on a voice, set amplitude to 0, and remove cap filtering.    
-029C: 3A 4B 40        LD      A,($404B)           ;{-} Voice number
+029C: 3A 4B 40        LD      A,($404B)           ; Voice number
 029F: 47              LD      B,A                 ; Copy to B
 02A0: 3E 84           LD      A,$84               ; 10000100
 02A2: 07              RLCA                        ; Shift bits
-02A3: 10 FD           DJNZ    $2A2                ;{} Build OR part of enable
+02A3: 10 FD           DJNZ    $2A2                ; Build OR part of enable
 02A5: 5F              LD      E,A                 ; Hold in E
 02A6: 16 FF           LD      D,$FF               ; AND part of enable ... leave everything alone
-02A8: CD 6D 02        CALL    $026D               ;{} Turn off a voice (NOISE and TONE)
-02AB: CD 30 02        CALL    $0230               ;{} Turn off voice amplitude
-02AE: 18 17           JR      $2C7                ;{} Set voice's cap filtering to "none"
+02A8: CD 6D 02        CALL    $026D               ; Turn off a voice (NOISE and TONE)
+02AB: CD 30 02        CALL    $0230               ; Turn off voice amplitude
+02AE: 18 17           JR      $2C7                ; Set voice's cap filtering to "none"
 
 EnableNoise: ; =
 ; Sets a voice to NOISE and disables TONE. 
 02B0: 11 80 FB        LD      DE,$FB80            ; Rotate bit pattern
-02B3: 18 AE           JR      $263                ;{} Continue with mask and set
+02B3: 18 AE           JR      $263                ; Continue with mask and set
 
 WriteAYR: ; =
 ; Here is yet another way to write to the AY register. Why would a caller prefer this
@@ -536,11 +537,11 @@ WriteAYR: ; =
 02B6: C9              RET                         ; Out
 
 ReadAmplitude: ; =
-02B7: 3A 4B 40        LD      A,($404B)           ;{-} Voice number
+02B7: 3A 4B 40        LD      A,($404B)           ; Voice number
 02BA: E6 03           AND     $03                 ; Any requested?
 02BC: C8              RET     Z                   ; No ... skip
 02BD: C6 07           ADD     A,$07               ; Offset to amplitude
-02BF: 18 00           JR      $2C1                ;{} Read voice's amplitude register
+02BF: 18 00           JR      $2C1                ; Read voice's amplitude register
 
 ReadAY: ; =
 ; Read AY register (A) to B (and A).
@@ -554,15 +555,15 @@ Filter00: ; =
 02C7: 01 00 00        LD      BC,$0000            ; OR mask ... all 0's here
 ;
 02CA: 11 FF FC        LD      DE,$FCFF            ; 11111100 11111111
-02CD: 3A 4B 40        LD      A,($404B)           ;{-} Voice number
+02CD: 3A 4B 40        LD      A,($404B)           ; Voice number
 02D0: FE 02           CP      $02                 ; Is it voice 2?
-02D2: 28 15           JR      Z,$2E9              ;{} Yes ... DE is good
-02D4: 38 08           JR      C,$2DE              ;{} 3 ... go handle that
+02D2: 28 15           JR      Z,$2E9              ; Yes ... DE is good
+02D4: 38 08           JR      C,$2DE              ; 3 ... go handle that
 ;
 02D6: 16 F3           LD      D,$F3               ; 11110011 11111111
 02D8: CB 00           RLC     B                   ; Shift OR mask left 2 ..
 02DA: CB 00           RLC     B                   ; ....xx.. ........
-02DC: 18 0B           JR      $2E9                ;{} Continue
+02DC: 18 0B           JR      $2E9                ; Continue
 ;
 02DE: 11 3F FF        LD      DE,$FF3F            ; 11111111 00111111
 02E1: CB 38           SRL     B                   ; Shift OR mask right 2 ...
@@ -570,7 +571,7 @@ Filter00: ; =
 02E5: CB 38           SRL     B                   ; ...
 02E7: CB 19           RR      C                   ; ...
 ;
-02E9: 2A 4E 40        LD      HL,($404E)          ;{-} Current value of capacitor filter
+02E9: 2A 4E 40        LD      HL,($404E)          ; Current value of capacitor filter
 02EC: 7C              LD      A,H                 ; Mask for requested voice ...
 02ED: A2              AND     D                   ; ...
 02EE: B0              OR      B                   ; ...
@@ -579,24 +580,24 @@ Filter00: ; =
 02F1: A3              AND     E                   ; ...
 02F2: B1              OR      C                   ; ...
 02F3: 6F              LD      L,A                 ; ...
-02F4: 22 4E 40        LD      ($404E),HL          ;{-} New capacitor filter value
+02F4: 22 4E 40        LD      ($404E),HL          ; New capacitor filter value
 02F7: 77              LD      (HL),A              ; Change hardware
 02F8: C9              RET                         ; Done
 
 Filter11: ; =
 ; Set 0.047uF + 0.220uF
 02F9: 01 00 03        LD      BC,$0300            ; Turn on ...
-02FC: C3 CA 02        JP      $02CA               ;{} ... both caps
+02FC: C3 CA 02        JP      $02CA               ; ... both caps
 
 Filter01: ; =
 ; Set 0.220uF
 02FF: 01 00 01        LD      BC,$0100            ; Turn on ...
-0302: 18 C6           JR      $2CA                ;{} ... one cap
+0302: 18 C6           JR      $2CA                ; ... one cap
 
 Filter10: ; =
 ; Set 0.047uF
 0304: 01 00 02        LD      BC,$0200            ; Turn on ...
-0307: 18 C1           JR      $2CA                ;{} ... one cap
+0307: 18 C1           JR      $2CA                ; ... one cap
 
 WriteAYAL: ; =
 ; Another write-to-AY
@@ -624,7 +625,7 @@ WriteAYAL: ; =
 0323: 23              INC     HL                  
 0324: 77              LD      (HL),A              
 0325: 21 10 00        LD      HL,$0010            
-0328: 22 65 40        LD      ($4065),HL          ;{-} 
+0328: 22 65 40        LD      ($4065),HL          ; 
 032B: 2E 20           LD      L,$20               
 032D: EF              RST     $28                 
 032E: F7              RST     $30                 
@@ -634,73 +635,73 @@ WriteAYAL: ; =
 
 ;C01 Coin inserted
 
-0333: 3A 64 40        LD      A,($4064)           ;{-} 
+0333: 3A 64 40        LD      A,($4064)           ; 
 0336: A7              AND     A                   
-0337: 28 0D           JR      Z,$346              ;{} 
+0337: 28 0D           JR      Z,$346              ; 
 0339: FE 01           CP      $01                 
-033B: 28 1F           JR      Z,$35C              ;{} 
+033B: 28 1F           JR      Z,$35C              ; 
 033D: FE 03           CP      $03                 
-033F: 38 2B           JR      C,$36C              ;{} 
-0341: 28 49           JR      Z,$38C              ;{} 
-0343: C3 71 06        JP      $0671               ;{} 
+033F: 38 2B           JR      C,$36C              ; 
+0341: 28 49           JR      Z,$38C              ; 
+0343: C3 71 06        JP      $0671               ; 
 0346: 21 60 40        LD      HL,$4060            
 0349: 35              DEC     (HL)                
-034A: 20 6F           JR      NZ,$3BB             ;{} 
+034A: 20 6F           JR      NZ,$3BB             ; 
 034C: 36 20           LD      (HL),$20            
 034E: D7              RST     $10                 
 034F: 3D              DEC     A                   
-0350: 28 04           JR      Z,$356              ;{} 
+0350: 28 04           JR      Z,$356              ; 
 0352: 47              LD      B,A                 
 0353: DF              RST     $18                 
-0354: 18 65           JR      $3BB                ;{} 
+0354: 18 65           JR      $3BB                ; 
 0356: 21 64 40        LD      HL,$4064            
 0359: 34              INC     (HL)                
-035A: 18 F6           JR      $352                ;{} 
+035A: 18 F6           JR      $352                ; 
 035C: 21 00 03        LD      HL,$0300            
-035F: 22 67 40        LD      ($4067),HL          ;{-} 
+035F: 22 67 40        LD      ($4067),HL          ; 
 0362: EF              RST     $28                 
 0363: 06 08           LD      B,$08               
 0365: DF              RST     $18                 
 0366: 21 64 40        LD      HL,$4064            
 0369: 34              INC     (HL)                
-036A: 18 4F           JR      $3BB                ;{} 
+036A: 18 4F           JR      $3BB                ; 
 036C: 21 61 40        LD      HL,$4061            
 036F: 35              DEC     (HL)                
-0370: 20 49           JR      NZ,$3BB             ;{} 
+0370: 20 49           JR      NZ,$3BB             ; 
 0372: 36 03           LD      (HL),$03            
-0374: CD 4D 02        CALL    $024D               ;{} 
+0374: CD 4D 02        CALL    $024D               ; 
 0377: B7              OR      A                   
 0378: 11 08 00        LD      DE,$0008            
 037B: ED 52           SBC     HL,DE               
 037D: EF              RST     $28                 
 037E: 21 62 40        LD      HL,$4062            
 0381: 35              DEC     (HL)                
-0382: 20 37           JR      NZ,$3BB             ;{} 
+0382: 20 37           JR      NZ,$3BB             ; 
 0384: 36 14           LD      (HL),$14            
 0386: 21 64 40        LD      HL,$4064            
 0389: 34              INC     (HL)                
-038A: 18 2F           JR      $3BB                ;{} 
+038A: 18 2F           JR      $3BB                ; 
 038C: 21 63 40        LD      HL,$4063            
 038F: 35              DEC     (HL)                
-0390: 20 1D           JR      NZ,$3AF             ;{} 
+0390: 20 1D           JR      NZ,$3AF             ; 
 0392: 36 01           LD      (HL),$01            
 0394: B7              OR      A                   
-0395: 2A 67 40        LD      HL,($4067)          ;{-} 
+0395: 2A 67 40        LD      HL,($4067)          ; 
 0398: 11 20 00        LD      DE,$0020            
 039B: ED 52           SBC     HL,DE               
-039D: 22 67 40        LD      ($4067),HL          ;{-} 
+039D: 22 67 40        LD      ($4067),HL          ; 
 03A0: EF              RST     $28                 
-03A1: 2A 65 40        LD      HL,($4065)          ;{-} 
+03A1: 2A 65 40        LD      HL,($4065)          ; 
 03A4: 2B              DEC     HL                  
 03A5: 7D              LD      A,L                 
 03A6: B4              OR      H                   
-03A7: 20 0B           JR      NZ,$3B4             ;{} 
+03A7: 20 0B           JR      NZ,$3B4             ; 
 03A9: 21 64 40        LD      HL,$4064            
 03AC: 34              INC     (HL)                
-03AD: 18 0C           JR      $3BB                ;{} 
-03AF: 2A 67 40        LD      HL,($4067)          ;{-} 
-03B2: 18 EC           JR      $3A0                ;{} 
-03B4: 22 65 40        LD      ($4065),HL          ;{-} 
+03AD: 18 0C           JR      $3BB                ; 
+03AF: 2A 67 40        LD      HL,($4067)          ; 
+03B2: 18 EC           JR      $3A0                ; 
+03B4: 22 65 40        LD      ($4065),HL          ; 
 03B7: 21 64 40        LD      HL,$4064            
 03BA: 35              DEC     (HL)                
 03BB: AF              XOR     A                   
@@ -708,125 +709,125 @@ WriteAYAL: ; =
 
 ;I02 Die in water
 03BD: 3E 80           LD      A,$80               
-03BF: 32 5D 40        LD      ($405D),A           ;{-} 
+03BF: 32 5D 40        LD      ($405D),A           ; 
 03C2: 06 0E           LD      B,$0E               
-03C4: CD 7C 02        CALL    $027C               ;{} 
+03C4: CD 7C 02        CALL    $027C               ; 
 03C7: 21 70 00        LD      HL,$0070            
-03CA: CD 3C 02        CALL    $023C               ;{} 
+03CA: CD 3C 02        CALL    $023C               ; 
 03CD: F7              RST     $30                 
-03CE: CD 04 03        CALL    $0304               ;{} Set filtering 0.047uF
+03CE: CD 04 03        CALL    $0304               ; Set filtering 0.047uF
 03D1: C9              RET                         
 
 ;C02 Die in water
-03D2: 3A 5D 40        LD      A,($405D)           ;{-} 
+03D2: 3A 5D 40        LD      A,($405D)           ; 
 03D5: 3D              DEC     A                   
-03D6: 32 5D 40        LD      ($405D),A           ;{-} 
-03D9: 28 25           JR      Z,$400              ;{} 
+03D6: 32 5D 40        LD      ($405D),A           ; 
+03D9: 28 25           JR      Z,$400              ; 
 03DB: FE FF           CP      $FF                 
-03DD: 28 3A           JR      Z,$419              ;{} 
+03DD: 28 3A           JR      Z,$419              ; 
 03DF: FE 20           CP      $20                 
-03E1: 38 0A           JR      C,$3ED              ;{} 
+03E1: 38 0A           JR      C,$3ED              ; 
 03E3: FE 30           CP      $30                 
-03E5: 38 0C           JR      C,$3F3              ;{} 
+03E5: 38 0C           JR      C,$3F3              ; 
 03E7: FE 70           CP      $70                 
-03E9: 38 02           JR      C,$3ED              ;{} 
+03E9: 38 02           JR      C,$3ED              ; 
 03EB: AF              XOR     A                   
 03EC: C9              RET                         
 03ED: 06 00           LD      B,$00               
-03EF: CD 7C 02        CALL    $027C               ;{} 
+03EF: CD 7C 02        CALL    $027C               ; 
 03F2: C9              RET                         
 03F3: 21 3C 00        LD      HL,$003C            
-03F6: CD 3C 02        CALL    $023C               ;{} 
+03F6: CD 3C 02        CALL    $023C               ; 
 03F9: 06 0B           LD      B,$0B               
-03FB: CD 7C 02        CALL    $027C               ;{} 
+03FB: CD 7C 02        CALL    $027C               ; 
 03FE: AF              XOR     A                   
 03FF: C9              RET                         
-0400: CD 04 03        CALL    $0304               ;{} 
+0400: CD 04 03        CALL    $0304               ; 
 0403: 3E 80           LD      A,$80               
-0405: 32 5E 40        LD      ($405E),A           ;{-} 
+0405: 32 5E 40        LD      ($405E),A           ; 
 0408: 06 0A           LD      B,$0A               
-040A: CD 7C 02        CALL    $027C               ;{} 
+040A: CD 7C 02        CALL    $027C               ; 
 040D: 21 FC 00        LD      HL,$00FC            
-0410: CD 3C 02        CALL    $023C               ;{} 
+0410: CD 3C 02        CALL    $023C               ; 
 0413: F7              RST     $30                 
 0414: AF              XOR     A                   
-0415: 32 5D 40        LD      ($405D),A           ;{-} 
+0415: 32 5D 40        LD      ($405D),A           ; 
 0418: C9              RET                         
-0419: 3A 5E 40        LD      A,($405E)           ;{-} 
+0419: 3A 5E 40        LD      A,($405E)           ; 
 041C: 3D              DEC     A                   
-041D: 32 5E 40        LD      ($405E),A           ;{-} 
+041D: 32 5E 40        LD      ($405E),A           ; 
 0420: FE 41           CP      $41                 
-0422: 38 0B           JR      C,$42F              ;{} 
-0424: CD 4D 02        CALL    $024D               ;{} 
+0422: 38 0B           JR      C,$42F              ; 
+0424: CD 4D 02        CALL    $024D               ; 
 0427: 2D              DEC     L                   
 0428: 2D              DEC     L                   
 0429: EF              RST     $28                 
 042A: AF              XOR     A                   
-042B: 32 5D 40        LD      ($405D),A           ;{-} 
+042B: 32 5D 40        LD      ($405D),A           ; 
 042E: C9              RET                         
 042F: FE 40           CP      $40                 
-0431: 28 0E           JR      Z,$441              ;{} 
+0431: 28 0E           JR      Z,$441              ; 
 0433: B7              OR      A                   
-0434: 28 11           JR      Z,$447              ;{} 
-0436: CD 4D 02        CALL    $024D               ;{} 
+0434: 28 11           JR      Z,$447              ; 
+0436: CD 4D 02        CALL    $024D               ; 
 0439: 2C              INC     L                   
 043A: 2C              INC     L                   
 043B: EF              RST     $28                 
 043C: AF              XOR     A                   
-043D: 32 5D 40        LD      ($405D),A           ;{-} 
+043D: 32 5D 40        LD      ($405D),A           ; 
 0440: C9              RET                         
 0441: D7              RST     $10                 
 0442: 05              DEC     B                   
 0443: DF              RST     $18                 
-0444: C3 33 04        JP      $0433               ;{} 
+0444: C3 33 04        JP      $0433               ; 
 0447: D7              RST     $10                 
 0448: 05              DEC     B                   
-0449: 28 0F           JR      Z,$45A              ;{} 
+0449: 28 0F           JR      Z,$45A              ; 
 044B: DF              RST     $18                 
 044C: 21 00 00        LD      HL,$0000            
-044F: CD 3C 02        CALL    $023C               ;{} 
+044F: CD 3C 02        CALL    $023C               ; 
 0452: 3E 80           LD      A,$80               
-0454: 32 5E 40        LD      ($405E),A           ;{-} 
-0457: C3 19 04        JP      $0419               ;{} 
+0454: 32 5E 40        LD      ($405E),A           ; 
+0457: C3 19 04        JP      $0419               ; 
 045A: 3E FF           LD      A,$FF               
 045C: C9              RET                         
 
 ;I03 Die in road
-045D: CD C7 02        CALL    $02C7               ;{} 
-0460: CD 60 02        CALL    $0260               ;{} 
+045D: CD C7 02        CALL    $02C7               ; 
+0460: CD 60 02        CALL    $0260               ; 
 0463: 21 00 01        LD      HL,$0100            
-0466: CD 3C 02        CALL    $023C               ;{} 
+0466: CD 3C 02        CALL    $023C               ; 
 0469: 06 0A           LD      B,$0A               
-046B: CD 7C 02        CALL    $027C               ;{} 
+046B: CD 7C 02        CALL    $027C               ; 
 046E: 21 90 02        LD      HL,$0290            
-0471: 22 30 41        LD      ($4130),HL          ;{-} 
+0471: 22 30 41        LD      ($4130),HL          ; 
 0474: C9              RET                         
 
 ;C03 Die in road
-0475: 2A 30 41        LD      HL,($4130)          ;{-} 
+0475: 2A 30 41        LD      HL,($4130)          ; 
 0478: 2B              DEC     HL                  
-0479: 22 30 41        LD      ($4130),HL          ;{-} 
+0479: 22 30 41        LD      ($4130),HL          ; 
 047C: 7C              LD      A,H                 
 047D: B5              OR      L                   
 047E: 3E FF           LD      A,$FF               
 0480: C8              RET     Z                   
-0481: CD 4D 02        CALL    $024D               ;{} 
+0481: CD 4D 02        CALL    $024D               ; 
 0484: 11 03 00        LD      DE,$0003            
 0487: 19              ADD     HL,DE               
-0488: CD 3C 02        CALL    $023C               ;{} 
+0488: CD 3C 02        CALL    $023C               ; 
 048B: AF              XOR     A                   
 048C: C9              RET                         
 
 ;I07 Extra frog
 048D: E7              RST     $20                 
 048E: 3E 08           LD      A,$08               
-0490: 32 70 41        LD      ($4170),A           ;{-} 
+0490: 32 70 41        LD      ($4170),A           ; 
 0493: 3E 0C           LD      A,$0C               
-0495: 32 71 41        LD      ($4171),A           ;{-} 
+0495: 32 71 41        LD      ($4171),A           ; 
 0498: 3E 10           LD      A,$10               
-049A: 32 72 41        LD      ($4172),A           ;{-} 
+049A: 32 72 41        LD      ($4172),A           ; 
 049D: AF              XOR     A                   
-049E: 32 73 41        LD      ($4173),A           ;{-} 
+049E: 32 73 41        LD      ($4173),A           ; 
 04A1: 21 50 00        LD      HL,$0050            
 04A4: EF              RST     $28                 
 04A5: F7              RST     $30                 
@@ -835,43 +836,43 @@ WriteAYAL: ; =
 04A9: C9              RET                         
 
 ;C07 Extra frog
-04AA: 3A 73 41        LD      A,($4173)           ;{-} 
+04AA: 3A 73 41        LD      A,($4173)           ; 
 04AD: A7              AND     A                   
-04AE: 28 17           JR      Z,$4C7              ;{} 
+04AE: 28 17           JR      Z,$4C7              ; 
 04B0: FE 01           CP      $01                 
-04B2: 28 21           JR      Z,$4D5              ;{} 
+04B2: 28 21           JR      Z,$4D5              ; 
 04B4: FE 03           CP      $03                 
-04B6: 38 22           JR      C,$4DA              ;{} 
-04B8: 28 2C           JR      Z,$4E6              ;{} 
+04B6: 38 22           JR      C,$4DA              ; 
+04B8: 28 2C           JR      Z,$4E6              ; 
 04BA: 21 72 41        LD      HL,$4172            
 04BD: 35              DEC     (HL)                
 04BE: 3E FF           LD      A,$FF               
 04C0: C8              RET     Z                   
 04C1: AF              XOR     A                   
-04C2: 32 73 41        LD      ($4173),A           ;{-} 
+04C2: 32 73 41        LD      ($4173),A           ; 
 04C5: AF              XOR     A                   
 04C6: C9              RET                         
 04C7: D7              RST     $10                 
 04C8: 3C              INC     A                   
 04C9: FE 0D           CP      $0D                 
-04CB: 20 04           JR      NZ,$4D1             ;{} 
+04CB: 20 04           JR      NZ,$4D1             ; 
 04CD: 21 73 41        LD      HL,$4173            
 04D0: 34              INC     (HL)                
 04D1: 47              LD      B,A                 
 04D2: DF              RST     $18                 
-04D3: 18 F0           JR      $4C5                ;{} 
-04D5: CD EB 04        CALL    $04EB               ;{} 
-04D8: 18 EB           JR      $4C5                ;{} 
+04D3: 18 F0           JR      $4C5                ; 
+04D5: CD EB 04        CALL    $04EB               ; 
+04D8: 18 EB           JR      $4C5                ; 
 04DA: D7              RST     $10                 
 04DB: 3D              DEC     A                   
-04DC: 20 04           JR      NZ,$4E2             ;{} 
+04DC: 20 04           JR      NZ,$4E2             ; 
 04DE: 21 73 41        LD      HL,$4173            
 04E1: 34              INC     (HL)                
 04E2: 47              LD      B,A                 
 04E3: DF              RST     $18                 
-04E4: 18 DF           JR      $4C5                ;{} 
-04E6: CD F8 04        CALL    $04F8               ;{} 
-04E9: 18 DA           JR      $4C5                ;{} 
+04E4: 18 DF           JR      $4C5                ; 
+04E6: CD F8 04        CALL    $04F8               ; 
+04E9: 18 DA           JR      $4C5                ; 
 04EB: 21 70 41        LD      HL,$4170            
 04EE: 35              DEC     (HL)                
 04EF: C0              RET     NZ                  
@@ -890,104 +891,104 @@ WriteAYAL: ; =
 0504: C9              RET                         
 
 ;I15 Snake on ground
-0505: CD 04 03        CALL    $0304               ;{} 
+0505: CD 04 03        CALL    $0304               ; 
 0508: 21 00 01        LD      HL,$0100            
-050B: 22 76 41        LD      ($4176),HL          ;{-} 
+050B: 22 76 41        LD      ($4176),HL          ; 
 050E: F7              RST     $30                 
 050F: 06 06           LD      B,$06               
 0511: DF              RST     $18                 
 0512: 3E 08           LD      A,$08               
-0514: 32 75 41        LD      ($4175),A           ;{-} 
+0514: 32 75 41        LD      ($4175),A           ; 
 0517: AF              XOR     A                   
-0518: 32 78 41        LD      ($4178),A           ;{-} 
+0518: 32 78 41        LD      ($4178),A           ; 
 051B: C9              RET                         
 
 ;C15 Snake on ground
-051C: 3A 78 41        LD      A,($4178)           ;{-} 
+051C: 3A 78 41        LD      A,($4178)           ; 
 051F: FE 01           CP      $01                 
-0521: 28 34           JR      Z,$557              ;{} 
+0521: 28 34           JR      Z,$557              ; 
 0523: FE 02           CP      $02                 
-0525: 28 48           JR      Z,$56F              ;{} 
+0525: 28 48           JR      Z,$56F              ; 
 0527: FE 03           CP      $03                 
-0529: 28 69           JR      Z,$594              ;{} 
+0529: 28 69           JR      Z,$594              ; 
 052B: FE 04           CP      $04                 
-052D: 28 76           JR      Z,$5A5              ;{} 
+052D: 28 76           JR      Z,$5A5              ; 
 052F: 21 75 41        LD      HL,$4175            
 0532: 35              DEC     (HL)                
-0533: 20 16           JR      NZ,$54B             ;{} 
+0533: 20 16           JR      NZ,$54B             ; 
 0535: 36 08           LD      (HL),$08            
 0537: 11 F0 FF        LD      DE,$FFF0            
-053A: 2A 76 41        LD      HL,($4176)          ;{-} 
+053A: 2A 76 41        LD      HL,($4176)          ; 
 053D: 19              ADD     HL,DE               
-053E: 22 76 41        LD      ($4176),HL          ;{-} 
+053E: 22 76 41        LD      ($4176),HL          ; 
 0541: 7C              LD      A,H                 
 0542: A7              AND     A                   
-0543: 20 05           JR      NZ,$54A             ;{} 
+0543: 20 05           JR      NZ,$54A             ; 
 0545: 7D              LD      A,L                 
 0546: FE 38           CP      $38                 
-0548: 38 03           JR      C,$54D              ;{} 
+0548: 38 03           JR      C,$54D              ; 
 054A: EF              RST     $28                 
 054B: AF              XOR     A                   
 054C: C9              RET                         
 054D: 3E 20           LD      A,$20               
-054F: 32 75 41        LD      ($4175),A           ;{-} 
+054F: 32 75 41        LD      ($4175),A           ; 
 0552: 44              LD      B,H                 
 0553: 3E 01           LD      A,$01               
-0555: 18 12           JR      $569                ;{} 
+0555: 18 12           JR      $569                ; 
 0557: 21 75 41        LD      HL,$4175            
 055A: 35              DEC     (HL)                
-055B: 20 EE           JR      NZ,$54B             ;{} 
+055B: 20 EE           JR      NZ,$54B             ; 
 055D: 36 05           LD      (HL),$05            
 055F: 3E 03           LD      A,$03               
 0561: 21 60 00        LD      HL,$0060            
 0564: 06 02           LD      B,$02               
-0566: 22 76 41        LD      ($4176),HL          ;{-} 
-0569: 32 78 41        LD      ($4178),A           ;{-} 
+0566: 22 76 41        LD      ($4176),HL          ; 
+0569: 32 78 41        LD      ($4178),A           ; 
 056C: DF              RST     $18                 
 056D: AF              XOR     A                   
 056E: C9              RET                         
 056F: 21 75 41        LD      HL,$4175            
 0572: 35              DEC     (HL)                
-0573: 20 D6           JR      NZ,$54B             ;{} 
+0573: 20 D6           JR      NZ,$54B             ; 
 0575: 36 06           LD      (HL),$06            
 0577: 11 FC FF        LD      DE,$FFFC            
-057A: 2A 76 41        LD      HL,($4176)          ;{-} 
+057A: 2A 76 41        LD      HL,($4176)          ; 
 057D: 19              ADD     HL,DE               
-057E: 22 76 41        LD      ($4176),HL          ;{-} 
+057E: 22 76 41        LD      ($4176),HL          ; 
 0581: 7C              LD      A,H                 
 0582: A7              AND     A                   
-0583: 20 C5           JR      NZ,$54A             ;{} 
+0583: 20 C5           JR      NZ,$54A             ; 
 0585: 7D              LD      A,L                 
 0586: FE 30           CP      $30                 
-0588: 30 C0           JR      NC,$54A             ;{} 
+0588: 30 C0           JR      NC,$54A             ; 
 058A: 3E 30           LD      A,$30               
-058C: 32 75 41        LD      ($4175),A           ;{-} 
+058C: 32 75 41        LD      ($4175),A           ; 
 058F: 44              LD      B,H                 
 0590: 3E 03           LD      A,$03               
-0592: 18 D5           JR      $569                ;{} 
+0592: 18 D5           JR      $569                ; 
 0594: 21 75 41        LD      HL,$4175            
 0597: 35              DEC     (HL)                
-0598: 20 B1           JR      NZ,$54B             ;{} 
+0598: 20 B1           JR      NZ,$54B             ; 
 059A: 36 04           LD      (HL),$04            
 059C: 3E 04           LD      A,$04               
 059E: 21 60 00        LD      HL,$0060            
 05A1: 06 04           LD      B,$04               
-05A3: 18 C1           JR      $566                ;{} 
+05A3: 18 C1           JR      $566                ; 
 05A5: 21 75 41        LD      HL,$4175            
 05A8: 35              DEC     (HL)                
-05A9: 20 A0           JR      NZ,$54B             ;{} 
+05A9: 20 A0           JR      NZ,$54B             ; 
 05AB: 36 04           LD      (HL),$04            
 05AD: 11 10 00        LD      DE,$0010            
-05B0: 2A 76 41        LD      HL,($4176)          ;{-} 
+05B0: 2A 76 41        LD      HL,($4176)          ; 
 05B3: 19              ADD     HL,DE               
-05B4: 22 76 41        LD      ($4176),HL          ;{-} 
+05B4: 22 76 41        LD      ($4176),HL          ; 
 05B7: 7C              LD      A,H                 
 05B8: A7              AND     A                   
-05B9: 28 8F           JR      Z,$54A              ;{} 
+05B9: 28 8F           JR      Z,$54A              ; 
 05BB: 7D              LD      A,L                 
 05BC: FE 80           CP      $80                 
-05BE: 38 8A           JR      C,$54A              ;{} 
-05C0: C3 05 05        JP      $0505               ;{} 
+05BE: 38 8A           JR      C,$54A              ; 
+05C0: C3 05 05        JP      $0505               ; 
 
 ;I17 Race car
 05C3: AF              XOR     A                   
@@ -1001,56 +1002,56 @@ WriteAYAL: ; =
 05CF: 36 04           LD      (HL),$04            
 05D1: 23              INC     HL                  
 05D2: 36 68           LD      (HL),$68            
-05D4: CD B0 02        CALL    $02B0               ;{} 
+05D4: CD B0 02        CALL    $02B0               ; 
 05D7: 3E 06           LD      A,$06               
 05D9: 06 18           LD      B,$18               
 05DB: CF              RST     $08                 ; Write to AY
 05DC: 06 04           LD      B,$04               
-05DE: CD 7C 02        CALL    $027C               ;{} 
-05E1: CD C7 02        CALL    $02C7               ;{} 
+05DE: CD 7C 02        CALL    $027C               ; 
+05E1: CD C7 02        CALL    $02C7               ; 
 05E4: C9              RET                         
 
 ;C17 Race car
-05E5: CD 1C 06        CALL    $061C               ;{} 
-05E8: CD ED 05        CALL    $05ED               ;{} 
+05E5: CD 1C 06        CALL    $061C               ; 
+05E8: CD ED 05        CALL    $05ED               ; 
 05EB: AF              XOR     A                   
 05EC: C9              RET                         
-05ED: 3A 10 41        LD      A,($4110)           ;{-} 
+05ED: 3A 10 41        LD      A,($4110)           ; 
 05F0: CB 47           BIT     0,A                 
-05F2: 28 10           JR      Z,$604              ;{} 
+05F2: 28 10           JR      Z,$604              ; 
 05F4: 21 12 41        LD      HL,$4112            
 05F7: 35              DEC     (HL)                
 05F8: C0              RET     NZ                  
 05F9: 36 04           LD      (HL),$04            
 05FB: 06 00           LD      B,$00               
-05FD: CD 7C 02        CALL    $027C               ;{} 
+05FD: CD 7C 02        CALL    $027C               ; 
 0600: 0E 01           LD      C,$01               
-0602: 18 10           JR      $614                ;{} 
+0602: 18 10           JR      $614                ; 
 0604: 21 11 41        LD      HL,$4111            
 0607: 35              DEC     (HL)                
 0608: C0              RET     NZ                  
 0609: 36 04           LD      (HL),$04            
-060B: 3A 13 41        LD      A,($4113)           ;{-} 
+060B: 3A 13 41        LD      A,($4113)           ; 
 060E: 47              LD      B,A                 
-060F: CD 7C 02        CALL    $027C               ;{} 
+060F: CD 7C 02        CALL    $027C               ; 
 0612: 0E 01           LD      C,$01               
-0614: 3A 10 41        LD      A,($4110)           ;{-} 
+0614: 3A 10 41        LD      A,($4110)           ; 
 0617: A9              XOR     C                   
-0618: 32 10 41        LD      ($4110),A           ;{-} 
+0618: 32 10 41        LD      ($4110),A           ; 
 061B: C9              RET                         
 061C: 21 14 41        LD      HL,$4114            
 061F: 35              DEC     (HL)                
 0620: C0              RET     NZ                  
 0621: 36 68           LD      (HL),$68            
 0623: 21 13 41        LD      HL,$4113            
-0626: 3A 10 41        LD      A,($4110)           ;{-} 
+0626: 3A 10 41        LD      A,($4110)           ; 
 0629: CB 4F           BIT     1,A                 
-062B: 20 09           JR      NZ,$636             ;{} 
+062B: 20 09           JR      NZ,$636             ; 
 062D: 34              INC     (HL)                
 062E: 3E 07           LD      A,$07               
 0630: BE              CP      (HL)                
 0631: 0E 02           LD      C,$02               
-0633: 28 DF           JR      Z,$614              ;{} 
+0633: 28 DF           JR      Z,$614              ; 
 0635: C9              RET                         
 0636: 35              DEC     (HL)                
 0637: 7E              LD      A,(HL)              
@@ -1077,7 +1078,7 @@ WriteAYAL: ; =
 0650: 23              INC     HL                  
 0651: 36 00           LD      (HL),$00            
 0653: 21 10 00        LD      HL,$0010            
-0656: 22 E5 41        LD      ($41E5),HL          ;{-} 
+0656: 22 E5 41        LD      ($41E5),HL          ; 
 0659: 2E 20           LD      L,$20               
 065B: EF              RST     $28                 
 065C: F7              RST     $30                 
@@ -1086,77 +1087,77 @@ WriteAYAL: ; =
 0660: C9              RET                         
 
 ;C18 Pick up mate
-0661: 3A E4 41        LD      A,($41E4)           ;{-} 
+0661: 3A E4 41        LD      A,($41E4)           ; 
 0664: A7              AND     A                   
-0665: 28 1C           JR      Z,$683              ;{} 
+0665: 28 1C           JR      Z,$683              ; 
 0667: FE 01           CP      $01                 
-0669: 28 1F           JR      Z,$68A              ;{} 
+0669: 28 1F           JR      Z,$68A              ; 
 066B: FE 03           CP      $03                 
-066D: 38 2B           JR      C,$69A              ;{} 
-066F: 28 49           JR      Z,$6BA              ;{} 
+066D: 38 2B           JR      C,$69A              ; 
+066F: 28 49           JR      Z,$6BA              ; 
 0671: D7              RST     $10                 
 0672: 3D              DEC     A                   
-0673: 28 04           JR      Z,$679              ;{} 
+0673: 28 04           JR      Z,$679              ; 
 0675: 47              LD      B,A                 
 0676: DF              RST     $18                 
 0677: AF              XOR     A                   
 0678: C9              RET                         
 0679: AF              XOR     A                   ; 0
-067A: 32 A5 42        LD      ($42A5),A           ;{-} Allow music to preempt
+067A: 32 A5 42        LD      ($42A5),A           ; Allow music to preempt
 067D: 3D              DEC     A                   
 067E: C9              RET                         
 067F: 47              LD      B,A                 
 0680: DF              RST     $18                 
-0681: 18 66           JR      $6E9                ;{} 
+0681: 18 66           JR      $6E9                ; 
 0683: 21 E4 41        LD      HL,$41E4            
 0686: 34              INC     (HL)                
 0687: AF              XOR     A                   
-0688: 18 F5           JR      $67F                ;{} 
+0688: 18 F5           JR      $67F                ; 
 068A: 21 00 03        LD      HL,$0300            
-068D: 22 E7 41        LD      ($41E7),HL          ;{-} 
+068D: 22 E7 41        LD      ($41E7),HL          ; 
 0690: EF              RST     $28                 
 0691: 06 08           LD      B,$08               
 0693: DF              RST     $18                 
 0694: 21 E4 41        LD      HL,$41E4            
 0697: 34              INC     (HL)                
-0698: 18 4F           JR      $6E9                ;{} 
+0698: 18 4F           JR      $6E9                ; 
 069A: 21 E1 41        LD      HL,$41E1            
 069D: 35              DEC     (HL)                
-069E: 20 49           JR      NZ,$6E9             ;{} 
+069E: 20 49           JR      NZ,$6E9             ; 
 06A0: 36 03           LD      (HL),$03            
-06A2: CD 4D 02        CALL    $024D               ;{} 
+06A2: CD 4D 02        CALL    $024D               ; 
 06A5: B7              OR      A                   
 06A6: 11 08 00        LD      DE,$0008            
 06A9: ED 52           SBC     HL,DE               
 06AB: EF              RST     $28                 
 06AC: 21 E2 41        LD      HL,$41E2            
 06AF: 35              DEC     (HL)                
-06B0: 20 37           JR      NZ,$6E9             ;{} 
+06B0: 20 37           JR      NZ,$6E9             ; 
 06B2: 36 14           LD      (HL),$14            
 06B4: 21 E4 41        LD      HL,$41E4            
 06B7: 34              INC     (HL)                
-06B8: 18 2F           JR      $6E9                ;{} 
+06B8: 18 2F           JR      $6E9                ; 
 06BA: 21 E3 41        LD      HL,$41E3            
 06BD: 35              DEC     (HL)                
-06BE: 20 1D           JR      NZ,$6DD             ;{} 
+06BE: 20 1D           JR      NZ,$6DD             ; 
 06C0: 36 01           LD      (HL),$01            
 06C2: B7              OR      A                   
-06C3: 2A E7 41        LD      HL,($41E7)          ;{-} 
+06C3: 2A E7 41        LD      HL,($41E7)          ; 
 06C6: 11 20 00        LD      DE,$0020            
 06C9: ED 52           SBC     HL,DE               
-06CB: 22 E7 41        LD      ($41E7),HL          ;{-} 
+06CB: 22 E7 41        LD      ($41E7),HL          ; 
 06CE: EF              RST     $28                 
-06CF: 2A E5 41        LD      HL,($41E5)          ;{-} 
+06CF: 2A E5 41        LD      HL,($41E5)          ; 
 06D2: 2B              DEC     HL                  
 06D3: 7D              LD      A,L                 
 06D4: B4              OR      H                   
-06D5: 20 0B           JR      NZ,$6E2             ;{} 
+06D5: 20 0B           JR      NZ,$6E2             ; 
 06D7: 21 E4 41        LD      HL,$41E4            
 06DA: 34              INC     (HL)                
-06DB: 18 0C           JR      $6E9                ;{} 
-06DD: 2A E7 41        LD      HL,($41E7)          ;{-} 
-06E0: 18 EC           JR      $6CE                ;{} 
-06E2: 22 E5 41        LD      ($41E5),HL          ;{-} 
+06DB: 18 0C           JR      $6E9                ; 
+06DD: 2A E7 41        LD      HL,($41E7)          ; 
+06E0: 18 EC           JR      $6CE                ; 
+06E2: 22 E5 41        LD      ($41E5),HL          ; 
 06E5: 21 E4 41        LD      HL,$41E4            
 06E8: 35              DEC     (HL)                
 06E9: AF              XOR     A                   
@@ -1164,82 +1165,82 @@ WriteAYAL: ; =
 
 ;I10 Frog landing safe
 06EB: 21 50 00        LD      HL,$0050            
-06EE: 22 80 41        LD      ($4180),HL          ;{-} 
+06EE: 22 80 41        LD      ($4180),HL          ; 
 06F1: 21 24 09        LD      HL,$0924            
-06F4: 22 82 41        LD      ($4182),HL          ;{-} 
+06F4: 22 82 41        LD      ($4182),HL          ; 
 06F7: 3E 00           LD      A,$00               
-06F9: 32 84 41        LD      ($4184),A           ;{-} 
+06F9: 32 84 41        LD      ($4184),A           ; 
 06FC: 06 0D           LD      B,$0D               
-06FE: CD 7C 02        CALL    $027C               ;{} 
+06FE: CD 7C 02        CALL    $027C               ; 
 0701: 21 50 00        LD      HL,$0050            
-0704: CD 3C 02        CALL    $023C               ;{} 
-0707: CD 60 02        CALL    $0260               ;{} 
-070A: CD C7 02        CALL    $02C7               ;{} 
+0704: CD 3C 02        CALL    $023C               ; 
+0707: CD 60 02        CALL    $0260               ; 
+070A: CD C7 02        CALL    $02C7               ; 
 070D: C9              RET                         
 
 ;C10 Frig landing safe
-070E: 2A 80 41        LD      HL,($4180)          ;{-} 
+070E: 2A 80 41        LD      HL,($4180)          ; 
 0711: 2B              DEC     HL                  
-0712: 22 80 41        LD      ($4180),HL          ;{-} 
+0712: 22 80 41        LD      ($4180),HL          ; 
 0715: 7C              LD      A,H                 
 0716: B5              OR      L                   
 0717: 3E 00           LD      A,$00               
-0719: 28 47           JR      Z,$762              ;{} 
-071B: 3A 84 41        LD      A,($4184)           ;{-} 
+0719: 28 47           JR      Z,$762              ; 
+071B: 3A 84 41        LD      A,($4184)           ; 
 071E: CB 47           BIT     0,A                 
 0720: 3E 00           LD      A,$00               
-0722: 28 0E           JR      Z,$732              ;{} 
+0722: 28 0E           JR      Z,$732              ; 
 0724: 21 82 41        LD      HL,$4182            
 0727: 35              DEC     (HL)                
 0728: C0              RET     NZ                  
 0729: 36 24           LD      (HL),$24            
 072B: 06 0D           LD      B,$0D               
-072D: CD 7C 02        CALL    $027C               ;{} 
-0730: 18 25           JR      $757                ;{} 
-0732: CD 4D 02        CALL    $024D               ;{} 
+072D: CD 7C 02        CALL    $027C               ; 
+0730: 18 25           JR      $757                ; 
+0732: CD 4D 02        CALL    $024D               ; 
 0735: 11 0A 00        LD      DE,$000A            
-0738: 3A 84 41        LD      A,($4184)           ;{-} 
+0738: 3A 84 41        LD      A,($4184)           ; 
 073B: CB 4F           BIT     1,A                 
-073D: 28 04           JR      Z,$743              ;{} 
+073D: 28 04           JR      Z,$743              ; 
 073F: AF              XOR     A                   
 0740: ED 52           SBC     HL,DE               
 0742: 3E 19           LD      A,$19               
-0744: CD 3C 02        CALL    $023C               ;{} 
+0744: CD 3C 02        CALL    $023C               ; 
 0747: 0E 02           LD      C,$02               
-0749: CD 59 07        CALL    $0759               ;{} 
+0749: CD 59 07        CALL    $0759               ; 
 074C: 21 83 41        LD      HL,$4183            
 074F: 35              DEC     (HL)                
 0750: C0              RET     NZ                  
 0751: 36 09           LD      (HL),$09            
 0753: 47              LD      B,A                 
-0754: CD 7C 02        CALL    $027C               ;{} 
+0754: CD 7C 02        CALL    $027C               ; 
 0757: 0E 01           LD      C,$01               
-0759: 3A 84 41        LD      A,($4184)           ;{-} 
+0759: 3A 84 41        LD      A,($4184)           ; 
 075C: A9              XOR     C                   
-075D: 32 84 41        LD      ($4184),A           ;{-} 
+075D: 32 84 41        LD      ($4184),A           ; 
 0760: AF              XOR     A                   
 0761: C9              RET                         
 0762: 21 84 41        LD      HL,$4184            
 0765: CB 56           BIT     2,(HL)              
-0767: 20 0E           JR      NZ,$777             ;{} 
-0769: CD EB 06        CALL    $06EB               ;{} 
+0767: 20 0E           JR      NZ,$777             ; 
+0769: CD EB 06        CALL    $06EB               ; 
 076C: 06 00           LD      B,$00               
-076E: CD 7C 02        CALL    $027C               ;{} 
+076E: CD 7C 02        CALL    $027C               ; 
 0771: 21 84 41        LD      HL,$4184            
 0774: CB D6           SET     2,(HL)              
 0776: C9              RET                         
 0777: 06 00           LD      B,$00               
-0779: CD 7C 02        CALL    $027C               ;{} 
+0779: CD 7C 02        CALL    $027C               ; 
 077C: 3E FF           LD      A,$FF               
 077E: C9              RET                         
 
 ;I09 Main song intro
 077F: E7              RST     $20                 ; Cap filters off
 0780: AF              XOR     A                   ; 0
-0781: 32 C8 42        LD      ($42C8),A           ;{-} ??
-0784: 32 A3 42        LD      ($42A3),A           ;{-} Song 0
+0781: 32 C8 42        LD      ($42C8),A           ; ??
+0784: 32 A3 42        LD      ($42A3),A           ; Song 0
 0787: F7              RST     $30                 ; Enable tone
-0788: C3 61 09        JP      $0961               ;{} Setup voice descriptors
+0788: C3 61 09        JP      $0961               ; Setup voice descriptors
 
 ;I0A Music voice B
 078B: E7              RST     $20                 ; Cap filters off
@@ -1253,25 +1254,25 @@ WriteAYAL: ; =
 
 ;C09 Main song intro
 0791: DD 21 80 42     LD      IX,$4280            ; Process ...
-0795: 18 0A           JR      $7A1                ;{} ... voice A
+0795: 18 0A           JR      $7A1                ; ... voice A
 
 ;C0A Music voice B
 0797: DD 21 88 42     LD      IX,$4288            ; Process ...
-079B: 18 04           JR      $7A1                ;{} ... voice B
+079B: 18 04           JR      $7A1                ; ... voice B
 
 ;C0B Music voice C
 079D: DD 21 90 42     LD      IX,$4290            ; Process voice C
 ;
 07A1: DD 7E 00        LD      A,(IX+$00)          ; Coarse counter
 07A4: FE FF           CP      $FF                 ; FF means end
-07A6: 28 05           JR      Z,$7AD              ;{} End of song ... return end
-07A8: CD B7 07        CALL    $07B7               ;{} Process music command
+07A6: 28 05           JR      Z,$7AD              ; End of song ... return end
+07A8: CD B7 07        CALL    $07B7               ; Process music command
 07AB: AF              XOR     A                   ; Return ...
 07AC: C9              RET                         ; ... continue
 
 07AD: AF              XOR     A                   ; 0
-07AE: 32 A5 42        LD      ($42A5),A           ;{-} Allow music to preempt
-07B1: 32 A6 42        LD      ($42A6),A           ;{-} ??
+07AE: 32 A5 42        LD      ($42A5),A           ; Allow music to preempt
+07B1: 32 A6 42        LD      ($42A6),A           ; ??
 07B4: 3E FF           LD      A,$FF               ; Return ...
 07B6: C9              RET                         ; ... end command
 
@@ -1304,13 +1305,13 @@ Music: ; =
 
 07B7: DD 35 01        DEC     (IX+$01)            ; Time till next volume dec
 07BA: C0              RET     NZ                  ; Not 0 ... keep delaying
-07BB: 3A A2 42        LD      A,($42A2)           ;{-} Master delay between volume decs
+07BB: 3A A2 42        LD      A,($42A2)           ; Master delay between volume decs
 07BE: DD 77 01        LD      (IX+$01),A          ; New delay value
 07C1: DD CB 00 46     BIT     0,(IX+$00)          ; Time to change volume?
-07C5: C2 D5 07        JP      NZ,$07D5            ;{} No ... skip changing
+07C5: C2 D5 07        JP      NZ,$07D5            ; No ... skip changing
 07C8: DD 7E 07        LD      A,(IX+$07)          ; Current volume
 07CB: D6 01           SUB     $01                 ; Bump volume
-07CD: FA D5 07        JP      M,$07D5             ;{} Already as low as possible ... skip
+07CD: FA D5 07        JP      M,$07D5             ; Already as low as possible ... skip
 07D0: DD 77 07        LD      (IX+$07),A          ; Store new volume
 07D3: 47              LD      B,A                 ; Volume to B
 07D4: DF              RST     $18                 ; Set voice amplitude to value in B
@@ -1322,9 +1323,9 @@ Music: ; =
 07DF: 7E              LD      A,(HL)              ; Get next command
 07E0: 47              LD      B,A                 ; Hold command for a sec
 07E1: E6 1F           AND     $1F                 ; Check lower 5 bits
-07E3: CA 6A 08        JP      Z,$086A             ;{} All zero ... rest command
+07E3: CA 6A 08        JP      Z,$086A             ; All zero ... rest command
 07E6: FE 1F           CP      $1F                 ; All ones?
-07E8: C2 84 08        JP      NZ,$0884            ;{} No ... note command
+07E8: C2 84 08        JP      NZ,$0884            ; No ... note command
 
 ;ccc_11111 Do command c
 07EB: 23              INC     HL                  ; Bump ...
@@ -1370,7 +1371,7 @@ MusicCmd0: ; =
 0826: 56              LD      D,(HL)              ; ... base pointer
 0827: DD 73 04        LD      (IX+$04),E          ; Set ...
 082A: DD 72 05        LD      (IX+$05),D          ; ... note-set
-082D: 18 23           JR      $852                ;{} Bump music pointer and out
+082D: 18 23           JR      $852                ; Bump music pointer and out
 
 MusicCmd1: ; =
 ; Change the music tempo. Next byte in music is an index into the lookup table.
@@ -1381,9 +1382,9 @@ MusicCmd1: ; =
 0838: 21 4B 09        LD      HL,$094B            ; Table of base delays
 083B: 09              ADD     HL,BC               ; Offset to new value
 083C: 7E              LD      A,(HL)              ; New tempo
-083D: 32 A2 42        LD      ($42A2),A           ;{-} Set the tempo for here on out
+083D: 32 A2 42        LD      ($42A2),A           ; Set the tempo for here on out
 0840: DD 77 01        LD      (IX+$01),A          ; Reset the current note's count
-0843: 18 0D           JR      $852                ;{} Bump music pointer and out
+0843: 18 0D           JR      $852                ; Bump music pointer and out
 
 MusicCmd2: ; =
 ; Change the note volume. Next byte in the music is the new volume.
@@ -1398,7 +1399,7 @@ MusicCmd2: ; =
 0858: 23              INC     HL                  ; Bump to next
 0859: DD 75 02        LD      (IX+$02),L          ; Store new ...
 085C: DD 74 03        LD      (IX+$03),H          ; ... music pointer
-085F: C3 D9 07        JP      $07D9               ;{} Process next music command
+085F: C3 D9 07        JP      $07D9               ; Process next music command
 ;
 0862: 06 00           LD      B,$00               ; Volume ...
 0864: DF              RST     $18                 ; ... off
@@ -1407,10 +1408,10 @@ MusicCmd2: ; =
 
 MusicREST: ; =
 ;ccc_0000 Rest command
-086A: CD 72 08        CALL    $0872               ;{} Upper 3 to power of 2 for note length
+086A: CD 72 08        CALL    $0872               ; Upper 3 to power of 2 for note length
 086D: 06 00           LD      B,$00               ; Set voice volume ...
 086F: DF              RST     $18                 ; ... to 0
-0870: 18 33           JR      $8A5                ;{} Bump music pointer and out
+0870: 18 33           JR      $8A5                ; Bump music pointer and out
 
 ; Upper three bits to power of 2 in note length
 0872: 78              LD      A,B                 ; Full command
@@ -1420,16 +1421,16 @@ MusicREST: ; =
 0877: 07              RLCA                        ; ... to lower 3
 0878: 47              LD      B,A                 ; Into B (the counter)
 0879: 3E 01           LD      A,$01               ; Far right bit
-087B: 10 04           DJNZ    $881                ;{} Set ...
+087B: 10 04           DJNZ    $881                ; Set ...
 087D: DD 77 00        LD      (IX+$00),A          ; ... note length ...
 0880: C9              RET                         ; ... to ...
 0881: 07              RLCA                        ; ... power ...
-0882: 18 F7           JR      $87B                ;{} ... of two
+0882: 18 F7           JR      $87B                ; ... of two
 
 MusicNOTE: ; =
 ;ccc_nnnnn NOTE command. c is bit number for length, n is offset in note table
 0884: C5              PUSH    BC                  ; Original command is in B
-0885: CD 72 08        CALL    $0872               ;{} Set note length
+0885: CD 72 08        CALL    $0872               ; Set note length
 0888: C1              POP     BC                  ; Restore original command
 0889: 78              LD      A,B                 ; Get ...
 088A: E6 1F           AND     $1F                 ; ... note value
@@ -1555,7 +1556,7 @@ DelayTable: ; =
 0964: 11 80 42        LD      DE,$4280            ; Descriptors
 0967: 01 18 00        LD      BC,$0018            ; 8+8+8 = 18
 096A: ED B0           LDIR                        ; Initialize music descriptors
-096C: 3A A3 42        LD      A,($42A3)           ;{-} Song number to A
+096C: 3A A3 42        LD      A,($42A3)           ; Song number to A
 096F: 87              ADD     A,A                 ; A*2
 0970: 4F              LD      C,A                 ; Hold *2 value
 0971: 87              ADD     A,A                 ; A*4
@@ -1565,13 +1566,13 @@ DelayTable: ; =
 0976: 21 AB 09        LD      HL,$09AB            ; Song table
 0979: 09              ADD     HL,BC               ; Get song info
 097A: 11 82 42        LD      DE,$4282            ; Load music pointer of ...
-097D: CD 89 09        CALL    $0989               ;{} ... first descriptor
+097D: CD 89 09        CALL    $0989               ; ... first descriptor
 0980: 11 8A 42        LD      DE,$428A            ; Load music pointer of ...
-0983: CD 89 09        CALL    $0989               ;{} ... second descriptor
+0983: CD 89 09        CALL    $0989               ; ... second descriptor
 0986: 11 92 42        LD      DE,$4292            ; Third descriptor
 0989: 7E              LD      A,(HL)              ; Value from table
 098A: 12              LD      (DE),A              ; Store it in descriptor
-098B: CD 90 09        CALL    $0990               ;{} Bump pointers
+098B: CD 90 09        CALL    $0990               ; Bump pointers
 098E: 7E              LD      A,(HL)              ; Value from table
 098F: 12              LD      (DE),A              ; Store it in table
 0990: 23              INC     HL                  ; Bump ...
@@ -1736,14 +1737,14 @@ SongTable: ; =
 ;I0C Game over song 
 0AB0: E7              RST     $20                 
 0AB1: 3E 01           LD      A,$01               
-0AB3: 32 A3 42        LD      ($42A3),A           ;{-} 
-0AB6: 32 A6 42        LD      ($42A6),A           ;{-} 
+0AB3: 32 A3 42        LD      ($42A3),A           ; 
+0AB6: 32 A6 42        LD      ($42A6),A           ; 
 0AB9: F7              RST     $30                 
-0ABA: C3 61 09        JP      $0961               ;{} 
+0ABA: C3 61 09        JP      $0961               ; 
 
 ;C0C Game over song
 0ABD: DD 21 80 42     LD      IX,$4280            
-0AC1: C3 A1 07        JP      $07A1               ;{} 
+0AC1: C3 A1 07        JP      $07A1               ; 
 
 ;I0D Music voice B
 0AC4: E7              RST     $20                 
@@ -1752,7 +1753,7 @@ SongTable: ; =
 
 ;C0D Music voice B
 0AC7: DD 21 88 42     LD      IX,$4288            
-0ACB: C3 A1 07        JP      $07A1               ;{} 
+0ACB: C3 A1 07        JP      $07A1               ; 
 
 ;S1A Game over
 ; Song=1 Voice=A
@@ -1898,16 +1899,16 @@ SongTable: ; =
 ;I11 Level complete song
 0B3B: E7              RST     $20                 
 0B3C: AF              XOR     A                   
-0B3D: 32 C8 42        LD      ($42C8),A           ;{-} 
+0B3D: 32 C8 42        LD      ($42C8),A           ; 
 0B40: 3E 02           LD      A,$02               
-0B42: 32 A3 42        LD      ($42A3),A           ;{-} 
-0B45: 32 A6 42        LD      ($42A6),A           ;{-} 
+0B42: 32 A3 42        LD      ($42A3),A           ; 
+0B45: 32 A6 42        LD      ($42A6),A           ; 
 0B48: F7              RST     $30                 
-0B49: C3 61 09        JP      $0961               ;{} 
+0B49: C3 61 09        JP      $0961               ; 
 
 ;C11 Level complete song
 0B4C: DD 21 80 42     LD      IX,$4280            
-0B50: C3 A1 07        JP      $07A1               ;{} 
+0B50: C3 A1 07        JP      $07A1               ; 
 
 ;I12 Music voice B 
 0B53: E7              RST     $20                 
@@ -1916,7 +1917,7 @@ SongTable: ; =
 
 ;C12 Music voice B
 0B56: DD 21 88 42     LD      IX,$4288            
-0B5A: C3 A1 07        JP      $07A1               ;{} 
+0B5A: C3 A1 07        JP      $07A1               ; 
 
 ;I13 Music voice C
 0B5D: E7              RST     $20                 
@@ -1925,7 +1926,7 @@ SongTable: ; =
 
 ;C13 Music voice C
 0B60: DD 21 90 42     LD      IX,$4290            
-0B64: C3 A1 07        JP      $07A1               ;{} 
+0B64: C3 A1 07        JP      $07A1               ; 
 
 ;I08 Song interludes after frog home
 0B67: E7              RST     $20                 ; Remove all capacitor filtering
@@ -1933,22 +1934,22 @@ SongTable: ; =
 0B6B: 34              INC     (HL)                ; Bump to next frog-home song
 0B6C: 7E              LD      A,(HL)              ; Get new frog-home song
 0B6D: FE 01           CP      $01                 ; Is this the first pass
-0B6F: 28 10           JR      Z,$B81              ;{} Yes ... use song 5 and up
+0B6F: 28 10           JR      Z,$B81              ; Yes ... use song 5 and up
 0B71: FE 18           CP      $18                 ; End of frog-home songs?
-0B73: 28 11           JR      Z,$B86              ;{} Yes ... reset to beginning
-0B75: 32 A3 42        LD      ($42A3),A           ;{-} Set song number
+0B73: 28 11           JR      Z,$B86              ; Yes ... reset to beginning
+0B75: 32 A3 42        LD      ($42A3),A           ; Set song number
 0B78: F7              RST     $30                 ; Enable tone
 0B79: 3E 01           LD      A,$01               ; Interlude after frog home ...
-0B7B: 32 A5 42        LD      ($42A5),A           ;{-} ... can't be preempted
-0B7E: C3 61 09        JP      $0961               ;{} Set up song descriptors
+0B7B: 32 A5 42        LD      ($42A5),A           ; ... can't be preempted
+0B7E: C3 61 09        JP      $0961               ; Set up song descriptors
 ;
 0B81: 36 05           LD      (HL),$05            ; Start sequence with
 0B83: 7E              LD      A,(HL)              ; ... song 5
-0B84: 18 EF           JR      $B75                ;{} Start song 5
+0B84: 18 EF           JR      $B75                ; Start song 5
 ;
 0B86: 36 04           LD      (HL),$04            ; Next song will increment to 5
 0B88: 3E 18           LD      A,$18               ; Last song is 18
-0B8A: 18 E9           JR      $B75                ;{} Start song 18
+0B8A: 18 E9           JR      $B75                ; Start song 18
 
 ;I0E Music voice B
 0B8C: E7              RST     $20                 
@@ -1957,25 +1958,25 @@ SongTable: ; =
 
 ;C08 Song interludes after frog home
 0B8F: DD 21 80 42     LD      IX,$4280            
-0B93: C3 A1 07        JP      $07A1               ;{} 
+0B93: C3 A1 07        JP      $07A1               ; 
 
 ;C0E Music voice B
 0B96: DD 21 88 42     LD      IX,$4288            
-0B9A: C3 A1 07        JP      $07A1               ;{} 
+0B9A: C3 A1 07        JP      $07A1               ; 
 
 ;I06 Next life begins
 0B9D: E7              RST     $20                 
 0B9E: 3E 03           LD      A,$03               
-0BA0: 32 A3 42        LD      ($42A3),A           ;{-} 
+0BA0: 32 A3 42        LD      ($42A3),A           ; 
 0BA3: F7              RST     $30                 
-0BA4: C3 5B 09        JP      $095B               ;{} 
+0BA4: C3 5B 09        JP      $095B               ; 
 
 ;C06 Next life begins
-0BA7: 3A A5 42        LD      A,($42A5)           ;{-} Music preemption ...
+0BA7: 3A A5 42        LD      A,($42A5)           ; Music preemption ...
 0BAA: A7              AND     A                   ; ... allowed
-0BAB: C2 B4 07        JP      NZ,$07B4            ;{} No ...
+0BAB: C2 B4 07        JP      NZ,$07B4            ; No ...
 0BAE: DD 21 80 42     LD      IX,$4280            
-0BB2: C3 A1 07        JP      $07A1               ;{} 
+0BB2: C3 A1 07        JP      $07A1               ; 
 
 ;S5A Frog-home 1
 ; Song=5 Voice=A
@@ -3134,11 +3135,11 @@ SongTable: ; =
 ;I0F Main song
 1015: E7              RST     $20                 
 1016: AF              XOR     A                   
-1017: 32 C8 42        LD      ($42C8),A           ;{-} 
+1017: 32 C8 42        LD      ($42C8),A           ; 
 101A: 3E 19           LD      A,$19               
-101C: 32 A3 42        LD      ($42A3),A           ;{-} 
+101C: 32 A3 42        LD      ($42A3),A           ; 
 101F: F7              RST     $30                 
-1020: C3 61 09        JP      $0961               ;{} 
+1020: C3 61 09        JP      $0961               ; 
 
 ;I16 Music voice B
 1023: E7              RST     $20                 
@@ -3147,11 +3148,11 @@ SongTable: ; =
 
 ;C0F Main song
 1026: DD 21 80 42     LD      IX,$4280            
-102A: C3 A1 07        JP      $07A1               ;{} 
+102A: C3 A1 07        JP      $07A1               ; 
 
 ;C16 Music voice B
 102D: DD 21 88 42     LD      IX,$4288            
-1031: C3 A1 07        JP      $07A1               ;{} 
+1031: C3 A1 07        JP      $07A1               ; 
 
 ;S25A Main song
 ; Song=25 Voice=A
@@ -4267,66 +4268,66 @@ SongTable: ; =
 ;I05 Time running out
 1465: E7              RST     $20                 
 1466: 3E 01           LD      A,$01               
-1468: 32 C8 42        LD      ($42C8),A           ;{-} 
-146B: 32 C3 42        LD      ($42C3),A           ;{-} 
+1468: 32 C8 42        LD      ($42C8),A           ; 
+146B: 32 C3 42        LD      ($42C3),A           ; 
 146E: F7              RST     $30                 
-146F: C3 70 16        JP      $1670               ;{} 
+146F: C3 70 16        JP      $1670               ; 
 
 ;C05 Time running out
 1472: DD 21 B0 42     LD      IX,$42B0            
 1476: DD 7E 00        LD      A,(IX+$00)          
 1479: FE FF           CP      $FF                 
-147B: 28 25           JR      Z,$14A2             ;{} 
-147D: CD A9 14        CALL    $14A9               ;{} 
+147B: 28 25           JR      Z,$14A2             ; 
+147D: CD A9 14        CALL    $14A9               ; 
 1480: AF              XOR     A                   
 1481: C9              RET                         
 
 ;I04 Frog hopping
 1482: E7              RST     $20                 
 1483: 3E 00           LD      A,$00               
-1485: 32 C3 42        LD      ($42C3),A           ;{-} 
+1485: 32 C3 42        LD      ($42C3),A           ; 
 1488: F7              RST     $30                 
-1489: C3 6B 16        JP      $166B               ;{} 
+1489: C3 6B 16        JP      $166B               ; 
 
 ;C04 Frog hopping
-148C: 3A C8 42        LD      A,($42C8)           ;{-} 
+148C: 3A C8 42        LD      A,($42C8)           ; 
 148F: A7              AND     A                   
-1490: 20 14           JR      NZ,$14A6            ;{} 
+1490: 20 14           JR      NZ,$14A6            ; 
 1492: E7              RST     $20                 
 1493: DD 21 B0 42     LD      IX,$42B0            
 1497: DD 7E 00        LD      A,(IX+$00)          
 149A: FE FF           CP      $FF                 
 149C: C8              RET     Z                   
-149D: CD A9 14        CALL    $14A9               ;{} 
+149D: CD A9 14        CALL    $14A9               ; 
 14A0: AF              XOR     A                   
 14A1: C9              RET                         
 14A2: AF              XOR     A                   
-14A3: 32 C8 42        LD      ($42C8),A           ;{-} 
+14A3: 32 C8 42        LD      ($42C8),A           ; 
 14A6: 3E FF           LD      A,$FF               
 14A8: C9              RET                         
 14A9: DD 35 01        DEC     (IX+$01)            
 14AC: C0              RET     NZ                  
-14AD: 3A C2 42        LD      A,($42C2)           ;{-} 
+14AD: 3A C2 42        LD      A,($42C2)           ; 
 14B0: DD 77 01        LD      (IX+$01),A          
 14B3: DD 7E 08        LD      A,(IX+$08)          
 14B6: A7              AND     A                   
-14B7: 28 16           JR      Z,$14CF             ;{} 
+14B7: 28 16           JR      Z,$14CF             ; 
 14B9: 21 C4 42        LD      HL,$42C4            
 14BC: 35              DEC     (HL)                
 14BD: 7E              LD      A,(HL)              
 14BE: A7              AND     A                   
-14BF: 28 0B           JR      Z,$14CC             ;{} 
-14C1: CD 4D 02        CALL    $024D               ;{} 
-14C4: ED 5B C5 42     LD      DE,($42C5)          ;{-} 
+14BF: 28 0B           JR      Z,$14CC             ; 
+14C1: CD 4D 02        CALL    $024D               ; 
+14C4: ED 5B C5 42     LD      DE,($42C5)          ; 
 14C8: 19              ADD     HL,DE               
 14C9: EF              RST     $28                 
-14CA: 18 03           JR      $14CF               ;{} 
+14CA: 18 03           JR      $14CF               ; 
 14CC: DD 77 08        LD      (IX+$08),A          
 14CF: DD CB 00 46     BIT     0,(IX+$00)          
-14D3: C2 E3 14        JP      NZ,$14E3            ;{} 
+14D3: C2 E3 14        JP      NZ,$14E3            ; 
 14D6: DD 7E 07        LD      A,(IX+$07)          
 14D9: D6 01           SUB     $01                 
-14DB: FA E3 14        JP      M,$14E3             ;{} 
+14DB: FA E3 14        JP      M,$14E3             ; 
 14DE: DD 77 07        LD      (IX+$07),A          
 14E1: 47              LD      B,A                 
 14E2: DF              RST     $18                 
@@ -4337,9 +4338,9 @@ SongTable: ; =
 14ED: 7E              LD      A,(HL)              
 14EE: 47              LD      B,A                 
 14EF: E6 1F           AND     $1F                 
-14F1: CA 94 15        JP      Z,$1594             ;{} 
+14F1: CA 94 15        JP      Z,$1594             ; 
 14F4: FE 1F           CP      $1F                 
-14F6: C2 AE 15        JP      NZ,$15AE            ;{} 
+14F6: C2 AE 15        JP      NZ,$15AE            ; 
 14F9: 23              INC     HL                  
 14FA: DD 75 02        LD      (IX+$02),L          
 14FD: DD 74 03        LD      (IX+$03),H          
@@ -4356,7 +4357,7 @@ SongTable: ; =
 150E: 5E              LD      E,(HL)              
 150F: 23              INC     HL                  
 1510: 56              LD      D,(HL)              
-1511: 2A B2 42        LD      HL,($42B2)          ;{-} 
+1511: 2A B2 42        LD      HL,($42B2)          ; 
 1514: D5              PUSH    DE                  
 1515: C9              RET                         
 1516: 26 15           LD      H,$15               
@@ -4382,30 +4383,30 @@ SongTable: ; =
 1530: 09              ADD     HL,BC               
 1531: DD 75 04        LD      (IX+$04),L          
 1534: DD 74 05        LD      (IX+$05),H          
-1537: 18 43           JR      $157C               ;{} 
+1537: 18 43           JR      $157C               ; 
 1539: 4E              LD      C,(HL)              
 153A: 06 00           LD      B,$00               
 153C: 21 5B 16        LD      HL,$165B            
 153F: 09              ADD     HL,BC               
 1540: 7E              LD      A,(HL)              
-1541: 32 C2 42        LD      ($42C2),A           ;{-} 
+1541: 32 C2 42        LD      ($42C2),A           ; 
 1544: DD 77 01        LD      (IX+$01),A          
-1547: 18 33           JR      $157C               ;{} 
+1547: 18 33           JR      $157C               ; 
 1549: 7E              LD      A,(HL)              
 154A: DD 77 06        LD      (IX+$06),A          
 154D: DD 77 07        LD      (IX+$07),A          
-1550: 18 2A           JR      $157C               ;{} 
+1550: 18 2A           JR      $157C               ; 
 1552: 7E              LD      A,(HL)              
 1553: DD 77 08        LD      (IX+$08),A          
 1556: DD 77 09        LD      (IX+$09),A          
 1559: A7              AND     A                   
-155A: 28 20           JR      Z,$157C             ;{} 
+155A: 28 20           JR      Z,$157C             ; 
 155C: 47              LD      B,A                 
 155D: E6 E0           AND     $E0                 
 155F: 07              RLCA                        
 1560: 07              RLCA                        
 1561: 07              RLCA                        
-1562: 32 C4 42        LD      ($42C4),A           ;{-} 
+1562: 32 C4 42        LD      ($42C4),A           ; 
 1565: 78              LD      A,B                 
 1566: 16 00           LD      D,$00               
 1568: 21 00 00        LD      HL,$0000            
@@ -4414,25 +4415,25 @@ SongTable: ; =
 156E: 5F              LD      E,A                 
 156F: 78              LD      A,B                 
 1570: E6 10           AND     $10                 
-1572: 20 04           JR      NZ,$1578            ;{} 
+1572: 20 04           JR      NZ,$1578            ; 
 1574: ED 52           SBC     HL,DE               
-1576: 18 01           JR      $1579               ;{} 
+1576: 18 01           JR      $1579               ; 
 1578: 19              ADD     HL,DE               
-1579: 22 C5 42        LD      ($42C5),HL          ;{-} 
+1579: 22 C5 42        LD      ($42C5),HL          ; 
 157C: DD 6E 02        LD      L,(IX+$02)          
 157F: DD 66 03        LD      H,(IX+$03)          
 1582: 23              INC     HL                  
 1583: DD 75 02        LD      (IX+$02),L          
 1586: DD 74 03        LD      (IX+$03),H          
-1589: C3 E7 14        JP      $14E7               ;{} 
+1589: C3 E7 14        JP      $14E7               ; 
 158C: 06 00           LD      B,$00               
 158E: DF              RST     $18                 
 158F: DD 36 00 FF     LD      (IX+$00),$FF        
 1593: C9              RET                         
-1594: CD 9C 15        CALL    $159C               ;{} 
+1594: CD 9C 15        CALL    $159C               ; 
 1597: 06 00           LD      B,$00               
 1599: DF              RST     $18                 
-159A: 18 39           JR      $15D5               ;{} 
+159A: 18 39           JR      $15D5               ; 
 159C: 78              LD      A,B                 
 159D: E6 E0           AND     $E0                 
 159F: 07              RLCA                        
@@ -4440,13 +4441,13 @@ SongTable: ; =
 15A1: 07              RLCA                        
 15A2: 47              LD      B,A                 
 15A3: 3E 01           LD      A,$01               
-15A5: 10 04           DJNZ    $15AB               ;{} 
+15A5: 10 04           DJNZ    $15AB               ; 
 15A7: DD 77 00        LD      (IX+$00),A          
 15AA: C9              RET                         
 15AB: 07              RLCA                        
-15AC: 18 F7           JR      $15A5               ;{} 
+15AC: 18 F7           JR      $15A5               ; 
 15AE: C5              PUSH    BC                  
-15AF: CD 9C 15        CALL    $159C               ;{} 
+15AF: CD 9C 15        CALL    $159C               ; 
 15B2: C1              POP     BC                  
 15B3: 78              LD      A,B                 
 15B4: E6 1F           AND     $1F                 
@@ -4478,7 +4479,7 @@ SongTable: ; =
 
 15E3: 6B              LD      L,E                 
 15E4: 08              EX      AF,AF'              
-15E5: F2 07 80        JP      P,$8007             ;{} 
+15E5: F2 07 80        JP      P,$8007             ; 
 15E8: 07              RLCA                        
 15E9: 14              INC     D                   
 15EA: 07              RLCA                        
@@ -4505,7 +4506,7 @@ SongTable: ; =
 1604: 03              INC     BC                  
 1605: 27              DAA                         
 1606: 03              INC     BC                  
-1607: FA 02 CF        JP      M,$CF02             ;{} 
+1607: FA 02 CF        JP      M,$CF02             ; 
 160A: 02              LD      (BC),A              
 160B: A7              AND     A                   
 160C: 02              LD      (BC),A              
@@ -4535,7 +4536,7 @@ SongTable: ; =
 1631: E3              EX      (SP),HL             
 1632: 00              NOP                         
 1633: D6 00           SUB     $00                 
-1635: CA 00 BE        JP      Z,$BE00             ;{} 
+1635: CA 00 BE        JP      Z,$BE00             ; 
 1638: 00              NOP                         
 1639: B4              OR      H                   
 163A: 00              NOP                         
@@ -4591,7 +4592,7 @@ SongTable: ; =
 1673: 11 B0 42        LD      DE,$42B0            
 1676: 01 0A 00        LD      BC,$000A            
 1679: ED B0           LDIR                        
-167B: 3A C3 42        LD      A,($42C3)           ;{-} 
+167B: 3A C3 42        LD      A,($42C3)           ; 
 167E: 87              ADD     A,A                 
 167F: 4F              LD      C,A                 
 1680: 87              ADD     A,A                 
@@ -4602,7 +4603,7 @@ SongTable: ; =
 1687: 11 B2 42        LD      DE,$42B2            
 168A: 7E              LD      A,(HL)              
 168B: 12              LD      (DE),A              
-168C: CD 91 16        CALL    $1691               ;{} 
+168C: CD 91 16        CALL    $1691               ; 
 168F: 7E              LD      A,(HL)              
 1690: 12              LD      (DE),A              
 1691: 23              INC     HL                  
@@ -4654,312 +4655,25 @@ SongTable: ; =
 16C8: 88              ADC     A,B                 
 16C9: 94              SUB     H                   
 16CA: 8D              ADC     A,L                 
-16CB: C8              RET     Z                   
-16CC: FF              RST     $38                 
-16CD: FF              RST     $38                 
-16CE: FF              RST     $38                 
-16CF: FF              RST     $38                 
-16D0: FF              RST     $38                 
-16D1: FF              RST     $38                 
-16D2: FF              RST     $38                 
-16D3: FF              RST     $38                 
-16D4: FF              RST     $38                 
-16D5: FF              RST     $38                 
-16D6: FF              RST     $38                 
-16D7: FF              RST     $38                 
-16D8: FF              RST     $38                 
-16D9: FF              RST     $38                 
-16DA: FF              RST     $38                 
-16DB: FF              RST     $38                 
-16DC: FF              RST     $38                 
-16DD: FF              RST     $38                 
-16DE: FF              RST     $38                 
-16DF: FF              RST     $38                 
-16E0: FF              RST     $38                 
-16E1: FF              RST     $38                 
-16E2: FF              RST     $38                 
-16E3: FF              RST     $38                 
-16E4: FF              RST     $38                 
-16E5: FF              RST     $38                 
-16E6: FF              RST     $38                 
-16E7: FF              RST     $38                 
-16E8: FF              RST     $38                 
-16E9: FF              RST     $38                 
-16EA: FF              RST     $38                 
-16EB: FF              RST     $38                 
-16EC: FF              RST     $38                 
-16ED: FF              RST     $38                 
-16EE: FF              RST     $38                 
-16EF: FF              RST     $38                 
-16F0: FF              RST     $38                 
-16F1: FF              RST     $38                 
-16F2: FF              RST     $38                 
-16F3: FF              RST     $38                 
-16F4: FF              RST     $38                 
-16F5: FF              RST     $38                 
-16F6: FF              RST     $38                 
-16F7: FF              RST     $38                 
-16F8: FF              RST     $38                 
-16F9: FF              RST     $38                 
-16FA: FF              RST     $38                 
-16FB: FF              RST     $38                 
-16FC: FF              RST     $38                 
-16FD: FF              RST     $38                 
-16FE: FF              RST     $38                 
-16FF: FF              RST     $38                 
-1700: FF              RST     $38                 
-1701: FF              RST     $38                 
-1702: FF              RST     $38                 
-1703: FF              RST     $38                 
-1704: FF              RST     $38                 
-1705: FF              RST     $38                 
-1706: FF              RST     $38                 
-1707: FF              RST     $38                 
-1708: FF              RST     $38                 
-1709: FF              RST     $38                 
-170A: FF              RST     $38                 
-170B: FF              RST     $38                 
-170C: FF              RST     $38                 
-170D: FF              RST     $38                 
-170E: FF              RST     $38                 
-170F: FF              RST     $38                 
-1710: FF              RST     $38                 
-1711: FF              RST     $38                 
-1712: FF              RST     $38                 
-1713: FF              RST     $38                 
-1714: FF              RST     $38                 
-1715: FF              RST     $38                 
-1716: FF              RST     $38                 
-1717: FF              RST     $38                 
-1718: FF              RST     $38                 
-1719: FF              RST     $38                 
-171A: FF              RST     $38                 
-171B: FF              RST     $38                 
-171C: FF              RST     $38                 
-171D: FF              RST     $38                 
-171E: FF              RST     $38                 
-171F: FF              RST     $38                 
-1720: FF              RST     $38                 
-1721: FF              RST     $38                 
-1722: FF              RST     $38                 
-1723: FF              RST     $38                 
-1724: FF              RST     $38                 
-1725: FF              RST     $38                 
-1726: FF              RST     $38                 
-1727: FF              RST     $38                 
-1728: FF              RST     $38                 
-1729: FF              RST     $38                 
-172A: FF              RST     $38                 
-172B: FF              RST     $38                 
-172C: FF              RST     $38                 
-172D: FF              RST     $38                 
-172E: FF              RST     $38                 
-172F: FF              RST     $38                 
-1730: FF              RST     $38                 
-1731: FF              RST     $38                 
-1732: FF              RST     $38                 
-1733: FF              RST     $38                 
-1734: FF              RST     $38                 
-1735: FF              RST     $38                 
-1736: FF              RST     $38                 
-1737: FF              RST     $38                 
-1738: FF              RST     $38                 
-1739: FF              RST     $38                 
-173A: FF              RST     $38                 
-173B: FF              RST     $38                 
-173C: FF              RST     $38                 
-173D: FF              RST     $38                 
-173E: FF              RST     $38                 
-173F: FF              RST     $38                 
-1740: FF              RST     $38                 
-1741: FF              RST     $38                 
-1742: FF              RST     $38                 
-1743: FF              RST     $38                 
-1744: FF              RST     $38                 
-1745: FF              RST     $38                 
-1746: FF              RST     $38                 
-1747: FF              RST     $38                 
-1748: FF              RST     $38                 
-1749: FF              RST     $38                 
-174A: FF              RST     $38                 
-174B: FF              RST     $38                 
-174C: FF              RST     $38                 
-174D: FF              RST     $38                 
-174E: FF              RST     $38                 
-174F: FF              RST     $38                 
-1750: FF              RST     $38                 
-1751: FF              RST     $38                 
-1752: FF              RST     $38                 
-1753: FF              RST     $38                 
-1754: FF              RST     $38                 
-1755: FF              RST     $38                 
-1756: FF              RST     $38                 
-1757: FF              RST     $38                 
-1758: FF              RST     $38                 
-1759: FF              RST     $38                 
-175A: FF              RST     $38                 
-175B: FF              RST     $38                 
-175C: FF              RST     $38                 
-175D: FF              RST     $38                 
-175E: FF              RST     $38                 
-175F: FF              RST     $38                 
-1760: FF              RST     $38                 
-1761: FF              RST     $38                 
-1762: FF              RST     $38                 
-1763: FF              RST     $38                 
-1764: FF              RST     $38                 
-1765: FF              RST     $38                 
-1766: FF              RST     $38                 
-1767: FF              RST     $38                 
-1768: FF              RST     $38                 
-1769: FF              RST     $38                 
-176A: FF              RST     $38                 
-176B: FF              RST     $38                 
-176C: FF              RST     $38                 
-176D: FF              RST     $38                 
-176E: FF              RST     $38                 
-176F: FF              RST     $38                 
-1770: FF              RST     $38                 
-1771: FF              RST     $38                 
-1772: FF              RST     $38                 
-1773: FF              RST     $38                 
-1774: FF              RST     $38                 
-1775: FF              RST     $38                 
-1776: FF              RST     $38                 
-1777: FF              RST     $38                 
-1778: FF              RST     $38                 
-1779: FF              RST     $38                 
-177A: FF              RST     $38                 
-177B: FF              RST     $38                 
-177C: FF              RST     $38                 
-177D: FF              RST     $38                 
-177E: FF              RST     $38                 
-177F: FF              RST     $38                 
-1780: FF              RST     $38                 
-1781: FF              RST     $38                 
-1782: FF              RST     $38                 
-1783: FF              RST     $38                 
-1784: FF              RST     $38                 
-1785: FF              RST     $38                 
-1786: FF              RST     $38                 
-1787: FF              RST     $38                 
-1788: FF              RST     $38                 
-1789: FF              RST     $38                 
-178A: FF              RST     $38                 
-178B: FF              RST     $38                 
-178C: FF              RST     $38                 
-178D: FF              RST     $38                 
-178E: FF              RST     $38                 
-178F: FF              RST     $38                 
-1790: FF              RST     $38                 
-1791: FF              RST     $38                 
-1792: FF              RST     $38                 
-1793: FF              RST     $38                 
-1794: FF              RST     $38                 
-1795: FF              RST     $38                 
-1796: FF              RST     $38                 
-1797: FF              RST     $38                 
-1798: FF              RST     $38                 
-1799: FF              RST     $38                 
-179A: FF              RST     $38                 
-179B: FF              RST     $38                 
-179C: FF              RST     $38                 
-179D: FF              RST     $38                 
-179E: FF              RST     $38                 
-179F: FF              RST     $38                 
-17A0: FF              RST     $38                 
-17A1: FF              RST     $38                 
-17A2: FF              RST     $38                 
-17A3: FF              RST     $38                 
-17A4: FF              RST     $38                 
-17A5: FF              RST     $38                 
-17A6: FF              RST     $38                 
-17A7: FF              RST     $38                 
-17A8: FF              RST     $38                 
-17A9: FF              RST     $38                 
-17AA: FF              RST     $38                 
-17AB: FF              RST     $38                 
-17AC: FF              RST     $38                 
-17AD: FF              RST     $38                 
-17AE: FF              RST     $38                 
-17AF: FF              RST     $38                 
-17B0: FF              RST     $38                 
-17B1: FF              RST     $38                 
-17B2: FF              RST     $38                 
-17B3: FF              RST     $38                 
-17B4: FF              RST     $38                 
-17B5: FF              RST     $38                 
-17B6: FF              RST     $38                 
-17B7: FF              RST     $38                 
-17B8: FF              RST     $38                 
-17B9: FF              RST     $38                 
-17BA: FF              RST     $38                 
-17BB: FF              RST     $38                 
-17BC: FF              RST     $38                 
-17BD: FF              RST     $38                 
-17BE: FF              RST     $38                 
-17BF: FF              RST     $38                 
-17C0: FF              RST     $38                 
-17C1: FF              RST     $38                 
-17C2: FF              RST     $38                 
-17C3: FF              RST     $38                 
-17C4: FF              RST     $38                 
-17C5: FF              RST     $38                 
-17C6: FF              RST     $38                 
-17C7: FF              RST     $38                 
-17C8: FF              RST     $38                 
-17C9: FF              RST     $38                 
-17CA: FF              RST     $38                 
-17CB: FF              RST     $38                 
-17CC: FF              RST     $38                 
-17CD: FF              RST     $38                 
-17CE: FF              RST     $38                 
-17CF: FF              RST     $38                 
-17D0: FF              RST     $38                 
-17D1: FF              RST     $38                 
-17D2: FF              RST     $38                 
-17D3: FF              RST     $38                 
-17D4: FF              RST     $38                 
-17D5: FF              RST     $38                 
-17D6: FF              RST     $38                 
-17D7: FF              RST     $38                 
-17D8: FF              RST     $38                 
-17D9: FF              RST     $38                 
-17DA: FF              RST     $38                 
-17DB: FF              RST     $38                 
-17DC: FF              RST     $38                 
-17DD: FF              RST     $38                 
-17DE: FF              RST     $38                 
-17DF: FF              RST     $38                 
-17E0: FF              RST     $38                 
-17E1: FF              RST     $38                 
-17E2: FF              RST     $38                 
-17E3: FF              RST     $38                 
-17E4: FF              RST     $38                 
-17E5: FF              RST     $38                 
-17E6: FF              RST     $38                 
-17E7: FF              RST     $38                 
-17E8: FF              RST     $38                 
-17E9: FF              RST     $38                 
-17EA: FF              RST     $38                 
-17EB: FF              RST     $38                 
-17EC: FF              RST     $38                 
-17ED: FF              RST     $38                 
-17EE: FF              RST     $38                 
-17EF: FF              RST     $38                 
-17F0: FF              RST     $38                 
-17F1: FF              RST     $38                 
-17F2: FF              RST     $38                 
-17F3: FF              RST     $38                 
-17F4: FF              RST     $38                 
-17F5: FF              RST     $38                 
-17F6: FF              RST     $38                 
-17F7: FF              RST     $38                 
-17F8: FF              RST     $38                 
-17F9: FF              RST     $38                 
-17FA: FF              RST     $38                 
-17FB: FF              RST     $38                 
-17FC: FF              RST     $38                 
-17FD: FF              RST     $38                 
-17FE: FF              RST     $38                 
-17FF: FF              RST     $38                 
+16CB: C8              RET     Z  
+                 
+16CC: FF FF FF FF
+16D0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
+16E0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF    
+16F0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF    
+1700: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF    
+1710: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF    
+1720: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF    
+1730: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF    
+1740: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF    
+1750: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF    
+1760: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF    
+1770: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
+1780: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF  
+1790: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF  
+17A0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF  
+17B0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF  
+17C0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF  
+17D0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF  
+17E0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF  
+17F0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF                  
