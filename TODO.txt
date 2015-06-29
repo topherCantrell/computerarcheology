@@ -2,6 +2,10 @@
 
 Implement the 6809 link finders.
 
+Dividers in the navs
+
+Links to ports and "r" and "w" must include the specifiers in the link.
+
 -------- Content ----------
 
 Sweep through all links over entire site and make sure they works.
@@ -12,3 +16,5 @@ Sweep through all links over entire site and make sure they works.
   * Asteroids: Stubbed up and tucked in
   * Defender: Harry's realm. Stubbed up and tucked in
   * Frogger: Stubbed up and tucked in
+  * GALAGA: Leaving it as is
+  * Moon Patrol: Stubbed up and tucked in

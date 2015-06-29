@@ -12,7 +12,7 @@ public class AddressAccess implements Comparable<AddressAccess> {
 		
 	@Override
 	public int compareTo(AddressAccess other) {
-		return other.address - address;
+		return address - other.address;
 	}
 	
 	@Override
