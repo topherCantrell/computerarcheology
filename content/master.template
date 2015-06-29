@@ -43,15 +43,15 @@
           
 				<div class="col-md-2 sidebar">
 					<ul class="nav nav-tabs" style="margin-bottom:16px;">
-						<li id="siteTab" role="presentation" onclick="switchTab('site');"><a>Site</a></li>
-						<li id="pageTab" role="presentation" class="active" onclick="switchTab('page');"><a>Page</a></li>
+						<li id="siteTab" role="presentation" class="active" onclick="switchTab('site');"><a>Site</a></li>
+						<li id="pageTab" role="presentation" onclick="switchTab('page');"><a>Page</a></li>
 					</ul>
 						
-					<ul id="siteTree" class="hidden">
+					<ul id="siteTree">
 						<!-- %%SITE_TREE%% -->
 					</ul>
 		
-					<ul id="pageTree">
+					<ul id="pageTree" class="hidden">
 						<!-- %%PAGE_TREE%% -->
 					</ul>		
 

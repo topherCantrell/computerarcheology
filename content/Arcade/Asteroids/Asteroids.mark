@@ -4,6 +4,27 @@
 = Code Links =
 
 * [Code.html Disassembled Code]
-* [DVG.html Vector ROM]
+* [Hardware.html Hardware Info]
+* [RAMUse.html RAM Usage]
+* [VectorROM.html Vector ROM]
+* [DVG.html Info on the DVG]
 
+{{{html
+<div class="tourGuide">
+<div style="padding-left: 20px">
+}}}
+= Tour Guide =
 
+Just getting started on this dig. Lonnie Howell (displacer2@yahoo.com) is doing the code comments.
+
+You should browse the [VectorROM.html Vector ROM] and see the game images. For instance:
+* [VectorROM.html#UFO UFO]
+* [VectorROM.html#RockPatterns Asteroids]
+* [VectorROM.html#PlayerShips Player Ships]
+
+And many more.
+
+{{{html
+</div>
+</div>
+}}}

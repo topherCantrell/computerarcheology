@@ -111,7 +111,7 @@ function handleDVGCanvas(can) {
 					if(callStack.length==0) { 
 						break;
 					}
-					setDataCursor(callStack.pop());
+					cursor = callStack.pop();
 				} else if(op==14) { // JMPL
 					b = ((b&15)<<8)+a;
 					b = b - origin;
