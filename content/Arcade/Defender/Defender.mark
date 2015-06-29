@@ -1,21 +1,37 @@
 %%title Defender
-
-* [MemoryMap.html Memory Map]
-
-* [Bank1.html Bank 1]
-* [Bank2.html Bank 2]
-* [Bank3.html Bank 3]
-* [Bank7.html Bank 7]
-* [BankFixed.html Fixed ROM]
-* [Sound.html Sound board]
-
-= Defender =
+%%image Defender.jpg
 
 {{{html
 <b>Archeologist: <a href="/People/HarryHurst.html">Harry Hurst</a></b>
 }}}
 
-== Memory and ROM Banks ==
+= Code Links =
+
+* [RAMUse.html Main Board RAM Use]
+* [Hardware.html Main Board Hardware]
+* [Bank1.html Bank 1 Code]
+* [Bank2.html Bank 2 Code]
+* [Bank3.html Bank 3 Code]
+* [Bank7.html Bank 7 Code]
+* [BankFixed.html Fixed ROM Code]
+* [SoundCode.html Sound Board Code]
+* [SoundRAMUse.html Sound Board RAM Use]
+* [SoundHardware.html Sound Board Hardware Info]
+
+{{{html
+<div class="tourGuide">
+<div style="padding-left: 20px">
+}}}
+= Tour Guide =
+
+Harry is working on this dig.
+
+{{{html
+</div>
+</div>
+}}}
+
+= Memory and ROM Banks =
 
 Memory $D000 - $FFFF is always ROM. The 6809 vectors are at the end of the map from $FFF0 - $FFFF. All the vectors point to the RESET address except for the IRQ vector.
 

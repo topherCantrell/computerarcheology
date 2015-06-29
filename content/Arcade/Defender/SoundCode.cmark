@@ -1,4 +1,9 @@
-= Sound board =
+%%title Defender Sound Board Code
+%%image Defender.jpg
+
+* [SoundRAMUse.html RAM Use]
+* [SoundHardware.html Hardware Info]
+
 This is a disassembly of one of two ROM images that I have found for the Defender sound board. The other ROM image is largely the same, but with some significant omissions, and rerouting of jumps and subroutines. At this time I do not have any plans to disassemble that ROM.
 
 {{{

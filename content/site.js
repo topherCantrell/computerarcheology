@@ -59,17 +59,25 @@
 	         },
 	         {"dir": "Defender", "nav": "Defender", "entries": [	         
 	             {"mark": "Defender.mark", "out": "index.html"},
-	             {"mark": "Bank1.mark", "out": "Bank1.html", "nav":"Bank 1"},
-	             {"mark": "Bank2.mark", "out": "Bank2.html", "nav":"Bank 2"},
-	             {"mark": "Bank3.mark", "out": "Bank3.html", "nav":"Bank 3"},
-	             {"mark": "Bank7.mark", "out": "Bank7.html", "nav":"Bank 7"},
-	             {"mark": "MemoryMap.mark", "out": "MemoryMap.html", "nav":"MemoryMap"},
-	             {"mark": "Sound.mark", "out": "Sound.html", "nav":"Sound"},
+	             
+	             {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
+	             {"address": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware"},
+	             {"mark": "Bank1.cmark", "out": "Bank1.html", "nav":"Bank 1"},
+	             {"mark": "Bank2.cmark", "out": "Bank2.html", "nav":"Bank 2"},
+	             {"mark": "Bank3.cmark", "out": "Bank3.html", "nav":"Bank 3"},
+	             {"mark": "Bank7.cmark", "out": "Bank7.html", "nav":"Bank 7"},
+	             {"mark": "BankFixed.cmark", "out": "BankFixed.html", "nav":"Fixed Bank"},	             
+	             
+	             {"mark": "SoundCode.cmark", "out": "SoundCode.html", "nav":"Sound Code"},
+	             {"address": "SoundRAMUse.mark", "out": "SoundRAMUse.html", "nav": "Sound RAM Use"},
+	             {"address": "SoundHardware.mark", "out": "SoundHardware.html", "nav": "Sound Hardware"},
+	             
 	             {"copy": "Defender-Theory-Early.pdf"},
 	             {"copy": "Defender-Theory-Later.pdf"},
 	             {"copy": "Defender.ROM.B&W.jpg"},
 	             {"copy": "Defender.CPU.jpg"},
-	             {"copy": "Defender.Vid.B&W.jpg"}
+	             {"copy": "Defender.Vid.B&W.jpg"},
+	             {"copy": "Defender.jpg"}
 	             ]
 	         },
 	         {"dir": "Frogger", "nav": "Frogger", "entries": [

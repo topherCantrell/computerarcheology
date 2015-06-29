@@ -1,14 +1,14 @@
-= Defender Bank 3 =
+%%title Defender Bank 3
+%%cpu 6809
+%%image Defender.jpg
 
-[wiki:Arcade/Defender/MemoryMap Memory Map]
-
-
-
+* [RAMUse.html RAM Use]
+* [Hardware.html Hardware Info]
 
 Bank3 (write 3 to $D000)
 
-Jump table
 {{{
+;Jump table
 $C000
 C000: 7E C0 76      JMP   $C076         ;
 $C003

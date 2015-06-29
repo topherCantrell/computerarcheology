@@ -8,3 +8,9 @@ Implement the Z80 and 6809 link finders.
 -------- Content ----------
 
 Sweep through all links over entire site and make sure they works.
+
+
+* Amiga: Patrick's realm. I haven't heard from him in awhile.
+* Arcade
+  * Asteroids: Stubbed up and tucked in
+  * Defender: Harry's realm. Stubbed up and tucked in
