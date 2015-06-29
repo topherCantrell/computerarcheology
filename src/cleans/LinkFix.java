@@ -37,7 +37,7 @@ import cpu.CPU;
  */
 public class LinkFix {
 	
-	List<Integer> notFounds;
+	List<AddressAccess> notFounds;
 	
 	/**
 	 * Fix up all the links in all comments in the code.
@@ -45,7 +45,7 @@ public class LinkFix {
 	 */
 	public void fix(CodeFile tabs, boolean shortVersion) {
 				
-		notFounds = new ArrayList<Integer>();
+		notFounds = new ArrayList<AddressAccess>();
 		
 		int commentPos = 0;
 		
@@ -107,7 +107,7 @@ public class LinkFix {
 			
 			// Check the opcode for read/write/port
 			AddressAccess ac = tabs.cpu.getAccess(c.opcode, i-1, CU.parseInt(c.opcode.substring(i,j),16) );
-			if(ac==null) {
+			if(ac==null) {		
 				continue;
 			}			
 					
@@ -153,12 +153,15 @@ public class LinkFix {
 			return null;			
 		} else {
 			if(table==null) {
+				if(!notFounds.contains(ac)) {
+					notFounds.add(ac);
+				}
 				return null;
 			}
-			AddressDef en = table.getEntry(ac.address, ac.bus);	
+			AddressDef en = table.getEntry(ac.address, ac.bus, ac.accessType);	
 			if(en == null) {
-				if(!notFounds.contains(ac.address)) {
-					notFounds.add(ac.address);
+				if(!notFounds.contains(ac)) {
+					notFounds.add(ac);
 				}
 				return null;
 			}
@@ -184,12 +187,15 @@ public class LinkFix {
 			return null;			
 		} else {
 			if(table==null) {
+				if(!notFounds.contains(ac)) {
+					notFounds.add(ac);
+				}
 				return null;
 			}
-			AddressDef en = table.getEntry(ac.address, ac.bus);	
+			AddressDef en = table.getEntry(ac.address, ac.bus, ac.accessType);	
 			if(en == null) {
-				if(!notFounds.contains(ac.address)) {
-					notFounds.add(ac.address);
+				if(!notFounds.contains(ac)) {
+					notFounds.add(ac);
 				}
 				return null;
 			}
@@ -225,8 +231,9 @@ public class LinkFix {
 		if(fixer.notFounds.size()>0) {		
 			System.out.println("The following definitions were not found in the address tables:");
 			Collections.sort(fixer.notFounds);
-			for(int ii : fixer.notFounds) {
-				System.out.println("|| "+CU.hex4(ii)+" || "+CU.hex4(ii)+" || ||");
+			for(AddressAccess ii : fixer.notFounds) {
+				System.out.println(ii);
+				//System.out.println("|| "+CU.hex4(ii)+" || "+CU.hex4(ii)+" || ||");
 			}
 		}
 		

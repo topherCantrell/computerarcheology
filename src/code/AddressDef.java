@@ -2,7 +2,8 @@ package code;
 
 public class AddressDef {
 	
-	BusDir bus;
+	BusDir busDir;
+	BusType busType;
 	
 	int startAddress;
 	int endAddress;
@@ -11,16 +12,23 @@ public class AddressDef {
 	
 	public AddressDef(String addr, String n) {
 		
+		busType = BusType.MAIN;
+		
 		name = n;
 		
 		if(addr.endsWith("r")) {
-			bus = BusDir.READ;
+			busDir = BusDir.READ;
 			addr = addr.substring(0,addr.length()-1);
 		} else if(addr.endsWith("w")) {
-			bus = BusDir.WRITE;
+			busDir = BusDir.WRITE;
 			addr = addr.substring(0,addr.length()-1);
 		} else {
-			bus = BusDir.BOTH;
+			busDir = BusDir.BOTH;			
+		}
+		
+		if(addr.endsWith("p")) {
+			busType = BusType.PORT;
+			addr = addr.substring(0,addr.length()-1);
 		}
 		
 		int i = addr.indexOf(":");
@@ -34,8 +42,14 @@ public class AddressDef {
 		
 	}
 
-	public boolean isMe(int address, BusDir b) {
+	public boolean isMe(int address, BusDir b, BusType type) {
 		
+		if(type!=busType) {
+			// Not even the right bus
+			return false;
+		}
+		
+		// Single address or within a range
 		if(endAddress==-1) {
 			if(address != startAddress) {
 				return false;
@@ -46,11 +60,13 @@ public class AddressDef {
 			}
 		}
 		
-		if(b==bus) {
+		// Exact match
+		if(b==busDir) {
 			return true;
 		}
 		
-		if(bus==BusDir.BOTH) {
+		// If we are both directions then this is good
+		if(busDir==BusDir.BOTH) {
 			return true;
 		}
 		

@@ -7,23 +7,6 @@
 ;; * [SoundRAMUse.html RAM Usage]
 ;; * [SoundHardware.html Hardware Info]
 
-; Port space addressing is straightforward:
-; If upper address bit 7 is set, value is written to chip address register
-; If address bit 6 is set, value is written to chip register last addressed
-
-; There is a capacitor filter control network controlled through memory addresses 
-; decoded from 6000. Reading from an address sets the filter as follows:
-;
-; Address 0110_aa_bb_cc_dd_ee_ff
-; aa, bb, cc are AY chip 0 voices
-; dd, ee, ff are AY chip 1 voices (not used in this 1-chip hardware)
-;
-; For each voice the two-bit data switches capacitors as follows:
-; 00 None
-; 01 0.220uF
-; 10 0.047uF
-; 11 0.047uF + 0.220uF
-
 ;I14
 ; Reset program to program entry
 
@@ -38,25 +21,25 @@ START: ; =
 
 WriteToAY: ; =
 ; A is address, B is value
-0008: D3 80           OUT     ($80),A             ; Write the address to the AY
+0008: D3 80           OUT     ($80),A             ;{-2_AY_ADDR} Write the address to the AY
 000A: 78              LD      A,B                 ; Write the ...
-000B: D3 40           OUT     ($40),A             ; ... value to the AY register
+000B: D3 40           OUT     ($40),A             ;{-2_AY_WATA} ... value to the AY register
 000D: C9              RET                         ; Done
 000E: FF FF  
 
-0010: C3 B7 02        JP      $02B7               ; Read voice amplitude
+0010: C3 B7 02        JP      $02B7               ;{ReadAmplitude} Read voice amplitude
 0013: FF FF FF FF FF                 
 
-0018: C3 7C 02        JP      $027C               ; Set voice amplitude
+0018: C3 7C 02        JP      $027C               ;{SetAmplitude} Set voice amplitude
 001B: FF FF FF FF FF                 
 
-0020: C3 C7 02        JP      $02C7               ; Remove all voice capacitor filters
+0020: C3 C7 02        JP      $02C7               ;{Filter00} Remove all voice capacitor filters
 0023: FF FF FF FF FF               
 
-0028: C3 3C 02        JP      $023C               ; Write to voice tune registers (coarse/fine)
+0028: C3 3C 02        JP      $023C               ;{WriteTune} Write to voice tune registers (coarse/fine)
 002B: FF FF FF FF FF                 
 
-0030: C3 60 02        JP      $0260               ; Enable tone
+0030: C3 60 02        JP      $0260               ;{EnableTone} Enable tone
 
 ;C00 Not used
 0033: 3E FF           LD      A,$FF               ; Return ...
@@ -80,9 +63,9 @@ Interrupt: ; =
 003A: 21 6D 00        LD      HL,$006D            ; Return address
 003D: E5              PUSH    HL                  ; Push return
 003E: 3E 0E           LD      A,$0E               ; Read from ...
-0040: CD C1 02        CALL    $02C1               ; ... AY IO port A
+0040: CD C1 02        CALL    $02C1               ;{ReadAY} ... AY IO port A
 0043: B7              OR      A                   ; Reset everything?
-0044: 28 2B           JR      Z,$71               ; Yes ... go reset all command info and out
+0044: 28 2B           JR      Z,$71               ;{ClearCommands} Yes ... go reset all command info and out
 0046: 57              LD      D,A                 ; Copy command to D
 0047: FE FF           CP      $FF                 ; Is it a RESET command?
 0049: 20 01           JR      NZ,$4C              ; No ... keep going
@@ -97,20 +80,20 @@ Interrupt: ; =
 0054: B7              OR      A                   ; ... all 0?
 0055: 28 03           JR      Z,$5A               ; Yes ... shuffle
 0057: 7A              LD      A,D                 ; Original command 
-0058: 18 3D           JR      $97                 ; Process original command as-is
+0058: 18 3D           JR      $97                 ;{CmdRequest} Process original command as-is
 ;
 005A: 7A              LD      A,D                 ; Original command
 005B: E6 0F           AND     $0F                 ; Just the lower bits
-005D: 20 38           JR      NZ,$97              ; Lower 4 is not 0 ... processes lower 4 as command
+005D: 20 38           JR      NZ,$97              ;{CmdRequest} Lower 4 is not 0 ... processes lower 4 as command
 005F: 7A              LD      A,D                 ; Original command
 0060: C6 12           ADD     A,$12               ; shuffle ...
 0062: 07              RLCA                        ; ... the ...
 0063: 07              RLCA                        ; ... bits ...
 0064: 07              RLCA                        ; ... around
 0065: CB 7F           BIT     7,A                 ; Upper bit set?
-0067: 28 2E           JR      Z,$97               ; No ... use this as command
+0067: 28 2E           JR      Z,$97               ;{CmdRequest} No ... use this as command
 0069: CB BF           RES     7,A                 ; Reset the bit
-006B: 18 13           JR      $80                 ; Stop the requested command
+006B: 18 13           JR      $80                 ;{StopCommand} Stop the requested command
 
 ; Return from interrupt
 006D: D9              EXX                         ; Swap ...
@@ -130,9 +113,9 @@ ClearCommands: ; =
 007F: C9              RET                         ; back to 6D and out 
 
 StopCommand: ; =
-0080: CD E6 00        CALL    $00E6               ; Attempt to reinit running command
+0080: CD E6 00        CALL    $00E6               ;{ReinitCommand} Attempt to reinit running command
 0083: D0              RET     NC                  ; Return if not there
-0084: CD 8C 00        CALL    $008C               ; Find command data
+0084: CD 8C 00        CALL    $008C               ;{FindDat} Find command data
 0087: AF              XOR     A                   ; Zero
 0088: 77              LD      (HL),A              ; Clear command
 0089: 23              INC     HL                  ; Clear ...
@@ -153,22 +136,22 @@ CmdRequest: ; =
 ; Process a command request. Request is in A. The lowest priority voice is 
 ; preempted with the request if the request is higher priority. Otherwise th
 ; request is ignored.
-0097: 32 46 40        LD      ($4046),A           ; Hold requested command
-009A: CD E6 00        CALL    $00E6               ; Reinit command if running
+0097: 32 46 40        LD      ($4046),A           ;{-1_cmdRequest} Hold requested command
+009A: CD E6 00        CALL    $00E6               ;{ReinitCommand} Reinit command if running
 009D: D8              RET     C                   ; Command now running ... out
-009E: CD E6 00        CALL    $00E6               ; If not found, A=0. So look for a idle voice
+009E: CD E6 00        CALL    $00E6               ;{ReinitCommand} If not found, A=0. So look for a idle voice
 00A1: 38 38           JR      C,$DB               ; Found idle voice ... use it
-00A3: 3A 40 40        LD      A,($4040)           ; Voice 1 command
-00A6: CD 02 01        CALL    $0102               ; Priority of current ...
+00A3: 3A 40 40        LD      A,($4040)           ;{-1_v1Command} Voice 1 command
+00A6: CD 02 01        CALL    $0102               ;{GetComPriority} Priority of current ...
 00A9: 47              LD      B,A                 ; ... voice 1 command to B
-00AA: 3A 42 40        LD      A,($4042)           ; Priority of  ...
-00AD: CD 02 01        CALL    $0102               ; ... current ...
+00AA: 3A 42 40        LD      A,($4042)           ;{-1_v2Command} Priority of  ...
+00AD: CD 02 01        CALL    $0102               ;{GetComPriority} ... current ...
 00B0: 4F              LD      C,A                 ; ... voice 2 command to C
-00B1: 3A 44 40        LD      A,($4044)           ; Priority of ...
-00B4: CD 02 01        CALL    $0102               ; ... current ...
-00B7: 32 49 40        LD      ($4049),A           ; ... voice 3 command to 4049
-00BA: 3A 46 40        LD      A,($4046)           ; Requested command
-00BD: CD 02 01        CALL    $0102               ; Priority of requested command ...
+00B1: 3A 44 40        LD      A,($4044)           ;{-1_v3Command} Priority of ...
+00B4: CD 02 01        CALL    $0102               ;{GetComPriority} ... current ...
+00B7: 32 49 40        LD      ($4049),A           ;{-1_v3priority} ... voice 3 command to 4049
+00BA: 3A 46 40        LD      A,($4046)           ;{-1_cmdRequest} Requested command
+00BD: CD 02 01        CALL    $0102               ;{GetComPriority} Priority of requested command ...
 00C0: 5F              LD      E,A                 ; ... to E
 00C1: 21 49 40        LD      HL,$4049            ; Voice 3 priority ...
 00C4: 56              LD      D,(HL)              ; ... E (B=1, C=2, D=3, E=requested)
@@ -193,8 +176,8 @@ CmdRequest: ; =
 00D9: 1C              INC     E                   ; Must be replacing voice 3
 00DA: 7B              LD      A,E                 
 ;
-00DB: CD 8C 00        CALL    $008C               ; Find voice structure
-00DE: 3A 46 40        LD      A,($4046)           ; Store command ...
+00DB: CD 8C 00        CALL    $008C               ;{FindDat} Find voice structure
+00DE: 3A 46 40        LD      A,($4046)           ;{-1_cmdRequest} Store command ...
 00E1: 77              LD      (HL),A              ; ... in structure
 00E2: 23              INC     HL                  ; Flag init ...
 00E3: 36 00           LD      (HL),$00            ; ... needs doing
@@ -244,7 +227,7 @@ GetComPriority: ; =
 0114: 32 80 42        LD      ($4280),A           ; Disable sound processing
 0117: ED 56           IM      1                   ; Interrupt mode 1 (everything goes to 0038)
 0119: 11 3F 00        LD      DE,$003F            ; D=0 (all off) then E=3F ...
-011C: CD 6D 02        CALL    $026D               ; ... port A and B inputs, all noise and voice off
+011C: CD 6D 02        CALL    $026D               ;{AYEnable} ... port A and B inputs, all noise and voice off
 011F: 3E 08           LD      A,$08               ; Amplitude A register
 0121: 06 00           LD      B,$00               ; 0
 0123: CF              RST     $08                 ; Set voice A amplitude to 0
@@ -256,7 +239,7 @@ GetComPriority: ; =
 012C: 06 3F           LD      B,$3F               ; ... in the call to ...
 012E: CF              RST     $08                 ; ... 026D above ?
 012F: 21 00 60        LD      HL,$6000            ; Current capacitor filter value (none)
-0132: 22 4E 40        LD      ($404E),HL          ; Hold current
+0132: 22 4E 40        LD      ($404E),HL          ;{-1_curFilter} Hold current
 0135: 77              LD      (HL),A              ; Set the capacitor network hardware
 
 MainLoop: ; =
@@ -277,24 +260,24 @@ MainLoop: ; =
 0137: 21 3F 40        LD      HL,$403F            ; ?? Counter? Nobody ever looks at this
 013A: 34              INC     (HL)                ; ?? Counter? Nobody ever looks at this
 013B: 3E 0F           LD      A,$0F               ; Register IO port B (timer)
-013D: CD C1 02        CALL    $02C1               ; Read IO port B
+013D: CD C1 02        CALL    $02C1               ;{ReadAY} Read IO port B
 0140: E6 08           AND     $08                 ; Watch for bit 4
 0142: 20 F7           JR      NZ,$13B             ; Not a 0 ... delay until it is 0
 0144: 3E 0F           LD      A,$0F               ; Now wait ...
-0146: CD C1 02        CALL    $02C1               ; ... for ...
+0146: CD C1 02        CALL    $02C1               ;{ReadAY} ... for ...
 0149: E6 08           AND     $08                 ; ... bit to ...
 014B: 28 F7           JR      Z,$144              ; ... go to 1
 014D: F3              DI                          ; Interrupts off
 ;
 014E: 3E 01           LD      A,$01               ; Start with ...
-0150: 32 4B 40        LD      ($404B),A           ; ... voice 1
+0150: 32 4B 40        LD      ($404B),A           ;{-1_voiceNum} ... voice 1
 0153: 21 41 40        LD      HL,$4041            ; Get ...
 0156: 7E              LD      A,(HL)              ; ... init flag
 0157: 2B              DEC     HL                  ; Point to command
 0158: B7              OR      A                   ; This command has been initialized?
 0159: 28 30           JR      Z,$18B              ; No ... go do it
 015B: 7E              LD      A,(HL)              ; Get command number
-015C: CD E8 01        CALL    $01E8               ; Do continuation command
+015C: CD E8 01        CALL    $01E8               ;{VCommandCont} Do continuation command
 015F: FB              EI                          ; Interrupts on
 0160: 00              NOP                         ; For ...
 0161: 00              NOP                         ; ... just ...
@@ -309,7 +292,7 @@ MainLoop: ; =
 016D: B7              OR      A                   ; This command has been initialized?
 016E: 28 21           JR      Z,$191              ; No ... go do it
 0170: 7E              LD      A,(HL)              ; Get command number
-0171: CD E8 01        CALL    $01E8               ; Do continuation command
+0171: CD E8 01        CALL    $01E8               ;{VCommandCont} Do continuation command
 0174: FB              EI                          ; Interrupts on
 0175: 00              NOP                         ; For ...
 0176: 00              NOP                         ; ... just ...
@@ -324,20 +307,20 @@ MainLoop: ; =
 0182: B7              OR      A                   ; This command has been initialized?
 0183: 28 12           JR      Z,$197              ; No ... go do it
 0185: 7E              LD      A,(HL)              ; Get command number
-0186: CD E8 01        CALL    $01E8               ; Do continuation command
-0189: 18 AB           JR      $136                ; Back to top of loop
+0186: CD E8 01        CALL    $01E8               ;{VCommandCont} Do continuation command
+0189: 18 AB           JR      $136                ;{MainLoop} Back to top of loop
 ;
 018B: 7E              LD      A,(HL)              ; Get command number
-018C: CD D9 01        CALL    $01D9               ; Do the initialization command
+018C: CD D9 01        CALL    $01D9               ;{VCommandInit} Do the initialization command
 018F: 18 CE           JR      $15F                ; Back to voice 2
 ;
 0191: 7E              LD      A,(HL)              ; Get command number
-0192: CD D9 01        CALL    $01D9               ; Do the initialization command
+0192: CD D9 01        CALL    $01D9               ;{VCommandInit} Do the initialization command
 0195: 18 DD           JR      $174                ; Back to voice 3
 ;
 0197: 7E              LD      A,(HL)              ; Get command number
-0198: CD D9 01        CALL    $01D9               ; Do the initialization command
-019B: 18 99           JR      $136                ; Back to the top of the loop
+0198: CD D9 01        CALL    $01D9               ;{VCommandInit} Do the initialization command
+019B: 18 99           JR      $136                ;{MainLoop} Back to the top of the loop
 
 JumpTabler: ; =
 ; Look up address in jump table and jump to it.
@@ -386,9 +369,9 @@ CommandInit: ; =
 VCommandInit: ; =
 ; Call the initialization function for a voice command
 01D9: 21 A7 01        LD      HL,$01A7            ; Initialization functions
-01DC: CD 9D 01        CALL    $019D               ; Do initialization function
-01DF: 3A 4B 40        LD      A,($404B)           ; Voice number
-01E2: CD 8C 00        CALL    $008C               ; Get the voice command structure
+01DC: CD 9D 01        CALL    $019D               ;{JumpTabler} Do initialization function
+01DF: 3A 4B 40        LD      A,($404B)           ;{-1_voiceNum} Voice number
+01E2: CD 8C 00        CALL    $008C               ;{FindDat} Get the voice command structure
 01E5: 23              INC     HL                  ; Point to voice's init flag
 01E6: 77              LD      (HL),A              ; Mark initialized (happens to be voice number)
 01E7: C9              RET                         ; Done
@@ -400,7 +383,7 @@ VCommandCont: ; =
 01EA: 21 25 02        LD      HL,$0225            ; Return address right after table
 01ED: E5              PUSH    HL                  ; Push return
 01EE: 21 F3 01        LD      HL,$01F3            ; Jump table of commands
-01F1: 18 AA           JR      $19D                ; Take the jump
+01F1: 18 AA           JR      $19D                ;{JumpTabler} Take the jump
 
 CommandCont: ; =
 ; These functions are called to contine a voice command each pass. They return 0 to continue or
@@ -434,12 +417,12 @@ CommandCont: ; =
 ; All continuation functions RET here
 0225: B7              OR      A                   ; Return "continue"?
 0226: C8              RET     Z                   ; Yes ... out
-0227: CD 9C 02        CALL    $029C               ; Not "continue" ... shutdown voice
-022A: 3A 4B 40        LD      A,($404B)           ; Voice number
+0227: CD 9C 02        CALL    $029C               ;{ShutdownVoice} Not "continue" ... shutdown voice
+022A: 3A 4B 40        LD      A,($404B)           ;{-1_voiceNum} Voice number
 022D: C3 84 00        JP      $0084               ; Clear out 2-byte voice command (with 0,0)
 
 AmplitudeOff: ; =
-0230: 3A 4B 40        LD      A,($404B)           ; Voice number
+0230: 3A 4B 40        LD      A,($404B)           ;{-1_voiceNum} Voice number
 0233: E6 03           AND     $03                 ; Is it valid?
 0235: C8              RET     Z                   ; No ... skip
 0236: C6 07           ADD     A,$07               ; Offset to amplitude register
@@ -449,38 +432,38 @@ AmplitudeOff: ; =
 
 WriteTune: ; =
 ; Write HL to voice's coarse/fine reigsters
-023C: 3A 4B 40        LD      A,($404B)           ; Voice number (1,2, or 3)
+023C: 3A 4B 40        LD      A,($404B)           ;{-1_voiceNum} Voice number (1,2, or 3)
 023F: 3D              DEC     A                   ; Make it 0 based
 0240: 87              ADD     A,A                 ; Voice * 2
 0241: 47              LD      B,A                 ; To B
-0242: CD 09 03        CALL    $0309               ; Write L to voice's fine register
+0242: CD 09 03        CALL    $0309               ;{WriteAYAL} Write L to voice's fine register
 0245: 04              INC     B                   ; Bump to ...
 0246: 78              LD      A,B                 ; ... coarse register
-0247: D3 80           OUT     ($80),A             ; Write register address
+0247: D3 80           OUT     ($80),A             ;{-2_AY_ADDR} Write register address
 0249: 7C              LD      A,H                 ; Coarse value
-024A: D3 40           OUT     ($40),A             ; Write coarse value
+024A: D3 40           OUT     ($40),A             ;{-2_AY_WATA} Write coarse value
 024C: C9              RET                         ; Done
 
 ReadTune: ; =
 ; Read voice's coarse/fine registers to HL
-024D: 3A 4B 40        LD      A,($404B)           ; Voice number (1,3, or 3)
+024D: 3A 4B 40        LD      A,($404B)           ;{-1_voiceNum} Voice number (1,3, or 3)
 0250: 3D              DEC     A                   ; Make it 0 based
 0251: 87              ADD     A,A                 ; Voiced * 2
 0252: 47              LD      B,A                 ; To B
-0253: D3 80           OUT     ($80),A             ; Latch address
-0255: DB 40           IN      A,($40)             ; Read fine value
+0253: D3 80           OUT     ($80),A             ;{-2_AY_ADDR} Latch address
+0255: DB 40           IN      A,($40)             ;{-2_AY_RDATA} Read fine value
 0257: 6F              LD      L,A                 ; To L
 0258: 04              INC     B                   ; Bump to ...
 0259: 78              LD      A,B                 ; ... coarse register
-025A: D3 80           OUT     ($80),A             ; Latch address
-025C: DB 40           IN      A,($40)             ; Read coarse value
+025A: D3 80           OUT     ($80),A             ;{-2_AY_ADDR} Latch address
+025C: DB 40           IN      A,($40)             ;{-2_AY_RDATA} Read coarse value
 025E: 67              LD      H,A                 ; To H
 025F: C9              RET                         ; Done
 
 EnableTone: ; =
 ; Sets a voice to TONE and disables NOISE. 
 0260: 11 04 7F        LD      DE,$7F04            ; One 0 in AND and one 1 in OR
-0263: 3A 4B 40        LD      A,($404B)           ; Roll the one target bit ...
+0263: 3A 4B 40        LD      A,($404B)           ;{-1_voiceNum} Roll the one target bit ...
 0266: 47              LD      B,A                 ; ... to the propper ...
 0267: CB 02           RLC     D                   ; ... spot
 0269: CB 03           RLC     E                   ; ...
@@ -490,17 +473,17 @@ AYEnable: ; =
 ; Current value is ANDed with D
 ; and then ORed with E
 026D: 3E 07           LD      A,$07               ; The ENABLE register
-026F: D3 80           OUT     ($80),A             ; Select register in AY chip
-0271: 3A 4C 40        LD      A,($404C)           ; Get current enable value
+026F: D3 80           OUT     ($80),A             ;{-2_AY_ADDR} Select register in AY chip
+0271: 3A 4C 40        LD      A,($404C)           ;{-1_curEnable} Get current enable value
 0274: A2              AND     D                   ; Mask bits off
 0275: B3              OR      E                   ; OR bits on
-0276: 32 4C 40        LD      ($404C),A           ; New enable value
-0279: D3 40           OUT     ($40),A             ; Write value to AY chip
+0276: 32 4C 40        LD      ($404C),A           ;{-1_curEnable} New enable value
+0279: D3 40           OUT     ($40),A             ;{-2_AY_WATA} Write value to AY chip
 027B: C9              RET                         ; Done
 
 SetAmplitude: ; =
 ; Set the voice's amplitude to B
-027C: 3A 4B 40        LD      A,($404B)           ; Voice number
+027C: 3A 4B 40        LD      A,($404B)           ;{-1_voiceNum} Voice number
 027F: C6 07           ADD     A,$07               ; Offset to amplitude register
 0281: CF              RST     $08                 ; Write B to voice's amplitude
 0282: C9              RET                         ; Done
@@ -514,16 +497,16 @@ CommandPriority: ; =
 ShutdownVoice: ; =
 ;I00
 ; Disable TONE and NOISe on a voice, set amplitude to 0, and remove cap filtering.    
-029C: 3A 4B 40        LD      A,($404B)           ; Voice number
+029C: 3A 4B 40        LD      A,($404B)           ;{-1_voiceNum} Voice number
 029F: 47              LD      B,A                 ; Copy to B
 02A0: 3E 84           LD      A,$84               ; 10000100
 02A2: 07              RLCA                        ; Shift bits
 02A3: 10 FD           DJNZ    $2A2                ; Build OR part of enable
 02A5: 5F              LD      E,A                 ; Hold in E
 02A6: 16 FF           LD      D,$FF               ; AND part of enable ... leave everything alone
-02A8: CD 6D 02        CALL    $026D               ; Turn off a voice (NOISE and TONE)
-02AB: CD 30 02        CALL    $0230               ; Turn off voice amplitude
-02AE: 18 17           JR      $2C7                ; Set voice's cap filtering to "none"
+02A8: CD 6D 02        CALL    $026D               ;{AYEnable} Turn off a voice (NOISE and TONE)
+02AB: CD 30 02        CALL    $0230               ;{AmplitudeOff} Turn off voice amplitude
+02AE: 18 17           JR      $2C7                ;{Filter00} Set voice's cap filtering to "none"
 
 EnableNoise: ; =
 ; Sets a voice to NOISE and disables TONE. 
@@ -537,16 +520,16 @@ WriteAYR: ; =
 02B6: C9              RET                         ; Out
 
 ReadAmplitude: ; =
-02B7: 3A 4B 40        LD      A,($404B)           ; Voice number
+02B7: 3A 4B 40        LD      A,($404B)           ;{-1_voiceNum} Voice number
 02BA: E6 03           AND     $03                 ; Any requested?
 02BC: C8              RET     Z                   ; No ... skip
 02BD: C6 07           ADD     A,$07               ; Offset to amplitude
-02BF: 18 00           JR      $2C1                ; Read voice's amplitude register
+02BF: 18 00           JR      $2C1                ;{ReadAY} Read voice's amplitude register
 
 ReadAY: ; =
 ; Read AY register (A) to B (and A).
-02C1: D3 80           OUT     ($80),A             ; Latch the address
-02C3: DB 40           IN      A,($40)             ; Read the value
+02C1: D3 80           OUT     ($80),A             ;{-2_AY_ADDR} Latch the address
+02C3: DB 40           IN      A,($40)             ;{-2_AY_RDATA} Read the value
 02C5: 47              LD      B,A                 ; To B ... not sure why ... we already mangled A
 02C6: C9              RET                         ; Done
 
@@ -555,7 +538,7 @@ Filter00: ; =
 02C7: 01 00 00        LD      BC,$0000            ; OR mask ... all 0's here
 ;
 02CA: 11 FF FC        LD      DE,$FCFF            ; 11111100 11111111
-02CD: 3A 4B 40        LD      A,($404B)           ; Voice number
+02CD: 3A 4B 40        LD      A,($404B)           ;{-1_voiceNum} Voice number
 02D0: FE 02           CP      $02                 ; Is it voice 2?
 02D2: 28 15           JR      Z,$2E9              ; Yes ... DE is good
 02D4: 38 08           JR      C,$2DE              ; 3 ... go handle that
@@ -571,7 +554,7 @@ Filter00: ; =
 02E5: CB 38           SRL     B                   ; ...
 02E7: CB 19           RR      C                   ; ...
 ;
-02E9: 2A 4E 40        LD      HL,($404E)          ; Current value of capacitor filter
+02E9: 2A 4E 40        LD      HL,($404E)          ;{-1_curFilter} Current value of capacitor filter
 02EC: 7C              LD      A,H                 ; Mask for requested voice ...
 02ED: A2              AND     D                   ; ...
 02EE: B0              OR      B                   ; ...
@@ -580,7 +563,7 @@ Filter00: ; =
 02F1: A3              AND     E                   ; ...
 02F2: B1              OR      C                   ; ...
 02F3: 6F              LD      L,A                 ; ...
-02F4: 22 4E 40        LD      ($404E),HL          ; New capacitor filter value
+02F4: 22 4E 40        LD      ($404E),HL          ;{-1_curFilter} New capacitor filter value
 02F7: 77              LD      (HL),A              ; Change hardware
 02F8: C9              RET                         ; Done
 
@@ -602,9 +585,9 @@ Filter10: ; =
 WriteAYAL: ; =
 ; Another write-to-AY
 ; A is register, L is value
-0309: D3 80           OUT     ($80),A             ; Write address
+0309: D3 80           OUT     ($80),A             ;{-2_AY_ADDR} Write address
 030B: 7D              LD      A,L                 ; Write ...
-030C: D3 40           OUT     ($40),A             ; ... value
+030C: D3 40           OUT     ($40),A             ;{-2_AY_WATA} ... value
 030E: C9              RET                         ; Out
 
 ;I01 Coin inserted
@@ -669,7 +652,7 @@ WriteAYAL: ; =
 036F: 35              DEC     (HL)                
 0370: 20 49           JR      NZ,$3BB             ; 
 0372: 36 03           LD      (HL),$03            
-0374: CD 4D 02        CALL    $024D               ; 
+0374: CD 4D 02        CALL    $024D               ;{ReadTune} 
 0377: B7              OR      A                   
 0378: 11 08 00        LD      DE,$0008            
 037B: ED 52           SBC     HL,DE               
@@ -711,11 +694,11 @@ WriteAYAL: ; =
 03BD: 3E 80           LD      A,$80               
 03BF: 32 5D 40        LD      ($405D),A           ; 
 03C2: 06 0E           LD      B,$0E               
-03C4: CD 7C 02        CALL    $027C               ; 
+03C4: CD 7C 02        CALL    $027C               ;{SetAmplitude} 
 03C7: 21 70 00        LD      HL,$0070            
-03CA: CD 3C 02        CALL    $023C               ; 
+03CA: CD 3C 02        CALL    $023C               ;{WriteTune} 
 03CD: F7              RST     $30                 
-03CE: CD 04 03        CALL    $0304               ; Set filtering 0.047uF
+03CE: CD 04 03        CALL    $0304               ;{Filter10} Set filtering 0.047uF
 03D1: C9              RET                         
 
 ;C02 Die in water
@@ -734,21 +717,21 @@ WriteAYAL: ; =
 03EB: AF              XOR     A                   
 03EC: C9              RET                         
 03ED: 06 00           LD      B,$00               
-03EF: CD 7C 02        CALL    $027C               ; 
+03EF: CD 7C 02        CALL    $027C               ;{SetAmplitude} 
 03F2: C9              RET                         
 03F3: 21 3C 00        LD      HL,$003C            
-03F6: CD 3C 02        CALL    $023C               ; 
+03F6: CD 3C 02        CALL    $023C               ;{WriteTune} 
 03F9: 06 0B           LD      B,$0B               
-03FB: CD 7C 02        CALL    $027C               ; 
+03FB: CD 7C 02        CALL    $027C               ;{SetAmplitude} 
 03FE: AF              XOR     A                   
 03FF: C9              RET                         
-0400: CD 04 03        CALL    $0304               ; 
+0400: CD 04 03        CALL    $0304               ;{Filter10} 
 0403: 3E 80           LD      A,$80               
 0405: 32 5E 40        LD      ($405E),A           ; 
 0408: 06 0A           LD      B,$0A               
-040A: CD 7C 02        CALL    $027C               ; 
+040A: CD 7C 02        CALL    $027C               ;{SetAmplitude} 
 040D: 21 FC 00        LD      HL,$00FC            
-0410: CD 3C 02        CALL    $023C               ; 
+0410: CD 3C 02        CALL    $023C               ;{WriteTune} 
 0413: F7              RST     $30                 
 0414: AF              XOR     A                   
 0415: 32 5D 40        LD      ($405D),A           ; 
@@ -758,7 +741,7 @@ WriteAYAL: ; =
 041D: 32 5E 40        LD      ($405E),A           ; 
 0420: FE 41           CP      $41                 
 0422: 38 0B           JR      C,$42F              ; 
-0424: CD 4D 02        CALL    $024D               ; 
+0424: CD 4D 02        CALL    $024D               ;{ReadTune} 
 0427: 2D              DEC     L                   
 0428: 2D              DEC     L                   
 0429: EF              RST     $28                 
@@ -769,7 +752,7 @@ WriteAYAL: ; =
 0431: 28 0E           JR      Z,$441              ; 
 0433: B7              OR      A                   
 0434: 28 11           JR      Z,$447              ; 
-0436: CD 4D 02        CALL    $024D               ; 
+0436: CD 4D 02        CALL    $024D               ;{ReadTune} 
 0439: 2C              INC     L                   
 043A: 2C              INC     L                   
 043B: EF              RST     $28                 
@@ -785,7 +768,7 @@ WriteAYAL: ; =
 0449: 28 0F           JR      Z,$45A              ; 
 044B: DF              RST     $18                 
 044C: 21 00 00        LD      HL,$0000            
-044F: CD 3C 02        CALL    $023C               ; 
+044F: CD 3C 02        CALL    $023C               ;{WriteTune} 
 0452: 3E 80           LD      A,$80               
 0454: 32 5E 40        LD      ($405E),A           ; 
 0457: C3 19 04        JP      $0419               ; 
@@ -793,12 +776,12 @@ WriteAYAL: ; =
 045C: C9              RET                         
 
 ;I03 Die in road
-045D: CD C7 02        CALL    $02C7               ; 
-0460: CD 60 02        CALL    $0260               ; 
+045D: CD C7 02        CALL    $02C7               ;{Filter00} 
+0460: CD 60 02        CALL    $0260               ;{EnableTone} 
 0463: 21 00 01        LD      HL,$0100            
-0466: CD 3C 02        CALL    $023C               ; 
+0466: CD 3C 02        CALL    $023C               ;{WriteTune} 
 0469: 06 0A           LD      B,$0A               
-046B: CD 7C 02        CALL    $027C               ; 
+046B: CD 7C 02        CALL    $027C               ;{SetAmplitude} 
 046E: 21 90 02        LD      HL,$0290            
 0471: 22 30 41        LD      ($4130),HL          ; 
 0474: C9              RET                         
@@ -811,10 +794,10 @@ WriteAYAL: ; =
 047D: B5              OR      L                   
 047E: 3E FF           LD      A,$FF               
 0480: C8              RET     Z                   
-0481: CD 4D 02        CALL    $024D               ; 
+0481: CD 4D 02        CALL    $024D               ;{ReadTune} 
 0484: 11 03 00        LD      DE,$0003            
 0487: 19              ADD     HL,DE               
-0488: CD 3C 02        CALL    $023C               ; 
+0488: CD 3C 02        CALL    $023C               ;{WriteTune} 
 048B: AF              XOR     A                   
 048C: C9              RET                         
 
@@ -891,7 +874,7 @@ WriteAYAL: ; =
 0504: C9              RET                         
 
 ;I15 Snake on ground
-0505: CD 04 03        CALL    $0304               ; 
+0505: CD 04 03        CALL    $0304               ;{Filter10} 
 0508: 21 00 01        LD      HL,$0100            
 050B: 22 76 41        LD      ($4176),HL          ; 
 050E: F7              RST     $30                 
@@ -1002,13 +985,13 @@ WriteAYAL: ; =
 05CF: 36 04           LD      (HL),$04            
 05D1: 23              INC     HL                  
 05D2: 36 68           LD      (HL),$68            
-05D4: CD B0 02        CALL    $02B0               ; 
+05D4: CD B0 02        CALL    $02B0               ;{EnableNoise} 
 05D7: 3E 06           LD      A,$06               
 05D9: 06 18           LD      B,$18               
 05DB: CF              RST     $08                 ; Write to AY
 05DC: 06 04           LD      B,$04               
-05DE: CD 7C 02        CALL    $027C               ; 
-05E1: CD C7 02        CALL    $02C7               ; 
+05DE: CD 7C 02        CALL    $027C               ;{SetAmplitude} 
+05E1: CD C7 02        CALL    $02C7               ;{Filter00} 
 05E4: C9              RET                         
 
 ;C17 Race car
@@ -1024,7 +1007,7 @@ WriteAYAL: ; =
 05F8: C0              RET     NZ                  
 05F9: 36 04           LD      (HL),$04            
 05FB: 06 00           LD      B,$00               
-05FD: CD 7C 02        CALL    $027C               ; 
+05FD: CD 7C 02        CALL    $027C               ;{SetAmplitude} 
 0600: 0E 01           LD      C,$01               
 0602: 18 10           JR      $614                ; 
 0604: 21 11 41        LD      HL,$4111            
@@ -1033,7 +1016,7 @@ WriteAYAL: ; =
 0609: 36 04           LD      (HL),$04            
 060B: 3A 13 41        LD      A,($4113)           ; 
 060E: 47              LD      B,A                 
-060F: CD 7C 02        CALL    $027C               ; 
+060F: CD 7C 02        CALL    $027C               ;{SetAmplitude} 
 0612: 0E 01           LD      C,$01               
 0614: 3A 10 41        LD      A,($4110)           ; 
 0617: A9              XOR     C                   
@@ -1125,7 +1108,7 @@ WriteAYAL: ; =
 069D: 35              DEC     (HL)                
 069E: 20 49           JR      NZ,$6E9             ; 
 06A0: 36 03           LD      (HL),$03            
-06A2: CD 4D 02        CALL    $024D               ; 
+06A2: CD 4D 02        CALL    $024D               ;{ReadTune} 
 06A5: B7              OR      A                   
 06A6: 11 08 00        LD      DE,$0008            
 06A9: ED 52           SBC     HL,DE               
@@ -1171,11 +1154,11 @@ WriteAYAL: ; =
 06F7: 3E 00           LD      A,$00               
 06F9: 32 84 41        LD      ($4184),A           ; 
 06FC: 06 0D           LD      B,$0D               
-06FE: CD 7C 02        CALL    $027C               ; 
+06FE: CD 7C 02        CALL    $027C               ;{SetAmplitude} 
 0701: 21 50 00        LD      HL,$0050            
-0704: CD 3C 02        CALL    $023C               ; 
-0707: CD 60 02        CALL    $0260               ; 
-070A: CD C7 02        CALL    $02C7               ; 
+0704: CD 3C 02        CALL    $023C               ;{WriteTune} 
+0707: CD 60 02        CALL    $0260               ;{EnableTone} 
+070A: CD C7 02        CALL    $02C7               ;{Filter00} 
 070D: C9              RET                         
 
 ;C10 Frig landing safe
@@ -1195,9 +1178,9 @@ WriteAYAL: ; =
 0728: C0              RET     NZ                  
 0729: 36 24           LD      (HL),$24            
 072B: 06 0D           LD      B,$0D               
-072D: CD 7C 02        CALL    $027C               ; 
+072D: CD 7C 02        CALL    $027C               ;{SetAmplitude} 
 0730: 18 25           JR      $757                ; 
-0732: CD 4D 02        CALL    $024D               ; 
+0732: CD 4D 02        CALL    $024D               ;{ReadTune} 
 0735: 11 0A 00        LD      DE,$000A            
 0738: 3A 84 41        LD      A,($4184)           ; 
 073B: CB 4F           BIT     1,A                 
@@ -1205,7 +1188,7 @@ WriteAYAL: ; =
 073F: AF              XOR     A                   
 0740: ED 52           SBC     HL,DE               
 0742: 3E 19           LD      A,$19               
-0744: CD 3C 02        CALL    $023C               ; 
+0744: CD 3C 02        CALL    $023C               ;{WriteTune} 
 0747: 0E 02           LD      C,$02               
 0749: CD 59 07        CALL    $0759               ; 
 074C: 21 83 41        LD      HL,$4183            
@@ -1213,7 +1196,7 @@ WriteAYAL: ; =
 0750: C0              RET     NZ                  
 0751: 36 09           LD      (HL),$09            
 0753: 47              LD      B,A                 
-0754: CD 7C 02        CALL    $027C               ; 
+0754: CD 7C 02        CALL    $027C               ;{SetAmplitude} 
 0757: 0E 01           LD      C,$01               
 0759: 3A 84 41        LD      A,($4184)           ; 
 075C: A9              XOR     C                   
@@ -1225,12 +1208,12 @@ WriteAYAL: ; =
 0767: 20 0E           JR      NZ,$777             ; 
 0769: CD EB 06        CALL    $06EB               ; 
 076C: 06 00           LD      B,$00               
-076E: CD 7C 02        CALL    $027C               ; 
+076E: CD 7C 02        CALL    $027C               ;{SetAmplitude} 
 0771: 21 84 41        LD      HL,$4184            
 0774: CB D6           SET     2,(HL)              
 0776: C9              RET                         
 0777: 06 00           LD      B,$00               
-0779: CD 7C 02        CALL    $027C               ; 
+0779: CD 7C 02        CALL    $027C               ;{SetAmplitude} 
 077C: 3E FF           LD      A,$FF               
 077E: C9              RET                         
 
@@ -1266,7 +1249,7 @@ WriteAYAL: ; =
 07A1: DD 7E 00        LD      A,(IX+$00)          ; Coarse counter
 07A4: FE FF           CP      $FF                 ; FF means end
 07A6: 28 05           JR      Z,$7AD              ; End of song ... return end
-07A8: CD B7 07        CALL    $07B7               ; Process music command
+07A8: CD B7 07        CALL    $07B7               ;{Music} Process music command
 07AB: AF              XOR     A                   ; Return ...
 07AC: C9              RET                         ; ... continue
 
@@ -1323,9 +1306,9 @@ Music: ; =
 07DF: 7E              LD      A,(HL)              ; Get next command
 07E0: 47              LD      B,A                 ; Hold command for a sec
 07E1: E6 1F           AND     $1F                 ; Check lower 5 bits
-07E3: CA 6A 08        JP      Z,$086A             ; All zero ... rest command
+07E3: CA 6A 08        JP      Z,$086A             ;{MusicREST} All zero ... rest command
 07E6: FE 1F           CP      $1F                 ; All ones?
-07E8: C2 84 08        JP      NZ,$0884            ; No ... note command
+07E8: C2 84 08        JP      NZ,$0884            ;{MusicNOTE} No ... note command
 
 ;ccc_11111 Do command c
 07EB: 23              INC     HL                  ; Bump ...
@@ -4317,7 +4300,7 @@ SongTable: ; =
 14BD: 7E              LD      A,(HL)              
 14BE: A7              AND     A                   
 14BF: 28 0B           JR      Z,$14CC             ; 
-14C1: CD 4D 02        CALL    $024D               ; 
+14C1: CD 4D 02        CALL    $024D               ;{ReadTune} 
 14C4: ED 5B C5 42     LD      DE,($42C5)          ; 
 14C8: 19              ADD     HL,DE               
 14C9: EF              RST     $28                 

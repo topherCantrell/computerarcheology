@@ -1,6 +1,6 @@
 package code;
 
-public class AddressAccess {
+public class AddressAccess implements Comparable<AddressAccess> {
 	
 	public BusType accessType;
 	
@@ -9,9 +9,31 @@ public class AddressAccess {
 	public boolean isCode;
 	
 	public int address;
-	
-	public String toString() {
-		return bus.toString()+" "+isCode+" "+accessType+" "+address;
+		
+	@Override
+	public int compareTo(AddressAccess other) {
+		return other.address - address;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		AddressAccess other = (AddressAccess)o;
+		if(accessType==other.accessType && isCode==other.isCode && address==other.address) {
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public String toString() {
+		String ret = "|| " + CU.hex4(address);
+		if(accessType==BusType.PORT){
+			ret = ret + "p";
+		}
+						
+		ret = ret +" || || ||";
+		return ret;
+	}
+		
 
 }

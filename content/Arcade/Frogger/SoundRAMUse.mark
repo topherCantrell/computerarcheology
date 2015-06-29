@@ -1,5 +1,6 @@
 %%title Frogger Sound Board RAM Use
 %%image Frogger.jpg
+%%range 4000:43FF
 
 ||= Address || Name             || Description ||
 || 403F     || loopCount        || incremented with each main loop (never used) ||

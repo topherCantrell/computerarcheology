@@ -1,9 +1,6 @@
 -------- Tools ----------
 
-Hardware files can have READ and WRITE labels (same address ... different functions). "IN" means read and
-"OUT" means write. Easy for Z80.
-
-Implement the Z80 and 6809 link finders.
+Implement the 6809 link finders.
 
 -------- Content ----------
 
@@ -14,3 +11,4 @@ Sweep through all links over entire site and make sure they works.
 * Arcade
   * Asteroids: Stubbed up and tucked in
   * Defender: Harry's realm. Stubbed up and tucked in
+  * Frogger: Stubbed up and tucked in

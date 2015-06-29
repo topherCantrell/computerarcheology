@@ -70,9 +70,9 @@ public class AddressTable {
 		return false;
 	}
 	
-	public AddressDef getEntry(int address, BusDir bus) {
+	public AddressDef getEntry(int address, BusDir busDir, BusType busType) {
 		for(AddressDef ad : defs) {
-			if(ad.isMe(address,bus)) {
+			if(ad.isMe(address,busDir,busType)) {
 				return ad;
 			}
 		}
