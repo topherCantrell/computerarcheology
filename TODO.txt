@@ -1,15 +1,9 @@
 -------- Tools ----------
 
-Implement the 6809 link finders.
-
 Dividers in the navs
-
-Links to ports and "r" and "w" must include the specifiers in the link.
 
 Sometimes code references address in ROM (bank switching in a2600 for instance).
 The link-fixer should be able to identify addresses in code by range.
-
-6809 uses direct-page
 
 -------- Content ----------
 

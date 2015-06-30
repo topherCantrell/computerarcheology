@@ -7,7 +7,7 @@ import code.BusDir;
 public class CPU_6502 extends CPU {
 		
 	@Override
-	public AddressAccess getAccess(String opcode, int numPos, int num) {
+	public AddressAccess getAccess(String opcode, int numPos, int num, int directPage) {
 		
 		if(opcode.charAt(numPos-1)=='#') {
 			// Immediate constant

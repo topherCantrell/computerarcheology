@@ -4,7 +4,7 @@ import code.AddressAccess;
 
 public abstract class CPU {
 	
-	public abstract AddressAccess getAccess(String opcode, int numPos, int num);
+	public abstract AddressAccess getAccess(String opcode, int numPos, int num, int directPage);
 	
 	public static CPU getCPU(String name) {
 		if(name.equals("6502")) {

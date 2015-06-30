@@ -24,6 +24,20 @@ public class AddressAccess implements Comparable<AddressAccess> {
 		return false;
 	}
 	
+	public String getTarget() {
+		String ret = CU.hex4(address);
+		if(accessType==BusType.PORT) {
+			ret = ret + "p";
+		}
+		if(bus==BusDir.READ){
+			ret = ret + "r";
+		}
+		if(bus==BusDir.WRITE){
+			ret = ret + "w";
+		}
+		return ret;
+	}
+	
 	@Override
 	public String toString() {
 		String ret = "|| " + CU.hex4(address);

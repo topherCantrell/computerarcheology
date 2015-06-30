@@ -15,11 +15,16 @@ public class CPU_6809 extends CPU {
 	static final String[] BOTH = {"INC","DEC","ROL","ASL","NEG","ROR","COM","LSR","LSL"};
 
 	@Override
-	public AddressAccess getAccess(String opcode, int numPos, int num) {
+	public AddressAccess getAccess(String opcode, int numPos, int num, int directPage) {
 		
 		// Immediates always have a '#'
 		if(numPos>0 && opcode.charAt(numPos-1)=='#') {
 			return null;
+		}
+		
+		// Direct page offsets
+		if(numPos>0 && opcode.charAt(numPos-1)=='>') {
+			num = num + directPage;			
 		}
 		
 		// No indexing

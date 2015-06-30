@@ -12,7 +12,7 @@ public class CPU_6803 extends CPU {
 	static final String[] BOTH = {"INC","DEC"};
 
 	@Override
-	public AddressAccess getAccess(String opcode, int numPos, int num) {
+	public AddressAccess getAccess(String opcode, int numPos, int num, int directPage) {
 		
 		// Immediates always have a '#'
 		if(numPos>0 && opcode.charAt(numPos-1)=='#') {

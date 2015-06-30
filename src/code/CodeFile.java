@@ -16,6 +16,8 @@ public class CodeFile {
 	
 	public CPU cpu = null;
 	
+	public int directPage = 0;
+	
 	public CodeFile(Path codeFile) throws IOException {
 		
 		List<String> lines = Files.readAllLines(codeFile);
@@ -26,6 +28,9 @@ public class CodeFile {
 			code.add(new CodeLine(s,codeFile.toString(),lineno));
 			++lineno;
 			
+			if(s.startsWith(";;%%directPage")) {
+				this.directPage = CU.parseInt(s.substring(15).trim(), 16);
+			}
 			if(s.startsWith(";;%%cpu")) {
 				String c = s.substring(8).trim();
 				cpu = CPU.getCPU(c);				

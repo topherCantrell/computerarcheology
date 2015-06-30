@@ -7,7 +7,7 @@ import code.BusType;
 public class CPU_Z80 extends CPU {
 
 	@Override
-	public AddressAccess getAccess(String opcode, int numPos, int num) {
+	public AddressAccess getAccess(String opcode, int numPos, int num, int directPage) {
 		
 		if(opcode.startsWith("RST")) {
 			// Software interrupts by number

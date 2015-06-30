@@ -106,9 +106,9 @@ public class LinkFix {
 			}
 			
 			// Check the opcode for read/write/port
-			AddressAccess ac = tabs.cpu.getAccess(c.opcode, i-1, CU.parseInt(c.opcode.substring(i,j),16) );
+			AddressAccess ac = tabs.cpu.getAccess(c.opcode, i-1, CU.parseInt(c.opcode.substring(i,j),16), tabs.directPage );
 			if(ac==null) {		
-				continue;
+				continue; 
 			}			
 					
 			// If there is no comment then make a blank one.			
@@ -202,7 +202,7 @@ public class LinkFix {
 			if(en.name==null || en.name.length()==0) {
 				return null;
 			}
-			return "{"+table.htmlRef+"#"+CU.hex4(ac.address)+":"+en.name+":"+table.index+"}";
+			return "{"+table.htmlRef+"#"+ac.getTarget()+":"+en.name+":"+table.index+"}";
 		}			
 			
 	}
@@ -216,7 +216,7 @@ public class LinkFix {
 	 */
 	public static void main(String [] args) throws Exception {
 		
-		Path p = Paths.get("content/CoCo/RaakaTu/Code.cmark");
+		Path p = Paths.get("content/CoCo/Daggorath/Code.cmark");
 		
 		// The worker object
 		LinkFix fixer = new LinkFix();		
