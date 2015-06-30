@@ -1,4 +1,8 @@
 ;;%%image TimePilot.jpg
+;;%%title Time Pilot Sound Board
+;;%%cpu Z80
+;;%%- Arcade/TimePilot/RAMUse.mark RAMUse.cmark
+;;%%-2 Arcade/TimePilot/Hardware.mark Hardware.cmark
 
 ; Sound processor for the arcade game "Time Pilot"
 ; 1982 by Centuri/Konami
@@ -129,7 +133,7 @@ InterruptService: ; =
 ; Switch banks and call the command fetch routine
 0038: D9              EXX                         ; Switch banks B-L
 0039: 08              EX      AF,AF'              ; Switch AF banks
-003A: CD 40 00        CALL    $0040               ; Make the call
+003A: CD 40 00        CALL    $0040               ;{CommandBuffer} Make the call
 003D: 08              EX      AF,AF'              ; Set the AF banks back
 003E: D9              EXX                         ; Set the B-L banks back
 003F: C9              RET                         ; Done
@@ -818,7 +822,7 @@ MusicProcessing: ; =
 Command01: ; =
 ; Initialize Routine Vector 01 (Coin Drop)
 03E7: AF              XOR     A                   ;
-03E8: CD C8 01        CALL    $01C8               ;
+03E8: CD C8 01        CALL    $01C8               ;{FilterCaps}
 03EB: 21 6B 00        LD      HL,$006B            ; Fine=6B, Coars=00
 03EE: CD AA 01        CALL    $01AA               ; Write to tone registers
 03F1: 21 41 30        LD      HL,$3041            ;
@@ -871,7 +875,7 @@ Command01: ; =
 Command02: ; =
 ; Initialization Vector Routine 02 (Plane Fire)
 0432: AF              XOR     A                   ; A=0
-0433: CD C8 01        CALL    $01C8               ; No filter caps on channel
+0433: CD C8 01        CALL    $01C8               ;{FilterCaps} No filter caps on channel
 0436: 0E 0A           LD      C,$0A               ; Set volume ...
 0438: CD 99 01        CALL    $0199               ; ... to 10
 043B: 3E 80           LD      A,$80               ; Loop count ...
@@ -899,7 +903,7 @@ Command02: ; =
 Command03: ; =
 ; Initialization Routine Vector 03 (1910 Bomb)
 0462: AF              XOR     A                   ; No filter ...
-0463: CD C8 01        CALL    $01C8               ; ... caps on channel
+0463: CD C8 01        CALL    $01C8               ;{FilterCaps} ... caps on channel
 0466: 21 C0 00        LD      HL,$00C0            ; Inital ...
 0469: 22 47 30        LD      ($3047),HL          ; ... tone
 046C: CD AA 01        CALL    $01AA               ; Write tone
@@ -932,7 +936,7 @@ Command03: ; =
 Command04: ; =
 ; Initialization Routine Vector 04 (Missile Launch)
 049A: 3E 01           LD      A,$01               ;
-049C: CD C8 01        CALL    $01C8               ;
+049C: CD C8 01        CALL    $01C8               ;{FilterCaps}
 049F: 21 4A 30        LD      HL,$304A            ;
 04A2: 36 00           LD      (HL),$00            ;
 04A4: 2C              INC     L                   ;
@@ -970,7 +974,7 @@ Command04: ; =
 Command05: ; =
 ; Initialization Routine Vector 05 (Missile - continuous)
 04D9: AF              XOR     A                   ;
-04DA: CD C8 01        CALL    $01C8               ;
+04DA: CD C8 01        CALL    $01C8               ;{FilterCaps}
 04DD: 21 4E 30        LD      HL,$304E            ;
 04E0: 36 B0           LD      (HL),$B0            ;
 04E2: 2C              INC     L                   ;
@@ -1005,7 +1009,7 @@ Command05: ; =
 Command06: ; =
 ; Initialization Routine Vector 06 (UFO shot)
 050A: AF              XOR     A                   ;
-050B: CD C8 01        CALL    $01C8               ;
+050B: CD C8 01        CALL    $01C8               ;{FilterCaps}
 050E: 21 50 00        LD      HL,$0050            ;
 0511: CD AA 01        CALL    $01AA               ; Write tone
 0514: 21 51 30        LD      HL,$3051            ;
@@ -1050,7 +1054,7 @@ Command06: ; =
 Command07: ; =
 ; Initialization Routine Vector 07 (User Fire)
 054D: AF              XOR     A                   ;
-054E: CD C8 01        CALL    $01C8               ;
+054E: CD C8 01        CALL    $01C8               ;{FilterCaps}
 0551: 21 56 30        LD      HL,$3056            ;
 0554: 36 08           LD      (HL),$08            ;
 0556: 2D              DEC     L                   ;
@@ -1086,7 +1090,7 @@ Command07: ; =
 Command08: ; =
 ; Initialization Routine Vector 08 (Enemy Explosion Component - thud)
 0588: 3E 01           LD      A,$01               ;
-058A: CD C8 01        CALL    $01C8               ;
+058A: CD C8 01        CALL    $01C8               ;{FilterCaps}
 058D: 21 5C 30        LD      HL,$305C            ;
 0590: 36 0C           LD      (HL),$0C            ;
 0592: 4E              LD      C,(HL)              ;
@@ -1125,7 +1129,7 @@ Command08: ; =
 Command09: ; =
 ; Initialization Routine Vector 09 (Enemy Explosion Component white-noise)
 05C8: 3E 01           LD      A,$01               ;
-05CA: CD C8 01        CALL    $01C8               ;
+05CA: CD C8 01        CALL    $01C8               ;{FilterCaps}
 05CD: 21 5D 30        LD      HL,$305D            ;
 05D0: 36 00           LD      (HL),$00            ;
 05D2: 2C              INC     L                   ;
@@ -1181,7 +1185,7 @@ Command09: ; =
 Command0A: ; =
 ; Initialization Routine Vector 0A (Traker or Bomb Explosion)
 061B: AF              XOR     A                   ;
-061C: CD C8 01        CALL    $01C8               ;
+061C: CD C8 01        CALL    $01C8               ;{FilterCaps}
 061F: 21 62 30        LD      HL,$3062            ;
 0622: 36 00           LD      (HL),$00            ;
 0624: 2C              INC     L                   ;
@@ -1223,7 +1227,7 @@ Command0A: ; =
 Command0B: ; =
 ; Initialization Routine Vector 0B (Squad appears)
 065E: AF              XOR     A                   ; No filter ...
-065F: CD C8 01        CALL    $01C8               ; ... caps on channel
+065F: CD C8 01        CALL    $01C8               ;{FilterCaps} ... caps on channel
 0662: 0E 0C           LD      C,$0C               ; Set ...
 0664: CD 99 01        CALL    $0199               ; ... volume
 0667: 21 67 30        LD      HL,$3067            ; Set ...
@@ -1259,7 +1263,7 @@ Command0B: ; =
 Command0C: ; =
 ; Initialization Routine Vector 0C (1st boss - blimp)
 0695: 3E 01           LD      A,$01               ;
-0697: CD C8 01        CALL    $01C8               ;
+0697: CD C8 01        CALL    $01C8               ;{FilterCaps}
 069A: 21 C0 00        LD      HL,$00C0            ;
 069D: CD AA 01        CALL    $01AA               ; Write tone
 06A0: 0E 0F           LD      C,$0F               ;
@@ -1305,7 +1309,7 @@ Command0C: ; =
 Command0D: ; =
 ; Initialization Routine Vector 0D (2nd boss - jet)
 06D9: 3E 01           LD      A,$01               ;
-06DB: CD C8 01        CALL    $01C8               ;
+06DB: CD C8 01        CALL    $01C8               ;{FilterCaps}
 06DE: 21 6D 30        LD      HL,$306D            ;
 06E1: 36 28           LD      (HL),$28            ;
 06E3: 2C              INC     L                   ;
@@ -1344,7 +1348,7 @@ Command0D: ; =
 Command0E: ; =
 ; Initialization Routine Vector 0E (3rd boss - helicopter)
 0715: 3E 01           LD      A,$01               ;
-0717: CD C8 01        CALL    $01C8               ;
+0717: CD C8 01        CALL    $01C8               ;{FilterCaps}
 071A: 21 00 01        LD      HL,$0100            ;
 071D: CD AA 01        CALL    $01AA               ; Write tone
 0720: 21 70 30        LD      HL,$3070            ;
@@ -1393,7 +1397,7 @@ Command0E: ; =
 Command0F: ; =
 ; Initialization Routine Vector 0F (4th boss - super jet)
 075C: 3E 01           LD      A,$01               ;
-075E: CD C8 01        CALL    $01C8               ;
+075E: CD C8 01        CALL    $01C8               ;{FilterCaps}
 0761: 21 00 01        LD      HL,$0100            ;
 0764: CD AA 01        CALL    $01AA               ; Write tone
 0767: 0E 0C           LD      C,$0C               ;
@@ -1424,7 +1428,7 @@ Command0F: ; =
 Command10: ; =
 ; Initialization Routine Vector 10 (5th boss - mother ship)
 078A: 3E 01           LD      A,$01               ;
-078C: CD C8 01        CALL    $01C8               ;
+078C: CD C8 01        CALL    $01C8               ;{FilterCaps}
 078F: 0E 0A           LD      C,$0A               ;
 0791: CD 99 01        CALL    $0199               ; Set volume
 0794: 21 76 30        LD      HL,$3076            ;
@@ -1465,7 +1469,7 @@ Command10: ; =
 Command11: ; =
 ; Initialization Routine Vector 11 (User Explosion Component)
 07C6: 3E 01           LD      A,$01               ;
-07C8: CD C8 01        CALL    $01C8               ;
+07C8: CD C8 01        CALL    $01C8               ;{FilterCaps}
 07CB: 21 00 00        LD      HL,$0000            ;
 07CE: CD AA 01        CALL    $01AA               ; Write tone
 07D1: 21 7A 30        LD      HL,$307A            ;
@@ -1512,7 +1516,7 @@ Command11: ; =
 Command12: ; =
 ; Initialization Routine Vector 12 (User Explosion Component)
 080B: 3E 01           LD      A,$01               ;
-080D: CD C8 01        CALL    $01C8               ;
+080D: CD C8 01        CALL    $01C8               ;{FilterCaps}
 0810: 21 00 00        LD      HL,$0000            ;
 0813: 22 81 30        LD      ($3081),HL          ;
 0816: CD AA 01        CALL    $01AA               ; Write tone
@@ -1561,7 +1565,7 @@ Command12: ; =
 Command13: ; =
 ; Initialization Routine Vector 13 (User Explosion Component)
 0857: 3E 02           LD      A,$02               ;
-0859: CD C8 01        CALL    $01C8               ;
+0859: CD C8 01        CALL    $01C8               ;{FilterCaps}
 085C: 21 00 00        LD      HL,$0000            ;
 085F: CD AA 01        CALL    $01AA               ; Write tone
 0862: 21 83 30        LD      HL,$3083            ;
@@ -1633,7 +1637,7 @@ Command13: ; =
 Command14: ; =
 ; Initialization Routine Vector 14 (User Explosion Component)
 08D0: 3E 02           LD      A,$02               ;
-08D2: CD C8 01        CALL    $01C8               ;
+08D2: CD C8 01        CALL    $01C8               ;{FilterCaps}
 08D5: 21 00 00        LD      HL,$0000            ;
 08D8: CD AA 01        CALL    $01AA               ; Write tone
 08DB: 21 8B 30        LD      HL,$308B            ;
@@ -1701,7 +1705,7 @@ Command14: ; =
 Command15: ; =
 ; Initialization Routine Vector 15 (User Explosion Component)
 0944: 3E 01           LD      A,$01               ;
-0946: CD C8 01        CALL    $01C8               ;
+0946: CD C8 01        CALL    $01C8               ;{FilterCaps}
 0949: 21 93 30        LD      HL,$3093            ;
 094C: 36 00           LD      (HL),$00            ;
 094E: 2C              INC     L                   ;
@@ -1760,7 +1764,7 @@ Command15: ; =
 Command16: ; =
 ; Initialization Routine Vector 16 (Pickup Parachute)
 099C: AF              XOR     A                   ;
-099D: CD C8 01        CALL    $01C8               ;
+099D: CD C8 01        CALL    $01C8               ;{FilterCaps}
 09A0: 0E 09           LD      C,$09               ;
 09A2: CD 99 01        CALL    $0199               ; Set volume
 09A5: 21 99 30        LD      HL,$3099            ;
@@ -1795,7 +1799,7 @@ Command16: ; =
 Command17: ; =
 ; Initialization Routine Vector 17 (Free Man)
 09D1: 3E 01           LD      A,$01               ;
-09D3: CD C8 01        CALL    $01C8               ;
+09D3: CD C8 01        CALL    $01C8               ;{FilterCaps}
 09D6: 0E 0F           LD      C,$0F               ;
 09D8: CD 99 01        CALL    $0199               ; Set volume
 09DB: 21 9A 30        LD      HL,$309A            ;
@@ -1830,7 +1834,7 @@ Command17: ; =
 Command18: ; =
 ; Initialization Routine Vector 18 (Time Jump 1)
 0A02: AF              XOR     A                   ;
-0A03: CD C8 01        CALL    $01C8               ;
+0A03: CD C8 01        CALL    $01C8               ;{FilterCaps}
 0A06: 0E 0A           LD      C,$0A               ;
 0A08: CD 99 01        CALL    $0199               ; Set volume
 0A0B: 3E 80           LD      A,$80               ;
@@ -1876,7 +1880,7 @@ Command18: ; =
 Command19: ; =
 ; Initialization Routine Vector 19 (Time Jump 2)
 0A4B: AF              XOR     A                   ;
-0A4C: CD C8 01        CALL    $01C8               ;
+0A4C: CD C8 01        CALL    $01C8               ;{FilterCaps}
 0A4F: 21 C0 00        LD      HL,$00C0            ;
 0A52: CD AA 01        CALL    $01AA               ; Write tone
 0A55: 0E 0F           LD      C,$0F               ;
@@ -2021,37 +2025,37 @@ Command1B: ; =
 ; Initialization Routine Vector 1C,1D,1E,1F,20 Music
 ; Do nothing.
 0B3B: AF              XOR     A                   ;
-0B3C: CD C8 01        CALL    $01C8               ; That mysterious routine ?
+0B3C: CD C8 01        CALL    $01C8               ;{FilterCaps} That mysterious routine ?
 0B3F: AF              XOR     A                   ; Initialized
 0B40: C9              RET                         ; Done
 
 ; Continue Sound Routine Vector 1C
 0B41: DD 21 0F 30     LD      IX,$300F            ; Descriptor 1
-0B45: CD FC 01        CALL    $01FC               ; Process
+0B45: CD FC 01        CALL    $01FC               ;{MusicProcessing} Process
 0B48: AF              XOR     A                   ; Continue flag
 0B49: C9              RET                         ; Done
 
 ; Continue Sound Routine Vector 1D
 0B4A: DD 21 19 30     LD      IX,$3019            ; Descriptor 2
-0B4E: CD FC 01        CALL    $01FC               ; Process
+0B4E: CD FC 01        CALL    $01FC               ;{MusicProcessing} Process
 0B51: AF              XOR     A                   ; Continue flag
 0B52: C9              RET                         ; Done
 
 ; Continue Sound Routine Vector 1E
 0B53: DD 21 23 30     LD      IX,$3023            ; Descriptor 3
-0B57: CD FC 01        CALL    $01FC               ; Process
+0B57: CD FC 01        CALL    $01FC               ;{MusicProcessing} Process
 0B5A: AF              XOR     A                   ; Continue flag
 0B5B: C9              RET                         ; Done
 
 ; Continue Sound Routine Vector 1F
 0B5C: DD 21 2D 30     LD      IX,$302D            ; Descriptor 4
-0B60: CD FC 01        CALL    $01FC               ; Process
+0B60: CD FC 01        CALL    $01FC               ;{MusicProcessing} Process
 0B63: AF              XOR     A                   ; Continue flag
 0B64: C9              RET                         ; Done
 
 ; Continue Sound Routine Vector 20
 0B65: DD 21 37 30     LD      IX,$3037            ; Descriptor 5
-0B69: CD FC 01        CALL    $01FC               ; Process
+0B69: CD FC 01        CALL    $01FC               ;{MusicProcessing} Process
 0B6C: AF              XOR     A                   ; Continue flag
 0B6D: C9              RET                         ; Done
 

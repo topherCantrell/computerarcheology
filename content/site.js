@@ -166,6 +166,8 @@
 	         {"dir": "TimePilot", "nav": "Time Pilot", "entries": [
 	             {"copy": "TimePilot.jpg"},
 	             {"mark": "TimePilot.mark", "out": "index.html"},
+	             {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
+	             {"address": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware Info"},
 	             {"code": "SoundCode.cmark", "out": "SoundCode.html", "nav": "Sound Code"}
 	             ]
 	         }

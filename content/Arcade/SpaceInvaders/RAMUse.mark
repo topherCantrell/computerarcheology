@@ -1,4 +1,6 @@
 %%image SpaceInvaders.jpg
+%%title Space Invaders RAM Use
+%%range 2000:23FF
 
 = General Vars =
 ||= Address  || Name                  || Description                                  ||

@@ -18,3 +18,7 @@ Sweep through all links over entire site and make sure they works.
   * Frogger: Stubbed up and tucked in
   * GALAGA: Leaving it as is
   * Moon Patrol: Stubbed up and tucked in
+  * OmegaRace: Pretty much as-is (just the vectors)
+  * Robotron: Leaving it as is (nothing really done)
+  * SpaceInvaders: Tucked in
+  * TimePilot: Stubbed up and tucked in
