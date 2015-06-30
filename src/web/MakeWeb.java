@@ -83,7 +83,7 @@ public class MakeWeb {
 	}
 	
 	private static String makeSeparator() {
-		return "<li class=\"snn\"><hr align=\"left\" width=\"50%\"></li>";
+		return "<li class=\"snn\"><hr style=\"margin: 4px;\" align=\"left\" width=\"50%\"></li>";
 	}
 	
 	private static String makeNav(String link, String nav, int level, boolean active, boolean leaf, boolean opened) {
