@@ -1,4 +1,8 @@
 ;;%%image A2600ET.jpg
+;;%%title Atari2600 ET
+;;%%cpu 6502
+;;%%- Atari2600/ET/RAMUse.mark /Atari2600/ET/RAMUse.mark
+;;%%-2 Atari2600/Stella.mark /Atari2600/Stella.html
 
 ; This cartridge uses the "F8" bank-switching hardware. This is a single 8K ROM 
 ; with the switching built into it. You read location FFF8 to switch to bank 0. 
@@ -11,7 +15,7 @@ B000: AD F8 FF   LDA $FFF8           ; Switch to bank 0 (this bank ... interesti
 B003: 4C 7F BC   JMP $BC7F           ; Continue startup
 
 B006: A2 04      LDX #$04            ; 
-B008: 85 02      STA >$02            ; 
+B008: 85 02      STA >$02            ;{-2_WSYNC} 
 B00A: B5 95      LDA $95,X           ; 
 B00C: A8         TAY                 ; 
 B00D: B9 00 BC   LDA $BC00,Y         ; 
@@ -23,8 +27,8 @@ B016: 10 FD      BPL $B015           ;
 B018: 95 10      STA $10,X           ; 
 B01A: CA         DEX                 ; 
 B01B: 10 EB      BPL $B008           ; 
-B01D: 85 02      STA >$02            ; 
-B01F: 85 2A      STA >$2A            ; 
+B01D: 85 02      STA >$02            ;{-2_WSYNC} 
+B01F: 85 2A      STA >$2A            ;{-2_HMOVE} 
 B021: 68         PLA                 ; 
 B022: 85 96      STA >$96            ; 
 B024: AA         TAX                 ; 
@@ -571,11 +575,11 @@ B433: 0A         ASL A               ;
 B434: 0A         ASL A               ; 
 B435: 0A         ASL A               ; 
 B436: 85 BE      STA >$BE            ; 
-B438: AD 84 02   LDA $0284           ; 
+B438: AD 84 02   LDA $0284           ;{-2_INTIM} 
 B43B: D0 FB      BNE $B438           ; 
 B43D: A9 02      LDA #$02            ; 
-B43F: 85 02      STA >$02            ; 
-B441: 85 00      STA >$00            ; 
+B43F: 85 02      STA >$02            ;{-2_WSYNC} 
+B441: 85 00      STA >$00            ;{-2_VSYNC} 
 B443: E6 81      INC >$81            ; 
 B445: D0 16      BNE $B45D           ; 
 B447: 24 E3      BIT >$E3            ; 
@@ -589,12 +593,12 @@ B455: 24 91      BIT >$91            ;
 B457: 70 04      BVS $B45D           ; 
 B459: A9 0F      LDA #$0F            ; 
 B45B: 85 A2      STA >$A2            ; 
-B45D: 85 02      STA >$02            ; 
+B45D: 85 02      STA >$02            ;{-2_WSYNC} 
 B45F: A9 3F      LDA #$3F            ; 
 B461: 25 81      AND >$81            ; 
 B463: D0 14      BNE $B479           ; 
 B465: E6 82      INC >$82            ; 
-B467: AD 82 02   LDA $0282           ; 
+B467: AD 82 02   LDA $0282           ;{-2_SWCHB} 
 B46A: 29 02      AND #$02            ; 
 B46C: D0 0B      BNE $B479           ; 
 B46E: A6 EA      LDX >$EA            ; 
@@ -603,7 +607,7 @@ B471: E0 04      CPX #$04            ;
 B473: 90 02      BCC $B477           ; 
 B475: A2 01      LDX #$01            ; 
 B477: 86 EA      STX >$EA            ; 
-B479: 85 02      STA >$02            ; 
+B479: 85 02      STA >$02            ;{-2_WSYNC} 
 B47B: A5 80      LDA >$80            ; 
 B47D: C9 08      CMP #$08            ; 
 B47F: D0 10      BNE $B491           ; 
@@ -617,9 +621,9 @@ B48D: A9 5F      LDA #$5F            ;
 B48F: 85 98      STA >$98            ; 
 B491: A9 00      LDA #$00            ; 
 B493: A2 2F      LDX #$2F            ; 
-B495: 85 02      STA >$02            ; 
-B497: 85 00      STA >$00            ; 
-B499: 8E 96 02   STX $0296           ; 
+B495: 85 02      STA >$02            ;{-2_WSYNC} 
+B497: 85 00      STA >$00            ;{-2_VSYNC} 
+B499: 8E 96 02   STX $0296           ;{-2_TIM64T} 
 B49C: 24 EB      BIT >$EB            ; 
 B49E: 10 03      BPL $B4A3           ; 
 B4A0: 4C 84 B7   JMP $B784           ; 
@@ -632,9 +636,9 @@ B4AD: A6 A1      LDX >$A1            ;
 B4AF: CA         DEX                 ; 
 B4B0: D0 2A      BNE $B4DC           ; 
 B4B2: A9 07      LDA #$07            ; 
-B4B4: 85 1A      STA >$1A            ; 
+B4B4: 85 1A      STA >$1A            ;{-2_AUDV1} 
 B4B6: A9 0C      LDA #$0C            ; 
-B4B8: 85 16      STA >$16            ; 
+B4B8: 85 16      STA >$16            ;{-2_AUDC1} 
 B4BA: A6 EE      LDX >$EE            ; 
 B4BC: CA         DEX                 ; 
 B4BD: 10 0D      BPL $B4CC           ; 
@@ -648,26 +652,26 @@ B4CA: 84 EF      STY >$EF            ;
 B4CC: 86 EE      STX >$EE            ; 
 B4CE: A4 EF      LDY >$EF            ; 
 B4D0: B9 C4 BE   LDA $BEC4,Y         ; 
-B4D3: 85 18      STA >$18            ; 
+B4D3: 85 18      STA >$18            ;{-2_AUDF1} 
 B4D5: A9 00      LDA #$00            ; 
-B4D7: 85 19      STA >$19            ; 
+B4D7: 85 19      STA >$19            ;{-2_AUDV0} 
 B4D9: 4C 48 B5   JMP $B548           ; 
 B4DC: 24 D9      BIT >$D9            ; 
 B4DE: 10 0E      BPL $B4EE           ; 
 B4E0: A9 05      LDA #$05            ; 
-B4E2: 85 16      STA >$16            ; 
+B4E2: 85 16      STA >$16            ;{-2_AUDC1} 
 B4E4: 0A         ASL A               ; 
-B4E5: 85 1A      STA >$1A            ; 
+B4E5: 85 1A      STA >$1A            ;{-2_AUDV1} 
 B4E7: A5 9C      LDA >$9C            ; 
 B4E9: 4A         LSR A               ; 
-B4EA: 85 18      STA >$18            ; 
+B4EA: 85 18      STA >$18            ;{-2_AUDF1} 
 B4EC: D0 5A      BNE $B548           ; 
 B4EE: 50 0E      BVC $B4FE           ; 
 B4F0: A5 D4      LDA >$D4            ; 
 B4F2: 29 0F      AND #$0F            ; 
 B4F4: D0 4A      BNE $B540           ; 
 B4F6: A9 04      LDA #$04            ; 
-B4F8: 85 1A      STA >$1A            ; 
+B4F8: 85 1A      STA >$1A            ;{-2_AUDV1} 
 B4FA: A9 1C      LDA #$1C            ; 
 B4FC: D0 46      BNE $B544           ; 
 B4FE: A5 94      LDA >$94            ; 
@@ -676,10 +680,10 @@ B502: 38         SEC                 ;
 B503: 2A         ROL A               ; 
 B504: 38         SEC                 ; 
 B505: 2A         ROL A               ; 
-B506: 85 1A      STA >$1A            ; 
+B506: 85 1A      STA >$1A            ;{-2_AUDV1} 
 B508: A9 0E      LDA #$0E            ; 
 B50A: D0 38      BNE $B544           ; 
-B50C: AD 80 02   LDA $0280           ; 
+B50C: AD 80 02   LDA $0280           ;{-2_SWCHA} 
 B50F: C9 F0      CMP #$F0            ; 
 B511: B0 2D      BCS $B540           ; 
 B513: 24 91      BIT >$91            ; 
@@ -688,11 +692,11 @@ B517: A5 81      LDA >$81            ;
 B519: 4A         LSR A               ; 
 B51A: 4A         LSR A               ; 
 B51B: 29 07      AND #$07            ; 
-B51D: 85 18      STA >$18            ; 
+B51D: 85 18      STA >$18            ;{-2_AUDF1} 
 B51F: A9 05      LDA #$05            ; 
-B521: 85 16      STA >$16            ; 
+B521: 85 16      STA >$16            ;{-2_AUDC1} 
 B523: A9 07      LDA #$07            ; 
-B525: 85 1A      STA >$1A            ; 
+B525: 85 1A      STA >$1A            ;{-2_AUDV1} 
 B527: D0 1F      BNE $B548           ; 
 B529: A5 81      LDA >$81            ; 
 B52B: 29 07      AND #$07            ; 
@@ -704,13 +708,13 @@ B533: 4A         LSR A               ;
 B534: 29 03      AND #$03            ; 
 B536: F0 08      BEQ $B540           ; 
 B538: A2 07      LDX #$07            ; 
-B53A: 86 1A      STX >$1A            ; 
+B53A: 86 1A      STX >$1A            ;{-2_AUDV1} 
 B53C: 69 16      ADC #$16            ; 
 B53E: D0 04      BNE $B544           ; 
 B540: A9 00      LDA #$00            ; 
-B542: 85 1A      STA >$1A            ; 
-B544: 85 16      STA >$16            ; 
-B546: 85 18      STA >$18            ; 
+B542: 85 1A      STA >$1A            ;{-2_AUDV1} 
+B544: 85 16      STA >$16            ;{-2_AUDC1} 
+B546: 85 18      STA >$18            ;{-2_AUDF1} 
 B548: A5 80      LDA >$80            ; 
 B54A: C9 07      CMP #$07            ; 
 B54C: D0 03      BNE $B551           ; 
@@ -791,7 +795,7 @@ B5DA: 29 38      AND #$38            ;
 B5DC: 18         CLC                 ; 
 B5DD: 69 68      ADC #$68            ; 
 B5DF: 85 C0      STA >$C0            ; 
-B5E1: AD 80 02   LDA $0280           ; 
+B5E1: AD 80 02   LDA $0280           ;{-2_SWCHA} 
 B5E4: 4A         LSR A               ; 
 B5E5: 4A         LSR A               ; 
 B5E6: 4A         LSR A               ; 
@@ -809,7 +813,7 @@ B5FA: A5 89      LDA >$89            ;
 B5FC: 30 30      BMI $B62E           ; 
 B5FE: 09 80      ORA #$80            ; 
 B600: 85 89      STA >$89            ; 
-B602: AD 80 02   LDA $0280           ; 
+B602: AD 80 02   LDA $0280           ;{-2_SWCHA} 
 B605: C9 F0      CMP #$F0            ; 
 B607: B0 07      BCS $B610           ; 
 B609: 26 91      ROL >$91            ; 
@@ -1315,7 +1319,7 @@ BA2C: 85 B8      STA >$B8            ;
 BA2E: D0 33      BNE $BA63           ; 
 BA30: A9 09      LDA #$09            ; 
 BA32: 85 8D      STA >$8D            ; 
-BA34: AD 80 02   LDA $0280           ; 
+BA34: AD 80 02   LDA $0280           ;{-2_SWCHA} 
 BA37: C9 F0      CMP #$F0            ; 
 BA39: B0 20      BCS $BA5B           ; 
 BA3B: A9 03      LDA #$03            ; 
@@ -1659,7 +1663,7 @@ BC86: 95 00      STA $00,X           ;
 BC88: CA         DEX                 ; 
 BC89: D0 FB      BNE $BC86           ; 
 BC8B: A9 01      LDA #$01            ; 
-BC8D: 85 0A      STA >$0A            ; 
+BC8D: 85 0A      STA >$0A            ;{-2_CTRLPF} 
 BC8F: 85 EA      STA >$EA            ; 
 BC91: A9 BF      LDA #$BF            ; 
 BC93: 85 CE      STA >$CE            ; 
@@ -1673,10 +1677,10 @@ BCA1: A9 08      LDA #$08            ;
 BCA3: 85 80      STA >$80            ; 
 BCA5: 20 E3 BA   JSR $BAE3           ; 
 BCA8: 4C 3D B4   JMP $B43D           ; 
-BCAB: AD 84 02   LDA $0284           ; 
+BCAB: AD 84 02   LDA $0284           ;{-2_INTIM} 
 BCAE: D0 FB      BNE $BCAB           ; 
-BCB0: 85 02      STA >$02            ; WSYNC wait for end of scanline 38
-BCB2: 85 02      STA >$02            ; WSYNC wait for end of scanline 39
+BCB0: 85 02      STA >$02            ;{-2_WSYNC} WSYNC wait for end of scanline 38
+BCB2: 85 02      STA >$02            ;{-2_WSYNC} WSYNC wait for end of scanline 39
 ; Scanline 40 begins here
 
 ;; = Bank Switch (to bank 1) =
@@ -1974,22 +1978,22 @@ BE69: 0B
 BE6A: 0C 
 BE6B: 0D A5 81   ORA $81A5           ; 
 BE6E: 09 18      ORA #$18            ; 
-BE70: 85 17      STA >$17            ; 
+BE70: 85 17      STA >$17            ;{-2_AUDF0} 
 BE72: 29 07      AND #$07            ; 
-BE74: 85 18      STA >$18            ; 
+BE74: 85 18      STA >$18            ;{-2_AUDF1} 
 BE76: A5 81      LDA >$81            ; 
 BE78: 4A         LSR A               ; 
 BE79: 29 1F      AND #$1F            ; 
 BE7B: C9 10      CMP #$10            ; 
 BE7D: 90 02      BCC $BE81           ; 
 BE7F: 49 0F      EOR #$0F            ; 
-BE81: 85 19      STA >$19            ; 
+BE81: 85 19      STA >$19            ;{-2_AUDV0} 
 BE83: 49 0F      EOR #$0F            ; 
-BE85: 85 1A      STA >$1A            ; 
+BE85: 85 1A      STA >$1A            ;{-2_AUDV1} 
 BE87: A9 0F      LDA #$0F            ; 
-BE89: 85 15      STA >$15            ; 
+BE89: 85 15      STA >$15            ;{-2_AUDC0} 
 BE8B: A9 0D      LDA #$0D            ; 
-BE8D: 85 16      STA >$16            ; 
+BE8D: 85 16      STA >$16            ;{-2_AUDC1} 
 BE8F: 60         RTS                 ; 
 BE90: BD E8 BD   LDA $BDE8,X         ; 
 BE93: 85 8C      STA >$8C            ; 
@@ -2146,7 +2150,7 @@ BF6E: 7A
 BF6F: 10 43      BPL $BFB4           ; 
 BF71: 02 
 BF72: 97 
-BF73: 85 20      STA >$20            ; 
+BF73: 85 20      STA >$20            ;{-2_HMP0} 
 BF75: 43 
 BF76: 11 6A      ORA ($6A),Y         ; 
 BF78: 24 83      BIT >$83            ; 
@@ -2239,13 +2243,13 @@ F006: E0 40      CPX #$40            ;
 F008: 90 03      BCC $F00D           ; 
 F00A: 4C 33 F1   JMP $F133           ; 
 F00D: A9 00      LDA #$00            ; 
-F00F: 85 1B      STA >$1B            ; 
+F00F: 85 1B      STA >$1B            ;{-2_GRP0} 
 F011: 85 87      STA >$87            ; 
 F013: A5 81      LDA >$81            ; 
 F015: 4A         LSR A               ; 
 F016: 29 1F      AND #$1F            ; 
 F018: 09 40      ORA #$40            ; 
-F01A: 85 06      STA >$06            ; 
+F01A: 85 06      STA >$06            ;{-2_COLUP0} 
 F01C: A5 83      LDA >$83            ; 
 F01E: EA         NOP                 ; 
 F01F: 4C 4B F0   JMP $F04B           ; 
@@ -2261,14 +2265,14 @@ F02E: 8A         TXA                 ;
 F02F: 38         SEC                 ; 
 F030: E5 9B      SBC >$9B            ; 
 F032: C5 8C      CMP >$8C            ; 
-F034: 84 1C      STY >$1C            ; 
-F036: 85 02      STA >$02            ; 
+F034: 84 1C      STY >$1C            ;{-2_GRP1} 
+F036: 85 02      STA >$02            ;{-2_WSYNC} 
 F038: B0 CC      BCS $F006           ; 
 F03A: A8         TAY                 ; 
 F03B: B1 AE      LDA ($AE),Y         ; 
-F03D: 85 1B      STA >$1B            ; 
+F03D: 85 1B      STA >$1B            ;{-2_GRP0} 
 F03F: B1 B2      LDA ($B2),Y         ; 
-F041: 85 06      STA >$06            ; 
+F041: 85 06      STA >$06            ;{-2_COLUP0} 
 F043: B1 B0      LDA ($B0),Y         ; 
 F045: 85 87      STA >$87            ; 
 F047: B1 B4      LDA ($B4),Y         ; 
@@ -2285,83 +2289,83 @@ F057: A8         TAY                 ;
 F058: B1 B8      LDA ($B8),Y         ; 
 F05A: 85 86      STA >$86            ; 
 F05C: B1 B6      LDA ($B6),Y         ; 
-F05E: 85 1C      STA >$1C            ; 
-F060: 85 02      STA >$02            ; 
+F05E: 85 1C      STA >$1C            ;{-2_GRP1} 
+F060: 85 02      STA >$02            ;{-2_WSYNC} 
 F062: A5 87      LDA >$87            ; 
-F064: 85 1B      STA >$1B            ; 
+F064: 85 1B      STA >$1B            ;{-2_GRP0} 
 F066: A5 88      LDA >$88            ; 
-F068: 85 06      STA >$06            ; 
+F068: 85 06      STA >$06            ;{-2_COLUP0} 
 F06A: 8A         TXA                 ; 
 F06B: A8         TAY                 ; 
 F06C: B1 BA      LDA ($BA),Y         ; 
-F06E: 85 0E      STA >$0E            ; 
+F06E: 85 0E      STA >$0E            ;{-2_PF1} 
 F070: B1 BC      LDA ($BC),Y         ; 
-F072: 85 0F      STA >$0F            ; 
+F072: 85 0F      STA >$0F            ;{-2_PF2} 
 F074: 4C 22 F0   JMP $F022           ; 
 F077: A9 00      LDA #$00            ; 
-F079: 85 1C      STA >$1C            ; 
+F079: 85 1C      STA >$1C            ;{-2_GRP1} 
 F07B: 85 86      STA >$86            ; 
 F07D: F0 E1      BEQ $F060           ; 
-F07F: 85 02      STA >$02            ; 
+F07F: 85 02      STA >$02            ;{-2_WSYNC} 
 F081: E8         INX                 ; 
 F082: E0 10      CPX #$10            ; 
 F084: 90 F9      BCC $F07F           ; 
 F086: A9 24      LDA #$24            ; 
-F088: 85 06      STA >$06            ; 
-F08A: 85 07      STA >$07            ; 
+F088: 85 06      STA >$06            ;{-2_COLUP0} 
+F08A: 85 07      STA >$07            ;{-2_COLUP1} 
 F08C: A9 17      LDA #$17            ; 
-F08E: 85 04      STA >$04            ; 
-F090: 85 05      STA >$05            ; 
+F08E: 85 04      STA >$04            ;{-2_NUSIZ0} 
+F090: 85 05      STA >$05            ;{-2_NUSIZ1} 
 F092: A9 00      LDA #$00            ; 
-F094: 85 0B      STA >$0B            ; 
-F096: 85 0C      STA >$0C            ; 
+F094: 85 0B      STA >$0B            ;{-2_REFP0} 
+F096: 85 0C      STA >$0C            ;{-2_PEFP1} 
 F098: A2 0F      LDX #$0F            ; 
-F09A: 85 02      STA >$02            ; 
+F09A: 85 02      STA >$02            ;{-2_WSYNC} 
 F09C: BD 9E F9   LDA $F99E,X         ; 
-F09F: 85 1B      STA >$1B            ; 
+F09F: 85 1B      STA >$1B            ;{-2_GRP0} 
 F0A1: BD AE F9   LDA $F9AE,X         ; 
-F0A4: 85 1C      STA >$1C            ; 
+F0A4: 85 1C      STA >$1C            ;{-2_GRP1} 
 F0A6: E0 02      CPX #$02            ; 
 F0A8: B0 06      BCS $F0B0           ; 
 F0AA: A9 0F      LDA #$0F            ; 
-F0AC: 85 1D      STA >$1D            ; 
-F0AE: 85 1E      STA >$1E            ; 
-F0B0: 85 02      STA >$02            ; 
+F0AC: 85 1D      STA >$1D            ;{-2_ENAM0} 
+F0AE: 85 1E      STA >$1E            ;{-2_ENAM1} 
+F0B0: 85 02      STA >$02            ;{-2_WSYNC} 
 F0B2: CA         DEX                 ; 
-F0B3: 85 02      STA >$02            ; 
+F0B3: 85 02      STA >$02            ;{-2_WSYNC} 
 F0B5: 10 E5      BPL $F09C           ; 
 F0B7: A9 00      LDA #$00            ; 
-F0B9: 85 1B      STA >$1B            ; 
-F0BB: 85 1C      STA >$1C            ; 
-F0BD: 85 1D      STA >$1D            ; 
-F0BF: 85 1E      STA >$1E            ; 
+F0B9: 85 1B      STA >$1B            ;{-2_GRP0} 
+F0BB: 85 1C      STA >$1C            ;{-2_GRP1} 
+F0BD: 85 1D      STA >$1D            ;{-2_ENAM0} 
+F0BF: 85 1E      STA >$1E            ;{-2_ENAM1} 
 F0C1: A2 2F      LDX #$2F            ; 
-F0C3: 85 02      STA >$02            ; 
+F0C3: 85 02      STA >$02            ;{-2_WSYNC} 
 F0C5: E8         INX                 ; 
 F0C6: E0 40      CPX #$40            ; 
 F0C8: 90 F9      BCC $F0C3           ; 
-F0CA: 85 02      STA >$02            ; 
-F0CC: 85 2A      STA >$2A            ; 
+F0CA: 85 02      STA >$02            ;{-2_WSYNC} 
+F0CC: 85 2A      STA >$2A            ;{-2_HMOVE} 
 F0CE: A9 03      LDA #$03            ; 
 F0D0: A0 00      LDY #$00            ; 
-F0D2: 84 0C      STY >$0C            ; 
-F0D4: 85 04      STA >$04            ; 
-F0D6: 85 05      STA >$05            ; 
-F0D8: 85 25      STA >$25            ; 
-F0DA: 85 26      STA >$26            ; 
-F0DC: 84 1B      STY >$1B            ; 
-F0DE: 84 1C      STY >$1C            ; 
-F0E0: 84 1B      STY >$1B            ; 
-F0E2: 84 1C      STY >$1C            ; 
+F0D2: 84 0C      STY >$0C            ;{-2_PEFP1} 
+F0D4: 85 04      STA >$04            ;{-2_NUSIZ0} 
+F0D6: 85 05      STA >$05            ;{-2_NUSIZ1} 
+F0D8: 85 25      STA >$25            ;{-2_VDELP0} 
+F0DA: 85 26      STA >$26            ;{-2_VDELP1} 
+F0DC: 84 1B      STY >$1B            ;{-2_GRP0} 
+F0DE: 84 1C      STY >$1C            ;{-2_GRP1} 
+F0E0: 84 1B      STY >$1B            ;{-2_GRP0} 
+F0E2: 84 1C      STY >$1C            ;{-2_GRP1} 
 F0E4: EA         NOP                 ; 
-F0E5: 85 10      STA >$10            ; 
-F0E7: 85 11      STA >$11            ; 
-F0E9: 84 21      STY >$21            ; 
+F0E5: 85 10      STA >$10            ;{-2_RESP0} 
+F0E7: 85 11      STA >$11            ;{-2_RESP1} 
+F0E9: 84 21      STY >$21            ;{-2_HMP1} 
 F0EB: A9 F0      LDA #$F0            ; 
-F0ED: 85 20      STA >$20            ; 
-F0EF: 84 0B      STY >$0B            ; 
-F0F1: 85 02      STA >$02            ; 
-F0F3: 85 2A      STA >$2A            ; 
+F0ED: 85 20      STA >$20            ;{-2_HMP0} 
+F0EF: 84 0B      STY >$0B            ;{-2_REFP0} 
+F0F1: 85 02      STA >$02            ;{-2_WSYNC} 
+F0F3: 85 2A      STA >$2A            ;{-2_HMOVE} 
 F0F5: A9 F7      LDA #$F7            ; 
 F0F7: 85 BF      STA >$BF            ; 
 F0F9: 85 C1      STA >$C1            ; 
@@ -2381,30 +2385,30 @@ F113: A9 C1      LDA #$C1            ;
 F115: 85 C6      STA >$C6            ; 
 F117: A9 00      LDA #$00            ; 
 F119: 85 C8      STA >$C8            ; 
-F11B: 85 02      STA >$02            ; 
+F11B: 85 02      STA >$02            ;{-2_WSYNC} 
 F11D: A9 EA      LDA #$EA            ; 
-F11F: 85 06      STA >$06            ; 
-F121: 85 07      STA >$07            ; 
+F11F: 85 06      STA >$06            ;{-2_COLUP0} 
+F121: 85 07      STA >$07            ;{-2_COLUP1} 
 F123: A9 27      LDA #$27            ; 
 F125: 85 83      STA >$83            ; 
 F127: 20 09 F5   JSR $F509           ; 
 F12A: A2 6E      LDX #$6E            ; 
-F12C: 85 02      STA >$02            ; 
+F12C: 85 02      STA >$02            ;{-2_WSYNC} 
 F12E: E8         INX                 ; 
 F12F: E0 80      CPX #$80            ; 
 F131: 90 F9      BCC $F12C           ; 
-F133: 85 02      STA >$02            ; 
+F133: 85 02      STA >$02            ;{-2_WSYNC} 
 F135: A2 FF      LDX #$FF            ; 
 F137: 9A         TXS                 ; 
-F138: 86 0E      STX >$0E            ; 
-F13A: 86 0F      STX >$0F            ; 
+F138: 86 0E      STX >$0E            ;{-2_PF1} 
+F13A: 86 0F      STX >$0F            ;{-2_PF2} 
 F13C: E8         INX                 ; 
-F13D: 86 1B      STX >$1B            ; 
-F13F: 86 1C      STX >$1C            ; 
-F141: 86 1D      STX >$1D            ; 
-F143: 86 1E      STX >$1E            ; 
-F145: 86 1F      STX >$1F            ; 
-F147: 85 02      STA >$02            ; 
+F13D: 86 1B      STX >$1B            ;{-2_GRP0} 
+F13F: 86 1C      STX >$1C            ;{-2_GRP1} 
+F141: 86 1D      STX >$1D            ;{-2_ENAM0} 
+F143: 86 1E      STX >$1E            ;{-2_ENAM1} 
+F145: 86 1F      STX >$1F            ;{-2_ENABL} 
+F147: 85 02      STA >$02            ;{-2_WSYNC} 
 F149: A5 81      LDA >$81            ; 
 F14B: 29 07      AND #$07            ; 
 F14D: D0 12      BNE $F161           ; 
@@ -2417,39 +2421,39 @@ F159: 69 90      ADC #$90            ;
 F15B: 85 E6      STA >$E6            ; 
 F15D: A9 83      LDA #$83            ; 
 F15F: 85 8A      STA >$8A            ; 
-F161: 85 02      STA >$02            ; 
+F161: 85 02      STA >$02            ;{-2_WSYNC} 
 F163: A9 C0      LDA #$C0            ; 
-F165: 85 06      STA >$06            ; 
-F167: 85 07      STA >$07            ; 
+F165: 85 06      STA >$06            ;{-2_COLUP0} 
+F167: 85 07      STA >$07            ;{-2_COLUP1} 
 F169: A2 00      LDX #$00            ; 
-F16B: 86 20      STX >$20            ; 
-F16D: 85 02      STA >$02            ; 
-F16F: 86 0D      STX >$0D            ; 
-F171: 86 09      STX >$09            ; 
-F173: 86 0E      STX >$0E            ; 
-F175: 86 0F      STX >$0F            ; 
-F177: 85 02      STA >$02            ; 
-F179: 85 2A      STA >$2A            ; 
+F16B: 86 20      STX >$20            ;{-2_HMP0} 
+F16D: 85 02      STA >$02            ;{-2_WSYNC} 
+F16F: 86 0D      STX >$0D            ;{-2_PF0} 
+F171: 86 09      STX >$09            ;{-2_COLUBK} 
+F173: 86 0E      STX >$0E            ;{-2_PF1} 
+F175: 86 0F      STX >$0F            ;{-2_PF2} 
+F177: 85 02      STA >$02            ;{-2_WSYNC} 
+F179: 85 2A      STA >$2A            ;{-2_HMOVE} 
 F17B: A9 03      LDA #$03            ; 
 F17D: A0 00      LDY #$00            ; 
-F17F: 84 0C      STY >$0C            ; 
-F181: 85 04      STA >$04            ; 
-F183: 85 05      STA >$05            ; 
-F185: 85 25      STA >$25            ; 
-F187: 85 26      STA >$26            ; 
-F189: 84 1B      STY >$1B            ; 
-F18B: 84 1C      STY >$1C            ; 
-F18D: 84 1B      STY >$1B            ; 
-F18F: 84 1C      STY >$1C            ; 
+F17F: 84 0C      STY >$0C            ;{-2_PEFP1} 
+F181: 85 04      STA >$04            ;{-2_NUSIZ0} 
+F183: 85 05      STA >$05            ;{-2_NUSIZ1} 
+F185: 85 25      STA >$25            ;{-2_VDELP0} 
+F187: 85 26      STA >$26            ;{-2_VDELP1} 
+F189: 84 1B      STY >$1B            ;{-2_GRP0} 
+F18B: 84 1C      STY >$1C            ;{-2_GRP1} 
+F18D: 84 1B      STY >$1B            ;{-2_GRP0} 
+F18F: 84 1C      STY >$1C            ;{-2_GRP1} 
 F191: EA         NOP                 ; 
-F192: 85 10      STA >$10            ; 
-F194: 85 11      STA >$11            ; 
-F196: 84 21      STY >$21            ; 
+F192: 85 10      STA >$10            ;{-2_RESP0} 
+F194: 85 11      STA >$11            ;{-2_RESP1} 
+F196: 84 21      STY >$21            ;{-2_HMP1} 
 F198: A9 F0      LDA #$F0            ; 
-F19A: 85 20      STA >$20            ; 
-F19C: 84 0B      STY >$0B            ; 
-F19E: 85 02      STA >$02            ; 
-F1A0: 85 2A      STA >$2A            ; 
+F19A: 85 20      STA >$20            ;{-2_HMP0} 
+F19C: 84 0B      STY >$0B            ;{-2_REFP0} 
+F19E: 85 02      STA >$02            ;{-2_WSYNC} 
+F1A0: 85 2A      STA >$2A            ;{-2_HMOVE} 
 F1A2: A5 D2      LDA >$D2            ; 
 F1A4: 85 83      STA >$83            ; 
 F1A6: A5 D3      LDA >$D3            ; 
@@ -2470,7 +2474,7 @@ F1C2: 85 C3      STA >$C3            ;
 F1C4: 85 C5      STA >$C5            ; 
 F1C6: 85 C7      STA >$C7            ; 
 F1C8: 85 C9      STA >$C9            ; 
-F1CA: 85 02      STA >$02            ; 
+F1CA: 85 02      STA >$02            ;{-2_WSYNC} 
 F1CC: A5 80      LDA >$80            ; 
 F1CE: C9 07      CMP #$07            ; 
 F1D0: 90 0C      BCC $F1DE           ; 
@@ -2480,9 +2484,9 @@ F1D6: A5 E0      LDA >$E0            ;
 F1D8: 85 84      STA >$84            ; 
 F1DA: A5 E1      LDA >$E1            ; 
 F1DC: 85 85      STA >$85            ; 
-F1DE: 85 02      STA >$02            ; 
+F1DE: 85 02      STA >$02            ;{-2_WSYNC} 
 F1E0: A9 9A      LDA #$9A            ; 
-F1E2: 85 09      STA >$09            ; 
+F1E2: 85 09      STA >$09            ;{-2_COLUBK} 
 F1E4: A5 83      LDA >$83            ; 
 F1E6: 29 F0      AND #$F0            ; 
 F1E8: D0 02      BNE $F1EC           ; 
@@ -2495,7 +2499,7 @@ F1F3: 0A         ASL A               ;
 F1F4: 0A         ASL A               ; 
 F1F5: 0A         ASL A               ; 
 F1F6: 85 C0      STA >$C0            ; 
-F1F8: 85 02      STA >$02            ; 
+F1F8: 85 02      STA >$02            ;{-2_WSYNC} 
 F1FA: A5 84      LDA >$84            ; 
 F1FC: 29 F0      AND #$F0            ; 
 F1FE: 4A         LSR A               ; 
@@ -2506,7 +2510,7 @@ F205: 0A         ASL A               ;
 F206: 0A         ASL A               ; 
 F207: 0A         ASL A               ; 
 F208: 85 C4      STA >$C4            ; 
-F20A: 85 02      STA >$02            ; 
+F20A: 85 02      STA >$02            ;{-2_WSYNC} 
 F20C: A9 69      LDA #$69            ; 
 F20E: C5 F1      CMP >$F1            ; 
 F210: D0 04      BNE $F216           ; 
@@ -2522,7 +2526,7 @@ F221: 0A         ASL A               ;
 F222: 0A         ASL A               ; 
 F223: 0A         ASL A               ; 
 F224: 85 C8      STA >$C8            ; 
-F226: 85 02      STA >$02            ; 
+F226: 85 02      STA >$02            ;{-2_WSYNC} 
 F228: A0 50      LDY #$50            ; 
 F22A: A6 80      LDX >$80            ; 
 F22C: E0 07      CPX #$07            ; 
@@ -2541,7 +2545,7 @@ F244: 84 C4      STY >$C4            ;
 F246: A5 C6      LDA >$C6            ; 
 F248: D0 02      BNE $F24C           ; 
 F24A: 84 C6      STY >$C6            ; 
-F24C: 85 02      STA >$02            ; 
+F24C: 85 02      STA >$02            ;{-2_WSYNC} 
 F24E: A9 FC      LDA #$FC            ; 
 F250: C5 BF      CMP >$BF            ; 
 F252: D0 18      BNE $F26C           ; 
@@ -2560,9 +2564,9 @@ F26A: 85 C8      STA >$C8            ;
 F26C: A9 07      LDA #$07            ; 
 F26E: 85 83      STA >$83            ; 
 F270: 20 09 F5   JSR $F509           ; 
-F273: 85 02      STA >$02            ; 
+F273: 85 02      STA >$02            ;{-2_WSYNC} 
 F275: A9 02      LDA #$02            ; 
-F277: 2D 82 02   AND $0282           ; 
+F277: 2D 82 02   AND $0282           ;{-2_SWCHB} 
 F27A: D0 0A      BNE $F286           ; 
 F27C: A9 88      LDA #$88            ; 
 F27E: 85 E2      STA >$E2            ; 
@@ -2570,20 +2574,20 @@ F280: 85 E4      STA >$E4            ;
 F282: A9 00      LDA #$00            ; 
 F284: 85 EB      STA >$EB            ; 
 ;
-F286: 85 02      STA >$02            ; WSYNC end of scanline 216
-F288: 85 02      STA >$02            ; WSYNC end of scanline 217
-F28A: 85 02      STA >$02            ; WSYNC end of scanline 218
-F28C: 85 02      STA >$02            ; WSYNC end of scanline 219
-F28E: 85 02      STA >$02            ; WSYNC end of scanline 220
+F286: 85 02      STA >$02            ;{-2_WSYNC} WSYNC end of scanline 216
+F288: 85 02      STA >$02            ;{-2_WSYNC} WSYNC end of scanline 217
+F28A: 85 02      STA >$02            ;{-2_WSYNC} WSYNC end of scanline 218
+F28C: 85 02      STA >$02            ;{-2_WSYNC} WSYNC end of scanline 219
+F28E: 85 02      STA >$02            ;{-2_WSYNC} WSYNC end of scanline 220
 ;
 ; Beginning of scanline 221
 F290: A2 0F      LDX #$0F            ; 
-F292: 86 01      STX >$01            ; 
+F292: 86 01      STX >$01            ;{-2_VBLANK} 
 F294: 20 08 F5   JSR $F508           ; 
 F297: 20 08 F5   JSR $F508           ; 
 F29A: A2 2D      LDX #$2D            ; 
-F29C: 8E 96 02   STX $0296           ; 
-F29F: 6E 82 02   ROR $0282           ; 
+F29C: 8E 96 02   STX $0296           ;{-2_TIM64T} 
+F29F: 6E 82 02   ROR $0282           ;{-2_SWCHB} 
 F2A2: B0 0D      BCS $F2B1           ; 
 F2A4: A9 40      LDA #$40            ; 
 F2A6: 24 89      BIT >$89            ; 
@@ -2610,11 +2614,11 @@ F2D2: F0 05      BEQ $F2D9           ;
 F2D4: A9 80      LDA #$80            ; 
 F2D6: 4C 15 F3   JMP $F315           ; 
 F2D9: A9 13      LDA #$13            ; 
-F2DB: 85 15      STA >$15            ; 
+F2DB: 85 15      STA >$15            ;{-2_AUDC0} 
 F2DD: 24 81      BIT >$81            ; 
 F2DF: D0 02      BNE $F2E3           ; 
 F2E1: A9 16      LDA #$16            ; 
-F2E3: 85 17      STA >$17            ; 
+F2E3: 85 17      STA >$17            ;{-2_AUDF0} 
 F2E5: A5 96      LDA >$96            ; 
 F2E7: E5 95      SBC >$95            ; 
 F2E9: 10 02      BPL $F2ED           ; 
@@ -2639,12 +2643,12 @@ F30A: 4A         LSR A               ;
 F30B: 4A         LSR A               ; 
 F30C: 4A         LSR A               ; 
 F30D: 49 0F      EOR #$0F            ; 
-F30F: 85 19      STA >$19            ; 
+F30F: 85 19      STA >$19            ;{-2_AUDV0} 
 F311: A5 8A      LDA >$8A            ; 
 F313: 10 0F      BPL $F324           ; 
-F315: 85 15      STA >$15            ; 
-F317: 85 19      STA >$19            ; 
-F319: 85 17      STA >$17            ; 
+F315: 85 15      STA >$15            ;{-2_AUDC0} 
+F317: 85 19      STA >$19            ;{-2_AUDV0} 
+F319: 85 17      STA >$17            ;{-2_AUDF0} 
 F31B: 0A         ASL A               ; 
 F31C: F0 06      BEQ $F324           ; 
 F31E: A9 80      LDA #$80            ; 
@@ -2917,12 +2921,12 @@ F507: D8         CLD                 ;
 F508: 60         RTS                 ; 
 F509: A4 83      LDY >$83            ; 
 F50B: B1 BE      LDA ($BE),Y         ; 
-F50D: 85 1B      STA >$1B            ; 
-F50F: 85 02      STA >$02            ; 
+F50D: 85 1B      STA >$1B            ;{-2_GRP0} 
+F50F: 85 02      STA >$02            ;{-2_WSYNC} 
 F511: B1 C0      LDA ($C0),Y         ; 
-F513: 85 1C      STA >$1C            ; 
+F513: 85 1C      STA >$1C            ;{-2_GRP1} 
 F515: B1 C2      LDA ($C2),Y         ; 
-F517: 85 1B      STA >$1B            ; 
+F517: 85 1B      STA >$1B            ;{-2_GRP0} 
 F519: B1 C4      LDA ($C4),Y         ; 
 F51B: 85 84      STA >$84            ; 
 F51D: B1 C6      LDA ($C6),Y         ; 
@@ -2930,23 +2934,23 @@ F51F: AA         TAX                 ;
 F520: B1 C8      LDA ($C8),Y         ; 
 F522: A8         TAY                 ; 
 F523: A5 84      LDA >$84            ; 
-F525: 85 1C      STA >$1C            ; 
-F527: 86 1B      STX >$1B            ; 
-F529: 84 1C      STY >$1C            ; 
-F52B: 84 1B      STY >$1B            ; 
+F525: 85 1C      STA >$1C            ;{-2_GRP1} 
+F527: 86 1B      STX >$1B            ;{-2_GRP0} 
+F529: 84 1C      STY >$1C            ;{-2_GRP1} 
+F52B: 84 1B      STY >$1B            ;{-2_GRP0} 
 F52D: C6 83      DEC >$83            ; 
 F52F: 10 D8      BPL $F509           ; 
 F531: A9 00      LDA #$00            ; 
-F533: 85 02      STA >$02            ; 
-F535: 85 1B      STA >$1B            ; 
-F537: 85 1C      STA >$1C            ; 
-F539: 85 1B      STA >$1B            ; 
-F53B: 85 1C      STA >$1C            ; 
-F53D: 85 04      STA >$04            ; 
-F53F: 85 05      STA >$05            ; 
-F541: 85 25      STA >$25            ; 
-F543: 85 26      STA >$26            ; 
-F545: 85 02      STA >$02            ; 
+F533: 85 02      STA >$02            ;{-2_WSYNC} 
+F535: 85 1B      STA >$1B            ;{-2_GRP0} 
+F537: 85 1C      STA >$1C            ;{-2_GRP1} 
+F539: 85 1B      STA >$1B            ;{-2_GRP0} 
+F53B: 85 1C      STA >$1C            ;{-2_GRP1} 
+F53D: 85 04      STA >$04            ;{-2_NUSIZ0} 
+F53F: 85 05      STA >$05            ;{-2_NUSIZ1} 
+F541: 85 25      STA >$25            ;{-2_VDELP0} 
+F543: 85 26      STA >$26            ;{-2_VDELP1} 
+F545: 85 02      STA >$02            ;{-2_WSYNC} 
 F547: 60         RTS                 ; 
 
 ;; = Visible Screen =
@@ -2955,20 +2959,20 @@ F547: 60         RTS                 ;
 
 ; Near the middle of scanline 40
 F548: A9 06      LDA #$06            ; 
-F54A: 85 05      STA >$05            ; 
+F54A: 85 05      STA >$05            ;{-2_NUSIZ1} 
 F54C: A9 52      LDA #$52            ; 
-F54E: 85 09      STA >$09            ; 
+F54E: 85 09      STA >$09            ;{-2_COLUBK} 
 F550: A9 00      LDA #$00            ; 
-F552: 85 02      STA >$02            ; 
-F554: 85 01      STA >$01            ; 
-F556: 85 2B      STA >$2B            ; 
-F558: 85 2C      STA >$2C            ; 
+F552: 85 02      STA >$02            ;{-2_WSYNC} 
+F554: 85 01      STA >$01            ;{-2_VBLANK} 
+F556: 85 2B      STA >$2B            ;{-2_HMCLR} 
+F558: 85 2C      STA >$2C            ;{-2_CXCLR} 
 F55A: A9 FC      LDA #$FC            ; 
 F55C: 85 BF      STA >$BF            ; 
 F55E: 85 C1      STA >$C1            ; 
 F560: A9 FB      LDA #$FB            ; 
 F562: 85 C3      STA >$C3            ; 
-F564: 85 02      STA >$02            ; 
+F564: 85 02      STA >$02            ;{-2_WSYNC} 
 F566: A2 03      LDX #$03            ; 
 F568: 24 CA      BIT >$CA            ; 
 F56A: 10 01      BPL $F56D           ; 
@@ -2981,7 +2985,7 @@ F574: 10 01      BPL $F577           ;
 F576: CA         DEX                 ; 
 F577: BD E8 FB   LDA $FBE8,X         ; 
 F57A: 85 C2      STA >$C2            ; 
-F57C: 85 02      STA >$02            ; 
+F57C: 85 02      STA >$02            ;{-2_WSYNC} 
 F57E: A9 00      LDA #$00            ; 
 F580: A4 80      LDY >$80            ; 
 F582: C0 07      CPY #$07            ; 
@@ -3003,7 +3007,7 @@ F59F: 0A         ASL A               ;
 F5A0: 0A         ASL A               ; 
 F5A1: 0A         ASL A               ; 
 F5A2: 85 BE      STA >$BE            ; 
-F5A4: 85 02      STA >$02            ; 
+F5A4: 85 02      STA >$02            ;{-2_WSYNC} 
 F5A6: 24 EB      BIT >$EB            ; 
 F5A8: 10 06      BPL $F5B0           ; 
 F5AA: A9 00      LDA #$00            ; 
@@ -3016,38 +3020,38 @@ F5B6: 85 C0      STA >$C0            ;
 F5B8: A9 07      LDA #$07            ; 
 F5BA: 85 83      STA >$83            ; 
 F5BC: A4 83      LDY >$83            ; 
-F5BE: 85 02      STA >$02            ; 
+F5BE: 85 02      STA >$02            ;{-2_WSYNC} 
 F5C0: EA         NOP                 ; 
 F5C1: EA         NOP                 ; 
 F5C2: A5 8E      LDA >$8E            ; 
 F5C4: 48         PHA                 ; 
 F5C5: A5 90      LDA >$90            ; 
-F5C7: 85 07      STA >$07            ; 
+F5C7: 85 07      STA >$07            ;{-2_COLUP1} 
 F5C9: B1 C2      LDA ($C2),Y         ; 
-F5CB: 85 1C      STA >$1C            ; 
+F5CB: 85 1C      STA >$1C            ;{-2_GRP1} 
 F5CD: B1 BE      LDA ($BE),Y         ; 
 F5CF: AA         TAX                 ; 
 F5D0: B1 C0      LDA ($C0),Y         ; 
 F5D2: A8         TAY                 ; 
 F5D3: 68         PLA                 ; 
-F5D4: 85 07      STA >$07            ; 
-F5D6: 86 1C      STX >$1C            ; 
+F5D4: 85 07      STA >$07            ;{-2_COLUP1} 
+F5D6: 86 1C      STX >$1C            ;{-2_GRP1} 
 F5D8: A5 8F      LDA >$8F            ; 
-F5DA: 85 07      STA >$07            ; 
-F5DC: 84 1C      STY >$1C            ; 
+F5DA: 85 07      STA >$07            ;{-2_COLUP1} 
+F5DC: 84 1C      STY >$1C            ;{-2_GRP1} 
 F5DE: C6 83      DEC >$83            ; 
 F5E0: 10 DA      BPL $F5BC           ; 
-F5E2: 85 02      STA >$02            ; 
+F5E2: 85 02      STA >$02            ;{-2_WSYNC} 
 F5E4: A9 00      LDA #$00            ; 
-F5E6: 85 1C      STA >$1C            ; 
-F5E8: 85 05      STA >$05            ; 
-F5EA: 85 02      STA >$02            ; 
-F5EC: 85 02      STA >$02            ; 
-F5EE: 85 02      STA >$02            ; 
+F5E6: 85 1C      STA >$1C            ;{-2_GRP1} 
+F5E8: 85 05      STA >$05            ;{-2_NUSIZ1} 
+F5EA: 85 02      STA >$02            ;{-2_WSYNC} 
+F5EC: 85 02      STA >$02            ;{-2_WSYNC} 
+F5EE: 85 02      STA >$02            ;{-2_WSYNC} 
 F5F0: A9 00      LDA #$00            ; 
-F5F2: 85 09      STA >$09            ; 
+F5F2: 85 09      STA >$09            ;{-2_COLUBK} 
 F5F4: A2 01      LDX #$01            ; 
-F5F6: 85 02      STA >$02            ; 
+F5F6: 85 02      STA >$02            ;{-2_WSYNC} 
 F5F8: EA         NOP                 ; 
 F5F9: EA         NOP                 ; 
 F5FA: A5 D5      LDA >$D5            ; 
@@ -3058,19 +3062,19 @@ F602: A8         TAY                 ;
 F603: 88         DEY                 ; 
 F604: 10 FD      BPL $F603           ; 
 F606: 95 10      STA $10,X           ; 
-F608: 85 02      STA >$02            ; 
-F60A: 85 2A      STA >$2A            ; 
+F608: 85 02      STA >$02            ;{-2_WSYNC} 
+F60A: 85 2A      STA >$2A            ;{-2_HMOVE} 
 F60C: A9 11      LDA #$11            ; 
 F60E: A6 80      LDX >$80            ; 
 F610: E0 05      CPX #$05            ; 
 F612: D0 02      BNE $F616           ; 
 F614: A9 15      LDA #$15            ; 
-F616: 85 0A      STA >$0A            ; 
+F616: 85 0A      STA >$0A            ;{-2_CTRLPF} 
 F618: A2 FF      LDX #$FF            ; 
 F61A: 2C 80 02   BIT $0280           ; 
 F61D: 10 01      BPL $F620           ; 
 F61F: E8         INX                 ; 
-F620: 86 0C      STX >$0C            ; 
+F620: 86 0C      STX >$0C            ;{-2_PEFP1} 
 F622: A6 A1      LDX >$A1            ; 
 F624: 30 18      BMI $F63E           ; 
 F626: 24 91      BIT >$91            ; 
@@ -3084,20 +3088,20 @@ F635: A5 96      LDA >$96            ;
 F637: C5 95      CMP >$95            ; 
 F639: 90 01      BCC $F63C           ; 
 F63B: C8         INY                 ; 
-F63C: 84 0B      STY >$0B            ; 
-F63E: 85 02      STA >$02            ; 
+F63C: 84 0B      STY >$0B            ;{-2_REFP0} 
+F63E: 85 02      STA >$02            ;{-2_WSYNC} 
 F640: A6 80      LDX >$80            ; 
 F642: E0 07      CPX #$07            ; 
 F644: D0 12      BNE $F658           ; 
 F646: 24 ED      BIT >$ED            ; 
 F648: 10 06      BPL $F650           ; 
 F64A: A9 11      LDA #$11            ; 
-F64C: 85 0A      STA >$0A            ; 
+F64C: 85 0A      STA >$0A            ;{-2_CTRLPF} 
 F64E: D0 06      BNE $F656           ; 
 F650: A9 15      LDA #$15            ; 
-F652: 85 0A      STA >$0A            ; 
+F652: 85 0A      STA >$0A            ;{-2_CTRLPF} 
 F654: A9 FF      LDA #$FF            ; 
-F656: 85 0B      STA >$0B            ; 
+F656: 85 0B      STA >$0B            ;{-2_REFP0} 
 F658: A2 00      LDX #$00            ; 
 F65A: 24 E3      BIT >$E3            ; 
 F65C: 30 09      BMI $F667           ; 
@@ -3110,32 +3114,32 @@ F664: 4A         LSR A               ;
 F665: AA         TAX                 ; 
 F666: E8         INX                 ; 
 F667: BD F9 F7   LDA $F7F9,X         ; 
-F66A: 85 07      STA >$07            ; 
-F66C: 85 02      STA >$02            ; 
+F66A: 85 07      STA >$07            ;{-2_COLUP1} 
+F66C: 85 02      STA >$02            ;{-2_WSYNC} 
 F66E: A6 80      LDX >$80            ; 
 F670: BD D9 FD   LDA $FDD9,X         ; 
-F673: 85 08      STA >$08            ; 
+F673: 85 08      STA >$08            ;{-2_COLUPF} 
 F675: A0 FF      LDY #$FF            ; 
-F677: 84 0D      STY >$0D            ; 
-F679: 84 0E      STY >$0E            ; 
-F67B: 84 0F      STY >$0F            ; 
+F677: 84 0D      STY >$0D            ;{-2_PF0} 
+F679: 84 0E      STY >$0E            ;{-2_PF1} 
+F67B: 84 0F      STY >$0F            ;{-2_PF2} 
 F67D: BD E2 FD   LDA $FDE2,X         ; 
-F680: 85 09      STA >$09            ; 
+F680: 85 09      STA >$09            ;{-2_COLUBK} 
 F682: A9 20      LDA #$20            ; 
 F684: 24 EB      BIT >$EB            ; 
 F686: 10 02      BPL $F68A           ; 
 F688: A9 25      LDA #$25            ; 
-F68A: 85 04      STA >$04            ; 
+F68A: 85 04      STA >$04            ;{-2_NUSIZ0} 
 F68C: A9 20      LDA #$20            ; 
-F68E: 85 05      STA >$05            ; 
-F690: 85 02      STA >$02            ; 
-F692: 85 02      STA >$02            ; 
-F694: 85 02      STA >$02            ; 
+F68E: 85 05      STA >$05            ;{-2_NUSIZ1} 
+F690: 85 02      STA >$02            ;{-2_WSYNC} 
+F692: 85 02      STA >$02            ;{-2_WSYNC} 
+F694: 85 02      STA >$02            ;{-2_WSYNC} 
 F696: A4 80      LDY >$80            ; 
-F698: 85 02      STA >$02            ; 
+F698: 85 02      STA >$02            ;{-2_WSYNC} 
 F69A: A9 00      LDA #$00            ; 
-F69C: 85 0E      STA >$0E            ; 
-F69E: 85 0F      STA >$0F            ; 
+F69C: 85 0E      STA >$0E            ;{-2_PF1} 
+F69E: 85 0F      STA >$0F            ;{-2_PF2} 
 F6A0: BE 05 F8   LDX $F805,Y         ; 
 F6A3: BD F4 F8   LDA $F8F4,X         ; 
 F6A6: 48         PHA                 ; 
@@ -3789,7 +3793,7 @@ FA0F: 00         BRK                 ;
 FA10: FE C0 C0   INC $C0C0,X         ; 
 FA13: FE 02 82   INC $8202,X         ; 
 FA16: FE 00 FE   INC $FE00,X         ; 
-FA19: 86 06      STX >$06            ; 
+FA19: 86 06      STX >$06            ;{-2_COLUP0} 
 FA1B: 7E 02 82   ROR $8202,X         ; 
 FA1E: FE 00 06   INC $0600,X         ; 
 FA21: 06 FE      ASL >$FE            ; 
@@ -4543,7 +4547,7 @@ FDE3: D4
 FDE4: D4 
 FDE5: D4 
 FDE6: D4 
-FDE7: 84 06      STY >$06            ; 
+FDE7: 84 06      STY >$06            ;{-2_COLUP0} 
 FDE9: 90 80      BCC $FD6B           ; 
 FDEB: 24 F2      BIT >$F2            ; 
 FDED: 10 0C      BPL $FDFB           ; 
