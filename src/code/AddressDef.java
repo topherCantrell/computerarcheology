@@ -74,4 +74,19 @@ public class AddressDef {
 		
 	}
 
+	public String getTarget() {
+		String ret = CU.hex4(startAddress);
+		if(busType==BusType.PORT) {
+			ret = ret + "p";
+		}
+		if(busDir==BusDir.READ){
+			ret = ret + "r";
+		}
+		if(busDir==BusDir.WRITE){
+			ret = ret + "w";
+		}
+		return ret;
+	}
+	
+
 }

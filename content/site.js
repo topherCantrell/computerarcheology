@@ -58,20 +58,19 @@
 	             ]
 	         },
 	         {"dir": "Defender", "nav": "Defender", "entries": [	         
-	             {"mark": "Defender.mark", "out": "index.html"},
-	             
+	             {"mark": "Defender.mark", "out": "index.html"},	             
 	             {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
 	             {"address": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware"},
+	             {"separator": ""},
 	             {"mark": "Bank1.cmark", "out": "Bank1.html", "nav":"Bank 1"},
 	             {"mark": "Bank2.cmark", "out": "Bank2.html", "nav":"Bank 2"},
 	             {"mark": "Bank3.cmark", "out": "Bank3.html", "nav":"Bank 3"},
 	             {"mark": "Bank7.cmark", "out": "Bank7.html", "nav":"Bank 7"},
 	             {"mark": "BankFixed.cmark", "out": "BankFixed.html", "nav":"Fixed Bank"},	             
-	             
+	             {"separator": ""},
 	             {"mark": "SoundCode.cmark", "out": "SoundCode.html", "nav":"Sound Code"},
 	             {"address": "SoundRAMUse.mark", "out": "SoundRAMUse.html", "nav": "Sound RAM Use"},
-	             {"address": "SoundHardware.mark", "out": "SoundHardware.html", "nav": "Sound Hardware"},
-	             
+	             {"address": "SoundHardware.mark", "out": "SoundHardware.html", "nav": "Sound Hardware"},	             
 	             {"copy": "Defender-Theory-Early.pdf"},
 	             {"copy": "Defender-Theory-Later.pdf"},
 	             {"copy": "Defender.ROM.B&W.jpg"},

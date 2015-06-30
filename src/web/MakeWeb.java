@@ -82,6 +82,10 @@ public class MakeWeb {
 		}
 	}
 	
+	private static String makeSeparator() {
+		return "<li class=\"snn\"><hr align=\"left\" width=\"50%\"></li>";
+	}
+	
 	private static String makeNav(String link, String nav, int level, boolean active, boolean leaf, boolean opened) {
 		String cl = "snn";
 		if(level==0) {
@@ -117,6 +121,12 @@ public class MakeWeb {
 		String ret = "";
 		
 		for(SiteInfoEntry ent : root.entries) {
+			
+			if(ent.command.equals("separator")) {
+				ret = ret + MakeWeb.makeSeparator();
+				continue;
+			}
+			
 			boolean active = false;
 			if(ent==activeNode) {
 				active = true;
@@ -203,7 +213,9 @@ public class MakeWeb {
 			} else if(ent.command.equals("copyDir")) {
 				System.out.println("COPY_DIR "+cont+"/"+ent.arg);
 				FU.copyDirectory(new File(cont+"/"+ent.arg), new File(dep+"/"+ent.arg));
-			}			
+			} else if(ent.command.equals("separator")) {
+				
+			}
 			else if(ent.command.equals("dir")) {
 				System.out.println("DIR "+cont+"/"+ent.arg);
 				// Make directory

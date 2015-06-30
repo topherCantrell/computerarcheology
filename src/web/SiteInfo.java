@@ -111,6 +111,13 @@ public class SiteInfo {
 				continue;
 			}
 			
+			k= (String)j.get("separator");
+			if(k!=null) {
+				ent.command = "separator";
+				ret.add(ent);
+				continue;
+			}
+			
 			throw new Exception("Unknown entry '"+j.toString()+"'");			
 			
 		}

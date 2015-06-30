@@ -202,7 +202,7 @@ public class LinkFix {
 			if(en.name==null || en.name.length()==0) {
 				return null;
 			}
-			return "{"+table.htmlRef+"#"+ac.getTarget()+":"+en.name+":"+table.index+"}";
+			return "{"+table.htmlRef+"#"+en.getTarget()+":"+en.name+":"+table.index+"}";
 		}			
 			
 	}
@@ -216,7 +216,7 @@ public class LinkFix {
 	 */
 	public static void main(String [] args) throws Exception {
 		
-		Path p = Paths.get("content/CoCo/Daggorath/Code.cmark");
+		Path p = Paths.get("content/Arcade/SpaceInvaders/Code.cmark");
 		
 		// The worker object
 		LinkFix fixer = new LinkFix();		
