@@ -13,6 +13,9 @@ public abstract class CPU {
 		if(name.equals("6803")) {
 			return new CPU_6803();
 		}
+		if(name.equals("6809")) {
+			return new CPU_6809();
+		}
 		if(name.equals("DVG")) {
 			return new CPU_DVG();
 		}

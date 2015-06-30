@@ -1,6 +1,7 @@
 %%image Daggorath.jpg
+%%title Daggorath RAM Use
 
-= Overview =
+
 The first 256 bytes of RAM (DP=0) are needed by BASIC function calls made by Daggorath. The second
 256 bytes of RAM (DP=1) contain the BASIC interrupt vectors.
 

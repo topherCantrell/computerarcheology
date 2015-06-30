@@ -216,7 +216,7 @@ public class LinkFix {
 	 */
 	public static void main(String [] args) throws Exception {
 		
-		Path p = Paths.get("content/Atari2600/MissileCommand/Code.cmark");
+		Path p = Paths.get("content/CoCo/RaakaTu/Code.cmark");
 		
 		// The worker object
 		LinkFix fixer = new LinkFix();		

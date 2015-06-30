@@ -88,6 +88,7 @@ public class MarkupToHTML {
 	}
 	
 	private String markDownHeaders(String proc, List<PageNavInfo> pageNav) {
+		//System.out.println(proc);
 		//     text        lid   id
         // == This is it == it #thisIt
 

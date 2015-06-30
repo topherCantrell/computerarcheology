@@ -1,8 +1,11 @@
 ;;%%image RaakaTu.jpg
+;;%%title Raaka Tu Code
 ;;%%- CoCo/RaakaTu/RAMUse.mark /CoCo/RaakaTu/RAMUse.html
 ;;%%-2 CoCo/Hardware.mark /CoCo/Hardware.html
-;; The game's RAM usage is detailed here: 
-;; [RAMUse.html RAM Usage]
+;;%%cpu 6809
+ 
+;;* [RAMUse.html RAM Usage]
+;;* [/CoCo/Hardware.html Hardware Info]
 
 ;; Loaded from cassette at 0x600 (right after text screen memory).
 ;; Executed at 0x0600.
@@ -15,83 +18,83 @@ Start: ; ==
 0604: CE 60 60            LDU     #$6060      ; Space-space
 0607: EF 81               STU     ,X++        ; Clear ...
 0609: 4A                  DECA                ; ... text ...
-060A: 26 FB               BNE     $607        ; {} ... screen
+060A: 26 FB               BNE     $607        ;  ... screen
 
 060C: 10 CE 03 FF         LDS     #$03FF      ; Stack starts just below screen
 0610: 86 1D               LDA     #$1D        ; Player object ...
-0612: B7 01 D2            STA     $01D2       ; {-ACTIVE_OBJ_NUM} ... is the active object number
+0612: B7 01 D2            STA     $01D2       ;{-1_ACTIVE_OBJ_NUM}  ... is the active object number
 0615: 8E 05 E0            LDX     #$05E0      ; Set cursor to ...
-0618: 9F 88               STX     >$88        ; {-} ... bottom row of screen
+0618: 9F 88               STX     >$88        ;{-1_printCursor}  ... bottom row of screen
 061A: C6 96               LDB     #$96        ; Starting ...
-061C: F7 01 D5            STB     $01D5       ; {-CUR_ROOM} ... room
+061C: F7 01 D5            STB     $01D5       ;{-1_CUR_ROOM}  ... room
 061F: 8E 15 23            LDX     #$1523      ; Room descriptions
-0622: BD 0A 1F            JSR     $0A1F       ; {} Find room data
-0625: BF 01 D6            STX     $01D6       ; Store current room data
-0628: BD 0D 4A            JSR     $0D4A       ; {} Print room description
+0622: BD 0A 1F            JSR     $0A1F       ;{FindSublist}  Find room data
+0625: BF 01 D6            STX     $01D6       ;{-1_CUR_ROOM_DATA} Store current room data
+0628: BD 0D 4A            JSR     $0D4A       ;  Print room description
 062B: 86 0D               LDA     #$0D        ; Print ...
-062D: BD 11 84            JSR     $1184       ; {} ... CR
+062D: BD 11 84            JSR     $1184       ;{PrintCharacterAutoWrap}  ... CR
 
 MainLoop: ; ==
 0630: 10 CE 03 FF         LDS     #$03FF      ; Initialize stack
-0634: BD 0A CC            JSR     $0ACC       ; {} Get user input
+0634: BD 0A CC            JSR     $0ACC       ;  Get user input
 
-0637: 7F 01 B7            CLR     $01B7       ; {-adjWord} Adjective word number
-063A: 7F 01 BA            CLR     $01BA       ; {-lsbAdj1} LSB of 1st adjective in buffer (not used)
-063D: 7F 01 BB            CLR     $01BB       ; {-lsbVerb} LSB of verb
-0640: 7F 01 B2            CLR     $01B2       ; {-tmp1B2} Misc
-0643: 7F 01 B3            CLR     $01B3       ; {-verbWord} Verb word number
-0646: 7F 01 B9            CLR     $01B9       ; {-not1B9} Never used again
-0649: 7F 01 B8            CLR     $01B8       ; {-commandTarg} Target object of command (not used)
-064C: 7F 01 B4            CLR     $01B4       ; {-perpWord} Preposition number
-064F: 7F 01 B5            CLR     $01B5       ; {-prepGiven} Preposition given flag (not 0 if given)
-0652: 7F 01 BF            CLR     $01BF       ; {-VAR_OBJ_NUMBER} VAR object number
-0655: 7F 01 C3            CLR     $01C3       ; {-FIRST_NOUN_NUM} 1st noun word number
-0658: 7F 01 C9            CLR     $01C9       ; {-SECOND_NOUN_NUM} 2nd noun word number
+0637: 7F 01 B7            CLR     $01B7       ;{-1_adjWord}  Adjective word number
+063A: 7F 01 BA            CLR     $01BA       ;{-1_lsbAdj1}  LSB of 1st adjective in buffer (not used)
+063D: 7F 01 BB            CLR     $01BB       ;{-1_lsbVerb}  LSB of verb
+0640: 7F 01 B2            CLR     $01B2       ;{-1_tmp1B2}  Misc
+0643: 7F 01 B3            CLR     $01B3       ;{-1_verbWord}  Verb word number
+0646: 7F 01 B9            CLR     $01B9       ;{-1_not1B9}  Never used again
+0649: 7F 01 B8            CLR     $01B8       ;{-1_commandTarg}  Target object of command (not used)
+064C: 7F 01 B4            CLR     $01B4       ;{-1_perpWord}  Preposition number
+064F: 7F 01 B5            CLR     $01B5       ;{-1_prepGiven}  Preposition given flag (not 0 if given)
+0652: 7F 01 BF            CLR     $01BF       ;{-1_VAR_OBJ_NUMBER}  VAR object number
+0655: 7F 01 C3            CLR     $01C3       ;{-1_FIRST_NOUN_NUM}  1st noun word number
+0658: 7F 01 C9            CLR     $01C9       ;{-1_SECOND_NOUN_NUM}  2nd noun word number
 
 065B: C6 1D               LDB     #$1D        ; Player object ...
-065D: F7 01 D2            STB     $01D2       ; {-ACTIVE_OBJ_NUM} ... is active object
-0660: BD 11 33            JSR     $1133       ; {} Get player object data
-0663: BF 01 D3            STX     $01D3       ; Active object's data
-0666: BD 0A 42            JSR     $0A42       ; {} Skip length
+065D: F7 01 D2            STB     $01D2       ;{-1_ACTIVE_OBJ_NUM}  ... is active object
+0660: BD 11 33            JSR     $1133       ;  Get player object data
+0663: BF 01 D3            STX     $01D3       ;{-1_ACTIVE_OBJ_DATA} Active object's data
+0666: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip length
 0669: E6 84               LDB     ,X          ; Get player location
-066B: F7 01 D5            STB     $01D5       ; {-CUR_ROOM} Current room
+066B: F7 01 D5            STB     $01D5       ;{-1_CUR_ROOM}  Current room
 066E: 8E 15 23            LDX     #$1523      ; Room scripts
-0671: BD 0A 1F            JSR     $0A1F       ; {} Find sublist ... script for room
-0674: BF 01 D6            STX     $01D6       ; Script for current room
+0671: BD 0A 1F            JSR     $0A1F       ;{FindSublist}  Find sublist ... script for room
+0674: BF 01 D6            STX     $01D6       ;{-1_CUR_ROOM_DATA} Script for current room
 0677: 8E 01 E3            LDX     #$01E3      ; Input token list area
-067A: BF 01 D8            STX     $01D8       ; Where decoder fills in
+067A: BF 01 D8            STX     $01D8       ;{-1_nextToken} Where decoder fills in
 067D: 6F 84               CLR     ,X          ; Empty token ... clear the list
 067F: 8E 05 E0            LDX     #$05E0      ; Bottom row is input buffer
-0682: BD 0B 42            JSR     $0B42       ; {} Decode input word
-0685: 27 0B               BEQ     $692        ; {} All words done
+0682: BD 0B 42            JSR     $0B42       ;  Decode input word
+0685: 27 0B               BEQ     $692        ;  All words done
 0687: A6 80               LDA     ,X+         ; Next character
 0689: 81 60               CMPA    #$60        ; A space?
-068B: 27 F5               BEQ     $682        ; {} Yes ... decode next
+068B: 27 F5               BEQ     $682        ;  Yes ... decode next
 068D: 8C 06 00            CMPX    #$0600      ; End of input buffer?
-0690: 26 F5               BNE     $687        ; {} No ... look for next word
+0690: 26 F5               BNE     $687        ;  No ... look for next word
 0692: 8C 06 00            CMPX    #$0600      ; End of input buffer?
-0695: 26 EB               BNE     $682        ; {} No ... keep looking
-0697: 6F 9F 01 D8         CLR     [$01D8]     ; Terminate token list
+0695: 26 EB               BNE     $682        ;  No ... keep looking
+0697: 6F 9F 01 D8         CLR     [$01D8]     ;{-1_nextToken} Terminate token list
 069B: 8E 01 E3            LDX     #$01E3      ; Input buffer
 069E: A6 84               LDA     ,X          ; List number of first word
-06A0: 10 27 00 92         LBEQ    $0736       ; {} Nothing entered
+06A0: 10 27 00 92         LBEQ    $0736       ;  Nothing entered
 06A4: 81 02               CMPA    #$02        ; First word a noun?
-06A6: 26 0F               BNE     $6B7        ; {} No ... move on
+06A6: 26 0F               BNE     $6B7        ;  No ... move on
 06A8: 30 01               LEAX    1,X         ; Point to word number
 06AA: A6 84               LDA     ,X          ; Get word number
 06AC: 30 1F               LEAX    -1,X        ; Back to list number
 06AE: 81 06               CMPA    #$06        ; Living things (people, dogs, etc) are <6
-06B0: 24 05               BCC     $6B7        ; {} Not a living thing
-06B2: B7 01 B8            STA     $01B8       ; {-commandTarg} Remember living thing. We are giving them a command so process normally
+06B0: 24 05               BCC     $6B7        ;  Not a living thing
+06B2: B7 01 B8            STA     $01B8       ;{-1_commandTarg}  Remember living thing. We are giving them a command so process normally
 06B5: 30 03               LEAX    3,X         ; Next word
 
 06B7: A6 80               LDA     ,X+         ; Word list
-06B9: 27 7B               BEQ     $736        ; {} End of list ... go process
+06B9: 27 7B               BEQ     $736        ;  End of list ... go process
 06BB: E6 84               LDB     ,X          ; Word number to B
 06BD: EE 81               LDU     ,X++        ; LSB to LSB of U
 06BF: 34 10               PSHS    X           ; Hold token buffer
 06C1: 4A                  DECA                ; List 1? Verbs?
-06C2: 26 21               BNE     $6E5        ; {} No ... continue
+06C2: 26 21               BNE     $6E5        ;  No ... continue
 
 ;; I believe the goal here was to allow multiple verbs given on an input line
 ;; to be translated to a single verb. The code finds a replacement list for the
@@ -102,154 +105,154 @@ MainLoop: ; ==
 ;; list for BEDLAM and RAAKATU is empty so the code is never used anyway.
 
 06C4: 8E 13 32            LDX     #$1332      ;  Multi verb translation list (empty list for BEDLAM and RAAKATU)
-06C7: BD 0A 1F            JSR     $0A1F       ; {}  Look for an entry for the given verb
-06CA: 24 13               BCC     $6DF        ; {}  No entry ... use the word as-is
-06CC: BD 0A 42            JSR     $0A42       ; {}  Skip length of entry
-06CF: BD 0A 58            JSR     $0A58       ; {}  End of list?
+06C7: BD 0A 1F            JSR     $0A1F       ;{FindSublist}   Look for an entry for the given verb
+06CA: 24 13               BCC     $6DF        ;   No entry ... use the word as-is
+06CC: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}   Skip length of entry
+06CF: BD 0A 58            JSR     $0A58       ;{CompareXY}   End of list?
 06D2: 1F 98               TFR     B,A         ;  ?? Held in A but ...
-06D4: 24 09               BCC     $6DF        ; {}  Reached end of list. This input is the verb.
+06D4: 24 09               BCC     $6DF        ;   Reached end of list. This input is the verb.
 06D6: E6 80               LDB     ,X+         ;  ??
 06D8: A6 80               LDA     ,X+         ;  ?? ... A is mangled here?
-06DA: F1 01 B3            CMPB    $01B3       ; {-verbWord}  ?? Compare to 01B3 ...
-06DD: 26 F0               BNE     $6CF        ; {}  Continue running list
-06DF: F7 01 B3            STB     $01B3       ; {-verbWord}  ?? ... then store if equal?
-06E2: 7E 07 31            JMP     $0731       ; {}  Continue with next word
+06DA: F1 01 B3            CMPB    $01B3       ;{-1_verbWord}   ?? Compare to 01B3 ...
+06DD: 26 F0               BNE     $6CF        ;   Continue running list
+06DF: F7 01 B3            STB     $01B3       ;{-1_verbWord}   ?? ... then store if equal?
+06E2: 7E 07 31            JMP     $0731       ;   Continue with next word
 
 06E5: 4A                  DECA                ;  List 2 Noun
-06E6: 26 36               BNE     $71E        ; {}  Not a noun
-06E8: 7D 01 B5            TST     $01B5       ; {-prepGiven}  Has prepostion been given?
-06EB: 27 20               BEQ     $70D        ; {}  No ... this is first noun
+06E6: 26 36               BNE     $71E        ;   Not a noun
+06E8: 7D 01 B5            TST     $01B5       ;{-1_prepGiven}   Has prepostion been given?
+06EB: 27 20               BEQ     $70D        ;   No ... this is first noun
 06ED: 8E 01 C9            LDX     #$01C9      ;  2nd noun area
 06F0: E7 80               STB     ,X+         ;  Store word number
-06F2: B6 01 B7            LDA     $01B7       ; {-adjWord}  Last adjective
+06F2: B6 01 B7            LDA     $01B7       ;{-1_adjWord}   Last adjective
 06F5: A7 80               STA     ,X+         ;  Keep with noun
-06F7: B6 01 BA            LDA     $01BA       ; {-lsbAdj1}  LSB of adjective
+06F7: B6 01 BA            LDA     $01BA       ;{-1_lsbAdj1}   LSB of adjective
 06FA: A7 84               STA     ,X          ;  Keep with noun
-06FC: 26 04               BNE     $702        ; {}  There was one ... go on
+06FC: 26 04               BNE     $702        ;   There was one ... go on
 06FE: 1F 30               TFR     U,D         ;  Use LSB of ...
 0700: E7 84               STB     ,X          ;  ... noun if no adjective
-0702: 7F 01 B7            CLR     $01B7       ; {-adjWord}  Adjective moved
-0705: 7F 01 B5            CLR     $01B5       ; {-prepGiven}  Preposition moved
-0708: 7F 01 BA            CLR     $01BA       ; {-lsbAdj1}  LSB moved
-070B: 20 24               BRA     $731        ; {}  Continue with next word
+0702: 7F 01 B7            CLR     $01B7       ;{-1_adjWord}   Adjective moved
+0705: 7F 01 B5            CLR     $01B5       ;{-1_prepGiven}   Preposition moved
+0708: 7F 01 BA            CLR     $01BA       ;{-1_lsbAdj1}   LSB moved
+070B: 20 24               BRA     $731        ;   Continue with next word
 
-070D: BE 01 C3            LDX     $01C3       ; {-FIRST_NOUN_NUM}  Copy ...
-0710: BF 01 C9            STX     $01C9       ; {-SECOND_NOUN_NUM}  ... any ...
-0713: BE 01 C5            LDX     $01C5       ; {-firstNounLSB}  ... first noun ...
-0716: BF 01 CB            STX     $01CB       ; {-secondNounLSB}  ... to second
+070D: BE 01 C3            LDX     $01C3       ;{-1_FIRST_NOUN_NUM}   Copy ...
+0710: BF 01 C9            STX     $01C9       ;{-1_SECOND_NOUN_NUM}   ... any ...
+0713: BE 01 C5            LDX     $01C5       ;{-1_firstNounLSB}   ... first noun ...
+0716: BF 01 CB            STX     $01CB       ;{-1_secondNounLSB}   ... to second
 0719: 8E 01 C3            LDX     #$01C3      ;  First word area
-071C: 20 D2               BRA     $6F0        ; {}  Go fill out first word
+071C: 20 D2               BRA     $6F0        ;   Go fill out first word
 
 071E: 4A                  DECA                ;  List 3 Adjective
-071F: 26 0A               BNE     $72B        ; {}  Not a proposition
-0721: F7 01 B7            STB     $01B7       ; {-adjWord}  Store adjective number
+071F: 26 0A               BNE     $72B        ;   Not a proposition
+0721: F7 01 B7            STB     $01B7       ;{-1_adjWord}   Store adjective number
 0724: 1F 30               TFR     U,D         ;  Store ...
-0726: F7 01 BA            STB     $01BA       ; {-lsbAdj1}  ... adjective LSB in buffer
-0729: 20 06               BRA     $731        ; {}  Continue with next word
+0726: F7 01 BA            STB     $01BA       ;{-1_lsbAdj1}   ... adjective LSB in buffer
+0729: 20 06               BRA     $731        ;   Continue with next word
 
-072B: F7 01 B4            STB     $01B4       ; {-perpWord}  Preposition
-072E: F7 01 B5            STB     $01B5       ; {-prepGiven}  Preoposition given (noun should follow)
+072B: F7 01 B4            STB     $01B4       ;{-1_perpWord}   Preposition
+072E: F7 01 B5            STB     $01B5       ;{-1_prepGiven}   Preoposition given (noun should follow)
 0731: 35 10               PULS    X           ;  Restore token pointer
-0733: 7E 06 B7            JMP     $06B7       ; {}  Next word
+0733: 7E 06 B7            JMP     $06B7       ;   Next word
 
 
-0736: 7D 01 B3            TST     $01B3       ; {-verbWord}  Verb given?
-0739: 10 27 02 58         LBEQ    $0995       ; {}  No ... ?VERB? error
+0736: 7D 01 B3            TST     $01B3       ;{-1_verbWord}   Verb given?
+0739: 10 27 02 58         LBEQ    $0995       ;   No ... ?VERB? error
 073D: 8E 01 C9            LDX     #$01C9      ;  Second noun
-0740: BD 08 22            JSR     $0822       ; {}  Decode it (only returns if OK)
-0743: B7 01 C9            STA     $01C9       ; {-SECOND_NOUN_NUM}  Hold target object index
-0746: BF 01 CC            STX     $01CC       ;  Hold target object pointer
+0740: BD 08 22            JSR     $0822       ;   Decode it (only returns if OK)
+0743: B7 01 C9            STA     $01C9       ;{-1_SECOND_NOUN_NUM}   Hold target object index
+0746: BF 01 CC            STX     $01CC       ;{-1_SECOND_NOUN_DATA}  Hold target object pointer
 0749: 8E 01 C3            LDX     #$01C3      ;  First noun
-074C: BD 08 22            JSR     $0822       ; {}  Decode it (only returns if OK)
-074F: B7 01 C3            STA     $01C3       ; {-FIRST_NOUN_NUM}  Hold target object index
-0752: BF 01 C6            STX     $01C6       ;  Hold target object pointer
-0755: 7F 01 B5            CLR     $01B5       ; {-prepGiven}  Clear preposition flag
+074C: BD 08 22            JSR     $0822       ;   Decode it (only returns if OK)
+074F: B7 01 C3            STA     $01C3       ;{-1_FIRST_NOUN_NUM}   Hold target object index
+0752: BF 01 C6            STX     $01C6       ;{-1_FIRST_NOUN_DATA}  Hold target object pointer
+0755: 7F 01 B5            CLR     $01B5       ;{-1_prepGiven}   Clear preposition flag
 
-0758: BE 01 C6            LDX     $01C6       ;  Pointer to first noun object data
-075B: B6 01 C3            LDA     $01C3       ; {-FIRST_NOUN_NUM}  First noun index
-075E: 27 07               BEQ     $767        ; {}  No first noun ... store a 0
-0760: BD 0A 42            JSR     $0A42       ; {}  Skip ID and load end
+0758: BE 01 C6            LDX     $01C6       ;{-1_FIRST_NOUN_DATA}  Pointer to first noun object data
+075B: B6 01 C3            LDA     $01C3       ;{-1_FIRST_NOUN_NUM}   First noun index
+075E: 27 07               BEQ     $767        ;   No first noun ... store a 0
+0760: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}   Skip ID and load end
 0763: 30 02               LEAX    2,X         ;  Skip 2 bytes
 0765: A6 84               LDA     ,X          ;  Object parameter bits
-0767: B7 01 C8            STA     $01C8       ; {-firstNounParams}  Hold first noun's parameter bits
+0767: B7 01 C8            STA     $01C8       ;{-1_firstNounParams}   Hold first noun's parameter bits
 
-076A: BE 01 CC            LDX     $01CC       ;  Pointer to second noun object data
-076D: B6 01 C9            LDA     $01C9       ; {-SECOND_NOUN_NUM}  Second noun number
-0770: 27 07               BEQ     $779        ; {}  No second noun ... store 0
-0772: BD 0A 42            JSR     $0A42       ; {} Skip ID and load end
+076A: BE 01 CC            LDX     $01CC       ;{-1_SECOND_NOUN_DATA}  Pointer to second noun object data
+076D: B6 01 C9            LDA     $01C9       ;{-1_SECOND_NOUN_NUM}   Second noun number
+0770: 27 07               BEQ     $779        ;   No second noun ... store 0
+0772: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip ID and load end
 0775: 30 02               LEAX    2,X         ;  Skip 2 bytes
 0777: A6 84               LDA     ,X          ;  Object parameter bits
-0779: B7 01 CE            STA     $01CE       ; {-secondNounParams}  Hold second noun's parameter bits
+0779: B7 01 CE            STA     $01CE       ;{-1_secondNounParams}   Hold second noun's parameter bits
 
 077C: 8E 13 5B            LDX     #$135B      ;  Syntax list
 077F: A6 84               LDA     ,X          ;  End of list?
-0781: 10 27 01 CC         LBEQ    $0951       ; {}  Yes ... "?PHRASE?"
-0785: B6 01 B3            LDA     $01B3       ; {-verbWord}  Verb ...
+0781: 10 27 01 CC         LBEQ    $0951       ;   Yes ... "?PHRASE?"
+0785: B6 01 B3            LDA     $01B3       ;{-1_verbWord}   Verb ...
 0788: A1 80               CMPA    ,X+         ;  ... matches?
-078A: 26 5B               BNE     $7E7        ; {}  No ... move to next entry
+078A: 26 5B               BNE     $7E7        ;   No ... move to next entry
 078C: A6 84               LDA     ,X          ;  Phrase's proposition
-078E: B7 01 B6            STA     $01B6       ; {-phrasePrep}  Hold it
-0791: B6 01 B4            LDA     $01B4       ; {-perpWord}  Preposition word number
-0794: 27 04               BEQ     $79A        ; {}  None given ... skip prep check
+078E: B7 01 B6            STA     $01B6       ;{-1_phrasePrep}   Hold it
+0791: B6 01 B4            LDA     $01B4       ;{-1_perpWord}   Preposition word number
+0794: 27 04               BEQ     $79A        ;   None given ... skip prep check
 0796: A1 84               CMPA    ,X          ;  Given prep matches?
-0798: 26 4D               BNE     $7E7        ; {}  No ... move to next phrase
+0798: 26 4D               BNE     $7E7        ;   No ... move to next phrase
 079A: 30 01               LEAX    1,X         ;  Skip to next phrase component
 079C: A6 84               LDA     ,X          ;  First noun required by phrase
-079E: 27 14               BEQ     $7B4        ; {}  Not given in phrase ... skip check
-07A0: B6 01 C3            LDA     $01C3       ; {-FIRST_NOUN_NUM}  1st noun index
-07A3: 26 16               BNE     $7BB        ; {}  Requested by phrase but not given by user ... next phrase
-07A5: B6 01 BB            LDA     $01BB       ; {-lsbVerb}  LSB of verb ...
-07A8: B7 01 BD            STA     $01BD       ; {-lsbError}  ... to location of error
+079E: 27 14               BEQ     $7B4        ;   Not given in phrase ... skip check
+07A0: B6 01 C3            LDA     $01C3       ;{-1_FIRST_NOUN_NUM}   1st noun index
+07A3: 26 16               BNE     $7BB        ;   Requested by phrase but not given by user ... next phrase
+07A5: B6 01 BB            LDA     $01BB       ;{-1_lsbVerb}   LSB of verb ...
+07A8: B7 01 BD            STA     $01BD       ;{-1_lsbError}   ... to location of error
 07AB: 10 8E 01 C3         LDY     #$01C3      ;  Descriptor for 1st noun
-07AF: BD 08 D2            JSR     $08D2       ; {}  Decode 1st noun as per phrase
-07B2: 20 07               BRA     $7BB        ; {}  We just processed a first one. We know it is there.
-07B4: B6 01 C3            LDA     $01C3       ; {-FIRST_NOUN_NUM}  Is there a 1st noun?
+07AF: BD 08 D2            JSR     $08D2       ;   Decode 1st noun as per phrase
+07B2: 20 07               BRA     $7BB        ;   We just processed a first one. We know it is there.
+07B4: B6 01 C3            LDA     $01C3       ;{-1_FIRST_NOUN_NUM}   Is there a 1st noun?
 
-07B7: 10 26 01 96         LBNE    $0951       ; {} No ... next entry
+07B7: 10 26 01 96         LBNE    $0951       ;  No ... next entry
 07BB: 30 01               LEAX    1,X         ; Next in phrase
 07BD: A6 84               LDA     ,X          ; Phrase wants a second noun?
-07BF: 27 19               BEQ     $7DA        ; {} No ... skip
-07C1: B6 01 C9            LDA     $01C9       ; {-SECOND_NOUN_NUM} User given 2nd noun
-07C4: 26 1B               BNE     $7E1        ; {} Yes ... use this phrase
-07C6: B6 01 BC            LDA     $01BC       ; {-lsbCursor} Location of ...
-07C9: B7 01 BD            STA     $01BD       ; {-lsbError} ... error on screen
+07BF: 27 19               BEQ     $7DA        ;  No ... skip
+07C1: B6 01 C9            LDA     $01C9       ;{-1_SECOND_NOUN_NUM}  User given 2nd noun
+07C4: 26 1B               BNE     $7E1        ;  Yes ... use this phrase
+07C6: B6 01 BC            LDA     $01BC       ;{-1_lsbCursor}  Location of ...
+07C9: B7 01 BD            STA     $01BD       ;{-1_lsbError}  ... error on screen
 07CC: 86 01               LDA     #$01        ; Set preposition ...
-07CE: B7 01 B5            STA     $01B5       ; {-prepGiven} ... flag to YES
+07CE: B7 01 B5            STA     $01B5       ;{-1_prepGiven}  ... flag to YES
 07D1: 10 8E 01 C9         LDY     #$01C9      ; 2nd noun index
-07D5: BD 08 D2            JSR     $08D2       ; {} Decode 2nd noun as per phrase
-07D8: 20 07               BRA     $7E1        ; {} Use this
+07D5: BD 08 D2            JSR     $08D2       ;  Decode 2nd noun as per phrase
+07D8: 20 07               BRA     $7E1        ;  Use this
 
-07DA: B6 01 C9            LDA     $01C9       ; {-SECOND_NOUN_NUM} Is there a second noun?
-07DD: 10 26 01 70         LBNE    $0951       ; {} No ... phrase error
+07DA: B6 01 C9            LDA     $01C9       ;{-1_SECOND_NOUN_NUM}  Is there a second noun?
+07DD: 10 26 01 70         LBNE    $0951       ;  No ... phrase error
 07E1: 30 01               LEAX    1,X         ; Get matched ...
 07E3: A6 84               LDA     ,X          ; ... phrase number
-07E5: 20 09               BRA     $7F0        ; {} Store and continue
+07E5: 20 09               BRA     $7F0        ;  Store and continue
 07E7: 30 01               LEAX    1,X         ; Skip ...
 07E9: 30 01               LEAX    1,X         ; ... to ...
 07EB: 30 02               LEAX    2,X         ; ... next entry
-07ED: 7E 07 7F            JMP     $077F       ; {} Keep looking
+07ED: 7E 07 7F            JMP     $077F       ;  Keep looking
 
 ;; Unlike BEDLAM, there is no giving a command to something else. Just
 ;; ignore any commanded object and give the phrase to the user.
 
-07F0: B7 01 D1            STA     $01D1       ; {-PHRASE_FORM} Store the phrase number
+07F0: B7 01 D1            STA     $01D1       ;{-1_PHRASE_FORM}  Store the phrase number
 07F3: 8E 05 FF            LDX     #$05FF      ; Move cursor to ...
-07F6: 9F 88               STX     >$88        ; {-} ... end of line
+07F6: 9F 88               STX     >$88        ;{-1_printCursor}  ... end of line
 07F8: 86 0D               LDA     #$0D        ; Print ...
-07FA: BD 11 84            JSR     $1184       ; {} ... CR
-07FD: B6 01 C3            LDA     $01C3       ; {-FIRST_NOUN_NUM} First noun given?
-0800: 26 0C               BNE     $80E        ; {} Yes ... keep what we have
-0802: BE 01 CC            LDX     $01CC       ; Move 2nd ...
-0805: BF 01 C6            STX     $01C6       ; ... noun to ...
-0808: B6 01 C9            LDA     $01C9       ; {-SECOND_NOUN_NUM} ... first ...
-080B: B7 01 C3            STA     $01C3       ; {-FIRST_NOUN_NUM} ... descriptor
+07FA: BD 11 84            JSR     $1184       ;{PrintCharacterAutoWrap}  ... CR
+07FD: B6 01 C3            LDA     $01C3       ;{-1_FIRST_NOUN_NUM}  First noun given?
+0800: 26 0C               BNE     $80E        ;  Yes ... keep what we have
+0802: BE 01 CC            LDX     $01CC       ;{-1_SECOND_NOUN_DATA} Move 2nd ...
+0805: BF 01 C6            STX     $01C6       ;{-1_FIRST_NOUN_DATA} ... noun to ...
+0808: B6 01 C9            LDA     $01C9       ;{-1_SECOND_NOUN_NUM}  ... first ...
+080B: B7 01 C3            STA     $01C3       ;{-1_FIRST_NOUN_NUM}  ... descriptor
 080E: 8E 32 3C            LDX     #$323C      ; General command scripts
-0811: BD 0A 42            JSR     $0A42       ; {} Skip over end delta
-0814: BD 0C 03            JSR     $0C03       ; {} Execute script
-0817: BD 0F 66            JSR     $0F66       ; {} Allow objects to move
+0811: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip over end delta
+0814: BD 0C 03            JSR     $0C03       ;{ProcessCommand}  Execute script
+0817: BD 0F 66            JSR     $0F66       ;  Allow objects to move
 081A: 86 0D               LDA     #$0D        ; Print ...
-081C: BD 11 84            JSR     $1184       ; {} ... CR
-081F: 7E 06 30            JMP     $0630       ; {} Top of game loop
+081C: BD 11 84            JSR     $1184       ;{PrintCharacterAutoWrap}  ... CR
+081F: 7E 06 30            JMP     $0630       ;{MainLoop}  Top of game loop
 
 ;; This function decodes the NOUN descriptor pointed to by X. The AJECTIVE-NOUN
 ;; pair is compared to all objects in the room (and pack). If no adjective
@@ -262,61 +265,61 @@ MainLoop: ; ==
 ;; @return A index of target object[[br]]
 ;; @return X pointer to target object data[[br]]
 
-0822: 7F 01 BF            CLR     $01BF       ; {-VAR_OBJ_NUMBER} Input object number
+0822: 7F 01 BF            CLR     $01BF       ;{-1_VAR_OBJ_NUMBER}  Input object number
 0825: E6 80               LDB     ,X+         ; Word number of noun
-0827: F7 01 B2            STB     $01B2       ; {-tmp1B2} Hold it
-082A: 26 02               BNE     $82E        ; {} Real object ... go decode
+0827: F7 01 B2            STB     $01B2       ;{-1_tmp1B2}  Hold it
+082A: 26 02               BNE     $82E        ;  Real object ... go decode
 082C: 4F                  CLRA                ; Not found
 082D: 39                  RTS                 ; Out
 082E: A6 80               LDA     ,X+         ; Noun's adjective
-0830: B7 01 B7            STA     $01B7       ; {-adjWord} Hold it
+0830: B7 01 B7            STA     $01B7       ;{-1_adjWord}  Hold it
 0833: A6 84               LDA     ,X          ; LSB of word in buffer
-0835: B7 01 CF            STA     $01CF       ; {-tmp1CF} Hold it
+0835: B7 01 CF            STA     $01CF       ;{-1_tmp1CF}  Hold it
 0838: 8E 20 FF            LDX     #$20FF      ; Object data
-083B: BD 0A 1F            JSR     $0A1F       ; {} Get pointer to next object that matches word
-083E: 24 5A               BCC     $89A        ; {} Not found
+083B: BD 0A 1F            JSR     $0A1F       ;{FindSublist}  Get pointer to next object that matches word
+083E: 24 5A               BCC     $89A        ;  Not found
 0840: 34 20               PSHS    Y           ; Hold end of object data
 0842: 34 10               PSHS    X           ; Hold pointer to noun descriptor
-0844: B6 01 E1            LDA     $01E1       ; {-tmp1E1} Index of object in the object list
-0847: B7 01 E2            STA     $01E2       ; {-tmp1E2} Remember this
-084A: BD 08 AA            JSR     $08AA       ; {} Is object in this room or on player?
-084D: 26 57               BNE     $8A6        ; {} No ... can't be target ... out
-084F: B6 01 B7            LDA     $01B7       ; {-adjWord} Noun's adjective
-0852: 27 1F               BEQ     $873        ; {} No adjective ... skip this
+0844: B6 01 E1            LDA     $01E1       ;{-1_tmp1E1}  Index of object in the object list
+0847: B7 01 E2            STA     $01E2       ;{-1_tmp1E2}  Remember this
+084A: BD 08 AA            JSR     $08AA       ;  Is object in this room or on player?
+084D: 26 57               BNE     $8A6        ;  No ... can't be target ... out
+084F: B6 01 B7            LDA     $01B7       ;{-1_adjWord}  Noun's adjective
+0852: 27 1F               BEQ     $873        ;  No adjective ... skip this
 0854: 35 10               PULS    X           ; Restore pointer to noun descriptor
 0856: 34 10               PSHS    X           ; Hold it again
-0858: BD 0A 42            JSR     $0A42       ; {} Skip the id and end
+0858: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip the id and end
 085B: 30 03               LEAX    3,X         ; Skip the object data
 085D: C6 01               LDB     #$01        ; Look up adjective ...
-085F: BD 0A 27            JSR     $0A27       ; {} ... list for object
-0862: 24 0F               BCC     $873        ; {} No adjective ... ignore
-0864: BD 0A 42            JSR     $0A42       ; {} Skip the id and length
-0867: BD 0A 58            JSR     $0A58       ; {} End of adjective list?
-086A: 24 3A               BCC     $8A6        ; {} Yes ... no match ... next object
-086C: B6 01 B7            LDA     $01B7       ; {-adjWord} Adjective
+085F: BD 0A 27            JSR     $0A27       ;  ... list for object
+0862: 24 0F               BCC     $873        ;  No adjective ... ignore
+0864: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip the id and length
+0867: BD 0A 58            JSR     $0A58       ;{CompareXY}  End of adjective list?
+086A: 24 3A               BCC     $8A6        ;  Yes ... no match ... next object
+086C: B6 01 B7            LDA     $01B7       ;{-1_adjWord}  Adjective
 086F: A1 80               CMPA    ,X+         ; In this list?
-0871: 26 F4               BNE     $867        ; {} No ... keep searching list
+0871: 26 F4               BNE     $867        ;  No ... keep searching list
 0873: 35 10               PULS    X           ; Restore object pointer
-0875: B6 01 BF            LDA     $01BF       ; {-VAR_OBJ_NUMBER} Last object index that matched
-0878: 10 26 01 10         LBNE    $098C       ; {} Multiple matches ... do "?WHICH?"
-087C: B6 01 E2            LDA     $01E2       ; {-tmp1E2} Object index
-087F: B7 01 BF            STA     $01BF       ; {-VAR_OBJ_NUMBER} Current guess at matching object index
-0882: BF 01 C0            STX     $01C0       ; Input object data
-0885: BD 0A 42            JSR     $0A42       ; {} Skip id and end
+0875: B6 01 BF            LDA     $01BF       ;{-1_VAR_OBJ_NUMBER}  Last object index that matched
+0878: 10 26 01 10         LBNE    $098C       ;  Multiple matches ... do "?WHICH?"
+087C: B6 01 E2            LDA     $01E2       ;{-1_tmp1E2}  Object index
+087F: B7 01 BF            STA     $01BF       ;{-1_VAR_OBJ_NUMBER}  Current guess at matching object index
+0882: BF 01 C0            STX     $01C0       ;{-1_VAR_OBJ_DATA} Input object data
+0885: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip id and end
 0888: 1F 21               TFR     Y,X         ; Next object
 088A: 35 20               PULS    Y           ; End of object data
-088C: F6 01 B2            LDB     $01B2       ; {-tmp1B2} Restore word number of noun
-088F: B6 01 E2            LDA     $01E2       ; {-tmp1E2} Current object index
-0892: B7 01 E1            STA     $01E1       ; {-tmp1E1} Start count for next pass
-0895: BD 0A 27            JSR     $0A27       ; {} Find next matching object
-0898: 25 A6               BCS     $840        ; {} Got one ... go test it
-089A: BE 01 C0            LDX     $01C0       ; Object data to X
-089D: B6 01 BF            LDA     $01BF       ; {-VAR_OBJ_NUMBER} Object found?
-08A0: 26 03               BNE     $8A5        ; {} Yes ...  out
-08A2: 7E 09 48            JMP     $0948       ; {} No ... "?WHAT?"
+088C: F6 01 B2            LDB     $01B2       ;{-1_tmp1B2}  Restore word number of noun
+088F: B6 01 E2            LDA     $01E2       ;{-1_tmp1E2}  Current object index
+0892: B7 01 E1            STA     $01E1       ;{-1_tmp1E1}  Start count for next pass
+0895: BD 0A 27            JSR     $0A27       ;  Find next matching object
+0898: 25 A6               BCS     $840        ;  Got one ... go test it
+089A: BE 01 C0            LDX     $01C0       ;{-1_VAR_OBJ_DATA} Object data to X
+089D: B6 01 BF            LDA     $01BF       ;{-1_VAR_OBJ_NUMBER}  Object found?
+08A0: 26 03               BNE     $8A5        ;  Yes ...  out
+08A2: 7E 09 48            JMP     $0948       ;  No ... "?WHAT?"
 08A5: 39                  RTS                 ; Done
 08A6: 35 10               PULS    X           ; Restore object pointer
-08A8: 20 DB               BRA     $885        ; {} Do next object
+08A8: 20 DB               BRA     $885        ;  Do next object
 
 ;; This function checks if the target object is in the current room or being
 ;; held by the active object.
@@ -324,22 +327,22 @@ MainLoop: ; ==
 ;; @param X pointer to target object[[br]]
 ;; @return Z=1 for yes or Z=0 for no
 
-08AA: BD 0A 42            JSR     $0A42       ; {} Skip size
-08AD: B6 01 D5            LDA     $01D5       ; {-CUR_ROOM} Current room number
+08AA: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip size
+08AD: B6 01 D5            LDA     $01D5       ;{-1_CUR_ROOM}  Current room number
 08B0: A1 84               CMPA    ,X          ; Is object in room?
-08B2: 27 F1               BEQ     $8A5        ; {} Yes ... return OK
+08B2: 27 F1               BEQ     $8A5        ;  Yes ... return OK
 08B4: A6 84               LDA     ,X          ; Get object's room number
-08B6: 27 17               BEQ     $8CF        ; {} 0 ... fail
+08B6: 27 17               BEQ     $8CF        ;  0 ... fail
 08B8: 81 FF               CMPA    #$FF        ; FF ...
-08BA: 27 E9               BEQ     $8A5        ; {} ... return OK
+08BA: 27 E9               BEQ     $8A5        ;  ... return OK
 08BC: 85 80               BITA    #$80        ; Upper bit of object location set ...
-08BE: 26 0F               BNE     $8CF        ; {} ... then fail
+08BE: 26 0F               BNE     $8CF        ;  ... then fail
 08C0: E6 84               LDB     ,X          ; Location again
-08C2: F1 01 D2            CMPB    $01D2       ; {-ACTIVE_OBJ_NUM} Being held by the active object?
-08C5: 27 DE               BEQ     $8A5        ; {} Yes ... return OK
+08C2: F1 01 D2            CMPB    $01D2       ;{-1_ACTIVE_OBJ_NUM}  Being held by the active object?
+08C5: 27 DE               BEQ     $8A5        ;  Yes ... return OK
 08C7: 8E 20 FF            LDX     #$20FF      ; Strange. 117D does this too.
-08CA: BD 11 33            JSR     $1133       ; {} Get object's container object (if any)
-08CD: 20 DB               BRA     $8AA        ; {} Repeat check
+08CA: BD 11 33            JSR     $1133       ;  Get object's container object (if any)
+08CD: 20 DB               BRA     $8AA        ;  Repeat check
 08CF: 8A 01               ORA     #$01        ; Mark failure
 08D1: 39                  RTS                 ; Out
 
@@ -354,148 +357,148 @@ MainLoop: ; ==
 ;; @return descriptor filled out with object
 
 08D2: 34 10               PSHS    X           ; Hold phrase data pointer
-08D4: 7F 01 B2            CLR     $01B2       ; {-tmp1B2} Found word flag
-08D7: 7F 01 E1            CLR     $01E1       ; {-tmp1E1} Object index starts at 0
+08D4: 7F 01 B2            CLR     $01B2       ;{-1_tmp1B2}  Found word flag
+08D7: 7F 01 E1            CLR     $01E1       ;{-1_tmp1E1}  Object index starts at 0
 08DA: 34 20               PSHS    Y           ; Hold noun descriptor
 08DC: A6 84               LDA     ,X          ; Object parameter mask bits
-08DE: B7 01 AB            STA     $01AB       ; {-tmp1AB} Hold
+08DE: B7 01 AB            STA     $01AB       ;{-1_tmp1AB}  Hold
 08E1: 8E 20 FF            LDX     #$20FF      ; Object data
-08E4: BD 0A 42            JSR     $0A42       ; {} Skip ID and load end
-08E7: BD 0A 58            JSR     $0A58       ; {} At end of object data?
-08EA: 24 40               BCC     $92C        ; {} Yes ... done
-08EC: 7C 01 E1            INC     $01E1       ; {-tmp1E1} Bump object index
+08E4: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip ID and load end
+08E7: BD 0A 58            JSR     $0A58       ;{CompareXY}  At end of object data?
+08EA: 24 40               BCC     $92C        ;  Yes ... done
+08EC: 7C 01 E1            INC     $01E1       ;{-1_tmp1E1}  Bump object index
 08EF: 34 20               PSHS    Y           ; Hold end of object
 08F1: 34 10               PSHS    X           ; Hold pointer to object
-08F3: BD 08 AA            JSR     $08AA       ; {} Is object in room or on player?
+08F3: BD 08 AA            JSR     $08AA       ;  Is object in room or on player?
 08F6: 35 10               PULS    X           ; Restore pointer to object
-08F8: 26 2D               BNE     $927        ; {} No ... next object
+08F8: 26 2D               BNE     $927        ;  No ... next object
 08FA: E6 84               LDB     ,X          ; Object word number
-08FC: BF 01 D8            STX     $01D8       ; Pointer to object data
-08FF: BD 0A 42            JSR     $0A42       ; {} Skip ID and load end
+08FC: BF 01 D8            STX     $01D8       ;{-1_nextToken} Pointer to object data
+08FF: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip ID and load end
 0902: 30 02               LEAX    2,X         ; Point to object parameters
 0904: A6 84               LDA     ,X          ; Get parameters
-0906: B4 01 AB            ANDA    $01AB       ; {-tmp1AB} Compare to phrase data ...
-0909: B1 01 AB            CMPA    $01AB       ; {-tmp1AB} ... this is a strange way to do it
-090C: 26 13               BNE     $921        ; {} Not a match ... next word
-090E: B6 01 B2            LDA     $01B2       ; {-tmp1B2} Already got a word number?
-0911: 26 47               BNE     $95A        ; {} Yes ... error
-0913: F7 01 B2            STB     $01B2       ; {-tmp1B2} Found word number
+0906: B4 01 AB            ANDA    $01AB       ;{-1_tmp1AB}  Compare to phrase data ...
+0909: B1 01 AB            CMPA    $01AB       ;{-1_tmp1AB}  ... this is a strange way to do it
+090C: 26 13               BNE     $921        ;  Not a match ... next word
+090E: B6 01 B2            LDA     $01B2       ;{-1_tmp1B2}  Already got a word number?
+0911: 26 47               BNE     $95A        ;  Yes ... error
+0913: F7 01 B2            STB     $01B2       ;{-1_tmp1B2}  Found word number
 0916: A6 84               LDA     ,X          ; Remember ...
-0918: B7 01 B7            STA     $01B7       ; {-adjWord} ... object parameters
-091B: BE 01 D8            LDX     $01D8       ; Remember ...
-091E: BF 01 AD            STX     $01AD       ; {-tmp1AD} ... object pointer
+0918: B7 01 B7            STA     $01B7       ;{-1_adjWord}  ... object parameters
+091B: BE 01 D8            LDX     $01D8       ;{-1_nextToken} Remember ...
+091E: BF 01 AD            STX     $01AD       ;{-1_tmp1AD}  ... object pointer
 0921: 1E 12               EXG     X,Y         ; Start of next object to X
 0923: 35 20               PULS    Y           ; Restore end of object pointer
-0925: 20 C0               BRA     $8E7        ; {} Continue with next object
-0927: BD 0A 42            JSR     $0A42       ; {} Skip ID and load end
-092A: 20 F5               BRA     $921        ; {} Try next object
-092C: B6 01 B2            LDA     $01B2       ; {-tmp1B2} Did we find an object word?
-092F: 27 29               BEQ     $95A        ; {} No .... error
+0925: 20 C0               BRA     $8E7        ;  Continue with next object
+0927: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip ID and load end
+092A: 20 F5               BRA     $921        ;  Try next object
+092C: B6 01 B2            LDA     $01B2       ;{-1_tmp1B2}  Did we find an object word?
+092F: 27 29               BEQ     $95A        ;  No .... error
 0931: 35 20               PULS    Y           ; Noun descriptor
-0933: BE 01 AD            LDX     $01AD       ; {-tmp1AD} Object data pointer
-0936: B6 01 E1            LDA     $01E1       ; {-tmp1E1} New ...
+0933: BE 01 AD            LDX     $01AD       ;{-1_tmp1AD}  Object data pointer
+0936: B6 01 E1            LDA     $01E1       ;{-1_tmp1E1}  New ...
 0939: A7 A4               STA     ,Y          ; ... object number
 093B: 31 23               LEAY    3,Y         ; New ...
 093D: AF A1               STX     ,Y++        ; ... pointer to object data
-093F: B6 01 B7            LDA     $01B7       ; {-adjWord} New ...
+093F: B6 01 B7            LDA     $01B7       ;{-1_adjWord}  New ...
 0942: A7 A4               STA     ,Y          ; ... object parameters
 0944: 35 10               PULS    X           ; Restore phrase data pointer
 0946: 4F                  CLRA                ; Set Z=1
 0947: 39                  RTS                 ; Done
 
 0948: 10 8E 13 43         LDY     #$1343      ; "?WHAT?"
-094C: B6 01 CF            LDA     $01CF       ; {-tmp1CF} LSB of screen location
-094F: 20 4A               BRA     $99B        ; {} Go flash error and try again
+094C: B6 01 CF            LDA     $01CF       ;{-1_tmp1CF}  LSB of screen location
+094F: 20 4A               BRA     $99B        ;  Go flash error and try again
 
 0951: 10 8E 13 52         LDY     #$1352      ; "?PHRASE?"
-0955: B6 01 BC            LDA     $01BC       ; {-lsbCursor} LSB of screen location
-0958: 20 41               BRA     $99B        ; {} Go flash error and try again
+0955: B6 01 BC            LDA     $01BC       ;{-1_lsbCursor}  LSB of screen location
+0958: 20 41               BRA     $99B        ;  Go flash error and try again
 
-095A: B6 01 B5            LDA     $01B5       ; {-prepGiven} Preposition given?
-095D: 27 24               BEQ     $983        ; {} No ... just plain "?WHAT?"
-095F: B6 01 B4            LDA     $01B4       ; {-perpWord} Preposition word number?
-0962: 26 1F               BNE     $983        ; {} No word ... just plain "?WHAT?"
+095A: B6 01 B5            LDA     $01B5       ;{-1_prepGiven}  Preposition given?
+095D: 27 24               BEQ     $983        ;  No ... just plain "?WHAT?"
+095F: B6 01 B4            LDA     $01B4       ;{-1_perpWord}  Preposition word number?
+0962: 26 1F               BNE     $983        ;  No word ... just plain "?WHAT?"
 0964: 8E 3E CF            LDX     #$3ECF      ; Prepositions list
 0967: E6 84               LDB     ,X          ; Length of word
-0969: 27 18               BEQ     $983        ; {} Reached the end ... do "?WHAT?"
+0969: 27 18               BEQ     $983        ;  Reached the end ... do "?WHAT?"
 096B: 34 10               PSHS    X           ; Hold start of word
 096D: E6 80               LDB     ,X+         ; Get length again
 096F: 3A                  ABX                 ; Point to end of word
-0970: B6 01 B6            LDA     $01B6       ; {-phrasePrep} Target preposition
+0970: B6 01 B6            LDA     $01B6       ;{-1_phrasePrep}  Target preposition
 0973: A1 80               CMPA    ,X+         ; Matches?
-0975: 27 04               BEQ     $97B        ; {} Yes ... error includes this word
+0975: 27 04               BEQ     $97B        ;  Yes ... error includes this word
 0977: 35 06               PULS    A,B         ; Restore stack
-0979: 20 EC               BRA     $967        ; {} Next word
+0979: 20 EC               BRA     $967        ;  Next word
 097B: 35 20               PULS    Y           ; Word text to Y
-097D: B6 01 BD            LDA     $01BD       ; {-lsbError} LSB of error message
-0980: BD 09 E1            JSR     $09E1       ; {} Push preposition word
+097D: B6 01 BD            LDA     $01BD       ;{-1_lsbError}  LSB of error message
+0980: BD 09 E1            JSR     $09E1       ;  Push preposition word
 0983: 10 8E 13 43         LDY     #$1343      ; "?WHAT?"
-0987: B6 01 BD            LDA     $01BD       ; {-lsbError} LSB of screen location
-098A: 20 0F               BRA     $99B        ; {} Go flash error and try again
+0987: B6 01 BD            LDA     $01BD       ;{-1_lsbError}  LSB of screen location
+098A: 20 0F               BRA     $99B        ;  Go flash error and try again
 098C: 10 8E 13 4A         LDY     #$134A      ; "?WHICH"?
-0990: B6 01 CF            LDA     $01CF       ; {-tmp1CF} LSB of screen location
-0993: 20 06               BRA     $99B        ; {} Go flash error and try again
+0990: B6 01 CF            LDA     $01CF       ;{-1_tmp1CF}  LSB of screen location
+0993: 20 06               BRA     $99B        ;  Go flash error and try again
 0995: 10 8E 13 3C         LDY     #$133C      ; "?VERB?"
 
 0999: 86 E0               LDA     #$E0        ; LSB of start of input line
 099B: 10 CE 03 FF         LDS     #$03FF      ; Reset the stack (we jump back into the main loop)
 099F: 8E 05 E0            LDX     #$05E0      ; Error goes at start of line
-09A2: BD 09 E1            JSR     $09E1       ; {} Push error message on and pause
+09A2: BD 09 E1            JSR     $09E1       ;  Push error message on and pause
 09A5: A6 A4               LDA     ,Y          ; Get length
-09A7: B7 01 AB            STA     $01AB       ; {-tmp1AB} Hold in counter
+09A7: B7 01 AB            STA     $01AB       ;{-1_tmp1AB}  Hold in counter
 09AA: 34 10               PSHS    X           ; Hold X
 09AC: 86 60               LDA     #$60        ; SPACE
 09AE: A7 80               STA     ,X+         ; Flash off ...
-09B0: 7A 01 AB            DEC     $01AB       ; {-tmp1AB} ... error ...
-09B3: 26 F7               BNE     $9AC        ; {} ... word
-09B5: BD 09 D6            JSR     $09D6       ; {} Long delay
+09B0: 7A 01 AB            DEC     $01AB       ;{-1_tmp1AB}  ... error ...
+09B3: 26 F7               BNE     $9AC        ;  ... word
+09B5: BD 09 D6            JSR     $09D6       ;  Long delay
 09B8: 35 10               PULS    X           ; Restore insertion point
 09BA: 5A                  DECB                ; All flashes done?
-09BB: 26 14               BNE     $9D1        ; {} No ... keep flashing error word
+09BB: 26 14               BNE     $9D1        ;  No ... keep flashing error word
 09BD: A6 A4               LDA     ,Y          ; Size of error word
 09BF: 4C                  INCA                ; Plus the extra space
-09C0: B7 01 AB            STA     $01AB       ; {-tmp1AB} Hold counter
-09C3: BD 0A DB            JSR     $0ADB       ; {} Close up the ...
-09C6: 7A 01 AB            DEC     $01AB       ; {-tmp1AB} ... error ...
-09C9: 26 F8               BNE     $9C3        ; {} ... word
-09CB: BD 0A 63            JSR     $0A63       ; {} Get input line
-09CE: 7E 06 37            JMP     $0637       ; {} Continue processing
-09D1: BD 0A 00            JSR     $0A00       ; {} Flash message and pause
-09D4: 20 CF               BRA     $9A5        ; {} Continue flashing and read new line
+09C0: B7 01 AB            STA     $01AB       ;{-1_tmp1AB}  Hold counter
+09C3: BD 0A DB            JSR     $0ADB       ;  Close up the ...
+09C6: 7A 01 AB            DEC     $01AB       ;{-1_tmp1AB}  ... error ...
+09C9: 26 F8               BNE     $9C3        ;  ... word
+09CB: BD 0A 63            JSR     $0A63       ;  Get input line
+09CE: 7E 06 37            JMP     $0637       ;  Continue processing
+09D1: BD 0A 00            JSR     $0A00       ;  Flash message and pause
+09D4: 20 CF               BRA     $9A5        ;  Continue flashing and read new line
 
 ;Long delay
 09D6: 86 32               LDA     #$32        ; Outer loop counts
-09D8: 7A 01 AB            DEC     $01AB       ; {-tmp1AB} Decrease inner count (doesn't matter what's there)
-09DB: 26 FB               BNE     $9D8        ; {} Kill inner time
+09D8: 7A 01 AB            DEC     $01AB       ;{-1_tmp1AB}  Decrease inner count (doesn't matter what's there)
+09DB: 26 FB               BNE     $9D8        ;  Kill inner time
 09DD: 4A                  DECA                ; All 256 loops done?
-09DE: 26 F8               BNE     $9D8        ; {} No ... keep pausing
+09DE: 26 F8               BNE     $9D8        ;  No ... keep pausing
 09E0: 39                  RTS                 ; Done
 
-09E1: B7 01 AB            STA     $01AB       ; {-tmp1AB} Hold LSB of cursor
+09E1: B7 01 AB            STA     $01AB       ;{-1_tmp1AB}  Hold LSB of cursor
 09E4: CC 05 E0            LDD     #$05E0      ; Start of input line
-09E7: F6 01 AB            LDB     $01AB       ; {-tmp1AB} Replace LSB
+09E7: F6 01 AB            LDB     $01AB       ;{-1_tmp1AB}  Replace LSB
 09EA: 1F 01               TFR     D,X         ; Place for error word in X
 09EC: A6 A4               LDA     ,Y          ; Get length of message
 09EE: 4C                  INCA                ; Plus a space after
-09EF: B7 01 AB            STA     $01AB       ; {-tmp1AB} Store length
+09EF: B7 01 AB            STA     $01AB       ;{-1_tmp1AB}  Store length
 09F2: 34 20               PSHS    Y           ; Hold message
-09F4: BD 0B 06            JSR     $0B06       ; {} Slide right past insertion point
-09F7: 7A 01 AB            DEC     $01AB       ; {-tmp1AB} Space opened up?
-09FA: 26 F8               BNE     $9F4        ; {} No ... open all the spaces for the error word
+09F4: BD 0B 06            JSR     $0B06       ;  Slide right past insertion point
+09F7: 7A 01 AB            DEC     $01AB       ;{-1_tmp1AB}  Space opened up?
+09FA: 26 F8               BNE     $9F4        ;  No ... open all the spaces for the error word
 09FC: 35 20               PULS    Y           ; Restore pointer
 09FE: C6 08               LDB     #$08        ; 8 flashes
 0A00: A6 A4               LDA     ,Y          ; Count again
-0A02: B7 01 AB            STA     $01AB       ; {-tmp1AB} Size of word
+0A02: B7 01 AB            STA     $01AB       ;{-1_tmp1AB}  Size of word
 0A05: 34 34               PSHS    Y,X,B       ; Hold all
 0A07: 31 21               LEAY    1,Y         ; Skip size
 0A09: A6 A0               LDA     ,Y+         ; Copy error word ...
 0A0B: A7 80               STA     ,X+         ; ... to screen
-0A0D: 7A 01 AB            DEC     $01AB       ; {-tmp1AB} All done?
-0A10: 26 F7               BNE     $A09        ; {} No ... go back and do all
+0A0D: 7A 01 AB            DEC     $01AB       ;{-1_tmp1AB}  All done?
+0A10: 26 F7               BNE     $A09        ;  No ... go back and do all
 0A12: 30 01               LEAX    1,X         ; Bump ...
 0A14: 1F 10               TFR     X,D         ; ... LSB ...
-0A16: F7 01 BD            STB     $01BD       ; {-lsbError} ... of screen pointer
-0A19: BD 09 D6            JSR     $09D6       ; {} Long pause
+0A16: F7 01 BD            STB     $01BD       ;{-1_lsbError}  ... of screen pointer
+0A19: BD 09 D6            JSR     $09D6       ;  Long pause
 0A1C: 35 34               PULS    B,X,Y       ; Restore
 0A1E: 39                  RTS                 ; Done
 
@@ -506,19 +509,19 @@ FindSublist: ; ==
 ; Return sublist pointer in X
 ; Return C=0 if not found, C=1 if found
 0A1F: 30 01               LEAX    1,X         ; Skip list ID
-0A21: BD 0A 44            JSR     $0A44       ; {} Read end of list to Y
-0A24: 7F 01 E1            CLR     $01E1       ; {-tmp1E1} Clear index of sublist
-0A27: BD 0A 58            JSR     $0A58       ; {} Compare X to Y
-0A2A: 25 01               BCS     $A2D        ; {} X is smaller ... keep going
+0A21: BD 0A 44            JSR     $0A44       ;{LoadEnd}  Read end of list to Y
+0A24: 7F 01 E1            CLR     $01E1       ;{-1_tmp1E1}  Clear index of sublist
+0A27: BD 0A 58            JSR     $0A58       ;{CompareXY}  Compare X to Y
+0A2A: 25 01               BCS     $A2D        ;  X is smaller ... keep going
 0A2C: 39                  RTS                 ; Done (C=0 not found)
-0A2D: 7C 01 E1            INC     $01E1       ; {-tmp1E1} Keep up with index of sublist
+0A2D: 7C 01 E1            INC     $01E1       ;{-1_tmp1E1}  Keep up with index of sublist
 0A30: E1 84               CMPB    ,X          ; Is this the sublist we want?
-0A32: 27 0B               BEQ     $A3F        ; {} Found ... C=1 and out
+0A32: 27 0B               BEQ     $A3F        ;  Found ... C=1 and out
 0A34: 34 20               PSHS    Y           ; Hold the end
-0A36: BD 0A 42            JSR     $0A42       ; {} Skip ID and read end of list to Y
+0A36: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip ID and read end of list to Y
 0A39: 1F 21               TFR     Y,X         ; Jump to the end of this list
 0A3B: 35 20               PULS    Y           ; Restore the end of the master list
-0A3D: 20 E8               BRA     $A27        ; {} Keep looking for the sublist
+0A3D: 20 E8               BRA     $A27        ;  Keep looking for the sublist
 ;
 0A3F: 1A 01               ORCC    #$01        ; C=1
 0A41: 39                  RTS                 ; Done
@@ -533,7 +536,7 @@ LoadEnd:
 0A45: 34 04               PSHS    B           ; Hold lower
 0A47: E6 80               LDB     ,X+         ; Get lower
 0A49: C5 80               BITB    #$80        ; One or two byte value?
-0A4B: 27 06               BEQ     $A53        ; {} Just a one byte ... use it
+0A4B: 27 06               BEQ     $A53        ;  Just a one byte ... use it
 0A4D: C4 7F               ANDB    #$7F        ; This is the ...
 0A4F: 1F 98               TFR     B,A         ; ... MSB
 0A51: E6 80               LDB     ,X+         ; Now get 2nd byte (LSB)
@@ -543,64 +546,64 @@ LoadEnd:
 
 CompareXY:
 ; Compare X to Y (flags = X - Y)
-0A58: 10 BF 01 A9         STY     $01A9       ; {-tmp1A9} Do compare ...
-0A5C: BC 01 A9            CMPX    $01A9       ; {-tmp1A9} X - Y
+0A58: 10 BF 01 A9         STY     $01A9       ;{-1_tmp1A9}  Do compare ...
+0A5C: BC 01 A9            CMPX    $01A9       ;{-1_tmp1A9}  X - Y
 0A5F: 39                  RTS                 ; Done
 
 GetInputLine: ; ==
 0A60: 8E 05 E0            LDX     #$05E0      ; Start of bottom row
-0A63: BD 0B 23            JSR     $0B23       ; {} Slide bottom row to right after cursor and draw cursor
-0A66: BD 0B 2B            JSR     $0B2B       ; {} Get a key from the keyboard
+0A63: BD 0B 23            JSR     $0B23       ;  Slide bottom row to right after cursor and draw cursor
+0A66: BD 0B 2B            JSR     $0B2B       ;{GetKey}  Get a key from the keyboard
 0A69: 81 15               CMPA    #$15        ;
-0A6B: 27 20               BEQ     $A8D        ; {} Swap cursor and character to left
+0A6B: 27 20               BEQ     $A8D        ;  Swap cursor and character to left
 0A6D: 81 5D               CMPA    #$5D        ; ']' ?
-0A6F: 27 2F               BEQ     $AA0        ; {} Swap cursor and character to right
+0A6F: 27 2F               BEQ     $AA0        ;  Swap cursor and character to right
 0A71: 81 09               CMPA    #$09        ; Backspace
-0A73: 27 3E               BEQ     $AB3        ; {} Go handle backspace
+0A73: 27 3E               BEQ     $AB3        ;  Go handle backspace
 0A75: 81 0D               CMPA    #$0D        ; CR?
-0A77: 27 4F               BEQ     $AC8        ; {} Handle it and out
+0A77: 27 4F               BEQ     $AC8        ;  Handle it and out
 0A79: 81 0C               CMPA    #$0C        ; BREAK?
-0A7B: 27 4F               BEQ     $ACC        ; {} Yes ... clear the row
+0A7B: 27 4F               BEQ     $ACC        ;  Yes ... clear the row
 0A7D: 81 08               CMPA    #$08        ; Backspace?
-0A7F: 27 3B               BEQ     $ABC        ; {} Yes go handle
+0A7F: 27 3B               BEQ     $ABC        ;  Yes go handle
 0A81: 8C 05 FF            CMPX    #$05FF      ; At the end of the screen?
-0A84: 27 E0               BEQ     $A66        ; {} Yes ... ignore and get another
-0A86: BD 0B 06            JSR     $0B06       ; {} Slide bottom row beyond insertion
+0A84: 27 E0               BEQ     $A66        ;  Yes ... ignore and get another
+0A86: BD 0B 06            JSR     $0B06       ;  Slide bottom row beyond insertion
 0A89: A7 80               STA     ,X+         ; Store character
-0A8B: 20 D9               BRA     $A66        ; {} Go get another character
+0A8B: 20 D9               BRA     $A66        ;  Go get another character
 
 0A8D: 8C 05 E0            CMPX    #$05E0      ; Nothing typed?
-0A90: 27 D4               BEQ     $A66        ; {} Yes ... ignore and get another
+0A90: 27 D4               BEQ     $A66        ;  Yes ... ignore and get another
 0A92: 30 1F               LEAX    -1,X        ; Swap ...
 0A94: A6 80               LDA     ,X+         ; ... cursor ...
 0A96: A7 84               STA     ,X          ; ... and ...
 0A98: 30 1F               LEAX    -1,X        ; ... character ...
 0A9A: 86 CF               LDA     #$CF        ; ... to the ...
 0A9C: A7 84               STA     ,X          ; ... left
-0A9E: 20 C6               BRA     $A66        ; {} Go get another character
+0A9E: 20 C6               BRA     $A66        ;  Go get another character
 
 0AA0: 8C 05 FF            CMPX    #$05FF      ; End of screen?
-0AA3: 27 C1               BEQ     $A66        ; {} Yes ... go get another key
+0AA3: 27 C1               BEQ     $A66        ;  Yes ... go get another key
 0AA5: 30 01               LEAX    1,X         ; Swap ...
 0AA7: A6 84               LDA     ,X          ; ... cursor ...
 0AA9: 30 1F               LEAX    -1,X        ; ... and ...
 0AAB: A7 80               STA     ,X+         ; ... character ...
 0AAD: 86 CF               LDA     #$CF        ; ... to the ...
 0AAF: A7 84               STA     ,X          ; ... right
-0AB1: 20 B3               BRA     $A66        ; {} Go get another key
+0AB1: 20 B3               BRA     $A66        ;  Go get another key
 ;
-0AB3: BD 0A DB            JSR     $0ADB       ; {} Back off trailing cursor block
+0AB3: BD 0A DB            JSR     $0ADB       ;  Back off trailing cursor block
 0AB6: 86 CF               LDA     #$CF        ; Store ...
 0AB8: A7 84               STA     ,X          ; ... cursor block
-0ABA: 20 AA               BRA     $A66        ; {} Go get another key
+0ABA: 20 AA               BRA     $A66        ;  Go get another key
 ;
 0ABC: 8C 05 E0            CMPX    #$05E0      ; At the start of the row?
-0ABF: 27 A5               BEQ     $A66        ; {} Yes ... go get another key
+0ABF: 27 A5               BEQ     $A66        ;  Yes ... go get another key
 0AC1: 30 1F               LEAX    -1,X        ; Back up one character
-0AC3: BD 0A DB            JSR     $0ADB       ; {} Erase the end
-0AC6: 20 9E               BRA     $A66        ; {} Go get another key
+0AC3: BD 0A DB            JSR     $0ADB       ;  Erase the end
+0AC6: 20 9E               BRA     $A66        ;  Go get another key
 ;
-0AC8: BD 0A DB            JSR     $0ADB       ; {} Back off cursor character
+0AC8: BD 0A DB            JSR     $0ADB       ;  Back off cursor character
 0ACB: 39                  RTS                 ; Done
 ;
 0ACC: 8E 05 E0            LDX     #$05E0      ; Start of bottom row
@@ -608,8 +611,8 @@ GetInputLine: ; ==
 0AD1: 86 60               LDA     #$60        ; SPACE character
 0AD3: A7 80               STA     ,X+         ; Clear ...
 0AD5: 5A                  DECB                ; ... the ...
-0AD6: 26 FB               BNE     $AD3        ; {} ... bottom row
-0AD8: 7E 0A 60            JMP     $0A60       ; {} Go get another key
+0AD6: 26 FB               BNE     $AD3        ;  ... bottom row
+0AD8: 7E 0A 60            JMP     $0A60       ;{GetInputLine}  Go get another key
 ;
 0ADB: 1F 13               TFR     X,U         ; Hold X
 0ADD: 31 01               LEAY    1,X         ; Clear trailing ...
@@ -617,47 +620,47 @@ GetInputLine: ; ==
 0AE1: A7 84               STA     ,X          ; ... block
 ;
 0AE3: 10 8C 06 00         CMPY    #$0600      ; End of screen?
-0AE7: 27 E2               BEQ     $ACB        ; {} Yes out
+0AE7: 27 E2               BEQ     $ACB        ;  Yes out
 0AE9: 10 8C 06 01         CMPY    #$0601      ; End of screen?
-0AED: 27 DC               BEQ     $ACB        ; {} Yes out
+0AED: 27 DC               BEQ     $ACB        ;  Yes out
 0AEF: 10 8C 06 02         CMPY    #$0602      ; End of screen?
-0AF3: 27 D6               BEQ     $ACB        ; {} Yes out
+0AF3: 27 D6               BEQ     $ACB        ;  Yes out
 0AF5: A6 A0               LDA     ,Y+         ; Back ...
 0AF7: A7 80               STA     ,X+         ; ... up ...
 0AF9: 10 8C 06 00         CMPY    #$0600      ; ... row ...
-0AFD: 26 F6               BNE     $AF5        ; {} ... over cursor
+0AFD: 26 F6               BNE     $AF5        ;  ... over cursor
 0AFF: 86 60               LDA     #$60        ; Clear last ...
 0B01: A7 84               STA     ,X          ; ... character
 0B03: 1F 31               TFR     U,X         ; Restore X
 0B05: 39                  RTS                 ; Done
 ;
 0B06: 8C 06 00            CMPX    #$0600      ; Past end of screen?
-0B09: 27 17               BEQ     $B22        ; {} Yes ... out
-0B0B: BF 01 A7            STX     $01A7       ; Hold insertion point
+0B09: 27 17               BEQ     $B22        ;  Yes ... out
+0B0B: BF 01 A7            STX     $01A7       ;{-1_tmp1A7} Hold insertion point
 0B0E: 8E 06 00            LDX     #$0600      ; End+1
 0B11: 10 8E 05 FF         LDY     #$05FF      ; End
 0B15: E6 A2               LDB     ,-Y         ; Slide bottom row ...
 0B17: E7 82               STB     ,-X         ; ... to the right
-0B19: BC 01 A7            CMPX    $01A7       ; At the insertion point?
-0B1C: 26 F7               BNE     $B15        ; {} No ... slide all
+0B19: BC 01 A7            CMPX    $01A7       ;{-1_tmp1A7} At the insertion point?
+0B1C: 26 F7               BNE     $B15        ;  No ... slide all
 0B1E: C6 60               LDB     #$60        ; SPACE
 0B20: E7 84               STB     ,X          ; Clear first character
 0B22: 39                  RTS                 ; Done
 ;
-0B23: BD 0B 06            JSR     $0B06       ; {} Slide row over from cursor
+0B23: BD 0B 06            JSR     $0B06       ;  Slide row over from cursor
 0B26: 86 CF               LDA     #$CF        ; Cursor character (white block)
 0B28: A7 84               STA     ,X          ; Cursor to screen
 0B2A: 39                  RTS                 ; Done
 
 GetKey:
-0B2B: BD 12 A8            JSR     $12A8       ; {} Get random number every key
+0B2B: BD 12 A8            JSR     $12A8       ;  Get random number every key
 0B2E: AD 9F A0 00         JSR     [$A000]     ; Get key from user
 0B32: 4D                  TSTA                ; Anything pressed?
-0B33: 27 F6               BEQ     $B2B        ; {} No ... keep waiting
+0B33: 27 F6               BEQ     $B2B        ;{GetKey}  No ... keep waiting
 0B35: 81 41               CMPA    #$41        ; Letter 'A'
-0B37: 24 06               BCC     $B3F        ; {} Greater or equal ... use it
+0B37: 24 06               BCC     $B3F        ;  Greater or equal ... use it
 0B39: 81 20               CMPA    #$20        ; Space
-0B3B: 25 02               BCS     $B3F        ; {} Lower .... use it
+0B3B: 25 02               BCS     $B3F        ;  Lower .... use it
 0B3D: 8B 40               ADDA    #$40        ; Not really sure why. '!' becomes 'a'.
 0B3F: 39                  RTS                 ; Done
 
@@ -676,37 +679,37 @@ DecodeBuffer: ; ==
 0B40: 30 01               LEAX    1,X         ; Next in buffer
 ;
 0B42: 1F 10               TFR     X,D         ; Hold ...
-0B44: F7 01 CF            STB     $01CF       ; {-tmp1CF} ... LSB of first word (could be ignored)
+0B44: F7 01 CF            STB     $01CF       ;{-1_tmp1CF}  ... LSB of first word (could be ignored)
 0B47: 8C 06 00            CMPX    #$0600      ; End of buffer?
-0B4A: 27 F3               BEQ     $B3F        ; {} Yes ... out
+0B4A: 27 F3               BEQ     $B3F        ;  Yes ... out
 0B4C: A6 84               LDA     ,X          ; Next in input
 0B4E: 81 60               CMPA    #$60        ; Valid character?
-0B50: 24 EE               BCC     $B40        ; {} No ... skip till we find one
+0B50: 24 EE               BCC     $B40        ;{DecodeBuffer}  No ... skip till we find one
 0B52: 10 8E 3C 29         LDY     #$3C29      ; Word token table
-0B56: BD 0B 8B            JSR     $0B8B       ; {} Try first list
-0B59: 27 E7               BEQ     $B42        ; {} Found a match ... ignore it
+0B56: BD 0B 8B            JSR     $0B8B       ;{DecodeWord}  Try first list
+0B59: 27 E7               BEQ     $B42        ;  Found a match ... ignore it
 0B5B: C6 01               LDB     #$01        ; Staring list number
 0B5D: 31 21               LEAY    1,Y         ; Next list of words
-0B5F: BD 0B 8B            JSR     $0B8B       ; {} Try and match
-0B62: 27 08               BEQ     $B6C        ; {} Found a match ... record it
+0B5F: BD 0B 8B            JSR     $0B8B       ;{DecodeWord}  Try and match
+0B62: 27 08               BEQ     $B6C        ;  Found a match ... record it
 0B64: 5C                  INCB                ; Next list of words
 0B65: C1 05               CMPB    #$05        ; All tried?
-0B67: 26 F4               BNE     $B5D        ; {} No ... go back and try all
+0B67: 26 F4               BNE     $B5D        ;  No ... go back and try all
 0B69: 8A 01               ORA     #$01        ; Not-zero ... error
 0B6B: 39                  RTS                 ; Done
 
 0B6C: 1E 12               EXG     X,Y         ; X to Y
-0B6E: BE 01 D8            LDX     $01D8       ; Current result token pointer
+0B6E: BE 01 D8            LDX     $01D8       ;{-1_nextToken} Current result token pointer
 0B71: E7 80               STB     ,X+         ; Store list number
 0B73: A7 80               STA     ,X+         ; Store word number
-0B75: B6 01 CF            LDA     $01CF       ; {-tmp1CF} Start of word
+0B75: B6 01 CF            LDA     $01CF       ;{-1_tmp1CF}  Start of word
 0B78: A7 80               STA     ,X+         ; Store word start
-0B7A: BF 01 D8            STX     $01D8       ; Bump result token pointer
+0B7A: BF 01 D8            STX     $01D8       ;{-1_nextToken} Bump result token pointer
 0B7D: 1E 12               EXG     X,Y         ; Restore X
 0B7F: C1 01               CMPB    #$01        ; Is this the first (VERB) list?
-0B81: 26 06               BNE     $B89        ; {} No ... skip marking
-0B83: B6 01 BC            LDA     $01BC       ; {-lsbCursor} Mark the input buffer location ...
-0B86: B7 01 BB            STA     $01BB       ; {-lsbVerb} ... of the verb
+0B81: 26 06               BNE     $B89        ;  No ... skip marking
+0B83: B6 01 BC            LDA     $01BC       ;{-1_lsbCursor}  Mark the input buffer location ...
+0B86: B7 01 BB            STA     $01BB       ;{-1_lsbVerb}  ... of the verb
 0B89: 4F                  CLRA                ; OK
 0B8A: 39                  RTS                 ; Return
 
@@ -723,72 +726,72 @@ DecodeWord: ; ==
 ; 1D0 Temporary 
 ;
 0B8B: A6 A4               LDA     ,Y          ; Length of word
-0B8D: 26 03               BNE     $B92        ; {} It is a word ... go check it
+0B8D: 26 03               BNE     $B92        ;  It is a word ... go check it
 0B8F: 8A 01               ORA     #$01        ; End of list ...
 0B91: 39                  RTS                 ; ... return not-zero
-0B92: B7 01 AB            STA     $01AB       ; {-tmp1AB} Temporary
-0B95: B7 01 D0            STA     $01D0       ; {-tmp1DO} Temporary
+0B92: B7 01 AB            STA     $01AB       ;{-1_tmp1AB}  Temporary
+0B95: B7 01 D0            STA     $01D0       ;{-1_tmp1DO}  Temporary
 0B98: 34 10               PSHS    X           ; Hold pointer to input word
 0B9A: 31 21               LEAY    1,Y         ; Skip over word length in table
 0B9C: A6 84               LDA     ,X          ; Character from input (from screen)
 0B9E: 81 60               CMPA    #$60        ; Space?
-0BA0: 27 53               BEQ     $BF5        ; {} Yes. Didn't match the target word. Next.
+0BA0: 27 53               BEQ     $BF5        ;  Yes. Didn't match the target word. Next.
 0BA2: 8C 06 00            CMPX    #$0600      ; Past screen (end of buffer)?
-0BA5: 27 4E               BEQ     $BF5        ; {} Yes. Didn't match the target word. next
+0BA5: 27 4E               BEQ     $BF5        ;  Yes. Didn't match the target word. next
 0BA7: 81 60               CMPA    #$60        ; Valid character?
-0BA9: 25 04               BCS     $BAF        ; {} Yes ... do compare
+0BA9: 25 04               BCS     $BAF        ;  Yes ... do compare
 0BAB: 30 01               LEAX    1,X         ; No ... skip this
-0BAD: 20 ED               BRA     $B9C        ; {} Look for valid character
+0BAD: 20 ED               BRA     $B9C        ;  Look for valid character
 0BAF: A1 A4               CMPA    ,Y          ; Matches target word?
-0BB1: 26 42               BNE     $BF5        ; {} No ... next word
+0BB1: 26 42               BNE     $BF5        ;  No ... next word
 0BB3: 30 01               LEAX    1,X         ; Next in input
 0BB5: 31 21               LEAY    1,Y         ; Next in match
-0BB7: 7A 01 AB            DEC     $01AB       ; {-tmp1AB} All done?
-0BBA: 26 E0               BNE     $B9C        ; {} No ... keep looking
-0BBC: B6 01 D0            LDA     $01D0       ; {-tmp1DO} Original length
+0BB7: 7A 01 AB            DEC     $01AB       ;{-1_tmp1AB}  All done?
+0BBA: 26 E0               BNE     $B9C        ;  No ... keep looking
+0BBC: B6 01 D0            LDA     $01D0       ;{-1_tmp1DO}  Original length
 0BBF: 81 06               CMPA    #$06        ; Six letter input?
-0BC1: 27 06               BEQ     $BC9        ; {} Yes ... could be truncated. That's enough of a match.
+0BC1: 27 06               BEQ     $BC9        ;  Yes ... could be truncated. That's enough of a match.
 0BC3: A6 84               LDA     ,X          ; Next from screen
 0BC5: 81 60               CMPA    #$60        ; Space? End of word?
-0BC7: 25 33               BCS     $BFC        ; {} No. Try next word
+0BC7: 25 33               BCS     $BFC        ;  No. Try next word
 0BC9: A6 A4               LDA     ,Y          ; Get the word data
 0BCB: 35 20               PULS    Y           ; Drop the input buffer pointer
-0BCD: B7 01 AB            STA     $01AB       ; {-tmp1AB} Hold the word data
+0BCD: B7 01 AB            STA     $01AB       ;{-1_tmp1AB}  Hold the word data
 0BD0: A6 84               LDA     ,X          ; Next in input buffer?
 0BD2: 81 60               CMPA    #$60        ; Is it a space?
-0BD4: 27 0C               BEQ     $BE2        ; {} Yes ... ready for next word
-0BD6: BF 01 A7            STX     $01A7       ; Start of next word (in case end of buffer)
+0BD4: 27 0C               BEQ     $BE2        ;  Yes ... ready for next word
+0BD6: BF 01 A7            STX     $01A7       ;{-1_tmp1A7} Start of next word (in case end of buffer)
 0BD9: 8C 06 00            CMPX    #$0600      ; Is this the end of the input buffer?
-0BDC: 27 0A               BEQ     $BE8        ; {} Yes. Done
+0BDC: 27 0A               BEQ     $BE8        ;  Yes. Done
 0BDE: 30 01               LEAX    1,X         ; Skip to next input word
-0BE0: 20 EE               BRA     $BD0        ; {} Keep looking for input
-0BE2: BF 01 A7            STX     $01A7       ; Pointer to ending space
-0BE5: 7C 01 A8            INC     $01A8       ; Point to next character past space (start of next word)
-0BE8: B6 01 A8            LDA     $01A8       ; Keep ...
-0BEB: B7 01 BC            STA     $01BC       ; {-lsbCursor} ... only LSB
-0BEE: B6 01 AB            LDA     $01AB       ; {-tmp1AB} Return word data in A
-0BF1: 7F 01 A7            CLR     $01A7       ; return is-zero for found
+0BE0: 20 EE               BRA     $BD0        ;  Keep looking for input
+0BE2: BF 01 A7            STX     $01A7       ;{-1_tmp1A7} Pointer to ending space
+0BE5: 7C 01 A8            INC     $01A8       ;{-1_tmp1A7} Point to next character past space (start of next word)
+0BE8: B6 01 A8            LDA     $01A8       ;{-1_tmp1A7} Keep ...
+0BEB: B7 01 BC            STA     $01BC       ;{-1_lsbCursor}  ... only LSB
+0BEE: B6 01 AB            LDA     $01AB       ;{-1_tmp1AB}  Return word data in A
+0BF1: 7F 01 A7            CLR     $01A7       ;{-1_tmp1A7} return is-zero for found
 0BF4: 39                  RTS                 ; Done
 ;
 0BF5: 31 21               LEAY    1,Y         ; Skip next in word data
-0BF7: 7A 01 AB            DEC     $01AB       ; {-tmp1AB} All skipped
-0BFA: 26 F9               BNE     $BF5        ; {} No ... skip all
+0BF7: 7A 01 AB            DEC     $01AB       ;{-1_tmp1AB}  All skipped
+0BFA: 26 F9               BNE     $BF5        ;  No ... skip all
 0BFC: 35 10               PULS    X           ; Restore pointer to word
 0BFE: 31 21               LEAY    1,Y         ; Skip word data
-0C00: 7E 0B 8B            JMP     $0B8B       ; {} Keep trying
+0C00: 7E 0B 8B            JMP     $0B8B       ;{DecodeWord}  Keep trying
     
 ProcessCommand: ; ==
 ; Either a direct command or a common command
 0C03: A6 80               LDA     ,X+         ; Next in script
 0C05: 1F 89               TFR     A,B         ; Hold original command
 0C07: 85 80               BITA    #$80        ; Upper bit set?
-0C09: 27 13               BEQ     $C1E        ; {} No ... do commands
+0C09: 27 13               BEQ     $C1E        ;  No ... do commands
 0C0B: 34 30               PSHS    Y,X         ; Hold
 0C0D: 8E 37 FA            LDX     #$37FA      ; Common commands
-0C10: BD 0A 1F            JSR     $0A1F       ; {} Find common command
-0C13: 24 06               BCC     $C1B        ; {} Not found ... skip
-0C15: BD 0A 42            JSR     $0A42       ; {} Skip length of command
-0C18: BD 0C 03            JSR     $0C03       ; {} Execute command
+0C10: BD 0A 1F            JSR     $0A1F       ;{FindSublist}  Find common command
+0C13: 24 06               BCC     $C1B        ;  Not found ... skip
+0C15: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip length of command
+0C18: BD 0C 03            JSR     $0C03       ;{ProcessCommand}  Execute command
 0C1B: 35 30               PULS    X,Y         ; Restore
 0C1D: 39                  RTS                 ; Out
 
@@ -801,13 +804,13 @@ Com0D_ExecutePassingList:
 ; Execute a list of commands as long as they pass. Either way end pointing one
 ; past end.
 ; Data: LENGTH + list of command
-0C27: BD 0A 44            JSR     $0A44       ; {} Read length of command
-0C2A: BD 0A 58            JSR     $0A58       ; {} Are we past the end?
-0C2D: 24 0C               BCC     $C3B        ; {} Yes ... end successfully
+0C27: BD 0A 44            JSR     $0A44       ;{LoadEnd}  Read length of command
+0C2A: BD 0A 58            JSR     $0A58       ;{CompareXY}  Are we past the end?
+0C2D: 24 0C               BCC     $C3B        ;  Yes ... end successfully
 0C2F: 34 20               PSHS    Y           ; Hold the end
-0C31: BD 0C 03            JSR     $0C03       ; {} Execute the command
+0C31: BD 0C 03            JSR     $0C03       ;{ProcessCommand}  Execute the command
 0C34: 35 20               PULS    Y           ; Restore the end
-0C36: 27 F2               BEQ     $C2A        ; {} Command successful? Yes ... keep processing
+0C36: 27 F2               BEQ     $C2A        ;  Command successful? Yes ... keep processing
 0C38: 1E 12               EXG     X,Y         ; Fail ... put us at the end
 0C3A: 39                  RTS                 ; Done
 0C3B: 1E 12               EXG     X,Y         ; Point to end of list
@@ -815,13 +818,13 @@ Com0D_ExecutePassingList:
 0C3E: 39                  RTS                 ; Done
 
 Com0E_ExecuteFailingList:
-0C3F: BD 0A 44            JSR     $0A44       ; {} Load the end
-0C42: BD 0A 58            JSR     $0A58       ; {} Reached end of list?
-0C45: 24 0C               BCC     $C53        ; {} Yes ... error
+0C3F: BD 0A 44            JSR     $0A44       ;{LoadEnd}  Load the end
+0C42: BD 0A 58            JSR     $0A58       ;{CompareXY}  Reached end of list?
+0C45: 24 0C               BCC     $C53        ;  Yes ... error
 0C47: 34 20               PSHS    Y           ; Hold end of command
-0C49: BD 0C 03            JSR     $0C03       ; {} Execute command
+0C49: BD 0C 03            JSR     $0C03       ;{ProcessCommand}  Execute command
 0C4C: 35 20               PULS    Y           ; Restore end
-0C4E: 26 F2               BNE     $C42        ; {} Command failed ... try next
+0C4E: 26 F2               BNE     $C42        ;  Command failed ... try next
 0C50: 1E 12               EXG     X,Y         ; Set script pointer to end of list
 0C52: 39                  RTS                 ; Out
 ; 
@@ -830,29 +833,29 @@ Com0E_ExecuteFailingList:
 0C57: 39                  RTS                 ; Done
 
 Com0B_Switch:
-0C58: BD 0A 44            JSR     $0A44       ; {} Get size of switch list
+0C58: BD 0A 44            JSR     $0A44       ;{LoadEnd}  Get size of switch list
 0C5B: E6 80               LDB     ,X+         ; Get function to call
-0C5D: BD 0A 58            JSR     $0A58       ; {} End of options?
-0C60: 24 F1               BCC     $C53        ; {} Yes ... out with error
+0C5D: BD 0A 58            JSR     $0A58       ;{CompareXY}  End of options?
+0C60: 24 F1               BCC     $C53        ;  Yes ... out with error
 0C62: 34 20               PSHS    Y           ; Hold total switch size
 0C64: 34 04               PSHS    B           ; Hold function to call
 0C66: 1F 98               TFR     B,A         ; Call the ...
-0C68: BD 0C 20            JSR     $0C20       ; {} ... target function
+0C68: BD 0C 20            JSR     $0C20       ;  ... target function
 0C6B: 35 04               PULS    B           ; Restore function to call
-0C6D: 27 09               BEQ     $C78        ; {} Got our script ... go do it
-0C6F: BD 0A 44            JSR     $0A44       ; {} Size of pass script
+0C6D: 27 09               BEQ     $C78        ;  Got our script ... go do it
+0C6F: BD 0A 44            JSR     $0A44       ;{LoadEnd}  Size of pass script
 0C72: 1E 12               EXG     X,Y         ; Skip over this option
 0C74: 35 20               PULS    Y           ; End of script
-0C76: 20 E5               BRA     $C5D        ; {} Keep looking
-0C78: BD 0A 44            JSR     $0A44       ; {} Skip length
-0C7B: BD 0C 03            JSR     $0C03       ; {} Execute
+0C76: 20 E5               BRA     $C5D        ;  Keep looking
+0C78: BD 0A 44            JSR     $0A44       ;{LoadEnd}  Skip length
+0C7B: BD 0C 03            JSR     $0C03       ;{ProcessCommand}  Execute
 0C7E: 35 10               PULS    X           ; Restore script
 0C80: 39                  RTS                 ; Done
 
 Com00_MoveActiveObjectToRoomAndLook:
-0C81: BD 0C 8D            JSR     $0C8D       ; {} Move active object to new room
+0C81: BD 0C 8D            JSR     $0C8D       ;{Com19_MoveActiveObjectToRoom}  Move active object to new room
 0C84: 34 10               PSHS    X           ; Hold script
-0C86: BD 0D 4A            JSR     $0D4A       ; {} Print room description and objects
+0C86: BD 0D 4A            JSR     $0D4A       ;  Print room description and objects
 0C89: 35 10               PULS    X           ; Restore script
 0C8B: 4F                  CLRA                ; OK
 0C8C: 39                  RTS                 ; Done
@@ -860,153 +863,153 @@ Com00_MoveActiveObjectToRoomAndLook:
 Com19_MoveActiveObjectToRoom:
 0C8D: A6 80               LDA     ,X+         ; New room number
 0C8F: 34 10               PSHS    X           ; Hold script
-0C91: B7 01 D5            STA     $01D5       ; {-CUR_ROOM} Store new actvie room number
+0C91: B7 01 D5            STA     $01D5       ;{-1_CUR_ROOM}  Store new actvie room number
 0C94: 1F 89               TFR     A,B         ; Store ...
 0C96: 8E 15 23            LDX     #$1523      ; ... pointer ...
-0C99: BD 0A 1F            JSR     $0A1F       ; {} ... to ...
-0C9C: BF 01 D6            STX     $01D6       ; ... new room
-0C9F: BE 01 D3            LDX     $01D3       ; Active object
-0CA2: BD 0A 42            JSR     $0A42       ; {} Skip size
-0CA5: B6 01 D5            LDA     $01D5       ; {-CUR_ROOM} New location
+0C99: BD 0A 1F            JSR     $0A1F       ;{FindSublist}  ... to ...
+0C9C: BF 01 D6            STX     $01D6       ;{-1_CUR_ROOM_DATA} ... new room
+0C9F: BE 01 D3            LDX     $01D3       ;{-1_ACTIVE_OBJ_DATA} Active object
+0CA2: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip size
+0CA5: B6 01 D5            LDA     $01D5       ;{-1_CUR_ROOM}  New location
 0CA8: A7 84               STA     ,X          ; Move object to active room
 0CAA: 35 10               PULS    X           ; Restore script
 0CAC: 4F                  CLRA                ; OK
 0CAD: 39                  RTS                 ; Done
 
 Com1A_SetVarObjectTo1stNoun:
-0CAE: FE 01 C6            LDU     $01C6       ; Copy 1st noun ...
-0CB1: FF 01 C0            STU     $01C0       ; ... data pointer
-0CB4: B6 01 C3            LDA     $01C3       ; {-FIRST_NOUN_NUM} Copy 1st noun ...
-0CB7: B7 01 BF            STA     $01BF       ; {-VAR_OBJ_NUMBER} ... object number
+0CAE: FE 01 C6            LDU     $01C6       ;{-1_FIRST_NOUN_DATA} Copy 1st noun ...
+0CB1: FF 01 C0            STU     $01C0       ;{-1_VAR_OBJ_DATA} ... data pointer
+0CB4: B6 01 C3            LDA     $01C3       ;{-1_FIRST_NOUN_NUM}  Copy 1st noun ...
+0CB7: B7 01 BF            STA     $01BF       ;{-1_VAR_OBJ_NUMBER}  ... object number
 0CBA: 4F                  CLRA                ; Z=1 for OK
 0CBB: 39                  RTS                 ; Done
 
 Com1B_SetVarObjectTo2ndNoun:
-0CBC: FE 01 CC            LDU     $01CC       ; Copy 2nd noun ...
-0CBF: FF 01 C0            STU     $01C0       ; ... data pointer
-0CC2: B6 01 C9            LDA     $01C9       ; {-SECOND_NOUN_NUM} Copy 2nd noun ...
-0CC5: B7 01 BF            STA     $01BF       ; {-VAR_OBJ_NUMBER} ... object number
+0CBC: FE 01 CC            LDU     $01CC       ;{-1_SECOND_NOUN_DATA} Copy 2nd noun ...
+0CBF: FF 01 C0            STU     $01C0       ;{-1_VAR_OBJ_DATA} ... data pointer
+0CC2: B6 01 C9            LDA     $01C9       ;{-1_SECOND_NOUN_NUM}  Copy 2nd noun ...
+0CC5: B7 01 BF            STA     $01BF       ;{-1_VAR_OBJ_NUMBER}  ... object number
 0CC8: 4F                  CLRA                ; Z=1 for OK
 0CC9: 39                  RTS                 ; Done
 
 Com1C_SetVarObject:
 0CCA: E6 80               LDB     ,X+         ; Get object number from script
 0CCC: 34 10               PSHS    X           ; Hold script pointer
-0CCE: F7 01 BF            STB     $01BF       ; {-VAR_OBJ_NUMBER} Store target object number
-0CD1: 27 06               BEQ     $CD9        ; {} 0 ... no-object
-0CD3: BD 11 33            JSR     $1133       ; {} Find object data
-0CD6: BF 01 C0            STX     $01C0       ; Store target object data
+0CCE: F7 01 BF            STB     $01BF       ;{-1_VAR_OBJ_NUMBER}  Store target object number
+0CD1: 27 06               BEQ     $CD9        ;  0 ... no-object
+0CD3: BD 11 33            JSR     $1133       ;  Find object data
+0CD6: BF 01 C0            STX     $01C0       ;{-1_VAR_OBJ_DATA} Store target object data
 0CD9: 35 10               PULS    X           ; Restore script
 0CDB: 4F                  CLRA                ; Return OK
 0CDC: 39                  RTS                 ; Done
 
 Com21_RunGeneralWithTempPhrase:
-0CDD: FE 01 C6            LDU     $01C6       ; 1st noun data ...
+0CDD: FE 01 C6            LDU     $01C6       ;{-1_FIRST_NOUN_DATA} 1st noun data ...
 0CE0: 34 40               PSHS    U           ; ... on stack
-0CE2: FE 01 CC            LDU     $01CC       ; 2nd noun data ...
+0CE2: FE 01 CC            LDU     $01CC       ;{-1_SECOND_NOUN_DATA} 2nd noun data ...
 0CE5: 34 40               PSHS    U           ; ... on stack
-0CE7: B6 01 C9            LDA     $01C9       ; {-SECOND_NOUN_NUM} 2nd noun number
-0CEA: F6 01 C3            LDB     $01C3       ; {-FIRST_NOUN_NUM} 1st noun number
+0CE7: B6 01 C9            LDA     $01C9       ;{-1_SECOND_NOUN_NUM}  2nd noun number
+0CEA: F6 01 C3            LDB     $01C3       ;{-1_FIRST_NOUN_NUM}  1st noun number
 0CED: 34 06               PSHS    B,A         ; Hold these
-0CEF: B6 01 D1            LDA     $01D1       ; {-PHRASE_FORM} Phrase number
+0CEF: B6 01 D1            LDA     $01D1       ;{-1_PHRASE_FORM}  Phrase number
 0CF2: 34 02               PSHS    A           ; Hold it
 0CF4: A6 80               LDA     ,X+         ; New temporary ...
-0CF6: B7 01 D1            STA     $01D1       ; {-PHRASE_FORM} ... phrase number
+0CF6: B7 01 D1            STA     $01D1       ;{-1_PHRASE_FORM}  ... phrase number
 0CF9: EC 81               LDD     ,X++        ; Temporary 1st and 2nd noun numbers
-0CFB: F7 01 AB            STB     $01AB       ; {-tmp1AB} Hold 2nd noun for now
+0CFB: F7 01 AB            STB     $01AB       ;{-1_tmp1AB}  Hold 2nd noun for now
 0CFE: 34 10               PSHS    X           ; Hold script
-0D00: B7 01 C3            STA     $01C3       ; {-FIRST_NOUN_NUM} Temporary 1st noun
+0D00: B7 01 C3            STA     $01C3       ;{-1_FIRST_NOUN_NUM}  Temporary 1st noun
 0D03: 1F 89               TFR     A,B         ; To B (for lookup)
-0D05: 27 06               BEQ     $D0D        ; {} Not one ... skip
-0D07: BD 11 33            JSR     $1133       ; {} Lookup object in B
-0D0A: BF 01 C6            STX     $01C6       ; Temporary 1st noun data
-0D0D: F6 01 AB            LDB     $01AB       ; {-tmp1AB} Temporary 2nd noun ...
-0D10: F7 01 C9            STB     $01C9       ; {-SECOND_NOUN_NUM} ... index
-0D13: 27 06               BEQ     $D1B        ; {} There isn't one ... skip
-0D15: BD 11 33            JSR     $1133       ; {} Lookup object in B
-0D18: BF 01 CC            STX     $01CC       ; Temporary 2nd noun
+0D05: 27 06               BEQ     $D0D        ;  Not one ... skip
+0D07: BD 11 33            JSR     $1133       ;  Lookup object in B
+0D0A: BF 01 C6            STX     $01C6       ;{-1_FIRST_NOUN_DATA} Temporary 1st noun data
+0D0D: F6 01 AB            LDB     $01AB       ;{-1_tmp1AB}  Temporary 2nd noun ...
+0D10: F7 01 C9            STB     $01C9       ;{-1_SECOND_NOUN_NUM}  ... index
+0D13: 27 06               BEQ     $D1B        ;  There isn't one ... skip
+0D15: BD 11 33            JSR     $1133       ;  Lookup object in B
+0D18: BF 01 CC            STX     $01CC       ;{-1_SECOND_NOUN_DATA} Temporary 2nd noun
 0D1B: 8E 32 3C            LDX     #$323C      ; General commands
-0D1E: BD 0A 42            JSR     $0A42       ; {} Skip ID and length
-0D21: BD 0C 03            JSR     $0C03       ; {} Execute general script
+0D1E: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip ID and length
+0D21: BD 0C 03            JSR     $0C03       ;{ProcessCommand}  Execute general script
 0D24: 1F A8               TFR     CCR,A       ; Hold the result ...
-0D26: B7 01 AB            STA     $01AB       ; {-tmp1AB} ... for a moment
+0D26: B7 01 AB            STA     $01AB       ;{-1_tmp1AB}  ... for a moment
 0D29: 35 20               PULS    Y           ;
 0D2B: 35 02               PULS    A           ;
-0D2D: B7 01 D1            STA     $01D1       ; {-PHRASE_FORM} Restore ...
+0D2D: B7 01 D1            STA     $01D1       ;{-1_PHRASE_FORM}  Restore ...
 0D30: 35 06               PULS    A,B         ; ... phrase ...
-0D32: F7 01 C3            STB     $01C3       ; {-FIRST_NOUN_NUM} ... and ...
-0D35: B7 01 C9            STA     $01C9       ; {-SECOND_NOUN_NUM} ... nouns
+0D32: F7 01 C3            STB     $01C3       ;{-1_FIRST_NOUN_NUM}  ... and ...
+0D35: B7 01 C9            STA     $01C9       ;{-1_SECOND_NOUN_NUM}  ... nouns
 0D38: 35 40               PULS    U           ;
-0D3A: FF 01 CC            STU     $01CC       ;
+0D3A: FF 01 CC            STU     $01CC       ;{-1_SECOND_NOUN_DATA}
 0D3D: 35 40               PULS    U           ;
-0D3F: FF 01 C6            STU     $01C6       ;
+0D3F: FF 01 C6            STU     $01C6       ;{-1_FIRST_NOUN_DATA}
 0D42: 1E 12               EXG     X,Y         ;
-0D44: B6 01 AB            LDA     $01AB       ; {-tmp1AB}
+0D44: B6 01 AB            LDA     $01AB       ;{-1_tmp1AB} 
 0D47: 1F 8A               TFR     A,CCR       ; Restore result
 0D49: 39                  RTS                 ; Done
 
 ; Print room description
-0D4A: B6 01 D2            LDA     $01D2       ; {-ACTIVE_OBJ_NUM} Actiuve object number
+0D4A: B6 01 D2            LDA     $01D2       ;{-1_ACTIVE_OBJ_NUM}  Actiuve object number
 0D4D: 81 1D               CMPA    #$1D        ; Is this the SYSTEM object?
-0D4F: 26 F8               BNE     $D49        ; {} No ... return
-0D51: BE 01 D6            LDX     $01D6       ; Current room script
-0D54: BD 0A 42            JSR     $0A42       ; {} Skip length
+0D4F: 26 F8               BNE     $D49        ;  No ... return
+0D51: BE 01 D6            LDX     $01D6       ;{-1_CUR_ROOM_DATA} Current room script
+0D54: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip length
 0D57: 30 01               LEAX    1,X         ;
 0D59: C6 03               LDB     #$03        ; You are in DESCRIPTION script
-0D5B: BD 0A 27            JSR     $0A27       ; {} Get room description
-0D5E: 24 05               BCC     $D65        ; {} No room description ... print objects in room
+0D5B: BD 0A 27            JSR     $0A27       ;  Get room description
+0D5E: 24 05               BCC     $D65        ;  No room description ... print objects in room
 0D60: 30 01               LEAX    1,X         ; Assume length is one byte
-0D62: BD 11 4C            JSR     $114C       ; {} Print the packed message
+0D62: BD 11 4C            JSR     $114C       ;{PrintPackedMessage}  Print the packed message
 ;
 ; Print object descriptions
 ;
 0D65: 8E 20 FF            LDX     #$20FF      ; Object data
-0D68: BD 0A 42            JSR     $0A42       ; {} Skip length
+0D68: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip length
 0D6B: 34 20               PSHS    Y           ; Hold end
-0D6D: BD 0A 42            JSR     $0A42       ; {} Skip this object's length
-0D70: B6 01 D5            LDA     $01D5       ; {-CUR_ROOM} Current room
+0D6D: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip this object's length
+0D70: B6 01 D5            LDA     $01D5       ;{-1_CUR_ROOM}  Current room
 0D73: A1 84               CMPA    ,X          ; Object in room?
-0D75: 26 12               BNE     $D89        ; {} No ... next object
+0D75: 26 12               BNE     $D89        ;  No ... next object
 0D77: 30 03               LEAX    3,X         ; Skip data
 0D79: C6 03               LDB     #$03        ; Get description ...
-0D7B: BD 0A 27            JSR     $0A27       ; {} ... field
-0D7E: 24 09               BCC     $D89        ; {} No description ... next object
+0D7B: BD 0A 27            JSR     $0A27       ;  ... field
+0D7E: 24 09               BCC     $D89        ;  No description ... next object
 0D80: 30 01               LEAX    1,X         ; Skip length
 0D82: 34 20               PSHS    Y           ; Hold end of object
-0D84: BD 11 4C            JSR     $114C       ; {} Print description
+0D84: BD 11 4C            JSR     $114C       ;{PrintPackedMessage}  Print description
 0D87: 35 20               PULS    Y           ; Restore length
 0D89: 1E 12               EXG     X,Y         ; Next object
 0D8B: 35 20               PULS    Y           ; End of objects
-0D8D: BD 0A 58            JSR     $0A58       ; {} All done?
-0D90: 25 D9               BCS     $D6B        ; {} No ... keep printing
+0D8D: BD 0A 58            JSR     $0A58       ;{CompareXY}  All done?
+0D90: 25 D9               BCS     $D6B        ;  No ... keep printing
 0D92: 39                  RTS                 ; Done
 
 Com01_IsObjectInPackOrRoom:
 0D93: E6 80               LDB     ,X+         ; Get object number from script
 0D95: 34 10               PSHS    X           ; Hold script pointer
-0D97: BD 11 33            JSR     $1133       ; {} Get object data
-0D9A: BD 08 AA            JSR     $08AA       ; {} See if it is in pack or room
+0D97: BD 11 33            JSR     $1133       ;  Get object data
+0D9A: BD 08 AA            JSR     $08AA       ;  See if it is in pack or room
 0D9D: 35 10               PULS    X           ; Restore script
 0D9F: 39                  RTS                 ; Out
 
 Com20_CheckActiveObject:
-0DA0: B6 01 D2            LDA     $01D2       ; {-ACTIVE_OBJ_NUM} Active object
+0DA0: B6 01 D2            LDA     $01D2       ;{-1_ACTIVE_OBJ_NUM}  Active object
 0DA3: A1 80               CMPA    ,X+         ; Matches target?
 0DA5: 39                  RTS                 ; Done
 
 Com02_CheckObjectIsOwnedByActive:
 0DA6: E6 80               LDB     ,X+         ;
-0DA8: 7E 0F 5F            JMP     $0F5F       ; {}
+0DA8: 7E 0F 5F            JMP     $0F5F       ; 
 
 Com03_IsObjectYAtX:
 ; Check to see if an object is at a target location.
 0DAB: EC 81               LDD     ,X++        ; Room and object
 0DAD: 34 10               PSHS    X           ; Hold script
-0DAF: B7 01 AB            STA     $01AB       ; {-tmp1AB} Remember the room
-0DB2: BD 11 33            JSR     $1133       ; {} Locate the object
-0DB5: BD 0A 42            JSR     $0A42       ; {} Skip the length
+0DAF: B7 01 AB            STA     $01AB       ;{-1_tmp1AB}  Remember the room
+0DB2: BD 11 33            JSR     $1133       ;  Locate the object
+0DB5: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip the length
 0DB8: EC 81               LDD     ,X++        ; Get the room to A
-0DBA: B1 01 AB            CMPA    $01AB       ; {-tmp1AB} Is this object in the target place?
+0DBA: B1 01 AB            CMPA    $01AB       ;{-1_tmp1AB}  Is this object in the target place?
 0DBD: 35 10               PULS    X           ; Restore script
 0DBF: 39                  RTS                 ; Out
 
@@ -1016,92 +1019,92 @@ Com0C_FAIL:
 0DC2: 39                  RTS                 ; Done
 
 Com04_PrintSYSTEMOrPlayerMessage:
-0DC3: B6 01 D2            LDA     $01D2       ; {-ACTIVE_OBJ_NUM} Active object
+0DC3: B6 01 D2            LDA     $01D2       ;{-1_ACTIVE_OBJ_NUM}  Active object
 0DC6: 81 1D               CMPA    #$1D        ; Is this the player?
 
-0DC8: 26 0E               BNE     $DD8        ; {} No ... must be system
+0DC8: 26 0E               BNE     $DD8        ;  No ... must be system
 
 Com1F_PrintMessage:
 0DCA: C6 1D               LDB     #$1D        ; Player number
 0DCC: 34 10               PSHS    X           ; Hold script
-0DCE: BD 11 33            JSR     $1133       ; {} Look up Player
-0DD1: BD 08 AA            JSR     $08AA       ; {} Is Player in current room?
+0DCE: BD 11 33            JSR     $1133       ;  Look up Player
+0DD1: BD 08 AA            JSR     $08AA       ;  Is Player in current room?
 0DD4: 35 10               PULS    X           ; Restore
-0DD6: 27 07               BEQ     $DDF        ; {} Yes ... do printing
-0DD8: BD 0A 44            JSR     $0A44       ; {} Skip to ...
+0DD6: 27 07               BEQ     $DDF        ;  Yes ... do printing
+0DD8: BD 0A 44            JSR     $0A44       ;{LoadEnd}  Skip to ...
 0DDB: 1E 12               EXG     X,Y         ; ... end of packed message.
-0DDD: 20 03               BRA     $DE2        ; {} Return OK but no printing
-0DDF: BD 11 4C            JSR     $114C       ; {} Print packed message at X
+0DDD: 20 03               BRA     $DE2        ;  Return OK but no printing
+0DDF: BD 11 4C            JSR     $114C       ;{PrintPackedMessage}  Print packed message at X
 0DE2: 4F                  CLRA                ; OK
 0DE3: 39                  RTS                 ; Done
 
 Com07_Look:
-0DE4: BD 0D 4A            JSR     $0D4A       ; {} Print room description
+0DE4: BD 0D 4A            JSR     $0D4A       ;  Print room description
 0DE7: 4F                  CLRA                ; OK
 0DE8: 39                  RTS                 ; Done
 
 Com06_Inventory:
 0DE9: 34 10               PSHS    X           ; Hold script pointer
 0DEB: 86 0D               LDA     #$0D        ; Print ...
-0DED: BD 11 84            JSR     $1184       ; {} ... CR
+0DED: BD 11 84            JSR     $1184       ;{PrintCharacterAutoWrap}  ... CR
 0DF0: 8E 20 FF            LDX     #$20FF      ; Objects
-0DF3: BD 0A 42            JSR     $0A42       ; {} Skip size of objects
+0DF3: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip size of objects
 ;
-0DF6: BD 0A 58            JSR     $0A58       ; {} CompareXY
-0DF9: 24 24               BCC     $E1F        ; {} End of list ... out
+0DF6: BD 0A 58            JSR     $0A58       ;{CompareXY}  CompareXY
+0DF9: 24 24               BCC     $E1F        ;  End of list ... out
 0DFB: 34 20               PSHS    Y           ; Hold end of master list of objects
-0DFD: BD 0A 42            JSR     $0A42       ; {} Get pointer to next object
+0DFD: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Get pointer to next object
 0E00: E6 84               LDB     ,X          ; Object location
-0E02: F1 01 D2            CMPB    $01D2       ; {-ACTIVE_OBJ_NUM} Active object?
-0E05: 26 12               BNE     $E19        ; {} No ... skip this object
+0E02: F1 01 D2            CMPB    $01D2       ;{-1_ACTIVE_OBJ_NUM}  Active object?
+0E05: 26 12               BNE     $E19        ;  No ... skip this object
 0E07: 30 03               LEAX    3,X         ; Skip data
 0E09: C6 02               LDB     #$02        ; Find short name ...
-0E0B: BD 0A 27            JSR     $0A27       ; {} ... string
-0E0E: 24 09               BCC     $E19        ; {} No short name ... skip
+0E0B: BD 0A 27            JSR     $0A27       ;  ... string
+0E0E: 24 09               BCC     $E19        ;  No short name ... skip
 0E10: 30 01               LEAX    1,X         ; Skip the 02 data id
 0E12: 34 20               PSHS    Y           ; Hold next-object
-0E14: BD 11 43            JSR     $1143       ; {} Print packed message and CR
+0E14: BD 11 43            JSR     $1143       ;  Print packed message and CR
 0E17: 35 20               PULS    Y           ; Restore next-object
 0E19: 1E 12               EXG     X,Y         ; Move to next object
 0E1B: 35 20               PULS    Y           ; End of master list
-0E1D: 20 D7               BRA     $DF6        ; {} Do all objects
+0E1D: 20 D7               BRA     $DF6        ;  Do all objects
 0E1F: 4F                  CLRA                ; Success
 0E20: 35 10               PULS    X           ; Restore script pointer
 0E22: 39                  RTS                 ; Done
 
 Com08_CompareObjectToFirstNoun:
-0E23: FE 01 C6            LDU     $01C6       ; 1st noun data
-0E26: B6 01 C3            LDA     $01C3       ; {-FIRST_NOUN_NUM} 1st noun number
+0E23: FE 01 C6            LDU     $01C6       ;{-1_FIRST_NOUN_DATA} 1st noun data
+0E26: B6 01 C3            LDA     $01C3       ;{-1_FIRST_NOUN_NUM}  1st noun number
 ;
-0E29: FF 01 D8            STU     $01D8       ; Hold
+0E29: FF 01 D8            STU     $01D8       ;{-1_nextToken} Hold
 0E2C: 4D                  TSTA                ; Is there an object?
-0E2D: 27 10               BEQ     $E3F        ; {} No ... error
+0E2D: 27 10               BEQ     $E3F        ;  No ... error
 0E2F: E6 80               LDB     ,X+         ; Object number from script
 0E31: 34 10               PSHS    X           ; Hold script
-0E33: BD 11 33            JSR     $1133       ; {} Find object
+0E33: BD 11 33            JSR     $1133       ;  Find object
 0E36: 1E 12               EXG     X,Y         ; Pointer of found object to Y
 0E38: 35 10               PULS    X           ; Restore script pointer
-0E3A: 10 BC 01 D8         CMPY    $01D8       ; Object the same?
+0E3A: 10 BC 01 D8         CMPY    $01D8       ;{-1_nextToken} Object the same?
 0E3E: 39                  RTS                 ; Done
 0E3F: 5D                  TSTB                ; B can't be 0 ... Z=0 error
 0E40: 39                  RTS                 ; Done
 
 Com09_CompareObjectToSecondNoun:
-0E41: FE 01 CC            LDU     $01CC       ; 2nd noun data
-0E44: B6 01 C9            LDA     $01C9       ; {-SECOND_NOUN_NUM} 2nd noun number
-0E47: 20 E0               BRA     $E29        ; {} Do compare
+0E41: FE 01 CC            LDU     $01CC       ;{-1_SECOND_NOUN_DATA} 2nd noun data
+0E44: B6 01 C9            LDA     $01C9       ;{-1_SECOND_NOUN_NUM}  2nd noun number
+0E47: 20 E0               BRA     $E29        ;  Do compare
 
 Com0A_CompareToPhraseForm:
 0E49: E6 80               LDB     ,X+         ; Compare from script ...
-0E4B: F1 01 D1            CMPB    $01D1       ; {-PHRASE_FORM} ... to phrase form
+0E4B: F1 01 D1            CMPB    $01D1       ;{-1_PHRASE_FORM}  ... to phrase form
 0E4E: 39                  RTS                 ; Done
 
 Com0F_PickUpObject:
 ; Move noun object to pack.
 0E4F: 34 10               PSHS    X           ; Hold script
-0E51: BE 01 C0            LDX     $01C0       ; Pointer to noun object
-0E54: BD 0A 42            JSR     $0A42       ; {} Skip length
-0E57: B6 01 D2            LDA     $01D2       ; {-ACTIVE_OBJ_NUM} Back pack "location" value
+0E51: BE 01 C0            LDX     $01C0       ;{-1_VAR_OBJ_DATA} Pointer to noun object
+0E54: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip length
+0E57: B6 01 D2            LDA     $01D2       ;{-1_ACTIVE_OBJ_NUM}  Back pack "location" value
 0E5A: A7 84               STA     ,X          ; Move object to pack
 0E5C: 4F                  CLRA                ; OK
 0E5D: 35 10               PULS    X           ; Restore script
@@ -1110,9 +1113,9 @@ Com0F_PickUpObject:
 Com10_DropObject:
 ; Move noun object to current room.
 0E60: 34 10               PSHS    X           ; Hold script
-0E62: BE 01 C0            LDX     $01C0       ; Pointer to noun object
-0E65: BD 0A 42            JSR     $0A42       ; {} Skip length
-0E68: B6 01 D5            LDA     $01D5       ; {-CUR_ROOM} Current room
+0E62: BE 01 C0            LDX     $01C0       ;{-1_VAR_OBJ_DATA} Pointer to noun object
+0E65: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip length
+0E68: B6 01 D5            LDA     $01D5       ;{-1_CUR_ROOM}  Current room
 0E6B: A7 84               STA     ,X          ; Move object to room
 0E6D: 35 10               PULS    X           ; Restore script
 0E6F: 4F                  CLRA                ; Done
@@ -1120,84 +1123,84 @@ Com10_DropObject:
 
 Com13_PhraseWithRoom1st2nd:
 0E71: 34 10               PSHS    X           ; Save script
-0E73: BE 01 D6            LDX     $01D6       ; Current room script
-0E76: BD 0A 42            JSR     $0A42       ; {} Skip id and length
+0E73: BE 01 D6            LDX     $01D6       ;{-1_CUR_ROOM_DATA} Current room script
+0E76: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip id and length
 0E79: 30 01               LEAX    1,X         ; Skip
 0E7B: C6 04               LDB     #$04        ; Get ...
-0E7D: BD 0A 27            JSR     $0A27       ; {} ... phrase script
-0E80: 24 08               BCC     $E8A        ; {} No phrase script ... skip
-0E82: BD 0A 42            JSR     $0A42       ; {} Skip id and length
-0E85: BD 0C 03            JSR     $0C03       ; {} Execute
-0E88: 27 3B               BEQ     $EC5        ; {} Move passed ... OK and out
-0E8A: B6 01 C9            LDA     $01C9       ; {-SECOND_NOUN_NUM} Is there a 2nd noun?
-0E8D: 27 17               BEQ     $EA6        ; {} No ... skip
-0E8F: BE 01 CC            LDX     $01CC       ; Second noun data
-0E92: BD 0A 42            JSR     $0A42       ; {} Skip ...
+0E7D: BD 0A 27            JSR     $0A27       ;  ... phrase script
+0E80: 24 08               BCC     $E8A        ;  No phrase script ... skip
+0E82: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip id and length
+0E85: BD 0C 03            JSR     $0C03       ;{ProcessCommand}  Execute
+0E88: 27 3B               BEQ     $EC5        ;  Move passed ... OK and out
+0E8A: B6 01 C9            LDA     $01C9       ;{-1_SECOND_NOUN_NUM}  Is there a 2nd noun?
+0E8D: 27 17               BEQ     $EA6        ;  No ... skip
+0E8F: BE 01 CC            LDX     $01CC       ;{-1_SECOND_NOUN_DATA} Second noun data
+0E92: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip ...
 0E95: 30 03               LEAX    3,X         ; ... object header
 0E97: C6 06               LDB     #$06        ; Get "noun is second" ...
-0E99: BD 0A 27            JSR     $0A27       ; {} ... phrase script
-0E9C: 24 08               BCC     $EA6        ; {} None ... move on
-0E9E: BD 0A 42            JSR     $0A42       ; {} Skip header
-0EA1: BD 0C 03            JSR     $0C03       ; {} Execute script
-0EA4: 27 1F               BEQ     $EC5        ; {} Script passed ... OK and out
-0EA6: B6 01 C3            LDA     $01C3       ; {-FIRST_NOUN_NUM} Is there a 1st noun?
-0EA9: 26 05               BNE     $EB0        ; {} Yes ... go do it
+0E99: BD 0A 27            JSR     $0A27       ;  ... phrase script
+0E9C: 24 08               BCC     $EA6        ;  None ... move on
+0E9E: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip header
+0EA1: BD 0C 03            JSR     $0C03       ;{ProcessCommand}  Execute script
+0EA4: 27 1F               BEQ     $EC5        ;  Script passed ... OK and out
+0EA6: B6 01 C3            LDA     $01C3       ;{-1_FIRST_NOUN_NUM}  Is there a 1st noun?
+0EA9: 26 05               BNE     $EB0        ;  Yes ... go do it
 0EAB: 35 10               PULS    X           ; Restore script
 0EAD: 8A 01               ORA     #$01        ; Nobody took the phrase ..
 0EAF: 39                  RTS                 ; .. error and and out
-0EB0: BE 01 C6            LDX     $01C6       ; First noun data
-0EB3: BD 0A 42            JSR     $0A42       ; {} Skip ...
+0EB0: BE 01 C6            LDX     $01C6       ;{-1_FIRST_NOUN_DATA} First noun data
+0EB3: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip ...
 0EB6: 30 03               LEAX    3,X         ; ... object header
 0EB8: C6 07               LDB     #$07        ; Get "noun is first" ...
-0EBA: BD 0A 27            JSR     $0A27       ; {} ... phrase script
-0EBD: 24 EC               BCC     $EAB        ; {} None ... error and out
-0EBF: BD 0A 42            JSR     $0A42       ; {} Skip the id and length
-0EC2: BD 0C 03            JSR     $0C03       ; {} Execute script (use return)
+0EBA: BD 0A 27            JSR     $0A27       ;  ... phrase script
+0EBD: 24 EC               BCC     $EAB        ;  None ... error and out
+0EBF: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip the id and length
+0EC2: BD 0C 03            JSR     $0C03       ;{ProcessCommand}  Execute script (use return)
 0EC5: 35 10               PULS    X           ; Restore script pointer
 0EC7: 39                  RTS                 ; Done
 
 Com16_PrintVarShortName:
 0EC8: 34 10               PSHS    X           ; Save script pointer
-0ECA: BE 01 C0            LDX     $01C0       ; Var noun data
-0ECD: B6 01 BF            LDA     $01BF       ; {-VAR_OBJ_NUMBER} Var noun index
-0ED0: 20 08               BRA     $EDA        ; {} Print short name
+0ECA: BE 01 C0            LDX     $01C0       ;{-1_VAR_OBJ_DATA} Var noun data
+0ECD: B6 01 BF            LDA     $01BF       ;{-1_VAR_OBJ_NUMBER}  Var noun index
+0ED0: 20 08               BRA     $EDA        ;  Print short name
 
 Com11_Print1stNounShortName:
 0ED2: 34 10               PSHS    X           ; Save script pointer
-0ED4: BE 01 C6            LDX     $01C6       ; 1st noun data
-0ED7: B6 01 C3            LDA     $01C3       ; {-FIRST_NOUN_NUM} 1st noun index
+0ED4: BE 01 C6            LDX     $01C6       ;{-1_FIRST_NOUN_DATA} 1st noun data
+0ED7: B6 01 C3            LDA     $01C3       ;{-1_FIRST_NOUN_NUM}  1st noun index
 ;
-0EDA: 27 E9               BEQ     $EC5        ; {} Return Z=1 return
+0EDA: 27 E9               BEQ     $EC5        ;  Return Z=1 return
 0EDC: C6 1D               LDB     #$1D        ; User object
 0EDE: 34 10               PSHS    X           ; Hold noun data
-0EE0: BD 11 33            JSR     $1133       ; {} Lookup user object
-0EE3: BD 08 AA            JSR     $08AA       ; {} User in current room?
+0EE0: BD 11 33            JSR     $1133       ;  Lookup user object
+0EE3: BD 08 AA            JSR     $08AA       ;  User in current room?
 0EE6: 35 10               PULS    X           ; Restore noun data
-0EE8: 26 11               BNE     $EFB        ; {} Not in current room ... skip print
-0EEA: BD 0A 42            JSR     $0A42       ; {} Skip object ...
+0EE8: 26 11               BNE     $EFB        ;  Not in current room ... skip print
+0EEA: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip object ...
 0EED: 30 03               LEAX    3,X         ; ... header
 0EEF: C6 02               LDB     #$02        ; Get object ...
-0EF1: BD 0A 27            JSR     $0A27       ; {} ... short name
-0EF4: 24 05               BCC     $EFB        ; {} No short name ... out with OK
+0EF1: BD 0A 27            JSR     $0A27       ;  ... short name
+0EF4: 24 05               BCC     $EFB        ;  No short name ... out with OK
 0EF6: 30 01               LEAX    1,X         ; Skip the 2
-0EF8: BD 11 4C            JSR     $114C       ; {} Print packed message at X
+0EF8: BD 11 4C            JSR     $114C       ;{PrintPackedMessage}  Print packed message at X
 0EFB: 35 10               PULS    X           ; Restore script
 0EFD: 4F                  CLRA                ; Return ...
 0EFE: 39                  RTS                 ; ... OK
 
 Com12_Print2ndNounShortName:
 0EFF: 34 10               PSHS    X           ; Save script pointer
-0F01: BE 01 CC            LDX     $01CC       ; 2nd noun data
-0F04: B6 01 C9            LDA     $01C9       ; {-SECOND_NOUN_NUM} 2nd noun index
-0F07: 20 D1               BRA     $EDA        ; {} Print short name
+0F01: BE 01 CC            LDX     $01CC       ;{-1_SECOND_NOUN_DATA} 2nd noun data
+0F04: B6 01 C9            LDA     $01C9       ;{-1_SECOND_NOUN_NUM}  2nd noun index
+0F07: 20 D1               BRA     $EDA        ;  Print short name
 
 Com15_CheckObjBits:
 ; Check target bits in an object.
 0F09: 34 10               PSHS    X           ; Hold script pointer
-0F0B: BE 01 C0            LDX     $01C0       ; Input object pointer
-0F0E: B6 01 BF            LDA     $01BF       ; {-VAR_OBJ_NUMBER} Var object number
-0F11: 27 0E               BEQ     $F21        ; {} No object ... return error
-0F13: BD 0A 42            JSR     $0A42       ; {} Skip the pointer-to-next object
+0F0B: BE 01 C0            LDX     $01C0       ;{-1_VAR_OBJ_DATA} Input object pointer
+0F0E: B6 01 BF            LDA     $01BF       ;{-1_VAR_OBJ_NUMBER}  Var object number
+0F11: 27 0E               BEQ     $F21        ;  No object ... return error
+0F13: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip the pointer-to-next object
 0F16: 30 02               LEAX    2,X         ; Skip to data byte
 0F18: A6 84               LDA     ,X          ; Get the object data
 0F1A: 35 10               PULS    X           ; Restore the script
@@ -1211,8 +1214,8 @@ Com15_CheckObjBits:
 0F27: 39                  RTS                 ; Return
 
 Com14_ExecuteCommandAndReverseReturn:
-0F28: BD 0C 03            JSR     $0C03       ; {} Execute command
-0F2B: 26 03               BNE     $F30        ; {} Command returned a non-zero ... return zero
+0F28: BD 0C 03            JSR     $0C03       ;{ProcessCommand}  Execute command
+0F2B: 26 03               BNE     $F30        ;  Command returned a non-zero ... return zero
 0F2D: 8A 01               ORA     #$01        ; Command returned a zero ... return non-zerio
 0F2F: 39                  RTS                 ; Done
 0F30: 4F                  CLRA                ; Zero
@@ -1221,8 +1224,8 @@ Com14_ExecuteCommandAndReverseReturn:
 Com17_MoveObjectXToLocationY:
 0F32: E6 80               LDB     ,X+         ; Get object number
 0F34: 34 10               PSHS    X           ; Hold script
-0F36: BD 11 33            JSR     $1133       ; {} Find object
-0F39: BD 0A 42            JSR     $0A42       ; {} Skip over length
+0F36: BD 11 33            JSR     $1133       ;  Find object
+0F39: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip over length
 0F3C: 35 20               PULS    Y           ; Script to Y
 0F3E: A6 A0               LDA     ,Y+         ; Get new location
 0F40: A7 84               STA     ,X          ; Set object's new location
@@ -1232,69 +1235,69 @@ Com17_MoveObjectXToLocationY:
 
 Com18_CheckVarOwnedByActiveObject:
 0F46: 34 10               PSHS    X           ; Save script pointer
-0F48: BE 01 C0            LDX     $01C0       ; Var object data
-0F4B: BD 0A 42            JSR     $0A42       ; {} Skip length
+0F48: BE 01 C0            LDX     $01C0       ;{-1_VAR_OBJ_DATA} Var object data
+0F4B: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip length
 0F4E: E6 84               LDB     ,X          ; Location
 0F50: 35 10               PULS    X           ; Restore script
-0F52: 10 27 F9 79         LBEQ    $08CF       ; {} Out-of-game ... error and out
-0F56: F1 01 D2            CMPB    $01D2       ; {-ACTIVE_OBJ_NUM} Is this the active object?
-0F59: 27 EA               BEQ     $F45        ; {} Yes ... return OK
+0F52: 10 27 F9 79         LBEQ    $08CF       ;  Out-of-game ... error and out
+0F56: F1 01 D2            CMPB    $01D2       ;{-1_ACTIVE_OBJ_NUM}  Is this the active object?
+0F59: 27 EA               BEQ     $F45        ;  Yes ... return OK
 0F5B: C5 80               BITB    #$80        ; Test upper bit
-0F5D: 26 E6               BNE     $F45        ; {} It is in a room ... error and out
+0F5D: 26 E6               BNE     $F45        ;  It is in a room ... error and out
 ;
 0F5F: 34 10               PSHS    X           ; Hold script
-0F61: BD 11 33            JSR     $1133       ; {} Look up owner object
-0F64: 20 E5               BRA     $F4B        ; {} Check again
+0F61: BD 11 33            JSR     $1133       ;  Look up owner object
+0F64: 20 E5               BRA     $F4B        ;  Check again
 
 ; Execute any turn-scripts on the objects
 0F66: 8E 20 FF            LDX     #$20FF      ; Start of object data
-0F69: 7F 01 D0            CLR     $01D0       ; {-tmp1DO} Object number
-0F6C: BD 0A 42            JSR     $0A42       ; {} Skip length
-0F6F: BD 0A 58            JSR     $0A58       ; {} End of objects?
-0F72: 24 D1               BCC     $F45        ; {} Yes ... out
-0F74: 7C 01 D0            INC     $01D0       ; {-tmp1DO} Next object number
+0F69: 7F 01 D0            CLR     $01D0       ;{-1_tmp1DO}  Object number
+0F6C: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip length
+0F6F: BD 0A 58            JSR     $0A58       ;{CompareXY}  End of objects?
+0F72: 24 D1               BCC     $F45        ;  Yes ... out
+0F74: 7C 01 D0            INC     $01D0       ;{-1_tmp1DO}  Next object number
 0F77: 34 20               PSHS    Y           ; Hold end-of-objects
-0F79: BD 0A 42            JSR     $0A42       ; {} Skip length
+0F79: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip length
 0F7C: A6 84               LDA     ,X          ; Location
-0F7E: B7 01 AB            STA     $01AB       ; {-tmp1AB} Hold
+0F7E: B7 01 AB            STA     $01AB       ;{-1_tmp1AB}  Hold
 0F81: 34 20               PSHS    Y           ; End of object
 0F83: A6 84               LDA     ,X          ; Location
-0F85: 27 42               BEQ     $FC9        ; {} If it is out-of-game it doesn't get a turn
+0F85: 27 42               BEQ     $FC9        ;  If it is out-of-game it doesn't get a turn
 0F87: 30 03               LEAX    3,X         ; Skip data
 0F89: C6 08               LDB     #$08        ; Turn-script
-0F8B: BD 0A 27            JSR     $0A27       ; {} Find turn script
-0F8E: 24 39               BCC     $FC9        ; {} Nothing to do ... next object
-0F90: BD 0A 42            JSR     $0A42       ; {} Skip length
+0F8B: BD 0A 27            JSR     $0A27       ;  Find turn script
+0F8E: 24 39               BCC     $FC9        ;  Nothing to do ... next object
+0F90: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip length
 0F93: 34 10               PSHS    X           ; Hold pointer
-0F95: BD 12 A8            JSR     $12A8       ; {} Generate random number
-0F98: F6 01 D0            LDB     $01D0       ; {-tmp1DO} Current object number ...
-0F9B: F7 01 D2            STB     $01D2       ; {-ACTIVE_OBJ_NUM} ... is now the active object
-0F9E: BD 11 33            JSR     $1133       ; {} Get its data pointer
-0FA1: BF 01 D3            STX     $01D3       ; Hold pointer to active object data
-0FA4: F6 01 AB            LDB     $01AB       ; {-tmp1AB} Object's location
+0F95: BD 12 A8            JSR     $12A8       ;  Generate random number
+0F98: F6 01 D0            LDB     $01D0       ;{-1_tmp1DO}  Current object number ...
+0F9B: F7 01 D2            STB     $01D2       ;{-1_ACTIVE_OBJ_NUM}  ... is now the active object
+0F9E: BD 11 33            JSR     $1133       ;  Get its data pointer
+0FA1: BF 01 D3            STX     $01D3       ;{-1_ACTIVE_OBJ_DATA} Hold pointer to active object data
+0FA4: F6 01 AB            LDB     $01AB       ;{-1_tmp1AB}  Object's location
 0FA7: 5D                  TSTB                ; Check upper bit
-0FA8: 2B 0E               BMI     $FB8        ; {} If in a room ... go handle
-0FAA: BD 11 33            JSR     $1133       ; {} Get object's owner
-0FAD: BD 0A 42            JSR     $0A42       ; {} Skip length
+0FA8: 2B 0E               BMI     $FB8        ;  If in a room ... go handle
+0FAA: BD 11 33            JSR     $1133       ;  Get object's owner
+0FAD: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip length
 0FB0: E6 84               LDB     ,X          ; Get owner location
-0FB2: 26 F3               BNE     $FA7        ; {} Still in game ... find room location of owner chain
+0FB2: 26 F3               BNE     $FA7        ;  Still in game ... find room location of owner chain
 0FB4: 35 10               PULS    X           ; Restore pointer
-0FB6: 20 11               BRA     $FC9        ; {} Next object
-0FB8: F7 01 D5            STB     $01D5       ; {-CUR_ROOM} Objects location
+0FB6: 20 11               BRA     $FC9        ;  Next object
+0FB8: F7 01 D5            STB     $01D5       ;{-1_CUR_ROOM}  Objects location
 0FBB: 8E 15 23            LDX     #$1523      ; Get room ...
-0FBE: BD 0A 1F            JSR     $0A1F       ; {} ... scripts for object
-0FC1: BF 01 D6            STX     $01D6       ; Hold
+0FBE: BD 0A 1F            JSR     $0A1F       ;{FindSublist}  ... scripts for object
+0FC1: BF 01 D6            STX     $01D6       ;{-1_CUR_ROOM_DATA} Hold
 0FC4: 35 10               PULS    X           ; Restore turn-script
-0FC6: BD 0C 03            JSR     $0C03       ; {} Execute turn-script
+0FC6: BD 0C 03            JSR     $0C03       ;{ProcessCommand}  Execute turn-script
 0FC9: 35 10               PULS    X           ; Restore
 0FCB: 35 20               PULS    Y           ; Restore
-0FCD: 20 A0               BRA     $F6F        ; {} Next object
+0FCD: 20 A0               BRA     $F6F        ;  Next object
 
 Com05_IsRandomLessOrEqual:
 0FCF: B6 13 38            LDA     $1338       ; Random value
 0FD2: A1 80               CMPA    ,X+         ; Compare random value to script
-0FD4: 25 05               BCS     $FDB        ; {} If less than ... OK
-0FD6: 27 03               BEQ     $FDB        ; {} If the same ... OK
+0FD4: 25 05               BCS     $FDB        ;  If less than ... OK
+0FD6: 27 03               BEQ     $FDB        ;  If the same ... OK
 0FD8: 8A 01               ORA     #$01        ; Greater than ... FAIL
 0FDA: 39                  RTS                 ; Done
 0FDB: 4F                  CLRA                ; Less than or equal ... OK
@@ -1302,54 +1305,54 @@ Com05_IsRandomLessOrEqual:
 
 Com1D_AttackObject:
 0FDD: A6 80               LDA     ,X+         ; Get attack value
-0FDF: B7 01 AB            STA     $01AB       ; {-tmp1AB} Hold attack value
+0FDF: B7 01 AB            STA     $01AB       ;{-1_tmp1AB}  Hold attack value
 0FE2: 34 10               PSHS    X           ; Hold script
-0FE4: BE 01 C0            LDX     $01C0       ; Target object data
-0FE7: BD 0A 42            JSR     $0A42       ; {} Skip length
+0FE4: BE 01 C0            LDX     $01C0       ;{-1_VAR_OBJ_DATA} Target object data
+0FE7: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip length
 0FEA: 30 03               LEAX    3,X         ; Skip object data
 0FEC: 34 10               PSHS    X           ; Hold X ...
 0FEE: 34 20               PSHS    Y           ; ... and Y
 0FF0: C6 09               LDB     #$09        ; Get target's ...
-0FF2: BD 0A 27            JSR     $0A27       ; {} ... combat info
-0FF5: 24 29               BCC     $1020       ; {} Not found. Do nothing (return OK)
-0FF7: BD 0A 42            JSR     $0A42       ; {} Skip length
+0FF2: BD 0A 27            JSR     $0A27       ;  ... combat info
+0FF5: 24 29               BCC     $1020       ;  Not found. Do nothing (return OK)
+0FF7: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip length
 0FFA: 30 01               LEAX    1,X         ; Hit points
 0FFC: A6 84               LDA     ,X          ; Hit points
-0FFE: B0 01 AB            SUBA    $01AB       ; {-tmp1AB} Subtract attack from hit points
-1001: 24 01               BCC     $1004       ; {} Not negative ... keep it
+0FFE: B0 01 AB            SUBA    $01AB       ;{-1_tmp1AB}  Subtract attack from hit points
+1001: 24 01               BCC     $1004       ;  Not negative ... keep it
 1003: 4F                  CLRA                ; Floor the hit points
 1004: A7 84               STA     ,X          ; New hit points
 1006: 35 20               PULS    Y           ; Restore ...
 1008: 35 10               PULS    X           ; ... X and Y
 100A: 4D                  TSTA                ; Hit points zero?
-100B: 27 04               BEQ     $1011       ; {} Yes ... object dies
+100B: 27 04               BEQ     $1011       ;  Yes ... object dies
 100D: 35 10               PULS    X           ; Restore list
 100F: 4F                  CLRA                ; Return OK
 1010: 39                  RTS                 ; Done
 
 ;Handle object being killed
 1011: C6 0A               LDB     #$0A        ; Object being killed script
-1013: BD 0A 27            JSR     $0A27       ; {} Find a script for handling being killed
-1016: 24 F5               BCC     $100D       ; {} Not found ... nothing happens (return OK)
-1018: BD 0A 42            JSR     $0A42       ; {} Skip id and length
-101B: BD 0C 03            JSR     $0C03       ; {} Execute "being killed" script
-101E: 20 ED               BRA     $100D       ; {} Done (return OK)
+1013: BD 0A 27            JSR     $0A27       ;  Find a script for handling being killed
+1016: 24 F5               BCC     $100D       ;  Not found ... nothing happens (return OK)
+1018: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip id and length
+101B: BD 0C 03            JSR     $0C03       ;{ProcessCommand}  Execute "being killed" script
+101E: 20 ED               BRA     $100D       ;  Done (return OK)
 
 1020: 35 20               PULS    Y           ; Reset ...
 1022: 35 10               PULS    X           ; ... stack
-1024: 20 E7               BRA     $100D       ; {} Return OK
+1024: 20 E7               BRA     $100D       ;  Return OK
 
 Com1E_SwapObjects:
 1026: E6 80               LDB     ,X+         ; 1st object number
 1028: A6 80               LDA     ,X+         ; 2nd object
-102A: B7 01 AB            STA     $01AB       ; {-tmp1AB} Hold second object
+102A: B7 01 AB            STA     $01AB       ;{-1_tmp1AB}  Hold second object
 102D: 34 10               PSHS    X           ; Hold script
-102F: BD 11 33            JSR     $1133       ; {} Look up object
-1032: BD 0A 42            JSR     $0A42       ; {} Skip length
+102F: BD 11 33            JSR     $1133       ;  Look up object
+1032: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip length
 1035: 1F 13               TFR     X,U         ; 1st object pointer to U
-1037: F6 01 AB            LDB     $01AB       ; {-tmp1AB} 2nd object
-103A: BD 11 33            JSR     $1133       ; {} Look up object
-103D: BD 0A 42            JSR     $0A42       ; {} Skip length
+1037: F6 01 AB            LDB     $01AB       ;{-1_tmp1AB}  2nd object
+103A: BD 11 33            JSR     $1133       ;  Look up object
+103D: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip length
 1040: A6 84               LDA     ,X          ; Swap ...
 1042: E6 C4               LDB     ,U          ; ... location ...
 1044: A7 C4               STA     ,U          ; ... of ...
@@ -1362,19 +1365,19 @@ Com1E_SwapObjects:
 Com22_CompareHealthToValue:
 104C: A6 80               LDA     ,X+         ; Get value
 104E: 34 10               PSHS    X           ; Hold script pointer
-1050: B7 01 AB            STA     $01AB       ; {-tmp1AB} Hold value
-1053: BE 01 C0            LDX     $01C0       ; Var object data
-1056: BD 0A 42            JSR     $0A42       ; {} Skip length
+1050: B7 01 AB            STA     $01AB       ;{-1_tmp1AB}  Hold value
+1053: BE 01 C0            LDX     $01C0       ;{-1_VAR_OBJ_DATA} Var object data
+1056: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip length
 1059: 30 03               LEAX    3,X         ; Skip data
 105B: C6 09               LDB     #$09        ; Get object ...
-105D: BD 0A 27            JSR     $0A27       ; {} ... hit points
-1060: 24 0E               BCC     $1070       ; {} Doesn't have any ... error and out
-1062: BD 0A 42            JSR     $0A42       ; {} Skip length
+105D: BD 0A 27            JSR     $0A27       ;  ... hit points
+1060: 24 0E               BCC     $1070       ;  Doesn't have any ... error and out
+1062: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip length
 1065: 30 01               LEAX    1,X         ; Get current ...
 1067: A6 84               LDA     ,X          ; ... hit points
-1069: B1 01 AB            CMPA    $01AB       ; {-tmp1AB} Compare hit points to value
-106C: 25 07               BCS     $1075       ; {} Less than ..
-106E: 27 05               BEQ     $1075       ; {} ... or equal ... OK and out
+1069: B1 01 AB            CMPA    $01AB       ;{-1_tmp1AB}  Compare hit points to value
+106C: 25 07               BCS     $1075       ;  Less than ..
+106E: 27 05               BEQ     $1075       ;  ... or equal ... OK and out
 1070: 35 10               PULS    X           ; Restore script
 1072: 8A 01               ORA     #$01        ; Error
 1074: 39                  RTS                 ; Done
@@ -1384,116 +1387,116 @@ Com22_CompareHealthToValue:
 
 Com23_HealVarObject:
 1079: A6 80               LDA     ,X+         ; Get healing value
-107B: B7 01 AB            STA     $01AB       ; {-tmp1AB} Hold it
+107B: B7 01 AB            STA     $01AB       ;{-1_tmp1AB}  Hold it
 107E: 34 10               PSHS    X           ; Hold script
-1080: BE 01 C0            LDX     $01C0       ; Var object data
-1083: BD 0A 42            JSR     $0A42       ; {} Skip length
+1080: BE 01 C0            LDX     $01C0       ;{-1_VAR_OBJ_DATA} Var object data
+1083: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip length
 1086: 30 03               LEAX    3,X         ; Skip data
 1088: C6 09               LDB     #$09        ; Get object ...
-108A: BD 0A 27            JSR     $0A27       ; {} ... hit points
-108D: 24 E6               BCC     $1075       ; {} No entry ... do nothing (but OK)
-108F: BD 0A 42            JSR     $0A42       ; {} Skip length
+108A: BD 0A 27            JSR     $0A27       ;  ... hit points
+108D: 24 E6               BCC     $1075       ;  No entry ... do nothing (but OK)
+108F: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip length
 1092: EC 84               LDD     ,X          ; Get HP info
-1094: FB 01 AB            ADDB    $01AB       ; {-tmp1AB} Add to health
-1097: B7 01 AB            STA     $01AB       ; {-tmp1AB} Max value
-109A: F1 01 AB            CMPB    $01AB       ; {-tmp1AB} Over the max?
-109D: 25 03               BCS     $10A2       ; {} No ... keep it
-109F: F6 01 AB            LDB     $01AB       ; {-tmp1AB} Use max value
+1094: FB 01 AB            ADDB    $01AB       ;{-1_tmp1AB}  Add to health
+1097: B7 01 AB            STA     $01AB       ;{-1_tmp1AB}  Max value
+109A: F1 01 AB            CMPB    $01AB       ;{-1_tmp1AB}  Over the max?
+109D: 25 03               BCS     $10A2       ;  No ... keep it
+109F: F6 01 AB            LDB     $01AB       ;{-1_tmp1AB}  Use max value
 10A2: 30 01               LEAX    1,X         ; Store ...
 10A4: E7 84               STB     ,X          ; ... new health
-10A6: 20 CD               BRA     $1075       ; {} OK out
+10A6: 20 CD               BRA     $1075       ;  OK out
 
 Com25_RestartGame:
 ; No return to script
 10A8: 86 0D               LDA     #$0D        ; Print first ...
-10AA: BD 11 84            JSR     $1184       ; {} ... CR
+10AA: BD 11 84            JSR     $1184       ;{PrintCharacterAutoWrap}  ... CR
 10AD: 86 0D               LDA     #$0D        ; Print second ...
-10AF: BD 11 84            JSR     $1184       ; {} ... CR
-10B2: 7E 06 0C            JMP     $060C       ; {} Restart game
+10AF: BD 11 84            JSR     $1184       ;{PrintCharacterAutoWrap}  ... CR
+10B2: 7E 06 0C            JMP     $060C       ;  Restart game
 
 Com24_EndlessLoop:
-10B5: 20 FE               BRA     $10B5       ; {} Spin forever
+10B5: 20 FE               BRA     $10B5       ;{Com24_EndlessLoop}  Spin forever
 
 ;; This snippet of code is never called by anyone, but this is a print
 ;; for null-terminate ASCII strings. Presumably the PrintScore function
 ;; used this at one time.
 
 10B7: A6 A0               LDA     ,Y+         ; Get next character
-10B9: 27 09               BEQ     $10C4       ; {} Null means done
+10B9: 27 09               BEQ     $10C4       ;  Null means done
 10BB: 34 20               PSHS    Y           ; Hold Y
-10BD: BD 11 84            JSR     $1184       ; {} Print character
+10BD: BD 11 84            JSR     $1184       ;{PrintCharacterAutoWrap}  Print character
 10C0: 35 20               PULS    Y           ; Restore Y
-10C2: 20 F3               BRA     $10B7       ; {} Keep going
+10C2: 20 F3               BRA     $10B7       ;  Keep going
 10C4: 39                  RTS                 ; Done
 
 Com26_PrintScore:
 ; Second byte of object data is points. If the object is in the
 ; treasure room (dropped or carried) it counts double.
 10C5: 34 10               PSHS    X           
-10C7: 7F 01 AF            CLR     $01AF       ; {-not1AF} Score tally
-10CA: 7F 01 B0            CLR     $01B0       
-10CD: B6 01 D5            LDA     $01D5       ; {-CUR_ROOM} Player location
+10C7: 7F 01 AF            CLR     $01AF       ;{-1_not1AF}  Score tally
+10CA: 7F 01 B0            CLR     $01B0       ;{-1_not1B0}
+10CD: B6 01 D5            LDA     $01D5       ;{-1_CUR_ROOM}  Player location
 10D0: 81 96               CMPA    #$96        ; Player in the treasure room?
-10D2: 26 03               BNE     $10D7       ; {} No ... regular score
-10D4: 7C 01 B0            INC     $01B0       ; {-not1B0} Yes ... carried objects count double
+10D2: 26 03               BNE     $10D7       ;  No ... regular score
+10D4: 7C 01 B0            INC     $01B0       ;{-1_not1B0}  Yes ... carried objects count double
 10D7: 8E 20 FF            LDX     #$20FF      ; Object data
-10DA: BD 0A 42            JSR     $0A42       ; {} Skip header
-10DD: BD 0A 58            JSR     $0A58       ; {} Reached end?
-10E0: 24 2D               BCC     $110F       ; {} Yes ... move on
+10DA: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip header
+10DD: BD 0A 58            JSR     $0A58       ;{CompareXY}  Reached end?
+10E0: 24 2D               BCC     $110F       ;  Yes ... move on
 10E2: 34 20               PSHS    Y           ; Hold end
-10E4: BD 0A 42            JSR     $0A42       ; {} Skip object length
+10E4: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip object length
 10E7: E6 80               LDB     ,X+         ; Get owner
 10E9: C1 96               CMPB    #$96        ; Treasure room?
-10EB: 27 04               BEQ     $10F1       ; {} Yes ... count it
+10EB: 27 04               BEQ     $10F1       ;  Yes ... count it
 10ED: C1 1D               CMPB    #$1D        ; Carried by user?
-10EF: 26 18               BNE     $1109       ; {} No ... next object
-10F1: B6 01 AF            LDA     $01AF       ; {-not1AF} Score tally
+10EF: 26 18               BNE     $1109       ;  No ... next object
+10F1: B6 01 AF            LDA     $01AF       ;{-1_not1AF}  Score tally
 10F4: AB 84               ADDA    ,X          ; Add to score value
 10F6: 19                  DAA                 ; Decimal adjust
-10F7: B7 01 AF            STA     $01AF       ; {-not1AF} New score
+10F7: B7 01 AF            STA     $01AF       ;{-1_not1AF}  New score
 10FA: C1 96               CMPB    #$96        ; Treasure room?
-10FC: 27 05               BEQ     $1103       ; {} Yes ... counts double
-10FE: 7D 01 B0            TST     $01B0       ; {-not1B0} Player in treasure room?
-1101: 27 06               BEQ     $1109       ; {} No ... just count once
+10FC: 27 05               BEQ     $1103       ;  Yes ... counts double
+10FE: 7D 01 B0            TST     $01B0       ;{-1_not1B0}  Player in treasure room?
+1101: 27 06               BEQ     $1109       ;  No ... just count once
 1103: AB 84               ADDA    ,X          ; Double ...
 1105: 19                  DAA                 ; ... the ...
-1106: B7 01 AF            STA     $01AF       ; {-not1AF} ... score value
+1106: B7 01 AF            STA     $01AF       ;{-1_not1AF}  ... score value
 1109: 1F 21               TFR     Y,X         ; Next object
 110B: 35 20               PULS    Y           ; Restore end of list
-110D: 20 CE               BRA     $10DD       ; {} Do all objects
+110D: 20 CE               BRA     $10DD       ;  Do all objects
 ;        
-110F: B6 01 AF            LDA     $01AF       ; {-not1AF} Score value
+110F: B6 01 AF            LDA     $01AF       ;{-1_not1AF}  Score value
 1112: 47                  ASRA                ; Left ...
 1113: 47                  ASRA                ; ... most ...
 1114: 47                  ASRA                ; ... digit ...
 1115: 47                  ASRA                ; ... value
 1116: 8B 30               ADDA    #$30        ; Convert to ASCII
-1118: BD 11 84            JSR     $1184       ; {} Print the left digit
-111B: B6 01 AF            LDA     $01AF       ; {-not1AF} Score value
+1118: BD 11 84            JSR     $1184       ;{PrintCharacterAutoWrap}  Print the left digit
+111B: B6 01 AF            LDA     $01AF       ;{-1_not1AF}  Score value
 111E: 84 0F               ANDA    #$0F        ; Mask off the right digit
 1120: 8B 30               ADDA    #$30        ; Convert ot ASCII
-1122: BD 11 84            JSR     $1184       ; {} Print the right digit
+1122: BD 11 84            JSR     $1184       ;{PrintCharacterAutoWrap}  Print the right digit
 1125: 86 2E               LDA     #$2E        ; Print ...
-1127: BD 11 84            JSR     $1184       ; {} ... "."
+1127: BD 11 84            JSR     $1184       ;{PrintCharacterAutoWrap}  ... "."
 112A: 86 20               LDA     #$20        ; Print ...
-112C: BD 11 84            JSR     $1184       ; {} ... SPACE
+112C: BD 11 84            JSR     $1184       ;{PrintCharacterAutoWrap}  ... SPACE
 112F: 35 10               PULS    X           ; Restore script
 1131: 4F                  CLRA                ; OK
 1132: 39                  RTS                 ; Done
 
 ; Find object index in B
 1133: 8E 20 FF            LDX     #$20FF      ; Start of objects
-1136: BD 0A 42            JSR     $0A42       ; {} Skip end
+1136: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Skip end
 1139: 5A                  DECB                ; Found desired object?
-113A: 27 88               BEQ     $10C4       ; {} Yes ... out OK
-113C: BD 0A 42            JSR     $0A42       ; {} Length of object
+113A: 27 88               BEQ     $10C4       ;  Yes ... out OK
+113C: BD 0A 42            JSR     $0A42       ;{SkipIDLoadEnd}  Length of object
 113F: 1E 12               EXG     X,Y         ; Next object
-1141: 20 F6               BRA     $1139       ; {} Keep looking
+1141: 20 F6               BRA     $1139       ;  Keep looking
 
 ; Print packed message and CR
-1143: BD 11 4C            JSR     $114C       ; {} Print packed message at X
+1143: BD 11 4C            JSR     $114C       ;{PrintPackedMessage}  Print packed message at X
 1146: 86 0D               LDA     #$0D        ; Print ...
-1148: BD 11 84            JSR     $1184       ; {} ... CR
+1148: BD 11 84            JSR     $1184       ;{PrintCharacterAutoWrap}  ... CR
 114B: 39                  RTS                 ; Done
 
 PrintPackedMessage: ; ==
@@ -1501,27 +1504,27 @@ PrintPackedMessage: ; ==
 114C: 4F                  CLRA                ; Assume MSB is 0
 114D: E6 84               LDB     ,X          ; Get length
 114F: C5 80               BITB    #$80        ; Is it single byte length?
-1151: 27 04               BEQ     $1157       ; {} Yes ... use D
+1151: 27 04               BEQ     $1157       ;  Yes ... use D
 1153: A6 80               LDA     ,X+         ; Get the ...
 1155: 84 7F               ANDA    #$7F        ; ... MSB and ...
 1157: E6 80               LDB     ,X+         ; ... LSB
-1159: FD 01 AB            STD     $01AB       ; {-tmp1AB} Store byte count
-115C: FC 01 AB            LDD     $01AB       ; {-tmp1AB} Number of bytes left in message
+1159: FD 01 AB            STD     $01AB       ;{-1_tmp1AB}  Store byte count
+115C: FC 01 AB            LDD     $01AB       ;{-1_tmp1AB}  Number of bytes left in message
 115F: 10 83 00 02         CMPD    #$0002      ; Less than 2?
-1163: 25 0E               BCS     $1173       ; {} Yes ... these aren't compressed
-1165: BD 11 EC            JSR     $11EC       ; {} Decompress and print two bytes pointed to by X
-1168: FC 01 AB            LDD     $01AB       ; {-tmp1AB} Get byte count
+1163: 25 0E               BCS     $1173       ;  Yes ... these aren't compressed
+1165: BD 11 EC            JSR     $11EC       ;{UnpackBytes}  Decompress and print two bytes pointed to by X
+1168: FC 01 AB            LDD     $01AB       ;{-1_tmp1AB}  Get byte count
 116B: 83 00 02            SUBD    #$0002      ; Handled 2
-116E: FD 01 AB            STD     $01AB       ; {-tmp1AB} Store count
-1171: 20 E9               BRA     $115C       ; {} Keep decompressing
+116E: FD 01 AB            STD     $01AB       ;{-1_tmp1AB}  Store count
+1171: 20 E9               BRA     $115C       ;  Keep decompressing
 1173: 5D                  TSTB                ; Any characters on the end to print?
-1174: 27 08               BEQ     $117E       ; {} No ... skip
+1174: 27 08               BEQ     $117E       ;  No ... skip
 1176: A6 80               LDA     ,X+         ; Get character
-1178: BD 11 84            JSR     $1184       ; {} Print the character
+1178: BD 11 84            JSR     $1184       ;{PrintCharacterAutoWrap}  Print the character
 117B: 5A                  DECB                ; Decrement count
-117C: 20 F5               BRA     $1173       ; {} Keeop going
+117C: 20 F5               BRA     $1173       ;  Keeop going
 117E: 86 20               LDA     #$20        ; Print ...
-1180: BD 11 84            JSR     $1184       ; {} ... space on end
+1180: BD 11 84            JSR     $1184       ;{PrintCharacterAutoWrap}  ... space on end
 1183: 39                  RTS                 ; Done
  
 PrintCharacterAutoWrap: ; ==
@@ -1529,51 +1532,51 @@ PrintCharacterAutoWrap: ; ==
 ; auto MORE prompting.
 ;
 1184: 34 06               PSHS    B,A         ; Hold B and A
-1186: B6 01 BE            LDA     $01BE       ; {-lastChar} Last printed character
+1186: B6 01 BE            LDA     $01BE       ;{-1_lastChar}  Last printed character
 1189: 81 20               CMPA    #$20        ; Last printed a space?
-118B: 26 1A               BNE     $11A7       ; {} No ... print this
+118B: 26 1A               BNE     $11A7       ;  No ... print this
 118D: 35 06               PULS    A,B         ; Hold
 118F: 81 20               CMPA    #$20        ; Space now?
-1191: 27 57               BEQ     $11EA       ; {} Yes ... just ignore
+1191: 27 57               BEQ     $11EA       ;  Yes ... just ignore
 1193: 81 2E               CMPA    #$2E        ; A '.' ?
-1195: 27 08               BEQ     $119F       ; {} Yes. Ignore leading space.
+1195: 27 08               BEQ     $119F       ;  Yes. Ignore leading space.
 1197: 81 3F               CMPA    #$3F        ; A '?' ?
-1199: 27 04               BEQ     $119F       ; {} Yes. Ignore leading space.
+1199: 27 04               BEQ     $119F       ;  Yes. Ignore leading space.
 119B: 81 21               CMPA    #$21        ; A '!' ?
-119D: 26 0A               BNE     $11A9       ; {} Yes. Ignore leading space.
-119F: DE 88               LDU     >$88        ; {-} Back screen ...
+119D: 26 0A               BNE     $11A9       ;  Yes. Ignore leading space.
+119F: DE 88               LDU     >$88        ;{-1_printCursor}  Back screen ...
 11A1: 33 5F               LEAU    -1,U        ; ... pointer up ...
-11A3: DF 88               STU     >$88        ; {-} ... over ignored space
-11A5: 20 02               BRA     $11A9       ; {} Store and print
+11A3: DF 88               STU     >$88        ;{-1_printCursor}  ... over ignored space
+11A5: 20 02               BRA     $11A9       ;  Store and print
 11A7: 35 06               PULS    A,B         ; Restore A and B
-11A9: B7 01 BE            STA     $01BE       ; {-lastChar} Last printed character
+11A9: B7 01 BE            STA     $01BE       ;{-1_lastChar}  Last printed character
 11AC: AD 9F A0 02         JSR     [$A002]     ; Output character
-11B0: 96 89               LDA     >$89        ; {-} LSB of screen position
+11B0: 96 89               LDA     >$89        ;{-1_printCursor}  LSB of screen position
 11B2: 81 FE               CMPA    #$FE        ; Reached end of screen?
-11B4: 25 34               BCS     $11EA       ; {} No ... done
-11B6: DE 88               LDU     >$88        ; {-} Cursor position
+11B4: 25 34               BCS     $11EA       ;  No ... done
+11B6: DE 88               LDU     >$88        ;{-1_printCursor}  Cursor position
 11B8: 33 C8 DF            LEAU    $-21,U      ; Back up to end of current row
 11BB: 86 0D               LDA     #$0D        ; CR ...
 11BD: AD 9F A0 02         JSR     [$A002]     ; ... to screen
 11C1: A6 C4               LDA     ,U          ; Find the ...
 11C3: 81 60               CMPA    #$60        ; ... space before ...
-11C5: 27 04               BEQ     $11CB       ; {} ... the last ...
+11C5: 27 04               BEQ     $11CB       ;  ... the last ...
 11C7: 33 5F               LEAU    -1,U        ; ... word ...
-11C9: 20 F6               BRA     $11C1       ; {} ... on the line
+11C9: 20 F6               BRA     $11C1       ;  ... on the line
 11CB: 33 41               LEAU    1,U         ; Now pointing to last word on line
 11CD: A6 C4               LDA     ,U          ; Get next character in buffer
 11CF: 81 60               CMPA    #$60        ; Is it a space?
-11D1: 27 17               BEQ     $11EA       ; {} Yes ... all done
+11D1: 27 17               BEQ     $11EA       ;  Yes ... all done
 11D3: 34 04               PSHS    B           ; Hold B
 11D5: C6 60               LDB     #$60        ; Put ...
 11D7: E7 C4               STB     ,U          ; ... space
 11D9: 35 04               PULS    B           ; Restore B
 11DB: 81 60               CMPA    #$60        ; Make sure ...
-11DD: 25 02               BCS     $11E1       ; {} ... upper ...
+11DD: 25 02               BCS     $11E1       ;  ... upper ...
 11DF: 80 40               SUBA    #$40        ; ... case
-11E1: B7 01 BE            STA     $01BE       ; {-lastChar} Last printed character
+11E1: B7 01 BE            STA     $01BE       ;{-1_lastChar}  Last printed character
 11E4: AD 9F A0 02         JSR     [$A002]     ; Output to screen
-11E8: 20 E1               BRA     $11CB       ; {} Move overhang to next line
+11E8: 20 E1               BRA     $11CB       ;  Move overhang to next line
 11EA: 39                  RTS                 ; Done
 11EB: 39                  RTS                 ; OOPS
 
@@ -1586,58 +1589,58 @@ UnpackBytes: ; ==
 11F0: C6 03               LDB     #$03        ;
 11F2: F7 12 A1            STB     $12A1       ;
 11F5: A6 80               LDA     ,X+         ;
-11F7: B7 01 DE            STA     $01DE       ; {-tmp1DE}
+11F7: B7 01 DE            STA     $01DE       ;{-1_tmp1DE} 
 11FA: A6 80               LDA     ,X+         ;
-11FC: B7 01 DD            STA     $01DD       ; {-tmp1DD}
+11FC: B7 01 DD            STA     $01DD       ;{-1_tmp1DD} 
 11FF: 31 23               LEAY    3,Y         ;
 1201: CE 00 28            LDU     #$0028      ;
 1204: FF 12 A2            STU     $12A2       ;
 1207: 86 11               LDA     #$11        ;
-1209: B7 01 DA            STA     $01DA       ; {-tmp1DA}
-120C: 7F 01 DB            CLR     $01DB       ; {-tmp1DB}
-120F: 7F 01 DC            CLR     $01DC       ; {-tmp1DC}
-1212: 79 01 DE            ROL     $01DE       ; {-tmp1DE}
-1215: 79 01 DD            ROL     $01DD       ; {-tmp1DD}
-1218: 7A 01 DA            DEC     $01DA       ; {-tmp1DA}
-121B: 27 39               BEQ     $1256       ; {}
+1209: B7 01 DA            STA     $01DA       ;{-1_tmp1DA} 
+120C: 7F 01 DB            CLR     $01DB       ;{-1_tmp1DB} 
+120F: 7F 01 DC            CLR     $01DC       ;{-1_tmp1DC} 
+1212: 79 01 DE            ROL     $01DE       ;{-1_tmp1DE} 
+1215: 79 01 DD            ROL     $01DD       ;{-1_tmp1DD} 
+1218: 7A 01 DA            DEC     $01DA       ;{-1_tmp1DA} 
+121B: 27 39               BEQ     $1256       ; 
 121D: 86 00               LDA     #$00        ;
 121F: 89 00               ADCA    #$00        ; This algorithm is identical to the decompression
-1221: 78 01 DC            ASL     $01DC       ; {-tmp1DC} used in Pyramid2000. Check the comments there for
-1224: 79 01 DB            ROL     $01DB       ; {-tmp1DB} more detail.
-1227: BB 01 DC            ADDA    $01DC       ; {-tmp1DC}
+1221: 78 01 DC            ASL     $01DC       ;{-1_tmp1DC}  used in Pyramid2000. Check the comments there for
+1224: 79 01 DB            ROL     $01DB       ;{-1_tmp1DB}  more detail.
+1227: BB 01 DC            ADDA    $01DC       ;{-1_tmp1DC} 
 122A: B0 12 A3            SUBA    $12A3       ;
-122D: B7 01 E0            STA     $01E0       ; {-tmp1EO}
-1230: B6 01 DB            LDA     $01DB       ; {-tmp1DB}
+122D: B7 01 E0            STA     $01E0       ;{-1_tmp1EO} 
+1230: B6 01 DB            LDA     $01DB       ;{-1_tmp1DB} 
 1233: B2 12 A2            SBCA    $12A2       ;
-1236: B7 01 DF            STA     $01DF       ; {-tmp1DF}
-1239: 24 0B               BCC     $1246       ; {}
-123B: FC 01 DF            LDD     $01DF       ; {-tmp1DF}
+1236: B7 01 DF            STA     $01DF       ;{-1_tmp1DF} 
+1239: 24 0B               BCC     $1246       ; 
+123B: FC 01 DF            LDD     $01DF       ;{-1_tmp1DF} 
 123E: F3 12 A2            ADDD    $12A2       ;
-1241: FD 01 DB            STD     $01DB       ; {-tmp1DB}
-1244: 20 06               BRA     $124C       ; {}
-1246: FC 01 DF            LDD     $01DF       ; {-tmp1DF}
-1249: FD 01 DB            STD     $01DB       ; {-tmp1DB}
+1241: FD 01 DB            STD     $01DB       ;{-1_tmp1DB} 
+1244: 20 06               BRA     $124C       ; 
+1246: FC 01 DF            LDD     $01DF       ;{-1_tmp1DF} 
+1249: FD 01 DB            STD     $01DB       ;{-1_tmp1DB} 
 ; Compliment C flag and continue
-124C: 25 04               BCS     $1252       ; {}
+124C: 25 04               BCS     $1252       ; 
 124E: 1A 01               ORCC    #$01        ;
-1250: 20 C0               BRA     $1212       ; {}
+1250: 20 C0               BRA     $1212       ; 
 1252: 1C FE               ANDCC   #$FE        ;
-1254: 20 BC               BRA     $1212       ; {}
+1254: 20 BC               BRA     $1212       ; 
 ; Process the result of the division
-1256: FC 01 DB            LDD     $01DB       ; {-tmp1DB}
+1256: FC 01 DB            LDD     $01DB       ;{-1_tmp1DB} 
 1259: C3 12 79            ADDD    #$1279      ;
 125C: 1F 03               TFR     D,U         ;
 125E: A6 C4               LDA     ,U          ;
 1260: A7 A2               STA     ,-Y         ;
 1262: 7A 12 A1            DEC     $12A1       ;
-1265: 26 9A               BNE     $1201       ; {}
+1265: 26 9A               BNE     $1201       ; 
 1267: 10 8E 12 A4         LDY     #$12A4      ;
 126B: C6 03               LDB     #$03        ;
 126D: A6 A0               LDA     ,Y+         ;
-126F: BD 11 84            JSR     $1184       ; {} Print character
+126F: BD 11 84            JSR     $1184       ;{PrintCharacterAutoWrap}  Print character
 1272: 5A                  DECB                ;
-1273: 26 F8               BNE     $126D       ; {}
-1275: FC 01 AB            LDD     $01AB       ; {-tmp1AB}
+1273: 26 F8               BNE     $126D       ; 
+1275: FC 01 AB            LDD     $01AB       ;{-1_tmp1AB} 
 1278: 39                  RTS                 ;
 
 ; Character translation table
@@ -1658,29 +1661,29 @@ UnpackBytes: ; ==
 12B1: 30 01               LEAX    1,X         ;
 12B3: 1A 01               ORCC    #$01        ;
 12B5: 84 06               ANDA    #$06        ;
-12B7: 27 07               BEQ     $12C0       ; {}
+12B7: 27 07               BEQ     $12C0       ; 
 12B9: 81 06               CMPA    #$06        ;
 12BB: 1A 01               ORCC    #$01        ;
-12BD: 27 01               BEQ     $12C0       ; {}
+12BD: 27 01               BEQ     $12C0       ; 
 12BF: 4F                  CLRA                ;
 12C0: A6 84               LDA     ,X          ;
-12C2: 25 03               BCS     $12C7       ; {}
+12C2: 25 03               BCS     $12C7       ; 
 12C4: 44                  LSRA                ;
-12C5: 20 03               BRA     $12CA       ; {}
+12C5: 20 03               BRA     $12CA       ; 
 12C7: 44                  LSRA                ;
 12C8: 8A 80               ORA     #$80        ;
 12CA: A7 84               STA     ,X          ;
 12CC: 30 1F               LEAX    -1,X        ;
 12CE: A6 84               LDA     ,X          ;
-12D0: 25 03               BCS     $12D5       ; {}
+12D0: 25 03               BCS     $12D5       ; 
 12D2: 44                  LSRA                ;
-12D3: 20 03               BRA     $12D8       ; {}
+12D3: 20 03               BRA     $12D8       ; 
 12D5: 44                  LSRA                ;
 12D6: 8A 80               ORA     #$80        ;
 12D8: 84 FE               ANDA    #$FE        ;
 12DA: A7 84               STA     ,X          ;
 12DC: 5A                  DECB                ;
-12DD: 26 D2               BNE     $12B1       ; {}
+12DD: 26 D2               BNE     $12B1       ; 
 12DF: B6 13 39            LDA     $1339       ;
 12E2: 35 14               PULS    B,X         ;
 12E4: 39                  RTS                 ;

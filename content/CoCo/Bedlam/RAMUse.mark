@@ -1,6 +1,6 @@
 %%image Bedlam.jpg
-
-= Game Variables = 
+%%title Bedlam RAM Use
+%%range 0088:03FF
 
 ||= Address  || Name                  || Description                                  || Accessed ||
 || 88:89     || printCursor           || screen pointer used by BASIC                 ||          ||
@@ -46,8 +46,8 @@
 || 01D2      || ACTIVE_OBJ_NUM        || active object                                || :617,66A,823,903,D8B,DA5,DBC,E31,E3B,E65,EA8,F0C,1041,1086,116A ||
 || 01D3:01D4 || ACTIVE_OBJ_DATA       || active object data                           || :670,826,CE0,E41,108C ||
 || 01D5      || CUR_ROOM              || current room number                          || :678,8EE,CD2,CE6,DCF,F1D,10A3 ||
-|| 01D601D7  || CUR_ROOM_DATA         || current room data                            || :681,CDD,D96,F28,10AC ||
-|| 01D801D9  || nextToken             || used in decoding input                       || :687,93D,95C,BAF,BBB,ED5,EE6 ||
+|| 01D6:1D7  || CUR_ROOM_DATA         || current room data                            || :681,CDD,D96,F28,10AC ||
+|| 01D8:1D9  || nextToken             || used in decoding input                       || :687,93D,95C,BAF,BBB,ED5,EE6 ||
 || 01DA      || tmp1DA                || used in unpacking bytes                      || :1276,1285 ||
 || 01DB      || tmp1DB                || used in unpacking bytes                      || :1279,1291,129D,12AE,12B6,12C3 ||
 || 01DC      || tmp1DC                || used in unpacking bytes                      || :127C,128E,1294 ||

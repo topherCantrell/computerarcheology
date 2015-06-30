@@ -1,7 +1,12 @@
 %%image Pyramid.jpg
+%%title Pyramid RAM Use
+%%range 007C:0209, 18E5:18EC
 
 = Variables Kept Outside of Code (Not Saved) =
 
+|| 007C || || ||
+|| 007D || || ||
+|| 007E || || ||
 || 0088:0089 || cursor || Screen cursor used by BASIC routines ||
 
 || 01B0 || || ||
@@ -70,18 +75,32 @@
 || 01EF || || ||
 || 01F0 || || ||
 
+|| 01F2 || || ||
+|| 01F4 || || ||
+|| 01F8 || || ||
+|| 01FD || || ||
+|| 01FE || || ||
+|| 01FF || || ||
+|| 0200 || || ||
+|| 0201 || || ||
+|| 0202 || || ||
+|| 0203 || || ||
+|| 0207 || || ||
+|| 0208 || || ||
+|| 0209 || || ||
+
  The game uses 65 bytes of memory in low memory beginning at 0x01B0 for temporaries.
  These temporaries are NOT persisted in a SAVE.
 
 = Variables Kept in the Code (Saved) =
 
-||= Address || Init || Description ||
-|| 18E5 || 01 || RoomNumber (starts in 1) ||
-|| 18E6 || 00 || TurnCountMSB (BCD format) ||
-|| 18E7 || 00 || TurnCountLSB (BCD format) ||
-|| 18E8 || 00 || LampTime ||
-|| 18E9 || 00 || * NOT USED * ||
-|| 18EA || 00 || LastRoomNumber ||
-|| 18EB || 00 || NumInPack ||
-|| 18EC || 00 || * NOT USED * ||
+||= Address  || Name || Init || Description ||
+|| 18E5  || curRoom || 01 || RoomNumber (starts in 1) ||
+|| 18E6  || turnsMSB || 00 || TurnCountMSB (BCD format) ||
+|| 18E7  || turnsLSB || 00 || TurnCountLSB (BCD format) ||
+|| 18E8  || lampTime || 00 || LampTime ||
+|| 18E9  || || 00 || * NOT USED * ||
+|| 18EA  || lastRoom || 00 || LastRoomNumber ||
+|| 18EB  || numInPack || 00 || NumInPack ||
+|| 18EC  || || 00 || * NOT USED * ||
  
