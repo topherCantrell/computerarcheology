@@ -49,10 +49,11 @@
 	         {"dir": "Asteroids", "nav": "Asteroids", "entries": [
 	             {"mark": "Asteroids.mark", "out": "index.html"},
 	             {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
-	             {"address": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware"},
+	             {"address": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware"},	             
 	             {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
-	             {"mark": "DVG.mark", "out": "DVG.html", "nav": "DVG"},
 	             {"code": "VectorROM.cmark", "out": "VectorROM.html", "nav": "Vector ROM"},
+	             {"separator": ""},
+	             {"mark": "DVG.mark", "out": "DVG.html", "nav": "DVG"},	             
 	             {"copy": "DVG.jpg"},
 	             {"copy": "Asteroids.jpg"}
 	             ]
@@ -60,17 +61,16 @@
 	         {"dir": "Defender", "nav": "Defender", "entries": [	         
 	             {"mark": "Defender.mark", "out": "index.html"},	             
 	             {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
-	             {"address": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware"},
-	             {"separator": ""},
+	             {"address": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware"},	             
 	             {"mark": "Bank1.cmark", "out": "Bank1.html", "nav":"Bank 1"},
 	             {"mark": "Bank2.cmark", "out": "Bank2.html", "nav":"Bank 2"},
 	             {"mark": "Bank3.cmark", "out": "Bank3.html", "nav":"Bank 3"},
 	             {"mark": "Bank7.cmark", "out": "Bank7.html", "nav":"Bank 7"},
 	             {"mark": "BankFixed.cmark", "out": "BankFixed.html", "nav":"Fixed Bank"},	             
-	             {"separator": ""},
-	             {"mark": "SoundCode.cmark", "out": "SoundCode.html", "nav":"Sound Code"},
+	             {"separator": ""},	             
 	             {"address": "SoundRAMUse.mark", "out": "SoundRAMUse.html", "nav": "Sound RAM Use"},
-	             {"address": "SoundHardware.mark", "out": "SoundHardware.html", "nav": "Sound Hardware"},	             
+	             {"address": "SoundHardware.mark", "out": "SoundHardware.html", "nav": "Sound Hardware"},
+	             {"mark": "SoundCode.cmark", "out": "SoundCode.html", "nav":"Sound Code"},
 	             {"copy": "Defender-Theory-Early.pdf"},
 	             {"copy": "Defender-Theory-Later.pdf"},
 	             {"copy": "Defender.ROM.B&W.jpg"},
@@ -82,9 +82,9 @@
 	         {"dir": "Frogger", "nav": "Frogger", "entries": [
 	             {"mark": "Frogger.mark", "out": "index.html"},
 	             {"address": "SoundRAMUse.mark", "out": "SoundRAMUse.html", "nav": "Sound RAM Use"},
-	             {"address": "SoundHardware.mark", "out": "SoundHardware.html", "nav": "Sound Hardware"},
+	             {"address": "SoundHardware.mark", "out": "SoundHardware.html", "nav": "Sound Hardware"},	             
 	             {"code": "SoundCode.cmark", "out": "SoundCode.html", "nav": "Sound Code"},
-	             {"copy": "Frogger.jpg"},
+	             {"copy": "Frogger.jpg"},	             
 	             {"copy": "FroggerFix.mp3"}
 	             ]
 	         },
@@ -100,18 +100,17 @@
 	         },
 	         
 	         {"dir": "MoonPatrol", "nav": "Moon Patrol", "entries": [
-                 {"copy": "MoonPatrol.jpg"},
-	             
+                 {"copy": "MoonPatrol.jpg"},	             
 	             {"mark": "MoonPatrol.mark", "out": "index.html"},
 	             {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
 	             {"address": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware"},
 	             {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
-	             
+	             {"separator": ""},
 	             {"mark": "MoonPatrolSound.mark", "out": "MoonPatrolSound.html"},
 	             {"address": "SoundRAMUse.mark", "out": "SoundRAMUse.html", "nav": "Sound RAM Use"},
 	             {"address": "SoundHardware.mark", "out": "SoundHardware.html", "nav": "Sound Hardware"},
 	             {"code": "SoundCode.cmark", "out": "SoundCode.html", "nav": "Sound Code"},
-	             
+	             {"separator": ""},
 	             {"code": "GFX1.cmark", "out": "GFX1.html", "nav": "GFX1"},
 	             {"code": "GFX2.cmark", "out": "GFX2.html", "nav": "GFX2"},
 	             {"code": "GFX3.cmark", "out": "GFX3.html", "nav": "GFX3"},
@@ -125,12 +124,13 @@
 	         },
 	         
 	         {"dir": "OmegaRace", "nav": "Omega Race", "entries": [
-                 {"address": "MainRAMUse.mark", "out": "MainRAMUse.html", "nav": "RAM Use (Main)"},
-                 {"address": "SoundRAMUse.mark", "out": "SoundRAMUse.html", "nav": "RAM Use (Sound)"},
 	             {"mark": "OmegaRace.mark", "out":"index.html"},
-	             {"code": "VectorROM.cmark", "out":"VectorROM.html", "nav": "Vector ROM"},
-	             {"code": "MainBoard.cmark", "out":"MainBoard.html", "nav": "Main Board"},
-	             {"code": "SoundBoard.cmark", "out":"SoundBoard.html", "nav": "Sound Board"},	             
+                 {"address": "MainRAMUse.mark", "out": "MainRAMUse.html", "nav": "RAM Use"},
+                 {"code": "MainBoard.cmark", "out":"MainBoard.html", "nav": "Main Board"},      
+                 {"code": "VectorROM.cmark", "out":"VectorROM.html", "nav": "Vector ROM"},
+                 {"separator": ""},
+                 {"address": "SoundRAMUse.mark", "out": "SoundRAMUse.html", "nav": "Sound RAM Use"},
+	             {"code": "SoundBoard.cmark", "out":"SoundBoard.html", "nav": "Sound Code"}, 	                         
 	             {"copy": "ORace.jpg"}
 	             ]
 	         },
@@ -148,9 +148,8 @@
 	             {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
 	             {"address": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware Info"},
 	             {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
-	             
-	             {"mark": "Chronology.mark", "out": "Chronology.html", "nav": "Chronology"},
-	             
+	             {"separator": ""},
+	             {"mark": "Chronology.mark", "out": "Chronology.html", "nav": "Chronology"},	             
 	             {"copy": "Alive.jpg"},
 	             {"copy": "Check23.jpg"},
 	             {"copy": "Chronology.jpg"},
@@ -358,18 +357,18 @@
 	         ]
 	     },
 	     
-	     {"dir": "Virus", "nav": "Viruses", "entries": [
+	     {"dir": "Virus", "nav": "Viruses", "leaf":true, "entries": [
 	         {"mark": "Virus.mark", "out": "index.html"},
 	         {"copy": "Virus.jpg"},
 	                                          	                                              	         
-	         {"dir": "MorrisWorm", "nav": "Morris Worm", "entries": [
+	         {"dir": "MorrisWorm", "nav": "Morris Worm", "leaf":true, "entries": [
 	              {"copy": "Worm.jpg"},
 	              {"copy": "wormvax.gif"},
 	              {"mark": "Worm.mark", "out": "index.html"}
 	              ]
 	         },
 	         
-	         {"dir": "Stoned", "nav": "Stoned", "entries": [
+	         {"dir": "Stoned", "nav": "Stoned", "leaf":true, "entries": [
 	              {"copy": "Stoned.jpg"},
 	              {"mark": "Stoned.mark", "out": "index.html"}
 	              ]
@@ -381,7 +380,7 @@
 	         {"mark": "Tools.mark", "out": "index.html"},
 	         {"copy": "Tools.jpg"},
 	                                       	                                          	                                              	         
-	         {"dir": "Blend", "nav": "Blend", "entries": [
+	         {"dir": "Blend", "nav": "Blend", "leaf":true, "entries": [
 	               {"copy": "Blend.jpg"},
 	               {"copy": "blend.zip"},
 	               {"copy": "Blend1.png"},

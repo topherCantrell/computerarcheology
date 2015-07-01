@@ -3,6 +3,8 @@
 Sometimes code references address in ROM (bank switching in a2600 for instance).
 The link-fixer should be able to identify addresses in code by range.
 
+Better deployment strategy that doesn't upload everything every time.
+
 -------- Content ----------
 
 Sweep through all links over entire site and make sure they works.
