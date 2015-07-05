@@ -15,8 +15,6 @@
 
 ;; Lots of info here about what the areas in the ROM are:
 ;; [http://arcarc.xmission.com/Tech/dvg.txt http://arcarc.xmission.com/Tech/dvg.txt]
-;;
-;; The first ship picture has a line of brightness 15. Is this off? It shouldn't be visisble.
 
 ;;= DVG Info =
 
