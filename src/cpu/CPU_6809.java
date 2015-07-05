@@ -23,7 +23,7 @@ public class CPU_6809 extends CPU {
 		}
 		
 		// Direct page offsets
-		if(numPos>0 && opcode.charAt(numPos-1)=='>') {
+		if(numPos>0 && opcode.charAt(numPos-1)=='<') {
 			num = num + directPage;			
 		}
 		

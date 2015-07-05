@@ -24,18 +24,18 @@
 
 		<opcodes>
 		<op code="108Ewmwl"  m6809="LDY   #w"             clocks="4"     flags="-aa0-"    />
-  <op code="00pp"      m6809="NEG   >p"             clocks="6"     flags="uaaaa"    />
-  <op code="03pp"      m6809="COM   >p"             clocks="6"     flags="-aa01"    />
-  <op code="04pp"      m6809="LSR   >p"             clocks="6"     flags="-0a-s"    />
-  <op code="06pp"      m6809="ROR   >p"             clocks="6"     flags="-aa-s"    />
-  <op code="07pp"      m6809="ASR   >p"             clocks="6"     flags="uaa-s"    />
-  <op code="08pp"      m6809="LSL   >p;ASL   >p"    clocks="6"     flags="naaas"    />
-  <op code="09pp"      m6809="ROL   >p"             clocks="6"     flags="-aaas"    />
-  <op code="0App"      m6809="DEC   >p"             clocks="6"     flags="-aaa-"    />
-  <op code="0Cpp"      m6809="INC   >p"             clocks="6"     flags="-aaa-"    />
-  <op code="0Dpp"      m6809="TST   >p"             clocks="6"     flags="-aa0-"    />
-  <op code="0Epp"      m6809="JMP   >p"             clocks="3"     flags="-----"    />
-  <op code="0Fpp"      m6809="CLR   >p"             clocks="6"     flags="-0100"    />
+  <op code="00pp"      m6809="NEG   <p"             clocks="6"     flags="uaaaa"    />
+  <op code="03pp"      m6809="COM   <p"             clocks="6"     flags="-aa01"    />
+  <op code="04pp"      m6809="LSR   <p"             clocks="6"     flags="-0a-s"    />
+  <op code="06pp"      m6809="ROR   <p"             clocks="6"     flags="-aa-s"    />
+  <op code="07pp"      m6809="ASR   <p"             clocks="6"     flags="uaa-s"    />
+  <op code="08pp"      m6809="LSL   <p;ASL   <p"    clocks="6"     flags="naaas"    />
+  <op code="09pp"      m6809="ROL   <p"             clocks="6"     flags="-aaas"    />
+  <op code="0App"      m6809="DEC   <p"             clocks="6"     flags="-aaa-"    />
+  <op code="0Cpp"      m6809="INC   <p"             clocks="6"     flags="-aaa-"    />
+  <op code="0Dpp"      m6809="TST   <p"             clocks="6"     flags="-aa0-"    />
+  <op code="0Epp"      m6809="JMP   <p"             clocks="3"     flags="-----"    />
+  <op code="0Fpp"      m6809="CLR   <p"             clocks="6"     flags="-0100"    />
   <op code="1021smsl"  m6809="LBRN  s"              clocks="5(6)"  flags="-----"    />
   <op code="1022smsl"  m6809="LBHI  s"              clocks="5(6)"  flags="-----"    />
   <op code="1023smsl"  m6809="LBLS  s"              clocks="5(6)"  flags="-----"    />
@@ -55,10 +55,10 @@
   <op code="1083wmwl"  m6809="CMPD  #w"             clocks="5"     flags="-aaaa"    />
   <op code="108Cwmwl"  m6809="CMPY  #w"             clocks="5"     flags="-aaaa"    />
   
-  <op code="1093pp"    m6809="CMPD  >p"             clocks="7"     flags="-aaaa"    />
-  <op code="109Cpp"    m6809="CMPY  >p"             clocks="7"     flags="-aaaa"    />
-  <op code="109Epp"    m6809="LDY   >p"             clocks="6"     flags="-aa0-"    />
-  <op code="109Fpp"    m6809="STY   >p"             clocks="6"     flags="-aa0-"    />
+  <op code="1093pp"    m6809="CMPD  <p"             clocks="7"     flags="-aaaa"    />
+  <op code="109Cpp"    m6809="CMPY  <p"             clocks="7"     flags="-aaaa"    />
+  <op code="109Epp"    m6809="LDY   <p"             clocks="6"     flags="-aa0-"    />
+  <op code="109Fpp"    m6809="STY   <p"             clocks="6"     flags="-aa0-"    />
   <op code="10A3yy"    m6809="CMPD  y"              clocks="7"     flags="-aaaa"    />
   <op code="10ACyy"    m6809="CMPY  y"              clocks="7"     flags="-aaaa"    />
   <op code="10AEyy"    m6809="LDY   y"              clocks="6"     flags="-aa0-"    />
@@ -68,8 +68,8 @@
   <op code="10BEtmtl"  m6809="LDY   t"              clocks="7"     flags="-aa0-"    />
   <op code="10BFtmtl"  m6809="STY   t"              clocks="7"     flags="-aa0-"    />
   <op code="10CEwmwl"  m6809="LDS   #w"             clocks="4"     flags="-aa0-"    />
-  <op code="10DEpp"    m6809="LDS   >p"             clocks="6"     flags="-aa0-"    />
-  <op code="10DFpp"    m6809="STS   >p"             clocks="6"     flags="-aa0-"    />
+  <op code="10DEpp"    m6809="LDS   <p"             clocks="6"     flags="-aa0-"    />
+  <op code="10DFpp"    m6809="STS   <p"             clocks="6"     flags="-aa0-"    />
   <op code="10EEyy"    m6809="LDS   y"              clocks="6"     flags="-aa0-"    />
   <op code="10EFyy"    m6809="STS   y"              clocks="6"     flags="-aa0-"    />
   <op code="10FEtmtl"  m6809="LDS   t"              clocks="7"     flags="-aa0-"    />
@@ -77,8 +77,8 @@
   <op code="113F"      m6809="SWI3"                 clocks="20"    flags="-----"    />
   <op code="1183wmwl"  m6809="CMPU  #w"             clocks="5"     flags="-aaaa"    />
   <op code="118Cwmwl"  m6809="CMPS  #w"             clocks="5"     flags="-aaaa"    />
-  <op code="1193pp"    m6809="CMPU  >p"             clocks="7"     flags="-aaaa"    />
-  <op code="119Cpp"    m6809="CMPS  >p"             clocks="7"     flags="-aaaa"    />
+  <op code="1193pp"    m6809="CMPU  <p"             clocks="7"     flags="-aaaa"    />
+  <op code="119Cpp"    m6809="CMPS  <p"             clocks="7"     flags="-aaaa"    />
   <op code="11A3yy"    m6809="CMPU  y"              clocks="7"     flags="-aaaa"    />
   <op code="11ACyy"    m6809="CMPS  y"              clocks="7"     flags="-aaaa"    />
   <op code="11B3tmtl"  m6809="CMPU  t"              clocks="8"     flags="-aaaa"    />
@@ -184,22 +184,22 @@
   <op code="8Cwmwl"    m6809="CMPX  #w"             clocks="4"     flags="-aaaa"    />
   <op code="8Drr"      m6809="BSR   r"              clocks="7"     flags="-----"    />
   <op code="8Ewmwl"    m6809="LDX   #w"             clocks="3"     flags="-aa0-"    />
-  <op code="90pp"      m6809="SUBA  >p"             clocks="4"     flags="uaaaa"    />
-  <op code="91pp"      m6809="CMPA  >p"             clocks="4"     flags="uaaaa"    />
-  <op code="92pp"      m6809="SBCA  >p"             clocks="4"     flags="uaaaa"    />
-  <op code="93pp"      m6809="SUBD  >p"             clocks="6"     flags="-aaaa"    />
-  <op code="94pp"      m6809="ANDA  >p"             clocks="4"     flags="-aa0-"    />
-  <op code="95pp"      m6809="BITA  >p"             clocks="4"     flags="-aa0-"    />
-  <op code="96pp"      m6809="LDA   >p"             clocks="4"     flags="-aa0-"    />
-  <op code="97pp"      m6809="STA   >p"             clocks="4"     flags="-aa0-"    />
-  <op code="98pp"      m6809="EORA  >p"             clocks="4"     flags="-aa0-"    />
-  <op code="99pp"      m6809="ADCA  >p"             clocks="4"     flags="aaaaa"    />
-  <op code="9App"      m6809="ORA   >p"             clocks="4"     flags="-aa0-"    />
-  <op code="9Bpp"      m6809="ADDA  >p"             clocks="4"     flags="aaaaa"    />
-  <op code="9Cpp"      m6809="CMPX  >p"             clocks="6"     flags="-aaaa"    />
-  <op code="9Dpp"      m6809="JSR   >p"             clocks="7"     flags="-----"    />
-  <op code="9Epp"      m6809="LDX   >p"             clocks="5"     flags="-aa0-"    />
-  <op code="9Fpp"      m6809="STX   >p"             clocks="5"     flags="-aa0-"    />
+  <op code="90pp"      m6809="SUBA  <p"             clocks="4"     flags="uaaaa"    />
+  <op code="91pp"      m6809="CMPA  <p"             clocks="4"     flags="uaaaa"    />
+  <op code="92pp"      m6809="SBCA  <p"             clocks="4"     flags="uaaaa"    />
+  <op code="93pp"      m6809="SUBD  <p"             clocks="6"     flags="-aaaa"    />
+  <op code="94pp"      m6809="ANDA  <p"             clocks="4"     flags="-aa0-"    />
+  <op code="95pp"      m6809="BITA  <p"             clocks="4"     flags="-aa0-"    />
+  <op code="96pp"      m6809="LDA   <p"             clocks="4"     flags="-aa0-"    />
+  <op code="97pp"      m6809="STA   <p"             clocks="4"     flags="-aa0-"    />
+  <op code="98pp"      m6809="EORA  <p"             clocks="4"     flags="-aa0-"    />
+  <op code="99pp"      m6809="ADCA  <p"             clocks="4"     flags="aaaaa"    />
+  <op code="9App"      m6809="ORA   <p"             clocks="4"     flags="-aa0-"    />
+  <op code="9Bpp"      m6809="ADDA  <p"             clocks="4"     flags="aaaaa"    />
+  <op code="9Cpp"      m6809="CMPX  <p"             clocks="6"     flags="-aaaa"    />
+  <op code="9Dpp"      m6809="JSR   <p"             clocks="7"     flags="-----"    />
+  <op code="9Epp"      m6809="LDX   <p"             clocks="5"     flags="-aa0-"    />
+  <op code="9Fpp"      m6809="STX   <p"             clocks="5"     flags="-aa0-"    />
   <op code="A0yy"      m6809="SUBA  y"              clocks="4"     flags="uaaaa"    />
   <op code="A1yy"      m6809="CMPA  y"              clocks="4"     flags="uaaaa"    />
   <op code="A2yy"      m6809="SBCA  y"              clocks="4"     flags="uaaaa"    />
@@ -245,22 +245,22 @@
   <op code="CBbb"      m6809="ADDB  #b"             clocks="2"     flags="aaaaa"    />
   <op code="CCwmwl"    m6809="LDD   #w"             clocks="3"     flags="-aa0-"    />
   <op code="CEwmwl"    m6809="LDU   #w"             clocks="3"     flags="-aa0-"    />
-  <op code="D0pp"      m6809="SUBB  >p"             clocks="4"     flags="uaaaa"    />
-  <op code="D1pp"      m6809="CMPB  >p"             clocks="4"     flags="uaaaa"    />
-  <op code="D2pp"      m6809="SBCB  >p"             clocks="4"     flags="uaaaa"    />
-  <op code="D3pp"      m6809="ADDD  >p"             clocks="6"     flags="-aaaa"    />
-  <op code="D4pp"      m6809="ANDB  >p"             clocks="4"     flags="-aa0-"    />
-  <op code="D5pp"      m6809="BITB  >p"             clocks="4"     flags="-aa0-"    />
-  <op code="D6pp"      m6809="LDB   >p"             clocks="4"     flags="-aa0-"    />
-  <op code="D7pp"      m6809="STB   >p"             clocks="4"     flags="-aa0-"    />
-  <op code="D8pp"      m6809="EORB  >p"             clocks="4"     flags="-aa0-"    />
-  <op code="D9pp"      m6809="ADCB  >p"             clocks="4"     flags="aaaaa"    />
-  <op code="DApp"      m6809="ORB   >p"             clocks="4"     flags="-aa0-"    />
-  <op code="DBpp"      m6809="ADDB  >p"             clocks="4"     flags="aaaaa"    />
-  <op code="DCpp"      m6809="LDD   >p"             clocks="5"     flags="-aa0-"    />
-  <op code="DDpp"      m6809="STD   >p"             clocks="5"     flags="-aa0-"    />
-  <op code="DEpp"      m6809="LDU   >p"             clocks="5"     flags="-aa0-"    />
-  <op code="DFpp"      m6809="STU   >p"             clocks="5"     flags="-aa0-"    />
+  <op code="D0pp"      m6809="SUBB  <p"             clocks="4"     flags="uaaaa"    />
+  <op code="D1pp"      m6809="CMPB  <p"             clocks="4"     flags="uaaaa"    />
+  <op code="D2pp"      m6809="SBCB  <p"             clocks="4"     flags="uaaaa"    />
+  <op code="D3pp"      m6809="ADDD  <p"             clocks="6"     flags="-aaaa"    />
+  <op code="D4pp"      m6809="ANDB  <p"             clocks="4"     flags="-aa0-"    />
+  <op code="D5pp"      m6809="BITB  <p"             clocks="4"     flags="-aa0-"    />
+  <op code="D6pp"      m6809="LDB   <p"             clocks="4"     flags="-aa0-"    />
+  <op code="D7pp"      m6809="STB   <p"             clocks="4"     flags="-aa0-"    />
+  <op code="D8pp"      m6809="EORB  <p"             clocks="4"     flags="-aa0-"    />
+  <op code="D9pp"      m6809="ADCB  <p"             clocks="4"     flags="aaaaa"    />
+  <op code="DApp"      m6809="ORB   <p"             clocks="4"     flags="-aa0-"    />
+  <op code="DBpp"      m6809="ADDB  <p"             clocks="4"     flags="aaaaa"    />
+  <op code="DCpp"      m6809="LDD   <p"             clocks="5"     flags="-aa0-"    />
+  <op code="DDpp"      m6809="STD   <p"             clocks="5"     flags="-aa0-"    />
+  <op code="DEpp"      m6809="LDU   <p"             clocks="5"     flags="-aa0-"    />
+  <op code="DFpp"      m6809="STU   <p"             clocks="5"     flags="-aa0-"    />
   <op code="E0yy"      m6809="SUBB  y"              clocks="4"     flags="uaaaa"    />
   <op code="E1yy"      m6809="CMPB  y"              clocks="4"     flags="uaaaa"    />
   <op code="E2yy"      m6809="SBCB  y"              clocks="4"     flags="uaaaa"    />

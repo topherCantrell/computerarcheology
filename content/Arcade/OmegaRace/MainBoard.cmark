@@ -170,7 +170,7 @@
 ;     Since all other avg/dvg games connect the PROM
 ;     in a consistent way to the decoder, we swap the bits
 ;     here. 
-;	for (i=0; i&ltlen; i++) prom[i] = BITSWAP8(prom[i],7,6,5,4,1,0,3,2);
+; for (i=0; i&ltlen; i++) prom[i] = BITSWAP8(prom[i],7,6,5,4,1,0,3,2);
 
 0000: F3              DI                          ; Turn interrupts off
 0001: ED 56           IM      1                   ; Mode 1 ... everything to $38

@@ -2,6 +2,8 @@
 %%image Atari2600.jpg
 %%range 0000:007F, 0280:02FF
 
+On the web: [http://www.alienbill.com/2600/101/docs/stella.html Stella Programmer's Guide]
+
 The address decoding for the 2600 is very simple. The TIA is accessed
 if A12 is 0 and A7 is 0. The TIA is selected if (address&1080 == 0000).
 
@@ -91,7 +93,19 @@ The PIA chip uses the lower 7 address lines A0-A6. Thus the 007F mask below.
 
 || 0280    || SWCHA               || Port A Hand controllers ||
 || 0281    || SWACNT              || Port A DDR ||
+
 || 0282    || SWCHB               || Port B Console switches ||
+{{{
+D7 : P1 difficulty (0=amateur, 1=pro)
+D6 : P0 difficulty (0=amateur, 1=pro)
+D5 : not used
+D4 : not used
+D3 : color or B/W (0=B/W, 1=color)
+D2 : not used
+D1 : game select (0=pressed)
+D0 : game reset (0=pressed)
+}}}
+
 || 0283    || SWBCNT              || Port B DDR ||
 || 0284    || INTIM               || Timer output (read only) ||
 || 0294    || TIM1T               || Set 1 clock interval (write only) ||

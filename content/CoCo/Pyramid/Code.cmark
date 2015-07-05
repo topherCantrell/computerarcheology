@@ -36,7 +36,7 @@
 0618: 26 FB               BNE     $0615                     ;  ... screen
 
 061A: 8E 05 E0            LDX     #$05E0                    ; Cursor ...
-061D: 9F 88               STX     >$88                      ;{-1_cursor} ... position
+061D: 9F 88               STX     <$88                      ;{-1_cursor} ... position
 061F: 86 0D               LDA     #$0D                      ; Scroll ...
 0621: B7 01 B0            STA     $01B0                     ; ... count
 0624: 8E 10 21            LDX     #$1021                    ; "WELCOME TO PYRAMID!!"
@@ -576,9 +576,9 @@ MorePrompt:
 0925: 8E 10 19            LDX     #$1019                    ; " MORE" message
 0928: BD 08 FC            JSR     $08FC                     ;{PrintUnpacked}  Print message
 092B: BD 09 37            JSR     $0937                     ;{ReadKey}  Wait for user to press a key
-092E: 9E 88               LDX     >$88                      ;{-1_cursor} Back pointer ...
+092E: 9E 88               LDX     <$88                      ;{-1_cursor} Back pointer ...
 0930: 30 19               LEAX    -7,X                      ; ... up 7 over ...
-0932: 9F 88               STX     >$88                      ;{-1_cursor} ... MORE prompt
+0932: 9F 88               STX     <$88                      ;{-1_cursor} ... MORE prompt
 0934: 35 74               PULS    B,X,Y,U                   ;
 0936: 39                  RTS                               ;
 
@@ -608,16 +608,16 @@ PrintCharacterAutoWrap:
 0958: 81 21               CMPA    #$21                      ; A '!' ?
 095A: 26 06               BNE     $0962                     ;  No. Don't ignore space.
 ;
-095C: DE 88               LDU     >$88                      ;{-1_cursor} Back screen ...
+095C: DE 88               LDU     <$88                      ;{-1_cursor} Back screen ...
 095E: 33 5F               LEAU    -1,U                      ; ... pointer up ...
-0960: DF 88               STU     >$88                      ;{-1_cursor} ... over ignored space
+0960: DF 88               STU     <$88                      ;{-1_cursor} ... over ignored space
 ;
 0962: B7 02 07            STA     $0207                     ; Store last printed character
 0965: AD 9F A0 02         JSR     [$A002]                   ; Print A to screen
-0969: 96 89               LDA     >$89                      ;{-1_cursor} LSB of screen position (we know MSB is a 4 or 5)
+0969: 96 89               LDA     <$89                      ;{-1_cursor} LSB of screen position (we know MSB is a 4 or 5)
 096B: 81 FE               CMPA    #$FE                      ; Have we reached the end of the screen?
 096D: 25 3C               BCS     $09AB                     ;  No ... handle any MORE and out
-096F: DE 88               LDU     >$88                      ;{-1_cursor} Cursor position
+096F: DE 88               LDU     <$88                      ;{-1_cursor} Cursor position
 0971: 33 C8 DF            LEAU    $-21,U                    ; Back up to end of current row (where it will be after CR)
 0974: 86 0D               LDA     #$0D                      ; CR ...
 0976: AD 9F A0 02         JSR     [$A002]                   ; ... to screen
@@ -1421,17 +1421,17 @@ SaveGame:
 0E90: 26 F5               BNE     $0E87                     ;  ... for ENTER or BACKSPACE
 0E92: AD 9F A0 0C         JSR     [$A00C]                   ; Turn on cassette and write leader
 0E96: 86 01               LDA     #$01                      ; Block ...
-0E98: 97 7C               STA     >$7C                      ; ... type 1
+0E98: 97 7C               STA     <$7C                      ; ... type 1
 0E9A: 86 82               LDA     #$82                      ; Write ...
-0E9C: 97 7D               STA     >$7D                      ; ... 0x82 bytes
+0E9C: 97 7D               STA     <$7D                      ; ... 0x82 bytes
 0E9E: 8E 17 EB            LDX     #$17EB                    ; Start at ...
-0EA1: 9F 7E               STX     >$7E                      ; ... transient data
+0EA1: 9F 7E               STX     <$7E                      ; ... transient data
 0EA3: AD 9F A0 08         JSR     [$A008]                   ; Write to tape
-0EA7: 9F 7E               STX     >$7E                      ; Continue where we left off
+0EA7: 9F 7E               STX     <$7E                      ; Continue where we left off
 0EA9: 86 01               LDA     #$01                      ; Block ...
-0EAB: 97 7C               STA     >$7C                      ; ... type 1
+0EAB: 97 7C               STA     <$7C                      ; ... type 1
 0EAD: 86 82               LDA     #$82                      ; Write ...
-0EAF: 97 7D               STA     >$7D                      ; ... 0x82 bytes
+0EAF: 97 7D               STA     <$7D                      ; ... 0x82 bytes
 0EB1: AD 9F A0 08         JSR     [$A008]                   ; Write to tape
 0EB5: BD 0F 0C            JSR     $0F0C                     ;  Turn motor off
 0EB8: 7E 06 CB            JMP     $06CB                     ;  
@@ -1451,18 +1451,18 @@ LoadGame:
 0ECA: 26 F5               BNE     $0EC1                     ;  ... for enter or abort
 0ECC: AD 9F A0 04         JSR     [$A004]                   ; Start cassette and sync
 0ED0: 8E 17 EB            LDX     #$17EB                    ; Start at ...
-0ED3: 9F 7E               STX     >$7E                      ; ... transient data
+0ED3: 9F 7E               STX     <$7E                      ; ... transient data
 0ED5: 86 01               LDA     #$01                      ; Block ...
-0ED7: 97 7C               STA     >$7C                      ; ... type 1
+0ED7: 97 7C               STA     <$7C                      ; ... type 1
 0ED9: 86 82               LDA     #$82                      ; Read ...
-0EDB: 97 7D               STA     >$7D                      ; ... 0x82 bytes
+0EDB: 97 7D               STA     <$7D                      ; ... 0x82 bytes
 0EDD: AD 9F A0 06         JSR     [$A006]                   ; Read from tape
 0EE1: 26 1D               BNE     $0F00                     ;  Error ... report and try again
-0EE3: 9F 7E               STX     >$7E                      ; Keep going
+0EE3: 9F 7E               STX     <$7E                      ; Keep going
 0EE5: 86 01               LDA     #$01                      ; Block ...
-0EE7: 97 7C               STA     >$7C                      ; ... type 1
+0EE7: 97 7C               STA     <$7C                      ; ... type 1
 0EE9: 86 82               LDA     #$82                      ; Read ...
-0EEB: 97 7D               STA     >$7D                      ; ... 0x82 bytes
+0EEB: 97 7D               STA     <$7D                      ; ... 0x82 bytes
 0EED: AD 9F A0 06         JSR     [$A006]                   ; Read from tape
 0EF1: 26 0D               BNE     $0F00                     ;  Error ... report and try again
 0EF3: BD 0F 0C            JSR     $0F0C                     ;  Stop motor

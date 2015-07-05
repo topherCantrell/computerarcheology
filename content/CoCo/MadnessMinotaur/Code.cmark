@@ -40,7 +40,7 @@ START: ; =
 ;;
 PrintChar:
 032E: 34 16               PSHS    X,B,A       ; Save parameters
-0330: 9E 88               LDX     >$88        ;{-1_scrCursor}  Cursor
+0330: 9E 88               LDX     <$88        ;{-1_scrCursor}  Cursor
 0332: 81 08               CMPA    #$08        ; Printing a backspace?
 0334: 26 0B               BNE     $341        ;  No ... move on
 0336: 8C 02 00            CMPX    #$0200      ; Already at top of screen (double screen)
@@ -69,7 +69,7 @@ PrintChar:
 0360: 84 DF               ANDA    #$DF        ; .... case ...
 0362: 88 40               EORA    #$40        ; .... (black on green background)
 0364: A7 80               STA     ,X+         ; Store the character to screen, advance cursor
-0366: 9F 88               STX     >$88        ;{-1_scrCursor}  New cursor
+0366: 9F 88               STX     <$88        ;{-1_scrCursor}  New cursor
 0368: 8C 05 FF            CMPX    #$05FF      ; At the end of the line?
 036B: 23 06               BLS     $373        ;  No ... out
 036D: 8E 02 00            LDX     #$0200      ; Scroll both ...
@@ -98,41 +98,41 @@ SaveToTape:
 0382: 8E 02 40            LDX     #$0240      ; 012A: Write buffer start (lower vars)
 0385: BF 01 E7            STX     $01E7       ; 012D: Hold for later
 0388: 8E 05 FF            LDX     #$05FF      ; 0130: End of write
-038B: 9F 54               STX     >$54        ;  0133: Store end
+038B: 9F 54               STX     <$54        ;  0133: Store end
 038D: 8D 0B               BSR     $39A        ;  0135: Do write
 ;
 ; Write game state from 3BC1 to 3FFF. Don't mess with filename.
 038F: 8E 3B C1            LDX     #$3BC1      ; 0137: Write buffer start (game state)
 0392: BF 01 E7            STX     $01E7       ; 013A: Hold for later
 0395: 8E 3F FF            LDX     #$3FFF      ; 013D: End of write
-0398: 9F 54               STX     >$54        ;  0140: Store end
+0398: 9F 54               STX     <$54        ;  0140: Store end
 ;
 039A: 86 02               LDA     #$02        ; 0142: File type: machine
-039C: 9E 8A               LDX     >$8A        ;{-1_zeroWord}  0144: ASCII flag and mode (00 00)
+039C: 9E 8A               LDX     <$8A        ;{-1_zeroWord}  0144: ASCII flag and mode (00 00)
 039E: BD A6 5F            JSR     $A65F       ; 0146: Write header block to tape (BASIC)
-03A1: 0F 78               CLR     >$78        ;  0149: File closed
-03A3: 0C 7C               INC     >$7C        ;  014B: Bump block type (from HEADER to DATA)
+03A1: 0F 78               CLR     <$78        ;  0149: File closed
+03A3: 0C 7C               INC     <$7C        ;  014B: Bump block type (from HEADER to DATA)
 03A5: BD A7 D8            JSR     $A7D8       ; 014D: Send 55s to tape (BASIC)
 03A8: 20 08               BRA     $3B2        ;  0150: Skip over keyboard buffer
 
 03AA: 00 00 00 00 00 00 00 00                 ; 0152: 8 bytes of keyboard buffer used by BASIC ... skip that
 
 03B2: BE 01 E7            LDX     $01E7       ; 015A: Remembered buffer
-03B5: 9F 7E               STX     >$7E        ;  015D: Buffer pointer for IO
+03B5: 9F 7E               STX     <$7E        ;  015D: Buffer pointer for IO
 03B7: 86 FF               LDA     #$FF        ; 015F: Block count ...
-03B9: 97 7D               STA     >$7D        ;  0161: ... 255 (the max)
-03BB: DC 54               LDD     >$54        ;  0163: End address
-03BD: 93 7E               SUBD    >$7E        ;  0165: Subtract start (get length)
+03B9: 97 7D               STA     <$7D        ;  0161: ... 255 (the max)
+03BB: DC 54               LDD     <$54        ;  0163: End address
+03BD: 93 7E               SUBD    <$7E        ;  0165: Subtract start (get length)
 03BF: 24 0A               BCC     $3CB        ;  0167: More to do ... go write another block
-03C1: 00 7C               NEG     >$7C        ;  0169: Block type FF ... EOF
-03C3: 0F 7D               CLR     >$7D        ;  016B: Block length 0
+03C1: 00 7C               NEG     <$7C        ;  0169: Block type FF ... EOF
+03C3: 0F 7D               CLR     <$7D        ;  016B: Block length 0
 03C5: BD A7 F4            JSR     $A7F4       ; 016D: BLKOUT ... write EOF (BASIC)
 03C8: 7E A7 EB            JMP     $A7EB       ; 0170: Turn off motor (leave IRQ and FIRQ alone) and out (BASIC)
 ;
 03CB: 10 83 00 FF         CMPD    #$00FF      ; 0173: More than 255 bytes remaining
 03CF: 24 03               BCC     $3D4        ;  0177: Yes ... use 255
 03D1: 5C                  INCB                ; 0179: Remainder ...
-03D2: D7 7D               STB     >$7D        ;  017A: ... data size
+03D2: D7 7D               STB     <$7D        ;  017A: ... data size
 03D4: BD A7 F4            JSR     $A7F4       ; 017C: BLKOUT (BASIC)
 03D7: 20 DC               BRA     $3B5        ;  017F: Do all blocks
 
@@ -211,19 +211,19 @@ PrintWrap:
 0604: 27 53               BEQ     $659        ;  Yes ... either forget last space or print it
 0606: 81 20               CMPA    #$20        ; Anything below 20 ...
 0608: 25 4B               BCS     $655        ;  ... just print
-060A: D6 89               LDB     >$89        ;{-1_scrCursor}  Cursor LSB
+060A: D6 89               LDB     <$89        ;{-1_scrCursor}  Cursor LSB
 060C: C4 1F               ANDB    #$1F        ; Are we at the end of a row?
 060E: 26 41               BNE     $651        ;  No ... move on
 0610: 81 60               CMPA    #$60        ; Space at the end of a row?
 0612: 27 04               BEQ     $618        ;  Yes ... just count it
 0614: 81 20               CMPA    #$20        ; Lower case space?
 0616: 26 04               BNE     $61C        ;  No ... not a space
-0618: 0C 0B               INC     >$0B        ;{-1_spacesOnEnd}  Note the space ...
+0618: 0C 0B               INC     <$0B        ;{-1_spacesOnEnd}  Note the space ...
 061A: 20 3B               BRA     $657        ;  ... and out
 ;
-061C: D6 0B               LDB     >$0B        ;{-1_spacesOnEnd}  Last printed was a space on the end of the row?
+061C: D6 0B               LDB     <$0B        ;{-1_spacesOnEnd}  Last printed was a space on the end of the row?
 061E: 26 31               BNE     $651        ;  Yes ... print this character
-0620: 9E 88               LDX     >$88        ;{-1_scrCursor}  Screen cursor
+0620: 9E 88               LDX     <$88        ;{-1_scrCursor}  Screen cursor
 0622: A6 1F               LDA     -1,X        ; Back up one space
 0624: 81 60               CMPA    #$60        ; A space last?
 0626: 27 29               BEQ     $651        ;  Yes ... print this
@@ -246,16 +246,16 @@ PrintWrap:
 0645: 80 40               SUBA    #$40        ; ... case
 0647: 10 8C 00 67         CMPY    #$0067      ; Moved them all?
 064B: 27 06               BEQ     $653        ;  Yes ... move on
-064D: 9D A6               JSR     >$A6        ;  Print character to screen
+064D: 9D A6               JSR     <$A6        ;  Print character to screen
 064F: 20 EE               BRA     $63F        ;  Keep printing wrapping word
-0651: 0F 0B               CLR     >$0B        ;{-1_spacesOnEnd}  No space on end of line
+0651: 0F 0B               CLR     <$0B        ;{-1_spacesOnEnd}  No space on end of line
 0653: A6 E4               LDA     ,S          ; Restore A (character)
-0655: 9D A6               JSR     >$A6        ;  Print it
+0655: 9D A6               JSR     <$A6        ;  Print it
 0657: 35 B6               PULS    A,B,X,Y,PC  ; Done
 ;
-0659: D6 0B               LDB     >$0B        ;{-1_spacesOnEnd}  Any trailing space waiting from before?
+0659: D6 0B               LDB     <$0B        ;{-1_spacesOnEnd}  Any trailing space waiting from before?
 065B: 27 F6               BEQ     $653        ;  No ... print the backspace
-065D: 0F 0B               CLR     >$0B        ;{-1_spacesOnEnd}  Just drop the held space ...
+065D: 0F 0B               CLR     <$0B        ;{-1_spacesOnEnd}  Just drop the held space ...
 065F: 20 F6               BRA     $657        ;  ... and done
 
 ;; = Random Numbers = 
@@ -266,12 +266,12 @@ PrintWrap:
 ;;
 Random:
 0661: 34 10               PSHS    X           ; Save parameters
-0663: 9E 18               LDX     >$18        ;{-1_randPoint}  Get pointer to ROM area
+0663: 9E 18               LDX     <$18        ;{-1_randPoint}  Get pointer to ROM area
 0665: 30 01               LEAX    1,X         ; Next byte in ROM
 0667: 8C C0 00            CMPX    #$C000      ; Reached the end of ROM?
 066A: 25 03               BCS     $66F        ;  No ... use this
 066C: 8E A0 00            LDX     #$A000      ; Restart at the top of ROM (BASIC)
-066F: 9F 18               STX     >$18        ;{-1_randPoint}  New pointer
+066F: 9F 18               STX     <$18        ;{-1_randPoint}  New pointer
 0671: E6 84               LDB     ,X          ; Get byte
 0673: E8 04               EORB    4,X         ; Mangle it with a later byte
 0675: 35 90               PULS    X,PC        ; Done
@@ -294,7 +294,7 @@ Random:
 RandB:
 ; Get a random number less than B
 0690: 34 12               PSHS    X,A         ; Save params
-0692: D7 3D               STB     >$3D        ;  Hold max value
+0692: D7 3D               STB     <$3D        ;  Hold max value
 0694: 8E 01 85            LDX     #$0185      ;
 0697: 43                  COMA                ; Set the C flag
 0698: 1F 98               TFR     B,A         ;
@@ -304,9 +304,9 @@ RandB:
 069F: 24 F9               BCC     $69A        ; 
 06A1: 8D BE               BSR     $661        ;{Random}  Get random number
 06A3: E4 84               ANDB    ,X          ;
-06A5: D1 3D               CMPB    >$3D        ; 
+06A5: D1 3D               CMPB    <$3D        ; 
 06A7: 23 04               BLS     $6AD        ; 
-06A9: D6 3D               LDB     >$3D        ; 
+06A9: D6 3D               LDB     <$3D        ; 
 06AB: 20 E7               BRA     $694        ; 
 06AD: 35 92               PULS    A,X,PC      ; Done
 
@@ -347,7 +347,7 @@ LearnSpell:
 06E4: BD 18 85            JSR     $1885       ;{InPack}  ... in pack?
 06E7: 24 F0               BCC     $6D9        ;  No ... out
 06E9: E6 22               LDB     2,Y         ; Is the spell even ...
-06EB: D1 00               CMPB    >$00        ;{-1_curRoom}  ... in this room?
+06EB: D1 00               CMPB    <$00        ;{-1_curRoom}  ... in this room?
 06ED: 26 EA               BNE     $6D9        ;  No ... out
 06EF: 8B 37               ADDA    #$37        ; Spell number to object number
 06F1: 1F 89               TFR     A,B         ; To B for call
@@ -377,8 +377,8 @@ PickUpObject:
 0723: 35 82               PULS    A,PC        ; Out
       
 ; Clear counters associated with being in MYSTERIOUS FOG room.
-0725: 0F 32               CLR     >$32        ;{-1_enteredFog}  Not in MYSTERIOUS FOG room.
-0727: 0F 45               CLR     >$45        ;{-1_fogClock}  Fog time to 0
+0725: 0F 32               CLR     <$32        ;{-1_enteredFog}  Not in MYSTERIOUS FOG room.
+0727: 0F 45               CLR     <$45        ;{-1_fogClock}  Fog time to 0
 0729: 39                  RTS                 ; Out
 
 ; Init the interrupt service routine
@@ -399,62 +399,62 @@ PickUpObject:
 ;;
 InterruptService:
 0745: B6 FF 02            LDA     $FF02       ;  Strobe hardware to reenable interrupt
-0748: 0C 3F               INC     >$3F        ;{-1_ticksTillSec}  Interrupt ...
-074A: 96 3F               LDA     >$3F        ;{-1_ticksTillSec}  ... divisor
+0748: 0C 3F               INC     <$3F        ;{-1_ticksTillSec}  Interrupt ...
+074A: 96 3F               LDA     <$3F        ;{-1_ticksTillSec}  ... divisor
 074C: 81 3C               CMPA    #$3C        ; Once ...
 074E: 24 01               BCC     $751        ;  ... a second
 0750: 3B                  RTI                 ; Return from interrupt
 ;
 0751: BD 0A 1F            JSR     $0A1F       ;{CreaturesAttack}  Handle creatures that attack
-0754: 96 45               LDA     >$45        ;{-1_fogClock}  Time spent with MYSTERIOUS FOG
+0754: 96 45               LDA     <$45        ;{-1_fogClock}  Time spent with MYSTERIOUS FOG
 0756: 81 06               CMPA    #$06        ; Fog counter reached 6 secods?
 0758: 27 19               BEQ     $773        ;  Yes ... warn the player
 075A: 25 21               BCS     $77D        ;  Less than 6 ... just move on
 075C: 81 0A               CMPA    #$0A        ; Counter reached 10 seconds?
 075E: 25 1D               BCS     $77D        ;  No ... keep waiting
-0760: 96 32               LDA     >$32        ;{-1_enteredFog}  In MYSTERIOUS FOG room?
+0760: 96 32               LDA     <$32        ;{-1_enteredFog}  In MYSTERIOUS FOG room?
 0762: 27 19               BEQ     $77D        ;  No skip processing
 ;
 0764: 8D BF               BSR     $725        ;  Clear MYSTERIOUS FOG flag and fog time
-0766: 96 09               LDA     >$09        ;{-1_stingCount}  Scorpion sting count
+0766: 96 09               LDA     <$09        ;{-1_stingCount}  Scorpion sting count
 0768: 26 13               BNE     $77D        ;  Scorpion poison trumps ... handle later
 076A: 8E 31 53            LDX     #$3153      ; "THE POISON FOG HAS KILLED YOU!"
 076D: BD 10 66            JSR     $1066       ;{PrintMess}  Print the message
 0770: 7E 0D 5C            JMP     $0D5C       ;{CommandUNCLE}  Command "UNCLE" ... end game
 ;
-0773: 96 32               LDA     >$32        ;{-1_enteredFog}  Have we passed through MYSTERIOUS FOG?
+0773: 96 32               LDA     <$32        ;{-1_enteredFog}  Have we passed through MYSTERIOUS FOG?
 0775: 27 06               BEQ     $77D        ;  No ... skip
 0777: 8E 31 72            LDX     #$3172      ; "IT'S POISONOUS!!"
 077A: BD 10 66            JSR     $1066       ;{PrintMess}  Print the message
 ;
-077D: 96 45               LDA     >$45        ;{-1_fogClock}  Fog clock running?
+077D: 96 45               LDA     <$45        ;{-1_fogClock}  Fog clock running?
 077F: 27 02               BEQ     $783        ;  No ... skip it
-0781: 0C 45               INC     >$45        ;{-1_fogClock}  Increment the fog clock
+0781: 0C 45               INC     <$45        ;{-1_fogClock}  Increment the fog clock
 ;
-0783: 96 0A               LDA     >$0A        ;{-1_lampOn}  Lamp status
+0783: 96 0A               LDA     <$0A        ;{-1_lampOn}  Lamp status
 0785: 27 12               BEQ     $799        ;  Lap is off ... skip timing it
-0787: 9E 38               LDX     >$38        ;{-1_lampOil}  Oil remaining
+0787: 9E 38               LDX     <$38        ;{-1_lampOil}  Oil remaining
 0789: 27 06               BEQ     $791        ;  No oil ... lamp now goes out
 078B: 30 1F               LEAX    -1,X        ; Decrement the oil level
-078D: 9F 38               STX     >$38        ;{-1_lampOil}  New oil level
+078D: 9F 38               STX     <$38        ;{-1_lampOil}  New oil level
 078F: 20 08               BRA     $799        ;  Move on
-0791: 0F 0A               CLR     >$0A        ;{-1_lampOn}  Lamp off
+0791: 0F 0A               CLR     <$0A        ;{-1_lampOn}  Lamp off
 0793: 8E 2B 97            LDX     #$2B97      ; "YOUR LAMP HAS JUST GONE OFF."
 0796: BD 10 66            JSR     $1066       ;{PrintMess}  Print the message
-0799: 9E 4C               LDX     >$4C        ;{-1_secsInRoom}  Count time in room
+0799: 9E 4C               LDX     <$4C        ;{-1_secsInRoom}  Count time in room
 079B: 8C 00 0F            CMPX    #$000F      ; 15?
 079E: 24 04               BCC     $7A4        ;  Leave counter at 15
 07A0: 30 01               LEAX    1,X         ; Bump ...
-07A2: 9F 4C               STX     >$4C        ;{-1_secsInRoom}  ... counter
-07A4: 9E 4A               LDX     >$4A        ;{-1_seconds}  Bump ...
+07A2: 9F 4C               STX     <$4C        ;{-1_secsInRoom}  ... counter
+07A4: 9E 4A               LDX     <$4A        ;{-1_seconds}  Bump ...
 07A6: 30 01               LEAX    1,X         ; ... continual ...
-07A8: 9F 4A               STX     >$4A        ;{-1_seconds}  ... counter (nobody uses it)
-07AA: 0F 3F               CLR     >$3F        ;{-1_ticksTillSec}  Clear interrupt divisor
-07AC: 0C 40               INC     >$40        ;{-1_secsTillMin}  Sub divisor for 1 minute ticks
-07AE: 96 40               LDA     >$40        ;{-1_secsTillMin}  Get minute count
+07A8: 9F 4A               STX     <$4A        ;{-1_seconds}  ... counter (nobody uses it)
+07AA: 0F 3F               CLR     <$3F        ;{-1_ticksTillSec}  Clear interrupt divisor
+07AC: 0C 40               INC     <$40        ;{-1_secsTillMin}  Sub divisor for 1 minute ticks
+07AE: 96 40               LDA     <$40        ;{-1_secsTillMin}  Get minute count
 07B0: 81 3C               CMPA    #$3C        ; Reached a minute?
 07B2: 25 5A               BCS     $80E        ;  No ... out
-07B4: 0F 40               CLR     >$40        ;{-1_secsTillMin}  Reset minute count
+07B4: 0F 40               CLR     <$40        ;{-1_secsTillMin}  Reset minute count
 
 ;; = One Minute Tick =
 ;; Things that happen on minute ticks.
@@ -462,9 +462,9 @@ InterruptService:
 OneMinTick:
 ; If we are invulnerable, count down the time. When it expires move the
 ; SCARAB to a random room.
-07B6: 96 46               LDA     >$46        ;{-1_akhiromMins}  AKHIROM made us invulnerable?
+07B6: 96 46               LDA     <$46        ;{-1_akhiromMins}  AKHIROM made us invulnerable?
 07B8: 27 12               BEQ     $7CC        ;  No ... skip
-07BA: 0A 46               DEC     >$46        ;{-1_akhiromMins}  Count down invulnerability time
+07BA: 0A 46               DEC     <$46        ;{-1_akhiromMins}  Count down invulnerability time
 07BC: 26 0E               BNE     $7CC        ;  Not time to move SCARAB
 07BE: BD 0B 3E            JSR     $0B3E       ;  Sound effect
 07C1: C6 15               LDB     #$15        ; Move SCARAB from pack ...
@@ -472,15 +472,15 @@ OneMinTick:
 07C6: BD 06 61            JSR     $0661       ;{Random}  Random number
 07C9: F7 3D 38            STB     $3D38       ; SCARABs to random room ... again
 
-07CC: 96 3E               LDA     >$3E        ;{-1_drinkTimer}  Count down since drinking water
+07CC: 96 3E               LDA     <$3E        ;{-1_drinkTimer}  Count down since drinking water
 07CE: 27 02               BEQ     $7D2        ;  No count ... skip
-07D0: 0A 3E               DEC     >$3E        ;{-1_drinkTimer}  Time down till we can drink again
-07D2: 96 09               LDA     >$09        ;{-1_stingCount}  Scorpion stings
+07D0: 0A 3E               DEC     <$3E        ;{-1_drinkTimer}  Time down till we can drink again
+07D2: 96 09               LDA     <$09        ;{-1_stingCount}  Scorpion stings
 07D4: 27 15               BEQ     $7EB        ;  Not stung ... continue
 07D6: C6 05               LDB     #$05        ;
 07D8: 3D                  MUL                 ; B = numStings * 5
 07D9: 1F 98               TFR     B,A         ;
-07DB: D0 05               SUBB    >$05        ;{-1_condition}  Enough to kill us?
+07DB: D0 05               SUBB    <$05        ;{-1_condition}  Enough to kill us?
 07DD: 25 09               BCS     $7E8        ;  No ... move on
 07DF: 8E 34 B4            LDX     #$34B4      ; "YOU HAVE DIED FROM A SCORPION BITE."
 07E2: BD 10 66            JSR     $1066       ;{PrintMess}  Print the message
@@ -488,10 +488,10 @@ OneMinTick:
 ;
 07E8: BD 1A 2F            JSR     $1A2F       ;  Drop physical condition and out
 ;
-07EB: 9E 38               LDX     >$38        ;{-1_lampOil}  Oil in lamp
+07EB: 9E 38               LDX     <$38        ;{-1_lampOil}  Oil in lamp
 07ED: 8C 01 2C            CMPX    #$012C      ; Begins to flicker at 300
 07F0: 22 11               BHI     $803        ;  Not time to flicker
-07F2: 96 0A               LDA     >$0A        ;{-1_lampOn}  Lamp status
+07F2: 96 0A               LDA     <$0A        ;{-1_lampOn}  Lamp status
 07F4: 27 0D               BEQ     $803        ;  Lamp not on ... can't flicker
 07F6: C6 0C               LDB     #$0C        ; "LAMP"
 07F8: BD 18 85            JSR     $1885       ;{InPack}  Check pack
@@ -499,9 +499,9 @@ OneMinTick:
 07FD: 8E 32 EF            LDX     #$32EF      ; "THE LAMP IS FLICKERING."
 0800: BD 10 66            JSR     $1066       ;{PrintMess}  Print the message
 ;
-0803: 96 13               LDA     >$13        ;{-1_auraTimer}  Enchanted aura counter
+0803: 96 13               LDA     <$13        ;{-1_auraTimer}  Enchanted aura counter
 0805: 27 02               BEQ     $809        ;  Timed out? Skip
-0807: 0A 13               DEC     >$13        ;{-1_auraTimer}  Count down until we can heal again
+0807: 0A 13               DEC     <$13        ;{-1_auraTimer}  Count down until we can heal again
 ;
 0809: 8D 04               BSR     $80F        ;  Ground might shake
 080B: BD 09 6E            JSR     $096E       ;{MoveCreatures}  Move creatures once every minute
@@ -556,9 +556,9 @@ OneMinTick:
 ;;
 UserInput:
 0859: BD 10 90            JSR     $1090       ;{PrintCR}  Print CR
-085C: 0F 03               CLR     >$03        ;{-1_inpLen}  Clear character count
-085E: DC 88               LDD     >$88        ;{-1_scrCursor}  Current cursor
-0860: DD 3B               STD     >$3B        ;  Hold it for now
+085C: 0F 03               CLR     <$03        ;{-1_inpLen}  Clear character count
+085E: DC 88               LDD     <$88        ;{-1_scrCursor}  Current cursor
+0860: DD 3B               STD     <$3B        ;  Hold it for now
 0862: 1C EF               ANDCC   #$EF        ; Interrupts on while waiting
 0864: BD A1 B1            JSR     $A1B1       ; Blink cursor and wait for key (BASIC)
 0867: 1A 50               ORCC    #$50        ; Interrupts off while processing
@@ -580,23 +580,23 @@ UserInput:
 0887: 25 D9               BCS     $862        ;  Ignore invalid character
 0889: 81 5A               CMPA    #$5A        ; Upper bounds
 088B: 22 D5               BHI     $862        ;  Ignore invalid character
-088D: 0C 03               INC     >$03        ;{-1_inpLen}  Increment the character count
+088D: 0C 03               INC     <$03        ;{-1_inpLen}  Increment the character count
 088F: C6 1E               LDB     #$1E        ; Reached the ...
-0891: D1 03               CMPB    >$03        ;{-1_inpLen}  ... Max?
+0891: D1 03               CMPB    <$03        ;{-1_inpLen}  ... Max?
 0893: 23 22               BLS     $8B7        ;  Yes ... out
-0895: 9D A6               JSR     >$A6        ;  Print character
+0895: 9D A6               JSR     <$A6        ;  Print character
 0897: 20 C9               BRA     $862        ;  Back for more
 ;        
-0899: 0A 03               DEC     >$03        ;{-1_inpLen}  Take a character away
+0899: 0A 03               DEC     <$03        ;{-1_inpLen}  Take a character away
 089B: 2A F8               BPL     $895        ;  Yes ... it was there ... take it off the screen
-089D: 0F 03               CLR     >$03        ;{-1_inpLen}  Otherwise ignore ...
+089D: 0F 03               CLR     <$03        ;{-1_inpLen}  Otherwise ignore ...
 089F: 20 C1               BRA     $862        ;  ... the backspace
 
 ; Parse two words from input (off of screen) and fill 2A and 2B. Error and back to
 ; top of game loop if unknown verb.
-08A1: 9E 3B               LDX     >$3B        ;  Start of input buffer
+08A1: 9E 3B               LDX     <$3B        ;  Start of input buffer
 08A3: 86 FF               LDA     #$FF        ; Clear ...
-08A5: 97 2B               STA     >$2B        ;{-1_nounNum}  ... NOUN
+08A5: 97 2B               STA     <$2B        ;{-1_nounNum}  ... NOUN
 08A7: 8D 1B               BSR     $8C4        ;  Parse the first word
 08A9: 8D 60               BSR     $90B        ;  Match the VERB
 08AB: 24 0B               BCC     $8B8        ;  Didn't know the verb ... error
@@ -671,7 +671,7 @@ UserInput:
 0919: 25 05               BCS     $920        ;  Got a match
 091B: BD 10 7D            JSR     $107D       ;  Skip to the end of the string
 091E: 20 F2               BRA     $912        ;  Keep going
-0920: D7 2A               STB     >$2A        ;{-1_verbNum}  Command number
+0920: D7 2A               STB     <$2A        ;{-1_verbNum}  Command number
 0922: 43                  COMA                ; Set C=1
 0923: 21 4F               BRN     $974        ;  (CLRA at 924 ... C=0)
 0925: 35 B0               PULS    X,Y,PC      ; Done
@@ -689,7 +689,7 @@ UserInput:
 0935: 25 05               BCS     $93C        ;  C=1 ... we found a match
 0937: BD 10 7D            JSR     $107D       ;  Skip to end of string
 093A: 20 F2               BRA     $92E        ;  Keep looking
-093C: D7 2B               STB     >$2B        ;{-1_nounNum}  Store string number
+093C: D7 2B               STB     <$2B        ;{-1_nounNum}  Store string number
 093E: 43                  COMA                ; C=1
 093F: 21 4F               BRN     $990        ;  (CLRA at 940 ... C=0)
 0941: 35 B0               PULS    X,Y,PC      ; Done
@@ -702,7 +702,7 @@ IsObjInRoom:
 0945: 1F 89               TFR     A,B         ; To B for the check
 0947: BD 1A 5A            JSR     $1A5A       ;{GetObject}  Get the object's descriptor
 094A: A6 84               LDA     ,X          ; Get the object's room
-094C: 91 00               CMPA    >$00        ;{-1_curRoom}  Is object in room?
+094C: 91 00               CMPA    <$00        ;{-1_curRoom}  Is object in room?
 094E: 27 05               BEQ     $955        ;  Yes ... check it furter
 0950: 4F                  CLRA                ; C=0 ... not in room
 0951: 21 43               BRN     $996        ;  COMA from 952 ... C=1
@@ -858,17 +858,17 @@ MINOTAURAttack:
 0A1F: 86 1E               LDA     #$1E        ; MINOTAUR
 0A21: 8D EA               BSR     $A0D        ;  Is the MINOTAUR alive?
 0A23: 24 38               BCC     $A5D        ;{TROGLODYTEAttack}  No Minotaur ... move on
-0A25: D6 41               LDB     >$41        ;{-1_minotaurTimer}  Minotaur timer
+0A25: D6 41               LDB     <$41        ;{-1_minotaurTimer}  Minotaur timer
 0A27: 27 08               BEQ     $A31        ;  Count ==0 ... print description if in room and continue
 0A29: C1 0A               CMPB    #$0A        ; Count == 10
 0A2B: 27 10               BEQ     $A3D        ;  Yes ... minotaur attacks!
-0A2D: 0C 41               INC     >$41        ;{-1_minotaurTimer}  Next in count
+0A2D: 0C 41               INC     <$41        ;{-1_minotaurTimer}  Next in count
 0A2F: 20 2C               BRA     $A5D        ;{TROGLODYTEAttack}  Continue
 ;
 0A31: BD 09 5D            JSR     $095D       ;  Print description if minotaur is in room
 0A34: 24 27               BCC     $A5D        ;{TROGLODYTEAttack}  Not in room
 0A36: BD 0B 03            JSR     $0B03       ;{SweepSounds}  Sound effect
-0A39: 0C 41               INC     >$41        ;{-1_minotaurTimer}  Increment count
+0A39: 0C 41               INC     <$41        ;{-1_minotaurTimer}  Increment count
 0A3B: 20 20               BRA     $A5D        ;{TROGLODYTEAttack}  Move on
 ;
 0A3D: BD 09 43            JSR     $0943       ;{IsObjInRoom}  Is Minotaur in room with us?
@@ -883,7 +883,7 @@ MINOTAURAttack:
 0A54: C1 20               CMPB    #$20        ; Only a little damage?
 0A56: 25 03               BCS     $A5B        ;  Just a little ... move on
 0A58: BD 0B 70            JSR     $0B70       ;  Lot of damage ... "OUCH THAT HURT"
-0A5B: 0F 41               CLR     >$41        ;{-1_minotaurTimer}  Restart 10 second count
+0A5B: 0F 41               CLR     <$41        ;{-1_minotaurTimer}  Restart 10 second count
 
 ;; == Troglodyte ==
 ;; TROGLODYTE is on an 12 second counter. 
@@ -896,11 +896,11 @@ TROGLODYTEAttack:
 0A5D: 86 1A               LDA     #$1A        ; TROGLODYTE
 0A5F: 8D AC               BSR     $A0D        ;  Is Troglodyte alive?
 0A61: 24 33               BCC     $A96        ;  No ... reset counter and move on
-0A63: D6 42               LDB     >$42        ;{-1_trogTimer}  Timer
+0A63: D6 42               LDB     <$42        ;{-1_trogTimer}  Timer
 0A65: 27 06               BEQ     $A6D        ;  Count 0 ... attack
 0A67: C1 0C               CMPB    #$0C        ; Count 12 ?
 0A69: 26 28               BNE     $A93        ;  No ... just move on
-0A6B: 0F 42               CLR     >$42        ;{-1_trogTimer}  Reset to 0 and attack
+0A6B: 0F 42               CLR     <$42        ;{-1_trogTimer}  Reset to 0 and attack
 ;
 0A6D: BD 09 43            JSR     $0943       ;{IsObjInRoom}  Is Troglodyte in room with us?
 0A70: 24 24               BCC     $A96        ;  No ... clear count and move on
@@ -918,7 +918,7 @@ TROGLODYTEAttack:
 0A8E: 24 03               BCC     $A93        ;  Just a little ... move on
 0A90: BD 0B 70            JSR     $0B70       ;  Lot of damage ... "OUCH THAT HURT"
 ;
-0A93: 0C 42               INC     >$42        ;{-1_trogTimer}  Next in cycle
+0A93: 0C 42               INC     <$42        ;{-1_trogTimer}  Next in cycle
 0A95: 8C 0F 42            CMPX    #$0F42      ; Reset Troglodyte counter
 
 ;; == Satyr ==
@@ -929,11 +929,11 @@ SATYRAttack:
 0A98: 86 1D               LDA     #$1D        ; Is SATYR ...
 0A9A: BD 0A 0D            JSR     $0A0D       ;  ... alive?
 0A9D: 24 21               BCC     $AC0        ;  No ... reset counter and move on
-0A9F: D6 43               LDB     >$43        ;{-1_satyrTimer}  Satyr counter
+0A9F: D6 43               LDB     <$43        ;{-1_satyrTimer}  Satyr counter
 0AA1: 27 06               BEQ     $AA9        ;  Attack on 0
 0AA3: C1 0F               CMPB    #$0F        ; Count 15?
 0AA5: 26 16               BNE     $ABD        ;  No ... bump and move on
-0AA7: 0F 43               CLR     >$43        ;{-1_satyrTimer}  Reset to 0
+0AA7: 0F 43               CLR     <$43        ;{-1_satyrTimer}  Reset to 0
 ;
 0AA9: BD 09 43            JSR     $0943       ;{IsObjInRoom}  Is Satyr in room with us?
 0AAC: 24 12               BCC     $AC0        ;  No ... reset counter and move on
@@ -943,7 +943,7 @@ SATYRAttack:
 0AB5: BD 10 90            JSR     $1090       ;{PrintCR}  Print CR
 0AB8: C6 1E               LDB     #$1E        ; Always hit with ...
 0ABA: BD 1A 2A            JSR     $1A2A       ;  ... 30 damage
-0ABD: 0C 43               INC     >$43        ;{-1_satyrTimer}  Next in cycle
+0ABD: 0C 43               INC     <$43        ;{-1_satyrTimer}  Next in cycle
 0ABF: 8C 0F 43            CMPX    #$0F43      ; Reset cycle
      
 ;; == Scorpion ==
@@ -959,7 +959,7 @@ SCORPIONAttack:
 0AC7: 24 1F               BCC     $AE8        ;  No ... reset counter and move on
 0AC9: BD 09 43            JSR     $0943       ;{IsObjInRoom}  Is Scorpion in room with us?
 0ACC: 24 1A               BCC     $AE8        ;  No ... reset counter and move on
-0ACE: D6 44               LDB     >$44        ;{-1_scorpTimer}  Scorpion timer
+0ACE: D6 44               LDB     <$44        ;{-1_scorpTimer}  Scorpion timer
 0AD0: 27 26               BEQ     $AF8        ;  On 0 ... attack and random count
 0AD2: C1 0F               CMPB    #$0F        ; Count F?
 0AD4: 26 0F               BNE     $AE5        ;  No ... next count and move on
@@ -967,9 +967,9 @@ SCORPIONAttack:
 0AD9: 2B 10               BMI     $AEB        ;  1/2 the time it vanishes for 16 seconds
 0ADB: 8E 34 94            LDX     #$3494      ; "THE SCORPION HAS JUST STUNG YOU."
 0ADE: BD 10 66            JSR     $1066       ;{PrintMess}  Print the message
-0AE1: 0C 09               INC     >$09        ;{-1_stingCount}  Add scorption sting count
+0AE1: 0C 09               INC     <$09        ;{-1_stingCount}  Add scorption sting count
 0AE3: 20 0E               BRA     $AF3        ;  Vanish for 16 seconds
-0AE5: 0C 44               INC     >$44        ;{-1_scorpTimer}  Next count
+0AE5: 0C 44               INC     <$44        ;{-1_scorpTimer}  Next count
 0AE7: 8C 0F 44            CMPX    #$0F44      ; Clear count
 0AEA: 39                  RTS                 ; Done
 ;
@@ -977,13 +977,13 @@ SCORPIONAttack:
 0AED: BD 10 48            JSR     $1048       ;  ... "THE SCORPION DISAPPEARS."
 0AF0: BD 10 90            JSR     $1090       ;{PrintCR}  Print CR
 0AF3: 86 F0               LDA     #$F0        ; Vanish for ...
-0AF5: 97 44               STA     >$44        ;{-1_scorpTimer}  ... 16 seconds
+0AF5: 97 44               STA     <$44        ;{-1_scorpTimer}  ... 16 seconds
 0AF7: 39                  RTS                 ; Done
 ;
 0AF8: C6 0D               LDB     #$0D        ; Random 0 ...
 0AFA: BD 06 90            JSR     $0690       ;{RandB}  ... to 13
 0AFD: 5C                  INCB                ; 1 to 14
-0AFE: D7 44               STB     >$44        ;{-1_scorpTimer}  Next scorpion count
+0AFE: D7 44               STB     <$44        ;{-1_scorpTimer}  Next scorpion count
 0B00: 8D 01               BSR     $B03        ;{SweepSounds}  Sound effect
 0B02: 39                  RTS                 ; Done
 
@@ -993,7 +993,7 @@ SCORPIONAttack:
 SweepSounds:
 0B03: 34 16               PSHS    X,B,A       ; Store params
 0B05: 86 0F               LDA     #$0F        ; Count ...
-0B07: 97 53               STA     >$53        ;  ... of 15
+0B07: 97 53               STA     <$53        ;  ... of 15
 0B09: C6 A2               LDB     #$A2        ; High value = 101000_10
 0B0B: 86 6F               LDA     #$6F        ; Delay
 0B0D: C0 14               SUBB    #$14        ; Drop volume
@@ -1003,7 +1003,7 @@ SweepSounds:
 0B16: 80 05               SUBA    #$05        ; Raise frequency
 0B18: 81 14               CMPA    #$14        ; Still acceptibly low ...
 0B1A: 22 F6               BHI     $B12        ;  ... use it
-0B1C: 0A 53               DEC     >$53        ;  Sweep count
+0B1C: 0A 53               DEC     <$53        ;  Sweep count
 0B1E: 26 E9               BNE     $B09        ;  Do all sweeps
 0B20: 35 96               PULS    A,B,X,PC    ; Out
 
@@ -1030,7 +1030,7 @@ SweepSounds:
 0B42: BD 06 90            JSR     $0690       ;{RandB}  ... value 0-30
 0B45: CB 0F               ADDB    #$0F        ; Value 15-45
 0B47: 86 14               LDA     #$14        ; Number of ...
-0B49: D7 53               STB     >$53        ;  ... cycles
+0B49: D7 53               STB     <$53        ;  ... cycles
 0B4B: C6 1F               LDB     #$1F        ; Random ...
 0B4D: BD 06 90            JSR     $0690       ;{RandB}  ... 0 to 31
 0B50: 58                  ASLB                ; Now 0 to 62
@@ -1048,7 +1048,7 @@ SweepSounds:
 0B64: 35 02               PULS    A           ; Get delay
 0B66: C6 A2               LDB     #$A2        ; Volume
 0B68: 8D B8               BSR     $B22        ;  Play tone
-0B6A: 0A 53               DEC     >$53        ;  All cycles?
+0B6A: 0A 53               DEC     <$53        ;  All cycles?
 0B6C: 26 DD               BNE     $B4B        ;  No ... back to do them all
 0B6E: 35 96               PULS    A,B,X,PC    ; Out
 
@@ -1163,7 +1163,7 @@ InitializeObjects:
 ;
 ; Initialize lamp full of oil
 0C22: CC 07 08            LDD     #$0708      ; Init oil level ..
-0C25: DD 38               STD     >$38        ;{-1_lampOil}  ... to 1800 second (30 minutes)
+0C25: DD 38               STD     <$38        ;{-1_lampOil}  ... to 1800 second (30 minutes)
 ;
 ; Initialize Oracle's advice
 0C27: 8E 1E 43            LDX     #$1E43      ; Objects oracle gives advice on
@@ -1187,7 +1187,7 @@ InitializeObjects:
 0C4A: 58                  ASLB                ; Offset to treasure
 0C4B: 5C                  INCB                ; Treasure word
 0C4C: A6 85               LDA     B,X         ; Set packrat's ...
-0C4E: 97 2C               STA     >$2C        ;{-1_ratObject}  ... trigger object
+0C4E: 97 2C               STA     <$2C        ;{-1_ratObject}  ... trigger object
 0C50: 39                  RTS                 ; Done
 
 AssignHolders:
@@ -1196,7 +1196,7 @@ AssignHolders:
 0C51: C6 05               LDB     #$05        ; Get random ..
 0C53: BD 06 90            JSR     $0690       ;{RandB}  ... value 0 to 5
 0C56: CB 19               ADDB    #$19        ; 25 - 30 (One of the creatures)
-0C58: D7 2F               STB     >$2F        ;{-1_temporary}  Hold "empty" creature
+0C58: D7 2F               STB     <$2F        ;{-1_temporary}  Hold "empty" creature
 0C5A: CE 3C 5F            LDU     #$3C5F      ; List of owners
 0C5D: 8E 3C 8F            LDX     #$3C8F      ; End of "held by" table
 0C60: 86 10               LDA     #$10        ; 16 things held
@@ -1211,7 +1211,7 @@ AssignHolders:
 0C71: 6D 85               TST     B,X         ; Object already held?
 0C73: 26 F6               BNE     $C6B        ;  Yes ... find an object not held
 0C75: A6 C6               LDA     A,U         ; Next owner
-0C77: 91 2F               CMPA    >$2F        ;{-1_temporary}  Is this the "empty" creature?
+0C77: 91 2F               CMPA    <$2F        ;{-1_temporary}  Is this the "empty" creature?
 0C79: 26 02               BNE     $C7D        ;  No ... assign it
 0C7B: 86 0B               LDA     #$0B        ; Assign object to enter-room-r instead
 0C7D: A7 85               STA     B,X         ; New owner
@@ -1252,20 +1252,20 @@ PlaceEnterRoomActions:
 ;
 ; Place HYDRA with its action
 0CBD: B6 3C A1            LDA     $3CA1       ; We just placed the HYDRA action
-0CC0: 97 33               STA     >$33        ;{-1_hydraRoom}  Put the HYDRA there
+0CC0: 97 33               STA     <$33        ;{-1_hydraRoom}  Put the HYDRA there
 ;
 ; Place SMALL PIT and JUMP to 39 with its action
 0CC2: B6 3C E6            LDA     $3CE6       ; We just placed the SMALL PIT action
-0CC5: 97 35               STA     >$35        ;{-1_smallPitRoom}  Put the SMALL PIT there
+0CC5: 97 35               STA     <$35        ;{-1_smallPitRoom}  Put the SMALL PIT there
 0CC7: B7 3C 59            STA     $3C59       ; Put the "JUMP DOWN" to room 39 with the pit
 ;
 ; Count on ISHTAR
 0CCA: BD 06 61            JSR     $0661       ;{Random}  Random number
 0CCD: C4 03               ANDB    #$03        ; 0-3
-0CCF: D7 34               STB     >$34        ;{-1_ishtarUses}  ISHTAR can be used 1-4 times
+0CCF: D7 34               STB     <$34        ;{-1_ishtarUses}  ISHTAR can be used 1-4 times
 ;
 0CD1: CB 04               ADDB    #$04        ; 4-7
-0CD3: D7 3A               STB     >$3A        ;{-1_lampFills}  Number of refills in the OIL ROOM (action _v)
+0CD3: D7 3A               STB     <$3A        ;{-1_lampFills}  Number of refills in the OIL ROOM (action _v)
 ;
 0CD5: C6 17               LDB     #$17        ; Random ...
 0CD7: BD 06 90            JSR     $0690       ;{RandB}  ... value 0 to 23
@@ -1284,7 +1284,7 @@ GameInit:
 0CE7: BD A9 28            JSR     $A928       ; Clear screen (BASIC)
 0CEA: BD A9 76            JSR     $A976       ; Enables sound (BASIC)
 0CED: 5F                  CLRB                ; 0
-0CEE: 9E 8A               LDX     >$8A        ;{-1_zeroWord}  Always 0
+0CEE: 9E 8A               LDX     <$8A        ;{-1_zeroWord}  Always 0
 0CF0: 6F 80               CLR     ,X+         ; Clear out ...
 0CF2: 8C 00 66            CMPX    #$0066      ; ... RAM ...
 0CF5: 23 F9               BLS     $CF0        ;  ... up through 66
@@ -1295,9 +1295,9 @@ GameInit:
 0CFD: 26 FB               BNE     $CFA        ;  ... table
 ;
 0CFF: BD A9 A2            JSR     $A9A2       ; SNDSEL ... sound source is DAC (BASIC)
-0D02: 0F 68               CLR     >$68        ;  Current line # of BASIC program. Don't know why we are setting this.
-0D04: 0F 78               CLR     >$78        ;  BASIC file status flag (set to closed). Don't know why we are setting this.
-0D06: 0A 18               DEC     >$18        ;{-1_randPoint}  Force random number to reseed
+0D02: 0F 68               CLR     <$68        ;  Current line # of BASIC program. Don't know why we are setting this.
+0D04: 0F 78               CLR     <$78        ;  BASIC file status flag (set to closed). Don't know why we are setting this.
+0D06: 0A 18               DEC     <$18        ;{-1_randPoint}  Force random number to reseed
 0D08: 8E 2A D7            LDX     #$2AD7      ; "WELCOME TO THE LABYRINTH!! BEWARE OF THE MINOTAUR AND GOOD LUCK."
 0D0B: BD 10 66            JSR     $1066       ;{PrintMess}  Print the message
 0D0E: BD 06 61            JSR     $0661       ;{Random}  Advance random number
@@ -1308,10 +1308,10 @@ GameInit:
 0D1C: BD 0C 22            JSR     $0C22       ;  Init lamp oil (0708)
 0D1F: BD 0C 51            JSR     $0C51       ;{AssignHolders}  Assign treasures to holders
 0D22: BD 0C A0            JSR     $0CA0       ;{PlaceEnterRoomActions}  Place the enter-room-actions
-0D25: 0A 05               DEC     >$05        ;{-1_condition}  Physical condition at max
+0D25: 0A 05               DEC     <$05        ;{-1_condition}  Physical condition at max
 0D27: 86 0A               LDA     #$0A        ; Start in ...
-0D29: 97 00               STA     >$00        ;{-1_curRoom}  ... Room 10
-0D2B: 97 01               STA     >$01        ;{-1_lastRoom}  Last room is Room 10
+0D29: 97 00               STA     <$00        ;{-1_curRoom}  ... Room 10
+0D2B: 97 01               STA     <$01        ;{-1_lastRoom}  Last room is Room 10
 0D2D: BD A9 28            JSR     $A928       ; Clear screen (BASIC)
 0D30: BD 0E 27            JSR     $0E27       ;  Print room description
 0D33: BD 07 2A            JSR     $072A       ;  Init ISR
@@ -1325,7 +1325,7 @@ MainGameLoop:
 0D40: BD 16 A7            JSR     $16A7       ;{CalculateScore}  Calculate score (detects win)
 0D43: BD 10 90            JSR     $1090       ;{PrintCR}  Print CR
 0D46: 8D 23               BSR     $D6B        ;  Execute command
-0D48: 96 05               LDA     >$05        ;{-1_condition}  Physical condition
+0D48: 96 05               LDA     <$05        ;{-1_condition}  Physical condition
 0D4A: 81 28               CMPA    #$28        ; Is condition 40 or better
 0D4C: 24 06               BCC     $D54        ;  Yes .. skip message
 0D4E: 8E 2A 44            LDX     #$2A44      ; YOUR SIGHT IS DIM
@@ -1352,7 +1352,7 @@ CommandUNCLE:
 0D68: 7E 0C E0            JMP     $0CE0       ;{GameInit}  Start game
 
 0D6B: 8E 27 D4            LDX     #$27D4      ; Command table
-0D6E: 96 2A               LDA     >$2A        ;{-1_verbNum}  Command number
+0D6E: 96 2A               LDA     <$2A        ;{-1_verbNum}  Command number
 0D70: 48                  ASLA                ; Two bytes per entry
 0D71: 6E 96               JMP     [A,X]       ; Execute the command
   
@@ -1388,9 +1388,9 @@ CommandUNCLE:
 0D92: A6 02               LDA     2,X         ; Flags
 0D94: 2B 06               BMI     $D9C        ;  In pack ... yes it is here
 0D96: A6 84               LDA     ,X          ; Is lamp in ...
-0D98: 91 00               CMPA    >$00        ;{-1_curRoom}  ... current room
+0D98: 91 00               CMPA    <$00        ;{-1_curRoom}  ... current room
 0D9A: 26 04               BNE     $DA0        ;  No ... not here ... C=0 and out
-0D9C: 96 0A               LDA     >$0A        ;{-1_lampOn}  Lamp status
+0D9C: 96 0A               LDA     <$0A        ;{-1_lampOn}  Lamp status
 0D9E: 26 03               BNE     $DA3        ;  Lamp is on ... Z=0
 0DA0: 4F                  CLRA                ; C=0 ... not glowing
 0DA1: 20 01               BRA     $DA4        ;  Out
@@ -1402,27 +1402,27 @@ CommandUNCLE:
 0DA6: 34 36               PSHS    Y,X,B,A     ; Save params
 0DA8: 8D E1               BSR     $D8B        ;  Can we see?
 0DAA: 25 2A               BCS     $DD6        ;  Yes ... out
-0DAC: 96 00               LDA     >$00        ;{-1_curRoom}  Current room
+0DAC: 96 00               LDA     <$00        ;{-1_curRoom}  Current room
 0DAE: 81 28               CMPA    #$28        ; First 40 room ..
 0DB0: 25 24               BCS     $DD6        ;  ... have ambient light
 0DB2: 81 CA               CMPA    #$CA        ; The forest ...
 0DB4: 27 20               BEQ     $DD6        ;  ... has ambient light
 0DB6: BD 06 61            JSR     $0661       ;{Random}  Random number
 0DB9: BD 10 90            JSR     $1090       ;{PrintCR}  Print CR
-0DBC: D1 08               CMPB    >$08        ;{-1_fallOdds}  Random number smaller than current value?
+0DBC: D1 08               CMPB    <$08        ;{-1_fallOdds}  Random number smaller than current value?
 0DBE: 25 0E               BCS     $DCE        ;  Yes ... we died
 0DC0: 8E 2B 26            LDX     #$2B26      ; "IT'S DARK AND YOU CAN'T SEE - IF YOU CONTINUE, YOU MAY FALL."
 0DC3: BD 10 66            JSR     $1066       ;{PrintMess}  Print the message
-0DC6: D6 08               LDB     >$08        ;{-1_fallOdds}  Current value
+0DC6: D6 08               LDB     <$08        ;{-1_fallOdds}  Current value
 0DC8: CB 1F               ADDB    #$1F        ; Odds are 0 then 1/8 then 2/8 then 3/8 ... (each step better chance of falling)
-0DCA: D7 08               STB     >$08        ;{-1_fallOdds}  New value
+0DCA: D7 08               STB     <$08        ;{-1_fallOdds}  New value
 0DCC: 20 0C               BRA     $DDA        ;  Return with C=1 (can't see)
 ;
 0DCE: 8E 2B 62            LDX     #$2B62      ; "YOU HAVE JUST FALLEN INTO A PIT AND KILLED YOURSELF."
 0DD1: BD 10 66            JSR     $1066       ;{PrintMess}  Print the message
 0DD4: 20 86               BRA     $D5C        ;{CommandUNCLE}  UNCLE ... new game
 ;    
-0DD6: 0F 08               CLR     >$08        ;{-1_fallOdds}  Reset moving in darkness
+0DD6: 0F 08               CLR     <$08        ;{-1_fallOdds}  Reset moving in darkness
 0DD8: 4F                  CLRA                ; C=0
 0DD9: 21 43               BRN     $E1E        ;  COMA
 0DDB: 35 B6               PULS    A,B,X,Y,PC  ; Out
@@ -1432,11 +1432,11 @@ CommandUNCLE:
 ;; "in poison room" flag if we move.
 ;;
 CommandBACK:
-0DDD: 9E 4C               LDX     >$4C        ;{-1_secsInRoom}  Too late to ...
+0DDD: 9E 4C               LDX     <$4C        ;{-1_secsInRoom}  Too late to ...
 0DDF: 8C 00 0F            CMPX    #$000F      ; ... go back?
 0DE2: 24 43               BCC     $E27        ;  Yes ... print room description and out
-0DE4: 96 01               LDA     >$01        ;{-1_lastRoom}  Last room ...
-0DE6: 97 00               STA     >$00        ;{-1_curRoom}  ... to current room
+0DE4: 96 01               LDA     <$01        ;{-1_lastRoom}  Last room ...
+0DE6: 97 00               STA     <$00        ;{-1_curRoom}  ... to current room
 0DE8: BD 07 25            JSR     $0725       ;  Now out of the MYSTERIOUS FOG
 0DEB: 20 3A               BRA     $E27        ;  Print room description and out
      
@@ -1465,21 +1465,21 @@ CommandWEST:
 0DF5: 8C 86 04            CMPX    #$8604      ; EAST
 0DF8: 8C 86 02            CMPX    #$8602      ; SOUTH
 0DFB: 8C 86 01            CMPX    #$8601      ; WEST
-0DFE: 97 02               STA     >$02        ;{-1_dirBits}  Hold the bit pattern
-0E00: 0F 14               CLR     >$14        ;{-1_lampStripped}  We've moved. VETAR will not work.
+0DFE: 97 02               STA     <$02        ;{-1_dirBits}  Hold the bit pattern
+0E00: 0F 14               CLR     <$14        ;{-1_lampStripped}  We've moved. VETAR will not work.
 0E02: BD 07 25            JSR     $0725       ;  Now out of the MYSTERIOUS FOG
-0E05: 0F 0F               CLR     >$0F        ;{-1_hydraPushed}  HYDRA is no longer here
+0E05: 0F 0F               CLR     <$0F        ;{-1_hydraPushed}  HYDRA is no longer here
 0E07: BD 0F 93            JSR     $0F93       ;  Get doors in this room
-0E0A: 96 02               LDA     >$02        ;{-1_dirBits}  Direction bit pattern
+0E0A: 96 02               LDA     <$02        ;{-1_dirBits}  Direction bit pattern
 0E0C: A4 84               ANDA    ,X          ; Can we go in that direction?
 0E0E: 26 06               BNE     $E16        ;  Yes ... go
-0E10: 96 00               LDA     >$00        ;{-1_curRoom}  Current room ...
-0E12: 97 01               STA     >$01        ;{-1_lastRoom}  ... is last room
+0E10: 96 00               LDA     <$00        ;{-1_curRoom}  Current room ...
+0E12: 97 01               STA     <$01        ;{-1_lastRoom}  ... is last room
 0E14: 20 11               BRA     $E27        ;  Print room description
 
-0E16: 0F 0C               CLR     >$0C        ;{-1_downFail}  Clear the flag for "don't move us"
+0E16: 0F 0C               CLR     <$0C        ;{-1_downFail}  Clear the flag for "don't move us"
 0E18: BD 0F 27            JSR     $0F27       ;  Execute any handler when moving between rooms
-0E1B: 96 0C               LDA     >$0C        ;{-1_downFail}  Did handler tell us to skip moving?
+0E1B: 96 0C               LDA     <$0C        ;{-1_downFail}  Did handler tell us to skip moving?
 0E1D: 26 08               BNE     $E27        ;  Yes ... bypass moving
 0E1F: 17 00 B4            LBSR    $0ED6       ;  Open path or wearing powerring?
 0E22: 25 03               BCS     $E27        ;  No ... bypass moving
@@ -1551,7 +1551,7 @@ DropHeldObj:
 0E8E: 27 16               BEQ     $EA6        ;  Yes ... NOTHING SPECIAL and out
 0E90: C4 FC               ANDB    #$FC        ; Make the held object visible and not in pack
 0E92: E7 02               STB     2,X         ; Reset flags
-0E94: 96 00               LDA     >$00        ;{-1_curRoom}  Current room
+0E94: 96 00               LDA     <$00        ;{-1_curRoom}  Current room
 0E96: A7 84               STA     ,X          ; To held object's location
 0E98: E6 01               LDB     1,X         ; Object description
 0E9A: BD 18 6D            JSR     $186D       ;  Print object name
@@ -1570,7 +1570,7 @@ PrintObjectsInRoom:
 0EB1: EC 84               LDD     ,X          ; A=Room, B=name
 0EB3: C1 FF               CMPB    #$FF        ; End of table?
 0EB5: 27 1E               BEQ     $ED5        ;  Yes ... out
-0EB7: 91 00               CMPA    >$00        ;{-1_curRoom}  Object in room?
+0EB7: 91 00               CMPA    <$00        ;{-1_curRoom}  Object in room?
 0EB9: 26 F4               BNE     $EAF        ;  No ... keep looking
 0EBB: A6 02               LDA     2,X         ; Get flags
 0EBD: 2B F0               BMI     $EAF        ;  Already in pack ... ignore
@@ -1590,7 +1590,7 @@ PrintObjectsInRoom:
        
 ; Return C=0 if path is open or powerring is in pack. C=1 if blocked and no powerring.
 0ED6: 34 10               PSHS    X           ; Save params
-0ED8: 96 02               LDA     >$02        ;{-1_dirBits}  Direction bits
+0ED8: 96 02               LDA     <$02        ;{-1_dirBits}  Direction bits
 0EDA: A4 89 01 00         ANDA    $0100,X     ; Check block
 0EDE: 27 09               BEQ     $EE9        ;  No blocks ... return C=0
 0EE0: C6 2A               LDB     #$2A        ; Powerring ...
@@ -1602,7 +1602,7 @@ PrintObjectsInRoom:
 
 0EEC: 34 16               PSHS    X,B,A       ; Save params
 0EEE: 8E 3C 8F            LDX     #$3C8F      ; Enter-room actions
-0EF1: 96 00               LDA     >$00        ;{-1_curRoom}  Current room
+0EF1: 96 00               LDA     <$00        ;{-1_curRoom}  Current room
 0EF3: A1 84               CMPA    ,X          ; Found an entry for this room?
 0EF5: 27 09               BEQ     $F00        ;  Yes ... do routine
 0EF7: 30 03               LEAX    3,X         ; Next entry
@@ -1617,7 +1617,7 @@ PrintObjectsInRoom:
 ; Find current room description and print
 0F09: 34 10               PSHS    X           ; Save params
 0F0B: 8E 21 65            LDX     #$2165      ; Room description list
-0F0E: D6 00               LDB     >$00        ;{-1_curRoom}  Current room number
+0F0E: D6 00               LDB     <$00        ;{-1_curRoom}  Current room number
 0F10: 8D 05               BSR     $F17        ;  Get the right description
 0F12: BD 0F 9A            JSR     $0F9A       ;  Print it
 0F15: 35 90               PULS    X,PC        ; Out
@@ -1635,8 +1635,8 @@ PrintObjectsInRoom:
 ; Execute any handler between the room and target room in either direction
 0F27: 34 10               PSHS    X           ; Store params
 0F29: 30 8D 2C 1D         LEAX    $2C1D,PC    ; 3B4A
-0F2D: 96 00               LDA     >$00        ;{-1_curRoom}  Current room
-0F2F: D6 02               LDB     >$02        ;{-1_dirBits}  Direction pattern
+0F2D: 96 00               LDA     <$00        ;{-1_curRoom}  Current room
+0F2F: D6 02               LDB     <$02        ;{-1_dirBits}  Direction pattern
 0F31: 8D 07               BSR     $F3A        ;  Look for a handler between the rooms
 0F33: 24 03               BCC     $F38        ;  No handler ... out
 0F35: AD 98 02            JSR     [$02,X]     ; Do the handler
@@ -1693,17 +1693,17 @@ PrintObjectsInRoom:
 0F82: 35 96               PULS    A,B,X,PC    ; Done
 
 ; Change rooms based on direction
-0F84: 96 00               LDA     >$00        ;{-1_curRoom}  Current room ...
-0F86: 97 01               STA     >$01        ;{-1_lastRoom}  ... to last room
-0F88: D6 02               LDB     >$02        ;{-1_dirBits}  Direction bits
+0F84: 96 00               LDA     <$00        ;{-1_curRoom}  Current room ...
+0F86: 97 01               STA     <$01        ;{-1_lastRoom}  ... to last room
+0F88: D6 02               LDB     <$02        ;{-1_dirBits}  Direction bits
 0F8A: 8D E5               BSR     $F71        ;  Offset room number based on direction
-0F8C: 97 00               STA     >$00        ;{-1_curRoom}  New current room
-0F8E: 0F 4C               CLR     >$4C        ;{-1_secsInRoom}  Clear room ...
-0F90: 0F 4D               CLR     >$4D        ;{-1_secsInRoom}  ... timer for BACK
+0F8C: 97 00               STA     <$00        ;{-1_curRoom}  New current room
+0F8E: 0F 4C               CLR     <$4C        ;{-1_secsInRoom}  Clear room ...
+0F90: 0F 4D               CLR     <$4D        ;{-1_secsInRoom}  ... timer for BACK
 0F92: 39                  RTS                 ; Done
             
 ; Get room doors
-0F93: D6 00               LDB     >$00        ;{-1_curRoom}  Current room number
+0F93: D6 00               LDB     <$00        ;{-1_curRoom}  Current room number
 0F95: 8E 3D B8            LDX     #$3DB8      ; Room door table
 0F98: 3A                  ABX                 ; Offset into table
 0F99: 39                  RTS                 ; Done
@@ -1726,11 +1726,11 @@ PrintObjectsInRoom:
 0FB9: 34 16               PSHS    X,B,A       ; Save params
 0FBB: BD 06 61            JSR     $0661       ;{Random}  Random number
 0FBE: C4 07               ANDB    #$07        ; 0-7
-0FC0: D7 17               STB     >$17        ;{-1_randPass}  Hold
+0FC0: D7 17               STB     <$17        ;{-1_randPass}  Hold
 0FC2: AE A4               LDX     ,Y          ; Pointer to passage in directions
 0FC4: 86 FF               LDA     #$FF        ; Get ...
 0FC6: 4C                  INCA                ; ... the ...
-0FC7: 91 17               CMPA    >$17        ;{-1_randPass}  ... right
+0FC7: 91 17               CMPA    <$17        ;{-1_randPass}  ... right
 0FC9: 27 05               BEQ     $FD0        ;  ... message
 0FCB: 17 00 B6            LBSR    $1084       ;  Find the FF terminator
 0FCE: 20 F6               BRA     $FC6        ;  Keep going
@@ -1749,7 +1749,7 @@ PrintObjectsInRoom:
 0FE5: 86 08               LDA     #$08        ; Eight spells
 0FE7: 30 04               LEAX    4,X         ; Next spell
 0FE9: E6 02               LDB     2,X         ; Rooms
-0FEB: D1 00               CMPB    >$00        ;{-1_curRoom}  Spell in current room?
+0FEB: D1 00               CMPB    <$00        ;{-1_curRoom}  Spell in current room?
 0FED: 26 0B               BNE     $FFA        ;  No ... keep looking
 0FEF: E6 03               LDB     3,X         ; Learned flags
 0FF1: 2B 07               BMI     $FFA        ;  We already know it ... skip
@@ -1761,9 +1761,9 @@ PrintObjectsInRoom:
 0FFD: 35 96               PULS    A,B,X,PC    ; Done
   
 0FFF: 34 16               PSHS    X,B,A       ; Save params
-1001: 9E 88               LDX     >$88        ;{-1_scrCursor}  Cursor
+1001: 9E 88               LDX     <$88        ;{-1_scrCursor}  Cursor
 1003: 86 6C               LDA     #$6C        ; ","
-1005: D6 0B               LDB     >$0B        ;{-1_spacesOnEnd}  Any skipped space
+1005: D6 0B               LDB     <$0B        ;{-1_spacesOnEnd}  Any skipped space
 1007: C0 02               SUBB    #$02        ; Back up two characters to the period
 1009: A7 85               STA     B,X         ; Replace period with a coma
 100B: 5F                  CLRB                ; Message 0 is ...
@@ -1814,10 +1814,10 @@ PrintWord:
 ; Print word number A followed by space
 1054: 34 16               PSHS    X,B,A       ; Save params
 1056: 8E 35 C6            LDX     #$35C6      ; Start of word list
-1059: 97 2F               STA     >$2F        ;{-1_temporary}  Hold word number
+1059: 97 2F               STA     <$2F        ;{-1_temporary}  Hold word number
 105B: C6 FF               LDB     #$FF        ; Start count at 0
 105D: 5C                  INCB                ; Current word number
-105E: D1 2F               CMPB    >$2F        ;{-1_temporary}  Have we found it?
+105E: D1 2F               CMPB    <$2F        ;{-1_temporary}  Have we found it?
 1060: 27 06               BEQ     $1068       ;  Yes ... go print word
 1062: 8D 19               BSR     $107D       ;  No ... skip word
 1064: 20 F7               BRA     $105D       ;  Keep looking
@@ -1861,7 +1861,7 @@ ComWHAT:
 1099: 8E 27 26            LDX     #$2726      ; Command words
 109C: 86 FF               LDA     #$FF        ; Start with 0
 109E: 4C                  INCA                ; Next command word
-109F: 91 2A               CMPA    >$2A        ;{-1_verbNum}  This is the input word?
+109F: 91 2A               CMPA    <$2A        ;{-1_verbNum}  This is the input word?
 10A1: 27 04               BEQ     $10A7       ;  Yes ... go handle it
 10A3: 8D D8               BSR     $107D       ;  Skip to end of command word
 10A5: 20 F7               BRA     $109E       ;  Keep looking
@@ -1880,8 +1880,8 @@ ComWHAT:
 ;; Drop object in current room and adjust pack weight.
 ;;
 CommandDROPTHROW:
-10BE: 0F 2F               CLR     >$2F        ;{-1_temporary}  Clear found-flag
-10C0: 96 2B               LDA     >$2B        ;{-1_nounNum}  Noun
+10BE: 0F 2F               CLR     <$2F        ;{-1_temporary}  Clear found-flag
+10C0: 96 2B               LDA     <$2B        ;{-1_nounNum}  Noun
 10C2: 81 FF               CMPA    #$FF        ; Was there a noun?
 10C4: 26 02               BNE     $10C8       ;  Yes ... continue
 10C6: 20 D1               BRA     $1099       ;{ComWHAT}  No ... "THROW WHAT?"
@@ -1895,12 +1895,12 @@ CommandDROPTHROW:
 10D6: A6 01               LDA     1,X         ; Get the word
 10D8: 81 FF               CMPA    #$FF        ; End of list
 10DA: 27 18               BEQ     $10F4       ;  Yes ... error out
-10DC: 91 07               CMPA    >$07        ;{-1_nounObjNum}  Matches our noun?
+10DC: 91 07               CMPA    <$07        ;{-1_nounObjNum}  Matches our noun?
 10DE: 26 F4               BNE     $10D4       ;  No ... keep looking
 10E0: A6 02               LDA     2,X         ; Flags
 10E2: 2A F0               BPL     $10D4       ;  Not in pack ... next
-10E4: 0C 2F               INC     >$2F        ;{-1_temporary}  Flag we found it
-10E6: D6 00               LDB     >$00        ;{-1_curRoom}  Current room
+10E4: 0C 2F               INC     <$2F        ;{-1_temporary}  Flag we found it
+10E6: D6 00               LDB     <$00        ;{-1_curRoom}  Current room
 10E8: E7 84               STB     ,X          ; To object's location
 10EA: E6 02               LDB     2,X         ; Mask off ...
 10EC: C4 7F               ANDB    #$7F        ; ... in pack
@@ -1908,7 +1908,7 @@ CommandDROPTHROW:
 10F0: 8D 11               BSR     $1103       ;  Update bulk/weight
 10F2: 20 E0               BRA     $10D4       ;  Do all objects
 ;
-10F4: 96 2F               LDA     >$2F        ;{-1_temporary}  Did we find one?
+10F4: 96 2F               LDA     <$2F        ;{-1_temporary}  Did we find one?
 10F6: 26 06               BNE     $10FE       ;  Yes ... print OK
 10F8: 8E 2A AB            LDX     #$2AAB      ; "YOU DON'T HAVE THAT."
 10FB: 7E 10 66            JMP     $1066       ;{PrintMess}  Print and return
@@ -1919,16 +1919,16 @@ CommandDROPTHROW:
 ; Readjust carry weight/bulk for dropped object in $07
 1103: 34 26               PSHS    Y,B,A       ; Save params
 1105: BD 19 8C            JSR     $198C       ;  Get buld/weight for object
-1108: 96 04               LDA     >$04        ;{-1_weight}  Subtract ...
+1108: 96 04               LDA     <$04        ;{-1_weight}  Subtract ...
 110A: A0 A0               SUBA    ,Y+         ; ... dropped weight
 110C: 24 01               BCC     $110F       ;  Still something
 110E: 4F                  CLRA                ; Zero if negative weight
-110F: 97 04               STA     >$04        ;{-1_weight}  Store new weight
-1111: 96 06               LDA     >$06        ;{-1_bulk}  Subtract ...
+110F: 97 04               STA     <$04        ;{-1_weight}  Store new weight
+1111: 96 06               LDA     <$06        ;{-1_bulk}  Subtract ...
 1113: A0 A4               SUBA    ,Y          ; ... dropped bulk
 1115: 24 01               BCC     $1118       ;  Still something
 1117: 4F                  CLRA                ; Zero if negative bulk
-1118: 97 06               STA     >$06        ;{-1_bulk}  New bulk
+1118: 97 06               STA     <$06        ;{-1_bulk}  New bulk
 111A: 35 A6               PULS    A,B,Y,PC    ; Out
 
 ; Open scroll   
@@ -1936,7 +1936,7 @@ CommandDROPTHROW:
 111C: C6 12               LDB     #$12        ; Do we have ...
 111E: BD 18 85            JSR     $1885       ;{InPack}  ... the scroll?
 1121: 24 36               BCC     $1159       ;  No ... "OPEN WHAT?"
-1123: 96 00               LDA     >$00        ;{-1_curRoom}  Current room
+1123: 96 00               LDA     <$00        ;{-1_curRoom}  Current room
 1125: 2A 70               BPL     $1197       ;  On floor 1 or 2 ... "Nothing interesting" and out
 1127: B7 3D 47            STA     $3D47       ; Bring Trodlodyte to us
 112A: 20 68               BRA     $1194       ;  "OK" and out
@@ -1946,7 +1946,7 @@ CommandDROPTHROW:
 112C: C6 16               LDB     #$16        ; Do we haave ...
 112E: BD 18 85            JSR     $1885       ;{InPack}  ... the jewlbox
 1131: 24 26               BCC     $1159       ;  No ... "OPEN WHAT?"
-1133: 96 00               LDA     >$00        ;{-1_curRoom}  Current room
+1133: 96 00               LDA     <$00        ;{-1_curRoom}  Current room
 1135: 81 9E               CMPA    #$9E        ; In room 158 (Minotaur's lair)
 1137: 26 5E               BNE     $1197       ;  No ... "Nothing interesting" and out
 1139: B7 3D 53            STA     $3D53       ; Bring the Minotaur to us
@@ -1955,7 +1955,7 @@ CommandDROPTHROW:
 ;; == OPEN ==
 ;;
 CommandOPEN:
-113E: 96 2B               LDA     >$2B        ;{-1_nounNum}  Noun
+113E: 96 2B               LDA     <$2B        ;{-1_nounNum}  Noun
 1140: 81 74               CMPA    #$74        ; "CRYPT" ?
 1142: 27 18               BEQ     $115C       ;{OpenCrypt}  Yes ... go handle crypt
 1144: 81 33               CMPA    #$33        ; "DRAPES" ?
@@ -1973,12 +1973,12 @@ CommandOPEN:
 
 OpenCrypt:
 ; If pys-weight is 250 or better the treasure falls out.
-115C: 96 00               LDA     >$00        ;{-1_curRoom}  Current room
+115C: 96 00               LDA     <$00        ;{-1_curRoom}  Current room
 115E: 81 43               CMPA    #$43        ; Are we in the crypt room?
 1160: 26 38               BNE     $119A       ;{OpenCryptKing}  May be in the crypt of the king
 ;
-1162: 96 05               LDA     >$05        ;{-1_condition}  Physical condition ...
-1164: 90 04               SUBA    >$04        ;{-1_weight}  ... less than weight?
+1162: 96 05               LDA     <$05        ;{-1_condition}  Physical condition ...
+1164: 90 04               SUBA    <$04        ;{-1_weight}  ... less than weight?
 1166: 25 0E               BCS     $1176       ;  Yes ... can't open it
 1168: 81 FA               CMPA    #$FA        ; Physical condition ...
 116A: 25 0A               BCS     $1176       ;  ... must be 250 to open
@@ -1992,12 +1992,12 @@ OpenCrypt:
 OpenDrapes:
 ; Open drapes (1/4th chance of opening passage leading south from room 9 ... we only
 ; get one shot at opening).
-117C: 96 00               LDA     >$00        ;{-1_curRoom}  Current room
+117C: 96 00               LDA     <$00        ;{-1_curRoom}  Current room
 117E: 81 09               CMPA    #$09        ; Right room?
 1180: 26 D7               BNE     $1159       ;  No ... "OPEN WHAT?"
-1182: 96 12               LDA     >$12        ;{-1_drapesOpen}  Already tried passage?
+1182: 96 12               LDA     <$12        ;{-1_drapesOpen}  Already tried passage?
 1184: 26 11               BNE     $1197       ;  Yes ... error message
-1186: 0C 12               INC     >$12        ;{-1_drapesOpen}  Now we have tried (whether we succeeded or not)
+1186: 0C 12               INC     <$12        ;{-1_drapesOpen}  Now we have tried (whether we succeeded or not)
 1188: BD 06 61            JSR     $0661       ;{Random}  Random number
 118B: C1 40               CMPB    #$40        ; 3/4 th of the time ...
 118D: 24 08               BCC     $1197       ;  ... nothing happens
@@ -2014,8 +2014,8 @@ OpenCryptKing:
 119E: C6 2A               LDB     #$2A        ; Got the ...
 11A0: BD 18 85            JSR     $1885       ;{InPack}  ... powerring?
 11A3: 25 0A               BCS     $11AF       ;  Yes ... automatically get the treasure
-11A5: 96 05               LDA     >$05        ;{-1_condition}  Physical condition ...
-11A7: 90 06               SUBA    >$06        ;{-1_bulk}  ... less than bulk?
+11A5: 96 05               LDA     <$05        ;{-1_condition}  Physical condition ...
+11A7: 90 06               SUBA    <$06        ;{-1_bulk}  ... less than bulk?
 11A9: 25 CB               BCS     $1176       ;  Yes ... can't open
 11AB: 81 FA               CMPA    #$FA        ; Takes physical condition of 250 to open
 11AD: 25 C7               BCS     $1176       ;  Not strong enough ... error and out
@@ -2028,22 +2028,22 @@ OpenCryptKing:
 ;; room.
 ;;
 CommandASK:
-11B6: 96 2B               LDA     >$2B        ;{-1_nounNum}  Noun
+11B6: 96 2B               LDA     <$2B        ;{-1_nounNum}  Noun
 11B8: 81 AE               CMPA    #$AE        ; "ASK ORACLE" ?
 11BA: 27 03               BEQ     $11BF       ;  Yes ... go do it
 11BC: 7E 10 99            JMP     $1099       ;{ComWHAT}  "ASK WHAT?" and out
 11BF: B6 3D 56            LDA     $3D56       ; Oracle's room
-11C2: 91 00               CMPA    >$00        ;{-1_curRoom}  Oracle in current room
+11C2: 91 00               CMPA    <$00        ;{-1_curRoom}  Oracle in current room
 11C4: 27 06               BEQ     $11CC       ;  Yes ... "ASK" is OK
 11C6: 8E 2B B5            LDX     #$2BB5      ; "ASK WHO?" error
 11C9: 7E 10 66            JMP     $1066       ;{PrintMess}  Print the message
 ;
 11CC: 10 8E 00 1B         LDY     #$001B      ; Flags that advice has been given and for what objects
 11D0: C6 0D               LDB     #$0D        ; Number of advices given so far.
-11D2: D1 1A               CMPB    >$1A        ;{-1_numAdviceGiven}  Compare 13 to number given so far
+11D2: D1 1A               CMPB    <$1A        ;{-1_numAdviceGiven}  Compare 13 to number given so far
 11D4: 22 0C               BHI     $11E2       ;  Number given is less than 13 ... still have ungiven
 ;
-11D6: 0F 1A               CLR     >$1A        ;{-1_numAdviceGiven}  Reset number of advices
+11D6: 0F 1A               CLR     <$1A        ;{-1_numAdviceGiven}  Reset number of advices
 11D8: 5A                  DECB                ; Reset ...
 11D9: A6 A5               LDA     B,Y         ; ... all ...
 11DB: 84 7F               ANDA    #$7F        ; ... advice ...
@@ -2051,11 +2051,11 @@ CommandASK:
 11DF: 5A                  DECB                ; ... flags ...
 11E0: 2A F7               BPL     $11D9       ;  ... to start over with advice
 ;
-11E2: 0C 1A               INC     >$1A        ;{-1_numAdviceGiven}  Number of advices given
+11E2: 0C 1A               INC     <$1A        ;{-1_numAdviceGiven}  Number of advices given
 ;
 11E4: C6 0C               LDB     #$0C        ; Number of advices (0 to C ... 13 advices)
 11E6: BD 06 90            JSR     $0690       ;{RandB}  Random advice slot
-11E9: D7 51               STB     >$51        ;  Hold it
+11E9: D7 51               STB     <$51        ;  Hold it
 11EB: A6 A5               LDA     B,Y         ; This advice already been given?
 11ED: 2B F5               BMI     $11E4       ;  Yes ... try again
 ;
@@ -2067,7 +2067,7 @@ CommandASK:
 11FD: BD 18 6D            JSR     $186D       ;  Get the word
 1200: 8E 2B FC            LDX     #$2BFC      ; "YOU MUST POSSESS THE"
 1203: BD 10 66            JSR     $1066       ;{PrintMess}  Print the message
-1206: D6 51               LDB     >$51        ;  Protected object number
+1206: D6 51               LDB     <$51        ;  Protected object number
 1208: 8D 16               BSR     $1220       ;  Print the list of required
 120A: A6 A5               LDA     B,Y         ; Advice flag
 120C: 8A 80               ORA     #$80        ; Advice has been given
@@ -2100,7 +2100,7 @@ CommandASK:
 ;; == EAT ==
 ;;
 CommandEAT:
-1245: 96 2B               LDA     >$2B        ;{-1_nounNum}  Noun
+1245: 96 2B               LDA     <$2B        ;{-1_nounNum}  Noun
 1247: 81 94               CMPA    #$94        ; Is it FOOD?
 1249: 27 1E               BEQ     $1269       ;{EatFood}  Handle food
 124B: 81 CA               CMPA    #$CA        ; Is it MUSHROOM?
@@ -2115,7 +2115,7 @@ EatPowder:
 1258: C6 27               LDB     #$27        ; Powder object
 125A: 8D 5C               BSR     $12B8       ;  Move it to random room if we have it
 125C: 24 0F               BCC     $126D       ;  Didn't have it ... error and out
-125E: 96 00               LDA     >$00        ;{-1_curRoom}  Current room
+125E: 96 00               LDA     <$00        ;{-1_curRoom}  Current room
 1260: B7 3D 29            STA     $3D29       ; Move the URN here
 1263: B7 3C FF            STA     $3CFF       ; Move the BOTTLE here
 1266: 7E 10 17            JMP     $1017       ;  "OK" and out
@@ -2157,7 +2157,7 @@ EatMushroom:
 
 12AD: BD 18 CD            JSR     $18CD       ;  Convert noun to object number
 12B0: 24 05               BCC     $12B7       ;  Not valid ... out
-12B2: D6 07               LDB     >$07        ;{-1_nounObjNum}  Get object number
+12B2: D6 07               LDB     <$07        ;{-1_nounObjNum}  Get object number
 12B4: BD 18 85            JSR     $1885       ;{InPack}  Check for object in pack
 12B7: 39                  RTS                 ; Done
 
@@ -2168,7 +2168,7 @@ EatMushroom:
 12C2: 1F 98               TFR     B,A         ; ... to A
 12C4: 35 04               PULS    B           ; Object number again
 ;
-12C6: D7 07               STB     >$07        ;{-1_nounObjNum}  To parameter
+12C6: D7 07               STB     <$07        ;{-1_nounObjNum}  To parameter
 12C8: BD 11 03            JSR     $1103       ;  Adjust weight in pack for dropping B
 12CB: 34 16               PSHS    X,B,A       ; Save all
 12CD: BD 1A 5A            JSR     $1A5A       ;{GetObject}  Get object data
@@ -2182,7 +2182,7 @@ EatMushroom:
 ;; == DRINK ==
 ;;
 CommandDRINK:
-12DB: 96 2B               LDA     >$2B        ;{-1_nounNum}  Noun word
+12DB: 96 2B               LDA     <$2B        ;{-1_nounNum}  Noun word
 12DD: 81 2D               CMPA    #$2D        ; "WATER"
 12DF: 27 4A               BEQ     $132B       ;{DrinkWater}  Go drink the water
 12E1: 81 BA               CMPA    #$BA        ; "SPRITE"
@@ -2197,7 +2197,7 @@ CommandDRINK:
 DrinkSPRITE:
 ; Get it ... as in the soda? Nothing happens.      
 12F4: B6 3D 44            LDA     $3D44       ; Sprite's location
-12F7: 91 00               CMPA    >$00        ;{-1_curRoom}  Is sprite in current room?
+12F7: 91 00               CMPA    <$00        ;{-1_curRoom}  Is sprite in current room?
 12F9: 26 62               BNE     $135D       ;  No ... "DRINK WHAT?"
 12FB: 8E 34 6D            LDX     #$346D      ; "YOU MUST BE KIDDING!"
 12FE: 20 35               BRA     $1335       ;  Print and out
@@ -2219,14 +2219,14 @@ CodeBug1:
 130D: 8D B7               BSR     $12C6       ;  Drop to random room
 130F: 86 C8               LDA     #$C8        ; Add 200 to ...
 1311: BD 1A 4E            JSR     $1A4E       ;  ... physical condition
-1314: D6 09               LDB     >$09        ;{-1_stingCount}  Scorpion sting count
+1314: D6 09               LDB     <$09        ;{-1_stingCount}  Scorpion sting count
 1316: 26 05               BNE     $131D       ;  If stung ... there is good chance of healing
 1318: 8E 2C 5D            LDX     #$2C5D      ; "THAT IS VERY STRONG MEDICINE."
 131B: 20 18               BRA     $1335       ;  Print message and out
 131D: BD 06 61            JSR     $0661       ;{Random}  Random number
 1320: C1 20               CMPB    #$20        ; There is a 1/8 chance ...
 1322: 25 F4               BCS     $1318       ;  ... of doing nothing
-1324: 0F 09               CLR     >$09        ;{-1_stingCount}  Remove sting
+1324: 0F 09               CLR     <$09        ;{-1_stingCount}  Remove sting
 1326: 8E 2C 38            LDX     #$2C38      ; "THE SCORPION'S STING HAS BEEN CURED."
 1329: 20 0A               BRA     $1335       ;  Print and out
 
@@ -2244,12 +2244,12 @@ DrinkWater:
 133F: 27 13               BEQ     $1354       ;  The bottle is empty
 1341: C4 F3               ANDB    #$F3        ; Now ...
 1343: E7 02               STB     2,X         ; ... it is empty
-1345: D6 3E               LDB     >$3E        ;{-1_drinkTimer}  Enough time passed since last drinking?
+1345: D6 3E               LDB     <$3E        ;{-1_drinkTimer}  Enough time passed since last drinking?
 1347: 26 08               BNE     $1351       ;  No ... skip healing
 1349: 86 20               LDA     #$20        ; Heal ...
 134B: BD 1A 4E            JSR     $1A4E       ;  ... by 32 points
 134E: 44                  LSRA                ; Must wait ...
-134F: 97 3E               STA     >$3E        ;{-1_drinkTimer}  ... 16 minutes
+134F: 97 3E               STA     <$3E        ;{-1_drinkTimer}  ... 16 minutes
 1351: 7E 10 17            JMP     $1017       ;  Print "OK" and continue
 ;
 1354: C6 0E               LDB     #$0E        ; "THE BOTTLE IS EMPTY."
@@ -2259,11 +2259,11 @@ DrinkWater:
 ;; If the LEDGE is here and we have the rope, drop the treasure. 
 ;;
 CommandCLIMB:    
-1359: 96 2B               LDA     >$2B        ;{-1_nounNum}  Noun
+1359: 96 2B               LDA     <$2B        ;{-1_nounNum}  Noun
 135B: 81 FD               CMPA    #$FD        ; "LEDGE"?
 135D: 10 26 FD 38         LBNE    $1099       ;{ComWHAT}  No .... Command+" WHAT?"
-1361: 96 36               LDA     >$36        ;{-1_ledgeRoom}  Room of ledge
-1363: 91 00               CMPA    >$00        ;{-1_curRoom}  Current room
+1361: 96 36               LDA     <$36        ;{-1_ledgeRoom}  Room of ledge
+1363: 91 00               CMPA    <$00        ;{-1_curRoom}  Current room
 1365: 10 26 05 7C         LBNE    $18E5       ;  "I DO NOT SEE ANY LEDGE" and out
 1369: C6 18               LDB     #$18        ; See if rope ...
 136B: BD 18 85            JSR     $1885       ;{InPack}  ... is in pack
@@ -2276,14 +2276,14 @@ CommandCLIMB:
 ;; it with the rope. The rope is dropped from our pack and bound to the HYDRA.
 ;;
 CommandTIE:      
-1377: 96 2B               LDA     >$2B        ;{-1_nounNum}  Noun
+1377: 96 2B               LDA     <$2B        ;{-1_nounNum}  Noun
 1379: 81 FC               CMPA    #$FC        ; "HYDRA" ?
 137B: 27 03               BEQ     $1380       ;  Yes .... handle
 137D: 7E 10 99            JMP     $1099       ;{ComWHAT}  "TIE WHAT?" and out
-1380: 96 0F               LDA     >$0F        ;{-1_hydraPushed}  Did HYDRA just push us?
+1380: 96 0F               LDA     <$0F        ;{-1_hydraPushed}  Did HYDRA just push us?
 1382: 27 22               BEQ     $13A6       ;  No ... I DO NOT SEE and out
 1384: C6 18               LDB     #$18        ; See if ...
-1386: D7 07               STB     >$07        ;{-1_nounObjNum}  ... rope ...
+1386: D7 07               STB     <$07        ;{-1_nounObjNum}  ... rope ...
 1388: BD 18 85            JSR     $1885       ;{InPack}  ... is in pack
 138B: 24 16               BCC     $13A3       ;  No ... "WITH WHAT" and out
 138D: BD 10 17            JSR     $1017       ;  "OK"
@@ -2294,7 +2294,7 @@ CommandTIE:
 1399: E7 02               STB     2,X         ; New flags
 139B: BD 11 03            JSR     $1103       ;  Readjust pack weight/bulk for dropped rope
 139E: 86 AA               LDA     #$AA        ; Set HYDRA status to ...
-13A0: 97 0E               STA     >$0E        ;{-1_hydraStatus}  ... tied up
+13A0: 97 0E               STA     <$0E        ;{-1_hydraStatus}  ... tied up
 13A2: 39                  RTS                 ; Out
 ;
 13A3: 7E 10 25            JMP     $1025       ;  "WITH WHAT?" and out
@@ -2313,12 +2313,12 @@ CommandHELP:
 ;; then HYDRA dies and it drops treasure and rope.
 ;
 CommandSTAB:
-13AF: 96 2B               LDA     >$2B        ;{-1_nounNum}  Get noun
+13AF: 96 2B               LDA     <$2B        ;{-1_nounNum}  Get noun
 13B1: 81 FC               CMPA    #$FC        ; Stabbing the "HYDRA" ?
 13B3: 27 03               BEQ     $13B8       ;  Yes ... go stap hydra
 13B5: 7E 10 99            JMP     $1099       ;{ComWHAT}  Command+"WHAT?"
-13B8: 96 33               LDA     >$33        ;{-1_hydraRoom}  Hydra's room
-13BA: 91 00               CMPA    >$00        ;{-1_curRoom}  Current room
+13B8: 96 33               LDA     <$33        ;{-1_hydraRoom}  Hydra's room
+13BA: 91 00               CMPA    <$00        ;{-1_curRoom}  Current room
 13BC: 26 E8               BNE     $13A6       ;  "I DO NOT SEE ANY" and out
 13BE: C6 06               LDB     #$06        ; Sword in ...
 13C0: BD 18 85            JSR     $1885       ;{InPack}  ... pack?
@@ -2326,7 +2326,7 @@ CommandSTAB:
 13C5: C6 03               LDB     #$03        ; Dagger in ...
 13C7: BD 18 85            JSR     $1885       ;{InPack}  ... pack?
 13CA: 24 0C               BCC     $13D8       ;  No ... move on
-13CC: 96 05               LDA     >$05        ;{-1_condition}  Physical condition
+13CC: 96 05               LDA     <$05        ;{-1_condition}  Physical condition
 13CE: 81 F0               CMPA    #$F0        ; Must be 240 of 256 to hit Hydra with dagger
 13D0: 24 1C               BCC     $13EE       ;  We are ... go do it
 13D2: 8E 2E 11            LDX     #$2E11      ; "YOU MISSED."
@@ -2340,14 +2340,14 @@ CommandSTAB:
 13E6: 20 BB               BRA     $13A3       ;  "WITH WHAT?" and out
 ;
 ; Stab hydra with sword.
-13E8: 96 05               LDA     >$05        ;{-1_condition}  Physical condition
+13E8: 96 05               LDA     <$05        ;{-1_condition}  Physical condition
 13EA: 81 C8               CMPA    #$C8        ; Must be 200 to hit Hydra with sword
 13EC: 25 E4               BCS     $13D2       ;  MISSED and out
 13EE: 20 00               BRA     $13F0       ;  Got it
 ;
 ; Hydra dies
 13F0: 86 01               LDA     #$01        ; HYDRA is ...
-13F2: 97 0E               STA     >$0E        ;{-1_hydraStatus}  ... dead
+13F2: 97 0E               STA     <$0E        ;{-1_hydraStatus}  ... dead
 13F4: C6 18               LDB     #$18        ; Get object ...
 13F6: BD 1A 5A            JSR     $1A5A       ;{GetObject}  ... "ROPE"
 13F9: A6 02               LDA     2,X         ; Flags
@@ -2355,7 +2355,7 @@ CommandSTAB:
 13FD: 27 08               BEQ     $1407       ;  No ... leave it alone
 13FF: 84 7E               ANDA    #$7E        ; Not in pack or in use
 1401: A7 02               STA     2,X         ; New status
-1403: 96 33               LDA     >$33        ;{-1_hydraRoom}  Drop rope ...
+1403: 96 33               LDA     <$33        ;{-1_hydraRoom}  Drop rope ...
 1405: A7 84               STA     ,X          ; ... where HYDRA was
 1407: 8E 33 07            LDX     #$3307      ; "THE HYDRA IS DEAD!"
 140A: BD 10 66            JSR     $1066       ;{PrintMess}  Print the message
@@ -2370,11 +2370,11 @@ CommandSTAB:
 CommandVETAR:
 1412: 8D 3F               BSR     $1453       ;  Make sure spell has been learned
 1414: 24 3B               BCC     $1451       ;  "NOTHING SPECIAL HAPPENS"
-1416: 96 14               LDA     >$14        ;{-1_lampStripped}  Has VETAR been temporarily enabled?
+1416: 96 14               LDA     <$14        ;{-1_lampStripped}  Has VETAR been temporarily enabled?
 1418: 27 37               BEQ     $1451       ;  No ... "NOTHING SPECIAL HAPPENS"
 141A: 86 A6               LDA     #$A6        ; "LAMP" word
-141C: 97 2B               STA     >$2B        ;{-1_nounNum}  As if typed (for GET in a sec)
-141E: 96 00               LDA     >$00        ;{-1_curRoom}  Current room
+141C: 97 2B               STA     <$2B        ;{-1_nounNum}  As if typed (for GET in a sec)
+141E: 96 00               LDA     <$00        ;{-1_curRoom}  Current room
 1420: B7 3D 1D            STA     $3D1D       ; Move lamp to this room
 1423: 7E 18 F7            JMP     $18F7       ;{CommandGETTAKEGRAB}  "GET LAMP"
 
@@ -2384,7 +2384,7 @@ CommandVETAR:
 CommandMITR: 
 1426: 8D 2B               BSR     $1453       ;  Make sure spell has been learned
 1428: 24 27               BCC     $1451       ;  "NOTHING SPECIAL HAPPENS"
-142A: 96 09               LDA     >$09        ;{-1_stingCount}  Poison sting
+142A: 96 09               LDA     <$09        ;{-1_stingCount}  Poison sting
 142C: 27 23               BEQ     $1451       ;  Not stung ... "NOTHING SPECIAL HAPPENS"
 142E: 7E 13 24            JMP     $1324       ;  Remove scorpion sting
 ;
@@ -2396,17 +2396,17 @@ CommandMITR:
 CommandOKKAN:             
 1432: 8D 1F               BSR     $1453       ;  Make sure spell has been learned
 1434: 24 1B               BCC     $1451       ;  "NOTHING SPECIAL HAPPENS"
-1436: 96 11               LDA     >$11        ;{-1_rocksExposed}  Already done this?
+1436: 96 11               LDA     <$11        ;{-1_rocksExposed}  Already done this?
 1438: 26 F7               BNE     $1431       ;  Out
-143A: 96 10               LDA     >$10        ;{-1_rocksMoved}  Has pile of rocks been moved to us?
+143A: 96 10               LDA     <$10        ;{-1_rocksMoved}  Has pile of rocks been moved to us?
 143C: 27 13               BEQ     $1451       ;  No ... "NOTHING SPECIAL HAPPENS"
-143E: 96 37               LDA     >$37        ;{-1_rocksRoom}  Location of "pile of rocks"
-1440: 91 00               CMPA    >$00        ;{-1_curRoom}  Current room
+143E: 96 37               LDA     <$37        ;{-1_rocksRoom}  Location of "pile of rocks"
+1440: 91 00               CMPA    <$00        ;{-1_curRoom}  Current room
 1442: 26 0D               BNE     $1451       ;  "NOTHING SPECIAL HAPPENS"
 1444: 8E 31 AB            LDX     #$31AB      ; "THE LIGHT GROWS STRONGER UNTIL THE ENTIRE ROOM IS BATHED IN ITS GLOW."
 1447: BD 10 66            JSR     $1066       ;{PrintMess}  Print the message
 144A: 86 08               LDA     #$08        ; Drop treasure held ...
-144C: 0C 11               INC     >$11        ;{-1_rocksExposed}  ... by ...
+144C: 0C 11               INC     <$11        ;{-1_rocksExposed}  ... by ...
 144E: 7E 0E 80            JMP     $0E80       ;{DropHeldObj}  ... pile of rocks
 ;
 1451: 20 31               BRA     $1484       ;  "NOTHING SPECIAL HAPPENS"
@@ -2414,9 +2414,9 @@ CommandOKKAN:
 ; Make sure we have learned the spell. If we have take damage like this:
 ; VETAR=5*2, MITRA=6*2, OKKAN=7*2, AKHIROM=8*2, NERGAL=9*2, BELROG=10*2,
 ; CROM=11*2, ISHTAR=12*2
-1453: D6 2A               LDB     >$2A        ;{-1_verbNum}  Verb word (spell)
+1453: D6 2A               LDB     <$2A        ;{-1_verbNum}  Verb word (spell)
 1455: CB D3               ADDB    #$D3        ; Convert verb word to word list
-1457: D7 2B               STB     >$2B        ;{-1_nounNum}  Noun
+1457: D7 2B               STB     <$2B        ;{-1_nounNum}  Noun
 1459: BD 0E 38            JSR     $0E38       ;  Look for noun in pack
 145C: 24 07               BCC     $1465       ;  Dont have it ... out
 145E: C0 32               SUBB    #$32        ; (5 for VETAR)
@@ -2434,17 +2434,17 @@ CommandOKKAN:
 CommandAKHIROM:
 1466: 8D EB               BSR     $1453       ;  Make sure spell has been learned
 1468: 24 1A               BCC     $1484       ;  "NOTHING SPECIAL HAPPENS"
-146A: 96 33               LDA     >$33        ;{-1_hydraRoom}  Is HYDRA ...
-146C: 91 00               CMPA    >$00        ;{-1_curRoom}  ... in current room?
+146A: 96 33               LDA     <$33        ;{-1_hydraRoom}  Is HYDRA ...
+146C: 91 00               CMPA    <$00        ;{-1_curRoom}  ... in current room?
 146E: 26 03               BNE     $1473       ;  No ... skip
 1470: BD 13 F0            JSR     $13F0       ;  Kill HYDRA
-1473: D6 46               LDB     >$46        ;{-1_akhiromMins}  Invulnerability count
+1473: D6 46               LDB     <$46        ;{-1_akhiromMins}  Invulnerability count
 1475: 26 0D               BNE     $1484       ;  already invulnerable ... "NOTHING SPECIAL HAPPENS"
 1477: C6 15               LDB     #$15        ; Is the SCARAB ...
 1479: BD 18 85            JSR     $1885       ;{InPack}  ... in the pack?
 147C: 24 06               BCC     $1484       ;  No ... "NOTHING SPECIAL HAPPENS"
 147E: 86 03               LDA     #$03        ; Invulnerable ...
-1480: 97 46               STA     >$46        ;{-1_akhiromMins}  ... for 3 minutes
+1480: 97 46               STA     <$46        ;{-1_akhiromMins}  ... for 3 minutes
 1482: 20 0F               BRA     $1493       ;  "OK"
 1484: 7E 10 1E            JMP     $101E       ;  "NOTHING SPECIAL HAPPENS"
 
@@ -2454,10 +2454,10 @@ CommandAKHIROM:
 CommandNERGAL:     
 1487: 8D CA               BSR     $1453       ;  Make sure spell has been learned
 1489: 24 F9               BCC     $1484       ;  "NOTHING SPECIAL HAPPENS"
-148B: 96 45               LDA     >$45        ;{-1_fogClock}  Poision fog clock running?
+148B: 96 45               LDA     <$45        ;{-1_fogClock}  Poision fog clock running?
 148D: 27 F5               BEQ     $1484       ;  "NOTHING SPECIAL HAPPENS"
-148F: 0F 32               CLR     >$32        ;{-1_enteredFog}  Clear in-fog-room
-1491: 0F 45               CLR     >$45        ;{-1_fogClock}  Clear time in poison fog
+148F: 0F 32               CLR     <$32        ;{-1_enteredFog}  Clear in-fog-room
+1491: 0F 45               CLR     <$45        ;{-1_fogClock}  Clear time in poison fog
 1493: 7E 10 17            JMP     $1017       ;  "OK"
 
 ;; === BELROG ===
@@ -2470,7 +2470,7 @@ CommandBELROG:
 149D: 4D                  TSTA                ; Any jump from this room?
 149E: 27 E4               BEQ     $1484       ;  No ... "NOTHING SPECIAL HAPPENS"
 14A0: A6 43               LDA     3,U         ; Get jump destination
-14A2: 97 00               STA     >$00        ;{-1_curRoom}  Make jump
+14A2: 97 00               STA     <$00        ;{-1_curRoom}  Make jump
 14A4: 7E 0E 27            JMP     $0E27       ;  Print room description
 
 ;; === CROM ===
@@ -2494,12 +2494,12 @@ CommandCROM:
 CommandISHTAR:
 14C0: BD 14 53            JSR     $1453       ;  Make sure spell has been learned
 14C3: 24 BF               BCC     $1484       ;  "NOTHING SPECIAL HAPPENS"
-14C5: 0D 34               TST     >$34        ;{-1_ishtarUses}  Still have an ISHTAR to use?
+14C5: 0D 34               TST     <$34        ;{-1_ishtarUses}  Still have an ISHTAR to use?
 14C7: 2B BB               BMI     $1484       ;  "NOTHING SPECIAL HAPPENS"
-14C9: 0A 34               DEC     >$34        ;{-1_ishtarUses}  One used up
+14C9: 0A 34               DEC     <$34        ;{-1_ishtarUses}  One used up
 14CB: 86 CA               LDA     #$CA        ; Move to treasure room 202 ...
-14CD: 97 00               STA     >$00        ;{-1_curRoom}  ... "NEAR A GREAT FOREST"
-14CF: 97 01               STA     >$01        ;{-1_lastRoom}  Back as well
+14CD: 97 00               STA     <$00        ;{-1_curRoom}  ... "NEAR A GREAT FOREST"
+14CF: 97 01               STA     <$01        ;{-1_lastRoom}  Back as well
 CodeBug3:
 ;; All the other leave-room commands reset the MYSTERIOUS FOG counters. This does not.
 ;; If you use ISHTAR to leave the poison fog the count goes on as if you are there.
@@ -2514,21 +2514,21 @@ CodeBug3:
 CommandRUN:  
 14D4: BD 07 25            JSR     $0725       ;  Out of the MYSTERIOUS FOG
 14D7: 86 07               LDA     #$07        ; Is pack weight ...
-14D9: 91 04               CMPA    >$04        ;{-1_weight}  ... less than 8
+14D9: 91 04               CMPA    <$04        ;{-1_weight}  ... less than 8
 14DB: 24 03               BCC     $14E0       ;  Yes ... don't drop anything
 14DD: BD 19 FE            JSR     $19FE       ;  Drop the heaviest object in pack
 14E0: C6 08               LDB     #$08        ; Get random value ...
 14E2: BD 06 90            JSR     $0690       ;{RandB}  0-8
 14E5: 5C                  INCB                ; Make it 1-9
 14E6: E7 E2               STB     ,-S         ; Store count
-14E8: 96 00               LDA     >$00        ;{-1_curRoom}  Current room
+14E8: 96 00               LDA     <$00        ;{-1_curRoom}  Current room
 14EA: 1F 89               TFR     A,B         ; Align parameter
 14EC: BD 06 77            JSR     $0677       ;  Get random valid direction
 14EF: BD 0F 71            JSR     $0F71       ;  Make move
 14F2: 6A E4               DEC     ,S          ; All steps taken?
 14F4: 26 F4               BNE     $14EA       ;  No .. do all
-14F6: 97 00               STA     >$00        ;{-1_curRoom}  New current room
-14F8: 97 01               STA     >$01        ;{-1_lastRoom}  And last room
+14F6: 97 00               STA     <$00        ;{-1_curRoom}  New current room
+14F8: 97 01               STA     <$01        ;{-1_lastRoom}  And last room
 14FA: BD 0E 27            JSR     $0E27       ;  Print room description (maybe fall if dark)
 14FD: BD 0F E0            JSR     $0FE0       ;  Check for spells again. Not sure why.
 1500: 35 82               PULS    A,PC        ; Out
@@ -2536,7 +2536,7 @@ CommandRUN:
 ;; == FILL ==
 ;;
 CommandFILL:
-1502: 96 2B               LDA     >$2B        ;{-1_nounNum}  Fill ...
+1502: 96 2B               LDA     <$2B        ;{-1_nounNum}  Fill ...
 1504: 81 A6               CMPA    #$A6        ; ... LAMP?
 1506: 27 10               BEQ     $1518       ;{FillLamp}  Yes ... handle
 1508: 81 B8               CMPA    #$B8        ; Fill BOTTLE?
@@ -2555,16 +2555,16 @@ FillLamp:
 1518: BD 0E 38            JSR     $0E38       ;  Look for noun in pack
 151B: 25 07               BCS     $1524       ;  Got it
 151D: F6 3D 1D            LDB     $3D1D       ; LAMP's room
-1520: D1 00               CMPB    >$00        ;{-1_curRoom}  In current room?
+1520: D1 00               CMPB    <$00        ;{-1_curRoom}  In current room?
 1522: 26 3B               BNE     $155F       ;  I DO NOT SEE ... and out
 1524: B6 3C D7            LDA     $3CD7       ; Action _v ... the oil room
-1527: 91 00               CMPA    >$00        ;{-1_curRoom}  In current room?
+1527: 91 00               CMPA    <$00        ;{-1_curRoom}  In current room?
 1529: 26 09               BNE     $1534       ;  No ... try URN
 152B: BD 1C F8            JSR     $1CF8       ;  Can the lamp be refilled?
 CodeBug7:
 ; If you try to fill from the URN in this room and the oil is not visible yet, you will fail.
 152E: 27 04               BEQ     $1534       ;  No ... error
-1530: 0A 3A               DEC     >$3A        ;{-1_lampFills}  One less refill from oil room
+1530: 0A 3A               DEC     <$3A        ;{-1_lampFills}  One less refill from oil room
 1532: 20 0E               BRA     $1542       ;  Go restore lamp
 1534: B6 3D 2B            LDA     $3D2B       ; URN flags
 1537: 2A 51               BPL     $158A       ;  Not in pack ... WITH WHAT
@@ -2573,7 +2573,7 @@ CodeBug7:
 153D: 80 04               SUBA    #$04        ; Take one of the 4 refills from the 0000_XX00 bits
 153F: B7 3D 2B            STA     $3D2B       ; New fill status
 1542: 8E 07 08            LDX     #$0708      ; 1800 is 30 minutes
-1545: 9F 38               STX     >$38        ;{-1_lampOil}  New oil level
+1545: 9F 38               STX     <$38        ;{-1_lampOil}  New oil level
 1547: C6 BF               LDB     #$BF        ; Random number ...
 1549: BD 06 90            JSR     $0690       ;{RandB}  0 to 191
 154C: CB 40               ADDB    #$40        ; 64 to 255
@@ -2583,7 +2583,7 @@ CodeBug7:
 1553: BD 0E 38            JSR     $0E38       ;  Look for noun in pack
 1556: 25 0B               BCS     $1563       ;{FillBottle}  Got it
 1558: F6 3C FF            LDB     $3CFF       ; Is bottle in ...
-155B: D1 00               CMPB    >$00        ;{-1_curRoom}  ... current room
+155B: D1 00               CMPB    <$00        ;{-1_curRoom}  ... current room
 155D: 27 04               BEQ     $1563       ;{FillBottle}  Yes ... do it
 155F: BD 18 E5            JSR     $18E5       ;  I DO NOT SEE ANY
 1562: 39                  RTS                 ; Out
@@ -2592,7 +2592,7 @@ FillBottle:
 ; The bottle can be refilled over and over. It has two levels ... filled and empty. There
 ; are several rooms with water: 0, 74, 16, 17, and 130. Note the missing word from the
 ; error message here: "THERE IS NO HERE" ... no WATER.
-1563: 96 00               LDA     >$00        ;{-1_curRoom}  Our ...current room
+1563: 96 00               LDA     <$00        ;{-1_curRoom}  Our ...current room
 1565: 81 00               CMPA    #$00        ; Room 0?
 1567: 27 15               BEQ     $157E       ;  Yes ... has water
 1569: 81 4A               CMPA    #$4A        ; Room 74?
@@ -2622,7 +2622,7 @@ FillURN:
 158D: B6 3D 2B            LDA     $3D2B       ; URN flags
 1590: 2A CD               BPL     $155F       ;  Not in pack ... "I DO NOT SEE ANY" and out
 1592: F6 3C D7            LDB     $3CD7       ; Are we in ..
-1595: D1 00               CMPB    >$00        ;{-1_curRoom}  ... the oil room
+1595: D1 00               CMPB    <$00        ;{-1_curRoom}  ... the oil room
 1597: 26 F1               BNE     $158A       ;  No ... WITH WHAT and out
 1599: BD 1C F8            JSR     $1CF8       ;  Can we refill the lamp?
 159C: 27 EC               BEQ     $158A       ;  No ... WITH WHAT and out
@@ -2630,7 +2630,7 @@ FillURN:
 15A0: 84 0C               ANDA    #$0C        ; Is the ...
 15A2: 81 0C               CMPA    #$0C        ; ... URN full?
 15A4: 27 E0               BEQ     $1586       ;  Say OK but do nothing
-15A6: 0A 3A               DEC     >$3A        ;{-1_lampFills}  Remove one refill from the OIL ROOM
+15A6: 0A 3A               DEC     <$3A        ;{-1_lampFills}  Remove one refill from the OIL ROOM
 15A8: CB 04               ADDB    #$04        ; Add one refill to the URN
 15AA: F7 3D 2B            STB     $3D2B       ; New flags
 15AD: 20 98               BRA     $1547       ;  Move the OIL ROOM to another floor
@@ -2641,7 +2641,7 @@ LookScarab:
 ; room -- this must be a hint to drop it before then.
 15AF: BD 0E 38            JSR     $0E38       ;  Look for noun in pack
 15B2: 24 62               BCC     $1616       ;  No ... "LOOK WHAT?"
-15B4: 96 46               LDA     >$46        ;{-1_akhiromMins}  Currently invulnerable?
+15B4: 96 46               LDA     <$46        ;{-1_akhiromMins}  Currently invulnerable?
 15B6: 27 38               BEQ     $15F0       ;  No ... "I DON'T SEE ANYTING INTERESTING"
 15B8: C6 12               LDB     #$12        ; THE SCARAB IS GLOWING
 15BA: 7E 10 48            JMP     $1048       ;  Print and out
@@ -2652,7 +2652,7 @@ LookTablet:
 15BD: C6 17               LDB     #$17        ; TABLET
 15BF: BD 12 B8            JSR     $12B8       ;  Move to random room if in pack
 15C2: 24 52               BCC     $1616       ;  Not in pack ... "LOOK WHAT?" and out
-15C4: D6 00               LDB     >$00        ;{-1_curRoom}  Current room
+15C4: D6 00               LDB     <$00        ;{-1_curRoom}  Current room
 15C6: C1 13               CMPB    #$13        ; Are we in room 19?
 15C8: 26 26               BNE     $15F0       ;  No ... I DON'T SEE ANYTHING INTERESTING
 15CA: F7 3D 56            STB     $3D56       ; Bring the ORACLE to this room
@@ -2661,7 +2661,7 @@ LookTablet:
 ;; == LOOK ==
 ;;
 CommandLOOK:
-15CE: 96 2B               LDA     >$2B        ;{-1_nounNum}  Noun
+15CE: 96 2B               LDA     <$2B        ;{-1_nounNum}  Noun
 15D0: 81 C4               CMPA    #$C4        ; TABLET?
 15D2: 27 E9               BEQ     $15BD       ;{LookTablet}  Yes ... go handle tablet
 15D4: 81 C7               CMPA    #$C7        ; SCARAB?
@@ -2685,7 +2685,7 @@ CommandLOOK:
 LookPool:
 ; If we look into the pool in room 0 we see the instructions for getting the SPELLBOOK.
 ; The oracle doesn't give info on the SPELLBOOK ... this completes all we need to know. 
-15F6: 0D 00               TST     >$00        ;{-1_curRoom}  In room 0 (pool of water)
+15F6: 0D 00               TST     <$00        ;{-1_curRoom}  In room 0 (pool of water)
 15F8: 26 F6               BNE     $15F0       ;  No ... "I DON'T SEE ANYTHING INTERESTING".
 15FA: 8E 2C C1            LDX     #$2CC1      ; "IN A REFLECTION IN THE POOL YOU CAN READ THE FOLLOWING WORDS ON THE CEILING..."
 15FD: BD 10 66            JSR     $1066       ;{PrintMess}  Print the message
@@ -2712,8 +2712,8 @@ LookPit:
 ; appear. Be persistent ... it may take a few LOOKs to get the treasure.
 1624: BD 0D 8B            JSR     $0D8B       ;  Can we see?
 1627: 24 2F               BCC     $1658       ;  No ...
-1629: 96 00               LDA     >$00        ;{-1_curRoom}  Current room
-162B: 91 35               CMPA    >$35        ;{-1_smallPitRoom}  Is the PIT in this room?
+1629: 96 00               LDA     <$00        ;{-1_curRoom}  Current room
+162B: 91 35               CMPA    <$35        ;{-1_smallPitRoom}  Is the PIT in this room?
 162D: 26 26               BNE     $1655       ;  No ... nothing interesting
 162F: BD 06 61            JSR     $0661       ;{Random}  Random
 1632: C1 80               CMPB    #$80        ; We see it ...
@@ -2726,7 +2726,7 @@ LookUrn:
 163B: BD 0E 38            JSR     $0E38       ;  Is urn in pack?
 163E: 25 07               BCS     $1647       ;  Yes .. handle
 1640: B6 3D 29            LDA     $3D29       ; Urn in ...
-1643: 91 00               CMPA    >$00        ;{-1_curRoom}  ... current room
+1643: 91 00               CMPA    <$00        ;{-1_curRoom}  ... current room
 1645: 26 CF               BNE     $1616       ;  No ... "LOOK WHAT?" and out
 1647: BD 1A 5A            JSR     $1A5A       ;{GetObject}  Get object data
 164A: A6 02               LDA     2,X         ; Get flags
@@ -2764,7 +2764,7 @@ LookBottle:
 ;; we have the parchment then the LEDGE appears. (The LEDGE holds a treasure).
 ;;
 CommandPLAY: 
-167B: 96 2B               LDA     >$2B        ;{-1_nounNum}  Get noun
+167B: 96 2B               LDA     <$2B        ;{-1_nounNum}  Get noun
 167D: 81 24               CMPA    #$24        ; FLUTE?
 167F: 10 26 01 10         LBNE    $1793       ;  No ... DON'T BE REDICULOUS
 1683: BD 0E 38            JSR     $0E38       ;  Is in pack?
@@ -2774,10 +2774,10 @@ CommandPLAY:
 168E: C6 0E               LDB     #$0E        ; Parchment
 1690: BD 18 85            JSR     $1885       ;{InPack}  Is it in pack?
 1693: 24 0F               BCC     $16A4       ;  No ... just toot along
-1695: 96 00               LDA     >$00        ;{-1_curRoom}  Current room
+1695: 96 00               LDA     <$00        ;{-1_curRoom}  Current room
 1697: B1 3C 9B            CMPA    $3C9B       ; action _e room ?
 169A: 26 08               BNE     $16A4       ;  No ... just toot along
-169C: 97 36               STA     >$36        ;{-1_ledgeRoom}  Bring the LEDGE here
+169C: 97 36               STA     <$36        ;{-1_ledgeRoom}  Bring the LEDGE here
 169E: 8E 2F 95            LDX     #$2F95      ; "BY PLAYING THE FLUTE ACCORDING TO A SONG ON THE PARCHMENT, A SECRET LEDGE HAS BEEN EXPOSED."
 16A1: 7E 10 66            JMP     $1066       ;{PrintMess}  Print message and return
 16A4: 7E 10 17            JMP     $1017       ;  OK (not really an error .. we can toot along anytime)
@@ -2791,15 +2791,15 @@ CalculateScore:
 ; The catch is that the treasure must be on the ground outside to get full credit.
 ;
 16A7: 34 10               PSHS    X           ; Save params
-16A9: 0F 28               CLR     >$28        ;{-1_score}  Score tally
+16A9: 0F 28               CLR     <$28        ;{-1_score}  Score tally
 16AB: 8E 3B BD            LDX     #$3BBD      ; Spell data
 16AE: C6 08               LDB     #$08        ; Eight spells
 16B0: 30 04               LEAX    4,X         ; Skip to next spell
 16B2: A6 03               LDA     3,X         ; Skip if not ...
 16B4: 2A 06               BPL     $16BC       ;  ... learned
-16B6: 96 28               LDA     >$28        ;{-1_score}  Score tally
+16B6: 96 28               LDA     <$28        ;{-1_score}  Score tally
 16B8: 8B 0A               ADDA    #$0A        ; +10 for learned spells (up to 8)
-16BA: 97 28               STA     >$28        ;{-1_score}  New score
+16BA: 97 28               STA     <$28        ;{-1_score}  New score
 16BC: 5A                  DECB                ; All done?
 16BD: 26 F1               BNE     $16B0       ;  No ... check all spells
 ;
@@ -2811,7 +2811,7 @@ CalculateScore:
 16CA: 26 27               BNE     $16F3       ;  No ... skip it completely
 16CC: 4D                  TSTA                ; Is this in backpack?
 16CD: 2A 06               BPL     $16D5       ;  No .... maybe in the forrest?
-16CF: 96 28               LDA     >$28        ;{-1_score}  Score tally
+16CF: 96 28               LDA     <$28        ;{-1_score}  Score tally
 16D1: 8B 05               ADDA    #$05        ; +5 for holding treasure (up to 16)
 16D3: 20 0A               BRA     $16DF       ;  Check for win (can't be if holding ... why check?)
 16D5: A6 84               LDA     ,X          ; Get location
@@ -2820,7 +2820,7 @@ CalculateScore:
 ;
 16D7: 81 CA               CMPA    #$CA        ; Outside in forest?
 16D9: 26 18               BNE     $16F3       ;  No ... skip
-16DB: 96 28               LDA     >$28        ;{-1_score}  Score tally
+16DB: 96 28               LDA     <$28        ;{-1_score}  Score tally
 16DD: 8B 0A               ADDA    #$0A        ; +10 for treasures at entrance (up to 16)
 16DF: 81 F0               CMPA    #$F0        ; Reached 240?
 16E1: 25 0E               BCS     $16F1       ;  Less than ... keep going
@@ -2831,7 +2831,7 @@ Win:
 16E9: 8D B6               BSR     $16A1       ;  Short way to JSR PrintMessage
 16EB: BD 0B 3E            JSR     $0B3E       ;  Sound effect
 16EE: 7E 0D 65            JMP     $0D65       ;  Blink cursor and wait for key and start game again
-16F1: 97 28               STA     >$28        ;{-1_score}  Score tally
+16F1: 97 28               STA     <$28        ;{-1_score}  Score tally
 16F3: 5A                  DECB                ; All checked?
 16F4: 26 CE               BNE     $16C4       ;  No ... back for more
 16F6: 35 90               PULS    X,PC        ; Done
@@ -2843,11 +2843,11 @@ CommandSCORE:
 16FA: 8D AB               BSR     $16A7       ;{CalculateScore}  Calculate score
 16FC: 8E 2D 27            LDX     #$2D27      ; "YOU HAVE SCORED"
 16FF: BD 10 66            JSR     $1066       ;{PrintMess}  Print message
-1702: D6 28               LDB     >$28        ;{-1_score}  Score
+1702: D6 28               LDB     <$28        ;{-1_score}  Score
 1704: 8D 0F               BSR     $1715       ;  Print number
 1706: 8E 2D 36            LDX     #$2D36      ; " POINTS OUT OF A TOTAL OF 240 POINTS. PHYS COND = "
 1709: BD 10 66            JSR     $1066       ;{PrintMess}  Print message
-170C: D6 05               LDB     >$05        ;{-1_condition}  Physical condition
+170C: D6 05               LDB     <$05        ;{-1_condition}  Physical condition
 170E: 8D 05               BSR     $1715       ;  Print number
 1710: BD 10 90            JSR     $1090       ;{PrintCR}  Print CR
 1713: 35 90               PULS    X,PC        ; Done
@@ -2884,7 +2884,7 @@ CommandSCORE:
 CommandQUIET:
 173F: BD A1 B1            JSR     $A1B1       ; Blink cursor and wait for keystroke (BASIC)
 1742: 10 CE 02 37         LDS     #$0237      ; Need to relocate stack while we work with the area
-1746: 0F 78               CLR     >$78        ;  File status: CLOSED
+1746: 0F 78               CLR     <$78        ;  File status: CLOSED
 1748: 81 57               CMPA    #$57        ; 'W'
 174A: 27 1B               BEQ     $1767       ;  'W' ... ignore (return to game loop)
 174C: 81 21               CMPA    #$21        ; '!' ...
@@ -2895,7 +2895,7 @@ CommandQUIET:
 1754: BD A5 00            JSR     $A500       ; CLOADM Load engine state (BASIC)
 1757: BD A5 00            JSR     $A500       ; CLOADM Load game state (BASIC)
 175A: 8E 02 40            LDX     #$0240      ; Restore 1st 256 bytes
-175D: DE 8A               LDU     >$8A        ;{-1_zeroWord}  PV DUMMY - THESE TWO BYTES ARE ALWAYS ZERO
+175D: DE 8A               LDU     <$8A        ;{-1_zeroWord}  PV DUMMY - THESE TWO BYTES ARE ALWAYS ZERO
 175F: 5F                  CLRB                ; Move ...
 1760: A6 80               LDA     ,X+         ; ... 256 ...
 1762: A7 C0               STA     ,U+         ; ... bytes ...
@@ -2905,7 +2905,7 @@ CommandQUIET:
 ;
 176A: 8E 02 40            LDX     #$0240      ; Engine state
 176D: 5F                  CLRB                ; Move ...
-176E: DE 8A               LDU     >$8A        ;{-1_zeroWord}  ... 256 ...
+176E: DE 8A               LDU     <$8A        ;{-1_zeroWord}  ... 256 ...
 1770: A6 C0               LDA     ,U+         ; ... bytes ...
 1772: A7 80               STA     ,X+         ; ... from ....
 1774: 5A                  DECB                ; 0 to ...
@@ -2916,7 +2916,7 @@ CommandQUIET:
 ;; == KILL ==
 ;;
 CommandKILL:
-177C: 96 2B               LDA     >$2B        ;{-1_nounNum}  Noun
+177C: 96 2B               LDA     <$2B        ;{-1_nounNum}  Noun
 177E: 81 FC               CMPA    #$FC        ; "HYDRA?"
 1780: 27 3D               BEQ     $17BF       ;{KillHydra}  Yes ... go attack HYDRA
 1782: BD 18 CD            JSR     $18CD       ;  Noun to object number
@@ -2961,11 +2961,11 @@ KillHydra:
 ; You kill the HYDRA by stabbing it with the sword or dagger. Killing it here just lopps
 ; off a head and it grows back. Note the HYDRA must be in this room which means it was
 ; previously tied up with the rope.
-17BF: 96 0E               LDA     >$0E        ;{-1_hydraStatus}  Is HYDRA ...
+17BF: 96 0E               LDA     <$0E        ;{-1_hydraStatus}  Is HYDRA ...
 17C1: 81 01               CMPA    #$01        ; ... status: dead?
 17C3: 27 D3               BEQ     $1798       ;  Yes ... "KILL WHAT?" and out
-17C5: 96 33               LDA     >$33        ;{-1_hydraRoom}  Is Hydra in ...
-17C7: 91 00               CMPA    >$00        ;{-1_curRoom}  ... current room?
+17C5: 96 33               LDA     <$33        ;{-1_hydraRoom}  Is Hydra in ...
+17C7: 91 00               CMPA    <$00        ;{-1_curRoom}  ... current room?
 17C9: 26 CD               BNE     $1798       ;  No ... "KILL WHAT?" and out
 17CB: 8E 30 8C            LDX     #$308C      ; "ONE OF THE HYDRA'S HEADS IS LOPPED OFF, BUT ANOTHER ONE TAKES ITS PLACE AND SNEERS AT YOU."
 17CE: 20 08               BRA     $17D8       ;  Print message and out
@@ -2987,14 +2987,14 @@ KillHydra:
 17EE: 35 96               PULS    A,B,X,PC    ; Done
  
 17F0: E6 1F               LDB     -1,X        ; Object number
-17F2: D7 52               STB     >$52        ;  Hold for now
+17F2: D7 52               STB     <$52        ;  Hold for now
 17F4: BD 1A 5A            JSR     $1A5A       ;{GetObject}  Get descriptor for object
 17F7: A6 02               LDA     2,X         ; Flags
 17F9: 84 7C               ANDA    #$7C        ; Not pack, not invisible
 17FB: A7 02               STA     2,X         ; Set flags
-17FD: D6 00               LDB     >$00        ;{-1_curRoom}  Current room
+17FD: D6 00               LDB     <$00        ;{-1_curRoom}  Current room
 17FF: BD 06 77            JSR     $0677       ;  Random valid direction
-1802: 96 00               LDA     >$00        ;{-1_curRoom}  Current room
+1802: 96 00               LDA     <$00        ;{-1_curRoom}  Current room
 1804: BD 0F 71            JSR     $0F71       ;  Calculate target room
 1807: A7 84               STA     ,X          ; Object thrown to here
 1809: 8E 2D A9            LDX     #$2DA9      ; "IN HIS DYING EFFORT THE"
@@ -3003,7 +3003,7 @@ KillHydra:
 1811: BD 18 6D            JSR     $186D       ;  ... of the creature
 1814: 8E 2D C0            LDX     #$2DC0      ; "PULLS THE"
 1817: BD 10 66            JSR     $1066       ;{PrintMess}  Print the message
-181A: D6 52               LDB     >$52        ;  Print name of ...
+181A: D6 52               LDB     <$52        ;  Print name of ...
 181C: 8D 4F               BSR     $186D       ;  ... object
 181E: 8E 2D C9            LDX     #$2DC9      ; "FROM A BAG AND THROWS IT BEFORE HE DISAPPEARS IN A PUFF OF PURPLE SMOKE."
 1821: BD 10 66            JSR     $1066       ;{PrintMess}  Print the message
@@ -3038,7 +3038,7 @@ KillHydra:
 CommandINV:
 184A: 8E 2A 9B            LDX     #$2A9B      ; "YOU ARE HOLDING:"
 184D: BD 10 66            JSR     $1066       ;{PrintMess}  Print the message
-1850: 0F 31               CLR     >$31        ;  Nothing in pack so far
+1850: 0F 31               CLR     <$31        ;  Nothing in pack so far
 1852: C6 FF               LDB     #$FF        ; Start with 0
 1854: 5C                  INCB                ; Next object number
 1855: C1 3F               CMPB    #$3F        ; All done?
@@ -3047,7 +3047,7 @@ CommandINV:
 185B: 24 F7               BCC     $1854       ;  Not in pack ... skip
 185D: 8D 0E               BSR     $186D       ;  Print object name
 185F: 20 F3               BRA     $1854       ;  Next object
-1861: 96 31               LDA     >$31        ;  Did we find at least one?
+1861: 96 31               LDA     <$31        ;  Did we find at least one?
 1863: 26 05               BNE     $186A       ;  Yes ... skip "nothing"
 1865: 86 93               LDA     #$93        ; "NOTHING"
 1867: BD 10 54            JSR     $1054       ;{PrintWord}  Print word
@@ -3071,8 +3071,8 @@ InPack:
 ; Return C=0 if not found
 ; Return C=1 if found
 1885: 34 16               PSHS    X,B,A       ; Sava parameters
-1887: 0F 2F               CLR     >$2F        ;{-1_temporary}  Strange ...
-1889: 0F 30               CLR     >$30        ;  ... flagging
+1887: 0F 2F               CLR     <$2F        ;{-1_temporary}  Strange ...
+1889: 0F 30               CLR     <$30        ;  ... flagging
 188B: 8E 3C F9            LDX     #$3CF9      ; Object data
 188E: 30 03               LEAX    3,X         ; Next object
 1890: A6 02               LDA     2,X         ; Flags
@@ -3080,14 +3080,14 @@ InPack:
 1894: A6 61               LDA     1,S         ; Is this ...
 1896: A1 01               CMPA    1,X         ; ... our object word?
 1898: 26 0A               BNE     $18A4       ;  No ... next word
-189A: 0C 31               INC     >$31        ;  Flag found object (increment if counting)
-189C: DC 2F               LDD     >$2F        ;{-1_temporary}  Strange ...
+189A: 0C 31               INC     <$31        ;  Flag found object (increment if counting)
+189C: DC 2F               LDD     <$2F        ;{-1_temporary}  Strange ...
 189E: E3 02               ADDD    2,X         ; ... way ...
-18A0: DD 2F               STD     >$2F        ;{-1_temporary}  ... to flag things
+18A0: DD 2F               STD     <$2F        ;{-1_temporary}  ... to flag things
 18A2: A6 01               LDA     1,X         ; Description
 18A4: 81 FF               CMPA    #$FF        ; End of list marker?
 18A6: 26 E6               BNE     $188E       ;  No ... keep looking
-18A8: DC 2F               LDD     >$2F        ;{-1_temporary}  Did we find the object?
+18A8: DC 2F               LDD     <$2F        ;{-1_temporary}  Did we find the object?
 18AA: 27 03               BEQ     $18AF       ;  Yes ... Z=1
 18AC: 43                  COMA                ; C=1... found
 18AD: 20 01               BRA     $18B0       ;  Out
@@ -3121,9 +3121,9 @@ InPack:
 18D4: 4C                  INCA                ; Next object number
 18D5: E6 80               LDB     ,X+         ; Get noun number
 18D7: 27 09               BEQ     $18E2       ;  End of map ... error and out
-18D9: D1 2B               CMPB    >$2B        ;{-1_nounNum}  Is this our word?
+18D9: D1 2B               CMPB    <$2B        ;{-1_nounNum}  Is this our word?
 18DB: 26 F7               BNE     $18D4       ;  No keep looking
-18DD: 97 07               STA     >$07        ;{-1_nounObjNum}  Yes ... hold object number
+18DD: 97 07               STA     <$07        ;{-1_nounObjNum}  Yes ... hold object number
 18DF: 53                  COMB                ; Z=0
 18E0: 35 90               PULS    X,PC        ; Done
 18E2: 5F                  CLRB                ; Z=1
@@ -3133,7 +3133,7 @@ InPack:
 18E5: 34 10               PSHS    X           ; Save params
 18E7: 8E 2A 49            LDX     #$2A49      ; "I DO NOT SEE ANY"
 18EA: BD 10 66            JSR     $1066       ;{PrintMess}  Print the message
-18ED: 96 2B               LDA     >$2B        ;{-1_nounNum}  Nound word
+18ED: 96 2B               LDA     <$2B        ;{-1_nounNum}  Nound word
 18EF: BD 10 54            JSR     $1054       ;{PrintWord}  Print word
 18F2: BD 10 90            JSR     $1090       ;{PrintCR}  Print CR
 18F5: 35 90               PULS    X,PC        ; Out
@@ -3144,7 +3144,7 @@ InPack:
 ;;
 CommandGETTAKEGRAB:
 18F7: 34 10               PSHS    X           ; Save params
-18F9: 96 2B               LDA     >$2B        ;{-1_nounNum}  Nound word
+18F9: 96 2B               LDA     <$2B        ;{-1_nounNum}  Nound word
 18FB: 81 FF               CMPA    #$FF        ; If there is a noun ...
 18FD: 26 05               BNE     $1904       ;  ... go handle it
 18FF: BD 10 99            JSR     $1099       ;{ComWHAT}  Command+what ... "GET WHAT?"
@@ -3152,7 +3152,7 @@ CommandGETTAKEGRAB:
      
 1904: 8D C7               BSR     $18CD       ;  Convert noun to object number
 1906: 24 7F               BCC     $1987       ;  Invalid word ... DON'T BE REDICULOUS
-1908: D6 00               LDB     >$00        ;{-1_curRoom}  Current room
+1908: D6 00               LDB     <$00        ;{-1_curRoom}  Current room
 190A: 8D A6               BSR     $18B2       ;  Look for object B=room, A=word (no flags check)
 190C: 24 04               BCC     $1912       ;  Found it ... handle it
 ;
@@ -3169,7 +3169,7 @@ CommandGETTAKEGRAB:
 1920: 26 EC               BNE     $190E       ;  Yes ... print "I DO NOT SEE ANY "+word and out
 1922: 85 10               BITA    #$10        ; Protected?
 1924: 27 21               BEQ     $1947       ;  No ... we can do it
-1926: 96 07               LDA     >$07        ;{-1_nounObjNum}  Object number
+1926: 96 07               LDA     <$07        ;{-1_nounObjNum}  Object number
 1928: BD 1A DD            JSR     $1ADD       ;  Get list of required objects
 192B: 24 1A               BCC     $1947       ;  There are none ... get it
 192D: E6 A0               LDB     ,Y+         ; Next required object
@@ -3179,27 +3179,27 @@ CommandGETTAKEGRAB:
 1935: BD 18 85            JSR     $1885       ;{InPack}  Object in pack?
 1938: 25 F3               BCS     $192D       ;  Yes ... check them all
 193A: 8E 20 74            LDX     #$2074      ; Protected messages
-193D: D6 07               LDB     >$07        ;{-1_nounObjNum}  Object number
+193D: D6 07               LDB     <$07        ;{-1_nounObjNum}  Object number
 193F: BD 0E 52            JSR     $0E52       ;  Get message for protection
 1942: BD 10 2F            JSR     $102F       ;{PrintPacked}  Print protection phrase
 1945: 20 39               BRA     $1980       ;  Out
      
 1947: 8D 43               BSR     $198C       ;  Get object weight/buld
-1949: 96 04               LDA     >$04        ;{-1_weight}  Current weight
+1949: 96 04               LDA     <$04        ;{-1_weight}  Current weight
 194B: AB A4               ADDA    ,Y          ; Add object weight
 194D: 25 33               BCS     $1982       ;  Over 255 is "TOO HEAVY"
-194F: 91 05               CMPA    >$05        ;{-1_condition}  Physical condition
+194F: 91 05               CMPA    <$05        ;{-1_condition}  Physical condition
 1951: 22 2F               BHI     $1982       ;  Not strong enough to carry it
-1953: D6 06               LDB     >$06        ;{-1_bulk}  Bulk
+1953: D6 06               LDB     <$06        ;{-1_bulk}  Bulk
 1955: EB 21               ADDB    1,Y         ; Add object bulk
 1957: 25 04               BCS     $195D       ;  Over 255 is "TOO BULKY"
-1959: D1 05               CMPB    >$05        ;{-1_condition}  Physical condition
+1959: D1 05               CMPB    <$05        ;{-1_condition}  Physical condition
 195B: 23 05               BLS     $1962       ;  OK
 ;
 195D: 8E 2A 59            LDX     #$2A59      ; "IT'S TOO BULKY."
 1960: 20 1B               BRA     $197D       ;  Print message and out
 ;
-1962: 97 2F               STA     >$2F        ;{-1_temporary}  Hold weight
+1962: 97 2F               STA     <$2F        ;{-1_temporary}  Hold weight
 1964: A6 02               LDA     2,X         ; Flags
 1966: 85 40               BITA    #$40        ; Spells, creatures, protected things?
 1968: 26 1D               BNE     $1987       ;  "DON'T BE REDICULOUS."
@@ -3208,9 +3208,9 @@ CommandGETTAKEGRAB:
 196E: 84 EF               ANDA    #$EF        ; Turn off protection
 1970: 8A 80               ORA     #$80        ; Now in pack
 1972: A7 02               STA     2,X         ; New flags
-1974: 96 2F               LDA     >$2F        ;{-1_temporary}  New weight
-1976: 97 04               STA     >$04        ;{-1_weight}  Store new weight
-1978: D7 06               STB     >$06        ;{-1_bulk}  Store new bulk
+1974: 96 2F               LDA     <$2F        ;{-1_temporary}  New weight
+1976: 97 04               STA     <$04        ;{-1_weight}  Store new weight
+1978: D7 06               STB     <$06        ;{-1_bulk}  Store new bulk
 197A: 8E 2A 79            LDX     #$2A79      ; "OK"
 197D: BD 10 66            JSR     $1066       ;{PrintMess}  Print the message
 1980: 35 90               PULS    X,PC        ; Done
@@ -3223,7 +3223,7 @@ CommandGETTAKEGRAB:
 
 ; Y points to weight/bulk for object number in $07
 198C: 34 06               PSHS    B,A         ; Save params
-198E: 96 07               LDA     >$07        ;{-1_nounObjNum}  Object number
+198E: 96 07               LDA     <$07        ;{-1_nounObjNum}  Object number
 1990: C6 02               LDB     #$02        ; Two byes ...
 1992: 3D                  MUL                 ; ... per entry
 1993: 10 8E 35 48         LDY     #$3548      ; Weight/bulk
@@ -3235,7 +3235,7 @@ CommandGETTAKEGRAB:
 199E: 33 45               LEAU    5,U         ; Next entry
 19A0: A6 C4               LDA     ,U          ; Get "from" room
 19A2: 27 04               BEQ     $19A8       ;  End of list ... out
-19A4: 91 00               CMPA    >$00        ;{-1_curRoom}  Matches our room?
+19A4: 91 00               CMPA    <$00        ;{-1_curRoom}  Matches our room?
 19A6: 26 F6               BNE     $199E       ;  No ... next entry
 19A8: 39                  RTS                 ; Out
 
@@ -3257,21 +3257,21 @@ CommandJUMP:
 19B7: 4D                  TSTA                ; Is there one?
 19B8: 27 EF               BEQ     $19A9       ;  No ... "JUMP WHAT?" and out
 19BA: A6 44               LDA     4,U         ; Thing we are jumping
-19BC: 91 2B               CMPA    >$2B        ;{-1_nounNum}  Did we ask to jump it?
+19BC: 91 2B               CMPA    <$2B        ;{-1_nounNum}  Did we ask to jump it?
 19BE: 26 E9               BNE     $19A9       ;  No ... "JUMP WHAT?" and out
-19C0: 96 05               LDA     >$05        ;{-1_condition}  Physical condition ...
-19C2: 90 04               SUBA    >$04        ;{-1_weight}  ... minus weight of pack
+19C0: 96 05               LDA     <$05        ;{-1_condition}  Physical condition ...
+19C2: 90 04               SUBA    <$04        ;{-1_weight}  ... minus weight of pack
 19C4: 25 17               BCS     $19DD       ;  Phys cond less ... bad jump
 19C6: A1 41               CMPA    1,U         ; Required extra to make jump
 19C8: 23 13               BLS     $19DD       ;  Not enough ... bad jump
-19CA: 96 05               LDA     >$05        ;{-1_condition}  Physical condition ...
-19CC: 90 06               SUBA    >$06        ;{-1_bulk}  ... minus bulk of pack
+19CA: 96 05               LDA     <$05        ;{-1_condition}  Physical condition ...
+19CC: 90 06               SUBA    <$06        ;{-1_bulk}  ... minus bulk of pack
 19CE: 25 26               BCS     $19F6       ;  Phys cond less ... jump but drop heaviest
 19D0: A1 41               CMPA    1,U         ; Required extra to make jump
 19D2: 23 22               BLS     $19F6       ;  Not enough ... jump but drop heaviest
 19D4: A6 43               LDA     3,U         ; Get target room
-19D6: 97 01               STA     >$01        ;{-1_lastRoom}  Set last room ...
-19D8: 97 00               STA     >$00        ;{-1_curRoom}  ... and current room
+19D6: 97 01               STA     <$01        ;{-1_lastRoom}  Set last room ...
+19D8: 97 00               STA     <$00        ;{-1_curRoom}  ... and current room
 19DA: 7E 0E 27            JMP     $0E27       ;  Print room description and out
 
 ; Failed jump
@@ -3306,8 +3306,8 @@ CommandJUMP:
 1A05: 1F 89               TFR     A,B         ; Weightiest object
 1A07: C1 0C               CMPB    #$0C        ; Is it the lamp?
 1A09: 26 02               BNE     $1A0D       ;  No
-1A0B: 0C 14               INC     >$14        ;{-1_lampStripped}  Flag lamp has been torn from player
-1A0D: 96 00               LDA     >$00        ;{-1_curRoom}  Current room
+1A0B: 0C 14               INC     <$14        ;{-1_lampStripped}  Flag lamp has been torn from player
+1A0D: 96 00               LDA     <$00        ;{-1_curRoom}  Current room
 1A0F: BD 12 C6            JSR     $12C6       ;  Adjust pack for dropping object
 1A12: BD 10 AE            JSR     $10AE       ;  Drop the object
 1A15: 8D 43               BSR     $1A5A       ;{GetObject}  Get the object data
@@ -3327,26 +3327,26 @@ CommandJUMP:
 ;
 ; Take damage and drop heaviest object
 1A2F: 34 02               PSHS    A           ; Hold adjustment
-1A31: 96 46               LDA     >$46        ;{-1_akhiromMins}  Temporarily invulnerable (AKHIROM)?
+1A31: 96 46               LDA     <$46        ;{-1_akhiromMins}  Temporarily invulnerable (AKHIROM)?
 1A33: 26 17               BNE     $1A4C       ;  Yes ... no damage
-1A35: 96 05               LDA     >$05        ;{-1_condition}  Current physical condition
+1A35: 96 05               LDA     <$05        ;{-1_condition}  Current physical condition
 1A37: A0 E4               SUBA    ,S          ; Subtract adjustment
 1A39: 24 09               BCC     $1A44       ;  Still OK ... continue
 1A3B: 8E 2F 30            LDX     #$2F30      ; "YOU HAVE DIED FROM EXHAUSTION AND WOUNDS."
 1A3E: BD 10 66            JSR     $1066       ;{PrintMess}  Print the message
 1A41: 7E 0D 5C            JMP     $0D5C       ;{CommandUNCLE}  Command "UNCLE" ... end of game
-1A44: 97 05               STA     >$05        ;{-1_condition}  New physical condition
-1A46: 91 04               CMPA    >$04        ;{-1_weight}  Compare to weight of pack
+1A44: 97 05               STA     <$05        ;{-1_condition}  New physical condition
+1A46: 91 04               CMPA    <$04        ;{-1_weight}  Compare to weight of pack
 1A48: 24 02               BCC     $1A4C       ;  Still OK
 1A4A: 8D B2               BSR     $19FE       ;  Drop heaviest object in pack
 1A4C: 35 82               PULS    A,PC        ; Done
        
 ; Add to physical condition (max out at 255)
 1A4E: 34 02               PSHS    A           ; Save params
-1A50: 9B 05               ADDA    >$05        ;{-1_condition}  Increase the physical condition
+1A50: 9B 05               ADDA    <$05        ;{-1_condition}  Increase the physical condition
 1A52: 24 02               BCC     $1A56       ;  OK to use
 1A54: 86 FF               LDA     #$FF        ; Max out at 255
-1A56: 97 05               STA     >$05        ;{-1_condition}  New physical condition
+1A56: 97 05               STA     <$05        ;{-1_condition}  New physical condition
 1A58: 35 82               PULS    A,PC        ; Done
         
 GetObject:
@@ -3376,7 +3376,7 @@ GetObject:
 1A7E: 24 20               BCC     $1AA0       ;  Yes ... return what we found
 1A80: BD 18 85            JSR     $1885       ;{InPack}  Is object in pack?
 1A83: 24 F6               BCC     $1A7B       ;  No ... next object
-1A85: D7 07               STB     >$07        ;{-1_nounObjNum}  Param
+1A85: D7 07               STB     <$07        ;{-1_nounObjNum}  Param
 1A87: BD 19 8C            JSR     $198C       ;  Get object weight/bulk
 1A8A: A6 A4               LDA     ,Y          ; Weight
 1A8C: A1 E4               CMPA    ,S          ; Compare to current highest
@@ -3400,13 +3400,13 @@ GetObject:
 CommandLAMP:
 1AA6: B6 3D 1F            LDA     $3D1F       ; Lamp in pack?
 1AA9: 2B 0E               BMI     $1AB9       ;  Yes ... we can fiddle with it
-1AAB: 96 00               LDA     >$00        ;{-1_curRoom}  Current room
+1AAB: 96 00               LDA     <$00        ;{-1_curRoom}  Current room
 1AAD: B1 3D 1D            CMPA    $3D1D       ; Lamp in this room?
 1AB0: 27 07               BEQ     $1AB9       ;  yes ... we can fiddle with it
 1AB2: 86 A6               LDA     #$A6        ; "LAMP"
-1AB4: 97 2B               STA     >$2B        ;{-1_nounNum}  To noun
+1AB4: 97 2B               STA     <$2B        ;{-1_nounNum}  To noun
 1AB6: 7E 18 E5            JMP     $18E5       ;  "I DON'T SEE ANY LAMP HERE." and out
-1AB9: 96 2B               LDA     >$2B        ;{-1_nounNum}  Input token
+1AB9: 96 2B               LDA     <$2B        ;{-1_nounNum}  Input token
 1ABB: 81 8F               CMPA    #$8F        ; "OFF"
 1ABD: 27 0A               BEQ     $1AC9       ;  Yes ... OFF
 1ABF: 81 34               CMPA    #$34        ; "ON"
@@ -3414,13 +3414,13 @@ CommandLAMP:
 1AC3: 8E 2A 81            LDX     #$2A81      ; "I DON'T UNDERSTAND THAT."
 1AC6: 7E 10 66            JMP     $1066       ;{PrintMess}  Print the message and out
 ; Lamp off
-1AC9: 0F 0A               CLR     >$0A        ;{-1_lampOn}  Lamp off
+1AC9: 0F 0A               CLR     <$0A        ;{-1_lampOn}  Lamp off
 1ACB: C6 01               LDB     #$01        ; "THE LAMP IS OFF"
 1ACD: 20 0B               BRA     $1ADA       ;  Print and out
 ; Lamp on
-1ACF: 9E 38               LDX     >$38        ;{-1_lampOil}  Oil in lamp
+1ACF: 9E 38               LDX     <$38        ;{-1_lampOil}  Oil in lamp
 1AD1: 27 05               BEQ     $1AD8       ;  No oil left ... error and out
-1AD3: 97 0A               STA     >$0A        ;{-1_lampOn}  Non-zero value
+1AD3: 97 0A               STA     <$0A        ;{-1_lampOn}  Non-zero value
 1AD5: C6 02               LDB     #$02        ; "THE LAMP IS ON"
 1AD7: 8C C6 06            CMPX    #$C606      ; "THERE IS NO OIL IN THE LAMP"
 1ADA: 7E 10 48            JMP     $1048       ;  Print and out
@@ -3462,18 +3462,18 @@ BetweenRoomE:
 1B02: 8C C6 C0            CMPX    #$C6C0      ; LDB #$C0  Handler C
 1B05: 8C C6 40            CMPX    #$C640      ; LDB #$40  Handler D
 1B08: 8C C6 80            CMPX    #$C680      ; LDB #$80  Handler E
-1B0B: D7 2E               STB     >$2E        ;{-1_holderACDE}  Hold handler value
-1B0D: 96 02               LDA     >$02        ;{-1_dirBits}  Direction bit pattern
+1B0B: D7 2E               STB     <$2E        ;{-1_holderACDE}  Hold handler value
+1B0D: 96 02               LDA     <$02        ;{-1_dirBits}  Direction bit pattern
 1B0F: 81 20               CMPA    #$20        ; Up into this room?
 1B11: 26 0C               BNE     $1B1F       ;  No ... do nothing
-1B13: 96 05               LDA     >$05        ;{-1_condition}  Compare ...
-1B15: 90 04               SUBA    >$04        ;{-1_weight}  ... phys - weight
+1B13: 96 05               LDA     <$05        ;{-1_condition}  Compare ...
+1B15: 90 04               SUBA    <$04        ;{-1_weight}  ... phys - weight
 CodeBug4:
 ; I think if we are overburdeoned it should jump to 1B1D and fail the move.
 1B17: 25 06               BCS     $1B1F       ;  Overburdoned ... nothing happens
-1B19: 91 2E               CMPA    >$2E        ;{-1_holderACDE}  Compare excess phys to value
+1B19: 91 2E               CMPA    <$2E        ;{-1_holderACDE}  Compare excess phys to value
 1B1B: 24 02               BCC     $1B1F       ;  Excess is greater than value ... do nothing
-1B1D: 0C 0C               INC     >$0C        ;{-1_downFail}  Flag for main handler to skip moving us
+1B1D: 0C 0C               INC     <$0C        ;{-1_downFail}  Flag for main handler to skip moving us
 1B1F: 39                  RTS                 ; Done
 
 BetweenRoomB:
@@ -3485,8 +3485,8 @@ BetweenRoomB:
 1B27: C4 0F               ANDB    #$0F        ; Random room 0-15
 1B29: 1F 98               TFR     B,A         ; Align params
 1B2B: 8C 86 0A            CMPX    #$860A      ; LDA #$0A  Handler
-1B2E: 97 00               STA     >$00        ;{-1_curRoom}  Current room ...
-1B30: 97 01               STA     >$01        ;{-1_lastRoom}  ... and last room
+1B2E: 97 00               STA     <$00        ;{-1_curRoom}  Current room ...
+1B30: 97 01               STA     <$01        ;{-1_lastRoom}  ... and last room
 1B32: 20 E9               BRA     $1B1D       ;  Flag for skipping moving us
 
 BetweenRoomF:
@@ -3495,8 +3495,8 @@ BetweenRoomF:
 1B36: BD 18 85            JSR     $1885       ;{InPack}  ... in pack?
 1B39: 24 07               BCC     $1B42       ;  No ... out
 1B3B: BD 06 61            JSR     $0661       ;{Random}  Random number
-1B3E: D7 00               STB     >$00        ;{-1_curRoom}  Current room ...
-1B40: D7 01               STB     >$01        ;{-1_lastRoom}  ... and last room
+1B3E: D7 00               STB     <$00        ;{-1_curRoom}  Current room ...
+1B40: D7 01               STB     <$01        ;{-1_lastRoom}  ... and last room
 1B42: 39                  RTS                 ; Done
  
 BetweenRoomH:
@@ -3515,9 +3515,9 @@ BetweenRoomI:
 1B51: BD 06 61            JSR     $0661       ;{Random}  Random room
 1B54: C4 CF               ANDB    #$CF        ; Limt to 1st 16 rooms of any floor
 1B56: CA 30               ORB     #$30        ; Make it random room in maze
-1B58: D7 00               STB     >$00        ;{-1_curRoom}  Current room
-1B5A: D7 01               STB     >$01        ;{-1_lastRoom}  Last room
-1B5C: 0C 0C               INC     >$0C        ;{-1_downFail}  Flag main to skip movement
+1B58: D7 00               STB     <$00        ;{-1_curRoom}  Current room
+1B5A: D7 01               STB     <$01        ;{-1_lastRoom}  Last room
+1B5C: 0C 0C               INC     <$0C        ;{-1_downFail}  Flag main to skip movement
 1B5E: 39                  RTS                 ; Out
 
 BetweenRoomG:
@@ -3542,14 +3542,14 @@ EnteringRoomAction_c:
 1B6D: 86 C0               LDA     #$C0        ; Weight  192
 1B6F: 8C 86 80            CMPX    #$8680      ; 128
 1B72: 8C 86 5F            CMPX    #$865F      ; 95
-1B75: 91 04               CMPA    >$04        ;{-1_weight}  Pack weighs more?
+1B75: 91 04               CMPA    <$04        ;{-1_weight}  Pack weighs more?
 1B77: 23 01               BLS     $1B7A       ;  Yes ... fall to next level
 1B79: 39                  RTS                 ; No ... done
 ;
-1B7A: 96 00               LDA     >$00        ;{-1_curRoom}  Current room
+1B7A: 96 00               LDA     <$00        ;{-1_curRoom}  Current room
 1B7C: 8B 40               ADDA    #$40        ; Drop a level
-1B7E: 97 00               STA     >$00        ;{-1_curRoom}  Current room ...
-1B80: 97 01               STA     >$01        ;{-1_lastRoom}  ... and last room
+1B7E: 97 00               STA     <$00        ;{-1_curRoom}  Current room ...
+1B80: 97 01               STA     <$01        ;{-1_lastRoom}  ... and last room
 1B82: BD 06 61            JSR     $0661       ;{Random}  Random
 1B85: F7 3C 8F            STB     $3C8F       ; Move first handler to another room
 1B88: BD 06 61            JSR     $0661       ;{Random}  Random
@@ -3565,11 +3565,11 @@ EnteringRoomAction_d:
 1B9C: C6 37               LDB     #$37        ; Do we have ...
 1B9E: BD 18 85            JSR     $1885       ;{InPack}  ... VETAR?
 1BA1: 24 55               BCC     $1BF8       ;  No ... ignore
-1BA3: 96 11               LDA     >$11        ;{-1_rocksExposed}  Have we already exposed the pile of rocks?
+1BA3: 96 11               LDA     <$11        ;{-1_rocksExposed}  Have we already exposed the pile of rocks?
 1BA5: 26 51               BNE     $1BF8       ;  Yes ... ignore
-1BA7: 0C 10               INC     >$10        ;{-1_rocksMoved}  Mark pile of rocks moved to us
-1BA9: 96 00               LDA     >$00        ;{-1_curRoom}  Current room
-1BAB: 97 37               STA     >$37        ;{-1_rocksRoom}  Room of "pile of rocks"
+1BA7: 0C 10               INC     <$10        ;{-1_rocksMoved}  Mark pile of rocks moved to us
+1BA9: 96 00               LDA     <$00        ;{-1_curRoom}  Current room
+1BAB: 97 37               STA     <$37        ;{-1_rocksRoom}  Room of "pile of rocks"
 1BAD: 8E 2F 59            LDX     #$2F59      ; "A DULL, EERIE GLOW IS EMANATING FROM BEHIND A PILE OF ROCKS."
 1BB0: 7E 10 66            JMP     $1066       ;{PrintMess}  Print the message
 
@@ -3598,38 +3598,38 @@ EnteringRoomAction_f:
 1BC1: 2B 35               BMI     $1BF8       ;  Do nothing 1/2 the time
 1BC3: C6 1E               LDB     #$1E        ; Take 30 from ...
 1BC5: BD 1A 2A            JSR     $1A2A       ;  ... physical condition
-1BC8: D6 00               LDB     >$00        ;{-1_curRoom}  Current room
+1BC8: D6 00               LDB     <$00        ;{-1_curRoom}  Current room
 1BCA: BD 06 77            JSR     $0677       ;  Get a valid direction out of this room
-1BCD: 96 00               LDA     >$00        ;{-1_curRoom}  Current room
+1BCD: 96 00               LDA     <$00        ;{-1_curRoom}  Current room
 1BCF: BD 0F 71            JSR     $0F71       ;  Get target room in random direction
 1BD2: C6 0C               LDB     #$0C        ; Drop ...
 1BD4: BD 12 C6            JSR     $12C6       ;  ... the lamp in target room
 1BD7: 8E 2F F1            LDX     #$2FF1      ; "A POWERFUL GUST OF WIND HAS BLOWN THE LAMP OUT OF YOUR GRASP."
-1BDA: 0C 14               INC     >$14        ;{-1_lampStripped}  VETAR will work until next move
+1BDA: 0C 14               INC     <$14        ;{-1_lampStripped}  VETAR will work until next move
 1BDC: BD 10 66            JSR     $1066       ;{PrintMess}  Print the message
 1BDF: BD 06 61            JSR     $0661       ;{Random}  Random
 1BE2: C1 3F               CMPB    #$3F        ; 1/4th of the time ...
 1BE4: 22 05               BHI     $1BEB       ;  ... room stays here
 1BE6: CB 40               ADDB    #$40        ; New room is NOT on bottom floor
 1BE8: F7 3C 9E            STB     $3C9E       ; New location for this handler
-1BEB: DC 38               LDD     >$38        ;{-1_lampOil}  Oil level
+1BEB: DC 38               LDD     <$38        ;{-1_lampOil}  Oil level
 1BED: 83 01 00            SUBD    #$0100      ; This spills 256 seconds (4.3 minutes) from the lamp
 1BF0: 24 02               BCC     $1BF4       ;  Didn't underflow
 1BF2: 4F                  CLRA                ; All ...
 1BF3: 5F                  CLRB                ; ... oil ...
-1BF4: DD 38               STD     >$38        ;{-1_lampOil}  ... from lamp
-1BF6: 0F 0A               CLR     >$0A        ;{-1_lampOn}  Lamp off
+1BF4: DD 38               STD     <$38        ;{-1_lampOil}  ... from lamp
+1BF6: 0F 0A               CLR     <$0A        ;{-1_lampOn}  Lamp off
 1BF8: 39                  RTS                 ; Done
 
 EnteringRoomAction_g:
 ; _g Hydra is here. If it is free it pushes us back to last room. 
-1BF9: 96 0E               LDA     >$0E        ;{-1_hydraStatus}  Hydra status ... free?
+1BF9: 96 0E               LDA     <$0E        ;{-1_hydraStatus}  Hydra status ... free?
 1BFB: 26 0E               BNE     $1C0B       ;  No ... see if it is dead
-1BFD: 0C 0F               INC     >$0F        ;{-1_hydraPushed}  HYDRA is now in current room
+1BFD: 0C 0F               INC     <$0F        ;{-1_hydraPushed}  HYDRA is now in current room
 1BFF: 8E 30 2F            LDX     #$302F      ; "A NINE-HEADED HYDRA BLOCKS YOUR PASSAGE."
-1C02: 0C 0D               INC     >$0D        ;{-1_pushedBack}  ? nobody ever uses this ?
-1C04: 96 01               LDA     >$01        ;{-1_lastRoom}  Move back ...
-1C06: 97 00               STA     >$00        ;{-1_curRoom}  ... to last room
+1C02: 0C 0D               INC     <$0D        ;{-1_pushedBack}  ? nobody ever uses this ?
+1C04: 96 01               LDA     <$01        ;{-1_lastRoom}  Move back ...
+1C06: 97 00               STA     <$00        ;{-1_curRoom}  ... to last room
 1C08: 7E 10 66            JMP     $1066       ;{PrintMess}  Print the message
 1C0B: 81 AA               CMPA    #$AA        ; Is HYDRA tied up?
 1C0D: 26 E9               BNE     $1BF8       ;  No ... must be dead ... out
@@ -3686,17 +3686,17 @@ EnteringRoomAction_p:
 1C43: BD 18 85            JSR     $1885       ;{InPack}  Do we know the spell?
 1C46: 25 31               BCS     $1C79       ;  Yes ... nothing happens
 1C48: BD 06 61            JSR     $0661       ;{Random}  Random number
-1C4B: D0 04               SUBB    >$04        ;{-1_weight}  Random number greater than physical condition
+1C4B: D0 04               SUBB    <$04        ;{-1_weight}  Random number greater than physical condition
 1C4D: 25 04               BCS     $1C53       ;  Yes ... push back
 1C4F: C1 80               CMPB    #$80        ; 1/2 the time ...
 1C51: 24 26               BCC     $1C79       ;  ... do nothing
-1C53: 96 01               LDA     >$01        ;{-1_lastRoom}  Last room
-1C55: 91 00               CMPA    >$00        ;{-1_curRoom}  Moved back to last room?
+1C53: 96 01               LDA     <$01        ;{-1_lastRoom}  Last room
+1C55: 91 00               CMPA    <$00        ;{-1_curRoom}  Moved back to last room?
 1C57: 27 20               BEQ     $1C79       ;  Yes ... that's OK
 1C59: 8E 30 58            LDX     #$3058      ; "A MAGIC SPELL HAS PUSHED YOU BACK OUT OF THIS ROOM."
 1C5C: BD 10 66            JSR     $1066       ;{PrintMess}  Print the message
-1C5F: 0C 0D               INC     >$0D        ;{-1_pushedBack}  ? Nobody ever checks this ?
-1C61: 97 00               STA     >$00        ;{-1_curRoom}  Back to last room
+1C5F: 0C 0D               INC     <$0D        ;{-1_pushedBack}  ? Nobody ever checks this ?
+1C61: 97 00               STA     <$00        ;{-1_curRoom}  Back to last room
 1C63: C6 05               LDB     #$05        ; Take ...
 1C65: 7E 1A 2A            JMP     $1A2A       ;  ... damage of 5
 
@@ -3704,22 +3704,22 @@ EnteringRoomAction_q:
 ; _q Start the poison clock (we can't stay here long). 1/3 of the time we give the clock an extra tick.
 1C68: 8E 31 24            LDX     #$3124      ; "A MYSTERIOUS FOG BEGINS RISING FROM THE FLOOR!"
 1C6B: BD 10 66            JSR     $1066       ;{PrintMess}  Print the message
-1C6E: 0C 45               INC     >$45        ;{-1_fogClock}  Start poison time count
+1C6E: 0C 45               INC     <$45        ;{-1_fogClock}  Start poison time count
 1C70: BD 06 61            JSR     $0661       ;{Random}  Random number
 1C73: C1 55               CMPB    #$55        ; 2/3 of the time ...
 1C75: 24 02               BCC     $1C79       ;  ... nothing happens
-1C77: 0C 32               INC     >$32        ;{-1_enteredFog}  1/3 of the time give it a double increment
+1C77: 0C 32               INC     <$32        ;{-1_enteredFog}  1/3 of the time give it a double increment
 1C79: 39                  RTS                 ; Out
  
 EnteringRoomAction_r:
 ; _r When we enter this room 3 times the treasure is released.
-1C7A: 96 15               LDA     >$15        ;{-1_treas0BReleased}  Has treasure "$0B" been released?
+1C7A: 96 15               LDA     <$15        ;{-1_treas0BReleased}  Has treasure "$0B" been released?
 1C7C: 26 FB               BNE     $1C79       ;  Yes ... ignore
-1C7E: 0C 47               INC     >$47        ;{-1_enterRcount}  Increment count entering this room
-1C80: 96 47               LDA     >$47        ;{-1_enterRcount}  Have we been here ...
+1C7E: 0C 47               INC     <$47        ;{-1_enterRcount}  Increment count entering this room
+1C80: 96 47               LDA     <$47        ;{-1_enterRcount}  Have we been here ...
 1C82: 81 03               CMPA    #$03        ; ... three times now?
 1C84: 25 F3               BCS     $1C79       ;  No ... out
-1C86: 0C 15               INC     >$15        ;{-1_treas0BReleased}  Flag treaure released
+1C86: 0C 15               INC     <$15        ;{-1_treas0BReleased}  Flag treaure released
 1C88: 86 0B               LDA     #$0B        ; Drop ...
 1C8A: 7E 0E 80            JMP     $0E80       ;{DropHeldObj}  .... treasure "$0B"
 
@@ -3729,7 +3729,7 @@ EnteringRoomAction_s:
 1C8D: C6 0C               LDB     #$0C        ; Is lamp ...
 1C8F: BD 18 85            JSR     $1885       ;{InPack}  ... in pack?
 1C92: 24 6B               BCC     $1CFF       ;  No ... out
-1C94: 96 0A               LDA     >$0A        ;{-1_lampOn}  Lamp status
+1C94: 96 0A               LDA     <$0A        ;{-1_lampOn}  Lamp status
 1C96: 26 0B               BNE     $1CA3       ;  Lamp is on ... can't see the glow
 1C98: 8E 32 2C            LDX     #$322C      ; "AN EERIE PHOSPHORESCENT GLOW FILLS THE ENTIRE ROOM!"
 1C9B: BD 10 66            JSR     $1066       ;{PrintMess}  Print the message
@@ -3745,9 +3745,9 @@ EnteringRoomAction_t:
 ;    drops it immediately.
 1CA9: 86 0A               LDA     #$0A        ; Get object ...
 1CAB: BD 0E 6A            JSR     $0E6A       ;  ... held by packrat
-1CAE: D1 2C               CMPB    >$2C        ;{-1_ratObject}  Is its treasure the trigger?
+1CAE: D1 2C               CMPB    <$2C        ;{-1_ratObject}  Is its treasure the trigger?
 1CB0: 27 0D               BEQ     $1CBF       ;  Yes ... go drop treasure
-1CB2: D6 2C               LDB     >$2C        ;{-1_ratObject}  Is trigger object ...
+1CB2: D6 2C               LDB     <$2C        ;{-1_ratObject}  Is trigger object ...
 1CB4: BD 18 85            JSR     $1885       ;{InPack}  ... in backpack?
 1CB7: 25 06               BCS     $1CBF       ;  Yes ... go drop treasure
 1CB9: 8E 33 1A            LDX     #$331A      ; "A PACKRAT SCURRIES INTO A SMALL HOLE."
@@ -3793,22 +3793,22 @@ EnteringRoomAction_v:
 ;      
 1CF8: F6 3B E0            LDB     $3BE0       ; ISHTAR flags
 1CFB: 27 02               BEQ     $1CFF       ;  Have not learned it ... out
-1CFD: D6 3A               LDB     >$3A        ;{-1_lampFills}  Number of times lamp can be refilled
+1CFD: D6 3A               LDB     <$3A        ;{-1_lampFills}  Number of times lamp can be refilled
 1CFF: 39                  RTS                 ; Out
 
 EnteringRoomAction_x:
 ; _x Add 40 to health and move us a short distance away. 10 minutes must pass before again.   
-1D00: 96 13               LDA     >$13        ;{-1_auraTimer}  Have we recently visited healed up here?
+1D00: 96 13               LDA     <$13        ;{-1_auraTimer}  Have we recently visited healed up here?
 1D02: 26 FB               BNE     $1CFF       ;  Yes ... not again
 1D04: 86 0A               LDA     #$0A        ; Can heal again ...
-1D06: 97 13               STA     >$13        ;{-1_auraTimer}  ... in 10 seconds
+1D06: 97 13               STA     <$13        ;{-1_auraTimer}  ... in 10 seconds
 1D08: BD 06 61            JSR     $0661       ;{Random}  Random room number
 1D0B: C4 3F               ANDB    #$3F        ; 00-3F
 1D0D: C0 1F               SUBB    #$1F        ; Offset from -1F to 20
-1D0F: DB 00               ADDB    >$00        ;{-1_curRoom}  Move to new room
+1D0F: DB 00               ADDB    <$00        ;{-1_curRoom}  Move to new room
 1D11: C4 DF               ANDB    #$DF        ; 1st half of whichever floor
-1D13: D7 00               STB     >$00        ;{-1_curRoom}  Current room
-1D15: D7 01               STB     >$01        ;{-1_lastRoom}  And last room
+1D13: D7 00               STB     <$00        ;{-1_curRoom}  Current room
+1D15: D7 01               STB     <$01        ;{-1_lastRoom}  And last room
 1D17: 86 28               LDA     #$28        ; Add 40 to ...
 1D19: BD 1A 4E            JSR     $1A4E       ;  ... health
 1D1C: 8E 32 99            LDX     #$3299      ; "YOU HAVE JUST WALKED THROUGH AN ENCHANTED AURA."
@@ -3827,7 +3827,7 @@ EnteringRoomAction_213:
 EnteringRoomAction_232:
 ; _232 If we came south to this room and we are carying the pendant then move the 
 ;      pendant to a random room and move us to (or near) the start.
-1D2D: 96 02               LDA     >$02        ;{-1_dirBits}  Direction we took to get here
+1D2D: 96 02               LDA     <$02        ;{-1_dirBits}  Direction we took to get here
 1D2F: 81 08               CMPA    #$08        ; Did we come south to this room?
 1D31: 26 09               BNE     $1D3C       ;  No ... out
 1D33: C6 0A               LDB     #$0A        ; Move the pandant ...

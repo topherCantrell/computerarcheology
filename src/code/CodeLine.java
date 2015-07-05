@@ -80,6 +80,8 @@ public class CodeLine {
 	 */
 	public CodeLine(String originalText, String filename, int line) {
 		
+		originalText = originalText.replaceAll("(\\t|\\r?\\n)+", " ");
+		
 		this.originalText = originalText;
 		this.filename = filename;
 		this.line = line;
@@ -122,7 +124,7 @@ public class CodeLine {
 					pos = pos + 2;
 					break;
 				}
-			}
+			}			
 			if(originalText.charAt(pos+2)!=' ') { // Not a two digit value
 				break;
 			}

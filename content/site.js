@@ -214,7 +214,7 @@
 	         {"dir": "DoubleGap", "nav": "Double Gap", "entries": [
 	             {"copy": "DoubleGap.jpg"},
 	             {"mark": "DoubleGap.mark", "out": "index.html"},
-	             {"mark": "Code.mark", "out": "Code.html", "nav": "Code"}
+	             {"mark": "DoubleGap.asm", "out": "Code.html", "nav": "Code"}
 	             ]
 	         },
 	         

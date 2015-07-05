@@ -3567,7 +3567,7 @@ ReadPriStruct: ; =
 ; Read a 4-byte print-structure pointed to by BC
 ; HL=Screen coordiante, DE=pointer to message
 ; If the first byte is FF then return with C=1.
-1856: 0A              LD      A,(BC)           	  ; Get the screen LSB
+1856: 0A              LD      A,(BC)              ; Get the screen LSB
 1857: FE FF           CP      $FF                 ; Valid?
 1859: 37              SCF                         ; If not C will be 1
 185A: C8              RET     Z                   ; Return if 255

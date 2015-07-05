@@ -24,7 +24,7 @@ Start: ; ==
 0610: 86 1D               LDA     #$1D        ; Player object ...
 0612: B7 01 D2            STA     $01D2       ;{-1_ACTIVE_OBJ_NUM}  ... is the active object number
 0615: 8E 05 E0            LDX     #$05E0      ; Set cursor to ...
-0618: 9F 88               STX     >$88        ;{-1_printCursor}  ... bottom row of screen
+0618: 9F 88               STX     <$88        ;{-1_printCursor}  ... bottom row of screen
 061A: C6 96               LDB     #$96        ; Starting ...
 061C: F7 01 D5            STB     $01D5       ;{-1_CUR_ROOM}  ... room
 061F: 8E 15 23            LDX     #$1523      ; Room descriptions
@@ -237,7 +237,7 @@ MainLoop: ; ==
 
 07F0: B7 01 D1            STA     $01D1       ;{-1_PHRASE_FORM}  Store the phrase number
 07F3: 8E 05 FF            LDX     #$05FF      ; Move cursor to ...
-07F6: 9F 88               STX     >$88        ;{-1_printCursor}  ... end of line
+07F6: 9F 88               STX     <$88        ;{-1_printCursor}  ... end of line
 07F8: 86 0D               LDA     #$0D        ; Print ...
 07FA: BD 11 84            JSR     $1184       ;{PrintCharacterAutoWrap}  ... CR
 07FD: B6 01 C3            LDA     $01C3       ;{-1_FIRST_NOUN_NUM}  First noun given?
@@ -1544,17 +1544,17 @@ PrintCharacterAutoWrap: ; ==
 1199: 27 04               BEQ     $119F       ;  Yes. Ignore leading space.
 119B: 81 21               CMPA    #$21        ; A '!' ?
 119D: 26 0A               BNE     $11A9       ;  Yes. Ignore leading space.
-119F: DE 88               LDU     >$88        ;{-1_printCursor}  Back screen ...
+119F: DE 88               LDU     <$88        ;{-1_printCursor}  Back screen ...
 11A1: 33 5F               LEAU    -1,U        ; ... pointer up ...
-11A3: DF 88               STU     >$88        ;{-1_printCursor}  ... over ignored space
+11A3: DF 88               STU     <$88        ;{-1_printCursor}  ... over ignored space
 11A5: 20 02               BRA     $11A9       ;  Store and print
 11A7: 35 06               PULS    A,B         ; Restore A and B
 11A9: B7 01 BE            STA     $01BE       ;{-1_lastChar}  Last printed character
 11AC: AD 9F A0 02         JSR     [$A002]     ; Output character
-11B0: 96 89               LDA     >$89        ;{-1_printCursor}  LSB of screen position
+11B0: 96 89               LDA     <$89        ;{-1_printCursor}  LSB of screen position
 11B2: 81 FE               CMPA    #$FE        ; Reached end of screen?
 11B4: 25 34               BCS     $11EA       ;  No ... done
-11B6: DE 88               LDU     >$88        ;{-1_printCursor}  Cursor position
+11B6: DE 88               LDU     <$88        ;{-1_printCursor}  Cursor position
 11B8: 33 C8 DF            LEAU    $-21,U      ; Back up to end of current row
 11BB: 86 0D               LDA     #$0D        ; CR ...
 11BD: AD 9F A0 02         JSR     [$A002]     ; ... to screen

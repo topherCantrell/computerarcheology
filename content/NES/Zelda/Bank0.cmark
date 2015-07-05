@@ -734,7 +734,7 @@
 
 
 SoundProcessing: ; =
-9825: A5 E0         LDA   >$E0                ;{-}
+9825: A5 E0         LDA   <$E0                ;{-}
 9827: F0 0C         BEQ   $9835               ;{}
 9829: A9 00         LDA   #$00                ; Disable all ...
 982B: 8D 15 40      STA   $4015               ;{--} ... channels
@@ -865,21 +865,21 @@ SndEffect: ; =
 
 993A: 8C 06 06      STY   $0606               ;{-}
 993D: A9 05         LDA   #$05                ;
-993F: 85 69         STA   >$69                ;{-}
+993F: 85 69         STA   <$69                ;{-}
 9941: AD 04 06      LDA   $0604               ;{-} If anything is requested alongside ...
 9944: 29 EF         AND   #$EF                ; ... "letters popping up" then ...
 9946: D0 03         BNE   $994B               ;{} ... drop request for ...
 9948: 8D 04 06      STA   $0604               ;{-} ... "letters popping up"
-994B: A4 69         LDY   >$69                ;{-}
+994B: A4 69         LDY   <$69                ;{-}
 994D: B9 BB 9F      LDA   $9FBB,Y             ;
 9950: D0 1C         BNE   $996E               ;{}
 9952: 8C 06 06      STY   $0606               ;{-}
 9955: A9 38         LDA   #$38                ;
-9957: 85 69         STA   >$69                ;{-}
+9957: 85 69         STA   <$69                ;{-}
 9959: A9 0D         LDA   #$0D                ; Initialize ...
-995B: 85 68         STA   >$68                ;{-} ... count
-995D: C6 68         DEC   >$68                ;{-} Drop the count
-995F: A4 68         LDY   >$68                ;{-} End of sample table?
+995B: 85 68         STA   <$68                ;{-} ... count
+995D: C6 68         DEC   <$68                ;{-} Drop the count
+995F: A4 68         LDY   <$68                ;{-} End of sample table?
 9961: F0 F6         BEQ   $9959               ;{} Yes ... go reset
 9963: C0 07         CPY   #$07                ;
 9965: 90 04         BCC   $996B               ;{}
@@ -900,7 +900,7 @@ SndEffect: ; =
 997B: 8D 0C 40      STA   $400C               ;{--} Set noise volume [NES] Audio -> Noise control reg
 997E: A9 08         LDA   #$08                ; Set length counter reload ...
 9980: 8D 0F 40      STA   $400F               ;{--} ... to 00001 [NES] Audio -> Noise Frequency reg #2
-9983: C6 69         DEC   >$69                ;{-}
+9983: C6 69         DEC   <$69                ;{-}
 9985: D0 0A         BNE   $9991               ;{}
 9987: A9 F0         LDA   #$F0                ; Volume ...
 9989: 8D 0C 40      STA   $400C               ;{--} ... zero [NES] Audio -> Noise control reg
@@ -910,8 +910,8 @@ SndEffect: ; =
 
 9992: 8C 06 06      STY   $0606               ;{-}
 9995: A9 0A         LDA   #$0A                ;
-9997: 85 69         STA   >$69                ;{-}
-9999: A4 69         LDY   >$69                ;{-}
+9997: 85 69         STA   <$69                ;{-}
+9999: A4 69         LDY   <$69                ;{-}
 999B: B9 B1 9F      LDA   $9FB1,Y             ;
 999E: D0 CE         BNE   $996E               ;{}
 ;
@@ -947,15 +947,15 @@ SndEffect: ; =
 
 99D9: 8C 06 06      STY   $0606               ;{-}
 99DC: A9 18         LDA   #$18                ;
-99DE: 85 69         STA   >$69                ;{-}
+99DE: 85 69         STA   <$69                ;{-}
 
-99E0: A4 69         LDY   >$69                ;{-}
+99E0: A4 69         LDY   <$69                ;{-}
 99E2: B9 3C 9A      LDA   $9A3C,Y             ;
 99E5: D0 87         BNE   $996E               ;{}
 99E7: 8C 06 06      STY   $0606               ;{-}
 99EA: A9 20         LDA   #$20                ;
-99EC: 85 69         STA   >$69                ;{-}
-99EE: A5 69         LDA   >$69                ;{-}
+99EC: 85 69         STA   <$69                ;{-}
+99EE: A5 69         LDA   <$69                ;{-}
 99F0: 4A            LSR   A                   ;
 99F1: A8            TAY                       ;
 99F2: A2 0E         LDX   #$0E                ; Coversion to 11 bits as ...
@@ -967,11 +967,11 @@ SndEffect: ; =
 9A00: A9 D0         LDA   #$D0                ;
 9A02: 8D F3 05      STA   $05F3               ;{-}
 9A05: A9 10         LDA   #$10                ; Volume all ...
-9A07: 85 68         STA   >$68                ;{-} ... the way down
+9A07: 85 68         STA   <$68                ;{-} ... the way down
 9A09: AD F3 05      LDA   $05F3               ;{-}
 9A0C: C9 BF         CMP   #$BF                ;
 9A0E: 90 04         BCC   $9A14               ;{}
-9A10: E6 68         INC   >$68                ;{-} Increase the volume
+9A10: E6 68         INC   <$68                ;{-} Increase the volume
 9A12: D0 14         BNE   $9A28               ;{} Didn't overflow ... use it
 9A14: AD F3 05      LDA   $05F3               ;{-}
 9A17: 4A            LSR   A                   ;
@@ -981,11 +981,11 @@ SndEffect: ; =
 9A1D: 4A            LSR   A                   ;
 9A1E: 90 08         BCC   $9A28               ;{}
 
-9A20: A5 68         LDA   >$68                ;{-} Current noise volume
+9A20: A5 68         LDA   <$68                ;{-} Current noise volume
 9A22: C9 10         CMP   #$10                ; At its lowest?
 9A24: F0 02         BEQ   $9A28               ;{} Yes ... leave it there
-9A26: C6 68         DEC   >$68                ;{-} Drop the volume
-9A28: A5 68         LDA   >$68                ;{-} New volume value
+9A26: C6 68         DEC   <$68                ;{-} Drop the volume
+9A28: A5 68         LDA   <$68                ;{-} New volume value
 9A2A: 8D 0C 40      STA   $400C               ;{--} Set new volume [NES] Audio -> Noise control reg
 9A2D: A2 03         LDX   #$03                ; 4 bit conversion ...
 9A2F: 8E 0E 40      STX   $400E               ;{--} ... to note  A12 [NES] Audio -> Noise Frequency reg #1
@@ -1040,9 +1040,9 @@ MusEffect: ; =
 9AF0: B9 54 9A      LDA   $9A54,Y             ; Get offset to script
 9AF3: 8D 18 06      STA   $0618               ;{-} Store new script offset
 9AF6: A9 01         LDA   #$01                ; Script starts ...
-9AF8: 85 6F         STA   >$6F                ;{-} ... now (no delay)
+9AF8: 85 6F         STA   <$6F                ;{-} ... now (no delay)
 ;
-9AFA: C6 6F         DEC   >$6F                ;{-} Decrement delay
+9AFA: C6 6F         DEC   <$6F                ;{-} Decrement delay
 9AFC: D0 49         BNE   $9B47               ;{} Not time ... warble or hold note
 9AFE: AC 18 06      LDY   $0618               ;{-} Get script pointer
 9B01: EE 18 06      INC   $0618               ;{-} Bump script pointer
@@ -1064,7 +1064,7 @@ MusEffect: ; =
 9B24: 60            RTS                       ; Done
 ;
 9B25: 29 7F         AND   #$7F                ; Mask off upper bit
-9B27: 85 6E         STA   >$6E                ;{-} Store new delay reload
+9B27: 85 6E         STA   <$6E                ;{-} Store new delay reload
 9B29: AC 18 06      LDY   $0618               ;{-} Get pointer to next in script
 9B2C: EE 18 06      INC   $0618               ;{-} Bump script pointer
 9B2F: B9 55 9A      LDA   $9A55,Y             ; Get note value
@@ -1074,21 +1074,21 @@ MusEffect: ; =
 9B37: 8D 05 40      STA   $4005               ;{--} ... disable [NES] Audio -> Square 2 Ramp control
 9B3A: A9 86         LDA   #$86                ; Set envelope decay rate ...
 9B3C: 8D 04 40      STA   $4004               ;{--} ... to 6 [NES] Audio -> Square 2 Control
-9B3F: A5 6E         LDA   >$6E                ;{-} Get last delay reload
-9B41: 85 6F         STA   >$6F                ;{-} Reset reload
+9B3F: A5 6E         LDA   <$6E                ;{-} Get last delay reload
+9B41: 85 6F         STA   <$6F                ;{-} Reset reload
 9B43: A9 1F         LDA   #$1F                ; Reset ...
-9B45: 85 6D         STA   >$6D                ;{-} ... bell-curve envelope
+9B45: 85 6D         STA   <$6D                ;{-} ... bell-curve envelope
 ;
 9B47: AD 07 06      LDA   $0607               ;{-} Current music effect
 9B4A: 29 90         AND   #$90                ; Is this effect 1 or 8?
 9B4C: F0 16         BEQ   $9B64               ;{} No ... just let the note play as is
-9B4E: A4 6D         LDY   >$6D                ;{-} Bell curve envelope counter
+9B4E: A4 6D         LDY   <$6D                ;{-} Bell curve envelope counter
 9B50: F0 02         BEQ   $9B54               ;{} Reached the bottom ... hold that value
-9B52: C6 6D         DEC   >$6D                ;{-} Decrement the envelope counter
+9B52: C6 6D         DEC   <$6D                ;{-} Decrement the envelope counter
 9B54: B9 65 9B      LDA   $9B65,Y             ; Get the volume value
 9B57: 8D 04 40      STA   $4004               ;{--} Set volume as per the bell curve [NES] Audio -> Square 2 Control
-9B5A: A5 6F         LDA   >$6F                ;{-} Warble count (use current delay count)
-9B5C: A6 6B         LDX   >$6B                ;{-} Current frequency
+9B5A: A5 6F         LDA   <$6F                ;{-} Warble count (use current delay count)
+9B5C: A6 6B         LDX   <$6B                ;{-} Current frequency
 9B5E: 20 54 9C      JSR   $9C54               ;{} Do the warble
 9B61: 8E 06 40      STX   $4006               ;{--} Play the note on square 2 [NES] Audio -> Square 2 Fine tune
 9B64: 60            RTS                       ; Done
@@ -1181,7 +1181,7 @@ NoteOnSq1: ; =
 9C0D: A8            TAY                       ; Note number to Y
 9C0E: B9 01 9F      LDA   $9F01,Y             ; Fine note frequency
 9C11: F0 0D         BEQ   $9C20               ;{} Fine is 0 for silence
-9C13: 85 6A         STA   >$6A                ;{-} Remember fine value (for warbling)
+9C13: 85 6A         STA   <$6A                ;{-} Remember fine value (for warbling)
 9C15: 8D 02 40      STA   $4002               ;{--} Set fine value [NES] Audio -> Square 1 Fine tune
 9C18: B9 00 9F      LDA   $9F00,Y             ; Coarse note frequency
 9C1B: 09 08         ORA   #$08                ; Base value
@@ -1197,7 +1197,7 @@ NoteOnSq2: ; =
 9C2B: A8            TAY                       ; Note number to Y
 9C2C: B9 01 9F      LDA   $9F01,Y             ; Fine note frequency
 9C2F: F0 EF         BEQ   $9C20               ;{} Fine is 0 for silence
-9C31: 85 6B         STA   >$6B                ;{-} Remember fine value (for warbling)
+9C31: 85 6B         STA   <$6B                ;{-} Remember fine value (for warbling)
 9C33: 8D 06 40      STA   $4006               ;{--} Set fine value [NES] Audio -> Square 2 Fine tune
 9C36: B9 00 9F      LDA   $9F00,Y             ; Coarse note frequency
 9C39: 09 08         ORA   #$08                ; Length counter load = 00001
@@ -1278,7 +1278,7 @@ PlayMusic: ; =
 9C97: A0 0F         LDY   #$0F                ;
 9C99: D0 02         BNE   $9C9D               ;{}
 9C9B: A0 08         LDY   #$08                ;
-9C9D: 84 6C         STY   >$6C                ;{-}
+9C9D: 84 6C         STY   <$6C                ;{-}
 ;
 9C9F: AA            TAX                       ;
 9CA0: 30 30         BMI   $9CD2               ;{}
@@ -1290,32 +1290,32 @@ PlayMusic: ; =
 9CAC: D0 30         BNE   $9CDE               ;{}
 
 ; Song fragments 14..19 (loop)
-9CAE: E6 6C         INC   >$6C                ;{-}
-9CB0: A4 6C         LDY   >$6C                ;{-}
+9CAE: E6 6C         INC   <$6C                ;{-}
+9CB0: A4 6C         LDY   <$6C                ;{-}
 9CB2: C0 1A         CPY   #$1A                ;
 9CB4: D0 2F         BNE   $9CE5               ;{}
 9CB6: A0 14         LDY   #$14                ;
 9CB8: D0 E3         BNE   $9C9D               ;{}
 
 ; Song fragments 0F..11 (loop)
-9CBA: E6 6C         INC   >$6C                ;{-}
-9CBC: A4 6C         LDY   >$6C                ;{-}
+9CBA: E6 6C         INC   <$6C                ;{-}
+9CBC: A4 6C         LDY   <$6C                ;{-}
 9CBE: C0 12         CPY   #$12                ;
 9CC0: D0 23         BNE   $9CE5               ;{}
 9CC2: A0 0F         LDY   #$0F                ;
 9CC4: D0 D7         BNE   $9C9D               ;{}
 
 ; Song fragments 09..0F (loop) Main background music
-9CC6: E6 6C         INC   >$6C                ;{-}
-9CC8: A4 6C         LDY   >$6C                ;{-}
+9CC6: E6 6C         INC   <$6C                ;{-}
+9CC8: A4 6C         LDY   <$6C                ;{-}
 9CCA: C0 10         CPY   #$10                ;
 9CCC: D0 17         BNE   $9CE5               ;{}
 9CCE: A0 09         LDY   #$09                ;
 9CD0: D0 CB         BNE   $9C9D               ;{}
 ;
 ; Song fragments 19..23 (loop) Splash screen music
-9CD2: E6 6C         INC   >$6C                ;{-} Next song number
-9CD4: A4 6C         LDY   >$6C                ;{-} Have we reached ...
+9CD2: E6 6C         INC   <$6C                ;{-} Next song number
+9CD4: A4 6C         LDY   <$6C                ;{-} Have we reached ...
 9CD6: C0 24         CPY   #$24                ; ... the end?
 9CD8: D0 0B         BNE   $9CE5               ;{} No ... use it
 9CDA: A0 19         LDY   #$19                ; Restart ...
@@ -1332,9 +1332,9 @@ PlayMusic: ; =
 9CE9: B9 60 8D      LDA   $8D60,Y             ; ... duration ...
 9CEC: 8D F4 05      STA   $05F4               ;{-} ... list
 9CEF: B9 61 8D      LDA   $8D61,Y             ; Set ...
-9CF2: 85 66         STA   >$66                ;{-} ... pointer ...
+9CF2: 85 66         STA   <$66                ;{-} ... pointer ...
 9CF4: B9 62 8D      LDA   $8D62,Y             ; ... to ...
-9CF7: 85 67         STA   >$67                ;{-} ... music
+9CF7: 85 67         STA   <$67                ;{-} ... music
 9CF9: B9 63 8D      LDA   $8D63,Y             ; Set offset for ...
 9CFC: 8D 0C 06      STA   $060C               ;{-} ... voice C
 9CFF: B9 64 8D      LDA   $8D64,Y             ; Set offset for ...
@@ -1407,7 +1407,7 @@ PlayMusic: ; =
 9D9E: AD 09 06      LDA   $0609               ;{-}
 9DA1: 10 0B         BPL   $9DAE               ;{}
 9DA3: AD 1B 06      LDA   $061B               ;{-}
-9DA6: A6 6B         LDX   >$6B                ;{-}
+9DA6: A6 6B         LDX   <$6B                ;{-}
 9DA8: 20 54 9C      JSR   $9C54               ;{}
 9DAB: 8E 06 40      STX   $4006               ;{--} [NES] Audio -> Square 2 Fine tune
 
@@ -1447,7 +1447,7 @@ PlayMusic: ; =
 9E04: AD 09 06      LDA   $0609               ;{-}
 9E07: 10 0B         BPL   $9E14               ;{}
 9E09: AD 1C 06      LDA   $061C               ;{-}
-9E0C: A6 6A         LDX   >$6A                ;{-}
+9E0C: A6 6A         LDX   <$6A                ;{-}
 9E0E: 20 54 9C      JSR   $9C54               ;{}
 9E11: 8E 02 40      STX   $4002               ;{--} [NES] Audio -> Square 1 Fine tune
 9E14: A9 7F         LDA   #$7F                ;

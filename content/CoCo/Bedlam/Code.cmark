@@ -23,7 +23,7 @@ Start:
 0615: 86 13               LDA     #$13        ; Player object ...
 0617: B7 01 D2            STA     $01D2       ;{-1_ACTIVE_OBJ_NUM} ... is the active object number
 061A: 8E 05 E0            LDX     #$05E0      ; Set cursor to ...
-061D: 9F 88               STX     >$88        ;{-1_printCursor} ... bottom row of screen
+061D: 9F 88               STX     <$88        ;{-1_printCursor} ... bottom row of screen
 061F: 8E 13 55            LDX     #$1355      ; Init the game with ...
 0622: BD 0C 44            JSR     $0C44       ;{ProcessCommand} ... random solution
 0625: 86 0D               LDA     #$0D        ; Print ...
@@ -244,7 +244,7 @@ MainLoop: ; =
 
 07F9: B7 01 D1            STA     $01D1       ;{-1_PHRASE_FORM} Store the phrase number
 07FC: 8E 05 FF            LDX     #$05FF      ; Move cursor to ...
-07FF: 9F 88               STX     >$88        ;{-1_printCursor} ... end of line (force line feed on next print)
+07FF: 9F 88               STX     <$88        ;{-1_printCursor} ... end of line (force line feed on next print)
 0801: B6 01 C3            LDA     $01C3       ;{-1_FIRST_NOUN_NUM} First noun given?
 0804: 26 0C               BNE     $812        ; Yes ... keep what we have
 0806: BE 01 CC            LDX     $01CC       ;{-1_SECOND_NOUN_DATA} Move 2nd ...
@@ -1580,15 +1580,15 @@ PrintCharacterAutoWrap: ; =
 11E6: 27 04               BEQ     $11EC       ; Yes. Ignore leading space.
 11E8: 81 21               CMPA    #$21        ; A '!' ?
 11EA: 26 06               BNE     $11F2       ; Yes. Ignore leading space.
-11EC: DE 88               LDU     >$88        ;{-1_printCursor} Back screen ...
+11EC: DE 88               LDU     <$88        ;{-1_printCursor} Back screen ...
 11EE: 33 5F               LEAU    -1,U        ; ... pointer up ...
-11F0: DF 88               STU     >$88        ;{-1_printCursor} ... over ignored space
+11F0: DF 88               STU     <$88        ;{-1_printCursor} ... over ignored space
 11F2: B7 01 BE            STA     $01BE       ;{-1_lastChar} Store last printed character
 11F5: AD 9F A0 02         JSR     [$A002]     ; Output a character
-11F9: 96 89               LDA     >$89        ;{-1_printCursor} LSB of screen position (we know MSB is 4 or 5)
+11F9: 96 89               LDA     <$89        ;{-1_printCursor} LSB of screen position (we know MSB is 4 or 5)
 11FB: 81 FE               CMPA    #$FE        ; Have we reached the end of the screen?
 11FD: 25 33               BCS     $1232       ; No ... handle any MORE and out
-11FF: DE 88               LDU     >$88        ;{-1_printCursor} Cursor position
+11FF: DE 88               LDU     <$88        ;{-1_printCursor} Cursor position
 1201: 33 C8 DF            LEAU    $-21,U      ; Back up to end of current row (where it will be after CR)
 1204: 86 0D               LDA     #$0D        ; CR ...
 1206: AD 9F A0 02         JSR     [$A002]     ; ... to screen
@@ -1625,9 +1625,9 @@ MorePrompt:
 1245: E6 80               LDB     ,X+         ; Length
 1247: BD 11 C0            JSR     $11C0       ; Print message
 124A: BD 0B 6C            JSR     $0B6C       ;{GetKey} Get a key
-124D: 9E 88               LDX     >$88        ;{-1_printCursor} back pointer ...
+124D: 9E 88               LDX     <$88        ;{-1_printCursor} back pointer ...
 124F: 30 18               LEAX    -8,X        ; ... up 8 over ...
-1251: 9F 88               STX     >$88        ;{-1_printCursor} ... MORE prompt
+1251: 9F 88               STX     <$88        ;{-1_printCursor} ... MORE prompt
 1253: 35 76               PULS    A,B,X,Y,U   ; Restore
 1255: B7 01 BE            STA     $01BE       ;{-1_lastChar} Restore last printed character
 1258: 39                  RTS                 ; Done

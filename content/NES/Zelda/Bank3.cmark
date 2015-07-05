@@ -94,7 +94,7 @@ ConfigureTiles: ; =
 8044: 20 25 E6      JSR   $E625               ;{} Turn off all video
 8047: AD 02 20      LDA   $2002               ;{} Clear address latch (and scroll)
 804A: 20 5E 80      JSR   $805E               ;{} Initialize set-count to 0
-804D: A5 10         LDA   >$10                ;{-} Get the level
+804D: A5 10         LDA   <$10                ;{-} Get the level
 804F: D0 13         BNE   $8064               ;{} Not the surface ... configure an underworld dungeon
 ;
 8051: 20 91 80      JSR   $8091               ;{} Tiles_B_Surface->1700(820) then Tiles_S_Surface->08E0(720) 2nd pass
@@ -125,10 +125,10 @@ ConfigureTiles: ; =
 8083: 0A            ASL   A                   ; *2 bytes per structure per set
 8084: AA            TAX                       ; Index register
 8085: BD 28 80      LDA   $8028,X             ; Get LSB ...
-8088: 85 00         STA   >$00                ;{-} ... of ROM pointer
+8088: 85 00         STA   <$00                ;{-} ... of ROM pointer
 808A: E8            INX                       ; Next byte
 808B: BD 28 80      LDA   $8028,X             ; Get MSB ...
-808E: 85 01         STA   >$01                ;{-} ... of ROM pointer
+808E: 85 01         STA   <$01                ;{-} ... of ROM pointer
 8090: 60            RTS                       ; Done
 
 ; Set ROM (source) pointer and length from tables 802C and 8038. Tables
@@ -137,36 +137,36 @@ ConfigureTiles: ; =
 8094: 0A            ASL   A                   ; *2 bytes per structure per set
 8095: AA            TAX                       ; Index register
 8096: BD 2C 80      LDA   $802C,X             ; Get MSB ...
-8099: 85 00         STA   >$00                ;{-} ... of pointer
+8099: 85 00         STA   <$00                ;{-} ... of pointer
 809B: BD 38 80      LDA   $8038,X             ; Get LSB ...
-809E: 85 02         STA   >$02                ;{-} ... of count
+809E: 85 02         STA   <$02                ;{-} ... of count
 80A0: E8            INX                       ; Next byte
 80A1: BD 2C 80      LDA   $802C,X             ; Get LSB ...
-80A4: 85 01         STA   >$01                ;{-} ... of pointer
+80A4: 85 01         STA   <$01                ;{-} ... of pointer
 80A6: BD 38 80      LDA   $8038,X             ; Get MSB ...
-80A9: 85 03         STA   >$03                ;{-} ... of count
+80A9: 85 03         STA   <$03                ;{-} ... of count
 80AB: 60            RTS                       ; Done
 
 ; Set ROM (source) pointer from 8000[>$10]. Table has 10 word entries.
-80AC: A5 10         LDA   >$10                ;{-} Get table offset
+80AC: A5 10         LDA   <$10                ;{-} Get table offset
 80AE: 0A            ASL   A                   ; *2 (word offset)
 80AF: AA            TAX                       ; To index
 80B0: BD 00 80      LDA   $8000,X             ; Get MSB ...
-80B3: 85 00         STA   >$00                ;{-} ... of ROM pointer
+80B3: 85 00         STA   <$00                ;{-} ... of ROM pointer
 80B5: E8            INX                       ; Next byte
 80B6: BD 00 80      LDA   $8000,X             ; GET LSB ...
-80B9: 85 01         STA   >$01                ;{-} ... of ROM pointer
+80B9: 85 01         STA   <$01                ;{-} ... of ROM pointer
 80BB: 60            RTS                       ; Done
 
 ; Set ROM (source) pointer from 8014[>$10]. Table has 10 word entries.
-80BC: A5 10         LDA   >$10                ;{-} Get table offset
+80BC: A5 10         LDA   <$10                ;{-} Get table offset
 80BE: 0A            ASL   A                   ; *2 (word offset)
 80BF: AA            TAX                       ; To index
 80C0: BD 14 80      LDA   $8014,X             ; Get MSB ...
-80C3: 85 00         STA   >$00                ;{-} ... of ROM pointer
+80C3: 85 00         STA   <$00                ;{-} ... of ROM pointer
 80C5: E8            INX                       ; Next byte
 80C6: BD 14 80      LDA   $8014,X             ; Get LSB ...
-80C9: 85 01         STA   >$01                ;{-} ... of ROM pointer
+80C9: 85 01         STA   <$01                ;{-} ... of ROM pointer
 80CB: 60            RTS                       ; Done
 
 ; Copy set of tiles to VRAM. 051D is the set pointer ... 0,1,2, or 3
@@ -176,10 +176,10 @@ ConfigureTiles: ; =
 80CF: 0A            ASL   A                   ; *2 bytes per structure
 80D0: AA            TAX                       ; To index register
 80D1: BD 3C 80      LDA   $803C,X             ; Get LSB ...
-80D4: 85 02         STA   >$02                ;{-} ... of count
+80D4: 85 02         STA   <$02                ;{-} ... of count
 80D6: E8            INX                       ; Get ...
 80D7: BD 3C 80      LDA   $803C,X             ; ... MSB ...
-80DA: 85 03         STA   >$03                ;{-} ... of count
+80DA: 85 03         STA   <$03                ;{-} ... of count
 ;
 80DC: AD 1D 05      LDA   $051D               ;{-} Set number
 80DF: 0A            ASL   A                   ; *2 bytes per structure
@@ -198,25 +198,25 @@ CopyToVRAM: ; =
 80EE: A0 00         LDY   #$00                ; Straight offset from Y coming up
 80F0: B1 00         LDA   ($00),Y             ; Byte from pointer ...
 80F2: 8D 07 20      STA   $2007               ;{} ... to next VRAM address
-80F5: A5 00         LDA   >$00                ;{-} Increment ...
+80F5: A5 00         LDA   <$00                ;{-} Increment ...
 80F7: 18            CLC                       ; ... two ..
 80F8: 69 01         ADC   #$01                ; ... byte ...
-80FA: 85 00         STA   >$00                ;{-} ... pointer ...
-80FC: A5 01         LDA   >$01                ;{-} ... at ...
+80FA: 85 00         STA   <$00                ;{-} ... pointer ...
+80FC: A5 01         LDA   <$01                ;{-} ... at ...
 80FE: 69 00         ADC   #$00                ; ... 00 and ...
-8100: 85 01         STA   >$01                ;{-} ... 01
+8100: 85 01         STA   <$01                ;{-} ... 01
 ;
-8102: A5 03         LDA   >$03                ;{-} Decrement ...
+8102: A5 03         LDA   <$03                ;{-} Decrement ...
 8104: 38            SEC                       ; ... two ...
 8105: E9 01         SBC   #$01                ; ... byte ...
-8107: 85 03         STA   >$03                ;{-} ... count ...
-8109: A5 02         LDA   >$02                ;{-} ... at ...
+8107: 85 03         STA   <$03                ;{-} ... count ...
+8109: A5 02         LDA   <$02                ;{-} ... at ...
 810B: E9 00         SBC   #$00                ; ... 02 and ...
-810D: 85 02         STA   >$02                ;{-} ... 03
+810D: 85 02         STA   <$02                ;{-} ... 03
 ;
-810F: A5 02         LDA   >$02                ;{-} More to do?
+810F: A5 02         LDA   <$02                ;{-} More to do?
 8111: D0 DD         BNE   $80F0               ;{} Yes ... go move all
-8113: A5 03         LDA   >$03                ;{-} More to do?
+8113: A5 03         LDA   <$03                ;{-} More to do?
 8115: D0 D9         BNE   $80F0               ;{} Yes ... go move all
 8117: EE 1D 05      INC   $051D               ;{-} Next set
 811A: 60            RTS                       ; Done

@@ -17,10 +17,12 @@ public class CodeFile {
 	public CPU cpu = null;
 	
 	public int directPage = 0;
+	public String filename;
 	
 	public CodeFile(Path codeFile) throws IOException {
 		
 		List<String> lines = Files.readAllLines(codeFile);
+		filename = codeFile.toString();
 		
 		int lineno = 1;
 		for(String s : lines) {
