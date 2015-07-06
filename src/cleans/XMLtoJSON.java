@@ -6,7 +6,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 
 public class XMLtoJSON {
@@ -14,7 +13,7 @@ public class XMLtoJSON {
 	public static void main2(String [] args) throws Exception {
 		Path p = Paths.get("src/cpu/6502.js");
 		JSONParser parser = new JSONParser();
-		JSONArray obj = (JSONArray) parser.parse(new FileReader(p.toString()));
+		parser.parse(new FileReader(p.toString()));
 	}
 	
 	public static String getValue(String target, String key) {

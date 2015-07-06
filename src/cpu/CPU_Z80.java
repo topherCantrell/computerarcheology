@@ -5,6 +5,14 @@ import code.BusDir;
 import code.BusType;
 
 public class CPU_Z80 extends CPU {
+	
+	public CPU_Z80() {
+		try {
+			loadOpcodes("src/cpu/Z80.js");
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	@Override
 	public AddressAccess getAccess(String opcode, int numPos, int num, int directPage) {

@@ -6,6 +6,14 @@ import code.BusType;
 
 public class CPU_6803 extends CPU {
 	
+	public CPU_6803() {
+		try {
+			loadOpcodes("src/cpu/6803.js");
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	static final String[] CODE = {"JSR","BPL","BNE","BEQ","BMI","JMP","BCC","BRA","BCS"};
 	static final String[] READ = {"LDA", "LDB", "LDX","LDD","ORA","ADDA","ANDA","ORB","CMPA"};
 	static final String[] WRITE = {"STA", "STB", "STX","STD","CLR"};

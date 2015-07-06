@@ -1,66 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<ProcessorFamily name="650x" endian="little">
-
-       <printSpacing>
-            <set name="6502"   dataFieldSize="10" mnemonicFieldSize="20"/>
-            <set name="65C02"  dataFieldSize="10" mnemonicFieldSize="20"/>
-            <set name="65C816" dataFieldSize="10" mnemonicFieldSize="20"/>
-            <set name="Cish"   dataFieldSize="10" mnemonicFieldSize="20"/> 
-        </printSpacing>
-
-		<processors>
-			<processor name="6502" />
-			<processor name="65C02" />
-			<processor name="65C816" />
-		</processors>
-		
-		<blends jump="JMP $DEST$">
-		
-		    <!-- CARRY and BORROW are the same flag, but in this family C=0 means borrow -->
-		
-		    <!-- Simple one-flag tests. These have equally-short alternate forms -->
-            <blend left="A" op="=="    right="*"     branchPass="CMP $RIGHT$;BEQ $PASS$"   branchFail="CMP $RIGHT$;BNE $FAIL$"/>
-            <blend left="A" op="!="    right="*"     branchPass="CMP $RIGHT$;BNE $PASS$"   branchFail="CMP $RIGHT$;BEQ $FAIL$"/>  
-            <blend left="A" op="&lt;"  right="*"     branchPass="CMP $RIGHT$;BCC $PASS$"   branchFail="CMP $RIGHT$;BCS $FAIL$"/> 
-            <blend left="A" op="&gt;=" right="*"     branchPass="CMP $RIGHT$;BCS $PASS$"   branchFail="CMP $RIGHT$;BCC $FAIL$" /> 
-            
-            <blend left="X" op="=="    right="*"     branchPass="CPX $RIGHT$;BEQ $PASS$"   branchFail="CPX $RIGHT$;BNE $FAIL$"/>
-            <blend left="X" op="!="    right="*"     branchPass="CPX $RIGHT$;BNE $PASS$"   branchFail="CPX $RIGHT$;BEQ $FAIL$"/>  
-            <blend left="X" op="&lt;"  right="*"     branchPass="CPX $RIGHT$;BCC $PASS$"   branchFail="CPX $RIGHT$;BCS $FAIL$"/> 
-            <blend left="X" op="&gt;=" right="*"     branchPass="CPX $RIGHT$;BCS $PASS$"   branchFail="CPX $RIGHT$;BCC $FAIL$" />
-            
-            <blend left="Y" op="=="    right="*"     branchPass="CPY $RIGHT$;BEQ $PASS$"   branchFail="CPY $RIGHT$;BNE $FAIL$"/>
-            <blend left="Y" op="!="    right="*"     branchPass="CPY $RIGHT$;BNE $PASS$"   branchFail="CPY $RIGHT$;BEQ $FAIL$"/>  
-            <blend left="Y" op="&lt;"  right="*"     branchPass="CPY $RIGHT$;BCC $PASS$"   branchFail="CPY $RIGHT$;BCS $FAIL$"/> 
-            <blend left="Y" op="&gt;=" right="*"     branchPass="CPY $RIGHT$;BCS $PASS$"   branchFail="CPY $RIGHT$;BCC $FAIL$" />
-  
-            <!-- These can't be tested with one flag ... the alternate form is needlessly complicated -->
-            <blend left="A" op="&gt;"  right="*"     branchFail="CMP $RIGHT$;BEQ $FAIL$;BCC $FAIL$" />  
-            <blend left="A" op="&lt;=" right="*"     branchPass="CMP $RIGHT$;BEQ $PASS$;BCC $PASS$" />
-            
-            <blend left="X" op="&gt;"  right="*"     branchFail="CPX $RIGHT$;BEQ $FAIL$;BCC $FAIL$" />  
-            <blend left="X" op="&lt;=" right="*"     branchPass="CPX $RIGHT$;BEQ $PASS$;BCC $PASS$" /> 
-            
-            <blend left="Y" op="&gt;"  right="*"     branchFail="CPY $RIGHT$;BEQ $FAIL$;BCC $FAIL$" />  
-            <blend left="Y" op="&lt;=" right="*"     branchPass="CPY $RIGHT$;BEQ $PASS$;BCC $PASS$" />  
-  
-            <!-- No operation ... just use the existing flags -->
-            <blend left="ZERO"       op="" right=""  branchPass="BEQ $PASS$"  branchFail="BNE $FAIL$"/>
-            <blend left="NOT_ZERO"   op="" right=""  branchPass="BNE $PASS$"  branchFail="BEQ $FAIL$"/>  
-            <blend left="CARRY"      op="" right=""  branchPass="BCS $PASS$"  branchFail="BCC $FAIL$"/>
-            <blend left="NOT_BORROW" op="" right=""  branchPass="BCS $PASS$"  branchFail="BCC $FAIL$"/>
-            <blend left="NOT_CARRY"  op="" right=""  branchPass="BCC $PASS$"  branchFail="BCS $FAIL$"/>
-            <blend left="BORROW"     op="" right=""  branchPass="BCC $PASS$"  branchFail="BCS $FAIL$"/>
-		
-		    <!--  TRUE and FALSE -->
-            <blend left="true"       op="" right=""  branchPass="JMP $PASS$"   branchFail=""/>
-            <blend left="false"      op="" right=""  branchPass=""             branchFail="JMP $FAIL$"/>
-		 
-		</blends>
-		
-		<opcodes>
-		
+	
   <op m6502="BRK"        m65C02="BRK"       m65C816="BRK"          code="00"      clocks="7"     flags="-------"           />
   <op m6502="ORA (p,X)"  m65C02="ORA (p,X)" m65C816="ORA (p,X)"    code="01pp"    clocks="6"     flags="-------"  bus="r"  mCish="A = A | BYTE[WORD[<p+X]]"/>
   <op                                       m65C816="COP b"        code="02"      clocks=""      flags="-------"           />
@@ -318,7 +256,3 @@
   <op m6502="SBC t,X"    m65C02="SBC t,X"   m65C816="SBC t,X"      code="FDtltm"  clocks=""      flags="-------"  bus="r"  mCish="A = A - BORROW - BYTE[t+X]"/>
   <op m6502="INC t,X"    m65C02="INC t,X"   m65C816="INC t,X"      code="FEtltm"  clocks="7"     flags="-------"  bus="rw" mCish="++BYTE[t+X]"/>
   <op                                       m65C816="SBC al,X"     code="FF"      clocks=""      flags="-------"           />
-		</opcodes>
-		
-</ProcessorFamily>
-

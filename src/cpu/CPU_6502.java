@@ -1,10 +1,18 @@
 package cpu;
 
-import code.BusType;
 import code.AddressAccess;
 import code.BusDir;
+import code.BusType;
 
 public class CPU_6502 extends CPU {
+	
+	public CPU_6502() {
+		try {
+			loadOpcodes("src/cpu/6502.js");
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 		
 	@Override
 	public AddressAccess getAccess(String opcode, int numPos, int num, int directPage) {
@@ -40,5 +48,5 @@ public class CPU_6502 extends CPU {
 				
 		return ret;
 	}
-
+		
 }

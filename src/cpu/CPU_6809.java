@@ -1,10 +1,48 @@
 package cpu;
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import code.AddressAccess;
 import code.BusDir;
 import code.BusType;
 
 public class CPU_6809 extends CPU {
+	
+	public CPU_6809() {
+		try {
+			loadOpcodes("src/cpu/6809.js");
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+protected void loadOpcodes(String filename) throws IOException, ParseException {
+		
+		opcodes = new ArrayList<Opcode>();
+		
+		JSONParser parser = new JSONParser();
+		JSONArray objs = (JSONArray) parser.parse(new FileReader(filename));
+		
+		for(Object obj : objs) {
+			JSONObject o = (JSONObject)obj;
+			Opcode op = new Opcode();
+			if(o.containsKey("mnem")) {
+				op.mnemonic = o.get("mnem").toString();
+				op.bus = o.get("bus").toString();
+				op.clocks = o.get("clocks").toString();
+				op.flags = o.get("flags").toString();
+				op.code = o.get("code").toString();
+				opcodes.add(op);
+			}
+		}
+	}
 	
 	static final String[] CODE = {"JSR","BPL","BNE","BEQ","BMI","JMP","BCC","BRA","BCS", 
 		"LBEQ", "LBNE","BLS","BSR","BHI","BRN","LBSR","LBCC","LBCS","BVS","BLE","BLT","BVC","BGE","BGT","LBLE","LBPL","LBMI"};
