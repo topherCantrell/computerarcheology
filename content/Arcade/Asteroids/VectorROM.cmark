@@ -16,6 +16,8 @@
 ;; Lots of info here about what the areas in the ROM are:
 ;; [http://arcarc.xmission.com/Tech/dvg.txt http://arcarc.xmission.com/Tech/dvg.txt]
 
+;; Thanks to [https://github.com/slx7R4GDZM slx7R4GDZM] for many fixes and discoveries here.
+
 ;;= DVG Info =
 
 ;; For info about the vector generator hardware and opcodes:
@@ -1076,13 +1078,13 @@ ThrustDir64:
 ;; = Sine lookup table =
 ; Used for vertical thrust (offset by 64 to get cosine for horizontal thrust)
 0FBB: 00 03 06 09 0c 10 13 16
-0FC1: 19 1c 1f 22 25 28 2b 2e
-0FC9: 31 33 36 39 3c 3f 41 44
-0FD1: 47 49 4c 4e 51 53 55 58
-0FD9: 5a 5c 5e 60 62 64 66 68
-0FE1: 6a 6b 6d 6f 70 71 73 74
-0FE9: 75 76 78 79 7a 7a 7b 7c
-0FF1: 7d 7d 7e 7e 7e 7f 7f 7f
-0FF9: 7f
+0FC3: 19 1c 1f 22 25 28 2b 2e
+0FCB: 31 33 36 39 3c 3f 41 44
+0FD3: 47 49 4c 4e 51 53 55 58
+0FDB: 5a 5c 5e 60 62 64 66 68
+0FE3: 6a 6b 6d 6f 70 71 73 74
+0FEB: 75 76 78 79 7a 7a 7b 7c
+0FF3: 7d 7d 7e 7e 7e 7f 7f 7f
+0FFB: 7f
 ; Extra space
 0FFC: 00 00 00 00
