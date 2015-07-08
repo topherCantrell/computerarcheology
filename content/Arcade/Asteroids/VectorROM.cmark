@@ -9,7 +9,7 @@
 ;;<script src="/js/bytes.js"></script>
 ;;}}}
 
-; OriginalBinary 035127.02
+; OriginalBinary 035127.01
 
 ;;= TODO =
 
@@ -1037,78 +1037,52 @@ ThrustDir64:
 0F1C: 20 cb          JSR  $0E40                                        ; {} Y
 0F1E: 27 cb          JSR  $0E4E                                        ; {} Z
 
-; ====== Not valid commands from here down ... cross reference table of some kind?
-; How are ship/rock/etc objects referenced? Surely not hard-coded ...
+;; = Messages =
+; Message offsets
+0F20: 0b  ; HIGH SCORES
+0F21: 13  ; PLAYER
+0F22: 19  ; YOUR SCORE IS ONE OF THE TEN BEST
+0F23: 2f  ; PEASE ENTER YOUR INITIALS
+0F24: 41  ; PUSH ROTATE TO SELECT LETTER
+0F25: 55  ; PUSH HYPERSPACE WHEN LETTER IS CORRECT
+0F26: 6f  ; PUSH START
+0F27: 77  ; GAME OVER
+0F28: 7d  ; 1 COIN 2 PLAYS
+0F29: 87  ; 1 COIN 1 PLAY
+0F2A: 91  ; 2 COINS 1 PLAY
+; HIGH SCORES
+0F2B: 63 56 60 6e 3c ec 4d c0
+; PLAYER
+0F33: a4 0a ea 6c 08 00
+; YOUR SCORE IS ONE OF THE TEN BEST
+0F39: ec f2 b0 6e 3c ec 48 5a b8 66 92 42 9a 82 c3 12 0e 12 90 4c 4d f1
+; PEASE ENTER YOUR INITIALS
+0F4F: a4 12 2d d2 0a 64 c2 6c 0f 66 cd 82 6c 9a c3 4a 85 c0
+; PUSH ROTATE TO SELECT LETTER
+0F61: a6 6e 60 6c 9e 0a c2 42 c4 c2 ba 60 49 f0 0c 12 c6 12 b0 00
+; PUSH HYPERSPACE WHEN LETTER IS CORRECT
+0F75: a6 6e 60 58 ed 12 b5 e8 29 d2 0e d8 4c 82 82 70 c2 6c 0b 6e 09 e6 b5 92 3e 00
+; PUSH START
+0F8F: a6 6e 60 6e c1 6c c0 00
+; GAME OVER
+0F97: 59 62 48 66 d2 6d
+; 1 COIN 2 PLAYS
+0F9D: 18 4e 9b 64 09 02 a4 0a ed c0
+; 1 COIN 1 PLAY
+0FA7: 18 4e 9b 64 08 c2 a4 0a e8 00
+; 2 COINS 1 PLAY
+0FB1: 20 4e 9b 64 b8 46 0d 20 2f 40
 
-0F20: 0b 13 19 2f    VEC  scale=01(/256)  bri=02  x=-793    y=779    (-3.10, 3.04)
-0F24: 41 55 6f 77    VEC  scale=05(/16)   bri=07  x=-879    y=-321   (-54.94, -20.06)
-0F28: 7d 87 91 63    VEC  scale=08(/2)    bri=06  x=913     y=-893   (456.50, -446.50)
-0F2C: 56 60 6e 3c    VEC  scale=06(/8)    bri=03  x=-110    y=86     (-13.75, 10.75)
-0F30: ec 4d c0 a4    VEC  scale=04(/32)   bri=10  x=-192    y=-492   (-6.00, -15.38)
-0F34: 0a ea          JMP  $0C14                                        
-0F36: 6c 08          VEC  scale=00(/512)  bri=15  x=-1023   y=108    (-2.00, 0.21); 86c
-0F38: 00 ec          JMP  $1000                                        
-0F3A: f2 b0          HALT                                              ; ?? 0xf2
-0F3C: 6e 3c ec 48    VEC  scale=03(/64)   bri=04  x=236     y=-110   (3.69, -1.72)
-0F40: 5a b8          HALT                                              ; ?? 0x85a
-0F42: 66 92 42 9a    VEC  scale=09(/1)    bri=09  x=578     y=614    (578.00, 614.00)
-0F46: 82 c3          ; JSR  $-0FC                                        
-0F48: 12 0e          VEC  scale=00(/512)  bri=15  x=-1023   y=-530   (-2.00, -1.04); e12
-0F4A: 12 90 4c 4d    VEC  scale=09(/1)    bri=04  x=-332    y=18     (-332.00, 18.00)
-0F4E: f1 a4 12 2d    CUR  scale=02(/128)  y=1265  x=3346               
-0F52: d2 0a          VEC  scale=00(/512)  bri=15  x=-1023   y=722    (-2.00, 1.41); ad2
-0F54: 64 c2          ;JSR  $-338                                        
-0F56: 6c 0f          VEC  scale=00(/512)  bri=15  x=-1023   y=-876   (-2.00, -1.71); f6c
-0F58: 66 cd          JSR  $12CC                                        
-0F5A: 82 6c 9a c3    VEC  scale=06(/8)    bri=12  x=922     y=-130   (115.25, -16.25)
-0F5E: 4a 85 c0 a6    VEC  scale=08(/2)    bri=10  x=-704    y=-330   (-352.00, -165.00)
-0F62: 6e 60 6c 9e    VEC  scale=06(/8)    bri=09  x=-620    y=110    (-77.50, 13.75)
-0F66: 0a c2          ;JSR  $-3EC                                        
-0F68: 42 c4          JSR  $0084                                        
-0F6A: c2 ba          HALT                                              ; ?? 0xac2
-0F6C: 60 49 f0 0c    VEC  scale=04(/32)   bri=00  x=-240    y=352    (-7.50, 11.00)
-0F70: 12 c6          JSR  $0424                                        
-0F72: 12 b0          HALT                                              ; ?? 0x12
-0F74: 00 a6 6e 60    CUR  scale=06(/8)    y=1536  x=110                
-0F78: 58 ed          JMP  $12B0                                        
-0F7A: 12 b5          HALT                                              ; ?? 0x512
-0F7C: e8 29 d2 0e    VEC  scale=02(/128)  bri=00  x=-722    y=488    (-5.64, 3.81)
-0F80: d8 4c 82 82    VEC  scale=04(/32)   bri=08  x=642     y=-216   (20.06, -6.75)
-0F84: 70 c2          ;JSR  $-320                                        
-0F86: 6c 0b          VEC  scale=00(/512)  bri=15  x=-1023   y=876    (-2.00, 1.71); b6c
-0F88: 6e 09          VEC  scale=00(/512)  bri=15  x=-1023   y=366    (-2.00, 0.71); 96e
-0F8A: e6 b5          HALT                                              ; ?? 0x5e6
-0F8C: 92 3e 00 a6    VEC  scale=03(/64)   bri=10  x=-512    y=-658   (-8.00, -10.28)
-0F90: 6e 60 6e c1    VEC  scale=06(/8)    bri=12  x=366     y=110    (45.75, 13.75)
-0F94: 6c c0          ;JSR  $-728                                        
-0F96: 00 59 62 48    VEC  scale=05(/16)   bri=04  x=98      y=256    (6.12, 16.00)
-0F9A: 66 d2          RTS                                               ; ?? 0x266
-0F9C: 6d 18 4e 9b    VEC  scale=01(/256)  bri=09  x=846     y=109    (3.30, 0.43)
-0FA0: 64 09          VEC  scale=00(/512)  bri=15  x=-1023   y=356    (-2.00, 0.70); 964
-0FA2: 02 a4 0a ed    CUR  scale=14(???)  y=1026  x=3338                
-0FA6: c0 18 4e 9b    VEC  scale=01(/256)  bri=09  x=846     y=192    (3.30, 0.75)
-0FAA: 64 08          VEC  scale=00(/512)  bri=15  x=-1023   y=100    (-2.00, 0.20); 864
-0FAC: c2 a4 0a e8    CUR  scale=14(???)  y=1218  x=2058                
-0FB0: 00 20 4e 9b    VEC  scale=02(/128)  bri=09  x=846     y=0      (6.61, 0.00)
-0FB4: 64 b8          HALT                                              ; ?? 0x864
-0FB6: 46 0d          VEC  scale=00(/512)  bri=15  x=-1023   y=-326   (-2.00, -0.64); d46
-0FB8: 20 2f 40 00    VEC  scale=02(/128)  bri=00  x=64      y=-800   (0.50, -6.25)
-0FBC: 03 06          VEC  scale=00(/512)  bri=15  x=-1023   y=-515   (-2.00, -1.01); 603
-0FBE: 09 0c          VEC  scale=00(/512)  bri=15  x=-1023   y=-9     (-2.00, -0.02); c09
-0FC0: 10 13 16 19    VEC  scale=01(/256)  bri=01  x=278     y=784    (1.09, 3.06)
-0FC4: 1c 1f 22 25    VEC  scale=01(/256)  bri=02  x=-290    y=-796   (-1.13, -3.11)
-0FC8: 28 2b 2e 31    VEC  scale=02(/128)  bri=03  x=302     y=808    (2.36, 6.31)
-0FCC: 33 36 39 3c    VEC  scale=03(/64)   bri=03  x=-57     y=-563   (-0.89, -8.80)
-0FD0: 3f 41 44 47    VEC  scale=04(/32)   bri=04  x=-836    y=319    (-26.12, 9.97)
-0FD4: 49 4c 4e 51    VEC  scale=04(/32)   bri=05  x=334     y=-73    (10.44, -2.28)
-0FD8: 53 55 58 5a    VEC  scale=05(/16)   bri=05  x=600     y=-339   (37.50, -21.19)
-0FDC: 5c 5e 60 62    VEC  scale=05(/16)   bri=06  x=608     y=-604   (38.00, -37.75)
-0FE0: 64 66 68 6a    VEC  scale=06(/8)    bri=06  x=616     y=-612   (77.00, -76.50)
-0FE4: 6b 6d 6f 70    VEC  scale=06(/8)    bri=07  x=111     y=-363   (13.88, -45.38)
-0FE8: 71 73 74 75    VEC  scale=07(/4)    bri=07  x=-372    y=881    (-93.00, 220.25)
-0FEC: 76 78 79 7a    VEC  scale=07(/4)    bri=07  x=633     y=118    (158.25, 29.50)
-0FF0: 7a 7b 7c 7d    VEC  scale=07(/4)    bri=07  x=-380    y=890    (-95.00, 222.50)
-0FF4: 7d 7e 7e 7e    VEC  scale=07(/4)    bri=07  x=-638    y=-637   (-159.50, -159.25)
-0FF8: 7f 7f 7f 7f    VEC  scale=07(/4)    bri=07  x=-895    y=-895   (-223.75, -223.75)
-0FFC: 00 00          VEC  scale=00(/512)  bri=15  x=-1023   y=0      (-2.00, 0.00); 0
-0FFE: 00 00          VEC  scale=00(/512)  bri=15  x=-1023   y=0      (-2.00, 0.00); 0
+;; = Sine lookup table =
+; Used for vertical thrust (offset by 64 to get cosine for horizontal thrust)
+0FBB: 00 03 06 09 0c 10 13 16
+0FC1: 19 1c 1f 22 25 28 2b 2e
+0FC9: 31 33 36 39 3c 3f 41 44
+0FD1: 47 49 4c 4e 51 53 55 58
+0FD9: 5a 5c 5e 60 62 64 66 68
+0FE1: 6a 6b 6d 6f 70 71 73 74
+0FE9: 75 76 78 79 7a 7a 7b 7c
+0FF1: 7d 7d 7e 7e 7e 7f 7f 7f
+0FF9: 7f
+; Extra space
+0FFC: 00 00 00 00
