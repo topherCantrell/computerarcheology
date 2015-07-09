@@ -1001,43 +1001,43 @@ ThrustDir64:
 0ED4: 00 d0          RTS                                               
 
 ; Cross reference table for character data
-0ED6: 2d cb          JSR  $0E5A                                        ; {} SPACE
+0ED6: 2d cb          JSR  $0E5A                                        ; {} SPACE 1
 0ED8: de ca          JSR  $0DBC                                        ; {} O and 0 ... same pattern
 0EDA: 2f cb          JSR  $0E5E                                        ; {} 1
 0EDC: 33 cb          JSR  $0E66                                        ; {} 2
 0EDE: 3b cb          JSR  $0E76                                        ; {} 3
 0EE0: 42 cb          JSR  $0E84                                        ; {} 4
 0EE2: 49 cb          JSR  $0E92                                        ; {} 5
-0EE4: 50 cb          JSR  $0EA0                                        ; {} 6
-0EE6: 57 cb          JSR  $0EAE                                        ; {} 7
-0EE8: 5c cb          JSR  $0EB8                                        ; {} 8
-0EEA: 64 cb          JSR  $0EC8                                        ; {} 9
-0EEC: 79 ca          JSR  $0CF2                                        ; {} A
-0EEE: 81 ca          JSR  $0D02                                        ; {} B
-0EF0: 8e ca          JSR  $0D1C                                        ; {} C
-0EF2: 94 ca          JSR  $0D28                                        ; {} D
-0EF4: 9c ca          JSR  $0D38                                        ; {} E
-0EF6: a4 ca          JSR  $0D48                                        ; {} F
-0EF8: ab ca          JSR  $0D56                                        ; {} G
-0EFA: b4 ca          JSR  $0D68                                        ; {} H
-0EFC: bb ca          JSR  $0D76                                        ; {} I
-0EFE: c2 ca          JSR  $0D84                                        ; {} J
-0F00: c8 ca          JSR  $0D90                                        ; {} K
-0F02: ce ca          JSR  $0D9C                                        ; {} L
-0F04: d3 ca          JSR  $0DA6                                        ; {} M
-0F06: d9 ca          JSR  $0DB2                                        ; {} N
-0F08: de ca          JSR  $0DBC                                        ; {} O
-0F0A: e4 ca          JSR  $0DC8                                        ; {} P
-0F0C: eb ca          JSR  $0DD6                                        ; {} Q
-0F0E: f4 ca          JSR  $0DE8                                        ; {} R
-0F10: fc ca          JSR  $0DF8                                        ; {} S
-0F12: 03 cb          JSR  $0E06                                        ; {} T
-0F14: 09 cb          JSR  $0E12                                        ; {} U
-0F16: 0f cb          JSR  $0E1E                                        ; {} V
-0F18: 14 cb          JSR  $0E28                                        ; {} W
-0F1A: 1b cb          JSR  $0E36                                        ; {} X
-0F1C: 20 cb          JSR  $0E40                                        ; {} Y
-0F1E: 27 cb          JSR  $0E4E                                        ; {} Z
+0EE4: 50 cb          JSR  $0EA0                                        ; {} 6 
+0EE6: 57 cb          JSR  $0EAE                                        ; {} 7 2
+0EE8: 5c cb          JSR  $0EB8                                        ; {} 8 3
+0EEA: 64 cb          JSR  $0EC8                                        ; {} 9 4
+0EEC: 79 ca          JSR  $0CF2                                        ; {} A 5
+0EEE: 81 ca          JSR  $0D02                                        ; {} B 6
+0EF0: 8e ca          JSR  $0D1C                                        ; {} C 7
+0EF2: 94 ca          JSR  $0D28                                        ; {} D 8
+0EF4: 9c ca          JSR  $0D38                                        ; {} E 9
+0EF6: a4 ca          JSR  $0D48                                        ; {} F 10
+0EF8: ab ca          JSR  $0D56                                        ; {} G 11
+0EFA: b4 ca          JSR  $0D68                                        ; {} H 12
+0EFC: bb ca          JSR  $0D76                                        ; {} I 13
+0EFE: c2 ca          JSR  $0D84                                        ; {} J 14
+0F00: c8 ca          JSR  $0D90                                        ; {} K 15
+0F02: ce ca          JSR  $0D9C                                        ; {} L 16
+0F04: d3 ca          JSR  $0DA6                                        ; {} M 17
+0F06: d9 ca          JSR  $0DB2                                        ; {} N 18
+0F08: de ca          JSR  $0DBC                                        ; {} O 19
+0F0A: e4 ca          JSR  $0DC8                                        ; {} P 20
+0F0C: eb ca          JSR  $0DD6                                        ; {} Q 21
+0F0E: f4 ca          JSR  $0DE8                                        ; {} R 22
+0F10: fc ca          JSR  $0DF8                                        ; {} S 23
+0F12: 03 cb          JSR  $0E06                                        ; {} T 24
+0F14: 09 cb          JSR  $0E12                                        ; {} U 25
+0F16: 0f cb          JSR  $0E1E                                        ; {} V 26
+0F18: 14 cb          JSR  $0E28                                        ; {} W 27
+0F1A: 1b cb          JSR  $0E36                                        ; {} X 28
+0F1C: 20 cb          JSR  $0E40                                        ; {} Y 29
+0F1E: 27 cb          JSR  $0E4E                                        ; {} Z 30
 
 ;; = Messages =
 ; Message offsets
@@ -1052,27 +1052,69 @@ ThrustDir64:
 0F28: 7d  ; 1 COIN 2 PLAYS
 0F29: 87  ; 1 COIN 1 PLAY
 0F2A: 91  ; 2 COINS 1 PLAY
+
+;; Messages are packed with 3 characters in 2 bytes (3 5-bit characters).
+;; The upper 15 bits are used. If the last bit is set then the message terminates.
+;; If the last bit is clear then the next two bytes are parsed UNLESS the parser
+;; finds a 00000 character. That pattern terminates the message too.
+;;
+;; Here is the character map for a 5 bit character (00-1F):[[BR]]
+;; "@_012ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+;; Again ... a 0 ("@") terminates the message
+
 ; HIGH SCORES
-0F2B: 63 56 60 6e 3c ec 4d c0
-; PLAYER
+; 01100_01101_01011_0 01100_00001_10111_0 00111_10011_10110_0 01001_10111_00000_0
+; H     I     G       H     _     S       C     O     R       E     S     @ 
+0F2B: 63 56 60 6e 3c ec 4d c0 
+ 
+; PLAYER_
+; 10100_10000_00101_0 11101_01001_10110_0 00001_00000_00000_0 
+; P     L     A       Y     E     R       _     @     @  
 0F33: a4 0a ea 6c 08 00
+
 ; YOUR SCORE IS ONE OF THE TEN BEST
+; 11101_10011_11001_0 10110_00001_10111_0 00111_10011_10110_0 01001_00001_01101_0 10111_00001_10011_0 10010_01001_00001_0 10011_01010_00001_0 11000_01100_01001_0 00001_11000_01001_0 10010_00001_00110_0 01001_10111_11000_1 
+; Y     O     U       R     _     S       C     O     R       E     _     I       S     _     O       N     E     _       O     F     _       T     H     E       _     T     E       N     _     B       E     S     T     @ 
 0F39: ec f2 b0 6e 3c ec 48 5a b8 66 92 42 9a 82 c3 12 0e 12 90 4c 4d f1
+
 ; PEASE ENTER YOUR INITIALS
+; 10100_10000_01001_0 00101_10111_01001_0 00001_01001_10010_0 11000_01001_10110_0 00001_11101_10011_0 11001_10110_00001_0 01101_10010_01101_0 11000_01101_00101_0 10000_10111_00000_0 
+; P     L     E       A     S     E       _     E     N       T     E     R       _     Y     O       U     R     _       I     N     I       T     I     A       L     S     @     
 0F4F: a4 12 2d d2 0a 64 c2 6c 0f 66 cd 82 6c 9a c3 4a 85 c0
+
 ; PUSH ROTATE TO SELECT LETTER
+; 10100_11001_10111_0 01100_00001_10110_0 10011_11000_00101_0 11000_01001_00001_0 11000_10011_00001_0 10111_01001_10000_0 01001_00111_11000_0 00001_10000_01001_0 11000_11000_01001_0 10110_00000_00000_0 
+; P     U     S       H     _     R       O     T     A       T     E     _       T     O     _       S     E     L       E     C     T       _     L     E       T     T     E       R     @     @     
 0F61: a6 6e 60 6c 9e 0a c2 42 c4 c2 ba 60 49 f0 0c 12 c6 12 b0 00
+
 ; PUSH HYPERSPACE WHEN LETTER IS CORRECT
+; 10100_11001_10111_0 01100_00001_01100_0 11101_10100_01001_0 10110_10111_10100_0 00101_00111_01001_0 00001_11011_01100_0 01001_10010_00001_0 10000_01001_11000_0 11000_01001_10110_0 00001_01101_10111_0 00001_00111_10011_0 10110_10110_01001_0 00111_11000_00000_0 
+; P     U     S       H     _     H       Y     P     E       R     S     P       A     C     E       _     W     H       E     N     _       L     E     T       T     E     R       _     I     S       _     C     O       R     R     E       C     T     @     
 0F75: a6 6e 60 58 ed 12 b5 e8 29 d2 0e d8 4c 82 82 70 c2 6c 0b 6e 09 e6 b5 92 3e 00
+
 ; PUSH START
+; 10100_11001_10111_0 01100_00001_10111_0 11000_00101_10110_0 11000_00000_00000_0 
+; P     U     S       H           S       T     A     R       T     @     @     
 0F8F: a6 6e 60 6e c1 6c c0 00
+
 ; GAME OVER
+; 01011_00101_10001_0 01001_00001_10011_0 11010_01001_10110_1 
+; G     A     M       E     _     O       V     E     R     @     
 0F97: 59 62 48 66 d2 6d
+
 ; 1 COIN 2 PLAYS
+; 00011_00001_00111_0 10011_01101_10010_0 00001_00100_00001_0 10100_10000_00101_0 11101_10111_00000_0 
+; 1     _     C       O     I     N       _     2     _       P     L     A       Y     S     @    
 0F9D: 18 4e 9b 64 09 02 a4 0a ed c0
+
 ; 1 COIN 1 PLAY
+; 00011_00001_00111_0 10011_01101_10010_0 00001_00011_00001_0 10100_10000_00101_0 11101_00000_00000_0 
+; 1     _     C       O     I     N       _     1     _       P     L     A       Y     @     @ 
 0FA7: 18 4e 9b 64 08 c2 a4 0a e8 00
+
 ; 2 COINS 1 PLAY
+; 00100_00001_00111_0 10011_01101_10010_0 10111_00001_00011_0 00001_10100_10000_0 00101_11101_00000_0 
+; 2     _     C       O     I     N       S     _     1       _     P     L       A     Y     @     
 0FB1: 20 4e 9b 64 b8 46 0d 20 2f 40
 
 ;; = Sine lookup table =
@@ -1086,5 +1128,6 @@ ThrustDir64:
 0FEB: 75 76 78 79 7a 7a 7b 7c
 0FF3: 7d 7d 7e 7e 7e 7f 7f 7f
 0FFB: 7f
+
 ; Extra space
 0FFC: 00 00 00 00
