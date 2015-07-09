@@ -51,8 +51,8 @@ public class CodeLine {
 	String filename;
 	int line;
 	
-	int address = -1;
-	List<Integer> data = null;
+	public int address = -1;
+	public List<Integer> data = null;
 	public String opcode = null;
 	public int opcodePos = -1;	
 	public String comment = null;
@@ -148,5 +148,5 @@ public class CodeLine {
 		}		
 		
 	}	
-	
+		
 }

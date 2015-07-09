@@ -2001,7 +2001,9 @@ Top: ;=
 77F2: 00            BRK                       
 77F3: 00            BRK                       
 77F4: 00            BRK                       
-77F5: 00            BRK                       
+77F5: 00            BRK      
+
+PrintPackedMsg:                 
 77F6: AD 03 28      LDA   $2803               ;  DIP Switches 1 & 2, Language
 77F9: 29 03         AND   #$03                
 77FB: 0A            ASL   A                   
@@ -2015,7 +2017,7 @@ Top: ;=
 780B: 71 08         ADC   ($08),Y             ;  Add In The Offset To Get Starting
 780D: 85 08         STA   <$08                ;  Address Of Message
 780F: 90 02         BCC   $7813               ;       
-7811: E6 09         INC   <$09                ;       
+7811: E6 09         INC   <$09                ;  Bump MSB (no 16 bit registers)      
 7813: 98            TYA                       
 7814: 0A            ASL   A                   
 7815: A8            TAY                       
@@ -2045,7 +2047,8 @@ Top: ;=
 7845: 46 0B         LSR   <$0B                ;       
 7847: 90 DF         BCC   $7828               ;       
 7849: 88            DEY                       
-784A: 4C 39 7C      JMP   $7C39               ;       
+784A: 4C 39 7C      JMP   $7C39               ;    
+;   
 784D: E6 08         INC   <$08                ;       
 784F: D0 02         BNE   $7853               ;       
 7851: E6 09         INC   <$09                ;       
@@ -2065,7 +2068,8 @@ Top: ;=
 786B: 91 02         STA   ($02),Y             
 786D: C8            INY                       
 786E: A2 00         LDX   #$00                
-7870: 60            RTS                       
+7870: 60            RTS
+                       
 7871: 64 
 7872: B6 64         LDX   $64,Y               
 7874: B6 0C         LDX   $0C,Y               
@@ -2080,7 +2084,11 @@ Top: ;=
 7880: 9D 50 39      STA   $3950,X             
 7883: 50 39         BVC   $78BE               ;
 7885: 50 39         BVC   $78C0               ;
-7887: 1E 57 8F      ASL   $8F57,X             
+
+7887: 1E 57 ; Offset to packed-messages table in vector ROM ?
+ 
+7889: 8F 
+             
 788A: 78            SEI                       
 788B: 46 79         LSR   <$79                ;       
 788D: F3 
@@ -2652,6 +2660,7 @@ NMI: ;=
 7C3F: 90 02         BCC   $7C43               ;       
 7C41: E6 03         INC   <$03                ;       
 7C43: 60            RTS                       
+
 7C44: A9 D0         LDA   #$D0                
 7C46: 4C C2 7B      JMP   $7BC2               ;       
 7C49: A5 05         LDA   <$05                ;       

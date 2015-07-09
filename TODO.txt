@@ -5,6 +5,11 @@ The link-fixer should be able to identify addresses in code by range.
 
 Better deployment strategy that doesn't upload everything every time.
 
+The code references data files, but does so with relative paths. These data files should be
+loaded via the classpath loader. The content and deploy, however, are NOT in the
+classpath. Move site.js to the classpath and assume "content" and "deploy" are off the
+current working directory.
+
 -------- Content ----------
 
 Sweep through all links over entire site and make sure they works.

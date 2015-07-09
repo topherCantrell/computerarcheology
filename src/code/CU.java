@@ -58,4 +58,19 @@ public class CU {
 		}
 	}
 
+	public static String hex2(int value) {
+		String ret = Integer.toString(value,16).toUpperCase();
+		while(ret.length()<2) {
+			ret = "0"+ret;
+		}
+		return ret;
+	}
+	
+	public static String padTo(String s, int length) {
+		while(s.length()<length) {
+			s = s+" ";
+		}
+		return s;
+	}
+
 }

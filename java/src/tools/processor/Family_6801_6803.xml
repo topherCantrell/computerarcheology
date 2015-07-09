@@ -221,7 +221,7 @@
   <op code="E0ii"    m6801="SUBB i,X"             m6803="SUBB i,X"             clocks="4"   flags="----****" />
   <op code="E1ii"    m6801="CMPB i,X"             m6803="CMPB i,X"             clocks="4"   flags="----****" />
   <op code="E2ii"    m6801="SBCB i,X"             m6803="SBCB i,X"             clocks="4"   flags="----****" />
-  <op code="E3ii"    m6801="ADDD i,x"             m6803="ADDD i,x"             clocks="6"   flags="--*-****" />
+  <op code="E3ii"    m6801="ADDD i,x"             m6803="ADDD i,X"             clocks="6"   flags="--*-****" />
   <op code="E4ii"    m6801="ANDB i,X"             m6803="ANDB i,X"             clocks="4"   flags="----**0*" />
   <op code="E5ii"    m6801="BITB i,X"             m6803="BITB i,X"             clocks="4"   flags="----**0-" />
   <op code="E6ii"    m6801="LDB  i,X"             m6803="LDB  i,X"             clocks="4"   flags="----**0-" />

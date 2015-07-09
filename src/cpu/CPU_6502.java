@@ -13,6 +13,12 @@ public class CPU_6502 extends CPU {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	@Override
+	public int[] getSpacing() {
+		int[] ret = {9,6,16};
+		return ret;
+	}
 		
 	@Override
 	public AddressAccess getAccess(String opcode, int numPos, int num, int directPage) {

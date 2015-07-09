@@ -31,14 +31,15 @@ protected void loadOpcodes(String filename) throws IOException, ParseException {
 		JSONArray objs = (JSONArray) parser.parse(new FileReader(filename));
 		
 		for(Object obj : objs) {
-			JSONObject o = (JSONObject)obj;
-			Opcode op = new Opcode();
+			JSONObject o = (JSONObject)obj;			
 			if(o.containsKey("mnem")) {
-				op.mnemonic = o.get("mnem").toString();
+				JSONArray mns = (JSONArray) o.get("mnem");
+				String [] mn = new String[mns.size()];
+				for(int x=0;x<mn.length;++x) mn[x] = mns.get(x).toString();
+				Opcode op = new Opcode(mn, o.get("code").toString());				
 				op.bus = o.get("bus").toString();
 				op.clocks = o.get("clocks").toString();
 				op.flags = o.get("flags").toString();
-				op.code = o.get("code").toString();
 				opcodes.add(op);
 			}
 		}

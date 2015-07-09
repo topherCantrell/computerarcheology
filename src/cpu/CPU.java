@@ -17,10 +17,17 @@ import code.AddressAccess;
 public abstract class CPU {
 	
 	protected List<Opcode> opcodes;
+
+	public boolean bigEndian;
 	
 	static Map<String,CPU> cache = new HashMap<String,CPU>();
 	
 	public abstract AddressAccess getAccess(String opcode, int numPos, int num, int directPage);
+	
+	public int[] getSpacing() {
+		int[] ret = {12,8,16};
+		return ret;
+	}
 	
 	protected void loadOpcodes(String filename) throws IOException, ParseException {
 		
@@ -31,12 +38,13 @@ public abstract class CPU {
 		
 		for(Object obj : objs) {
 			JSONObject o = (JSONObject)obj;
-			Opcode op = new Opcode();
-			op.mnemonic = o.get("mnem").toString();
+			JSONArray mns = (JSONArray) o.get("mnem");
+			String [] mn = new String[mns.size()];
+			for(int x=0;x<mn.length;++x) mn[x] = mns.get(x).toString();
+			Opcode op = new Opcode(mn, o.get("code").toString());			
 			op.bus = o.get("bus").toString();
 			op.clocks = o.get("clocks").toString();
-			op.flags = o.get("flags").toString();
-			op.code = o.get("code").toString();
+			op.flags = o.get("flags").toString();			
 			opcodes.add(op);
 		}
 	}

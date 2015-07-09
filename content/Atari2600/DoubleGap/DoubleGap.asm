@@ -961,14 +961,14 @@ FxRun:
 	 ;  1 scanline, every 8
 	 ;  Wall delay=3 gives us 128*3=336 scanlines 2
                                            
-MUSCMD_JUMP      =     0                ; Music command value for JUMP
-MUSCMD_CONTROL   =     1                ; Music command value for CONTROL
-MUSCMD_VOLUME    =     2                ; Music command value for VOLUME
-MUS_REST         =     31               ; Frequency value for silence
-MUS_DEL_1        =     32*1             ; Note duration 1
-MUS_DEL_2        =     32*2             ; Note duration 2
-MUS_DEL_3        =     32*3             ; Note duration 3
-MUS_DEL_4        =     32*4             ; Note duration 4                         
+.MUSCMD_JUMP      =     0                ; Music command value for JUMP
+.MUSCMD_CONTROL   =     1                ; Music command value for CONTROL
+.MUSCMD_VOLUME    =     2                ; Music command value for VOLUME
+.MUS_REST         =     31               ; Frequency value for silence
+.MUS_DEL_1        =     32*1             ; Note duration 1
+.MUS_DEL_2        =     32*2             ; Note duration 2
+.MUS_DEL_3        =     32*3             ; Note duration 3
+.MUS_DEL_4        =     32*4             ; Note duration 4                         
                                            
 MUSICA:
                                            
