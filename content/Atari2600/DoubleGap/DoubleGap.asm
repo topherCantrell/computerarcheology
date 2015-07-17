@@ -1,40 +1,40 @@
-.cpu = 6502
+.cpu 6502
 
 ; Hardware definitions
 .include "stella.asm"
 
 ; RAM Usage
 .TMP0        = 0x80              
-.TMP1        = +              
-.TMP2        = +              
-.PLAYR0Y     = +              
+.TMP1        = +               
+.TMP2        = +               
+.PLAYR0Y     = +               
 .PLAYR1Y     = +              
-.MUS_TMP0    = +              
-.MUS_TMP1    = +              
-.SCANCNT     = +             
+.MUS_TMP0    = +               
+.MUS_TMP1    = +               
+.SCANCNT     = +              
 .MODE        = +              
-.WALL_INC    = +              
-.WALLCNT     = +              
-.WALLDELY    = +              
-.WALLDELYR   = +              
-.ENTROPYA    = +              
-.ENTROPYB    = +              
-.ENTROPYC    = +              
-.DEBOUNCE    = +              
-.WALLDRELA   = +              
-.WALLDRELB   = +              
-.WALLDRELC   = +              
+.WALL_INC    = +               
+.WALLCNT     = +               
+.WALLDELY    = +               
+.WALLDELYR   = +               
+.ENTROPYA    = +               
+.ENTROPYB    = +               
+.ENTROPYC    = +               
+.DEBOUNCE    = +               
+.WALLDRELA   = +               
+.WALLDRELB   = +               
+.WALLDRELC   = +               
 .WALLSTART   = +              
-.WALLHEI     = +              
-.GAPBITS     = +              
+.WALLHEI     = +               
+.GAPBITS     = +               
 .SCORE_PF1   = +              
-.SCORE_PF2   = +              
-.MUSADEL     = +              
-.MUSAIND     = +              
-.MUSAVOL     = +              
+.SCORE_PF2   = +               
+.MUSADEL     = +               
+.MUSAIND     = +               
+.MUSAVOL     = +               
 .MUSBDEL     = +              
-.MUSBIND     = +              
-.MUSBVOL     = +
+.MUSBIND     = +               
+.MUSBVOL     = + 
 
 F000:
 main: 
@@ -912,7 +912,7 @@ INIT_GO_FX:
      STA      AUDF0            ; ... frequency
      RTS                       ; Done
 
-PROCESS_GO_FX
+PROCESS_GO_FX:
                                            
      ;  This function is called once per scanline to play the
      ;  soundeffects of a player hitting the wall.

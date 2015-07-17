@@ -9,9 +9,12 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import asm.ASM;
+import asm.ASMException;
 import code.AddressAccess;
 import code.BusDir;
 import code.BusType;
+import code.CodeLine;
 
 public class CPU_6809 extends CPU {
 	
@@ -23,7 +26,12 @@ public class CPU_6809 extends CPU {
 		}
 	}
 	
-protected void loadOpcodes(String filename) throws IOException, ParseException {
+	@Override
+	public int assemble(boolean firstPass, CodeLine c, ASM asm) throws ASMException {
+		throw new RuntimeException("IMPLEMENT ME");
+	}
+	
+	protected void loadOpcodes(String filename) throws IOException, ParseException {
 		
 		opcodes = new ArrayList<Opcode>();
 		

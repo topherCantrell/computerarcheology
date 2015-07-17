@@ -9,14 +9,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+
 import code.CU;
 import code.CodeFile;
 import code.CodeLine;
 import cpu.CPU;
-
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
 
 public class ASM {
 	
@@ -24,6 +24,8 @@ public class ASM {
 	CPU cpu;
 	Map<String,String> defines = new HashMap<String,String>();
 	Map<String,String> subs = new HashMap<String,String>();
+	
+	int lastAssign = -1;
 	
 	ScriptEngineManager mgr = new ScriptEngineManager();
     ScriptEngine engine = mgr.getEngineByName("JavaScript");
@@ -71,8 +73,8 @@ public class ASM {
 				if(c.data!=null) {
 					address = address + c.data.size();
 				}
-			} else {				
-				address = address + doOpcode(firstPass,c);
+			} else {		
+				address = address + cpu.assemble(firstPass,c,this);				
 			}
 		}
 	}
@@ -85,6 +87,16 @@ public class ASM {
 			if(firstPass && defines.containsKey(key)) {
 				throw new ASMException("Already defined '"+command+"'",c);
 			}
+			
+			if(val.equals("+")) {
+				lastAssign = lastAssign+1;
+				val = ""+lastAssign;
+			} else {
+				if(CU.isNumeric(val, 10)) {
+					lastAssign = CU.parseInt(val, 10);
+				}
+			}
+			
 			defines.put(key, val);
 		} else {
 			String key = command.trim();
@@ -154,8 +166,8 @@ public class ASM {
 			return val;						
 		}
 	}
-	
-	protected int parseData(boolean firstPass, String command, CodeLine c) throws ASMException {
+		
+	public int parseData(boolean firstPass, String command, CodeLine c) throws ASMException {
 		if(firstPass) {
 			return 0;
 		}
@@ -202,40 +214,6 @@ public class ASM {
 		}
 	}
 	
-	protected int doOpcode(boolean firstPass, CodeLine c) {
-		
-		/*
-		 
-		 An opcode spec looks like this:
-		 "DEC t,X" : "DEtltm"
-		 
-		 Beginning part "DEC " (note the space)
-		 Ending part ",X"
-		 
-		 The Z80 has one opcode with multiple fill-ins:
-		 "LD (IY+i),b" : "FD36iibb"		 
-		 This +i is also signed. It might appear as (IY-i).		 
-		 
-		 The Z80 assembler will have to convert "LD (IY-128),4" to "LD (IY+-128),4"
-		 for proper matching.		 
-		 
-		 - Find the numbers in the input. Make an array of CONST+number+CONST+number+CONST+number
-		   as many as there are
-		 - Match the terms to the opcode. There should only be one match.
-		 
-		 */
-		
-		// TODO Finish this
-		//System.out.println(c.opcode);
-		c.data = new ArrayList<Integer>();
-		c.data.add(0);
-		c.data.add(1);
-		c.data.add(2);
-		return 3;
-	}
-	
-	
-	
 	private void expandIncludes() throws IOException {
 		boolean changed = true;
 		while(changed) {
@@ -274,7 +252,7 @@ public class ASM {
 			
 			String dat = "";
 			for(int i : c.data) {
-				s = s + CU.hex2(i)+" ";
+				dat = dat + CU.hex2(i)+" ";
 			}
 			dat = CU.padTo(dat, spacing[0]);
 			
@@ -285,6 +263,10 @@ public class ASM {
 						
 			ps.println(s+dat+ot);
 		}
+		
+		// TODO: flag to substitute hex value in for symbol in opcode
+		// TODO: flag to generate symbol table in comments at end
+		// TODO: binary output (fill gaps with 0xFF)
 		
 	}
 	

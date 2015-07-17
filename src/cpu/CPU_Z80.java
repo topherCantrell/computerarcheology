@@ -1,8 +1,11 @@
 package cpu;
 
+import asm.ASM;
+import asm.ASMException;
 import code.AddressAccess;
 import code.BusDir;
 import code.BusType;
+import code.CodeLine;
 
 public class CPU_Z80 extends CPU {
 	
@@ -12,6 +15,11 @@ public class CPU_Z80 extends CPU {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	@Override
+	public int assemble(boolean firstPass, CodeLine c, ASM asm) throws ASMException {
+		throw new RuntimeException("IMPLEMENT ME");
 	}
 
 	@Override

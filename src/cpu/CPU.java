@@ -12,17 +12,22 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import asm.ASM;
+import asm.ASMException;
 import code.AddressAccess;
+import code.CodeLine;
 
 public abstract class CPU {
 	
-	protected List<Opcode> opcodes;
+	public List<Opcode> opcodes;
 
 	public boolean bigEndian;
 	
 	static Map<String,CPU> cache = new HashMap<String,CPU>();
 	
 	public abstract AddressAccess getAccess(String opcode, int numPos, int num, int directPage);
+	
+	public abstract int assemble(boolean firstPass, CodeLine c, ASM asm) throws ASMException;
 	
 	public int[] getSpacing() {
 		int[] ret = {12,8,16};
