@@ -1,6 +1,8 @@
 package asm;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -238,6 +240,47 @@ public class ASM {
 		}
 	}
 	
+	public void makeBinaryFile(String fileName) throws IOException {
+		
+		// TODO embelish and add options as needed
+		
+		OutputStream os = new FileOutputStream(fileName);
+		
+		try {
+		
+			int currentAddress = -1;
+			
+			for(CodeLine c : codeFile.code) {
+				if(c.data!=null && c.data.size()>0) {
+					if(currentAddress<0) {
+						currentAddress = c.address;
+					}
+					
+					if(c.address<currentAddress) {
+						System.out.println(CU.hex4(c.address)+":"+CU.hex4(currentAddress));
+						throw new RuntimeException("Data addresses go backwards");
+					}
+					while(c.address>currentAddress) {
+						os.write(0xFF);
+						++currentAddress;
+					}
+					
+					for(int d : c.data) {
+						os.write(d);
+						++currentAddress;
+					}
+					
+				}
+			}
+			
+			os.flush();
+		
+		} finally {
+			os.close();
+		}
+		
+	}
+	
 	public void makeListing(PrintStream ps) {
 		
 		int[] spacing = cpu.getSpacing();
@@ -266,7 +309,6 @@ public class ASM {
 		
 		// TODO: flag to substitute hex value in for symbol in opcode
 		// TODO: flag to generate symbol table in comments at end
-		// TODO: binary output (fill gaps with 0xFF)
 		
 	}
 	
@@ -276,6 +318,8 @@ public class ASM {
 		asm.assemble();		
 		
 		asm.makeListing(System.out);
+		
+		asm.makeBinaryFile("content/atari2600/doublegap/doublegap.bin");
 				
 	}
 

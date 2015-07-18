@@ -7,6 +7,7 @@ import asm.ASMException;
 import code.AddressAccess;
 import code.BusDir;
 import code.BusType;
+import code.CU;
 import code.CodeLine;
 
 public class CPU_6502 extends CPU {
@@ -132,6 +133,20 @@ public class CPU_6502 extends CPU {
 					
 					// We are dealing with a p vs t situation. Pick the best one.
 					
+					// To pick we need to know the value. If this is a defined
+					// symbol then we'll have it in the first pass. Otherwise
+					// we have to assume the worst (2 byte value). If you don't
+					// like what we pick then use the '<' or '>' to force it.
+					if(firstPass) {
+						try {
+							value = asm.parseData(false,b,co);
+						} catch (ASMException e) {
+							// Might be a code symbol later we pick up later
+							// in the first pass.
+							value = 0xFFFF;
+						}
+					} 
+					
 					if(value>=0 && value<=0xFF) {
 						fnd = pForm;
 					} else {
@@ -182,8 +197,12 @@ public class CPU_6502 extends CPU {
 		} else if(fnd.code.length()==6) {
 			co.data.add(value&0xFF);
 			co.data.add((value>>8)&0xFF);			
+		} else if(fnd.code.length()!=2) {			
+			System.out.println(fnd.code);
+			throw new RuntimeException("OOPS");
 		}
 		
+		System.out.println(CU.hex4(co.address)+":"+co.data.size());
 		return co.data.size();
 	}
 		
