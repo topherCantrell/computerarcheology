@@ -6,7 +6,11 @@
 ; RAM Usage
 .TMP0        = 0x80              
 .TMP1        = +               
-.TMP2        = +               
+.TMP2        = +    
+.rand1       = + 
+.rand2       = + 
+.rand3       = + 
+.rand4       = +      
 .PLAYR0Y     = +               
 .PLAYR1Y     = +              
 .MUS_TMP0    = +               
@@ -16,10 +20,7 @@
 .WALL_INC    = +               
 .WALLCNT     = +               
 .WALLDELY    = +               
-.WALLDELYR   = +               
-.ENTROPYA    = +               
-.ENTROPYB    = +               
-.ENTROPYC    = +               
+.WALLDELYR   = +  
 .DEBOUNCE    = +               
 .WALLDRELA   = +               
 .WALLDRELB   = +               
@@ -44,10 +45,10 @@ main:
     LDX      #0xFF            ; Set stack ...
     TXS                       ; ... to the end of RAM    
     JSR      INIT             ; Initialize game environment
-    JSR      INIT_SELMODE     ; Start out in SELECT-MODE
+    JSR      INIT_SELMODE     ; Start out in SELECT-MODE (fall into main loop)
  
 ; Start here at the end of every screen frame
-
+;
 VIDEO_KERNEL:
 
     LDA      #2               ; D1 bit ON
@@ -68,20 +69,43 @@ VIDEO_KERNEL:
                                            
     ;  ***** LENGTHY GAME LOGIC PROCESSING BEGINS HERE *****
                                            
-    ;  Do one of 3 routines while the beam travels back to the top
+    ;  Do one of 3 routines while the beam travels back to the top of the screen
     ;  0 = Game Over processing
     ;  1 = Playing-Game processing
     ;  2 = Selecting-Game processing
                                            
-    INC      ENTROPYA         ; Counting video frames as part of the random number
-    LDA      MODE             ; What are we doing between frames?
-                                           
+    JSR      RandomBit        ; Counting video frames as part of the random number
+    LDA      MODE             ; What are we doing between frames?                                           
     CMP      #0               ; Mode is ...
     BEQ      DoGameOverMode   ; ... "game over"
     CMP      #1               ; Mode is ...
     BEQ      DoPlayMode       ; ... "game play"
     JSR      SELMODE          ; Mode is "select game"
     JMP      DrawFrame        ; Continue to the visible screen area
+    
+; Random algorithm from:
+; http://www.classic-games.com/atari2600/random.html
+RandomBit:
+    LDA      rand4
+    ASL      A
+    ASL      A
+    ASL      A
+    EOR      rand4            ; new bit is now in bit 6 of A
+    ASL      A
+    ASL      A                ; new bit is now in carry
+    ROL      rand1            ; shift new bit into bit 0 of register, bit 7 goes into carry
+    ROL      rand2            ; shift old bit 7 into bit 8, etc.
+    ROL      rand3
+    ROL      rand4
+    RTS
+RandomByte:
+    LDX      #8               ; 8 bits
+RandomByte1:
+    JSR      RandomBit        ; Get next bit
+    DEX                       ; All done?
+    BNE      RandomByte1      ; No ... keep going
+    LDA      rand1            ; Get the value
+    RTS
      
 DoPlayMode:                           
     JSR      PLAYMODE         ; Playing-game processing
@@ -358,11 +382,7 @@ NoFirst:
      JSR      INIT_GOMODE      ; Go to Game-Over mode
      RTS                       ; Done
      
-NoHit:                                     
-     LDA      SWCHA            ; Joystick
-     ADC      ENTROPYB         ; Add to ...  
-     STA      ENTROPYB         ; ... entropy
-                               
+NoHit: 
      LDA      SWCHA            ; Joystick
      AND      #128             ; Player 0 ...
      CMP      #0               ; ... moving left?
@@ -374,7 +394,6 @@ NoHit:
      LDA      #0               ; Not moving value
      JMP      SetMoveP0        ; Don't move the player
 MoveP0Right:                           
-     INC      ENTROPYC         ; Yes ... increase entropy
      LDA      #16              ; +1
      JMP      SetMoveP0        ; Set HMP0
 MoveP0Left:                           
@@ -389,8 +408,7 @@ SetMoveP0:
      LDA      SWCHA            ; Joystick
      AND      #4               ; Player 0 ...
      CMP      #0               ; ... moving right?
-     BEQ      MoveP1Right      ; Yes ... move right
-     INC      ENTROPYC         ; Increase entropy
+     BEQ      MoveP1Right      ; Yes ... move right     
      LDA      #0               ; Not moving value
      JMP      SetMoveP1        ; Don't move the player
 MoveP1Right:                           
@@ -530,10 +548,7 @@ NEW_GAPS:
      LDA      GAPBITS          ; Store the gap pattern ...
      STA      WALLDRELC        ; ... in PF2
                                
-     LDA      ENTROPYA         ; Get ...
-     ADC      ENTROPYB         ; ... a randomish ...
-     ADC      ENTROPYC         ; ... number ...  
-     STA      ENTROPYC         ; New entropy
+     JSR      RandomByte       ; Get random value
      AND      #15              ; 0 to 15                               
      CMP      #12              ; Too far to the right?
      BEQ      GapOK            ; No ... 12 is OK

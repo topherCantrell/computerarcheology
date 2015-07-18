@@ -7,7 +7,6 @@ import asm.ASMException;
 import code.AddressAccess;
 import code.BusDir;
 import code.BusType;
-import code.CU;
 import code.CodeLine;
 
 public class CPU_6502 extends CPU {
@@ -202,7 +201,6 @@ public class CPU_6502 extends CPU {
 			throw new RuntimeException("OOPS");
 		}
 		
-		System.out.println(CU.hex4(co.address)+":"+co.data.size());
 		return co.data.size();
 	}
 		
