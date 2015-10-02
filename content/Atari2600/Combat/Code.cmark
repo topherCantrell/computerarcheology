@@ -769,40 +769,90 @@ F5B6: 95 D8         STA   $D8,X
 F5B8: C8            INY                       
 F5B9: CA            DEX                       
 F5BA: 10 EF         BPL   $F5AB               ;
-F5BC: 60            RTS                       
-F5BD: A9 00         LDA   #$00                
-F5BF: E8            INX                       
-F5C0: 95 A2         STA   $A2,X               ;AUDF1:4,12 AUDF0:4,12 CTRLPF:2,10 HMP0:5,13 HMP1:5,13 ENAM1:5,13 RESM0:3,11 RESM1:3,11 VBLANK:1,9 ENAM0:5,13 NUSIZ0:2,10 CXBLPF:8,16 NUSIZ1:2,10 COLUBK:2,10 CXPPMM:8,16 WSYNC:1,9 VDELP1:6,14 VDELP0:6,14 HMBL:5,13 RESMP1:6,14 ENABL:5,13 RESMP0:6,14 PF2:3,11 HMOVE:6,14 CXM1P:7,15 PF0:3,11 PF1:3,11 HMCLR:6,14 INPT0:8,16 INPT5:8,16 INPT4:8,16 COLUPF:2,10 INPT3:8,16 INPT2:8,16 INPT1:8,16 REFP1:3,11 COLUP0:2,10 COLUP1:2,10 CXM0P:7,15 CXCLR:6,14 VDELBL:6,14 REFP0:3,11 HMM1:5,13 HMM0:5,13 CXP0FB:7,15 RESBL:4,12 CXM1FB:7,15 RESP0:3,11 CXP1FB:7,15 RESP1:3,11 AUDC1:4,12 VSYNC:1,9 AUDC0:4,12 GRP1:5,13 CXM0FB:7,15 AUDV0:4,12 GRP0:4,12 AUDV1:4,12 
-F5C2: D0 FB         BNE   $F5BF               ;
-F5C4: 60            RTS                       
-F5C5: 0E 0A 0A      ASL   $0A0A               ;
-F5C8: 0A            ASL   A                   
-F5C9: 0E 22 22      ASL   $2222               ;
-F5CC: 22                                    
-F5CD: 22                                    
-F5CE: 22                                    
-F5CF: EE 22 EE      INC   $EE22               ;
-F5D2: 88            DEY                       
-F5D3: EE EE 22      INC   $22EE               ;
-F5D6: 66 22         ROR   $22                 ;
-F5D8: EE AA AA      INC   $AAAA               ;
-F5DB: EE 22 22      INC   $2222               ;
-F5DE: EE 88 EE      INC   $EE88               ;
-F5E1: 22                                    
-F5E2: EE EE 88      INC   $88EE               ;
-F5E5: EE AA EE      INC   $EEAA               ;
-F5E8: EE 22 22      INC   $2222               ;
-F5EB: 22                                    
-F5EC: 22                                    
-F5ED: EE AA EE      INC   $EEAA               ;
-F5F0: AA            TAX                       
-F5F1: EE EE AA      INC   $AAEE               ;
-F5F4: EE 22 EE      INC   $EE22               ;
+F5BC: 60            RTS
+                       
+F5BD: A9 00         LDA   #$00                ; Value 0                
+F5BF: E8            INX                       ; Next register
+F5C0: 95 A2         STA   $A2,X               ; Clear register
+F5C2: D0 FB         BNE   $F5BF               ; All registers done?
+F5C4: 60            RTS                       ; No ... back for more
+
+; Numbers
+F5C5: 0E 0A 0A 0A 0E  ;  0
+ ; .... ***.
+ ; .... *.*.
+ ; .... *.*.
+ ; .... *.*.
+ ; .... ****
+  
+F5CA: 22 22 22 22 22  ; 11
+; ..*. ..*.
+; ..*. ..*.
+; ..*. ..*.
+; ..*. ..*.
+; ..*. ..*.
+                                  
+F5CF: EE 22 EE 88 EE  ; 22
+; ***. ***.
+; ..*. ..*.
+; ***. ***.
+; *... *...
+; ***. ***.
+
+F5D4: EE 22 66 22 EE  ; 33
+; ***. ***.
+; ..*. ..*.
+; .**. .**.
+; ..*. ..*.
+; ***. ***.
+
+F5D9: AA AA EE 22 22  ; 44
+; *.*. *.*.
+; *.*. *.*.
+; ***. ***.
+; ..*. ..*.
+    
+F5DE: EE 88 EE 22 EE  ; 55
+; ***. ***.
+; *... *...
+; ***. ***.
+; ..*. ..*.
+; ***. ***.
+
+F5E3: EE 88 EE AA EE  ; 66
+; ***. ***.
+; *... *...
+; ***. ***.
+; *.*. *.*.
+; ***. ***.
+    
+F5E8: EE 22 22 22 22  ; 77
+; ***. ***.
+; ..*. ..*.
+; ..*. ..*.
+; ..*. ..*.
+; ..*. ..*.
+                                  
+F5ED: EE AA EE AA EE  ; 88
+; ***. ***.
+; *.*. *.*.
+; ***. ***.
+; *.*. *.*.
+; ***. ***.
+
+F5F2: EE AA EE 22 EE  ; 99
+; ***. ***.
+; *.*. *.*.
+; ***. ***.
+; ..*. ..*.
+; ***. ***.    
+
 F5F7: F8            SED                       
 F5F8: F7                                    
 F5F9: F6 06         INC   $06,X               
 F5FB: 06 06         ASL   $06                 ;
-F5FD: 16 17         ASL   $17,X               
+F5FD: 16 17         ASL   $17,X          
+     
 F5FF: 18            CLC                       
 F600: 19 1A 0A      ORA   $0A1A,Y             
 F603: 0A            ASL   A                   
@@ -1164,14 +1214,10 @@ F7EC: E8            INX
 F7ED: C8            INY                       
 F7EE: E0 C0         CPX   #$C0                
 F7F0: E9 E2         SBC   #$E2                
-F7F2: C1 FF         CMP   ($FF,X)             
-F7F4: 00            BRK                       
-F7F5: 00            BRK                       
-F7F6: 00            BRK                       
-F7F7: 00            BRK                       
-F7F8: 00            BRK                       
-F7F9: 00            BRK                       
-F7FA: 00            BRK                       
-F7FB: 00            BRK                       
-F7FC: 00            BRK                       
-F7FD: F0 0F 11           
+F7F2: C1 FF         CMP   ($FF,X)
+             
+F7F4: 00 00 00 00 00 00 
+
+F7FA: 00 00        ; NMI Vector (not used)
+F7FC: 00 F0        ; Reset vector to F000
+F7FE: 0F 11        ; IRQ/vector to 110F (maybe debug hardware?)
