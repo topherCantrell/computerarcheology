@@ -67,7 +67,11 @@ public abstract class CPU {
 				ret = new CPU_DVG();
 			} else if(name.equals("Z80")) {
 				ret = new CPU_Z80();
-			} else {
+			} else if(name.equals("Z80GB")) {
+			    ret = new CPU_Z80GB();
+			}
+			
+			else {
 				ret = new CPU_None();
 			}
 			cache.put(name, ret);
