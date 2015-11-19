@@ -1,7 +1,6 @@
 package diss;
 
 import java.io.PrintStream;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,7 +50,7 @@ public class Disassembler {
         // specification.
         BinaryFiles files = new BinaryFiles(args[0]);
         int start = files.getLowestAddress();
-        int end = files.getHighestAddress();
+        int end = files.getHighestAddress();        
         
         if(args.length>3) {
             start = CU.parseInt(args[3], 16);
@@ -72,13 +71,13 @@ public class Disassembler {
         Map<String,Object> fillins = new HashMap<String,Object>();
         int addr = start;
         while(addr<=end) {
-            Opcode op = cpu.disassemble(binary,addr,fillins);
+            Opcode op = cpu.disassemble(files,addr,fillins);
             if(op==null) {
                 op = Opcode.UNKNOWN;
-                cpu.fillin(op, binary, addr, fillins);
+                cpu.fillin(op, files, addr, fillins);
             }
                                     
-            printDisassembly(cpu,addr,op,fillins,ps);
+            printDisassembly(cpu, addr, op,fillins,ps);
             
             addr = addr + op.getSize();
             

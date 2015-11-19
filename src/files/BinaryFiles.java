@@ -12,7 +12,7 @@ public class BinaryFiles {
 	
 	public BinaryFile [] binaryFiles;
 	String rootPath;
-	
+		
 	public BinaryFiles(String fileList) throws IOException
 	{
 		this(fileList,"");
@@ -97,7 +97,7 @@ public class BinaryFiles {
 				return b.data[address-b.origin];
 			}
 		}
-		return -1;		
+		return 0;		
 	}
 
 }

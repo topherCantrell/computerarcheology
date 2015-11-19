@@ -17,6 +17,7 @@ import asm.ASMException;
 import code.AddressAccess;
 import code.CU;
 import code.CodeLine;
+import files.BinaryFiles;
 
 public abstract class CPU {
 	
@@ -118,14 +119,8 @@ public abstract class CPU {
 	        }
 	    }
 	}
-	
-	public int dsafe(int[] binary, int addr) {
-	    if(addr<binary.length) return binary[addr];
-	    return 0;
-	}
-	
-	
-	public void fillin(Opcode op, int[] binary, int addr, Map<String, Object> fillins) {
+		
+	public void fillin(Opcode op, BinaryFiles binary, int addr, Map<String, Object> fillins) {
 	    
 	    // "bytes" : [1,2,3,4]
         // "wordA" : "LDA"
@@ -135,9 +130,7 @@ public abstract class CPU {
 	    
         int [] data = new int[op.getSize()];
         for(int x=0;x<data.length;++x) {
-            if(x<binary.length) {
-                data[x] = dsafe(binary,x+addr);
-            } 
+            data[x] = binary.getByte(addr+x);             
         }
         
         String mnem = "";
@@ -159,11 +152,11 @@ public abstract class CPU {
                     if(c!=e) {
                         throw new RuntimeException("OOPS");
                     }
-                    rep = expandFillinField(addr,c, d, binary[ofs+addr], binary[ofs+1+addr]);
+                    rep = expandFillinField(addr,c, d, binary.getByte(ofs+addr), binary.getByte(ofs+1+addr));
                     pos = pos + 4;
                     ofs += 2;                    
                 } else {                    
-                    rep = expandFillinField(addr,c,d,binary[ofs+addr],0);  
+                    rep = expandFillinField(addr,c,d,binary.getByte(ofs+addr),0);  
                     ofs = ofs + 1;
                     pos = pos + 2;
                 }
@@ -193,7 +186,7 @@ public abstract class CPU {
         
 	}
 
-    public Opcode disassemble(int[] binary, int addr, Map<String, Object> fillins) {
+    public Opcode disassemble(BinaryFiles binary, int addr, Map<String, Object> fillins) {
         
         int pos = addr; 
                 
@@ -203,12 +196,7 @@ public abstract class CPU {
         
         for(Opcode op : opcodes) {
             while(pot.length()<(op.getSize()*2)) {
-                if(pos<binary.length) {
-                    pot = pot + CU.hex2(binary[pos]);
-                    ++pos;
-                } else {
-                    pot = pot + "00";
-                }
+                pot = pot + CU.hex2(binary.getByte(pos));                
             }
             if(couldMatch(pot,op)) {
                 if(ret!=null) {
