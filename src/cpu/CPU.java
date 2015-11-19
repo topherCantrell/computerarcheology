@@ -79,4 +79,8 @@ public abstract class CPU {
 		return ret;
 	}
 
+    public Opcode disassemble(int[] binary, int addr) {
+        return null;        
+    }
+
 }

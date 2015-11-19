@@ -1,7 +1,10 @@
 package diss;
 
+import java.io.PrintStream;
+
 import code.CU;
 import cpu.CPU;
+import cpu.Opcode;
 import files.BinaryFiles;
 
 public class Disassembler {
@@ -53,8 +56,29 @@ public class Disassembler {
         
         CPU cpu = CPU.getCPU(args[1]);
         
+        // We need the binary data in an array for scanning                     
+        int [] binary = new int[end-start+1];
+        for(int x=start;x<=end;++x) binary[x-start]=files.getByte(x);   
         
-        System.out.println(""+start+" "+end+" "+cpu);
+        int addr = start;
+        while(addr<=end) {
+            Opcode op = cpu.disassemble(binary,addr);
+            if(op==null) op = Opcode.UNKNOWN;
+            
+            // TODO we have to mingle the data into the fillins of the opcode
+            
+            printDisassembly(addr,op,System.out);
+            
+            addr = addr + op.getSize();
+            
+        }
+        
+                
+        
+    }
+    
+    static void printDisassembly(int addr, Opcode op, PrintStream ps) {
+        ps.println(CU.hex4(addr)+": ");
         
     }
 
