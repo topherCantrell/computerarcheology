@@ -1,6 +1,9 @@
 package diss;
 
 import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import code.CU;
 import cpu.CPU;
@@ -31,14 +34,18 @@ public class Disassembler {
      * @throws Exception errors opening files
      */
     public static void main(String [] args) throws Exception {
-        
-        String [] targs = {"0x0000~content/gameboy/zelda/zelda.gb","Z80GB"};
-        args = targs;
                 
-        if(args.length<2) {
-            System.out.println("Arguments: binFile cpu [start] [end]");
+        
+        //String [] targs = {"0x0000~content/gameboy/zelda/zelda.gb","Z80GB"};
+        //args = targs;
+                
+        if(args.length<3) {
+            //                               0       1     2    3       4
+            System.out.println("Arguments: binFile outfile cpu [start] [end]");
             return;
         }
+        
+        PrintStream ps = new PrintStream(args[1]);
         
         // Load the data from multiple files. The origin is part of the
         // specification.
@@ -46,39 +53,58 @@ public class Disassembler {
         int start = files.getLowestAddress();
         int end = files.getHighestAddress();
         
-        if(args.length>2) {
-            start = CU.parseInt(args[2], 16);
-        }
-        
         if(args.length>3) {
             start = CU.parseInt(args[3], 16);
         }
         
-        CPU cpu = CPU.getCPU(args[1]);
+        if(args.length>4) {
+            end = CU.parseInt(args[4], 16);
+        }
+        
+        CPU cpu = CPU.getCPU(args[2]);
+        
+        System.out.println(CU.hex4(start)+" - "+CU.hex4(end));
         
         // We need the binary data in an array for scanning                     
         int [] binary = new int[end-start+1];
         for(int x=start;x<=end;++x) binary[x-start]=files.getByte(x);   
         
+        Map<String,Object> fillins = new HashMap<String,Object>();
         int addr = start;
         while(addr<=end) {
-            Opcode op = cpu.disassemble(binary,addr);
-            if(op==null) op = Opcode.UNKNOWN;
-            
-            // TODO we have to mingle the data into the fillins of the opcode
-            
-            printDisassembly(addr,op,System.out);
+            Opcode op = cpu.disassemble(binary,addr,fillins);
+            if(op==null) {
+                op = Opcode.UNKNOWN;
+                cpu.fillin(op, binary, addr, fillins);
+            }
+                                    
+            printDisassembly(cpu,addr,op,fillins,ps);
             
             addr = addr + op.getSize();
             
-        }
+        }                
         
-                
+        ps.flush();
+        ps.close();
         
     }
     
-    static void printDisassembly(int addr, Opcode op, PrintStream ps) {
-        ps.println(CU.hex4(addr)+": ");
+    static void printDisassembly(CPU cpu, int addr, Opcode op, Map<String,Object> fillins, PrintStream ps) {
+        
+        int [] spacing = cpu.getSpacing();
+        
+        String data = "";
+        for(int val : (int[])fillins.get("bytes")) {
+            data = data +" "+CU.hex2(val);
+        }
+        data = CU.padTo(data, spacing[0]);
+        
+        String wordA = (String)fillins.get("wordA");
+        wordA = CU.padTo(wordA, spacing[1]);
+        String wordB = (String)fillins.get("wordB");
+        wordB = CU.padTo(wordB, spacing[2]);
+        
+        ps.println(CU.hex4(addr)+":"+data+wordA+wordB);
         
     }
 

@@ -13,7 +13,7 @@ public class Opcode {
     static {
         String[] unk = {"???"};
         UNKNOWN = new Opcode(unk,"bb");
-    }
+    }        
 	
 	public Opcode(String[] mnemonic, String code) {
 		this.mnemonic = mnemonic;
