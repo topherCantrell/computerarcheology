@@ -63,6 +63,9 @@ public class FU {
     	
     }
     
+    // TODO fix this
+    
+    @SuppressWarnings("resource")
     public static void copyFile(File sourceFile, File destFile) throws IOException {
     	if(!destFile.exists()) {
             destFile.createNewFile();

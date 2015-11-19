@@ -187,6 +187,7 @@
 {"mnem":["DEC SP"], "code":"3B", "clocks":"6", "bus":"", "flags":"--------"},
 {"mnem":["IN A,(C)"], "code":"ED78", "clocks":"12", "bus":"", "flags":"sz-0-p0-"},
 {"mnem":["IN B,(C)"], "code":"ED40", "clocks":"12", "bus":"", "flags":"sz-0-p0-"},
+
 {"mnem":["IN C,(C)"], "code":"ED48", "clocks":"12", "bus":"", "flags":"sz-0-p0-"},
 {"mnem":["IN D,(C)"], "code":"ED50", "clocks":"12", "bus":"", "flags":"sz-0-p0-"},
 {"mnem":["IN E,(C)"], "code":"ED58", "clocks":"12", "bus":"", "flags":"sz-0-p0-"},
@@ -204,7 +205,7 @@
 {"mnem":["INC DE"], "code":"13", "clocks":"6", "bus":"", "flags":"--------"},
 {"mnem":["INC HL"], "code":"23", "clocks":"6", "bus":"", "flags":"--------"},
 {"mnem":["INC SP"], "code":"33", "clocks":"6", "bus":"", "flags":"--------"},
-"mnem":["JP (HL)"], "code":"E9", "clocks":"4", "bus":"r", "flags":"--------"},
+{"mnem":["JP (HL)"], "code":"E9", "clocks":"4", "bus":"r", "flags":"--------"},
 {"mnem":["JP ","m"], "code":"C3mlmm", "clocks":"10", "bus":"", "flags":"--------"},
 {"mnem":["JP NZ,","m"], "code":"C2mlmm", "clocks":"10/10", "bus":"", "flags":"--------"},
 {"mnem":["JP Z,","m"], "code":"CAmlmm", "clocks":"10/10", "bus":"", "flags":"--------"},
@@ -236,6 +237,7 @@
 {"mnem":["LD C,A"], "code":"4F", "clocks":"4", "bus":"", "flags":"--------"},
 {"mnem":["LD C,B"], "code":"48", "clocks":"4", "bus":"", "flags":"--------"},
 {"mnem":["LD C,C"], "code":"49", "clocks":"4", "bus":"", "flags":"--------"},
+
 {"mnem":["LD C,D"], "code":"4A", "clocks":"4", "bus":"", "flags":"--------"},
 {"mnem":["LD C,E"], "code":"4B", "clocks":"4", "bus":"", "flags":"--------"},
 {"mnem":["LD C,H"], "code":"4C", "clocks":"4", "bus":"", "flags":"--------"},
