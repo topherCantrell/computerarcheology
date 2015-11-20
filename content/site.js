@@ -334,6 +334,52 @@
 	         ]	    	 
 	     },
 	     
+	     {"dir": "Gameboy", "nav": "Gameboy", "entries": [
+  	         {"mark": "Gameboy.mark", "out": "index.html"},
+  	         {"copy": "Gameboy.jpg"},
+  	                                              	         
+  	         {"dir": "Zelda", "nav": "Zelda", "entries": [
+  	             {"copy": "GBZelda.jpg"},
+  	             {"mark": "GBZelda.mark", "out": "index.html"},
+  	             {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
+  	             {"address": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware Info"},
+  	             {"code": "Bank00.cmark", "out": "Bank00.html", "nav": "Bank00"},
+  	             {"code": "Bank01.cmark", "out": "Bank01.html", "nav": "Bank01"},
+  	             {"code": "Bank02.cmark", "out": "Bank02.html", "nav": "Bank02"},
+  	             {"code": "Bank03.cmark", "out": "Bank03.html", "nav": "Bank03"},
+  	             {"code": "Bank04.cmark", "out": "Bank04.html", "nav": "Bank04"},
+  	             {"code": "Bank05.cmark", "out": "Bank05.html", "nav": "Bank05"},
+  	             {"code": "Bank06.cmark", "out": "Bank06.html", "nav": "Bank06"},
+  	             {"code": "Bank07.cmark", "out": "Bank07.html", "nav": "Bank07"},
+  	             {"code": "Bank08.cmark", "out": "Bank08.html", "nav": "Bank08"},
+  	             {"code": "Bank09.cmark", "out": "Bank09.html", "nav": "Bank09"},
+  	             {"code": "Bank10.cmark", "out": "Bank10.html", "nav": "Bank10"},
+  	             {"code": "Bank11.cmark", "out": "Bank11.html", "nav": "Bank11"},
+  	             {"code": "Bank12.cmark", "out": "Bank12.html", "nav": "Bank12"},
+  	             {"code": "Bank13.cmark", "out": "Bank13.html", "nav": "Bank13"},
+  	             {"code": "Bank14.cmark", "out": "Bank14.html", "nav": "Bank14"},
+  	             {"code": "Bank15.cmark", "out": "Bank15.html", "nav": "Bank15"}, 	 
+  	             {"code": "Bank16.cmark", "out": "Bank16.html", "nav": "Bank16"},
+  	             {"code": "Bank17.cmark", "out": "Bank17.html", "nav": "Bank17"},
+  	             {"code": "Bank18.cmark", "out": "Bank18.html", "nav": "Bank18"},
+  	             {"code": "Bank19.cmark", "out": "Bank19.html", "nav": "Bank19"},
+  	             {"code": "Bank20.cmark", "out": "Bank20.html", "nav": "Bank20"},
+	             {"code": "Bank21.cmark", "out": "Bank21.html", "nav": "Bank21"},
+	             {"code": "Bank22.cmark", "out": "Bank22.html", "nav": "Bank22"},
+	             {"code": "Bank23.cmark", "out": "Bank23.html", "nav": "Bank23"},
+	             {"code": "Bank24.cmark", "out": "Bank24.html", "nav": "Bank24"},
+	             {"code": "Bank25.cmark", "out": "Bank25.html", "nav": "Bank25"}, 	 
+	             {"code": "Bank26.cmark", "out": "Bank26.html", "nav": "Bank26"},
+	             {"code": "Bank27.cmark", "out": "Bank27.html", "nav": "Bank27"},
+	             {"code": "Bank28.cmark", "out": "Bank28.html", "nav": "Bank28"},
+	             {"code": "Bank29.cmark", "out": "Bank29.html", "nav": "Bank29"},
+	             {"code": "Bank30.cmark", "out": "Bank30.html", "nav": "Bank30"},
+	             {"code": "Bank31.cmark", "out": "Bank31.html", "nav": "Bank31"}  	             
+  	             ]
+  	         }
+  	         ]
+  	     },
+	     
 	     {"dir": "NES", "nav": "Nintendo NES", "entries": [
 	         {"mark": "NES.mark", "out": "index.html"},
 	         {"copy": "NES.jpg"},
