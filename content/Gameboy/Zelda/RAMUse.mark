@@ -1,1 +1,8 @@
 %%image GBZelda.jpg
+%%range A000:DFFF
+
+= RAM =
+
+A000:BFFF  Cartridge RAM (if any)
+C000:CFFF  Fixed RAM bank 0
+D000:DFFF  Internal RAM bank 1-7 (switchable on CGB only)
