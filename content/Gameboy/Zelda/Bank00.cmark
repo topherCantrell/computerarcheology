@@ -3,327 +3,135 @@
 ;;%%- Gameboy/Zelda/RAMUse.mark /Gameboy/Zelda/RAMUse.html
 ;;%%-2 Gameboy/Zelda/Hardware.mark /Gameboy/Zelda/Hardware.html
 
-0000: C3 72 28   JP      $2872           
+
+; TODO:
+; Problems in disassembly. Fix and write REDIS program.
+; - CB instructions are jacked. CB87 should be RES 0,A and does something else
+; - ": F0" should be LDFF00 -- not LD
+;
+; Proper way to document a function
+; Document RAM addresses correctly
+; JavaScript to show tiles/sprites
+; What's up with Horiz/Veritcal implulse. Looks likes the code is doing 2 different.
+       
+
+0000: C3 72 28   JP      $2872           ; RST 0 rerouted to table-jumper
 0003: 00         NOP                     
-0004: 00         NOP                     
-0005: FF         RST     0X38            
-0006: FF         RST     0X38            
-0007: FF         RST     0X38            
-0008: FF         RST     0X38            
-0009: FF         RST     0X38            
-000A: FF         RST     0X38            
-000B: FF         RST     0X38            
-000C: FF         RST     0X38            
-000D: FF         RST     0X38            
-000E: FF         RST     0X38            
-000F: FF         RST     0X38            
-0010: FF         RST     0X38            
-0011: FF         RST     0X38            
-0012: FF         RST     0X38            
-0013: FF         RST     0X38            
-0014: FF         RST     0X38            
-0015: FF         RST     0X38            
-0016: FF         RST     0X38            
-0017: FF         RST     0X38            
-0018: FF         RST     0X38            
-0019: FF         RST     0X38            
-001A: FF         RST     0X38            
-001B: FF         RST     0X38            
-001C: FF         RST     0X38            
-001D: FF         RST     0X38            
-001E: FF         RST     0X38            
-001F: FF         RST     0X38            
-0020: FF         RST     0X38            
-0021: FF         RST     0X38            
-0022: FF         RST     0X38            
-0023: FF         RST     0X38            
-0024: FF         RST     0X38            
-0025: FF         RST     0X38            
-0026: FF         RST     0X38            
-0027: FF         RST     0X38            
-0028: FF         RST     0X38            
-0029: FF         RST     0X38            
-002A: FF         RST     0X38            
-002B: FF         RST     0X38            
-002C: FF         RST     0X38            
-002D: FF         RST     0X38            
-002E: FF         RST     0X38            
-002F: FF         RST     0X38            
-0030: FF         RST     0X38            
-0031: FF         RST     0X38            
-0032: FF         RST     0X38            
-0033: FF         RST     0X38            
-0034: FF         RST     0X38            
-0035: FF         RST     0X38            
-0036: FF         RST     0X38            
-0037: FF         RST     0X38            
-0038: FF         RST     0X38            
-0039: FF         RST     0X38            
-003A: FF         RST     0X38            
-003B: FF         RST     0X38            
-003C: FF         RST     0X38            
-003D: FF         RST     0X38            
-003E: FF         RST     0X38            
-003F: FF         RST     0X38            
+0004: 00         NOP  
+                   
+0005: FF FF FF FF FF FF FF FF FF FF FF           
+0010: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF      
+0020: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
+0030: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF      
+    
 0040: C3 25 05   JP      $0525           
-0043: FF         RST     0X38            
-0044: FF         RST     0X38            
-0045: FF         RST     0X38            
-0046: FF         RST     0X38            
-0047: FF         RST     0X38            
+0043: FF FF FF FF FF
+           
 0048: C3 E2 03   JP      $03E2           
-004B: FF         RST     0X38            
-004C: FF         RST     0X38            
-004D: FF         RST     0X38            
-004E: FF         RST     0X38            
-004F: FF         RST     0X38            
+004B: FF FF FF FF FF
+            
 0050: D9         RETI                    
-0051: FF         RST     0X38            
-0052: FF         RST     0X38            
-0053: FF         RST     0X38            
-0054: FF         RST     0X38            
-0055: FF         RST     0X38            
-0056: FF         RST     0X38            
-0057: FF         RST     0X38            
+0051: FF FF FF FF FF FF FF
+           
 0058: D9         RETI                    
-0059: FF         RST     0X38            
-005A: FF         RST     0X38            
-005B: FF         RST     0X38            
-005C: FF         RST     0X38            
-005D: FF         RST     0X38            
-005E: FF         RST     0X38            
-005F: FF         RST     0X38            
+0059: FF FF FF FF FF FF FF
+            
 0060: D9         RETI                    
-0061: FF         RST     0X38            
+0061: FF
+           
 0062: 21 00 69   LD      HL,$6900        
-0065: 11 A0 89   LD      DE,$89A0        
+0065: 11 A0 89   LD      DE,$89A0        ; ?Character RAM
 0068: 18 16      JR      $80             
+
 006A: 21 30 69   LD      HL,$6930        
-006D: 11 D0 89   LD      DE,$89D0        
-0070: 18 0E      JR      $80             
+006D: 11 D0 89   LD      DE,$89D0        ; ?Character RAM
+0070: 18 0E      JR      $80      
+       
 0072: 21 D0 49   LD      HL,$49D0        
-0075: 11 D0 89   LD      DE,$89D0        
-0078: 18 06      JR      $80             
+0075: 11 D0 89   LD      DE,$89D0        ; ?Character RAM
+0078: 18 06      JR      $80     
+        
 007A: 21 A0 49   LD      HL,$49A0        
-007D: 11 A0 89   LD      DE,$89A0        
-0080: 01 30 00   LD      BC,$0030        
-0083: CD C5 28   CALL    $28C5           
-0086: AF         XOR     A               
-0087: E0 90      LDFF00  ($90),A         
-0089: E0 92      LDFF00  ($92),A         
-008B: 3E 0C      LD      A,$0C           
-008D: EA 00 21   LD      ($2100),A       
-0090: C9         RET                     
-0091: FF         RST     0X38            
-0092: FF         RST     0X38            
-0093: FF         RST     0X38            
-0094: FF         RST     0X38            
-0095: FF         RST     0X38            
-0096: FF         RST     0X38            
-0097: FF         RST     0X38            
-0098: FF         RST     0X38            
-0099: FF         RST     0X38            
-009A: FF         RST     0X38            
-009B: FF         RST     0X38            
-009C: FF         RST     0X38            
-009D: FF         RST     0X38            
-009E: FF         RST     0X38            
-009F: FF         RST     0X38            
-00A0: FF         RST     0X38            
-00A1: FF         RST     0X38            
-00A2: FF         RST     0X38            
-00A3: FF         RST     0X38            
-00A4: FF         RST     0X38            
-00A5: FF         RST     0X38            
-00A6: FF         RST     0X38            
-00A7: FF         RST     0X38            
-00A8: FF         RST     0X38            
-00A9: FF         RST     0X38            
-00AA: FF         RST     0X38            
-00AB: FF         RST     0X38            
-00AC: FF         RST     0X38            
-00AD: FF         RST     0X38            
-00AE: FF         RST     0X38            
-00AF: FF         RST     0X38            
-00B0: FF         RST     0X38            
-00B1: FF         RST     0X38            
-00B2: FF         RST     0X38            
-00B3: FF         RST     0X38            
-00B4: FF         RST     0X38            
-00B5: FF         RST     0X38            
-00B6: FF         RST     0X38            
-00B7: FF         RST     0X38            
-00B8: FF         RST     0X38            
-00B9: FF         RST     0X38            
-00BA: FF         RST     0X38            
-00BB: FF         RST     0X38            
-00BC: FF         RST     0X38            
-00BD: FF         RST     0X38            
-00BE: FF         RST     0X38            
-00BF: FF         RST     0X38            
-00C0: FF         RST     0X38            
-00C1: FF         RST     0X38            
-00C2: FF         RST     0X38            
-00C3: FF         RST     0X38            
-00C4: FF         RST     0X38            
-00C5: FF         RST     0X38            
-00C6: FF         RST     0X38            
-00C7: FF         RST     0X38            
-00C8: FF         RST     0X38            
-00C9: FF         RST     0X38            
-00CA: FF         RST     0X38            
-00CB: FF         RST     0X38            
-00CC: FF         RST     0X38            
-00CD: FF         RST     0X38            
-00CE: FF         RST     0X38            
-00CF: FF         RST     0X38            
-00D0: FF         RST     0X38            
-00D1: FF         RST     0X38            
-00D2: FF         RST     0X38            
-00D3: FF         RST     0X38            
-00D4: FF         RST     0X38            
-00D5: FF         RST     0X38            
-00D6: FF         RST     0X38            
-00D7: FF         RST     0X38            
-00D8: FF         RST     0X38            
-00D9: FF         RST     0X38            
-00DA: FF         RST     0X38            
-00DB: FF         RST     0X38            
-00DC: FF         RST     0X38            
-00DD: FF         RST     0X38            
-00DE: FF         RST     0X38            
-00DF: FF         RST     0X38            
-00E0: FF         RST     0X38            
-00E1: FF         RST     0X38            
-00E2: FF         RST     0X38            
-00E3: FF         RST     0X38            
-00E4: FF         RST     0X38            
-00E5: FF         RST     0X38            
-00E6: FF         RST     0X38            
-00E7: FF         RST     0X38            
-00E8: FF         RST     0X38            
-00E9: FF         RST     0X38            
-00EA: FF         RST     0X38            
-00EB: FF         RST     0X38            
-00EC: FF         RST     0X38            
-00ED: FF         RST     0X38            
-00EE: FF         RST     0X38            
-00EF: FF         RST     0X38            
-00F0: FF         RST     0X38            
-00F1: FF         RST     0X38            
-00F2: FF         RST     0X38            
-00F3: FF         RST     0X38            
-00F4: FF         RST     0X38            
-00F5: FF         RST     0X38            
-00F6: FF         RST     0X38            
-00F7: FF         RST     0X38            
-00F8: FF         RST     0X38            
-00F9: FF         RST     0X38            
-00FA: FF         RST     0X38            
-00FB: FF         RST     0X38            
-00FC: FF         RST     0X38            
-00FD: FF         RST     0X38            
-00FE: FF         RST     0X38            
-00FF: FF         RST     0X38            
+007D: 11 A0 89   LD      DE,$89A0        ; ?Character RAM
+;        
+0080: 01 30 00   LD      BC,$0030        ; 48 bytes (3 tile maps) to copy
+0083: CD C5 28   CALL    $28C5           ; Copy HL to DE
+0086: AF         XOR     A               ; 0 ...
+0087: E0 90      LDFF00  ($90),A         ; ?In high ram
+0089: E0 92      LDFF00  ($92),A         ; 
+008B: 3E 0C      LD      A,$0C           ; Bank switch to ...
+008D: EA 00 21   LD      ($2100),A       ; ... Bank 0C
+0090: C9         RET                     ; Done
+
+0091: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
+00A0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
+00B0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
+00C0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
+00D0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
+00E0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
+00F0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
+  
+; Gameboy boot ROM transfers control here    
 0100: 00         NOP                     
-0101: C3 50 01   JP      $0150           
-0104: CE ED      ADC     $ED             
-0106: 66         LD      H,(HL)          
-0107: 66         LD      H,(HL)          
-0108: CC 0D 00   CALL    Z,$000D         
-010B: 0B         DEC     BC              
-010C: 03         INC     BC              
-010D: 73         LD      (HL),E          
-010E: 00         NOP                     
-010F: 83         ADD     A,E             
-0110: 00         NOP                     
-0111: 0C         INC     C               
-0112: 00         NOP                     
-0113: 0D         DEC     C               
-0114: 00         NOP                     
-0115: 08 11 1F   LD      ($1F11),SP      
-0118: 88         ADC     A,B             
-0119: 89         ADC     A,C             
-011A: 00         NOP                     
-011B: 0E DC      LD      C,$DC           
-011D: CC 6E E6   CALL    Z,$E66E         
-0120: DD         ???                     
-0121: DD         ???                     
-0122: D9         RETI                    
-0123: 99         SBC     C               
-0124: BB         CP      E               
-0125: BB         CP      E               
-0126: 67         LD      H,A             
-0127: 63         LD      H,E             
-0128: 6E         LD      L,(HL)          
-0129: 0E EC      LD      C,$EC           
-012B: CC DD DC   CALL    Z,$DCDD         
-012E: 99         SBC     C               
-012F: 9F         SBC     A               
-0130: BB         CP      E               
-0131: B9         CP      C               
-0132: 33         INC     SP              
-0133: 3E 5A      LD      A,$5A           
-0135: 45         LD      B,L             
-0136: 4C         LD      C,H             
-0137: 44         LD      B,H             
-0138: 41         LD      B,C             
-0139: 00         NOP                     
-013A: 00         NOP                     
-013B: 00         NOP                     
-013C: 00         NOP                     
-013D: 00         NOP                     
-013E: 00         NOP                     
-013F: 00         NOP                     
-0140: 00         NOP                     
-0141: 00         NOP                     
-0142: 00         NOP                     
-0143: 00         NOP                     
-0144: 00         NOP                     
-0145: 00         NOP                     
-0146: 00         NOP                     
-0147: 03         INC     BC              
-0148: 04         INC     B               
-0149: 02         LD      (BC),A          
-014A: 01 01 00   LD      BC,$0001        
-014D: 6C         LD      L,H             
-014E: 47         LD      B,A             
-014F: B7         OR      A               
-0150: CD 81 28   CALL    $2881           
-0153: 31 FF DF   LD      SP,$DFFF        
-0156: AF         XOR     A               
-0157: E0 47      LDFF00  ($47),A         
-0159: E0 48      LDFF00  ($48),A         
-015B: E0 49      LDFF00  ($49),A         
-015D: 21 00 80   LD      HL,$8000        
-0160: 01 00 18   LD      BC,$1800        
-0163: CD 99 29   CALL    $2999           
-0166: CD A8 28   CALL    $28A8           
-0169: CD 8A 29   CALL    $298A           
-016C: 3E 01      LD      A,$01           
-016E: EA 00 21   LD      ($2100),A       
-0171: CD 19 7D   CALL    $7D19           
-0174: CD C0 FF   CALL    $FFC0           
-0177: CD CE 40   CALL    $40CE           
-017A: CD 6B 2B   CALL    $2B6B           
-017D: 3E 44      LD      A,$44           
-017F: E0 41      LDFF00  ($41),A         
-0181: 3E 4F      LD      A,$4F           
-0183: E0 45      LDFF00  ($45),A         
-0185: 3E 01      LD      A,$01           
-0187: EA AF DB   LD      ($DBAF),A       
-018A: 3E 01      LD      A,$01           
-018C: E0 FF      LDFF00  ($FF),A         
-018E: 3E 01      LD      A,$01           
-0190: EA 00 21   LD      ($2100),A       
+0101: C3 50 01   JP      $0150    ; Start game
+       
+; Nintendo characters
+0104: CE ED 66 66 CC 0D 00 0B 03 73 00 83            
+0110: 00 0C 00 0D 00 08 11 1F 88 89 00 0E DC CC 6E E6         
+0120: DD DD D9 99 BB BB 67 63 6E 0E EC CC DD DC 99 9F             
+0130: BB B9 33 3E
+ 
+;     Z  E  L  D  A
+0134: 5A 45 4C 44 41 00 00 00 00 00 00 00 00 00 00 00
+                    
+0144: 00 00 ; Extended manufacturer code (none here)
+0146: 00    ; Not used
+0147: 03    ; Cartridge type (ROM+MBC1+RAM+BATTERY)
+0148: 04    ; ROM Size (512K -- 32 banks)
+0149: 02    ; RAM Size (8K   --  1 bank)
+014A: 01    ; Language (English)
+014B: 01    ; Manufacturer code
+014C: 00    ; Version number
+014D: 6C    ; Complement check
+014E: 47 B7 ; Checksum
+
+; Code starts here
+0150: CD 81 28   CALL    $2881           ; Turn off LCD
+0153: 31 FF DF   LD      SP,$DFFF        ; Stack in internal RAM ?DF00-DFFF
+0156: AF         XOR     A               ; Clear out ...
+0157: E0 47      LDFF00  ($47),A         ; ... Background palette ...
+0159: E0 48      LDFF00  ($48),A         ; ... Sprite palette #0 ...
+015B: E0 49      LDFF00  ($49),A         ; ... Sprite palette #1
+015D: 21 00 80   LD      HL,$8000        ; Clear ...
+0160: 01 00 18   LD      BC,$1800        ; ... 8000-97FF ...
+0163: CD 99 29   CALL    $2999           ; ... Tile Pattern Tables
+0166: CD A8 28   CALL    $28A8           ; Fill Background Tile Table with 7Fs
+0169: CD 8A 29   CALL    $298A           ; Clear RAM and HRAM
+016C: 3E 01      LD      A,$01           ; Switch in ...
+016E: EA 00 21   LD      ($2100),A       ; ... bank 01
+0171: CD 19 7D   CALL    $7D19           ; Copy ?routine to HRAM at FFC0
+0174: CD C0 FF   CALL    $FFC0           ; Call ?routine
+0177: CD CE 40   CALL    $40CE           ; ?window and lcd
+017A: CD 6B 2B   CALL    $2B6B           ; ?lots of tile pattern work
+017D: 3E 44      LD      A,$44           ; 0100 0100 
+017F: E0 41      LDFF00  ($41),A         ; LCDSTAT= ?Horiz blanking impulse, interrupt on coincidence
+0181: 3E 4F      LD      A,$4F           ; Scanline 79
+0183: E0 45      LDFF00  ($45),A         ; Scanline compare = 79
+0185: 3E 01      LD      A,$01           ; Currently in ...
+0187: EA AF DB   LD      ($DBAF),A       ; ... bank 01
+018A: 3E 01      LD      A,$01           ; Enable ...
+018C: E0 FF      LDFF00  ($FF),A         ; ... vertical blanking impulse
+018E: 3E 01      LD      A,$01           ; Switch in ...
+0190: EA 00 21   LD      ($2100),A       ; ... bank 01
 0193: CD 0F 46   CALL    $460F           
-0196: 3E 1F      LD      A,$1F           
-0198: EA 00 21   LD      ($2100),A       
+0196: 3E 1F      LD      A,$1F           ; Switch in ...
+0198: EA 00 21   LD      ($2100),A       ; ... bank 1F
 019B: CD 00 40   CALL    $4000           
 019E: 3E 18      LD      A,$18           
 01A0: E0 B5      LDFF00  ($B5),A         
-01A2: FB         EI                      
+01A2: FB         EI                      ; Enable interrupts
 01A3: C3 BD 03   JP      $03BD           
+
 01A6: 3E 01      LD      A,$01           
 01A8: E0 FD      LDFF00  ($FD),A         
 01AA: FA 00 C5   LD      A,($C500)       
@@ -1175,9 +983,12 @@
 07B5: AF         XOR     A               
 07B6: E0 90      LDFF00  ($90),A         
 07B8: C9         RET                     
-07B9: EA 00 21   LD      ($2100),A       
-07BC: EA AF DB   LD      ($DBAF),A       
-07BF: C9         RET                     
+
+; Switch to bank A (remember bank number)
+07B9: EA 00 21   LD      ($2100),A       ; Switch to bank A
+07BC: EA AF DB   LD      ($DBAF),A       ; Remember what bank we are in
+07BF: C9         RET                     ; Back
+
 07C0: F5         PUSH    AF              
 07C1: FA AF DB   LD      A,($DBAF)       
 07C4: EA 00 21   LD      ($2100),A       
@@ -5696,61 +5507,78 @@
 286E: E0 D0      LDFF00  ($D0),A         
 2870: C1         POP     BC              
 2871: C9         RET                     
-2872: 5F         LD      E,A             
-2873: 16 00      LD      D,$00           
-2875: CB 23      SET     1,E             
-2877: CB 12      SET     1,E             
-2879: E1         POP     HL              
-287A: 19         ADD     HL,DE           
-287B: 5E         LD      E,(HL)          
-287C: 23         INC     HL              
-287D: 56         LD      D,(HL)          
-287E: D5         PUSH    DE              
-287F: E1         POP     HL              
-2880: E9         JP      (HL)            
-2881: F0 FF      LD      A,($FF)         
-2883: E0 D2      LDFF00  ($D2),A         
-2885: CB 87      SET     1,E             
-2887: F0 44      LD      A,($44)         
-2889: FE 91      CP      $91             
-288B: 20 FA      JR      NZ,$2887        
-288D: F0 40      LD      A,($40)         
-288F: E6 7F      AND     $7F             
-2891: E0 40      LDFF00  ($40),A         
-2893: F0 D2      LD      A,($D2)         
-2895: E0 FF      LDFF00  ($FF),A         
-2897: C9         RET                     
+
+; Normally RST 0 (reset) would come here. But boot rom gets reset.
+; Instead, this is used as a table-jumper.
+;
+; Jump table follows RST 0 instruction. A has table entry.
+; Look up address and jump to it
+2872: 5F         LD      E,A             ; A*2 ...
+2873: 16 00      LD      D,$00           ; ... to ..
+2875: CB 23      SLA     E               ; ...
+2877: CB 12      RL      D               ; DE
+2879: E1         POP     HL              ; Next byte in caller
+287A: 19         ADD     HL,DE           ; Offset into table
+287B: 5E         LD      E,(HL)          ; Get LSB from table
+287C: 23         INC     HL              ; Next byte
+287D: 56         LD      D,(HL)          ; Get MSB from table
+287E: D5         PUSH    DE              ; Jump address ...
+287F: E1         POP     HL              ; ... to HL
+2880: E9         JP      (HL)            ; Jump to routine
+
+; Turn off LCD at next vertical blanking
+2881: F0 FF      LDFF00  A,($FF)         ; Current interrupt register
+2883: E0 D2      LDFF00  ($D2),A         ; Hold it in RAM
+2885: CB 87      RES     0,A             ; ??
+2887: F0 44      LDFF00  A,($44)         ; Wait for ...
+2889: FE 91      CP      $91             ; ... line 145 ...
+288B: 20 FA      JR      NZ,$2887        ; ... Vertical Blanking
+288D: F0 40      LD      A,($40)         ; LCD control
+288F: E6 7F      AND     $7F             ; Turn ...
+2891: E0 40      LDFF00  ($40),A         ; ... LCD off
+2893: F0 D2      LD      A,($D2)         ; Old interrupt value
+2895: E0 FF      LDFF00  ($FF),A         ; Restore interrupts
+2897: C9         RET                     ; Done
+
 2898: 3E 01      LD      A,$01           
 289A: CD B9 07   CALL    $07B9           
 289D: CD F3 7C   CALL    $7CF3           
 28A0: C9         RET                     
 28A1: 3E 7E      LD      A,$7E           
 28A3: 01 00 04   LD      BC,$0400        
-28A6: 18 05      JR      $28AD           
-28A8: 3E 7F      LD      A,$7F           
-28AA: 01 00 08   LD      BC,$0800        
-28AD: 57         LD      D,A             
-28AE: 21 00 98   LD      HL,$9800        
-28B1: 7A         LD      A,D             
-28B2: 22         LD      (HLI),A         
-28B3: 0B         DEC     BC              
-28B4: 78         LD      A,B             
-28B5: B1         OR      C               
-28B6: 20 F9      JR      NZ,$28B1        
-28B8: C9         RET                     
+28A6: 18 05      JR      $28AD    
+       
+; Fill Background Tile Table with all 7Fs
+28A8: 3E 7F      LD      A,$7F           ; Blank background tile number
+28AA: 01 00 08   LD      BC,$0800        ; 800 bytes
+28AD: 57         LD      D,A             ; Pattern to D (we'll mutilate A shortly)
+28AE: 21 00 98   LD      HL,$9800        ; Background Tile Table
+28B1: 7A         LD      A,D             ; Tile number
+28B2: 22         LD      (HLI),A         ; Store in table and HL++
+28B3: 0B         DEC     BC              ; Count down
+28B4: 78         LD      A,B             ; All ...
+28B5: B1         OR      C               ; ... done?
+28B6: 20 F9      JR      NZ,$28B1        ; No ... keep going
+28B8: C9         RET                     ; OUT
+
+; Switch to bank A, copy HL to DE (BC bytes), switch to bank 1
 28B9: EA 00 21   LD      ($2100),A       
 28BC: CD C5 28   CALL    $28C5           
 28BF: 3E 01      LD      A,$01           
 28C1: EA 00 21   LD      ($2100),A       
 28C4: C9         RET                     
-28C5: 2A         LD      A,(HLI)         
-28C6: 12         LD      (DE),A          
-28C7: 13         INC     DE              
-28C8: 0B         DEC     BC              
-28C9: 78         LD      A,B             
-28CA: B1         OR      C               
-28CB: 20 F8      JR      NZ,$28C5        
-28CD: C9         RET                     
+
+;copyBytes
+; From HL to DE ... count BC
+28C5: 2A         LD      A,(HLI)         ; From (HL++)
+28C6: 12         LD      (DE),A          ; To (DE)
+28C7: 13         INC     DE              ; Bump destination pointer
+28C8: 0B         DEC     BC              ; Decrement count
+28C9: 78         LD      A,B             ; Reached ...
+28CA: B1         OR      C               ; ... zero?
+28CB: 20 F8      JR      NZ,$28C5        ; No ... keep copying
+28CD: C9         RET                     ; Done
+
 28CE: 13         INC     DE              
 28CF: 67         LD      H,A             
 28D0: 1A         LD      A,(DE)          
@@ -5884,43 +5712,28 @@
 2983: 18 11      JR      $2996           
 2985: 01 2F 00   LD      BC,$002F        
 2988: 18 03      JR      $298D           
-298A: 01 6D 00   LD      BC,$006D        
+
+; Clear HRAM and RAM
+298A: 01 6D 00   LD      BC,$006D        ; ?Is this all we use in HRAM
 298D: 21 90 FF   LD      HL,$FF90        
 2990: CD 99 29   CALL    $2999           
-2993: 01 00 1F   LD      BC,$1F00        
-2996: 21 00 C0   LD      HL,$C000        
-2999: AF         XOR     A               
-299A: 22         LD      (HLI),A         
-299B: 0B         DEC     BC              
-299C: 78         LD      A,B             
-299D: B1         OR      C               
-299E: 20 F9      JR      NZ,$2999        
-29A0: C9         RET                     
-29A1: FF         RST     0X38            
-29A2: FF         RST     0X38            
-29A3: FF         RST     0X38            
-29A4: FF         RST     0X38            
-29A5: FF         RST     0X38            
-29A6: FF         RST     0X38            
-29A7: FF         RST     0X38            
-29A8: FF         RST     0X38            
-29A9: FF         RST     0X38            
-29AA: FF         RST     0X38            
-29AB: FF         RST     0X38            
-29AC: FF         RST     0X38            
-29AD: FF         RST     0X38            
-29AE: FF         RST     0X38            
-29AF: FF         RST     0X38            
-29B0: FF         RST     0X38            
-29B1: FF         RST     0X38            
-29B2: FF         RST     0X38            
-29B3: FF         RST     0X38            
-29B4: FF         RST     0X38            
-29B5: FF         RST     0X38            
-29B6: FF         RST     0X38            
-29B7: FF         RST     0X38            
-29B8: 3E 14      LD      A,$14           
-29BA: EA 00 21   LD      ($2100),A       
+2993: 01 00 1F   LD      BC,$1F00        ; Clear RAM ...
+2996: 21 00 C0   LD      HL,$C000        ; ... C000 - DF00 (all but stack)
+
+; clear BC bytes of memory at HL
+2999: AF         XOR     A               ; A = 0
+299A: 22         LD      (HLI),A         ; Clear (HL++)
+299B: 0B         DEC     BC              ; Decrement count
+299C: 78         LD      A,B             ; All ...
+299D: B1         OR      C               ; ... done?
+299E: 20 F9      JR      NZ,$2999        ; No... keep clearing
+29A0: C9         RET                     ; Out
+
+29A1: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF           
+29B0: FF FF FF FF FF FF FF FF    
+        
+29B8: 3E 14      LD      A,$14           ; Switch in ...
+29BA: EA 00 21   LD      ($2100),A       ; ... bank 14
 29BD: 21 00 45   LD      HL,$4500        
 29C0: 19         ADD     HL,DE           
 29C1: 7E         LD      A,(HL)          
@@ -6093,25 +5906,31 @@
 2B66: CD C0 07   CALL    $07C0           
 2B69: C1         POP     BC              
 2B6A: C9         RET                     
-2B6B: 3E 0C      LD      A,$0C           
-2B6D: CD B9 07   CALL    $07B9           
+
+; Lots of copy to tile pattern
+2B6B: 3E 0C      LD      A,$0C           ; Switch in ...
+2B6D: CD B9 07   CALL    $07B9           ; ... bank 0C
 2B70: 21 00 40   LD      HL,$4000        
 2B73: 11 00 80   LD      DE,$8000        
 2B76: 01 00 04   LD      BC,$0400        
 2B79: CD C5 28   CALL    $28C5           
-2B7C: 3E 0C      LD      A,$0C           
-2B7E: CD B9 07   CALL    $07B9           
+;
+2B7C: 3E 0C      LD      A,$0C           ; Switch in ...
+2B7E: CD B9 07   CALL    $07B9           ; ... bank 0C
 2B81: 21 00 48   LD      HL,$4800        
 2B84: 11 00 88   LD      DE,$8800        
 2B87: 01 00 10   LD      BC,$1000        
 2B8A: CD C5 28   CALL    $28C5           
+;
 2B8D: 21 A0 47   LD      HL,$47A0        
 2B90: 11 00 8E   LD      DE,$8E00        
 2B93: 01 20 00   LD      BC,$0020        
-2B96: CD C5 28   CALL    $28C5           
-2B99: 3E 01      LD      A,$01           
-2B9B: CD B9 07   CALL    $07B9           
-2B9E: C9         RET                     
+2B96: CD C5 28   CALL    $28C5
+;           
+2B99: 3E 01      LD      A,$01           ; Switch in ...
+2B9B: CD B9 07   CALL    $07B9           ; ... bank 01
+2B9E: C9         RET                     ; Out
+
 2B9F: CD 6B 2B   CALL    $2B6B           
 2BA2: 3E 0F      LD      A,$0F           
 2BA4: CD B9 07   CALL    $07B9           

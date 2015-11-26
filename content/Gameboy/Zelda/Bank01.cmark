@@ -95,20 +95,22 @@
 40C2: CD D2 27   CALL    $27D2           
 40C5: CD 94 5B   CALL    $5B94           
 40C8: CD 85 29   CALL    $2985           
-40CB: CD 1A 5F   CALL    $5F1A           
-40CE: 3E C7      LD      A,$C7           
-40D0: E0 40      LDFF00  ($40),A         
-40D2: EA FD D6   LD      ($D6FD),A       
+40CB: CD 1A 5F   CALL    $5F1A         
+;  
+40CE: 3E C7      LD      A,$C7           ; 1100 0111
+40D0: E0 40      LDFF00  ($40),A         ; LDCCONT
+40D2: EA FD D6   LD      ($D6FD),A       ; ?control mirror?
 40D5: 3E 07      LD      A,$07           
-40D7: E0 4B      LDFF00  ($4B),A         
+40D7: E0 4B      LDFF00  ($4B),A         ; WNDPOSX
 40D9: 3E 80      LD      A,$80           
 40DB: EA 9A DB   LD      ($DB9A),A       
-40DE: E0 4A      LDFF00  ($4A),A         
+40DE: E0 4A      LDFF00  ($4A),A         ; WNDPOSY
 40E0: 3E 07      LD      A,$07           
 40E2: E0 A9      LDFF00  ($A9),A         
 40E4: 3E 70      LD      A,$70           
 40E6: E0 AA      LDFF00  ($AA),A         
-40E8: C9         RET                     
+40E8: C9         RET
+                     
 40E9: 48         LD      C,B             
 40EA: 58         LD      E,B             
 40EB: 21 3F C1   LD      HL,$C13F        
@@ -778,6 +780,7 @@
 4608: 01 08 01   LD      BC,$0108        
 460B: 01 01 01   LD      BC,$0101        
 460E: 09         ADD     HL,BC           
+
 460F: 11 00 00   LD      DE,$0000        
 4612: CD DD 46   CALL    $46DD           
 4615: 11 85 03   LD      DE,$0385        
@@ -866,6 +869,7 @@
 46D9: 1D         DEC     E               
 46DA: 20 FC      JR      NZ,$46D8        
 46DC: C9         RET                     
+
 46DD: 0E 01      LD      C,$01           
 46DF: 06 05      LD      B,$05           
 46E1: 21 00 A1   LD      HL,$A100        
@@ -878,7 +882,8 @@
 46ED: 0C         INC     C               
 46EE: 05         DEC     B               
 46EF: 20 F4      JR      NZ,$46E5        
-46F1: 18 1D      JR      $4710           
+46F1: 18 1D      JR      $4710           ; Out
+
 46F3: 21 00 A1   LD      HL,$A100        
 46F6: 19         ADD     HL,DE           
 46F7: 3E 01      LD      A,$01           
@@ -897,6 +902,7 @@
 470D: B2         OR      D               
 470E: 20 F6      JR      NZ,$4706        
 4710: C9         RET                     
+
 4711: CD 6E 5B   CALL    $5B6E           
 4714: FA 96 DB   LD      A,($DB96)       
 4717: C7         RST     0X00            
@@ -1170,14 +1176,20 @@
 48FB: 0D         DEC     C               
 48FC: 20 F9      JR      NZ,$48F7        
 48FE: AF         XOR     A               
-48FF: EA 96 DB   LD      ($DB96),A       
-4902: 3E 03      LD      A,$03           
-4904: EA 95 DB   LD      ($DB95),A       
-4907: 3E 13      LD      A,$13           
-4909: E0 F2      LDFF00  ($F2),A         
-490B: C9         RET                     
-490C: CD 07 49   CALL    $4907           
-490F: 3E 00      LD      A,$00           
+48FF: EA 
+
+4890: 96 DB      ; 10010110
+                 ; 11011011
+4902: 3E 03      ; 00111110
+                 ; 00000011      
+4904: EA 95 
+4906: DB 3E 
+4908: 13 E0 
+490A: F2 C9         RET                     
+490C: CD 07 
+490E: 49 3E 
+
+4910: 00      LD      A,$00           
 4911: EA 97 DB   LD      ($DB97),A       
 4914: EA 98 DB   LD      ($DB98),A       
 4917: EA 99 DB   LD      ($DB99),A       
@@ -1259,14 +1271,18 @@
 4997: 01 49 98   LD      BC,$9849        
 499A: CD 95 47   CALL    $4795           
 499D: F0 CC      LD      A,($CC)         
-499F: E6 80      AND     $80             
+499F: E6
+ 
+49A0: 80            
 49A1: 28 71      JR      Z,$4A14         
 49A3: CD 07 49   CALL    $4907           
 49A6: FA A6 DB   LD      A,($DBA6)       
 49A9: CB 27      SET     1,E             
 49AB: 5F         LD      E,A             
 49AC: 16 00      LD      D,$00           
-49AE: 21 36 49   LD      HL,$4936        
+49AE: 21 36 
+
+49B0: 49        
 49B1: 19         ADD     HL,DE           
 49B2: 2A         LD      A,(HLI)         
 49B3: 66         LD      H,(HL)          
@@ -1277,7 +1293,9 @@
 49BA: E5         PUSH    HL              
 49BB: FA A6 DB   LD      A,($DBA6)       
 49BE: 5F         LD      E,A             
-49BF: CB 27      SET     1,E             
+49BF: CB 
+
+49C0: 27             
 49C1: CB 27      SET     1,E             
 49C3: 83         ADD     A,E             
 49C4: 5F         LD      E,A             
@@ -1286,7 +1304,8 @@
 49CA: 19         ADD     HL,DE           
 49CB: 2A         LD      A,(HLI)         
 49CC: FE 5B      CP      $5B             
-49CE: 20 19      JR      NZ,$49E9        
+49CE: 20 19      JR      NZ,$49E9    
+    
 49D0: 2A         LD      A,(HLI)         
 49D1: FE 46      CP      $46             
 49D3: 20 14      JR      NZ,$49E9        
@@ -6156,7 +6175,9 @@
 68FB: 2E 20      LD      L,$20           
 68FD: 22         LD      (HLI),A         
 68FE: 24         INC     H               
-68FF: 26 28      LD      H,$28           
+68FF: 26 
+
+6900: 28          
 6901: 2A         LD      A,(HLI)         
 6902: 2C         INC     L               
 6903: 2E F0      LD      L,$F0           
@@ -6165,7 +6186,8 @@
 6909: F0 F0      LD      A,($F0)         
 690B: F0 F0      LD      A,($F0)         
 690D: DF         RST     0X18            
-690E: E0 E2      LDFF00  ($E2),A         
+690E: E0 E2      LDFF00  ($E2),A  
+       
 6910: E3         ???                     
 6911: E5         PUSH    HL              
 6912: E6 E8      AND     $E8             
@@ -6178,7 +6200,8 @@
 691B: F4         ???                     
 691C: F5         PUSH    AF              
 691D: F7         RST     0X30            
-691E: F8 FA      LDHL    SP,$FA          
+691E: F8 FA      LDHL    SP,$FA   
+       
 6920: FB         EI                      
 6921: FD         ???                     
 6922: FE 00      CP      $00             
@@ -6189,7 +6212,8 @@
 692B: 0C         INC     C               
 692C: 0D         DEC     C               
 692D: 0F         RRCA                    
-692E: 10 12      STOP    $12             
+692E: 10 12      STOP    $12     
+        
 6930: 13         INC     DE              
 6931: 15         DEC     D               
 6932: 16 18      LD      D,$18           
@@ -9543,21 +9567,28 @@
 7D15: B1         OR      C               
 7D16: 20 E1      JR      NZ,$7CF9        
 7D18: C9         RET                     
-7D19: 0E C0      LD      C,$C0           
-7D1B: 06 0A      LD      B,$0A           
-7D1D: 21 27 7D   LD      HL,$7D27        
-7D20: 2A         LD      A,(HLI)         
-7D21: E2         LDFF00  (C),A           
-7D22: 0C         INC     C               
-7D23: 05         DEC     B               
-7D24: 20 FA      JR      NZ,$7D20        
-7D26: C9         RET                     
+
+; Copy ? routine to HRAM at FFC0
+7D19: 0E C0      LD      C,$C0           ; HRAM FFC0
+7D1B: 06 0A      LD      B,$0A           ; 10 bytes in routine at 7D27
+7D1D: 21 27 7D   LD      HL,$7D27        ; Start of routine to copy
+7D20: 2A         LD      A,(HLI)         ; Copy ...
+7D21: E2         LDFF00  (C),A           ; ... ? ...
+7D22: 0C         INC     C               ; ... routine ...
+7D23: 05         DEC     B               ; ... to ...
+7D24: 20 FA      JR      NZ,$7D20        ; ... HRAM ...
+7D26: C9         RET                     ; Out
+
+; This routine is copied to FFC0..
+; It loads FF46 with C0 and delays in a short loop
+; ?What does this do?
 7D27: 3E C0      LD      A,$C0           
 7D29: E0 46      LDFF00  ($46),A         
 7D2B: 3E 28      LD      A,$28           
 7D2D: 3D         DEC     A               
 7D2E: 20 FD      JR      NZ,$7D2D        
 7D30: C9         RET                     
+
 7D31: 80         ADD     A,B             
 7D32: 80         ADD     A,B             
 7D33: 40         LD      B,B             

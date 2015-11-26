@@ -6,3 +6,8 @@
 A000:BFFF  Cartridge RAM (if any)
 C000:CFFF  Fixed RAM bank 0
 D000:DFFF  Internal RAM bank 1-7 (switchable on CGB only)
+
+FF80:FFFE  High RAM (HRAM)
+
+||= Address  || Name            || Description                      ||
+||DBAF       || curBank         || Current switched-in bank number ||

@@ -3,6 +3,18 @@
 
 = Registers =
 
+MBC5:
+0000 - 3FFF: ROM Bank 0
+4000 - 7FFF: ROM Switched Bank
+A000 - BFFF: RAM Bank switched (read/write)
+
+WRITES:
+0000 - 1FFF: (RAM Enable)
+2000 - 2FFF: Low 8 bits of ROM bank number
+3000 - 3FFF: High bit of ROM bank number
+4000 - 5FFF: RAM Bank number
+6000 - 7FFF: ROM/RAM mode select
+
 ||= Address  || Name     || Description || Bits ||
 || 8000:97FF || chars    || Character RAM || ||
 || 9800:9BFF || bg1      || BG Map Data 1 || ||

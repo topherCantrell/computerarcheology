@@ -1,0 +1,504 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>bgb readme</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+<h2>BGB version 1.5.2</h2>
+
+<b>homepage: </b><a href="http://bgb.bircd.org/">http://bgb.bircd.org/</a><br>
+<b>email: </b>bgb at bircd dot org
+<p>
+
+this is a gameboy/color emulator/debugger for win32 which will probably never be finished
+<p>
+
+<h3>disclaimer:</h3>
+no warranty of any kind, use at your own risk. This program is guaranteed to do nothing but taking disk space. Don't blame me if it damages your computer, or erases your hard drive, etc. 
+Using copyrighted roms with an emulator is illegal if you don't own the real cartridge or have explicit permission from the copyright holder. If you choose to do so, that is your responsibility.
+<p>
+
+<h3>table of contents</h3>
+<a href="#rightclick">right click menu</a><br>
+<a href="#defaultkeys">default keys</a><br>
+<a href="#features">features in this version</a><br>
+<a href="#requirements">supported platforms/system requirements</a><br>
+<a href="#pdroms">accurate emulation and broken PD roms</a><br>
+<a href="#knownproblems">known problems</a><br>
+<a href="#options">options window</a><br>
+<a href="#cheats">GameGenie/GameShark cheat</a><br>
+<a href="#cheatsearcher">cheat searcher</a><br>
+<a href="#expressions">expressions, breakpoint conditions, and debug messages</a><br>
+<a href="#commandlineparams">Commandline parameters</a><br>
+<a href="#demorec">Demo recording/playback</a><br>
+<a href="#slowpc">How to make bgb run faster if you have a slow computer</a><br>
+<a href="#fullscreenmode">full screen mode</a><br>
+<a href="#gamelink">game link</a><br>
+<a href="#avirecorder">AVI recorder</a><br>
+<a href="#speedruns">Note for speedrun or "race" use</a><br>
+<a href="#history">version history</a><br>
+
+
+<h3 id="rightclick">right click menu:</h3>
+Click the right mouse button in the emulator window to get the popup menu, from which you can access the options and functions.
+<p>
+
+<h3 id="defaultkeys">default keys:</h3>
+<table border="0">
+<tr><td width="50%">numpad +</td><td>fast forward</tr>
+<tr><td>numpad *</td><td>reset gameboy</tr>
+<tr><td>numpad -</td><td>cheat codes on/off</tr>
+<tr><td>A</td><td>B button</tr>
+<tr><td>S</td><td>A button</tr>
+<tr><td>Shift</td><td>Select button</tr>
+<tr><td>Enter</td><td>Start button</tr>
+
+<tr><td>F2</td><td>save state</tr>
+<tr><td>F3</td><td>select state</tr>
+<tr><td>F4</td><td>load state</tr>
+<tr><td>Esc</td><td>debugger</tr>
+<tr><td>Alt+F4</td><td>exit</tr>
+</table>
+<p>
+
+<h3 id="features">features in this version:</h3>
+<ul>
+<li>emulation of the GameBoy, GameBoy Color, and Super Gameboy</li>
+<li>accurate emulation of the hardware, based on research with lots of test roms, useful for debugging/rom development. some highlights:
+  <ul>
+   <li>clock exact timing of LCD behavior/state changes</li>
+   <li>realistic initial ram values - random but with specific bit patterns, and simulated values left by bootroms (for example "nibbler (pd)" depends on this)</li>
+   <li>accurate emulation of LCD register writes during scanline (prehistorik man, demotronic demo)</li>
+   <li>emulation of inaccessible VRAM and OAM as on real hardware</li>
+   <li>10 sprites per line limit</li>
+   <li>clock exact emulation of sprites causing mode 3 to take longer</li>
+   <li>correct memory access timing (access happening at the last/second to last clock of an opcode)</li>
+   <li>accurate emulation of the differences between DMG and GBC, including timing differences, differences in hardware behavior, initial state, etc.</li>
+   <li>can run a GBC rom as on a DMG, and a DMG rom as on a GBC</li>
+   </ul></li>
+
+<li>powerful debugger:
+  <ul>
+  <li>disassembler</li>
+  <li>assembler (change code and ability to save modified rom)</li>
+  <li>symbols (SYM file) support</li>
+  <li>"inline" editing in code, data, and stack viewer</li>
+  <li>breakpoints</li>
+  <li>break on access</li>
+  <li>conditional breakpoints</li>
+  <li>"on jump" access breakpoints for breaking before a jump into a range is taken.</li>
+  <li>source code breakpoints (ld b,b)</li>
+  <li>singlestepping/tracing/animating/step out/step over</li>
+  <li>vram viewer: BG map, tiles, OAM, palette.</li>
+  <li>IO registers viewer</li>
+  <li>live display of data during emulation and freezing of ram values</li>
+  <li>break on exceptions (accessing inaccessible VRAM, read unitialized RAM, echo ram access, access locked external ram, disable lcd outside vblank)</li>
+  <li>ability to modify all registers and state at any time</li>
+  <li>joypad window allows simulating button presses at any time while debugging</li>
+  </ul></li>
+<li>SGB multiplayer with up to 4 gamepads</li>
+<li>graphics output: GDI, DirectDraw, Direct3D, OpenGL, null output</li>
+<li>graphics doubler: HQ2X, Scale2x, scanlines filter, blocky</li>
+<li>sound output: waveout, directsound, null, and disk writer supported. support for writing the 4 channels to separate wav files</li>
+<li>AVI recording, to installed system codec of choice. No sound included but is in sync and conveniently named with recorded wav file.</li>
+<li>runs almost all roms perfectly, compatibility comparable with the best GB/C emulators</li>
+<li>Accurate/high quality sound emulation, bandlimited synthesis</li>
+<li>accurate video emulation including "high color" graphics, correct sprite/background priorities, 10 sprites/line limit, and mid-scanline register changes.</li>
+<li>This emulator is fast.</li>
+<li>Joystick/Gamepad support, everything mappable to every button</li>
+<li>some user interface keys are configurable and can be mapped to joystick/gamepad buttons</li>
+<li>MBC3 Real Time Clock emulation. RTC is saved/loaded in the .sav file, compatible with VBA</li>
+<li>Auto delay/frameskip, emulation runs at 100% real speed and full 60 fps</li>
+<li>GameGenie and GameShark cheat, load/save cheats (auto and manual), "cheat searcher", easy creation of new cheat codes</li>
+<li>save/load state with quick (zsnes style) keys, and preview screenshots for slots in select window.</li>
+<li>Load from ZIP and GZIP files</li>
+<li>good OS/platform compatibility/low requirements (works well on wine, windows 98, and on slow/old PCs)</li>
+<li>support for optional border bitmap and pseudo and real fullscreen modes.</li>
+<li>TCP/IP game link support</li>
+</ul>
+<p>
+
+<h3 id="requirements">supported platforms/system requirements</h3>
+<p>OS: supported/known to work on windows 98 up to windows 8, DirextX 7 or later. Wine on Linux and OS X.
+<p>
+soundcard and joystick/gamepad are optional. A videocard with 3D hardware acceleration is recommended.
+200 MHz pentium or faster CPU. BGB runs perfectly on an atom netbook.<p>
+
+<h3 id="pdroms">accurate emulation and broken PD roms:</h3>
+by default, BGB emulates the real hardware very accurately, including behavior that some broken PD/unofficial roms may have problems with. These roms would also fail on real hardware, or on a real cartridge: they rely on an inaccurate emulator, or a flashcart.
+in the "except" tab, one can choose <i>"Troubleshoot broken PD roms"</i>, and then set aspects of deliberately inaccurate emulation, to see which one a broken PD rom depends on. Choosing <i>"Emulate as in reality"</i> disables and locks out all inaccuracies and should be done if not trying to fix a problem with a bad rom.<br>
+one can also set "break on ..." settings to break (go to the debugger) if a rom misbehaves.<br>
+note that if you enable any <i>"break on"</i> settings, or set breakpoints of any kind, bgb will run in "debug mode", and will be about twice as slow because of extra checks.
+this is done to allow bgb to run as fast as possible if debug features are disabled.
+<p>
+
+
+<h3 id="knownproblems">known problems:</h3>
+<ul><li>pinball fantasies/deluxe: crashes in game</li>
+<li>bgb 0.x will hang/crash when attempting to open bgb 1.0 save states because the old save state format had no version information.</li></ul>
+<p>
+
+<h3 id="options">options window:</h3>
+Popup menu --> <i>Options.</i><br>
+here you can change a lot of settings such as the joypad keys, configure a gamepad/jostick, change the colors of the gameboy screen, and graphics and sound options.
+Besides obvious "preference" settings, most settings are optimal as default and should not be changed unless trying to fix a problem.<p>
+
+<ul>
+<li><h4><i>Sound:</i></h4>
+  <ul>
+  <li><b><i>Soundcard</i></b> (auto) enable sound output to soundcard API. if this and WAV writer are disabled, sound rendering is disabled completely.</li>
+  <li><b><i>disable events:</i></b> (off) do not time sound output on callback events. can be used with null output for performance testing.</li>
+  <li><b><i>8 bits output:</i></b> (off) enable this if 16 bits audio is not supported or gives problems.</li>
+  <li><b><i>mono output:</i></b> (off) enable this to output mono and mix the channels into it. useful if you listen with one headphone, or soundcard does not support stereo.</li>
+  <li><b><i>High quality sound rendering:</i></b> (on) bandlimited synthesis. disable this if you're on a very slow PC and you're trying to speed up emulation.</li>
+  <li><b><i>Latency:</i></b> (60) setting this higher means lower latency. setting it too high causes sound to skip.</li>
+  <li><b><i>WAV file writer:</i></b> (off) writes wav file. each time it is re-inited, a new WAV with a different timestamp is created</li>
+  <li><b><i>Save individual channels:</i></b> (off) write 4 wav files for the individual hardware channels. this works in addition to/independently of "WAV file writer"</li>  
+  <li><b><i>animation recording:</i></b> (off) saves a BMP screenshot for every 1 or 2 frames (as desired), with timestamp prefix matching the WAV file and a frame number.</li>
+  <li><b><i>record AVI:</i></b> (off) record animation to AVI. Give fourcc in box to choose codec. "Config" will open the codec's settings dialog.</li>
+  <li><b><i>record half framerate:</i></b> (on) record ~30 fps instead of ~60 fps, saving only every other frame.</li>
+  </ul></li>
+
+<li><h4><i>Joypad:</i></h4>
+  <ul>
+  <li>click on <i>"configure keyboard"</i> or <i>"configure game controller"</i>, to show the wizard. press the desired keys/buttons for the hilighted buttons.
+  to change keys for user interface functions (load/save state, fast forward, reset, etc), check <i>"configure extra buttons"</i>, then click on <i>"configure ..."</i></li>
+  </ul></li>
+
+<li><h4><i>Misc:</i></h4>
+  <ul>
+  <li><b><i>show framerate:</i></b> (off) shows framerate in the window title bar, 2 numbers: drawed frames/sec, executed frames/sec.</li>
+  <li><b><i>reduce CPU usage:</i></b> (on) causes bgb to use the minimum possible cpu by issuing sleep calls when waiting</li>
+  <li><b><i>reduce input latency:</i></b> (auto) use an algorithm that, if vsync is used, delays input polling and emulation to reduce input-to-screen latency.</li>
+  <li><b><i>pause if losing focus:</i></b> (off) pauses/stops bgb if switching to another app.</li>
+  <li><b><i>use fast open files dialog:</i></b> (off) uses bgb's builtin open/save files dialog instead of the default windows one which can be very slow in windows XP.</li>
+  <li><b><i>framerate:</i></b> (0) can be used to make bgb run slower or faster than real speed, at a desired framerate. 0 runs at the real ~59.72 fps</li>
+  <li><b><i>adjust sound speed:</i></b> (off) change the sound's pitch to match the alternative emulation speed (like a real GB does if you change the clock signal).</li>
+  <li><b><i>undelayed speed:</i></b> (10) how fast to run if pressing the "fast forward" button, 1 is equal to real speed. can also be used to turn the key into a "slow down" key if desired.</li>
+  </ul></li>
+
+<li><h4><i>Graphics:</i></h4>
+  <ul>
+  <li><b><i>Mix current and last frame:</i></b> (off) can be used to make games show correctly which use "flickering" to mix colors (for example "ballistic")</li>
+  <li><b><i>doubler:</i></b> (off) applies a screen filter effect, also doubles the size in pixels (useful for fullscreen pageflipped mode if you can't use 320x240)</li>
+  </ul>
+  the "auto" settings are defaults and are recommended settings. other settings may sometimes have specific benefits or uses.
+  <ul>
+  <li><b><i>bpp:</i></b> (auto) override bits per pixel selection</li>
+  <li><b><i>output:</i></b> (auto) override choice of output method. use GDI if other methods have problems. null can be used for speed testing (does render, but not output. to disable graphics rendering *and* outputting, change the window's height to 0 instead). to force use of windowed directdraw in vista/7 "aero" mode, find and set "DDrawForceNT6=1" in the ini file.</li>
+  <li><b><i>vsync:</i></b> (auto) override choice of vertical synchronization method. vsync eliminates tearing in the animation. one can disable vsync, or set 1 frame/vblank (instead of synchronizing to real speed)</li>
+  <li><b><i>stretch:</i></b> (blocky) instruct the graphics output to use "blocky" (point sampling) or "blurry" (bilinear filter) stretching</li>
+  <li><b><i>fullscreen pageflipped:</i></b> (off) run in a real double/triple buffered fullscreen mode. may have benefits for performance or smooth animation</li>
+  <li><b><i>GBC LCD colors:</i></b> (on) make GBC colors look as on real GBC. disable to use RGB values directly without conversion.</li>
+  <li><b><i>border BMP file:</i></b> (<i>only SGB border</i>) you can use a BMP file as border for BGB (it will show if enabled, and there is no SGB border). use a 160x144 pixels plain, one color rectangle to define the location of the GB screen. You can also drag and drop a bitmap file to use it as background.</li>
+  </ul></li>
+
+<li><h4><i>System:</i></h4>
+  <ul>
+  <li><b><i>Gameboy:</i></b> runs any rom as on a DMG (original gameboy)</li>
+  <li><b><i>Gameboy Color:</i></b> runs any rom as on a GBC (gameboy color). this also emulates a DMG rom as on a real GBC in DMG mode, to allow testing/debugging this (for example, legend of zerd breaks as in reality)</li>
+  <li><b><i>Super Gameboy:</i></b> runs any rom with SGB support as on a SGB, any other rom as on a DMG.</li>
+  <li><b><i>automatic, prefer GBC:</i></b> (default) runs DMG, SGB, and GBC roms on the proper system. runs GBC+SGB roms as on a GBC.</li>
+  <li><b><i>automatic, prefer SGB:</i></b> runs DMG, SGB, and GBC roms on the proper system. runs GBC+SGB roms as on a SGB.</li>
+  <li><b><i>SGB + GBC:</i></b> emulates both SGB and GBC features at the same time. because this system does not exist, roms may have problems/unpredictable behavior.</li>
+  <li><b><i>GBC + initial SGB border:</i></b> starts SGB+GBC roms in SGB mode, until they transferred a border, then resets in GBC mode. this is required for some GBC+SGB roms to show a border.</li>
+  <li><b><i>Gameboy or GBC:</i></b> runs GBC supporting roms as on GBC, otherwise on DMG (does not enable SGB)</li>  
+
+  <li><b><i>detect GB pocket / SGB2:</i></b> (off) when in DMG mode, make roms detect a gameboy pocket, possibly unlocking features.</li>
+  <li><b><i>detect GBA:</i></b> (off) when in GBC mode, make roms detect a gameboy advance, possibly unlocking features (example: "legend of zelda oracle of ages/seasons")</li>
+  <li><b><i>fast SGB transfers:</i></b> (off) run at unlimited speed during SGB VRAM transfers (inaccurate and can cause problems).</li>
+  <li><b><i>Waitloop detection:</i></b> (on) detect and shortcut waitloops (which most roms use), speeding up emulation. this is done without compromise on accuracy and has no known problems so it should be left enabled.</li>
+  <li><b><i>boot roms:</i></b> (off) run the DMG/SGB and GBC bootrom (rom images must be obtained elsewhere). if used with the "gameboy color" system setting, this lets the GBC bootrom colorize DMG roms. The bootroms are not necessary for normal emulation.</li>
+  </ul></li>
+
+<li><h4><i>Exceptions:</i></h4>
+Controls emulation relevant for debugging roms. 
+<p>
+For <b>playing games</b>, the defaults are recommended: <i>"Emulate as in reality"</i>, and disabling all <i>"break on"</i> settings. Enabling any <i>"break on"</i> setting will enable "debug mode" and cause emulation to use at least twice as much CPU.
+</p><p>
+If <b>developing a rom</b>, keep <i>"Emulate as in reality"</i> and enable the <i>"break on"</i> settings to help catch common problems. If your rom works in bgb with <i>"Emulate as in reality"</i> then it is likely to work on real hardware, but you should still test that too.
+</p><p>
+To <b>make a 3rd party PD (unofficial) rom work</b> which doesn't work, you can enable deliberate inaccuracies with with <i>"Troubleshoot broken PD roms"</i> and then enable individual inaccuracies, effectively emulating a poor emulator or a generic flash cart. This can help to pinpoint the cause of problems. Such roms will not work on a real gameboy, or on the real cart they report in the header. Do not rely on this when developing a rom.
+</p>
+
+</li>
+
+</ul>
+<p>
+
+
+<h3 id="cheats">GameGenie/GameShark cheat:</h3>
+
+how to use a gamegenie/shark code: press F10, or use the rightclick menu and choose <i>"cheat"</i>, to show the cheat window.
+click <i>"Add"</i>. click in the <i>"Code"</i> field, and paste or type the code. optionally, click in the <i>"Comment"</i> field, and enter a description. click "OK".
+click on the newly added code in the list, and click <i>"Enable"</i>.<p>
+
+the cheat window shows a list. you can add/edit/delete cheat entries, with a code and a description. you can load/save the cheats to a file.<br>
+meaning of the letters:
+<ul>
+<li>G = game genie</li>
+<li>S = game shark</li>
+<li>P = patched. means a gamegenie code changed values in the rom. if it does not show, the gamegenie code does not work for the used rom.</li>
+<li>E = enabled (toggled with enable/disable buttons)</li>
+</ul>
+
+in the cheat edit window, you can either enter a code, and internal values will be displayed, or you can enter internal values, and the corresponding code will be displayed.<p>
+
+for a gameshark cheat, you can either use <i>"enable"</i> to make it work constantly, or "poke" to make it change the ram value once.<p>
+
+rightclick on a cheat to set an "access breakpoint" (for gameshark codes only), or go to this cheat's rom or ram address in the debugger.<p>
+
+<h3 id="cheatsearcher">cheat searcher:</h3>
+
+with the cheat searcher and the debugger, you can make new gameshark and gamegenie cheats<p>
+
+Play the game to the point where you want to influence behavior (for example, the game action itself)
+
+press esc to enter debugger. menu: <i>Window</i> -> <i>cheat searcher</i>. select value type (normally 8 bits) and press start.<p>
+
+you may be looking for a value such as "3 lives", in that case, the value in RAM may be 3 as well, but it's not guaranteed.<p>
+continue the game, walking around, killing enemies, etc, but making the value you're looking for *not* change (not dying, not getting hurt, etc), use the criteria <i>"equal to the previous value"</i> and search. 
+the number of addresses displayed goes down.
+you can repeat this a few times.
+now run the game, but make the value you are looking for change, for example by dying or getting hurt in the game.
+now search for values which are, for example, <i>"lower than the previous value"</i>.
+the number of matching addresses in the list become smaller each time you run the game and do a search, and you should end up with only one address.<p>
+
+Now, rightclick on the address, and choose <i>"go here in debugger"</i>. this will select the address in the ram viewer (on the bottom of the window). then rightclick on that address, and choose <i>"freeze ram value"</i>, and enter the desired value. This will create a gameshark code. You can open the cheat window to see the code listed.<p>
+
+if you want to create a gamegenie code, rightclick on the gameshark code, and choose <i>"set access breakpoint"</i>. Run the game until the value is changed (for example, die in the game), and it should stop and show the code line on which the value is changed.
+interpret how the code changes the value, and use game genie codes to change bytes in the code - such as changing an instruction to a nop, or change a "number to decrease" (value 01 to 00), in the cheat window, add new code, enter the address, existing and desired values, and a gamegenie code is produced automatically.<p>
+
+<h3 id="expressions">expressions, breakpoint conditions, and debug messages</h3>
+In the "condition" field of a breakpoint, one can enter an expression. for example ($ff44)=$90, to trip on the start of each vblank. the condition will only trip once every time when it becomes true.
+besides constant values and addresses, one can use the following:<p>
+CPU registers: AF, BC, DE, HL, SP, PC, B, C, D, E, H, L, A, ZERO, CARRY, IME<br>
+other state values: ROMBANK, XRAMBANK, SRAMBANK, WRAMBANK, VRAMBANK, TOTALCLKS, LASTCLKS, CLKS2VBLANK<p>
+These values can also be evaluated by using the menu, <i>"Debug"</i>, <i>"Evaluate expression"</i>.<p>
+To add "ld d,d" debug messages into the code, assemble an opcode in the form: .msg 'message' where message is the message content. debug messages can contain expressions between %%. When enabled in the settings, whenever a debug message is encountered in the code, it will be logged to the debug messages window or log file.<p>
+
+
+<h3 id="commandlineparams">Commandline parameters</h3>
+<ul><li><b>[<i>-rom</i>] &lt;filename of rom or state&gt;</b> load a rom or save state
+</li><li><b><i>-setting</i> name=value</b> load bgb with a custom setting. this is useful for running multiple (linked) instances on a different position (with winx setting).
+</li><li><b><i>-listen</i> [[addr:]port]</b> start bgb listening for game link. if addr/port is omitted, take from settings
+</li><li><b><i>-connect</i> [addr:port]</b> start bgb connecting for game link. if addr/port is omitted, take from settings
+</li><li><b><i>-demorec</i> filename</b> record demo
+</li><li><b><i>-demoplay</i> filename</b> play back demo
+</li></ul>
+
+
+<h3 id="demorec">Demo recording/playback</h3>
+There is minimal support for recording and playing back a demo. The support must be considered "experimental", and it may change in the future.
+It is only intended to be used from the commandline, where the rom to run is also given on the commandline (and not through the menus). One should start from a save state to ensure an exact identical starting state for recording and playback. an example commandline is: 
+<pre>bgb -rom game.sna -demorec game.dem</pre> to record a demo, and then <pre>bgb -rom game.sna -demoplay game.dem</pre> to play it again. The save state should be created first. One can still load a rom directly (without using a save state) but with a risk that the playback differs from the recording.<p>
+Demo recording of linked bgb's works, but only on the same machine, not over lan. This is done because it's the only way that both instances will run at the exact same timing, to allow the demo to be played back. To do this, also link listen or connect using commandline parameters (not the menu). Use commandlines such as the following to start the two instances:
+<pre>
+bgb -rom red.sna -demorec red.dem -setting winx=300 -listen 127.0.0.1:8765
+bgb -rom blue.sna -demorec blue.dem -setting winx=800 -connect 127.0.0.1:8765
+</pre>
+
+The demo file format is very simple, with 1 byte per frame for joypad buttons pressed, at the start of each vblank, and before emulation, so it could be handled easily with external tools. If LCD is disabled, no bytes are added to the demo, this was done to keep the demo format deterministic (consistent).
+
+<h3 id="slowpc">How to make bgb run faster if you have a slow computer</h3>
+
+This should not be necessary on any PC later than ~1998. if you have choppy graphics on a modern PC, the problem is something else.
+<ul>
+<li>disable high quality sound rendering, set the sound samplerate to 22KHz, or turn sound off.</li>
+<li>make sure <i>"debug mode"</i> is not active (menu, <i>"other"</i>, <i>"debug mode"</i>)</li>
+<li>disable <i>"mix current and last frame"</i> and set <i>"doubler"</i> to <i>"off"</i></li>
+<li>Set the desktop resolution to 16 bpp, set emulation to 16 or 8 bpp</li>
+<li>try "fullscreen pageflipped" mode, especially combined with 8 bpp.</li>
+</ul>
+<p>
+
+<h3 id="fullscreenmode">full screen mode:</h3>
+select window size -> full screen, to go to a "pseudo full screen" mode. the GB screen will be at the center of the screen and has the same size which the window had before going to fullscreen mode.
+"full screen stretched" is a pseudo fullscreen mode where the GB screen covers the whole screen.
+<p>
+real (pageflipped) fullscreen modes are also available in the graphics tab of the settings.<p>
+
+<h3 id="gamelink">game link:</h3>
+for bgb game link to work at all, you need a modern PC (around 1-2 GHz) and &lt;1ms lag (fast LAN, or localhost). it does not work with all games. on one bgb, you select "listen", on the other you select "connect". it should then show "linked" in the titlebar. there is also an option "remotejoy" so joypad 2 of one bgb controls the other bgb (which does not have keyboard focus, for example).<p>
+
+As of 1.5.2, link in most games should work, and pokemon should work without any glitches (before, pokemon had occasional glitches). one can link between different games, for example pokemon red and blue. Also, a new feature was added: automatic connecting/reconnecting and re-listening: if the link is broken, it will connect or listen again. Also, it will keep trying to connect until it succeeded. This makes the link feature easier to use, and potentially enables unattended use. If the behavior causes problems, it can be disabled in the ini with <i>"LinkAutoListen"</i> and <i>"LinkAutoConnect"</i>.
+<p>
+
+<h3 id="avirecorder">AVI recorder</h3>
+As of 1.5, one can record to AVI, in addition to recording to BMP screenshots. this allows for greatly improved efficiency while recording, and allow for longer recordings. Sound is still not included in the AVI; enable WAV file writing too, to record sound. The AVI and WAV will have the same filename (and then .avi and .wav), and can easily be combined in video editing/transcoding software.
+"media player classic" will automatically use the WAV accompanying the AVI file, allowing for quick preview.<p>
+I recommend getting and installing the "camstudio lossless codec". I tested version 1.5. then in bgb, set the codec field to "cscd" to choose the codec. click "Config" to open the configure dialog, and choose "gzip compression" (this will produce smaller AVI files still). Turn off "record half framerate" to record full ~60 fps, which will still not produce too big AVI files, if desired.<p>
+The codec can be uploaded as is to youtube, which supports it, or be edited and transcoded to another codec afterwards.<p>
+
+<h3 id="speedruns">Note for speedrun or "race" use</h3>
+Speedruns, also known as "races", refer to completing a game in the shortest possible real time. Speedrun communities may or may not allow the use of emulators, but if they allow them, the emulator typically has to run at the real speed.<p>
+bgb will, by default, run at the real speed (~59.727 fps). When using bgb for speedruns, and one is not sure whether the settings are default, make sure of the following settings, to ensure running at the speed:<p>
+<ul><li>on the <i>"Graphics"</i> tab, <i>"vsync"</i> is set to <i>"auto"</i> (the default), or to <i>"Vsync disabled"</i></li>
+<li>on the <i>"Misc"</i> tab, <i>"framerate"</i> is set to "0" (the default)</li></ul>
+
+
+<h3 id="history">version history:</h3>
+
+<b>1.5.2</b> - Fixed a large number of bugs and problems, including: glitches in pokemon linking. Screensaver now doesn't start if you play with gamepad. Crash/stability fixes. Many small improvements, including efficiency improvements. Added support for more joypad axes (xbox 360 controller). Various debugger GUI improvements including local symbols.
+<p>
+
+<b>1.5.1</b> - Fixed a number of bugs, including Donkey Kong Land and possibly other roms being broken, and a bug that caused it to sometimes not work on a secondary monitor.
+<p>
+
+<b>1.5</b> 
+<ul><li>AVI writer
+</li><li>Greatly improved efficiency (about 10-30% faster, depending on the system)
+</li><li>Improved accuracy
+</li><li>Improved sound quality
+</li><li>Lower audio latency
+</li><li>Preview screenshots in select state window
+</li><li>Improvements to debugger, including selectable RGBDS or WLA assembler syntax, "ld d,d" debug messages, and editing the palette in the vram viewer.
+</li><li>Fixed a large number of bugs, including "alt+F4 loads state", and "timing in LSDJ is unstable"
+</li></ul>
+
+
+<b>1.4.3</b> - fixed: loading/saving save files for roms with unicode filenames was broken if a save dir is not set. this was broken in 1.4.2.
+<p>
+
+<b>1.4.2</b> - fixed a large number of small problems and bugs including: direct3d now works on secondary monitors, some accuracy fixes (including sagaia problem), added some features including: mono sound output and an exception break if making bad accesses during an OAM DMA transfer. tested to work on windows 8.
+<p>
+
+<b>1.4.1</b> - fixed time keeping problems (hiccups) on windows 7. fixed inaccuracy in mid-scanline change of LCDC bits (gejmboj). fixed a condition that would cause inaccurate timing of interrupt (final fantasy adventure). added "gameboy or GBC" system mode setting. fixed searching any opcode with a space giving "IO error 105". added field in IO map to view/edit the "low" bank of multicart emulation. fixed "remotejoy" being broken. screen window can now init on secondary monitor. fixed failure of GUI elements initing on secondary monitor. fixed wrong field in wav file written. 
+<p>
+
+<b>1.4</b> 
+<ul><li>greatly improved game link accuracy, most games should now work perfectly.
+</li><li>added optional HQ2X and Scale2x graphics filters
+</li><li>various accuracy improvements including sound registers, joypad timing, and lcd/interrupt timing
+</li><li>Performance/efficiency improvements including waitloop detection and more efficient high quality sound rendering and others
+</li><li>Major debugger improvements: Supports SYM files containing debug symbols. "on jump" access breakpoints. immediate entry of data into assembler, data, and stack viewer. improved assembler flexibility. Multiline code/data entry window. Keyboard shortcut for navigation to previous/next breakpoint, label etc. Live update memory mode. edit IO map registers. Fixed causes of accidental running while debugging.
+</li><li>Sound quality improvements: CH3 and CH4 are now bandlimited in high quality mode. Improved DC offset accuracy. fixed sound timing inaccuracies.
+</li><li>Improved WAV writer + screenshot recording. Fixed audio/video desync problems. Exported files are now better named. 
+</li><li>fixed windows 98 compatibility problem. eliminated requirement for DX9. improved wine support.
+</li><li>New truecolor/hi-res icon.
+</li><li>Many small bug fixes and improvements.
+</li></ul>
+<p>
+<b>1.3.2</b> - more accurate SGB color scheme. improved detection of non-working vsync. fixed: bootroms don't load if read only.  fixed: "load rom dialog on startup" not working. fixed: "game controller works only if focus" not working. fixed: setting borderless window, and switching to fullscreen, if using directdraw, the "window" can still move, and cause graphical glitches and crash. fixed: GBC accurate initial WRAM values as left by bootrom (fixes the menu in baby felix - halloween). fixed: a sprite on X = 0 uses more time in mode 3, too. fixed: inconsistent timing if resetting in the debugger.
+<p>
+
+<b>1.3.1</b> - fixed: a DMG rom with GBC bootrom would show a white background instead of colorized palette. fixed: header checksum suggestion showed only one hex digit. fixed: menu->reset did not correctly reset emulation.
+<p>
+
+<b>1.3</b>
+<ul><li>added direct3D and OpenGL output, giving accelerated graphics on windows vista/7.
+</li><li>greatly improved emulation accuracy based on lots of test roms/research, also fixing a number of remaining rom compatibility problems.
+</li><li>added VBA compatible RTC loading/saving (in the .sav file).
+</li><li>added support for the GBC bootrom.
+</li><li>fixed lots of bugs.
+</li><li>improved debugger functionality.
+</li><li>redone cheat searcher.
+</li><li>various performance improvements.
+</li><li>various gameplay experience related improvements.
+</li></ul>
+<p>
+
+<b>1.12</b> - Fixed bug in graphics introduced in 1.1, affecting legend of zelda oracle of ages/seasons, and alfred chicken. Added separate settings for DMG and GBC border bitmaps. various fixes.
+<p>
+
+<b>1.11</b> - fixed problem with saving color schemes. show ram values in cheat searcher. analog joystick can be used with mbc7. cpu registers can be changed in debugger. various fixes.
+<p>
+
+<b>1.1</b> - rewritten graphics output to allow 24 bits accurate color reproduction. added support for directdraw pageflipped fullscreen mode (can be faster on old pc's). added support for loading the DMG bootrom (available elsewhere). some emulation accuracy fixes. pop 'n music GB (all versions) now work. added support for "POV hat" (fixed a possible cause for gamepads/joysticks d-pad to not work properly with BGB). 
+<p>
+<b>1.03</b> -
+ Emulating hardware behavior for "gin &amp; tonic trick" in the "mental respirator" demo by Phantasy.
+ Fixed the "on blt2: action not supported" problem which happens on some videocards - if it still happens for you, please contact me.
+ Added 24 bpp directdraw support.
+ Made joypad wizard better support "broken" controllers with things like flickering buttons (must press button for 0.5 secs).
+ Added optional screen on startup to tell the user what to do.
+ Added "cpu idle" wait for vblank routine - if it's not smooth on your pc, disable "reduce cpu usage".
+ Added support for up to 32 joypad buttons.
+<p>
+<b>1.02</b> - fixed a bug in the emulation core which may have broken roms. added japanese documentation (thanks, translator). show error if trying to add duplicate cheat code. allow saving disassembler output to text file.
+<p>
+<b>1.01</b> - fixed "Cannot change Visible in OnShow or OnHide" bug. fixed bugs related to gamegenie cheats and cheats GUI. fixed problems/bug with window/fullscreen behavior.
+<p>
+<b>1.0</b><ul>
+<li>added debugger</li>
+<li>added cheat searcher</li>
+<li>added optional directdraw and directsound support.</li>
+<li>greatly improved accuracy/compatibility/rom support, fixed many known problem roms.</li>
+<li>added "GBC + initial SGB border" support, allowing a number of GBC roms to show a border.</li>
+<li>added experimental support for sub-scanline timing graphics, "demotronic demo" works perfectly.</li>
+<li>new, more accurate, extendable, save state format. Old states are automatically converted/resaved by default.
+<li>made bgb faster by optimizing/rewriting parts</li>
+<li>added support for 4 gamepads.</li>
+<li>redone joypad config, easy to use GUI</li>
+<li>new GBC LCD colors, more like the real GBC</li>
+<li>lots of minor changes</li>
+</ul>
+<p>
+
+<b>0.9</b> - Color schemes can be edited. Increased precision of frequencies in sound code (alone in the dark intro interference effect). Centralized/wrapped sound output (waveout, disk writer) code. Fixed AV if showing registers w/o rom loaded.
+<p>
+<b>0.88</b> - fixed: save file name gets corrupted if loading a rom causes a warning, making load/save impossible. added: you can now change the current save name, by changing the save dir in the options, without reloading the rom.
+<p>
+<b>0.87c</b> - fixed: the info screen still showed my old email adres...</p>
+<p>
+<b>0.87b</b> - fixed: linkspeed was not initialized, causing problems when not linked, such as breaking alleyway</p>
+<p>
+<b>0.87</b> - added experimental TCP game link support.</p>
+<p>
+<b>0.86</b> - added support for japanese pokemon crystal. fixed: accessing a word on address $ffff caused AccessViolation. fixed saving of joystick buttons config. Redone code which searches GB screen rectangle in border bitmap.
+<p>
+<b>0.85</b> - emulation of 2 joypads for SGB multiplayer. fixed memory leak when loading a rom fails. added support for gzipped roms. fixed some bugs in zip header code, bgb is less likely to hang on corrupt zips. new time synchronization code. sound bugfixes and accuracy improvements. Added option to use GB colors in SGB mode.</p>
+<p>
+<b>0.84</b> - Fixed pokemon crystal (HDMA behavior guesswork). Option for generating high quality anti aliased rectangular waves (CH1 and CH2).
+<p>
+<b>0.83</b> - fixed some sound bugs introduced in 0.82. CH4 anti aliasing, especially CH4 high pitch tones sound better. Fixed a resize problem in wine.
+<p>
+<b>0.82</b> - fixed "magical drop" and "miahamm soccer shootout". fixed "little mermaid ii pinball frenzy", speculation about HDMA behavior. rewritten sound code, improved sound. CH4 (noise) is more like real gb now. implemented anti emulator detection.
+<p>
+<b>0.81</b> - redone STAT/timing/interrupts core, more accurate now (?), fixed *many* known problem roms. implemented DI+HALT hardware bug now, needed to fix smurfs/thunderbirds again (thanks no$gmb history text). "little mermaid ii pinball frenzy" graphics will be broken until i have exact HDMA timing. added "no visible window" mode (doubleclick in bgb window to toggle). GB screen can now be off-center in the border bitmap. SGB border can now overlap main screen in 16 bits gfx mode (alfred chicken). minor fixes/changes.
+<p>
+<b>0.8</b> - Added SGB support. renamed "snapshot" to "state" to prevent confusion with "screenshot". changed I/O register behavior, it should be more like the real hardware, i might break something. fixed bugs. added options.
+<p>
+<b>0.71b</b> - i removed the hide taskbar code for fullscreen, i think its not needed. added support for "the smurfs" and "pocket puyo sun" (i didn't HALT if ints disabled)
+<p>
+<b>0.71</b> - Added support for HuC1 and HuC3. Improved control panel GUI. The 4 sound channels can be enabled/disabled independently. Colors of background, window and sprites can be set. Improved full screen support. Bugfixes. Changed DMA behavior, "little mermaid II pinball frenzy" and "le mans 24h" both have correct GFX. fixed nintendo logo screen (ishido)
+<p>
+<b>0.7</b> - improved compatibility, a number of problems fixed; tested: "legend of zerd", "magical chase", "elmo in grouchland", "faceball 2000" (framerate), "dragon slayer" (music). Emulation speed can be adjusted. added "delay" option so bgb doesnt have to use 100% cpu. emulation of absence of external ram (reads $ff). more cleanup.
+<p>
+<b>0.66b</b> - Saving zero length .sav files problem is fixed. save-filenames were truncated at first dot, fixed. problem with pressing U+D or L+R key simultaneously is fixed. Fixed problem of "Mr. do!" hanging at hi-scores screen.
+<p>
+<b>0.66</b> - You can drag and drop files to the BGB window. BGB can start with no rom loaded - you don't get the load rom dialog.
+<p>
+<b>0.65b</b> - i did the changes from 0.64 to 0.65 again... this time i did yet another gfx engine, i didnt like 0.65 being 5 fps slower on my pc.
+<p>
+<b>0.65</b> - Support for bilinear filter. removed the vram viewer; i didn't use it, and it was not stable. Fixed problems with "Mr. Do!". fix in gfx engine: dirty statusbar-split in "fortress of fear". small sound fix (broken in 0.64)
+<p>
+<b>0.64</b> - minor update+bugfix. based on diagnose roms. Fixed speed of envelope sweep, it is now 1/64 sec per unit as in reality. sound registers now behave more like on real gb. OAM is now zero filled on reset, sprites were flipped incorrectly.
+<p>
+<b>0.63</b> - minor update. Fixed (reversed) sound stereo. Added option for GBC "LCD colors", similar to the "real colors" option in no$gmb. Joystick buttons up to #16 can now be used. Fixed problem with puzzle road.
+<p>
+<b>0.62</b> - Added support for joystick/gamepad. Added support for rumble carts. Cleaned up the LCD/STAT/interrupts code; a few rom problems solved, runs pinball deluxe/fantasies. Fixed sound volume rounding, better sound. Fixed the in 0.61 introduced sound problem with Cannon Fodder.
+<p>
+<b>0.61</b> - Added support for zip files. Added 16 bits gfx engine for old GB (faster if window is big/maximized).
+<p>
+<b>0.6</b> - Added GameShark support. Fixed many bugs. Great sound improvements (also fixed a bug which messed up the sound in GBC mode). Sprite priority as on real gb.
+<p>
+<b>0.52</b> - Added a setting which automaticly switches between the faster 8 bits gfx and the 16 bits gfx when needed. Changed window behavior again, it should be correct by now (alfred's adventure). WAV writer didn't work if soundcard disabled... minor fixes. Fixed problem with Hook.
+<p>
+<b>0.51</b> - fixed problems, even more roms supported, check out the screenshots page. Added "Tiles viewer". Fixed a problem with the filename of the wav-writer.
+<p>
+<b>0.5</b> - Added hicolor GBC graphics engine. Added background priority support. Added MBC3 timer emulation. Problems solved, more roms run correctly. Wait-loop detection, some games run faster. Maximum frameskip option. BackGround map vram viewer. Minor changes.
+<p>
+<b>0.4</b> - Added GBC support. Fixed bug in auto-frameskip code, it is now smoother. Minor change in video engine, "the addams family" and "starfight" now run.
+<p>
+<b>0.32</b> - Added icon. Fixed serial transfer; Mortal Kombat and Alleyway now run. CPU optimized with assembler. Emulated behavior of window (startrek briefing screen). minor changes.
+<p>
+<b>0.31</b> - Added support for MBC5 (games like warioland 2). Added gamegenie on/off key. Changed behavior of select snapshot window.
+<p>
+<b>0.3</b> - First released version
+<p>
+
+<h3>feedback:</h3>
+If you have comments, questions, hints or problems/bugs which are not described here, send me mail.
+</body></html>
