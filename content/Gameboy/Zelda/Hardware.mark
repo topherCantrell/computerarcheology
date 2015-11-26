@@ -1,25 +1,38 @@
 %%image GBZelda.jpg
 %%range 8000:9FFF, FE00:FFFF
 
-= Registers =
+= Memory Map =
 
-MBC5:
-0000 - 3FFF: ROM Bank 0
-4000 - 7FFF: ROM Switched Bank
-A000 - BFFF: RAM Bank switched (read/write)
+ * 0000-3FFF : Fixed ROM bank (8K)
+ * 4000-7FFF : Bank-switched ROM (8K)
+ * 8000-9FFF : VRAM (tiles, palettes, maps)
+ * A000-BFFF : Space for cartridge RAM, if any, which might be battery-backed
+ * C000-FEFF : Main RAM
+ * FF00-FFFF : I/O ports and high RAM
 
-WRITES:
-0000 - 1FFF: (RAM Enable)
-2000 - 2FFF: Low 8 bits of ROM bank number
-3000 - 3FFF: High bit of ROM bank number
-4000 - 5FFF: RAM Bank number
-6000 - 7FFF: ROM/RAM mode select
+= Bank Switchers =
 
-||= Address  || Name     || Description || Bits ||
-|| 8000:97FF || chars    || Character RAM || ||
-|| 9800:9BFF || bg1      || BG Map Data 1 || ||
-|| 9C00:9FFF || bg2      || BG Map Data 2 || ||
-|| FE00:FE9F || OAM      || Object Attribute Memory || ||
+There were several on-cartridge chips to manage cartridge memory bank switching
+(RAM and ROM).
+
+MB1: write anywhere from 2000-3FFF to select a ROM bank at 4000-7FFF. The value
+written is the bank number. Write anywhere from 4000-5FFF selects a RAM bank from
+A000-C000.
+
+= VRAM =
+
+TODO describe formats, windows, etc
+
+ * 8000-97FF : Character RAM 
+ * 9800-9BFF : BG Map Data 1 
+ * 9C00-9FFF : BG Map Data 2 
+ * FE00-FE9F : Object Attribute Memory
+
+= I/O Ports and High RAM =
+
+FF80-FFFE is an area of RAM called High RAM -- HRAM.
+
+||= Address  || Name    || Description || Bits ||
 || FF00 || JOYPAD       || Joypad port  ||   ||
 || FF01 || SIODATA      || Serial I/O Data  ||   ||
 || FF02 || SIOCNT       || Serial I/O Control  ||   ||
