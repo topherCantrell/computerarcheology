@@ -96,6 +96,7 @@
 014E: 47 B7 ; Checksum
 
 ; Code starts here
+Startup:
 0150: CD 81 28   CALL    $2881           ; Turn off LCD
 0153: 31 FF DF   LD      SP,$DFFF        ; Stack in internal RAM ?DF00-DFFF
 0156: AF         XOR     A               ; Clear out ...
@@ -985,15 +986,18 @@
 07B8: C9         RET                     
 
 ; Switch to bank A (remember bank number)
+SwitchBank:
 07B9: EA 00 21   LD      ($2100),A       ; Switch to bank A
 07BC: EA AF DB   LD      ($DBAF),A       ; Remember what bank we are in
 07BF: C9         RET                     ; Back
 
+SwitchBankSave:
 07C0: F5         PUSH    AF              
 07C1: FA AF DB   LD      A,($DBAF)       
 07C4: EA 00 21   LD      ($2100),A       
 07C7: F1         POP     AF              
-07C8: C9         RET                     
+07C8: C9         RET                
+     
 07C9: 3E 12      LD      A,$12           
 07CB: EA 00 21   LD      ($2100),A       
 07CE: F0 92      LD      A,($92)         
@@ -5513,6 +5517,7 @@
 ;
 ; Jump table follows RST 0 instruction. A has table entry.
 ; Look up address and jump to it
+TableJump:
 2872: 5F         LD      E,A             ; A*2 ...
 2873: 16 00      LD      D,$00           ; ... to ..
 2875: CB 23      SLA     E               ; ...
@@ -5527,6 +5532,7 @@
 2880: E9         JP      (HL)            ; Jump to routine
 
 ; Turn off LCD at next vertical blanking
+LCDOff:
 2881: F0 FF      LDFF00  A,($FF)         ; Current interrupt register
 2883: E0 D2      LDFF00  ($D2),A         ; Hold it in RAM
 2885: CB 87      RES     0,A             ; ??
@@ -5549,6 +5555,7 @@
 28A6: 18 05      JR      $28AD    
        
 ; Fill Background Tile Table with all 7Fs
+ClearMap:
 28A8: 3E 7F      LD      A,$7F           ; Blank background tile number
 28AA: 01 00 08   LD      BC,$0800        ; 800 bytes
 28AD: 57         LD      D,A             ; Pattern to D (we'll mutilate A shortly)
@@ -5562,14 +5569,15 @@
 28B8: C9         RET                     ; OUT
 
 ; Switch to bank A, copy HL to DE (BC bytes), switch to bank 1
+BankCopyHLtoDE:
 28B9: EA 00 21   LD      ($2100),A       
 28BC: CD C5 28   CALL    $28C5           
 28BF: 3E 01      LD      A,$01           
 28C1: EA 00 21   LD      ($2100),A       
 28C4: C9         RET                     
 
-;copyBytes
 ; From HL to DE ... count BC
+CopyHLtoDE:
 28C5: 2A         LD      A,(HLI)         ; From (HL++)
 28C6: 12         LD      (DE),A          ; To (DE)
 28C7: 13         INC     DE              ; Bump destination pointer
@@ -5714,6 +5722,7 @@
 2988: 18 03      JR      $298D           
 
 ; Clear HRAM and RAM
+ClearRAM
 298A: 01 6D 00   LD      BC,$006D        ; ?Is this all we use in HRAM
 298D: 21 90 FF   LD      HL,$FF90        
 2990: CD 99 29   CALL    $2999           
@@ -5721,6 +5730,7 @@
 2996: 21 00 C0   LD      HL,$C000        ; ... C000 - DF00 (all but stack)
 
 ; clear BC bytes of memory at HL
+ClearRAMHL:
 2999: AF         XOR     A               ; A = 0
 299A: 22         LD      (HLI),A         ; Clear (HL++)
 299B: 0B         DEC     BC              ; Decrement count
