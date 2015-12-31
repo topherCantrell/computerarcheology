@@ -1650,21 +1650,22 @@ CA08: 26 F2               BNE     $C9FC            ; No ... keep blanking
 CA0A: 35 B6               PULS    A,B,X,Y,PC       ; Done
 
 ; Shift-D-to-the-left entry points
-Dshift5:
+Dleft5:
 CA0C: 58                  ASLB                     ; D << 5 starts here           
 CA0D: 49                  ROLA                     ;
-Dshift4:
+Dleft4:
 CA0E: 58                  ASLB                     ; D << 4 starts here
 CA0F: 49                  ROLA                     ;
-Dshift3:
+Dleft3:
 CA10: 58                  ASLB                     ; D << 3 starts here
 CA11: 49                  ROLA                     ;
-Dshift2:
+Dleft2:
 CA12: 58                  ASLB                     ; D << 2 starts here
 CA13: 49                  ROLA                     ;
-Dshift1:
+Dleft1:
 CA14: 58                  ASLB                     ; D << 1 starts here
 CA15: 49                  ROLA                     ;
+;
 CA16: 39                  RTS                      ; Done
 
 PrintRegChar:
