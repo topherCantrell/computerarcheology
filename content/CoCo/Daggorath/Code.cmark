@@ -6,6 +6,9 @@
 ;; The game's RAM usage is detailed here: 
 ;; [RAMUse.html RAM Usage]
 
+; TODO: what areas are mirrored? how does the flip happen? are graphics/text areas ended differently?
+; TODO: make a HTML table of links to the SWI routines. Figure out what they all do.
+
 ;;{{{html
 ;;<script src="/js/CANVAS.js"    type="text/javascript"></script>
 ;;<script src="/js/pixelUI.js"   type="text/javascript"></script>
@@ -27,10 +30,11 @@
 ;;</canvas>
 ;;}}}
 
-C000: CE C0 D1            LDU     #$C0D1         ; Demo info
+;;= Start =
+C000: CE C0 D1            LDU     #$C0D1         ; Demo game info
 C003: 20 03               BRA     $C008          ; Do Demo
 ;
-C005: CE C1 24            LDU     #$C124         ; Game info
+C005: CE C1 24            LDU     #$C124         ; Live game info
 ;
 C008: 10 CE 10 00         LDS     #$1000         ; Stacks builds to lower from $1000
 C00C: 8E FF 00            LDX     #$FF00         ; PIA0
@@ -99,7 +103,7 @@ C088: CE DA 91            LDU     #$DA91         ; Object distribution table
 C08B: 4F                  CLRA                   ; First object in table is type 0 (SUPREME RING)
 C08C: E6 C4               LDB     ,U             ; Get the info
 C08E: C4 0F               ANDB    #$0F           ; Hold ...
-C090: D7 8C               STB     <$8C           ; ... number of objects
+C090: D7 8C               STB     <$8C           ;{-1_numObjs} ... number of objects
 C092: E6 C0               LDB     ,U+            ; Get the info
 C094: 54                  LSRB                   ; Hold ...
 C095: 54                  LSRB                   ; ... ...
@@ -113,7 +117,7 @@ C09E: 5C                  INCB                   ; Next object on next level
 C09F: C1 05               CMPB    #$05           ; Past level 4?
 C0A1: 2F 02               BLE     $C0A5          ; No ... use next level
 C0A3: D6 8D               LDB     <$8D           ; use
-C0A5: 0A 8C               DEC     <$8C           ; Decrement number of objects
+C0A5: 0A 8C               DEC     <$8C           ;{-1_numObjs} Decrement number of objects
 C0A7: 26 F1               BNE     $C09A          ; Go back to create more of this type
 C0A9: 4C                  INCA                   ; Next object type
 C0AA: 11 83 DA A3         CMPU    #$DAA3         ; All object types done?
@@ -209,53 +213,57 @@ C166: 3F                  SWI
 C167: 19                                         ; SWI 19 Bring up normal display
 C168: 3F                  SWI                 
 C169: 0F                                         ; SWI 0F Ready command prompt
-C16A: 7E C1 F5            JMP     $C1F5          ;       
-C16D: BF 00 7E            STX     $007E          ;
+C16A: 7E C1 F5            JMP     $C1F5          ;{GameLoop}   
+
+    
+C16D: BF 00 7E            STX     $007E          ;{-1_CASSPTR}
 C170: 10 3F               SWI2                
-C172: 06 
+C172: 06                  ; A006: BLKIN 
 C173: 4D                  TSTA        
 C174: 10 26 DE AF         LBNE    $A027          ;       
-C178: F6 00 7C            LDB     $007C          ;
-C17B: 39                  RTS                 
+C178: F6 00 7C            LDB     $007C          ;{-1_CASSBLKTYPE}
+C17B: 39                  RTS
+                 
 C17C: CE FF 00            LDU     #$FF00      
 C17F: CC 34 3C            LDD     #$343C      
 C182: A7 43               STA     3,U         
 C184: B7 FF 23            STA     $FF23          ;{-2_PIA1_CB}
 C187: F7 FF 21            STB     $FF21          ;{-2_PIA1_CA}
-C18A: 39                  RTS                 
+C18A: 39                  RTS
+                 
 C18B: 9E 00               LDX     <$00           ;       
 C18D: 30 1F               LEAX    -1,X        
 C18F: 26 FC               BNE     $C18D          ;       
-C191: 39                  RTS                 
+C191: 39                  RTS
+                 
 C192: 8D E8               BSR     $C17C          ;       
 C194: 8D F5               BSR     $C18B          ;       
 C196: 8D F3               BSR     $C18B          ;       
 C198: 10 3F               SWI2                
-C19A: 0C 10               INC     <$10           ;{-1_endOfObjsM}       
-C19C: 3F                  SWI                 
-C19D: 08                                         ; SWI 08 Clear display screen
+C19A: 0C                  ; A00C: WRTLDR
+C19B: 10 3F               SWI2                 
+C19D: 08                  ; A008: BLKOUT        
 C19E: 8D EB               BSR     $C18B          ;       
 C1A0: 10 3F               SWI2                
-C1A2: 0C 8E               INC     <$8E           ;       
-C1A4: 02                       
-C1A5: 00 CC               NEG     <$CC           ;       
-C1A7: 01                       
-C1A8: 80 FD               SUBA    #$FD        
-C1AA: 00 7C               NEG     <$7C           ;{-1_drwMazeY}       
-C1AC: BF 00 7E            STX     $007E          ;
+C1A2: 0C                  ; A00C: WRTLDR
+C1A3: 8E 02 00            LDX     #$0200 
+C1A6: CC 01 80            LDD     #$0180 
+C1A9: FD 00 7C            STD     $007C       
+C1AC: BF 00 7E            STX     $007E          ;{-1_CASSPTR}
 C1AF: 10 3F               SWI2                
-C1B1: 08 8C               LSL     <$8C           ;       
-C1B3: 0F 05               CLR     <$05           ;       
+C1B1: 08                  ; A008: BLKOUT
+C1B2: 8C 0F 05            CMPX    #$0F05       
 C1B5: 25 EF               BCS     $C1A6          ;       
-C1B7: FF                    
-C1B8: 00 7C               NEG     <$7C           ;{-1_drwMazeY}       
+C1B7: FF 00 7C            STU     $007C          ;       
 C1BA: 10 3F               SWI2                
-C1BC: 08 8D               LSL     <$8D           ;       
-C1BE: CC 20 2B            LDD     #$202B      
+C1BC: 08                  ; A008: BLKOUT
+C1BD: 8D CC               BSR     $C18B 
+C1BF: 20 2B               BRA     $C1EC
+      
 C1C1: 8D B9               BSR     $C17C          ;       
 C1C3: 10 3F               SWI2                
-C1C5: 04 DE               LSR     <$DE           ;{-1_inputBuf}       
-C1C7: 0B                        
+C1C5: 04                  ; A004: CRSDON
+C1C6: DE 0B               LDU     <$0B                         
 C1C8: AE C4               LDX     ,U          
 C1CA: 8D A1               BSR     $C16D          ;       
 C1CC: 26 F8               BNE     $C1C6          ;       
@@ -268,19 +276,21 @@ C1D9: 26 E6               BNE     $C1C1          ;
 C1DB: 5A                  DECB                
 C1DC: 26 F7               BNE     $C1D5          ;       
 C1DE: 10 3F               SWI2                
-C1E0: 04 8E               LSR     <$8E           ;       
-C1E2: 02                       
-C1E3: 00 8D               NEG     <$8D           ;       
-C1E5: 87                       
+C1E0: 04                  ; A004: CRSDON
+C1E1: 8E 02 00            LDX     #$0200 
+C1E4: 8D 87               BSR     $C16D                       
 C1E6: 2A FC               BPL     $C1E4          ;       
-C1E8: 10 CE 10 00         LDS     #$1000      
+C1E8: 10 CE 10 00         LDS     #$1000         ; Reset stack  
+;    
 C1EC: BD C1 14            JSR     $C114          ;       
 C1EF: 0F B8               CLR     <$B8           ;       
 C1F1: 3F                  SWI                 
 C1F2: 19                                         ; SWI 19 Bring up normal display
 C1F3: 3F                  SWI                    ; SWI 0F ...
 C1F4: 0F                                         ; SWI 0F Ready command prompt
+; Fall into game loop
 
+GameLoop: ;=
 C1F5: CE 02 AB            LDU     #$02AB      
 C1F8: 0F BB               CLR     <$BB           ;       
 C1FA: 1F 32               TFR     U,Y         
@@ -288,14 +298,14 @@ C1FC: 0D B8               TST     <$B8           ;
 C1FE: 2E 92               BGT     $C192          ;
 C200: 2B BF               BMI     $C1C1          ;       
 C202: EE C4               LDU     ,U          
-C204: 27 EF               BEQ     $C1F5          ;       
+C204: 27 EF               BEQ     $C1F5          ;{GameLoop}       
 ;
 C206: 34 60               PSHS    U,Y            ; Hold registers         
 C208: AD D8 03            JSR     [$03,U]        ; Execute game task
 C20B: 35 60               PULS    Y,U            ; Restore
 ;
 C20D: 0D BB               TST     <$BB           ;       
-C20F: 26 E4               BNE     $C1F5          ;       
+C20F: 26 E4               BNE     $C1F5          ;{GameLoop}       
 C211: C1 0C               CMPB    #$0C        
 C213: 27 E5               BEQ     $C1FA          ;       
 C215: 8D 21               BSR     $C238          ;       
@@ -372,7 +382,7 @@ C276: 8C FF D4            CMPX    #$FFD4         ; All done?
 C279: 25 F0               BCS     $C26B          ; No ... keep going
 C27B: 35 96               PULS    A,B,X,PC       ; Restore and out
 
-InterruptServiceRoutine:
+InterruptServiceRoutine: ; =
 C27D: 8E FF 20            LDX     #$FF20         ; 6-bit sound value
 C280: A6 88 E3            LDA     $-1D,X         ; FF03 ... 16.67MS (60Hz) interrupt status
 C283: 10 2A 00 99         LBPL    $C320          ; Upper bit 0 ... must have been the horizontal ... ignore
@@ -396,30 +406,30 @@ C2A5: 48                  ASLA                   ; 8 bit to ...
 C2A6: 48                  ASLA                   ; ... 6 bit value (divide by 4)
 C2A7: A7 84               STA     ,X             ; Store to FF20 (6 bit sound)
 ;
-C2A9: 0D B1               TST     <$B1           ;       
-C2AB: 27 2F               BEQ     $C2DC          ;       
-C2AD: 0A AE               DEC     <$AE           ;       
-C2AF: 26 2B               BNE     $C2DC          ;       
-C2B1: 96 AF               LDA     <$AF           ;       
-C2B3: 97 AE               STA     <$AE           ;       
-C2B5: E6 02               LDB     2,X         
-C2B7: C8 02               EORB    #$02        
-C2B9: E7 02               STB     2,X         
-C2BB: 0D AD               TST     <$AD           ;       
-C2BD: 27 1D               BEQ     $C2DC          ;       
-C2BF: CE 03 88            LDU     #$0388      
-C2C2: AE 44               LDX     4,U         
-C2C4: CC 00 0F            LDD     #$000F      
-C2C7: ED 44               STD     4,U         
-C2C9: 86 20               LDA     #$20        
-C2CB: 03 B0               COM     <$B0           ;       
-C2CD: 27 02               BEQ     $C2D1          ;       
-C2CF: 86 22               LDA     #$22        
-C2D1: BD CA 17            JSR     $CA17          ;       
-C2D4: 6C 45               INC     5,U         
-C2D6: 4C                  INCA                
-C2D7: BD CA 17            JSR     $CA17          ;       
-C2DA: AF 44               STX     4,U         
+C2A9: 0D B1               TST     <$B1           ;{-1_hearHeart} Are we between rounds?      
+C2AB: 27 2F               BEQ     $C2DC          ; Yes .. no heart      
+C2AD: 0A AE               DEC     <$AE           ;{-1_heartCounter} Time to change heart pattern?      
+C2AF: 26 2B               BNE     $C2DC          ; No ... skip it      
+C2B1: 96 AF               LDA     <$AF           ;{-1_heartCounterRel} Reload the ...      
+C2B3: 97 AE               STA     <$AE           ;{-1_heartCounter} ... heart counter      
+C2B5: E6 02               LDB     2,X            ; FF22 ... current single-bit sound
+C2B7: C8 02               EORB    #$02           ; Toggle the single-bit ...
+C2B9: E7 02               STB     2,X            ; ... sound (makes a pop)
+C2BB: 0D AD               TST     <$AD           ;{-1_scrollShowing} Scroll showing?      
+C2BD: 27 1D               BEQ     $C2DC          ; No ... skip drawing the heart      
+C2BF: CE 03 88            LDU     #$0388         ; Hand line area ?active or inactive?
+C2C2: AE 44               LDX     4,U            ; Hold onto current cursor (we might be printing)
+C2C4: CC 00 0F            LDD     #$000F         ; New cursor ...
+C2C7: ED 44               STD     4,U            ; ... middle of the line
+C2C9: 86 20               LDA     #$20           ; 20, 21 ... small-heart characters
+C2CB: 03 B0               COM     <$B0           ;{-1_heartPicture} Toggle heart picture tracking      
+C2CD: 27 02               BEQ     $C2D1          ; Zero now? Draw the small heart      
+C2CF: 86 22               LDA     #$22           ; 22, 23 ... large-heart characters
+C2D1: BD CA 17            JSR     $CA17          ; Draw the first heart character      
+C2D4: 6C 45               INC     5,U            ; Bump the cursor for the second picture
+C2D6: 4C                  INCA                   ; Second heart picture
+C2D7: BD CA 17            JSR     $CA17          ; Draw the second heart character       
+C2DA: AF 44               STX     4,U            ; Restore the text cursor
 ;
 C2DC: CE 02 A1            LDU     #$02A1      
 C2DF: BD C2 42            JSR     $C242          ;       
@@ -454,10 +464,7 @@ C31E: 8D 20               BSR     $C340          ;{CharToBuf} Store character in
 C320: B6 FF 02            LDA     $FF02          ;{-2_PIA0_DB} Acknowledge the interrupt so it can fire again
 C323: 3B                  RTI                    ; Return from interrupt
 
-
-C324: 06 0A
-C326: 3C 3C
-C328: 18
+C324: 06 0A 3C 3C 18 ; ? Counters for task levels ?
 
 CharFromBuf:
 ; Read character A from input ring buffer and advance the tail. Return 0
@@ -682,18 +689,18 @@ C456: 2A FA               BPL     $C452       ; Printable ... do it
 C458: 39                  RTS                 ; End of string
 
 SWI_4:
-;  Display a single character in A
+;  Display a single character in A (auto scroll)
 
 C459: 0D B7               TST     <$B7        ;       
 C45B: 26 03               BNE     $C460       ;       
 C45D: CE 03 90            LDU     #$0390      
-C460: AE 44               LDX     4,U         
-C462: BD C9 B2            JSR     $C9B2       ;       
-C465: AC 42               CMPX    2,U         
-C467: 25 03               BCS     $C46C       ;       
-C469: BD C9 D4            JSR     $C9D4       ;       
-C46C: AF 44               STX     4,U         
-C46E: 39                  RTS                 
+C460: AE 44               LDX     4,U         ; Current cursor
+C462: BD C9 B2            JSR     $C9B2       ; Draw the character and advance the cursor      
+C465: AC 42               CMPX    2,U         ; Filled this area up?
+C467: 25 03               BCS     $C46C       ; No ... no scrolling      
+C469: BD C9 D4            JSR     $C9D4       ; Yes ... scroll the text area      
+C46C: AF 44               STX     4,U         ; New text cursor offset
+C46E: 39                  RTS                 ; Done
 
 SWI_5:
 ;  Uncompress message X to buffer
@@ -788,59 +795,61 @@ C4CE: 39                  RTS           ; Done
 SWI_7:
 ;  Get random number
 
-C4CF: 8E 00 08            LDX     #$0008      
-C4D2: 5F                  CLRB                
-C4D3: 10 8E 00 08         LDY     #$0008      
+C4CF: 8E 00 08            LDX     #$0008      ;
+C4D2: 5F                  CLRB                ;
+C4D3: 10 8E 00 08         LDY     #$0008      ;
 C4D7: 96 6D               LDA     <$6D        ;{-1_rndSeedC}       
-C4D9: 84 E1               ANDA    #$E1        
-C4DB: 48                  ASLA                
+C4D9: 84 E1               ANDA    #$E1        ;
+C4DB: 48                  ASLA                ;
 C4DC: 24 01               BCC     $C4DF       ;       
-C4DE: 5C                  INCB                
-C4DF: 31 3F               LEAY    -1,Y        
+C4DE: 5C                  INCB                ;
+C4DF: 31 3F               LEAY    -1,Y        ;
 C4E1: 26 F8               BNE     $C4DB       ;       
-C4E3: 54                  LSRB                
+C4E3: 54                  LSRB                ;
 C4E4: 09 6B               ROL     <$6B        ;{-1_rndSeedA}       
 C4E6: 09 6C               ROL     <$6C        ;{-1_rndSeedB}       
 C4E8: 09 6D               ROL     <$6D        ;{-1_rndSeedC}       
-C4EA: 30 1F               LEAX    -1,X        
+C4EA: 30 1F               LEAX    -1,X        ;
 C4EC: 26 E4               BNE     $C4D2       ;       
 C4EE: 96 6B               LDA     <$6B        ;{-1_rndSeedA}       
-C4F0: A7 63               STA     3,S         
-C4F2: 39                  RTS                 
+C4F0: A7 63               STA     3,S         ;
+C4F2: 39                  RTS                 ;
 
 SWI_8:
 ;  Clear display screen
 SWI_9:
-;  Clear secondary screen
-
+;  Clear drawing screen
+;
 C4F3: DE 09               LDU     <$09        ;{-1_activeScreen} U = Visible screen descriptor
 C4F5: 8C DE 0B            CMPX    #$DE0B      ; SWI_9 U = Drawing screen descriptor
-C4F8: D6 2C               LDB     <$2C        ;       
-C4FA: 8D 1B               BSR     $C517       ;       
-C4FC: EF 6A               STU     10,S        
-C4FE: 39                  RTS                 
+C4F8: D6 2C               LDB     <$2C        ; ? color      
+C4FA: 8D 1B               BSR     $C517       ; Clear the area      
+C4FC: EF 6A               STU     10,S        ; ? return the screen pointer
+C4FE: 39                  RTS                 ; Done
 
 SWI_A:
-;  Clear hand descriptor
+;  Clear hand descriptor (both screen buffers)
 C4FF: 8E 03 88            LDX     #$0388      ; Hand descriptor space
 C502: CE D8 7C            LDU     #$D87C      ; Clearing Data
 C505: 20 06               BRA     $C50D       ; Clear out hand descriptor
 
 SWI_B:
-;  Clear play field
+;  Clear play field (both screen buffers)
 C507: 8E 03 90            LDX     #$0390      ; Playing field
-C50A: CE D8 88            LDU     #$D888      ; Clearing Data
+C50A: CE D8 88            LDU     #$D888      ; 1st screen buffer area
+;
 C50D: 6F 04               CLR     4,X         ; Move cursor...
 C50F: 6F 05               CLR     5,X         ; ... to beginning
 C511: E6 06               LDB     6,X         ; Color
-C513: 8D 02               BSR     $C517       ; Clear space
-C515: 33 46               LEAU    6,U         ; Now clear command lines
-C517: 34 76               PSHS    U,Y,X,B,A   
+C513: 8D 02               BSR     $C517       ; Clear space pointed to by U
+C515: 33 46               LEAU    6,U         ; Now clear 2nd screen buffer area
+;
+C517: 34 76               PSHS    U,Y,X,B,A   ; Hold all
 C519: 1D                  SEX                 ; Expand color mask to word
 C51A: 1F 02               TFR     D,Y         ; D->Y for a double word
-C51C: 30 C4               LEAX    ,U          ; First in space
-C51E: EE 42               LDU     2,U         ; Last in space
-C520: 36 26               PSHU    Y,B,A       ; Wipe 2 word area
+C51C: 30 C4               LEAX    ,U          ; First address in space
+C51E: EE 42               LDU     2,U         ; Last address in space
+C520: 36 26               PSHU    Y,B,A       ; Wipe 2 word area, back up two
 C522: 11 A3 84            CMPU    ,X          ; Done?
 C525: 26 F9               BNE     $C520       ; No, do all
 C527: 35 F6               PULS    A,B,X,Y,U,PC; Out
@@ -879,7 +888,7 @@ C560: 0C C7               INC     <$C7        ;
 C562: 24 F0               BCC     $C554       ;       
 C564: 96 C7               LDA     <$C7        ;       
 C566: 80 13               SUBA    #$13        
-C568: 97 AF               STA     <$AF        ;       
+C568: 97 AF               STA     <$AF        ;{-1_heartCounterRel}       
 C56A: 0D 28               TST     <$28        ;       
 C56C: 26 27               BNE     $C595       ;       
 C56E: 81 03               CMPA    #$03        
@@ -1001,12 +1010,9 @@ C648: A6 80               LDA     ,X+         ; Copy from uncompressed...
 C64A: A7 C0               STA     ,U+         ; ... to hand string
 C64C: 2A FA               BPL     $C648       ; Copy all, including end marker
 C64E: 35 92               PULS    A,X,PC      
-C650: 05                                    ;'E'
-C651: 0D                                    ;'M'
-C652: 10                                    ;'P'
-C653: 14                                    ;'T'
-C654: 19                                    ;'Y'
-C655: FF                                    ;END
+
+C650: 05 0D 10 14 19      ; 'EMPTY'
+C655: FF                  ; END
 
 SWI_E:
 ;  Display playing screen
@@ -1071,7 +1077,7 @@ C6A3: 39                  RTS
 
 SWI_13:
 ;  Beam on picture pointed to by X
-C6A4: 0F B1               CLR     <$B1        ;       
+C6A4: 0F B1               CLR     <$B1        ;{-1_hearHeart}       
 C6A6: 3F                  SWI                 
 C6A7: 0A                                         ; SWI 0A Clear hand descriptor
 
@@ -1204,11 +1210,13 @@ C745: 3F                  SWI
 C746: 0B                                         ; SWI 0B Clear play field
 C747: 3F                  SWI                 
 C748: 0C                                         ; SWI 0C Update heart rate
-C749: 0C AE               INC     <$AE           ;       
-C74B: 0A AD               DEC     <$AD           ;       
-C74D: 0A B1               DEC     <$B1           ;       
+C749: 0C AE               INC     <$AE           ;{-1_heartCounter}       
+C74B: 0A AD               DEC     <$AD           ;{-1_scrollShowing}       
+C74D: 0A B1               DEC     <$B1           ;{-1_hearHeart}       
 C74F: 3F                  SWI                 
 C750: 0D                                         ; SWI 0D Print contents of hands on status line
+
+CmdLOOK:
 C751: 8E CE 66            LDX     #$CE66      
 C754: 9F B2               STX     <$B2           ;       
 C756: 3F                  SWI                 
@@ -1265,15 +1273,16 @@ C7B0: AF 48               STX     8,U            ; ... object ...
 C7B2: ED 84               STD     ,X             ; ... to monster
 C7B4: 20 DF               BRA     $C795          ; Keep going
 ;
+; Set the colors of the screen areas
 C7B6: 96 81               LDA     <$81           ;{-1_currentLevel}       
-C7B8: 84 01               ANDA    #$01        
-C7BA: 40                  NEGA                
-C7BB: 97 2C               STA     <$2C           ;       
-C7BD: B7 03 96            STA     $0396          ;
-C7C0: B7 03 86            STA     $0386          ;
-C7C3: 43                  COMA                
-C7C4: B7 03 8E            STA     $038E          ;
-C7C7: 39                  RTS                 
+C7B8: 84 01               ANDA    #$01           ; Just the lower bit
+C7BA: 40                  NEGA                   ; 0->00000000, 1->11111111
+C7BB: 97 2C               STA     <$2C           ; ? color      
+C7BD: B7 03 96            STA     $0396          ; 
+C7C0: B7 03 86            STA     $0386          ; 
+C7C3: 43                  COMA                   ; Toggle color for hands
+C7C4: B7 03 8E            STA     $038E          ; Color of hands area
+C7C7: 39                  RTS                    ; Done
 
 SWI_1B:
 ;  * Play sound i at full volume
@@ -1394,23 +1403,27 @@ C89E: 30 02               LEAX    2,X
 C8A0: 8C 01 50            CMPX    #$0150      
 C8A3: 26 F0               BNE     $C895       ;       
 C8A5: 39                  RTS                 
+
 C8A6: BD C9 31            JSR     $C931       ;       
 C8A9: 80 8D               SUBA    #$8D        
-C8AB: 76 25 04            ROR     $2504       ;
+C8AB: 76 25 04            
 C8AE: 8D 15               BSR     $C8C5       ;       
 C8B0: 20 F8               BRA     $C8AA       ;       
 C8B2: BD C9 2E            JSR     $C92E       ;       
-C8B5: A0 8D 6E 20         SUBA    $6E20,PC    
-C8B9: FC 8E 10            LDD     $8E10       ;
-C8BC: 00 34               NEG     <$34        ;       
-C8BE: 10 30                     
-C8C0: 1F 26               TFR     Y,?         
-C8C2: FC 35 90            LDD     $3590       ;
+C8B5: A0 
+C8B6: 8D 6E 
+C8B8: 20 FC 
+C8BA: 8E 10 00 
+C8BD: 34 10 
+C8BF: 30 1F 
+C8C1: 26 FC 
+C8C3: 35 90            
 C8C5: D6 61               LDB     <$61        ;       
 C8C7: 3D                  MUL                 
 C8C8: 84 FC               ANDA    #$FC        
 C8CA: B7 FF 20            STA     $FF20       ;{-2_PIA1_DA}
 C8CD: 39                  RTS                 
+
 C8CE: DC 56               LDD     <$56        ;       
 C8D0: 58                  ASLB                
 C8D1: 49                  ROLA                
@@ -1423,16 +1436,15 @@ C8D9: 39                  RTS
 C8DA: 8D 39               BSR     $C915       ;       
 C8DC: 64 24               LSR     4,Y         
 C8DE: 8D 35               BSR     $C915       ;       
-C8E0: 32 12               LEAS    -14,X       
+C8E0: 32 12      
 C8E2: 8D 31               BSR     $C915       ;       
-C8E4: AF 36               STX     -10,Y       
+C8E4: AF 36       
 C8E6: 8D 2D               BSR     $C915       ;       
-C8E8: 19                  DAA                 
-C8E9: 09 8D               ROL     <$8D        ;       
-C8EB: 42                        
-C8EC: 60 9E              
-C8EE: 63 10               COM     -16,X       
-C8F0: 9E 65               LDX     <$65        ;       
+C8E8: 19 09 
+C8EA: 8D 42               BSR     $C92E         
+C8EC: 60 
+C8ED: 9E 63 
+C8EF: 10 9E 65                  
 C8F2: 4F                  CLRA                
 C8F3: 30 1F               LEAX    -1,X        
 C8F5: 26 06               BNE     $C8FD       ;       
@@ -1463,7 +1475,8 @@ C924: 20 67               BRA     $C98D       ;
 C926: 8D A6               BSR     $C8CE       ;       
 C928: 8D 54               BSR     $C97E       ;       
 C92A: 23 97               BLS     $C8C3       ;       
-C92C: 20 97               BRA     $C8C5       ;       
+C92C: 20 97               BRA     $C8C5       ;    
+   
 C92E: 9E 03               LDX     <$03        ;       
 C930: 10 9E 00            LDY     <$00        ;       
 C933: 9F 5B               STX     <$5B        ;       
@@ -1474,7 +1487,8 @@ C93A: DD 5D               STD     <$5D        ;
 C93C: AF E4               STX     ,S          
 C93E: 39                  RTS                 
 C93F: 8D ED               BSR     $C92E       ;       
-C941: 60 BD C8 CE         NEG     [$-3732,PC] 
+C941: 60 
+C942: BD C8 CE            JSR     $C8CE
 C945: 44                  LSRA                
 C946: 8D E0               BSR     $C928       ;       
 C948: BD C8 CE            JSR     $C8CE       ;       
@@ -1552,7 +1566,7 @@ C993: 20 EF               BRA     $C984       ;
 
 SWIOffsetTable:
 ;
-C995: 00 ;  0: C384 ??
+C995: 00 ;  0: C384 Light level
 C996: 1E ;  1: C3A2 Draw picture X on screen
 C997: A6 ;  2: C448 Uncompress and display immediate message
 C998: 0C ;  3: C454 Display uncompressed message pointed to by X
@@ -1560,128 +1574,143 @@ C999: 05 ;  4: C459 Display a single characte
 C99A: 16 ;  5: C46F Uncompress message to buffer
 C99B: 03 ;  6: C472 Uncompress message to given buffer
 C99C: 5D ;  7: C4CF Return random number in A
-C99D: 24 ;  8: C4F3 ??
-C99E: 03 ;  9: C4F6 ??
+C99D: 24 ;  8: C4F3 Clear display screen
+C99E: 03 ;  9: C4F6 Clear secondary screen
 C99F: 09 ;  A: C4FF Clear hand descriptor
 C9A0: 08 ;  B: C507 Clear play field
-C9A1: 22 ;  C: C529 ??
+C9A1: 22 ;  C: C529 Update heart rate
 C9A2: B0 ;  D: C5D9 Print contents of hands on status line
 C9A3: 7D ;  E: C656 Display playing screen
 C9A4: 1E ;  F: C674 Ready command prompt
 C9A5: 0B ; 10: C67F Wait for n SYNCs
-C9A6: 07 ; 11: C686 ?? Fill with 0s
-C9A7: 02 ; 12: C688 ?? Fill with FFs
-C9A8: 1C ; 13: C6A4 ??
-C9A9: 04 ; 14: C6A8 ??
-C9AA: 1D ; 15: C6C5 ??
-C9AB: 21 ; 16: C6E6 ??
-C9AC: 15 ; 17: C6FB ??
-C9AD: 24 ; 18: C71F ??
-C9AE: 24 ; 19: C743 ??
-C9AF: 16 ; 1A: C759 ??
+C9A6: 07 ; 11: C686 Fill X to U with 0s
+C9A7: 02 ; 12: C688 Fill X to U with FFs
+C9A8: 1C ; 13: C6A4 Beam on picture pointe to by X
+C9A9: 04 ; 14: C6A8 Beam subroutine
+C9AA: 1D ; 15: C6C5 Beam subroutine
+C9AB: 21 ; 16: C6E6 Print PREPARE
+C9AC: 15 ; 17: C6FB Create object structure
+C9AD: 24 ; 18: C71F Change object to proper name and data
+C9AE: 24 ; 19: C743 Bring up normal display
+C9AF: 16 ; 1A: C759 Set up level
 C9B0: 6F ; 1B: C7C8 Play sound A at full volume
 C9B1: 08 ; 1C: C7D0 Play sound A at volume B 
 
-C9B2: 81 24               CMPA    #$24        
-C9B4: 27 09               BEQ     $C9BF       ;       
-C9B6: 81 1F               CMPA    #$1F        
-C9B8: 27 10               BEQ     $C9CA       ;       
-C9BA: 8D 5B               BSR     $CA17       ;       
-C9BC: 30 01               LEAX    1,X         
-C9BE: 39                  RTS                 
-       
-C9BF: 30 1F               LEAX    -1,X        
-C9C1: 9C 03               CMPX    <$03        ;       
-C9C3: 26 04               BNE     $C9C9       ;       
-C9C5: AE 42               LDX     2,U         
-C9C7: 30 1F               LEAX    -1,X        
-C9C9: 39                  RTS                 
-C9CA: 30 88 20            LEAX    $20,X       
-C9CD: 1E 01               EXG     D,X         
-C9CF: C4 E0               ANDB    #$E0        
-C9D1: 1E 01               EXG     D,X         
-C9D3: 39                  RTS                 
-C9D4: 34 36               PSHS    Y,X,B,A     
-C9D6: AE C4               LDX     ,U          
-C9D8: EC 42               LDD     2,U         
-C9DA: 83 00 20            SUBD    #$0020      
-C9DD: ED 62               STD     2,S         
-C9DF: 8D 2F               BSR     $CA10       ;       
-C9E1: 1F 02               TFR     D,Y         
-C9E3: EC 89 01 00         LDD     $0100,X     
-C9E7: 6D 47               TST     7,U         
-C9E9: 26 04               BNE     $C9EF       ;       
-C9EB: ED 89 18 00         STD     $1800,X     
-C9EF: ED 81               STD     ,X++        
-C9F1: 31 3E               LEAY    -2,Y        
-C9F3: 26 EE               BNE     $C9E3       ;       
-C9F5: E6 46               LDB     6,U         
-C9F7: 1D                  SEX                 
-C9F8: 10 8E 01 00         LDY     #$0100      
-C9FC: 6D 47               TST     7,U         
-C9FE: 26 04               BNE     $CA04       ;       
-CA00: ED 89 18 00         STD     $1800,X     
-CA04: ED 81               STD     ,X++        
-CA06: 31 3E               LEAY    -2,Y        
-CA08: 26 F2               BNE     $C9FC       ;       
-CA0A: 35 B6               PULS    A,B,X,Y,PC  
+PrintCharCRBS:
+; Print character ... handle backspace and carriage return
+C9B2: 81 24               CMPA    #$24             ; Is it backspace?
+C9B4: 27 09               BEQ     $C9BF            ; Yes ... go do a backspace      
+C9B6: 81 1F               CMPA    #$1F             ; Is it CR character?
+C9B8: 27 10               BEQ     $C9CA            ; Yes ... go do a CR      
+C9BA: 8D 5B               BSR     $CA17            ; Print the character      
+C9BC: 30 01               LEAX    1,X              ; Advance the cursor
+C9BE: 39                  RTS                      ; Done
+;       
+; Backspace (wrap to end of area)
+C9BF: 30 1F               LEAX    -1,X             ; Back cursor up one space
+C9C1: 9C 03               CMPX    <$03             ; Did we underflow?      
+C9C3: 26 04               BNE     $C9C9            ; No ... keep it      
+C9C5: AE 42               LDX     2,U              ; Yes ... wrap ...
+C9C7: 30 1F               LEAX    -1,X             ; ... to end of area
+C9C9: 39                  RTS                      ; Done
+;
+; Carriage return                 
+C9CA: 30 88 20            LEAX    $20,X            ; Drop to next row
+C9CD: 1E 01               EXG     D,X              ; Mask row offset ...
+C9CF: C4 E0               ANDB    #$E0             ; ... back to beginning ...
+C9D1: 1E 01               EXG     D,X              ; ... of row
+C9D3: 39                  RTS                      ; Done
+
+ScrollTextArea:
+; Scroll the text area pointed to by U. Return the new cursor offset.
+C9D4: 34 36               PSHS    Y,X,B,A          ; Hold all     
+C9D6: AE C4               LDX     ,U               ; Start of area
+C9D8: EC 42               LDD     2,U              ; Number of characters in the area
+C9DA: 83 00 20            SUBD    #$0020           ; Back up 32 characters (one row)
+C9DD: ED 62               STD     2,S              ; Return the new cursor offset
+C9DF: 8D 2F               BSR     $CA10            ; D = D * 8 (8 bytes per character)
+C9E1: 1F 02               TFR     D,Y              ; Number of bytes to move in Y
+C9E3: EC 89 01 00         LDD     $0100,X          ; Data from next text row (32 columns * 8 rows)
+C9E7: 6D 47               TST     7,U              ; Mirroring into both screen buffers?
+C9E9: 26 04               BNE     $C9EF            ; No ... skip the 2nd screen      
+C9EB: ED 89 18 00         STD     $1800,X          ; Yes ... store it to 2nd screen
+C9EF: ED 81               STD     ,X++             ; Store to first screen
+C9F1: 31 3E               LEAY    -2,Y             ; All pixels moved up?
+C9F3: 26 EE               BNE     $C9E3            ; No ... keep scrolling   
+; Blank the new bottom line   
+C9F5: E6 46               LDB     6,U              ; Get color of area         
+C9F7: 1D                  SEX                      ; Make it a double
+C9F8: 10 8E 01 00         LDY     #$0100           ; 32 columns * 8 rows
+C9FC: 6D 47               TST     7,U              ; Mirroring to second screen?
+C9FE: 26 04               BNE     $CA04            ; No ... only one screen      
+CA00: ED 89 18 00         STD     $1800,X          ; Mirror data to second screen
+CA04: ED 81               STD     ,X++             ; Blank the area
+CA06: 31 3E               LEAY    -2,Y             ; Entire row blanked?
+CA08: 26 F2               BNE     $C9FC            ; No ... keep blanking      
+CA0A: 35 B6               PULS    A,B,X,Y,PC       ; Done
 
 ; Shift-D-to-the-left entry points
-CA0C: 58                  ASLB                   ; D << 5 starts here           
-CA0D: 49                  ROLA                   ;
-CA0E: 58                  ASLB                   ; D << 4 starts here
-CA0F: 49                  ROLA                   ;
-CA10: 58                  ASLB                   ; D << 3 starts here
-CA11: 49                  ROLA                   ;
-CA12: 58                  ASLB                   ; D << 2 starts here
-CA13: 49                  ROLA                   ;
-CA14: 58                  ASLB                   ; D << 1 starts here
-CA15: 49                  ROLA                   ;
-CA16: 39                  RTS                    ; Done
-             
+Dshift5:
+CA0C: 58                  ASLB                     ; D << 5 starts here           
+CA0D: 49                  ROLA                     ;
+Dshift4:
+CA0E: 58                  ASLB                     ; D << 4 starts here
+CA0F: 49                  ROLA                     ;
+Dshift3:
+CA10: 58                  ASLB                     ; D << 3 starts here
+CA11: 49                  ROLA                     ;
+Dshift2:
+CA12: 58                  ASLB                     ; D << 2 starts here
+CA13: 49                  ROLA                     ;
+Dshift1:
+CA14: 58                  ASLB                     ; D << 1 starts here
+CA15: 49                  ROLA                     ;
+CA16: 39                  RTS                      ; Done
+
+PrintRegChar:
 ; Print character image or heart image
-CA17: 34 76               PSHS    U,Y,X,B,A       ; Save everything
-CA19: 81 20               CMPA    #$20            ; Letter?
-CA1B: 25 0C               BCS     $CA29           ; Yes ... go handle
-CA1D: 80 20               SUBA    #$20            ; Must be heart picture
-CA1F: C6 07               LDB     #$07            ; 7 bytes ...
-CA21: 3D                  MUL                     ; ... per heart picture
-CA22: C3 DB B6            ADDD    #$DBB6          ; Offset ...
-CA25: 1F 01               TFR     D,X             ; ... to bit mask
-CA27: 20 1B               BRA     $CA44           ;       
-; Get character pattern
-CA29: C6 05               LDB     #$05            ; Five bytes in each character image
-CA2B: 3D                  MUL                     ; Pointer now in D
-CA2C: C3 DB 1B            ADDD    #$DB1B          ; Offset into character image table
-CA2F: 1F 01               TFR     D,X             ; To X
-CA31: CE 03 57            LDU     #$0357          ; Expansion buffer
-CA34: 3F                  SWI                     ; Decompress the pattern
-CA35: 06                                         ; SWI 06 Uncompress message X to given buffer U
-CA36: 8E 03 5E            LDX     #$035E      
-CA39: 68 82               ASL     ,-X         
-CA3B: 68 84               ASL     ,X          
-CA3D: 8C 03 57            CMPX    #$0357      
-CA40: 22 F7               BHI     $CA39          ;       
-CA42: EE 66               LDU     6,S         
-;
-CA44: EC 44               LDD     4,U         
-CA46: 8D C8               BSR     $CA10          ;       
-CA48: 54                  LSRB                
-CA49: 54                  LSRB                
-CA4A: 54                  LSRB                
-CA4B: E3 C4               ADDD    ,U          
-CA4D: 1F 02               TFR     D,Y         
-CA4F: C6 07               LDB     #$07           ; 7 rows in an image
-CA51: A6 80               LDA     ,X+            ; Get next row pattern
-CA53: A8 46               EORA    6,U         
-CA55: A7 A4               STA     ,Y          
-CA57: 6D 47               TST     7,U         
-CA59: 26 04               BNE     $CA5F          ;       
-CA5B: A7 A9 18 00         STA     $1800,Y        ; Pattern to screen
-CA5F: 31 A8 20            LEAY    $20,Y          ; Next row
-CA62: 5A                  DECB                   ; All rows done?
-CA63: 26 EC               BNE     $CA51          ; No ... go do them all
-CA65: 35 F6               PULS    A,B,X,Y,U,PC   ; Done
+CA17: 34 76               PSHS    U,Y,X,B,A        ; Save everything
+CA19: 81 20               CMPA    #$20             ; Letter?
+CA1B: 25 0C               BCS     $CA29            ; Yes ... go handle
+CA1D: 80 20               SUBA    #$20             ; Must be heart picture
+CA1F: C6 07               LDB     #$07             ; 7 bytes ...
+CA21: 3D                  MUL                      ; ... per heart picture
+CA22: C3 DB B6            ADDD    #$DBB6           ; Offset ...
+CA25: 1F 01               TFR     D,X              ; ... to bit mask
+CA27: 20 1B               BRA     $CA44            ; Already have the pattern -- use it       
+; Uncompress the character pattern
+CA29: C6 05               LDB     #$05             ; Five bytes in each character image
+CA2B: 3D                  MUL                      ; Pointer now in D
+CA2C: C3 DB 1B            ADDD    #$DB1B           ; Offset into character image table
+CA2F: 1F 01               TFR     D,X              ; To X
+CA31: CE 03 57            LDU     #$0357           ; Expansion buffer
+CA34: 3F                  SWI                      ; Decompress the pattern
+CA35: 06                                           ; SWI 06 Uncompress message X to given buffer U
+CA36: 8E 03 5E            LDX     #$035E           ; Shift ... 
+CA39: 68 82               ASL     ,-X              ; ... image two times to ...
+CA3B: 68 84               ASL     ,X               ; ... middle of ...
+CA3D: 8C 03 57            CMPX    #$0357           ; ... raster ...
+CA40: 22 F7               BHI     $CA39            ; ... buffer       
+CA42: EE 66               LDU     6,S              ; Pointer to screen area
+; Draw the raster image
+CA44: EC 44               LDD     4,U              ; Current cursor
+CA46: 8D C8               BSR     $CA10            ; Offset = (cur/32)*256 + (cur%32). From yyyxxxxx to yyy_000xxxxx ...    
+CA48: 54                  LSRB                     ; ... y is number of whole rows (32*8 = 256 bytes) ...
+CA49: 54                  LSRB                     ; ... then x is the ...
+CA4A: 54                  LSRB                     ; ... offset on the final row. Clever.
+CA4B: E3 C4               ADDD    ,U               ; Offset from beginning of area
+CA4D: 1F 02               TFR     D,Y              ; To Y for indexing
+CA4F: C6 07               LDB     #$07             ; 7 rows in an image
+CA51: A6 80               LDA     ,X+              ; Get next row pattern
+CA53: A8 46               EORA    6,U              ; Use the color from the area
+CA55: A7 A4               STA     ,Y               ; Store the pattern on the screen
+CA57: 6D 47               TST     7,U              ; Are we mirroring?
+CA59: 26 04               BNE     $CA5F            ; No ... skip 2nd screen      
+CA5B: A7 A9 18 00         STA     $1800,Y          ; Pattern to 2nd screen
+CA5F: 31 A8 20            LEAY    $20,Y            ; Next row
+CA62: 5A                  DECB                     ; All rows done?
+CA63: 26 EC               BNE     $CA51            ; No ... go do them all
+CA65: 35 F6               PULS    A,B,X,Y,U,PC     ; Done
 
 CA67: 34 16               PSHS    X,B,A       
 CA69: 6F E4               CLR     ,S          
@@ -2731,10 +2760,7 @@ D10F: A6 27               LDA     7,Y
 D111: C6 04               LDB     #$04        
 D113: 39                  RTS                 
 
-D114: 00 03        
-D116: 01
-D117: 00 01  
-D119: 03 00
+D114: 00 03 01 00 01 03 00
 
 StepInDirection:
 ; This function moves the Y,X coordinates in A,B in the direction in $8A.
@@ -2863,7 +2889,7 @@ D1E1: 5F                  CLRB
 D1E2: DD 21               STD     <$21           ;       
 D1E4: 3F                  SWI                 
 D1E5: 0C                                         ; SWI 0C Update heart rate
-D1E6: 96 AF               LDA     <$AF           ;       
+D1E6: 96 AF               LDA     <$AF           ;{-1_heartCounterRel}       
 D1E8: C6 02               LDB     #$02        
 D1EA: 39                  RTS
 
@@ -2899,7 +2925,7 @@ D222: 3F                  SWI
 D223: 10                                         ; SWI 10 Wait for n SYNCs
 D224: 3F                  SWI                 
 D225: 10                                         ; SWI 10 Wait for n SYNCs
-D226: 7E C0 00            JMP     $C000       ; Restart
+D226: 7E C0 00            JMP     $C000          ; Restart
 
 D229: AE A1               LDX     ,Y++        
 D22B: CE 03 61            LDU     #$0361      
@@ -2921,7 +2947,7 @@ D245: 10 9F 0D            STY     <$0D           ;
 D248: CC 01 02            LDD     #$0102      
 D24B: 39                  RTS                 
 D24C: 34 76               PSHS    U,Y,X,B,A   
-D24E: 0D AD               TST     <$AD           ;       
+D24E: 0D AD               TST     <$AD           ;{-1_scrollShowing}       
 D250: 26 04               BNE     $D256          ;       
 D252: 3F                  SWI                 
 D253: 19                                         ; SWI 19 Bring up normal display
@@ -2968,7 +2994,7 @@ D2A1: 48                  ASLA
 D2A2: 8E D9 D0            LDX     #$D9D0      
 D2A5: AD 96               JSR     [A,X]       
 D2A7: CE 02 F1            LDU     #$02F1      
-D2AA: 0D AD               TST     <$AD           ;       
+D2AA: 0D AD               TST     <$AD           ;{-1_scrollShowing}       
 D2AC: 27 06               BEQ     $D2B4          ;       
 D2AE: 0D 28               TST     <$28           ;       
 D2B0: 26 02               BNE     $D2B4          ;       
@@ -2977,6 +3003,7 @@ D2B3: 0F                                         ; SWI 0F Ready command prompt
 D2B4: DF 11               STU     <$11           ;       
 D2B6: 35 F6               PULS    A,B,X,Y,U,PC
 
+CmdATTACK:
 D2B8: BD CC 31            JSR     $CC31          ;       
 D2BB: EE C4               LDU     ,U          
 D2BD: 26 03               BNE     $D2C2          ;       
@@ -3080,6 +3107,7 @@ D374: 19                                         ; SWI 19 Bring up normal displa
 D375: 3F                  SWI                 
 D376: 0C                                         ; SWI 0C Update heart rate
     
+; Shift D right routine entries
 D377: 47                  ASRA                
 D378: 56                  RORB                
 D379: 47                  ASRA                
@@ -3194,7 +3222,9 @@ D446: 08 C3               LSL     <$C3           ;
 D448: 59                  ROLB                
 D449: 49                  ROLA                
 D44A: ED E4               STD     ,S          
-D44C: 35 96               PULS    A,B,X,PC    
+D44C: 35 96               PULS    A,B,X,PC   
+
+CmdCLIMB:
 D44E: DC 13               LDD     <$13           ;{-1_playerY}       
 D450: BD CF E1            JSR     $CFE1          ;{ScanForHole}       
 D453: 2B 1A               BMI     $D46F          ;       
@@ -3221,7 +3251,9 @@ D47C: 3F                  SWI
 D47D: 1A                                         ; SWI 1A Set up level
 D47E: 3F                  SWI                 
 D47F: 19                                         ; SWI 19 Bring up normal display
-D480: 39                  RTS                 
+D480: 39                  RTS    
+
+CmdEXAMINE:             
 D481: 8E D4 95            LDX     #$D495      
 D484: 9F B2               STX     <$B2           ;       
 D486: 3F                  SWI                 
@@ -3305,6 +3337,8 @@ D519: C4 F0               ANDB    #$F0
 D51B: ED 44               STD     4,U         
 D51D: 8C 8D DE            CMPX    #$8DDE      
 D520: 35 96               PULS    A,B,X,PC    
+
+CmdGET:
 D522: 8D 52               BSR     $D576          ;       
 D524: 26 4D               BNE     $D573          ;       
 D526: BD CB BA            JSR     $CBBA          ;       
@@ -3326,7 +3360,9 @@ D546: E6 0A               LDB     10,X
 D548: 8E D9 FA            LDX     #$D9FA      
 D54B: E6 85               LDB     B,X         
 D54D: 4F                  CLRA                
-D54E: 20 1B               BRA     $D56B          ;       
+D54E: 20 1B               BRA     $D56B          ;    
+
+CmdDROP:   
 D550: 8D 24               BSR     $D576          ;       
 D552: 27 1F               BEQ     $D573          ;       
 D554: 4F                  CLRA                
@@ -3348,7 +3384,9 @@ D56F: 3F                  SWI
 D570: 0C                                         ; SWI 0C Update heart rate
 D571: 20 44               BRA     $D5B7          ;       
 D573: 7E CB E1            JMP     $CBE1          ;       
-D576: 7E CC 31            JMP     $CC31          ;       
+D576: 7E CC 31            JMP     $CC31          ;     
+
+CmdSTOW:  
 D579: 8D FB               BSR     $D576          ;       
 D57B: 27 F6               BEQ     $D573          ;       
 D57D: DC 29               LDD     <$29           ;       
@@ -3357,7 +3395,9 @@ D581: 9F 29               STX     <$29           ;
 D583: 4F                  CLRA                
 D584: 5F                  CLRB                
 D585: ED C4               STD     ,U          
-D587: 20 2E               BRA     $D5B7          ;       
+D587: 20 2E               BRA     $D5B7          ;    
+
+CmdPULL:   
 D589: 8D EB               BSR     $D576          ;       
 D58B: 26 E6               BNE     $D573          ;       
 D58D: BD CB BA            JSR     $CBBA          ;       
@@ -3386,6 +3426,8 @@ D5B8: 0D                                         ; SWI 0D Print contents of hand
 D5B9: 3F                  SWI                 
 D5BA: 0E                                         ; SWI 0E Display playing screen
 D5BB: 39                  RTS                 
+
+CmdINCANT:
 D5BC: 8E D8 F3            LDX     #$D8F3      
 D5BF: BD CB EC            JSR     $CBEC          ;       
 D5C2: 2F 2B               BLE     $D5EF          ;
@@ -3432,6 +3474,7 @@ D610: C8 00 00 00 00 03 CC 00 81 C5 B8 2E 9D 06 44 F7 BC ; "        OF A NEW WIZ
 ;
 D621: 20 FE               BRA   $D621         ;
 
+CmdREVEAL:
 D623: BD CC 31            JSR   $CC31         ;
 D626: EE C4               LDU   ,U            ;
 D628: 27 14               BEQ   $D63E         ;
@@ -3449,6 +3492,7 @@ D63C: 3F                  SWI
 D63D: 0D                                         ; SWI 0D Print contents of hands on status line
 D63E: 39                  RTS                 
 
+CmdTURN:
 D63F: 8E D8 D9            LDX     #$D8D9      
 D642: BD CB EC            JSR     $CBEC          ;       
 D645: 2F 4C               BLE     $D693          ;
@@ -3517,13 +3561,17 @@ D6BE: 8D 00               BSR     $D6C0          ;
 D6C0: BD CA B7            JSR     $CAB7          ;       
 D6C3: 03 2C               COM     <$2C           ;       
 D6C5: 39                  RTS                 
+
+; ? Picture of some kind (Maybe the turning line?
 D6C6: 10 00                             
-D6C8: 10 FF FF 88         STS     $FF88          ;
-D6CC: 00 88               NEG     <$88           ;{-1_drwMazeTmp}       
+D6C8: 10 FF FF 88         
+D6CC: 00 88                      
 D6CE: FF                       
-D6CF: FE 8E D8            LDU     $8ED8          ;
-D6D2: D9 BD               ADCB    <$BD           ;{-1_inputTail}       
-D6D4: CB EC               ADDB    #$EC        
+D6CF: FE
+ 
+CmdMOVE:
+D6D0: 8E D8 D9            LDX     #$D8D9         ; 
+D6D3: BD CB EC            JSR     $CBEC          ;
 D6D6: 2D BB               BLT     $D693          ;
 D6D8: 2E 09               BGT     $D6E3          ;
 D6DA: 0A 73               DEC     <$73           ;       
@@ -3581,6 +3629,8 @@ D738: DD 13               STD     <$13           ;{-1_playerY}
 D73A: BD C6 60            JSR     $C660          ;       
 D73D: 6D E0               TST     ,S+         
 D73F: 35 86               PULS    A,B,PC      
+
+CmdUSE:
 D741: BD CC 31            JSR     $CC31          ;       
 D744: 27 21               BEQ     $D767          ;       
 D746: EC 09               LDD     9,X         
@@ -3643,14 +3693,14 @@ D7A8: 26 0C               BNE     $D7B6          ;
 D7AA: 3F                  SWI                 
 D7AB: 1B                                         ; SWI 1B * Play sound i at full volume
 D7AC: 0E                                         ; 0E = Scroll 
-D7AD: 0F AD               CLR     <$AD           ;       
+D7AD: 0F AD               CLR     <$AD           ;{-1_scrollShowing}       
 D7AF: 8E CD B2            LDX     #$CDB2
 D7B2: 9F B2               STX     <$B2           ;       
 D7B4: 3F                  SWI                 
 D7B5: 0E                                         ; SWI 0E Display playing screen
 D7B6: 39                  RTS         
         
-; ZLOAD
+CmdZLOAD:
 D7B7: 8D 03               BSR     $D7BC          ;       
 D7B9: 0A B8               DEC     <$B8           ;       
 D7BB: 39                  RTS
@@ -3661,11 +3711,11 @@ D7C2: 3F                  SWI                    ; Fill X to U with FFs
 D7C3: 12                                         ; SWI 12 Fill X to U with FFs
 D7C4: 7E CB 96            JMP     $CB96          ;       
 
-; ZSAVE
+CmdZSAVE:
 D7C7: 8D F3               BSR     $D7BC          ;       
-D7C9: BF 00 7E            STX     $007E          ;
+D7C9: BF 00 7E            STX     $007E          ;{-1_CASSPTR}
 D7CC: CC 00 0F            LDD     #$000F      
-D7CF: FD 00 7C            STD     $007C          ;
+D7CF: FD 00 7C            STD     $007C          ;{-1_CASSBLKTYPE}
 D7D2: 0C B8               INC     <$B8           ;       
 D7D4: 39                  RTS                 
 
@@ -4381,15 +4431,15 @@ DBF9: FF ; End
 
 ShieldPic:       
 ; Shield
-DBFA: 86 AC
-DBFC: 80 C0
-DBFE: 7A BA 
-DC00: 80 A8 
-DC02: FC 
-DC03: 3E
-DC04: 04 
-DC05: 00
-DC06: FE 
+DBFA: 86 AC         ; Move to absolute (172,134)
+DBFC: 80 C0         ; Line to absolute (192,128)
+DBFE: 7A BA         ; Line to absolute (186,122)
+DC00: 80 A8         ; Line to absolute (168,128)
+DC02: FC            ; Draw short lines
+DC03: 3E            ;     Short line to relative (-4,6)
+DC04: 04            ;     Short line to relative (8,0)
+DC05: 00            ;     End of short lines
+DC06: FE            ; End of image
 
 ;;{{{html
 ;;<canvas width="128" height="30" data-canvasfunction="handleDagCanvas" data-border="false" data-scale="3.0" data-xoffs="-140" data-yoffs="-335" data-command="DC07">
@@ -4397,13 +4447,13 @@ DC06: FE
 ;;}}}
 
 ; Torch
-DC07: 76 3C
-DC09: FC 
-DC0A: F7 
-DC0B: FF
-DC0C: 2A 
-DC0D: 00
-DC0E: FE 
+DC07: 76 3C         ; Move to absolute (60,118)
+DC09: FC            ; Draw short lines
+DC0A: F7            ;     Short line to relative (14,-2)
+DC0B: FF            ;     Short line to relative (-2,-2)
+DC0C: 2A            ;     Short line to relative (-12,4)
+DC0D: 00            ;     End of short lines
+DC0E: FE            ; End of image
 
 ;;{{{html
 ;;<canvas width="128" height="45" data-canvasfunction="handleDagCanvas" data-border="false" data-scale="3.0" data-xoffs="-200" data-yoffs="-330" data-command="DC0F">
@@ -4411,12 +4461,12 @@ DC0E: FE
 ;;}}}
 
 ; Sword
-DC0F: 72 50
-DC11: 7C 64 
-DC13: FF
-DC14: 76 52 
-DC16: 72 56
-DC18: FE 
+DC0F: 72 50         ; Move to absolute (80,114)
+DC11: 7C 64         ; Line to absolute (100,124)
+DC13: FF            ; Start new line
+DC14: 76 52         ; Move to absolute (82,118)
+DC16: 72 56         ; Line to absolute (86,114)
+DC18: FE            ; End of image
 
 ;;{{{html
 ;;<canvas width="128" height="40" data-canvasfunction="handleDagCanvas" data-border="false" data-scale="3.0" data-xoffs="-420" data-yoffs="-325" data-command="DC19">
@@ -4424,13 +4474,13 @@ DC18: FE
 ;;}}}
 
 ; Flask
-DC19: 6E A2
-DC1B: FC 
-DC1C: 51 
-DC1D: 0E
-DC1E: B1 
-DC1F: 00 
-DC20: FE
+DC19: 6E A2         ; Move to absolute (162,110)
+DC1B: FC            ; Draw short lines
+DC1C: 51            ;     Short line to relative (2,10)
+DC1D: 0E            ;     Short line to relative (-4,0)
+DC1E: B1            ;     Short line to relative (2,-10)
+DC1F: 00            ;     End of short lines
+DC20: FE            ; End of image
 
 ;;{{{html
 ;;<canvas width="128" height="40" data-canvasfunction="handleDagCanvas" data-border="false" data-scale="3.0" data-xoffs="-120" data-yoffs="-350" data-command="DC21">
@@ -4438,14 +4488,14 @@ DC20: FE
 ;;}}}
 
 ; Ring
-DC21: 7A 3C 
-DC23: FC
-DC24: 11 
-DC25: 1F
-DC26: FF
-DC27: F1 
-DC28: 00 
-DC29: FE
+DC21: 7A 3C         ; Move to absolute (60,122)
+DC23: FC            ; Draw short lines
+DC24: 11            ;     Short line to relative (2,2)
+DC25: 1F            ;     Short line to relative (-2,2)
+DC26: FF            ;     Short line to relative (-2,-2)
+DC27: F1            ;     Short line to relative (2,-2)
+DC28: 00            ;     End of short lines
+DC29: FE            ; End of image
 
 ;;{{{html
 ;;<canvas width="128" height="40" data-canvasfunction="handleDagCanvas" data-border="false" data-scale="3.0" data-xoffs="-530" data-yoffs="-350" data-command="DC2A">
@@ -4453,14 +4503,14 @@ DC29: FE
 ;;}}}
 
 ; Scroll
-DC2A: 76 C2 
-DC2C: FC
-DC2D: 1F 
-DC2E: 34
-DC2F: F1 
-DC30: DC 
-DC31: 00
-DC32: FE 
+DC2A: 76 C2         ; Move to absolute (194,118)
+DC2C: FC            ; Draw short lines
+DC2D: 1F            ;     Short line to relative (-2,2)
+DC2E: 34            ;     Short line to relative (8,6)
+DC2F: F1            ;     Short line to relative (2,-2)
+DC30: DC            ;     Short line to relative (-8,-6)
+DC31: 00            ;     End of short lines
+DC32: FE            ; End of image
 
 ;;= Walls and Doors =
 
@@ -4566,113 +4616,114 @@ DC32: FE
 ;;}}}
 
 ; Left wall
-DC33: 10 1B
-DC35: 26 40
-DC37: 72 40
-DC39: 88 1B
-DC3B: FE 
+DC33: 10 1B         ; Move to absolute (27,16)
+DC35: 26 40         ; Line to absolute (64,38)
+DC37: 72 40         ; Line to absolute (64,114)
+DC39: 88 1B         ; Line to absolute (27,136)
+DC3B: FE            ; End of image 
 
 ; Right wall
-DC3C: 10 E5
-DC3E: 26 C0
-DC40: 72
-DC41: C0 88
-DC43: E5 FE
+DC3C: 10 E5         ; Move to absolute (229,16)
+DC3E: 26 C0         ; Line to absolute (192,38)
+DC40: 72 C0         ; Line to absolute (192,114)
+DC42: 88 E5         ; Line to absolute (229,136)
+DC44: FE            ; End of image
 
 ; Front wall (line at top and bottom)
-DC45: 26 40
-DC47: 26 C0
-DC49: FF
-DC4A: 72
-DC4B: 40
-DC4C: 72
-DC4D: C0 FE
+DC45: 26 40         ; Move to absolute (64,38)
+DC47: 26 C0         ; Line to absolute (192,38)
+DC49: FF            ; Start new line
+DC4A: 72 40         ; Move to absolute (64,114)
+DC4C: 72 C0         ; Line to absolute (192,114)
+DC4E: FE            ; End of image
 
 ; Left wall open
-DC4F: 26 1D
-DC51: 26 40
-DC53: 72
-DC54: 40
-DC55: 72
-DC56: 1B
-DC57: FF
-DC58: 10 1B
-DC5A: 26 40
-DC5C: FE
+DC4F: 26 1D         ; Move to absolute (29,38)
+DC51: 26 40         ; Line to absolute (64,38)
+DC53: 72 40         ; Line to absolute (64,114)
+DC55: 72 1B         ; Line to absolute (27,114)
+DC57: FF            ; Start new line
+DC58: 10 1B         ; Move to absolute (27,16)
+DC5A: 26 40         ; Line to absolute (64,38)
+DC5C: FE            ; End of image
 
 ; Right wall open
-DC5D: 26 E5
-DC5F: 26 C0
-DC61: 72
-DC62: C0 72
-DC64: E5 FF 10 E5
-DC68: 26 C0
-DC6A: FE 
+DC5D: 26 E5         ; Move to absolute (229,38)
+DC5F: 26 C0         ; Line to absolute (192,38)
+DC61: 72 C0         ; Line to absolute (192,114)
+DC63: 72 E5         ; Line to absolute (229,114)
+DC65: FF            ; Start new line
+DC66: 10 E5         ; Move to absolute (229,16)
+DC68: 26 C0         ; Line to absolute (192,38)
+DC6A: FE            ; End of image
 
 ; Left wall physical door
-DC6B: 80 28
-DC6D: 41
-DC6E: 28 44
-DC70: 38
-DC71: 77 38 FF
-DC74: 5C
-DC75: 30 5D
-DC77: 34 FD
-DC79: DC 33
+DC6B: 80 28         ; Move to absolute (40,128)
+DC6D: 41 28         ; Line to absolute (40,65)
+DC6F: 44 38         ; Line to absolute (56,68)
+DC71: 77 38         ; Line to absolute (56,119)
+DC73: FF            ; Start new line
+DC74: 5C 30         ; Move to absolute (48,92)
+DC76: 5D 34         ; Line to absolute (52,93)
+DC78: FD DC 33      ; Jump to DC33
 
 ; Right wall with physical door
-DC7B: 80 D8
-DC7D: 41
-DC7E: D8 44
-DC80: C8 77
-DC82: C8 FF
-DC84: 5C
-DC85: D0 5D
-DC87: CC FD DC 3C
+DC7B: 80 D8         ; Line to absolute (216,128)
+DC7D: 41 D8         ; Line to absolute (216,65)
+DC7F: 44 C8         ; Line to absolute (200,68)
+DC81: 77 C8         ; Line to absolute (200,119)
+DC83: FF            ; Start new line
+DC84: 5C D0         ; Move to absolute (208,92)
+DC86: 5D CC         ; Line to absolute (204,93)
+DC88: FD DC 3C      ; Jump to DC3C
 
 ;Front wall with physical door 
-DC8B: 72
-DC8C: 6C 43
-DC8E: 6C 43
-DC90: 94 72
-DC92: 94 FF
-DC94: 5E
-DC95: 7E 5E 82
-DC98: FD DC 45
+DC8B: 72 6C         ; Line to absolute (108,114)
+DC8D: 43 6C         ; Line to absolute (108,67)
+DC8F: 43 94         ; Line to absolute (148,67)
+DC91: 72 94         ; Line to absolute (148,114)
+DC93: FF            ; Start new line
+DC94: 5E 7E         ; Move to absolute (126,94)
+DC96: 5E 82         ; Line to absolute (130,94)
+DC98: FD DC 45      ; Jump to DC45
 
 ; Left magic door
-DC9B: 80 28
-DC9D: 42
-DC9E: 32 75
-DCA0: 3A
-DCA1: FE 
+DC9B: 80 28         ; Line to absolute (40,128)
+DC9D: 42 32         ; Line to absolute (50,66)
+DC9F: 75 3A         ; Line to absolute (58,117)
+DCA1: FE            ; End of image 
 
 ; Right magic door
-DCA2: 80 D8
-DCA4: 42
-DCA5: CE 75 C6
-DCA8: FE 
+DCA2: 80 D8         ; Move to absolute (216,128)
+DCA4: 42 CE         ; Line to absolute (206,66)
+DCA6: 75 C6         ; Line to absolute (198,117)
+DCA8: FE            ; End of image 
 
 ; Front magic door
-DCA9: 71 6C
-DCAB: 43
-DCAC: 80 72
-DCAE: 94 
-DCAF: FE
+DCA9: 71 6C         ; Move to absolute (108,113)
+DCAB: 43 80         ; Line to absolute (128,67)
+DCAD: 72 94         ; Line to absolute (148,114)
+DCAF: FE            ; End of image
 
 ; Creature on left
-DCB0: 64 1C
-DCB2: FC 44 2E
-DCB5: 42
-DCB6: 4C
-DCB7: 00 FE
+DCB0: 64 1C         ; Move to absolute (28,100)
+DCB2: FC            ; Draw short lines
+DCB3: 44            ;     Short line to relative (8,8)
+DCB4: 2E            ;     Short line to relative (-4,4)
+DCB5: 42            ;     Short line to relative (4,8)
+DCB6: 4C            ;     Short line to relative (-8,8)
+DCB7: 00            ;     End of short lines
+DCB8: FE            ; End of image
 
 ; Creature on right
-DCB9: 64 E4
-DCBB: FC 4C 22
-DCBE: 4E
-DCBF: 44
-DCC0: 00 FE
+DCB9: 64 E4         ; Move to absolute (228,100)
+DCBB: FC            ; Draw short lines
+DCBC: 4C            ;     Short line to relative (-8,8)
+DCBD: 22            ;     Short line to relative (4,4)
+DCBE: 4E            ;     Short line to relative (-4,8)
+DCBF: 44            ;     Short line to relative (8,8)
+DCC0: 00            ;     End of short lines
+DCC1: FE            ; End of image
 
 ; Table for drawing holes/ladders
 DCC2: DD 0E  ; Hole in ceiling
@@ -4730,68 +4781,73 @@ DCD0: FB DC D6 ; Ladder subroutine
 DCD3: FD DD 2A ; Hole in floor
 
 ; Ladder subroutine
-DCD6: 18
-DCD7: 74 80 74
-DCDA: FF
-DCDB: 18
-DCDC: 8C 80 8C
-DCDF: FF
-DCE0: 1C 74
-DCE2: 1C 8C
-DCE4: FF
-DCE5: 28 74
-DCE7: 28 8C
-DCE9: FF
-DCEA: 34 74
-DCEC: 34 8C
-DCEE: FF
-DCEF: 40
-DCF0: 74 40 8C
-DCF3: FF
-DCF4: 4C
-DCF5: 74 4C 8C
-DCF8: FF
-DCF9: 58
-DCFA: 74 58 8C
-DCFD: FF
-DCFE: 64 74
-DD00: 64 8C FF
-DD03: 70 74 70
-DD06: 8C FF 7B
-DD09: 74 7B 8C
-DD0C: FF
-DD0D: FA
+DCD6: 18 74         ; Move to absolute (116,24)
+DCD8: 80 74         ; Line to absolute (116,128)
+DCDA: FF            ; Start new line
+DCDB: 18 8C         ; Move to absolute (140,24)
+DCDD: 80 8C         ; Line to absolute (140,128)
+DCDF: FF            ; Start new line
+DCE0: 1C 74         ; Move to absolute (116,28)
+DCE2: 1C 8C         ; Line to absolute (140,28)
+DCE4: FF            ; Start new line
+DCE5: 28 74         ; Move to absolute (116,40)
+DCE7: 28 8C         ; Line to absolute (140,40)
+DCE9: FF            ; Start new line
+DCEA: 34 74         ; Move to absolute (116,52)
+DCEC: 34 8C         ; Line to absolute (140,52)
+DCEE: FF            ; Start new line
+DCEF: 40 74         ; Move to absolute (116,64)
+DCF1: 40 8C         ; Line to absolute (140,64)
+DCF3: FF            ; Start new line
+DCF4: 4C 74         ; Move to absolute (116,76)
+DCF6: 4C 8C         ; Line to absolute (140,76)
+DCF8: FF            ; Start new line
+DCF9: 58 74         ; Move to absolute (116,88)
+DCFB: 58 8C         ; Line to absolute (140,88)
+DCFD: FF            ; Start new line
+DCFE: 64 74         ; Move to absolute (116,100)
+DD00: 64 8C         ; Line to absolute (140,100)
+DD02: FF            ; Start new line
+DD03: 70 74         ; Move to absolute (116,112)
+DD05: 70 8C         ; Line to absolute (140,112)
+DD07: FF            ; Start new line
+DD08: 7B 74         ; Move to absolute (116,123)
+DD0A: 7B 8C         ; Line to absolute (140,123)
+DD0C: FF            ; Start new line
+DD0D: FA            ; Return
  
 ; Hole in ceiling
-DD0E: 22 64
-DD10: 18
-DD11: 5C
-DD12: 18
-DD13: A4 22
-DD15: 9C 22
-DD17: 64 18
-DD19: 64 FF 22 9C
-DD1D: 18
-DD1E: 9C FF
-DD20: 1C 2F
-DD22: 1C 60
-DD24: FF
-DD25: 1C A1
-DD27: 1C D2
-DD29: FE 
+DD0E: 22 64         ; Move to absolute (100,34)
+DD10: 18 5C         ; Line to absolute (92,24)
+DD12: 18 A4         ; Line to absolute (164,24)
+DD14: 22 9C         ; Line to absolute (156,34)
+DD16: 22 64         ; Line to absolute (100,34)
+DD18: 18 64         ; Line to absolute (100,24)
+DD1A: FF            ; Start new line
+DD1B: 22 9C         ; Move to absolute (156,34)
+DD1D: 18 9C         ; Line to absolute (156,24)
+DD1F: FF            ; Start new line
+DD20: 1C 2F         ; Move to absolute (47,28)
+DD22: 1C 60         ; Line to absolute (96,28)
+DD24: FF            ; Start new line
+DD25: 1C A1         ; Move to absolute (161,28)
+DD27: 1C D2         ; Line to absolute (210,28)
+DD29: FE            ; End of image
 
 ; Hole in floor
-DD2A: 76 64
-DD2C: 80 5C
-DD2E: 80 A4
-DD30: 76 9C 76
-DD33: 64 80
-DD35: 64 FF 76 9C
-DD39: 80 9C
-DD3B: FF
-DD3C: 1C 2F
-DD3E: 1C D2
-DD40: FE 
+DD2A: 76 64         ; Move to absolute (100,118)
+DD2C: 80 5C         ; Line to absolute (92,128)
+DD2E: 80 A4         ; Line to absolute (164,128)
+DD30: 76 9C         ; Line to absolute (156,118)
+DD32: 76 64         ; Line to absolute (100,118)
+DD34: 80 64         ; Line to absolute (100,128)
+DD36: FF            ; Start new line
+DD37: 76 9C         ; Move to absolute (156,118)
+DD39: 80 9C         ; Line to absolute (156,128)
+DD3B: FF            ; Start new line
+DD3C: 1C 2F         ; Move to absolute (47,28)
+DD3E: 1C D2         ; Line to absolute (210,28)
+DD40: FE            ; End of image
 
 ;;= Club Giant Picture =
 ;;{{{html
@@ -4815,17 +4871,19 @@ DD40: FE
 ;;}}}
 
 ClubGiantPic:       
-DD41: 68 62
-DD43: FC 
-DD44: D7 D4
-DD46: 14
-DD47: 12
-DD48: 30 1D
-DD4A: 0D FD
-DD4C: 29 00
-;
-DD4E: FD
-DD4F: DD 62
+DD41: 68 62         ; Move to absolute (98,104)
+DD43: FC            ; Draw short lines
+DD44: D7            ;     Short line to relative (14,-6)
+DD45: D4            ;     Short line to relative (8,-6)
+DD46: 14            ;     Short line to relative (8,2)
+DD47: 12            ;     Short line to relative (4,2)
+DD48: 30            ;     Short line to relative (0,6)
+DD49: 1D            ;     Short line to relative (-6,2)
+DD4A: 0D            ;     Short line to relative (-6,0)
+DD4B: FD            ;     Short line to relative (-6,-2)
+DD4C: 29            ;     Short line to relative (-14,4)
+DD4D: 00            ;     End of short lines
+DD4E: FD DD 62      ; Jump to DD62
 ;
 
 ;;= Hatchet Giant Picture =
@@ -4851,49 +4909,78 @@ DD4F: DD 62
 
 HatchetGiantPic:        
 ; Giant (with hatchet)
-DD51: 68 62
-DD53: 5E
-DD54: 7C 60 7E
-DD57: 6A 64
-DD59: FF
-DD5A: 66 84
-DD5C: 5C
-DD5D: 72
-DD5E: 66 76
-DD60: 6E 72
+DD51: 68 62         ; Move to absolute (98,104)
+DD53: 5E 7C         ; Line to absolute (124,94)
+DD55: 60 7E         ; Line to absolute (126,96)
+DD57: 6A 64         ; Line to absolute (100,106)
+DD59: FF            ; Start new line
+DD5A: 66 84         ; Move to absolute (132,102)
+DD5C: 5C 72         ; Line to absolute (114,92)
+DD5E: 66 76         ; Line to absolute (118,102)
+DD60: 6E 72         ; Line to absolute (114,110)
 ;
 ; Common Giant
-DD62: 66 84
-DD64: FC 02 56
-DD67: 56
-DD68: 17 EE 02
-DD6B: EA BB
-DD6D: BB EA EA
-DD70: 00 4E
-DD72: 5C
-DD73: FC C2 51
-DD76: 3E
-DD77: CF
-DD78: FC 42 13
-DD7B: 00 6A
-DD7D: 5A
-DD7E: FC 1E 11
-DD81: F3 62 39
-DD84: E2 0C
-DD86: E4 8A
-DD88: E2 00
-DD8A: 56
-DD8B: 54
-DD8C: FC 54 65
-DD8F: 2E CA
-DD91: BA A1 D4
-DD94: EE 12
-DD96: D2 13
-DD98: E1 20
-DD9A: F6 24 72
-DD9D: 58
-DD9E: EE C5
-DDA0: BE 00 FE
+DD62: 66 84         ; Line to absolute (132,102)
+DD64: FC            ; Draw short lines
+DD65: 02            ;     Short line to relative (4,0)
+DD66: 56            ;     Short line to relative (12,10)
+DD67: 56            ;     Short line to relative (12,10)
+DD68: 17            ;     Short line to relative (14,2)
+DD69: EE            ;     Short line to relative (-4,-4)
+DD6A: 02            ;     Short line to relative (4,0)
+DD6B: EA            ;     Short line to relative (-12,-4)
+DD6C: BB            ;     Short line to relative (-10,-10)
+DD6D: BB            ;     Short line to relative (-10,-10)
+DD6E: EA            ;     Short line to relative (-12,-4)
+DD6F: EA            ;     Short line to relative (-12,-4)
+DD70: 00            ;     End of short lines
+DD71: 4E 5C         ; Move to absolute (92,78)
+DD73: FC            ; Draw short lines
+DD74: C2            ;     Short line to relative (4,-8)
+DD75: 51            ;     Short line to relative (2,10)
+DD76: 3E            ;     Short line to relative (-4,6)
+DD77: CF            ;     Short line to relative (-2,-8)
+DD78: FC            ;     Short line to relative (-8,-2)
+DD79: 42            ;     Short line to relative (4,8)
+DD7A: 13            ;     Short line to relative (6,2)
+DD7B: 00            ;     End of short lines
+DD7C: 6A 5A         ; Move to absolute (90,106)
+DD7E: FC            ; Draw short lines
+DD7F: 1E            ;     Short line to relative (-4,2)
+DD80: 11            ;     Short line to relative (2,2)
+DD81: F3            ;     Short line to relative (6,-2)
+DD82: 62            ;     Short line to relative (4,12)
+DD83: 39            ;     Short line to relative (-14,6)
+DD84: E2            ;     Short line to relative (4,-4)
+DD85: 0C            ;     Short line to relative (-8,0)
+DD86: E4            ;     Short line to relative (8,-4)
+DD87: 8A            ;     Short line to relative (-12,-16)
+DD88: E2            ;     Short line to relative (4,-4)
+DD89: 00            ;     End of short lines
+DD8A: 56 54         ; Move to absolute (84,86)
+DD8C: FC            ; Draw short lines
+DD8D: 54            ;     Short line to relative (8,10)
+DD8E: 65            ;     Short line to relative (10,12)
+DD8F: 2E            ;     Short line to relative (-4,4)
+DD90: CA            ;     Short line to relative (-12,-8)
+DD91: BA            ;     Short line to relative (-12,-10)
+DD92: A1            ;     Short line to relative (2,-12)
+DD93: D4            ;     Short line to relative (8,-6)
+DD94: EE            ;     Short line to relative (-4,-4)
+DD95: 12            ;     Short line to relative (4,2)
+DD96: D2            ;     Short line to relative (4,-6)
+DD97: 13            ;     Short line to relative (6,2)
+DD98: E1            ;     Short line to relative (2,-4)
+DD99: 20            ;     Short line to relative (0,4)
+DD9A: F6            ;     Short line to relative (12,-2)
+DD9B: 24            ;     Short line to relative (8,4)
+DD9C: 72            ;     Short line to relative (4,14)
+DD9D: 58            ;     Short line to relative (-16,10)
+DD9E: EE            ;     Short line to relative (-4,-4)
+DD9F: C5            ;     Short line to relative (10,-8)
+DDA0: BE            ;     Short line to relative (-4,-10)
+DDA1: 00            ;     End of short lines
+DDA2: FE            ; End of image
 
 ;;= Galdrog Picture =
 ;;{{{html
@@ -4908,59 +4995,82 @@ DDA0: BE 00 FE
 ;;}}}
 
 GaldrogPic:       
-DDA3: 50
-DDA4: 7C 5E 72
-DDA7: 6E 78
-DDA9: 84 70
-DDAB: 68 4E
-DDAD: 84 30
-DDAF: 44
-DDB0: 48
-DDB1: 54
-DDB2: 20 16
-DDB4: 58
-DDB5: 34 72
-DDB7: 5C
-DDB8: 80 34
-DDBA: 8E 16 A8
-DDBD: 58
-DDBE: E0 44
-DDC0: B8 84 D0
-DDC3: 70 B2 84
-DDC6: 90 6E
-DDC8: 88 5E
-DDCA: 8E 50 84
-DDCD: FF
-DDCE: 84 70
-DDD0: FC C5 92
-DDD3: BE C3 43
-DDD6: 5E
-DDD7: 72
-DDD8: 45
-DDD9: 00 52
-DDDB: 7A FC 78
-DDDE: E9 8D EC 33
-DDE2: 0C 24
-DDE4: 72
-DDE5: 47
-DDE6: E7 00
-DDE8: 16 A8 FC
-DDEB: 2D C2
-DDED: 3D
-DDEE: 30 4B
-DDF0: 4B
-DDF1: ED B2
-DDF3: 9D 71
-DDF5: 3D
-DDF6: DD 91
-DDF8: 7D 52 63
-DDFB: A3 2D
-DDFD: ED 2D
-DDFF: CB CB
-DE01: D0 DD
-DE03: 42
-DE04: ED 00
-DE06: FE 
+DDA3: 50 7C         ; Move to absolute (124,80)
+DDA5: 5E 72         ; Line to absolute (114,94)
+DDA7: 6E 78         ; Line to absolute (120,110)
+DDA9: 84 70         ; Line to absolute (112,132)
+DDAB: 68 4E         ; Line to absolute (78,104)
+DDAD: 84 30         ; Line to absolute (48,132)
+DDAF: 44 48         ; Line to absolute (72,68)
+DDB1: 54 20         ; Line to absolute (32,84)
+DDB3: 16 58         ; Line to absolute (88,22)
+DDB5: 34 72         ; Line to absolute (114,52)
+DDB7: 5C 80         ; Line to absolute (128,92)
+DDB9: 34 8E         ; Line to absolute (142,52)
+DDBB: 16 A8         ; Line to absolute (168,22)
+DDBD: 58 E0         ; Line to absolute (224,88)
+DDBF: 44 B8         ; Line to absolute (184,68)
+DDC1: 84 D0         ; Line to absolute (208,132)
+DDC3: 70 B2         ; Line to absolute (178,112)
+DDC5: 84 90         ; Line to absolute (144,132)
+DDC7: 6E 88         ; Line to absolute (136,110)
+DDC9: 5E 8E         ; Line to absolute (142,94)
+DDCB: 50 84         ; Line to absolute (132,80)
+DDCD: FF            ; Start new line
+DDCE: 84 70         ; Move to absolute (112,132)
+DDD0: FC            ; Draw short lines
+DDD1: C5            ;     Short line to relative (10,-8)
+DDD2: 92            ;     Short line to relative (4,-14)
+DDD3: BE            ;     Short line to relative (-4,-10)
+DDD4: C3            ;     Short line to relative (6,-8)
+DDD5: 43            ;     Short line to relative (6,8)
+DDD6: 5E            ;     Short line to relative (-4,10)
+DDD7: 72            ;     Short line to relative (4,14)
+DDD8: 45            ;     Short line to relative (10,8)
+DDD9: 00            ;     End of short lines
+DDDA: 52 7A         ; Move to absolute (122,82)
+DDDC: FC            ; Draw short lines
+DDDD: 78            ;     Short line to relative (-16,14)
+DDDE: E9            ;     Short line to relative (-14,-4)
+DDDF: 8D            ;     Short line to relative (-6,-16)
+DDE0: EC            ;     Short line to relative (-8,-4)
+DDE1: 33            ;     Short line to relative (6,6)
+DDE2: 0C            ;     Short line to relative (-8,0)
+DDE3: 24            ;     Short line to relative (8,4)
+DDE4: 72            ;     Short line to relative (4,14)
+DDE5: 47            ;     Short line to relative (14,8)
+DDE6: E7            ;     Short line to relative (14,-4)
+DDE7: 00            ;     End of short lines
+DDE8: 16 A8         ; Move to absolute (168,22)
+DDEA: FC            ; Draw short lines
+DDEB: 2D            ;     Short line to relative (-6,4)
+DDEC: C2            ;     Short line to relative (4,-8)
+DDED: 3D            ;     Short line to relative (-6,6)
+DDEE: 30            ;     Short line to relative (0,6)
+DDEF: 4B            ;     Short line to relative (-10,8)
+DDF0: 4B            ;     Short line to relative (-10,8)
+DDF1: ED            ;     Short line to relative (-6,-4)
+DDF2: B2            ;     Short line to relative (4,-10)
+DDF3: 9D            ;     Short line to relative (-6,-14)
+DDF4: 71            ;     Short line to relative (2,14)
+DDF5: 3D            ;     Short line to relative (-6,6)
+DDF6: DD            ;     Short line to relative (-6,-6)
+DDF7: 91            ;     Short line to relative (2,-14)
+DDF8: 7D            ;     Short line to relative (-6,14)
+DDF9: 52            ;     Short line to relative (4,10)
+DDFA: 63            ;     Short line to relative (6,12)
+DDFB: A3            ;     Short line to relative (6,-12)
+DDFC: 2D            ;     Short line to relative (-6,4)
+DDFD: ED            ;     Short line to relative (-6,-4)
+DDFE: 2D            ;     Short line to relative (-6,4)
+DDFF: CB            ;     Short line to relative (-10,-8)
+DE00: CB            ;     Short line to relative (-10,-8)
+DE01: D0            ;     Short line to relative (0,-6)
+DE02: DD            ;     Short line to relative (-6,-6)
+DE03: 42            ;     Short line to relative (4,8)
+DE04: ED            ;     Short line to relative (-6,-4)
+DE05: 00            ;     End of short lines
+DE06: FE            ; End of image
 
 ;;= Wraith Picture =
 ;;{{{html
@@ -4978,22 +5088,31 @@ DE06: FE
 ;;}}}
 
 WraithPic:       
-DE07: 3E 44
-DE09: 44
-DE0A: 58
-DE0B: 38
-DE0C: 64 FF 4A 5A
-DE10: 46
-DE11: 4A
-DE12: FC 33 F5
-DE15: F5 C1 5A
-DE18: 62
-DE19: 0E 00
-DE1B: 64 50
-DE1D: FC B3 17
-DE20: 34 EB
-DE22: 0A 3D
-DE24: 00 FE
+DE07: 3E 44         ; Move to absolute (68,62)
+DE09: 44 58         ; Line to absolute (88,68)
+DE0B: 38 64         ; Line to absolute (100,56)
+DE0D: FF            ; Start new line
+DE0E: 4A 5A         ; Move to absolute (90,74)
+DE10: 46 4A         ; Line to absolute (74,70)
+DE12: FC            ; Draw short lines
+DE13: 33            ;     Short line to relative (6,6)
+DE14: F5            ;     Short line to relative (10,-2)
+DE15: F5            ;     Short line to relative (10,-2)
+DE16: C1            ;     Short line to relative (2,-8)
+DE17: 5A            ;     Short line to relative (-12,10)
+DE18: 62            ;     Short line to relative (4,12)
+DE19: 0E            ;     Short line to relative (-4,0)
+DE1A: 00            ;     End of short lines
+DE1B: 64 50         ; Move to absolute (80,100)
+DE1D: FC            ; Draw short lines
+DE1E: B3            ;     Short line to relative (6,-10)
+DE1F: 17            ;     Short line to relative (14,2)
+DE20: 34            ;     Short line to relative (8,6)
+DE21: EB            ;     Short line to relative (-10,-4)
+DE22: 0A            ;     Short line to relative (-12,0)
+DE23: 3D            ;     Short line to relative (-6,6)
+DE24: 00            ;     End of short lines
+DE25: FE            ; End of image
 
 ;;= Spider Picture =
 ;;{{{html
@@ -5011,21 +5130,29 @@ DE24: 00 FE
 ;;}}}
 
 SpiderPic:       
-DE26: 7C A0
-DE28: FC
-DE29: C2 22
-DE2B: E4 24
-DE2D: 2C EC
-DE2F: 04 04
-DE31: E2 42
-DE33: 00
-DE34: 7C
-DE35: A8
-DE36: FC C1
-DE38: 21 12
-DE3A: F2 E1 41
-DE3D: 00
-DE3E: FE
+DE26: 7C A0         ; Move to absolute (160,124)
+DE28: FC            ; Draw short lines
+DE29: C2            ;     Short line to relative (4,-8)
+DE2A: 22            ;     Short line to relative (4,4)
+DE2B: E4            ;     Short line to relative (8,-4)
+DE2C: 24            ;     Short line to relative (8,4)
+DE2D: 2C            ;     Short line to relative (-8,4)
+DE2E: EC            ;     Short line to relative (-8,-4)
+DE2F: 04            ;     Short line to relative (8,0)
+DE30: 04            ;     Short line to relative (8,0)
+DE31: E2            ;     Short line to relative (4,-4)
+DE32: 42            ;     Short line to relative (4,8)
+DE33: 00            ;     End of short lines
+DE34: 7C A8         ; Move to absolute (168,124)
+DE36: FC            ; Draw short lines
+DE37: C1            ;     Short line to relative (2,-8)
+DE38: 21            ;     Short line to relative (2,4)
+DE39: 12            ;     Short line to relative (4,2)
+DE3A: F2            ;     Short line to relative (4,-2)
+DE3B: E1            ;     Short line to relative (2,-4)
+DE3C: 41            ;     Short line to relative (2,8)
+DE3D: 00            ;     End of short lines
+DE3E: FE            ; End of image
 
 ;;= Scorpion Picture =
 ;;{{{html
@@ -5043,19 +5170,30 @@ DE3E: FE
 ;;}}}
 
 ScorpionPic:                     
-DE3F: 70 4A FC
-DE42: E0 EE
-DE44: 2C 42
-DE46: 14
-DE47: 14
-DE48: 20 0C
-DE4A: CC 22 0C
-DE4D: 22 00
-DE4F: 7C 5A FC
-DE52: E0 0C
-DE54: 2C 20
-DE56: 04 00
-DE58: FE 
+DE3F: 70 4A         ; Move to absolute (74,112)
+DE41: FC            ; Draw short lines
+DE42: E0            ;     Short line to relative (0,-4)
+DE43: EE            ;     Short line to relative (-4,-4)
+DE44: 2C            ;     Short line to relative (-8,4)
+DE45: 42            ;     Short line to relative (4,8)
+DE46: 14            ;     Short line to relative (8,2)
+DE47: 14            ;     Short line to relative (8,2)
+DE48: 20            ;     Short line to relative (0,4)
+DE49: 0C            ;     Short line to relative (-8,0)
+DE4A: CC            ;     Short line to relative (-8,-8)
+DE4B: 22            ;     Short line to relative (4,4)
+DE4C: 0C            ;     Short line to relative (-8,0)
+DE4D: 22            ;     Short line to relative (4,4)
+DE4E: 00            ;     End of short lines
+DE4F: 7C 5A         ; Move to absolute (90,124)
+DE51: FC            ; Draw short lines
+DE52: E0            ;     Short line to relative (0,-4)
+DE53: 0C            ;     Short line to relative (-8,0)
+DE54: 2C            ;     Short line to relative (-8,4)
+DE55: 20            ;     Short line to relative (0,4)
+DE56: 04            ;     Short line to relative (8,0)
+DE57: 00            ;     End of short lines
+DE58: FE            ; End of image
 
 ;;= Blob Picture =
 ;;{{{html
@@ -5075,46 +5213,46 @@ DE58: FE
 BlobPic:
 ;     
 ; Body outline   
-DE59: 52 82    ; MoveTo(130,82)
-DE5B: FC       ; DrawShorts(   
-DE5C: 28       ;   LineToRelative(-16,+4) 
-DE5D: 7D       ;
-DE5E: 5F       ;
-DE5F: 50
-DE60: 5B
-DE61: F5 
-DE62: 2F 
-DE63: D5
-DE64: 17 
-DE65: 17 
-DE66: F3
-DE67: 22 
-DE68: E1
-DE69: 14
-DE6A: DD 
-DE6B: 8F
-DE6C: 8D 
-DE6D: DB
-DE6E: EC 
-DE6F: 00       ; )
+DE59: 52 82         ; Move to absolute (130,82)
+DE5B: FC            ; Draw short lines
+DE5C: 28            ;     Short line to relative (-16,4)
+DE5D: 7D            ;     Short line to relative (-6,14)
+DE5E: 5F            ;     Short line to relative (-2,10)
+DE5F: 50            ;     Short line to relative (0,10)
+DE60: 5B            ;     Short line to relative (-10,10)
+DE61: F5            ;     Short line to relative (10,-2)
+DE62: 2F            ;     Short line to relative (-2,4)
+DE63: D5            ;     Short line to relative (10,-6)
+DE64: 17            ;     Short line to relative (14,2)
+DE65: 17            ;     Short line to relative (14,2)
+DE66: F3            ;     Short line to relative (6,-2)
+DE67: 22            ;     Short line to relative (4,4)
+DE68: E1            ;     Short line to relative (2,-4)
+DE69: 14            ;     Short line to relative (8,2)
+DE6A: DD            ;     Short line to relative (-6,-6)
+DE6B: 8F            ;     Short line to relative (-2,-16)
+DE6C: 8D            ;     Short line to relative (-6,-16)
+DE6D: DB            ;     Short line to relative (-10,-6)
+DE6E: EC            ;     Short line to relative (-8,-4)
+DE6F: 00            ;     End of short lines
 ;
 ; Eyes
-DE70: 56 82    ; MoveTo(130,86)
-DE72: FC       ; DrawShorts( 
-DE73: 33       ;   LineToRelative(+6,+6)
-DE74: 31
-DE75: 1B
-DE76: 91 
-DE77: 3B
-DE78: 5F
-DE79: F5 
-DE7A: 00       ; )
+DE70: 56 82         ; Move to absolute (130,86)
+DE72: FC            ; Draw short lines
+DE73: 33            ;     Short line to relative (6,6)
+DE74: 31            ;     Short line to relative (2,6)
+DE75: 1B            ;     Short line to relative (-10,2)
+DE76: 91            ;     Short line to relative (2,-14)
+DE77: 3B            ;     Short line to relative (-10,6)
+DE78: 5F            ;     Short line to relative (-2,10)
+DE79: F5            ;     Short line to relative (10,-2)
+DE7A: 00            ;     End of short lines
 ;
 ; Mouth
-DE7B: 6C 74    ; MoveTo(116,108)
-DE7D: 72 76    ; LineToAbsolute(118,114)
-DE7F: 78 90    ; LineToAbsolute(144,120)
-DE81: FE       ; EndOfImage
+DE7B: 6C 74         ; Move to absolute (116,108)
+DE7D: 72 76         ; Line to (118,114)
+DE7F: 78 90         ; Line to (144,120)
+DE81: FE            ; End of image
 
 ;;= Knight Picture =
 ;;{{{html
@@ -5132,19 +5270,22 @@ DE81: FE       ; EndOfImage
 ;;}}}
 
 KnightPic:       
-DE82: 22 7C
-DE84: FC 04 1F
-DE87: 0E FF
-DE89: 00 50
-DE8B: 8E 40 88
-DE8E: 2E 92
-DE90: 40
-DE91: 9C 52
-DE93: 8C 4C 88
-DE96: 40
-DE97: 92 3A
-DE99: 8C FD DE
-DE9C: B3 
+DE82: 22 7C         ; Move to absolute (124,34)
+DE84: FC            ; Draw short lines
+DE85: 04            ;     Short line to relative (8,0)
+DE86: 1F            ;     Short line to relative (-2,2)
+DE87: 0E            ;     Short line to relative (-4,0)
+DE88: FF            ;     Short line to relative (-2,-2)
+DE89: 00            ;     End of short lines
+DE8A: 50 8E         ; Move to absolute (142,80)
+DE8C: 40 88         ; Line to absolute (136,64)
+DE8E: 2E 92         ; Line to absolute (146,46)
+DE90: 40 9C         ; Line to absolute (156,64)
+DE92: 52 8C         ; Line to absolute (140,82)
+DE94: 4C 88         ; Line to absolute (136,76)
+DE96: 40 92         ; Line to absolute (146,64)
+DE98: 3A 8C         ; Line to absolute (140,58)
+DE9A: FD DE B3      ; Jump to DEB3
 ;
 
 ;;= Shield Knight Picture =
@@ -5164,67 +5305,90 @@ DE9C: B3
 ;;}}}
 
 ShieldKnightPic:       
-DE9D: 1E 7E
-DE9F: FC 50 0F
-DEA2: E0 00
-DEA4: 2C 96
-DEA6: 34 A6
-DEA8: 4C
-DEA9: A4 5C
-DEAB: 96 4C
-DEAD: 88 34
-DEAF: 86 2C
-DEB1: 96 FF
-DEB3: 50
-DEB4: 8C 80 98
-DEB7: 84 A0
-DEB9: 84 90
-DEBB: 7E 90 54
-DEBE: 82 FF
-DEC0: 54
-DEC1: 7E 7E 6E
-DEC4: 84 6E
-DEC6: 84 5C
-DEC8: 80 66
-DECA: 50
-DECB: 74 FF 50
-DECE: 8C FC 3A
-DED1: D9 83
-DED3: DE AD
-DED5: E6 A1
-DED7: E2 22
-DED9: 61
-DEDA: 26 EA
-DEDC: 20 3D
-DEDE: DD E0
-DEE0: 00 34
-DEE2: 80 14
-DEE4: 80 FC
-DEE6: 0E 21
-DEE8: 02
-DEE9: E1 0E
-DEEB: 00 4A
-DEED: 66 FC E0
-DEF0: 02
-DEF1: D0 08
-DEF3: 30 02
-DEF5: 20 01
-DEF7: 30 02
-DEF9: D0 01
-DEFB: 87
-DEFC: 00 2E
-DEFE: 6E 40
-DF00: 66 40
-DF02: 64 1E
-DF04: 66 14
-DF06: 62
-DF07: 1E 5E
-DF09: 40
-DF0A: 60 40
-DF0C: 62
-DF0D: 14
-DF0E: 62
-DF0F: FE
+DE9D: 1E 7E         ; Line to absolute (126,30)
+DE9F: FC            ; Draw short lines
+DEA0: 50            ;     Short line to relative (0,10)
+DEA1: 0F            ;     Short line to relative (-2,0)
+DEA2: E0            ;     Short line to relative (0,-4)
+DEA3: 00            ;     End of short lines
+DEA4: 2C 96         ; Move to absolute (150,44)
+DEA6: 34 A6         ; Line to absolute (166,52)
+DEA8: 4C A4         ; Line to absolute (164,76)
+DEAA: 5C 96         ; Line to absolute (150,92)
+DEAC: 4C 88         ; Line to absolute (136,76)
+DEAE: 34 86         ; Line to absolute (134,52)
+DEB0: 2C 96         ; Line to absolute (150,44)
+DEB2: FF            ; Start new line
+;
+; Common knight
+DEB3: 50 8C         ; Move to absolute (140,80)
+DEB5: 80 98         ; Line to absolute (152,128)
+DEB7: 84 A0         ; Line to absolute (160,132)
+DEB9: 84 90         ; Line to absolute (144,132)
+DEBB: 7E 90         ; Line to absolute (144,126)
+DEBD: 54 82         ; Line to absolute (130,84)
+DEBF: FF            ; Start new line
+DEC0: 54 7E         ; Move to absolute (126,84)
+DEC2: 7E 6E         ; Line to absolute (110,126)
+DEC4: 84 6E         ; Line to absolute (110,132)
+DEC6: 84 5C         ; Line to absolute (92,132)
+DEC8: 80 66         ; Line to absolute (102,128)
+DECA: 50 74         ; Line to absolute (116,80)
+DECC: FF            ; Start new line
+DECD: 50 8C         ; Move to absolute (140,80)
+DECF: FC            ; Draw short lines
+DED0: 3A            ;     Short line to relative (-12,6)
+DED1: D9            ;     Short line to relative (-14,-6)
+DED2: 83            ;     Short line to relative (6,-16)
+DED3: DE            ;     Short line to relative (-4,-6)
+DED4: AD            ;     Short line to relative (-6,-12)
+DED5: E6            ;     Short line to relative (12,-4)
+DED6: A1            ;     Short line to relative (2,-12)
+DED7: E2            ;     Short line to relative (4,-4)
+DED8: 22            ;     Short line to relative (4,4)
+DED9: 61            ;     Short line to relative (2,12)
+DEDA: 26            ;     Short line to relative (12,4)
+DEDB: EA            ;     Short line to relative (-12,-4)
+DEDC: 20            ;     Short line to relative (0,4)
+DEDD: 3D            ;     Short line to relative (-6,6)
+DEDE: DD            ;     Short line to relative (-6,-6)
+DEDF: E0            ;     Short line to relative (0,-4)
+DEE0: 00            ;     End of short lines
+DEE1: 34 80         ; Move to absolute (128,52)
+DEE3: 14 80         ; Line to absolute (128,20)
+DEE5: FC            ; Draw short lines
+DEE6: 0E            ;     Short line to relative (-4,0)
+DEE7: 21            ;     Short line to relative (2,4)
+DEE8: 02            ;     Short line to relative (4,0)
+DEE9: E1            ;     Short line to relative (2,-4)
+DEEA: 0E            ;     Short line to relative (-4,0)
+DEEB: 00            ;     End of short lines
+DEEC: 4A 66         ; Move to absolute (102,74)
+DEEE: FC            ; Draw short lines
+DEEF: E0            ;     Short line to relative (0,-4)
+DEF0: 02            ;     Short line to relative (4,0)
+DEF1: D0            ;     Short line to relative (0,-6)
+DEF2: 08            ;     Short line to relative (-16,0)
+DEF3: 30            ;     Short line to relative (0,6)
+DEF4: 02            ;     Short line to relative (4,0)
+DEF5: 20            ;     Short line to relative (0,4)
+DEF6: 01            ;     Short line to relative (2,0)
+DEF7: 30            ;     Short line to relative (0,6)
+DEF8: 02            ;     Short line to relative (4,0)
+DEF9: D0            ;     Short line to relative (0,-6)
+DEFA: 01            ;     Short line to relative (2,0)
+DEFB: 87            ;     Short line to relative (14,-16)
+DEFC: 00            ;     End of short lines
+DEFD: 2E 6E         ; Move to absolute (110,46)
+DEFF: 40 66         ; Line to absolute (102,64)
+DF01: 40 64         ; Line to absolute (100,64)
+DF03: 1E 66         ; Line to absolute (102,30)
+DF05: 14 62         ; Line to absolute (98,20)
+DF07: 1E 5E         ; Line to absolute (94,30)
+DF09: 40 60         ; Line to absolute (96,64)
+DF0B: 40 62         ; Line to absolute (98,64)
+DF0D: 14 62         ; Line to absolute (98,20)
+DF0F: FE            ; End of image
 
 ;;= Moon Wizard Picture =
 ;;{{{html
@@ -5240,29 +5404,43 @@ DF0F: FE
 ;;}}}
 
 MoonWizardPic:        
-DF10: 2E 62
-DF12: FC 21 2F
-DF15: 2D FD
-DF17: CE C2 F2
-DF1A: 12
-DF1B: 0F 1E
-DF1D: 3F
-DF1E: 21
-DF1F: 12
-DF20: E3 E0
-DF22: 00 68
-DF24: 9A FC
-DF26: 21 2F
-DF28: 2D FD
-DF2A: CE C2 F2
-DF2D: 12
-DF2E: 0F 1E
-DF30: 3F
-DF31: 22
-DF32: 12
-DF33: E2 E0
-DF35: 00 FD
-DF37: DF 65
+DF10: 2E 62         ; Move to absolute (98,46)
+DF12: FC            ; Draw short lines
+DF13: 21            ;     Short line to relative (2,4)
+DF14: 2F            ;     Short line to relative (-2,4)
+DF15: 2D            ;     Short line to relative (-6,4)
+DF16: FD            ;     Short line to relative (-6,-2)
+DF17: CE            ;     Short line to relative (-4,-8)
+DF18: C2            ;     Short line to relative (4,-8)
+DF19: F2            ;     Short line to relative (4,-2)
+DF1A: 12            ;     Short line to relative (4,2)
+DF1B: 0F            ;     Short line to relative (-2,0)
+DF1C: 1E            ;     Short line to relative (-4,2)
+DF1D: 3F            ;     Short line to relative (-2,6)
+DF1E: 21            ;     Short line to relative (2,4)
+DF1F: 12            ;     Short line to relative (4,2)
+DF20: E3            ;     Short line to relative (6,-4)
+DF21: E0            ;     Short line to relative (0,-4)
+DF22: 00            ;     End of short lines
+DF23: 68 9A         ; Move to absolute (154,104)
+DF25: FC            ; Draw short lines
+DF26: 21            ;     Short line to relative (2,4)
+DF27: 2F            ;     Short line to relative (-2,4)
+DF28: 2D            ;     Short line to relative (-6,4)
+DF29: FD            ;     Short line to relative (-6,-2)
+DF2A: CE            ;     Short line to relative (-4,-8)
+DF2B: C2            ;     Short line to relative (4,-8)
+DF2C: F2            ;     Short line to relative (4,-2)
+DF2D: 12            ;     Short line to relative (4,2)
+DF2E: 0F            ;     Short line to relative (-2,0)
+DF2F: 1E            ;     Short line to relative (-4,2)
+DF30: 3F            ;     Short line to relative (-2,6)
+DF31: 22            ;     Short line to relative (4,4)
+DF32: 12            ;     Short line to relative (4,2)
+DF33: E2            ;     Short line to relative (4,-4)
+DF34: E0            ;     Short line to relative (0,-4)
+DF35: 00            ;     End of short lines
+DF36: FD DF 65      ; Jump to DF65
 
 ;;= Star Wizard Picture =
 ;;{{{html
@@ -5278,31 +5456,36 @@ DF37: DF 65
 ;;}}}
 
 StarWizardPic:
-DF39: 28 56
-DF3B: 40
-DF3C: 5C
-DF3D: 2A 64
-DF3F: 36 52
-DF41: 38
-DF42: 68 28
-DF44: 56
-DF45: FF
-DF46: 42
-DF47: 8C FC 70
-DF4A: AD 35
-DF4C: 1B
-DF4D: B3 00 60
-DF50: 92 78
-DF52: 94 64
-DF54: 88 6A
-DF56: 9A 74
-DF58: 8A 60
-DF5A: 92 FF
-DF5C: 50
-DF5D: 74 FC 53
-DF60: EC E4
-DF62: 4D
-DF63: B0 00 
+DF39: 28 56         ; Move to absolute (86,40)
+DF3B: 40 5C         ; Line to absolute (92,64)
+DF3D: 2A 64         ; Line to absolute (100,42)
+DF3F: 36 52         ; Line to absolute (82,54)
+DF41: 38 68         ; Line to absolute (104,56)
+DF43: 28 56         ; Line to absolute (86,40)
+DF45: FF            ; Start new line
+DF46: 42 8C         ; Move to absolute (140,66)
+DF48: FC            ; Draw short lines
+DF49: 70            ;     Short line to relative (0,14)
+DF4A: AD            ;     Short line to relative (-6,-12)
+DF4B: 35            ;     Short line to relative (10,6)
+DF4C: 1B            ;     Short line to relative (-10,2)
+DF4D: B3            ;     Short line to relative (6,-10)
+DF4E: 00            ;     End of short lines
+DF4F: 60 92         ; Move to absolute (146,96)
+DF51: 78 94         ; Line to absolute (148,120)
+DF53: 64 88         ; Line to absolute (136,100)
+DF55: 6A 9A         ; Line to absolute (154,106)
+DF57: 74 8A         ; Line to absolute (138,116)
+DF59: 60 92         ; Line to absolute (146,96)
+DF5B: FF            ; Start new line
+DF5C: 50 74         ; Move to absolute (116,80)
+DF5E: FC            ; Draw short lines
+DF5F: 53            ;     Short line to relative (6,10)
+DF60: EC            ;     Short line to relative (-8,-4)
+DF61: E4            ;     Short line to relative (8,-4)
+DF62: 4D            ;     Short line to relative (-6,8)
+DF63: B0            ;     Short line to relative (0,-10)
+DF64: 00            ;     End of short lines
 
 
 ;;= Demon Picture =
@@ -5319,54 +5502,82 @@ DF63: B0 00
 ;;}}}
 
 DemonPic:        
-DF65: 40
-DF66: 7C FC 4E
-DF69: C0 7B
-DF6B: 9C D4
-DF6D: E4 E1
-DF6F: E1 DD 1C 96
-DF73: 03 00
-DF75: 1C 82
-DF77: FC 03 45
-DF7A: 71
-DF7B: DA 1E
-DF7D: 11 E1
-DF7F: 00 30
-DF81: 86 36
-DF83: 8E 74 A4
-DF86: 84 84
-DF88: 82 76
-DF8A: 78 5E 5A
-DF8D: 6E 84
-DF8F: 84 48
-DF91: 6A FF 40 66
-DF95: FC 1F BD
-DF98: F1 53 00
-DF9B: 42
-DF9C: 66 FC 1E
-DF9F: 32 11
-DFA1: 73 00 58
-DFA4: 70 48 78
-DFA7: FF
-DFA8: 3E
-DFA9: 84 14
-DFAB: 80 34
-DFAD: 7A 40 7A
-DFB0: 3C 7C
-DFB2: 72
-DFB3: 80 50
-DFB5: 82 44
-DFB7: 82 3E
-DFB9: 84 FF
-DFBB: 28 82
-DFBD: FC FF 1E
-DFC0: 11 F2
-DFC2: 3F
-DFC3: 20
-DFC4: 0F C0
-DFC6: FF
-DFC7: 31 00
-DFC9: FE
+DF65: 40 7C         ; Move to absolute (124,64)
+DF67: FC            ; Draw short lines
+DF68: 4E            ;     Short line to relative (-4,8)
+DF69: C0            ;     Short line to relative (0,-8)
+DF6A: 7B            ;     Short line to relative (-10,14)
+DF6B: 9C            ;     Short line to relative (-8,-14)
+DF6C: D4            ;     Short line to relative (8,-6)
+DF6D: E4            ;     Short line to relative (8,-4)
+DF6E: E1            ;     Short line to relative (2,-4)
+DF6F: E1            ;     Short line to relative (2,-4)
+DF70: DD            ;     Short line to relative (-6,-6)
+DF71: 1C            ;     Short line to relative (-8,2)
+DF72: 96            ;     Short line to relative (12,-14)
+DF73: 03            ;     Short line to relative (6,0)
+DF74: 00            ;     End of short lines
+DF75: 1C 82         ; Move to absolute (130,28)
+DF77: FC            ; Draw short lines
+DF78: 03            ;     Short line to relative (6,0)
+DF79: 45            ;     Short line to relative (10,8)
+DF7A: 71            ;     Short line to relative (2,14)
+DF7B: DA            ;     Short line to relative (-12,-6)
+DF7C: 1E            ;     Short line to relative (-4,2)
+DF7D: 11            ;     Short line to relative (2,2)
+DF7E: E1            ;     Short line to relative (2,-4)
+DF7F: 00            ;     End of short lines
+DF80: 30 86         ; Move to absolute (134,48)
+DF82: 36 8E         ; Line to absolute (142,54)
+DF84: 74 A4         ; Line to absolute (164,116)
+DF86: 84 84         ; Line to absolute (132,132)
+DF88: 82 76         ; Line to absolute (118,130)
+DF8A: 78 5E         ; Line to absolute (94,120)
+DF8C: 5A 6E         ; Line to absolute (110,90)
+DF8E: 84 84         ; Line to absolute (132,132)
+DF90: 48 6A         ; Line to absolute (106,72)
+DF92: FF            ; Start new line
+DF93: 40 66         ; Move to absolute (102,64)
+DF95: FC            ; Draw short lines
+DF96: 1F            ;     Short line to relative (-2,2)
+DF97: BD            ;     Short line to relative (-6,-10)
+DF98: F1            ;     Short line to relative (2,-2)
+DF99: 53            ;     Short line to relative (6,10)
+DF9A: 00            ;     End of short lines
+DF9B: 42 66         ; Move to absolute (102,66)
+DF9D: FC            ; Draw short lines
+DF9E: 1E            ;     Short line to relative (-4,2)
+DF9F: 32            ;     Short line to relative (4,6)
+DFA0: 11            ;     Short line to relative (2,2)
+DFA1: 73            ;     Short line to relative (6,14)
+DFA2: 00            ;     End of short lines
+DFA3: 58 70         ; Move to absolute (112,88)
+DFA5: 48 78         ; Line to absolute (120,72)
+DFA7: FF            ; Start new line
+DFA8: 3E 84         ; Move to absolute (132,62)
+DFAA: 14 80         ; Line to absolute (128,20)
+DFAC: 34 7A         ; Line to absolute (122,52)
+DFAE: 40 7A         ; Line to absolute (122,64)
+DFB0: 3C 7C         ; Line to absolute (124,60)
+DFB2: 72 80         ; Line to absolute (128,114)
+DFB4: 50 82         ; Line to absolute (130,80)
+DFB6: 44 82         ; Line to absolute (130,68)
+DFB8: 3E 84         ; Line to absolute (132,62)
+DFBA: FF            ; Start new line
+DFBB: 28 82         ; Move to absolute (130,40)
+DFBD: FC            ; Draw short lines
+DFBE: FF            ;     Short line to relative (-2,-2)
+DFBF: 1E            ;     Short line to relative (-4,2)
+DFC0: 11            ;     Short line to relative (2,2)
+DFC1: F2            ;     Short line to relative (4,-2)
+DFC2: 3F            ;     Short line to relative (-2,6)
+DFC3: 20            ;     Short line to relative (0,4)
+DFC4: 0F            ;     Short line to relative (-2,0)
+DFC5: C0            ;     Short line to relative (0,-8)
+DFC6: FF            ;     Short line to relative (-2,-2)
+DFC7: 31            ;     Short line to relative (2,6)
+DFC8: 00            ;     End of short lines
+DFC9: FE            ; End of image
 
 ;;= Snake Picture =
 ;;{{{html
@@ -5385,42 +5596,40 @@ DFC9: FE
 ;;}}}
 
 SnakePic:        
-DFCA: 84 82
-DFCC: 70 7A
-DFCE: 5C 7C
-DFD0: 5E 7E
-DFD2: 5E 82
-DFD4: 5C 84
-DFD6: 70 82
-DFD8: 80 8C
-DFDA: 84 88
-DFDC: 84 72
-DFDE: 78 6C
-DFE0: 6A 76
-DFE2: 78 70
-DFE4: 7C 74
-DFE6: 7C 7E
-;
-DFE8: FF
-DFE9: 64 78
-; 
-DFEB: FC
-DFEC: E0
-DFED: E2
-DFEE: EE
-DFEF: E0
-DFF0: F1
-DFF1: 22
-DFF2: EE
-DFF3: 06
-DFF4: 2E
-DFF5: E2
-DFF6: 11
-DFF7: 20
-DFF8: 2E
-DFF9: 22
-DFFA: 20
-DFFB: 00
-DFFC: FE
+DFCA: 84 82         ; Move to absolute (130,132)
+DFCC: 70 7A         ; Line to absolute (122,112)
+DFCE: 5C 7C         ; Line to absolute (124,92)
+DFD0: 5E 7E         ; Line to absolute (126,94)
+DFD2: 5E 82         ; Line to absolute (130,94)
+DFD4: 5C 84         ; Line to absolute (132,92)
+DFD6: 70 82         ; Line to absolute (130,112)
+DFD8: 80 8C         ; Line to absolute (140,128)
+DFDA: 84 88         ; Line to absolute (136,132)
+DFDC: 84 72         ; Line to absolute (114,132)
+DFDE: 78 6C         ; Line to absolute (108,120)
+DFE0: 6A 76         ; Line to absolute (118,106)
+DFE2: 78 70         ; Line to absolute (112,120)
+DFE4: 7C 74         ; Line to absolute (116,124)
+DFE6: 7C 7E         ; Line to absolute (126,124)
+DFE8: FF            ; Start new line
+DFE9: 64 78         ; Move to absolute (120,100)
+DFEB: FC            ; Draw short lines
+DFEC: E0            ;     Short line to relative (0,-4)
+DFED: E2            ;     Short line to relative (4,-4)
+DFEE: EE            ;     Short line to relative (-4,-4)
+DFEF: E0            ;     Short line to relative (0,-4)
+DFF0: F1            ;     Short line to relative (2,-2)
+DFF1: 22            ;     Short line to relative (4,4)
+DFF2: EE            ;     Short line to relative (-4,-4)
+DFF3: 06            ;     Short line to relative (12,0)
+DFF4: 2E            ;     Short line to relative (-4,4)
+DFF5: E2            ;     Short line to relative (4,-4)
+DFF6: 11            ;     Short line to relative (2,2)
+DFF7: 20            ;     Short line to relative (0,4)
+DFF8: 2E            ;     Short line to relative (-4,4)
+DFF9: 22            ;     Short line to relative (4,4)
+DFFA: 20            ;     Short line to relative (0,4)
+DFFB: 00            ;     End of short lines
+DFFC: FE            ; End of image
 
 DFFD: 4B 53 4B ; "KSK" Initials of Keith S. Kiyohara, co-creator of the game

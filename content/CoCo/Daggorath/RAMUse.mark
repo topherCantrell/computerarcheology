@@ -1,7 +1,6 @@
 %%image Daggorath.jpg
 %%title Daggorath RAM Use
-%%range 0200:02FF
-
+%%range 7C:7E, 0200:03FF
 
 The first 256 bytes of RAM (DP=0) are needed by BASIC function calls made by Daggorath. The second
 256 bytes of RAM (DP=1) contain the BASIC interrupt vectors.
@@ -12,24 +11,24 @@ RAM from 0300 to 1000 is used for various arrays of structures. The stack grows 
 
 The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two screen buffers. 
 
-* 0000-01FF DP=0, DP=1 for BASIC function calls and interrupts
-* 0200-02FF DP=1 for game variables (named in table below)
 * 0300-03D3 ?? Text area descriptors ??
 * 03D4-05F4 Creature objects (32 creatures, 17 bytes each). See description below.
 * 05F4-09F3 Current level maze, one byte per room (32*32 bytes)
 * 09F4-09FC ?? Used in maze drawing ??
 * 09FD-0B14 ?? Game tasks ??
 * 0B15-???? Game objects (14 bytes each).  020F points to 1-entry-past-last game object. See description below.
+
 * ????-0FFF Stack space (grows downwards towards 0000 from 1000)
+
 * 1000-27FF First screen buffer
 * 2800-3FFF Second screen buffer
 
 ||=Address     || Name                 || Description || 
-|| 0200        || || ||
-|| 0201 || || ||
-|| 0202        ||                      || '01'        ||
-|| 0203        ||                      || 'FF'            ||
-|| 0204        ||                      || 'FF'            ||
+|| 007C        || CASSBLKTYPE          || BASIC cassette block type ||
+|| 007E        || CASSPTR              || BASIC cassette buffer ptr ||
+|| 0200:0201   || CONST_00             || '0000' Double constant ('0001' from 0201) ||
+|| 0202        ||                      || '01'   LSB of double constant '0001'      ||
+|| 0203:0204   || CONST_FF             || 'FFFF' Double constant ||
 || 0205        ||                      || '00'            ||
 || 0206        ||                      || '80'            ||
 || 0207        ||                      || '00'            ||
@@ -51,20 +50,20 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 || 026B        || rndSeedA             || Random number generator seed value ||
 || 026C        || rndSeedB             || Random number generator seed value ||
 || 026D        || rndSeedC             || Random number generator seed value ||
-|| 026E || || ||
-|| 026F || || ||
-|| 0270 || || ||
-|| 0271 || || ||
-|| 0272 || || ||
-|| 0273 || || ||
-|| 0274 || || ||
-|| 0275 || || ||
-|| 0276 || || ||
+|| 026E        || || ||
+|| 026F        || || ||
+|| 0270        || || ||
+|| 0271        || || ||
+|| 0272        || || ||
+|| 0273        || || ||
+|| 0274        || || ||
+|| 0275        || || ||
+|| 0276        || || ||
 || 0277        ||                      || ||
-|| 0278 || || ||
-|| 0279 || || ||
-|| 027A || || ||
-|| 027B || || ||
+|| 0278        || || ||
+|| 0279        || || ||
+|| 027A        || || ||
+|| 027B        || || ||
 || 027C        || drwMazeY             || Maze drawing ... current Y ||
 || 027D        || drwMazeX             || Maze drawing ... current X ||
 || 027E        || drwMazeCross         || Maze drawings ... number of crossings for current run ||
@@ -81,7 +80,7 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 || 0289        ||                      || ||
 || 028A        || drwMazeDir           || Maze drawing ... current direction ||
 || 028B        ||                      || ||
-|| 028C        ||                      || ||
+|| 028C        || numObjs              || Number of objects to create ||
 || 028D        ||                      || ||
 || 028E        ||                      || ||
 || 028F        ||                      || ||
@@ -114,11 +113,11 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 || 02AA        ||                      || ||
 || 02AB        ||                      || ||
 || 02AC        ||                      || ||
-|| 02AD        ||                      || ||
-|| 02AE        ||                      || ||
-|| 02AF        ||                      || ||
-|| 02B0        ||                      || ||
-|| 02B1        ||                      || ||
+|| 02AD        || scrollShowing        || Not 0 if a scroll is showing ||
+|| 02AE        || heartCounter         || Redraw when it reaches zero ||
+|| 02AF        || heartCounterRel      || Heart counter reload value ||
+|| 02B0        || heartPicture         || 0 for small-heart, other for large-heart ||
+|| 02B1        || hearHeart            || Not-0 to hear the heart beat ||
 || 02B2        ||                      || ||
 || 02B3        ||                      || ||
 || 02B4        || flipScreens          || Not-0 to flip screens then ack to 0 ||
@@ -132,15 +131,40 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 || 02BC        || inputHead            || head index (next read) of the 32 byte input ring buffer at 2D1  ||
 || 02BD        || inputTail            || tail index (next write) of the 32 byte input ring buffer at 2D1 ||
 || 02BE:02CB   || || ||
-|| 02CC || || ||
+|| 02CC        || || ||
 || 02CD:02D0   || || ||
 || 02D1:02F0   || inputBuf             || 32 byte input ring buffer ||
+|| 0313        || || ||
+|| 0335        || || ||
+
+? I believe that the "end" value in a descriptor is different for text and graphics areas.
+For text, the "end" is the number of characters.
+For graphics, the "end" is the end+1 address.
+
+Hand line descriptor
+
+||= address || name || description ||
+|| 388:389     || hndStart   || Starting address of this area ||
+|| 38A:38B     || hndEnd     || Number of characters in this area ||
+|| 38C:38D     || hndTextCur || Text cursor position in this area ||
+|| 038E        || hndColor   || Color (black or white) of this area ||
+|| 038F        || hnd???     || Something to do with this area ? duplicate images to +1800 ||
+
+Playfield descriptor
+
+||= address || name || description ||
+|| 390:391     || playStart   || Starting address of this area ||
+|| 392:393     || playEnd     || End+1 address of area ||
+|| 394:396     || playTextCur || Text cursor position in this area ||
+|| 0396        || playColor   || Color (black or white) of this area ||
+|| 0397        || play???     || Something to do with this area ? duplicate images to +1800 ||
 
 = Screen Descriptor =
 {{{
- aabbccdd eeff
-
- eeff : SAM settings for screen
+ aabb ccdd eeff
+ aabb : Start memory of area
+ ccdd : End memory (+1) of area
+ eeff : SAM settings for screen 
 }}}
 
 = Creatures =

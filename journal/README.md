@@ -1,5 +1,10 @@
 # Journal
 
+## 12/30/2015
+
+I wrote a graphics-processor disassembler to make better comments in the picture data. Lots
+of little cleans and comments all over the place. This is some wonderful code.
+
 ## 12/27/2015
 
 I wish I had been keeping this journal over the years. I don't know why I didn't think of it until now.
