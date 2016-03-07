@@ -19,6 +19,14 @@
 
 {{{
 
+ /* main CPU */
+ /* XTAL101 Crystal @ 12mhz */
+ /* through 74LS161, Pin 13 = divide by 4 */
+ MDRV_CPU_ADD("maincpu", Z80,12000000/4)
+ MDRV_CPU_PROGRAM_MAP(main_map, 0)
+ MDRV_CPU_IO_MAP(port_map, 0)
+ MDRV_CPU_PERIODIC_INT(irq0_line_hold,250)
+
 Memory Map:
 
     0000 - 3FFF ROM
@@ -26,7 +34,6 @@ Memory Map:
     5C00 - 5CFF NVRAM (256 x 4bits)
     8000 - 8FFF VECTOR RAM (4k)
     9000 - 9FFF VECTOR ROM (4k)
-
 
     10 I    DIP SW C4 (game ship settings)
 

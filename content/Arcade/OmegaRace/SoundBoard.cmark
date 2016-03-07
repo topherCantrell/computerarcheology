@@ -4,11 +4,15 @@
 ;;%%-2 Arcade/OmegaRace/SoundHardware.mark SoundHardware.html
 ;;%%cpu Z80
 
+; Commands:
+;    0 - reset sound CPU
+;    7 - beep used in diagnostics
+
 0000: F3          DI                       ; Interrupts off
 0001: ED 56       IM    1                  ; All interrupts go to RST 38
 0003: 31 FC 13    LD    SP,$13FC           ; Stack pointer almost to top of RAM
 0006: FD 21 00 10 LD    IY,$1000           
-000A: 01 FF 03    LD    BC,$03FF           ; 400 byets (1K) to clear
+000A: 01 FF 03    LD    BC,$03FF           ; 400 bytes (1K) to clear
 000D: 11 01 10    LD    DE,$1001           ; Destination is 1 ...
 0010: 21 00 10    LD    HL,$1000           ; ... past source
 0013: 36 00       LD    (HL),$00           ; Move 0 ...
