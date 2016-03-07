@@ -1,13 +1,8 @@
 %%image ORace.jpg
+%%title Omega Race Sound RAM Use
+%%range 1000:1FFF
 
 ||= Address || Name             || Description ||
-|| 0000     ||                  || ||
-|| 006F     ||                  || ||
-|| 00EF     ||                  || ||
-|| 011C     ||                  || ||
-|| 0166     ||                  || ||
-|| 017B     ||                  || ||
-|| 0238     ||                  || ||
 || 1000     ||                  || ||
 || 1001     ||                  || ||
 || 1002     ||                  || ||

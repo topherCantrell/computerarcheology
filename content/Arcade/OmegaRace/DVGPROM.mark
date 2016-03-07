@@ -1,8 +1,13 @@
-[[PageOutline()]]
-
-= DVG PROM =
 
 {{{
+
+     Omega Race has two pairs of the state PROM output
+     lines swapped before going into the decoder.
+     Since all other avg/dvg games connect the PROM
+     in a consistent way to the decoder, we swap the bits
+     here. 
+ for (i=0; i&ltlen; i++) prom[i] = BITSWAP8(prom[i],7,6,5,4,1,0,3,2);
+
 Courtesy of Mr. Gary Dion
 
 Original dvgprom.bin dump:
