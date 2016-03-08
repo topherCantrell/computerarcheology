@@ -29,12 +29,13 @@
 || 17        ||                       ||             || 
 || 18        || curPlayer             || Current Player (0 = Player 1, 1 = Player 2) ||
 || 19        ||                       ||             ||
-|| 1A        ||                       ||             ||
+|| 1A        ||                       || Previous Game (0 = None, 1 = Singleplayer, 2 = Multiplayer) ||
+|| 1B        ||                       ||             ||
 || 1C        || numPlayers            || Number Of Players In Current Game ||
 || 1D:30     ||                       || High Score Table (Scores) 2 Byte Format In Decimal. Byte 1 Tens, Byte 2 Thousands (In Decimal) ||
-|| 31        ||                       ||             ||
-|| 32        ||                       ||             ||
-|| 33        ||                       ||             ||
+|| 31        ||                       || Current Letter On High Score Entry ||
+|| 32        ||                       || Placement Of Player 1 High Score ||
+|| 33        ||                       || Placement Of Player 2 High Score ||
 || 34:51     ||                       || High Score Table (Initials) 3 Byte Format ||
 || 52        ||                       || Player 1 Score Tens (In Decimal) ||
 || 53        ||                       || Player 1 Score Thousands (In Decimal) ||
@@ -49,11 +50,11 @@
 || 5C        ||                       || Fast Timer ||
 || 5D        ||                       || Slow Timer ||
 || 5E        ||                       ||             ||
-|| 5F        ||                       ||             ||
+|| 5F        ||                       || "Random" Value ||
 || 60        ||                       ||             ||
 || 61        ||  direction            || Ship Direction ||
-|| 62        ||                       || Direction Shot Is Fired From Saucer (?) ||
-|| 63        ||                       ||             ||
+|| 62        ||                       || Direction Shot Is Fired From Saucer ||
+|| 63        ||                       || Photon Input Limiter (0 = No Input, +128 Per Photon, 255 = Max Input Limit) values divides by two per frame, can't shoot a photon if value is above 127 ||
 || 64        ||                       || Ship Horizontal Velocity Low ||
 || 65        ||                       || Ship Vertical Velocity Low ||
 || 66        ||                       ||             ||
@@ -69,16 +70,16 @@
 || 70        ||                       || Current Number Of Credits ||
 || 71        ||                       || Bitmap Of DIP Switches 4-8 ||
 || 72        ||                       || Slam Switch Flag ||
-|| 73        ||                       || Total Coins (After Multiplyers) To Be Converted To Credits ||
+|| 73        ||                       || Total Coins (After Multipliers) To Be Converted To Credits ||
 || 74        ||                       ||             ||
 || 75        ||                       ||             ||
 || 76        ||                       ||             ||
 || 77        ||                       ||             ||
 || 78        ||                       ||             ||
 || 79        ||                       ||             ||
-|| 7A        ||                       ||             ||
-|| 7B        ||                       ||             ||
-|| 7C        ||                       ||             ||
+|| 7A        ||                       || Coin 1 Input Length (31 = No Input) goes down by 1 until it hits 0, if input is released before 0 then credit is added ||
+|| 7B        ||                       || Coin 2 Input Length ||
+|| 7C        ||                       || Coin 3 Input Length ||
 || 7D        ||                       ||             ||
 || 7E        ||                       ||             ||
 || 7F        ||                       ||             ||
@@ -129,7 +130,7 @@
 || 02F1:02F4 ||                       || Ship Shots 4-1 ||
 || 02F5      ||                       || Starting Asteroids ||
 || 02F6      ||                       || Current Amount Of Asteroids ||
-|| 02F7      ||                       || Countdown Timer For Saucer, At 0, Saucer Appears. Possibly A Dual Purpose Timer ||
+|| 02F7      ||                       || Countdown Timer For Saucer, At 0, Saucer Appears. Also Used For Time Between Saucer Shots While Saucer Is Alive ||
 || 02F8      ||                       || Starting Value For Timer At 02F7 ||
 || 02F8      ||                       || Starting Value For Timer At 6E ||
 || 02F9      ||                       || Possibly Screen Transition Timer ||
