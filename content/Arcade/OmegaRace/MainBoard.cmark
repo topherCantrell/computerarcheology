@@ -10,6 +10,7 @@
 0006: DB 09           IN      A,($09)             ; Feed watchdog
 0008: 3E FF           LD      A,$FF               ; LEDs, screen reverse, meters ... 
 000A: D3 13           OUT     ($13),A             ; ... all off
+;
 000C: 01 FE 07        LD      BC,$07FE            ; Size of vector RAM (minus 2)
 000F: 11 02 80        LD      DE,$8002            ; Fill ...
 0012: 21 01 80        LD      HL,$8001            ; ... vector ...
@@ -17,19 +18,23 @@
 0017: 2B              DEC     HL                  ; ... with ...
 0018: 36 00           LD      (HL),$00            ; ... 00 B0 ...
 001A: ED B0           LDIR                        ; ... HALT
+;
 001C: 01 80 01        LD      BC,$0180            
-001F: 11 81 44        LD      DE,$4481            
+001F: 11 81 44        LD      DE,$4481            ; Some kind of vector mirror in RAM? This loads it with HALT
 0022: 21 00 80        LD      HL,$8000            
-0025: ED B0           LDIR                        
+0025: ED B0           LDIR
+;                        
 0027: 01 30 00        LD      BC,$0030            
-002A: 11 01 46        LD      DE,$4601            
+002A: 11 01 46        LD      DE,$4601            ; Another vector
 002D: 21 D9 30        LD      HL,$30D9            
-0030: ED B0           LDIR                        
-0032: C3 E8 04        JP      $04E8               ;{Diagnostics} 
+0030: ED B0           LDIR
+;                        
+0032: C3 E8 04        JP      $04E8               ;{Diagnostics} Diagnostics OR startup
 
-0035: FF              RST     $38                 
-0036: FF              RST     $38                 
-0037: FF              RST     $38                 
+0035: FF FF FF                 
+
+; Interrupt Mode 1: All interrupts come here
+;
 0038: F5              PUSH    AF                  
 0039: C5              PUSH    BC                  
 003A: FD 34 97        INC     (IY+$97)            ;
@@ -47,16 +52,14 @@
 0055: 32 25 40        LD      ($4025),A           ; 
 0058: 32 26 40        LD      ($4026),A           ; 
 005B: 18 0B           JR      $68                 ; 
-005D: FF              RST     $38                 
-005E: FF              RST     $38                 
-005F: FF              RST     $38                 
-0060: FF              RST     $38                 
-0061: FF              RST     $38                 
-0062: FF              RST     $38                 
-0063: FF              RST     $38                 
-0064: FF              RST     $38                 
-0065: FF              RST     $38                 
-0066: ED 45           RETN                        
+
+; Padding to NMI destination
+005D: FF FF FF FF FF FF FF FF FF
+;                 
+; NMI comes here
+0066: ED 45           RETN                        ; Return from non-maskable interrupt
+                  
+; Continuing from 005B
 0068: 3A 2D 40        LD      A,($402D)           ; 
 006B: B7              OR      A                   
 006C: 28 0A           JR      Z,$78               ; 
@@ -274,8 +277,9 @@ DiagString: ; =
 0294: 3F              CCF                         
 0295: 74              LD      (HL),H              
 0296: FF              RST     $38                 
-0297: 06 00           LD      B,$00               
-0299: D0              RET     NC                  
+0297: 06 
+0297: 00 D0
+                  
 029A: 43              LD      B,E                 
 029B: 4F              LD      C,A                 
 029C: 49              LD      C,C                 
@@ -2109,20 +2113,22 @@ PrintString: ; =
 11AE: CA 47 12        JP      Z,$1247             ; 
 11B1: FD CB 97 76     BIT     6,(IY+$97)          
 11B5: 28 1D           JR      Z,$11D4             ; 
-11B7: F3              DI                          
-11B8: FD 46 F2        LD      B,(IY+$F2)          
-11BB: CB 90           RES     2,B                 
-11BD: FE 02           CP      $02                 
-11BF: 38 0A           JR      C,$11CB             ; 
-11C1: CB 98           RES     3,B                 
-11C3: CB A0           RES     4,B                 
-11C5: FE 04           CP      $04                 
-11C7: 38 02           JR      C,$11CB             ; 
-11C9: CB A8           RES     5,B                 
-11CB: 78              LD      A,B                 
-11CC: D3 13           OUT     ($13),A             ;
-11CE: 32 72 40        LD      ($4072),A           ; 
-11D1: FB              EI                          
+
+11B7: F3              DI                          ; Interrupts off (atomic operation)
+11B8: FD 46 F2        LD      B,(IY+$F2)          ;
+11BB: CB 90           RES     2,B                 ; At least one credit: 1P1C start on
+11BD: FE 02           CP      $02                 ; Two or more credits?
+11BF: 38 0A           JR      C,$11CB             ; No ... skip
+11C1: CB 98           RES     3,B                 ; 2 or more: 1P1C start
+11C3: CB A0           RES     4,B                 ; 2 or more: 2P1C start
+11C5: FE 04           CP      $04                 ; At least four credits?
+11C7: 38 02           JR      C,$11CB             ; No ... skip
+11C9: CB A8           RES     5,B                 ; 4 or more: 2P2C start
+11CB: 78              LD      A,B                 ; Value to A for OUT
+11CC: D3 13           OUT     ($13),A             ; Write the LED values
+11CE: 32 72 40        LD      ($4072),A           ; Remember what we wrote
+11D1: FB              EI                          ; Done ... interrupts back on
+
 11D2: 18 03           JR      $11D7               ; 
 11D4: CD 48 12        CALL    $1248               ; 
 11D7: 3A 2D 40        LD      A,($402D)           ; 
@@ -6075,6 +6081,7 @@ PrintString: ; =
 30D7: 0C              INC     C                   
 30D8: 0E 
 
+; Copied 48 bytes to 4601 at startup
 30D9: D8           LD      C,$D8               
 30DA: E0              RET     PO                  
 30DB: FF              RST     $38                 
@@ -6112,7 +6119,8 @@ PrintString: ; =
 3103: 92              SUB     D                   
 3104: CD 2F CD        CALL    $CD2F               ; 
 3107: 00              NOP                         
-3108: D0              RET     NC                  
+3108: D0              RET     NC
+                  
 3109: F8              RET     M                   
 310A: A3              AND     E                   
 310B: F8              RET     M                   
