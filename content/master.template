@@ -31,8 +31,8 @@
 					<li><a href="/Help/">Help</a></li>
 				</ul>
           
-				<ol class="breadcrumb">
-					<!-- %%BREAD_CRUMBS%% -->
+				<ol id="crumbs" class="breadcrumb">		
+				<!-- %%BREAD_CRUMBS%% -->			
 				</ol>          
         
 			</div>
@@ -47,8 +47,7 @@
 						<li id="pageTab" role="presentation" onclick="switchTab('page');"><a>Page</a></li>
 					</ul>
 						
-					<ul id="siteTree">
-						<!-- %%SITE_TREE%% -->
+					<ul id="siteTree">						
 					</ul>
 		
 					<ul id="pageTree" class="hidden">

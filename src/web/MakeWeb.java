@@ -1,7 +1,9 @@
 package web;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,11 +23,18 @@ public class MakeWeb {
 		}
 				
 		// Create the empty deploy directory		
-		dep.mkdir();
+		dep.mkdir();		        
 		
 		// Process all the entries	
 		List<SiteInfoEntry> nodes = new ArrayList<SiteInfoEntry>();
 		nodes.add(si.root);
+		
+		String siteNav = MakeWeb.getSiteNav(si.root, nodes, null);
+		OutputStream os = new FileOutputStream(si.deployRoot.toString()+"/tree.html");
+		os.write(siteNav.getBytes());
+		os.flush();
+		os.close();
+		
 		processEntries(si.contentRoot.toString(),si.root,nodes,si.deployRoot.toString(),si.contentRoot.toString());
 		
 		System.out.println("\nDONE");
@@ -108,11 +117,11 @@ public class MakeWeb {
 
 	public static String getSiteNav(SiteInfoEntry desc, List<SiteInfoEntry> nodes, SiteInfoEntry activeNode) {
 		String a = null;
-		if(nodes.size()<3) {
-			a = MakeWeb.makeNav("/", "Home", 0, true, true, true) + "<p></li>";
-		} else {
+		//if(nodes.size()<3) {
+		//	a = MakeWeb.makeNav("/", "Home", 0, true, true, true) + "<p></li>";
+		//} else {
 			a = MakeWeb.makeNav("/", "Home", 0, false, true, true) + "<p></li>";
-		}
+		//}
 		return a + MakeWeb.getSiteNavRecurse(desc, nodes, "/", 0, activeNode);
 	}
 	
@@ -181,30 +190,27 @@ public class MakeWeb {
 				Object[] mr = MakeWeb.getBreadCrumbs(nodes);
 				String breadCrumbs = (String)mr[0];
 				nodes.remove(nodes.size()-1);
-				SiteInfoEntry activeNode = (SiteInfoEntry)mr[1];
-				String siteNav = MakeWeb.getSiteNav(root, nodes, activeNode);
+				//SiteInfoEntry activeNode = (SiteInfoEntry)mr[1];
 				MarkupToHTML tr = new MarkupToHTML();
-				tr.translate(contentRoot, cont+"/"+ent.arg, dep+"/"+ent.out, breadCrumbs, siteNav, nav);
+				tr.translate(contentRoot, cont+"/"+ent.arg, dep+"/"+ent.out, breadCrumbs, "", nav);
 			} else if(ent.command.equals("code")) {
 				System.out.println("CODE "+cont+"/"+ent.arg+" "+dep+"/"+ent.out+" "+nav);
 				nodes.add(ent);
 				Object[] mr = MakeWeb.getBreadCrumbs(nodes);
 				String breadCrumbs = (String)mr[0];
 				nodes.remove(nodes.size()-1);
-				SiteInfoEntry activeNode = (SiteInfoEntry)mr[1];
-				String siteNav = MakeWeb.getSiteNav(root, nodes, activeNode);
+				//SiteInfoEntry activeNode = (SiteInfoEntry)mr[1];
 				CodeToHTML tr = new CodeToHTML();
-				tr.translate(contentRoot, cont+"/"+ent.arg, dep+"/"+ent.out, breadCrumbs, siteNav, nav);
+				tr.translate(contentRoot, cont+"/"+ent.arg, dep+"/"+ent.out, breadCrumbs, "", nav);
 			} else if(ent.command.equals("address")) {
 				System.out.println("ADDRESS "+cont+"/"+ent.arg+" "+dep+"/"+ent.out+" "+nav);
 				nodes.add(ent);
 				Object[] mr = MakeWeb.getBreadCrumbs(nodes);
 				String breadCrumbs = (String)mr[0];
 				nodes.remove(nodes.size()-1);
-				SiteInfoEntry activeNode = (SiteInfoEntry)mr[1];
-				String siteNav = MakeWeb.getSiteNav(root, nodes, activeNode);
+				//SiteInfoEntry activeNode = (SiteInfoEntry)mr[1];
 				AddressToHTML tr = new AddressToHTML();
-				tr.translate(contentRoot, cont+"/"+ent.arg, dep+"/"+ent.out, breadCrumbs, siteNav, nav);
+				tr.translate(contentRoot, cont+"/"+ent.arg, dep+"/"+ent.out, breadCrumbs, "", nav);
 			}
 			
 			else if(ent.command.equals("copy")) {
