@@ -1,5 +1,13 @@
 # Journal
 
+## 4/24/2016
+
+Mark McDougall asked about Space Invaders RAM initialization. It looks like 0x1FF is not initialized before
+it is read in the demo screen. The code blows up if it is bad.
+
+I added the SpaceInvaders simulator code to the project. Sure enough. Read before written. I am checking
+with Gary to see if that the TMS4060 powers up to all zeros.
+
 ## 12/30/2015
 
 I wrote a graphics-processor disassembler to make better comments in the picture data. Lots
