@@ -10,7 +10,8 @@ public class InvadersScreen implements AddressBusDevice {
 	
 	private JPanel panel;
 	
-	private int[] raster = new int[256*224/8];
+	//private int[] raster = new int[256*224/8];
+	private int[] raster = new int[8192];
 	
 	private boolean dirty = true;
 	
@@ -21,7 +22,8 @@ public class InvadersScreen implements AddressBusDevice {
 		boolean running = true;
 		
 		InvPan() {
-			this.setPreferredSize(new Dimension(256*2,224*2));
+			//this.setPreferredSize(new Dimension(256*2,224*2));
+			this.setPreferredSize(new Dimension(224*2,256*2));
 			Thread tm = new Thread(this);
 			tm.start();
 		}
@@ -36,7 +38,7 @@ public class InvadersScreen implements AddressBusDevice {
 					int m = 0b1;
 					for(int z=0;z<8;++z) {
 						if( (v&m)>0 ) {
-							g.fillRect((x*8+z)*2, y*2, 2, 2);
+							g.fillRect(y*2, 256*2 - (x*8+z)*2, 2, 2);
 						}
 						m = m << 1;
 					}

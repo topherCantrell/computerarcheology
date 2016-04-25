@@ -6,9 +6,11 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class Invaders {
+	
+	static CPU_8080 cpu;
 
 	public static void main(String[] args) throws Exception {
-		
+				
 		SimpleAddressBus ports = new SimpleAddressBus();
 		
 		InvadersPorts ip = new InvadersPorts();
@@ -23,9 +25,9 @@ public class Invaders {
 		sys.addDevice(0x2000, 1024, ram); // 1K of RAM at 0x2000
 		
 		InvadersScreen scr = new InvadersScreen();
-		sys.addDevice(0x2400, 7*1024, scr); // Screen raster (7K) at 0x2400
+		sys.addDevice(0x2400, 8192, scr); // Screen raster (8K) at 0x2400
 		
-		CPU_8080 cpu = new CPU_8080(ports,sys);
+		cpu = new CPU_8080(ports,sys);
 		//CPU_SPIN8080 cpu = new CPU_SPIN8080(ports,sys);
 		
 		JFrame jf = new JFrame("Space Invaders");
@@ -34,7 +36,7 @@ public class Invaders {
 		jf.setContentPane(jp);
 		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jf.pack();
-		jf.setVisible(true);
+		jf.setVisible(true);		
 		
 		// Crude logic here ... just for testing
 		while(true) {		
@@ -43,7 +45,8 @@ public class Invaders {
 			cpu.exec(50_000);	
 			cpu.interruptIRQ();						
 			Thread.sleep(20);
-		}		
+		}	
+		
 	}
 
 }
