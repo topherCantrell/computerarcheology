@@ -29,7 +29,7 @@
 || 17        ||                       ||             || 
 || 18        || curPlayer             || Current Player (0 = Player 1, 1 = Player 2) ||
 || 19        ||                       ||             ||
-|| 1A        ||                       || Previous Game (0 = None, 1 = Singleplayer, 2 = Multiplayer) ||
+|| 1A        ||                       || Number Of Players In Previous Game (0 = None, 1 = Singleplayer, 2 = Multiplayer) ||
 || 1B        ||                       ||             ||
 || 1C        || numPlayers            || Number Of Players In Current Game ||
 || 1D:30     ||                       || High Score Table (Scores) 2 Byte Format In Decimal. Byte 1 Tens, Byte 2 Thousands (In Decimal) ||
@@ -54,15 +54,15 @@
 || 60        ||                       ||             ||
 || 61        ||  direction            || Ship Direction ||
 || 62        ||                       || Direction Shot Is Fired From Saucer ||
-|| 63        ||                       || Photon Input Limiter (0 = No Input, +128 Per Photon, 255 = Max Input Limit) values divides by two per frame, can't shoot a photon if value is above 127 ||
+|| 63        ||                       || Photon Input Limiter (0 = No Input, +128 Per Photon, 255 = Max Input Limit) can't shoot a photon if value is above 127. Also used for initials input length on high score entry ||
 || 64        ||                       || Ship Horizontal Velocity Low ||
 || 65        ||                       || Ship Vertical Velocity Low ||
-|| 66        ||                       ||             ||
-|| 67        ||                       ||             ||
+|| 66        ||                       || TIMER: Length Of Time To Play Player Fire Sound ||
+|| 67        ||                       || TIMER: Length Of Time To Play Saucer Fire Sound ||
 || 68        ||                       || TIMER: Length Of Time To Play Bonus Ship Sound ||
-|| 69        ||                       ||             ||
-|| 6A        ||                       || Fire Sound Flag For Player ||
-|| 6B        ||                       || Fire Sound Flag For Saucer ||
+|| 69        ||                       || TIMER: Length Of Time To Play Explosion Sound ||
+|| 6A        ||                       || Alternate Fire Sound Flag For Player ||
+|| 6B        ||                       || Alternate Fire Sound Flag For Saucer ||
 || 6C        ||                       || Current Volume & Frequency Settings For THUMP Sound ||
 || 6D        ||                       || TIMER: Time THUMP Sound Remains On ||
 || 6E        ||                       || TIMER: Time THUMP Sound Remains Off (Speeds Up As Game Progresses) ||
@@ -85,7 +85,7 @@
 || 7F        ||                       ||             ||
 || 80:FF     ||                       ||             ||
 || 0100:01FF ||                       || Stack Space ||
-|| 0200:02FF ||                       || Player 1 RAM ||
+|| 0200:02FF ||                       || Current Player RAM ||
 || 0200:0222 ||                       || Status ||
 || 0200:021A ||                       || Asteroids 27-1 ||
 || 021B      ||                       || Ship, 0 = No Ship Or Currently In Hyperspace, 1 = Alive, 0x160+ = Ship Currently Exploding ||
@@ -128,13 +128,17 @@
 || 02EE      ||                       || Saucer ||
 || 02EF:02F0 ||                       || Saucer Shots 2-1 ||
 || 02F1:02F4 ||                       || Ship Shots 4-1 ||
-|| 02F5      ||                       || Starting Asteroids ||
+|| 02F5      ||                       || Starting Asteroids Per Wave ||
 || 02F6      ||                       || Current Amount Of Asteroids ||
 || 02F7      ||                       || Countdown Timer For Saucer, At 0, Saucer Appears. Also Used For Time Between Saucer Shots While Saucer Is Alive ||
 || 02F8      ||                       || Starting Value For Timer At 02F7 ||
-|| 02F8      ||                       || Starting Value For Timer At 6E ||
-|| 02F9      ||                       || Possibly Screen Transition Timer ||
+|| 02F9      ||                       || ?? Goes Up After Explosion ?? ||
 || 02FA      ||                       || Timer For Ship Spawning ||
-|| 0300:03FF ||                       || Player 2 RAM ||
+|| 02FB      ||                       || Timer For Asteroid Wave ||
+|| 02FC      ||                       || Starting Value For Timer At 6E ||
+|| 02FD      ||                       || ?? Goes Up By One Every Wave ?? ||
+|| 02FE      ||                       ||             ||
+|| 02FF      ||                       ||             ||
+|| 0300:03FF ||                       || Other Player RAM ||
 
 

@@ -152,7 +152,7 @@
 08DE: bb ca          JSR  $0D76                                        ; {} I
 08E0: 00 d0          RTS                                               
 
-; ??
+; Ship Explosion
 08E2: c6 ff          SVEC scale=01(/256)  bri=12  x=-2      y=-3     (-0.01, -0.01)
 08E4: c1 fe          SVEC scale=01(/256)  bri=12  x=1       y=-2     (0.00, -0.01)
 08E6: c3 f1          SVEC scale=00(/512)  bri=12  x=3       y=1      (0.01, 0.00)
