@@ -313,13 +313,35 @@ public class ASM {
 	}
 	
 	public static void main(String [] args) throws Exception {
+		/*
+		String [] pargs = {
+				"C:/Users/Topher/git/Atari2600-Sound-Card/GAP_BLEND.asm",
+				"C:/Users/Topher/git/Atari2600-Sound-Card/GAP_BLEND.lst",
+				"C:/Users/Topher/git/Atari2600-Sound-Card/GAP_BLEND.bin"
+		};
+		*/		
+		/*
+		String [] pargs = {
+				"C:/Users/Topher/git/Atari2600-Sound-Card/SoundGap.asm"
+		};
+		*/		
+		/*
+		String [] pargs = {
+				"C:/Users/Topher/git/Atari2600-Sound-Card/Tests.asm",
+				"C:/Users/Topher/git/Atari2600-Sound-Card/Tests.lst",
+				"C:/Users/Topher/git/Atari2600-Sound-Card/Tests.bin"
+		};
+		*/
+		//args = pargs;
+		int i = args[0].lastIndexOf('.');
 		
-		ASM asm = new ASM("content/atari2600/doublegap/doublegap.asm");	
+		ASM asm = new ASM(args[0]);	
 		asm.assemble();		
 		
-		asm.makeListing(System.out);
+		PrintStream ps = new PrintStream(args[0].substring(0, i)+".lst");		
+		asm.makeListing(ps);
 		
-		asm.makeBinaryFile("content/atari2600/doublegap/doublegap.bin");
+		asm.makeBinaryFile(args[0].substring(0, i)+".bin");
 				
 	}
 
