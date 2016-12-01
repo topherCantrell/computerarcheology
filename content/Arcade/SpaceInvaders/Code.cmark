@@ -1778,7 +1778,7 @@ Animate: ; =
 0A92: C9              RET                         ; Done
 
 PrintMessageDel: ; =
-; Print message from DE to screen at HL (length in B) with a
+; Print message from DE to screen at HL (length in C) with a
 ; delay between letters.
 0A93: D5              PUSH    DE                  ; Preserve
 0A94: 1A              LD      A,(DE)              ; Get character

@@ -473,3 +473,5 @@ Round 7 is as hard as the game gets. By that time the player"s score is above 30
 Thanks to Colin Dooley for correcting the comments around 1D15. He pointed out the "rolling" shot tracks the player ... not the "plunger" shot as originally commented.
 
 Thanks to Colin Dooley for correcting the comments around the saucer-score-table at 1D54. He pointed out that the code at 044E wraps after 15 values and not 16. This brings the code in line with the guides that say the 300 value comes up every 15 shots (instead of 16).
+
+Thanks to Glen Hewlett for correcting the comments above 0A93. He points out the length is in C and not B.
