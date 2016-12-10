@@ -3566,10 +3566,10 @@ DrawAdvTable: ; =
 ReadPriStruct: ; =
 ; Read a 4-byte print-structure pointed to by BC
 ; HL=Screen coordiante, DE=pointer to message
-; If the first byte is FF then return with C=1.
+; If the first byte is FF then return with Carry Set, Carry Cleared otherwise.
 1856: 0A              LD      A,(BC)              ; Get the screen LSB
 1857: FE FF           CP      $FF                 ; Valid?
-1859: 37              SCF                         ; If not C will be 1
+1859: 37              SCF                         ; If not Carry will be Set
 185A: C8              RET     Z                   ; Return if 255
 185B: 6F              LD      L,A                 ; Screen LSB to L
 185C: 03              INC     BC                  ; Next
@@ -3582,7 +3582,7 @@ ReadPriStruct: ; =
 1863: 0A              LD      A,(BC)              ; Read message MSB
 1864: 57              LD      D,A                 ; Message MSB to D
 1865: 03              INC     BC                  ; Next (for next print)
-1866: A7              AND     A                   ; Clear C
+1866: A7              AND     A                   ; Clear Carry
 1867: C9              RET                         ; Done
 
 SplashSprite: ; =
