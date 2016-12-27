@@ -1,0 +1,341 @@
+
+
+C4C0: 34 76               PSHS    U,Y,X,B,A   ; Hold all
+;
+C4CF: 8E 00 08            LDX     #$0008      ; 8 rolls
+;
+C4D2: 5F                  CLRB                ; Count of 1's
+C4D3: 10 8E 00 08         LDY     #$0008      ; Counting 8 bits in the byte
+C4D7: 96 6D               LDA     <$6D        ;{-1_rndSeedC} Upper most seed
+C4D9: 84 E1               ANDA    #$E1        ; 1110_0001
+C4DB: 48                  ASLA                ; Count ...
+C4DC: 24 01               BCC     $C4DF       ; ... the ...      
+C4DE: 5C                  INCB                ; ... 1's ...
+C4DF: 31 3F               LEAY    -1,Y        ; ... in the ...
+C4E1: 26 F8               BNE     $C4DB       ; ... value in A
+;      
+C4E3: 54                  LSRB                ; 1 to carry if number of 1's was odd
+C4E4: 09 6B               ROL     <$6B        ;{-1_rndSeedA} Three ...
+C4E6: 09 6C               ROL     <$6C        ;{-1_rndSeedB} ... byte ...      
+C4E8: 09 6D               ROL     <$6D        ;{-1_rndSeedC} ... roll ...      
+C4EA: 30 1F               LEAX    -1,X        ; ... with B going ...
+C4EC: 26 E4               BNE     $C4D2       ; ... far right ...
+;
+C4ED: 35 F6               PULS    A,B,X,Y,U 
+C4EE: 96 6B               LDA     <$6B        ;{-1_rndSeedA}
+C4EF: 00                  RTS   
+
+
+
+
+GetNeighborCells:
+; This function gets the cell values for the 8 cells surrounding a given cell (and the
+; value of the center square as well). If a cell is on the edge of the map then the
+; invalid neighbor value is FF ... just as if it were solid.
+;
+; Param A,B: The Y,X coordinate of the center cell
+; Param U: The 9-byte buffer to store results in
+;
+; The cell values are stored in the U buffer in this order from the maze map.
+; 0 1 2
+; 3 4 5
+; 6 7 8
+;
+CC49: 34 56               PSHS    U,X,B,A     ; Preserve registers
+CC4B: 4A                  DECA                ; Y-1
+CC4C: 8D 08               BSR     $CC56       ; Check row (Y-1,*)
+CC4E: 4C                  INCA                ; Back to center
+CC4F: 8D 05               BSR     $CC56       ; Check row (Y,*)
+CC51: 4C                  INCA                ; Y+1
+CC52: 8D 02               BSR     $CC56       ; Check row (Y+1,*)
+CC54: 35 D6               PULS    A,B,X,U,PC  ; Restore and out
+;
+CC56: 34 06               PSHS    B,A         ; Hold Y,X coordinates
+CC58: 5A                  DECB                ; X-1
+CC59: 8D 05               BSR     $CC60       ; Check Y,X-1
+CC5B: 5C                  INCB                ; Back to center
+CC5C: 8D 02               BSR     $CC60       ; Check Y,X
+CC5E: 5C                  INCB                ; X+1
+CC5F: 8C 34 06            CMPX    #$3406      ; Fall into routine without pushing. Clever.
+CC62: 8D 2A               BSR     $CC8E       ;{IsValidCell} Is the cell valid?
+CC64: 26 05               BNE     $CC6B       ; No ... Store FF to cell buffer
+CC66: 8D 13               BSR     $CC7B       ;{GetCellPointer} Get the pointer to the cell
+CC68: A6 84               LDA     ,X          ; Get the value from the maze
+CC6A: 8C 86 FF            CMPX    #$86FF      ; (LDA #$FF at CC6A)
+CC6D: A7 C0               STA     ,U+         ; Store the result in the buffer
+CC6F: 35 86               PULS    A,B,PC      ; Done
+
+
+CC60: 00                  PSHS    B,A
+CC61: 00                  BRA     $CC62
+
+CC6B: 00                  LDA     #$FF
+CC6C: 00                  JMP     $CC6D
+
+GetRandomCell:
+; This function returns a random X,Y coordinate in the maze
+; and the pointer to the cell memory in X.
+;
+; Return A: 0-31 (Y coordinate)
+; Return B: 0-31 (X coordinate)
+; Return X: Pointer to cell in memory
+;
+CC71: 00                  JSR     $C4C0
+CC73: 84 1F               ANDA    #$1F        ; 0-31 ... X coordinate
+CC75: 1F 89               TFR     A,B         ; Coordinate to B
+CC77: 00                  JSR     $C4C0
+CC79: 84 1F               ANDA    #$1F        ; 0-31 ... Y coordinate
+;
+GetCellPointer:
+; Return the pointer to cell memory in X for the Y,X coordinate in A,B
+;
+CC7B: 34 06               PSHS    B,A         ; Hold these
+CC7D: 84 1F               ANDA    #$1F        ; Limit coordiantes ...
+CC7F: C4 1F               ANDB    #$1F        ; ... (another entry point)
+CC81: 1F 01               TFR     D,X         ; Hold in X
+CC83: C6 20               LDB     #$20        ; Multiply A (Y coordinate) ...
+CC85: 3D                  MUL                 ; ... by 32 (one row)
+CC86: C3 05 F4            ADDD    #$05F4      ; Offset to maze
+CC89: 1E 01               EXG     D,X         ; X coordinate back to B
+CC8B: 3A                  ABX                 ; Add in the X coordinate
+CC8C: 35 86               PULS    A,B,PC      ; Return coordinate and pointer
+
+IsValidCell:
+; This function tests a given X,Y coordinate and returns
+; Z=1 if within (31,31) or Z=0 if the coordinate is out
+; of bounds.
+;
+; Param A: Y coordinate
+; Param B: X coordinate
+;
+; Return Z: 1 if OK or 0 if out-of-bounds
+;
+CC8E: 34 06               PSHS    B,A         ; Push the coordinates on the stack
+CC90: 84 1F               ANDA    #$1F        ; Mask the coordinate to within range
+CC92: A1 E4               CMPA    ,S          ; Is the coordinate within range?
+CC94: 26 04               BNE     $CC9A       ; No ... out
+CC96: C4 1F               ANDB    #$1F        ; Mask the coordinate to within range
+CC98: E1 61               CMPB    1,S         ; Is the coordinate within range? (return Z=1 if so)
+CC9A: 35 86               PULS    A,B,PC      ; Return with Z=1 if OK or Z=0 if out of range
+  
+MakeMazeLevel:
+; The maze is a 32x32 cell (one byte per cell) table at $05F4. Each cell has 4 2-bit fields that
+; describe the wall in a given direction. A value of 00 means the wall in that direction is open.
+; A value of 01 is a normal door in that direction. A value of 10 is a magic door in that direction.
+; A value of 11 is a solid wall. The 4 fields are stored in the byte as: LL_DD_RR_UU with UU being
+; the least significant 2 bits.
+;
+; The maze is generated by carving out a series of random "runs". The code picks a random starting
+; cell and a random direction. It picks a random "number of crossings" for the run from 1 to 8.
+; Then it starts opening cells in that direction one by one until one of the following occurs:
+; - The run crosses the randomly chosen number of other runs
+; - The run reaches the edge of the map
+; - The cell would create a block of 4 adjacent open cells
+;
+; The 3D display during game play can only draw hallways. Four adjacent open cells would create an
+; open space that the display can't handle. Thus the check in the run algorithm.
+;
+; The algorithm keeps count of each new open cell created. Runs are generated until exactly 500 cells
+; have been opened. Each level has exactly 500 open cells in it.
+;
+; Once the 500 cells are open the code adds exactly 70 regular doors and 45 magic doors between adjacent
+; cells. Both cells get a copy of the door in opposite directions.
+;
+; It is possible (though unlikely) to create a run that does not overlap another. This would be an
+; unreachable area that would trap the player or required monsters. Each level is drawn with a pre-chosen
+; random number seed. Thus the level is always the same, and the designers chose seeds that produce good
+; mazes.
+;
+; Holes and ladders are manually defined for each level and are kept in a separate table.
+; 
+; Maze value: LL_DD_RR_UU
+; 00 = open
+; 01 = normal door
+; 10 = magic door
+; 11 = blocked
+;
+
+CCA4: 8E CD 9F            LDX     #$CD9F      ; Random number seeds
+CCA7: D6 81               LDB     <$81        ;{-1_currentLevel} Offset into seeds ...
+CCA9: 3A                  ABX                 ; ... for this level
+CCAA: EC 81               LDD     ,X++        ; Copy the ...
+CCAC: DD 6B               STD     <$6B        ;{-1_rndSeedA} ... 3 byte ...
+CCAE: A6 84               LDA     ,X          ; ... seed to ...
+CCB0: 97 6D               STA     <$6D        ;{-1_rndSeedC} ... current seed
+CCB2: 10 8E 01 F4         LDY     #$01F4      ; Make 500 cells in the "run" process
+CCB6: BD CC 71            JSR     $CC71       ;{GetRandomCell} Get a random coordinate
+CCB9: DD 7C               STD     <$7C        ;{-1_drwMazeY} Hold the starting point
+;
+; Start a new maze "run" of cells
+CCBB: 00                  JSR     $C4C0
+CCBD: 84 03               ANDA    #$03        ; Now a random direction (0-3)
+CCBF: 97 8A               STA     <$8A        ;{-1_drwMazeDir} Hold current direction
+CCC1: 00                  JSR     $C4C0
+CCC3: 84 07               ANDA    #$07        ; Random [0..7]
+CCC5: 4C                  INCA                ; Random [1..8]
+CCC6: 97 7E               STA     <$7E        ;{-1_drwMazeCross} Store number of crossings
+CCC8: 20 08               BRA     $CCD2       ; Start this run with a step
+
+CCCA: DC 88               LDD     <$88        ;{-1_drwMazeTmp} Get the potential new coordinate
+CCCC: DD 7C               STD     <$7C        ;{-1_drwMazeY} Make it the new cell
+CCCE: 0A 7E               DEC     <$7E        ;{-1_drwMazeCross} All crossings in this run placed?
+CCD0: 27 E9               BEQ     $CCBB       ; Yes ... start a new run (done with this one)
+;
+CCD2: DC 7C               LDD     <$7C        ;{-1_drwMazeY} Get the current cell pointer
+CCD4: BD D1 1B            JSR     $D11B       ;{StepInDirection} Move in the random direction
+CCD7: 8D B5               BSR     $CC8E       ;{IsValidCell} Is this cell out of bounds?
+CCD9: 26 E0               BNE     $CCBB       ; Yes ... start a new run
+CCDB: DD 88               STD     <$88        ;{-1_drwMazeTmp} Hold the new coordinates
+CCDD: 6D 84               TST     ,X          ; Already an open cell there?
+CCDF: 27 E9               BEQ     $CCCA       ; Yes ... count it and keep going (no need to check it)
+CCE1: CE 09 F4            LDU     #$09F4      ; Buffer to hold cell values
+;
+; These checks prevent opening a cell if it would make a block-of-4-opens. An open block can't be
+; drawn during game play.
+CCE4: BD CC 49            JSR     $CC49       ;{GetNeighborCells} Get the neighbor cell values
+CCE7: A6 43               LDA     3,U         ; Cell to the left
+CCE9: AB C4               ADDA    ,U          ; Cell to the upper left
+CCEB: AB 41               ADDA    1,U         ; Cell above
+CCED: 27 CC               BEQ     $CCBB       ; This would make the upper left corner 4-opens together. Skip
+;
+CCEF: A6 41               LDA     1,U         ; Cell above
+CCF1: AB 42               ADDA    2,U         ; Cell to the upper right
+CCF3: AB 45               ADDA    5,U         ; Cell to the right
+CCF5: 27 C4               BEQ     $CCBB       ; This would make the upper right corner 4-opens together. Skip
+;
+CCF7: A6 45               LDA     5,U         ; Cell to the right
+CCF9: AB 48               ADDA    8,U         ; Cell to the lower right
+CCFB: AB 47               ADDA    7,U         ; Cell below
+CCFD: 27 BC               BEQ     $CCBB       ; This would make the lower right corner 4-opens together. Skip
+;
+CCFF: A6 47               LDA     7,U         ; Cell below
+CD01: AB 46               ADDA    6,U         ; Cell to the lower left
+CD03: AB 43               ADDA    3,U         ; Cell to the left
+CD05: 27 B4               BEQ     $CCBB       ; This would make the lower left corner 4-opens together. Skip
+;
+CD07: 6F 84               CLR     ,X          ; Open this cell up
+CD09: 31 3F               LEAY    -1,Y        ; All 500 cells done?
+CD0B: 26 BD               BNE     $CCCA       ; No ... use this and keep going
+;
+; This loops over the cells and sets the "solid wall" bits for directions that are blocked.
+CD0D: 0F 7C               CLR     <$7C        ;{-1_drwMazeY} Start with ...
+CD0F: 0F 7D               CLR     <$7D        ;{-1_drwMazeX} ... Y,X = 0,0
+CD11: DC 7C               LDD     <$7C        ;{-1_drwMazeY} Get the current coordinate
+CD13: BD CC 7B            JSR     $CC7B       ;{GetCellPointer} Get the cell pointer
+CD16: A6 84               LDA     ,X          ; Get the cell value
+CD18: 4C                  INCA                ; Is this a solid?
+CD19: 27 26               BEQ     $CD41       ; Yes ... skip it
+CD1B: DC 7C               LDD     <$7C        ;{-1_drwMazeY} Coordinates again
+CD1D: CE 09 F4            LDU     #$09F4      ; Status buffer
+CD20: BD CC 49            JSR     $CC49       ;{GetNeighborCells} Get the status of the neighbors
+CD23: A6 84               LDA     ,X          ; Get the value of the cell
+CD25: C6 FF               LDB     #$FF        ; Value FF (solid) for compares
+CD27: E1 41               CMPB    1,U         ; Cell above us open?
+CD29: 26 02               BNE     $CD2D       ; No ... leave the bits open
+CD2B: 8A 03               ORA     #$03        ; Set the "up" bits to solid wall
+CD2D: E1 43               CMPB    3,U         ; Cell to the left open?
+CD2F: 26 02               BNE     $CD33       ; No ... leave the bits open
+CD31: 8A C0               ORA     #$C0        ; Set the "left" bits to solid wall
+CD33: E1 45               CMPB    5,U         ; Cell to the right open?
+CD35: 26 02               BNE     $CD39       ; No ... leave the bits open
+CD37: 8A 0C               ORA     #$0C        ; Set the "right" bits to solid wall
+CD39: E1 47               CMPB    7,U         ; Cell to the bottom open?
+CD3B: 26 02               BNE     $CD3F       ; No ... leave the bits open
+CD3D: 8A 30               ORA     #$30        ; Set the "down" bits to solid wall
+CD3F: A7 84               STA     ,X          ; Set solid walls on the edge cells
+;
+; Add walls next to solid cells
+CD41: C6 20               LDB     #$20        ; 32 for compare
+CD43: 0C 7D               INC     <$7D        ;{-1_drwMazeX} Bump the X coordinate
+CD45: D1 7D               CMPB    <$7D        ;{-1_drwMazeX} Reached end of row?
+CD47: 26 C8               BNE     $CD11       ; No ... keep going
+CD49: 0F 7D               CLR     <$7D        ;{-1_drwMazeX} Back to X=0
+CD4B: 0C 7C               INC     <$7C        ;{-1_drwMazeY} Bump the Y coordinate
+CD4D: D1 7C               CMPB    <$7C        ;{-1_drwMazeY} End of maze?
+CD4F: 26 C0               BNE     $CD11       ; No ... keep going
+;
+; Add 70 regular doors
+CD51: C6 46               LDB     #$46        ; 70 regular doors to make
+CD53: CE CD AA            LDU     #$CDAA      ; Table of bit patterns for regular doors
+CD56: 8D 15               BSR     $CD6D       ; Make a random regular door
+CD58: 5A                  DECB                ; All done?
+CD59: 26 FB               BNE     $CD56       ; No ... do all
+;
+; Add 45 magic doors
+CD5B: C6 2D               LDB     #$2D        ; 45 magic doors to make
+CD5D: CE CD AE            LDU     #$CDAE      ; Table of bit patterns for magic doors
+CD60: 8D 0B               BSR     $CD6D       ; Make a random magic door
+CD62: 5A                  DECB                ; All done?
+CD63: 26 FB               BNE     $CD60       ; No ... do all
+;
+CD65: D6 97               LDB     <$97        ; ?? A randomizer count? 0?
+CD67: 00                  JSR     $C4C0
+CD69: 5A                  DECB                ; Randomized the full count?
+CD6A: 26 FB               BNE     $CD67       ; No ... do all
+CD6C: 39                  RTS                 ; Out
+;
+; Make a door (regular or magic) between two adjacent cells
+CD6D: 34 76               PSHS    U,Y,X,B,A   ; Preserve registers
+CD6F: 10 8E CD A6         LDY     #$CDA6      ; Bit patterns for solid walls in each direction
+CD73: BD CC 71            JSR     $CC71       ;{GetRandomCell} Get random cell
+CD76: DD 88               STD     <$88        ;{-1_drwMazeTmp} Hold coordinates
+CD78: E6 84               LDB     ,X          ; Get cell value
+CD7A: C1 FF               CMPB    #$FF        ; Is it solid?
+CD7C: 27 F5               BEQ     $CD73       ; Yes ... find an open cell
+CD7E: 00                  JSR     $C4C0
+CD80: 84 03               ANDA    #$03        ; Make it a direction
+CD82: 97 8A               STA     <$8A        ;{-1_drwMazeDir} Store the direction
+CD84: E5 A6               BITB    A,Y         ; Is that direction open (no solid and no existing door)?
+CD86: 26 EB               BNE     $CD73       ; No ... find another
+CD88: EA C6               ORB     A,U         ; Or in the pattern for the door (magic or regular)
+CD8A: E7 84               STB     ,X          ; Set the new pattern
+CD8C: DC 88               LDD     <$88        ;{-1_drwMazeTmp} Get coordinates
+CD8E: BD D1 1B            JSR     $D11B       ;{StepInDirection} Step in that direction
+CD91: D6 8A               LDB     <$8A        ;{-1_drwMazeDir} Get the direction we came in
+CD93: CB 02               ADDB    #$02        ; Flip it ...
+CD95: C4 03               ANDB    #$03        ; ... around
+CD97: A6 84               LDA     ,X          ; Get value
+CD99: AA C5               ORA     B,U         ; Make same door in ...
+CD9B: A7 84               STA     ,X          ; ... on both sides
+CD9D: 35 F6               PULS    A,B,X,Y,U,PC ; Restore and out
+
+RandomSeeds:
+; These seeds control the shape of the dungeon and placement
+; of creatures. Three bytes instead of over 1K of data -- good
+; idea. The levels overlap seeds as shown below.
+;     0-------
+;        1-------
+;           2-------
+;              3-------
+;                 4-------
+CD9F: 73 C7 5D 97 F3 13 87   
+            
+; Bit positions for walls in a given direction (0-3)
+;     0U 1R 2D 3L            
+CDA6: 03 0C 30 C0
+
+; Bit positions to add a regular door in a given direction
+CDAA: 01 04 10 40
+
+; Bit positions to add a magic door in a give direction
+CDAE: 02 08 20 80                                    
+
+; Return A,B: The new Y,X coordinates
+; Return X: Pointer to the new cell
+;
+D11B: 34 06               PSHS    B,A         ; Hold coordinates
+D11D: D6 8A               LDB     <$8A        ;{-1_drwMazeDir} Get direction
+D11F: C4 03               ANDB    #$03        ; Only four
+D121: 58                  ASLB                ; 2 bytes for each table entry
+D122: 8E D1 2E            LDX     #$D12E      ; Table of X,Y offsets for direction
+D125: EC 85               LDD     B,X         ; Get the X,Y offsets
+D127: AB E0               ADDA    ,S+         ; Offset the Y
+D129: EB E0               ADDB    ,S+         ; Offset the X
+D12B: 7E CC 7B            JMP     $CC7B       ;{GetCellPointer} Get cell pointer and return
+;     
+; Y,X offsets for each direction
+;
+D12E: FF 00 ; 00 Up    (Y-1, X)
+D130: 00 01 ; 01 Right (Y,   X+1)
+D132: 01 00 ; 02 Down  (y+1, X)
+D134: 00 FF ; 03 Left  (Y,   X-1)

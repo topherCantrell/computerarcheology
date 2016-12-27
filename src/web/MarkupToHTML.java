@@ -412,11 +412,24 @@ public class MarkupToHTML {
 		}				
 	}
 		
+	public void expandIncludes(List<String> lines,String inFile) throws IOException {
+		for(int x=lines.size()-1;x>=0;--x) {
+			String s = lines.get(x).trim();
+			if(s.startsWith("##include ")) {
+				int i = inFile.lastIndexOf("/");
+				List<String> inc = Files.readAllLines(Paths.get(inFile.substring(0,i+1)+s.substring(10).trim()));
+				lines.remove(x);
+				lines.addAll(x,inc);				
+			}
+		}
+	}
+	
 	public void translate(String contentRoot, String inFile, String outFile, 
 			String breadCrumbs, String siteNav, String nav) throws IOException 
 	{
 		Path ip = Paths.get(inFile);
 		List<String> lines = Files.readAllLines(ip);
+		expandIncludes(lines,inFile);
 		translate(contentRoot, inFile, outFile, breadCrumbs, siteNav, nav, lines);
 	}
 	

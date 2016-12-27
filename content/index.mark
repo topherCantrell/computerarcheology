@@ -10,16 +10,11 @@ ideas, and ingenuity in the code -- the programmer's "flavor". There are code ge
 programs buried in the ancient (decades past) ROMs of old. My goal is to dust them off and put them on
 display for all to share.
 
-Welcome to the museum!
+Welcome to my museum!
 
-= Archeologists =
-
-The contributors to this site:
- * [People/ChrisCantrell.html Chris Cantrell]
- * [People/HarryHurst.html Harry Hurst]
- * [People/PatrikSevallius.html Patrick Sevallius]
+About me: [People/ChrisCantrell.html Chris Cantrell]
  
-= Join the Team =
+= Raw Content =
 
 All of the web content and tools are on github: [https://github.com/topherCantrell/computerarcheology]
 
@@ -179,3 +174,8 @@ dig site, then look here.
 These are my 
 [https://github.com/topherCantrell/computerarcheology/tree/master/code/tools Assemblers, Disassemblers, Cleaners, etc]
 used to dig into the code. There are several site-specific tools here as well.
+
+= Other Contributors =
+ Harry and Patrick are contributing disassemblies to the museum. Read about them and their work: 
+ * [People/HarryHurst.html Harry Hurst]
+ * [People/PatrikSevallius.html Patrick Sevallius]

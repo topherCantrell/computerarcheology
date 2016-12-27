@@ -1,0 +1,27 @@
+%%title Level Maps
+%%image Daggorath.jpg
+
+= Level 1 = 
+{{{html
+##include level1.svg
+}}}
+
+= Level 2 = 
+{{{html
+##include level2.svg
+}}}
+
+= Level 3 = 
+{{{html
+##include level3.svg
+}}}
+
+= Level 4 = 
+{{{html
+##include level4.svg
+}}}
+
+= Level 5 = 
+{{{html
+##include level5.svg
+}}}

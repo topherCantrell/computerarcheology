@@ -322,6 +322,7 @@
              },
              {"dir": "Daggorath", "nav": "Daggorath", "entries" : [
 				 {"mark": "Daggorath.mark", "out": "index.html"},
+				 {"mark": "Levels.mark", "out": "levels.html", "nav":"Level Maps"},
 				 {"address": "RAMUse.mark", "out": "RAMUse.html", "nav":"RAM Use"},
 				 {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
 				 {"copy": "Daggorath.jpg"}
