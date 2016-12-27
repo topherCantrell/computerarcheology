@@ -318,7 +318,16 @@ CDA6: 03 0C 30 C0
 CDAA: 01 04 10 40
 
 ; Bit positions to add a magic door in a give direction
-CDAE: 02 08 20 80                                    
+CDAE: 02 08 20 80        
+
+CF97: 34 16               PSHS    X,B,A       ; Preserve registers
+CF99: BD CC 71            JSR     $CC71       ; Get a random cell
+CF9C: ED E4               STD     ,S          ; Put it in return in case it is good
+CF9E: A6 84               LDA     ,X          ; Get the cell value
+CFA0: 4C                  INCA                ; FF means all walls (solid)
+CFA1: 27 F6               BEQ     $CF99       ; This is not a valid cell ... keep looking
+CFA3: 35 96               PULS    A,B,X,PC    ; Return the random cell in A,B
+                            
 
 ; Return A,B: The new Y,X coordinates
 ; Return X: Pointer to the new cell

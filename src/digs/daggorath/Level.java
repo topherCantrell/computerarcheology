@@ -53,8 +53,67 @@ public class Level {
 		  "<line x1='18' y1='25' x2='32' y2='25' style='stroke:rgb(0,255,255)'/>"+
 		  "<line x1='18' y1='29' x2='32' y2='29' style='stroke:rgb(0,255,255)'/>"+
 		  "<line x1='18' y1='33' x2='32' y2='33' style='stroke:rgb(0,255,255)'/> ";
-
+	
+	
+	
+	
+	
 	public static void main(String[] args) throws Exception {
+		List<String> raw = Files.readAllLines(Paths.get("src/digs/daggorath/DCode.cmark"));
+		List<String> lines = new ArrayList<String>();
+		
+		for(String line : raw) {
+			int i = line.indexOf(";");
+			if(i>=0) {
+				line = line.substring(0,i);
+			}
+			line = line.trim();
+			if(line.isEmpty()) continue;
+			if(!line.contains(" ") && line.endsWith(":")) {
+				continue;
+			}
+			line = replaceAll(line,"  "," ");
+
+			for(int pos=6;pos<line.length();pos=pos+3) {
+				if(!isTwoDigitHex(line,pos)) {
+					line = line.substring(0,pos)+":"+line.substring(pos);
+					break;
+				}
+			}
+			lines.add(line);	
+		}
+		
+		
+		CPU6809 cpu = new CPU6809(lines);
+		cpu.getRegister("DP").writeValue(2);       // Direct Page is 0x200
+		cpu.getRegister("SP").writeValue(0x1000);  // Daggorath sets the stack here
+		cpu.push(0xFFFF, true);                    // Mark return-to-system
+		
+		// Fill map with FF		
+		for(int x=0x05F4;x<0x09F4;++x) {
+			cpu.writeByte(x, 0xFF);
+		}
+		cpu.writeMemory(0x281,0, false);						
+		cpu.run(0xCCA4);
+		
+		
+		
+		for(int z=0;z<24;++z) {
+			cpu.push(0xFFFF, true);                    // Mark return-to-system
+			cpu.run(0xCF97);
+			System.out.println(":"+cpu.getRegister("B").readValue()+","+cpu.getRegister("A").readValue());
+		}
+		
+		
+		
+		
+		
+	}
+	
+	
+	
+
+	public static void main2(String[] args) throws Exception {
 
 		List<String> raw = Files.readAllLines(Paths.get("DCode.cmark"));
 		List<String> lines = new ArrayList<String>();
