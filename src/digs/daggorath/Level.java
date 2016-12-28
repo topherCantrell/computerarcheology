@@ -112,7 +112,7 @@ public class Level {
 		
 	}
 	
-	static int[] rndm = {0x4,    0x4,0x4,0x4,0x4,0x4}; // Find the rest by dumping 0297 from ZSAVE
+	static int[] rndm = {0x4,    0x18,0x4,0x4,0x4,0x4}; // Find the rest by dumping 0297 from ZSAVE
 	
 	static String [][] creatures = 
 	{ 
