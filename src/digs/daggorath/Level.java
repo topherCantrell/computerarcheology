@@ -86,20 +86,21 @@ public class Level {
 		
 		CPU6809 cpu = new CPU6809(lines);
 		cpu.getRegister("DP").writeValue(2);       // Direct Page is 0x200
-		cpu.getRegister("SP").writeValue(0x1000);  // Daggorath sets the stack here
-		cpu.push(0xFFFF, true);                    // Mark return-to-system
+		cpu.getRegister("SP").writeValue(0x1000);  // Daggorath sets the stack here		
 		
 		// Fill map with FF		
 		for(int x=0x05F4;x<0x09F4;++x) {
 			cpu.writeByte(x, 0xFF);
 		}
 		cpu.writeMemory(0x281,0, false);						
-		cpu.run(0xCCA4);
+		cpu.call(0xCCA4);
 		
 		for(int z=0;z<24;++z) {
-			cpu.push(0xFFFF, true);                    // Mark return-to-system
-			cpu.run(0xCF97);
-			System.out.println(":"+cpu.getRegister("B").readValue()+","+cpu.getRegister("A").readValue());
+			cpu.call(0xCF97);
+			int x = cpu.getRegister("B").readValue();
+			int y = cpu.getRegister("A").readValue();
+			if(cpu.readMemory(0x5F4+y*32+x,false)==0xFF) System.out.println("*"+x+","+y);
+			else System.out.println(" "+x+","+y);
 		}
 		
 		

@@ -235,6 +235,11 @@ public class CPU6809 {
 		}
 		return ret;
 	}
+	
+	public void call(int address) {
+		push(0xFFFF,true);
+		run(address);
+	}
 					
 	public void run(int address) {
 		

@@ -1,5 +1,13 @@
 # Journal
 
+## 12/28/2016
+
+Daggorath for the holidays! I whipped up a 6809 disassembly runner and mapped out the levels. The output is
+an SVG file. I am having trouble calculating the starting positions of the monsters. I patched the code
+and played in mocha.jar. I prevented the monsters from moving and started with a seer scroll. Thus I could
+walk through the levels and manually map creatures and what they hold. But I can't get the software to
+produce what I see in the walkthrough. Frustrating.
+
 ## 4/24/2016
 
 Mark McDougall asked about Space Invaders RAM initialization. It looks like 0x1FF is not initialized before
