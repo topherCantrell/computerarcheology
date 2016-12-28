@@ -96,8 +96,6 @@ public class Level {
 		cpu.writeMemory(0x281,0, false);						
 		cpu.run(0xCCA4);
 		
-		
-		
 		for(int z=0;z<24;++z) {
 			cpu.push(0xFFFF, true);                    // Mark return-to-system
 			cpu.run(0xCF97);
