@@ -8,6 +8,10 @@ and played in mocha.jar. I prevented the monsters from moving and started with a
 walk through the levels and manually map creatures and what they hold. But I can't get the software to
 produce what I see in the walkthrough. Frustrating.
 
+Patching the code. The first creature created is the BLOB/RING at 5,28 as the walkthrough shows.
+
+
+
 ## 4/24/2016
 
 Mark McDougall asked about Space Invaders RAM initialization. It looks like 0x1FF is not initialized before
