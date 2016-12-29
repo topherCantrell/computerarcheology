@@ -275,7 +275,9 @@ public class Level {
 				cpu.call(0xCF97);
 				int xx=cpu.getRegister("B").readValue();
 				int yy=cpu.getRegister("A").readValue();
-				System.out.println(cre+" ("+xx+","+yy+")");
+				
+				System.out.println("<g transform='translate("+((xx+1)*50+6)+","+((yy+1)*50+30)+")'><text>"+cre+"</text></g>");
+								
 			}
 
 			ps.println("</g>");
