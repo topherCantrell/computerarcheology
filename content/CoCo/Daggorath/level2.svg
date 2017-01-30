@@ -1,6 +1,6 @@
 
-<svg height='450' width='450'>
-<g transform='scale(0.25)'>
+<svg height='850' width='850'>
+<g transform='scale(0.5)'>
 <rect width='1700' height='1700' style='fill:rgb(150,150,150)'/>
 <g transform='translate(200,50)'>
 <rect width='50' height='50' style='stroke-width:0;fill:rgb(250,250,250)'/>

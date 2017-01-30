@@ -2,6 +2,18 @@
 
 ## 12/28/2016
 
+So completes another season of Daggorath. One play-trhough on the original hardware. One easy victory.
+
+It turns out that the creatures are randomized on each level except the first. They always start at the
+same place on level-one. I noted their starts and what they carry on the level map.
+
+True, the random number seeds are fixed at the start of each level, which is why the maps are the same.
+But at the end of making the level, the value at <$97 controls a shuffling of the random number generator
+between the maze-draw and the creature-create. The value at <$97 is 4 for the first level. It seems to 
+change with each user input. I'll eventually figure out where the creature-create entropy comes from.
+
+## 12/28/2016
+
 Daggorath for the holidays! I whipped up a 6809 disassembly runner and mapped out the levels. The output is
 an SVG file. I am having trouble calculating the starting positions of the monsters. I patched the code
 and played in mocha.jar. I prevented the monsters from moving and started with a seer scroll. Thus I could
@@ -9,8 +21,6 @@ walk through the levels and manually map creatures and what they hold. But I can
 produce what I see in the walkthrough. Frustrating.
 
 Patching the code. The first creature created is the BLOB/RING at 5,28 as the walkthrough shows.
-
-
 
 ## 4/24/2016
 
