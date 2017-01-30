@@ -35,8 +35,8 @@ public class Disassembler {
     public static void main(String [] args) throws Exception {
                 
         
-        //String [] targs = {"0x0000~content/gameboy/zelda/zelda.gb","Z80GB"};
-        //args = targs;
+        String [] targs = {"0x42E9~haunt.bin","c:\\tmp\\test.txt","Z80"};
+        args = targs;
                 
         if(args.length<3) {
             //                               0       1     2    3       4
@@ -58,7 +58,7 @@ public class Disassembler {
         
         if(args.length>4) {
             end = CU.parseInt(args[4], 16);
-        }
+        } 
         
         CPU cpu = CPU.getCPU(args[2]);
         
