@@ -1,0 +1,28 @@
+%%title Haunted House
+%%image HauntedHouse.jpg
+
+= Code Links =
+
+* [haunt1.html Disassembled Code]
+* [haunt2.html Disassembled Code]
+* [RAMUse.html RAM Usage]
+
+{{{html
+<div class="tourGuide">
+<div style="padding-left: 20px">
+}}}
+
+= Tour Guide =
+
+
+{{{html
+</div>
+</div>
+}}}
+
+= References =
+
+If you seek specific game information, solutions, and online emulators then check out Sean Murphy's wonderful site.[[br]]
+Solutions and info on Haunted House:[[br]]
+[http://www.figmentfly.com]
+

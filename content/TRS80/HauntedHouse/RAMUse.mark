@@ -1,0 +1,8 @@
+%%image HauntedHouse.jpg
+%%title HauntedHouse RAM Use
+%%range 4000:4FFF
+
+||= Address  || Name                  || Description                                  ||
+|| 467E      || InputEntropy          || Incremented while waiting on user input      ||
+
+$46B8 stack builds down from here

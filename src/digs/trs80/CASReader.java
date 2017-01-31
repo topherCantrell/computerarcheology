@@ -14,19 +14,20 @@ public class CASReader {
 		// Looks like hauntORG has a couple of file loads in it. Looks like the game loads
 		// its second half over the first.
 		
-		InputStream is = new FileInputStream("hauntORG.cas");
+		// 42E9
+		
+		InputStream is = new FileInputStream("haunt.cas");
 		int [] data = new int[is.available()];
 		for(int x=0;x<data.length;++x) {
 			data[x] = is.read();
 		}
 		is.close();
 		
-		OutputStream os = new FileOutputStream("haunt.bin");
-		int pos = 0x0106;
-		int datpos = 0x42E9;
+		OutputStream os = new FileOutputStream("haunt1.bin");
+		int pos = 0x0106;		
 		
 		for(int z=0;z<14;++z) {
-			System.out.print(CU.hex4(pos)+"("+CU.hex4(datpos)+"): ");
+			System.out.print(CU.hex4(pos)+": ");
 			for(int x=0;x<5;++x) {
 				System.out.print(CU.hex2(data[pos++])+" ");
 			}
@@ -37,28 +38,55 @@ public class CASReader {
 			}
 			
 			pos = pos + 0x100;
-			datpos = datpos+0x100;
 		}
 		
-		/*
-		pos = 0x0F81;
-		for(int z=0;z<12;++z) {
-			System.out.print(CU.hex4(pos)+"("+CU.hex4(datpos)+"): ");
+		while(pos<data.length) {
+			os.write(data[pos++]);
+		}
+				
+		os.flush();
+		os.close();
+
+	}
+	
+	public static void main2(String[] args) throws Exception {
+		
+		// Looks like hauntORG has a couple of file loads in it. Looks like the game loads
+		// its second half over the first.
+		
+		// 435E
+		
+		InputStream is = new FileInputStream("haunt.cas");
+		int [] data = new int[is.available()];
+		for(int x=0;x<data.length;++x) {
+			data[x] = is.read();
+		}
+		is.close();
+		
+		OutputStream os = new FileOutputStream("haunt2.bin");
+		int pos = 0x0F81;		
+		
+		for(int z=0;z<11;++z) {
+			System.out.print(CU.hex4(pos)+": ");
 			for(int x=0;x<5;++x) {
 				System.out.print(CU.hex2(data[pos++])+" ");
 			}
 			System.out.println();
 			
-			pos = pos + 0x100;
-			datpos = datpos+0x100;
+			for(int y=0;y<0x100;++y) {
+				os.write(data[pos+y]);
+			}
+			
+			pos = pos + 0x100;			
 		}
-		*/
 		
-		//pos = 0x1ABD;
-		
+		while(pos<data.length) {
+			os.write(data[pos++]);
+		}
+				
 		os.flush();
 		os.close();
-
+		
 	}
 
 }
