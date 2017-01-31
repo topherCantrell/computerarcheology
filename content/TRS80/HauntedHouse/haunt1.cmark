@@ -1,7 +1,7 @@
 
 42E9: C3 5E 43   JP      $435E           ; Skip over ?data to start
      
-42EC: CD F8 01   CALL    $01F8           
+42EC: CD F8 01   CALL    $01F8           ; Turn off the tape drive
 42EF: 21 41 43   LD      HL,$4341        ; "CHECKSUM<CR>"
 42F2: CD D0 45   CALL    $45D0           ; Print message
 42F5: 31 FE 4F   LD      SP,$4FFE        ; Reset sack at top of RAM
@@ -10,35 +10,36 @@
 42FE: CD EE 45   CALL    $45EE           ; Get a key
 4301: FE 0D      CP      $0D             ; Enter?
 4303: C2 FE 42   JP      NZ,$42FE        ; No ... wait for player to press enter
-4306: CD 93 02   CALL    $0293           
-4309: CD 35 02   CALL    $0235           
-430C: FE 55      CP      $55             
-430E: 20 F9      JR      NZ,$4309        
+4306: CD 93 02   CALL    $0293           ; Find the cassette header
+4309: CD 35 02   CALL    $0235           ; Get one byte from the tape
+430C: FE 55      CP      $55             ; Start of data?
+430E: 20 F9      JR      NZ,$4309        ; No ... keep reading
+;
 4310: 06 06      LD      B,$06           
 4312: 7E         LD      A,(HL)          
 4313: 23         INC     HL              
 4314: 10 FC      DJNZ    $4312           
-4316: CD 2C 02   CALL    $022C           
-4319: CD 35 02   CALL    $0235           
+4316: CD 2C 02   CALL    $022C           ; ???
+4319: CD 35 02   CALL    $0235           ; Get one byte from the tape
 431C: FE 78      CP      $78             
 431E: CA 5B 43   JP      Z,$435B         
 4321: FE 3C      CP      $3C             
 4323: 20 F4      JR      NZ,$4319        
-4325: CD 35 02   CALL    $0235           
+4325: CD 35 02   CALL    $0235           ; Get one byte from the tape
 4328: 47         LD      B,A             
-4329: CD 14 03   CALL    $0314           
+4329: CD 14 03   CALL    $0314           ; ???
 432C: 85         ADD     A,L             
 432D: 4F         LD      C,A             
-432E: CD 35 02   CALL    $0235           
-4331: 77         LD      (HL),A          
-4332: 23         INC     HL              
+432E: CD 35 02   CALL    $0235           ; Read one byte
+4331: 77         LD      (HL),A          ; Store in buffer
+4332: 23         INC     HL              ; Bump buffer pointer
 4333: 81         ADD     A,C             
 4334: 4F         LD      C,A             
 4335: 10 F7      DJNZ    $432E           
-4337: CD 35 02   CALL    $0235           
+4337: CD 35 02   CALL    $0235           ; Get one byte from the tape
 433A: B9         CP      C               
 433B: CA 16 43   JP      Z,$4316         
-433E: C3 EC 42   JP      $42EC      
+433E: C3 EC 42   JP      $42EC           ; Do checksum error and try again
 ;     
 ; CHECKSUM<CR>
 4341: 43 48 45 43 4B 53 55 4D 00

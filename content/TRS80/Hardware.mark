@@ -32,3 +32,7 @@
 ;                        POP     DE        ;restore
 ; 
 ;
+
+; http://www.classiccmp.org/cpmarchives/trs80/mirrors/kjsl/www.kjsl.com/trs80/lvl2romaddr.html
+
+1F8 CSOFF Turn off the cassette drive
