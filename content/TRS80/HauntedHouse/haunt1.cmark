@@ -19,7 +19,7 @@
 4312: 7E         LD      A,(HL)          
 4313: 23         INC     HL              
 4314: 10 FC      DJNZ    $4312           
-4316: CD 2C 02   CALL    $022C           ; ???
+4316: CD 2C 02   CALL    $022C           ; (Model I only) Blinks right asterisk during tape load operations
 4319: CD 35 02   CALL    $0235           ; Get one byte from the tape
 431C: FE 78      CP      $78             
 431E: CA 5B 43   JP      Z,$435B         
@@ -27,7 +27,7 @@
 4323: 20 F4      JR      NZ,$4319        
 4325: CD 35 02   CALL    $0235           ; Get one byte from the tape
 4328: 47         LD      B,A             
-4329: CD 14 03   CALL    $0314           ; ???
+4329: CD 14 03   CALL    $0314           ; Reads two bytes (LSB/MSB) from tape to HL registers
 432C: 85         ADD     A,L             
 432D: 4F         LD      C,A             
 432E: CD 35 02   CALL    $0235           ; Read one byte
