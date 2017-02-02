@@ -1149,9 +1149,11 @@
 4A97: C3 97 4A   JP      $4A97  
 
 CommandTable: ;= 
-4A9A: 0C 53 49 47 4E 0A      ; SIGN        
-4AA0: 0C 53 57 4F 52 09      ; SWOR        
-4AA6: 3C 47 48 4F 53 01 02 03 04 05 06 07  ; GHOS        
+; aa_bbb_ccc
+;   bbb = number of data bytes 
+4A9A: 0C 53 49 47 4E 0A                    ; SIGN        
+4AA0: 0C 53 57 4F 52 09                    ; SWOR        
+4AA6: 3C 47 48 4F 53 01 02 03 04 05 06 07  ; 00_111_100 GHOS        
 4AB2: C9 4E 01               ; N
 4AB5: C9 45 02               ; E          
 4AB8: C9 53 03               ; S              

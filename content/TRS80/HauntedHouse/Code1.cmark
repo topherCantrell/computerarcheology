@@ -186,7 +186,8 @@
 442A: E1         POP     HL              
 442B: E1         POP     HL              
 442C: F6 01      OR      $01             
-442E: C9         RET                     
+442E: C9         RET
+                     
 442F: CD 05 46   CALL    $4605           
 4432: CD DA 44   CALL    $44DA           
 4435: 2A AC 45   LD      HL,($45AC)      
@@ -264,23 +265,23 @@
 44DD: 97         SUB     A               
 44DE: 32 AB 45   LD      ($45AB),A       
 44E1: 32 7D 46   LD      ($467D),A       
-44E4: 11 4B 4A   LD      DE,$4A4B        
+44E4: 11 4B 4A   LD      DE,$4A4B        ; Command table
 44E7: EB         EX      DE,HL           
 44E8: 22 7F 46   LD      ($467F),HL      
 44EB: EB         EX      DE,HL           
-44EC: 7E         LD      A,(HL)          
-44ED: FE 20      CP      $20             
-44EF: C2 F6 44   JP      NZ,$44F6        
-44F2: 23         INC     HL              
-44F3: C3 EC 44   JP      $44EC           
-44F6: A7         AND     A               
-44F7: CA 81 45   JP      Z,$4581         
+44EC: 7E         LD      A,(HL)          ; Next character from input buffer
+44ED: FE 20      CP      $20             ; A space?
+44EF: C2 F6 44   JP      NZ,$44F6        ; No ... decode this input
+44F2: 23         INC     HL              ; It is a space, skip over it
+44F3: C3 EC 44   JP      $44EC           ; And keep trying
+44F6: A7         AND     A               ; This was a ...
+44F7: CA 81 45   JP      Z,$4581         ; ... blank line
 44FA: 3E 01      LD      A,$01           
 44FC: 32 AB 45   LD      ($45AB),A       
-44FF: E5         PUSH    HL              
-4500: 1A         LD      A,(DE)          
-4501: A7         AND     A               
-4502: CA 8C 45   JP      Z,$458C         
+44FF: E5         PUSH    HL              ; Hold start of word
+4500: 1A         LD      A,(DE)          ; Have we reached ...
+4501: A7         AND     A               ; ... the end of the command table?
+4502: CA 8C 45   JP      Z,$458C         ; Yes ... give error
 4505: 32 82 46   LD      ($4682),A       
 4508: E6 07      AND     $07             
 450A: 4F         LD      C,A             
@@ -345,13 +346,17 @@
 4579: 05         DEC     B               
 457A: C2 78 45   JP      NZ,$4578        
 457D: E1         POP     HL              
-457E: C3 EC 44   JP      $44EC           
+457E: C3 EC 44   JP      $44EC          
+
+; Blank line entered
 4581: 3A AB 45   LD      A,($45AB)       
 4584: A7         AND     A               
 4585: C0         RET     NZ              
 4586: 3E 03      LD      A,$03           
 4588: 32 7D 46   LD      ($467D),A       
 458B: C9         RET                     
+
+; Reached the end of the command list
 458C: E1         POP     HL              
 458D: 97         SUB     A               
 458E: 32 7C 46   LD      ($467C),A       
@@ -1141,37 +1146,39 @@ PrintChar:
 4A45: C3 0B 44   JP      $440B           
 4A48: C3 48 4A   JP      $4A48     
             
-CommandTable: ;=      
-4A4B: 0B 4B 45 59 03         ; KEY            
-4A50: 0C 50 41 50 45 01      ; PAPE
-4A56: 14 44 4F 4F 52 02 05   ; DOOR               
-4A5D: 0C 46 49 52 45 04      ; FIRE               
-4A63: 0C 4B 4E 49 46 06      ; KNIF 
-4A69: 14 52 4F 50 45 07 0C   ; ROPE                
-4A70: 0C 41 52 4D 4F 08      ; ARMO           
-4A76: 14 43 41 42 49 09 0B   ; CABI                
-4A7D: 0C 57 41 54 45 0A      ; WATE          
-4A83: 0C 42 55 43 4B 0A      ; BUCK           
-4A89: 0C 53 43 52 4F 0D      ; SCRO                
-4A8F: C9 4E 01               ; N
-4A92: C9 45 02               ; E          
-4A95: C9 53 03               ; S              
-4A98: C9 57 04               ; W               
-4A9B: CC 43 4C 49 4D 0F      ; CLIM                    
-4AA1: CC 51 55 49 54 0B      ; QUIT             
-4AA7: CC 49 4E 56 45 0C      ; INVE               
-4AAD: CC 4C 4F 4F 4B 0D      ; LOOK               
-4AB3: 4C 44 52 4F 50 07      ; DROP                    
-4AB9: 4C 50 4F 55 52 08      ; POUR         
-4ABF: 8B 47 45 54 06         ; GET
-4AC4: 8C 4F 50 45 4E 05      ; OPEN               
-4ACA: 4C 44 52 49 4E 10      ; DRIN
-4AD0: 8C 53 4D 41 53 11      ; SMAS
-4AD6: CB 59 45 53 12         ; YES         
-4ADB: CA 4E 4F 13            ; NO              
-4ADF: 4C 52 45 41 44 09      ; READ         
-4AE5: CC 50 41 4E 45 0E      ; PAN 
-4AEB: CC 50 4C 55 47 0A      ; PLUG          
+CommandTable: ;=            
+; aa_bbb_ccc
+; bbb = number of data bytes 
+4A4B: 0B 4B 45 59 03         ; 00_001_011  KEY   03            
+4A50: 0C 50 41 50 45 01      ; 00_001_100  PAPE  01 (??? 01 is starting room?)
+4A56: 14 44 4F 4F 52 02 05   ; 00_010_100  DOOR  02 05               
+4A5D: 0C 46 49 52 45 04      ; 00_001_100  FIRE  04              
+4A63: 0C 4B 4E 49 46 06      ; 00_001_100  KNIF  06
+4A69: 14 52 4F 50 45 07 0C   ; 00_010_100  ROPE  07 0C                
+4A70: 0C 41 52 4D 4F 08      ; 00_001_100  ARMO  08          
+4A76: 14 43 41 42 49 09 0B   ; 00_010_100  CABI  09 0B               
+4A7D: 0C 57 41 54 45 0A      ; 00_001_100  WATE  0A         
+4A83: 0C 42 55 43 4B 0A      ; 00_001_100  BUCK  0A          
+4A89: 0C 53 43 52 4F 0D      ; 00_001_100  SCRO  0D               
+4A8F: C9 4E 01               ; 11_001_001  N     01
+4A92: C9 45 02               ; 11_001_001  E     02         
+4A95: C9 53 03               ; 11_001_001  S     03             
+4A98: C9 57 04               ; 11_001_001  W     04              
+4A9B: CC 43 4C 49 4D 0F      ; 11_001_100  CLIM  0F                    
+4AA1: CC 51 55 49 54 0B      ; 11_001_100  QUIT  0B          
+4AA7: CC 49 4E 56 45 0C      ; 11_001_100  INVE  0C              
+4AAD: CC 4C 4F 4F 4B 0D      ; 11_001_100  LOOK  0D              
+4AB3: 4C 44 52 4F 50 07      ; 01_001_100  DROP  07                   
+4AB9: 4C 50 4F 55 52 08      ; 01_001_100  POUR  08        
+4ABF: 8B 47 45 54 06         ; 10_001_011  GET   06
+4AC4: 8C 4F 50 45 4E 05      ; 10_001_100  OPEN  05              
+4ACA: 4C 44 52 49 4E 10      ; 01_001_100  DRIN  10
+4AD0: 8C 53 4D 41 53 11      ; 10_001_100  SMAS  11
+4AD6: CB 59 45 53 12         ; 11_001_011  YES   12       
+4ADB: CA 4E 4F 13            ; 11_001_010  NO    13           
+4ADF: 4C 52 45 41 44 09      ; 01_001_100  READ  09        
+4AE5: CC 50 41 4E 45 0E      ; 11_001_100  PAN   0E
+4AEB: CC 50 4C 55 47 0A      ; 11_001_100  PLUG  0A         
 4AF1: 00                     ; end of list
                      
 4AF2: 01 02 05   LD      BC,$0502        
