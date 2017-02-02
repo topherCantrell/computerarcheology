@@ -1150,31 +1150,31 @@
 
 CommandTable: ;= 
 ; aa_bbb_ccc
-;   bbb = number of data bytes 
-4A9A: 0C 53 49 47 4E 0A                    ; SIGN        
-4AA0: 0C 53 57 4F 52 09                    ; SWOR        
-4AA6: 3C 47 48 4F 53 01 02 03 04 05 06 07  ; 00_111_100 GHOS        
-4AB2: C9 4E 01               ; N
-4AB5: C9 45 02               ; E          
-4AB8: C9 53 03               ; S              
-4ABB: C9 57 04               ; W               
-4ABE: CC 43 4C 49 4D 0F      ; CLIM                  
-4AC4: CC 4A 55 4D 50 0F      ; JUMP                    
-4ACA: CC 51 55 49 54 0B      ; QUIT              
-4AD0: CC 49 4E 56 45 0C      ; INVEN               
-4AD6: CC 4C 4F 4F 4B 0D      ; LOOK               
-4ADC: 4C 44 52 4F 50 07      ; DROP                   
-4AE2: 8B 47 45 54 06         ; GET
-4AE7: 8C 4F 50 45 4E 05      ; OPEN               
-4AED: 8C 53 4D 41 53 11      ; SMAS
-4AF3: CB 48 49 54 11         ; HIT  (same as SMAS)
-4AF8: CC 41 54 54 41 11      ; ATTA (same as SMAS)
-4AFE: CC 4B 49 4C 4C 11      ; KILL (same as SMAS)
-4B04: CB 59 45 53 12         ; YES          
-4B09: CA 4E 4F 13            ; NO              
-4B0D: 4C 52 45 41 44 09      ; READ           
-4B13: CC 50 4C 55 47 0A      ; PLUG          
-4B19: 00                     ; end of list
+;   bbb = number of data bytes                    SECOND FLOOR
+4A9A: 0C 53 49 47 4E 0A                    ; 00_001_100  SIGN  0A
+4AA0: 0C 53 57 4F 52 09                    ; 00_001_100  SWOR  09
+4AA6: 3C 47 48 4F 53 01 02 03 04 05 06 07  ; 00_111_100  GHOS  01 02 03 04 05 06 07
+4AB2: C9 4E 01                             ; 11_001_001  N     01
+4AB5: C9 45 02                             ; 11_001_001  E     02
+4AB8: C9 53 03                             ; 11_001_001  S     03
+4ABB: C9 57 04                             ; 11_001_001  W     04
+4ABE: CC 43 4C 49 4D 0F                    ; 11_001_100  CLIM  0F
+4AC4: CC 4A 55 4D 50 0F                    ; 11_001_100  JUMP  0F
+4ACA: CC 51 55 49 54 0B                    ; 11_001_100  QUIT  0B
+4AD0: CC 49 4E 56 45 0C                    ; 11_001_100  INVE  0C
+4AD6: CC 4C 4F 4F 4B 0D                    ; 11_001_100  LOOK  0D
+4ADC: 4C 44 52 4F 50 07                    ; 01_001_100  DROP  07
+4AE2: 8B 47 45 54 06                       ; 10_001_011  GET   06
+4AE7: 8C 4F 50 45 4E 05                    ; 10_001_100  OPEN  05
+4AED: 8C 53 4D 41 53 11                    ; 10_001_100  SMAS  11
+4AF3: CB 48 49 54 11                       ; 11_001_011  HIT   11
+4AF8: CC 41 54 54 41 11                    ; 11_001_100  ATTA  11
+4AFE: CC 4B 49 4C 4C 11                    ; 11_001_100  KILL  11
+4B04: CB 59 45 53 12                       ; 11_001_011  YES   12
+4B09: CA 4E 4F 13                          ; 11_001_010  NO    13
+4B0D: 4C 52 45 41 44 09                    ; 01_001_100  READ  09
+4B13: CC 50 4C 55 47 0A                    ; 11_001_100  PLUG  0A
+4B19: 00                                   ; end of list
                     
 4B1A: 01 02 05   LD      BC,$0502        
 4B1D: 02         LD      (BC),A          

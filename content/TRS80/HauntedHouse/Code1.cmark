@@ -1148,9 +1148,9 @@ PrintChar:
             
 CommandTable: ;=            
 ; aa_bbb_ccc
-; bbb = number of data bytes 
+; bbb = number of data bytes        FIRST FLOOR
 4A4B: 0B 4B 45 59 03         ; 00_001_011  KEY   03            
-4A50: 0C 50 41 50 45 01      ; 00_001_100  PAPE  01 (??? 01 is starting room?)
+4A50: 0C 50 41 50 45 01      ; 00_001_100  PAPE  01 
 4A56: 14 44 4F 4F 52 02 05   ; 00_010_100  DOOR  02 05               
 4A5D: 0C 46 49 52 45 04      ; 00_001_100  FIRE  04              
 4A63: 0C 4B 4E 49 46 06      ; 00_001_100  KNIF  06
@@ -1177,7 +1177,7 @@ CommandTable: ;=
 4AD6: CB 59 45 53 12         ; 11_001_011  YES   12       
 4ADB: CA 4E 4F 13            ; 11_001_010  NO    13           
 4ADF: 4C 52 45 41 44 09      ; 01_001_100  READ  09        
-4AE5: CC 50 41 4E 45 0E      ; 11_001_100  PAN   0E
+4AE5: CC 50 41 4E 45 0E      ; 11_001_100  PANE  0E
 4AEB: CC 50 4C 55 47 0A      ; 11_001_100  PLUG  0A         
 4AF1: 00                     ; end of list
                      
