@@ -9,14 +9,14 @@ import code.CU;
 
 public class CASReader {
 
-	public static void main(String[] args) throws Exception {
+	public static void main2(String[] args) throws Exception {
 		
 		// Looks like hauntORG has a couple of file loads in it. Looks like the game loads
 		// its second half over the first.
 		
 		// 42E9
 		
-		InputStream is = new FileInputStream("haunt.cas");
+		InputStream is = new FileInputStream("content/trs80/hauntedhouse/haunt.cas");
 		int [] data = new int[is.available()];
 		for(int x=0;x<data.length;++x) {
 			data[x] = is.read();
@@ -49,14 +49,14 @@ public class CASReader {
 
 	}
 	
-	public static void main2(String[] args) throws Exception {
+	public static void main(String[] args) throws Exception {
 		
 		// Looks like hauntORG has a couple of file loads in it. Looks like the game loads
 		// its second half over the first.
 		
 		// 435E
 		
-		InputStream is = new FileInputStream("haunt.cas");
+		InputStream is = new FileInputStream("content/trs80/hauntedhouse/haunt.cas");
 		int [] data = new int[is.available()];
 		for(int x=0;x<data.length;++x) {
 			data[x] = is.read();
@@ -79,6 +79,8 @@ public class CASReader {
 			
 			pos = pos + 0x100;			
 		}
+		
+		pos = pos + 5;
 		
 		while(pos<data.length) {
 			os.write(data[pos++]);

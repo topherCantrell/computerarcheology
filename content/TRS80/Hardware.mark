@@ -1,57 +1,18 @@
 %%title TRS80 Hardware
 %%image TRS80Tech.jpg
-%%range FF00:FFFF
+%%range 3000:3BFF
 
-= References =
+= Memory Map =
+ * 0000-2FFF Level 2 ROM
+ * 3000-37DF Unused
+ * 37E0-37FF Memory Mapped I/O
+ * 3800-28FF Keyboard map
+ * 3900-3BFF (Keyboard map shadow)
+ * 3C00-3FFF 1KB Video RAM
+ * 4000-41FF RAM used by the ROM routines
+ * 42FF-4FFF Usable RAM in a 4K machine
+ * 5000-7FFF Usable RAM in a 16K machine
+ * 8000-BFFF Additional RAM in a 32K machine
+ * C000-FFFF Still more RAM in a 48K machine
 
-= Hardware Addresses =
-
-; TRS-80 ROM routines
-; http://www.trs-80.com/trs80-zaps-internals.htm#romcalls
-;
-;002B            INKEY subroutine- scans keyboard.  The data is not echoed on
-;                your screen.  Note that calling 0358H instead will eliminate
-;                need to save DE.
-;
-;                call:   PUSH    DE      ;save
-;                        CALL    002BH   ;scan keyboard
-;                        POP     DE      ;restore
-;                        JP      Z,NOKEY ;no key pressed
-;                        ;key is now in A
-;
-;
-;0033            DISPLAY subroutine- prints character in A at current cursor
-;               position on video display.  Cursor position is stored at
-;               4020-4021.  Note that calling 033AH instead will eliminate
-;               need to save DE.
-;
-;               call:    PUSH    DE        ;save
-;                        LD      HL,nnnn   ;* optionally position cursor
-;                        LD      (4020H),HL;*   before displaying byte
-;                        CALL    0033H     ;dislay character
-;                        POP     DE        ;restore
-; 
-;
-
-http://www.classiccmp.org/cpmarchives/trs80/mirrors/kjsl/www.kjsl.com/trs80/lvl2romaddr.html
-
-https://archive.org/stream/ROM_Routines_Documented_1983_The_Alternate_Source/ROM_Routines_Documented_1983_The_Alternate_Source_djvu.txt
-
-
-
-1F8 CSOFF Turn off the cassette drive
-
-0000-2FFF Level 2 ROM
-3000-37DF Unused
-37E0-37FF Memory Mapped I/O
-3800-28FF Keyboard map
-3900-3BFF (Keyboard map shadow)
-3C00-3FFF 1KB Video RAM
-4000-41FF RAM used by the ROM routines
-42FF-4FFF Usable RAM in a 4K machine
-5000-7FFF Usable RAM in a 16K machine
-8000-BFFF Additional RAM in a 32K machine
-C000-FFFF Still more RAM in a 48K machine
-
-42E9      Start of user RAM for program storage
-
+Start of user RAM for program storage: 42E9

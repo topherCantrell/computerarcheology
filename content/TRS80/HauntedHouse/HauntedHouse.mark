@@ -3,26 +3,17 @@
 
 = Code Links =
 
-* [haunt1.html Disassembled Code]
-* [haunt2.html Disassembled Code]
+* [Code1.html Disassembled Code]
+* [Code2.html Disassembled Code]
 * [RAMUse.html RAM Usage]
 
-{{{html
-<div class="tourGuide">
-<div style="padding-left: 20px">
-}}}
+= TODO =
 
-= Tour Guide =
-
-
-{{{html
-</div>
-</div>
-}}}
+Just getting started on this disassembly. Check back soon!
 
 = References =
 
-If you seek specific game information, solutions, and online emulators then check out Sean Murphy's wonderful site.[[br]]
-Solutions and info on Haunted House:[[br]]
-[http://www.figmentfly.com]
+If you seek specific game information, solutions, and online emulators then check out [http://www.figmentfly.com Sean Murphy's wonderful site].
 
+Joe Peterson has recreated the original Haunted house in Java on his webpage as well as created an Android app. Both can be found on his
+[http://www.wildlava.com/explore/ "Explore" Adventure Games website].
