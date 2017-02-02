@@ -65,7 +65,7 @@
 
 ; First Floor starts here (the second floor loads here too)
 
-435E: 31 B8 46   LD      SP,$46B8        ; Stack starts here
+435E: 31 B8 46   LD      SP,$46B8        ; ??? This is within the code area ???
 4361: 3E 0E      LD      A,$0E           ; ??? Maybe ...
 4363: CD 33 00   CALL    $0033           ; ... ??? clear the screen?
 4366: 21 83 46   LD      HL,$4683        ; "HAUNTED HOUSE!!"
@@ -106,7 +106,8 @@
 43B6: C2 AB 43   JP      NZ,$43AB        
 43B9: 2B         DEC     HL              
 43BA: BB         CP      E               
-43BB: C9         RET                     
+43BB: C9         RET           
+          
 43BC: D5         PUSH    DE              
 43BD: EB         EX      DE,HL           
 43BE: 6F         LD      L,A             
@@ -489,7 +490,8 @@ PrintChar:
 465A: 15         DEC     D               
 465B: 46         LD      B,(HL)          
 465C: 36 00      LD      (HL),$00        
-465E: C9         RET                     
+465E: C9         RET                   
+  
 465F: 45         LD      B,L             
 4660: 20 49      JR      NZ,$46AB        
 4662: 50         LD      D,B             
@@ -518,7 +520,7 @@ PrintChar:
 4682: 00         NOP        
   
 ; "HAUNTED HOUSE!![CR]"             
-4683: 48 41 55 4E 54 45 44 20 4F 55 53 45 21 21 00
+4683: 48 41 55 4E 54 45 44 20 48 4F 55 53 45 21 21 00
        
 4693: 15         DEC     D               
 4694: 40         LD      B,B             
@@ -547,7 +549,10 @@ PrintChar:
 46B1: 26 44      LD      H,$44           
 46B3: FE 48      CP      $48             
 46B5: F2 43 93   JP      P,$9343         
-46B8: 00         NOP                     
+46B8: 00         NOP                  ; Stack points here at beginning???
+
+
+   
 46B9: 32 7B 47   LD      ($477B),A       
 46BC: 3E 01      LD      A,$01           
 46BE: 32 7E 47   LD      ($477E),A       
@@ -567,7 +572,8 @@ PrintChar:
 46D5: 6F         LD      L,A             
 46D6: 13         INC     DE              
 46D7: 13         INC     DE              
-46D8: EB         EX      DE,HL           
+46D8: EB         EX      DE,HL        
+   
 46D9: E5         PUSH    HL              
 46DA: C5         PUSH    BC              
 46DB: 21 28 00   LD      HL,$0028        
@@ -603,16 +609,18 @@ PrintChar:
 470A: 21 11 47   LD      HL,$4711        
 470D: 3F         CCF                     
 470E: C3 EA 46   JP      $46EA           
+;
 4711: 00         NOP                     
-4712: 01 53 47   LD      BC,$4753        
-4715: 09         ADD     HL,BC           
-4716: 7E         LD      A,(HL)          
-4717: C1         POP     BC              
-4718: E1         POP     HL              
-4719: 77         LD      (HL),A          
-471A: 2B         DEC     HL              
-471B: 05         DEC     B               
-471C: C2 D9 46   JP      NZ,$46D9        
+;
+4712: 01 53 47   LD      BC,$4753        ; Character compression map
+4715: 09         ADD     HL,BC           ; Offset into table
+4716: 7E         LD      A,(HL)          ; Get the character value
+4717: C1         POP     BC              ; Restore BC
+4718: E1         POP     HL              ; Restore pointer to buffer
+4719: 77         LD      (HL),A          ; Replace the character with the decoded value
+471A: 2B         DEC     HL              ; Next character (moving left)
+471B: 05         DEC     B               ; All done?
+471C: C2 D9 46   JP      NZ,$46D9        ; No ... keep decoding
 471F: 3A 7E 47   LD      A,($477E)       
 4722: A7         AND     A               
 4723: CA 3B 47   JP      Z,$473B         
@@ -624,7 +632,7 @@ PrintChar:
 472C: 46         LD      B,(HL)          
 472D: E5         PUSH    HL              
 472E: 78         LD      A,B             
-472F: CD FF 45   CALL    $45FF           
+472F: CD FF 45   CALL    $45FF           ; Print character
 4732: E1         POP     HL              
 4733: 23         INC     HL              
 4734: 1D         DEC     E               
@@ -644,42 +652,15 @@ PrintChar:
 474A: 3D         DEC     A               
 474B: 32 7B 47   LD      ($477B),A       
 474E: C2 CC 46   JP      NZ,$46CC        
-4751: E1         POP     HL              
-4752: C9         RET                     
-4753: 3F         CCF                     
-4754: 21 32 20   LD      HL,$2032        
-4757: 22 27 3C   LD      ($3C27),HL      
-475A: 3E 2F      LD      A,$2F           
-475C: 30 33      JR      NC,$4791        
-475E: 41         LD      B,C             
-475F: 42         LD      B,D             
-4760: 43         LD      B,E             
-4761: 44         LD      B,H             
-4762: 45         LD      B,L             
-4763: 46         LD      B,(HL)          
-4764: 47         LD      B,A             
-4765: 48         LD      C,B             
-4766: 49         LD      C,C             
-4767: 4A         LD      C,D             
-4768: 4B         LD      C,E             
-4769: 4C         LD      C,H             
-476A: 4D         LD      C,L             
-476B: 4E         LD      C,(HL)          
-476C: 4F         LD      C,A             
-476D: 50         LD      D,B             
-476E: 51         LD      D,C             
-476F: 52         LD      D,D             
-4770: 53         LD      D,E             
-4771: 54         LD      D,H             
-4772: 55         LD      D,L             
-4773: 56         LD      D,(HL)          
-4774: 57         LD      D,A             
-4775: 58         LD      E,B             
-4776: 59         LD      E,C             
-4777: 5A         LD      E,D             
-4778: 2D         DEC     L               
-4779: 2C         INC     L               
-477A: 2E 00      LD      L,$00           
+4751: E1         POP     HL          
+4752: C9         RET       
+              
+; Character compression table
+4753: 3F 21 32 20 22 27 3C 3E 2F 30 33                 ; ?!2_"'<>/03
+475E: 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 50  ; ABCDEFGHIJKLMNOP       
+476E: 51 52 53 54 55 56 57 58 59 5A 2D 2C 2E           ; QRSTUVWXYZ-,.
+ 
+477B: 00               
 477C: 00         NOP                     
 477D: 00         NOP                     
 477E: 00         NOP                     
@@ -992,7 +973,8 @@ PrintChar:
 4923: 78         LD      A,B             
 4924: 32 E2 48   LD      ($48E2),A       
 4927: CD 2D 49   CALL    $492D           
-492A: C3 0B 44   JP      $440B           
+492A: C3 0B 44   JP      $440B      
+     
 492D: 21 84 4C   LD      HL,$4C84        
 4930: CD AE 45   CALL    $45AE           
 4933: 3A E2 48   LD      A,($48E2)       
