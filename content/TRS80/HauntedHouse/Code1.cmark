@@ -27,10 +27,10 @@
 430C: FE 55      CP      $55             ; Start of data?
 430E: 20 F9      JR      NZ,$4309        ; No ... keep reading
 ;
-4310: 06 06      LD      B,$06           ; ??? 
-4312: 7E         LD      A,(HL)          ; ??? Is this a screen cursor for the Model I asterisk blink?
-4313: 23         INC     HL              ; ??? I'll know more when I find the code that gets us here
-4314: 10 FC      DJNZ    $4312           ; ???
+4310: 06 06      LD      B,$06           ; Six bytes 
+4312: 7E         LD      A,(HL)          ; ??? This is never used. Killing time?
+4313: 23         INC     HL              ; Bump HL (???This may be where the asterisk is going to print in model 1 routine)
+4314: 10 FC      DJNZ    $4312           ; Keep going to add 6 to HL
 4316: CD 2C 02   CALL    $022C           ; (Model I only) Blinks right asterisk during tape load operations
 4319: CD 35 02   CALL    $0235           ; Get one byte from the tape
 431C: FE 78      CP      $78             ; End of load?
