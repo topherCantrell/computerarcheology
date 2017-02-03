@@ -147,6 +147,13 @@ public class CPUZ80 extends CPU {
 				return true;
 			}
 		}
+		if(op.equals("CALL")) {
+			push(pc,true);
+			int dest = Integer.parseInt(par.substring(1),16);
+			pc = findCodeTarget(dest);
+			return true;
+		}
+		
 		return false;
 	}
 
