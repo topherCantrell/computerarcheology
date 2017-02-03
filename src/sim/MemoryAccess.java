@@ -1,12 +1,12 @@
-package digs.daggorath.cpu;
+package sim;
 
 public class MemoryAccess implements Accessable {
 		
-		CPU6809 cpu;
-		int addr;
-		boolean isWordAccess;
+		private CPU cpu;
+		private int addr;
+		private boolean isWordAccess;
 		
-		MemoryAccess(CPU6809 cpu, int addr, boolean isWordAccess) {
+		MemoryAccess(CPU cpu, int addr, boolean isWordAccess) {
 			this.cpu = cpu;
 			this.addr = addr;
 			this.isWordAccess = isWordAccess;

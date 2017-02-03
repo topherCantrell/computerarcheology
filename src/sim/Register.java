@@ -1,10 +1,10 @@
-package digs.daggorath.cpu;
+package sim;
 
 public class Register implements Accessable {
 	
-	String name;
-	boolean isWordSize;
-	int value;
+	private String name;
+	private boolean isWordSize;
+	private int value;
 	
 	public static void checkSize(int value, boolean isWordSize) {
 		if(value<0) throw new RuntimeException ("Invalid value "+value);
@@ -22,6 +22,10 @@ public class Register implements Accessable {
 	public Register(String name, boolean isWordSize) {
 		this.name = name;
 		this.isWordSize = isWordSize;
+	}
+	
+	public String getName() {
+		return name;
 	}
 
 	@Override

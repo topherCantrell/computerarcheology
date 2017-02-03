@@ -73,4 +73,18 @@ public class CU {
 		return s;
 	}
 
+	public static boolean isTwoDigitHex(String s, int pos) {
+		if(pos>=s.length()) return false;
+		char a = s.charAt(pos++);
+		if(pos>=s.length()) return false;
+		char b = s.charAt(pos++);
+
+		if(pos!=s.length() && s.charAt(pos)!=' ') return false;
+
+		if( (a>='0' && a<='9' || a>='A' && a<='F') && (b>='0' && b<='9' || b>='A' && b<='F') ) {
+			return true;
+		}
+		return false;
+	}
+
 }

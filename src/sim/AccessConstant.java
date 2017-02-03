@@ -1,9 +1,9 @@
-package digs.daggorath.cpu;
+package sim;
 
 public class AccessConstant implements Accessable {
 		
-		int value;
-		boolean isWordSize;
+		private int value;
+		private boolean isWordSize;
 		
 		AccessConstant(int value, boolean isWordSize) {
 			this.value = value;
@@ -17,7 +17,7 @@ public class AccessConstant implements Accessable {
 
 		@Override
 		public void writeValue(int value) {
-			throw new RuntimeException("Cannot write constant");			
+			throw new RuntimeException("Cannot write to constant value");			
 		}
 
 		@Override
@@ -27,7 +27,7 @@ public class AccessConstant implements Accessable {
 
 		@Override
 		public int getEffectiveAddress() {
-			throw new RuntimeException("Cannot get effective address of a constant");
+			throw new RuntimeException("Cannot get the effective address of a constant value");
 		}
 		
 	}

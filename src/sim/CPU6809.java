@@ -1,31 +1,25 @@
-package digs.daggorath.cpu;
+package sim;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import code.CU;
-
-public class CPU6809 {
+public class CPU6809 extends CPU {
 	
-	int [] memory = new int[64*1024];
-	
-	Map<String,Register> registers = new HashMap<String,Register>();
+	int [] memory = new int[64*1024];	
 			
 	boolean cf, zf;			
 	
-	List<String> lines;	
 	int pc;
 	
 	public CPU6809(List<String> lines) {
+		super(lines);
 		
 		registers.put("DP",new Register("DP",false));
 		Register a = new Register("A",false);
 		Register b = new Register("B",false);
 		registers.put("A", a);
 		registers.put("B", b);
-		registers.put("D", new DRegister(a,b));
+		registers.put("D", new RegisterPair("D",a,b));
 		registers.put("X", new Register("X",true));
 		registers.put("Y", new Register("Y",true));
 		registers.put("U", new Register("U",true));
@@ -33,7 +27,6 @@ public class CPU6809 {
 		registers.put("SP",sp);
 		registers.put("S",sp);
 		
-		this.lines = lines;
 		for(String s : lines) {
 			
 			int i = s.indexOf(":",5);
@@ -69,27 +62,7 @@ public class CPU6809 {
 			memory[addr] = value;
 		}
 	}	
-	public int readByte(int addr) {
-		return readMemory(addr,false);
-	}	
-	public int readWord(int addr) {
-		return readMemory(addr,true);
-	}	
-	public void writeByte(int addr, int value) {
-		writeMemory(addr,value,false);
-	}
-	public void writeWord(int addr, int value) {
-		writeMemory(addr,value,true);
-	}
-	
-	public Register getRegister(String reg) {
-		Register ret = registers.get(reg);
-		if(ret==null) {
-			throw new RuntimeException("Unknown register '"+reg+"'");
-		}
-		return ret;
-	}
-	
+		
 	public void push(int value, boolean word) {		
 		Register sp = getRegister("SP");
 		int p = sp.readValue();
@@ -116,17 +89,7 @@ public class CPU6809 {
 		sp.writeValue(p);
 		return ret;
 	}
-	
-	public int findCodeTarget(int address) {
-		String adr = Integer.toString(address,16).toUpperCase();
-		for(int x=0;x<lines.size();++x) {
-			if(lines.get(x).startsWith(adr+":")) {
-				return x;
-			}
-		}
-		throw new RuntimeException("No code target "+address);
-	}
-	
+			
 	int setNZv(int value) {
 		zf = (value==0);
 		// TODO other flags as needed
@@ -236,11 +199,6 @@ public class CPU6809 {
 		return ret;
 	}
 	
-	public void call(int address) {
-		push(0xFFFF,true);
-		run(address);
-	}
-					
 	public void run(int address) {
 		
 		// Good info on instruction set:

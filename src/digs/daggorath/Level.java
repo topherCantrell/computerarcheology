@@ -6,8 +6,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import code.CU;
-import digs.daggorath.cpu.CPU6809;
+import sim.CPU6809;
 
 public class Level {
 

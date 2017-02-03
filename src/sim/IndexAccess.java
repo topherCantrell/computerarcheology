@@ -1,14 +1,14 @@
-package digs.daggorath.cpu;
+package sim;
 
 public class IndexAccess implements Accessable {
 	
-	CPU6809 cpu;
+	CPU cpu;
 	Register reg;
 	int adjust;
 	int offset;
 	boolean isWordAccess;
 						
-	IndexAccess(CPU6809 cpu, Register reg, boolean isWordAccess) {
+	IndexAccess(CPU cpu, Register reg, boolean isWordAccess) {
 		this.cpu = cpu;
 		this.reg = reg;		
 		this.isWordAccess = isWordAccess;		
