@@ -4,12 +4,17 @@ import java.util.List;
 
 public class CPUZ80 extends CPU {
 	
+	// http://www.z80.info/z80flag.htm
+	
 	int [] memory = new int[64*1024];
 	
 	int pc;
 
 	public CPUZ80(List<String> lines) {
 		super(lines);
+		
+		registers.put("SP", new Register("SP",true));
+		registers.put("A", new Register("A",false));
 		
 		for(String s : lines) {			
 			int i = s.indexOf(":",5);
@@ -84,7 +89,8 @@ public class CPUZ80 extends CPU {
 			}
 			
 			if(
-					flow(op,par)
+					flow(op,par) ||
+					load(op,par)
 				) 
 			{
 				debug(addr,instruction);
@@ -92,6 +98,45 @@ public class CPUZ80 extends CPU {
 				throw new RuntimeException("Unknown instruction "+addr+":"+op+":"+par);
 			}
 		}
+	}
+	
+	public boolean load(String op, String par) {
+		if(op.equals("LD")) {
+			// NONE of the LD opcodes affect the flags			
+			String [] parts = par.split(",");			
+			boolean isWordAccess = false;
+			Accessable left=null,right=null;
+			// One of these must be a register
+			if(!parts[0].startsWith("$") && !parts[0].startsWith("(")) {
+				// src is a register
+				left = getRegister(parts[0]);
+				isWordAccess = left.isWordSize();
+			} else if(!parts[1].startsWith("$") && !parts[1].startsWith("(")) {
+				// src is a register
+				right = getRegister(parts[0]);
+				isWordAccess = right.isWordSize();
+			} else {
+				throw new RuntimeException("One of these must be a register");
+			}
+			
+			if(parts[0].startsWith("(")) {
+				left = new MemoryAccess(this,Integer.parseInt(parts[0].substring(1,parts[0].length()-1),16),isWordAccess);
+			} 
+			if(parts[1].startsWith("(")) {
+				right = new MemoryAccess(this,Integer.parseInt(parts[1].substring(1,parts[1].length()-1),16),isWordAccess);
+			} 
+			if(parts[0].startsWith("$")) {
+				left = new AccessConstant(Integer.parseInt(parts[0].substring(1),16),isWordAccess);
+			}
+			if(parts[1].startsWith("$")) {
+				right = new AccessConstant(Integer.parseInt(parts[1].substring(1),16),isWordAccess);
+			}
+			
+			left.writeValue(right.readValue());
+			
+			return true;
+		}
+		return false;
 	}
 	
 	public boolean flow(String op, String par) {
