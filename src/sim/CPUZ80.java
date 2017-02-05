@@ -173,10 +173,163 @@ public class CPUZ80 extends CPU {
 	}
 	
 	public boolean math(String op, String par) {
+		if(op.equals("SBC")) {
+			Accessable dst,val;
+			if(par.startsWith("HL,")) {
+				dst = getRegister("HL");
+				par = par.substring(3);
+			} else {
+				dst = getRegister("A");
+				par = par.substring(2);
+			}
+			if(par.startsWith("$")) {
+				val = new AccessConstant(Integer.parseInt(par.substring(1),16),dst.isWordSize());
+			} else {
+				val = getRegister(par);
+			}
+			
+			int aval = dst.readValue() - val.readValue();
+			if(cf) aval = aval - 1;
+			cf = false;
+			if(dst.isWordSize()) {
+				if(aval<0) {
+					aval = aval + 65536;
+					cf = true;
+				}
+			} else {
+				if(aval<0) {
+					aval = aval + 256;
+					cf = true;
+				}
+			}
+			
+			zf = (aval==0);
+			dst.writeValue(aval);
+			return true;
+		}
+		if(op.equals("SUB")) {
+			Accessable dst,val;
+			if(par.startsWith("HL,")) {
+				dst = getRegister("HL");
+				par = par.substring(3);
+			} else {
+				dst = getRegister("A");
+				par = par.substring(2);
+			}
+			if(par.startsWith("$")) {
+				val = new AccessConstant(Integer.parseInt(par.substring(1),16),dst.isWordSize());
+			} else {
+				val = getRegister(par);
+			}
+			
+			int aval = dst.readValue() - val.readValue();
+			cf = false;
+			if(dst.isWordSize()) {
+				if(aval<0) {
+					aval = aval + 65536;
+					cf = true;
+				}
+			} else {
+				if(aval<0) {
+					aval = aval + 256;
+					cf = true;
+				}
+			}
+			
+			zf = (aval==0);
+			dst.writeValue(aval);
+			return true;
+		}
+		if(op.equals("ADC")) {
+			Accessable dst,val;
+			if(par.startsWith("HL,")) {
+				dst = getRegister("HL");
+				par = par.substring(3);
+			} else {
+				dst = getRegister("A");
+				par = par.substring(2);
+			}
+			if(par.startsWith("$")) {
+				val = new AccessConstant(Integer.parseInt(par.substring(1),16),dst.isWordSize());
+			} else {
+				val = getRegister(par);
+			}
+			
+			int aval = dst.readValue() + val.readValue();
+			if(cf) aval = aval + 1;
+			cf = false;
+			if(dst.isWordSize()) {
+				if(aval>0xFFFF) {
+					cf = true;
+					aval = aval & 0xFFFF;
+				}
+			} else {
+				if(aval>0xFF) {
+					cf = true;
+					aval = aval & 0xFF;
+				}
+			}
+						
+			zf = (aval==0);
+			dst.writeValue(aval);
+			return true;
+		}
+		if(op.equals("ADD")) {
+			Accessable dst,val;
+			if(par.startsWith("HL,")) {
+				dst = getRegister("HL");
+				par = par.substring(3);
+			} else {
+				dst = getRegister("A");
+				par = par.substring(2);
+			}
+			if(par.startsWith("$")) {
+				val = new AccessConstant(Integer.parseInt(par.substring(1),16),dst.isWordSize());
+			} else {
+				val = getRegister(par);
+			}
+			
+			int aval = dst.readValue() + val.readValue();
+			//if(cf) aval = aval + 1;
+			cf = false;
+			if(dst.isWordSize()) {
+				if(aval>0xFFFF) {
+					cf = true;
+					aval = aval & 0xFFFF;
+				}
+			} else {
+				if(aval>0xFF) {
+					cf = true;
+					aval = aval & 0xFF;
+				}
+			}
+						
+			zf = (aval==0);
+			dst.writeValue(aval);
+			return true;
+		}
 		if(op.equals("INC")) {
-			Accessable ac = getRegister(par);
+			Accessable ac;
+			if(par.equals("(HL)")) {
+				ac = new IndexAccess(this,getRegister("HL"),false);
+			} else {
+				ac = getRegister(par);
+			}
 			int val = ac.readValue();
 			val = val + 1;
+			ac.writeValue(val);
+			setFlags(val, false, cf, -1, -1, -1, 0, 1);
+			return true;
+		}
+		if(op.equals("DEC")) {
+			Accessable ac;
+			if(par.equals("(HL)")) {
+				ac = new IndexAccess(this,getRegister("HL"),false);
+			} else {
+				ac = getRegister(par);
+			}
+			int val = ac.readValue();
+			val = val - 1;
 			ac.writeValue(val);
 			setFlags(val, false, cf, -1, -1, -1, 0, 1);
 			return true;
@@ -200,6 +353,18 @@ public class CPUZ80 extends CPU {
 				setFlags(aval, false, cf, -1, -1, -1, 0, 1);
 				return true;
 			}
+		}
+		if(op.equals("RLA")) {
+			int aval = getRegister("A").readValue();
+			aval = aval << 1;
+			if(aval>0xFF) {
+				aval = (aval & 0xFF) | 1;
+				cf = true;
+			} else {
+				cf = false;
+			}
+			getRegister("A").writeValue(aval);
+			return true;
 		}
 		return false;
 	}
@@ -236,20 +401,25 @@ public class CPUZ80 extends CPU {
 			
 			// NONE of the LD opcodes affect the flags
 			
-			String [] parts = par.split(",");			
-			
-			// One of these must be a register
 			Accessable left,right;
-			left = decodeRegister(parts[0]);		
-			right = decodeRegister(parts[1]);
 			
-			// The other can be a register or something else
-			if(left==null) {
-				left = decodeNonRegister(parts[0],right.isWordSize());
+			if(par.startsWith("(HL),$")) {
+				left = new IndexAccess(this,getRegister("HL"),false);
+				right = new AccessConstant(Integer.parseInt(par.substring(6),16),false);
+			} else {			
+				// One of these must be a register
+				String [] parts = par.split(",");	
+				left = decodeRegister(parts[0]);		
+				right = decodeRegister(parts[1]);
+				
+				// The other can be a register or something else
+				if(left==null) {
+					left = decodeNonRegister(parts[0],right.isWordSize());
+				}
+				if(right==null) {
+					right = decodeNonRegister(parts[1],left.isWordSize());
+				}		
 			}
-			if(right==null) {
-				right = decodeNonRegister(parts[1],left.isWordSize());
-			}			
 			
 			left.writeValue(right.readValue());
 			
@@ -261,6 +431,8 @@ public class CPUZ80 extends CPU {
 	public boolean evaluateCondition(String cond) {
 		if(cond.equals("NZ")) return !zf;
 		if(cond.equals("Z")) return zf;
+		if(cond.equals("NC")) return !cf;
+		if(cond.equals("C")) return cf;
 		throw new RuntimeException("Unknown condition "+cond);
 	}
 	

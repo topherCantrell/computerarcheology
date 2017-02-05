@@ -75,7 +75,7 @@
 436F: 3E 10      LD      A,$10           
 4371: 32 E2 48   LD      ($48E2),A       
 4374: CD 2D 49   CALL    $492D           
-4377: 97         SUB     A               
+4377: 97         SUB     A,A               
 4378: 32 7B 46   LD      ($467B),A       
 437B: 32 7C 46   LD      ($467C),A       
 437E: 32 7D 46   LD      ($467D),A       
@@ -246,7 +246,7 @@
 44AE: C3 B4 44   JP      $44B4           
 44B1: 21 84 4F   LD      HL,$4F84        
 44B4: CD AE 45   CALL    $45AE           
-44B7: 97         SUB     A               
+44B7: 97         SUB     A,A               
 44B8: 32 7B 46   LD      ($467B),A       
 44BB: C3 2F 44   JP      $442F           
 44BE: 2A AC 45   LD      HL,($45AC)      
@@ -263,7 +263,7 @@
 44D6: C3 2F 44   JP      $442F           
 44D9: 00         NOP                     
 44DA: 21 5A 46   LD      HL,$465A        
-44DD: 97         SUB     A               
+44DD: 97         SUB     A,A               
 44DE: 32 AB 45   LD      ($45AB),A       
 44E1: 32 7D 46   LD      ($467D),A       
 44E4: 11 4B 4A   LD      DE,$4A4B        ; Command table
@@ -333,7 +333,7 @@
 4562: EB         EX      DE,HL           
 4563: 78         LD      A,B             
 4564: 32 AA 45   LD      ($45AA),A       
-4567: 97         SUB     A               
+4567: 97         SUB     A,A               
 4568: 32 D9 44   LD      ($44D9),A       
 456B: 7E         LD      A,(HL)          
 456C: FE 20      CP      $20             
@@ -359,7 +359,7 @@
 
 ; Reached the end of the command list
 458C: E1         POP     HL              
-458D: 97         SUB     A               
+458D: 97         SUB     A,A               
 458E: 32 7C 46   LD      ($467C),A       
 4591: 32 7B 46   LD      ($467B),A       
 4594: 7E         LD      A,(HL)          
@@ -558,7 +558,7 @@ PrintChar:
 46BE: 32 7E 47   LD      ($477E),A       
 46C1: C3 CB 46   JP      $46CB           
 46C4: 32 7B 47   LD      ($477B),A       
-46C7: 97         SUB     A               
+46C7: 97         SUB     A,A               
 46C8: 32 7E 47   LD      ($477E),A       
 46CB: E5         PUSH    HL              
 46CC: 06 03      LD      B,$03           
@@ -592,15 +592,15 @@ PrintChar:
 46F1: E1         POP     HL              
 46F2: CA 12 47   JP      Z,$4712         
 46F5: 3E 00      LD      A,$00           
-46F7: CE 00      ADC     $00             
+46F7: CE 00      ADC     A,$00             
 46F9: 29         ADD     HL,HL           
 46FA: 44         LD      B,H             
 46FB: 85         ADD     A,L             
 46FC: 2A 7C 47   LD      HL,($477C)      
-46FF: 95         SUB     L               
+46FF: 95         SUB     A,L               
 4700: 4F         LD      C,A             
 4701: 78         LD      A,B             
-4702: 9C         SBC     H               
+4702: 9C         SBC     A,H               
 4703: 47         LD      B,A             
 4704: C5         PUSH    BC              
 4705: D2 0A 47   JP      NC,$470A        
@@ -664,11 +664,11 @@ PrintChar:
 477C: 00         NOP                     
 477D: 00         NOP                     
 477E: 00         NOP                     
-477F: 90         SUB     B               
+477F: 90         SUB     A,B               
 4780: 4C         LD      C,H             
 4781: BF         CP      A               
 4782: 47         LD      B,A             
-4783: 96         SUB     (HL)            
+4783: 96         SUB     A,(HL)            
 4784: 4C         LD      C,H             
 4785: CC 47 A0   CALL    Z,$A047         
 4788: 4C         LD      C,H             
@@ -958,7 +958,7 @@ PrintChar:
 4912: 4A         LD      C,D             
 4913: 2A 4A 33   LD      HL,($334A)      
 4916: 4A         LD      C,D             
-4917: 9A         SBC     D               
+4917: 9A         SBC     A,D               
 4918: 49         LD      C,C             
 4919: 23         INC     HL              
 491A: 4A         LD      C,D             
@@ -1190,7 +1190,7 @@ CommandTable: ;=
 4B0E: 06 0A      LD      B,$0A           
 4B10: 0A         LD      A,(BC)          
 4B11: 04         INC     B               
-4B12: 95         SUB     L               
+4B12: 95         SUB     A,L               
 4B13: 4D         LD      C,L             
 4B14: 09         ADD     HL,BC           
 4B15: 06 0A      LD      B,$0A           
@@ -1206,7 +1206,7 @@ CommandTable: ;=
 4B24: 0A         LD      A,(BC)          
 4B25: 0A         LD      A,(BC)          
 4B26: 04         INC     B               
-4B27: CE 4D      ADC     $4D             
+4B27: CE 4D      ADC     A,$4D             
 4B29: 07         RLCA                    
 4B2A: 11 04 04   LD      DE,$0404        
 4B2D: F5         PUSH    AF              
@@ -1235,14 +1235,14 @@ CommandTable: ;=
 4B45: 79         LD      A,C             
 4B46: 51         LD      D,C             
 4B47: 5E         LD      E,(HL)          
-4B48: 92         SUB     D               
+4B48: 92         SUB     A,D               
 4B49: 64         LD      H,H             
 4B4A: DF         RST     0X18            
 4B4B: 48         LD      C,B             
-4B4C: 91         SUB     C               
+4B4C: 91         SUB     A,C               
 4B4D: AF         XOR     A               
-4B4E: 96         SUB     (HL)            
-4B4F: 96         SUB     (HL)            
+4B4E: 96         SUB     A,(HL)            
+4B4F: 96         SUB     A,(HL)            
 4B50: DB 72      IN      A,($72)         
 4B52: B9         CP      C               
 4B53: 6E         LD      L,(HL)          
@@ -1304,8 +1304,8 @@ CommandTable: ;=
 4B96: B6         OR      (HL)            
 4B97: 14         INC     D               
 4B98: 5D         LD      E,L             
-4B99: 9E         SBC     (HL)            
-4B9A: D6 B5      SUB     $B5             
+4B99: 9E         SBC     A,(HL)            
+4B9A: D6 B5      SUB     A,$B5             
 4B9C: DB 72      IN      A,($72)         
 4B9E: 1B         DEC     DE              
 4B9F: D0         RET     NC              
@@ -1318,7 +1318,7 @@ CommandTable: ;=
 4BA6: 4E         LD      C,(HL)          
 4BA7: 45         LD      B,L             
 4BA8: 5D         LD      E,L             
-4BA9: 9E         SBC     (HL)            
+4BA9: 9E         SBC     A,(HL)            
 4BAA: F3         DI                      
 4BAB: 5F         LD      E,A             
 4BAC: 81         ADD     A,C             
@@ -1341,14 +1341,14 @@ CommandTable: ;=
 4BBD: 10 4D      DJNZ    $4C0C           
 4BBF: 45         LD      B,L             
 4BC0: 08         EX      AF,AF'          
-4BC1: 99         SBC     C               
+4BC1: 99         SBC     A,C               
 4BC2: 4B         LD      C,E             
 4BC3: 5E         LD      E,(HL)          
-4BC4: CE B5      ADC     $B5             
+4BC4: CE B5      ADC     A,$B5             
 4BC6: D3 62      OUT     ($62),A         
 4BC8: 56         LD      D,(HL)          
 4BC9: BD         CP      L               
-4BCA: 91         SUB     C               
+4BCA: 91         SUB     A,C               
 4BCB: 7A         LD      A,D             
 4BCC: D0         RET     NC              
 4BCD: 15         DEC     D               
@@ -1363,7 +1363,7 @@ CommandTable: ;=
 4BDA: 39         ADD     HL,SP           
 4BDB: 17         RLA                     
 4BDC: FF         RST     0X38            
-4BDD: 9F         SBC     A               
+4BDD: 9F         SBC     A,A               
 4BDE: 00         NOP                     
 4BDF: 01 13 87   LD      BC,$8713        
 4BE2: 46         LD      B,(HL)          
@@ -1396,7 +1396,7 @@ CommandTable: ;=
 4C01: B3         OR      E               
 4C02: 46         LD      B,(HL)          
 4C03: 76         HALT                    
-4C04: 98         SBC     B               
+4C04: 98         SBC     A,B               
 4C05: C0         RET     NZ              
 4C06: 16 C0      LD      D,$C0           
 4C08: 16 59      LD      D,$59           
@@ -1447,11 +1447,11 @@ CommandTable: ;=
 4C3D: 23         INC     HL              
 4C3E: 54         LD      D,H             
 4C3F: AB         XOR     E               
-4C40: 98         SBC     B               
+4C40: 98         SBC     A,B               
 4C41: 79         LD      A,C             
 4C42: 68         LD      L,B             
 4C43: 56         LD      D,(HL)          
-4C44: 90         SUB     B               
+4C44: 90         SUB     A,B               
 4C45: DB 72      IN      A,($72)         
 4C47: B9         CP      C               
 4C48: 6E         LD      L,(HL)          
@@ -1464,15 +1464,15 @@ CommandTable: ;=
 4C4F: 4A         LD      C,D             
 4C50: 5E         LD      E,(HL)          
 4C51: BF         CP      A               
-4C52: 9F         SBC     A               
+4C52: 9F         SBC     A,A               
 4C53: D0         RET     NC              
 4C54: 15         DEC     D               
 4C55: 82         ADD     A,D             
 4C56: 17         RLA                     
 4C57: 45         LD      B,L             
 4C58: 5E         LD      E,(HL)          
-4C59: CE 60      ADC     $60             
-4C5B: 91         SUB     C               
+4C59: CE 60      ADC     A,$60             
+4C5B: 91         SUB     A,C               
 4C5C: 7A         LD      A,D             
 4C5D: 2E 00      LD      L,$00           
 4C5F: 0E 5F      LD      C,$5F           
@@ -1493,7 +1493,7 @@ CommandTable: ;=
 4C6F: 17         RLA                     
 4C70: FE B2      CP      $B2             
 4C72: 11 8A 96   LD      DE,$968A        
-4C75: 96         SUB     (HL)            
+4C75: 96         SUB     A,(HL)            
 4C76: DB 72      IN      A,($72)         
 4C78: B9         CP      C               
 4C79: 6E         LD      L,(HL)          
@@ -1507,7 +1507,7 @@ CommandTable: ;=
 4C83: 00         NOP                     
 4C84: 05         DEC     B               
 4C85: C7         RST     0X00            
-4C86: DE 94      SBC     $94             
+4C86: DE 94      SBC     A,$94             
 4C88: 14         INC     D               
 4C89: 43         LD      B,E             
 4C8A: 5E         LD      E,(HL)          
@@ -1519,24 +1519,24 @@ CommandTable: ;=
 4C94: 62         LD      H,D             
 4C95: 00         NOP                     
 4C96: 04         INC     B               
-4C97: 98         SBC     B               
+4C97: 98         SBC     A,B               
 4C98: 8C         ADC     A,H             
-4C99: 91         SUB     C               
+4C99: 91         SUB     A,C               
 4C9A: 7A         LD      A,D             
 4C9B: 39         ADD     HL,SP           
 4C9C: 17         RLA                     
 4C9D: FF         RST     0X38            
-4C9E: 9F         SBC     A               
+4C9E: 9F         SBC     A,A               
 4C9F: 00         NOP                     
 4CA0: 04         INC     B               
-4CA1: 90         SUB     B               
+4CA1: 90         SUB     A,B               
 4CA2: 5A         LD      E,D             
-4CA3: 91         SUB     C               
+4CA3: 91         SUB     A,C               
 4CA4: 7A         LD      A,D             
 4CA5: 39         ADD     HL,SP           
 4CA6: 17         RLA                     
 4CA7: FF         RST     0X38            
-4CA8: 9F         SBC     A               
+4CA8: 9F         SBC     A,A               
 4CA9: 00         NOP                     
 4CAA: 02         LD      (BC),A          
 4CAB: 56         LD      D,(HL)          
@@ -1554,7 +1554,7 @@ CommandTable: ;=
 4CB9: 39         ADD     HL,SP           
 4CBA: 17         RLA                     
 4CBB: FF         RST     0X38            
-4CBC: 9F         SBC     A               
+4CBC: 9F         SBC     A,A               
 4CBD: 00         NOP                     
 4CBE: 06 B4      LD      B,$B4           
 4CC0: B7         OR      A               
@@ -1572,15 +1572,15 @@ CommandTable: ;=
 4CCC: 01 F0 59   LD      BC,$59F0        
 4CCF: 2E 00      LD      L,$00           
 4CD1: 07         RLCA                    
-4CD2: 95         SUB     L               
+4CD2: 95         SUB     A,L               
 4CD3: 5F         LD      E,A             
 4CD4: 07         RLCA                    
 4CD5: BC         CP      H               
 4CD6: 33         INC     SP              
-4CD7: 98         SBC     B               
+4CD7: 98         SBC     A,B               
 4CD8: C3 9E 5F   JP      $5F9E           
 4CDB: BE         CP      (HL)            
-4CDC: 9B         SBC     E               
+4CDC: 9B         SBC     A,E               
 4CDD: 15         DEC     D               
 4CDE: 17         RLA                     
 4CDF: 8D         ADC     A,L             
@@ -1591,10 +1591,10 @@ CommandTable: ;=
 4CE4: 07         RLCA                    
 4CE5: BC         CP      H               
 4CE6: 33         INC     SP              
-4CE7: 98         SBC     B               
+4CE7: 98         SBC     A,B               
 4CE8: C3 9E 5F   JP      $5F9E           
 4CEB: BE         CP      (HL)            
-4CEC: 9B         SBC     E               
+4CEC: 9B         SBC     A,E               
 4CED: 15         DEC     D               
 4CEE: 17         RLA                     
 4CEF: 8D         ADC     A,L             
@@ -1606,14 +1606,14 @@ CommandTable: ;=
 4CF6: 66         LD      H,(HL)          
 4CF7: 4D         LD      C,L             
 4CF8: 01 B3 DB   LD      BC,$DBB3        
-4CFB: 95         SUB     L               
+4CFB: 95         SUB     A,L               
 4CFC: 5F         LD      E,A             
 4CFD: BE         CP      (HL)            
 4CFE: 5D         LD      E,L             
 4CFF: B1         OR      C               
 4D00: C3 B5 DB   JP      $DBB5           
 4D03: 16 6E      LD      D,$6E           
-4D05: 98         SBC     B               
+4D05: 98         SBC     A,B               
 4D06: C0         RET     NZ              
 4D07: 16 82      LD      D,$82           
 4D09: 17         RLA                     
@@ -1650,7 +1650,7 @@ CommandTable: ;=
 4D2D: B1         OR      C               
 4D2E: C3 B5 DB   JP      $DBB5           
 4D31: 16 6E      LD      D,$6E           
-4D33: 98         SBC     B               
+4D33: 98         SBC     A,B               
 4D34: C0         RET     NZ              
 4D35: 16 82      LD      D,$82           
 4D37: 17         RLA                     
@@ -1664,14 +1664,14 @@ CommandTable: ;=
 4D3F: 8D         ADC     A,L             
 4D40: 00         NOP                     
 4D41: 05         DEC     B               
-4D42: 95         SUB     L               
-4D43: 91         SUB     C               
+4D42: 95         SUB     A,L               
+4D43: 91         SUB     A,C               
 4D44: F4 BD AF   CALL    P,$AFBD         
 4D47: 14         INC     D               
 4D48: F9         LD      SP,HL           
 4D49: 5B         LD      E,E             
 4D4A: FF         RST     0X38            
-4D4B: 9F         SBC     A               
+4D4B: 9F         SBC     A,A               
 4D4C: 00         NOP                     
 4D4D: 0D         DEC     C               
 4D4E: 84         ADD     A,H             
@@ -1690,12 +1690,12 @@ CommandTable: ;=
 4D5D: 74         LD      (HL),H          
 4D5E: 4B         LD      C,E             
 4D5F: 5E         LD      E,(HL)          
-4D60: 96         SUB     (HL)            
-4D61: 96         SUB     (HL)            
+4D60: 96         SUB     A,(HL)            
+4D61: 96         SUB     A,(HL)            
 4D62: DB 72      IN      A,($72)         
 4D64: AB         XOR     E               
 4D65: 53         LD      D,E             
-4D66: 90         SUB     B               
+4D66: 90         SUB     A,B               
 4D67: 8C         ADC     A,H             
 4D68: 47         LD      B,A             
 4D69: 2E 00      LD      L,$00           
@@ -1705,7 +1705,7 @@ CommandTable: ;=
 4D6F: B8         CP      B               
 4D70: 51         LD      D,C             
 4D71: 5E         LD      E,(HL)          
-4D72: 96         SUB     (HL)            
+4D72: 96         SUB     A,(HL)            
 4D73: 64         LD      H,H             
 4D74: DB 72      IN      A,($72)         
 4D76: 87         ADD     A,A             
@@ -1741,7 +1741,7 @@ CommandTable: ;=
 4D9D: 58         LD      E,B             
 4D9E: D9         EXX                     
 4D9F: B5         OR      L               
-4DA0: 97         SUB     A               
+4DA0: 97         SUB     A,A               
 4DA1: 62         LD      H,D             
 4DA2: 56         LD      D,(HL)          
 4DA3: 13         INC     DE              
@@ -1775,12 +1775,12 @@ CommandTable: ;=
 4DC6: B1         OR      C               
 4DC7: D2 E7 69   JP      NC,$69E7        
 4DCA: 8E         ADC     A,(HL)          
-4DCB: 9C         SBC     H               
+4DCB: 9C         SBC     A,H               
 4DCC: 76         HALT                    
 4DCD: 00         NOP                     
 4DCE: 12         LD      (DE),A          
 4DCF: C7         RST     0X00            
-4DD0: DE 4F      SBC     $4F             
+4DD0: DE 4F      SBC     A,$4F             
 4DD2: 15         DEC     D               
 4DD3: 33         INC     SP              
 4DD4: 61         LD      H,C             
@@ -1827,7 +1827,7 @@ CommandTable: ;=
 4E09: 0B         DEC     BC              
 4E0A: 44         LD      B,H             
 4E0B: B9         CP      C               
-4E0C: 9E         SBC     (HL)            
+4E0C: 9E         SBC     A,(HL)            
 4E0D: B4         OR      H               
 4E0E: C0         RET     NZ              
 4E0F: 16 FB      LD      D,$FB           
@@ -1841,12 +1841,12 @@ CommandTable: ;=
 4E1B: AF         XOR     A               
 4E1C: 66         LD      H,(HL)          
 4E1D: C6 E7      ADD     $E7             
-4E1F: 9F         SBC     A               
+4E1F: 9F         SBC     A,A               
 4E20: 52         LD      D,D             
 4E21: 2E 00      LD      L,$00           
 4E23: 0A         LD      A,(BC)          
 4E24: C7         RST     0X00            
-4E25: DE 63      SBC     $63             
+4E25: DE 63      SBC     A,$63             
 4E27: 16 F4      LD      D,$F4           
 4E29: BD         CP      L               
 4E2A: 8E         ADC     A,(HL)          
@@ -1879,15 +1879,15 @@ CommandTable: ;=
 4E48: 5F         LD      E,A             
 4E49: A0         AND     B               
 4E4A: 66         LD      H,(HL)          
-4E4B: 98         SBC     B               
+4E4B: 98         SBC     A,B               
 4E4C: 2E 00      LD      L,$00           
 4E4E: 11 55 45   LD      DE,$4555        
-4E51: D6 C4      SUB     $C4             
+4E51: D6 C4      SUB     A,$C4             
 4E53: B8         CP      B               
 4E54: 16 94      LD      D,$94           
 4E56: 14         INC     D               
 4E57: C7         RST     0X00            
-4E58: 93         SUB     E               
+4E58: 93         SUB     A,E               
 4E59: 8A         ADC     A,D             
 4E5A: AF         XOR     A               
 4E5B: 2F         CPL                     
@@ -1905,15 +1905,15 @@ CommandTable: ;=
 4E69: 0B         DEC     BC              
 4E6A: C0         RET     NZ              
 4E6B: C7         RST     0X00            
-4E6C: DE 8D      SBC     $8D             
+4E6C: DE 8D      SBC     A,$8D             
 4E6E: AF         XOR     A               
 4E6F: 08         EX      AF,AF'          
-4E70: 99         SBC     C               
+4E70: 99         SBC     A,C               
 4E71: 45         LD      B,L             
 4E72: 00         NOP                     
 4E73: 1A         LD      A,(DE)          
 4E74: C7         RST     0X00            
-4E75: DE 83      SBC     $83             
+4E75: DE 83      SBC     A,$83             
 4E77: AF         XOR     A               
 4E78: 5B         LD      E,E             
 4E79: B1         OR      C               
@@ -1933,10 +1933,10 @@ CommandTable: ;=
 4E87: A0         AND     B               
 4E88: 3B         DEC     SP              
 4E89: F4 83 48   CALL    P,$4883         
-4E8C: 93         SUB     E               
+4E8C: 93         SUB     A,E               
 4E8D: 48         LD      C,B             
-4E8E: 96         SUB     (HL)            
-4E8F: 91         SUB     C               
+4E8E: 96         SUB     A,(HL)            
+4E8F: 91         SUB     A,C               
 4E90: F3         DI                      
 4E91: 5F         LD      E,A             
 4E92: 2B         DEC     HL              
@@ -1965,7 +1965,7 @@ CommandTable: ;=
 4EB1: 59         LD      E,C             
 4EB2: 2E 00      LD      L,$00           
 4EB4: 0E C7      LD      C,$C7           
-4EB6: DE C6      SBC     $C6             
+4EB6: DE C6      SBC     A,$C6             
 4EB8: 22 8F 16   LD      ($168F),HL      
 4EBB: F3         DI                      
 4EBC: 5F         LD      E,A             
@@ -1997,7 +1997,7 @@ CommandTable: ;=
 4ED9: C2 66 C6   JP      NZ,$C666        
 4EDC: 81         ADD     A,C             
 4EDD: 15         DEC     D               
-4EDE: 91         SUB     C               
+4EDE: 91         SUB     A,C               
 4EDF: 7A         LD      A,D             
 4EE0: 89         ADC     A,C             
 4EE1: 17         RLA                     
@@ -2038,7 +2038,7 @@ CommandTable: ;=
 4F06: 63         LD      H,E             
 4F07: 83         ADD     A,E             
 4F08: 7A         LD      A,D             
-4F09: 97         SUB     A               
+4F09: 97         SUB     A,A               
 4F0A: 7B         LD      A,E             
 4F0B: 00         NOP                     
 4F0C: 01 0F 9A   LD      BC,$9A0F        
@@ -2073,7 +2073,7 @@ CommandTable: ;=
 4F33: 16 9E      LD      D,$9E           
 4F35: BB         CP      E               
 4F36: 06 C7      LD      B,$C7           
-4F38: DE 94      SBC     $94             
+4F38: DE 94      SBC     A,$94             
 4F3A: 14         INC     D               
 4F3B: FF         RST     0X38            
 4F3C: 5F         LD      E,A             
@@ -2104,15 +2104,15 @@ CommandTable: ;=
 4F56: 16 16      LD      D,$16           
 4F58: CB 7F      SET     1,E             
 4F5A: 49         LD      C,C             
-4F5B: D6 B5      SUB     $B5             
-4F5D: D6 9C      SUB     $9C             
+4F5B: D6 B5      SUB     A,$B5             
+4F5D: D6 9C      SUB     A,$9C             
 4F5F: DB 72      IN      A,($72)         
 4F61: 7E         LD      A,(HL)          
 4F62: 74         LD      (HL),H          
 4F63: 4B         LD      C,E             
 4F64: 5E         LD      E,(HL)          
-4F65: 96         SUB     (HL)            
-4F66: 96         SUB     (HL)            
+4F65: 96         SUB     A,(HL)            
+4F66: 96         SUB     A,(HL)            
 4F67: DB 72      IN      A,($72)         
 4F69: 3B         DEC     SP              
 4F6A: 13         INC     DE              
@@ -2121,11 +2121,11 @@ CommandTable: ;=
 4F6D: 43         LD      B,E             
 4F6E: 7A         LD      A,D             
 4F6F: A9         XOR     C               
-4F70: 98         SBC     B               
+4F70: 98         SBC     A,B               
 4F71: 00         NOP                     
 4F72: 07         RLCA                    
 4F73: C7         RST     0X00            
-4F74: DE 94      SBC     $94             
+4F74: DE 94      SBC     A,$94             
 4F76: 14         INC     D               
 4F77: 85         ADD     A,L             
 4F78: 61         LD      H,C             
@@ -2149,7 +2149,7 @@ CommandTable: ;=
 4F8C: A0         AND     B               
 4F8D: 0F         RRCA                    
 4F8E: A0         AND     B               
-4F8F: 9F         SBC     A               
+4F8F: 9F         SBC     A,A               
 4F90: 15         DEC     D               
 4F91: 7F         LD      A,A             
 4F92: B1         OR      C               
@@ -2166,10 +2166,10 @@ CommandTable: ;=
 4F9D: 46         LD      B,(HL)          
 4F9E: 77         LD      (HL),A          
 4F9F: D9         EXX                     
-4FA0: 9C         SBC     H               
+4FA0: 9C         SBC     A,H               
 4FA1: 82         ADD     A,D             
 4FA2: 7B         LD      A,E             
-4FA3: D6 15      SUB     $15             
+4FA3: D6 15      SUB     A,$15             
 4FA5: 3F         CCF                     
 4FA6: 00         NOP                     
 4FA7: 06 46      LD      B,$46           
@@ -2179,7 +2179,7 @@ CommandTable: ;=
 4FAC: 17         RLA                     
 4FAD: BC         CP      H               
 4FAE: 3F         CCF                     
-4FAF: 98         SBC     B               
+4FAF: 98         SBC     A,B               
 4FB0: A6         AND     (HL)            
 4FB1: B3         OR      E               
 4FB2: 8E         ADC     A,(HL)          
@@ -2198,9 +2198,9 @@ CommandTable: ;=
 4FC2: B5         OR      L               
 4FC3: 73         LD      (HL),E          
 4FC4: C6 C3      ADD     $C3             
-4FC6: 9E         SBC     (HL)            
+4FC6: 9E         SBC     A,(HL)            
 4FC7: C7         RST     0X00            
-4FC8: DE 94      SBC     $94             
+4FC8: DE 94      SBC     A,$94             
 4FCA: AF         XOR     A               
 4FCB: 85         ADD     A,L             
 4FCC: 5F         LD      E,A             
@@ -2243,7 +2243,7 @@ CommandTable: ;=
 4FF6: E1         POP     HL              
 4FF7: 5F         LD      E,A             
 4FF8: 33         INC     SP              
-4FF9: 98         SBC     B               
+4FF9: 98         SBC     A,B               
 4FFA: 89         ADC     A,C             
 4FFB: 67         LD      H,A             
 4FFC: A1         AND     C               
