@@ -1,17 +1,20 @@
 package sim;
 
+import java.io.IOException;
 import java.util.List;
 
 public class CPUZ80 extends CPU {
 	
 	// http://www.z80.info/z80flag.htm
 	
+	private static final boolean DEBUG = false;
+	
 	int [] memory = new int[64*1024];
 	
 	int pc;
 	
 	boolean zf, cf, sf;
-
+	
 	public CPUZ80(List<String> lines) {
 		super(lines);
 		
@@ -40,6 +43,7 @@ public class CPUZ80 extends CPU {
 				memory[addr] = val;
 				++addr;
 			}			
+		
 		}
 	}
 
@@ -99,14 +103,16 @@ public class CPUZ80 extends CPU {
 	}
 	
 	public void debug(String addr, String instruction) {
-		System.out.println(addr+": "+instruction);
+		if(DEBUG) {
+			System.out.println(addr+": "+instruction);
+		}
 	}
 
 	@Override
 	public void run(int address) {
 		pc = findCodeTarget(address);
 		
-		while(pc!= 65535) {
+		while(pc!= 65535) {			
 			String line = lines.get(pc);
 			pc=pc+1;
 			int i = line.indexOf(":",5);
@@ -124,17 +130,22 @@ public class CPUZ80 extends CPU {
 				op = instruction;
 			}
 			
-			if(
-					flow(op,par) ||
-					load(op,par) ||
-					math(op,par) ||
-					stack(op,par) ||
-					misc(op,par)
-				) 
-			{
-				debug(addr,instruction);
-			} else {			
-				throw new RuntimeException("Unknown instruction "+addr+":"+op+":"+par);
+			try {
+				if(
+						flow(op,par) ||
+						load(op,par) ||
+						math(op,par) ||
+						stack(op,par) ||
+						misc(op,par)
+					) 
+				{
+					debug(addr,instruction);
+				} else {			
+					throw new RuntimeException("Unknown instruction "+addr+":"+op+":"+par);
+				}
+			} catch (Exception e) {
+				RuntimeException ne = new RuntimeException(":"+line+":",e);				
+				throw ne;
 			}
 		}
 	}
@@ -317,6 +328,11 @@ public class CPUZ80 extends CPU {
 			}
 			int val = ac.readValue();
 			val = val + 1;
+			if(ac.isWordSize()) {
+				val = val & 0xFFFF;
+			} else {
+				val = val & 0xFF;
+			}
 			ac.writeValue(val);
 			setFlags(val, false, cf, -1, -1, -1, 0, 1);
 			return true;
@@ -330,14 +346,26 @@ public class CPUZ80 extends CPU {
 			}
 			int val = ac.readValue();
 			val = val - 1;
+			if(val<0) {
+				if(ac.isWordSize()) {
+					val = val + 65536;
+				} else {
+					val = val + 256;
+				}
+			}
 			ac.writeValue(val);
 			setFlags(val, false, cf, -1, -1, -1, 0, 1);
 			return true;
 		}
 		if(op.equals("AND")) {
-			int val = getRegister(par).readValue();
+			Accessable val;
+			if(par.startsWith("$")) {
+				val = new AccessConstant(Integer.parseInt(par.substring(1),16),false);
+			} else {
+				val = getRegister(par);
+			}			
 			int aval = getRegister("A").readValue();
-			aval = aval & val;
+			aval = aval & val.readValue();
 			getRegister("A").writeValue(aval);			
 			//                    C       Z   P   S  N  H
 			setFlags(aval, false, false, -1, -1, -1, 0, 1); // Set Z,S,P   C=0,N=0,H=1
@@ -370,10 +398,20 @@ public class CPUZ80 extends CPU {
 	}
 	
 	public boolean misc(String op, String par) {
+		if(op.equals("CCF")) {
+			cf = false;
+			return true;
+		}
 		if(op.equals("EX")) {
-			String [] parts = par.split(",");
-			Accessable left = getRegister(parts[0]);
-			Accessable right = getRegister(parts[1]);
+			Accessable left,right;
+			if(par.equals("(SP),HL")) {
+				left = new MemoryAccess(this,getRegister("SP").readValue(),true);
+				right = getRegister("HL");
+			} else {
+				String [] parts = par.split(",");			
+				left = getRegister(parts[0]);
+				right = getRegister(parts[1]);
+			}
 			int lv = left.readValue();
 			left.writeValue(right.readValue());
 			right.writeValue(lv);
@@ -481,11 +519,17 @@ public class CPUZ80 extends CPU {
 	}
 	
 	void ROMCALL_DISPLAY() {
-		System.out.println("DISPLAY:"+(char)getRegister("A").readValue());
+		//System.out.println("DISPLAY:"+(char)getRegister("A").readValue());
+		System.out.print((char)getRegister("A").readValue());
 	}
 	
 	void ROMCALL_GETCHAR() {
-		getRegister("A").writeValue(65);
+		try {
+			int c = System.in.read();
+			getRegister("A").writeValue(c);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }
