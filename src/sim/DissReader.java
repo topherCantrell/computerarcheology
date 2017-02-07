@@ -39,6 +39,26 @@ public class DissReader {
 		}		
 		
 	}
+	
+	public void getData(int [] memory) {
+		for(String s : lines) {
+			
+			int i = s.indexOf(":",5);
+			if(i>0) {
+				s = s.substring(0,i);
+			}			
+			
+			int addr = Integer.parseInt(s.substring(0,4),16);
+			s = s.substring(6).trim();
+			while(s.length()>0) {
+				int val = Integer.parseInt(s.substring(0,2),16);
+				s = s.substring(2).trim();
+				memory[addr] = val;
+				++addr;
+			}
+			
+		}
+	}
 
 	public List<String> getCleaned() {
 		return lines;

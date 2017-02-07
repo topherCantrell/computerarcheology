@@ -1260,7 +1260,9 @@ CommandTable: ;=
 4B53: 6E         LD      L,(HL)          
 4B54: 8E         ADC     A,(HL)          
 4B55: C5         PUSH    BC              
-4B56: 2E 00      LD      L,$00           
+4B56: 2E 00      LD      L,$00     
+
+      
 4B58: 04         INC     B               
 4B59: BF         CP      A               
 4B5A: 55         LD      D,L             
@@ -1745,7 +1747,7 @@ CommandTable: ;=
 4D92: 53         LD      D,E             
 4D93: 21 00 
 
-0495: 10   LD      HL,$1000        
+4D95: 10   LD      HL,$1000        
 4D96: 5F         LD      E,A             
 4D97: BE         CP      (HL)            
 4D98: 84         ADD     A,H             
