@@ -1223,725 +1223,133 @@ CommandTable: ;=
 4B4D: 04         INC     B               
 4B4E: D5         PUSH    DE              
 4B4F: 4D         LD      C,L             
-4B50: 00         NOP                     
-4B51: 07         RLCA                    
-4B52: 5F         LD      E,A             
-4B53: BE         CP      (HL)            
-4B54: 5B         LD      E,E             
-4B55: B1         OR      C               
-4B56: 4B         LD      C,E             
-4B57: 7B         LD      A,E             
-4B58: 49         LD      C,C             
-4B59: 45         LD      B,L             
-4B5A: 85         ADD     A,L             
-4B5B: 74         LD      (HL),H          
-4B5C: 0A         LD      A,(BC)          
-4B5D: BC         CP      H               
-4B5E: 2F         CPL                     
-4B5F: 62         LD      H,D             
-4B60: 2E 00      LD      L,$00           
-4B62: 0D         DEC     C               
-4B63: 5F         LD      E,A             
-4B64: BE         CP      (HL)            
-4B65: B9         CP      C               
-4B66: 14         INC     D               
-4B67: FB         EI                      
-4B68: 5C         LD      E,H             
-4B69: C3 9E 46   JP      $469E           
-4B6C: 45         LD      B,L             
-4B6D: 86         ADD     A,(HL)          
-4B6E: 5F         LD      E,A             
-4B6F: 7A         LD      A,D             
-4B70: 15         DEC     D               
-4B71: E6 A0      AND     $A0             
-4B73: D5         PUSH    DE              
-4B74: 15         DEC     D               
-4B75: C0         RET     NZ              
-4B76: 16 82      LD      D,$82           
-4B78: 17         RLA                     
-4B79: 48         LD      C,B             
-4B7A: 5E         LD      E,(HL)          
-4B7B: 81         ADD     A,C             
-4B7C: 8D         ADC     A,L             
-4B7D: 52         LD      D,D             
-4B7E: 2E 00      LD      L,$00           
-4B80: 0C         INC     C               
-4B81: 5F         LD      E,A             
-4B82: BE         CP      (HL)            
-4B83: 5B         LD      E,E             
-4B84: B1         OR      C               
-4B85: 4B         LD      C,E             
-4B86: 7B         LD      A,E             
-4B87: 4F         LD      C,A             
-4B88: 45         LD      B,L             
-4B89: 7B         LD      A,E             
-4B8A: 47         LD      B,A             
-4B8B: D5         PUSH    DE              
-4B8C: 51         LD      D,C             
-4B8D: 44         LD      B,H             
-4B8E: D2 11 58   JP      NC,$5811        
-4B91: 96         SUB     (HL)            
-4B92: 96         SUB     (HL)            
-4B93: DB 72      IN      A,($72)         
-4B95: 89         ADC     A,C             
-4B96: 67         LD      H,A             
-4B97: C7         RST     0X00            
-4B98: A0         AND     B               
-4B99: 00         NOP                     
-4B9A: 03         INC     BC              
-4B9B: 89         ADC     A,C             
-4B9C: 91         SUB     C               
-4B9D: CB 78      SET     1,E             
-4B9F: 81         ADD     A,C             
-4BA0: BA         CP      D               
-4BA1: 52         LD      D,D             
-4BA2: 44         LD      B,H             
-4BA3: 00         NOP                     
-4BA4: 0F         RRCA                    
-4BA5: 5F         LD      E,A             
-4BA6: BE         CP      (HL)            
-4BA7: 5B         LD      E,E             
-4BA8: B1         OR      C               
-4BA9: 4B         LD      C,E             
-4BAA: 7B         LD      A,E             
-4BAB: 54         LD      D,H             
-4BAC: 45         LD      B,L             
-4BAD: 66         LD      H,(HL)          
-4BAE: C6 51      ADD     $51             
-4BB0: DB B3      IN      A,($B3)         
-4BB2: 8B         ADC     A,E             
-4BB3: 49         LD      C,C             
-4BB4: B8         CP      B               
-4BB5: 8E         ADC     A,(HL)          
-4BB6: 96         SUB     (HL)            
-4BB7: 4B         LD      C,E             
-4BB8: 4A         LD      C,D             
-4BB9: AB         XOR     E               
-4BBA: 98         SBC     B               
-4BBB: 03         INC     BC              
-4BBC: A0         AND     B               
-4BBD: 5F         LD      E,A             
-4BBE: BE         CP      (HL)            
-4BBF: 84         ADD     A,H             
-4BC0: 15         DEC     D               
-4BC1: 30 A1      JR      NC,$4B64        
-4BC3: 44         LD      B,H             
-4BC4: 2E 00      LD      L,$00           
-4BC6: 03         INC     BC              
-4BC7: F5         PUSH    AF              
-4BC8: B3         OR      E               
-4BC9: FB         EI                      
-4BCA: C0         RET     NZ              
-4BCB: 49         LD      C,C             
-4BCC: B8         CP      B               
-4BCD: 4E         LD      C,(HL)          
-4BCE: 00         NOP                     
-4BCF: 04         INC     B               
-4BD0: C7         RST     0X00            
-4BD1: DE 94      SBC     $94             
-4BD3: 14         INC     D               
-4BD4: 4B         LD      C,E             
-4BD5: 5E         LD      E,(HL)          
-4BD6: 83         ADD     A,E             
-4BD7: 96         SUB     (HL)            
-4BD8: 20 01      JR      NZ,$4BDB        
-4BDA: 05         DEC     B               
-4BDB: 8F         ADC     A,A             
-4BDC: 5A         LD      E,D             
-4BDD: FB         EI                      
-4BDE: 8E         ADC     A,(HL)          
-4BDF: 96         SUB     (HL)            
-4BE0: 8C         ADC     A,H             
-4BE1: 39         ADD     HL,SP           
-4BE2: 17         RLA                     
-4BE3: FF         RST     0X38            
-4BE4: 9F         SBC     A               
-4BE5: 00         NOP                     
-4BE6: 0F         RRCA                    
-4BE7: 8F         ADC     A,A             
-4BE8: 5A         LD      E,D             
-4BE9: FB         EI                      
-4BEA: 8E         ADC     A,(HL)          
-4BEB: 96         SUB     (HL)            
-4BEC: 8C         ADC     A,H             
-4BED: 39         ADD     HL,SP           
-4BEE: 17         RLA                     
-4BEF: FF         RST     0X38            
-4BF0: 9F         SBC     A               
-4BF1: 56         LD      D,(HL)          
-4BF2: 13         INC     DE              
-4BF3: F4 72 4B   CALL    P,$4B72         
-4BF6: 5E         LD      E,(HL)          
-4BF7: C3 B5 A9   JP      $A9B5           
-4BFA: 15         DEC     D               
-4BFB: DB 8B      IN      A,($8B)         
-4BFD: 83         ADD     A,E             
-4BFE: 7A         LD      A,D             
-4BFF: 5F         LD      E,A             
-4C00: BE         CP      (HL)            
-4C01: 56         LD      D,(HL)          
-4C02: 15         DEC     D               
-4C03: 44         LD      B,H             
-4C04: A0         AND     B               
-4C05: 2E 00      LD      L,$00           
-4C07: 01 8B 9F   LD      BC,$9F8B        
-4C0A: 00         NOP                     
-4C0B: 01 1B D1   LD      BC,$D11B        
-4C0E: 54         LD      D,H             
-4C0F: 3F         CCF                     
-4C10: 00         NOP                     
-4C11: 0F         RRCA                    
-4C12: C7         RST     0X00            
-4C13: DE 8F      SBC     $8F             
-4C15: AF         XOR     A               
-4C16: 7B         LD      A,E             
-4C17: 47         LD      B,A             
-4C18: D5         PUSH    DE              
-4C19: 51         LD      D,C             
-4C1A: 44         LD      B,H             
-4C1B: D2 07 58   JP      NC,$5807        
-4C1E: C4 97 F5   CALL    NZ,$F597        
-4C21: 8B         ADC     A,E             
-4C22: 51         LD      D,C             
-4C23: 18 56      JR      $4C7B           
-4C25: C2 CD 9C   JP      NZ,$9CCD        
-4C28: 46         LD      B,(HL)          
-4C29: 7A         LD      A,D             
-4C2A: 82         ADD     A,D             
-4C2B: 17         RLA                     
-4C2C: 49         LD      C,C             
-4C2D: 5E         LD      E,(HL)          
-4C2E: 85         ADD     A,L             
-4C2F: 74         LD      (HL),H          
-4C30: 54         LD      D,H             
-4C31: 21 00 06   LD      HL,$0600        
-4C34: 80         ADD     A,B             
-4C35: 5B         LD      E,E             
-4C36: F3         DI                      
-4C37: 23         INC     HL              
-4C38: 5B         LD      E,E             
-4C39: 4D         LD      C,L             
-4C3A: 06 B2      LD      B,$B2           
-4C3C: E7         RST     0X20            
-4C3D: 78         LD      A,B             
-4C3E: 87         ADD     A,A             
-4C3F: 8D         ADC     A,L             
-4C40: 53         LD      D,E             
-4C41: 21 00 0E   LD      HL,$0E00        
-4C44: C7         RST     0X00            
-4C45: DE D3      SBC     $D3             
-4C47: 14         INC     D               
-4C48: E6 96      AND     $96             
-4C4A: 1B         DEC     DE              
-4C4B: 16 F3      LD      D,$F3           
-4C4D: 8C         ADC     A,H             
-4C4E: 49         LD      C,C             
-4C4F: 45         LD      B,L             
-4C50: 85         ADD     A,L             
-4C51: 74         LD      (HL),H          
-4C52: 19         ADD     HL,DE           
-4C53: BC         CP      H               
-4C54: 82         ADD     A,D             
-4C55: 7B         LD      A,E             
-4C56: 51         LD      D,C             
-4C57: 18 23      JR      $4C7C           
-4C59: C6 D4      ADD     $D4             
-4C5B: 4C         LD      C,H             
-4C5C: 4A         LD      C,D             
-4C5D: 5E         LD      E,(HL)          
-4C5E: 8E         ADC     A,(HL)          
-4C5F: 48         LD      C,B             
-4C60: 53         LD      D,E             
-4C61: 2E 00      LD      L,$00           
-4C63: 0A         LD      A,(BC)          
-4C64: 5F         LD      E,A             
-4C65: BE         CP      (HL)            
-4C66: E9         JP      (HL)            
-4C67: 16 A3      LD      D,$A3           
-4C69: A0         AND     B               
-4C6A: 63         LD      H,E             
-4C6B: BE         CP      (HL)            
-4C6C: AD         XOR     L               
-4C6D: 98         SBC     B               
-4C6E: C3 B5 EF   JP      $EFB5           
-4C71: 8D         ADC     A,L             
-4C72: 13         INC     DE              
-4C73: 47         LD      B,A             
-4C74: FF         RST     0X38            
-4C75: 14         INC     D               
-4C76: 17         RLA                     
-4C77: 47         LD      B,A             
-4C78: 00         NOP                     
-4C79: 0A         LD      A,(BC)          
-4C7A: 5F         LD      E,A             
-4C7B: BE         CP      (HL)            
-4C7C: 7A         LD      A,D             
-4C7D: 15         DEC     D               
-4C7E: E6 A0      AND     $A0             
-4C80: FB         EI                      
-4C81: 17         RLA                     
-4C82: F3         DI                      
-4C83: 8C         ADC     A,H             
-4C84: 06 9A      LD      B,$9A           
-4C86: 3F         CCF                     
-4C87: 16 1B      LD      D,$1B           
-4C89: BC         CP      H               
-4C8A: 1B         DEC     DE              
-4C8B: A1         AND     C               
-4C8C: 55         LD      D,L             
-4C8D: A4         AND     H               
-4C8E: 53         LD      D,E             
-4C8F: 21 00 08   LD      HL,$0800        
-4C92: 25         DEC     H               
-4C93: A1         AND     C               
-4C94: AB         XOR     E               
-4C95: 70         LD      (HL),B          
-4C96: 51         LD      D,C             
-4C97: 18 4A      JR      $4CE3           
-4C99: C2 3E C6   JP      NZ,$C63E        
-4C9C: 51         LD      D,C             
-4C9D: 18 23      JR      $4CC2           
-4C9F: C6 50      ADD     $50             
-4CA1: 72         LD      (HL),D          
-4CA2: 44         LD      B,H             
-4CA3: 2E 00      LD      L,$00           
-4CA5: 0B         DEC     BC              
-4CA6: 44         LD      B,H             
-4CA7: B9         CP      C               
-4CA8: 9E         SBC     (HL)            
-4CA9: B4         OR      H               
-4CAA: C0         RET     NZ              
-4CAB: 16 FB      LD      D,$FB           
-4CAD: 8E         ADC     A,(HL)          
-4CAE: 0F         RRCA                    
-4CAF: A0         AND     B               
-4CB0: E6 16      AND     $16             
-4CB2: 7A         LD      A,D             
-4CB3: C4 DF 16   CALL    NZ,$16DF        
-4CB6: 85         ADD     A,L             
-4CB7: AF         XOR     A               
-4CB8: 66         LD      H,(HL)          
-4CB9: C6 E7      ADD     $E7             
-4CBB: 9F         SBC     A               
-4CBC: 52         LD      D,D             
-4CBD: 2E 00      LD      L,$00           
-4CBF: 0B         DEC     BC              
-4CC0: 5F         LD      E,A             
-4CC1: BE         CP      (HL)            
-4CC2: 7A         LD      A,D             
-4CC3: 15         DEC     D               
-4CC4: E6 A0      AND     $A0             
-4CC6: D5         PUSH    DE              
-4CC7: 15         DEC     D               
-4CC8: CF         RST     0X08            
-4CC9: 15         DEC     D               
-4CCA: B0         OR      B               
-4CCB: 94         SUB     H               
-4CCC: 56         LD      D,(HL)          
-4CCD: 5E         LD      E,(HL)          
-4CCE: DB 9C      IN      A,($9C)         
-4CD0: 34         INC     (HL)            
-4CD1: A1         AND     C               
-4CD2: 96         SUB     (HL)            
-4CD3: 14         INC     D               
-4CD4: 45         LD      B,L             
-4CD5: BD         CP      L               
-4CD6: 4B         LD      C,E             
-4CD7: 21 00 3D   LD      HL,$3D00        
-4CDA: 5F         LD      E,A             
-4CDB: BE         CP      (HL)            
-4CDC: 5B         LD      E,E             
-4CDD: 17         RLA                     
-4CDE: 03         INC     BC              
-4CDF: 6E         LD      L,(HL)          
-4CE0: 1B         DEC     DE              
-4CE1: B7         OR      A               
-4CE2: 33         INC     SP              
-4CE3: BB         CP      E               
-4CE4: 3B         DEC     SP              
-4CE5: 13         INC     DE              
-4CE6: 3B         DEC     SP              
-4CE7: 13         INC     DE              
-4CE8: 3B         DEC     SP              
-4CE9: 13         INC     DE              
-4CEA: 3B         DEC     SP              
-4CEB: 13         INC     DE              
-4CEC: 3B         DEC     SP              
-4CED: 13         INC     DE              
-4CEE: 3B         DEC     SP              
-4CEF: 13         INC     DE              
-4CF0: 3B         DEC     SP              
-4CF1: 13         INC     DE              
-4CF2: 3B         DEC     SP              
-4CF3: 13         INC     DE              
-4CF4: 3B         DEC     SP              
-4CF5: 13         INC     DE              
-4CF6: 3B         DEC     SP              
-4CF7: 13         INC     DE              
-4CF8: 3B         DEC     SP              
-4CF9: 13         INC     DE              
-4CFA: 3B         DEC     SP              
-4CFB: 13         INC     DE              
-4CFC: 3B         DEC     SP              
-4CFD: 13         INC     DE              
-4CFE: 3B         DEC     SP              
-4CFF: 13         INC     DE              
-4D00: 3B         DEC     SP              
-4D01: 13         INC     DE              
-4D02: 3B         DEC     SP              
-4D03: 13         INC     DE              
-4D04: 3B         DEC     SP              
-4D05: 13         INC     DE              
-4D06: 3B         DEC     SP              
-4D07: 13         INC     DE              
-4D08: C2 1D 2F   JP      NZ,$2F1D        
-4D0B: 62         LD      H,D             
-4D0C: 94         SUB     H               
-4D0D: 14         INC     D               
-4D0E: 56         LD      D,(HL)          
-4D0F: 5E         LD      E,(HL)          
-4D10: EF         RST     0X28            
-4D11: 74         LD      (HL),H          
-4D12: 47         LD      B,A             
-4D13: 5E         LD      E,(HL)          
-4D14: 96         SUB     (HL)            
-4D15: D7         RST     0X10            
-4D16: C8         RET     Z               
-4D17: B5         OR      L               
-4D18: FF         RST     0X38            
-4D19: B2         OR      D               
-4D1A: 82         ADD     A,D             
-4D1B: 17         RLA                     
-4D1C: 4B         LD      C,E             
-4D1D: 7B         LD      A,E             
-4D1E: 01 B3 DB   LD      BC,$DBB3        
-4D21: 95         SUB     L               
-4D22: C0         RET     NZ              
-4D23: 16 FB      LD      D,$FB           
-4D25: 8E         ADC     A,(HL)          
-4D26: 0F         RRCA                    
-4D27: A0         AND     B               
-4D28: D5         PUSH    DE              
-4D29: 15         DEC     D               
-4D2A: 8C         ADC     A,H             
-4D2B: 17         RLA                     
-4D2C: 3F         CCF                     
-4D2D: C4 DB F9   CALL    NZ,$F9DB        
-4D30: 3B         DEC     SP              
-4D31: 13         INC     DE              
-4D32: 5B         LD      E,E             
-4D33: 13         INC     DE              
-4D34: 1B         DEC     DE              
-4D35: A1         AND     C               
-4D36: B5         OR      L               
-4D37: 94         SUB     H               
-4D38: 0D         DEC     C               
-4D39: BC         CP      H               
-4D3A: 09         ADD     HL,BC           
-4D3B: 9A         SBC     D               
-4D3C: 04         INC     B               
-4D3D: EE 73      XOR     $73             
-4D3F: C6 06      ADD     $06             
-4D41: 9A         SBC     D               
-4D42: AF         XOR     A               
-4D43: 14         INC     D               
-4D44: BF         CP      A               
-4D45: 14         INC     D               
-4D46: 3F         CCF                     
-4D47: B1         OR      C               
-4D48: 66         LD      H,(HL)          
-4D49: 98         SBC     B               
-4D4A: C3 14 16   JP      $1614           
-4D4D: EE 95      XOR     $95             
-4D4F: 73         LD      (HL),E          
-4D50: DE 14      SBC     $14             
-4D52: 19         ADD     HL,DE           
-4D53: C4 22 00   CALL    NZ,$0022        
-4D56: 0E C7      LD      C,$C7           
-4D58: DE 4B      SBC     $4B             
-4D5A: 15         DEC     D               
-4D5B: F3         DI                      
-4D5C: 8C         ADC     A,H             
-4D5D: 6C         LD      L,H             
-4D5E: BE         CP      (HL)            
-4D5F: 29         ADD     HL,HL           
-4D60: A1         AND     C               
-4D61: 03         INC     BC              
-4D62: 71         LD      (HL),C          
-4D63: 8C         ADC     A,H             
-4D64: 17         RLA                     
-4D65: D3 48      OUT     ($48),A         
-4D67: 81         ADD     A,C             
-4D68: 5B         LD      E,E             
-4D69: 96         SUB     (HL)            
-4D6A: AF         XOR     A               
-4D6B: DB 9C      IN      A,($9C)         
-4D6D: 34         INC     (HL)            
-4D6E: A1         AND     C               
-4D6F: FF         RST     0X38            
-4D70: 14         INC     D               
-4D71: 82         ADD     A,D             
-4D72: 49         LD      C,C             
-4D73: 21 00 2E   LD      HL,$2E00        
-4D76: C7         RST     0X00            
-4D77: DE F3      SBC     $F3             
-4D79: 17         RLA                     
-4D7A: CB 8C      SET     1,E             
-4D7C: 6C         LD      L,H             
-4D7D: BE         CP      (HL)            
-4D7E: 29         ADD     HL,HL           
-4D7F: A1         AND     C               
-4D80: 03         INC     BC              
-4D81: 71         LD      (HL),C          
-4D82: 09         ADD     HL,BC           
-4D83: 15         DEC     D               
-4D84: A3         AND     E               
-4D85: A0         AND     B               
-4D86: 8E         ADC     A,(HL)          
-4D87: 48         LD      C,B             
-4D88: 53         LD      D,E             
-4D89: 15         DEC     D               
-4D8A: 33         INC     SP              
-4D8B: 98         SBC     B               
-4D8C: C7         RST     0X00            
-4D8D: DE 97      SBC     $97             
-4D8F: B3         OR      E               
-4D90: 03         INC     BC              
-4D91: 8C         ADC     A,H             
-4D92: 03         INC     BC              
-4D93: A0         AND     B               
-4D94: 44         LD      B,H             
-4D95: 45         LD      B,L             
-4D96: 3D         DEC     A               
-4D97: 48         LD      C,B             
-4D98: 23         INC     HL              
-4D99: A0         AND     B               
-4D9A: 3B         DEC     SP              
-4D9B: F4 C7 DE   CALL    P,$DEC7         
-4D9E: 3B         DEC     SP              
-4D9F: 13         INC     DE              
-4DA0: DE 14      SBC     $14             
-4DA2: 64         LD      H,H             
-4DA3: 7A         LD      A,D             
-4DA4: 09         ADD     HL,BC           
-4DA5: 15         DEC     D               
-4DA6: 03         INC     BC              
-4DA7: D2 56 45   JP      NC,$4556        
-4DAA: 67         LD      H,A             
-4DAB: B1         OR      C               
-4DAC: 90         SUB     B               
-4DAD: 14         INC     D               
-4DAE: 07         RLCA                    
-4DAF: 58         LD      E,B             
-4DB0: 53         LD      D,E             
-4DB1: B7         OR      A               
-4DB2: DB A4      IN      A,($A4)         
-4DB4: 6B         LD      L,E             
-4DB5: BF         CP      A               
-4DB6: 08         EX      AF,AF'          
-4DB7: B7         OR      A               
-4DB8: 93         SUB     E               
-4DB9: 62         LD      H,D             
-4DBA: BB         CP      E               
-4DBB: 06 40      LD      B,$40           
-4DBD: 55         LD      D,L             
-4DBE: AB         XOR     E               
-4DBF: 6E         LD      L,(HL)          
-4DC0: 6E         LD      L,(HL)          
-4DC1: C0         RET     NZ              
-4DC2: 83         ADD     A,E             
-4DC3: 49         LD      C,C             
-4DC4: 1D         DEC     E               
-4DC5: A0         AND     B               
-4DC6: BB         CP      E               
-4DC7: 06 3B      LD      B,$3B           
-4DC9: 13         INC     DE              
-4DCA: 5B         LD      E,E             
-4DCB: 13         INC     DE              
-4DCC: 1B         DEC     DE              
-4DCD: A1         AND     C               
-4DCE: 86         ADD     A,(HL)          
-4DCF: 91         SUB     C               
-4DD0: 4B         LD      C,E             
-4DD1: 5E         LD      E,(HL)          
-4DD2: 54         LD      D,H             
-4DD3: 21 00 0C   LD      HL,$0C00        
-4DD6: 83         ADD     A,E             
-4DD7: 48         LD      C,B             
-4DD8: 9D         SBC     L               
-4DD9: 7A         LD      A,D             
-4DDA: B3         OR      E               
-4DDB: 55         LD      D,L             
-4DDC: 43         LD      B,E             
-4DDD: A7         AND     A               
-4DDE: 03         INC     BC              
-4DDF: A0         AND     B               
-4DE0: 63         LD      H,E             
-4DE1: B1         OR      C               
-4DE2: 2E 5C      LD      L,$5C           
-4DE4: 71         LD      (HL),C          
-4DE5: 13         INC     DE              
-4DE6: 85         ADD     A,L             
-4DE7: 74         LD      (HL),H          
-4DE8: 0D         DEC     C               
-4DE9: BC         CP      H               
-4DEA: 46         LD      B,(HL)          
-4DEB: 7A         LD      A,D             
-4DEC: 47         LD      B,A             
-4DED: 62         LD      H,D             
-4DEE: 22 00 01   LD      ($0100),HL      
-4DF1: 0F         RRCA                    
-4DF2: 9A         SBC     D               
-4DF3: 00         NOP                     
-4DF4: 14         INC     D               
-4DF5: C7         RST     0X00            
-4DF6: DE 4B      SBC     $4B             
-4DF8: 15         DEC     D               
-4DF9: F3         DI                      
-4DFA: 8C         ADC     A,H             
-4DFB: 6C         LD      L,H             
-4DFC: BE         CP      (HL)            
-4DFD: 29         ADD     HL,HL           
-4DFE: A1         AND     C               
-4DFF: 16 71      LD      D,$71           
-4E01: DB 72      IN      A,($72)         
-4E03: 7E         LD      A,(HL)          
-4E04: 74         LD      (HL),H          
-4E05: 43         LD      B,E             
-4E06: 5E         LD      E,(HL)          
-4E07: 33         INC     SP              
-4E08: 98         SBC     B               
-4E09: 6F         LD      L,A             
-4E0A: 4F         LD      C,A             
-4E0B: 0B         DEC     BC              
-4E0C: 48         LD      C,B             
-4E0D: C7         RST     0X00            
-4E0E: DE 90      SBC     $90             
-4E10: AF         XOR     A               
-4E11: DD         ???                     
-4E12: 5F         LD      E,A             
-4E13: 3B         DEC     SP              
-4E14: F4 C7 DE   CALL    P,$DEC7         
-4E17: 94         SUB     H               
-4E18: 14         INC     D               
-4E19: 46         LD      B,(HL)          
-4E1A: 5E         LD      E,(HL)          
-4E1B: 86         ADD     A,(HL)          
-4E1C: 5F         LD      E,A             
-4E1D: 2E 00      LD      L,$00           
-4E1F: 07         RLCA                    
-4E20: C7         RST     0X00            
-4E21: DE 94      SBC     $94             
-4E23: 14         INC     D               
-4E24: 85         ADD     A,L             
-4E25: 61         LD      H,C             
-4E26: 05         DEC     B               
-4E27: BC         CP      H               
-4E28: 3C         INC     A               
-4E29: 49         LD      C,C             
-4E2A: D0         RET     NC              
-4E2B: DD         ???                     
-4E2C: CB 6A      SET     1,E             
-4E2E: 54         LD      D,H             
-4E2F: 2E 00      LD      L,$00           
-4E31: 07         RLCA                    
-4E32: 5F         LD      E,A             
-4E33: BE         CP      (HL)            
-4E34: 5D         LD      E,L             
-4E35: B1         OR      C               
-4E36: D0         RET     NC              
-4E37: B5         OR      L               
-4E38: F3         DI                      
-4E39: A0         AND     B               
-4E3A: 0F         RRCA                    
-4E3B: A0         AND     B               
-4E3C: 9F         SBC     A               
-4E3D: 15         DEC     D               
-4E3E: 7F         LD      A,A             
-4E3F: B1         OR      C               
-4E40: 00         NOP                     
-4E41: 0B         DEC     BC              
-4E42: 1B         DEC     DE              
-4E43: D1         POP     DE              
-4E44: 06 BC      LD      B,$BC           
-4E46: DB 9C      IN      A,($9C)         
-4E48: 1B         DEC     DE              
-4E49: A1         AND     C               
-4E4A: 10 D0      DJNZ    $4E1C           
-4E4C: 0F         RRCA                    
-4E4D: BC         CP      H               
-4E4E: 56         LD      D,(HL)          
-4E4F: 5E         LD      E,(HL)          
-4E50: C6 9C      ADD     $9C             
-4E52: D9         EXX                     
-4E53: 9C         SBC     H               
-4E54: 82         ADD     A,D             
-4E55: 7B         LD      A,E             
-4E56: D6 15      SUB     $15             
-4E58: 3F         CCF                     
-4E59: 00         NOP                     
-4E5A: 06 46      LD      B,$46           
-4E5C: 77         LD      (HL),A          
-4E5D: 05         DEC     B               
-4E5E: A0         AND     B               
-4E5F: 17         RLA                     
-4E60: BC         CP      H               
-4E61: 3F         CCF                     
-4E62: 98         SBC     B               
-4E63: A6         AND     (HL)            
-4E64: B3         OR      E               
-4E65: 8E         ADC     A,(HL)          
-4E66: 48         LD      C,B             
-4E67: 2E 00      LD      L,$00           
-4E69: 19         ADD     HL,DE           
-4E6A: C7         RST     0X00            
-4E6B: DE 0C      SBC     $0C             
-4E6D: 15         DEC     D               
-4E6E: 53         LD      D,E             
-4E6F: A0         AND     B               
-4E70: CF         RST     0X08            
-4E71: 62         LD      H,D             
-4E72: 96         SUB     (HL)            
-4E73: B4         OR      H               
-4E74: 90         SUB     B               
-4E75: 73         LD      (HL),E          
-4E76: DB 6A      IN      A,($6A)         
-4E78: 1B         DEC     DE              
-4E79: A1         AND     C               
-4E7A: 46         LD      B,(HL)          
-4E7B: 72         LD      (HL),D          
-4E7C: 89         ADC     A,C             
-4E7D: 17         RLA                     
-4E7E: DE 14      SBC     $14             
-4E80: 64         LD      H,H             
-4E81: 7A         LD      A,D             
-4E82: 82         ADD     A,D             
-4E83: 17         RLA                     
-4E84: 54         LD      D,H             
-4E85: 5E         LD      E,(HL)          
-4E86: 5F         LD      E,A             
-4E87: A0         AND     B               
-4E88: 3B         DEC     SP              
-4E89: F4 C7 DE   CALL    P,$DEC7         
-4E8C: 2F         CPL                     
-4E8D: 17         RLA                     
-4E8E: DA 46 82   JP      C,$8246         
-4E91: 17         RLA                     
-4E92: 3B         DEC     SP              
-4E93: 5E         LD      E,(HL)          
-4E94: 57         LD      D,A             
-4E95: 17         RLA                     
-4E96: 40         LD      B,B             
-4E97: 55         LD      D,L             
-4E98: 08         EX      AF,AF'          
-4E99: 58         LD      E,B             
-4E9A: 81         ADD     A,C             
-4E9B: 8D         ADC     A,L             
-4E9C: 52         LD      D,D             
-4E9D: 2E 00      LD      L,$00           
-4E9F: 17         RLA                     
-4EA0: 09         ADD     HL,BC     
-      
-; This is on the end of the cassette data file. Probably nothing, but here just in case.
+4B50: 00         NOP
+                     
+; Compressed text
 
-4EA1: 93 78 00 00                    
+; THERE_IS_A_GHOST_HERE.[CR]
+4B51: 07 5F BE 5B B1 4B 7B 49 45 85 74 0A BC 2F 62 2E 
+4B61: 00 
+
+; THE_BODY_OF_A_DEAD_GHOST_IS_ON_THE_FLOOR.[CR]
+4B62: 0D 5F BE B9 14 FB 5C C3 9E 46 45 86 5F 7A 15 E6 
+4B72: A0 D5 15 C0 16 82 17 48 5E 81 8D 52 2E 00 
+
+; THERE_IS_A_MAGIC_SWORD_ON_THE_FLOOR.[CR]
+4B80: 0C 5F BE 5B B1 4B 7B 4F 45 7B 47 D5 51 44 D2 11 
+4B90: 58 96 96 DB 72 89 67 C7 A0 00 
+
+; MAGIC_SWORD[CR]
+4B9A: 03 89 91 CB 78 81 BA 52 44 00 
+
+; THERE_IS_A_RUSTY_OLD_SIGN_LAYING_ON_THE_GROUND.[CR]
+4BA4: 0F 5F BE 5B B1 4B 7B 54 45 66 C6 51 DB B3 8B 49 
+4BB4: B8 8E 96 4B 4A AB 98 03 A0 5F BE 84 15 30 A1 44 
+4BC4: 2E 00 
+
+; RUSTY_SIGN[CR]
+4BC6: 03 F5 B3 FB C0 49 B8 4E 00 
+
+; YOU_ARE_IN_A 
+4BCF: 04 C7 DE 94 14 4B 5E 83 96 20 01 
+
+; DIMLY_LIT_ROOM.[CR]
+4BDA: 05 8F 5A FB 8E 96 8C 39 17 FF 9F 00 
+
+; DIMLY_LIT_ROOM.__THERE_IS_A_HOLE_IN_THE_FLOOR.[CR]
+4BE6: 0F 8F 5A FB 8E 96 8C 39 17 FF 9F 56 13 F4 72 4B 
+4BF6: 5E C3 B5 A9 15 DB 8B 83 7A 5F BE 56 15 44 A0 2E 
+4C06: 00 
+
+; OK_[CR]
+4C07: 01 8B 9F 00 
+
+; WHAT?[CR]
+4C0B: 01 1B D1 54 3F 00 
+
+; YOUR_MAGIC_SWORD_ENABLES_YOU_TO_KILL_THE_GHOST![CR]
+4C11: 0F C7 DE 8F AF 7B 47 D5 51 44 D2 07 58 C4 97 F5 
+4C21: 8B 51 18 56 C2 CD 9C 46 7A 82 17 49 5E 85 74 54 
+4C31: 21 00 
+
+; DON'T_BE_RIDICULOUS![CR]
+4C33: 06 80 5B F3 23 5B 4D 06 B2 E7 78 87 8D 53 21 00 
+
+; YOU_CAN'T_KILL_A_GHOST_WITH_YOUR_BARE_HANDS.[CR]
+4C43: 0E C7 DE D3 14 E6 96 1B 16 F3 8C 49 45 85 74 19 
+4C53: BC 82 7B 51 18 23 C6 D4 4C 4A 5E 8E 48 53 2E 00 
+
+; THE_POOR_THING'S_ALREADY_DEAD.[CR]
+4C63: 0A 5F BE E9 16 A3 A0 63 BE AD 98 C3 B5 EF 8D 13 
+4C73: 47 FF 14 17 47 00 
+
+; THE_GHOST_WILL_NOT_LET_YOU_PASS![CR]
+4C79: 0A 5F BE 7A 15 E6 A0 FB 17 F3 8C 06 9A 3F 16 1B 
+4C89: BC 1B A1 55 A4 53 21 00 
+
+; OUCH!__YOU_HURT_YOUR_HAND.[CR]
+4C91: 08 25 A1 AB 70 51 18 4A C2 3E C6 51 18 23 C6 50 
+4CA1: 72 44 2E 00 
+
+; SORRY,_ONLY_ONE_PLUGH_PER_CUSTOMER.[CR]
+4CA5: 0B 44 B9 9E B4 C0 16 FB 8E 0F A0 E6 16 7A C4 DF 
+4CB5: 16 85 AF 66 C6 E7 9F 52 2E 00 
+
+; THE_GHOST_IS_IMMUNE_TO_YOUR_ATTACK![CR]
+4CBF: 0B 5F BE 7A 15 E6 A0 D5 15 CF 15 B0 94 56 5E DB 
+4CCF: 9C 34 A1 96 14 45 BD 4B 21 00 
+
+; THE_SIGN_SAYS,_______________________________________________________"THERE_ARE_THREE_EXITS_FROM_THIS_ROOM.__ONLY_ONE_IS_TRUE...______YOU_MUST_KNOW,_BUT_NOT_BE_BURDENED_BY,_THIS_CLUE!"[CR]
+4CD9: 3D 5F BE 5B 17 03 6E 1B B7 33 BB 3B 13 3B 13 3B 
+4CE9: 13 3B 13 3B 13 3B 13 3B 13 3B 13 3B 13 3B 13 3B 
+4CF9: 13 3B 13 3B 13 3B 13 3B 13 3B 13 3B 13 3B 13 C2 
+4D09: 1D 2F 62 94 14 56 5E EF 74 47 5E 96 D7 C8 B5 FF 
+4D19: B2 82 17 4B 7B 01 B3 DB 95 C0 16 FB 8E 0F A0 D5 
+4D29: 15 8C 17 3F C4 DB F9 3B 13 5B 13 1B A1 B5 94 0D 
+4D39: BC 09 9A 04 EE 73 C6 06 9A AF 14 BF 14 3F B1 66 
+4D49: 98 C3 14 16 EE 95 73 DE 14 19 C4 22 00 
+
+; YOU_FALL_THROUGH_A_TRAP_DOOR_TO_YOUR_DEATH![CR]
+4D56: 0E C7 DE 4B 15 F3 8C 6C BE 29 A1 03 71 8C 17 D3 
+4D66: 48 81 5B 96 AF DB 9C 34 A1 FF 14 82 49 21 00 
+
+; YOU_WALK_THROUGH_A_DOOR_AND_FIND_YOURSELF_ON_A_BALCONY.__YOU____CLIMB_DOWN_A_TREE_AND_ESCAPE_TO_SAFETY!__CONGRATULATIONS!_______YOU_MADE_IT![CR]
+4D75: 2E C7 DE F3 17 CB 8C 6C BE 29 A1 03 71 09 15 A3 
+4D85: A0 8E 48 53 15 33 98 C7 DE 97 B3 03 8C 03 A0 44 
+4D95: 45 3D 48 23 A0 3B F4 C7 DE 3B 13 DE 14 64 7A 09 
+4DA5: 15 03 D2 56 45 67 B1 90 14 07 58 53 B7 DB A4 6B 
+4DB5: BF 08 B7 93 62 BB 06 40 55 AB 6E 6E C0 83 49 1D 
+4DC5: A0 BB 06 3B 13 5B 13 1B A1 86 91 4B 5E 54 21 00 
+
+; AN_INSCRIPTION_READS,_"GHOST_KILLER."[CR]
+4DD5: 0C 83 48 9D 7A B3 55 43 A7 03 A0 63 B1 2E 5C 71 
+4DE5: 13 85 74 0D BC 46 7A 47 62 22 00 
+
+; NO.[CR]
+4DF0: 01 0F 9A 00 
+
+; YOU_FALL_THROUGH_THE_HOLE_AND_BREAK_YOUR_NECK.__YOU_ARE_DEAD.[CR]
+4DF4: 14 C7 DE 4B 15 F3 8C 6C BE 29 A1 16 71 DB 72 7E 
+4E04: 74 43 5E 33 98 6F 4F 0B 48 C7 DE 90 AF DD 5F 3B 
+4E14: F4 C7 DE 94 14 46 5E 86 5F 2E 00 
+
+; YOU_AREN'T_CARRYING_IT.[CR]
+4E1F: 07 C7 DE 94 14 85 61 05 BC 3C 49 D0 DD CB 6A 54 
+4E2F: 2E 00 
+
+; THERE'S_NOT_ONE_HERE.[CR]
+4E31: 07 5F BE 5D B1 D0 B5 F3 A0 0F A0 9F 15 7F B1 00 
+
+; WHAT_DO_YOU_WANT_ME_TO_DO_WITH_IT?[CR]
+4E41: 0B 1B D1 06 BC DB 9C 1B A1 10 D0 0F BC 56 5E C6 
+4E51: 9C D9 9C 82 7B D6 15 3F 00 
+
+; I_DON'T_UNDERSTAND.[CR]
+4E5A: 06 46 77 05 A0 17 BC 3F 98 A6 B3 8E 48 2E 00 
+
+; YOU_DROP_EVERYTHING_YOU_HAD_TO_CLIMB_THE_ROPE.__YOU_REACH_THE___SECOND_FLOOR.[CR]
+4E69: 19 C7 DE 0C 15 53 A0 CF 62 96 B4 90 73 DB 6A 1B 
+4E79: A1 46 72 89 17 DE 14 64 7A 82 17 54 5E 5F A0 3B 
+4E89: F4 C7 DE 2F 17 DA 46 82 17 3B 5E 57 17 40 55 08 
+4E99: 58 81 8D 52 2E 00 
+      

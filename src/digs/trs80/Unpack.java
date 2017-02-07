@@ -8,18 +8,37 @@ public class Unpack {
 	public static void main(String[] args) throws Exception {
 		Unpack un = new Unpack();
 		
-		DissReader reader = new DissReader("content/trs80/hauntedhouse/Code1.cmark");
+		DissReader reader = new DissReader("content/trs80/hauntedhouse/Code2.cmark");
 		int [] memory = new int[64*1024];
 		reader.getData(memory);
 				
-		int pos = 0x4B35;
-		for(int x=0;x<59;++x) {
-			pos = un.parseMessage(memory,pos);
-			System.out.println(un.lastUnpack);
+		int pos = 0x4B51;
+		//for(int x=0;x<59;++x) { For 1
+		for(int x=0;x<30;++x) {
+			int npos = un.parseMessage(memory,pos);
+			printDump(memory,pos,npos,un.lastUnpack);
+			//System.out.println(un.lastUnpack);
+			pos = npos;
 		}
 
 	}
 	
+	private static void printDump(int[] memory, int pos, int npos, String lastUnpack) {
+		System.out.println();
+		System.out.println("; "+lastUnpack);
+		int prpos = 0;
+		while(pos<npos) {
+			if((prpos%16)==0 ) {
+				if(prpos!=0) System.out.println();
+				System.out.print(CU.hex4(pos)+": ");
+			}
+			++prpos;
+			System.out.print(CU.hex2(memory[pos++])+" ");			
+		}
+		System.out.println();
+		
+	}
+
 	public int parseMessage(int [] message, int pos) {
 		
 		lastUnpack = "";
