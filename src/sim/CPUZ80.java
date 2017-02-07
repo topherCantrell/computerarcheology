@@ -3,17 +3,20 @@ package sim;
 import java.io.IOException;
 import java.util.List;
 
+import code.CU;
+
 public class CPUZ80 extends CPU {
 	
 	// http://www.z80.info/z80flag.htm
 	
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
+	int inscnt;
 	
 	int [] memory = new int[64*1024];
 	
 	int pc;
 	
-	boolean zf, cf, sf;
+	boolean zf, cf;
 	
 	public CPUZ80(List<String> lines) {
 		super(lines);
@@ -102,9 +105,34 @@ public class CPUZ80 extends CPU {
 		return rval;
 	}
 	
+	String addRegister(String name) {
+		Accessable a = getRegister(name);
+		String ta = name+"=";
+		if(a.isWordSize()) {
+			ta = ta + CU.hex4(a.readValue());
+			ta = CU.padTo(ta, 6);
+		} else {
+			ta = ta + CU.hex2(a.readValue());
+			ta = CU.padTo(ta, 8);
+		}
+		return ta;
+		
+	}
+	
 	public void debug(String addr, String instruction) {
 		if(DEBUG) {
-			System.out.println(addr+": "+instruction);
+			String ins = CU.padTo(addr+": "+instruction,30);
+			ins = ins + addRegister("A");
+			ins = ins + addRegister("B");
+			ins = ins + addRegister("C");
+			ins = ins + addRegister("D");
+			ins = ins + addRegister("E");
+			ins = ins + addRegister("H");
+			ins = ins + addRegister("L");
+			ins = ins + "CF="+cf+" ZF="+zf;
+			System.out.println(ins);
+			++inscnt;
+			if(inscnt==200) System.exit(0);
 		}
 	}
 
@@ -171,17 +199,7 @@ public class CPUZ80 extends CPU {
 	boolean intToBool(int v) {
 		if(v==0) return false;
 		return true;
-	}
-	public void setFlags(int value, boolean isWordAccess,
-			boolean C, int Z, int P, int S, int N, int H) 
-	{
-		// -1 means calculate from value
-		cf=C;
-		if(Z>=0) zf=intToBool(Z);
-		else zf=(value==0);
-		if(S>=0) sf=intToBool(S);
-		else sf = (value&128)>0;		
-	}
+	}	
 	
 	public boolean math(String op, String par) {
 		if(op.equals("SBC")) {
@@ -334,7 +352,7 @@ public class CPUZ80 extends CPU {
 				val = val & 0xFF;
 			}
 			ac.writeValue(val);
-			setFlags(val, false, cf, -1, -1, -1, 0, 1);
+			zf = (val==0);			
 			return true;
 		}
 		if(op.equals("DEC")) {
@@ -354,7 +372,7 @@ public class CPUZ80 extends CPU {
 				}
 			}
 			ac.writeValue(val);
-			setFlags(val, false, cf, -1, -1, -1, 0, 1);
+			zf = (val==0);
 			return true;
 		}
 		if(op.equals("AND")) {
@@ -368,7 +386,7 @@ public class CPUZ80 extends CPU {
 			aval = aval & val.readValue();
 			getRegister("A").writeValue(aval);			
 			//                    C       Z   P   S  N  H
-			setFlags(aval, false, false, -1, -1, -1, 0, 1); // Set Z,S,P   C=0,N=0,H=1
+			zf = (aval==0);
 			return true;
 		}
 		if(op.equals("CP")) {
@@ -378,7 +396,7 @@ public class CPUZ80 extends CPU {
 				aval = aval - cv.readValue();
 				boolean cf = aval<0;
 				if(cf) aval=aval+256;
-				setFlags(aval, false, cf, -1, -1, -1, 0, 1);
+				zf = (aval==0);
 				return true;
 			}
 		}

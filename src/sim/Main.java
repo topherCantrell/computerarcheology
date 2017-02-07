@@ -10,10 +10,13 @@ public class Main {
 		
 		//cpu.run(0x42E9);
 		
+		
 		cpu.getRegister("SP").writeValue(0x7000);
 		
-		cpu.getRegister("HL").writeValue(0x4D7B);
-		cpu.call(0x45AE);
+		cpu.getRegister("A").writeValue(1);
+		cpu.getRegister("HL").writeValue(0x4D7C);
+		cpu.call(0x46B9);
+		
 		
 	}
 
