@@ -19,6 +19,7 @@
 ;
 ; Script command 17 jumps here to load second floor
 ;
+ScriptCommand17:
 42F5: 31 FE 4F   LD      SP,$4FFE        ; Reset sack at top of RAM
 42F8: 21 4A 43   LD      HL,$434A        ; "READY CASSETTE[CR]"
 42FB: CD D0 45   CALL    $45D0           ; Print message
@@ -161,6 +162,7 @@ ProcessRoomScript:
 43F2: C0         RET     NZ              ; Not zero if the command passed
 43F3: C3 D8 43   JP      $43D8           ; The command failed ... keep running the list of commands
 
+
 43F6: E5         PUSH    HL              
 43F7: 4E         LD      C,(HL)          
 43F8: 06 00      LD      B,$00           
@@ -194,6 +196,8 @@ ProcessRoomScript:
 441F: E1         POP     HL              
 4420: AF         XOR     A               
 4421: C9         RET                     
+
+; Call script and reverse logic
 4422: E1         POP     HL              
 4423: CD F6 43   CALL    $43F6           
 4426: E5         PUSH    HL              
@@ -916,44 +920,37 @@ PromptAndReadLine:
 48DF: 00         NOP                     
 48E0: 40         LD      B,B             
 48E1: 02         LD      (BC),A          
-48E2: 10 35      DJNZ    $4919           
-48E4: 4B         LD      C,E             
-48E5: 64         LD      H,H             
-48E6: 4B         LD      C,E             
-48E7: 77         LD      (HL),A          
-48E8: 4B         LD      C,E             
-48E9: 87         ADD     A,A             
-48EA: 4B         LD      C,E             
-48EB: A5         AND     L               
-48EC: 4B         LD      C,E             
-48ED: BD         CP      L               
-48EE: 4B         LD      C,E             
-48EF: E5         PUSH    HL              
-48F0: 4B         LD      C,E             
-48F1: CB 47      SET     1,E             
-48F3: F8         RET     M               
-48F4: 4B         LD      C,E             
-48F5: 0F         RRCA                    
-48F6: 4C         LD      C,H             
-48F7: F8         RET     M               
-48F8: 4B         LD      C,E             
-48F9: 32 4C 5F   LD      ($5F4C),A       
-48FC: 4C         LD      C,H          
+48E2: 10
+ 
+; Object Descriptions
+48E3: 35 4B ; Description for PAPER            
+48E5: 64 4B ; DOOR       
+48E7: 77 4B ; KEY
+48E9: 87 4B ; RING OF FIRE
+48EB: A5 4B ; LOCKED DOOR BARS THE WAY
+48ED: BD 4B ; KNIFE
+48EF: E5 4B ; ROPE
+48F1: CB 47 ; (a zero ... no description)            
+48F3: F8 4B ; CABINET
+48F5: 0F 4C ; BUCKET
+48F7: F8 4B ; CABINET (another one)
+48F9: 32 4C ; ROPE TO CEILING
+48FB: 5F 4C ; SCROLL
 
 ScriptCommands:
 48FD: 1F 49 ;  1 GoToRoom(room)
 48FF: 67 49 ;  2 AssertObjectIsInPack(object)
 4901: 76 49 ;  3 AssertObjectIsInRoomOrPack(object)
 4903: AF 49 ;  4 PrintMessage(message)
-4905: 27 49 ;  5
-4907: 22 44 ;  6
-490B: 48 4A ;  7
-490B: BC 49 ;  8
-490D: CB 49 ;  9
-490F: F5 49 ; 10
-4911: 03 4A ; 11
-4913: 2A 4A ; 12
-4914: 33 4A ; 13      
+4905: 27 49 ;  5 PrintRoomDescription
+4907: 22 44 ;  6 CommandReverseLogic(...)
+490B: 48 4A ;  7 Stop()
+490B: BC 49 ;  8 DropObject(object)
+490D: CB 49 ;  9 ?? Inventory
+490F: F5 49 ; 10 ?? AssertRequestedObject
+4911: 03 4A ; 11 GetObjectFromRoom(object)
+4913: 2A 4A ; 12 Print "OK"
+4914: 33 4A ; 13 MoveObjectToRoom(object,room)     
 4917: 9A 49 ; 14
 4919: 23 4A ; 15
 491B: 89 49 ; 16
@@ -1036,6 +1033,9 @@ ScriptCommand03:
 4991: CD AB 43   CALL    $43AB           
 4994: CA 0B 44   JP      Z,$440B         
 4997: C3 1E 44   JP      $441E           
+
+ScriptCommand14:
+;
 499A: 3A 7B 46   LD      A,($467B)       
 499D: 1E FF      LD      E,$FF           
 499F: CD AB 43   CALL    $43AB           
@@ -1055,17 +1055,21 @@ ScriptCommand04:
 49B4: E5         PUSH    HL              ; New script pointer
 49B5: EB         EX      DE,HL           ; Message pointer to HL
 49B6: CD AE 45   CALL    $45AE           ; Unpack and print
-49B9: C3 0B 44   JP      $440B           
+49B9: C3 0B 44   JP      $440B           ; Command PASS
 
+Command08:
+; Drop object from pack to current room
 49BC: E1         POP     HL              
 49BD: 46         LD      B,(HL)          
 49BE: 23         INC     HL              
 49BF: E5         PUSH    HL              
-49C0: 3A E2 48   LD      A,($48E2)       
+49C0: 3A E2 48   LD      A,($48E2)       ; Room number
 49C3: 5F         LD      E,A             
 49C4: 78         LD      A,B             
 49C5: CD D1 43   CALL    $43D1           
-49C8: C3 2A 4A   JP      $4A2A           
+49C8: C3 2A 4A   JP      $4A2A           ; Print OK and PASS
+
+; ?? Print inventory
 49CB: 06 00      LD      B,$00           
 49CD: 1E FF      LD      E,$FF           
 49CF: 04         INC     B               
@@ -1089,6 +1093,9 @@ ScriptCommand04:
 49EE: CD AE 45   CALL    $45AE           
 49F1: C1         POP     BC              
 49F2: C3 CD 49   JP      $49CD           
+
+ScriptCommand10:
+; ?? Assert object matches user input
 49F5: E1         POP     HL              
 49F6: 46         LD      B,(HL)          
 49F7: 23         INC     HL              
@@ -1097,6 +1104,9 @@ ScriptCommand04:
 49FC: B8         CP      B               
 49FD: C2 1E 44   JP      NZ,$441E        
 4A00: C3 0B 44   JP      $440B           
+
+ScriptCommand11:
+; GetObjectFromRoom(object)
 4A03: E1         POP     HL              
 4A04: 46         LD      B,(HL)          
 4A05: 23         INC     HL              
@@ -1106,19 +1116,27 @@ ScriptCommand04:
 4A0B: 7E         LD      A,(HL)          
 4A0C: E6 40      AND     $40             
 4A0E: C2 1A 4A   JP      NZ,$4A1A        
-4A11: 21 85 4D   LD      HL,$4D85        
+4A11: 21 85 4D   LD      HL,$4D85        ; "DON'T BE RIDICULOUS"
 4A14: CD AE 45   CALL    $45AE           
-4A17: C3 0B 44   JP      $440B           
+4A17: C3 0B 44   JP      $440B           ; Command PASSES (was handled here)
+;
 4A1A: 78         LD      A,B             
 4A1B: 1E FF      LD      E,$FF           
 4A1D: CD D1 43   CALL    $43D1           
 4A20: C3 2A 4A   JP      $4A2A           
+
 4A23: 3A 7B 46   LD      A,($467B)       
 4A26: 47         LD      B,A             
 4A27: C3 C0 49   JP      $49C0           
-4A2A: 21 7B 4D   LD      HL,$4D7B        
-4A2D: CD AE 45   CALL    $45AE           
-4A30: C3 0B 44   JP      $440B           
+
+ScriptCommand12:
+; PrintOK
+4A2A: 21 7B 4D   LD      HL,$4D7B        ; "OK"
+4A2D: CD AE 45   CALL    $45AE           ; Print OK
+4A30: C3 0B 44   JP      $440B           ; Command Passes
+
+ScriptCommand13:
+; MoveObjectToRoom(object,room)
 4A33: E1         POP     HL              
 4A34: 7E         LD      A,(HL)          
 4A35: 23         INC     HL              
@@ -1131,8 +1149,10 @@ ScriptCommand04:
 4A40: E6 7F      AND     $7F             
 4A42: 77         LD      (HL),A          
 4A43: 23         INC     HL              
-4A44: 73         LD      (HL),E          
-4A45: C3 0B 44   JP      $440B           
+4A44: 73         LD      (HL),E  
+4A45: C3 0B 44   JP      $440B   
+        
+InfiniteLoop:
 4A48: C3 48 4A   JP      $4A48     
             
 CommandTable: ;=            
