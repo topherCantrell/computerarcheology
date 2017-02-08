@@ -15,7 +15,10 @@
 
 42EC: CD F8 01   CALL    $01F8           ; Turn off the tape drive
 42EF: 21 41 43   LD      HL,$4341        ; "CHECKSUM[CR]"
-42F2: CD D0 45   CALL    $45D0           ;{Topher} Print message
+42F2: CD D0 45   CALL    $45D0           ; Print message
+;
+; Script command 17 jumps here to load second floor
+;
 42F5: 31 FE 4F   LD      SP,$4FFE        ; Reset sack at top of RAM
 42F8: 21 4A 43   LD      HL,$434A        ; "READY CASSETTE[CR]"
 42FB: CD D0 45   CALL    $45D0           ; Print message
@@ -72,24 +75,24 @@
 4369: CD D0 45   CALL    $45D0           ; Print welcome message
 436C: CD EE 45   CALL    $45EE           ; Wait for the user to press a key
 
-436F: 3E 10      LD      A,$10           
-4371: 32 E2 48   LD      ($48E2),A       
+436F: 3E 10      LD      A,$10           ; Starting room is ...
+4371: 32 E2 48   LD      ($48E2),A       ; 16 (OUTIDE OF HOUSE)
 4374: CD 2D 49   CALL    $492D           
 4377: 97         SUB     A,A               
-4378: 32 7B 46   LD      ($467B),A       
-437B: 32 7C 46   LD      ($467C),A       
-437E: 32 7D 46   LD      ($467D),A       
-4381: CD 2F 44   CALL    $442F           
-4384: 3A E2 48   LD      A,($48E2)       
-4387: 21 7F 47   LD      HL,$477F        
-438A: CD C6 43   CALL    $43C6           
-438D: 23         INC     HL              
-438E: 23         INC     HL              
-438F: 7E         LD      A,(HL)          
-4390: 23         INC     HL              
-4391: 66         LD      H,(HL)          
-4392: 6F         LD      L,A             
-4393: CD D8 43   CALL    $43D8           
+4378: 32 7B 46   LD      ($467B),A       ; ?? Clear noun (object within reach)
+437B: 32 7C 46   LD      ($467C),A       ; ?? Clear verb (throw, north, rub, etc)
+437E: 32 7D 46   LD      ($467D),A       ; ?? Grammar type (verb, verb+nounInReach, verb+nounInPack)
+4381: CD 2F 44   CALL    $442F           ; ?? Get user input and parse
+4384: 3A E2 48   LD      A,($48E2)       ; Room number
+4387: 21 7F 47   LD      HL,$477F        ; Room descriptors
+438A: CD C6 43   CALL    $43C6           ; Get 4 bytes for room
+438D: 23         INC     HL              ; Skip over ...
+438E: 23         INC     HL              ; ... to room's script pointer
+438F: 7E         LD      A,(HL)          ; Script ...
+4390: 23         INC     HL              ; ... pointer ...
+4391: 66         LD      H,(HL)          ; ... to ...
+4392: 6F         LD      L,A             ; ... HL
+4393: CD D8 43   CALL    $43D8           ; Process the room script
 4396: C2 A8 43   JP      NZ,$43A8        
 4399: 21 F2 4A   LD      HL,$4AF2        
 439C: CD D8 43   CALL    $43D8           
@@ -137,22 +140,27 @@
 43D5: 73         LD      (HL),E          
 43D6: 2B         DEC     HL              
 43D7: C9         RET                     
-43D8: 7E         LD      A,(HL)          
-43D9: A7         AND     A               
-43DA: C8         RET     Z               
-43DB: FE FF      CP      $FF             
-43DD: CA E4 43   JP      Z,$43E4         
-43E0: 3A 7C 46   LD      A,($467C)       
-43E3: BE         CP      (HL)            
-43E4: 23         INC     HL              
-43E5: CA EF 43   JP      Z,$43EF         
-43E8: 4E         LD      C,(HL)          
-43E9: 06 00      LD      B,$00           
-43EB: 09         ADD     HL,BC           
-43EC: C3 D8 43   JP      $43D8           
-43EF: CD F6 43   CALL    $43F6           
-43F2: C0         RET     NZ              
-43F3: C3 D8 43   JP      $43D8           
+
+; Process the user input against the script for a room
+ProcessRoomScript:
+43D8: 7E         LD      A,(HL)          ; Next command to run
+43D9: A7         AND     A               ; Zero means ...
+43DA: C8         RET     Z               ; ... end of the list
+43DB: FE FF      CP      $FF             ; If we get to an FF then ALWAYS ...
+43DD: CA E4 43   JP      Z,$43E4         ; ... process the command (kind of like an ELSE)
+43E0: 3A 7C 46   LD      A,($467C)       ; Verb word
+43E3: BE         CP      (HL)            ; Does it match?
+43E4: 23         INC     HL              ; Next byte
+43E5: CA EF 43   JP      Z,$43EF         ; Yes ... go do it
+43E8: 4E         LD      C,(HL)          ; Get length of command
+43E9: 06 00      LD      B,$00           ; MSB is zero
+43EB: 09         ADD     HL,BC           ; Skip to next command
+43EC: C3 D8 43   JP      $43D8           ; Back to process next command
+;
+43EF: CD F6 43   CALL    $43F6           ; Run the command
+43F2: C0         RET     NZ              ; Not zero if the command passed
+43F3: C3 D8 43   JP      $43D8           ; The command failed ... keep running the list of commands
+
 43F6: E5         PUSH    HL              
 43F7: 4E         LD      C,(HL)          
 43F8: 06 00      LD      B,$00           
@@ -162,13 +170,14 @@
 43FD: 7E         LD      A,(HL)          
 43FE: 23         INC     HL              
 43FF: E5         PUSH    HL              
-4400: 21 FD 48   LD      HL,$48FD        
-4403: CD BC 43   CALL    $43BC           
+4400: 21 FD 48   LD      HL,$48FD        ; Jump table of commands
+4403: CD BC 43   CALL    $43BC           ; Offset A-1 into commands table
 4406: 7E         LD      A,(HL)          
 4407: 23         INC     HL              
 4408: 66         LD      H,(HL)          
 4409: 6F         LD      L,A             
-440A: E9         JP      (HL)            
+440A: E9         JP      (HL)  
+;          
 440B: E1         POP     HL              
 440C: D1         POP     DE              
 440D: 7C         LD      A,H             
@@ -589,7 +598,8 @@ PromptAndReadLine:
 46D9: E5         PUSH    HL              
 46DA: C5         PUSH    BC              
 46DB: 21 28 00   LD      HL,$0028        ; Number of characters in map
-46DE: 22 7C 47   LD      ($477C),HL      
+46DE: 22 7C 47   LD      ($477C),HL
+;      
 46E1: 21 11 47   LD      HL,$4711        
 46E4: 36 11      LD      (HL),$11        ; 17 passes
 46E6: 01 00 00   LD      BC,$0000        
@@ -691,12 +701,10 @@ PromptAndReadLine:
 47BB: 6B 4D B9 48 ; 16 OUTSIDE OF THE HOUSE.
      
 ; Commands 1 FORYER
-47BF: 02 03           
-47C1: 01 02 03       
-47C4: 03         
-47C5: 01 08 04      
-47C8: 03          
-47C9: 01 09 00    
+47BF: 02 03 01 02 ; E : GOTO 2
+47C3: 03 03 01 08 ; S : GOTO 8
+47C7: 04 03 01 09 ; W : GOTO 9
+47CB: 00    
  
 ; Commands 2 LIVING ROOM
 47CC: 02         LD      (BC),A          
@@ -881,16 +889,8 @@ PromptAndReadLine:
 48B7: 11 00 
 
 ; Commands 16 OUTSIDE OF THE HOUSE
-48B9: 0A   LD      DE,$0A00        
-48BA: 06 04      LD      B,$04           
-48BC: 23         INC     HL              
-48BD: 4E         LD      C,(HL)          
-48BE: 01 01 05   LD      BC,$0501        
-48C1: 06 0A      LD      B,$0A           
-48C3: 02         LD      (BC),A          
-48C4: 04         INC     B               
-48C5: 3B         DEC     SP              
-48C6: 4E         LD      C,(HL)          
+48B9: 0A 06 04 23 4E 01 01 
+      05 06 0A 02 04 3B 4E         LD      C,(HL)          
 48C7: 00         NOP                     
 
 
@@ -938,46 +938,40 @@ PromptAndReadLine:
 48F7: F8         RET     M               
 48F8: 4B         LD      C,E             
 48F9: 32 4C 5F   LD      ($5F4C),A       
-48FC: 4C         LD      C,H             
-48FD: 1F         RRA                     
-48FE: 49         LD      C,C             
-48FF: 67         LD      H,A             
-4900: 49         LD      C,C             
-4901: 76         HALT                    
-4902: 49         LD      C,C             
-4903: AF         XOR     A               
-4904: 49         LD      C,C             
-4905: 27         DAA                     
-4906: 49         LD      C,C             
-4907: 22 44 48   LD      ($4844),HL      
-490A: 4A         LD      C,D             
-490B: BC         CP      H               
-490C: 49         LD      C,C             
-490D: CB 49      SET     1,E             
-490F: F5         PUSH    AF              
-4910: 49         LD      C,C             
-4911: 03         INC     BC              
-4912: 4A         LD      C,D             
-4913: 2A 4A 33   LD      HL,($334A)      
-4916: 4A         LD      C,D             
-4917: 9A         SBC     A,D               
-4918: 49         LD      C,C             
-4919: 23         INC     HL              
-491A: 4A         LD      C,D             
-491B: 89         ADC     A,C             
-491C: 49         LD      C,C             
-491D: F5         PUSH    AF              
-491E: 42         LD      B,D             
-491F: E1         POP     HL      
-        
-4920: 46         LD      B,(HL)          
-4921: 23         INC     HL              
-4922: E5         PUSH    HL              
-4923: 78         LD      A,B             
-4924: 32 E2 48   LD      ($48E2),A       
-4927: CD 2D 49   CALL    $492D           
-492A: C3 0B 44   JP      $440B      
+48FC: 4C         LD      C,H          
+
+ScriptCommands:
+48FD: 1F 49 ;  1 GoToRoom(room)
+48FF: 67 49 ;  2 AssertObjectIsInPack(object)
+4901: 76 49 ;  3 AssertObjectIsInRoomOrPack(object)
+4903: AF 49 ;  4 PrintMessage(message)
+4905: 27 49 ;  5
+4907: 22 44 ;  6
+490B: 48 4A ;  7
+490B: BC 49 ;  8
+490D: CB 49 ;  9
+490F: F5 49 ; 10
+4911: 03 4A ; 11
+4913: 2A 4A ; 12
+4914: 33 4A ; 13      
+4917: 9A 49 ; 14
+4919: 23 4A ; 15
+491B: 89 49 ; 16
+491D: F5 42 ; 17 Load second floor from tape
+
+ScriptCommand01:
+; GoToRoom(room)
+491F: E1         POP     HL              ; Pointer to script  
+4920: 46         LD      B,(HL)          ; Get the room number from the script          
+4921: 23         INC     HL              ; Next byte in script
+4922: E5         PUSH    HL              ; New pointer into script
+4923: 78         LD      A,B             ; Room number to A
+4924: 32 E2 48   LD      ($48E2),A       ; Change rooms
+4927: CD 2D 49   CALL    $492D           ; Print the room description
+492A: C3 0B 44   JP      $440B           ;
      
+DescribeRoom:
+; Describe the Room
 492D: 21 84 4C   LD      HL,$4C84        ; "YOU ARE AT THE " message
 4930: CD AE 45   CALL    $45AE           ; ?? Print
 4933: 3A E2 48   LD      A,($48E2)       ; Room number
@@ -1008,6 +1002,9 @@ PromptAndReadLine:
 4960: CD AE 45   CALL    $45AE           
 4963: C1         POP     BC              
 4964: C3 45 49   JP      $4945           
+
+ScriptCommand02:
+; AssertObjectInPack(object)
 4967: E1         POP     HL              
 4968: 7E         LD      A,(HL)          
 4969: 23         INC     HL              
@@ -1015,7 +1012,10 @@ PromptAndReadLine:
 496B: 1E FF      LD      E,$FF           
 496D: CD AB 43   CALL    $43AB           
 4970: CA 0B 44   JP      Z,$440B         
-4973: C3 1E 44   JP      $441E           
+4973: C3 1E 44   JP      $441E          
+
+ScriptCommand03:
+; AssertObjectIsInRoomOrPack(object) 
 4976: E1         POP     HL              
 4977: 46         LD      B,(HL)          
 4978: 23         INC     HL              
@@ -1044,15 +1044,19 @@ PromptAndReadLine:
 49A8: 3A 7B 46   LD      A,($467B)       
 49AB: 47         LD      B,A             
 49AC: C3 08 4A   JP      $4A08           
-49AF: E1         POP     HL              
-49B0: 5E         LD      E,(HL)          
-49B1: 23         INC     HL              
-49B2: 56         LD      D,(HL)          
-49B3: 23         INC     HL              
-49B4: E5         PUSH    HL              
-49B5: EB         EX      DE,HL           
-49B6: CD AE 45   CALL    $45AE           
+
+ScriptCommand04:
+; PrintMessage(message)
+49AF: E1         POP     HL              ; Get script pointer
+49B0: 5E         LD      E,(HL)          ; Get ...
+49B1: 23         INC     HL              ; ... message pointer ...
+49B2: 56         LD      D,(HL)          ; ... from ...
+49B3: 23         INC     HL              ; ... script
+49B4: E5         PUSH    HL              ; New script pointer
+49B5: EB         EX      DE,HL           ; Message pointer to HL
+49B6: CD AE 45   CALL    $45AE           ; Unpack and print
 49B9: C3 0B 44   JP      $440B           
+
 49BC: E1         POP     HL              
 49BD: 46         LD      B,(HL)          
 49BE: 23         INC     HL              
@@ -1166,6 +1170,7 @@ CommandTable: ;=
 4AEB: CC 50 4C 55 47 0A      ; 11_001_100  PLUG  0A         
 4AF1: 00                     ; end of list
                      
+; General Script (when input does not match room script)
 4AF2: 01 02 05   LD      BC,$0502        
 4AF5: 02         LD      (BC),A          
 4AF6: 02         LD      (BC),A          
