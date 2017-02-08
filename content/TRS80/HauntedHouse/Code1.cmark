@@ -96,7 +96,8 @@
 439F: C2 A8 43   JP      NZ,$43A8        
 43A2: 21 0C 4F   LD      HL,$4F0C        
 43A5: CD AE 45   CALL    $45AE           
-43A8: C3 77 43   JP      $4377           
+43A8: C3 77 43   JP      $4377
+           
 43AB: 21 C8 48   LD      HL,$48C8        
 43AE: CD BC 43   CALL    $43BC           
 43B1: 7E         LD      A,(HL)          
@@ -108,25 +109,29 @@
 43BA: BB         CP      E               
 43BB: C9         RET           
           
-43BC: D5         PUSH    DE              
-43BD: EB         EX      DE,HL           
-43BE: 6F         LD      L,A             
-43BF: 2D         DEC     L               
-43C0: 26 00      LD      H,$00           
-43C2: 29         ADD     HL,HL           
-43C3: 19         ADD     HL,DE           
-43C4: D1         POP     DE              
-43C5: C9         RET                     
-43C6: D5         PUSH    DE              
-43C7: EB         EX      DE,HL           
-43C8: 6F         LD      L,A             
-43C9: 2D         DEC     L               
-43CA: 26 00      LD      H,$00           
-43CC: 29         ADD     HL,HL           
-43CD: 29         ADD     HL,HL           
-43CE: 19         ADD     HL,DE           
-43CF: D1         POP     DE              
-43D0: C9         RET                     
+; HL = HL + (A-1)*2
+43BC: D5         PUSH    DE              ; Will be mangling this
+43BD: EB         EX      DE,HL           ; HL to DE for a moment
+43BE: 6F         LD      L,A             ; A - 1 ...
+43BF: 2D         DEC     L               ; ... to ...
+43C0: 26 00      LD      H,$00           ; ... HL
+43C2: 29         ADD     HL,HL           ; Times 2
+43C3: 19         ADD     HL,DE           ; Offset to HL
+43C4: D1         POP     DE              ; Restore DE
+43C5: C9         RET                     ; Done
+
+; HL = HL + (A-1)*4
+43C6: D5         PUSH    DE              ; Will be mangling this
+43C7: EB         EX      DE,HL           ; HL to DE for a moment
+43C8: 6F         LD      L,A             ; A - 1 ...
+43C9: 2D         DEC     L               ; ... to ...
+43CA: 26 00      LD      H,$00           ; ... HL
+43CC: 29         ADD     HL,HL           ; Times 2
+43CD: 29         ADD     HL,HL           ; Times 4
+43CE: 19         ADD     HL,DE           ; Offset to HL
+43CF: D1         POP     DE              ; Restore DE
+43D0: C9         RET                     ; Done
+
 43D1: CD AB 43   CALL    $43AB           
 43D4: 23         INC     HL              
 43D5: 73         LD      (HL),E          
@@ -667,74 +672,33 @@ PromptAndReadLine:
 475E: 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 50  ; ABCDEFGHIJKLMNOP       
 476E: 51 52 53 54 55 56 57 58 59 5A 2D 2C 2E           ; QRSTUVWXYZ-,.
  
-477B: 00               
-477C: 00         NOP                     
-477D: 00         NOP                     
-477E: 00         NOP                     
-477F: 90         SUB     A,B               
-4780: 4C         LD      C,H             
-4781: BF         CP      A               
-4782: 47         LD      B,A             
-4783: 96         SUB     A,(HL)            
-4784: 4C         LD      C,H             
-4785: CC 47 A0   CALL    Z,$A047         
-4788: 4C         LD      C,H             
-4789: EC 47 AA   CALL    PE,$AA47        
-478C: 4C         LD      C,H             
-478D: F5         PUSH    AF              
-478E: 47         LD      B,A             
-478F: B2         OR      D               
-4790: 4C         LD      C,H             
-4791: 16 48      LD      D,$48           
-4793: BE         CP      (HL)            
-4794: 4C         LD      C,H             
-4795: 1F         RRA                     
-4796: 48         LD      C,B             
-4797: BE         CP      (HL)            
-4798: 4C         LD      C,H             
-4799: 2F         CPL                     
-479A: 48         LD      C,B             
-479B: CC 4C 3D   CALL    Z,$3D4C         
-479E: 48         LD      C,B             
-479F: D1         POP     DE              
-47A0: 4C         LD      C,H             
-47A1: 46         LD      B,(HL)          
-47A2: 48         LD      C,B             
-47A3: E1         POP     HL              
-47A4: 4C         LD      C,H             
-47A5: 53         LD      D,E             
-47A6: 48         LD      C,B             
-47A7: F1         POP     AF              
-47A8: 4C         LD      C,H             
-47A9: 74         LD      (HL),H          
-47AA: 48         LD      C,B             
-47AB: 13         INC     DE              
-47AC: 4D         LD      C,L             
-47AD: 7D         LD      A,L             
-47AE: 48         LD      C,B             
-47AF: 1F         RRA                     
-47B0: 4D         LD      C,L             
-47B1: 86         ADD     A,(HL)          
-47B2: 48         LD      C,B             
-47B3: 41         LD      B,C             
-47B4: 4D         LD      C,L             
-47B5: 8F         ADC     A,A             
-47B6: 48         LD      C,B             
-47B7: 4D         LD      C,L             
-47B8: 4D         LD      C,L             
-47B9: A3         AND     E               
-47BA: 48         LD      C,B             
-47BB: 6B         LD      L,E             
-47BC: 4D         LD      C,L             
-47BD: B9         CP      C               
-47BE: 48         LD      C,B             
-47BF: 02         LD      (BC),A          
-47C0: 03         INC     BC              
-47C1: 01 02 03   LD      BC,$0302        
-47C4: 03         INC     BC              
-47C5: 01 08 04   LD      BC,$0408        
-47C8: 03         INC     BC              
-47C9: 01 09 00   LD      BC,$0009        
+477B: 00 00 00 00 ; 0 (not a room)     
+477F: 90 4C BF 47 ; 1 FORYER.
+4783: 96 4C CC 47 ; 2 LIVING ROOM.
+4789: A0 4C EC 47 ; 3 DINING ROOM.
+478B: AA 4C F5 47 ; 4 KITCHEN.
+478F: B2 4C 16 48 ; 5 BREAKFAST ROOM.
+4793: BE 4C 1F 48 ; 6 SERVANTS QUARTERS.
+4797: BE 4C 2F 48 ; 7 SERVANTS QUARTERS.
+479B: CC 4C 3D 48 ; 8 DEN.
+479F: D1 4C 46 48 ; 9 EAST END OF THE HALL.
+47A3: E1 4C 53 48 ; 10 WEST END OF THE HALL.
+47A7: F1 4C 74 48 ; 11 GREEN BEDROOM. THERE'S A PANEL ON THE WEST WALL.
+47AB: 13 4D 7D 48 ; 12 SECRET PASSAGE.
+47AF: 1F 4D 86 48 ; 13 BLUE BEDROOM. THERE'S A PANEL ON THE EAST WALL.
+47B3: 41 4D 8F 48 ; 14 MASTER BEDROOM.
+47B7: 4D 4D A3 48 ; 15 LIBRARY. THERE IS A HOLE IN THE CEILING.
+47BB: 6B 4D B9 48 ; 16 OUTSIDE OF THE HOUSE.
+     
+; Commands 1 FORYER
+47BF: 02 03           
+47C1: 01 02 03       
+47C4: 03         
+47C5: 01 08 04      
+47C8: 03          
+47C9: 01 09 00    
+ 
+; Commands 2 LIVING ROOM
 47CC: 02         LD      (BC),A          
 47CD: 03         INC     BC              
 47CE: 01 03 04   LD      BC,$0403        
@@ -755,12 +719,16 @@ PromptAndReadLine:
 47E7: 04         INC     B               
 47E8: 10 4F      DJNZ    $4839           
 47EA: 07         RLCA                    
-47EB: 00         NOP                     
+47EB: 00         NOP
+                     
+; Commands 3 DINING ROOM
 47EC: 03         INC     BC              
 47ED: 03         INC     BC              
 47EE: 01 04 04   LD      BC,$0404        
 47F1: 03         INC     BC              
-47F2: 01 02 00   LD      BC,$0002        
+47F2: 01 02 00   LD      BC,$0002      
+
+; Commands 4 KITCHEN  
 47F5: 01 03 01   LD      BC,$0103        
 47F8: 03         INC     BC              
 47F9: 04         INC     B               
@@ -781,12 +749,16 @@ PromptAndReadLine:
 4810: 73         LD      (HL),E          
 4811: 4E         LD      C,(HL)          
 4812: 05         DEC     B               
-4813: 01 05 00   LD      BC,$0005        
+4813: 01 05 00   LD      BC,$0005     
+
+; Commands 5 BREAKFAST ROOM   
 4816: 01 03 01   LD      BC,$0103        
 4819: 04         INC     B               
 481A: 02         LD      (BC),A          
 481B: 03         INC     BC              
 481C: 01 06 00   LD      BC,$0006        
+
+; Commands 6 SERVANTS QUARTERS
 481F: 01 03 01   LD      BC,$0103        
 4822: 07         RLCA                    
 4823: 04         INC     B               
@@ -797,7 +769,9 @@ PromptAndReadLine:
 482B: 04         INC     B               
 482C: AA         XOR     D               
 482D: 4E         LD      C,(HL)          
-482E: 00         NOP                     
+482E: 00         NOP
+
+; Commands 7 SERVANTS QUARTERS                     
 482F: 03         INC     BC              
 4830: 03         INC     BC              
 4831: 01 06 05   LD      BC,$0506        
@@ -807,17 +781,23 @@ PromptAndReadLine:
 4837: 08         EX      AF,AF'          
 4838: 03         INC     BC              
 4839: 04         INC     B               
-483A: FC 4E 00   CALL    M,$004E         
+483A: FC 4E 00   CALL    M,$004E      
+
+; Commands 8 DEN   
 483D: 01 03 01   LD      BC,$0103        
 4840: 01 02 03   LD      BC,$0302        
 4843: 01 04 00   LD      BC,$0004        
+
+; Commands 9 EAST END OF THE HALL
 4846: 01 03 01   LD      BC,$0103        
 4849: 0B         DEC     BC              
 484A: 02         LD      (BC),A          
 484B: 03         INC     BC              
 484C: 01 01 04   LD      BC,$0401        
 484F: 03         INC     BC              
-4850: 01 0A 00   LD      BC,$000A        
+4850: 01 0A 00   LD      BC,$000A
+
+; Commands 10 WEST END OF THE HALL        
 4853: 01 03 01   LD      BC,$0103        
 4856: 0D         DEC     C               
 4857: 02         LD      (BC),A          
@@ -840,22 +820,30 @@ PromptAndReadLine:
 486E: 01 0E 04   LD      BC,$040E        
 4871: B4         OR      H               
 4872: 4E         LD      C,(HL)          
-4873: 00         NOP                     
+4873: 00         NOP              
+
+; Commands 11 GREEN BEDROOM. THERE'S A PANEL ON THE WEST WALL       
 4874: 03         INC     BC              
 4875: 03         INC     BC              
 4876: 01 09 0E   LD      BC,$0E09        
 4879: 03         INC     BC              
 487A: 01 0C 00   LD      BC,$000C        
+
+; Commands 12 SECRET PASSAGE
 487D: 02         LD      (BC),A          
 487E: 03         INC     BC              
 487F: 01 0B 04   LD      BC,$040B        
 4882: 03         INC     BC              
 4883: 01 0D 00   LD      BC,$000D        
+
+; Commands 13 BLUE BEDROOM. THERE'S A PANEL ON THE EAST WALL
 4886: 03         INC     BC              
 4887: 03         INC     BC              
 4888: 01 0A 0E   LD      BC,$0E0A        
 488B: 03         INC     BC              
 488C: 01 0C 00   LD      BC,$000C        
+
+; Commands 14 MASTER BEDROOM
 488F: 01 03 01   LD      BC,$0103        
 4892: 0A         LD      A,(BC)          
 4893: 02         LD      (BC),A          
@@ -871,6 +859,8 @@ PromptAndReadLine:
 48A0: D0         RET     NC              
 48A1: 4F         LD      C,A             
 48A2: 00         NOP                     
+
+; LIBRARY. THERE IS A HOLE IN THE CEILING
 48A3: 04         INC     B               
 48A4: 03         INC     BC              
 48A5: 01 0E 07   LD      BC,$070E        
@@ -888,7 +878,10 @@ PromptAndReadLine:
 48B3: 0F         RRCA                    
 48B4: 04         INC     B               
 48B5: 10 0C      DJNZ    $48C3           
-48B7: 11 00 0A   LD      DE,$0A00        
+48B7: 11 00 
+
+; Commands 16 OUTSIDE OF THE HOUSE
+48B9: 0A   LD      DE,$0A00        
 48BA: 06 04      LD      B,$04           
 48BC: 23         INC     HL              
 48BD: 4E         LD      C,(HL)          
@@ -899,6 +892,8 @@ PromptAndReadLine:
 48C5: 3B         DEC     SP              
 48C6: 4E         LD      C,(HL)          
 48C7: 00         NOP                     
+
+
 48C8: 40         LD      B,B             
 48C9: 10 00      DJNZ    $48CB           
 48CB: 10 40      DJNZ    $490D           
@@ -983,19 +978,19 @@ PromptAndReadLine:
 4927: CD 2D 49   CALL    $492D           
 492A: C3 0B 44   JP      $440B      
      
-492D: 21 84 4C   LD      HL,$4C84        
-4930: CD AE 45   CALL    $45AE           
-4933: 3A E2 48   LD      A,($48E2)       
+492D: 21 84 4C   LD      HL,$4C84        ; "YOU ARE AT THE " message
+4930: CD AE 45   CALL    $45AE           ; ?? Print
+4933: 3A E2 48   LD      A,($48E2)       ; Room number
 4936: 21 7F 47   LD      HL,$477F        
 4939: CD C6 43   CALL    $43C6           
 493C: 7E         LD      A,(HL)          
 493D: 23         INC     HL              
 493E: 66         LD      H,(HL)          
 493F: 6F         LD      L,A             
-4940: CD AE 45   CALL    $45AE           
+4940: CD AE 45   CALL    $45AE           ; ?? Print
 4943: 06 00      LD      B,$00           
 4945: 04         INC     B               
-4946: 3A E2 48   LD      A,($48E2)       
+4946: 3A E2 48   LD      A,($48E2)       ; Room number
 4949: 5F         LD      E,A             
 494A: 78         LD      A,B             
 494B: FE 0E      CP      $0E             
