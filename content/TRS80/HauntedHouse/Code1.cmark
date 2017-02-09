@@ -705,40 +705,31 @@ PromptAndReadLine:
 47BB: 6B 4D B9 48 ; 16 OUTSIDE OF THE HOUSE.
      
 ; Commands 1 FORYER
-47BF: 02 03 01 02 ; E : GOTO 2
-47C3: 03 03 01 08 ; S : GOTO 8
-47C7: 04 03 01 09 ; W : GOTO 9
+47BF: 02 03 01 02 ; E : GoToRoom(2)
+47C3: 03 03 01 08 ; S : GoToRoom(8)
+47C7: 04 03 01 09 ; W : GoToRoom(9)
 47CB: 00    
  
 ; Commands 2 LIVING ROOM
-47CC: 02         LD      (BC),A          
-47CD: 03         INC     BC              
-47CE: 01 03 04   LD      BC,$0403        
-47D1: 03         INC     BC              
-47D2: 01 01 06   LD      BC,$0601        
-47D5: 0E 06      LD      C,$06           
-47D7: 0B         DEC     BC              
-47D8: 0A         LD      A,(BC)          
-47D9: 06 06      LD      B,$06           
-47DB: 04         INC     B               
-47DC: 02         LD      (BC),A          
-47DD: 01 0E 04   LD      BC,$040E        
-47E0: B6         OR      (HL)            
-47E1: 4F         LD      C,A             
-47E2: 0E FF      LD      C,$FF           
-47E4: 07         RLCA                    
-47E5: 10 06      DJNZ    $47ED           
-47E7: 04         INC     B               
-47E8: 10 4F      DJNZ    $4839           
-47EA: 07         RLCA                    
-47EB: 00         NOP
+47CC: 02 03 01 03 ; E   : GoToRoom(3)
+47D0: 04 03 01 01 ; W   : GoToRoom(1)
+47D4: 06 0E 06 0B ; GET : CommandReverseLogic                               
+47D8: 0A 06       ;         AssertRequestedObject(KNIFE)
+47DA: 06 04       ;         CommandReverseLogic            
+47DC: 02 01       ;           AssertObjectIsInPack(PAPER) 
+47DE: 0E          ;           GetNounToPack()
+47DF: 04 B6 4F    ;         PRINT("THE KNIFE FLOATS OUT OF YOUR REACH.")               
+47E2: 0E          ;       GetNounToPack()
+47E3: FF 07       ; ANY OTHER COMMAND                       
+47E5: 10 06       ;   AssertObjectIsInRoom(KNIFE)   
+47E7: 04 10 4F    ;   PRINT("SUDDENLY THE KNIFE WHOOSHES DOWN AND SLITS YOUR THROAT! YOU ARE DEAD.")           
+47EA: 07          ;   EndlessLoop()                  
+47EB: 00
                      
 ; Commands 3 DINING ROOM
-47EC: 03         INC     BC              
-47ED: 03         INC     BC              
-47EE: 01 04 04   LD      BC,$0404        
-47F1: 03         INC     BC              
-47F2: 01 02 00   LD      BC,$0002      
+47EC: 03 03 01 04 ; S : GOTO 4  
+47F0: 04 03 01 02 ; W : 
+47F4: 00   
 
 ; Commands 4 KITCHEN  
 47F5: 01 03 01   LD      BC,$0103        
@@ -923,19 +914,19 @@ PromptAndReadLine:
 48E2: 10
  
 ; Object Descriptions
-48E3: 35 4B ; Description for PAPER            
-48E5: 64 4B ; DOOR       
-48E7: 77 4B ; KEY
-48E9: 87 4B ; RING OF FIRE
-48EB: A5 4B ; LOCKED DOOR BARS THE WAY
-48ED: BD 4B ; KNIFE
-48EF: E5 4B ; ROPE
-48F1: CB 47 ; (a zero ... no description)            
-48F3: F8 4B ; CABINET
-48F5: 0F 4C ; BUCKET
-48F7: F8 4B ; CABINET (another one)
-48F9: 32 4C ; ROPE TO CEILING
-48FB: 5F 4C ; SCROLL
+48E3: 35 4B ;  1 Description for PAPER            
+48E5: 64 4B ;  2 DOOR       
+48E7: 77 4B ;  3 KEY
+48E9: 87 4B ;  4 RING OF FIRE
+48EB: A5 4B ;  5 LOCKED DOOR BARS THE WAY
+48ED: BD 4B ;  6 KNIFE
+48EF: E5 4B ;  7 ROPE
+48F1: CB 47 ;  8 (a zero ... no description)            
+48F3: F8 4B ;  9 CABINET
+48F5: 0F 4C ; 10 BUCKET
+48F7: F8 4B ; 11 CABINET (another one)
+48F9: 32 4C ; 12 ROPE TO CEILING
+48FB: 5F 4C ; 13 SCROLL
 
 ScriptCommands:
 48FD: 1F 49 ;  1 GoToRoom(room)
@@ -944,10 +935,10 @@ ScriptCommands:
 4903: AF 49 ;  4 PrintMessage(message)
 4905: 27 49 ;  5 PrintRoomDescription
 4907: 22 44 ;  6 CommandReverseLogic(...)
-490B: 48 4A ;  7 Stop()
+490B: 48 4A ;  7 EndlessLoop()
 490B: BC 49 ;  8 DropObject(object)
 490D: CB 49 ;  9 ?? Inventory
-490F: F5 49 ; 10 ?? AssertRequestedObject
+490F: F5 49 ; 10 AssertInputNounIs(object)
 4911: 03 4A ; 11 GetObjectFromRoom(object)
 4913: 2A 4A ; 12 Print "OK"
 4914: 33 4A ; 13 MoveObjectToRoom(object,room)     
@@ -1024,8 +1015,11 @@ ScriptCommand03:
 4982: CA 0B 44   JP      Z,$440B         
 4985: 78         LD      A,B             
 4986: C3 6B 49   JP      $496B           
+
+ScriptCommand16:
+; AssertObjectIsInRoom(object)
 4989: E1         POP     HL              
-498A: 3A E2 48   LD      A,($48E2)       
+498A: 3A E2 48   LD      A,($48E2)       ; Room number
 498D: 5F         LD      E,A             
 498E: 7E         LD      A,(HL)          
 498F: 23         INC     HL              
@@ -1035,15 +1029,16 @@ ScriptCommand03:
 4997: C3 1E 44   JP      $441E           
 
 ScriptCommand14:
+; GetNounToPack
+499A: 3A 7B 46   LD      A,($467B)       ; Input Noun
+499D: 1E FF      LD      E,$FF           ; Is object already ...
+499F: CD AB 43   CALL    $43AB           ; ... in backpack?
+49A2: C2 A8 49   JP      NZ,$49A8        ; No ... do the get
+49A5: C3 2A 4A   JP      $4A2A           ; Print OK and PASS
 ;
-499A: 3A 7B 46   LD      A,($467B)       
-499D: 1E FF      LD      E,$FF           
-499F: CD AB 43   CALL    $43AB           
-49A2: C2 A8 49   JP      NZ,$49A8        
-49A5: C3 2A 4A   JP      $4A2A           
-49A8: 3A 7B 46   LD      A,($467B)       
-49AB: 47         LD      B,A             
-49AC: C3 08 4A   JP      $4A08           
+49A8: 3A 7B 46   LD      A,($467B)       ; User input ...
+49AB: 47         LD      B,A             ; ... noun
+49AC: C3 08 4A   JP      $4A08           ; Get object from room
 
 ScriptCommand04:
 ; PrintMessage(message)
@@ -1063,6 +1058,7 @@ Command08:
 49BD: 46         LD      B,(HL)          
 49BE: 23         INC     HL              
 49BF: E5         PUSH    HL              
+;
 49C0: 3A E2 48   LD      A,($48E2)       ; Room number
 49C3: 5F         LD      E,A             
 49C4: 78         LD      A,B             
@@ -1112,6 +1108,7 @@ ScriptCommand11:
 4A05: 23         INC     HL              
 4A06: E5         PUSH    HL              
 4A07: 78         LD      A,B             
+;
 4A08: CD AB 43   CALL    $43AB           
 4A0B: 7E         LD      A,(HL)          
 4A0C: E6 40      AND     $40             
