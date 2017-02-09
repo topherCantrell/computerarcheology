@@ -728,29 +728,22 @@ PromptAndReadLine:
                      
 ; Commands 3 DINING ROOM
 47EC: 03 03 01 04 ; S : GOTO 4  
-47F0: 04 03 01 02 ; W : 
+47F0: 04 03 01 02 ; W : GOTO 2
 47F4: 00   
 
 ; Commands 4 KITCHEN  
-47F5: 01 03 01   LD      BC,$0103        
-47F8: 03         INC     BC              
-47F9: 04         INC     B               
-47FA: 03         INC     BC              
-47FB: 01 08 03   LD      BC,$0308        
-47FE: 17         RLA                     
-47FF: 06 13      LD      B,$13           
-4801: 10 08      DJNZ    $480B           
-4803: 06 0B      LD      B,$0B           
-4805: 02         LD      (BC),A          
-4806: 06 0D      LD      B,$0D           
+47F5: 01 03 01 03 ; N : GOTO 3             
+47F9: 04 03 01 08 ; W : GOTO 8
+47FD: 03 17 06 13 ; S : CommandReverseLogic           
+4801: 10 08       ;       AssertObjectIsInRoom(object8)
+4803: 06 0B       ;       CommandReverseLogic           
+4805: 02 06       ;         AssertObjectIsInPack(KNIFE)
+    : 0D      LD      B,$0D           
 4808: 08         EX      AF,AF'          
 4809: 00         NOP                     
-480A: 04         INC     B               
-480B: 4E         LD      C,(HL)          
-480C: 4E         LD      C,(HL)          
-480D: 01 05 04   LD      BC,$0405        
-4810: 73         LD      (HL),E          
-4811: 4E         LD      C,(HL)          
+480A: 04 4E 4E    ; PRINT("A SUIT OF ARMOUR HERE FLEES WHEN IT SPOTS YOUR KNIFE")          
+480D: 01 05 
+      04 73 4E    ; PRINT("YOUR ARE AT THE BREAKFAST ROOM. AN ANIMATED SUIT OF ARMOUR THROWS_YOU_OUT!")      
 4812: 05         DEC     B               
 4813: 01 05 00   LD      BC,$0005     
 
