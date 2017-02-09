@@ -101,17 +101,20 @@ ScriptCommand17:
 43A2: 21 0C 4F   LD      HL,$4F0C        
 43A5: CD AE 45   CALL    $45AE           
 43A8: C3 77 43   JP      $4377
-           
-43AB: 21 C8 48   LD      HL,$48C8        
-43AE: CD BC 43   CALL    $43BC           
-43B1: 7E         LD      A,(HL)          
-43B2: E6 80      AND     $80             
-43B4: 23         INC     HL              
-43B5: 7E         LD      A,(HL)          
-43B6: C2 AB 43   JP      NZ,$43AB        
-43B9: 2B         DEC     HL              
-43BA: BB         CP      E               
-43BB: C9         RET           
+         
+GetObjectInfo:  
+; Return ZF set if found in desired location
+; Return HL points to object location structure
+43AB: 21 C8 48   LD      HL,$48C8        ; Object location table
+43AE: CD BC 43   CALL    $43BC           ; A has object number ... two byte offset into table
+43B1: 7E         LD      A,(HL)          ; Get location
+43B2: E6 80      AND     $80             ; Is object contained by another
+43B4: 23         INC     HL              ; Parent object (if any)
+43B5: 7E         LD      A,(HL)          ; Get the parent object (if any ... does not affect ZF)
+43B6: C2 AB 43   JP      NZ,$43AB        ; Bit is set ... find where the parent is
+43B9: 2B         DEC     HL              ; HL back to start of object location
+43BA: BB         CP      E               ; Is this object in the desired location?
+43BB: C9         RET                     ; DOne
           
 ; HL = HL + (A-1)*2
 43BC: D5         PUSH    DE              ; Will be mangling this
@@ -162,50 +165,60 @@ ProcessRoomScript:
 43F2: C0         RET     NZ              ; Not zero if the command passed
 43F3: C3 D8 43   JP      $43D8           ; The command failed ... keep running the list of commands
 
-
-43F6: E5         PUSH    HL              
-43F7: 4E         LD      C,(HL)          
-43F8: 06 00      LD      B,$00           
-43FA: 09         ADD     HL,BC           
-43FB: E3         EX      (SP),HL         
-43FC: 23         INC     HL              
-43FD: 7E         LD      A,(HL)          
-43FE: 23         INC     HL              
-43FF: E5         PUSH    HL              
+RunScript:
+43F6: E5         PUSH    HL              ; Make room for the destination (and hold the current value)
+43F7: 4E         LD      C,(HL)          ; Get the length of the script (length INCLUDES the length byte)
+43F8: 06 00      LD      B,$00           ; MSB is 0
+43FA: 09         ADD     HL,BC           ; This is where the script ends
+43FB: E3         EX      (SP),HL         ; Put the end pointer on the stack (and restore the current value)
+43FC: 23         INC     HL              ; The actual script command
+;
+RunScriptCommand:
+43FD: 7E         LD      A,(HL)          ; Get the script command
+43FE: 23         INC     HL              ; Point to first parameter
+43FF: E5         PUSH    HL              ; Current script location
 4400: 21 FD 48   LD      HL,$48FD        ; Jump table of commands
 4403: CD BC 43   CALL    $43BC           ; Offset A-1 into commands table
-4406: 7E         LD      A,(HL)          
-4407: 23         INC     HL              
-4408: 66         LD      H,(HL)          
-4409: 6F         LD      L,A             
-440A: E9         JP      (HL)  
-;          
-440B: E1         POP     HL              
-440C: D1         POP     DE              
-440D: 7C         LD      A,H             
-440E: BA         CP      D               
-440F: C2 1A 44   JP      NZ,$441A        
-4412: 7D         LD      A,L             
-4413: BB         CP      E               
-4414: C2 1A 44   JP      NZ,$441A        
-4417: F6 01      OR      $01             
-4419: C9         RET                     
-441A: D5         PUSH    DE              
-441B: C3 FD 43   JP      $43FD           
-441E: E1         POP     HL              
-441F: E1         POP     HL              
-4420: AF         XOR     A               
-4421: C9         RET                     
+4406: 7E         LD      A,(HL)          ; Get LSB
+4407: 23         INC     HL              ; Point to MSB
+4408: 66         LD      H,(HL)          ; Get MSB
+4409: 6F         LD      L,A             ; LSB to HL
+440A: E9         JP      (HL)            ; Jump to the command
 
-; Call script and reverse logic
-4422: E1         POP     HL              
-4423: CD F6 43   CALL    $43F6           
-4426: E5         PUSH    HL              
-4427: CA 0B 44   JP      Z,$440B         
-442A: E1         POP     HL              
-442B: E1         POP     HL              
-442C: F6 01      OR      $01             
-442E: C9         RET
+ScriptCommandPASS:          
+440B: E1         POP     HL              ; Current script pointer
+440C: D1         POP     DE              ; Where we should end
+440D: 7C         LD      A,H             ; MSB ...
+440E: BA         CP      D               ; ... the same?
+440F: C2 1A 44   JP      NZ,$441A        ; No ... keep processing
+4412: 7D         LD      A,L             ; LSB ...
+4413: BB         CP      E               ; ... the same?
+4414: C2 1A 44   JP      NZ,$441A        ; No ... keep processing
+4417: F6 01      OR      $01             ; Clear Zero Flag (PASS)
+4419: C9         RET                     ; Return
+441A: D5         PUSH    DE              ; Put end back on the stack
+441B: C3 FD 43   JP      $43FD           ; Keep running commands
+
+ScriptCommandFAIL:
+441E: E1         POP     HL              ; Pop the current script pointer
+441F: E1         POP     HL              ; Pop the ending spot
+4420: AF         XOR     A               ; Set Zero Flag (FAIL)
+4421: C9         RET                     ; Done
+
+ScriptCommand06:
+; SubscriptAbortIfPass(...)
+; Run the subscript. If the subscript passes then abort the entire current script (no
+; matter how many levels deep) with a PASS. If the subscript fails then continue on
+; to the next command.
+4422: E1         POP     HL              ; Current script pointer
+4423: CD F6 43   CALL    $43F6           ; Run the list of commands
+4426: E5         PUSH    HL              ; Points passed the list just executed
+4427: CA 0B 44   JP      Z,$440B         ; Subscript failed ... but keep going in current script
+; The subscript failed. Bail out completely (with a PASS)
+442A: E1         POP     HL              ; Current script pointer
+442B: E1         POP     HL              ; End of script
+442C: F6 01      OR      $01             ; Clear Zero Flag (PASS)
+442E: C9         RET					 ; Done
                      
 442F: CD 05 46   CALL    $4605           
 4432: CD DA 44   CALL    $44DA           
@@ -713,9 +726,9 @@ PromptAndReadLine:
 ; Commands 2 LIVING ROOM
 47CC: 02 03 01 03 ; E   : GoToRoom(3)
 47D0: 04 03 01 01 ; W   : GoToRoom(1)
-47D4: 06 0E 06 0B ; GET : CommandReverseLogic                               
+47D4: 06 0E 06 0B ; GET : SubscriptAbortIfPass                               
 47D8: 0A 06       ;         AssertRequestedObject(KNIFE)
-47DA: 06 04       ;         CommandReverseLogic            
+47DA: 06 04       ;         SubscriptAbortIfPass            
 47DC: 02 01       ;           AssertObjectIsInPack(PAPER) 
 47DE: 0E          ;           GetNounToPack()
 47DF: 04 B6 4F    ;         PRINT("THE KNIFE FLOATS OUT OF YOUR REACH.")               
@@ -734,7 +747,7 @@ PromptAndReadLine:
 ; Commands 4 KITCHEN  
 47F5: 01 03 01 03 ; N : GOTO 3             
 47F9: 04 03 01 08 ; W : GOTO 8
-47FD: 03 17 06 13 ; S : CommandReverseLogic           
+47FD: 03 17 06 13 ; S : SubscriptAbortIfPass           
 4801: 10 08       ;       AssertObjectIsInRoom(object8)
 4803: 06 0B       ;       CommandReverseLogic           
 4805: 02 06       ;         AssertObjectIsInPack(KNIFE)
@@ -881,30 +894,30 @@ PromptAndReadLine:
       05 06 0A 02 04 3B 4E         LD      C,(HL)          
 48C7: 00         NOP                     
 
-
-48C8: 40         LD      B,B             
-48C9: 10 00      DJNZ    $48CB           
-48CB: 10 40      DJNZ    $490D           
-48CD: 00         NOP                     
-48CE: 00         NOP                     
-48CF: 0E 00      LD      C,$00           
-48D1: 0A         LD      A,(BC)          
-48D2: 40         LD      B,B             
-48D3: 02         LD      (BC),A          
-48D4: 40         LD      B,B             
-48D5: 0C         INC     C               
-48D6: 00         NOP                     
-48D7: 04         INC     B               
-48D8: 00         NOP                     
-48D9: 06 40      LD      B,$40           
-48DB: 04         INC     B               
-48DC: 00         NOP                     
-48DD: 07         RLCA                    
-48DE: 00         NOP                     
-48DF: 00         NOP                     
-48E0: 40         LD      B,B             
-48E1: 02         LD      (BC),A          
-48E2: 10
+; The format of the two bytes are:
+;
+; MC------ RRRRRRRR
+;
+; M - if set, the second byte is an object number (container). if clear, the second byte is a room number.
+; C - if set, object can be picked up.
+;
+; RRRRRRRR - Second byte is the object's location (containing object or room number).
+;
+48C8: 40 10 ;  1 PAPER (OUTSIDE OF THE HOUSE)
+48CA: 00 10 ;  2 DOOR (OUTSIDE OF THE HOUSE)
+48CC: 40 00 ;  3 KEY                        
+48CE: 00 0E ;  4 RING OF FIRE
+48D0: 00 0A ;  5 LOCKED DOOR            
+48D2: 40 02 ;  6 KNIFE              
+48D4: 40 0C ;  7 ROPE                   
+48D6: 00 04 ;  8 (invisible object)                   
+48D8: 00 06 ;  9 CABINET
+48DA: 40 04 ; 10 BUCKET                 
+48DC: 00 07 ; 11 CABINET (another one)                       
+48DE: 00 00 ; 12 ROPE TO CEILING                          
+48E0: 40 02 ; 13 SCROLL        
+ 
+48E2: 10 ; Current room number (OUTSIDE OF THE HOUSE)
  
 ; Object Descriptions
 48E3: 35 4B ;  1 Description for PAPER            
@@ -949,7 +962,7 @@ ScriptCommand01:
 4923: 78         LD      A,B             ; Room number to A
 4924: 32 E2 48   LD      ($48E2),A       ; Change rooms
 4927: CD 2D 49   CALL    $492D           ; Print the room description
-492A: C3 0B 44   JP      $440B           ;
+492A: C3 0B 44   JP      $440B           ; ScriptCommandPASS
      
 DescribeRoom:
 ; Describe the Room
@@ -986,40 +999,40 @@ DescribeRoom:
 
 ScriptCommand02:
 ; AssertObjectInPack(object)
-4967: E1         POP     HL              
-4968: 7E         LD      A,(HL)          
-4969: 23         INC     HL              
-496A: E5         PUSH    HL              
-496B: 1E FF      LD      E,$FF           
-496D: CD AB 43   CALL    $43AB           
-4970: CA 0B 44   JP      Z,$440B         
-4973: C3 1E 44   JP      $441E          
+4967: E1         POP     HL              ; Script pointer
+4968: 7E         LD      A,(HL)          ; Get object number
+4969: 23         INC     HL              ; New script ...
+496A: E5         PUSH    HL              ; ... pointer
+496B: 1E FF      LD      E,$FF           ; Backpack value
+496D: CD AB 43   CALL    $43AB           ; Get object info
+4970: CA 0B 44   JP      Z,$440B         ; ScriptCommandPASS
+4973: C3 1E 44   JP      $441E           ; ScriptCommandFAIL
 
 ScriptCommand03:
 ; AssertObjectIsInRoomOrPack(object) 
-4976: E1         POP     HL              
-4977: 46         LD      B,(HL)          
-4978: 23         INC     HL              
-4979: E5         PUSH    HL              
-497A: 3A E2 48   LD      A,($48E2)       
-497D: 5F         LD      E,A             
-497E: 78         LD      A,B             
-497F: CD AB 43   CALL    $43AB           
-4982: CA 0B 44   JP      Z,$440B         
-4985: 78         LD      A,B             
-4986: C3 6B 49   JP      $496B           
+4976: E1         POP     HL              ; Script pointer
+4977: 46         LD      B,(HL)          ; Get object number
+4978: 23         INC     HL              ; New script ...
+4979: E5         PUSH    HL              ; ... pointer
+497A: 3A E2 48   LD      A,($48E2)       ; Current room ...
+497D: 5F         LD      E,A             ; ... to E for find
+497E: 78         LD      A,B             ; Object number for find
+497F: CD AB 43   CALL    $43AB           ; Look for the object in current room
+4982: CA 0B 44   JP      Z,$440B         ; Found it ... ScriptCommandPASS
+4985: 78         LD      A,B             ; Object number again
+4986: C3 6B 49   JP      $496B           ; Continue checking the pack
 
 ScriptCommand16:
 ; AssertObjectIsInRoom(object)
-4989: E1         POP     HL              
-498A: 3A E2 48   LD      A,($48E2)       ; Room number
-498D: 5F         LD      E,A             
-498E: 7E         LD      A,(HL)          
-498F: 23         INC     HL              
-4990: E5         PUSH    HL              
-4991: CD AB 43   CALL    $43AB           
-4994: CA 0B 44   JP      Z,$440B         
-4997: C3 1E 44   JP      $441E           
+4989: E1         POP     HL              ; Script pointer
+498A: 3A E2 48   LD      A,($48E2)       ; Room number ...
+498D: 5F         LD      E,A             ; ... to E for find
+498E: 7E         LD      A,(HL)          ; Get object number
+498F: 23         INC     HL              ; New script ...
+4990: E5         PUSH    HL              ; ... pointer
+4991: CD AB 43   CALL    $43AB           ; Find the object
+4994: CA 0B 44   JP      Z,$440B         ; Found it in room ... ScriptCommandPASS
+4997: C3 1E 44   JP      $441E           ; ScriptCommandFAIL
 
 ScriptCommand14:
 ; GetNounToPack
@@ -1043,7 +1056,7 @@ ScriptCommand04:
 49B4: E5         PUSH    HL              ; New script pointer
 49B5: EB         EX      DE,HL           ; Message pointer to HL
 49B6: CD AE 45   CALL    $45AE           ; Unpack and print
-49B9: C3 0B 44   JP      $440B           ; Command PASS
+49B9: C3 0B 44   JP      $440B           ; ScriptCommandPASS
 
 Command08:
 ; Drop object from pack to current room
@@ -1064,7 +1077,7 @@ Command08:
 49CF: 04         INC     B               
 49D0: 78         LD      A,B             
 49D1: FE 0E      CP      $0E             
-49D3: D2 0B 44   JP      NC,$440B        
+49D3: D2 0B 44   JP      NC,$440B        ; ScriptCommandPASS
 49D6: CD AB 43   CALL    $43AB           
 49D9: C2 CD 49   JP      NZ,$49CD        
 49DC: 78         LD      A,B             
@@ -1091,24 +1104,24 @@ ScriptCommand10:
 49F8: E5         PUSH    HL              
 49F9: 3A 7B 46   LD      A,($467B)       
 49FC: B8         CP      B               
-49FD: C2 1E 44   JP      NZ,$441E        
-4A00: C3 0B 44   JP      $440B           
+49FD: C2 1E 44   JP      NZ,$441E        ; ScriptCommandFAIL
+4A00: C3 0B 44   JP      $440B           ; ScriptCommandPASS
 
 ScriptCommand11:
 ; GetObjectFromRoom(object)
-4A03: E1         POP     HL              
-4A04: 46         LD      B,(HL)          
-4A05: 23         INC     HL              
-4A06: E5         PUSH    HL              
-4A07: 78         LD      A,B             
+4A03: E1         POP     HL              ; Script pointer
+4A04: 46         LD      B,(HL)          ; Get object
+4A05: 23         INC     HL              ; New ...
+4A06: E5         PUSH    HL              ; ... script pointer
+4A07: 78         LD      A,B             ; Object number to A for the find
 ;
-4A08: CD AB 43   CALL    $43AB           
-4A0B: 7E         LD      A,(HL)          
-4A0C: E6 40      AND     $40             
-4A0E: C2 1A 4A   JP      NZ,$4A1A        
+4A08: CD AB 43   CALL    $43AB           ; Find the object
+4A0B: 7E         LD      A,(HL)          ; Get the flags
+4A0C: E6 40      AND     $40             ; Can the user pick it up?
+4A0E: C2 1A 4A   JP      NZ,$4A1A        ; Yes ... pass the command
 4A11: 21 85 4D   LD      HL,$4D85        ; "DON'T BE RIDICULOUS"
-4A14: CD AE 45   CALL    $45AE           
-4A17: C3 0B 44   JP      $440B           ; Command PASSES (was handled here)
+4A14: CD AE 45   CALL    $45AE           ; Print error message
+4A17: C3 0B 44   JP      $440B           ; ScriptCommandPASS (was handled here)
 ;
 4A1A: 78         LD      A,B             
 4A1B: 1E FF      LD      E,$FF           
@@ -1123,7 +1136,7 @@ ScriptCommand12:
 ; PrintOK
 4A2A: 21 7B 4D   LD      HL,$4D7B        ; "OK"
 4A2D: CD AE 45   CALL    $45AE           ; Print OK
-4A30: C3 0B 44   JP      $440B           ; Command Passes
+4A30: C3 0B 44   JP      $440B           ; ScriptCommandPASS
 
 ScriptCommand13:
 ; MoveObjectToRoom(object,room)
@@ -1140,7 +1153,7 @@ ScriptCommand13:
 4A42: 77         LD      (HL),A          
 4A43: 23         INC     HL              
 4A44: 73         LD      (HL),E  
-4A45: C3 0B 44   JP      $440B   
+4A45: C3 0B 44   JP      $440B       ; ScriptCommandPASS
         
 InfiniteLoop:
 4A48: C3 48 4A   JP      $4A48     

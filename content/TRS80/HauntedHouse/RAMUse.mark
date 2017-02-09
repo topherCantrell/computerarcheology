@@ -2,7 +2,9 @@
 %%title HauntedHouse RAM Use
 %%range 467E:4FFF
 
-||= Address  || Name                  || Description                                  ||
+||= Address  || Name                  || Description    
+|| 467B      || InputNoun             || The user input noun                          ||
 || 467E      || InputEntropy          || Incremented while waiting on user input      ||
+|| 48E2      || CurrentRoom           || Player's current room number
 
 $46B8 stack builds down from here
