@@ -139,11 +139,12 @@ GetObjectInfo:
 43CF: D1         POP     DE              ; Restore DE
 43D0: C9         RET                     ; Done
 
-43D1: CD AB 43   CALL    $43AB           
-43D4: 23         INC     HL              
-43D5: 73         LD      (HL),E          
-43D6: 2B         DEC     HL              
-43D7: C9         RET                     
+; Set object's location
+43D1: CD AB 43   CALL    $43AB           ; Find object
+43D4: 23         INC     HL              ; Point to location
+43D5: 73         LD      (HL),E          ; Change location
+43D6: 2B         DEC     HL              ; Back to start of object
+43D7: C9         RET                     ; Done
 
 ; Process the user input against the script for a room
 ProcessRoomScript:
@@ -940,9 +941,9 @@ ScriptCommands:
 4901: 76 49 ;  3 AssertObjectIsInRoomOrPack(object)
 4903: AF 49 ;  4 PrintMessage(message)
 4905: 27 49 ;  5 PrintRoomDescription
-4907: 22 44 ;  6 CommandReverseLogic(...)
+4907: 22 44 ;  6 RunScriptAbortOnPass(...)
 490B: 48 4A ;  7 EndlessLoop()
-490B: BC 49 ;  8 DropObject(object)
+490B: BC 49 ;  8 MoveObjectToCurrentRoom(object)
 490D: CB 49 ;  9 ?? Inventory
 490F: F5 49 ; 10 AssertInputNounIs(object)
 4911: 03 4A ; 11 GetObjectFromRoom(object)
@@ -1059,16 +1060,16 @@ ScriptCommand04:
 49B9: C3 0B 44   JP      $440B           ; ScriptCommandPASS
 
 Command08:
-; Drop object from pack to current room
-49BC: E1         POP     HL              
-49BD: 46         LD      B,(HL)          
-49BE: 23         INC     HL              
-49BF: E5         PUSH    HL              
+; MoveObjectToCurrentRoom(object)
+49BC: E1         POP     HL              ; Get script pointer
+49BD: 46         LD      B,(HL)          ; Get the object number
+49BE: 23         INC     HL              ; New script ...
+49BF: E5         PUSH    HL              ; ... pointer
 ;
-49C0: 3A E2 48   LD      A,($48E2)       ; Room number
-49C3: 5F         LD      E,A             
-49C4: 78         LD      A,B             
-49C5: CD D1 43   CALL    $43D1           
+49C0: 3A E2 48   LD      A,($48E2)       ; Current Room number
+49C3: 5F         LD      E,A             ; To E
+49C4: 78         LD      A,B             ; Object number to A
+49C5: CD D1 43   CALL    $43D1           ; Move object
 49C8: C3 2A 4A   JP      $4A2A           ; Print OK and PASS
 
 ; ?? Print inventory
