@@ -20,6 +20,7 @@
 ; Script command 17 jumps here to load second floor
 ;
 ScriptCommand17:
+; LoadSecondFloorFromTape()
 42F5: 31 FE 4F   LD      SP,$4FFE        ; Reset sack at top of RAM
 42F8: 21 4A 43   LD      HL,$434A        ; "READY CASSETTE[CR]"
 42FB: CD D0 45   CALL    $45D0           ; Print message
@@ -78,8 +79,9 @@ ScriptCommand17:
 
 436F: 3E 10      LD      A,$10           ; Starting room is ...
 4371: 32 E2 48   LD      ($48E2),A       ; 16 (OUTIDE OF HOUSE)
-4374: CD 2D 49   CALL    $492D           
-4377: 97         SUB     A,A               
+4374: CD 2D 49   CALL    $492D           ; Print the room description
+;
+4377: 97         SUB     A,A             ; A=0
 4378: 32 7B 46   LD      ($467B),A       ; ?? Clear noun (object within reach)
 437B: 32 7C 46   LD      ($467C),A       ; ?? Clear verb (throw, north, rub, etc)
 437E: 32 7D 46   LD      ($467D),A       ; ?? Grammar type (verb, verb+nounInReach, verb+nounInPack)
@@ -94,13 +96,13 @@ ScriptCommand17:
 4391: 66         LD      H,(HL)          ; ... to ...
 4392: 6F         LD      L,A             ; ... HL
 4393: CD D8 43   CALL    $43D8           ; Process the room script
-4396: C2 A8 43   JP      NZ,$43A8        
-4399: 21 F2 4A   LD      HL,$4AF2        
-439C: CD D8 43   CALL    $43D8           
-439F: C2 A8 43   JP      NZ,$43A8        
-43A2: 21 0C 4F   LD      HL,$4F0C        
-43A5: CD AE 45   CALL    $45AE           
-43A8: C3 77 43   JP      $4377
+4396: C2 A8 43   JP      NZ,$43A8        ; ZF clear ... script was successful. Move on.
+4399: 21 F2 4A   LD      HL,$4AF2        ; General script
+439C: CD D8 43   CALL    $43D8           ; Process the script
+439F: C2 A8 43   JP      NZ,$43A8        ; ZF clear ... script was successful. Move on.
+43A2: 21 0C 4F   LD      HL,$4F0C        ; Simply "NO"
+43A5: CD AE 45   CALL    $45AE           ; Print "NO"
+43A8: C3 77 43   JP      $4377           ; Back to get user input
          
 GetObjectInfo:  
 ; Return ZF set if found in desired location
@@ -207,15 +209,14 @@ ScriptCommandFAIL:
 4421: C9         RET                     ; Done
 
 ScriptCommand06:
-; SubscriptAbortIfPass(...)
-; Run the subscript. If the subscript passes then abort the entire current script (no
-; matter how many levels deep) with a PASS. If the subscript fails then continue on
-; to the next command.
+; RunScriptAbortOnPass(...)
+; Run the subscript. If the subscript passes then abort the current script with a PASS. 
+; If the subscript fails then continue on to the next command.
 4422: E1         POP     HL              ; Current script pointer
 4423: CD F6 43   CALL    $43F6           ; Run the list of commands
 4426: E5         PUSH    HL              ; Points passed the list just executed
 4427: CA 0B 44   JP      Z,$440B         ; Subscript failed ... but keep going in current script
-; The subscript failed. Bail out completely (with a PASS)
+; The subscript failed. Bail out (with a PASS)
 442A: E1         POP     HL              ; Current script pointer
 442B: E1         POP     HL              ; End of script
 442C: F6 01      OR      $01             ; Clear Zero Flag (PASS)
@@ -944,15 +945,15 @@ ScriptCommands:
 4907: 22 44 ;  6 RunScriptAbortOnPass(...)
 490B: 48 4A ;  7 EndlessLoop()
 490B: BC 49 ;  8 MoveObjectToCurrentRoom(object)
-490D: CB 49 ;  9 ?? Inventory
+490D: CB 49 ;  9 PrintInventory()
 490F: F5 49 ; 10 AssertInputNounIs(object)
 4911: 03 4A ; 11 GetObjectFromRoom(object)
-4913: 2A 4A ; 12 Print "OK"
+4913: 2A 4A ; 12 PrintOK
 4914: 33 4A ; 13 MoveObjectToRoom(object,room)     
-4917: 9A 49 ; 14
-4919: 23 4A ; 15
-491B: 89 49 ; 16
-491D: F5 42 ; 17 Load second floor from tape
+4917: 9A 49 ; 14 GetNounToPack()
+4919: 23 4A ; 15 DropNounToRoom()
+491B: 89 49 ; 16 AssertObjectIsInRoom(object)
+491D: F5 42 ; 17 LoadSecondFloorFromTape()
 
 ScriptCommand01:
 ; GoToRoom(room)
@@ -962,41 +963,44 @@ ScriptCommand01:
 4922: E5         PUSH    HL              ; New pointer into script
 4923: 78         LD      A,B             ; Room number to A
 4924: 32 E2 48   LD      ($48E2),A       ; Change rooms
+
+ScriptComman05:
+; PrintRoomDescription()
 4927: CD 2D 49   CALL    $492D           ; Print the room description
 492A: C3 0B 44   JP      $440B           ; ScriptCommandPASS
      
 DescribeRoom:
-; Describe the Room
+; DescribeCurrentRoom()
 492D: 21 84 4C   LD      HL,$4C84        ; "YOU ARE AT THE " message
-4930: CD AE 45   CALL    $45AE           ; ?? Print
+4930: CD AE 45   CALL    $45AE           ; Print the message
 4933: 3A E2 48   LD      A,($48E2)       ; Room number
-4936: 21 7F 47   LD      HL,$477F        
-4939: CD C6 43   CALL    $43C6           
-493C: 7E         LD      A,(HL)          
-493D: 23         INC     HL              
-493E: 66         LD      H,(HL)          
-493F: 6F         LD      L,A             
-4940: CD AE 45   CALL    $45AE           ; ?? Print
-4943: 06 00      LD      B,$00           
-4945: 04         INC     B               
+4936: 21 7F 47   LD      HL,$477F        ; Room descriptions
+4939: CD C6 43   CALL    $43C6           ; 4-byte offset
+493C: 7E         LD      A,(HL)          ; Get ...
+493D: 23         INC     HL              ; ... LSB ...
+493E: 66         LD      H,(HL)          ; ... and ...
+493F: 6F         LD      L,A             ; ... MSB
+4940: CD AE 45   CALL    $45AE           ; Print the description
+4943: 06 00      LD      B,$00           ; B runs the object numbers
+4945: 04         INC     B               ; Next object (1 on first pass)
 4946: 3A E2 48   LD      A,($48E2)       ; Room number
-4949: 5F         LD      E,A             
-494A: 78         LD      A,B             
-494B: FE 0E      CP      $0E             
-494D: D0         RET     NC              
-494E: CD AB 43   CALL    $43AB           
-4951: C2 45 49   JP      NZ,$4945        
-4954: 78         LD      A,B             
-4955: 21 E3 48   LD      HL,$48E3        
-4958: CD BC 43   CALL    $43BC           
-495B: 7E         LD      A,(HL)          
-495C: 23         INC     HL              
-495D: 66         LD      H,(HL)          
-495E: 6F         LD      L,A             
-495F: C5         PUSH    BC              
-4960: CD AE 45   CALL    $45AE           
-4963: C1         POP     BC              
-4964: C3 45 49   JP      $4945           
+4949: 5F         LD      E,A             ; To E for find
+494A: 78         LD      A,B             ; Object number for find
+494B: FE 0E      CP      $0E             ; All objects (1 through 13) checked?
+494D: D0         RET     NC              ; Yes ... done here
+494E: CD AB 43   CALL    $43AB           ; Get object if in this room
+4951: C2 45 49   JP      NZ,$4945        ; Object is not in room ... skip it
+4954: 78         LD      A,B             ; Object number
+4955: 21 E3 48   LD      HL,$48E3        ; Object descriptions
+4958: CD BC 43   CALL    $43BC           ; 2-byte offset
+495B: 7E         LD      A,(HL)          ; Get ...
+495C: 23         INC     HL              ; ... LSB ...
+495D: 66         LD      H,(HL)          ; ... and ...
+495E: 6F         LD      L,A             ; ... MSB
+495F: C5         PUSH    BC              ; Hang on to object number
+4960: CD AE 45   CALL    $45AE           ; Print description
+4963: C1         POP     BC              ; Restore object number
+4964: C3 45 49   JP      $4945           ; Keep checking objects
 
 ScriptCommand02:
 ; AssertObjectInPack(object)
@@ -1036,7 +1040,7 @@ ScriptCommand16:
 4997: C3 1E 44   JP      $441E           ; ScriptCommandFAIL
 
 ScriptCommand14:
-; GetNounToPack
+; GetNounToPack()
 499A: 3A 7B 46   LD      A,($467B)       ; Input Noun
 499D: 1E FF      LD      E,$FF           ; Is object already ...
 499F: CD AB 43   CALL    $43AB           ; ... in backpack?
@@ -1059,7 +1063,7 @@ ScriptCommand04:
 49B6: CD AE 45   CALL    $45AE           ; Unpack and print
 49B9: C3 0B 44   JP      $440B           ; ScriptCommandPASS
 
-Command08:
+ScriptCommand08:
 ; MoveObjectToCurrentRoom(object)
 49BC: E1         POP     HL              ; Get script pointer
 49BD: 46         LD      B,(HL)          ; Get the object number
@@ -1072,41 +1076,42 @@ Command08:
 49C5: CD D1 43   CALL    $43D1           ; Move object
 49C8: C3 2A 4A   JP      $4A2A           ; Print OK and PASS
 
-; ?? Print inventory
-49CB: 06 00      LD      B,$00           
-49CD: 1E FF      LD      E,$FF           
-49CF: 04         INC     B               
-49D0: 78         LD      A,B             
-49D1: FE 0E      CP      $0E             
-49D3: D2 0B 44   JP      NC,$440B        ; ScriptCommandPASS
-49D6: CD AB 43   CALL    $43AB           
-49D9: C2 CD 49   JP      NZ,$49CD        
-49DC: 78         LD      A,B             
-49DD: 21 E3 48   LD      HL,$48E3        
-49E0: CD BC 43   CALL    $43BC           
-49E3: 7E         LD      A,(HL)          
-49E4: 23         INC     HL              
-49E5: 66         LD      H,(HL)          
-49E6: 6F         LD      L,A             
-49E7: 7E         LD      A,(HL)          
-49E8: 23         INC     HL              
-49E9: A7         AND     A               
-49EA: C2 E7 49   JP      NZ,$49E7        
-49ED: C5         PUSH    BC              
-49EE: CD AE 45   CALL    $45AE           
-49F1: C1         POP     BC              
-49F2: C3 CD 49   JP      $49CD           
+ScriptCommand09:
+; PrintInventory()
+49CB: 06 00      LD      B,$00           ; B runs the object numbers
+49CD: 1E FF      LD      E,$FF           ; Location = backpack
+49CF: 04         INC     B               ; Next object (1 on first pass)
+49D0: 78         LD      A,B             ; Have we ...
+49D1: FE 0E      CP      $0E             ; ... done all objects (1 - 13) ?
+49D3: D2 0B 44   JP      NC,$440B        ; Yes ... ScriptCommandPASS
+49D6: CD AB 43   CALL    $43AB           ; Find the object
+49D9: C2 CD 49   JP      NZ,$49CD        ; Not in the pack ... skip it
+49DC: 78         LD      A,B             ; Object number
+49DD: 21 E3 48   LD      HL,$48E3        ; Object descriptions
+49E0: CD BC 43   CALL    $43BC           ; 2-byte offset
+49E3: 7E         LD      A,(HL)          ; Get ...
+49E4: 23         INC     HL              ; ... LSB ...
+49E5: 66         LD      H,(HL)          ; ... and ...
+49E6: 6F         LD      L,A             ; ... MSB
+49E7: 7E         LD      A,(HL)          ; Skip ...
+49E8: 23         INC     HL              ; ... to ...
+49E9: A7         AND     A               ; ... short ...
+49EA: C2 E7 49   JP      NZ,$49E7        ; ... description
+49ED: C5         PUSH    BC              ; Hold object number
+49EE: CD AE 45   CALL    $45AE           ; Print the description
+49F1: C1         POP     BC              ; Restore object number
+49F2: C3 CD 49   JP      $49CD           ; Keep going
 
 ScriptCommand10:
-; ?? Assert object matches user input
-49F5: E1         POP     HL              
-49F6: 46         LD      B,(HL)          
-49F7: 23         INC     HL              
-49F8: E5         PUSH    HL              
-49F9: 3A 7B 46   LD      A,($467B)       
-49FC: B8         CP      B               
-49FD: C2 1E 44   JP      NZ,$441E        ; ScriptCommandFAIL
-4A00: C3 0B 44   JP      $440B           ; ScriptCommandPASS
+; AssertInputNounIs(object)
+49F5: E1         POP     HL              ; Script pointer
+49F6: 46         LD      B,(HL)          ; Get object number
+49F7: 23         INC     HL              ; New ...
+49F8: E5         PUSH    HL              ; ... script pointer
+49F9: 3A 7B 46   LD      A,($467B)       ; Input noun
+49FC: B8         CP      B               ; Are they the same
+49FD: C2 1E 44   JP      NZ,$441E        ; No ... ScriptCommandFAIL
+4A00: C3 0B 44   JP      $440B           ; Yes ... ScriptCommandPASS
 
 ScriptCommand11:
 ; GetObjectFromRoom(object)
@@ -1119,19 +1124,21 @@ ScriptCommand11:
 4A08: CD AB 43   CALL    $43AB           ; Find the object
 4A0B: 7E         LD      A,(HL)          ; Get the flags
 4A0C: E6 40      AND     $40             ; Can the user pick it up?
-4A0E: C2 1A 4A   JP      NZ,$4A1A        ; Yes ... pass the command
+4A0E: C2 1A 4A   JP      NZ,$4A1A        ; Yes ... move to pack
 4A11: 21 85 4D   LD      HL,$4D85        ; "DON'T BE RIDICULOUS"
 4A14: CD AE 45   CALL    $45AE           ; Print error message
 4A17: C3 0B 44   JP      $440B           ; ScriptCommandPASS (was handled here)
 ;
-4A1A: 78         LD      A,B             
-4A1B: 1E FF      LD      E,$FF           
-4A1D: CD D1 43   CALL    $43D1           
-4A20: C3 2A 4A   JP      $4A2A           
+4A1A: 78         LD      A,B             ; Object number
+4A1B: 1E FF      LD      E,$FF           ; Location is backpack
+4A1D: CD D1 43   CALL    $43D1           ; Move the object
+4A20: C3 2A 4A   JP      $4A2A           ; Print OK and PASS
 
-4A23: 3A 7B 46   LD      A,($467B)       
-4A26: 47         LD      B,A             
-4A27: C3 C0 49   JP      $49C0           
+ScriptCommand15:
+; DropNounToCurrentRoom()
+4A23: 3A 7B 46   LD      A,($467B)       ; User input
+4A26: 47         LD      B,A             ; To B
+4A27: C3 C0 49   JP      $49C0           ; Drop the object in the current room
 
 ScriptCommand12:
 ; PrintOK
@@ -1141,23 +1148,24 @@ ScriptCommand12:
 
 ScriptCommand13:
 ; MoveObjectToRoom(object,room)
-4A33: E1         POP     HL              
-4A34: 7E         LD      A,(HL)          
-4A35: 23         INC     HL              
-4A36: 5E         LD      E,(HL)          
-4A37: 23         INC     HL              
-4A38: E5         PUSH    HL              
-4A39: 21 C8 48   LD      HL,$48C8        
-4A3C: CD BC 43   CALL    $43BC           
-4A3F: 7E         LD      A,(HL)          
-4A40: E6 7F      AND     $7F             
-4A42: 77         LD      (HL),A          
-4A43: 23         INC     HL              
-4A44: 73         LD      (HL),E  
-4A45: C3 0B 44   JP      $440B       ; ScriptCommandPASS
+4A33: E1         POP     HL              ; Script pointer
+4A34: 7E         LD      A,(HL)          ; Get object
+4A35: 23         INC     HL              ; Next
+4A36: 5E         LD      E,(HL)          ; Get room number
+4A37: 23         INC     HL              ; New ...
+4A38: E5         PUSH    HL              ; ... object pointer
+4A39: 21 C8 48   LD      HL,$48C8        ; Object descriptor
+4A3C: CD BC 43   CALL    $43BC           ; 2 byte offset
+4A3F: 7E         LD      A,(HL)          ; Clear the ...
+4A40: E6 7F      AND     $7F             ; ... contained-by ...
+4A42: 77         LD      (HL),A          ; ... flag
+4A43: 23         INC     HL              ; Next
+4A44: 73         LD      (HL),E          ; Set the room number
+4A45: C3 0B 44   JP      $440B           ; ScriptCommandPASS
         
-InfiniteLoop:
-4A48: C3 48 4A   JP      $4A48     
+ScriptCommand07:
+; EndlessLoop()
+4A48: C3 48 4A   JP      $4A48           ; Infinite loop
             
 CommandTable: ;=            
 ; aa_bbb_ccc
