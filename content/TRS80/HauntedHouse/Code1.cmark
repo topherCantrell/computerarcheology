@@ -587,7 +587,7 @@ PromptAndReadLine:
 46B1: 26 44      LD      H,$44           
 46B3: FE 48      CP      $48             
 46B5: F2 43 93   JP      P,$9343         
-46B8: 00         NOP                  ; Stack points here at beginning???
+46B8: 00         NOP                  ; Stack points here at beginning
 
 
    
@@ -720,26 +720,27 @@ PromptAndReadLine:
 47BB: 6B 4D B9 48 ; 16 OUTSIDE OF THE HOUSE.
      
 ; Commands 1 FORYER
-47BF: 02 03 01 02 ; E : GoToRoom(2)
-47C3: 03 03 01 08 ; S : GoToRoom(8)
-47C7: 04 03 01 09 ; W : GoToRoom(9)
-47CB: 00    
+                  ; "Room_1"   : {
+47BF: 02 03 01 02 ;     "E"    : ["GoToRoom(2)"],
+47C3: 03 03 01 08 ;     "S"    : ["GoToRoom(8)"],
+47C7: 04 03 01 09 ;     "W"    : ["GoToRoom(9)"]
+47CB: 00          ; },
  
 ; Commands 2 LIVING ROOM
-47CC: 02 03 01 03 ; E   : GoToRoom(3)
-47D0: 04 03 01 01 ; W   : GoToRoom(1)
-47D4: 06 0E 06 0B ; GET : SubscriptAbortIfPass                               
-47D8: 0A 06       ;         AssertRequestedObject(KNIFE)
-47DA: 06 04       ;         SubscriptAbortIfPass            
-47DC: 02 01       ;           AssertObjectIsInPack(PAPER) 
-47DE: 0E          ;           GetNounToPack()
-47DF: 04 B6 4F    ;         PRINT("THE KNIFE FLOATS OUT OF YOUR REACH.")               
-47E2: 0E          ;       GetNounToPack()
-47E3: FF 07       ; ANY OTHER COMMAND                       
-47E5: 10 06       ;   AssertObjectIsInRoom(KNIFE)   
-47E7: 04 10 4F    ;   PRINT("SUDDENLY THE KNIFE WHOOSHES DOWN AND SLITS YOUR THROAT! YOU ARE DEAD.")           
-47EA: 07          ;   EndlessLoop()                  
-47EB: 00
+                  ; "Room_2"   : {
+47CC: 02 03 01 03 ;     "E"    : ["GoToRoom(3)"],
+47D0: 04 03 01 01 ;     "W"    : ["GoToRoom(1)"],
+47D4: 06 0E 06 0B ;     "GET"  : ["SubscriptAbortIfPass", [                               
+47D8: 0A 06       ;                   "AssertNounIs(KNIFE)",
+47DA: 06 04       ;                   "SubscriptAbortIfPass", [           
+47DC: 02 01       ;                       "AssertIsInPack(PAPER)"
+47DE: 0E          ;                       "MoveNounToPack()"],
+47DF: 04 B6 4F    ;                   "Print(THE_KNIFE_FLOATS_OUT_OF_YOUR_REACH.[CR])"]              
+47E2: 0E          ;               "MoveNounToPack()"],
+47E3: FF 07 10 06 ;     "*"    : ["AssertIsInRoom(KNIFE)",                       
+47E7: 04 10 4F    ;               "Print(SUDDENLY_THE_KNIFE_WHOOSHES_DOWN_AND_SLITS_YOUR_THROAT!__YOU_AREDEAD.[CR])",           
+47EA: 07          ;               "EndlessLoop()"]                  
+47EB: 00          ; },
                      
 ; Commands 3 DINING ROOM
 47EC: 03 03 01 04 ; S : GOTO 4  
@@ -871,7 +872,7 @@ PromptAndReadLine:
 48A1: 4F         LD      C,A             
 48A2: 00         NOP                     
 
-; LIBRARY. THERE IS A HOLE IN THE CEILING
+; Commands 15 LIBRARY. THERE IS A HOLE IN THE CEILING
 48A3: 04         INC     B               
 48A4: 03         INC     BC              
 48A5: 01 0E 07   LD      BC,$070E        
@@ -1169,6 +1170,11 @@ ScriptCommand07:
             
 CommandTable: ;=            
 ; aa_bbb_ccc
+; aa is grammar type:
+;   00 This word is a noun
+;   01 This verb requires a noun in the pack (POUR WATER)
+;   10 This verb requires a noun in the room or pack (OPEN DOOR)
+;   11 This verb requires nothing more
 ; bbb = number of data bytes        FIRST FLOOR
 4A4B: 0B 4B 45 59 03         ; 00_001_011  KEY   03            
 4A50: 0C 50 41 50 45 01      ; 00_001_100  PAPE  01 

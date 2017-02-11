@@ -1,0 +1,31 @@
+
+E : GoToRoom(2)
+47C3: 03 03 01 08 ; S : GoToRoom(8)
+47C7: 04 03 01 09 ; W : GoToRoom(9)
+
+{
+
+  "Room_1" : {
+    "E"    : ["GoToRoom(2)"],
+    "S"    : ["GoToRoom(8)"],
+    "W"    : ["GoToRoom(9)"]
+  },
+
+  "Room_2" : { 
+    "E"    : ["GoToRoom(3)"],
+    "W"    : ["GoToRoom(1)"],
+    "GET"  : ["SubscriptAbortIfPass", [
+                 "AssertNounIs(KNIFE)",
+                 "SubscriptAbortIfPass", [
+                     "AssertIsInPack(PAPER)"
+                     "MoveNounToPack()"],
+                 "Print(THE_KNIFE_FLOATS_OUT_OF_YOUR_REACH.[CR])"]
+             "MoveNounToPack()"],
+     "*"   : ["AssertIsInRoom(KNIFE)",
+             "Print(SUDDENLY_THE_KNIFE_WHOOSHES_DOWN_AND_SLITS_YOUR_THROAT!__YOU_AREDEAD.[CR])",
+             "EndlessLoop()"]
+  }
+             
+  
+
+}
