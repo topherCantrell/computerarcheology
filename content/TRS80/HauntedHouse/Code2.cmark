@@ -8,14 +8,15 @@
 ;;* [/TRS80/Hardware.html Hardware Info]
 
 435E: 31 B9 46   LD      SP,$46B9        
-4361: 3E 0E      LD      A,$0E           
-4363: CD 33 00   CALL    $0033           
-4366: 3E 01      LD      A,$01           
-4368: 32 2F 49   LD      ($492F),A       
-436B: 21 69 4E   LD      HL,$4E69        
-436E: CD B3 45   CALL    $45B3           
-4371: CD 7C 49   CALL    $497C           
-4374: 97         SUB     A               
+4361: 3E 0E      LD      A,$0E           ; ??? Clear ...
+4363: CD 33 00   CALL    $0033           ; ... the screen
+4366: 3E 01      LD      A,$01           ; Starting room is ...
+4368: 32 2F 49   LD      ($492F),A       ; ... 1 (???)
+436B: 21 69 4E   LD      HL,$4E69        ; YOU_DROP_EVERYTHING_YOU_HAD_TO_CLIMB_THE_ROPE.__YOU_REACH_THE___SECOND_FLOOR.[CR]
+436E: CD B3 45   CALL    $45B3           ; Print message
+4371: CD 7C 49   CALL    $497C           ; Print room description
+;
+4374: 97         SUB     A,A             
 4375: 32 80 46   LD      ($4680),A       
 4378: 32 81 46   LD      ($4681),A       
 437B: 32 82 46   LD      ($4682),A       
@@ -38,6 +39,7 @@
 43A2: CD B3 45   CALL    $45B3           
 43A5: CD 6D 49   CALL    $496D           
 43A8: C3 74 43   JP      $4374           
+
 43AB: 21 15 49   LD      HL,$4915        
 43AE: CD BC 43   CALL    $43BC           
 43B1: 7E         LD      A,(HL)          
@@ -580,7 +582,9 @@
 474E: 32 7E 47   LD      ($477E),A       
 4751: C2 CF 46   JP      NZ,$46CF        
 4754: E1         POP     HL              
-4755: C9         RET                     
+4755: C9         RET      
+
+               
 4756: 3F         CCF                     
 4757: 21 32 20   LD      HL,$2032        
 475A: 22 27 3C   LD      ($3C27),HL      
@@ -617,27 +621,24 @@
 477D: 2E 00      LD      L,$00           
 477F: 00         NOP                     
 4780: 00         NOP                     
-4781: 00         NOP                     
-4782: E6 4B      AND     $4B             
-4784: A2         AND     D               
-4785: 47         LD      B,A             
-4786: DA 4B B5   JP      C,$B54B         
-4789: 47         LD      B,A             
-478A: DA 4B EF   JP      C,$EF4B         
-478D: 47         LD      B,A             
-478E: DA 4B 29   JP      C,$294B         
-4791: 48         LD      C,B             
-4792: DA 4B 67   JP      C,$674B         
-4795: 48         LD      C,B             
-4796: DA 4B A0   JP      C,$A04B         
-4799: 48         LD      C,B             
-479A: DA 4B B9   JP      C,$B94B         
-479D: 48         LD      C,B             
-479E: DA 4B CE   JP      C,$CE4B         
-47A1: 48         LD      C,B             
-47A2: 02         LD      (BC),A          
-47A3: 03         INC     BC              
-47A4: 01 02 03   LD      BC,$0302        
+4781: 00         NOP
+
+RoomInformation:
+; First two: description
+; Second two: room script                     
+4782: E6 4B A2 47          
+4786: DA 4B B5 47          
+478A: DA 4B EF 47          
+478E: DA 4B 29 48         
+4792: DA 4B 67 48              
+4796: DA 4B A0 48            
+479A: DA 4B B9 48               
+479E: DA 4B CE 48     
+    
+; Commands 1 ????               
+47A2: 02        
+47A3: 03         
+47A4: 01 02 03     
 47A7: 03         INC     BC              
 47A8: 01 03 04   LD      BC,$0403        
 47AB: 03         INC     BC              
@@ -995,6 +996,7 @@
 4973: 32 2F 49   LD      ($492F),A       
 4976: CD 7C 49   CALL    $497C           
 4979: C3 0B 44   JP      $440B           
+
 497C: 21 CF 4B   LD      HL,$4BCF        
 497F: CD B3 45   CALL    $45B3           
 4982: 3A 2F 49   LD      A,($492F)       
@@ -1145,12 +1147,22 @@
 4A91: 77         LD      (HL),A          
 4A92: 23         INC     HL              
 4A93: 73         LD      (HL),E          
-4A94: C3 0B 44   JP      $440B           
+4A94: C3 0B 44   JP      $440B      
+
+ScriptCommand07:
+; EndlessLoop()     
 4A97: C3 97 4A   JP      $4A97  
 
-CommandTable: ;= 
+CommandTable: ;=            
 ; aa_bbb_ccc
-;   bbb = number of data bytes                    SECOND FLOOR
+; aa is grammar type:
+;   00 This word is a noun
+;   01 This verb requires a noun in the pack (POUR WATER)
+;   10 This verb requires a noun in the room or pack (OPEN DOOR)
+;   11 This verb requires nothing more
+; bbb = number of data bytes       
+; ccc = word text size
+;                              SECOND FLOOR WORDS
 4A9A: 0C 53 49 47 4E 0A                    ; 00_001_100  SIGN  0A
 4AA0: 0C 53 57 4F 52 09                    ; 00_001_100  SWOR  09
 4AA6: 3C 47 48 4F 53 01 02 03 04 05 06 07  ; 00_111_100  GHOS  01 02 03 04 05 06 07
@@ -1175,55 +1187,57 @@ CommandTable: ;=
 4B0D: 4C 52 45 41 44 09                    ; 01_001_100  READ  09
 4B13: CC 50 4C 55 47 0A                    ; 11_001_100  PLUG  0A
 4B19: 00                                   ; end of list
-                    
-4B1A: 01 02 05   LD      BC,$0502        
-4B1D: 02         LD      (BC),A          
-4B1E: 02         LD      (BC),A          
-4B1F: 05         DEC     B               
-4B20: 03         INC     BC              
-4B21: 02         LD      (BC),A          
-4B22: 05         DEC     B               
-4B23: 04         INC     B               
-4B24: 02         LD      (BC),A          
-4B25: 05         DEC     B               
-4B26: 06 02      LD      B,$02           
-4B28: 0E 07      LD      C,$07           
-4B2A: 02         LD      (BC),A          
-4B2B: 0F         RRCA                    
-4B2C: 0D         DEC     C               
-4B2D: 02         LD      (BC),A          
-4B2E: 05         DEC     B               
-4B2F: 0B         DEC     BC              
-4B30: 02         LD      (BC),A          
-4B31: 07         RLCA                    
-4B32: 0C         INC     C               
-4B33: 02         LD      (BC),A          
-4B34: 09         ADD     HL,BC           
-4B35: 09         ADD     HL,BC           
-4B36: 09         ADD     HL,BC           
-4B37: 0A         LD      A,(BC)          
-4B38: 0A         LD      A,(BC)          
-4B39: 0D         DEC     C               
-4B3A: 0D         DEC     C               
-4B3B: 08         EX      AF,AF'          
-4B3C: 04         INC     B               
-4B3D: D9         EXX                     
-4B3E: 4C         LD      C,H             
-4B3F: 0A         LD      A,(BC)          
-4B40: 04         INC     B               
-4B41: 04         INC     B               
-4B42: A5         AND     L               
-4B43: 4C         LD      C,H             
-4B44: 11 04 04   LD      DE,$0404        
-4B47: 91         SUB     C               
-4B48: 4C         LD      C,H             
-4B49: 09         ADD     HL,BC           
-4B4A: 06 0A      LD      B,$0A           
-4B4C: 09         ADD     HL,BC           
-4B4D: 04         INC     B               
-4B4E: D5         PUSH    DE              
-4B4F: 4D         LD      C,L             
-4B50: 00         NOP
+
+; General script (when input does not match the current room's script)
+;                     
+4B1A: 01 02 05         
+4B1D: 02              
+4B1E: 02           
+4B1F: 05                   
+4B20: 03                    
+4B21: 02                
+4B22: 05                 
+4B23: 04                   
+4B24: 02            
+4B25: 05                      
+4B26: 06 02              
+4B28: 0E 07            
+4B2A: 02                
+4B2B: 0F                      
+4B2C: 0D                      
+4B2D: 02               
+4B2E: 05                   
+4B2F: 0B                 
+4B30: 02               
+4B31: 07                          
+4B32: 0C                      
+4B33: 02              
+4B34: 09                   
+4B35: 09                 
+4B36: 09                
+4B37: 0A                 
+4B38: 0A                 
+4B39: 0D                    
+4B3A: 0D                      
+4B3B: 08                
+4B3C: 04                   
+4B3D: D9                        
+4B3E: 4C                  
+4B3F: 0A               
+4B40: 04                     
+4B41: 04                  
+4B42: A5                  
+4B43: 4C                    
+4B44: 11 04 04        
+4B47: 91                     
+4B48: 4C                     
+4B49: 09                 
+4B4A: 06 0A                
+4B4C: 09                 
+4B4D: 04                     
+4B4E: D5                      
+4B4F: 4D                   
+4B50: 00       
                      
 ; Compressed text
 

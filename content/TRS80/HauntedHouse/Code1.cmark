@@ -34,7 +34,7 @@ ScriptCommand17:
 ;
 4310: 06 06      LD      B,$06           ; Six bytes 
 4312: 7E         LD      A,(HL)          ; ??? This is never used. Killing time?
-4313: 23         INC     HL              ; Bump HL (???This may be where the asterisk is going to print in model 1 routine)
+4313: 23         INC     HL              ; Bump HL (??? This may be where the asterisk is going to print in model 1 routine)
 4314: 10 FC      DJNZ    $4312           ; Keep going to add 6 to HL
 4316: CD 2C 02   CALL    $022C           ; (Model I only) Blinks right asterisk during tape load operations
 4319: CD 35 02   CALL    $0235           ; Get one byte from the tape
@@ -70,7 +70,7 @@ ScriptCommand17:
 
 ; First Floor starts here (the second floor loads here too)
 
-435E: 31 B8 46   LD      SP,$46B8        ; ??? This is within the code area ???
+435E: 31 B8 46   LD      SP,$46B8        ; Small stack space
 4361: 3E 0E      LD      A,$0E           ; ??? Maybe ...
 4363: CD 33 00   CALL    $0033           ; ... ??? clear the screen?
 4366: 21 83 46   LD      HL,$4683        ; "HAUNTED HOUSE!!"
@@ -78,14 +78,14 @@ ScriptCommand17:
 436C: CD EE 45   CALL    $45EE           ; Wait for the user to press a key
 
 436F: 3E 10      LD      A,$10           ; Starting room is ...
-4371: 32 E2 48   LD      ($48E2),A       ; 16 (OUTIDE OF HOUSE)
+4371: 32 E2 48   LD      ($48E2),A       ; ... 16 (OUTIDE OF HOUSE)
 4374: CD 2D 49   CALL    $492D           ; Print the room description
 ;
 4377: 97         SUB     A,A             ; A=0
-4378: 32 7B 46   LD      ($467B),A       ; ?? Clear noun (object within reach)
-437B: 32 7C 46   LD      ($467C),A       ; ?? Clear verb (throw, north, rub, etc)
-437E: 32 7D 46   LD      ($467D),A       ; ?? Grammar type (verb, verb+nounInReach, verb+nounInPack)
-4381: CD 2F 44   CALL    $442F           ; ?? Get user input and parse
+4378: 32 7B 46   LD      ($467B),A       ; Clear noun (object within reach)
+437B: 32 7C 46   LD      ($467C),A       ; Clear verb (throw, north, rub, etc)
+437E: 32 7D 46   LD      ($467D),A       ; Grammar type (verb, verb+nounInReach, verb+nounInPack)
+4381: CD 2F 44   CALL    $442F           ; Get user input line and parse
 4384: 3A E2 48   LD      A,($48E2)       ; Room number
 4387: 21 7F 47   LD      HL,$477F        ; Room descriptors
 438A: CD C6 43   CALL    $43C6           ; Get 4 bytes for room
@@ -169,7 +169,7 @@ ProcessRoomScript:
 43F3: C3 D8 43   JP      $43D8           ; The command failed ... keep running the list of commands
 
 RunScript:
-43F6: E5         PUSH    HL              ; Make room for the destination (and hold the current value)
+43F6: E5         PUSH    HL              ; Make room for the end point (and hold the current value)
 43F7: 4E         LD      C,(HL)          ; Get the length of the script (length INCLUDES the length byte)
 43F8: 06 00      LD      B,$00           ; MSB is 0
 43FA: 09         ADD     HL,BC           ; This is where the script ends
@@ -209,9 +209,15 @@ ScriptCommandFAIL:
 4421: C9         RET                     ; Done
 
 ScriptCommand06:
-; RunScriptAbortOnPass(...)
-; Run the subscript. If the subscript passes then abort the current script with a PASS. 
-; If the subscript fails then continue on to the next command.
+; SubscriptAbortAllIfPass(...)
+; Run the subscript. If the subscript passes then abort the current script and
+; all parent scripts. If the subscript fails then continue on to the next command.
+;
+; How does this abort all current scripts, you ask?
+; 43F6 only has two callers: the primary caller and the code here at 4423. The RET
+; at 442E returns either to that primary caller or to 4426. The code at 4426 keeps
+; the zero flag clear which continues to call return for subscripts eventually
+; getting back to the primary caller.
 4422: E1         POP     HL              ; Current script pointer
 4423: CD F6 43   CALL    $43F6           ; Run the list of commands
 4426: E5         PUSH    HL              ; Points passed the list just executed
@@ -222,195 +228,221 @@ ScriptCommand06:
 442C: F6 01      OR      $01             ; Clear Zero Flag (PASS)
 442E: C9         RET					 ; Done
                      
-442F: CD 05 46   CALL    $4605           
-4432: CD DA 44   CALL    $44DA           
-4435: 2A AC 45   LD      HL,($45AC)      
-4438: 3A AA 45   LD      A,($45AA)       
-443B: 47         LD      B,A             
-443C: 3A 7D 46   LD      A,($467D)       
-443F: FE 03      CP      $03             
-4441: CA 2F 44   JP      Z,$442F         
-4444: 3A 7B 46   LD      A,($467B)       
-4447: A7         AND     A               
-4448: C2 6A 44   JP      NZ,$446A        
-444B: 3A 7C 46   LD      A,($467C)       
-444E: A7         AND     A               
-444F: C2 5B 44   JP      NZ,$445B        
-4452: 21 A7 4F   LD      HL,$4FA7        
-4455: CD AE 45   CALL    $45AE           
-4458: C3 2F 44   JP      $442F           
-445B: 3A 7D 46   LD      A,($467D)       
-445E: FE C0      CP      $C0             
-4460: C8         RET     Z               
-4461: 21 7F 4D   LD      HL,$4D7F        
-4464: CD AE 45   CALL    $45AE           
-4467: C3 2F 44   JP      $442F           
-446A: 22 AC 45   LD      ($45AC),HL      
-446D: 3A D9 44   LD      A,($44D9)       
-4470: A7         AND     A               
-4471: C2 C6 44   JP      NZ,$44C6        
-4474: 7E         LD      A,(HL)          
-4475: 23         INC     HL              
-4476: 22 AC 45   LD      ($45AC),HL      
-4479: 1E FF      LD      E,$FF           
-447B: C5         PUSH    BC              
-447C: CD AB 43   CALL    $43AB           
-447F: C1         POP     BC              
-4480: CA BE 44   JP      Z,$44BE         
-4483: 3A 7D 46   LD      A,($467D)       
-4486: FE 40      CP      $40             
-4488: CA 9C 44   JP      Z,$449C         
-448B: 2A AC 45   LD      HL,($45AC)      
-448E: 2B         DEC     HL              
-448F: 3A E2 48   LD      A,($48E2)       
-4492: 5F         LD      E,A             
-4493: 7E         LD      A,(HL)          
-4494: C5         PUSH    BC              
-4495: CD AB 43   CALL    $43AB           
-4498: C1         POP     BC              
-4499: CA BE 44   JP      Z,$44BE         
-449C: 2A AC 45   LD      HL,($45AC)      
-449F: 05         DEC     B               
-44A0: C2 74 44   JP      NZ,$4474        
-44A3: 3A 7D 46   LD      A,($467D)       
-44A6: FE 40      CP      $40             
-44A8: C2 B1 44   JP      NZ,$44B1        
-44AB: 21 72 4F   LD      HL,$4F72        
-44AE: C3 B4 44   JP      $44B4           
-44B1: 21 84 4F   LD      HL,$4F84        
-44B4: CD AE 45   CALL    $45AE           
-44B7: 97         SUB     A,A               
-44B8: 32 7B 46   LD      ($467B),A       
-44BB: C3 2F 44   JP      $442F           
-44BE: 2A AC 45   LD      HL,($45AC)      
-44C1: 2B         DEC     HL              
-44C2: 7E         LD      A,(HL)          
-44C3: 32 7B 46   LD      ($467B),A       
-44C6: 3A 7C 46   LD      A,($467C)       
-44C9: A7         AND     A               
-44CA: C0         RET     NZ              
-44CB: 21 94 4F   LD      HL,$4F94        
-44CE: CD AE 45   CALL    $45AE           
-44D1: 3E 01      LD      A,$01           
-44D3: 32 D9 44   LD      ($44D9),A       
-44D6: C3 2F 44   JP      $442F           
-44D9: 00         NOP                     
-44DA: 21 5A 46   LD      HL,$465A        
-44DD: 97         SUB     A,A               
-44DE: 32 AB 45   LD      ($45AB),A       
-44E1: 32 7D 46   LD      ($467D),A       
+ParseUserInput:
+442F: CD 05 46   CALL    $4605           ; Prompt and read line
+4432: CD DA 44   CALL    $44DA           ; Parse the input string
+4435: 2A AC 45   LD      HL,($45AC)      ; Pointer to noun data
+4438: 3A AA 45   LD      A,($45AA)       ; Number of bytes ...
+443B: 47         LD      B,A             ; ... in noun data
+443C: 3A 7D 46   LD      A,($467D)       ; Grammar type
+443F: FE 03      CP      $03             ; Value 3 means nothing in buffer
+4441: CA 2F 44   JP      Z,$442F         ; Ignore blank lines
+4444: 3A 7B 46   LD      A,($467B)       ; Noun number
+4447: A7         AND     A               ; Was there a noun on the input line?
+4448: C2 6A 44   JP      NZ,$446A        ; Yes ... check for verb-noun things
+444B: 3A 7C 46   LD      A,($467C)       ; Verb
+444E: A7         AND     A               ; Did we have a verb?
+444F: C2 5B 44   JP      NZ,$445B        ; Yes ... check for verb-only things
+;
+; Something was typed, but no noun or verb were decoded
+4452: 21 A7 4F   LD      HL,$4FA7        ; I_DON'T_UNDERSTAND.[CR]
+4455: CD AE 45   CALL    $45AE           ; Print the error
+4458: C3 2F 44   JP      $442F           ; Back to the top
+;
+445B: 3A 7D 46   LD      A,($467D)       ; Grammar type
+445E: FE C0      CP      $C0             ; Is the verb nounless?
+4460: C8         RET     Z               ; Yes ... done (we don't have a noun)
+;
+; We have a verb that expected a noun, but no noun was given
+4461: 21 7F 4D   LD      HL,$4D7F        ; WHAT?[CR]
+4464: CD AE 45   CALL    $45AE           ; Print error (verb expected noun)
+4467: C3 2F 44   JP      $442F           ; Back to top of input loop
+;
+; We have a verb and a noun
+446A: 22 AC 45   LD      ($45AC),HL      ; Pointer into noun data
+446D: 3A D9 44   LD      A,($44D9)       ; Did we have ...
+4470: A7         AND     A               ; ... lone noun last parse?
+4471: C2 C6 44   JP      NZ,$44C6        ; Yes ... use that now
+;
+4474: 7E         LD      A,(HL)          ; Next word-for-object value
+4475: 23         INC     HL              ; Bump ...
+4476: 22 AC 45   LD      ($45AC),HL      ; ... word-data pointer
+4479: 1E FF      LD      E,$FF           ; Look in backpack first
+447B: C5         PUSH    BC              ; Hold
+447C: CD AB 43   CALL    $43AB           ; Find object
+447F: C1         POP     BC              ; Restore
+4480: CA BE 44   JP      Z,$44BE         ; Found object. Use it.
+4483: 3A 7D 46   LD      A,($467D)       ; Grammar type
+4486: FE 40      CP      $40             ; 01 ... noun must be in pack
+4488: CA 9C 44   JP      Z,$449C         ; Validate noun
+448B: 2A AC 45   LD      HL,($45AC)      ; Pointer to noun data
+448E: 2B         DEC     HL              ;
+448F: 3A E2 48   LD      A,($48E2)       ; Current room
+4492: 5F         LD      E,A             ; For find
+4493: 7E         LD      A,(HL)          ; Back up data pointer
+4494: C5         PUSH    BC              ; Hold
+4495: CD AB 43   CALL    $43AB           ; Do find
+4498: C1         POP     BC              ; Restore
+4499: CA BE 44   JP      Z,$44BE         ; Object is in room. Use it.
+;
+449C: 2A AC 45   LD      HL,($45AC)      ; Noun data
+449F: 05         DEC     B               ; All tried?
+44A0: C2 74 44   JP      NZ,$4474        ; No ... try next word
+44A3: 3A 7D 46   LD      A,($467D)       ; Grammar type
+44A6: FE 40      CP      $40             ; 01 ... noun must be in pack
+44A8: C2 B1 44   JP      NZ,$44B1        ; Could be pack or room
+44AB: 21 72 4F   LD      HL,$4F72        ; YOU_AREN'T_CARRYING_IT.[CR]
+44AE: C3 B4 44   JP      $44B4           ; Print and out
+44B1: 21 84 4F   LD      HL,$4F84        ; THERE'S_NOT_ONE_HERE.[CR]
+44B4: CD AE 45   CALL    $45AE           ; Print error
+44B7: 97         SUB     A,A             ; This noun doesn't ...
+44B8: 32 7B 46   LD      ($467B),A       ; ... count
+44BB: C3 2F 44   JP      $442F           ; Back to top of input loop
+;
+44BE: 2A AC 45   LD      HL,($45AC)      ; Noun data
+44C1: 2B         DEC     HL              ; Back to word pointer
+44C2: 7E         LD      A,(HL)          ; Get the for-object value
+44C3: 32 7B 46   LD      ($467B),A       ; Hold the value
+;
+44C6: 3A 7C 46   LD      A,($467C)       ; Verb
+44C9: A7         AND     A               ; Was there a verb?
+44CA: C0         RET     NZ              ; Yes ... got what we need
+44CB: 21 94 4F   LD      HL,$4F94        ; WHAT_SHOULD_I_DO_WITH_IT?[CR]
+44CE: CD AE 45   CALL    $45AE           ; Print message
+44D1: 3E 01      LD      A,$01           ; Flag that we have a lone ...
+44D3: 32 D9 44   LD      ($44D9),A       ; ... noun
+44D6: C3 2F 44   JP      $442F           ; Back to the top of input loop
+           
+44D9: 00 ; 1 if there was a lone object last input             
+
+; Parse the input line
+44DA: 21 5A 46   LD      HL,$465A        ; Start of the input
+44DD: 97         SUB     A,A             ; Make a zero
+44DE: 32 AB 45   LD      ($45AB),A       ; Nothing in buffer to start with
+44E1: 32 7D 46   LD      ($467D),A       ; Grammar type
+;
 44E4: 11 4B 4A   LD      DE,$4A4B        ; Command table
-44E7: EB         EX      DE,HL           
-44E8: 22 7F 46   LD      ($467F),HL      
-44EB: EB         EX      DE,HL           
+44E7: EB         EX      DE,HL           ; Next word to HL 
+44E8: 22 7F 46   LD      ($467F),HL      ; Pointer to next word to check
+44EB: EB         EX      DE,HL           ; Back to DE
+; Skip spaces before a word
 44EC: 7E         LD      A,(HL)          ; Next character from input buffer
 44ED: FE 20      CP      $20             ; A space?
 44EF: C2 F6 44   JP      NZ,$44F6        ; No ... decode this input
 44F2: 23         INC     HL              ; It is a space, skip over it
 44F3: C3 EC 44   JP      $44EC           ; And keep trying
-44F6: A7         AND     A               ; This was a ...
-44F7: CA 81 45   JP      Z,$4581         ; ... blank line
-44FA: 3E 01      LD      A,$01           
-44FC: 32 AB 45   LD      ($45AB),A       
+;
+44F6: A7         AND     A               ; Reached the end ...
+44F7: CA 81 45   JP      Z,$4581         ; ... of the line
+44FA: 3E 01      LD      A,$01           ; Flag that something ...
+44FC: 32 AB 45   LD      ($45AB),A       ; ... is in the buffer
 44FF: E5         PUSH    HL              ; Hold start of word
 4500: 1A         LD      A,(DE)          ; Have we reached ...
 4501: A7         AND     A               ; ... the end of the command table?
 4502: CA 8C 45   JP      Z,$458C         ; Yes ... give error
-4505: 32 82 46   LD      ($4682),A       
-4508: E6 07      AND     $07             
-450A: 4F         LD      C,A             
-450B: 32 81 46   LD      ($4681),A       
-450E: 3A 82 46   LD      A,($4682)       
-4511: E6 38      AND     $38             
-4513: 0F         RRCA                    
-4514: 0F         RRCA                    
-4515: 0F         RRCA                    
-4516: 47         LD      B,A             
-4517: EB         EX      DE,HL           
-4518: 22 7F 46   LD      ($467F),HL      
-451B: EB         EX      DE,HL           
-451C: 13         INC     DE              
-451D: 1A         LD      A,(DE)          
-451E: BE         CP      (HL)            
-451F: C2 73 45   JP      NZ,$4573        
-4522: 23         INC     HL              
-4523: 13         INC     DE              
-4524: 0D         DEC     C               
-4525: C2 1D 45   JP      NZ,$451D        
-4528: 3A 81 46   LD      A,($4681)       
-452B: FE 04      CP      $04             
-452D: CA 3A 45   JP      Z,$453A         
-4530: 7E         LD      A,(HL)          
-4531: FE 20      CP      $20             
-4533: CA 48 45   JP      Z,$4548         
-4536: A7         AND     A               
-4537: C2 78 45   JP      NZ,$4578        
-453A: 7E         LD      A,(HL)          
-453B: FE 20      CP      $20             
-453D: CA 48 45   JP      Z,$4548         
-4540: A7         AND     A               
-4541: CA 48 45   JP      Z,$4548         
-4544: 23         INC     HL              
-4545: C3 3A 45   JP      $453A           
-4548: 3A 82 46   LD      A,($4682)       
-454B: E6 C0      AND     $C0             
-454D: CA 5A 45   JP      Z,$455A         
-4550: 32 7D 46   LD      ($467D),A       
-4553: 1A         LD      A,(DE)          
-4554: 32 7C 46   LD      ($467C),A       
-4557: C3 6B 45   JP      $456B           
-455A: 1A         LD      A,(DE)          
-455B: 32 7B 46   LD      ($467B),A       
-455E: EB         EX      DE,HL           
-455F: 22 AC 45   LD      ($45AC),HL      
-4562: EB         EX      DE,HL           
-4563: 78         LD      A,B             
-4564: 32 AA 45   LD      ($45AA),A       
-4567: 97         SUB     A,A               
-4568: 32 D9 44   LD      ($44D9),A       
-456B: 7E         LD      A,(HL)          
-456C: FE 20      CP      $20             
-456E: D1         POP     DE              
-456F: CA E4 44   JP      Z,$44E4         
-4572: C9         RET                     
-4573: 13         INC     DE              
-4574: 0D         DEC     C               
-4575: C2 73 45   JP      NZ,$4573        
-4578: 13         INC     DE              
-4579: 05         DEC     B               
-457A: C2 78 45   JP      NZ,$4578        
-457D: E1         POP     HL              
-457E: C3 EC 44   JP      $44EC          
+4505: 32 82 46   LD      ($4682),A       ; Store word data
+4508: E6 07      AND     $07             ; Size of text ...
+450A: 4F         LD      C,A             ; ... to C
+450B: 32 81 46   LD      ($4681),A       ; Text count
+450E: 3A 82 46   LD      A,($4682)       ; Word data again
+4511: E6 38      AND     $38             ; Mask 0_111_000
+4513: 0F         RRCA                    ; Get ...
+4514: 0F         RRCA                    ; ... number of ...
+4515: 0F         RRCA                    ; ... data bytes
+4516: 47         LD      B,A             ; To B
+4517: EB         EX      DE,HL           ; Update ...
+4518: 22 7F 46   LD      ($467F),HL      ; ... command table ...
+451B: EB         EX      DE,HL           ; ... pointer
+451C: 13         INC     DE              ; Next in word text
+451D: 1A         LD      A,(DE)          ; Character from table
+451E: BE         CP      (HL)            ; Same as user input?
+451F: C2 73 45   JP      NZ,$4573        ; No ... not this word
+4522: 23         INC     HL              ; Next character ...
+4523: 13         INC     DE              ; ... to try
+4524: 0D         DEC     C               ; Tried all in the table?
+4525: C2 1D 45   JP      NZ,$451D        ; No ... keep looking
+4528: 3A 81 46   LD      A,($4681)       ; Text count
+452B: FE 04      CP      $04             ; Four (or more)?
+452D: CA 3A 45   JP      Z,$453A         ; Yes ... we need to ignore extras
+4530: 7E         LD      A,(HL)          ; Next in buffer
+4531: FE 20      CP      $20             ; Word ended correctly in the buffer?
+4533: CA 48 45   JP      Z,$4548         ; Yes ... this is our word
+4536: A7         AND     A               ; Word ended correctly at end of buffer?
+4537: C2 78 45   JP      NZ,$4578        ; No ... not our word
+;Skip to end of word
+453A: 7E         LD      A,(HL)          ; Next character in buffer
+453B: FE 20      CP      $20             ; A space?
+453D: CA 48 45   JP      Z,$4548         ; Yes ... word matched
+4540: A7         AND     A               ; End of buffer?
+4541: CA 48 45   JP      Z,$4548         ; Yes ... word matched
+4544: 23         INC     HL              ; Next in input buffer
+4545: C3 3A 45   JP      $453A           ; Skip to end of the word
+; Word matched
+4548: 3A 82 46   LD      A,($4682)       ; Word data
+454B: E6 C0      AND     $C0             ; Top two bits ... word type
+454D: CA 5A 45   JP      Z,$455A         ; Word is a noun
+4550: 32 7D 46   LD      ($467D),A       ; Store grammar type
+4553: 1A         LD      A,(DE)          ; Get word number
+4554: 32 7C 46   LD      ($467C),A       ; Store verb
+4557: C3 6B 45   JP      $456B           ; Check for more to parse
+;Word is a noun
+455A: 1A         LD      A,(DE)          ; Noun number from the word's data
+455B: 32 7B 46   LD      ($467B),A       ; Hold word number
+455E: EB         EX      DE,HL           ; Store ...
+455F: 22 AC 45   LD      ($45AC),HL      ; ... pointer to noun data
+4562: EB         EX      DE,HL           ; Restore pointers
+4563: 78         LD      A,B             ; Number of data bytes
+4564: 32 AA 45   LD      ($45AA),A       ; Hold this for later
+4567: 97         SUB     A,A             ; No longer remember ...
+4568: 32 D9 44   LD      ($44D9),A       ; ... a past lone object
 
-; Blank line entered
-4581: 3A AB 45   LD      A,($45AB)       
-4584: A7         AND     A               
-4585: C0         RET     NZ              
-4586: 3E 03      LD      A,$03           
-4588: 32 7D 46   LD      ($467D),A       
-458B: C9         RET                     
+456B: 7E         LD      A,(HL)          ; Next from buffer
+456C: FE 20      CP      $20             ; Is it a space
+456E: D1         POP     DE              ; Restore command table pointer
+456F: CA E4 44   JP      Z,$44E4         ; Yes ... more input. Parse next word.
+4572: C9         RET                     ; That's all the input we need
+; Word doesn't match
+4573: 13         INC     DE              ; Skip ...
+4574: 0D         DEC     C               ; ... to end of word text ...
+4575: C2 73 45   JP      NZ,$4573        ; ... in table
+4578: 13         INC     DE              ; Skip to end ...
+4579: 05         DEC     B               ; ... of data ...
+457A: C2 78 45   JP      NZ,$4578        ; ... bytes
+457D: E1         POP     HL              ; Back to start of word
+457E: C3 EC 44   JP      $44EC           ; Try next word in command table
 
-; Reached the end of the command list
-458C: E1         POP     HL              
-458D: 97         SUB     A,A               
-458E: 32 7C 46   LD      ($467C),A       
-4591: 32 7B 46   LD      ($467B),A       
-4594: 7E         LD      A,(HL)          
-4595: FE 20      CP      $20             
-4597: C2 9E 45   JP      NZ,$459E        
-459A: 23         INC     HL              
-459B: C3 94 45   JP      $4594           
-459E: 7E         LD      A,(HL)          
-459F: A7         AND     A               
-45A0: C8         RET     Z               
-45A1: FE 20      CP      $20             
-45A3: CA E4 44   JP      Z,$44E4         
-45A6: 23         INC     HL              
-45A7: C3 9E 45   JP      $459E           
-45AA: 00         NOP                     
-45AB: 00         NOP                     
-45AC: 00         NOP                     
-45AD: 00         NOP                  
+; End of input
+4581: 3A AB 45   LD      A,($45AB)       ; Something in ...
+4584: A7         AND     A               ; ... the buffer?
+4585: C0         RET     NZ              ; Yes ... done
+4586: 3E 03      LD      A,$03           ; Grammar type 3 means ...
+4588: 32 7D 46   LD      ($467D),A       ; ... nothing in buffer
+458B: C9         RET                     ; Done
+
+; Skip leading space in front of token and then skip to next token.
+; If there is another token go back and decode. Otherwise return.
+458C: E1         POP     HL              ; Start of word
+458D: 97         SUB     A,A             ; Clear ...  
+458E: 32 7C 46   LD      ($467C),A       ; ... verb ...
+4591: 32 7B 46   LD      ($467B),A       ; ... and noun
+4594: 7E         LD      A,(HL)          ; Next character
+4595: FE 20      CP      $20             ; A space?
+4597: C2 9E 45   JP      NZ,$459E        ; No ... out of loop
+459A: 23         INC     HL              ; Next in input
+459B: C3 94 45   JP      $4594           ; Skip spaces
+;
+459E: 7E         LD      A,(HL)          ; Next in buffer          
+459F: A7         AND     A               ; End of buffer?
+45A0: C8         RET     Z               ; Yes ... out
+45A1: FE 20      CP      $20             ; Space?
+45A3: CA E4 44   JP      Z,$44E4         ; Restart at top of command list
+45A6: 23         INC     HL              ; Next input
+45A7: C3 9E 45   JP      $459E           ; Keep looking
+
+; RAM used in parsing input
+45AA: 00       ; Number of data bytes in noun       
+45AB: 00       ; 0 if decode is empty, 1 if something was decoded               
+45AC: 00 00    ; Pointer to noun data            
 
 PrintPacked:
 ; Unpack a message (or multiple packed message) and print.
@@ -482,177 +514,139 @@ PromptAndReadLine:
 4605: 06 3A      LD      B,$3A           ; ":" for prompt
 4607: 78         LD      A,B             ; To A for printing
 4608: CD FF 45   CALL    $45FF           ; Print the prompt
-460B: 21 5A 46   LD      HL,$465A        
-460E: 0E 00      LD      C,$00           
-4610: E5         PUSH    HL              
-4611: C5         PUSH    BC              
-4612: D5         PUSH    DE              
+460B: 21 5A 46   LD      HL,$465A        ; Input buffer
+460E: 0E 00      LD      C,$00           ; Size of input buffer (starts empty)
+;
+4610: E5         PUSH    HL              ; Hold ...
+4611: C5         PUSH    BC              ; ... most ...
+4612: D5         PUSH    DE              ; ... everything
 4613: CD EE 45   CALL    $45EE           ; Wait for a key
-4616: D1         POP     DE              
-4617: C1         POP     BC              
-4618: E1         POP     HL              
-4619: 47         LD      B,A             
-461A: FE 08      CP      $08             
-461C: CA 41 46   JP      Z,$4641         
-461F: 77         LD      (HL),A          
-4620: CD FF 45   CALL    $45FF           
-4623: FE 0D      CP      $0D             
-4625: CA 57 46   JP      Z,$4657         
-4628: 0C         INC     C               
-4629: 23         INC     HL              
-462A: 11 7A 46   LD      DE,$467A        
-462D: 7C         LD      A,H             
-462E: BA         CP      D               
-462F: DA 10 46   JP      C,$4610         
-4632: 7D         LD      A,L             
-4633: BB         CP      E               
-4634: DA 10 46   JP      C,$4610         
-4637: 06 08      LD      B,$08           
-4639: 78         LD      A,B             
-463A: CD FF 45   CALL    $45FF           
-463D: 2B         DEC     HL              
-463E: C3 10 46   JP      $4610           
-4641: 2B         DEC     HL              
-4642: 3E 46      LD      A,$46           
-4644: BC         CP      H               
-4645: DA 4E 46   JP      C,$464E         
-4648: 7D         LD      A,L             
-4649: FE 5A      CP      $5A             
-464B: DA 0B 46   JP      C,$460B         
-464E: 3E 08      LD      A,$08           
-4650: 47         LD      B,A             
-4651: CD FF 45   CALL    $45FF           
-4654: C3 10 46   JP      $4610           
-4657: 36 00      LD      (HL),$00        
-4659: C9         RET                     
-465A: 15         DEC     D               
-465B: 46         LD      B,(HL)          
-465C: 36 00      LD      (HL),$00        
-465E: C9         RET                   
-  
-465F: 45         LD      B,L             
-4660: 20 49      JR      NZ,$46AB        
-4662: 50         LD      D,B             
-4663: 20 53      JR      NZ,$46B8        
-4665: 49         LD      C,C             
-4666: 47         LD      B,A             
-4667: 4E         LD      C,(HL)          
-4668: 00         NOP                     
-4669: 00         NOP                     
-466A: 47         LD      B,A             
-466B: FE 78      CP      $78             
-466D: 28 26      JR      Z,$4695         
-466F: FE 3C      CP      $3C             
-4671: 20 F5      JR      NZ,$4668        
-4673: CD 82 47   CALL    $4782           
-4676: 47         LD      B,A             
-4677: CD 9C 46   CALL    $469C           
-467A: 00         NOP                     
-467B: 00         NOP                     
-467C: 00         NOP                     
-467D: 00         NOP                     
-467E: 00         NOP                     
-467F: 00         NOP                     
-4680: 00         NOP                     
-4681: 00         NOP                     
-4682: 00         NOP        
+4616: D1         POP     DE              ; ... restore ...
+4617: C1         POP     BC              ; ... most ...
+4618: E1         POP     HL              ; ... everything
+4619: 47         LD      B,A             ; Key to B
+461A: FE 08      CP      $08             ; A backspace?
+461C: CA 41 46   JP      Z,$4641         ; Yes ... go handle that
+461F: 77         LD      (HL),A          ; Put character in buffer
+4620: CD FF 45   CALL    $45FF           ; Send the character to the screen
+4623: FE 0D      CP      $0D             ; Was it ENTER?
+4625: CA 57 46   JP      Z,$4657         ; Yes ... we have our line
+4628: 0C         INC     C               ; Bump the input count
+4629: 23         INC     HL              ; Bump the pointer in the buffer
+462A: 11 7A 46   LD      DE,$467A        ; End of buffer (32 bytes long)
+462D: 7C         LD      A,H             ; Compare ...
+462E: BA         CP      D               ; ... MSB
+462F: DA 10 46   JP      C,$4610         ; Not the same ... still room for more
+4632: 7D         LD      A,L             ; Compare ...
+4633: BB         CP      E               ; ... LSB
+4634: DA 10 46   JP      C,$4610         ; Not the same ... still room for more
+4637: 06 08      LD      B,$08           ; No more room. Take the last ...
+4639: 78         LD      A,B             ; ... character ...
+463A: CD FF 45   CALL    $45FF           ; ... off the screen
+463D: 2B         DEC     HL              ; And reject the character from our buffer
+463E: C3 10 46   JP      $4610           ; Back for more input (better be backspaces)
+; Backspace
+4641: 2B         DEC     HL              ; Back up our pointer
+4642: 3E 46      LD      A,$46           ; Compare MSB to ...
+4644: BC         CP      H               ; ... start of buffer
+4645: DA 4E 46   JP      C,$464E         ; Not the same. We can take it.
+4648: 7D         LD      A,L             ; Compare LSB to ...
+4649: FE 5A      CP      $5A             ; ... start of buffer
+464B: DA 0B 46   JP      C,$460B         ; Nothing left to remove. Ignore this.
+464E: 3E 08      LD      A,$08           ; Backspace ...
+4650: 47         LD      B,A             ; ... to ...
+4651: CD FF 45   CALL    $45FF           ; ... screen
+4654: C3 10 46   JP      $4610           ; Back to input loop
+; Enter
+4657: 36 00      LD      (HL),$00        ; Put a zero on the end of the buffer        
+4659: C9         RET                     ; Done
+
+; Input buffer (with some uninitialized leftover data!)
+InputBuffer:
+; 32 bytes
+465A: 15 46 36 00 C9 45 20 49 50 20 53 49 47 4E 00 00         
+466A: 47 FE 78 28 26 FE 3C 20 F5 CD 82 47 47 CD 9C 46        
+467A: 00
+
+; Used in input parsing
+467B: 00    ; Noun
+467C: 00    ; Verb
+467D: 00    ; Grammar type
+467E: 00    ; Input loop counter (never used)
+467F: 00 00 ; Pointer to next word while parsing                      
+4681: 00    ; Character counter in word text                  
+4682: 00    ; Current word data   
   
 ; "HAUNTED HOUSE!![CR]"             
 4683: 48 41 55 4E 54 45 44 20 48 4F 55 53 45 21 21 00
        
-4693: 15         DEC     D               
-4694: 40         LD      B,B             
-4695: 0D         DEC     C               
-4696: 02         LD      (BC),A          
-4697: C0         RET     NZ              
-4698: 3F         CCF                     
-4699: 80         ADD     A,B             
-469A: 04         INC     B               
-469B: DD         ???                     
-469C: 03         INC     BC              
-469D: 1D         DEC     E               
-469E: 40         LD      B,B             
-469F: 15         DEC     D               
-46A0: 40         LD      B,B             
-46A1: D4 4D 5E   CALL    NC,$5E4D        
-46A4: 0D         DEC     C               
-46A5: 08         EX      AF,AF'          
-46A6: 46         LD      B,(HL)          
-46A7: 5F         LD      E,A             
-46A8: 46         LD      B,(HL)          
-46A9: FA 48 97   JP      M,$9748         
-46AC: 4A         LD      C,D             
-46AD: FA 48 FA   JP      M,$FA48         
-46B0: 48         LD      C,B             
-46B1: 26 44      LD      H,$44           
-46B3: FE 48      CP      $48             
-46B5: F2 43 93   JP      P,$9343         
-46B8: 00         NOP                  ; Stack points here at beginning
-
-
+; Uninitialized stack space with some leftover data in it!
+; This might be interesting stuff?
+4693: 15 40 0D 02 C0 3F 80 04 DD 03 1D 40 15 40 D4 4D 
+45A3: 5E 0D 08 46 5F 46 FA 48 97 4A FA 48 FA 48 26 44                
+46B3: FE 48 F2 43 93   
+; Stack points here at beginning    
+46B8: 00 
    
-46B9: 32 7B 47   LD      ($477B),A       
-46BC: 3E 01      LD      A,$01           
-46BE: 32 7E 47   LD      ($477E),A       
-46C1: C3 CB 46   JP      $46CB      
-     
-46C4: 32 7B 47   LD      ($477B),A       
-46C7: 97         SUB     A,A               
-46C8: 32 7E 47   LD      ($477E),A       
-
-46CB: E5         PUSH    HL              
-46CC: 06 03      LD      B,$03           
-46CE: E1         POP     HL              
-46CF: 7E         LD      A,(HL)          
-46D0: 23         INC     HL              
-46D1: 4E         LD      C,(HL)          
-46D2: 23         INC     HL              
-46D3: E5         PUSH    HL              
-46D4: 61         LD      H,C             
-46D5: 6F         LD      L,A             
-46D6: 13         INC     DE              
-46D7: 13         INC     DE              
-46D8: EB         EX      DE,HL        
-   
-46D9: E5         PUSH    HL              
-46DA: C5         PUSH    BC              
+UnpackMessage:
+; TODO: Decode this. I have a program created by translating this to Java.
+; It works, but it would be nice to understand the math here.
+46B9: 32 7B 47   LD      ($477B),A       ;
+46BC: 3E 01      LD      A,$01           ;
+46BE: 32 7E 47   LD      ($477E),A       ;
+46C1: C3 CB 46   JP      $46CB           ;     
+46C4: 32 7B 47   LD      ($477B),A       ;
+46C7: 97         SUB     A,A             ;  
+46C8: 32 7E 47   LD      ($477E),A       ;
+46CB: E5         PUSH    HL              ;
+46CC: 06 03      LD      B,$03           ;
+46CE: E1         POP     HL              ;
+46CF: 7E         LD      A,(HL)          ;
+46D0: 23         INC     HL              ;
+46D1: 4E         LD      C,(HL)          ;
+46D2: 23         INC     HL              ;
+46D3: E5         PUSH    HL              ;
+46D4: 61         LD      H,C             ;
+46D5: 6F         LD      L,A             ;
+46D6: 13         INC     DE              ;
+46D7: 13         INC     DE              ;
+46D8: EB         EX      DE,HL           ;   
+46D9: E5         PUSH    HL              ;
+46DA: C5         PUSH    BC              ;
 46DB: 21 28 00   LD      HL,$0028        ; Number of characters in map
-46DE: 22 7C 47   LD      ($477C),HL
-;      
-46E1: 21 11 47   LD      HL,$4711        
+46DE: 22 7C 47   LD      ($477C),HL      ; 
+46E1: 21 11 47   LD      HL,$4711        ;
 46E4: 36 11      LD      (HL),$11        ; 17 passes
-46E6: 01 00 00   LD      BC,$0000        
-46E9: C5         PUSH    BC              
-46EA: 7B         LD      A,E             
-46EB: 17         RLA                     
-46EC: 5F         LD      E,A             
-46ED: 7A         LD      A,D             
-46EE: 17         RLA                     
-46EF: 57         LD      D,A             
-46F0: 35         DEC     (HL)            
-46F1: E1         POP     HL              
-46F2: CA 12 47   JP      Z,$4712         
-46F5: 3E 00      LD      A,$00           
-46F7: CE 00      ADC     A,$00             
-46F9: 29         ADD     HL,HL           
-46FA: 44         LD      B,H             
-46FB: 85         ADD     A,L             
-46FC: 2A 7C 47   LD      HL,($477C)      
-46FF: 95         SUB     A,L               
-4700: 4F         LD      C,A             
-4701: 78         LD      A,B             
-4702: 9C         SBC     A,H               
-4703: 47         LD      B,A             
-4704: C5         PUSH    BC              
-4705: D2 0A 47   JP      NC,$470A        
-4708: 09         ADD     HL,BC           
-4709: E3         EX      (SP),HL         
-470A: 21 11 47   LD      HL,$4711        
-470D: 3F         CCF                     
-470E: C3 EA 46   JP      $46EA           
-;
-4711: 00         NOP                     
-;
+46E6: 01 00 00   LD      BC,$0000        ;
+46E9: C5         PUSH    BC              ;
+46EA: 7B         LD      A,E             ;
+46EB: 17         RLA                     ;
+46EC: 5F         LD      E,A             ;
+46ED: 7A         LD      A,D             ;
+46EE: 17         RLA                     ;
+46EF: 57         LD      D,A             ;
+46F0: 35         DEC     (HL)            ;
+46F1: E1         POP     HL              ;
+46F2: CA 12 47   JP      Z,$4712         ;
+46F5: 3E 00      LD      A,$00           ;
+46F7: CE 00      ADC     A,$00           ; 
+46F9: 29         ADD     HL,HL           ;
+46FA: 44         LD      B,H             ;
+46FB: 85         ADD     A,L             ;
+46FC: 2A 7C 47   LD      HL,($477C)      ;
+46FF: 95         SUB     A,L             ;  
+4700: 4F         LD      C,A             ;
+4701: 78         LD      A,B             ;
+4702: 9C         SBC     A,H             ; 
+4703: 47         LD      B,A             ;
+4704: C5         PUSH    BC              ;
+4705: D2 0A 47   JP      NC,$470A        ;
+4708: 09         ADD     HL,BC           ;
+4709: E3         EX      (SP),HL         ;
+470A: 21 11 47   LD      HL,$4711        ;
+470D: 3F         CCF                     ;
+470E: C3 EA 46   JP      $46EA           ;
+4711: 00                                 ;
 4712: 01 53 47   LD      BC,$4753        ; Character compression map
 4715: 09         ADD     HL,BC           ; Offset into table
 4716: 7E         LD      A,(HL)          ; Get the character value
@@ -662,46 +656,53 @@ PromptAndReadLine:
 471A: 2B         DEC     HL              ; Next character (moving left)
 471B: 05         DEC     B               ; All done?
 471C: C2 D9 46   JP      NZ,$46D9        ; No ... keep decoding
-471F: 3A 7E 47   LD      A,($477E)       
-4722: A7         AND     A               
-4723: CA 3B 47   JP      Z,$473B         
-4726: E5         PUSH    HL              
-4727: C5         PUSH    BC              
-4728: D5         PUSH    DE              
-4729: 1E 03      LD      E,$03           
-472B: 23         INC     HL              
-472C: 46         LD      B,(HL)          
-472D: E5         PUSH    HL              
-472E: 78         LD      A,B             
+471F: 3A 7E 47   LD      A,($477E)       ;
+4722: A7         AND     A               ;
+4723: CA 3B 47   JP      Z,$473B         ;
+4726: E5         PUSH    HL              ;
+4727: C5         PUSH    BC              ;
+4728: D5         PUSH    DE              ;
+4729: 1E 03      LD      E,$03           ;
+472B: 23         INC     HL              ;
+472C: 46         LD      B,(HL)          ;
+472D: E5         PUSH    HL              ;
+472E: 78         LD      A,B             ;
 472F: CD FF 45   CALL    $45FF           ; Print character
-4732: E1         POP     HL              
-4733: 23         INC     HL              
-4734: 1D         DEC     E               
-4735: C2 2C 47   JP      NZ,$472C        
-4738: D1         POP     DE              
-4739: C1         POP     BC              
-473A: E1         POP     HL              
-473B: EB         EX      DE,HL           
-473C: 13         INC     DE              
-473D: 3A 7E 47   LD      A,($477E)       
-4740: A7         AND     A               
-4741: C2 47 47   JP      NZ,$4747        
-4744: 13         INC     DE              
-4745: 13         INC     DE              
-4746: 13         INC     DE              
-4747: 3A 7B 47   LD      A,($477B)       
-474A: 3D         DEC     A               
-474B: 32 7B 47   LD      ($477B),A       
-474E: C2 CC 46   JP      NZ,$46CC        
-4751: E1         POP     HL          
-4752: C9         RET       
+4732: E1         POP     HL              ;
+4733: 23         INC     HL              ;
+4734: 1D         DEC     E               ;
+4735: C2 2C 47   JP      NZ,$472C        ;
+4738: D1         POP     DE              ;
+4739: C1         POP     BC              ;
+473A: E1         POP     HL              ;
+473B: EB         EX      DE,HL           ;
+473C: 13         INC     DE              ;
+473D: 3A 7E 47   LD      A,($477E)       ;
+4740: A7         AND     A               ;
+4741: C2 47 47   JP      NZ,$4747        ;
+4744: 13         INC     DE              ;
+4745: 13         INC     DE              ;
+4746: 13         INC     DE              ;
+4747: 3A 7B 47   LD      A,($477B)       ;
+474A: 3D         DEC     A               ;
+474B: 32 7B 47   LD      ($477B),A       ;
+474E: C2 CC 46   JP      NZ,$46CC        ;
+4751: E1         POP     HL              ;
+4752: C9         RET                     ;
               
 ; Character compression table
 4753: 3F 21 32 20 22 27 3C 3E 2F 30 33                 ; ?!2_"'<>/03
 475E: 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 50  ; ABCDEFGHIJKLMNOP       
 476E: 51 52 53 54 55 56 57 58 59 5A 2D 2C 2E           ; QRSTUVWXYZ-,.
  
-477B: 00 00 00 00 ; 0 (not a room)     
+477B: 00 ; RAM used by unpack 
+477C: 00 ; RAM used by unpack
+477D: 00 ; RAM used by unpack
+477E: 00 ; RAM used by unpack
+    
+RoomInformation:
+; First two: description
+; Second two: room script
 477F: 90 4C BF 47 ; 1 FORYER.
 4783: 96 4C CC 47 ; 2 LIVING ROOM.
 4789: A0 4C EC 47 ; 3 DINING ROOM.
@@ -721,6 +722,7 @@ PromptAndReadLine:
      
 ; Commands 1 FORYER
                   ; "Room_1"   : {
+                  ;     "Description" : "YOU_ARE_AT_THE_FORYER.[CR]",
 47BF: 02 03 01 02 ;     "E"    : ["GoToRoom(2)"],
 47C3: 03 03 01 08 ;     "S"    : ["GoToRoom(8)"],
 47C7: 04 03 01 09 ;     "W"    : ["GoToRoom(9)"]
@@ -728,14 +730,15 @@ PromptAndReadLine:
  
 ; Commands 2 LIVING ROOM
                   ; "Room_2"   : {
+                  ;     "Description" : "YOU_ARE_AT_THE_LIVING_ROOM.[CR]",
 47CC: 02 03 01 03 ;     "E"    : ["GoToRoom(3)"],
 47D0: 04 03 01 01 ;     "W"    : ["GoToRoom(1)"],
-47D4: 06 0E 06 0B ;     "GET"  : ["SubscriptAbortIfPass", [                               
+47D4: 06 0E 06 0B ;     "GET"  : ["SubscriptAbortAllIfPass", [                               
 47D8: 0A 06       ;                   "AssertNounIs(KNIFE)",
-47DA: 06 04       ;                   "SubscriptAbortIfPass", [           
-47DC: 02 01       ;                       "AssertIsInPack(PAPER)"
+47DA: 06 04       ;                   "SubscriptAbortAllIfPass", [           
+47DC: 02 01       ;                       "AssertIsInPack(PAPER)",
 47DE: 0E          ;                       "MoveNounToPack()"],
-47DF: 04 B6 4F    ;                   "Print(THE_KNIFE_FLOATS_OUT_OF_YOUR_REACH.[CR])"]              
+47DF: 04 B6 4F    ;                   "Print(THE_KNIFE_FLOATS_OUT_OF_YOUR_REACH.[CR])"],              
 47E2: 0E          ;               "MoveNounToPack()"],
 47E3: FF 07 10 06 ;     "*"    : ["AssertIsInRoom(KNIFE)",                       
 47E7: 04 10 4F    ;               "Print(SUDDENLY_THE_KNIFE_WHOOSHES_DOWN_AND_SLITS_YOUR_THROAT!__YOU_AREDEAD.[CR])",           
@@ -743,198 +746,179 @@ PromptAndReadLine:
 47EB: 00          ; },
                      
 ; Commands 3 DINING ROOM
-47EC: 03 03 01 04 ; S : GOTO 4  
-47F0: 04 03 01 02 ; W : GOTO 2
-47F4: 00   
+                  ; "Room_3"   : {
+                  ;     "Description" : "YOU_ARE_AT_THE_DINING_ROOM.[CR]",
+47EC: 03 03 01 04 ;     "S"    : ["GoToRoom(4)"],  
+47F0: 04 03 01 02 ;     "W"    : ["GoToRoom(2)"]
+47F4: 00          ; },
 
 ; Commands 4 KITCHEN  
-47F5: 01 03 01 03 ; N : GOTO 3             
-47F9: 04 03 01 08 ; W : GOTO 8
-47FD: 03 17 06 13 ; S : SubscriptAbortIfPass           
-4801: 10 08       ;       AssertObjectIsInRoom(object8)
-4803: 06 0B       ;       CommandReverseLogic           
-4805: 02 06       ;         AssertObjectIsInPack(KNIFE)
-    : 0D      LD      B,$0D           
-4808: 08         EX      AF,AF'          
-4809: 00         NOP                     
-480A: 04 4E 4E    ; PRINT("A SUIT OF ARMOUR HERE FLEES WHEN IT SPOTS YOUR KNIFE")          
-480D: 01 05 
-      04 73 4E    ; PRINT("YOUR ARE AT THE BREAKFAST ROOM. AN ANIMATED SUIT OF ARMOUR THROWS_YOU_OUT!")      
-4812: 05         DEC     B               
-4813: 01 05 00   LD      BC,$0005     
+                  ; "Room_4"   : {
+                  ;     "Description" : "YOU_ARE_AT_THE_KITCHEN.[CR]",
+47F5: 01 03 01 03 ;     "N"    : ["GoToRoom(3)"],             
+47F9: 04 03 01 08 ;     "W"    : ["GoToRoom(8)"],
+47FD: 03 17 06 13 ;     "S"    : ["SubscriptAbortAllIfPass", [           
+4801: 10 08       ;                   "AssertObjectIsInRoom(object8)",
+4803: 06 0B       ;                   "SubscriptAbortAllIfPass", [           
+4805: 02 06       ;                       "AssertObjectIsInPack(KNIFE)",
+4607: 0D 08 00    ;                       "MoveObjectToRoom(8,0)",                     
+480A: 04 4E 4E    ;                       "Print(A_SUIT_OF_ARMOUR_HERE_FLEES_WHEN_IT_SPOTS_YOUR_KNIFE[CR])",          
+480D: 01 05       ;                       "GoToRoom(5)"],
+480F: 04 73 4E    ;                   "Print(YOUR_ARE_AT_THE_BREAKFAST_ROOM.__AN_ANIMATED_SUIT_OF_ARMOUR_____THROWS_YOU_OUT![CR])",      
+4812: 05          ;                   "PrintRoomDescription()"],             
+4813: 01 05       ;               "GoToRoom(5)"
+4815: 00          ; },     
 
 ; Commands 5 BREAKFAST ROOM   
-4816: 01 03 01   LD      BC,$0103        
-4819: 04         INC     B               
-481A: 02         LD      (BC),A          
-481B: 03         INC     BC              
-481C: 01 06 00   LD      BC,$0006        
+                  ; "Room_5"   : {
+                  ;     "Description" : "YOU_ARE_AT_THE_BREAKFAST_ROOM.[CR]",
+4816: 01 03 01 04 ;     "N"    : ["GoToRoom(4)"],
+481A: 02 03 01 06 ;     "E"    : ["GoToRoom(6)"],
+181E: 00          ; },
 
 ; Commands 6 SERVANTS QUARTERS
-481F: 01 03 01   LD      BC,$0103        
-4822: 07         RLCA                    
-4823: 04         INC     B               
-4824: 03         INC     BC              
-4825: 01 05 05   LD      BC,$0505        
-4828: 06 0A      LD      B,$0A           
-482A: 09         ADD     HL,BC           
-482B: 04         INC     B               
-482C: AA         XOR     D               
-482D: 4E         LD      C,(HL)          
-482E: 00         NOP
+                  ; "Room_6"   : {
+                  ;     "Description" : "YOU_ARE_AT_THE_SERVANTS_QUARTERS.[CR]",
+481F: 01 03 01 07 ;     "N"    : ["GoToRoom(7)"],
+4823: 04 03 01 05 ;     "W"    : ["GoToRoom(5)"],
+4827: 05 06 0A 09 ;     "OPEN" : ["AssertNounIs(CABINET)",
+482B: 04 AA 4E    ;               "Print(IT'S_EMPTY.[CR])"]        
+482E: 00          ; },
 
-; Commands 7 SERVANTS QUARTERS                     
-482F: 03         INC     BC              
-4830: 03         INC     BC              
-4831: 01 06 05   LD      BC,$0506        
-4834: 08         EX      AF,AF'          
-4835: 0A         LD      A,(BC)          
-4836: 0B         DEC     BC              
-4837: 08         EX      AF,AF'          
-4838: 03         INC     BC              
-4839: 04         INC     B               
-483A: FC 4E 00   CALL    M,$004E      
+; Commands 7 SERVANTS QUARTERS  
+                  ; "Room_7"   : {
+                  ;     "Description" : "YOU_ARE_AT_THE_SERVANTS_QUARTERS.[CR]",                   
+482F: 03 03 01 06 ;     "S"    : ["GoToRoom(6)"],
+4833: 05 08 0A 0B ;     "OPEN" : ["AssertNounIs(CABINET)",               
+4837: 08 03       ;               "MoveObjectToCurrentRoom(KEY)",
+4839: 04 FC 4E    ;               "Print(THERE_IS_A_KEY_IN_IT.[CR])"]
+483C: 00          ; },
 
 ; Commands 8 DEN   
-483D: 01 03 01   LD      BC,$0103        
-4840: 01 02 03   LD      BC,$0302        
-4843: 01 04 00   LD      BC,$0004        
+                  ; "Room_8"   : {   
+                  ;     "Description" : "YOU_ARE_AT_THE_DEN.[CR]",
+483D: 01 03 01 01 ;     "N"    : ["GoToRoom(1)"], 
+4841: 02 03 01 04 ;     "E"    : ["GoToRoom(4)"]
+4845: 00          ; },
 
 ; Commands 9 EAST END OF THE HALL
-4846: 01 03 01   LD      BC,$0103        
-4849: 0B         DEC     BC              
-484A: 02         LD      (BC),A          
-484B: 03         INC     BC              
-484C: 01 01 04   LD      BC,$0401        
-484F: 03         INC     BC              
-4850: 01 0A 00   LD      BC,$000A
+                  ; "Room_9"   : {   
+                  ;     "Description" : "YOU_ARE_AT_THE_EAST_END_OF_THE_HALL.[CR]",
+4846: 01 03 01 0B ;     "N"    : ["GoToRoom(11)"],           
+484A: 02 03 01 01 ;     "E"    : ["GoToRoom(1)"], 
+484E: 04 03 01 0A ;     "W"    : ["GoToRoom(10)"], 
+4852: 00          ; },
 
-; Commands 10 WEST END OF THE HALL        
-4853: 01 03 01   LD      BC,$0103        
-4856: 0D         DEC     C               
-4857: 02         LD      (BC),A          
-4858: 03         INC     BC              
-4859: 01 09 03   LD      BC,$0309        
-485C: 0A         LD      A,(BC)          
-485D: 06 05      LD      B,$05           
-485F: 02         LD      (BC),A          
-4860: 03         INC     BC              
-4861: 01 0E 04   LD      BC,$040E        
-4864: B4         OR      H               
-4865: 4E         LD      C,(HL)          
-4866: 05         DEC     B               
-4867: 0C         INC     C               
-4868: 0A         LD      A,(BC)          
-4869: 05         DEC     B               
-486A: 06 05      LD      B,$05           
-486C: 02         LD      (BC),A          
-486D: 03         INC     BC              
-486E: 01 0E 04   LD      BC,$040E        
-4871: B4         OR      H               
-4872: 4E         LD      C,(HL)          
-4873: 00         NOP              
+; Commands 10 WEST END OF THE HALL      
+                  ; "Room_10"  : {     
+                  ;     "Description" : "YOU_ARE_AT_THE_WEST_END_OF_THE_HALL.[CR]",
+4853: 01 03 01 0D ;     "N"    : ["GoToRoom(13)"],            
+4857: 02 03 01 09 ;     "E"    : ["GoToRoom(9)"],
+485B: 03 0A 06 05 ;     "S"    : ["SubscriptAbortAllIfPass", [        
+485F: 02 03       ;                   "AssertObjectIsIPack(KEY)", 
+4861: 01 0E       ;                   "GoToRoom(15)"],
+4863: 04 B4 4E    ;               "Print(YOU'LL_NEED_A_KEY_TO_GET_THROUGH_THAT_DOOR.[CR])"],     
+4866: 05 0C 0A 05 ;     "OPEN" : ["AssertInputNounIs(DOOR)",       
+486A: 06 05       ;               "SubscriptAbortAllIfPass", [       
+486C: 02 03       ;                   "AssertObjectIsInPack(KEY)",
+486E: 01 0E       ;                   "GoToRoom(15)"],
+4870: 04 B4 4E    ;               "Print(YOU'LL_NEED_A_KEY_TO_GET_THROUGH_THAT_DOOR.[CR])"]    
+4873: 00          ; },
 
-; Commands 11 GREEN BEDROOM. THERE'S A PANEL ON THE WEST WALL       
-4874: 03         INC     BC              
-4875: 03         INC     BC              
-4876: 01 09 0E   LD      BC,$0E09        
-4879: 03         INC     BC              
-487A: 01 0C 00   LD      BC,$000C        
+; Commands 11 GREEN BEDROOM. THERE'S A PANEL ON THE WEST WALL      
+                  ; "Room_11"  : {  
+                  ;     "Description" : "YOU_ARE_AT_THE_GREEN_BEDROOM._THERE'S_A_PANEL_ON_THE_WEST_WALL.[CR]",
+4874: 03 03 01 09 ;     "S"    : ["GoToRoom(9)"],
+4878: 0E 03 01 0C ;     "PANE" : ["GoToRoom(12)"]
+487C: 00          ; },
 
 ; Commands 12 SECRET PASSAGE
-487D: 02         LD      (BC),A          
-487E: 03         INC     BC              
-487F: 01 0B 04   LD      BC,$040B        
-4882: 03         INC     BC              
-4883: 01 0D 00   LD      BC,$000D        
+                  ; "Room_12"  : { 
+                  ;     "Description" : "YOU_ARE_AT_THE_SECRET_PASSAGE.[CR]",
+487D: 02 03 01 0B ;     "E"    : ["GoToRoom(11)"],
+4881: 04 03 01 0D ;     "W"    : ["GoToRoom(13)"],
+4885: 00          ; },
 
 ; Commands 13 BLUE BEDROOM. THERE'S A PANEL ON THE EAST WALL
-4886: 03         INC     BC              
-4887: 03         INC     BC              
-4888: 01 0A 0E   LD      BC,$0E0A        
-488B: 03         INC     BC              
-488C: 01 0C 00   LD      BC,$000C        
+                  ; "Room_13"  : { 
+                  ;     "Description" : "YOU_ARE_AT_THE_BLUE_BEDROOM.__THERE'S_A_PANEL_ON_THE_WEST_WALL.[CR]",
+4886: 03 03 01 0A ;     "S"    : ["GoToRoom(10)"],
+488A: 0E 03 01 0C ;     "PANE" : ["GoToRoom(12)"]
+488E: 00          ; },
 
 ; Commands 14 MASTER BEDROOM
-488F: 01 03 01   LD      BC,$0103        
-4892: 0A         LD      A,(BC)          
-4893: 02         LD      (BC),A          
-4894: 04         INC     B               
-4895: 04         INC     B               
-4896: D3 4E      OUT     ($4E),A         
-4898: 12         LD      (DE),A          
-4899: 04         INC     B               
-489A: 0C         INC     C               
-489B: 01 0F 13   LD      BC,$130F        
-489E: 04         INC     B               
-489F: 04         INC     B               
-48A0: D0         RET     NC              
-48A1: 4F         LD      C,A             
-48A2: 00         NOP                     
+                     ; "Room_14"  : { 
+                     ;     "Description" : "YOU_ARE_AT_THE_MASTER_BEDROOM.[CR]",
+488F: 01 03 01 0A    ;     "N"    : ["GoToRoom(11)"],  
+4893: 02 04 04 D3 4E ;     "E"    : ["Print(ARE_YOU_JUST_GOING_TO_WALK_RIGHT_THROUGH_THAT_RAGING_FIRE?[CR])"],  
+4898: 12 04 0C       ;     "YES"  : ["PrintOK()",
+488B: 01 0F          ;               "GoToRoom(15)"],
+489D: 13 04 04 D0 4F ;     "NO"   : ["Print(A_WISE_DECISION.[CR])"]    
+48A2: 00                           
 
 ; Commands 15 LIBRARY. THERE IS A HOLE IN THE CEILING
-48A3: 04         INC     B               
-48A4: 03         INC     BC              
-48A5: 01 0E 07   LD      BC,$070E        
-48A8: 0B         DEC     BC              
-48A9: 0A         LD      A,(BC)          
-48AA: 07         RLCA                    
-48AB: 0D         DEC     C               
-48AC: 07         RLCA                    
-48AD: 00         NOP                     
-48AE: 08         EX      AF,AF'          
-48AF: 0C         INC     C               
-48B0: 04         INC     B               
-48B1: 40         LD      B,B             
-48B2: 4F         LD      C,A             
-48B3: 0F         RRCA                    
-48B4: 04         INC     B               
-48B5: 10 0C      DJNZ    $48C3           
-48B7: 11 00 
+                     ; "Room_15"  : { 
+                     ;     "Description" : "YOU_ARE_AT_THE_LIBRARY._THERE IS A HOLE IN THE CEILING.[CR]",
+48A3: 04 03 01 0E    ;     "W"    : ["GoToRoom(13)"],
+      07 0B 0A 07    ;     "DROP" : ["AssertInputNounIs(ROPE)",                
+48AB: 0D 07 00       ;               "MoveObjectToRoom(ROPE,0)"                                    
+48AE: 08 0C          ;               "MoveObjectToCurrentRoom(ROPECEILING)",               
+48B0: 04 40 4F       ;               "Print(INSTANTLY_THE_ROPE_UNWINDS_AND_LEVITATES_TO_THE_HOLE_IN_THE_____CEILING![CR])"],         
+48B3: 0F 04 10 0C    ;     "CLIM" : ["AssertObjectIsInRoom(ROPECEILING)",  
+48B7: 11             ;               "LoadSecondFloorFromTape"]
+48B8: 00             ; },
 
 ; Commands 16 OUTSIDE OF THE HOUSE
-48B9: 0A 06 04 23 4E 01 01 
-      05 06 0A 02 04 3B 4E         LD      C,(HL)          
-48C7: 00         NOP                     
+                     ; "Room_16"  : { 
+                     ;     "Description" : "YOU_ARE_AT_THE_OUTSIDE_OF_THE_HOUSE.[CR]",
+48B9: 0A 06 04 23 4E ; "PLUG" : ["Print(YOU_MATERIALIZE_INSIDE_THE_DOOR.[CR])", 
+48BE: 01 01          ;           "GoToRoom(1)"],
+48C0: 05 06 0A 02    ; "OPEN" : ["AssertInputNounIs(DOOR)"
+48C4: 04 3B 4E       ;           "Print(THE_DOOR_CAN'T_BE_OPENED.[CR])"]
+48C7: 00              ; }      
 
+ObjectInfo:
+;
 ; The format of the two bytes are:
 ;
 ; MC------ RRRRRRRR
 ;
-; M - if set, the second byte is an object number (container). if clear, the second byte is a room number.
-; C - if set, object can be picked up.
+; M - if set, the second byte is an object number (container). if clear, the second byte 
+;     is a room number (containment is not used in this game).
+; C - if set, object can be picked up ("+" objects in the list below).
 ;
 ; RRRRRRRR - Second byte is the object's location (containing object or room number).
 ;
-48C8: 40 10 ;  1 PAPER (OUTSIDE OF THE HOUSE)
-48CA: 00 10 ;  2 DOOR (OUTSIDE OF THE HOUSE)
-48CC: 40 00 ;  3 KEY                        
-48CE: 00 0E ;  4 RING OF FIRE
-48D0: 00 0A ;  5 LOCKED DOOR            
-48D2: 40 02 ;  6 KNIFE              
-48D4: 40 0C ;  7 ROPE                   
-48D6: 00 04 ;  8 (invisible object)                   
-48D8: 00 06 ;  9 CABINET
-48DA: 40 04 ; 10 BUCKET                 
-48DC: 00 07 ; 11 CABINET (another one)                       
-48DE: 00 00 ; 12 ROPE TO CEILING                          
-48E0: 40 02 ; 13 SCROLL        
+48C8: 40 10 ;  1 PAPER       +(OUTSIDE OF THE HOUSE)
+48CA: 00 10 ;  2 DOOR         (OUTSIDE OF THE HOUSE)
+48CC: 40 00 ;  3 KEY         +(Starts out of play)                
+48CE: 00 0E ;  4 FIRE         ()
+48D0: 00 0A ;  5 LOCKEDDOOR   ()           
+48D2: 40 02 ;  6 KNIFE       +()        
+48D4: 40 0C ;  7 ROPE        +()            
+48D6: 00 04 ;  8 ARMOR        ()             
+48D8: 00 06 ;  9 CABINET      ()
+48DA: 40 04 ; 10 BUCKET      +()            
+48DC: 00 07 ; 11 CABINETKEY   ()                      
+48DE: 00 00 ; 12 ROPECEILING  ()                          
+48E0: 40 02 ; 13 SCROLL      +()  
  
 48E2: 10 ; Current room number (OUTSIDE OF THE HOUSE)
  
-; Object Descriptions
-48E3: 35 4B ;  1 Description for PAPER            
+; Object descriptions. Two strings: first is "in room" description. Second
+; is a shorter "inventory" description.
+48E3: 35 4B ;  1 PAPER            
 48E5: 64 4B ;  2 DOOR       
 48E7: 77 4B ;  3 KEY
-48E9: 87 4B ;  4 RING OF FIRE
-48EB: A5 4B ;  5 LOCKED DOOR BARS THE WAY
+48E9: 87 4B ;  4 FIRE
+48EB: A5 4B ;  5 LOCKEDDOOR
 48ED: BD 4B ;  6 KNIFE
 48EF: E5 4B ;  7 ROPE
-48F1: CB 47 ;  8 (a zero ... no description)            
+48F1: CB 47 ;  8 (no description for the suit of armor)            
 48F3: F8 4B ;  9 CABINET
 48F5: 0F 4C ; 10 BUCKET
-48F7: F8 4B ; 11 CABINET (another one)
-48F9: 32 4C ; 12 ROPE TO CEILING
+48F7: F8 4B ; 11 CABINETKEY
+48F9: 32 4C ; 12 ROPECEILING
 48FB: 5F 4C ; 13 SCROLL
 
 ScriptCommands:
@@ -942,14 +926,14 @@ ScriptCommands:
 48FF: 67 49 ;  2 AssertObjectIsInPack(object)
 4901: 76 49 ;  3 AssertObjectIsInRoomOrPack(object)
 4903: AF 49 ;  4 PrintMessage(message)
-4905: 27 49 ;  5 PrintRoomDescription
-4907: 22 44 ;  6 RunScriptAbortOnPass(...)
+4905: 27 49 ;  5 PrintRoomDescription()
+4907: 22 44 ;  6 SubscriptAbortAllIfPass[...]
 490B: 48 4A ;  7 EndlessLoop()
 490B: BC 49 ;  8 MoveObjectToCurrentRoom(object)
 490D: CB 49 ;  9 PrintInventory()
 490F: F5 49 ; 10 AssertInputNounIs(object)
 4911: 03 4A ; 11 GetObjectFromRoom(object)
-4913: 2A 4A ; 12 PrintOK
+4913: 2A 4A ; 12 PrintOK()
 4914: 33 4A ; 13 MoveObjectToRoom(object,room)     
 4917: 9A 49 ; 14 GetNounToPack()
 4919: 23 4A ; 15 DropNounToRoom()
@@ -1175,18 +1159,21 @@ CommandTable: ;=
 ;   01 This verb requires a noun in the pack (POUR WATER)
 ;   10 This verb requires a noun in the room or pack (OPEN DOOR)
 ;   11 This verb requires nothing more
-; bbb = number of data bytes        FIRST FLOOR
+; bbb = number of data bytes       
+; ccc = word text size
+;                              FIRST FLOOR WORDS
 4A4B: 0B 4B 45 59 03         ; 00_001_011  KEY   03            
 4A50: 0C 50 41 50 45 01      ; 00_001_100  PAPE  01 
-4A56: 14 44 4F 4F 52 02 05   ; 00_010_100  DOOR  02 05               
+4A56: 14 44 4F 4F 52 02 05   ; 00_010_100  DOOR  02 05 ; Noun for object 2 and 5               
 4A5D: 0C 46 49 52 45 04      ; 00_001_100  FIRE  04              
 4A63: 0C 4B 4E 49 46 06      ; 00_001_100  KNIF  06
-4A69: 14 52 4F 50 45 07 0C   ; 00_010_100  ROPE  07 0C                
+4A69: 14 52 4F 50 45 07 0C   ; 00_010_100  ROPE  07 0C ; For 7 and C                
 4A70: 0C 41 52 4D 4F 08      ; 00_001_100  ARMO  08          
-4A76: 14 43 41 42 49 09 0B   ; 00_010_100  CABI  09 0B               
+4A76: 14 43 41 42 49 09 0B   ; 00_010_100  CABI  09 0B ; For 9 and B               
 4A7D: 0C 57 41 54 45 0A      ; 00_001_100  WATE  0A         
 4A83: 0C 42 55 43 4B 0A      ; 00_001_100  BUCK  0A          
-4A89: 0C 53 43 52 4F 0D      ; 00_001_100  SCRO  0D               
+4A89: 0C 53 43 52 4F 0D      ; 00_001_100  SCRO  0D
+;               
 4A8F: C9 4E 01               ; 11_001_001  N     01
 4A92: C9 45 02               ; 11_001_001  E     02         
 4A95: C9 53 03               ; 11_001_001  S     03             
@@ -1208,61 +1195,29 @@ CommandTable: ;=
 4AEB: CC 50 4C 55 47 0A      ; 11_001_100  PLUG  0A         
 4AF1: 00                     ; end of list
                      
-; General Script (when input does not match room script)
-4AF2: 01 02 05   LD      BC,$0502        
-4AF5: 02         LD      (BC),A          
-4AF6: 02         LD      (BC),A          
-4AF7: 05         DEC     B               
-4AF8: 03         INC     BC              
-4AF9: 02         LD      (BC),A          
-4AFA: 05         DEC     B               
-4AFB: 04         INC     B               
-4AFC: 02         LD      (BC),A          
-4AFD: 05         DEC     B               
-4AFE: 06 02      LD      B,$02           
-4B00: 0E 07      LD      C,$07           
-4B02: 02         LD      (BC),A          
-4B03: 0F         RRCA                    
-4B04: 0D         DEC     C               
-4B05: 02         LD      (BC),A          
-4B06: 05         DEC     B               
-4B07: 0B         DEC     BC              
-4B08: 02         LD      (BC),A          
-4B09: 07         RLCA                    
-4B0A: 0C         INC     C               
-4B0B: 02         LD      (BC),A          
-4B0C: 09         ADD     HL,BC           
-4B0D: 08         EX      AF,AF'          
-4B0E: 06 0A      LD      B,$0A           
-4B10: 0A         LD      A,(BC)          
-4B11: 04         INC     B               
-4B12: 95         SUB     A,L               
-4B13: 4D         LD      C,L             
-4B14: 09         ADD     HL,BC           
-4B15: 06 0A      LD      B,$0A           
-4B17: 01 04 B8   LD      BC,$B804        
-4B1A: 4D         LD      C,L             
-4B1B: 09         ADD     HL,BC           
-4B1C: 06 0A      LD      B,$0A           
-4B1E: 0D         DEC     C               
-4B1F: 04         INC     B               
-4B20: DD         ???                     
-4B21: 4F         LD      C,A             
-4B22: 10 07      DJNZ    $4B2B           
-4B24: 0A         LD      A,(BC)          
-4B25: 0A         LD      A,(BC)          
-4B26: 04         INC     B               
-4B27: CE 4D      ADC     A,$4D             
-4B29: 07         RLCA                    
-4B2A: 11 04 04   LD      DE,$0404        
-4B2D: F5         PUSH    AF              
-4B2E: 4D         LD      C,L             
-4B2F: 0A         LD      A,(BC)          
-4B30: 04         INC     B               
-4B31: 04         INC     B               
-4B32: 09         ADD     HL,BC           
-4B33: 4E         LD      C,(HL)          
-4B34: 00         NOP                     
+; General script (when input does not match the current room's script)
+;                    ; {
+4AF2: 01 02 05       ;  "N"    : ["PrintRoomDescription()"],
+4AF5: 02 02 05       ;  "E"    : ["PrintRoomDescription()"],                
+4AF8: 03 02 05       ;  "S"    : ["PrintRoomDescription()"],              
+4AFB: 04 02 05       ;  "W"    : ["PrintRoomDescription()"],                   
+4AFE: 06 02 0E       ;  "GET"  : ["GetNounToPack()"],
+4B01: 07 02 0F       ;  "DROP" : ["DropNounToRoom()"],                    
+4B04: 0D 02 05       ;  "LOOK" : ["PrintRoomDescription()"],         
+4B07: 0B 02 07       ;  "QUIT" : ["EndlessLoop()"],             
+4B0A: 0C 02 09       ;  "INVE" : ["PrintInventory()"],  
+4B0D: 08 06 0A 0A    ;  "POUR" : ["AssertInputNounIs(BUCKET)",  
+4B11: 04 95 4D       ;            "Print(THE_GROUND_IS_WET.__THE_BUCKET_MAGICALLY_REFILLS![CR])"],                 
+4B14: 09 06 0A 01    ;  "READ" : ["AssertInputNounIs(PAPER)", 
+4B18: 04 B8 4D       ;            "Print(IT_SAYS,_"MAGIC_WORD_-_PLUGH."[CR])"],                 
+4B1B: 09 06 0A 0D    ;  "READ" : ["AssertInputNounIs(SCROLL)",                  
+4B1F: 04 DD 4F       ;            "Print(IT_SAYS,_"THERE_IS_ESCAPE_FROM_THE_SECOND_FLOOR!"[CR])"],          
+4B22: 10 07 0A 0A    ;  "DRIN" : ["AssertInputNounIs(BUCKET)",                
+4B26: 04 CE 4D       ;            "Print(YOU_FEEL_SICK.__IN_FACT,_YOU_JUST_DIED.__IT_WAS_POSION![CR])",          
+4B29: 07             ;            "EndlessLoop()"],                
+4B2A: 11 04 04 F5 4D ;  "SMAS" : ["OUCH!__YOU_HURT_YOUR_HAND.[CR]"],                  
+4B2F: 0A 04 04 09 4E ;  "PLUG" : ["Print(SORRY,_ONLY_ONE_PLUGH_PER_CUSTOMER.[CR])"]               
+4B34: 00             ; }            
 
 ; Compressed text
 
