@@ -7,6 +7,7 @@
 ;;* [RAMUse.html RAM Usage]
 ;;* [/TRS80/Hardware.html Hardware Info]
 
+Start: ;=
 42E9: C3 5E 43   JP      $435E           ; Skip over load-second-floor
      
 ; The second-floor of the game is a completely separate program that loads
@@ -19,7 +20,7 @@
 ;
 ; Script command 17 jumps here to load second floor
 ;
-ScriptCommand17:
+ScriptCommand17: ;=
 ; LoadSecondFloorFromTape()
 42F5: 31 FE 4F   LD      SP,$4FFE        ; Reset sack at top of RAM
 42F8: 21 4A 43   LD      HL,$434A        ; "READY CASSETTE[CR]"
@@ -104,7 +105,7 @@ ScriptCommand17:
 43A5: CD AE 45   CALL    $45AE           ; Print "NO"
 43A8: C3 77 43   JP      $4377           ; Back to get user input
          
-GetObjectInfo:  
+GetObjectInfo:  ;=
 ; Return ZF set if found in desired location
 ; Return HL points to object location structure
 43AB: 21 C8 48   LD      HL,$48C8        ; Object location table
@@ -149,7 +150,7 @@ GetObjectInfo:
 43D7: C9         RET                     ; Done
 
 ; Process the user input against the script for a room
-ProcessRoomScript:
+ProcessRoomScript: ;=
 43D8: 7E         LD      A,(HL)          ; Next command to run
 43D9: A7         AND     A               ; Zero means ...
 43DA: C8         RET     Z               ; ... end of the list
@@ -168,7 +169,7 @@ ProcessRoomScript:
 43F2: C0         RET     NZ              ; Not zero if the command passed
 43F3: C3 D8 43   JP      $43D8           ; The command failed ... keep running the list of commands
 
-RunScript:
+RunScript: ;=
 43F6: E5         PUSH    HL              ; Make room for the end point (and hold the current value)
 43F7: 4E         LD      C,(HL)          ; Get the length of the script (length INCLUDES the length byte)
 43F8: 06 00      LD      B,$00           ; MSB is 0
@@ -176,7 +177,7 @@ RunScript:
 43FB: E3         EX      (SP),HL         ; Put the end pointer on the stack (and restore the current value)
 43FC: 23         INC     HL              ; The actual script command
 ;
-RunScriptCommand:
+RunScriptCommand: ;=
 43FD: 7E         LD      A,(HL)          ; Get the script command
 43FE: 23         INC     HL              ; Point to first parameter
 43FF: E5         PUSH    HL              ; Current script location
@@ -188,7 +189,7 @@ RunScriptCommand:
 4409: 6F         LD      L,A             ; LSB to HL
 440A: E9         JP      (HL)            ; Jump to the command
 
-ScriptCommandPASS:          
+ScriptCommandPASS: ;=      
 440B: E1         POP     HL              ; Current script pointer
 440C: D1         POP     DE              ; Where we should end
 440D: 7C         LD      A,H             ; MSB ...
@@ -202,13 +203,13 @@ ScriptCommandPASS:
 441A: D5         PUSH    DE              ; Put end back on the stack
 441B: C3 FD 43   JP      $43FD           ; Keep running commands
 
-ScriptCommandFAIL:
+ScriptCommandFAIL: ;=
 441E: E1         POP     HL              ; Pop the current script pointer
 441F: E1         POP     HL              ; Pop the ending spot
 4420: AF         XOR     A               ; Set Zero Flag (FAIL)
 4421: C9         RET                     ; Done
 
-ScriptCommand06:
+ScriptCommand06: ;=
 ; SubscriptAbortAllIfPass(...)
 ; Run the subscript. If the subscript passes then abort the current script and
 ; all parent scripts. If the subscript fails then continue on to the next command.
@@ -228,7 +229,7 @@ ScriptCommand06:
 442C: F6 01      OR      $01             ; Clear Zero Flag (PASS)
 442E: C9         RET					 ; Done
                      
-ParseUserInput:
+ParseUserInput: ;=
 442F: CD 05 46   CALL    $4605           ; Prompt and read line
 4432: CD DA 44   CALL    $44DA           ; Parse the input string
 4435: 2A AC 45   LD      HL,($45AC)      ; Pointer to noun data
@@ -316,6 +317,7 @@ ParseUserInput:
 44D9: 00 ; 1 if there was a lone object last input             
 
 ; Parse the input line
+ParseInputLine: ;=
 44DA: 21 5A 46   LD      HL,$465A        ; Start of the input
 44DD: 97         SUB     A,A             ; Make a zero
 44DE: 32 AB 45   LD      ($45AB),A       ; Nothing in buffer to start with
@@ -444,7 +446,7 @@ ParseUserInput:
 45AB: 00       ; 0 if decode is empty, 1 if something was decoded               
 45AC: 00 00    ; Pointer to noun data            
 
-PrintPacked:
+PrintPacked: ;=
 ; Unpack a message (or multiple packed message) and print.
 ; HL is pointer to message   
 45AE: 7E         LD      A,(HL)          ; Get the length
@@ -493,7 +495,7 @@ PrintMessage: ;=
 45EA: CD FF 45   CALL    $45FF           ; Print character
 45ED: C9         RET                  
    
-WaitForKey:
+WaitForKey: ;=
 45EE: D5         PUSH    DE              ; Hold DE
 45EF: 3A 7E 46   LD      A,($467E)       ; Bump ...
 45F2: 3C         INC     A               ; ... some ...
@@ -504,13 +506,13 @@ WaitForKey:
 45FD: D1         POP     DE              ; Restore DE
 45FE: C9         RET                     ; Return key in A
 
-PrintChar:                     
+PrintChar: ;=      
 45FF: D5         PUSH    DE              ; Hold DE
 4600: CD 33 00   CALL    $0033           ; Print the character
 4603: D1         POP     DE              ; Restore DE
 4604: C9         RET                     ; Done
 
-PromptAndReadLine:
+PromptAndReadLine: ;=
 4605: 06 3A      LD      B,$3A           ; ":" for prompt
 4607: 78         LD      A,B             ; To A for printing
 4608: CD FF 45   CALL    $45FF           ; Print the prompt
@@ -562,7 +564,7 @@ PromptAndReadLine:
 4659: C9         RET                     ; Done
 
 ; Input buffer (with some uninitialized leftover data!)
-InputBuffer:
+InputBuffer: ;=
 ; 32 bytes
 465A: 15 46 36 00 C9 45 20 49 50 20 53 49 47 4E 00 00         
 466A: 47 FE 78 28 26 FE 3C 20 F5 CD 82 47 47 CD 9C 46        
@@ -582,13 +584,14 @@ InputBuffer:
        
 ; Uninitialized stack space with some leftover data in it!
 ; This might be interesting stuff?
+StackRAM: ;=
 4693: 15 40 0D 02 C0 3F 80 04 DD 03 1D 40 15 40 D4 4D 
 45A3: 5E 0D 08 46 5F 46 FA 48 97 4A FA 48 FA 48 26 44                
 46B3: FE 48 F2 43 93   
 ; Stack points here at beginning    
 46B8: 00 
    
-UnpackMessage:
+UnpackMessage: ;=
 ; TODO: Decode this. I have a program created by translating this to Java.
 ; It works, but it would be nice to understand the math here.
 46B9: 32 7B 47   LD      ($477B),A       ;
@@ -691,6 +694,7 @@ UnpackMessage:
 4752: C9         RET                     ;
               
 ; Character compression table
+CharTable: ;=
 4753: 3F 21 32 20 22 27 3C 3E 2F 30 33                 ; ?!2_"'<>/03
 475E: 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 50  ; ABCDEFGHIJKLMNOP       
 476E: 51 52 53 54 55 56 57 58 59 5A 2D 2C 2E           ; QRSTUVWXYZ-,.
@@ -700,7 +704,7 @@ UnpackMessage:
 477D: 00 ; RAM used by unpack
 477E: 00 ; RAM used by unpack
     
-RoomInformation:
+RoomInformation: ;=
 ; First two: description
 ; Second two: room script
 477F: 90 4C BF 47 ; 1 FORYER.
@@ -720,7 +724,9 @@ RoomInformation:
 47B7: 4D 4D A3 48 ; 15 LIBRARY. THERE IS A HOLE IN THE CEILING.
 47BB: 6B 4D B9 48 ; 16 OUTSIDE OF THE HOUSE.
      
+RoomScripts: ;=
 ; Commands 1 FORYER
+; This room just has directional changes.
                   ; "Room_1"   : {
                   ;     "Description" : "YOU_ARE_AT_THE_FORYER.[CR]",
 47BF: 02 03 01 02 ;     "E"    : ["GoToRoom(2)"],
@@ -729,6 +735,12 @@ RoomInformation:
 47CB: 00          ; },
  
 ; Commands 2 LIVING ROOM
+; You can safely go EAST or WEST. You can also issue a GET command. If you enter any other
+; command and the KNIFE is in the room then you die. Note that you can't pick up the KNIFE
+; unless you have the PAPER.
+;
+; This KNIFE behavior is part of the LIVING ROOM script. Anywhere else the KNIFE is just an
+; ordinary, non-dangerous object.
                   ; "Room_2"   : {
                   ;     "Description" : "YOU_ARE_AT_THE_LIVING_ROOM.[CR]",
 47CC: 02 03 01 03 ;     "E"    : ["GoToRoom(3)"],
@@ -746,6 +758,7 @@ RoomInformation:
 47EB: 00          ; },
                      
 ; Commands 3 DINING ROOM
+; This room just has directional changes.
                   ; "Room_3"   : {
                   ;     "Description" : "YOU_ARE_AT_THE_DINING_ROOM.[CR]",
 47EC: 03 03 01 04 ;     "S"    : ["GoToRoom(4)"],  
@@ -755,6 +768,9 @@ RoomInformation:
 ; Commands 4 KITCHEN  
                   ; "Room_4"   : {
                   ;     "Description" : "YOU_ARE_AT_THE_KITCHEN.[CR]",
+; The ARMOR is an invisible object in this room (it has no description). If you have the KNIFE in your pack then
+; it runs off (out of game-play). If you don't have the knife and the ARMOR is in the room then it prevents you
+; from going SOUTH.
 47F5: 01 03 01 03 ;     "N"    : ["GoToRoom(3)"],             
 47F9: 04 03 01 08 ;     "W"    : ["GoToRoom(8)"],
 47FD: 03 17 06 13 ;     "S"    : ["SubscriptAbortAllIfPass", [           
@@ -770,6 +786,7 @@ RoomInformation:
 4815: 00          ; },     
 
 ; Commands 5 BREAKFAST ROOM   
+; This room just has directional changes.
                   ; "Room_5"   : {
                   ;     "Description" : "YOU_ARE_AT_THE_BREAKFAST_ROOM.[CR]",
 4816: 01 03 01 04 ;     "N"    : ["GoToRoom(4)"],
@@ -777,6 +794,7 @@ RoomInformation:
 181E: 00          ; },
 
 ; Commands 6 SERVANTS QUARTERS
+; This room has the empty CABINET. If you open the CABINET you get the message.
                   ; "Room_6"   : {
                   ;     "Description" : "YOU_ARE_AT_THE_SERVANTS_QUARTERS.[CR]",
 481F: 01 03 01 07 ;     "N"    : ["GoToRoom(7)"],
@@ -786,15 +804,20 @@ RoomInformation:
 482E: 00          ; },
 
 ; Commands 7 SERVANTS QUARTERS  
+; This room has the same description as Room_6 ... very sneaky. This room has the
+; CABINET WITH KEY in it. Whenever you open this CABINET the KEY appears in the 
+; room. If the key is already in your pack or dropped in some other room then it
+; magically appears here.
                   ; "Room_7"   : {
                   ;     "Description" : "YOU_ARE_AT_THE_SERVANTS_QUARTERS.[CR]",                   
 482F: 03 03 01 06 ;     "S"    : ["GoToRoom(6)"],
-4833: 05 08 0A 0B ;     "OPEN" : ["AssertNounIs(CABINET)",               
+4833: 05 08 0A 0B ;     "OPEN" : ["AssertNounIs(CABINETKEY)",               
 4837: 08 03       ;               "MoveObjectToCurrentRoom(KEY)",
 4839: 04 FC 4E    ;               "Print(THERE_IS_A_KEY_IN_IT.[CR])"]
 483C: 00          ; },
 
 ; Commands 8 DEN   
+; This room just has directional changes.
                   ; "Room_8"   : {   
                   ;     "Description" : "YOU_ARE_AT_THE_DEN.[CR]",
 483D: 01 03 01 01 ;     "N"    : ["GoToRoom(1)"], 
@@ -802,6 +825,7 @@ RoomInformation:
 4845: 00          ; },
 
 ; Commands 9 EAST END OF THE HALL
+; This room just has directional changes.
                   ; "Room_9"   : {   
                   ;     "Description" : "YOU_ARE_AT_THE_EAST_END_OF_THE_HALL.[CR]",
 4846: 01 03 01 0B ;     "N"    : ["GoToRoom(11)"],           
@@ -810,6 +834,8 @@ RoomInformation:
 4852: 00          ; },
 
 ; Commands 10 WEST END OF THE HALL      
+; You can OPEN DOOR or go S to the LIBRARY -- but only if you have the KEY in the pack. Otherwise you
+; get an error message.
                   ; "Room_10"  : {     
                   ;     "Description" : "YOU_ARE_AT_THE_WEST_END_OF_THE_HALL.[CR]",
 4853: 01 03 01 0D ;     "N"    : ["GoToRoom(13)"],            
@@ -825,7 +851,8 @@ RoomInformation:
 4870: 04 B4 4E    ;               "Print(YOU'LL_NEED_A_KEY_TO_GET_THROUGH_THAT_DOOR.[CR])"]    
 4873: 00          ; },
 
-; Commands 11 GREEN BEDROOM. THERE'S A PANEL ON THE WEST WALL      
+; Commands 11 GREEN BEDROOM. THERE'S A PANEL ON THE WEST WALL     
+; This room just has directional changes. 
                   ; "Room_11"  : {  
                   ;     "Description" : "YOU_ARE_AT_THE_GREEN_BEDROOM._THERE'S_A_PANEL_ON_THE_WEST_WALL.[CR]",
 4874: 03 03 01 09 ;     "S"    : ["GoToRoom(9)"],
@@ -833,6 +860,7 @@ RoomInformation:
 487C: 00          ; },
 
 ; Commands 12 SECRET PASSAGE
+; This room just has directional changes.
                   ; "Room_12"  : { 
                   ;     "Description" : "YOU_ARE_AT_THE_SECRET_PASSAGE.[CR]",
 487D: 02 03 01 0B ;     "E"    : ["GoToRoom(11)"],
@@ -847,6 +875,9 @@ RoomInformation:
 488E: 00          ; },
 
 ; Commands 14 MASTER BEDROOM
+; The YES command takes you east at any time (even if you haven't seen the "are you sure?"). The E command
+; always prints a "are you sure?" message. The NO command prints "a wise decision", but it isn't really.
+; Very sneaky game.
                      ; "Room_14"  : { 
                      ;     "Description" : "YOU_ARE_AT_THE_MASTER_BEDROOM.[CR]",
 488F: 01 03 01 0A    ;     "N"    : ["GoToRoom(11)"],  
@@ -857,6 +888,9 @@ RoomInformation:
 48A2: 00                           
 
 ; Commands 15 LIBRARY. THERE IS A HOLE IN THE CEILING
+; If you DROP the ROPE in this room then the ROPE object goes out of game-play and the ROPE TO CEILING is
+; moved to this room. If the ROPE TO CEILING is in this room then the CLIMB command loads the second floor
+; from tape.
                      ; "Room_15"  : { 
                      ;     "Description" : "YOU_ARE_AT_THE_LIBRARY._THERE IS A HOLE IN THE CEILING.[CR]",
 48A3: 04 03 01 0E    ;     "W"    : ["GoToRoom(13)"],
@@ -869,6 +903,9 @@ RoomInformation:
 48B8: 00             ; },
 
 ; Commands 16 OUTSIDE OF THE HOUSE
+; There is a DOOR here, but you can't open it. You have to use the PLUGH command to "poof" inside the house.
+; Be sure to pick up the PAPER here or you can't get the KNIFE later. The PAPER has a message you can
+; READ, but that is handled by the general script (later).
                      ; "Room_16"  : { 
                      ;     "Description" : "YOU_ARE_AT_THE_OUTSIDE_OF_THE_HOUSE.[CR]",
 48B9: 0A 06 04 23 4E ; "PLUG" : ["Print(YOU_MATERIALIZE_INSIDE_THE_DOOR.[CR])", 
@@ -877,7 +914,7 @@ RoomInformation:
 48C4: 04 3B 4E       ;           "Print(THE_DOOR_CAN'T_BE_OPENED.[CR])"]
 48C7: 00              ; }      
 
-ObjectInfo:
+ObjectInfo: ;=
 ;
 ; The format of the two bytes are:
 ;
@@ -905,6 +942,7 @@ ObjectInfo:
  
 48E2: 10 ; Current room number (OUTSIDE OF THE HOUSE)
  
+ ObjectDescriptions: ;=
 ; Object descriptions. Two strings: first is "in room" description. Second
 ; is a shorter "inventory" description.
 48E3: 35 4B ;  1 PAPER            
@@ -921,7 +959,7 @@ ObjectInfo:
 48F9: 32 4C ; 12 ROPECEILING
 48FB: 5F 4C ; 13 SCROLL
 
-ScriptCommands:
+ScriptCommands: ;=
 48FD: 1F 49 ;  1 GoToRoom(room)
 48FF: 67 49 ;  2 AssertObjectIsInPack(object)
 4901: 76 49 ;  3 AssertObjectIsInRoomOrPack(object)
@@ -940,7 +978,7 @@ ScriptCommands:
 491B: 89 49 ; 16 AssertObjectIsInRoom(object)
 491D: F5 42 ; 17 LoadSecondFloorFromTape()
 
-ScriptCommand01:
+ScriptCommand01: ;=
 ; GoToRoom(room)
 491F: E1         POP     HL              ; Pointer to script  
 4920: 46         LD      B,(HL)          ; Get the room number from the script          
@@ -949,12 +987,12 @@ ScriptCommand01:
 4923: 78         LD      A,B             ; Room number to A
 4924: 32 E2 48   LD      ($48E2),A       ; Change rooms
 
-ScriptComman05:
+ScriptComman05: ;=
 ; PrintRoomDescription()
 4927: CD 2D 49   CALL    $492D           ; Print the room description
 492A: C3 0B 44   JP      $440B           ; ScriptCommandPASS
      
-DescribeRoom:
+DescribeRoom: ;=
 ; DescribeCurrentRoom()
 492D: 21 84 4C   LD      HL,$4C84        ; "YOU ARE AT THE " message
 4930: CD AE 45   CALL    $45AE           ; Print the message
@@ -987,7 +1025,7 @@ DescribeRoom:
 4963: C1         POP     BC              ; Restore object number
 4964: C3 45 49   JP      $4945           ; Keep checking objects
 
-ScriptCommand02:
+ScriptCommand02: ;=
 ; AssertObjectInPack(object)
 4967: E1         POP     HL              ; Script pointer
 4968: 7E         LD      A,(HL)          ; Get object number
@@ -998,7 +1036,7 @@ ScriptCommand02:
 4970: CA 0B 44   JP      Z,$440B         ; ScriptCommandPASS
 4973: C3 1E 44   JP      $441E           ; ScriptCommandFAIL
 
-ScriptCommand03:
+ScriptCommand03: ;=
 ; AssertObjectIsInRoomOrPack(object) 
 4976: E1         POP     HL              ; Script pointer
 4977: 46         LD      B,(HL)          ; Get object number
@@ -1012,7 +1050,7 @@ ScriptCommand03:
 4985: 78         LD      A,B             ; Object number again
 4986: C3 6B 49   JP      $496B           ; Continue checking the pack
 
-ScriptCommand16:
+ScriptCommand16: ;=
 ; AssertObjectIsInRoom(object)
 4989: E1         POP     HL              ; Script pointer
 498A: 3A E2 48   LD      A,($48E2)       ; Room number ...
@@ -1024,7 +1062,7 @@ ScriptCommand16:
 4994: CA 0B 44   JP      Z,$440B         ; Found it in room ... ScriptCommandPASS
 4997: C3 1E 44   JP      $441E           ; ScriptCommandFAIL
 
-ScriptCommand14:
+ScriptCommand14: ;=
 ; GetNounToPack()
 499A: 3A 7B 46   LD      A,($467B)       ; Input Noun
 499D: 1E FF      LD      E,$FF           ; Is object already ...
@@ -1036,7 +1074,7 @@ ScriptCommand14:
 49AB: 47         LD      B,A             ; ... noun
 49AC: C3 08 4A   JP      $4A08           ; Get object from room
 
-ScriptCommand04:
+ScriptCommand04: ;=
 ; PrintMessage(message)
 49AF: E1         POP     HL              ; Get script pointer
 49B0: 5E         LD      E,(HL)          ; Get ...
@@ -1048,7 +1086,7 @@ ScriptCommand04:
 49B6: CD AE 45   CALL    $45AE           ; Unpack and print
 49B9: C3 0B 44   JP      $440B           ; ScriptCommandPASS
 
-ScriptCommand08:
+ScriptCommand08: ;=
 ; MoveObjectToCurrentRoom(object)
 49BC: E1         POP     HL              ; Get script pointer
 49BD: 46         LD      B,(HL)          ; Get the object number
@@ -1061,7 +1099,7 @@ ScriptCommand08:
 49C5: CD D1 43   CALL    $43D1           ; Move object
 49C8: C3 2A 4A   JP      $4A2A           ; Print OK and PASS
 
-ScriptCommand09:
+ScriptCommand09: ;=
 ; PrintInventory()
 49CB: 06 00      LD      B,$00           ; B runs the object numbers
 49CD: 1E FF      LD      E,$FF           ; Location = backpack
@@ -1087,7 +1125,7 @@ ScriptCommand09:
 49F1: C1         POP     BC              ; Restore object number
 49F2: C3 CD 49   JP      $49CD           ; Keep going
 
-ScriptCommand10:
+ScriptCommand10: ;=
 ; AssertInputNounIs(object)
 49F5: E1         POP     HL              ; Script pointer
 49F6: 46         LD      B,(HL)          ; Get object number
@@ -1098,7 +1136,7 @@ ScriptCommand10:
 49FD: C2 1E 44   JP      NZ,$441E        ; No ... ScriptCommandFAIL
 4A00: C3 0B 44   JP      $440B           ; Yes ... ScriptCommandPASS
 
-ScriptCommand11:
+ScriptCommand11: ;=
 ; GetObjectFromRoom(object)
 4A03: E1         POP     HL              ; Script pointer
 4A04: 46         LD      B,(HL)          ; Get object
@@ -1119,19 +1157,19 @@ ScriptCommand11:
 4A1D: CD D1 43   CALL    $43D1           ; Move the object
 4A20: C3 2A 4A   JP      $4A2A           ; Print OK and PASS
 
-ScriptCommand15:
+ScriptCommand15: ;=
 ; DropNounToCurrentRoom()
 4A23: 3A 7B 46   LD      A,($467B)       ; User input
 4A26: 47         LD      B,A             ; To B
 4A27: C3 C0 49   JP      $49C0           ; Drop the object in the current room
 
-ScriptCommand12:
+ScriptCommand12: ;=
 ; PrintOK
 4A2A: 21 7B 4D   LD      HL,$4D7B        ; "OK"
 4A2D: CD AE 45   CALL    $45AE           ; Print OK
 4A30: C3 0B 44   JP      $440B           ; ScriptCommandPASS
 
-ScriptCommand13:
+ScriptCommand13: ;=
 ; MoveObjectToRoom(object,room)
 4A33: E1         POP     HL              ; Script pointer
 4A34: 7E         LD      A,(HL)          ; Get object
@@ -1148,7 +1186,7 @@ ScriptCommand13:
 4A44: 73         LD      (HL),E          ; Set the room number
 4A45: C3 0B 44   JP      $440B           ; ScriptCommandPASS
         
-ScriptCommand07:
+ScriptCommand07: ;=
 ; EndlessLoop()
 4A48: C3 48 4A   JP      $4A48           ; Infinite loop
             
@@ -1194,8 +1232,17 @@ CommandTable: ;=
 4AE5: CC 50 41 4E 45 0E      ; 11_001_100  PANE  0E
 4AEB: CC 50 4C 55 47 0A      ; 11_001_100  PLUG  0A         
 4AF1: 00                     ; end of list
-                     
-; General script (when input does not match the current room's script)
+ 
+GeneralScript: ;=                    
+; When you enter a command, the game tries your input against the script of the current room.
+; If that script fails then this general script runs to handle common things like GET and DROP
+; along with some other things:
+;  - Unhandled directions simply reprint the room description
+;  - GET, DROP, LOOK, QUIT, and INVENTORY do what you would expect (unless the room
+;    script has already handled these words).
+;  - POUR, SMASH, and PLUGH print messages.
+;  - You can READ the PAPER or SCROLL if they are present (in your pack or in the room).
+;  - DRINK the water and you die.
 ;                    ; {
 4AF2: 01 02 05       ;  "N"    : ["PrintRoomDescription()"],
 4AF5: 02 02 05       ;  "E"    : ["PrintRoomDescription()"],                
@@ -1219,7 +1266,11 @@ CommandTable: ;=
 4B2F: 0A 04 04 09 4E ;  "PLUG" : ["Print(SORRY,_ONLY_ONE_PLUGH_PER_CUSTOMER.[CR])"]               
 4B34: 00             ; }            
 
-; Compressed text
+CompressedText: ;=
+
+; How much was saved? There are 04CB bytes from here down. The compression isn't perfect. There are uncompressed
+; characters and terminators. But ideally you could get 04CB/2*3 = 72F characters. That would be an additional 
+; 612 bytes. The "uncompressor" is 154 bytes. That's a pretty good tradeoff.
 
 ; THERE_IS_A_CRUMPLED_PIECE_OF_PAPER_ON_THE_GROUND.[CR]
 4B35: 10 5F BE 5B B1 4B 7B 45 45 EF B3 FF A5 12 58 25 
