@@ -750,9 +750,9 @@ RoomScripts:
 484D: 01 06 10 03 ;     "N"    : ["AssertObjectIsInRoom(GHOST3)",                
 4851: 04 79 4C    ;               "Print(THE_GHOST_WILL_NOT_LET_YOU_PASS![CR])"],                 
 4854: 03 06 10 03 ;     "S"    : ["AssertObjectIsInRoom(GHOST3)",                  
-4858: 04 79 4C    ;               "Print(THE_GHOST_WILL_NOT_LET_YOU_PASS![CR]))"],             
+4858: 04 79 4C    ;               "Print(THE_GHOST_WILL_NOT_LET_YOU_PASS![CR])"],             
 485B: 04 06 10 03 ;     "W"    : ["AssertObjectIsInRoom(GHOST3)",                  
-485F: 04 79 4C    ;               "Print(THE_GHOST_WILL_NOT_LET_YOU_PASS![CR]))"],          
+485F: 04 79 4C    ;               "Print(THE_GHOST_WILL_NOT_LET_YOU_PASS![CR])"],          
 4862: 04 03 01 05 ;     "W"    : ["GoToRoom(5)"]
 4866: 00          ; },
 
@@ -764,121 +764,78 @@ RoomScripts:
 486E: 02 03 01 04 ;     "E"    : ["GoToRoom(4)"],
 4872: 11 0B 06 06 ;     "KILL" : ["SubscriptAbortAllIfPass", [             
 4876: 02 09       ;                   "AssertObjectIsInPack(SWORD)",         
-4878: 04 BF 4C    ;                   "Print(THE_GHOST_IS_IMMUNE_TO_YOUR_ATTACK![CR])"],                  
-487B: 04 43 4C    ;               "Print(YOU_CAN'T_KILL_A_GHOST_WITH_YOUR_BARE_HANDS.[CR])"],                   
-487E: 01 0A 06 06 
-4882: 03 09 04 79 4C                 
-4887: 01 06 03         
-488A: 0A                  
-488B: 06 06           
-488D: 03               
-488E: 09                  
-488F: 04                      
-4890: 79                  
-4891: 4C                   
-4892: 01 05 04       
-4895: 0A                
-4896: 06 06             
-4898: 03                     
-4899: 09              
-489A: 04                    
-489B: 79                 
-489C: 4C                    
-489D: 01 05 00     
+4878: 04 BF 4C    ;                   "Print(THE_GHOST_IS_IMMUNE_TO_YOUR_ATTACK![CR])"],                
+487B: 04 43 4C    ;               "Print(YOU_CAN'T_KILL_A_GHOST_WITH_YOUR_BARE_HANDS.[CR])"],          
+487E: 01 0A 06 06 ;     "N"    : ["SubscriptAbortAllIfPass", [ 
+4882: 03 09       ;                   "AssertObjectIsInRoomOrPack(SWORD)"
+4884: 04 79 4C    ;                   "Print(THE_GHOST_WILL_NOT_LET_YOU_PASS![CR])"],            
+4887: 01 06       ;               "GoToRoom(6)"],
+4889: 03 0A 06 06 ;     "S"    : ["SubscriptAbortAllIfPass", [          
+488D: 03 09       ;                   "AssertObjectIsInRoomOrPack(SWORD)",          
+488F: 04 79 4C    ;                   "Print(THE_GHOST_WILL_NOT_LET_YOU_PASS![CR])"],               
+4892: 01 05       ;               "GoToRoom(5)"],
+4894: 04 0A 06 06 ;     "W"    : ["SubscriptAbortAllIfPass", [          
+4898: 03 09       ;                   "AssertObjectIsInRoomOrPack(SWORD)",       
+489A: 04 79 4C    ;                   "Print(THE_GHOST_WILL_NOT_LET_YOU_PASS![CR])"],                  
+489D: 01 05       ;               "GoToRoom(5)"] 
+489F: 00          ; },     
 
 ; Commands 6 
-                  ; "Room_6"   : {
-                  ;     "Description" : "YOU_ARE_IN_A_DIMLY_LIT_ROOM.[CR]",  
-48A0: 11 06 0A       
-48A3: 09             
-48A4: 04                    
-48A5: 91                   
-48A6: 4C                 
-48A7: 02                  
-48A8: 03                 
-48A9: 01 04 03          
-48AC: 03             
-48AD: 01 05 04     
-48B0: 03                
-48B1: 01 07 11         
-48B4: 04                   
-48B5: 04                
-48B6: 43               
-48B7: 4C                   
-48B8: 00                  
+                     ; "Room_6"   : {
+                     ;     "Description" : "YOU_ARE_IN_A_DIMLY_LIT_ROOM.[CR]",  
+48A0: 11 06 0A 09    ;     "KILL" : ["AssertNounIs(SWORD)",          
+48A4: 04 91 4C       ;               "Print(OUCH!__YOU_HURT_YOUR_HAND.[CR])"],             
+48A7: 02 03 01 04    ;     "E"    : ["GoToRoom(4)"],
+48AB: 03 03 01 05    ;     "S"    : ["GoToRoom(5)"],
+48AF: 04 03 01 07    ;     "W"    : ["GoToRoom(7)"],
+48B3: 11 04 04 43 4C ;     "KILL" : ["Print(YOU_CAN'T_KILL_A_GHOST_WITH_YOUR_BARE_HANDS.[CR]))"]                   
+48B8: 00             ; },     
 
 ; Commands 7 
-                  ; "Room_7"   : {
-                  ;     "Description" : "YOU_ARE_IN_A_DIMLY_LIT_ROOM.[CR]",      
-48B9: 11 06 0A 09             
-48BD: 04 91 4C                   
-48C0: 02 03 01 06 
-      03 03 01 08 
-      11 04 04 43 4C                  
-48CD: 00                           
+                     ; "Room_7"   : {
+                     ;     "Description" : "YOU_ARE_IN_A_DIMLY_LIT_ROOM.[CR]",      
+48B9: 11 06 0A 09    ;     "KILL" : ["AssertNounIs(SWORD)",         
+48BD: 04 91 4C       ;               "Print(OUCH!__YOU_HURT_YOUR_HAND.[CR])"],             
+48C0: 02 03 01 06    ;     "E"    : ["GoToRoom(6)"],
+48C4: 03 03 01 08    ;     "S"    : ["GoToRoom(8)"],
+48C8: 11 04 04 43 4C ;     "KILL" : ["Print(YOU_CAN'T_KILL_A_GHOST_WITH_YOUR_BARE_HANDS.[CR]))"]                
+48CD: 00             ; },              
 
 ; Commands 8 
                   ; "Room_8"   : {
                   ;     "Description" : "YOU_ARE_IN_A_DIMLY_LIT_ROOM.[CR]",
-48CE: 01 03 01 07                        
-48D2: 02 15                    
-48D4: 06 07          
-48D6: 02               
-48D7: 0A          
-48D8: 04                      
-48D9: 56              
-48DA: 4D                
-48DB: 07                         
-48DC: 06 07               
-48DE: 10 0D             
-48E0: 04              
-48E1: 75               
-48E2: 4D                  
-48E3: 07                        
-48E4: 04                  
-48E5: 56              
-48E6: 4D                 
-48E7: 07                        
-
-48E8: 03 15                    
-48EA: 06 07            
-48EC: 02              
-48ED: 0A              
-48EE: 04                  
-48EF: 56                  
-48F0: 4D                 
-48F1: 07                           
-48F2: 06 07          
-48F4: 10 0D            
-48F6: 04                
-48F7: 75                 
-48F8: 4D                   
-48F9: 07                            
-48FA: 04                    
-48FB: 56                 
-48FC: 4D                
-48FD: 07
-                  
-48FE: 04 15                      
-4900: 06 07              
-4902: 02               
-4903: 0A            
-4904: 04                
-4905: 56              
-4906: 4D                    
-4907: 07                          
-4908: 06 07               
-490A: 10 0D               
-490C: 04                    
-490D: 75               
-490E: 4D                 
-490F: 07                       
-4910: 04                
-4911: 56              
-4912: 4D                  
-4913: 07 
-                         
-4914: 00            
+48CE: 01 03 01 07 ;     "N"    : ["GoToRoom(7)"],                       
+48D2: 02 15 06 07 ;     "E"    : ["SubscriptAbortAllIfPass", [          
+48D6: 02 0A       ;                   "AssertObjectIsInPack(SIGN)",   
+48D8: 04 56 4D    ;                   "Print(YOU_FALL_THROUGH_A_TRAP_DOOR_TO_YOUR_DEATH![CR])",            
+48DB: 07          ;                   "EndlessLoop()"],                       
+48DC: 06 07       ;               "SubscriptAbortAllIfPass", [
+48DE: 10 0D       ;                   "AssertObjectIsInRoom(EXIT)"
+48E0: 04 75 4D    ;                   "Print(YOU_WALK_THROUGH_A_DOOR_AND_FIND_YOURSELF_ON_A_BALCONY.__YOU____CLIMB_DOWN_A_TREE_AND_ESCAPE_TO_SAFETY!__CONGRATULATIONS!_______YOU_MADE_IT![CR])",              
+48E3: 07          ;                   "EndlessLoop()"],              
+48E4: 04 56 4D    ;               "Print(YOU_FALL_THROUGH_A_TRAP_DOOR_TO_YOUR_DEATH![CR])",             
+48E7: 07          ;               "EndlessLoop()"],    
+48E8: 03 15 06 07 ;     "S"    : ["SubscriptAbortAllIfPass", [           
+48EC: 02 0A       ;                   "AssertObjectIsInPack(SIGN)",       
+48EE: 04 56 4D    ;                   "Print(YOU_FALL_THROUGH_A_TRAP_DOOR_TO_YOUR_DEATH![CR])",              
+48F1: 07          ;                   "EndlessLoop()"],                 
+48F2: 06 07       ;               "SubscriptAbortAllIfPass", [   
+48F4: 10 0D       ;                   "AssertObjectIsInRoom(EXIT)"     
+48F6: 04 75 4D    ;                   "Print(YOU_WALK_THROUGH_A_DOOR_AND_FIND_YOURSELF_ON_A_BALCONY.__YOU____CLIMB_DOWN_A_TREE_AND_ESCAPE_TO_SAFETY!__CONGRATULATIONS!_______YOU_MADE_IT![CR])",                             
+48F9: 07          ;                   "EndlessLoop()"],                  
+48FA: 04 56 4D    ;               "Print(YOU_FALL_THROUGH_A_TRAP_DOOR_TO_YOUR_DEATH![CR])",            
+48FD: 07          ;                   "EndlessLoop()"],                  
+48FE: 04 15 06 07 ;     "W"    : ["SubscriptAbortAllIfPass", [              
+4902: 02 0A       ;                   "AssertObjectIsInPack(SIGN)",      
+4904: 04 56 4D    ;                   "Print(YOU_FALL_THROUGH_A_TRAP_DOOR_TO_YOUR_DEATH![CR])",                
+4907: 07          ;                   "EndlessLoop()"],                 
+4908: 06 07       ;               "SubscriptAbortAllIfPass", [         
+490A: 10 0D       ;                   "AssertObjectIsInRoom(EXIT)"         
+490C: 04 75 4D    ;                   "Print(YOU_WALK_THROUGH_A_DOOR_AND_FIND_YOURSELF_ON_A_BALCONY.__YOU____CLIMB_DOWN_A_TREE_AND_ESCAPE_TO_SAFETY!__CONGRATULATIONS!_______YOU_MADE_IT![CR])",             
+490F: 07          ;                   "EndlessLoop()"],              
+4910: 04 56 4D    ;               "Print(YOU_FALL_THROUGH_A_TRAP_DOOR_TO_YOUR_DEATH![CR])",               
+4913: 07          ;                   "EndlessLoop()"]                         
+4914: 00          ; } 
    
 ObjectInfo: ;= 
 ;
@@ -904,7 +861,7 @@ ObjectInfo: ;=
 4927: 40 08 ; 10 SIGN                      +(Room 8)
 4929: 00 06 ; 11 GHOST 11 (live)            (Room 6)
 492B: 00 07 ; 12 GHOST 12 (live)            (Room 7)       
-492D: 40 00 ; 13 (?)                       +(out of play)
+492D: 40 00 ; 13 (open exit marker)        +(out of play) ; ?? Why is this pick-up-able?
 
 492F: 01
 4930: 00 
@@ -925,7 +882,7 @@ ObjectDescriptions:
 4945: A4 4B ; 10 SIGN              
 4947: 51 4B ; 11 GHOST 11 (live)                
 4949: 51 4B ; 12 GHOST 12 (live)               
-494B: 15 49 ; 13 (? no description)    
+494B: 15 49 ; 13 (open exit marker no description)    
  
 ScriptCommands:          
 494D: 6E 49 ;  1 GoToRoom(room)        
@@ -1159,56 +1116,33 @@ CommandTable: ;=
 4B13: CC 50 4C 55 47 0A                    ; 11_001_100  PLUG  0A
 4B19: 00                                   ; end of list
 
-; General script (when input does not match the current room's script)
-;                     
-4B1A: 01 02 05         
-4B1D: 02              
-4B1E: 02           
-4B1F: 05                   
-4B20: 03                    
-4B21: 02                
-4B22: 05                 
-4B23: 04                   
-4B24: 02            
-4B25: 05                      
-4B26: 06 02              
-4B28: 0E 07            
-4B2A: 02                
-4B2B: 0F                      
-4B2C: 0D                      
-4B2D: 02               
-4B2E: 05                   
-4B2F: 0B                 
-4B30: 02               
-4B31: 07                          
-4B32: 0C                      
-4B33: 02              
-4B34: 09                   
-4B35: 09                 
-4B36: 09                
-4B37: 0A                 
-4B38: 0A                 
-4B39: 0D                    
-4B3A: 0D                      
-4B3B: 08                
-4B3C: 04                   
-4B3D: D9                        
-4B3E: 4C                  
-4B3F: 0A               
-4B40: 04                     
-4B41: 04                  
-4B42: A5                  
-4B43: 4C                    
-4B44: 11 04 04        
-4B47: 91                     
-4B48: 4C                     
-4B49: 09                 
-4B4A: 06 0A                
-4B4C: 09                 
-4B4D: 04                     
-4B4E: D5                      
-4B4F: 4D                   
-4B50: 00       
+GeneralScript: ;=                    
+; When you enter a command, the game tries your input against the script of the current room.
+; If that script fails then this general script runs to handle common things like GET and DROP
+; along with some other things:
+;  - Unhandled directions simply reprint the room description
+;  - GET, DROP, LOOK, QUIT, and INVENTORY do what you would expect (unless the room
+;    script has already handled these words).
+;  - KILL and PLUGH print a message.
+;  - You can READ the SIGN or SWORD to get a message. Note that you MUST read the sign to open the exit.  
+;                    ; {                   
+4B1A: 01 02 05       ;  "N"    : ["PrintRoomDescription()"],  
+4B1D: 02 02 05       ;  "E"    : ["PrintRoomDescription()"],            
+4B20: 03 02 05       ;  "S"    : ["PrintRoomDescription()"],          
+4B23: 04 02 05       ;  "W"    : ["PrintRoomDescription()"],               
+4B26: 06 02 0E       ;  "GET"  : ["GetNounToPack()"], 
+4B29: 07 02 0F       ;  "DROP" : ["DropNounToRoom()"],               
+4B2C: 0D 02 05       ;  "LOOK" : ["PrintRoomDescription()"],           
+4B2F: 0B 02 07       ;  "QUIT" : ["EndlessLoop()"],                    
+4B32: 0C 02  09      ;  "INVE" : ["PrintInventory()"],                  
+4B35: 09 09 0A 0A    ;  "READ" : ["AssertInputNounIs(SIGN)",                 
+4B39: 0D 0D 08       ;            "MoveObjectToRoom(8)", 
+4B3C: 04 D9 4C       ;            "Print(THE_SIGN_SAYS,_______________________________________________________"THERE_ARE_THREE_EXITS_FROM_THIS_ROOM.__ONLY_ONE_IS_TRUE...______YOU_MUST_KNOW,_BUT_NOT_BE_BURDENED_BY,_THIS_CLUE!"[CR])"],   
+4B3F: 0A 04 04 A5 4C ;  "PLUG" : ["Print(SORRY,_ONLY_ONE_PLUGH_PER_CUSTOMER.[CR])"],                  
+4B44: 11 04 04 91 4C ;  "KILL" : ["Print(; OUCH!__YOU_HURT_YOUR_HAND.[CR])"],                     
+4B49: 09 06 0A 09    ;  "READ" : ["AssertInputNounIs(SWORD)",             
+4B4D: 04 D5 4D       ;            "Print(AN_INSCRIPTION_READS,_"GHOST_KILLER."[CR])"]            
+4B50: 00             ; }
                      
 ; Compressed text
 
