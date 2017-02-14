@@ -16,29 +16,34 @@
 436E: CD B3 45   CALL    $45B3           ; Print message
 4371: CD 7C 49   CALL    $497C           ; Print room description
 ;
-4374: 97         SUB     A,A             
-4375: 32 80 46   LD      ($4680),A       
-4378: 32 81 46   LD      ($4681),A       
-437B: 32 82 46   LD      ($4682),A       
-437E: CD 2F 44   CALL    $442F           
-4381: 3A 2F 49   LD      A,($492F)       
-4384: 21 82 47   LD      HL,$4782        
-4387: CD C6 43   CALL    $43C6           
-438A: 23         INC     HL              
-438B: 23         INC     HL              
-438C: 7E         LD      A,(HL)          
-438D: 23         INC     HL              
-438E: 66         LD      H,(HL)          
-438F: 6F         LD      L,A             
-4390: CD D8 43   CALL    $43D8           
-4393: C2 A5 43   JP      NZ,$43A5        
-4396: 21 1A 4B   LD      HL,$4B1A        
-4399: CD D8 43   CALL    $43D8           
-439C: C2 A5 43   JP      NZ,$43A5        
-439F: 21 F0 4D   LD      HL,$4DF0        
-43A2: CD B3 45   CALL    $45B3           
-43A5: CD 6D 49   CALL    $496D           
-43A8: C3 74 43   JP      $4374           
+4374: 97         SUB     A,A             ; Make a zero
+4375: 32 80 46   LD      ($4680),A       ; Clear noun
+4378: 32 81 46   LD      ($4681),A       ; Clear verb
+437B: 32 82 46   LD      ($4682),A       ; Clear grammar
+437E: CD 2F 44   CALL    $442F           ; ParseUserInput
+4381: 3A 2F 49   LD      A,($492F)       ; Current room
+4384: 21 82 47   LD      HL,$4782        ; Room descriptors
+4387: CD C6 43   CALL    $43C6           ; Get 4 bytes for room
+438A: 23         INC     HL              ; Skip over ...
+438B: 23         INC     HL              ; ... to room's script pointer
+438C: 7E         LD      A,(HL)          ; Script ...
+438D: 23         INC     HL              ; ... pointer ...
+438E: 66         LD      H,(HL)          ; ... to ...
+438F: 6F         LD      L,A             ; ... HL
+4390: CD D8 43   CALL    $43D8           ; Process the room script
+4393: C2 A5 43   JP      NZ,$43A5        ; ZF clear ... script was successful. Move on.
+4396: 21 1A 4B   LD      HL,$4B1A        ; General script
+4399: CD D8 43   CALL    $43D8           ; Process the script
+439C: C2 A5 43   JP      NZ,$43A5        ; ZF clear ... script was successful. Move on
+439F: 21 F0 4D   LD      HL,$4DF0        ; "NO"
+43A2: CD B3 45   CALL    $45B3           ; Print packed error message
+;
+; This is a RET statement. The PYRAMID code uses this to process after-every-command things.
+; This wasted call was removed from the first floor code ... maybe as part of a byte-squeeze
+; effort.
+43A5: CD 6D 49   CALL    $496D           ; Do nothing
+;
+43A8: C3 74 43   JP      $4374           ; Back to top of input loop
 
 43AB: 21 15 49   LD      HL,$4915        
 43AE: CD BC 43   CALL    $43BC           
@@ -74,6 +79,8 @@
 43D5: 73         LD      (HL),E          
 43D6: 2B         DEC     HL              
 43D7: C9         RET                     
+
+ProcessRoomScript: ;=
 43D8: 7E         LD      A,(HL)          
 43D9: A7         AND     A               
 43DA: C8         RET     Z               
@@ -82,30 +89,36 @@
 43E0: 3A 81 46   LD      A,($4681)       
 43E3: BE         CP      (HL)            
 43E4: 23         INC     HL              
-43E5: CA EF 43   JP      Z,$43EF         
+43E5: CA EF 43   JP      Z,$43EF        
 43E8: 4E         LD      C,(HL)          
 43E9: 06 00      LD      B,$00           
 43EB: 09         ADD     HL,BC           
 43EC: C3 D8 43   JP      $43D8           
 43EF: CD F6 43   CALL    $43F6           
 43F2: C0         RET     NZ              
-43F3: C3 D8 43   JP      $43D8           
+43F3: C3 D8 43   JP      $43D8        
+
+RunScript: ;=   
 43F6: E5         PUSH    HL              
 43F7: 4E         LD      C,(HL)          
 43F8: 06 00      LD      B,$00           
 43FA: 09         ADD     HL,BC           
 43FB: E3         EX      (SP),HL         
 43FC: 23         INC     HL              
+;
+;RunScriptCommand:
 43FD: 7E         LD      A,(HL)          
 43FE: 23         INC     HL              
 43FF: E5         PUSH    HL              
-4400: 21 4D 49   LD      HL,$494D        
+4400: 21 4D 49   LD      HL,$494D         ; Jump table of commands
 4403: CD BC 43   CALL    $43BC           
 4406: 7E         LD      A,(HL)          
 4407: 23         INC     HL              
 4408: 66         LD      H,(HL)          
 4409: 6F         LD      L,A             
 440A: E9         JP      (HL)            
+
+ScriptCommandPASS:
 440B: E1         POP     HL              
 440C: D1         POP     DE              
 440D: 7C         LD      A,H             
@@ -117,11 +130,24 @@
 4417: F6 01      OR      $01             
 4419: C9         RET                     
 441A: D5         PUSH    DE              
-441B: C3 FD 43   JP      $43FD           
+441B: C3 FD 43   JP      $43FD
+
+ScriptCommandFAIL:           
 441E: E1         POP     HL              
 441F: E1         POP     HL              
 4420: AF         XOR     A               
 4421: C9         RET                     
+
+ScriptCommand06:
+; SubscriptAbortAllIfPass(...)
+; Run the subscript. If the subscript passes then abort the current script and
+; all parent scripts. If the subscript fails then continue on to the next command.
+;
+; How does this abort all current scripts, you ask?
+; 43F6 only has two callers: the primary caller and the code here at 4423. The RET
+; at 442E returns either to that primary caller or to 4426. The code at 4426 keeps
+; the zero flag clear which continues to call return for subscripts eventually
+; getting back to the primary caller.
 4422: E1         POP     HL              
 4423: CD F6 43   CALL    $43F6           
 4426: E5         PUSH    HL              
@@ -318,6 +344,8 @@
 45B0: 00         NOP                     
 45B1: 00         NOP                     
 45B2: 00         NOP                     
+
+PrintPacked: ;=
 45B3: 7E         LD      A,(HL)          
 45B4: A7         AND     A               
 45B5: C8         RET     Z               
@@ -464,6 +492,7 @@
 469A: 04         INC     B               
 469B: DD         ???                     
 469C: 03         INC     BC              
+
 469D: 1D         DEC     E               
 469E: 40         LD      B,B             
 469F: 15         DEC     D               
@@ -584,419 +613,356 @@
 4754: E1         POP     HL              
 4755: C9         RET      
 
-               
-4756: 3F         CCF                     
-4757: 21 32 20   LD      HL,$2032        
-475A: 22 27 3C   LD      ($3C27),HL      
-475D: 3E 2F      LD      A,$2F           
-475F: 30 33      JR      NC,$4794        
-4761: 41         LD      B,C             
-4762: 42         LD      B,D             
-4763: 43         LD      B,E             
-4764: 44         LD      B,H             
-4765: 45         LD      B,L             
-4766: 46         LD      B,(HL)          
-4767: 47         LD      B,A             
-4768: 48         LD      C,B             
-4769: 49         LD      C,C             
-476A: 4A         LD      C,D             
-476B: 4B         LD      C,E             
-476C: 4C         LD      C,H             
-476D: 4D         LD      C,L             
-476E: 4E         LD      C,(HL)          
-476F: 4F         LD      C,A             
-4770: 50         LD      D,B             
-4771: 51         LD      D,C             
-4772: 52         LD      D,D             
-4773: 53         LD      D,E             
-4774: 54         LD      D,H             
-4775: 55         LD      D,L             
-4776: 56         LD      D,(HL)          
-4777: 57         LD      D,A             
-4778: 58         LD      E,B             
-4779: 59         LD      E,C             
-477A: 5A         LD      E,D             
-477B: 2D         DEC     L               
-477C: 2C         INC     L               
-477D: 2E 00      LD      L,$00           
-477F: 00         NOP                     
-4780: 00         NOP                     
-4781: 00         NOP
+; Character compression table
+CharTable:                
+4756: 3F                         
+4757: 21 32 20       
+475A: 22 27 3C       
+475D: 3E 2F             
+475F: 30 33           
+4761: 41                   
+4762: 42               
+4763: 43                 
+4764: 44                
+4765: 45                    
+4766: 46           
+4767: 47                  
+4768: 48                     
+4769: 49                    
+476A: 4A                    
+476B: 4B                 
+476C: 4C                    
+476D: 4D                   
+476E: 4E                
+476F: 4F                     
+4770: 50                    
+4771: 51                     
+4772: 52                    
+4773: 53                     
+4774: 54                
+4775: 55         
+4776: 56                
+4777: 57                   
+4778: 58                 
+4779: 59                  
+477A: 5A                
+477B: 2D                     
+477C: 2C                    
+477D: 2E
+ 
+477E: 00 ; RAM used by unpack        
+477F: 00 ; RAM used by unpack                
+4780: 00 ; RAM used by unpack                    
+4781: 00 ; RAM used by unpack
 
 RoomInformation:
-; First two: description
+; First two: description (most rooms look the same)
 ; Second two: room script                     
-4782: E6 4B A2 47          
-4786: DA 4B B5 47          
-478A: DA 4B EF 47          
-478E: DA 4B 29 48         
-4792: DA 4B 67 48              
-4796: DA 4B A0 48            
-479A: DA 4B B9 48               
-479E: DA 4B CE 48     
+4782: E6 4B A2 47 ; 1 DIMLY_LIT_ROOM.__THERE_IS_A_HOLE_IN_THE_FLOOR.[CR]   
+4786: DA 4B B5 47 ; 2 DIMLY_LIT_ROOM.[CR]      
+478A: DA 4B EF 47 ; 3 DIMLY_LIT_ROOM.[CR]         
+478E: DA 4B 29 48 ; 4 DIMLY_LIT_ROOM.[CR]        
+4792: DA 4B 67 48 ; 5 DIMLY_LIT_ROOM.[CR]              
+4796: DA 4B A0 48 ; 6 DIMLY_LIT_ROOM.[CR]            
+479A: DA 4B B9 48 ; 7 DIMLY_LIT_ROOM.[CR]              
+479E: DA 4B CE 48 ; 8 DIMLY_LIT_ROOM.[CR]     
     
-; Commands 1 ????               
-47A2: 02        
-47A3: 03         
-47A4: 01 02 03     
-47A7: 03         INC     BC              
-47A8: 01 03 04   LD      BC,$0403        
-47AB: 03         INC     BC              
-47AC: 01 04 0F   LD      BC,$0F04        
-47AF: 05         DEC     B               
-47B0: 04         INC     B               
-47B1: F4 4D 07   CALL    P,$074D         
-47B4: 00         NOP                     
-47B5: 11 06 0A   LD      DE,$0A06        
-47B8: 09         ADD     HL,BC           
-47B9: 04         INC     B               
-47BA: 91         SUB     C               
-47BB: 4C         LD      C,H             
-47BC: 04         INC     B               
-47BD: 03         INC     BC              
-47BE: 01 01 11   LD      BC,$1101        
-47C1: 18 06      JR      $47C9           
-47C3: 13         INC     DE              
-47C4: 10 01      DJNZ    $47C7           
-47C6: 06 0C      LD      B,$0C           
-47C8: 02         LD      (BC),A          
-47C9: 09         ADD     HL,BC           
-47CA: 0D         DEC     C               
-47CB: 01 00 0D   LD      BC,$0D00        
-47CE: 05         DEC     B               
-47CF: 02         LD      (BC),A          
-47D0: 04         INC     B               
-47D1: 11 4C 04   LD      DE,$044C        
-47D4: 43         LD      B,E             
-47D5: 4C         LD      C,H             
-47D6: 04         INC     B               
-47D7: 63         LD      H,E             
-47D8: 4C         LD      C,H             
-47D9: 01 06 10   LD      BC,$1006        
-47DC: 01 04 79   LD      BC,$7904        
-47DF: 4C         LD      C,H             
-47E0: 02         LD      (BC),A          
-47E1: 06 10      LD      B,$10           
-47E3: 01 04 79   LD      BC,$7904        
-47E6: 4C         LD      C,H             
-47E7: 03         INC     BC              
-47E8: 06 10      LD      B,$10           
-47EA: 01 04 79   LD      BC,$7904        
-47ED: 4C         LD      C,H             
-47EE: 00         NOP                     
-47EF: 11 06 0A   LD      DE,$0A06        
-47F2: 09         ADD     HL,BC           
-47F3: 04         INC     B               
-47F4: 91         SUB     C               
-47F5: 4C         LD      C,H             
-47F6: 01 03 01   LD      BC,$0103        
-47F9: 01 11 18   LD      BC,$1811        
-47FC: 06 13      LD      B,$13           
-47FE: 10 02      DJNZ    $4802           
-4800: 06 0C      LD      B,$0C           
-4802: 02         LD      (BC),A          
-4803: 09         ADD     HL,BC           
-4804: 0D         DEC     C               
-4805: 02         LD      (BC),A          
-4806: 00         NOP                     
-4807: 0D         DEC     C               
-4808: 06 03      LD      B,$03           
-480A: 04         INC     B               
-480B: 11 4C 04   LD      DE,$044C        
-480E: 43         LD      B,E             
-480F: 4C         LD      C,H             
-4810: 04         INC     B               
-4811: 63         LD      H,E             
-4812: 4C         LD      C,H             
-4813: 02         LD      (BC),A          
-4814: 06 10      LD      B,$10           
-4816: 02         LD      (BC),A          
-4817: 04         INC     B               
-4818: 79         LD      A,C             
-4819: 4C         LD      C,H             
-481A: 03         INC     BC              
-481B: 06 10      LD      B,$10           
-481D: 02         LD      (BC),A          
-481E: 04         INC     B               
-481F: 79         LD      A,C             
-4820: 4C         LD      C,H             
-4821: 04         INC     B               
-4822: 06 10      LD      B,$10           
-4824: 02         LD      (BC),A          
-4825: 04         INC     B               
-4826: 79         LD      A,C             
-4827: 4C         LD      C,H             
-4828: 00         NOP                     
-4829: 11 06 0A   LD      DE,$0A06        
-482C: 09         ADD     HL,BC           
-482D: 04         INC     B               
-482E: 91         SUB     C               
-482F: 4C         LD      C,H             
-4830: 02         LD      (BC),A          
-4831: 03         INC     BC              
-4832: 01 01 11   LD      BC,$1101        
-4835: 18 06      JR      $483D           
-4837: 13         INC     DE              
-4838: 10 03      DJNZ    $483D           
-483A: 06 0C      LD      B,$0C           
-483C: 02         LD      (BC),A          
-483D: 09         ADD     HL,BC           
-483E: 0D         DEC     C               
-483F: 03         INC     BC              
-4840: 00         NOP                     
-4841: 0D         DEC     C               
-4842: 07         RLCA                    
-4843: 04         INC     B               
-4844: 04         INC     B               
-4845: 11 4C 04   LD      DE,$044C        
-4848: 43         LD      B,E             
-4849: 4C         LD      C,H             
-484A: 04         INC     B               
-484B: 63         LD      H,E             
-484C: 4C         LD      C,H             
-484D: 01 06 10   LD      BC,$1006        
-4850: 03         INC     BC              
-4851: 04         INC     B               
-4852: 79         LD      A,C             
-4853: 4C         LD      C,H             
-4854: 03         INC     BC              
-4855: 06 10      LD      B,$10           
-4857: 03         INC     BC              
-4858: 04         INC     B               
-4859: 79         LD      A,C             
-485A: 4C         LD      C,H             
-485B: 04         INC     B               
-485C: 06 10      LD      B,$10           
-485E: 03         INC     BC              
-485F: 04         INC     B               
-4860: 79         LD      A,C             
-4861: 4C         LD      C,H             
-4862: 04         INC     B               
-4863: 03         INC     BC              
-4864: 01 05 00   LD      BC,$0005        
-4867: 11 06 0A   LD      DE,$0A06        
-486A: 09         ADD     HL,BC           
-486B: 04         INC     B               
-486C: 91         SUB     C               
-486D: 4C         LD      C,H             
-486E: 02         LD      (BC),A          
-486F: 03         INC     BC              
-4870: 01 04 11   LD      BC,$1104        
-4873: 0B         DEC     BC              
-4874: 06 06      LD      B,$06           
-4876: 02         LD      (BC),A          
-4877: 09         ADD     HL,BC           
-4878: 04         INC     B               
-4879: BF         CP      A               
-487A: 4C         LD      C,H             
-487B: 04         INC     B               
-487C: 43         LD      B,E             
-487D: 4C         LD      C,H             
-487E: 01 0A 06   LD      BC,$060A        
-4881: 06 03      LD      B,$03           
-4883: 09         ADD     HL,BC           
-4884: 04         INC     B               
-4885: 79         LD      A,C             
-4886: 4C         LD      C,H             
-4887: 01 06 03   LD      BC,$0306        
-488A: 0A         LD      A,(BC)          
-488B: 06 06      LD      B,$06           
-488D: 03         INC     BC              
-488E: 09         ADD     HL,BC           
-488F: 04         INC     B               
-4890: 79         LD      A,C             
-4891: 4C         LD      C,H             
-4892: 01 05 04   LD      BC,$0405        
-4895: 0A         LD      A,(BC)          
-4896: 06 06      LD      B,$06           
-4898: 03         INC     BC              
-4899: 09         ADD     HL,BC           
-489A: 04         INC     B               
-489B: 79         LD      A,C             
-489C: 4C         LD      C,H             
-489D: 01 05 00   LD      BC,$0005        
-48A0: 11 06 0A   LD      DE,$0A06        
-48A3: 09         ADD     HL,BC           
-48A4: 04         INC     B               
-48A5: 91         SUB     C               
-48A6: 4C         LD      C,H             
-48A7: 02         LD      (BC),A          
-48A8: 03         INC     BC              
-48A9: 01 04 03   LD      BC,$0304        
-48AC: 03         INC     BC              
-48AD: 01 05 04   LD      BC,$0405        
-48B0: 03         INC     BC              
-48B1: 01 07 11   LD      BC,$1107        
-48B4: 04         INC     B               
-48B5: 04         INC     B               
-48B6: 43         LD      B,E             
-48B7: 4C         LD      C,H             
-48B8: 00         NOP                     
-48B9: 11 06 0A   LD      DE,$0A06        
-48BC: 09         ADD     HL,BC           
-48BD: 04         INC     B               
-48BE: 91         SUB     C               
-48BF: 4C         LD      C,H             
-48C0: 02         LD      (BC),A          
-48C1: 03         INC     BC              
-48C2: 01 06 03   LD      BC,$0306        
-48C5: 03         INC     BC              
-48C6: 01 08 11   LD      BC,$1108        
-48C9: 04         INC     B               
-48CA: 04         INC     B               
-48CB: 43         LD      B,E             
-48CC: 4C         LD      C,H             
-48CD: 00         NOP                     
-48CE: 01 03 01   LD      BC,$0103        
-48D1: 07         RLCA                    
-48D2: 02         LD      (BC),A          
-48D3: 15         DEC     D               
-48D4: 06 07      LD      B,$07           
-48D6: 02         LD      (BC),A          
-48D7: 0A         LD      A,(BC)          
-48D8: 04         INC     B               
-48D9: 56         LD      D,(HL)          
-48DA: 4D         LD      C,L             
-48DB: 07         RLCA                    
-48DC: 06 07      LD      B,$07           
-48DE: 10 0D      DJNZ    $48ED           
-48E0: 04         INC     B               
-48E1: 75         LD      (HL),L          
-48E2: 4D         LD      C,L             
-48E3: 07         RLCA                    
-48E4: 04         INC     B               
-48E5: 56         LD      D,(HL)          
-48E6: 4D         LD      C,L             
-48E7: 07         RLCA                    
-48E8: 03         INC     BC              
-48E9: 15         DEC     D               
-48EA: 06 07      LD      B,$07           
-48EC: 02         LD      (BC),A          
-48ED: 0A         LD      A,(BC)          
-48EE: 04         INC     B               
-48EF: 56         LD      D,(HL)          
-48F0: 4D         LD      C,L             
-48F1: 07         RLCA                    
-48F2: 06 07      LD      B,$07           
-48F4: 10 0D      DJNZ    $4903           
-48F6: 04         INC     B               
-48F7: 75         LD      (HL),L          
-48F8: 4D         LD      C,L             
-48F9: 07         RLCA                    
-48FA: 04         INC     B               
-48FB: 56         LD      D,(HL)          
-48FC: 4D         LD      C,L             
-48FD: 07         RLCA                    
-48FE: 04         INC     B               
-48FF: 15         DEC     D               
-4900: 06 07      LD      B,$07           
-4902: 02         LD      (BC),A          
-4903: 0A         LD      A,(BC)          
-4904: 04         INC     B               
-4905: 56         LD      D,(HL)          
-4906: 4D         LD      C,L             
-4907: 07         RLCA                    
-4908: 06 07      LD      B,$07           
-490A: 10 0D      DJNZ    $4919           
-490C: 04         INC     B               
-490D: 75         LD      (HL),L          
-490E: 4D         LD      C,L             
-490F: 07         RLCA                    
-4910: 04         INC     B               
-4911: 56         LD      D,(HL)          
-4912: 4D         LD      C,L             
-4913: 07         RLCA                    
-4914: 00         NOP                     
-4915: 00         NOP                     
-4916: 02         LD      (BC),A          
-4917: 00         NOP                     
-4918: 03         INC     BC              
-4919: 00         NOP                     
-491A: 04         INC     B               
-491B: 00         NOP                     
-491C: 05         DEC     B               
-491D: 00         NOP                     
-491E: 00         NOP                     
-491F: 00         NOP                     
-4920: 00         NOP                     
-4921: 00         NOP                     
-4922: 00         NOP                     
-4923: 00         NOP                     
-4924: 00         NOP                     
-4925: 40         LD      B,B             
-4926: 01 40 08   LD      BC,$0840        
-4929: 00         NOP                     
-492A: 06 00      LD      B,$00           
-492C: 07         RLCA                    
-492D: 40         LD      B,B             
-492E: 00         NOP                     
-492F: 01 00 00   LD      BC,$0000        
-4932: 00         NOP                     
-4933: 51         LD      D,C             
-4934: 4B         LD      C,E             
-4935: 51         LD      D,C             
-4936: 4B         LD      C,E             
-4937: 51         LD      D,C             
-4938: 4B         LD      C,E             
-4939: 51         LD      D,C             
-493A: 4B         LD      C,E             
-493B: 62         LD      H,D             
-493C: 4B         LD      C,E             
-493D: 62         LD      H,D             
-493E: 4B         LD      C,E             
-493F: 62         LD      H,D             
-4940: 4B         LD      C,E             
-4941: 62         LD      H,D             
-4942: 4B         LD      C,E             
-4943: 80         ADD     A,B             
-4944: 4B         LD      C,E             
-4945: A4         AND     H               
-4946: 4B         LD      C,E             
-4947: 51         LD      D,C             
-4948: 4B         LD      C,E             
-4949: 51         LD      D,C             
-494A: 4B         LD      C,E             
-494B: 15         DEC     D               
-494C: 49         LD      C,C             
-494D: 6E         LD      L,(HL)          
-494E: 49         LD      C,C             
-494F: B6         OR      (HL)            
-4950: 49         LD      C,C             
-4951: C5         PUSH    BC              
-4952: 49         LD      C,C             
-4953: FE 49      CP      $49             
-4955: 76         HALT                    
-4956: 49         LD      C,C             
-4957: 22 44 97   LD      ($9744),HL      
-495A: 4A         LD      C,D             
-495B: 0B         DEC     BC              
-495C: 4A         LD      C,D             
-495D: 1A         LD      A,(DE)          
-495E: 4A         LD      C,D             
-495F: 44         LD      B,H             
-4960: 4A         LD      C,D             
-4961: 52         LD      D,D             
-4962: 4A         LD      C,D             
-4963: 79         LD      A,C             
-4964: 4A         LD      C,D             
-4965: 82         ADD     A,D             
-4966: 4A         LD      C,D             
-4967: E9         JP      (HL)            
-4968: 49         LD      C,C             
-4969: 72         LD      (HL),D          
-496A: 4A         LD      C,D             
-496B: D8         RET     C               
-496C: 49         LD      C,C             
-496D: C9         RET                     
+RoomScripts:
+; Commands 1 
+                     ; "Room_1"   : {
+                     ;     "Description" : "YOU_ARE_IN_A_DIMLY_LIT_ROOM.__THERE_IS_A_HOLE_IN_THE_FLOOR.[CR]",
+47A2: 02 03 01 02    ;     "E"    : ["GoToRoom(2)"],
+47A6: 03 03 01 03    ;     "S"    : ["GoToRoom(3)"],
+47AA: 04 03 01 04    ;     "W"    : ["GoToRoom(4)"],
+47AE: 0F 05 04 F4 4D ;     "CLIM" : ["Print(YOU_FALL_THROUGH_THE_HOLE_AND_BREAK_YOUR_NECK.__YOU_ARE_DEAD.[CR])",
+47B3: 07             ;               "EndlessLoop()"]
+47B4: 00             ; },
+
+; Commands 2 
+; This room either has GHOST1 (living) or GHOST5 (dead).
+; If you HIT the sword you get a message that you hurt your hand. 
+; If GHOST1 (living) is in the room:
+;  You can KILL the GHOST if you have the sword. GHOST1 is moved out of play and GHOST5 is moved to this room.
+;  Any attempt to move in an invalid direction gets you a "GHOST WILL NOT LET YOU PASS" message.
+; If GHOST5 (dead) is in the room:
+;  Any KILL command results in "THE POOR THING'S ALREADY DEAD". Try killing the sign in a room with a dead
+;  ghost. ?? Maybe you can't
+                  ; "Room_2"   : {
+                  ;     "Description" : "YOU_ARE_IN_A_DIMLY_LIT_ROOM.[CR]",                   
+47B5: 11 06 0A 09 ;     "KILL" : ["AssertNounIs(SWORD)",       
+47B9: 04 91 4C    ;               "Print(OUCH!__YOU_HURT_YOUR_HAND.[CR])"],        
+47BC: 04 03 01 01 ;     "W"    : ["GoToRoom(1)"],
+47C0: 11 18 06 13 ;     "KILL" : ["SubscriptAbortAllIfPass", [            
+47C4: 10 01       ;                   "AssertObjectIsInRoom(GHOST1)"
+47C6: 06 0C       ;                   "SubscriptAbortAllIfPass", [   
+47C8: 02 09       ;                       "AssertObjectIsInPack(SWORD)",
+47CA: 0D 01 00    ;                       "MoveObjectToRoom(GHOST1,0)",
+47CD: 0D 05 02    ;                       "MoveObjectToRoom(GHOST5,2)",         
+47D0: 04 11 4C    ;                       "Print(YOUR_MAGIC_SWORD_ENABLES_YOU_TO_KILL_THE_GHOST![CR])"]
+47D3: 04 43 4C    ;                   "Print(YOU_CAN'T_KILL_A_GHOST_WITH_YOUR_BARE_HANDS.[CR])"]
+47D6: 04 63 4C    ;               "Print(THE_POOR_THING'S_ALREADY_DEAD.[CR])"],
+47D9: 01 06 10 01 ;     "N"    : ["AssertObjectIsInRoom(GHOST1)",
+47DD: 04 79 4C    ;               "Print(THE_GHOST_WILL_NOT_LET_YOU_PASS![CR])"],      
+47E0: 02 06 10 01 ;     "E"    : ["AssertObjectIsInRoom(GHOST1)",
+47E4: 04 79 4C    ;               "Print(THE_GHOST_WILL_NOT_LET_YOU_PASS![CR]))"],
+47E7: 03 06 10 01 ;     "S"    : ["AssertObjectIsInRoom(GHOST1)",
+47EB: 04 79 4C    ;               "Print(THE_GHOST_WILL_NOT_LET_YOU_PASS![CR]))"]
+47EE: 00          ; },                  
+
+; Commands 3 
+                  ; "Room_3"   : {
+                  ;     "Description" : "YOU_ARE_IN_A_DIMLY_LIT_ROOM.[CR]",
+47EF: 11 06 0A 09 ;     "KILL" : ["AssertNounIs(SWORD)",                 
+47F3: 04 91 4C    ;               "Print(OUCH!__YOU_HURT_YOUR_HAND.[CR])"],                 
+47F6: 01 03 01 01 ;     "N"    : ["GoToRoom(1)"],
+47FA: 11 18 06 13 ;     "KILL" : ["SubscriptAbortAllIfPass", [             
+47FE: 10 02       ;                   "AssertObjectIsInRoom(GHOST2)"      
+4800: 06 0C       ;                   "SubscriptAbortAllIfPass", [          
+4802: 02 09       ;                       "AssertObjectIsInPack(SWORD)",         
+4804: 0D 02 00    ;                       "MoveObjectToRoom(GHOST2,0)",                       
+4807: 0D 06 03    ;                       "MoveObjectToRoom(GHOST6,2)",          
+480A: 04 11 4C    ;                       "Print(YOUR_MAGIC_SWORD_ENABLES_YOU_TO_KILL_THE_GHOST![CR])"]
+480D: 04 43 4C    ;                   "Print(YOU_CAN'T_KILL_A_GHOST_WITH_YOUR_BARE_HANDS.[CR])"]        
+4810: 04 63 4C    ;               "Print(THE_POOR_THING'S_ALREADY_DEAD.[CR])"],        
+4813: 02 06 10 02 ;     "E"    : ["AssertObjectIsInRoom(GHOST2)",          
+4817: 04 79 4C    ;               "Print(THE_GHOST_WILL_NOT_LET_YOU_PASS![CR])"],             
+481A: 03 06 10 02 ;     "S"    : ["AssertObjectIsInRoom(GHOST2)",           
+481E: 04 79 4C    ;               "Print(THE_GHOST_WILL_NOT_LET_YOU_PASS![CR])"],            
+4821: 04 06 10 02 ;     "W"    : ["AssertObjectIsInRoom(GHOST2)", 
+4825: 04 79 4C    ;               "Print(THE_GHOST_WILL_NOT_LET_YOU_PASS![CR])"],         
+4828: 00
+
+; Commands 4 
+                  ; "Room_4"   : {
+                  ;     "Description" : "YOU_ARE_IN_A_DIMLY_LIT_ROOM.[CR]",                     
+4829: 11 06 09    ;     "KILL" : ["AssertNounIs(SWORD)",              
+482D: 04 91 4C    ;               "Print(OUCH!__YOU_HURT_YOUR_HAND.[CR])"],               
+4830: 02 03 01 01 ;     "E"    : ["GoToRoom(1)"], 
+4834: 11 18 06 13 ;     "KILL" : ["SubscriptAbortAllIfPass", [               
+4838: 10 03       ;                   "AssertObjectIsInRoom(GHOST3)"     
+483A: 06 0C       ;                   "SubscriptAbortAllIfPass", [         
+483C: 02 09       ;                       "AssertObjectIsInPack(SWORD)",        
+483E: 0D 03 00    ;                       "MoveObjectToRoom(GHOST3,0)",                       
+4841: 0D 07 04    ;                       "MoveObjectToRoom(GHOST7,2)",             
+4844: 04 11 4C    ;                       "Print(YOUR_MAGIC_SWORD_ENABLES_YOU_TO_KILL_THE_GHOST![CR])"]
+4847: 04 43 4C    ;                   "Print(YOU_CAN'T_KILL_A_GHOST_WITH_YOUR_BARE_HANDS.[CR])"]             
+484A: 04 63 4C    ;               "Print(THE_POOR_THING'S_ALREADY_DEAD.[CR])"],               
+484D: 01 06 10 03 ;     "N"    : ["AssertObjectIsInRoom(GHOST3)",                
+4851: 04 79 4C    ;               "Print(THE_GHOST_WILL_NOT_LET_YOU_PASS![CR])"],                 
+4854: 03 06 10 03 ;     "S"    : ["AssertObjectIsInRoom(GHOST3)",                  
+4858: 04 79 4C    ;               "Print(THE_GHOST_WILL_NOT_LET_YOU_PASS![CR]))"],             
+485B: 04 06 10 03 ;     "W"    : ["AssertObjectIsInRoom(GHOST3)",                  
+485F: 04 79 4C    ;               "Print(THE_GHOST_WILL_NOT_LET_YOU_PASS![CR]))"],          
+4862: 04 03 01 05 ;     "W"    : ["GoToRoom(5)"]
+4866: 00          ; },
+
+; Commands 5
+                  ; "Room_5"   : {
+                  ;     "Description" : "YOU_ARE_IN_A_DIMLY_LIT_ROOM.[CR]",
+4867: 11 06 0A 09 ;     "KILL" : ["AssertNounIs(SWORD)",             
+486B: 04 91 4C    ;               "Print(OUCH!__YOU_HURT_YOUR_HAND.[CR])"],                
+486E: 02 03 01 04 ;     "E"    : ["GoToRoom(4)"],
+4872: 11 0B 06 06 ;     "KILL" : ["SubscriptAbortAllIfPass", [             
+4876: 02 09       ;                   "AssertObjectIsInPack(SWORD)",         
+4878: 04 BF 4C    ;                   "Print(THE_GHOST_IS_IMMUNE_TO_YOUR_ATTACK![CR])"],                  
+487B: 04 43 4C    ;               "Print(YOU_CAN'T_KILL_A_GHOST_WITH_YOUR_BARE_HANDS.[CR])"],                   
+487E: 01 0A 06 06 
+4882: 03 09 04 79 4C                 
+4887: 01 06 03         
+488A: 0A                  
+488B: 06 06           
+488D: 03               
+488E: 09                  
+488F: 04                      
+4890: 79                  
+4891: 4C                   
+4892: 01 05 04       
+4895: 0A                
+4896: 06 06             
+4898: 03                     
+4899: 09              
+489A: 04                    
+489B: 79                 
+489C: 4C                    
+489D: 01 05 00     
+
+; Commands 6 
+                  ; "Room_6"   : {
+                  ;     "Description" : "YOU_ARE_IN_A_DIMLY_LIT_ROOM.[CR]",  
+48A0: 11 06 0A       
+48A3: 09             
+48A4: 04                    
+48A5: 91                   
+48A6: 4C                 
+48A7: 02                  
+48A8: 03                 
+48A9: 01 04 03          
+48AC: 03             
+48AD: 01 05 04     
+48B0: 03                
+48B1: 01 07 11         
+48B4: 04                   
+48B5: 04                
+48B6: 43               
+48B7: 4C                   
+48B8: 00                  
+
+; Commands 7 
+                  ; "Room_7"   : {
+                  ;     "Description" : "YOU_ARE_IN_A_DIMLY_LIT_ROOM.[CR]",      
+48B9: 11 06 0A 09             
+48BD: 04 91 4C                   
+48C0: 02 03 01 06 
+      03 03 01 08 
+      11 04 04 43 4C                  
+48CD: 00                           
+
+; Commands 8 
+                  ; "Room_8"   : {
+                  ;     "Description" : "YOU_ARE_IN_A_DIMLY_LIT_ROOM.[CR]",
+48CE: 01 03 01 07                        
+48D2: 02 15                    
+48D4: 06 07          
+48D6: 02               
+48D7: 0A          
+48D8: 04                      
+48D9: 56              
+48DA: 4D                
+48DB: 07                         
+48DC: 06 07               
+48DE: 10 0D             
+48E0: 04              
+48E1: 75               
+48E2: 4D                  
+48E3: 07                        
+48E4: 04                  
+48E5: 56              
+48E6: 4D                 
+48E7: 07                        
+
+48E8: 03 15                    
+48EA: 06 07            
+48EC: 02              
+48ED: 0A              
+48EE: 04                  
+48EF: 56                  
+48F0: 4D                 
+48F1: 07                           
+48F2: 06 07          
+48F4: 10 0D            
+48F6: 04                
+48F7: 75                 
+48F8: 4D                   
+48F9: 07                            
+48FA: 04                    
+48FB: 56                 
+48FC: 4D                
+48FD: 07
+                  
+48FE: 04 15                      
+4900: 06 07              
+4902: 02               
+4903: 0A            
+4904: 04                
+4905: 56              
+4906: 4D                    
+4907: 07                          
+4908: 06 07               
+490A: 10 0D               
+490C: 04                    
+490D: 75               
+490E: 4D                 
+490F: 07                       
+4910: 04                
+4911: 56              
+4912: 4D                  
+4913: 07 
+                         
+4914: 00            
+   
+ObjectInfo: ;= 
+;
+; The format of the two bytes are:
+;
+; MC------ RRRRRRRR
+;
+; M - if set, the second byte is an object number (container). if clear, the second byte 
+;     is a room number (containment is not used in this game).
+; C - if set, object can be picked up ("+" objects in the list below).
+;
+; RRRRRRRR - Second byte is the object's location (containing object or room number).
+;             
+4915: 00 02 ;  1 GHOST1 (live)              (Room 2)
+4917: 00 03 ;  2 GHOST2 (live)              (Room 3)  
+4919: 00 04 ;  3 GHOST3 (live)              (Room 4)        
+491B: 00 05 ;  4 GHOST4 (live)              (Room 5)   
+491D: 00 00 ;  5 GHOST5 (dead)              (out of play)            
+491F: 00 00 ;  6 GHOST6 (dead)              (out of play)         
+4921: 00 00 ;  7 GHOST7 (dead)              (out of play)              
+4923: 00 00 ;  8 GHOST8 (dead)              (out of play)             
+4925: 40 01 ;  9 SWORD                     +(Room 1)
+4927: 40 08 ; 10 SIGN                      +(Room 8)
+4929: 00 06 ; 11 GHOST 11 (live)            (Room 6)
+492B: 00 07 ; 12 GHOST 12 (live)            (Room 7)       
+492D: 40 00 ; 13 (?)                       +(out of play)
+
+492F: 01
+4930: 00 
+4931: 00 00     
+
+ObjectDescriptions: 
+; Object descriptions. Two strings: first is "in room" description. Second
+; is a shorter "inventory" description.                           
+4933: 51 4B ;  1 GHOST1 (live)  
+4935: 51 4B ;  2 GHOST2 (live)              
+4937: 51 4B ;  3 GHOST3 (live)                 
+4939: 51 4B ;  4 GHOST4 (live)                   
+493B: 62 4B ;  5 GHOST5 (dead)                  
+493D: 62 4B ;  6 GHOST6 (dead)                 
+493F: 62 4B ;  7 GHOST7 (dead)               
+4941: 62 4B ;  8 GHOST8 (dead)                
+4943: 80 4B ;  9 SWORD                
+4945: A4 4B ; 10 SIGN              
+4947: 51 4B ; 11 GHOST 11 (live)                
+4949: 51 4B ; 12 GHOST 12 (live)               
+494B: 15 49 ; 13 (? no description)    
+ 
+ScriptCommands:          
+494D: 6E 49 ;  1 GoToRoom(room)        
+494F: B6 49 ;  2 AssertObjectIsInPack(object)           
+4951: C5 49 ;  3 AssertObjectIsInRoomOrPack(object)         
+4953: FE 49 ;  4 PrintMessage(message)          
+4955: 76 49 ;  5 PrintRoomDescription()          
+4957: 22 44 ;  6 SubscriptAbortAllIfPass[...]
+4959: 97 4A ;  7 EndlessLoop()          
+495B: 0B 4A ;  8 MoveObjectToCurrentRoom(object)         
+495D: 1A 4A ;  9 PrintInventory()          
+495F: 44 4A ; 10 AssertInputNounIs(object)           
+4961: 52 4A ; 11 GetObjectFromRoom(object)           
+4963: 79 4A ; 12 PrintOK()           
+4965: 82 4A ; 13 MoveObjectToRoom(object,room)             
+4967: E9 49 ; 14 GetNounToPack()           
+4969: 72 4A ; 15 DropNounToRoom()            
+496B: D8 49 ; 16 AssertObjectIsInRoom(object)
+             
+496D: C9         RET  ; Run-after-every-command comes here (and does nothing)
+                     
+ScriptCommand01: 
+; GoToRoom(room)
 496E: E1         POP     HL              
 496F: 46         LD      B,(HL)          
 4970: 23         INC     HL              
 4971: E5         PUSH    HL              
 4972: 78         LD      A,B             
-4973: 32 2F 49   LD      ($492F),A       
+4973: 32 2F 49   LD      ($492F),A  
+
+ScriptComman05: 
+; PrintRoomDescription()     
 4976: CD 7C 49   CALL    $497C           
 4979: C3 0B 44   JP      $440B           
 
+DescribeRoom: 
+; DescribeCurrentRoom()
 497C: 21 CF 4B   LD      HL,$4BCF        
 497F: CD B3 45   CALL    $45B3           
 4982: 3A 2F 49   LD      A,($492F)       
@@ -1027,6 +993,8 @@ RoomInformation:
 49AF: CD B3 45   CALL    $45B3           
 49B2: C1         POP     BC              
 49B3: C3 94 49   JP      $4994           
+
+
 49B6: E1         POP     HL              
 49B7: 7E         LD      A,(HL)          
 49B8: 23         INC     HL              
@@ -1133,7 +1101,10 @@ RoomInformation:
 4A76: C3 0F 4A   JP      $4A0F           
 4A79: 21 07 4C   LD      HL,$4C07        
 4A7C: CD B3 45   CALL    $45B3           
-4A7F: C3 0B 44   JP      $440B           
+4A7F: C3 0B 44   JP      $440B
+
+ScriptCommand13: ;=
+; MoveObjectToRoom(object,room)           
 4A82: E1         POP     HL              
 4A83: 7E         LD      A,(HL)          
 4A84: 23         INC     HL              
