@@ -9,7 +9,9 @@ public class CPUZ80 extends CPU {
 	
 	// http://www.z80.info/z80flag.htm
 	
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
+	private static final int STOPAFTER = -1;
+	
 	int inscnt;
 	
 	int [] memory = new int[64*1024];
@@ -71,41 +73,27 @@ public class CPUZ80 extends CPU {
 	}
 
 	@Override
-	public void push(int value, boolean word) {
-		// SP = SP - 1
-		// write LSB
-		// SP = SP - 1
-		// write MSB
+	public void push(int value, boolean word) {		
+		if(!word) throw new RuntimeException("Stack ops are word sized");
 		Accessable sp = getRegister("SP");
 		int spval = sp.readValue();
-		spval = spval - 1;
-		memory[spval] = value&0xFF;
-		if(word) {
-			spval = spval - 1;
-			memory[spval] = (value>>8)&0xFF;
-		}
+		spval = spval - 2;
+		writeMemory(spval,value,true);		
 		sp.writeValue(spval);		
 	}
 
 	@Override
 	public int pop(boolean word) {
-		// read MSB
-		// SP = SP + 1
-		// read LSB
-		// SP = SP + 1
+		if(!word) throw new RuntimeException("Stack ops are word sized");
 		Accessable sp = getRegister("SP");
-		int spval = sp.readValue();
-		int rval = memory[spval];
-		spval = spval + 1;
-		if(word) {
-			rval = (rval<<8) | memory[spval];
-			spval = spval + 1;
-		}
-		sp.writeValue(spval);
-		return rval;
+		int spval = sp.readValue();		
+		int ret = readMemory(spval,true);	
+		spval = spval + 2;
+		sp.writeValue(spval);		
+		return ret;
 	}
 	
-	String addRegister(String name) {
+	String addDebugRegister(String name) {
 		Accessable a = getRegister(name);
 		String ta = name+"=";
 		if(a.isWordSize()) {
@@ -115,24 +103,24 @@ public class CPUZ80 extends CPU {
 			ta = ta + CU.hex2(a.readValue());
 			ta = CU.padTo(ta, 8);
 		}
-		return ta;
-		
+		return ta;		
 	}
 	
 	public void debug(String addr, String instruction) {
 		if(DEBUG) {
-			String ins = CU.padTo(addr+": "+instruction,30);
-			ins = ins + addRegister("A");
-			ins = ins + addRegister("B");
-			ins = ins + addRegister("C");
-			ins = ins + addRegister("D");
-			ins = ins + addRegister("E");
-			ins = ins + addRegister("H");
-			ins = ins + addRegister("L");
+			String ic = CU.padTo(Integer.toString(inscnt).toUpperCase(),12);
+			String ins = ic+CU.padTo(addr+": "+instruction,30);
+			ins = ins + addDebugRegister("A");
+			ins = ins + addDebugRegister("B");
+			ins = ins + addDebugRegister("C");
+			ins = ins + addDebugRegister("D");
+			ins = ins + addDebugRegister("E");
+			ins = ins + addDebugRegister("H");
+			ins = ins + addDebugRegister("L");
 			ins = ins + "CF="+cf+" ZF="+zf;
 			System.out.println(ins);
 			++inscnt;
-			if(inscnt==200) System.exit(0);
+			if(STOPAFTER>0 && inscnt==STOPAFTER) System.exit(0);
 		}
 	}
 
@@ -196,144 +184,117 @@ public class CPUZ80 extends CPU {
 		return new IndexAccess(this,r,isWordAccess);		
 	}
 	
-	boolean intToBool(int v) {
-		if(v==0) return false;
-		return true;
-	}	
+	Accessable [] decodeMathA(String par) {
+		Accessable dst,val;
+		dst = getRegister("A");
+		if(par.equals("(HL)")) {
+			val = new IndexAccess(this,getRegister("HL"),false);
+		} else if(par.startsWith("$")) {
+			val = new AccessConstant(Integer.parseInt(par.substring(1),16),false);
+		} else { // Must be a register
+			val = getRegister(par);
+		}
+		Accessable [] ret = {dst,val};
+		return ret;
+	}
+	
+	Accessable [] decodeMathPair(String par) {
+		Accessable dst,val;
+		// First must be "HL," or "A,"
+		if(par.startsWith("HL,")) {
+			dst = getRegister("HL");
+			par = par.substring(3);
+		} else {
+			dst = getRegister("A");
+			par = par.substring(2);
+		}
+		// Second can be "$val" or a register
+		if(par.startsWith("$")) {
+			val = new AccessConstant(Integer.parseInt(par.substring(1),16),dst.isWordSize());
+		} else {
+			val = getRegister(par);
+		}
+		// TODO might be "(HL)"
+		Accessable [] ret = {dst,val};
+		return ret;
+	}
+	
+	void setZF(int value) {
+		zf = (value==0);
+	}
+	
+	int setCF(int value, boolean isWordSize) {
+		cf = false;
+		if(isWordSize) {
+			if(value<0) {
+				cf = true;
+				return 65536+value;
+			}
+			if(value>65535) {
+				cf = true;
+				return value & 0xFFFF;				
+			}
+		} else {
+			if(value<0) {
+				cf = true;
+				return 256+value;
+			}
+			if(value>255) {
+				cf = true;
+				return value & 0xFF;
+			}
+		}
+		return value;
+	}
 	
 	public boolean math(String op, String par) {
 		if(op.equals("SBC")) {
-			Accessable dst,val;
-			if(par.startsWith("HL,")) {
-				dst = getRegister("HL");
-				par = par.substring(3);
-			} else {
-				dst = getRegister("A");
-				par = par.substring(2);
-			}
-			if(par.startsWith("$")) {
-				val = new AccessConstant(Integer.parseInt(par.substring(1),16),dst.isWordSize());
-			} else {
-				val = getRegister(par);
-			}
-			
+			Accessable [] pair = decodeMathPair(par);
+			Accessable dst=pair[0];Accessable val=pair[1];
+			//
 			int aval = dst.readValue() - val.readValue();
 			if(cf) aval = aval - 1;
-			cf = false;
-			if(dst.isWordSize()) {
-				if(aval<0) {
-					aval = aval + 65536;
-					cf = true;
-				}
-			} else {
-				if(aval<0) {
-					aval = aval + 256;
-					cf = true;
-				}
-			}
-			
-			zf = (aval==0);
+			//			
+			aval = setCF(aval,dst.isWordSize());
+			setZF(aval);			
+			//
 			dst.writeValue(aval);
 			return true;
 		}
 		if(op.equals("SUB")) {
-			Accessable dst,val;
-			if(par.startsWith("HL,")) {
-				dst = getRegister("HL");
-				par = par.substring(3);
-			} else {
-				dst = getRegister("A");
-				par = par.substring(2);
-			}
-			if(par.startsWith("$")) {
-				val = new AccessConstant(Integer.parseInt(par.substring(1),16),dst.isWordSize());
-			} else {
-				val = getRegister(par);
-			}
-			
+			Accessable [] pair = decodeMathPair(par);
+			Accessable dst=pair[0];Accessable val=pair[1];
+			//			
 			int aval = dst.readValue() - val.readValue();
-			cf = false;
-			if(dst.isWordSize()) {
-				if(aval<0) {
-					aval = aval + 65536;
-					cf = true;
-				}
-			} else {
-				if(aval<0) {
-					aval = aval + 256;
-					cf = true;
-				}
-			}
-			
-			zf = (aval==0);
+			//			
+			aval = setCF(aval,dst.isWordSize());
+			setZF(aval);			
+			//
 			dst.writeValue(aval);
 			return true;
 		}
 		if(op.equals("ADC")) {
-			Accessable dst,val;
-			if(par.startsWith("HL,")) {
-				dst = getRegister("HL");
-				par = par.substring(3);
-			} else {
-				dst = getRegister("A");
-				par = par.substring(2);
-			}
-			if(par.startsWith("$")) {
-				val = new AccessConstant(Integer.parseInt(par.substring(1),16),dst.isWordSize());
-			} else {
-				val = getRegister(par);
-			}
-			
+			Accessable [] pair = decodeMathPair(par);
+			Accessable dst=pair[0];Accessable val=pair[1];
+			//			
 			int aval = dst.readValue() + val.readValue();
 			if(cf) aval = aval + 1;
-			cf = false;
-			if(dst.isWordSize()) {
-				if(aval>0xFFFF) {
-					cf = true;
-					aval = aval & 0xFFFF;
-				}
-			} else {
-				if(aval>0xFF) {
-					cf = true;
-					aval = aval & 0xFF;
-				}
-			}
-						
-			zf = (aval==0);
+			//			
+			aval = setCF(aval,dst.isWordSize());
+			setZF(aval);			
+			//
 			dst.writeValue(aval);
 			return true;
 		}
 		if(op.equals("ADD")) {
-			Accessable dst,val;
-			if(par.startsWith("HL,")) {
-				dst = getRegister("HL");
-				par = par.substring(3);
-			} else {
-				dst = getRegister("A");
-				par = par.substring(2);
-			}
-			if(par.startsWith("$")) {
-				val = new AccessConstant(Integer.parseInt(par.substring(1),16),dst.isWordSize());
-			} else {
-				val = getRegister(par);
-			}
-			
+			Accessable [] pair = decodeMathPair(par);
+			Accessable dst=pair[0];Accessable val=pair[1];
+			//	
 			int aval = dst.readValue() + val.readValue();
-			//if(cf) aval = aval + 1;
-			cf = false;
-			if(dst.isWordSize()) {
-				if(aval>0xFFFF) {
-					cf = true;
-					aval = aval & 0xFFFF;
-				}
-			} else {
-				if(aval>0xFF) {
-					cf = true;
-					aval = aval & 0xFF;
-				}
-			}
-						
-			zf = (aval==0);
+			//			
+			aval = setCF(aval,dst.isWordSize());
+			setZF(aval);			
+			//
 			dst.writeValue(aval);
 			return true;
 		}
@@ -346,13 +307,15 @@ public class CPUZ80 extends CPU {
 			}
 			int val = ac.readValue();
 			val = val + 1;
+			// INC does NOT affect the CF
 			if(ac.isWordSize()) {
 				val = val & 0xFFFF;
 			} else {
 				val = val & 0xFF;
 			}
-			ac.writeValue(val);
-			zf = (val==0);			
+			setZF(val);
+			//
+			ac.writeValue(val);					
 			return true;
 		}
 		if(op.equals("DEC")) {
@@ -364,6 +327,7 @@ public class CPUZ80 extends CPU {
 			}
 			int val = ac.readValue();
 			val = val - 1;
+			// DEC does NOT affect the CF
 			if(val<0) {
 				if(ac.isWordSize()) {
 					val = val + 65536;
@@ -371,34 +335,33 @@ public class CPUZ80 extends CPU {
 					val = val + 256;
 				}
 			}
-			ac.writeValue(val);
-			zf = (val==0);
+			setZF(val);
+			//
+			ac.writeValue(val);					
 			return true;
 		}
 		if(op.equals("AND")) {
-			Accessable val;
-			if(par.startsWith("$")) {
-				val = new AccessConstant(Integer.parseInt(par.substring(1),16),false);
-			} else {
-				val = getRegister(par);
-			}			
-			int aval = getRegister("A").readValue();
-			aval = aval & val.readValue();
-			getRegister("A").writeValue(aval);			
-			//                    C       Z   P   S  N  H
-			zf = (aval==0);
+			Accessable [] pair = decodeMathA(par);
+			Accessable dst=pair[0];Accessable val=pair[1];
+			//	
+			int aval = dst.readValue() & val.readValue();
+			//
+			cf = false;
+			setZF(aval);
+			//
+			dst.writeValue(aval);
 			return true;
 		}
 		if(op.equals("CP")) {
-			int aval = getRegister("A").readValue();
-			if(par.startsWith("$")) {
-				Accessable cv = new AccessConstant(Integer.parseInt(par.substring(1),16),false);
-				aval = aval - cv.readValue();
-				boolean cf = aval<0;
-				if(cf) aval=aval+256;
-				zf = (aval==0);
-				return true;
-			}
+			Accessable [] pair = decodeMathA(par);
+			Accessable dst=pair[0];Accessable val=pair[1];
+			//			
+			int aval = dst.readValue() - val.readValue();
+			//			
+			aval = setCF(aval,dst.isWordSize());
+			setZF(aval);			
+			//			
+			return true;
 		}
 		if(op.equals("RLA")) {
 			int aval = getRegister("A").readValue();
@@ -538,10 +501,17 @@ public class CPUZ80 extends CPU {
 	
 	void ROMCALL_DISPLAY() {
 		//System.out.println("DISPLAY:"+(char)getRegister("A").readValue());
-		System.out.print((char)getRegister("A").readValue());
+		if(DEBUG) {
+			System.out.println(":ROMCALL_DISPLAY:"+(char)getRegister("A").readValue());
+		} else {
+			System.out.print((char)getRegister("A").readValue());
+		}
 	}
 	
 	void ROMCALL_GETCHAR() {
+		if(DEBUG) {
+			System.out.println(":ROMCALL_GETCHAR:");
+		}
 		try {
 			int c = System.in.read();
 			getRegister("A").writeValue(c);

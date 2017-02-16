@@ -8,15 +8,7 @@ public class Main {
 		
 		CPU cpu = new CPUZ80(reader.getCleaned());
 		
-		//cpu.run(0x42E9);
-		
-		
-		cpu.getRegister("SP").writeValue(0x7000);
-		
-		cpu.getRegister("A").writeValue(1);
-		cpu.getRegister("HL").writeValue(0x4D7C);
-		cpu.call(0x46B9);
-		
+		cpu.run(0x42E9);						
 		
 	}
 

@@ -894,7 +894,7 @@ RoomScripts: ;=
                      ; "Room_15"  : { 
                      ;     "Description" : "YOU_ARE_AT_THE_LIBRARY._THERE IS A HOLE IN THE CEILING.[CR]",
 48A3: 04 03 01 0E    ;     "W"    : ["GoToRoom(13)"],
-      07 0B 0A 07    ;     "DROP" : ["AssertInputNounIs(ROPE)",                
+48A7: 07 0B 0A 07    ;     "DROP" : ["AssertInputNounIs(ROPE)",                
 48AB: 0D 07 00       ;               "MoveObjectToRoom(ROPE,0)"                                    
 48AE: 08 0C          ;               "MoveObjectToCurrentRoom(ROPECEILING)",               
 48B0: 04 40 4F       ;               "Print(INSTANTLY_THE_ROPE_UNWINDS_AND_LEVITATES_TO_THE_HOLE_IN_THE_____CEILING![CR])"],         
