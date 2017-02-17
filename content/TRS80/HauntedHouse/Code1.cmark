@@ -7,6 +7,27 @@
 ;;* [RAMUse.html RAM Usage]
 ;;* [/TRS80/Hardware.html Hardware Info]
 
+;;{{{html
+;;<script src="/js/bytes.js"></script>
+;;<script src="/js/Z80.js"></script>
+;;<script src="/js/hauntedhouse.js"></script>
+;;
+;;<!-- Cache some commonly-used values -->
+;;<canvas width="0" height="0"
+;;        data-canvasFunction="handleTileCanvas"
+;;        data-labelColor=""
+;;        data-pixWidth="8"
+;;        data-gridX="5"
+;;        data-gridY="7"
+;;        data-pixHeight="8"
+;;        data-gap="0.25"
+;;        data-gridPad="10"
+;;        data-colorsName="CS0"
+;;        data-colors='["#808080","#000080"]'>
+;;</canvas>
+;;}}}
+
+
 Start: ;=
 42E9: C3 5E 43   JP      $435E           ; Skip over load-second-floor
      
@@ -586,7 +607,7 @@ InputBuffer: ;=
 ; This might be interesting stuff?
 StackRAM: ;=
 4693: 15 40 0D 02 C0 3F 80 04 DD 03 1D 40 15 40 D4 4D 
-45A3: 5E 0D 08 46 5F 46 FA 48 97 4A FA 48 FA 48 26 44                
+46A3: 5E 0D 08 46 5F 46 FA 48 97 4A FA 48 FA 48 26 44                
 46B3: FE 48 F2 43 93   
 ; Stack points here at beginning    
 46B8: 00 
@@ -709,7 +730,7 @@ RoomInformation: ;=
 ; Second two: room script
 477F: 90 4C BF 47 ; 1 FORYER.
 4783: 96 4C CC 47 ; 2 LIVING ROOM.
-4789: A0 4C EC 47 ; 3 DINING ROOM.
+4787: A0 4C EC 47 ; 3 DINING ROOM.
 478B: AA 4C F5 47 ; 4 KITCHEN.
 478F: B2 4C 16 48 ; 5 BREAKFAST ROOM.
 4793: BE 4C 1F 48 ; 6 SERVANTS QUARTERS.
@@ -777,7 +798,7 @@ RoomScripts: ;=
 4801: 10 08       ;                   "AssertObjectIsInRoom(object8)",
 4803: 06 0B       ;                   "SubscriptAbortAllIfPass", [           
 4805: 02 06       ;                       "AssertObjectIsInPack(KNIFE)",
-4607: 0D 08 00    ;                       "MoveObjectToRoom(8,0)",                     
+4807: 0D 08 00    ;                       "MoveObjectToRoom(8,0)",                     
 480A: 04 4E 4E    ;                       "Print(A_SUIT_OF_ARMOUR_HERE_FLEES_WHEN_IT_SPOTS_YOUR_KNIFE[CR])",          
 480D: 01 05       ;                       "GoToRoom(5)"],
 480F: 04 73 4E    ;                   "Print(YOUR_ARE_AT_THE_BREAKFAST_ROOM.__AN_ANIMATED_SUIT_OF_ARMOUR_____THROWS_YOU_OUT![CR])",      
@@ -791,7 +812,7 @@ RoomScripts: ;=
                   ;     "Description" : "YOU_ARE_AT_THE_BREAKFAST_ROOM.[CR]",
 4816: 01 03 01 04 ;     "N"    : ["GoToRoom(4)"],
 481A: 02 03 01 06 ;     "E"    : ["GoToRoom(6)"],
-181E: 00          ; },
+481E: 00          ; },
 
 ; Commands 6 SERVANTS QUARTERS
 ; This room has the empty CABINET. If you open the CABINET you get the message.
@@ -883,7 +904,7 @@ RoomScripts: ;=
 488F: 01 03 01 0A    ;     "N"    : ["GoToRoom(11)"],  
 4893: 02 04 04 D3 4E ;     "E"    : ["Print(ARE_YOU_JUST_GOING_TO_WALK_RIGHT_THROUGH_THAT_RAGING_FIRE?[CR])"],  
 4898: 12 04 0C       ;     "YES"  : ["PrintOK()",
-488B: 01 0F          ;               "GoToRoom(15)"],
+489B: 01 0F          ;               "GoToRoom(15)"],
 489D: 13 04 04 D0 4F ;     "NO"   : ["Print(A_WISE_DECISION.[CR])"]    
 48A2: 00                           
 
@@ -966,13 +987,13 @@ ScriptCommands: ;=
 4903: AF 49 ;  4 PrintMessage(message)
 4905: 27 49 ;  5 PrintRoomDescription()
 4907: 22 44 ;  6 SubscriptAbortAllIfPass[...]
-490B: 48 4A ;  7 EndlessLoop()
+4909: 48 4A ;  7 EndlessLoop()
 490B: BC 49 ;  8 MoveObjectToCurrentRoom(object)
 490D: CB 49 ;  9 PrintInventory()
 490F: F5 49 ; 10 AssertInputNounIs(object)
 4911: 03 4A ; 11 GetObjectFromRoom(object)
 4913: 2A 4A ; 12 PrintOK()
-4914: 33 4A ; 13 MoveObjectToRoom(object,room)     
+4915: 33 4A ; 13 MoveObjectToRoom(object,room)     
 4917: 9A 49 ; 14 GetNounToPack()
 4919: 23 4A ; 15 DropNounToRoom()
 491B: 89 49 ; 16 AssertObjectIsInRoom(object)
