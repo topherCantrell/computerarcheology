@@ -4,6 +4,16 @@ var htmlUpper = "";
 
 window.onload = function() {
 	
+	var inputBuffer = [];
+	
+	var console = $("#trs80console");
+	
+	console.on("keydown",function(evt) {
+		var k = evt.keyCode;
+		inputBuffer.push(k);
+	});
+	
+	
 	htmlUpper = document.body.innerHTML.toUpperCase();
 		
 	var machine = {		

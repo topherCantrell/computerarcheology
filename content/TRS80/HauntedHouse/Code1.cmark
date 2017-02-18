@@ -8,23 +8,11 @@
 ;;* [/TRS80/Hardware.html Hardware Info]
 
 ;;{{{html
-;;<script src="/js/bytes.js"></script>
+;;<script src="/js/BinaryData.js"></script>
 ;;<script src="/js/Z80.js"></script>
 ;;<script src="/js/hauntedhouse.js"></script>
 ;;
-;;<!-- Cache some commonly-used values -->
-;;<canvas width="0" height="0"
-;;        data-canvasFunction="handleTileCanvas"
-;;        data-labelColor=""
-;;        data-pixWidth="8"
-;;        data-gridX="5"
-;;        data-gridY="7"
-;;        data-pixHeight="8"
-;;        data-gap="0.25"
-;;        data-gridPad="10"
-;;        data-colorsName="CS0"
-;;        data-colors='["#808080","#000080"]'>
-;;</canvas>
+;;<textarea id="trs80console" rows="16" style="font-family: monospace;font-size:12px;width:65ch;" >KJHGFDSAWQERFREDSWERFDGT56Y,MNBGKJHGFDSAWQERFREDSWERFDGT56Y,MNBG</textarea>
 ;;}}}
 
 
