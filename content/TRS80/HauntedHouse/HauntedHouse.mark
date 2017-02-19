@@ -4,12 +4,28 @@
 = Code Links =
 
 * [Code1.html Disassembled Code]
-* [Code2.html Disassembled Code]
+* [Code2.html Disassembled Code (2nd Floor)]
 * [RAMUse.html RAM Usage]
 
 = TODO =
 
-Just getting started on this disassembly. Check back soon!
+Making good progress. Check back soon!
+
+= Emulation =
+
+I used [https://github.com/DrGoldfire/Z80.js/tree/master DrGodfire's JavaScript Z80 emulator] in the window below. You can play either/both
+floors of the game.
+
+Remember: you have to press a key to get started on the 1st floor.
+
+{{{html
+<script src="/js/BinaryData.js"></script>
+<script src="/js/Z80.js"></script>
+<script src="/js/hauntedhouse.js"></script>
+
+<button id="floorOne" class="btn btn-primary" >1st Floor</button><button id="floorTwo" class="btn btn-primary" style="margin-left:0.5em">2nd Floor</button><p>
+<textarea id="trs80console" rows="16" style="background-color: black;color: white;font-family: monospace;font-size:12px;width:65ch;" ></textarea>
+}}}
 
 = References =
 

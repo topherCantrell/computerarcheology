@@ -7,15 +7,6 @@
 ;;* [RAMUse.html RAM Usage]
 ;;* [/TRS80/Hardware.html Hardware Info]
 
-;;{{{html
-;;<script src="/js/BinaryData.js"></script>
-;;<script src="/js/Z80.js"></script>
-;;<script src="/js/hauntedhouse.js"></script>
-;;
-;;<textarea id="trs80console" rows="16" style="font-family: monospace;font-size:12px;width:65ch;" >KJHGFDSAWQERFREDSWERFDGT56Y,MNBGKJHGFDSAWQERFREDSWERFDGT56Y,MNBG</textarea>
-;;}}}
-
-
 Start: ;=
 42E9: C3 5E 43   JP      $435E           ; Skip over load-second-floor
      

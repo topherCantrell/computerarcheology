@@ -5,8 +5,20 @@ var BinaryData = (function() {
 		dataOrigin : null
 	};
 	
+	my.write = function(addr,value) {
+		my.dataCache[addr-my.dataOrigin] = value;
+	},
+	
 	my.read = function(addr) {
 		return my.dataCache[addr-my.dataOrigin];
+	},
+	
+	my.loadDataCacheFromURL = function(url,success) {
+		my.dataOrigin = null;
+		$.get(url,{},function(t) {
+			my.loadDataCache(t.toUpperCase());
+			success();
+		});
 	},
 	
 	my.loadDataCache = function(src) {
@@ -49,7 +61,7 @@ var BinaryData = (function() {
 	        }
 	        
 	        if (adr-my.dataOrigin != my.dataCache.length) {
-	            alert("Data continuency error: "+adr);
+	            throw "Data continuency error: "+adr;
 	        }
 	        
 	        line = line.substring(5).trim();

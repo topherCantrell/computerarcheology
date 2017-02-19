@@ -735,7 +735,7 @@ RoomScripts:
 ; Commands 4 
                   ; "Room_4"   : {
                   ;     "Description" : "YOU_ARE_IN_A_DIMLY_LIT_ROOM.[CR]",                     
-4829: 11 06 09    ;     "KILL" : ["AssertNounIs(SWORD)",              
+4829: 11 06 0A 09 ;     "KILL" : ["AssertNounIs(SWORD)",              
 482D: 04 91 4C    ;               "Print(OUCH!__YOU_HURT_YOUR_HAND.[CR])"],               
 4830: 02 03 01 01 ;     "E"    : ["GoToRoom(1)"], 
 4834: 11 18 06 13 ;     "KILL" : ["SubscriptAbortAllIfPass", [               
