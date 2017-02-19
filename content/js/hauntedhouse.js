@@ -1,6 +1,4 @@
 
-// Cache of the page (for data extraction)
-var htmlUpper = "";
 
 // The Z80 computer
 var comp;
@@ -55,6 +53,8 @@ window.onload = function() {
 				if(addr===2) return 0x43;
 	
 				// Key input routine.
+				// The first IN halts the CPU until a key is ready.
+				// The second IN returns the actual key.
 				// 002B: DB 00  IN A,($00)
 				// 002D: DB 01  IN A,($01)
 				// 002F: C9     RET
@@ -77,8 +77,9 @@ window.onload = function() {
 						comp.reset();
 						runTillInput();
 					});
-				}
-				
+					running = false;
+					return 0;
+				}				
 				throw "Unknown memory read "+addr;
 			},
 			mem_write : function(addr,value) {

@@ -912,7 +912,7 @@ RoomScripts: ;=
 48BE: 01 01          ;           "GoToRoom(1)"],
 48C0: 05 06 0A 02    ; "OPEN" : ["AssertInputNounIs(DOOR)"
 48C4: 04 3B 4E       ;           "Print(THE_DOOR_CAN'T_BE_OPENED.[CR])"]
-48C7: 00              ; }      
+48C7: 00             ; }      
 
 ObjectInfo: ;=
 ;
