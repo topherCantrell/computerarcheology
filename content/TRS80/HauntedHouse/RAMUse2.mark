@@ -18,7 +18,7 @@ RAM Usage (Second Floor Code)
 || 4686      || WordSize              || Character counter in word parsing            ||
 || 4687      || CurrentWord           || Current word data                            ||
 || 468A:468B || PtrHold               || Input pointer hold (never used)              ||
-|| 468C:46B9 || Stack                 ||Stack space                                   ||
+|| 468C:46B9 || Stack                 || Stack space                                  ||
 || 477E      || Unpack1               || RAM used by unpack routine                   ||
 || 477F      || Unpack2               || RAM used by unpack routine                   ||
 || 4780      || Unpack3               || RAM used by unpack routine                   ||
