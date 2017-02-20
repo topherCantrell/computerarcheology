@@ -1,10 +1,10 @@
 ;;%%image HauntedHouse.jpg
 ;;%%title Haunted House (1st Floor)
 ;;%%cpu Z80
-;;%%- TRS80/HauntedHouse/RAMUse.mark /TRS80/HauntedHouse/RAMUse.html
+;;%%- TRS80/HauntedHouse/RAMUse1.mark /TRS80/HauntedHouse/RAMUse1.html
 ;;%%-2 TRS80/Hardware.mark /TRS80/Hardware.html
 
-;;* [RAMUse.html RAM Usage]
+;;* [RAMUse1.html RAM Usage]
 ;;* [/TRS80/Hardware.html Hardware Info]
 
 Start: ;=
@@ -117,8 +117,8 @@ GetObjectInfo:  ;=
 43B6: C2 AB 43   JP      NZ,$43AB        ; Bit is set ... find where the parent is
 43B9: 2B         DEC     HL              ; HL back to start of object location
 43BA: BB         CP      E               ; Is this object in the desired location?
-43BB: C9         RET                     ; DOne
-          
+43BB: C9         RET                     ; Done
+
 ; HL = HL + (A-1)*2
 43BC: D5         PUSH    DE              ; Will be mangling this
 43BD: EB         EX      DE,HL           ; HL to DE for a moment
@@ -590,7 +590,7 @@ StackRAM: ;=
 46B3: FE 48 F2 43 93   
 ; Stack points here at beginning    
 46B8: 00 
-   
+
 UnpackMessage: ;=
 ; TODO: Decode this. I have a program created by translating this to Java.
 ; It works, but it would be nice to understand the math here.
@@ -692,7 +692,7 @@ UnpackMessage: ;=
 474E: C2 CC 46   JP      NZ,$46CC        ;
 4751: E1         POP     HL              ;
 4752: C9         RET                     ;
-              
+
 ; Character compression table
 CharTable: ;=
 4753: 3F 21 32 20 22 27 3C 3E 2F 30 33                 ; ?!2_"'<>/03
@@ -741,6 +741,7 @@ RoomScripts: ;=
 ;
 ; This KNIFE behavior is part of the LIVING ROOM script. Anywhere else the KNIFE is just an
 ; ordinary, non-dangerous object.
+;
                   ; "Room_2"   : {
                   ;     "Description" : "YOU_ARE_AT_THE_LIVING_ROOM.[CR]",
 47CC: 02 03 01 03 ;     "E"    : ["GoToRoom(3)"],
@@ -759,6 +760,7 @@ RoomScripts: ;=
                      
 ; Commands 3 DINING ROOM
 ; This room just has directional changes.
+;
                   ; "Room_3"   : {
                   ;     "Description" : "YOU_ARE_AT_THE_DINING_ROOM.[CR]",
 47EC: 03 03 01 04 ;     "S"    : ["GoToRoom(4)"],  
@@ -766,11 +768,12 @@ RoomScripts: ;=
 47F4: 00          ; },
 
 ; Commands 4 KITCHEN  
-                  ; "Room_4"   : {
-                  ;     "Description" : "YOU_ARE_AT_THE_KITCHEN.[CR]",
 ; The ARMOR is an invisible object in this room (it has no description). If you have the KNIFE in your pack then
 ; it runs off (out of game-play). If you don't have the knife and the ARMOR is in the room then it prevents you
 ; from going SOUTH.
+;
+                  ; "Room_4"   : {
+                  ;     "Description" : "YOU_ARE_AT_THE_KITCHEN.[CR]",
 47F5: 01 03 01 03 ;     "N"    : ["GoToRoom(3)"],             
 47F9: 04 03 01 08 ;     "W"    : ["GoToRoom(8)"],
 47FD: 03 17 06 13 ;     "S"    : ["SubscriptAbortAllIfPass", [           
@@ -787,6 +790,7 @@ RoomScripts: ;=
 
 ; Commands 5 BREAKFAST ROOM   
 ; This room just has directional changes.
+;
                   ; "Room_5"   : {
                   ;     "Description" : "YOU_ARE_AT_THE_BREAKFAST_ROOM.[CR]",
 4816: 01 03 01 04 ;     "N"    : ["GoToRoom(4)"],
@@ -795,6 +799,7 @@ RoomScripts: ;=
 
 ; Commands 6 SERVANTS QUARTERS
 ; This room has the empty CABINET. If you open the CABINET you get the message.
+;
                   ; "Room_6"   : {
                   ;     "Description" : "YOU_ARE_AT_THE_SERVANTS_QUARTERS.[CR]",
 481F: 01 03 01 07 ;     "N"    : ["GoToRoom(7)"],
@@ -807,7 +812,8 @@ RoomScripts: ;=
 ; This room has the same description as Room_6 ... very sneaky. This room has the
 ; CABINET WITH KEY in it. Whenever you open this CABINET the KEY appears in the 
 ; room. If the key is already in your pack or dropped in some other room then it
-; magically appears here.
+; magically moves here.
+;
                   ; "Room_7"   : {
                   ;     "Description" : "YOU_ARE_AT_THE_SERVANTS_QUARTERS.[CR]",                   
 482F: 03 03 01 06 ;     "S"    : ["GoToRoom(6)"],
@@ -818,6 +824,7 @@ RoomScripts: ;=
 
 ; Commands 8 DEN   
 ; This room just has directional changes.
+;
                   ; "Room_8"   : {   
                   ;     "Description" : "YOU_ARE_AT_THE_DEN.[CR]",
 483D: 01 03 01 01 ;     "N"    : ["GoToRoom(1)"], 
@@ -826,6 +833,7 @@ RoomScripts: ;=
 
 ; Commands 9 EAST END OF THE HALL
 ; This room just has directional changes.
+;
                   ; "Room_9"   : {   
                   ;     "Description" : "YOU_ARE_AT_THE_EAST_END_OF_THE_HALL.[CR]",
 4846: 01 03 01 0B ;     "N"    : ["GoToRoom(11)"],           
@@ -836,6 +844,7 @@ RoomScripts: ;=
 ; Commands 10 WEST END OF THE HALL      
 ; You can OPEN DOOR or go S to the LIBRARY -- but only if you have the KEY in the pack. Otherwise you
 ; get an error message.
+;
                   ; "Room_10"  : {     
                   ;     "Description" : "YOU_ARE_AT_THE_WEST_END_OF_THE_HALL.[CR]",
 4853: 01 03 01 0D ;     "N"    : ["GoToRoom(13)"],            
@@ -853,6 +862,7 @@ RoomScripts: ;=
 
 ; Commands 11 GREEN BEDROOM. THERE'S A PANEL ON THE WEST WALL     
 ; This room just has directional changes. 
+;
                   ; "Room_11"  : {  
                   ;     "Description" : "YOU_ARE_AT_THE_GREEN_BEDROOM._THERE'S_A_PANEL_ON_THE_WEST_WALL.[CR]",
 4874: 03 03 01 09 ;     "S"    : ["GoToRoom(9)"],
@@ -861,6 +871,7 @@ RoomScripts: ;=
 
 ; Commands 12 SECRET PASSAGE
 ; This room just has directional changes.
+;
                   ; "Room_12"  : { 
                   ;     "Description" : "YOU_ARE_AT_THE_SECRET_PASSAGE.[CR]",
 487D: 02 03 01 0B ;     "E"    : ["GoToRoom(11)"],
@@ -878,6 +889,7 @@ RoomScripts: ;=
 ; The YES command takes you east at any time (even if you haven't seen the "are you sure?"). The E command
 ; always prints a "are you sure?" message. The NO command prints "a wise decision", but it isn't really.
 ; Very sneaky game.
+;
                      ; "Room_14"  : { 
                      ;     "Description" : "YOU_ARE_AT_THE_MASTER_BEDROOM.[CR]",
 488F: 01 03 01 0A    ;     "N"    : ["GoToRoom(11)"],  
@@ -891,6 +903,7 @@ RoomScripts: ;=
 ; If you DROP the ROPE in this room then the ROPE object goes out of game-play and the ROPE TO CEILING is
 ; moved to this room. If the ROPE TO CEILING is in this room then the CLIMB command loads the second floor
 ; from tape.
+;
                      ; "Room_15"  : { 
                      ;     "Description" : "YOU_ARE_AT_THE_LIBRARY._THERE IS A HOLE IN THE CEILING.[CR]",
 48A3: 04 03 01 0E    ;     "W"    : ["GoToRoom(13)"],
@@ -906,6 +919,7 @@ RoomScripts: ;=
 ; There is a DOOR here, but you can't open it. You have to use the PLUGH command to "poof" inside the house.
 ; Be sure to pick up the PAPER here or you can't get the KNIFE later. The PAPER has a message you can
 ; READ, but that is handled by the general script (later).
+;
                      ; "Room_16"  : { 
                      ;     "Description" : "YOU_ARE_AT_THE_OUTSIDE_OF_THE_HOUSE.[CR]",
 48B9: 0A 06 04 23 4E ; "PLUG" : ["Print(YOU_MATERIALIZE_INSIDE_THE_DOOR.[CR])", 
@@ -921,7 +935,8 @@ ObjectInfo: ;=
 ; MC------ RRRRRRRR
 ;
 ; M - if set, the second byte is an object number (container). if clear, the second byte 
-;     is a room number (containment is not used in this game).
+;     is a room number (containment is not used in this game). Containment is not used
+;     in this game. Maybe this is part of an earlier general purpose engine.
 ; C - if set, object can be picked up ("+" objects in the list below).
 ;
 ; RRRRRRRR - Second byte is the object's location (containing object or room number).
@@ -991,7 +1006,7 @@ ScriptComman05: ;=
 ; PrintRoomDescription()
 4927: CD 2D 49   CALL    $492D           ; Print the room description
 492A: C3 0B 44   JP      $440B           ; ScriptCommandPASS
-     
+
 DescribeRoom: ;=
 ; DescribeCurrentRoom()
 492D: 21 84 4C   LD      HL,$4C84        ; "YOU ARE AT THE " message
@@ -1189,7 +1204,7 @@ ScriptCommand13: ;=
 ScriptCommand07: ;=
 ; EndlessLoop()
 4A48: C3 48 4A   JP      $4A48           ; Infinite loop
-            
+
 CommandTable: ;=            
 ; aa_bbb_ccc
 ; aa is grammar type:

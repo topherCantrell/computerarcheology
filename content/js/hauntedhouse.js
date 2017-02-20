@@ -3,6 +3,7 @@
 // The Z80 computer
 var comp;
 var running;
+var endlessloop;
 
 function runTillInput() {	
 	running = true;
@@ -19,12 +20,16 @@ window.onload = function() {
 		
 	console.on("keydown",function(evt) {		
 		inputKey = evt.keyCode;
-		runTillInput();
+		if(!endlessloop) {
+			runTillInput();
+		}
 		return false;
 	});
 	
 	$("#floorOne").on("click",function() {
 		BinaryData.loadDataCacheFromURL("/TRS80/HauntedHouse/Code1.html",function() {
+			floor=1;
+			endlessloop = false;
 			comp.reset();
 			runTillInput();
 		});
@@ -32,15 +37,31 @@ window.onload = function() {
 	
 	$("#floorTwo").on("click",function() {		
 		BinaryData.loadDataCacheFromURL("/TRS80/HauntedHouse/Code2.html",function() {
+			floor=2;
+			endlessloop = false;
 			comp.reset();
 			runTillInput();
 		});
 	});
+	
+	var floor=1;
 		
-	BinaryData.loadDataCacheFromURL("/TRS80/HauntedHouse/Code1.html",function() {
+	BinaryData.loadDataCacheFromURL("/TRS80/HauntedHouse/Code1.html",function() {		
 		
 		var machine = {		
 			mem_read : function(addr) {
+				
+				// Endless loops in code
+				if(floor===1 && addr===0x4A48) {
+					endlessloop = true;
+					running = false;
+					return 0;					
+				}
+				if(floor===2 && addr===0x4A97) {
+					endlessloop = true;
+					running = false;
+					return 0;					
+				}
 				
 				if(addr>=0x42E9 &&addr<0x5000) {
 					return BinaryData.read(addr);

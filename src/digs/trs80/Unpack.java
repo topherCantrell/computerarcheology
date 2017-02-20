@@ -11,7 +11,7 @@ public class Unpack {
 		DissReader reader = new DissReader("content/trs80/hauntedhouse/Code2.cmark");
 		int [] memory = new int[64*1024];
 		reader.getData(memory);
-				
+			
 		int pos = 0x4B51;
 		//for(int x=0;x<59;++x) { For 1
 		for(int x=0;x<30;++x) {

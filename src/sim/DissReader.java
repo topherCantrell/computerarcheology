@@ -40,6 +40,27 @@ public class DissReader {
 		
 	}
 	
+	public List<Integer> getData() {
+		List<Integer> ret = new ArrayList<Integer>();
+		for(String s : lines) {
+			
+			int i = s.indexOf(":",5);
+			if(i>0) {
+				s = s.substring(0,i);
+			}			
+			
+			//int addr = Integer.parseInt(s.substring(0,4),16);
+			s = s.substring(6).trim();
+			while(s.length()>0) {
+				int val = Integer.parseInt(s.substring(0,2),16);
+				s = s.substring(2).trim();
+				ret.add(val);
+				//++addr;
+			}			
+		}
+		return ret;
+	}
+	
 	public void getData(int [] memory) {
 		for(String s : lines) {
 			
