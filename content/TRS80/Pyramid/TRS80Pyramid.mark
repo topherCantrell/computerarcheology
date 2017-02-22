@@ -10,6 +10,20 @@
 
 Just getting started. Check back soon.
 
+= Emulation =
+
+I used [https://github.com/DrGoldfire/Z80.js/tree/master DrGodfire's JavaScript Z80 emulator] in the window below. 
+
+== Play Me! ==
+
+{{{html
+<script src="/js/BinaryData.js"></script>
+<script src="/js/Z80.js"></script>
+<script src="/js/trs80pyramid.js"></script>
+
+<textarea id="trs80console" rows="16" style="background-color: black;color: white;font-family: monospace;font-size:12px;width:65ch;" ></textarea>
+}}}
+
 = References =
 
 If you seek specific game information, solutions, and online emulators then check out [http://www.figmentfly.com Sean Murphy's wonderful site].

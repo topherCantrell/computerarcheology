@@ -1,6 +1,6 @@
 %%image TRS80Pyramid.jpg
 %%title Pyramid RAM Use
-%%range 4000:4FFF
+%%range 4000:7FFF
 
 ||= Address  || Name                  || Description                                  ||
 || 4FDC      || CurrentRoom           || Current Room Number                          ||
