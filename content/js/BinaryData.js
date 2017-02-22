@@ -13,8 +13,7 @@ var BinaryData = (function() {
 		return my.dataCache[addr-my.dataOrigin];
 	},
 	
-	my.loadDataCacheFromURL = function(url,success) {
-		my.dataOrigin = null;
+	my.loadDataCacheFromURL = function(url,success) {		
 		$.get(url,{},function(t) {
 			my.loadDataCache(t.toUpperCase());
 			success();
@@ -22,7 +21,7 @@ var BinaryData = (function() {
 	},
 	
 	my.loadDataCache = function(src) {
-		
+	    my.dataOrigin = null;
 		if(!src) {
 			src = document.body.innerHTML.toUpperCase();
 		}
