@@ -1,5 +1,15 @@
 # Journal
 
+## 2/20/2017
+
+I am pulling the code for Xenos -- yet another Arnstein text game.
+
+## 2/19/2017
+
+Sean and Joe prodded me to disassemble Haunted House -- another Arnstein text game. The engine
+is very similar to the other games. It was a quick task to comment it. I even squeezed in a
+TRS-80 emulator to play the game on the CA site.
+
 ## 12/28/2016
 
 So completes another season of Daggorath. One play-trhough on the original hardware. One easy victory.

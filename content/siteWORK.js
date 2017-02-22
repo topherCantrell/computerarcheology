@@ -16,12 +16,12 @@
             {"address": "Hardware.mark", "out": "Hardware.html", "nav":"Hardware"},            
             {"copy": "TRS80.jpg"},
             {"copy": "TRS80Tech.jpg"},            
-            {"dir": "HauntedHouse", "nav": "HauntedHouse", "entries": [
+            {"dir": "HauntedHouse", "nav": "HauntedHouse", "entries": [      
             	{"mark": "HauntedHouse.mark", "out": "index.html"},
+            	{"code": "Code1.cmark", "out": "Code1.html", "nav": "Code1"},
                 {"address": "RAMUse1.mark", "out": "RAMUse1.html", "nav":"RAM Use (1st)"},
-                {"address": "RAMUse2.mark", "out": "RAMUse2.html", "nav":"RAM Use (2nd)"},
-                {"code": "Code1.cmark", "out": "Code1.html", "nav": "Code1"},
                 {"code": "Code2.cmark", "out": "Code2.html", "nav": "Code2"},
+                {"address": "RAMUse2.mark", "out": "RAMUse2.html", "nav":"RAM Use (2nd)"}, 
                 {"copy": "HauntedHouse.jpg"}                
                 ]
             }            

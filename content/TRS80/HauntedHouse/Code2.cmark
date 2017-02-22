@@ -1258,7 +1258,7 @@ GeneralScript: ;=
 4B4D: 04 D5 4D       ;            "Print(AN_INSCRIPTION_READS,_"GHOST_KILLER."[CR])"]            
 4B50: 00             ; }
                      
-; Compressed text ;=
+CompressedText: ;=
 
 ; THERE_IS_A_GHOST_HERE.[CR]
 4B51: 07 5F BE 5B B1 4B 7B 49 45 85 74 0A BC 2F 62 2E 

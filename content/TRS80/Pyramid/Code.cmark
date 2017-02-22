@@ -1,4 +1,13 @@
-= Pyramid 2000 for the TRS-80 =
+;;%%image TRS80Pyramid.jpg
+;;%%title TRS-80 Pyramid
+;;%%cpu Z80
+;;%%- TRS80/Pyramid/RAMUse.mark /TRS80/Pyramid/RAMUse.html
+;;%%-2 TRS80/Hardware.mark /TRS80/Hardware.html
+
+;;* [RAMUse.html RAM Usage]
+;;* [/TRS80/Hardware.html Hardware Info]
+
+Start: ;=
 
 4200: 31 5C 47    LD    SP,$475C           
 4203: 21 1F 47    LD    HL,$471F           ; WELCOME TO PYRAMID!

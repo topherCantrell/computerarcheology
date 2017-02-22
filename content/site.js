@@ -414,15 +414,28 @@
               {"copy": "TRS80.jpg"},
               {"copy": "TRS80Tech.jpg"},            
               {"dir": "HauntedHouse", "nav": "HauntedHouse", "entries": [
-              	  {"mark": "HauntedHouse.mark", "out": "index.html"},
-                  {"address": "RAMUse1.mark", "out": "RAMUse1.html", "nav":"RAM Use"},
+            	  {"mark": "HauntedHouse.mark", "out": "index.html"},
+              	  {"code": "Code1.cmark", "out": "Code1.html", "nav": "Code1"},
                   {"address": "RAMUse1.mark", "out": "RAMUse1.html", "nav":"RAM Use (1st)"},
-                  {"address": "RAMUse2.mark", "out": "RAMUse2.html", "nav":"RAM Use (2nd)"},
                   {"code": "Code2.cmark", "out": "Code2.html", "nav": "Code2"},
-                  {"copy": "HauntedHouse.jpg"}                
+                  {"address": "RAMUse2.mark", "out": "RAMUse2.html", "nav":"RAM Use (2nd)"}, 
+                  {"copy": "HauntedHouse.jpg"}         
                   ]
-              }            
-              
+              },
+              {"dir": "Pyramid", "nav": "Pyramid", "entries": [
+            	  {"mark": "TRS80Pyramid.mark", "out": "index.html"},
+            	  {"address": "RAMUse.mark", "out": "RAMUse.html", "nav":"RAM Use"},
+                  {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
+                  {"copy": "TRS80Pyramid.jpg"}               
+            	  ]
+              },
+              {"dir": "Xenos", "nav": "Xenos", "entries": [
+            	  {"mark": "Xenos.mark", "out": "index.html"},
+            	  {"address": "RAMUse.mark", "out": "RAMUse.html", "nav":"RAM Use"},
+                  {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
+                  {"copy": "Xenos.png"}               
+            	  ]
+              }      
       	 ]	    	 
        },
 	     

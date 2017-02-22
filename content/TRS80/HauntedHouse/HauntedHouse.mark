@@ -3,13 +3,60 @@
 
 = Code Links =
 
-* [Code1.html Disassembled Code]
+* [Code1.html Disassembled Code (1st Floor)]
 * [Code2.html Disassembled Code (2nd Floor)]
-* [RAMUse.html RAM Usage]
+* [RAMUse1.html RAM Usage (1st Floor)]
+* [RAMUse2.html RAM Usage (2nd Floor)]
 
-= TODO =
+= Get Out! =
 
-Making good progress. Check back soon!
+Generations have passed since the McDaniel family mysteriously disappeared. It is said that a stranger came 
+to visit on that cold, Autumn day many years ago, but no one knows for sure. Their house has been vacant 
+for decades now. Its two story image is forlorn and looming, visible only from the narrow, winding road that 
+has been distorted by vegetation from the surrounding forest. The stone wall that encompasses the house is 
+discolored and broken from years of neglect, its iron gate rusty and worn by angry seasons. The windows are 
+boarded ? the house is quiet and contented, not accustomed to visitors. The wind is restless today, blowing 
+fallen leaves in all directions. As you walk towards the entrance of the house, the wind grows distant and weak. 
+Suddenly, the calm and silence is broken by sounds from within the house!
+
+= From the mind of Robert Arnstein =
+
+This is one of the many Robert Arnstein text games disassmebled on my site. You can see the evolution of the
+game engine by comparing Haunted House with [/CoCo/Pyramid/index.html Pyramid],
+[/TRS80/Pyramid/index.html Pyramid for TRS-80], [/CoCo/RaakaTu/index.html RaakaTu], and 
+[/CoCo/Bedlam/index.html Bedlam].
+
+{{{html
+<div class="tourGuide">
+<div style="padding-left: 20px">
+}}}
+
+= Tour Guide =
+
+The JavaScript TRS-80 emulation of this game is running at the bottom of the page. [#PlayMe Play it now!]
+
+The code is code-within-code. The adventure language processor commands are [Code1.html#ScriptCommands here].
+
+Have a look at all the unpacked messages in the game:
+* [Code1.html#CompressedText First Floor Messages]
+* [Code2.html#CompressedText Second Floor Messages]
+
+Visit the room scripts to see what you can do in each room. Then visit the general script that runs after the 
+current room has a chance to take the command. These "adventure language scripts" are interpreted by 
+the [Code1.html#RunScript Script Processor].
+* [Code1.html#RoomScripts Room scripts (1st floor)]
+* [Code1.html#GeneralScript General Script (1st floor)]
+* [Code2.html#RoomScripts Room scripts (2nd floor)]
+* [Code2.html#GeneralScript General Script (2nd floor)]
+
+Read through all words that the game understands:
+* [Code1.html#CommandTable Word (1st Floor)]
+* [Code2.html#CommandTable Word (2nd Floor)]
+
+{{{html
+</div>
+</div>
+}}}
 
 = Emulation =
 
@@ -17,6 +64,8 @@ I used [https://github.com/DrGoldfire/Z80.js/tree/master DrGodfire's JavaScript 
 floors of the game.
 
 Remember: you have to press a key to get started on the 1st floor.
+
+== Play Me! ==
 
 {{{html
 <script src="/js/BinaryData.js"></script>
@@ -31,5 +80,5 @@ Remember: you have to press a key to get started on the 1st floor.
 
 If you seek specific game information, solutions, and online emulators then check out [http://www.figmentfly.com Sean Murphy's wonderful site].
 
-Joe Peterson has recreated the original Haunted house in Java on his webpage as well as created an Android app. Both can be found on his
-[http://www.wildlava.com/explore/ "Explore" Adventure Games website].
+Joe Peterson has recreated the original Haunted house in Java and Python. The Java version makes a nice Android app you can play
+on your phone. Check it out on [http://www.wildlava.com/explore/ The "Explore" Adventure Games website].
