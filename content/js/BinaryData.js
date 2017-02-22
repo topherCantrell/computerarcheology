@@ -1,3 +1,5 @@
+// This module reads binary data right out of a disassembly text file
+
 var BinaryData = (function() {
 	
 	var my = {
@@ -5,14 +7,15 @@ var BinaryData = (function() {
 		dataOrigin : null
 	};
 	
+	// Simple read/write
+	my.read = function(addr) {
+        return my.dataCache[addr-my.dataOrigin];
+    },
 	my.write = function(addr,value) {
 		my.dataCache[addr-my.dataOrigin] = value;
-	},
+	},	
 	
-	my.read = function(addr) {
-		return my.dataCache[addr-my.dataOrigin];
-	},
-	
+	// Load data from another file (not the page we are on)
 	my.loadDataCacheFromURL = function(url,success) {		
 		$.get(url,{},function(t) {
 			my.loadDataCache(t.toUpperCase());
@@ -20,6 +23,7 @@ var BinaryData = (function() {
 		});
 	},
 	
+	// Load data from the given source (default is this page)
 	my.loadDataCache = function(src) {
 	    my.dataOrigin = null;
 		if(!src) {
@@ -87,6 +91,8 @@ var BinaryData = (function() {
 		
 	}
 	
+	// Return true if the string starts with a two-digit hex number
+	// ended either by the end of the string or a whitespace.
 	function isTwoDigitHex(s) {
 		if (s.length<2) {
 			return false;

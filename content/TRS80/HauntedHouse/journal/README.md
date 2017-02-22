@@ -1,6 +1,10 @@
 # Journal
 
-## 2/1/2016
+## 2/20/2017
+
+I have everything commented and an emulator running. That'll do for now.
+
+## 2/1/2017
 
 I got the basic TRS80 and HauntedHouse pages up on computerarcheology.
 

@@ -419,14 +419,16 @@
                   {"address": "RAMUse1.mark", "out": "RAMUse1.html", "nav":"RAM Use (1st)"},
                   {"code": "Code2.cmark", "out": "Code2.html", "nav": "Code2"},
                   {"address": "RAMUse2.mark", "out": "RAMUse2.html", "nav":"RAM Use (2nd)"}, 
-                  {"copy": "HauntedHouse.jpg"}         
+                  {"copy": "HauntedHouse.jpg"},
+                  {"copy": "hauntedhouse.js"}
                   ]
               },
               {"dir": "Pyramid", "nav": "Pyramid", "entries": [
             	  {"mark": "TRS80Pyramid.mark", "out": "index.html"},
             	  {"address": "RAMUse.mark", "out": "RAMUse.html", "nav":"RAM Use"},
                   {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
-                  {"copy": "TRS80Pyramid.jpg"}               
+                  {"copy": "TRS80Pyramid.jpg"},
+                  {"copy": "trs80pyramid.js"}
             	  ]
               },
               {"dir": "Xenos", "nav": "Xenos", "entries": [

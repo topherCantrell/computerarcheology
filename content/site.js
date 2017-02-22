@@ -20,7 +20,8 @@
           	  {"mark": "TRS80Pyramid.mark", "out": "index.html"},
           	  {"address": "RAMUse.mark", "out": "RAMUse.html", "nav":"RAM Use"},
                 {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
-                {"copy": "TRS80Pyramid.jpg"}               
+                {"copy": "TRS80Pyramid.jpg"},
+                {"copy": "trs80pyramid.js"}
           	  ]
             }  
             
