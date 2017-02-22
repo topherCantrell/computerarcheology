@@ -66,11 +66,11 @@ window.onload = function() {
 				//if(addr===0x2F) return 0xC9;
 	
 				// Print routine.
-				// 0033: D3 00  OUT ($00),A
-				// 0035: C9     RET	
-				//if(addr===0x33) return 0xD3;
-				//if(addr===0x34) return 0x00;
-				//if(addr===0x35) return 0xC9;
+				// 0010: D3 00  OUT ($00),A
+				// 0012: C9     RET	
+				if(addr===0x10) return 0xD3;
+				if(addr===0x11) return 0x00;
+				if(addr===0x12) return 0xC9;
 				
 				// Tape operation (loading 2nd floor)
 				//if(addr===0x0293) {
@@ -103,26 +103,26 @@ window.onload = function() {
 			},
 			io_write : function(addr,value) {
 				addr = addr & 0xFF;
-				//if(addr===0) {					
-				//	var oldtext = console.text();
-				//	if(value===8) {
-				//		oldtext = oldtext.substring(0,oldtext.length-1);
-				//	} else if(value===14) {
-				//		oldtext = "";
-				//	} else {
-				//		oldtext = oldtext+String.fromCharCode(value);
-				//	}
-				//	console.text(oldtext);
-				//	console.scrollTop(console[0].scrollHeight);
-				//	return;
-				//}
+				if(addr===0) {					
+					var oldtext = console.text();
+					if(value===8) {
+						oldtext = oldtext.substring(0,oldtext.length-1);
+					} else if(value===14) {
+						oldtext = "";
+					} else {
+						oldtext = oldtext+String.fromCharCode(value);
+					}
+					console.text(oldtext);
+					console.scrollTop(console[0].scrollHeight);
+					return;
+				}
 				throw "Unknown io write "+addr;
 			}		
 		};
 				
 		comp = new Z80(machine);
 		
-		for(var x=0;x<100;++x) {
+		for(var x=0;x<2000;++x) {
 			comp.run_instruction();
 		}
 		
