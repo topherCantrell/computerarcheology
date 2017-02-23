@@ -10,10 +10,10 @@ var BinaryData = (function() {
 	// Simple read/write
 	my.read = function(addr) {
         return my.dataCache[addr-my.dataOrigin];
-    },
+    };
 	my.write = function(addr,value) {
 		my.dataCache[addr-my.dataOrigin] = value;
-	},	
+	};	
 	
 	// Load data from another file (not the page we are on)
 	my.loadDataCacheFromURL = function(url,success) {		
@@ -21,7 +21,7 @@ var BinaryData = (function() {
 			my.loadDataCache(t.toUpperCase());
 			success();
 		});
-	},
+	};
 	
 	// Load data from the given source (default is this page)
 	my.loadDataCache = function(src) {
@@ -49,7 +49,7 @@ var BinaryData = (function() {
 	            if(j<0) {
 	                break;
 	            }
-	            line = line.substring(0,i)+line.substring(j+1)
+	            line = line.substring(0,i)+line.substring(j+1);
 	        }
 	        
 	        if (line.length<5 || line[4]!=':') {
@@ -59,7 +59,7 @@ var BinaryData = (function() {
 	        if (isNaN(adr)) {
 	        	continue;
 	        } 
-	        if (my.dataOrigin==null) {
+	        if (my.dataOrigin===null) {
 	        	my.dataOrigin = adr;
 	        }
 	        
@@ -89,7 +89,7 @@ var BinaryData = (function() {
 	        }
 	    }		    
 		
-	}
+	};
 	
 	/**
 	 * This function reads a section of data
@@ -105,10 +105,10 @@ var BinaryData = (function() {
 		}
 		
 		for (var x=0;x<size;x=x+1) {
-		    ret.push(my.dataCache[start - my.dataOrigin + x])
+		    ret.push(my.dataCache[start - my.dataOrigin + x]);
 		}
 		return ret;
-	}
+	};
 	
 	// Return true if the string starts with a two-digit hex number
 	// ended either by the end of the string or a whitespace.

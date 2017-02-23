@@ -23,17 +23,19 @@ function pageScrollTo(name) {
 
 function openTree() {	
 	
+    var x,y;
+    var ch;
 	var crumbs = $("#crumbs").find("li a, li strong");
 	var path = [];	
-	for(var x=1;x<crumbs.length;++x) {
+	for(x=1;x<crumbs.length;++x) {
 		path.push(crumbs[x].textContent);		
 	}
 		
 	var treeNode = $("#siteTree");
 	
-	for(var x=0;x<path.length-1;++x) {
-		var ch = treeNode.children();
-		for(var y=0;y<ch.length;++y) {
+	for(x=0;x<path.length-1;++x) {
+		ch = treeNode.children();
+		for(y=0;y<ch.length;++y) {
 			if(ch[y].firstChild.textContent==path[x]) {
 				treeNode = $(ch[y]);
 				$(treeNode).children().eq(1).removeAttr("hidden");
@@ -46,8 +48,8 @@ function openTree() {
 	
 	var last = path[path.length-1];
 	if(!last) last="Home";
-	var ch = treeNode.children();
-	for(var y=0;y<ch.length;++y) {
+	ch = treeNode.children();
+	for(y=0;y<ch.length;++y) {
 		if(ch[y].firstChild.textContent==last) {
 			$(ch[y]).children().first().replaceWith('<span class="sna"><strong>'+last+'</strong></span>');
 			var ul = $(ch[y]).find("ul");
@@ -63,21 +65,21 @@ function openTree() {
 
 function prepareList() {
 	
-	openTree();
-	
+    openTree();
+    
     $('#siteTree').find('li:has(ul)')
       .click( function(event) {
               $(this).toggleClass('expanded');
               $(this).children('ul').toggle('medium');          
           return false;
-      })    
+      });    
       
       //Hack to add links inside the cv
       $('#siteTree a').unbind('click').click(function() {
           window.open($(this).attr('href'),"_self");
           return false;
       });
-    };
+}
    
 $(document).ready( function() {
 	$("#siteTree").load("/tree.html", function() {
