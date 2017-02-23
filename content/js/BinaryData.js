@@ -28,7 +28,7 @@ var BinaryData = (function() {
 	    my.dataOrigin = null;
 		if(!src) {
 			src = document.body.innerHTML.toUpperCase();
-		}
+		} 
 		
 	    var lines = src.split("\n");
 	    my.dataCache = [];
@@ -89,6 +89,25 @@ var BinaryData = (function() {
 	        }
 	    }		    
 		
+	}
+	
+	/**
+	 * This function reads a section of data
+	 * @param the starting address
+	 * @param size number of bytes to return
+	 * @return the array of data
+	 */
+	my.getData = function(start,size) {		
+		var ret = [];
+		
+		if (my.dataCache.length===0) {
+		    my.loadDataCache();
+		}
+		
+		for (var x=0;x<size;x=x+1) {
+		    ret.push(my.dataCache[start - my.dataOrigin + x])
+		}
+		return ret;
 	}
 	
 	// Return true if the string starts with a two-digit hex number

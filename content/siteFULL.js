@@ -100,7 +100,8 @@
 	         },
 	         
 	         {"dir": "MoonPatrol", "nav": "Moon Patrol", "entries": [
-                 {"copy": "MoonPatrol.jpg"},	             
+                 {"copy": "MoonPatrol.jpg"},
+                 {"copy": "MoonPatrol.js"},
 	             {"mark": "MoonPatrol.mark", "out": "index.html"},
 	             {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
 	             {"address": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware"},

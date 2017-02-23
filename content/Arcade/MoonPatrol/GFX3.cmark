@@ -21,13 +21,13 @@
 
 ;Mountains (far background)
 ;;{{{html
-;;<script src="/js/mpUI.js"></script>
+;;<script src="/js/BinaryData.js"></script>
+;;<script src="/Arcade/MoonPatrol/MoonPatrol.js"></script>
+;;<script src="/js/TileEngine.js"></script>
 ;;<script src="/js/CANVAS.js"></script>
-;;<script src="/js/pixelUI.js"></script>
-;;<script src="/js/bytes.js"></script>
 ;;<canvas width="2304" height="576"
-;;        data-canvasFunction="handleTileCanvas"
-;;        data-getTileDataFunction="getBackgroundImage"
+;;        data-canvasFunction="TileEngine.handleTileCanvas"
+;;        data-getTileDataFunction="MoonPatrol.getBackgroundImage"
 ;;        height="150"
 ;;        data-pixWidth="8"
 ;;        data-gridX="256"

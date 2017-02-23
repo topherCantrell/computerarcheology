@@ -11,22 +11,37 @@
 	     {"copyDir": "css"},
 	     {"copyDir": "img"},	     
 	     
-	     {"dir": "TRS80", "nav": "TRS80", "entries": [
-            {"mark": "TRS80.mark", "out": "index.html"},
-            {"address": "Hardware.mark", "out": "Hardware.html", "nav":"Hardware"},            
-            {"copy": "TRS80.jpg"},
-            {"copy": "TRS80Tech.jpg"},            
-            {"dir": "Pyramid", "nav": "Pyramid", "entries": [
-          	  {"mark": "TRS80Pyramid.mark", "out": "index.html"},
-          	  {"address": "RAMUse.mark", "out": "RAMUse.html", "nav":"RAM Use"},
-                {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
-                {"copy": "TRS80Pyramid.jpg"},
-                {"copy": "trs80pyramid.js"}
-          	  ]
-            }  
-            
-    	 ]	    	 
-     }
+	     {"dir": "Arcade", "nav": "Arcade", "entries": [
+	         {"mark": "Arcade.mark", "out": "index.html"},
+	         {"copy": "Arcade.jpg"},
+	         
+	         {"dir": "MoonPatrol", "nav": "Moon Patrol", "entries": [
+                 {"copy": "MoonPatrol.jpg"},
+                 {"copy": "MoonPatrol.js"},
+	             {"mark": "MoonPatrol.mark", "out": "index.html"},
+	             {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
+	             {"address": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware"},
+	             {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
+	             {"separator": ""},
+	             {"mark": "MoonPatrolSound.mark", "out": "MoonPatrolSound.html"},
+	             {"address": "SoundRAMUse.mark", "out": "SoundRAMUse.html", "nav": "Sound RAM Use"},
+	             {"address": "SoundHardware.mark", "out": "SoundHardware.html", "nav": "Sound Hardware"},
+	             {"code": "SoundCode.cmark", "out": "SoundCode.html", "nav": "Sound Code"},
+	             {"separator": ""},
+	             {"code": "GFX1.cmark", "out": "GFX1.html", "nav": "GFX1"},
+	             {"code": "GFX2.cmark", "out": "GFX2.html", "nav": "GFX2"},
+	             {"code": "GFX3.cmark", "out": "GFX3.html", "nav": "GFX3"},
+	             {"code": "GFX4.cmark", "out": "GFX4.html", "nav": "GFX4"},
+	             {"code": "GFX5.cmark", "out": "GFX5.html", "nav": "GFX5"},	             
+	             {"code": "ImageBackgroundColors.cmark", "out": "ImageBackgroundColors.html", "nav": "Background Colors"},
+	             {"code": "SpriteColors.cmark", "out": "SpriteColors.html", "nav": "Sprite Colors"},
+	             {"code": "SpriteColorSets.cmark", "out": "SpriteColorSets.html", "nav": "Sprite Color Sets"},
+	             {"code": "TextColors.cmark", "out": "TextColors.html", "nav": "Text Colors"}
+	             ]
+	         }
+	         	         
+	         ]
+	     }
 	             
 	 ]
 

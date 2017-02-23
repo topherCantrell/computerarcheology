@@ -5394,7 +5394,7 @@ ISROBJRun_21:
 2A24: 00 08 00 ; 000800
 2A27: 00 10 00 ; 001000
       
-BUG1 : ;"Continue" is spelled wrong
+CODEBUG1 : ;"Continue" is spelled wrong
 2A2A: 08 81 08  ; Screen:8108 Color:8
 2A2D: 54 4F 20 43 4F 55 4E 54 49 4E 55 45 20 47 41 4D 45  ; "TO_COUNTINUE_GAME"
 2A3E: 22  ; Set Cursor and Color
@@ -5410,7 +5410,7 @@ BUG1 : ;"Continue" is spelled wrong
 2A62: 43 48 41 4D 50 49 4F 4E 20 43 4F 55 52 53 45 20 31 20 47 4F 20 5B  ; "CHAMPION_COURSE_1_GO__"
 2A78: 21  ; END OF SCRIPT
 
-BUG2: ; This doesn't appear to be used anywhere. Free-play is implemented by always having 2 credits.
+CODEBUG2: ; This doesn't appear to be used anywhere. Free-play is implemented by always having 2 credits.
 2A79: 4C 82 00  ; Screen:824C Color:0
 2A7C: 46 52 45 45 20 50 4C 41 59  ; "FREE_PLAY"
 2A85: 21  ; END OF SCRIPT
@@ -5564,19 +5564,19 @@ BUG2: ; This doesn't appear to be used anywhere. Free-play is implemented by alw
 2D3C: 07 6E 08 66 09 5F 0A 59 
 
 ;;{{{html
-;;<script src="/js/mpUI.js"></script>
+;;<script src="/js/BinaryData.js"></script>
+;;<script src="/Arcade/MoonPatrol/MoonPatrol.js"></script>
+;;<script src="/js/TileEngine.js"></script>
 ;;<script src="/js/CANVAS.js"></script>
-;;<script src="/js/pixelUI.js"></script>
-;;<script src="/js/bytes.js"></script>
 ;;}}}
 
 Splash:
 ; Text printing for MOON PATROL on the splash
 ;;{{{html
 ;;<canvas width="1000" height="330"
-;;data-canvasFunction="handleTileCanvas"
+;;data-canvasFunction="TileEngine.handleTileCanvas"
 ;;data-file="GFX1.html"
-;;data-getTileDataFunction="getBackground8x8Data"
+;;data-getTileDataFunction="MoonPatrol.getBackground8x8Data"
 ;;data-pixWidth="8"
 ;;data-gridX="8"
 ;;data-gridY="8"
@@ -5595,7 +5595,7 @@ Splash:
 ;;1B1,1DE,1E1,1E4,1E6,1E9,1ED,1F0,1F4,1F8,1B2,1FD,1FE,1D0,1D3,1D6,1BF,,
 ;;1B2,1DF,1E2,1E5,1B2,1EA,1EE,1F1,1F5,1F9,1B3,1B8,1BC,1D1,1D4,1D7,1C0,,
 ;;1B3,1B8,,,1E7,1EB,1EF,1F2,1BF,1B0,1FB,,1CE,1D2,1D5,1BC,1FF,,
-;;1B4,,,,1E8,1EC,1B4,,,1FA,1FC,,1CF,1CA,1C2,1BD,1EC, ">
+;;1B4,,,,1E8,1EC,1B4,,,1FA,1FC,,1CF,1CA,1C2,1BD,1EC,">
 ;;</canvas>
 ;;}}}
 

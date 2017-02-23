@@ -11,13 +11,14 @@
 
 ;BackgroundTiles
 ;;{{{html
-;;<script src="/js/mpUI.js"></script>
+;;<script src="/js/BinaryData.js"></script>
+;;<script src="/Arcade/MoonPatrol/MoonPatrol.js"></script>
+;;<script src="/js/TileEngine.js"></script>
 ;;<script src="/js/CANVAS.js"></script>
-;;<script src="/js/pixelUI.js"></script>
-;;<script src="/js/bytes.js"></script>
+;;
 ;;<canvas width="1200" height="2100"  
-;;    data-canvasFunction="handleTileCanvas"
-;;    data-getTileDataFunction="getBackground8x8Data"
+;;    data-canvasFunction="TileEngine.handleTileCanvas"
+;;    data-getTileDataFunction="MoonPatrol.getBackground8x8Data"
 ;;    data-pixWidth="8"
 ;;    data-gridX="8"
 ;;    data-gridY="8"

@@ -18,7 +18,7 @@ function switchTab(name) {
 function pageScrollTo(name) {
 	$('html, body').animate({
         scrollTop: $("#"+name).offset().top
-    }, 200);
+    }, 300);
 }
 
 function openTree() {	
