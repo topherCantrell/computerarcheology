@@ -1,6 +1,6 @@
 
 function mergePixels(data) {
-	var ret = new Array();
+	var ret = [];
 	for(var x=0;x<8;++x) {
 		var a = data[x].toString(2);
 		while(a.length<8) a="0"+a;

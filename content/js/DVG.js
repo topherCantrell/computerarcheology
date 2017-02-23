@@ -14,15 +14,15 @@ function handleDVGCanvas(can) {
 	
 	
 	var att = can.getAttribute("data-address");	
-	if(att!=undefined) {
+	if(att) {
 		setDataCursor(att);
 	}
 	att = can.getAttribute("data-origin");
-	if(att!=undefined) {
+	if(att) {
 		origin = parseInt(att,16);
 	}
 	att = can.getAttribute("data-colors");	
-	if(att!=undefined) {
+	if(att) {
 		pixColors = JSON.parse(att);		
 	}
 	
@@ -35,13 +35,13 @@ function handleDVGCanvas(can) {
 				
 	for(var p=0;p<command.length;++p) {		
 		command[p] = command[p].trim();
-		if(command[p].indexOf("x=")==0) {
+		if(command[p].indexOf("x=")===0) {
 			x = parseInt(command[p].substring(2));
-		} else if(command[p].indexOf("y=")==0) {
+		} else if(command[p].indexOf("y=")===0) {
 			y = parseInt(command[p].substring(2));
-		} else if(command[p].indexOf("baseScale=")==0) {
+		} else if(command[p].indexOf("baseScale=")===0) {
 			baseScale = parseInt(command[p].substring(10));
-		} else if(command[p].indexOf("screenScale=")==0) {
+		} else if(command[p].indexOf("screenScale=")===0) {
 			screenScale = parseFloat(command[p].substring(12));		
 		} else {			
 			if(command[p]!="*") {
@@ -50,7 +50,7 @@ function handleDVGCanvas(can) {
 			
 			context.beginPath();
 			
-			var callStack = new Array();
+			var callStack = [];
 			context.moveTo(x*screenScale,y*screenScale);
 			var nx = 0;
 			var ny = 0;
@@ -72,16 +72,16 @@ function handleDVGCanvas(can) {
 					s = 1 << (9-(op+baseScale)); // Scale (divisor)
 					//s=s/baseScale;
 					ny = ((b&3)<<8) + a;
-					if((b&4)!=0) ny = -ny;
+					if((b&4)!==0) ny = -ny;
 					i = d>>4; // Intensity
 					nx = ((d&3)<<8) + c;
-					if((d&4)!=0) nx = -nx;
+					if((d&4)!==0) nx = -nx;
 					x = x + (nx / s);
 					y = y - (ny / s);
-					if(i!=0) {				
-						if(nx==0 && ny==0) {
+					if(i!==0) {				
+						if(nx===0 && ny===0) {
 							context.fillStyle=pixColors[i];
-							context.fillRect(x*screenScale,y*screenScale,2,2)
+							context.fillRect(x*screenScale,y*screenScale,2,2);
 						} else {	
 							context.strokeStyle=pixColors[i];
 							context.lineTo(x*screenScale,y*screenScale);
@@ -93,12 +93,12 @@ function handleDVGCanvas(can) {
 					c = getNextByte();
 					d = getNextByte();
 					
-					y = 1024 - (((b&15)<<8)+a)
-					x = ((d&15)<<8)+c +3 
+					y = 1024 - (((b&15)<<8)+a);
+					x = ((d&15)<<8)+c +3; 
 					
 					context.moveTo(x*screenScale,y*screenScale);
 					
-					baseScale = (d>>4) & 15					
+					baseScale = (d>>4) & 15;					
 
 				} else if(op==11) { // HALT
 					break; // Just stop the sequence
@@ -108,7 +108,7 @@ function handleDVGCanvas(can) {
 					b = b - origin;
 					setDataCursor(b*2+origin);
 				} else if(op==13) { // RTSL
-					if(callStack.length==0) { 
+					if(callStack.length===0) { 
 						break;
 					}
 					cursor = callStack.pop();
@@ -122,18 +122,18 @@ function handleDVGCanvas(can) {
 					context.moveTo(x*screenScale,y*screenScale);
 					
 					ny = (b&3)<<8;
-					if((b&4)!=0) ny=-ny;
+					if((b&4)!==0) ny=-ny;
 					nx = (a&3)<<8;
-					if((a&4)!=0) nx=-nx;
+					if((a&4)!==0) nx=-nx;
 					i = a>>4;
 					s = ((a>>2)&2) + ((b>>3)&1);
 					s = 1 << (7-(s+baseScale)); // Now a divisor		
 					x = x + (nx / s);
 					y = y - (ny / s);
-					if(i!=0) {
-						if(nx==0 && ny==0) {
+					if(i!==0) {
+						if(nx===0 && ny===0) {
 							context.fillStyle=pixColors[i];
-							context.fillRect(x*screenScale,y*screenScale,2,2)
+							context.fillRect(x*screenScale,y*screenScale,2,2);
 						} else {	
 							context.strokeStyle=pixColors[i];
 							context.lineTo(x*screenScale,y*screenScale);

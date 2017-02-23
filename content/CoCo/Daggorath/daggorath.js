@@ -6,9 +6,9 @@ function padBinaryTo8Bits(value) {
 
 function get5x7Packed(tile) {
 	
-	var ret = new Array();
+	var ret = [];
 	
-	var dat = new Array();
+	var dat = [];
 	
 	getLineOfData(address+tile*5,dat);
 	
@@ -25,8 +25,8 @@ function get5x7Packed(tile) {
 }
 
 function get8x7(tile) {
-	var ret = new Array();
-	var dat = new Array();
+	var ret = [];
+	var dat = [];
 	
 	getLineOfData(address+tile*7,dat);
 	
@@ -69,7 +69,7 @@ function processScript(context,pc) {
 		case 0xFC: // Multiple short segments
 			while(true) {
 				com = getNextByte();
-				if(com==0) break;
+				if(com===0) break;
 				ny = com >> 4;
 				if(ny>=8) ny=ny | 0xF0;
 				ny = ny << 1;
@@ -120,19 +120,19 @@ function processScript(context,pc) {
 function handleDagCanvas(can) {
 			
 	var att = can.getAttribute("data-scale");	
-	if(att!=undefined) {
+	if(att) {
 		scale = parseFloat(att);
 	}
 	att = can.getAttribute("data-colors");	
-	if(att!=undefined) {
+	if(att) {
 		colors = JSON.parse(att);		
 	}
 	att = can.getAttribute("data-xoffs");	
-	if(att!=undefined) {
+	if(att) {
 		xoffs = parseInt(att);
 	}
 	att = can.getAttribute("data-yoffs");	
-	if(att!=undefined) {
+	if(att) {
 		yoffs = parseInt(att);
 	}
 	
@@ -144,7 +144,7 @@ function handleDagCanvas(can) {
 	context.beginPath();
 	
 	att = can.getAttribute("data-border");
-	if(att==undefined || att!="false") {
+	if(!attd || att!="false") {
 		context.rect(0,0,can.width-1, can.height-1);
 	}
 	

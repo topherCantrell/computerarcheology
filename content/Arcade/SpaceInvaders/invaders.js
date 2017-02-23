@@ -1,8 +1,8 @@
 
 function get8x8Data(tile) {
 
-	var ret = new Array();
-	var dat = new Array();
+	var ret = [];
+	var dat = [];
 	getLineOfData(address+tile*8,dat);
 	for(var x=0;x<8;++x) {
 		var a = dat[x].toString(2);
@@ -20,19 +20,20 @@ function get8x8Data(tile) {
 
 function get8x8CharData(tile) {
 	
-	var ret = new Array();
+	var ret = [];
+	var x;
 	
 	setDataCursor(0x1E00);
-	for(var x=0;x<tile*8;++x) {
+	for(x=0;x<tile*8;++x) {
 		getNextByte();
 	}
 	
-	var dat = new Array();
-	for(var x=0;x<8;++x) {
+	var dat = [];
+	for(x=0;x<8;++x) {
 		dat.push(getNextByte());
 	}
 		
-	for(var x=0;x<8;++x) {
+	for(x=0;x<8;++x) {
 		var a = dat[x].toString(2);
 		while(a.length<8) a="0"+a;
 		for(var y=7;y>=0;--y) {
@@ -46,9 +47,9 @@ function get8x8CharData(tile) {
 }
 
 function get8x3Data(tile) {
-	var ret = new Array();
+	var ret =[];
 	
-	var dat = new Array();	
+	var dat = [];	
 	getLineOfData(address+tile*3,dat);
 	getLineOfData(address+tile*3+1,dat);
 	getLineOfData(address+tile*3+2,dat);
@@ -67,9 +68,9 @@ function get8x3Data(tile) {
 
 function get1x8Data(tile) {
 	
-	var ret = new Array();
+	var ret = [];
 	
-	var dat = new Array();
+	var dat = [];
 	getLineOfData(address+tile,dat);
 	for(var x=0;x<1;++x) {
 		var a = dat[x].toString(2);
@@ -85,9 +86,9 @@ function get1x8Data(tile) {
 
 function get6x8Data(tile) {
 	
-	var ret = new Array();
+	var ret = [];
 	
-	var dat = new Array();
+	var dat = [];
 	getLineOfData(address+tile,dat);
 	for(var x=0;x<6;++x) {
 		var a = dat[x].toString(2);
@@ -102,9 +103,9 @@ function get6x8Data(tile) {
 }
 
 function get8x16Data(tile) {
-    var ret = new Array();
+    var ret = [];
 	
-    var dat = new Array();
+    var dat = [];
 	getLineOfData(address+tile*16,dat);
 	for(var x=0;x<16;++x) {
 		var a = dat[x].toString(2);
@@ -119,9 +120,9 @@ function get8x16Data(tile) {
 }
 
 function get8x24Data(tile) {
-    var ret = new Array();
+    var ret = [];
 	
-    var dat = new Array();
+    var dat = [];
 	getLineOfData(address+tile*24,dat);
 	for(var x=0;x<24;++x) {
 		var a = dat[x].toString(2);
@@ -137,23 +138,25 @@ function get8x24Data(tile) {
 
 function get16x22Data(tile) {
 	
-	var ret = new Array();
+	var ret = [];	
+	var dat = [];
+	var x,y;
+	var ming;
 	
-	var dat = new Array();
 	getLineOfData(address,dat);
 	getLineOfData(address+22,dat);
 	
-	for(var x=0;x<22;++x) {
+	for(x=0;x<22;++x) {
 		var a = dat[x*2].toString(2);
 		while(a.length<8) a="0"+a;		
-		for(var y=7;y>=0;--y) {
-			var ming = a.charAt(y);
+		for(y=7;y>=0;--y) {
+			ming = a.charAt(y);
 			ret.push(parseInt(ming,2));
 		}
 		var b = dat[x*2+1].toString(2);
 		while(b.length<8) b="0"+b;
-		for(var y=7;y>=0;--y) {
-			var ming = b.charAt(y);
+		for(y=7;y>=0;--y) {
+			ming = b.charAt(y);
 			ret.push(parseInt(ming,2));			
 		}
 	}
@@ -164,7 +167,7 @@ function get16x22Data(tile) {
 
 function rotateCCW(data,width,height) {
 	
-	var ret = new Array();
+	var ret = [];
 	
 	for(var x=width-1;x>=0;--x) {
 		for(var y=0;y<height;++y) {
