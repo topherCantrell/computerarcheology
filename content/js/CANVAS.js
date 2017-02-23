@@ -11,14 +11,12 @@ window.onload = function() {
 	
 	var cans = $("canvas");
 	
-	for(var x=0;x<cans.length;++x) {		
-		for(var x=0;x<cans.length;++x) {		
-			var att = cans[x].getAttribute("data-canvasFunction");	
-			if(att) {
-				handleCanvasFunction = eval(att);
-			}
-			handleCanvasFunction(cans[x]);			
-		}	
+	for(var x=0;x<cans.length;++x) {				
+		var att = cans[x].getAttribute("data-canvasFunction");	
+		if(att) {
+			handleCanvasFunction = eval(att);
+		}
+		handleCanvasFunction(cans[x]);			
 	}
 
 };

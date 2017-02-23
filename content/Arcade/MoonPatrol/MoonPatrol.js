@@ -6,7 +6,7 @@ var MoonPatrol = (function() {
 	
 	function getSpriteQuadrantData(tileAddress) {
 		
-		var ret = new Array();
+		var ret = [];
 		
 		var plane1 = BinaryData.getData(tileAddress,8); 
 		var plane2 = BinaryData.getData(tileAddress+0x1000,8);
@@ -28,6 +28,7 @@ var MoonPatrol = (function() {
 	my.getSprite16x16Data = function(tileAddress) {	
 		
 		var ret = [];
+		var x,y;
 		
 		var a = getSpriteQuadrantData(tileAddress*32);
 		var b = getSpriteQuadrantData(tileAddress*32+8);
@@ -36,33 +37,33 @@ var MoonPatrol = (function() {
 		
 		var cnta=0;
 		var cntb=0;
-		for(var y=0;y<8;++y) {
-			for(var x=0;x<8;++x) {
-				ret.push(a[cnta++])
+		for(y=0;y<8;++y) {
+			for(x=0;x<8;++x) {
+				ret.push(a[cnta++]);
 			}
-			for(var x=0;x<8;++x) {
-				ret.push(c[cntb++])
+			for(x=0;x<8;++x) {
+				ret.push(c[cntb++]);
 			}		
 		}
 		
 		cnta=0;
 		cntb=0;
-		for(var y=0;y<8;++y) {
-			for(var x=0;x<8;++x) {
-				ret.push(b[cnta++])
+		for(y=0;y<8;++y) {
+			for(x=0;x<8;++x) {
+				ret.push(b[cnta++]);
 			}
-			for(var x=0;x<8;++x) {
-				ret.push(d[cntb++])
+			for(x=0;x<8;++x) {
+				ret.push(d[cntb++]);
 			}		
 		}
 		
 		return ret;
 		
-	},
+	};
 	
 	my.getBackground8x8Data = function(tileAddress) {
 		
-		var ret = new Array();
+		var ret = [];
 		
 		var dataA = BinaryData.getData(tileAddress*8,8);
 		var dataB = BinaryData.getData(tileAddress*8+4096,8);	
@@ -84,33 +85,12 @@ var MoonPatrol = (function() {
 		
 		return ret;
 		
-	},
+	};
 	
 	my.getBackgroundImage = function() {
 		
-		// There is just one giant tile image. Ignore
-		// the tileAddressed passed in.
-		
 		var j = 0;
 		
-		/*
-		var data = new Array();
-		while(j<htmlUpper.length) {
-			
-			var k=htmlUpper.indexOf("\n",j);
-			if(k<0) k=htmlUpper.length;
-			var text = htmlUpper.substring(j,k);
-			j = k+1;
-	
-			if(text.length<5) continue;
-			if(text.charAt(4)!=':') continue;
-	
-			for(var x=6;x<text.length;x=x+3) {
-				data.push(parseInt(text.substring(x,x+2),16));
-			}
-	
-		}	
-		*/
 	    var data = BinaryData.getData(0,4096);
 		var ret = [];
 		for(var x=0;x<4096;++x) {
@@ -124,7 +104,7 @@ var MoonPatrol = (function() {
 	
 		return ret;
 	
-	}
+	};
 	
 	return my;
 

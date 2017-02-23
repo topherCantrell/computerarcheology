@@ -1,89 +1,5 @@
 var TileEngine = (function() {	
 	
-	/**
-	 * This function draws a single tile specification. A tile spec is a number with optional
-	 * prepended V (vertical mirroring) or H (horizontal mirroring) or both. This function
-	 * uses the registered "get data" function to get the tile data.
-	 * @param context  the canvas context
-	 * @param xo       x offset on canvas
-	 * @param yo       y offset on canvas
-	 * @param gridX    number of pixels across
-	 * @param gridY    number of pixels down
-	 * @param com      the tile command
-	 */
-	function singleTileCommand(context,xo,yo,gridX,gridY,com) {
-		
-		var hmirror = false;
-		var vmirror = false;
-	
-		com = com.toString();
-		var ocom = com.trim();
-	
-		if(com.charAt(0)=='V') {
-			vmirror = true;
-			com = com.substring(1);
-		}
-	
-		if(com.charAt(0)=='H') {
-			hmirror = true;
-			com = com.substring(1);
-		}
-	
-		if(com.length==0) return;
-		
-		var tileAddress = parseInt(com,16);	
-		
-		var pixelData = getTileDataFunction(tileAddress);
-				
-		drawPixelGrid(context,pixelData,0,gridX,gridY,ocom,hmirror,vmirror,xo,yo);
-		
-	}
-	
-	/**
-	 * This function draws a grid of pixels on the canvas and
-	 * optionally displays the given label over the top.
-	 * @param context    the canvas context
-	 * @param pixelData  the array of pixel data, 1 per pixel
-	 * @param dataStart  the starting offset in the pixelData
-	 * @param width      number of pixels across
-	 * @param height     number of pixels down
-	 * @param label      label to show over grid or null for none
-	 * @param hMirror    true if grid should be mirrored horizontally
-	 * @param vMirror    true if grid should be mirrored vertically
-	 * @param xo         x offset on canvas
-	 * @param yo         y offset on canvas
-	 */
-	function drawPixelGrid(context,pixelData,dataStart,width,height,label,
-			hMirror,vMirror,xo,yo) 
-	{			
-		for(var y=0;y<height;++y) {
-			for(var x=0;x<width;++x) {
-				context.fillStyle = colors[pixelData[dataStart++]];
-				
-				var xx;
-				var yy;
-				
-				if(hMirror) {
-					xx = xo+(width-1-x)*pixWidth;
-				} else {
-					xx = xo+x*pixWidth;
-				}
-				
-				if(vMirror) {
-					yy = yo+(height-1-y)*pixHeight;
-				} else {						          
-					yy = yo+y*pixHeight;
-				}
-	                       
-	            context.fillRect(xx,yy,pixWidth-gap,pixWidth-gap);
-			}
-		}		
-		if(label!=null && labColor!=null && labColor!="") {
-			context.fillStyle = labColor;	
-			context.fillText(label,xo+pixWidth, yo+pixHeight*2);
-		}	
-	}
-	
 	var my = {};
 
 	var colors = ["#000000","#FF00FF","#FFFF00","#00FFFF"];
@@ -134,32 +50,32 @@ var TileEngine = (function() {
 	my.handleTileCanvas = function(can) {   
 	
 		var att = can.getAttribute("data-pixWidth");	
-		if(att!=undefined) {
+		if(att) {
 			pixWidth = parseInt(att);
 		}
 		att = can.getAttribute("data-getTileDataFunction");
-		if(att!=undefined) {
+		if(att) {
 			getTileDataFunction = eval(att);
 		}
 		att = can.getAttribute("data-pixHeight");	
-		if(att!=undefined) {
+		if(att) {
 			pixHeight = parseInt(att);
 		}
 		att = can.getAttribute("data-gridX");
-		if(att!=undefined) {
+		if(att) {
 			gridX = parseInt(att);
 		}
 		att = can.getAttribute("data-gridY");
-		if(att!=undefined) {
+		if(att) {
 			gridY = parseInt(att);
 		}
 		att = can.getAttribute("data-showBorder");
-		if(att!=undefined) {
+		if(att) {
 			if(att=="true") showBorder=true;
 			else showBorder=false;
 		}
 		att = can.getAttribute("data-colors");	
-		if(att!=undefined) {
+		if(att) {
 			if(att.charAt(0)=='[') {
 				colors = JSON.parse(att);
 			} else {
@@ -167,27 +83,27 @@ var TileEngine = (function() {
 			}
 		}
 		att = can.getAttribute("data-gap");
-		if(att!=undefined) {
+		if(att) {
 			gap = parseFloat(att);
 		}
 		att = can.getAttribute("data-labelColor");
-		if(att!=undefined) {
+		if(att) {
 			labColor = att;
 		}
 		att = can.getAttribute("data-address");
-		if(att!=undefined) {
+		if(att) {
 			address = parseInt(att,16);
 		}
 		att = can.getAttribute("data-gridPad");
-		if(att!=undefined) {
+		if(att) {
 			gridPad = parseFloat(att);
 		}
 		att = can.getAttribute("data-colorsName");
-		if(att!=undefined) {
+		if(att) {
 			colorMap[att] = colors;
 		}
 		att = can.getAttribute("data-file");
-		if(att!=undefined) {
+		if(att) {
 			if(att == "*") {
 				htmlUpper = document.body.innerHTML.toUpperCase();
 			} else {
@@ -200,7 +116,7 @@ var TileEngine = (function() {
 		}
 	
 		att = can.getAttribute("data-command");
-		if(att==undefined) return;
+		if(!att) return;
 		
 		// Handle drawing commands
 	
@@ -260,7 +176,91 @@ var TileEngine = (function() {
 			context.strokeStyle = "#ff0000";
 			context.stroke();
 		}
-	}
+	};
+	
+	/**
+     * This function draws a single tile specification. A tile spec is a number with optional
+     * prepended V (vertical mirroring) or H (horizontal mirroring) or both. This function
+     * uses the registered "get data" function to get the tile data.
+     * @param context  the canvas context
+     * @param xo       x offset on canvas
+     * @param yo       y offset on canvas
+     * @param gridX    number of pixels across
+     * @param gridY    number of pixels down
+     * @param com      the tile command
+     */
+    function singleTileCommand(context,xo,yo,gridX,gridY,com) {
+        
+        var hmirror = false;
+        var vmirror = false;
+    
+        com = com.toString();
+        var ocom = com.trim();
+    
+        if(com.charAt(0)=='V') {
+            vmirror = true;
+            com = com.substring(1);
+        }
+    
+        if(com.charAt(0)=='H') {
+            hmirror = true;
+            com = com.substring(1);
+        }
+    
+        if(com.length===0) return;
+        
+        var tileAddress = parseInt(com,16); 
+        
+        var pixelData = getTileDataFunction(tileAddress);
+                
+        drawPixelGrid(context,pixelData,0,gridX,gridY,ocom,hmirror,vmirror,xo,yo);
+        
+    }
+    
+    /**
+     * This function draws a grid of pixels on the canvas and
+     * optionally displays the given label over the top.
+     * @param context    the canvas context
+     * @param pixelData  the array of pixel data, 1 per pixel
+     * @param dataStart  the starting offset in the pixelData
+     * @param width      number of pixels across
+     * @param height     number of pixels down
+     * @param label      label to show over grid or null for none
+     * @param hMirror    true if grid should be mirrored horizontally
+     * @param vMirror    true if grid should be mirrored vertically
+     * @param xo         x offset on canvas
+     * @param yo         y offset on canvas
+     */
+    function drawPixelGrid(context,pixelData,dataStart,width,height,label,
+            hMirror,vMirror,xo,yo) 
+    {           
+        for(var y=0;y<height;++y) {
+            for(var x=0;x<width;++x) {
+                context.fillStyle = colors[pixelData[dataStart++]];
+                
+                var xx;
+                var yy;
+                
+                if(hMirror) {
+                    xx = xo+(width-1-x)*pixWidth;
+                } else {
+                    xx = xo+x*pixWidth;
+                }
+                
+                if(vMirror) {
+                    yy = yo+(height-1-y)*pixHeight;
+                } else {                                  
+                    yy = yo+y*pixHeight;
+                }
+                           
+                context.fillRect(xx,yy,pixWidth-gap,pixWidth-gap);
+            }
+        }       
+        if(label!==null && labColor!==null && labColor!=="") {
+            context.fillStyle = labColor;   
+            context.fillText(label,xo+pixWidth, yo+pixHeight*2);
+        }   
+    }
 	
 	return my;
 
