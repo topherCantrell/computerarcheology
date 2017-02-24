@@ -4,10 +4,10 @@
 ;;%%-2 NES/Zelda/Hardware.mark /NES/Zelda/Hardware.html
 
 ;;{{{html
+;;<script src="/NES/Zelda/zelda.js"></script>
+;;<script src="/js/BinaryData.js"></script>
+;;<script src="/js/TileEngine.js"></script>
 ;;<script src="/js/CANVAS.js"></script>
-;;<script src="/js/pixelUI.js"></script>
-;;<script src="/js/bytes.js"></script>
-;;<script src="/js/zelda.js"></script>
 ;;}}}
 
 ; Zelda screens come in two main flavors: surface (overworld) and dungeon. There are 10
@@ -698,8 +698,8 @@ Unknown1: ; =
 
 ;;{{{html
 ;;<canvas width="150" height="150"
-;;data-canvasFunction="handleTileCanvas"
-;;data-getTileDataFunction="getMergedData"
+;;data-canvasFunction="TileEngine.handleTileCanvas"
+;;data-getTileDataFunction="Zelda.getMergedData"
 ;;data-labelColor="#00C0FF"
 ;;data-pixWidth="8"
 ;;data-pixHeight="8"

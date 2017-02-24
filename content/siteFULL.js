@@ -397,6 +397,7 @@
 	                                              	         
 	         {"dir": "Zelda", "nav": "Zelda", "entries": [
 	             {"copy": "Zelda.jpg"},
+	             {"copy": "zelda.js"},
 	             {"copy": "ZeldaBanks.jpg"},
 	             {"mark": "Zelda.mark", "out": "index.html"},
 	             {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},

@@ -4,10 +4,10 @@
 ;;%%-2 NES/Zelda/Hardware.mark /NES/Zelda/Hardware.html
 
 ;;{{{html
+;;<script src="/NES/Zelda/zelda.js"></script>
+;;<script src="/js/BinaryData.js"></script>
+;;<script src="/js/TileEngine.js"></script>
 ;;<script src="/js/CANVAS.js"></script>
-;;<script src="/js/pixelUI.js"></script>
-;;<script src="/js/bytes.js"></script>
-;;<script src="/js/zelda.js"></script>
 ;;}}}
 
 ; ROM pointers
@@ -99,7 +99,7 @@ Tiles_S_Common1: ; =
 ; that Link sprites appear first.
 
 ;;{{{html
-;;<canvas data-canvasFunction="handleTileCanvas" data-getTileDataFunction="getMergedData"width="0" height="0" data-colorsName="GreenTanBrown" data-colors='["#606060","#80D010","#FC9838","#C84C0C"]'></canvas>
+;;<canvas data-canvasFunction="TileEngine.handleTileCanvas" data-getTileDataFunction="Zelda.getMergedData"width="0" height="0" data-colorsName="GreenTanBrown" data-colors='["#606060","#80D010","#FC9838","#C84C0C"]'></canvas>
 ;;<canvas width="0" height="0" data-colorsName="RedOrangeWhite" data-colors='["#606060","#B53120","#F9BC22","#F0F0F0"]'></canvas>
 ;;<canvas width="0" height="0" data-colorsName="BlueBlueWhite" data-colors='["#606060","0000BC","#6B8EFF","#FFFFFF"]'></canvas>
 ;;
