@@ -10,14 +10,14 @@
 ; TODO: make a HTML table of links to the SWI routines. Figure out what they all do.
 
 ;;{{{html
-;;<script src="/js/CANVAS.js"    type="text/javascript"></script>
-;;<script src="/js/pixelUI.js"   type="text/javascript"></script>
-;;<script src="/js/bytes.js"     type="text/javascript"></script>
-;;<script src="/js/dundagUI.js"  type="text/javascript"></script>
+;;<script src="/CoCo/Daggorath/daggorath.js"></script>
+;;<script src="/js/TileEngine.js"></script>
+;;<script src="/js/BinaryData.js"></script>
+;;<script src="/js/CANVAS.js"></script>
 ;;
 ;;<!-- Cache some commonly-used values -->
 ;;<canvas width="0" height="0"
-;;        data-canvasFunction="handleTileCanvas"
+;;        data-canvasFunction="TileEngine.handleTileCanvas"
 ;;        data-labelColor=""
 ;;        data-pixWidth="8"
 ;;        data-gridX="5"
@@ -4302,7 +4302,7 @@ DB13: 1F 40    FF   06       FF      00       0D 07 ; Wizard
 
 ;;{{{html
 ;;<canvas width="400" height="260"
-;;     data-getTileDataFunction="get5x7Packed"
+;;     data-getTileDataFunction="Daggorath.get5x7Packed"
 ;;         data-address="DB1B"
 ;;         data-gridX="5"
 ;;         data-gridY="7"
@@ -4350,7 +4350,7 @@ DBB1: 30 00 00 00 04 ; .     00110 > 00000 00000 00000 00000 00000 00000 00100  
 
 ;;{{{html
 ;;<canvas width="280" height="80"
-;;     data-getTileDataFunction="get8x7"
+;;     data-getTileDataFunction="Daggorath.get8x7"
 ;;         data-address="DBB6"
 ;;         data-gridX="8"
 ;;         data-gridY="7"
@@ -4418,7 +4418,7 @@ DBF9: FF ; End
 ;;= Object Pictures =
 ;;{{{html
 ;;<canvas width="256" height="152"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-colors='["#FFFFFF","#000000"]'
 ;;  data-border="true"
 ;;  data-scale="1.0"
@@ -4429,7 +4429,7 @@ DBF9: FF ; End
 ;;}}}
 ;;
 ;;{{{html
-;;<canvas width="200" height="60" data-canvasfunction="handleDagCanvas" data-border="false" data-scale="3.0" data-xoffs="-450" data-yoffs="-350" data-command="DBFA">
+;;<canvas width="200" height="60" data-canvasfunction="Daggorath.handleDagCanvas" data-border="false" data-scale="3.0" data-xoffs="-450" data-yoffs="-350" data-command="DBFA">
 ;;</canvas>
 ;;}}}
 
@@ -4446,7 +4446,7 @@ DC05: 00            ;     End of short lines
 DC06: FE            ; End of image
 
 ;;{{{html
-;;<canvas width="128" height="30" data-canvasfunction="handleDagCanvas" data-border="false" data-scale="3.0" data-xoffs="-140" data-yoffs="-335" data-command="DC07">
+;;<canvas width="128" height="30" data-canvasfunction="Daggorath.handleDagCanvas" data-border="false" data-scale="3.0" data-xoffs="-140" data-yoffs="-335" data-command="DC07">
 ;;</canvas>
 ;;}}}
 
@@ -4460,7 +4460,7 @@ DC0D: 00            ;     End of short lines
 DC0E: FE            ; End of image
 
 ;;{{{html
-;;<canvas width="128" height="45" data-canvasfunction="handleDagCanvas" data-border="false" data-scale="3.0" data-xoffs="-200" data-yoffs="-330" data-command="DC0F">
+;;<canvas width="128" height="45" data-canvasfunction="Daggorath.handleDagCanvas" data-border="false" data-scale="3.0" data-xoffs="-200" data-yoffs="-330" data-command="DC0F">
 ;;</canvas>
 ;;}}}
 
@@ -4473,7 +4473,7 @@ DC16: 72 56         ; Line to absolute (86,114)
 DC18: FE            ; End of image
 
 ;;{{{html
-;;<canvas width="128" height="40" data-canvasfunction="handleDagCanvas" data-border="false" data-scale="3.0" data-xoffs="-420" data-yoffs="-325" data-command="DC19">
+;;<canvas width="128" height="40" data-canvasfunction="Daggorath.handleDagCanvas" data-border="false" data-scale="3.0" data-xoffs="-420" data-yoffs="-325" data-command="DC19">
 ;;</canvas>
 ;;}}}
 
@@ -4487,7 +4487,7 @@ DC1F: 00            ;     End of short lines
 DC20: FE            ; End of image
 
 ;;{{{html
-;;<canvas width="128" height="40" data-canvasfunction="handleDagCanvas" data-border="false" data-scale="3.0" data-xoffs="-120" data-yoffs="-350" data-command="DC21">
+;;<canvas width="128" height="40" data-canvasfunction="Daggorath.handleDagCanvas" data-border="false" data-scale="3.0" data-xoffs="-120" data-yoffs="-350" data-command="DC21">
 ;;</canvas>
 ;;}}}
 
@@ -4502,7 +4502,7 @@ DC28: 00            ;     End of short lines
 DC29: FE            ; End of image
 
 ;;{{{html
-;;<canvas width="128" height="40" data-canvasfunction="handleDagCanvas" data-border="false" data-scale="3.0" data-xoffs="-530" data-yoffs="-350" data-command="DC2A">
+;;<canvas width="128" height="40" data-canvasfunction="Daggorath.handleDagCanvas" data-border="false" data-scale="3.0" data-xoffs="-530" data-yoffs="-350" data-command="DC2A">
 ;;</canvas>
 ;;}}}
 
@@ -4520,7 +4520,7 @@ DC32: FE            ; End of image
 
 ;;{{{html
 ;;<canvas width="256" height="152"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-border="true"
 ;;  data-scale="1.0"
 ;;  data-xoffs="0"
@@ -4528,7 +4528,7 @@ DC32: FE            ; End of image
 ;;  data-command="DC4F">
 ;;</canvas>
 ;;<canvas width="256" height="152"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-border="true"
 ;;    data-scale="1.0"
 ;;  data-xoffs="0"
@@ -4536,7 +4536,7 @@ DC32: FE            ; End of image
 ;;  data-command="DC6B">
 ;;</canvas>
 ;;<canvas width="256" height="152"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-border="true"
 ;;    data-scale="1.0"
 ;;  data-xoffs="0"
@@ -4544,7 +4544,7 @@ DC32: FE            ; End of image
 ;;  data-command="DC9B">
 ;;</canvas>
 ;;<canvas width="256" height="152"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-border="true"
 ;;    data-scale="1.0"
 ;;  data-xoffs="0"
@@ -4553,7 +4553,7 @@ DC32: FE            ; End of image
 ;;</canvas>
 ;;<p>
 ;;<canvas width="256" height="152"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-border="true"
 ;;  data-scale="1.0"
 ;;  data-xoffs="0"
@@ -4561,7 +4561,7 @@ DC32: FE            ; End of image
 ;;  data-command="DC6A">
 ;;</canvas>
 ;;<canvas width="256" height="152"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-border="true"
 ;;    data-scale="1.0"
 ;;  data-xoffs="0"
@@ -4569,7 +4569,7 @@ DC32: FE            ; End of image
 ;;  data-command="DC8B">
 ;;</canvas>
 ;;<canvas width="256" height="152"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-border="true"
 ;;    data-scale="1.0"
 ;;  data-xoffs="0"
@@ -4577,7 +4577,7 @@ DC32: FE            ; End of image
 ;;  data-command="DCA9">
 ;;</canvas>
 ;;<canvas width="256" height="152"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-border="true"
 ;;    data-scale="1.0"
 ;;  data-xoffs="0"
@@ -4586,7 +4586,7 @@ DC32: FE            ; End of image
 ;;</canvas>
 ;;<p>
 ;;<canvas width="256" height="152"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-border="true"
 ;;  data-scale="1.0"
 ;;  data-xoffs="0"
@@ -4594,7 +4594,7 @@ DC32: FE            ; End of image
 ;;  data-command="DC5D">
 ;;</canvas>
 ;;<canvas width="256" height="152"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-border="true"
 ;;    data-scale="1.0"
 ;;  data-xoffs="0"
@@ -4602,7 +4602,7 @@ DC32: FE            ; End of image
 ;;  data-command="DC7B">
 ;;</canvas>
 ;;<canvas width="256" height="152"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-border="true"
 ;;    data-scale="1.0"
 ;;  data-xoffs="0"
@@ -4610,7 +4610,7 @@ DC32: FE            ; End of image
 ;;  data-command="DCA2">
 ;;</canvas>
 ;;<canvas width="256" height="152"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-border="true"
 ;;    data-scale="1.0"
 ;;  data-xoffs="0"
@@ -4739,7 +4739,7 @@ DCC8: DC D0  ; Ladder through floor
 
 ;;{{{html
 ;;<canvas width="256" height="152"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-colors='["#FFFFFF","#000000"]'
 ;;  data-border="true"
 ;;  data-scale="1.0"
@@ -4748,7 +4748,7 @@ DCC8: DC D0  ; Ladder through floor
 ;;  data-command="DD0E">
 ;;</canvas>
 ;;<canvas width="256" height="152"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-colors='["#FFFFFF","#000000"]'
 ;;  data-border="true"
 ;;  data-scale="1.0"
@@ -4757,7 +4757,7 @@ DCC8: DC D0  ; Ladder through floor
 ;;  data-command="DCCA">
 ;;</canvas>
 ;;<canvas width="256" height="152"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-colors='["#FFFFFF","#000000"]'
 ;;  data-border="true"
 ;;  data-scale="1.0"
@@ -4766,7 +4766,7 @@ DCC8: DC D0  ; Ladder through floor
 ;;  data-command="DD2A">
 ;;</canvas>
 ;;<canvas width="256" height="152"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-colors='["#FFFFFF","#000000"]'
 ;;  data-border="true"
 ;;  data-scale="1.0"
@@ -4856,7 +4856,7 @@ DD40: FE            ; End of image
 ;;= Club Giant Picture =
 ;;{{{html
 ;;<canvas width="128" height="76"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-colors='["#FFFFFF","#000000"]'
 ;;  data-border="true"
 ;;  data-scale="0.5"
@@ -4865,7 +4865,7 @@ DD40: FE            ; End of image
 ;;  data-command="DD41">
 ;;</canvas><br>
 ;;<canvas width="512" height="304"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-border="false"
 ;;  data-scale="4.5"
 ;;  data-xoffs="-300"
@@ -4893,7 +4893,7 @@ DD4E: FD DD 62      ; Jump to DD62
 ;;= Hatchet Giant Picture =
 ;;{{{html
 ;;<canvas width="128" height="76"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-colors='["#FFFFFF","#000000"]'
 ;;  data-border="true"
 ;;  data-scale="0.5"
@@ -4902,7 +4902,7 @@ DD4E: FD DD 62      ; Jump to DD62
 ;;  data-command="DD51">
 ;;</canvas><br>
 ;;<canvas width="512" height="304"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-border="false"
 ;;  data-scale="4.5"
 ;;  data-xoffs="-300"
@@ -4989,7 +4989,7 @@ DDA2: FE            ; End of image
 ;;= Galdrog Picture =
 ;;{{{html
 ;;<canvas width="768" height="456"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-colors='["#FFFFFF","#000000"]'
 ;;  data-scale="3.0"
 ;;  data-xoffs="0"
@@ -5079,7 +5079,7 @@ DE06: FE            ; End of image
 ;;= Wraith Picture =
 ;;{{{html
 ;;<canvas width="128" height="76"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-colors='["#FFFFFF","#000000"]'
 ;;  data-border="true"
 ;;  data-scale="0.5"
@@ -5087,7 +5087,7 @@ DE06: FE            ; End of image
 ;;  data-yoffs="0"
 ;;  data-command="DE07">
 ;;</canvas><br>
-;;<canvas width="200" height="220" data-canvasfunction="handleDagCanvas" data-border="false" data-scale="4.5" data-xoffs="-300" data-yoffs="-240" data-command="DE07">
+;;<canvas width="200" height="220" data-canvasfunction="Daggorath.handleDagCanvas" data-border="false" data-scale="4.5" data-xoffs="-300" data-yoffs="-240" data-command="DE07">
 ;;</canvas>
 ;;}}}
 
@@ -5121,7 +5121,7 @@ DE25: FE            ; End of image
 ;;= Spider Picture =
 ;;{{{html
 ;;<canvas width="128" height="76"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-colors='["#FFFFFF","#000000"]'
 ;;  data-border="true"
 ;;  data-scale="0.5"
@@ -5129,7 +5129,7 @@ DE25: FE            ; End of image
 ;;  data-yoffs="0"
 ;;  data-command="DE26">
 ;;</canvas><br>
-;;<canvas width="200" height="100" data-canvasfunction="handleDagCanvas" data-colors="[&quot;#FFFFFF&quot;,&quot;#000000&quot;]" data-border="false" data-scale="5.0" data-xoffs="-780" data-yoffs="-550" data-command="DE26">
+;;<canvas width="200" height="100" data-canvasfunction="Daggorath.handleDagCanvas" data-colors="[&quot;#FFFFFF&quot;,&quot;#000000&quot;]" data-border="false" data-scale="5.0" data-xoffs="-780" data-yoffs="-550" data-command="DE26">
 ;;</canvas>
 ;;}}}
 
@@ -5161,7 +5161,7 @@ DE3E: FE            ; End of image
 ;;= Scorpion Picture =
 ;;{{{html
 ;;<canvas width="128" height="76"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-colors='["#FFFFFF","#000000"]'
 ;;  data-border="true"
 ;;  data-scale="0.5"
@@ -5169,7 +5169,7 @@ DE3E: FE            ; End of image
 ;;  data-yoffs="0"
 ;;  data-command="DE3F">
 ;;</canvas><br>
-;;<canvas width="200" height="150" data-canvasfunction="handleDagCanvas" data-colors="[&quot;#FFFFFF&quot;,&quot;#000000&quot;]" data-border="false" data-scale="5.0" data-xoffs="-300" data-yoffs="-500" data-command="DE3F">
+;;<canvas width="200" height="150" data-canvasfunction="Daggorath.handleDagCanvas" data-colors="[&quot;#FFFFFF&quot;,&quot;#000000&quot;]" data-border="false" data-scale="5.0" data-xoffs="-300" data-yoffs="-500" data-command="DE3F">
 ;;</canvas>
 ;;}}}
 
@@ -5202,7 +5202,7 @@ DE58: FE            ; End of image
 ;;= Blob Picture =
 ;;{{{html
 ;;<canvas width="128" height="76"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-colors='["#FFFFFF","#000000"]'
 ;;  data-border="true"
 ;;  data-scale="0.5"
@@ -5210,7 +5210,7 @@ DE58: FE            ; End of image
 ;;  data-yoffs="0"
 ;;  data-command="DE59">
 ;;</canvas><br>
-;;<canvas width="512" height="250" data-canvasfunction="handleDagCanvas" data-colors="[&quot;#FFFFFF&quot;,&quot;#000000&quot;]" data-border="false" data-scale="4.0" data-xoffs="-350" data-yoffs="-300" data-command="DE59">
+;;<canvas width="512" height="250" data-canvasfunction="Daggorath.handleDagCanvas" data-colors="[&quot;#FFFFFF&quot;,&quot;#000000&quot;]" data-border="false" data-scale="4.0" data-xoffs="-350" data-yoffs="-300" data-command="DE59">
 ;;</canvas>
 ;;}}}
 
@@ -5261,7 +5261,7 @@ DE81: FE            ; End of image
 ;;= Knight Picture =
 ;;{{{html
 ;;<canvas width="128" height="76"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-colors='["#FFFFFF","#000000"]'
 ;;  data-border="true"
 ;;  data-scale="0.5"
@@ -5269,7 +5269,7 @@ DE81: FE            ; End of image
 ;;  data-yoffs="0"
 ;;  data-command="DE82">
 ;;</canvas><br>
-;;<canvas width="400" height="500" data-canvasfunction="handleDagCanvas" data-colors="[&quot;#FFFFFF&quot;,&quot;#000000&quot;]" data-border="false" data-scale="4.0" data-xoffs="-350" data-yoffs="-50" data-command="DE82">
+;;<canvas width="400" height="500" data-canvasfunction="Daggorath.handleDagCanvas" data-colors="[&quot;#FFFFFF&quot;,&quot;#000000&quot;]" data-border="false" data-scale="4.0" data-xoffs="-350" data-yoffs="-50" data-command="DE82">
 ;;</canvas>
 ;;}}}
 
@@ -5295,7 +5295,7 @@ DE9A: FD DE B3      ; Jump to DEB3
 ;;= Shield Knight Picture =
 ;;{{{html
 ;;<canvas width="128" height="76"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-colors='["#FFFFFF","#000000"]'
 ;;  data-border="true"
 ;;  data-scale="0.5"
@@ -5303,7 +5303,7 @@ DE9A: FD DE B3      ; Jump to DEB3
 ;;  data-yoffs="0"
 ;;  data-command="DE9D">
 ;;</canvas><br>
-;;<canvas width="400" height="500" data-canvasfunction="handleDagCanvas" data-colors="[&quot;#FFFFFF&quot;,&quot;#000000&quot;]" 
+;;<canvas width="400" height="500" data-canvasfunction="Daggorath.handleDagCanvas" data-colors="[&quot;#FFFFFF&quot;,&quot;#000000&quot;]" 
 ;;data-border="false" data-scale="4.0" data-xoffs="-350" data-yoffs="-50" data-command="DE9D">
 ;;</canvas>
 ;;}}}
@@ -5397,7 +5397,7 @@ DF0F: FE            ; End of image
 ;;= Moon Wizard Picture =
 ;;{{{html
 ;;<canvas width="768" height="456"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-colors='["#FFFFFF","#000000"]'
 ;;  data-border="true"
 ;;  data-scale="3"
@@ -5449,7 +5449,7 @@ DF36: FD DF 65      ; Jump to DF65
 ;;= Star Wizard Picture =
 ;;{{{html
 ;;<canvas width="768" height="456"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-colors='["#FFFFFF","#000000"]'
 ;;  data-border="true"
 ;;  data-scale="3"
@@ -5495,7 +5495,7 @@ DF64: 00            ;     End of short lines
 ;;= Demon Picture =
 ;;{{{html
 ;;<canvas width="768" height="456"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-colors='["#FFFFFF","#000000"]'
 ;;  data-border="true"
 ;;  data-scale="3"
@@ -5586,7 +5586,7 @@ DFC9: FE            ; End of image
 ;;= Snake Picture =
 ;;{{{html
 ;;<canvas width="128" height="76"
-;;  data-canvasFunction="handleDagCanvas"
+;;  data-canvasFunction="Daggorath.handleDagCanvas"
 ;;  data-colors='["#FFFFFF","#000000"]'
 ;;  data-border="true"
 ;;  data-scale="0.5"
@@ -5594,7 +5594,7 @@ DFC9: FE            ; End of image
 ;;  data-yoffs="0"
 ;;  data-command="DFCA">
 ;;</canvas><br>
-;;<canvas width="200" height="250" data-canvasfunction="handleDagCanvas" data-colors="[&quot;#FFFFFF&quot;,&quot;#000000&quot;]" 
+;;<canvas width="200" height="250" data-canvasfunction="Daggorath.handleDagCanvas" data-colors="[&quot;#FFFFFF&quot;,&quot;#000000&quot;]" 
 ;;data-border="false" data-scale="4" data-xoffs="-400" data-yoffs="-300" data-command="DFCA">
 ;;</canvas>
 ;;}}}
