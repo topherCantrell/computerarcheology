@@ -4,17 +4,17 @@
 ;;%%-2 Gameboy/Zelda/Hardware.mark /Gameboy/Zelda/Hardware.html
 
 ;;{{{html
+;;<script src="/Gameboy/Zelda/zeldaGB.js"></script>
+;;<script src="/js/BinaryData.js"></script>
+;;<script src="/js/TileEngine.js"></script>
 ;;<script src="/js/CANVAS.js"></script>
-;;<script src="/js/pixelUI.js"></script>
-;;<script src="/js/bytes.js"></script>
-;;<script src="/js/zeldaGB.js"></script>
 ;;}}}
 
 Person?: ; =
 ;;{{{html
 ;;<canvas 
-;;  data-canvasFunction="handleTileCanvas" 
-;;  data-getTileDataFunction="getGBTile" 
+;;  data-canvasFunction="TileEngine.handleTileCanvas" 
+;;  data-getTileDataFunction="ZeldaGB.getGBTile" 
 ;;  width="0" height="0" 
 ;;  data-colorsName="BGP1" 
 ;;  data-colors='["#E8E8E8","#A0A0A0","#585858","#101010"]'>

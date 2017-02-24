@@ -350,6 +350,7 @@
   	                                              	         
   	         {"dir": "Zelda", "nav": "Zelda", "entries": [
   	             {"copy": "GBZelda.jpg"},
+  	             {"copy": "zeldaGB.js"},
   	             {"mark": "GBZelda.mark", "out": "index.html"},
   	             {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
   	             {"address": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware Info"},

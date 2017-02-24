@@ -1,3 +1,8 @@
+;;%%image GBZelda.jpg
+;;%%cpu Z80GB
+;;%%- Gameboy/Zelda/RAMUse.mark /Gameboy/Zelda/RAMUse.html
+;;%%-2 Gameboy/Zelda/Hardware.mark /Gameboy/Zelda/Hardware.html
+
 4000: FF         RST     0X38            
 4001: FF         RST     0X38            
 4002: FF         RST     0X38            
