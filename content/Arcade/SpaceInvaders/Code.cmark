@@ -8,14 +8,14 @@
 ;; * [Hardware.html Hardware Info]
 
 ;;{{{html
+;;<script src="/Arcade/SpaceInvaders/SpaceInvaders.js"></script>
+;;<script src="/js/TileEngine.js"></script>
+;;<script src="/js/BinaryData.js"></script>
 ;;<script src="/js/CANVAS.js"></script>
-;;<script src="/js/pixelUI.js"></script>
-;;<script src="/js/bytes.js"></script>
-;;<script src="/js/siUI.js"></script>
 ;;
 ;;<!-- Cache some commonly-used values -->
 ;;<canvas width="0" height="0"
-;;        data-canvasFunction="handleTileCanvas"
+;;        data-canvasFunction="TileEngine.handleTileCanvas"
 ;;        data-labelColor=""
 ;;        data-pixWidth="8"
 ;;        data-gridX="8"
@@ -4077,7 +4077,7 @@ AlienSprCYA: ; =
 ; Alien sprite type C pulling upside down Y
 ;;{{{html
 ;;<canvas width="130" height="65"
-;;     data-getTileDataFunction="get8x16Data"
+;;     data-getTileDataFunction="SpaceInvaders.get8x16Data"
 ;;         data-address="1BA0"
 ;;         data-gridX="16"
 ;;         data-gridY="8"
@@ -4116,7 +4116,7 @@ AlienSprCYB: ; =
 ; animation.
 ;;{{{html
 ;;<canvas width="130" height="65"
-;;     data-getTileDataFunction="get8x16Data"
+;;     data-getTileDataFunction="SpaceInvaders.get8x16Data"
 ;;         data-address="1BD0"
 ;;         data-gridX="16"
 ;;         data-gridY="8"
@@ -4152,7 +4152,7 @@ AlienSprA: ; =
 
 ;;{{{html
 ;;<canvas width="400" height="140"
-;;     data-getTileDataFunction="get8x16Data"
+;;     data-getTileDataFunction="SpaceInvaders.get8x16Data"
 ;;         data-address="1C00"
 ;;         data-gridX="16"
 ;;         data-gridY="8"
@@ -4205,7 +4205,7 @@ AlienSprB: ; =
 PlayerSprite: ; =
 ;;{{{html
 ;; <canvas width="400" height="65"
-;;     data-getTileDataFunction="get8x16Data"
+;;     data-getTileDataFunction="SpaceInvaders.get8x16Data"
 ;;         data-address="1C60"
 ;;         data-gridX="16"
 ;;         data-gridY="8"
@@ -4274,7 +4274,7 @@ PlayerSprite: ; =
 PlayerShotSpr: ; =
 ;;{{{html
 ;; <canvas width="10" height="65"
-;;     data-getTileDataFunction="get1x8Data"
+;;     data-getTileDataFunction="SpaceInvaders.get1x8Data"
 ;;         data-address="1C90"
 ;;         data-gridX="1"
 ;;         data-gridY="8"
@@ -4286,7 +4286,7 @@ PlayerShotSpr: ; =
 ShotExploding: ; =
 ;;{{{html
 ;; <canvas width="65" height="65"
-;;     data-getTileDataFunction="get8x8Data"
+;;     data-getTileDataFunction="SpaceInvaders.get8x8Data"
 ;;         data-address="1C91"
 ;;         data-gridX="8"
 ;;         data-gridY="8"
@@ -4333,7 +4333,7 @@ AlienExplode: ; =
 ; Alien exploding sprite
 ;;{{{html
 ;; <canvas width="130" height="65"
-;;     data-getTileDataFunction="get8x16Data"
+;;     data-getTileDataFunction="SpaceInvaders.get8x16Data"
 ;;         data-address="1CC0"
 ;;         data-gridX="16"
 ;;         data-gridY="8"
@@ -4362,7 +4362,7 @@ AlienExplode: ; =
 ; Squigly shot picture in 4 animation frames
 ;;{{{html
 ;; <canvas width="120" height="65"
-;;     data-getTileDataFunction="get8x3Data"
+;;     data-getTileDataFunction="SpaceInvaders.get8x3Data"
 ;;         data-address="1CD0"
 ;;         data-gridX="3"
 ;;         data-gridY="8"
@@ -4390,7 +4390,7 @@ AShotExplo: ; =
 ; Alien shot exploding 
 ;;{{{html     
 ;; <canvas width="65" height="65"
-;;     data-getTileDataFunction="get6x8Data"
+;;     data-getTileDataFunction="SpaceInvaders.get6x8Data"
 ;;         data-address="1CDC"
 ;;         data-gridX="6"
 ;;         data-gridY="8"
@@ -4409,7 +4409,7 @@ PlungerShot: ; =
 ; Alien shot ... the plunger looking one
 ;;{{{html
 ;; <canvas width="120" height="65"
-;;     data-getTileDataFunction="get8x3Data"
+;;     data-getTileDataFunction="SpaceInvaders.get8x3Data"
 ;;         data-address="1CE2"
 ;;         data-gridX="3"
 ;;         data-gridY="8"
@@ -4436,7 +4436,7 @@ RollShot: ; =
 ; Alien shot ... the rolling one
 ;;{{{html
 ;; <canvas width="120" height="65"
-;;     data-getTileDataFunction="get8x3Data"
+;;     data-getTileDataFunction="SpaceInvaders.get8x3Data"
 ;;         data-address="1CEE"
 ;;         data-gridX="3"
 ;;         data-gridY="8"
@@ -4484,7 +4484,7 @@ ColFireTable: ; =
 ShieldImage: ; =
 ;;{{{html
 ;; <canvas width="180" height="130"
-;;     data-getTileDataFunction="get16x22Data"
+;;     data-getTileDataFunction="SpaceInvaders.get16x22Data"
 ;;         data-address="1D20"
 ;;         data-gridX="22"
 ;;         data-gridY="16"
@@ -4535,7 +4535,7 @@ SaucerScrTab: ; =
 SpriteSaucer: ; =
 ;;{{{html
 ;; <canvas width="410" height="65"
-;;     data-getTileDataFunction="get8x24Data"
+;;     data-getTileDataFunction="SpaceInvaders.get8x24Data"
 ;;         data-address="1D64"
 ;;         data-gridX="24"
 ;;         data-gridY="8"
@@ -4666,7 +4666,7 @@ Characters: ; =
 ; show the character slots that have been repurposed.
 ;;{{{html
 ;; <canvas width="520" height="520"
-;;     data-getTileDataFunction="get8x8CharData"
+;;     data-getTileDataFunction="SpaceInvaders.get8x8CharData"
 ;;         data-labelColor="#FFFFFF"
 ;;         data-address="1E00"
 ;;         data-gridX="8"
@@ -4749,7 +4749,7 @@ AlienSprCA: ; =
 ; Small alien pushing Y back onto screen
 ;;{{{html
 ;; <canvas width="140" height="65"
-;;     data-getTileDataFunction="get8x16Data"
+;;     data-getTileDataFunction="SpaceInvaders.get8x16Data"
 ;;         data-labelColor=""
 ;;         data-address="1F80"
 ;;         data-gridX="16"
@@ -4757,7 +4757,7 @@ AlienSprCA: ; =
 ;;         data-command="0">
 ;; </canvas>
 ;; <canvas width="140" height="65" 
-;;     data-getTileDataFunction="get8x16Data"
+;;     data-getTileDataFunction="SpaceInvaders.get8x16Data"
 ;;         data-address="1FB0"
 ;;         data-gridX="16"
 ;;         data-gridY="8"

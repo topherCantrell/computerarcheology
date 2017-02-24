@@ -55,7 +55,8 @@
 	             {"separator": ""},
 	             {"mark": "DVG.mark", "out": "DVG.html", "nav": "DVG"},	             
 	             {"copy": "DVG.jpg"},
-	             {"copy": "Asteroids.jpg"}
+	             {"copy": "Asteroids.jpg"},
+	             {"copy": "VectorROM.js"}
 	             ]
 	         },
 	         {"dir": "Defender", "nav": "Defender", "entries": [	         
@@ -136,7 +137,8 @@
                  {"address": "SoundHardware.mark", "out": "SoundHardware.html", "nav": "Sound Hardware"},
                  {"address": "SoundRAMUse.mark", "out": "SoundRAMUse.html", "nav": "Sound RAM Use"},
 	             {"code": "SoundBoard.cmark", "out":"SoundBoard.html", "nav": "Sound Code"}, 	                         
-	             {"copy": "ORace.jpg"}
+	             {"copy": "ORace.jpg"},
+	             {"copy": "VectorROM.js"}
 	             ]
 	         },
 	         
@@ -162,7 +164,8 @@
 	             {"copy": "DiagRun.jpg"},
 	             {"copy": "Flip.jpg"},
 	             {"copy": "NoTAITO.jpg"},
-	             {"copy": "SideCheck.jpg"}
+	             {"copy": "SideCheck.jpg"},
+	             {"copy": "SpaceInvaders.js"}
 	             ]
 	         },
 	         

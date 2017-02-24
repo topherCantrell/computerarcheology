@@ -3,10 +3,11 @@
 ;;%%cpu DVG
 
 ;;{{{html
+;;<script src="/Arcade/Asteroids/VectorROM.js"></script>
+;;
+;;<script src="/js/BinaryData.js"></script>
 ;;<script src="/js/DVG.js"></script>
 ;;<script src="/js/CANVAS.js"></script>
-;;<script src="/js/pixelUI.js"></script>
-;;<script src="/js/bytes.js"></script>
 ;;}}}
 
 ; OriginalBinary 035127.01
@@ -31,7 +32,7 @@
 
 ;;{{{html
 ;;<canvas width="520" height="520"
-;;  data-canvasFunction="handleDVGCanvas"
+;;  data-canvasFunction="DVG.handleDVGCanvas"
 ;;  data-origin="0800"
 ;;  data-command="screenScale=0.5,0800">
 ;;</canvas>
@@ -91,7 +92,7 @@
 
 ;;{{{html
 ;;<canvas width="500" height="60"
-;;  data-canvasFunction="handleDVGCanvas"
+;;  data-canvasFunction="DVG.handleDVGCanvas"
 ;;  data-origin="0800"
 ;;  data-command="x=20,y=45,baseScale=1,088C">
 ;;</canvas>
@@ -123,7 +124,7 @@
 
 ;;{{{html
 ;;<canvas width="500" height="60"
-;;  data-canvasFunction="handleDVGCanvas"
+;;  data-canvasFunction="DVG.handleDVGCanvas"
 ;;  data-origin="0800"
 ;;  data-command="x=20,y=45,baseScale=1,08B8">
 ;;</canvas>
@@ -176,7 +177,7 @@
 
 ;;{{{html
 ;;<canvas width="400" height="100"
-;;  data-canvasFunction="handleDVGCanvas"
+;;  data-canvasFunction="DVG.handleDVGCanvas"
 ;;  data-origin="0800"
 ;;  data-command="baseScale=0,x=50,y=50,09A2,x=150,y=50,096C,x=250,y=50,092E,x=350,y=50,0902">
 ;;</canvas>
@@ -284,7 +285,7 @@
 
 ;;{{{html
 ;;<canvas width="400" height="100"
-;;  data-canvasFunction="handleDVGCanvas"
+;;  data-canvasFunction="DVG.handleDVGCanvas"
 ;;  data-origin="0800"
 ;;  data-command="baseScale=0,x=50,y=50,09E8,x=150,y=50,0A00,x=250,y=50,0A1C,x=350,y=50,0A36">
 ;;</canvas>
@@ -360,7 +361,7 @@
 ;;= UFO =
 ;;{{{html
 ;;<canvas width="100" height="75"
-;;  data-canvasFunction="handleDVGCanvas"
+;;  data-canvasFunction="DVG.handleDVGCanvas"
 ;;  data-origin="0800"
 ;;  data-command="x=50,y=40,baseScale=0,0A54">
 ;;</canvas>
@@ -410,7 +411,7 @@
 
 ;;{{{html
 ;;<canvas width="1060" height="100"
-;;  data-canvasFunction="handleDVGCanvas"
+;;  data-canvasFunction="DVG.handleDVGCanvas"
 ;;  data-origin="0800"
 ;;  data-command="baseScale=-1,
 ;;    x=50,y=50,A92,AA4,    
@@ -661,7 +662,7 @@ ThrustDir64:
 
 ;;{{{html
 ;;<canvas width="200" height="100"
-;;  data-canvasFunction="handleDVGCanvas"
+;;  data-canvasFunction="DVG.handleDVGCanvas"
 ;;  data-origin="0800"
 ;;  data-command="x=50,y=50,baseScale=-1,0CDC,0CDC,0CDC">
 ;;</canvas>
@@ -680,7 +681,7 @@ ThrustDir64:
 
 ;;{{{html
 ;;<canvas width="500" height="120"
-;;  data-canvasFunction="handleDVGCanvas"
+;;  data-canvasFunction="DVG.handleDVGCanvas"
 ;;  data-origin="0800"
 ;;  data-command="x=30,y=45,baseScale=1,0CF2,0D02,0D1C,0D28,0D38,0D48,0D56,0D68,0D76,0D84,0D90,0D9C,0DA6,0DB2,0DBC,0DC8,0DD6,0DE8,x=30,y=90,0DF8,0E06,0E12,0E1E,0E28,0E36,0E40,0E4E,0E5A,0E5E,0E66,0E76,0E84,0E92,0EA0,0EAE,0EB8,0EC8">
 ;;</canvas>

@@ -49,7 +49,11 @@ var TileEngine = (function() {
 	 */
 	my.handleTileCanvas = function(can) {   
 	
-		var att = can.getAttribute("data-pixWidth");	
+	    var att = can.getAttribute("data-address");
+	    if(att) {
+	        my.address = parseInt(att,16);
+	    }
+		att = can.getAttribute("data-pixWidth");	
 		if(att) {
 			pixWidth = parseInt(att);
 		}
@@ -211,7 +215,7 @@ var TileEngine = (function() {
         
         var tileAddress = parseInt(com,16); 
         
-        var pixelData = getTileDataFunction(tileAddress);
+        var pixelData = getTileDataFunction(tileAddress,address);
                 
         drawPixelGrid(context,pixelData,0,gridX,gridY,ocom,hmirror,vmirror,xo,yo);
         
