@@ -4,7 +4,7 @@
  * "data-canvasFunction" function. The function name is cached so that only the
  * first canvas on the page needs to specify a function used by all.
  */
-window.onload = function() {	
+$(function() {	
 	
 	// data-canvasFunction
 	var handleCanvasFunction = null;
@@ -19,4 +19,4 @@ window.onload = function() {
 		handleCanvasFunction(cans[x]);			
 	}
 
-};
+});
