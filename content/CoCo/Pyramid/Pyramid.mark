@@ -398,6 +398,14 @@ You can view the source from the repository here:
 
 The files are broken out into separate modules for easier maintenance. 
 
+=== Emulation ===
+
+{{{html
+<script src="/js/BinaryData.js"></script>
+<script src="/js/6809.js"></script>
+<script src="/CoCo/Pyramid/pyramid.js"></script>
+}}}
+
 === Play Me! ===
 {{{html
     <div>
