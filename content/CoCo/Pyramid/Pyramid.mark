@@ -404,6 +404,7 @@ The files are broken out into separate modules for easier maintenance.
 <script src="/js/BinaryData.js"></script>
 <script src="/js/6809.js"></script>
 <script src="/CoCo/Pyramid/pyramid.js"></script>
+<textarea id="cocoConsole" rows="16" style="background-color: #00FF01; color: black;font-family: monospace;font-size:12px;width:33ch;" ></textarea>
 }}}
 
 === Play Me! ===
