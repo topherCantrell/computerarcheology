@@ -23,6 +23,7 @@
              {"copy": "super-extended-basic-unravelled.pdf"},
              {"copy": "CoCo.jpg"},
              {"copy": "CoCoTech.jpg"},
+             {"copy": "CoCoText.js"},
              {"dir": "Pyramid", "nav": "Pyramid", "entries": [
                  {"mark": "Pyramid.mark", "out": "index.html"},
                  {"address": "RAMUse.mark", "out": "RAMUse.html", "nav":"RAM Use"},

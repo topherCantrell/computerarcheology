@@ -257,6 +257,7 @@
              {"copy": "super-extended-basic-unravelled.pdf"},
              {"copy": "CoCo.jpg"},
              {"copy": "CoCoTech.jpg"},
+             {"copy": "CoCoText.js"},
              {"dir": "EarlyWork", "nav": "My Early Work", "leaf":true, "entries": [
                  {"mark": "EarlyWork.mark", "out": "index.html"},
                  {"copy": "CoverTRS80News.jpg"},
