@@ -701,7 +701,7 @@ var step = function() {
             if (addr & 0x100)
                CC  |= F_CARRY;
             rA = addr & 0xff;
-            CC  |= flags[rA];
+            CC  |= flagsNZ[rA];
             break;
         case 0x1A: //ORCC
             CC |= fetch();

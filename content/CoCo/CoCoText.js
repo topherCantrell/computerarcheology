@@ -8,27 +8,23 @@ var CoCoText = (function() {
 	var endlessLoop = false;
 	
 	var pureRAM = [];
-	var screenRAM = "";
-	var cursor = 0x400;
 	
-	function write(addr,value) { 
-		if(addr<0x0100) {
-			if(addr===0x88) {
-				cursor = (value<<8) | (cursor & 0xFF);
-				return;
-			}
-			if(addr===0x89) {
-				cursor = (cursor & 0xFF00) | value;
-				return;
-			}
-        	throw "Unimplemented BASIC RAM write "+addr;
-        }
+	var CHARMAP = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+
+                  "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+
+	              "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[~]~~"+
+	              " !\"#$%&'()*+,-./0123456789:;<=>?"+
+	              "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+
+	              "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+
+	              "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+
+	              "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
+	
+	function write(addr,value) {
         
-        if(addr>=0x0400 && addr<0x0600) {
-        	addr = addr - 0x400;
-        	if(value==0x60) value=0x20;
-        	screenRAM = screenRAM.substring(0,addr)+String.fromCharCode(value)+screenRAM.substring(addr+1);
-        	updateScreen();
+        if(addr<0x0600) {
+        	pureRAM[addr] = value;
+        	if(addr>=0x400 && addr<0x600) {
+        		updateScreen();
+        	}        	
         	return;
         }
         
@@ -39,12 +35,7 @@ var CoCoText = (function() {
         if(addr>=0xF000) {
         	throw "Unimplemented high ROM write "+addr;
         }
-        
-        if(addr<0x600) {
-        	pureRAM[addr] = value;
-        	return;
-        }
-        
+                        
         my.writeFN(addr,value);
     }
     
@@ -83,21 +74,7 @@ var CoCoText = (function() {
         	}
         	running=false;
         	return 0x12; // NOP            
-        }        
-        
-        if(addr<0x0100) {
-        	if(addr===0x88) {
-        		return cursor>>8;
-        	}
-        	if(addr===0x89) {
-        		return cursor & 0xFF;
-        	}
-        	throw "Unimplemented BASIC RAM read "+addr;
-        }
-        
-        if(addr>=0x0400 && addr<0x0600) {
-        	throw "Unimplemented screen read "+addr;
-        }
+        }          
         
         if(addr>=0x8000 && addr<0xF000) {
         	throw "Unimplemented ROM read "+addr;
@@ -115,12 +92,16 @@ var CoCoText = (function() {
     }
     
     function updateScreen() {
-    	var b = "";
-    	for(var x=0;x<16;++x) {
-    		b = b + screenRAM.substring(x*32,(x+1)*32);
-    		if(x!==15) b = b + "\n";
+    	var t = "";
+    	var p = 0x400;
+    	for(var y=0;y<16;++y) {
+    		for(var x=0;x<32;++x) {
+    			var c = pureRAM[p++];
+    			t = t + CHARMAP[c];
+    		}    	
+    		if(y!=15) t=t+"\n";
     	}
-    	my.console.val(b);
+    	my.console.val(t);
     }
 	
 	my.init = function(readFN, writeFN, onKeyPress, resetVector, console) {
@@ -130,13 +111,11 @@ var CoCoText = (function() {
 		my.console = console;
 		my.onKeyPress = onKeyPress;
 		
-		for(var x=0;x<0600;++x) pureRAM.push(0);
-		for(x=0;x<32*16;++x) screenRAM = screenRAM + " ";
+		for(var x=0;x<0600;++x) pureRAM.push(0);		
 		
 		updateScreen();
 		
 		console.on("keydown",function(evt) {	
-			alert("KEY");
 			if(!endlessLoop) {
 				inputKey = evt.keyCode;
 				my.onKeyPress();
@@ -159,29 +138,40 @@ var CoCoText = (function() {
 	};
 	
 	function printByte(value) {
-		if(value==0x60) value=0x20;
-		if(value===0x0D) {
-			// Store spaces at cursor and bump until cursor is at beginning of line
-			do {
-				printByte(0x60);				
-			} while((cursor%32)!=0);
-			return;
-		}
+		//console.log(""+value+":"+String.fromCharCode(value));		
+		var cursor = (pureRAM[0x88]<<8) | (pureRAM[0x89]);
 		if(value===0x08) {
-			throw "Implement me";
+			if(cursor===0x400) return; // Top of screen ... nothing to do
+			cursor = cursor - 1;
+			pureRAM[cursor] = 0x60;
+		} else if(value===0x0D) {			
+			do {
+				pureRAM[cursor++] = 0x60;
+			} while((cursor%32)!=0);
+		} else {
+			if(value<0x20) return; // No control characters
+			if(value<128) {
+				if(value<0x40) {
+					value = value ^ 0x40;
+				} else if(value>=0x60) {
+					value = value & 0xDF;
+					value = value ^ 0x40;
+				}
+			}
+			pureRAM[cursor++] = value;			
 		}
-		
-		var p = cursor-0x400;
-		
-		// TODO eh, after doing this I see it would be easier just to update the screen from pureRAM
-		screenRAM = screenRAM.substring(0,p)+String.fromCharCode(value)+screenRAM.substring(p+1);
-		++cursor;
-		if(cursor===0x600) {
-			cursor = cursor - 32;
-			screenRAM = screenRAM.substring(32)+"                                ";
+		if(cursor>=0x600) {
+			for(var x=0x0420;x<0x600;++x) {
+				pureRAM[x-32] = pureRAM[x];				
+			}
+			for(x=0x600-0x20;x<0x600;++x) {
+				pureRAM[x] = 0x60;
+			}
+			cursor = 0x600-0x20;
 		}
+		pureRAM[0x88] = cursor>>8;
+		pureRAM[0x89] = cursor & 0xFF;		
 		updateScreen();
-		
 	}
 	
 	my.startEndlessLoop = function() {	

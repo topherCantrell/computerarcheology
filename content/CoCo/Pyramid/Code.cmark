@@ -1784,15 +1784,15 @@ RoomScripts:
 ;   desc : "YOU ARE STANDING BEFORE THE ENTRANCE OF A PYRAMID. AROUND YOU IS A DESERT.",
 ;   lit  : true,
 ;   commands : {
-1272: 01 02     ; _n : [
+1272: 01 03     ; _n : [
 1274: 01 02     ;    "MoveToRoomX","room_2"],
-1276: 02 02     ; _e : [
+1276: 02 03     ; _e : [
 1278: 01 03     ;    "MoveToRoomX","room_3"],
-127A: 03 02     ; _s : [
+127A: 03 03     ; _s : [
 127C: 01 04     ;    "MoveToRoomX","room_4"],
-127E: 04 02     ; _w : [
+127E: 04 03     ; _w : [
 1280: 01 05     ;    "MoveToRoomX","room_5"],
-1282: 0B 02     ; _in : [
+1282: 0B 03     ; _in : [
 1284: 01 02     ;    "MoveToRoomX","room_2"]
 1286: 00
 ;   }
@@ -1802,13 +1802,13 @@ RoomScripts:
 ;   desc : "YOU ARE IN THE ENTRANCE TO THE PYRAMID. A HOLE IN THE FLOOR LEADS TO A PASSAGE BENEATH THE SURFACE.",
 ;   lit  : true,
 ;   commands : {
-1287: 03 02     ; _s : [
+1287: 03 03     ; _s : [
 1289: 01 01     ;    "MoveToRoomX","room_1"],
-128B: 0A 02     ; _d : [
+128B: 0A 03     ; _d : [
 128D: 01 07     ;    "MoveToRoomX","room_7"],
-128F: 0C 02     ; _out : [
+128F: 0C 03     ; _out : [
 1291: 01 01     ;    "MoveToRoomX","room_1"],
-1293: 12 02     ; _panel : [
+1293: 12 03     ; _panel : [
 1295: 01 1A     ;    "MoveToRoomX","room_26"]
 1297: 00
 ;   }
@@ -1818,13 +1818,13 @@ RoomScripts:
 ;   desc : "YOU ARE IN THE DESERT.",
 ;   lit  : true,
 ;   commands : {
-1298: 01 02     ; _n : [
+1298: 01 03     ; _n : [
 129A: 01 06     ;    "MoveToRoomX","room_6"],
-129C: 02 02     ; _e : [
+129C: 02 03     ; _e : [
 129E: 01 03     ;    "MoveToRoomX","room_3"],
-12A0: 03 02     ; _s : [
+12A0: 03 03     ; _s : [
 12A2: 01 04     ;    "MoveToRoomX","room_4"],
-12A4: 04 02     ; _w : [
+12A4: 04 03     ; _w : [
 12A6: 01 01     ;    "MoveToRoomX","room_1"]
 12A8: 00
 ;   }
@@ -1834,13 +1834,13 @@ RoomScripts:
 ;   desc : "YOU ARE IN THE DESERT.",
 ;   lit  : true,
 ;   commands : {
-12A9: 01 02     ; _n : [
+12A9: 01 03     ; _n : [
 12AB: 01 01     ;    "MoveToRoomX","room_1"],
-12AD: 02 02     ; _e : [
+12AD: 02 03     ; _e : [
 12AF: 01 03     ;    "MoveToRoomX","room_3"],
-12B1: 03 02     ; _s : [
+12B1: 03 03     ; _s : [
 12B3: 01 04     ;    "MoveToRoomX","room_4"],
-12B5: 04 02     ; _w : [
+12B5: 04 03     ; _w : [
 12B7: 01 05     ;    "MoveToRoomX","room_5"]
 12B9: 00
 ;   }
@@ -1850,13 +1850,13 @@ RoomScripts:
 ;   desc : "YOU ARE IN THE DESERT.",
 ;   lit  : true,
 ;   commands : {
-12BA: 01 02     ; _n : [
+12BA: 01 03     ; _n : [
 12BC: 01 06     ;    "MoveToRoomX","room_6"],
-12BE: 02 02     ; _e : [
+12BE: 02 03     ; _e : [
 12C0: 01 01     ;    "MoveToRoomX","room_1"],
-12C2: 03 02     ; _s : [
+12C2: 03 03     ; _s : [
 12C4: 01 04     ;    "MoveToRoomX","room_4"],
-12C6: 04 02     ; _w : [
+12C6: 04 03     ; _w : [
 12C8: 01 05     ;    "MoveToRoomX","room_5"]
 12CA: 00
 ;   }
@@ -1866,13 +1866,13 @@ RoomScripts:
 ;   desc : "YOU ARE IN THE DESERT.",
 ;   lit  : true,
 ;   commands : {
-12CB: 01 02     ; _n : [
+12CB: 01 03     ; _n : [
 12CD: 01 06     ;    "MoveToRoomX","room_6"],
-12CF: 02 02     ; _e : [
+12CF: 02 03     ; _e : [
 12D1: 01 03     ;    "MoveToRoomX","room_3"],
-12D3: 03 02     ; _s : [
+12D3: 03 03     ; _s : [
 12D5: 01 01     ;    "MoveToRoomX","room_1"],
-12D7: 04 02     ; _w : [
+12D7: 04 03     ; _w : [
 12D9: 01 05     ;    "MoveToRoomX","room_5"]
 12DB: 00
 ;   }
@@ -1882,13 +1882,13 @@ RoomScripts:
 ;   desc : "YOU ARE IN A SMALL CHAMBER BENEATH A HOLE FROM THE SURFACE. A LOW CRAWL LEADS INWARD TO THE WEST.  HIEROGLYPHICS ON THE WALL TRANSLATE, \"CURSE ALL WHO ENTER THIS SACRED CRYPT.\"",
 ;   lit  : true,
 ;   commands : {
-12DC: 09 02     ; _u : [
+12DC: 09 03     ; _u : [
 12DE: 01 02     ;    "MoveToRoomX","room_2"],
-12E0: 0C 02     ; _out : [
+12E0: 0C 03     ; _out : [
 12E2: 01 02     ;    "MoveToRoomX","room_2"],
-12E4: 04 02     ; _w : [
+12E4: 04 03     ; _w : [
 12E6: 01 08     ;    "MoveToRoomX","room_8"],
-12E8: 0B 02     ; _in : [
+12E8: 0B 03     ; _in : [
 12EA: 01 08     ;    "MoveToRoomX","room_8"]
 12EC: 00
 ;   }
@@ -1897,13 +1897,13 @@ RoomScripts:
 ; room_8 : {
 ;   desc : "YOU ARE CRAWLING OVER PEBBLES IN A LOW PASSAGE. THERE IS A DIM LIGHT AT THE EAST END OF THE PASSAGE.",
 ;   commands : {
-12ED: 02 02     ; _e : [
+12ED: 02 03     ; _e : [
 12EF: 01 07     ;    "MoveToRoomX","room_7"],
-12F1: 0C 02     ; _out : [
+12F1: 0C 03     ; _out : [
 12F3: 01 07     ;    "MoveToRoomX","room_7"],
-12F5: 04 02     ; _w : [
+12F5: 04 03     ; _w : [
 12F7: 01 09     ;    "MoveToRoomX","room_9"],
-12F9: 0B 02     ; _in : [
+12F9: 0B 03     ; _in : [
 12FB: 01 09     ;    "MoveToRoomX","room_9"]
 12FD: 00
 ;   }
@@ -1912,13 +1912,13 @@ RoomScripts:
 ; room_9 : {
 ;   desc : "YOU ARE IN A ROOM FILLED WITH BROKEN POTTERY SHARDS OF ANCIENT EGYPTIAN CRAFTS. AN AWKWARD CORRIDOR LEADS UPWARD AND WEST.",
 ;   commands : {
-12FE: 02 02     ; _e : [
+12FE: 02 03     ; _e : [
 1300: 01 08     ;    "MoveToRoomX","room_8"],
-1302: 0B 02     ; _in : [
+1302: 0B 03     ; _in : [
 1304: 01 0A     ;    "MoveToRoomX","room_10"],
-1306: 09 02     ; _u : [
+1306: 09 03     ; _u : [
 1308: 01 0A     ;    "MoveToRoomX","room_10"],
-130A: 04 02     ; _w : [
+130A: 04 03     ; _w : [
 130C: 01 0A     ;    "MoveToRoomX","room_10"]
 130E: 00
 ;   }
@@ -1927,15 +1927,15 @@ RoomScripts:
 ; room_10 : {
 ;   desc : "YOU ARE IN AN AWKWARD SLOPING EAST/WEST CORRIDOR.",
 ;   commands : {
-130F: 0A 02     ; _d : [
+130F: 0A 03     ; _d : [
 1311: 01 09     ;    "MoveToRoomX","room_9"],
-1313: 02 02     ; _e : [
+1313: 02 03     ; _e : [
 1315: 01 09     ;    "MoveToRoomX","room_9"],
-1317: 0B 02     ; _in : [
+1317: 0B 03     ; _in : [
 1319: 01 0B     ;    "MoveToRoomX","room_11"],
-131B: 04 02     ; _w : [
+131B: 04 03     ; _w : [
 131D: 01 0B     ;    "MoveToRoomX","room_11"],
-131F: 09 02     ; _u : [
+131F: 09 03     ; _u : [
 1321: 01 0B     ;    "MoveToRoomX","room_11"]
 1323: 00
 ;   }
@@ -1944,9 +1944,9 @@ RoomScripts:
 ; room_11 : {
 ;   desc : "YOU ARE IN A SPLENDID CHAMBER THIRTY FEET HIGH. THE WALLS ARE FROZEN RIVERS OF ORANGE STONE. AN AWKWARD CORRIDOR AND A GOOD PASSAGE EXIT FROM THE EAST AND WEST SIDES OF THE CHAMBER.",
 ;   commands : {
-1324: 02 02     ; _e : [
+1324: 02 03     ; _e : [
 1326: 01 0A     ;    "MoveToRoomX","room_10"],
-1328: 04 02     ; _w : [
+1328: 04 03     ; _w : [
 132A: 01 0C     ;    "MoveToRoomX","room_12"]
 132C: 00
 ;   }
@@ -1955,15 +1955,15 @@ RoomScripts:
 ; room_12 : {
 ;   desc : "AT YOUR FEET IS A SMALL PIT BREATHING TRACES OF WHITE MIST. AN EAST PASSAGE ENDS HERE EXCEPT FOR A SMALL CRACK LEADING ON. ROUGH STONE STEPS LEAD DOWN THE PIT.",
 ;   commands : {
-132D: 02 02     ; _e : [
+132D: 02 03     ; _e : [
 132F: 01 0B     ;    "MoveToRoomX","room_11"],
-1331: 0A 0A     ; _d : [
+1331: 0A 0B     ; _d : [
 1333: 07 07     ;    "SubScriptXAbortIfPass",[
 1335: 02 25     ;        "AssertObjectXIsInPack","#GOLD",
 1337: 04 30 8A  ;        "PrintMessageX","YOU ARE AT THE BOTTOM OF THE PIT WITH A BROKEN NECK.",
 133A: 05        ;        "PlayerDied"],
 133B: 01 0D     ;    "MoveToRoomX","room_13"],
-133D: 04 03     ; _w : [
+133D: 04 04     ; _w : [
 133F: 04 30 AF  ;    "PrintMessageX","THE CRACK IS FAR TOO SMALL FOR YOU TO FOLLOW."]
 1342: 00
 ;   }
@@ -1972,25 +1972,25 @@ RoomScripts:
 ; room_13 : {
 ;   desc : "YOU ARE AT ONE END OF A VAST HALL STRETCHING FORWARD OUT OF SIGHT TO THE WEST. THERE ARE OPENINGS TO EITHER SIDE. NEARBY, A WIDE STONE STAIRCASE LEADS DOWNWARD. THE HALL IS VERY MUSTY AND A COLD WIND BLOWS UP THE STAIRCASE. THERE IS A PASSAGE AT THE TOP OF A DOME BEHIND YOU. ROUGH STONE STEPS LEAD UP THE DOME.",
 ;   commands : {
-1343: 03 02     ; _s : [
+1343: 03 03     ; _s : [
 1345: 01 0E     ;    "MoveToRoomX","room_14"],
-1347: 04 02     ; _w : [
+1347: 04 03     ; _w : [
 1349: 01 0F     ;    "MoveToRoomX","room_15"],
-134B: 0A 02     ; _d : [
+134B: 0A 03     ; _d : [
 134D: 01 10     ;    "MoveToRoomX","room_16"],
-134F: 01 02     ; _n : [
+134F: 01 03     ; _n : [
 1351: 01 10     ;    "MoveToRoomX","room_16"],
-1353: 09 09     ; _u : [
+1353: 09 0A     ; _u : [
 1355: 07 06     ;    "SubScriptXAbortIfPass",[
 1357: 02 25     ;        "AssertObjectXIsInPack","#GOLD",
 1359: 04 30 CF  ;        "PrintMessageX","THE DOME IS UNCLIMBABLE."],
 135C: 01 0C     ;    "MoveToRoomX","room_12"],
-135E: 02 09     ; _e : [
+135E: 02 0A     ; _e : [
 1360: 07 06     ;    "SubScriptXAbortIfPass",[
 1362: 02 25     ;        "AssertObjectXIsInPack","#GOLD",
 1364: 04 30 CF  ;        "PrintMessageX","THE DOME IS UNCLIMBABLE."],
 1367: 01 0C     ;    "MoveToRoomX","room_12"],
-1369: 20 02     ; _??20?? : [
+1369: 20 03     ; _??20?? : [
 136B: 01 1A     ;    "MoveToRoomX","room_26"]
 136D: 00
 ;   }
@@ -1999,9 +1999,9 @@ RoomScripts:
 ; room_14 : {
 ;   desc : "THIS IS A LOW ROOM WITH A HIEROGLYPH ON THE WALL. IT TRANSLATES \"YOU WON'T GET IT UP THE STEPS\".",
 ;   commands : {
-136E: 0C 02     ; _out : [
+136E: 0C 03     ; _out : [
 1370: 01 0D     ;    "MoveToRoomX","room_13"],
-1372: 01 02     ; _n : [
+1372: 01 03     ; _n : [
 1374: 01 0D     ;    "MoveToRoomX","room_13"]
 1376: 00
 ;   }
@@ -2010,23 +2010,23 @@ RoomScripts:
 ; room_15 : {
 ;   desc : "YOU ARE ON THE EAST BANK OF A BOTTOMLESS PIT STRETCHING ACROSS THE HALL. THE MIST IS QUITE THICK HERE, AND THE PIT IS TOO WIDE TO JUMP.",
 ;   commands : {
-1377: 02 02     ; _e : [
+1377: 02 03     ; _e : [
 1379: 01 0D     ;    "MoveToRoomX","room_13"],
-137B: 10 0B     ; _jump : [
+137B: 10 0C     ; _jump : [
 137D: 07 06     ;    "SubScriptXAbortIfPass",[
 137F: 03 01     ;        "AssertObjectXIsInCurrentRoomOrPack","#bridge_15",
 1381: 04 30 E1  ;        "PrintMessageX","I RESPECTFULLY SUGGEST YOU GO ACROSS THE BRIDGE INSTEAD OF JUMPING."],
 1384: 04 31 10  ;    "PrintMessageX","YOU DIDN'T MAKE IT.",
 1387: 05        ;    "PlayerDied"],
-1388: 04 09     ; _w : [
+1388: 04 0A     ; _w : [
 138A: 07 05     ;    "SubScriptXAbortIfPass",[
 138C: 03 01     ;        "AssertObjectXIsInCurrentRoomOrPack","#bridge_15",
 138E: 01 12     ;        "MoveToRoomX","room_18"],
 1390: 04 31 1F  ;    "PrintMessageX","THERE IS NO WAY ACROSS THE BOTTOMLESS PIT."],
-1393: 0D 04     ; _cross : [
+1393: 0D 05     ; _cross : [
 1395: 03 01     ;    "AssertObjectXIsInCurrentRoomOrPack","#bridge_15",
 1397: 01 12     ;    "MoveToRoomX","room_18"],
-1399: 23 17     ; _wave : [
+1399: 23 18     ; _wave : [
 139B: 11 11     ;    "AssertObjectXMatchesUserInput","#SCEPTER",
 139D: 07 0C     ;    "SubScriptXAbortIfPass",[
 139F: 03 01     ;        "AssertObjectXIsInCurrentRoomOrPack","#bridge_15",
@@ -2043,26 +2043,26 @@ RoomScripts:
 ; room_16 : {
 ;   desc : "YOU ARE IN THE PHARAOH'S CHAMBER, WITH PASSAGES OFF IN ALL DIRECTIONS.",
 ;   commands : {
-13B3: 09 02     ; _u : [
+13B3: 09 03     ; _u : [
 13B5: 01 0D     ;    "MoveToRoomX","room_13"],
-13B7: 02 02     ; _e : [
+13B7: 02 03     ; _e : [
 13B9: 01 0D     ;    "MoveToRoomX","room_13"],
-13BB: 03 09     ; _s : [
+13BB: 03 0A     ; _s : [
 13BD: 07 06     ;    "SubScriptXAbortIfPass",[
 13BF: 03 0B     ;        "AssertObjectXIsInCurrentRoomOrPack","#SERPENT",
 13C1: 04 31 3D  ;        "PrintMessageX","YOU CAN'T GET BY THE SERPENT."],
 13C4: 01 11     ;    "MoveToRoomX","room_17"],
-13C6: 01 09     ; _n : [
+13C6: 01 0A     ; _n : [
 13C8: 07 06     ;    "SubScriptXAbortIfPass",[
 13CA: 03 0B     ;        "AssertObjectXIsInCurrentRoomOrPack","#SERPENT",
 13CC: 04 31 3D  ;        "PrintMessageX","YOU CAN'T GET BY THE SERPENT."],
 13CF: 01 19     ;    "MoveToRoomX","room_25"],
-13D1: 04 09     ; _w : [
+13D1: 04 0A     ; _w : [
 13D3: 07 06     ;    "SubScriptXAbortIfPass",[
 13D5: 03 0B     ;        "AssertObjectXIsInCurrentRoomOrPack","#SERPENT",
 13D7: 04 31 3D  ;        "PrintMessageX","YOU CAN'T GET BY THE SERPENT."],
 13DA: 01 18     ;    "MoveToRoomX","room_24"],
-13DC: 26 0F     ; _throw : [
+13DC: 26 10     ; _throw : [
 13DE: 11 14     ;    "AssertObjectXMatchesUserInput","#BIRD_boxed",
 13E0: 03 0B     ;    "AssertObjectXIsInCurrentRoomOrPack","#SERPENT",
 13E2: 15 0B 00  ;    "MoveObjectXToRoomY","#SERPENT","room_0",
@@ -2076,9 +2076,9 @@ RoomScripts:
 ; room_17 : {
 ;   desc : "YOU ARE IN THE SOUTH SIDE CHAMBER.",
 ;   commands : {
-13EE: 01 02     ; _n : [
+13EE: 01 03     ; _n : [
 13F0: 01 10     ;    "MoveToRoomX","room_16"],
-13F2: 0C 02     ; _out : [
+13F2: 0C 03     ; _out : [
 13F4: 01 10     ;    "MoveToRoomX","room_16"]
 13F6: 00
 ;   }
@@ -2087,24 +2087,24 @@ RoomScripts:
 ; room_18 : {
 ;   desc : "YOU ARE ON THE WEST SIDE OF THE BOTTOMLESS PIT IN THE HALL OF GODS.",
 ;   commands : {
-13F7: 10 0B     ; _jump : [
+13F7: 10 0C     ; _jump : [
 13F9: 07 06     ;    "SubScriptXAbortIfPass",[
 13FB: 03 02     ;        "AssertObjectXIsInCurrentRoomOrPack","#bridge_18",
 13FD: 04 30 E1  ;        "PrintMessageX","I RESPECTFULLY SUGGEST YOU GO ACROSS THE BRIDGE INSTEAD OF JUMPING."],
 1400: 04 31 10  ;    "PrintMessageX","YOU DIDN'T MAKE IT.",
 1403: 05        ;    "PlayerDied"],
-1404: 02 09     ; _e : [
+1404: 02 0A     ; _e : [
 1406: 07 05     ;    "SubScriptXAbortIfPass",[
 1408: 03 02     ;        "AssertObjectXIsInCurrentRoomOrPack","#bridge_18",
 140A: 01 0F     ;        "MoveToRoomX","room_15"],
 140C: 04 31 1F  ;    "PrintMessageX","THERE IS NO WAY ACROSS THE BOTTOMLESS PIT."],
-140F: 01 05     ; _n : [
+140F: 01 06     ; _n : [
 1411: 04 31 53  ;    "PrintMessageX","YOU HAVE CRAWLED THROUGH A VERY LOW WIDE PASSAGE PARALLEL TO AND NORTH OF THE HALL OF GODS.",
 1414: 01 13     ;    "MoveToRoomX","room_19"],
-1416: 0D 04     ; _cross : [
+1416: 0D 05     ; _cross : [
 1418: 03 02     ;    "AssertObjectXIsInCurrentRoomOrPack","#bridge_18",
 141A: 01 0F     ;    "MoveToRoomX","room_15"],
-141C: 23 17     ; _wave : [
+141C: 23 18     ; _wave : [
 141E: 11 11     ;    "AssertObjectXMatchesUserInput","#SCEPTER",
 1420: 07 0C     ;    "SubScriptXAbortIfPass",[
 1422: 03 02     ;        "AssertObjectXIsInCurrentRoomOrPack","#bridge_18",
@@ -2121,17 +2121,17 @@ RoomScripts:
 ; room_19 : {
 ;   desc : "YOU ARE AT THE WEST END OF THE HALL OF GODS. A LOW WIDE PASS CONTINUES WEST AND ANOTHER GOES NORTH. TO THE SOUTH IS A LITTLE PASSAGE SIX FEET OFF THE FLOOR.",
 ;   commands : {
-1436: 03 02     ; _s : [
+1436: 03 03     ; _s : [
 1438: 01 1C     ;    "MoveToRoomX","room_28"],
-143A: 09 02     ; _u : [
+143A: 09 03     ; _u : [
 143C: 01 1C     ;    "MoveToRoomX","room_28"],
-143E: 11 02     ; _climb : [
+143E: 11 03     ; _climb : [
 1440: 01 1C     ;    "MoveToRoomX","room_28"],
-1442: 02 02     ; _e : [
+1442: 02 03     ; _e : [
 1444: 01 12     ;    "MoveToRoomX","room_18"],
-1446: 01 02     ; _n : [
+1446: 01 03     ; _n : [
 1448: 01 12     ;    "MoveToRoomX","room_18"],
-144A: 04 02     ; _w : [
+144A: 04 03     ; _w : [
 144C: 01 14     ;    "MoveToRoomX","room_20"]
 144E: 00
 ;   }
@@ -2140,15 +2140,15 @@ RoomScripts:
 ; room_20 : {
 ;   desc : "YOU ARE AT EAST END OF A VERY LONG HALL APPARENTLY WITHOUT SIDE CHAMBERS. TO THE EAST A LOW WIDE CRAWL SLANTS UP. TO THE NORTH A ROUND TWO FOOT HOLE SLANTS DOWN.",
 ;   commands : {
-144F: 02 02     ; _e : [
+144F: 02 03     ; _e : [
 1451: 01 13     ;    "MoveToRoomX","room_19"],
-1453: 09 02     ; _u : [
+1453: 09 03     ; _u : [
 1455: 01 13     ;    "MoveToRoomX","room_19"],
-1457: 04 02     ; _w : [
+1457: 04 03     ; _w : [
 1459: 01 15     ;    "MoveToRoomX","room_21"],
-145B: 01 02     ; _n : [
+145B: 01 03     ; _n : [
 145D: 01 16     ;    "MoveToRoomX","room_22"],
-145F: 0A 02     ; _d : [
+145F: 0A 03     ; _d : [
 1461: 01 16     ;    "MoveToRoomX","room_22"]
 1463: 00
 ;   }
@@ -2157,9 +2157,9 @@ RoomScripts:
 ; room_21 : {
 ;   desc : "YOU ARE AT THE WEST END OF A VERY LONG FEATURELESS HALL. THE HALL JOINS UP WITH A NARROW NORTH/SOUTH PASSAGE.",
 ;   commands : {
-1464: 02 02     ; _e : [
+1464: 02 03     ; _e : [
 1466: 01 14     ;    "MoveToRoomX","room_20"],
-1468: 01 02     ; _n : [
+1468: 01 03     ; _n : [
 146A: 01 16     ;    "MoveToRoomX","room_22"]
 146C: 00
 ;   }
@@ -2168,13 +2168,13 @@ RoomScripts:
 ; room_22 : {
 ;   desc : "YOU ARE AT A CROSSOVER OF A HIGH N/S PASSAGE AND A LOW E/W ONE.",
 ;   commands : {
-146D: 04 02     ; _w : [
+146D: 04 03     ; _w : [
 146F: 01 14     ;    "MoveToRoomX","room_20"],
-1471: 01 02     ; _n : [
+1471: 01 03     ; _n : [
 1473: 01 17     ;    "MoveToRoomX","room_23"],
-1475: 02 02     ; _e : [
+1475: 02 03     ; _e : [
 1477: 01 18     ;    "MoveToRoomX","room_24"],
-1479: 03 02     ; _s : [
+1479: 03 03     ; _s : [
 147B: 01 15     ;    "MoveToRoomX","room_21"]
 147D: 00
 ;   }
@@ -2183,9 +2183,9 @@ RoomScripts:
 ; room_23 : {
 ;   desc : "DEAD END.",
 ;   commands : {
-147E: 03 02     ; _s : [
+147E: 03 03     ; _s : [
 1480: 01 16     ;    "MoveToRoomX","room_22"],
-1482: 0C 02     ; _out : [
+1482: 0C 03     ; _out : [
 1484: 01 16     ;    "MoveToRoomX","room_22"]
 1486: 00
 ;   }
@@ -2194,13 +2194,13 @@ RoomScripts:
 ; room_24 : {
 ;   desc : "YOU ARE IN THE WEST THRONE CHAMBER. A PASSAGE CONTINUES WEST AND UP FROM HERE.",
 ;   commands : {
-1487: 02 02     ; _e : [
+1487: 02 03     ; _e : [
 1489: 01 10     ;    "MoveToRoomX","room_16"],
-148B: 0C 02     ; _out : [
+148B: 0C 03     ; _out : [
 148D: 01 10     ;    "MoveToRoomX","room_16"],
-148F: 04 02     ; _w : [
+148F: 04 03     ; _w : [
 1491: 01 16     ;    "MoveToRoomX","room_22"],
-1493: 09 02     ; _u : [
+1493: 09 03     ; _u : [
 1495: 01 16     ;    "MoveToRoomX","room_22"]
 1497: 00
 ;   }
@@ -2209,15 +2209,15 @@ RoomScripts:
 ; room_25 : {
 ;   desc : "YOU ARE IN A LOW N/S PASSAGE AT A HOLE IN THE FLOOR. THE HOLE GOES DOWN TO AN E/W PASSAGE.",
 ;   commands : {
-1498: 0C 02     ; _out : [
+1498: 0C 03     ; _out : [
 149A: 01 10     ;    "MoveToRoomX","room_16"],
-149C: 03 02     ; _s : [
+149C: 03 03     ; _s : [
 149E: 01 10     ;    "MoveToRoomX","room_16"],
-14A0: 01 02     ; _n : [
+14A0: 01 03     ; _n : [
 14A2: 01 1A     ;    "MoveToRoomX","room_26"],
-14A4: 20 02     ; _??20?? : [
+14A4: 20 03     ; _??20?? : [
 14A6: 01 1A     ;    "MoveToRoomX","room_26"],
-14A8: 0A 02     ; _d : [
+14A8: 0A 03     ; _d : [
 14AA: 01 36     ;    "MoveToRoomX","room_54"]
 14AC: 00
 ;   }
@@ -2226,11 +2226,11 @@ RoomScripts:
 ; room_26 : {
 ;   desc : "YOU ARE IN A LARGE ROOM, WITH A PASSAGE TO THE SOUTH, AND A WALL OF BROKEN ROCK TO THE EAST. THERE IS A PANEL ON THE NORTH WALL.",
 ;   commands : {
-14AD: 12 02     ; _panel : [
+14AD: 12 03     ; _panel : [
 14AF: 01 02     ;    "MoveToRoomX","room_2"],
-14B1: 03 02     ; _s : [
+14B1: 03 03     ; _s : [
 14B3: 01 19     ;    "MoveToRoomX","room_25"],
-14B5: 02 02     ; _e : [
+14B5: 02 03     ; _e : [
 14B7: 01 1B     ;    "MoveToRoomX","room_27"]
 14B9: 00
 ;   }
@@ -2239,11 +2239,11 @@ RoomScripts:
 ; room_27 : {
 ;   desc : "YOU ARE IN THE CHAMBER OF ANUBIS.",
 ;   commands : {
-14BA: 0A 02     ; _d : [
+14BA: 0A 03     ; _d : [
 14BC: 01 1A     ;    "MoveToRoomX","room_26"],
-14BE: 20 02     ; _??20?? : [
+14BE: 20 03     ; _??20?? : [
 14C0: 01 1A     ;    "MoveToRoomX","room_26"],
-14C2: 09 02     ; _u : [
+14C2: 09 03     ; _u : [
 14C4: 01 0D     ;    "MoveToRoomX","room_13"]
 14C6: 00
 ;   }
@@ -2252,15 +2252,15 @@ RoomScripts:
 ; room_28 : {
 ;   desc : "YOU ARE IN A MAZE OF TWISTY PASSAGES, ALL ALIKE.",
 ;   commands : {
-14C7: 01 02     ; _n : [
+14C7: 01 03     ; _n : [
 14C9: 01 1C     ;    "MoveToRoomX","room_28"],
-14CB: 02 02     ; _e : [
+14CB: 02 03     ; _e : [
 14CD: 01 20     ;    "MoveToRoomX","room_32"],
-14CF: 03 02     ; _s : [
+14CF: 03 03     ; _s : [
 14D1: 01 1E     ;    "MoveToRoomX","room_30"],
-14D3: 04 02     ; _w : [
+14D3: 04 03     ; _w : [
 14D5: 01 1D     ;    "MoveToRoomX","room_29"],
-14D7: 09 02     ; _u : [
+14D7: 09 03     ; _u : [
 14D9: 01 13     ;    "MoveToRoomX","room_19"]
 14DB: 00
 ;   }
@@ -2269,13 +2269,13 @@ RoomScripts:
 ; room_29 : {
 ;   desc : "YOU ARE IN A MAZE OF TWISTY PASSAGES, ALL ALIKE.",
 ;   commands : {
-14DC: 01 02     ; _n : [
+14DC: 01 03     ; _n : [
 14DE: 01 1C     ;    "MoveToRoomX","room_28"],
-14E0: 02 02     ; _e : [
+14E0: 02 03     ; _e : [
 14E2: 01 33     ;    "MoveToRoomX","room_51"],
-14E4: 03 02     ; _s : [
+14E4: 03 03     ; _s : [
 14E6: 01 1D     ;    "MoveToRoomX","room_29"],
-14E8: 04 02     ; _w : [
+14E8: 04 03     ; _w : [
 14EA: 01 1D     ;    "MoveToRoomX","room_29"]
 14EC: 00
 ;   }
@@ -2284,17 +2284,17 @@ RoomScripts:
 ; room_30 : {
 ;   desc : "YOU ARE IN A MAZE OF TWISTY PASSAGES, ALL ALIKE.",
 ;   commands : {
-14ED: 01 02     ; _n : [
+14ED: 01 03     ; _n : [
 14EF: 01 20     ;    "MoveToRoomX","room_32"],
-14F1: 02 02     ; _e : [
+14F1: 02 03     ; _e : [
 14F3: 01 2A     ;    "MoveToRoomX","room_42"],
-14F5: 03 02     ; _s : [
+14F5: 03 03     ; _s : [
 14F7: 01 2B     ;    "MoveToRoomX","room_43"],
-14F9: 04 02     ; _w : [
+14F9: 04 03     ; _w : [
 14FB: 01 1C     ;    "MoveToRoomX","room_28"],
-14FD: 09 02     ; _u : [
+14FD: 09 03     ; _u : [
 14FF: 01 1F     ;    "MoveToRoomX","room_31"],
-1501: 0A 02     ; _d : [
+1501: 0A 03     ; _d : [
 1503: 01 1F     ;    "MoveToRoomX","room_31"]
 1505: 00
 ;   }
@@ -2303,9 +2303,9 @@ RoomScripts:
 ; room_31 : {
 ;   desc : "YOU ARE IN A MAZE OF TWISTY PASSAGES, ALL ALIKE.",
 ;   commands : {
-1506: 09 02     ; _u : [
+1506: 09 03     ; _u : [
 1508: 01 1E     ;    "MoveToRoomX","room_30"],
-150A: 0A 02     ; _d : [
+150A: 0A 03     ; _d : [
 150C: 01 1E     ;    "MoveToRoomX","room_30"]
 150E: 00
 ;   }
@@ -2314,11 +2314,11 @@ RoomScripts:
 ; room_32 : {
 ;   desc : "YOU ARE IN A MAZE OF TWISTY PASSAGES, ALL ALIKE.",
 ;   commands : {
-150F: 02 02     ; _e : [
+150F: 02 03     ; _e : [
 1511: 01 1E     ;    "MoveToRoomX","room_30"],
-1513: 03 02     ; _s : [
+1513: 03 03     ; _s : [
 1515: 01 21     ;    "MoveToRoomX","room_33"],
-1517: 04 02     ; _w : [
+1517: 04 03     ; _w : [
 1519: 01 1C     ;    "MoveToRoomX","room_28"]
 151B: 00
 ;   }
@@ -2327,13 +2327,13 @@ RoomScripts:
 ; room_33 : {
 ;   desc : "YOU ARE IN A MAZE OF TWISTY PASSAGES, ALL ALIKE.",
 ;   commands : {
-151C: 01 02     ; _n : [
+151C: 01 03     ; _n : [
 151E: 01 2C     ;    "MoveToRoomX","room_44"],
-1520: 02 02     ; _e : [
+1520: 02 03     ; _e : [
 1522: 01 20     ;    "MoveToRoomX","room_32"],
-1524: 03 02     ; _s : [
+1524: 03 03     ; _s : [
 1526: 01 22     ;    "MoveToRoomX","room_34"],
-1528: 0A 02     ; _d : [
+1528: 0A 03     ; _d : [
 152A: 01 2D     ;    "MoveToRoomX","room_45"]
 152C: 00
 ;   }
@@ -2342,13 +2342,13 @@ RoomScripts:
 ; room_34 : {
 ;   desc : "YOU ARE IN A MAZE OF TWISTY PASSAGES, ALL ALIKE.",
 ;   commands : {
-152D: 02 02     ; _e : [
+152D: 02 03     ; _e : [
 152F: 01 21     ;    "MoveToRoomX","room_33"],
-1531: 03 02     ; _s : [
+1531: 03 03     ; _s : [
 1533: 01 23     ;    "MoveToRoomX","room_35"],
-1535: 04 02     ; _w : [
+1535: 04 03     ; _w : [
 1537: 01 25     ;    "MoveToRoomX","room_37"],
-1539: 0A 02     ; _d : [
+1539: 0A 03     ; _d : [
 153B: 01 26     ;    "MoveToRoomX","room_38"]
 153D: 00
 ;   }
@@ -2357,17 +2357,17 @@ RoomScripts:
 ; room_35 : {
 ;   desc : "YOU ARE IN A MAZE OF TWISTY PASSAGES, ALL ALIKE.",
 ;   commands : {
-153E: 01 02     ; _n : [
+153E: 01 03     ; _n : [
 1540: 01 24     ;    "MoveToRoomX","room_36"],
-1542: 02 02     ; _e : [
+1542: 02 03     ; _e : [
 1544: 01 26     ;    "MoveToRoomX","room_38"],
-1546: 03 02     ; _s : [
+1546: 03 03     ; _s : [
 1548: 01 23     ;    "MoveToRoomX","room_35"],
-154A: 04 02     ; _w : [
+154A: 04 03     ; _w : [
 154C: 01 22     ;    "MoveToRoomX","room_34"],
-154E: 09 02     ; _u : [
+154E: 09 03     ; _u : [
 1550: 01 27     ;    "MoveToRoomX","room_39"],
-1552: 0A 02     ; _d : [
+1552: 0A 03     ; _d : [
 1554: 01 2F     ;    "MoveToRoomX","room_47"]
 1556: 00
 ;   }
@@ -2376,13 +2376,13 @@ RoomScripts:
 ; room_36 : {
 ;   desc : "YOU ARE IN A MAZE OF TWISTY PASSAGES, ALL ALIKE.",
 ;   commands : {
-1557: 01 02     ; _n : [
+1557: 01 03     ; _n : [
 1559: 01 24     ;    "MoveToRoomX","room_36"],
-155B: 02 02     ; _e : [
+155B: 02 03     ; _e : [
 155D: 01 34     ;    "MoveToRoomX","room_52"],
-155F: 04 02     ; _w : [
+155F: 04 03     ; _w : [
 1561: 01 23     ;    "MoveToRoomX","room_35"],
-1563: 0A 02     ; _d : [
+1563: 0A 03     ; _d : [
 1565: 01 30     ;    "MoveToRoomX","room_48"]
 1567: 00
 ;   }
@@ -2391,9 +2391,9 @@ RoomScripts:
 ; room_37 : {
 ;   desc : "YOU ARE IN A MAZE OF TWISTY PASSAGES, ALL ALIKE.",
 ;   commands : {
-1568: 02 02     ; _e : [
+1568: 02 03     ; _e : [
 156A: 01 22     ;    "MoveToRoomX","room_34"],
-156C: 04 02     ; _w : [
+156C: 04 03     ; _w : [
 156E: 01 26     ;    "MoveToRoomX","room_38"]
 1570: 00
 ;   }
@@ -2402,13 +2402,13 @@ RoomScripts:
 ; room_38 : {
 ;   desc : "YOU ARE IN A MAZE OF TWISTY PASSAGES, ALL ALIKE.",
 ;   commands : {
-1571: 02 02     ; _e : [
+1571: 02 03     ; _e : [
 1573: 01 23     ;    "MoveToRoomX","room_35"],
-1575: 03 02     ; _s : [
+1575: 03 03     ; _s : [
 1577: 01 27     ;    "MoveToRoomX","room_39"],
-1579: 04 02     ; _w : [
+1579: 04 03     ; _w : [
 157B: 01 25     ;    "MoveToRoomX","room_37"],
-157D: 09 02     ; _u : [
+157D: 09 03     ; _u : [
 157F: 01 22     ;    "MoveToRoomX","room_34"]
 1581: 00
 ;   }
@@ -2417,11 +2417,11 @@ RoomScripts:
 ; room_39 : {
 ;   desc : "YOU ARE IN A MAZE OF TWISTY PASSAGES, ALL ALIKE.",
 ;   commands : {
-1582: 01 02     ; _n : [
+1582: 01 03     ; _n : [
 1584: 01 23     ;    "MoveToRoomX","room_35"],
-1586: 03 02     ; _s : [
+1586: 03 03     ; _s : [
 1588: 01 2E     ;    "MoveToRoomX","room_46"],
-158A: 04 02     ; _w : [
+158A: 04 03     ; _w : [
 158C: 01 26     ;    "MoveToRoomX","room_38"]
 158E: 00
 ;   }
@@ -2430,11 +2430,11 @@ RoomScripts:
 ; room_40 : {
 ;   desc : "YOU ARE IN A MAZE OF TWISTY PASSAGES, ALL ALIKE.",
 ;   commands : {
-158F: 01 02     ; _n : [
+158F: 01 03     ; _n : [
 1591: 01 34     ;    "MoveToRoomX","room_52"],
-1593: 04 02     ; _w : [
+1593: 04 03     ; _w : [
 1595: 01 29     ;    "MoveToRoomX","room_41"],
-1597: 08 02     ; _nw : [
+1597: 08 03     ; _nw : [
 1599: 01 35     ;    "MoveToRoomX","room_53"]
 159B: 00
 ;   }
@@ -2443,11 +2443,11 @@ RoomScripts:
 ; room_41 : {
 ;   desc : "YOU ARE IN A MAZE OF TWISTY PASSAGES, ALL ALIKE.",
 ;   commands : {
-159C: 02 02     ; _e : [
+159C: 02 03     ; _e : [
 159E: 01 28     ;    "MoveToRoomX","room_40"],
-15A0: 03 02     ; _s : [
+15A0: 03 03     ; _s : [
 15A2: 01 34     ;    "MoveToRoomX","room_52"],
-15A4: 04 02     ; _w : [
+15A4: 04 03     ; _w : [
 15A6: 01 32     ;    "MoveToRoomX","room_50"]
 15A8: 00
 ;   }
@@ -2456,7 +2456,7 @@ RoomScripts:
 ; room_42 : {
 ;   desc : "DEAD END.",
 ;   commands : {
-15A9: 04 02     ; _w : [
+15A9: 04 03     ; _w : [
 15AB: 01 1E     ;    "MoveToRoomX","room_30"]
 15AD: 00
 ;   }
@@ -2465,7 +2465,7 @@ RoomScripts:
 ; room_43 : {
 ;   desc : "DEAD END.",
 ;   commands : {
-15AE: 02 02     ; _e : [
+15AE: 02 03     ; _e : [
 15B0: 01 1E     ;    "MoveToRoomX","room_30"]
 15B2: 00
 ;   }
@@ -2474,7 +2474,7 @@ RoomScripts:
 ; room_44 : {
 ;   desc : "DEAD END.",
 ;   commands : {
-15B3: 03 02     ; _s : [
+15B3: 03 03     ; _s : [
 15B5: 01 21     ;    "MoveToRoomX","room_33"]
 15B7: 00
 ;   }
@@ -2483,7 +2483,7 @@ RoomScripts:
 ; room_45 : {
 ;   desc : "DEAD END.",
 ;   commands : {
-15B8: 09 02     ; _u : [
+15B8: 09 03     ; _u : [
 15BA: 01 21     ;    "MoveToRoomX","room_33"]
 15BC: 00
 ;   }
@@ -2492,7 +2492,7 @@ RoomScripts:
 ; room_46 : {
 ;   desc : "DEAD END.",
 ;   commands : {
-15BD: 04 02     ; _w : [
+15BD: 04 03     ; _w : [
 15BF: 01 27     ;    "MoveToRoomX","room_39"]
 15C1: 00
 ;   }
@@ -2501,7 +2501,7 @@ RoomScripts:
 ; room_47 : {
 ;   desc : "DEAD END.",
 ;   commands : {
-15C2: 09 02     ; _u : [
+15C2: 09 03     ; _u : [
 15C4: 01 23     ;    "MoveToRoomX","room_35"]
 15C6: 00
 ;   }
@@ -2510,7 +2510,7 @@ RoomScripts:
 ; room_48 : {
 ;   desc : "DEAD END.",
 ;   commands : {
-15C7: 09 02     ; _u : [
+15C7: 09 03     ; _u : [
 15C9: 01 24     ;    "MoveToRoomX","room_36"]
 15CB: 00
 ;   }
@@ -2519,7 +2519,7 @@ RoomScripts:
 ; room_49 : {
 ;   desc : "DEAD END.",
 ;   commands : {
-15CC: 02 02     ; _e : [
+15CC: 02 03     ; _e : [
 15CE: 01 34     ;    "MoveToRoomX","room_52"]
 15D0: 00
 ;   }
@@ -2528,7 +2528,7 @@ RoomScripts:
 ; room_50 : {
 ;   desc : "DEAD END.",
 ;   commands : {
-15D1: 02 02     ; _e : [
+15D1: 02 03     ; _e : [
 15D3: 01 29     ;    "MoveToRoomX","room_41"]
 15D5: 00
 ;   }
@@ -2537,9 +2537,9 @@ RoomScripts:
 ; room_51 : {
 ;   desc : "DEAD END.",
 ;   commands : {
-15D6: 04 02     ; _w : [
+15D6: 04 03     ; _w : [
 15D8: 01 1D     ;    "MoveToRoomX","room_29"],
-15DA: 21 0A     ; _drop : [
+15DA: 21 0B     ; _drop : [
 15DC: 11 29     ;    "AssertObjectXMatchesUserInput","#COINS",
 15DE: 15 29 00  ;    "MoveObjectXToRoomY","#COINS","room_0",
 15E1: 18 23     ;    "MoveObjectXToCurrentRoom","#BATTERIES_fresh",
@@ -2551,15 +2551,15 @@ RoomScripts:
 ; room_52 : {
 ;   desc : "YOU ARE ON THE BRINK OF A LARGE PIT. YOU COULD CLIMB DOWN, BUT YOU WOULD NOT BE ABLE TO CLIMB BACK UP. THE MAZE CONTINUES ON THIS LEVEL.",
 ;   commands : {
-15E7: 01 02     ; _n : [
+15E7: 01 03     ; _n : [
 15E9: 01 29     ;    "MoveToRoomX","room_41"],
-15EB: 02 02     ; _e : [
+15EB: 02 03     ; _e : [
 15ED: 01 28     ;    "MoveToRoomX","room_40"],
-15EF: 03 02     ; _s : [
+15EF: 03 03     ; _s : [
 15F1: 01 31     ;    "MoveToRoomX","room_49"],
-15F3: 04 02     ; _w : [
+15F3: 04 03     ; _w : [
 15F5: 01 24     ;    "MoveToRoomX","room_36"],
-15F7: 0A 02     ; _d : [
+15F7: 0A 03     ; _d : [
 15F9: 01 0B     ;    "MoveToRoomX","room_11"]
 15FB: 00
 ;   }
@@ -2568,7 +2568,7 @@ RoomScripts:
 ; room_53 : {
 ;   desc : "DEAD END.",
 ;   commands : {
-15FC: 06 02     ; _se : [
+15FC: 06 03     ; _se : [
 15FE: 01 28     ;    "MoveToRoomX","room_40"]
 1600: 00
 ;   }
@@ -2577,11 +2577,11 @@ RoomScripts:
 ; room_54 : {
 ;   desc : "YOU ARE IN A DIRTY BROKEN PASSAGE. TO THE EAST IS A CRAWL. TO THE WEST IS A LARGE PASSAGE. ABOVE YOU IS A HOLE TO ANOTHER PASSAGE.",
 ;   commands : {
-1601: 02 02     ; _e : [
+1601: 02 03     ; _e : [
 1603: 01 37     ;    "MoveToRoomX","room_55"],
-1605: 04 02     ; _w : [
+1605: 04 03     ; _w : [
 1607: 01 39     ;    "MoveToRoomX","room_57"],
-1609: 09 02     ; _u : [
+1609: 09 03     ; _u : [
 160B: 01 19     ;    "MoveToRoomX","room_25"]
 160D: 00
 ;   }
@@ -2590,11 +2590,11 @@ RoomScripts:
 ; room_55 : {
 ;   desc : "YOU ARE ON THE BRINK OF A SMALL CLEAN CLIMBABLE PIT. A CRAWL LEADS WEST.",
 ;   commands : {
-160E: 04 02     ; _w : [
+160E: 04 03     ; _w : [
 1610: 01 36     ;    "MoveToRoomX","room_54"],
-1612: 0A 02     ; _d : [
+1612: 0A 03     ; _d : [
 1614: 01 38     ;    "MoveToRoomX","room_56"],
-1616: 11 02     ; _climb : [
+1616: 11 03     ; _climb : [
 1618: 01 38     ;    "MoveToRoomX","room_56"]
 161A: 00
 ;   }
@@ -2603,15 +2603,15 @@ RoomScripts:
 ; room_56 : {
 ;   desc : "YOU ARE IN THE BOTTOM OF A SMALL PIT WITH A LITTLE STREAM, WHICH ENTERS AND EXITS THROUGH TINY SLITS.",
 ;   commands : {
-161B: 09 02     ; _u : [
+161B: 09 03     ; _u : [
 161D: 01 37     ;    "MoveToRoomX","room_55"],
-161F: 0C 02     ; _out : [
+161F: 0C 03     ; _out : [
 1621: 01 37     ;    "MoveToRoomX","room_55"],
-1623: 11 02     ; _climb : [
+1623: 11 03     ; _climb : [
 1625: 01 37     ;    "MoveToRoomX","room_55"],
-1627: 0A 03     ; _d : [
+1627: 0A 04     ; _d : [
 1629: 04 31 92  ;    "PrintMessageX","YOU DON'T FIT THROUGH TWO-INCH SLIT!"],
-162C: 27 0A     ; _fill : [
+162C: 27 0B     ; _fill : [
 162E: 07 06     ;    "SubScriptXAbortIfPass",[
 1630: 02 1C     ;        "AssertObjectXIsInPack","#WATER",
 1632: 04 39 C1  ;        "PrintMessageX","YOUR BOTTLE IS ALREADY FULL."],
@@ -2623,9 +2623,9 @@ RoomScripts:
 ; room_57 : {
 ;   desc : "YOU ARE IN A THE ROOM OF BES, WHOSE PICTURE IS ON THE WALL. THERE IS A BIG HOLE IN THE FLOOR. THERE IS A PASSAGE LEADING EAST.",
 ;   commands : {
-1639: 02 02     ; _e : [
+1639: 02 03     ; _e : [
 163B: 01 36     ;    "MoveToRoomX","room_54"],
-163D: 0A 02     ; _d : [
+163D: 0A 03     ; _d : [
 163F: 01 3A     ;    "MoveToRoomX","room_58"]
 1641: 00
 ;   }
@@ -2634,15 +2634,15 @@ RoomScripts:
 ; room_58 : {
 ;   desc : "YOU ARE AT A COMPLEX JUNCTION. A LOW HANDS AND KNEES PASSAGE FROM THE NORTH JOINS A HIGHER CRAWL FROM THE EAST TO MAKE A WALKING PASSAGE GOING WEST. THERE IS ALSO A LARGE ROOM ABOVE. THE AIR IS DAMP HERE.",
 ;   commands : {
-1642: 01 02     ; _n : [
+1642: 01 03     ; _n : [
 1644: 01 3D     ;    "MoveToRoomX","room_61"],
-1646: 02 02     ; _e : [
+1646: 02 03     ; _e : [
 1648: 01 3B     ;    "MoveToRoomX","room_59"],
-164A: 04 02     ; _w : [
+164A: 04 03     ; _w : [
 164C: 01 41     ;    "MoveToRoomX","room_65"],
-164E: 09 02     ; _u : [
+164E: 09 03     ; _u : [
 1650: 01 39     ;    "MoveToRoomX","room_57"],
-1652: 11 02     ; _climb : [
+1652: 11 03     ; _climb : [
 1654: 01 39     ;    "MoveToRoomX","room_57"]
 1656: 00
 ;   }
@@ -2651,11 +2651,11 @@ RoomScripts:
 ; room_59 : {
 ;   desc : "YOU ARE IN THE UNDERWORLD ANTEROOM OF SEKER. PASSAGES GO EAST, WEST, AND UP. HUMAN BONES ARE STREWN ABOUT ON THE FLOOR. HIEROGLYPHICS ON THE WALL ROUGHLY TRANSLATE TO \"THOSE WHO PROCEED EAST MAY NEVER RETURN.\"",
 ;   commands : {
-1657: 02 02     ; _e : [
+1657: 02 03     ; _e : [
 1659: 01 3C     ;    "MoveToRoomX","room_60"],
-165B: 04 02     ; _w : [
+165B: 04 03     ; _w : [
 165D: 01 41     ;    "MoveToRoomX","room_65"],
-165F: 09 02     ; _u : [
+165F: 09 03     ; _u : [
 1661: 01 3A     ;    "MoveToRoomX","room_58"]
 1663: 00
 ;   }
@@ -2664,39 +2664,39 @@ RoomScripts:
 ; room_60 : {
 ;   desc : "YOU ARE AT THE LAND OF DEAD. PASSAGES LEAD OFF IN >ALL< DIRECTIONS.",
 ;   commands : {
-1664: 01 06     ; _n : [
+1664: 01 07     ; _n : [
 1666: 07 03     ;    "SubScriptXAbortIfPass",[
 1668: 0A F0     ;        "AssertRandomIsGreaterThanX","240"],
 166A: 01 3B     ;    "MoveToRoomX","room_59"],
-166C: 02 06     ; _e : [
+166C: 02 07     ; _e : [
 166E: 07 03     ;    "SubScriptXAbortIfPass",[
 1670: 0A F0     ;        "AssertRandomIsGreaterThanX","240"],
 1672: 01 3B     ;    "MoveToRoomX","room_59"],
-1674: 03 06     ; _s : [
+1674: 03 07     ; _s : [
 1676: 07 03     ;    "SubScriptXAbortIfPass",[
 1678: 0A F0     ;        "AssertRandomIsGreaterThanX","240"],
 167A: 01 3B     ;    "MoveToRoomX","room_59"],
-167C: 05 06     ; _ne : [
+167C: 05 07     ; _ne : [
 167E: 07 03     ;    "SubScriptXAbortIfPass",[
 1680: 0A F0     ;        "AssertRandomIsGreaterThanX","240"],
 1682: 01 3B     ;    "MoveToRoomX","room_59"],
-1684: 06 06     ; _se : [
+1684: 06 07     ; _se : [
 1686: 07 03     ;    "SubScriptXAbortIfPass",[
 1688: 0A F0     ;        "AssertRandomIsGreaterThanX","240"],
 168A: 01 3B     ;    "MoveToRoomX","room_59"],
-168C: 07 06     ; _sw : [
+168C: 07 07     ; _sw : [
 168E: 07 03     ;    "SubScriptXAbortIfPass",[
 1690: 0A F0     ;        "AssertRandomIsGreaterThanX","240"],
 1692: 01 3B     ;    "MoveToRoomX","room_59"],
-1694: 08 06     ; _nw : [
+1694: 08 07     ; _nw : [
 1696: 07 03     ;    "SubScriptXAbortIfPass",[
 1698: 0A F0     ;        "AssertRandomIsGreaterThanX","240"],
 169A: 01 3B     ;    "MoveToRoomX","room_59"],
-169C: 09 06     ; _u : [
+169C: 09 07     ; _u : [
 169E: 07 03     ;    "SubScriptXAbortIfPass",[
 16A0: 0A F0     ;        "AssertRandomIsGreaterThanX","240"],
 16A2: 01 3B     ;    "MoveToRoomX","room_59"],
-16A4: 04 05     ; _w : [
+16A4: 04 06     ; _w : [
 16A6: 04 31 E6  ;    "PrintMessageX","YOU HAVE CRAWLED AROUND IN SOME LITTLE HOLES AND FOUND YOUR WAY BLOCKED BY A FALLEN SLAB. YOU ARE NOW BACK IN THE MAIN PASSAGE.",
 16A9: 01 3C     ;    "MoveToRoomX","room_60"]
 16AB: 00
@@ -2706,7 +2706,7 @@ RoomScripts:
 ; room_61 : {
 ;   desc : "YOU'RE IN A LARGE ROOM WITH ANCIENT DRAWINGS ON ALL WALLS. THE PICTURES DEPICT ATUM, A PHARAOH WEARING THE DOUBLE CROWN. A SHALLOW PASSAGE PROCEEDS DOWNWARD, AND A SOMEWHAT STEEPER ONE LEADS UP. A LOW HANDS AND KNEES PASSAGE ENTERS FROM THE SOUTH. ",
 ;   commands : {
-16AC: 03 10     ; _s : [
+16AC: 03 11     ; _s : [
 16AE: 07 06     ;    "SubScriptXAbortIfPass",[
 16B0: 02 17     ;        "AssertObjectXIsInPack","#SARCOPH_full",
 16B2: 04 32 3D  ;        "PrintMessageX","YOU CAN'T FIT THIS BIG SARCOPHAGUS THROUGH THAT LITTLE PASSAGE!"],
@@ -2714,9 +2714,9 @@ RoomScripts:
 16B7: 02 18     ;        "AssertObjectXIsInPack","#SARCOPH_empty",
 16B9: 04 32 3D  ;        "PrintMessageX","YOU CAN'T FIT THIS BIG SARCOPHAGUS THROUGH THAT LITTLE PASSAGE!"],
 16BC: 01 3A     ;    "MoveToRoomX","room_58"],
-16BE: 09 02     ; _u : [
+16BE: 09 03     ; _u : [
 16C0: 01 3E     ;    "MoveToRoomX","room_62"],
-16C2: 0A 02     ; _d : [
+16C2: 0A 03     ; _d : [
 16C4: 01 3F     ;    "MoveToRoomX","room_63"]
 16C6: 00
 ;   }
@@ -2725,9 +2725,9 @@ RoomScripts:
 ; room_62 : {
 ;   desc : "YOU ARE IN A CHAMBER WHOSE WALL CONTAINS A PICTURE OF A MAN WEARING THE LUNAR DISK ON HIS HEAD.  HE IS THE GOD KHONS, THE MOON GOD.",
 ;   commands : {
-16C7: 0A 02     ; _d : [
+16C7: 0A 03     ; _d : [
 16C9: 01 3D     ;    "MoveToRoomX","room_61"],
-16CB: 0C 02     ; _out : [
+16CB: 0C 03     ; _out : [
 16CD: 01 3D     ;    "MoveToRoomX","room_61"]
 16CF: 00
 ;   }
@@ -2736,9 +2736,9 @@ RoomScripts:
 ; room_63 : {
 ;   desc : "YOU ARE IN A LONG SLOPING CORRIDOR WITH RAGGED WALLS.",
 ;   commands : {
-16D0: 09 02     ; _u : [
+16D0: 09 03     ; _u : [
 16D2: 01 3D     ;    "MoveToRoomX","room_61"],
-16D4: 0A 02     ; _d : [
+16D4: 0A 03     ; _d : [
 16D6: 01 40     ;    "MoveToRoomX","room_64"]
 16D8: 00
 ;   }
@@ -2747,9 +2747,9 @@ RoomScripts:
 ; room_64 : {
 ;   desc : "YOU ARE IN A CUL-DE-SAC ABOUT EIGHT FEET ACROSS.",
 ;   commands : {
-16D9: 09 02     ; _u : [
+16D9: 09 03     ; _u : [
 16DB: 01 3F     ;    "MoveToRoomX","room_63"],
-16DD: 0C 02     ; _out : [
+16DD: 0C 03     ; _out : [
 16DF: 01 3F     ;    "MoveToRoomX","room_63"]
 16E1: 00
 ;   }
@@ -2758,23 +2758,23 @@ RoomScripts:
 ; room_65 : {
 ;   desc : "YOU ARE IN THE CHAMBER OF HORUS, A LONG EAST/WEST PASSAGE WITH HOLES EVERYWHERE. TO EXPLORE AT RANDOM, SELECT NORTH, SOUTH, UP, OR DOWN.",
 ;   commands : {
-16E2: 02 02     ; _e : [
+16E2: 02 03     ; _e : [
 16E4: 01 3A     ;    "MoveToRoomX","room_58"],
-16E6: 04 02     ; _w : [
+16E6: 04 03     ; _w : [
 16E8: 01 4E     ;    "MoveToRoomX","room_78"],
-16EA: 09 06     ; _u : [
+16EA: 09 07     ; _u : [
 16EC: 07 03     ;    "SubScriptXAbortIfPass",[
 16EE: 0A CC     ;        "AssertRandomIsGreaterThanX","204"],
 16F0: 01 48     ;    "MoveToRoomX","room_72"],
-16F2: 01 06     ; _n : [
+16F2: 01 07     ; _n : [
 16F4: 07 03     ;    "SubScriptXAbortIfPass",[
 16F6: 0A CC     ;        "AssertRandomIsGreaterThanX","204"],
 16F8: 01 49     ;    "MoveToRoomX","room_73"],
-16FA: 03 06     ; _s : [
+16FA: 03 07     ; _s : [
 16FC: 07 03     ;    "SubScriptXAbortIfPass",[
 16FE: 0A CC     ;        "AssertRandomIsGreaterThanX","204"],
 1700: 01 42     ;    "MoveToRoomX","room_66"],
-1702: 0A 06     ; _d : [
+1702: 0A 07     ; _d : [
 1704: 07 03     ;    "SubScriptXAbortIfPass",[
 1706: 0A CC     ;        "AssertRandomIsGreaterThanX","204"],
 1708: 01 3B     ;    "MoveToRoomX","room_59"]
@@ -2785,9 +2785,9 @@ RoomScripts:
 ; room_66 : {
 ;   desc : "YOU ARE IN A LARGE LOW CIRCULAR CHAMBER WHOSE FLOOR IS AN IMMENSE SLAB FALLEN FROM THE CEILING. EAST AND WEST THERE ONCE WERE LARGE PASSAGES, BUT THEY ARE NOW FILLED WITH SAND. LOW SMALL PASSAGES GO NORTH AND SOUTH.",
 ;   commands : {
-170B: 01 02     ; _n : [
+170B: 01 03     ; _n : [
 170D: 01 41     ;    "MoveToRoomX","room_65"],
-170F: 03 02     ; _s : [
+170F: 03 03     ; _s : [
 1711: 01 50     ;    "MoveToRoomX","room_80"]
 1713: 00
 ;   }
@@ -2796,9 +2796,9 @@ RoomScripts:
 ; room_72 : {
 ;   desc : "YOU ARE IN THE PRIEST'S BEDROOM. THE WALLS ARE COVERED WITH CURTAINS, THE FLOOR WITH A THICK PILE CARPET. MOSS COVERS THE CEILING.",
 ;   commands : {
-1714: 04 02     ; _w : [
+1714: 04 03     ; _w : [
 1716: 01 41     ;    "MoveToRoomX","room_65"],
-1718: 0C 02     ; _out : [
+1718: 0C 03     ; _out : [
 171A: 01 41     ;    "MoveToRoomX","room_65"]
 171C: 00
 ;   }
@@ -2807,12 +2807,12 @@ RoomScripts:
 ; room_73 : {
 ;   desc : "THIS IS THE CHAMBER OF THE HIGH PRIEST. ANCIENT DRAWINGS COVER THE WALLS. AN EXTREMELY TIGHT TUNNEL LEADS WEST. IT LOOKS LIKE A TIGHT SQUEEZE. ANOTHER PASSAGE LEADS SE.",
 ;   commands : {
-171D: 04 08     ; _w : [
+171D: 04 09     ; _w : [
 171F: 07 04     ;    "SubScriptXAbortIfPass",[
 1721: 0D        ;        "AssertPackIsEmptyExceptForEmerald",
 1722: 01 4C     ;        "MoveToRoomX","room_76"],
 1724: 04 32 69  ;    "PrintMessageX","SOMETHING YOU'RE CARRYING WON'T FIT THROUGH THE TUNNEL WITH YOU. YOU'D BEST TAKE INVENTORY AND DROP SOMETHING."],
-1727: 06 02     ; _se : [
+1727: 06 03     ; _se : [
 1729: 01 41     ;    "MoveToRoomX","room_65"]
 172B: 00
 ;   }
@@ -2822,12 +2822,12 @@ RoomScripts:
 ;   desc : "YOU ARE IN THE HIGH PRIEST'S TREASURE ROOM LIT BY AN EERIE GREEN LIGHT. A NARROW TUNNEL EXITS TO THE EAST.",
 ;   lit  : true,
 ;   commands : {
-172C: 02 08     ; _e : [
+172C: 02 09     ; _e : [
 172E: 07 04     ;    "SubScriptXAbortIfPass",[
 1730: 0D        ;        "AssertPackIsEmptyExceptForEmerald",
 1731: 01 49     ;        "MoveToRoomX","room_73"],
 1733: 04 32 69  ;    "PrintMessageX","SOMETHING YOU'RE CARRYING WON'T FIT THROUGH THE TUNNEL WITH YOU. YOU'D BEST TAKE INVENTORY AND DROP SOMETHING."],
-1736: 0C 08     ; _out : [
+1736: 0C 09     ; _out : [
 1738: 07 04     ;    "SubScriptXAbortIfPass",[
 173A: 0D        ;        "AssertPackIsEmptyExceptForEmerald",
 173B: 01 49     ;        "MoveToRoomX","room_73"],
@@ -2839,11 +2839,11 @@ RoomScripts:
 ; room_78 : {
 ;   desc : "YOU ARE AT THE EAST END OF THE TWOPIT ROOM. THE FLOOR HERE IS LITTERED WITH THIN ROCK SLABS, WHICH MAKE IT EASY TO DESCEND THE PITS. THERE IS A PATH HERE BYPASSING THE PITS TO CONNECT PASSAGES EAST AND WEST. THERE ARE HOLES ALL OVER, BUT THE ONLY BIG ONE IS ON THE WALL DIRECTLY OVER THE WEST PIT WHERE YOU CAN'T GET TO IT.",
 ;   commands : {
-1741: 02 02     ; _e : [
+1741: 02 03     ; _e : [
 1743: 01 41     ;    "MoveToRoomX","room_65"],
-1745: 04 02     ; _w : [
+1745: 04 03     ; _w : [
 1747: 01 50     ;    "MoveToRoomX","room_80"],
-1749: 0A 02     ; _d : [
+1749: 0A 03     ; _d : [
 174B: 01 4F     ;    "MoveToRoomX","room_79"]
 174D: 00
 ;   }
@@ -2852,9 +2852,9 @@ RoomScripts:
 ; room_79 : {
 ;   desc : "YOU ARE AT THE BOTTOM OF THE EASTERN PIT IN THE TWOPIT ROOM.",
 ;   commands : {
-174E: 09 02     ; _u : [
+174E: 09 03     ; _u : [
 1750: 01 4E     ;    "MoveToRoomX","room_78"],
-1752: 0C 02     ; _out : [
+1752: 0C 03     ; _out : [
 1754: 01 4E     ;    "MoveToRoomX","room_78"]
 1756: 00
 ;   }
@@ -2863,11 +2863,11 @@ RoomScripts:
 ; room_80 : {
 ;   desc : "YOU ARE AT THE WEST END OF THE TWOPIT ROOM. THERE IS A LARGE HOLE IN THE WALL ABOVE THE PIT AT THIS END OF THE ROOM.",
 ;   commands : {
-1757: 02 02     ; _e : [
+1757: 02 03     ; _e : [
 1759: 01 4E     ;    "MoveToRoomX","room_78"],
-175B: 04 02     ; _w : [
+175B: 04 03     ; _w : [
 175D: 01 42     ;    "MoveToRoomX","room_66"],
-175F: 0A 02     ; _d : [
+175F: 0A 03     ; _d : [
 1761: 01 51     ;    "MoveToRoomX","room_81"]
 1763: 00
 ;   }
@@ -2876,11 +2876,11 @@ RoomScripts:
 ; room_81 : {
 ;   desc : "YOU ARE AT THE BOTTOM OF THE WEST PIT IN THE TWOPIT ROOM. THERE IS A LARGE HOLE IN THE WALL ABOUT TWENTY FIVE FEET ABOVE YOU.",
 ;   commands : {
-1764: 09 02     ; _u : [
+1764: 09 03     ; _u : [
 1766: 01 50     ;    "MoveToRoomX","room_80"],
-1768: 0C 02     ; _out : [
+1768: 0C 03     ; _out : [
 176A: 01 50     ;    "MoveToRoomX","room_80"],
-176C: 11 15     ; _climb : [
+176C: 11 16     ; _climb : [
 176E: 07 08     ;    "SubScriptXAbortIfPass",[
 1770: 03 09     ;        "AssertObjectXIsInCurrentRoomOrPack","#PLANT_C",
 1772: 04 32 B5  ;        "PrintMessageX","YOU CLAMBER UP THE PLANT AND SCURRY THROUGH THE HOLE AT THE TOP.",
@@ -2890,7 +2890,7 @@ RoomScripts:
 177B: 04 32 E2  ;        "PrintMessageX","YOU'VE CLIMBED UP THE PLANT AND OUT OF THE PIT."],
 177E: 01 50     ;    "MoveToRoomX","room_80",
 1780: 04 3B FB  ;    "PrintMessageX","THERE IS NOTHING HERE TO CLIMB. USE UP OR OUT TO LEAVE THE PIT."],
-1783: 24 2E     ; _pour : [
+1783: 24 2F     ; _pour : [
 1785: 11 1C     ;    "AssertObjectXMatchesUserInput","#WATER",
 1787: 15 1C 00  ;    "MoveObjectXToRoomY","#WATER","room_0",
 178A: 07 0E     ;    "SubScriptXAbortIfPass",[
@@ -2916,16 +2916,16 @@ RoomScripts:
 ; room_77 : {
 ;   desc : "YOU ARE IN A LONG, NARROW CORRIDOR STRETCHING OUT OF SIGHT TO THE WEST. AT THE EASTERN END IS A HOLE THROUGH WHICH YOU CAN SEE A PROFUSION OF LEAVES.",
 ;   commands : {
-17B4: 02 02     ; _e : [
+17B4: 02 03     ; _e : [
 17B6: 01 51     ;    "MoveToRoomX","room_81"],
-17B8: 0A 02     ; _d : [
+17B8: 0A 03     ; _d : [
 17BA: 01 51     ;    "MoveToRoomX","room_81"],
-17BC: 11 02     ; _climb : [
+17BC: 11 03     ; _climb : [
 17BE: 01 51     ;    "MoveToRoomX","room_81"],
-17C0: 10 04     ; _jump : [
+17C0: 10 05     ; _jump : [
 17C2: 04 30 8A  ;    "PrintMessageX","YOU ARE AT THE BOTTOM OF THE PIT WITH A BROKEN NECK.",
 17C5: 05        ;    "PlayerDied"],
-17C6: 04 02     ; _w : [
+17C6: 04 03     ; _w : [
 17C8: 01 47     ;    "MoveToRoomX","room_71"]
 17CA: 00
 ;   }
@@ -2934,11 +2934,11 @@ RoomScripts:
 ; room_71 : {
 ;   desc : "YOU ARE IN THE CHAMBER OF OSIRIS. THE CEILING IS TOO HIGH UP FOR YOUR LAMP TO SHOW IT. PASSAGES LEAD EAST, NORTH, AND SOUTH.",
 ;   commands : {
-17CB: 01 02     ; _n : [
+17CB: 01 03     ; _n : [
 17CD: 01 44     ;    "MoveToRoomX","room_68"],
-17CF: 02 02     ; _e : [
+17CF: 02 03     ; _e : [
 17D1: 01 46     ;    "MoveToRoomX","room_70"],
-17D3: 03 02     ; _s : [
+17D3: 03 03     ; _s : [
 17D5: 01 4D     ;    "MoveToRoomX","room_77"]
 17D7: 00
 ;   }
@@ -2947,9 +2947,9 @@ RoomScripts:
 ; room_70 : {
 ;   desc : "THE PASSAGE HERE IS BLOCKED BY A FALLEN BLOCK.",
 ;   commands : {
-17D8: 03 02     ; _s : [
+17D8: 03 03     ; _s : [
 17DA: 01 47     ;    "MoveToRoomX","room_71"],
-17DC: 0C 02     ; _out : [
+17DC: 0C 03     ; _out : [
 17DE: 01 47     ;    "MoveToRoomX","room_71"]
 17E0: 00
 ;   }
@@ -2958,9 +2958,9 @@ RoomScripts:
 ; room_68 : {
 ;   desc : "YOU ARE IN THE CHAMBER OF NEKHEBET, A WOMAN WITH THE HEAD OF A VULTURE, WEARING THE CROWN OF EGYPT. A PASSAGE EXITS TO THE SOUTH.",
 ;   commands : {
-17E1: 03 02     ; _s : [
+17E1: 03 03     ; _s : [
 17E3: 01 47     ;    "MoveToRoomX","room_71"],
-17E5: 0C 02     ; _out : [
+17E5: 0C 03     ; _out : [
 17E7: 01 47     ;    "MoveToRoomX","room_71"]
 17E9: 00
 ;   }
@@ -3195,41 +3195,41 @@ ObjectDescriptions:
 ;; This script is used when the room doesn't have a script for the input command.
 
 GeneralCommandHandler:
-1945: 01 03     ; _n : [
+1945: 01 04     ; _n : [
 1947: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION."],
-194A: 02 03     ; _e : [
+194A: 02 04     ; _e : [
 194C: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION."],
-194F: 03 03     ; _s : [
+194F: 03 04     ; _s : [
 1951: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION."],
-1954: 04 03     ; _w : [
+1954: 04 04     ; _w : [
 1956: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION."],
-1959: 05 03     ; _ne : [
+1959: 05 04     ; _ne : [
 195B: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION."],
-195E: 06 03     ; _se : [
+195E: 06 04     ; _se : [
 1960: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION."],
-1963: 07 03     ; _sw : [
+1963: 07 04     ; _sw : [
 1965: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION."],
-1968: 08 03     ; _nw : [
+1968: 08 04     ; _nw : [
 196A: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION."],
-196D: 09 03     ; _u : [
+196D: 09 04     ; _u : [
 196F: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION."],
-1972: 0A 03     ; _d : [
+1972: 0A 04     ; _d : [
 1974: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION."],
-1977: 0B 03     ; _in : [
+1977: 0B 04     ; _in : [
 1979: 04 33 24  ;    "PrintMessageX","I DON'T KNOW IN FROM OUT HERE. USE COMPASS POINTS."],
-197C: 0C 03     ; _out : [
+197C: 0C 04     ; _out : [
 197E: 04 33 24  ;    "PrintMessageX","I DON'T KNOW IN FROM OUT HERE. USE COMPASS POINTS."],
-1981: 0E 03     ; _left : [
+1981: 0E 04     ; _left : [
 1983: 04 33 48  ;    "PrintMessageX","I AM UNSURE HOW YOU ARE FACING. USE COMPASS POINTS."],
-1986: 0F 03     ; _right : [
+1986: 0F 04     ; _right : [
 1988: 04 33 48  ;    "PrintMessageX","I AM UNSURE HOW YOU ARE FACING. USE COMPASS POINTS."],
-198B: 12 03     ; _panel : [
+198B: 12 04     ; _panel : [
 198D: 04 33 6C  ;    "PrintMessageX","NOTHING HAPPENS."],
-1990: 14 01     ; _back : [
+1990: 14 02     ; _back : [
 1992: 0E        ;    "MoveToLastRoom"],
-1993: 16 03     ; _swim : [
+1993: 16 04     ; _swim : [
 1995: 04 33 79  ;    "PrintMessageX","I DON'T KNOW HOW."],
-1998: 17 17     ; _on : [
+1998: 17 18     ; _on : [
 199A: 07 0C     ;    "SubScriptXAbortIfPass",[
 199C: 02 0E     ;        "AssertObjectXIsInPack","#LAMP_off",
 199E: 15 0E 00  ;        "MoveObjectXToRoomY","#LAMP_off","room_0",
@@ -3239,7 +3239,7 @@ GeneralCommandHandler:
 19A9: 02 0F     ;        "AssertObjectXIsInPack","#LAMP_on",
 19AB: 04 33 A5  ;        "PrintMessageX","YOUR LAMP IS NOW ON."],
 19AE: 04 33 B5  ;    "PrintMessageX","YOU HAVE NO SOURCE OF LIGHT."],
-19B1: 18 17     ; _off : [
+19B1: 18 18     ; _off : [
 19B3: 07 0C     ;    "SubScriptXAbortIfPass",[
 19B5: 02 0F     ;        "AssertObjectXIsInPack","#LAMP_on",
 19B7: 15 0F 00  ;        "MoveObjectXToRoomY","#LAMP_on","room_0",
@@ -3249,15 +3249,15 @@ GeneralCommandHandler:
 19C2: 02 0E     ;        "AssertObjectXIsInPack","#LAMP_off",
 19C4: 04 33 CA  ;        "PrintMessageX","YOUR LAMP IS NOW OFF."],
 19C7: 04 33 B5  ;    "PrintMessageX","YOU HAVE NO SOURCE OF LIGHT."],
-19CA: 19 01     ; _quit : [
+19CA: 19 02     ; _quit : [
 19CC: 09        ;    "Quit"],
-19CD: 1A 01     ; _score : [
+19CD: 1A 02     ; _score : [
 19CF: 08        ;    "PrintScore"],
-19D0: 1B 01     ; _inv : [
+19D0: 1B 02     ; _inv : [
 19D2: 0F        ;    "PrintInventory"],
-19D3: 1C 01     ; _look : [
+19D3: 1C 02     ; _look : [
 19D5: 10        ;    "PrintRoomDescription"],
-19D6: 28 46     ; _get : [
+19D6: 28 47     ; _get : [
 19D8: 07 06     ;    "SubScriptXAbortIfPass",[
 19DA: 11 07     ;        "AssertObjectXMatchesUserInput","#PLANT_A",
 19DC: 04 38 EF  ;        "PrintMessageX","THE PLANT HAS EXCEPTIONALLY DEEP ROOTS AND CANNOT BE PULLED FREE."],
@@ -3289,7 +3289,7 @@ GeneralCommandHandler:
 1A19: 18 21     ;        "MoveObjectXToCurrentRoom","#VASE_solo",
 1A1B: 12 12     ;        "GetObjectXFromRoom","#PILLOW"],
 1A1D: 16        ;    "GetUserInputObject"],
-1A1E: 21 16     ; _drop : [
+1A1E: 21 17     ; _drop : [
 1A20: 07 14     ;    "SubScriptXAbortIfPass",[
 1A22: 11 21     ;        "AssertObjectXMatchesUserInput","#VASE_solo",
 1A24: 15 21 00  ;        "MoveObjectXToRoomY","#VASE_solo","room_0",
@@ -3300,14 +3300,14 @@ GeneralCommandHandler:
 1A30: 18 15     ;        "MoveObjectXToCurrentRoom","#POTTERY",
 1A32: 04 3A BD  ;        "PrintMessageX","THE VASE DROPS WITH A DELICATE CRASH."],
 1A35: 17        ;    "DropUserInputObject"],
-1A36: 26 0D     ; _throw : [
+1A36: 26 0E     ; _throw : [
 1A38: 07 0B     ;    "SubScriptXAbortIfPass",[
 1A3A: 11 21     ;        "AssertObjectXMatchesUserInput","#VASE_solo",
 1A3C: 15 21 00  ;        "MoveObjectXToRoomY","#VASE_solo","room_0",
 1A3F: 18 15     ;        "MoveObjectXToCurrentRoom","#POTTERY",
 1A41: 04 3A F5  ;        "PrintMessageX","YOU HAVE TAKEN THE VASE AND HURLED IT DELICATELY TO THE GROUND."],
 1A44: 17        ;    "DropUserInputObject"],
-1A45: 29 35     ; _open : [
+1A45: 29 36     ; _open : [
 1A47: 07 1C     ;    "SubScriptXAbortIfPass",[
 1A49: 11 17     ;        "AssertObjectXMatchesUserInput","#SARCOPH_full",
 1A4B: 07 06     ;        "SubScriptXAbortIfPass",[
@@ -3330,15 +3330,15 @@ GeneralCommandHandler:
 1A73: 04 35 D0  ;            "PrintMessageX","THE SARCOPHAGUS CREAKS OPEN, REVEALING NOTHING INSIDE. IT PROMPTLY SNAPS SHUT AGAIN."],
 1A76: 04 36 0A  ;        "PrintMessageX","YOU DON'T HAVE ANYTHING STRONG ENOUGH TO OPEN THE SARCOPHAGUS."],
 1A79: 04 36 36  ;    "PrintMessageX","I DON'T KNOW HOW TO LOCK OR UNLOCK SUCH A THING."],
-1A7C: 23 03     ; _wave : [
+1A7C: 23 04     ; _wave : [
 1A7E: 04 33 6C  ;    "PrintMessageX","NOTHING HAPPENS."],
-1A81: 24 0D     ; _pour : [
+1A81: 24 0E     ; _pour : [
 1A83: 07 09     ;    "SubScriptXAbortIfPass",[
 1A85: 11 1C     ;        "AssertObjectXMatchesUserInput","#WATER",
 1A87: 15 1C 00  ;        "MoveObjectXToRoomY","#WATER","room_0",
 1A8A: 04 34 92  ;        "PrintMessageX","YOUR BOTTLE IS EMPTY AND THE GROUND IS WET."],
 1A8D: 04 34 B1  ;    "PrintMessageX","YOU CAN'T POUR THAT."],
-1A90: 25 11     ; _rub : [
+1A90: 25 12     ; _rub : [
 1A92: 07 06     ;    "SubScriptXAbortIfPass",[
 1A94: 11 0E     ;        "AssertObjectXMatchesUserInput","#LAMP_off",
 1A96: 04 34 C1  ;        "PrintMessageX","RUBBING THE ELECTRIC LAMP IS NOT PARTICULARLY REWARDING. ANYWAY, NOTHING EXCITING HAPPENS."],
@@ -3346,7 +3346,7 @@ GeneralCommandHandler:
 1A9B: 11 0F     ;        "AssertObjectXMatchesUserInput","#LAMP_on",
 1A9D: 04 34 C1  ;        "PrintMessageX","RUBBING THE ELECTRIC LAMP IS NOT PARTICULARLY REWARDING. ANYWAY, NOTHING EXCITING HAPPENS."],
 1AA0: 04 34 FF  ;    "PrintMessageX","PECULIAR. NOTHING UNEXPECTED HAPPENS."],
-1AA3: 27 11     ; _fill : [
+1AA3: 27 12     ; _fill : [
 1AA5: 07 06     ;    "SubScriptXAbortIfPass",[
 1AA7: 11 1B     ;        "AssertObjectXMatchesUserInput","#BOTTLE",
 1AA9: 04 35 1A  ;        "PrintMessageX","THERE IS NOTHING HERE WITH WHICH TO FILL THE BOTTLE."],
@@ -3354,7 +3354,7 @@ GeneralCommandHandler:
 1AAE: 11 21     ;        "AssertObjectXMatchesUserInput","#VASE_solo",
 1AB0: 04 34 82  ;        "PrintMessageX","DON'T BE RIDICULOUS!"],
 1AB3: 04 35 51  ;    "PrintMessageX","YOU CAN'T FILL THAT."],
-1AB6: 2C 2C     ; _attack : [
+1AB6: 2C 2D     ; _attack : [
 1AB8: 07 09     ;    "SubScriptXAbortIfPass",[
 1ABA: 11 13     ;        "AssertObjectXMatchesUserInput","#BIRD",
 1ABC: 15 13 00  ;        "MoveObjectXToRoomY","#BIRD","room_0",
@@ -3373,9 +3373,9 @@ GeneralCommandHandler:
 1ADC: 11 0B     ;        "AssertObjectXMatchesUserInput","#SERPENT",
 1ADE: 04 36 A1  ;        "PrintMessageX","ATTACKING THE SERPENT BOTH DOESN'T WORK AND IS VERY DANGEROUS."],
 1AE1: 04 36 CD  ;    "PrintMessageX","YOU CAN'T BE SERIOUS!"],
-1AE4: 30 03     ; _break : [
+1AE4: 30 04     ; _break : [
 1AE6: 04 36 DD  ;    "PrintMessageX","IT IS BEYOND YOUR POWER TO DO THAT."],
-1AE9: 2E 22     ; _eat : [
+1AE9: 2E 23     ; _eat : [
 1AEB: 07 09     ;    "SubScriptXAbortIfPass",[
 1AED: 11 1A     ;        "AssertObjectXMatchesUserInput","#FOOD",
 1AEF: 15 1A 00  ;        "MoveObjectXToRoomY","#FOOD","room_0",
@@ -3390,7 +3390,7 @@ GeneralCommandHandler:
 1B05: 11 14     ;        "AssertObjectXMatchesUserInput","#BIRD_boxed",
 1B07: 04 37 0C  ;        "PrintMessageX","I THINK I JUST LOST MY APPETITE."],
 1B0A: 04 34 82  ;    "PrintMessageX","DON'T BE RIDICULOUS!"],
-1B0D: 2F 14     ; _drink : [
+1B0D: 2F 15     ; _drink : [
 1B0F: 07 09     ;    "SubScriptXAbortIfPass",[
 1B11: 11 1C     ;        "AssertObjectXMatchesUserInput","#WATER",
 1B13: 15 1C 00  ;        "MoveObjectXToRoomY","#WATER","room_0",
@@ -3399,7 +3399,7 @@ GeneralCommandHandler:
 1B1B: 11 1E     ;        "AssertObjectXMatchesUserInput","#stream_56",
 1B1D: 04 37 24  ;        "PrintMessageX","YOU HAVE TAKEN A DRINK FROM THE STREAM. THE WATER TASTES STRONGLY OF MINERALS, BUT IS NOT UNPLEASANT. IT IS EXTREMELY COLD."],
 1B20: 04 36 CD  ;    "PrintMessageX","YOU CAN'T BE SERIOUS!"],
-1B23: 2D 37     ; _feed : [
+1B23: 2D 38     ; _feed : [
 1B25: 07 06     ;    "SubScriptXAbortIfPass",[
 1B27: 11 13     ;        "AssertObjectXMatchesUserInput","#BIRD",
 1B29: 04 37 78  ;        "PrintMessageX","IT'S NOT HUNGRY. BESIDES, YOU HAVE NO BIRD SEED."],
@@ -3423,11 +3423,11 @@ GeneralCommandHandler:
 1B54: 11 0D     ;        "AssertObjectXMatchesUserInput","#-13-",
 1B56: 04 37 E2  ;        "PrintMessageX","THERE IS NOTHING HERE IT WANTS TO EAT - EXCEPT PERHAPS YOU."],
 1B59: 04 34 82  ;    "PrintMessageX","DON'T BE RIDICULOUS!"],
-1B5C: 39 01     ; _plugh : [
+1B5C: 39 02     ; _plugh : [
 1B5E: 1D        ;    "JumpToTopOfGameLoop"],
-1B5F: 3A 01     ; _load : [
+1B5F: 3A 02     ; _load : [
 1B61: 1B        ;    "LoadGame"],
-1B62: 3B 01     ; _save : [
+1B62: 3B 02     ; _save : [
 1B64: 1C        ;    "SaveGame"]
 1B65: 00
 

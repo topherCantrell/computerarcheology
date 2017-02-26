@@ -10,11 +10,18 @@ $(function() {
     	BinaryData.write(addr,value);
     }
     
-    function read(addr) {        
+    function read(addr) {   
+    	
         if(addr<0x0600 || addr>0x3F20) {
         	// Oops! Not in our address space
             throw "Unhandled read "+addr;
         }        
+        
+        if(addr===0x0F1B) {
+    		// This is the game's endless-loop after death and such
+    		CoCoText.startEndlessLoop();    		
+    	}
+        
         // RAM where the game is loaded
         return BinaryData.read(addr); 
     }
