@@ -370,12 +370,23 @@ else if the player is in 99 then print EXIT TO LEFT" and so on for each room on 
 
 = Play Me! =
 
-I used the [https://github.com/maly/6809js 6809.js emulator] to run the actual Raaka Tu code in the window below. Click in the area and type a command.
+I used the [https://github.com/maly/6809js 6809.js emulator] to run the actual Raaka Tu code in the window below. Click in the green text area below and type a command.
 
 {{{html
 <script src="/js/BinaryData.js"></script>
 <script src="/js/6809.js"></script>
 <script src="/CoCo/CoCoText.js"></script>
 <script src="/CoCo/RaakaTu/raakatu.js"></script>
+PC keys map to CoCo keys and game functions as shown:
+</p>
+<table class="caTable">
+<tr><th>PC Key</th><th>CoCo Key</th><th>Function</th></tr>
+<tr><td>left-arrow</td><td>shift-left-arrow</td><td>Move cursor left</td></tr>
+<tr><td>right-arrow</td><td>shift-right-arrow</td><td>Move cursor right</td></tr>
+<tr><td>delete</td><td>right-arrow</td><td>Delete character right of cursor</td></tr>
+<tr><td>backspace</td><td>left-arrow</td><td>Delete character left of cursor</td></tr>
+<tr><td>escape</td><td>clear</td><td>Delete the line</td></tr>
+</table>
+</p>
 <textarea readonly id="cocoConsole" rows="16" style="background-color: #00FF01; color: black;font-family: monospace;font-size:12px;width:33ch;" ></textarea>
 }}}

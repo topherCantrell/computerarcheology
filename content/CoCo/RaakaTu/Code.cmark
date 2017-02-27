@@ -554,17 +554,17 @@ GetInputLine: ; ==
 0A60: 8E 05 E0            LDX     #$05E0      ; Start of bottom row
 0A63: BD 0B 23            JSR     $0B23       ;  Slide bottom row to right after cursor and draw cursor
 0A66: BD 0B 2B            JSR     $0B2B       ;{GetKey}  Get a key from the keyboard
-0A69: 81 15               CMPA    #$15        ;
-0A6B: 27 20               BEQ     $A8D        ;  Swap cursor and character to left
-0A6D: 81 5D               CMPA    #$5D        ; ']' ?
-0A6F: 27 2F               BEQ     $AA0        ;  Swap cursor and character to right
-0A71: 81 09               CMPA    #$09        ; Backspace
-0A73: 27 3E               BEQ     $AB3        ;  Go handle backspace
-0A75: 81 0D               CMPA    #$0D        ; CR?
+0A69: 81 15               CMPA    #$15        ; SHIFT-LEFT ARROW ? (true left arrow)
+0A6B: 27 20               BEQ     $A8D        ; Yes ... swap cursor and character to left
+0A6D: 81 5D               CMPA    #$5D        ; SHIFT-RIGHT ARROW ? (true right arrow)
+0A6F: 27 2F               BEQ     $AA0        ; Yes ... swap cursor and character to right
+0A71: 81 09               CMPA    #$09        ; RIGHT-ARROW ? (backspace)
+0A73: 27 3E               BEQ     $AB3        ;  Go handle delete
+0A75: 81 0D               CMPA    #$0D        ; CR ?
 0A77: 27 4F               BEQ     $AC8        ;  Handle it and out
-0A79: 81 0C               CMPA    #$0C        ; BREAK?
+0A79: 81 0C               CMPA    #$0C        ; CLEAR ?
 0A7B: 27 4F               BEQ     $ACC        ;  Yes ... clear the row
-0A7D: 81 08               CMPA    #$08        ; Backspace?
+0A7D: 81 08               CMPA    #$08        ; LEFT-ARROW ? (backspace)
 0A7F: 27 3B               BEQ     $ABC        ;  Yes go handle
 0A81: 8C 05 FF            CMPX    #$05FF      ; At the end of the screen?
 0A84: 27 E0               BEQ     $A66        ;  Yes ... ignore and get another

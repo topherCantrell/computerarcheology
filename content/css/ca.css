@@ -109,3 +109,8 @@ body {
 #siteTree .expanded {
     background-image: url(/img/minusbox.gif);
 }
+
+.caTable, .caTable th, .caTable td {
+	border : 1px solid black;
+	padding : 4px;
+}

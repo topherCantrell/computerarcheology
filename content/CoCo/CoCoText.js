@@ -20,6 +20,7 @@ var CoCoText = (function() {
 	
 	var inputKey;
 	var running;
+	var noInput;
 	var endlessLoop = false;
 	var tapepos;
 	
@@ -180,6 +181,16 @@ var CoCoText = (function() {
     	}
     	my.console.val(t);
     }
+    
+    my.pause = function() {
+        running = false;
+        noInput = true;
+    };
+    
+    my.unpause = function() {
+        running = true;
+        noInput = false;
+    };
 	
 	my.init = function(readFN, writeFN, onKeyPress, resetVector) {
 		my.readFN = readFN;
@@ -193,8 +204,14 @@ var CoCoText = (function() {
 		updateScreen();
 		
 		my.console.on("keydown",function(evt) {	
-			if(!endlessLoop) {
-				inputKey = evt.keyCode;
+			if(!endlessLoop && !noInput) {
+			    if(evt.keyCode===16) return; // Lone shift key
+			    var c = evt.keyCode;			    
+			    if(c===37)      c=0x15; // Left on PC becomes SHIFT-LEFT on coco
+			    else if(c===39) c=0x5D; // Right on PC becomes SHIFT-RIGHT on coco
+			    else if(c===46) c=0x09; // Del on PC becomes RIGHT on coco
+			    else if(c===27) c=0x0C; // ESC on PC becomes CLEAR on coco
+				inputKey = c;
 				my.onKeyPress();
 			}
 			// Consume the event
@@ -224,7 +241,7 @@ var CoCoText = (function() {
 		} else if(value===0x0D) {			
 			do {
 				pureRAM[cursor++] = 0x60;
-			} while((cursor%32)!=0);
+			} while((cursor%32)!==0);
 		} else {
 			if(value<0x20) return; // No control characters
 			if(value<128) {
