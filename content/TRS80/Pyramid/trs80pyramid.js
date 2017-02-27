@@ -20,32 +20,16 @@ window.onload = function() {
 		
 	console.on("keydown",function(evt) {		
 		inputKey = evt.keyCode;
-		//if(!endlessloop) {
-		//	runTillInput();
-		//}
-		//return false;
+		if(!endlessloop) {
+			runTillInput();
+		}
+		return false;
 	});
 
 	BinaryData.loadDataCacheFromURL("/TRS80/Pyramid/Code.html",function() {		
 		
 		var machine = {		
 			mem_read : function(addr) {
-				
-				// Endless loops in code
-				//if(floor===1 && addr===0x4A48) {
-				//	endlessloop = true;
-				//	running = false;
-				//	return 0;					
-				//}
-				//if(floor===2 && addr===0x4A97) {
-				//	endlessloop = true;
-				//	running = false;
-				//	return 0;					
-				//}
-				
-				if(addr>=0x4200 &&addr<0x8000) {
-					return BinaryData.read(addr);
-				}
 									
 				// Reset (starutp) comes here. Jump to the program.
 				// JP $42E9
@@ -53,17 +37,17 @@ window.onload = function() {
 				if(addr===1) return 0x00;
 				if(addr===2) return 0x42;
 	
-				// Key input routine.
+				// Key input routine (the game reads the keyboard manually)
 				// The first IN halts the CPU until a key is ready.
 				// The second IN returns the actual key.
-				// 002B: DB 00  IN A,($00)
-				// 002D: DB 01  IN A,($01)
-				// 002F: C9     RET
-				//if(addr===0x2B) return 0xDB;
-				//if(addr===0x2C) return 0x00;
-				//if(addr===0x2D) return 0xDB;
-				//if(addr===0x2E) return 0x01;
-				//if(addr===0x2F) return 0xC9;
+				// 44E9: DB 00  IN A,($00)   ; Trigger halt-till-key
+                // 44EB: DB 01  IN A,($01)   ; Return last key
+                // 44ED: C9     RET
+				if(addr===0x44E9) return 0xDB;
+				if(addr===0x44EA) return 0x00;
+				if(addr===0x44EB) return 0xDB;
+				if(addr===0x44EC) return 0x01;
+				if(addr===0x44ED) return 0xC9;
 	
 				// Print routine.
 				// 0010: D3 00  OUT ($00),A
@@ -72,15 +56,23 @@ window.onload = function() {
 				if(addr===0x11) return 0x00;
 				if(addr===0x12) return 0xC9;
 				
-				// Tape operation (loading 2nd floor)
-				//if(addr===0x0293) {
-				//	BinaryData.loadDataCacheFromURL("/TRS80/HauntedHouse/Code2.html",function() {
-				//		comp.reset();
-				//		runTillInput();
-				//	});
-				//	running = false;
-				//	return 0;
-				//}				
+				if(addr===0x558F) {
+				    // This is the endless loop in the game
+				    endlessloop = true;
+				    running = false;
+				    return 0x00; // NOP
+				}
+				
+				if(addr===0x4711) {
+				    // We hijacked the input spin-loop. We need
+				    // to simulate the random number counter.
+		            return Math.floor(Math.random()*256);
+		        }
+				
+				if(addr>=0x4200 &&addr<0x8000) {
+                    return BinaryData.read(addr);
+                }
+								
 				throw "Unknown memory read "+addr;
 			},
 			mem_write : function(addr,value) {
@@ -92,13 +84,13 @@ window.onload = function() {
 			},
 			io_read : function(addr) {
 				addr = addr & 0xFF;
-				//if(addr===0) {
-				//	running = false;
-				//	return;
-				//}
-				//if(addr===1) {
-				//	return inputKey;
-				//}
+				if(addr===0) {
+					running = false;
+					return;
+				}
+				if(addr===1) {
+				    return inputKey;
+				}
 				throw "Unknown io read "+addr;
 			},
 			io_write : function(addr,value) {
@@ -122,13 +114,9 @@ window.onload = function() {
 				
 		comp = new Z80(machine);
 		
-		for(var x=0;x<2000;++x) {
-			comp.run_instruction();
-		}
-		
-		//runTillInput();
+		runTillInput();
 	
 	});
 		
-}
+};
 

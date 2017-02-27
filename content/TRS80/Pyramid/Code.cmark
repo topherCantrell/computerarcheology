@@ -2627,7 +2627,8 @@ Start: ;=
 53E0: 77          LD    (HL),A             
 53E1: 23          INC   HL                 
 53E2: 73          LD    (HL),E             
-53E3: C3 A6 42    JP    $42A6              
+53E3: C3 A6 42    JP    $42A6         
+     
 53E6: 3A E3 4F    LD    A,($4FE3)          
 53E9: 3C          INC   A                  
 53EA: 32 E3 4F    LD    ($4FE3),A          
@@ -2838,7 +2839,9 @@ Start: ;=
 5588: 4E          LD    C,(HL)             
 5589: 53          LD    D,E                
 558A: 2E 00       LD    L,$00              
-558C: CD 6A 54    CALL  $546A              
+558C: CD 6A 54    CALL  $546A
+  
+; Endless loop            
 558F: C3 8F 55    JP    $558F              
         
 5592: 21 F4 7E    LD    HL,$7EF4           
