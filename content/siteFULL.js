@@ -316,14 +316,16 @@
 			     {"mark": "RaakaTu.mark", "out": "index.html"},
 				 {"address": "RAMUse.mark", "out": "RAMUse.html", "nav":"RAM Use"},
 				 {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
-				 {"copy": "RaakaTu.jpg"}
+				 {"copy": "RaakaTu.jpg"},
+				 {"copy": "raakatu.js"}
                  ]
              },
              {"dir": "Bedlam", "nav": "Bedlam", "entries" : [
                  {"mark": "Bedlam.mark", "out": "index.html"},
                  {"address": "RAMUse.mark", "out": "RAMUse.html", "nav":"RAM Use"},
                  {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
-                 {"copy": "Bedlam.jpg"}
+                 {"copy": "Bedlam.jpg"},
+                 {"copy": "bedlam.js"}
                  ]
              },
              {"dir": "Daggorath", "nav": "Daggorath", "entries" : [

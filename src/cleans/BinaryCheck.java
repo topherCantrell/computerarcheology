@@ -12,11 +12,11 @@ public class BinaryCheck {
 
     public static void main(String[] args) throws Exception {
 
-        BinaryFiles data = new BinaryFiles("0600~content/CoCo/Pyramid/pyramid.bin");        
-        Path p = Paths.get("content/CoCo/Pyramid/Code.cmark");
+        BinaryFiles data = new BinaryFiles("0600~content/CoCo/Bedlam/Bedlam.bin");        
+        Path p = Paths.get("content/CoCo/Bedlam/Code.cmark");
         CodeFile tabs = new CodeFile(p);
         int start = 0x0600;
-        int end = 0x0601;
+        int end = 0x3F01;
         
         for(CodeLine line : tabs.code) {
             if(line.data==null || line.data.size()==0) continue;

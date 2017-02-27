@@ -23,6 +23,8 @@ and wearing a headdress.
 }}}
 = Tour Guide =
 
+Play the real code running in a CoCo emulator at the bottom of the page. [#PlayMe Play it now!]
+
 The code is practically a virtual-machine for the game written in adventure-language. The [Code.html#MainLoop Main Loop] decodes the complex
 user input with nouns, verbs, and prepositions.
 
@@ -364,4 +366,16 @@ else if the player is in 99 then print EXIT TO LEFT" and so on for each room on 
 2FC7:               03 99 1D                                    ;               Command_03_IS_OBJECT_AT_LOCATION object=1D(USER) location=99
 2FCA:               87                                          ;               CommonCommand_87
 2FCB:         9F 23                                             ;         Command_03_IS_OBJECT_AT_LOCATION object=23(Guards) location=9F
+}}}
+
+= Play Me! =
+
+I used the [https://github.com/maly/6809js 6809.js emulator] to run the actual Raaka Tu code in the window below. Click in the area and type a command.
+
+{{{html
+<script src="/js/BinaryData.js"></script>
+<script src="/js/6809.js"></script>
+<script src="/CoCo/CoCoText.js"></script>
+<script src="/CoCo/RaakaTu/raakatu.js"></script>
+<textarea readonly id="cocoConsole" rows="16" style="background-color: #00FF01; color: black;font-family: monospace;font-size:12px;width:33ch;" ></textarea>
 }}}

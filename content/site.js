@@ -38,6 +38,22 @@
                  {"copy": "ROOMS.js"},
                  {"copy": "SCRIPTER.js"}
                  ]
+             },
+             {"dir": "RaakaTu", "nav": "Raaka Tu", "entries" : [
+			     {"mark": "RaakaTu.mark", "out": "index.html"},
+				 {"address": "RAMUse.mark", "out": "RAMUse.html", "nav":"RAM Use"},
+				 {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
+				 {"copy": "RaakaTu.jpg"},
+				 {"copy": "raakatu.js"}
+                 ]
+             },
+             {"dir": "Bedlam", "nav": "Bedlam", "entries" : [
+                 {"mark": "Bedlam.mark", "out": "index.html"},
+                 {"address": "RAMUse.mark", "out": "RAMUse.html", "nav":"RAM Use"},
+                 {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
+                 {"copy": "Bedlam.jpg"},
+                 {"copy": "bedlam.js"}
+                 ]
              }
              ]           
          }

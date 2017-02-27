@@ -19,6 +19,8 @@ the questionnaire until you try to escape from Bedlam." - From the game manual
 }}}
 = Tour Guide =
 
+Play the real code running in a CoCo emulator at the bottom of the page. [#PlayMe Play it now!]
+
 The code is practically a virtual-machine for the game written in adventure-language. The [Code.html#MainLoop Main Loop] decodes the complex
 user input with nouns, verbs, adjectives, and prepositions.
 
@@ -174,3 +176,16 @@ If you manage to get into the electro-shock room with 3A in your pack, and that 
 let the 3A random-movement take you back out of the room (hopefully -- it may take a few tries). Since the player object (13) 
 executes before the nurse object (2D) the random movement will fire before the nurse's script can shock you. You then use 
 the PLUGH command to take 3A out of your pack. The PLUGH command goes all the way back to Colossal Cave Adventure.
+
+= Play Me! =
+
+I used the [https://github.com/maly/6809js 6809.js emulator] to run the actual Bedlam code in the window below. Click in the area and press any key to begin.
+
+{{{html
+<script src="/js/BinaryData.js"></script>
+<script src="/js/6809.js"></script>
+<script src="/CoCo/CoCoText.js"></script>
+<script src="/CoCo/Bedlam/bedlam.js"></script>
+<textarea readonly id="cocoConsole" rows="16" style="background-color: #00FF01; color: black;font-family: monospace;font-size:12px;width:33ch;" ></textarea>
+</div>
+}}}
