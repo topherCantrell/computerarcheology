@@ -587,17 +587,17 @@ GetInputLine: ; =
 0AA1: 8E 05 E0            LDX     #$05E0      ; Start of bottom row
 0AA4: BD 0B 64            JSR     $0B64       ; Slide bottom row to right after cursor and draw cursor
 0AA7: BD 0B 6C            JSR     $0B6C       ;{GetKey} Get a key from the keyboard
-0AAA: 81 15               CMPA    #$15        ;
+0AAA: 81 15               CMPA    #$15        ; SHIFT-LEFT ARROW ? (true left arrow)
 0AAC: 27 20               BEQ     $ACE        ; Swap cursor and character to left
-0AAE: 81 5D               CMPA    #$5D        ; ']' ?
+0AAE: 81 5D               CMPA    #$5D        ;  SHIFT-RIGHT ARROW ? (true right arrow)
 0AB0: 27 2F               BEQ     $AE1        ; Swap cursor and character to right
 0AB2: 81 09               CMPA    #$09        ; Backspace
 0AB4: 27 3E               BEQ     $AF4        ; Go handle backspace
 0AB6: 81 0D               CMPA    #$0D        ; CR?
 0AB8: 27 4F               BEQ     $B09        ; Handle it and out
-0ABA: 81 0C               CMPA    #$0C        ; BREAK?
+0ABA: 81 0C               CMPA    #$0C        ; CLEAR?
 0ABC: 27 4F               BEQ     $B0D        ; Yes ... clear the row
-0ABE: 81 08               CMPA    #$08        ; Backspace?
+0ABE: 81 08               CMPA    #$08        ; LEFT-ARROW ? (backspace)
 0AC0: 27 3B               BEQ     $AFD        ; Yes go handle
 0AC2: 8C 05 FF            CMPX    #$05FF      ; At the end of the screen?
 0AC5: 27 E0               BEQ     $AA7        ; Yes ... ignore and get another
@@ -1804,7 +1804,8 @@ CommandJumpTable: ; =
 13B3: 00  ; List is the length. List is pointed to by 13B2 which is ignored
 
 ; Random number seed
-13B4: 12 23 44 1D     27 4D 2D 13    
+13B4: 12 23 44 1D     
+13B8: 27 4D 2D 13    
 
 FeedbackPrompts:
 ; "?VERB?"      

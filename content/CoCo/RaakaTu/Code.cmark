@@ -1654,7 +1654,7 @@ UnpackBytes: ; ==
 12A1: 00 00 00 00 00 00 00  ; Temporaries for decompression algorithm above            
 
 ; Generate random number
-12A8: 34 14               PSHS    X,B         ; Random number generator. Uses seed at 13B8.
+12A8: 34 14               PSHS    X,B         ; Random number generator. Uses seed at 1338.
 12AA: 8E 13 38            LDX     #$1338      ;
 12AD: C6 17               LDB     #$17        ;
 12AF: A6 84               LDA     ,X          ;
@@ -1735,7 +1735,8 @@ CommandJumpTable: ; ==
 1333: 00  ; List is the length. List is pointed to by 1331 which is ignored
 
 ; Random number seed
-1334: 12 23 44  1D     27 4D  2D 13  
+1334: 12 23 44 1D 
+1338: 27 4D 2D 13  
        
 FeedbackPrompts: ; ==
 ; "?VERB?"  

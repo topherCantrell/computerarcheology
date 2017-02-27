@@ -10,12 +10,20 @@ $(function() {
     }
     
     function read(addr) {   
+                
+        if(addr===0x12A8) {
+            // The wait-for-key calls this routine to roll the random number.
+            // Since we are eating that spin-wait we'll provide true
+            // random numbers here.
+            write(0x1338,Math.floor(Math.random()*256));
+            CPU6809.set("A",Math.floor(Math.random()*256));        
+            return 0x39; // RTS
+        }
         
         if(addr===0x09D6) {
             // This is the long delay loop for flashing an error hint.
             // We want that wait to happen by the browser ... not in a 
             // spin within the code.
-            // TODO need to halt input to the text field here
             CoCoText.pause();
             setTimeout(function() {
                 CoCoText.unpause();
