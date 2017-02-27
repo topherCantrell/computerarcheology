@@ -2,33 +2,43 @@
 $(function() {
 	
     function write(addr,value) {        
-    	if(addr<0x0600 || addr>0x3F20) {
-        	// Oops! Not in our address space
-            throw "Unhandled write "+addr;
-        }
-    	// RAM where the game is loaded
-    	BinaryData.write(addr,value);
+    	if(addr>=0x0600 && addr<0x3F21) {
+    		// RAM where the game is loaded
+        	BinaryData.write(addr,value);
+        	return true;
+        }    	
     }
     
     function read(addr) {   
     	
-        if(addr<0x0600 || addr>0x3F20) {
-        	// Oops! Not in our address space
-            throw "Unhandled read "+addr;
-        }        
-        
-        if(addr===0x0F1B) {
+    	// The game uses the input-loop to increment 1EB as a
+    	// random number. Since we aren't allowing the
+    	// input loop to spin, we'll return a random number here.
+    	if(addr===0x01EB) {
+    		return Math.floor(Math.random()*256);
+    	}
+    	
+    	// Make the tape appear for tape operations
+    	if(addr===0x0EBB || addr===0x0E81) {
+    		$("#cocoTapeArea").show();
+    	}
+    	
+    	if(addr===0x0F1B) {
     		// This is the game's endless-loop after death and such
     		CoCoText.startEndlessLoop();    		
     	}
+    	
+        if(addr>=0x0600 && addr<0x3F21) {
+        	// RAM where the game is loaded
+            return BinaryData.read(addr); 
+        }        
         
-        // RAM where the game is loaded
-        return BinaryData.read(addr); 
+        return undefined;
+        
     }
       
     BinaryData.loadDataCacheFromURL("/CoCo/Pyramid/Code.html",function() { 
-    	var console = $("#cocoConsole");
-    	CoCoText.init(read,write,function() {CoCoText.runUntilWaitKey();}, 0x0600,console);
+    	CoCoText.init(read,write,function() {CoCoText.runUntilWaitKey();}, 0x0600);
     	CoCoText.runUntilWaitKey();    	  
     });    
     

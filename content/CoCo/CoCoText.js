@@ -1,11 +1,27 @@
 
 var CoCoText = (function() {
 	
+	// [A004] Start cassette and read leader
+	// [A006] Read block
+	//        7E, 7F : Destination
+	//        7C     : Block type
+	//        7D     : Length
+	//        Return ZF set if OK
+	//
+	// [A00C] Start cassette and write leader
+	// [A008] Write block
+	//        7E, 7F : Source
+	//        7C     : Block type
+	//        7D     : Length
+	//
+	// FF21 - write 34 to turn motor off
+	
 	var my = {};
 	
 	var inputKey;
 	var running;
 	var endlessLoop = false;
+	var tapepos;
 	
 	var pureRAM = [];
 	
@@ -19,6 +35,10 @@ var CoCoText = (function() {
 	              "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
 	
 	function write(addr,value) {
+		
+		// Let the system have it first in case it overrides something.
+		var ret = my.writeFN(addr,value);
+		if(ret) return;
         
         if(addr<0x0600) {
         	pureRAM[addr] = value;
@@ -33,13 +53,24 @@ var CoCoText = (function() {
         }
         
         if(addr>=0xF000) {
-        	throw "Unimplemented high ROM write "+addr;
+        	return;
+        	//throw "Unimplemented high ROM write "+addr;
         }
                         
-        my.writeFN(addr,value);
+        throw "Unimplemented write "+addr;
     }
     
-    function read(addr) {        
+    function read(addr) {     
+    	
+    	var src;
+    	var cnt;
+    	var tape;
+    	var v;
+    	
+    	// Try the system first (in case it overrides something)
+    	var ret = my.readFN(addr);
+    	if(ret!==undefined) return ret;
+    	
         // 6809 reset vector (point to game code at 0600)
         if(addr===0xFFFE) return my.resetVector>>8;
         if(addr===0xFFFF) return my.resetVector&0xFF;
@@ -53,6 +84,52 @@ var CoCoText = (function() {
         // routine. We'll intercept C100 below.
         if(addr===0xA000) return 0xC0;
         if(addr===0xA001) return 0x00;
+        
+        // Tape operations
+        if(addr===0xA004) return 0xD0;
+        if(addr===0xA005) return 0x04;
+        if(addr===0xA006) return 0xD0;
+        if(addr===0xA007) return 0x06;
+        if(addr===0xA00C) return 0xD0;
+        if(addr===0xA00D) return 0x0C;
+        if(addr===0xA008) return 0xD0;
+        if(addr===0xA009) return 0x08;
+        
+        if(addr===0xD004 || addr===0xD00C) { // Read/write leader  
+        	if(addr===0xD00C) {
+        		$("#cocoTape").val(""); // Writing? Clear the tape first.
+        	}     	
+        	tapepos = 0;
+        	return 0x39; // RTS
+        }
+        if(addr===0xD006) { // Read block
+        	src = (pureRAM[0x7E]<<8) | pureRAM[0x7F];
+        	cnt = pureRAM[0x7D];        	
+        	tape = $("#cocoTape");
+        	var dat = tape.val();
+        	while(cnt>0) {
+        		v = parseInt(dat.substring(tapepos,tapepos+2),16);
+        		tapepos = tapepos + 2;
+        		write(src++,v);
+        		--cnt;
+        	}
+        	CPU6809.set("X",src);
+        	CPU6809.set("FLAGS",CPU6809.status().flags | 4); // Set the Z flag (no error)
+        	return 0x39;
+        }        
+        if(addr===0xD008) { // Write block
+        	src = (pureRAM[0x7E]<<8) | pureRAM[0x7F];
+        	cnt = pureRAM[0x7D];
+        	tape = $("#cocoTape");
+        	while(cnt>0) {
+        		v = read(src++).toString(16).toUpperCase();
+        		if(v.length<2) v="0"+v;        		
+        		tape.val(tape.val()+v);
+        		--cnt;
+        	}
+        	CPU6809.set("X",src);
+        	return 0x39;
+        }
         
         // Trying to read the code at the character-output routine.
         // Instead we'll print A on the screen and return a 0x39
@@ -69,7 +146,7 @@ var CoCoText = (function() {
         	if(inputKey) {
         		CPU6809.set("A",inputKey);
         		inputKey = null;
-        		CPU6809.set("CC",CPU6809.status().cc & (0xFF-4)); // clear Z flag
+        		CPU6809.set("FLAGS",CPU6809.status().flags & (0xFF-4)); // clear Z flag
         		return 0x39;
         	}
         	running=false;
@@ -88,7 +165,7 @@ var CoCoText = (function() {
         	return pureRAM[addr];
         }
         
-        return my.readFN(addr);
+        throw "Unimplemented read "+addr;
     }
     
     function updateScreen() {
@@ -104,18 +181,18 @@ var CoCoText = (function() {
     	my.console.val(t);
     }
 	
-	my.init = function(readFN, writeFN, onKeyPress, resetVector, console) {
+	my.init = function(readFN, writeFN, onKeyPress, resetVector) {
 		my.readFN = readFN;
 		my.writeFN = writeFN;
 		my.resetVector = resetVector;	
-		my.console = console;
+		my.console = $("#cocoConsole");
 		my.onKeyPress = onKeyPress;
 		
 		for(var x=0;x<0600;++x) pureRAM.push(0);		
 		
 		updateScreen();
 		
-		console.on("keydown",function(evt) {	
+		my.console.on("keydown",function(evt) {	
 			if(!endlessLoop) {
 				inputKey = evt.keyCode;
 				my.onKeyPress();

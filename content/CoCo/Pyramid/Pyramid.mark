@@ -20,7 +20,7 @@ awaits just a step away." - From the game manual introduction
 }}}
 = Tour Guide =
 
-The JavaScript port of this game is running at the bottom of the page. [#PlayMe Play it now!]
+Play the real code running in a CoCo emulator at the bottom of the page. [#PlayMe Play it now!]
 
 Check out a [#TRS80Nugget snippet of the original source code] caught in an uninitialized buffer.
 
@@ -376,29 +376,11 @@ In August 2007 my article on
 [http://www.cc-webshop.com/Circuit-Cellar-Issue-205-August-2007-PDF-FI-2007-205.htm Text Adventure Gaming] 
 was published in Circuit Cellar magazine. I ported the game to play on a Propeller microcontroller.
 
-== JavaScript Port ==
+=== Play Me! ===
 
-I made a JavaScript version of the game that you can play on this page below. It is a faithful reproduction of the game's scripting engine, 
-and it uses the game's scripts as-is.
+I used the [https://github.com/maly/6809js 6809.js emulator] to run the actual Pyramid code in the window below. Click in the area and press any key to begin.
 
-A few features in the port:
-* SAVE produces a line of text you must copy/paste on your own. LOAD takes that line of text.
-* You can enter a sequence of commands separated by ";". For instance "n;get lamp;on;d".
-* The random number generator produces the same sequence every game allowing for scripted walk-throughs.
-
-=== JavaScript Source ===
-You can view the source from the repository here: 
-* [PARSE.js] Words and parsing routine
-* [SCRIPTER.js] Scripting engine
-* [ROOMS.js] Specific room scripts
-* [DEFAULT.js] Default word handling
-* [OBJS.js] The objects of the game
-* [GAME.js] Game logic
-* [MAIN.js] Wrapper to pick between NODEJS and BROWSER environments
-
-The files are broken out into separate modules for easier maintenance. 
-
-=== Emulation ===
+The emulator supports tape operations (see the tape text-area below the game window).
 
 {{{html
 <script src="/js/BinaryData.js"></script>
@@ -406,30 +388,22 @@ The files are broken out into separate modules for easier maintenance.
 <script src="/CoCo/CoCoText.js"></script>
 <script src="/CoCo/Pyramid/pyramid.js"></script>
 <textarea readonly id="cocoConsole" rows="16" style="background-color: #00FF01; color: black;font-family: monospace;font-size:12px;width:33ch;" ></textarea>
-}}}
 
-=== Play Me! ===
-{{{html
-    <div>
-        <textarea class="cocoScreen" id="con_stdout" readonly style="height: 280px;cursor: text !important"></textarea>
-        <p>
-        <label for="stdin">Enter command :<br><input id="con_stdin" style="width: 32ch;"
-           onkeypress="doBrowserInput(event);"/></label>
-           <br>
-           (grab the bottom right corner of the game window to resize it)
-    </div>
-    <script src="PARSE.js" type="text/javascript"></script>
-    <script src="SCRIPTER.js" type="text/javascript"></script>
-    <script src="ROOMS.js" type="text/javascript"></script>
-    <script src="OBJS.js" type="text/javascript"></script>
-    <script src="DEFAULT.js" type="text/javascript"></script>
-    <script src="GAME.js" type="text/javascript"></script>
-    <script src="MAIN.js" type="text/javascript"></script>
+<div id="cocoTapeArea">
+The text area below is the virtual cassette tape. Instead of writing to tape, the emulator writes data as two-digit hex
+values to this text area.</p>
+
+The SAVE command will write 260 bytes (520 characters)
+to the text box. You must select all the characters (CNTRL-A) and copy them (CNTRL-C). Then store them
+in a text file for later use. </p>
+
+Before the LOAD command you must paste the desired saved-data back into the text area.</p>
+
+<textarea id="cocoTape" rows="8" style="font-size:8px;width:80ch;" ></textarea>
+</div>
 }}}
 
 === Walk Through ===
-
-Paste these lines into the game input above.
 
 1. Get into the pyramid. You have to get the bird into the box before picking up the scepter.[[br]]
 * n;get lamp;lamp on;get bottle;eat food;d;w;get box;w;w;w;get bird;e;e;get scepter;w;w;w;d;d
