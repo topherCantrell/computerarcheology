@@ -3,6 +3,9 @@
 %%range 4000:7FFF
 
 ||= Address  || Name                  || Description                                  ||
-|| 4FDC      || CurrentRoom           || Current Room Number                          ||
+|| 503F      || CurrentRoom           || Current Room Number                          ||
+|| 467B      || Noun                  || Input noun ||
+|| 467C      || Verb                  || Input verb ||
+|| 467D      || Grammar               || Input grammar type ||
 
-Stack initialized to 475C
+Stack initialized to 47BF

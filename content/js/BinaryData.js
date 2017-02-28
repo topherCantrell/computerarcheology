@@ -94,9 +94,7 @@ var BinaryData = (function() {
 	        }
 	        
 	    }	
-	    
-	    alert(chk);
-		
+	    		
 	};
 	
 	/**

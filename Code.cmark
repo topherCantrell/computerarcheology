@@ -1,52 +1,35 @@
-;;%%image TRS80Pyramid.jpg
-;;%%title TRS-80 Pyramid
-;;%%cpu Z80
-;;%%- TRS80/Pyramid/RAMUse.mark /TRS80/Pyramid/RAMUse.html
-;;%%-2 TRS80/Hardware.mark /TRS80/Hardware.html
-
-;;* [RAMUse.html RAM Usage]
-;;* [/TRS80/Hardware.html Hardware Info]
-
-Start: ;=
-
-4300: 31 BF 47   LD      SP,$47BF        ; Small stack space
-4303: 3E 0E      LD      A,$0E           ; Clear ....
-4305: CD 33 00   CALL    $0033           ; ... the screen
-4308: 21 82 47   LD      HL,$4782        ; "WELCOME TO PYRAMID!!"
-430B: CD D0 45   CALL    $45D0           ; Print the message
-430E: CD EE 45   CALL    $45EE           ; Wait for a key
-
-4311: 3E 01      LD      A,$01           ; Starting room is ...
-4313: 32 3F 50   LD      ($503F),A       ; ... room 1
-4316: CD 45 52   CALL    $5245           ; Print room description
-
-4319: 97         SUB     A               ; A=0
-431A: 32 7B 46   LD      ($467B),A       ; Clear noun (object within reach)
-431D: 32 7C 46   LD      ($467C),A       ; Clear verb (throw, north, rub, etc)
-4320: 32 7D 46   LD      ($467D),A       ; Grammar type (verb, verb+nounInReach, verb+nounInPack)
-4323: CD CF 43   CALL    $43CF           ; Get user input line and parse
-4326: 3A 3F 50   LD      A,($503F)       ; Room number
-4329: 21 88 48   LD      HL,$4888        ; Room descriptors
-432C: CD 6B 43   CALL    $436B           ; Get 4 bytes for room
-432F: 23         INC     HL              ; Skip over ...
-4330: 23         INC     HL              ; ... to room's script pointer
-4331: 7E         LD      A,(HL)          ; Script ...
-4332: 23         INC     HL              ; ... pointer ...
-4333: 66         LD      H,(HL)          ; ... to ...
-4334: 6F         LD      L,A             ; ... HL
-4335: CD 7D 43   CALL    $437D           ; Process the room script
-4338: C2 4A 43   JP      NZ,$434A        ; ZF clear ... script was successful. Move on.
-433B: 21 B0 59   LD      HL,$59B0        ; General script
-433E: CD 7D 43   CALL    $437D           ; Process the script
-4341: C2 4A 43   JP      NZ,$434A        ; Process the script
-4344: 21 71 74   LD      HL,$7471        ; General fail message
-4347: CD AE 45   CALL    $45AE           ; Print message
-434A: CD D9 50   CALL    $50D9           ; After every turn
-434D: C3 19 43   JP      $4319           ; Back to get user input
-
-GetObjectInfo:  ;=
-; Return ZF set if found in desired location
-; Return HL points to object location structure
+4300: 31 BF 47   LD      SP,$47BF        
+4303: 3E 0E      LD      A,$0E           
+4305: CD 33 00   CALL    $0033           
+4308: 21 82 47   LD      HL,$4782        
+430B: CD D0 45   CALL    $45D0           
+430E: CD EE 45   CALL    $45EE           
+4311: 3E 01      LD      A,$01           
+4313: 32 3F 50   LD      ($503F),A       
+4316: CD 45 52   CALL    $5245           
+4319: 97         SUB     A               
+431A: 32 7B 46   LD      ($467B),A       
+431D: 32 7C 46   LD      ($467C),A       
+4320: 32 7D 46   LD      ($467D),A       
+4323: CD CF 43   CALL    $43CF           
+4326: 3A 3F 50   LD      A,($503F)       
+4329: 21 88 48   LD      HL,$4888        
+432C: CD 6B 43   CALL    $436B           
+432F: 23         INC     HL              
+4330: 23         INC     HL              
+4331: 7E         LD      A,(HL)          
+4332: 23         INC     HL              
+4333: 66         LD      H,(HL)          
+4334: 6F         LD      L,A             
+4335: CD 7D 43   CALL    $437D           
+4338: C2 4A 43   JP      NZ,$434A        
+433B: 21 B0 59   LD      HL,$59B0        
+433E: CD 7D 43   CALL    $437D           
+4341: C2 4A 43   JP      NZ,$434A        
+4344: 21 71 74   LD      HL,$7471        
+4347: CD AE 45   CALL    $45AE           
+434A: CD D9 50   CALL    $50D9           
+434D: C3 19 43   JP      $4319           
 4350: 21 E7 4F   LD      HL,$4FE7        
 4353: CD 61 43   CALL    $4361           
 4356: 7E         LD      A,(HL)          
@@ -57,8 +40,6 @@ GetObjectInfo:  ;=
 435E: 2B         DEC     HL              
 435F: BB         CP      E               
 4360: C9         RET                     
-
-; HL = HL + (A-1)*2
 4361: D5         PUSH    DE              
 4362: EB         EX      DE,HL           
 4363: 6F         LD      L,A             
@@ -68,8 +49,6 @@ GetObjectInfo:  ;=
 4368: 19         ADD     HL,DE           
 4369: D1         POP     DE              
 436A: C9         RET                     
-
-; HL = HL + (A-1)*4
 436B: D5         PUSH    DE              
 436C: EB         EX      DE,HL           
 436D: 6F         LD      L,A             
@@ -80,16 +59,11 @@ GetObjectInfo:  ;=
 4373: 19         ADD     HL,DE           
 4374: D1         POP     DE              
 4375: C9         RET                     
-
-; Set object's location
 4376: CD 50 43   CALL    $4350           
 4379: 23         INC     HL              
 437A: 73         LD      (HL),E          
 437B: 2B         DEC     HL              
 437C: C9         RET                     
-
-; Process the user input against the script for a room
-ProcessRoomScript: ;=
 437D: 7E         LD      A,(HL)          
 437E: A7         AND     A               
 437F: C8         RET     Z               
@@ -104,16 +78,12 @@ ProcessRoomScript: ;=
 438F: CD 96 43   CALL    $4396           
 4392: C0         RET     NZ              
 4393: C3 7D 43   JP      $437D           
-
-RunScript: ;=
 4396: E5         PUSH    HL              
 4397: 4E         LD      C,(HL)          
 4398: 06 00      LD      B,$00           
 439A: 09         ADD     HL,BC           
 439B: E3         EX      (SP),HL         
-439C: 23         INC     HL
-;              
-RunScriptCommand: ;=
+439C: 23         INC     HL              
 439D: 7E         LD      A,(HL)          
 439E: 23         INC     HL              
 439F: E5         PUSH    HL              
@@ -124,8 +94,6 @@ RunScriptCommand: ;=
 43A8: 66         LD      H,(HL)          
 43A9: 6F         LD      L,A             
 43AA: E9         JP      (HL)            
-
-ScriptCommandPASS: ;=    
 43AB: E1         POP     HL              
 43AC: D1         POP     DE              
 43AD: 7C         LD      A,H             
@@ -138,34 +106,18 @@ ScriptCommandPASS: ;=
 43B9: C9         RET                     
 43BA: D5         PUSH    DE              
 43BB: C3 9D 43   JP      $439D           
-
-ScriptCommandFAIL: ;=
 43BE: E1         POP     HL              
 43BF: E1         POP     HL              
 43C0: AF         XOR     A               
 43C1: C9         RET                     
-
-ScriptCommand06: ;=
-; SubscriptAbortAllIfPass(...)
-; Run the subscript. If the subscript passes then abort the current script and
-; all parent scripts. If the subscript fails then continue on to the next command.
-;
-; How does this abort all current scripts, you ask?
-; 43F6 only has two callers: the primary caller and the code here at 4423. The RET
-; at 442E returns either to that primary caller or to 4426. The code at 4426 keeps
-; the zero flag clear which continues to call return for subscripts eventually
-; getting back to the primary caller.
 43C2: E1         POP     HL              
 43C3: CD 96 43   CALL    $4396           
 43C6: E5         PUSH    HL              
 43C7: CA AB 43   JP      Z,$43AB         
-; The subscript failed. Bail out (with a PASS)
 43CA: E1         POP     HL              
 43CB: E1         POP     HL              
 43CC: F6 01      OR      $01             
 43CE: C9         RET                     
-
-ParseUserInput: ;=
 43CF: CD 05 46   CALL    $4605           
 43D2: CD A2 44   CALL    $44A2           
 43D5: 2A AA 45   LD      HL,($45AA)      
@@ -257,10 +209,8 @@ ParseUserInput: ;=
 4496: CD D0 45   CALL    $45D0           
 4499: 3E 01      LD      A,$01           
 449B: 32 A1 44   LD      ($44A1),A       
-449E: C3 CF 43   JP      $43CF
-           
-44A1: 00 ; 1 if there was a lone object last input 
-                   
+449E: C3 CF 43   JP      $43CF           
+44A1: 00         NOP                     
 44A2: 21 5A 46   LD      HL,$465A        
 44A5: 97         SUB     A               
 44A6: 32 A9 45   LD      ($45A9),A       
@@ -399,18 +349,12 @@ ParseUserInput: ;=
 45A3: 05         DEC     B               
 45A4: C2 9F 45   JP      NZ,$459F        
 45A7: C9         RET                     
-
-; RAM used in parsing input
-45A8: 00             
-45A9: 00                  
-45AA: 00                   
-45AB: 00                   
-45AC: 00                   
-45AD: 00 
-
-PrintPacked: ;=
-; Unpack a message (or multiple packed message) and print.
-; HL is pointer to message                        
+45A8: 00         NOP                     
+45A9: 00         NOP                     
+45AA: 00         NOP                     
+45AB: 00         NOP                     
+45AC: 00         NOP                     
+45AD: 00         NOP                     
 45AE: 7E         LD      A,(HL)          
 45AF: A7         AND     A               
 45B0: C8         RET     Z               
@@ -431,12 +375,6 @@ PrintPacked: ;=
 45C9: 23         INC     HL              
 45CA: CA AE 45   JP      Z,$45AE         
 45CD: C3 B8 45   JP      $45B8           
-
-; HL points to message terminated by
-;  - 0 : add a CR on the end and return
-;  - 1 : no CR on the end and return
-; Return with B holding last character (if any) sent to ROM routine.
-;
 45D0: 7E         LD      A,(HL)          
 45D1: A7         AND     A               
 45D2: CA E7 45   JP      Z,$45E7         
@@ -454,8 +392,6 @@ PrintPacked: ;=
 45E9: 78         LD      A,B             
 45EA: CD FF 45   CALL    $45FF           
 45ED: C9         RET                     
-
-WaitForKey: ;=
 45EE: D5         PUSH    DE              
 45EF: 3A 74 47   LD      A,($4774)       
 45F2: 3C         INC     A               
@@ -465,20 +401,15 @@ WaitForKey: ;=
 45FA: CA EF 45   JP      Z,$45EF         
 45FD: D1         POP     DE              
 45FE: C9         RET                     
-
-PrintChar: ;=   
 45FF: D5         PUSH    DE              
 4600: CD 33 00   CALL    $0033           
 4603: D1         POP     DE              
 4604: C9         RET                     
-
-PromptAndReadLine: ;=
 4605: 06 3A      LD      B,$3A           
 4607: 78         LD      A,B             
 4608: CD FF 45   CALL    $45FF           
 460B: 21 5A 46   LD      HL,$465A        
 460E: 0E 00      LD      C,$00           
-;
 4610: E5         PUSH    HL              
 4611: C5         PUSH    BC              
 4612: D5         PUSH    DE              
@@ -520,26 +451,42 @@ PromptAndReadLine: ;=
 4654: C3 10 46   JP      $4610           
 4657: 36 00      LD      (HL),$00        
 4659: C9         RET                     
-
-; Input buffer (with some uninitialized leftover data!)
-InputBuffer: ;=
-;      A  N T  _  M  E  _  T  O  _  D  O  _  W  I  T
-465A: 41 4E 54 20 4D 45 20 54 4F 20 44 4F 20 57 49 54             
-;     H  _  T  H  E  _  ,  A  CR -- 0  0  0  0  _  _
-466A: 48 20 54 48 45 20 2C 41 0D 12 30 30 30 30 20 20    
-
-; Used in input parsing
-467A: 00                   
-467B: 00                    
-467C: 00                   
-467D: 00                    
-467E: 00                   
-
-467F: 25 47           
-4681: 2C 47         
-4683: 44 47       
-4685: 58 47
-          
+465A: 41         LD      B,C             
+465B: 4E         LD      C,(HL)          
+465C: 54         LD      D,H             
+465D: 20 4D      JR      NZ,$46AC        
+465F: 45         LD      B,L             
+4660: 20 54      JR      NZ,$46B6        
+4662: 4F         LD      C,A             
+4663: 20 44      JR      NZ,$46A9        
+4665: 4F         LD      C,A             
+4666: 20 57      JR      NZ,$46BF        
+4668: 49         LD      C,C             
+4669: 54         LD      D,H             
+466A: 48         LD      C,B             
+466B: 20 54      JR      NZ,$46C1        
+466D: 48         LD      C,B             
+466E: 45         LD      B,L             
+466F: 20 2C      JR      NZ,$469D        
+4671: 41         LD      B,C             
+4672: 0D         DEC     C               
+4673: 12         LD      (DE),A          
+4674: 30 30      JR      NC,$46A6        
+4676: 30 30      JR      NC,$46A8        
+4678: 20 20      JR      NZ,$469A        
+467A: 00         NOP                     
+467B: 00         NOP                     
+467C: 00         NOP                     
+467D: 00         NOP                     
+467E: 00         NOP                     
+467F: 25         DEC     H               
+4680: 47         LD      B,A             
+4681: 2C         INC     L               
+4682: 47         LD      B,A             
+4683: 44         LD      B,H             
+4684: 47         LD      B,A             
+4685: 58         LD      E,B             
+4686: 47         LD      B,A             
 4687: 49         LD      C,C             
 4688: 20 53      JR      NZ,$46DD        
 468A: 45         LD      B,L             
@@ -547,13 +494,11 @@ InputBuffer: ;=
 468C: 20 4E      JR      NZ,$46DC        
 468E: 4F         LD      C,A             
 468F: 20 01      JR      NZ,$4692        
-
 4691: 20 48      JR      NZ,$46DB        
 4693: 45         LD      B,L             
 4694: 52         LD      D,D             
 4695: 45         LD      B,L             
-4696: 2E 00      LD      L,$00   
-        
+4696: 2E 00      LD      L,$00           
 4698: 59         LD      E,C             
 4699: 4F         LD      C,A             
 469A: 55         LD      D,L             
@@ -671,19 +616,70 @@ InputBuffer: ;=
 4722: 43         LD      B,E             
 4723: 4F         LD      C,A             
 4724: 4D         LD      C,L             
-
-;" WHAT?",0
-4725: 20 57 48 41 54 3F 00                  
-
-; "I DON'T KNOW THAT WORD.",0
-472C: 49 20 44 4F 4E 27 54 20 4B 4E 4F 57 20 54 48 41 54 20 57 4F 52 44 2E 00 
-
-; "I DON'T UNDERSTAND.",0          
-4744: 49 20 44 4F 4E 27 54 20 55 4E 44 45 52 53 54 41 4E 44 2E 00 
- 
-; "I DON'T KNOW WHAT YOU MEAN.",0          
-4758: 49 20 44 4F 4E 27 54 20 4B 4E 4F 57 20 57 48 41 54 20 59 4F 55 20 4D 45 41 4E 2E 00  
-          
+4725: 20 57      JR      NZ,$477E        
+4727: 48         LD      C,B             
+4728: 41         LD      B,C             
+4729: 54         LD      D,H             
+472A: 3F         CCF                     
+472B: 00         NOP                     
+472C: 49         LD      C,C             
+472D: 20 44      JR      NZ,$4773        
+472F: 4F         LD      C,A             
+4730: 4E         LD      C,(HL)          
+4731: 27         DAA                     
+4732: 54         LD      D,H             
+4733: 20 4B      JR      NZ,$4780        
+4735: 4E         LD      C,(HL)          
+4736: 4F         LD      C,A             
+4737: 57         LD      D,A             
+4738: 20 54      JR      NZ,$478E        
+473A: 48         LD      C,B             
+473B: 41         LD      B,C             
+473C: 54         LD      D,H             
+473D: 20 57      JR      NZ,$4796        
+473F: 4F         LD      C,A             
+4740: 52         LD      D,D             
+4741: 44         LD      B,H             
+4742: 2E 00      LD      L,$00           
+4744: 49         LD      C,C             
+4745: 20 44      JR      NZ,$478B        
+4747: 4F         LD      C,A             
+4748: 4E         LD      C,(HL)          
+4749: 27         DAA                     
+474A: 54         LD      D,H             
+474B: 20 55      JR      NZ,$47A2        
+474D: 4E         LD      C,(HL)          
+474E: 44         LD      B,H             
+474F: 45         LD      B,L             
+4750: 52         LD      D,D             
+4751: 53         LD      D,E             
+4752: 54         LD      D,H             
+4753: 41         LD      B,C             
+4754: 4E         LD      C,(HL)          
+4755: 44         LD      B,H             
+4756: 2E 00      LD      L,$00           
+4758: 49         LD      C,C             
+4759: 20 44      JR      NZ,$479F        
+475B: 4F         LD      C,A             
+475C: 4E         LD      C,(HL)          
+475D: 27         DAA                     
+475E: 54         LD      D,H             
+475F: 20 4B      JR      NZ,$47AC        
+4761: 4E         LD      C,(HL)          
+4762: 4F         LD      C,A             
+4763: 57         LD      D,A             
+4764: 20 57      JR      NZ,$47BD        
+4766: 48         LD      C,B             
+4767: 41         LD      B,C             
+4768: 54         LD      D,H             
+4769: 20 59      JR      NZ,$47C4        
+476B: 4F         LD      C,A             
+476C: 55         LD      D,L             
+476D: 20 4D      JR      NZ,$47BC        
+476F: 45         LD      B,L             
+4770: 41         LD      B,C             
+4771: 4E         LD      C,(HL)          
+4772: 2E 00      LD      L,$00           
 4774: 00         NOP                     
 4775: 00         NOP                     
 4776: 00         NOP                     
@@ -698,10 +694,23 @@ InputBuffer: ;=
 477F: 00         NOP                     
 4780: 00         NOP                     
 4781: 00         NOP                     
-
-; "WELCOME TO PYRAMID!!",0
-4782: 57 45 4C 43 4F 4D 45 20 54 4F 20 50 59 52 41 4D 49 44 21 21 00 
-        
+4782: 57         LD      D,A             
+4783: 45         LD      B,L             
+4784: 4C         LD      C,H             
+4785: 43         LD      B,E             
+4786: 4F         LD      C,A             
+4787: 4D         LD      C,L             
+4788: 45         LD      B,L             
+4789: 20 54      JR      NZ,$47DF        
+478B: 4F         LD      C,A             
+478C: 20 50      JR      NZ,$47DE        
+478E: 59         LD      E,C             
+478F: 52         LD      D,D             
+4790: 41         LD      B,C             
+4791: 4D         LD      C,L             
+4792: 49         LD      C,C             
+4793: 44         LD      B,H             
+4794: 21 21 00   LD      HL,$0021        
 4797: E1         POP     HL              
 4798: CA B8 47   JP      Z,$47B8         
 479B: 3E 00      LD      A,$00           
@@ -828,32 +837,49 @@ InputBuffer: ;=
 4854: 32 84 48   LD      ($4884),A       
 4857: C2 D5 47   JP      NZ,$47D5        
 485A: E1         POP     HL              
-485B: C9         RET         
- 
-; Character compression table
-CharTable: ;=           
-485C: 3F 21 32 20 22 27 3C 3E 2F 30 33                 ; ?!2_"'<>/03 
-4867: 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 50  ; ABCDEFGHIJKLMNOP
-4877: 51 52 53 54 55 56 57 58 59 5A 2D 2C 2E           ; QRSTUVWXYZ-,.
-
-; RAM used by unpack
-4884: 00           
-4885: 00                    
-4886: 00                    
-4887: 00
-     
-;; == Room Table == #
-
-;; Each entry is 4 bytes. The first word is the packed room description. 
-;; The second word is the room's command script.
-
-
-RoomTable:
-;
-; 81 rooms numbered starting at 1
-;      Description   Script                
-4888: DB 5B CC 49 
-488C: 10 5C E1 49             
+485B: C9         RET                     
+485C: 3F         CCF                     
+485D: 21 32 20   LD      HL,$2032        
+4860: 22 27 3C   LD      ($3C27),HL      
+4863: 3E 2F      LD      A,$2F           
+4865: 30 33      JR      NC,$489A        
+4867: 41         LD      B,C             
+4868: 42         LD      B,D             
+4869: 43         LD      B,E             
+486A: 44         LD      B,H             
+486B: 45         LD      B,L             
+486C: 46         LD      B,(HL)          
+486D: 47         LD      B,A             
+486E: 48         LD      C,B             
+486F: 49         LD      C,C             
+4870: 4A         LD      C,D             
+4871: 4B         LD      C,E             
+4872: 4C         LD      C,H             
+4873: 4D         LD      C,L             
+4874: 4E         LD      C,(HL)          
+4875: 4F         LD      C,A             
+4876: 50         LD      D,B             
+4877: 51         LD      D,C             
+4878: 52         LD      D,D             
+4879: 53         LD      D,E             
+487A: 54         LD      D,H             
+487B: 55         LD      D,L             
+487C: 56         LD      D,(HL)          
+487D: 57         LD      D,A             
+487E: 58         LD      E,B             
+487F: 59         LD      E,C             
+4880: 5A         LD      E,D             
+4881: 2D         DEC     L               
+4882: 2C         INC     L               
+4883: 2E 00      LD      L,$00           
+4885: 00         NOP                     
+4886: 00         NOP                     
+4887: 00         NOP                     
+4888: DB 5B      IN      A,($5B)         
+488A: CC 49 10   CALL    Z,$1049         
+488D: 5C         LD      E,H             
+488E: E1         POP     HL              
+488F: 49         LD      C,C             
 4890: 57         LD      D,A             
 4891: 5C         LD      E,H             
 4892: F2 49 57   JP      P,$5749         
@@ -1129,8 +1155,7 @@ RoomTable:
 49C8: 9D         SBC     L               
 49C9: 6A         LD      L,D             
 49CA: BE         CP      (HL)            
-49CB: 4E         LD      C,(HL)        
-  
+49CB: 4E         LD      C,(HL)          
 49CC: 01 03 01   LD      BC,$0103        
 49CF: 02         LD      (BC),A          
 49D0: 02         LD      (BC),A          
@@ -1142,7 +1167,6 @@ RoomTable:
 49DA: 01 05 0B   LD      BC,$0B05        
 49DD: 03         INC     BC              
 49DE: 01 02 00   LD      BC,$0002        
-
 49E1: 03         INC     BC              
 49E2: 03         INC     BC              
 49E3: 01 01 0A   LD      BC,$0A01        
@@ -1976,15 +2000,7 @@ RoomTable:
 4F3D: 01 47 0C   LD      BC,$0C47        
 4F40: 03         INC     BC              
 4F41: 01 47 00   LD      BC,$0047        
-4F44: FF         RST     0X38           
-
-;; == Ambient Light Table == #
-
-;; 2 bytes per room
-;; * 0x4000 means there is light in the room (no need for a lamp)
-;; * 0x0000 means you better have a lamp
-
-AmbientLight: 
+4F44: FF         RST     0X38            
 4F45: 40         LD      B,B             
 4F46: 00         NOP                     
 4F47: 40         LD      B,B             
@@ -2146,29 +2162,7 @@ AmbientLight:
 4FE3: 00         NOP                     
 4FE4: 00         NOP                     
 4FE5: 00         NOP                     
-4FE6: 00         NOP   
-
-;; == Object Data == #
-
-;; This two-byte table contains the object's attributes ("isTreasure" and "isGettable") 
-;; and the object's current location (a room or inside another object).
-;;
-;; The code references the objects by numeric id, but I have given them unique names 
-;; in the table below. All object names begin with "#". All word names begin with "_".
-;;
-;; The format of the two bytes are:
-;;
-;;   MCT----- RRRRRRRR
-;;
-;;   M - if set, the second byte is an object number (container). if clear, the second byte is a room number.[[br]] 
-;;   C - if set, object can be picked up.[[br]]
-;;   T - if set, object is treasure.
-;;
-;;   RRRRRRRR - Second byte is the object's location (containing object or room number).
-
-ObjectData:
-; Object data table (2 bytes)
-;              MCT              # Name             Start location                  
+4FE6: 00         NOP                     
 4FE7: 00         NOP                     
 4FE8: 00         NOP                     
 4FE9: 00         NOP                     
@@ -2250,25 +2244,13 @@ ObjectData:
 503B: 60         LD      H,B             
 503C: 47         LD      B,A             
 503D: 40         LD      B,B             
-503E: 00         NOP
-
-;; == Game Variables == #                     
-
-GameVariables:
+503E: 00         NOP                     
 503F: 01 00 00   LD      BC,$0000        
 5042: 00         NOP                     
 5043: 00         NOP                     
 5044: 00         NOP                     
 5045: 00         NOP                     
 5046: 00         NOP                     
-
-;; == Object Table == #
-
-ObjectDescriptions:
-; Object descriptions (44 objects)
-; For packable objects each slot points to a message pair. The first is the long
-; description and the second is the short (if any).
-;                  # Name              Description
 5047: 58         LD      E,B             
 5048: 6D         LD      L,L             
 5049: 58         LD      E,B             
@@ -2344,58 +2326,56 @@ ObjectDescriptions:
 509B: 52         LD      D,D             
 509C: 70         LD      (HL),B          
 509D: 2E 6C      LD      L,$6C           
-
-;; = Script Commands = #
-
-;; This lookup table holds the pointers to the individual script commands. Each command 
-;; reads 1 or 2 bytes of data from the script. The number of extra bytes read is show 
-;; for reference in the table.
-;;
-;; Script Command Table
-;; *   b = 2 bytes ... message address
-;; *   c = 1 byte  ... object number
-;; *   d = 1 byte  ... room number
-;; *   e = 2 bytes ... target object and container object 
-;; *   f = 2 bytes ... target object and room number
-
-ScriptCommands:
-;    Address   Number Bytes Type Name
-509F: 8A 51   ;   1     1    d   MoveToRoomX           
-50A1: C8 52   ;   2     1    c   AssertObjectXIsInPack
-50A3: D7 52   ;   3     1    c   AssertObjectXIsInCurrentRoomOrPack
-50A5: 5E 53   ;   4     2    b   PrintMessageX
-50A7: 49 54   ;   5     0        PrintScoreAndStop
-50A9: 00 00   ;   6     -        
-50AB: C2 43   ;   7     1    *   SubScripXtAbortIfPass 
-50AD: C7 54   ;   8     0        PrintScore
-50AF: EF 55   ;   9     0        PrintScoreAndStop
-50B1: 18 53   ;  10     1        AssertRandomIsGreaterThanX
-50B3: 6B 53   ;  11     1    c   DropObjectX
-50B5: 32 53   ;  12     1    d   MoveToRoomXIfItWasLastRoom
-50B7: FB 52   ;  13     0        AssertPackIsEmptyExceptForEmerald
-50B9: 81 53   ;  14     0        MoveToLastRoom
-50BB: 9B 53   ;  15     0        PrintInventory    
-50BD: DB 53   ;  16     0        PrintRoomDescription
-50BF: E1 53   ;  17     1    c   AssertObjectXMatchesUserInput
-50C1: EF 53   ;  18     1    c   GetObjectFromRoom
-50C3: 00 00   ;  19     -        
-50C5: 2B 54   ;  20     0        PrintOK 
-50C7: 34 54   ;  21     2    f   MoveObjectXToRoomY
-50C9: 43 53   ;  22     0        GetUserInputObject
-50CB: 24 54   ;  23     0        DropUserInputObject
-50CD: A5 52   ;  24     1    c   MoveObjectXToCurrentRoom
-50CF: B3 52   ;  25     2    e   MoveObjectXIntoContainerY
-50D1: EA 52   ;  26     1    c   AssertObjectXIsInCurrentRoom
-50D3: F5 55   ;  27     0        LoadGame  
-50D5: 54 56   ;  28     0        SaveGame 
-50D7: 94 56   ;  29     0        RandomizeDirections
-
-;; = After Every Step = #
-
-;; This processing takes place after every user input.[[br]]
-;;  1. Increment the count on the lamp and the number of turns.[[br]]
-;;  2.  Warn the player if the lamp is going dim and change the batteries automatically.
-     
+509F: 8A         ADC     A,D             
+50A0: 51         LD      D,C             
+50A1: C8         RET     Z               
+50A2: 52         LD      D,D             
+50A3: D7         RST     0X10            
+50A4: 52         LD      D,D             
+50A5: 5E         LD      E,(HL)          
+50A6: 53         LD      D,E             
+50A7: 49         LD      C,C             
+50A8: 54         LD      D,H             
+50A9: 00         NOP                     
+50AA: 00         NOP                     
+50AB: C2 43 C7   JP      NZ,$C743        
+50AE: 54         LD      D,H             
+50AF: EF         RST     0X28            
+50B0: 55         LD      D,L             
+50B1: 18 53      JR      $5106           
+50B3: 6B         LD      L,E             
+50B4: 53         LD      D,E             
+50B5: 32 53 FB   LD      ($FB53),A       
+50B8: 52         LD      D,D             
+50B9: 81         ADD     A,C             
+50BA: 53         LD      D,E             
+50BB: 9B         SBC     E               
+50BC: 53         LD      D,E             
+50BD: DB 53      IN      A,($53)         
+50BF: E1         POP     HL              
+50C0: 53         LD      D,E             
+50C1: EF         RST     0X28            
+50C2: 53         LD      D,E             
+50C3: 00         NOP                     
+50C4: 00         NOP                     
+50C5: 2B         DEC     HL              
+50C6: 54         LD      D,H             
+50C7: 34         INC     (HL)            
+50C8: 54         LD      D,H             
+50C9: 43         LD      B,E             
+50CA: 53         LD      D,E             
+50CB: 24         INC     H               
+50CC: 54         LD      D,H             
+50CD: A5         AND     L               
+50CE: 52         LD      D,D             
+50CF: B3         OR      E               
+50D0: 52         LD      D,D             
+50D1: EA 52 F5   JP      PE,$F552        
+50D4: 55         LD      D,L             
+50D5: 54         LD      D,H             
+50D6: 56         LD      D,(HL)          
+50D7: 94         SUB     H               
+50D8: 56         LD      D,(HL)          
 50D9: 3E 0F      LD      A,$0F           
 50DB: 21 E7 4F   LD      HL,$4FE7        
 50DE: CD 61 43   CALL    $4361           
@@ -2476,22 +2456,6 @@ ScriptCommands:
 5185: 27         DAA                     
 5186: 32 41 50   LD      ($5041),A       
 5189: C9         RET                     
-
-;; = Command 1: Move To Room X = # 
-
-;; This routine moves the player to a new room. If there is light in the new room or light 
-;; in the old room then the move always works. Otherwise there is a 60% chance the move kills you.
-;;
-;; If there is light in the new room then the room description is printed.
-;;
-;; After every move the code checks the pack for treasures. If there are 2 or more treasures then 
-;; the Mummy moves them all to room 53 (the hard-to-find room in the maze). Then the code moves the 
-;; chest to room 53. Up till now the chest has been in room 0 (out of play). The only way to make the 
-;; chest appear in the maze is to encounter the Mummy!
-;;
-;; Once the chest is in a room (any room) the Mummy no longer appears. You only see the Mummy once.
-
-MoveToRoomX:
 518A: E1         POP     HL              
 518B: 46         LD      B,(HL)          
 518C: 23         INC     HL              
@@ -3046,58 +3010,52 @@ MoveToRoomX:
 55EB: 4E         LD      C,(HL)          
 55EC: 53         LD      D,E             
 55ED: 2E 00      LD      L,$00           
-
-55EF: CD CD 54   CALL    $54CD
-
-; Endless loop           
-55F2: C3 F2 55   JP      $55F2
-           
-55F5: 21 A0 7F   LD      HL,$7FA0        ; READY CASSETTE
-55F8: CD AE 45   CALL    $45AE           ; Print message
-55FB: CD EE 45   CALL    $45EE           ; Wait on key
-55FE: FE 08      CP      $08             ; Backspace?
-5600: CA AB 43   JP      Z,$43AB         ; Yes ... abort operation
-5603: FE 0D      CP      $0D             ; Enter?
-5605: C2 FB 55   JP      NZ,$55FB        ; No ... keep waiting
-5608: 97         SUB     A               ; Make a zero
-5609: CD 12 02   CALL    $0212           ; Turn on cassette 0
-560C: CD 96 02   CALL    $0296           ; Read tape leader
-560F: 21 45 4F   LD      HL,$4F45        ; Load destination
-5612: 01 03 01   LD      BC,$0103        ; 259 bytes
-5615: 1E 00      LD      E,$00           ; Initialize checksum
-5617: E5         PUSH    HL              ; ROM ...
-5618: C5         PUSH    BC              ; ... mangles ...
-5619: D5         PUSH    DE              ; ... these
-561A: CD 35 02   CALL    $0235           ; Read one byte of data
-561D: D1         POP     DE              ; Un ...
-561E: C1         POP     BC              ; ... mangle ...
-561F: E1         POP     HL              ; ... these
-5620: 77         LD      (HL),A          ; Store the byte
-5621: 83         ADD     A,E             ; Add to ...
-5622: 5F         LD      E,A             ; ... checksum
-5623: 23         INC     HL              ; Next destination
-5624: 0B         DEC     BC              ; All done?
-5625: 78         LD      A,B             ; Remember, DEC doesn't ...
-5626: B1         OR      C               ; ... affect the zero flag
-5627: C2 17 56   JP      NZ,$5617        ; Nope ... do all $103 bytes
-562A: D5         PUSH    DE              ; Hold
-562B: CD 35 02   CALL    $0235           ; Read the checksum
-562E: D1         POP     DE              ; Restore
-562F: BB         CP      E               ; Checksum OK?
-5630: CA 3F 56   JP      Z,$563F         ; Yes ... out
-5633: 21 AC 7F   LD      HL,$7FAC        ; Error message
-5636: CD AE 45   CALL    $45AE           ; Print error message
-5639: CD F8 01   CALL    $01F8           ; Turn off tape drive
-563C: C3 F5 55   JP      $55F5           ; Go back and try again (you better not abort ... we already changed memory)
-
-563F: CD F8 01   CALL    $01F8           ; Turn off the tape  
+55EF: CD CD 54   CALL    $54CD           
+55F2: C3 F2 55   JP      $55F2           
+55F5: 21 A0 7F   LD      HL,$7FA0        
+55F8: CD AE 45   CALL    $45AE           
+55FB: CD EE 45   CALL    $45EE           
+55FE: FE 08      CP      $08             
+5600: CA AB 43   JP      Z,$43AB         
+5603: FE 0D      CP      $0D             
+5605: C2 FB 55   JP      NZ,$55FB        
+5608: 97         SUB     A               
+5609: CD 12 02   CALL    $0212           
+560C: CD 96 02   CALL    $0296           
+560F: 21 45 4F   LD      HL,$4F45        
+5612: 01 03 01   LD      BC,$0103        
+5615: 1E 00      LD      E,$00           
+5617: E5         PUSH    HL              
+5618: C5         PUSH    BC              
+5619: D5         PUSH    DE              
+561A: CD 35 02   CALL    $0235           
+561D: D1         POP     DE              
+561E: C1         POP     BC              
+561F: E1         POP     HL              
+5620: 77         LD      (HL),A          
+5621: 83         ADD     A,E             
+5622: 5F         LD      E,A             
+5623: 23         INC     HL              
+5624: 0B         DEC     BC              
+5625: 78         LD      A,B             
+5626: B1         OR      C               
+5627: C2 17 56   JP      NZ,$5617        
+562A: D5         PUSH    DE              
+562B: CD 35 02   CALL    $0235           
+562E: D1         POP     DE              
+562F: BB         CP      E               
+5630: CA 3F 56   JP      Z,$563F         
+5633: 21 AC 7F   LD      HL,$7FAC        
+5636: CD AE 45   CALL    $45AE           
+5639: CD F8 01   CALL    $01F8           
+563C: C3 F5 55   JP      $55F5           
+563F: CD F8 01   CALL    $01F8           
 5642: 21 58 6D   LD      HL,$6D58        
 5645: 22 47 50   LD      ($5047),HL      
 5648: 22 49 50   LD      ($5049),HL      
 564B: CD 45 52   CALL    $5245           
-564E: 31 BF 47   LD      SP,$47BF        ; Abandon previous stack
-5651: C3 19 43   JP      $4319           ; Back to input loop
-
+564E: 31 BF 47   LD      SP,$47BF        
+5651: C3 19 43   JP      $4319           
 5654: 21 A0 7F   LD      HL,$7FA0        
 5657: CD AE 45   CALL    $45AE           
 565A: CD EE 45   CALL    $45EE           
@@ -3131,7 +3089,6 @@ MoveToRoomX:
 568B: CD 64 02   CALL    $0264           
 568E: CD F8 01   CALL    $01F8           
 5691: C3 AB 43   JP      $43AB           
-
 5694: 3A 74 47   LD      A,($4774)       
 5697: E6 03      AND     $03             
 5699: 47         LD      B,A             
@@ -3783,12 +3740,6 @@ MoveToRoomX:
 59AD: 48         LD      C,B             
 59AE: 39         ADD     HL,SP           
 59AF: 00         NOP                     
-
-;; == General Command Handler == #
-
-;; This script is used when the room doesn't have a script for the input command.
-
-GeneralCommandHandler:
 59B0: 01 04 04   LD      BC,$0404        
 59B3: ED         ???                     
 59B4: 73         LD      (HL),E          
@@ -4221,23 +4172,14 @@ GeneralCommandHandler:
 5BCE: 04         INC     B               
 5BCF: D9         EXX                     
 5BD0: 75         LD      (HL),L          
-
-5BD1: 39         ADD     HL,SP           ; plugh
+5BD1: 39         ADD     HL,SP           
 5BD2: 02         LD      (BC),A          
-5BD3: 1D         DEC     E
-               
+5BD3: 1D         DEC     E               
 5BD4: 3A 02 1B   LD      A,($1B02)       
 5BD7: 3B         DEC     SP              
 5BD8: 02         LD      (BC),A          
 5BD9: 1C         INC     E               
-5BDA: 00         NOP
-
-;; == Room Descriptions == #
-
-RoomDescriptions:
-
-; Description for room: 1
-; YOU ARE STANDING BEFORE THE ENTRANCE OF A PYRAMID. AROUND YOU IS A DESERT.[CR]                
+5BDA: 00         NOP                     
 5BDB: 19         ADD     HL,DE           
 5BDC: C7         RST     0X00            
 5BDD: DE 94      SBC     $94             
@@ -7763,15 +7705,6 @@ RoomDescriptions:
 6C29: 36 A1      LD      (HL),$A1        
 6C2B: 48         LD      C,B             
 6C2C: 2E 00      LD      L,$00           
-
-;; == Object Descriptions == #
-
-;; These are the long (in a room description) and short (in the inventory) strings for each object.
-
-ObjDescriptions:
-
-;Description for objects: 14 "Lamp (not lit)",44 "Lamp (dead)"
-; THERE IS A SHINY BRASS LAMP NEARBY.[CR]
 6C2E: 0B         DEC     BC              
 6C2F: 5F         LD      E,A             
 6C30: BE         CP      (HL)            
@@ -7794,7 +7727,6 @@ ObjDescriptions:
 6C44: 49         LD      C,C             
 6C45: 59         LD      E,C             
 6C46: 2E 00      LD      L,$00           
-
 6C48: 04         INC     B               
 6C49: 6B         LD      L,E             
 6C4A: 4F         LD      C,A             
@@ -10590,11 +10522,52 @@ ObjDescriptions:
 7971: 51         LD      D,C             
 7972: 18 55      JR      $79C9           
 7974: 2E 00      LD      L,$00           
-
-; IT IS NOW PITCH DARK ... typo in here. Decode it.
-7976: 17 73 7B 4B 7B 09 9A E3 16 9A BD FB 14 6F B2 4B 13 9B 64 1B A1 F9 A6 A7 53 73 5D C7 DE FB 17 F3          
-7996: 8C 8D 8C 53 61 4B 15 F3 8C 9E 7A FB 9D 96 A5 2E 00      
-
+7976: 17         RLA                     
+7977: 73         LD      (HL),E          
+7978: 7B         LD      A,E             
+7979: 4B         LD      C,E             
+797A: 7B         LD      A,E             
+797B: 09         ADD     HL,BC           
+797C: 9A         SBC     D               
+797D: E3         EX      (SP),HL         
+797E: 16 9A      LD      D,$9A           
+7980: BD         CP      L               
+7981: FB         EI                      
+7982: 14         INC     D               
+7983: 6F         LD      L,A             
+7984: B2         OR      D               
+7985: 4B         LD      C,E             
+7986: 13         INC     DE              
+7987: 9B         SBC     E               
+7988: 64         LD      H,H             
+7989: 1B         DEC     DE              
+798A: A1         AND     C               
+798B: F9         LD      SP,HL           
+798C: A6         AND     (HL)            
+798D: A7         AND     A               
+798E: 53         LD      D,E             
+798F: 73         LD      (HL),E          
+7990: 5D         LD      E,L             
+7991: C7         RST     0X00            
+7992: DE FB      SBC     $FB             
+7994: 17         RLA                     
+7995: F3         DI                      
+7996: 8C         ADC     A,H             
+7997: 8D         ADC     A,L             
+7998: 8C         ADC     A,H             
+7999: 53         LD      D,E             
+799A: 61         LD      H,C             
+799B: 4B         LD      C,E             
+799C: 15         DEC     D               
+799D: F3         DI                      
+799E: 8C         ADC     A,H             
+799F: 9E         SBC     (HL)            
+79A0: 7A         LD      A,D             
+79A1: FB         EI                      
+79A2: 9D         SBC     L               
+79A3: 96         SUB     (HL)            
+79A4: A5         AND     L               
+79A5: 2E 00      LD      L,$00           
 79A7: 0D         DEC     C               
 79A8: 9F         SBC     A               
 79A9: 77         LD      (HL),A          

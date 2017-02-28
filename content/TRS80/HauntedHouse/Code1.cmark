@@ -103,6 +103,7 @@ ScriptCommand17: ;=
 439F: C2 A8 43   JP      NZ,$43A8        ; ZF clear ... script was successful. Move on.
 43A2: 21 0C 4F   LD      HL,$4F0C        ; Simply "NO"
 43A5: CD AE 45   CALL    $45AE           ; Print "NO"
+; Removed call to "after every command"
 43A8: C3 77 43   JP      $4377           ; Back to get user input
          
 GetObjectInfo:  ;=
@@ -566,8 +567,11 @@ PromptAndReadLine: ;=
 ; Input buffer (with some uninitialized leftover data!)
 InputBuffer: ;=
 ; 32 bytes
-465A: 15 46 36 00 C9 45 20 49 50 20 53 49 47 4E 00 00         
-466A: 47 FE 78 28 26 FE 3C 20 F5 CD 82 47 47 CD 9C 46        
+;     -- F  6  -- -- E  _  I  P  _  S  I  G  N  -- --
+465A: 15 46 36 00 C9 45 20 49 50 20 53 49 47 4E 00 00
+;     G  -- -- (  &  -- <  _  -- -- -- /  /  -- -- .         
+466A: 47 FE 78 28 26 FE 3C 20 F5 CD 82 47 47 CD 9C 46
+        
 467A: 00
 
 ; Used in input parsing

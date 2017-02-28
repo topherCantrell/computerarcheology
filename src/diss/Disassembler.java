@@ -36,7 +36,10 @@ public class Disassembler {
                 
         
         //String [] targs = {"0x42E9~haunt1.bin","haunt1.cmark","Z80"};
-        String [] targs = {"0x435E~haunt2.bin","haunt2.cmark","Z80"};
+        //String [] targs = {"0x435E~haunt2.bin","haunt2.cmark","Z80"};
+    	
+    	String [] targs = {"0x4300~content/trs80/pyramid/pyramid.bin","Code.cmark","Z80"};
+    	
         args = targs;
                 
         if(args.length<3) {

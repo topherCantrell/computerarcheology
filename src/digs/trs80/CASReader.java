@@ -17,7 +17,7 @@ public class CASReader {
 		}
 		is.close();
 		
-		OutputStream os = new FileOutputStream("pyramid.bin");
+		OutputStream os = new FileOutputStream("content/trs80/pyramid/pyramid.bin");
 		int pos = 0x0106;	
 		
 		for(int z=0;z<61;++z) {
@@ -49,7 +49,7 @@ public class CASReader {
 		
 		// 42E9
 		
-		InputStream is = new FileInputStream("content/trs80/pyramid/haunt.cas");
+		InputStream is = new FileInputStream("content/trs80/hauntedhouse/haunt.cas");
 		int [] data = new int[is.available()];
 		for(int x=0;x<data.length;++x) {
 			data[x] = is.read();

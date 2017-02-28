@@ -22,6 +22,20 @@ I used [https://github.com/DrGoldfire/Z80.js/tree/master DrGodfire's JavaScript 
 <script src="/TRS80/Pyramid/trs80pyramid.js"></script>
 
 <textarea id="trs80console" rows="16" style="background-color: black;color: white;font-family: monospace;font-size:12px;width:65ch;" ></textarea>
+
+<div id="tapeArea">
+The text area below is the virtual cassette tape. Instead of writing to tape, the emulator writes data as two-digit hex
+values to this text area.</p>
+
+The SAVE command will write 260 bytes (520 characters)
+to the text box. You must select all the characters (CNTRL-A) and copy them (CNTRL-C). Then store them
+in a text file for later use. </p>
+
+Before the LOAD command you must paste the desired saved-data back into the text area.</p>
+
+<textarea id="tape" rows="8" style="font-size:8px;width:80ch;" ></textarea>
+</div>
+
 }}}
 
 = References =
