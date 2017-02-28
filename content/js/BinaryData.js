@@ -30,6 +30,7 @@ var BinaryData = (function() {
 			src = document.body.innerHTML.toUpperCase();
 		} 
 		
+		var chk = 0;
 	    var lines = src.split("\n");
 	    my.dataCache = [];
 	    for (var x=0;x<lines.length;x=x+1) {
@@ -72,7 +73,9 @@ var BinaryData = (function() {
 	        while(true) {        
 	            if (line.length<3) {
 	                if (isTwoDigitHex(line)) {
-	                	my.dataCache.push(parseInt(line,16));
+	                	var vv = parseInt(line,16);
+	                	chk = chk + vv;
+	                	my.dataCache.push(vv);
 	                }
 	                break;
 	            }
@@ -84,10 +87,15 @@ var BinaryData = (function() {
 	            if (!isTwoDigitHex(a)) {
 	                break;
 	            }
-	            my.dataCache.push(parseInt(a,16));
+	            vv = parseInt(a,16);
+	            chk = chk + vv;
+	            my.dataCache.push(vv);
 	            
 	        }
-	    }		    
+	        
+	    }	
+	    
+	    alert(chk);
 		
 	};
 	
