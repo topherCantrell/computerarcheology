@@ -1,4 +1,4 @@
-function makeTRS80Text() {
+function makeTRS80Text(consoleElement,tapeElement) {
 	
 	// ROM Calls:
 	// 0212 : turn on cassette
@@ -48,8 +48,9 @@ function makeTRS80Text() {
         my.iowriteFN = iowriteFN;
 		my.resetVector = resetVector;	
 		my.onKeyPress = onKeyPress;
-		console = document.getElementById("trs80console");
-		tape = document.getElementById("tape");		
+
+		console = document.getElementById(consoleElement);
+		tape = document.getElementById(tapeElement);		
 		
 		console.addEventListener("keydown",function(evt) {   			
 			if(!endlessLoop && !noInput) {

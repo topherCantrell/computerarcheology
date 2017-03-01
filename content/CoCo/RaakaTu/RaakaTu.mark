@@ -377,7 +377,7 @@ I used the [https://github.com/maly/6809js 6809.js emulator] to run the actual R
 <script src="/js/6809.js"></script>
 <script src="/CoCo/CoCoText.js"></script>
 <script src="/CoCo/RaakaTu/raakatu.js"></script>
-<script>window.onload = startRaakaTu</script>
+<script>window.onload = function() {startRaakaTu("raakatuConsole");}</script>
 PC keys map to CoCo keys and game functions as shown:
 </p>
 <table class="caTable">
@@ -389,5 +389,5 @@ PC keys map to CoCo keys and game functions as shown:
 <tr><td>escape</td><td>clear</td><td>Delete the line</td></tr>
 </table>
 </p>
-<textarea readonly id="cocoConsole" rows="16" style="background-color: #00FF01; color: black;font-family: monospace;font-size:12px;width:33ch;" ></textarea>
+<textarea readonly id="raakatuConsole" rows="16" style="background-color: #00FF01; color: black;font-family: monospace;font-size:12px;width:33ch;" ></textarea>
 }}}

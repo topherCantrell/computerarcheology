@@ -1,8 +1,8 @@
 
-function startBedlam() {
+function startBedlam(consoleElement) {
 	
 	// The CoCo emulator
-	var CoCoText = makeCoCoText();
+	var CoCoText = makeCoCoText(consoleElement);
 	// The game code
 	var BinaryData = makeBinaryDataBedlam();
 	

@@ -21,9 +21,9 @@ I used [https://github.com/DrGoldfire/Z80.js/tree/master DrGodfire's JavaScript 
 <script src="/js/Z80.js"></script>
 <script src="/TRS80/TRS80Text.js"></script>
 <script src="/TRS80/Pyramid/trs80pyramid.js"></script>
-<script>window.onload = startTRS80Pyramid</script>
+<script>window.onload = function() {startTRS80Pyramid("trs80PyramidConsole","trs80PyramidTape");}</script>
 
-<textarea id="trs80console" rows="16" style="background-color: black;color: white;font-family: monospace;font-size:12px;width:65ch;" ></textarea>
+<textarea id="trs80PyramidConsole" rows="16" style="background-color: black;color: white;font-family: monospace;font-size:12px;width:65ch;" ></textarea>
 
 <div id="tapeArea">
 The text area below is the virtual cassette tape. Instead of writing to tape, the emulator writes data as two-digit hex
@@ -35,7 +35,7 @@ in a text file for later use. </p>
 
 Before the LOAD command you must paste the desired saved-data back into the text area.</p>
 
-<textarea id="tape" rows="8" style="font-size:8px;width:80ch;" ></textarea>
+<textarea id="trs80PyramidTape" rows="8" style="font-size:8px;width:80ch;" ></textarea>
 </div>
 
 }}}

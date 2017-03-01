@@ -1,6 +1,6 @@
-function startTRS80Pyramid() {
+function startTRS80Pyramid(consoleElement,tapeElement) {
 	
-	var TRS80Text = makeTRS80Text();
+	var TRS80Text = makeTRS80Text(consoleElement,tapeElement);
 	var BinaryData = makeBinaryDataTRS80Pyramid();
 	
 	function write(addr,value) {

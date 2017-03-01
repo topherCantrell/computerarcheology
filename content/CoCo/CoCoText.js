@@ -1,4 +1,4 @@
-function makeCoCoText() {
+function makeCoCoText(consoleElement, tapeElement) {
 	
 	// ROM Calls:
 	// [A004] Start cassette and read leader
@@ -232,8 +232,8 @@ function makeCoCoText() {
 		my.resetVector = resetVector;			
 		my.onKeyPress = onKeyPress;
 		
-		tape = document.getElementById("tape");
-	    cocoConsole = document.getElementById("cocoConsole");
+		tape = document.getElementById(tapeElement);
+	    cocoConsole = document.getElementById(consoleElement);
 		
 		for(var x=0;x<0600;++x) pureRAM.push(0);		
 		

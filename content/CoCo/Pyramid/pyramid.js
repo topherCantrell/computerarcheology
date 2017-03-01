@@ -1,8 +1,8 @@
 
-function startPyramid() {
+function startPyramid(consoleElement,tapeElement) {
 	
 	// The CoCo emulator
-	var CoCoText = makeCoCoText();
+	var CoCoText = makeCoCoText(consoleElement,tapeElement);
 	// The game code
 	var BinaryData = makeBinaryDataPyramid();
 	

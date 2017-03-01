@@ -1,6 +1,6 @@
-function startHauntedHouse() {
+function startHauntedHouse(consoleElement) {
 	
-	var TRS80Text = makeTRS80Text();
+	var TRS80Text = makeTRS80Text(consoleElement);
 	var BinaryData = makeBinaryDataHauntedHouse();
 	
     document.getElementById("floorOne").onclick = function() {
