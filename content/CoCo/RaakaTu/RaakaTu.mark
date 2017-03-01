@@ -373,7 +373,7 @@ else if the player is in 99 then print EXIT TO LEFT" and so on for each room on 
 I used the [https://github.com/maly/6809js 6809.js emulator] to run the actual Raaka Tu code in the window below. Click in the green text area below and type a command.
 
 {{{html
-<script src="/js/BinaryData.js"></script>
+<script src="/CoCo/RaakaTu/BinaryDataRaakaTu.js"></script>
 <script src="/js/6809.js"></script>
 <script src="/CoCo/CoCoText.js"></script>
 <script src="/CoCo/RaakaTu/raakatu.js"></script>

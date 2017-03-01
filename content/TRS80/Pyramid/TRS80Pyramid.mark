@@ -17,7 +17,7 @@ I used [https://github.com/DrGoldfire/Z80.js/tree/master DrGodfire's JavaScript 
 == Play Me! ==
 
 {{{html
-<script src="/js/BinaryData.js"></script>
+<script src="/TRS80/Pyramid/BinaryDataTRS80Pyramid.js"></script>
 <script src="/js/Z80.js"></script>
 <script src="/TRS80/TRS80Text.js"></script>
 <script src="/TRS80/Pyramid/trs80pyramid.js"></script>

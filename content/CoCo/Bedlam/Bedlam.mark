@@ -182,7 +182,7 @@ the PLUGH command to take 3A out of your pack. The PLUGH command goes all the wa
 I used the [https://github.com/maly/6809js 6809.js emulator] to run the actual Bedlam code in the window below. Click in the green text area below and press a key to begin.
 
 {{{html
-<script src="/js/BinaryData.js"></script>
+<script src="/CoCo/Bedlam/BinaryDataBedlam.js"></script>
 <script src="/js/6809.js"></script>
 <script src="/CoCo/CoCoText.js"></script>
 <script src="/CoCo/Bedlam/bedlam.js"></script>

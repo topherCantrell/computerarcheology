@@ -383,7 +383,7 @@ I used the [https://github.com/maly/6809js 6809.js emulator] to run the actual P
 The emulator supports tape operations (see the tape text-area below the game window).
 
 {{{html
-<script src="/js/BinaryData.js"></script>
+<script src="/CoCo/Pyramid/BinaryDataPyramid.js"></script>
 <script src="/js/6809.js"></script>
 <script src="/CoCo/CoCoText.js"></script>
 <script src="/CoCo/Pyramid/pyramid.js"></script>

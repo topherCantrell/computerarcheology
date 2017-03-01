@@ -37,7 +37,8 @@
                  {"copy": "OBJS.js"},
                  {"copy": "PARSE.js"},
                  {"copy": "ROOMS.js"},
-                 {"copy": "SCRIPTER.js"}
+                 {"copy": "SCRIPTER.js"},
+                 {"copy": "BinaryDataPyramid.js"}
                  ]
              }, 
              {"dir": "RaakaTu", "nav": "Raaka Tu", "entries" : [
@@ -45,7 +46,8 @@
                  {"address": "RAMUse.mark", "out": "RAMUse.html", "nav":"RAM Use"},
                  {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
                  {"copy": "RaakaTu.jpg"},
-                 {"copy": "raakatu.js"}
+                 {"copy": "raakatu.js"},
+                 {"copy": "BinaryDataRaakaTu.js"}
                  ]
              },
              {"dir": "Bedlam", "nav": "Bedlam", "entries" : [
@@ -53,7 +55,8 @@
                  {"address": "RAMUse.mark", "out": "RAMUse.html", "nav":"RAM Use"},
                  {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
                  {"copy": "Bedlam.jpg"},
-                 {"copy": "bedlam.js"}
+                 {"copy": "bedlam.js"},
+                 {"copy": "BinaryDataBedlam.js"}
                  ]
              }
              ]           
@@ -64,7 +67,7 @@
               {"address": "Hardware.mark", "out": "Hardware.html", "nav":"Hardware"},            
               {"copy": "TRS80.jpg"},
               {"copy": "TRS80Tech.jpg"}, 
-              {"copy": "TRS80Text.js"},
+              {"copy": "TRS80Text.js"},              
               {"dir": "HauntedHouse", "nav": "HauntedHouse", "entries": [
                   {"mark": "HauntedHouse.mark", "out": "index.html"},
                   {"code": "Code1.cmark", "out": "Code1.html", "nav": "Code1"},
@@ -72,7 +75,8 @@
                   {"code": "Code2.cmark", "out": "Code2.html", "nav": "Code2"},
                   {"address": "RAMUse2.mark", "out": "RAMUse2.html", "nav":"RAM Use (2nd)"}, 
                   {"copy": "HauntedHouse.jpg"},
-                  {"copy": "hauntedhouse.js"}
+                  {"copy": "hauntedhouse.js"},
+                  {"copy": "BinaryDataHauntedHouse.js"}
                   ]
               },
               {"dir": "Pyramid", "nav": "Pyramid", "entries": [
@@ -80,7 +84,8 @@
                   {"address": "RAMUse.mark", "out": "RAMUse.html", "nav":"RAM Use"},
                   {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
                   {"copy": "TRS80Pyramid.jpg"},
-                  {"copy": "trs80pyramid.js"}
+                  {"copy": "trs80pyramid.js"},
+                  {"copy": "BinaryDataTRS80Pyramid.js"}
                   ]
               },
               {"dir": "Xenos", "nav": "Xenos", "entries": [
