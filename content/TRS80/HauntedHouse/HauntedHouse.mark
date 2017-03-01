@@ -68,7 +68,7 @@ Remember: you have to press a key to get started on the 1st floor.
 == Play Me! ==
 
 {{{html
-<script src="/CoCo/Bedlam/BinaryDataHauntedHouse.js"></script>
+<script src="/TRS80/HauntedHouse/BinaryDataHauntedHouse.js"></script>
 <script src="/js/Z80.js"></script>
 <script src="/TRS80/TRS80Text.js"></script>
 <script src="/TRS80/HauntedHouse/hauntedhouse.js"></script>
