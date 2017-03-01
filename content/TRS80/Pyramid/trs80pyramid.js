@@ -1,4 +1,4 @@
-$(function() {
+window.onload = function() {
 	
 	function write(addr,value) {
 		// From the loaded game RAM
@@ -32,9 +32,23 @@ $(function() {
 		return undefined;
 	}
 	
+	function ioread(addr) {
+        return undefined;
+    }
+    
+    function iowrite(addr,value) {
+        return undefined;
+    }
+	
 	BinaryData.loadDataCacheFromURL("/TRS80/Pyramid/Code.html",function() {		
-		TRS80Text.init(read,write,function() {TRS80Text.runUntilWaitKey();}, 0x4300);
+		TRS80Text.init(
+		        read,
+		        write,
+		        ioread, 
+		        iowrite,
+		        function() {TRS80Text.runUntilWaitKey();}, 
+		        0x4300);
 		TRS80Text.runUntilWaitKey();    
 	});	
 	
-});
+};

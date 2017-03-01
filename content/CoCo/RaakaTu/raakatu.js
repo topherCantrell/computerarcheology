@@ -1,5 +1,5 @@
 
-$(function() {
+window.onload = function() {
 	
     function write(addr,value) {        
     	if(addr>=0x0600 && addr<0x3F18) {
@@ -26,7 +26,6 @@ $(function() {
             // spin within the code.
             CoCoText.pause();
             setTimeout(function() {
-                CoCoText.unpause();
                 CoCoText.runUntilWaitKey();
             },100);
             return 0x12; // NOP
@@ -57,4 +56,4 @@ $(function() {
     	CoCoText.runUntilWaitKey();    	  
     });    
     
-});
+};

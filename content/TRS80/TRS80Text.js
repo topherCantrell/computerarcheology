@@ -19,6 +19,9 @@ var TRS80Text = (function() {
 	var noInput;
 	var inputKey;
 	
+	var console;
+	var tape;
+	
 	my.reset = function() {
 		endlessLoop = false;
 		comp.reset();
@@ -34,20 +37,27 @@ var TRS80Text = (function() {
         noInput = false;
     };
     
-    my.init = function(readFN, writeFN, onKeyPress, resetVector) {
+    my.changeResetVector = function(resetVector) {
+        my.resetVector = resetVector;   
+    };
+    
+    my.init = function(readFN, writeFN, ioreadFN, iowriteFN, onKeyPress, resetVector) {
     	my.readFN = readFN;
 		my.writeFN = writeFN;
+		my.ioreadFN = ioreadFN;
+        my.iowriteFN = iowriteFN;
 		my.resetVector = resetVector;	
-		my.console = $("#trs80console");
 		my.onKeyPress = onKeyPress;
+		console = document.getElementById("trs80console");
+		tape = document.getElementById("tape");		
 		
-		my.console.on("keydown",function(evt) {			
+		console.addEventListener("keydown",function(evt) {   			
 			if(!endlessLoop && !noInput) {
 				inputKey = evt.keyCode;
 				my.runUntilWaitKey();
 			}
 			// Consume the event
-			return false;
+            evt.preventDefault();
 		});
 		
 		var machine = {
@@ -102,7 +112,7 @@ var TRS80Text = (function() {
                     return 0xC9; // Read tape leader
                 }
                 if(addr===0x0287) {
-                    $("#tape").val("");
+                    tape.value = "";                    
                     return 0xC9; // Write tape leader                
                 }
                 throw "Unknown memory read "+addr;
@@ -114,6 +124,8 @@ var TRS80Text = (function() {
 				throw "Unknown memory write "+addr;
 			},
 			io_read : function(addr) {
+			    var ret = my.ioreadFN(addr);
+			    if(ret!==undefined) return ret;
 				addr = addr & 0xFF;
 				if(addr===0) {
 					running = false;
@@ -123,7 +135,7 @@ var TRS80Text = (function() {
 				    return inputKey;
 				}
 				if(addr===2) {
-				    var dat = $("#tape").val();
+				    var dat = tape.value;
 				    var v = parseInt(dat.substring(tapepos,tapepos+2),16);
 	                tapepos = tapepos + 2;
 	                return v;
@@ -132,8 +144,10 @@ var TRS80Text = (function() {
 			},
 			io_write : function(addr,value) {
 				addr = addr & 0xFF;
+				var ret = my.iowriteFN(addr,value);
+                if(ret) return;
 				if(addr===0) {					
-					var oldtext = my.console.text();
+					var oldtext = console.value;
 					if(value===8) {
 						oldtext = oldtext.substring(0,oldtext.length-1);
 					} else if(value===14) {
@@ -141,15 +155,15 @@ var TRS80Text = (function() {
 					} else {
 						oldtext = oldtext+String.fromCharCode(value);
 					}
-					my.console.text(oldtext);
-					my.console.scrollTop(my.console[0].scrollHeight);
+					console.value = oldtext;
+					console.scrollTop = console.scrollHeight;
+					//console.scrollTop(console.scrollHeight);
 					return;
 				}
 				if(addr===1) {				    
 				    value = value.toString(16).toUpperCase();
-				    if(value.length<2) value = "0"+value;
-				    tape = $("#tape");
-				    tape.val(tape.val()+value);
+				    if(value.length<2) value = "0"+value;				    
+				    tape.value = tape.value + value;
 				    return;
 				}
 				throw "Unknown io write "+addr;

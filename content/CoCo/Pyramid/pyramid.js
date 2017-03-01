@@ -1,5 +1,5 @@
 
-$(function() {
+window.onload = function() {
 	
     function write(addr,value) {        
     	if(addr>=0x0600 && addr<0x3F21) {
@@ -17,12 +17,7 @@ $(function() {
     	if(addr===0x01EB) {
     		return Math.floor(Math.random()*256);
     	}
-    	
-    	// Make the tape appear for tape operations
-    	if(addr===0x0EBB || addr===0x0E81) {
-    		$("#cocoTapeArea").show();
-    	}
-    	
+    	    	    	
     	if(addr===0x0F1B) {
     		// This is the game's endless-loop after death and such
     		CoCoText.startEndlessLoop();    		
@@ -42,4 +37,4 @@ $(function() {
     	CoCoText.runUntilWaitKey();    	  
     });    
     
-});
+};

@@ -36,6 +36,9 @@ var CoCoText = (function() {
 	              "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+
 	              "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
 	
+	var tape;
+	var cocoConsole;
+	
 	function write(addr,value) {
 		
 		// Let the system have it first in case it overrides something.
@@ -66,7 +69,6 @@ var CoCoText = (function() {
     	
     	var src;
     	var cnt;
-    	var tape;
     	var v;
     	
     	// Try the system first (in case it overrides something)
@@ -99,16 +101,15 @@ var CoCoText = (function() {
         
         if(addr===0xD004 || addr===0xD00C) { // Read/write leader  
         	if(addr===0xD00C) {
-        		$("#cocoTape").val(""); // Writing? Clear the tape first.
+        	    tape.value = ""; // Writing? Clear the tape first.    		
         	}     	
         	tapepos = 0;
         	return 0x39; // RTS
         }
         if(addr===0xD006) { // Read block
         	src = (pureRAM[0x7E]<<8) | pureRAM[0x7F];
-        	cnt = pureRAM[0x7D];        	
-        	tape = $("#cocoTape");
-        	var dat = tape.val();
+        	cnt = pureRAM[0x7D];       	
+        	var dat = tape.value;
         	while(cnt>0) {
         		v = parseInt(dat.substring(tapepos,tapepos+2),16);
         		tapepos = tapepos + 2;
@@ -121,12 +122,11 @@ var CoCoText = (function() {
         }        
         if(addr===0xD008) { // Write block
         	src = (pureRAM[0x7E]<<8) | pureRAM[0x7F];
-        	cnt = pureRAM[0x7D];
-        	tape = $("#cocoTape");
+        	cnt = pureRAM[0x7D];        	
         	while(cnt>0) {
         		v = read(src++).toString(16).toUpperCase();
         		if(v.length<2) v="0"+v;        		
-        		tape.val(tape.val()+v);
+        		tape.value = tape.value + v;
         		--cnt;
         	}
         	CPU6809.set("X",src);
@@ -180,7 +180,7 @@ var CoCoText = (function() {
     		}    	
     		if(y!=15) t=t+"\n";
     	}
-    	my.console.val(t);
+    	cocoConsole.value = t;
     }
     
     function printByte(value) {
@@ -226,24 +226,21 @@ var CoCoText = (function() {
         running = false;
         noInput = true;
     };
-    
-    my.unpause = function() {
-        running = true;
-        noInput = false;
-    };
-	
+        	
 	my.init = function(readFN, writeFN, onKeyPress, resetVector) {
 		my.readFN = readFN;
 		my.writeFN = writeFN;
-		my.resetVector = resetVector;	
-		my.console = $("#cocoConsole");
+		my.resetVector = resetVector;			
 		my.onKeyPress = onKeyPress;
+		
+		tape = document.getElementById("tape");
+	    cocoConsole = document.getElementById("cocoConsole");
 		
 		for(var x=0;x<0600;++x) pureRAM.push(0);		
 		
 		updateScreen();
 		
-		my.console.on("keydown",function(evt) {	
+		cocoConsole.addEventListener("keydown",function(evt) {	
 			if(!endlessLoop && !noInput) {
 			    if(evt.keyCode===16) return; // Lone shift key
 			    var c = evt.keyCode;			    
@@ -255,7 +252,7 @@ var CoCoText = (function() {
 				my.onKeyPress();
 			}
 			// Consume the event
-			return false;
+			evt.preventDefault();
 		});
 		
 		CPU6809.init(write,read,function(){});
