@@ -24,9 +24,17 @@ public class BinaryToJS {
 	    //CodeFile tabs = new CodeFile(p);
 	    //int start = 0x0600;
 	    
-	    Path p = Paths.get("content/CoCo/RaakaTu/Code.cmark");
+	    //Path p = Paths.get("content/CoCo/RaakaTu/Code.cmark");
+	    //CodeFile tabs = new CodeFile(p);
+	    //int start = 0x0600;
+	    
+	    //Path p = Paths.get("content/TRS80/HauntedHouse/Code1.cmark");
+	    //CodeFile tabs = new CodeFile(p);
+	    //int start = 0x42E9;
+	    
+	    Path p = Paths.get("content/TRS80/HauntedHouse/Code2.cmark");
 	    CodeFile tabs = new CodeFile(p);
-	    int start = 0x0600;
+	    int start = 0x435E;    
 	    
 	    PrintStream ps = new PrintStream("data.js");
 	    ps.print("var data = [");
