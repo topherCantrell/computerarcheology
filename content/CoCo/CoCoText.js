@@ -1,6 +1,7 @@
 
 var CoCoText = (function() {
 	
+	// ROM Calls:
 	// [A004] Start cassette and read leader
 	// [A006] Read block
 	//        7E, 7F : Destination
@@ -182,6 +183,45 @@ var CoCoText = (function() {
     	my.console.val(t);
     }
     
+    function printByte(value) {
+		//console.log(""+value+":"+String.fromCharCode(value));		
+		var cursor = (pureRAM[0x88]<<8) | (pureRAM[0x89]);
+		if(value===0x08) {
+			if(cursor===0x400) return; // Top of screen ... nothing to do
+			cursor = cursor - 1;
+			pureRAM[cursor] = 0x60;
+		} else if(value===0x0D) {			
+			do {
+				pureRAM[cursor++] = 0x60;
+			} while((cursor%32)!==0);
+		} else {
+			if(value<0x20) return; // No control characters
+			if(value<128) {
+				if(value<0x40) {
+					value = value ^ 0x40;
+				} else if(value>=0x60) {
+					value = value & 0xDF;
+					value = value ^ 0x40;
+				}
+			}
+			pureRAM[cursor++] = value;			
+		}
+		if(cursor>=0x600) {
+			for(var x=0x0420;x<0x600;++x) {
+				pureRAM[x-32] = pureRAM[x];				
+			}
+			for(x=0x600-0x20;x<0x600;++x) {
+				pureRAM[x] = 0x60;
+			}
+			cursor = 0x600-0x20;
+		}
+		pureRAM[0x88] = cursor>>8;
+		pureRAM[0x89] = cursor & 0xFF;		
+		updateScreen();
+	}
+    
+    // ----- Public API -----
+    
     my.pause = function() {
         running = false;
         noInput = true;
@@ -231,42 +271,9 @@ var CoCoText = (function() {
 		}
 	};
 	
-	function printByte(value) {
-		//console.log(""+value+":"+String.fromCharCode(value));		
-		var cursor = (pureRAM[0x88]<<8) | (pureRAM[0x89]);
-		if(value===0x08) {
-			if(cursor===0x400) return; // Top of screen ... nothing to do
-			cursor = cursor - 1;
-			pureRAM[cursor] = 0x60;
-		} else if(value===0x0D) {			
-			do {
-				pureRAM[cursor++] = 0x60;
-			} while((cursor%32)!==0);
-		} else {
-			if(value<0x20) return; // No control characters
-			if(value<128) {
-				if(value<0x40) {
-					value = value ^ 0x40;
-				} else if(value>=0x60) {
-					value = value & 0xDF;
-					value = value ^ 0x40;
-				}
-			}
-			pureRAM[cursor++] = value;			
-		}
-		if(cursor>=0x600) {
-			for(var x=0x0420;x<0x600;++x) {
-				pureRAM[x-32] = pureRAM[x];				
-			}
-			for(x=0x600-0x20;x<0x600;++x) {
-				pureRAM[x] = 0x60;
-			}
-			cursor = 0x600-0x20;
-		}
-		pureRAM[0x88] = cursor>>8;
-		pureRAM[0x89] = cursor & 0xFF;		
-		updateScreen();
-	}
+	my.set = function(register,value) {
+		CPU6809.set(register,value);
+	};
 	
 	my.startEndlessLoop = function() {	
 		running = false;

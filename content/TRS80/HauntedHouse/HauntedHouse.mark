@@ -70,6 +70,7 @@ Remember: you have to press a key to get started on the 1st floor.
 {{{html
 <script src="/js/BinaryData.js"></script>
 <script src="/js/Z80.js"></script>
+<script src="/TRS80/TRS80.js"></script>
 <script src="/TRS80/HauntedHouse/hauntedhouse.js"></script>
 
 <button id="floorOne" class="btn btn-primary" >1st Floor</button><button id="floorTwo" class="btn btn-primary" style="margin-left:0.5em">2nd Floor</button><p>

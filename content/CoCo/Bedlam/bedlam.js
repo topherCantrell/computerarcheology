@@ -16,7 +16,7 @@ $(function() {
             // Since we are eating that spin-wait we'll provide true
             // random numbers here.
             write(0x13B8,Math.floor(Math.random()*256));
-            CPU6809.set("A",0); // Bedlam does this        
+            CoCoText.set("A",0); // Bedlam does this        
             return 0x39; // RTS
         }
         

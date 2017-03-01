@@ -16,7 +16,7 @@ $(function() {
             // Since we are eating that spin-wait we'll provide true
             // random numbers here.
             write(0x1338,Math.floor(Math.random()*256));
-            CPU6809.set("A",Math.floor(Math.random()*256));        
+            CoCoText.set("A",Math.floor(Math.random()*256));        
             return 0x39; // RTS
         }
         

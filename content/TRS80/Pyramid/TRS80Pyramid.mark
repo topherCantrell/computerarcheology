@@ -19,6 +19,7 @@ I used [https://github.com/DrGoldfire/Z80.js/tree/master DrGodfire's JavaScript 
 {{{html
 <script src="/js/BinaryData.js"></script>
 <script src="/js/Z80.js"></script>
+<script src="/TRS80/TRS80Text.js"></script>
 <script src="/TRS80/Pyramid/trs80pyramid.js"></script>
 
 <textarea id="trs80console" rows="16" style="background-color: black;color: white;font-family: monospace;font-size:12px;width:65ch;" ></textarea>
