@@ -1,3 +1,67 @@
+$(function() {
+	
+	$("#floorOne").on("click",function() {
+		BinaryData.loadDataCacheFromURL("/TRS80/HauntedHouse/Code1.html",function() {
+			floor=1;
+			TRS80Text.reset();
+			TRS80Text.runUntilWaitKey();  
+		});
+	});
+	
+	$("#floorTwo").on("click",function() {		
+		BinaryData.loadDataCacheFromURL("/TRS80/HauntedHouse/Code2.html",function() {
+			floor=2;
+			TRS80Text.reset();
+			TRS80Text.runUntilWaitKey();  
+		});
+	});
+	
+	var floor=1;
+	
+	function write(addr,value) {
+		// From the loaded game RAM
+		if(addr>=0x42E9 &&addr<0x5000) {
+			BinaryData.write(addr,value);
+			return true;
+		}
+		
+		return undefined;
+	}
+	
+	function read(addr) { 
+		
+		// Endless loops in code
+		if(floor===1 && addr===0x4A48) {
+			TRS80Text.startEndlessLoop(); 
+			return 0;					
+		}
+		if(floor===2 && addr===0x4A97) {
+			TRS80Text.startEndlessLoop(); 
+			return 0;					
+		}
+				
+		if(addr===0x4774) {
+		    // We hijacked the input spin-loop. We need
+		    // to simulate the random number counter.
+            return Math.floor(Math.random()*256);
+        }
+		
+		// From the loaded game RAM
+		if(addr>=0x42E9 &&addr<0x5000) {
+			return BinaryData.read(addr);
+		}
+		
+		return undefined;
+	}
+	
+	BinaryData.loadDataCacheFromURL("/TRS80/Pyramid/Code.html",function() {		
+		TRS80Text.init(read,write,function() {TRS80Text.runUntilWaitKey();}, 0x4300);
+		TRS80Text.runUntilWaitKey();    
+	});	
+	
+});
+
+
 
 
 // The Z80 computer
