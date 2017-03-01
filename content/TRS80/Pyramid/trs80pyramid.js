@@ -1,4 +1,7 @@
-window.onload = function() {
+function startTRS80Pyramid() {
+	
+	var TRS80Text = makeTRS80Text();
+	var BinaryData = makeBinaryDataTRS80Pyramid();
 	
 	function write(addr,value) {
 		// From the loaded game RAM

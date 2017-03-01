@@ -387,6 +387,7 @@ The emulator supports tape operations (see the tape text-area below the game win
 <script src="/js/6809.js"></script>
 <script src="/CoCo/CoCoText.js"></script>
 <script src="/CoCo/Pyramid/pyramid.js"></script>
+<script>window.onload = startPyramid</script>
 <textarea readonly id="cocoConsole" rows="16" style="background-color: #00FF01; color: black;font-family: monospace;font-size:12px;width:33ch;" ></textarea>
 
 <div id="cocoTapeArea">

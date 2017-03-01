@@ -1,4 +1,4 @@
-var TRS80Text = (function() {	
+function makeTRS80Text() {
 	
 	// ROM Calls:
 	// 0212 : turn on cassette
@@ -189,4 +189,4 @@ var TRS80Text = (function() {
 	
 	return my;
 	
-}());
+};

@@ -72,6 +72,7 @@ Remember: you have to press a key to get started on the 1st floor.
 <script src="/js/Z80.js"></script>
 <script src="/TRS80/TRS80Text.js"></script>
 <script src="/TRS80/HauntedHouse/hauntedhouse.js"></script>
+<script>window.onload = startHauntedHouse</script>
 
 <button id="floorOne" class="btn btn-primary" >1st Floor</button><button id="floorTwo" class="btn btn-primary" style="margin-left:0.5em">2nd Floor</button><p>
 <textarea id="trs80console" rows="16" style="background-color: black;color: white;font-family: monospace;font-size:12px;width:65ch;" ></textarea>

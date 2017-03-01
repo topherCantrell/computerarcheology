@@ -1,5 +1,5 @@
 
-var BinaryData = (function() {
+function makeBinaryDataTRS80Pyramid() {
     
     var dataOrigin = 0x4300;
     var data = [
@@ -511,4 +511,4 @@ var BinaryData = (function() {
     
     return my;
     
-}());
+};

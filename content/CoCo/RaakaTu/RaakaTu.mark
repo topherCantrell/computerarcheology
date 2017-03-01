@@ -377,6 +377,7 @@ I used the [https://github.com/maly/6809js 6809.js emulator] to run the actual R
 <script src="/js/6809.js"></script>
 <script src="/CoCo/CoCoText.js"></script>
 <script src="/CoCo/RaakaTu/raakatu.js"></script>
+<script>window.onload = startRaakaTu</script>
 PC keys map to CoCo keys and game functions as shown:
 </p>
 <table class="caTable">

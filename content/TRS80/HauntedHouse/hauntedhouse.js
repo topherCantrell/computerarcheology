@@ -1,4 +1,7 @@
-window.onload = function() {
+function startHauntedHouse() {
+	
+	var TRS80Text = makeTRS80Text();
+	var BinaryData = makeBinaryDataHauntedHouse();
 	
     document.getElementById("floorOne").onclick = function() {
 		BinaryData.loadDataCacheFromURL("/TRS80/HauntedHouse/Code1.html",function() {

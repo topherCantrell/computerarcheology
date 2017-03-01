@@ -1,5 +1,4 @@
-
-var CoCoText = (function() {
+function makeCoCoText() {
 	
 	// ROM Calls:
 	// [A004] Start cassette and read leader
@@ -263,6 +262,7 @@ var CoCoText = (function() {
 			return;
 		}
 		running = true;
+		noInput = false;
 		while(running) {			
 			CPU6809.steps(1);
 		}
@@ -279,4 +279,4 @@ var CoCoText = (function() {
 	
 	return my;	
 	
-}());
+};

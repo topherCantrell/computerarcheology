@@ -1,5 +1,10 @@
 
-window.onload = function() {
+function startPyramid() {
+	
+	// The CoCo emulator
+	var CoCoText = makeCoCoText();
+	// The game code
+	var BinaryData = makeBinaryDataPyramid();
 	
     function write(addr,value) {        
     	if(addr>=0x0600 && addr<0x3F21) {
