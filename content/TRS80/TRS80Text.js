@@ -22,6 +22,25 @@ function makeTRS80Text(consoleElement,tapeElement) {
 	var console;
 	var tape;
 	
+	var screenValues = [];
+	var cursor = 0;
+	for(var z=0;z<64*16;++z) {
+	    screenValues.push(0x20);
+	}
+	
+	function updateScreen() {
+	    var t = "";
+        var p = 0;
+        for(var y=0;y<16;++y) {
+            for(var x=0;x<64;++x) {
+                var c = screenValues[p++];
+                t = t + String.fromCharCode(c);
+            }       
+            if(y!=15) t=t+"\n";
+        }
+        console.value = t;
+	}
+	
 	my.reset = function() {
 		endlessLoop = false;
 		comp.reset();
@@ -54,6 +73,7 @@ function makeTRS80Text(consoleElement,tapeElement) {
 		
 		console.addEventListener("keydown",function(evt) {   			
 			if(!endlessLoop && !noInput) {
+			    if(evt.keyCode===16) return; // Lone shift key
 				inputKey = evt.keyCode;
 				my.runUntilWaitKey();
 			}
@@ -147,18 +167,33 @@ function makeTRS80Text(consoleElement,tapeElement) {
 				addr = addr & 0xFF;
 				var ret = my.iowriteFN(addr,value);
                 if(ret) return;
-				if(addr===0) {					
-					var oldtext = console.value;
-					if(value===8) {
-						oldtext = oldtext.substring(0,oldtext.length-1);
-					} else if(value===14) {
-						oldtext = "";
-					} else {
-						oldtext = oldtext+String.fromCharCode(value);
-					}
-					console.value = oldtext;
-					console.scrollTop = console.scrollHeight;
-					//console.scrollTop(console.scrollHeight);
+				if(addr===0) {
+				    if(value===0x0E) {
+				        for(var x=0;x<64*16;++x) {
+				            screenValues[x] = 0x20;
+				        }
+				        cursor = 0;
+				    } else if(value===0x08) {
+				        if(cursor===0) return; // Top of screen ... nothing to do
+				        cursor = cursor - 1;
+				        screenValues[cursor] = 0x20;				        
+				    } else if(value===0x0D) {
+				        do {
+				            screenValues[cursor++] = 0x20;
+				        } while((cursor%64)!==0);
+				    } else {
+				        screenValues[cursor++] = value;
+				    }
+				    if(cursor>=64*16) {
+				        for(x=64;x<64*16;++x) {
+				            screenValues[x-64] = screenValues[x];
+				        }
+				        for(x=64*16-64;x<64*16;++x) {
+				            screenValues[x] = 0x20;
+				        }
+				        cursor = cursor - 64;
+				    }
+				    updateScreen();
 					return;
 				}
 				if(addr===1) {				    

@@ -22,6 +22,11 @@ function startPyramid(consoleElement,tapeElement) {
     	if(addr===0x01EB) {
     		return Math.floor(Math.random()*256);
     	}
+    	
+    	// Virtual tape area
+    	if(addr===0x3C27) {
+    	    $("#cocoTapeArea").show();
+    	}
     	    	    	
     	if(addr===0x0F1B) {
     		// This is the game's endless-loop after death and such

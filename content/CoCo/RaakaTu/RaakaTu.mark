@@ -1,6 +1,35 @@
 %%title Raaka Tu
 %%image RaakaTu.jpg
 
+{{{html
+<div class="playMe">
+<div style="padding-left: 20px;height: 368px;">
+<script src="/CoCo/RaakaTu/BinaryDataRaakaTu.js"></script>
+<script src="/js/6809.js"></script>
+<script src="/CoCo/CoCoText.js"></script>
+<script src="/CoCo/RaakaTu/raakatu.js"></script>
+<script>window.onload = function() {startRaakaTu("raakatuConsole");}</script>
+
+<h1>Play Me!</h1>
+Play the game in a CoCo emulator. Click on the green console and start typing.<br>
+
+<textarea readonly id="raakatuConsole" rows="16" style="background-color: #00FF01; color: black;font-family: monospace;font-size:12px;width:33ch;float: left;margin-top:8px"></textarea>
+
+<table class="caTable" style="float: left;margin-left:8px;margin-top:8px;">
+<tr><th>PC Key</th><th>CoCo Key</th><th>Function</th></tr>
+<tr><td>left-arrow</td><td>shift-left-arrow</td><td>Move cursor left</td></tr>
+<tr><td>right-arrow</td><td>shift-right-arrow</td><td>Move cursor right</td></tr>
+<tr><td>delete</td><td>right-arrow</td><td>Delete character right of cursor</td></tr>
+<tr><td>backspace</td><td>left-arrow</td><td>Delete character left of cursor</td></tr>
+<tr><td>escape</td><td>clear</td><td>Delete the line</td></tr>
+</table>
+
+</div>
+</div>
+
+}}}
+
+
 = Code Links =
 
 * [Code.html Disassembled Code]
@@ -22,8 +51,6 @@ and wearing a headdress.
 <div style="padding-left: 20px">
 }}}
 = Tour Guide =
-
-Play the real code running in a CoCo emulator at the bottom of the page. [#PlayMe Play it now!]
 
 The code is practically a virtual-machine for the game written in adventure-language. The [Code.html#MainLoop Main Loop] decodes the complex
 user input with nouns, verbs, and prepositions.
@@ -368,26 +395,3 @@ else if the player is in 99 then print EXIT TO LEFT" and so on for each room on 
 2FCB:         9F 23                                             ;         Command_03_IS_OBJECT_AT_LOCATION object=23(Guards) location=9F
 }}}
 
-= Play Me! =
-
-I used the [https://github.com/maly/6809js 6809.js emulator] to run the actual Raaka Tu code in the window below. Click in the green text area below and type a command.
-
-{{{html
-<script src="/CoCo/RaakaTu/BinaryDataRaakaTu.js"></script>
-<script src="/js/6809.js"></script>
-<script src="/CoCo/CoCoText.js"></script>
-<script src="/CoCo/RaakaTu/raakatu.js"></script>
-<script>window.onload = function() {startRaakaTu("raakatuConsole");}</script>
-PC keys map to CoCo keys and game functions as shown:
-</p>
-<table class="caTable">
-<tr><th>PC Key</th><th>CoCo Key</th><th>Function</th></tr>
-<tr><td>left-arrow</td><td>shift-left-arrow</td><td>Move cursor left</td></tr>
-<tr><td>right-arrow</td><td>shift-right-arrow</td><td>Move cursor right</td></tr>
-<tr><td>delete</td><td>right-arrow</td><td>Delete character right of cursor</td></tr>
-<tr><td>backspace</td><td>left-arrow</td><td>Delete character left of cursor</td></tr>
-<tr><td>escape</td><td>clear</td><td>Delete the line</td></tr>
-</table>
-</p>
-<textarea readonly id="raakatuConsole" rows="16" style="background-color: #00FF01; color: black;font-family: monospace;font-size:12px;width:33ch;" ></textarea>
-}}}

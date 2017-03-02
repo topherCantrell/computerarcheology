@@ -83,6 +83,12 @@ body {
 	margin-top: 0px;
 }
 
+.playMe {
+	border: 1px solid;
+    border-radius: 10px;
+    background-color: #dff0d8;
+}
+
 .cocoScreen {
 	background: #00FF01; 
 	color: #000; 

@@ -14,6 +14,11 @@ function startTRS80Pyramid(consoleElement,tapeElement) {
 	}
 	
 	function read(addr) { 
+	    
+	    // Virtual tape area
+        if(addr===0x7FA0) {
+            $("#tapeArea").show();
+        }
 		
 		if(addr===0x55F2) {
 		    // This is the endless loop in the game

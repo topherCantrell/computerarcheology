@@ -1,6 +1,39 @@
 %%title Pyramid 2000
 %%image Pyramid.jpg
 
+
+{{{html
+<div class="playMe">
+<div style="padding-left: 20px">
+<script src="/CoCo/Pyramid/BinaryDataPyramid.js"></script>
+<script src="/js/6809.js"></script>
+<script src="/CoCo/CoCoText.js"></script>
+<script src="/CoCo/Pyramid/pyramid.js"></script>
+<script>window.onload = function() {startPyramid("pyramidConsole","pyramidTape");}</script>
+}}}
+= Play Me! =
+Play the game in a CoCo emulator. Click on the green console and press any key.
+
+
+{{{html
+<textarea readonly id="pyramidConsole" rows="16" style="background-color: #00FF01; color: black;font-family: monospace;font-size:12px;width:33ch;" ></textarea>
+
+<div id="cocoTapeArea" style="display:none">
+The text area below is the virtual cassette tape. Instead of writing to tape, the emulator writes data as two-digit hex
+values to this text area.</p>
+
+The SAVE command will write 260 bytes (520 characters)
+to the text box. You must select all the characters (CNTRL-A) and copy them (CNTRL-C). Then store them
+in a text file for later use. </p>
+
+Before the LOAD command you must paste the desired saved-data back into the text area.</p>
+
+<textarea id="pyramidTape" rows="8" style="font-size:8px;width:80ch;" ></textarea>
+</div>
+</div>
+</div>
+}}}
+
 = Code Links =
 
 * [Code.html Disassembled Code]
@@ -19,8 +52,6 @@ awaits just a step away." - From the game manual introduction
 <div style="padding-left: 20px">
 }}}
 = Tour Guide =
-
-Play the real code running in a CoCo emulator at the bottom of the page. [#PlayMe Play it now!]
 
 Check out a [#TRS80Nugget snippet of the original source code] caught in an uninitialized buffer.
 
@@ -53,11 +84,9 @@ If you seek specific game information, solutions, and online emulators then chec
 Solutions and info on Pyramid 2000, Raaka-Tu, and Bedlam:[[br]]
 [http://www.figmentfly.com]
 
-You can play the actual code in the online coco emulator here: [http://www.haplessgenius.com/mocha/]
-* Press the "Setup" button (bottom left)
-* Select the "Pyramid" cassette
-* Enter the "CLOADM" command
-* Enter the "EXEC" command when the game has loaded
+In August 2007 my article on 
+[http://www.cc-webshop.com/Circuit-Cellar-Issue-205-August-2007-PDF-FI-2007-205.htm Text Adventure Gaming] 
+was published in Circuit Cellar magazine. I ported the game to play on a Propeller microcontroller.
 
 = Colossal Cave Adventure =
 
@@ -364,77 +393,3 @@ scripts. This code is part of the script command executed when you enter the com
 
 In the CoCo version of the game, PLUGH does nothing. But in the TRS80 version the code run through the scripts for all the rooms and "rolls" 
 the NORTH, SOUTH, EAST, and WEST directions by a random offset! You type NORTH but you go EAST instead.
-
-This PLUGH routine is such a cool segment of code, and I only found it because it happened to be a snippet of the original assembly text that 
-accidentally made it into the binary image.
-
-= The Game Still Lives =
-
-== Propeller Port ==
-
-In August 2007 my article on 
-[http://www.cc-webshop.com/Circuit-Cellar-Issue-205-August-2007-PDF-FI-2007-205.htm Text Adventure Gaming] 
-was published in Circuit Cellar magazine. I ported the game to play on a Propeller microcontroller.
-
-=== Play Me! ===
-
-I used the [https://github.com/maly/6809js 6809.js emulator] to run the actual Pyramid code in the window below. Click in the area and press any key to begin.
-
-The emulator supports tape operations (see the tape text-area below the game window).
-
-{{{html
-<script src="/CoCo/Pyramid/BinaryDataPyramid.js"></script>
-<script src="/js/6809.js"></script>
-<script src="/CoCo/CoCoText.js"></script>
-<script src="/CoCo/Pyramid/pyramid.js"></script>
-<script>window.onload = function() {startPyramid("pyramidConsole","pyramidTape");}</script>
-<textarea readonly id="pyramidConsole" rows="16" style="background-color: #00FF01; color: black;font-family: monospace;font-size:12px;width:33ch;" ></textarea>
-
-<div id="cocoTapeArea">
-The text area below is the virtual cassette tape. Instead of writing to tape, the emulator writes data as two-digit hex
-values to this text area.</p>
-
-The SAVE command will write 260 bytes (520 characters)
-to the text box. You must select all the characters (CNTRL-A) and copy them (CNTRL-C). Then store them
-in a text file for later use. </p>
-
-Before the LOAD command you must paste the desired saved-data back into the text area.</p>
-
-<textarea id="pyramidTape" rows="8" style="font-size:8px;width:80ch;" ></textarea>
-</div>
-}}}
-
-=== Walk Through ===
-
-1. Get into the pyramid. You have to get the bird into the box before picking up the scepter.[[br]]
-* n;get lamp;lamp on;get bottle;eat food;d;w;get box;w;w;w;get bird;e;e;get scepter;w;w;w;d;d
-
-2. Drive the serpent away with the bird.[[br]]
-* throw bird;drop box
-
-3. Get the diamonds, gold, and jewelry. The mummy takes them all (the mummy must appear to make the chest appear).[[br]]
-* s;get diamonds;n;e;s;get gold;n;w;wave scepter;drop scepter;w;get jewelry;e
-
-4. Get the coins and silver to the entrance.[[br]]
-* e;n;w;get coins;e;n;get silver;n;panel;drop coins;drop silver;drop jewelry;score
-
-5. Pour water on the plant twice to get it to grow into the ceiling.[[br]]
-* panel;s;d;w;d;w;w;w;d;pour water;u;e;e;e;u;e;e;d;fill bottle;u;w;w;d;w;w;w;d;pour water;drop bottle
-
-6. Get the nest and the key. The key opens the sarcophagus.[[br]]
-* climb plant;w;n;get key;s;get nest
-
-7. Get the pearl out of the sarcophagus and drop treasures at the entrance.
-* s;d;u;e;e;e;n;open sarcophagus;d;d;get pearl;u;u;s;u;e;u;n;panel;drop nest;drop pearl;drop key;score[[br]]
-
-8. Get the emerald, vase, and pillow. The "Chamber of Horus" is somewhat random. You may have to go "north" and "up" repeatedly to get to the
-vase and pillow.[[br]]
-* panel;s;d;w;d;w;   n   ;drop lamp;w;get emerald;e;get lamp;get vase;se;   u   ;get pillow
-
-9. Take these treasures to the entrance.[[br]]
-* w;e;u;e;u;n;panel;drop pillow;drop vase;drop emerald;score
-
-10. Get the chest from the maze.[[br]]
-* panel;s;s;u;w;w;n;s;e;s;s;s;n;e;e;nw;get chest;get gold;get diamonds;se;n;d;e;e;e;e;u;drop chest;drop gold; drop diamonds;score
-
-

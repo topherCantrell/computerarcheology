@@ -1,6 +1,28 @@
 %%title Haunted House
 %%image HauntedHouse.jpg
 
+{{{html
+<div class="playMe">
+<div style="padding-left: 20px">
+<script src="/TRS80/HauntedHouse/BinaryDataHauntedHouse.js"></script>
+<script src="/js/Z80.js"></script>
+<script src="/TRS80/TRS80Text.js"></script>
+<script src="/TRS80/HauntedHouse/hauntedhouse.js"></script>
+<script>window.onload = function() {startHauntedHouse("hauntedConsole");}</script>
+
+}}}
+= Play Me! =
+Play the game in a TRS80 emulator. Click on the black console and press any key.
+
+{{{html
+<button id="floorOne" class="btn btn-primary" >1st Floor</button><button id="floorTwo" class="btn btn-primary" style="margin-left:0.5em">2nd Floor</button><p>
+<textarea id="hauntedConsole" rows="16" style="background-color: black;color: white;font-family: monospace;font-size:12px;width:65ch;" ></textarea>
+
+</div>
+</div>
+}}}
+
+
 = Code Links =
 
 * [Code1.html Disassembled Code (1st Floor)]
@@ -33,8 +55,6 @@ game engine by comparing Haunted House with [/CoCo/Pyramid/index.html Pyramid],
 
 = Tour Guide =
 
-The JavaScript TRS-80 emulation of this game is running at the bottom of the page. [#PlayMe Play it now!]
-
 The code is code-within-code. The adventure language processor commands are [Code1.html#ScriptCommands here].
 
 Have a look at all the unpacked messages in the game:
@@ -56,26 +76,6 @@ Read through all words that the game understands:
 {{{html
 </div>
 </div>
-}}}
-
-= Emulation =
-
-I used [https://github.com/DrGoldfire/Z80.js/tree/master DrGodfire's JavaScript Z80 emulator] in the window below. You can play either/both
-floors of the game.
-
-Remember: you have to press a key to get started on the 1st floor.
-
-== Play Me! ==
-
-{{{html
-<script src="/TRS80/HauntedHouse/BinaryDataHauntedHouse.js"></script>
-<script src="/js/Z80.js"></script>
-<script src="/TRS80/TRS80Text.js"></script>
-<script src="/TRS80/HauntedHouse/hauntedhouse.js"></script>
-<script>window.onload = function() {startHauntedHouse("hauntedConsole");}</script>
-
-<button id="floorOne" class="btn btn-primary" >1st Floor</button><button id="floorTwo" class="btn btn-primary" style="margin-left:0.5em">2nd Floor</button><p>
-<textarea id="hauntedConsole" rows="16" style="background-color: black;color: white;font-family: monospace;font-size:12px;width:65ch;" ></textarea>
 }}}
 
 = References =
