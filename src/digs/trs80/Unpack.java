@@ -4,17 +4,69 @@ import code.CU;
 import sim.DissReader;
 
 public class Unpack {
+	
+	public static void main2(String [] args) throws Exception {
+		DissReader reader = new DissReader("content/trs80/pyramid/Code.cmark");
+		int [] memory = new int[64*1024];
+		reader.getData(memory);
+		
+		/*
+		for(int x=0x4888;x<0x49CC;x=x+4) {
+			System.out.print(CU.hex4(x)+":");
+			for(int y=0;y<4;++y) {
+				System.out.print(" "+CU.hex2(memory[x+y]));
+			}
+			System.out.println();
+		}
+		*/
+		
+		
+			
+		int pos = 0x5BDB;
+		
+		for(int z=0;z<10;++z) {
+			String t = "";
+			int p = pos;
+			while(true) {
+				char c = (char) memory[p++];
+				if(c==0) {
+					t = t + "[CR]";
+					break;
+				}
+				if(c==1) {
+					break;
+				}
+				if(c==' ') c='_';
+				t = t + c;
+			}
+			
+			System.out.println("; "+t);
+			int cnt = 0;
+			while(pos!=p) {			
+				if((cnt%32) == 0 ) {
+					if(cnt!=0) System.out.println();
+					System.out.print(CU.hex4(pos)+":");				
+				}
+				System.out.print(" "+CU.hex2(memory[pos++]));
+				++cnt;
+			}
+			System.out.println("\n");
+		}
+		
+		
+		
+		
+	}
 
 	public static void main(String[] args) throws Exception {
 		Unpack un = new Unpack();
 		
-		DissReader reader = new DissReader("content/trs80/hauntedhouse/Code2.cmark");
+		DissReader reader = new DissReader("content/trs80/pyramid/Code.cmark");
 		int [] memory = new int[64*1024];
 		reader.getData(memory);
 			
-		int pos = 0x4B51;
-		//for(int x=0;x<59;++x) { For 1
-		for(int x=0;x<30;++x) {
+		int pos = 0x6C2E;
+		for(int x=0;x<143;++x) {
 			int npos = un.parseMessage(memory,pos);
 			printDump(memory,pos,npos,un.lastUnpack);
 			//System.out.println(un.lastUnpack);
