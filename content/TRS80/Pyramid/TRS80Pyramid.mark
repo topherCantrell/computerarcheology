@@ -51,16 +51,15 @@ The compressed message strings contain spaces to pad the words out to 64 columns
 79A6: 00 
 }}}
 
-The word "INTO" ends at the right edge of the monitor. The next character "A" should be printed at the start
+The word "INTO" ends at the right edge of the monitor. The next character "A" is printed at the start
 of the next line.
 
-But the print routine uses an auto-wrapping feature that allows the code to space and break sentences instead of
-having the messages coded with spaces. This functionality must have been added AFTER the messages were coded, because
-the message strings were never changed. The code thinks that "INTOA" is one word and wraps it to the next line
-to keep from breaking it up.
+The CoCo version of this code uses a auto-word-wrap feature that adds spaces to keep letters of a word together
+on the same line. The CoCo screen is only 32 characters wide. The strings would have had lots of wasted
+spaces to format for the CoCo. 
 
-Enter "N" then "D" then "W" in the emulator to see this error. You'll find several places in the game where words
-run together -- this is why. 
+When you are reading through the strings here you'll see odd spacing and words run together. That's why. The
+strings are hand-formatted to the TRS80 64-column monitor.
 
 = References =
 
