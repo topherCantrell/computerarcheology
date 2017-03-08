@@ -136,7 +136,7 @@ public class DVG
 		
 		//InputStream is = new FileInputStream(args[0]);
 		
-		InputStream is = new FileInputStream("content/arcade/Asteroids/035127.01");
+		InputStream is = new FileInputStream("content/arcade/Asteroids/rev2/035127.02");
 		
 		int [] data = new int[is.available()];
 		for(int x=0;x<data.length;++x) {
@@ -188,7 +188,7 @@ public class DVG
 				System.out.print(CU.hex4(addr)+": "+CU.hex2(a)+" "+CU.hex2(b)+" "+CU.hex2(c)+" "+CU.hex2(d)+"    CUR  ");
 				System.out.println(getScale(baseScale)+"          "+CU.padTo("x="+x, 10)+CU.padTo("y="+y, 10));
 			} else if(com==11) { // HALT
-				System.out.print(CU.hex4(addr)+": "+CU.hex2(a)+" "+CU.hex2(b)+"          HALT ");				
+				System.out.println(CU.hex4(addr)+": "+CU.hex2(a)+" "+CU.hex2(b)+"          HALT ");				
 			} else if(com==12) { // JSRL
 				
 				int dest = ((b&15)<<8) + a;
@@ -197,7 +197,7 @@ public class DVG
 				System.out.print(CU.hex4(addr)+": "+CU.hex2(a)+" "+CU.hex2(b)+"          JSR  ");
 				System.out.println("$"+CU.hex4(dest));
 			} else if(com==13) { // RTSL
-				System.out.print(CU.hex4(addr)+": "+CU.hex2(a)+" "+CU.hex2(b)+"          RTS  ");				
+				System.out.println(CU.hex4(addr)+": "+CU.hex2(a)+" "+CU.hex2(b)+"          RTS  ");				
 			} else if(com==14) { // JMPL
 				
 				int dest = ((b&15)<<8) + a;
