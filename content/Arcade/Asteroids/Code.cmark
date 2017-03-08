@@ -13,7 +13,7 @@
 ;; NOTE: This code is property of Atari Inc. All requests from said company to remove
 ;; this code from public display will be honored.
 
-;6800~035145.02+035144.02+035143.02
+;6800~035145.02+035144.02+035143.02 (Rev 2)
 ; Vector 035127.02
 
 Top: ;=

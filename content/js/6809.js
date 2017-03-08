@@ -22,11 +22,15 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+/*
 (function(name, definition) {
     if (typeof module != 'undefined') module.exports = definition();
     else if (typeof define == 'function' && typeof define.amd == 'object') define(definition);
     else this[name] = definition();
 }('CPU6809', function() {
+*/
+
+function make6809() {
 
 var rA,rB,rX,rY,rU,rS,PC,CC,DP,
 F_CARRY     =1,
@@ -2427,4 +2431,4 @@ return {
 };
 
 
-}));
+}

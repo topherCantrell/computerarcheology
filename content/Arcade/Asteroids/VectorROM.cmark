@@ -10,7 +10,7 @@
 ;;<script src="/js/CANVAS.js"></script>
 ;;}}}
 
-; OriginalBinary 035127.02
+; OriginalBinary 035127.02 (Rev 2)
 
 ;;= TODO =
 
@@ -44,6 +44,7 @@
 080C: FF 92 00 70    VEC  scale=09(/1)   bri=7     x=0       y=767     (0.0000, 767.0000)
 0810: 00 90 FF 77    VEC  scale=09(/1)   bri=7     x=-1023   y=0       (-1023.0000, 0.0000)
 0814: FF 96 00 70    VEC  scale=09(/1)   bri=7     x=0       y=-767    (0.0000, -767.0000)
+;
 0818: FF 92 FF 72    VEC  scale=09(/1)   bri=7     x=767     y=767     (767.0000, 767.0000)
 081C: 00 86 00 72    VEC  scale=08(/2)   bri=7     x=512     y=-512    (256.0000, -256.0000)
 0820: FE 87 FE 77    VEC  scale=08(/2)   bri=7     x=-1022   y=-1022   (-511.0000, -511.0000)
@@ -51,6 +52,7 @@
 0828: FE 81 00 72    VEC  scale=08(/2)   bri=7     x=512     y=510     (256.0000, 255.0000)
 082C: FF 96 FF 72    VEC  scale=09(/1)   bri=7     x=767     y=-767    (767.0000, -767.0000)
 0830: 7F A3 FF 03    CUR  scale=00(/512)           x=1023    y=895     
+;
 0834: 00 70 00 00    VEC  scale=07(/4)   bri=0     x=0       y=0       (0.0000, 0.0000)
 0838: FF 96 FF 76    VEC  scale=09(/1)   bri=7     x=-767    y=-767    (-767.0000, -767.0000)
 083C: FE 81 00 76    VEC  scale=08(/2)   bri=7     x=-512    y=510     (-256.0000, 255.0000)
@@ -58,7 +60,8 @@
 0844: FE 87 FE 73    VEC  scale=08(/2)   bri=7     x=1022    y=-1022   (511.0000, -511.0000)
 0848: 00 86 00 76    VEC  scale=08(/2)   bri=7     x=-512    y=-512    (-256.0000, -256.0000)
 084C: FF 92 FF 76    VEC  scale=09(/1)   bri=7     x=-767    y=767     (-767.0000, 767.0000)
-0850: FC A1 F4 01    CUR  scale=00(/512)           x=500     y=508     
+0850: FC A1 F4 01    CUR  scale=00(/512)           x=500     y=508
+;     
 0854: 00 70 00 00    VEC  scale=07(/4)   bri=0     x=0       y=0       (0.0000, 0.0000)
 0858: DB F0          SVEC scale=02(/128) bri=13    x=3       y=0       (0.0234, 0.0000)
 085A: 00 F9          SVEC scale=01(/256) bri=0     x=0       y=1       (0.0000, 0.0039)
@@ -95,7 +98,9 @@
 ;;</canvas>
 ;;}}}
 
-; "BANK ERROR"  
+; In Revision 1 of this ROM, the text is: "PAGE SELECT ERROR"
+
+; "BANK ERROR"  In this Revision 2
 0888: E4 A0 5E 11    CUR  scale=01(/256)           x=350     y=228     
 088C: 00 70 00 00    VEC  scale=07(/4)   bri=0     x=0       y=0       (0.0000, 0.0000)
 0890: 80 CA          JSR  $0D00
@@ -119,7 +124,9 @@
 ;;</canvas>
 ;;}}}
 
-; "c 1979 ATARI INC"
+; In Revision 1 of this ROM the text is "ASTEROIDS BY ATARI"
+
+; "c 1979 ATARI INC" In this Revision 2
 08A4: 80 A0 90 01    CUR  scale=00(/512)           x=400     y=128     
 08A8: 00 70 00 00    VEC  scale=07(/4)   bri=0     x=0       y=0       (0.0000, 0.0000)
 08AC: 73 F5          SVEC scale=00(/512) bri=7     x=3       y=-3      (0.0059, -0.0059)
@@ -304,7 +311,8 @@
 09F8: 79 F9          SVEC scale=03(/64)  bri=7     x=1       y=1       (0.0156, 0.0156)
 09FA: 79 FD          SVEC scale=03(/64)  bri=7     x=1       y=-3      (0.0156, -0.0469)
 09FC: 00 D0          RTS  
-
+;
+; Rock Pattern 2
 09FE: 0A F1          SVEC scale=02(/128) bri=0     x=2       y=1       (0.0156, 0.0078)
 0A00: 7A F1          SVEC scale=02(/128) bri=7     x=2       y=1       (0.0156, 0.0078)
 0A02: 7D F9          SVEC scale=03(/64)  bri=7     x=-1      y=1       (-0.0156, 0.0156)
@@ -319,7 +327,8 @@
 0A14: 8A F3          SVEC scale=02(/128) bri=8     x=2       y=3       (0.0156, 0.0234)
 0A16: 7D F9          SVEC scale=03(/64)  bri=7     x=-1      y=1       (-0.0156, 0.0156)
 0A18: 00 D0          RTS
-  
+;
+; Rock Pattern 3  
 0A1A: 0D F8          SVEC scale=03(/64)  bri=0     x=-1      y=0       (-0.0156, 0.0000)
 0A1C: 7E F5          SVEC scale=02(/128) bri=7     x=-2      y=-3      (-0.0156, -0.0234)
 0A1E: 7A F7          SVEC scale=02(/128) bri=7     x=2       y=-3      (0.0156, -0.0234)
@@ -333,7 +342,8 @@
 0A2E: 7F F7          SVEC scale=02(/128) bri=7     x=-3      y=-3      (-0.0234, -0.0234)
 0A30: 7A F5          SVEC scale=02(/128) bri=7     x=2       y=-3      (0.0156, -0.0234)
 0A32: 00 D0          RTS  
-
+;
+; Rock Pattern 4
 0A34: 09 F0          SVEC scale=02(/128) bri=0     x=1       y=0       (0.0078, 0.0000)
 0A36: 7B F1          SVEC scale=02(/128) bri=7     x=3       y=1       (0.0234, 0.0078)
 0A38: 68 F1          SVEC scale=02(/128) bri=6     x=0       y=1       (0.0000, 0.0078)
@@ -382,15 +392,23 @@
 ; memory map (begins at 5000). Thus 5292 - 5000 + 0800 = 0A92.
 ; The thrust pattern for each ship follows the ship itself.
 ;
-0A6E: 90 52 A8 52    VEC  scale=05(/16)  bri=5     x=680     y=656     (42.5000, 41.0000)
-0A72: CC 52 F0 52    VEC  scale=05(/16)  bri=5     x=752     y=716     (47.0000, 44.7500)
-0A76: 14 53 36 53    VEC  scale=05(/16)  bri=5     x=822     y=788     (51.3750, 49.2500)
-0A7A: 5A 53 7E 53    VEC  scale=05(/16)  bri=5     x=894     y=858     (55.8750, 53.6250)
-0A7E: A2 53 C6 53    VEC  scale=05(/16)  bri=5     x=966     y=930     (60.3750, 58.1250)
-0A82: EA 53 0E 54    VEC  scale=05(/16)  bri=5     x=-14     y=1002    (-0.8750, 62.6250)
-0A86: 32 54 56 54    VEC  scale=05(/16)  bri=5     x=-86     y=-50     (-5.3750, -3.1250)
-0A8A: 7A 54 9E 54    VEC  scale=05(/16)  bri=5     x=-158    y=-122    (-9.8750, -7.6250)
-0A8E: C2 54 
+0A6E: 90 52 ;{{#ShipDir0:ShipDir0:0}}
+0A70: A8 52 ;{{#ShipDir4:ShipDir4:0}}
+0A72: CC 52 ;{{#ShipDir8:ShipDir8:0}}
+0A74: F0 52 ;{{#ShipDir12:ShipDir12:0}}
+0A76: 14 53 ;{{#ShipDir16:ShipDir16:0}}
+0A78: 36 53 ;{{#ShipDir20:ShipDir20:0}}
+0A7A: 5A 53 ;{{#ShipDir24:ShipDir24:0}}
+0A7C: 7E 53 ;{{#ShipDir28:ShipDir28:0}}
+0A7E: A2 53 ;{{#ShipDir32:ShipDir32:0}}
+0A80: C6 53 ;{{#ShipDir36:ShipDir36:0}}
+0A82: EA 53 ;{{#ShipDir40:ShipDir40:0}}
+0A84: 0E 54 ;{{#ShipDir44:ShipDir44:0}}
+0A86: 32 54 ;{{#ShipDir48:ShipDir48:0}}
+0A88: 56 54 ;{{#ShipDir52:ShipDir52:0}}
+0A8A: 7A 54 ;{{#ShipDir56:ShipDir56:0}}
+0A8C: 9E 54 ;{{#ShipDir60:ShipDir60:0}}
+0A8E: C2 54 ;{{#ShipDir64:ShipDir64:0}}
 
 ;;{{{html
 ;;<canvas width="1060" height="100"
@@ -443,7 +461,8 @@ ThrustDir4:
 0AC2: D0 50 10 C6    VEC  scale=05(/16)  bri=12    x=-528    y=208     (-33.0000, 13.0000)
 0AC6: 60 42 C0 C3    VEC  scale=04(/32)  bri=12    x=960     y=608     (30.0000, 19.0000)
 0ACA: 00 D0          RTS
-  
+
+ShipDir8:  
 0ACC: 80 46 80 06    VEC  scale=04(/32)  bri=0     x=-640    y=-640    (-20.0000, -20.0000)
 0AD0: E0 43 C0 C4    VEC  scale=04(/32)  bri=12    x=-192    y=992     (-6.0000, 31.0000)
 0AD4: A0 41 60 C6    VEC  scale=04(/32)  bri=12    x=-608    y=416     (-19.0000, 13.0000)
@@ -451,9 +470,12 @@ ThrustDir4:
 0ADC: 90 65 C0 C6    VEC  scale=06(/8)   bri=12    x=-704    y=-400    (-88.0000, -50.0000)
 0AE0: 60 42 A0 C1    VEC  scale=04(/32)  bri=12    x=416     y=608     (13.0000, 19.0000)
 0AE4: 00 D0          RTS  
+ThrustDir8:
 0AE6: 90 50 30 C6    VEC  scale=05(/16)  bri=12    x=-560    y=144     (-35.0000, 9.0000)
 0AEA: C0 42 80 C3    VEC  scale=04(/32)  bri=12    x=896     y=704     (28.0000, 22.0000)
 0AEE: 00 D0          RTS  
+
+ShipDir12:
 0AF0: C0 46 40 06    VEC  scale=04(/32)  bri=0     x=-576    y=-704    (-18.0000, -22.0000)
 0AF4: E0 43 20 C5    VEC  scale=04(/32)  bri=12    x=-288    y=992     (-9.0000, 31.0000)
 0AF8: 60 41 80 C6    VEC  scale=04(/32)  bri=12    x=-640    y=352     (-20.0000, 11.0000)
@@ -461,9 +483,12 @@ ThrustDir4:
 0B00: D0 65 98 C6    VEC  scale=06(/8)   bri=12    x=-664    y=-464    (-83.0000, -58.0000)
 0B04: 80 42 60 C1    VEC  scale=04(/32)  bri=12    x=352     y=640     (11.0000, 20.0000)
 0B08: 00 D0          RTS  
+ThrustDir12:
 0B0A: 60 50 30 C6    VEC  scale=05(/16)  bri=12    x=-560    y=96      (-35.0000, 6.0000)
 0B0E: 20 43 40 C3    VEC  scale=04(/32)  bri=12    x=832     y=800     (26.0000, 25.0000)
 0B12: 00 D0          RTS
+
+ShipDir16:
 0B14: 0E F7          SVEC scale=02(/128) bri=0     x=-2      y=-3      (-0.0156, -0.0234)
 0B16: C0 43 80 C5    VEC  scale=04(/32)  bri=12    x=-384    y=960     (-12.0000, 30.0000)
 0B1A: 20 41 A0 C6    VEC  scale=04(/32)  bri=12    x=-672    y=288     (-21.0000, 9.0000)
@@ -471,9 +496,12 @@ ThrustDir4:
 0B22: 10 66 60 C6    VEC  scale=06(/8)   bri=12    x=-608    y=-528    (-76.0000, -66.0000)
 0B26: A0 42 20 C1    VEC  scale=04(/32)  bri=12    x=288     y=672     (9.0000, 21.0000)
 0B2A: 00 D0          RTS  
+ThrustDir16:
 0B2C: 30 50 40 C6    VEC  scale=05(/16)  bri=12    x=-576    y=48      (-36.0000, 3.0000)
 0B30: 60 43 E0 C2    VEC  scale=04(/32)  bri=12    x=736     y=864     (23.0000, 27.0000)
-0B34: 00 D0          RTS  
+0B34: 00 D0          RTS
+
+ShipDir20:  
 0B36: 20 47 C0 05    VEC  scale=04(/32)  bri=0     x=-448    y=-800    (-14.0000, -25.0000)
 0B3A: 80 43 E0 C5    VEC  scale=04(/32)  bri=12    x=-480    y=896     (-15.0000, 28.0000)
 0B3E: E0 40 C0 C6    VEC  scale=04(/32)  bri=12    x=-704    y=224     (-22.0000, 7.0000)
@@ -481,9 +509,12 @@ ThrustDir4:
 0B46: 48 66 30 C6    VEC  scale=06(/8)   bri=12    x=-560    y=-584    (-70.0000, -73.0000)
 0B4A: C0 42 E0 C0    VEC  scale=04(/32)  bri=12    x=224     y=704     (7.0000, 22.0000)
 0B4E: 00 D0          RTS  
+ThrustDir20:
 0B50: 10 54 40 C6    VEC  scale=05(/16)  bri=12    x=-576    y=-16     (-36.0000, -1.0000)
 0B54: A0 43 A0 C2    VEC  scale=04(/32)  bri=12    x=672     y=928     (21.0000, 29.0000)
-0B58: 00 D0          RTS  
+0B58: 00 D0          RTS
+
+ShipDir24:  
 0B5A: 60 47 60 05    VEC  scale=04(/32)  bri=0     x=-352    y=-864    (-11.0000, -27.0000)
 0B5E: 60 43 40 C6    VEC  scale=04(/32)  bri=12    x=-576    y=864     (-18.0000, 27.0000)
 0B62: 80 40 C0 C6    VEC  scale=04(/32)  bri=12    x=-704    y=128     (-22.0000, 4.0000)
@@ -491,9 +522,12 @@ ThrustDir4:
 0B6A: 80 66 F0 C5    VEC  scale=06(/8)   bri=12    x=-496    y=-640    (-62.0000, -80.0000)
 0B6E: C0 42 80 C0    VEC  scale=04(/32)  bri=12    x=128     y=704     (4.0000, 22.0000)
 0B72: 00 D0          RTS  
+ThrustDir24:
 0B74: 40 54 30 C6    VEC  scale=05(/16)  bri=12    x=-560    y=-64     (-35.0000, -4.0000)
 0B78: E0 43 40 C2    VEC  scale=04(/32)  bri=12    x=576     y=992     (18.0000, 31.0000)
-0B7C: 00 D0          RTS  
+0B7C: 00 D0          RTS
+
+ShipDir28:  
 0B7E: 80 47 00 05    VEC  scale=04(/32)  bri=0     x=-256    y=-896    (-8.0000, -28.0000)
 0B82: 20 43 80 C6    VEC  scale=04(/32)  bri=12    x=-640    y=800     (-20.0000, 25.0000)
 0B86: 40 40 E0 C6    VEC  scale=04(/32)  bri=12    x=-736    y=64      (-23.0000, 2.0000)
@@ -501,9 +535,12 @@ ThrustDir4:
 0B8E: B0 66 B0 C5    VEC  scale=06(/8)   bri=12    x=-432    y=-688    (-54.0000, -86.0000)
 0B92: E0 42 40 C0    VEC  scale=04(/32)  bri=12    x=64      y=736     (2.0000, 23.0000)
 0B96: 00 D0          RTS  
+ThrustDir28:
 0B98: 80 54 30 C6    VEC  scale=05(/16)  bri=12    x=-560    y=-128    (-35.0000, -8.0000)
 0B9C: 10 52 F0 C0    VEC  scale=05(/16)  bri=12    x=240     y=528     (15.0000, 33.0000)
-0BA0: 00 D0          RTS  
+0BA0: 00 D0          RTS
+
+ShipDir32:  
 0BA2: 80 47 C0 04    VEC  scale=04(/32)  bri=0     x=-192    y=-896    (-6.0000, -28.0000)
 0BA6: E0 42 E0 C6    VEC  scale=04(/32)  bri=12    x=-736    y=736     (-23.0000, 23.0000)
 0BAA: 00 40 E0 C6    VEC  scale=04(/32)  bri=12    x=-736    y=0       (-23.0000, 0.0000)
@@ -511,9 +548,12 @@ ThrustDir4:
 0BB2: D8 66 68 C5    VEC  scale=06(/8)   bri=12    x=-360    y=-728    (-45.0000, -91.0000)
 0BB6: E0 42 00 C0    VEC  scale=04(/32)  bri=12    x=0       y=736     (0.0000, 23.0000)
 0BBA: 00 D0          RTS  
+ThrustDir32:
 0BBC: B0 54 20 C6    VEC  scale=05(/16)  bri=12    x=-544    y=-176    (-34.0000, -11.0000)
 0BC0: 20 52 B0 C0    VEC  scale=05(/16)  bri=12    x=176     y=544     (11.0000, 34.0000)
-0BC4: 00 D0          RTS  
+0BC4: 00 D0          RTS
+
+ShipDir36:  
 0BC6: A0 47 60 04    VEC  scale=04(/32)  bri=0     x=-96     y=-928    (-3.0000, -29.0000)
 0BCA: 80 42 20 C7    VEC  scale=04(/32)  bri=12    x=-800    y=640     (-25.0000, 20.0000)
 0BCE: 40 44 E0 C6    VEC  scale=04(/32)  bri=12    x=-736    y=-64     (-23.0000, -2.0000)
@@ -521,9 +561,12 @@ ThrustDir4:
 0BD6: F8 66 20 C5    VEC  scale=06(/8)   bri=12    x=-288    y=-760    (-36.0000, -95.0000)
 0BDA: E0 42 40 C4    VEC  scale=04(/32)  bri=12    x=-64     y=736     (-2.0000, 23.0000)
 0BDE: 00 D0          RTS  
+ThrustDir36:
 0BE0: F0 54 10 C6    VEC  scale=05(/16)  bri=12    x=-528    y=-240    (-33.0000, -15.0000)
 0BE4: 30 52 80 C0    VEC  scale=05(/16)  bri=12    x=128     y=560     (8.0000, 35.0000)
-0BE8: 00 D0          RTS  
+0BE8: 00 D0          RTS
+
+ShipDir40:  
 0BEA: A0 47 00 00    VEC  scale=04(/32)  bri=0     x=0       y=-928    (0.0000, -29.0000)
 0BEE: 40 42 60 C7    VEC  scale=04(/32)  bri=12    x=-864    y=576     (-27.0000, 18.0000)
 0BF2: 80 44 C0 C6    VEC  scale=04(/32)  bri=12    x=-704    y=-128    (-22.0000, -4.0000)
@@ -531,9 +574,12 @@ ThrustDir4:
 0BFA: 10 67 D8 C4    VEC  scale=06(/8)   bri=12    x=-216    y=-784    (-27.0000, -98.0000)
 0BFE: C0 42 80 C4    VEC  scale=04(/32)  bri=12    x=-128    y=704     (-4.0000, 22.0000)
 0C02: 00 D0          RTS  
+ThrustDir40:
 0C04: 40 46 E0 C7    VEC  scale=04(/32)  bri=12    x=-992    y=-576    (-31.0000, -18.0000)
 0C08: 30 52 40 C0    VEC  scale=05(/16)  bri=12    x=64      y=560     (4.0000, 35.0000)
-0C0C: 00 D0          RTS  
+0C0C: 00 D0          RTS
+
+ShipDir44: 
 0C0E: A0 47 60 00    VEC  scale=04(/32)  bri=0     x=96      y=-928    (3.0000, -29.0000)
 0C12: E0 41 80 C7    VEC  scale=04(/32)  bri=12    x=-896    y=480     (-28.0000, 15.0000)
 0C16: E0 44 C0 C6    VEC  scale=04(/32)  bri=12    x=-704    y=-224    (-22.0000, -7.0000)
@@ -541,9 +587,12 @@ ThrustDir4:
 0C1E: 20 67 88 C4    VEC  scale=06(/8)   bri=12    x=-136    y=-800    (-17.0000, -100.0000)
 0C22: C0 42 E0 C4    VEC  scale=04(/32)  bri=12    x=-224    y=704     (-7.0000, 22.0000)
 0C26: 00 D0          RTS  
+ThrustDir44:
 0C28: A0 46 A0 C7    VEC  scale=04(/32)  bri=12    x=-928    y=-672    (-29.0000, -21.0000)
 0C2C: 40 52 10 C0    VEC  scale=05(/16)  bri=12    x=16      y=576     (1.0000, 36.0000)
-0C30: 00 D0          RTS  
+0C30: 00 D0          RTS
+
+ShipDir48:  
 0C32: 80 47 C0 00    VEC  scale=04(/32)  bri=0     x=192     y=-896    (6.0000, -28.0000)
 0C36: 80 41 C0 C7    VEC  scale=04(/32)  bri=12    x=-960    y=384     (-30.0000, 12.0000)
 0C3A: 20 45 A0 C6    VEC  scale=04(/32)  bri=12    x=-672    y=-288    (-21.0000, -9.0000)
@@ -551,9 +600,12 @@ ThrustDir4:
 0C42: 28 67 38 C4    VEC  scale=06(/8)   bri=12    x=-56     y=-808    (-7.0000, -101.0000)
 0C46: A0 42 20 C5    VEC  scale=04(/32)  bri=12    x=-288    y=672     (-9.0000, 21.0000)
 0C4A: 00 D0          RTS  
+ThrustDir48:
 0C4C: E0 46 60 C7    VEC  scale=04(/32)  bri=12    x=-864    y=-736    (-27.0000, -23.0000)
 0C50: 40 52 30 C4    VEC  scale=05(/16)  bri=12    x=-48     y=576     (-3.0000, 36.0000)
 0C54: 00 D0          RTS  
+
+ShipDir52:
 0C56: 80 47 00 01    VEC  scale=04(/32)  bri=0     x=256     y=-896    (8.0000, -28.0000)
 0C5A: 20 41 E0 C7    VEC  scale=04(/32)  bri=12    x=-992    y=288     (-31.0000, 9.0000)
 0C5E: 60 45 80 C6    VEC  scale=04(/32)  bri=12    x=-640    y=-352    (-20.0000, -11.0000)
@@ -561,9 +613,12 @@ ThrustDir4:
 0C66: 28 67 18 C0    VEC  scale=06(/8)   bri=12    x=24      y=-808    (3.0000, -101.0000)
 0C6A: 80 42 60 C5    VEC  scale=04(/32)  bri=12    x=-352    y=640     (-11.0000, 20.0000)
 0C6E: 00 D0          RTS  
+ThrustDir52:
 0C70: 40 47 20 C7    VEC  scale=04(/32)  bri=12    x=-800    y=-832    (-25.0000, -26.0000)
 0C74: 30 52 60 C4    VEC  scale=05(/16)  bri=12    x=-96     y=560     (-6.0000, 35.0000)
 0C78: 00 D0          RTS  
+
+ShipDir56:
 0C7A: 60 47 60 01    VEC  scale=04(/32)  bri=0     x=352     y=-864    (11.0000, -27.0000)
 0C7E: C0 40 E0 C7    VEC  scale=04(/32)  bri=12    x=-992    y=192     (-31.0000, 6.0000)
 0C82: A0 45 60 C6    VEC  scale=04(/32)  bri=12    x=-608    y=-416    (-19.0000, -13.0000)
@@ -571,9 +626,12 @@ ThrustDir4:
 0C8A: 20 67 68 C0    VEC  scale=06(/8)   bri=12    x=104     y=-800    (13.0000, -100.0000)
 0C8E: 60 42 A0 C5    VEC  scale=04(/32)  bri=12    x=-416    y=608     (-13.0000, 19.0000)
 0C92: 00 D0          RTS  
+ThrustDir56:
 0C94: 80 47 C0 C6    VEC  scale=04(/32)  bri=12    x=-704    y=-896    (-22.0000, -28.0000)
 0C98: 30 52 90 C4    VEC  scale=05(/16)  bri=12    x=-144    y=560     (-9.0000, 35.0000)
-0C9C: 00 D0          RTS  
+0C9C: 00 D0          RTS
+
+ShipDir60:  
 0C9E: 20 47 C0 01    VEC  scale=04(/32)  bri=0     x=448     y=-800    (14.0000, -25.0000)
 0CA2: 30 50 00 C6    VEC  scale=05(/16)  bri=12    x=-512    y=48      (-32.0000, 3.0000)
 0CA6: C0 45 20 C6    VEC  scale=04(/32)  bri=12    x=-544    y=-448    (-17.0000, -14.0000)
@@ -581,15 +639,19 @@ ThrustDir4:
 0CAE: 18 67 B0 C0    VEC  scale=06(/8)   bri=12    x=176     y=-792    (22.0000, -99.0000)
 0CB2: 20 42 C0 C5    VEC  scale=04(/32)  bri=12    x=-448    y=544     (-14.0000, 17.0000)
 0CB6: 00 D0          RTS  
+ThrustDir60:
 0CB8: C0 47 60 C6    VEC  scale=04(/32)  bri=12    x=-608    y=-960    (-19.0000, -30.0000)
 0CBC: 10 52 D0 C4    VEC  scale=05(/16)  bri=12    x=-208    y=528     (-13.0000, 33.0000)
 0CC0: 00 D0          RTS  
+
+ShipDir64:
 0CC2: 0A F7          SVEC scale=02(/128) bri=0     x=2       y=-3      (0.0156, -0.0234)
 0CC4: CE F8          SVEC scale=03(/64)  bri=12    x=-2      y=0       (-0.0313, 0.0000)
 0CC6: CD FD          SVEC scale=03(/64)  bri=12    x=-1      y=-3      (-0.0156, -0.0469)
 0CC8: 00 63 00 C1    VEC  scale=06(/8)   bri=12    x=256     y=768     (32.0000, 96.0000)
 0CCC: 00 67 00 C1    VEC  scale=06(/8)   bri=12    x=256     y=-768    (32.0000, -96.0000)
 0CD0: CD F9          SVEC scale=03(/64)  bri=12    x=-1      y=1       (-0.0156, 0.0156)
+ThrustDir64:
 0CD2: 00 D0          RTS  
 0CD4: CD FE          SVEC scale=03(/64)  bri=12    x=-1      y=-3      (-0.0156, -0.0469)
 0CD6: CD FA          SVEC scale=03(/64)  bri=12    x=-1      y=2       (-0.0156, 0.0313)
@@ -636,6 +698,7 @@ ThrustDir4:
 0CFC: 02 F6          SVEC scale=00(/512) bri=0     x=2       y=-3      (0.0039, -0.0059)
 0CFE: 00 D0          RTS  
 
+; "B"
 0D00: 70 FB          SVEC scale=01(/256) bri=7     x=0       y=3       (0.0000, 0.0117)
 0D02: 73 F0          SVEC scale=00(/512) bri=7     x=3       y=0       (0.0059, 0.0000)
 0D04: 71 F5          SVEC scale=00(/512) bri=7     x=1       y=-3      (0.0020, -0.0059)
@@ -650,13 +713,15 @@ ThrustDir4:
 0D16: 03 F8          SVEC scale=01(/256) bri=0     x=3       y=0       (0.0117, 0.0000)
 0D18: 00 D0          RTS  
 
+; "C"
 0D1A: 70 FB          SVEC scale=01(/256) bri=7     x=0       y=3       (0.0000, 0.0117)
 0D1C: 72 F8          SVEC scale=01(/256) bri=7     x=2       y=0       (0.0078, 0.0000)
 0D1E: 06 FF          SVEC scale=01(/256) bri=0     x=-2      y=-3      (-0.0078, -0.0117)
 0D20: 72 F8          SVEC scale=01(/256) bri=7     x=2       y=0       (0.0078, 0.0000)
 0D22: 02 F0          SVEC scale=00(/512) bri=0     x=2       y=0       (0.0039, 0.0000)
-0D24: 00 D0          RTS  
-
+0D24: 00 D0          RTS
+  
+; "D"
 0D26: 70 FB          SVEC scale=01(/256) bri=7     x=0       y=3       (0.0000, 0.0117)
 0D28: 72 F0          SVEC scale=00(/512) bri=7     x=2       y=0       (0.0039, 0.0000)
 0D2A: 72 F6          SVEC scale=00(/512) bri=7     x=2       y=-3      (0.0039, -0.0059)
@@ -666,6 +731,7 @@ ThrustDir4:
 0D32: 03 F8          SVEC scale=01(/256) bri=0     x=3       y=0       (0.0117, 0.0000)
 0D34: 00 D0          RTS  
 
+; "E"
 0D36: 70 FB          SVEC scale=01(/256) bri=7     x=0       y=3       (0.0000, 0.0117)
 0D38: 72 F8          SVEC scale=01(/256) bri=7     x=2       y=0       (0.0078, 0.0000)
 0D3A: 05 F7          SVEC scale=00(/512) bri=0     x=-1      y=-3      (-0.0020, -0.0059)
@@ -675,6 +741,7 @@ ThrustDir4:
 0D42: 02 F0          SVEC scale=00(/512) bri=0     x=2       y=0       (0.0039, 0.0000)
 0D44: 00 D0          RTS  
 
+; "F"
 0D46: 70 FB          SVEC scale=01(/256) bri=7     x=0       y=3       (0.0000, 0.0117)
 0D48: 72 F8          SVEC scale=01(/256) bri=7     x=2       y=0       (0.0078, 0.0000)
 0D4A: 05 F7          SVEC scale=00(/512) bri=0     x=-1      y=-3      (-0.0020, -0.0059)
@@ -683,6 +750,7 @@ ThrustDir4:
 0D50: 03 F8          SVEC scale=01(/256) bri=0     x=3       y=0       (0.0117, 0.0000)
 0D52: 00 D0          RTS  
 
+; "G"
 0D54: 70 FB          SVEC scale=01(/256) bri=7     x=0       y=3       (0.0000, 0.0117)
 0D56: 72 F8          SVEC scale=01(/256) bri=7     x=2       y=0       (0.0078, 0.0000)
 0D58: 70 F6          SVEC scale=00(/512) bri=7     x=0       y=-3      (0.0000, -0.0059)
@@ -691,14 +759,18 @@ ThrustDir4:
 0D5E: 70 F6          SVEC scale=00(/512) bri=7     x=0       y=-3      (0.0000, -0.0059)
 0D60: 76 F8          SVEC scale=01(/256) bri=7     x=-2      y=0       (-0.0078, 0.0000)
 0D62: 03 F8          SVEC scale=01(/256) bri=0     x=3       y=0       (0.0117, 0.0000)
-0D64: 00 D0          RTS  
+0D64: 00 D0          RTS
+
+; "H"  
 0D66: 70 FB          SVEC scale=01(/256) bri=7     x=0       y=3       (0.0000, 0.0117)
 0D68: 00 F7          SVEC scale=00(/512) bri=0     x=0       y=-3      (0.0000, -0.0059)
 0D6A: 72 F8          SVEC scale=01(/256) bri=7     x=2       y=0       (0.0078, 0.0000)
 0D6C: 00 F3          SVEC scale=00(/512) bri=0     x=0       y=3       (0.0000, 0.0059)
 0D6E: 70 FF          SVEC scale=01(/256) bri=7     x=0       y=-3      (0.0000, -0.0117)
 0D70: 02 F0          SVEC scale=00(/512) bri=0     x=2       y=0       (0.0039, 0.0000)
-0D72: 00 D0          RTS  
+0D72: 00 D0          RTS
+
+; "I"  
 0D74: 72 F8          SVEC scale=01(/256) bri=7     x=2       y=0       (0.0078, 0.0000)
 0D76: 06 F0          SVEC scale=00(/512) bri=0     x=-2      y=0       (-0.0039, 0.0000)
 0D78: 70 FB          SVEC scale=01(/256) bri=7     x=0       y=3       (0.0000, 0.0117)
@@ -706,47 +778,63 @@ ThrustDir4:
 0D7C: 76 F8          SVEC scale=01(/256) bri=7     x=-2      y=0       (-0.0078, 0.0000)
 0D7E: 03 FF          SVEC scale=01(/256) bri=0     x=3       y=-3      (0.0117, -0.0117)
 0D80: 00 D0          RTS  
+
+; "J"
 0D82: 00 F2          SVEC scale=00(/512) bri=0     x=0       y=2       (0.0000, 0.0039)
 0D84: 72 F6          SVEC scale=00(/512) bri=7     x=2       y=-3      (0.0039, -0.0059)
 0D86: 72 F0          SVEC scale=00(/512) bri=7     x=2       y=0       (0.0039, 0.0000)
 0D88: 70 FB          SVEC scale=01(/256) bri=7     x=0       y=3       (0.0000, 0.0117)
 0D8A: 01 FF          SVEC scale=01(/256) bri=0     x=1       y=-3      (0.0039, -0.0117)
-0D8C: 00 D0          RTS  
+0D8C: 00 D0          RTS
+
+; "K"  
 0D8E: 70 FB          SVEC scale=01(/256) bri=7     x=0       y=3       (0.0000, 0.0117)
 0D90: 03 F0          SVEC scale=00(/512) bri=0     x=3       y=0       (0.0059, 0.0000)
 0D92: 77 F7          SVEC scale=00(/512) bri=7     x=-3      y=-3      (-0.0059, -0.0059)
 0D94: 73 F7          SVEC scale=00(/512) bri=7     x=3       y=-3      (0.0059, -0.0059)
 0D96: 03 F0          SVEC scale=00(/512) bri=0     x=3       y=0       (0.0059, 0.0000)
-0D98: 00 D0          RTS  
+0D98: 00 D0          RTS
+
+; "L"  
 0D9A: 00 FB          SVEC scale=01(/256) bri=0     x=0       y=3       (0.0000, 0.0117)
 0D9C: 70 FF          SVEC scale=01(/256) bri=7     x=0       y=-3      (0.0000, -0.0117)
 0D9E: 72 F8          SVEC scale=01(/256) bri=7     x=2       y=0       (0.0078, 0.0000)
 0DA0: 02 F0          SVEC scale=00(/512) bri=0     x=2       y=0       (0.0039, 0.0000)
 0DA2: 00 D0          RTS  
+
+; "M"
 0DA4: 70 FB          SVEC scale=01(/256) bri=7     x=0       y=3       (0.0000, 0.0117)
 0DA6: 72 F6          SVEC scale=00(/512) bri=7     x=2       y=-3      (0.0039, -0.0059)
 0DA8: 72 F2          SVEC scale=00(/512) bri=7     x=2       y=2       (0.0039, 0.0039)
 0DAA: 70 FF          SVEC scale=01(/256) bri=7     x=0       y=-3      (0.0000, -0.0117)
 0DAC: 02 F0          SVEC scale=00(/512) bri=0     x=2       y=0       (0.0039, 0.0000)
-0DAE: 00 D0          RTS  
+0DAE: 00 D0          RTS
+
+; "N"  
 0DB0: 70 FB          SVEC scale=01(/256) bri=7     x=0       y=3       (0.0000, 0.0117)
 0DB2: 72 FF          SVEC scale=01(/256) bri=7     x=2       y=-3      (0.0078, -0.0117)
 0DB4: 70 FB          SVEC scale=01(/256) bri=7     x=0       y=3       (0.0000, 0.0117)
 0DB6: 01 FF          SVEC scale=01(/256) bri=0     x=1       y=-3      (0.0039, -0.0117)
-0DB8: 00 D0          RTS  
+0DB8: 00 D0          RTS
+
+; "O"  
 0DBA: 70 FB          SVEC scale=01(/256) bri=7     x=0       y=3       (0.0000, 0.0117)
 0DBC: 72 F8          SVEC scale=01(/256) bri=7     x=2       y=0       (0.0078, 0.0000)
 0DBE: 70 FF          SVEC scale=01(/256) bri=7     x=0       y=-3      (0.0000, -0.0117)
 0DC0: 76 F8          SVEC scale=01(/256) bri=7     x=-2      y=0       (-0.0078, 0.0000)
 0DC2: 03 F8          SVEC scale=01(/256) bri=0     x=3       y=0       (0.0117, 0.0000)
 0DC4: 00 D0          RTS  
+
+; "P"
 0DC6: 70 FB          SVEC scale=01(/256) bri=7     x=0       y=3       (0.0000, 0.0117)
 0DC8: 72 F8          SVEC scale=01(/256) bri=7     x=2       y=0       (0.0078, 0.0000)
 0DCA: 70 F7          SVEC scale=00(/512) bri=7     x=0       y=-3      (0.0000, -0.0059)
 0DCC: 76 F8          SVEC scale=01(/256) bri=7     x=-2      y=0       (-0.0078, 0.0000)
 0DCE: 03 F7          SVEC scale=00(/512) bri=0     x=3       y=-3      (0.0059, -0.0059)
 0DD0: 03 F0          SVEC scale=00(/512) bri=0     x=3       y=0       (0.0059, 0.0000)
-0DD2: 00 D0          RTS  
+0DD2: 00 D0          RTS
+
+; "Q"  
 0DD4: 70 FB          SVEC scale=01(/256) bri=7     x=0       y=3       (0.0000, 0.0117)
 0DD6: 72 F8          SVEC scale=01(/256) bri=7     x=2       y=0       (0.0078, 0.0000)
 0DD8: 70 FE          SVEC scale=01(/256) bri=7     x=0       y=-3      (0.0000, -0.0117)
@@ -756,6 +844,8 @@ ThrustDir4:
 0DE0: 72 F6          SVEC scale=00(/512) bri=7     x=2       y=-3      (0.0039, -0.0059)
 0DE2: 02 F0          SVEC scale=00(/512) bri=0     x=2       y=0       (0.0039, 0.0000)
 0DE4: 00 D0          RTS  
+
+; "R"
 0DE6: 70 FB          SVEC scale=01(/256) bri=7     x=0       y=3       (0.0000, 0.0117)
 0DE8: 72 F8          SVEC scale=01(/256) bri=7     x=2       y=0       (0.0078, 0.0000)
 0DEA: 70 F7          SVEC scale=00(/512) bri=7     x=0       y=-3      (0.0000, -0.0059)
@@ -764,6 +854,8 @@ ThrustDir4:
 0DF0: 73 F7          SVEC scale=00(/512) bri=7     x=3       y=-3      (0.0059, -0.0059)
 0DF2: 02 F0          SVEC scale=00(/512) bri=0     x=2       y=0       (0.0039, 0.0000)
 0DF4: 00 D0          RTS  
+
+; "S"
 0DF6: 72 F8          SVEC scale=01(/256) bri=7     x=2       y=0       (0.0078, 0.0000)
 0DF8: 70 F3          SVEC scale=00(/512) bri=7     x=0       y=3       (0.0000, 0.0059)
 0DFA: 76 F8          SVEC scale=01(/256) bri=7     x=-2      y=0       (-0.0078, 0.0000)
@@ -771,35 +863,47 @@ ThrustDir4:
 0DFE: 72 F8          SVEC scale=01(/256) bri=7     x=2       y=0       (0.0078, 0.0000)
 0E00: 01 FF          SVEC scale=01(/256) bri=0     x=1       y=-3      (0.0039, -0.0117)
 0E02: 00 D0          RTS  
+
+; "T"
 0E04: 02 F0          SVEC scale=00(/512) bri=0     x=2       y=0       (0.0039, 0.0000)
 0E06: 70 FB          SVEC scale=01(/256) bri=7     x=0       y=3       (0.0000, 0.0117)
 0E08: 06 F0          SVEC scale=00(/512) bri=0     x=-2      y=0       (-0.0039, 0.0000)
 0E0A: 72 F8          SVEC scale=01(/256) bri=7     x=2       y=0       (0.0078, 0.0000)
 0E0C: 01 FF          SVEC scale=01(/256) bri=0     x=1       y=-3      (0.0039, -0.0117)
 0E0E: 00 D0          RTS  
+
+; "U"
 0E10: 00 FB          SVEC scale=01(/256) bri=0     x=0       y=3       (0.0000, 0.0117)
 0E12: 70 FF          SVEC scale=01(/256) bri=7     x=0       y=-3      (0.0000, -0.0117)
 0E14: 72 F8          SVEC scale=01(/256) bri=7     x=2       y=0       (0.0078, 0.0000)
 0E16: 70 FB          SVEC scale=01(/256) bri=7     x=0       y=3       (0.0000, 0.0117)
 0E18: 01 FF          SVEC scale=01(/256) bri=0     x=1       y=-3      (0.0039, -0.0117)
 0E1A: 00 D0          RTS  
+
+; "V"
 0E1C: 00 FB          SVEC scale=01(/256) bri=0     x=0       y=3       (0.0000, 0.0117)
 0E1E: 71 FF          SVEC scale=01(/256) bri=7     x=1       y=-3      (0.0039, -0.0117)
 0E20: 71 FB          SVEC scale=01(/256) bri=7     x=1       y=3       (0.0039, 0.0117)
 0E22: 01 FF          SVEC scale=01(/256) bri=0     x=1       y=-3      (0.0039, -0.0117)
 0E24: 00 D0          RTS  
+
+; "W"
 0E26: 00 FB          SVEC scale=01(/256) bri=0     x=0       y=3       (0.0000, 0.0117)
 0E28: 70 FF          SVEC scale=01(/256) bri=7     x=0       y=-3      (0.0000, -0.0117)
 0E2A: 72 F2          SVEC scale=00(/512) bri=7     x=2       y=2       (0.0039, 0.0039)
 0E2C: 72 F6          SVEC scale=00(/512) bri=7     x=2       y=-3      (0.0039, -0.0059)
 0E2E: 70 FB          SVEC scale=01(/256) bri=7     x=0       y=3       (0.0000, 0.0117)
 0E30: 01 FF          SVEC scale=01(/256) bri=0     x=1       y=-3      (0.0039, -0.0117)
-0E32: 00 D0          RTS  
+0E32: 00 D0          RTS
+  
+; "X"
 0E34: 72 FB          SVEC scale=01(/256) bri=7     x=2       y=3       (0.0078, 0.0117)
 0E36: 06 F8          SVEC scale=01(/256) bri=0     x=-2      y=0       (-0.0078, 0.0000)
 0E38: 72 FF          SVEC scale=01(/256) bri=7     x=2       y=-3      (0.0078, -0.0117)
 0E3A: 02 F0          SVEC scale=00(/512) bri=0     x=2       y=0       (0.0039, 0.0000)
 0E3C: 00 D0          RTS  
+
+; "Y"
 0E3E: 02 F0          SVEC scale=00(/512) bri=0     x=2       y=0       (0.0039, 0.0000)
 0E40: 70 FA          SVEC scale=01(/256) bri=7     x=0       y=2       (0.0000, 0.0078)
 0E42: 76 F2          SVEC scale=00(/512) bri=7     x=-2      y=2       (-0.0039, 0.0039)
@@ -807,6 +911,8 @@ ThrustDir4:
 0E46: 76 F6          SVEC scale=00(/512) bri=7     x=-2      y=-3      (-0.0039, -0.0059)
 0E48: 02 FE          SVEC scale=01(/256) bri=0     x=2       y=-3      (0.0078, -0.0117)
 0E4A: 00 D0          RTS  
+
+; "Z"
 0E4C: 00 FB          SVEC scale=01(/256) bri=0     x=0       y=3       (0.0000, 0.0117)
 0E4E: 72 F8          SVEC scale=01(/256) bri=7     x=2       y=0       (0.0078, 0.0000)
 0E50: 76 FF          SVEC scale=01(/256) bri=7     x=-2      y=-3      (-0.0078, -0.0117)
