@@ -8,7 +8,7 @@ function startBedlam(consoleElement) {
 	var BinaryData = makeBinaryDataBedlam();
 	
     function write(addr,value) {        
-    	if(addr>=0x0600 && addr<0x3F02) {
+    	if(addr>=0x0600 && addr<0x3F10) {
     		// RAM where the game is loaded
         	BinaryData.write(addr,value);
         	return true;
@@ -49,7 +49,7 @@ function startBedlam(consoleElement) {
             CoCoText.startEndlessLoop();            
         }
         
-        if(addr>=0x0600 && addr<0x3F02) {
+        if(addr>=0x0600 && addr<0x3F10) {
             // RAM where the game is loaded
             return BinaryData.read(addr); 
         }        
