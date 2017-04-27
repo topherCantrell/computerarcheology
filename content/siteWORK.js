@@ -11,25 +11,33 @@
 	     {"copyDir": "css"},
 	     {"copyDir": "img"},	
 	     
-	     {"dir": "Arcade", "nav": "Arcade", "entries": [
-	         {"mark": "Arcade.mark", "out": "index.html"},
-	         {"copy": "Arcade.jpg"},
-	         {"dir": "Asteroids", "nav": "Asteroids", "entries": [
-	             {"mark": "Asteroids.mark", "out": "index.html"},
-	             {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
-	             {"address": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware"},	             
-	             {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
-	             {"code": "VectorROM.cmark", "out": "VectorROM.html", "nav": "Vector ROM"},
-	             {"separator": ""},
-	             {"mark": "DVG.mark", "out": "DVG.html", "nav": "DVG"},	             
-	             {"copy": "DVG.jpg"},
-	             {"copy": "Asteroids.jpg"},
-	             {"copy": "VectorROM.js"}
-	             ]
-	         },
-	         
-	         	         
-	         ]
+	     {"dir": "CoCo", "nav": "CoCo", "entries": [
+             {"mark": "CoCo.mark", "out": "index.html"},
+             {"address": "Hardware.mark", "out": "Hardware.html", "nav":"Hardware"},
+             {"copy": "PIA0.jpg"},
+             {"copy": "PIA1.jpg"},
+             {"copy": "SAM.jpg"},
+             {"copy": "color-basic-unravelled.pdf"},
+             {"copy": "disk-basic-unravelled.pdf"},
+             {"copy": "extended-basic-unravelled.pdf"},
+             {"copy": "super-extended-basic-unravelled.pdf"},
+             {"copy": "CoCo.jpg"},
+             {"copy": "CoCoTech.jpg"},
+             {"copy": "CoCoText.js"},
+             
+            
+             
+             {"dir": "Bedlam", "nav": "Bedlam", "entries" : [
+                 {"mark": "Bedlam.mark", "out": "index.html"},
+                 {"address": "RAMUse.mark", "out": "RAMUse.html", "nav":"RAM Use"},
+                 {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
+                 {"copy": "Bedlam.jpg"},
+                 {"copy": "bedlam.js"},
+                 {"copy": "BinaryDataBedlam.js"}
+                 ]
+             },
+            
+	    	 ]	    	 
 	     },
 	     
 	     ]

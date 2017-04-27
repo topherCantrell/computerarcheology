@@ -1,3 +1,4 @@
+// Chris Cantrell. Visit computerarcheology.com
 
 function makeBinaryDataBedlam() {
     
