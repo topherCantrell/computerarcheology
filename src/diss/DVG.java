@@ -212,7 +212,7 @@ public class DVG
 				String scale = getScale(sc);
 				int y = b&7;
 				if(y>3) {
-					y = 0-(3&7);
+					y = 0-(y&3);
 				}
 				String dy = String.format("%.04f", (double)(y)/SCALE_VALS[sc]);
 				int x = a&7;
