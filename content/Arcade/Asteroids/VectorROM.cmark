@@ -12,6 +12,11 @@
 
 ; OriginalBinary 035127.02 (Rev 2)
 
+;;= Corrections =
+
+;; Thanks to Sean D. Solle for pointing out mistakes in the disassembly for SVEC y= negative values.
+;; Those have been corrected.
+
 ;;= TODO =
 
 ;; Lots of info here about what the areas in the ROM are:
