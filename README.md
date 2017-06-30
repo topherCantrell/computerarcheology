@@ -360,3 +360,21 @@ the same but is ignored by the link tool.
 
 The link tool uses the opcode to decide on "read" or "write" versions of the label from the hardware map file. For instance
 "IN" and "OUT".
+
+# New Format
+
+%%variable = value
+
+image
+
+template (optional)
+
+title
+
+#
+##
+
+[]()
+
+{{{playMe
+}}}
