@@ -71,7 +71,7 @@ public class NewMarkupToHTML {
 				j = k;
 			}
 			String rep = "<a href='"+link+"'>"+text+"</a>";
-			System.out.println(rep);
+			//System.out.println(rep);
 			line = line.substring(0,i)+rep+line.substring(j+1);
 		}		
 	}
@@ -117,7 +117,7 @@ public class NewMarkupToHTML {
 			lineTrim = lines.get(pos++).trim();			
 			if(!lineTrim.startsWith("*")) break;
 			lineTrim = lineTrim.substring(1).trim();
-			System.out.println(">>"+lineTrim+"<<");
+			//System.out.println(">>"+lineTrim+"<<");
 			body.append("<li>"+fixHTMLText(lineTrim)+"</li>\n");
 		}		
 		body.append("</ul>\n");

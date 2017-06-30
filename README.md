@@ -363,18 +363,49 @@ The link tool uses the opcode to decide on "read" or "write" versions of the lab
 
 # New Format
 
-%%variable = value
+## Variables
 
-image
+The page templates use information from variables that are usually set near the top of the page. The syntax is ```%%variable = value``.
+* ```%%image    = Arch.jpg``` The image to use in the banner at the top of the page
+* ```%%template = newlook.template``` The markdown template to use (defaults to ```master.template```)
+* ```%%title    = Computer Archeology``` The title to use on the page
 
-template (optional)
+## Headers
 
-title
+Headers on the page are defined with the familiar markdown syntax.
+```
+# First level
+## Second level
+# Back to first level
+```
 
-#
-##
+## Links
 
-[]()
+Links are given as ```[text on page](url)```.
 
+You can use the url as the text as ```[link]```.
+
+## Bullets
+
+Bullet lists are defined with the familiar markdown syntax.
+
+```
+* Item
+* Item
+* Item
+```
+
+Coming soon: nested bullets
+
+## Blocks
+
+```
 {{{playMe
 }}}
+
+{{{html
+}}}
+
+{{{pre
+}}}
+```
