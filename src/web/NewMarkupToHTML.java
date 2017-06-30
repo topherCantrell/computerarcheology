@@ -17,6 +17,10 @@ public class NewMarkupToHTML {
 	Map<String,String> variables; // Any %% variables in the markup
 	PageNavInfo rootPageNav;      // The navigation tree for the page
 	List<String> ids;             // Unique IDs on the page
+	StringBuffer body;	
+	PageNavInfo navCursor;        // For moving up and down the navigation tree as we build it
+	List<String> lines;
+	int pos;
 		
 	/**
 	 * We keep a list of unique IDs on the page. This method ensures the
@@ -51,6 +55,79 @@ public class NewMarkupToHTML {
 		variables.put(key,value );
 		//System.out.println(":"+key+":"+value+":");
 	}
+	
+	String fixLinks(String line) {
+		while(true) {
+			int i = line.indexOf('[');
+			if(i<0) return line;
+			int j = line.indexOf(']',i);
+			if(j<0) return line;
+			String text = line.substring(i+1, j);
+			String link = text;
+			if(j+1<line.length() && line.charAt(j+1)=='(') {
+				int k = line.indexOf(')',j+1);
+				if(k<0) return line;
+				link = line.substring(j+2,k);
+				j = k;
+			}
+			String rep = "<a href='"+link+"'>"+text+"</a>";
+			System.out.println(rep);
+			line = line.substring(0,i)+rep+line.substring(j+1);
+		}		
+	}
+	
+	/**
+	 * Parse the header and create a navigation link
+	 * @param lineTrim the header line
+	 */
+	void parseHeader(String lineTrim) {
+		int level = 0;
+		while(level<lineTrim.length() && lineTrim.charAt(level)=='#') {
+			++level;
+		}
+		
+		PageNavInfo ni = new PageNavInfo();
+		
+		if(level>navCursor.level) {
+			if(navCursor.level+1 != level) {
+				throw new MarkupException("Header skipped a sublevel '"+lineTrim+"'");
+			}								
+			navCursor.subs.add(ni);
+			navCursor = ni;					
+		} else {
+			for(int x=1;x<level;++x) {
+				navCursor = navCursor.parent;
+			}					
+			navCursor.subs.add(ni);
+		}
+		
+		ni.level = level;
+		ni.parent = navCursor;
+		ni.text = lineTrim.substring(level).trim();
+		ni.link = addID(PageNavInfo.idFromText(ni.text));	
+		
+		body.append("<h"+(level+1)+" id='"+ni.link+"'>"+ni.text+"</h"+(level+1)+">\n");
+	}
+	
+	void parseBullet(String lineTrim) {
+		// TODO multi-levels if ever needed
+		--pos; // Back up to this one
+		body.append("<ul>\n");
+		while(true) {
+			lineTrim = lines.get(pos++).trim();			
+			if(!lineTrim.startsWith("*")) break;
+			lineTrim = lineTrim.substring(1).trim();
+			System.out.println(">>"+lineTrim+"<<");
+			body.append("<li>"+fixHTMLText(lineTrim)+"</li>\n");
+		}		
+		body.append("</ul>\n");
+	}
+	
+	String fixHTMLText(String line) {
+		line = fixLinks(line);
+		// TODO entize
+		return line;
+	}
 		
 	/**
 	 * Parse the given input markup file and write the HTML to the given
@@ -61,20 +138,19 @@ public class NewMarkupToHTML {
 	 * @throws IOException with file operation exceptions
 	 */
 	public void makeHTML(String contentRoot, String inFile, String outFile) throws IOException {
-		List<String> lines = Files.readAllLines(Paths.get(contentRoot,inFile));
+		lines = Files.readAllLines(Paths.get(contentRoot,inFile));
 		
-		variables = new HashMap<String,String>();
-		rootPageNav = new PageNavInfo();
 		ids = new ArrayList<String>();
-		rootPageNav.level = 1;
+		variables = new HashMap<String,String>();
+		rootPageNav = new PageNavInfo();		
+		rootPageNav.level = 1;		
+		navCursor = rootPageNav;		
 		
-		PageNavInfo navCursor = rootPageNav;		
-		
-		StringBuffer body = new StringBuffer();
+		body = new StringBuffer();
 		
 		boolean startedPElement  = false;
 		
-		int pos = 0;
+		pos = 0;
 		while(pos<lines.size()) {
 			String line = lines.get(pos++);			
 			String lineTrim = line.trim();			
@@ -87,44 +163,13 @@ public class NewMarkupToHTML {
 			
 			// Header
 			if(lineTrim.startsWith("#")) {				
-				int level = 0;
-				while(level<lineTrim.length() && lineTrim.charAt(level)=='#') {
-					++level;
-				}
-				
-				PageNavInfo ni = new PageNavInfo();
-				
-				if(level>navCursor.level) {
-					if(navCursor.level+1 != level) {
-						throw new MarkupException("Header skipped a sublevel '"+lineTrim+"'");
-					}								
-					navCursor.subs.add(ni);
-					navCursor = ni;					
-				} else {
-					for(int x=1;x<level;++x) {
-						navCursor = navCursor.parent;
-					}					
-					navCursor.subs.add(ni);
-				}
-				
-				ni.level = level;
-				ni.parent = navCursor;
-				ni.text = lineTrim.substring(level).trim();
-				ni.link = addID(PageNavInfo.idFromText(ni.text));	
-				
-				body.append("<h"+(level+1)+" id='"+ni.link+"'>"+ni.text+"</h"+(level+1)+">\n");
-							
+				parseHeader(lineTrim);							
 				continue;
 			}
 			
-			if(lineTrim.startsWith("*")) {
-				System.out.println("BULLET:"+lineTrim);
-				
-				body.append("<p>BULLET ITEM HERE</p>\n");
-				continue;
-				// Remember, we stripped off space counts
-				// We can use the PageNav tree class here too
-				// And we can use that for site info
+			if(lineTrim.startsWith("*")) {				
+				parseBullet(lineTrim);
+				continue;				
 			}
 			
 			if(lineTrim.startsWith("{{{")) {
@@ -135,13 +180,7 @@ public class NewMarkupToHTML {
 			}
 			
 			// Tables
-			
-			// Entize strings
-			
-			// Expand links (after entize)	
-			
-			// Blank lines are end of paragraphs
-			
+															
 			if(lineTrim.isEmpty()) {
 				// We are prepared for adjacent blank lines
 				if(startedPElement) {
@@ -156,7 +195,11 @@ public class NewMarkupToHTML {
 				}
 			}
 			
+			// Depends on what kind of block we are in
+			line = fixHTMLText(line);
+			
 			body.append(line);
+			
 			body.append("\n");
 			continue;
 			
