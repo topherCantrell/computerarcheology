@@ -346,29 +346,28 @@ public class MarkupToHTML {
 			
 			// TODO Tables
 						
-			// TODO if we are in HTML then don't do any fixing
-			// TODO if we are in PRE then fix but don't add <p>
-															
-			if(lineTrim.isEmpty()) {
-				// We are prepared for adjacent blank lines
-				if(startedPElement) {
-					body.append("</p>\n");
-					startedPElement = false;
+			if(blockType!=BlockType.HTML) { // if we are in HTML then don't do any fixing
+				if(blockType!=BlockType.PRE && blockType!=BlockType.CODE) { // PRE and CODE are wrapped in <pre> ... no need to <p>
+					if(lineTrim.isEmpty()) {
+						// We are prepared for adjacent blank lines
+						if(startedPElement) {
+							body.append("</p>\n");
+							startedPElement = false;
+						}
+					} else {
+						// TODO this logic will change with <pre> and <html> elements
+						if(!startedPElement) {
+							body.append("<p>\n");
+							startedPElement=true;
+						}
+					}
 				}
-			} else {
-				// TODO this logic will change with <pre> and <html> elements
-				if(!startedPElement) {
-					body.append("<p>\n");
-					startedPElement=true;
-				}
+				line = fixHTMLText(line);
 			}
-			
-			// Depends on what kind of block we are in
-			line = fixHTMLText(line);
-			
+									
 			body.append(line);
 			
-			body.append("\n");
+			body.append("\n"); // This was stripped off the original line
 			continue;
 			
 		}
