@@ -250,7 +250,7 @@ public class MarkupToHTML {
 		}
 		if(lineTrim.toUpperCase().contains("CODE")) {
 			blockType = BlockType.CODE;
-			body.append("<div class='code'>");
+			body.append("<div class='code'><pre>\n");
 			return;
 		}
 		if(lineTrim.length()!=3) {
@@ -273,10 +273,10 @@ public class MarkupToHTML {
 			System.out.println(pos);
 			throw new MarkupException("Found a close-block but wasn't in a block");		
 		case PRE:
-			body.append("</pre>");
+			body.append("</pre>\n");
 			break;	
 		case CODE:
-			body.append("</pre>");
+			body.append("</pre></div>\n");
 			break;
 		}
 		blockType = BlockType.NONE;		
