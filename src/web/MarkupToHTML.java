@@ -56,6 +56,11 @@ public class MarkupToHTML {
 		//System.out.println(":"+key+":"+value+":");
 	}
 	
+	/**
+	 * Parse all markdown links in the string and replace with HTML
+	 * @param line the markdown line
+	 * @return the modified line
+	 */
 	String fixLinks(String line) {
 		while(true) {
 			int i = line.indexOf('[');
@@ -156,21 +161,16 @@ public class MarkupToHTML {
 		}
 	}
 	
-	protected void translate(String contentRoot, String inFile, String outFile, 
-			String breadCrumbs, String siteNav, String nav) throws IOException 
-	{
-		Path ip = Paths.get(inFile);
-		List<String> lines = Files.readAllLines(ip);
-		expandIncludes(lines,inFile);
-		translate(contentRoot, inFile, outFile, breadCrumbs, siteNav, nav, lines);
-	}
-		
 	/**
 	 * Parse the given input markup file and write the HTML to the given
 	 * output file.
 	 * @param contentRoot the root path of the content (we may pull in other files)
 	 * @param inFile the name of the input markup file 
 	 * @param outFile the output file to generate
+	 * @param breadCrumbs the breadcrumb string for this page
+	 * @param siteNav the site navigation string (common to all pages)
+	 * @param pageNav the page navigation string for this page
+	 * @param lines the lines of markdown
 	 * @throws IOException with file operation exceptions
 	 */
 	public void translate(String contentRoot, String inFile, String outFile, String breadCrumbs, String siteNav,
@@ -271,19 +271,14 @@ public class MarkupToHTML {
 						
 	}
 	
-	/*
-	private void printPageNavInfo(PageNavInfo p) {
-		for(int x=0;x<p.level;++x) {
-			System.out.print(" ");
-		}
-		System.out.println(":"+p.text+":"+p.link+":");
-		for(PageNavInfo pc : p.subs) {
-			printPageNavInfo(pc);
-		}
+	// Address and Code derived classes use this
+	protected void translate(String contentRoot, String inFile, String outFile, 
+			String breadCrumbs, String siteNav, String nav) throws IOException 
+	{
+		Path ip = Paths.get(inFile);
+		List<String> lines = Files.readAllLines(ip);
+		expandIncludes(lines,inFile);
+		translate(contentRoot, inFile, outFile, breadCrumbs, siteNav, nav, lines);
 	}
-	*/
-
 	
-	
-
 }

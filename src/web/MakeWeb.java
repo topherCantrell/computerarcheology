@@ -32,7 +32,7 @@ public class MakeWeb {
 		
 	}
 			
-	static Object[] getBreadCrumbs(List<SiteInfoEntry> nodes) {
+	private static Object[] getBreadCrumbs(List<SiteInfoEntry> nodes) {
 		
 		// Don't include the last node if it has no navigation
 		int end = nodes.size()-1;
@@ -124,7 +124,7 @@ public class MakeWeb {
 		
 	}
 
-	public static void processEntries(String contentRoot, SiteInfoEntry root, List<SiteInfoEntry> nodes, String dep, String cont ) throws IOException {
+	private static void processEntries(String contentRoot, SiteInfoEntry root, List<SiteInfoEntry> nodes, String dep, String cont ) throws IOException {
 		
 		SiteInfoEntry e = nodes.get(nodes.size()-1);
 		
