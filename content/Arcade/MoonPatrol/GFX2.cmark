@@ -186,6 +186,7 @@
 ;;}}}
 
 ;;= Alien Ship Shots (fin alien and saucer alien, 3 rotations) =
+;;{{{html
 ;;<canvas width="900" 
 ;;        height="150"
 ;;        data-colors="CS1"    

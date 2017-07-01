@@ -14,6 +14,14 @@ import code.CU;
 
 public class MarkupToHTML {
 	
+	enum BlockType {
+		NONE,
+		PRE,
+		PLAYME,
+		HTML,
+		CODE
+	}
+	
 	Map<String,String> variables; // Any %% variables in the markup
 	PageNavInfo rootPageNav;      // The navigation tree for the page
 	List<String> ids;             // Unique IDs on the page
@@ -21,6 +29,7 @@ public class MarkupToHTML {
 	PageNavInfo navCursor;        // For moving up and down the navigation tree as we build it
 	List<String> lines;
 	int pos;
+	BlockType blockType = BlockType.NONE;
 		
 	/**
 	 * We keep a list of unique IDs on the page. This method ensures the
@@ -130,6 +139,9 @@ public class MarkupToHTML {
 			body.append("<li>"+fixHTMLText(lineTrim)+"</li>\n");
 		}		
 		body.append("</ul>\n");
+		if(pos<lines.size()) {
+			--pos;
+		}
 	}
 	
 	/**
@@ -222,6 +234,54 @@ public class MarkupToHTML {
 		}				
 	}
 	
+	private void parseBlockOpen(String lineTrim) {
+		if(blockType!=BlockType.NONE) {
+			System.out.println(pos);
+			throw new MarkupException("No nested blocks allowed");
+		}
+		if(lineTrim.toUpperCase().contains("PLAYME")) {
+			blockType = BlockType.PLAYME;
+			body.append("<div class='playMe'><div>\n");
+			return;
+		}
+		if(lineTrim.toUpperCase().contains("HTML")) {
+			blockType = BlockType.HTML;
+			return;
+		}
+		if(lineTrim.toUpperCase().contains("CODE")) {
+			blockType = BlockType.CODE;
+			body.append("<div class='code'>");
+			return;
+		}
+		if(lineTrim.length()!=3) {
+			System.out.println(pos);
+			throw new MarkupException("Unknown block type: "+lineTrim);
+		}		
+		blockType = BlockType.PRE;
+		body.append("<pre>");
+		return;				
+	}
+	
+	private void parseBlockClose(String lineTrim) {		
+		switch(blockType) {
+		case PLAYME:
+			body.append("</div></div>\n");
+			break;
+		case HTML:
+			break;			
+		case NONE:
+			System.out.println(pos);
+			throw new MarkupException("Found a close-block but wasn't in a block");		
+		case PRE:
+			body.append("</pre>");
+			break;	
+		case CODE:
+			body.append("</pre>");
+			break;
+		}
+		blockType = BlockType.NONE;		
+	}
+	
 	/**
 	 * Parse the given input markup file and write the HTML to the given
 	 * output file.
@@ -275,13 +335,19 @@ public class MarkupToHTML {
 			}
 			
 			if(lineTrim.startsWith("{{{")) {
-				System.out.println("BLOCK:"+lineTrim);
+				parseBlockOpen(lineTrim);				
+				continue;				
+			}
+			
+			if(lineTrim.startsWith("}}}")) {
+				parseBlockClose(lineTrim);
 				continue;
-				// Block mode
-				// Some are completely <pre> and some are complete markdown with div wraps
 			}
 			
 			// TODO Tables
+						
+			// TODO if we are in HTML then don't do any fixing
+			// TODO if we are in PRE then fix but don't add <p>
 															
 			if(lineTrim.isEmpty()) {
 				// We are prepared for adjacent blank lines

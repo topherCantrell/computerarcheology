@@ -485,7 +485,7 @@ D313: 33 C9 01 06   LEAU  $0106,U       ;
 D317: 36 36         PSHU  Y,X,B,A       ;
 D319: 35 90         PULS  X,PC          ;
 }}}
-{{{#!comment
+{{{
 No JMP, JSR, BRA, vector, etc. leads us to these two sections of code, so far.
 }}}
 {{{
@@ -5267,7 +5267,7 @@ F521: 39            RTS                 ;
 
 This paints in shapes according to the data in the address that is passed? Used to paint alphanumeric characters on screen, score and possibly extra ships (lives) and bombs.
 
-{{{#!comment
+{{{
 It doesn't look very useful for the dynamic portion of the game screen, I think. Only for the "lives", bombs, and score, perhaps?
 }}}
 
@@ -5325,6 +5325,8 @@ F574: 97 36         STA   <$36          ; save previous page number in [$36]
 F576: B7 D0 00      STA   $D000         ;restore page #
 F579: 35 F6         PULS  A,B,X,Y,U,PC  ; pop all registers and do hack RET by popping PC.
 }}}
+
+{{{
 Clear video memory block.
 ScrnBlkClrP2      ;SUBRTN
 F57B: 34 56         PSHS  U,X,B,A       ;
@@ -5378,6 +5380,7 @@ F5CB: 34 02         PSHS  A             ;on the stack
 F5CD: A6 61         LDA   1,S           ;recover A reg entry value w/o changing the stack pointer
 F5CF: 20 BB         BRA   $F58C         ;
 }}}
+
 Clear video memory completely
 {{{
 VidMemClr      ;SUBRTN

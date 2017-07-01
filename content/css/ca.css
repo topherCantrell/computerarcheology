@@ -98,4 +98,16 @@ html,
     background-image: url(/img/minusbox.gif);
 }
 
+.playMe {
+	border: 1px solid;
+    border-radius: 10px;
+    background-color: #dff0d8;
+}
+
+.playMe div {
+	padding-left: 20px;
+}
+
+
+
 

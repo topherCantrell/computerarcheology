@@ -206,7 +206,7 @@ Playfield descriptor
    0B Strength to reveal   | Copied from entry in DA00
    0C Magic power          |
    0D Physical power      -+
-}}
+}}}
 
 = Tasks =
 {{{

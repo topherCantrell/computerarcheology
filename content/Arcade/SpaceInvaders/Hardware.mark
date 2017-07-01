@@ -177,6 +177,7 @@ Port 6:
 
 The map below shows the raster layout. Take this map and rotate it counter clockwise once. Thus the first
 byte is lower left. First "row" ends upper left. Last byte is upper right.
+}}}
 
 {{{ 
      2400     2401     2402        ....   241F
