@@ -161,6 +161,67 @@ public class MarkupToHTML {
 		}
 	}
 	
+	protected String makePageNav(String inFile, List<PageNavInfo> pageNav) {
+		if(pageNav.size()<1) {
+			return "";
+		}
+		
+		int tlev = (int) pageNav.get(0).level;
+		if(tlev != 1) {
+			throw new RuntimeException("File '"+inFile+"' Headers must start at level 1.");
+		}
+		
+		List<PageNavInfo> pret = new ArrayList<PageNavInfo>();
+		PageNavInfo p = new PageNavInfo();
+		p.level = 0;
+		pret.add(p);
+		
+		makePageNavRecurse(inFile, pret,1,0,pageNav);
+		
+		List<String> lines = new ArrayList<String>();
+		makePageNavHTMLRecurse(pret.get(0).subs, lines);
+		
+				
+		return CU.listToString(lines);		
+		
+	}
+	
+	private void makePageNavHTMLRecurse(List<PageNavInfo> cur, List<String> lines) {
+		for(PageNavInfo c : cur) {						
+			
+			String li = "<li><a href=\"#"+c.link+"\">"+c.text+"</a>";
+			lines.add(li);
+			
+			if(c.subs!=null) {
+				lines.add("<ul>");
+				makePageNavHTMLRecurse(c.subs,lines);
+				lines.add("</ul>");
+			}
+			
+			lines.add("</i>");
+			
+		}
+	}
+	
+	private int makePageNavRecurse(String fileName, List<PageNavInfo> parent, int level, int pos, List<PageNavInfo> pageNav) {		
+		List<PageNavInfo> ret = new ArrayList<PageNavInfo>();
+		while(true) {
+			if(pos==pageNav.size() || pageNav.get(pos).level<level) {
+				parent.get(parent.size()-1).subs = ret;
+				return pos;
+			}
+			if(pageNav.get(pos).level == level) {
+				ret.add(pageNav.get(pos));
+				pos = pos + 1;
+				continue;
+			}
+			if(pageNav.get(pos).level != (level+1)) {
+				throw new RuntimeException("In '"+fileName+"' Missing header level");
+			}
+			pos = makePageNavRecurse(fileName, ret,level+1,pos,pageNav);		
+		}				
+	}
+	
 	/**
 	 * Parse the given input markup file and write the HTML to the given
 	 * output file.
@@ -169,18 +230,20 @@ public class MarkupToHTML {
 	 * @param outFile the output file to generate
 	 * @param breadCrumbs the breadcrumb string for this page
 	 * @param siteNav the site navigation string (common to all pages)
-	 * @param pageNav the page navigation string for this page
+	 * @param title default page title
 	 * @param lines the lines of markdown
 	 * @throws IOException with file operation exceptions
 	 */
 	public void translate(String contentRoot, String inFile, String outFile, String breadCrumbs, String siteNav,
-			String pageNav, List<String> lines) throws IOException {
+			String title, List<String> lines) throws IOException {
 		
 		this.lines = lines;
 		//lines = Files.readAllLines(Paths.get(contentRoot,inFile));
 		
 		ids = new ArrayList<String>();
 		variables = new HashMap<String,String>();
+		variables.put("template", "master.template"); // Default page template
+		variables.put("title", title);
 		rootPageNav = new PageNavInfo();		
 		rootPageNav.level = 1;		
 		navCursor = rootPageNav;		
@@ -245,20 +308,20 @@ public class MarkupToHTML {
 		}
 							
 		// Load the template
-		String templateFile = variables.get("template");
-		if(templateFile==null) {
-			templateFile = "master.template";
-		}		
+		String templateFile = variables.get("template");		
 		String template = "<!-- %%BODY%% -->";
 		Path p = Paths.get(contentRoot+"/"+templateFile);
 		List<String> tlines = Files.readAllLines(p);
 		template = CU.listToString(tlines);		
+		
+		// Get page_nav fillin		
+		String pageTree = makePageNav(inFile,rootPageNav.subs);
 						
 		// Fill in the template substitutions
 		template = CU.replaceAll(template, "<!-- %%title=%% -->", variables.get("title"));		
 		template = CU.replaceAll(template, "<!-- %%CONTENT_TITLE%% -->", variables.get("title"));
 		template = CU.replaceAll(template, "<!-- %%BREAD_CRUMBS%% -->", breadCrumbs);
-		template = CU.replaceAll(template, "<!-- %%PAGE_TREE%% -->", pageNav);
+		template = CU.replaceAll(template, "<!-- %%PAGE_TREE%% -->", pageTree);
 		template = CU.replaceAll(template, "<!-- %%SITE_TREE%% -->", siteNav);
 		template = CU.replaceAll(template, "<!-- %%CONTENT%% -->", body.toString());
 		template = CU.replaceAll(template, "<!-- %%IMAGE%% -->", variables.get("image"));
