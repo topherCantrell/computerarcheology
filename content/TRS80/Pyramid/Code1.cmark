@@ -1,8 +1,8 @@
-;;%%image TRS80Pyramid.jpg
-;;%%title TRS-80 Pyramid (Model 1 ???)
-;;%%cpu Z80
-;;%%- TRS80/Pyramid/RAMUse1.mark /TRS80/Pyramid/RAMUse1.html
-;;%%-2 TRS80/Hardware.mark /TRS80/Hardware.html
+;;%%image=TRS80Pyramid.jpg
+;;%%title= TRS-80 Pyramid (Model 1 ???)
+;;%%cpu=Z80
+;;%%-=TRS80/Pyramid/RAMUse1.mark /TRS80/Pyramid/RAMUse1.html
+;;%%-2=TRS80/Hardware.mark /TRS80/Hardware.html
 
 ;;* [RAMUse2.html RAM Usage]
 ;;* [/TRS80/Hardware.html Hardware Info]

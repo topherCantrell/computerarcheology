@@ -1,8 +1,8 @@
-;;%%image A2600MissileCommand.jpg
-;;%%title Atari2600 Missile Command
-;;%%cpu 6502
-;;%%- Atari2600/MissileCommand/RAMUse.mark /Atari2600/MissileCommand/RAMUse.mark
-;;%%-2 Atari2600/Stella.mark /Atari2600/Stella.html
+;;%%image=A2600MissileCommand.jpg
+;;%%title= Atari2600 Missile Command
+;;%%cpu=6502
+;;%%-=Atari2600/MissileCommand/RAMUse.mark /Atari2600/MissileCommand/RAMUse.mark
+;;%%-2=Atari2600/Stella.mark /Atari2600/Stella.html
 
 ; 86 P0
 ; 87 P1 

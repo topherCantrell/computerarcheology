@@ -1,8 +1,8 @@
-;;%%image MoonPatrol.jpg
-;;%%- Arcade/MoonPatrol/SoundRAMUse.mark /Arcade/MoonPatrol/SoundRAMUse.html
-;;%%-2 Arcade/MoonPatrol/SoundHardware.mark /Arcade/MoonPatrol/SoundHardware.html
-;;%%cpu 6803
-;;%%title Moon Patrol Sound Board Code
+;;%%image=MoonPatrol.jpg
+;;%%-=Arcade/MoonPatrol/SoundRAMUse.mark /Arcade/MoonPatrol/SoundRAMUse.html
+;;%%-2=Arcade/MoonPatrol/SoundHardware.mark /Arcade/MoonPatrol/SoundHardware.html
+;;%%cpu=6803
+;;%%title= Moon Patrol Sound Board Code
 
 DACExplosionSamples: ;=
 ; Interesting. This explosion effect lasting 1/2 second consumes 1/4th of the ROM.

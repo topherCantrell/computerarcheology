@@ -1,7 +1,7 @@
-;;%%image GBZelda.jpg
-;;%%cpu Z80GB
-;;%%- Gameboy/Zelda/RAMUse.mark /Gameboy/Zelda/RAMUse.html
-;;%%-2 Gameboy/Zelda/Hardware.mark /Gameboy/Zelda/Hardware.html
+;;%%image=GBZelda.jpg
+;;%%cpu=Z80GB
+;;%%-=Gameboy/Zelda/RAMUse.mark /Gameboy/Zelda/RAMUse.html
+;;%%-2=Gameboy/Zelda/Hardware.mark /Gameboy/Zelda/Hardware.html
 
 4000: C3 09 40   JP      $4009           
 4003: C3 FA 4C   JP      $4CFA           

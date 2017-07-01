@@ -1,6 +1,6 @@
-%%image ORace.jpg
-%%title Omega Race Sound RAM Use
-%%range 1000:13FF
+%%image=ORace.jpg
+%%title= Omega Race Sound RAM Use
+%%range=1000:13FF
 
 {{{
  1010..101F Requested values for the 32 AY registers (16 registers per chip)

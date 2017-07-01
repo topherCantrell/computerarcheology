@@ -1,8 +1,8 @@
-;;%%image Madness.jpg
-;;%%title Madness and the Minotaur
-;;%%cpu 6809
-;;%%- Coco/MadnessMinotaur/RAMUse.mark /CoCo/MadnessMinotaur/RAMUse.html
-;;%%-2 Coco/Hardware.mark /CoCo/Hardware.html
+;;%%image=Madness.jpg
+;;%%title= Madness and the Minotaur
+;;%%cpu=6809
+;;%%-=Coco/MadnessMinotaur/RAMUse.mark /CoCo/MadnessMinotaur/RAMUse.html
+;;%%-2=Coco/Hardware.mark /CoCo/Hardware.html
 
 ;; * [RAMUse.html RAM Usage]
 ;; * [/CoCo/Hardware.html Hardware Info]

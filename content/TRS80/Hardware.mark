@@ -1,6 +1,6 @@
-%%title TRS80 Hardware
-%%image TRS80Tech.jpg
-%%range 3000:3BFF
+%%title= TRS80 Hardware
+%%image=TRS80Tech.jpg
+%%range=3000:3BFF
 
 = Memory Map =
  * 0000-2FFF Level 2 ROM

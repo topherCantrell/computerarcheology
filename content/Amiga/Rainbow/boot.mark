@@ -1,5 +1,5 @@
-%%title boot
-%%image Rainbow.jpg
+%%title= boot
+%%image=Rainbow.jpg
 
 The first part that's loaded is the boot block, it's located on the first sector of the first track,
 

@@ -1,5 +1,5 @@
-%%title orig_boot
-%%image Rainbow.jpg
+%%title= orig_boot
+%%image=Rainbow.jpg
 
 After running the protection, this is what we end up with, the original boot block in all it's glory:
 

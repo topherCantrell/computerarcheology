@@ -1,5 +1,5 @@
-%%title 1loader
-%%image Rainbow.jpg
+%%title= 1loader
+%%image= Rainbow.jpg
 
 This is the code loaded by the boot block.
 

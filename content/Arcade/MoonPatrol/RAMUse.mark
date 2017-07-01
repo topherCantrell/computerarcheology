@@ -1,5 +1,5 @@
-%%image MoonPatrol.jpg
-%%range E000:E7FF
+%%image=MoonPatrol.jpg
+%%range=E000:E7FF
 
 ||= Address     || Name         || Description ||
 || E001         || SndQueue1    || Sound effects queue buffer ||

@@ -1,5 +1,5 @@
-%%title Defender Hardware
-%%image Defender.jpg
+%%title= Defender Hardware
+%%image=Defender.jpg
 
  $0000..$BFFF is always RAM 
      stack pointer is initialized to $BFFF 

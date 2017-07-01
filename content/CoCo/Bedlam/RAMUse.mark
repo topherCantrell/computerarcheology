@@ -1,6 +1,6 @@
-%%image Bedlam.jpg
-%%title Bedlam RAM Use
-%%range 0088:03FF
+%%image=Bedlam.jpg
+%%title= Bedlam RAM Use
+%%range=0088:03FF
 
 ||= Address  || Name                  || Description                                  || Accessed ||
 || 88:89     || printCursor           || screen pointer used by BASIC                 ||          ||

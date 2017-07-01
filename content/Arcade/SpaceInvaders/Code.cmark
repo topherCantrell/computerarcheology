@@ -1,8 +1,8 @@
-;;%%image SpaceInvaders.jpg
-;;%%title Space Invaders Code
-;;%%cpu Z80
-;;%%- Arcade/SpaceInvaders/RAMUse.mark /Arcade/SpaceInvaders/RAMUse.html
-;;%%-2 Arcade/SpaceInvaders/Hardware.mark /Arcade/SpaceInvaders/Hardware.html
+;;%%image=SpaceInvaders.jpg
+;;%%title= Space Invaders Code
+;;%%cpu=Z80
+;;%%-=Arcade/SpaceInvaders/RAMUse.mark /Arcade/SpaceInvaders/RAMUse.html
+;;%%-2=Arcade/SpaceInvaders/Hardware.mark /Arcade/SpaceInvaders/Hardware.html
  
 ;; * [RAMUse.html RAM Usage]
 ;; * [Hardware.html Hardware Info]

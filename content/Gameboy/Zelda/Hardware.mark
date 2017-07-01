@@ -1,5 +1,5 @@
-%%image GBZelda.jpg
-%%range 8000:9FFF, FE00:FFFF
+%%image=GBZelda.jpg
+%%range=8000:9FFF, FE00:FFFF
 
 = Memory Map =
 

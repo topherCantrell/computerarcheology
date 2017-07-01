@@ -1,8 +1,8 @@
-;;%%image A2600Combat.jpg
-;;%%title Atari2600 Combat
-;;%%cpu 6502
-;;%%- Atari2600/Combat/RAMUse.mark /Atari2600/Combat/RAMUse.mark
-;;%%-2 Atari2600/Stella.mark /Atari2600/Stella.html
+;;%%image=A2600Combat.jpg
+;;%%title= Atari2600 Combat
+;;%%cpu=6502
+;;%%-=Atari2600/Combat/RAMUse.mark /Atari2600/Combat/RAMUse.mark
+;;%%-2=Atari2600/Stella.mark /Atari2600/Stella.html
 
 F000: 78            SEI                       ; Turn off interrupts 
 F001: D8            CLD                       ; Binary mode (not BCD)

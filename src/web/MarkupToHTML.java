@@ -14,405 +14,137 @@ import code.CU;
 
 public class MarkupToHTML {
 	
-	List<String> headers = new ArrayList<String>();
-	String rawMode = "none";
-	String mode = "none";
-	
-	private boolean markDownContinueRaw(String line, List<String> ret, List<PageNavInfo> pageNav) {
-		if(line.trim().startsWith("}}}")) {
-			if(rawMode.equals("pre")) {
-				ret.add("</pre>");
-			}
-			return true;
-		}
+	Map<String,String> variables; // Any %% variables in the markup
+	PageNavInfo rootPageNav;      // The navigation tree for the page
+	List<String> ids;             // Unique IDs on the page
+	StringBuffer body;	
+	PageNavInfo navCursor;        // For moving up and down the navigation tree as we build it
+	List<String> lines;
+	int pos;
 		
-		// Special! Code labels can be headers too!
-		String[] words = line.split(":");
-		if(words.length == 2) {
-			words[0] = words[0].trim();
-			words[1] = words[1].trim();
-			if(words[1].startsWith(";")) {
-				int i = words[0].indexOf("id=");
-				if(i>=0) {
-					words[1] = words[1].substring(1).trim();
-					if(words[1].startsWith("=")) {
-						int j = words[0].indexOf("\"",i+4);
-						words[0] = words[0].substring(i+4,j);
-						markDownHeaders(words[1]+" "+words[0]+" "+words[1]+"#"+words[0],pageNav);
-						i = line.indexOf(";");
-						line = line.substring(0,i);
-					}
-				}
-			}
-		}
-		
-		ret.add(line);
-		return false;
-	}
-	
-	private void markDownStartRaw(String line, List<String> ret) {
-		
-		// Code uses a special coloring class
-		if(line.startsWith("{{{code")) {
-			rawMode = "pre";
-			ret.add("<pre class=\"codePreStyle\">");
-			return;
-		}
-		
-		// HTML .. no <pre>
-		if(line.startsWith("{{{html")) {
-			rawMode = "html";
-			return;
-		}
-		
-		// Simple raw block is just <pre>
-		ret.add("<pre>");
-		rawMode = "pre";
-	}
-	
-	private String entizeString(String s) {
-		String ret = "";
-		for(int i=0;i<s.length();++i) {
-			char c = s.charAt(i);
-			if(c=='<') {
-				ret = ret + "&lt;";
-			} else if(c=='>') {
-				ret = ret + "&gt;";
-			} else if(c=='&') {
-				ret = ret + "&amp;";
-			} else {
-				ret = ret + c;
-			}
+	/**
+	 * We keep a list of unique IDs on the page. This method ensures the
+	 * id is unique by modifying it until it is. 
+	 * @param org the original (requested) id
+	 * @return the actual (maybe modified) id
+	 */
+	String addID(String org) {
+		if(!ids.contains(org)) {
+			ids.add(org);
+			return org;
 		}		
-		return ret;
+		int un = 2;
+		while(ids.contains(org+un)) {
+			++un;
+		}
+		ids.add(org+un);
+		return org+un;		
 	}
 	
-	private String markDownHeaders(String proc, List<PageNavInfo> pageNav) {
-		//System.out.println(proc);
-		//     text        lid   id
-        // == This is it == it #thisIt
-
-        // Count the leading "=". This is the
-        // header number.
-		
-		int i = 0;
-		while(proc.charAt(i)=='=') {
-			i = i + 1;
+	/**
+	 * Parse the set-variable line from the markup.
+	 * @param com the markup text
+	 */
+	void setVariable(String com) {
+		int i = com.indexOf("=");
+		if(i<0) {
+			throw new MarkupException("Expected '=' in '"+com+"'");
 		}
-		
-		int j = proc.indexOf('=',i);
-		
-		String text = proc.substring(i,j).trim();
-		String altText = proc.substring(j+i).trim();
-		String lid = "";
-		
-		int x = altText.indexOf("#");
-		if(x>=0) {
-			lid = altText.substring(x+1).trim();
-			altText = altText.substring(0,x).trim();
-		} else {
-			lid = makeHeaderLink(text);
-		}
-		
-		if(altText.length()==0) {
-			altText = text;
-		}
-		
-		String ret = "<h"+i+" id=\""+lid+"\" class=\"siteTarget\">"+text+"</h"+i+">";
-		
-		PageNavInfo n = new PageNavInfo();
-		n.level = i;
-		n.link = lid;
-		n.text = altText;
-		pageNav.add(n);
-		
-		//System.out.println(n.level+" "+n.link+" "+n.text);
-		
-		return ret;
+		String key = com.substring(2,i).trim();
+		String value = com.substring(i+1).trim();
+		variables.put(key,value );
+		//System.out.println(":"+key+":"+value+":");
 	}
 	
-	private String makeHeaderLink(String text) {
-		String ret = "";
-		for(int x=0;x<text.length();++x) {
-			char c=text.charAt(x);
-			if( (c>='a' && c<='z') || (c>='A' && c<='Z') || (c>='0' && c<='9') ) {
-				ret = ret + c;
-			}
-		}		
-		if(ret.length()==0) {
-			ret = "header";
-		}
-		if(headers.contains(ret)) {
-			ret = ret + "" + headers.size();
-		}
-		headers.add(ret);
-		return ret;
-	}
-	
-	private String markDownBraces(String proc) {
-						
-		while(true) {			
-			int i = proc.indexOf("[");		
-			int ii = i+1;
-			if(i<0) return proc;
-			
-			String ltp = "<a href=\"###HREF###\">###TEXT###</a>";						
-			int j = proc.indexOf("]",i);			
-			if(proc.charAt(i+1)=='!') {
-				ltp = "<img src=\"###HREF###\">###TEXT###</img>";
-				ii = ii + 1;
-			}
-			
-			String a = proc.substring(ii,j);	
-			
-			int x = a.indexOf(" ");
-			if(x>=0) {
-				ltp = CU.replaceAll(ltp, "###HREF###", a.substring(0,x));
-				ltp = CU.replaceAll(ltp, "###TEXT###", a.substring(x+1).trim());
-			} else {
-				ltp = CU.replaceAll(ltp, "###HREF###", a);
-				ltp = CU.replaceAll(ltp, "###TEXT###", a);				
-			}
-			proc = proc.substring(0,i)+ltp+proc.substring(j+1);			
-		}
-		
-	}
-	
-	private String markDownStartBullets(String proc) {
-		return "<ul><li>"+proc.substring(1).trim()+"</li>";
-	}
-
-	private void markDownEndBullets(List<String> ret) {
-		ret.add("</ul>");
-	}
-
-	private String markDownContinueBullets(String proc) {
-		return "<li>"+proc.substring(1).trim()+"</li>";
-	}
-	
-	
-	protected String markDownStartTable(String proc) {
-		
-		String[] hdrs = proc.split("\\|\\|");		
-		
-		if(hdrs[1].startsWith("=")) {
-			hdrs[1] = hdrs[1].substring(1).trim();
-			String s = "<table class=\"table table-condensed\"><thead><tr>";		
-			for(int x=1;x<hdrs.length;++x) {
-				s = s + "<th>" + hdrs[x].trim()+ "</th>";
-			}
-			return s + "</tr></thead>";
-		} else {
-			String s = "<table class=\"table table-condensed\"><tr>";
-			for(int x=1;x<hdrs.length;++x) {
-				s = s + "<td>" + hdrs[x].trim()+ "</td>";
-			}
-			return s + "</tr>";
-		}
-		 
-	}
-
-	private void markDownEndTable(List<String> ret) {
-		ret.add("</table>");
-	}
-
-	protected String markDownContinueTable(String proc) {
-		String[] cells = proc.split("\\|\\|");
-		String s = "<tr>";
-		for(int x=1;x<cells.length;++x) {
-			s = s + "<td>" + cells[x].trim() + "</td>";
-		}
-		return s + "</tr>";
-	}
-			
-	
-	
-	public String markDown(String fileName, List<String> lines, List<PageNavInfo> pageNav) {		
-		
-		List<String> ret = new ArrayList<String>();
-		
-		mode = "none";
-		headers.clear();
-		
-		int pos = 0;
-		
-		try {
-		
-			for(String line : lines) {
-				++pos;
-				
-				// In raw mode we don't do any processing at all
-				if(mode.equals("raw")) {
-					boolean nm = markDownContinueRaw(line, ret,pageNav);
-					if(nm) {
-						mode = "none";
-					}
-					continue;
-				}
-				
-				String proc = line.trim();
-				
-				// This is how you get into raw mode
-				if(proc.startsWith("{{{")) {
-					markDownStartRaw(proc,ret);
-					mode = "raw";
-					continue;
-				}
-				
-				if(proc.startsWith("%%")) {
-					// Ignore any defines
-					continue;
-				}
-				
-				// Make this string HTML friendly
-				proc = entizeString(proc);
-				
-				// Handle line breaks
-				proc = CU.replaceAll(proc, "[[br]]", "<br>");
-				proc = CU.replaceAll(proc, "[[BR]]", "<br>");
-				
-				// Handle paragraph breaks
-				if(proc.length()==0) {
-					proc = "<p />";
-				}
-				
-				// Handle headers
-				if(proc.startsWith("=")) {
-					proc = markDownHeaders(proc,pageNav);
-				}
-								
-				// Links
-				if(proc.contains("[")) {
-					proc = markDownBraces(proc);
-				}
-				
-				// Bullets
-				if(mode.equals("bullets")) {
-					if(proc.startsWith("*")) {
-						proc = markDownContinueBullets(proc);
-					} else {
-						markDownEndBullets(ret);
-						mode = "none";
-					}				
-				} else if(proc.startsWith("*")) {
-					if(proc.startsWith("*")) {
-						proc = markDownStartBullets(proc);
-						mode = "bullets";
-						ret.add(proc);
-						continue;
-					}				
-				}			
-				
-				// Table
-				if(mode.equals("table")) {
-					if(proc.startsWith("||")) {
-						proc = markDownContinueTable(proc);
-					} else {
-						markDownEndTable(ret);
-						mode = "none";
-					}
-				} else {
-					if(proc.startsWith("||")) {
-						proc = markDownStartTable(proc);
-						mode = "table";
-						ret.add(proc);
-						continue;
-					}
-					
-				}
-							
-				ret.add(proc+" ");
-							
-			}		
-			
-			return CU.listToString(ret);
-		
-		} catch (RuntimeException e) {
-			RuntimeException er = new RuntimeException("File '"+fileName+"' line "+pos,e);
-			throw er;
-		}
-	}
-
-	public void getFillIns(String preamble, Map<String, String> fills, List<String> lines) {
-		for(String s : lines) {
-			String t = s.trim();
-			if(t.startsWith(preamble)) {
-				t = t.substring(preamble.length()).trim();
-				int i = t.indexOf(" ");
-				String key = t.substring(0,i);
-				String value = t.substring(i+1).trim();
-				fills.put(key, value);
-			}
-		}		
-	}
-	
-	protected String makePageNav(String inFile, List<PageNavInfo> pageNav) {
-		if(pageNav.size()<1) {
-			return "";
-		}
-		
-		int tlev = (int) pageNav.get(0).level;
-		if(tlev != 1) {
-			throw new RuntimeException("File '"+inFile+"' Headers must start at level 1.");
-		}
-		
-		List<PageNavInfo> pret = new ArrayList<PageNavInfo>();
-		PageNavInfo p = new PageNavInfo();
-		p.level = 0;
-		pret.add(p);
-		
-		makePageNavRecurse(inFile, pret,1,0,pageNav);
-		
-		List<String> lines = new ArrayList<String>();
-		makePageNavHTMLRecurse(pret.get(0).subs, lines);
-		
-				
-		return CU.listToString(lines);		
-		
-	}
-	
-	private void makePageNavHTMLRecurse(List<PageNavInfo> cur, List<String> lines) {
-		for(PageNavInfo c : cur) {
-			
-			String cl = "n";
-			if(c.level==1) {
-				cl = "1";
-			}
-			
-			String li = "<li class=\"sn"+cl+"\"><a class=\"sna\" href=\"#"+c.link+"\">"+c.text+"</a>";
-			lines.add(li);
-			
-			if(c.subs!=null) {
-				lines.add("<ul>");
-				makePageNavHTMLRecurse(c.subs,lines);
-				lines.add("</ul>");
-			}
-			
-			lines.add("</i>");
-			
-		}
-	}
-	
-	private int makePageNavRecurse(String fileName, List<PageNavInfo> parent, int level, int pos, List<PageNavInfo> pageNav) {		
-		List<PageNavInfo> ret = new ArrayList<PageNavInfo>();
+	String fixLinks(String line) {
 		while(true) {
-			if(pos==pageNav.size() || pageNav.get(pos).level<level) {
-				parent.get(parent.size()-1).subs = ret;
-				return pos;
+			int i = line.indexOf('[');
+			if(i<0) return line;
+			int j = line.indexOf(']',i);
+			if(j<0) return line;
+			String text = line.substring(i+1, j);
+			String link = text;
+			if(j+1<line.length() && line.charAt(j+1)=='(') {
+				int k = line.indexOf(')',j+1);
+				if(k<0) return line;
+				link = line.substring(j+2,k);
+				j = k;
 			}
-			if(pageNav.get(pos).level == level) {
-				ret.add(pageNav.get(pos));
-				pos = pos + 1;
-				continue;
-			}
-			if(pageNav.get(pos).level != (level+1)) {
-				throw new RuntimeException("In '"+fileName+"' Missing header level");
-			}
-			pos = makePageNavRecurse(fileName, ret,level+1,pos,pageNav);		
-		}				
+			String rep = "<a href='"+link+"'>"+text+"</a>";
+			//System.out.println(rep);
+			line = line.substring(0,i)+rep+line.substring(j+1);
+		}		
 	}
+	
+	/**
+	 * Parse the header and create a navigation link
+	 * @param lineTrim the header line
+	 */
+	void parseHeader(String lineTrim) {
+		int level = 0;
+		while(level<lineTrim.length() && lineTrim.charAt(level)=='#') {
+			++level;
+		}
 		
-	public void expandIncludes(List<String> lines,String inFile) throws IOException {
+		PageNavInfo ni = new PageNavInfo();
+		
+		if(level>navCursor.level) {
+			if(navCursor.level+1 != level) {
+				throw new MarkupException("Header skipped a sublevel '"+lineTrim+"'");
+			}								
+			navCursor.subs.add(ni);
+			navCursor = ni;					
+		} else {
+			for(int x=1;x<level;++x) {
+				navCursor = navCursor.parent;
+			}					
+			navCursor.subs.add(ni);
+		}
+		
+		ni.level = level;
+		ni.parent = navCursor;
+		ni.text = lineTrim.substring(level).trim();
+		ni.link = addID(PageNavInfo.idFromText(ni.text));	
+		
+		body.append("<h"+(level+1)+" id='"+ni.link+"'>"+ni.text+"</h"+(level+1)+">\n");
+	}
+	
+	/**
+	 * Parse a list of bullets
+	 * @param lineTrim the first bullet
+	 */
+	void parseBullet(String lineTrim) {
+		// TODO multi-levels if ever needed
+		--pos; // Back up to this one
+		body.append("<ul>\n");
+		while(pos<lines.size()) {
+			lineTrim = lines.get(pos++).trim();			
+			if(!lineTrim.startsWith("*")) break;
+			lineTrim = lineTrim.substring(1).trim();
+			//System.out.println(">>"+lineTrim+"<<");
+			body.append("<li>"+fixHTMLText(lineTrim)+"</li>\n");
+		}		
+		body.append("</ul>\n");
+	}
+	
+	/**
+	 * Processes links and entities.
+	 * @param line the line to be HTML
+	 * @return the modified line
+	 */
+	String fixHTMLText(String line) {
+		line = fixLinks(line);
+		// TODO entize
+		return line;
+	}
+	
+	/**
+	 * Expand all include directives
+	 * @param lines the current list of lines
+	 * @param inFile the name of the input file
+	 * @throws IOException file errors
+	 */
+	void expandIncludes(List<String> lines,String inFile) throws IOException {
 		for(int x=lines.size()-1;x>=0;--x) {
 			String s = lines.get(x).trim();
 			if(s.startsWith("##include ")) {
@@ -424,7 +156,7 @@ public class MarkupToHTML {
 		}
 	}
 	
-	public void translate(String contentRoot, String inFile, String outFile, 
+	protected void translate(String contentRoot, String inFile, String outFile, 
 			String breadCrumbs, String siteNav, String nav) throws IOException 
 	{
 		Path ip = Paths.get(inFile);
@@ -432,54 +164,126 @@ public class MarkupToHTML {
 		expandIncludes(lines,inFile);
 		translate(contentRoot, inFile, outFile, breadCrumbs, siteNav, nav, lines);
 	}
-	
-	public void translate(String contentRoot, String inFile, String outFile, 
-			String breadCrumbs, String siteNav, String nav, List<String> lines) throws IOException 
-	{									
 		
-		List<PageNavInfo> pageNav = new ArrayList<PageNavInfo>(); // Page navigation targets
+	/**
+	 * Parse the given input markup file and write the HTML to the given
+	 * output file.
+	 * @param contentRoot the root path of the content (we may pull in other files)
+	 * @param inFile the name of the input markup file 
+	 * @param outFile the output file to generate
+	 * @throws IOException with file operation exceptions
+	 */
+	public void translate(String contentRoot, String inFile, String outFile, String breadCrumbs, String siteNav,
+			String pageNav, List<String> lines) throws IOException {
 		
-		Map<String,String> fills = new HashMap<String,String>(); // Fill-ins		
-		fills.put("template", "master.template"); // Default page template
-		fills.put("title", nav);
+		this.lines = lines;
+		//lines = Files.readAllLines(Paths.get(contentRoot,inFile));
 		
-		getFillIns("%%",fills,lines);
+		ids = new ArrayList<String>();
+		variables = new HashMap<String,String>();
+		rootPageNav = new PageNavInfo();		
+		rootPageNav.level = 1;		
+		navCursor = rootPageNav;		
 		
-		// Process the markdown (results in a string)		
-		String body = markDown(inFile,lines, pageNav);
+		body = new StringBuffer();
 		
-		// Read the template
-		String tempName = fills.get("template");
+		boolean startedPElement  = false;
+		
+		pos = 0;
+		while(pos<lines.size()) {
+			String line = lines.get(pos++);			
+			String lineTrim = line.trim();			
+			
+			// Set a variable's value
+			if(lineTrim.startsWith("%%")) {
+				setVariable(lineTrim);
+				continue;
+			}
+			
+			// Header
+			if(lineTrim.startsWith("#")) {				
+				parseHeader(lineTrim);							
+				continue;
+			}
+			
+			if(lineTrim.startsWith("*")) {				
+				parseBullet(lineTrim);
+				continue;				
+			}
+			
+			if(lineTrim.startsWith("{{{")) {
+				System.out.println("BLOCK:"+lineTrim);
+				continue;
+				// Block mode
+				// Some are completely <pre> and some are complete markdown with div wraps
+			}
+			
+			// TODO Tables
+															
+			if(lineTrim.isEmpty()) {
+				// We are prepared for adjacent blank lines
+				if(startedPElement) {
+					body.append("</p>\n");
+					startedPElement = false;
+				}
+			} else {
+				// TODO this logic will change with <pre> and <html> elements
+				if(!startedPElement) {
+					body.append("<p>\n");
+					startedPElement=true;
+				}
+			}
+			
+			// Depends on what kind of block we are in
+			line = fixHTMLText(line);
+			
+			body.append(line);
+			
+			body.append("\n");
+			continue;
+			
+		}
+							
+		// Load the template
+		String templateFile = variables.get("template");
+		if(templateFile==null) {
+			templateFile = "master.template";
+		}		
 		String template = "<!-- %%BODY%% -->";
-		if(tempName!=null) {
-			Path p = Paths.get(contentRoot+"/"+tempName);
-			List<String> tlines = Files.readAllLines(p);
-			template = CU.listToString(tlines);
-		}
-				
-		// Get page_nav fillin		
-		String pageTree = makePageNav(inFile,pageNav);
-		
-		String im = fills.get("image");
-		if(im!=null) {
-			im = "<img src=\"" + im + "\" height=\"90\" style=\"PADDING-LEFT: 40px\"/>";
-		} else {
-			im = "";
-		}
-		
-		template = CU.replaceAll(template, "<!-- %%TITLE%% -->", fills.get("title"));		
-		template = CU.replaceAll(template, "<!-- %%CONTENT_TITLE%% -->", fills.get("title"));
+		Path p = Paths.get(contentRoot+"/"+templateFile);
+		List<String> tlines = Files.readAllLines(p);
+		template = CU.listToString(tlines);		
+						
+		// Fill in the template substitutions
+		template = CU.replaceAll(template, "<!-- %%title=%% -->", variables.get("title"));		
+		template = CU.replaceAll(template, "<!-- %%CONTENT_TITLE%% -->", variables.get("title"));
 		template = CU.replaceAll(template, "<!-- %%BREAD_CRUMBS%% -->", breadCrumbs);
-		template = CU.replaceAll(template, "<!-- %%PAGE_TREE%% -->", pageTree);
+		template = CU.replaceAll(template, "<!-- %%PAGE_TREE%% -->", pageNav);
 		template = CU.replaceAll(template, "<!-- %%SITE_TREE%% -->", siteNav);
-		template = CU.replaceAll(template, "<!-- %%CONTENT%% -->", body);
-		template = CU.replaceAll(template, "<!-- %%IMAGE%% -->", im);
+		template = CU.replaceAll(template, "<!-- %%CONTENT%% -->", body.toString());
+		template = CU.replaceAll(template, "<!-- %%IMAGE%% -->", variables.get("image"));
 				
+		// Write the output file
 		PrintWriter pw = new PrintWriter(outFile);
 		pw.print(template);
 		pw.flush();
-		pw.close();	
+		pw.close();					
 						
 	}
+	
+	/*
+	private void printPageNavInfo(PageNavInfo p) {
+		for(int x=0;x<p.level;++x) {
+			System.out.print(" ");
+		}
+		System.out.println(":"+p.text+":"+p.link+":");
+		for(PageNavInfo pc : p.subs) {
+			printPageNavInfo(pc);
+		}
+	}
+	*/
+
+	
+	
 
 }

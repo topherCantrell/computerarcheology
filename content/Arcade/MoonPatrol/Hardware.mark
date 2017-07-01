@@ -1,6 +1,6 @@
-%%image MoonPatrol.jpg
-%%title Moon Patrol Hardware Info
-%%range 0000:00C0, 8800:DFFF
+%%image=MoonPatrol.jpg
+%%title= Moon Patrol Hardware Info
+%%range=0000:00C0, 8800:DFFF
 
 ||= Port || Name || Description ||
 || 0000p || || ||

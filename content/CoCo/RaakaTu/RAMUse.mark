@@ -1,6 +1,6 @@
-%%image RaakaTu.jpg
-%%title Raaka Tu RAM Usage
-%%range 0088:01E3
+%%image=RaakaTu.jpg
+%%title= Raaka Tu RAM Usage
+%%range=0088:01E3
 
 
 = Game Variables =

@@ -1,7 +1,7 @@
-;;%%image GBZelda.jpg
-;;%%cpu Z80GB
-;;%%- Gameboy/Zelda/RAMUse.mark /Gameboy/Zelda/RAMUse.html
-;;%%-2 Gameboy/Zelda/Hardware.mark /Gameboy/Zelda/Hardware.html
+;;%%image=GBZelda.jpg
+;;%%cpu=Z80GB
+;;%%-=Gameboy/Zelda/RAMUse.mark /Gameboy/Zelda/RAMUse.html
+;;%%-2=Gameboy/Zelda/Hardware.mark /Gameboy/Zelda/Hardware.html
 
 4000: 20 51      JR      NZ,$4053        
 4002: 27         DAA                     

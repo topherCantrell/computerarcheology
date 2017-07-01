@@ -1,5 +1,5 @@
-%%image SpaceInvaders.jpg
-%%range 0000:0007
+%%image=SpaceInvaders.jpg
+%%range=0000:0007
 
 = ROM Chips =
 

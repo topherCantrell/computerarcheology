@@ -1,6 +1,6 @@
-%%image Pyramid.jpg
-%%title Pyramid RAM Use
-%%range 007C:0209, 18E5:18EC
+%%image=Pyramid.jpg
+%%title= Pyramid RAM Use
+%%range=007C:0209, 18E5:18EC
 
 = Variables Kept Outside of Code (Not Saved) =
 

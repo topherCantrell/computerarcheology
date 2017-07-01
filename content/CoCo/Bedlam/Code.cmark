@@ -1,8 +1,8 @@
-;;%%image Bedlam.jpg
-;;%%title Bedlam Code
-;;%%cpu 6809
-;;%%- CoCo/Bedlam/RAMUse.mark /CoCo/Bedlam/RAMUse.html
-;;%%-2 CoCo/Hardware.mark /CoCo/Hardware.html
+;;%%image=Bedlam.jpg
+;;%%title= Bedlam Code
+;;%%cpu=6809
+;;%%-=CoCo/Bedlam/RAMUse.mark /CoCo/Bedlam/RAMUse.html
+;;%%-2=CoCo/Hardware.mark /CoCo/Hardware.html
 
 ;;* [RAMUse.html RAM Usage]
 ;;* [/CoCo/Hardware.html Hardware Info]

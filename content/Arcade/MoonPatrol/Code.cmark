@@ -1,8 +1,8 @@
-;;%%image MoonPatrol.jpg
-;;%%- Arcade/MoonPatrol/RAMUse.mark /Arcade/MoonPatrol/RAMUse.html
-;;%%-2 Arcade/MoonPatrol/Hardware.mark /Arcade/MoonPatrol/Hardware.html
-;;%%cpu Z80
-;;%%title Moon Patrol Code
+;;%%image=MoonPatrol.jpg
+;;%%-=Arcade/MoonPatrol/RAMUse.mark /Arcade/MoonPatrol/RAMUse.html
+;;%%-2=Arcade/MoonPatrol/Hardware.mark /Arcade/MoonPatrol/Hardware.html
+;;%%cpu=Z80
+;;%%title= Moon Patrol Code
   
 ;; * [RAMUse.html RAM Usage]
 ;; * [Hardware.html Hardware]

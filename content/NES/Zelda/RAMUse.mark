@@ -1,5 +1,5 @@
-%%image Zelda.jpg
-%%range 0000:07FF, 6000:7FFF
+%%image=Zelda.jpg
+%%range=0000:07FF, 6000:7FFF
 
 = RAM =
 

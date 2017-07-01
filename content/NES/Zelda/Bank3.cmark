@@ -1,7 +1,7 @@
-;;%%image Zelda.jpg
-;;%%cpu 6502
-;;%%- NES/Zelda/RAMUse.mark /NES/Zelda/RAMUse.html
-;;%%-2 NES/Zelda/Hardware.mark /NES/Zelda/Hardware.html
+;;%%image=Zelda.jpg
+;;%%cpu=6502
+;;%%-=NES/Zelda/RAMUse.mark /NES/Zelda/RAMUse.html
+;;%%-2=NES/Zelda/Hardware.mark /NES/Zelda/Hardware.html
 
 ;;{{{html
 ;;<script src="/NES/Zelda/zelda.js"></script>

@@ -1,9 +1,7 @@
 package web;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,21 +25,14 @@ public class MakeWeb {
 		
 		// Process all the entries	
 		List<SiteInfoEntry> nodes = new ArrayList<SiteInfoEntry>();
-		nodes.add(si.root);
-		
-		String siteNav = MakeWeb.getSiteNav(si.root, nodes, null);
-		OutputStream os = new FileOutputStream(si.deployRoot.toString()+"/tree.html");
-		os.write(siteNav.getBytes());
-		os.flush();
-		os.close();
-		
+		nodes.add(si.root);		
 		processEntries(si.contentRoot.toString(),si.root,nodes,si.deployRoot.toString(),si.contentRoot.toString());
 		
 		System.out.println("\nDONE");
 		
 	}
 			
-	public static Object[] getBreadCrumbs(List<SiteInfoEntry> nodes) {
+	static Object[] getBreadCrumbs(List<SiteInfoEntry> nodes) {
 		
 		// Don't include the last node if it has no navigation
 		int end = nodes.size()-1;
@@ -85,47 +76,26 @@ public class MakeWeb {
 	
 	private static String makeCrumb(String link, String nav, boolean active) {
 		if(active) {
-	        return "<li class=\"active\"><strong>" + nav + "</strong></li>";
+	        return "<li><span>" + nav + "</span></li>";
 		} else {
 	        return "<li><a href=\"" + link + "\">" + nav + "</a></li>";
 		}
 	}
 	
 	private static String makeSeparator() {
-		return "<li class=\"snn\"><hr style=\"margin: 4px;\" align=\"left\" width=\"50%\"></li>";
+		return "<li><hr class='navSeparator'></li>";
 	}
 	
-	private static String makeNav(String link, String nav, int level, boolean active, boolean leaf, boolean opened) {
-		String cl = "snn";
-		if(level==0) {
-			cl = "sn1";			
-		}		
-		if(!leaf) {
-			if(opened) {
-				cl = cl + " collapsed expanded";
-			} else {
-				cl = cl + " collapsed";
-			}
-		}
-		if(active) {
-			return "<li class=\"" + cl + "\"><span class=\"sna\"><strong>" + nav + "</strong></span>";
-		} else {
-			return "<li class=\"" + cl + "\"><a class=\"sna\" href=\"" + link + "\">" + nav + "</a>";
-		}		
-		
+	private static String makeNav(String link, String nav) {
+		return "<li><a href='" + link + "'>" + nav + "</a>";		
 	}
 
-	public static String getSiteNav(SiteInfoEntry desc, List<SiteInfoEntry> nodes, SiteInfoEntry activeNode) {
-		String a = null;
-		//if(nodes.size()<3) {
-		//	a = MakeWeb.makeNav("/", "Home", 0, true, true, true) + "<p></li>";
-		//} else {
-			a = MakeWeb.makeNav("/", "Home", 0, false, true, true) + "<p></li>";
-		//}
-		return a + MakeWeb.getSiteNavRecurse(desc, nodes, "/", 0, activeNode);
+	private static String getSiteNav(SiteInfoEntry desc, List<SiteInfoEntry> nodes, SiteInfoEntry activeNode) {
+		String a = MakeWeb.makeNav("/", "Home") + "</li>\n";
+		return a + MakeWeb.getSiteNavRecurse(desc, nodes, "/");
 	}
 	
-	private static String getSiteNavRecurse(SiteInfoEntry root, List<SiteInfoEntry> nodes, String link, int level, SiteInfoEntry activeNode) {
+	private static String getSiteNavRecurse(SiteInfoEntry root, List<SiteInfoEntry> nodes, String link) {
 		
 		String ret = "";
 		
@@ -134,37 +104,18 @@ public class MakeWeb {
 			if(ent.command.equals("separator")) {
 				ret = ret + MakeWeb.makeSeparator();
 				continue;
-			}
+			}			
 			
-			boolean active = false;
-			if(ent==activeNode) {
-				active = true;
-			}
-			boolean opened = false;
-			for(SiteInfoEntry n : nodes) {
-				if(n==ent) {
-					opened = true;
-					break;
-				}
-			}
 			if(ent.command.equals("dir")) {
-				if(ent.nav!=null) {
-					boolean leaf = false;
-					if(ent.leaf){
-						leaf = true;
-					}
-					ret = ret + MakeWeb.makeNav(link+ent.arg+"/", ent.nav, level, active, leaf, opened);
-					if(opened) {
-						ret = ret + "<ul>";
-					} else {
-						ret = ret + "<ul hidden>";
-					}
-					ret = ret + MakeWeb.getSiteNavRecurse(ent, nodes, link+ent.arg+"/", level+1, activeNode);
-					ret = ret + "</ul></li>";
+				if(ent.nav!=null) {					
+					ret = ret + MakeWeb.makeNav(link+ent.arg+"/", ent.nav);
+					ret = ret + "\n<ul>\n";					
+					ret = ret + MakeWeb.getSiteNavRecurse(ent, nodes, link+ent.arg+"/");
+					ret = ret + "</ul>\n</li>\n";
 				}
 			} else if(ent.nav!=null) {
-				ret = ret + MakeWeb.makeNav(link+ent.out, ent.nav, level, active, true, opened);
-				ret = ret + "</li>";
+				ret = ret + MakeWeb.makeNav(link+ent.out, ent.nav);
+				ret = ret + "</li>\n";
 			}
 			
 		}
@@ -176,6 +127,8 @@ public class MakeWeb {
 	public static void processEntries(String contentRoot, SiteInfoEntry root, List<SiteInfoEntry> nodes, String dep, String cont ) throws IOException {
 		
 		SiteInfoEntry e = nodes.get(nodes.size()-1);
+		
+		String siteNav = MakeWeb.getSiteNav(root, nodes, null);
 		
 		for (SiteInfoEntry ent : e.entries) {
 			
@@ -190,27 +143,24 @@ public class MakeWeb {
 				Object[] mr = MakeWeb.getBreadCrumbs(nodes);
 				String breadCrumbs = (String)mr[0];
 				nodes.remove(nodes.size()-1);
-				//SiteInfoEntry activeNode = (SiteInfoEntry)mr[1];
 				MarkupToHTML tr = new MarkupToHTML();
-				tr.translate(contentRoot, cont+"/"+ent.arg, dep+"/"+ent.out, breadCrumbs, "", nav);
+				tr.translate(contentRoot, cont+"/"+ent.arg, dep+"/"+ent.out, breadCrumbs, siteNav, nav);
 			} else if(ent.command.equals("code")) {
 				System.out.println("CODE "+cont+"/"+ent.arg+" "+dep+"/"+ent.out+" "+nav);
 				nodes.add(ent);
 				Object[] mr = MakeWeb.getBreadCrumbs(nodes);
 				String breadCrumbs = (String)mr[0];
 				nodes.remove(nodes.size()-1);
-				//SiteInfoEntry activeNode = (SiteInfoEntry)mr[1];
 				CodeToHTML tr = new CodeToHTML();
-				tr.translate(contentRoot, cont+"/"+ent.arg, dep+"/"+ent.out, breadCrumbs, "", nav);
+				tr.translate(contentRoot, cont+"/"+ent.arg, dep+"/"+ent.out, breadCrumbs, siteNav, nav);
 			} else if(ent.command.equals("address")) {
 				System.out.println("ADDRESS "+cont+"/"+ent.arg+" "+dep+"/"+ent.out+" "+nav);
 				nodes.add(ent);
 				Object[] mr = MakeWeb.getBreadCrumbs(nodes);
 				String breadCrumbs = (String)mr[0];
 				nodes.remove(nodes.size()-1);
-				//SiteInfoEntry activeNode = (SiteInfoEntry)mr[1];
 				AddressToHTML tr = new AddressToHTML();
-				tr.translate(contentRoot, cont+"/"+ent.arg, dep+"/"+ent.out, breadCrumbs, "", nav);
+				tr.translate(contentRoot, cont+"/"+ent.arg, dep+"/"+ent.out, breadCrumbs, siteNav, nav);
 			}
 			
 			else if(ent.command.equals("copy")) {

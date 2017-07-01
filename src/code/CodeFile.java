@@ -39,7 +39,7 @@ public class CodeFile {
 			}
 			if(s.startsWith(";;%%-")) {
 				
-				int i = s.indexOf(" ");
+				int i = s.indexOf("=");
 				int j = s.indexOf(" ",i+1);
 				
 				String pa = s.substring(i+1,j);

@@ -1,8 +1,8 @@
-;;%%image RaakaTu.jpg
-;;%%title Raaka Tu Code
-;;%%- CoCo/RaakaTu/RAMUse.mark /CoCo/RaakaTu/RAMUse.html
-;;%%-2 CoCo/Hardware.mark /CoCo/Hardware.html
-;;%%cpu 6809
+;;%%image=RaakaTu.jpg
+;;%%title= Raaka Tu Code
+;;%%-=CoCo/RaakaTu/RAMUse.mark /CoCo/RaakaTu/RAMUse.html
+;;%%-2=CoCo/Hardware.mark /CoCo/Hardware.html
+;;%%cpu=6809
  
 ;;* [RAMUse.html RAM Usage]
 ;;* [/CoCo/Hardware.html Hardware Info]

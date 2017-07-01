@@ -1,7 +1,7 @@
-;;%%image GBZelda.jpg
-;;%%cpu Z80GB
-;;%%- Gameboy/Zelda/RAMUse.mark /Gameboy/Zelda/RAMUse.html
-;;%%-2 Gameboy/Zelda/Hardware.mark /Gameboy/Zelda/Hardware.html
+;;%%image=GBZelda.jpg
+;;%%cpu=Z80GB
+;;%%-=Gameboy/Zelda/RAMUse.mark /Gameboy/Zelda/RAMUse.html
+;;%%-2=Gameboy/Zelda/Hardware.mark /Gameboy/Zelda/Hardware.html
 
 4000: CD AF 3D   CALL    $3DAF           
 4003: 21 30 C3   LD      HL,$C330        

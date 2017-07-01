@@ -1,6 +1,6 @@
-%%title Asteroids RAM Usage
-%%image Asteroids.jpg
-%%range 0000:03FF
+%%title= Asteroids RAM Usage
+%%image=Asteroids.jpg
+%%range=0000:03FF
 
 ||= Address  || Name                  || Description ||
 || 00        ||                       ||             ||

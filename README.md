@@ -191,7 +191,7 @@ Defines allow you to pass information to the processor itself. These usually app
 Defines begin with "%%". For instance:
 
 ```
-%%title Pyramid
+%%title= Pyramid
 %%template SpecialShort.template
 
 Welcome to the Pyramid site!
@@ -200,10 +200,10 @@ Welcome to the Pyramid site!
 The key is the first word after the "%%". The rest of the line is the value.
 
 Defines and their use:
- - %%title - gives the text used in the browser tab. The default is the page title from the deployment description.
+ - %%title= - gives the text used in the browser tab. The default is the page title from the deployment description.
  - %%template - gives the page's master HTML template. The default is "master.template". This is ?never? used.
- - %%- - used in code markdown. Defines the file containing ram-usage information.
- - %%-2 - used in code markdown. Defines the file containing hardware-usage information.
+ - %%-=- used in code markdown. Defines the file containing ram-usage information.
+ - %%-2=- used in code markdown. Defines the file containing hardware-usage information.
 
 ## Code Markup ##
 
@@ -241,8 +241,8 @@ a semicolon as shown in the last entry in the table above.
 You link the code to the description files with a define. For instance:
 
 ```
-;;%%- Coco/MadnessMinotaur/RAMUse.mark /CoCo/MadnessMinotaur/RAMUse.html
-;;%%-2 Coco/Hardware.mark /CoCo/Hardware.html
+;;%%-=Coco/MadnessMinotaur/RAMUse.mark /CoCo/MadnessMinotaur/RAMUse.html
+;;%%-2=Coco/Hardware.mark /CoCo/Hardware.html
 ```
 
 The defines include the name of the markdown file (needed to parse the info) and the name of the
@@ -366,9 +366,9 @@ The link tool uses the opcode to decide on "read" or "write" versions of the lab
 ## Variables
 
 The page templates use information from variables that are usually set near the top of the page. The syntax is ```%%variable = value``.
-* ```%%image    = Arch.jpg``` The image to use in the banner at the top of the page
+* ```%%image=   = Arch.jpg``` The image to use in the banner at the top of the page
 * ```%%template = newlook.template``` The markdown template to use (defaults to ```master.template```)
-* ```%%title    = Computer Archeology``` The title to use on the page
+* ```%%title=    = Computer Archeology``` The title to use on the page
 
 ## Headers
 
@@ -396,6 +396,10 @@ Bullet lists are defined with the familiar markdown syntax.
 ```
 
 Coming soon: nested bullets
+
+## Tables
+
+TODO
 
 ## Blocks
 

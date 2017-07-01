@@ -1,6 +1,6 @@
-%%title Defender Bank 7
-%%cpu 6809
-%%image Defender.jpg
+%%title= Defender Bank 7
+%%cpu=6809
+%%image=Defender.jpg
 
 * [RAMUse.html RAM Use]
 * [Hardware.html Hardware Info]

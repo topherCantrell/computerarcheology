@@ -1,6 +1,6 @@
-%%image A2600MissileCommand.jpg
-%%title RAM Use
-%%range 0080:00FF
+%%image=A2600MissileCommand.jpg
+%%title= RAM Use
+%%range=0080:00FF
 
 || 0080 || || ||
 || 0081 || || ||

@@ -1,8 +1,8 @@
-;;%%image Pyramid.jpg
-;;%%title Pyramid Code
-;;%%cpu 6809
-;;%%- CoCo/Pyramid/RAMUse.mark /CoCo/Pyramid/RAMUse.html
-;;%%-2 CoCo/Hardware.mark /CoCo/Hardware.html
+;;%%image=Pyramid.jpg
+;;%%title= Pyramid Code
+;;%%cpu=6809
+;;%%-=CoCo/Pyramid/RAMUse.mark /CoCo/Pyramid/RAMUse.html
+;;%%-2=CoCo/Hardware.mark /CoCo/Hardware.html
  
 ;;* [RAMUse.html RAM Usage]
 ;;* [/CoCo/Hardware.html Hardware Info]

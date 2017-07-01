@@ -1,6 +1,6 @@
-%%title Frogger Sound Board Hardware
-%%image Frogger.jpg
-%%range 0040:0080, 6000:6FFF
+%%title= Frogger Sound Board Hardware
+%%image=Frogger.jpg
+%%range=0040:0080, 6000:6FFF
 
 = AY38910 Chip =
 

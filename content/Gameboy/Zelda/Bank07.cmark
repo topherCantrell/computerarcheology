@@ -1,7 +1,7 @@
-;;%%image GBZelda.jpg
-;;%%cpu Z80GB
-;;%%- Gameboy/Zelda/RAMUse.mark /Gameboy/Zelda/RAMUse.html
-;;%%-2 Gameboy/Zelda/Hardware.mark /Gameboy/Zelda/Hardware.html
+;;%%image=GBZelda.jpg
+;;%%cpu=Z80GB
+;;%%-=Gameboy/Zelda/RAMUse.mark /Gameboy/Zelda/RAMUse.html
+;;%%-2=Gameboy/Zelda/Hardware.mark /Gameboy/Zelda/Hardware.html
 
 4000: 3E 04      LD      A,$04           
 4002: E0 F4      LDFF00  ($F4),A         

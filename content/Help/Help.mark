@@ -1,5 +1,5 @@
-%%title Help
-%%image Help.jpg
+%%title= Help
+%%image=Help.jpg
 
 {{{html
 <img src="HelpExample1.jpg" width="600" style="border: 2px solid">

@@ -1,6 +1,6 @@
-%%title Stella (Atari 2600 Hardware)
-%%image Atari2600.jpg
-%%range 0000:007F, 0280:02FF
+%%title= Stella (Atari 2600 Hardware)
+%%image=Atari2600.jpg
+%%range=0000:007F, 0280:02FF
 
 On the web: [http://www.alienbill.com/2600/101/docs/stella.html Stella Programmer's Guide]
 

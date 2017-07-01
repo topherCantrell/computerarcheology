@@ -1,6 +1,6 @@
-%%title CoCo Hardware
-%%image CoCoTech.jpg
-%%range FF00:FFFF
+%%title= CoCo Hardware
+%%image=CoCoTech.jpg
+%%range=FF00:FFFF
 
 = References =
 

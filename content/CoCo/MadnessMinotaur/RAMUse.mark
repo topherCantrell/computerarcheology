@@ -1,6 +1,6 @@
-%%image Madness.jpg
-%%title Madness and the Minotaur RAM Use
-%%range 0000:00FF
+%%image=Madness.jpg
+%%title= Madness and the Minotaur RAM Use
+%%range=0000:00FF
 
 Init clears 00-66 inclusive. The area is in BASIC's memory usage. The code uses some of
 BASIC's routines, but this first area of memory is for the BASIC interpreter. The code

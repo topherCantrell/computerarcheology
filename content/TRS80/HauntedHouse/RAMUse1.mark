@@ -1,6 +1,6 @@
-%%image HauntedHouse.jpg
-%%title HauntedHouse RAM Use
-%%range 467E:4FFF
+%%image=HauntedHouse.jpg
+%%title= HauntedHouse RAM Use
+%%range=467E:4FFF
 
 RAM Usage (First Floor Code)
 

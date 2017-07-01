@@ -1,6 +1,6 @@
-%%image MoonPatrol.jpg
-%%title Moon Patrol Sound RAM Use
-%%range 0080:00FF
+%%image=MoonPatrol.jpg
+%%title= Moon Patrol Sound RAM Use
+%%range=0080:00FF
 
 || 0080 || seqV0 || Sequence voice 0 on AY0 (FF for off, count down to 0=process) ||
 || 0081 || seqV0 || Sequence voice 1 on AY0 (FF for off, count down to 0=process) ||

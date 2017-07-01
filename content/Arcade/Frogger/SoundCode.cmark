@@ -1,8 +1,8 @@
-;;%%title Frogger Sound Board
-;;%%image Frogger.jpg
-;;%%- Arcade/Frogger/SoundRAMUse.mark SoundRAMUse.html
-;;%%-2 Arcade/Frogger/SoundHardware.mark SoundHardware.html
-;;%%cpu Z80
+;;%%title= Frogger Sound Board
+;;%%image=Frogger.jpg
+;;%%-=Arcade/Frogger/SoundRAMUse.mark SoundRAMUse.html
+;;%%-2=Arcade/Frogger/SoundHardware.mark SoundHardware.html
+;;%%cpu=Z80
 
 ;; * [SoundRAMUse.html RAM Usage]
 ;; * [SoundHardware.html Hardware Info]

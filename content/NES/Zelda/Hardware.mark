@@ -1,5 +1,5 @@
-%%image Zelda.jpg
-%%range 4000:401F, 100:200, 8000:FFFF
+%%image=Zelda.jpg
+%%range=4000:401F, 100:200, 8000:FFFF
 
 = Registers =
 

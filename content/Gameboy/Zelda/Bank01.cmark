@@ -1,7 +1,7 @@
-;;%%image GBZelda.jpg
-;;%%cpu Z80GB
-;;%%- Gameboy/Zelda/RAMUse.mark /Gameboy/Zelda/RAMUse.html
-;;%%-2 Gameboy/Zelda/Hardware.mark /Gameboy/Zelda/Hardware.html
+;;%%image=GBZelda.jpg
+;;%%cpu=Z80GB
+;;%%-=Gameboy/Zelda/RAMUse.mark /Gameboy/Zelda/RAMUse.html
+;;%%-2=Gameboy/Zelda/Hardware.mark /Gameboy/Zelda/Hardware.html
 
 4000: FA 96 DB   LD      A,($DB96)       
 4003: C7         RST     0X00            

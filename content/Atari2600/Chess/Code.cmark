@@ -1,8 +1,8 @@
-;;%%image A2600Chess.jpg
-;;%%title Atari2600 Chess
-;;%%cpu 6502
-;;%%- Atari2600/Chess/RAMUse.mark /Atari2600/Chess/RAMUse.mark
-;;%%-2 Atari2600/Stella.mark /Atari2600/Stella.html
+;;%%image=A2600Chess.jpg
+;;%%title= Atari2600 Chess
+;;%%cpu=6502
+;;%%-=Atari2600/Chess/RAMUse.mark /Atari2600/Chess/RAMUse.mark
+;;%%-2=Atari2600/Stella.mark /Atari2600/Stella.html
 
 ; EA Skill level (0-7 for 1-8)
 ; F2 Switch debounce timer

@@ -1,88 +1,91 @@
-function switchTab(name) {    	
-	if( $("#"+name+"Tab").hasClass("active") ) {
+function switchToSiteTab() {   	
+	if($("#siteTab").hasClass("active")) {
 		return;
-	}    	
-	if(name=="page") {
-		$("#siteTab").removeClass("active");
-		$("#pageTab").addClass("active");    	
-		$("#siteTree").addClass("hidden");
-		$("#pageTree").removeClass("hidden");
-	} else {
-		$("#pageTab").removeClass("active");
-		$("#siteTab").addClass("active");
-		$("#pageTree").addClass("hidden");
-		$("#siteTree").removeClass("hidden");
 	}
+	$("#pageTab").removeClass("active");
+	$("#siteTab").addClass("active");
+	$("#pageTree").addClass("hidden");
+	$("#siteTree").removeClass("hidden");		
 }
 
-function pageScrollTo(name) {
-	$('html, body').animate({
-        scrollTop: $("#"+name).offset().top
-    }, 300);
+function switchToPageTab() {   	
+	if($("#pageTab").hasClass("active")) {
+		return;
+	}
+	$("#siteTab").removeClass("active");
+	$("#pageTab").addClass("active");
+	$("#siteTree").addClass("hidden");
+	$("#pageTree").removeClass("hidden");		
 }
 
-function openTree() {	
-	
-    var x,y;
-    var ch;
-	var crumbs = $("#crumbs").find("li a, li strong");
-	var path = [];	
-	for(x=1;x<crumbs.length;++x) {
-		path.push(crumbs[x].textContent);		
-	}
-		
+function openTree() {  
+
+	var x,y,ch;	
+	var crumbs = $("#crumbs li a, #crumbs li span");
+	var path = [];  
 	var treeNode = $("#siteTree");
 	
-	for(x=0;x<path.length-1;++x) {
-		ch = treeNode.children();
+	// Get the path from the bread crumbs
+	for(x=1;x<crumbs.length;++x) {
+	    path.push(crumbs[x].textContent);       
+	}	
+	
+	// All the items with children are collapsible
+	$('#siteTree').find('li:has(ul)').toggleClass('collapsed');
+	// All children are collapsed
+	$('#siteTree').find('ul').attr('hidden',true);	
+	
+	var lastNode = null;
+		
+	for(x=0;x<path.length;++x) {
+		ch = treeNode.children(); // treeNode is a <ul>
 		for(y=0;y<ch.length;++y) {
-			if(ch[y].firstChild.textContent==path[x]) {
-				treeNode = $(ch[y]);
-				$(treeNode).children().eq(1).removeAttr("hidden");
-				$(treeNode).addClass("expanded");
+			treeNode = $(ch[y]);		
+			if(ch[y].firstChild.textContent.trim()==path[x]) {
+				// This <li> node matches the path				
+				// All of its direct children are visible				
+				lastNode = $(ch[y].firstChild);
+				lastNode.addClass("selectedPagePath");
+				if($(treeNode).hasClass('collapsed')) {
+					$(treeNode).children().removeAttr("hidden");				
+					$(treeNode).addClass("expanded");	
+				}
+				// Keep processing with the children <ul>
 				treeNode = treeNode.find("ul");
-				break;				
+				break;              
 			}
-		}		
+		}       
 	}
 	
-	var last = path[path.length-1];
-	if(!last) last="Home";
-	ch = treeNode.children();
-	for(y=0;y<ch.length;++y) {
-		if(ch[y].firstChild.textContent==last) {
-			$(ch[y]).children().first().replaceWith('<span class="sna"><strong>'+last+'</strong></span>');
-			var ul = $(ch[y]).find("ul");
-			if(ul.length>0) {
-				$(ul[0]).removeAttr("hidden");
-				$(ch[y]).addClass("expanded");
-			}
-			break;				
-		}
-	}	
+	if(lastNode!==null) {
+		var c = lastNode.html();
+		lastNode.replaceWith("<span class='selectedPage'>"+c+"</span>");		
+	}
 	
 }
 
 function prepareList() {
 	
-    openTree();
-    
-    $('#siteTree').find('li:has(ul)')
-      .click( function(event) {
-              $(this).toggleClass('expanded');
-              $(this).children('ul').toggle('medium');          
-          return false;
-      });    
-      
-      //Hack to add links inside the cv
-      $('#siteTree a').unbind('click').click(function() {
-          window.open($(this).attr('href'),"_self");
-          return false;
-      });
+	// We use the same tree for all pages. This function opens the tree
+	// branches to match the breadcrumbs.
+	openTree();
+
+	$('#siteTree').find('li:has(ul)')
+	.click( function(event) {
+		$(this).toggleClass('expanded');
+		$(this).children('ul').toggle('medium');          
+		return false;
+	});    
+
+	// Sometimes a collapsible container is a link. In that case
+	// just the +/- icon opens and closes. We need to deregister
+	// the click handler we just added and let it flow normally.
+	$('#siteTree a').unbind('click').click(function() {
+		window.open($(this).attr('href'),"_self");
+		return false;
+	});
 }
-   
+
 $(document).ready( function() {
-	$("#siteTree").load("/tree.html", function() {
-        prepareList();
-    }); 
+	prepareList();	     
 });

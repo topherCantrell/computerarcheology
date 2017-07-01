@@ -1,6 +1,6 @@
-%%title Asteroids Hardware
-%%image Asteroids.jpg
-%%range 2000:2FFF
+%%title= Asteroids Hardware
+%%image=Asteroids.jpg
+%%range=2000:2FFF
 
 There is 1K game RAM, 2K vector-RAM, 2K vector-ROM, and 6K game ROM.
 

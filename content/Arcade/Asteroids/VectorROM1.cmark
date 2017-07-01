@@ -1,6 +1,6 @@
-;;%%image Asteroids.jpg
-;;%%title Asteroids DVG Vector ROM
-;;%%cpu DVG
+;;%%image=Asteroids.jpg
+;;%%title= Asteroids DVG Vector ROM
+;;%%cpu=DVG
 
 ;;{{{html
 ;;<script src="/Arcade/Asteroids/VectorROM.js"></script>

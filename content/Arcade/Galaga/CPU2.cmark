@@ -1,5 +1,5 @@
-;;%%image Galaga.jpg
-;;%%cpu Z80
+;;%%image=Galaga.jpg
+;;%%cpu=Z80
 
 ;================================================================
 ; Startup comes here

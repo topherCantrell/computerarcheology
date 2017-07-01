@@ -1,5 +1,5 @@
-%%title Rainbow Islands
-%%image Rainbow.jpg
+%%title= Rainbow Islands
+%%image=Rainbow.jpg
 
 {{{html
 <b>Archeologist: PatrikSevallius</b>
@@ -12,7 +12,7 @@ I will reverse engineer the copy protection, [http://en.wikipedia.org/wiki/Rob_N
 Copylock uses a TVD, trace vector decoder. Every instruction is decrypted, run and then encrypted again before moving on to the next instruction.
 
 Parts:
-* [boot.html Boot block] 
-* [1loader.html First loader] 
-* [1loader_dec.html First loader Decrypted] 
-* [orig_boot.html Original bootloader] 
+* [block](boot.html) 
+* [First loader](1loader.html First loader) 
+* [First loader Decrypted](1loader_dec.html) 
+* [Original bootloader](orig_boot.html)

@@ -1,8 +1,8 @@
-;;%%image A2600Battlezone.jpg
-;;%%title Atari2600 Battle Zone
-;;%%cpu 6502
-;;%%- Atari2600/BattleZone/RAMUse.mark /Atari2600/BattleZone/RAMUse.mark
-;;%%-2 Atari2600/Stella.mark /Atari2600/Stella.html
+;;%%image=A2600Battlezone.jpg
+;;%%title= Atari2600 Battle Zone
+;;%%cpu=6502
+;;%%-=Atari2600/BattleZone/RAMUse.mark /Atari2600/BattleZone/RAMUse.mark
+;;%%-2=Atari2600/Stella.mark /Atari2600/Stella.html
 
 ; C1 is set to $80 when the player is hit and decrements on eac screen draw until 0.
 ; While C1 is >=$58 the screen kernel alternates Hit/Normal based on the lower bit.

@@ -1,8 +1,8 @@
-;;%%image A2600Asteroids.jpg
-;;%%title Atari2600 Asteroids
-;;%%cpu 6502
-;;%%- Atari2600/Asteroids/RAMUse.mark /Atari2600/Asteroids/RAMUse.mark
-;;%%-2 Atari2600/Stella.mark /Atari2600/Stella.html
+;;%%image=A2600Asteroids.jpg
+;;%%title= Atari2600 Asteroids
+;;%%cpu=6502
+;;%%-=Atari2600/Asteroids/RAMUse.mark /Atari2600/Asteroids/RAMUse.mark
+;;%%-2=Atari2600/Stella.mark /Atari2600/Stella.html
 
 ; The code is designed to run in 2 * 4K bank-switch mode or
 ; flat 8K mode (in 12K map ... D000 to FFFF).

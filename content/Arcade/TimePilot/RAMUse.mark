@@ -1,6 +1,6 @@
-%%image TimePilot.jpg
-%%title Time Pilot Sound Board RAM Use
-%%range 3000:33FF
+%%image=TimePilot.jpg
+%%title= Time Pilot Sound Board RAM Use
+%%range=3000:33FF
 
 The following definitions were not found in the address tables:
 || 3000 || || ||

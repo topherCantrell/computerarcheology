@@ -101,7 +101,7 @@ public class LinkFix {
 			c.numericConstantEnd = j;
 			
 			if(tabs.cpu==null) {
-				//throw new RuntimeException(";;%%cpu must be valid");
+				//throw new RuntimeException(";;%%cpu=must be valid");
 				tabs.cpu = CPU.getCPU("None");
 			}
 			

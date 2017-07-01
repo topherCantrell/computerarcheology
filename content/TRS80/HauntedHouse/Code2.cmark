@@ -1,8 +1,8 @@
-;;%%image HauntedHouse.jpg
-;;%%title Haunted House (2nd Floor)
-;;%%cpu Z80
-;;%%- TRS80/HauntedHouse/RAMUse2.mark /TRS80/HauntedHouse/RAMUse2.html
-;;%%-2 TRS80/Hardware.mark /TRS80/Hardware.html
+;;%%image=HauntedHouse.jpg
+;;%%title= Haunted House (2nd Floor)
+;;%%cpu=Z80
+;;%%-=TRS80/HauntedHouse/RAMUse2.mark /TRS80/HauntedHouse/RAMUse2.html
+;;%%-2=TRS80/Hardware.mark /TRS80/Hardware.html
 
 ;;* [RAMUse2.html RAM Usage]
 ;;* [/TRS80/Hardware.html Hardware Info]
