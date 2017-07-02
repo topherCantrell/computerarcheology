@@ -12,6 +12,7 @@ import files.BinaryFiles;
 
 public class BinaryCheck {
 	
+	@SuppressWarnings("resource")
 	public static void main2(String [] args) throws Exception {
 		
 		// Compare two binary files

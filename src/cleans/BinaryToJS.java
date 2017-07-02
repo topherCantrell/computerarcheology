@@ -10,6 +10,7 @@ import code.CodeLine;
 
 public class BinaryToJS {
 
+	@SuppressWarnings("resource")
 	public static void main(String[] args) throws Exception {
 		
 		//Path p = Paths.get("content/TRS80/pyramid/Code.cmark");

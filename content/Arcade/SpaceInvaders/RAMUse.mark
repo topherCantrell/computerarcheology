@@ -1,8 +1,11 @@
 %%image=SpaceInvaders.jpg
 %%title= Space Invaders RAM Use
+
+{{{memory
 %%range=2000:23FF
 
-= General Vars =
+# General Vars
+
 ||= Address  || Name                  || Description                                  ||
 ||2000||waitOnDraw||Cleared by alien-draw and set by next-alien. This ensures no alien gets missed while drawing.||
 ||2001|| || ||
@@ -281,7 +284,7 @@
 ||20FE||P2ScorLoL||Hi-score descriptor ... location LSB||
 ||20FF||P2ScorLoM||Hi-score descriptor ... location MSB||
 
-= Player 1 specific data =
+# Player 1 specific data
 || 2100:2136 || || Player 1 alien ship indicators (0=dead) 11*5 = 55 ||
 || 2137:2141 || || Unused 11 bytes (room for another row of aliens?) ||
 || 2142:21F1 || || Player 1 shields remembered between rounds 44 bytes * 4 shields ($B0 bytes) ||
@@ -292,7 +295,7 @@
 || 21FE || p1RackCnt    || Player 1 rack-count (starts at 0 but get incremented to 1-8) ||
 || 21FF || p1ShipsRem   || Ships remaining after current dies  ||
 
-= Player 2 specific data =
+# Player 2 specific data
 || 2200:2236 || || Player 2 alien ship indicators (0=dead) 11*5 = 55 ||
 || 2237:2241 || || Unused 11 bytes (room for another row of aliens?) ||
 || 2242:22F1 || || Player 2 shields remembered between rounds 44 bytes * 4 shields ($B0 bytes) ||
@@ -303,6 +306,8 @@
 || 22FE || p2RackCnt    || Player 2 rack-count (starts at 0 but get incremented to 1-8) ||
 || 22FF || p2ShipsRem   || Ships remaining after current dies ||
 
-= Stack =
+# Stack
 || 2300:23DD || || Unused (stack space) ||
 || 23DE:23FF || || In the emulator the stack consumes this area (roughly 16 levels) ||
+
+}}}

@@ -6,7 +6,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import cleans.LinkFix;
+import cleans.NamesInCode;
 import code.CodeFile;
 import code.CodeLine;
 
@@ -21,7 +21,7 @@ public class CodeToHTML extends MarkupToHTML {
 		CodeFile code = new CodeFile(ip);
 		
 		// Fix up the inter-HTML links
-		LinkFix fixer = new LinkFix();
+		NamesInCode fixer = new NamesInCode();
 		fixer.fix(code, false);			
 		
 		// Convert to pure markdown		

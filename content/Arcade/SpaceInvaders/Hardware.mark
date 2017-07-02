@@ -1,7 +1,7 @@
-%%image=SpaceInvaders.jpg
-%%range=0000:0007
+%%image = SpaceInvaders.jpg
+%%title = Space Invaders Hardware
 
-= ROM Chips =
+# ROM Chips 
 
 Much of this comes from the comments in the MAME emulator.
  * invaders.h 0000-07FF
@@ -9,7 +9,7 @@ Much of this comes from the comments in the MAME emulator.
  * invaders.f 1000-17FF
  * invaders.e 1800-1FFF
 
-= Interrupts =
+# Interrupts 
 
 The mame/drivers/mw8080bw.c comments have the following information about the interrupts:
 {{{
@@ -23,26 +23,29 @@ The mame/drivers/mw8080bw.c comments have the following information about the in
         The flip-flop, thus the INT line, is later cleared by the CPU via
         one of its memory access control signals.
 }}}
+
 The value CF is RST 8 and D7 is RST 10.
 
 If I understand this right then the system gets RST 8 when the beam is *near* the middle of the screen and RST 10 
 when it is at the end (start of VBLANK).
 
-= Video =
+# Video
 
 The raster resolution is 256x224 at 60Hz. The monitor is rotated in the cabinet 90 degrees counter-clockwise.
 
 The screens pixels are on/off (1 bit each). 256*224/8 = 7168 (7K) bytes.
 
-= Memory Map =
+# Memory Map 
 
  * 0000-1FFF   8K ROM
  * 2000-23FF   1K RAM
  * 2400-3FFF   7K Video RAM
  * 4000-       RAM mirror
 
-= I/O Ports =
+# I/O Ports 
 
+{{{memory
+%%range=0000:0007
 || 0000pr || INP0      || See below ||
 || 0001pr || INP1      || See below ||
 || 0002pr || INP2      || See below ||
@@ -53,6 +56,7 @@ The screens pixels are on/off (1 bit each). 256*224/8 = 7168 (7K) bytes.
 || 0004pw || SHFT_DATA || See below ||
 || 0005pw || SOUND2    || See below ||
 || 0006pw || WATCHDOG  || See below ||
+}}}
 
 These ports are mapped into the 8080's I/O address space (not the memory space):
 {{{
@@ -72,7 +76,7 @@ These ports are mapped into the 8080's I/O address space (not the memory space):
 Port 07 is also demultiplexed. The schematics say the select signal is wired directly to input-port-0's bit 7. This 
 doesn't make sense. 
 
-== Dedicated Shift Hardware ==
+## Dedicated Shift Hardware 
 
 The 8080 instruction set does not include opcodes for shifting. An 8-bit pixel image must be shifted into a 16-bit word 
 for the desired bit-position on the screen. Space Invaders adds a hardware shift register to help with the math.
@@ -104,7 +108,7 @@ for the desired bit-position on the screen. Space Invaders adds a hardware shift
 	Reading from port 3 returns said result.
 }}}
 
-== Inputs ==
+## Inputs 
 {{{
 Port 0
 * bit 0 DIP4 (Seems to be self-test-request read at power up)
@@ -140,7 +144,7 @@ Port 3
 *  bit 0-7 Shift register data
 }}}
 
-== Output ==
+## Output
 
 {{{
 Port 2:
@@ -171,7 +175,7 @@ Port 5:
 Port 6:
 * Watchdog ... read or write to reset
 
-= Screen Geometry =
+# Screen Geometry 
 
 2400 - 3FFF (1C00 bytes = 256 * 28) 28*8=224. Screen is 256x224 pixels.
 

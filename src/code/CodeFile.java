@@ -30,20 +30,23 @@ public class CodeFile {
 			code.add(new CodeLine(s,codeFile.toString(),lineno));
 			++lineno;
 			
-			if(s.startsWith(";;%%directPage")) {
+			if(s.startsWith("%%directPage")) {
 				this.directPage = CU.parseInt(s.substring(15).trim(), 16);
 			}
-			if(s.startsWith(";;%%cpu")) {
-				String c = s.substring(8).trim();
+			if(s.startsWith("%%cpu")) {
+				int i = s.indexOf("=");		
+				String c = s.substring(i+1).trim();
 				cpu = CPU.getCPU(c);				
 			}
-			if(s.startsWith(";;%%-")) {
+			if(s.startsWith("%%-")) {
 				
-				int i = s.indexOf("=");
-				int j = s.indexOf(" ",i+1);
+				int i = s.indexOf("=");				
 				
-				String pa = s.substring(i+1,j);
-				String re = s.substring(j+1).trim();				
+				String af = s.substring(i+1).trim();
+				int j = af.indexOf(" ");
+				
+				String pa = af.substring(0,j).trim();
+				String re = af.substring(j+1).trim();				
 				
 				tables.add(new AddressTable(Paths.get("content/",pa), re, tables.size()));
 				

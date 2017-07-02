@@ -9,6 +9,7 @@ import sim.DissReader;
 
 public class CompareBinary {
 	
+	@SuppressWarnings("resource")
 	public static void main(String [] args) throws Exception {
 		
 		DissReader diss = new DissReader("content/TRS80/HauntedHouse/Code2.cmark");		

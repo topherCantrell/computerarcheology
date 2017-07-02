@@ -35,7 +35,7 @@ import cpu.CPU;
  * read while disassembling. The web builder always erases the full "{...}" and rebuilds 
  * it to the current long specification.
  */
-public class LinkFix {
+public class NamesInCode {
 	
 	List<AddressAccess> notFounds;
 	
@@ -132,7 +132,7 @@ public class LinkFix {
 				tnam = getLongVersion(table,ac,c, tabs);
 			}
 			if(tnam!=null) {
-				c.originalText = c.originalText.substring(0,i+1)+tnam+c.originalText.substring(i+1);
+				c.originalText = c.originalText.substring(0,i+1)+" "+tnam+c.originalText.substring(i+1);
 			}								
 			
 		}
@@ -216,42 +216,39 @@ public class LinkFix {
 	 */
 	public static void main(String [] args) throws Exception {
 		
-		Path p = Paths.get("content/CoCo/Daggorath/Code.cmark");
+		Path p = Paths.get("content/arcade/SpaceInvaders/Code.cmark");
 		
 		// The worker object
-		LinkFix fixer = new LinkFix();		
+		NamesInCode fixer = new NamesInCode();		
 		
 		// Load the code and tables
-		CodeFile tabs = new CodeFile(p);
+		CodeFile tabs = new CodeFile(p);		
 		
 		// Do the fix up
-		fixer.fix(tabs,true);		
+		fixer.fix(tabs,true);			
 		
 		// Report on missing entries in the tables
 		if(fixer.notFounds.size()>0) {		
 			System.out.println("The following definitions were not found in the address tables:");
 			Collections.sort(fixer.notFounds);
 			for(AddressAccess ii : fixer.notFounds) {
-				System.out.println(ii);
-				//System.out.println("|| "+CU.hex4(ii)+" || "+CU.hex4(ii)+" || ||");
+				System.out.println(ii);				
 			}
 		}
 		
-		/*
-		for(CodeLine c : tabs.code){
-			System.out.println(c.originalText);
-		}
-		*/	
-		
-		
-		// Replace the contents of the file
+		//for(CodeLine c : tabs.code){
+		//	System.out.println(c.originalText);
+		//}
+			
+				
+		// Replace the contents of the file. Check it through the github compare before
+		// you blindly check it in.
 		PrintWriter pw = new PrintWriter(p.toString());
 		for(CodeLine c : tabs.code){
 			pw.println(c.originalText);
 		}		
 		pw.flush();
-		pw.close();
-						
+		pw.close();	
 		
 	}
 

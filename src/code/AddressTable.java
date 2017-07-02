@@ -57,6 +57,7 @@ public class AddressTable {
 			}
 			String n = parts[2].trim();			
 			defs.add(new AddressDef(address,n));
+			//System.out.println("::"+address+":"+n+"::");
 		}
 		
 	}
