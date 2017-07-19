@@ -60,7 +60,7 @@
 {"mnem":["PLA"], "code":"68", "clocks":"4", "bus":"r", "flags":"-------"},
 {"mnem":["ADC #","b"], "code":"69bb", "clocks":"2", "bus":"", "flags":"-------"},
 {"mnem":["ROR A"], "code":"6A", "clocks":"2", "bus":"", "flags":"-------"},
-{"mnem":["JMP (","m",")"], "code":"6Cmlmm", "clocks":"5", "bus":"", "flags":"-------"},
+{"mnem":["JMP (","t",")"], "code":"6Ctltm", "clocks":"5", "bus":"", "flags":"-------"},
 {"mnem":["ADC ","t"], "code":"6Dtltm", "clocks":"4", "bus":"r", "flags":"-------"},
 {"mnem":["ROR ","t"], "code":"6Etltm", "clocks":"6", "bus":"r", "flags":"-------"},
 {"mnem":["BVS ","r"], "code":"70rr", "clocks":"2/3/4", "bus":"", "flags":"-------"},
