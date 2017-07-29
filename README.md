@@ -1,3 +1,15 @@
+
+
+# TODO
+
+  * The LinkNames tool
+  * The local-server
+  * Assemblers
+  * Disassemblers
+  * Dig cleans and tools
+  * Help and Contact buttons
+  * Some individual code section <pre> are showing horiz scroll bars.
+  
 Computer Archeology
 ==================
 

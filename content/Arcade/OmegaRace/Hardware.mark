@@ -1,11 +1,10 @@
-%%image=ORace.jpg
-%%title= Omega Race Hardware Info
-%%range=0000:0020
+%%image = ORace.jpg
+%%title = Omega Race Hardware Info
 
+{{{memory
 ||= Address || Name             || Description ||
 ||  09p     || WDOG             || Reset watchdog timer ||
 ||  08p     || VGSTART          || Start/ (VG start) ||
-||  09p     || WDOG             || Reset watchdog timer ||
 ||  0Ap     || SEQRES           || SEQRES/ (VG stop/reset?) ||
 ||  0Bp     || RDSTOP           || RDSTOP/ d7 = stop (VG running if 0) ||
 ||  10p     || DIPSWC4          || DIP SW C4 (game ship settings) ||
@@ -16,6 +15,7 @@
 ||  15p     || ENCODER1         || Encoder 1 ||
 ||  16p     || ENCODER2         || Encoder 2 ||
 ||  17p     || DIPSWC6          || DIP SW C6 (coin/cocktail settings) ||
+}}}
 
 {{{
 

@@ -1,7 +1,19 @@
-%%title= Atari 2600 Asteroids
-%%image=A2600Asteroids.jpg
+%%title = Atari 2600 Asteroids
+%%image = A2600Asteroids.jpg
 
-[Code.html Code]
+[Code](Code.html)
+
+{{{playMe
+
+# Play Me!
+
+It might take a few seconds for the ROM to load, but play Atari2600 Asteroids here:
+
+[http://javatari.org&ROM=Asteroids](http://javatari.org?ROM=https://github.com/topherCantrell/computerarcheology/blob/master/content/Atari2600/Asteroids/ASTEROID.BIN?raw=true`playMe`)
+
+}}}
+
+Debug output from Z26.
 
 {{{
 Z26Frame: Loading Z26 log file 'asteroidrun.log' ...

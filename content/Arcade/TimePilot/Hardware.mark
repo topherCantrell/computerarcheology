@@ -1,6 +1,5 @@
-%%image=TimePilot.jpg
-%%title= Time Pilot Sound Board Hardware
-%%range=4000:7000, 8000:8FFF
+%%image = TimePilot.jpg
+%%title = Time Pilot Sound Board Hardware
 
 There are two capacitors that can be switched onto each audio channel
 to ground. The MSB bit set to one selects a 0.22 and the LSB bit set selects
@@ -16,7 +15,9 @@ V5 1000xxxxxxxxAAxx
 V6 1000xxxxxxAAxxxx
 }}}
 
+{{{memory
 || 4000 || AY0_DATA || ||
 || 5000 || AY0_ADDR || ||
 || 6000 || AY1_DATA || ||
 || 7000 || AY1_ADDR || ||
+}}}

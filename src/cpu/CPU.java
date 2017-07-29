@@ -1,7 +1,8 @@
 package cpu;
 
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,76 +13,161 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import asm.ASM;
-import asm.ASMException;
-import code.AddressAccess;
-import code.CU;
+import bus.AddressAccess;
+import bus.BusDir;
+import bus.BusType;
 import code.CodeLine;
-import files.BinaryFiles;
+import util.CU;
 
-public abstract class CPU {
-	
-	public List<Opcode> opcodes;
-
-	public boolean bigEndian;
+public class CPU {
 	
 	static Map<String,CPU> cache = new HashMap<String,CPU>();
 	
-	public abstract AddressAccess getAccess(String opcode, int numPos, int num, int directPage);
+	public List<Opcode> opcodes; // Opcodes for this CPU
+	public boolean bigEndian;	 // True if this is a big-endian CPU
 	
-	public abstract int assemble(boolean firstPass, CodeLine c, ASM asm) throws ASMException;
-	
-	public int[] getSpacing() {
-		int[] ret = {12,8,16};
-		return ret;
+	private BusDir decodeBusDirection(String d) {		
+		if(d.contains("r") && d.contains("w")) return BusDir.BOTH;
+		if(d.contains("r")) return BusDir.READ;
+		if(d.contains("w")) return BusDir.WRITE;
+		return null;
 	}
 	
+	/**
+	 * A line of disassembly will have an opcode and the fill-in numerical values. The
+	 * numerical value may or may not result in a fixed memory access. If it does then
+	 * the HTML generator can provide links and symbolic names to the access.
+	 * 
+	 * This method checks the opcode to see if the numerical portion is actually a
+	 * bus access. If it is, this method fills out the information about that access.
+	 * @param opcode the opcode making the access
+	 * @param num the fill-in number
+	 * @param directPage the value of the direct page offset
+	 * @param accessOverride true if the line has been commented with an override request 
+	 * @return the AddressAccess information
+	 */
+	public final AddressAccess getAccess(Opcode opcode, int num, int directPage, boolean accessOverride) {
+		
+		AddressAccess ret = new AddressAccess();		
+		ret.address = num;
+		
+		if(opcode==null) {
+			// TODO until we flesh out the DVG opcodes this will allow the JMP and JSR to create links	
+			ret.busType = BusType.MAIN;
+			ret.busDir = BusDir.READ;
+			return ret;
+		}
+		
+		String code = opcode.code;
+		
+		ret.busDir =  decodeBusDirection(opcode.bus);
+		ret.busType = BusType.MAIN; // The usual case
+		
+		// Ports are always PORT
+		if(code.contains("o")) {
+			ret.busType = BusType.PORT;			
+			return ret;
+		}
+		
+		// Direct pages are always MAIN
+		if(code.contains("p")) {	
+			if(accessOverride) {		
+				return null;
+			}
+			ret.address = num + directPage;
+			return ret;
+		}
+		
+		// Relative flow destinations ... always leading to memory
+		if(code.contains("r") || code.contains("s")) {			
+			return ret;
+		}
+		
+		// The opcode considers these constants to be likely memory targets
+		if(code.contains("t")) {			
+			if(accessOverride) {		
+				// But sometimes the indexed forms are used for other reasons
+				return null;
+			}
+			return ret;
+		}
+		
+		// At this point we don't think this is a memory access. But if the comment
+		// insists then we'll pretend it is.
+		if(accessOverride) {			
+			return ret;
+		}
+		
+		// This constant is NOT a memory access
+		return null;
+		
+	}
+		
+	/**
+	 * Common code used by all CPUs to load the opcode description file.
+	 * @param filename
+	 * @throws IOException
+	 * @throws ParseException
+	 */
 	protected void loadOpcodes(String filename) throws IOException, ParseException {
 		
 		opcodes = new ArrayList<Opcode>();
 		
+		Reader ir = new InputStreamReader(CPU.class.getClassLoader().getResourceAsStream(filename));		
+		
 		JSONParser parser = new JSONParser();
-		JSONArray objs = (JSONArray) parser.parse(new FileReader(filename));
+		
+		JSONArray objs = (JSONArray) parser.parse(ir);
 		
 		for(Object obj : objs) {
-			JSONObject o = (JSONObject)obj;
-			JSONArray mns = (JSONArray) o.get("mnem");
-			String [] mn = new String[mns.size()];
-			for(int x=0;x<mn.length;++x) mn[x] = mns.get(x).toString();
-			Opcode op = new Opcode(mn, o.get("code").toString());			
-			op.bus = o.get("bus").toString();
-			op.clocks = o.get("clocks").toString();
-			op.flags = o.get("flags").toString();			
-			opcodes.add(op);
+			JSONObject o = (JSONObject)obj;	
+			if(o.containsKey("mnem")) {	
+				Opcode op = new Opcode(o.get("mnem").toString(), o.get("code").toString());		
+				op.bus = o.get("bus").toString();				
+				opcodes.add(op);
+			}
 		}
 	}
 	
+	/**
+	 * Get a CPU object by name
+	 * @param name the name of the CPU
+	 * @return the CPU object
+	 */
 	public static CPU getCPU(String name) {		
+		if(name==null) return null;
 		CPU ret = cache.get(name);
-		if(ret==null) {			
-			if(name.equals("6502")) {
+		if(ret==null) {		
+			
+			switch(name) {
+			case "6502":
 				ret = new CPU_6502();
-			} else if(name.equals("6803")) {
+				break;
+			case "6803":
 				ret = new CPU_6803();
-			} else if(name.equals("6809")) {
+				break;
+			case "6809":
 				ret = new CPU_6809();
-			} else if(name.equals("DVG")) {
+				break;
+			case "DVG":
 				ret = new CPU_DVG();
-			} else if(name.equals("Z80")) {
+				break;
+			case "Z80":
 				ret = new CPU_Z80();
-			} else if(name.equals("Z80GB")) {
-			    ret = new CPU_Z80GB();
+				break;
+			case "Z80GB":
+				ret = new CPU_Z80GB();
+				break;
+				default:
+					return null;
 			}
 			
-			else {
-				ret = new CPU_None();
-			}
 			cache.put(name, ret);
 		}
 		return ret;
 	}
-	
-	public boolean couldMatch(String pot, Opcode op) {
+			
+	private boolean couldMatch(String pot, Opcode op) {
 	    
 	    for(int x=0;x<op.code.length();++x) {
 	        char c = op.code.charAt(x);
@@ -96,118 +182,51 @@ public abstract class CPU {
 	    return true;
 	}
 	
-	public String expandFillinField(int addr, char c, char d, int ba, int bb) {
-	    if(c!=d) {
-	        int val = 0;
-	        if(d=='l') {
-	            val = ba + (bb<<8);
-	        } else {
-	            val = (ba<<8) + bb;
-	        }
-	        // TODO signed and relative
-	        return "$"+CU.hex4(val);
-	    } else {
-	        
-	        if(c=='r') {
-	            if(ba>127) {
-	                ba = ba - 256;
-	            }
-	            ba = ba + addr + 2;
-	            return "$"+CU.hex2(ba);
-	        } else {	        
-    	        return "$"+CU.hex2(ba);
-	        }
-	    }
+	/**
+	 * Find the first opcode that matches the given line of disassembly. Some opcodes
+	 * have multiple mnemonic matches (BCC/BHS are the same thing).
+	 * @param codeLine the code
+	 * @return the matching opcode
+	 */
+	public Opcode matchDisassembly(CodeLine codeLine) {
+		String dat = "";
+		for(int i : codeLine.data) {
+			dat += CU.hex2(i);
+		}
+		if(opcodes==null) return null;
+		Opcode ret = null;
+		for(Opcode op : opcodes) {
+			if(op.getSize()==codeLine.data.size()) {
+				if(couldMatch(dat,op)) {
+					//if(ret!=null) {
+					//	throw new RuntimeException("Multiple opcodes match the disassembly: "+codeLine.originalText);
+					//}
+					ret = op;
+					break;
+				}
+			}
+		}
+		if(ret==null) {
+			throw new RuntimeException("Unknown line of disassembly: "+codeLine.originalText);
+		}
+		return ret;
 	}
+	
+	/*
+	public static void main(String [] args) throws Exception {
+		CPU cpu = getCPU("6502");
+		System.out.println(cpu);
+		cpu = getCPU("6803");
+		System.out.println(cpu);
+		cpu = getCPU("6809");
+		System.out.println(cpu);
+		cpu = getCPU("DVG");
+		System.out.println(cpu);
+		cpu = getCPU("Z80");
+		System.out.println(cpu);
+		cpu = getCPU("Z80GB");
+		System.out.println(cpu);
+	}
+	*/
 		
-	public void fillin(Opcode op, BinaryFiles binary, int addr, Map<String, Object> fillins) {
-	    
-	    // "bytes" : [1,2,3,4]
-        // "wordA" : "LDA"
-        // "wordB" : "24,X++"
-        
-	    fillins.clear();
-	    
-        int [] data = new int[op.getSize()];
-        for(int x=0;x<data.length;++x) {
-            data[x] = binary.getByte(addr+x);             
-        }
-        
-        String mnem = "";
-        for(String a : op.mnemonic) {
-            mnem = mnem + a;
-        }
-        
-        int ofs = 0;
-        int pos = 0;
-        while(pos<op.code.length()) {            
-            char c = op.code.charAt(pos);
-            char d = op.code.charAt(pos+1);
-            
-            if(c>='a' && c<='z') {
-                String rep = "";
-                if(d!=c) {
-                    char e = op.code.charAt(pos+2);
-                    //char f = op.code.charAt(pos+3);
-                    if(c!=e) {
-                        throw new RuntimeException("OOPS");
-                    }
-                    rep = expandFillinField(addr,c, d, binary.getByte(ofs+addr), binary.getByte(ofs+1+addr));
-                    pos = pos + 4;
-                    ofs += 2;                    
-                } else {                    
-                    rep = expandFillinField(addr,c,d,binary.getByte(ofs+addr),0);  
-                    ofs = ofs + 1;
-                    pos = pos + 2;
-                }
-                
-                mnem = CU.replaceAll(mnem, ""+c, rep);
-                
-            } else {
-                ofs = ofs + 1;
-                pos = pos + 2;
-            }
-            
-        }
-                        
-        int x = mnem.indexOf(" ");
-        if(x>=0) {
-            fillins.put("wordA",mnem.substring(0,x).trim());
-            fillins.put("wordB",mnem.substring(x+1).trim());
-        } else {
-            fillins.put("wordA", mnem);
-            fillins.put("wordB", "");
-        }
-        
-        // Calculate relative addresses
-        // Need 1-byte signed calculations type
-        
-        fillins.put("bytes", data);
-        
-	}
-
-    public Opcode disassemble(BinaryFiles binary, int addr, Map<String, Object> fillins) {
-        
-        int pos = addr; 
-                
-        String pot = "";
-        
-        Opcode ret = null;
-        
-        for(Opcode op : opcodes) {
-            while(pot.length()<(op.getSize()*2)) {
-                pot = pot + CU.hex2(binary.getByte(pos));                
-            }
-            if(couldMatch(pot,op)) {
-                if(ret!=null) {
-                    throw new RuntimeException("OOPS");
-                }
-                ret = op;
-                fillin(op, binary, addr, fillins);  
-            }
-        }
-        
-        return ret;    
-    }
-
 }

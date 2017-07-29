@@ -1,18 +1,20 @@
-%%title= Bedlam
-%%image=Bedlam.jpg
+%%title = Bedlam
+%%image = Bedlam.jpg
 
 {{{html
 <div class="playMe">
-<div style="padding-left: 20px;height: 368px;">
+<div>
 <script src="/CoCo/Bedlam/BinaryDataBedlam.js"></script>
 <script src="/js/6809.js"></script>
 <script src="/CoCo/CoCoText.js"></script>
 <script src="/CoCo/Bedlam/bedlam.js"></script>
 <script>window.onload = function() {startBedlam("bedlamConsole");}</script>
+}}}
+# Play Me!
 
-<h1>Play Me!</h1>
 Play the game in a CoCo emulator. Click on the green console and press any key.<br>
 
+{{{html
 <textarea readonly id="bedlamConsole" rows="16" style="background-color: #00FF01; color: black;font-family: monospace;font-size:12px;width:33ch;float: left;margin-top:8px" ></textarea>
 
 <table class="caTable" style="float: left;margin-left:8px;margin-top:8px;">
@@ -26,64 +28,57 @@ Play the game in a CoCo emulator. Click on the green console and press any key.<
 
 </div>
 </div>
-
 }}}
 
-= Code Links =
+# Code Links 
 
-* [Code.html Disassembled Code]
-* [RAMUse.html RAM Usage]
+* [Disassembled Code](Code.html)
+* [RAM Usage](RAMUse.html)
 
-= Questionnaire = 
+# Questionnaire 
 
 "This questionnaire is not an official psychological test and is not endorsed by any reputable doctor. Only the doctor 
 that you'll find in Bedlam endorses this crazy test. Although the test is mostly for fun, it does have a purpose. Concealed 
 within the questions and score evaluations are clues which should help you escape Bedlam. You may not recognize the clues in 
 the questionnaire until you try to escape from Bedlam." - From the game manual
 
-{{{html
-<div class="tourGuide">
-<div style="padding-left: 20px">
-}}}
-= Tour Guide =
+{{{tourGuide
+# Tour Guide
 
-The code is practically a virtual-machine for the game written in adventure-language. The [Code.html#MainLoop Main Loop] decodes the complex
+The code is practically a virtual-machine for the game written in adventure-language. The [Main Loop](Code.html#MainLoop) decodes the complex
 user input with nouns, verbs, adjectives, and prepositions.
 
-Have a look at the [Code.html#ProcessCommand Adventure Language Processor] and all its complex commands.
+Have a look at the [Adventure Language Processor](Code.html#ProcessCommand) and all its complex commands.
 
-Have a look at the [Code.html#PhraseList Phrase List] that describes the forms of all known input lines.
+Have a look at the [Phrase List](Code.html#PhraseList) that describes the forms of all known input lines.
 
-The Bedlam game has fewer rooms and more object interactions. Visit all the [Code.html#RoomDescriptions Room Definitions]. Then have a look 
-at the [Code.html#ObjectData Objects and their scripts].
+The Bedlam game has fewer rooms and more object interactions. Visit all the [Room Definitions](Code.html#RoomDescriptions). Then have a look 
+at the [Objects and their scripts](Code.html#ObjectData).
 
-Have a look at the [Code.html#GeneralCommands General Command Script] that processes commands not handled by the current room.
+Have a look at the [General Command Script](Code.html#GeneralCommands) that processes commands not handled by the current room.
 
-Look through the game's [Code.html#InputWordTables list of all known words].
+Look through the game's [list of all known words](Code.html#InputWordTables).
 
-{{{html
-</div>
-</div>
 }}}
 
-= References =
+# References 
 
 If you seek specific game information, solutions, and online emulators then check out Sean Murphy's wonderful site.[[br]]
 Solutions and info on Pyramid 2000, Raaka-Tu, and Bedlam:[[br]]
-[http://www.figmentfly.com]
+[http://www.figmentfly.com](http://www.figmentfly.com)
 
 Check out Aaron Wolfe's awesome port of Bedlam to the Android platform. He is working on Raaka-tu next![[br]]
-[https://play.google.com/store/apps/details?id=com.aaronwolfe.bedlam]
+[https://play.google.com/store/apps/details?id=com.aaronwolfe.bedlam](https://play.google.com/store/apps/details?id=com.aaronwolfe.bedlam)
 
-= The Evolution of the Engine = 
+# The Evolution of the Engine
 
 I will follow Arnstein's adventure language and interpreter as it evolved from Pyramid 2000 to Raaka-Tu and finally to Bedlam. Be sure to 
 visit those pages as well:
-* [/CoCo/Pyramid Pyramid 2000]
-* [/CoCo/RaakaTu Raaka Tu]
+* [Pyramid 2000](/CoCo/Pyramid)
+* [Raaka Tu](/CoCo/RaakaTu)
 * Bedlam
 
-= A Year Later =
+# A Year Later 
 
 A year later the engine in Bedlam is almost identical to that of RaakaTu. The RAM usage is identical between the two. Bedlam 
 adds a needed automatic MORE prompt to the print routine that was in Pyramid but fell out with RaakaTu.
@@ -127,12 +122,12 @@ prints a static string. But for "people" objects the script prints a long introd
 script then switches the object for another object that prints a shorter description from then on. Thus the people in the game 
 cleverly remember that they have met you whether you remember them or not.
 
-= Solutions =
+# Solutions 
 
 CommonCommand 94 sets up the game by moving the game objects into position. Many of objects are distributed randomly, 
 and one of three solutions is picks at random. I will call these the BLUE-PILL-EXIT, the NAPOLEON-EXIT, and the PICASSO-EXIT.
 
-== Blue Pill Exit ==
+## Blue Pill Exit 
 
 There are two blue-pill objects in the code. If the game picks the BLUE-PILL-EXIT then you get BluePillA. Otherwise 
 you get BluePillB. Both pills can be dissolved in the hamburger meat and fed to the dog. But BluePillA is poison and will 
@@ -140,7 +135,7 @@ kill the dog. The command script for room 93 (THE KENNEL) checks the status of t
 room 93. If the dog is dead then the guards lock you in the storage shed. There is a green escape door in the shed. That's 
 the BLUE-PILL-EXIT.
 
-== Napoleon Exit ==
+## Napoleon Exit 
 
 The NAPOLEON-EXIT involves a secret door placed randomly (within limits) in the hospital. The door is secret in that it 
 does not show up in normal room descriptions. If you EXAMINE the rooms you will see it. Also XRay Johnson will see it 
@@ -151,7 +146,7 @@ NAPOLEON-EXIT. Otherwise you get NapoleonA. Napoleon is strong and you can tell 
  the only way to open the secret door. NapoleanA will complain about being tired. The trick with the NAPOLEAN-EXIT is to 
  find the secret door and to get Napoleon to it (see people-movement below).
 
-== Picasso Exit ==
+## Picasso Exit 
 
 The PICASSO-EXIT involves opening a door that Picasso paints on the wall. There are two Picasso objects: PicassoA and 
 PicassoB. Both paint a non-openable door at random, but PicassoB also paints a door in your cell that you can open. You'll 
@@ -162,7 +157,7 @@ The PICASSO-EXIT involves waiting for Picasso to visit your cell. Then you open 
  the TRS80 version of the Picasso logic is a bit different from the CoCo version. The TRS80 version seems to allow 
  Picasso to paint the exit door anywhere while the CoCo version is fixed to your starting cell.
 
-= Houdini, Merlin, XRay Johnson, and More =
+# Houdini, Merlin, XRay Johnson, and More 
 
 There are several other colorful people you will meet in the game. You'll meet Houdini hanging from the ceiling in a 
 straight jacket. You can let him down and he will struggle with the jacket, but he'll never get out of it. Merlin will 
@@ -173,7 +168,7 @@ need to get a key from the nurse!
 XRay Johnson can see the PICASSO-EXIT even before Picasso gets there to paint it. He can also see the secret door. You 
 can tell Ray which direction to go in and he'll obey (if he can). The other people have a mind of their own.
 
-= People Movement =
+# People Movement 
 
 The people objects all use a common movement script: CommonCommand 9C. Most of the time (90%) the people will move in 
 the direction you just moved in no matter where they are. This has the side effect of having them follow you once you bump 
@@ -188,7 +183,7 @@ CommonCommand 9A is used if a command is given to a person when the person is no
 messages for WHAT, COME, WAIT, and MEET. Despite the messages, the COME and WAIT have no effect on the objects. All other 
 commands get a random "no" that can be quite humorous.
 
-= Frontal Lobotomy =
+# Frontal Lobotomy 
 
 The crazy doctor is an interesting touch to the game. The green key is in the electro-shock room with the nurse. The 
 action-script for the nurse gives you an instant shock treatment which returns you to your room ... without the key 

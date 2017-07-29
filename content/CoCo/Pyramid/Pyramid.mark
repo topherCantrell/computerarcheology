@@ -1,19 +1,17 @@
-%%title= Pyramid 2000
-%%image=Pyramid.jpg
-
+%%title = Pyramid 2000
+%%image = Pyramid.jpg
 
 {{{html
 <div class="playMe">
-<div style="padding-left: 20px">
+<div>
 <script src="/CoCo/Pyramid/BinaryDataPyramid.js"></script>
 <script src="/js/6809.js"></script>
 <script src="/CoCo/CoCoText.js"></script>
 <script src="/CoCo/Pyramid/pyramid.js"></script>
 <script>window.onload = function() {startPyramid("pyramidConsole","pyramidTape");}</script>
 }}}
-= Play Me! =
+# Play Me! 
 Play the game in a CoCo emulator. Click on the green console and press any key.
-
 
 {{{html
 <textarea readonly id="pyramidConsole" rows="16" style="background-color: #00FF01; color: black;font-family: monospace;font-size:12px;width:33ch;" ></textarea>
@@ -34,12 +32,12 @@ Before the LOAD command you must paste the desired saved-data back into the text
 </div>
 }}}
 
-= Code Links =
+# Code Links
 
-* [Code.html Disassembled Code]
-* [RAMUse.html RAM Usage]
+* [Disassembled Code](Code.html)
+* [RAM Usage](RAMUse.html)
 
-= The Great Lost Pyramid =
+# The Great Lost Pyramid
 
 "The seal on the entrance is still unbroken -- perhaps the tomb is still intact,
 untouched by the passage of time, impervious to the elements, still settled in
@@ -47,48 +45,42 @@ quiet repose. There must be treasures. If even half of the stories about the Los
 Pyramid are true, ... But why dwell on that now -- you are here, and adventure
 awaits just a step away." - From the game manual introduction
 
-{{{html
-<div class="tourGuide">
-<div style="padding-left: 20px">
-}}}
-= Tour Guide =
+{{{tourGuide
 
-Check out a [#TRS80Nugget snippet of the original source code] caught in an uninitialized buffer.
+# Tour Guide 
 
-Have a look at the [Code.html#MainLoop game's main loop]. It is really short.
+Check out a [snippet of the original source code](#TRS80Nugget) caught in an uninitialized buffer.
 
-The code is code-within-code. The adventure language processor commands are [Code.html#ScriptCommands here].
+Have a look at the [game's main loop](Code.html#MainLoop). It is really short.
 
-The spooky mummy is given life as part of the [Code.html#MoveToRoomX Move to Room X] code.
+The code is code-within-code. The adventure language processor commands are [here](Code.html#ScriptCommands).
+
+The spooky mummy is given life as part of the [Move to Room X](Code.html#MoveToRoomX) code.
 
 Have a look at all the unpacked messages in the game:
-* [Code.html#AlternatingErrors General Messages]
-* [Code.html#RoomDescriptions Room Descriptions]
-* [Code.html#ObjectDescriptions Object Descriptions]
-* [Code.html#GameSpecificMessages More General Messages]
+* [General Messages](Code.html#AlternatingErrors)
+* [Room Descriptions](Code.html#RoomDescriptions)
+* [Object Descriptions](Code.html#ObjectDescriptions)
+* [More General Messages](Code.html#GameSpecificMessages)
 
-Visit the [Code.html#RoomScripts Room Scripts] to see what you can do in each room. Then visit the 
-[Code.html#GeneralCommandHandler General Command Handler] script that runs after the current room
-has a chance to take the command. These "adventure language scripts" are interpreted by the [Code.html#ProcessCommandList Script Processor].
+Visit the [Room Scripts](Code.html#RoomScripts) to see what you can do in each room. Then visit the 
+[General Command Handler](Code.html#GeneralCommandHandler) script that runs after the current room
+has a chance to take the command. These "adventure language scripts" are interpreted by the [Script Processor](Code.html#ProcessCommandList).
 
-Read through all words that the game understands in the [Code.html#WordTable Word table].
-
-{{{html
-</div>
-</div>
+Read through all words that the game understands in the [Word table](Code.html#WordTable).
 }}}
 
-= References =
+# References
 
 If you seek specific game information, solutions, and online emulators then check out Sean Murphy's wonderful site.[[br]]
 Solutions and info on Pyramid 2000, Raaka-Tu, and Bedlam:[[br]]
-[http://www.figmentfly.com]
+[http://www.figmentfly.com](http://www.figmentfly.com)
 
 In August 2007 my article on 
-[http://www.cc-webshop.com/Circuit-Cellar-Issue-205-August-2007-PDF-FI-2007-205.htm Text Adventure Gaming] 
+[Text Adventure Gaming](http://www.cc-webshop.com/Circuit-Cellar-Issue-205-August-2007-PDF-FI-2007-205.htm) 
 was published in Circuit Cellar magazine. I ported the game to play on a Propeller microcontroller.
 
-= Colossal Cave Adventure =
+# Colossal Cave Adventure
 
 The Wikipedia says that Colossal Cave Adventure was the first computer text adventure game. The original source, recovered from 
 Don Wood's student account at Stanford, is about 700 lines of FORTRAN with another 700 lines of data. It ran on giant mainframe 
@@ -97,12 +89,12 @@ most popular. It featured an adventure language he called A-code and an interpre
 translated the game logic into his A-code language and enhanced it to score a max of 550 points.
 
 All things Colossal Cave Adventure:
-[http://en.wikipedia.org/wiki/Colossal_Cave_Adventure]
+[http://en.wikipedia.org/wiki/Colossal_Cave_Adventure](http://en.wikipedia.org/wiki/Colossal_Cave_Adventure)
 
 David Platt's A-code version of Adventure550:
-[http://www.mipmip.org/adv550/src550a.shtml]
+[http://www.mipmip.org/adv550/src550a.shtml](http://www.mipmip.org/adv550/src550a.shtml)
 
-= TRS-80 and CoCo =
+# TRS-80 and CoCo
  
 In 1979 Radio Shack released Robert Arnstein's Pyramid 2000 for the TRS-80 Model I. The game is basically a port of David Platt's A-code 
 Adventure550 with the setting changed to a pyramid instead of a cave. The dungeon layout and error messages are almost identical. Arnstein's 
@@ -124,10 +116,10 @@ language become game participants themselves. The player must give Napoleon, X-R
 I will follow Arnstein's adventure language and interpreter as it evolved from Pyramid 2000 to Raaka-Tu and finally to Bedlam. Be sure to 
 visit those pages as well:
 * Pyramid 2000
-* [/CoCo/RaakaTu Raaka Tu]
-* [/CoCo/Bedlam Bedlam]
+* [Raaka Tu](/CoCo/RaakaTu)
+* [Bedlam](/CoCo/Bedlam)
 
-= Pyramid 2000 Implementation =
+# Pyramid 2000 Implementation
 
 The game includes colorful responses to certain command requests -- like rubbing the lamp:
 
@@ -160,7 +152,7 @@ NORTH. TO THE SOUTH IS A LITTLE[[br]]
 </div>
 }}}
 
-= The Engine =
+# The Engine 
 
 When you turn on the 16K TRS-80 Color Computer, the first 1K of memory is reserved for the BASIC interpreter. The next 512 bytes is reserved for the 
 text mode screen map (32 characters per line * 16 rows = 512 bytes). That leaves 0x4000 - 0x600 = 14848 bytes of memory in the system for the Pyramid 
@@ -197,7 +189,7 @@ That's almost a perfect fit, and it compresses strings by 33%.
 I wrote a Java utility to uncompress the strings in the code listing. You'll find all the packed strings uncompressed near the bottom of the code. 
 Take a few moments to read through them! It's a great trip down memory lane.
 
-= Adventure Language =
+# Adventure Language
 
 The data area of the game is made of several data tables, the room scripts, the common-script, the packed strings, and the vocabulary. I wrote a java 
 program to parse this data area and make great comments in the data section of the game.
@@ -322,7 +314,7 @@ THERE IS A PANEL ON THE NORTH WALL.
 Then I compared the GOTOs to Room 26 in Pyramid to the GOTOs to Room Y2 in Adventure. Sure enough -- they line up perfectly. So the missing direction 
 command in Pyramid is the "Y2" command from Adventure.
 
-= TRS-80 Nugget =
+# TRS-80 Nugget
 
 I looked briefly at the TRS-80 version of the Pyramid code. The game objects are the same. The descriptions are all the same except for double spaces 
 after periods in the TRS80 version. The scripts are the same too, but the TRS80 vocabulary includes one extra word: "HELP".

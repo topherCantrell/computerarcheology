@@ -1,8 +1,7 @@
-%%title= Stella (Atari 2600 Hardware)
-%%image=Atari2600.jpg
-%%range=0000:007F, 0280:02FF
+%%title = Stella (Atari 2600 Hardware)
+%%image = Atari2600.jpg
 
-On the web: [http://www.alienbill.com/2600/101/docs/stella.html Stella Programmer's Guide]
+On the web: [Stella Programmer's Guide](http://www.alienbill.com/2600/101/docs/stella.html)
 
 The address decoding for the 2600 is very simple. The TIA is accessed
 if A12 is 0 and A7 is 0. The TIA is selected if (address&1080 == 0000).
@@ -17,8 +16,9 @@ Note that the 6502 has an 8-bit stack pointer. The CPU automatically sets the up
 byte of the address to 01. The RIOT chip RAM ghosts from 00xx to 01xx putting the stack
 in RAM.
 
-= TIA =
+# TIA (read)
 
+{{{memory
 || 0000r    || CXM0P               || Collisions M0/P1   M0/P0 ||
 || 0001r    || CXM1P               || Collisions M1/P0   M1/P1 ||
 || 0002r    || CXP0FB              || Collisions M0/PF   P0/BL ||
@@ -33,7 +33,11 @@ in RAM.
 || 000Br    || INPT3               || Paddle input 3 ||
 || 000Cr    || INPT4               || Latched inputs (joystick buttons) ||
 || 000Dr    || INPT5               || Latched inputs (joystick buttons) ||
+}}}
 
+# TIA (write)
+
+{{{memory
 || 0000w    || VSYNC               || D1=1 starts the vertical sync ||
 || 0001w    || VBLANK              || D1=1 starts the vertical blank (D6 and D7 config INPT0-5) ||
 || 0002w    || WSYNC               || Halts processor until leading edge of horizontal blank ||
@@ -79,8 +83,9 @@ in RAM.
 || 002Aw    || HMOVE               || Executes horizontal motions ||
 || 002Bw    || HMCLR               || Clears all horizonal motion registers ||
 || 002Cw    || CXCLR               || Clears all collision registers ||
+}}}
 
-= PIA =
+# PIA
 
 The PIA (R.I.O.T.) is accessed if A12 is 0 and A7 is 1. If A9 is 0 then the 128 bytes 
 of RAM are selected. If A9 is 1 then the PIA timer registers are selected.
@@ -91,10 +96,12 @@ The TIA RAM is selected if (address&1280 == 0080).
 
 The PIA chip uses the lower 7 address lines A0-A6. Thus the 007F mask below.
 
+{{{memory
 || 0280    || SWCHA               || Port A Hand controllers ||
 || 0281    || SWACNT              || Port A DDR ||
-
 || 0282    || SWCHB               || Port B Console switches ||
+}}}
+
 {{{
 D7 : P1 difficulty (0=amateur, 1=pro)
 D6 : P0 difficulty (0=amateur, 1=pro)
@@ -106,9 +113,11 @@ D1 : game select (0=pressed)
 D0 : game reset (0=pressed)
 }}}
 
+{{{memory
 || 0283    || SWBCNT              || Port B DDR ||
 || 0284    || INTIM               || Timer output (read only) ||
 || 0294    || TIM1T               || Set 1 clock interval (write only) ||
 || 0295    || TIM8T               || Set 8 clock interval (write only) ||
 || 0296    || TIM64T              || Set 64 clock interval (write only) ||
 || 0297    || TIM1024T            || Set 1024 clock interval (write only) ||
+}}}

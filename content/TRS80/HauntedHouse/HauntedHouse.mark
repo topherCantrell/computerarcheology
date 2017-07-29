@@ -1,5 +1,5 @@
-%%title= Haunted House
-%%image=HauntedHouse.jpg
+%%title = Haunted House
+%%image = HauntedHouse.jpg
 
 {{{html
 <div class="playMe">
@@ -11,7 +11,8 @@
 <script>window.onload = function() {startHauntedHouse("hauntedConsole");}</script>
 
 }}}
-= Play Me! =
+
+# Play Me!
 Play the game in a TRS80 emulator. Click on the black console and press any key.
 
 {{{html
@@ -23,14 +24,14 @@ Play the game in a TRS80 emulator. Click on the black console and press any key.
 }}}
 
 
-= Code Links =
+# Code Links 
 
-* [Code1.html Disassembled Code (1st Floor)]
-* [Code2.html Disassembled Code (2nd Floor)]
-* [RAMUse1.html RAM Usage (1st Floor)]
-* [RAMUse2.html RAM Usage (2nd Floor)]
+* [Disassembled Code 1st Floor](Code1.html)
+* [Disassembled Code 2nd Floor](Code2.html)
+* [RAM Usage 1st Floor](RAMUse1.html)
+* [RAM Usage 2nd Floor](RAMUse2.html)
 
-= Get Out! =
+# Get Out! 
 
 Generations have passed since the McDaniel family mysteriously disappeared. It is said that a stranger came 
 to visit on that cold, Autumn day many years ago, but no one knows for sure. Their house has been vacant 
@@ -41,46 +42,40 @@ boarded ? the house is quiet and contented, not accustomed to visitors. The wind
 fallen leaves in all directions. As you walk towards the entrance of the house, the wind grows distant and weak. 
 Suddenly, the calm and silence is broken by sounds from within the house!
 
-= From the mind of Robert Arnstein =
+# From the mind of Robert Arnstein 
 
 This is one of the many Robert Arnstein text games disassmebled on my site. You can see the evolution of the
-game engine by comparing Haunted House with [/CoCo/Pyramid/index.html Pyramid],
-[/TRS80/Pyramid/index.html Pyramid for TRS-80], [/CoCo/RaakaTu/index.html RaakaTu], and 
-[/CoCo/Bedlam/index.html Bedlam].
+game engine by comparing Haunted House with [Pyramid](/CoCo/Pyramid/index.html),
+[Pyramid for TRS-80](/TRS80/Pyramid/index.html), [RaakaTu](/CoCo/RaakaTu/index.html), and 
+[Bedlam](/CoCo/Bedlam/index.html).
 
-{{{html
-<div class="tourGuide">
-<div style="padding-left: 20px">
-}}}
+{{{tourGuide
 
-= Tour Guide =
+# Tour Guide 
 
-The code is code-within-code. The adventure language processor commands are [Code1.html#ScriptCommands here].
+The code is code-within-code. The adventure language processor commands are [here](Code1.html#ScriptCommands).
 
 Have a look at all the unpacked messages in the game:
-* [Code1.html#CompressedText First Floor Messages]
-* [Code2.html#CompressedText Second Floor Messages]
+* [First Floor Messages](Code1.html#CompressedText)
+* [Second Floor Messages](Code2.html#CompressedText)
 
 Visit the room scripts to see what you can do in each room. Then visit the general script that runs after the 
 current room has a chance to take the command. These "adventure language scripts" are interpreted by 
-the [Code1.html#RunScript Script Processor].
-* [Code1.html#RoomScripts Room scripts (1st floor)]
-* [Code1.html#GeneralScript General Script (1st floor)]
-* [Code2.html#RoomScripts Room scripts (2nd floor)]
-* [Code2.html#GeneralScript General Script (2nd floor)]
+the [Script Processor](Code1.html#RunScript).
+* [Room scripts 1st floor](Code1.html#RoomScripts)
+* [General Script 1st floor](Code1.html#GeneralScript)
+* [Room scripts 2nd floor](Code2.html#RoomScripts)
+* [General Script 2nd floor](Code2.html#GeneralScript)
 
 Read through all words that the game understands:
-* [Code1.html#CommandTable Word (1st Floor)]
-* [Code2.html#CommandTable Word (2nd Floor)]
+* [Word 1st Floor](Code1.html#CommandTable)
+* [Word 2nd Floor](Code2.html#CommandTable)
 
-{{{html
-</div>
-</div>
 }}}
 
-= References =
+# References
 
-If you seek specific game information, solutions, and online emulators then check out [http://www.figmentfly.com Sean Murphy's wonderful site].
+If you seek specific game information, solutions, and online emulators then check out [Sean Murphy's wonderful site](http://www.figmentfly.com).
 
 Joe Peterson has recreated the original Haunted house in Java and Python. The Java version makes a nice Android app you can play
-on your phone. Check it out on [http://www.wildlava.com/explore/ The "Explore" Adventure Games website].
+on your phone. Check it out on [The "Explore" Adventure Games website](http://www.wildlava.com/explore/).

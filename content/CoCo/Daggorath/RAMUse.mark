@@ -1,6 +1,5 @@
-%%image=Daggorath.jpg
-%%title= Daggorath RAM Use
-%%range=7C:7E, 0200:03FF
+%%image = Daggorath.jpg
+%%title = Daggorath RAM Use
 
 The first 256 bytes of RAM (DP=0) are needed by BASIC function calls made by Daggorath. The second
 256 bytes of RAM (DP=1) contain the BASIC interrupt vectors.
@@ -23,119 +22,121 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 * 1000-27FF First screen buffer
 * 2800-3FFF Second screen buffer
 
+{{{memory
 ||=Address     || Name                 || Description || 
-|| 007C        || CASSBLKTYPE          || BASIC cassette block type ||
-|| 007E        || CASSPTR              || BASIC cassette buffer ptr ||
-|| 0200:0201   || CONST_00             || '0000' Double constant ('0001' from 0201) ||
-|| 0202        ||                      || '01'   LSB of double constant '0001'      ||
-|| 0203:0204   || CONST_FF             || 'FFFF' Double constant ||
-|| 0205        ||                      || '00'            ||
-|| 0206        ||                      || '80'            ||
-|| 0207        ||                      || '00'            ||
-|| 0208        ||                      || '4C'            ||
-|| 0209:020A   || activeScreen         || 'D870' Pointer to visible screen descriptor ||
-|| 020B:020C   || backScreen           || 'D876' Pointer to drawing screen descriptor ||
-|| 020D        ||                      || 'D9'            ||
-|| 020E        ||                      || 'D8'            ||
-|| 020F:0210   || endOfObjsM           || '0B15' Pointer to one object slot past end of list ||
-|| 0211        ||                      || '02'            ||
-|| 0212        ||                      || 'F1'            ||
-|| 0213        || playerY              || '0C' Player's Y coordinate   ||
-|| 0214        || playerX              || '16' Player's X coordinate   ||
-|| 0215        || playerDir            || '00' Player's direction      ||
-|| 0216        ||                      || '23'            ||
-|| 0217        ||                      || '17'            ||
-|| 0218        ||                      || 'A0'            ||
-|| 0219:026A   || || ||
-|| 026B        || rndSeedA             || Random number generator seed value ||
-|| 026C        || rndSeedB             || Random number generator seed value ||
-|| 026D        || rndSeedC             || Random number generator seed value ||
-|| 026E        || || ||
-|| 026F        || || ||
-|| 0270        || || ||
-|| 0271        || || ||
-|| 0272        || || ||
-|| 0273        || || ||
-|| 0274        || || ||
-|| 0275        || || ||
-|| 0276        || || ||
-|| 0277        ||                      || ||
-|| 0278        || || ||
-|| 0279        || || ||
-|| 027A        || || ||
-|| 027B        || || ||
-|| 027C        || drwMazeY             || Maze drawing ... current Y ||
-|| 027D        || drwMazeX             || Maze drawing ... current X ||
-|| 027E        || drwMazeCross         || Maze drawings ... number of crossings for current run ||
-|| 027F        ||                      || ||
-|| 0280        ||                      || ||
-|| 0281        || currentLevel         || Current maze level number (0-4) ||
-|| 0282        ||                      || ||
-|| 0283        ||                      || ||
-|| 0284        ||                      || ||
-|| 0285        ||                      || ||
-|| 0286        || currentHolesM        || Pointer to ceiling hole/ladder table for current level ||
-|| 0287        || currentHolesL        || ^ ||
-|| 0288        || drwMazeTmp           || Temporary for maze drawing ||
-|| 0289        ||                      || ||
-|| 028A        || drwMazeDir           || Maze drawing ... current direction ||
-|| 028B        ||                      || ||
-|| 028C        || numObjs              || Number of objects to create ||
-|| 028D        ||                      || ||
-|| 028E        ||                      || ||
-|| 028F        ||                      || ||
-|| 0290        ||                      || ||
-|| 0291        || restartFind          || 1 to restart "FindNextObject" at top of list, 0 to continue find ||
-|| 0292        || currentObjM          || Pointer to last object found ||
-|| 0293        || currentObjL          || ^ ||
-|| 0294        || scrollType           || 0 means "vision", not-0 means "seer" ||
-|| 0295        ||                      || ||
-|| 0296        ||                      || ||
-|| 0297        ||                      || Used at CD65 to advance random number ||
-|| 0298        ||                      || ||
-|| 0299        ||                      || ||
-|| 029A        ||                      || ||
-|| 029B        ||                      || ||
-|| 029C        || beamSound            || Not-0 if wizard-beam sound ||
-|| 029D        || beamSoundVal         || wizard sound value ||
-|| 029E        ||                      || ||
-|| 029F        ||                      || ||
-|| 02A0        ||                      || ||
-|| 02A1        ||                      || ||
-|| 02A2        ||                      || ||
-|| 02A3        ||                      || ||
-|| 02A4        ||                      || ||
-|| 02A5        ||                      || ||
-|| 02A6        ||                      || ||
-|| 02A7        ||                      || ||
-|| 02A8        ||                      || ||
-|| 02A9        ||                      || ||
-|| 02AA        ||                      || ||
-|| 02AB        ||                      || ||
-|| 02AC        ||                      || ||
-|| 02AD        || scrollShowing        || Not 0 if a scroll is showing ||
-|| 02AE        || heartCounter         || Redraw when it reaches zero ||
-|| 02AF        || heartCounterRel      || Heart counter reload value ||
-|| 02B0        || heartPicture         || 0 for small-heart, other for large-heart ||
-|| 02B1        || hearHeart            || Not-0 to hear the heart beat ||
-|| 02B2        ||                      || ||
-|| 02B3        ||                      || ||
-|| 02B4        || flipScreens          || Not-0 to flip screens then ack to 0 ||
-|| 02B5        ||                      || ||
-|| 02B6        ||                      || ||
-|| 02B7        ||                      || ||
-|| 02B8        ||                      || ||
-|| 02B9        || nextTask             || Next available game-task slot ||
-|| 02BA        ||                      || ||
-|| 02BB        ||                      || ||
-|| 02BC        || inputHead            || head index (next read) of the 32 byte input ring buffer at 2D1  ||
-|| 02BD        || inputTail            || tail index (next write) of the 32 byte input ring buffer at 2D1 ||
-|| 02BE:02CB   || || ||
-|| 02CC        || || ||
-|| 02CD:02D0   || || ||
-|| 02D1:02F0   || inputBuf             || 32 byte input ring buffer ||
-|| 0313        || || ||
-|| 0335        || || ||
+|| 007C      || CASSBLKTYPE          || BASIC cassette block type ||
+|| 007E      || CASSPTR              || BASIC cassette buffer ptr ||
+|| 0200:0201 || CONST_00             || '0000' Double constant ('0001' from 0201) ||
+|| 0202      || m0202                || '01'   LSB of double constant '0001'      ||
+|| 0203:0204 || CONST_FF             || 'FFFF' Double constant ||
+|| 0205      || m0205                || '00'            ||
+|| 0206      || m0206                || '80'            ||
+|| 0207      || m0207                || '00'            ||
+|| 0208      || m0208                || '4C'            ||
+|| 0209:020A || activeScreen         || 'D870' Pointer to visible screen descriptor ||
+|| 020B:020C || backScreen           || 'D876' Pointer to drawing screen descriptor ||
+|| 020D      || m020D                || 'D9'            ||
+|| 020E      || m020E                || 'D8'            ||
+|| 020F:0210 || endOfObjsM           || '0B15' Pointer to one object slot past end of list ||
+|| 0211      || m0211                || '02'            ||
+|| 0212      || m0212                || 'F1'            ||
+|| 0213      || playerY              || '0C' Player's Y coordinate   ||
+|| 0214      || playerX              || '16' Player's X coordinate   ||
+|| 0215      || playerDir            || '00' Player's direction      ||
+|| 0216      || m0216                || '23'            ||
+|| 0217      || m0217                || '17'            ||
+|| 0218      || m0218                || 'A0'            ||
+|| 0219:026A || m0219                || ||
+|| 026B      || rndSeedA             || Random number generator seed value ||
+|| 026C      || rndSeedB             || Random number generator seed value ||
+|| 026D      || rndSeedC             || Random number generator seed value ||
+|| 026E      || m026E                || ||
+|| 026F      || m026F                || ||
+|| 0270      || m0270                || ||
+|| 0271      || m0271                || ||
+|| 0272      || m0272                || ||
+|| 0273      || m0273                || ||
+|| 0274      || m0274                || ||
+|| 0275      || m0275                || ||
+|| 0276      || m0276                || ||
+|| 0277      || m0277                || ||
+|| 0278      || m0278                || ||
+|| 0279      || m0279                || ||
+|| 027A      || m027A                || ||
+|| 027B      || m027B                || ||
+|| 027C      || drwMazeY             || Maze drawing ... current Y ||
+|| 027D      || drwMazeX             || Maze drawing ... current X ||
+|| 027E      || drwMazeCross         || Maze drawings ... number of crossings for current run ||
+|| 027F      || m027F                || ||
+|| 0280      || m0280                || ||
+|| 0281      || currentLevel         || Current maze level number (0-4) ||
+|| 0282      || m0282                || ||
+|| 0283      || m0283                || ||
+|| 0284      || m0284                || ||
+|| 0285      || m0285                || ||
+|| 0286      || currentHolesM        || Pointer to ceiling hole/ladder table for current level ||
+|| 0287      || currentHolesL        || ^ ||
+|| 0288      || drwMazeTmp           || Temporary for maze drawing ||
+|| 0289      || m0289                || ||
+|| 028A      || drwMazeDir           || Maze drawing ... current direction ||
+|| 028B      || m028B                || ||
+|| 028C      || numObjs              || Number of objects to create ||
+|| 028D      || m028D                || ||
+|| 028E      || m028E                || ||
+|| 028F      || m028F                || ||
+|| 0290      || m0290                || ||
+|| 0291      || restartFind          || 1 to restart "FindNextObject" at top of list, 0 to continue find ||
+|| 0292      || currentObjM          || Pointer to last object found ||
+|| 0293      || currentObjL          || ^ ||
+|| 0294      || scrollType           || 0 means "vision", not-0 means "seer" ||
+|| 0295      || m0295                || ||
+|| 0296      || m0296                || ||
+|| 0297      || m0297                || Used at CD65 to advance random number ||
+|| 0298      || m0298                || ||
+|| 0299      || m0299                || ||
+|| 029A      || m029A                || ||
+|| 029B      || m029B                || ||
+|| 029C      || beamSound            || Not-0 if wizard-beam sound ||
+|| 029D      || beamSoundVal         || wizard sound value ||
+|| 029E      || m029E                || ||
+|| 029F      || m029F                || ||
+|| 02A0      || m02A0                || ||
+|| 02A1      || m02A1                || ||
+|| 02A2      || m02A2                || ||
+|| 02A3      || m02A3                || ||
+|| 02A4      || m02A4                || ||
+|| 02A5      || m02A5                || ||
+|| 02A6      || m02A6                || ||
+|| 02A7      || m02A7                || ||
+|| 02A8      || m02A8                || ||
+|| 02A9      || m02A9                || ||
+|| 02AA      || m02AA                || ||
+|| 02AB      || m02AB                || ||
+|| 02AC      || m02AC                || ||
+|| 02AD      || scrollShowing        || Not 0 if a scroll is showing ||
+|| 02AE      || heartCounter         || Redraw when it reaches zero ||
+|| 02AF      || heartCounterRel      || Heart counter reload value ||
+|| 02B0      || heartPicture         || 0 for small-heart, other for large-heart ||
+|| 02B1      || hearHeart            || Not-0 to hear the heart beat ||
+|| 02B2      || m02B2                || ||
+|| 02B3      || m02B3                || ||
+|| 02B4      || flipScreens          || Not-0 to flip screens then ack to 0 ||
+|| 02B5      || m02B5                || ||
+|| 02B6      || m02B6                || ||
+|| 02B7      || m02B7                || ||
+|| 02B8      || m02B8                || ||
+|| 02B9      || nextTask             || Next available game-task slot ||
+|| 02BA      || m02BA                || ||
+|| 02BB      || m02BB                || ||
+|| 02BC      || inputHead            || head index (next read) of the 32 byte input ring buffer at 2D1  ||
+|| 02BD      || inputTail            || tail index (next write) of the 32 byte input ring buffer at 2D1 ||
+|| 02BE:02CB || m02BE                || ||
+|| 02CC      || m02CC                || ||
+|| 02CD:02D0 || m02CD                || ||
+|| 02D1:02F0 || inputBuf             || 32 byte input ring buffer ||
+|| 0313      || m0313                || ||
+|| 0335      || m0335                || ||
+}}}
 
 ? I believe that the "end" value in a descriptor is different for text and graphics areas.
 For text, the "end" is the number of characters.
@@ -143,23 +144,27 @@ For graphics, the "end" is the end+1 address.
 
 Hand line descriptor
 
+{{{memory
 ||= address || name || description ||
-|| 388:389     || hndStart   || Starting address of this area ||
-|| 38A:38B     || hndEnd     || Number of characters in this area ||
-|| 38C:38D     || hndTextCur || Text cursor position in this area ||
-|| 038E        || hndColor   || Color (black or white) of this area ||
-|| 038F        || hnd???     || Something to do with this area ? duplicate images to +1800 ||
+|| 388:389   || hndStart             || Starting address of this area ||
+|| 38A:38B   || hndEnd               || Number of characters in this area ||
+|| 38C:38D   || hndTextCur           || Text cursor position in this area ||
+|| 038E      || hndColor             || Color (black or white) of this area ||
+|| 038F      || hnd???               || Something to do with this area ? duplicate images to +1800 ||
+}}}
 
 Playfield descriptor
 
+{{{memory
 ||= address || name || description ||
-|| 390:391     || playStart   || Starting address of this area ||
-|| 392:393     || playEnd     || End+1 address of area ||
-|| 394:396     || playTextCur || Text cursor position in this area ||
-|| 0396        || playColor   || Color (black or white) of this area ||
-|| 0397        || play???     || Something to do with this area ? duplicate images to +1800 ||
+|| 390:391   || playStart            || Starting address of this area ||
+|| 392:393   || playEnd              || End+1 address of area ||
+|| 394:395   || playTextCur          || Text cursor position in this area ||
+|| 0396      || playColor            || Color (black or white) of this area ||
+|| 0397      || play???              || Something to do with this area ? duplicate images to +1800 ||
+}}}
 
-= Screen Descriptor =
+# Screen Descriptor 
 {{{
  aabb ccdd eeff
  aabb : Start memory of area
@@ -167,7 +172,7 @@ Playfield descriptor
  eeff : SAM settings for screen 
 }}}
 
-= Creatures =
+# Creatures 
 {{{
  Creatures are 17 byte structures as follows:
    00
@@ -189,7 +194,7 @@ Playfield descriptor
    10 X coordinate
 }}}
 
-= Objects =
+# Objects 
 {{{
  Objects are 14 byte structures as follows:
    00
@@ -208,7 +213,7 @@ Playfield descriptor
    0D Physical power      -+
 }}}
 
-= Tasks =
+# Tasks 
 {{{
  Tasks are 7 byte structures as follows:
    00

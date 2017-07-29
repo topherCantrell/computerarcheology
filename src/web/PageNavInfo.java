@@ -19,9 +19,11 @@ public class PageNavInfo {
 	public int level;
 	public String link;
 	public String text;
+	public String style;
 	
 	public PageNavInfo parent;
 	
 	public List<PageNavInfo> subs = new ArrayList<PageNavInfo>();
+	
 
 }

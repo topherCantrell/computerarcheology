@@ -1,11 +1,11 @@
-%%title= TRS80
-%%image=TRS80.jpg
+%%title = TRS80
+%%image =TRS80.jpg
 
-= Technical Reference =
+# Technical Reference
 
-[http://www.classiccmp.org/cpmarchives/trs80/mirrors/kjsl/www.kjsl.com/trs80/lvl2romaddr.html Level 2 ROM Addresses]
+[Level 2 ROM Addresses](http://www.classiccmp.org/cpmarchives/trs80/mirrors/kjsl/www.kjsl.com/trs80/lvl2romaddr.html)
 
-[https://archive.org/stream/ROM_Routines_Documented_1983_The_Alternate_Source/ROM_Routines_Documented_1983_The_Alternate_Source_djvu.txt Tandy/Radio Shack Book: ROM Routines Documented (1983)]
+[Tandy/Radio Shack Book: ROM Routines Documented 1983](https://archive.org/stream/ROM_Routines_Documented_1983_The_Alternate_Source/ROM_Routines_Documented_1983_The_Alternate_Source_djvu.txt)
 
-= Disassembled Code =
-* [HauntedHouse Haunted House]
+# Disassembled Code 
+* [Haunted House](HauntedHouse)

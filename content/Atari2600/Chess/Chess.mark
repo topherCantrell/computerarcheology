@@ -1,8 +1,14 @@
-%%title= Atari 2600 Chess
-%%image=A2600Chess.jpg
+%%title = Atari 2600 Chess
+%%image = A2600Chess.jpg
 
-= Atari 2600 Chess =
+[Code](Code.html)
 
-[Code.html Code]
+{{{playMe
 
-      
+# Play Me!
+
+It might take a few seconds for the ROM to load, but play Atari2600 Chess here:
+
+[http://javatari.org&ROM=Chess](http://javatari.org?ROM=https://github.com/topherCantrell/computerarcheology/blob/master/content/Atari2600/Chess/ATARICHESS.BIN?raw=true`playMe`)
+
+}}}

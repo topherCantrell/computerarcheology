@@ -1,30 +1,24 @@
-%%title= Asteroids
-%%image=Asteroids.jpg
+%%title = Asteroids
+%%image = Asteroids.jpg
 
-= Code Links =
+# Code Links 
 
-* [Code.html Disassembled Code]
-* [Hardware.html Hardware Info]
-* [RAMUse.html RAM Usage]
-* [VectorROM.html Vector ROM]
-* [DVG.html Info on the DVG]
+* [Disassembled Code](Code.html)
+* [Hardware Info](Hardware.html)
+* [RAM Usage](RAMUse.html)
+* [Vector ROM](VectorROM.html)
+* [Info on the DVG](DVG.html)
 
-{{{html
-<div class="tourGuide">
-<div style="padding-left: 20px">
-}}}
-= Tour Guide =
+{{{tourGuide
+# Tour Guide
 
-Just getting started on this dig. Lonnie Howell (displacer2@yahoo.com) is doing the code comments.
+Just getting started on this dig. Lonnie Howell started the comments. Mark McDougall picked up where
+he left up. Mark's work is amazing.
 
-You should browse the [VectorROM.html Vector ROM] and see the game images. For instance:
-* [VectorROM.html#UFO UFO]
-* [VectorROM.html#RockPatterns Asteroids]
-* [VectorROM.html#PlayerShips Player Ships]
+You should browse the [Vector ROM](VectorROM.html) and see the game images. For instance:
+* [UFO](VectorROM.html#UFO)
+* [Asteroids](VectorROM.html#RockPatterns)
+* [Player Ships](VectorROM.html#PlayerShips)
 
 And many more.
-
-{{{html
-</div>
-</div>
 }}}

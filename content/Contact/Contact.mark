@@ -1,7 +1,7 @@
-%%title= Contact Me
-%%image=Contact.jpg
+%%title = Contact Me
+%%image = Contact.jpg
 
-= Email =
+# Email 
 
 {{{html
 <a href="mailto:topher@computerarcheology.com">topher@computerarcheology.com</a>
@@ -14,10 +14,3 @@ If you spot an error in the discussion or code send me an email. I'll give you
 full credit in the "Corrections" section of the discussion.
 
 If you would like to contribute to this site then send me an email!
-
-= Contributors =
-
-* Harry Hurst
-* Patrick Sevallius
-
-See the main page for more information about the contributors and their work on this site.

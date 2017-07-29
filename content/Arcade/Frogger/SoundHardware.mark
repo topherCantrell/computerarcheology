@@ -1,20 +1,23 @@
-%%title= Frogger Sound Board Hardware
-%%image=Frogger.jpg
-%%range=0040:0080, 6000:6FFF
+%%title = Frogger Sound Board Hardware
+%%image = Frogger.jpg
 
-= AY38910 Chip =
+# AY38910 Chip
 
 Port space addressing is straightforward.
 If upper address bit 7 is set, value is written to chip address register.
 If address bit 6 is set, value is written (or read) to chip register last addressed.
 
+{{{memory
 ||=Address || Name || Description ||
 || 40p  || AY_DATA || Read/write the selected AY internal register ||
 || 80pw || AY_ADDR || Write here to select AY internal register ||
+}}}
 
-= Capacitor Network =
+# Capacitor Network
 
+{{{memory
 || 6000:6FFFw || caps || Capacitor network ||
+}}}
 
 There is a capacitor filter control network controlled through memory addresses 
  decoded from 6000. Reading from an address sets the filter as follows:

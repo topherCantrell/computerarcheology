@@ -1,10 +1,7 @@
-%%image=RaakaTu.jpg
-%%title= Raaka Tu RAM Usage
-%%range=0088:01E3
+%%image = RaakaTu.jpg
+%%title = Raaka Tu RAM Usage
 
-
-= Game Variables =
-
+{{{memory
 ||= Address  || Name                  || Description ||
 || 88:89     || printCursor           || screen pointer used by BASIC ||
 || 01A7:01A8 ||  tmp1A7               || used in decoding the input ||                   
@@ -61,6 +58,7 @@
 || 01E1      || tmp1E1                || used in making index of data fields ||         
 || 01E2      || tmp1E2                || used in input processing ||                    
 || 01E3      || tillMORE              || rows left until MORE prompt (not used here) ||               
+}}}
 
  01E4     inputTokens           input token buffer
  

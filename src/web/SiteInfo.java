@@ -21,14 +21,15 @@ public class SiteInfo {
 	
 	/**
 	 * This creates a SiteInfo object parsed from the input JSON file.
+	 * @param siteInfoFile the name of the site info JSON file
 	 * @throws IOException
 	 * @throws ParseException
 	 * @throws Exception
 	 */
-	public SiteInfo() throws IOException, ParseException, Exception {
+	public SiteInfo(String siteInfoFile) throws IOException, ParseException {
 		
 		// This never changes ... and there are no others
-		Path filename = Paths.get("content/site.js");
+		Path filename = Paths.get(siteInfoFile);
 		
 		JSONParser parser = new JSONParser();
 		JSONObject obj = (JSONObject) parser.parse(new FileReader(filename.toString()));
@@ -41,7 +42,7 @@ public class SiteInfo {
 		
 	}
 	
-	private List<SiteInfoEntry> parseEntries(JSONArray obj) throws Exception {
+	private List<SiteInfoEntry> parseEntries(JSONArray obj) {
 		
 		List<SiteInfoEntry> ret = new ArrayList<SiteInfoEntry>();
 		
@@ -58,27 +59,7 @@ public class SiteInfo {
 				ret.add(ent);
 				continue;
 			}
-			
-			k = (String)j.get("code");
-			if(k!=null) {
-				ent.command = "code";
-				ent.arg = k;
-				ent.nav = (String)j.get("nav");
-				ent.out = (String)j.get("out");
-				ret.add(ent);
-				continue;
-			}
-			
-			k = (String)j.get("address");
-			if(k!=null) {
-				ent.command = "address";
-				ent.arg = k;
-				ent.nav = (String)j.get("nav");
-				ent.out = (String)j.get("out");
-				ret.add(ent);
-				continue;
-			}
-			
+									
 			k = (String)j.get("copy");
 			if(k!=null) {
 				ent.command = "copy";
@@ -118,7 +99,7 @@ public class SiteInfo {
 				continue;
 			}
 			
-			throw new Exception("Unknown entry '"+j.toString()+"'");			
+			throw new RuntimeException("Unknown entry '"+j.toString()+"'");			
 			
 		}
 		

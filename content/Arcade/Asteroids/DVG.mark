@@ -1,19 +1,17 @@
 %%image=DVG.jpg
 %%title= Digital Vector Generator (DVG)
 
-= TODO =
-
 There is a lot of info here:
 
-[http://www.philpem.me.uk/elec/vecgen.pdf http://www.philpem.me.uk/elec/vecgen.pdf]
+[http://www.philpem.me.uk/elec/vecgen.pdf](http://www.philpem.me.uk/elec/vecgen.pdf)
 
 This info talks about the global scale factor allowing multiply and divide.
 
 Follow the schematics here to figure it out:
 
-[http://www.jmargolin.com/vgens/aster.pdf http://www.jmargolin.com/vgens/aster.pdf]
+[http://www.jmargolin.com/vgens/aster.pdf](http://www.jmargolin.com/vgens/aster.pdf)
 
-= Vector Graphics =
+# Vector Graphics
 
 Modern computers use raster graphics. The monitor display is essentially a giant two dimensional matrix
 of dots (a dot matrix). The states of these dots must be configured a giant buffer in memory. The more 
@@ -27,12 +25,12 @@ drawn on low-resolution raster displays. The vector display doesn't need much me
 But in the end all your program can draw is a bunch of lines.
 
 Detailed information on the DVG from Asteroids: 
-[http://www.jmargolin.com/vgens/aster.pdf http://www.jmargolin.com/vgens/aster.pdf]
+[http://www.jmargolin.com/vgens/aster.pdf](http://www.jmargolin.com/vgens/aster.pdf)
 
-* [Asteroids/VectorROM.html Asteroids Vector ROM]
-* [OmegaRace/VectorROM.html Omega Race Vector ROM]
+* [Asteroids Vector ROM](../Asteroids/VectorROM.html)
+* [Omega Race Vector ROM](../OmegaRace/VectorROM.html)
 
-= Memory Layout =
+# Memory Layout
 
 The DVG reads lines from an 8K bank of memory. The first 4K is RAM. The last 4K is ROM containing vector
 sequences for the game: asteroids, letters and numbers, ships, UFOs, etc. The "display list" is much
@@ -59,7 +57,7 @@ The DVG would fetch these bytes as two words LSB first:
 8000: 36BF 06BF
 }}}
 
-= Screen Geometry =
+# Screen Geometry
 
 The DVG keeps up with a current (x,y) cursor coordinate. (0,0) is the lower left corner of the display.
 (1023,1023) is the upper right corner of the display.
@@ -103,7 +101,7 @@ square wraps the lower left quadrant of the screen. A scale-factor of 0 divides 
 512 -- turning those 1023's into 2's. That would draw a tiny box in the bottom left
 corner of the screen.
 
-= Vector Specification =
+# Vector Specification
 
 A vector has a deltaX, deltaY, and an intensity. It also has its own "local" scale factor. This "local" 
 scale-factor is added to the global scale-factor to make a "total" scale-factor used in rendering 
@@ -143,7 +141,7 @@ The upper nibble of the first word is the command.
     F : SVEC -- a short vector command
 }}} 
 
-== VEC ==
+## VEC
 
 Draw a line from the current (x,y) coordinate.
 
@@ -160,7 +158,7 @@ VEC  scale=08(/2)    bri=07  x=1022    y=-1022  (511.00, -511.00)
   
 }}}
 
-== CUR ==
+## CUR
 
 Set the current (x,y) and global scale-factor.
 
@@ -175,7 +173,7 @@ CUR  scale=00(/512)  y=895  x=1023
 
 }}}
 
-== HALT ==
+## HALT
 
 End the current drawing list.
 
@@ -186,7 +184,7 @@ HALT
 
 }}}
  
-== JSR ==
+## JSR 
 
 Jump to a vector subroutine. Note that there is room in the internal "stack" for only
 FOUR levels of nested subroutine calls. Be careful.
@@ -207,7 +205,7 @@ JSR  $0DC8
 
 }}}
  
-== RTS ==
+## RTS
 
 Return from current vector subroutine.
  
@@ -218,7 +216,7 @@ RTS
 
 }}}
  
-== JMP ==
+## JMP
 
 Jump to a new location in the vector program.
 
@@ -238,7 +236,7 @@ JMP  $0C14
 
 }}}
 
-== SVEC ==
+## SVEC
 
 Use a "short" notation to draw a vector. This does not mean the vector itself
 is necessarily short. It means that the notation is shorter (fewer bits of

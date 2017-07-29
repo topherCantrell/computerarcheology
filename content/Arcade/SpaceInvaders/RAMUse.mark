@@ -2,7 +2,6 @@
 %%title= Space Invaders RAM Use
 
 {{{memory
-%%range=2000:23FF
 
 # General Vars
 
@@ -23,7 +22,7 @@
 ||200D||rackDirection||Value 0 if rack is moving right or 1 if rack is moving left||
 ||200E||rackDownDelta||Constant value of alien rack dropping after bumping screen edge||
 ||200F|| || ||
-|| || ||
+|| || || ||
 || || || '''GameObject0 (Move/draw the player)''' ||
 ||2010||obj0TimerMSB|| ||
 ||2011||obj0TimerLSB||Wait 128 interrupts (about 2 secs) before player task starts||
@@ -42,7 +41,7 @@
 ||201E||hidMessSeq||Set to 1 after 1st of 2 sequences are entered for hidden-message display||
 ||201F|| ||Appears to be unused||
 ||2020||obj1TimerMSB|| ||
-|| || ||
+|| || || ||
 || || || '''GameObject1 (Move/draw the player shot)''' ||
 ||2021||obj1TimerLSB|| ||
 ||2022||obj1TimerExtra||All 0's ... run immediately||
@@ -59,7 +58,7 @@
 ||202D||fireBounce||1 if button has been handled but remains down||
 ||202E|| || ||
 ||202F|| || ||
-|| || ||
+|| || || ||
 || || || '''GameObject2 (Alien rolling-shot)''' ||
 ||2030||obj2TimerMSB|| ||
 ||2031||obj2TimerLSB|| ||
@@ -77,7 +76,7 @@
 ||203D||rolShotYr|| ||
 ||203E||rolShotXr|| ||
 ||203F||rolShotSize|| ||
-|| || ||
+|| || || ||
 || || || '''GameObject3 (Alien plunger-shot)''' ||
 ||2040||obj3TimerMSB|| ||
 ||2041||obj3TimerLSB|| ||
@@ -95,7 +94,7 @@
 ||204D||pluShotYr|| ||
 ||204E||pluSHotXr|| ||
 ||204F||pluShotSize|| ||
-|| || ||
+|| || || ||
 || || ||'''GameObject4 (Flying saucer OR alien squiggly shot)''' ||
 ||2050||obj4TimerMSB|| ||
 ||2051||obj4TimerLSB|| ||
@@ -132,7 +131,7 @@
 ||2070||otherShot1||When processing a shot, this holds one of the other shot's info||
 ||2071||otherShot2||When processing a shot, this holds one of the other shot's info||
 ||2072||vblankStatus||80=screen is being drawn (don't touch), 0=blanking in progress (ok to change)||
-|| || ||
+|| || || ||
 || || || '''Alien shot information (copied from the 3 actual structures when processed)''' ||
 ||2073||aShotStatus||Bit 0 set if shot is blowing up, bit 7 set if active||
 ||2074||aShotStepCnt||Count of steps made by shot (used for fire reload rate)||
@@ -180,7 +179,7 @@
 ||209E|| || ||
 ||209F|| || ||
 ||20A0|| || ||
-|| || ||
+|| || || ||
 || || || '''In the ROM mirror copied to RAM this is the image of the alien sprite pulling the upside down Y. The code expects it to be 0030 below the second animation picture at 1BD0. This RAM area must be unused. The copy is wasted. ''' ||
 ||20A1|| || ||
 ||20A2|| || ||
@@ -213,11 +212,11 @@
 ||20BD|| || ||
 ||20BE|| || ||
 ||20BF|| || ||
-|| || ||
+|| || || ||
 || || || ''' End of inialization copy from ROM mirror''' ||
-|| || ||
+|| || || ||
 || || || ''' These are copied once from ROM at startup (01E6)''' ||
-|| || ||
+|| || || ||
 || || || ''' Splash screen animation structure ''' ||
 ||20C0||isrDelay||Delay counter decremented in ISR||
 ||20C1||isrSplashTask||1=In demo, 2=Little-alien and Y, 4=shooting extra 'C'||
@@ -237,25 +236,25 @@
 ||20CF||aShotReloadRate||Based on the MSB of the player's score ... how fast the aliens reload their shots||
 ||20D0|| ||; This is where the alien-sprite-carying-the-Y ...||
 ||20D1|| ||; ... lives in ROM||
-||20D2|| || ||
-||20D3|| || ||
-||20D4|| || ||
-||20D5|| || ||
-||20D6|| || ||
-||20D7|| || ||
-||20D8|| || ||
-||20D9|| || ||
-||20DA|| || ||
-||20DB|| || ||
-||20DC|| || ||
-||20DD|| || ||
-||20DE|| || ||
-||20DF|| || ||
-||20E0|| || ||
-||20E1|| || ||
-||20E2|| || ||
-||20E3|| || ||
-||20E4|| || ||
+||20D2|| || || ||
+||20D3|| || || ||
+||20D4|| || || ||
+||20D5|| || || ||
+||20D6|| || || ||
+||20D7|| || || ||
+||20D8|| || || ||
+||20D9|| || || ||
+||20DA|| || || ||
+||20DB|| || || ||
+||20DC|| || || ||
+||20DD|| || || ||
+||20DE|| || || ||
+||20DF|| || || ||
+||20E0|| || || ||
+||20E1|| || || ||
+||20E2|| || || ||
+||20E3|| || || ||
+||20E4|| || || ||
 ||20E5||player1Ex||Extra ship has been awarded = 0||
 ||20E6||player2Ex||Extra ship has been awarded = 0||
 ||20E7||player1Alive||1 if player is alive, 0 if dead (after last man)||
@@ -267,7 +266,7 @@
 ||20ED||demoCmdPtrLSB||pointer to demo commands LSB 1663||
 ||20EE||demoCmdPtrMSB||pointer to demo commands MSB||
 ||20EF||gameMode||1=game running, 0=demo or splash screens||
-||20F0|| || ||
+||20F0|| || || ||
 ||20F1||adjustScore||Set to 1 if score needs adjusting||
 ||20F2||scoreDeltaLSB||Score adjustment (LSB)||
 ||20F3||scoreDeltaMSB||Score adjustment (MSB)||

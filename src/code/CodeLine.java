@@ -1,35 +1,14 @@
 package code;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import util.CU;
 
 public class CodeLine {
-	
+			
 	/**
-	 * This function loads all the CodeLines from a given file.
-	 * @param filename the file to parse
-	 * @return the list of CodeLines
-	 * @throws IOException
-	 */
-	public static List<CodeLine> loadLines(Path filename) throws IOException {
-		List<CodeLine> ret = new ArrayList<CodeLine>();		
-		List<String> lines = Files.readAllLines(filename);
-		
-		int n = 1;
-		for(String s : lines) {
-			CodeLine c = new CodeLine(s,filename.toString(), n);
-			ret.add(c);
-		}
-		
-		return ret;		
-	}
-	
-	/**
-	 * This function does a simple checksum over all "data" in the
+	 * This function does a simple checksum over all data in the
 	 * code lines.
 	 * @param code the list of code lines
 	 * @return the simple checksum
@@ -48,9 +27,7 @@ public class CodeLine {
 	
 	
 	public String originalText;
-	String filename;
-	int line;
-	
+				
 	public int address = -1;
 	public List<Integer> data = null;
 	public String opcode = null;
@@ -59,12 +36,7 @@ public class CodeLine {
 	public int commentPos = -1;
 	
 	public String label = null;
-	String[] collectedLabels = null;
-	
-	public Object flag = null; // Spare data to attach when processing
-	public int numericConstantStart = -1;
-	public int numericConstantEnd = -1;
-		
+				
 	// PrintChar:
 	// 4000: 01 02 03  LDA  $500   ; This is a comment
 	//
@@ -78,14 +50,12 @@ public class CodeLine {
 	 * @param filename the name of the file (for error reporting)
 	 * @param line the line number (for error reporting)
 	 */
-	public CodeLine(String originalText, String filename, int line) {
+	public CodeLine(String originalText) {
 		
 		originalText = originalText.replaceAll("(\\t|\\r?\\n)+", " ");
 		
 		this.originalText = originalText;
-		this.filename = filename;
-		this.line = line;
-		
+				
 		// comment		
 		commentPos = originalText.indexOf(";");
 		if(commentPos>=0) {

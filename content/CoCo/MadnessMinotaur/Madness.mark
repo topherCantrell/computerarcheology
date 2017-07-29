@@ -1,63 +1,57 @@
-%%title= Madness and the Minotaur
-%%image=Madness.jpg
+%%title = Madness and the Minotaur
+%%image = Madness.jpg
 
-= Code Links =
+# Code Links
 
-* [Code.html Disassembled Code]
-* [RAMUse.html RAM Usage]
+* [Disassembled Code](Code.html)
+* [RAM Usage](RAMUse.html)
 
-= The Labyrinth of King Minos = The Labyrinth
+# The Labyrinth of King Minos
 
 "Rumor has it that there are treasures hidden in the vicinity of the Labyrinth.
 Are these treasures worth risking life or sanity? If your answer to this question
 is negative or you are plagued with skepticism, it is suggested that you re-evaluate
 your priorities and establish some healthy materialism." - From the game manual introduction
 
-{{{html
-<div class="tourGuide">
-<div style="padding-left: 20px">
-}}}
-= Tour Guide =
+{{{tourGuide
+# Tour Guide
 
 Code bugs are always fun to explore. You should visit these:
-* [Code.html#CodeBug1  Error message with POTION]
-* [Code.html#CodeBug2  Error when KILL ORACLE]
-* [Code.html#CodeBug3  ISHTAR does not clear fog poison]
-* [Code.html#CodeBug4  Should fail if overburdeoned]
-* [Code.html#CodeBug5  Missing word WATER from message]
-* [Code.html#CodeBug6  Shadowed jump]
-* [Code.html#CodeBug7  Invisible Oil hides the URN]
-* [Code.html#CodeBug8  YOUR SIGHT IS DIM never gets printed (Joe Hagan)]
+* [Error message with POTION](Code.html#CodeBug1)
+* [Error when KILL ORACLE](Code.html#CodeBug2)
+* [ISHTAR does not clear fog poison](Code.html#CodeBug3)
+* [Should fail if overburdeoned](Code.html#CodeBug4)
+* [Missing word WATER from message](Code.html#CodeBug5)
+* [Shadowed jump](Code.html#CodeBug6)
+* [Invisible Oil hides the URN](Code.html#CodeBug7)
+* [YOUR SIGHT IS DIM never gets printed (Joe Hagan)](Code.html#CodeBug8)
 
-You should see the routines that [Code.html#MoveCreatures Move each Creature] and the
-routines that [Code.html#CreaturesAttack Make Each Creature Attack].
+You should see the routines that [Move each Creature](Code.html#MoveCreatures) and the
+routines that [Make Each Creature Attack](Code.html#CreaturesAttack).
 
-Have a look at the [Code.html#IndividualCommands Individual User Commands] -- especially the
-[Code.html#UseSpell Spell Commands].
+Have a look at the [Individual User Commands](Code.html#IndividualCommands) -- especially the
+[Spell Commands](Code.html#UseSpell).
 
-Check out the routines that run [Code.html#BetweenRoomActions Between Certain Rooms] and when you [Code.html#EnteringRoomActions Enter Certain Rooms].
+Check out the routines that run [Between Certain Rooms](Code.html#BetweenRoomActions) and when you [Enter Certain Rooms](Code.html#EnteringRoomActions).
 
 Read through the text messages of the game:
-* [Code.html#ItemDescriptions Item Descriptions]
-* [Code.html#RoomDescriptions Room Descriptions]
-* [Code.html#MiscStrings Game Messages] 
+* [Item Descriptions](Code.html#ItemDescriptions)
+* [Room Descriptions](Code.html#RoomDescriptions)
+* [Game Messages](Code.html#MiscStrings)
 
-Here is the map of all the passages between all 256 rooms: [Code.html#PassageConfigurations Dungeon Map]
+Here is the map of all the passages between all 256 rooms: [Dungeon Map](Code.html#PassageConfigurations)
 
-{{{html
-</div>
-</div>
 }}}
 
-= References =
+# References
 
 For more information on Madness and the Minotaur check out Sean Murphy's wonderful site:[[br]]
-[http://www.figmentfly.com http://www.figmentfly.com] 
+[http://www.figmentfly.com](http://www.figmentfly.com) 
 
 John Layman has translated the 6809 opcodes to x86 to run on a LINUX, BSD, and OSX. Follow his awesome work:[[br]]
-[http://www.frijid.net/madness/madness.html http://www.frijid.net/madness/madness.html]
+[http://www.frijid.net/madness/madness.html](http://www.frijid.net/madness/madness.html)
 
-= Text Adventure and Real Time Strategy = Text + RTS
+# Text Adventure and Real Time Strategy
 
 Madness and the Minotaur is a text adventure game that includes elements of a D&D game and a non-turn-based action game. 
 You have "hit points" (physical condition) and you will die when they run out. There are creatures that move from room 
@@ -68,7 +62,7 @@ To win the game you have to learn all 8 spells and drop all 16 treasure objects 
 sprinkled around the rooms at random. Some objects are "protected" and require you have a set of other objects to release 
 (see below). Some object are "carried" by creatures. Some objects are attached to special room-actions.
 
-= Game Room Geometry =
+# Game Room Geometry 
 
 There are 256 rooms in the game -- 4 floors of 64 rooms each. Each floor is a square grid of 8x8 rooms. Rooms are numbered from 0 
 to 255. Room 0 is the upper left of the first floor and room 255 is the lower right of the last floor. Going EAST adds 1 to the 
@@ -95,7 +89,7 @@ they all share the same room description and they all have full connectivity to 
 and exit to the maze. Note that all the rooms on the 4th floor (except the treasure room) are a "maze of tunnels" even though the first 5 rows 
 are not laid out like the maze.
 
-= Jumps =
+# Jumps 
 
 There are 24 places in the dungeon where you can jump. The map shows these jump locations and where they go. The map also shows landing 
 points for jumps so you can quickly reference back to the starting room. For instance, "j:102" in room 38 means that you can jump into 
@@ -151,7 +145,7 @@ requires a dexterity of 128 and if you fail you "fumble" an object. All of these
 They are same every game. The last jump in the table is dynamically assigned to the room with the "SMALL PIT IN THE CORNER". 
 If this jump is placed in a room that already has a jump then it is never seen.
 
-= Passage Actions =
+# Passage Actions 
 
 There are several passages that have action triggers associated with them. You can see these triggers as letters on the passage 
 lines between the rooms. The same triggers are used for multiple passages. Like the passage configurations and the jumps, these 
@@ -186,7 +180,7 @@ along with the other randomizable things. Also note that action A is applied to 
 But action A specifically checks to see that it is used in an up/down passage or nothing happens. Perhaps these were randomized 
 once and then "locked down" in the code.
 
-= Enter-Room Actions =
+# Enter-Room Actions 
 
 There are 36 rooms that are given random "enter actions" at the start of the game. There are only 28 different actions - some are
 used multiple times. The first 30 action are placed at random. The "room with the music" is also placed at random. The other 5 are fixed.
@@ -284,7 +278,7 @@ The actions themselves are described below:
 ;      pendant to a random room and move us to (or near) the start.
 }}}
 
-= Objects =
+# Objects 
 
 There are 40 objects in the game. 16 of those are treasures. 8 objects are "protected", which requires you to have a combination 
 of other objects in your pack in order to pick them up. Once you have released a protected object it remains unprotected the rest 
@@ -427,7 +421,7 @@ JEWLBOX - If you open the JEWLBOX in room 158 (the Minotaur's lair) the Minotaur
 
 DRAPES - If you OPEN DRAPES in room 9 there is a 1 in 4 chance of opening the passage to the south. You only get one chance at this.
 
-= Protected Objects =
+# Protected Objects 
 
 Object marked with a "*" in the table above are protected. You must have a specific set of objects in your pack in order to GET these 
 objects. You can have other objects in your pack too, but you must have all of the combo objects. Once you have freed a protected object 
@@ -516,7 +510,7 @@ For instance, to get the POWERRING you might only need to have learned BELROG. O
 The Oracle will tell you (one object at a time) the required objects for each protected item except the SPELLBOOK. You get the combination 
 for the SPELLBOOK by "LOOK POOL" in room 0.
 
-= Spells =
+# Spells 
 
 The "AIR IS CRACKLING WITH ENCHANTMENT" if you enter a room with a spell (or multiple spells). If you have the right item in your backpack 
 you will automatically learn the spell. You have to learn the spells in order. You have to have the MUSHROOM and the FOOD to learn VETAR. 
@@ -579,7 +573,7 @@ back. If you take a step, VETAR won't work.
 ISHTAR moves you to the exit room. At the beginning of the game the number of uses is randomized from 1 to 4. The room with the oil 
 in it (to refill the URN or LAMP) will not appear until you know ISHTAR.
 
-= Creatures =
+# Creatures 
 
 There are six "real" creatures in the game that move around and attack you. The Oracle moves like a creature but gives you advice if 
 you ASK ORACLE. Once the oracle gives advice it moves to a random room in the dungeon and continues walking around. The ORACLE starts 
@@ -610,7 +604,7 @@ just like the protected objects in order for the KILL to take them down. If you 
 Like the protected objects the creatures have "possible" lists that are chosen at random at the start of the game. The oracle will 
 tell you what the combinations are.
 
-== Sprite ==
+## Sprite 
 
 The SPRITE starts in a random room on the 1st two floors (not the maze). Once a minute the SPRITE moves in a random direction. It 
 may only move in a valid, unblocked direction. It may not move to the 4th floor except for the treasure room.
@@ -631,7 +625,7 @@ In order to KILL SPRITE, you must have one of the following combinations of obje
 1D8C: 43 3A FF        ;   DAGGER, AKHIROM
 }}}
 
-== Troglodyte ==
+## Troglodyte 
 
 The TROGLODYTE starts in a random room on the 3rd floor (not the maze). Once a minute the TROGLODYTE moves in a random direction. It may 
 only move in a valid, unblocked direction. It may not move to the 4th floor.
@@ -646,7 +640,7 @@ is low. Try to take it on there!
 1D55: 43 07 3B FF     ;   DAGGER, SHIELD, NERGAL
 }}}
 
-== Scorpion ==
+## Scorpion 
 
 The SCORPION starts in a random room on the 2nd or 3rd floor (not the maze). Once a minute the SCORPTION moves in a random direction. It 
 does not check for passages or blocks. It may move to any floor.
@@ -664,7 +658,7 @@ In order to KILL SCORPION, you must have one of the following combination of obj
 1D78: 51 2A FF        ;   TALISMAN, POWERRING
 }}}
 
-== Nymph ==
+## Nymph 
 
 The NYMPH starts in a random room on the 2nd floor (not the maze). Once a minute the NYMPH moves in a random direction. It may only move 
 in a valid, unblocked direction. It may move to any floor.
@@ -679,7 +673,7 @@ In order to KILL NYMPH, you must have one of the following combination of object
 1D82: 48 39 FF        ;   FLUTE, OKKAN
 }}}
 
-== Satyr ==
+## Satyr 
 
 The SATYR starts in a random room on the 3rd floor (not the maze). Once a minute the SATYR moves in a random direction. It may only 
 move in a valid, unblocked direction. It may not move to the 1st floor.
@@ -694,7 +688,7 @@ In order to KILL SATYR, you must have one of the following combination of object
 1D61: 23 77 FF        ;   SPELLBOOK, VETAR
 }}}
 
-== Minotaur ==
+## Minotaur 
 
 The MINOTAUR starts in a random room on the 3rd floor (not the maze). Once a minute the MINOTAUR moves in a random direction. It may 
 only move in a valid, unblocked direction. It may not move to the 1st floor.
@@ -710,7 +704,7 @@ In order to KILL MINOTAUR you must have one of the following combinations of obj
 1D6E: 45 3B FF        ;   AX, NERGAL
 }}}
 
-= Healing =
+# Healing 
 
 EAT FOOD adds 30. Food moves to random room.
 
@@ -722,7 +716,7 @@ DRINK WATER adds 32 (must wait 16 minutes before drinking again).
 
 Entering room with aura adds 40 (must wait 10 minutes before it will heal again). You are moved to a nearby room.
 
-= Getting Treasures =
+# Getting Treasures 
 
 There are 16 treasure objects you must get to the ground in room 202: GOLD, SILVER, DIAMNOD, SPELLBOOK, RUBY, FLEECE, TIARA, POWDER, 
 AMULET, POTION, POWERRING, LIGHTRIGHT, TRUTHRING, CROWN, OPAL, and SAPPHIRE. These are the last 16 objects in the object table above.
@@ -769,7 +763,7 @@ must be 250 or better. You'll probably have to drop everything before you can op
 There is a crypt in room 102. If you OPEN CRYPT in this room then the object will fall out. If you have the POWERRING you will 
 automatically open it. Otherwise your physical condition minus your pack-bulk must be 250 or better.
 
-= Corrections =
+# Corrections 
 
 Thanks to Joe Hagan for pointing out some mistakes in the original disassembly (now corrected here and in the code). 
 The original comments at 09C5 said the Sprite can't move to the treasure room, but it can. The original comments at 1125 
@@ -785,10 +779,10 @@ in the emulator.
 
 Thanks again, Joe.
 
-= The Save-Game Viewer =
+# The Save-Game Viewer 
 
 The map and info at the end of this write-up was created by my save-game viewer. Download the code JAR from the "Tools" page on my site 
-to your machine and play the game online using the signed-version of the [http://members.cox.net/javacoco/signedmocha.html online Mocha emulator]. 
+to your machine and play the game online using the signed-version of the [online Mocha emulator](http://members.cox.net/javacoco/signedmocha.html ). 
 The signed version will allow you to save your game to your local machine.
 
 In the emulator's "SETUP" click on "MOUNT LOCAL". When you save your game you will be prompted for a local CAS file. 
@@ -800,7 +794,7 @@ To run the save-game viewer, enter the following command:
 java -classpath TOOLS.JAR ca.madness.SaveGameViewer NAME.CAS
 Where "NAME.CAS" is the name of your saved game.
 
-= ZCode Translation (for iPod) = ZCode
+# ZCode Translation (for iPod)
 
 I started working on translating the original source into ZCode for play with Frotz. Frotz is an interpreter for Infocom games 
 and other Z-machine games. It compiles for many platforms including Windows and the iPod. You can download Frotz from the 
@@ -811,19 +805,19 @@ I abandoned the effort when I realized that JavaScript on a web-site (or in Node
 Here is the ZCode as far as I got. Currently you can explore the game's rooms through their natural passages (no jumps). 
 The spells, objects, and creatures are placed. The "protected" lists work. You can learn spells and score points. 
 
- * [madness.inf madness.inf (top)]
- * [MadGameLoop.inf MadGameLoop.inf (main game flow)]
- * [MadRooms.inf MadRooms.inf (rooms)]
- * [MadRoomActions.inf MadRoomActions.inf (room actions)]
- * [MadPassages.inf MadPassages.inf (passage actions)]
- * [MadItems.inf MadItems.inf (items)]
- * [MadSpells.inf MadSpells.inf (spells)]
- * [MadBlocks.inf MadBlocks.inf (blockages)]
- * [MadBanner.inf MadBanner.inf (tape-banner)]
- * [MadDebug.inf MadDebug.inf (debug functions)]
- * [Madness.z5 Madness.z5 (playable zcode)]
+ * [madness.inf](madness.inf) (top)
+ * [MadGameLoop.inf](MadGameLoop.inf) (main game flow)
+ * [MadRooms.inf](MadRooms.inf) (rooms)
+ * [MadRoomActions.inf](MadRoomActions.inf) (room actions)
+ * [MadPassages.inf](MadPassages.inf) (passage actions)
+ * [MadItems.inf](MadItems.inf) (items)
+ * [MadSpells.inf](MadSpells.inf) (spells)
+ * [MadBlocks.inf](MadBlocks.inf) (blockages)
+ * [MadBanner.inf](MadBanner.inf) (tape-banner)
+ * [MadDebug.inf](MadDebug.inf) (debug functions)
+ * [Madness.z5](Madness.z5) (playable zcode)
 
-= Cheats =
+# Cheats 
 
 You type "CLOADM" to load the game. Then you type "EXEC" to run the game. Between these commands you can make patches to the 
 code with BASIC POKE commands. Here are some useful cheats:
@@ -905,14 +899,14 @@ Then you make 6 pokes to tie the system to the game's commands. As shown in the 
 703F: 39       RTS               ; Done
 }}}
 
-Here is the virtual COCO tape that contains the debug system: [inst.cas inst.cas].
+Here is the virtual COCO tape that contains the debug system: [inst.cas](inst.cas).
 
-= Walkthrough of my Game =
+# Walkthrough of my Game 
 
 This is the description of my game experience played using the saved-game info below. 
 You can duplicate my steps with my FIRST.CAS file.
 
-== TASK 1: LEARN VETAR == 1. Learn VETAR
+## TASK 1: LEARN VETAR 
 
 {{{
 SOUTH         ; This is room with music where SPRITE can't go
@@ -945,9 +939,9 @@ DROP FOOD
 DROP MUSHROOM
 DROP GOLD
 }}}
-[s_one.cas s_one.cas]
+[s_one.cas](s_one.cas)
 
-== TASK 2: LEARN MITRA == 2. Learn MITRA
+## TASK 2: LEARN MITRA 
 
 {{{
 NORTH EAST EAST SOUTH SOUTH SOUTH WEST
@@ -968,9 +962,9 @@ DOWN NORTH NORTH EAST
 NORTH WEST UP SOUTH EAST EAST SOUTH
 DROP PARCHMENT
 }}}
-[s_two.cas s_two.cas]
+[s_two.cas](s_two.cas)
 
-== TASK 3: LEARN OKKAN == 3. Learn OKKAN
+## TASK 3: LEARN OKKAN 
 
 {{{
 NORTH EAST EAST SOUTH SOUTH SOUTH WEST
@@ -987,9 +981,9 @@ UP EAST EAST SOUTH EAST NORTH NORTH NORTH WEST WEST SOUTH
 
 DROP TALISMAN
 }}}
-[s_three.cas s_three.cas]
+[s_three.cas](s_three.cas)
 
-== TASK 4: Get the SWORD and SHIELD == 4. SWORD and SHIELD
+## TASK 4: Get the SWORD and SHIELD 
 
 {{{
 GET PARCHMENT
@@ -1006,9 +1000,9 @@ NORTH NORTH EAST EAST EAST
 
 GET SHIELD
 }}}
-[s_four.cas s_four.cas]
+[s_four.cas](s_four.cas)
 
-== TASK 5: Get the ROPE and learn AKHIROM == 5. ROPE and AKHIROM
+## TASK 5: Get the ROPE and learn AKHIROM
 
 {{{
 WEST WEST WEST SOUTH SOUTH
@@ -1030,9 +1024,9 @@ NORTH         ; Now know AKHIROM
 SOUTH WEST WEST WEST NORTH NORTH NORTH NORTH UP SOUTH EAST EAST SOUTH
 DROP ROPE
 }}}
-[s_five.cas s_five.cas]
+[s_five.cas](s_five.cas)
 
-== TASK 6: Get the SCEPTER and learn NERGAL == 6. SCEPTER and NERGAL
+## TASK 6: Get the SCEPTER and learn NERGAL 
 
 {{{
 NORTH EAST EAST SOUTH SOUTH SOUTH WEST
@@ -1064,9 +1058,9 @@ JUMP PIT      ; Jumping into the treasure room
 DOWN
 SOUTH
 }}}
-[s_six.cas s_six.cas]
+[s_six.cas](s_six.cas)
 
-== TASK 7: Get VIAL, BELROG, and CROM == 7. VIAL, BELROG, CROM
+## TASK 7: Get VIAL, BELROG, and CROM 
 
 {{{
 GET MUSHROOM
@@ -1105,17 +1099,17 @@ DROP PENDANT
 JUMP PIT
 DOWN SOUTH
 }}}
-[s_seven.cas s_seven.cas]
+[s_seven.cas](s_seven.cas)
 
-== TASK 8: Learn ISHTAR == 8. ISHTAR
+## TASK 8: Learn ISHTAR
 
 TO BE DONE
 
-= Save-Game Analysis =
+# Save-Game Analysis 
 
 Save-game analysis for 'first.cas' 
 
-== Map ==
+## Map 
 
 {{{html
 <pre>
@@ -1526,7 +1520,7 @@ Floor 4
 
 }}}                                                                                                                                                                                                                   
                                                                                                                                                                                                                    
-== Configuration ==                                                                                                                                                                                                               
+## Configuration                                                                                                                                                                                                               
                                                                                                                                                                                                                    
 {{{
 ***** Object Data *****

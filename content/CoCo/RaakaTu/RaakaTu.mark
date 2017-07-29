@@ -1,18 +1,19 @@
-%%title= Raaka Tu
-%%image=RaakaTu.jpg
+%%title = Raaka Tu
+%%image =RaakaTu.jpg
 
 {{{html
 <div class="playMe">
-<div style="padding-left: 20px;height: 368px;">
+<div>
 <script src="/CoCo/RaakaTu/BinaryDataRaakaTu.js"></script>
 <script src="/js/6809.js"></script>
 <script src="/CoCo/CoCoText.js"></script>
 <script src="/CoCo/RaakaTu/raakatu.js"></script>
 <script>window.onload = function() {startRaakaTu("raakatuConsole");}</script>
-
-<h1>Play Me!</h1>
+}}}
+#Play Me!</h1>
 Play the game in a CoCo emulator. Click on the green console and start typing.<br>
 
+{{{html
 <textarea readonly id="raakatuConsole" rows="16" style="background-color: #00FF01; color: black;font-family: monospace;font-size:12px;width:33ch;float: left;margin-top:8px"></textarea>
 
 <table class="caTable" style="float: left;margin-left:8px;margin-top:8px;">
@@ -30,12 +31,12 @@ Play the game in a CoCo emulator. Click on the green console and start typing.<b
 }}}
 
 
-= Code Links =
+# Code Links 
 
-* [Code.html Disassembled Code]
-* [RAMUse.html RAM Usage]
+* [Disassembled Code](Code.html)
+* [RAM Usage](RAMUse.html)
 
-= The Temple of Raaka-Tu =
+# The Temple of Raaka-Tu
 
 This morning looks like a good one to start exploring the area. After breakfast, you're planning to set out on foot, 
 perhaps talk to a few natives for any information they might give you, and hire a guide. As you sip your coffee and scan 
@@ -46,49 +47,43 @@ and wearing a headdress.
 
 - From the game manual introduction
 
-{{{html
-<div class="tourGuide">
-<div style="padding-left: 20px">
-}}}
-= Tour Guide =
+{{{tourGuide
+# Tour Guide 
 
-The code is practically a virtual-machine for the game written in adventure-language. The [Code.html#MainLoop Main Loop] decodes the complex
+The code is practically a virtual-machine for the game written in adventure-language. The [Main Loop](Code.html#MainLoop) decodes the complex
 user input with nouns, verbs, and prepositions.
 
-Have a look at the [Code.html#ProcessCommand Adventure Language Processor] and all its complex commands.
+Have a look at the [Adventure Language Processor](Code.html#ProcessCommand) and all its complex commands.
 
-Have a look at the [Code.html#PhraseList Phrase List] that describes the forms of all known input lines.
+Have a look at the [Phrase List](Code.html#PhraseList) that describes the forms of all known input lines.
 
-In Raaka-Tu, the rooms are objects with descriptions and commands combined. Visit all the [Code.html#RoomDescriptions Room Definitions]
+In Raaka-Tu, the rooms are objects with descriptions and commands combined. Visit all the [Room Definitions](Code.html#RoomDescriptions)
 for a blast from the past.
 
 There are lots of game objects -- normal things like "rugs" and "rings" and "guards". They all can have complex code scripts
-and may move around on their own (like the "guards" and the "serpent"). Have a look at the [Code.html#ObjectData Objects and their scripts].
+and may move around on their own (like the "guards" and the "serpent"). Have a look at the [Objects and their scripts](Code.html#ObjectData).
 
-Have a look at the [Code.html#GeneralCommands General Command Script] that processes commands not handled by the current room.
+Have a look at the [General Command Script](Code.html#GeneralCommands) that processes commands not handled by the current room.
 
-Look through the game's [Code.html#InputWordTables list of all known words].
+Look through the game's [list of all known words](Code.html#InputWordTables).
 
-{{{html
-</div>
-</div>
 }}}
 
-= References =
+# References
 
 If you seek specific game information, solutions, and online emulators then check out Sean Murphy's wonderful site.[[br]]
 Solutions and info on Pyramid 2000, Raaka-Tu, and Bedlam:[[br]]
-[http://www.figmentfly.com]
+[http://www.figmentfly.com](http://www.figmentfly.com)
 
-= The Evolution of the Engine = 
+# The Evolution of the Engine 
 
 I will follow Arnstein's adventure language and interpreter as it evolved from Pyramid 2000 to Raaka-Tu and finally to Bedlam. Be sure to 
 visit those pages as well:
-* [/CoCo/Pyramid Pyramid 2000]
+* [Pyramid 2000](/CoCo/Pyramid)
 * Raaka Tu
-* [/CoCo/Bedlam Bedlam]
+* [Bedlam](/CoCo/Bedlam)
 
-== User Input Structure ==
+## User Input Structure 
 
 Two years later in 1981, Arnstein's adventure engine has evolved considerably. The syntax for a user input line is 
 VERB NOUN PREPOSITION NOUN as in "LIGHT CANDLE WITH LAMP". Error messages now indicate which word of the line 
@@ -102,7 +97,7 @@ The raakatu engine always passes the user input to a single user-input script. I
 the user script is always executed at the first command. It is up to the script to do IF/ELSE tests on the individual 
 phrase forms. The adventure now includes a SWITCH/CASE structures for this very reason.
 
-== Game Objects ==
+## Game Objects 
 
 The game objects have evolved considerably. They have become real "objects" in the programming sense. Within each is a 
 list of optional fields identified by a number and a size. Field "2" is the short name of the object. Field "9" is 
@@ -118,7 +113,7 @@ There is a player object to represent the human player. The field "10" (upon dea
 the game for another go. The field "6" (between turns) heals the player 5 points. Having a player object was a stroke 
 of genius allowing all the objects to interact with the player as they would each other.
 
-== Adventure Commands ==
+## Adventure Commands 
 
 The adventure language contains a much richer set of 38 commands. There is a "variable object" used as a 
 temporary in script processing. One script command sets this variable object to a desired object by number. 
@@ -159,9 +154,9 @@ be "EAT SERPENT". The second (executed if the assertion passes) prints "I'VE LOS
 The adventure language supports "helper" scripts. These are essentially script subroutines that are called from 
 other scripts. They are used mainly for commonly printed messages.
 
-= Raaka-Tu Implementation =
+# Raaka-Tu Implementation 
 
-== Carved Wooden Door ==
+## Carved Wooden Door
 
 One of my deepest frustrations in Raaka-Tu was never figuring out how to cross 
 the rug-covered pit to the carved wooden door.
@@ -251,7 +246,7 @@ Notice the "??" phrases. These were removed from the game as part of the strip-d
 were removed (and the words that make them up), but the checks were left in the game logic. I need to disassemble 
 the TRS80 version to see what the phrases were.
 
-== Guards ==
+## Guards 
 
 The guards in RaakaTu are really the first complex object you encounter in Arnstein's games. In 
 Pyramid there was a serpent that "barred the way". It is little more than a door you have to figure 

@@ -1,4 +1,14 @@
-%%title= Atari 2600 Combat
-%%image=A2600Combat.jpg
+%%title = Atari 2600 Combat
+%%image = A2600Combat.jpg
 
-[Code.html Code]
+[Code](Code.html)
+
+{{{playMe
+
+# Play Me!
+
+It might take a few seconds for the ROM to load, but play Atari2600 Combat here:
+
+[http://javatari.org&ROM=Combat](http://javatari.org?ROM=https://github.com/topherCantrell/computerarcheology/blob/master/content/Atari2600/Combat/Combat.bin?raw=true`playMe`)
+
+}}}

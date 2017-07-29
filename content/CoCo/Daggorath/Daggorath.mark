@@ -1,30 +1,24 @@
-%%title= Dungeons of Daggorath
-%%image=Daggorath.jpg
+%%title = Dungeons of Daggorath
+%%image = Daggorath.jpg
 
-= Code Links =
+# Code Links
 
-* [Code.html Disassembled Code]
-* [RAMUse.html RAM Usage]
+* [Disassembled Code](Code.html)
+* [RAM Usage](RAMUse.html)
 
-{{{html
-<div class="tourGuide">
-<div style="padding-left: 20px">
+{{{tourGuide
+
+# Tour Guide
+
 }}}
 
-= Tour Guide =
+# Strategy
 
-{{{html
-</div>
-</div>
-}}}
-
-= Strategy =
-
-== Overview ==
+## Overview
 
 I like to beat the game in a long-and-drawn-out session that spans several days:
 
-== Level 1: (15 or 20 minutes) ==
+## Level 1: (15 or 20 minutes) 
 * Kill most everything on the 1st level
 * Use pine torches as needed
 * Kill 2 Blobs (Iron Sword and Fire Ring), 4 Giants (Lunar and Pine torches), and lots of snakes (Wooden Sword and Leather Shield)
@@ -41,7 +35,7 @@ T A, M, T R, M, P L TO, U L, P R SW, T L, M M M, T L, M M M M M M M, T R
 
 The door you see down the hall on the left is your guide. When you climb down, this is the direction you want to face.
 
-== Level 2: (15 Minutes, Wait an hour, 15 Minutes, then Wait Overnight) ==
+## Level 2: (15 Minutes, Wait an hour, 15 Minutes, then Wait Overnight)
 * Make your way all the way down the hall, turn right, and move straight to the hole in the bottom-left corner of this level.
 * Get a Bronze shield in your hand and sit on a low power creature.
 * Pull your Lunar Torch into an empty hand to put it out while you wait for an hour or so.
@@ -54,7 +48,7 @@ It takes 2.5 hours to create all 32 possible random creatures. Pull your torch a
 power creature. This will ensure all the other creatures lock on to you. Then kill them all. THEN pull your torch
 and wait over night.
 
-== Level 3: (30 Minutes) ==
+## Level 3: (30 Minutes)
 * Unload all your bait. Watch carefully for the scorpions, which are difficult to see under LUNAR light.
 * Kill, kill, kill. Accumulate bait.
 * Get the SOLAR torch lit when you can (this lets you spot the scorpions).
@@ -65,7 +59,7 @@ and wait over night.
 * Move all the way up the hall, turn right, move twice, turn right, move twice, turn around.
 * Climb up.
 
-== Repeat Level 2: (As many times as you want) ==
+## Repeat Level 2: (As many times as you want)
 * This is the WHITE level.
 * Go back to the bottom left corner.
 * Drop all bait.
@@ -81,12 +75,9 @@ The Level 2 (white level) is a particularly good level to build strength. In the
 two long halls to attract creatures. When you finally get to Level 4 you'll want to be as powerful as 
 possible since you'll have no bait objects.
 
-== Level 3 Last Time (15 Minutes) ==
+## Level 3 Last Time (15 Minutes)
 
-
-
-
-= Graphics =
+# Graphics
 
 All the pictures are drawn in the upper 80% of the screen. This area is 256x152 pixels.
 

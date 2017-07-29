@@ -44,6 +44,8 @@ html,
 #pageImage {
 	height: 90px;
 	padding-left:40px;
+	margin-top:4px;
+	margin-bottom:4px;
 }
 
 #siteTree, #siteTree ul, #siteTree li {
@@ -99,15 +101,71 @@ html,
 }
 
 .playMe {
-	border: 1px solid;
-    border-radius: 10px;
-    background-color: #dff0d8;
+	background-color: #dff0d8;
 }
 
-.playMe div {
+.tourGuide {
+	 background-color: #adc9f7;
+}
+
+.playMe, .tourGuide {
+	border: 1px solid;
+    border-radius: 10px;    
+}
+
+.playMe div, .tourGuide div {
 	padding-left: 20px;
 }
 
+.playMe h2, .tourGuide h2 {
+	margin-top:8px;
+}
 
+.codePreStyle {
+	background-color: #FFFFFF;
+	border: 0px solid;
+}
+
+.cocoScreen {
+	background: #00FF01; 
+	color: #000; 
+	font-family: 'Courier New', Courier, monospace; 
+	font-size: 12px; 
+	width: 32ch;
+}
+
+.addr_code {
+	color: #337ab7;
+	font-weight: bold;
+}
+
+.addr_ram {
+	color: #00C000;
+	font-weight: bold;
+}
+
+.addr_hard {
+	color: #00C0C0;
+	font-weight: bold;
+}
+
+.page-header {
+	margin-top: 0px;
+}
+
+.pageNav_visual {
+	color: green;
+}
+
+.block_plainCode {
+	background-color: #FFFFFF;
+	border: 0px solid;
+}
+
+.navSeparator {
+	margin: 4px;
+	border-color: #505050;
+	width: 50%;
+}
 
 

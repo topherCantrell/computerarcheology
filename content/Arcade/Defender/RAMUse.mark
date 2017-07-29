@@ -163,43 +163,43 @@
 
 
 
-= Fixed Bank ($D000 - $FFFF) subroutines =
+# Fixed Bank ($D000 - $FFFF) subroutines 
 
-== $D013 ==
+## $D013 
 The same as the routine at $D015 except the source of the value in the X register 
 is provided at an address at 6,X with this entry point.
 
-=== Called from: === 
+### Called from:  
 Fixed ROM:  $EBF1 : $EDC1 : $F40F : $F418   
 
-== $D015 ==
+## $D015 
 
 
-=== Called from: === 
+### Called from:  
 Fixed ROM:  $D00C : $D08F : $F3D8  Bank 1 ROM:/ $C472   
 
 
-== $D03A ==
+## $D03A 
 
-=== Called from: ===
+### Called from: 
 Fixed ROM:  $D044 : $D05B : $D0B3 : $D0EF : $EDD5   
 
 
-== $D03E == 
+## $D03E  
 This is one entry point for a subroutine that fits into the address space from 
 $D03E to $D07B. The other, much more heavily used, entry point is at $D055. 
 This one is used only once. $D055 is used 42 times that I know about. The two 
 subroutines converge at address $D066 and continue to the exit point
 at $D07A.
-=== Called from: ===
+### Called from: 
 Fixed ROM:  $F2AE     
 
 
-== $D055 ==
+## $D055 
 This is the main entry point for a subroutine that fits into the address space from 
 $D03E to $D07B. The other entry point, which is only used once as far as I am aware, is at $D03E. 
 $D055 is used 42 times that I know about. The two subroutines converge at address $D066 and continue to the exit point at $D07A.
-=== Called from: ===
+### Called from: 
 Fixed ROM:  $D7AC : $D8C1 : $D94A : $D9D2 : $D9DA : $D9E2 : $D9EA : $D9F2 : $D9FA : 
 $DC23 : $E843 : $E88B : $EA85 : $EBB2 : $EDAE : $EDE5 : $EF1E : $EFAC : $F1F4 : 
 $F27E    
@@ -208,226 +208,226 @@ $C37C : $C384 : $C38C : $C394 : $C42E : $C58A : $C690 : $C698 : $C725 : $C735 :
 $C7C9 : $C7D9 : $C829 : $C861    
 
 
-== $D07C ==
+## $D07C 
 
-=== Called from: ===
+### Called from: 
 Fixed ROM:  $D86C : $D921 : $DABA : $DCF9  
 Bank 1 ROM: $C006 : $C10E : $C266 : $C351 : $C677    
 
 
-== $D095 ==
+## $D095 
 
-=== Called from: ===
+### Called from: 
 Fixed ROM:  $DBE5 : $E975 : $EA8A : $EBB7 : $EE65 : $EE73 : $EF23 : $EFB1 : $F2C1 :   
 
-== $D0AD ==
+## $D0AD 
 
-=== Called from: ===
+### Called from: 
 Fixed ROM:  $D095 : $DC77   
 Bank 1 ROM: $C397 : $C3BC : $C3E1 : $C4B5 : $C54F : $C5A1    
 
-== $D0C7 ==
+## $D0C7 
 
-=== Called from: ===
+### Called from: 
 Fixed ROM:  $F3FB : $F41D  
 Bank 1 ROM: $C47A : $C546 : $C59E    
 
-== $D0F2 ==
+## $D0F2 
 
-=== Called from: ===
+### Called from: 
 Fixed ROM:  $E526 : $E93A    
 
 
-== $D21F ==
+## $D21F 
 Looks like a subroutine on its face. I have two problems with it that make me think otherwise, however.    1) I can't find where it is ever called. It may be in a jump table that I have not yet discovered, though. 
 2) It uses the S register to pick up data in 4 byte packs, which would presumably be OK if you disabled the interrupts first. This routine does not disable the interrupts, though. However, it could be that the calling routine does this so it is unnecessary to do it here. In either case, it sounds like a recipe for disaster to me.
     
 
 
-== $D260 ==
+## $D260 
 I can't find where this is ever called from anywhere. However, it does seem to be a 
 clear routine for a structure such as the one that appears to be created by $D21F. 
 Unfortunately, I can't find where $D21F is ever called either.    
 
 
-== $F57B (ScrnBlkClrP2) ==
+## $F57B (ScrnBlkClrP2) 
 This looks like it will clear a block of screen memory, of any size with byte granularity. It sets the ROM page # to 2 for some reason that I haven't figured out yet. On completion it restores the ROM page # to its previous setting. 
-=== Entry conditions: ===
+### Entry conditions: 
   X = address to begin
   Y = pointer to size of block to clear 
     1st byte = # lines to clear 
     2nd byte = # of bytes/line to clear 
-=== Exit conditions: ===
+### Exit conditions: 
   The block is cleared
-=== Called from: ===
+### Called from: 
 Fixed ROM:  $FFB6 : $D41B : $DA81 
 Bank 3 ROM: $C533   
 
 
-== $F5C7 (ScrnBlkClr) ==
+## $F5C7 (ScrnBlkClr) 
 This subroutine will clear a block of screen memory of any size, with byte granularity. It bypasses the part of ScrnBlkClrP2 that changes the ROM page. Then it converges with ScrnBlkClrP2 at $F58C. Because it restores the ROM page #, this routine also must save the ROM page #. 
-=== Entry conditions: ===
+### Entry conditions: 
   X = address to begin
   Y = pointer to size of block to clear 
     1st byte = # lines to clear 
     2nd byte = # of bytes/line to clear 
-=== Exit conditions: ===
+### Exit conditions: 
   The block is cleared
-=== Called from: ===
+### Called from: 
 Fixed ROM:  $FFB9 : $D64D : $D66D : $D6A4 : $DA53 : $F4A5 
 Bank 1 ROM: $C15E   
 
 
-== $F5D1 (VidMemClr) ==
-=== Entry conditions: ===
+## $F5D1 (VidMemClr) 
+### Entry conditions: 
 
-=== Exit conditions: ===
+### Exit conditions: 
 
-=== Called from: ===
+### Called from: 
 Fixed ROM:  $FFBC : $D75A : $D86F : $D959 
 Bank 1 ROM: $C043 : $C26C : $C443 : $C681 
 Bank 3 ROM: $C24A : $C2C6 : $C5E6 : $C7C8 : $CA2A 
 Bank 7 ROM: $C7C8   
 
 
-== $F7DB (WriteIOPort) ==
+## $F7DB (WriteIOPort) 
 Saves current ROM page #, switches to I/O page, and writes a byte to the port # specified. Then restores the ROM page #.
-=== Entry conditions: ===
+### Entry conditions: 
   B = byte to write to port 
   X = I/O port to write 
-=== Exit conditions: ===
+### Exit conditions: 
   no change 
-=== Called from: ===  
+### Called from:   
 Bank 1 ROM: $C068 : $C06D : $C075 : $C07A  
 Bank 3 ROM: $C114 : $C224 : $C36D : $C3EF : $C4F8 : $C506 : $C5F1 : $C5F9 : 
 $C601 : $C609 : $C77C? : $C796? : $C9CB : $CA70 : $CA9E : $CAB8 : $CAC3 : $CAFF : 
 $CB13 : $CB1B    
 
-== $F7F1 (ReadIOPort) ==
+## $F7F1 (ReadIOPort) 
 Saves current ROM page #, switches to I/O page, and reads a byte from the port # specified. Then returns the ROM page # to the same as it was on entry.
-=== Entry conditions: ===
+### Entry conditions: 
   X = I/O port to read 
-=== Exit conditions: ===
+### Exit conditions: 
   B = data read from port 
-=== Called from: ===
+### Called from: 
 Bank 1 ROM: $C312 
 Bank 3 ROM: $C0EB : $C10B : $C1C6 : $C1E2 : $C322 : $C347 : $C34E : $C42F : 
 $C4C4 : $C4EE : $C55C : $C5A1 : $C5B5 : $C7FB : $C878 : $C9AC : $CA18 : $CA22 : 
 $CA76    
 
-== $F813 (SRAMRead) ==
+## $F813 (SRAMRead) 
 Performs the actual reading of the nybbles out of the SRAM.
-=== Entry conditions: === 
+### Entry conditions:  
   X = the memory location to be read 
-=== Exit conditions: ===
+### Exit conditions: 
   A = the contents of the ,X and the 1,X. They are each only 4 bits wide and thus are packed into a single byte in the A register. ,X is the MSNybble and 1,X is the LSNybble. 
   X = memory location + 2.
 
 See $F822    
 
-== $F822 (RdSRAMbyte) ==
+## $F822 (RdSRAMbyte) 
   Saves the contents of the $Cxxx page before switching to the 0, or I/O, page, calls $F813, and then restores the previous contents of the $Cxxx page. $F813 is not called from any other location so, if one wanted to speed things up just a bit, it could be incorporated into this subroutine.
-=== Entry conditions: ===
+### Entry conditions: 
   X = the address of the first of the two memory locations to be read
-=== Exit conditions: ===
+### Exit conditions: 
   A = the contents of the ,X and the 1,X. They are each only 4 bits wide and thus are packed into a single byte in the A register. ,X is the MSNybble and 1,X is the LSNybble.  
   X = memory location + 2.
 
-=== Called from: ===
+### Called from: 
 Fixed ROM:  $D82B : $D88B : $DE83 : $F838 : $F83C : $FFA1  
 Bank 1 ROM: $C151 : $C332  
 Bank 3 ROM: $C8DD : $C951 : $C973 : $C991    
 
-== $F838 (SRAMWordRd) ==
-=== Entry conditions: ===
+## $F838 (SRAMWordRd) 
+### Entry conditions: 
   X = the address of the first of the two memory locations to be read
-=== Exit conditions: ===
+### Exit conditions: 
   D = the contents of the ,X , 1,X, 2,X and 3,X. They are each only 4 bits wide and thus are packed into a single word in the D register. As with the 8 bit variation the MSNybble is first followed by decreasingly significant digits.   
   X = memory location + 4.
-=== Called from: ===
+### Called from: 
 Fixed ROM:  $D8A4 : $DEC5 : $FFA7 
 Bank 1 ROM: $C149 : $C1C7 : $C32D 
 Bank 3 ROM: $C937 : $C963    
 
-== $F83A (SRAMByteRd) ==
-=== Entry conditions: ===
+## $F83A (SRAMByteRd) 
+### Entry conditions: 
   X = the address of the first of the two memory locations to be read
-=== Exit conditions: ===
+### Exit conditions: 
   B = the contents of the ,X and the 1,X. They are each only 4 bits wide and thus are packed into a single byte in the B register. ,X is the MSNybble and 1,X is the LSNybble.  
   X = memory location + 2.
 
-=== Called from: ===
+### Called from: 
 Fixed ROM:  $D775 : $FFA4 
 Bank 3 ROM: $C101 : $C11A : $C835 : $C8C8 : $CBF2 : $CBF7 : $CC38 : $CC4E : 
 $CC5E : $CC6C     
 
-== $F842 (SRAMWrite) ==
+## $F842 (SRAMWrite) 
 Performs the actual writing into the SRAM.
-=== Entry conditions: ===
+### Entry conditions: 
   A = byte to be written into 2 nybbles of SRAM. 
   X = address of first, most signigicant nybble. 
-=== Exit conditions: ===
+### Exit conditions: 
   The byte is written into 2 nybbles in the SRAM
 
 See $F84E    
 
-== $F84E (WrSRAMbyte) ==
-=== Entry conditions: ===
+## $F84E (WrSRAMbyte) 
+### Entry conditions: 
 
-=== Called from: ===
+### Called from: 
 Fixed ROM:  $D8D0 : $F864 : $F86A : $FFAA 
 Bank 1 ROM: $C1B1 : $C1B9 
 Bank 3 ROM: $C120 : $C95B : $CBB5 : $CBC8 : $CC1B : $CCCE   
 
-== $F864 (SRAMWordWr) ==
-=== Entry conditions: ===
+## $F864 (SRAMWordWr) 
+### Entry conditions: 
 
-=== Called from: ===
+### Called from: 
 Fixed ROM:  $FFB0 
 Bank 1 ROM: $C1AC : $C1CC 
 Bank 3 ROM: $C94E? : $CC08   
 
-== $F866 (SRAMByteWr) ==
-=== Entry conditions: ===
+## $F866 (SRAMByteWr) 
+### Entry conditions: 
 
-=== Called from: ===
+### Called from: 
 Fixed ROM:  $FFAD 
 Bank 3 ROM: $C84B : $C854 : $CB9C   
 
 
-== $FC60 (see $FC60)== 
+## $FC60 (see $FC60) 
 This routine consists of a single instruction: JMP  $FC69  Further discussion will be found in the $FC69 subroutine entry.    
 
 
-== $FC63 (see $FCCC)==
+## $FC63 (see $FCCC)
 This routine consists of a single instruction: JMP  $FCCC  Further discussion will be found in the $FCCC subroutine entry.    
 
 
-== $FC66 (see $FD2D)==
+## $FC66 (see $FD2D)
 This routine consists of a single instruction: JMP  $FD2D  Further discussion will be found in the $FD2D subroutine entry.    
 
 
 
-== $FC69 ==
+## $FC69 
 All known calls to this routine are made via a jump to $FC60.
 The reasoning behind this remains a mystery to me.
 
-=== Called from: === 
+### Called from:  
 Fixed ROM:  $E9A1 : $EAB1 : $EB6C : $EF5D : $EFE6[[br]]
 Bank 1 ROM: $C404 : $C574 : $C5BC : $C79B   
 
 
 
-== $FCCC ==
+## $FCCC 
 All known calls to this rountine are made via a jump to $FC63.
 
-=== Called from: === 
+### Called from:  
 Fixed ROM:  $E541 : $EC08 : $EE88 : $EE20 : $F438
 
 
 
-== $FD2D ==
+## $FD2D 
 All known calls to this rountine are made via a jump to $FC66.
 
-=== Called from: === 
+### Called from:  
 Fixed ROM:  $E823 

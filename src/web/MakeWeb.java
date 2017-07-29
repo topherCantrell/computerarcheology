@@ -5,34 +5,93 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import files.FU;
+import util.FU;
 
 public class MakeWeb {
 	
 	public static void main(String [] args) throws Exception {
 		
-		// Load the site layout
-		SiteInfo si = new SiteInfo();
+		SiteInfo info = new SiteInfo("content/site.js");
 		
 		// Recursively delete the deploy directory
-		File dep = new File(si.deployRoot.toString());
+		File dep = new File(info.deployRoot.toString());
 		if(dep.exists()) {
 			FU.deleteRecursive(dep);
 		}
 				
 		// Create the empty deploy directory		
-		dep.mkdir();		        
+		dep.mkdir();		   
 		
-		// Process all the entries	
+		// Process all the entries (recursively)
 		List<SiteInfoEntry> nodes = new ArrayList<SiteInfoEntry>();
-		nodes.add(si.root);		
-		processEntries(si.contentRoot.toString(),si.root,nodes,si.deployRoot.toString(),si.contentRoot.toString());
+		nodes.add(info.root);		
 		
-		System.out.println("\nDONE");
+		String siteNav = MakeWeb.getSiteNav(info.root, nodes, null);
+		//System.out.println(siteNav);
+		
+		processEntries(siteNav,
+				info.contentRoot.toString(),
+				info.root,
+				nodes,
+				info.deployRoot.toString(),
+				info.contentRoot.toString()); // The directory is the root directory
+
+	}
+	
+	// A separator list item in the site tree
+	private static String makeSeparator() {
+		return "<li><hr class='navSeparator'></li>";
+	}
+	
+	// A navigation list item in the site tree (leaves the tag open in case
+	// there are children to add.
+	private static String makeNav(String link, String nav) {
+		return "<li><a href='" + link + "'>" + nav + "</a>";		
+	}
+
+	private static String getSiteNav(SiteInfoEntry desc, List<SiteInfoEntry> nodes, SiteInfoEntry activeNode) {
+		// Add a quick link back to the site's landing page
+		String a = MakeWeb.makeNav("/", "Home") + "</li>\n";
+		// Run the tree of information and generate an HTML nested list of links
+		return a + MakeWeb.getSiteNavRecurse(desc,  "/");
+	}
+	
+	private static String getSiteNavRecurse(SiteInfoEntry root, String link) {
+		
+		String ret = "";
+		
+		for(SiteInfoEntry ent : root.entries) {
+			
+			if(ent.command.equals("separator")) {
+				ret = ret + MakeWeb.makeSeparator();
+				continue;
+			}			
+			
+			if(ent.command.equals("dir")) {
+				if(ent.nav!=null) {					
+					ret = ret + MakeWeb.makeNav(link+ent.arg+"/", ent.nav);
+					ret = ret + "\n<ul>\n";					
+					ret = ret + MakeWeb.getSiteNavRecurse(ent, link+ent.arg+"/");
+					ret = ret + "</ul>\n</li>\n";
+				}
+			} else if(ent.nav!=null) {
+				ret = ret + MakeWeb.makeNav(link+ent.out, ent.nav);
+				ret = ret + "</li>\n";
+			}
+			
+		}
+		
+		return ret;		
 		
 	}
-			
-	private static Object[] getBreadCrumbs(List<SiteInfoEntry> nodes) {
+	
+	/** 
+	 * Get the list of breadcrumbs for the banner navigation. This shows the path
+	 * to the currently open directory of the site.
+	 * @param nodes the list of site info nodes (in order of traversal)
+	 * @return the HTML list for the nav bar
+	 */
+    private static String getBreadCrumbs(List<SiteInfoEntry> nodes) {
 		
 		// Don't include the last node if it has no navigation
 		int end = nodes.size()-1;
@@ -40,7 +99,6 @@ public class MakeWeb {
 			end = end - 1;
 		}		
 		
-		SiteInfoEntry activeNode = null;
 		String crumbs = "";
 		
 		if(end>0) {
@@ -59,7 +117,6 @@ public class MakeWeb {
 			SiteInfoEntry si = nodes.get(x);
 			boolean active = false;
 			if(x==end) {
-				activeNode = si;
 				active = true;
 			}
 			String nav = si.nav;
@@ -70,10 +127,16 @@ public class MakeWeb {
 			crumbs = crumbs + MakeWeb.makeCrumb(link, nav, active);
 		}		
 				
-		Object[] ret = {crumbs, activeNode};
-		return ret;
+		return crumbs;
 	}
 	
+    /**
+     * Make a list item for the navigation -- either a link or a span
+     * @param link the href of the anchor
+     * @param nav the text of the item
+     * @param active true if this is the last item in the list
+     * @return the HTML list item
+     */
 	private static String makeCrumb(String link, String nav, boolean active) {
 		if(active) {
 	        return "<li><span>" + nav + "</span></li>";
@@ -82,53 +145,20 @@ public class MakeWeb {
 		}
 	}
 	
-	private static String makeSeparator() {
-		return "<li><hr class='navSeparator'></li>";
-	}
-	
-	private static String makeNav(String link, String nav) {
-		return "<li><a href='" + link + "'>" + nav + "</a>";		
-	}
-
-	private static String getSiteNav(SiteInfoEntry desc, List<SiteInfoEntry> nodes, SiteInfoEntry activeNode) {
-		String a = MakeWeb.makeNav("/", "Home") + "</li>\n";
-		return a + MakeWeb.getSiteNavRecurse(desc, nodes, "/");
-	}
-	
-	private static String getSiteNavRecurse(SiteInfoEntry root, List<SiteInfoEntry> nodes, String link) {
-		
-		String ret = "";
-		
-		for(SiteInfoEntry ent : root.entries) {
-			
-			if(ent.command.equals("separator")) {
-				ret = ret + MakeWeb.makeSeparator();
-				continue;
-			}			
-			
-			if(ent.command.equals("dir")) {
-				if(ent.nav!=null) {					
-					ret = ret + MakeWeb.makeNav(link+ent.arg+"/", ent.nav);
-					ret = ret + "\n<ul>\n";					
-					ret = ret + MakeWeb.getSiteNavRecurse(ent, nodes, link+ent.arg+"/");
-					ret = ret + "</ul>\n</li>\n";
-				}
-			} else if(ent.nav!=null) {
-				ret = ret + MakeWeb.makeNav(link+ent.out, ent.nav);
-				ret = ret + "</li>\n";
-			}
-			
-		}
-		
-		return ret;		
-		
-	}
-
-	private static void processEntries(String contentRoot, SiteInfoEntry root, List<SiteInfoEntry> nodes, String dep, String cont ) throws IOException {
+	/**
+	 * Run a directory of the site information tree and generate the deployment directory 
+	 * by executing each entry command. This is called recursively for subdirectories.
+	 * @param siteNav the common site-navigation-tree
+	 * @param contentRoot the root path of the content
+	 * @param root the root node at this directory level
+	 * @param nodes the nodes traversed to this point
+	 * @param dep the root path of the deployment output
+	 * @param cont the path to this directory
+	 * @throws IOException
+	 */
+	private static void processEntries(String siteNav, String contentRoot, SiteInfoEntry root, List<SiteInfoEntry> nodes, String dep, String cont) throws IOException {
 		
 		SiteInfoEntry e = nodes.get(nodes.size()-1);
-		
-		String siteNav = MakeWeb.getSiteNav(root, nodes, null);
 		
 		for (SiteInfoEntry ent : e.entries) {
 			
@@ -137,31 +167,14 @@ public class MakeWeb {
 				nav = ent.nav;
 			}
 									
-			if(ent.command.equals("mark")) {
-				System.out.println("MARK "+cont+"/"+ent.arg+" "+dep+"/"+ent.out+" "+nav);
-				nodes.add(ent);
-				Object[] mr = MakeWeb.getBreadCrumbs(nodes);
-				String breadCrumbs = (String)mr[0];
-				nodes.remove(nodes.size()-1);
+			if(ent.command.equals("mark")) {				
+				System.out.println("MARK "+cont+"/"+ent.arg+" "+dep+"/"+ent.out+" "+nav);				
+				nodes.add(ent); // Add this node just for breadcrumbing
+				String breadCrumbs = MakeWeb.getBreadCrumbs(nodes);
+				nodes.remove(nodes.size()-1); // Now take it back off
 				MarkupToHTML tr = new MarkupToHTML();
-				tr.translate(contentRoot, cont+"/"+ent.arg, dep+"/"+ent.out, breadCrumbs, siteNav, nav);
-			} else if(ent.command.equals("code")) {
-				System.out.println("CODE "+cont+"/"+ent.arg+" "+dep+"/"+ent.out+" "+nav);
-				nodes.add(ent);
-				Object[] mr = MakeWeb.getBreadCrumbs(nodes);
-				String breadCrumbs = (String)mr[0];
-				nodes.remove(nodes.size()-1);
-				CodeToHTML tr = new CodeToHTML();
-				tr.translate(contentRoot, cont+"/"+ent.arg, dep+"/"+ent.out, breadCrumbs, siteNav, nav);
-			} else if(ent.command.equals("address")) {
-				System.out.println("ADDRESS "+cont+"/"+ent.arg+" "+dep+"/"+ent.out+" "+nav);
-				nodes.add(ent);
-				Object[] mr = MakeWeb.getBreadCrumbs(nodes);
-				String breadCrumbs = (String)mr[0];
-				nodes.remove(nodes.size()-1);
-				AddressToHTML tr = new AddressToHTML();
-				tr.translate(contentRoot, cont+"/"+ent.arg, dep+"/"+ent.out, breadCrumbs, siteNav, nav);
-			}
+				tr.translate(contentRoot, cont+"/"+ent.arg, dep+"/"+ent.out, breadCrumbs, siteNav, nav);				
+			} 
 			
 			else if(ent.command.equals("copy")) {
 				System.out.println("COPY "+cont+"/"+ent.arg);
@@ -169,17 +182,17 @@ public class MakeWeb {
 			} else if(ent.command.equals("copyDir")) {
 				System.out.println("COPY_DIR "+cont+"/"+ent.arg);
 				FU.copyDirectory(new File(cont+"/"+ent.arg), new File(dep+"/"+ent.arg));
-			} else if(ent.command.equals("separator")) {
-				
-			}
-			else if(ent.command.equals("dir")) {
+			} else if(ent.command.equals("dir")) {
 				System.out.println("DIR "+cont+"/"+ent.arg);
 				// Make directory
 				File nd = new File(dep+"/"+ent.arg);
 				nd.mkdir();
 				nodes.add(ent);
-				MakeWeb.processEntries(contentRoot,root,nodes, dep+"/"+ent.arg, cont+"/"+ent.arg);
+				MakeWeb.processEntries(siteNav,contentRoot,root,nodes, dep+"/"+ent.arg, cont+"/"+ent.arg);
 				nodes.remove(nodes.size()-1);
+			} else if(ent.command.equals("separator")) {
+				// Separators create dividers in the navigation tree, but they have no
+				// actions to process here
 			} else {
 				throw new RuntimeException("Unknown site layout directive '"+ent.command+"'");
 			}

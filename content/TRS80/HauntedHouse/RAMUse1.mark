@@ -1,9 +1,8 @@
-%%image=HauntedHouse.jpg
-%%title= HauntedHouse RAM Use
-%%range=467E:4FFF
+%%image = HauntedHouse.jpg
+%%title = HauntedHouse RAM Use
 
 RAM Usage (First Floor Code)
-
+{{{memory
 ||= Address  || Name                  || Description
 || 44D9      || LoneObject            || 1 if a lone-object was given last input      ||    
 || 45AA      || NounDataSize          || Number of bytes in noun's data area          ||
@@ -23,3 +22,4 @@ RAM Usage (First Floor Code)
 || 477D      || Unpack3               || RAM used by unpack routine                   ||
 || 477E      || Unpack4               || RAM used by unpack routine                   ||
 || 48E2      || CurrentRoom           || Player's current room number                 ||
+}}}

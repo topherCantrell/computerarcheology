@@ -1,5 +1,5 @@
-%%title= TRS-80 Pyramid
-%%image=TRS80Pyramid.jpg
+%%title = TRS-80 Pyramid
+%%image = TRS80Pyramid.jpg
 
 {{{html
 <div class="playMe">
@@ -11,7 +11,7 @@
 <script>window.onload = function() {startTRS80Pyramid("trs80PyramidConsole","trs80PyramidTape");}</script>
 
 }}}
-= Play Me! =
+# Play Me! 
 Play the game in a TRS80 emulator. Click on the black console and press any key.
 
 
@@ -34,12 +34,12 @@ Before the LOAD command you must paste the desired saved-data back into the text
 </div>
 }}}
 
-= Code Links =
+# Code Links
 
-* [Code.html Disassembled Code]
-* [RAMUse.html RAM Usage]
+* [Disassembled Code](Code.html)
+* [RAM Usage](RAMUse.html)
 
-= Messages for 64 Columns =
+# Messages for 64 Columns 
 
 The compressed message strings contain spaces to pad the words out to 64 columns (the size of the monitor). For instance:
 
@@ -61,6 +61,6 @@ spaces to format for the CoCo.
 When you are reading through the strings here you'll see odd spacing and words run together. That's why. The
 strings are hand-formatted to the TRS80 64-column monitor.
 
-= References =
+# References 
 
-If you seek specific game information, solutions, and online emulators then check out [http://www.figmentfly.com Sean Murphy's wonderful site].
+If you seek specific game information, solutions, and online emulators then check out [Sean Murphy's wonderful site](http://www.figmentfly.com).

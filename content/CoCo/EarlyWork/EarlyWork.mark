@@ -1,6 +1,9 @@
-%%title= Early CoCo Work
+%%title = Early CoCo Work
+%%image = CoverTRS80News.jpg
 
-= Bullseye =
+TODO OCR the code. These should be playable (well, not DOS commander)
+
+# Bullseye
 
 My first publication was the "Bull's Eye" game. It appeared
 in the July 1983 issue of TRS-80 Microcomputer News.
@@ -19,7 +22,7 @@ No. That is not me on the cover.
 <img src="BullsEye2.jpg" height="500"></img>
 }}}
 
-= Animal House =
+# Animal House
 
 In March of 1986 80 Micro published my article/code "Animal House". I was a senior in high school.
 I got paid $125 for the work. Nearly all of the article text was heavily edited -- practically
@@ -43,7 +46,7 @@ No. That is not me on the cover.
 <img src="Animal3.jpg" height="500"></img>
 }}}
 
-= DOS Commander =
+# DOS Commander
 
 In June of 1986 80 Micro purchased my article/code "DOS Commander" for $50. But the magazine dropped
 coverage of the Color Computer shortly after. My article never made it to print.

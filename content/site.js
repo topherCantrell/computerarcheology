@@ -5,21 +5,12 @@
 	
 	"entries": [
 		 {"mark": "index.mark",   "out": "index.html"},	     
-	     {"copy": "Arch.jpg"},	     	
+	     {"copy": "Arch.jpg"},	   
+	     {"copy": "favicon.ico"},
 	     
 	     {"copyDir": "js"},
 	     {"copyDir": "css"},
-	     {"copyDir": "img"},
-	     
-	     {"dir": "Help", "entries": [
-             {"copy": "Help.jpg"},
-             {"copy": "HelpExample1.jpg"},
-             {"copy": "HelpExample2.jpg"},
-             {"copy": "HelpExample3.jpg"},
-             {"copy": "HelpExample4.jpg"},
-             {"mark": "Help.mark", "out": "index.html"}
-	    	 ]	    	 
-	     },
+	     {"copyDir": "img"},	
 	     
 	     {"dir": "Contact",  "entries": [
 	         {"copy": "Contact.jpg"},
@@ -27,7 +18,6 @@
 	    	 ]	    	 
 	     },
 	     
-	     	     	     	     
 	     {"dir": "Amiga", "nav": "Amiga", "entries": [
 	    	 {"mark": "Amiga.mark", "out": "index.html"},
 	    	 {"copy": "Amiga.jpg"},
@@ -45,13 +35,13 @@
 	     
 	     {"dir": "Arcade", "nav": "Arcade", "entries": [
 	         {"mark": "Arcade.mark", "out": "index.html"},
-	         {"copy": "Arcade.jpg"},
+	         {"copy": "Arcade.jpg"},	         
 	         {"dir": "Asteroids", "nav": "Asteroids", "entries": [
 	             {"mark": "Asteroids.mark", "out": "index.html"},
-	             {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
-	             {"address": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware"},	             
-	             {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
-	             {"code": "VectorROM.cmark", "out": "VectorROM.html", "nav": "Vector ROM"},
+	             {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
+	             {"mark": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware"},	             
+	             {"mark": "Code.mark", "out": "Code.html", "nav": "Code"},
+	             {"mark": "VectorROM.mark", "out": "VectorROM.html", "nav": "Vector ROM"},
 	             {"separator": ""},
 	             {"mark": "DVG.mark", "out": "DVG.html", "nav": "DVG"},	             
 	             {"copy": "DVG.jpg"},
@@ -61,17 +51,17 @@
 	         },
 	         {"dir": "Defender", "nav": "Defender", "entries": [	         
 	             {"mark": "Defender.mark", "out": "index.html"},	             
-	             {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
-	             {"address": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware"},	             
-	             {"mark": "Bank1.cmark", "out": "Bank1.html", "nav":"Bank 1"},
-	             {"mark": "Bank2.cmark", "out": "Bank2.html", "nav":"Bank 2"},
-	             {"mark": "Bank3.cmark", "out": "Bank3.html", "nav":"Bank 3"},
-	             {"mark": "Bank7.cmark", "out": "Bank7.html", "nav":"Bank 7"},
-	             {"mark": "BankFixed.cmark", "out": "BankFixed.html", "nav":"Fixed Bank"},	             
+	             {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
+	             {"mark": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware"},	             
+	             {"mark": "Bank1.mark", "out": "Bank1.html", "nav":"Bank 1"},
+	             {"mark": "Bank2.mark", "out": "Bank2.html", "nav":"Bank 2"},
+	             {"mark": "Bank3.mark", "out": "Bank3.html", "nav":"Bank 3"},
+	             {"mark": "Bank7.mark", "out": "Bank7.html", "nav":"Bank 7"},
+	             {"mark": "BankFixed.mark", "out": "BankFixed.html", "nav":"Fixed Bank"},	             
 	             {"separator": ""},	             
-	             {"address": "SoundRAMUse.mark", "out": "SoundRAMUse.html", "nav": "Sound RAM Use"},
-	             {"address": "SoundHardware.mark", "out": "SoundHardware.html", "nav": "Sound Hardware"},
-	             {"mark": "SoundCode.cmark", "out": "SoundCode.html", "nav":"Sound Code"},
+	             {"mark": "SoundRAMUse.mark", "out": "SoundRAMUse.html", "nav": "Sound RAM Use"},
+	             {"mark": "SoundHardware.mark", "out": "SoundHardware.html", "nav": "Sound Hardware"},
+	             {"mark": "SoundCode.mark", "out": "SoundCode.html", "nav":"Sound Code"},
 	             {"copy": "Defender-Theory-Early.pdf"},
 	             {"copy": "Defender-Theory-Later.pdf"},
 	             {"copy": "Defender.ROM.B&W.jpg"},
@@ -82,99 +72,79 @@
 	         },
 	         {"dir": "Frogger", "nav": "Frogger", "entries": [
 	             {"mark": "Frogger.mark", "out": "index.html"},
-	             {"address": "SoundRAMUse.mark", "out": "SoundRAMUse.html", "nav": "Sound RAM Use"},
-	             {"address": "SoundHardware.mark", "out": "SoundHardware.html", "nav": "Sound Hardware"},	             
-	             {"code": "SoundCode.cmark", "out": "SoundCode.html", "nav": "Sound Code"},
+	             {"mark": "SoundRAMUse.mark", "out": "SoundRAMUse.html", "nav": "Sound RAM Use"},
+	             {"mark": "SoundHardware.mark", "out": "SoundHardware.html", "nav": "Sound Hardware"},	             
+	             {"mark": "SoundCode.mark", "out": "SoundCode.html", "nav": "Sound Code"},
 	             {"copy": "Frogger.jpg"},	             
 	             {"copy": "FroggerFix.mp3"}
 	             ]
 	         },
 	         {"dir": "Galaga", "nav": "Galaga", "entries": [
                  {"mark": "Galaga.mark", "out": "index.html"},
-                 {"code": "CPU1.cmark", "out":"CPU1.html","nav":"CPU1"},
-                 {"code": "CPU2.cmark", "out":"CPU2.html","nav":"CPU2"},
-                 {"code": "CPU3.cmark", "out":"CPU3.html","nav":"CPU3"},
+                 {"mark": "CPU1.mark", "out":"CPU1.html","nav":"CPU1"},
+                 {"mark": "CPU2.mark", "out":"CPU2.html","nav":"CPU2"},
+                 {"mark": "CPU3.mark", "out":"CPU3.html","nav":"CPU3"},
                  {"copy": "Galaga.jpg"},
                  {"copy": "galaga1.jpg"},
                  {"copy": "galaga2.jpg"}
 	             ]
 	         },
-	         
 	         {"dir": "MoonPatrol", "nav": "Moon Patrol", "entries": [
                  {"copy": "MoonPatrol.jpg"},
                  {"copy": "MoonPatrol.js"},
 	             {"mark": "MoonPatrol.mark", "out": "index.html"},
-	             {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
-	             {"address": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware"},
-	             {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
+	             {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
+	             {"mark": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware"},
+	             {"mark": "Code.mark", "out": "Code.html", "nav": "Code"},
 	             {"separator": ""},
-	             {"mark": "MoonPatrolSound.mark", "out": "MoonPatrolSound.html"},
-	             {"address": "SoundRAMUse.mark", "out": "SoundRAMUse.html", "nav": "Sound RAM Use"},
-	             {"address": "SoundHardware.mark", "out": "SoundHardware.html", "nav": "Sound Hardware"},
-	             {"code": "SoundCode.cmark", "out": "SoundCode.html", "nav": "Sound Code"},
+	             {"mark": "MoonPatrolSound.mark", "out": "MoonPatrolSound.html", "nav":"Moon Patrol Sound"},
+	             {"mark": "SoundRAMUse.mark", "out": "SoundRAMUse.html", "nav": "Sound RAM Use"},
+	             {"mark": "SoundHardware.mark", "out": "SoundHardware.html", "nav": "Sound Hardware"},
+	             {"mark": "SoundCode.mark", "out": "SoundCode.html", "nav": "Sound Code"},
 	             {"separator": ""},
-	             {"code": "GFX1.cmark", "out": "GFX1.html", "nav": "GFX1"},
-	             {"code": "GFX2.cmark", "out": "GFX2.html", "nav": "GFX2"},
-	             {"code": "GFX3.cmark", "out": "GFX3.html", "nav": "GFX3"},
-	             {"code": "GFX4.cmark", "out": "GFX4.html", "nav": "GFX4"},
-	             {"code": "GFX5.cmark", "out": "GFX5.html", "nav": "GFX5"},	             
-	             {"code": "ImageBackgroundColors.cmark", "out": "ImageBackgroundColors.html", "nav": "Background Colors"},
-	             {"code": "SpriteColors.cmark", "out": "SpriteColors.html", "nav": "Sprite Colors"},
-	             {"code": "SpriteColorSets.cmark", "out": "SpriteColorSets.html", "nav": "Sprite Color Sets"},
-	             {"code": "TextColors.cmark", "out": "TextColors.html", "nav": "Text Colors"}
+	             {"mark": "GFX1.mark", "out": "GFX1.html", "nav": "GFX1"},
+	             {"mark": "GFX2.mark", "out": "GFX2.html", "nav": "GFX2"},
+	             {"mark": "GFX3.mark", "out": "GFX3.html", "nav": "GFX3"},
+	             {"mark": "GFX4.mark", "out": "GFX4.html", "nav": "GFX4"},
+	             {"mark": "GFX5.mark", "out": "GFX5.html", "nav": "GFX5"},	             
+	             {"mark": "ImageBackgroundColors.mark", "out": "ImageBackgroundColors.html", "nav": "Background Colors"},
+	             {"mark": "SpriteColors.mark", "out": "SpriteColors.html", "nav": "Sprite Colors"},
+	             {"mark": "SpriteColorSets.mark", "out": "SpriteColorSets.html", "nav": "Sprite Color Sets"},
+	             {"mark": "TextColors.mark", "out": "TextColors.html", "nav": "Text Colors"}
 	             ]
 	         },
-	         
 	         {"dir": "OmegaRace", "nav": "Omega Race", "entries": [
 	             {"mark": "OmegaRace.mark", "out":"index.html"},
-                 {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
-                 {"address": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware"},
-                 {"code": "MainBoard.cmark", "out":"MainBoard.html", "nav": "Main Board"},     
+                 {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
+                 {"mark": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware"},
+                 {"mark": "MainBoard.mark", "out":"MainBoard.html", "nav": "Main Board"},     
                  {"separator": ""},
-                 {"code": "VectorROM.cmark", "out":"VectorROM.html", "nav": "Vector ROM"},
-                 {"address": "DVGPROM.mark", "out": "DVGPROM.html", "nav": "DVG PROM"},
+                 {"mark": "VectorROM.mark", "out":"VectorROM.html", "nav": "Vector ROM"},
+                 {"mark": "DVGPROM.mark", "out": "DVGPROM.html", "nav": "DVG PROM"},
                  {"separator": ""},
-                 {"address": "SoundHardware.mark", "out": "SoundHardware.html", "nav": "Sound Hardware"},
-                 {"address": "SoundRAMUse.mark", "out": "SoundRAMUse.html", "nav": "Sound RAM Use"},
-	             {"code": "SoundBoard.cmark", "out":"SoundBoard.html", "nav": "Sound Code"}, 	                         
+                 {"mark": "SoundHardware.mark", "out": "SoundHardware.html", "nav": "Sound Hardware"},
+                 {"mark": "SoundRAMUse.mark", "out": "SoundRAMUse.html", "nav": "Sound RAM Use"},
+	             {"mark": "SoundBoard.mark", "out":"SoundBoard.html", "nav": "Sound Code"}, 	                         
 	             {"copy": "ORace.jpg"},
 	             {"copy": "VectorROM.js"}
 	             ]
-	         },
-	         
-	         {"dir": "Robotron", "nav": "Robotron", "entries": [
-	             {"mark": "Robotron.mark", "out": "index.html"},
-	             {"copy": "Robotron.jpg"},
-	             {"code": "SoundCode.cmark", "out": "SoundCode.html", "nav": "Sound Code"}	                                                            
-	             ]
-	         },
-	         
+	         },	              
 	         {"dir": "SpaceInvaders", "nav": "Space Invaders", "entries": [
 	             {"mark": "SpaceInvaders.mark", "out": "index.html"},
-	             {"copy": "SpaceInvaders.jpg"},
-	             {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
-	             {"address": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware Info"},
-	             {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
-	             {"separator": ""},
-	             {"mark": "Chronology.mark", "out": "Chronology.html", "nav": "Chronology"},	             
-	             {"copy": "Alive.jpg"},
-	             {"copy": "Check23.jpg"},
-	             {"copy": "Chronology.jpg"},
-	             {"copy": "Diag.jpg"},
-	             {"copy": "DiagRun.jpg"},
-	             {"copy": "Flip.jpg"},
-	             {"copy": "NoTAITO.jpg"},
-	             {"copy": "SideCheck.jpg"},
+	             {"mark": "RAMUse.mark",        "nav":"RAM Usage", "out": "RAMUse.html"},
+	             {"mark": "Hardware.mark",      "nav":"Hardware", "out": "Hardware.html"},
+	             {"mark": "Code.mark",          "nav":"Code", "out": "Code.html"},	             
+	             {"copy": "SpaceInvaders.jpg"}	             	             
 	             {"copy": "SpaceInvaders.js"}
+	             
 	             ]
 	         },
-	         
 	         {"dir": "TimePilot", "nav": "Time Pilot", "entries": [
 	             {"copy": "TimePilot.jpg"},
 	             {"mark": "TimePilot.mark", "out": "index.html"},
-	             {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
-	             {"address": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware Info"},
-	             {"code": "SoundCode.cmark", "out": "SoundCode.html", "nav": "Sound Code"}
+	             {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
+	             {"mark": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware Info"},
+	             {"mark": "SoundCode.mark", "out": "SoundCode.html", "nav": "Sound Code"}
 	             ]
 	         }
 	         	         
@@ -185,69 +155,63 @@
 	         {"mark": "Atari2600.mark", "out": "index.html"},
 	         {"copy": "Atari2600.jpg"},
 	         {"copy": "Hardware.jpg"},
-	         {"address": "Stella.mark", "out": "Stella.html", "nav": "Stella"},
+	         {"mark": "Stella.mark", "out": "Stella.html", "nav": "Stella"},
 	         
 	         {"dir": "Asteroids", "nav": "Asteroids", "entries": [
 	             {"copy": "A2600Asteroids.jpg"},
 	             {"mark": "Asteroids.mark", "out": "index.html"},
-	             {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
-	             {"code": "Code.cmark", "out": "Code.html", "nav": "Code"}
+	             {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
+	             {"mark": "Code.mark", "out": "Code.html", "nav": "Code"}
 	             ]
-	         },
-	         
+	         },	         
 	         {"dir": "BattleZone", "nav": "BattleZone", "entries": [
 	             {"copy": "A2600Battlezone.jpg"},
 	             {"mark": "BattleZone.mark", "out": "index.html"},
-	             {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
-	             {"code": "Code.cmark", "out": "Code.html", "nav": "Code"}
+	             {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
+	             {"mark": "Code.mark", "out": "Code.html", "nav": "Code"}
 	             ]
 	         },
-	         
 	         {"dir": "Chess", "nav": "Chess", "entries": [
 	             {"copy": "A2600Chess.jpg"},
 	             {"mark": "Chess.mark", "out": "index.html"},
-	             {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
-	             {"code": "Code.cmark", "out": "Code.html", "nav": "Code"}
+	             {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
+	             {"mark": "Code.mark", "out": "Code.html", "nav": "Code"}
 	             ]
-	         },
-	         
+	         },	         
 	         {"dir": "Combat", "nav": "Combat", "entries": [
 	             {"copy": "A2600Combat.jpg"},
 	             {"mark": "Combat.mark", "out": "index.html"},
-	             {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
-	             {"code": "Code.cmark", "out": "Code.html", "nav": "Code"}
+	             {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
+	             {"mark": "Code.mark", "out": "Code.html", "nav": "Code"}
 	             ]
 	         },
-	         
-	         {"dir": "DoubleGap", "nav": "Double Gap", "entries": [
-	             {"copy": "DoubleGap.jpg"},
-	             {"mark": "DoubleGap.mark", "out": "index.html"},
-	             {"mark": "DoubleGap.asm", "out": "Code.html", "nav": "Code"}
-	             ]
-	         },
-	         
 	         {"dir": "ET", "nav": "ET", "entries": [
 	             {"copy": "A2600ET.jpg"},
 	             {"mark": "ET.mark", "out": "index.html"},
-	             {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
-	             {"code": "Code.cmark", "out": "Code.html", "nav": "Code"}
+	             {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
+	             {"mark": "Code.mark", "out": "Code.html", "nav": "Code"}
 	             ]
-	         },
-	         
+	         },	         
 	         {"dir": "MissileCommand", "nav": "Missile Command", "entries": [
 	             {"copy": "A2600MissileCommand.jpg"},
 	             {"mark": "MissileCommand.mark", "out": "index.html"},
-	             {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
-	             {"code": "Code.cmark", "out": "Code.html", "nav": "Code"}
+	             {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
+	             {"mark": "Code.mark", "out": "Code.html", "nav": "Code"}
 	             ]
-	         }
-	         
+	         },
+	         {"dir": "DoubleGap", "nav": "Double Gap", "entries": [
+	             {"copy": "DoubleGap.jpg"},
+	             {"mark": "DoubleGap.mark", "out": "index.html"},
+	             {"mark": "Code.mark", "out": "Code.html", "nav": "Code"}
+	             ]
+	         },
+	         	         
 	         ]
 	     },
 	     
 	     {"dir": "CoCo", "nav": "CoCo", "entries": [
              {"mark": "CoCo.mark", "out": "index.html"},
-             {"address": "Hardware.mark", "out": "Hardware.html", "nav":"Hardware"},
+             {"mark": "Hardware.mark", "out": "Hardware.html", "nav":"Hardware"},
              {"copy": "PIA0.jpg"},
              {"copy": "PIA1.jpg"},
              {"copy": "SAM.jpg"},
@@ -258,6 +222,7 @@
              {"copy": "CoCo.jpg"},
              {"copy": "CoCoTech.jpg"},
              {"copy": "CoCoText.js"},
+             
              {"dir": "EarlyWork", "nav": "My Early Work", "leaf":true, "entries": [
                  {"mark": "EarlyWork.mark", "out": "index.html"},
                  {"copy": "CoverTRS80News.jpg"},
@@ -273,8 +238,8 @@
              },
              {"dir": "MadnessMinotaur", "nav": "Madness & Minotaur", "entries": [
                  {"mark": "Madness.mark", "out": "index.html"},
-                 {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
-                 {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
+                 {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
+                 {"mark": "Code.mark", "out": "Code.html", "nav": "Code"},
                  {"copy": "Madness.jpg"},
                  {"copy": "madness.inf"},
                  {"copy": "MadGameLoop.inf"},
@@ -299,8 +264,8 @@
              },
              {"dir": "Pyramid", "nav": "Pyramid", "entries": [
              	 {"mark": "Pyramid.mark", "out": "index.html"},
-                 {"address": "RAMUse.mark", "out": "RAMUse.html", "nav":"RAM Use"},
-                 {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
+                 {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav":"RAM Use"},
+                 {"mark": "Code.mark", "out": "Code.html", "nav": "Code"},
                  {"copy": "Pyramid.jpg"},
                  {"copy": "pyramid.js"},
                  {"copy": "DEFAULT.js"},
@@ -315,8 +280,8 @@
              }, 
              {"dir": "RaakaTu", "nav": "Raaka Tu", "entries" : [
 			     {"mark": "RaakaTu.mark", "out": "index.html"},
-				 {"address": "RAMUse.mark", "out": "RAMUse.html", "nav":"RAM Use"},
-				 {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
+				 {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav":"RAM Use"},
+				 {"mark": "Code.mark", "out": "Code.html", "nav": "Code"},
 				 {"copy": "RaakaTu.jpg"},
 				 {"copy": "raakatu.js"},
 				 {"copy": "BinaryDataRaakaTu.js"}
@@ -324,8 +289,8 @@
              },
              {"dir": "Bedlam", "nav": "Bedlam", "entries" : [
                  {"mark": "Bedlam.mark", "out": "index.html"},
-                 {"address": "RAMUse.mark", "out": "RAMUse.html", "nav":"RAM Use"},
-                 {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
+                 {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav":"RAM Use"},
+                 {"mark": "Code.mark", "out": "Code.html", "nav": "Code"},
                  {"copy": "Bedlam.jpg"},
                  {"copy": "bedlam.js"},
                  {"copy": "BinaryDataBedlam.js"}
@@ -334,21 +299,14 @@
              {"dir": "Daggorath", "nav": "Daggorath", "entries" : [
 				 {"mark": "Daggorath.mark", "out": "index.html"},
 				 {"mark": "Levels.mark", "out": "levels.html", "nav":"Level Maps"},
-				 {"address": "RAMUse.mark", "out": "RAMUse.html", "nav":"RAM Use"},
-				 {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
+				 {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav":"RAM Use"},
+				 {"mark": "Code.mark", "out": "Code.html", "nav": "Code"},
 				 {"copy": "Daggorath.jpg"},
                  {"copy": "daggorath.js"}
                  ]
              }
+             
 	    	 ]	    	 
-	     },
-	     
-	     {"dir": "People",  "nav": "People", "entries": [	         
-	         {"mark": "People.mark", "out": "index.html"},
-	         {"mark": "ChrisCantrell.mark", "out": "ChrisCantrell.html", "nav": "Chris Cantrell"},
-	         {"mark": "HarryHurst.mark", "out": "HarryHurst.html", "nav": "Harry Hurst"},
-	         {"mark": "PatrikSevallius.mark", "out": "PatrikSevallius.html", "nav": "Patrik Sevallius"}
-	         ]	    	 
 	     },
 	     
 	     {"dir": "Gameboy", "nav": "Gameboy", "entries": [
@@ -359,46 +317,46 @@
   	             {"copy": "GBZelda.jpg"},
   	             {"copy": "zeldaGB.js"},
   	             {"mark": "GBZelda.mark", "out": "index.html"},
-  	             {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
-  	             {"address": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware Info"},
-  	             {"code": "Bank00.cmark", "out": "Bank00.html", "nav": "Bank00"},
-  	             {"code": "Bank01.cmark", "out": "Bank01.html", "nav": "Bank01"},
-  	             {"code": "Bank02.cmark", "out": "Bank02.html", "nav": "Bank02"},
-  	             {"code": "Bank03.cmark", "out": "Bank03.html", "nav": "Bank03"},
-  	             {"code": "Bank04.cmark", "out": "Bank04.html", "nav": "Bank04"},
-  	             {"code": "Bank05.cmark", "out": "Bank05.html", "nav": "Bank05"},
-  	             {"code": "Bank06.cmark", "out": "Bank06.html", "nav": "Bank06"},
-  	             {"code": "Bank07.cmark", "out": "Bank07.html", "nav": "Bank07"},
-  	             {"code": "Bank08.cmark", "out": "Bank08.html", "nav": "Bank08"},
-  	             {"code": "Bank09.cmark", "out": "Bank09.html", "nav": "Bank09"},
-  	             {"code": "Bank0A.cmark", "out": "Bank0A.html", "nav": "Bank0A"},
-  	             {"code": "Bank0B.cmark", "out": "Bank0B.html", "nav": "Bank0B"},
-  	             {"code": "Bank0C.cmark", "out": "Bank0C.html", "nav": "Bank0C"},
-  	             {"code": "Bank0D.cmark", "out": "Bank0D.html", "nav": "Bank0D"},
-  	             {"code": "Bank0E.cmark", "out": "Bank0E.html", "nav": "Bank0E"},
-  	             {"code": "Bank0F.cmark", "out": "Bank0F.html", "nav": "Bank0F"}, 	 
-  	             {"code": "Bank10.cmark", "out": "Bank10.html", "nav": "Bank10"},
-  	             {"code": "Bank11.cmark", "out": "Bank11.html", "nav": "Bank11"},
-  	             {"code": "Bank12.cmark", "out": "Bank12.html", "nav": "Bank12"},
-  	             {"code": "Bank13.cmark", "out": "Bank13.html", "nav": "Bank13"},
-  	             {"code": "Bank14.cmark", "out": "Bank14.html", "nav": "Bank14"},
-	             {"code": "Bank15.cmark", "out": "Bank15.html", "nav": "Bank15"},
-	             {"code": "Bank16.cmark", "out": "Bank16.html", "nav": "Bank16"},
-	             {"code": "Bank17.cmark", "out": "Bank17.html", "nav": "Bank17"},
-	             {"code": "Bank18.cmark", "out": "Bank18.html", "nav": "Bank18"},
-	             {"code": "Bank19.cmark", "out": "Bank19.html", "nav": "Bank19"}, 	 
-	             {"code": "Bank1A.cmark", "out": "Bank1A.html", "nav": "Bank1A"},
-	             {"code": "Bank1B.cmark", "out": "Bank1B.html", "nav": "Bank1B"},
-	             {"code": "Bank1C.cmark", "out": "Bank1C.html", "nav": "Bank1C"},
-	             {"code": "Bank1D.cmark", "out": "Bank1D.html", "nav": "Bank1D"},
-	             {"code": "Bank1E.cmark", "out": "Bank1E.html", "nav": "Bank1E"},
-	             {"code": "Bank1F.cmark", "out": "Bank1F.html", "nav": "Bank1F"}  	             
+  	             {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
+  	             {"mark": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware Info"},
+  	             {"mark": "Bank00.mark", "out": "Bank00.html", "nav": "Bank00"},
+  	             {"mark": "Bank01.mark", "out": "Bank01.html", "nav": "Bank01"},
+  	             {"mark": "Bank02.mark", "out": "Bank02.html", "nav": "Bank02"},
+  	             {"mark": "Bank03.mark", "out": "Bank03.html", "nav": "Bank03"},
+  	             {"mark": "Bank04.mark", "out": "Bank04.html", "nav": "Bank04"},
+  	             {"mark": "Bank05.mark", "out": "Bank05.html", "nav": "Bank05"},
+  	             {"mark": "Bank06.mark", "out": "Bank06.html", "nav": "Bank06"},
+  	             {"mark": "Bank07.mark", "out": "Bank07.html", "nav": "Bank07"},
+  	             {"mark": "Bank08.mark", "out": "Bank08.html", "nav": "Bank08"},
+  	             {"mark": "Bank09.mark", "out": "Bank09.html", "nav": "Bank09"},
+  	             {"mark": "Bank0A.mark", "out": "Bank0A.html", "nav": "Bank0A"},
+  	             {"mark": "Bank0B.mark", "out": "Bank0B.html", "nav": "Bank0B"},
+  	             {"mark": "Bank0C.mark", "out": "Bank0C.html", "nav": "Bank0C"},
+  	             {"mark": "Bank0D.mark", "out": "Bank0D.html", "nav": "Bank0D"},
+  	             {"mark": "Bank0E.mark", "out": "Bank0E.html", "nav": "Bank0E"},
+  	             {"mark": "Bank0F.mark", "out": "Bank0F.html", "nav": "Bank0F"}, 	 
+  	             {"mark": "Bank10.mark", "out": "Bank10.html", "nav": "Bank10"},
+  	             {"mark": "Bank11.mark", "out": "Bank11.html", "nav": "Bank11"},
+  	             {"mark": "Bank12.mark", "out": "Bank12.html", "nav": "Bank12"},
+  	             {"mark": "Bank13.mark", "out": "Bank13.html", "nav": "Bank13"},
+  	             {"mark": "Bank14.mark", "out": "Bank14.html", "nav": "Bank14"},
+	             {"mark": "Bank15.mark", "out": "Bank15.html", "nav": "Bank15"},
+	             {"mark": "Bank16.mark", "out": "Bank16.html", "nav": "Bank16"},
+	             {"mark": "Bank17.mark", "out": "Bank17.html", "nav": "Bank17"},
+	             {"mark": "Bank18.mark", "out": "Bank18.html", "nav": "Bank18"},
+	             {"mark": "Bank19.mark", "out": "Bank19.html", "nav": "Bank19"}, 	 
+	             {"mark": "Bank1A.mark", "out": "Bank1A.html", "nav": "Bank1A"},
+	             {"mark": "Bank1B.mark", "out": "Bank1B.html", "nav": "Bank1B"},
+	             {"mark": "Bank1C.mark", "out": "Bank1C.html", "nav": "Bank1C"},
+	             {"mark": "Bank1D.mark", "out": "Bank1D.html", "nav": "Bank1D"},
+	             {"mark": "Bank1E.mark", "out": "Bank1E.html", "nav": "Bank1E"},
+	             {"mark": "Bank1F.mark", "out": "Bank1F.html", "nav": "Bank1F"}  	             
   	             ]
   	         }
   	         ]
   	     },
-	     
-	     {"dir": "NES", "nav": "Nintendo NES", "entries": [
+  	     
+  	     {"dir": "NES", "nav": "Nintendo NES", "entries": [
 	         {"mark": "NES.mark", "out": "index.html"},
 	         {"copy": "NES.jpg"},
 	                                              	         
@@ -407,58 +365,58 @@
 	             {"copy": "zelda.js"},
 	             {"copy": "ZeldaBanks.jpg"},
 	             {"mark": "Zelda.mark", "out": "index.html"},
-	             {"address": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
-	             {"address": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware Info"},
-	             {"code": "Bank0.cmark", "out": "Bank0.html", "nav": "Bank0"},
-	             {"code": "Bank1.cmark", "out": "Bank1.html", "nav": "Bank1"},
-	             {"code": "Bank2.cmark", "out": "Bank2.html", "nav": "Bank2"},
-	             {"code": "Bank3.cmark", "out": "Bank3.html", "nav": "Bank3"},
-	             {"code": "Bank4.cmark", "out": "Bank4.html", "nav": "Bank4"},
-	             {"code": "Bank5.cmark", "out": "Bank5.html", "nav": "Bank5"},
-	             {"code": "Bank6.cmark", "out": "Bank6.html", "nav": "Bank6"},
-	             {"code": "Bank7.cmark", "out": "Bank7.html", "nav": "Bank7"}
+	             {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
+	             {"mark": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware Info"},
+	             {"mark": "Bank0.mark", "out": "Bank0.html", "nav": "Bank0"},
+	             {"mark": "Bank1.mark", "out": "Bank1.html", "nav": "Bank1"},
+	             {"mark": "Bank2.mark", "out": "Bank2.html", "nav": "Bank2"},
+	             {"mark": "Bank3.mark", "out": "Bank3.html", "nav": "Bank3"},
+	             {"mark": "Bank4.mark", "out": "Bank4.html", "nav": "Bank4"},
+	             {"mark": "Bank5.mark", "out": "Bank5.html", "nav": "Bank5"},
+	             {"mark": "Bank6.mark", "out": "Bank6.html", "nav": "Bank6"},
+	             {"mark": "Bank7.mark", "out": "Bank7.html", "nav": "Bank7"}
 	             ]
 	         }
 	         ]
 	     },
 	     
 	     {"dir": "TRS80", "nav": "TRS80", "entries": [
-              {"mark": "TRS80.mark", "out": "index.html"},
-              {"address": "Hardware.mark", "out": "Hardware.html", "nav":"Hardware"},            
-              {"copy": "TRS80.jpg"},
-              {"copy": "TRS80Tech.jpg"},      
-              {"copy": "TRS80Text.js"},
-              {"dir": "HauntedHouse", "nav": "HauntedHouse", "entries": [
-            	  {"mark": "HauntedHouse.mark", "out": "index.html"},
-              	  {"code": "Code1.cmark", "out": "Code1.html", "nav": "Code1"},
-                  {"address": "RAMUse1.mark", "out": "RAMUse1.html", "nav":"RAM Use (1st)"},
-                  {"code": "Code2.cmark", "out": "Code2.html", "nav": "Code2"},
-                  {"address": "RAMUse2.mark", "out": "RAMUse2.html", "nav":"RAM Use (2nd)"}, 
-                  {"copy": "HauntedHouse.jpg"},
-                  {"copy": "hauntedhouse.js"},
-                  {"copy": "BinaryDataHauntedHouse.js"}
-                  ]
-              },
-              {"dir": "Pyramid", "nav": "Pyramid", "entries": [
-            	  {"mark": "TRS80Pyramid.mark", "out": "index.html"},
-            	  {"address": "RAMUse.mark", "out": "RAMUse.html", "nav":"RAM Use"},
-                  {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
-                  {"copy": "TRS80Pyramid.jpg"},
-                  {"copy": "trs80pyramid.js"},
-                  {"copy": "BinaryDataTRS80Pyramid.js"}
-            	  ]
-              },
-              {"dir": "Xenos", "nav": "Xenos", "entries": [
-            	  {"mark": "Xenos.mark", "out": "index.html"},
-            	  {"address": "RAMUse.mark", "out": "RAMUse.html", "nav":"RAM Use"},
-                  {"code": "Code.cmark", "out": "Code.html", "nav": "Code"},
-                  {"copy": "Xenos.png"}               
-            	  ]
-              }      
-      	 ]	    	 
-       },
-	     
-	     {"dir": "Virus", "nav": "Viruses", "leaf":true, "entries": [
+             {"mark": "TRS80.mark", "out": "index.html"},
+             {"mark": "Hardware.mark", "out": "Hardware.html", "nav":"Hardware"},            
+             {"copy": "TRS80.jpg"},
+             {"copy": "TRS80Tech.jpg"},      
+             {"copy": "TRS80Text.js"},
+             {"dir": "HauntedHouse", "nav": "HauntedHouse", "entries": [
+           	  {"mark": "HauntedHouse.mark", "out": "index.html"},
+             	  {"mark": "Code1.mark", "out": "Code1.html", "nav": "Code1"},
+                 {"mark": "RAMUse1.mark", "out": "RAMUse1.html", "nav":"RAM Use (1st)"},
+                 {"mark": "Code2.mark", "out": "Code2.html", "nav": "Code2"},
+                 {"mark": "RAMUse2.mark", "out": "RAMUse2.html", "nav":"RAM Use (2nd)"}, 
+                 {"copy": "HauntedHouse.jpg"},
+                 {"copy": "hauntedhouse.js"},
+                 {"copy": "BinaryDataHauntedHouse.js"}
+                 ]
+             },
+             {"dir": "Pyramid", "nav": "Pyramid", "entries": [
+           	  {"mark": "TRS80Pyramid.mark", "out": "index.html"},
+           	  {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav":"RAM Use"},
+                 {"mark": "Code.mark", "out": "Code.html", "nav": "Code"},
+                 {"copy": "TRS80Pyramid.jpg"},
+                 {"copy": "trs80pyramid.js"},
+                 {"copy": "BinaryDataTRS80Pyramid.js"}
+           	  ]
+             },
+             {"dir": "Xenos", "nav": "Xenos", "entries": [
+           	  {"mark": "Xenos.mark", "out": "index.html"},
+           	  {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav":"RAM Use"},
+                 {"mark": "Code.mark", "out": "Code.html", "nav": "Code"},
+                 {"copy": "Xenos.png"}               
+           	  ]
+             }      
+     	 ]	    	 
+      },
+      
+      {"dir": "Virus", "nav": "Viruses", "leaf":true, "entries": [
 	         {"mark": "Virus.mark", "out": "index.html"},
 	         {"copy": "Virus.jpg"},
 	                                          	                                              	         
@@ -491,7 +449,7 @@
 	         }
 	         ]
 	     }
-	             
+	     
 	 ]
 
 }
