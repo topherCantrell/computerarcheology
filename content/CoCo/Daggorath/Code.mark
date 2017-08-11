@@ -4063,13 +4063,13 @@ DA64: 00 03 12 00 ; Supreme Ring    (proper, strikes, ??, ??)
 DA68: 01 03 13 00 ; Joule Ring      (proper, strikes, ??, ??)
 DA6C: 03 40 40 00 ; Mithril Shield  (proper, magic defense, physical defense, ??)
 DA70: 06 03 14 00 ; Rime Ring       (proper, strikes, ??, ??)
-DA74: 0A 3C 0D 0B ; Solar Torch     (proper, ??, ??, ??)
+DA74: 0A 3C 0D 0B ; Solar Torch     (proper, minutes, physical illumination, magic illumination)
 DA78: 0B 60 80 00 ; Bronze Shield   (proper, magic defense, physical defense, ??)
 DA7C: 0C 03 15 00 ; Vulcan Ring     (proper, strikes, ??, ??)
-DA80: 0E 1E 0A 04 ; Lunar Torch     (proper, ??, ??, ??)
-DA84: 0F 0F 07 00 ; Pine Torch      (proper, ??, ??, ??)
+DA80: 0E 1E 0A 04 ; Lunar Torch     (proper, minutes, physical illumination, magic illumination)
+DA84: 0F 0F 07 00 ; Pine Torch      (proper, minutes, physical illumination, magic illumination)
 DA88: 10 6C 80 00 ; Leather Shield  (proper, magic defense, physical defense, ??)
-DA8C: 18 00 00 00 ; Dead Torch      (proper, ??, ??, ??)
+DA8C: 18 00 00 00 ; Dead Torch      (proper, minutes, physical illumination, magic illumination)
 DA90: FF          ; End of list
 
 ObjectDist:
