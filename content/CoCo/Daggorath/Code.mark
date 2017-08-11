@@ -4052,6 +4052,7 @@ DA60: 05 05 00 05 ; 18 Torch   Dead
  
 ; Special object properties by proper-index
 ;
+; Thanks to Aaron Oliver for pointing out:
 ; Note that the physical and magic defense of the shields is swapped. This is a well known
 ; bug in the code. These values are multipliers. 80 means 1. 40 means 0.5.
 ;
