@@ -772,7 +772,7 @@ public class MarkupToHTML {
 		ExternalMemoryMap emm = null;
 		AddressTableEntry e = null;
 		for(ExternalMemoryMap map : memoryMaps) {			
-			e = map.map.findEntryForAccess(num, a.busDir, a.busType); 
+			e = map.map.findEntryForAccess(num+dp, a.busDir, a.busType); 
 			if(e != null) {
 				emm = map;
 				break;
@@ -796,8 +796,8 @@ public class MarkupToHTML {
 			url = emm.htmlFile+"#addr_"+name;
 			style = "addr_"+emm.name.substring(1);		
 			target = " target='"+emm.name.substring(1)+"'";
-			if(num!=e.start) {
-				int k = num-e.start;
+			if((num+dp)!=e.start) {
+				int k = (num+dp)-e.start;
 				if(k<256) {
 					offset="+"+CU.hex2(k);
 					mod=3;

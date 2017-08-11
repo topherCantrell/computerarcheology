@@ -3,7 +3,9 @@
 %%-hard = Coco/Hardware.mark /CoCo/Hardware.html
 %%cpu   = 6809
 
-%%directPage=200
+%%directPage = 200
+
+Good info on the math here: [http://archive.li/mJKIz](http://archive.li/mJKIz)
 
 The game's RAM usage is detailed here: 
 [RAM Usage](RAMUse.html)
@@ -52,7 +54,7 @@ C01D: E7 02               STB     2,X            ; DDRB = 11111010 (mem and seri
 C01F: 86 3C               LDA     #$3C           ; 0_0_111_1_00
 C021: A7 03               STA     3,X            ; Turn off FIRQs
 C023: CC 20 46            LDD     #$2046         ; 001000__0001000_110
-C026: BD C2 66            JSR     $C266          ;{WriteToSAM} Graphics=G6R,G6C  Display=8*512 (0x1000)
+C026: BD C2 66            JSR     $C266          ; {WriteToSAM} Graphics=G6R,G6C  Display=8*512 (0x1000)
 C029: 86 F8               LDA     #$F8           ; Upper bits ...
 C02B: A7 02               STA     2,X            ; ... of display mode (256x192 color)
 C02D: 8E 02 00            LDX     #$0200         ; Clear ...
@@ -66,7 +68,7 @@ C03D: 10 8E D7 E8         LDY     #$D7E8         ; Table of inits
 C041: A6 A0               LDA     ,Y+            ; Get count
 C043: 27 41               BEQ     $C086          ; All done ... move on
 C045: AE A1               LDX     ,Y++           ; Get destination
-C047: 8D 02               BSR     $C04B          ;{CopyYtoX} Do copy
+C047: 8D 02               BSR     $C04B          ; {CopyYtoX} Do copy
 C049: 20 F6               BRA     $C041          ; Do all
 
 CopyYtoX:
@@ -74,7 +76,7 @@ CopyYtoX:
 C04B: E6 A0               LDB     ,Y+            ; Value from Y
 C04D: E7 80               STB     ,X+            ; Store to X
 C04F: 4A                  DECA                   ; All done?
-C050: 26 F9               BNE     $C04B          ;{CopyYtoX} No ... do all
+C050: 26 F9               BNE     $C04B          ; {CopyYtoX} No ... do all
 C052: 39                  RTS                    ; Out
 
 InitTasks:
@@ -85,7 +87,7 @@ C05A: 6F 80               CLR     ,X+              ;
 C05C: 8C 02 AD            CMPX    #$02AD           ;
 C05F: 25 F9               BCS     $C05A            ;
 C061: 8E 09 FD            LDX     #$09FD           ; First game-task slot
-C064: 9F B9               STX     <$B9             ;{-1_nextTask} Clear the task list
+C064: 9F B9               STX     <$B9             ; {-1_nextTask} Clear the task list
 C066: 6F 80               CLR     ,X+              ; Zero out  ...
 C068: 8C 0B 07            CMPX    #$0B07           ; ... game-tasks ... (Not the last task. It is initialized at startup.)
 C06B: 25 F9               BCS     $C066            ; ... slots
@@ -95,19 +97,19 @@ C071: 0A BB               DEC     <$BB             ;
 C073: CC 00 0C            LDD     #$000C           ;
 C076: AE A1               LDX     ,Y++             ; Get next task entry
 C078: 27 0A               BEQ     $C084            ; All tasks made ... out
-C07A: BD C2 5C            JSR     $C25C            ;{ReserveTask} Reserve a task slot (pointer in U) 
+C07A: BD C2 5C            JSR     $C25C            ; {ReserveTask} Reserve a task slot (pointer in U) 
 C07D: AF 43               STX     3,U              ; Save code pointer in structure
 C07F: BD C2 1D            JSR     $C21D            ; ?? Add task pointer to chain ??
 C082: 20 F2               BRA     $C076            ; Do all tasks
 C084: 35 F7               PULS    CC,A,B,X,Y,U,PC  ; Done
 
 ; Initialization continues from C043
-C086: 8D CB               BSR     $C053          ;{InitTasks} Initialize game tasks
+C086: 8D CB               BSR     $C053          ; {InitTasks} Initialize game tasks
 C088: CE DA 91            LDU     #$DA91         ; Object distribution table
 C08B: 4F                  CLRA                   ; First object in table is type 0 (SUPREME RING)
 C08C: E6 C4               LDB     ,U             ; Get the info
 C08E: C4 0F               ANDB    #$0F           ; Hold ...
-C090: D7 8C               STB     <$8C           ;{-1_numObjs} ... number of objects
+C090: D7 8C               STB     <$8C           ; {-1_numObjs} ... number of objects
 C092: E6 C0               LDB     ,U+            ; Get the info
 C094: 54                  LSRB                   ; Hold ...
 C095: 54                  LSRB                   ; ... ...
@@ -121,7 +123,7 @@ C09E: 5C                  INCB                   ; Next object on next level
 C09F: C1 05               CMPB    #$05           ; Past level 4?
 C0A1: 2F 02               BLE     $C0A5          ; No ... use next level
 C0A3: D6 8D               LDB     <$8D           ; use
-C0A5: 0A 8C               DEC     <$8C           ;{-1_numObjs} Decrement number of objects
+C0A5: 0A 8C               DEC     <$8C           ; {-1_numObjs} Decrement number of objects
 C0A7: 26 F1               BNE     $C09A          ; Go back to create more of this type
 C0A9: 4C                  INCA                   ; Next object type
 C0AA: 11 83 DA A3         CMPU    #$DAA3         ; All object types done?
@@ -162,21 +164,21 @@ C106: 3F                  SWI
 C107: 15                                         ; SWI 15 Beam subroutine
 C108: 3F                  SWI                 
 C109: 09                                         ; SWI 09 Clear secondary screen
-C10A: 0A B4               DEC     <$B4           ;{-1_flipScreens}       
+C10A: 0A B4               DEC     <$B4           ; {-1_flipScreens}       
 C10C: 13                  SYNC                
 C10D: 86 02               LDA     #$02        
 C10F: CE D7 D5            LDU     #$D7D5      
 C112: 20 1D               BRA     $C131          ;       
 C114: CC 34 3C            LDD     #$343C      
-C117: B7 FF 21            STA     $FF21          ;{-2_PIA1_CA}
-C11A: F7 FF 23            STB     $FF23          ;{-2_PIA1_CB}
+C117: B7 FF 21            STA     $FF21          ; {-2_PIA1_CA}
+C11A: F7 FF 23            STB     $FF23          ; {-2_PIA1_CB}
 C11D: 4C                  INCA                
-C11E: B7 FF 03            STA     $FF03          ;{-2_PIA0_CB}
+C11E: B7 FF 03            STA     $FF03          ; {-2_PIA0_CB}
 C121: 3C EF               CWAI    $EF         
 C123: 39                  RTS                 
 C124: 8D EE               BSR     $C114          ;       
 C126: CC 10 0B            LDD     #$100B      
-C129: DD 13               STD     <$13           ;{-1_playerY}       
+C129: DD 13               STD     <$13           ; {-1_playerY}       
 C12B: 0F 17               CLR     <$17           ;       
 C12D: 4F                  CLRA                
 C12E: CE D7 D9            LDU     #$D7D9      
@@ -203,7 +205,7 @@ C151: 27 13               BEQ     $C166          ;
 C153: 0A 9B               DEC     <$9B           ;       
 C155: 8E CD B2            LDX     #$CDB2      
 C158: 9F B2               STX     <$B2           ;       
-C15A: 0A 94               DEC     <$94           ;{-1_scrollType}       
+C15A: 0A 94               DEC     <$94           ; {-1_scrollType}       
 C15C: 3F                  SWI                 
 C15D: 0E                                         ; SWI 0E Display playing screen
 C15E: 3F                  SWI                 
@@ -217,22 +219,22 @@ C166: 3F                  SWI
 C167: 19                                         ; SWI 19 Bring up normal display
 C168: 3F                  SWI                 
 C169: 0F                                         ; SWI 0F Ready command prompt
-C16A: 7E C1 F5            JMP     $C1F5          ;{GameLoop}   
+C16A: 7E C1 F5            JMP     $C1F5          ; {GameLoop}   
 
     
-C16D: BF 00 7E            STX     $007E          ;{-1_CASSPTR}
+C16D: BF 00 7E            STX     $007E          ; {-1_CASSPTR}
 C170: 10 3F               SWI2                
 C172: 06                  ; A006: BLKIN 
 C173: 4D                  TSTA        
 C174: 10 26 DE AF         LBNE    $A027          ;       
-C178: F6 00 7C            LDB     $007C          ;{-1_CASSBLKTYPE}
+C178: F6 00 7C            LDB     $007C          ; {-1_CASSBLKTYPE}
 C17B: 39                  RTS
                  
 C17C: CE FF 00            LDU     #$FF00      
 C17F: CC 34 3C            LDD     #$343C      
 C182: A7 43               STA     3,U         
-C184: B7 FF 23            STA     $FF23          ;{-2_PIA1_CB}
-C187: F7 FF 21            STB     $FF21          ;{-2_PIA1_CA}
+C184: B7 FF 23            STA     $FF23          ; {-2_PIA1_CB}
+C187: F7 FF 21            STB     $FF21          ; {-2_PIA1_CA}
 C18A: 39                  RTS
                  
 C18B: 9E 00               LDX     <$00           ;       
@@ -253,7 +255,7 @@ C1A2: 0C                  ; A00C: WRTLDR
 C1A3: 8E 02 00            LDX     #$0200 
 C1A6: CC 01 80            LDD     #$0180 
 C1A9: FD 00 7C            STD     $007C       
-C1AC: BF 00 7E            STX     $007E          ;{-1_CASSPTR}
+C1AC: BF 00 7E            STX     $007E          ; {-1_CASSPTR}
 C1AF: 10 3F               SWI2                
 C1B1: 08                  ; A008: BLKOUT
 C1B2: 8C 0F 05            CMPX    #$0F05       
@@ -304,14 +306,14 @@ C1FC: 0D B8               TST     <$B8           ;
 C1FE: 2E 92               BGT     $C192          ;
 C200: 2B BF               BMI     $C1C1          ;       
 C202: EE C4               LDU     ,U          
-C204: 27 EF               BEQ     $C1F5          ;{GameLoop}       
+C204: 27 EF               BEQ     $C1F5          ; {GameLoop}       
 ;
 C206: 34 60               PSHS    U,Y            ; Hold registers         
 C208: AD D8 03            JSR     [$03,U]        ; Execute game task
 C20B: 35 60               PULS    Y,U            ; Restore
 ;
 C20D: 0D BB               TST     <$BB           ;       
-C20F: 26 E4               BNE     $C1F5          ;{GameLoop}       
+C20F: 26 E4               BNE     $C1F5          ; {GameLoop}       
 C211: C1 0C               CMPB    #$0C        
 C213: 27 E5               BEQ     $C1FA          ;       
 C215: 8D 21               BSR     $C238          ;       
@@ -358,9 +360,9 @@ ReserveTask:
 ; Move the next-task-pointer to the next seven-byte slot.
 ; Return reserved slot pointer in U.
 C25C: 34 10               PSHS    X              ; Hold X
-C25E: DE B9               LDU     <$B9           ;{-1_nextTask} Get the slot pointer
+C25E: DE B9               LDU     <$B9           ; {-1_nextTask} Get the slot pointer
 C260: 30 47               LEAX    7,U            ; Point to next
-C262: 9F B9               STX     <$B9           ;{-1_nextTask} New slot pointer
+C262: 9F B9               STX     <$B9           ; {-1_nextTask} New slot pointer
 C264: 35 90               PULS    X,PC           ; Out
 
 WriteToSAM:
@@ -396,41 +398,41 @@ C280: A6 88 E3            LDA     $-1D,X         ; FF03 ... 16.67MS (60Hz) inter
 C283: 10 2A 00 99         LBPL    $C320          ; Upper bit 0 ... must have been the horizontal ... ignore
 C287: 86 02               LDA     #$02           ; Set DP to ...
 C289: 1F 8B               TFR     A,DP           ; ... base 02xx
-C28B: 0D B4               TST     <$B4           ;{-1_flipScreens} Time to flip screens?
+C28B: 0D B4               TST     <$B4           ; {-1_flipScreens} Time to flip screens?
 C28D: 27 0E               BEQ     $C29D          ; No ... keep what we have
-C28F: DC 09               LDD     <$09           ;{-1_activeScreen} Get the current visible
-C291: DE 0B               LDU     <$0B           ;{-1_backScreen} Get the current drawing
-C293: DD 0B               STD     <$0B           ;{-1_backScreen} Flip the ...
-C295: DF 09               STU     <$09           ;{-1_activeScreen} ... visible and drawing screens
+C28F: DC 09               LDD     <$09           ; {-1_activeScreen} Get the current visible
+C291: DE 0B               LDU     <$0B           ; {-1_backScreen} Get the current drawing
+C293: DD 0B               STD     <$0B           ; {-1_backScreen} Flip the ...
+C295: DF 09               STU     <$09           ; {-1_activeScreen} ... visible and drawing screens
 C297: EC 44               LDD     4,U            ; Get the SAM settings for the new visible screen
-C299: 8D CB               BSR     $C266          ;{WriteToSAM} Set the SAM registers to flip the screen
-C29B: 0F B4               CLR     <$B4           ;{-1_flipScreens} Acknowledge the flip
+C299: 8D CB               BSR     $C266          ; {WriteToSAM} Set the SAM registers to flip the screen
+C29B: 0F B4               CLR     <$B4           ; {-1_flipScreens} Acknowledge the flip
 ;
-C29D: 0D 9C               TST     <$9C           ;{-1_beamSound} Is the wizard beaming in or out (cut scenes)?
+C29D: 0D 9C               TST     <$9C           ; {-1_beamSound} Is the wizard beaming in or out (cut scenes)?
 C29F: 27 08               BEQ     $C2A9          ; No ... skip it
-C2A1: 03 9D               COM     <$9D           ;{-1_beamSoundVal} Toggle the wizard sound square wave
-C2A3: 96 9D               LDA     <$9D           ;{-1_beamSoundVal} Get sound value
+C2A1: 03 9D               COM     <$9D           ; {-1_beamSoundVal} Toggle the wizard sound square wave
+C2A3: 96 9D               LDA     <$9D           ; {-1_beamSoundVal} Get sound value
 C2A5: 48                  ASLA                   ; 8 bit to ...
 C2A6: 48                  ASLA                   ; ... 6 bit value (divide by 4)
 C2A7: A7 84               STA     ,X             ; Store to FF20 (6 bit sound)
 ;
-C2A9: 0D B1               TST     <$B1           ;{-1_hearHeart} Are we between rounds?      
+C2A9: 0D B1               TST     <$B1           ; {-1_hearHeart} Are we between rounds?      
 C2AB: 27 2F               BEQ     $C2DC          ; Yes .. no heart      
-C2AD: 0A AE               DEC     <$AE           ;{-1_heartCounter} Time to change heart pattern?      
+C2AD: 0A AE               DEC     <$AE           ; {-1_heartCounter} Time to change heart pattern?      
 C2AF: 26 2B               BNE     $C2DC          ; No ... skip it      
-C2B1: 96 AF               LDA     <$AF           ;{-1_heartCounterRel} Reload the ...      
-C2B3: 97 AE               STA     <$AE           ;{-1_heartCounter} ... heart counter      
+C2B1: 96 AF               LDA     <$AF           ; {-1_heartCounterRel} Reload the ...      
+C2B3: 97 AE               STA     <$AE           ; {-1_heartCounter} ... heart counter      
 C2B5: E6 02               LDB     2,X            ; FF22 ... current single-bit sound
 C2B7: C8 02               EORB    #$02           ; Toggle the single-bit ...
 C2B9: E7 02               STB     2,X            ; ... sound (makes a pop)
-C2BB: 0D AD               TST     <$AD           ;{-1_scrollShowing} Scroll showing?      
+C2BB: 0D AD               TST     <$AD           ; {-1_scrollShowing} Scroll showing?      
 C2BD: 27 1D               BEQ     $C2DC          ; No ... skip drawing the heart      
 C2BF: CE 03 88            LDU     #$0388         ; Hand line area ?active or inactive?
 C2C2: AE 44               LDX     4,U            ; Hold onto current cursor (we might be printing)
 C2C4: CC 00 0F            LDD     #$000F         ; New cursor ...
 C2C7: ED 44               STD     4,U            ; ... middle of the line
 C2C9: 86 20               LDA     #$20           ; 20, 21 ... small-heart characters
-C2CB: 03 B0               COM     <$B0           ;{-1_heartPicture} Toggle heart picture tracking      
+C2CB: 03 B0               COM     <$B0           ; {-1_heartPicture} Toggle heart picture tracking      
 C2CD: 27 02               BEQ     $C2D1          ; Zero now? Draw the small heart      
 C2CF: 86 22               LDA     #$22           ; 22, 23 ... large-heart characters
 C2D1: BD CA 17            JSR     $CA17          ; Draw the first heart character      
@@ -457,8 +459,8 @@ C2FF: 0D 28               TST     <$28           ;
 C301: 26 1D               BNE     $C320          ;       
 C303: 0D 77               TST     <$77           ;       
 C305: 27 11               BEQ     $C318          ;       
-C307: 7F FF 02            CLR     $FF02          ;{-2_PIA0_DB}
-C30A: B6 FF 00            LDA     $FF00          ;{-2_PIA0_DA}
+C307: 7F FF 02            CLR     $FF02          ; {-2_PIA0_DB}
+C30A: B6 FF 00            LDA     $FF00          ; {-2_PIA0_DA}
 C30D: 84 7F               ANDA    #$7F        
 C30F: 81 7F               CMPA    #$7F        
 C311: 27 0D               BEQ     $C320          ;       
@@ -468,8 +470,8 @@ C318: 10 3F               SWI2                   ; BASIC function ...
 C31A: 00                                         ; ... POLCAT
 C31B: 4D                  TSTA                   ; Was a key pressed?
 C31C: 27 02               BEQ     $C320          ; No ... move on
-C31E: 8D 20               BSR     $C340          ;{CharToBuf} Store character in ring buffer
-C320: B6 FF 02            LDA     $FF02          ;{-2_PIA0_DB} Acknowledge the interrupt so it can fire again
+C31E: 8D 20               BSR     $C340          ; {CharToBuf} Store character in ring buffer
+C320: B6 FF 02            LDA     $FF02          ; {-2_PIA0_DB} Acknowledge the interrupt so it can fire again
 C323: 3B                  RTI                    ; Return from interrupt
 
 C324: 06 0A 3C 3C 18 ; ? Counters for task levels ?
@@ -481,13 +483,13 @@ C329: 34 15               PSHS    X,B,CC         ; Save
 C32B: 1A 10               ORCC    #$10           ; Turn OFF the IRQ interrupt
 C32D: 4F                  CLRA                   ; Initial return ... no key in buffer
 C32E: 8E 02 D1            LDX     #$02D1         ; 32-byte input ring buffer
-C331: D6 BC               LDB     <$BC           ;{-1_inputHead} The ring-buffer head
-C333: D1 BD               CMPB    <$BD           ;{-1_inputTail} Same as the ring-buffer tail?
+C331: D6 BC               LDB     <$BC           ; {-1_inputHead} The ring-buffer head
+C333: D1 BD               CMPB    <$BD           ; {-1_inputTail} Same as the ring-buffer tail?
 C335: 27 07               BEQ     $C33E          ; Yes ... return 0 (no input)
 C337: A6 85               LDA     B,X            ; Get the next character from the head
 C339: 5C                  INCB                   ; Advance the head ...
 C33A: C4 1F               ANDB    #$1F           ; ... and wrap ...
-C33C: D7 BC               STB     <$BC           ;{-1_inputHead} ... if needed
+C33C: D7 BC               STB     <$BC           ; {-1_inputHead} ... if needed
 C33E: 35 95               PULS    CC,B,X,PC      ; Done
 
 CharToBuf:
@@ -495,11 +497,11 @@ CharToBuf:
 C340: 34 15               PSHS    X,B,CC         ; Save all
 C342: 1A 10               ORCC    #$10           ; Turn OFF the IRQ interrupt
 C344: 8E 02 D1            LDX     #$02D1         ; 32-byte ring buffer
-C347: D6 BD               LDB     <$BD           ;{-1_inputTail} Get tail index
+C347: D6 BD               LDB     <$BD           ; {-1_inputTail} Get tail index
 C349: A7 85               STA     B,X            ; Store the character to the tail
 C34B: 5C                  INCB                   ; Advance the tail ...
 C34C: C4 1F               ANDB    #$1F           ; ... and wrap ...
-C34E: D7 BD               STB     <$BD           ;{-1_inputTail} ... if needed
+C34E: D7 BD               STB     <$BD           ; {-1_inputTail} ... if needed
 C350: 35 95               PULS    CC,B,X,PC      ; Done
 
 ;;= SWI Handler =
@@ -807,7 +809,7 @@ C4CF: 8E 00 08            LDX     #$0008      ; 8 rolls
 ;
 C4D2: 5F                  CLRB                ; Count of 1's
 C4D3: 10 8E 00 08         LDY     #$0008      ; Counting 8 bits in the byte
-C4D7: 96 6D               LDA     <$6D        ;{-1_rndSeedC} Upper most seed
+C4D7: 96 6D               LDA     <$6D        ; {-1_rndSeedC} Upper most seed
 C4D9: 84 E1               ANDA    #$E1        ; 1110_0001
 C4DB: 48                  ASLA                ; Count ...
 C4DC: 24 01               BCC     $C4DF       ; ... the ...      
@@ -816,13 +818,13 @@ C4DF: 31 3F               LEAY    -1,Y        ; ... in the ...
 C4E1: 26 F8               BNE     $C4DB       ; ... value in A
 ;      
 C4E3: 54                  LSRB                ; 1 to carry if number of 1's was odd
-C4E4: 09 6B               ROL     <$6B        ;{-1_rndSeedA} Three ...
-C4E6: 09 6C               ROL     <$6C        ;{-1_rndSeedB} ... byte ...      
-C4E8: 09 6D               ROL     <$6D        ;{-1_rndSeedC} ... roll ...      
+C4E4: 09 6B               ROL     <$6B        ; {-1_rndSeedA} Three ...
+C4E6: 09 6C               ROL     <$6C        ; {-1_rndSeedB} ... byte ...      
+C4E8: 09 6D               ROL     <$6D        ; {-1_rndSeedC} ... roll ...      
 C4EA: 30 1F               LEAX    -1,X        ; ... with B going ...
 C4EC: 26 E4               BNE     $C4D2       ; ... far right ...
 ;
-C4EE: 96 6B               LDA     <$6B        ;{-1_rndSeedA}       
+C4EE: 96 6B               LDA     <$6B        ; {-1_rndSeedA}       
 C4F0: A7 63               STA     3,S         ;
 C4F2: 39                  RTS                 ;
 
@@ -831,7 +833,7 @@ SWI_8:
 SWI_9:
 ;  Clear drawing screen
 ;
-C4F3: DE 09               LDU     <$09        ;{-1_activeScreen} U = Visible screen descriptor
+C4F3: DE 09               LDU     <$09        ; {-1_activeScreen} U = Visible screen descriptor
 C4F5: 8C DE 0B            CMPX    #$DE0B      ; SWI_9 U = Drawing screen descriptor
 C4F8: D6 2C               LDB     <$2C        ; ? color      
 C4FA: 8D 1B               BSR     $C517       ; Clear the area      
@@ -899,7 +901,7 @@ C560: 0C C7               INC     <$C7        ;
 C562: 24 F0               BCC     $C554       ;       
 C564: 96 C7               LDA     <$C7        ;       
 C566: 80 13               SUBA    #$13        
-C568: 97 AF               STA     <$AF        ;{-1_heartCounterRel}       
+C568: 97 AF               STA     <$AF        ; {-1_heartCounterRel}       
 C56A: 0D 28               TST     <$28        ;       
 C56C: 26 27               BNE     $C595       ;       
 C56E: 81 03               CMPA    #$03        
@@ -910,7 +912,7 @@ C574: 96 6E               LDA     <$6E           ;
 C576: 97 70               STA     <$70           ;       
 C578: 0A 6F               DEC     <$6F           ;       
 C57A: AD 9F 02 B2         JSR     [$02B2]     ; Display playing screen
-C57E: 0A B4               DEC     <$B4        ;{-1_flipScreens}       
+C57E: 0A B4               DEC     <$B4        ; {-1_flipScreens}       
 C580: 13                  SYNC                ; Wait for display
 C581: 0A 6E               DEC     <$6E        ; Light level down
 C583: 96 6E               LDA     <$6E        ; Down
@@ -918,15 +920,15 @@ C585: 81 F8               CMPA    #$F8        ; All fainted out?
 C587: 2E EF               BGT     $C578       ; No, keep going
 C589: 3F                  SWI                 ; Clear screen
 C58A: 09                                         ; SWI 09 Clear secondary screen
-C58B: 0A B4               DEC     <$B4           ;{-1_flipScreens}       
+C58B: 0A B4               DEC     <$B4           ; {-1_flipScreens}       
 C58D: 0A 28               DEC     <$28           ;       
-C58F: 0F BC               CLR     <$BC           ;{-1_inputHead}       
-C591: 0F BD               CLR     <$BD           ;{-1_inputTail}       
+C58F: 0F BC               CLR     <$BC           ; {-1_inputHead}       
+C591: 0F BD               CLR     <$BD           ; {-1_inputTail}       
 C593: 20 19               BRA     $C5AE          ;       
 C595: 81 04               CMPA    #$04        
 C597: 2F 15               BLE     $C5AE          ;
 C599: AD 9F 02 B2         JSR     [$02B2]     ; Display playing screen
-C59D: 0A B4               DEC     <$B4        ;{-1_flipScreens}       
+C59D: 0A B4               DEC     <$B4        ; {-1_flipScreens}       
 C59F: 13                  SYNC                ; Wait a display
 C5A0: 0C 6F               INC     <$6F        ;       
 C5A2: 0C 6E               INC     <$6E        ;       
@@ -1031,7 +1033,7 @@ SWI_E:
 C656: 0D 28               TST     <$28        ; Needs refreshing?
 C658: 26 05               BNE     $C65F       ; No, skip it
 C65A: 8D 04               BSR     $C660       ; Refresh display
-C65C: 0A B4               DEC     <$B4        ;{-1_flipScreens}       
+C65C: 0A B4               DEC     <$B4        ; {-1_flipScreens}       
 C65E: 13                  SYNC                ; Wait on display
 C65F: 39                  RTS                 ; Out
 C660: 34 76               PSHS    U,Y,X,B,A   
@@ -1088,7 +1090,7 @@ C6A3: 39                  RTS
 
 SWI_13:
 ;  Beam on picture pointed to by X
-C6A4: 0F B1               CLR     <$B1        ;{-1_hearHeart}       
+C6A4: 0F B1               CLR     <$B1        ; {-1_hearHeart}       
 C6A6: 3F                  SWI                 
 C6A7: 0A                                         ; SWI 0A Clear hand descriptor
 
@@ -1101,12 +1103,12 @@ C6AD: DD 4F               STD     <$4F           ;
 C6AF: D6 9E               LDB     <$9E           ;       
 C6B1: 27 04               BEQ     $C6B7          ;       
 C6B3: C6 20               LDB     #$20        
-C6B5: 0A 9C               DEC     <$9C           ;{-1_beamSound}       
+C6B5: 0A 9C               DEC     <$9C           ; {-1_beamSound}       
 C6B7: 8D 1E               BSR     $C6D7          ;       
 C6B9: 5A                  DECB                
 C6BA: 5A                  DECB                
 C6BB: 2A FA               BPL     $C6B7          ;       
-C6BD: 0F 9C               CLR     <$9C           ;{-1_beamSound}       
+C6BD: 0F 9C               CLR     <$9C           ; {-1_beamSound}       
 C6BF: 0F 9E               CLR     <$9E           ;       
 C6C1: 3F                  SWI                 
 C6C2: 1B                                         ; SWI 1B * Play sound i at full volume
@@ -1119,22 +1121,22 @@ C6C5: 3F                  SWI
 C6C6: 0B                                         ; SWI 0B Clear play field
 C6C7: 8D F8               BSR     $C6C1          ;       
 C6C9: 5F                  CLRB                
-C6CA: 0A 9C               DEC     <$9C           ;{-1_beamSound}       
+C6CA: 0A 9C               DEC     <$9C           ; {-1_beamSound}       
 C6CC: 8D 09               BSR     $C6D7          ;       
 C6CE: 5C                  INCB                
 C6CF: 5C                  INCB                
 C6D0: C1 20               CMPB    #$20        
 C6D2: 26 F8               BNE     $C6CC          ;       
-C6D4: 0F 9C               CLR     <$9C           ;{-1_beamSound}       
+C6D4: 0F 9C               CLR     <$9C           ; {-1_beamSound}       
 C6D6: 39                  RTS                 
 C6D7: 34 50               PSHS    U,X         
 C6D9: D7 2D               STB     <$2D           ;       
-C6DB: D7 9D               STB     <$9D           ;{-1_beamSoundVal}       
+C6DB: D7 9D               STB     <$9D           ; {-1_beamSoundVal}       
 C6DD: 3F                  SWI                 
 C6DE: 09                                         ; SWI 09 Clear secondary screen
 C6DF: 3F                  SWI                 
 C6E0: 01                                         ; SWI 01 Draw picture X on screen
-C6E1: 0A B4               DEC     <$B4           ;{-1_flipScreens}       
+C6E1: 0A B4               DEC     <$B4           ; {-1_flipScreens}       
 C6E3: 13                  SYNC                
 C6E4: 35 D0               PULS    X,U,PC     
 
@@ -1149,7 +1151,7 @@ C6EF: 02                                         ; SWI 02 * Uncompress message m
 C6F0: 3C 24 58 06 45 D8 ; "PREPARE!"
 ;
 C6F6: 0F B7               CLR     <$B7;       
-C6F8: 0A B4               DEC     <$B4       ;{-1_flipScreens}       
+C6F8: 0A B4               DEC     <$B4       ; {-1_flipScreens}       
 C6FA: 39                  RTS                 
 
 SWI_17:
@@ -1164,10 +1166,10 @@ SWI_17:
 ; B = maze level
 ; Return X = pointer to object
 ;
-C6FB: DE 0F               LDU     <$0F           ;{-1_endOfObjsM} Current object pointer
+C6FB: DE 0F               LDU     <$0F           ; {-1_endOfObjsM} Current object pointer
 C6FD: EF 66               STU     6,S            ; Return this
 C6FF: 30 4E               LEAX    14,U           ; Point to ...
-C701: 9F 0F               STX     <$0F           ;{-1_endOfObjsM} ... next object
+C701: 9F 0F               STX     <$0F           ; {-1_endOfObjsM} ... next object
 C703: A7 49               STA     9,U            ; Object type
 C705: E7 44               STB     4,U            ; Maze level
 C707: 3F                  SWI                    ; Fill out object ...
@@ -1200,7 +1202,7 @@ C721: 8E DA 00            LDX     #$DA00         ; Object descriptors
 C724: 31 86               LEAY    A,X            ; Get the object data
 C726: 30 4A               LEAX    10,U           ; Destination in structure
 C728: 86 04               LDA     #$04           ; Four bytes
-C72A: BD C0 4B            JSR     $C04B          ;{CopyYtoX} Copy 4 bytes from Y to X
+C72A: BD C0 4B            JSR     $C04B          ; {CopyYtoX} Copy 4 bytes from Y to X
 C72D: 8E DA 60            LDX     #$DA60         ; Special object properties (backed up one slot)
 C730: 30 04               LEAX    4,X            ; Point to next object
 C732: A6 84               LDA     ,X             ; Object's type
@@ -1221,9 +1223,9 @@ C745: 3F                  SWI
 C746: 0B                                         ; SWI 0B Clear play field
 C747: 3F                  SWI                 
 C748: 0C                                         ; SWI 0C Update heart rate
-C749: 0C AE               INC     <$AE           ;{-1_heartCounter}       
-C74B: 0A AD               DEC     <$AD           ;{-1_scrollShowing}       
-C74D: 0A B1               DEC     <$B1           ;{-1_hearHeart}       
+C749: 0C AE               INC     <$AE           ; {-1_heartCounter}       
+C74B: 0A AD               DEC     <$AD           ; {-1_scrollShowing}       
+C74D: 0A B1               DEC     <$B1           ; {-1_hearHeart}       
 C74F: 3F                  SWI                 
 C750: 0D                                         ; SWI 0D Print contents of hands on status line
 
@@ -1237,15 +1239,15 @@ C758: 39                  RTS
 SWI_1A:
 ;  Set up level
 ;
-C759: 97 81               STA     <$81           ;{-1_currentLevel} Current level
+C759: 97 81               STA     <$81           ; {-1_currentLevel} Current level
 C75B: C6 0C               LDB     #$0C           ; 12 bytes each (one byte to count each type of creature)
 C75D: 3D                  MUL                    ; Pointer to ...
 C75E: C3 03 98            ADDD    #$0398         ; ... creature count on level
 C761: DD 82               STD     <$82           ; Hold pointer to creature count
 ;
-C763: D6 81               LDB     <$81           ;{-1_currentLevel} Current level
+C763: D6 81               LDB     <$81           ; {-1_currentLevel} Current level
 C765: 8E CF FD            LDX     #$CFFD      
-C768: 9F 86               STX     <$86           ;{-1_currentHolesM}       
+C768: 9F 86               STX     <$86           ; {-1_currentHolesM}       
 C76A: A6 80               LDA     ,X+         
 C76C: 2A FC               BPL     $C76A          ;       
 C76E: 5A                  DECB                
@@ -1254,22 +1256,22 @@ C771: 8E 03 D4            LDX     #$03D4
 C774: CE 05 F4            LDU     #$05F4      
 C777: 3F                  SWI                 
 C778: 11                                         ; SWI 11 Fill X to U with 0s
-C779: BD C0 53            JSR     $C053          ;{InitTasks}       
-C77C: BD CC 9C            JSR     $CC9C          ;{MakeMazeLevel}       
+C779: BD C0 53            JSR     $C053          ; {InitTasks}       
+C77C: BD CC 9C            JSR     $CC9C          ; {MakeMazeLevel}       
 ;
 C77F: DE 82               LDU     <$82           ; Pointer to creature counts
 C781: 86 0B               LDA     #$0B           ; Start with most powerful
 C783: E6 C6               LDB     A,U            ; Get count of creature type in A
 C785: 27 06               BEQ     $C78D          ; None to make ... skip
-C787: BD CF A5            JSR     $CFA5          ;{CreateCreature} Make a creature of type in A
+C787: BD CF A5            JSR     $CFA5          ; {CreateCreature} Make a creature of type in A
 C78A: 5A                  DECB                   ; Make all ...
 C78B: 26 FA               BNE     $C787          ; ... of that creature type
 C78D: 4A                  DECA                   ; Next creature type
 C78E: 2A F3               BPL     $C783          ; Do all creature types
 ;  
 C790: CE 03 C3            LDU     #$03C3         ; (03D4 - 11) Start of monsters on this level
-C793: 0F 91               CLR     <$91           ;{-1_restartFind} Scan from start of objects
-C795: BD CF 63            JSR     $CF63          ;{GetNextOject} Find next object on this level
+C793: 0F 91               CLR     <$91           ; {-1_restartFind} Scan from start of objects
+C795: BD CF 63            JSR     $CF63          ; {GetNextOject} Find next object on this level
 C798: 27 1C               BEQ     $C7B6          ; No objects ... done
 C79A: 6D 05               TST     5,X            ; Somebody already holding this object?
 C79C: 2A F7               BPL     $C795          ; Yes ... leave it alone
@@ -1285,7 +1287,7 @@ C7B2: ED 84               STD     ,X             ; ... to monster
 C7B4: 20 DF               BRA     $C795          ; Keep going
 ;
 ; Set the colors of the screen areas
-C7B6: 96 81               LDA     <$81           ;{-1_currentLevel}       
+C7B6: 96 81               LDA     <$81           ; {-1_currentLevel}       
 C7B8: 84 01               ANDA    #$01           ; Just the lower bit
 C7BA: 40                  NEGA                   ; 0->00000000, 1->11111111
 C7BB: 97 2C               STA     <$2C           ; ? color      
@@ -1310,7 +1312,7 @@ C7D0: D7 61               STB     <$61        ; Store the volume
 C7D2: 8E C7 DC            LDX     #$C7DC      ; Effect table
 C7D5: 48                  ASLA                ; Sound number to offset
 C7D6: AD 96               JSR     [A,X]       ; Execute the sound routine
-C7D8: 7F FF 20            CLR     $FF20       ;{-2_PIA1_DA} All sound off
+C7D8: 7F FF 20            CLR     $FF20       ; {-2_PIA1_DA} All sound off
 C7DB: 39                  RTS                 ; Done
 
 SoundEffectsRoutines:
@@ -1432,7 +1434,7 @@ C8C3: 35 90
 C8C5: D6 61               LDB     <$61        ;       
 C8C7: 3D                  MUL                 
 C8C8: 84 FC               ANDA    #$FC        
-C8CA: B7 FF 20            STA     $FF20       ;{-2_PIA1_DA}
+C8CA: B7 FF 20            STA     $FF20       ; {-2_PIA1_DA}
 C8CD: 39                  RTS                 
 
 C8CE: DC 56               LDD     <$56        ;       
@@ -1995,9 +1997,9 @@ CC5B: 5C                  INCB                ; Back to center
 CC5C: 8D 02               BSR     $CC60       ; Check Y,X
 CC5E: 5C                  INCB                ; X+1
 CC5F: 8C 34 06            CMPX    #$3406      ; Fall into routine without pushing. Clever.
-CC62: 8D 2A               BSR     $CC8E       ;{IsValidCell} Is the cell valid?
+CC62: 8D 2A               BSR     $CC8E       ; {IsValidCell} Is the cell valid?
 CC64: 26 05               BNE     $CC6B       ; No ... Store FF to cell buffer
-CC66: 8D 13               BSR     $CC7B       ;{GetCellPointer} Get the pointer to the cell
+CC66: 8D 13               BSR     $CC7B       ; {GetCellPointer} Get the pointer to the cell
 CC68: A6 84               LDA     ,X          ; Get the value from the maze
 CC6A: 8C 86 FF            CMPX    #$86FF      ; (LDA $FF at CC6A)
 CC6D: A7 C0               STA     ,U+         ; Store the result in the buffer
@@ -2092,45 +2094,45 @@ CC9F: CE 09 F4            LDU     #$09F4      ; One past end of level (32*32=102
 CCA2: 3F                  SWI                 ; Fill the buffer with FFs
 CCA3: 12                                      ; SWI 12 Fill X to U with FFs
 CCA4: 8E CD 9F            LDX     #$CD9F      ; Random number seeds
-CCA7: D6 81               LDB     <$81        ;{-1_currentLevel} Offset into seeds ...
+CCA7: D6 81               LDB     <$81        ; {-1_currentLevel} Offset into seeds ...
 CCA9: 3A                  ABX                 ; ... for this level
 CCAA: EC 81               LDD     ,X++        ; Copy the ...
-CCAC: DD 6B               STD     <$6B        ;{-1_rndSeedA} ... 3 byte ...
+CCAC: DD 6B               STD     <$6B        ; {-1_rndSeedA} ... 3 byte ...
 CCAE: A6 84               LDA     ,X          ; ... seed to ...
-CCB0: 97 6D               STA     <$6D        ;{-1_rndSeedC} ... current seed
+CCB0: 97 6D               STA     <$6D        ; {-1_rndSeedC} ... current seed
 CCB2: 10 8E 01 F4         LDY     #$01F4      ; Make 500 cells in the "run" process
-CCB6: BD CC 71            JSR     $CC71       ;{GetRandomCell} Get a random coordinate
-CCB9: DD 7C               STD     <$7C        ;{-1_drwMazeY} Hold the starting point
+CCB6: BD CC 71            JSR     $CC71       ; {GetRandomCell} Get a random coordinate
+CCB9: DD 7C               STD     <$7C        ; {-1_drwMazeY} Hold the starting point
 ;
 ; Start a new maze "run" of cells
 CCBB: 3F                  SWI                 ; Get a random number
 CCBC: 07                                      ; SWI 07 Get random number
 CCBD: 84 03               ANDA    #$03        ; Now a random direction (0-3)
-CCBF: 97 8A               STA     <$8A        ;{-1_drwMazeDir} Hold current direction
+CCBF: 97 8A               STA     <$8A        ; {-1_drwMazeDir} Hold current direction
 CCC1: 3F                  SWI                 ; Get a random number
 CCC2: 07                                      ; SWI 07 Get random number
 CCC3: 84 07               ANDA    #$07        ; Random [0..7]
 CCC5: 4C                  INCA                ; Random [1..8]
-CCC6: 97 7E               STA     <$7E        ;{-1_drwMazeCross} Store number of crossings
+CCC6: 97 7E               STA     <$7E        ; {-1_drwMazeCross} Store number of crossings
 CCC8: 20 08               BRA     $CCD2       ; Start this run with a step
 
-CCCA: DC 88               LDD     <$88        ;{-1_drwMazeTmp} Get the potential new coordinate
-CCCC: DD 7C               STD     <$7C        ;{-1_drwMazeY} Make it the new cell
-CCCE: 0A 7E               DEC     <$7E        ;{-1_drwMazeCross} All crossings in this run placed?
+CCCA: DC 88               LDD     <$88        ; {-1_drwMazeTmp} Get the potential new coordinate
+CCCC: DD 7C               STD     <$7C        ; {-1_drwMazeY} Make it the new cell
+CCCE: 0A 7E               DEC     <$7E        ; {-1_drwMazeCross} All crossings in this run placed?
 CCD0: 27 E9               BEQ     $CCBB       ; Yes ... start a new run (done with this one)
 ;
-CCD2: DC 7C               LDD     <$7C        ;{-1_drwMazeY} Get the current cell pointer
-CCD4: BD D1 1B            JSR     $D11B       ;{StepInDirection} Move in the random direction
-CCD7: 8D B5               BSR     $CC8E       ;{IsValidCell} Is this cell out of bounds?
+CCD2: DC 7C               LDD     <$7C        ; {-1_drwMazeY} Get the current cell pointer
+CCD4: BD D1 1B            JSR     $D11B       ; {StepInDirection} Move in the random direction
+CCD7: 8D B5               BSR     $CC8E       ; {IsValidCell} Is this cell out of bounds?
 CCD9: 26 E0               BNE     $CCBB       ; Yes ... start a new run
-CCDB: DD 88               STD     <$88        ;{-1_drwMazeTmp} Hold the new coordinates
+CCDB: DD 88               STD     <$88        ; {-1_drwMazeTmp} Hold the new coordinates
 CCDD: 6D 84               TST     ,X          ; Already an open cell there?
 CCDF: 27 E9               BEQ     $CCCA       ; Yes ... count it and keep going (no need to check it)
 CCE1: CE 09 F4            LDU     #$09F4      ; Buffer to hold cell values
 ;
 ; These checks prevent opening a cell if it would make a block-of-4-opens. An open block can't be
 ; drawn during game play.
-CCE4: BD CC 49            JSR     $CC49       ;{GetNeighborCells} Get the neighbor cell values
+CCE4: BD CC 49            JSR     $CC49       ; {GetNeighborCells} Get the neighbor cell values
 CCE7: A6 43               LDA     3,U         ; Cell to the left
 CCE9: AB C4               ADDA    ,U          ; Cell to the upper left
 CCEB: AB 41               ADDA    1,U         ; Cell above
@@ -2156,16 +2158,16 @@ CD09: 31 3F               LEAY    -1,Y        ; All 500 cells done?
 CD0B: 26 BD               BNE     $CCCA       ; No ... use this and keep going
 ;
 ; This loops over the cells and sets the "solid wall" bits for directions that are blocked.
-CD0D: 0F 7C               CLR     <$7C        ;{-1_drwMazeY} Start with ...
-CD0F: 0F 7D               CLR     <$7D        ;{-1_drwMazeX} ... Y,X = 0,0
-CD11: DC 7C               LDD     <$7C        ;{-1_drwMazeY} Get the current coordinate
-CD13: BD CC 7B            JSR     $CC7B       ;{GetCellPointer} Get the cell pointer
+CD0D: 0F 7C               CLR     <$7C        ; {-1_drwMazeY} Start with ...
+CD0F: 0F 7D               CLR     <$7D        ; {-1_drwMazeX} ... Y,X = 0,0
+CD11: DC 7C               LDD     <$7C        ; {-1_drwMazeY} Get the current coordinate
+CD13: BD CC 7B            JSR     $CC7B       ; {GetCellPointer} Get the cell pointer
 CD16: A6 84               LDA     ,X          ; Get the cell value
 CD18: 4C                  INCA                ; Is this a solid?
 CD19: 27 26               BEQ     $CD41       ; Yes ... skip it
-CD1B: DC 7C               LDD     <$7C        ;{-1_drwMazeY} Coordinates again
+CD1B: DC 7C               LDD     <$7C        ; {-1_drwMazeY} Coordinates again
 CD1D: CE 09 F4            LDU     #$09F4      ; Status buffer
-CD20: BD CC 49            JSR     $CC49       ;{GetNeighborCells} Get the status of the neighbors
+CD20: BD CC 49            JSR     $CC49       ; {GetNeighborCells} Get the status of the neighbors
 CD23: A6 84               LDA     ,X          ; Get the value of the cell
 CD25: C6 FF               LDB     #$FF        ; Value FF (solid) for compares
 CD27: E1 41               CMPB    1,U         ; Cell above us open?
@@ -2184,12 +2186,12 @@ CD3F: A7 84               STA     ,X          ; Set solid walls on the edge cell
 ;
 ; Add walls next to solid cells
 CD41: C6 20               LDB     #$20        ; 32 for compare
-CD43: 0C 7D               INC     <$7D        ;{-1_drwMazeX} Bump the X coordinate
-CD45: D1 7D               CMPB    <$7D        ;{-1_drwMazeX} Reached end of row?
+CD43: 0C 7D               INC     <$7D        ; {-1_drwMazeX} Bump the X coordinate
+CD45: D1 7D               CMPB    <$7D        ; {-1_drwMazeX} Reached end of row?
 CD47: 26 C8               BNE     $CD11       ; No ... keep going
-CD49: 0F 7D               CLR     <$7D        ;{-1_drwMazeX} Back to X=0
-CD4B: 0C 7C               INC     <$7C        ;{-1_drwMazeY} Bump the Y coordinate
-CD4D: D1 7C               CMPB    <$7C        ;{-1_drwMazeY} End of maze?
+CD49: 0F 7D               CLR     <$7D        ; {-1_drwMazeX} Back to X=0
+CD4B: 0C 7C               INC     <$7C        ; {-1_drwMazeY} Bump the Y coordinate
+CD4D: D1 7C               CMPB    <$7C        ; {-1_drwMazeY} End of maze?
 CD4F: 26 C0               BNE     $CD11       ; No ... keep going
 ;
 ; Add 70 regular doors
@@ -2216,22 +2218,22 @@ CD6C: 39                  RTS                 ; Out
 ; Make a door (regular or magic) between two adjacent cells
 CD6D: 34 76               PSHS    U,Y,X,B,A   ; Preserve registers
 CD6F: 10 8E CD A6         LDY     #$CDA6      ; Bit patterns for solid walls in each direction
-CD73: BD CC 71            JSR     $CC71       ;{GetRandomCell} Get random cell
-CD76: DD 88               STD     <$88        ;{-1_drwMazeTmp} Hold coordinates
+CD73: BD CC 71            JSR     $CC71       ; {GetRandomCell} Get random cell
+CD76: DD 88               STD     <$88        ; {-1_drwMazeTmp} Hold coordinates
 CD78: E6 84               LDB     ,X          ; Get cell value
 CD7A: C1 FF               CMPB    #$FF        ; Is it solid?
 CD7C: 27 F5               BEQ     $CD73       ; Yes ... find an open cell
 CD7E: 3F                  SWI                 ; Get a random number
 CD7F: 07                                      ; SWI 07 Get random number
 CD80: 84 03               ANDA    #$03        ; Make it a direction
-CD82: 97 8A               STA     <$8A        ;{-1_drwMazeDir} Store the direction
+CD82: 97 8A               STA     <$8A        ; {-1_drwMazeDir} Store the direction
 CD84: E5 A6               BITB    A,Y         ; Is that direction open (no solid and no existing door)?
 CD86: 26 EB               BNE     $CD73       ; No ... find another
 CD88: EA C6               ORB     A,U         ; Or in the pattern for the door (magic or regular)
 CD8A: E7 84               STB     ,X          ; Set the new pattern
-CD8C: DC 88               LDD     <$88        ;{-1_drwMazeTmp} Get coordinates
-CD8E: BD D1 1B            JSR     $D11B       ;{StepInDirection} Step in that direction
-CD91: D6 8A               LDB     <$8A        ;{-1_drwMazeDir} Get the direction we came in
+CD8C: DC 88               LDD     <$88        ; {-1_drwMazeTmp} Get coordinates
+CD8E: BD D1 1B            JSR     $D11B       ; {StepInDirection} Step in that direction
+CD91: D6 8A               LDB     <$8A        ; {-1_drwMazeDir} Get the direction we came in
 CD93: CB 02               ADDB    #$02        ; Flip it ...
 CD95: C4 03               ANDB    #$03        ; ... around
 CD97: A6 84               LDA     ,X          ; Get value
@@ -2262,14 +2264,14 @@ CDAE: 02 08 20 80
 
 ShowMap:
 ;
-CDB2: DE 0B               LDU     <$0B        ;{-1_backScreen} Drawing screen descriptor
+CDB2: DE 0B               LDU     <$0B        ; {-1_backScreen} Drawing screen descriptor
 CDB4: CC 1F 1F            LDD     #$1F1F      ; 32x32
-CDB7: DD 7C               STD     <$7C        ;{-1_drwMazeY} Store the count
+CDB7: DD 7C               STD     <$7C        ; {-1_drwMazeY} Store the count
 ;
 ; First draw the open/closed states of all cells in the maze;
-CDB9: DC 7C               LDD     <$7C        ;{-1_drwMazeY} Get the current map coordinate
-CDBB: 8D 54               BSR     $CE11       ;{GetMapCellMem} Get a screen pointer to the cell in Y
-CDBD: BD CC 7B            JSR     $CC7B       ;{GetCellPointer} Get a pointer to the maze memory
+CDB9: DC 7C               LDD     <$7C        ; {-1_drwMazeY} Get the current map coordinate
+CDBB: 8D 54               BSR     $CE11       ; {GetMapCellMem} Get a screen pointer to the cell in Y
+CDBD: BD CC 7B            JSR     $CC7B       ; {GetCellPointer} Get a pointer to the maze memory
 CDC0: 5F                  CLRB                ; Initial cell state (open)
 CDC1: A6 84               LDA     ,X          ; Get the cell wall state
 CDC3: 4C                  INCA                ; Is it FF (solid)?
@@ -2280,26 +2282,26 @@ CDC9: E7 A4               STB     ,Y          ; Draw ...
 CDCB: 31 A8 20            LEAY    $20,Y       ; ... six ...
 CDCE: 4A                  DECA                ; ... row ...
 CDCF: 26 F8               BNE     $CDC9       ; ... block
-CDD1: 0A 7D               DEC     <$7D        ;{-1_drwMazeX} Move left one cell
+CDD1: 0A 7D               DEC     <$7D        ; {-1_drwMazeX} Move left one cell
 CDD3: 2A E4               BPL     $CDB9       ; Do all of the row
 CDD5: 86 1F               LDA     #$1F        ; Restart row at ...
-CDD7: 97 7D               STA     <$7D        ;{-1_drwMazeX} ... far right
-CDD9: 0A 7C               DEC     <$7C        ;{-1_drwMazeY} Move up a row
+CDD7: 97 7D               STA     <$7D        ; {-1_drwMazeX} ... far right
+CDD9: 0A 7C               DEC     <$7C        ; {-1_drwMazeY} Move up a row
 CDDB: 2A DC               BPL     $CDB9       ; Do all rows
 ;
-CDDD: 0D 94               TST     <$94        ;{-1_scrollType} Is this a "seer" scroll?
+CDDD: 0D 94               TST     <$94        ; {-1_scrollType} Is this a "seer" scroll?
 CDDF: 27 4A               BEQ     $CE2B       ; No ... skip drawing monsters and objects
 ;
 ; Show objects on floor (Seer Scroll)
-CDE1: 0F 91               CLR     <$91        ;{-1_restartFind} Start at top of list
-CDE3: BD CF 63            JSR     $CF63       ;{GetNextOject} Get next object on floor
+CDE1: 0F 91               CLR     <$91        ; {-1_restartFind} Start at top of list
+CDE3: BD CF 63            JSR     $CF63       ; {GetNextOject} Get next object on floor
 CDE6: 27 0F               BEQ     $CDF7       ; All done ... do monsters
 CDE8: 6D 05               TST     5,X         ; Is this on the floor?
 CDEA: 26 F7               BNE     $CDE3       ; No ... don't show it
 CDEC: EC 02               LDD     2,X         ; Get the Y,X coordinate
-CDEE: 8D 21               BSR     $CE11       ;{GetMapCellMem} Get map screen pointer for coordinate
+CDEE: 8D 21               BSR     $CE11       ; {GetMapCellMem} Get map screen pointer for coordinate
 CDF0: CC 00 08            LDD     #$0008      ; 4 byte graphics pattern (small dot) for object
-CDF3: 8D 28               BSR     $CE1D       ;{DrawMapSymbol} Draw an object on the map
+CDF3: 8D 28               BSR     $CE1D       ; {DrawMapSymbol} Draw an object on the map
 CDF5: 20 EC               BRA     $CDE3       ; Draw next object on floor
 ;
 ; Show monsters (Seer Scroll)
@@ -2310,9 +2312,9 @@ CE00: 27 29               BEQ     $CE2B       ; Yes ... draw holes and ladders
 CE02: 6D 0C               TST     12,X        ; Is this creature active?
 CE04: 27 F4               BEQ     $CDFA       ; No ... skip it
 CE06: EC 0F               LDD     15,X        ; Get the creature coordinates
-CE08: 8D 07               BSR     $CE11       ;{GetMapCellMem} Get a pointer to the map screen
+CE08: 8D 07               BSR     $CE11       ; {GetMapCellMem} Get a pointer to the map screen
 CE0A: CC 10 54            LDD     #$1054      ; 4 byte graphics pattern (large dot) for monster
-CE0D: 8D 0E               BSR     $CE1D       ;{DrawMapSymbol} Draw a creature on the map
+CE0D: 8D 0E               BSR     $CE1D       ; {DrawMapSymbol} Draw a creature on the map
 CE0F: 20 E9               BRA     $CDFA       ; Do all creatures
 
 GetMapCellMem:
@@ -2345,21 +2347,21 @@ CE26: A7 A9 00 80         STA     $0080,Y     ; Bottom row pattern (A)
 CE2A: 39                  RTS                 ; Done
 
 ; Draws holes and player on map (both scroll types)
-CE2B: DC 13               LDD     <$13        ;{-1_playerY} Player Y,X coordinate
-CE2D: 8D E2               BSR     $CE11       ;{GetMapCellMem} Player's cell on map screen
+CE2B: DC 13               LDD     <$13        ; {-1_playerY} Player Y,X coordinate
+CE2D: 8D E2               BSR     $CE11       ; {GetMapCellMem} Player's cell on map screen
 CE2F: CC 24 18            LDD     #$2418      ; 4 byte pattern (X) for player 
-CE32: 8D E9               BSR     $CE1D       ;{DrawMapSymbol} Draw player on the map
+CE32: 8D E9               BSR     $CE1D       ; {DrawMapSymbol} Draw player on the map
 ;
 ; Two passes here. 1st draw the holes in the current ceiling. Then draw the holes
 ; in the current floor.
-CE34: 9E 86               LDX     <$86        ;{-1_currentHolesM} Pointer to ceiling holes/ladders for current level
+CE34: 9E 86               LDX     <$86        ; {-1_currentHolesM} Pointer to ceiling holes/ladders for current level
 CE36: 8D 00               BSR     $CE38       ; Draw the holes in this floor's ceiling (fall through to show floor holes)
 CE38: A6 80               LDA     ,X+         ; Get hole type
 CE3A: 2B EE               BMI     $CE2A       ; End of list? Yes ... out
 CE3C: EC 81               LDD     ,X++        ; Get the hole's Y,X coordinate
-CE3E: 8D D1               BSR     $CE11       ;{GetMapCellMem} Convert to screen pointer
+CE3E: 8D D1               BSR     $CE11       ; {GetMapCellMem} Convert to screen pointer
 CE40: CC 3C 24            LDD     #$3C24      ; 4 byte pattern (open circle) for hole
-CE43: 8D D8               BSR     $CE1D       ;{DrawMapSymbol} Draw the hole
+CE43: 8D D8               BSR     $CE1D       ; {DrawMapSymbol} Draw the hole
 CE45: 20 F1               BRA     $CE38       ; Keep going
 
 CE47: 34 12               PSHS    X,A         
@@ -2378,11 +2380,11 @@ CE64: 35 92               PULS    A,X,PC
 CE66: 3F                  SWI                 
 CE67: 09                                         ; SWI 09 Clear secondary screen
 CE68: 0F 8B               CLR     <$8B           ;       
-CE6A: DC 13               LDD     <$13           ;{-1_playerY}       
-CE6C: DD 7C               STD     <$7C           ;{-1_drwMazeY}       
+CE6A: DC 13               LDD     <$13           ; {-1_playerY}       
+CE6C: DD 7C               STD     <$7C           ; {-1_drwMazeY}       
 CE6E: 8D D7               BSR     $CE47          ;       
-CE70: DC 7C               LDD     <$7C           ;{-1_drwMazeY}       
-CE72: BD CC 7B            JSR     $CC7B          ;{GetCellPointer}       
+CE70: DC 7C               LDD     <$7C           ; {-1_drwMazeY}       
+CE72: BD CC 7B            JSR     $CC7B          ; {GetCellPointer}       
 CE75: A6 84               LDA     ,X          
 CE77: CE 09 F4            LDU     #$09F4      
 CE7A: 8E 00 04            LDX     #$0004      
@@ -2417,10 +2419,10 @@ CEB2: 1F 12               TFR     X,Y
 CEB4: 6D C5               TST     B,U         
 CEB6: 26 F9               BNE     $CEB1          ;       
 CEB8: DB 23               ADDB    <$23           ;       
-CEBA: D7 8A               STB     <$8A           ;{-1_drwMazeDir}       
-CEBC: DC 7C               LDD     <$7C           ;{-1_drwMazeY}       
-CEBE: BD D1 1B            JSR     $D11B          ;{StepInDirection}       
-CEC1: BD CF 82            JSR     $CF82          ;{GetCreatureAt}       
+CEBA: D7 8A               STB     <$8A           ; {-1_drwMazeDir}       
+CEBC: DC 7C               LDD     <$7C           ; {-1_drwMazeY}       
+CEBE: BD D1 1B            JSR     $D11B          ; {StepInDirection}       
+CEC1: BD CF 82            JSR     $CF82          ; {GetCreatureAt}       
 CEC4: 27 EB               BEQ     $CEB1          ;       
 CEC6: 1E 12               EXG     X,Y         
 CEC8: 6D 22               TST     2,Y         
@@ -2429,12 +2431,12 @@ CECC: 0A 75               DEC     <$75           ;
 CECE: 34 40               PSHS    U           
 CED0: 3F                  SWI                 
 CED1: 00                                         ; SWI 00 Light level
-CED2: DE 0B               LDU     <$0B           ;{-1_backScreen}       
+CED2: DE 0B               LDU     <$0B           ; {-1_backScreen}       
 CED4: 3F                  SWI                 
 CED5: 01                                         ; SWI 01 Draw picture X on screen
 CED6: 35 C0               PULS    U,PC        
-CED8: DC 7C               LDD     <$7C           ;{-1_drwMazeY}       
-CEDA: BD CF 82            JSR     $CF82          ;{GetCreatureAt}       
+CED8: DC 7C               LDD     <$7C           ; {-1_drwMazeY}       
+CEDA: BD CF 82            JSR     $CF82          ; {GetCreatureAt}       
 CEDD: 27 0C               BEQ     $CEEB          ;       
 CEDF: 1F 12               TFR     X,Y         
 CEE1: E6 2D               LDB     13,Y        
@@ -2449,15 +2451,15 @@ CEF2: C6 01               LDB     #$01
 CEF4: 8E DC B9            LDX     #$DCB9      
 CEF7: 8D B9               BSR     $CEB2          ;       
 CEF9: 8E DD 3C            LDX     #$DD3C      
-CEFC: DC 7C               LDD     <$7C           ;{-1_drwMazeY}       
-CEFE: BD CF E1            JSR     $CFE1          ;{ScanForHole}       
+CEFC: DC 7C               LDD     <$7C           ; {-1_drwMazeY}       
+CEFE: BD CF E1            JSR     $CFE1          ; {ScanForHole}       
 CF01: 2B 06               BMI     $CF09          ;       
 CF03: 8E DC C2            LDX     #$DCC2      
 CF06: 48                  ASLA                
 CF07: AE 86               LDX     A,X         
 CF09: 8D C3               BSR     $CECE          ;       
-CF0B: 0F 91               CLR     <$91           ;{-1_restartFind}       
-CF0D: DC 7C               LDD     <$7C           ;{-1_drwMazeY}       
+CF0B: 0F 91               CLR     <$91           ; {-1_restartFind}       
+CF0D: DC 7C               LDD     <$7C           ; {-1_drwMazeY}       
 CF0F: BD CF 53            JSR     $CF53          ;       
 CF12: 27 10               BEQ     $CF24          ;       
 CF14: A6 0A               LDA     10,X        
@@ -2471,10 +2473,10 @@ CF22: 20 E9               BRA     $CF0D          ;
 CF24: 6D C4               TST     ,U          
 CF26: 26 15               BNE     $CF3D          ;       
 CF28: 96 23               LDA     <$23           ;       
-CF2A: 97 8A               STA     <$8A           ;{-1_drwMazeDir}       
-CF2C: DC 7C               LDD     <$7C           ;{-1_drwMazeY}       
-CF2E: BD D1 1B            JSR     $D11B          ;{StepInDirection}       
-CF31: DD 7C               STD     <$7C           ;{-1_drwMazeY}       
+CF2A: 97 8A               STA     <$8A           ; {-1_drwMazeDir}       
+CF2C: DC 7C               LDD     <$7C           ; {-1_drwMazeY}       
+CF2E: BD D1 1B            JSR     $D11B          ; {StepInDirection}       
+CF31: DD 7C               STD     <$7C           ; {-1_drwMazeY}       
 CF33: 0C 8B               INC     <$8B           ;       
 CF35: 96 8B               LDA     <$8B           ;       
 CF37: 81 09               CMPA    #$09        
@@ -2493,7 +2495,7 @@ CF4C: 28 1A               BVC     $CF68          ;
 CF4E: 10 0A                    
 CF50: 06 03               ROR     <$03           ;       
 CF52: 01                        
-CF53: 8D 0E               BSR     $CF63          ;{GetNextOject}       
+CF53: 8D 0E               BSR     $CF63          ; {GetNextOject}       
 CF55: 27 0B               BEQ     $CF62          ;       
 CF57: 10 A3 02            CMPD    2,X         
 CF5A: 26 F7               BNE     $CF53          ;       
@@ -2511,15 +2513,15 @@ GetNextOject:
 ; Return Z=1 if no more, Z=0 if next is in X
 ;
 CF63: 34 02               PSHS    A           ; Preserve A
-CF65: 96 81               LDA     <$81        ;{-1_currentLevel} Get current level number
-CF67: 9E 92               LDX     <$92        ;{-1_currentObjM} Get current object pointer
-CF69: 0D 91               TST     <$91        ;{-1_restartFind} Start at top of list?
+CF65: 96 81               LDA     <$81        ; {-1_currentLevel} Get current level number
+CF67: 9E 92               LDX     <$92        ; {-1_currentObjM} Get current object pointer
+CF69: 0D 91               TST     <$91        ; {-1_restartFind} Start at top of list?
 CF6B: 26 05               BNE     $CF72       ; No ... continue from last time
 CF6D: 8E 0B 07            LDX     #$0B07      ; Start of list (-14 ... one slot before)
-CF70: 0A 91               DEC     <$91        ;{-1_restartFind} Next time through we won't restart
+CF70: 0A 91               DEC     <$91        ; {-1_restartFind} Next time through we won't restart
 CF72: 30 0E               LEAX    14,X        ; Get pointer to next object
-CF74: 9F 92               STX     <$92        ;{-1_currentObjM} Remember it
-CF76: 9C 0F               CMPX    <$0F        ;{-1_endOfObjsM} Have we reached the end of the list?
+CF74: 9F 92               STX     <$92        ; {-1_currentObjM} Remember it
+CF76: 9C 0F               CMPX    <$0F        ; {-1_endOfObjsM} Have we reached the end of the list?
 CF78: 27 06               BEQ     $CF80       ; Yes ... out with nothing found
 CF7A: A1 04               CMPA    4,X         ; Level the same as what we want?
 CF7C: 26 F4               BNE     $CF72       ; No ... next object
@@ -2547,7 +2549,7 @@ GetRandCell:
 ; Return A,B: The Y,X coordinate of the random open cell
 ;
 CF97: 34 16               PSHS    X,B,A       ; Preserve registers
-CF99: BD CC 71            JSR     $CC71       ;{GetRandomCell} Get a random cell
+CF99: BD CC 71            JSR     $CC71       ; {GetRandomCell} Get a random cell
 CF9C: ED E4               STD     ,S          ; Put it in return in case it is good
 CF9E: A6 84               LDA     ,X          ; Get the cell value
 CFA0: 4C                  INCA                ; FF means all walls (solid)
@@ -2572,13 +2574,13 @@ CFB8: C3 DA BB            ADDD    #$DABB      ; Add to creature-class data table
 CFBB: 1F 02               TFR     D,Y         ; Source to Y
 CFBD: 1F 31               TFR     U,X         ; Destination to X
 CFBF: 86 08               LDA     #$08        ; Bytes to copy = 8
-CFC1: BD C0 4B            JSR     $C04B       ;{CopyYtoX} Copy the 8 bytes of initial data
-CFC4: 8D D1               BSR     $CF97       ;{GetRandCell} Get a random cell
-CFC6: 8D BA               BSR     $CF82       ;{GetCreatureAt} Is there already a creature there?
+CFC1: BD C0 4B            JSR     $C04B       ; {CopyYtoX} Copy the 8 bytes of initial data
+CFC4: 8D D1               BSR     $CF97       ; {GetRandCell} Get a random cell
+CFC6: 8D BA               BSR     $CF82       ; {GetCreatureAt} Is there already a creature there?
 CFC8: 26 FA               BNE     $CFC4       ; Yes ... keep looking
 CFCA: ED 4F               STD     15,U        ; Put the creature in the random cell
 CFCC: 1F 31               TFR     U,X         
-CFCE: BD C2 5C            JSR     $C25C       ;{ReserveTask}       
+CFCE: BD C2 5C            JSR     $C25C       ; {ReserveTask}       
 CFD1: AF 45               STX     5,U         
 CFD3: CC D0 41            LDD     #$D041      
 CFD6: ED 43               STD     3,U         
@@ -2596,7 +2598,7 @@ ScanForHole:
 ; Return Negative if not found, positive if found
 ;
 CFE1: 34 56               PSHS    U,X,B,A     ; Preserve registers
-CFE3: DE 86               LDU     <$86        ;{-1_currentHolesM} Holes in ceiling of current level
+CFE3: DE 86               LDU     <$86        ; {-1_currentHolesM} Holes in ceiling of current level
 CFE5: 8D 0B               BSR     $CFF2       ; Check for a hole in the ceiling
 CFE7: 4D                  TSTA                ; Is there one?
 CFE8: 2A 04               BPL     $CFEE       ; Yes ... keep the data and skip the floor
@@ -2676,7 +2678,7 @@ D051: 27 1A               BEQ     $D06D          ;
 D053: 81 0A               CMPA    #$0A        
 D055: 2C 16               BGE     $D06D          ;
 D057: EC 2F               LDD     15,Y        
-D059: 0F 91               CLR     <$91           ;{-1_restartFind}       
+D059: 0F 91               CLR     <$91           ; {-1_restartFind}       
 D05B: BD CF 53            JSR     $CF53          ;       
 D05E: 27 0D               BEQ     $D06D          ;       
 D060: EC 28               LDD     8,Y         
@@ -2687,7 +2689,7 @@ D068: 3F                  SWI
 D069: 0E                                         ; SWI 0E Display playing screen
 D06A: 7E D1 03            JMP     $D103          ;       
 D06D: EC 2F               LDD     15,Y        
-D06F: 10 93 13            CMPD    <$13           ;{-1_playerY}       
+D06F: 10 93 13            CMPD    <$13           ; {-1_playerY}       
 D072: 26 3E               BNE     $D0B2          ;       
 D074: A6 2D               LDA     13,Y        
 D076: C6 FF               LDB     #$FF        
@@ -2721,28 +2723,28 @@ D0AA: AC E4               CMPX    ,S
 D0AC: 24 02               BCC     $D0B0          ;       
 D0AE: AF E4               STX     ,S          
 D0B0: 35 96               PULS    A,B,X,PC    
-D0B2: 91 13               CMPA    <$13           ;{-1_playerY}       
+D0B2: 91 13               CMPA    <$13           ; {-1_playerY}       
 D0B4: 26 0D               BNE     $D0C3          ;       
 D0B6: A6 A8 10            LDA     $10,Y       
 D0B9: C6 01               LDB     #$01        
-D0BB: 90 14               SUBA    <$14           ;{-1_playerX}       
+D0BB: 90 14               SUBA    <$14           ; {-1_playerX}       
 D0BD: 2B 11               BMI     $D0D0          ;       
 D0BF: C6 03               LDB     #$03        
 D0C1: 20 0D               BRA     $D0D0          ;       
 D0C3: EC 2F               LDD     15,Y        
-D0C5: D1 14               CMPB    <$14           ;{-1_playerX}       
+D0C5: D1 14               CMPB    <$14           ; {-1_playerX}       
 D0C7: 26 1B               BNE     $D0E4          ;       
 D0C9: C6 02               LDB     #$02        
-D0CB: 90 13               SUBA    <$13           ;{-1_playerY}       
+D0CB: 90 13               SUBA    <$13           ; {-1_playerY}       
 D0CD: 2B 01               BMI     $D0D0          ;       
 D0CF: 5F                  CLRB                
-D0D0: D7 8A               STB     <$8A           ;{-1_drwMazeDir}       
+D0D0: D7 8A               STB     <$8A           ; {-1_drwMazeDir}       
 D0D2: EC 2F               LDD     15,Y        
 D0D4: 8D 60               BSR     $D136          ;       
 D0D6: 26 0C               BNE     $D0E4          ;       
-D0D8: 10 93 13            CMPD    <$13           ;{-1_playerY}       
+D0D8: 10 93 13            CMPD    <$13           ; {-1_playerY}       
 D0DB: 26 F7               BNE     $D0D4          ;       
-D0DD: D6 8A               LDB     <$8A           ;{-1_drwMazeDir}       
+D0DD: D6 8A               LDB     <$8A           ; {-1_drwMazeDir}       
 D0DF: E7 2E               STB     14,Y        
 D0E1: 5F                  CLRB                
 D0E2: 20 1D               BRA     $D101          ;       
@@ -2765,7 +2767,7 @@ D0FF: C6 02               LDB     #$02
 D101: 8D 4C               BSR     $D14F          ;       
 D103: A6 26               LDA     6,Y         
 D105: AE 2F               LDX     15,Y        
-D107: 9C 13               CMPX    <$13           ;{-1_playerY}       
+D107: 9C 13               CMPX    <$13           ; {-1_playerY}       
 D109: 26 06               BNE     $D111          ;       
 D10B: 3F                  SWI                 
 D10C: 0E                                         ; SWI 0E Display playing screen
@@ -2785,14 +2787,14 @@ StepInDirection:
 ; Return X: Pointer to the new cell
 ;
 D11B: 34 06               PSHS    B,A         ; Hold coordinates
-D11D: D6 8A               LDB     <$8A        ;{-1_drwMazeDir} Get direction
+D11D: D6 8A               LDB     <$8A        ; {-1_drwMazeDir} Get direction
 D11F: C4 03               ANDB    #$03        ; Only four
 D121: 58                  ASLB                ; 2 bytes for each table entry
 D122: 8E D1 2E            LDX     #$D12E      ; Table of X,Y offsets for direction
 D125: EC 85               LDD     B,X         ; Get the X,Y offsets
 D127: AB E0               ADDA    ,S+         ; Offset the Y
 D129: EB E0               ADDB    ,S+         ; Offset the X
-D12B: 7E CC 7B            JMP     $CC7B       ;{GetCellPointer} Get cell pointer and return
+D12B: 7E CC 7B            JMP     $CC7B       ; {GetCellPointer} Get cell pointer and return
 ;     
 ; Y,X offsets for each direction
 ;
@@ -2802,8 +2804,8 @@ D132: 01 00 ; 02 Down  (y+1, X)
 D134: 00 FF ; 03 Left  (Y,   X-1)
                         
 D136: 34 76               PSHS    U,Y,X,B,A   
-D138: 8D E1               BSR     $D11B       ;{StepInDirection}       
-D13A: BD CC 8E            JSR     $CC8E       ;{IsValidCell}       
+D138: 8D E1               BSR     $D11B       ; {StepInDirection}       
+D13A: BD CC 8E            JSR     $CC8E       ; {IsValidCell}       
 D13D: 26 0E               BNE     $D14D       ;       
 D13F: 1F 03               TFR     D,U         
 D141: A6 84               LDA     ,X          
@@ -2817,20 +2819,20 @@ D14D: 35 F6               PULS    A,B,X,Y,U,PC
 D14F: 34 16               PSHS    X,B,A       
 D151: EB 2E               ADDB    14,Y        
 D153: C4 03               ANDB    #$03        
-D155: D7 8A               STB     <$8A        ;{-1_drwMazeDir}       
+D155: D7 8A               STB     <$8A        ; {-1_drwMazeDir}       
 D157: EC 2F               LDD     15,Y        
 D159: 8D DB               BSR     $D136       ;       
 D15B: 26 3C               BNE     $D199       ;       
-D15D: BD CF 82            JSR     $CF82       ;{GetCreatureAt}       
+D15D: BD CF 82            JSR     $CF82       ; {GetCreatureAt}       
 D160: 26 37               BNE     $D199       ;       
 D162: ED 2F               STD     15,Y        
-D164: D6 8A               LDB     <$8A        ;{-1_drwMazeDir}       
+D164: D6 8A               LDB     <$8A        ; {-1_drwMazeDir}       
 D166: E7 2E               STB     14,Y        
 D168: EC 2F               LDD     15,Y        
-D16A: 90 13               SUBA    <$13        ;{-1_playerY}       
+D16A: 90 13               SUBA    <$13        ; {-1_playerY}       
 D16C: 2A 01               BPL     $D16F       ;       
 D16E: 40                  NEGA                
-D16F: D0 14               SUBB    <$14        ;{-1_playerX}       
+D16F: D0 14               SUBB    <$14        ; {-1_playerX}       
 D171: 2A 01               BPL     $D174       ;       
 D173: 50                  NEGB                
 D174: D7 C1               STB     <$C1        ;       
@@ -2903,14 +2905,14 @@ D1E1: 5F                  CLRB
 D1E2: DD 21               STD     <$21           ;       
 D1E4: 3F                  SWI                 
 D1E5: 0C                                         ; SWI 0C Update heart rate
-D1E6: 96 AF               LDA     <$AF           ;{-1_heartCounterRel}       
+D1E6: 96 AF               LDA     <$AF           ; {-1_heartCounterRel}       
 D1E8: C6 02               LDB     #$02        
 D1EA: 39                  RTS
 
 ; ?? Task 0 ??                 
 D1EB: 0D 77               TST     <$77           ;       
 D1ED: 26 2C               BNE     $D21B          ;       
-D1EF: BD C3 29            JSR     $C329          ;{CharFromBuf}       
+D1EF: BD C3 29            JSR     $C329          ; {CharFromBuf}       
 D1F2: 4D                  TSTA                
 D1F3: 27 53               BEQ     $D248          ;       
 D1F5: 0D 28               TST     <$28           ;       
@@ -2961,7 +2963,7 @@ D245: 10 9F 0D            STY     <$0D           ;
 D248: CC 01 02            LDD     #$0102      
 D24B: 39                  RTS                 
 D24C: 34 76               PSHS    U,Y,X,B,A   
-D24E: 0D AD               TST     <$AD           ;{-1_scrollShowing}       
+D24E: 0D AD               TST     <$AD           ; {-1_scrollShowing}       
 D250: 26 04               BNE     $D256          ;       
 D252: 3F                  SWI                 
 D253: 19                                         ; SWI 19 Bring up normal display
@@ -3008,7 +3010,7 @@ D2A1: 48                  ASLA
 D2A2: 8E D9 D0            LDX     #$D9D0      
 D2A5: AD 96               JSR     [A,X]       
 D2A7: CE 02 F1            LDU     #$02F1      
-D2AA: 0D AD               TST     <$AD           ;{-1_scrollShowing}       
+D2AA: 0D AD               TST     <$AD           ; {-1_scrollShowing}       
 D2AC: 27 06               BEQ     $D2B4          ;       
 D2AE: 0D 28               TST     <$28           ;       
 D2B0: 26 02               BNE     $D2B4          ;       
@@ -3050,8 +3052,8 @@ D2EE: 26 07               BNE     $D2F7       ; Still good, go on
 D2F0: 86 16               LDA     #$16        ; GOLD token
 D2F2: A7 49               STA     9,U         ; Now a gold ring
 D2F4: BD D6 38            JSR     $D638       ; Change object
-D2F7: DC 13               LDD     <$13        ;{-1_playerY} Our coordinates
-D2F9: BD CF 82            JSR     $CF82       ;{GetCreatureAt} Find creature
+D2F7: DC 13               LDD     <$13        ; {-1_playerY} Our coordinates
+D2F9: BD CF 82            JSR     $CF82       ; {GetCreatureAt} Find creature
 D2FC: 27 77               BEQ     $D375       ; None found ignore attack
 D2FE: CE 02 17            LDU     #$0217      
 D301: 1E 13               EXG     X,U         
@@ -3110,7 +3112,7 @@ D35D: 0A 2B               DEC     <$2B        ;
 D35F: CC 07 13            LDD     #$0713      ; Light level
 D362: DD 26               STD     <$26        ; Temporary light
 D364: 8E 0B 23            LDX     #$0B23      ; Drop all but ...
-D367: 9F 0F               STX     <$0F        ;{-1_endOfObjsM} ... first object (the Supreme Ring)
+D367: 9F 0F               STX     <$0F        ; {-1_endOfObjsM} ... first object (the Supreme Ring)
 D369: DC 00               LDD     <$00        ; Zero constant
 D36B: DD 29               STD     <$29        ;       
 D36D: DD 24               STD     <$24        ; No torch
@@ -3162,12 +3164,12 @@ D3C0: 4F                  CLRA
 D3C1: 5F                  CLRB                
 D3C2: ED C4               STD     ,U          
 D3C4: CC 00 C8            LDD     #$00C8      
-D3C7: DD 15               STD     <$15           ;{-1_playerDir}       
+D3C7: DD 15               STD     <$15           ; {-1_playerDir}       
 D3C9: 86 03               LDA     #$03        ; Level 4
 D3CB: 3F                  SWI                 ; Prepare level
 D3CC: 1A                                         ; SWI 1A Set up level
-D3CD: BD CF 97            JSR     $CF97       ;{GetRandCell} Get random coordinates
-D3D0: DD 13               STD     <$13        ;{-1_playerY} New coordinates
+D3CD: BD CF 97            JSR     $CF97       ; {GetRandCell} Get random coordinates
+D3D0: DD 13               STD     <$13        ; {-1_playerY} New coordinates
 D3D2: 3F                  SWI                 
 D3D3: 15                                         ; SWI 15 Beam subroutine
 D3D4: 3F                  SWI                 
@@ -3239,8 +3241,8 @@ D44A: ED E4               STD     ,S
 D44C: 35 96               PULS    A,B,X,PC   
 
 CmdCLIMB:
-D44E: DC 13               LDD     <$13           ;{-1_playerY}       
-D450: BD CF E1            JSR     $CFE1          ;{ScanForHole}       
+D44E: DC 13               LDD     <$13           ; {-1_playerY}       
+D450: BD CF E1            JSR     $CFE1          ; {ScanForHole}       
 D453: 2B 1A               BMI     $D46F          ;       
 D455: 97 C1               STA     <$C1           ;       
 D457: 8E D8 D9            LDX     #$D8D9      
@@ -3260,7 +3262,7 @@ D474: C1 01               CMPB    #$01
 D476: 26 F7               BNE     $D46F          ;       
 D478: 3F                  SWI                 
 D479: 16                                         ; SWI 16 Print PREPARE
-D47A: 9B 81               ADDA    <$81           ;{-1_currentLevel}       
+D47A: 9B 81               ADDA    <$81           ; {-1_currentLevel}       
 D47C: 3F                  SWI                 
 D47D: 1A                                         ; SWI 1A Set up level
 D47E: 3F                  SWI                 
@@ -3289,8 +3291,8 @@ D49F: 02                                         ; SWI 02 * Uncompress message m
 ;
 D4A0: 62 5C 0A 21 33 04 9E F6 FC ; "IN THIS ROOM_1F_"
 ;
-D4A9: DC 13               LDD     <$13       ;{-1_playerY}       
-D4AB: BD CF 82            JSR     $CF82       ;{GetCreatureAt}       
+D4A9: DC 13               LDD     <$13       ; {-1_playerY}       
+D4AB: BD CF 82            JSR     $CF82       ; {GetCreatureAt}       
 D4AE: 27 10               BEQ     $D4C0       ;       
 D4B0: AE 44               LDX     4,U         
 D4B2: 30 0B               LEAX    11,X        
@@ -3300,7 +3302,7 @@ D4B7: 02                                         ; SWI 02 * Uncompress message m
 ;
 D4B8: 56 C7 22 86 95 91 77 F0 ; "!CREATURE!_1F_"
 ;
-D4C0: 0F 91               CLR     <$91 ;{-1_restartFind}       
+D4C0: 0F 91               CLR     <$91 ; {-1_restartFind}       
 D4C2: DC 13               LDD     <$19                ;       
 D4C4: BD CF 53            JSR     $CF53       ;       
 D4C7: 27 04               BEQ     $D4CD       ;       
@@ -3356,8 +3358,8 @@ CmdGET:
 D522: 8D 52               BSR     $D576          ;       
 D524: 26 4D               BNE     $D573          ;       
 D526: BD CB BA            JSR     $CBBA          ;       
-D529: 0F 91               CLR     <$91           ;{-1_restartFind}       
-D52B: DC 13               LDD     <$13           ;{-1_playerY}       
+D529: 0F 91               CLR     <$91           ; {-1_restartFind}       
+D52B: DC 13               LDD     <$13           ; {-1_playerY}       
 D52D: BD CF 53            JSR     $CF53          ;       
 D530: 27 41               BEQ     $D573          ;       
 D532: 0D 90               TST     <$90           ;       
@@ -3383,17 +3385,17 @@ D554: 4F                  CLRA
 D555: 5F                  CLRB                
 D556: ED C4               STD     ,U          
 D558: 6F 05               CLR     5,X         
-D55A: DC 13               LDD     <$13           ;{-1_playerY}       
+D55A: DC 13               LDD     <$13           ; {-1_playerY}       
 D55C: ED 02               STD     2,X         
-D55E: 96 81               LDA     <$81           ;{-1_currentLevel}       
+D55E: 96 81               LDA     <$81           ; {-1_currentLevel}       
 D560: A7 04               STA     4,X         
 D562: E6 0A               LDB     10,X        
 D564: 8E D9 FA            LDX     #$D9FA      
 D567: E6 85               LDB     B,X         
 D569: 50                  NEGB                
 D56A: 1D                  SEX                 
-D56B: D3 15               ADDD    <$15           ;{-1_playerDir}       
-D56D: DD 15               STD     <$15           ;{-1_playerDir}       
+D56B: D3 15               ADDD    <$15           ; {-1_playerDir}       
+D56D: DD 15               STD     <$15           ; {-1_playerDir}       
 D56F: 3F                  SWI                 
 D570: 0C                                         ; SWI 0C Update heart rate
 D571: 20 44               BRA     $D5B7          ;       
@@ -3528,7 +3530,7 @@ D661: CB 02               ADDB    #$02
 D663: 8D 08               BSR     $D66D          ;       
 D665: 8D 1D               BSR     $D684          ;       
 D667: 8D 1B               BSR     $D684          ;       
-D669: 0A B4               DEC     <$B4           ;{-1_flipScreens}       
+D669: 0A B4               DEC     <$B4           ; {-1_flipScreens}       
 D66B: 13                  SYNC                
 D66C: 39                  RTS                 
 D66D: C4 03               ANDB    #$03        
@@ -3616,30 +3618,30 @@ D705: C6 03               LDB     #$03
 D707: 8D 17               BSR     $D720          ;       
 D709: 26 03               BNE     $D70E          ;       
 D70B: BD D6 74            JSR     $D674          ;       
-D70E: DC 15               LDD     <$15           ;{-1_playerDir}       
+D70E: DC 15               LDD     <$15           ; {-1_playerDir}       
 D710: BD D3 7F            JSR     $D37F          ;       
 D713: C3 00 03            ADDD    #$0003      
 D716: D3 21               ADDD    <$21           ;       
 D718: DD 21               STD     <$21           ;       
 D71A: 3F                  SWI                 
 D71B: 0C                                         ; SWI 0C Update heart rate
-D71C: 0A B4               DEC     <$B4           ;{-1_flipScreens}       
+D71C: 0A B4               DEC     <$B4           ; {-1_flipScreens}       
 D71E: 13                  SYNC                
 D71F: 39                  RTS                 
 D720: 34 06               PSHS    B,A         
 D722: 6F E2               CLR     ,-S         
 D724: DB 23               ADDB    <$23           ;       
 D726: C4 03               ANDB    #$03        
-D728: D7 8A               STB     <$8A           ;{-1_drwMazeDir}       
-D72A: DC 13               LDD     <$13           ;{-1_playerY}       
+D728: D7 8A               STB     <$8A           ; {-1_drwMazeDir}       
+D72A: DC 13               LDD     <$13           ; {-1_playerY}       
 D72C: BD D1 36            JSR     $D136          ;       
 D72F: 27 07               BEQ     $D738          ;       
 D731: 3F                  SWI                 
 D732: 1B                                         ; SWI 1B * Play sound i at full volume
 D733: 14                                         ; 14 = Wall hit
 D734: 6A E4               DEC     ,S          
-D736: DC 13               LDD     <$13           ;{-1_playerY}       
-D738: DD 13               STD     <$13           ;{-1_playerY}       
+D736: DC 13               LDD     <$13           ; {-1_playerY}       
+D738: DD 13               STD     <$13           ; {-1_playerY}       
 D73A: BD C6 60            JSR     $C660          ;       
 D73D: 6D E0               TST     ,S+         
 D73F: 35 86               PULS    A,B,PC      
@@ -3670,10 +3672,10 @@ D767: 39                  RTS
 D768: 6E 98 01            JMP     [$01,X]     
 D76B: 05                     
 D76C: D7 7A               STB     <$7A           ;       
-D76E: 09 D7               ROL     <$D7           ;{-1_inputBuf}       
+D76E: 09 D7               ROL     <$D7           ; {-1_inputBuf}       
 D770: 83 08 D7            SUBD    #$08D7      
 D773: 87                      
-D774: 04 D7               LSR     <$D7           ;{-1_inputBuf}       
+D774: 04 D7               LSR     <$D7           ; {-1_inputBuf}       
 D776: A2 07               SBCA    7,X         
 D778: D7 A0               STB     <$A0           ;       
 D77A: CC 03 E8            LDD     #$03E8      
@@ -3701,13 +3703,13 @@ D79E: 0C                                         ; SWI 0C Update heart rate
 D79F: 39                  RTS        
 D7A0: 4F                  CLRA                
 D7A1: 8C 86 FF            CMPX    #$86FF      
-D7A4: 97 94               STA     <$94           ;{-1_scrollType}       
+D7A4: 97 94               STA     <$94           ; {-1_scrollType}       
 D7A6: 6D 4B               TST     11,U        
 D7A8: 26 0C               BNE     $D7B6          ;       
 D7AA: 3F                  SWI                 
 D7AB: 1B                                         ; SWI 1B * Play sound i at full volume
 D7AC: 0E                                         ; 0E = Scroll 
-D7AD: 0F AD               CLR     <$AD           ;{-1_scrollShowing}       
+D7AD: 0F AD               CLR     <$AD           ; {-1_scrollShowing}       
 D7AF: 8E CD B2            LDX     #$CDB2
 D7B2: 9F B2               STX     <$B2           ;       
 D7B4: 3F                  SWI                 
@@ -3727,9 +3729,9 @@ D7C4: 7E CB 96            JMP     $CB96          ;
 
 CmdZSAVE:
 D7C7: 8D F3               BSR     $D7BC          ;       
-D7C9: BF 00 7E            STX     $007E          ;{-1_CASSPTR}
+D7C9: BF 00 7E            STX     $007E          ; {-1_CASSPTR}
 D7CC: CC 00 0F            LDD     #$000F      
-D7CF: FD 00 7C            STD     $007C          ;{-1_CASSBLKTYPE}
+D7CF: FD 00 7C            STD     $007C          ; {-1_CASSBLKTYPE}
 D7D2: 0C B8               INC     <$B8           ;       
 D7D4: 39                  RTS                 
 
@@ -4020,7 +4022,7 @@ D9FE: 19    ; Sword
 D9FF: 0A    ; Torch
 
 ; Object descriptors by object index
-;     CC RR MM PP: Class, Reveal, Magic, Physical
+;     CC RR MM PP: Class, Reveal, Magic Attack, Physical Attack
 ;                   nn Class   Proper
 DA00: 01 FF 00 05 ; 00 Ring    Supreme
 DA04: 01 AA 00 05 ; 01 Ring    Joule
@@ -4050,16 +4052,23 @@ DA60: 05 05 00 05 ; 18 Torch   Dead
  
 ; Special object properties by proper-index
 ;
+; Note that the physical and magic defense of the shields is swapped. This is a well known
+; bug in the code. These values are multipliers. 80 means 1. 40 means 0.5.
+;
+; In this table the leather and bronze shields have a little reduction for magic and no
+; reduction for physical. Since these are purely physical shields, the numbers should be
+; reversed. The mithril shield has 0.5 for both physical and magic.
+;
 DA64: 00 03 12 00 ; Supreme Ring    (proper, strikes, ??, ??)
 DA68: 01 03 13 00 ; Joule Ring      (proper, strikes, ??, ??)
-DA6C: 03 40 40 00 ; Mithril Shield  (proper, ??, ??, ??)
+DA6C: 03 40 40 00 ; Mithril Shield  (proper, magic defense, physical defense, ??)
 DA70: 06 03 14 00 ; Rime Ring       (proper, strikes, ??, ??)
 DA74: 0A 3C 0D 0B ; Solar Torch     (proper, ??, ??, ??)
-DA78: 0B 60 80 00 ; Bronze Shield   (proper, ??, ??, ??)
+DA78: 0B 60 80 00 ; Bronze Shield   (proper, magic defense, physical defense, ??)
 DA7C: 0C 03 15 00 ; Vulcan Ring     (proper, strikes, ??, ??)
 DA80: 0E 1E 0A 04 ; Lunar Torch     (proper, ??, ??, ??)
 DA84: 0F 0F 07 00 ; Pine Torch      (proper, ??, ??, ??)
-DA88: 10 6C 80 00 ; Leather Shield  (proper, ??, ??, ??)
+DA88: 10 6C 80 00 ; Leather Shield  (proper, magic defense, physical defense, ??)
 DA8C: 18 00 00 00 ; Dead Torch      (proper, ??, ??, ??)
 DA90: FF          ; End of list
 

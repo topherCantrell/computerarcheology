@@ -4,10 +4,11 @@ import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import code.CU;
-import cpu.CPU;
 import cpu.Opcode;
-import files.BinaryFiles;
+import diss.cpu.DissCPU;
+import util.BinaryFiles;
+import util.CU;
+
 
 public class Disassembler {
     
@@ -38,7 +39,9 @@ public class Disassembler {
         //String [] targs = {"0x42E9~haunt1.bin","haunt1.cmark","Z80"};
         //String [] targs = {"0x435E~haunt2.bin","haunt2.cmark","Z80"};
     	
-    	String [] targs = {"0x4300~content/trs80/pyramid/pyramid.bin","Code.cmark","Z80"};
+    	//String [] targs = {"0x4300~content/trs80/pyramid/pyramid.bin","Code.cmark","Z80"};
+    	
+    	String [] targs = {"0x0000~content/arcade/frogger/roms/main.bin","Topher.mark","Z80"};
     	
         args = targs;
                 
@@ -64,7 +67,7 @@ public class Disassembler {
             end = CU.parseInt(args[4], 16);
         } 
         
-        CPU cpu = CPU.getCPU(args[2]);
+        DissCPU cpu = DissCPU.getDissCPU(args[2]);
         
         System.out.println(CU.hex4(start)+" - "+CU.hex4(end));
         
@@ -92,7 +95,7 @@ public class Disassembler {
         
     }
     
-    static void printDisassembly(CPU cpu, int addr, Opcode op, Map<String,Object> fillins, PrintStream ps) {
+    static void printDisassembly(DissCPU cpu, int addr, Opcode op, Map<String,Object> fillins, PrintStream ps) {
         
         int [] spacing = cpu.getSpacing();
         

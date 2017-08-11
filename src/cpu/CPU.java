@@ -167,7 +167,7 @@ public class CPU {
 		return ret;
 	}
 			
-	private boolean couldMatch(String pot, Opcode op) {
+	public boolean couldMatch(String pot, Opcode op) {
 	    
 	    for(int x=0;x<op.code.length();++x) {
 	        char c = op.code.charAt(x);

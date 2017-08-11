@@ -5,7 +5,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class FU {
 	
@@ -83,6 +86,25 @@ public final class FU {
             }
         }
 
+    }
+    
+    public static int[] readBinary(String ... names) throws IOException {
+    	List<Integer> data = new ArrayList<Integer>();
+    	
+    	for(String name : names) {
+    		try (InputStream is = new FileInputStream(name)) {
+    			int s = is.available();
+    			for(int x=0;x<s;++x) data.add(is.read());
+    		}
+    	}
+    	
+    	int [] ret = new int[data.size()];
+    	for(int x=0;x<ret.length;++x) {
+    		ret[x] = data.get(x);
+    	}
+    	
+    	return ret;   	
+    	
     }
 
 }

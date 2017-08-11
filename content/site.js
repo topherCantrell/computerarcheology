@@ -77,6 +77,9 @@
 	             {"mark": "SoundCode.mark", "out": "SoundCode.html", "nav": "Sound Code"},
 	             {"copy": "Frogger.jpg"},	             
 	             {"copy": "FroggerFix.mp3"}
+	             {"mark": "Code.mark", "out":"Main.html","nav":"Main Board"},
+	             {"mark": "Hardware.mark", "out":"Hardware.html","nav":"Hardware"},
+	             {"mark": "RAMUse.mark", "out":"RAMUse.html","nav":"RAM Use"}
 	             ]
 	         },
 	         {"dir": "Galaga", "nav": "Galaga", "entries": [

@@ -1,0 +1,19 @@
+%%title = Frogger Main Board Hardware
+%%image = Frogger.jpg
+
+Main CPU is a Z80 running at 3.072MHz.
+
+Sound CPU is a Z80 running at 1.78975MHz.
+
+|| frogger.26 || main 0000:0FFF ||
+|| frogger.27 || main 1000:1FFF ||
+|| frsm3.7    || main 2000:2FFF ||
+
+|| frogger.608 || sound 0000:07FF ||
+|| frogger.609 || sound 0800:0FFF ||
+|| frogger.610 || sound 1000:17FF ||
+
+|| frogger.607 || gfx 0000:07FF ||
+|| frogger.606 || gfx 0800:0FFF ||
+
+|| pr-91.6l || PROM ||
