@@ -62,7 +62,7 @@ public class MarkupToHTML {
 	 * @param inFile the name of the input file
 	 * @throws IOException file errors
 	 */
-	void expandIncludes(List<LineOfMarkup> lines,String inFile) throws IOException {
+	public static void expandIncludes(List<LineOfMarkup> lines,String inFile) throws IOException {
 		for(int x=lines.size()-1;x>=0;--x) {
 			String s = lines.get(x).line.trim();
 			if(s.startsWith("%%include ")) {

@@ -7,9 +7,9 @@
 0000: 3A 00 40       LD      A,($4000)       ; Is there ...
 0003: FE 55          CP      $55             ; ... an expansion ROM ?
 0005: CA 01 40       JP      Z,$4001         ; Yes ... jump to it
-0008: 3A 00 88       LD      A,($8800)       ; Feed the watchdog
+0008: 3A 00 88       LD      A,($8800)       ; {-hard_watchdog} Feed the watchdog
 000B: 31 00 88       LD      SP,$8800        ; Stack at top of RAM
-000E: C3 A3 02       JP      $02A3           
+000E: C3 A3 02       JP      $02A3           ; {Initialize}
 0011: FF             RST     0X38            
 0012: FF             RST     0X38            
 0013: FF             RST     0X38            
@@ -84,9 +84,9 @@
 0069: C5             PUSH    BC              
 006A: DD E5          PUSH    IX              
 006C: FD E5          PUSH    IY              
-006E: 3A 00 88       LD      A,($8800)       
+006E: 3A 00 88       LD      A,($8800)       ; {-hard_watchdog}
 0071: AF             XOR     A               
-0072: 32 08 B8       LD      ($B808),A       
+0072: 32 08 B8       LD      ($B808),A       ; {-hard_IRQENABLE}
 0075: CD F0 2C       CALL    $2CF0           
 0078: 21 07 80       LD      HL,$8007        
 007B: 11 07 B0       LD      DE,$B007        
@@ -138,7 +138,7 @@
 00B9: 35             DEC     (HL)            
 00BA: 20 04          JR      NZ,$C0          
 00BC: AF             XOR     A               
-00BD: 32 1C B8       LD      ($B81C),A       
+00BD: 32 1C B8       LD      ($B81C),A       ; {-hard_COINCNT1}
 00C0: 21 7E 83       LD      HL,$837E        
 00C3: 7E             LD      A,(HL)          
 00C4: B7             OR      A               
@@ -146,8 +146,8 @@
 00C7: 35             DEC     (HL)            
 00C8: 20 04          JR      NZ,$CE          
 00CA: AF             XOR     A               
-00CB: 32 18 B8       LD      ($B818),A       
-00CE: 3A 04 E0       LD      A,($E004)       
+00CB: 32 18 B8       LD      ($B818),A       ; {-hard_COINCNT0}
+00CE: 3A 04 E0       LD      A,($E004)       ; {-hard_PPI8255}
 00D1: E6 08          AND     $08             
 00D3: CA FC 00       JP      Z,$00FC         
 00D6: 3A FE 83       LD      A,($83FE)       
@@ -320,14 +320,14 @@
 023E: 3A 97 82       LD      A,($8297)       
 0241: A7             AND     A               
 0242: C4 A2 06       CALL    NZ,$06A2        
-0245: 3A 00 88       LD      A,($8800)       
+0245: 3A 00 88       LD      A,($8800)       ; {-hard_watchdog}
 0248: FD E1          POP     IY              
 024A: DD E1          POP     IX              
 024C: C1             POP     BC              
 024D: D1             POP     DE              
 024E: E1             POP     HL              
 024F: 3E 01          LD      A,$01           
-0251: 32 08 B8       LD      ($B808),A       
+0251: 32 08 B8       LD      ($B808),A       ; {-hard_IRQENABLE}
 0254: F1             POP     AF              
 0255: ED 45          RETN                    
 0257: 3D             DEC     A               
@@ -364,12 +364,14 @@
 029D: B5             OR      L               
 029E: C0             RET     NZ              
 029F: 32 AE 83       LD      ($83AE),A       
-02A2: C9             RET                     
+02A2: C9             RET                   
+
+Initialize:  
 02A3: AF             XOR     A               
-02A4: 32 08 B8       LD      ($B808),A       
+02A4: 32 08 B8       LD      ($B808),A       ; {-hard_IRQENABLE}
 02A7: 32 05 88       LD      ($8805),A       
-02AA: 32 10 B8       LD      ($B810),A       
-02AD: 32 0C B8       LD      ($B80C),A       
+02AA: 32 10 B8       LD      ($B810),A       ; {-hard_FLIPX}
+02AD: 32 0C B8       LD      ($B80C),A       ; {-hard_FLIPY}
 02B0: 21 00 80       LD      HL,$8000        
 02B3: 11 01 80       LD      DE,$8001        
 02B6: 01 FF 07       LD      BC,$07FF        
@@ -380,13 +382,13 @@
 02C2: 71             LD      (HL),C          
 02C3: 2C             INC     L               
 02C4: 10 FC          DJNZ    $2C2            
-02C6: 3A 02 E0       LD      A,($E002)       
+02C6: 3A 02 E0       LD      A,($E002)       ; {-hard_PPI8255}
 02C9: 16 2E          LD      D,$2E           
 02CB: E6 03          AND     $03             
 02CD: 5F             LD      E,A             
 02CE: 1A             LD      A,(DE)          
 02CF: 32 E4 83       LD      ($83E4),A       
-02D2: 3A 04 E0       LD      A,($E004)       
+02D2: 3A 04 E0       LD      A,($E004)       ; {-hard_PPI8255}
 02D5: 67             LD      H,A             
 02D6: CB 5C          BIT     3,H             
 02D8: 28 05          JR      Z,$2DF          
@@ -402,12 +404,12 @@
 02F0: CD 48 10       CALL    $1048           
 02F3: 3E 01          LD      A,$01           
 02F5: 32 70 83       LD      ($8370),A       
-02F8: 32 08 B8       LD      ($B808),A       
+02F8: 32 08 B8       LD      ($B808),A       ; {-hard_IRQENABLE}
 02FB: FF             RST     0X38            
 02FC: AF             XOR     A               
-02FD: 32 01 B0       LD      ($B001),A       
+02FD: 32 01 B0       LD      ($B001),A       ; {-hard_SPRITERAM}
 0300: 3E 06          LD      A,$06           
-0302: 32 03 B0       LD      ($B003),A       
+0302: 32 03 B0       LD      ($B003),A       ; {-hard_SPRITERAM}
 0305: 21 00 01       LD      HL,$0100        
 0308: 22 C7 83       LD      ($83C7),HL      
 030B: 3E 15          LD      A,$15           
@@ -422,13 +424,13 @@
 0323: 36 88          LD      (HL),$88        
 0325: 3E 18          LD      A,$18           
 0327: 32 D9 83       LD      ($83D9),A       
-032A: 32 02 D0       LD      ($D002),A       
+032A: 32 02 D0       LD      ($D002),A       ; {-hard_PPI8255}
 032D: AF             XOR     A               
 032E: CD 94 07       CALL    $0794           
 0331: 3A D9 83       LD      A,($83D9)       
 0334: E6 EF          AND     $EF             
 0336: 32 D9 83       LD      ($83D9),A       
-0339: 32 02 D0       LD      ($D002),A       
+0339: 32 02 D0       LD      ($D002),A       ; {-hard_PPI8255}
 033C: 3E FF          LD      A,$FF           
 033E: CD 94 07       CALL    $0794           
 0341: 3A D6 83       LD      A,($83D6)       
@@ -464,7 +466,7 @@
 0377: 3A B3 83       LD      A,($83B3)       
 037A: B7             OR      A               
 037B: 20 C4          JR      NZ,$341         
-037D: 3A 02 E0       LD      A,($E002)       
+037D: 3A 02 E0       LD      A,($E002)       ; {-hard_PPI8255}
 0380: 07             RLCA                    
 0381: 30 07          JR      NC,$38A         
 0383: 07             RLCA                    
@@ -710,8 +712,8 @@
 05A7: 77             LD      (HL),A          
 05A8: 67             LD      H,A             
 05A9: 6F             LD      L,A             
-05AA: 32 10 B8       LD      ($B810),A       
-05AD: 32 0C B8       LD      ($B80C),A       
+05AA: 32 10 B8       LD      ($B810),A       ; {-hard_FLIPX}
+05AD: 32 0C B8       LD      ($B80C),A       ; {-hard_FLIPY}
 05B0: 22 93 82       LD      ($8293),HL      
 05B3: 32 BB 83       LD      ($83BB),A       
 05B6: 32 CB 83       LD      ($83CB),A       
@@ -928,17 +930,17 @@
 0790: 15             DEC     D               
 0791: 20 F6          JR      NZ,$789         
 0793: C9             RET                     
-0794: 32 00 D0       LD      ($D000),A       
+0794: 32 00 D0       LD      ($D000),A       ; {-hard_PPI8255}
 0797: 3A D9 83       LD      A,($83D9)       
 079A: E6 F7          AND     $F7             
-079C: 32 02 D0       LD      ($D002),A       
+079C: 32 02 D0       LD      ($D002),A       ; {-hard_PPI8255}
 079F: 00             NOP                     
 07A0: 00             NOP                     
 07A1: 00             NOP                     
 07A2: 00             NOP                     
 07A3: 3A D9 83       LD      A,($83D9)       
 07A6: F6 08          OR      $08             
-07A8: 32 02 D0       LD      ($D002),A       
+07A8: 32 02 D0       LD      ($D002),A       ; {-hard_PPI8255}
 07AB: C9             RET                     
 07AC: 21 00 83       LD      HL,$8300        
 07AF: 7E             LD      A,(HL)          
@@ -1029,8 +1031,8 @@
 084E: EE 01          XOR     $01             
 0850: 32 CB 83       LD      ($83CB),A       
 0853: 67             LD      H,A             
-0854: 32 10 B8       LD      ($B810),A       
-0857: 32 0C B8       LD      ($B80C),A       
+0854: 32 10 B8       LD      ($B810),A       ; {-hard_FLIPX}
+0857: 32 0C B8       LD      ($B80C),A       ; {-hard_FLIPY}
 085A: C9             RET                     
 085B: 21 51 AA       LD      HL,$AA51        
 085E: 11 6E 2F       LD      DE,$2F6E        
@@ -2107,7 +2109,7 @@
 1044: C3 F1 0F       JP      $0FF1           
 1047: C9             RET                     
 1048: 01 FF EF       LD      BC,$EFFF        
-104B: 3A 00 88       LD      A,($8800)       
+104B: 3A 00 88       LD      A,($8800)       ; {-hard_watchdog}
 104E: 0B             DEC     BC              
 104F: 78             LD      A,B             
 1050: A7             AND     A               
@@ -2586,8 +2588,8 @@
 1415: 10 10          DJNZ    $1427           
 1417: D0             RET     NC              
 1418: D1             POP     DE              
-1419: D2 D3 CC       JP      NC,$CCD3        
-141C: CD CE CF       CALL    $CFCE           
+1419: D2 D3 CC       JP      NC,$CCD3        ; {-hard_PPI8255}
+141C: CD CE CF       CALL    $CFCE           ; {-hard_PPI8255}
 141F: C8             RET     Z               
 1420: C9             RET                     
 1421: CA CB 34       JP      Z,$34CB         
@@ -3505,24 +3507,24 @@
 1AE2: C0             RET     NZ              
 1AE3: 21 44 80       LD      HL,$8044        
 1AE6: 11 47 80       LD      DE,$8047        
-1AE9: 3A 04 E0       LD      A,($E004)       
+1AE9: 3A 04 E0       LD      A,($E004)       ; {-hard_PPI8255}
 1AEC: CB 5F          BIT     3,A             
 1AEE: 28 07          JR      Z,$1AF7         
 1AF0: 3A FD 83       LD      A,($83FD)       
 1AF3: 3D             DEC     A               
 1AF4: C2 74 1B       JP      NZ,$1B74        
-1AF7: 3A 00 E0       LD      A,($E000)       
+1AF7: 3A 00 E0       LD      A,($E000)       ; {-hard_PPI8255}
 1AFA: 4F             LD      C,A             
 1AFB: 3A 48 82       LD      A,($8248)       
 1AFE: A7             AND     A               
 1AFF: C2 BA 1B       JP      NZ,$1BBA        
-1B02: 3A 04 E0       LD      A,($E004)       
+1B02: 3A 04 E0       LD      A,($E004)       ; {-hard_PPI8255}
 1B05: CB 5F          BIT     3,A             
 1B07: 28 07          JR      Z,$1B10         
 1B09: 3A FD 83       LD      A,($83FD)       
 1B0C: 3D             DEC     A               
 1B0D: C2 7B 1B       JP      NZ,$1B7B        
-1B10: 3A 04 E0       LD      A,($E004)       
+1B10: 3A 04 E0       LD      A,($E004)       ; {-hard_PPI8255}
 1B13: CB 77          BIT     6,A             
 1B15: CA 8B 1B       JP      Z,$1B8B         
 1B18: AF             XOR     A               
@@ -3536,13 +3538,13 @@
 1B2A: 3A 4B 82       LD      A,($824B)       
 1B2D: 80             ADD     A,B             
 1B2E: 20 1D          JR      NZ,$1B4D        
-1B30: 3A 04 E0       LD      A,($E004)       
+1B30: 3A 04 E0       LD      A,($E004)       ; {-hard_PPI8255}
 1B33: CB 5F          BIT     3,A             
 1B35: 28 07          JR      Z,$1B3E         
 1B37: 3A FD 83       LD      A,($83FD)       
 1B3A: 3D             DEC     A               
 1B3B: C2 83 1B       JP      NZ,$1B83        
-1B3E: 3A 04 E0       LD      A,($E004)       
+1B3E: 3A 04 E0       LD      A,($E004)       ; {-hard_PPI8255}
 1B41: CB 67          BIT     4,A             
 1B43: CA E4 1B       JP      Z,$1BE4         
 1B46: AF             XOR     A               
@@ -3565,13 +3567,13 @@
 1B6D: 32 4F 82       LD      ($824F),A       
 1B70: 32 53 82       LD      ($8253),A       
 1B73: C9             RET                     
-1B74: 3A 02 E0       LD      A,($E002)       
+1B74: 3A 02 E0       LD      A,($E002)       ; {-hard_PPI8255}
 1B77: 4F             LD      C,A             
 1B78: C3 FB 1A       JP      $1AFB           
-1B7B: 3A 04 E0       LD      A,($E004)       
+1B7B: 3A 04 E0       LD      A,($E004)       ; {-hard_PPI8255}
 1B7E: CB 47          BIT     0,A             
 1B80: C3 15 1B       JP      $1B15           
-1B83: 3A 00 E0       LD      A,($E000)       
+1B83: 3A 00 E0       LD      A,($E000)       ; {-hard_PPI8255}
 1B86: CB 47          BIT     0,A             
 1B88: C3 43 1B       JP      $1B43           
 1B8B: 3A 47 80       LD      A,($8047)       
@@ -5183,11 +5185,11 @@
 279E: C9             RET                     
 279F: 00             NOP                     
 27A0: EE EC          XOR     $EC             
-27A2: EA E8 E6       JP      PE,$E6E8        
-27A5: E4 E2 E0       CALL    PO,$E0E2        
+27A2: EA E8 E6       JP      PE,$E6E8        ; {-hard_PPI8255}
+27A5: E4 E2 E0       CALL    PO,$E0E2        ; {-hard_PPI8255}
 27A8: 01 DE DC       LD      BC,$DCDE        
-27AB: DA D8 D6       JP      C,$D6D8         
-27AE: D4 D2 D0       CALL    NC,$D0D2        
+27AB: DA D8 D6       JP      C,$D6D8         ; {-hard_PPI8255}
+27AE: D4 D2 D0       CALL    NC,$D0D2        ; {-hard_PPI8255}
 27B1: 00             NOP                     
 27B2: D0             RET     NC              
 27B3: 3A 35 81       LD      A,($8135)       
@@ -5890,7 +5892,7 @@
 2CF0: 21 E2 83       LD      HL,$83E2        
 2CF3: 7E             LD      A,(HL)          
 2CF4: B7             OR      A               
-2CF5: 3A 00 E0       LD      A,($E000)       
+2CF5: 3A 00 E0       LD      A,($E000)       ; {-hard_PPI8255}
 2CF8: 2F             CPL                     
 2CF9: 20 04          JR      NZ,$2CFF        
 2CFB: E6 C4          AND     $C4             
@@ -5908,7 +5910,7 @@
 2D12: 77             LD      (HL),A          
 2D13: 20 09          JR      NZ,$2D1E        
 2D15: 3C             INC     A               
-2D16: 32 18 B8       LD      ($B818),A       
+2D16: 32 18 B8       LD      ($B818),A       ; {-hard_COINCNT0}
 2D19: 3E 04          LD      A,$04           
 2D1B: 32 7E 83       LD      ($837E),A       
 2D1E: 21 23 2D       LD      HL,$2D23        
@@ -5920,7 +5922,7 @@
 2D29: 18 1E          JR      $2D49           
 2D2B: 77             LD      (HL),A          
 2D2C: 3C             INC     A               
-2D2D: 32 1C B8       LD      ($B81C),A       
+2D2D: 32 1C B8       LD      ($B81C),A       ; {-hard_COINCNT1}
 2D30: 3E 04          LD      A,$04           
 2D32: 32 7F 83       LD      ($837F),A       
 2D35: 21 3A 2D       LD      HL,$2D3A        

@@ -10,13 +10,13 @@ import code.CodeLine;
  */
 public class LineOfMarkup {
 	
-	String line;
-	String lineTrim;
+	public String line;
+	public String lineTrim;
 	String newLine;
 	String fileName;
-	int lineNumber;	
+	public int lineNumber;	
 	
-	CodeLine codeLine = null;
+	public CodeLine codeLine = null;
 	
 	String giveId = null;
 	
