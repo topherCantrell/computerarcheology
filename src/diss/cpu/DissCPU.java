@@ -60,8 +60,12 @@ public class DissCPU {
         Opcode ret = null;
         
         for(Opcode op : cpu.opcodes) {
+        	if(op.code.equals("DDE5")) {
+        		System.out.println("CLOSER");
+        	}
+        	
             while(pot.length()<(op.getSize()*2)) {
-                pot = pot + CU.hex2(files.getByte(pos));                
+                pot = pot + CU.hex2(files.getByte(pos++));                
             }
             if(cpu.couldMatch(pot,op)) {
                 if(ret!=null) {
@@ -162,7 +166,7 @@ public class DissCPU {
 	}
 
 	public int[] getSpacing() {
-		int[] ret = {12,8,16};
+		int[] ret = {16,8,16};
 		return ret;
 	}
 

@@ -168,8 +168,8 @@ public class CPU {
 	}
 			
 	public boolean couldMatch(String pot, Opcode op) {
-	    
-	    for(int x=0;x<op.code.length();++x) {
+		
+		for(int x=0;x<op.code.length();++x) {
 	        char c = op.code.charAt(x);
 	        if(c>='a' && c<='z') {
 	            // Fill-in field. Matches anything.

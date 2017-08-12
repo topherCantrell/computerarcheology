@@ -733,21 +733,5 @@
 {"mnem":"LD IYH,E",     "code":"FD63",       "bus":""      },
 {"mnem":"XOR IYH",      "code":"FDAC",       "bus":""      },
 {"mnem":"CALL Z,t",     "code":"FDCCtltm",   "bus":""      },
-{"mnem":"RET C",        "code":"FDD8",       "bus":""      },
-{"mnem":"PUSH IX",      "code":"DDE5",       "bus":"w"     },
-{"mnem":"PUSH IY",      "code":"FDE5",       "bus":"w"     },  
-{"mnem":"LDIR",         "code":"EDB0",       "bus":"r"     },
-  
-  {"mnem":"POP IY", "code":"FDE1", "bus":"r"},
-  {"mnem":"POP IX", "code":"DDE1", "bus":""},
-  
-  {"mnem":"RETN", "code":"ED45", "bus":""},
-  
-  {"mnem":"", "code":"", "bus":""},
-  {"mnem":"", "code":"", "bus":""},
-  {"mnem":"", "code":"", "bus":""},
-  {"mnem":"", "code":"", "bus":""},
-  {"mnem":"", "code":"", "bus":""},
-  {"mnem":"", "code":"", "bus":""},
-  
+{"mnem":"RET C",        "code":"FDD8",       "bus":""      },  
 ]

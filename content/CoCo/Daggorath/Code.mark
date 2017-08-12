@@ -1194,7 +1194,8 @@ C71D: 11  ; Sword   (11 = WOODEN SWORD)
 C71E: 0F  ; Torch   (0F = PINE TORCH)
 
 SWI_18:
-;  Change object to proper name and data
+; Morph one object into another  
+; Change object to proper name and data
 ; A = object type
 C71F: 48                  ASLA                   ; Type times ...
 C720: 48                  ASLA                   ; ... 4 bytes per entry
@@ -1202,7 +1203,7 @@ C721: 8E DA 00            LDX     #$DA00         ; Object descriptors
 C724: 31 86               LEAY    A,X            ; Get the object data
 C726: 30 4A               LEAX    10,U           ; Destination in structure
 C728: 86 04               LDA     #$04           ; Four bytes
-C72A: BD C0 4B            JSR     $C04B          ; {CopyYtoX} Copy 4 bytes from Y to X
+C72A: BD C0 4B            JSR     $C04B          ; Copy 4 bytes from Y to X
 C72D: 8E DA 60            LDX     #$DA60         ; Special object properties (backed up one slot)
 C730: 30 04               LEAX    4,X            ; Point to next object
 C732: A6 84               LDA     ,X             ; Object's type

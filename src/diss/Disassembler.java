@@ -78,6 +78,9 @@ public class Disassembler {
         Map<String,Object> fillins = new HashMap<String,Object>();
         int addr = start;
         while(addr<=end) {
+        	if(addr==0x006A) {
+        		System.out.println("HERE");
+        	}
             Opcode op = cpu.disassemble(files,addr,fillins);
             if(op==null) {
                 op = Opcode.UNKNOWN;
