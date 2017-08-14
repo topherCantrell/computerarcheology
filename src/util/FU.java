@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
@@ -106,5 +107,14 @@ public final class FU {
     	return ret;   	
     	
     }
+
+	public static void writeBinary(int[] data, String name) throws IOException {
+		try (OutputStream os = new FileOutputStream(name)) {
+			for(int d : data) {
+				os.write(d);
+			}
+			os.flush();
+		}
+	}
 
 }

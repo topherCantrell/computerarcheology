@@ -76,8 +76,10 @@
 	             {"mark": "SoundHardware.mark", "out": "SoundHardware.html", "nav": "Sound Hardware"},	             
 	             {"mark": "SoundCode.mark", "out": "SoundCode.html", "nav": "Sound Code"},
 	             {"copy": "Frogger.jpg"},	             
-	             {"copy": "FroggerFix.mp3"}
+	             {"copy": "FroggerFix.mp3"},
+	             {"copy": "Frogger.js"},
 	             {"mark": "Code.mark", "out":"Main.html","nav":"Main Board"},
+	             {"mark": "GFX.mark", "out":"GFX.html","nav":"GFX"},
 	             {"mark": "Hardware.mark", "out":"Hardware.html","nav":"Hardware"},
 	             {"mark": "RAMUse.mark", "out":"RAMUse.html","nav":"RAM Use"}
 	             ]

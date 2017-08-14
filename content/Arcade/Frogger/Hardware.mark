@@ -44,3 +44,17 @@ Sound CPU is a Z80 running at 1.78975MHz.
 || B81C      || COINCNT1         || ||
 || C000:FFFF || PPI8255          || A0 and A1 ... two ports ||
 }}}
+
+{{{
+/* the 2nd gfx ROM has data lines D0 and D1 swapped */
+	for (offs = 0x0800; offs < 0x1000; offs++)
+		rombase[offs] = BITSWAP8(rombase[offs], 7,6,5,4,3,2,0,1);
+}}}
+
+Lots of good information in mame/src/mame/video/galaxian.cpp
+{{{
+            objram[40] = vertical position of sprite 0
+            objram[41] = picture number and H/V flip of sprite 0
+            objram[42] = color of sprite 0
+            objram[43] = horizontal position of sprite 0
+}}}
