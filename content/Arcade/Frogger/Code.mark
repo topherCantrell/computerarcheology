@@ -1763,7 +1763,8 @@ Initialize:
 0DCD: 06 0D          LD      B,$0D           
 0DCF: EF             RST     $28            
 0DD0: 36 23          LD      (HL),$23        
-0DD2: C9             RET                     
+0DD2: C9             RET
+                     
 0DD3: 21 F1 AA       LD      HL,$AAF1        
 0DD6: 06 04          LD      B,$04           
 0DD8: EF             RST     $28            
@@ -1771,6 +1772,7 @@ Initialize:
 0DDC: 06 0B          LD      B,$0B           
 0DDE: EF             RST     $28            
 0DDF: C9             RET                     
+
 0DE0: 3E 03          LD      A,$03           
 0DE2: 32 0D 80       LD      ($800D),A       
 0DE5: 32 0F 80       LD      ($800F),A       
@@ -1780,62 +1782,71 @@ Initialize:
 0DEF: C0             RET     NZ              
 0DF0: 3E 20          LD      A,$20           
 0DF2: 32 BC 83       LD      ($83BC),A       
-0DF5: 3A D7 83       LD      A,($83D7)       
-0DF8: 87             ADD     A,A             
-0DF9: 16 00          LD      D,$00           
-0DFB: 5F             LD      E,A             
-0DFC: 21 FF 0D       LD      HL,$0DFF        
-0DFF: 19             ADD     HL,DE           
-0E00: E9             JP      (HL)            
-0E01: 18 46          JR      $E49            
-0E03: 18 3A          JR      $E3F            
-0E05: 18 2E          JR      $E35            
-0E07: 18 22          JR      $E2B            
-0E09: 18 16          JR      $E21            
-0E0B: 18 0A          JR      $E17            
-0E0D: 21 06 AB       LD      HL,$AB06        
+0DF5: 3A D7 83       LD      A,($83D7)       ; Splash letter number
+0DF8: 87             ADD     A,A             ; Times 2 (2 bytes each)
+0DF9: 16 00          LD      D,$00           ; MSB = 0
+0DFB: 5F             LD      E,A             ; DE is now offset
+0DFC: 21 FF 0D       LD      HL,$0DFF        ; Start number at 1 ... back up one slot
+0DFF: 19             ADD     HL,DE           ; Point to letter routine
+0E00: E9             JP      (HL)            ; Execute the routine
+
+0E01: 18 46          JR      $E49            ; "R" (This is count 7)
+0E03: 18 3A          JR      $E3F            ; "E"
+0E05: 18 2E          JR      $E35            ; "G"
+0E07: 18 22          JR      $E2B            ; "G"
+0E09: 18 16          JR      $E21            ; "O"
+0E0B: 18 0A          JR      $E17            ; "R"
+;                                            ; "F"
+0E0D: 21 06 AB       LD      HL,$AB06        ; Screen RAM
 0E10: 11 40 80       LD      DE,$8040        
-0E13: 3E D4          LD      A,$D4           
+0E13: 3E D4          LD      A,$D4           ; Big "F"
 0E15: 18 3A          JR      $E51            
-0E17: 21 A6 AA       LD      HL,$AAA6        
+
+0E17: 21 A6 AA       LD      HL,$AAA6        ; Screen RAM
 0E1A: 11 44 80       LD      DE,$8044        
-0E1D: 3E D8          LD      A,$D8           
-0E1F: 18 30          JR      $E51            
-0E21: 21 46 AA       LD      HL,$AA46        
+0E1D: 3E D8          LD      A,$D8           ; Big "R"
+0E1F: 18 30          JR      $E51
+            
+0E21: 21 46 AA       LD      HL,$AA46        ; Screen RAM
 0E24: 11 48 80       LD      DE,$8048        
-0E27: 3E DC          LD      A,$DC           
-0E29: 18 26          JR      $E51            
-0E2B: 21 E6 A9       LD      HL,$A9E6        
+0E27: 3E DC          LD      A,$DC           ; Big "O"
+0E29: 18 26          JR      $E51
+            
+0E2B: 21 E6 A9       LD      HL,$A9E6        ; Screen RAM
 0E2E: 11 4C 80       LD      DE,$804C        
-0E31: 3E F4          LD      A,$F4           
-0E33: 18 1C          JR      $E51            
-0E35: 21 86 A9       LD      HL,$A986        
+0E31: 3E F4          LD      A,$F4           ; Big "G"
+0E33: 18 1C          JR      $E51
+            
+0E35: 21 86 A9       LD      HL,$A986        ; Screen RAM
 0E38: 11 50 80       LD      DE,$8050        
-0E3B: 3E F4          LD      A,$F4           
-0E3D: 18 12          JR      $E51            
-0E3F: 21 26 A9       LD      HL,$A926        
+0E3B: 3E F4          LD      A,$F4           ; Big "G"
+0E3D: 18 12          JR      $E51
+            
+0E3F: 21 26 A9       LD      HL,$A926        ; Screen RAM
 0E42: 11 54 80       LD      DE,$8054        
-0E45: 3E F8          LD      A,$F8           
+0E45: 3E F8          LD      A,$F8           ; Big "E"
 0E47: 18 08          JR      $E51            
-0E49: 21 C6 A8       LD      HL,$A8C6        
+
+0E49: 21 C6 A8       LD      HL,$A8C6        ; Screen RAM
 0E4C: 11 58 80       LD      DE,$8058        
-0E4F: 3E D8          LD      A,$D8           
-0E51: 01 1F 00       LD      BC,$001F        
-0E54: 77             LD      (HL),A          
-0E55: 3C             INC     A               
-0E56: 2C             INC     L               
-0E57: 77             LD      (HL),A          
-0E58: 3C             INC     A               
-0E59: 09             ADD     HL,BC           
-0E5A: 77             LD      (HL),A          
-0E5B: 3C             INC     A               
-0E5C: 2C             INC     L               
-0E5D: 77             LD      (HL),A          
+0E4F: 3E D8          LD      A,$D8           ; Big "R"
+;
+0E51: 01 1F 00       LD      BC,$001F        ; 31 -- offset to jump to next row
+0E54: 77             LD      (HL),A          ; Store 1st tile
+0E55: 3C             INC     A               ; Next tile number
+0E56: 2C             INC     L               ; Next spot on screen
+0E57: 77             LD      (HL),A          ; Store 2nd tile
+0E58: 3C             INC     A               ; Next tile number
+0E59: 09             ADD     HL,BC           ; Next row
+0E5A: 77             LD      (HL),A          ; Store 3rd tile
+0E5B: 3C             INC     A               ; Next tile number
+0E5C: 2C             INC     L               ; Next spot on screen
+0E5D: 77             LD      (HL),A          ; Store 4th tile
 0E5E: EB             EX      DE,HL           
-0E5F: 01 00 04       LD      BC,$0400        
-0E62: 71             LD      (HL),C          
-0E63: 2C             INC     L               
-0E64: 10 FC          DJNZ    $E62            
+0E5F: 01 00 04       LD      BC,$0400        ; B=4 (count) C=0 (value)
+0E62: 71             LD      (HL),C          ; Zero out ??
+0E63: 2C             INC     L               ; Do ...
+0E64: 10 FC          DJNZ    $E62            ; ... all ??
 0E66: 21 D7 83       LD      HL,$83D7        
 0E69: 35             DEC     (HL)            
 0E6A: C0             RET     NZ              
@@ -1846,6 +1857,7 @@ Initialize:
 0E74: 3E 05          LD      A,$05           
 0E76: 32 D6 83       LD      ($83D6),A       
 0E79: C9             RET                     
+
 0E7A: 3A E1 83       LD      A,($83E1)       
 0E7D: B7             OR      A               
 0E7E: 20 F4          JR      NZ,$E74         

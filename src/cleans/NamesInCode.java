@@ -89,8 +89,8 @@ public class NamesInCode {
 	public static void main(String [] args) throws Exception {
 		
 		// For running within dev
-		//String [] targs = {"content/arcade/frogger/Code.mark"};
-		String [] targs = {"content/coco/daggorath/Code.mark"};
+		String [] targs = {"content/arcade/frogger/Code.mark"};
+		//String [] targs = {"content/coco/daggorath/Code.mark"};
 		args = targs;
 		
 		try (PrintStream ps = new PrintStream("NamesInCode.txt")) {
