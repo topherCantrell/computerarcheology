@@ -317,7 +317,7 @@ public class MarkupToHTML {
 			if(!lineTrim.startsWith("*")) break;
 			lineTrim = lineTrim.substring(1).trim();
 			//System.out.println(">>"+lineTrim+"<<");
-			lines.get(pos).newLine = "<li>"+fixHTMLText(lineTrim)+"</li>\n";
+			lines.get(pos).newLine = "<li>"+fixHTMLText(lineTrim,true)+"</li>\n";
 			++pos;
 		}		
 		ne = new LineOfMarkup("</ul>","GENERATED",-1);
@@ -329,13 +329,15 @@ public class MarkupToHTML {
 	 * @param line the line to be HTML
 	 * @return the modified line
 	 */
-	String fixHTMLText(String line) {	
+	String fixHTMLText(String line,boolean doLinks) {	
 		line = CU.replaceAll(line, "&", "&amp;"); // Do this first ... it adds more "&"
 		line = CU.replaceAll(line, "<", "&lt;");
 		line = CU.replaceAll(line, ">", "&gt;");
 		line = CU.replaceAll(line, "[[br]]", "<br>");
 		line = CU.replaceAll(line, "[[BR]]", "<br>");
-		line = fixLinks(line);		
+		if(doLinks) {
+			line = fixLinks(line);
+		}
 		return line;
 	}
 	
@@ -621,7 +623,7 @@ public class MarkupToHTML {
 							}
 						}
 					}
-					mark.newLine = fixHTMLText(mark.newLine);					
+					mark.newLine = fixHTMLText(mark.newLine,true);					
 				}
 			}								
 									
@@ -692,6 +694,7 @@ public class MarkupToHTML {
 	}
 	
 	String fixCodeHTMLText(String text) {
+		
 		List<String> keeps = new ArrayList<String>();
 		while(true) {
 			int i = text.indexOf('`');
@@ -699,8 +702,20 @@ public class MarkupToHTML {
 			int j = text.indexOf('`',i+1);
 			keeps.add(text.substring(i+1, j));
 			text = text.substring(0,i)+"__FILLIN__"+(keeps.size()-1)+"__"+text.substring(j+1);
-		}
-		text = fixHTMLText(text);
+		}		
+		
+		// We only fix links in comments
+		
+		String before = text;
+		String after = "";
+		
+		int z = text.indexOf(';');
+		if(z>=0) {
+			before = text.substring(0,z);
+			after = text.substring(z);
+		}				
+		text = fixHTMLText(before,false)+fixHTMLText(after,true);
+		
 		for(int x=0;x<keeps.size();++x) {
 			text = CU.replaceAll(text, "__FILLIN__"+x+"__", keeps.get(x));
 		}
@@ -709,7 +724,7 @@ public class MarkupToHTML {
 	
 	void fixCode(LineOfMarkup mark) {	
 		
-		CodeLine code = mark.codeLine;		
+		CodeLine code = mark.codeLine;			
 				
 		if(code.opcode==null) {
 			mark.newLine = fixCodeHTMLText(mark.line);		
@@ -759,7 +774,7 @@ public class MarkupToHTML {
 		// The opcode itself has much better information about what this access is
 		// But for now we'll ask based on text (the code.opcode is text)
 		Opcode op = cpu.matchDisassembly(code);
-				
+		
 		AddressAccess a = cpu.getAccess(op, num, dp, accessOverride); 
 		if(a==null) {
 			mark.newLine = stripOverride(fixCodeHTMLText(mark.line));		
@@ -773,7 +788,7 @@ public class MarkupToHTML {
 		ExternalMemoryMap emm = null;
 		AddressTableEntry e = null;
 		for(ExternalMemoryMap map : memoryMaps) {			
-			e = map.map.findEntryForAccess(num+dp, a.busDir, a.busType); 
+			e = map.map.findEntryForAccess(a.address, a.busDir, a.busType); 
 			if(e != null) {
 				emm = map;
 				break;
@@ -797,8 +812,8 @@ public class MarkupToHTML {
 			url = emm.htmlFile+"#addr_"+name;
 			style = "addr_"+emm.name.substring(1);		
 			target = " target='"+emm.name.substring(1)+"'";
-			if((num+dp)!=e.start) {
-				int k = (num+dp)-e.start;
+			if((a.address)!=e.start) {
+				int k = (a.address)-e.start;
 				if(k<256) {
 					offset="+"+CU.hex2(k);
 					mod=3;

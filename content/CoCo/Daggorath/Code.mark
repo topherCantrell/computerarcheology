@@ -1095,7 +1095,7 @@ C694: EE 6C               LDU     12,S
 C696: E6 C0               LDB     ,U+         
 C698: EF 6C               STU     12,S        
 C69A: CE A0 00            LDU     #$A000      
-C69D: AD D5               JSR     [B,U]       
+C69D: AD D5               JSR     [B,U]            ;  
 C69F: A7 63               STA     3,S         
 C6A1: AF 66               STX     6,S         
 C6A3: 39                  RTS                 
@@ -1363,7 +1363,7 @@ C80F: 20 05               BRA     $C816            ;
 C811: CE C8 1F            LDU     #$C81F      
 C814: 86 0A               LDA     #$0A        
 C816: 97 5F               STA     <$5F             ; {-ram_m0219}       
-C818: AD C4               JSR     ,U          
+C818: AD C4               JSR     ,U               ;  
 C81A: 0A 5F               DEC     <$5F             ; {-ram_m0219}       
 C81C: 26 FA               BNE     $C818            ;       
 C81E: 39                  RTS                 
@@ -3029,7 +3029,7 @@ D29C: BD CB E1            JSR     $CBE1            ;
 D29F: 20 06               BRA     $D2A7            ;       
 D2A1: 48                  ASLA                
 D2A2: 8E D9 D0            LDX     #$D9D0      
-D2A5: AD 96               JSR     [A,X]       
+D2A5: AD 96               JSR     [A,X]            ; 
 D2A7: CE 02 F1            LDU     #$02F1      
 D2AA: 0D AD               TST     <$AD             ; {-ram_scrollShowing}       
 D2AC: 27 06               BEQ     $D2B4            ;       
@@ -3510,12 +3510,12 @@ D60F: 02                                           ; SWI_2:[Uncompress message m
 ;
 D610: C8 00 00 00 00 03 CC 00 81 C5 B8 2E 9D 06 44 F7 BC ; "        OF A NEW WIZARD..."
 ;
-D621: 20 FE               BRA   $D621              ;
+D621: 20 FE               BRA     $D621            ;
 
 CmdREVEAL:
-D623: BD CC 31            JSR   $CC31              ;
-D626: EE C4               LDU   ,U                 ;
-D628: 27 14               BEQ   $D63E              ;
+D623: BD CC 31            JSR     $CC31            ;
+D626: EE C4               LDU     ,U               ;
+D628: 27 14               BEQ     $D63E            ;
 D62A: A6 4B               LDA     11,U             ; Already revealed?
 D62C: 27 10               BEQ     $D63E            ; Yes, skip it now
 D62E: C6 19               LDB     #$19             ; Base multiplier
