@@ -82,7 +82,7 @@ public class MarkupToHTML {
 	 * @param pos the current position within the list of lines
 	 * @return true if this is code
 	 */	 
-	boolean isCodeLine(int pos) {
+	public static boolean isCodeLine(List<LineOfMarkup> lines, int pos) {
 		if(pos>=lines.size()) return false;
 		if(lines.get(pos).lineNumber<0) return false; // We never insert code;
 		String lineTrim = lines.get(pos).line.trim();
@@ -93,7 +93,7 @@ public class MarkupToHTML {
 		if(lineTrim.isEmpty()) {				
 			// Blank line could be code if next line is
 			// DANGEROUS RECURSION HERE			
-			boolean is = isCodeLine(pos+1);
+			boolean is = isCodeLine(lines,pos+1);
 			return is;
 		}
 		// It could be a label
@@ -103,7 +103,7 @@ public class MarkupToHTML {
 		if(j>=0 && j<i) return false; // No spaces in labels		
 		// It is only a label if the next line is code
 		// DANGEROUS RECURSION HERE
-		boolean is = isCodeLine(pos+1);
+		boolean is = isCodeLine(lines,pos+1);
 		return is;
 	}
 	
@@ -513,7 +513,7 @@ public class MarkupToHTML {
 				continue; // Back around
 			}
 									
-			boolean ic = isCodeLine(x);
+			boolean ic = isCodeLine(lines,x);
 			if(ic) {				
 				lines.get(x).codeLine = new CodeLine(lines.get(x).line);
 				if(!isCodeBlock) {
@@ -543,6 +543,7 @@ public class MarkupToHTML {
 				if(code.label!=null) {
 					code.address = address;
 					labelValues.put(address, mark);
+					mark.giveId = "addr_"+code.label;
 				}
 			}
 		}

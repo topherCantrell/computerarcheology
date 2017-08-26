@@ -23,7 +23,7 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 * 2800-3FFF Second screen buffer
 
 {{{memory
-||=Address     || Name                 || Description || 
+||=Address   || Name                 || Description || 
 || 007C      || CASSBLKTYPE          || BASIC cassette block type ||
 || 007E      || CASSPTR              || BASIC cassette buffer ptr ||
 || 0200:0201 || CONST_00             || '0000' Double constant ('0001' from 0201) ||
@@ -46,7 +46,7 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 || 0216      || m0216                || '23'            ||
 || 0217      || m0217                || '17'            ||
 || 0218      || m0218                || 'A0'            ||
-|| 0219:026A || m0219                || ||
+|| 022D      || dotFrequency         || Based on light-level. Frequency of drawn dots in a line. ||
 || 026B      || rndSeedA             || Random number generator seed value ||
 || 026C      || rndSeedB             || Random number generator seed value ||
 || 026D      || rndSeedC             || Random number generator seed value ||
