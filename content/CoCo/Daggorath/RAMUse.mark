@@ -118,7 +118,7 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 || 02AF      || heartCounterRel      || Heart counter reload value ||
 || 02B0      || heartPicture         || 0 for small-heart, other for large-heart ||
 || 02B1      || hearHeart            || Not-0 to hear the heart beat ||
-|| 02B2      || m02B2                || ||
+|| 02B2      || displayFunction      || This is the function to call to redraw the screen (normal, scroll, inventory) ||
 || 02B3      || m02B3                || ||
 || 02B4      || flipScreens          || Not-0 to flip screens then ack to 0 ||
 || 02B5      || m02B5                || ||
