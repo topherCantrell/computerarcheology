@@ -124,7 +124,7 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 || 02B5      || m02B5                || ||
 || 02B6      || m02B6                || ||
 || 02B7      || m02B7                || ||
-|| 02B8      || m02B8                || ||
+|| 02B8      || tapeTrigger          || 01=ZSAVE, FF=ZLOAD ||
 || 02B9      || nextTask             || Next available game-task slot ||
 || 02BA      || m02BA                || ||
 || 02BB      || m02BB                || ||

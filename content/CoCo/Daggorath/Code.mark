@@ -171,15 +171,15 @@ C10F: CE D7 D5            LDU     #$D7D5
 C112: 20 1D               BRA     $C131            ;       
 
 EndOfTapeAccess:
-C114: CC 34 3C            LDD     #$343C           ; ?? flesh this out more
+C114: CC 34 3C            LDD     #$343C           ; 0011_0100 and 0011_1100
 C117: B7 FF 21            STA     $FF21            ; Motor off
-C11A: F7 FF 23            STB     $FF23            ; Sound enabled
-C11D: 4C                  INCA                     ; Reenable ...
-C11E: B7 FF 03            STA     $FF03            ; ... field sync interrupts
-C121: 3C EF               CWAI    $EF              ; Wait for an interrupt
+C11A: F7 FF 23            STB     $FF23            ; 6-bit Sound enabled
+C11D: 4C                  INCA                     ; Re-enable ...
+C11E: B7 FF 03            STA     $FF03            ; ... 60Hz interrupt
+C121: 3C EF               CWAI    $EF              ; Wait for a 60Hz interrupt to happen
 C123: 39                  RTS                      ; Done                 
 
-C124: 8D EE               BSR     $C114            ; {EndOfTapeAccess} Turn off tape motor and reenable interrupts    
+C124: 8D EE               BSR     $C114            ; {EndOfTapeAccess} Turn off tape motor and reenable interrupts and sound   
 C126: CC 10 0B            LDD     #$100B      
 C129: DD 13               STD     <$13             ; {-ram_playerY}       
 C12B: 0F 17               CLR     <$17             ; {-ram_m0217}       
@@ -224,76 +224,81 @@ C168: 3F                  SWI                      ; Show the command prompt
 C169: 0F                                           ; SWI_F:[Ready command prompt](#addr_SWI_F):
 C16A: 7E C1 F5            JMP     $C1F5            ; {GameLoop} Back to the game loop (??demo commands??)
 
-; ?? TODO ... better flesh the PIA access
-    
-C16D: BF 00 7E            STX     $007E            ; {-ram_drwMazeCross} 
-C170: 10 3F               SWI2                
-C172: 06                  ; A006: BLKIN 
-C173: 4D                  TSTA        
-C174: 10 26 DE AF         LBNE    $A027            ;       
-C178: F6 00 7C            LDB     $007C            ; {-ram_drwMazeY} 
-C17B: 39                  RTS
-                 
+ReadCheckError:
+; Read a block from tape to buffer. Restart the computer on an error.
+; X points to the buffer to fill. Block type returned in B.   
+C16D: BF 00 7E            STX     $007E            ; Read buffer
+C170: 10 3F               SWI2                     ; Read a block ...
+C172: 06                  ; A006: BLKIN            ; ... from tape
+C173: 4D                  TSTA                     ; Error?
+C174: 10 26 DE AF         LBNE    $A027            ; Yes ... restart the CoCo   
+C178: F6 00 7C            LDB     $007C            ; Return block type
+C17B: 39                  RTS                      ; Done
+ 
+StartOfTapeAccess:                
 C17C: CE FF 00            LDU     #$FF00           ; Base of PIA 0
 C17F: CC 34 3C            LDD     #$343C           ; 0011_0100  and 0011_1100
-C182: A7 43               STA     3,U              ; Disable 16.667Mz interrupt
+C182: A7 43               STA     3,U              ; Disable 60Hz interrupt
 C184: B7 FF 23            STA     $FF23            ; Disable cartridge-detect interrupt and sound off
-C187: F7 FF 21            STB     $FF21            ; Disable RS-232 interupt and Cassette motor ON
-C18A: 39                  RTS
+C187: F7 FF 21            STB     $FF21            ; Disable RS-232 interrupt and Cassette motor ON
+C18A: 39                  RTS                      ; Done
                  
+QuarterSecDelay:
 C18B: 9E 00               LDX     <$00             ; {-ram_CONST_00}       
 C18D: 30 1F               LEAX    -1,X             ; Long ...
 C18F: 26 FC               BNE     $C18D            ; ... delay loop      
 C191: 39                  RTS                      ; Done
                  
+SaveToTape:
 C192: 8D E8               BSR     $C17C            ; Tape motor on  
 C194: 8D F5               BSR     $C18B            ; Wait      
-C196: 8D F3               BSR     $C18B            ; Wait      
+C196: 8D F3               BSR     $C18B            ; Wait (1/2 second total)      
 C198: 10 3F               SWI2                     ; Write the tape header
 C19A: 0C                  ; A00C: WRTLDR
-C19B: 10 3F               SWI2                     ; Write a block to tape       
+C19B: 10 3F               SWI2                     ; Write the filename (we setup this block at D7C9)
 C19D: 08                  ; A008: BLKOUT        
 C19E: 8D EB               BSR     $C18B            ; Wait
-C1A0: 10 3F               SWI2                     ; Write the tape header
+C1A0: 10 3F               SWI2                     ; Write the tape header again
 C1A2: 0C                  ; A00C: WRTLDR
-C1A3: 8E 02 00            LDX     #$0200 
-C1A6: CC 01 80            LDD     #$0180 
-C1A9: FD 00 7C            STD     $007C            ; {-ram_drwMazeY} 
-C1AC: BF 00 7E            STX     $007E            ; {-ram_drwMazeCross} 
-C1AF: 10 3F               SWI2                
+C1A3: 8E 02 00            LDX     #$0200           ; Start of variables (the direct page)
+C1A6: CC 01 80            LDD     #$0180           ; Block type = 1 (data) ...
+C1A9: FD 00 7C            STD     $007C            ; ... block size = 128 bytes
+C1AC: BF 00 7E            STX     $007E            ; Store for BASIC
+C1AF: 10 3F               SWI2                     ; Write the block
 C1B1: 08                  ; A008: BLKOUT
-C1B2: 8C 0F 05            CMPX    #$0F05       
-C1B5: 25 EF               BCS     $C1A6            ;       
-C1B7: FF 00 7C            STU     $007C            ; {-ram_drwMazeY}       
-C1BA: 10 3F               SWI2                
+C1B2: 8C 0F 05            CMPX    #$0F05           ; Written all of our memory?
+C1B5: 25 EF               BCS     $C1A6            ; No ... back for more      
+C1B7: FF 00 7C            STU     $007C            ; U was last set at C17C. Clever. Block type = FF (end of file), length = 0
+C1BA: 10 3F               SWI2                     ; Write an end block
 C1BC: 08                  ; A008: BLKOUT
-C1BD: 8D CC               BSR     $C18B 
-C1BF: 20 2B               BRA     $C1EC
-      
-C1C1: 8D B9               BSR     $C17C            ;       
-C1C3: 10 3F               SWI2                
-C1C5: 04                  ; A004: CRSDON
-C1C6: DE 0B               LDU     <$0B             ; {-ram_backScreen}
-C1C8: AE C4               LDX     ,U          
-C1CA: 8D A1               BSR     $C16D            ;       
-C1CC: 26 F8               BNE     $C1C6            ;       
-C1CE: AE C4               LDX     ,U          
-C1D0: CE 03 13            LDU     #$0313      
-C1D3: C6 08               LDB     #$08        
-C1D5: A6 80               LDA     ,X+         
-C1D7: A1 C0               CMPA    ,U+         
-C1D9: 26 E6               BNE     $C1C1            ;       
-C1DB: 5A                  DECB                
-C1DC: 26 F7               BNE     $C1D5            ;       
-C1DE: 10 3F               SWI2                
+C1BD: 8D CC               BSR     $C18B            ; Delay 
+C1BF: 20 2B               BRA     $C1EC            ; Turn off motor and fall into game loop
+
+LoadFromTape:      
+C1C1: 8D B9               BSR     $C17C            ; Start tape access      
+C1C3: 10 3F               SWI2                     ; Tape on and start reading
+C1C5: 04                  ; A004: CRSDON           
+C1C6: DE 0B               LDU     <$0B             ; {-ram_backScreen} ?? Off screen buffer to use for scratch ??
+C1C8: AE C4               LDX     ,U               ; 
+C1CA: 8D A1               BSR     $C16D            ; Read block     
+C1CC: 26 F8               BNE     $C1C6            ; Is this a header? No ... keep looking     
+C1CE: AE C4               LDX     ,U               ; Where we read the header
+C1D0: CE 03 13            LDU     #$0313           ; Parsed filename
+C1D3: C6 08               LDB     #$08             ; Is this the ...
+C1D5: A6 80               LDA     ,X+              ; ... requested ...
+C1D7: A1 C0               CMPA    ,U+              ; ... data file?
+C1D9: 26 E6               BNE     $C1C1            ; No ... find the right header      
+C1DB: 5A                  DECB                     ; Check 8 byte ...
+C1DC: 26 F7               BNE     $C1D5            ; ... filename       
+C1DE: 10 3F               SWI2                     ; Tape on and start reading
 C1E0: 04                  ; A004: CRSDON
-C1E1: 8E 02 00            LDX     #$0200 
-C1E4: 8D 87               BSR     $C16D                       
-C1E6: 2A FC               BPL     $C1E4            ;       
+C1E1: 8E 02 00            LDX     #$0200           ; Start of variables to load (direct page)
+C1E4: 8D 87               BSR     $C16D            ; Read a block           
+C1E6: 2A FC               BPL     $C1E4            ; Keep reading if block type was not FF (end of file)
 C1E8: 10 CE 10 00         LDS     #$1000           ; Reset stack  
 ;    
 C1EC: BD C1 14            JSR     $C114            ; {EndOfTapeAccess} Turn off tape and reenable interrupts      
-C1EF: 0F B8               CLR     <$B8             ; {-ram_m02B8}       
+C1EF: 0F B8               CLR     <$B8             ; {-ram_m02B8} Tape operation complete    
 C1F1: 3F                  SWI                      ; Draw normal display
 C1F2: 19                                           ; SWI_19:[Bring up normal display](#addr_SWI_19):
 C1F3: 3F                  SWI                      ; Draw ready prompt
@@ -306,9 +311,9 @@ GameLoop:
 C1F5: CE 02 AB            LDU     #$02AB      
 C1F8: 0F BB               CLR     <$BB             ; {-ram_m02BB}       
 C1FA: 1F 32               TFR     U,Y         
-C1FC: 0D B8               TST     <$B8             ; {-ram_m02B8}       
-C1FE: 2E 92               BGT     $C192            ;
-C200: 2B BF               BMI     $C1C1            ;       
+C1FC: 0D B8               TST     <$B8             ; {-ram_m02B8} ZSAVE or ZLOAD requested?
+C1FE: 2E 92               BGT     $C192            ; ZSAVE ... go do it
+C200: 2B BF               BMI     $C1C1            ; ZLOAD ... go do it      
 C202: EE C4               LDU     ,U          
 C204: 27 EF               BEQ     $C1F5            ; {GameLoop}       
 ;
@@ -1894,7 +1899,8 @@ CB8A: 0A 2D               DEC     <$2D             ; {-ram_dotFrequency}
 CB8C: 35 F6               PULS    A,B,X,Y,U,PC
 
 CB8E: 80 40 20 10 08 04 02 01
-                       
+        
+ParseInputWord:               
 CB96: 34 52               PSHS    U,X,A       
 CB98: 9E 11               LDX     <$11             ; {-ram_m0211}       
 CB9A: CE 03 13            LDU     #$0313      
@@ -3754,27 +3760,25 @@ D7B5: 0E                                           ; SWI_E:[Display playing scre
 D7B6: 39                  RTS                      ; Done
         
 CmdZLOAD:
-D7B7: 8D 03               BSR     $D7BC            ;       
-D7B9: 0A B8               DEC     <$B8             ; {-ram_m02B8}       
-D7BB: 39                  RTS
+D7B7: 8D 03               BSR     $D7BC            ; Parse the next word      
+D7B9: 0A B8               DEC     <$B8             ; {-ram_m02B8} Trigger ZLOAD
+D7BB: 39                  RTS                      ; Done
 
-D7BC: 8E 03 13            LDX     #$0313      
-D7BF: 33 88 20            LEAU    $20,X       
-D7C2: 3F                  SWI                      ; Fill X to U with FFs
+D7BC: 8E 03 13            LDX     #$0313           ; Start of scratch buffer
+D7BF: 33 88 20            LEAU    $20,X            ; End is 16 bytes later
+D7C2: 3F                  SWI                      ; Fill scratch buffer with FFs
 D7C3: 12                                           ; SWI_12:[Fill X to U with FFs](#addr_SWI_12):
-D7C4: 7E CB 96            JMP     $CB96            ;       
+D7C4: 7E CB 96            JMP     $CB96            ; Parse the next word and return      
 
 CmdZSAVE:
-D7C7: 8D F3               BSR     $D7BC            ;       
-D7C9: BF 00 7E            STX     $007E            ; {-ram_drwMazeCross} 
-D7CC: CC 00 0F            LDD     #$000F      
-D7CF: FD 00 7C            STD     $007C            ; {-ram_drwMazeY} 
-D7D2: 0C B8               INC     <$B8             ; {-ram_m02B8}       
-D7D4: 39                  RTS                 
-
+D7C7: 8D F3               BSR     $D7BC            ; Parse the next word into the scratch buffer     
+D7C9: BF 00 7E            STX     $007E            ; This will be the name of the file
+D7CC: CC 00 0F            LDD     #$000F           ; Block type 0 (header) length = 16
+D7CF: FD 00 7C            STD     $007C            ; Prepare for first BLKOUT
+D7D2: 0C B8               INC     <$B8             ; {-ram_m02B8} Trigger ZSAVE       
+D7D4: 39                  RTS                      ; Done 
 
 ; ############################################### Data from here down ##########################################################
-
 
 ;Initial backpack objects
 ;
