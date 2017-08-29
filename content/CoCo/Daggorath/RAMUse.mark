@@ -27,7 +27,7 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 || 007C      || CASSBLKTYPE          || BASIC cassette block type ||
 || 007E      || CASSPTR              || BASIC cassette buffer ptr ||
 || 0200:0201 || CONST_00             || '0000' Double constant ('0001' from 0201) ||
-|| 0202      || m0202                || '01'   LSB of double constant '0001'      ||
+|| 0202      || CONST_01             || '01'   LSB of double constant '0001'      ||
 || 0203:0204 || CONST_FF             || 'FFFF' Double constant ||
 || 0205      || m0205                || '00'            ||
 || 0206      || m0206                || '80'            ||
@@ -44,8 +44,10 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 || 0214      || playerX              || '16' Player's X coordinate   ||
 || 0215      || playerDir            || '00' Player's direction      ||
 || 0216      || m0216                || '23'            ||
-|| 0217      || m0217                || '17'            ||
-|| 0218      || m0218                || 'A0'            ||
+|| 0217:0218 || pStrength            || '17A0'          ||
+|| 0224:0225 || torchPtr             || Pointer to lit torch object or 0 if none ||
+|| 0229:022A || firstObject          || Pointer to first object in linked list of objects ||
+|| 022C      || backgroundColor      || Color for the whole screen: FF for white or 00 for black ||
 || 022D      || dotFrequency         || Based on light-level. Frequency of drawn dots in a line. ||
 || 026B      || rndSeedA             || Random number generator seed value ||
 || 026C      || rndSeedB             || Random number generator seed value ||
@@ -122,8 +124,8 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 || 02B3      || m02B3                || ||
 || 02B4      || flipScreens          || Not-0 to flip screens then ack to 0 ||
 || 02B5      || m02B5                || ||
-|| 02B6      || m02B6                || ||
-|| 02B7      || m02B7                || ||
+|| 02B6      || tabOrCR              || Used to make 2 columns in the EXAMINE display. 0=at start of line ||
+|| 02B7      || whereToPrint         || Controls text printing. If ||
 || 02B8      || tapeTrigger          || 01=ZSAVE, FF=ZLOAD ||
 || 02B9      || nextTask             || Next available game-task slot ||
 || 02BA      || m02BA                || ||
@@ -138,30 +140,43 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 || 0335      || m0335                || ||
 }}}
 
+# Text Area Descriptors
+
 ? I believe that the "end" value in a descriptor is different for text and graphics areas.
 For text, the "end" is the number of characters.
 For graphics, the "end" is the end+1 address.
 
-Hand line descriptor
+## Examine area descriptor
 
 {{{memory
-||= address || name || description ||
+||=Address   || Name                    || Description ||
+|| 380:381   || examineStart            || Starting address of this area ||
+|| 382:383   || examineEnd              || End+1 address of area ||
+|| 384:385   || examineTextCur          || Text cursor position in this area ||
+|| 0386      || examineColor            || Color (black or white) of this area ||
+|| 0387      || examine???              || Something to do with this area ? duplicate images to +1800 ||
+}}}
+
+## Hand line descriptor
+
+{{{memory
+||=Address   || Name                 || Description ||
 || 388:389   || hndStart             || Starting address of this area ||
-|| 38A:38B   || hndEnd               || Number of characters in this area ||
+|| 38A:38B   || hndEnd               || Number of characters in this area ?? end + 1 ??||
 || 38C:38D   || hndTextCur           || Text cursor position in this area ||
 || 038E      || hndColor             || Color (black or white) of this area ||
 || 038F      || hnd???               || Something to do with this area ? duplicate images to +1800 ||
 }}}
 
-Playfield descriptor
+## Command area descriptor
 
 {{{memory
-||= address || name || description ||
-|| 390:391   || playStart            || Starting address of this area ||
-|| 392:393   || playEnd              || End+1 address of area ||
-|| 394:395   || playTextCur          || Text cursor position in this area ||
-|| 0396      || playColor            || Color (black or white) of this area ||
-|| 0397      || play???              || Something to do with this area ? duplicate images to +1800 ||
+||=Address   || Name                || Description ||
+|| 390:391   || comStart            || Starting address of this area ||
+|| 392:393   || comEnd              || End+1 address of area ||
+|| 394:395   || comTextCur          || Text cursor position in this area ||
+|| 0396      || comColor            || Color (black or white) of this area ||
+|| 0397      || com???              || Something to do with this area ? duplicate images to +1800 ||
 }}}
 
 # Screen Descriptor 
@@ -195,23 +210,21 @@ Playfield descriptor
 }}}
 
 # Objects 
-{{{
  Objects are 14 byte structures as follows:
-   00
-   01
-   02 Y coordinate
-   03 X coordinate
-   04 Maze level
-   05 ?? 0 if on floor
-   06 Special data 1 -+
-   07 Special data 2  | Copied from entry in DA64
-   08 Special data 3 -+ 
-   09 Object type        
-   0A Object class        -+
-   0B Strength to reveal   | Copied from entry in DA00
-   0C Magic power          |
-   0D Physical power      -+
-}}}
+ 
+|| 00:01 || Pointer to next object                 || Set at creation                  || ||
+|| 02    ||  Y coordinate (if on floor)            || Set when dropped                 || ||
+|| 03    ||  X coordinate (if on floor)            || Set when dropped                 || ||
+|| 04    ||  Maze level (if on floor)              || Set when dropped                 || ||
+|| 05    ||  Location: 0=floor, 1=pack, ??=monster || Set at creation and when changed || ||
+|| 06    ||  Special data 1                        || Copied from entry in DA64        || Ring: attacks,  Shield: magic,    Torch: minutes || 
+|| 07    ||  Special data 2                        || Copied from entry in DA64        || Ring: proper,   Shield: physical, Torch: phys light ||
+|| 08    ||  Special data 3                        || Copied from entry in DA64        || Ring: not used, Shield: not used, Torch: magic light ||
+|| 09    ||  Object proper type                    || Set at creation                  || ||
+|| 0A    ||  Object class                          || Copied from entry in DA00        || ||
+|| 0B    ||  Strength to reveal                    || Copied from entry in DA00        || ||
+|| 0C    ||  Magic power                           || Copied from entry in DA00        || ||
+|| 0D    ||  Physical power                        || Copied from entry in DA00        || ||
 
 # Tasks 
 {{{
