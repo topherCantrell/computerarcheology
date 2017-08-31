@@ -3698,9 +3698,9 @@ D6C5: 39                  RTS                      ; Done
 ; Top and bottom horizontal lines while turning
 D6C6: 10 00          ; Move to absolute (16,0)                   
 D6C8: 10 FF          ; Line to absolute (255,16)
-D6C9: FF             ; New line
-D6CA: 88 00          ; Move to absolute (0,136)
-D6DC: 88 FF          ; Line to absolute (255,136)
+D6CA: FF             ; New line
+D6CB: 88 00          ; Move to absolute (0,136)
+D6DD: 88 FF          ; Line to absolute (255,136)
 D6CF: FE             ; End
 
 # MOVE command 
