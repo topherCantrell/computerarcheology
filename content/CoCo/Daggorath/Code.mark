@@ -1795,7 +1795,8 @@ CA8F: DD C1               STD     <$C1             ; {-ram_m02BE}
 CA91: 6C 61               INC     1,S         
 CA93: 30 1F               LEAX    -1,X        
 CA95: 26 E8               BNE     $CA7F            ;       
-CA97: 35 96               PULS    A,B,X,PC    
+CA97: 35 96               PULS    A,B,X,PC
+    
 CA99: 43                  COMA                
 CA9A: 53                  COMB                
 CA9B: C3 00 01            ADDD    #$0001      
@@ -1810,8 +1811,10 @@ CAAB: 8D EC               BSR     $CA99            ;
 CAAD: 8C                  ; CMPX  opcode to skip next instruction 
 CAAE: 8D B7               BSR     ???      
 CAB0: ED E4               STD     ,S          
-CAB2: 35 96               PULS    A,B,X,PC    
+CAB2: 35 96               PULS    A,B,X,PC
+    
 CAB4: 7E CB 8A            JMP     $CB8A            ;       
+
 CAB7: 34 76               PSHS    U,Y,X,B,A   
 CAB9: 0C 2D               INC     <$2D             ; {-ram_dotFrequency}       
 CABB: 27 F7               BEQ     $CAB4            ;       
@@ -1921,12 +1924,14 @@ CB88: 26 A4               BNE     $CB2E            ;
 CB8A: 0A 2D               DEC     <$2D             ; {-ram_dotFrequency}       
 CB8C: 35 F6               PULS    A,B,X,Y,U,PC
 
+BitNumbers:
+; Left to right
 CB8E: 80 40 20 10 08 04 02 01
         
 ParseInputWord:               
-CB96: 34 52               PSHS    U,X,A       
+CB96: 34 52               PSHS    U,X,A            ; Hold these
 CB98: 9E 11               LDX     <$11             ; {-ram_m0211}       
-CB9A: CE 03 13            LDU     #$0313      
+CB9A: CE 03 13            LDU     #$0313           ; 
 CB9D: A6 80               LDA     ,X+         
 CB9F: 27 FC               BEQ     $CB9D            ;       
 CBA1: 20 02               BRA     $CBA5            ;       
@@ -2510,7 +2515,7 @@ CEF9: 8E DD 3C            LDX     #$DD3C           ; ?? Part of the hole-in-floo
 CEFC: DC 7C               LDD     <$7C             ; {-ram_drwMazeY}       
 CEFE: BD CF E1            JSR     $CFE1            ; {ScanForHole}       
 CF01: 2B 06               BMI     $CF09            ;       
-CF03: 8E DC C2            LDX     #$DCC2           ; @@ Holes and ladders pictures
+CF03: 8E DC C2            LDX     #$DCC2           ; {HoleList} @@ Holes and ladders pictures
 CF06: 48                  ASLA                
 CF07: AE 86               LDX     A,X         
 CF09: 8D C3               BSR     $CECE            ;       
@@ -2520,7 +2525,7 @@ CF0F: BD CF 53            JSR     $CF53            ; {GetObjectAtCoor}
 CF12: 27 10               BEQ     $CF24            ;       
 CF14: A6 0A               LDA     10,X        
 CF16: 48                  ASLA                
-CF17: 8E D9 EE            LDX     #$D9EE           ; @@ Object pictures (by class)
+CF17: 8E D9 EE            LDX     #$D9EE           ; {ClassPictures} @@ Object pictures (by class)
 CF1A: AE 86               LDX     A,X         
 CF1C: 0A 75               DEC     <$75             ; {-ram_m0275}       
 CF1E: 8D AE               BSR     $CECE            ;       
@@ -3193,19 +3198,19 @@ D375: 3F                  SWI
 D376: 0C                                           ; SWI_C:[Update heart rate](#addr_SWI_C):
     
 ; Shift D right routine entries
-D377: 47                  ASRA                
-D378: 56                  RORB                
-D379: 47                  ASRA                
+D377: 47                  ASRA                     ; 7
+D378: 56                  RORB                    
+D379: 47                  ASRA                     ; 6
 D37A: 56                  RORB                
-D37B: 47                  ASRA                
+D37B: 47                  ASRA                     ; 5
 D37C: 56                  RORB                
-D37D: 47                  ASRA                
+D37D: 47                  ASRA                     ; 4
 D37E: 56                  RORB                
-D37F: 47                  ASRA                
+D37F: 47                  ASRA                     ; 3
 D380: 56                  RORB                
-D381: 47                  ASRA                
+D381: 47                  ASRA                     ; 2
 D382: 56                  RORB                
-D383: 47                  ASRA                
+D383: 47                  ASRA                     ; 1
 D384: 56                  RORB                
 D385: 39                  RTS                 
 
@@ -3214,12 +3219,12 @@ D385: 39                  RTS
 D386: 8E DF 10            LDX     #$DF10           ; Wizard
 D389: 3F                  SWI                      ; Beam him on
 D38A: 13                                           ; SWI_13:[Beam on picture pointed to by X](#addr_SWI_13):
-D38B: 3F                  SWI                 
-D38C: 02                                           ; SWI_2:[Uncompress message m and display](#addr_SWI_2):D38C: 02                                         ; SWI_2(Uncompress message m and display
+D38B: 3F                  SWI                      ; Print first part of message
+D38C: 02                                           ; SWI_2:[Uncompress message m and display](#addr_SWI_2):
 ;
 D38D: FF C0 57 3E A7 46 C0 90 51 32 28 1E 60 51 09 98 20 C0 E7 DE F0 ; "_1F_ ENOUGH! I TIRE OF THIS PLAY..."
 ;
-D3A2: 3F                  SWI                 
+D3A2: 3F                  SWI                      ; Print second part of message
 D3A3: 02                                           ; SWI_2:[Uncompress message m and display](#addr_SWI_2):
 ;
 D3A4: E8 00 08 48 B0 0C 8A 0A 3C 0D 29 68 0A 23 20 23 DE DD EF 60 ; "   PREPARE TO MEET THY DOOM!!!"
@@ -3461,7 +3466,7 @@ D540: 26 E9               BNE     $D52B            ; Try next object
 D542: AF C4               STX     ,U               ; Object now in hand
 D544: 6C 05               INC     5,X              ; 1 means carried
 D546: E6 0A               LDB     10,X             ; Class
-D548: 8E D9 FA            LDX     #$D9FA           ; @@ Weight table
+D548: 8E D9 FA            LDX     #$D9FA           ; {ClassWeights} @@ Weight table
 D54B: E6 85               LDB     B,X              ; Get the weight
 D54D: 4F                  CLRA                     ; Two byte value (positive value)
 D54E: 20 1B               BRA     $D56B            ; Update the player's weight and screen   
@@ -3480,7 +3485,7 @@ D55C: ED 02               STD     2,X              ; ... player's position ...
 D55E: 96 81               LDA     <$81             ; {-ram_currentLevel} Object on ...      
 D560: A7 04               STA     4,X              ; ... player's level
 D562: E6 0A               LDB     10,X             ; Object class
-D564: 8E D9 FA            LDX     #$D9FA           ; @@ Weight table
+D564: 8E D9 FA            LDX     #$D9FA           ; {ClassWeights} @@ Weight table
 D567: E6 85               LDB     B,X              ; Get the weight of the object
 D569: 50                  NEGB                     ; Negative (removing the weight)
 D56A: 1D                  SEX                      ; Two byte value
@@ -3545,7 +3550,7 @@ D5BB: 39                  RTS                      ; Done
 # INCANT command
 
 CmdINCANT:
-D5BC: 8E D8 F3            LDX     #$D8F3           ; @@ Proper names
+D5BC: 8E D8 F3            LDX     #$D8F3           ; {ProperNames} @@ Proper names
 D5BF: BD CB EC            JSR     $CBEC            ; Decode the input word      
 D5C2: 2F 2B               BLE     $D5EF            ; Word not found ... fail silently
 D5C4: 0D 7B               TST     <$7B             ; {-ram_m027B}       
@@ -3572,7 +3577,7 @@ D5E7: 3F                  SWI
 D5E8: 0D                                           ; SWI_D:[Print contents of hands on status line](#addr_SWI_D):
 D5E9: 6F 47               CLR     7,U              ; Mark as revealed                 
 D5EB: 81 12               CMPA    #$12             ; Did we just incant the "FINAL" ring?
-D5ED: 27 01               BEQ     $D5F0            ; Yes ... player wins the game
+D5ED: 27 01               BEQ     $D5F0            ; {PlayerWins} Yes ... player wins the game
 D5EF: 39                  RTS                      ; Done
 
 PlayerWins:
@@ -3700,13 +3705,13 @@ D6C6: 10 00          ; Move to absolute (16,0)
 D6C8: 10 FF          ; Line to absolute (255,16)
 D6CA: FF             ; New line
 D6CB: 88 00          ; Move to absolute (0,136)
-D6DD: 88 FF          ; Line to absolute (255,136)
+D6CD: 88 FF          ; Line to absolute (255,136)
 D6CF: FE             ; End
 
 # MOVE command 
 
 CmdMOVE:
-D6D0: 8E D8 D9            LDX     #$D8D9           ; 
+D6D0: 8E D8 D9            LDX     #$D8D9           ; {SecondWords} @@
 D6D3: BD CB EC            JSR     $CBEC            ;
 D6D6: 2D BB               BLT     $D693            ;
 D6D8: 2E 09               BGT     $D6E3            ;
@@ -3910,19 +3915,22 @@ D80B: 0C 16    ; 213,4 Player starting point (for demo)
 D80D: 00       ; 215   Player direction
 D80E: 23       ; 216                 
 D80F: 17 A0    ; 217,8
-                             
+      
+; Text descriptors   ??                    
 D811: 54 03 80 ; Copy 54 bytes to 380
-D814: 10 00    ; ??               
+D814: 10 00    ; Starts at $1000               
 D816: 02 60 
 D818: 00 00 
 D81A: 00 FF                       
 ;
-D81C: 23 00                    
+; $388
+D81C: 23 00    ; Starts at $2300               
 D81E: 00 40                     
 D820: 00 00                    
 D822: FF 00 
 ;
-D824: 24 00 
+; $390
+D824: 24 00    ; Starts at $2400
 D826: 00 80 
 D828: 00 00 
 D82A: 00 00       
@@ -3981,7 +3989,7 @@ D87A: 20 A6 ; SAM value 0010000__010100_110 (G6R,G6C Display=20*512=0x2800)
 D87C: 23 00 ; Start of hand/heart row
 D87E: 24 00 ; End of hand/heart row (8 rows)
 D880: 00 00 
-
+;
 D882: 3B 00 ; Start of hand/heart row
 D884: 3C 00 ; End of hand/heart row (8 rows)
 D886: 00 00 
@@ -3989,7 +3997,7 @@ D886: 00 00
 D888: 24 00 ; Start of text lines
 D88A: 28 00 ; End of text lines (4*8 rows)
 D88C: 00 00 
-
+;
 D88E: 3C 00 ; Start of text lines
 D890: 40 00 ; End of text lines (4*8 rows)
 D892: 00 00    
@@ -4076,62 +4084,63 @@ D98C: D8 BA        ; PULL
 D98E: D8 DE        ; RIGHT
 D990: D9 83        ; TORCH
 ;
-D992: 02           ;
+D992: 02           ; two words
 D993: D8 CB        ; USE
 D995: D8 DE        ; RIGHT
 ;
-D997: 01           ;
+D997: 01           ; one word
 D998: D8 B2        ; LOOK
 ;
-D99A: 01           ;
+D99A: 01           ; one word
 D99B: D8 B6        ; MOVE
 ;
-D99D: 03           ;
+D99D: 03           ; three words
 D99E: D8 BA        ; PULL
 D9A0: D8 DA        ; LEFT
 D9A2: D9 79        ; SHIELD
 ;
-D9A4: 03           ;
+D9A4: 03           ; three words
 D9A5: D8 BA        ; PULL
 D9A7: D8 DE        ; RIGHT
 D9A9: D9 7E        ; SWORD
 ;
-D9AB: 01           ;
+D9AB: 01           ; one word
 D9AC: D8 B6        ; MOVE
 ;
-D9AE: 01           ;
+D9AE: 01           ; one word
 D9AF: D8 B6        ; MOVE
 ;
-D9B1: 02           ;
+D9B1: 02           ; two words
 D9B2: D8 95        ; ATTACK
 D9B4: D8 DE        ; RIGHT
 ;
-D9B6: 02           ;
+D9B6: 02           ; two words
 D9B7: D8 C7        ; TURN
 D9B9: D8 DE        ; RIGHT
 ;
-D9BB: 01           ;
+D9BB: 01           ; one word
 D9BC: D8 B6        ; MOVE
 ;
-D9BE: 01           ;
+D9BE: 01           ; one word
 D9BF: D8 B6        ; MOVE
 ;
-D9C1: 01           ;
+D9C1: 01           ; one word
 D9C2: D8 B6        ; MOVE
 ;
-D9C4: 02           ;
+D9C4: 02           ; two words
 D9C5: D8 C7        ; TURN
 D9C7: D8 DE        ; RIGHT
 ;
-D9C9: 01           ;
+D9C9: 01           ; one word
 D9CA: D8 B6        ; MOVE
 ;
-D9CC: 01           ;
+D9CC: 01           ; one word
 D9CD: D8 B6        ; MOVE
 ;
 D9CF: FF           ; End of list
 
 ; Command function jump table
+CommandTable:
 D9D0: D2 B8 ; 00 ATTACK
 D9D2: D4 4E ; 01 CLIMB
 D9D4: D5 50 ; 02 DROP
@@ -4149,6 +4158,7 @@ D9EA: D7 B7 ; 0D ZLOAD
 D9EC: D7 C7 ; 0E ZSAVE
 
 ; Object pictures by class
+ClassPictures:
 D9EE: DC 19 ; Flask
 D9F0: DC 21 ; Ring
 D9F2: DC 2A ; Scroll
@@ -4157,6 +4167,7 @@ D9F6: DC 0F ; Sword
 D9F8: DC 07 ; Torch
 
 ; Object weights by class
+ClassWeights:
 D9FA: 05    ; Flask
 D9FB: 01    ; Ring
 D9FC: 0A    ; Scroll
@@ -4164,6 +4175,7 @@ D9FD: 19    ; Shield
 D9FE: 19    ; Sword
 D9FF: 0A    ; Torch
 
+ObjectData:
 ; Object descriptors by object index
 ;     CC RR MM PP: Class, Reveal, Magic Attack, Physical Attack
 ;                   nn Class   Proper
@@ -4193,6 +4205,7 @@ DA58: 01 00 00 05 ; 16 Ring    Gold
 DA5C: 00 00 00 05 ; 17 Flask   Empty
 DA60: 05 05 00 05 ; 18 Torch   Dead
  
+ObjectSpecial:
 ; Special object properties by proper-index
 ;
 ; Thanks to Aaron Oliver for pointing out:
@@ -4573,22 +4586,22 @@ DBD6: 00 50   00 04
 DBDA: 00 50   00 05
 
 WallPictures:
-DBDE: 03 ; Left
+DBDE: 03    ; Left
 DBDF: DC 4F ; Left wall open
 DBE1: DC 6B ; Left wall with physical door
 DBE3: DC 9B ; Left magic door 
 DBE5: DC 33 ; Left wall solid
-DBE7: 00 ; Front
+DBE7: 00    ; Front
 DBE8: DC 6A ; Front wall open (draw nothing)
 DBEA: DC 8B ; Front wall with physical door
 DBEC: DC A9 ; Front wall magic door
 DBEE: DC 45 ; Front wall (lines at top and bottom)
-DBF0: 01 ; Right
+DBF0: 01    ; Right
 DBF1: DC 5D ; Right wall open
 DBF3: DC 7B ; Right wall with physical door
 DBF5: DC A2 ; Right magic door
 DBF7: DC 3C ; Right wall solid
-DBF9: FF ; End
+DBF9: FF    ; End
 
 # Object Pictures  `visual`
 
@@ -4905,6 +4918,7 @@ DCBF: 44            ;     Short line to relative (8,8)
 DCC0: 00            ;     End of short lines
 DCC1: FE            ; End of image
 
+HoleList:
 ; Table for drawing holes/ladders
 DCC2: DD 0E  ; Hole in ceiling
 DCC4: DC CA  ; Ladder through ceiling
