@@ -394,9 +394,9 @@ C268: 8E FF C0            LDX     #$FFC0           ; Start of SAM memory
 C26B: 44                  LSRA                     ; Next bit ...
 C26C: 56                  RORB                     ; ... into carry
 C26D: 25 03               BCS     $C272            ; It is a one ... set the bit
-C26F: A7 84               STA     ,X               ; It is a zero ... set the bit
+C26F: A7 84               STA     ,X               ; Set the zero (even address)
 C271: 8C                  ; CMPX  opcode to skip next instruction 
-C272: A7 01               STA     1,X
+C272: A7 01               STA     1,X              ; Set the one (odd address)
 C274: 30 02               LEAX    2,X              ; Next register bit
 C276: 8C FF D4            CMPX    #$FFD4           ; All done?
 C279: 25 F0               BCS     $C26B            ; No ... keep going
@@ -1011,15 +1011,16 @@ C602: ED 44               STD     4,U              ; Coordinates for right hand
 C604: 3F                  SWI                      ; Print right hand contents
 C605: 03                                           ; SWI_3:[Display uncompressed message pointed to by X](#addr_SWI_3):
 C606: 0F B7               CLR     <$B7             ; {-ram_whereToPrint} Printing goes to command line area now
-C608: 39                  RTS                 
-C609: 34 06               PSHS    B,A         
+C608: 39                  RTS                      ; Done
+;
+C609: 34 06               PSHS    B,A              ; Hold these
 C60B: ED 44               STD     4,U              ; Coordinates
 C60D: CC 00 0F            LDD     #$000F           ; 15
 C610: 3F                  SWI                      ; Print a space
 C611: 04                                           ; SWI_4:[Display a single character in A](#addr_SWI_4):
 C612: 5A                  DECB                     ; All blanked?
 C613: 26 FB               BNE     $C610            ; No, blank all
-C615: 35 86               PULS    A,B,PC      
+C615: 35 86               PULS    A,B,PC           ; Done
 
 GetObjDscrpt:
 ; Unpack the words to build the description for the given object.
@@ -1066,7 +1067,8 @@ C65A: 8D 04               BSR     $C660            ; Refresh display
 C65C: 0A B4               DEC     <$B4             ; {-ram_flipScreens}       
 C65E: 13                  SYNC                     ; Wait on display
 C65F: 39                  RTS                      ; Out
-C660: 34 76               PSHS    U,Y,X,B,A   
+;
+C660: 34 76               PSHS    U,Y,X,B,A        ; Hold these
 C662: DC 26               LDD     <$26             ; Ambient light level
 C664: DE 24               LDU     <$24             ; {-ram_torchPtr} Torch pointer
 C666: 27 04               BEQ     $C66C            ; No torch lit, go with ambient level
@@ -1074,12 +1076,12 @@ C668: AB 47               ADDA    7,U              ; Add ambient...
 C66A: EB 48               ADDB    8,U              ; ... to torch's power
 C66C: DD 6E               STD     <$6E             ; {-ram_m026E} Light level to display things with
 C66E: AD 9F 02 B2         JSR     [$02B2]          ; Refresh screen
-C672: 35 F6               PULS    A,B,X,Y,U,PC
+C672: 35 F6               PULS    A,B,X,Y,U,PC     ; Done
 
 SWI_F:
 ; Ready command prompt
 C674: 8E C6 7A            LDX     #$C67A           ; Prompt CR and cursor
-C677: 3F                  SWI                      ; 
+C677: 3F                  SWI                      ; Print the prompt and back up over cursor
 C678: 03                                           ; SWI_3:[Display uncompressed message pointed to by X](#addr_SWI_3):
 C679: 39                  RTS                      ; Done 
 
@@ -1095,11 +1097,11 @@ C685: 39                  RTS                      ; Done
 
 SWI_11:
 ; Fill X to U with 0s
-C686: 4F                  CLRA                     ; 
+C686: 4F                  CLRA                     ; Fill with 0's (black background)
 C687: 8C                  ; CMPX  opcode to skip next instruction
 SWI_12:
 ; Fill X to U with FFs
-C688: 86 FF               LDA     #$FF             ; 
+C688: 86 FF               LDA     #$FF             ; Fill with FF's (white background)
 C68A: A7 80               STA     ,X+              ; Clear the ...
 C68C: AC 6A               CMPX    10,S             ; ... entire ... (calling U)
 C68E: 26 FA               BNE     $C68A            ; ... buffer
@@ -1379,7 +1381,8 @@ C808: C8 8A ; 16 Wizard strike
 
 C80A: CE C8 23            LDU     #$C823      
 C80D: 86 04               LDA     #$04        
-C80F: 20 05               BRA     $C816            ;       
+C80F: 20 05               BRA     $C816            ;   
+;
 C811: CE C8 1F            LDU     #$C81F      
 C814: 86 0A               LDA     #$0A        
 C816: 97 5F               STA     <$5F             ;       
