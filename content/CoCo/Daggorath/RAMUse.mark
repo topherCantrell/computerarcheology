@@ -37,16 +37,19 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 || 020B:020C || backScreen           || 'D876' Pointer to drawing screen descriptor ||
 || 020D      || m020D                || 'D9'            ||
 || 020E      || m020E                || 'D8'            ||
-|| 020F:0210 || endOfObjsM           || '0B15' Pointer to one object slot past end of list ||
+|| 020F:0210 || nextObjSlot          || '0B15' Pointer to one object slot past end of list ||
 || 0211      || m0211                || '02'            ||
 || 0212      || m0212                || 'F1'            ||
 || 0213      || playerY              || '0C' Player's Y coordinate   ||
 || 0214      || playerX              || '16' Player's X coordinate   ||
-|| 0215      || playerDir            || '00' Player's direction      ||
+|| 0215      || playerWeight         || '00' Total weight of things carried (strain)      ||
 || 0216      || m0216                || '23'            ||
 || 0217:0218 || pStrength            || '17A0'          ||
+|| 021D:021E || leftHand             || Pointer to object in left hand (or 0 if EMPTY) ||
+|| 021F:0220 || rightHand            || Pointer to object in right hand (or 0 if EMPTY) ||
+|| 0223      || playerDir            || Player's direction ||
 || 0224:0225 || torchPtr             || Pointer to lit torch object or 0 if none ||
-|| 0229:022A || firstObject          || Pointer to first object in linked list of objects ||
+|| 0229:022A || firstPackObject      || Pointer to first object in linked list of objects in pack ||
 || 022C      || backgroundColor      || Color for the whole screen: FF for white or 00 for black ||
 || 022D      || dotFrequency         || Based on light-level. Frequency of drawn dots in a line. ||
 || 026B      || rndSeedA             || Random number generator seed value ||
@@ -88,8 +91,7 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 || 028F      || m028F                || ||
 || 0290      || m0290                || ||
 || 0291      || restartFind          || 1 to restart "FindNextObject" at top of list, 0 to continue find ||
-|| 0292      || currentObjM          || Pointer to last object found ||
-|| 0293      || currentObjL          || ^ ||
+|| 0292:0293 || objIterator          || Pointer to last object found ||
 || 0294      || scrollType           || 0 means "vision", not-0 means "seer" ||
 || 0295      || m0295                || ||
 || 0296      || m0296                || ||
@@ -210,9 +212,26 @@ For graphics, the "end" is the end+1 address.
 }}}
 
 # Objects 
+
+Objects 14-byte structures. These are created one after the other as needed beginning at 0B15.
+The location <$0F:10 points to the next available free object slot. This is where the next object
+is created. This is the end marker for walks through the objects.
+
+Objects can be chained together in lists through the first two bytes in the structure. These bytes
+are a pointer to the next object in the chain or 0 if this object is the end.
+
+<$29:2A points to the first object in the chain of objects in the backpack. When an object is picked up
+it is pushed to the head of this list. Thus the pack works like a LIFO stack.
+
+Each monster structure has a pointer to the first object in a chain of objects it is carrying.
+
+<$1D:1E points to the object in the left hand (or 0 if EMPTY).
+
+<$1F:20 points to the object in the right hand (or 0 if EMPTY).
+
  Objects are 14 byte structures as follows:
  
-|| 00:01 || Pointer to next object                 || Set at creation                  || ||
+|| 00:01 ||  Pointer to next object in chain       || Set at creation and when changed || ||
 || 02    ||  Y coordinate (if on floor)            || Set when dropped                 || ||
 || 03    ||  X coordinate (if on floor)            || Set when dropped                 || ||
 || 04    ||  Maze level (if on floor)              || Set when dropped                 || ||

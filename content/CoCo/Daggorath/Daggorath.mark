@@ -1,6 +1,9 @@
 %%title = Dungeons of Daggorath
 %%image = Daggorath.jpg
 
+TODO Overwrite the cassette code with a routine to ALLRAM. Then I can EXEC the ALLRAM, make
+some POKE tweaks, and then EXEC 49152. Burn a new ROM.
+
 # Code Links
 
 * [Disassembled Code](Code.html)
