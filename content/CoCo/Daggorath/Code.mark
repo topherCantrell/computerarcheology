@@ -3542,9 +3542,9 @@ D5BB: 39                  RTS                      ; Done
 # INCANT command
 
 CmdINCANT:
-D5BC: 8E D8 F3            LDX     #$D8F3      
-D5BF: BD CB EC            JSR     $CBEC            ;       
-D5C2: 2F 2B               BLE     $D5EF            ;
+D5BC: 8E D8 F3            LDX     #$D8F3           ; @@ Proper names
+D5BF: BD CB EC            JSR     $CBEC            ; Decode the input word      
+D5C2: 2F 2B               BLE     $D5EF            ; Word not found ... fail silently
 D5C4: 0D 7B               TST     <$7B             ; {-ram_m027B}       
 D5C6: 27 27               BEQ     $D5EF            ;       
 D5C8: DD 8E               STD     <$8E             ; {-ram_m028E}       
@@ -3555,8 +3555,8 @@ D5D0: 27 1D               BEQ     $D5EF            ;
 D5D2: A6 4A               LDA     10,U        
 D5D4: 81 01               CMPA    #$01        
 D5D6: 26 17               BNE     $D5EF            ;       
-D5D8: A6 47               LDA     7,U         
-D5DA: 27 13               BEQ     $D5EF            ;       
+D5D8: A6 47               LDA     7,U              ; Already revealed?
+D5DA: 27 13               BEQ     $D5EF            ; Yes ... fail silently
 D5DC: 91 8E               CMPA    <$8E             ; {-ram_m028E}       
 D5DE: 26 0F               BNE     $D5EF            ;       
 D5E0: A7 49               STA     9,U         
@@ -3567,26 +3567,27 @@ D5E5: 1B                                           ; SWI_1B:[Play sound i at ful
 D5E6: 0D                                           ; 0D = Ring
 D5E7: 3F                  SWI
 D5E8: 0D                                           ; SWI_D:[Print contents of hands on status line](#addr_SWI_D):
-D5E9: 6F                       
-D5EA: 47                  ASRA                
-D5EB: 81 12               CMPA    #$12        
-D5ED: 27 01               BEQ     $D5F0            ;       
-D5EF: 39                  RTS                 
-D5F0: 8E DF 39            LDX     #$DF39           ; Star Wizard
+D5E9: 6F 47               CLR     7,U              ; Mark as revealed                 
+D5EB: 81 12               CMPA    #$12             ; Did we just incant the "FINAL" ring?
+D5ED: 27 01               BEQ     $D5F0            ; Yes ... player wins the game
+D5EF: 39                  RTS                      ; Done
+
+PlayerWins:
+D5F0: 8E DF 39            LDX     #$DF39           ; Star Wizard picture
 D5F3: 0A 9E               DEC     <$9E             ; {-ram_m029E}       
-D5F5: 3F                  SWI                 
+D5F5: 3F                  SWI                      ; Beam on the Star Wizard
 D5F6: 13                                           ; SWI_13:[Beam on picture pointed to by X](#addr_SWI_13):
-D5F7: 3F                  SWI                 
+D5F7: 3F                  SWI                      ; Print the final message
 D5F8: 02                                           ; SWI_2:[Uncompress message m and display](#addr_SWI_2):
 ;
 D5F9: FF C4 54 3D 84 D8 08 59 D1 2E C8 03 70 A6 93 05 10 50 20 2E 20 ; "_1F_BEHOLD! DESTINY AWAITS THE HAND"
 ;
-D60E: 3F                  SWI                 
+D60E: 3F                  SWI                      ; More final message
 D60F: 02                                           ; SWI_2:[Uncompress message m and display](#addr_SWI_2):
 ;
 D610: C8 00 00 00 00 03 CC 00 81 C5 B8 2E 9D 06 44 F7 BC ; "        OF A NEW WIZARD..."
 ;
-D621: 20 FE               BRA     $D621            ;
+D621: 20 FE               BRA     $D621            ; Infinite loop 
 
 # REVEAL command
 
