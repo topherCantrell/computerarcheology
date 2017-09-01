@@ -127,6 +127,7 @@ var TileEngine = (function() {
 		var command = can.getAttribute("data-command").split(",");
 	
 		var context = can.getContext("2d");
+		context.clearRect(0,0,can.width,can.height);
 	
 		var xo = 0;
 		var yo = 0;
