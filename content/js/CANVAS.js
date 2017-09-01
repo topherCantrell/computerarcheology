@@ -4,8 +4,9 @@
  * "data-canvasFunction" function. The function name is cached so that only the
  * first canvas on the page needs to specify a function used by all.
  */
-$(function() {	
-	
+
+function redrawGraphics() {
+			
 	// data-canvasFunction
 	var handleCanvasFunction = null;
 	
@@ -18,5 +19,10 @@ $(function() {
 		}
 		handleCanvasFunction(cans[x]);			
 	}
+}
+
+$(function() {	
+	
+	redrawGraphics();
 
 });
