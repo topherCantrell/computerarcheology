@@ -37,10 +37,10 @@ TODO: make a HTML table of links to the SWI routines. Figure out what they all d
 
 # Start
 
-C000: CE C0 D1            LDU     #$C0D1           ; Demo game info
+C000: CE C0 D1            LDU     #$C0D1           ; {PlayDemo} @@ Play demo game code
 C003: 20 03               BRA     $C008            ; Do Demo
 ;
-C005: CE C1 24            LDU     #$C124           ; Live game info
+C005: CE C1 24            LDU     #$C124           ; {PlayGame} @@ Play normal game code
 ;
 C008: 10 CE 10 00         LDS     #$1000           ; Stacks builds to lower from $1000
 C00C: 8E FF 00            LDX     #$FF00           ; PIA0
@@ -138,20 +138,22 @@ C0B8: 02                                           ; SWI_2:[Uncompress message m
 ;
 C0B9: F8 DF 0C C9 27 45 00 02 65 C1 03 52 39 3C 00 68 DA CC 63 09 48 ; "COPYRIGHT  DYNA MICRO  MCMLXXXII"
 ;           
-C0CE: 0F B7               CLR     <$B7             ; {-ram_whereToPrint} Printing goes to commmand area
-C0D0: 39                  RTS                      ;
-C0D1: 0A 77               DEC     <$77             ; {-ram_m0277}
-C0D3: 8D 3F               BSR     $C114            ; {EndOfTapeAccess}       
-C0D5: 8E DF 10            LDX     #$DF10      
-C0D8: 0A 9E               DEC     <$9E             ; {-ram_m029E}       
-C0DA: 3F                  SWI                 
+C0CE: 0F B7               CLR     <$B7             ; {-ram_whereToPrint} Printing goes to command area
+C0D0: 39                  RTS                      ; Done
+
+PlayDemo:
+C0D1: 0A 77               DEC     <$77             ; {-ram_m0277} Demo mode flag
+C0D3: 8D 3F               BSR     $C114            ; {EndOfTapeAccess} Configure interrupts
+C0D5: 8E DF 10            LDX     #$DF10           ; Wizard picture
+C0D8: 0A 9E               DEC     <$9E             ; {-ram_m029E} ??       
+C0DA: 3F                  SWI                      ; Beam on the wizard
 C0DB: 14                                           ; SWI_14:[Beam subroutine](#addr_SWI_14):
-C0DC: 3F                  SWI                 
+C0DC: 3F                  SWI                      ; Print the first part of the message
 C0DD: 02                                           ; SWI_2:[Uncompress message m and display](#addr_SWI_2):
 ;
 C0DE: 9F D2 02 06 45 06 4A 02 BA 85 97 BD EF 80 ; "_1F_I DARE YE ENTER..._1F_"
 ;
-C0EC: 3F                  SWI                 
+C0EC: 3F                  SWI                      ; Print the second part of the message
 C0ED: 02                                           ; SWI_2:[Uncompress message m and display](#addr_SWI_2):
 ;
 C0EE: F7 BD EA 20 A0 25 5C 72 BD D3 03 CC 02 04 E7 7C 83 44 6F 7B ; "...THE DUNGEONS OF DAGGORATH!!!"
@@ -160,11 +162,11 @@ C102: 3F                  SWI                      ; Wait 1.35 seconds
 C103: 10                                           ; SWI_10:[Pause for 1.35 seconds](#addr_SWI_10):
 C104: 3F                  SWI                      ; Another 1.35 seconds
 C105: 10                                           ; SWI_10:[Pause for 1.35 seconds](#addr_SWI_10):
-C106: 3F                  SWI                      ; Another 1.35 seconds
+C106: 3F                  SWI                      ; Beam off the wizard
 C107: 15                                           ; SWI_15:[Beam subroutine](#addr_SWI_15):
-C108: 3F                  SWI                      ; And another. Total: 1.35 * 4 = 5.4 seconds
+C108: 3F                  SWI                      ; Wait 1.35 seconds
 C109: 09                                           ; SWI_9:[Clear secondary screen](#addr_SWI_9):
-C10A: 0A B4               DEC     <$B4             ; {-ram_flipScreens}       
+C10A: 0A B4               DEC     <$B4             ; {-ram_flipScreens} ??       
 C10C: 13                  SYNC                     ; Wait for draw
 C10D: 86 02               LDA     #$02             ; Initial light level (means what ??)
 C10F: CE D7 D5            LDU     #$D7D5           ; Demo objects
@@ -179,12 +181,14 @@ C11E: B7 FF 03            STA     $FF03            ; ... 60Hz interrupt
 C121: 3C EF               CWAI    $EF              ; Wait for a 60Hz interrupt to happen
 C123: 39                  RTS                      ; Done                 
 
-C124: 8D EE               BSR     $C114            ; {EndOfTapeAccess} Turn off tape motor and reenable interrupts and sound   
+PlayGame:
+C124: 8D EE               BSR     $C114            ; {EndOfTapeAccess} Configure interrupts and sound   
 C126: CC 10 0B            LDD     #$100B           ; Starting cell (Y=16, X=0B)
 C129: DD 13               STD     <$13             ; {-ram_playerY}       
 C12B: 0F 17               CLR     <$17             ; {-ram_pStrength} MSB of strength (start out weak)      
 C12D: 4F                  CLRA                     ; Initial light level (none)
 C12E: CE D7 D9            LDU     #$D7D9           ; {GameObjects} @@ List of game objects (not demo objects)
+;
 C131: 3F                  SWI                      ; Print "PREPARE!"
 C132: 16                                           ; SWI_16:[Print PREPARE](#addr_SWI_16):
 C133: 3F                  SWI                      ; Clear light level
@@ -518,7 +522,7 @@ C350: 35 95               PULS    CC,B,X,PC        ; Done
 
 # SWI Handler
 
-;;TODO discussion about this technique
+TODO discussion about this technique
 
 SWIHandler:
 ;
@@ -979,7 +983,8 @@ C5BD: 02                                           ; SWI_2:[Uncompress message m
 C5BE: FF C1 92 D0 01 73 E8 82 C8 04 79 66 07 3E 80 91 69 59 3B DE F0 ; "_1F_ YET ANOTHER DOES NOT RETURN..."
  ;      
 C5D3: 0F 28               CLR     <$28             ;       
-C5D5: 0A 77               DEC     <$77             ; {-ram_m0277}       
+C5D5: 0A 77               DEC     <$77             ; {-ram_m0277}    
+;   
 C5D7: 20 FE               BRA     $C5D7            ; Endless loop
 
 SWI_D:
@@ -1107,17 +1112,19 @@ C68C: AC 6A               CMPX    10,S             ; ... entire ... (calling U)
 C68E: 26 FA               BNE     $C68A            ; ... buffer
 C690: 39                  RTS                      ; Done
 
-; Execute a BASIC ROM routine ?? Never called? Maybe old SWI that migrated to SWI2?
-C691: 5F                  CLRB                
-C692: 1F 9B               TFR     B,DP        
-C694: EE 6C               LDU     12,S        
-C696: E6 C0               LDB     ,U+         
-C698: EF 6C               STU     12,S        
-C69A: CE A0 00            LDU     #$A000      
-C69D: AD D5               JSR     [B,U]            ;  
-C69F: A7 63               STA     3,S         
-C6A1: AF 66               STX     6,S         
-C6A3: 39                  RTS                 
+; Execute a BASIC ROM routine
+; This is never used. Instead the code uses SWI2, which is structured identically but
+; designed for an RTI instead of RTS.
+C691: 5F                  CLRB                     ; Set DP to ...
+C692: 1F 9B               TFR     B,DP             ; ... zero for BASIC
+C694: EE 6C               LDU     12,S             ; Read immediate ...
+C696: E6 C0               LDB     ,U+              ; ... byte from code ...
+C698: EF 6C               STU     12,S             ; Update the return
+C69A: CE A0 00            LDU     #$A000           ; Execute the ...
+C69D: AD D5               JSR     [B,U]            ; ... ROM routine
+C69F: A7 63               STA     3,S              ; Return A         
+C6A1: AF 66               STX     6,S              ; Return X
+C6A3: 39                  RTS                      ; Done
 
 SWI_13:
 ; Beam on picture pointed to by X
@@ -1379,39 +1386,58 @@ C804: C8 72 ; 14 Wall hit
 C806: C8 6D ; 15 Creature dying
 C808: C8 8A ; 16 Wizard strike
 
+SoundFlask:
 C80A: CE C8 23            LDU     #$C823      
 C80D: 86 04               LDA     #$04        
 C80F: 20 05               BRA     $C816            ;   
-;
+
+SoundRing:
 C811: CE C8 1F            LDU     #$C81F      
 C814: 86 0A               LDA     #$0A        
 C816: 97 5F               STA     <$5F             ;       
 C818: AD C4               JSR     ,U               ;  
 C81A: 0A 5F               DEC     <$5F             ;       
 C81C: 26 FA               BNE     $C818            ;       
-C81E: 39                  RTS                 
+C81E: 39                  RTS
+                 
 C81F: 8E 00 40            LDX     #$0040      
-C822: 10 8E 00 80         LDY     #$0080      
-C826: 10 8E 01 00         LDY     #$0100      
-C82A: 10 8E 00 20         LDY     #$0020      
+C822: 10                  ;CMPY opcode to skip next instruction 
+C823: 8E 00 80            LDX     #$0080      
+C826: 10                  ;CMPY opcode to skip next instruction 
+
+SoundScroll:
+C827: 8E 01 00            LDX     #$0100      
+C82A: 10                  ;CMPY opcode to skip next instruction
+
+SoundSpider:
+C82B: 8E 00 20            LDX     #$0020      
 C82E: 8D 05               BSR     $C835            ;       
 C830: 30 1F               LEAX    -1,X        
 C832: 26 FA               BNE     $C82E            ;       
 C834: 39                  RTS                 
+
 C835: 86 FF               LDA     #$FF        
 C837: 8D 30               BSR     $C869            ;       
 C839: 4F                  CLRA                
-C83A: 20 2D               BRA     $C869            ;       
+C83A: 20 2D               BRA     $C869            ;  
+
+SoundBlob:     
 C83C: 8E 05 00            LDX     #$0500      
 C83F: 8D F4               BSR     $C835            ;       
 C841: 30 88 30            LEAX    $30,X       
 C844: 8C 08 00            CMPX    #$0800      
 C847: 25 F6               BCS     $C83F            ;       
 C849: 39                  RTS                 
+
+SoundScorpion:
 C84A: 86 02               LDA     #$02        
 C84C: 8C                  ; CMPX  opcode to skip next instruction
+
+SoundWraith:
 C84D: 86 01               LDA     #$01      
 C84F: 8C                  ; CMPX  opcode to skip next instruction
+
+SoundSnake:
 C850: 86 0A               LDA     #$0A      
 C852: 97 62               STA     <$62             ;       
 C854: 10 8E 00 C0         LDY     #$00C0      
@@ -1425,11 +1451,18 @@ C864: 26 EE               BNE     $C854            ;
 C866: 39                  RTS                 
 C867: 8D 65               BSR     $C8CE            ;       
 C869: 8D 5A               BSR     $C8C5            ;       
-C86B: 20 50               BRA     $C8BD            ;       
+C86B: 20 50               BRA     $C8BD            ;      
+
+SoundMonsDeath: 
 C86D: CE DB DA            LDU     #$DBDA      
 C870: 20 21               BRA     $C893            ;       
+
+SoundWallHit:
 C872: CE DB D2            LDU     #$DBD2      
-C875: 20 1C               BRA     $C893            ;       
+C875: 20 1C               BRA     $C893            ;
+
+SoundWizard:
+SoundDemon:       
 C877: 86 08               LDA     #$08        
 C879: 97 5F               STA     <$5F             ;       
 C87B: 8D 51               BSR     $C8CE            ;       
@@ -1440,7 +1473,9 @@ C881: 5C                  INCB
 C882: 1F 01               TFR     D,X         
 C884: 8D A8               BSR     $C82E            ;       
 C886: 0A 5F               DEC     <$5F             ;       
-C888: 26 F1               BNE     $C87B            ;       
+C888: 26 F1               BNE     $C87B            ;     
+
+SoundWizStrike:  
 C88A: CE DB D2            LDU     #$DBD2      
 C88D: 8D 04               BSR     $C893            ;       
 C88F: 8D 29               BSR     $C8BA            ;       
@@ -1455,20 +1490,26 @@ C8A0: 8C 01 50            CMPX    #$0150
 C8A3: 26 F0               BNE     $C895            ;       
 C8A5: 39                  RTS                 
 
+SoundSword:
 C8A6: BD C9 31            JSR     $C931            ;       
-C8A9: 80 8D               SUBA    #$8D        
-C8AB: 76 25 04            
+C8A9: 80 ; Consumed by routine 
+C8AA: 8D 76               BSR     $C922
+C8AC: 25 04               BCS     $C8B2          ; {SoundTorch}
 C8AE: 8D 15               BSR     $C8C5            ;       
 C8B0: 20 F8               BRA     $C8AA            ;       
+
+SoundTorch:
 C8B2: BD C9 2E            JSR     $C92E            ;       
-C8B5: A0 
-C8B6: 8D 6E 
-C8B8: 20 FC 
-C8BA: 8E 10 00 
-C8BD: 34 10 
-C8BF: 30 1F 
-C8C1: 26 FC 
-C8C3: 35 90            
+C8B5: A0 ; Consumed by routine
+C8B6: 8D 6E               BSR     $C926 
+C8B8: 20 FC               BRA     $C8B6
+;
+C8BA: 8E 10 00            LDX     #$1000
+C8BD: 34 10               PSHS    X
+C8BF: 30 1F               LEAX    -1,X
+C8C1: 26 FC               BNE     $C8BF
+C8C3: 35 90               PULS    X,PC
+
 C8C5: D6 61               LDB     <$61             ;       
 C8C7: 3D                  MUL                 
 C8C8: 84 FC               ANDA    #$FC        
@@ -1484,18 +1525,27 @@ C8D4: D3 56               ADDD    <$56             ;
 C8D6: 5C                  INCB                
 C8D7: DD 56               STD     <$56             ;       
 C8D9: 39                  RTS                 
+
+SoundShield:
 C8DA: 8D 39               BSR     $C915            ;       
-C8DC: 64 24               LSR     4,Y         
+C8DC: 64 24  ; Consumed by routine. Returns to the one who called this.                   
+
+SoundShldKnight:
 C8DE: 8D 35               BSR     $C915            ;       
-C8E0: 32 12      
+C8E0: 32 12  ; Consumed by routine. Returns to the one who called this.             
+
+SoundKnight:
 C8E2: 8D 31               BSR     $C915            ;       
-C8E4: AF 36       
+C8E4: AF 36  ; Consumed by routine. Returns to the one who called this.             
+
+SoundWizBeam:
 C8E6: 8D 2D               BSR     $C915            ;       
-C8E8: 19 09 
-C8EA: 8D 42               BSR     $C92E         
-C8EC: 60 
-C8ED: 9E 63 
-C8EF: 10 9E 65                  
+C8E8: 19 09 ; Consumed by routine. Returns to the one who called this. 
+
+C8EA: 8D 42               BSR     $C92E   
+C8EC: 60    ; Consumed by routine
+C8ED: 9E 63               LDX     <$63
+C8EF: 10 9E 65            LDY     <$65      
 C8F2: 4F                  CLRA                
 C8F3: 30 1F               LEAX    -1,X        
 C8F5: 26 06               BNE     $C8FD            ;       
@@ -1513,14 +1563,16 @@ C90C: 8D 70               BSR     $C97E            ;
 C90E: 23 B3               BLS     $C8C3            ;       
 C910: 8D B3               BSR     $C8C5            ;       
 C912: 96 59               LDA     <$59             ;       
-C914: 39                  RTS                 
-C915: AE E1               LDX     ,S++        
-C917: E6 80               LDB     ,X+         
+C914: 39                  RTS
+                 
+C915: AE E1               LDX     ,S++             ; Pull return from the stack (returning up a frame)
+C917: E6 80               LDB     ,X+              ; Get the immediate byte
 C919: 4F                  CLRA                
 C91A: DD 63               STD     <$63             ;       
-C91C: E6 80               LDB     ,X+         
+C91C: E6 80               LDB     ,X+              ; Get the next byte
 C91E: DD 65               STD     <$65             ;       
 C920: 20 C8               BRA     $C8EA            ;       
+
 C922: 8D AA               BSR     $C8CE            ;       
 C924: 20 67               BRA     $C98D            ;       
 C926: 8D A6               BSR     $C8CE            ;       
@@ -1529,26 +1581,37 @@ C92A: 23 97               BLS     $C8C3            ;
 C92C: 20 97               BRA     $C8C5            ;    
    
 C92E: 9E 03               LDX     <$03             ; {-ram_CONST_FF}       
-C930: 10 9E 00            LDY     <$00             ; {-ram_CONST_00}       
+C930: 10                  ;LDY opcode to skip next instruction
+C931: 9E 00               LDX     <$00             ; {-ram_CONST_00}       
 C933: 9F 5B               STX     <$5B             ;       
-C935: AE E4               LDX     ,S          
-C937: E6 80               LDB     ,X+         
+C935: AE E4               LDX     ,S               ; Return location
+C937: E6 80               LDB     ,X+              ; Get the immediate byte
 C939: 4F                  CLRA                
 C93A: DD 5D               STD     <$5D             ;       
-C93C: AF E4               STX     ,S          
-C93E: 39                  RTS                 
+C93C: AF E4               STX     ,S               ; Corrected return address
+C93E: 39                  RTS                      ; Done
+
+SoundPlayerHit:
 C93F: 8D ED               BSR     $C92E            ;       
-C941: 60 
+C941: 60 ; Consumed by routine
 C942: BD C8 CE            JSR     $C8CE
 C945: 44                  LSRA                
 C946: 8D E0               BSR     $C928            ;       
 C948: BD C8 CE            JSR     $C8CE            ;       
 C94B: 8A 80               ORA     #$80        
 C94D: 8D D9               BSR     $C928            ;       
-C94F: 20 F1               BRA     $C942            ;       
+C94F: 20 F1               BRA     $C942            ;      
+
+SoundGiant: 
 C951: 8E 03 00            LDX     #$0300      
-C954: 10 8E 02 00         LDY     #$0200      
-C958: 10 8E 01 00         LDY     #$0100      
+C954: 10                  ;CMPY skip next instruction
+
+SoundHchGiant:
+C955: 8E 02 00            LDX     #$0200      
+C958: 10                  ;CMPY skip next instruction
+
+SoundGaldrog:
+C959: 8E 01 00            LDX     #$0100      
 C95C: 9F 5D               STX     <$5D             ;       
 C95E: 4F                  CLRA                
 C95F: 5F                  CLRB                
@@ -1577,10 +1640,6 @@ C98D: 34 02               PSHS    A
 C98F: DC 5B               LDD     <$5B             ;       
 C991: D3 5D               ADDD    <$5D             ;       
 C993: 20 EF               BRA     $C984            ;       
-
-TODO links here (Address) to the handlers
-
-TODO java to look through code and comment SWI from this table
 
 # SWI Function Table
 
@@ -1801,15 +1860,16 @@ CA99: 43                  COMA
 CA9A: 53                  COMB                
 CA9B: C3 00 01            ADDD    #$0001      
 CA9E: 39                  RTS                 
+
 CA9F: 34 16               PSHS    X,B,A       
 CAA1: 9E 43               LDX     <$43             ;       
-CAA3: EC E4               LDD     ,S          
+CAA3: EC E4               LDD     ,S               ;
 CAA5: 2A 07               BPL     $CAAE            ;       
 CAA7: 8D F0               BSR     $CA99            ;       
 CAA9: 8D BC               BSR     $CA67            ;       
 CAAB: 8D EC               BSR     $CA99            ;       
 CAAD: 8C                  ; CMPX  opcode to skip next instruction 
-CAAE: 8D B7               BSR     ???      
+CAAE: 8D B7               BSR     $CA67
 CAB0: ED E4               STD     ,S          
 CAB2: 35 96               PULS    A,B,X,PC
     
@@ -1903,7 +1963,7 @@ CB5E: DD 38               STD     <$38             ;
 CB60: D6 37               LDB     <$37             ;       
 CB62: D9 3D               ADCB    <$3D             ;       
 CB64: D7 37               STB     <$37             ;       
-CB66: 84 F8               ANDA    #$F8        
+CB66: 84 F8               ANDA    #$F8    
 CB68: 91 C1               CMPA    <$C1             ; {-ram_holdHole}       
 CB6A: 27 04               BEQ     $CB70            ;       
 CB6C: D6 45               LDB     <$45             ;       

@@ -56,6 +56,7 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 || 022B      || wizardDead           || FF means wizard is dead (creatures don't move) ||
 || 022C      || backgroundColor      || Color for the whole screen: FF for white or 00 for black ||
 || 022D      || dotFrequency         || Based on light-level. Frequency of drawn dots in a line. ||
+|| 0236      || m0236                || ?used in sound?
 || 026B      || rndSeedA             || Random number generator seed value ||
 || 026C      || rndSeedB             || Random number generator seed value ||
 || 026D      || rndSeedC             || Random number generator seed value ||
