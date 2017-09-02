@@ -50,6 +50,7 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 || 0223      || playerDir            || Player's direction ||
 || 0224:0225 || torchPtr             || Pointer to lit torch object or 0 if none ||
 || 0229:022A || firstPackObject      || Pointer to first object in linked list of objects in pack ||
+|| 022B      || wizardDead           || FF means wizard is dead (creatures don't move) ||
 || 022C      || backgroundColor      || Color for the whole screen: FF for white or 00 for black ||
 || 022D      || dotFrequency         || Based on light-level. Frequency of drawn dots in a line. ||
 || 026B      || rndSeedA             || Random number generator seed value ||
@@ -66,7 +67,7 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 || 0276      || m0276                || ||
 || 0277      || m0277                || ||
 || 0278      || m0278                || ||
-|| 0279      || m0279                || ||
+|| 0279      || numWords             || Used in decoding words. Number of words in a table of words. ||
 || 027A      || m027A                || ||
 || 027B      || m027B                || ||
 || 027C      || drwMazeY             || Maze drawing ... current Y ||
@@ -87,8 +88,8 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 || 028B      || m028B                || ||
 || 028C      || numObjs              || Number of objects to create ||
 || 028D      || m028D                || ||
-|| 028E      || m028E                || ||
-|| 028F      || m028F                || ||
+|| 028E      || holdIncantWord       || ||
+|| 028F      || holdIncantLen        || ||
 || 0290      || m0290                || ||
 || 0291      || restartFind          || 1 to restart "FindNextObject" at top of list, 0 to continue find ||
 || 0292:0293 || objIterator          || Pointer to last object found ||
@@ -134,12 +135,14 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 || 02BB      || m02BB                || ||
 || 02BC      || inputHead            || head index (next read) of the 32 byte input ring buffer at 2D1  ||
 || 02BD      || inputTail            || tail index (next write) of the 32 byte input ring buffer at 2D1 ||
-|| 02BE:02CB || m02BE                || ||
+|| 02BE:02C0 || m02BE                || ||
+|| 02C1      || holdHole             || hold the hole in this room ||
 || 02CC      || m02CC                || ||
 || 02CD:02D0 || m02CD                || ||
 || 02D1:02F0 || inputBuf             || 32 byte input ring buffer ||
-|| 0313      || m0313                || ||
-|| 0335      || m0335                || ||
+|| 02F1      || nextToParse          || Next user input to parse as we move across line ||
+|| 0313:0323 || tmpBuffer1           || Buffer used for loading tape header and for decoding user input ||
+|| 0335      || tmpBuffer2           || First byte is length. Buffer used for uncompressing words for parse ||
 }}}
 
 # Text Area Descriptors
