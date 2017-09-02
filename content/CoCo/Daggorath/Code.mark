@@ -651,11 +651,11 @@ C3FD: DD 31               STD     <$31             ; ... to new X
 C3FF: 39                  RTS                      ; Done
 ;
 C400: 96 50               LDA     <$50             ; Y Scale factor
-C402: D0 08               SUBB    <$08             ; {-ram_m0208} Y byte center of screen
+C402: D0 08               SUBB    <$08             ; {-ram_m0207} Y byte center of screen
 C404: 20 04               BRA     $C40A            ; Handle signed multiply
 ;
 C406: 96 4F               LDA     <$4F             ; X scale factor
-C408: D0 06               SUBB    <$06             ; {-ram_m0206} X byte center of screen
+C408: D0 06               SUBB    <$06             ; {-ram_m0205} X byte center of screen
 ;
 C40A: 25 03               BCS     $C40F            ; Handle signed multiply
 C40C: 3D                  MUL                      ; Do multiplication
@@ -1282,7 +1282,7 @@ C761: DD 82               STD     <$82             ; {-ram_m0282} Hold pointer t
 ;
 C763: D6 81               LDB     <$81             ; {-ram_currentLevel} Current level
 C765: 8E CF FD            LDX     #$CFFD           ; {HolesAndLadders} @@ Table of holes and ladders
-C768: 9F 86               STX     <$86             ; {-ram_currentHolesM}       
+C768: 9F 86               STX     <$86             ; {-ram_currentHoles}       
 C76A: A6 80               LDA     ,X+         
 C76C: 2A FC               BPL     $C76A            ;       
 C76E: 5A                  DECB                
@@ -1990,8 +1990,8 @@ CBEE: 4F                  CLRA                     ; Word number to return
 CBEF: 5F                  CLRB                     ; Command word length
 CBF0: 8D A4               BSR     $CB96            ; {GetNextWord} Get the next user input word     
 CBF2: 2B 39               BMI     $CC2D            ; Nothing on the input. Return nothing.      
-CBF4: 0F 78               CLR     <$78             ; {-ram_m0278} Found-a-match flag      
-CBF6: 0F 7B               CLR     <$7B             ; {-ram_m027B} Perfect input match      
+CBF4: 0F 78               CLR     <$78             ; {-ram_foundMatch} Found-a-match flag      
+CBF6: 0F 7B               CLR     <$7B             ; {-ram_perfectMatch} Perfect input match      
 CBF8: E6 80               LDB     ,X+              ; Get the number ...       
 CBFA: D7 79               STB     <$79             ; {-ram_numWords} ... of words in table
 CBFC: CE 03 13            LDU     #$0313           ; Start of typed word
@@ -2006,16 +2006,16 @@ CC0D: 6D A4               TST     ,Y               ; More in the user buffer?
 CC0F: 2A F4               BPL     $CC05            ; Yes ... keep checking against the command word      
 CC11: 6D C4               TST     ,U               ; No more. Did we check all of the command word?
 CC13: 2A 0D               BPL     $CC22            ; Yes ... we have a match
-CC15: 0A 7B               DEC     <$7B             ; {-ram_m027B} FF means there was an exact match     
-CC17: 0D 78               TST     <$78             ; {-ram_m0278} Do we already have a match?       
+CC15: 0A 7B               DEC     <$7B             ; {-ram_perfectMatch} FF means there was an exact match     
+CC17: 0D 78               TST     <$78             ; {-ram_foundMatch} Do we already have a match?       
 CC19: 26 10               BNE     $CC2B            ; Error ... this could match multiple words
-CC1B: 0C 78               INC     <$78             ; {-ram_m0278} Now we have a match
+CC1B: 0C 78               INC     <$78             ; {-ram_foundMatch} Now we have a match
 CC1D: F6 03 35            LDB     $0335            ; Length of command word
 CC20: ED E4               STD     ,S               ; Store potential match on the stack to return
 CC22: 4C                  INCA                     ; Word number for next test word
 CC23: 0A 79               DEC     <$79             ; {-ram_numWords} Tried all words?    
 CC25: 26 D5               BNE     $CBFC            ; No ... keep looking      
-CC27: 0D 78               TST     <$78             ; {-ram_m0278} Did we find a match?      
+CC27: 0D 78               TST     <$78             ; {-ram_foundMatch} Did we find a match?      
 CC29: 26 04               BNE     $CC2F            ; Yes ... leave it as it on the stack      
 CC2B: DC 03               LDD     <$03             ; {-ram_CONST_FF}       
 CC2D: ED E4               STD     ,S               ; No matches ... store error to return in D
@@ -2424,7 +2424,7 @@ CE32: 8D E9               BSR     $CE1D            ; {DrawMapSymbol} Draw player
 ;
 ; Two passes here. 1st draw the holes in the current ceiling. Then draw the holes
 ; in the current floor.
-CE34: 9E 86               LDX     <$86             ; {-ram_currentHolesM} Pointer to ceiling holes/ladders for current level
+CE34: 9E 86               LDX     <$86             ; {-ram_currentHoles} Pointer to ceiling holes/ladders for current level
 CE36: 8D 00               BSR     $CE38            ; Draw the holes in this floor's ceiling (fall through to show floor holes)
 CE38: A6 80               LDA     ,X+              ; Get hole type
 CE3A: 2B EE               BMI     $CE2A            ; End of list? Yes ... out
@@ -2677,7 +2677,7 @@ ScanForHole:
 ; Return Negative if not found, positive if found
 ;
 CFE1: 34 56               PSHS    U,X,B,A          ; Preserve registers
-CFE3: DE 86               LDU     <$86             ; {-ram_currentHolesM} Holes in ceiling of current level
+CFE3: DE 86               LDU     <$86             ; {-ram_currentHoles} Holes in ceiling of current level
 CFE5: 8D 0B               BSR     $CFF2            ; Check for a hole in the ceiling
 CFE7: 4D                  TSTA                     ; Is there one?
 CFE8: 2A 04               BPL     $CFEE            ; Yes ... keep the data and skip the floor
@@ -3028,7 +3028,7 @@ D215: 84 1F               ANDA    #$1F
 D217: 8D 33               BSR     $D24C            ;       
 D219: 20 D4               BRA     $D1EF            ;       
 
-D21B: 10 9E 0D            LDY     <$0D             ; {-ram_m020D}       
+D21B: 10 9E 0D            LDY     <$0D             ; {-ram_nextDemoCommand}       
 D21E: E6 A0               LDB     ,Y+         
 D220: 2A 07               BPL     $D229            ;       
 D222: 3F                  SWI                      ; Wait for 1.35 seconds
@@ -3054,7 +3054,7 @@ D23E: 5A                  DECB
 D23F: 26 E8               BNE     $D229            ;       
 D241: 86 1F               LDA     #$1F        
 D243: 8D 07               BSR     $D24C            ;       
-D245: 10 9F 0D            STY     <$0D             ; {-ram_m020D}       
+D245: 10 9F 0D            STY     <$0D             ; {-ram_nextDemoCommand}       
 D248: CC 01 02            LDD     #$0102      
 D24B: 39                  RTS
                  
@@ -3592,7 +3592,7 @@ CmdINCANT:
 D5BC: 8E D8 F3            LDX     #$D8F3           ; {ProperNames} @@ Proper names
 D5BF: BD CB EC            JSR     $CBEC            ; {DecodeInput} Decode the input word      
 D5C2: 2F 2B               BLE     $D5EF            ; Word not found ... fail silently
-D5C4: 0D 7B               TST     <$7B             ; {-ram_m027B}       
+D5C4: 0D 7B               TST     <$7B             ; {-ram_perfectMatch}       
 D5C6: 27 27               BEQ     $D5EF            ; Not an exact word match ... fail silently    
 D5C8: DD 8E               STD     <$8E             ; {-ram_holdIncantWord} Hold this for a second     
 D5CA: DE 1D               LDU     <$1D             ; {-ram_leftHand} Try object ...      
@@ -3962,21 +3962,18 @@ D7F4: 7E C2 7D   ; FIRQ Vector: JMP $C27D
 ;
 ; Initialize a few local variables
 D7F7: 17 02 02 ; Copy 17 bytes to 202           
-D7FA: 01       ; 202                   
-D7FB: FF       ; 203                   
-D7FC: FF       ; 204                   
-D7FD: 00 80    ; 205,6                    
-D7FF: 00 4C    ; 207,8                    
-D801: D8 70    ; 209,A Pointer to visible screen descriptor                    
-D803: D8 76    ; 20B,C Pointer to drawing screen descriptor
-D805: D9 88    ; 20D,E                 
-D807: 0B 15    ; 20F,0 Pointer to next available game object slot                    
-D809: 02       ; 211                 
-D80A: F1       ; 212
-D80B: 0C 16    ; 213,4 Player starting point (for demo)         
-D80D: 00       ; 215   Player direction
-D80E: 23       ; 216                 
-D80F: 17 A0    ; 217,8
+D7FA: 01       ; 202     Constant 1 (two bytes from 201)              
+D7FB: FF FF    ; 203:204 Constant FFFF                   
+D7FD: 00 80    ; 205:206 ??                   
+D7FF: 00 4C    ; 207:208 ??                    
+D801: D8 70    ; 209:20A Pointer to visible screen descriptor                    
+D803: D8 76    ; 20B:20C Pointer to drawing screen descriptor
+D805: D9 88    ; 20D:20E Pointer to demo commands                
+D807: 0B 15    ; 20F:210 Pointer to next available game object slot                    
+D809: 02 F1    ; 211 Next input to parse                 
+D80B: 0C 16    ; 213:214 Player starting point (for demo)         
+D80D: 00 23    ; 215:216 Player weight                
+D80F: 17 A0    ; 217:218 Player strength
       
 ; Text descriptors   ??                    
 D811: 54 03 80 ; Copy 54 bytes to 380
