@@ -142,7 +142,7 @@ C0CE: 0F B7               CLR     <$B7             ; {-ram_whereToPrint} Printin
 C0D0: 39                  RTS                      ; Done
 
 PlayDemo:
-C0D1: 0A 77               DEC     <$77             ; {-ram_m0277} Demo mode flag
+C0D1: 0A 77               DEC     <$77             ; {-ram_gameMode} Demo mode flag
 C0D3: 8D 3F               BSR     $C114            ; {EndOfTapeAccess} Configure interrupts
 C0D5: 8E DF 10            LDX     #$DF10           ; Wizard picture
 C0D8: 0A 9E               DEC     <$9E             ; {-ram_m029E} ??       
@@ -208,7 +208,7 @@ C149: AF A4               STX     ,Y               ; Link this object to last
 C14B: 1F 12               TFR     X,Y              ; This is now last
 C14D: 20 EA               BRA     $C139            ; Do all game objects
 ;       
-C14F: 0D 77               TST     <$77             ; {-ram_m0277}    ?? are we in play-game mode (not demo) ??   
+C14F: 0D 77               TST     <$77             ; {-ram_gameMode}    ?? are we in play-game mode (not demo) ??   
 C151: 27 13               BEQ     $C166            ; Yes ... don't start with the map      
 C153: 0A 9B               DEC     <$9B             ; {-ram_m029B}    ??
 C155: 8E CD B2            LDX     #$CDB2           ; {ShowMap} @@ The routine for drawing ...
@@ -410,10 +410,10 @@ C27B: 35 96               PULS    A,B,X,PC         ; Restore and out
 
 InterruptServiceRoutine: 
 C27D: 8E FF 20            LDX     #$FF20           ; 6-bit sound value
-C280: A6 88 E3            LDA     $-1D,X           ; FF03 ... 16.67MS (60Hz) interrupt status
+C280: A6 88 E3            LDA     -$1D,X           ; FF03 ... 16.67MS (60Hz) interrupt status
 C283: 10 2A 00 99         LBPL    $C320            ; Upper bit 0 ... must have been the horizontal ... ignore
 C287: 86 02               LDA     #$02             ; Set DP to ...
-C289: 1F 8B               TFR     A,DP             ; ... base 02xx
+C289: 1F 8B               TFR     A,DP             ; ... base 02xx (in case we are interrupting a BASIC routine)
 C28B: 0D B4               TST     <$B4             ; {-ram_flipScreens} Time to flip screens?
 C28D: 27 0E               BEQ     $C29D            ; No ... keep what we have
 C28F: DC 09               LDD     <$09             ; {-ram_activeScreen} Get the current visible
@@ -471,21 +471,22 @@ C2F6: 6F 80               CLR     ,X+
 C2F8: 33 42               LEAU    2,U         
 C2FA: BD C2 42            JSR     $C242            ;       
 C2FD: 20 EA               BRA     $C2E9            ;       
-C2FF: 0D 28               TST     <$28             ;       
-C301: 26 1D               BNE     $C320            ;       
-C303: 0D 77               TST     <$77             ; {-ram_m0277}       
-C305: 27 11               BEQ     $C318            ;       
-C307: 7F FF 02            CLR     $FF02            ;
-C30A: B6 FF 00            LDA     $FF00            ;
-C30D: 84 7F               ANDA    #$7F        
-C30F: 81 7F               CMPA    #$7F        
-C311: 27 0D               BEQ     $C320            ;       
-C313: 8E C0 05            LDX     #$C005           ; Start game
+;
+C2FF: 0D 28               TST     <$28             ; {-ram_fainting} Are we fainting?      
+C301: 26 1D               BNE     $C320            ; Yes .. ??      
+C303: 0D 77               TST     <$77             ; {-ram_gameMode} Are we in a live game?      
+C305: 27 11               BEQ     $C318            ; Yes ... don't restart the game on a key      
+C307: 7F FF 02            CLR     $FF02            ; Activate all keyboard columns
+C30A: B6 FF 00            LDA     $FF00            ; Check all rows
+C30D: 84 7F               ANDA    #$7F             ; Ignore the joystick bit
+C30F: 81 7F               CMPA    #$7F             ; Any key pressed?
+C311: 27 0D               BEQ     $C320            ; No ... skip processing the key      
+C313: 8E C0 05            LDX     #$C005           ; Any key was pressed ... start a new game
 C316: AF 6A               STX     10,S             ; Return address
 C318: 10 3F               SWI2                     ; BASIC function ...
 C31A: 00                                           ; ... POLCAT
-C31B: 4D                  TSTA                     ; Was a key pressed?
-C31C: 27 02               BEQ     $C320            ; No ... move on
+C31B: 4D                  TSTA                     ; Was it a valid key (not, say, SHIFT)
+C31C: 27 02               BEQ     $C320            ; No ... don't store it (but we are still starting a new game)
 C31E: 8D 20               BSR     $C340            ; {CharToBuf} Store character in ring buffer
 C320: B6 FF 02            LDA     $FF02            ; Acknowledge the interrupt so it can fire again
 C323: 3B                  RTI                      ; Return from interrupt
@@ -930,8 +931,8 @@ C562: 24 F0               BCC     $C554            ;
 C564: 96 C7               LDA     <$C7             ;       
 C566: 80 13               SUBA    #$13        
 C568: 97 AF               STA     <$AF             ; {-ram_heartCounterRel}       
-C56A: 0D 28               TST     <$28             ;       
-C56C: 26 27               BNE     $C595            ;       
+C56A: 0D 28               TST     <$28             ; {-ram_fainting} Are we fainting?      
+C56C: 26 27               BNE     $C595            ; Yes ... ??      
 C56E: 81 03               CMPA    #$03        
 C570: 2E 3C               BGT     $C5AE            ;
 C572: 3F                  SWI                 
@@ -949,7 +950,7 @@ C587: 2E EF               BGT     $C578            ; No, keep going
 C589: 3F                  SWI                      ; Clear screen
 C58A: 09                                           ; SWI_9:[Clear secondary screen](#addr_SWI_9):
 C58B: 0A B4               DEC     <$B4             ; {-ram_flipScreens}       
-C58D: 0A 28               DEC     <$28             ;       
+C58D: 0A 28               DEC     <$28             ; {-ram_fainting} Decrement the faint counter      
 C58F: 0F BC               CLR     <$BC             ; {-ram_inputHead}       
 C591: 0F BD               CLR     <$BD             ; {-ram_inputTail}       
 C593: 20 19               BRA     $C5AE            ;       
@@ -963,7 +964,7 @@ C5A2: 0C 6E               INC     <$6E             ; {-ram_m026E}
 C5A4: 96 6E               LDA     <$6E             ; {-ram_m026E}       
 C5A6: 91 70               CMPA    <$70             ; {-ram_m0270}       
 C5A8: 2F EF               BLE     $C599            ;
-C5AA: 0F 28               CLR     <$28             ;       
+C5AA: 0F 28               CLR     <$28             ; {-ram_fainting} No longer fainting      
 C5AC: 3F                  SWI                      ; Display playing screen
 C5AD: 0F                                           ; SWI_F:[Ready command prompt](#addr_SWI_F):
 C5AE: 9E 17               LDX     <$17             ; {-ram_pStrength} Strength
@@ -982,8 +983,8 @@ C5BD: 02                                           ; SWI_2:[Uncompress message m
 ;
 C5BE: FF C1 92 D0 01 73 E8 82 C8 04 79 66 07 3E 80 91 69 59 3B DE F0 ; "_1F_ YET ANOTHER DOES NOT RETURN..."
  ;      
-C5D3: 0F 28               CLR     <$28             ;       
-C5D5: 0A 77               DEC     <$77             ; {-ram_m0277}    
+C5D3: 0F 28               CLR     <$28             ; {-ram_fainting} No longer fainting      
+C5D5: 0A 77               DEC     <$77             ; {-ram_gameMode}    
 ;   
 C5D7: 20 FE               BRA     $C5D7            ; Endless loop
 
@@ -1066,8 +1067,8 @@ C655: FF                  ; END
 SWI_E:
 ; Display playing screen
 
-C656: 0D 28               TST     <$28             ; Needs refreshing?
-C658: 26 05               BNE     $C65F            ; No, skip it
+C656: 0D 28               TST     <$28             ; {-ram_fainting} Fainting?
+C658: 26 05               BNE     $C65F            ; Yes, skip this
 C65A: 8D 04               BSR     $C660            ; Refresh display
 C65C: 0A B4               DEC     <$B4             ; {-ram_flipScreens}       
 C65E: 13                  SYNC                     ; Wait on display
@@ -3062,13 +3063,14 @@ D1E8: C6 02               LDB     #$02
 D1EA: 39                  RTS
 
 ; ?? Task 0 ??                 
-D1EB: 0D 77               TST     <$77             ; {-ram_m0277}       
-D1ED: 26 2C               BNE     $D21B            ;       
+D1EB: 0D 77               TST     <$77             ; {-ram_gameMode} Are we in a demo?  
+D1ED: 26 2C               BNE     $D21B            ; Yes ... handle demo commands 
+;     
 D1EF: BD C3 29            JSR     $C329            ; {CharFromBuf}       
 D1F2: 4D                  TSTA                
 D1F3: 27 53               BEQ     $D248            ;       
-D1F5: 0D 28               TST     <$28             ;       
-D1F7: 26 F6               BNE     $D1EF            ;       
+D1F5: 0D 28               TST     <$28             ; {-ram_fainting} Fainting?      
+D1F7: 26 F6               BNE     $D1EF            ; Yes ... drop all characters from the buffer      
 D1F9: 81 20               CMPA    #$20        
 D1FB: 27 18               BEQ     $D215            ;       
 D1FD: C6 1F               LDB     #$1F        
@@ -3172,8 +3174,8 @@ D2A5: AD 96               JSR     [A,X]            ; Execute the command
 D2A7: CE 02 F1            LDU     #$02F1           ; Start of input buffer
 D2AA: 0D AD               TST     <$AD             ; {-ram_scrollShowing} Is a scroll showing?       
 D2AC: 27 06               BEQ     $D2B4            ; Yes ... skip the command prompt     
-D2AE: 0D 28               TST     <$28             ;       
-D2B0: 26 02               BNE     $D2B4            ;       
+D2AE: 0D 28               TST     <$28             ; {-ram_fainting} Are we fainting?      
+D2B0: 26 02               BNE     $D2B4            ; Yes ... skip the prompt      
 D2B2: 3F                  SWI                      ; Print the command prompt
 D2B3: 0F                                           ; SWI_F:[Ready command prompt](#addr_SWI_F):
 D2B4: DF 11               STU     <$11             ; {-ram_m0211} New start of command       

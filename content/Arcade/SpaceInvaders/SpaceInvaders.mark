@@ -445,7 +445,8 @@ falls. Object 3 is the "Plunger" shot. It reminds me of a bathroom plunger falli
 looks like a turning zig-zag line much like a resistor circuit symbol.
 
 The byte timer from Object 2 is used to synchronize the three shots so that only one shot is processed per screen. The objects can't 
-synchronize directly from the timer byte at 2032 since its decrement depends on which half of the screen it is on. Instead the timer byte is copied to a sync-flag at 2080 where it remains constant for all the shots between end and mid screen interrupts.
+synchronize directly from the timer byte at 2032 since its decrement depends on which half of the screen it is on. Instead the timer byte is 
+copied to a sync-flag at 2080 where it remains constant for all the shots between end and mid screen interrupts.
 
 The code uses a common routine to handle all three shots. Each shot task copies its data structure to a common area, calls the handler, 
 and then copies the changed data back to its personal area.
