@@ -168,11 +168,13 @@ line pattern in the center.
 08E8: C7 F1          SVEC scale=00(/512) bri=12    x=-3      y=1       (-0.0059, 0.0020)
 08EA: C1 FD          SVEC scale=01(/256) bri=12    x=1       y=-1      (0.0039, -0.0117)
 
-; Data of some kind
-08EC: D8 1E 32 EC
-08F0: 00 C4
-08F2: 3C 14 0A 46
-08F6: D8 D8
+; Ship explosion pieces velocity (x, y)
+08EC: D8 1E (-40,  30)
+08EE: 32 EC ( 50, -20)
+08F0: 00 C4 (  0, -60)
+08F2: 3C 14 ( 60,  20)
+08F4: 0A 46 ( 10,  70)
+08F6: D8 D8 (-40, -40)
 
 # Shrapnel Patterns `visual`
 
