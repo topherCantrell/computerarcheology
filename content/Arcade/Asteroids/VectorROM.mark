@@ -446,7 +446,7 @@ can be used to take up the gaps in the large scaling doubles!
 }}}
 
 ShipDir0:
-0A90: 0F F6    VEC  scale=05(/16)  bri=15    x=-527    y=-194    (-32.9375, -12.1250)
+0A90: 0F F6          SVEC scale=02(/128) bri=0     x=-3      y=-2      (-0.0234, -0.0156)
 0A92: C8 FA          SVEC scale=03(/64)  bri=12    x=0       y=2       (0.0000, 0.0313)
 0A94: BD F9          SVEC scale=03(/64)  bri=11    x=-1      y=1       (-0.0156, 0.0156)
 0A96: 00 65 00 C3    VEC  scale=06(/8)   bri=12    x=768     y=-256    (96.0000, -32.0000)
