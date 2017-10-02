@@ -80,10 +80,9 @@
 || 7A        || coin1InpLen        || Coin 1 Input Length (31 = No Input) goes down by 1 until it hits 0, if input is released before 0 then credit is added ||
 || 7B        || coin2InpLen        || Coin 2 Input Length ||
 || 7C        || coin3InpLen        || Coin 3 Input Length ||
-|| 7D        ||  $7D               ||             ||
-|| 7E        ||  $7E               ||             ||
-|| 7F        ||  $7F               ||             ||
-|| 80:FF     ||  $80               ||             ||
+|| 7D:88     ||  $7D               || Ship explosion pieces x offsets (byte 1 minor, byte 2 major) ||
+|| 89:94     ||  $89               || Ship explosion pieces y offsets (byte 1 minor, byte 2 major) ||
+|| 95:FF     ||  $95               ||             ||
 || 0100:01FF || stack              || Stack Space ||
 
 0200 - 02FF Current Player RAM
