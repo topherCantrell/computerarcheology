@@ -160,6 +160,7 @@
 	         {"mark": "Atari2600.mark", "out": "index.html"},
 	         {"copy": "Atari2600.jpg"},
 	         {"copy": "Hardware.jpg"},
+	         {"copy": "Stella.js"},
 	         {"mark": "Stella.mark", "out": "Stella.html", "nav": "Stella"},
 	         
 	         {"dir": "Asteroids", "nav": "Asteroids", "entries": [

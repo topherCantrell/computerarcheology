@@ -4,6 +4,24 @@
 %%-ram  = Atari2600/Combat/RAMUse.mark /Atari2600/Combat/RAMUse.mark
 %%-hard = Atari2600/Stella.mark /Atari2600/Stella.html
 
+{{{html
+<script src="/Atari2600/Stella.js"></script>
+<script src="/js/TileEngine.js"></script>
+<script src="/js/BinaryData.js"></script>
+<script src="/js/CANVAS.js"></script>
+<!-- Cache some commonly-used values -->
+<canvas width="0" height="0"
+        data-canvasFunction="TileEngine.handleTileCanvas"
+        data-labelColor=""
+        data-pixWidth="10"
+        data-pixHeight="10"
+        data-gap="0.25"
+        data-gridPad="1"
+        data-colorsName="SCORE"
+        data-colors='["#BBD46E","#8C2A44"]'>        
+</canvas>
+}}}
+
 F000: 78            SEI                       ; Turn off interrupts 
 F001: D8            CLD                       ; Binary mode (not BCD)
 F002: A2 FF         LDX   #$FF                ; Stack pointer to 1_FF ...
@@ -779,6 +797,16 @@ F5C4: 60            RTS                       ; No ... back for more
 
 # Numbers
 
+{{{html
+<canvas width="900" height="60"
+    data-getTileDataFunction="Stella.get8x5Data"
+    data-address="F5C5"
+    data-gridX="8"
+    data-gridY="5"
+    data-command="0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7,+x,8,+x,9">
+</canvas>
+}}}
+
 ; Numbers
 F5C5: 0E 0A 0A 0A 0E  ;  0
  ; .... ***.
@@ -848,6 +876,46 @@ F5F2: EE AA EE 22 EE  ; 99
 ; ***. ***.
 ; ..*. ..*.
 ; ***. ***.    
+
+{{{html
+<canvas width="1000" height="100"
+    data-getTileDataFunction="Stella.get8x8Data"
+    data-address="F60F"
+    data-gridX="8"
+    data-gridY="8"
+    data-command="0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7">
+</canvas>
+}}}
+
+{{{html
+<canvas width="1000" height="100"
+    data-getTileDataFunction="Stella.get8x8Data"
+    data-address="F64F"
+    data-gridX="8"
+    data-gridY="8"
+    data-command="0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7">
+</canvas>
+}}}
+
+{{{html
+<canvas width="1000" height="100"
+    data-getTileDataFunction="Stella.get8x8Data"
+    data-address="F68F"
+    data-gridX="8"
+    data-gridY="8"
+    data-command="0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7">
+</canvas>
+}}}
+
+{{{html
+<canvas width="1000" height="100"
+    data-getTileDataFunction="Stella.get8x8Data"
+    data-address="F6CF"
+    data-gridX="8"
+    data-gridY="8"
+    data-command="0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7">
+</canvas>
+}}}
 
 F5F7: F8            SED                       
 F5F8: F7                                    
