@@ -3,9 +3,9 @@
 @echo Kill this window stop the server.
 @echo.
  
-REM D:
-REM cd git\computerarcheology
-REM java SoftServe deploy 80
-
-cd /users/ccantrell/git/computerarcheology
+D:
+cd git\computerarcheology
 java SoftServe deploy 80
+
+REM cd /users/ccantrell/git/computerarcheology
+REM java SoftServe deploy 80

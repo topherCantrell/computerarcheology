@@ -337,7 +337,7 @@ F258: 29 0F         AND   #$0F
 F25A: 18            CLC                       
 F25B: 65 B1         ADC   $B1                 ;
 F25D: A8            TAY                       
-F25E: B9 F7 F5      LDA   $F5F7,Y             
+F25E: B9 F7 F5      LDA   $F5F7,Y             ; ??DATA??
 F261: 85 B0         STA   $B0                 ;
 F263: 24 82         BIT   $82                 ;
 F265: 70 13         BVS   $F27A               ;
@@ -433,7 +433,7 @@ F2FF: 4A            LSR   A
 F300: 95 19         STA   $19,X               ;AUDV0:12,13 
 F302: A9 08         LDA   #$08                
 F304: 95 15         STA   $15,X               ;AUDC0:12,13 
-F306: BD FE F7      LDA   $F7FE,X             
+F306: BD FE F7      LDA   $F7FE,X             ; Negative number??
 F309: 95 17         STA   $17,X               ;AUDF0:12,13 
 F30B: 60            RTS                       
 F30C: A2 01         LDX   #$01                
@@ -709,11 +709,13 @@ F51E: 95 8D         STA   $8D,X
 F520: B5 D8         LDA   $D8,X               
 F522: 95 D6         STA   $D6,X               
 F524: 60            RTS                       
-F525: A6 85         LDX   $85                 ;
-F527: BD C6 F7      LDA   $F7C6,X             
-F52A: 85 BB         STA   $BB                 ;
-F52C: BD C9 F7      LDA   $F7C9,X             
-F52F: 85 BC         STA   $BC                 ;
+
+F525: A6 85         LDX   $85                 ; Player type (0=tank, 1=jet, 2=plane)
+F527: BD C6 F7      LDA   $F7C6,X             ; Get picture ...
+F52A: 85 BB         STA   $BB                 ; ... pointer LSB
+F52C: BD C9 F7      LDA   $F7C9,X             ; Get picture ...
+F52F: 85 BC         STA   $BC                 ; ... pointer MSB
+
 F531: A5 A3         LDA   $A3                 ;
 F533: 4A            LSR   A                   
 F534: 4A            LSR   A                   
@@ -752,11 +754,11 @@ F572: A5 A3         LDA   $A3                 ;
 F574: 29 87         AND   #$87                
 F576: 30 02         BMI   $F57A               ;
 F578: A9 00         LDA   #$00                
-F57A: 0A            ASL   A                   
+F57A: 0A            ASL   A                   ; Two bytes each
 F57B: AA            TAX                       
-F57C: BD 5D F7      LDA   $F75D,X             
+F57C: BD 5D F7      LDA   $F75D,X             ; Number and size of player 0
 F57F: 85 04         STA   $04                 ;{-2_NUSIZ0}NUSIZ0:5,13,11 
-F581: BD 5E F7      LDA   $F75E,X             
+F581: BD 5E F7      LDA   $F75E,X             ; Number and size of player 1
 F584: 85 05         STA   $05                 ;{-2_NUSIZ1}NUSIZ1:5,13,11 
 F586: A5 A3         LDA   $A3                 ;
 F588: 29 C0         AND   #$C0                
@@ -795,7 +797,11 @@ F5C0: 95 A2         STA   $A2,X               ; Clear register
 F5C2: D0 FB         BNE   $F5BF               ; All registers done?
 F5C4: 60            RTS                       ; No ... back for more
 
-# Numbers
+; -----------------------------------------------------------------------------------------------------------------------------
+
+# Data From Here Down
+
+## Numbers `visual`
 
 {{{html
 <canvas width="900" height="60"
@@ -806,8 +812,6 @@ F5C4: 60            RTS                       ; No ... back for more
     data-command="0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7,+x,8,+x,9">
 </canvas>
 }}}
-
-; Numbers
 F5C5: 0E 0A 0A 0A 0E  ;  0
  ; .... ***.
  ; .... *.*.
@@ -877,15 +881,34 @@ F5F2: EE AA EE 22 EE  ; 99
 ; ..*. ..*.
 ; ***. ***.    
 
-{{{html
-<canvas width="1000" height="100"
-    data-getTileDataFunction="Stella.get8x8Data"
-    data-address="F60F"
-    data-gridX="8"
-    data-gridY="8"
-    data-command="0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7">
-</canvas>
-}}}
+; ?? From F25E
+F5F7: F8
+F5F8: F7
+F5F9: F6 06
+F5FB: 06 06
+F5FD: 16 17
+F5FF: 18
+F600: 19 1A 0A
+F603: 0A
+F604: 0A
+F605: FA
+F606: F9 F8 F7
+F609: F6 F6
+F60B: 06 16
+F60D: 16 17
+
+; ??
+               
+F60F: 18 19 1A 1A 0A FA FA F9 
+F617: E8 E6 E4 F4 04 14 24 26
+F61F: 28 2A 2C 1C 0C FC EC EA 
+F627: C8 C4 C0 E0 00 20 40 44
+F62F: 48 4C 4F 2F 0F EF CF CC
+F637: 00 00 80 80 84 20 88 88
+F63F: 92 48 A4 A4 A9 52 AA AA
+F647: D5 AA DA DA DB 6D EE EE
+
+## Tank Pictures `visual`
 
 {{{html
 <canvas width="1000" height="100"
@@ -896,6 +919,16 @@ F5F2: EE AA EE 22 EE  ; 99
     data-command="0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7">
 </canvas>
 }}}
+F64F: 00 FC FC 38 3F 38 FC FC
+F657: 1C 78 FB 7C 1C 1F 3E 18 
+F65F: 19 3A 7C FF DF 0E 1C 18
+F667: 24 64 79 FF FF 4E 0E 04
+F66F: 08 08 6B 7F 7F 7F 63 63
+F677: 24 26 9E FF FF 72 70 20
+F67F: 98 5C 3E FF FB 70 38 18
+F687: 38 1E DF 3E 38 F8 7C 18
+
+## Jet Pictures `visual`
 
 {{{html
 <canvas width="1000" height="100"
@@ -905,7 +938,17 @@ F5F2: EE AA EE 22 EE  ; 99
     data-gridY="8"
     data-command="0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7">
 </canvas>
-}}}
+}}}                 
+F68F: 60 70 78 FF 78 70 60 00
+F697: 00 C1 FE 7C 78 30 30 30
+F69F: 00 03 06 FC FC 3C 0C 0C
+F6A7: 02 04 0C 1C FC FC 1E 06
+F6AF: 10 10 10 38 7C FE FE 10
+F6B7: 40 20 30 38 3F 3F 78 60
+F6BF: 40 60 3F 1F 1E 1E 18 18
+F6C7: 00 83 7F 3E 1E 0C 0C 0C
+
+## Plane Pictures `visual`
 
 {{{html
 <canvas width="1000" height="100"
@@ -915,241 +958,67 @@ F5F2: EE AA EE 22 EE  ; 99
     data-gridY="8"
     data-command="0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7">
 </canvas>
-}}}
+}}}        
+F6CF: 00 8E 84 FF FF 04 0E 00
+F6D7: 00 0E 04 8F 7F 72 07 00        
+F6DF: 10 36 2E 0C 1F B2 E0 40
+F6E7: 24 2C 5D 1A 1A 30 F0 60
+F6EF: 18 5A 7E 5A 18 18 18 78
+F6F7: 34 36 5A 78 2C 0C 06 0C
+F6FF: 08 6C 70 B8 DC 4E 07 06
+F707: 38 10 F0 7C 4F E3 02 00
+        
+; ?? From F324 guidance for 0=tanks, 1=jets, 2=planes
+F70F: 00 0B 16 
 
-F5F7: F8            SED                       
-F5F8: F7                                    
-F5F9: F6 06         INC   $06,X               
-F5FB: 06 06         ASL   $06                 ;
-F5FD: 16 17         ASL   $17,X          
-     
-F5FF: 18            CLC                       
-F600: 19 1A 0A      ORA   $0A1A,Y             
-F603: 0A            ASL   A                   
-F604: 0A            ASL   A                   
-F605: FA                                    
-F606: F9 F8 F7      SBC   $F7F8,Y             
-F609: F6 F6         INC   $F6,X               
-F60B: 06 16         ASL   $16                 ;
-F60D: 16 17         ASL   $17,X               
-F60F: 18            CLC                       
-F610: 19 1A 1A      ORA   $1A1A,Y             
-F613: 0A            ASL   A                   
-F614: FA                                    
-F615: FA                                    
-F616: F9 E8 E6      SBC   $E6E8,Y             
-F619: E4 F4         CPX   $F4                 ;
-F61B: 04                                    
-F61C: 14                                    
-F61D: 24 26         BIT   $26                 ;
-F61F: 28            PLP                       
-F620: 2A            ROL   A                   
-F621: 2C 1C 0C      BIT   $0C1C               ;
-F624: FC                                    
-F625: EC EA C8      CPX   $C8EA               ;
-F628: C4 C0         CPY   $C0                 ;
-F62A: E0 00         CPX   #$00                
-F62C: 20 40 44      JSR   $4440               ;
-F62F: 48            PHA                       
-F630: 4C 4F 2F      JMP   $2F4F               ;
-F633: 0F                                    
-F634: EF                                    
-F635: CF                                    
-F636: CC 00 00      CPY   $0000               ;
-F639: 80                                    
-F63A: 80                                    
-F63B: 84 20         STY   $20                 ;{-2_HMP0}
-F63D: 88            DEY                       
-F63E: 88            DEY                       
-F63F: 92                                    
-F640: 48            PHA                       
-F641: A4 A4         LDY   $A4                 ;
-F643: A9 52         LDA   #$52                
-F645: AA            TAX                       
-F646: AA            TAX                       
-F647: D5 AA         CMP   $AA,X               
-F649: DA                                    
-F64A: DA                                    
-F64B: DB                                    
-F64C: 6D EE EE      ADC   $EEEE               ;
-F64F: 00            BRK                       
-F650: FC                                    
-F651: FC                                    
-F652: 38            SEC                       
-F653: 3F                                    
-F654: 38            SEC                       
-F655: FC                                    
-F656: FC                                    
-F657: 1C                                    
-F658: 78            SEI                       
-F659: FB                                    
-F65A: 7C                                    
-F65B: 1C                                    
-F65C: 1F                                    
-F65D: 3E 18 19      ROL   $1918,X             
-F660: 3A                                    
-F661: 7C                                    
-F662: FF                                    
-F663: DF                                    
-F664: 0E 1C 18      ASL   $181C               ;
-F667: 24 64         BIT   $64                 ;
-F669: 79 FF FF      ADC   $FFFF,Y             
-F66C: 4E 0E 04      LSR   $040E               ;
-F66F: 08            PHP                       
-F670: 08            PHP                       
-F671: 6B                                    
-F672: 7F                                    
-F673: 7F                                    
-F674: 7F                                    
-F675: 63                                    
-F676: 63                                    
-F677: 24 26         BIT   $26                 ;
-F679: 9E                                    
-F67A: FF                                    
-F67B: FF                                    
-F67C: 72                                    
-F67D: 70 20         BVS   $F69F               ;
-F67F: 98            TYA                       
-F680: 5C                                    
-F681: 3E FF FB      ROL   $FBFF,X             
-F684: 70 38         BVS   $F6BE               ;
-F686: 18            CLC                       
-F687: 38            SEC                       
-F688: 1E DF 3E      ASL   $3EDF,X             
-F68B: 38            SEC                       
-F68C: F8            SED                       
-F68D: 7C                                    
-F68E: 18            CLC                       
-F68F: 60            RTS                       
-F690: 70 78         BVS   $F70A               ;
-F692: FF                                    
-F693: 78            SEI                       
-F694: 70 60         BVS   $F6F6               ;
-F696: 00            BRK                       
-F697: 00            BRK                       
-F698: C1 FE         CMP   ($FE,X)             
-F69A: 7C                                    
-F69B: 78            SEI                       
-F69C: 30 30         BMI   $F6CE               ;
-F69E: 30 00         BMI   $F6A0               ;
-F6A0: 03                                    
-F6A1: 06 FC         ASL   $FC                 ;
-F6A3: FC                                    
-F6A4: 3C                                    
-F6A5: 0C                                    
-F6A6: 0C                                    
-F6A7: 02                                    
-F6A8: 04                                    
-F6A9: 0C                                    
-F6AA: 1C                                    
-F6AB: FC                                    
-F6AC: FC                                    
-F6AD: 1E 06 10      ASL   $1006,X             
-F6B0: 10 10         BPL   $F6C2               ;
-F6B2: 38            SEC                       
-F6B3: 7C                                    
-F6B4: FE FE 10      INC   $10FE,X             
-F6B7: 40            RTI                       
-F6B8: 20 30 38      JSR   $3830               ;
-F6BB: 3F                                    
-F6BC: 3F                                    
-F6BD: 78            SEI                       
-F6BE: 60            RTS                       
-F6BF: 40            RTI                       
-F6C0: 60            RTS                       
-F6C1: 3F                                    
-F6C2: 1F                                    
-F6C3: 1E 1E 18      ASL   $181E,X             
-F6C6: 18            CLC                       
-F6C7: 00            BRK                       
-F6C8: 83                                    
-F6C9: 7F                                    
-F6CA: 3E 1E 0C      ROL   $0C1E,X             
-F6CD: 0C                                    
-F6CE: 0C                                    
-F6CF: 00            BRK                       
-F6D0: 8E 84 FF      STX   $FF84               ;
-F6D3: FF                                    
-F6D4: 04                                    
-F6D5: 0E 00 00      ASL   $0000               ;
-F6D8: 0E 04 8F      ASL   $8F04               ;
-F6DB: 7F                                    
-F6DC: 72                                    
-F6DD: 07                                    
-F6DE: 00            BRK                       
-F6DF: 10 36         BPL   $F717               ;
-F6E1: 2E 0C 1F      ROL   $1F0C               ;
-F6E4: B2                                    
-F6E5: E0 40         CPX   #$40                
-F6E7: 24 2C         BIT   $2C                 ;
-F6E9: 5D 1A 1A      EOR   $1A1A,X             
-F6EC: 30 F0         BMI   $F6DE               ;
-F6EE: 60            RTS                       
-F6EF: 18            CLC                       
-F6F0: 5A                                    
-F6F1: 7E 5A 18      ROR   $185A,X             
-F6F4: 18            CLC                       
-F6F5: 18            CLC                       
-F6F6: 78            SEI                       
-F6F7: 34                                    
-F6F8: 36 5A         ROL   $5A,X               
-F6FA: 78            SEI                       
-F6FB: 2C 0C 06      BIT   $060C               ;
-F6FE: 0C                                    
-F6FF: 08            PHP                       
-F700: 6C 70 B8      JMP   ($B870)             ;
-F703: DC                                    
-F704: 4E 07 06      LSR   $0607               ;
-F707: 38            SEC                       
-F708: 10 F0         BPL   $F6FA               ;
-F70A: 7C                                    
-F70B: 4F                                    
-F70C: E3                                    
-F70D: 02                                    
-F70E: 00            BRK                       
-F70F: 00            BRK                       
-F710: 0B                                    
-F711: 16 00         ASL   $00,X               
-F713: 10 00         BPL   $F715               ;
-F715: FF                                    
-F716: 01 11         ORA   ($11,X)             
-F718: 01 FF         ORA   ($FF,X)             
-F71A: 0F                                    
-F71B: 1F                                    
-F71C: 0F                                    
-F71D: 50 5F         BVC   $F77E               ;
-F71F: 51 FF         EOR   ($FF),Y             
-F721: 30 3F         BMI   $F762               ;
-F723: 31 FF         AND   ($FF),Y             
-F725: 70 7F         BVS   $F7A6               ;
-F727: 71 90         ADC   ($90),Y             
-F729: B0 70         BCS   $F79B               ;
-F72B: FF                                    
-F72C: 91 B1         STA   ($B1),Y             
-F72E: 71 FF         ADC   ($FF),Y             
-F730: 9F                                    
-F731: BF                                    
-F732: 7F                                    
-F733: 08            PHP                       
-F734: 02                                    
-F735: 02                                    
-F736: 02                                    
-F737: 03                                    
-F738: 08            PHP                       
-F739: 1D 05 00      ORA   $0005,X             
-F73C: 00            BRK                       
-F73D: 00            BRK                       
-F73E: 00            BRK                       
-F73F: 00            BRK                       
-F740: 00            BRK                       
-F741: 00            BRK                       
-F742: 00            BRK                       
-F743: 00            BRK                       
-F744: 00            BRK                       
-F745: 00            BRK                       
-F746: 00            BRK                       
-F747: 1D 1D 16      ORA   $161D,X             
-F74A: 16 0F         ASL   $0F,X               
+; ?? From F32B guides the tanks in pre-game
+F712: 00
+F713: 10 00
+F715: FF
+F716: 01 11 ; There are more tank levels than others. is this why there are more in this table??
+F718: 01 FF
+F71A: 0F
+F71B: 1F
+F71C: 0F
+; ?? guides jets in pre-game
+F71D: 50 5F
+F71F: 51 FF
+F721: 30
+F722: 3F
+F723: 31 FF
+F725: 70 7F
+F727: 71 90
+F729: B0 70
+F72B: FF
+F72C: 91 B1
+F72E: 71 FF
+F730: 9F
+F731: BF
+F732: 7F
+
+; ?? From F423
+F733: 08 02 02
+
+; ?? From F42A
+F736: 02
+F737: 03
+F738: 08
+
+; ?? From F43E
+F739: 1D 05 00
+F73C: 00
+F73D: 00
+F73E: 00
+F73F: 00
+F740: 00
+F741: 00
+F742: 00
+F743: 00
+F744: 00
+F745: 00
+F746: 00
+F747: 1D 1D 16
+F74A: 16 0F
 F74C: 0F                                    
 F74D: 00            BRK                       
 F74E: 00            BRK                       
@@ -1166,15 +1035,20 @@ F759: 0C
 F75A: 0C                                    
 F75B: 07                                    
 F75C: 07                                    
-F75D: 00            BRK                       
-F75E: 00            BRK                       
-F75F: 01 01         ORA   ($01,X)             
-F761: 00            BRK                       
-F762: 03                                    
-F763: 27                                    
-F764: 03                                    
-F765: EA            NOP                       
-F766: 3C                                    
+
+; Planes 3,1 = big 1
+; Jets 3,1 = small 1
+
+plyrNumSize:
+; Number and size of players
+;                    copies    width            copies    width
+F75D: 00 00   ; P0 = 1         1           P1 = 1         1         
+F75F: 01 01   ; P0 = 2 close   1           P1 = 2 close   1        
+F761: 00 03   ; P0 = 1         1           P1 = 3 close   1                                    
+F763: 27 03   ; P0 = 1 quad    4           P1 = 3 close   1                         
+    
+; ?? Colors from F5AB    
+F765: EA 3C 
 F767: 82                                    
 F768: 44                                    
 F769: 32                                    
@@ -1256,18 +1130,19 @@ F7C1: 80
 F7C2: 00            BRK                       
 F7C3: 00            BRK                       
 F7C4: 00            BRK                       
-F7C5: 07                                    
-F7C6: 4F                                    
-F7C7: CF                                    
-F7C8: 8F                                    
-F7C9: F6 F6         INC   $F6,X               
-F7CB: F6 75         INC   $75,X               
-F7CD: 75 75         ADC   $75,X               
-F7CF: 9A            TXS                       
-F7D0: 81 99         STA   ($99,X)             
-F7D2: AA            TAX                       
-F7D3: 9D 8D 99      STA   $998D,X             
-F7D6: B6 9D         LDX   $9D,Y               
+F7C5: 07
+
+; Pointers to player pictures 0=tank, 1=jet, 2=plane                                    
+F7C6: 4F CF 8F ; Picture pointers LSB                                  
+F7C9: F6 F6 F6 ; Picture pointers MSB
+
+; ? RESP0 (reset P0)
+F7CC: 75 75 75 9A      
+ 
+F7D0: 81 99 AA 9D 
+F7D4: 8D 99 B6 9D
+
+; ?? From F1AE
 F7D8: 24 28         BIT   $28                 ;
 F7DA: 08            PHP                       
 F7DB: 20 00 48      JSR   $4800               ;
