@@ -139,7 +139,7 @@
 	             {"mark": "RAMUse.mark",        "nav":"RAM Usage", "out": "RAMUse.html"},
 	             {"mark": "Hardware.mark",      "nav":"Hardware", "out": "Hardware.html"},
 	             {"mark": "Code.mark",          "nav":"Code", "out": "Code.html"},	             
-	             {"copy": "SpaceInvaders.jpg"}	             	             
+	             {"copy": "SpaceInvaders.jpg"},	             	             
 	             {"copy": "SpaceInvaders.js"}
 	             
 	             ]
@@ -147,9 +147,12 @@
 	         {"dir": "TimePilot", "nav": "Time Pilot", "entries": [
 	             {"copy": "TimePilot.jpg"},
 	             {"mark": "TimePilot.mark", "out": "index.html"},
+	             {"mark": "Code.mark", "out": "Code.html", "nav": "Main Code"}
 	             {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
 	             {"mark": "Hardware.mark", "out": "Hardware.html", "nav": "Hardware Info"},
-	             {"mark": "SoundCode.mark", "out": "SoundCode.html", "nav": "Sound Code"}
+	             {"mark": "SoundCode.mark", "out": "SoundCode.html", "nav": "Sound Code"},
+	             {"mark": "SoundRAMUse.mark", "out": "SoundRAMUse.html", "nav": "Sound RAM Use"},
+	             {"mark": "SoundHardware.mark", "out": "SoundHardware.html", "nav": "Sound Hardware Info"},
 	             ]
 	         }
 	         	         

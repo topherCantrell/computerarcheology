@@ -1,0 +1,22 @@
+CPU1 (game)
+
+tm1   0000-1FFF
+tm2   2000-3FFF
+tm3   4000-5FFF
+
+GFX1 
+tm6   0000-1FFF
+
+GFX2
+tm4   0000-1FFF
+tm5   2000-3FFF
+
+PROMS
+timeplt.b4   palette
+timeplt.b5   palette
+timeplt.e9   sprite lookup table
+timeplt.e12  char lookup table
+
+CPU2 (audio)
+
+tm7   0000-0FFF

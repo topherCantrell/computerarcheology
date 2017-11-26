@@ -1,8 +1,8 @@
 %%image =TimePilot.jpg
 %%title = Time Pilot Sound Board
 %%cpu   = Z80
-%%-ram  = Arcade/TimePilot/RAMUse.mark RAMUse.cmark
-%%-hard = Arcade/TimePilot/Hardware.mark Hardware.cmark
+%%-ram  = Arcade/TimePilot/SoundRAMUse.mark SoundRAMUse.html
+%%-hard = Arcade/TimePilot/SoundHardware.mark SoundHardware.html
 
 Sound processor for the arcade game "Time Pilot"[[br]]
 ; 1982 by Centuri/Konami
