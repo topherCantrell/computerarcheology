@@ -27,12 +27,16 @@ F001: D8            CLD                       ; Binary mode (not BCD)
 F002: A2 FF         LDX   #$FF                ; Stack pointer to 1_FF ...
 F004: 9A            TXS                       ; ... ghosts to 0_FF
 
-F005: A2 5D         LDX   #$5D                
-F007: 20 BD F5      JSR   $F5BD               ;
-F00A: A9 10         LDA   #$10                
-F00C: 8D 83 02      STA   $0283               ;{-2_SWBCNT}SWBCNT:21 
-F00F: 85 88         STA   $88                 ;
+F005: A2 5D         LDX   #$5D                ; Clear memory ...
+F007: 20 BD F5      JSR   $F5BD               ; ... 00 through A2 (all registers and ??)
+F00A: A9 10         LDA   #$10                ; Console switches are all ...
+F00C: 8D 83 02      STA   $0283               ; ... inputs (D4 is not used)
+F00F: 85 88         STA   $88                 ; ?? Is this the debounce? Mirror?
+
 F011: 20 A3 F1      JSR   $F1A3               ;
+
+; Main game loop
+main:
 F014: 20 32 F0      JSR   $F032               ;
 F017: 20 57 F1      JSR   $F157               ;
 F01A: 20 72 F5      JSR   $F572               ;
@@ -42,7 +46,9 @@ F023: 20 14 F2      JSR   $F214               ;
 F026: 20 A9 F2      JSR   $F2A9               ;
 F029: 20 F2 F1      JSR   $F1F2               ;
 F02C: 20 54 F0      JSR   $F054               ;
-F02F: 4C 14 F0      JMP   $F014               ;
+F02F: 4C 14 F0      JMP   $F014               ; Back to top of main loop
+
+; ?? Called from main loop
 F032: E6 86         INC   $86                 ;
 F034: 85 2B         STA   $2B                 ;{-2_HMCLR}HMCLR:30,260,259 
 F036: A9 02         LDA   #$02                
@@ -60,6 +66,8 @@ F04C: 85 00         STA   $00                 ;{-2_VSYNC}VSYNC:4
 F04E: A9 2B         LDA   #$2B                
 F050: 8D 96 02      STA   $0296               ;{-2_TIM64T}TIM64T:4 
 F053: 60            RTS                       
+
+; ?? Called from main loop
 F054: A9 20         LDA   #$20                
 F056: 85 B4         STA   $B4                 ;
 F058: 85 02         STA   $02                 ;{-2_WSYNC}WSYNC:lots 
@@ -195,6 +203,8 @@ F150: 85 0D         STA   $0D                 ;{-2_PF0}PF0:259
 F152: 85 0E         STA   $0E                 ;{-2_PF1}PF1:259 
 F154: 85 0F         STA   $0F                 ;{-2_PF2}PF2:259 
 F156: 60            RTS                       
+
+; ?? Called from main loop
 F157: AD 82 02      LDA   $0282               ;{-2_SWCHB}SWCHB:4 
 F15A: 4A            LSR   A                   
 F15B: B0 13         BCS   $F170               ;
@@ -232,6 +242,8 @@ F19B: D0 54         BNE   $F1F1               ;
 F19D: 24 89         BIT   $89                 ;
 F19F: 30 50         BMI   $F1F1               ;
 F1A1: E6 80         INC   $80                 ;
+
+; ?? Called before main loop ... initialization?
 F1A3: A2 DF         LDX   #$DF                
 F1A5: 20 BD F5      JSR   $F5BD               ;
 F1A8: A9 FF         LDA   #$FF                
@@ -272,6 +284,8 @@ F1EB: 85 21         STA   $21                 ;{-2_HMP1}HMP1:29,12
 F1ED: 85 02         STA   $02                 ;{-2_WSYNC}WSYNC:29,12 
 F1EF: 85 2A         STA   $2A                 ;{-2_HMOVE}HMOVE:30,13 
 F1F1: 60            RTS                       
+
+; ?? Called from main loop
 F1F2: A2 01         LDX   #$01                
 F1F4: B5 A1         LDA   $A1,X               
 F1F6: 29 0F         AND   #$0F                
@@ -294,6 +308,8 @@ F20E: 95 E2         STA   $E2,X
 F210: CA            DEX                       
 F211: 10 E1         BPL   $F1F4               ;
 F213: 60            RTS                       
+
+; ?? Called from main loop
 F214: 24 83         BIT   $83                 ;
 F216: 50 04         BVC   $F21C               ;
 F218: A9 30         LDA   #$30                
@@ -376,6 +392,8 @@ F2A2: E0 02         CPX   #$02
 F2A4: B0 02         BCS   $F2A8               ;
 F2A6: 95 25         STA   $25,X               ;VDELP1:27,26,19,20 VDELP0:29,21,22 
 F2A8: 60            RTS                       
+
+; ?? Called from main loop
 F2A9: A9 01         LDA   #$01                
 F2AB: 25 86         AND   $86                 ;
 F2AD: AA            TAX                       
@@ -409,6 +427,8 @@ F2D5: CA            DEX
 F2D6: CA            DEX                       
 F2D7: 10 F3         BPL   $F2CC               ;
 F2D9: 60            RTS                       
+
+; ?? Called from main loop
 F2DA: A5 8A         LDA   $8A                 ;
 F2DC: 38            SEC                       
 F2DD: E9 02         SBC   #$02                
@@ -595,6 +615,8 @@ F43D: 0A            ASL   A
 F43E: 79 39 F7      ADC   $F739,Y             
 F441: 95 17         STA   $17,X               ;AUDF1:10,9,18,17 AUDF0:lots 
 F443: 60            RTS                       
+
+; ?? Called from main loop
 F444: A2 01         LDX   #$01                
 F446: B5 30         LDA   $30,X               ;CXM0P:lots CXM1P:14,13,22,21 
 F448: 10 2C         BPL   $F476               ;
@@ -750,6 +772,8 @@ F56A: 85 B7         STA   $B7                 ;
 F56C: BD D4 F7      LDA   $F7D4,X             
 F56F: 85 B9         STA   $B9                 ;
 F571: 60            RTS                       
+
+; ?? Called from main loop
 F572: A5 A3         LDA   $A3                 ;
 F574: 29 87         AND   #$87                
 F576: 30 02         BMI   $F57A               ;
@@ -790,11 +814,15 @@ F5B8: C8            INY
 F5B9: CA            DEX                       
 F5BA: 10 EF         BPL   $F5AB               ;
 F5BC: 60            RTS
-                       
+                   
+; Clear memory ($A2+X) incrementing X until X=0
+; From F007 X=5D to FF (clear 00 through A2)  All registers and RAM
+; From F16B X=E6 to FF (clear 88 through A2)
+; From F1A5 X=DF to FF (clear 81 through A2)  
 F5BD: A9 00         LDA   #$00                ; Value 0                
-F5BF: E8            INX                       ; Next register
-F5C0: 95 A2         STA   $A2,X               ; Clear register
-F5C2: D0 FB         BNE   $F5BF               ; All registers done?
+F5BF: E8            INX                       ; Next location
+F5C0: 95 A2         STA   $A2,X               ; Clear memory
+F5C2: D0 FB         BNE   $F5BF               ; All done?
 F5C4: 60            RTS                       ; No ... back for more
 
 ; -----------------------------------------------------------------------------------------------------------------------------
