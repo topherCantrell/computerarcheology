@@ -4,13 +4,13 @@
 {{{memory
 || 0080      || m80                || ||
 || 0081      || m81                || ||
-|| 0082      || m82                || ||
+|| 0082      || skipPlayfield      || If D7 is set then skip drawing the playfield ||
 || 0083      || m83                || ||
 || 0084      || m84                || ||
 || 0085      || m85                || ||
-|| 0086      || m86                || ||
+|| 0086      || frameCounter       || Incremented every TV frame ||
 || 0087      || m87                || ||
-|| 0088      || m88                || ||
+|| 0088      || m88                || ?? F00F something to do with console switch inputs ||
 || 0089      || m89                || ||
 || 008A      || m8A                || ||
 || 008B      || m8B                || ||
@@ -38,10 +38,10 @@
 || 00A1      || mA1                || ||
 || 00A2      || mA2                || ||
 || 00A3      || mA3                || ||
-|| 00A4      || mA4                || ||
-|| 00A5      || mA5                || ||
-|| 00A6      || mA6                || ||
-|| 00A7      || mA7                || ||
+|| 00A4      || player0row         || Row number of player 0 ||
+|| 00A5      || player1row         || Row number of player 1 ||
+|| 00A6      || missile0row        || Row number of missile 0 ||
+|| 00A7      || missile1row        || Row number of missile 1 ||
 || 00A8      || mA8                || ||
 || 00A9      || mA9                || ||
 || 00AA      || mAA                || ||
@@ -54,16 +54,13 @@
 || 00B1      || mB1                || ||
 || 00B2      || mB2                || ||
 || 00B3      || mB3                || ||
-|| 00B4      || mB4                || ||
-|| 00B5      || mB5                || ||
-|| 00B6      || mB6                || ||
-|| 00B7      || mB7                || ||
-|| 00B8      || mB8                || ||
-|| 00B9      || mB9                || ||
-|| 00BA      || mBA                || ||
+|| 00B4      || scanlineNumber     || Counts the scan lines while drawing ||
+|| 00B5:B6   || pf0Graphics        || Pointer to PF0 graphics ||
+|| 00B7:B8   || pf1Value           || Pointer to PF1 graphics ||
+|| 00B9:BA   || pf2Value           || Pointer to PF2 graphics ||
 || 00BB      || mBB                || ||
 || 00BC      || mBC                || ||
-|| 00BD      || mBD                || ||
+|| 00BD      || playerXpicture     || Offset to player graphics (interleaved -- P0 even, P1 odd) ||
 || 00BE      || mBE                || ||
 || 00BF      || mBF                || ||
 || 00C0      || mC0                || ||
@@ -85,7 +82,7 @@
 || 00D0      || mD0                || ||
 || 00D1      || mD1                || ||
 || 00D2      || mD2                || ||
-|| 00D3      || mD3                || ||
+|| 00D3      || stackPointer       || Holds stack pointer while drawing the screen (with the stack pointer) ||
 || 00D4      || mD4                || ||
 || 00D5      || mD5                || ||
 || 00D6      || mD6                || ||

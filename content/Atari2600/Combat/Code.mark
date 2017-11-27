@@ -1,7 +1,7 @@
 %%image = A2600Combat.jpg
 %%title = Atari2600 Combat
 %%cpu   = 6502
-%%-ram  = Atari2600/Combat/RAMUse.mark /Atari2600/Combat/RAMUse.mark
+%%-ram  = Atari2600/Combat/RAMUse.mark /Atari2600/Combat/RAMUse.html
 %%-hard = Atari2600/Stella.mark /Atari2600/Stella.html
 
 {{{html
@@ -37,7 +37,7 @@ F011: 20 A3 F1      JSR   $F1A3               ;
 
 ; Main game loop
 main:
-F014: 20 32 F0      JSR   $F032               ;
+F014: 20 32 F0      JSR   $F032               ; Start the next TV frame
 F017: 20 57 F1      JSR   $F157               ;
 F01A: 20 72 F5      JSR   $F572               ;
 F01D: 20 DA F2      JSR   $F2DA               ;
@@ -48,42 +48,44 @@ F029: 20 F2 F1      JSR   $F1F2               ;
 F02C: 20 54 F0      JSR   $F054               ;
 F02F: 4C 14 F0      JMP   $F014               ; Back to top of main loop
 
-; ?? Called from main loop
-F032: E6 86         INC   $86                 ;
-F034: 85 2B         STA   $2B                 ;{-2_HMCLR}HMCLR:30,260,259 
-F036: A9 02         LDA   #$02                
-F038: 85 02         STA   $02                 ;{-2_WSYNC}WSYNC:30,260,259 
-F03A: 85 01         STA   $01                 ;{-2_VBLANK}VBLANK:31,261,260 
-F03C: 85 02         STA   $02                 ;{-2_WSYNC}WSYNC:31,261,260 
-F03E: 85 02         STA   $02                 ;{-2_WSYNC}WSYNC:32,262,261 
-F040: 85 02         STA   $02                 ;{-2_WSYNC}WSYNC:33,263,262 
-F042: 85 00         STA   $00                 ;{-2_VSYNC}VSYNC:34,264,263 
-F044: 85 02         STA   $02                 ;{-2_WSYNC}WSYNC:1 
-F046: 85 02         STA   $02                 ;{-2_WSYNC}WSYNC:2 
-F048: A9 00         LDA   #$00                
-F04A: 85 02         STA   $02                 ;{-2_WSYNC}WSYNC:3 
-F04C: 85 00         STA   $00                 ;{-2_VSYNC}VSYNC:4 
-F04E: A9 2B         LDA   #$2B                
-F050: 8D 96 02      STA   $0296               ;{-2_TIM64T}TIM64T:4 
-F053: 60            RTS                       
+StartTVFrame:
+; Increment the frame counter and trigger the vertical sync.
+; The timer is set to time the blanking period.
+F032: E6 86         INC   $86                 ; Bump the frame counter
+F034: 85 2B         STA   $2B                 ; Clear horizontal motion registers 
+F036: A9 02         LDA   #$02                ; D1 bit ON
+F038: 85 02         STA   $02                 ; Wait for the end of the current line 
+F03A: 85 01         STA   $01                 ; Turn the electron beam off
+F03C: 85 02         STA   $02                 ; Wait for all ...
+F03E: 85 02         STA   $02                 ; ... the electrons ... 
+F040: 85 02         STA   $02                 ; ... to drain out 
+F042: 85 00         STA   $00                 ; Trigger the vertical sync signal 
+F044: 85 02         STA   $02                 ; Hold for ... 
+F046: 85 02         STA   $02                 ; ... two scan lines
+F048: A9 00         LDA   #$00                ; D1 bit OFF
+F04A: 85 02         STA   $02                 ; Hold for a third line
+F04C: 85 00         STA   $00                 ; Release the vertical sync signal
+F04E: A9 2B         LDA   #$2B                ; Set timer to 43*64 = 2752 machine ...
+F050: 8D 96 02      STA   $0296               ; ... cycles 2752/(228/3) = 36 scanlines
+F053: 60            RTS                       ; Done
 
 ; ?? Called from main loop
-F054: A9 20         LDA   #$20                
+F054: A9 20         LDA   #$20                ;
 F056: 85 B4         STA   $B4                 ;
-F058: 85 02         STA   $02                 ;{-2_WSYNC}WSYNC:lots 
-F05A: 85 2A         STA   $2A                 ;{-2_HMOVE}HMOVE:lots 
-F05C: AD 84 02      LDA   $0284               ;{-2_INTIM}INTIM:lots 
-F05F: D0 FB         BNE   $F05C               ;
-F061: 85 02         STA   $02                 ;{-2_WSYNC}WSYNC:39 
-F063: 85 2C         STA   $2C                 ;{-2_CXCLR}CXCLR:40 
-F065: 85 01         STA   $01                 ;{-2_VBLANK}VBLANK:40 
-F067: BA            TSX                       
-F068: 86 D3         STX   $D3                 ;
-F06A: A9 02         LDA   #$02                
-F06C: 85 0A         STA   $0A                 ;{-2_CTRLPF}CTRLPF:40 
-F06E: A6 DC         LDX   $DC                 ;
+F058: 85 02         STA   $02                 ; Wait for the end of the current line (ensure HMOVE is in the horiz blanking)
+F05A: 85 2A         STA   $2A                 ; Apply horizontal movement to all objects 
+F05C: AD 84 02      LDA   $0284               ; Wait for the visible TV to ...
+F05F: D0 FB         BNE   $F05C               ; ... reach the visible area
+F061: 85 02         STA   $02                 ; 37th scanline
+F063: 85 2C         STA   $2C                 ; Clear the collision flags
+F065: 85 01         STA   $01                 ; Turn the electron beam back on 
+F067: BA            TSX                       ; Hold stack ...
+F068: 86 D3         STX   $D3                 ; ... pointer
+F06A: A9 02         LDA   #$02                ; ?? Priorities P1,M1 ...
+F06C: 85 0A         STA   $0A                 ; ... on top?
+F06E: A6 DC         LDX   $DC                 ; 
 F070: 85 02         STA   $02                 ;{-2_WSYNC}WSYNC:40,41 
-F072: CA            DEX                       
+F072: CA            DEX                       ;
 F073: D0 FB         BNE   $F070               ;
 F075: A5 DC         LDA   $DC                 ;
 F077: C9 0E         CMP   #$0E                
@@ -127,6 +129,7 @@ F0C4: E6 E3         INC   $E3                 ;
 F0C6: A5 DF         LDA   $DF                 ;
 F0C8: 85 0E         STA   $0E                 ;{-2_PF1}PF1:lots 
 F0CA: 4C 83 F0      JMP   $F083               ;
+;
 F0CD: A9 00         LDA   #$00                
 F0CF: 85 0E         STA   $0E                 ;{-2_PF1}PF1:54 
 F0D1: 85 02         STA   $02                 ;{-2_WSYNC}WSYNC:54 
@@ -135,74 +138,106 @@ F0D5: 85 0A         STA   $0A                 ;{-2_CTRLPF}CTRLPF:55
 F0D7: A5 D6         LDA   $D6                 ;
 F0D9: 85 06         STA   $06                 ;{-2_COLUP0}COLUP0:55 
 F0DB: A5 D7         LDA   $D7                 ;
-F0DD: 85 07         STA   $07                 ;{-2_COLUP1}COLUP1:55 
-F0DF: A2 1E         LDX   #$1E                
-F0E1: 9A            TXS                       
-F0E2: 38            SEC                       
-F0E3: A5 A4         LDA   $A4                 ;
-F0E5: E5 B4         SBC   $B4                 ;
-F0E7: 29 FE         AND   #$FE                
-F0E9: AA            TAX                       
-F0EA: 29 F0         AND   #$F0                
-F0EC: F0 04         BEQ   $F0F2               ;
-F0EE: A9 00         LDA   #$00                
-F0F0: F0 02         BEQ   $F0F4               ;
-F0F2: B5 BD         LDA   $BD,X               
-F0F4: 85 02         STA   $02                 ;{-2_WSYNC}WSYNC:lots 
-F0F6: 85 1B         STA   $1B                 ;{-2_GRP0}GRP0:lots 
-F0F8: A5 A7         LDA   $A7                 ;
-F0FA: 45 B4         EOR   $B4                 ;
-F0FC: 29 FE         AND   #$FE                
-F0FE: 08            PHP                       ;ENAM1:lots 
-F0FF: A5 A6         LDA   $A6                 ;
-F101: 45 B4         EOR   $B4                 ;
-F103: 29 FE         AND   #$FE                
-F105: 08            PHP                       ;ENAM0:lots 
-F106: A5 B4         LDA   $B4                 ;
+F0DD: 85 07         STA   $07                 ;{-2_COLUP1}COLUP1:55
+;
+; Top of loop
+; 
+; Using the stackpointer here to speed up the writes.
+; We start pointing to ENAM1 and work lower in memory.
+; This is the playing area where th players and missiles are.
+F0DF: A2 1E         LDX   #$1E                ; Pointer to ...
+F0E1: 9A            TXS                       ; ... ENAM1
+;
+;Player 0
+;
+F0E2: 38            SEC                       ; Clear the borrow flag
+F0E3: A5 A4         LDA   $A4                 ; Player 0's row number
+F0E5: E5 B4         SBC   $B4                 ; Compare it to the current row
+; To speed up the lookup, the players graphics are interleaved. Even rows
+; are for player 0 and odd rows are for player 1.
+F0E7: 29 FE         AND   #$FE                ; Even is for player 0
+F0E9: AA            TAX                       ; Hold the graphics pointer
+F0EA: 29 F0         AND   #$F0                ; Within the 16 row window?
+F0EC: F0 04         BEQ   $F0F2               ; Yes ... draw the player
+F0EE: A9 00         LDA   #$00                ; No player 0 graphics on this row 
+F0F0: F0 02         BEQ   $F0F4               ; JMP $F0F4
+F0F2: B5 BD         LDA   $BD,X               ; Get the graphics for this row
+F0F4: 85 02         STA   $02                 ; Wait for next row
+F0F6: 85 1B         STA   $1B                 ; Draw player 0 on this row
+;
+; Missile 1
+;
+F0F8: A5 A7         LDA   $A7                 ; Missile 1 row
+F0FA: 45 B4         EOR   $B4                 ; Compare it to the current row
+F0FC: 29 FE         AND   #$FE                ; Odd and even rows (doubling)
+; The Z flag is in the D1 position of the status register. This maps to
+; D1 of the Enable-Missile-1. Thus when the current row is the same as the
+; missile the Z flag will be set and will enable the missile with the push.
+F0FE: 08            PHP                       ; Turn missile 1 on or off
+;
+; Missile 0
+; 
+F0FF: A5 A6         LDA   $A6                 ; Missile 0 row
+F101: 45 B4         EOR   $B4                 ; Compare it to the current row
+F103: 29 FE         AND   #$FE                ; Odd and even rows (doubling)
+F105: 08            PHP                       ; Turn missile 0 on or off
+;
+; Playfield graphics pointers
+;
+F106: A5 B4         LDA   $B4                 ; Current row
 F108: 10 02         BPL   $F10C               ;
 F10A: 49 F8         EOR   #$F8                
-F10C: C9 20         CMP   #$20                
-F10E: 90 04         BCC   $F114               ;
-F110: 4A            LSR   A                   
-F111: 4A            LSR   A                   
-F112: 4A            LSR   A                   
-F113: A8            TAY                       
-F114: A5 A5         LDA   $A5                 ;
-F116: 38            SEC                       
-F117: E5 B4         SBC   $B4                 ;
-F119: E6 B4         INC   $B4                 ;
-F11B: EA            NOP                       
-F11C: 09 01         ORA   #$01                
-F11E: AA            TAX                       
-F11F: 29 F0         AND   #$F0                
-F121: F0 04         BEQ   $F127               ;
-F123: A9 00         LDA   #$00                
-F125: F0 02         BEQ   $F129               ;
-F127: B5 BD         LDA   $BD,X               
-F129: 24 82         BIT   $82                 ;
-F12B: 85 1C         STA   $1C                 ;{-2_GRP1}GRP1:lots 
-F12D: 30 0C         BMI   $F13B               ;
-F12F: B1 B5         LDA   ($B5),Y             
-F131: 85 0D         STA   $0D                 ;{-2_PF0}PF0:lots 
-F133: B1 B7         LDA   ($B7),Y             
-F135: 85 0E         STA   $0E                 ;{-2_PF1}PF1:lots 
-F137: B1 B9         LDA   ($B9),Y             
-F139: 85 0F         STA   $0F                 ;{-2_PF2}PF2:lots 
-F13B: E6 B4         INC   $B4                 ;
-F13D: A5 B4         LDA   $B4                 ;
-F13F: 49 EC         EOR   #$EC                
-F141: D0 9C         BNE   $F0DF               ;
-F143: A6 D3         LDX   $D3                 ;
-F145: 9A            TXS                       
-F146: 85 1D         STA   $1D                 ;{-2_ENAM0}ENAM0:259 
-F148: 85 1E         STA   $1E                 ;{-2_ENAM1}ENAM1:259 
-F14A: 85 1B         STA   $1B                 ;{-2_GRP0}GRP0:259 
-F14C: 85 1C         STA   $1C                 ;{-2_GRP1}GRP1:259 
-F14E: 85 1B         STA   $1B                 ;{-2_GRP0}GRP0:259 
-F150: 85 0D         STA   $0D                 ;{-2_PF0}PF0:259 
-F152: 85 0E         STA   $0E                 ;{-2_PF1}PF1:259 
-F154: 85 0F         STA   $0F                 ;{-2_PF2}PF2:259 
-F156: 60            RTS                       
+F10C: C9 20         CMP   #$20                ; ?? 32 per picture ??
+F10E: 90 04         BCC   $F114               ; ?? skip playfield graphics?
+; Playfield graphics are 8-rows tall
+F110: 4A            LSR   A                   ; Divide ...
+F111: 4A            LSR   A                   ; ... by ...
+F112: 4A            LSR   A                   ; ... 8
+F113: A8            TAY                       ; Graphics offset to Y
+;
+; Player 1
+F114: A5 A5         LDA   $A5                 ; Player 1's row number
+F116: 38            SEC                       ; Clear the borrow flag
+F117: E5 B4         SBC   $B4                 ; Compare the row numbers
+F119: E6 B4         INC   $B4                 ; Bump to next row (doubling)
+F11B: EA            NOP                       ; ?? Timing ?
+F11C: 09 01         ORA   #$01                ; Odd is for player 1
+F11E: AA            TAX                       ; Hold the graphics pointer
+F11F: 29 F0         AND   #$F0                ; Within the 16 row window?
+F121: F0 04         BEQ   $F127               ; Yes ... draw the player
+F123: A9 00         LDA   #$00                ; No player 1 graphics on this row
+F125: F0 02         BEQ   $F129               ; JMP $F129
+F127: B5 BD         LDA   $BD,X               ; Get the graphics for this row
+F129: 24 82         BIT   $82                 ; Bit 7 goes to the M flag
+F12B: 85 1C         STA   $1C                 ; Draw player 1 on this row 
+F12D: 30 0C         BMI   $F13B               ; If D7 of $82 is set, skip the playfield
+F12F: B1 B5         LDA   ($B5),Y             ; Copy the ...
+F131: 85 0D         STA   $0D                 ; ... PF0 graphics
+F133: B1 B7         LDA   ($B7),Y             ; Copy the ...
+F135: 85 0E         STA   $0E                 ; ... PF1 graphics 
+F137: B1 B9         LDA   ($B9),Y             ; Copy the ...
+F139: 85 0F         STA   $0F                 ; ... PF2 graphics 
+F13B: E6 B4         INC   $B4                 ; Next row (we are doing 2 at a time)
+F13D: A5 B4         LDA   $B4                 ; Have we done all ...
+F13F: 49 EC         EOR   #$EC                ; ... 236 rows?
+F141: D0 9C         BNE   $F0DF               ; No ... go back for more
+;
+; End of frame
+;
+F143: A6 D3         LDX   $D3                 ; Restore the ...
+F145: 9A            TXS                       ; ... stack pointer
+; We just EORed with EC (11101100) and checked for zero.
+; The only way we get a zero is when A = EC, which means D1 is
+; zero for the stores below.
+F146: 85 1D         STA   $1D                 ; Turn off missile 0
+F148: 85 1E         STA   $1E                 ; Turn off missile 1
+F14A: 85 1B         STA   $1B                 ; Turn off player 0
+F14C: 85 1C         STA   $1C                 ; Turn off player 1
+F14E: 85 1B         STA   $1B                 ; Turn off player 0 (?? why again)
+F150: 85 0D         STA   $0D                 ; Turn off playfield 0
+F152: 85 0E         STA   $0E                 ; Turn off playfield 1
+F154: 85 0F         STA   $0F                 ; Turn off playfield 2
+F156: 60            RTS                       ; Done
 
 ; ?? Called from main loop
 F157: AD 82 02      LDA   $0282               ;{-2_SWCHB}SWCHB:4 
@@ -760,18 +795,18 @@ F550: 85 02         STA   $02                 ;{-2_WSYNC}WSYNC:27,10
 F552: 85 84         STA   $84                 ;
 F554: 29 80         AND   #$80                
 F556: 85 83         STA   $83                 ;
-F558: A9 F7         LDA   #$F7                
-F55A: 85 B6         STA   $B6                 ;
-F55C: 85 B8         STA   $B8                 ;
-F55E: 85 BA         STA   $BA                 ;
-F560: BD CC F7      LDA   $F7CC,X             
-F563: 85 10         STA   $10                 ;{-2_RESP0}RESP0:28,11,10 
-F565: 85 B5         STA   $B5                 ;
-F567: BD D0 F7      LDA   $F7D0,X             
-F56A: 85 B7         STA   $B7                 ;
-F56C: BD D4 F7      LDA   $F7D4,X             
-F56F: 85 B9         STA   $B9                 ;
-F571: 60            RTS                       
+F558: A9 F7         LDA   #$F7                ; MSB of tables ... F7xx
+F55A: 85 B6         STA   $B6                 ; For PF0 pointer
+F55C: 85 B8         STA   $B8                 ; For PF1 pointer
+F55E: 85 BA         STA   $BA                 ; For PF2 pointer
+F560: BD CC F7      LDA   $F7CC,X             ; Lookup LSB
+F563: 85 10         STA   $10                 ; Set horizontal position of P0
+F565: 85 B5         STA   $B5                 ; LSB for PF0 pointer
+F567: BD D0 F7      LDA   $F7D0,X             ; LSB for ...
+F56A: 85 B7         STA   $B7                 ; ... PF1 pointer
+F56C: BD D4 F7      LDA   $F7D4,X             ; LSB for ...
+F56F: 85 B9         STA   $B9                 ; ... PF2 pointer
+F571: 60            RTS                       ; Done
 
 ; ?? Called from main loop
 F572: A5 A3         LDA   $A3                 ;
@@ -1089,86 +1124,51 @@ F771: 64
 F772: A8            TAY                       
 F773: DA                                    
 F774: 4A            LSR   A                   
-F775: 08            PHP                       
-F776: 04                                    
-F777: 00            BRK                       
-F778: 0E F0 10      ASL   $10F0               ;
-F77B: 10 10         BPL   $F78D               ;
-F77D: 10 10         BPL   $F78F               ;
-F77F: 10 10         BPL   $F791               ;
-F781: 10 10         BPL   $F793               ;
-F783: 10 10         BPL   $F795               ;
-F785: FF                                    
-F786: 00            BRK                       
-F787: 00            BRK                       
-F788: 00            BRK                       
-F789: 38            SEC                       
-F78A: 00            BRK                       
-F78B: 00            BRK                       
-F78C: 00            BRK                       
-F78D: 60            RTS                       
-F78E: 20 20 23      JSR   $2320               ;
-F791: FF                                    
-F792: 80                                    
-F793: 80                                    
-F794: 00            BRK                       
-F795: 00            BRK                       
-F796: 00            BRK                       
-F797: 1C                                    
-F798: 04                                    
-F799: 00            BRK                       
-F79A: 00            BRK                       
-F79B: 00            BRK                       
-F79C: 00            BRK                       
-F79D: FF                                    
-F79E: 00            BRK                       
-F79F: 00            BRK                       
-F7A0: 00            BRK                       
-F7A1: 00            BRK                       
-F7A2: 00            BRK                       
-F7A3: 00            BRK                       
-F7A4: 00            BRK                       
-F7A5: 00            BRK                       
-F7A6: 00            BRK                       
-F7A7: 00            BRK                       
-F7A8: 00            BRK                       
-F7A9: 00            BRK                       
-F7AA: 07                                    
-F7AB: 1F                                    
-F7AC: 3F                                    
-F7AD: 7F                                    
-F7AE: FF                                    
-F7AF: 00            BRK                       
-F7B0: 00            BRK                       
-F7B1: 00            BRK                       
-F7B2: 00            BRK                       
-F7B3: 00            BRK                       
-F7B4: 00            BRK                       
-F7B5: 00            BRK                       
-F7B6: 00            BRK                       
-F7B7: 60            RTS                       
-F7B8: 20 21 FF      JSR   $FF21               ;
-F7BB: 00            BRK                       
-F7BC: 00            BRK                       
-F7BD: 00            BRK                       
-F7BE: 80                                    
-F7BF: 80                                    
-F7C0: 80                                    
-F7C1: 80                                    
-F7C2: 00            BRK                       
-F7C3: 00            BRK                       
-F7C4: 00            BRK                       
-F7C5: 07
+
+; 0,1,2-PF0
+F775: 08 04 00 0E F0 10 10 10 10 10 10 10
+
+; 0-PF1
+F781: 10 10 10 10 FF 00 00 00 38 00 00 00
+
+; 0-PF2           
+F78D: 60 20 20 23 FF 80 80 00 00 00 1C 04 
+
+; 1-PF1
+; 1-PF2
+F799: 00
+
+; 3-PF0           
+F79A: 00 00 00       
+
+; 3-PF1
+; 3-PF2
+F79D: FF 00 00 00 00 00 00 00 00 00 00 00
+; ??
+F7A9: 00         
+
+; 2-PF1
+F7AA: 07 1F 3F 7F FF 00 00 00 00 00 00 00
+       
+; 2-PF2
+F7B6: 00 60 20 21 FF 00 00 00 80 80 80 80 
+; ??                                   
+F7C2: 00 00 00 07
 
 ; Pointers to player pictures 0=tank, 1=jet, 2=plane                                    
 F7C6: 4F CF 8F ; Picture pointers LSB                                  
 F7C9: F6 F6 F6 ; Picture pointers MSB
 
-; ? RESP0 (reset P0)
-F7CC: 75 75 75 9A      
- 
-F7D0: 81 99 AA 9D 
-F7D4: 8D 99 B6 9D
+; Four different play fields
+; F775, F781, F78D
+; F775, F799, F799
+; F775, F7AA, F7B6
+; F79A, F79D, F79D
+
+;      0  1  2  3
+F7CC: 75 75 75 9A  ; PF0 LSB 
+F7D0: 81 99 AA 9D  ; PF1 LSB
+F7D4: 8D 99 B6 9D  ; PF2 LSB
 
 ; ?? From F1AE
 F7D8: 24 28         BIT   $28                 ;
