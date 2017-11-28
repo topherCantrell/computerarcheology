@@ -189,6 +189,7 @@
 	         },	         
 	         {"dir": "Combat", "nav": "Combat", "entries": [
 	             {"copy": "A2600Combat.jpg"},
+	             {"copy": "Combat.js"},
 	             {"mark": "Combat.mark", "out": "index.html"},
 	             {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
 	             {"mark": "Code.mark", "out": "Code.html", "nav": "Code"}

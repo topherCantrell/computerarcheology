@@ -9,6 +9,8 @@
 <script src="/js/TileEngine.js"></script>
 <script src="/js/BinaryData.js"></script>
 <script src="/js/CANVAS.js"></script>
+<script src="Combat.js"></script>
+
 <!-- Cache some commonly-used values -->
 <canvas width="0" height="0"
         data-canvasFunction="TileEngine.handleTileCanvas"
@@ -1137,35 +1139,17 @@ F774: 4A            LSR   A
 
 ; 16 bytes each mirrored left, right, top, bottom
 
-; 0,1,2-PF0
-F775: 08 04 00 0E F0 10 10 10 10 10 10 10
 
-; 0-PF1
-F781: 10 10 10 10 FF 00 00 00 38 00 00 00
+F775: 08 04 00 0E 
+F779: F0 10 10 10 10 10 10 10 10 10 10 10 ' PF0 all tanks
+F785: FF 00 00 00 38 00 00 00 60 20 20 23 ' PF1 complex tanks
+F791: FF 80 80 00 00 00 1C 04 00 00 00 00 ' PF2 complex tanks       
+F79D: FF 00 00 00 00 00 00 00 00 00 00 00 ' PF1 and PF2 simple tanks
 
-; 0-PF2           
-F78D: 60 20 20 23 FF 80 80 00 00 00 1C 04 
-
-; 1-PF1
-; 1-PF2
-F799: 00
-
-; 3-PF0           
-F79A: 00 00 00       
-
-; 3-PF1
-; 3-PF2
-F79D: FF 00 00 00 00 00 00 00 00 00 00 00
-; ??
 F7A9: 00         
-
-; 2-PF1
-F7AA: 07 1F 3F 7F FF 00 00 00 00 00 00 00
-       
-; 2-PF2
-F7B6: 00 60 20 21 FF 00 00 00 80 80 80 80 
-; ??                                   
-F7C2: 00 00 00 07
+F7AA: 07 1F 3F 7F 
+      FF 00 00 00 00 00 00 00 00 60 20 21 ' Simple tanks
+      FF 00 00 00 80 80 80 80 00 00 00 07
 
 ; Pointers to player pictures 0=tank, 1=jet, 2=plane                                    
 F7C6: 4F CF 8F ; Picture pointers LSB                                  
@@ -1208,3 +1192,12 @@ F7F4: 00 00 00 00 00 00
 F7FA: 00 00        ; NMI Vector (not used)
 F7FC: 00 F0        ; Reset vector to F000
 F7FE: 0F 11        ; IRQ/vector to 110F (maybe debug hardware?)
+
+{{{html
+<canvas width="1000" height="500"
+        data-getTileDataFunction="Combat.getPlayfield"
+        data-gridX="20"
+        data-gridY="16"
+        data-command="0">
+</canvas> 
+}}}
