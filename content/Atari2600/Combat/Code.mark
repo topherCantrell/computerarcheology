@@ -1021,6 +1021,7 @@ F6C7: 00 83 7F 3E 1E 0C 0C 0C
     data-address="F6CF"
     data-gridX="8"
     data-gridY="8"
+    data-colors='["#BBD46E","#8C2A44"]'> 
     data-command="0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7">
 </canvas>
 }}}        
@@ -1125,46 +1126,44 @@ F770: 3A
 F771: 64                                    
 F772: A8            TAY                       
 F773: DA                                    
-F774: 4A            LSR   A                   
+F774: 4A            LSR   A               
+F775: 08 04 00 0E     
 
 
 ; There are 4 play field patterns
 ; - Empty tank field
 ; - Simple tank field
 ; - Complex tank field
-; - Two clouds
+; - Clouds
 ; The empty-air-field is just no playfield at all
 
-; Each pattern has three tables of 16 bytes.
+; Each pattern has three tables of 12 bytes.
 
-; 16 bytes each mirrored left, right, top, bottom
+; 12 bytes each mirrored left, right, top, bottom
 
-
-F775: 08 04 00 0E 
-F779: F0 10 10 10 10 10 10 10 10 10 10 10 ' PF0 all tanks
-F785: FF 00 00 00 38 00 00 00 60 20 20 23 ' PF1 complex tanks
-F791: FF 80 80 00 00 00 1C 04 00 00 00 00 ' PF2 complex tanks       
-F79D: FF 00 00 00 00 00 00 00 00 00 00 00 ' PF1 and PF2 simple tanks
-
+F779: F0 10 10 10 10 10 10 10 10 10 10 10 
+F785: FF 00 00 00 38 00 00 00 60 20 20 23 
+F791: FF 80 80 00 00 00 1C 04 00 00 00 00        
+F79D: FF 00 00 00 00 00 00 00 00 00 00 00 
 F7A9: 00         
 F7AA: 07 1F 3F 7F 
-      FF 00 00 00 00 00 00 00 00 60 20 21 ' Simple tanks
-      FF 00 00 00 80 80 80 80 00 00 00 07
+F7AE: FF 00 00 00 00 00 00 00 00 60 20 21 
+F7BA: FF 00 00 00 80 80 80 80 00 00 00 07
 
 ; Pointers to player pictures 0=tank, 1=jet, 2=plane                                    
 F7C6: 4F CF 8F ; Picture pointers LSB                                  
 F7C9: F6 F6 F6 ; Picture pointers MSB
 
 ; Four different play fields
-; F775, F781, F78D
-; F775, F799, F799
-; F775, F7AA, F7B6
-; F79A, F79D, F79D
+; F779, F785, F791  ' Complex tanks
+; F779, F79D, F79D  ' Blank tanks
+; F779, F7AE, F7BA  ' Simple tanks
+; F79E, F7A1, F7A1  ' Clouds
 
 ;      0  1  2  3
-F7CC: 75 75 75 9A  ; PF0 LSB 
-F7D0: 81 99 AA 9D  ; PF1 LSB
-F7D4: 8D 99 B6 9D  ; PF2 LSB
+F7CC: 75 75 75 9A  ; PF0 LSB (add 4 ??why??)
+F7D0: 81 99 AA 9D  ; PF1 LSB (add 4)
+F7D4: 8D 99 B6 9D  ; PF2 LSB (add 4)
 
 ; ?? From F1AE
 F7D8: 24 28         BIT   $28                 ;
@@ -1197,7 +1196,7 @@ F7FE: 0F 11        ; IRQ/vector to 110F (maybe debug hardware?)
 <canvas width="1000" height="500"
         data-getTileDataFunction="Combat.getPlayfield"
         data-gridX="20"
-        data-gridY="16"
-        data-command="0">
+        data-gridY="12"
+        data-command="0,+x,1,+x,2,+x,3">
 </canvas> 
 }}}
