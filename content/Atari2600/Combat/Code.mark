@@ -1125,6 +1125,18 @@ F772: A8            TAY
 F773: DA                                    
 F774: 4A            LSR   A                   
 
+
+; There are 4 play field patterns
+; - Empty tank field
+; - Simple tank field
+; - Complex tank field
+; - Two clouds
+; The empty-air-field is just no playfield at all
+
+; Each pattern has three tables of 16 bytes.
+
+; 16 bytes each mirrored left, right, top, bottom
+
 ; 0,1,2-PF0
 F775: 08 04 00 0E F0 10 10 10 10 10 10 10
 
