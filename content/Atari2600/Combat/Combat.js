@@ -17,10 +17,14 @@ var Combat = (function() {
 			addrPF0 = 0xF779; 
 			addrPF1 = 0xF7AE;
 			addrPF2 = 0xF7BA;
-		} else {
+		} else if(index==3) {
 			addrPF0 = 0xF79E; 
 			addrPF1 = 0xF7A1;
 			addrPF2 = 0xF7A1;
+		} else {
+			addrPF0 = 0xF79E; 
+			addrPF1 = 0xF7A2;
+			addrPF2 = 0xF7A2;
 		}
 		
 		// Return 20x16

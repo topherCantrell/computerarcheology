@@ -11,6 +11,8 @@
 <script src="/js/CANVAS.js"></script>
 <script src="Combat.js"></script>
 
+144 80 236
+
 <!-- Cache some commonly-used values -->
 <canvas width="0" height="0"
         data-canvasFunction="TileEngine.handleTileCanvas"
@@ -18,9 +20,21 @@
         data-pixWidth="10"
         data-pixHeight="10"
         data-gap="0.25"
-        data-gridPad="1"
-        data-colorsName="SCORE"
-        data-colors='["#BBD46E","#8C2A44"]'>        
+        data-gridPad="1">      
+</canvas>
+<canvas width="0" height="0"
+       data-colorsName="TANKPLAYFIELD"
+       data-colors='["#BBD46E","#8C2A44"]'>
+</canvas>
+<canvas width="0" height="0"
+       data-colorsName="AIRPLAYFIELD"
+       data-colors='["#000088","#90B4EC"]'>
+</canvas>
+<canvas width="0" height="0"
+       data-colorsName="SCORE"
+       data-colors='["#BBD46E","#8C2A44"]'>
+</canvas>
+
 </canvas>
 }}}
 
@@ -874,7 +888,7 @@ F5C4: 60            RTS                       ; No ... back for more
     data-address="F5C5"
     data-gridX="8"
     data-gridY="5"
-    data-command="0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7,+x,8,+x,9">
+    data-command="#SCORE,0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7,+x,8,+x,9">
 </canvas>
 }}}
 F5C5: 0E 0A 0A 0A 0E  ;  0
@@ -1141,13 +1155,35 @@ F775: 08 04 00 0E
 
 ; 12 bytes each mirrored left, right, top, bottom
 
-F779: F0 10 10 10 10 10 10 10 10 10 10 10 
-F785: FF 00 00 00 38 00 00 00 60 20 20 23 
-F791: FF 80 80 00 00 00 1C 04 00 00 00 00        
-F79D: FF 00 00 00 00 00 00 00 00 00 00 00 
-F7A9: 00         
-F7AA: 07 1F 3F 7F 
-F7AE: FF 00 00 00 00 00 00 00 00 60 20 21 
+; PF0 for all tank levels
+F779: F0 10 10 10 10 10 10 10 10 10 10 10
+
+; PF1 for complex tanks 
+F785: FF 00 00 00 38 00 00 00 60 20 20 23
+
+; PF2 for complex tanks 
+F791: FF 80 80 00 00 00 1C 04 00 00 00 00
+
+; PF1 and PF2 for blank tanks (vertical line)        
+F79D: FF
+
+; PF0 for air (all off) 
+F79E: 00 00 00 
+
+; PF1 and PF2 for air
+F7A1: 00 00 00 00 00 00 00 00 00 07 1F 3F 
+
+; If you start the clouds PF1 and PF2 at F7A2 then this makes a fatter cloud!
+; You could also back up for smaller clouds. I bet the larger cloud was
+; intended for a second air playfield ... different for planes and jets.
+; Maybe they ran out of code space to use it. 
+
+F7AD: 7F 
+
+; PF1 for simple tanks
+F7AE: FF 00 00 00 00 00 00 00 00 60 20 21
+
+; PF2 for simple tanks 
 F7BA: FF 00 00 00 80 80 80 80 00 00 00 07
 
 ; Pointers to player pictures 0=tank, 1=jet, 2=plane                                    
@@ -1164,6 +1200,124 @@ F7C9: F6 F6 F6 ; Picture pointers MSB
 F7CC: 75 75 75 9A  ; PF0 LSB (add 4 ??why??)
 F7D0: 81 99 AA 9D  ; PF1 LSB (add 4)
 F7D4: 8D 99 B6 9D  ; PF2 LSB (add 4)
+
+{{{html
+<canvas width="410" height="250"
+        data-getTileDataFunction="Combat.getPlayfield"
+        data-pixWidth="20"
+        data-pixHeight="20"
+        data-gap="0.5"
+        data-gridPad="2"
+        data-gridX="20"
+        data-gridY="12"
+        data-command="#TANKPLAYFIELD,0">
+</canvas> 
+<canvas width="325" height="250"
+        data-getTileDataFunction="Combat.getPlayfield"
+        data-pixWidth="8"
+        data-pixHeight="8"
+        data-gap="0.25"
+        data-gridPad="1"
+        data-gridX="20"
+        data-gridY="12"
+        data-command="#TANKPLAYFIELD,0,H0,*,V0,VH0">
+</canvas> 
+}}}
+
+{{{html
+<canvas width="410" height="250"
+        data-getTileDataFunction="Combat.getPlayfield"
+        data-pixWidth="20"
+        data-pixHeight="20"
+        data-gap="0.5"
+        data-gridPad="2"
+        data-gridX="20"
+        data-gridY="12"
+        data-command="#TANKPLAYFIELD,1">
+</canvas> 
+<canvas width="325" height="250"
+        data-getTileDataFunction="Combat.getPlayfield"
+        data-pixWidth="8"
+        data-pixHeight="8"
+        data-gap="0.25"
+        data-gridPad="1"
+        data-gridX="20"
+        data-gridY="12"
+        data-command="#TANKPLAYFIELD,1,H1,*,V1,VH1">
+</canvas> 
+}}}
+
+{{{html
+<canvas width="410" height="250"
+        data-getTileDataFunction="Combat.getPlayfield"
+        data-pixWidth="20"
+        data-pixHeight="20"
+        data-gap="0.5"
+        data-gridPad="2"
+        data-gridX="20"
+        data-gridY="12"
+        data-command="#TANKPLAYFIELD,2">
+</canvas> 
+<canvas width="325" height="250"
+        data-getTileDataFunction="Combat.getPlayfield"
+        data-pixWidth="8"
+        data-pixHeight="8"
+        data-gap="0.25"
+        data-gridPad="1"
+        data-gridX="20"
+        data-gridY="12"
+        data-command="#TANKPLAYFIELD,2,H2,*,V2,VH2">
+</canvas> 
+}}}
+
+{{{html
+<canvas width="410" height="250"
+        data-getTileDataFunction="Combat.getPlayfield"
+        data-pixWidth="20"
+        data-pixHeight="20"
+        data-gap="0.5"
+        data-gridPad="2"
+        data-gridX="20"
+        data-gridY="12"
+        data-command="#AIRPLAYFIELD,3">
+</canvas> 
+<canvas width="325" height="250"
+        data-getTileDataFunction="Combat.getPlayfield"
+        data-pixWidth="8"
+        data-pixHeight="8"
+        data-gap="0.25"
+        data-gridPad="1"
+        data-gridX="20"
+        data-gridY="12"
+        data-command="#AIRPLAYFIELD,3,H3,*,V3,VH3">
+</canvas> 
+}}}
+
+; Available in the code, but never used. Maybe this was supposed to be a different
+; playfield for jets and planes?
+
+{{{html
+<canvas width="410" height="250"
+        data-getTileDataFunction="Combat.getPlayfield"
+        data-pixWidth="20"
+        data-pixHeight="20"
+        data-gap="0.5"
+        data-gridPad="2"
+        data-gridX="20"
+        data-gridY="12"
+        data-command="#AIRPLAYFIELD,3">
+</canvas> 
+<canvas width="325" height="250"
+        data-getTileDataFunction="Combat.getPlayfield"
+        data-pixWidth="8"
+        data-pixHeight="8"
+        data-gap="0.25"
+        data-gridPad="1"
+        data-gridX="20"
+        data-gridY="12"
+        data-command="#AIRPLAYFIELD,4,H4,*,V4,VH4">
+</canvas> 
+}}}
 
 ; ?? From F1AE
 F7D8: 24 28         BIT   $28                 ;
@@ -1191,12 +1345,3 @@ F7F4: 00 00 00 00 00 00
 F7FA: 00 00        ; NMI Vector (not used)
 F7FC: 00 F0        ; Reset vector to F000
 F7FE: 0F 11        ; IRQ/vector to 110F (maybe debug hardware?)
-
-{{{html
-<canvas width="1000" height="500"
-        data-getTileDataFunction="Combat.getPlayfield"
-        data-gridX="20"
-        data-gridY="12"
-        data-command="0,+x,1,+x,2,+x,3">
-</canvas> 
-}}}
