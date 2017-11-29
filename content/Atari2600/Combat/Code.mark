@@ -11,8 +11,6 @@
 <script src="/js/CANVAS.js"></script>
 <script src="Combat.js"></script>
 
-144 80 236
-
 <!-- Cache some commonly-used values -->
 <canvas width="0" height="0"
         data-canvasFunction="TileEngine.handleTileCanvas"
@@ -1100,17 +1098,17 @@ F746: 00
 F747: 1D 1D 16
 F74A: 16 0F
 F74C: 0F                                    
-F74D: 00            BRK                       
-F74E: 00            BRK                       
-F74F: 00            BRK                       
-F750: 00            BRK                       
-F751: 00            BRK                       
-F752: 00            BRK                       
-F753: 00            BRK                       
-F754: 00            BRK                       
-F755: 00            BRK                       
+F74D: 00                      
+F74E: 00                      
+F74F: 00                     
+F750: 00                       
+F751: 00                      
+F752: 00                     
+F753: 00                    
+F754: 00                     
+F755: 00                     
 F756: 12                                    
-F757: 10 10         BPL   $F769               ;
+F757: 10 10
 F759: 0C                                    
 F75A: 0C                                    
 F75B: 07                                    
@@ -1132,15 +1130,15 @@ F765: EA 3C
 F767: 82                                    
 F768: 44                                    
 F769: 32                                    
-F76A: 2C 8A DA      BIT   $DA8A               ;
+F76A: 2C 8A DA
 F76D: 80                                    
 F76E: 9C                                    
 F76F: DA                                    
 F770: 3A                                    
 F771: 64                                    
-F772: A8            TAY                       
+F772: A8                
 F773: DA                                    
-F774: 4A            LSR   A               
+F774: 4A         
 F775: 08 04 00 0E     
 
 
@@ -1221,7 +1219,7 @@ F7D4: 8D 99 B6 9D  ; PF2 LSB (add 4)
         data-gridX="20"
         data-gridY="12"
         data-command="#TANKPLAYFIELD,0,H0,*,V0,VH0">
-</canvas> 
+</canvas><br>
 }}}
 
 {{{html
@@ -1244,7 +1242,7 @@ F7D4: 8D 99 B6 9D  ; PF2 LSB (add 4)
         data-gridX="20"
         data-gridY="12"
         data-command="#TANKPLAYFIELD,1,H1,*,V1,VH1">
-</canvas> 
+</canvas><br> 
 }}}
 
 {{{html
@@ -1267,7 +1265,7 @@ F7D4: 8D 99 B6 9D  ; PF2 LSB (add 4)
         data-gridX="20"
         data-gridY="12"
         data-command="#TANKPLAYFIELD,2,H2,*,V2,VH2">
-</canvas> 
+</canvas><br> 
 }}}
 
 {{{html
@@ -1290,53 +1288,27 @@ F7D4: 8D 99 B6 9D  ; PF2 LSB (add 4)
         data-gridX="20"
         data-gridY="12"
         data-command="#AIRPLAYFIELD,3,H3,*,V3,VH3">
-</canvas> 
-}}}
-
-; Available in the code, but never used. Maybe this was supposed to be a different
-; playfield for jets and planes?
-
-{{{html
-<canvas width="410" height="250"
-        data-getTileDataFunction="Combat.getPlayfield"
-        data-pixWidth="20"
-        data-pixHeight="20"
-        data-gap="0.5"
-        data-gridPad="2"
-        data-gridX="20"
-        data-gridY="12"
-        data-command="#AIRPLAYFIELD,3">
-</canvas> 
-<canvas width="325" height="250"
-        data-getTileDataFunction="Combat.getPlayfield"
-        data-pixWidth="8"
-        data-pixHeight="8"
-        data-gap="0.25"
-        data-gridPad="1"
-        data-gridX="20"
-        data-gridY="12"
-        data-command="#AIRPLAYFIELD,4,H4,*,V4,VH4">
-</canvas> 
+</canvas><br> 
 }}}
 
 ; ?? From F1AE
-F7D8: 24 28         BIT   $28                 ;
-F7DA: 08            PHP                       
-F7DB: 20 00 48      JSR   $4800               ;
-F7DE: 40            RTI                       
+F7D8: 24 28
+F7DA: 08
+F7DB: 20 00 48
+F7DE: 40
 F7DF: 54                                    
-F7E0: 58            CLI                       
-F7E1: 25 29         AND   $29                 ;
-F7E3: 49 55         EOR   #$55                
-F7E5: 59 A8 88      EOR   $88A8,Y             
-F7E8: 98            TYA                       
-F7E9: 90 A1         BCC   $F78C               ;
+F7E0: 58
+F7E1: 25 29
+F7E3: 49 55
+F7E5: 59 A8 88
+F7E8: 98
+F7E9: 90 A1
 F7EB: 83                                    
-F7EC: E8            INX                       
-F7ED: C8            INY                       
-F7EE: E0 C0         CPX   #$C0                
-F7F0: E9 E2         SBC   #$E2                
-F7F2: C1 FF         CMP   ($FF,X)
+F7EC: E8  
+F7ED: C8
+F7EE: E0 C0
+F7F0: E9 E2
+F7F2: C1 FF
              
 F7F4: 00 00 00 00 00 00 
 

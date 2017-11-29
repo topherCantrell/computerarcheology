@@ -19,70 +19,70 @@ in RAM.
 # TIA (read)
 
 {{{memory
-|| 0000r    || CXM0P               || Collisions M0/P1   M0/P0 ||
-|| 0001r    || CXM1P               || Collisions M1/P0   M1/P1 ||
-|| 0002r    || CXP0FB              || Collisions M0/PF   P0/BL ||
-|| 0003r    || CXP1FB              || Collisions P1/PF   P1/BL ||
-|| 0004r    || CXM0FB              || Collisions M0/PF   M0/BL ||
-|| 0005r    || CXM1FB              || Collisions M1/PF   M1/BL ||
-|| 0006r    || CXBLPF              || Collisions BL/PF ||
-|| 0007r    || CXPPMM              || Collisions P0/P1   M0/M1 ||
-|| 0008r    || INPT0               || Paddle input 0 ||
-|| 0009r    || INPT1               || Paddle input 1 ||
-|| 000Ar    || INPT2               || Paddle input 2 ||
-|| 000Br    || INPT3               || Paddle input 3 ||
-|| 000Cr    || INPT4               || Latched inputs (joystick buttons) ||
-|| 000Dr    || INPT5               || Latched inputs (joystick buttons) ||
+|| 0000r    || CXM0P               || XX...... Collisions D7=M0/P1, D6=M0/P0 ||
+|| 0001r    || CXM1P               || XX...... Collisions D7=M1/P0, D6=M1/P1 ||
+|| 0002r    || CXP0FB              || XX...... Collisions D7=M0/PF, D6=P0/BL ||
+|| 0003r    || CXP1FB              || XX...... Collisions D7=P1/PF, D6=P1/BL ||
+|| 0004r    || CXM0FB              || XX...... Collisions D7=M0/PF, D6=M0/BL ||
+|| 0005r    || CXM1FB              || XX...... Collisions D7=M1/PF, D6=M1/BL ||
+|| 0006r    || CXBLPF              || X....... Collisions D7=BL/PF           ||
+|| 0007r    || CXPPMM              || XX...... Collisions D7=P0/P1, D6=M0/M1 ||
+|| 0008r    || INPT0               || X....... Paddle input 0 ||
+|| 0009r    || INPT1               || X....... Paddle input 1 ||
+|| 000Ar    || INPT2               || X....... Paddle input 2 ||
+|| 000Br    || INPT3               || X....... Paddle input 3 ||
+|| 000Cr    || INPT4               || X....... Latched inputs (joystick buttons) ||
+|| 000Dr    || INPT5               || X....... Latched inputs (joystick buttons) ||
 }}}
 
 # TIA (write)
 
 {{{memory
-|| 0000w    || VSYNC               || D1=1 starts the vertical sync ||
-|| 0001w    || VBLANK              || D1=1 starts the vertical blank (D6 and D7 config INPT0-5) ||
-|| 0002w    || WSYNC               || Halts processor until leading edge of horizontal blank ||
-|| 0003w    || RSYNC               || Resets sync counter (used in chip testing) ||
-|| 0004w    || NUSIZ0              || Number and size of player/missile P0 ||
-|| 0005w    || NUSIZ1              || Number and size of player/missile P0 ||
-|| 0006w    || COLUP0              || Color-luminance of player 0 ||
-|| 0007w    || COLUP1              || Color-luminance of player 1 ||
-|| 0008w    || COLUPF              || Color-luminance of play filed ||
-|| 0009w    || COLUBK              || Color-luminance of background ||
-|| 000Aw    || CTRLPF              || Control playfield, priorities, and ball size ||
-|| 000Bw    || REFP0               || D3=1 reflects player 0 ||
-|| 000Cw    || PEFP1               || D3=1 reflects player 1 ||
-|| 000Dw    || PF0                 || Playfield 0 bits (upper 4 bits) ||
-|| 000Ew    || PF1                 || Playfield 1 bits ||
-|| 000Fw    || PF2                 || Playfield 2 bits ||
-|| 0010w    || RESP0               || Set horizontal position of player 0 ||
-|| 0011w    || RESP1               || Set horizontal position of player 1 ||
-|| 0012w    || RESM0               || Set horizontal position of missile 0 ||
-|| 0013w    || RESM1               || Set horizontal position of missile 1 ||
-|| 0014w    || RESBL               || Set horizontal position of ball ||
-|| 0015w    || AUDC0               || Noise, tone, division control channel 0 ||
-|| 0016w    || AUDC1               || Noise, tone, division control channel 1 ||
-|| 0017w    || AUDF0               || Frequency divider channel 0 ||
-|| 0018w    || AUDF1               || Frequency divider channel 1 ||
-|| 0019w    || AUDV0               || Volume channel 0 ||
-|| 001Aw    || AUDV1               || Volume channel 1 ||
-|| 001Bw    || GRP0                || Player 0 graphics ||
-|| 001Cw    || GRP1                || Player 1 graphics ||
-|| 001Dw    || ENAM0               || D1=1 to enable missile 0 ||
-|| 001Ew    || ENAM1               || D1=1 to enable missile 1 ||
-|| 001Fw    || ENABL               || D1=1 to enable ball ||
-|| 0020w    || HMP0                || Horizontal motion offset for player 0 ||
-|| 0021w    || HMP1                || Horizontal motion offset for player 1 ||
-|| 0022w    || HMM0                || Horizontal motion offset for missile 0 ||
-|| 0023w    || HMM1                || Horizontal motion offset for missile 1 ||
-|| 0024w    || HMBL                || Horizontal motion offset for ball ||
-|| 0025w    || VDELP0              || D0=1 to delay player 0 one vertical line ||
-|| 0026w    || VDELP1              || D0=1 to delay player 1 one vertical line ||
-|| 0027w    || VDELBL              || D0=1 to delay ball one vertical line ||
-|| 0028w    || RESMP0              || D1=1 to reset missile 0 to player 0 ||
-|| 0029w    || RESMP1              || D1=1 to reset missile 1 to player 1 ||
-|| 002Aw    || HMOVE               || Executes horizontal motions ||
-|| 002Bw    || HMCLR               || Clears all horizonal motion registers ||
-|| 002Cw    || CXCLR               || Clears all collision registers ||
+|| 0000w    || VSYNC               || ......X. D1=1 starts the vertical sync ||
+|| 0001w    || VBLANK              || XX....X. D1=1 starts the vertical blank (D6 and D7 config INPT0-5) ||
+|| 0002w    || WSYNC               || strobe   Halts processor until leading edge of horizontal blank ||
+|| 0003w    || RSYNC               || strobe   Resets sync counter (used in chip testing) ||
+|| 0004w    || NUSIZ0              || ..XXXXXX Number and size of player/missile P0 ||
+|| 0005w    || NUSIZ1              || ..XXXXXX Number and size of player/missile P0 ||
+|| 0006w    || COLUP0              || XXXXXXX. Color-luminance of player 0 ||
+|| 0007w    || COLUP1              || XXXXXXX. Color-luminance of player 1 ||
+|| 0008w    || COLUPF              || XXXXXXX. Color-luminance of play filed ||
+|| 0009w    || COLUBK              || XXXXXXX. Color-luminance of background ||
+|| 000Aw    || CTRLPF              || ..XX.XXX Control playfield, priorities, and ball size ||
+|| 000Bw    || REFP0               || ....X... D3=1 reflects player 0 ||
+|| 000Cw    || PEFP1               || ....X... D3=1 reflects player 1 ||
+|| 000Dw    || PF0                 || XXXX.... Playfield 0 bits (upper 4 bits) ||
+|| 000Ew    || PF1                 || XXXXXXXX Playfield 1 bits ||
+|| 000Fw    || PF2                 || XXXXXXXX Playfield 2 bits ||
+|| 0010w    || RESP0               || strobe   Set horizontal position of player 0 ||
+|| 0011w    || RESP1               || strobe   Set horizontal position of player 1 ||
+|| 0012w    || RESM0               || strobe   Set horizontal position of missile 0 ||
+|| 0013w    || RESM1               || strobe   Set horizontal position of missile 1 ||
+|| 0014w    || RESBL               || strobe   Set horizontal position of ball ||
+|| 0015w    || AUDC0               || ....XXXX Noise, tone, division control channel 0 ||
+|| 0016w    || AUDC1               || ...XXXXX Noise, tone, division control channel 1 ||
+|| 0017w    || AUDF0               || ...XXXXX Frequency divider channel 0 ||
+|| 0018w    || AUDF1               || ....XXXX Frequency divider channel 1 ||
+|| 0019w    || AUDV0               || ....XXXX Volume channel 0 ||
+|| 001Aw    || AUDV1               || ....XXXX Volume channel 1 ||
+|| 001Bw    || GRP0                || XXXXXXXX Player 0 graphics ||
+|| 001Cw    || GRP1                || XXXXXXXX Player 1 graphics ||
+|| 001Dw    || ENAM0               || ......X. D1=1 to enable missile 0 ||
+|| 001Ew    || ENAM1               || ......X. D1=1 to enable missile 1 ||
+|| 001Fw    || ENABL               || ......X. D1=1 to enable ball ||
+|| 0020w    || HMP0                || XXXX.... Horizontal motion offset for player 0 ||
+|| 0021w    || HMP1                || XXXX.... Horizontal motion offset for player 1 ||
+|| 0022w    || HMM0                || XXXX.... Horizontal motion offset for missile 0 ||
+|| 0023w    || HMM1                || XXXX.... Horizontal motion offset for missile 1 ||
+|| 0024w    || HMBL                || XXXX.... Horizontal motion offset for ball ||
+|| 0025w    || VDELP0              || .......X D0=1 to delay player 0 one vertical line ||
+|| 0026w    || VDELP1              || .......X D0=1 to delay player 1 one vertical line ||
+|| 0027w    || VDELBL              || .......X D0=1 to delay ball one vertical line ||
+|| 0028w    || RESMP0              || ......X. D1=1 to reset missile 0 to player 0 ||
+|| 0029w    || RESMP1              || ......X. D1=1 to reset missile 1 to player 1 ||
+|| 002Aw    || HMOVE               || strobe   Executes horizontal motions ||
+|| 002Bw    || HMCLR               || strobe   Clears all horizontal motion registers ||
+|| 002Cw    || CXCLR               || strobe   Clears all collision registers ||
 }}}
 
 # PIA
