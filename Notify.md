@@ -9,5 +9,11 @@ Trevor Senn
 switchoff49@gmail.com
 
 # Dungeons of Daggorath
+
 Aaron Oliver
 aarondoom@gmail.com
+
+# Crazy Climber
+
+Rich McFerron (archeologist)
+rmcferron@hotmail.com

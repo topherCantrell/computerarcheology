@@ -49,6 +49,22 @@
 	             {"copy": "VectorROM.js"}
 	             ]
 	         },
+	         
+	         {"dir": "CrazyClimber", "nav":"Crazy Climber","entries": [
+	        	 {"copy": "CrazyClimber.jpg"},
+	        	 {"copy": "BigSpriteGraphics.docx"},
+	        	 {"copy": "Buildings.docx"},
+	        	 {"copy": "cclimber.asm"},
+	        	 {"copy": "CharEnc.inc"},
+	        	 {"copy": "CrazyClimber.jpg"},
+	        	 {"copy": "CrazyClimberMemoryMapInfo.doc"},
+	        	 {"copy": "GraphicsAndCharacterAssetInfo.docx"},
+	        	 {"copy": "MemoryMap.inc"},
+	        	 {"copy": "cclimber.asm"},	        	 
+	        	 {"mark": "CrazyClimber.mark", "out": "index.html"}	         
+	        	 ]
+	         },
+	         
 	         {"dir": "Defender", "nav": "Defender", "entries": [	         
 	             {"mark": "Defender.mark", "out": "index.html"},	             
 	             {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
