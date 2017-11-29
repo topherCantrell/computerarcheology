@@ -56,8 +56,8 @@
 || 00B3      || mB3                || ||
 || 00B4      || scanlineNumber     || Counts the scan lines while drawing ||
 || 00B5:B6   || pf0Graphics        || Pointer to PF0 graphics ||
-|| 00B7:B8   || pf1Value           || Pointer to PF1 graphics ||
-|| 00B9:BA   || pf2Value           || Pointer to PF2 graphics ||
+|| 00B7:B8   || pf1Graphics        || Pointer to PF1 graphics ||
+|| 00B9:BA   || pf2Graphics        || Pointer to PF2 graphics ||
 || 00BB      || mBB                || ||
 || 00BC      || mBC                || ||
 || 00BD      || playerXpicture     || Offset to player graphics (interleaved -- P0 even, P1 odd) ||
@@ -100,7 +100,7 @@
 || 00E2      || mE2                || ||
 || 00E3      || mE3                || ||
 || 00E4      || mE4                || ||
-|| 00E5      || mE5                || ||
+|| 00E5      || mE5                || Seems to be first non-used (like reserved for stack) ||
 || 00E6      || mE6                || ||
 || 00E7      || mE7                || ||
 || 00E8      || mE8                || ||
@@ -126,5 +126,5 @@
 || 00FC      || mFC                || ||
 || 00FD      || mFD                || ||
 || 00FE      || mFE                || ||
-|| 00FF      || mFF                || ||
+|| 00FF      || mFF                || Stack builds from here ||
 }}}

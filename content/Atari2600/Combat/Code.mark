@@ -84,8 +84,8 @@ F050: 8D 96 02      STA   $0296               ; ... cycles 2752/(228/3) = 36 sca
 F053: 60            RTS                       ; Done
 
 ; ?? Called from main loop
-F054: A9 20         LDA   #$20                ;
-F056: 85 B4         STA   $B4                 ;
+F054: A9 20         LDA   #$20                ; Starting on ...
+F056: 85 B4         STA   $B4                 ; ... scanline 32
 F058: 85 02         STA   $02                 ; Wait for the end of the current line (ensure HMOVE is in the horiz blanking)
 F05A: 85 2A         STA   $2A                 ; Apply horizontal movement to all objects 
 F05C: AD 84 02      LDA   $0284               ; Wait for the visible TV to ...
@@ -111,15 +111,15 @@ F081: 85 DF         STA   $DF                 ;
 F083: 85 02         STA   $02                 ;{-2_WSYNC}WSYNC:lots 
 F085: A5 DE         LDA   $DE                 ;
 F087: 85 0E         STA   $0E                 ;{-2_PF1}PF1:lots 
-F089: A4 E2         LDY   $E2                 ;
-F08B: B9 C5 F5      LDA   $F5C5,Y             
-F08E: 29 F0         AND   #$F0                
-F090: 85 DE         STA   $DE                 ;
-F092: A4 E0         LDY   $E0                 ;
-F094: B9 C5 F5      LDA   $F5C5,Y             
-F097: 29 0F         AND   #$0F                
-F099: 05 DE         ORA   $DE                 ;
-F09B: 85 DE         STA   $DE                 ;
+F089: A4 E2         LDY   $E2                 ; Left digit
+F08B: B9 C5 F5      LDA   $F5C5,Y             ; Digit graphics
+F08E: 29 F0         AND   #$F0                ; Only the left pattern
+F090: 85 DE         STA   $DE                 ; New graphics
+F092: A4 E0         LDY   $E0                 ; Right digit
+F094: B9 C5 F5      LDA   $F5C5,Y             ; Digit graphics
+F097: 29 0F         AND   #$0F                ; Only the right
+F099: 05 DE         ORA   $DE                 ; Combine ...
+F09B: 85 DE         STA   $DE                 ; ... the graphics
 F09D: A5 DF         LDA   $DF                 ;
 F09F: 85 0E         STA   $0E                 ;{-2_PF1}PF1:lots 
 F0A1: A4 E3         LDY   $E3                 ;
