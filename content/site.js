@@ -52,13 +52,13 @@
 	         
 	         {"dir": "CrazyClimber", "nav":"Crazy Climber","entries": [
 	        	 {"copy": "CrazyClimber.jpg"},
-	        	 {"copy": "BigSpriteGraphics.docx"},
-	        	 {"copy": "Buildings.docx"},
+	        	 {"copy": "BigSpriteGraphics.pdf"},
+	        	 {"copy": "Buildings.pdf"},
 	        	 {"copy": "cclimber.asm"},
 	        	 {"copy": "CharEnc.inc"},
 	        	 {"copy": "CrazyClimber.jpg"},
-	        	 {"copy": "CrazyClimberMemoryMapInfo.doc"},
-	        	 {"copy": "GraphicsAndCharacterAssetInfo.docx"},
+	        	 {"copy": "CrazyClimberMemoryMapInfo.pdf"},
+	        	 {"copy": "GraphicsAndCharacterAssetInfo.pdf"},
 	        	 {"copy": "MemoryMap.inc"},
 	        	 {"copy": "cclimber.asm"},	        	 
 	        	 {"mark": "CrazyClimber.mark", "out": "index.html"}	         
