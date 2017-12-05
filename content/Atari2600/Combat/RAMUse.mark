@@ -85,8 +85,8 @@
 || 00D3      || stackPointer       || Holds stack pointer while drawing the screen (with the stack pointer) ||
 || 00D4      || mD4                || ||
 || 00D5      || mD5                || ||
-|| 00D6      || mD6                || ||
-|| 00D7      || mD7                || ||
+|| 00D6      || colorP0            || Color of Player 0 ||
+|| 00D7      || colorP1            || Color of Player 1 ||
 || 00D8      || mD8                || ||
 || 00D9      || mD9                || ||
 || 00DA      || mDA                || ||
