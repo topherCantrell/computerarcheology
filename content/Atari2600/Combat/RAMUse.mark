@@ -93,12 +93,12 @@
 || 00DB      || mDB                || ||
 || 00DC      || mDC                || ||
 || 00DD      || mDD                || ||
-|| 00DE      || mDE                || ||
-|| 00DF      || mDF                || ||
-|| 00E0      || mE0                || ||
-|| 00E1      || mE1                || ||
-|| 00E2      || mE2                || ||
-|| 00E3      || mE3                || ||
+|| 00DE      || nextLeft           || Holds next pattern for left two digits (offset into 5 slots) ||
+|| 00DF      || nextRight          || Holds next pattern for right two digits (offset into 5 slots) ||
+|| 00E0      || leftDigitLSD       || Least significant digit for left number (offset into 5 slots) ||
+|| 00E1      || rightDigitLSD      || Least significant digit for right number (offset into 5 slots) ||
+|| 00E2      || leftDigitMSD       || Most significant digit for left number (offset into 5 slots) ||
+|| 00E3      || rightDigitMSD      || Most significant digit for right number (offset into 5 slots) ||
 || 00E4      || mE4                || ||
 || 00E5      || mE5                || Seems to be first non-used (like reserved for stack) ||
 || 00E6      || mE6                || ||

@@ -1,0 +1,549 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="CONTENT-TYPE"
+ content="text/html; charset=windows-1252">
+  <title>z26 readme</title>
+  <style type="text/css">
+	<!--
+		BODY  { font-family: "Arial"; font-size: 11pt; so-language: en-US }
+		P { font-family: "Arial"; font-size: 11pt; so-language: en-US }
+		H6 { font-family: "Arial"; font-size: 11pt; so-language: en-US; font-style: italic }
+		H2 { font-family: "Arial"; font-size: 14pt; so-language: en-US; font-style: italic }
+		H4 { font-family: "Arial"; font-size: 12pt; so-language: en-US; font-style: italic }
+		PRE { font-family: "Courier New"; font-size: 11pt; so-language: en-US }
+	-->
+	</style>
+</head>
+<body dir="ltr" lang="en-US">
+<div id="Section1" dir="ltr">
+<h2>z26 -- An Atari 2600 Emulator (2.14)</h2>
+<p>Spring 2011</p>
+<p>http://www.whimsey.com/z26</p>
+<h4>Copyright/License</h4>
+<p>z26 is Copyright ©1997-2011 by John Saeger and contributors. z26 is
+released subject to the terms and
+conditions of the GNU General Public License Version 2 (GPL). z26 comes
+with no warranty. Please see the included COPYING.TXT for details.
+Source code for the current release is available at the home page
+listed above.</p>
+<h4>What's new in version 2.14?</h4>
+<ul>
+  <li>Windows 7 compatibility, including the 64-bit version of the
+operating system.</li>
+  <li>SDL.dll upgraded to version 1.2.14.<br>
+  </li>
+  <li>Sound fixed on Ubuntu 10.04 and Debian 5. </li>
+  <li>Some larger video modes.</li>
+  <li>Desktop video modes for systems without full-screen hardware
+accelerated video.<br>
+  </li>
+  <li>Phosphor mode now updates the screen at 30 Hz. </li>
+  <li>More accurate and efficient timing routines.</li>
+  <li>Switching pixel depth is no longer supported.</li>
+  <li>Eight bit video modes are still available with an eight bit
+desktop.<br>
+  </li>
+  <li>A simple built-in GUI. </li>
+  <li>Thanks to B. Watson for the GUI framework. </li>
+  <li>Thanks to Eckhard Stolberg for help with this version. </li>
+</ul>
+<h4>Software Requirements</h4>
+<p>You need an x86 based Windows or Linux system. z26 works fine on
+32-bit or 64-bit versions of Windows 7. On Linux, a 32-bit system is
+preferred and phosphor mode is recommended. Running on a Linux virtual
+machine inside VMware or Virtual Box can work well. Older Windows
+platforms
+such as Windows XP and Windows 98 also work fine.<br>
+</p>
+<h4>Hardware Requirements<br>
+</h4>
+<p>z26 works great on modern x86 computers and can bring some joy back
+to old ones.&nbsp; Here are some examples of vintage or low
+specification computers that can run
+games at full speed including sound:<br>
+</p>
+<ul>
+  <li>Vaio N505X with a 333 MHz Celeron (Wary Puppy Linux).</li>
+  <li>Thinkpad 600E with a 366 MHz Pentium II (Windows 98).<br>
+  </li>
+  <li>OLPC-XO1 with a 433 MHz AMD Geode (Fedora Linux).</li>
+  <li>eeePC 701 with a 630 MHz Celeron (Windows XP and Ubuntu Linux).<br>
+  </li>
+  <li>Thinkpad X21 with a 700 MHz Pentium III (Antix Linux).<br>
+  </li>
+</ul>
+<p>Modern x86 computers are usually fast enough.&nbsp; If you have an
+original Pentium or Pentium MMX machine, you might
+like to try the DOS version of z26.</p>
+<h4>Virtual Hardware</h4>
+Running an Ubuntu 10.04 guest in Virtual Box 3.2.2 on a Windows 7 host
+has been tested.&nbsp; It's a little jerky, but it works better than I
+expected.&nbsp; Even the sound works.<br>
+<h4>Windows Installation</h4>
+<p>Unzip the z26 archive and place the executable which is called
+z26.exe into the directory that contains the ROM images that you want
+to run. You will need a copy of SDL.DLL either in the directory that
+you place z26, or in the Windows directory. This .DLL is included in
+the .zip file along with the z26 executable.</p>
+<p>It's a good idea to make sure DirectX is enabled. To enable DirectX
+with z26 you need to set an environment variable. On Windows 98 or
+Windows ME, edit autoexec.bat in the root directory and add the
+following line:</p>
+<pre>SET SDL_VIDEODRIVER=directx</pre>
+<p> To set the environment variable in Windows XP or Windows 7, use the
+System icon in the Control Panel. Under Advanced -- Environment
+Variables, add a new environment variable named SDL_VIDEODRIVER, and
+set its value to directx.</p>
+<p>If you don't enable DirectX for use with z26, running games with
+monitor-synchronized video will probably be much too fast.</p>
+<h4>Windows 98 hints</h4>
+<ul>
+  <li>Install the latest audio and video drivers for your hardware.</li>
+  <li>Install the latest version (probably 8.1) of DirectX for Windows
+98.</li>
+</ul>
+<h4>Linux Installation</h4>
+<p>A binary built on Ubuntu Linux called z26 is included in the
+z26
+archive.&nbsp; It runs on a wide variety of 32-bit Linux
+distributions.&nbsp; Just
+put it into the ROM
+directory and run it from
+there.&nbsp; You may need to install the SDL runtime libraries.&nbsp;
+If this doesn't work, build z26 from source code. To build
+z26
+on Linux,
+or other Linux like 32-bit operating systems, go to the src directory
+and type:</p>
+<pre>make linux</pre>
+<p> If all goes well, when it's done you'll have an executable named
+z26 that you can put in your ROM directory. You might need to install
+the SDL development headers, gcc, make, m4, and nasm for this to work.</p>
+<h4>Main Menu</h4>
+<p>Simply double-click on the z26 executable from your file manager or
+simply launch z26 without a filename and you will be presented with the
+Main Menu. The current selection is highlighted. You can navigate the
+list with the vertical arrow keys, and you can make a selection by
+pressing the &lt;enter&gt; key or the &lt;right arrow&gt; key.</p>
+<pre>z26 -- An Atari 2600 Emulator<br><br>         Play a Game<br><br>         Game<br>         Video<br>         Sound<br>         Timing<br>         Interface<br>         Tweaks<br>         Debug<br>         About<br><br>         Exit<br></pre>
+<h4> Play a Game Menu</h4>
+<p>Initially, the contents of the startup directory are shown. You can
+navigate to other directories which are shown with a / following the
+name. You can go upwards in a directory tree by selecting the ../
+entry. If you press a letter of the alphabet, the filelist shows the
+first game starting with that letter at the top of the list, with
+successive keypresses narrowing the search.</p>
+<pre>../<br>aciddrop.bin<br>atlantis.bin<br>breakout.bin<br>demonatk.bin<br>enduro.bin<br>oystr29.bin<br>phasor.bin<br>quadrun.bin<br>solaris.bin<br>spcshutl.bin<br>vidchess.bin<br></pre>
+<p> If you run a game with the game launcher, you can exit the game by
+pressing &lt;escape&gt; and you return to the game launcher. If you
+press &lt;escape&gt; again you return to the Main Menu.</p>
+<h4>Game Menu</h4>
+<p>Navigate the menu with the up/down arrows and select with left/right
+arrows, the enter key or the space bar. Press &lt;escape&gt; to return
+to the Main Menu.</p>
+<pre>Game Options – e5e657da              Recently run game CRC shown in hex.<br><br>         P0 Difficulty...: Easy      Player 0 difficulty -- easy or hard.<br>         P1 Difficulty...: Easy      Player 1 difficulty -- easy or hard.<br>         Console B/W.....: Color     Console B/W switch  -- color or B/W.<br><br>         Bankswitch......: Auto      Atari, Tigervision, Spectravideo, etc.<br>         Palette.........: Auto      NTSC, PAL or SECAM.<br>         Left Controller.: Auto      Joystick, paddle, keypad, etc.<br>         Right Controller: Auto      Joystick, paddle, keypad, etc.<br>         Swap Ports......: Auto      Swap left and right controllers.<br>         Allow All 4 Dir.: Auto      All 4 joystick directions simultaneously.<br><br>         Exit                        Return to Main Menu.</pre>
+<h4> </h4>
+<h4>Video Menu
+</h4>
+<p>By default z26 runs full-screen at the resolution of your desktop,
+but you can also run in a window or in a hardware-accelerated
+full-screen mode. z26 supports a scanline effect as seen on old TV
+sets. Interlaced video is also supported for those demos that require
+it.&nbsp; If you want to synchronize with the monitor to emulate the
+“shimmer”
+effect (on Windows), you should turn off phosphor mode, and turn on
+monitor sync under the Timing Menu (see below).</p>
+The following video modes are currently supported:<br>
+<br>
+<div style="margin-left: 40px;">0 - 320x200<br>
+1 - 320x240<br>
+2 - 640x480<br>
+3 - 800x600<br>
+4 - 1024x600<br>
+5 - 1024x768<br>
+6 - 1200x800<br>
+7 - 1200x900<br>
+8 - 1280x1024</div>
+<pre>Video Options<br><br>         Start Line.: Auto           First scanline to display.<br>         Video Mode.: 2-640x480      Screen resolution.<br>         Width......: Normal         Normal or Narrow.<br>         Display....: Window         Window, Desktop or Full Screen.<br>         Line Mode..: Normal         Normal, Scanline or Interlaced.<br>         Phosphor...: 60             Phosphor amount or None.<br>         Colour Loss: None           Simulate PAL colour loss.<br><br>         Exit                        Return to Main Menu.</pre>
+<h4> Sound Menu</h4>
+<p>You can try reducing the SQ size for better performance on
+fast systems, or make it larger if you get choppy sound on older
+systems. Changing the DSP changes the tone of the sound attempting to
+match the sound of older TV sets.</p>
+<pre>Sound Options<br><br>         Quiet......: No             Disable sound.<br>         DSP........: 1              Sound processing level -- 1, 2, or off.<br>         SQ Size....: 4096           Sound queue size.<br><br>         Exit                        Return to Main Menu.</pre>
+<h4> Timing Menu</h4>
+<p>With the framerate set to Auto, games to run at their true speed
+which depends on the number of scanlines that the game generates.
+Otherwise you can set a very high framerate to see how fast the
+emulator can run, or a slower rate to make games easier to play. </p>
+<p>Synchronizing the game to the sound system is nice if you would like
+to hear the Quadrun voice perfectly. Note that sync to sound takes
+priority over the framerate timers.</p>
+<p>If you want to sync to the monitor for perfect emulation of the
+“shimmer” effect, you must set this here, and turn off phosphor mode.
+Don't forget to set the SDL_VIDEODRIVER environment variable to directx
+or sync to monitor will likely run too fast.</p>
+<pre>Timing Options<br><br>         Framerate....: Auto         Force framerate or let game control it.<br>         Sync.........: Clock        Clock, sound, or monitor<br><br>         Exit                        Return to Main Menu.</pre>
+<h4> Interface Menu</h4>
+<p>Here you can tune the user inputs to the game. You can also choose
+to turn on the scanline and framerate display, as well as set the GUI
+color scheme.</p>
+<pre>Interface Options<br><br>         Show FPS....: No            Show framerate on game display.<br>         Theme.......: 5-aqua        Choose colour scheme for GUI.<br><br>         Mouse Rude..: No            Mouse control of Atari joystick in a window.<br>         Grab Input..: No            Grab ALL keyboard input.<br><br>         Keyboard....: Yes           Enable/Disable Keyboard.<br>         Mouse.......: Yes           Enable/Disable Mouse.<br>         Joystick....: Yes           Enable/Disable Joystick.<br>         Stelladaptor: Yes           Enable/Disable Stelladaptor.<br><br>         Exit                        Return to Main Menu.</pre>
+<h4> Controller Tweaks Menu</h4>
+<p>Here you can fine-tune how the emulator behaves.</p>
+<pre>Controller Tweaks<br><br>         Mouse Paddle X....: Auto    Paddle to control with mouse X-axis.<br>         Mouse Paddle Y....: Auto    Paddle to control with mouse Y-axis.<br><br>         Paddle Sensitivity: Auto    Sensitivity when controlled by keyboard.<br>         Paddle Adjust.....: Auto    Paddle delay in scanlines.<br><br>         Lightgun cycles...: Auto    Adjust lightgun by N cycles.<br>         Lightgun scanlines: Auto    Adjust lightgun by N  scanlines.<br><br>         Exit                        Return to Main Menu.</pre>
+<h4> Debug Menu</h4>
+<p>Here you can turn on or turn off the debug trace log.</p>
+<pre>Debug Options<br>         Trace Log....: Disabled     Write a code trace to z26.log.<br><br>         Exit</pre>
+<h4> About Menu</h4>
+<pre>Version 2.14.69 –- http://www.whimsey.com/z26      <br><br>         Exit                        Return to Main Menu.</pre>
+<h4> Saving Changes</h4>
+<p>Simply exit the emulator while in the startup directory. If you've
+navigated to a different directory to play a game, changes will be lost.</p>
+<h4>Restoring Defaults</h4>
+<p>Delete the file z26.gui from the startup directory. If you are using
+command-line switches from the command line, or an external front-end,
+delete z26.cli.</p>
+<h4>Console Controls</h4>
+<p>To control the switches on the main console box, use the function
+keys on the keyboard as follows:<br>
+</p>
+<pre>   F1 -- Reset<br>   F2 -- Select<br>   F3 -- B/W<br>   F4 -- Color<br>   F5 -- Player 0 easy<br>   F6 -- Player 0 hard<br>   F7 -- Player 1 easy<br>   F8 -- Player 1 hard</pre>
+<h4> Paddles</h4>
+<p>z26 supports the use of the mouse or PC trackball to play paddle
+games. If you want to change which paddle is emulated with the mouse
+use the Controller Tweaks Menu. You can change which direction the
+mouse must be moved in to get paddle motion by pressing the &lt;Tab&gt;
+key on the keyboard while you're playing a game. You can emulate two
+paddles with a mouse with one paddle on each axis. You can use the
+keyboard to play paddle games. If z26 doesn't automatically support a
+game as a paddle game you may specify which controllers are paddle
+controllers in the Game Options menu. <br>
+</p>
+<p>Paddles may be controlled from the keyboard as follows:<span
+ style="font-style: italic;"><span style="font-weight: bold;"><br>
+</span></span></p>
+<span style="font-family: &quot;Arial&quot;;"><span style="font-style: italic;"><span
+ style="font-weight: bold;"></span></span></span>
+<pre>  Ctrl -- fire paddle 0	Use left and right arrows to move<br>RShift -- fire paddle 1	Use up and down arrows to move<br>     n -- fire paddle 2	Use 's' and 'f' to move<br>     v -- fire paddle 3	Use 'e' and 'd' to move</pre>
+<h4> Joystick</h4>
+<p>PC or USB joysticks and gamepads are supported to the extent that
+the operating system and SDL supports them for playing joystick games.
+The mouse and PC keyboard may also be used. Some games like raiders.bin
+use the "wrong" joystick. To reverse the joysticks, reverse the ports
+under the Game Options Menu.&nbsp; Joysticks may be controlled from the
+keyboard as follows:<br>
+</p>
+<h4>Player 0<br>
+</h4>
+<pre>  Ctrl -- fire  Use the arrow keys to move.<br>     / -- trigger (booster grip)<br>RShift -- booster (booster grip)</pre>
+<h4>Player 1</h4>
+<pre>    n -- fire<br>    s -- left<br>    e -- up<br>    f -- right<br>    d -- down<br>    b -- trigger (booster grip)<br>    v -- booster (booster grip)</pre>
+<h4> Driving Controller</h4>
+<p>z26 suppports the game that uses the driving controller (Indy 500)
+from the keyboard as follows:<br>
+</p>
+<h4>Player 0<br>
+</h4>
+<pre>      Ctrl -- accelerate<br>right arrow -- turn clockwise<br>left arrow -- turn counter-clockwise</pre>
+<h4> Player 1<br>
+</h4>
+<pre>         n -- accelerate<br>         f -- turn clockwise<br>         s -- turn counter-clockwise</pre>
+<h4> Keyboard Controllers</h4>
+<pre>       Left Port                     Right Port<br><br>7 -- 1   8 -- 2   9 -- 3      1 -- 1   2 -- 2   3 -- 3<br>u -- 4   i -- 5   o -- 6      q -- 4   w -- 5   e -- 6<br>j -- 7   k -- 8   l -- 9      a -- 7   s -- 8   d -- 9<br>m -- *   , -- 0   . -- #      z -- *   x -- 0   c -- #</pre>
+<h4> Compumate Keyboard</h4>
+<p>Use PC keyboard columns 1 - 0</p>
+<pre> Ctrl -- FUNC<br>LShift -- SHIFT</pre>
+<h4> Mindlink Controller</h4>
+<p>Use the mouse to move horizontally.</p>
+<pre>button -- start the game<br>  Tab -- switch between player 0 and player 1</pre>
+<h4> Mouse Handling in Paddle emulation</h4>
+<pre>  Tab -- switch between horiz. normal, vert. normal<br>         and horiz. reversed, and vert reversed</pre>
+<h4> Kid Vid Controller</h4>
+<p>Use keys 1 2 3 to start the corresponding tape.</p>
+<p>F1 stops and rewinds the tape.</p>
+<h4>Trak-Ball Controllers</h4>
+<p>Atari sold a Trak-Ball that could be used to play joystick games.
+z26 supports the use of a mouse or PC trakball to do the same thing for
+joystick games. Optical trackballs like the Logitech Marble Mouse are
+great for this. Also z26 emulates the various types of Atari Trak-Balls
+in their native modes.</p>
+<h4><span style="font-family: &quot;Arial&quot;;"><span
+ style="font-style: italic;"><span style="font-weight: bold;"></span></span></span></h4>
+<h4>Light Gun</h4>
+<p>z26 supports light gun games (Sentinel, Shooting Gallery) with the
+mouse.</p>
+<h4>Keyboard Controllers</h4>
+<p>z26 enables the keyboard/touch pad/keypad for recognized games that
+use them.</p>
+<h4>Booster Grip</h4>
+<p>z26 supports the booster grip game (Omega Race) from the keyboard
+and the PC joystick with 3 or more buttons.</p>
+<h4>Scrolling the Screen</h4>
+<pre> PgUp -- Scroll the screen up.<br> PgDn -- Scroll the screen down.<br> Home -- Return to the default screen position.</pre>
+<h4>Screen Capture</h4>
+<p>Pressing the = key during game play causes a .bmp file with a screen
+image to be placed in your directory. Filenames are z26p0000.bmp,
+z26p0001.bmp etc. The filename restarts at z26p0000.bmp causing old
+versions to be replaced each time you restart the emulator.</p>
+<h4><span style="font-family: &quot;Arial&quot;;"><span
+ style="font-style: italic;"><span style="font-weight: bold;"></span></span></span>Trace
+Mode</h4>
+<p>If you start z26 from the command line with the -t command line
+switch, it automatically builds a text file called z26.log. This file
+is a log of all instructions executed and shows some other interesting
+things like the (frame number, scanline number, cpu cycle, tia clock),
+object positions (P0, P1, M0, M1, BL), cpu flags, registers (A, X, Y,
+SP), the program counter, the current instruction in hex, and a
+disassembled listing of the instruction.</p>
+<p>Emulator performance slows down quite a bit while writing out this
+file so you can turn off writing with F12 and turn it back on with F11
+to make it easier to get to the part of the game that you're interested
+in.</p>
+<h4>Counting Scan Lines and Showing FPS<br>
+</h4>
+<p>By enabling the Show FPS option in the Interface Options menu, thee
+number of scan lines that a game is using as well as its play speed in
+frames per second (FPS) to be displayed. This is
+useful for testing PAL games so you can avoid the PAL color loss bug.
+Of course you can also enable the color loss by turning on the Colour
+Loss option in the Video Options menu.&nbsp; The display may be toggled
+with the &lt;Alt-D&gt; key combination.<br>
+</p>
+<h4>Disabling Graphics</h4>
+<p>While the emulator is running, use the following keys:</p>
+<pre>   Alt+key  Effect<br>      Z     Enable/disable player 0<br>      X     Enable/disable player 1<br>      C     Enable/disable missile 0<br>      V     Enable/disable missile 0<br>      B     Enable/disable ball<br>      N     Enable/disable playfield<br>      /     Enable all of the above (returns to default)</pre>
+<p> There is currently no way to disable individual playfield registers
+(PF0, PF1, PF2). Alt-N affects all 3 registers.</p>
+<p>This feature can be useful for testing a game you're writing, or for
+analyzing a game someone else wrote. While a register is disabled, it's
+invisible and unable to collide with other objects.</p>
+<h4>Stelladaptor support</h4>
+<p>z26 assumes that a PC joystick with only two buttons and two axis is
+the Stelladaptor device, that lets you connect Atari joysticks, driving
+controllers and paddles to your PC's USB port. If you want to use a
+different 2-button/2-axis joystick with z26 and experience problems
+with the emulation of some Atari controller, you can disable the
+Stelladaptor support in the Interface Options menu. Please note that
+the Stelladaptor is seen as a joystick too, so disabling joysticks in
+the Interface Options menu will also disable the Stelladaptor.</p>
+<h4>Inactivating PC controller support</h4>
+<p>Some Atari controllers are simulated with more than one PC
+controller. If you are experiencing problems with this, you can disable
+one or more PC controllers for these Atari controller simulations. For
+example you might want to disable the PC mouse when you use the
+keyboard to play an Atari-joystick game, so that accidently pushing the
+mouse doesn't cause any unwanted movement. Also you might want to
+disable the PC joystick for paddle games, because the PC joystick
+always overrides all other PC controllers in the paddle simulation when
+one is plugged into the PC. Please look at the following table to find
+out which Atari controllers are simulated with which PC controller.</p>
+<pre>Atari/PC          keyboard  mouse  joystick  Stelladaptor<br>---------------------------------------------------------<br>joystick     JS      x        x       x          x<br>paddle       PC      x        x       x          x<br>keypad       KP      x        -       -          -<br>driving      DC      x        x       x          x<br>lightgun     LG      -        x       -          -<br>Compumate    CM      x        -       -          -<br>Kid Vid      KV      x        -       -          -<br>Mindlink     ML      -        x       -          -<br>ST mouse     ST      -        x       -          -<br>Trak-Ball    TB      -        x       -          -<br>Amiga mouse  AM      -        x       -          -<br></pre>
+<p> Please note that inactivating the PC controller only works for
+Atari controllers that are simulated by more than one PC controller.
+Also note that the Stelladaptor is just a special case of the PC
+joystick. So inactivating joystick support will also disable
+Stelladaptor support.</p>
+<h4><span style="font-family: &quot;Arial&quot;;"><span
+ style="font-style: italic;"><span style="font-weight: bold;"></span></span></span>Colors
+(palettes)</h4>
+<p>z26 supports three different sets of colors or palettes. The most
+common games shipped in North America use the so called NTSC colors.
+Games shipped in other parts of the world use the so called PAL colors.
+z26 typically detects the correct colors, but you can override the
+colors chosen by z26 with the Palette option in the Game Options menu.</p>
+<p>z26 also supports the bug in PAL consoles that causes the display to
+display a monochrome image if a game has the wrong number of scanlines.
+This feature is enabled with the Colour Loss option in the Video
+Options menu. Some of the 32-in-1 games which were poorly done PAL
+hacks show this effect.</p>
+<p>SECAM colors can be selected with Palette option in the Game Menu.
+In the time before the crash Atari created most of it's PAL games in
+such a way that the B/W switch would enable SECAM compatible colors. So
+nostalgic gamers from France can play PAL ROMs by selecting this option.</p>
+<h4>Forcing Black and White mode</h4>
+<p>You can force a game to start in black and white mode with the
+Console B/W option in the Game Options menu. Note that this doesn't
+mean that the game will actually be in black and white, this merely
+sets the console B/W switch which the game may or may not ignore.</p>
+<h4>Adjusting Game Speed</h4>
+<p>By default, games run at a speed that is determined by how many
+scanlines the game generates per frame. This provides correct play
+speed for NTSC and PAL games automatically. However you may adjust game
+speed to a specific number of frames per second as desired. On Windows
+platforms, you can turn off phosphor mode and synchronize the game to
+the monitor when you run in a full screen video mode.</p>
+<h4>Digital Signal Processing</h4>
+<p>z26 supports digital signal processing (DSP) on the sound. This is
+to reduce distortion on some clone sound cards, but also causes the
+sound to more closely approximate the sound of an old TV set for those
+users that prefer a more "classic" sound. By default a setting of 1 is
+selected, however a higher setting of 2 is also available, and the DSP
+can be turned off as well.</p>
+<h4>Offbeat Cartridge Formats (Bank Switching)</h4>
+<p>z26 currently supports the following schemes:</p>
+<ul>
+  <li> Standard 8K bank switching. </li>
+  <li> Standard 16K bank switching. </li>
+  <li> Atari Super-Chip. </li>
+  <li> CBS Ram Plus. </li>
+  <li> Parker Brothers 8K. </li>
+  <li> TigerVision 8K. </li>
+  <li> Activision FE 8K. </li>
+  <li> Atari 32K. </li>
+  <li> M-Network 16K. </li>
+  <li> Pitfall II. </li>
+  <li> Starpath. </li>
+  <li> Megaboy. </li>
+  <li> Compumate. </li>
+  <li> Extended TigerVision (to 512K). </li>
+  <li> UA Ltd. 8K. </li>
+  <li> 'EF' 64K (used by Paul Slocum's Homestar Runner RPG). </li>
+</ul>
+<p>Support is usually automatic, however one can override the default
+bankswitch scheme in the Game Options menu.</p>
+<h4>Starpath Games</h4>
+<p>For most Starpath games, the .bin file must be a multiple of 8448
+bytes big. To run multiload games you must concatenate the .bin files.
+Under Windows, a command like this will do the trick:</p>
+<pre>copy /b load1.bin+load2.bin+load3.bin+load4.bin mload.bin</pre>
+<p> Under Linux something like this will work:</p>
+<pre>cat load1.bin load2.bin load3.bin load4.bin &gt; mload.bin</pre>
+<p> Then run mload.bin in the emulator. z26 supports a maximum of 61
+loads.</p>
+<p>z26 also supports the 6144 byte Starpath format.</p>
+<p>The Extended Tigervision (#11) bankswitch scheme allows ROMs up to
+512K in size keeping the last bank fixed. All ROM images that are
+bigger than 64K and not a multiple of 8448 default to this scheme.</p>
+<p>The original Tigervision (#4) bankswitch scheme also supports up to
+512K games but with $1800-$1FFF as the fixed bank. This allows
+compatibility with the Cuttle Cart for games up to 64K in size.</p>
+<h4><span style="font-family: &quot;Arial&quot;;"><span
+ style="font-style: italic;"><span style="font-weight: bold;"></span></span></span></h4>
+<h4>Kid Vid Tapes</h4>
+<p>z26 supports the Kid Vid games (Smurfs Save the Day and Berenstain
+Bears) automatically.</p>
+<p>Press 1, 2, or 3 to select the corresponding tape. F1 rewinds the
+tape. In addition to the rom images, you need the wave files with the
+music in the same directory as z26.</p>
+<p>The files are named:</p>
+<p>Berenstain Bears:</p>
+<p>KVB1.WAV, KVB2.WAV, KVB3.WAV</p>
+<p>Smurfs Save the Day:</p>
+<p>KVS1.WAV, KVS2.WAV, KVS3.WAV</p>
+<p>Both:</p>
+<p>KVSHARED.WAV</p>
+<p>You can also play the games without the music, but it's much less
+fun.</p>
+<h4><span style="font-family: &quot;Arial&quot;;"><span
+ style="font-style: italic;"><span style="font-weight: bold;"></span></span></span>Configuring
+z26
+with
+command
+line
+switches</h4>
+<p>z26 has many options that are set with command line switches. You
+can use a text editor (or an external front end program) to create a
+file called z26.cli in the directory that contains your ROM images to
+set these options. Otherwise if you type z26 with some command line
+switches and don't include a filename, the command line switches are
+recorded in z26.cli automatically as emulator defaults. These defaults
+can still be overridden with command line switches that you include on
+command lines that include a filename.</p>
+<p>Spaces are not allowed between an option and its argument.</p>
+<p>Example: to force the framerate to 60, use -r60, not -r 60.</p>
+<p>Options set in the GUI are ignored when z26 is launched from the
+command line. But if you like you can copy the z26.gui file to z26.cli
+and the GUI set options will be recognized from the command line, since
+the files have the same format.</p>
+<h4>Command Line Switch Summary</h4>
+<p>More detailed information about the meaning of the switches may be
+found later in the document.</p>
+<pre>-)CC -- select controller on left port<br><br>       CC = JS -- joystick<br>       CC = PC -- paddle controller<br>       CC = KP -- keypad<br>       CC = DC -- driving controller<br>       CC = LG -- lightgun<br>       CC = CM -- CompuMate keyboard<br>       CC = KV -- Kid Vid tape player<br>       CC = ML -- Mindlink controller<br>       CC = ST -- ST mouse / CX-80 Trak-Ball<br>       CC = TB -- CX-22 Trak-Ball<br>       CC = AM -- Amiga mouse<br>       CC = NC -- no controller connnected<br><br>-(CC -- select controller on right port (CC: see above)<br><br>  -! -- run interlaced games<br><br>  -0 -- start with player 0 hard<br><br>  -1 -- start with player 1 hard<br><br>  -b -- start in black and white<br><br>  -4 -- allow all 4 directions on the joystick to be pressed simultaneously<br><br> -cN -- color palette (N=0 -- NTSC  N=1 -- PAL  N=2 -- SECAM)<br><br> -dN -- DSP processing level (N=1 -- low  N=2 -- high)<br><br>  -e -- enable narrow video modes<br><br> -fN -- enable phosphorescent effect (N=0 through N=100, 60=default) The<br>       parameter is the frame mixing coefficient (0 through 100) which<br>       specifies how much the bright pixel is favored over the dim pixel<br>       when mixing the value of two frames.<br><br> -gN -- override game type<br>       N=1  -- Commavid extra RAM<br>       N=2  -- 8K Superchip<br>       N=3  -- 8K Parker Brothers<br>       N=4  -- 8K Tigervision<br>       N=5  -- 8K Decathlon &amp; Robot Tank<br>       N=6  -- 16K Superchip<br>       N=7  -- 16K M-Network<br>       N=8  -- 32K Superchip<br>       N=9  -- 8K Atari -- banks swapped<br>       N=10 -- Spectravideo Compumate<br>       N=11 -- 32K - 512K Extended Tigervision<br>       N=12 -- 8K UA Ltd.<br>       N=13 -- 64K Homestar Runner / Paul Slocum<br><br> -iC -- inactivate PC-controller<br>        (C = K -- keyboard, M -- mouse, J -- joystick, S -- Stelladaptor)<br><br> -pN -- paddle sensitivity (N=1 to 15 -- keyboard only)<br><br> -PN -- enable lower sensitivity for PC joysticks / Stelladaptor<br>        in paddle emulation, and delay the paddle read-bit<br>        flipping by N scanlines<br><br> -mN -- paddle to emulate with mouse (N=0 to 3)<br><br>-m1XY -- emulate two paddles with mouse (X and Y = 0 to 3)<br><br> -MN -- enable mouse capture in a window<br><br>        allows mouse full control of games in windowed video modes just like<br>        full screen modes  (N=0 -- off, N=1 -- on)  default = off<br><br>  -G -- Grab all mouse and keyboard events. Use this if your window manager's<br>        hotkeys conflict with z26 hotkeys.<br><br>        This option is primarily intended for Linux/UNIX systems, but may be<br>        useful on Windows as well.<br><br> -lN -- adjust lightgun by N cycles<br><br> -aN -- adjust lightgun by N scanlines<br><br>  -n -- show scanline count and FPS on game display<br><br>  -o -- simulate PAL color loss<br><br>  -q -- quiet<br><br> -sN -- specifies the size of the sound queue<br>        (default = 4096 -- max = 65536)<br><br> -rN -- run at N frames per second. Give a large number<br>        (e.g. -r9999) to run the emulator as fast as possible.<br><br>  -R -- sync game to sound output<br><br>  -t -- write code trace to z26.log.<br><br> -tt -- Same as -t, but start emulator with tracing disabled.<br><br>        Press F11 to enable trace or F12 to disable.<br><br> -uN -- start scanning game at line N<br><br> -vN -- video mode N in desktop mode<br><br>-v1N -- video mode N in a window<br><br>-v2N -- video mode N in full screen mode<br><br>  -w -- swap Atari controller ports for all controller types<br><br> -CN -- set the GUI color theme to N<br><br>  -S -- turns on scanline mode<br><br>  -x -- print checksum of cartridge<br><br>  -V -- display the version</pre>
+<h4> </h4>
+<h4>Troubleshooting</h4>
+<h4>z26 runs too fast.</h4>
+<p>If synchronizing to the monitor, enable SDL_VIDEODRIVER=directx on
+Windows systems.</p>
+<p>Set framerate control to Auto or a slower speed.</p>
+<h4>z26 runs too slowly.</h4>
+<p>Try a different pixel depth on your desktop or a different video
+mode with lower resolution.<br>
+</p>
+<span style="font-family: &quot;Arial&quot;;"></span>
+<h4>z26 sounds bad.</h4>
+<p>Try increasing the size of the sound queue in the Sound Menu.&nbsp;
+Making the size 6144 bytes usually works.&nbsp; This may be necessary
+on older computers.&nbsp; <br>
+</p>
+<p>Turn off the sound in the Sound Menu.</p>
+<h4>Warranty</h4>
+<p>BECAUSE THE PROGRAM IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
+FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN
+OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
+PROVIDE THE PROGRAM "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
+EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
+ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH
+YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL
+NECESSARY SERVICING, REPAIR OR CORRECTION.</p>
+<p>IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN
+WRITING WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY
+AND/OR REDISTRIBUTE THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU
+FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR
+CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE
+PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING
+RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A
+FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF
+SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
+DAMAGES.</p>
+<h4>Tools</h4>
+<p>The Windows version of z26 is built with MinGW/Msys, with GCC
+version 3.2 and NASM.</p>
+<p>Fonts were designed with CSEDIT by Matt Pritchard.</p>
+<p>Documentation was made with SeaMonkey.<br>
+</p>
+<h4>Credits</h4>
+<p>Eckhard Stolberg has made contributions to z26 that are too numerous
+to count. He has been involved since the very early days and the high
+quality emulation that z26 provides would certainly not have been
+possible without his participation.</p>
+<p>Brian Watson made the 32-bit version of z26 possible and laid the
+foundation for the GUI.</p>
+<pre>     Paul Robson -- Wrote original A26.<br>       Ron Fries -- Original TIA sound emulation.<br>Ettore Perazzoli -- 6502 undocumented instructions.<br>   Andreas Boose -- Also 6502 undocumented instructions.<br>Wolfgang Lorentz -- 6502 diagnostics.<br>     Bob Colbert -- Object wrapping.<br>    Piero Cavina -- Multiple missiles.<br>     Erik Mooney -- HMOVE blanks.<br>    Kevin Horton -- Bankswitching and Quadrun voice.<br>       Dan Boris -- Atari 2600 schematics.<br>  Matt Pritchard -- Font design tools.<br>      Matt Conte -- Quadrun voice.<br>     John Dullea -- Fast elegant graphics and Pitfall II.<br>   Bradford Mott -- Object positioning (weird HMOVE).<br>   Chris Wilkson -- Pitfall II.<br>     Lee Krueger -- Kid Vid support, rare carts, and documentation.<br> Thomas Jentzsch -- Trace mode, Kid Vid support and fast video routines.<br> Henning Mueller -- CompuMate.<br> Christian Bogey -- SECAM colors.<br>   Oliver Achten -- PAL colors.<br>    Andrew Davie -- Extended Tigervision bankswitch demos.<br>     Paul Slocum -- Provided EF bankswitch demo.<br>       Billy Eno -- Provided interleaved display demo.<br>    Adam Wozniac -- Helped with TIA sound polynomials.<br>   Matt Matthews -- Linux consulting.<br>    Brian Watson -- Helped with Linux port, ASM-code, GUI framework.<br> James Wilkinson -- Helped with BeOS port.<br><br>Eckhard Stolberg -- Contributions too numerous to mention.</pre>
+<p> Thanks to everyone else who has helped with comments, suggestions,
+bug reports, information, supplies and testing:</p>
+<p>Junky, Kevin White, The Boatwrights, Miguel Guzman Centeno, Peter,
+Jay C. Heil, Zoop, Rob Anderson, Zophar, Peter Vogels, Stephan, Xahji,
+Ricardo Martinez Garza, Stephano Camarri, Peter Betz, Piero Cavina
+(Oystron! Helped find multiple missile bug.), Nick S. Bensema, Erik
+Mooney, Glenn Saunders, Abraham Velazquez, Christian Schaefers
+(Z-Type), Freirias, Brian Deuel, Chris Platt, Israel Geron T., jose
+roberto rodrigues, Dan Meyer, Martin Schaefer, Ummagumma, Digitoxin,
+Michael Walden Jr. (The most elaborate suggestion list!), Gilamonster,
+Gerald Gorman, Francisco Athens, Lex Nesta, Ben, Gerald Gray, Jose
+Pedro, Tadd Underhill, Ejber Ozkan, Lord Mhath, Larry Scott, Brad
+Komgenick, Michael J. Mika, Ettore Perazzoli (VICE), Stephan Eder,
+Andreas Boose (VICE), David Gray, jimnav, Dr. Simone Zanella, Brad
+Thomas, Jeff Cockayne, Sam Miller, EmrldSword, justin martin, Justin
+Scott, Jason Berk, Luis Graterol, Ricardo Soto, Brian Smith, Sam Hard,
+Keith Merizalde, Nate Marigoni, Kurt Woloch, GreenImp, M. C. Silvius,
+Matthew Conte (Nofrendo), Jason Barisoff, Rick Vasquez, Marco Turconi,
+Kalik, Christopher Warren, Curt Vendel, Roberto Sidney Teixeira,
+raverpup, iCeFiRe, Chism, Sascha Reuter, Craig Tildesley, Michael
+Prentler, Cody B, Thom Rechak, Cam, Jason, Keith Weisshar, Robin
+Gravel, Thom Bone, Mrfriend, Edwin Helsloot, C J Biro, Michael Monson,
+Justin Rodriguez, Francesco Azzurri, Greg Bendokus, Bruce Clarke, John
+Dullea (PCAE), Tim Boston, Chris Ainsley, Ricardo Henrique Tabone, and
+Seth Kintigh.</p>
+<p>And thanks to Len Shikowitz for *complaining* well beyond the call
+of duty. Definitely "the most obstinate, yet sincere, tester." :)</p>
+<p>At some point I stopped keeping the list of everyone who have sent
+me suggestions up to date. I apologize for that. But thanks to the
+folks who have continued to send in suggestions, even though they
+didn't make the list.</p>
+<p>Thanks!!!</p>
+</div>
+</body>
+</html>
