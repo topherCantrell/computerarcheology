@@ -9,7 +9,7 @@
 || 0084      || m84                || ||
 || 0085      || m85                || ||
 || 0086      || frameCounter       || Incremented every TV frame ||
-|| 0087      || m87                || ||
+|| 0087      || maskRightNumber    || Mask to turn off right number (0 for off, FF for on) ||
 || 0088      || m88                || ?? F00F something to do with console switch inputs ||
 || 0089      || m89                || ||
 || 008A      || m8A                || ||
