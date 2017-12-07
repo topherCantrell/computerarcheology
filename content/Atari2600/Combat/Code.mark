@@ -118,7 +118,7 @@ F089: A4 E2         LDY   $E2                 ; 45  6 {-ram_mE2} Left digit
 F08B: B9 C5 F5      LDA   $F5C5,Y             ; 45  9 Digit graphics
 F08E: 29 F0         AND   #$F0                ; 45 13 Only the left pattern
 F090: 85 DE         STA   $DE                 ; 45 15 {-ram_mDE} New graphics
-F092: A4 E0         LDY   $E0                 ; 45 18 {-ram_mE0} Right digit
+F092: A4 E0         LDY   $E0                 ; 45 18 {-ram_mE0} Right digit (graphics pointer)
 F094: B9 C5 F5      LDA   $F5C5,Y             ; 45 21 Digit graphics
 F097: 29 0F         AND   #$0F                ; 45 25 Only the right
 F099: 05 DE         ORA   $DE                 ; 45 27 {-ram_mDE} Combine ...
@@ -128,44 +128,44 @@ F09D: A5 DF         LDA   $DF                 ; 45 33 {-ram_mDF} Digit graphics 
 F09F: 85 0E         STA   $0E                 ; 45 36 {-hard_PF1} Draw the calculated right number
 F0A1: A4 E3         LDY   $E3                 ; 45 39 {-ram_mE3} Left digit
 F0A3: B9 C5 F5      LDA   $F5C5,Y             ; 45 42 Get graphics bits
-; ?? The playfield is flipped. F0 might be the LSB
 F0A6: 29 F0         AND   #$F0                ; 45 46 Only keep the upper (MSB) digit
-F0A8: 85 DF         STA   $DF                 ; 45 48 {-ram_mDF}
-F0AA: A4 E1         LDY   $E1                 ; 45 51 {-ram_mE1}
+F0A8: 85 DF         STA   $DF                 ; 45 48 {-ram_mDF} New graphics
+F0AA: A4 E1         LDY   $E1                 ; 45 51 {-ram_mE1} Right number right digit
 F0AC: B9 C5 F5      LDA   $F5C5,Y             ; 45 54 Get graphics bits
-F0AF: 25 87         AND   $87                 ; 45 58 {-ram_m87} ?? blank the right number completely ??
+F0AF: 25 87         AND   $87                 ; 45 58 {-ram_m87} Blank the right number if in game-select mode
 F0B1: 85 02         STA   $02                 ; 45 61 {-hard_WSYNC} Wait for next row
 ; 
-F0B3: 05 DF         ORA   $DF                 ; 46  0 {-ram_mDF}
-F0B5: 85 DF         STA   $DF                 ; 46  3 {-ram_mDF}
-F0B7: A5 DE         LDA   $DE                 ; 46  6 {-ram_mDE}
-F0B9: 85 0E         STA   $0E                 ; 46  9 {-hard_PF1}
+F0B3: 05 DF         ORA   $DF                 ; 46  0 {-ram_mDF} Combine digits
+F0B5: 85 DF         STA   $DF                 ; 46  3 {-ram_mDF} New graphics
+F0B7: A5 DE         LDA   $DE                 ; 46  6 {-ram_mDE} Draw ...
+F0B9: 85 0E         STA   $0E                 ; 46  9 {-hard_PF1} ... left number ?? figure out the timings of these draws
 F0BB: CA            DEX                       ; 46 12 All digit rows done?
 F0BC: 30 0F         BMI   $F0CD               ; 46 14 Yes ... done
 F0BE: E6 E0         INC   $E0                 ; 46 16 {-ram_mE0} Next row in left digit LSD
 F0C0: E6 E2         INC   $E2                 ; 46 21 {-ram_mE2} Next row in left digit MSD
 F0C2: E6 E1         INC   $E1                 ; 46 26 {-ram_mE1} Next row in right digit LSD
 F0C4: E6 E3         INC   $E3                 ; 46 31 {-ram_mE3} Next row in right digit MSD
-F0C6: A5 DF         LDA   $DF                 ; 46 36 {-ram_mDF}   ??
-F0C8: 85 0E         STA   $0E                 ; 46 39 {-hard_PF1}  ??
+F0C6: A5 DF         LDA   $DF                 ; 46 36 {-ram_mDF}   Draw ...
+F0C8: 85 0E         STA   $0E                 ; 46 39 {-hard_PF1}  ... right number ?? figure out the timings of these draws
 F0CA: 4C 83 F0      JMP   $F083               ; 46 42 Back for all rows of digits
 ;
+; Draw the play area
 F0CD: A9 00         LDA   #$00                ; 54 17 Clear the score for ...
 F0CF: 85 0E         STA   $0E                 ; 54 19 {-hard_PF1} ... next row
 F0D1: 85 02         STA   $02                 ; 54 22 {-hard_WSYNC} Make a blank line
 ;
 F0D3: A9 05         LDA   #$05                ; 55  0 Playfield over players and ...
 F0D5: 85 0A         STA   $0A                 ; 55  2 {-hard_CTRLPF} ... reflect playfield
-F0D7: A5 D6         LDA   $D6                 ; 55  5 {-ram_mD6}
-F0D9: 85 06         STA   $06                 ; 55  8 {-hard_COLUP0}
-F0DB: A5 D7         LDA   $D7                 ; 55 11 {-ram_mD7}
-F0DD: 85 07         STA   $07                 ; 55 14 {-hard_COLUP1}
+F0D7: A5 D6         LDA   $D6                 ; 55  5 {-ram_mD6} Set color ...
+F0D9: 85 06         STA   $06                 ; 55  8 {-hard_COLUP0} ... player 0
+F0DB: A5 D7         LDA   $D7                 ; 55 11 {-ram_mD7} Set color ...
+F0DD: 85 07         STA   $07                 ; 55 14 {-hard_COLUP1} ... player 1
 ;
 ; Top of loop
 ; 
 ; Using the stackpointer here to speed up the writes.
 ; We start pointing to ENAM1 and work lower in memory.
-; This is the playing area where th players and missiles are.
+; This is the playing area where the players and missiles are.
 F0DF: A2 1E         LDX   #$1E                ; 55 17 Pointer to ...
 F0E1: 9A            TXS                       ; 55 19 ... ENAM1
 ;
@@ -207,16 +207,14 @@ F105: 08            PHP                       ; Turn missile 0 on or off
 ;
 F106: A5 B4         LDA   $B4                 ; {-ram_scanlineNumber} Current row
 F108: 10 02         BPL   $F10C               ;
-F10A: 49 F8         EOR   #$F8                
-F10C: C9 20         CMP   #$20                ; ?? 32 per picture ??
-F10E: 90 04         BCC   $F114               ; ?? skip playfield graphics?
+F10A: 49 F8         EOR   #$F8                ; ?? makes a negative to reflect vertically?
+F10C: C9 20         CMP   #$20                ; 
+F10E: 90 04         BCC   $F114               ; Use the Y we got last time
 ; Playfield graphics are 8-rows tall
 F110: 4A            LSR   A                   ; Divide ...
 F111: 4A            LSR   A                   ; ... by ...
 F112: 4A            LSR   A                   ; ... 8
 F113: A8            TAY                       ; Graphics offset to Y
-;
-; Player 1
 F114: A5 A5         LDA   $A5                 ; {-ram_player1row} Player 1's row number
 F116: 38            SEC                       ; Clear the borrow flag
 F117: E5 B4         SBC   $B4                 ; {-ram_scanlineNumber} Compare the row numbers
