@@ -493,6 +493,11 @@ public class Z26Frame {
     }
     
     public static void main(String [] args) throws Exception {
+    	
+    	if(args.length==0) {
+    		String [] targs = {"content/Atari2600/Combat/combatZ26.log","30"};
+    		args = targs;
+    	}
         
     	int argsPos = 0;
     	
