@@ -110,44 +110,70 @@ F07F: 85 DE         STA   $DE                 ; {-ram_mDE} ... next pattern for 
 F081: 85 DF         STA   $DF                 ; {-ram_mDF} Clear next pattern for right two digits
 ;
 ; Loop for drawing digits
-; Lines 45 through 53 (9 rows)
-F083: 85 02         STA   $02                 ;  -  - {-hard_WSYNC} Wait for next row
-F085: A5 DE         LDA   $DE                 ; 45  0 {-ram_mDE} Digit graphics calculated last row
-F087: 85 0E         STA   $0E                 ; 45  3 {-hard_PF1} Draw the calculated left number
-F089: A4 E2         LDY   $E2                 ; 45  6 {-ram_mE2} Left digit
-F08B: B9 C5 F5      LDA   $F5C5,Y             ; 45  9 Digit graphics
-F08E: 29 F0         AND   #$F0                ; 45 13 Only the left pattern
-F090: 85 DE         STA   $DE                 ; 45 15 {-ram_mDE} New graphics
-F092: A4 E0         LDY   $E0                 ; 45 18 {-ram_mE0} Right digit (graphics pointer)
-F094: B9 C5 F5      LDA   $F5C5,Y             ; 45 21 Digit graphics
-F097: 29 0F         AND   #$0F                ; 45 25 Only the right
-F099: 05 DE         ORA   $DE                 ; 45 27 {-ram_mDE} Combine ...
-F09B: 85 DE         STA   $DE                 ; 45 30 {-ram_mDE} ... the graphics (for next row)
+; From Z26 log for frame 30
+; Lines 42 through 53
 ;
-F09D: A5 DF         LDA   $DF                 ; 45 33 {-ram_mDF} Digit graphics calculated last row
-F09F: 85 0E         STA   $0E                 ; 45 36 {-hard_PF1} Draw the calculated right number
-F0A1: A4 E3         LDY   $E3                 ; 45 39 {-ram_mE3} Left digit
-F0A3: B9 C5 F5      LDA   $F5C5,Y             ; 45 42 Get graphics bits
-F0A6: 29 F0         AND   #$F0                ; 45 46 Only keep the upper (MSB) digit
-F0A8: 85 DF         STA   $DF                 ; 45 48 {-ram_mDF} New graphics
-F0AA: A4 E1         LDY   $E1                 ; 45 51 {-ram_mE1} Right number right digit
-F0AC: B9 C5 F5      LDA   $F5C5,Y             ; 45 54 Get graphics bits
-F0AF: 25 87         AND   $87                 ; 45 58 {-ram_m87} Blank the right number if in game-select mode
-F0B1: 85 02         STA   $02                 ; 45 61 {-hard_WSYNC} Wait for next row
+; 42|.....................*.|.....................................................| At F083
+;
+; Loop from F083 to F0CA
+; 43|...1...................|.............1........................*..............| First pass - blanks
+; 44|.........1.............|................1.....*..............................| Digit row 1
+;
+; 45|...1...................|.............1........................*..............| Duplicate row 1
+; 46|.........1.............|................1.....*..............................| Digit row 2
+;
+; 47|...1...................|.............1........................*..............| Duplicate row 2
+; 48|.........1.............|................1.....*..............................| Digit row 3
+;
+; 49|...1...................|.............1........................*..............| Duplicate row 3
+; 50|.........1.............|................1.....*..............................| Digit row 4
+;
+; 51|...1...................|.............1........................*..............| Duplicate row 4
+; 52|.........1.............|................1.....*..............................| Digit row 5
+;
+; 53|...1...................|.............1........................*..............| Duplicate row 5
+;
+; 54|.........1.........1..*|.....................................................| Digit ... aborted at F0BC
+;
+F083: 85 02         STA   $02                 ; 42 21 {-hard_WSYNC} Wait for next row
+F085: A5 DE         LDA   $DE                 ; 43  0 {-ram_mDE} Digit graphics calculated last row
+F087: 85 0E         STA   $0E                 ; 43  3 ** {-hard_PF1} Duplicate the left number from last row
+F089: A4 E2         LDY   $E2                 ; 43  6 {-ram_mE2} Index to left number left digit
+F08B: B9 C5 F5      LDA   $F5C5,Y             ; 43  9 Get graphics for digit
+F08E: 29 F0         AND   #$F0                ; 43 13 Only the left part of the pattern
+F090: 85 DE         STA   $DE                 ; 43 15 {-ram_mDE} New graphics for left number
+F092: A4 E0         LDY   $E0                 ; 43 18 {-ram_mE0} Index to left number right digit
+F094: B9 C5 F5      LDA   $F5C5,Y             ; 43 21 Get graphics for digit
+F097: 29 0F         AND   #$0F                ; 43 25 Only the right part of the pattern
+F099: 05 DE         ORA   $DE                 ; 43 27 {-ram_mDE} Combine left and right digits
+F09B: 85 DE         STA   $DE                 ; 43 30 {-ram_mDE} We'll use it next row
+;
+F09D: A5 DF         LDA   $DF                 ; 43 33 {-ram_mDF} Digit graphics calculated last row
+F09F: 85 0E         STA   $0E                 ; 43 36 ** {-hard_PF1} Duplicate the right number from last row
+F0A1: A4 E3         LDY   $E3                 ; 43 39 {-ram_mE3} Index to right number left digit
+F0A3: B9 C5 F5      LDA   $F5C5,Y             ; 43 42 Get graphics for digit
+F0A6: 29 F0         AND   #$F0                ; 43 46 Only the left part of the pattern
+F0A8: 85 DF         STA   $DF                 ; 43 48 {-ram_mDF} New graphics for right number
+F0AA: A4 E1         LDY   $E1                 ; 43 51 {-ram_mE1} Index to the right number right digit
+F0AC: B9 C5 F5      LDA   $F5C5,Y             ; 43 54 Get graphics for digit
+F0AF: 25 87         AND   $87                 ; 43 58 {-ram_m87} Blank the right number right digit if in game-select
+F0B1: 85 02         STA   $02                 ; 43 61 {-hard_WSYNC} Wait for next row
 ; 
-F0B3: 05 DF         ORA   $DF                 ; 46  0 {-ram_mDF} Combine digits
-F0B5: 85 DF         STA   $DF                 ; 46  3 {-ram_mDF} New graphics
-F0B7: A5 DE         LDA   $DE                 ; 46  6 {-ram_mDE} Draw ...
-F0B9: 85 0E         STA   $0E                 ; 46  9 {-hard_PF1} ... left number ?? figure out the timings of these draws
-F0BB: CA            DEX                       ; 46 12 All digit rows done?
-F0BC: 30 0F         BMI   $F0CD               ; 46 14 Yes ... done
-F0BE: E6 E0         INC   $E0                 ; 46 16 {-ram_mE0} Next row in left digit LSD
-F0C0: E6 E2         INC   $E2                 ; 46 21 {-ram_mE2} Next row in left digit MSD
-F0C2: E6 E1         INC   $E1                 ; 46 26 {-ram_mE1} Next row in right digit LSD
-F0C4: E6 E3         INC   $E3                 ; 46 31 {-ram_mE3} Next row in right digit MSD
-F0C6: A5 DF         LDA   $DF                 ; 46 36 {-ram_mDF}   Draw ...
-F0C8: 85 0E         STA   $0E                 ; 46 39 {-hard_PF1}  ... right number ?? figure out the timings of these draws
-F0CA: 4C 83 F0      JMP   $F083               ; 46 42 Back for all rows of digits
+F0B3: 05 DF         ORA   $DF                 ; 44  0 {-ram_mDF} Combine left and right digits
+F0B5: 85 DF         STA   $DF                 ; 44  3 {-ram_mDF} We'll use it later on this row
+F0B7: A5 DE         LDA   $DE                 ; 44  6 {-ram_mDE} Get the newly calculated graphics
+F0B9: 85 0E         STA   $0E                 ; 44  9 ** {-hard_PF1} Draw the new left number
+F0BB: CA            DEX                       ; 44 12 All digit rows done?
+F0BC: 30 0F         BMI   $F0CD               ; 44 14 Yes ... done
+; On the last row we write a bogus value for the first number, but we quickly clear it out at F0CD before
+; it gets drawn
+F0BE: E6 E0         INC   $E0                 ; 44 16 {-ram_mE0} Next row in left digit LSD
+F0C0: E6 E2         INC   $E2                 ; 44 21 {-ram_mE2} Next row in left digit MSD
+F0C2: E6 E1         INC   $E1                 ; 44 26 {-ram_mE1} Next row in right digit LSD
+F0C4: E6 E3         INC   $E3                 ; 44 31 {-ram_mE3} Next row in right digit MSD
+F0C6: A5 DF         LDA   $DF                 ; 44 36 {-ram_mDF} Get the newly calculated graphics
+F0C8: 85 0E         STA   $0E                 ; 44 39 ** {-hard_PF1}  Draw the right number
+F0CA: 4C 83 F0      JMP   $F083               ; 44 42 Back for all rows of digits
 ;
 ; Draw the play area
 F0CD: A9 00         LDA   #$00                ; 54 17 Clear the score for ...
