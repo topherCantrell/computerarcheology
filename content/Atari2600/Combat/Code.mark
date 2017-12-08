@@ -180,6 +180,9 @@ F0CD: A9 00         LDA   #$00                ; 54 17 Clear the score for ...
 F0CF: 85 0E         STA   $0E                 ; 54 19 {-hard_PF1} ... next row
 F0D1: 85 02         STA   $02                 ; 54 22 {-hard_WSYNC} Make a blank line
 ;
+; 55|..W.....C.....c........|...................*.................................|
+; 56|x..........u..........t|...................................................y.|
+;
 F0D3: A9 05         LDA   #$05                ; 55  0 Playfield over players and ...
 F0D5: 85 0A         STA   $0A                 ; 55  2 {-hard_CTRLPF} ... reflect playfield
 F0D7: A5 D6         LDA   $D6                 ; 55  5 {-ram_mD6} Set color ...
@@ -188,29 +191,37 @@ F0DB: A5 D7         LDA   $D7                 ; 55 11 {-ram_mD7} Set color ...
 F0DD: 85 07         STA   $07                 ; 55 14 {-hard_COLUP1} ... player 1
 ;
 ; Top of loop
+;
+; Same loop for the rest of the screen, but at 155 we are in the middle of the screen
+; where the players are. Let's pick up the video timing at the top of the loop midway
+; across the scanline 155.
+155|.........0.......1.....|..2.........................................*........|
+156|X..........u..........t|....................................................Y|
+157|.........0.......1.....|..2.........................................*........|
+158|X..........u..........t|....................................................y|
 ; 
 ; Using the stackpointer here to speed up the writes.
 ; We start pointing to ENAM1 and work lower in memory.
 ; This is the playing area where the players and missiles are.
-F0DF: A2 1E         LDX   #$1E                ; 55 17 Pointer to ...
-F0E1: 9A            TXS                       ; 55 19 ... ENAM1
+F0DF: A2 1E         LDX   #$1E                ; 155 42 Pointer to ...
+F0E1: 9A            TXS                       ; 155 44 ... ENAM1
 ;
 ;Player 0
 ;
-F0E2: 38            SEC                       ; 55 21 Clear the borrow flag
-F0E3: A5 A4         LDA   $A4                 ; 55 23 {-ram_player0row} Player 0's row number
-F0E5: E5 B4         SBC   $B4                 ; 55 26 {-ram_scanlineNumber} Compare it to the current row
+F0E2: 38            SEC                       ; 155 46 Clear the borrow flag
+F0E3: A5 A4         LDA   $A4                 ; 155 48 {-ram_player0row} Player 0's row number
+F0E5: E5 B4         SBC   $B4                 ; 155 51 {-ram_scanlineNumber} Compare it to the current row
 ; To speed up the lookup, the players graphics are interleaved. Even rows
 ; are for player 0 and odd rows are for player 1.
-F0E7: 29 FE         AND   #$FE                ; 55 29 Even is for player 0
-F0E9: AA            TAX                       ; 55 31 Hold the graphics pointer
-F0EA: 29 F0         AND   #$F0                ; 55 33 Within the 16 row window?
-F0EC: F0 04         BEQ   $F0F2               ; 55 35 Yes ... draw the player
-F0EE: A9 00         LDA   #$00                ; 55 37 No player 0 graphics on this row 
-F0F0: F0 02         BEQ   $F0F4               ; JMP $F0F4
-F0F2: B5 BD         LDA   $BD,X               ; {-ram_playerXpicture} Get the graphics for this row
-F0F4: 85 02         STA   $02                 ; {-hard_WSYNC} Wait for next row
-F0F6: 85 1B         STA   $1B                 ; {-hard_GRP0} Draw player 0 on this row
+F0E7: 29 FE         AND   #$FE                ; 155 54 Even is for player 0
+F0E9: AA            TAX                       ; 155 56 Hold the graphics pointer
+F0EA: 29 F0         AND   #$F0                ; 155 68 Within the 16 row window?
+F0EC: F0 04         BEQ   $F0F2               ; 155 60 Yes ... draw the player
+F0EE: A9 00         LDA   #$00                ;        No player 0 graphics on this row 
+F0F0: F0 02         BEQ   $F0F4               ;        JMP $F0F4
+F0F2: B5 BD         LDA   $BD,X               ; 155 63 {-ram_playerXpicture} Get the graphics for this row
+F0F4: 85 02         STA   $02                 ; 155 67 {-hard_WSYNC} Wait for next row
+F0F6: 85 1B         STA   $1B                 ; 156  0 {-hard_GRP0} Draw player 0 on this row
 ;
 ; Missile 1
 ;
