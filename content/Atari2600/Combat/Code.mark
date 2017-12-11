@@ -49,7 +49,8 @@ F00F: 85 88         STA   $88                 ; {-ram_m88} ?? Is this the deboun
 
 F011: 20 A3 F1      JSR   $F1A3               ;
 
-; Main game loop
+# Main Game Loop
+
 main:
 F014: 20 32 F0      JSR   $F032               ; {StartTVFrame} Start the next TV frame
 F017: 20 57 F1      JSR   $F157               ; ?? switches ??
@@ -61,6 +62,8 @@ F026: 20 A9 F2      JSR   $F2A9               ;
 F029: 20 F2 F1      JSR   $F1F2               ;
 F02C: 20 54 F0      JSR   $F054               ; {DrawVisible}
 F02F: 4C 14 F0      JMP   $F014               ; {main} Back to top of main loop
+
+# Start the TV Frame
 
 StartTVFrame:
 ; Increment the frame counter and trigger the vertical sync.
@@ -83,6 +86,8 @@ F04E: A9 2B         LDA   #$2B                ; Set timer to 43*64 = 2752 machin
 F050: 8D 96 02      STA   $0296               ; {-hard_TIM64T} ... cycles 2752/(228/3) = 36 scanlines
 F053: 60            RTS                       ; Done
 
+# Draw the Visible Screen
+
 DrawVisible:
 ;
 ; TODO Blurb on Frame 30 and the key
@@ -104,9 +109,9 @@ F06E: A6 DC         LDX   $DC                 ; {-ram_mDC}
 F070: 85 02         STA   $02                 ; {-hard_WSYNC}
 F072: CA            DEX                       ;
 F073: D0 FB         BNE   $F070               ;
-F075: A5 DC         LDA   $DC                 ; {-ram_mDC}
+F075: A5 DC         LDA   $DC                 ; {-ram_mDC} ??
 F077: C9 0E         CMP   #$0E                
-F079: F0 52         BEQ   $F0CD               ;
+F079: F0 52         BEQ   $F0CD               ; Skip drawing the top numbers
 F07B: A2 05         LDX   #$05                ; 5 rows per digit
 F07D: A9 00         LDA   #$00                ; Clear ...
 F07F: 85 DE         STA   $DE                 ; {-ram_nextLeft} ... next pattern for left two digits
@@ -314,18 +319,19 @@ F154: 85 0F         STA   $0F                 ; 259 59 {-hard_PF2} Turn off play
 F156: 60            RTS                       ; 259 62 Done
 
 ; ?? Called from main loop
-F157: AD 82 02      LDA   $0282               ; {-hard_SWCHB}
-F15A: 4A            LSR   A                   
-F15B: B0 13         BCS   $F170               ;
-F15D: A9 0F         LDA   #$0F                
-F15F: 85 87         STA   $87                 ; {-ram_maskRightNumber}
+F157: AD 82 02      LDA   $0282               ; {-hard_SWCHB} Console switches
+F15A: 4A            LSR   A                   ; RESET switch to carry
+F15B: B0 13         BCS   $F170               ; 1 means NOT pressed ... skip
+F15D: A9 0F         LDA   #$0F                ; No longer blanking ...
+F15F: 85 87         STA   $87                 ; {-ram_maskRightNumber} ... the right digit for P1 score
 F161: A9 FF         LDA   #$FF                
 F163: 85 88         STA   $88                 ; {-ram_m88}
 F165: A9 80         LDA   #$80                
 F167: 85 DD         STA   $DD                 ; {-ram_mDD}
 F169: A2 E6         LDX   #$E6                
 F16B: 20 BD F5      JSR   $F5BD               ;
-F16E: F0 60         BEQ   $F1D0               ;
+F16E: F0 60         BEQ   $F1D0               ; JMP F1D0
+;
 F170: A0 02         LDY   #$02                
 F172: A5 DD         LDA   $DD                 ; {-ram_mDD}
 F174: 25 88         AND   $88                 ; {-ram_m88}
@@ -343,11 +349,12 @@ F18A: 85 89         STA   $89                 ; {-ram_m89}
 F18C: E6 DD         INC   $DD                 ; {-ram_mDD}
 F18E: D0 02         BNE   $F192               ;
 F190: 85 88         STA   $88                 ; {-ram_m88}
-F192: AD 82 02      LDA   $0282               ; {-hard_SWCHB}
-F195: 29 02         AND   #$02                
-F197: F0 04         BEQ   $F19D               ;
+F192: AD 82 02      LDA   $0282               ; {-hard_SWCHB} Console switches
+F195: 29 02         AND   #$02                ; SELECT pressed?
+F197: F0 04         BEQ   $F19D               ; 0 means YES
 F199: 85 89         STA   $89                 ; {-ram_m89}
-F19B: D0 54         BNE   $F1F1               ;
+F19B: D0 54         BNE   $F1F1               ; JMP F1F1
+;
 F19D: 24 89         BIT   $89                 ; {-ram_m89}
 F19F: 30 50         BMI   $F1F1               ;
 F1A1: E6 80         INC   $80                 ; {-ram_m80}
@@ -937,7 +944,9 @@ F5C4: 60            RTS                       ; No ... back for more
 
 ; -----------------------------------------------------------------------------------------------------------------------------
 
-# Data From Here Down
+# Data Area
+
+All data from here down
 
 ## Numbers `visual`
 
@@ -1094,8 +1103,7 @@ F6C7: 00 83 7F 3E 1E 0C 0C 0C
     data-address="F6CF"
     data-gridX="8"
     data-gridY="8"
-    data-colors='["#BBD46E","#8C2A44"]'> 
-    data-command="0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7">
+    data-command="#AIRPLAYFIELD,0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7">
 </canvas>
 }}}        
 F6CF: 00 8E 84 FF FF 04 0E 00
@@ -1260,6 +1268,8 @@ F7C9: F6 F6 F6 ; Picture pointers MSB
 F7CC: 75 75 75 9A  ; PF0 LSB (add 4 ??why??)
 F7D0: 81 99 AA 9D  ; PF1 LSB (add 4)
 F7D4: 8D 99 B6 9D  ; PF2 LSB (add 4)
+
+## Playfields `visual`
 
 {{{html
 <canvas width="410" height="250"
