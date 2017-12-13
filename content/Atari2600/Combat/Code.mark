@@ -22,18 +22,29 @@
 </canvas>
 <canvas width="0" height="0"
        data-colorsName="TANKPLAYFIELD"
-       data-colors='["#BBD46E","#8C2A44"]'>
+       data-colors='["#BBD46E","#8C2A44"]'>       
 </canvas>
 <canvas width="0" height="0"
-       data-colorsName="AIRPLAYFIELD"
-       data-colors='["#000088","#90B4EC"]'>
+       data-colorsName="PLANEPLAYFIELD"
+       data-colors='["#000088","#90B4EC"]'>       
 </canvas>
 <canvas width="0" height="0"
-       data-colorsName="SCORE"
-       data-colors='["#BBD46E","#8C2A44"]'>
+       data-colorsName="JETPLAYFIELD"
+       data-colors='["#783CA4","#689CC0"]'>
+</canvas>
+<canvas width="0" height="0"
+       data-colorsName="TANKP0"
+       data-colors='["#BBD46E","#B03C3C"]'>
+</canvas>
+<canvas width="0" height="0"
+       data-colorsName="PLANEP0"
+       data-colors='["#000088","#9CCC7C"]'>
+</canvas>
+<canvas width="0" height="0"
+       data-colorsName="JETP0"
+       data-colors='["#783CA4","#6E8454"]'>
 </canvas>
 
-</canvas>
 }}}
 
 F000: 78            SEI                       ; Turn off interrupts 
@@ -956,7 +967,7 @@ All data from here down
     data-address="F5C5"
     data-gridX="8"
     data-gridY="5"
-    data-command="#SCORE,0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7,+x,8,+x,9">
+    data-command="#TANKPLAYFIELD,0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7,+x,8,+x,9">
 </canvas>
 }}}
 F5C5: 0E 0A 0A 0A 0E  ;  0
@@ -1063,7 +1074,7 @@ F647: D5 AA DA DA DB 6D EE EE
     data-address="F64F"
     data-gridX="8"
     data-gridY="8"
-    data-command="0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7">
+    data-command="#TANKP0,0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7">
 </canvas>
 }}}
 F64F: 00 FC FC 38 3F 38 FC FC
@@ -1083,7 +1094,7 @@ F687: 38 1E DF 3E 38 F8 7C 18
     data-address="F68F"
     data-gridX="8"
     data-gridY="8"
-    data-command="0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7">
+    data-command="#JETP0,0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7">
 </canvas>
 }}}                 
 F68F: 60 70 78 FF 78 70 60 00
@@ -1103,7 +1114,7 @@ F6C7: 00 83 7F 3E 1E 0C 0C 0C
     data-address="F6CF"
     data-gridX="8"
     data-gridY="8"
-    data-command="#AIRPLAYFIELD,0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7">
+    data-command="#PLANEP0,0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7">
 </canvas>
 }}}        
 F6CF: 00 8E 84 FF FF 04 0E 00
@@ -1349,7 +1360,7 @@ F7D4: 8D 99 B6 9D  ; PF2 LSB (add 4)
         data-gridPad="2"
         data-gridX="20"
         data-gridY="12"
-        data-command="#AIRPLAYFIELD,3">
+        data-command="#PLANEPLAYFIELD,3">
 </canvas> 
 <canvas width="325" height="250"
         data-getTileDataFunction="Combat.getPlayfield"
@@ -1359,7 +1370,7 @@ F7D4: 8D 99 B6 9D  ; PF2 LSB (add 4)
         data-gridPad="1"
         data-gridX="20"
         data-gridY="12"
-        data-command="#AIRPLAYFIELD,3,H3,*,V3,VH3">
+        data-command="#PLANEPLAYFIELD,3,H3,*,V3,VH3">
 </canvas><br> 
 }}}
 
