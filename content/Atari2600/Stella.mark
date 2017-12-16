@@ -21,7 +21,7 @@ in RAM.
 {{{memory
 || 0000r    || CXM0P               || XX...... Collisions D7=M0/P1, D6=M0/P0 ||
 || 0001r    || CXM1P               || XX...... Collisions D7=M1/P0, D6=M1/P1 ||
-|| 0002r    || CXP0FB              || XX...... Collisions D7=M0/PF, D6=P0/BL ||
+|| 0002r    || CXP0FB              || XX...... Collisions D7=P0/PF, D6=P0/BL ||
 || 0003r    || CXP1FB              || XX...... Collisions D7=P1/PF, D6=P1/BL ||
 || 0004r    || CXM0FB              || XX...... Collisions D7=M0/PF, D6=M0/BL ||
 || 0005r    || CXM1FB              || XX...... Collisions D7=M1/PF, D6=M1/BL ||
@@ -83,6 +83,28 @@ in RAM.
 || 002Aw    || HMOVE               || strobe   Executes horizontal motions ||
 || 002Bw    || HMCLR               || strobe   Clears all horizontal motion registers ||
 || 002Cw    || CXCLR               || strobe   Clears all collision registers ||
+}}}
+
+# TIA (read ghost)
+
+These are the same registers as above but accessed with a ghost address to allow
+for different names.
+
+{{{memory
+|| 0030r    || CXM0P               || XX...... Collisions D7=M0/P1, D6=M0/P0 ||
+|| 0031r    || CXM1P               || XX...... Collisions D7=M1/P0, D6=M1/P1 ||
+|| 0032r    || CXP0FB              || XX...... Collisions D7=P0/PF, D6=P0/BL ||
+|| 0033r    || CXP1FB              || XX...... Collisions D7=P1/PF, D6=P1/BL ||
+|| 0034r    || CXM0FB              || XX...... Collisions D7=M0/PF, D6=M0/BL ||
+|| 0035r    || CXM1FB              || XX...... Collisions D7=M1/PF, D6=M1/BL ||
+|| 0036r    || CXBLPF              || X....... Collisions D7=BL/PF           ||
+|| 0037r    || CXPPMM              || XX...... Collisions D7=P0/P1, D6=M0/M1 ||
+|| 0038r    || INPT0               || X....... Paddle input 0 ||
+|| 0039r    || INPT1               || X....... Paddle input 1 ||
+|| 003Ar    || INPT2               || X....... Paddle input 2 ||
+|| 003Br    || INPT3               || X....... Paddle input 3 ||
+|| 003Cr    || INPT4               || X....... Latched inputs (joystick buttons) ||
+|| 003Dr    || INPT5               || X....... Latched inputs (joystick buttons) ||
 }}}
 
 # PIA

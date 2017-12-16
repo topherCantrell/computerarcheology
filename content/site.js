@@ -208,7 +208,8 @@
 	             {"copy": "Combat.js"},
 	             {"mark": "Combat.mark", "out": "index.html"},
 	             {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
-	             {"mark": "Code.mark", "out": "Code.html", "nav": "Code"}
+	             {"mark": "Code.mark", "out": "Code.html", "nav": "Code NTSC"},
+	             {"mark": "CodePAL.mark", "out": "CodePAL.html", "nav": "Code PAL"}
 	             ]
 	         },
 	         {"dir": "ET", "nav": "ET", "entries": [

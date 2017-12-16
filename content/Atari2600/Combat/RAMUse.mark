@@ -35,8 +35,8 @@
 || 009E      || m9E                || ||
 || 009F      || m9F                || ||
 || 00A0      || mA0                || ||
-|| 00A1      || mA1                || ||
-|| 00A2      || mA2                || ||
+|| 00A1      || scoreP1            || Score for player 0 ||
+|| 00A2      || scoreP1            || Score for player 1 ||
 || 00A3      || mA3                || ||
 || 00A4      || player0row         || Row number of player 0 ||
 || 00A5      || player1row         || Row number of player 1 ||

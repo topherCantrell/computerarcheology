@@ -42,7 +42,8 @@ public class Disassembler {
     	//String [] targs = {"0x4300~content/trs80/pyramid/pyramid.bin","Code.cmark","Z80"};
     	
     	//String [] targs = {"0x0000~content/arcade/frogger/roms/main.bin","Topher.mark","Z80"};
-    	String [] targs = {"0x0000~content/arcade/timepilot/roms/main.bin","Topher.mark","Z80"};
+    	//String [] targs = {"0x0000~content/arcade/timepilot/roms/main.bin","Topher.mark","Z80"};
+    	String [] targs = {"0xF000~content/atari2600/combat/combatPAL.bin","CombatPAL.mark","6502"};
     	
         args = targs;
                 

@@ -4,6 +4,10 @@
 %%-ram  = Atari2600/Combat/RAMUse.mark /Atari2600/Combat/RAMUse.html
 %%-hard = Atari2600/Stella.mark /Atari2600/Stella.html
 
+# NTSC
+
+This is the NTSC version of the code.
+
 {{{html
 <script src="/Atari2600/Stella.js"></script>
 <script src="/js/TileEngine.js"></script>
@@ -70,8 +74,8 @@ F01D: 20 DA F2      JSR   $F2DA               ;
 F020: 20 44 F4      JSR   $F444               ; ?? Collisions ??
 F023: 20 14 F2      JSR   $F214               ;
 F026: 20 A9 F2      JSR   $F2A9               ;
-F029: 20 F2 F1      JSR   $F1F2               ;
-F02C: 20 54 F0      JSR   $F054               ; {DrawVisible}
+F029: 20 F2 F1      JSR   $F1F2               ; Convert the player scores to graphics offsets
+F02C: 20 54 F0      JSR   $F054               ; {DrawVisible} Draw the screen
 F02F: 4C 14 F0      JMP   $F014               ; {main} Back to top of main loop
 
 # Start the TV Frame
@@ -352,6 +356,7 @@ F17A: A5 86         LDA   $86                 ; {-ram_frameCounter}
 F17C: 29 30         AND   #$30                
 F17E: D0 02         BNE   $F182               ;
 F180: A0 0E         LDY   #$0E                
+;
 F182: 84 DC         STY   $DC                 ; {-ram_mDC}
 F184: A5 86         LDA   $86                 ; {-ram_frameCounter}
 F186: 29 3F         AND   #$3F                
@@ -412,29 +417,31 @@ F1ED: 85 02         STA   $02                 ; {-hard_WSYNC}WSYNC:29,12
 F1EF: 85 2A         STA   $2A                 ; {-hard_HMOVE}HMOVE:30,13 
 F1F1: 60            RTS                       
 
-; ?? Called from main loop
-F1F2: A2 01         LDX   #$01                
-F1F4: B5 A1         LDA   $A1,X                  ; {-ram_mA1}
-F1F6: 29 0F         AND   #$0F                
-F1F8: 85 D2         STA   $D2                 ; {-ram_mD2}
-F1FA: 0A            ASL   A                   
-F1FB: 0A            ASL   A                   
-F1FC: 18            CLC                       
-F1FD: 65 D2         ADC   $D2                 ; {-ram_mD2}
-F1FF: 95 E0         STA   $E0,X                  ; {-ram_leftDigitLSD}
-F201: B5 A1         LDA   $A1,X                  ; {-ram_mA1}
-F203: 29 F0         AND   #$F0                
-F205: 4A            LSR   A                   
-F206: 4A            LSR   A                   
-F207: 85 D2         STA   $D2                 ; {-ram_mD2}
-F209: 4A            LSR   A                   
-F20A: 4A            LSR   A                   
-F20B: 18            CLC                       
-F20C: 65 D2         ADC   $D2                 ; {-ram_mD2}
-F20E: 95 E2         STA   $E2,X                  ; {-ram_leftDigitMSD}
-F210: CA            DEX                       
-F211: 10 E1         BPL   $F1F4               ;
-F213: 60            RTS                       
+ScoreGraphics:
+; Convert the score values in A1 to 5-byte digit offsets in E0,E2
+; Convert the score values in A2 to 5-byte digit offsets in E1,E3
+F1F2: A2 01         LDX   #$01                ; Loop over 1 and 0 ... score for each player
+F1F4: B5 A1         LDA   $A1,X               ; {-ram_mA1} Get score
+F1F6: 29 0F         AND   #$0F                ; Just the lower digit
+F1F8: 85 D2         STA   $D2                 ; {-ram_mD2} We will add this back to make 5
+F1FA: 0A            ASL   A                   ; Digit * 2
+F1FB: 0A            ASL   A                   ; Digit * 4
+F1FC: 18            CLC                       ; No carry
+F1FD: 65 D2         ADC   $D2                 ; {-ram_mD2} Digit * 5 
+F1FF: 95 E0         STA   $E0,X               ; {-ram_leftDigitLSD} Store offset
+F201: B5 A1         LDA   $A1,X               ; {-ram_mA1} Get score again
+F203: 29 F0         AND   #$F0                ; Upper digit this time
+F205: 4A            LSR   A                   ; Digit*16 / 2 = Digit*8
+F206: 4A            LSR   A                   ; Digit*4
+F207: 85 D2         STA   $D2                 ; {-ram_mD2} Hold Digit*4 
+F209: 4A            LSR   A                   ; Digit*2
+F20A: 4A            LSR   A                   ; Digit*1
+F20B: 18            CLC                       ; No carry
+F20C: 65 D2         ADC   $D2                 ; {-ram_mD2} Now Digit*5
+F20E: 95 E2         STA   $E2,X               ; {-ram_leftDigitMSD} Store offset
+F210: CA            DEX                       ; Loop back for ...
+F211: 10 E1         BPL   $F1F4               ; ... players 1 and 0
+F213: 60            RTS                       ; Done
 
 ; ?? Called from main loop
 F214: 24 83         BIT   $83                 ; {-ram_m83}
@@ -448,7 +455,7 @@ F222: 20 54 F2      JSR   $F254               ;
 F225: CA            DEX                       
 F226: 20 54 F2      JSR   $F254               ;
 F229: CA            DEX                       
-F22A: B5 8D         LDA   $8D,X                  ; {-ram_m8D}
+F22A: B5 8D         LDA   $8D,X               ; {-ram_m8D}
 F22C: 29 08         AND   #$08                
 F22E: 4A            LSR   A                   
 F22F: 4A            LSR   A                   
@@ -456,14 +463,14 @@ F230: 86 D1         STX   $D1                 ; {-ram_mD1}
 F232: 18            CLC                       
 F233: 65 D1         ADC   $D1                 ; {-ram_mD1}
 F235: A8            TAY                       
-F236: B9 A8 00      LDA   $00A8,Y                ; {-ram_mA8}
+F236: B9 A8 00      LDA   $00A8,Y             ; {-ram_mA8}
 F239: 38            SEC                       
 F23A: 30 01         BMI   $F23D               ;
 F23C: 18            CLC                       
 F23D: 2A            ROL   A                   
-F23E: 99 A8 00      STA   $00A8,Y                ; {-ram_mA8}
+F23E: 99 A8 00      STA   $00A8,Y             ; {-ram_mA8}
 F241: 90 0D         BCC   $F250               ;
-F243: B5 AC         LDA   $AC,X                  ; {-ram_mAC}
+F243: B5 AC         LDA   $AC,X               ; {-ram_mAC}
 F245: 29 01         AND   #$01                
 F247: 0A            ASL   A                   
 F248: 0A            ASL   A                   
@@ -474,8 +481,8 @@ F24D: 20 54 F2      JSR   $F254               ;
 F250: CA            DEX                       
 F251: F0 D7         BEQ   $F22A               ;
 F253: 60            RTS                       
-F254: F6 AC         INC   $AC,X                  ; {-ram_mAC}
-F256: B5 95         LDA   $95,X                  ; {-ram_m95}
+F254: F6 AC         INC   $AC,X               ; {-ram_mAC}
+F256: B5 95         LDA   $95,X               ; {-ram_m95}
 F258: 29 0F         AND   #$0F                
 F25A: 18            CLC                       
 F25B: 65 B1         ADC   $B1                 ; {-ram_mB1}
@@ -484,12 +491,12 @@ F25E: B9 F7 F5      LDA   $F5F7,Y             ; ??DATA??
 F261: 85 B0         STA   $B0                 ; {-ram_mB0}
 F263: 24 82         BIT   $82                 ; {-ram_skipPlayfield}
 F265: 70 13         BVS   $F27A               ;
-F267: B5 95         LDA   $95,X                  ; {-ram_m95}
+F267: B5 95         LDA   $95,X               ; {-ram_m95}
 F269: 38            SEC                       
 F26A: E9 02         SBC   #$02                
 F26C: 29 03         AND   #$03                
 F26E: D0 0A         BNE   $F27A               ;
-F270: B5 AC         LDA   $AC,X                  ; {-ram_mAC}
+F270: B5 AC         LDA   $AC,X               ; {-ram_mAC}
 F272: 29 03         AND   #$03                
 F274: D0 04         BNE   $F27A               ;
 F276: A9 08         LDA   #$08                
@@ -501,7 +508,7 @@ F280: 38            SEC
 F281: E9 08         SBC   #$08                
 F283: 85 D4         STA   $D4                 ; {-ram_mD4}
 F285: 18            CLC                       
-F286: 75 A4         ADC   $A4,X                  ; {-ram_player0row}
+F286: 75 A4         ADC   $A4,X               ; {-ram_player0row}
 F288: 24 A3         BIT   $A3                 ; {-ram_mA3}
 F28A: 30 04         BMI   $F290               ;
 F28C: E0 02         CPX   #$02                
@@ -514,7 +521,7 @@ F298: A9 D9         LDA   #$D9
 F29A: 24 D4         BIT   $D4                 ; {-ram_mD4}
 F29C: 30 02         BMI   $F2A0               ;
 F29E: A9 28         LDA   #$28                
-F2A0: 95 A4         STA   $A4,X                  ; {-ram_player0row}
+F2A0: 95 A4         STA   $A4,X               ; {-ram_player0row}
 F2A2: E0 02         CPX   #$02                
 F2A4: B0 02         BCS   $F2A8               ;
 F2A6: 95 25         STA   $25,X               ; {-hard_VDELP0}VDELP1:27,26,19,20 VDELP0:29,21,22 
@@ -524,13 +531,13 @@ F2A8: 60            RTS
 F2A9: A9 01         LDA   #$01                
 F2AB: 25 86         AND   $86                 ; {-ram_frameCounter}
 F2AD: AA            TAX                       
-F2AE: B5 95         LDA   $95,X                  ; {-ram_m95}
+F2AE: B5 95         LDA   $95,X               ; {-ram_m95}
 F2B0: 95 0B         STA   $0B,X               ; {-hard_REFP0}REFP1:20,19,18,21 REFP0:lots 
 F2B2: 29 0F         AND   #$0F                
 F2B4: A8            TAY                       
 F2B5: 24 83         BIT   $83                 ; {-ram_m83}
 F2B7: 10 02         BPL   $F2BB               ;
-F2B9: 94 97         STY   $97,X                  ; {-ram_m97}
+F2B9: 94 97         STY   $97,X               ; {-ram_m97}
 F2BB: 8A            TXA                       
 F2BC: 49 0E         EOR   #$0E                
 F2BE: AA            TAX                       
@@ -544,8 +551,8 @@ F2C6: 30 03         BMI   $F2CB               ;
 F2C8: 38            SEC                       
 F2C9: 49 47         EOR   #$47                
 F2CB: A8            TAY                       
-F2CC: B1 BB         LDA   ($BB),Y                ; {-ram_mBB}
-F2CE: 95 BD         STA   $BD,X                  ; {-ram_playerXpicture}
+F2CC: B1 BB         LDA   ($BB),Y             ; {-ram_mBB}
+F2CE: 95 BD         STA   $BD,X               ; {-ram_playerXpicture}
 F2D0: 90 02         BCC   $F2D4               ;
 F2D2: 88            DEY                       
 F2D3: 88            DEY                       
@@ -565,9 +572,9 @@ F2E3: C9 02         CMP   #$02
 F2E5: 90 24         BCC   $F30B               ;
 F2E7: 29 01         AND   #$01                
 F2E9: AA            TAX                       
-F2EA: F6 95         INC   $95,X                  ; {-ram_m95}
-F2EC: B5 D8         LDA   $D8,X                  ; {-ram_mD8}
-F2EE: 95 D6         STA   $D6,X                  ; {-ram_colorP0}
+F2EA: F6 95         INC   $95,X               ; {-ram_m95}
+F2EC: B5 D8         LDA   $D8,X               ; {-ram_mD8}
+F2EE: 95 D6         STA   $D6,X               ; {-ram_colorP0}
 F2F0: A5 8A         LDA   $8A                 ; {-ram_m8A}
 F2F2: C9 F7         CMP   #$F7                
 F2F4: 90 03         BCC   $F2F9               ;
@@ -603,18 +610,18 @@ F32B: B9 12 F7      LDA   $F712,Y
 F32E: 29 0F         AND   #$0F                
 F330: 85 D1         STA   $D1                 ; {-ram_mD1}
 F332: F0 04         BEQ   $F338               ;
-F334: D5 91         CMP   $91,X                  ; {-ram_m91}
+F334: D5 91         CMP   $91,X               ; {-ram_m91}
 F336: D0 04         BNE   $F33C               ;
-F338: D6 93         DEC   $93,X                  ; {-ram_m93}
+F338: D6 93         DEC   $93,X               ; {-ram_m93}
 F33A: D0 0D         BNE   $F349               ;
-F33C: 95 91         STA   $91,X                  ; {-ram_m91}
+F33C: 95 91         STA   $91,X               ; {-ram_m91}
 F33E: A9 0F         LDA   #$0F                
-F340: 95 93         STA   $93,X                  ; {-ram_m93}
+F340: 95 93         STA   $93,X               ; {-ram_m93}
 F342: A5 D1         LDA   $D1                 ; {-ram_mD1}
 F344: 18            CLC                       
-F345: 75 95         ADC   $95,X                  ; {-ram_m95}
-F347: 95 95         STA   $95,X                  ; {-ram_m95}
-F349: F6 8D         INC   $8D,X                  ; {-ram_m8D}
+F345: 75 95         ADC   $95,X               ; {-ram_m95}
+F347: 95 95         STA   $95,X               ; {-ram_m95}
+F349: F6 8D         INC   $8D,X               ; {-ram_m8D}
 F34B: 30 1E         BMI   $F36B               ;
 F34D: B9 12 F7      LDA   $F712,Y             
 F350: 4A            LSR   A                   
@@ -623,16 +630,16 @@ F352: 4A            LSR   A
 F353: 4A            LSR   A                   
 F354: 24 D5         BIT   $D5                 ; {-ram_mD5}
 F356: 30 23         BMI   $F37B               ;
-F358: 95 8B         STA   $8B,X                  ; {-ram_m8B}
+F358: 95 8B         STA   $8B,X               ; {-ram_m8B}
 F35A: 0A            ASL   A                   
 F35B: A8            TAY                       
 F35C: B9 37 F6      LDA   $F637,Y             
-F35F: 95 A8         STA   $A8,X                  ; {-ram_mA8}
+F35F: 95 A8         STA   $A8,X               ; {-ram_mA8}
 F361: C8            INY                       
 F362: B9 37 F6      LDA   $F637,Y             
-F365: 95 AA         STA   $AA,X                  ; {-ram_mAA}
+F365: 95 AA         STA   $AA,X               ; {-ram_mAA}
 F367: A9 F0         LDA   #$F0                
-F369: 95 8D         STA   $8D,X                  ; {-ram_m8D}
+F369: 95 8D         STA   $8D,X               ; {-ram_m8D}
 F36B: 20 80 F3      JSR   $F380               ;
 F36E: AD 80 02      LDA   $0280               ; {-hard_SWCHA}SWCHA:lots 
 F371: 4A            LSR   A                   
@@ -651,12 +658,12 @@ F382: 30 08         BMI   $F38C               ;
 F384: 29 01         AND   #$01                
 F386: F0 04         BEQ   $F38C               ;
 F388: A5 DB         LDA   $DB                 ; {-ram_mDB}
-F38A: 95 D6         STA   $D6,X                  ; {-ram_colorP0}
-F38C: B5 99         LDA   $99,X                  ; {-ram_m99}
+F38A: 95 D6         STA   $D6,X               ; {-ram_colorP0}
+F38C: B5 99         LDA   $99,X               ; {-ram_m99}
 F38E: F0 27         BEQ   $F3B7               ;
-F390: B5 D8         LDA   $D8,X                  ; {-ram_mD8}
-F392: 95 D6         STA   $D6,X                  ; {-ram_colorP0}
-F394: B5 99         LDA   $99,X                  ; {-ram_m99}
+F390: B5 D8         LDA   $D8,X               ; {-ram_mD8}
+F392: 95 D6         STA   $D6,X               ; {-ram_colorP0}
+F394: B5 99         LDA   $99,X               ; {-ram_m99}
 F396: C9 07         CMP   #$07                
 F398: 90 14         BCC   $F3AE               ;
 F39A: 24 D5         BIT   $D5                 ; {-ram_mD5}
@@ -670,7 +677,7 @@ F3A8: B0 21         BCS   $F3CB               ;
 F3AA: 24 83         BIT   $83                 ; {-ram_m83}
 F3AC: 50 1D         BVC   $F3CB               ;
 F3AE: A9 00         LDA   #$00                
-F3B0: 95 99         STA   $99,X                  ; {-ram_m99}
+F3B0: 95 99         STA   $99,X               ; {-ram_m99}
 F3B2: A9 FF         LDA   #$FF                
 F3B4: 95 28         STA   $28,X               ; {-hard_RESMP0}RESMP1:10,18,19,17 RESMP0:lots 
 F3B6: 60            RTS                       
@@ -682,13 +689,13 @@ F3BF: 20 10 F4      JSR   $F410               ;
 F3C2: 4C AE F3      JMP   $F3AE               ;
 F3C5: 20 10 F4      JSR   $F410               ;
 F3C8: 4C DE F3      JMP   $F3DE               ;
-F3CB: B5 9F         LDA   $9F,X                  ; {-ram_m9F}
+F3CB: B5 9F         LDA   $9F,X               ; {-ram_m9F}
 F3CD: F0 0A         BEQ   $F3D9               ;
 F3CF: 20 10 F4      JSR   $F410               ;
 F3D2: A9 30         LDA   #$30                
-F3D4: 95 99         STA   $99,X                  ; {-ram_m99}
+F3D4: 95 99         STA   $99,X               ; {-ram_m99}
 F3D6: 4C DE F3      JMP   $F3DE               ;
-F3D9: B5 99         LDA   $99,X                  ; {-ram_m99}
+F3D9: B5 99         LDA   $99,X               ; {-ram_m99}
 F3DB: 20 00 F3      JSR   $F300               ;
 F3DE: A5 86         LDA   $86                 ; {-ram_frameCounter}
 F3E0: 29 03         AND   #$03                
@@ -699,30 +706,30 @@ F3E8: 24 82         BIT   $82                 ; {-ram_skipPlayfield}
 F3EA: 50 04         BVC   $F3F0               ;
 F3EC: 29 01         AND   #$01                
 F3EE: D0 02         BNE   $F3F2               ;
-F3F0: D6 99         DEC   $99,X                  ; {-ram_m99}
+F3F0: D6 99         DEC   $99,X               ; {-ram_m99}
 F3F2: A9 00         LDA   #$00                
 F3F4: F0 BE         BEQ   $F3B4               ;
 F3F6: A9 3F         LDA   #$3F                
-F3F8: 95 99         STA   $99,X                  ; {-ram_m99}
+F3F8: 95 99         STA   $99,X               ; {-ram_m99}
 F3FA: 38            SEC                       
-F3FB: B5 A4         LDA   $A4,X                  ; {-ram_player0row}
+F3FB: B5 A4         LDA   $A4,X               ; {-ram_player0row}
 F3FD: E9 06         SBC   #$06                
-F3FF: 95 A6         STA   $A6,X                  ; {-ram_missile0row}
-F401: B5 95         LDA   $95,X                  ; {-ram_m95}
-F403: 95 97         STA   $97,X                  ; {-ram_m97}
+F3FF: 95 A6         STA   $A6,X               ; {-ram_missile0row}
+F401: B5 95         LDA   $95,X               ; {-ram_m95}
+F403: 95 97         STA   $97,X               ; {-ram_m97}
 F405: A9 1F         LDA   #$1F                
-F407: 95 9B         STA   $9B,X                  ; {-ram_m9B}
+F407: 95 9B         STA   $9B,X               ; {-ram_m9B}
 F409: A9 00         LDA   #$00                
-F40B: 95 9D         STA   $9D,X                  ; {-ram_m9D}
+F40B: 95 9D         STA   $9D,X               ; {-ram_m9D}
 F40D: 4C CB F3      JMP   $F3CB               ;
-F410: B5 9F         LDA   $9F,X                  ; {-ram_m9F}
+F410: B5 9F         LDA   $9F,X               ; {-ram_m9F}
 F412: F0 0D         BEQ   $F421               ;
 F414: A9 04         LDA   #$04                
-F416: 95 15         STA   $15,X                  ; {-hard_AUDC0}
+F416: 95 15         STA   $15,X               ; {-hard_AUDC0}
 F418: A9 07         LDA   #$07                
-F41A: 95 19         STA   $19,X                  ; {-hard_AUDV0}
-F41C: B5 9B         LDA   $9B,X                  ; {-ram_m9B}
-F41E: 95 17         STA   $17,X                  ; {-hard_AUDF0}
+F41A: 95 19         STA   $19,X               ; {-hard_AUDV0}
+F41C: B5 9B         LDA   $9B,X               ; {-ram_m9B}
+F41E: 95 17         STA   $17,X               ; {-hard_AUDF0}
 F420: 60            RTS                       
 F421: A4 85         LDY   $85                 ; {-ram_m85}
 F423: B9 33 F7      LDA   $F733,Y             
@@ -736,7 +743,7 @@ F432: 88            DEY
 F433: 30 04         BMI   $F439               ;
 F435: 69 0C         ADC   #$0C                
 F437: 10 F9         BPL   $F432               ;
-F439: 75 8B         ADC   $8B,X                  ; {-ram_m8B}
+F439: 75 8B         ADC   $8B,X               ; {-ram_m8B}
 F43B: A8            TAY                       
 F43C: 8A            TXA                       
 F43D: 0A            ASL   A                   
@@ -745,22 +752,24 @@ F441: 95 17         STA   $17,X               ; {-hard_AUDF0}AUDF1:10,9,18,17 AU
 F443: 60            RTS                       
 
 ; ?? Called from main loop
-F444: A2 01         LDX   #$01                
-F446: B5 30         LDA   $30,X               ;CXM0P:lots CXM1P:14,13,22,21 
-F448: 10 2C         BPL   $F476               ;
+F444: A2 01         LDX   #$01                ; Start with Player 1 (back again from F504)
+F446: B5 30         LDA   $30,X               ; Collisions between this player's missile and other player
+F448: 10 2C         BPL   $F476               ; D7 clear -- this player's missile did not hit other player
 F44A: 24 84         BIT   $84                 ; {-ram_m84}
 F44C: 50 06         BVC   $F454               ;
-F44E: B5 9B         LDA   $9B,X                  ; {-ram_m9B}
+F44E: B5 9B         LDA   $9B,X               ; {-ram_m9B}
 F450: C9 1F         CMP   #$1F                
 F452: F0 22         BEQ   $F476               ;
-F454: F6 95         INC   $95,X                  ; {-ram_m95}
-F456: F6 97         INC   $97,X                  ; {-ram_m97}
-F458: F8            SED                       
-F459: B5 A1         LDA   $A1,X                  ; {-ram_mA1}
-F45B: 18            CLC                       
-F45C: 69 01         ADC   #$01                
-F45E: 95 A1         STA   $A1,X                  ; {-ram_mA1}
-F460: D8            CLD                       
+F454: F6 95         INC   $95,X               ; {-ram_m95}
+F456: F6 97         INC   $97,X               ; {-ram_m97}
+;
+F458: F8            SED                       ; BCD mode for 2-digit score
+F459: B5 A1         LDA   $A1,X               ; {-ram_mA1} Player score
+F45B: 18            CLC                       ; No carry
+F45C: 69 01         ADC   #$01                ; Give 1 point ...
+F45E: 95 A1         STA   $A1,X               ; {-ram_mA1} ... to player
+F460: D8            CLD                       ; Out of BCD mode for normal math
+;
 F461: 8A            TXA                       
 F462: 18            CLC                       
 F463: 69 FD         ADC   #$FD                
@@ -769,74 +778,77 @@ F467: A9 FF         LDA   #$FF
 F469: 85 28         STA   $28                 ; {-hard_RESMP0}
 F46B: 85 29         STA   $29                 ; {-hard_RESMP1}
 F46D: A9 00         LDA   #$00                
-F46F: 95 19         STA   $19,X                  ; {-hard_AUDV0}
+F46F: 95 19         STA   $19,X               ; {-hard_AUDV0}
 F471: 85 99         STA   $99                 ; {-ram_m99}
 F473: 85 9A         STA   $9A                 ; {-ram_m9A}
 F475: 60            RTS                       
+;
 F476: 24 A3         BIT   $A3                 ; {-ram_mA3}
 F478: 10 03         BPL   $F47D               ;
 F47A: 4C 01 F5      JMP   $F501               ;
-F47D: B5 9F         LDA   $9F,X                  ; {-ram_m9F}
+F47D: B5 9F         LDA   $9F,X               ; {-ram_m9F}
 F47F: F0 0A         BEQ   $F48B               ;
 F481: C9 04         CMP   #$04                
-F483: F6 9F         INC   $9F,X                  ; {-ram_m9F}
+F483: F6 9F         INC   $9F,X               ; {-ram_m9F}
 F485: 90 04         BCC   $F48B               ;
 F487: A9 00         LDA   #$00                
-F489: 95 9F         STA   $9F,X                  ; {-ram_m9F}
-F48B: B5 34         LDA   $34,X               ;CXM1FB:14,13,23,15 CXM0FB:15,14,23,24 
-F48D: 30 07         BMI   $F496               ;
+F489: 95 9F         STA   $9F,X               ; {-ram_m9F}
+F48B: B5 34         LDA   $34,X               ; Collisions between this player's missile and the playfield
+F48D: 30 07         BMI   $F496               ; Bit set ... this player's missile hit the playfield
 F48F: A9 00         LDA   #$00                
-F491: 95 9D         STA   $9D,X                  ; {-ram_m9D}
+F491: 95 9D         STA   $9D,X               ; {-ram_m9D}
 F493: 4C D6 F4      JMP   $F4D6               ;
+;
 F496: 24 82         BIT   $82                 ; {-ram_skipPlayfield}
 F498: 50 36         BVC   $F4D0               ;
-F49A: B5 9D         LDA   $9D,X                  ; {-ram_m9D}
+F49A: B5 9D         LDA   $9D,X               ; {-ram_m9D}
 F49C: D0 19         BNE   $F4B7               ;
-F49E: F6 9F         INC   $9F,X                  ; {-ram_m9F}
-F4A0: D6 9B         DEC   $9B,X                  ; {-ram_m9B}
-F4A2: B5 97         LDA   $97,X                  ; {-ram_m97}
-F4A4: 95 B2         STA   $B2,X                  ; {-ram_mB2}
+F49E: F6 9F         INC   $9F,X               ; {-ram_m9F}
+F4A0: D6 9B         DEC   $9B,X               ; {-ram_m9B}
+F4A2: B5 97         LDA   $97,X               ; {-ram_m97}
+F4A4: 95 B2         STA   $B2,X               ; {-ram_mB2}
 F4A6: 49 FF         EOR   #$FF                
-F4A8: 95 97         STA   $97,X                  ; {-ram_m97}
-F4AA: F6 97         INC   $97,X                  ; {-ram_m97}
-F4AC: B5 97         LDA   $97,X                  ; {-ram_m97}
+F4A8: 95 97         STA   $97,X               ; {-ram_m97}
+F4AA: F6 97         INC   $97,X               ; {-ram_m97}
+F4AC: B5 97         LDA   $97,X               ; {-ram_m97}
 F4AE: 29 03         AND   #$03                
 F4B0: D0 02         BNE   $F4B4               ;
-F4B2: F6 97         INC   $97,X                  ; {-ram_m97}
+F4B2: F6 97         INC   $97,X               ; {-ram_m97}
 F4B4: 4C D4 F4      JMP   $F4D4               ;
 F4B7: C9 01         CMP   #$01                
 F4B9: F0 0B         BEQ   $F4C6               ;
 F4BB: C9 03         CMP   #$03                
 F4BD: 90 15         BCC   $F4D4               ;
 F4BF: D0 13         BNE   $F4D4               ;
-F4C1: B5 B2         LDA   $B2,X                  ; {-ram_mB2}
+F4C1: B5 B2         LDA   $B2,X               ; {-ram_mB2}
 F4C3: 4C C8 F4      JMP   $F4C8               ;
-F4C6: B5 97         LDA   $97,X                  ; {-ram_m97}
+F4C6: B5 97         LDA   $97,X               ; {-ram_m97}
 F4C8: 18            CLC                       
 F4C9: 69 08         ADC   #$08                
-F4CB: 95 97         STA   $97,X                  ; {-ram_m97}
+F4CB: 95 97         STA   $97,X               ; {-ram_m97}
 F4CD: 4C D4 F4      JMP   $F4D4               ;
+;
 F4D0: A9 01         LDA   #$01                
-F4D2: 95 99         STA   $99,X                  ; {-ram_m99}
-F4D4: F6 9D         INC   $9D,X                  ; {-ram_m9D}
-F4D6: B5 32         LDA   $32,X               ;CXP0FB:15,14,24,16 CXP1FB:15,13,14,23 
-F4D8: 30 04         BMI   $F4DE               ;
-F4DA: A5 37         LDA   $37                 ;CXPPMM:lots 
-F4DC: 10 09         BPL   $F4E7               ;
+F4D2: 95 99         STA   $99,X               ; {-ram_m99}
+F4D4: F6 9D         INC   $9D,X               ; {-ram_m9D}
+F4D6: B5 32         LDA   $32,X               ; Collisions between this player and the playfield
+F4D8: 30 04         BMI   $F4DE               ; Bit set ... this player hit the playfield
+F4DA: A5 37         LDA   $37                 ; Collisions between players
+F4DC: 10 09         BPL   $F4E7               ; Bit is clear ... no collisions
 F4DE: A5 8A         LDA   $8A                 ; {-ram_m8A}
 F4E0: C9 02         CMP   #$02                
 F4E2: 90 09         BCC   $F4ED               ;
 F4E4: 20 08 F5      JSR   $F508               ;
 F4E7: A9 03         LDA   #$03                
-F4E9: 95 E4         STA   $E4,X                  ; {-ram_mE4}
+F4E9: 95 E4         STA   $E4,X               ; {-ram_mE4}
 F4EB: D0 14         BNE   $F501               ;
-F4ED: D6 E4         DEC   $E4,X                  ; {-ram_mE4}
+F4ED: D6 E4         DEC   $E4,X               ; {-ram_mE4}
 F4EF: 30 06         BMI   $F4F7               ;
-F4F1: B5 8B         LDA   $8B,X                  ; {-ram_m8B}
+F4F1: B5 8B         LDA   $8B,X               ; {-ram_m8B}
 F4F3: F0 0C         BEQ   $F501               ;
 F4F5: D0 02         BNE   $F4F9               ;
-F4F7: F6 95         INC   $95,X                  ; {-ram_m95}
-F4F9: B5 95         LDA   $95,X                  ; {-ram_m95}
+F4F7: F6 95         INC   $95,X               ; {-ram_m95}
+F4F9: B5 95         LDA   $95,X               ; {-ram_m95}
 F4FB: 18            CLC                       
 F4FC: 69 08         ADC   #$08                
 F4FE: 20 0F F5      JSR   $F50F               ;
@@ -847,17 +859,17 @@ F507: 60            RTS
 F508: 8A            TXA                       
 F509: 49 01         EOR   #$01                
 F50B: A8            TAY                       
-F50C: B9 97 00      LDA   $0097,Y                ; {-ram_m97}
+F50C: B9 97 00      LDA   $0097,Y             ; {-ram_m97}
 F50F: 29 0F         AND   #$0F                
 F511: A8            TAY                       
 F512: B9 27 F6      LDA   $F627,Y             
 F515: 20 7C F2      JSR   $F27C               ;
 F518: A9 00         LDA   #$00                
-F51A: 95 A8         STA   $A8,X                  ; {-ram_mA8}
-F51C: 95 AA         STA   $AA,X                  ; {-ram_mAA}
-F51E: 95 8D         STA   $8D,X                  ; {-ram_m8D}
-F520: B5 D8         LDA   $D8,X                  ; {-ram_mD8}
-F522: 95 D6         STA   $D6,X                  ; {-ram_colorP0}
+F51A: 95 A8         STA   $A8,X               ; {-ram_mA8}
+F51C: 95 AA         STA   $AA,X               ; {-ram_mAA}
+F51E: 95 8D         STA   $8D,X               ; {-ram_m8D}
+F520: B5 D8         LDA   $D8,X               ; {-ram_mD8}
+F522: 95 D6         STA   $D6,X               ; {-ram_colorP0}
 F524: 60            RTS                       
 
 F525: A6 85         LDX   $85                 ; {-ram_m85} Player type (0=tank, 1=jet, 2=plane)
@@ -936,8 +948,8 @@ F5AB: B9 65 F7      LDA   $F765,Y
 F5AE: 45 D1         EOR   $D1                 ; {-ram_mD1}
 F5B0: 25 D2         AND   $D2                 ; {-ram_mD2}
 F5B2: 95 06         STA   $06,X               ; {-hard_COLUP0}
-F5B4: 95 D6         STA   $D6,X                  ; {-ram_colorP0}
-F5B6: 95 D8         STA   $D8,X                  ; {-ram_mD8}
+F5B4: 95 D6         STA   $D6,X               ; {-ram_colorP0}
+F5B6: 95 D8         STA   $D8,X               ; {-ram_mD8}
 F5B8: C8            INY                       
 F5B9: CA            DEX                       
 F5BA: 10 EF         BPL   $F5AB               ;
@@ -1194,11 +1206,8 @@ F75A: 0C
 F75B: 07                                    
 F75C: 07                                    
 
-; Planes 3,1 = big 1
-; Jets 3,1 = small 1
-
 plyrNumSize:
-; Number and size of players
+; Number/size of players, width of missile
 ;                    copies    width            copies    width
 F75D: 00 00   ; P0 = 1         1           P1 = 1         1         
 F75F: 01 01   ; P0 = 2 close   1           P1 = 2 close   1        
@@ -1276,7 +1285,7 @@ F7C9: F6 F6 F6 ; Picture pointers MSB
 ; F79E, F7A1, F7A1  ' Clouds
 
 ;      0  1  2  3
-F7CC: 75 75 75 9A  ; PF0 LSB (add 4 ??why??)
+F7CC: 75 75 75 9A  ; PF0 LSB (add 4 the drawing loop treats this as entries 4 through 16 (1)
 F7D0: 81 99 AA 9D  ; PF1 LSB (add 4)
 F7D4: 8D 99 B6 9D  ; PF2 LSB (add 4)
 
