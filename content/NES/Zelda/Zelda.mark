@@ -126,45 +126,45 @@ for second-quest-level-1). Investigation to come.
 
   <tr>
     <td>00-6F (Common objects)</td>
-    <td colspan="11"><a target="_blank" href="Zelda/Bank2#Tiles_S_Common1">Link, treasure, misc 2:807F</a></td>
+    <td colspan="11"><a target="_blank" href="Bank2.html#TilesSCommon1">Link, treasure, misc 2:807F</a></td>
   </tr>
 
   <tr>
     <td>70-8D (Common objects)</td>
-    <td colspan="11"><a target="_blank" href="Zelda/Bank1#Tiles_S_Splash">Ladder, misc 1:8DB4</a></td>
+    <td colspan="11"><a target="_blank" href="Bank1.html#TilesSSplash">Ladder, misc 1:8DB4</a></td>
   </tr>
 
   <tr>
     <td>8E-9D (Shared Creatures)</td>
-    <td rowspan="3"><a target="_blank" href="Zelda/Bank1#Tiles_S_Splash8E">Splash images 1:8F94</a></td>
-    <td rowspan="3"><a target="_blank" href="Zelda/Bank3#Tiles_S_Surface">Surface creatures 3:915B</a></td>
-    <td colspan="9"><a target="_blank" href="Zelda/Bank3#Tiles_S_Dungeon">Dungeon creatures 3:9CBB</a></td>
+    <td rowspan="3"><a target="_blank" href="Bank1.html#TilesSSplash8E">Splash images 1:8F94</a></td>
+    <td rowspan="3"><a target="_blank" href="Bank3.html#TilesSSurface">Surface creatures 3:915B</a></td>
+    <td colspan="9"><a target="_blank" href="Bank3.html#TilesSDungeon">Dungeon creatures 3:9CBB</a></td>
   </tr>
 
   <tr>
     <td>9E-BF (Specific creatures)</td>
-    <td><a target="_blank" href="Zelda/Bank3#Tiles_S_127">1,2,7 3:9DBB</a></td>
-    <td><a target="_blank" href="Zelda/Bank3#Tiles_S_127">1,2,7 3:9DBB</a></td>
-    <td><a target="_blank" href="Zelda/Bank3#Tiles_S_358">3,5,8 3:987B</a></td>
-    <td><a target="_blank" href="Zelda/Bank3#Tiles_S_469">4,6,9 3:9A9B</a></td>
-    <td><a target="_blank" href="Zelda/Bank3#Tiles_S_358">3,5,8 3:987B</a></td>
-    <td><a target="_blank" href="Zelda/Bank3#Tiles_S_469">4,6,9 3:9A9B</a></td>
-    <td><a target="_blank" href="Zelda/Bank3#Tiles_S_127">1,2,7 3:9DBB</a></td>
-    <td><a target="_blank" href="Zelda/Bank3#Tiles_S_358">3,5,8 3:987B</a></td>
-    <td><a target="_blank" href="Zelda/Bank3#Tiles_S_469">4,6,9 3:9A9B</a></td>
+    <td><a target="_blank" href="Bank3.html#TilesS127">1,2,7 3:9DBB</a></td>
+    <td><a target="_blank" href="Bank3.html#TilesS127">1,2,7 3:9DBB</a></td>
+    <td><a target="_blank" href="Bank3.html#TilesS358">3,5,8 3:987B</a></td>
+    <td><a target="_blank" href="Bank3.html#TilesS469">4,6,9 3:9A9B</a></td>
+    <td><a target="_blank" href="Bank3.html#TilesS358">3,5,8 3:987B</a></td>
+    <td><a target="_blank" href="Bank3.html#TilesS469">4,6,9 3:9A9B</a></td>
+    <td><a target="_blank" href="Bank3.html#TilesS127">1,2,7 3:9DBB</a></td>
+    <td><a target="_blank" href="Bank3.html#TilesS358">3,5,8 3:987B</a></td>
+    <td><a target="_blank" href="Bank3.html#TilesS469">4,6,9 3:9A9B</a></td>
   </tr>
 
   <tr>
     <td>C0-FF (Bosses)</td>
-    <td><a target="_blank" href="Zelda/Bank3#Tiles_S_Boss_1257">1,2,5,7 3:9FDB</a></td>
-    <td><a target="_blank" href="Zelda/Bank3#Tiles_S_Boss_1257">1,2,5,7 3:9FDB</a></td>
-    <td><a target="_blank" href="Zelda/Bank3#Tiles_S_Boss_3468">3,4,6,8 3:A3DB</a></td>
-    <td><a target="_blank" href="Zelda/Bank3#Tiles_S_Boss_3468">3,4,6,8 3:A3DB</a></td>
-    <td><a target="_blank" href="Zelda/Bank3#Tiles_S_Boss_1257">1,2,5,7 3:9FDB</a></td>
-    <td><a target="_blank" href="Zelda/Bank3#Tiles_S_Boss_3468">3,4,6,8 3:A3DB</a></td>
-    <td><a target="_blank" href="Zelda/Bank3#Tiles_S_Boss_1257">1,2,5,7 3:9FDB</a></td>
-    <td><a target="_blank" href="Zelda/Bank3#Tiles_S_Boss_3468">3,4,6,8 3:A3DB</a></td>
-    <td><a target="_blank" href="Zelda/Bank3#Tiles_S_Boss_9">Ganon 3:A7DB</a></td>
+    <td><a target="_blank" href="Bank3.html#TilesSBoss1257">1,2,5,7 3:9FDB</a></td>
+    <td><a target="_blank" href="Bank3.html#TilesSBoss1257">1,2,5,7 3:9FDB</a></td>
+    <td><a target="_blank" href="Bank3.html#TilesSBoss3468">3,4,6,8 3:A3DB</a></td>
+    <td><a target="_blank" href="Bank3.html#TilesSBoss3468">3,4,6,8 3:A3DB</a></td>
+    <td><a target="_blank" href="Bank3.html#TilesSBoss1257">1,2,5,7 3:9FDB</a></td>
+    <td><a target="_blank" href="Bank3.html#TilesSBoss3468">3,4,6,8 3:A3DB</a></td>
+    <td><a target="_blank" href="Bank3.html#TilesSBoss1257">1,2,5,7 3:9FDB</a></td>
+    <td><a target="_blank" href="Bank3.html#TilesSBoss3468">3,4,6,8 3:A3DB</a></td>
+    <td><a target="_blank" href="Bank3.html#TilesSBoss9">Ganon 3:A7DB</a></td>
   </tr>
 
   <tr/>
@@ -174,17 +174,17 @@ for second-quest-level-1). Investigation to come.
  
   <tr>
     <td>00-6F (Test, misc)</td>
-    <td colspan="12"><a target="_blank" href="Zelda/Bank2#Tiles_B_Common1">Common 2:877F</a></td>
+    <td colspan="12"><a target="_blank" href="Bank2.html#TilesBCommon1">Common 2:877F</a></td>
   </tr>
   <tr>
     <td>70-F1</td>
-    <td><a target="_blank" href="Zelda/Bank1#Tiles_B_Splash">Splash 1:96B4</a></td>
-    <td><a target="_blank" href="Zelda/Bank3#Tiles_B_Surface">Surface 3:893B</a></td>
-    <td colspan="10"><a target="_blank" href="Zelda/Bank3#Tiles_B_Dungeon">Dungeon 3:811B</a></td>
+    <td><a target="_blank" href="Bank1.html#TilesBSplash">Splash 1:96B4</a></td>
+    <td><a target="_blank" href="Bank3.html#TilesBSurface">Surface 3:893B</a></td>
+    <td colspan="10"><a target="_blank" href="Bank3.html#TilesBDungeon">Dungeon 3:811B</a></td>
   </tr>
   <tr>
     <td>F2-FF (Misc)</td>
-    <td colspan="12"><a target="_blank" href="Zelda/Bank2#Tiles_B_Common2">Common 2:8E7F</a></td>
+    <td colspan="12"><a target="_blank" href="Bank2.html#TilesBCommon2">Common 2:8E7F</a></td>
   </tr>
 
 </table>

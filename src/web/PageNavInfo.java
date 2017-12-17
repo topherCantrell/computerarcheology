@@ -12,6 +12,7 @@ public class PageNavInfo {
 			char c = text.charAt(x);
 			if(c>='a' && c<='z') ret = ret + c;
 			if(c>='A' && c<='Z') ret = ret + c;
+			if(c>='0' && c<='9') ret = ret + c;
 		}
 		return ret;
 	}

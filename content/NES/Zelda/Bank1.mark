@@ -1330,9 +1330,6 @@ Tiles_S_Splash:
 
 # Tiles_S_Splash70
 
-Tiles_S_Splash70: 
-Common2: 
-
 {{{html
  <canvas width="900" height="150"
      data-labelColor="#00C0FF"
@@ -1350,6 +1347,8 @@ Common2:
  </canvas>
 }}}
 
+Tiles_S_Splash70: 
+Common2: 
  ;   .....333    70
  ;   ....3333
  ;   ..333333
@@ -1652,9 +1651,6 @@ Common2:
 
 # Tiles_S_Splash8E
 
-Tiles_S_Splash8E: 
-Unused1: 
-
 {{{html
 <br>
  <canvas width="900" height="150"
@@ -1662,6 +1658,8 @@ Unused1:
  </canvas>
 }}}
 
+Tiles_S_Splash8E: 
+Unused1: 
  ;   ........    8E
  ;   ........
  ;   ........
@@ -1846,10 +1844,6 @@ Unused1:
 
 # Sword Overlap
 
-SwordOverlap: 
-;
-; Part of sword that overlaps ZELDA
-
 {{{html
 <br>
  <canvas width="900" height="150"
@@ -1857,6 +1851,9 @@ SwordOverlap:
  </canvas>
 }}}
 
+SwordOverlap: 
+;
+; Part of sword that overlaps ZELDA
  ;   ........    A0
  ;   ........
  ;   ........
@@ -1879,10 +1876,6 @@ SwordOverlap:
 
 # Water Above
 
-WaterAbove: 
-;
-; Splashing water above the waterfall
-
 {{{html
 <br>
  <canvas width="900" height="150"
@@ -1890,6 +1883,9 @@ WaterAbove:
  </canvas>
 }}}
 
+WaterAbove: 
+;
+; Splashing water above the waterfall
  ;   ........    A2
  ;   ........
  ;   ........
@@ -2052,10 +2048,6 @@ WaterAbove:
 
 # Water Falling
 
-WaterFalling: 
-;
-; Water falling down the waterfall
-
 {{{html
 <br>
  <canvas width="900" height="150"
@@ -2063,6 +2055,9 @@ WaterFalling:
  </canvas>
 }}}
 
+WaterFalling: 
+;
+; Water falling down the waterfall
  ;   ...11111    B2
  ;   .1111111
  ;   11111111
@@ -2305,10 +2300,6 @@ WaterFalling:
 
 # Vines
 
-Vines: 
-;
-; These are pieces of vine hanging around the inner boarder on the splash screen
-
 {{{html
 <br>
  <canvas width="900" height="150"
@@ -2316,6 +2307,9 @@ Vines:
  </canvas>
 }}}
 
+Vines: 
+;
+; These are pieces of vine hanging around the inner boarder on the splash screen
  ;   ........    CA
  ;   ..3.....
  ;   ..3....1
@@ -2456,10 +2450,6 @@ Vines:
  ;   ........
 9424: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 
-Unused2: 
-;
-; Duplicates of TileSetC in bank 1: D8, D9, DA, DB.
-
 {{{html
 <br>
  <canvas width="900" height="150"
@@ -2467,6 +2457,9 @@ Unused2:
  </canvas>
 }}}
 
+Unused2: 
+;
+; Duplicates of TileSetC in bank 1: D8, D9, DA, DB.
  ;   11.2....    D8
  ;   1112....
  ;   3112....
@@ -2509,11 +2502,6 @@ Unused2:
 
 # Sign
 
-Sign: 
-;
-; The sign at the end of the treasure info that says:
-; PLEASE LOOK UP THE MANUAL FOR DETAILS.
-
 {{{html
 <br>
  <canvas width="500" height="400"
@@ -2521,6 +2509,10 @@ Sign:
  </canvas>
 }}}
 
+Sign: 
+;
+; The sign at the end of the treasure info that says:
+; PLEASE LOOK UP THE MANUAL FOR DETAILS.
  ;   .2...2.2    DC
  ;   22222222
  ;   22222222
@@ -2882,10 +2874,6 @@ Sign:
 96a4: 02 01 01 00 00 00 00 00 FE FF DF 5F 5F 5F 5F 5F
 
 # Tiles_B_Splash
-
-Tiles_B_Splash: 
-; Copied to VRAM 1700
-
 ; ........  ........  ........  ........  .....222  22222222  22222222  22222222  22222222  22222222  22222222  22......  ........  ...11111  11111111  11111111  
 ; ........  ........  ........  ........  ....2222  22222222  22222222  22222222  22222222  22222222  22222222  222.....  ........  ..111111  11111111  11111113  
 ; ........  ...333.3  ..3.3333  ....3...  .3333223  33233332  33322333  22222233  22333322  22222222  22222222  223.....  ........  .1111111  11111111  11111133  
@@ -2895,6 +2883,8 @@ Tiles_B_Splash:
 ; ........  ....3..3  ..3.3333  ....3333  .3333.33  33233332  32232333  22222233  22322222  22222222  22232222  3.......  .....111  11111111  11111111  11333333  
 ; ........  ........  ........  ........  .......2  22222222  22222222  22222222  22222222  22222222  22322222  3.......  ....1111  33333333  11111111  13333333  
 ;
+Tiles_B_Splash: 
+; Copied to VRAM 1700
 96B4: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
 96C4: 00 00 1D 09 09 09 09 00 00 00 1D 09 09 09 09 00 
 96D4: 00 00 2F 28 EE 28 2F 00 00 00 2F 28 EE 28 2F 00 
