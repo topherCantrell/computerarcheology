@@ -764,7 +764,7 @@ C48B: 39                  RTS                      ; Done
 ; Return byte in B (5 bits)
 ; Advance compression to next
 ;
-; The algorithm compresses 8 5-bit values into 5 bytes
+; The algorithm decompresses 8 5-bit values into 5 bytes
 ; There are 8 algorithm steps to peel out the 5 bit value and advance the pointer 
 ; if the next step needs it advanced.
 ;
@@ -849,8 +849,8 @@ C4EA: 30 1F               LEAX    -1,X             ; ... with B going ...
 C4EC: 26 E4               BNE     $C4D2            ; ... far right ...
 ;
 C4EE: 96 6B               LDA     <$6B             ; {-ram_rndSeedA}       
-C4F0: A7 63               STA     3,S              ;
-C4F2: 39                  RTS                      ;
+C4F0: A7 63               STA     3,S              ; Return the value in A
+C4F2: 39                  RTS                      ; Done
 
 SWI_8:
 ; Clear display screen
