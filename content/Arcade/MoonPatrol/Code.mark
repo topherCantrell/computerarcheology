@@ -1074,6 +1074,12 @@ NextSound:
 ; If the front and back are the same pointer then nothing happens. Otherwise the
 ; value from the front is sent to the sound processor and the front is bumped
 ; and wrapped.
+;
+; Thanks to Leo Bodnar for explaining the sound-command sequence.
+; The main CPU address D000 (write) is connected to the sound CPU's AY0 sound chip general I/O.
+; The upper most bit triggers the IRQ on the sound CPU. The main CPU writes the command to D000
+; and toggles the upper bit of D000 bit low then high. The sound CPU clears the IRQ by accessing
+; memory $9xxx.
 ; 
 05CB: 2A DD E1       LD    HL,($E1DD)         ;{-1_SndQFront} Get front (L) and back (H) of sound effect queue pointer ** C0093
 05CE: 7D             LD    A,L                ; Head and tail ...
@@ -1081,9 +1087,9 @@ NextSound:
 05D0: C8             RET   Z                  ; Yes ... nothing to queue up
 05D1: 26 E0          LD    H,$E0              ; MSB is E0
 05D3: 7E             LD    A,(HL)             ; Get sound effect number from
-05D4: 32 00 D0       LD    ($D000),A          ; Write sound command
-05D7: CB FF          SET   7,A                ; Latch ...
-05D9: 32 00 D0       LD    ($D000),A          ; ... sound command
+05D4: 32 00 D0       LD    ($D000),A          ; Write sound command with IRQ triggered (D7=0)
+05D7: CB FF          SET   7,A                ; Release the IRQ ...
+05D9: 32 00 D0       LD    ($D000),A          ; ... trigger D7=1
 05DC: 7D             LD    A,L                ; Bump to the ...
 05DD: 3C             INC   A                  ; ... next effect in the queue
 05DE: E6 07          AND   $07                ; Only 8 bytes in queue ... then we wrap

@@ -938,12 +938,17 @@ FC8A: 39          RTS                             ;  Done
 # IRQ1 Command Request
 
 IRQ1CommandRequest: 
+; Thanks to Leo Bodnar for explaining the sound-command sequence.
+; The main CPU address D000 (write) is connected to the sound CPU's AY0 sound chip general I/O.
+; The upper most bit triggers the IRQ on the sound CPU. The main CPU writes the command to D000
+; and toggles the upper bit of D000 bit low then high. The sound CPU clears the IRQ by accessing
+; memory $9xxx.
 ;  IRQ1
 ; 
-FC8B: B7 90 00    STA     $9000                   ;{-2_WATCHDOG}  ??watchdog??
+FC8B: B7 90 00    STA     $9000                   ;{-2_IRQ_ACK}  Release the IRQ line so it can fire again
 FC8E: C6 0E       LDB     #$0E                    ;  Read from ...
 FC90: BD FD 20    JSR     $FD20                   ;  ... I/O port A on AY chip 0
-FC93: 84 1F       ANDA    #$1F                    ;  Ony lower 5 bits
+FC93: 84 1F       ANDA    #$1F                    ;  Only lower 5 bits
 FC95: 97 BC       STA     $BC                     ;{-1_sndCmd}  Store sound command
 FC97: 3B          RTI                             
 

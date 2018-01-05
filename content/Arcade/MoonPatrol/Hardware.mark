@@ -46,7 +46,9 @@ BKGCtrl:
 ||= Address || Name || Description ||
 || 8800r || PROTECT || Returns a mangled version of last value written to BG1X (port 40) ||
 || D000r || IN0 || ****XsBA    X=coin1, x=service credit, B=start2, A=start1 ||
+|| D000w || SND_CMD || Sound command (bit 7 is the latch) ||
 || D001r || IN1 || f**j**lr    f=fire, b=jump, lr=left/right ||
+|| D001w || FLIP    || **B* xyAF       A=counterA B=counterB F=Flip?? y=CFlip2?? x=CFlipB?? ||
 || D002r || IN2 || f**jX*lr    (cocktail) a=fire, b=jump, X=coin1, lr=left/right||
 || D003r || DSW1 || See below ||
 || D004r || DSW2 || See below ||
@@ -70,12 +72,6 @@ Coin mode B (two different currencies)
    Coin B: dd = 3:1C-6P, 2:1C-5P, 1:1C-3P, 0:1C-2P
    }}} 
    
-{{{memory  
-|| D000w || ??D000w || ||   
-|| D004w || SND_CMD || Sound command (bit 7 is the latch) ||
-|| D001w || FLIP    || **B* xyAF       A=counterA B=counterB F=Flip?? y=CFlip2?? x=CFlipB?? ||
-}}}
-
 Lots of good information in Mame Source: mame/drivers/m52.c
 
 {{{
