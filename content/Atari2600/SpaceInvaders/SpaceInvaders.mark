@@ -1,0 +1,14 @@
+%%title = Atari 2600 Space Invaders
+%%image = A26Invaders.jpg
+
+[Code](Code.html)
+
+{{{playMe
+
+# Play Me!
+
+It might take a few seconds for the ROM to load, but play Atari2600 Space Invaders here:
+
+[http://javatari.org&ROM=SPCINVAD](http://javatari.org?ROM=https://github.com/topherCantrell/computerarcheology/blob/master/content/Atari2600/SpaceInvaders/SPCINVAD.BIN?raw=true`playMe`)
+
+}}}

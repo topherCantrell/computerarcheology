@@ -226,6 +226,13 @@
 	             {"mark": "Code.mark", "out": "Code.html", "nav": "Code"}
 	             ]
 	         },
+	         {"dir": "SpaceInvaders", "nav": "SpaceInvaders", "entries": [
+	             {"copy": "A26Invaders.jpg"},
+	             {"mark": "SpaceInvaders.mark", "out": "index.html"},
+	             {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav": "RAM Use"},
+	             {"mark": "Code.mark", "out": "Code.html", "nav": "Code"}
+	             ]
+	         },	    
 	         {"dir": "DoubleGap", "nav": "Double Gap", "entries": [
 	             {"copy": "DoubleGap.jpg"},
 	             {"mark": "DoubleGap.mark", "out": "index.html"},

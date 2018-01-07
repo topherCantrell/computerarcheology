@@ -184,6 +184,8 @@ public class ScanLineCycle {
                 hardwareAccessValue = xRegister;
             } else if(disasm.startsWith("bit")) {
                 hardwareWrite = false;
+            } else if(disasm.startsWith("and")) {
+                hardwareWrite = false;
             } else if(disasm.startsWith("ldx")) {
                 hardwareWrite = false;
             } else if(disasm.startsWith("ldy")) {
