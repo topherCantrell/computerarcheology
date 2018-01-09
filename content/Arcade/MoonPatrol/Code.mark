@@ -1555,19 +1555,19 @@ XYToTextPtr:
 084F: 30 67          JR    NC,$8B8            ;{DrawObject} 
 0851: E1             POP   HL                 ;
 0852: DD 36 00 00    LD    (IX+$00),$00       ; ** J143E,J1639,J163E,C1711,J177C,J1B13,J1CE0,C1D98,J1E11,J1E30,J1E38,J1E45,J1E55,J1E9E,J2028,J2039,J20BB,J20CF
-0856: DD 7E 0D       LD    A,(IX+$0D)         ; ** C1794,J17C1,J1D20,C1E8B
-0859: 37             SCF                      ;
-085A: 17             RLA                      ;
-085B: D8             RET   C                  ;
-085C: 37             SCF                      ;
-085D: 17             RLA                      ;
-085E: 21 18 2E       LD    HL,$2E18           ;
+0856: DD 7E 0D       LD    A,(IX+$0D)         ; A = object.layoutIndex ** C1794,J17C1,J1D20,C1E8B
+0859: 37             SCF                      ; A = 2 * object.layoutIndex ...
+085A: 17             RLA                      ; ... + 1
+085B: D8             RET   C                  ; A was >= 0x80 ... not valid
+085C: 37             SCF                      ; A = 4 * object.layoutIndex ...
+085D: 17             RLA                      ; ... + 3
+085E: 21 18 2E       LD    HL,$2E18           ; 
 0861: 30 01          JR    NC,$864            ; 
 0863: 24             INC   H                  ;
-0864: 5F             LD    E,A                ; ** J0861
-0865: 16 00          LD    D,$00              ;
+0864: 5F             LD    E,A                ; DE = ... ** J0861
+0865: 16 00          LD    D,$00              ; ... 4 * object.layoutIndex + 3
 0867: 19             ADD   HL,DE              ;
-0868: 46             LD    B,(HL)             ;
+0868: 46             LD    B,(HL)             ; B = ObjectLaout[object.layoutIndex].numberOfTiles
 0869: DD 5E 01       LD    E,(IX+$01)         ; ** J20D8
 086C: 16 E1          LD    D,$E1              ;
 086E: 78             LD    A,B                ;
