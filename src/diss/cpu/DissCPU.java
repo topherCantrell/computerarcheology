@@ -62,6 +62,7 @@ public class DissCPU {
         for(Opcode op : cpu.opcodes) {
         	if(op.code.equals("DDE5")) {
         		System.out.println("CLOSER");
+        		throw new RuntimeException("What is this?");
         	}
         	
             while(pot.length()<(op.getSize()*2)) {
@@ -69,7 +70,8 @@ public class DissCPU {
             }
             if(cpu.couldMatch(pot,op)) {
                 if(ret!=null) {
-                    throw new RuntimeException("OOPS");
+                    //throw new RuntimeException("OOPS");
+                	System.out.println("OOPS");
                 }
                 ret = op;
                 fillin(op, files, addr, fillins);  
