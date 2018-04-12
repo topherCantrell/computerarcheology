@@ -7,17 +7,18 @@ public class Diff {
 
 	public static void main(String[] args) throws IOException {
 		
-		byte [] a = new byte[2048];
-		byte [] b = new byte[2048];
+		byte [] a = new byte[16384];
+		byte [] b = new byte[16384];
 		
-		FileInputStream fisa = new FileInputStream("content/atari2600/combat/combat.bin");
+		FileInputStream fisa = new FileInputStream("content/arcade/galaga/CPU1.bin");
 		fisa.read(a);
 		
-		FileInputStream fisb = new FileInputStream("content/atari2600/combat/combatPAL.bin");
+		FileInputStream fisb = new FileInputStream("content/arcade/galaga/CPU1Fix.bin");
 		fisb.read(b);
 		
-		for(int x=0;x<2048;++x) {
-			if(a[x] == b[x]) System.out.println("Same at "+CU.hex4(x));
+		System.out.println("HERE");
+		for(int x=0;x<16384;++x) {
+			if(a[x] != b[x]) System.out.println("Different at "+CU.hex4(x));
 		}
 		
 		
