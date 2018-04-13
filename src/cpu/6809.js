@@ -19,7 +19,7 @@
 {"mnem":"LBHS s",       "code":"1024smsl",  "bus":""      },
 {"mnem":"LBCC s",       "code":"1024smsl",  "bus":""      },
 {"mnem":"LBLO s",       "code":"1025smsl",  "bus":""      },
-{"mnem":"LBCS s",       "code":"1025smsl",  "bus":""      },
+{"mnem":"LBCS s",       "code":"1025smsl",  "bus":"", "alias":true},
 {"mnem":"LBNE s",       "code":"1026smsl",  "bus":""      },
 {"mnem":"LBEQ s",       "code":"1027smsl",  "bus":""      },
 {"mnem":"LBVC s",       "code":"1028smsl",  "bus":""      },

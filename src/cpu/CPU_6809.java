@@ -55,7 +55,8 @@ public class CPU_6809 extends CPU {
 					String nc = CU.replaceAll(co, "yy", p.code);
 					
 					// Replace the "y" with the postfix contribution to the mnemonic
-					String mn = op.mnemonic;
+					String mn = CU.replaceAll(op.mnemonic,"y", p.mnemonic);
+					
 										
 					Opcode no = new Opcode(mn,nc);	
 					no.bus = ""; // By default we consider these non-memory							

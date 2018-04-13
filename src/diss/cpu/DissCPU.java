@@ -66,7 +66,8 @@ public class DissCPU {
             if(cpu.couldMatch(pot,op)) {
                 if(ret!=null) {
                     //throw new RuntimeException("OOPS "+CU.hex4(addr));
-                	System.out.println("OOPS");
+                	System.out.println("OOPS "+ret.mnemonic+":"+op.mnemonic);
+                	// TODO we can recognize aliases here
                 }
                 ret = op;
                 fillin(op, files, addr, fillins);  
