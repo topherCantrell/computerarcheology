@@ -46,7 +46,9 @@ public class Disassembler {
     	//String [] targs = {"0xF000~content/atari2600/combat/combatPAL.bin","CombatPAL.mark","6502"};
     	//String [] targs = {"0xF000~content/atari2600/spaceinvaders/spcinvad.bin","Code.mark","6502"};
     	
-    	String [] targs = {"0x0000~content/arcade/galaga/UPDAT-3N.bin+content/arcade/galaga/UPDAT-3M.bin+content/arcade/galaga/UPDAT-3L.bin+content/arcade/galaga/UPDAT-3K.bin","Topher.mark","Z80"};
+    	//String [] targs = {"0x0000~content/arcade/galaga/UPDAT-3N.bin+content/arcade/galaga/UPDAT-3M.bin+content/arcade/galaga/UPDAT-3L.bin+content/arcade/galaga/UPDAT-3K.bin","Topher.mark","Z80"};
+    	
+    	String [] targs = {"0xC000~content/CoCo/Downland/downland.bin","Code.mark","6809"};
         args = targs;
                 
         if(args.length<3) {
