@@ -1,3 +1,12 @@
+%%image = downland.jpg
+%%title = Downland Code
+%%cpu   = 6809
+%%-ram  = CoCo/Downland/RAMUse.mark /CoCo/Downland/RAMUse.html
+%%-hard = CoCo/Hardware.mark /CoCo/Hardware.html
+
+* [RAM Usage](RAMUse.html)
+* [Hardware Info](/CoCo/Hardware.html)
+
 C000: 12             NOP                     
 C001: 1A 50          ORCC    #$50            
 C003: 10 CE 01 9F    LDS     #$019F          

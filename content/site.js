@@ -338,6 +338,13 @@
 				 {"copy": "Daggorath.jpg"},
                  {"copy": "daggorath.js"}
                  ]
+             },
+             {"dir": "Downland", "nav": "Downland", "entries" : [
+				 {"mark": "Downland.mark", "out": "index.html"},
+				 {"mark": "RAMUse.mark", "out": "RAMUse.html", "nav":"RAM Use"},
+				 {"mark": "Code.mark", "out": "Code.html", "nav": "Code"},
+				 {"copy": "downland.jpg"}
+                 ]
              }
              
 	    	 ]	    	 

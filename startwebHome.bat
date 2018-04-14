@@ -3,6 +3,6 @@
 @echo Kill this window stop the server.
 @echo.
 
-D:
-cd git\computerarcheology
+C:
+cd \users\tophe\git\computerarcheology
 java SoftServe deploy 80
