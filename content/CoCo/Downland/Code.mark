@@ -8,8 +8,8 @@
 * [Hardware Info](/CoCo/Hardware.html)
 
 C000: 12             NOP                     
-C001: 1A 50          ORCC    #$50            
-C003: 10 CE 01 9F    LDS     #$019F          
+C001: 1A 50          ORCC    #$50            ; Turn off interrupts
+C003: 10 CE 01 9F    LDS     #$019F          ; Stack in low memory
 C007: 8E 00 00       LDX     #$0000          ; Clear ...
 C00A: 6F 80          CLR     ,X+             ; ... 16K ...
 C00C: 8C 40 00       CMPX    #$4000          ; ... of ...
@@ -20,30 +20,33 @@ C013: B7 01 0C       STA     $010C           ; ... to ...
 C016: 8E DC 4D       LDX     #$DC4D          ; ... DC4D ...
 C019: BF 01 0D       STX     $010D           ; ... handler
            
-C01C: 86 35          LDA     #$35            
-C01E: B7 FF 03       STA     $FF03           
-C021: 86 20          LDA     #$20            
-C023: B7 FF 98       STA     $FF98           
-C026: 86 FE          LDA     #$FE            
-C028: B7 FF 02       STA     $FF02           
-C02B: B6 FF 00       LDA     $FF00           
-C02E: 84 10          ANDA    #$10            
-C030: 26 0F          BNE     $C041           
-C032: CC 00 09       LDD     #$0009          
-C035: FD FF B4       STD     $FFB4           
-C038: CC 24 3F       LDD     #$243F          
-C03B: FD FF B6       STD     $FFB6           
-C03E: 86 E8          LDA     #$E8            
-C040: 8C 86 F8       CMPX    #$86F8          
-C043: 97 6A          STA     <$6A            
-C045: BD C2 01       JSR     $C201           
-C048: CC 1C 00       LDD     #$1C00          
-C04B: BD CD F7       JSR     $CDF7           
-C04E: BD CD E3       JSR     $CDE3           
+C01C: 86 35          LDA     #$35            ; Enable ...
+C01E: B7 FF 03       STA     $FF03           ; {-hard_PIA0_CB} ... 60Hz interrupt 
+
+C021: 86 20          LDA     #$20            ; Swap artifact colors ...
+C023: B7 FF 98       STA     $FF98           ; ... in CoCo3 Video Mode (??makes walls blue??)
+C026: 86 FE          LDA     #$FE            ; All columns OFF ...
+C028: B7 FF 02       STA     $FF02           ; {-hard_PIA0_DB} ... except column 0
+C02B: B6 FF 00       LDA     $FF00           ; {-hard_PIA0_DA} Read the rows         
+C02E: 84 10          ANDA    #$10            ; Only keep row 5 (column 0, row 5 = "0")
+C030: 26 0F          BNE     $C041           ; 1 means NOT PRESSED ... use VDG Mode G6R
+; ?? Is this for computers with the GME chip? Like COCO3?
+C032: CC 00 09       LDD     #$0009          ;
+C035: FD FF B4       STD     $FFB4           ; COCO3 low order red/green
+C038: CC 24 3F       LDD     #$243F          ;
+C03B: FD FF B6       STD     $FFB6           ; COCO3 low order blue/composite
+C03E: 86 E8          LDA     #$E8            ; If "0" is pressed E8 - VDG Mode G6C (2 bits per pixel)
+C040: 8C 86 F8       CMPX    #$86F8          ; Normally F8 - VDG Mode G6R (1 bit per pixels with color artifacts)
+C043: 97 6A          STA     <$6A            ; This is our VDG mode from now on
+
+C045: BD C2 01       JSR     $C201           ; {WaitForIRQ} Wait for an IRQ
+C048: CC 1C 00       LDD     #$1C00          ; Display memory ...
+C04B: BD CD F7       JSR     $CDF7           ; {SetDispMem} ... 1C00
+C04E: BD CD E3       JSR     $CDE3           ; Set the graphics mode
 C051: 4F             CLRA                    
 C052: BD C1 F6       JSR     $C1F6           
 C055: BD C2 17       JSR     $C217           
-C058: B7 FF DE       STA     $FFDE           
+C058: B7 FF DE       STA     $FFDE           ; {-hard_mapType} Make sure we are not running in RAM (pirate copy)
 C05B: 8E C0 00       LDX     #$C000          
 C05E: 9F 61          STX     <$61            
 C060: 9F 72          STX     <$72            
@@ -65,9 +68,9 @@ C081: 97 39          STA     <$39
 C083: 86 55          LDA     #$55            
 C085: 97 69          STA     <$69            
 C087: BD CE 0B       JSR     $CE0B           
-C08A: BD C2 01       JSR     $C201           
-C08D: CC 1C 00       LDD     #$1C00          
-C090: BD CD F7       JSR     $CDF7           
+C08A: BD C2 01       JSR     $C201               ; {WaitForIRQ}
+C08D: CC 1C 00       LDD     #$1C00          ; Display memory ...
+C090: BD CD F7       JSR     $CDF7           ; {SetDispMem} ... 1C00
 C093: BD CD E3       JSR     $CDE3           
 C096: BD CE 10       JSR     $CE10           
 C099: 8E 04 00       LDX     #$0400          
@@ -78,10 +81,10 @@ C0A4: CE DA 19       LDU     #$DA19
 C0A7: 8E C2 3D       LDX     #$C23D          
 C0AA: 86 0D          LDA     #$0D            
 C0AC: 97 26          STA     <$26            
-C0AE: 34 10          PSHS    $10             
+C0AE: 34 10          PSHS    X               
 C0B0: AE 84          LDX     ,X              
 C0B2: BD D8 E2       JSR     $D8E2           
-C0B5: 35 10          PULS    $10             
+C0B5: 35 10          PULS    X               
 C0B7: 30 02          LEAX    2,X             
 C0B9: 0A 26          DEC     <$26            
 C0BB: 26 F1          BNE     $C0AE           
@@ -101,15 +104,15 @@ C0E1: CE 00 B3       LDU     #$00B3
 C0E4: 8E 16 CC       LDX     #$16CC          
 C0E7: BD DB 21       JSR     $DB21           
 C0EA: BD D8 E2       JSR     $D8E2           
-C0ED: CC 04 00       LDD     #$0400          
-C0F0: BD CD F7       JSR     $CDF7           
-C0F3: 8E 04 00       LDX     #$0400          
-C0F6: EC 84          LDD     ,X              
-C0F8: ED 89 18 00    STD     $1800,X         
-C0FC: 30 02          LEAX    2,X             
-C0FE: 8C 1C 00       CMPX    #$1C00          
-C101: 26 F3          BNE     $C0F6           
-C103: 1C EF          ANDCC   #$EF            
+C0ED: CC 04 00       LDD     #$0400          ; Display memory ...
+C0F0: BD CD F7       JSR     $CDF7           ; {SetDispMem} ... 400
+C0F3: 8E 04 00       LDX     #$0400          ; Copy ...
+C0F6: EC 84          LDD     ,X              ; ... current ...
+C0F8: ED 89 18 00    STD     $1800,X         ; ... screen ...
+C0FC: 30 02          LEAX    2,X             ; ... to ...
+C0FE: 8C 1C 00       CMPX    #$1C00          ; ... drawing ...
+C101: 26 F3          BNE     $C0F6           ; ... screen
+C103: 1C EF          ANDCC   #$EF            ; Turn interrupts back on
 C105: 96 51          LDA     <$51            
 C107: 97 50          STA     <$50            
 C109: 86 01          LDA     #$01            
@@ -138,9 +141,9 @@ C138: 20 06          BRA     $C140
 C13A: F7 13 64       STB     $1364           
 C13D: 7F 13 70       CLR     $1370           
 C140: BD CF 53       JSR     $CF53           
-C143: B6 FF 00       LDA     $FF00           
-C146: 85 01          BITA    #$01            
-C148: 26 C3          BNE     $C10D           
+C143: B6 FF 00       LDA     $FF00           ; {-hard_PIA0_DA} Check ...
+C146: 85 01          BITA    #$01            ; ... right joystick button
+C148: 26 C3          BNE     $C10D           ; Jump if button is pressed
 C14A: C6 03          LDB     #$03            
 C14C: D7 55          STB     <$55            
 C14E: D7 56          STB     <$56            
@@ -163,7 +166,11 @@ C177: BD CC A3       JSR     $CCA3
 C17A: BD CC D3       JSR     $CCD3           
 C17D: BD CE 68       JSR     $CE68           
 C180: 10 8E 01 AA    LDY     #$01AA          
-C184: BD C6 A9       JSR     $C6A9           
+C184: BD C6 A9       JSR     $C6A9
+
+Maybe the wait-for-start loop?
+           
+WaitStartLoop:
 C187: 96 48          LDA     <$48            
 C189: 27 09          BEQ     $C194           
 C18B: 0F 48          CLR     <$48            
@@ -182,14 +189,14 @@ C1AC: A7 02          STA     2,X
 C1AE: A6 84          LDA     ,X              
 C1B0: 84 40          ANDA    #$40            
 C1B2: 26 10          BNE     $C1C4           
-C1B4: 34 01          PSHS    $01             
+C1B4: 34 01          PSHS    CC              
 C1B6: 1A 50          ORCC    #$50            
 C1B8: 86 FD          LDA     #$FD            
 C1BA: A7 02          STA     2,X             
 C1BC: E6 84          LDB     ,X              
 C1BE: C4 40          ANDB    #$40            
 C1C0: 26 F6          BNE     $C1B8           
-C1C2: 35 01          PULS    $01             
+C1C2: 35 01          PULS    CC              
 C1C4: B6 01 A2       LDA     $01A2           
 C1C7: 4A             DECA                    
 C1C8: 26 0E          BNE     $C1D8           
@@ -198,30 +205,35 @@ C1CD: 84 07          ANDA    #$07
 C1CF: 81 06          CMPA    #$06            
 C1D1: 25 05          BCS     $C1D8           
 C1D3: 86 2F          LDA     #$2F            
-C1D5: B7 FF 20       STA     $FF20           
+C1D5: B7 FF 20       STA     $FF20               ; {-hard_PIA1_DA} Sound
 C1D8: BD CF 53       JSR     $CF53           
 C1DB: 86 02          LDA     #$02            
-C1DD: B7 FF 20       STA     $FF20           
+C1DD: B7 FF 20       STA     $FF20               ; {-hard_PIA1_DA} Sound
 C1E0: BD CA B6       JSR     $CAB6           
 C1E3: BD CB C3       JSR     $CBC3           
-C1E6: 96 14          LDA     <$14            
+
+C1E6: 96 14          LDA     <$14                ; {-ram_m0014}
 C1E8: 27 04          BEQ     $C1EE           
-C1EA: 0F 14          CLR     <$14            
-C1EC: 20 99          BRA     $C187           
+C1EA: 0F 14          CLR     <$14                ; {-ram_m0014}
+C1EC: 20 99          BRA     $C187               ; {WaitStartLoop}
 C1EE: 8E 00 23       LDX     #$0023          
 C1F1: BD DC 39       JSR     $DC39           
-C1F4: 20 F0          BRA     $C1E6           
+C1F4: 20 F0          BRA     $C1E6
+           
 C1F6: 8E 7E 00       LDX     #$7E00          
 C1F9: A7 80          STA     ,X+             
 C1FB: 8C 80 00       CMPX    #$8000          
 C1FE: 26 F9          BNE     $C1F9           
 C200: 39             RTS                     
-C201: 34 01          PSHS    $01             
-C203: 0F 14          CLR     <$14            
-C205: 1C EF          ANDCC   #$EF            
-C207: 96 14          LDA     <$14            
-C209: 27 FC          BEQ     $C207           
-C20B: 35 81          PULS    $81             
+
+WaitForIRQ:
+C201: 34 01          PSHS    CC              ; Hold the interrupt mask
+C203: 0F 14          CLR     <$14            ; {-ram_m0014} Clear the trigger
+C205: 1C EF          ANDCC   #$EF            ; Enable IRQ
+C207: 96 14          LDA     <$14            ; {-ram_m0014} Has the interrupt service incremented the trigger?
+C209: 27 FC          BEQ     $C207           ; No ... keep waiting
+C20B: 35 81          PULS    CC,PC           ; Restore interrupt status and done
+
 C20D: 8E 00 BB       LDX     #$00BB          
 C210: 6F 80          CLR     ,X+             
 C212: 8C 00 D3       CMPX    #$00D3          
@@ -233,14 +245,14 @@ C21D: 97 CA          STA     <$CA
 C21F: 97 D2          STA     <$D2            
 C221: 39             RTS                     
 C222: 8E 00 B3       LDX     #$00B3          
-C225: 34 50          PSHS    $50             
+C225: 34 50          PSHS    U,X             
 C227: A6 C0          LDA     ,U+             
 C229: 2B 06          BMI     $C231           
 C22B: A1 80          CMPA    ,X+             
 C22D: 27 F8          BEQ     $C227           
 C22F: 22 02          BHI     $C233           
-C231: 35 D0          PULS    $D0             
-C233: 35 50          PULS    $50             
+C231: 35 D0          PULS    X,U,PC          
+C233: 35 50          PULS    X,U             
 C235: A6 C0          LDA     ,U+             
 C237: 2B E8          BMI     $C221           
 C239: A7 80          STA     ,X+             
@@ -262,7 +274,7 @@ C251: 15             ???
 C252: 8B 18          ADDA    #$18            
 C254: 06 19          ROR     <$19            
 C256: 46             RORA                    
-C257: 35 20          PULS    $20             
+C257: 35 20          PULS    Y               
 C259: 10 9E 3D       LDY     <$3D            
 C25C: 86 0A          LDA     #$0A            
 C25E: 97 43          STA     <$43            
@@ -362,9 +374,9 @@ C32D: 20 08          BRA     $C337
 C32F: C3 01 2C       ADDD    #$012C          
 C332: 20 03          BRA     $C337           
 C334: C3 01 90       ADDD    #$0190          
-C337: 34 20          PSHS    $20             
+C337: 34 20          PSHS    Y               
 C339: BD DB 0C       JSR     $DB0C           
-C33C: 35 20          PULS    $20             
+C33C: 35 20          PULS    Y               
 C33E: BD D1 42       JSR     $D142           
 C341: D7 26          STB     <$26            
 C343: 8D 0C          BSR     $C351           
@@ -381,10 +393,10 @@ C35E: 39             RTS
 C35F: 97 4D          STA     <$4D            
 C361: D7 26          STB     <$26            
 C363: 86 FF          LDA     #$FF            
-C365: B7 FF 20       STA     $FF20           
+C365: B7 FF 20       STA     $FF20               ; {-hard_PIA1_DA} Sound
 C368: 8D 0C          BSR     $C376           
 C36A: 86 02          LDA     #$02            
-C36C: B7 FF 20       STA     $FF20           
+C36C: B7 FF 20       STA     $FF20               ; {-hard_PIA1_DA} Sound
 C36F: 8D 05          BSR     $C376           
 C371: 0A 26          DEC     <$26            
 C373: 26 EE          BNE     $C363           
@@ -427,7 +439,7 @@ C3B7: A6 38          LDA     -8,Y
 C3B9: 4A             DECA                    
 C3BA: 26 05          BNE     $C3C1           
 C3BC: C6 3F          LDB     #$3F            
-C3BE: F7 FF 20       STB     $FF20           
+C3BE: F7 FF 20       STB     $FF20               ; {-hard_PIA1_DA} Sound
 C3C1: A6 3B          LDA     -5,Y            
 C3C3: 27 ED          BEQ     $C3B2           
 C3C5: 81 01          CMPA    #$01            
@@ -456,25 +468,25 @@ C3F8: 26 04          BNE     $C3FE
 C3FA: 33 C9 01 68    LEAU    $0168,U         
 C3FE: AE 2C          LDX     12,Y            
 C400: 30 88 20       LEAX    $20,X           
-C403: 34 20          PSHS    $20             
+C403: 34 20          PSHS    Y               
 C405: 10 8E 00 74    LDY     #$0074          
 C409: 86 05          LDA     #$05            
 C40B: 97 26          STA     <$26            
-C40D: 37 06          PULU    $06             
+C40D: 37 06          PULU    A,B             
 C40F: A4 84          ANDA    ,X              
 C411: AA 89 18 00    ORA     $1800,X         
 C415: A7 A0          STA     ,Y+             
 C417: E4 01          ANDB    1,X             
 C419: EA 89 18 01    ORB     $1801,X         
 C41D: E7 A0          STB     ,Y+             
-C41F: 37 02          PULU    $02             
+C41F: 37 02          PULU    A               
 C421: A4 02          ANDA    2,X             
 C423: AA 89 18 02    ORA     $1802,X         
 C427: A7 A0          STA     ,Y+             
 C429: 30 88 60       LEAX    $60,X           
 C42C: 0A 26          DEC     <$26            
 C42E: 26 DD          BNE     $C40D           
-C430: 35 20          PULS    $20             
+C430: 35 20          PULS    Y               
 C432: CE 34 00       LDU     #$3400          
 C435: A6 38          LDA     -8,Y            
 C437: C6 C0          LDB     #$C0            
@@ -494,18 +506,18 @@ C44F: 26 04          BNE     $C455
 C451: 33 C9 04 80    LEAU    $0480,U         
 C455: AE 2C          LDX     12,Y            
 C457: 30 89 18 20    LEAX    $1820,X         
-C45B: 34 20          PSHS    $20             
+C45B: 34 20          PSHS    Y               
 C45D: 10 8E 00 74    LDY     #$0074          
 C461: 86 05          LDA     #$05            
 C463: 97 26          STA     <$26            
-C465: 37 06          PULU    $06             
+C465: 37 06          PULU    A,B             
 C467: AA 84          ORA     ,X              
 C469: A1 A0          CMPA    ,Y+             
 C46B: 10 26 FD E8    LBNE    $FDE8           
 C46F: EA 01          ORB     1,X             
 C471: E1 A0          CMPB    ,Y+             
 C473: 10 26 FD E0    LBNE    $FDE0           
-C477: 37 02          PULU    $02             
+C477: 37 02          PULU    A               
 C479: AA 02          ORA     2,X             
 C47B: A1 A0          CMPA    ,Y+             
 C47D: 10 26 FD D6    LBNE    $FDD6           
@@ -513,7 +525,7 @@ C481: 30 88 60       LEAX    $60,X
 C484: 33 46          LEAU    6,U             
 C486: 0A 26          DEC     <$26            
 C488: 26 DB          BNE     $C465           
-C48A: 35 20          PULS    $20             
+C48A: 35 20          PULS    Y               
 C48C: 96 2C          LDA     <$2C            
 C48E: 10 26 03 17    LBNE    $0317           
 C492: A6 35          LDA     -11,Y           
@@ -526,9 +538,9 @@ C4A3: A4 89 18 00    ANDA    $1800,X
 C4A7: E4 89 18 01    ANDB    $1801,X         
 C4AB: 10 93 1B       CMPD    <$1B            
 C4AE: 27 0E          BEQ     $C4BE           
-C4B0: 34 04          PSHS    $04             
+C4B0: 34 04          PSHS    B               
 C4B2: BD CA 9B       JSR     $CA9B           
-C4B5: 35 02          PULS    $02             
+C4B5: 35 02          PULS    A               
 C4B7: 26 73          BNE     $C52C           
 C4B9: BD CA 9B       JSR     $CA9B           
 C4BC: 26 6E          BNE     $C52C           
@@ -553,7 +565,7 @@ C4E5: 20 19          BRA     $C500
 C4E7: 8E C5 09       LDX     #$C509          
 C4EA: E6 26          LDB     6,Y             
 C4EC: C4 03          ANDB    #$03            
-C4EE: 1F 98          TFR     $98             
+C4EE: 1F 98          TFR     B,A             
 C4F0: E6 85          LDB     B,X             
 C4F2: AE 28          LDX     8,Y             
 C4F4: 3A             ABX                     
@@ -684,7 +696,7 @@ C5FC: 86 05          LDA     #$05
 C5FE: A7 84          STA     ,X              
 C600: 6A 84          DEC     ,X              
 C602: 10 2B 16 06    LBMI    $1606           
-C606: 34 20          PSHS    $20             
+C606: 34 20          PSHS    Y               
 C608: 96 50          LDA     <$50            
 C60A: 84 02          ANDA    #$02            
 C60C: 10 27 00 95    LBEQ    $0095           
@@ -706,7 +718,7 @@ C630: 96 39          LDA     <$39
 C632: A7 04          STA     4,X             
 C634: BD CE 10       JSR     $CE10           
 C637: CC 1C 00       LDD     #$1C00          
-C63A: BD CD F7       JSR     $CDF7           
+C63A: BD CD F7       JSR     $CDF7               ; {SetDispMem}
 C63D: CE CE C4       LDU     #$CEC4          
 C640: BD D2 4E       JSR     $D24E           
 C643: 96 52          LDA     <$52            
@@ -715,10 +727,10 @@ C647: 8E C5 DA       LDX     #$C5DA
 C64A: EE 86          LDU     A,X             
 C64C: 8E 0F 66       LDX     #$0F66          
 C64F: BD D8 E2       JSR     $D8E2           
-C652: BD C2 01       JSR     $C201           
+C652: BD C2 01       JSR     $C201               ; {WaitForIRQ}
 C655: 1C EF          ANDCC   #$EF            
 C657: CC 04 00       LDD     #$0400          
-C65A: BD CD F7       JSR     $CDF7           
+C65A: BD CD F7       JSR     $CDF7               ; {SetDispMem}
 C65D: 8E 04 00       LDX     #$0400          
 C660: EC 81          LDD     ,X++            
 C662: ED 89 17 FE    STD     $17FE,X         
@@ -750,7 +762,7 @@ C69B: 84 02          ANDA    #$02
 C69D: AE 86          LDX     A,X             
 C69F: 10 AE E4       LDY     ,S              
 C6A2: BD CC D3       JSR     $CCD3           
-C6A5: 35 20          PULS    $20             
+C6A5: 35 20          PULS    Y               
 C6A7: 6C 3B          INC     -5,Y            
 C6A9: 86 28          LDA     #$28            
 C6AB: A7 3D          STA     -3,Y            
@@ -776,7 +788,7 @@ C6D2: A7 3D          STA     -3,Y
 C6D4: 26 5A          BNE     $C730           
 C6D6: DC 4B          LDD     <$4B            
 C6D8: 26 56          BNE     $C730           
-C6DA: 34 20          PSHS    $20             
+C6DA: 34 20          PSHS    Y               
 C6DC: 10 8E 01 E9    LDY     #$01E9          
 C6E0: BD C5 C8       JSR     $C5C8           
 C6E3: A6 84          LDA     ,X              
@@ -791,7 +803,7 @@ C6F2: ED 84          STD     ,X
 C6F4: 30 88 20       LEAX    $20,X           
 C6F7: 0A 26          DEC     <$26            
 C6F9: 26 F7          BNE     $C6F2           
-C6FB: 35 20          PULS    $20             
+C6FB: 35 20          PULS    Y               
 C6FD: 6F 3E          CLR     -2,Y            
 C6FF: AE 28          LDX     8,Y             
 C701: E6 3F          LDB     -1,Y            
@@ -812,7 +824,7 @@ C722: 97 2F          STA     <$2F
 C724: 6F 38          CLR     -8,Y            
 C726: 0F 2E          CLR     <$2E            
 C728: 86 7F          LDA     #$7F            
-C72A: B7 FF 20       STA     $FF20           
+C72A: B7 FF 20       STA     $FF20               ; {-hard_PIA1_DA} Sound
 C72D: 7E C7 BE       JMP     $C7BE           
 C730: 4F             CLRA                    
 C731: 7E C8 5F       JMP     $C85F           
@@ -838,7 +850,7 @@ C75C: A7 3C          STA     -4,Y
 C75E: CC 00 36       LDD     #$0036          
 C761: ED 22          STD     2,Y             
 C763: 96 52          LDA     <$52            
-C765: B5 FF 00       BITA    $FF00           
+C765: B5 FF 00       BITA    $FF00               ; {-hard_PIA0_DA}
 C768: 26 5D          BNE     $C7C7           
 C76A: 96 31          LDA     <$31            
 C76C: 26 5B          BNE     $C7C9           
@@ -872,7 +884,7 @@ C7A6: 7E C8 79       JMP     $C879
 C7A9: 96 2C          LDA     <$2C            
 C7AB: 48             LSLA                    
 C7AC: 8A 02          ORA     #$02            
-C7AE: B7 FF 20       STA     $FF20           
+C7AE: B7 FF 20       STA     $FF20               ; {-hard_PIA1_DA} Sound
 C7B1: EC A4          LDD     ,Y              
 C7B3: C3 00 03       ADDD    #$0003          
 C7B6: ED A4          STD     ,Y              
@@ -946,7 +958,7 @@ C843: BD C5 25       JSR     $C525
 C846: 0C 36          INC     <$36            
 C848: 96 36          LDA     <$36            
 C84A: 81 14          CMPA    #$14            
-C84C: 10 22 FF 36    LBHI    $FF36           
+C84C: 10 22 FF 36    LBHI    $FF36           ; ?? WRONG. This is a relative offset -- not a destination
 C850: DC 1B          LDD     <$1B            
 C852: 20 03          BRA     $C857           
 C854: CC 00 36       LDD     #$0036          
@@ -979,9 +991,9 @@ C88B: A4 89 18 00    ANDA    $1800,X
 C88F: E4 89 18 01    ANDB    $1801,X         
 C893: 10 93 1B       CMPD    <$1B            
 C896: 27 1D          BEQ     $C8B5           
-C898: 34 04          PSHS    $04             
+C898: 34 04          PSHS    B               
 C89A: 8D 1D          BSR     $C8B9           
-C89C: 35 02          PULS    $02             
+C89C: 35 02          PULS    A               
 C89E: 26 04          BNE     $C8A4           
 C8A0: 8D 17          BSR     $C8B9           
 C8A2: 27 11          BEQ     $C8B5           
@@ -1012,9 +1024,9 @@ C8D6: A4 89 18 00    ANDA    $1800,X
 C8DA: E4 89 18 01    ANDB    $1801,X         
 C8DE: 10 93 1B       CMPD    <$1B            
 C8E1: 27 0C          BEQ     $C8EF           
-C8E3: 34 04          PSHS    $04             
+C8E3: 34 04          PSHS    B               
 C8E5: 8D D2          BSR     $C8B9           
-C8E7: 35 02          PULS    $02             
+C8E7: 35 02          PULS    A               
 C8E9: 26 0C          BNE     $C8F7           
 C8EB: 8D CC          BSR     $C8B9           
 C8ED: 26 08          BNE     $C8F7           
@@ -1039,7 +1051,7 @@ C911: 48             LSLA
 C912: 48             LSLA                    
 C913: 48             LSLA                    
 C914: 8A 1A          ORA     #$1A            
-C916: B7 FF 20       STA     $FF20           
+C916: B7 FF 20       STA     $FF20               ; {-hard_PIA1_DA} Sound
 C919: A6 24          LDA     4,Y             
 C91B: 97 23          STA     <$23            
 C91D: A6 35          LDA     -11,Y           
@@ -1047,13 +1059,13 @@ C91F: 26 59          BNE     $C97A
 C921: 8E C5 09       LDX     #$C509          
 C924: E6 26          LDB     6,Y             
 C926: C4 03          ANDB    #$03            
-C928: 1F 98          TFR     $98             
+C928: 1F 98          TFR     B,A             
 C92A: E6 85          LDB     B,X             
-C92C: 34 06          PSHS    $06             
+C92C: 34 06          PSHS    B,A             
 C92E: BD D8 52       JSR     $D852           
 C931: ED 28          STD     8,Y             
-C933: 1F 01          TFR     $01             
-C935: 35 06          PULS    $06             
+C933: 1F 01          TFR     D,X             
+C935: 35 06          PULS    A,B             
 C937: 30 89 01 E0    LEAX    $01E0,X         
 C93B: 3A             ABX                     
 C93C: 48             LSLA                    
@@ -1063,9 +1075,9 @@ C942: A4 89 18 00    ANDA    $1800,X
 C946: E4 89 18 01    ANDB    $1801,X         
 C94A: 10 93 1B       CMPD    <$1B            
 C94D: 27 30          BEQ     $C97F           
-C94F: 34 04          PSHS    $04             
+C94F: 34 04          PSHS    B               
 C951: BD CA 9B       JSR     $CA9B           
-C954: 35 02          PULS    $02             
+C954: 35 02          PULS    A               
 C956: 26 05          BNE     $C95D           
 C958: BD CA 9B       JSR     $CA9B           
 C95B: 27 22          BEQ     $C97F           
@@ -1116,7 +1128,7 @@ C9B8: 39             RTS
 C9B9: A6 3E          LDA     -2,Y            
 C9BB: 10 2E 00 D9    LBGT    $00D9           
 C9BF: E6 3C          LDB     -4,Y            
-C9C1: 34 20          PSHS    $20             
+C9C1: 34 20          PSHS    Y               
 C9C3: 10 8E 01 E9    LDY     #$01E9          
 C9C7: A7 3E          STA     -2,Y            
 C9C9: E7 3C          STB     -4,Y            
@@ -1148,7 +1160,7 @@ CA02: 26 04          BNE     $CA08
 CA04: 33 C9 04 80    LEAU    $0480,U         
 CA08: DF 45          STU     <$45            
 CA0A: BD DC 39       JSR     $DC39           
-CA0D: 1F 52          TFR     $52             
+CA0D: 1F 52          TFR     PC,Y            
 CA0F: 31 A5          LEAY    B,Y             
 CA11: EC C4          LDD     ,U              
 CA13: 48             LSLA                    
@@ -1179,7 +1191,7 @@ CA43: 3D             MUL
 CA44: 33 CB          LEAU    D,U             
 CA46: 6F 2E          CLR     14,Y            
 CA48: BD DC 39       JSR     $DC39           
-CA4B: 1F 52          TFR     $52             
+CA4B: 1F 52          TFR     PC,Y            
 CA4D: 31 A5          LEAY    B,Y             
 CA4F: EC C4          LDD     ,U              
 CA51: 48             LSLA                    
@@ -1200,11 +1212,11 @@ CA70: A7 02          STA     2,X
 CA72: 30 88 20       LEAX    $20,X           
 CA75: 0A 26          DEC     <$26            
 CA77: 26 D6          BNE     $CA4F           
-CA79: 35 20          PULS    $20             
+CA79: 35 20          PULS    Y               
 CA7B: 39             RTS                     
-CA7C: 37 06          PULU    $06             
+CA7C: 37 06          PULU    A,B             
 CA7E: ED 84          STD     ,X              
-CA80: 37 02          PULU    $02             
+CA80: 37 02          PULU    A               
 CA82: A7 02          STA     2,X             
 CA84: 30 88 20       LEAX    $20,X           
 CA87: 0A 26          DEC     <$26            
@@ -1214,7 +1226,7 @@ CA8D: A6 3B          LDA     -5,Y
 CA8F: 30 86          LEAX    A,X             
 CA91: AF 24          STX     4,Y             
 CA93: 7E C9 E1       JMP     $C9E1           
-CA96: 35 20          PULS    $20             
+CA96: 35 20          PULS    Y               
 CA98: 0C 48          INC     <$48            
 CA9A: 39             RTS                     
 CA9B: 97 34          STA     <$34            
@@ -1241,7 +1253,7 @@ CAC2: 2B 5F          BMI     $CB23
 CAC4: 8E C5 09       LDX     #$C509          
 CAC7: E6 26          LDB     6,Y             
 CAC9: C4 03          ANDB    #$03            
-CACB: 1F 98          TFR     $98             
+CACB: 1F 98          TFR     B,A             
 CACD: E6 85          LDB     B,X             
 CACF: AE 28          LDX     8,Y             
 CAD1: 30 89 01 00    LEAX    $0100,X         
@@ -1253,9 +1265,9 @@ CADC: A4 89 18 00    ANDA    $1800,X
 CAE0: E4 89 18 01    ANDB    $1801,X         
 CAE4: 10 93 1B       CMPD    <$1B            
 CAE7: 27 0C          BEQ     $CAF5           
-CAE9: 34 04          PSHS    $04             
+CAE9: 34 04          PSHS    B               
 CAEB: 8D AE          BSR     $CA9B           
-CAED: 35 02          PULS    $02             
+CAED: 35 02          PULS    A               
 CAEF: 26 27          BNE     $CB18           
 CAF1: 8D A8          BSR     $CA9B           
 CAF3: 26 23          BNE     $CB18           
@@ -1303,13 +1315,13 @@ CB4B: ED 26          STD     6,Y
 CB4D: 8E C5 09       LDX     #$C509          
 CB50: E6 26          LDB     6,Y             
 CB52: C4 03          ANDB    #$03            
-CB54: 1F 98          TFR     $98             
+CB54: 1F 98          TFR     B,A             
 CB56: E6 85          LDB     B,X             
-CB58: 34 06          PSHS    $06             
+CB58: 34 06          PSHS    B,A             
 CB5A: BD D8 52       JSR     $D852           
 CB5D: ED 28          STD     8,Y             
-CB5F: 1F 01          TFR     $01             
-CB61: 35 06          PULS    $06             
+CB5F: 1F 01          TFR     D,X             
+CB61: 35 06          PULS    A,B             
 CB63: 30 89 00 A0    LEAX    $00A0,X         
 CB67: 3A             ABX                     
 CB68: 48             LSLA                    
@@ -1319,9 +1331,9 @@ CB6E: A4 89 18 00    ANDA    $1800,X
 CB72: E4 89 18 01    ANDB    $1801,X         
 CB76: 10 93 1B       CMPD    <$1B            
 CB79: 27 12          BEQ     $CB8D           
-CB7B: 34 04          PSHS    $04             
+CB7B: 34 04          PSHS    B               
 CB7D: BD CA 9B       JSR     $CA9B           
-CB80: 35 02          PULS    $02             
+CB80: 35 02          PULS    A               
 CB82: 26 05          BNE     $CB89           
 CB84: BD CA 9B       JSR     $CA9B           
 CB87: 27 04          BEQ     $CB8D           
@@ -1487,13 +1499,13 @@ CCD1: 27 DD          BEQ     $CCB0
 CCD3: A6 05          LDA     5,X             
 CCD5: 81 21          CMPA    #$21            
 CCD7: 26 12          BNE     $CCEB           
-CCD9: 34 30          PSHS    $30             
+CCD9: 34 30          PSHS    Y,X             
 CCDB: 0C 3A          INC     <$3A            
 CCDD: BD D1 4C       JSR     $D14C           
 CCE0: BD CE CF       JSR     $CECF           
 CCE3: CC 27 10       LDD     #$2710          
 CCE6: BD DB 0C       JSR     $DB0C           
-CCE9: 35 30          PULS    $30             
+CCE9: 35 30          PULS    X,Y             
 CCEB: EC 02          LDD     2,X             
 CCED: A7 24          STA     4,Y             
 CCEF: E7 26          STB     6,Y             
@@ -1557,7 +1569,7 @@ CD77: 7E CF 0F       JMP     $CF0F
 CD7A: 30 88 06       LEAX    $06,X           
 CD7D: 7E CC B6       JMP     $CCB6           
 CD80: 39             RTS                     
-CD81: 34 50          PSHS    $50             
+CD81: 34 50          PSHS    U,X             
 CD83: EC 84          LDD     ,X              
 CD85: 81 FF          CMPA    #$FF            
 CD87: 27 3E          BEQ     $CDC7           
@@ -1565,13 +1577,13 @@ CD89: C1 40          CMPB    #$40
 CD8B: 25 03          BCS     $CD90           
 CD8D: CB 07          ADDB    #$07            
 CD8F: 8C C0 04       CMPX    #$C004          
-CD92: 34 04          PSHS    $04             
+CD92: 34 04          PSHS    B               
 CD94: BD D8 56       JSR     $D856           
-CD97: 1F 03          TFR     $03             
-CD99: 35 02          PULS    $02             
+CD97: 1F 03          TFR     D,U             
+CD99: 35 02          PULS    A               
 CD9B: 84 03          ANDA    #$03            
 CD9D: 97 26          STA     <$26            
-CD9F: 34 40          PSHS    $40             
+CD9F: 34 40          PSHS    U               
 CDA1: CE 00 83       LDU     #$0083          
 CDA4: 8E DF 0A       LDX     #$DF0A          
 CDA7: 86 10          LDA     #$10            
@@ -1585,11 +1597,11 @@ CDB5: 96 26          LDA     <$26
 CDB7: 27 29          BEQ     $CDE2           
 CDB9: C6 10          LDB     #$10            
 CDBB: 8D 0C          BSR     $CDC9           
-CDBD: 35 40          PULS    $40             
+CDBD: 35 40          PULS    U               
 CDBF: 8E 00 83       LDX     #$0083          
 CDC2: 86 10          LDA     #$10            
 CDC4: BD D8 9B       JSR     $D89B           
-CDC7: 35 D0          PULS    $D0             
+CDC7: 35 D0          PULS    X,U,PC          
 CDC9: 8E 00 83       LDX     #$0083          
 CDCC: 96 26          LDA     <$26            
 CDCE: 64 84          LSR     ,X              
@@ -1604,25 +1616,30 @@ CDDD: 30 03          LEAX    3,X
 CDDF: 5A             DECB                    
 CDE0: 26 EA          BNE     $CDCC           
 CDE2: 39             RTS                     
-CDE3: B6 FF 22       LDA     $FF22           
-CDE6: 84 07          ANDA    #$07            
-CDE8: 9A 6A          ORA     <$6A            
-CDEA: B7 FF 22       STA     $FF22           
-CDED: B7 FF C0       STA     $FFC0           
-CDF0: B7 FF C3       STA     $FFC3           
-CDF3: B7 FF C5       STA     $FFC5           
+
+SetVDGMode:
+CDE3: B6 FF 22       LDA     $FF22           ; {-hard_PIA1_DB} Current VDG settings
+CDE6: 84 07          ANDA    #$07            ; Clear out the top 5 bits (the VDG settings)
+CDE8: 9A 6A          ORA     <$6A            ; Set the desired ...
+CDEA: B7 FF 22       STA     $FF22           ; {-hard_PIA1_DB} ... mode
+CDED: B7 FF C0       STA     $FFC0           ; {-hard_dispMode}
+CDF0: B7 FF C3       STA     $FFC3           ; {-hard_dispMode}
+CDF3: B7 FF C5       STA     $FFC5           ; {-hard_dispMode}
 CDF6: 39             RTS                     
-CDF7: 8E FF C6       LDX     #$FFC6          
-CDFA: 44             LSRA                    
-CDFB: C6 07          LDB     #$07            
-CDFD: 44             LSRA                    
-CDFE: 25 03          BCS     $CE03           
-CE00: A7 84          STA     ,X              
-CE02: 8C A7 01       CMPX    #$A701          
-CE05: 30 02          LEAX    2,X             
-CE07: 5A             DECB                    
-CE08: 26 F3          BNE     $CDFD           
-CE0A: 39             RTS                     
+
+SetDispMem:
+CDF7: 8E FF C6       LDX     #$FFC6          ; Start of offset registers
+CDFA: 44             LSRA                    ; Only 7 bits -- discard the lowest
+CDFB: C6 07          LDB     #$07            ; 7 bits to set
+CDFD: 44             LSRA                    ; Test the bit
+CDFE: 25 03          BCS     $CE03           ; Bit is a one ... write to the SET register 
+CE00: A7 84          STA     ,X              ; Write to the CLEAR register for the bit
+CE02: 8C A7 01       CMPX    #$A701          ; STA 1,X
+CE05: 30 02          LEAX    2,X             ; Next register pair in SAM
+CE07: 5A             DECB                    ; All done?
+CE08: 26 F3          BNE     $CDFD           ; No ... set all the bits
+CE0A: 39             RTS                     ; Done
+
 CE0B: 8E 1C 00       LDX     #$1C00          
 CE0E: 20 03          BRA     $CE13           
 CE10: 8E 04 00       LDX     #$0400          
@@ -1633,7 +1650,7 @@ CE1A: 26 F9          BNE     $CE15
 CE1C: 39             RTS                     
 CE1D: 6F E2          CLR     ,-S             
 CE1F: 8E 04 00       LDX     #$0400          
-CE22: 1F 10          TFR     $10             
+CE22: 1F 10          TFR     X,D             
 CE24: C5 1F          BITB    #$1F            
 CE26: 26 08          BNE     $CE30           
 CE28: 10 8E 04 00    LDY     #$0400          
@@ -1647,11 +1664,11 @@ CE3A: 26 05          BNE     $CE41
 CE3C: 86 55          LDA     #$55            
 CE3E: A7 88 20       STA     $20,X           
 CE41: 30 89 04 00    LEAX    $0400,X         
-CE45: 34 04          PSHS    $04             
-CE47: 1F 10          TFR     $10             
+CE45: 34 04          PSHS    B               
+CE47: 1F 10          TFR     X,D             
 CE49: 8A 02          ORA     #$02            
-CE4B: B7 FF 20       STA     $FF20           
-CE4E: 35 04          PULS    $04             
+CE4B: B7 FF 20       STA     $FF20               ; {-hard_PIA1_DA}
+CE4E: 35 04          PULS    B               
 CE50: 5A             DECB                    
 CE51: 26 DF          BNE     $CE32           
 CE53: 30 89 E8 01    LEAX    $E801,X         
@@ -1661,7 +1678,7 @@ CE5C: 86 FF          LDA     #$FF
 CE5E: A7 E4          STA     ,S              
 CE60: 8C 08 00       CMPX    #$0800          
 CE63: 26 BD          BNE     $CE22           
-CE65: 35 02          PULS    $02             
+CE65: 35 02          PULS    A               
 CE67: 39             RTS                     
 CE68: 10 8E 01 AA    LDY     #$01AA          
 CE6C: 86 02          LDA     #$02            
@@ -1700,11 +1717,12 @@ CEB1: 0B             ???
 CEB2: 0C 0D          INC     <$0D            
 CEB4: 0E FF          JMP     <$FF            
 CEB6: BD CE 10       JSR     $CE10           
-CEB9: BD CD E3       JSR     $CDE3           
+CEB9: BD CD E3       JSR     $CDE3           ; Set the graphics mode
 CEBC: 8E D2 5A       LDX     #$D25A          
 CEBF: 9F 3B          STX     <$3B            
 CEC1: 0F 39          CLR     <$39            
 CEC3: 39             RTS                     
+
 CEC4: 80 0C          SUBA    #$0C            
 CEC6: 04 81          LSR     <$81            
 CEC8: 0A 89          DEC     <$89            
@@ -1852,7 +1870,7 @@ CFEF: E7 25          STB     5,Y
 CFF1: 8B 06          ADDA    #$06            
 CFF3: CB 04          ADDB    #$04            
 CFF5: BD D8 56       JSR     $D856           
-CFF8: 1F 01          TFR     $01             
+CFF8: 1F 01          TFR     D,X             
 CFFA: A6 89 18 00    LDA     $1800,X         
 CFFE: 8E D8 4A       LDX     #$D84A          
 D001: E6 25          LDB     5,Y             
@@ -1943,7 +1961,7 @@ D09F: 0F 02          CLR     <$02
 D0A1: 3E             RESET                   
 D0A2: 0F 01          CLR     <$01            
 D0A4: 3E             RESET                   
-D0A5: 37 09          PULU    $09             
+D0A5: 37 09          PULU    CC,DP           
 D0A7: 6B             ???                     
 D0A8: 27 04          BEQ     $D0AE           
 D0AA: 98 0F          EORA    <$0F            
@@ -1965,7 +1983,7 @@ D0C2: 0F 01          CLR     <$01
 D0C4: 3E             RESET                   
 D0C5: 0F 08          CLR     <$08            
 D0C7: 4D             TSTA                    
-D0C8: 1F 01          TFR     $01             
+D0C8: 1F 01          TFR     D,X             
 D0CA: 98 2F          EORA    <$2F            
 D0CC: 01             ???                     
 D0CD: 98 57          EORA    <$57            
@@ -1975,7 +1993,7 @@ D0D2: 0F 01          CLR     <$01
 D0D4: 3E             RESET                   
 D0D5: 67 0A          ASR     10,X            
 D0D7: 6B             ???                     
-D0D8: 1F 01          TFR     $01             
+D0D8: 1F 01          TFR     D,X             
 D0DA: 98 0F          EORA    <$0F            
 D0DC: 02             ???                     
 D0DD: 98 47          EORA    <$47            
@@ -2039,7 +2057,7 @@ D13F: 26 F9          BNE     $D13A
 D141: 39             RTS                     
 D142: EC 22          LDD     2,Y             
 D144: BD D8 56       JSR     $D856           
-D147: 1F 01          TFR     $01             
+D147: 1F 01          TFR     D,X             
 D149: C6 0A          LDB     #$0A            
 D14B: 39             RTS                     
 D14C: 86 FF          LDA     #$FF            
@@ -2073,7 +2091,7 @@ D186: D7 26          STB     <$26
 D188: 8E 02 71       LDX     #$0271          
 D18B: C6 05          LDB     #$05            
 D18D: D7 4D          STB     <$4D            
-D18F: 34 10          PSHS    $10             
+D18F: 34 10          PSHS    X               
 D191: D6 4D          LDB     <$4D            
 D193: 5A             DECB                    
 D194: 86 05          LDA     #$05            
@@ -2083,7 +2101,7 @@ D199: 86 03          LDA     #$03
 D19B: A7 84          STA     ,X              
 D19D: D6 4D          LDB     <$4D            
 D19F: 5A             DECB                    
-D1A0: 1F 98          TFR     $98             
+D1A0: 1F 98          TFR     B,A             
 D1A2: 48             LSLA                    
 D1A3: EC C6          LDD     A,U             
 D1A5: ED 02          STD     2,X             
@@ -2092,7 +2110,7 @@ D1A9: 26 07          BNE     $D1B2
 D1AB: BD DC 39       JSR     $DC39           
 D1AE: C4 01          ANDB    #$01            
 D1B0: E7 01          STB     1,X             
-D1B2: 35 10          PULS    $10             
+D1B2: 35 10          PULS    X               
 D1B4: 0A 4D          DEC     <$4D            
 D1B6: 26 D7          BNE     $D18F           
 D1B8: 30 88 19       LEAX    $19,X           
@@ -2137,7 +2155,7 @@ D1FC: 97 5C          STA     <$5C
 D1FE: 3A             ABX                     
 D1FF: 60 44          NEG     4,U             
 D201: 1C 4D          ANDCC   #$4D            
-D203: 34 69          PSHS    $69             
+D203: 34 69          PSHS    U,Y,DP,CC       
 D205: 64 78          LSR     -8,S            
 D207: 40             NEGA                    
 D208: 41             ???                     
@@ -2170,7 +2188,7 @@ D236: 3D             MUL
 D237: 6C 9B          INC     [D,X]           
 D239: 2C 21          BGE     $D25C           
 D23B: 38             ???                     
-D23C: 34 20          PSHS    $20             
+D23C: 34 20          PSHS    Y               
 D23E: 40             NEGA                    
 D23F: 60 5D          NEG     -3,U            
 D241: 1C 7C          ANDCC   #$7C            
@@ -2492,7 +2510,7 @@ D476: 09 0B          ROL     <$0B
 D478: 02             ???                     
 D479: 00 04          NEG     <$04            
 D47B: 11             ???                     
-D47C: 00 14          NEG     <$14            
+D47C: 00 14          NEG     <$14                ; {-ram_m0014}
 D47E: 96 04          LDA     <$04            
 D480: 15             ???                     
 D481: 98 06          EORA    <$06            
@@ -2664,9 +2682,9 @@ D5A8: 4A             DECA
 D5A9: E6 C0          LDB     ,U+             
 D5AB: 8C C6 01       CMPX    #$C601          
 D5AE: 48             LSLA                    
-D5AF: 34 56          PSHS    $56             
+D5AF: 34 56          PSHS    U,X,B,A         
 D5B1: AD 96          JSR     [A,X]           
-D5B3: 35 56          PULS    $56             
+D5B3: 35 56          PULS    A,B,X,U         
 D5B5: 5A             DECB                    
 D5B6: 26 F7          BNE     $D5AF           
 D5B8: 20 E7          BRA     $D5A1           
@@ -2749,7 +2767,7 @@ D656: 06 03          ROR     <$03
 D658: FF 05 03       STU     $0503           
 D65B: 80 07          SUBA    #$07            
 D65D: 03 CE          COM     <$CE            
-D65F: D6 63          LDB     <$63            
+D65F: D6 63          LDB     <$63                ; {-ram_m0063}
 D661: 20 EE          BRA     $D651           
 D663: 03 FF          COM     <$FF            
 D665: 08 00          ASL     <$00            
@@ -2863,7 +2881,7 @@ D735: 10 CE D7 4C    LDS     #$D74C
 D739: 8D 27          BSR     $D762           
 D73B: 86 03          LDA     #$03            
 D73D: 97 20          STA     <$20            
-D73F: 35 40          PULS    $40             
+D73F: 35 40          PULS    U               
 D741: 8D 1F          BSR     $D762           
 D743: CE D7 50       LDU     #$D750          
 D746: 86 01          LDA     #$01            
@@ -2934,9 +2952,9 @@ D7CD: 96 21          LDA     <$21
 D7CF: D6 1D          LDB     <$1D            
 D7D1: 27 12          BEQ     $D7E5           
 D7D3: D6 25          LDB     <$25            
-D7D5: 34 56          PSHS    $56             
+D7D5: 34 56          PSHS    U,X,B,A         
 D7D7: 8D 4E          BSR     $D827           
-D7D9: 35 56          PULS    $56             
+D7D9: 35 56          PULS    A,B,X,U         
 D7DB: 0A 1D          DEC     <$1D            
 D7DD: 27 06          BEQ     $D7E5           
 D7DF: AD 84          JSR     ,X              
@@ -2947,9 +2965,9 @@ D7E6: 96 22          LDA     <$22
 D7E8: D6 1D          LDB     <$1D            
 D7EA: 27 12          BEQ     $D7FE           
 D7EC: D6 25          LDB     <$25            
-D7EE: 34 56          PSHS    $56             
+D7EE: 34 56          PSHS    U,X,B,A         
 D7F0: 8D 35          BSR     $D827           
-D7F2: 35 56          PULS    $56             
+D7F2: 35 56          PULS    A,B,X,U         
 D7F4: 0A 1D          DEC     <$1D            
 D7F6: 27 06          BEQ     $D7FE           
 D7F8: AD 84          JSR     ,X              
@@ -2982,7 +3000,7 @@ D824: 93 1E          SUBD    <$1E
 D826: 39             RTS                     
 D827: DC 21          LDD     <$21            
 D829: 8D 2B          BSR     $D856           
-D82B: 1F 02          TFR     $02             
+D82B: 1F 02          TFR     D,Y             
 D82D: D6 22          LDB     <$22            
 D82F: C4 03          ANDB    #$03            
 D831: CE D8 4A       LDU     #$D84A          
@@ -3204,7 +3222,7 @@ DA1B: 20 17          BRA     $DA34
 DA1D: 15             ???                     
 DA1E: 0A 17          DEC     <$17            
 DA20: 0D 24          TST     <$24            
-DA22: 1F 01          TFR     $01             
+DA22: 1F 01          TFR     D,X             
 DA24: 26 01          BNE     $DA27           
 DA26: FF 20 1B       STU     $201B           
 DA29: 12             NOP                     
@@ -3275,7 +3293,7 @@ DA90: 1C 24          ANDCC   #$24
 DA92: 1B             ???                     
 DA93: 0E 1C          JMP     <$1C            
 DA95: 0E 1B          JMP     <$1B            
-DA97: 1F 0E          TFR     $0E             
+DA97: 1F 0E          TFR     D,?             
 DA99: 0D FF          TST     <$FF            
 DA9B: 18             ???                     
 DA9C: 17 0E 24       LBSR    $0E24           
@@ -3358,13 +3376,13 @@ DB2F: 30 1F          LEAX    -1,X
 DB31: 39             RTS                     
 DB32: 00 BB          NEG     <$BB            
 DB34: 00 C3          NEG     <$C3            
-DB36: 34 10          PSHS    $10             
+DB36: 34 10          PSHS    X               
 DB38: 8D 1B          BSR     $DB55           
-DB3A: 35 10          PULS    $10             
+DB3A: 35 10          PULS    X               
 DB3C: CE 00 CB       LDU     #$00CB          
 DB3F: 8D 03          BSR     $DB44           
 DB41: 7E D8 E2       JMP     $D8E2           
-DB44: 1F 32          TFR     $32             
+DB44: 1F 32          TFR     U,Y             
 DB46: A6 A0          LDA     ,Y+             
 DB48: 2B 08          BMI     $DB52           
 DB4A: 26 08          BNE     $DB54           
@@ -3409,16 +3427,17 @@ DB98: A6 C2          LDA     ,-U
 DB9A: CB F0          ADDB    #$F0            
 DB9C: A9 82          ADCA    ,-X             
 DB9E: 19             DAA                     
-DB9F: 1F 89          TFR     $89             
+DB9F: 1F 89          TFR     A,B             
 DBA1: 84 0F          ANDA    #$0F            
 DBA3: A7 C4          STA     ,U              
 DBA5: 8C 00 CB       CMPX    #$00CB          
 DBA8: 26 EE          BNE     $DB98           
 DBAA: CB F0          ADDB    #$F0            
 DBAC: 39             RTS                     
+
 DBAD: CE DB C1       LDU     #$DBC1          
 DBB0: EC C1          LDD     ,U++            
-DBB2: 2B 0C          BMI     $DBC0           
+DBB2: 2B 0C          BMI     $DBC0           ; A=FF ... end of the table
 DBB4: AE C1          LDX     ,U++            
 DBB6: 10 AE C1       LDY     ,U++            
 DBB9: 8D 1F          BSR     $DBDA           
@@ -3426,6 +3445,7 @@ DBBB: 4A             DECA
 DBBC: 26 FB          BNE     $DBB9           
 DBBE: 20 F0          BRA     $DBB0           
 DBC0: 39             RTS                     
+
 DBC1: 0A 10          DEC     <$10            
 DBC3: DC D7          LDD     <$D7            
 DBC5: 34 00          PSHS    $00             
@@ -3442,7 +3462,7 @@ DBD6: 9B 3E          ADDA    <$3E
 DBD8: E2 FF 34 46    SBCB    [$3446]         
 DBDC: 4F             CLRA                    
 DBDD: ED E3          STD     ,--S            
-DBDF: 34 16          PSHS    $16             
+DBDF: 34 16          PSHS    X,B,A           
 DBE1: 6F 22          CLR     2,Y             
 DBE3: EC 81          LDD     ,X++            
 DBE5: 6D 64          TST     4,S             
@@ -3461,22 +3481,22 @@ DBF9: A6 E4          LDA     ,S
 DBFB: A7 64          STA     4,S             
 DBFD: 6A 65          DEC     5,S             
 DBFF: 26 E0          BNE     $DBE1           
-DC01: 35 56          PULS    $56             
+DC01: 35 56          PULS    A,B,X,U         
 DC03: 4C             INCA                    
 DC04: 81 04          CMPA    #$04            
 DC06: 26 D5          BNE     $DBDD           
 DC08: 58             LSLB                    
 DC09: 3A             ABX                     
-DC0A: 35 C6          PULS    $C6             
-DC0C: 35 10          PULS    $10             
+DC0A: 35 C6          PULS    A,B,U,PC        
+DC0C: 35 10          PULS    X               
 DC0E: 96 50          LDA     <$50            
 DC10: 84 02          ANDA    #$02            
 DC12: 10 27 E4 55    LBEQ    $E455           
 DC16: 0A 50          DEC     <$50            
-DC18: 1F 20          TFR     $20             
-DC1A: 34 16          PSHS    $16             
+DC18: 1F 20          TFR     Y,D             
+DC1A: 34 16          PSHS    X,B,A           
 DC1C: 7E C6 10       JMP     $C610           
-DC1F: 34 12          PSHS    $12             
+DC1F: 34 12          PSHS    X,A             
 DC21: 4F             CLRA                    
 DC22: DD 64          STD     <$64            
 DC24: 43             COMA                    
@@ -3490,8 +3510,8 @@ DC2F: 8D 08          BSR     $DC39
 DC31: D4 64          ANDB    <$64            
 DC33: D1 65          CMPB    <$65            
 DC35: 22 F8          BHI     $DC2F           
-DC37: 35 92          PULS    $92             
-DC39: 34 10          PSHS    $10             
+DC37: 35 92          PULS    A,X,PC          
+DC39: 34 10          PSHS    X               
 DC3B: 9E 61          LDX     <$61            
 DC3D: 30 01          LEAX    1,X             
 DC3F: 8C DF 5A       CMPX    #$DF5A          
@@ -3499,16 +3519,15 @@ DC42: 25 03          BCS     $DC47
 DC44: 8E C0 00       LDX     #$C000          
 DC47: 9F 61          STX     <$61            
 DC49: E6 84          LDB     ,X              
-DC4B: 35 90          PULS    $90             
+DC4B: 35 90          PULS    X,PC            
 
 # IRQ Handler
-
 IRQHandler:
-DC4D: B6 FF 02       LDA     $FF02           
-DC50: 0C 14          INC     <$14            
-DC52: 0C 63          INC     <$63            
-DC54: 3B             RTI                     
-
+DC4D: B6 FF 02       LDA     $FF02               ; {-hard_PIA0_DB}
+DC50: 0C 14          INC     <$14                ; {-ram_m0014}
+DC52: 0C 63          INC     <$63                ; {-ram_m0063}
+DC54: 3B             RTI
+                     
 DC55: CE FF 01       LDU     #$FF01          
 DC58: 8D 00          BSR     $DC5A           
 DC5A: A6 C4          LDA     ,U              
@@ -3524,15 +3543,15 @@ DC6B: C6 01          LDB     #$01
 DC6D: D7 10          STB     <$10            
 DC6F: 96 52          LDA     <$52            
 DC71: 84 02          ANDA    #$02            
-DC73: 34 02          PSHS    $02             
+DC73: 34 02          PSHS    A               
 DC75: EB E0          ADDB    ,S+             
 DC77: 8D DC          BSR     $DC55           
 DC79: CC 40 80       LDD     #$4080          
 DC7C: 97 11          STA     <$11            
 DC7E: CA 02          ORB     #$02            
-DC80: F7 FF 20       STB     $FF20           
+DC80: F7 FF 20       STB     $FF20               ; {-hard_PIA1_DA}
 DC83: C8 02          EORB    #$02            
-DC85: B6 FF 00       LDA     $FF00           
+DC85: B6 FF 00       LDA     $FF00               ; {-hard_PIA0_DA}
 DC88: 2B 03          BMI     $DC8D           
 DC8A: D0 11          SUBB    <$11            
 DC8C: 8C DB 11       CMPX    #$DB11          
@@ -3563,15 +3582,15 @@ DCB8: 86 02          LDA     #$02
 DCBA: 8C 86 04       CMPX    #$8604          
 DCBD: 97 15          STA     <$15            
 DCBF: 86 02          LDA     #$02            
-DCC1: B7 FF 20       STA     $FF20           
+DCC1: B7 FF 20       STA     $FF20               ; {-hard_PIA1_DA}
 DCC4: 5F             CLRB                    
 DCC5: 8D 8E          BSR     $DC55           
-DCC7: B6 FF 23       LDA     $FF23           
+DCC7: B6 FF 23       LDA     $FF23               ; {-hard_PIA1_CB}
 DCCA: 8A 08          ORA     #$08            
 DCCC: 20 05          BRA     $DCD3           
-DCCE: B6 FF 23       LDA     $FF23           
+DCCE: B6 FF 23       LDA     $FF23               ; {-hard_PIA1_CB}
 DCD1: 84 F7          ANDA    #$F7            
-DCD3: B7 FF 23       STA     $FF23           
+DCD3: B7 FF 23       STA     $FF23               ; {-hard_PIA1_CB}
 DCD6: 39             RTS                     
 DCD7: 0A 80          DEC     <$80            
 DCD9: 2A A0          BPL     $DC7B           
@@ -3641,11 +3660,11 @@ DD57: 0A C0          DEC     <$C0
 DD59: 1A B0          ORCC    #$B0            
 DD5B: 15             ???                     
 DD5C: 58             LSLB                    
-DD5D: 35 58          PULS    $58             
-DD5F: 35 58          PULS    $58             
+DD5D: 35 58          PULS    DP,X,U          
+DD5F: 35 58          PULS    DP,X,U          
 DD61: 15             ???                     
 DD62: 58             LSLB                    
-DD63: 35 B8          PULS    $B8             
+DD63: 35 B8          PULS    DP,X,Y,PC       
 DD65: 6A             ???                     
 DD66: B0 EA A0       SUBA    $EAA0           
 DD69: 6A A0          DEC     ,Y+             
@@ -3763,18 +3782,18 @@ DE40: F0 3F FC       SUBB    $3FFC
 DE43: FF F0 3F       STU     $F03F           
 DE46: F0 3C F0       SUBB    $3CF0           
 DE49: FF C0 FF       STU     $C0FF           
-DE4C: F0 FF F0       SUBB    $FFF0           
+DE4C: F0 FF F0       SUBB    $FFF0               ; {-hard_vector6809}
 DE4F: 3F             SWI                     
 DE50: F0 3F C0       SUBB    $3FC0           
 DE53: 0F FC          CLR     <$FC            
-DE55: 1F F8          TFR     $F8             
+DE55: 1F F8          TFR     ?,A             
 DE57: 03 F0          COM     <$F0            
 DE59: 03 F0          COM     <$F0            
 DE5B: 03 F0          COM     <$F0            
 DE5D: 0F F8          CLR     <$F8            
-DE5F: 1F F8          TFR     $F8             
+DE5F: 1F F8          TFR     ?,A             
 DE61: 03 F0          COM     <$F0            
-DE63: 1F F6          TFR     $F6             
+DE63: 1F F6          TFR     ?,?             
 DE65: 1C FE          ANDCC   #$FE            
 DE67: 03 F0          COM     <$F0            
 DE69: 0F F8          CLR     <$F8            
@@ -3783,7 +3802,7 @@ DE6C: F0 0F F0       SUBB    $0FF0
 DE6F: 7C FE 0F       INC     $FE0F           
 DE72: F8 1F F8       EORB    $1FF8           
 DE75: 03 F0          COM     <$F0            
-DE77: 1F F6          TFR     $F6             
+DE77: 1F F6          TFR     ?,?             
 DE79: 0C FE          INC     <$FE            
 DE7B: 01             ???                     
 DE7C: 00 05          NEG     <$05            
@@ -3801,12 +3820,12 @@ DE8A: 00 00          NEG     <$00
 DE8C: 00 00          NEG     <$00            
 DE8E: 00 05          NEG     <$05            
 DE90: 40             NEGA                    
-DE91: 35 58          PULS    $58             
+DE91: 35 58          PULS    DP,X,U          
 DE93: 55             ???                     
 DE94: 54             LSRB                    
 DE95: 55             ???                     
 DE96: 54             LSRB                    
-DE97: 35 58          PULS    $58             
+DE97: 35 58          PULS    DP,X,U          
 DE99: 05             ???                     
 DE9A: 40             NEGA                    
 DE9B: C1 83          CMPB    #$83            

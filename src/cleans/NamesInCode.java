@@ -91,7 +91,8 @@ public class NamesInCode {
 		// For running within dev
 		//String [] targs = {"content/arcade/frogger/Code.mark"};
 		//String [] targs = {"content/coco/daggorath/Code.mark"};
-		String [] targs = {"content/atari2600/combat/Code.mark"};
+		//String [] targs = {"content/atari2600/combat/Code.mark"};
+		String [] targs = {"content/CoCo/Downland/Code.mark"};
 		args = targs;
 		
 		try (PrintStream ps = new PrintStream("NamesInCode.txt")) {
