@@ -4,11 +4,11 @@
 %%-ram  = Arcade/TimePilot/SoundRAMUse.mark SoundRAMUse.html
 %%-hard = Arcade/TimePilot/SoundHardware.mark SoundHardware.html
 
-Sound processor for the arcade game "Time Pilot"[[br]]
-; 1982 by Centuri/Konami
+# Sound processor for the arcade game "Time Pilot"
+1982 by Centuri/Konami
 
-; TO DO
-; - Decompose music script into command text
+TO DO:
+  - Decompose music script into command text
 
 ; Z80 CPU and 2 AY-3-8910 Sound Chips
 ; The sound board receives commands from the game board through
@@ -25,12 +25,10 @@ Sound processor for the arcade game "Time Pilot"[[br]]
 
 # Sound Commands
 
-SoundCommands: 
-;
 ; First number is command number
 ; Second is filter-capacitor configuration
 ;
-; 00   Write 0 to voice
+; 00   Stop all sounds
 ; 01 0 Coin 
 ; 02 0 Plane fire
 ; 03 0 1910 bomb
@@ -64,22 +62,7 @@ SoundCommands:
 ; 1F 0 Initialize music D4
 ; 20 0 Initialize music D5
 
-# Memory Map
 
-MemoryMap: 
-; Memory usage starts at 3000
-; 3000-0B Command Buffer (see COMMAND BUFFER)
-; 300C,0D Current cap-filter settings
-; 300E Voice number = command index
-
-; Music descriptors (see MUSIC PROCESSING)
-; 300F,10,11,12,13,14,15,16,17,18
-; 3019,1A,1B,1C,1D,1E,1F,00,01,02
-; 3023,24,25,26,27,28,29,2A,2B,2C
-; 302D,2E,2F,30,31,32,33,34,35,36
-; 3037,38,39,3A,3B,3C,3D,3E,3F,40
-
-; Individual sound routines use some memory above 3040
 
 # Start
 
@@ -91,25 +74,28 @@ Start:
 
 # AYChipIO
 
-AYChipIO: 
+RST8:
 ; Read CHIP0 register. A=register, return in A
 0008: 32 00 50        LD      ($5000),A           ; Store the register number
 000B: 3A 00 40        LD      A,($4000)           ; Read the value
 000E: C9              RET                         ; Done
 000F: FF              RST     $38                 ; Filler to align RST routines
 
+RST10:
 ; Read CHIP1 register. A=register, retun in A
 0010: 32 00 70        LD      ($7000),A           ; Store the register number
 0013: 3A 00 60        LD      A,($6000)           ; Read the value
 0016: C9              RET                         ; Done
 0017: FF              RST     $38                 ; Filler to align RST routines
 
+RST18:
 ; Write CHIP0 register. A=register, C=value
 0018: 32 00 50        LD      ($5000),A           ; Store register number
 001B: 79              LD      A,C                 ; Write ...
 001C: 32 00 40        LD      ($4000),A           ; ... value
 001F: C9              RET                         ; Done
 
+RST20:
 ; Write CHIP1 register. A=register, C=value
 0020: 32 00 70        LD      ($7000),A           ; Store register number
 0023: 79              LD      A,C                 ; Write ...
