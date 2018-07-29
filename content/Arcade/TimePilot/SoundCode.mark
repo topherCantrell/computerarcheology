@@ -4,7 +4,7 @@
 %%-ram  = Arcade/TimePilot/SoundRAMUse.mark SoundRAMUse.html
 %%-hard = Arcade/TimePilot/SoundHardware.mark SoundHardware.html
 
-# Sound processor for the arcade game "Time Pilot"
+# Time Pilot sound board
 1982 by Centuri/Konami
 
 TO DO:
@@ -124,7 +124,6 @@ RST20:
 # Interrupt
 
 InterruptService: 
-; # #### Interrupt Service Routine #######################################
 ; Called when the main CPU signals a new sound command.
 ; Switch banks and call the command fetch routine
 0038: D9              EXX                         ; Switch banks B-L
@@ -136,55 +135,53 @@ InterruptService:
 
 # Command Buffer
 
-CommandBuffer: 
-; # #### COMMAND BUFFER########################################
-;
-; COMMAND BUFFER
-; Command Buffer is kept at 3000 and contains 6 2-byte entries.
-; The first byte is the command. A zero marks an available slot.
-; Commands are read from Port A of Chip 0. 
-;
-; Command 0 clears the command buffer.
-;
-; If a command is already running, it is restarted.
-;
-; The command numbers are used as priorities if the buffer is full. The
-; higher the command number, the higher the priority. If all commands
-; in the buffer are of higher priority than the new command then the
-; new command is ignored. Otherwise the new command replaces the lowest
-; priority command in the buffer.
-;
-; If the upper bit is set, the command is removed from the buffer. Command 
-; values above 0x20 are ignored. 
-;
-; The second byte indicates initialization status. 0=not initialized, 1=
-; initialized. Note that entries are removed by setting them to 0000 which
-; forces an initialization of command 00 which turns the voice off.
-;
-; # ###########################################################
+The command Buffer is kept at 3000 and contains 6 2-byte entries.
+That's one entry for each hardware voice. The first of the two 
+bytes is the command. A zero marks an available slot. The second byte 
+indicates initialization status. 0=not initialized, 1=initialized. 
+Note that entries are removed by setting them to 0000, which clears
+the initialized-flag for the next command.
 
+The main CPU writes the command to Port A of sound chip 0 and 
+triggers an interrupt in this code.
+
+If the upper bit of the command is set, then that command is removed 
+from the buffer if it is still playing. Command values above 0x20 are 
+ignored. 
+
+Command 0 clears all six command slots thus stopping all sound.
+
+If a command is already running, it is restarted.
+
+If the command buffer is full, then the command numbers are used as 
+priorities. The higher the command number, the higher the priority. 
+If all commands in the buffer are of higher priority than the new command,
+then the new command is ignored. Otherwise the new command replaces the 
+lowest priority command in the buffer.
+
+HandleCommand: 
 ; Fetch a command from the port and place it in the
 ; command buffer.
 0040: 3E 0E           LD      A,$0E               ; Port A
 0042: CF              RST     $08                 ; Read CHIP0 Port A
-0043: B7              OR      A                   ; Set flags
-0044: 28 2F           JR      Z,$75               ; If 0, clear 3000-300B and out
+0043: B7              OR      A                   ; If zero then ...
+0044: 28 2F           JR      Z,$75               ; ... clear the entire buffer and out
 0046: 57              LD      D,A                 ; Hang on to command
 0047: E6 7F           AND     $7F                 ; Mask off upper bit
 0049: FE 21           CP      $21                 ; Compare command to 21
-004B: D0              RET     NC                  ; Invalid command (above 20)
-004C: CB 7A           BIT     7,D                 ; Upper bit set?
+004B: D0              RET     NC                  ; Ignore invalid commands (above 20)
+004C: CB 7A           BIT     7,D                 ; Is the upper bit set?
 004E: 20 42           JR      NZ,$92              ; Yes -- remove the command from the buffer
 0050: CD 80 00        CALL    $0080               ; Is the command already in the buffer?
 0053: 20 1C           JR      NZ,$71              ; Found ... restart it.
-0055: CD 80 00        CALL    $0080               ; Find 0 in the buffer
+0055: CD 80 00        CALL    $0080               ; Find A=0 (empty slot) in the buffer
 0058: 20 16           JR      NZ,$70              ; Found a slot -- store command in buffer
 ; Find the lowest numbered command
 005A: 21 00 30        LD      HL,$3000            ; Buffer
 005D: 1E 06           LD      E,$06               ; 6 entries to check
 005F: 7E              LD      A,(HL)              ; Get command value
 0060: 1D              DEC     E                   ; Count down
-0061: 28 08           JR      Z,$6B               ; All checked --
+0061: 28 08           JR      Z,$6B               ; All checked ... done
 0063: 2C              INC     L                   ; Bump to next ...
 0064: 2C              INC     L                   ; ... entry
 0065: BE              CP      (HL)                ; Compare current lowest with next entry
@@ -200,7 +197,7 @@ CommandBuffer:
 0072: 36 00           LD      (HL),$00            ; Flag command needs initializing
 0074: C9              RET                         ; Done
 
-; Clear buffer
+StopAllCommands:
 0075: 21 00 30        LD      HL,$3000            ; Clear 13 bytes ...
 0078: 06 0C           LD      B,$0C               ; ... starting at ...
 007A: AF              XOR     A                   ; ...
@@ -209,20 +206,21 @@ CommandBuffer:
 007D: 10 FC           DJNZ    $7B                 ; ... 3000
 007F: C9              RET                         ; Done
 
-; Find entry A in buffer. Return 7-index and HL if found.
+FindCommand:
+; Find entry A in buffer. Return slot number (1,2,3,4,5,6) and HL if found.
 ; If not found, return 0
-0080: 21 00 30        LD      HL,$3000            ; Buffer area.
-0083: 06 06           LD      B,$06               ; 6 entries to check.
-0085: 0E 07           LD      C,$07               ; Subtraction value.
-0087: BE              CP      (HL)                ; Found?
+0080: 21 00 30        LD      HL,$3000            ; Buffer area
+0083: 06 06           LD      B,$06               ; 6 entries to check
+0085: 0E 07           LD      C,$07               ; Subtraction constant (never changes here)
+0087: BE              CP      (HL)                ; Is this the same command?
 0088: 28 05           JR      Z,$8F               ; Yes -- done
 008A: 2C              INC     L                   ; Bump to ...
 008B: 2C              INC     L                   ; ... next entry
 008C: 10 F9           DJNZ    $87                 ; Check all entries
-008E: 41              LD      B,C                 ; Not found -- use 7 as index
-008F: 79              LD      A,C                 ; Substract found ...
-0090: 90              SUB     B                   ; ... index from 7
-0091: C9              RET                         ; Return index
+008E: 41              LD      B,C                 ; Not found -- ends up becoming 0
+008F: 79              LD      A,C                 ; Subtract remaining counter ...
+0090: 90              SUB     B                   ; ... from 7
+0091: C9              RET                         ; Return slot number 0 or 1-6
 
 ; Remove entry from buffer
 0092: CD 80 00        CALL    $0080               ; Find entry
@@ -242,17 +240,17 @@ CommandBuffer:
 00A0: 20 F9           JR      NZ,$9B              ; Loop back
 00A2: F9              LD      SP,HL               ; Set SP to 3400
 00A3: ED 56           IM      1                   ; Set interrupt MODE 1 (always vector to 0038)
-00A5: 21 00 80        LD      HL,$8000            ; All cap filters ...
-00A8: 22 0C 30        LD      ($300C),HL          ; ... (current value) ...
-00AB: 77              LD      (HL),A              ; ... disconnected from channels
+00A5: 21 00 80        LD      HL,$8000            ; All cap filters zero plus upper bit set.
+00A8: 22 0C 30        LD      ($300C),HL          ; Keep up with write-only value
+00AB: 77              LD      (HL),A              ; All caps disconnected from the channels
 
 ; Initialize sound chips
-00AC: 0E 00           LD      C,$00               ; Value 0
+00AC: 0E 00           LD      C,$00               ; Amplitude value 0
 00AE: 16 06           LD      D,$06               ; 6 voices
 00B0: 7A              LD      A,D                 ; Pass to function
-00B1: CD 9C 01        CALL    $019C               ; Amplitude to silence.
-00B4: 15              DEC     D                   ; ...
-00B5: 20 F9           JR      NZ,$B0              ; Silence all voices
+00B1: CD 9C 01        CALL    $019C               ; Channel x to 0. (Amplitude to silence.)
+00B4: 15              DEC     D                   ; Silence all ...
+00B5: 20 F9           JR      NZ,$B0              ; ... six voices
 00B7: 0E 38           LD      C,$38               ; Both IO Ports IN, Tones only on ...
 00B9: 3E 07           LD      A,$07               ; ... all voices.
 00BB: DF              RST     $18                 ; Configure AY38910 chip 0
@@ -261,8 +259,9 @@ CommandBuffer:
 
 # Main Loop
 
-MainLoop: 
-; == MAIN PROCESSING LOOP ==
+MainLoop:
+; Use the upper nibble of chip 0 port B as a counter. When it reaches 0,
+; then process all the voices. This is happens at approximately 175Hz.
 00BF: FB              EI                          ; Enable interrupts
 00C0: 3E 0F           LD      A,$0F               ; Port B
 00C2: CF              RST     $08                 ; Read CHIP0 Port B
@@ -275,14 +274,14 @@ MainLoop:
 00CA: 32 0E 30        LD      ($300E),A           ; Hang onto it
 00CD: 3A 01 30        LD      A,($3001)           ; First voice, 2nd byte
 00D0: B7              OR      A                   ; Set flags about 2nd byte
-00D1: 3A 00 30        LD      A,($3000)           ; Get commmand (no flags)
+00D1: 3A 00 30        LD      A,($3000)           ; Get command (no flags)
 00D4: 28 06           JR      Z,$DC               ; 2nd byte == 0
 00D6: CD 7F 01        CALL    $017F               ; Continue command
 00D9: C3 DF 00        JP      $00DF               ; Skip over
 00DC: CD 69 01        CALL    $0169               ; Initialize command
 00DF: FB              EI                          ; Enable interrupts
-00E0: 00              NOP                         ; Pause
-00E1: 00              NOP                         ; Pause
+00E0: 00              NOP                         ; Probably to make all the index handlers the ...
+00E1: 00              NOP                         ; ... same number of bytes (the last one is 2 bytes longer).
 
 ; Process Entry Index 2 (see Index 1 above)
 00E2: F3              DI                          ;
@@ -291,7 +290,7 @@ MainLoop:
 00E8: 3A 03 30        LD      A,($3003)           ;
 00EB: B7              OR      A                   ;
 00EC: 3A 02 30        LD      A,($3002)           ;
-00EF: 28 06           JR      Z,$F7               ;
+00EF: 28 06           JR      Z,$F7               ; Same as index 1
 00F1: CD 7F 01        CALL    $017F               ;
 00F4: C3 FA 00        JP      $00FA               ;
 00F7: CD 69 01        CALL    $0169               ;
@@ -306,7 +305,7 @@ MainLoop:
 0103: 3A 05 30        LD      A,($3005)           ;
 0106: B7              OR      A                   ;
 0107: 3A 04 30        LD      A,($3004)           ;
-010A: 28 06           JR      Z,$112              ;
+010A: 28 06           JR      Z,$112              ; Same as index 1
 010C: CD 7F 01        CALL    $017F               ;
 010F: C3 15 01        JP      $0115               ;
 0112: CD 69 01        CALL    $0169               ;
@@ -322,7 +321,7 @@ MainLoop:
 0121: B7              OR      A                   ;
 0122: 3A 06 30        LD      A,($3006)           ;
 0125: 28 06           JR      Z,$12D              ;
-0127: CD 7F 01        CALL    $017F               ;
+0127: CD 7F 01        CALL    $017F               ; Same as index 1
 012A: C3 30 01        JP      $0130               ;
 012D: CD 69 01        CALL    $0169               ;
 0130: FB              EI                          ;
@@ -336,7 +335,7 @@ MainLoop:
 0139: 3A 09 30        LD      A,($3009)           ;
 013C: B7              OR      A                   ;
 013D: 3A 08 30        LD      A,($3008)           ;
-0140: 28 06           JR      Z,$148              ;
+0140: 28 06           JR      Z,$148              ; Same as index 1
 0142: CD 7F 01        CALL    $017F               ;
 0145: C3 4B 01        JP      $014B               ;
 0148: CD 69 01        CALL    $0169               ;
@@ -351,15 +350,15 @@ MainLoop:
 0154: 3A 0B 30        LD      A,($300B)           ;
 0157: B7              OR      A                   ;
 0158: 3A 0A 30        LD      A,($300A)           ;
-015B: 28 06           JR      Z,$163              ;
+015B: 28 06           JR      Z,$163              ; Same as index 1
 015D: CD 7F 01        CALL    $017F               ;
-0160: C3 BF 00        JP      $00BF               ;{MainLoop}
+0160: C3 BF 00        JP      $00BF               ; Back to the main loop
 0163: CD 69 01        CALL    $0169               ;
 
-; Commands return 0 if still playing or else to remove from buffer
-
+; The upper nibble in B should be non-zero by now.
 0166: C3 BF 00        JP      $00BF               ;{MainLoop} Continue main loop
 
+InitCommand:
 ; Initialize command and flag it initialized
 ; Vector to command. If return is 0, set second byte to 1. If return
 ; is not 0, remove the command from the buffer.
@@ -377,6 +376,7 @@ MainLoop:
 017C: 36 01           LD      (HL),$01            ; Set second byte to 1
 017E: C9              RET                         ; Done
 
+ContinueCommand:
 ; Continue processing a command
 ; Vector to command. If return is 0, leave buffer alone. If return
 ; is not 0, remove command from buffer.
@@ -390,6 +390,7 @@ MainLoop:
 0184: EF              RST     $28                 ; Vector to address A in table HL
 0185: B7              OR      A                   ; Test return
 0186: C8              RET     Z                   ; If zero -- out
+;
 0187: 21 00 30        LD      HL,$3000            ; Command buffer
 018A: 3A 0E 30        LD      A,($300E)           ; Index of command
 018D: 3D              DEC     A                   ; Convert to ...
@@ -443,19 +444,19 @@ Command00:
 
 # FilterCaps
 
-FilterCaps: 
-; There are two capacitors that can be switched onto each audio channel
-; to ground. The MSB bit set to one selects a 0.22 and the LSB bit set selects
-; a 0.047 cap. Most effects just switch out the caps (writing 00), but the
-; explosion effects switch in one or the other (never both).
-;
-; V1 1000xxxxAAxxxxxx
-; V2 1000xxAAxxxxxxxx
-; V3 1000AAxxxxxxxxxx
-; V4 1000xxxxxxxxxxAA
-; V5 1000xxxxxxxxAAxx
-; V6 1000xxxxxxAAxxxx
+There are two capacitors that can be switched onto each audio channel
+to ground. The MSB bit set to one selects a 0.22 and the LSB bit set selects
+a 0.047 cap. Most effects just switch out the caps (writing 00), but the
+explosion effects switch in one or the other (never both).
 
+  - V1 1000xxxxAAxxxxxx
+  - V2 1000xxAAxxxxxxxx
+  - V3 1000AAxxxxxxxxxx
+  - V4 1000xxxxxxxxxxAA
+  - V5 1000xxxxxxxxAAxx
+  - V6 1000xxxxxxAAxxxx
+
+SetFilterCaps:
 ; Reverse A bits
 01C8: 01 FC FF        LD      BC,$FFFC            ; 11111111 11111100
 01CB: 21 00 00        LD      HL,$0000            ; Clear HL
@@ -495,59 +496,71 @@ FilterCaps:
 01F5: B2              OR      D                   ; OR in old value
 01F6: 67              LD      H,A                 ; New MSB
 01F7: 22 0C 30        LD      ($300C),HL          ; New configuration value
-; Write to memory -- why?
-01FA: 77              LD      (HL),A              ; Any write will do (using the ...
-01FB: C9              RET                         ; ... address lines as data.)
+01FA: 77              LD      (HL),A              ; Write the new filter value (the address value) ...
+01FB: C9              RET                         ; ... to the latches
 
 # Music Processing
 
-MusicProcessing:
-; # ### MUSIC PROCESSING #######################################
-;
-; Bytes are loaded from the music pointer. The upper three bits
-; define the MSB delay and the lower five bits define a note
-; offset from the base note pointer. If the lower five bits are
-; all ones, a special command is executed instead and then
-; processing continues.
-;
-; The MSB delay is a power of 2 (ie 128th,64th, ... quarter,half,whole).
-; The Running LSB delay is the base counter for note delay.
-; The Music Pointer points to the next byte in the song to process.
-; The Base Note Table Pointer points to the start of an octave in
-;   the note table. Subsequent notes are relative to the base.
-; The initial amplitude is the initial volume of the note.
-; The running amplitude is the current volume level. The modifier is
-;   used to change the volume ever other MSB delay count. (The volume
-;   becomes fixed when silenced.)
-; The LSB delay is the 128th-note-equals specification. This is used
-;   to reload the running count.
-; The Amplitude Modification is the value added (or subtracted) to
-;   the amplitude each change.
-;
-; Music Descriptors
-;
-; 00 01 02 03 04 05 06 07 08 09 0A
-;
-; 00 - MSB Note Delay
-; 01 - Running LSB Note delay (base delay)
-; 02,03 - Music Pointer
-; 04,05 - Note Table Base Pointer
-; 06 Initial Amplitude
-; 07 Running amplitude
-; 08 LSB delay reload
-; 09 Amplitude modification
-; 0A -- not used
-;
-; # ###########################################################
+Offset 00: The first byte is the currently playing note. The upper 3 bits 
+define the duration: 7=64th note, 6=32nd, 5=16th, 4=8th, 3=quarter note, 
+2=half note, and 1=whole note. A value of 0 is not allowed.
 
+01: The second byte is the base delay for all notes in the song. This is the reload
+value of the delay counter. Thus a lower value speeds up all notes in the song.
+This value remains constant while the song plays.
+
+The lower 5 bits of the first byte define the note number. This is added to the
+song's base note number in bytes 4 and 5. Thus some songs can be higher on the
+scale than other songs. This value changes with each new note in the song.
+
+A note value of all 0s is a rest.
+
+A note value of all 1s indicates a special music command. The command is processed
+and the next note is immediately processed. This allows several special commands
+to be handled at once. If the note value is all 1s then the MSB is the special
+command. The next value in the song is the data used to:
+
+  - MSB=0 Load base note table pointer from music
+  -     1 Load base delay from music
+  -     2 Load volume from music
+  -     3 Load volume modification from music
+  -     4 End of song
+  -     5 End of song
+  -     6 Jump to new music address
+  -     7 End of song
+
+02,03: The Music Pointer points to the next byte in the song to process. This is the
+song's "program counter". This value changes as the song moves from note to note.
+
+04,05: The Base Note Table Pointer points to the start of an octave in the note table. 
+All notes in the song are relative to this base. This value remains constant while
+the song plays. 
+
+06: The initial amplitude is the initial volume of each note when the note begins. The
+amplitude is modified as the note plays by the value in byte 09. This initial value 
+for all notes remains constant while the song plays.
+
+07: The running amplitude is the current volume level of the currently playing note.
+This value is modified every other MSB delay count until the note's duration is over
+or the value is at a minimum (and thus changing it would wrap the value).
+
+08: This is the duration delay count for the currently playing note. When this value
+reaches zero, it is reloaded with the value in 01 and the MSB is decremented. When
+the MSB reaches 0, the next note is played.
+
+09: This is the value used to modify each note's amplitude every other MSB tick. This
+value remains constant for every note over the entire song.
+
+MusicProcessing:
 ; Process Music Descriptor
 ; Amplitude of a note is reduced at a rate of 0.5 the MSB delay.
-01FC: DD 35 01        DEC     (IX+$01)            ; Decrement LSB of delay
+01FC: DD 35 01        DEC     (IX+$01)            ; Decrement base delay count
 01FF: C0              RET     NZ                  ; Not time for new note -- out
 0200: DD 7E 08        LD      A,(IX+$08)          ; Reload ...
-0203: DD 77 01        LD      (IX+$01),A          ; ... LSB of delay
+0203: DD 77 01        LD      (IX+$01),A          ; ... base delay
 0206: DD 35 00        DEC     (IX+$00)            ; Decrement MSB of delay
 0209: 28 15           JR      Z,$220              ; Load next note
+;
 020B: DD CB 00 46     BIT     0,(IX+$00)          ; Test bit 0 of MSB of delay
 020F: C8              RET     Z                   ; Not time to fool with volume
 0210: DD 7E 09        LD      A,(IX+$09)          ; Get volume modifier
@@ -558,6 +571,7 @@ MusicProcessing:
 0219: DD 77 07        LD      (IX+$07),A          ; New amplitude
 021C: 4F              LD      C,A                 ; To C
 021D: C3 99 01        JP      $0199               ; Set amplitude and out
+;
 ; Load next note
 0220: DD 6E 02        LD      L,(IX+$02)          ; LSB of music pointer
 0223: DD 66 03        LD      H,(IX+$03)          ; MSB of music pointer
@@ -601,7 +615,7 @@ MusicProcessing:
 0263: DD 77 00        LD      (IX+$00),A          ; Store to MSB delay
 0266: C9              RET                         ; Done
 
-; Music byte xxx11111
+; Music byte xxx11111 (special command)
 ; Vector to function xxx and continue processing
 0267: 7A              LD      A,D                 ; Restore command
 0268: E6 E0           AND     $E0                 ; Mask off lower bits
@@ -620,22 +634,23 @@ MusicProcessing:
 027E: C3 28 00        JP      $0028               ; Do command and continue with next
 
 ; Music commands (DE contains pointer to 2nd byte)
-0281: 91 02 ; Load base note table pointer from music
-0283: A5 02 ; Load LSB delay from music
-0285: B5 02 ; Load amplitude from music
-0287: BA 02 ; Load amplitude modification from music
-0289: C9 02 ; End sound command
-028B: C9 02 ; End sound command
-028D: BF 02 ; Jump to new music address
-028F: C9 02 ; End sound command
+0281: 91 02 ; 0 Load base note table pointer from music
+0283: A5 02 ; 1 Load LSB delay from music
+0285: B5 02 ; 2 Load amplitude from music
+0287: BA 02 ; 3 Load amplitude modification from music
+0289: C9 02 ; 4 End of song
+028B: C9 02 ; 5 End of song
+028D: BF 02 ; 6 Jump to new music address
+028F: C9 02 ; 7 End of song
 
-; Music function 00
+MusicCmd0:
 ; Load base note table pointer
+; 2 bytes
 0291: EB              EX      DE,HL               ; Pointer to second byte
 0292: 4E              LD      C,(HL)              ; Get second byte
 0293: CB 21           SLA     C                   ; *2
 0295: 06 00           LD      B,$00               ; MSB = 0
-0297: 21 CE 02        LD      HL,$02CE            ; Octave pointers
+0297: 21 CE 02        LD      HL,$02CE            ; Base pointers
 029A: 09              ADD     HL,BC               ; Offset into table
 029B: 5E              LD      E,(HL)              ; Get byte
 029C: 23              INC     HL                  ; Next
@@ -644,8 +659,9 @@ MusicProcessing:
 02A1: DD 72 05        LD      (IX+$05),D          ; ... tone pointer
 02A4: C9              RET                         ;
 
-; Music function 01
-; Load delay from table
+MusicCmd1:
+; Load delay from table. ?? why not just store the delay value in the song and
+; skip the table lookup?
 02A5: EB              EX      DE,HL               ; Second byte pointer
 02A6: 4E              LD      C,(HL)              ; Get second byte
 02A7: 06 00           LD      B,$00               ; MSB = 0
@@ -656,19 +672,19 @@ MusicProcessing:
 02B1: DD 77 01        LD      (IX+$01),A          ; Delay
 02B4: C9              RET                         ; Done
 
-; Music function 02
+MusicCmd2:
 ; Load amplitude
 02B5: 1A              LD      A,(DE)              ; Get second byte
 02B6: DD 77 06        LD      (IX+$06),A          ; Store it to amplitude
 02B9: C9              RET                         ; Done
 
-; Music function 03
+MusicCmd3:
 ; Set 09 Amplitude modification
 02BA: 1A              LD      A,(DE)              ; Get second byte
-02BB: DD 77 09        LD      (IX+$09),A          ; Store it to ?
+02BB: DD 77 09        LD      (IX+$09),A          ; Store it to modification value
 02BE: C9              RET                         ; Done
 
-; Music function 06
+MusicCmd6:
 ; Jump to new music address
 02BF: 1A              LD      A,(DE)              ; Get second byte
 02C0: DD 77 02        LD      (IX+$02),A          ; Set ...
@@ -677,122 +693,124 @@ MusicProcessing:
 02C5: DD 77 03        LD      (IX+$03),A          ; ... new pointer
 02C8: C9              RET                         ; Done
 
-; Music function 04, 05, 07
-; End this music command
+MusicCmd4:
+MusicCmd5:
+MusicCmd7:
+; End this song
 02C9: E1              POP     HL                  ; Clear for return ...
 02CA: E1              POP     HL                  ; ... from music routine
 02CB: 3E FF           LD      A,$FF               ; Flag end of processing
 02CD: C9              RET                         ; Done
 
-;Octave offsets into note table
-02CE: EE 02 
-02D0: F2 02 
-02D2: F6 02 
-02D4: FA 02 
-02D6: FE 02 
-02D8: 02 03 
-02DA: 06 03 
-02DC: 0A 03 
-02DE: 0E 03 
-02E0: 12 03 
-02E2: 16 03 
-02E4: 1A 03 
-02E6: 1E 03 
-02E8: 22 03 
-02EA: 26 03 
-02EC: 2A 03 
+BaseNotePtrs:
+; Base offsets into note table. The notes in a song are relative
+; to these pointers into the note table.
+02CE: EE 02  ; Lowest note (Would be G#1)
+02D0: F2 02  ; A#1
+;
+02D2: F6 02  ; C2
+02D4: FA 02  ; D2
+02D6: FE 02  ; E2
+02D8: 02 03  ; F#2
+02DA: 06 03  ; G#2
+02DC: 0A 03  ; A#2
+;
+02DE: 0E 03  ; C3
+02E0: 12 03  ; D3
+02E2: 16 03  ; E3
+02E4: 1A 03  ; F#3
+02E6: 1E 03  ; G#3
+02E8: 22 03  ; A#3
+;
+02EA: 26 03  ; C4
+02EC: 2A 03  ; D4
 
+NoteTable:
 ; Note Table -- tones for notes on the chromatic scale
-02EE: FF 0F ; Lowest possible note
-02F0: F2 07 
-02F2: 80 07 
-02F4: 14 07 
-02F6: AE 06 
-02F8: 4E 06 
-02FA: F3 05 
-02FC: 9E 05 
-02FE: 4E 05 
-0300: 01 05 
-0302: B9 04 
-0304: 76 04 
-0306: 36 04 
-0308: F9 03 
-030A: C0 03 
-030C: 8A 03 
-030E: 57 03 
-0310: 27 03 
-0312: FA 02 
-0314: CF 02 
-0316: A7 02 
-0318: 81 02 
-031A: 5D 02 
-031C: 3B 02 
-031E: 1B 02 
-0320: FD 01 
-0322: E0 01 
-0324: C5 01 
-0326: AC 01 
-0328: 94 01 
-032A: 7D 01 
-032C: 68 01 
-032E: 53 01 
-0330: 40 01 
-0332: 2E 01 
-0334: 1D 01 
-0336: 0D 01 
-0338: FE 00 
-033A: F0 00 
-033C: E3 00 
-033E: D6 00 
-0340: CA 00 
-0342: BE 00 
-0344: B4 00 
-0346: AA 00 
-0348: A0 00 
-034A: 97 00 
-034C: 8F 00 
-034E: 87 00 
-0350: 7F 00 
-0352: 78 00 
-0354: 71 00 
-0356: 6B 00 
-0358: 65 00 
-035A: 5F 00 
-035C: 5A 00 
-035E: 55 00 
-0360: 50 00 
-0362: 4C 00 
-0364: 07 00 ; Really high
+; Frequency is 1789772 / (16 * value)
+;
+;              Value   Freq   MIDI Note      Ideal Freq
+02EE: FF 0F  ; 4095    27.31    x  x         x
+02F0: F2 07  ; 2034    54.99    33 A1        55.00
+02F2: 80 07  ; 1920    58.26    34 A#1/Bb1   58.27
+02F4: 14 07  ; 1812    61.73    35 B1        61.74
+02F6: AE 06  ; 1710    65.41    36 C2        65.41
+02F8: 4E 06  ; 1614    69.30    37 C#2/Db2   69.30
+02FA: F3 05  ; 1523    73.44    38 D2        73.42
+02FC: 9E 05  ; 1438    77.78    39 D#2/Eb2   77.78
+02FE: 4E 05  ; 1358    82.37    40 E2        82.41
+0300: 01 05  ; 1281    87.32    41 F2        87.31
+0302: B9 04  ; 1209    92.52    42 F#2/Gb2   92.50
+0304: 76 04  ; 1142    97.95    43 G2        98.00
+0306: 36 04  ; 1078   103.76    44 G#2/Ab2  103.83
+0308: F9 03  ; 1017   109.99    45 A2       110.00
+030A: C0 03  ;  960   116.52    46 A#2/Bb2  116.54
+030C: 8A 03  ;  906   123.46    47 B2       123.47
+030E: 57 03  ;  855   130.83    48 C3       130.81
+0310: 27 03  ;  807   138.61    49 C#3/Db3  138.59
+0312: FA 02  ;  762   146.79    50 D3       146.83
+0314: CF 02  ;  719   155.57    51 D#3/Eb3  155.56
+0316: A7 02  ;  679   164.74    52 E3       164.81
+0318: 81 02  ;  641   174.50    53 F3       174.61
+031A: 5D 02  ;  605   184.89    54 F#3/Gb3  185.00
+031C: 3B 02  ;  571   195.90    55 G3       196.00
+031E: 1B 02  ;  539   207.53    56 G#3/Ab3  207.65
+0320: FD 01  ;  509   219.76    57 A3       220.00
+0322: E0 01  ;  480   233.04    58 A#3/Bb3  233.08
+0324: C5 01  ;  453   246.93    59 B3       246.94
+0326: AC 01  ;  428   261.35    60 C4       261.63 (middle C)
+0328: 94 01  ;  404   276.88    61 C#4/Db4  277.18
+032A: 7D 01  ;  381   293.59    62 D4       293.66
+032C: 68 01  ;  360   310.72    63 D#4/Eb4  311.13
+032E: 53 01  ;  339   329.97    64 E4       329.63
+0330: 40 01  ;  320   349.56    65 F4       349.23
+0332: 2E 01  ;  302   370.39    66 F#4/Gb4  369.99
+0334: 1D 01  ;  285   392.49    67 G4       392.00
+0336: 0D 01  ;  269   415.83    68 G#4/Ab4  415.30
+0338: FE 00  ;  254   440.39    69 A4       440.00 (concert pitch)
+033A: F0 00  ;  240   466.08    70 A#4/Bb4  466.16
+033C: E3 00  ;  227   492.76    71 B4       493.88
+033E: D6 00  ;  214   522.71    72 C5       523.25
+0340: CA 00  ;  202   553.76    73 C#5/Db5  554.37
+0342: BE 00  ;  190   588.74    74 D5       587.33
+0344: B4 00  ;  180   621.44    75 D#5/Eb5  622.25
+0346: AA 00  ;  170   658.00    76 E5       659.26
+0348: A0 00  ;  160   699.12    77 F5       698.46
+034A: 97 00  ;  151   740.79    78 F#5/Gb5  739.99
+034C: 8F 00  ;  143   782.24    79 G5       783.99
+034E: 87 00  ;  135   828.59    80 G#5/Ab   830.61
+0350: 7F 00  ;  127   880.79    81 A5       880.00
+0352: 78 00  ;  120   932.17    82 A#5/Bb5  932.33
+0354: 71 00  ;  113   989.91    83 B5       987.77
+0356: 6B 00  ;  107  1045.42    84 C6      1046.50
+0358: 65 00  ;  101  1107.53    85 C#6/Db6 1108.73
+035A: 5F 00  ;   95  1177.48    86 D6      1174.66
+035C: 5A 00  ;   90  1242.89    87 D#6/Eb6 1244.51
+035E: 55 00  ;   85  1316.00    88 E6      1318.51
+0360: 50 00  ;   80  1398.25    89 F6      1396.91
+0362: 4C 00  ;   76  1471.85    90 F#6/Gb6 1479.98
+0364: 07 00  ;    7 15980.10    x  x       x
 
-; Delay table (bytes)
-0366: 3C 
-0367: 38 34 
-0369: 30 2C 
-036B: 28 24 
-036D: 20 1E 
-036F: 1C 
-0370: 1A 
-0371: 18 16 
-0373: 14 
-0374: 12 
-0375: 10 0F 
-0377: 0E 0D 
-0379: 0C 
-037A: 0B 
-037B: 0A 
-037C: 09 
-037D: 08 
+DelayTable:
+; 24 fixed base-delay values. ?? The music command could just
+; store this one byte value instead of storing a one byte index
+; into this table.
+0366: 3C 38 34 30 2C 28 24 20 1E 1C 1A 18  
+0372: 16 14 12 10 0F 0E 0D 0C 0B 0A 09 08 
 
-; Initialize descriptors for a specified song number
+InitSong:
+; Initialize descriptors for a specified song number in A
 037E: 21 B5 03        LD      HL,$03B5            ; Initialization data
 0381: 11 0F 30        LD      DE,$300F            ; First music descriptor
-0384: 01 32 00        LD      BC,$0032            ; 10*5 = 50 bytes
+0384: 01 32 00        LD      BC,$0032            ; $32 = d50 = 10*5 = 50 bytes (5 descriptors)
 0387: ED B0           LDIR                        ; Initialize the data
-0389: 87              ADD     A,A                 ; *2
+;
+; Song number * 10 (5 music pointers, 2 bytes each)
+0389: 87              ADD     A,A                 ; A*2
 038A: 4F              LD      C,A                 ; Hold
-038B: 87              ADD     A,A                 ; *4
-038C: 87              ADD     A,A                 ; *8
-038D: 81              ADD     A,C                 ; *10
+038B: 87              ADD     A,A                 ; A*4
+038C: 87              ADD     A,A                 ; A*8
+038D: 81              ADD     A,C                 ; A*10
 038E: 4F              LD      C,A                 ; Hold it
 038F: 06 00           LD      B,$00               ; MSB = 0
 0391: 21 6E 0B        LD      HL,$0B6E            ; Data region
@@ -814,7 +832,9 @@ MusicProcessing:
 03B2: ED A0           LDI                         ; ... pointer
 03B4: C9              RET                         ; Done
 
+SongDescInit:
 ; Initialization data for music descriptors (10 bytes each)
+; Note=Rest, MSB=reload, LSB=reload, AmpMod=-1
 03B5: 01 01 00 00 00 00 00 00 00 FF 
 03BF: 01 01 00 00 00 00 00 00 00 FF 
 03C9: 01 01 00 00 00 00 00 00 00 FF 
@@ -1986,7 +2006,7 @@ Command19:
 
 CommandTable: 
 ; Initialize sound routines
-0A92: 97 01 ; 0   Write 0 to voice
+0A92: 97 01 ; 0   Stop all sounds
 0A94: E7 03 ; 1  0 Coin Drop
 0A96: 32 04 ; 2  0 Plane Fire
 0A98: 62 04 ; 3  0 1910 Bomb
@@ -2021,7 +2041,7 @@ CommandTable:
 0AD2: 3B 0B ; 20 0 Initialize music D5
 
 ; Continue sound routines
-0AD4: 00 00 ; 0 Place holder for initialize command
+0AD4: 00 00 ; 0 Place holder for stop-all-commands
 0AD6: 02 04 ; 1
 0AD8: 4B 04 ; 2
 0ADA: 7A 04 ; 3 
@@ -2070,7 +2090,7 @@ Command1B:
 0B1C: CD 7E 03        CALL    $037E               ; Initialize music descriptors
 0B1F: 11 00 30        LD      DE,$3000            ; Command table
 0B22: 21 2F 0B        LD      HL,$0B2F            ; Fill ...
-0B25: 01 0C 00        LD      BC,$000C            ; ... symultaneous
+0B25: 01 0C 00        LD      BC,$000C            ; ... simultaneous
 0B28: ED B0           LDIR                        ; ... commands
 0B2A: E1              POP     HL                  ; Clean ...
 0B2B: E1              POP     HL                  ; ... stack frame
@@ -2087,7 +2107,7 @@ Command1B:
 ; Initialization Routine Vector 1C,1D,1E,1F,20 Music
 ; Do nothing.
 0B3B: AF              XOR     A                   ;
-0B3C: CD C8 01        CALL    $01C8               ;{FilterCaps} That mysterious routine ?
+0B3C: CD C8 01        CALL    $01C8               ; Set the filter caps
 0B3F: AF              XOR     A                   ; Initialized
 0B40: C9              RET                         ; Done
 
@@ -2124,7 +2144,7 @@ Command1B:
 # Music Data
 
 MusicData: 
-; Descriptor pointers for songs (10 bytes each)
+; Music pointers for songs (10 bytes each)
 ; Song 0
 0B6E: 82 0B 
 0B70: B2 0B 
@@ -2138,64 +2158,230 @@ MusicData:
 0B7E: EB 0C 
 0B80: 04 0D 
 
+; TODO decode these into notes
+
 ;Song data
 ; Song 0 Descriptor 0
-0B82: 1F 0E 3F 16 5F 00 81 60 5F 08 66 A8 AD 92 7F 
-0B91: 00 B1 91 7F FF B1 B2 91 7F 00 D4 B4 7F FF B4 
-0BA0: 60 74 3F 13 77 76 74 74 73 71 71 70 6D 6D 70 
-0BAF: 71 AD FF 
+0B82: 1F 0E ; MusCmd0: Set base note pointer to 2EA (C4)
+0B84: 3F 16 ; MusCmd1: Set base delay to 16
+      5F 00 ; MusCmd2: Set initial volume to 0
+      81    ; del4, note  1 C4
+      60    ; del3, rest
+      5F 08 ; MusCmd2: Set volume to (8)
+      66    ; del3, note  6 F4
+      A8    ; del5, note  8 G4
+      AD    ; del5, note 13 C5 
+      92    ; del4, note 18 F5
+      7F 00 ; MusCmd3: Set volume modification to (0)
+      B1 
+      91 
+      7F FF ; MusCmd3: Set volume modification to (-1)
+      B1 
+      B2 
+      91 
+      7F 00 ; MusCmd3: Set volume modification to (0)
+      D4 
+      B4 
+      7F FF ; MusCmd3: Set volume modification to (-1)
+      B4 
+      60 ; del3, rest
+      74 
+      3F 
+      13 
+      77 
+      76 
+      74 
+      74 
+      73 
+      71 
+      71 
+      70 
+      6D 
+      6D 
+      70 
+      71 
+      AD 
+      FF 
 
 ; Song 0 Descriptor 1
-0BB2: 1F 02 3F 16 5F 00 81 60 5F 08 66 A8 AD 92 7F 
-0BC1: 00 B1 91 7F FF B1 B2 91 7F 00 D4 B4 7F FF B4 
-0BD0: 60 74 3F 13 77 76 74 74 73 71 71 70 6D 6D 70 
-0BDF: 71 AD FF 
+0BB2: 1F 02 
+      3F 16 
+      5F 00 
+      81 60 
+      5F 08 
+      66 
+      A8 
+      AD 
+      92 
+      7F 00 
+      B1 91 
+      7F FF 
+      B1 
+      B2 
+      91 
+      7F 00 
+      D4 B4 
+      7F FF 
+      B4 
+0BD0: 60 
+      74 
+      3F 13 
+      77 
+      76 
+      74 
+      74 
+      73 
+      71 
+      71 
+      70 
+      6D 
+      6D 
+      70 
+0BDF: 71 
+      AD 
+      FF 
 
 ; Song 0 Descriptor 2
-0BE2: 1F 0E 3F 13 5F 08 8D 6D 8D 6D 8D 6D 8D 6D 8D 
-0BF1: 6D 8D 6D 8D 6D 8D 6D 88 68 85 60 86 60 87 60 
-0C00: 7F 00 CB 7F FF AB AD FF 
+0BE2: 1F 0E 
+      3F 13 
+      5F 08 
+      8D 
+      6D 
+      8D 
+      6D 
+      8D 
+      6D 
+      8D 
+      6D 
+      8D 
+0BF1: 6D 
+      8D 
+      6D 
+      8D 
+      6D 
+      8D 
+      6D 
+      88 
+      68 
+      85 
+      60 
+      86 
+      60 
+      87 
+      60 
+0C00: 7F 00 
+      CB 
+      7F FF 
+      AB 
+      AD 
+      FF 
 
 ; Song 0 Descriptor 3
-0C08: 1F 02 3F 13 5F 08 8D 6D 8D 6D 8D 6D 8D 6D 8D 
-0C17: 6D 8D 6D 8D 6D 8D 6D 88 68 85 60 86 60 87 60 
-0C26: 7F 00 CB 7F FF AB AD 
+0C08: 1F 02 
+      3F 13 
+      5F 08 
+      8D 
+      6D 
+      8D 
+      6D 
+      8D 
+      6D 
+      8D 
+      6D 
+      8D 
+0C17: 6D 
+      8D 
+      6D 
+      8D 
+      6D 
+      8D 
+      6D 
+      88 
+      68 
+      85 
+      60 
+      86 
+      60 
+      87 
+      60 
+0C26: 7F 00 
+      CB 
+      7F FF 
+      AB 
+      AD 
 
 ; Song 0 Descriptor 4
 0C2D: FF 
 
 ; Song 1 Descriptor 0
-0C2E: 1F 0E 3F 15 5F 00 81 5F 07 65 65 25 25 25 25 
+0C2E: 1F 0E 
+      3F 15 
+      5F 00 
+      81 
+      5F 07 
+0C37: 65 65 25 25 25 25 
 0C3D: A5 85 65 85 65 65 80 65 65 25 25 25 25 A5 85 
 0C4C: 65 61 68 6C 6F 80 6A 6A 2A 2A 2A 2A AA 8A 6A 
 0C5B: 8A 6A 6A 80 6A 6A 2A 2A 2A 2A AA 8A 68 68 68 
-0C6A: 6A 6A 80 DF 37 0C 
+0C6A: 6A 6A 80 
+      DF 37 0C 
 
 ; Song 1 Descriptor 1
-0C70: 1F 0E 3F 15 5F 00 81 5F 07 68 68 28 28 28 28 
+0C70: 1F 0E 
+      3F 15 
+      5F 00 
+      81 
+      5F 07 
+0C79: 68 68 28 28 28 28 
 0C7F: A8 88 68 88 68 68 80 68 68 28 28 28 28 A8 88 
 0C8E: A8 60 80 6D 6D 2D 2D 2D 2D AD 8D 6D 8D 6D 6D 
-0C9D: 80 6D 6D 2D 2D 2D 2D AD 8D 6D 6D 6D AD DF 79 
-0CAC: 0C 
+0C9D: 80 6D 6D 2D 2D 2D 2D AD 8D 6D 6D 6D AD 
+      DF 79 0C 
 
 ; Song 1 Descriptor 2
-0CAD: 1F 0E 3F 15 5F 00 81 5F 07 6C 6C 2C 2C 2C 2C 
+0CAD: 1F 0E 
+      3F 15 
+      5F 00 
+      81 
+      5F 07 
+0CB6: 6C 6C 2C 2C 2C 2C 
 0CBC: AC 8C 6C 8C 6C 6C 80 6C 6C 2C 2C 2C 2C AC 8C 
 0CCB: AC 60 80 72 72 32 32 32 32 B2 92 72 92 72 72 
-0CDA: 80 72 72 32 32 32 32 B2 92 72 72 72 92 80 DF 
-0CE9: B6 0C 
+0CDA: 80 72 72 32 32 32 32 B2 92 72 72 72 92 80 
+      DF B6 0C 
 
 ; Song 1 Descriptor 3
-0CEB: 1F 0E 3F 15 5F 00 E1 E0 E0 C0 A0 5F 07 78 74 
-0CFA: 79 76 E0 E0 E0 C0 A0 DF F8 0C 
+0CEB: 1F 0E 
+      3F 15 
+      5F 00 
+      E1 E0 E0 C0 A0 
+      5F 07 
+0CF8: 78 74 
+0CFA: 79 76 E0 E0 E0 C0 A0 
+      DF F8 0C 
 
 ; Song 1 Descriptor 4
-0D04: 1F 02 3F 15 5F 07 8D 60 6D 88 60 6D 60 6D 60 
+0D04: 1F 02 
+      3F 15 
+      5F 07 
+0D0A: 8D 60 6D 88 60 6D 60 6D 60 
 0D13: 6D 28 28 28 28 88 60 8D 60 6D 88 60 6D 60 6D 
 0D22: 60 6D 88 6D 68 8F 60 6F 8A 60 6F 60 6F 60 6F 
 0D31: 2A 2A 2A 2A 8A 60 8F 60 6F 8A 60 8F 8F 6F 6A 
-0D40: 6F 6A 6E DF 0A 0D 1F 0E 3F 16 5F 09 BF B3 B2 
-0D4F: A9 B0 B9 BB BA AE E2 B7 B3 B4 C1 B5 B9 FF 
+0D40: 6F 6A 6E 
+      DF 0A 0D 
+      
+; ?? Is this a song fragment left over from something else?
+; ?? It reference sound command 5, which has been removed to
+; ?? end-of-song.
+0D46: 1F 0E 
+      3F 16 
+      5F 09 
+      BF B3 ; ?End of song
+      B2 A9 B0 B9 BB BA AE E2 B7 B3 B4 C1 B5 B9 
+      FF 
+
+; Not used (space on the end of the ROM)
 
 0D5D: FF FF FF
 0D60: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
