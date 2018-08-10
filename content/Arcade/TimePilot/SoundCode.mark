@@ -2158,228 +2158,445 @@ MusicData:
 0B7E: EB 0C 
 0B80: 04 0D 
 
-; TODO decode these into notes
-
 ;Song data
 ; Song 0 Descriptor 0
-0B82: 1F 0E ; MusCmd0: Set base note pointer to 2EA (C4)
+0B82: 1F 0E ; MusCmd0: Set base note pointer to 0326 (C4)
 0B84: 3F 16 ; MusCmd1: Set base delay to 16
-      5F 00 ; MusCmd2: Set initial volume to 0
-      81    ; del4, note  1 C4
-      60    ; del3, rest
-      5F 08 ; MusCmd2: Set volume to (8)
-      66    ; del3, note  6 F4
-      A8    ; del5, note  8 G4
-      AD    ; del5, note 13 C5 
-      92    ; del4, note 18 F5
-      7F 00 ; MusCmd3: Set volume modification to (0)
-      B1 
-      91 
-      7F FF ; MusCmd3: Set volume modification to (-1)
-      B1 
-      B2 
-      91 
-      7F 00 ; MusCmd3: Set volume modification to (0)
-      D4 
-      B4 
-      7F FF ; MusCmd3: Set volume modification to (-1)
-      B4 
-      60 ; del3, rest
-      74 
-      3F 
-      13 
-      77 
-      76 
-      74 
-      74 
-      73 
-      71 
-      71 
-      70 
-      6D 
-      6D 
-      70 
-      71 
-      AD 
-      FF 
+0B86: 5F 00 ; MusCmd2: Set initial note volume to 00
+0B88: 81    ; delay=4, note=C4+0: C4
+0B89: 60    ; delay=3, note=rest
+0B8A: 5F 08 ; MusCmd2: Set initial note volume to 08
+0B8C: 66    ; delay=3, note=C4+5: F4
+0B8D: A8    ; delay=5, note=C4+7: G4
+0B8E: AD    ; delay=5, note=C4+12: C5
+0B8F: 92    ; delay=4, note=C4+17: F5
+0B90: 7F 00 ; MusCmd3: Set volume modification to 0
+0B92: B1    ; delay=5, note=C4+16: E5
+0B93: 91    ; delay=4, note=C4+16: E5
+0B94: 7F FF ; MusCmd3: Set volume modification to -1
+0B96: B1    ; delay=5, note=C4+16: E5
+0B97: B2    ; delay=5, note=C4+17: F5
+0B98: 91    ; delay=4, note=C4+16: E5
+0B99: 7F 00 ; MusCmd3: Set volume modification to 0
+0B9B: D4    ; delay=6, note=C4+19: G5
+0B9C: B4    ; delay=5, note=C4+19: G5
+0B9D: 7F FF ; MusCmd3: Set volume modification to -1
+0B9F: B4    ; delay=5, note=C4+19: G5
+0BA0: 60    ; delay=3, note=rest
+0BA1: 74    ; delay=3, note=C4+19: G5
+0BA2: 3F 13 ; MusCmd1: Set base delay to 13
+0BA4: 77    ; delay=3, note=C4+22: A#5
+0BA5: 76    ; delay=3, note=C4+21: A5
+0BA6: 74    ; delay=3, note=C4+19: G5
+0BA7: 74    ; delay=3, note=C4+19: G5
+0BA8: 73    ; delay=3, note=C4+18: F#5
+0BA9: 71    ; delay=3, note=C4+16: E5
+0BAA: 71    ; delay=3, note=C4+16: E5
+0BAB: 70    ; delay=3, note=C4+15: D#5
+0BAC: 6D    ; delay=3, note=C4+12: C5
+0BAD: 6D    ; delay=3, note=C4+12: C5
+0BAE: 70    ; delay=3, note=C4+15: D#5
+0BAF: 71    ; delay=3, note=C4+16: E5
+0BB0: AD    ; delay=5, note=C4+12: C5
+0BB1: FF    ; END
 
 ; Song 0 Descriptor 1
-0BB2: 1F 02 
-      3F 16 
-      5F 00 
-      81 60 
-      5F 08 
-      66 
-      A8 
-      AD 
-      92 
-      7F 00 
-      B1 91 
-      7F FF 
-      B1 
-      B2 
-      91 
-      7F 00 
-      D4 B4 
-      7F FF 
-      B4 
-0BD0: 60 
-      74 
-      3F 13 
-      77 
-      76 
-      74 
-      74 
-      73 
-      71 
-      71 
-      70 
-      6D 
-      6D 
-      70 
-0BDF: 71 
-      AD 
-      FF 
+0BB2: 1F 02 ; MusCmd0: Set base note pointer to 02F6 (C2)
+0BB4: 3F 16 ; MusCmd1: Set base delay to 16
+0BB6: 5F 00 ; MusCmd2: Set initial note volume to 00
+0BB8: 81    ; delay=4, note=C2+0: C2
+0BB9: 60    ; delay=3, note=rest
+0BBA: 5F 08 ; MusCmd2: Set initial note volume to 08
+0BBC: 66    ; delay=3, note=C2+5: F2
+0BBD: A8    ; delay=5, note=C2+7: G2
+0BBE: AD    ; delay=5, note=C2+12: C3
+0BBF: 92    ; delay=4, note=C2+17: F3
+0BC0: 7F 00 ; MusCmd3: Set volume modification to 0
+0BC2: B1    ; delay=5, note=C2+16: E3
+0BC3: 91    ; delay=4, note=C2+16: E3
+0BC4: 7F FF ; MusCmd3: Set volume modification to -1
+0BC6: B1    ; delay=5, note=C2+16: E3
+0BC7: B2    ; delay=5, note=C2+17: F3
+0BC8: 91    ; delay=4, note=C2+16: E3
+0BC9: 7F 00 ; MusCmd3: Set volume modification to 0
+0BCB: D4    ; delay=6, note=C2+19: G3
+0BCC: B4    ; delay=5, note=C2+19: G3
+0BCD: 7F FF ; MusCmd3: Set volume modification to -1
+0BCF: B4    ; delay=5, note=C2+19: G3
+0BD0: 60    ; delay=3, note=rest
+0BD1: 74    ; delay=3, note=C2+19: G3
+0BD2: 3F 13 ; MusCmd1: Set base delay to 13
+0BD4: 77    ; delay=3, note=C2+22: A#3
+0BD5: 76    ; delay=3, note=C2+21: A3
+0BD6: 74    ; delay=3, note=C2+19: G3
+0BD7: 74    ; delay=3, note=C2+19: G3
+0BD8: 73    ; delay=3, note=C2+18: F#3
+0BD9: 71    ; delay=3, note=C2+16: E3
+0BDA: 71    ; delay=3, note=C2+16: E3
+0BDB: 70    ; delay=3, note=C2+15: D#3
+0BDC: 6D    ; delay=3, note=C2+12: C3
+0BDD: 6D    ; delay=3, note=C2+12: C3
+0BDE: 70    ; delay=3, note=C2+15: D#3
+0BDF: 71    ; delay=3, note=C2+16: E3
+0BE0: AD    ; delay=5, note=C2+12: C3
+0BE1: FF    ; END
 
 ; Song 0 Descriptor 2
-0BE2: 1F 0E 
-      3F 13 
-      5F 08 
-      8D 
-      6D 
-      8D 
-      6D 
-      8D 
-      6D 
-      8D 
-      6D 
-      8D 
-0BF1: 6D 
-      8D 
-      6D 
-      8D 
-      6D 
-      8D 
-      6D 
-      88 
-      68 
-      85 
-      60 
-      86 
-      60 
-      87 
-      60 
-0C00: 7F 00 
-      CB 
-      7F FF 
-      AB 
-      AD 
-      FF 
+0BE2: 1F 0E ; MusCmd0: Set base note pointer to 0326 (C4)
+0BE4: 3F 13 ; MusCmd1: Set base delay to 13
+0BE6: 5F 08 ; MusCmd2: Set initial note volume to 08
+0BE8: 8D    ; delay=4, note=C4+12: C5
+0BE9: 6D    ; delay=3, note=C4+12: C5
+0BEA: 8D    ; delay=4, note=C4+12: C5
+0BEB: 6D    ; delay=3, note=C4+12: C5
+0BEC: 8D    ; delay=4, note=C4+12: C5
+0BED: 6D    ; delay=3, note=C4+12: C5
+0BEE: 8D    ; delay=4, note=C4+12: C5
+0BEF: 6D    ; delay=3, note=C4+12: C5
+0BF0: 8D    ; delay=4, note=C4+12: C5
+0BF1: 6D    ; delay=3, note=C4+12: C5
+0BF2: 8D    ; delay=4, note=C4+12: C5
+0BF3: 6D    ; delay=3, note=C4+12: C5
+0BF4: 8D    ; delay=4, note=C4+12: C5
+0BF5: 6D    ; delay=3, note=C4+12: C5
+0BF6: 8D    ; delay=4, note=C4+12: C5
+0BF7: 6D    ; delay=3, note=C4+12: C5
+0BF8: 88    ; delay=4, note=C4+7: G4
+0BF9: 68    ; delay=3, note=C4+7: G4
+0BFA: 85    ; delay=4, note=C4+4: E4
+0BFB: 60    ; delay=3, note=rest
+0BFC: 86    ; delay=4, note=C4+5: F4
+0BFD: 60    ; delay=3, note=rest
+0BFE: 87    ; delay=4, note=C4+6: F#4
+0BFF: 60    ; delay=3, note=rest
+0C00: 7F 00 ; MusCmd3: Set volume modification to 0
+0C02: CB    ; delay=6, note=C4+10: A#4
+0C03: 7F FF ; MusCmd3: Set volume modification to -1
+0C05: AB    ; delay=5, note=C4+10: A#4
+0C06: AD    ; delay=5, note=C4+12: C5
+0C07: FF    ; END
 
 ; Song 0 Descriptor 3
-0C08: 1F 02 
-      3F 13 
-      5F 08 
-      8D 
-      6D 
-      8D 
-      6D 
-      8D 
-      6D 
-      8D 
-      6D 
-      8D 
-0C17: 6D 
-      8D 
-      6D 
-      8D 
-      6D 
-      8D 
-      6D 
-      88 
-      68 
-      85 
-      60 
-      86 
-      60 
-      87 
-      60 
-0C26: 7F 00 
-      CB 
-      7F FF 
-      AB 
-      AD 
+0C08: 1F 02 ; MusCmd0: Set base note pointer to 02F6 (C2)
+0C0A: 3F 13 ; MusCmd1: Set base delay to 13
+0C0C: 5F 08 ; MusCmd2: Set initial note volume to 08
+0C0E: 8D    ; delay=4, note=C2+12: C3
+0C0F: 6D    ; delay=3, note=C2+12: C3
+0C10: 8D    ; delay=4, note=C2+12: C3
+0C11: 6D    ; delay=3, note=C2+12: C3
+0C12: 8D    ; delay=4, note=C2+12: C3
+0C13: 6D    ; delay=3, note=C2+12: C3
+0C14: 8D    ; delay=4, note=C2+12: C3
+0C15: 6D    ; delay=3, note=C2+12: C3
+0C16: 8D    ; delay=4, note=C2+12: C3
+0C17: 6D    ; delay=3, note=C2+12: C3
+0C18: 8D    ; delay=4, note=C2+12: C3
+0C19: 6D    ; delay=3, note=C2+12: C3
+0C1A: 8D    ; delay=4, note=C2+12: C3
+0C1B: 6D    ; delay=3, note=C2+12: C3
+0C1C: 8D    ; delay=4, note=C2+12: C3
+0C1D: 6D    ; delay=3, note=C2+12: C3
+0C1E: 88    ; delay=4, note=C2+7: G2
+0C1F: 68    ; delay=3, note=C2+7: G2
+0C20: 85    ; delay=4, note=C2+4: E2
+0C21: 60    ; delay=3, note=rest
+0C22: 86    ; delay=4, note=C2+5: F2
+0C23: 60    ; delay=3, note=rest
+0C24: 87    ; delay=4, note=C2+6: F#2
+0C25: 60    ; delay=3, note=rest
+0C26: 7F 00 ; MusCmd3: Set volume modification to 0
+0C28: CB    ; delay=6, note=C2+10: A#2
+0C29: 7F FF ; MusCmd3: Set volume modification to -1
+0C2B: AB    ; delay=5, note=C2+10: A#2
+0C2C: AD    ; delay=5, note=C2+12: C3
 
 ; Song 0 Descriptor 4
-0C2D: FF 
+0C2D: FF    ; END
 
 ; Song 1 Descriptor 0
-0C2E: 1F 0E 
-      3F 15 
-      5F 00 
-      81 
-      5F 07 
-0C37: 65 65 25 25 25 25 
-0C3D: A5 85 65 85 65 65 80 65 65 25 25 25 25 A5 85 
-0C4C: 65 61 68 6C 6F 80 6A 6A 2A 2A 2A 2A AA 8A 6A 
-0C5B: 8A 6A 6A 80 6A 6A 2A 2A 2A 2A AA 8A 68 68 68 
-0C6A: 6A 6A 80 
-      DF 37 0C 
+0C2E: 1F 0E ; MusCmd0: Set base note pointer to 0326 (C4)
+0C30: 3F 15 ; MusCmd1: Set base delay to 15
+0C32: 5F 00 ; MusCmd2: Set initial note volume to 00
+0C34: 81    ; delay=4, note=C4+0: C4
+0C35: 5F 07 ; MusCmd2: Set initial note volume to 07
+0C37: 65    ; delay=3, note=C4+4: E4
+0C38: 65    ; delay=3, note=C4+4: E4
+0C39: 25    ; delay=1, note=C4+4: E4
+0C3A: 25    ; delay=1, note=C4+4: E4
+0C3B: 25    ; delay=1, note=C4+4: E4
+0C3C: 25    ; delay=1, note=C4+4: E4
+0C3D: A5    ; delay=5, note=C4+4: E4
+0C3E: 85    ; delay=4, note=C4+4: E4
+0C3F: 65    ; delay=3, note=C4+4: E4
+0C40: 85    ; delay=4, note=C4+4: E4
+0C41: 65    ; delay=3, note=C4+4: E4
+0C42: 65    ; delay=3, note=C4+4: E4
+0C43: 80    ; delay=4, note=rest
+0C44: 65    ; delay=3, note=C4+4: E4
+0C45: 65    ; delay=3, note=C4+4: E4
+0C46: 25    ; delay=1, note=C4+4: E4
+0C47: 25    ; delay=1, note=C4+4: E4
+0C48: 25    ; delay=1, note=C4+4: E4
+0C49: 25    ; delay=1, note=C4+4: E4
+0C4A: A5    ; delay=5, note=C4+4: E4
+0C4B: 85    ; delay=4, note=C4+4: E4
+0C4C: 65    ; delay=3, note=C4+4: E4
+0C4D: 61    ; delay=3, note=C4+0: C4
+0C4E: 68    ; delay=3, note=C4+7: G4
+0C4F: 6C    ; delay=3, note=C4+11: B4
+0C50: 6F    ; delay=3, note=C4+14: D5
+0C51: 80    ; delay=4, note=rest
+0C52: 6A    ; delay=3, note=C4+9: A4
+0C53: 6A    ; delay=3, note=C4+9: A4
+0C54: 2A    ; delay=1, note=C4+9: A4
+0C55: 2A    ; delay=1, note=C4+9: A4
+0C56: 2A    ; delay=1, note=C4+9: A4
+0C57: 2A    ; delay=1, note=C4+9: A4
+0C58: AA    ; delay=5, note=C4+9: A4
+0C59: 8A    ; delay=4, note=C4+9: A4
+0C5A: 6A    ; delay=3, note=C4+9: A4
+0C5B: 8A    ; delay=4, note=C4+9: A4
+0C5C: 6A    ; delay=3, note=C4+9: A4
+0C5D: 6A    ; delay=3, note=C4+9: A4
+0C5E: 80    ; delay=4, note=rest
+0C5F: 6A    ; delay=3, note=C4+9: A4
+0C60: 6A    ; delay=3, note=C4+9: A4
+0C61: 2A    ; delay=1, note=C4+9: A4
+0C62: 2A    ; delay=1, note=C4+9: A4
+0C63: 2A    ; delay=1, note=C4+9: A4
+0C64: 2A    ; delay=1, note=C4+9: A4
+0C65: AA    ; delay=5, note=C4+9: A4
+0C66: 8A    ; delay=4, note=C4+9: A4
+0C67: 68    ; delay=3, note=C4+7: G4
+0C68: 68    ; delay=3, note=C4+7: G4
+0C69: 68    ; delay=3, note=C4+7: G4
+0C6A: 6A    ; delay=3, note=C4+9: A4
+0C6B: 6A    ; delay=3, note=C4+9: A4
+0C6C: 80    ; delay=4, note=rest
+0C6D: DF 37 0C ; MusCmd6: GOTO 0C37
 
 ; Song 1 Descriptor 1
-0C70: 1F 0E 
-      3F 15 
-      5F 00 
-      81 
-      5F 07 
-0C79: 68 68 28 28 28 28 
-0C7F: A8 88 68 88 68 68 80 68 68 28 28 28 28 A8 88 
-0C8E: A8 60 80 6D 6D 2D 2D 2D 2D AD 8D 6D 8D 6D 6D 
-0C9D: 80 6D 6D 2D 2D 2D 2D AD 8D 6D 6D 6D AD 
-      DF 79 0C 
+0C70: 1F 0E ; MusCmd0: Set base note pointer to 0326 (C4)
+0C72: 3F 15 ; MusCmd1: Set base delay to 15
+0C74: 5F 00 ; MusCmd2: Set initial note volume to 00
+0C76: 81    ; delay=4, note=C4+0: C4
+0C77: 5F 07 ; MusCmd2: Set initial note volume to 07
+0C79: 68    ; delay=3, note=C4+7: G4
+0C7A: 68    ; delay=3, note=C4+7: G4
+0C7B: 28    ; delay=1, note=C4+7: G4
+0C7C: 28    ; delay=1, note=C4+7: G4
+0C7D: 28    ; delay=1, note=C4+7: G4
+0C7E: 28    ; delay=1, note=C4+7: G4
+0C7F: A8    ; delay=5, note=C4+7: G4
+0C80: 88    ; delay=4, note=C4+7: G4
+0C81: 68    ; delay=3, note=C4+7: G4
+0C82: 88    ; delay=4, note=C4+7: G4
+0C83: 68    ; delay=3, note=C4+7: G4
+0C84: 68    ; delay=3, note=C4+7: G4
+0C85: 80    ; delay=4, note=rest
+0C86: 68    ; delay=3, note=C4+7: G4
+0C87: 68    ; delay=3, note=C4+7: G4
+0C88: 28    ; delay=1, note=C4+7: G4
+0C89: 28    ; delay=1, note=C4+7: G4
+0C8A: 28    ; delay=1, note=C4+7: G4
+0C8B: 28    ; delay=1, note=C4+7: G4
+0C8C: A8    ; delay=5, note=C4+7: G4
+0C8D: 88    ; delay=4, note=C4+7: G4
+0C8E: A8    ; delay=5, note=C4+7: G4
+0C8F: 60    ; delay=3, note=rest
+0C90: 80    ; delay=4, note=rest
+0C91: 6D    ; delay=3, note=C4+12: C5
+0C92: 6D    ; delay=3, note=C4+12: C5
+0C93: 2D    ; delay=1, note=C4+12: C5
+0C94: 2D    ; delay=1, note=C4+12: C5
+0C95: 2D    ; delay=1, note=C4+12: C5
+0C96: 2D    ; delay=1, note=C4+12: C5
+0C97: AD    ; delay=5, note=C4+12: C5
+0C98: 8D    ; delay=4, note=C4+12: C5
+0C99: 6D    ; delay=3, note=C4+12: C5
+0C9A: 8D    ; delay=4, note=C4+12: C5
+0C9B: 6D    ; delay=3, note=C4+12: C5
+0C9C: 6D    ; delay=3, note=C4+12: C5
+0C9D: 80    ; delay=4, note=rest
+0C9E: 6D    ; delay=3, note=C4+12: C5
+0C9F: 6D    ; delay=3, note=C4+12: C5
+0CA0: 2D    ; delay=1, note=C4+12: C5
+0CA1: 2D    ; delay=1, note=C4+12: C5
+0CA2: 2D    ; delay=1, note=C4+12: C5
+0CA3: 2D    ; delay=1, note=C4+12: C5
+0CA4: AD    ; delay=5, note=C4+12: C5
+0CA5: 8D    ; delay=4, note=C4+12: C5
+0CA6: 6D    ; delay=3, note=C4+12: C5
+0CA7: 6D    ; delay=3, note=C4+12: C5
+0CA8: 6D    ; delay=3, note=C4+12: C5
+0CA9: AD    ; delay=5, note=C4+12: C5
+0CAA: DF 79 0C ; MusCmd6: GOTO 0C79
 
 ; Song 1 Descriptor 2
-0CAD: 1F 0E 
-      3F 15 
-      5F 00 
-      81 
-      5F 07 
-0CB6: 6C 6C 2C 2C 2C 2C 
-0CBC: AC 8C 6C 8C 6C 6C 80 6C 6C 2C 2C 2C 2C AC 8C 
-0CCB: AC 60 80 72 72 32 32 32 32 B2 92 72 92 72 72 
-0CDA: 80 72 72 32 32 32 32 B2 92 72 72 72 92 80 
-      DF B6 0C 
+0CAD: 1F 0E ; MusCmd0: Set base note pointer to 0326 (C4)
+0CAF: 3F 15 ; MusCmd1: Set base delay to 15
+0CB1: 5F 00 ; MusCmd2: Set initial note volume to 00
+0CB3: 81    ; delay=4, note=C4+0: C4
+0CB4: 5F 07 ; MusCmd2: Set initial note volume to 07
+0CB6: 6C    ; delay=3, note=C4+11: B4
+0CB7: 6C    ; delay=3, note=C4+11: B4
+0CB8: 2C    ; delay=1, note=C4+11: B4
+0CB9: 2C    ; delay=1, note=C4+11: B4
+0CBA: 2C    ; delay=1, note=C4+11: B4
+0CBB: 2C    ; delay=1, note=C4+11: B4
+0CBC: AC    ; delay=5, note=C4+11: B4
+0CBD: 8C    ; delay=4, note=C4+11: B4
+0CBE: 6C    ; delay=3, note=C4+11: B4
+0CBF: 8C    ; delay=4, note=C4+11: B4
+0CC0: 6C    ; delay=3, note=C4+11: B4
+0CC1: 6C    ; delay=3, note=C4+11: B4
+0CC2: 80    ; delay=4, note=rest
+0CC3: 6C    ; delay=3, note=C4+11: B4
+0CC4: 6C    ; delay=3, note=C4+11: B4
+0CC5: 2C    ; delay=1, note=C4+11: B4
+0CC6: 2C    ; delay=1, note=C4+11: B4
+0CC7: 2C    ; delay=1, note=C4+11: B4
+0CC8: 2C    ; delay=1, note=C4+11: B4
+0CC9: AC    ; delay=5, note=C4+11: B4
+0CCA: 8C    ; delay=4, note=C4+11: B4
+0CCB: AC    ; delay=5, note=C4+11: B4
+0CCC: 60    ; delay=3, note=rest
+0CCD: 80    ; delay=4, note=rest
+0CCE: 72    ; delay=3, note=C4+17: F5
+0CCF: 72    ; delay=3, note=C4+17: F5
+0CD0: 32    ; delay=1, note=C4+17: F5
+0CD1: 32    ; delay=1, note=C4+17: F5
+0CD2: 32    ; delay=1, note=C4+17: F5
+0CD3: 32    ; delay=1, note=C4+17: F5
+0CD4: B2    ; delay=5, note=C4+17: F5
+0CD5: 92    ; delay=4, note=C4+17: F5
+0CD6: 72    ; delay=3, note=C4+17: F5
+0CD7: 92    ; delay=4, note=C4+17: F5
+0CD8: 72    ; delay=3, note=C4+17: F5
+0CD9: 72    ; delay=3, note=C4+17: F5
+0CDA: 80    ; delay=4, note=rest
+0CDB: 72    ; delay=3, note=C4+17: F5
+0CDC: 72    ; delay=3, note=C4+17: F5
+0CDD: 32    ; delay=1, note=C4+17: F5
+0CDE: 32    ; delay=1, note=C4+17: F5
+0CDF: 32    ; delay=1, note=C4+17: F5
+0CE0: 32    ; delay=1, note=C4+17: F5
+0CE1: B2    ; delay=5, note=C4+17: F5
+0CE2: 92    ; delay=4, note=C4+17: F5
+0CE3: 72    ; delay=3, note=C4+17: F5
+0CE4: 72    ; delay=3, note=C4+17: F5
+0CE5: 72    ; delay=3, note=C4+17: F5
+0CE6: 92    ; delay=4, note=C4+17: F5
+0CE7: 80    ; delay=4, note=rest
+0CE8: DF B6 0C ; MusCmd6: GOTO 0CB6
 
 ; Song 1 Descriptor 3
-0CEB: 1F 0E 
-      3F 15 
-      5F 00 
-      E1 E0 E0 C0 A0 
-      5F 07 
-0CF8: 78 74 
-0CFA: 79 76 E0 E0 E0 C0 A0 
-      DF F8 0C 
+0CEB: 1F 0E ; MusCmd0: Set base note pointer to 0326 (C4)
+0CED: 3F 15 ; MusCmd1: Set base delay to 15
+0CEF: 5F 00 ; MusCmd2: Set initial note volume to 00
+0CF1: E1    ; delay=7, note=C4+0: C4
+0CF2: E0    ; delay=7, note=rest
+0CF3: E0    ; delay=7, note=rest
+0CF4: C0    ; delay=6, note=rest
+0CF5: A0    ; delay=5, note=rest
+0CF6: 5F 07 ; MusCmd2: Set initial note volume to 07
+0CF8: 78    ; delay=3, note=C4+23: B5
+0CF9: 74    ; delay=3, note=C4+19: G5
+0CFA: 79    ; delay=3, note=C4+24: C6
+0CFB: 76    ; delay=3, note=C4+21: A5
+0CFC: E0    ; delay=7, note=rest
+0CFD: E0    ; delay=7, note=rest
+0CFE: E0    ; delay=7, note=rest
+0CFF: C0    ; delay=6, note=rest
+0D00: A0    ; delay=5, note=rest
+0D01: DF F8 0C ; MusCmd6: GOTO 0CF8
 
 ; Song 1 Descriptor 4
-0D04: 1F 02 
-      3F 15 
-      5F 07 
-0D0A: 8D 60 6D 88 60 6D 60 6D 60 
-0D13: 6D 28 28 28 28 88 60 8D 60 6D 88 60 6D 60 6D 
-0D22: 60 6D 88 6D 68 8F 60 6F 8A 60 6F 60 6F 60 6F 
-0D31: 2A 2A 2A 2A 8A 60 8F 60 6F 8A 60 8F 8F 6F 6A 
-0D40: 6F 6A 6E 
-      DF 0A 0D 
+0D04: 1F 02 ; MusCmd0: Set base note pointer to 02F6 (C2)
+0D06: 3F 15 ; MusCmd1: Set base delay to 15
+0D08: 5F 07 ; MusCmd2: Set initial note volume to 07
+0D0A: 8D    ; delay=4, note=C2+12: C3
+0D0B: 60    ; delay=3, note=rest
+0D0C: 6D    ; delay=3, note=C2+12: C3
+0D0D: 88    ; delay=4, note=C2+7: G2
+0D0E: 60    ; delay=3, note=rest
+0D0F: 6D    ; delay=3, note=C2+12: C3
+0D10: 60    ; delay=3, note=rest
+0D11: 6D    ; delay=3, note=C2+12: C3
+0D12: 60    ; delay=3, note=rest
+0D13: 6D    ; delay=3, note=C2+12: C3
+0D14: 28    ; delay=1, note=C2+7: G2
+0D15: 28    ; delay=1, note=C2+7: G2
+0D16: 28    ; delay=1, note=C2+7: G2
+0D17: 28    ; delay=1, note=C2+7: G2
+0D18: 88    ; delay=4, note=C2+7: G2
+0D19: 60    ; delay=3, note=rest
+0D1A: 8D    ; delay=4, note=C2+12: C3
+0D1B: 60    ; delay=3, note=rest
+0D1C: 6D    ; delay=3, note=C2+12: C3
+0D1D: 88    ; delay=4, note=C2+7: G2
+0D1E: 60    ; delay=3, note=rest
+0D1F: 6D    ; delay=3, note=C2+12: C3
+0D20: 60    ; delay=3, note=rest
+0D21: 6D    ; delay=3, note=C2+12: C3
+0D22: 60    ; delay=3, note=rest
+0D23: 6D    ; delay=3, note=C2+12: C3
+0D24: 88    ; delay=4, note=C2+7: G2
+0D25: 6D    ; delay=3, note=C2+12: C3
+0D26: 68    ; delay=3, note=C2+7: G2
+0D27: 8F    ; delay=4, note=C2+14: D3
+0D28: 60    ; delay=3, note=rest
+0D29: 6F    ; delay=3, note=C2+14: D3
+0D2A: 8A    ; delay=4, note=C2+9: A2
+0D2B: 60    ; delay=3, note=rest
+0D2C: 6F    ; delay=3, note=C2+14: D3
+0D2D: 60    ; delay=3, note=rest
+0D2E: 6F    ; delay=3, note=C2+14: D3
+0D2F: 60    ; delay=3, note=rest
+0D30: 6F    ; delay=3, note=C2+14: D3
+0D31: 2A    ; delay=1, note=C2+9: A2
+0D32: 2A    ; delay=1, note=C2+9: A2
+0D33: 2A    ; delay=1, note=C2+9: A2
+0D34: 2A    ; delay=1, note=C2+9: A2
+0D35: 8A    ; delay=4, note=C2+9: A2
+0D36: 60    ; delay=3, note=rest
+0D37: 8F    ; delay=4, note=C2+14: D3
+0D38: 60    ; delay=3, note=rest
+0D39: 6F    ; delay=3, note=C2+14: D3
+0D3A: 8A    ; delay=4, note=C2+9: A2
+0D3B: 60    ; delay=3, note=rest
+0D3C: 8F    ; delay=4, note=C2+14: D3
+0D3D: 8F    ; delay=4, note=C2+14: D3
+0D3E: 6F    ; delay=3, note=C2+14: D3
+0D3F: 6A    ; delay=3, note=C2+9: A2
+0D40: 6F    ; delay=3, note=C2+14: D3
+0D41: 6A    ; delay=3, note=C2+9: A2
+0D42: 6E    ; delay=3, note=C2+13: C#3
+0D43: DF 0A 0D ; MusCmd6: GOTO 0D0A
       
 ; ?? Is this a song fragment left over from something else?
 ; ?? It reference sound command 5, which has been removed to
 ; ?? end-of-song.
-0D46: 1F 0E 
-      3F 16 
-      5F 09 
-      BF B3 ; ?End of song
-      B2 A9 B0 B9 BB BA AE E2 B7 B3 B4 C1 B5 B9 
-      FF 
+0D46: 1F 0E ; MusCmd0: Set base note pointer to 0326 (C4)
+0D48: 3F 16 ; MusCmd1: Set base delay to 16
+0D4A: 5F 09 ; MusCmd2: Set initial note volume to 09
+0D4C: BF B3 ; MusCmd5: ??? B3
+; These are probably not notes. They are probably data bytes for command 5?
+0D4E: B2    ; delay=5, note=C4+17: F5
+0D4F: A9    ; delay=5, note=C4+8: G#4
+0D50: B0    ; delay=5, note=C4+15: D#5
+0D51: B9    ; delay=5, note=C4+24: C6
+0D52: BB    ; delay=5, note=C4+26: D6
+0D53: BA    ; delay=5, note=C4+25: C#6
+0D54: AE    ; delay=5, note=C4+13: C#5
+0D55: E2    ; delay=7, note=C4+1: C#4
+0D56: B7    ; delay=5, note=C4+22: A#5
+0D57: B3    ; delay=5, note=C4+18: F#5
+0D58: B4    ; delay=5, note=C4+19: G5
+0D59: C1    ; delay=6, note=C4+0: C4
+0D5A: B5    ; delay=5, note=C4+20: G#5
+0D5B: B9    ; delay=5, note=C4+24: C6
+0D5C: FF    ; END
 
 ; Not used (space on the end of the ROM)
 
