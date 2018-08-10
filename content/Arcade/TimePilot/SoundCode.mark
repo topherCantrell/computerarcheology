@@ -2145,13 +2145,13 @@ Command1B:
 
 MusicData: 
 ; Music pointers for songs (10 bytes each)
-; Song 0
+; Song 0 (Start of game)
 0B6E: 82 0B 
 0B70: B2 0B 
 0B72: E2 0B 
 0B74: 08 0C 
 0B76: 2D 0C 
-; Song 1
+; Song 1 (Enter you initials)
 0B78: 2E 0C 
 0B7A: 70 0C 
 0B7C: AD 0C 
@@ -2159,6 +2159,9 @@ MusicData:
 0B80: 04 0D 
 
 ;Song data
+
+; Start of game song
+
 ; Song 0 Descriptor 0
 0B82: 1F 0E ; MusCmd0: Set base note pointer to 0326 (C4)
 0B84: 3F 16 ; MusCmd1: Set base delay to 16
@@ -2313,8 +2316,10 @@ MusicData:
 ; Song 0 Descriptor 4
 0C2D: FF    ; END
 
+; Enter-your-initials song. This loops.
+
 ; Song 1 Descriptor 0
-0C2E: 1F 0E ; MusCmd0: Set base note pointer to 0326 (C4)
+0C2E: 1F 0E ; MusCmd0: Set base note pointer to 0326 (C4 middle C)
 0C30: 3F 15 ; MusCmd1: Set base delay to 15
 0C32: 5F 00 ; MusCmd2: Set initial note volume to 00
 0C34: 81    ; delay=4, note=C4+0: C4
@@ -2376,7 +2381,7 @@ MusicData:
 0C6D: DF 37 0C ; MusCmd6: GOTO 0C37
 
 ; Song 1 Descriptor 1
-0C70: 1F 0E ; MusCmd0: Set base note pointer to 0326 (C4)
+0C70: 1F 0E ; MusCmd0: Set base note pointer to 0326 (C4 middle C)
 0C72: 3F 15 ; MusCmd1: Set base delay to 15
 0C74: 5F 00 ; MusCmd2: Set initial note volume to 00
 0C76: 81    ; delay=4, note=C4+0: C4
@@ -2433,7 +2438,7 @@ MusicData:
 0CAA: DF 79 0C ; MusCmd6: GOTO 0C79
 
 ; Song 1 Descriptor 2
-0CAD: 1F 0E ; MusCmd0: Set base note pointer to 0326 (C4)
+0CAD: 1F 0E ; MusCmd0: Set base note pointer to 0326 (C4 middle C)
 0CAF: 3F 15 ; MusCmd1: Set base delay to 15
 0CB1: 5F 00 ; MusCmd2: Set initial note volume to 00
 0CB3: 81    ; delay=4, note=C4+0: C4
@@ -2491,7 +2496,7 @@ MusicData:
 0CE8: DF B6 0C ; MusCmd6: GOTO 0CB6
 
 ; Song 1 Descriptor 3
-0CEB: 1F 0E ; MusCmd0: Set base note pointer to 0326 (C4)
+0CEB: 1F 0E ; MusCmd0: Set base note pointer to 0326 (C4 middle C)
 0CED: 3F 15 ; MusCmd1: Set base delay to 15
 0CEF: 5F 00 ; MusCmd2: Set initial note volume to 00
 0CF1: E1    ; delay=7, note=C4+0: C4
@@ -2577,7 +2582,7 @@ MusicData:
 ; ?? Is this a song fragment left over from something else?
 ; ?? It reference sound command 5, which has been removed to
 ; ?? end-of-song.
-0D46: 1F 0E ; MusCmd0: Set base note pointer to 0326 (C4)
+0D46: 1F 0E ; MusCmd0: Set base note pointer to 0326 (C4 middle C)
 0D48: 3F 16 ; MusCmd1: Set base delay to 16
 0D4A: 5F 09 ; MusCmd2: Set initial note volume to 09
 0D4C: BF B3 ; MusCmd5: ??? B3
