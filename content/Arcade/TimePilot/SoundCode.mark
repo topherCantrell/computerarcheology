@@ -2150,7 +2150,8 @@ MusicData:
 0B70: B2 0B 
 0B72: E2 0B 
 0B74: 08 0C 
-0B76: 2D 0C 
+0B76: 2D 0C
+ 
 ; Song 1 (Enter you initials)
 0B78: 2E 0C 
 0B7A: 70 0C 
