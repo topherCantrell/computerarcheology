@@ -62,8 +62,6 @@ TO DO:
 ; 1F 0 Initialize music D4
 ; 20 0 Initialize music D5
 
-
-
 # Start
 
 Start: 
@@ -403,9 +401,10 @@ ContinueCommand:
 0195: 70              LD      (HL),B              ; Clear second byte
 0196: C9              RET                         ; Done
 
-# Command 00
+# Command 00 Silence
 
 Command00: 
+; Silence
 ; Initialize Routine Vector 00 (Silence the channel)
 
 0197: 0E 00           LD      C,$00               ; Silence the voice
@@ -847,10 +846,12 @@ SongDescInit:
 
 # Command 01
 
+Coin drop
+
 Command01: 
 ; Initialize Routine Vector 01 (Coin Drop)
-03E7: AF              XOR     A                   ;
-03E8: CD C8 01        CALL    $01C8               ;{FilterCaps}
+03E7: AF              XOR     A                   ; No ...
+03E8: CD C8 01        CALL    $01C8               ; {FilterCaps} ... capacitors
 03EB: 21 6B 00        LD      HL,$006B            ; Fine=6B, Coars=00
 03EE: CD AA 01        CALL    $01AA               ; Write to tone registers
 03F1: 21 41 30        LD      HL,$3041            ;
@@ -896,9 +897,7 @@ Command01:
 042D: 3D              DEC     A                   ; Zero becomes FF
 042E: C9              RET                         ; Done
 
-042F: 47              LD      B,A                 ;
-0430: 55              LD      D,L                 ;
-0431: 6B              LD      L,E                 ;
+042F: 47 55 6B 
 
 # Command 02
 
@@ -2167,11 +2166,11 @@ MusicData:
 0B82: 1F 0E ; MusCmd0: Set base note pointer to 0326 (C4)
 0B84: 3F 16 ; MusCmd1: Set base delay to 16
 0B86: 5F 00 ; MusCmd2: Set initial note volume to 00
-0B88: 81    ; delay=4, note=C4+0: C4
+0B88: 81    ; delay=4, note=C4+0:  C4
 0B89: 60    ; delay=3, note=rest
 0B8A: 5F 08 ; MusCmd2: Set initial note volume to 08
-0B8C: 66    ; delay=3, note=C4+5: F4
-0B8D: A8    ; delay=5, note=C4+7: G4
+0B8C: 66    ; delay=3, note=C4+5:  F4
+0B8D: A8    ; delay=5, note=C4+7:  G4
 0B8E: AD    ; delay=5, note=C4+12: C5
 0B8F: 92    ; delay=4, note=C4+17: F5
 0B90: 7F 00 ; MusCmd3: Set volume modification to 0
@@ -2208,11 +2207,11 @@ MusicData:
 0BB2: 1F 02 ; MusCmd0: Set base note pointer to 02F6 (C2)
 0BB4: 3F 16 ; MusCmd1: Set base delay to 16
 0BB6: 5F 00 ; MusCmd2: Set initial note volume to 00
-0BB8: 81    ; delay=4, note=C2+0: C2
+0BB8: 81    ; delay=4, note=C2+0:  C2
 0BB9: 60    ; delay=3, note=rest
 0BBA: 5F 08 ; MusCmd2: Set initial note volume to 08
-0BBC: 66    ; delay=3, note=C2+5: F2
-0BBD: A8    ; delay=5, note=C2+7: G2
+0BBC: 66    ; delay=3, note=C2+5:  F2
+0BBD: A8    ; delay=5, note=C2+7:  G2
 0BBE: AD    ; delay=5, note=C2+12: C3
 0BBF: 92    ; delay=4, note=C2+17: F3
 0BC0: 7F 00 ; MusCmd3: Set volume modification to 0
@@ -2265,13 +2264,13 @@ MusicData:
 0BF5: 6D    ; delay=3, note=C4+12: C5
 0BF6: 8D    ; delay=4, note=C4+12: C5
 0BF7: 6D    ; delay=3, note=C4+12: C5
-0BF8: 88    ; delay=4, note=C4+7: G4
-0BF9: 68    ; delay=3, note=C4+7: G4
-0BFA: 85    ; delay=4, note=C4+4: E4
+0BF8: 88    ; delay=4, note=C4+7:  G4
+0BF9: 68    ; delay=3, note=C4+7:  G4
+0BFA: 85    ; delay=4, note=C4+4:  E4
 0BFB: 60    ; delay=3, note=rest
-0BFC: 86    ; delay=4, note=C4+5: F4
+0BFC: 86    ; delay=4, note=C4+5:  F4
 0BFD: 60    ; delay=3, note=rest
-0BFE: 87    ; delay=4, note=C4+6: F#4
+0BFE: 87    ; delay=4, note=C4+6:  F#4
 0BFF: 60    ; delay=3, note=rest
 0C00: 7F 00 ; MusCmd3: Set volume modification to 0
 0C02: CB    ; delay=6, note=C4+10: A#4
@@ -2300,13 +2299,13 @@ MusicData:
 0C1B: 6D    ; delay=3, note=C2+12: C3
 0C1C: 8D    ; delay=4, note=C2+12: C3
 0C1D: 6D    ; delay=3, note=C2+12: C3
-0C1E: 88    ; delay=4, note=C2+7: G2
-0C1F: 68    ; delay=3, note=C2+7: G2
-0C20: 85    ; delay=4, note=C2+4: E2
+0C1E: 88    ; delay=4, note=C2+7:  G2
+0C1F: 68    ; delay=3, note=C2+7:  G2
+0C20: 85    ; delay=4, note=C2+4:  E2
 0C21: 60    ; delay=3, note=rest
-0C22: 86    ; delay=4, note=C2+5: F2
+0C22: 86    ; delay=4, note=C2+5:  F2
 0C23: 60    ; delay=3, note=rest
-0C24: 87    ; delay=4, note=C2+6: F#2
+0C24: 87    ; delay=4, note=C2+6:  F#2
 0C25: 60    ; delay=3, note=rest
 0C26: 7F 00 ; MusCmd3: Set volume modification to 0
 0C28: CB    ; delay=6, note=C2+10: A#2
@@ -2323,61 +2322,61 @@ MusicData:
 0C2E: 1F 0E ; MusCmd0: Set base note pointer to 0326 (C4 middle C)
 0C30: 3F 15 ; MusCmd1: Set base delay to 15
 0C32: 5F 00 ; MusCmd2: Set initial note volume to 00
-0C34: 81    ; delay=4, note=C4+0: C4
+0C34: 81    ; delay=4, note=C4+0:  C4
 0C35: 5F 07 ; MusCmd2: Set initial note volume to 07
-0C37: 65    ; delay=3, note=C4+4: E4
-0C38: 65    ; delay=3, note=C4+4: E4
-0C39: 25    ; delay=1, note=C4+4: E4
-0C3A: 25    ; delay=1, note=C4+4: E4
-0C3B: 25    ; delay=1, note=C4+4: E4
-0C3C: 25    ; delay=1, note=C4+4: E4
-0C3D: A5    ; delay=5, note=C4+4: E4
-0C3E: 85    ; delay=4, note=C4+4: E4
-0C3F: 65    ; delay=3, note=C4+4: E4
-0C40: 85    ; delay=4, note=C4+4: E4
-0C41: 65    ; delay=3, note=C4+4: E4
-0C42: 65    ; delay=3, note=C4+4: E4
+0C37: 65    ; delay=3, note=C4+4:  E4
+0C38: 65    ; delay=3, note=C4+4:  E4
+0C39: 25    ; delay=1, note=C4+4:  E4
+0C3A: 25    ; delay=1, note=C4+4:  E4
+0C3B: 25    ; delay=1, note=C4+4:  E4
+0C3C: 25    ; delay=1, note=C4+4:  E4
+0C3D: A5    ; delay=5, note=C4+4:  E4
+0C3E: 85    ; delay=4, note=C4+4:  E4
+0C3F: 65    ; delay=3, note=C4+4:  E4
+0C40: 85    ; delay=4, note=C4+4:  E4
+0C41: 65    ; delay=3, note=C4+4:  E4
+0C42: 65    ; delay=3, note=C4+4:  E4
 0C43: 80    ; delay=4, note=rest
-0C44: 65    ; delay=3, note=C4+4: E4
-0C45: 65    ; delay=3, note=C4+4: E4
-0C46: 25    ; delay=1, note=C4+4: E4
-0C47: 25    ; delay=1, note=C4+4: E4
-0C48: 25    ; delay=1, note=C4+4: E4
-0C49: 25    ; delay=1, note=C4+4: E4
-0C4A: A5    ; delay=5, note=C4+4: E4
-0C4B: 85    ; delay=4, note=C4+4: E4
-0C4C: 65    ; delay=3, note=C4+4: E4
-0C4D: 61    ; delay=3, note=C4+0: C4
-0C4E: 68    ; delay=3, note=C4+7: G4
+0C44: 65    ; delay=3, note=C4+4:  E4
+0C45: 65    ; delay=3, note=C4+4:  E4
+0C46: 25    ; delay=1, note=C4+4:  E4
+0C47: 25    ; delay=1, note=C4+4:  E4
+0C48: 25    ; delay=1, note=C4+4:  E4
+0C49: 25    ; delay=1, note=C4+4:  E4
+0C4A: A5    ; delay=5, note=C4+4:  E4
+0C4B: 85    ; delay=4, note=C4+4:  E4
+0C4C: 65    ; delay=3, note=C4+4:  E4
+0C4D: 61    ; delay=3, note=C4+0:  C4
+0C4E: 68    ; delay=3, note=C4+7:  G4
 0C4F: 6C    ; delay=3, note=C4+11: B4
 0C50: 6F    ; delay=3, note=C4+14: D5
 0C51: 80    ; delay=4, note=rest
-0C52: 6A    ; delay=3, note=C4+9: A4
-0C53: 6A    ; delay=3, note=C4+9: A4
-0C54: 2A    ; delay=1, note=C4+9: A4
-0C55: 2A    ; delay=1, note=C4+9: A4
-0C56: 2A    ; delay=1, note=C4+9: A4
-0C57: 2A    ; delay=1, note=C4+9: A4
-0C58: AA    ; delay=5, note=C4+9: A4
-0C59: 8A    ; delay=4, note=C4+9: A4
-0C5A: 6A    ; delay=3, note=C4+9: A4
-0C5B: 8A    ; delay=4, note=C4+9: A4
-0C5C: 6A    ; delay=3, note=C4+9: A4
-0C5D: 6A    ; delay=3, note=C4+9: A4
+0C52: 6A    ; delay=3, note=C4+9:  A4
+0C53: 6A    ; delay=3, note=C4+9:  A4
+0C54: 2A    ; delay=1, note=C4+9:  A4
+0C55: 2A    ; delay=1, note=C4+9:  A4
+0C56: 2A    ; delay=1, note=C4+9:  A4
+0C57: 2A    ; delay=1, note=C4+9:  A4
+0C58: AA    ; delay=5, note=C4+9:  A4
+0C59: 8A    ; delay=4, note=C4+9:  A4
+0C5A: 6A    ; delay=3, note=C4+9:  A4
+0C5B: 8A    ; delay=4, note=C4+9:  A4
+0C5C: 6A    ; delay=3, note=C4+9:  A4
+0C5D: 6A    ; delay=3, note=C4+9:  A4
 0C5E: 80    ; delay=4, note=rest
-0C5F: 6A    ; delay=3, note=C4+9: A4
-0C60: 6A    ; delay=3, note=C4+9: A4
-0C61: 2A    ; delay=1, note=C4+9: A4
-0C62: 2A    ; delay=1, note=C4+9: A4
-0C63: 2A    ; delay=1, note=C4+9: A4
-0C64: 2A    ; delay=1, note=C4+9: A4
-0C65: AA    ; delay=5, note=C4+9: A4
-0C66: 8A    ; delay=4, note=C4+9: A4
-0C67: 68    ; delay=3, note=C4+7: G4
-0C68: 68    ; delay=3, note=C4+7: G4
-0C69: 68    ; delay=3, note=C4+7: G4
-0C6A: 6A    ; delay=3, note=C4+9: A4
-0C6B: 6A    ; delay=3, note=C4+9: A4
+0C5F: 6A    ; delay=3, note=C4+9:  A4
+0C60: 6A    ; delay=3, note=C4+9:  A4
+0C61: 2A    ; delay=1, note=C4+9:  A4
+0C62: 2A    ; delay=1, note=C4+9:  A4
+0C63: 2A    ; delay=1, note=C4+9:  A4
+0C64: 2A    ; delay=1, note=C4+9:  A4
+0C65: AA    ; delay=5, note=C4+9:  A4
+0C66: 8A    ; delay=4, note=C4+9:  A4
+0C67: 68    ; delay=3, note=C4+7:  G4
+0C68: 68    ; delay=3, note=C4+7:  G4
+0C69: 68    ; delay=3, note=C4+7:  G4
+0C6A: 6A    ; delay=3, note=C4+9:  A4
+0C6B: 6A    ; delay=3, note=C4+9:  A4
 0C6C: 80    ; delay=4, note=rest
 0C6D: DF 37 0C ; MusCmd6: GOTO 0C37
 
@@ -2385,30 +2384,30 @@ MusicData:
 0C70: 1F 0E ; MusCmd0: Set base note pointer to 0326 (C4 middle C)
 0C72: 3F 15 ; MusCmd1: Set base delay to 15
 0C74: 5F 00 ; MusCmd2: Set initial note volume to 00
-0C76: 81    ; delay=4, note=C4+0: C4
+0C76: 81    ; delay=4, note=C4+0:  C4
 0C77: 5F 07 ; MusCmd2: Set initial note volume to 07
-0C79: 68    ; delay=3, note=C4+7: G4
-0C7A: 68    ; delay=3, note=C4+7: G4
-0C7B: 28    ; delay=1, note=C4+7: G4
-0C7C: 28    ; delay=1, note=C4+7: G4
-0C7D: 28    ; delay=1, note=C4+7: G4
-0C7E: 28    ; delay=1, note=C4+7: G4
-0C7F: A8    ; delay=5, note=C4+7: G4
-0C80: 88    ; delay=4, note=C4+7: G4
-0C81: 68    ; delay=3, note=C4+7: G4
-0C82: 88    ; delay=4, note=C4+7: G4
-0C83: 68    ; delay=3, note=C4+7: G4
-0C84: 68    ; delay=3, note=C4+7: G4
+0C79: 68    ; delay=3, note=C4+7:  G4
+0C7A: 68    ; delay=3, note=C4+7:  G4
+0C7B: 28    ; delay=1, note=C4+7:  G4
+0C7C: 28    ; delay=1, note=C4+7:  G4
+0C7D: 28    ; delay=1, note=C4+7:  G4
+0C7E: 28    ; delay=1, note=C4+7:  G4
+0C7F: A8    ; delay=5, note=C4+7:  G4
+0C80: 88    ; delay=4, note=C4+7:  G4
+0C81: 68    ; delay=3, note=C4+7:  G4
+0C82: 88    ; delay=4, note=C4+7:  G4
+0C83: 68    ; delay=3, note=C4+7:  G4
+0C84: 68    ; delay=3, note=C4+7:  G4
 0C85: 80    ; delay=4, note=rest
-0C86: 68    ; delay=3, note=C4+7: G4
-0C87: 68    ; delay=3, note=C4+7: G4
-0C88: 28    ; delay=1, note=C4+7: G4
-0C89: 28    ; delay=1, note=C4+7: G4
-0C8A: 28    ; delay=1, note=C4+7: G4
-0C8B: 28    ; delay=1, note=C4+7: G4
-0C8C: A8    ; delay=5, note=C4+7: G4
-0C8D: 88    ; delay=4, note=C4+7: G4
-0C8E: A8    ; delay=5, note=C4+7: G4
+0C86: 68    ; delay=3, note=C4+7:  G4
+0C87: 68    ; delay=3, note=C4+7:  G4
+0C88: 28    ; delay=1, note=C4+7:  G4
+0C89: 28    ; delay=1, note=C4+7:  G4
+0C8A: 28    ; delay=1, note=C4+7:  G4
+0C8B: 28    ; delay=1, note=C4+7:  G4
+0C8C: A8    ; delay=5, note=C4+7:  G4
+0C8D: 88    ; delay=4, note=C4+7:  G4
+0C8E: A8    ; delay=5, note=C4+7:  G4
 0C8F: 60    ; delay=3, note=rest
 0C90: 80    ; delay=4, note=rest
 0C91: 6D    ; delay=3, note=C4+12: C5
@@ -2524,59 +2523,59 @@ MusicData:
 0D0A: 8D    ; delay=4, note=C2+12: C3
 0D0B: 60    ; delay=3, note=rest
 0D0C: 6D    ; delay=3, note=C2+12: C3
-0D0D: 88    ; delay=4, note=C2+7: G2
+0D0D: 88    ; delay=4, note=C2+7:  G2
 0D0E: 60    ; delay=3, note=rest
 0D0F: 6D    ; delay=3, note=C2+12: C3
 0D10: 60    ; delay=3, note=rest
 0D11: 6D    ; delay=3, note=C2+12: C3
 0D12: 60    ; delay=3, note=rest
 0D13: 6D    ; delay=3, note=C2+12: C3
-0D14: 28    ; delay=1, note=C2+7: G2
-0D15: 28    ; delay=1, note=C2+7: G2
-0D16: 28    ; delay=1, note=C2+7: G2
-0D17: 28    ; delay=1, note=C2+7: G2
-0D18: 88    ; delay=4, note=C2+7: G2
+0D14: 28    ; delay=1, note=C2+7:  G2
+0D15: 28    ; delay=1, note=C2+7:  G2
+0D16: 28    ; delay=1, note=C2+7:  G2
+0D17: 28    ; delay=1, note=C2+7:  G2
+0D18: 88    ; delay=4, note=C2+7:  G2
 0D19: 60    ; delay=3, note=rest
 0D1A: 8D    ; delay=4, note=C2+12: C3
 0D1B: 60    ; delay=3, note=rest
 0D1C: 6D    ; delay=3, note=C2+12: C3
-0D1D: 88    ; delay=4, note=C2+7: G2
+0D1D: 88    ; delay=4, note=C2+7:  G2
 0D1E: 60    ; delay=3, note=rest
 0D1F: 6D    ; delay=3, note=C2+12: C3
 0D20: 60    ; delay=3, note=rest
 0D21: 6D    ; delay=3, note=C2+12: C3
 0D22: 60    ; delay=3, note=rest
 0D23: 6D    ; delay=3, note=C2+12: C3
-0D24: 88    ; delay=4, note=C2+7: G2
+0D24: 88    ; delay=4, note=C2+7:  G2
 0D25: 6D    ; delay=3, note=C2+12: C3
-0D26: 68    ; delay=3, note=C2+7: G2
+0D26: 68    ; delay=3, note=C2+7:  G2
 0D27: 8F    ; delay=4, note=C2+14: D3
 0D28: 60    ; delay=3, note=rest
 0D29: 6F    ; delay=3, note=C2+14: D3
-0D2A: 8A    ; delay=4, note=C2+9: A2
+0D2A: 8A    ; delay=4, note=C2+9:  A2
 0D2B: 60    ; delay=3, note=rest
 0D2C: 6F    ; delay=3, note=C2+14: D3
 0D2D: 60    ; delay=3, note=rest
 0D2E: 6F    ; delay=3, note=C2+14: D3
 0D2F: 60    ; delay=3, note=rest
 0D30: 6F    ; delay=3, note=C2+14: D3
-0D31: 2A    ; delay=1, note=C2+9: A2
-0D32: 2A    ; delay=1, note=C2+9: A2
-0D33: 2A    ; delay=1, note=C2+9: A2
-0D34: 2A    ; delay=1, note=C2+9: A2
-0D35: 8A    ; delay=4, note=C2+9: A2
+0D31: 2A    ; delay=1, note=C2+9:  A2
+0D32: 2A    ; delay=1, note=C2+9:  A2
+0D33: 2A    ; delay=1, note=C2+9:  A2
+0D34: 2A    ; delay=1, note=C2+9:  A2
+0D35: 8A    ; delay=4, note=C2+9:  A2
 0D36: 60    ; delay=3, note=rest
 0D37: 8F    ; delay=4, note=C2+14: D3
 0D38: 60    ; delay=3, note=rest
 0D39: 6F    ; delay=3, note=C2+14: D3
-0D3A: 8A    ; delay=4, note=C2+9: A2
+0D3A: 8A    ; delay=4, note=C2+9:  A2
 0D3B: 60    ; delay=3, note=rest
 0D3C: 8F    ; delay=4, note=C2+14: D3
 0D3D: 8F    ; delay=4, note=C2+14: D3
 0D3E: 6F    ; delay=3, note=C2+14: D3
-0D3F: 6A    ; delay=3, note=C2+9: A2
+0D3F: 6A    ; delay=3, note=C2+9:  A2
 0D40: 6F    ; delay=3, note=C2+14: D3
-0D41: 6A    ; delay=3, note=C2+9: A2
+0D41: 6A    ; delay=3, note=C2+9:  A2
 0D42: 6E    ; delay=3, note=C2+13: C#3
 0D43: DF 0A 0D ; MusCmd6: GOTO 0D0A
       
@@ -2651,4 +2650,3 @@ MusicData:
 0FD0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 0FE0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 0FF0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
-
