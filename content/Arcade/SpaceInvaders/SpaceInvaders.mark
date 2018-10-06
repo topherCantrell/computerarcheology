@@ -82,7 +82,7 @@ the very next line of code. An even shorter cut would be to take the jump out co
 }}}
 
 Assembly programmers do all kinds of "unstructured flow" tricks with the stack. Some of it is confusing and potentially error prone. The 
-code at 01A2 breaks out of a routine when D reaches 0. But it doesn't return to the caller -- it discards a slot on the stack returns to 
+code at 0x01A2 breaks out of a routine when D reaches 0. But it doesn't return to the caller -- it discards a slot on the stack returns to 
 the caller's caller (the grand-caller?)! The code makes some dangerous assumptions about who is calling it.
 
 {{{
@@ -103,8 +103,8 @@ the caller's caller (the grand-caller?)! The code makes some dangerous assumptio
 01CE: C9              RET                         ; Return to caller's caller
 }}}
 
-At 0A01 the value of A is stuffed into location 2067. The very next instruction loads A from 2067. This might make sense if any other 
-line of code jumped to 0A04. But nobody does.
+At 0x0A01 the value of A is stuffed into location 0x2067. The very next instruction loads A from 0x2067. This might make sense if any other 
+line of code jumped to 0x0A04. But nobody does.
 
 {{{
 0A00: F1              POP     AF                  ; Restore ...
@@ -113,8 +113,8 @@ line of code jumped to 0A04. But nobody does.
 0A07: 67              LD      H,A                 ; To H
 }}}
 
-The count-aliens routine at 15F3 sets the location 206B to 1 if there is only one alien left. Nobody every reads the flag from 206B. Maybe 
-it was used at one time? At any rate the instructions at 160B and 160E could have been replaced with just "LD (2067),A" to save some time 
+The count-aliens routine at 0x15F3 sets the location 0x206B to 1 if there is only one alien left. Nobody every reads the flag from 0x206B. Maybe 
+it was used at one time? At any rate the instructions at 0x160B and 0x160E could have been replaced with just "LD ($2067),A" to save some time 
 and space.
 
 {{{
@@ -139,13 +139,13 @@ and space.
 1610: C9              RET                         ; Out
 }}}
 
-There is a huge empty area in the ROM between 0C00 and 13FF (2K bytes but not on a 2K ROM chip boundary, which would have saved the cost of 
+There is a huge empty area in the ROM between 0x0C00 and 0x13FF (2K bytes but not on a 2K ROM chip boundary, which would have saved the cost of 
 a chip). That's 1/4th of the ROM empty, which leaves a lot of space for expansion. And yet it appears the developers felt they were running 
 out of space! (Update ... this area was for a diagnostics routine that got dropped)
 
-The end of ROM beginning at 1E00 contains an 8x8 pixel character set used to draw text on the screen. The area is filled out completely 
+The end of ROM beginning at 0x1E00 contains an 8x8 pixel character set used to draw text on the screen. The area is filled out completely 
 with 64 characters, but some of them were not used in messages by the game. The developers reclaimed the space of these unused characters 
-for other purposes (see 1F50) rather than using the plentiful space at 0C00. Very strange.
+for other purposes (see 0x1F50) rather than using the plentiful space at 0x0C00. Very strange.
 
 # Hidden Message (Easter Egg)
 
@@ -208,7 +208,7 @@ The timing is very critical, and it might take you several tries to see the bug.
 and press Shift+F7 when there is only one alien left. That will save the state of your game, and you can press F7 to reload that state if 
 you miss the timing. Eventually you will see it.
 
-The bug is documented in the code at 1504, but I'll explain it in detail here.
+The bug is documented in the code at 0x1504, but I'll explain it in detail here.
 
 The aliens are all drawn relative to the bottom left alien in the rack. This is the "reference alien". Even if it has been shot it continues 
 to move as the origin for all the others (see discussion on The Aliens below).
@@ -246,7 +246,8 @@ Now imagine all the aliens are dead except for the upper left. This alien is in 
 alien is in column 0. Columns are numbered from 0 to 10 from left to right.
 
 The alien wiggles around and you shoot the right edge of your right shield when it makes its turn on the left into your screen row. The Y 
-coordinate of your shot is below the alien. The game correctly calculates your shot hit row 3 (one below 4). The shot is outside the alien rack, but the code calculates the column anyway. It gets 11 (the 12th column).
+coordinate of your shot is below the alien. The game correctly calculates your shot hit row 3 (one below 4). The shot is outside the alien rack, 
+but the code calculates the column anyway. It gets 11 (the 12th column).
 
 Aliens are numbered sequentially from 0 to 54 (11*55 = 55 aliens). The code converts row/column numbers to an index with this 
 formula: ROW*11 + COLUMN. For examples, the alien at row=0, column=0 is index 0*11+0 = 0. The alien at row=4, column=10 is index 4*11+10 = 54.
@@ -257,7 +258,8 @@ the game thinks the shot hit the last alien. The column overflow effectively mov
 # Game Timing
 
 The game-play timing is based on an interrupt from the video system. Actually there are two interrupts. When the video rendering reaches the 
-middle of the screen an RST 8 is generated. When the rendering reaches the end of the screen (when vertical blanking begins) an RST 10 is generated.
+middle of the screen an RST 1 (jumps to 0x0008) is generated. When the rendering reaches the end of the screen (when vertical blanking begins) 
+an RST 2 (jumps to 0x0010) is generated.
 
 The separate interrupts allow the code to keep out of the way of the monitor's electron beam. If an object is moved in memory while the 
 rendering hardware is drawing from the same memory then part of the image will be drawn at the old place and part at the new. This makes 
@@ -273,7 +275,7 @@ The screen refresh rate is 60Hz. So each interrupt is executed 60 times a second
 The end-screen interrupt checks the tilt switch. It counts the credits as coins are inserted. The limit is 99 stored as a byte of 
 binary-coded-decimal. After that coins are just ignored (an overflow would wipe out $25 of quarters).
 
-This interrupt decreases a general-purpose counter at 20C0. This counter is used to time small delays in the attract mode. The print-text 
+This interrupt decreases a general-purpose counter at 0x20C0. This counter is used to time small delays in the attract mode. The print-text 
 code sets this timer and waits for it to reach zero before moving to the next letter. Thus the letters appear on the screen in a slow, 
 steady beat.
 
@@ -343,7 +345,7 @@ the Y value is 128-255 (223 is the screen limit). The first thing the interrupts
 is running. Both interrupts call the task routines, but the routines only run in the context of one of them based on 
 their Y coordinate.
 
-The routine at 1A06 compares the upper bit of the Y coordinate to the interrupt-id. If the beam is on the other half of 
+The routine at 0x1A06 compares the upper bit of the Y coordinate to the interrupt-id. If the beam is on the other half of 
 the screen then the C flag is set, which allows the task to run in the current context. If the beam is on the same half 
 of the screen then the task routine returns and is executed by the "other" interrupt when the beam has moved on. For instance, 
 here is the check for an alien shot:
@@ -377,12 +379,12 @@ Here are the last lines few lines of the player's object code:
 0380: C9              RET                         ; Out
 }}}
 
-This code first draws the sprite then sets the one-byte timer at 2012. Notice that the value loaded into A to set this timer is 00. 
+This code first draws the sprite then sets the one-byte timer at 0x2012. Notice that the value loaded into A to set this timer is 00. 
 The timer is already at 00 or this task would never have run. In fact, this is the only place in the code that writes to this memory location.
 
 Notice that the instruction to set A to 00 is the two-byte indirect instruction "LD A,$00". A faster, smaller way is to use the 
 one-byte instruction "XOR A" that exclusive-ORs the register with itself. This "fast zero" is used all over the code. In fact, the less 
-efficient instruction "LD A,$00" is only used twice in the entire code: here and at 00CD. At 00CD it was specifically chosen because 
+efficient instruction "LD A,$00" is only used twice in the entire code: here and at 0x00CD. At 0x00CD it was specifically chosen because 
 it does not affect the flags, which are passed to the next instruction.
 
 {{{
@@ -446,7 +448,7 @@ looks like a turning zig-zag line much like a resistor circuit symbol.
 
 The byte timer from Object 2 is used to synchronize the three shots so that only one shot is processed per screen. The objects can't 
 synchronize directly from the timer byte at 2032 since its decrement depends on which half of the screen it is on. Instead the timer byte is 
-copied to a sync-flag at 2080 where it remains constant for all the shots between end and mid screen interrupts.
+copied to a sync-flag at 0x2080 where it remains constant for all the shots between end and mid screen interrupts.
 
 The code uses a common routine to handle all three shots. Each shot task copies its data structure to a common area, calls the handler, 
 and then copies the changed data back to its personal area.
@@ -459,11 +461,11 @@ each step as it falls. The game keeps a constant reload rate that determines how
 count of the other two shots and compares it to the reload rate. If it is too soon since the last shot then no shot is fired.
 
 The reload rate gets faster as the game progresses. The code uses the upper two digits of the player's score as a lookup into the table 
-at 1AA1 and sets the reload rate to the value in the table at 1CB8. The reload rate for anything below 0200 is 30 (hex). From 0200 to 1000 
-the delay drops to 10, then 0B at from 1000 to 2000. From 2000 to 3000 the rate is 08 and then maxes out above 3000 at 07. With a little 
-flying-saucer-luck you will reach 3000 in 2 or 3 racks.
+at 1AA1 and sets the reload rate to the value in the table at 1CB8. The reload rate for anything below 0x0200 is 0x30. From 0x0200 to 0x1000 
+the delay drops to 0x10, then 0x0B at from 0x1000 to 0x2000. From 0x2000 to 0x3000 the rate is 8 and then maxes out above 0x3000 at 7. With a little 
+flying-saucer-luck you will reach 0x3000 in 2 or 3 racks.
 
-The "rolling" shot (object 2) drops right over the player when it falls. The other two shots use pointers into a table of columns at 1D00. 
+The "rolling" shot (object 2) drops right over the player when it falls. The other two shots use pointers into a table of columns at 0x1D00. 
 The pointers advance very predictably. You can see from the table that the "squiggly" shot will fall first in column 11 and then 1, 6, and 3.
 
 When there is only one alien left on the screen the plunger shot is disabled. Only the "rolling" (tracking) and squiggly shots are active, 
@@ -518,7 +520,7 @@ from the left. The saucer object structure is re-initialized every time the play
 }}}
 
 The score for shooting the saucer ranges from 50 to 300, and the exact value depends on the number of player shots fired. The table 
-at 1D54 contains 16 score values, but a bug in the code at 044E treats the table as having 15 values. The saucer data starts out 
+at 0x1D54 contains 16 score values, but a bug in the code at 0x044E treats the table as having 15 values. The saucer data starts out 
 pointing to the first entry. Every time the player's shot blows up the pointer is incremented and wraps back around. Here is the 
 table. You have to append a trailing "0" to every value to get the three digit score.
 
@@ -616,7 +618,10 @@ fastest rate. The aliens never start out lower than Y=40. If you can manage the 
 Thanks to Colin Dooley for correcting the comments around 1D15. He pointed out the "rolling" shot tracks the player ... not the "plunger" 
 shot as originally commented.
 
-Thanks to Colin Dooley for correcting the comments around the saucer-score-table at 1D54. He pointed out that the code at 044E wraps 
+Thanks to Colin Dooley for correcting the comments around the saucer-score-table at 0x1D54. He pointed out that the code at 0x044E wraps 
 after 15 values and not 16. This brings the code in line with the guides that say the 300 value comes up every 15 shots (instead of 16).
 
-Thanks to Glen Hewlett for correcting the comments above 0A93. He points out the length is in C and not B.
+Thanks to Glen Hewlett for correcting the comments above 0x0A93. He points out the length is in C and not B.
+
+Thanks to Adrian Torres for pointing out that hexidecimal values in the write-up should be prefixed with '0x'. He also corrected
+'RST 8' and 'RST 10' pointing out that they are really 'RST 1 (jumps to 0x0008)' and 'RST 2 (jumps to 0x0010)'.
