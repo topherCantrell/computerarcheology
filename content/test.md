@@ -15,11 +15,11 @@ display for all to share. Welcome to my museum!
 
 There are several emulations on this site. If you want to experience the code for yourself then click on these links:
 
-* [Pyramid 2000 (text adventure on the CoCo)](/CoCo/Pyramid)
-* [Raaka-Tu (text adventure on the CoCo)](/CoCo/RaakaTu)
-* [Bedlam (text adventure on the CoCo)](/CoCo/Bedlam)
-* [Pyramid (text adventure on the TRS-80)](/TRS80/Pyramid)
-* [Haunted House (text adventure on the TRS-80)](/TRS80/HauntedHouse)
+* [Pyramid 2000 (text adventure on the CoCo)](CoCo/Pyramid)
+* [Raaka-Tu (text adventure on the CoCo)](CoCo/RaakaTu)
+* [Bedlam (text adventure on the CoCo)](CoCo/Bedlam)
+* [Pyramid (text adventure on the TRS-80)](TRS80/Pyramid)
+* [Haunted House (text adventure on the TRS-80)](TRS80/HauntedHouse)
 
 <!-- }}} -->
 
