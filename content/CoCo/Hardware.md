@@ -12,7 +12,7 @@ contains schematics and detailed hardware information. The images below are from
 
 ### PIA 0 
 
-| | |
+|A | B| C|
 |:--------- |:--------- |:----------------- |
 | FF00     | PIA0_DA | I/O data or direction (depends on control setting) |
 | FF01     | PIA0_CA | Control |
