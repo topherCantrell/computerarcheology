@@ -1,4 +1,5 @@
-<!-- %%image -->![](Arch.jpg)
+<!-- %%image -->
+![](Arch.jpg)
 %%title = Computer Archeology
 
 # The Museum
