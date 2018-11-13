@@ -1,7 +1,7 @@
 ![](Arch.jpg)
 # Computer Archeology
 
-# The Museum
+## The Museum
 
 This web site is about digging up old, forgotten computer systems and cracking open the code that ran on them. Think 
 of each program as a different "dig site". I am a nerdy Indiana Jones. My goal is to find the original programmer's spirit, 
@@ -9,9 +9,9 @@ ideas, and ingenuity in the code -- the programmer's "flavor". There are code ge
 programs buried in the ancient (decades past) ROMs of old. My goal is to dust them off and put them on
 display for all to share. Welcome to my museum!
 
-{{{playMe
+<!-- {{{playMe -->
 
-# Play Me!
+## Play Me!
 
 There are several emulations on this site. If you want to experience the code for yourself then click on these links:
 
@@ -21,7 +21,7 @@ There are several emulations on this site. If you want to experience the code fo
 * [Pyramid (text adventure on the TRS-80)](/TRS80/Pyramid)
 * [Haunted House (text adventure on the TRS-80)](/TRS80/HauntedHouse)
 
-}}}
+<!-- }}} -->
 
 # Raw Content
 
