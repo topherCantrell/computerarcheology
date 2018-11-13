@@ -23,9 +23,9 @@ There are several emulations on this site. If you want to experience the code fo
 
 <!-- }}} -->
 
-# Raw Content
+## Raw Content
 
-All of the web content and tools are on github: [https://github.com/topherCantrell/computerarcheology]
+All of the web content and tools are on github: [](https://github.com/topherCantrell/computerarcheology)
 
 You can submit merge requests to add your own work. The README file in the repository describes the tools and process.
 
@@ -33,7 +33,7 @@ You can click the "Contact" button at the top and send me corrections and additi
 
 If you would like me to add a link here to your own site then send me the information.
  
-# References
+## References
 
 If you like Computer Archeology you must visit [Don Hodges amazing site](http://donhodges.com/). He has a series 
 of digs into Pac Man, Ms Pac Man, Dig Dug, Donkey Kong, and Defender to name a few. Visit his 
@@ -47,11 +47,11 @@ Dr. Stefan Holtgen in Berlin is working on a project investigating the nexus of 
 of the early micro computer era. Check out his blog at [Dr. Stefan Holtgen](http://www.simulationsraum.de). 
 Google-translate does a great job if you don't read German.
 
-# Dig Sites
+## Dig Sites
 
 Use the "Site" tab on the navigation tree to the left to go straight to a particular page.
 
-## One Quarter at a Time 
+### One Quarter at a Time 
 
 There is a famous bug in the arcade game Galaga. Shoot everything in the game except the lower left bee. Then dodge it for 
 fifteen minutes. Eventually it will stop firing, and none of the bees will fire at you again for the rest of the game. 
@@ -67,7 +67,7 @@ programming in [Asteroids](/Arcade/Asteroids) and in [Omega Race](/Arcade/OmegaR
 
 Harry Hurst has dug into the multi-bank ROMs of [Defender](/Arcade/Defender). Have a look at his ongoing work.
 
-## Sounds of the 80s
+### Sounds of the 80s
 
 Remember the songs in Frogger? There is actually a snippet of hidden music buried until now. See and hear it here 
 in [Frogger](/Arcade/Frogger).
@@ -80,7 +80,7 @@ Check out the sound-board disassemblies of [Moon Patrol](/Arcade/MoonPatrol) and
 The running base line in Moon Patrol is a nugget in itself. You can see the beginnings of Domain Specific Languages 
 in these boards that define their own sound-script languages.
 
-## Adventures in Text 
+### Adventures in Text 
 
 The TRS-80 Color Computer hosted a series of text adventure games from Robert Arnstein. Follow the fascinating 
 evolution of his adventure engine from [Pyramid](/CoCo/Pyramid) to [Raaka Tu](/CoCo/RaakaTu) to [Bedlam](/CoCo/Bedlam).
@@ -89,7 +89,7 @@ Spectral Associates produced a complex text adventure game with real-time featur
 [Madness and the Minotaur](/CoCo/MadnessMinotaur). It is possible to win the game, but it is extremely difficult 
 without knowing the secrets. They are all described here.
 
-## TV Console Systems
+### TV Console Systems
 
 If you were a child in the 70s chances are you had an Atari2600. The hardware seems designed with the included 
 game [Combat](/Atari2600/Combat) in mind. But game developers squeezed out ingenious games using the simple hardware objects. 
@@ -101,26 +101,26 @@ swapped in and out through cartridge circuitry. See bank switching in action in 
 The [Chess](/Atari2600/Chess) cartridge is a complete chess playing program for the Atari2600 with multiple difficulty levels. 
 The entire game fits in a 4K cartridge and uses only the system's 128 bytes of memory.
 
-## Zelda
+### Zelda
 
 The [Legend of Zelda](/NES/Zelda) for the NES started a long series of wonderful Zelda games spanning all the different
  Nintendo game systems.
 
 Patrik, add whatever you want to the description here.
 
-## Viruses
+### Viruses
 
 Computer viruses are an intriguing part of our computer culture. Let me take you into the assembly workings of two famous but defunct 
 viruses. First I'll show you the [Morris Worm](/Virus/Worm) VAX assembly snippet written into a buffer overrun to forge a root shell. Then 
 we'll look at the PC [Stoned](/Virus/Stoned) boot sector infector. As tiny and efficient as it is, there is always room for improvement. 
 Let me show you!
 
-## Amiga
+### Amiga
 
 Patrik Sevallius is tackling [Rainbow Islands](/Amiga/Rainbow). He is especially focused on the
 [Rob Northen copylock](http://en.wikipedia.org/wiki/Rob_Northen_copylock) disk protection.
 
-# Some Assembly Required
+## Some Assembly Required
 
 You can learn the rules of chess in an afternoon. Becoming GOOD at chess could take a lifetime. Programming is similar: the
 instructions the computer can execute are simple and few. But learning to combine the instructions into a sequence that
@@ -152,7 +152,7 @@ The label "DrawLine" becomes "address $1577". And the label "QBertObjectStructur
 comments and drawings all get lost in the assembly process. All that remains is a list of very, very crude instructions that
 the computer follows one by one.
 
-# Disassembly
+## Disassembly
 
 If the computer can read the instructions, then you can too! A "disassembler" reads a binary program image and produces human
 readable mnemonics for each instruction.
@@ -167,18 +167,18 @@ assign labels to code and data. He begins to decipher what the data structures a
 There is no science to this part of the disassembly. This is where your own experience, insight, luck, and long staring result
 in that "ah ha!" moment of understanding.
 
-# Tools
+## Tools
 
 There are lots of tools support the archeology efforts. They are all in the 
 [computerarcheology repository on github](https://github.com/topherCantrell/computerarcheology).
 
-## Raw Content
+### Raw Content
 
 The [Raw Content](https://github.com/topherCantrell/computerarcheology/tree/master/content) includes the
 markup files for discussion and code. If you want the clean disassembly file for a particular
 dig site, then look here.
 
-## Archeology Tools
+### Archeology Tools
 
 These are my 
 [Assemblers, Disassemblers, Cleaners, etc](https://github.com/topherCantrell/computerarcheology/tree/master/code/tools)
