@@ -14,7 +14,7 @@ contains schematics and detailed hardware information. The images below are from
 
 <!-- memory -->
 | | | |
-|:--------- |:--------- |:----------------- |
+|:-------- |:------- |:----------------- |
 | FF00     | PIA0_DA | I/O data or direction (depends on control setting) |
 | FF01     | PIA0_CA | Control |
 | FF02     | PIA0_DB | I/O data or direction (depends on control setting) |
@@ -26,32 +26,27 @@ contains schematics and detailed hardware information. The images below are from
 
 <!-- memory -->
 | | | |
-|:--------- |:--------- |:----------------- |
+|:-------- |:------- |:----------------- |
 | FF20     | PIA1_DA | I/O data or direction (depends on control setting) |
 | FF21     | PIA1_CA | Control |
 | FF22     | PIA1_DB | I/O data or direction (depends on control setting) |
 | FF23     | PIA1_CB | Control |
 
-{{{html
-<img src="PIA1.jpg">
-}}}
+![](PIA1.jpg)
 
 ### SAM
 
 <!-- memory -->
 | | | |
-|:--------- |:--------- |:----------------- |
-| FFC0:FFC5 | dispMode | Display mode control |
+|:--------- |:---------- |:----------------- |
+| FFC0:FFC5 | dispMode   | Display mode control |
 | FFC6:FFD3 | dispOffset | Display offset |
-| FFD4:FFD5 | page | Should always be 0 |
-| FFD6:FFD9 | cpuRate | Transparent refresh |
-| FFDA:FFDD | memSize | Memory size |
-| FFDE:FFDF | mapType | Memory map type |
+| FFD4:FFD5 | page       | Should always be 0 |
+| FFD6:FFD9 | cpuRate    | Transparent refresh |
+| FFDA:FFDD | memSize    | Memory size |
+| FFDE:FFDF | mapType    | Memory map type |
 
-
-{{{html
-<img src="SAM.jpg">
-}}}
+![](SAM.jpg)
 
 ### Vectors 
 
@@ -66,7 +61,7 @@ address.
 
 <!-- memory -->
 | | | |
-|:--------- |:--------- |:----------------- |
+|:--------- |:----------- |:----------------- |
 | FFFE:FFFF | vectorReset | Reset/Start vector (A827 ROM) |
 | FFFC:FFFD | vectorNMI   | NMI vector (0109 RAM) |
 | FFFA:FFFB | vectorSWI   | SWI vector (0106 RAM) |
