@@ -55,27 +55,27 @@ Use the "Site" tab on the navigation tree to the left to go straight to a partic
 
 There is a famous bug in the arcade game Galaga. Shoot everything in the game except the lower left bee. Then dodge it for 
 fifteen minutes. Eventually it will stop firing, and none of the bees will fire at you again for the rest of the game. 
-Let me lead you into the tomb of Z80 opcodes and show you the mistake in [Galaga](/Arcade/Galaga).
+Let me lead you into the tomb of Z80 opcodes and show you the mistake in [Galaga](Arcade/Galaga).
 
 Space Invaders was one of (if not the) first arcade games. The 8080 code is littered with "questionable code design". 
 There is a hidden message Easter egg in the code, and I found a subtle bug. 
-Check it out here in [SpaceInvaders](/Arcade/SpaceInvaders).
+Check it out here in [SpaceInvaders](Arcade/SpaceInvaders).
 
 Many early video games used vector-graphics. The display hardware reads a long list of lines from memory and then 
 drives the electron gun from point to point. The technology is all but lost today. Check out the line-list 
-programming in [Asteroids](/Arcade/Asteroids) and in [Omega Race](/Arcade/OmegaRace).
+programming in [Asteroids](Arcade/Asteroids) and in [Omega Race](Arcade/OmegaRace).
 
-Harry Hurst has dug into the multi-bank ROMs of [Defender](/Arcade/Defender). Have a look at his ongoing work.
+Harry Hurst has dug into the multi-bank ROMs of [Defender](Arcade/Defender). Have a look at his ongoing work.
 
 ### Sounds of the 80s
 
 Remember the songs in Frogger? There is actually a snippet of hidden music buried until now. See and hear it here 
-in [Frogger](/Arcade/Frogger).
+in [Frogger](Arcade/Frogger).
 
 I grew up with the AY38910 sound chip. I still have a couple dozen of them! They were used in several arcade games, 
 and it is fun to see how different sound boards scheduled long-running effects over multiple channel resources. 
-Check out the sound-board disassemblies of [Moon Patrol](/Arcade/MoonPatrol) and [Time Pilot](/Arcade/TimePilot) and 
-[Frogger](/Arcade/Frogger). 
+Check out the sound-board disassemblies of [Moon Patrol](Arcade/MoonPatrol) and [Time Pilot](Arcade/TimePilot) and 
+[Frogger](Arcade/Frogger). 
 
 The running base line in Moon Patrol is a nugget in itself. You can see the beginnings of Domain Specific Languages 
 in these boards that define their own sound-script languages.
@@ -83,27 +83,27 @@ in these boards that define their own sound-script languages.
 ### Adventures in Text 
 
 The TRS-80 Color Computer hosted a series of text adventure games from Robert Arnstein. Follow the fascinating 
-evolution of his adventure engine from [Pyramid](/CoCo/Pyramid) to [Raaka Tu](/CoCo/RaakaTu) to [Bedlam](/CoCo/Bedlam).
+evolution of his adventure engine from [Pyramid](CoCo/Pyramid) to [Raaka Tu](CoCo/RaakaTu) to [Bedlam](CoCo/Bedlam).
 
 Spectral Associates produced a complex text adventure game with real-time features in 
-[Madness and the Minotaur](/CoCo/MadnessMinotaur). It is possible to win the game, but it is extremely difficult 
+[Madness and the Minotaur](CoCo/MadnessMinotaur). It is possible to win the game, but it is extremely difficult 
 without knowing the secrets. They are all described here.
 
 ### TV Console Systems
 
 If you were a child in the 70s chances are you had an Atari2600. The hardware seems designed with the included 
-game [Combat](/Atari2600/Combat) in mind. But game developers squeezed out ingenious games using the simple hardware objects. 
-In [Missile Command](/Atari2600/MissileCommand) the player-duplication feature creates the parallel falling missiles.
+game [Combat](Atari2600/Combat) in mind. But game developers squeezed out ingenious games using the simple hardware objects. 
+In [Missile Command](Atari2600/MissileCommand) the player-duplication feature creates the parallel falling missiles.
 
 The 2600 was limited to a direct access of 4K bytes in the cartridge. Many games included several banks of ROM that were 
-swapped in and out through cartridge circuitry. See bank switching in action in [Asteroids](/Atari2600/Asteroids).
+swapped in and out through cartridge circuitry. See bank switching in action in [Asteroids](Atari2600/Asteroids).
 
-The [Chess](/Atari2600/Chess) cartridge is a complete chess playing program for the Atari2600 with multiple difficulty levels. 
+The [Chess](Atari2600/Chess) cartridge is a complete chess playing program for the Atari2600 with multiple difficulty levels. 
 The entire game fits in a 4K cartridge and uses only the system's 128 bytes of memory.
 
 ### Zelda
 
-The [Legend of Zelda](/NES/Zelda) for the NES started a long series of wonderful Zelda games spanning all the different
+The [Legend of Zelda](NES/Zelda) for the NES started a long series of wonderful Zelda games spanning all the different
  Nintendo game systems.
 
 Patrik, add whatever you want to the description here.
@@ -111,13 +111,13 @@ Patrik, add whatever you want to the description here.
 ### Viruses
 
 Computer viruses are an intriguing part of our computer culture. Let me take you into the assembly workings of two famous but defunct 
-viruses. First I'll show you the [Morris Worm](/Virus/Worm) VAX assembly snippet written into a buffer overrun to forge a root shell. Then 
-we'll look at the PC [Stoned](/Virus/Stoned) boot sector infector. As tiny and efficient as it is, there is always room for improvement. 
+viruses. First I'll show you the [Morris Worm](Virus/Worm) VAX assembly snippet written into a buffer overrun to forge a root shell. Then 
+we'll look at the PC [Stoned](Virus/Stoned) boot sector infector. As tiny and efficient as it is, there is always room for improvement. 
 Let me show you!
 
 ### Amiga
 
-Patrik Sevallius is tackling [Rainbow Islands](/Amiga/Rainbow). He is especially focused on the
+Patrik Sevallius is tackling [Rainbow Islands](Amiga/Rainbow). He is especially focused on the
 [Rob Northen copylock](http://en.wikipedia.org/wiki/Rob_Northen_copylock) disk protection.
 
 ## Some Assembly Required
