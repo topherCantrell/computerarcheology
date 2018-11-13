@@ -24,12 +24,13 @@ contains schematics and detailed hardware information. The images below are from
 
 ### PIA 1 
 
-{{{memory
-|| FF20     || PIA1_DA || I/O data or direction (depends on control setting) ||
-|| FF21     || PIA1_CA || Control ||
-|| FF22     || PIA1_DB || I/O data or direction (depends on control setting) ||
-|| FF23     || PIA1_CB || Control ||
-}}}
+<!-- memory -->
+| | | |
+|:--------- |:--------- |:----------------- |
+| FF20     | PIA1_DA | I/O data or direction (depends on control setting) |
+| FF21     | PIA1_CA | Control |
+| FF22     | PIA1_DB | I/O data or direction (depends on control setting) |
+| FF23     | PIA1_CB | Control |
 
 {{{html
 <img src="PIA1.jpg">
@@ -37,14 +38,16 @@ contains schematics and detailed hardware information. The images below are from
 
 ### SAM
 
-{{{memory
-|| FFC0:FFC5 || dispMode || Display mode control ||
-|| FFC6:FFD3 || dispOffset || Display offset ||
-|| FFD4:FFD5 || page || Should always be 0 ||
-|| FFD6:FFD9 || cpuRate || Transparent refresh ||
-|| FFDA:FFDD || memSize || Memory size ||
-|| FFDE:FFDF || mapType || Memory map type ||
-}}}
+<!-- memory -->
+| | | |
+|:--------- |:--------- |:----------------- |
+| FFC0:FFC5 | dispMode | Display mode control |
+| FFC6:FFD3 | dispOffset | Display offset |
+| FFD4:FFD5 | page | Should always be 0 |
+| FFD6:FFD9 | cpuRate | Transparent refresh |
+| FFDA:FFDD | memSize | Memory size |
+| FFDE:FFDF | mapType | Memory map type |
+
 
 {{{html
 <img src="SAM.jpg">
@@ -61,13 +64,15 @@ The RAM vectors are what programs must change.
 Each vector gets 3 bytes in RAM. The first for the "JMP" opcode followed by the
 address.
 
-{{{memory
-|| FFFE:FFFF || vectorReset || Reset/Start vector (A827 ROM) ||
-|| FFFC:FFFD || vectorNMI   || NMI vector (0109 RAM) ||
-|| FFFA:FFFB || vectorSWI   || SWI vector (0106 RAM) ||
-|| FFF8:FFF9 || vectorIRQ   || IRQ vector (010C RAM) ||
-|| FFF6:FFF7 || vectorFIRQ  || FIRQ vector (010F RAM) ||
-|| FFF4:FFF5 || vectorSWI2  || SWI2 vector (0103 RAM) ||
-|| FFF2:FFF3 || vectorSWI3  || SWI3 vector (0100 RAM) ||
-|| FFF0:FFF1 || vector6809  || 6809 exceptions like divide by 0 (A681 ROM) ||
-}}}
+<!-- memory -->
+| | | |
+|:--------- |:--------- |:----------------- |
+| FFFE:FFFF | vectorReset | Reset/Start vector (A827 ROM) |
+| FFFC:FFFD | vectorNMI   | NMI vector (0109 RAM) |
+| FFFA:FFFB | vectorSWI   | SWI vector (0106 RAM) |
+| FFF8:FFF9 | vectorIRQ   | IRQ vector (010C RAM) |
+| FFF6:FFF7 | vectorFIRQ  | FIRQ vector (010F RAM) |
+| FFF4:FFF5 | vectorSWI2  | SWI2 vector (0103 RAM) |
+| FFF2:FFF3 | vectorSWI3  | SWI3 vector (0100 RAM) |
+| FFF0:FFF1 | vector6809  | 6809 exceptions like divide by 0 (A681 ROM) |
+
