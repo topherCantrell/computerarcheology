@@ -12,7 +12,7 @@ See the [CoCo Hardware Reference](Hardware.md) on this site.
 
 # ROM Disassembly
 
-Spectral Associates -- the people who made [Madness and the Minotaur](CoCo/MadnessMinotaur) -- produced a series of 
+Spectral Associates -- the people who made [Madness and the Minotaur](MadnessMinotaur/) -- produced a series of 
 disassemblies of the CoCo ROMs! Here are those awesome PDFs:
 
 [Color Basic Unravelled](color-basic-unravelled.pdf)
@@ -24,5 +24,5 @@ disassemblies of the CoCo ROMs! Here are those awesome PDFs:
 [Super Extended Basic Unravelled](super-extended-basic-unravelled.pdf)
 
 # Disassembled Code
-* [Minotaur and the Minotaur](MadnessMinotaur)
+* [Minotaur and the Minotaur](MadnessMinotaur/)
 * TODO all others here
