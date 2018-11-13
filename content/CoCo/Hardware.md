@@ -1,14 +1,16 @@
-%%title = CoCo Hardware
-%%image = CoCoTech.jpg
 
-# References
+![](CoCoTech.jpg)
+
+# CoCo Hardware
+
+## References
 
 The [Color Computer Reference Manual](http://sparksandflames.com/files/Color%20Computer%20Technical%20Reference%20Manual%20%28Tandy%29.pdf)
 contains schematics and detailed hardware information. The images below are from the manual.
 
-# Hardware Addresses
+## Hardware Addresses
 
-## PIA 0 
+### PIA 0 
 
 {{{memory
 || FF00     || PIA0_DA || I/O data or direction (depends on control setting) ||
@@ -21,7 +23,7 @@ contains schematics and detailed hardware information. The images below are from
 <img src="PIA0.jpg">
 }}}
 
-## PIA 1 
+### PIA 1 
 
 {{{memory
 || FF20     || PIA1_DA || I/O data or direction (depends on control setting) ||
@@ -34,7 +36,7 @@ contains schematics and detailed hardware information. The images below are from
 <img src="PIA1.jpg">
 }}}
 
-## SAM
+### SAM
 
 {{{memory
 || FFC0:FFC5 || dispMode || Display mode control ||
@@ -49,7 +51,7 @@ contains schematics and detailed hardware information. The images below are from
 <img src="SAM.jpg">
 }}}
 
-## Vectors 
+### Vectors 
 
 These are "ghosted" from the end of the BASIC ROM at BFF0. Since they are unchangeable it is
 unlikely you will see them referenced in code. Most of the vectors point to RAM, which
