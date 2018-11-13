@@ -12,6 +12,7 @@ contains schematics and detailed hardware information. The images below are from
 
 ### PIA 0 
 
+<!-- memory -->
 | | | |
 |:--------- |:--------- |:----------------- |
 | FF00     | PIA0_DA | I/O data or direction (depends on control setting) |
@@ -19,16 +20,7 @@ contains schematics and detailed hardware information. The images below are from
 | FF02     | PIA0_DB | I/O data or direction (depends on control setting) |
 | FF03     | PIA0_CB | Control |
 
-{{{memory
-|| FF00     || PIA0_DA || I/O data or direction (depends on control setting) ||
-|| FF01     || PIA0_CA || Control ||
-|| FF02     || PIA0_DB || I/O data or direction (depends on control setting) ||
-|| FF03     || PIA0_CB || Control ||
-}}}
-
-{{{html
-<img src="PIA0.jpg">
-}}}
+![](PIA0.jpg)
 
 ### PIA 1 
 
