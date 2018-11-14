@@ -40,8 +40,8 @@ Before the LOAD command you must paste the desired saved-data back into the text
 
 # Code Links
 
-* [Disassembled Code](Code.html)
-* [RAM Usage](RAMUse.html)
+* [Disassembled Code](Code.md)
+* [RAM Usage](RAMUse.md)
 
 # The Great Lost Pyramid
 
