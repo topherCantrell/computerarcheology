@@ -1,5 +1,6 @@
-%%title = Pyramid 2000
-%%image = Pyramid.jpg
+![](Pyramid.jpg)
+
+# Pyramid 2000
 
 {{{html
 <div class="playMe">
