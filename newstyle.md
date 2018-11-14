@@ -15,5 +15,26 @@ title that might be different (shorter) than the page's title.
 The page must start with an image link. This becomes the page's title image. The page's title is the first single-hash
 tag. The `navTitle` comment specifies the navigation title. If not given, the page title is used for navigation.
 
+# Special Areas
+
+The web page allows for special areas like "Play Me" and "Tour Guide". These areas are wrapped in comment blocks like this:
+
+```
+<!-- playMe { -->
+<!-- } -->
+
+<!-- tourGuide { -->
+<!-- } -->
+```
+
+Sections of HTML can be inserted in the markdown like this:
+
+```
+    ```html
+    <hr>    
+    ```
+    not part
+```
+
 # Address Maps
 
