@@ -53,22 +53,22 @@ awaits just a step away." - From the game manual introduction
 
 <!-- {{{tourGuide -->
 # Tour Guide 
-Check out a [snippet of the original source code](#TRS80Nugget) caught in an uninitialized buffer.
+Check out a [snippet of the original source code](#trs80ugget) caught in an uninitialized buffer.
 
-Have a look at the [game's main loop](Code.md#MainLoop). It is really short.
+Have a look at the [game's main loop](Code.md#mainloop). It is really short.
 
-The code is code-within-code. The adventure language processor commands are [here](Code.html#ScriptCommands).
+The code is code-within-code. The adventure language processor commands are [here](Code.html#scriptcommands).
 
-The spooky mummy is given life as part of the [Move to Room X](Code.html#MoveToRoomX) code.
+The spooky mummy is given life as part of the [Move to Room X](Code.md#movetoroomx) code.
 
 Have a look at all the unpacked messages in the game:
-* [General Messages](Code.html#AlternatingErrors)
-* [Room Descriptions](Code.html#RoomDescriptions)
-* [Object Descriptions](Code.html#ObjectDescriptions)
-* [More General Messages](Code.html#GameSpecificMessages)
+* [General Messages](Code.html#alternatingerrors)
+* [Room Descriptions](Code.html#roomdescriptions)
+* [Object Descriptions](Code.html#objectdescriptions)
+* [More General Messages](Code.html#gamespecificmessages)
 
-Visit the [Room Scripts](Code.html#RoomScripts) to see what you can do in each room. Then visit the 
-[General Command Handler](Code.html#GeneralCommandHandler) script that runs after the current room
+Visit the [Room Scripts](Code.html#roomscripts) to see what you can do in each room. Then visit the 
+[General Command Handler](Code.html#generalcommandhandler) script that runs after the current room
 has a chance to take the command. These "adventure language scripts" are interpreted by the [Script Processor](Code.html#ProcessCommandList).
 
 Read through all words that the game understands in the [Word table](Code.html#WordTable).
