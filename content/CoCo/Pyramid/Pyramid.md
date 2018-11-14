@@ -2,7 +2,7 @@
 
 # Pyramid 2000
 
-{{{html
+```
 <div class="playMe">
 <div>
 <script src="/CoCo/Pyramid/BinaryDataPyramid.js"></script>
@@ -10,7 +10,7 @@
 <script src="/CoCo/CoCoText.js"></script>
 <script src="/CoCo/Pyramid/pyramid.js"></script>
 <script>window.onload = function() {startPyramid("pyramidConsole","pyramidTape");}</script>
-}}}
+```
 # Play Me! 
 Play the game in a CoCo emulator. Click on the green console and press any key.
 
