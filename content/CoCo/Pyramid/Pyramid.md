@@ -120,8 +120,8 @@ language become game participants themselves. The player must give Napoleon, X-R
 I will follow Arnstein's adventure language and interpreter as it evolved from Pyramid 2000 to Raaka-Tu and finally to Bedlam. Be sure to 
 visit those pages as well:
 * Pyramid 2000
-* [Raaka Tu](../CoCo/RaakaTu)
-* [Bedlam](../CoCo/Bedlam)
+* [Raaka Tu](../RaakaTu)
+* [Bedlam](../Bedlam)
 
 # Pyramid 2000 Implementation
 
