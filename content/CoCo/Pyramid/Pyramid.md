@@ -51,13 +51,11 @@ quiet repose. There must be treasures. If even half of the stories about the Los
 Pyramid are true, ... But why dwell on that now -- you are here, and adventure
 awaits just a step away." - From the game manual introduction
 
-{{{tourGuide
-
+<!-- {{{tourGuide -->
 # Tour Guide 
-
 Check out a [snippet of the original source code](#TRS80Nugget) caught in an uninitialized buffer.
 
-Have a look at the [game's main loop](Code.html#MainLoop). It is really short.
+Have a look at the [game's main loop](Code.md#MainLoop). It is really short.
 
 The code is code-within-code. The adventure language processor commands are [here](Code.html#ScriptCommands).
 
@@ -74,7 +72,7 @@ Visit the [Room Scripts](Code.html#RoomScripts) to see what you can do in each r
 has a chance to take the command. These "adventure language scripts" are interpreted by the [Script Processor](Code.html#ProcessCommandList).
 
 Read through all words that the game understands in the [Word table](Code.html#WordTable).
-}}}
+<!-- }}} -->
 
 # References
 
@@ -122,20 +120,20 @@ language become game participants themselves. The player must give Napoleon, X-R
 I will follow Arnstein's adventure language and interpreter as it evolved from Pyramid 2000 to Raaka-Tu and finally to Bedlam. Be sure to 
 visit those pages as well:
 * Pyramid 2000
-* [Raaka Tu](/CoCo/RaakaTu)
-* [Bedlam](/CoCo/Bedlam)
+* [Raaka Tu](../CoCo/RaakaTu)
+* [Bedlam](../CoCo/Bedlam)
 
 # Pyramid 2000 Implementation
 
 The game includes colorful responses to certain command requests -- like rubbing the lamp:
 
-{{{html
+```html
 <div class="cocoScreen"> 
-}}}
-RUBBING THE ELECTRIC LAMP IS NOT[[br]]PARTICULARLY REWARDING. ANYWAY,[[br]]NOTHING EXCITING HAPPENS.
-{{{html
+RUBBING THE ELECTRIC LAMP IS NOT<br>
+PARTICULARLY REWARDING. ANYWAY,<br>
+NOTHING EXCITING HAPPENS.
 </div>
-}}}
+```
 
 Colossal Cave is based on an actual section of Mammoth Cave in Kentucky. Pyramid 2000 changes the setting from a cave to a pyramid, but the original 
 flow and most of the descriptions are still based on Mammoth Cave.
