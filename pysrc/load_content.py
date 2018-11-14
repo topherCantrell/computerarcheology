@@ -36,5 +36,5 @@ for (dirpath, dirnames, filenames) in walk('..\\content'):
 #print(dirs)
 #print(files)
 for f in files:
-    if f.endswith('.js'):
+    if f.endswith('.md'):
         print(f)
