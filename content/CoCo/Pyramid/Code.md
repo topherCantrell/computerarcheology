@@ -3,26 +3,27 @@
 
 # Pyramid Code
 
-<!-- %%cpu   = 6809 -->
+<!-- %%cpu = 6809 -->
 
 <!-- %%-ram  --> 
 * [RAM Usage](RAMUse.md)
 <!-- %%-hard --> 
 * [Hardware Info](Hardware.md)
 
- Loaded from cassette at 0x600 (right after text screen memory).
- Executed at 0x0600.
+Loaded from cassette at 0x600 (right after text screen memory).<br>
+Executed at 0x0600.
 
- Binary size is 14625 bytes.
- 14625 + 0x600 = 16161 (223 bytes shy of 16K).
+Binary size is 14625 bytes.<br>
+14625 + 0x600 = 16161 (223 bytes shy of 16K).
 
- The game uses 65 bytes of memory in low memory beginning at 0x01B0 for temporaries.
- These temporaries are not persisted in a SAVE.
+The game uses 65 bytes of memory in low memory beginning at 0x01B0 for temporaries.
+These temporaries are not persisted in a SAVE.
 
- The game is loaded into RAM, and the game modifies data structures within the
- program's loaded space. Thus the data structures are initialized at loading. The
- game must be reloaded to start over. 
+The game is loaded into RAM, and the game modifies data structures within the
+program's loaded space. Thus the data structures are initialized at loading. The
+game must be reloaded to start over. 
 
+```
 0600: 10 CE 03 FF         LDS     #$03FF                    ; Stack
 
 0604: 8E 01 B1            LDX     #$01B1                    ; Temporaries (not 1B0 ... interesting)
@@ -70,20 +71,22 @@ MainLoop:
 065E: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print message
 0661: BD 0A 51            JSR     $0A51                     ;{AfterEveryStep}  Do this stuff after every step
 0664: 20 CF               BRA     $0635                     ;{MainLoop}  Back to top of loop
+```
 
 # Get Object Info 
 
- An object has a location -- either because it is directly "there" or because it is 
- contained by another object that is "there". This method looks up the object data of 
- the object or the container and returns the location in B and the object 
- pointer (or container pointer) in X.
+An object has a location -- either because it is directly "there" or because it is 
+contained by another object that is "there". This method looks up the object data of 
+the object or the container and returns the location in B and the object 
+pointer (or container pointer) in X.
 
- Object number is in A
+Object number is in A
 
- Return object's location (or location of container) in B[[br]]
- Return pointer to object's data (or container's data) in X[[br]]
- Return Z as comparison between object's location and $01BC
+Return object's location (or location of container) in B<br>
+Return pointer to object's data (or container's data) in X<br>
+Return Z as comparison between object's location and $01BC
 
+```
 GetObjectInfo:
 0666: 8E 18 8D            LDX     #$188D                    ; Object location table
 0669: BD 06 7C            JSR     $067C                     ;{TwoTableOffset}  A is location
@@ -95,13 +98,14 @@ GetObjectInfo:
 0676: 30 1F               LEAX    -1,X                      ; Point to start of object
 0678: B1 01 BC            CMPA    $01BC                     ; Compare object's location to test location
 067B: 39                  RTS                               ; Done
-
+```
 
 # Table Offset Routines 
 
  Objects and rooms are numbered beginning with 1. These routines look up two-byte 
  and four-byte values from a table with A as the begins-with-1 offset.
 
+```
 TwoTableOffset:
 ; X = X + (A-1)*2
 ;
@@ -125,7 +129,7 @@ FourTableOffset:
 068C: 49                  ROLA                              ; ... * 2
 068D: 30 8B               LEAX    D,X                       ; Add D to X
 068F: 39                  RTS                               ; Done
-
+```
 
 # Move Object 
 
