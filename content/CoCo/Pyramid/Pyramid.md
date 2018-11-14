@@ -2,21 +2,18 @@
 
 # Pyramid 2000
 
-<!-- {{{html -->
-```js
+```html
 <script src="/CoCo/Pyramid/BinaryDataPyramid.js"></script>
 <script src="/js/6809.js"></script>
 <script src="/CoCo/CoCoText.js"></script>
 <script src="/CoCo/Pyramid/pyramid.js"></script>
 <script>window.onload = function() {startPyramid("pyramidConsole","pyramidTape");}</script>
 ```
-<!-- }}} -->
 
-<!-- {{{playMe -->
+<!-- playMe { -->
 # Play Me! 
 Play the game in a CoCo emulator. Click on the green console and press any key.
 
-<!-- {{{html -->
 ```html
 <textarea readonly id="pyramidConsole" rows="16" style="background-color: #00FF01; color: black;font-family: monospace;font-size:12px;width:33ch;" ></textarea>
 
@@ -35,8 +32,7 @@ Before the LOAD command you must paste the desired saved-data back into the text
 </div>
 </div>
 ```
-<!-- }}} -->
-<!-- }}} -->
+<!-- } -->
 
 # Code Links
 
@@ -51,7 +47,7 @@ quiet repose. There must be treasures. If even half of the stories about the Los
 Pyramid are true, ... But why dwell on that now -- you are here, and adventure
 awaits just a step away." - From the game manual introduction
 
-<!-- {{{tourGuide -->
+<!-- tourGuide { -->
 # Tour Guide 
 Check out a [snippet of the original source code](#trs80ugget) caught in an uninitialized buffer.
 
@@ -72,7 +68,7 @@ Visit the [Room Scripts](Code.html#roomscripts) to see what you can do in each r
 has a chance to take the command. These "adventure language scripts" are interpreted by the [Script Processor](Code.html#ProcessCommandList).
 
 Read through all words that the game understands in the [Word table](Code.html#WordTable).
-<!-- }}} -->
+<!-- } -->
 
 # References
 
@@ -129,9 +125,9 @@ The game includes colorful responses to certain command requests -- like rubbing
 
 ```html
 <div class="cocoScreen"> 
-RUBBING THE ELECTRIC LAMP IS NOT<br>
-PARTICULARLY REWARDING. ANYWAY,<br>
-NOTHING EXCITING HAPPENS.
+  RUBBING THE ELECTRIC LAMP IS NOT<br>
+  PARTICULARLY REWARDING. ANYWAY,<br>
+  NOTHING EXCITING HAPPENS.
 </div>
 ```
 
@@ -206,7 +202,7 @@ own or if it needs the lamp. This is a huge waste of space .... 16 bits to hold 
 
 In the original Adventure code, there are lots of attributes that can be applied to each room. The code from Adventure:
 
-```
+```code
 SYNON    0,LIT         {Place is self-illuminated}
 SYNON    1,BEENHERE    {We've been here at least once}
 SYNON    2,NODWARF     {Dwarves can't go here}
@@ -227,7 +223,7 @@ The adventure scripting language itself is straightforward. I wrote a java progr
 The first byte of each script segment is the token for the word (or words) that match the action. The remainder of the segment is what to do if the 
 input word matches. Have a look at the script for Room 1 at 1272:
 
-```
+```code
 ; Room 1
 ; "YOU ARE STANDING BEFORE THE ENTRANCE OF A PYRAMID. AROUND YOU IS A DESERT.[CR]"
 1272: 01 03          ; N,NORTH
@@ -251,7 +247,7 @@ continues to the end of the room script and if no segment matches then the "comm
 
 The scripting engine has a "sub-script" ability that groups a series of commands and reverses the pass/fail status. Look at the script for Room 12:
 
-```
+```code
 ; Room 12
 ; "AT YOUR FEET IS A SMALL PIT BREATHING TRACES OF WHITE MIST. AN EAST PASSAGE ENDS ..."
 132D: 02 03          ; E,EAST
@@ -330,7 +326,7 @@ The original assembly code must have used a "RESERVE MEMORY" directive to declar
 the assembler created the binary code, it skipped over these reserved holes and left whatever was in memory. In the CoCo case, the original memory 
 was FFs and 00s ... not very interesting. But here are the contents of the TRS-80 version (I added the ASCII conversion to the side):
 
-```
+```code
 ; "WHAT DO YOU WANT ME TO DO WITH THE "
 464D:  57 48 41 54 20 44 4F 20 59 4F 55 20 57 41 4E 54 20 4D 45 20 54 4F 20 44 4F 20 57 49 54 48 20 54 48 45 20 
 ; 40 byte buffer for unknown noun word
@@ -352,7 +348,7 @@ was FFs and 00s ... not very interesting. But here are the contents of the TRS-8
 
 Piecing the text together looks like this: 
 
-```
+```code
  --------------,A
 (12) 0000  LXI H,RAL1
 (14) 0000 CNALL MOV A,M-
@@ -371,7 +367,7 @@ that allowed the older mnemonics along with the new? It remains a mystery.
 
 After a little searching I found the matching segment in the disassembly:
 
-```
+```code
 55ED: 47              LD      B,A                 ; To B
 55EE: 21 69 49        LD      HL,$4969            ; Start of room scripts
 55F1: 7E              LD      A,(HL)              ; Get byte from script
