@@ -1,16 +1,17 @@
 
 ![](CoCoTech.jpg)
 
+<!-- navTitle Hardware -->
 # CoCo Hardware
 
-## References
+# References
 
 The [Color Computer Reference Manual](http://sparksandflames.com/files/Color%20Computer%20Technical%20Reference%20Manual%20%28Tandy%29.pdf)
 contains schematics and detailed hardware information. The images below are from the manual.
 
-## Hardware Addresses
+# Hardware Addresses
 
-### PIA 0 
+## PIA 0 
 
 <!-- memory -->
 | | | |
@@ -22,7 +23,7 @@ contains schematics and detailed hardware information. The images below are from
 
 ![](PIA0.jpg)
 
-### PIA 1 
+## PIA 1 
 
 <!-- memory -->
 | | | |
@@ -34,7 +35,7 @@ contains schematics and detailed hardware information. The images below are from
 
 ![](PIA1.jpg)
 
-### SAM
+## SAM
 
 <!-- memory -->
 | | | |
@@ -48,7 +49,7 @@ contains schematics and detailed hardware information. The images below are from
 
 ![](SAM.jpg)
 
-### Vectors 
+# Vectors 
 
 These are "ghosted" from the end of the BASIC ROM at BFF0. Since they are unchangeable it is
 unlikely you will see them referenced in code. Most of the vectors point to RAM, which
@@ -70,4 +71,3 @@ address.
 | FFF4:FFF5 | vectorSWI2  | SWI2 vector (0103 RAM) |
 | FFF2:FFF3 | vectorSWI3  | SWI3 vector (0100 RAM) |
 | FFF0:FFF1 | vector6809  | 6809 exceptions like divide by 0 (A681 ROM) |
-
