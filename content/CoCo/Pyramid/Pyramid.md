@@ -144,17 +144,15 @@ In Adventure, the description for the place labeled "WENDMISTS" is:
 
 In Pyramid 2000, the description for Room 19 is almost identical:
 
-{{{html
+```html
 <div class="cocoScreen"> 
-}}}
-YOU ARE AT THE WEST END OF THE[[br]]
-HALL OF GODS. A LOW WIDE PASS[[br]]
-CONTINUES WEST AND ANOTHER GOES[[br]]
-NORTH. TO THE SOUTH IS A LITTLE[[br]]
- PASSAGE SIX FEET OFF THE FLOOR.
-{{{html
+  YOU ARE AT THE WEST END OF THE<br>
+  HALL OF GODS. A LOW WIDE PASS<br>
+  CONTINUES WEST AND ANOTHER GOES<br>
+  NORTH. TO THE SOUTH IS A LITTLE<br>
+  PASSAGE SIX FEET OFF THE FLOOR.
 </div>
-}}}
+```
 
 # The Engine 
 
@@ -208,7 +206,7 @@ own or if it needs the lamp. This is a huge waste of space .... 16 bits to hold 
 
 In the original Adventure code, there are lots of attributes that can be applied to each room. The code from Adventure:
 
-{{{
+```
 SYNON    0,LIT         {Place is self-illuminated}
 SYNON    1,BEENHERE    {We've been here at least once}
 SYNON    2,NODWARF     {Dwarves can't go here}
@@ -220,7 +218,7 @@ SYNON    7,INMAZE      {This room is in one of the mazes}
 SYNON    8,ONE.EXIT    {Only one exit out of room - dwarves can block your way and force you to fight them.}
 SYNON    9,THROWER     {Throwing objects here will send them elsewhere, unless you're throwing them at something special (like a troll or dwarf).}
 SYNON    12,DAMP       {The ground is damp here because he poured water or oil from the bottle}
-}}}
+```
 
 The Pyramid 2000 code carries the storage for these attributes even though only one bit is used. 
 
@@ -229,7 +227,7 @@ The adventure scripting language itself is straightforward. I wrote a java progr
 The first byte of each script segment is the token for the word (or words) that match the action. The remainder of the segment is what to do if the 
 input word matches. Have a look at the script for Room 1 at 1272:
 
-{{{
+```
 ; Room 1
 ; "YOU ARE STANDING BEFORE THE ENTRANCE OF A PYRAMID. AROUND YOU IS A DESERT.[CR]"
 1272: 01 03          ; N,NORTH
@@ -243,7 +241,7 @@ input word matches. Have a look at the script for Room 1 at 1272:
 1282: 0B 03          ; IN,INSIDE
 1284: 01 02          ;     MoveToRoomN  Room:2
 1286: 00
-}}}
+```
 
 If the user input matches "NORTH" then the script executes function "MoveToRoomN" passing in the value 2. The player moves to room 2. The segment 
 completes (passes) and the script stops.
@@ -253,7 +251,7 @@ continues to the end of the room script and if no segment matches then the "comm
 
 The scripting engine has a "sub-script" ability that groups a series of commands and reverses the pass/fail status. Look at the script for Room 12:
 
-{{{
+```
 ; Room 12
 ; "AT YOUR FEET IS A SMALL PIT BREATHING TRACES OF WHITE MIST. AN EAST PASSAGE ENDS ..."
 132D: 02 03          ; E,EAST
@@ -267,7 +265,7 @@ The scripting engine has a "sub-script" ability that groups a series of commands
 133D: 04 04          ; W,WEST
 133F: 04 30 AF       ;     PrintMessageNN "THE CRACK IS FAR TOO SMALL FOR YOU TO FOLLOW.[CR]"
 1342: 00
-}}}
+```
 
 If the user types DOWN the script enters a sub-script that asserts that the "Gold Nugget" is in the backpack. If the nugget is not in the backpack 
 the assertion fails and the sub-script fails. But sub-script statuses are reversed so it actually passes and moves to the next command ... MoveToRoom 13.
@@ -304,16 +302,14 @@ rock in the room's center.
 
 Room 26 in Pyramid is:
 
-{{{html
+```html
 <div class="cocoScreen"> 
-}}}
-YOU ARE IN A LARGE ROOM, WITH A [[br]]
-PASSAGE TO THE SOUTH, AND A WALL[[br]]
-OF BROKEN ROCK TO THE EAST.[[br]]
-THERE IS A PANEL ON THE NORTH WALL.
-{{{html
+  YOU ARE IN A LARGE ROOM, WITH A<br>
+  PASSAGE TO THE SOUTH, AND A WALL<br>
+  OF BROKEN ROCK TO THE EAST.<br>
+  THERE IS A PANEL ON THE NORTH WALL.
 </div>
-}}}
+```
 
 Then I compared the GOTOs to Room 26 in Pyramid to the GOTOs to Room Y2 in Adventure. Sure enough -- they line up perfectly. So the missing direction 
 command in Pyramid is the "Y2" command from Adventure.
@@ -334,7 +330,7 @@ The original assembly code must have used a "RESERVE MEMORY" directive to declar
 the assembler created the binary code, it skipped over these reserved holes and left whatever was in memory. In the CoCo case, the original memory 
 was FFs and 00s ... not very interesting. But here are the contents of the TRS-80 version (I added the ASCII conversion to the side):
 
-{{{
+```
 ; "WHAT DO YOU WANT ME TO DO WITH THE "
 464D:  57 48 41 54 20 44 4F 20 59 4F 55 20 57 41 4E 54 20 4D 45 20 54 4F 20 44 4F 20 57 49 54 48 20 54 48 45 20 
 ; 40 byte buffer for unknown noun word
@@ -352,18 +348,18 @@ was FFs and 00s ... not very interesting. But here are the contents of the TRS-8
 46B8:  20 20 4A 5A 20 43 4E 41 4C 4C  ;   JZ CNALL
 ;" WHAT?",0
 46C2:  20 57 48 41 54 3F 00 
-}}}
+```
 
 Piecing the text together looks like this: 
 
-{{{
+```
  --------------,A
 (12) 0000  LXI H,RAL1
 (14) 0000 CNALL MOV A,M-
 (--) 0000  INX H
 (0D) 0000  ANA A
 (10) 0000  JZ CNALL
-}}}
+```
 
 This memory contained the source code for the pyramid game itself! The assembler tool the developers were using must have reused this section of 
 memory, and the memory originally contained the program. Thus the binary image contains a small snapshot of the original pre-assembled text. 
@@ -375,14 +371,14 @@ that allowed the older mnemonics along with the new? It remains a mystery.
 
 After a little searching I found the matching segment in the disassembly:
 
-{{{
+```
 55ED: 47              LD      B,A                 ; To B
 55EE: 21 69 49        LD      HL,$4969            ; Start of room scripts
 55F1: 7E              LD      A,(HL)              ; Get byte from script
 55F2: 23              INC     HL                  ; Next in script
 55F3: A7              AND     A                   ; 00?
 55F4: CA F1 55        JP      Z,$55F1             ; Yes ... ignore
-}}}
+```
 
 In the original source, the label "CNALL" is at 55F1. The data at address 4969 is called "RAL1". This data location is the start of the room 
 scripts. This code is part of the script command executed when you enter the command "PLUGH".
