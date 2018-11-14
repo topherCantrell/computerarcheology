@@ -35,5 +35,10 @@ Sections of HTML can be inserted in the markdown like this:
     ```
 ```
 
+Sections of code are placed in code blocks:
+```code
+This is some code
+```
+
 # Address Maps
 
