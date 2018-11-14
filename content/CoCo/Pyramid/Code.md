@@ -1,11 +1,12 @@
-%%image = Pyramid.jpg
-%%title = Pyramid Code
-%%cpu   = 6809
-%%-ram  = CoCo/Pyramid/RAMUse.mark /CoCo/Pyramid/RAMUse.html
-%%-hard = CoCo/Hardware.mark /CoCo/Hardware.html
- 
-* [RAM Usage](RAMUse.html)
-* [Hardware Info](/CoCo/Hardware.html)
+<!-- code -->
+![](Pyramid.jpg)
+
+# Pyramid Code
+
+<!-- %%cpu   = 6809 -->
+
+* <!-- %%-ram  --> [RAM Usage](RAMUse.md)
+* <!-- %%-hard --> [Hardware Info](Hardware.md)
 
  Loaded from cassette at 0x600 (right after text screen memory).
  Executed at 0x0600.
