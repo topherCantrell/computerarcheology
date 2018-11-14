@@ -2,7 +2,7 @@
 
 # Pyramid 2000
 
-<!-- html -->
+<!-- {{{html -->
 ```
 <div class="playMe">
 <div>
@@ -12,10 +12,14 @@
 <script src="/CoCo/Pyramid/pyramid.js"></script>
 <script>window.onload = function() {startPyramid("pyramidConsole","pyramidTape");}</script>
 ```
+<!-- }}} -->
+
+<!-- {{{playMe -->
 # Play Me! 
 Play the game in a CoCo emulator. Click on the green console and press any key.
 
-{{{html
+<!-- {{{html -->
+```
 <textarea readonly id="pyramidConsole" rows="16" style="background-color: #00FF01; color: black;font-family: monospace;font-size:12px;width:33ch;" ></textarea>
 
 <div id="cocoTapeArea" style="display:none">
@@ -32,7 +36,9 @@ Before the LOAD command you must paste the desired saved-data back into the text
 </div>
 </div>
 </div>
-}}}
+```
+<!-- }}} -->
+<!-- }}} -->
 
 # Code Links
 
