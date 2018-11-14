@@ -5,8 +5,10 @@
 
 <!-- %%cpu   = 6809 -->
 
-* <!-- %%-ram  --> [RAM Usage](RAMUse.md)
-* <!-- %%-hard --> [Hardware Info](Hardware.md)
+<!-- %%-ram  --> 
+* [RAM Usage](RAMUse.md)
+<!-- %%-hard --> 
+* [Hardware Info](Hardware.md)
 
  Loaded from cassette at 0x600 (right after text screen memory).
  Executed at 0x0600.
