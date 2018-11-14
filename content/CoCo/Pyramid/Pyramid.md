@@ -3,9 +3,7 @@
 # Pyramid 2000
 
 <!-- {{{html -->
-```
-<div class="playMe">
-<div>
+```js
 <script src="/CoCo/Pyramid/BinaryDataPyramid.js"></script>
 <script src="/js/6809.js"></script>
 <script src="/CoCo/CoCoText.js"></script>
@@ -19,7 +17,7 @@
 Play the game in a CoCo emulator. Click on the green console and press any key.
 
 <!-- {{{html -->
-```
+```html
 <textarea readonly id="pyramidConsole" rows="16" style="background-color: #00FF01; color: black;font-family: monospace;font-size:12px;width:33ch;" ></textarea>
 
 <div id="cocoTapeArea" style="display:none">
