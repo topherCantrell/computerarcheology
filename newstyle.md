@@ -30,10 +30,9 @@ The web page allows for special areas like "Play Me" and "Tour Guide". These are
 Sections of HTML can be inserted in the markdown like this:
 
 ```
-```html
-<hr>    
-```
-not part
+    ```html
+    <hr>    
+    ```
 ```
 
 # Address Maps
