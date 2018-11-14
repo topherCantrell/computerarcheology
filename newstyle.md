@@ -28,7 +28,6 @@ The web page allows for special areas like "Play Me" and "Tour Guide". These are
 ```
 
 Sections of HTML can be inserted in the markdown like this:
-
 ```
     ```html
     <hr>    
@@ -44,3 +43,36 @@ Sections of code are placed in code blocks:
 
 # Address Maps
 
+Memory maps are defined in regular tables with a leading comment. Like this:
+```
+<!-- memory -->
+| | | |
+|:-------- |:------- |:----------------- |
+| FF00     | PIA0_DA | I/O data or direction (depends on control setting) |
+| FF01     | PIA0_CA | Control |
+| FF02     | PIA0_DB | I/O data or direction (depends on control setting) |
+| FF03     | PIA0_CB | Control |
+```
+
+# Disassembly Files
+
+Disassembly files have this comment at the top:
+```
+<!-- code -->
+```
+
+You must give the CPU in a comment near the top (before the first line of disassembly):
+```
+<!-- cpu 6809 -->
+```
+
+You link the disassembly to other files containing address maps like this:
+```
+<!-- -ram  --> 
+* [RAM Usage](RAMUse.md)
+<!-- -hard --> 
+* [Hardware Info](..\Hardware.md)
+```
+
+The `-ram` is for RAM variables. The `-hard` is for hardware registers. These have special colorings in the final
+renderings. You can use any name starting with a minus: `-nonvol`.
