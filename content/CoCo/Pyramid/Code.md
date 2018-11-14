@@ -40,15 +40,15 @@ game must be reloaded to start over.
 0618: 26 FB               BNE     $0615                     ;  ... screen
 
 061A: 8E 05 E0            LDX     #$05E0                    ; Cursor ...
-061D: 9F 88               STX     <$88                      ;{-1_cursor} ... position
+061D: 9F 88               STX     <$88                      ; {-ram_cursor} ... position
 061F: 86 0D               LDA     #$0D                      ; Scroll ...
 0621: B7 01 B0            STA     $01B0                     ; ... count
 0624: 8E 10 21            LDX     #$1021                    ; "WELCOME TO PYRAMID!!"
-0627: BD 08 FC            JSR     $08FC                     ;{PrintUnpacked}  Print message
-062A: BD 09 37            JSR     $0937                     ;{ReadKey}  wait for key
+0627: BD 08 FC            JSR     $08FC                     ; {PrintUnpacked}  Print message
+062A: BD 09 37            JSR     $0937                     ; {ReadKey}  wait for key
 062D: 86 01               LDA     #$01                      ; Starting ...
-062F: B7 18 E5            STA     $18E5                     ;{-1_01} ... room number
-0632: BD 0B D2            JSR     $0BD2                     ;{PrintRoomDescription}  Print room description
+062F: B7 18 E5            STA     $18E5                     ; {-ram_01} ... room number
+0632: BD 0B D2            JSR     $0BD2                     ; {PrintRoomDescription}  Print room description
 
 # Main Loop
 
@@ -56,21 +56,21 @@ MainLoop:
 0635: 7F 01 E7            CLR     $01E7                     ; Clear noun (object within reach)
 0638: 7F 01 E8            CLR     $01E8                     ; Clear verb (thorw, north, rub, etc)
 063B: 7F 01 E9            CLR     $01E9                     ; Grammar type (verb, verb+nounInReach, verb+nounInPack)
-063E: BD 06 F5            JSR     $06F5                     ;{GetInputAndParse}  Get user input and parse
-0641: B6 18 E5            LDA     $18E5                     ;{-1_01} Current room
+063E: BD 06 F5            JSR     $06F5                     ; {GetInputAndParse}  Get user input and parse
+0641: B6 18 E5            LDA     $18E5                     ; {-ram_01} Current room
 0644: 8E 11 2E            LDX     #$112E                    ; Room descriptors
-0647: BD 06 85            JSR     $0685                     ;{FourTableOffset}  X = X + (A-1)*4
+0647: BD 06 85            JSR     $0685                     ; {FourTableOffset}  X = X + (A-1)*4
 064A: 30 02               LEAX    2,X                       ; Command-script ...
 064C: AE 84               LDX     ,X                        ; ... to X
-064E: BD 06 9D            JSR     $069D                     ;{ProcessRoomScript}  Process the command script for the room
+064E: BD 06 9D            JSR     $069D                     ; {ProcessRoomScript}  Process the command script for the room
 0651: 26 0E               BNE     $0661                     ;  The room handled it ... move on
 0653: 8E 19 45            LDX     #$1945                    ; Generic command script
-0656: BD 06 9D            JSR     $069D                     ;{ProcessRoomScript}  Process the input
+0656: BD 06 9D            JSR     $069D                     ; {ProcessRoomScript}  Process the input
 0659: 26 06               BNE     $0661                     ;  It was handled ... move on
 065B: 8E 33 87            LDX     #$3387                    ; "I DON'T KNOW HOW TO APPLY THAT WORD HERE."
-065E: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print message
-0661: BD 0A 51            JSR     $0A51                     ;{AfterEveryStep}  Do this stuff after every step
-0664: 20 CF               BRA     $0635                     ;{MainLoop}  Back to top of loop
+065E: BD 08 D6            JSR     $08D6                     ; {PrintPackedMessage}  Print message
+0661: BD 0A 51            JSR     $0A51                     ; {AfterEveryStep}  Do this stuff after every step
+0664: 20 CF               BRA     $0635                     ; {MainLoop}  Back to top of loop
 ```
 
 # Get Object Info 
@@ -89,12 +89,12 @@ Return Z as comparison between object's location and $01BC
 ```
 GetObjectInfo:
 0666: 8E 18 8D            LDX     #$188D                    ; Object location table
-0669: BD 06 7C            JSR     $067C                     ;{TwoTableOffset}  A is location
+0669: BD 06 7C            JSR     $067C                     ; {TwoTableOffset}  A is location
 066C: A6 80               LDA     ,X+                       ; Get object data
 066E: E6 84               LDB     ,X                        ; Get room (or container)
 0670: 85 80               BITA    #$80                      ; Is object contained by another?
 0672: 1F 98               TFR     B,A                       ; Room/container to A
-0674: 26 F0               BNE     $0666                     ;{GetObjectInfo}  Yes ... lookup the container object
+0674: 26 F0               BNE     $0666                     ; {GetObjectInfo}  Yes ... lookup the container object
 0676: 30 1F               LEAX    -1,X                      ; Point to start of object
 0678: B1 01 BC            CMPA    $01BC                     ; Compare object's location to test location
 067B: 39                  RTS                               ; Done
