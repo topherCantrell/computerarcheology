@@ -1,3 +1,12 @@
+<!-- deploy
+    RAMUse.md
+    Code.md
+    Journal.md
+    +BinaryDataPyramid.js
+    +Pyramid.jpg
+    +pyramid.js    
+-->
+
 ![](Pyramid.jpg)
 
 # Pyramid 2000

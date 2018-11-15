@@ -1,3 +1,12 @@
+<!-- deploy
+    +css
+    +js
+    +img
+    +Arch.jpg
+    +favicon.ico
+        CoCo
+-->
+
 ![](Arch.jpg)
 # Computer Archeology
 

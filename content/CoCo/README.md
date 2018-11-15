@@ -1,3 +1,17 @@
+<!-- deploy    
+    Hardware.md
+    +CoCo.jpg
+    +CoCoTech.jpg
+    +CoCoText.js
+    +color-basic-unravelled.pdf
+    +disk-basic-unravelled.pdf
+    +extended-basic-unravelled.pdf
+    +super-extended-basic-unravelled.pdf
+    +PIA0.jpg
+    +PIA1.jpg
+    +SAM.jpg
+        Pyramid
+-->
 
 ![](CoCo.jpg)
 
