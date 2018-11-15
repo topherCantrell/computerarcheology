@@ -49,9 +49,11 @@ game must be reloaded to start over.
 062D: 86 01               LDA     #$01                      ; Starting ...
 062F: B7 18 E5            STA     $18E5                     ; {-ram_01} ... room number
 0632: BD 0B D2            JSR     $0BD2                     ; {PrintRoomDescription}  Print room description
+```
 
 # Main Loop
 
+```
 MainLoop:
 0635: 7F 01 E7            CLR     $01E7                     ; Clear noun (object within reach)
 0638: 7F 01 E8            CLR     $01E8                     ; Clear verb (thorw, north, rub, etc)
@@ -102,8 +104,8 @@ GetObjectInfo:
 
 # Table Offset Routines 
 
- Objects and rooms are numbered beginning with 1. These routines look up two-byte 
- and four-byte values from a table with A as the begins-with-1 offset.
+Objects and rooms are numbered beginning with 1. These routines look up two-byte 
+and four-byte values from a table with A as the begins-with-1 offset.
 
 ```
 TwoTableOffset:
@@ -133,13 +135,14 @@ FourTableOffset:
 
 # Move Object 
 
- This routine moves an object (or its container) to a new location.
+This routine moves an object (or its container) to a new location.
 
- Object number is in B[[br]]
- New location is in $01BC
+Object number is in B<br>
+New location is in $01BC
 
- Return object pointer in X
+Return object pointer in X
 
+```
 MoveObject:
 0690: BD 06 66            JSR     $0666                     ;{GetObjectInfo}  Find object (or object's container)
 0693: 30 01               LEAX    1,X                       ; Object's location
@@ -147,26 +150,28 @@ MoveObject:
 0698: A7 84               STA     ,X                        ; Move object to new location
 069A: 30 1F               LEAX    -1,X                      ; Restore object pointer
 069C: 39                  RTS                               ; Done
+```
 
 # Process Room Script 
 
- A room script is a list of verbs with the commands that go with each. This function 
- looks for the one script that matches the verb in $01E8. Then it runs the script. If 
- the script "passes" then this function returns Z=0.
+A room script is a list of verbs with the commands that go with each. This function 
+looks for the one script that matches the verb in $01E8. Then it runs the script. If 
+the script "passes" then this function returns Z=0.
 
- If there is no script to match the verb or if the script "fails" then this function returns Z=1.
+If there is no script to match the verb or if the script "fails" then this function returns Z=1.
 
- X points to a list of choices for first-word tokens.[[br]]
- Return with[[br]]
- * Z SET (EQ)   ... no script found OR script was found but it failed[[br]]
- * Z CLEAR (NE) ... script was found and all commands passed 
+X points to a list of choices for first-word tokens.<br>
+Return with<br>
+  * Z SET (EQ)   ... no script found OR script was found but it failed
+  * Z CLEAR (NE) ... script was found and all commands passed 
 
 Format of word/script description list:
 
-  AA LL N0 N1 N2   ; First word AA and script comands (N) for AA. LL is size of command list.[[br]]
-  BB LL N0 N1      ; Second word BB and script commands (N) for BB. LL is size of command list.[[br]]
-  00               ; End of list
+AA LL N0 N1 N2   ; First word AA and script comands (N) for AA. LL is size of command list.<br>
+BB LL N0 N1      ; Second word BB and script commands (N) for BB. LL is size of command list.<br>
+00               ; End of list
 
+```
 ProcessRoomScript:
 069D: E6 84               LDB     ,X                        ; Get command verb
 069F: 27 FB               BEQ     $069C                     ;  End of list ... out (Z SET (EQ) no matching script)
@@ -180,28 +185,29 @@ ProcessRoomScript:
 06AD: BD 06 B4            JSR     $06B4                     ;{ProcessCommandList}  Run script (Z CLEAR (NE) all passed, Z SET (EQ) a command failed)
 06B0: 26 EA               BNE     $069C                     ;  If script passed then return Z CLEAR (NE)
 06B2: 20 E9               BRA     $069D                     ;{ProcessRoomScript}  Script failed ... try next word/script
-
+```
 
 # Process Command List 
 
- This routine processes a list of commands. The list begins with the size of the list (bytes) 
- followed by all the command bytes. The command addresses are looked up from a jump table. Each 
- command returns to either the "!FuncPassed" or the "!FuncFailed".
+This routine processes a list of commands. The list begins with the size of the list (bytes) 
+followed by all the command bytes. The command addresses are looked up from a jump table. Each 
+command returns to either the "!FuncPassed" or the "!FuncFailed".
 
- If a command fails then the processing starts and this script "fails". Otherwise all commands 
- are executed one after the other.
+If a command fails then the processing starts and this script "fails". Otherwise all commands 
+are executed one after the other.
 
- If all commands pass then the script "passes".
+If all commands pass then the script "passes".
 
- List format:[[br]]
-     LL A0 A1 B0 B1 B2 B3 C0 C1 ...   ; LL is length followed by commands A, B, and C ...
+List format:<br>
+LL A0 A1 B0 B1 B2 B3 C0 C1 ...   ; LL is length followed by commands A, B, and C ...
 
- X = start of script
+X = start of script
 
- Returns 
- * Z SET (EQ) failed
- * Z CLEAR (NE) passed
+Returns 
+  * Z SET (EQ) failed
+  * Z CLEAR (NE) passed
 
+```
 ProcessCommandList:
 06B4: 1F 13               TFR     X,U                       ; Hold start of script
 06B6: E6 84               LDB     ,X                        ; Length of script
@@ -238,21 +244,22 @@ ProcessCommandList:
 06E1: 35 10               PULS    X                         ; End=of-script position
 06E3: 4F                  CLRA                              ; Z SET (a script command failed)
 06E4: 39                  RTS                               ; Done
-
+```
 
 # Command 7: Subscript Abort If Pass  
 
- This game command runs a subscript. If the subscript passes then the entire script (no 
- matter how many subscripts-deep) ends with a "pass". If the subscript fails then the subscript 
- returns "pass" and the next command in the script is executed.
+This game command runs a subscript. If the subscript passes then the entire script (no 
+matter how many subscripts-deep) ends with a "pass". If the subscript fails then the subscript 
+returns "pass" and the next command in the script is executed.
 
- The GET script, for instance, is a list of subscripts that attempt to process specific gets one 
- at a time. Like GET WATER then GET SERPENT then GET PLANT and so on. If the first fails (like WATER 
- is not in the room) then the subscript ends and the script continues with the next command (the 
- next subscript). 
+The GET script, for instance, is a list of subscripts that attempt to process specific gets one 
+at a time. Like GET WATER then GET SERPENT then GET PLANT and so on. If the first fails (like WATER 
+is not in the room) then the subscript ends and the script continues with the next command (the 
+next subscript). 
 
- If the second subscript passes (like the SERPENT is here) then the entire script aborts with a "pass".
+If the second subscript passes (like the SERPENT is here) then the entire script aborts with a "pass".
 
+```
 SubScriptAbortIfPass: 
 ;
 06E5: 35 10               PULS    X                         ; Script pointer
@@ -4478,3 +4485,4 @@ WordTable:
 Unused:
 ; Unused data on end of program
 3F16: 0D 00 02 88 88 80 FA 00 00 4F 88
+```

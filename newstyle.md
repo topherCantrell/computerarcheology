@@ -15,6 +15,23 @@ title that might be different (shorter) than the page's title.
 The page must start with an image link. This becomes the page's title image. The page's title is the first single-hash
 tag. The `navTitle` comment specifies the navigation title. If not given, the page title is used for navigation.
 
+# Deployment Info
+
+The entry point README for a directory must contain deployment information for the files and directories within. For instance:
+
+```
+<!-- deploy
+  Info.md
+  Other.md
+  +file.jpg
+  +file.jpg
+      SubDirectory
+-->
+```
+
+Spacing is optional. A "+" before a file or directory indicates that the file or directory is to be copied to the
+deployment web site but does contribute to the navigation tree.
+
 # Special Areas
 
 The web page allows for special areas like "Play Me" and "Tour Guide". These areas are wrapped in comment blocks like this:
