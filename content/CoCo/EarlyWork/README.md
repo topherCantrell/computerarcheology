@@ -1,5 +1,20 @@
-%%title = Early CoCo Work
-%%image = CoverTRS80News.jpg
+<!-- deploy
++Animal1.jpg
++Animal2.jpg
++Animal3.jpg
++BullsEye1.jpg
++BullsEye2.jpg
++Cover80Micro.jpg
++CoverTRS80News.jpg
++DOS1.jpg
++DOS2.jg
+-->
+
+![](CoverTRS80News.jpg)
+
+<!-- navTitle Early Work -->
+
+# Early CoCo Work
 
 TODO OCR the code. These should be playable (well, not DOS commander)
 
@@ -10,17 +25,11 @@ in the July 1983 issue of TRS-80 Microcomputer News.
 
 No. That is not me on the cover.
 
-{{{html
 <img src="CoverTRS80News.jpg" height="500"></img>
-}}}
 
-{{{html
 <img src="BullsEye1.jpg" height="500"></img>
-}}}
 
-{{{html
 <img src="BullsEye2.jpg" height="500"></img>
-}}}
 
 # Animal House
 
@@ -30,33 +39,24 @@ rewritten.
 
 No. That is not me on the cover.
 
-{{{html
 <img src="Cover80Micro.jpg" height="500"></img>
-}}}
 
-{{{html
+
 <img src="Animal1.jpg" height="500"></img>
-}}}
 
-{{{html
 <img src="Animal2.jpg" height="500"></img>
-}}}
 
-{{{html
 <img src="Animal3.jpg" height="500"></img>
-}}}
+
 
 # DOS Commander
 
 In June of 1986 80 Micro purchased my article/code "DOS Commander" for $50. But the magazine dropped
 coverage of the Color Computer shortly after. My article never made it to print.
 
-{{{html
 <img src="DOS1.jpg" height="500"></img>
-}}}
 
-{{{html
 <img src="DOS2.jpg" height="500"></img>
-}}}
+
 
 
