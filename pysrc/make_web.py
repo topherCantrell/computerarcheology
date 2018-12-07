@@ -1,5 +1,5 @@
-CONTENT_DIR = '..\\content'
-DEPLOY_DIR = '..\\deploy'
+CONTENT_DIR = '../content'
+DEPLOY_DIR = '../deploy'
 
 def read_deploy(directory):
     ret = ['README']
@@ -19,3 +19,14 @@ def read_deploy(directory):
     return ret
 
 print(read_deploy(CONTENT_DIR))
+
+import shutil
+import os
+
+if os.path.isdir(DEPLOY_DIR):
+    shutil.rmtree(DEPLOY_DIR)
+
+os.makedirs('../deploy')
+
+def deploy_directory(content_current,deploy_current):
+    pass
