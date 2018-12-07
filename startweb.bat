@@ -8,5 +8,5 @@ rem D:
 rem cd git\computerarcheology
 rem java SoftServe deploy 80
 
-cd /users/ccantrell/git/computerarcheology
+cd /users/tophe/git/computerarcheology
 java SoftServe deploy 80

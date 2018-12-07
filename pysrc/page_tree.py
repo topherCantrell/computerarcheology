@@ -1,3 +1,4 @@
+import string
 
 class PageTree:
     
@@ -13,7 +14,13 @@ class PageTree:
         self._used_anchors = []
         
     def _make_valid_anchor(self,text):        
-        text = text.replace(' ','')
+        
+        tt = ''
+        for t in text:
+            if t in string.ascii_letters or t in '0123456789':
+                tt+=t
+        text = tt
+        
         if text in self._used_anchors:
             i = 1
             while True:
@@ -54,8 +61,19 @@ class PageTree:
                 self._node = self._node['parent']
             self._node['children'].append([anchor,text])        
                 
+    def _to_html_rec(self,node):
+        ret = '<ul>'
+        for g in node['children']:
+            if type(g) is dict:
+                ret += self._to_html_rec(g)
+            else:
+                ret = ret + '<a href="'+g[0]+'">'+g[1]+'</a>'
+        ret += '</ul>'
+        return ret
+    
     def to_html(self):
         # Each string is a <li>
         # Each dict is a <ul>
-        print(self._tree)
-        return "TODO"
+        ret = self._to_html_rec(self._tree)
+        print(ret)
+        return ret
