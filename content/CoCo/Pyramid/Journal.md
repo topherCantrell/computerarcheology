@@ -1,4 +1,5 @@
-<!-- exclude -->
+![Journal](/img/journal.jpg)
+
 # Journal
 
 ## 2/25/2017

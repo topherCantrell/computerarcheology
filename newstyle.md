@@ -44,6 +44,9 @@ The web page allows for special areas like "Play Me" and "Tour Guide". These are
 <!-- } -->
 ```
 
+# Raw HTML
+Sections in tripple-back-ticks are not processed as regular markdown. 
+
 Sections of HTML can be inserted in the markdown like this:
 ```
     ```html

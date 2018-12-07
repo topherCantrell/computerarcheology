@@ -7,7 +7,7 @@
         CoCo
 -->
 
-![](Arch.jpg)
+![Computer Archeology](Arch.jpg)
 # Computer Archeology
 
 This web site is about digging up old, forgotten computer systems and cracking open the code that ran on them. Think 

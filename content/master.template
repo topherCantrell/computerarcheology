@@ -3,7 +3,7 @@
 <html>
 
 	<head>
-		<title><!-- %%title=%% --></title>
+		<title><!-- %%TITLE%% --></title>
 		<meta charset="utf-8" />
 	
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
@@ -13,8 +13,6 @@
 	    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
 	    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 	    <script src="/js/ca.js"></script>
-	    
-	    <!-- %%ADDITIONAL_HEAD%% -->   
 	    	
 	</head>
 
@@ -62,10 +60,6 @@
     </div>
     
     <div id="right">
-    
-      <h1 class="page-header">
-        <!-- %%CONTENT_TITLE%% -->
-      </h1>
     
       <!-- %%CONTENT%% -->
       
