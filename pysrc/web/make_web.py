@@ -2,9 +2,8 @@ import shutil
 import os
 from web.page_tree import PageTree
 from web.id_mgr import IDMgr
-
-CONTENT_DIR = '../../content'
-DEPLOY_DIR = '../../deploy'
+import web.ENVIRONMENT as ENV
+import web.site_tree
 
 def read_deploy(directory):
     ret = ['README.md']
@@ -29,7 +28,7 @@ def substitute(lines,tag,value):
         if tag in lines[i]:
             lines[i] = lines[i].replace(tag,value)
 
-def process_markdown(lines):
+def process_markdown(lines,path):
     
     # Used to make unique anchor ids on this page    
     ids = IDMgr()
@@ -82,7 +81,7 @@ def process_markdown(lines):
     
     # TODO     
     ret['BREAD_CRUMBS'] = 'Crumbs'
-    ret['SITE_TREE'] = 'SiteTree'    
+    ret['SITE_TREE'] = web.site_tree.make_site_nav(path) # TODO path    
     
     # Some basic error checking
     if ret['IMAGE']=='' or ret['TITLE']=='':
@@ -90,7 +89,7 @@ def process_markdown(lines):
         
     return ret
 
-def deploy_directory(content_current,deploy_current):
+def deploy_directory(content_current,deploy_current,path):
     deps = read_deploy(content_current)
     for dep in deps:
         print(content_current+' : '+dep)
@@ -109,12 +108,12 @@ def deploy_directory(content_current,deploy_current):
             dst = os.path.join(deploy_current,dep)
             if os.path.isdir(src):
                 os.makedirs(dst)
-                deploy_directory(src,dst)
+                deploy_directory(src,dst,path+'/'+dep)
             else:
                 f = open(src,'r')
                 cont = f.readlines()
-                cont = process_markdown(cont)
-                f = open(os.path.join(CONTENT_DIR,'master.template'),'r')
+                cont = process_markdown(cont,path)
+                f = open(os.path.join(ENV.CONTENT_DIR,'master.template'),'r')
                 lines = f.readlines()
                 f.close()
                 substitute(lines,'TITLE',cont['TITLE'])
@@ -133,9 +132,11 @@ def deploy_directory(content_current,deploy_current):
 
 if __name__ == '__main__':
     
-    if os.path.isdir(DEPLOY_DIR):
-        shutil.rmtree(DEPLOY_DIR)
+    global site_nav
     
-    os.makedirs(DEPLOY_DIR)
+    if os.path.isdir(ENV.DEPLOY_DIR):
+        shutil.rmtree(ENV.DEPLOY_DIR)
     
-    deploy_directory(CONTENT_DIR,DEPLOY_DIR)
+    os.makedirs(ENV.DEPLOY_DIR)
+    
+    deploy_directory(ENV.CONTENT_DIR,ENV.DEPLOY_DIR,'/')
