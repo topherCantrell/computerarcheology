@@ -1,9 +1,10 @@
 import shutil
 import os
-from page_tree import PageTree
+from web.page_tree import PageTree
+from web.id_mgr import IDMgr
 
-CONTENT_DIR = '../content'
-DEPLOY_DIR = '../deploy'
+CONTENT_DIR = '../../content'
+DEPLOY_DIR = '../../deploy'
 
 def read_deploy(directory):
     ret = ['README.md']
@@ -29,10 +30,18 @@ def substitute(lines,tag,value):
             lines[i] = lines[i].replace(tag,value)
 
 def process_markdown(lines):
-        
+    
+    # Used to make unique anchor ids on this page    
+    ids = IDMgr()
+    
+    # Used to build the page's navigation tab
     page_nav = PageTree()
     
+    # All the different pieces of the page
     ret = {}
+    
+    # The HTML content of the page
+    content = '' 
         
     # Image and Title ... both before the first header
     for g in lines:
@@ -48,7 +57,7 @@ def process_markdown(lines):
             break
         
         
-        
+       
         
     # Line by line from the top ... here we go    
     for i in range(len(lines)):
@@ -58,24 +67,26 @@ def process_markdown(lines):
         
         # Build the page tree while we are processing the file
         if(line_strip.startswith('#')):
-            page_nav.add_page_nav(line_strip)
+            level = 0
+            while line[level]=='#':
+                level = level + 1                
+            text = line[level:].strip()
+            anchor = ids.add_id(text)
+            page_nav.add_page_nav(level,anchor,text)
+            content += '<h{level} id="{anchor}">{text}</h{level}>\n'.format(level=level,anchor=anchor,text=text)
     
+        
     
+    ret['PAGE_TREE'] = page_nav.to_html()      
+    ret['CONTENT'] = content   
     
-          
+    # TODO     
+    ret['BREAD_CRUMBS'] = 'Crumbs'
+    ret['SITE_TREE'] = 'SiteTree'    
     
-    
-    # TODO convert page_tree to HTML
-    
-    ret['PAGE_TREE'] = page_nav.to_html()          
-    
+    # Some basic error checking
     if ret['IMAGE']=='' or ret['TITLE']=='':
         raise Exception('IMAGE and TITLE are required')
-    
-    # TODO lots of conversions    
-    ret['BREAD_CRUMBS'] = 'Crumbs'
-    ret['SITE_TREE'] = 'SiteTree'
-    ret['CONTENT'] = 'Content'
         
     return ret
 
@@ -84,6 +95,7 @@ def deploy_directory(content_current,deploy_current):
     for dep in deps:
         print(content_current+' : '+dep)
         if dep.startswith('+'):
+            # This is just a blind copy -- no processing
             dep = dep[1:].strip()
             src = os.path.join(content_current,dep)
             dst = os.path.join(deploy_current,dep)                        
@@ -92,6 +104,7 @@ def deploy_directory(content_current,deploy_current):
             else:
                 shutil.copy(src,dst)
         else:
+            # This is a markdown file that needs processing
             src = os.path.join(content_current,dep)
             dst = os.path.join(deploy_current,dep)
             if os.path.isdir(src):
@@ -101,7 +114,7 @@ def deploy_directory(content_current,deploy_current):
                 f = open(src,'r')
                 cont = f.readlines()
                 cont = process_markdown(cont)
-                f = open('../content/master.template','r')
+                f = open(os.path.join(CONTENT_DIR,'master.template'),'r')
                 lines = f.readlines()
                 f.close()
                 substitute(lines,'TITLE',cont['TITLE'])

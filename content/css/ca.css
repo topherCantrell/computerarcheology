@@ -57,18 +57,25 @@ html,
 	padding-right: 20px;
 }
 
+/* Navigation on the page */
+
+#pageTree {
+	margin-top: 16px;
+}
 #pageTree, #pageTree ul, #pageTree li {
 	padding: 0;
 }
 #pageTree ul {
+	margin-left: 12px;
 	list-style: none;	
 }
-
 #pageTree li {
 	padding-left: 12px;
 }
 
-#siteTree, #pageTree {
+/* Navigation on the site */
+
+#siteTreee {
 	margin-top: 16px;
 }
 
