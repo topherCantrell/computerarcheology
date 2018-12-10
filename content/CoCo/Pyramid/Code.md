@@ -145,7 +145,7 @@ Return object pointer in X
 
 ```code
 MoveObject:
-0690: BD 06 66            JSR     $0666                     ;{GetObjectInfo}  Find object (or object's container)
+0690: BD 06 66            JSR     $0666                     ; {GetObjectInfo}  Find object (or object's container)
 0693: 30 01               LEAX    1,X                       ; Object's location
 0695: B6 01 BC            LDA     $01BC                     ; New value
 0698: A7 84               STA     ,X                        ; Move object to new location
@@ -183,11 +183,11 @@ ProcessRoomScript:
 06A6: 27 05               BEQ     $06AD                     ; Yes ... run the list
 06A8: E6 84               LDB     ,X                        ; Get length
 06AA: 3A                  ABX                               ; Skip this list
-06AB: 20 F0               BRA     $069D                     ;{ProcessRoomScript}  Keep trying lists
+06AB: 20 F0               BRA     $069D                     ; {ProcessRoomScript}  Keep trying lists
 ;
-06AD: BD 06 B4            JSR     $06B4                     ;{ProcessCommandList}  Run script (Z CLEAR (NE) all passed, Z SET (EQ) a command failed)
+06AD: BD 06 B4            JSR     $06B4                     ; {ProcessCommandList}  Run script (Z CLEAR (NE) all passed, Z SET (EQ) a command failed)
 06B0: 26 EA               BNE     $069C                     ; If script passed then return Z CLEAR (NE)
-06B2: 20 E9               BRA     $069D                     ;{ProcessRoomScript}  Script failed ... try next word/script
+06B2: 20 E9               BRA     $069D                     ; {ProcessRoomScript}  Script failed ... try next word/script
 ```
 
 # Process Command List 
@@ -224,7 +224,7 @@ ProcessCommandList:
 06BF: A6 80               LDA     ,X+                       ; Get command number
 06C1: 34 10               PSHS    X                         ; Hold current script pointer
 06C3: 8E 0A 17            LDX     #$0A17                    ; Jump table
-06C6: BD 06 7C            JSR     $067C                     ;{TwoTableOffset}  Offest
+06C6: BD 06 7C            JSR     $067C                     ; {TwoTableOffset}  Offest
 06C9: 6E 94               JMP     [,X]                      ; Indirection here ... processing function word
 ;
 ; Return from all script commands come here. We either get FuncPassed in which we
@@ -268,7 +268,7 @@ If the second subscript passes (like the SERPENT is here) then the entire script
 ```code
 SubScriptAbortIfPass: 
 06E5: 35 10               PULS    X                         ; Script pointer
-06E7: BD 06 B4            JSR     $06B4                     ;{ProcessCommandList}  Run script (Z CLEAR (NE) all passed, Z SET (EQ) a command failed)
+06E7: BD 06 B4            JSR     $06B4                     ; {ProcessCommandList}  Run script (Z CLEAR (NE) all passed, Z SET (EQ) a command failed)
 06EA: 34 10               PSHS    X                         ; Script pointer back to stack
 06EC: 27 DD               BEQ     $06CB                     ; A command failed ... continue parent list
 06EE: 35 10               PULS    X                         ; Pop script pointer
@@ -289,7 +289,7 @@ SubScriptAbortIfPass:
 
 ```code
 GetInputAndParse:
-06F5: BD 09 B3            JSR     $09B3                     ;{PromptAndReadLine}  Fill input buffer
+06F5: BD 09 B3            JSR     $09B3                     ; {PromptAndReadLine}  Fill input buffer
 06F8: 86 0D               LDA     #$0D                      ; Rows left ...
 06FA: B7 01 B0            STA     $01B0                     ; ... until MORE
 06FD: BD 07 C6            JSR     $07C6                     ; Parse the input string
@@ -297,7 +297,7 @@ GetInputAndParse:
 0703: F6 01 B2            LDB     $01B2                     ; Number of bytes in word data
 0706: B6 01 E9            LDA     $01E9                     ; Word grammar
 0709: 81 03               CMPA    #$03                      ; Value 3 means nothing in buffer
-070B: 27 E8               BEQ     $06F5                     ;{GetInputAndParse}  Nothing in buffer ... input again
+070B: 27 E8               BEQ     $06F5                     ; {GetInputAndParse}  Nothing in buffer ... input again
 070D: B6 01 E7            LDA     $01E7                     ; Noun
 0710: 26 29               BNE     $073B                     ; We have a noun ... test it
 0712: B6 01 E8            LDA     $01E8                     ; Action word (throw, rub, get, etc)
@@ -312,15 +312,15 @@ GetInputAndParse:
 0723: 58                  ASLB                              ; Index to offset
 0724: 3A                  ABX                               ; Point to error message
 0725: AE 84               LDX     ,X                        ; Get address of general error message
-0727: BD 08 FC            JSR     $08FC                     ;{PrintUnpacked}  Print the error
-072A: 20 C9               BRA     $06F5                     ;{GetInputAndParse}  Back for more
+0727: BD 08 FC            JSR     $08FC                     ; {PrintUnpacked}  Print the error
+072A: 20 C9               BRA     $06F5                     ; {GetInputAndParse}  Back for more
 ;
 072C: B6 01 E9            LDA     $01E9                     ; Action word type
 072F: 81 C0               CMPA    #$C0                      ; 11_000_000 means single word command
 0731: 27 C1               BEQ     $06F4                     ; Done
 0733: 8E 0F A2            LDX     #$0FA2                    ; "**verb** WHAT?"
-0736: BD 08 FC            JSR     $08FC                     ;{PrintUnpacked}  Print it (was expecting an object)
-0739: 20 BA               BRA     $06F5                     ;{GetInputAndParse}  Try input again
+0736: BD 08 FC            JSR     $08FC                     ; {PrintUnpacked}  Print it (was expecting an object)
+0739: 20 BA               BRA     $06F5                     ; {GetInputAndParse}  Try input again
 ;
 ; Validate noun
 073B: BF 01 B4            STX     $01B4                     ; Save pointer to noun word data
@@ -331,7 +331,7 @@ GetInputAndParse:
 0748: A6 80               LDA     ,X+                       ; Get object number
 074A: BF 01 B4            STX     $01B4                     ; Hold noun word data pointer
 074D: 34 04               PSHS    B                         ; Hold B
-074F: BD 06 66            JSR     $0666                     ;{GetObjectInfo}  Find object
+074F: BD 06 66            JSR     $0666                     ; {GetObjectInfo}  Find object
 0752: 35 04               PULS    B                         ; Restore B
 0754: 27 52               BEQ     $07A8                     ; Object is actually in pack ... go use it
 0756: B6 01 E9            LDA     $01E9                     ; Grammar type
@@ -339,11 +339,11 @@ GetInputAndParse:
 075B: 27 16               BEQ     $0773                     ; Yes ... check pack
 075D: BE 01 B4            LDX     $01B4                     ; Noun word pointer
 0760: 30 1F               LEAX    -1,X                      ; Back up word pointer
-0762: B6 18 E5            LDA     $18E5                     ;{-1_01} Current room
+0762: B6 18 E5            LDA     $18E5                     ; {-1_01} Current room
 0765: B7 01 BC            STA     $01BC                     ; Parameter to GetObjectInfo
 0768: A6 84               LDA     ,X                        ; Object number
 076A: 34 04               PSHS    B                         ; Hold B
-076C: BD 06 66            JSR     $0666                     ;{GetObjectInfo}  Find object
+076C: BD 06 66            JSR     $0666                     ; {GetObjectInfo}  Find object
 076F: 35 04               PULS    B                         ; Restore B
 0771: 27 35               BEQ     $07A8                     ; Yes ... object is in room. Use it.
 0773: BE 01 B4            LDX     $01B4                     ; Restore word data pointer
@@ -358,18 +358,18 @@ GetInputAndParse:
 0783: 20 19               BRA     $079E                     ; Print and back to try again
 ;
 0785: 8E 0F 2C            LDX     #$0F2C                    ; " I SEE NO "
-0788: BD 08 FC            JSR     $08FC                     ;{PrintUnpacked}  Print it
+0788: BD 08 FC            JSR     $08FC                     ; {PrintUnpacked}  Print it
 078B: 86 01               LDA     #$01                      ; Replace '?' with ...
 078D: B7 0F A0            STA     $0FA0                     ; ... no-CR terminator
 0790: 8E 0F 78            LDX     #$0F78                    ; User typed object
-0793: BD 08 FC            JSR     $08FC                     ;{PrintUnpacked}  Print the object
+0793: BD 08 FC            JSR     $08FC                     ; {PrintUnpacked}  Print the object
 0796: 86 3F               LDA     #$3F                      ; Restore the ...
 0798: B7 0F A0            STA     $0FA0                     ; ... '?' at the end of the message
 079B: 8E 0F 36            LDX     #$0F36                    ; " HERE."
-079E: BD 08 FC            JSR     $08FC                     ;{PrintUnpacked}  Print it
+079E: BD 08 FC            JSR     $08FC                     ; {PrintUnpacked}  Print it
 07A1: 4F                  CLRA                              ; Zero out ...
 07A2: B7 01 E7            STA     $01E7                     ; ... object
-07A5: 7E 06 F5            JMP     $06F5                     ;{GetInputAndParse}  Back to try input again
+07A5: 7E 06 F5            JMP     $06F5                     ; {GetInputAndParse}  Back to try input again
 ;
 ; Found object
 07A8: BE 01 B4            LDX     $01B4                     ; Object data pointer
@@ -381,10 +381,10 @@ GetInputAndParse:
 07B7: 39                  RTS                               ; Got verb and noun. Done
 ;
 07B8: 8E 0F 55            LDX     #$0F55                    ; "WHAT DO YOU WANT ME TO DO WITH THE *****?"
-07BB: BD 08 FC            JSR     $08FC                     ;{PrintUnpacked}  Print message
+07BB: BD 08 FC            JSR     $08FC                     ; {PrintUnpacked}  Print message
 07BE: 86 01               LDA     #$01                      ; We got the object ....
 07C0: B7 01 B1            STA     $01B1                     ; ... will take just verb
-07C3: 7E 06 F5            JMP     $06F5                     ;{GetInputAndParse}  Get user input and parse
+07C3: 7E 06 F5            JMP     $06F5                     ; {GetInputAndParse}  Get user input and parse
 ;
 ; Parse the input line
 07C6: 8E 01 C6            LDX     #$01C6                    ; Start of input buffer
@@ -542,18 +542,18 @@ PrintPackedMessage:
 08D8: 27 FB               BEQ     $08D5                     ; None ... out
 08DA: 30 01               LEAX    1,X                       ; Skip over length
 08DC: 10 8E 01 C6         LDY     #$01C6                    ; Reuse input buffer
-08E0: BD 10 66            JSR     $1066                     ;{UnpackMessage}  Unpack and print
+08E0: BD 10 66            JSR     $1066                     ; {UnpackMessage}  Unpack and print
 08E3: E6 84               LDB     ,X                        ; Get byte
 08E5: 27 2C               BEQ     $0913                     ; 0 ... do CR
 08E7: C1 01               CMPB    #$01                      ; 1 ...
 08E9: 27 EA               BEQ     $08D5                     ; ... no CR
 08EB: 34 10               PSHS    X                         ; Hold pointer
 08ED: 1F 98               TFR     B,A                       ; Character to A
-08EF: BD 09 45            JSR     $0945                     ;{PrintCharacterAutoWrap}  Print character to screen
+08EF: BD 09 45            JSR     $0945                     ; {PrintCharacterAutoWrap}  Print character to screen
 08F2: 35 10               PULS    X                         ; Restore pointer
 08F4: A6 80               LDA     ,X+                       ; Get next byte from unpacked
 08F6: 81 0A               CMPA    #$0A                      ; Mark for another packing?
-08F8: 27 DC               BEQ     $08D6                     ;{PrintPackedMessage}  Yes ... start again
+08F8: 27 DC               BEQ     $08D6                     ; {PrintPackedMessage}  Yes ... start again
 08FA: 20 E7               BRA     $08E3                     ; No ... continue this packing
 ```
 
@@ -575,16 +575,16 @@ PrintUnpacked:
 0904: 81 40               CMPA    #$40                      ; Is it '@'
 0906: 27 07               BEQ     $090F                     ; Just ignore it
 0908: 34 10               PSHS    X                         ; Save X
-090A: BD 09 45            JSR     $0945                     ;{PrintCharacterAutoWrap}  A to screen
+090A: BD 09 45            JSR     $0945                     ; {PrintCharacterAutoWrap}  A to screen
 090D: 35 10               PULS    X                         ; Restore X
 090F: 30 01               LEAX    1,X                       ; Next in message
-0911: 20 E9               BRA     $08FC                     ;{PrintUnpacked}  Keep going
+0911: 20 E9               BRA     $08FC                     ; {PrintUnpacked}  Keep going
 ;
 ; Print a CR
 0913: 86 0D               LDA     #$0D                      ; CR
-0915: BD 09 45            JSR     $0945                     ;{PrintCharacterAutoWrap}  Print a CR
+0915: BD 09 45            JSR     $0945                     ; {PrintCharacterAutoWrap}  Print a CR
 0918: 7A 01 B0            DEC     $01B0                     ; Rows left before more
-091B: 2B 01               BMI     $091E                     ;{MorePrompt}  Pause print out with MORE
+091B: 2B 01               BMI     $091E                     ; {MorePrompt}  Pause print out with MORE
 091D: 39                  RTS                               ; Done
 ```
 
@@ -598,11 +598,11 @@ MorePrompt:
 0920: 86 0D               LDA     #$0D                      ; Reset MORE ...
 0922: B7 01 B0            STA     $01B0                     ; ... row count
 0925: 8E 10 19            LDX     #$1019                    ; " MORE" message
-0928: BD 08 FC            JSR     $08FC                     ;{PrintUnpacked}  Print message
-092B: BD 09 37            JSR     $0937                     ;{ReadKey}  Wait for user to press a key
-092E: 9E 88               LDX     <$88                      ;{-1_cursor} Back pointer ...
+0928: BD 08 FC            JSR     $08FC                     ; {PrintUnpacked}  Print message
+092B: BD 09 37            JSR     $0937                     ; {ReadKey}  Wait for user to press a key
+092E: 9E 88               LDX     <$88                      ; {-1_cursor} Back pointer ...
 0930: 30 19               LEAX    -7,X                      ; ... up 7 over ...
-0932: 9F 88               STX     <$88                      ;{-1_cursor} ... MORE prompt
+0932: 9F 88               STX     <$88                      ; {-1_cursor} ... MORE prompt
 0934: 35 74               PULS    B,X,Y,U                   ;
 0936: 39                  RTS                               ;
 
@@ -632,16 +632,16 @@ PrintCharacterAutoWrap:
 0958: 81 21               CMPA    #$21                      ; A '!' ?
 095A: 26 06               BNE     $0962                     ; No. Don't ignore space.
 ;
-095C: DE 88               LDU     <$88                      ;{-1_cursor} Back screen ...
+095C: DE 88               LDU     <$88                      ; {-1_cursor} Back screen ...
 095E: 33 5F               LEAU    -1,U                      ; ... pointer up ...
-0960: DF 88               STU     <$88                      ;{-1_cursor} ... over ignored space
+0960: DF 88               STU     <$88                      ; {-1_cursor} ... over ignored space
 ;
 0962: B7 02 07            STA     $0207                     ; Store last printed character
 0965: AD 9F A0 02         JSR     [$A002]                   ; Print A to screen
-0969: 96 89               LDA     <$89                      ;{-1_cursor} LSB of screen position (we know MSB is a 4 or 5)
+0969: 96 89               LDA     <$89                      ; {-1_cursor} LSB of screen position (we know MSB is a 4 or 5)
 096B: 81 FE               CMPA    #$FE                      ; Have we reached the end of the screen?
 096D: 25 3C               BCS     $09AB                     ; No ... handle any MORE and out
-096F: DE 88               LDU     <$88                      ;{-1_cursor} Cursor position
+096F: DE 88               LDU     <$88                      ; {-1_cursor} Cursor position
 0971: 33 C8 DF            LEAU    $-21,U                    ; Back up to end of current row (where it will be after CR)
 0974: 86 0D               LDA     #$0D                      ; CR ...
 0976: AD 9F A0 02         JSR     [$A002]                   ; ... to screen
@@ -682,7 +682,7 @@ PromptAndReadLine:
 09BB: 8E 01 C6            LDX     #$01C6                    ; Input buffer
 09BE: 7F 01 BA            CLR     $01BA                     ; Input buffer is empty
 09C1: 34 34               PSHS    Y,X,B                     ; Get ...
-09C3: BD 09 37            JSR     $0937                     ;{ReadKey}  ... key from ...
+09C3: BD 09 37            JSR     $0937                     ; {ReadKey}  ... key from ...
 09C6: 35 34               PULS    B,X,Y                     ; ... player
 09C8: 1F 89               TFR     A,B                       ; Hold original key
 09CA: 81 08               CMPA    #$08                      ; A backspace?
@@ -717,7 +717,7 @@ PromptAndReadLine:
 ;
 0A0A: 6F 84               CLR     ,X                        ; New end of the input buffer
 0A0C: 86 60               LDA     #$60                      ; Space character
-0A0E: A7 9F 00 88         STA     [$0088]                   ;{-1_cursor} Store to cursor
+0A0E: A7 9F 00 88         STA     [$0088]                   ; {-1_cursor} Store to cursor
 0A12: 39                  RTS                               ; Done
 0A13: 86 CF               LDA     #$CF                      ; White-ish block
 0A15: 20 F7               BRA     $0A0E                     ; Store to cursor and done
@@ -780,65 +780,65 @@ ScriptCommands:
 AfterEveryStep:
 0A51: 86 0F               LDA     #$0F                      ; Lamp (lit version)
 0A53: 8E 18 8D            LDX     #$188D                    ; Object table
-0A56: BD 06 7C            JSR     $067C                     ;{TwoTableOffset}  Get lamp's data
+0A56: BD 06 7C            JSR     $067C                     ; {TwoTableOffset}  Get lamp's data
 0A59: 30 01               LEAX    1,X                       ; Lit-lamp's location
 0A5B: A6 84               LDA     ,X                        ; Get the location
 0A5D: 27 54               BEQ     $0AB3                     ; Not turned on ... skip the burn time
 ;
 ; Lamp is lit. Increment the burn time.
-0A5F: FC 18 E8            LDD     $18E8                     ;{-1_00} Get time
+0A5F: FC 18 E8            LDD     $18E8                     ; {-1_00} Get time
 0A62: C3 00 01            ADDD    #$0001                    ; Bump time ...
-0A65: FD 18 E8            STD     $18E8                     ;{-1_00} ... by one
+0A65: FD 18 E8            STD     $18E8                     ; {-1_00} ... by one
 0A68: 81 01               CMPA    #$01                      ; Has it been burning 256 turns?
 0A6A: 26 47               BNE     $0AB3                     ; No ... skip checks (should be to $0AF2?)
 0A6C: C1 22               CMPB    #$22                      ; Warn the player?
 0A6E: 26 08               BNE     $0A78                     ; No ...
 0A70: 8E 38 5A            LDX     #$385A                    ; "Your lamp is getting dim. Better start to wrap this up ..."
-0A73: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print message
+0A73: BD 08 D6            JSR     $08D6                     ; {PrintPackedMessage}  Print message
 0A76: 20 7A               BRA     $0AF2                     ; Continue
 ;
 0A78: C1 36               CMPB    #$36                      ; Really getting dim now?
 0A7A: 26 37               BNE     $0AB3                     ; No ... move on
 0A7C: 86 0F               LDA     #$0F                      ; Find ...
 0A7E: 8E 18 8D            LDX     #$188D                    ; ... lamp ...
-0A81: BD 06 7C            JSR     $067C                     ;{TwoTableOffset}  ... room ...
+0A81: BD 06 7C            JSR     $067C                     ; {TwoTableOffset}  ... room ...
 0A84: 30 01               LEAX    1,X                       ; ... number
 0A86: E6 84               LDB     ,X                        ; Get the number
 0A88: F7 01 BA            STB     $01BA                     ; Hold it
 0A8B: 6F 84               CLR     ,X                        ; Room is now ... nowhere
 0A8D: 8E 18 8D            LDX     #$188D                    ; Object data
 0A90: 86 2C               LDA     #$2C                      ; Dead lamp
-0A92: BD 06 7C            JSR     $067C                     ;{TwoTableOffset}  Offset
+0A92: BD 06 7C            JSR     $067C                     ; {TwoTableOffset}  Offset
 0A95: F6 01 BA            LDB     $01BA                     ; Lamp's room number
 0A98: 30 01               LEAX    1,X                       ; Dead lamp ...
 0A9A: E7 84               STB     ,X                        ; ... to pack
 0A9C: 86 23               LDA     #$23                      ; Batteries
 0A9E: C6 FF               LDB     #$FF                      ; Pack
 0AA0: F7 01 BC            STB     $01BC                     ; For find
-0AA3: BD 06 66            JSR     $0666                     ;{GetObjectInfo}  Batteries in pack?
+0AA3: BD 06 66            JSR     $0666                     ; {GetObjectInfo}  Batteries in pack?
 0AA6: 27 0B               BEQ     $0AB3                     ; Yes ... change them
 0AA8: 8E 38 D8            LDX     #$38D8                    ; "Your lamp has run out of power."
-0AAB: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print message
-0AAE: BD 0B D2            JSR     $0BD2                     ;{PrintRoomDescription}  Print room description (it's dark)
+0AAB: BD 08 D6            JSR     $08D6                     ; {PrintPackedMessage}  Print message
+0AAE: BD 0B D2            JSR     $0BD2                     ; {PrintRoomDescription}  Print room description (it's dark)
 0AB1: 20 3F               BRA     $0AF2                     ; Continue
 ;
 ; Attempt to change batteries
-0AB3: BE 18 E8            LDX     $18E8                     ;{-1_00} Current lamp time
+0AB3: BE 18 E8            LDX     $18E8                     ; {-1_00} Current lamp time
 0AB6: 8C 01 2C            CMPX    #$012C                    ; Time to change batteries?
 0AB9: 25 37               BCS     $0AF2                     ; No ... keep going
 0ABB: 86 FF               LDA     #$FF                      ; Pack
 0ABD: B7 01 BC            STA     $01BC                     ; For find
 0AC0: 86 23               LDA     #$23                      ; Batteries
-0AC2: BD 06 66            JSR     $0666                     ;{GetObjectInfo}  Do we have them?
+0AC2: BD 06 66            JSR     $0666                     ; {GetObjectInfo}  Do we have them?
 0AC5: 26 2B               BNE     $0AF2                     ; No ... on
 0AC7: 86 2C               LDA     #$2C                      ; Dead-lamp
-0AC9: BD 06 66            JSR     $0666                     ;{GetObjectInfo}  In pack?
+0AC9: BD 06 66            JSR     $0666                     ; {GetObjectInfo}  In pack?
 0ACC: 26 24               BNE     $0AF2                     ; No ... move on
 0ACE: 30 01               LEAX    1,X                       ; Object room
 0AD0: 6F 84               CLR     ,X                        ; Get rid of dead-lamp
 0AD2: 86 23               LDA     #$23                      ; Get ...
 0AD4: 8E 18 8D            LDX     #$188D                    ; ... rid ...
-0AD7: BD 06 7C            JSR     $067C                     ;{TwoTableOffset}  ... of ...
+0AD7: BD 06 7C            JSR     $067C                     ; {TwoTableOffset}  ... of ...
 0ADA: 30 01               LEAX    1,X                       ; ... the ...
 0ADC: 6F 84               CLR     ,X                        ; ... batteries
 0ADE: 30 02               LEAX    2,X                       ; Put worn out batteries ...
@@ -846,19 +846,19 @@ AfterEveryStep:
 0AE2: A7 84               STA     ,X                        ; ... backpack ...
 0AE4: B7 01 BC            STA     $01BC                     ; For move
 0AE7: 86 0F               LDA     #$0F                      ; Move lit-lamp ...
-0AE9: BD 06 90            JSR     $0690                     ;{MoveObject}  ... to old lamp's location
+0AE9: BD 06 90            JSR     $0690                     ; {MoveObject}  ... to old lamp's location
 0AEC: 8E 39 1D            LDX     #$391D                    ; "I'm changing the batteries ..."
-0AEF: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print message
+0AEF: BD 08 D6            JSR     $08D6                     ; {PrintPackedMessage}  Print message
 ;
 ; Bump the turn-counter in BCD format
-0AF2: B6 18 E7            LDA     $18E7                     ;{-1_00} Number of turns LSB
+0AF2: B6 18 E7            LDA     $18E7                     ; {-1_00} Number of turns LSB
 0AF5: 8B 01               ADDA    #$01                      ; Add one
 0AF7: 19                  DAA                               ; Adjust BCD after addition
-0AF8: B7 18 E7            STA     $18E7                     ;{-1_00} New LSB
-0AFB: B6 18 E6            LDA     $18E6                     ;{-1_00} Number of turns MSB
+0AF8: B7 18 E7            STA     $18E7                     ; {-1_00} New LSB
+0AFB: B6 18 E6            LDA     $18E6                     ; {-1_00} Number of turns MSB
 0AFE: 89 00               ADCA    #$00                      ; Add overflow from LSB
 0B00: 19                  DAA                               ; Adjust BCD after addition
-0B01: B7 18 E6            STA     $18E6                     ;{-1_00} New MSB
+0B01: B7 18 E6            STA     $18E6                     ; {-1_00} New MSB
 0B04: 39                  RTS                               ; Done
 ```
 
@@ -882,31 +882,31 @@ MoveToRoomX:
 0B07: E6 80               LDB     ,X+                       ; Get room number
 0B09: 34 10               PSHS    X                         ; Update cursor
 0B0B: F7 01 BB            STB     $01BB                     ; Remember value for later
-0B0E: B6 18 E5            LDA     $18E5                     ;{-1_01} Current room
+0B0E: B6 18 E5            LDA     $18E5                     ; {-1_01} Current room
 0B11: B7 01 BC            STA     $01BC                     ; For find
 0B14: 86 0F               LDA     #$0F                      ; Lamp (lit version)
-0B16: BD 06 66            JSR     $0666                     ;{GetObjectInfo}  Look for lamp in this room
+0B16: BD 06 66            JSR     $0666                     ; {GetObjectInfo}  Look for lamp in this room
 0B19: 27 44               BEQ     $0B5F                     ; Found it ... there is light
 0B1B: 86 FF               LDA     #$FF                      ; Backpack value
 0B1D: B7 01 BC            STA     $01BC                     ; For find
 0B20: 86 0F               LDA     #$0F                      ; Lamp (lit version)
-0B22: BD 06 66            JSR     $0666                     ;{GetObjectInfo}  Look for lamp in backpack
+0B22: BD 06 66            JSR     $0666                     ; {GetObjectInfo}  Look for lamp in backpack
 0B25: 27 38               BEQ     $0B5F                     ; Found it ... there is light
 0B27: 8E 17 EB            LDX     #$17EB                    ; Ambient light table
-0B2A: B6 18 E5            LDA     $18E5                     ;{-1_01} Current room
-0B2D: BD 06 7C            JSR     $067C                     ;{TwoTableOffset}  * 2
+0B2A: B6 18 E5            LDA     $18E5                     ; {-1_01} Current room
+0B2D: BD 06 7C            JSR     $067C                     ; {TwoTableOffset}  * 2
 0B30: A6 84               LDA     ,X                        ; Get value from table
 0B32: 84 40               ANDA    #$40                      ; Light in room?
 0B34: 26 29               BNE     $0B5F                     ; Yes ... no lamp needed
 0B36: B6 01 BB            LDA     $01BB                     ; New room number
 0B39: B7 01 BC            STA     $01BC                     ; For find
 0B3C: 8E 17 EB            LDX     #$17EB                    ; Ambient light table
-0B3F: BD 06 7C            JSR     $067C                     ;{TwoTableOffset}  * 2
+0B3F: BD 06 7C            JSR     $067C                     ; {TwoTableOffset}  * 2
 0B42: A6 84               LDA     ,X                        ; Get value
 0B44: 84 40               ANDA    #$40                      ; Light in room?
 0B46: 26 17               BNE     $0B5F                     ; Yes ... no lamp needed
 0B48: 86 0F               LDA     #$0F                      ; Lamp (lit version)
-0B4A: BD 06 66            JSR     $0666                     ;{GetObjectInfo}  Get object's data
+0B4A: BD 06 66            JSR     $0666                     ; {GetObjectInfo}  Get object's data
 0B4D: 27 10               BEQ     $0B5F                     ; We found it ... go on
 ;
 ; No light ... probable death (60%)
@@ -914,18 +914,18 @@ MoveToRoomX:
 0B52: 81 67               CMPA    #$67                      ; 103/256 = 40% chance of ...
 0B54: 25 09               BCS     $0B5F                     ; ... making it without light
 0B56: 8E 37 9A            LDX     #$379A                    ; "You fell into a pit and broke ..."
-0B59: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print message
-0B5C: 7E 0F 18            JMP     $0F18                     ;{PrintScoreAndStop}  Endless loop
+0B59: BD 08 D6            JSR     $08D6                     ; {PrintPackedMessage}  Print message
+0B5C: 7E 0F 18            JMP     $0F18                     ; {PrintScoreAndStop}  Endless loop
 ;
 ; The move was successful
-0B5F: B6 18 E5            LDA     $18E5                     ;{-1_01} Current room ...
-0B62: B7 18 EA            STA     $18EA                     ;{-1_00} ... is now the last room
+0B5F: B6 18 E5            LDA     $18E5                     ; {-1_01} Current room ...
+0B62: B7 18 EA            STA     $18EA                     ; {-1_00} ... is now the last room
 0B65: B6 01 BB            LDA     $01BB                     ; New ...
-0B68: B7 18 E5            STA     $18E5                     ;{-1_01} ... current room
-0B6B: BD 0B D2            JSR     $0BD2                     ;{PrintRoomDescription}  Print room description
+0B68: B7 18 E5            STA     $18E5                     ; {-1_01} ... current room
+0B6B: BD 0B D2            JSR     $0BD2                     ; {PrintRoomDescription}  Print room description
 0B6E: 86 2A               LDA     #$2A                      ; Object number for "Chest"
 0B70: 8E 18 8D            LDX     #$188D                    ; Look up the ...
-0B73: BD 06 7C            JSR     $067C                     ;{TwoTableOffset}  ... object
+0B73: BD 06 7C            JSR     $067C                     ; {TwoTableOffset}  ... object
 0B76: 30 01               LEAX    1,X                       ; Get ...
 0B78: A6 84               LDA     ,X                        ; ... object location
 0B7A: 26 53               BNE     $0BCF                     ; Chest is in the maze ... Mummy only happens once
@@ -961,7 +961,7 @@ MoveToRoomX:
 0BAF: 26 07               BNE     $0BB8                     ; No ... skip it
 0BB1: 86 35               LDA     #$35                      ; Treasure room in the maze
 0BB3: A7 84               STA     ,X                        ; Move treasure there
-0BB5: 7A 18 EB            DEC     $18EB                     ;{-1_00} Minus one object in pack
+0BB5: 7A 18 EB            DEC     $18EB                     ; {-1_00} Minus one object in pack
 0BB8: 30 01               LEAX    1,X                       ; Next object
 0BBA: 7A 01 BA            DEC     $01BA                     ; All done?
 0BBD: 26 E6               BNE     $0BA5                     ; No ... go back
@@ -970,57 +970,57 @@ MoveToRoomX:
 0BBF: 86 35               LDA     #$35                      ; Move ...
 0BC1: B7 01 BC            STA     $01BC                     ; ... chest ...
 0BC4: 86 2A               LDA     #$2A                      ; ... to ...
-0BC6: BD 06 90            JSR     $0690                     ;{MoveObject}  ... treasure room
+0BC6: BD 06 90            JSR     $0690                     ; {MoveObject}  ... treasure room
 0BC9: 8E 39 D6            LDX     #$39D6                    ; "Mummy steals your treasure ..."
-0BCC: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print message
+0BCC: BD 08 D6            JSR     $08D6                     ; {PrintPackedMessage}  Print message
 0BCF: 7E 06 CB            JMP     $06CB                     ; OK
 
 PrintRoomDescription:
 ; Print room description
-0BD2: B6 18 E5            LDA     $18E5                     ;{-1_01} Current room
+0BD2: B6 18 E5            LDA     $18E5                     ; {-1_01} Current room
 0BD5: 8E 17 EB            LDX     #$17EB                    ; Ambient light table
-0BD8: BD 06 7C            JSR     $067C                     ;{TwoTableOffset}  X = X + A*2
+0BD8: BD 06 7C            JSR     $067C                     ; {TwoTableOffset}  X = X + A*2
 0BDB: A6 84               LDA     ,X                        ; Get value
 0BDD: 84 40               ANDA    #$40                      ; Is there light?
-0BDF: 26 20               BNE     $0C01                     ;{PrintObjectsInRoom}  Yes ... print description
-0BE1: B6 18 E5            LDA     $18E5                     ;{-1_01} Current room
+0BDF: 26 20               BNE     $0C01                     ; {PrintObjectsInRoom}  Yes ... print description
+0BE1: B6 18 E5            LDA     $18E5                     ; {-1_01} Current room
 0BE4: B7 01 BC            STA     $01BC                     ; For find routine
 0BE7: 86 0F               LDA     #$0F                      ; Lamp (lit version)
-0BE9: BD 06 66            JSR     $0666                     ;{GetObjectInfo}  Is lamp in room?
-0BEC: 27 13               BEQ     $0C01                     ;{PrintObjectsInRoom}  Yes ... print description
+0BE9: BD 06 66            JSR     $0666                     ; {GetObjectInfo}  Is lamp in room?
+0BEC: 27 13               BEQ     $0C01                     ; {PrintObjectsInRoom}  Yes ... print description
 0BEE: 86 FF               LDA     #$FF                      ; Pack value
 0BF0: B7 01 BC            STA     $01BC                     ; For find routine
 0BF3: 86 0F               LDA     #$0F                      ; Lamp (lit version)
-0BF5: BD 06 66            JSR     $0666                     ;{GetObjectInfo}  Is it in pack?
-0BF8: 27 07               BEQ     $0C01                     ;{PrintObjectsInRoom}  Yes ... print room contents
+0BF5: BD 06 66            JSR     $0666                     ; {GetObjectInfo}  Is it in pack?
+0BF8: 27 07               BEQ     $0C01                     ; {PrintObjectsInRoom}  Yes ... print room contents
 0BFA: 8E 38 0C            LDX     #$380C                    ; "It is now pitch black ..."
-0BFD: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print message
+0BFD: BD 08 D6            JSR     $08D6                     ; {PrintPackedMessage}  Print message
 0C00: 39                  RTS                               ; Done
 ; 
 PrintObjectsInRoom:
 ; Print object descriptions
-0C01: B6 18 E5            LDA     $18E5                     ;{-1_01} Current room
+0C01: B6 18 E5            LDA     $18E5                     ; {-1_01} Current room
 0C04: 8E 11 2E            LDX     #$112E                    ; Room structures
-0C07: BD 06 85            JSR     $0685                     ;{FourTableOffset}  X = X + A * 4
+0C07: BD 06 85            JSR     $0685                     ; {FourTableOffset}  X = X + A * 4
 0C0A: AE 84               LDX     ,X                        ; Get description text
-0C0C: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Unpack and print message
+0C0C: BD 08 D6            JSR     $08D6                     ; {PrintPackedMessage}  Unpack and print message
 0C0F: 5F                  CLRB                              ; Start with ...
 0C10: 5C                  INCB                              ; ... object 1
-0C11: B6 18 E5            LDA     $18E5                     ;{-1_01} Current room
+0C11: B6 18 E5            LDA     $18E5                     ; {-1_01} Current room
 0C14: B7 01 BC            STA     $01BC                     ; For find routine
 0C17: C1 2C               CMPB    #$2C                      ; Done all objects?
 0C19: 24 E5               BCC     $0C00                     ; Yes ... out
 0C1B: 34 04               PSHS    B                         ; Remember count
 0C1D: 1F 98               TFR     B,A                       ; Object number
-0C1F: BD 06 66            JSR     $0666                     ;{GetObjectInfo}  Get object location
+0C1F: BD 06 66            JSR     $0666                     ; {GetObjectInfo}  Get object location
 0C22: 35 04               PULS    B                         ; Restore count
 0C24: 26 EA               BNE     $0C10                     ; Not current room, go on
 0C26: 1F 98               TFR     B,A                       ; Into position
 0C28: 34 04               PSHS    B                         ; Hold current object
 0C2A: 8E 18 ED            LDX     #$18ED                    ; Object number to object description table
-0C2D: BD 06 7C            JSR     $067C                     ;{TwoTableOffset}  Offset
+0C2D: BD 06 7C            JSR     $067C                     ; {TwoTableOffset}  Offset
 0C30: AE 84               LDX     ,X                        ; Get the object description
-0C32: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print the object description
+0C32: BD 08 D6            JSR     $08D6                     ; {PrintPackedMessage}  Print the object description
 0C35: 35 04               PULS    B                         ; Restore count
 0C37: 20 D7               BRA     $0C10                     ; Do all objects
 
@@ -1032,11 +1032,11 @@ Move the specified object to the current room.
 ```code
 MoveObjectXToCurrentRoom:
 0C39: 35 10               PULS    X                         ; Current action
-0C3B: B6 18 E5            LDA     $18E5                     ;{-1_01} Current room
+0C3B: B6 18 E5            LDA     $18E5                     ; {-1_01} Current room
 0C3E: B7 01 BC            STA     $01BC                     ; For find
 0C41: A6 80               LDA     ,X+                       ; Value
 0C43: 34 10               PSHS    X                         ; New action cursor
-0C45: BD 06 90            JSR     $0690                     ;{MoveObject}  Move object to new location
+0C45: BD 06 90            JSR     $0690                     ; {MoveObject}  Move object to new location
 0C48: 7E 06 CB            JMP     $06CB                     ; Continue processing
 ```
 
@@ -1051,13 +1051,13 @@ MoveObjectXIntoContainerY:
 0C4F: 34 10               PSHS    X                         ; New cursor
 0C51: F7 01 BB            STB     $01BB                     ; Hold this
 0C54: 8E 18 8D            LDX     #$188D                    ; Object table
-0C57: BD 06 7C            JSR     $067C                     ;{TwoTableOffset}  * 2
+0C57: BD 06 7C            JSR     $067C                     ; {TwoTableOffset}  * 2
 0C5A: A6 84               LDA     ,X                        ; Object data
 0C5C: 8A 80               ORA     #$80                      ; This object is ... 
 0C5E: A7 80               STA     ,X+                       ; ... contained
 0C60: F6 01 BB            LDB     $01BB                     ; Container object
 0C63: E7 84               STB     ,X                        ; Set object's container
-0C65: 7E 0D E8            JMP     $0DE8                     ;{PrintOK}  Print "OK" and pass.
+0C65: 7E 0D E8            JMP     $0DE8                     ; {PrintOK}  Print "OK" and pass.
 ```
 
 # Command 2: Assert Object X Is In Pack 
@@ -1072,7 +1072,7 @@ AssertObjectXIsInPack:
 0C6C: 34 10               PSHS    X                         ; Update cursor
 0C6E: C6 FF               LDB     #$FF                      ; Backpack value
 0C70: F7 01 BC            STB     $01BC                     ; For find
-0C73: BD 06 66            JSR     $0666                     ;{GetObjectInfo}  Get object
+0C73: BD 06 66            JSR     $0666                     ; {GetObjectInfo}  Get object
 0C76: 27 03               BEQ     $0C7B                     ; Got it
 0C78: 7E 06 DF            JMP     $06DF                     ; Invalid
 0C7B: 7E 06 CB            JMP     $06CB                     ; Valid
@@ -1091,9 +1091,9 @@ AssertObjectXIsInCurrentRoomOrPack:
 0C80: A6 80               LDA     ,X+                       ; Get target object
 0C82: 34 10               PSHS    X                         ; Update cursor
 0C84: B7 01 BB            STA     $01BB                     ; Hold this
-0C87: F6 18 E5            LDB     $18E5                     ;{-1_01} Current room
+0C87: F6 18 E5            LDB     $18E5                     ; {-1_01} Current room
 0C8A: F7 01 BC            STB     $01BC                     ; For find
-0C8D: BD 06 66            JSR     $0666                     ;{GetObjectInfo}  Check for object in room
+0C8D: BD 06 66            JSR     $0666                     ; {GetObjectInfo}  Check for object in room
 0C90: 27 E9               BEQ     $0C7B                     ; Found it
 0C92: B6 01 BB            LDA     $01BB                     ; Try ...
 0C95: 20 D7               BRA     $0C6E                     ; ... backpack
@@ -1107,11 +1107,11 @@ in a container in the room).
 ```code
 AssertObjectXIsInCurrentRoom:
 0C97: 35 10               PULS    X                         ; Action cursor
-0C99: B6 18 E5            LDA     $18E5                     ;{-1_01} Current room
+0C99: B6 18 E5            LDA     $18E5                     ; {-1_01} Current room
 0C9C: B7 01 BC            STA     $01BC                     ; For find routine
 0C9F: A6 80               LDA     ,X+                       ; Get object
 0CA1: 34 10               PSHS    X                         ; Update cursor
-0CA3: BD 06 66            JSR     $0666                     ;{GetObjectInfo}  Check for object in room
+0CA3: BD 06 66            JSR     $0666                     ; {GetObjectInfo}  Check for object in room
 0CA6: 27 D3               BEQ     $0C7B                     ; OK ... it's here
 0CA8: 7E 06 DF            JMP     $06DF                     ; Invalid
 ```
@@ -1154,8 +1154,8 @@ AssertRandomIsGreaterThanX:
 0CCF: 23 03               BLS     $0CD4                     ; Crossed threshold ... success!
 0CD1: 7E 06 DF            JMP     $06DF                     ; Didn't cross threshold ... failure!
 0CD4: 8E 31 AC            LDX     #$31AC                    ; "You have crawled around in some little holes ..."
-0CD7: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print message
-0CDA: BD 0B D2            JSR     $0BD2                     ;{PrintRoomDescription}  Print room description
+0CD7: BD 08 D6            JSR     $08D6                     ; {PrintPackedMessage}  Print message
+0CDA: BD 0B D2            JSR     $0BD2                     ; {PrintRoomDescription}  Print room description
 0CDD: 7E 06 CB            JMP     $06CB                     ; OK
 ```
 
@@ -1171,12 +1171,12 @@ MoveToRoomXIfItWasLastRoom:
 0CE0: 35 10               PULS    X                         ; Get cursor
 0CE2: E6 80               LDB     ,X+                       ; Target room
 0CE4: 34 10               PSHS    X                         ; Update cursor
-0CE6: F1 18 EA            CMPB    $18EA                     ;{-1_00} Did we just come from there?
+0CE6: F1 18 EA            CMPB    $18EA                     ; {-1_00} Did we just come from there?
 0CE9: 26 E6               BNE     $0CD1                     ; No ... fail
 0CEB: 35 10               PULS    X                         ; Cursor
 0CED: 30 1F               LEAX    -1,X                      ; Back it ..
 0CEF: 34 10               PSHS    X                         ; ... up
-0CF1: 7E 0B 05            JMP     $0B05                     ;{MoveToRoomX}  Move to room N
+0CF1: 7E 0B 05            JMP     $0B05                     ; {MoveToRoomX}  Move to room N
 ```
 
 # Command 22: Get User Input Object 
@@ -1194,10 +1194,10 @@ GetUserInputObject:
 0CF4: 86 FF               LDA     #$FF                      ; Pack value
 0CF6: B7 01 BC            STA     $01BC                     ; For find
 0CF9: B6 01 E7            LDA     $01E7                     ; Object from input (noun)
-0CFC: BD 06 66            JSR     $0666                     ;{GetObjectInfo}  Is it already in our pack?
+0CFC: BD 06 66            JSR     $0666                     ; {GetObjectInfo}  Is it already in our pack?
 0CFF: 26 09               BNE     $0D0A                     ; Not in our pack ... pick it up
 0D01: 8E 34 0B            LDX     #$340B                    ; "You are already carying it"
-0D04: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print message
+0D04: BD 08 D6            JSR     $08D6                     ; {PrintPackedMessage}  Print message
 0D07: 7E 06 CB            JMP     $06CB                     ; Passed
 0D0A: F6 01 E7            LDB     $01E7                     ; Requested object
 0D0D: 7E 0D AC            JMP     $0DAC                     ; Pick up object
@@ -1212,7 +1212,7 @@ PrintMessageX:
 0D10: 35 20               PULS    Y                         ; Get cursor
 0D12: AE A1               LDX     ,Y++                      ; Get address of message
 0D14: 34 20               PSHS    Y                         ; Update cursor
-0D16: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print message
+0D16: BD 08 D6            JSR     $08D6                     ; {PrintPackedMessage}  Print message
 0D19: 7E 06 CB            JMP     $06CB                     ; Pass
 ```
 
@@ -1226,12 +1226,12 @@ DropObjectX:
 0D1C: 35 10               PULS    X                         ; Get object ...
 0D1E: E6 80               LDB     ,X+                       ; ... from cursor
 0D20: 34 10               PSHS    X                         ; Restore cursor
-0D22: 7A 18 EB            DEC     $18EB                     ;{-1_00} No longer in our pack
-0D25: B6 18 E5            LDA     $18E5                     ;{-1_01} Where the object is going
+0D22: 7A 18 EB            DEC     $18EB                     ; {-1_00} No longer in our pack
+0D25: B6 18 E5            LDA     $18E5                     ; {-1_01} Where the object is going
 0D28: B7 01 BC            STA     $01BC                     ; For the move
 0D2B: 1F 98               TFR     B,A                       ; FOr the move
-0D2D: BD 06 90            JSR     $0690                     ;{MoveObject}  Drop object in current room
-0D30: 7E 0D E8            JMP     $0DE8                     ;{PrintOK}  OK and out
+0D2D: BD 06 90            JSR     $0690                     ; {MoveObject}  Drop object in current room
+0D30: 7E 0D E8            JMP     $0DE8                     ; {PrintOK}  OK and out
 ```
 
 # Command 14: Move To Last Room 
@@ -1243,14 +1243,14 @@ This command always passes.
 
 ```code
 MoveToLastRoom:
-0D33: F6 18 EA            LDB     $18EA                     ;{-1_00} Last room number
+0D33: F6 18 EA            LDB     $18EA                     ; {-1_00} Last room number
 0D36: 27 0C               BEQ     $0D44                     ; There was no last ... error message
 0D38: F7 01 BB            STB     $01BB                     ; Hold this
-0D3B: B6 18 E5            LDA     $18E5                     ;{-1_01} Current room ...
-0D3E: B7 18 EA            STA     $18EA                     ;{-1_00} ... is now last-room-number
+0D3B: B6 18 E5            LDA     $18E5                     ; {-1_01} Current room ...
+0D3E: B7 18 EA            STA     $18EA                     ; {-1_00} ... is now last-room-number
 0D41: 7E 0B 65            JMP     $0B65                     ; MoveToRoom ... past the room-number-update
 0D44: 8E 33 DE            LDX     #$33DE                    ; "I don't remember how you got here ..."
-0D47: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print message
+0D47: BD 08 D6            JSR     $08D6                     ; {PrintPackedMessage}  Print message
 0D4A: 7E 06 CB            JMP     $06CB                     ; Pass
 ```
 
@@ -1263,14 +1263,14 @@ This command always passes.
 
 ```code
 PrintInventory:
-0D4D: B6 18 EB            LDA     $18EB                     ;{-1_00} Do we even have anything?
+0D4D: B6 18 EB            LDA     $18EB                     ; {-1_00} Do we even have anything?
 0D50: 26 09               BNE     $0D5B                     ; Yes ... there is something
 0D52: 8E 34 4F            LDX     #$344F                    ; "You're not carrying anything."
-0D55: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print message
+0D55: BD 08 D6            JSR     $08D6                     ; {PrintPackedMessage}  Print message
 0D58: 7E 06 CB            JMP     $06CB                     ; pass
 ;
 0D5B: 8E 34 65            LDX     #$3465                    ; "You are currently holding the following:"
-0D5E: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print message
+0D5E: BD 08 D6            JSR     $08D6                     ; {PrintPackedMessage}  Print message
 0D61: 5F                  CLRB                              ; Starting before object 1
 0D62: 86 FF               LDA     #$FF                      ; Pack value
 0D64: B7 01 BC            STA     $01BC                     ; For find
@@ -1279,19 +1279,19 @@ PrintInventory:
 0D6A: 81 2D               CMPA    #$2D                      ; Have we checked every object?
 0D6C: 24 DC               BCC     $0D4A                     ; Yes ... out
 0D6E: 34 04               PSHS    B                         ; Hold it
-0D70: BD 06 66            JSR     $0666                     ;{GetObjectInfo}  Find the objet
+0D70: BD 06 66            JSR     $0666                     ; {GetObjectInfo}  Find the objet
 0D73: 35 04               PULS    B                         ; Restore it
 0D75: 26 EB               BNE     $0D62                     ; Not in the backpack ... check the others
 0D77: 1F 98               TFR     B,A                       ; To A
 0D79: 8E 18 ED            LDX     #$18ED                    ; Object descriptions
 0D7C: 34 04               PSHS    B                         ; Hold it
-0D7E: BD 06 7C            JSR     $067C                     ;{TwoTableOffset}  Offset to object description
+0D7E: BD 06 7C            JSR     $067C                     ; {TwoTableOffset}  Offset to object description
 0D81: 35 04               PULS    B                         ; Restore
 0D83: AE 84               LDX     ,X                        ; Pointer to 1st in message pair
 0D85: A6 80               LDA     ,X+                       ; Find second ...
 0D87: 26 FC               BNE     $0D85                     ; ... message
 0D89: 34 04               PSHS    B                         ; Hold object number
-0D8B: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print object description
+0D8B: BD 08 D6            JSR     $08D6                     ; {PrintPackedMessage}  Print object description
 0D8E: 35 04               PULS    B                         ; Restore object number
 0D90: 20 D0               BRA     $0D62                     ; Do all objects
 ```
@@ -1304,7 +1304,7 @@ This command always passes.
 
 ```code
 C_PrintRoomDescription:
-0D92: BD 0B D2            JSR     $0BD2                     ;{PrintRoomDescription}  Print room description
+0D92: BD 0B D2            JSR     $0BD2                     ; {PrintRoomDescription}  Print room description
 0D95: 7E 06 CB            JMP     $06CB                     ; 
 ```
 
@@ -1335,25 +1335,25 @@ GetObjectFromRoom:
 0DAA: 34 10               PSHS    X                         ; Update the cursor
 0DAC: 1F 98               TFR     B,A                       ; Needed here by GetObjectInfo
 0DAE: F7 01 BB            STB     $01BB                     ; Need again in a moment
-0DB1: BD 06 66            JSR     $0666                     ;{GetObjectInfo}  Find the object
+0DB1: BD 06 66            JSR     $0666                     ; {GetObjectInfo}  Find the object
 0DB4: A6 84               LDA     ,X                        ; Object info
 0DB6: 84 40               ANDA    #$40                      ; OK to pick up?
 0DB8: 26 09               BNE     $0DC3                     ; Yes ... keep going
 0DBA: 8E 34 82            LDX     #$3482                    ; "Don't be rediculous."
-0DBD: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print message
+0DBD: BD 08 D6            JSR     $08D6                     ; {PrintPackedMessage}  Print message
 0DC0: 7E 06 CB            JMP     $06CB                     ; Done
-0DC3: B6 18 EB            LDA     $18EB                     ;{-1_00} How many do we have?
+0DC3: B6 18 EB            LDA     $18EB                     ; {-1_00} How many do we have?
 0DC6: 81 08               CMPA    #$08                      ; Already got 8 things?
 0DC8: 25 08               BCS     $0DD2                     ; We got less ... go on and take it
 0DCA: 8E 34 20            LDX     #$3420                    ; "You can't carry anything more."
-0DCD: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print message
+0DCD: BD 08 D6            JSR     $08D6                     ; {PrintPackedMessage}  Print message
 0DD0: 20 EE               BRA     $0DC0                     ; And out
-0DD2: 7C 18 EB            INC     $18EB                     ;{-1_00} Got another one
+0DD2: 7C 18 EB            INC     $18EB                     ; {-1_00} Got another one
 0DD5: 86 FF               LDA     #$FF                      ; Pack value
 0DD7: B7 01 BC            STA     $01BC                     ; For function
 0DDA: B6 01 BB            LDA     $01BB                     ; Object number
-0DDD: BD 06 90            JSR     $0690                     ;{MoveObject}  Move object
-0DE0: 20 06               BRA     $0DE8                     ;{PrintOK}  Print "OK" and out
+0DDD: BD 06 90            JSR     $0690                     ; {MoveObject}  Move object
+0DE0: 20 06               BRA     $0DE8                     ; {PrintOK}  Print "OK" and out
 ```
 
 # Command 23: Drop User Input Object 
@@ -1373,7 +1373,7 @@ Print "OK".
 ```code
 PrintOK:
 0DE8: 8E 33 DA            LDX     #$33DA                    ; "OK"
-0DEB: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print message
+0DEB: BD 08 D6            JSR     $08D6                     ; {PrintPackedMessage}  Print message
 0DEE: 7E 06 CB            JMP     $06CB                     ; 
 ```
 
@@ -1389,7 +1389,7 @@ MoveObjectXToRoomY:
 0DF5: 34 10               PSHS    X                         ; Update cursor
 0DF7: F7 01 BC            STB     $01BC                     ; Hold for a second
 0DFA: 8E 18 8D            LDX     #$188D                    ; Object table
-0DFD: BD 06 7C            JSR     $067C                     ;{TwoTableOffset}  Offset
+0DFD: BD 06 7C            JSR     $067C                     ; {TwoTableOffset}  Offset
 0E00: A6 84               LDA     ,X                        ; Object data
 0E02: 84 7F               ANDA    #$7F                      ; Trun off ...
 0E04: A7 80               STA     ,X+                       ; ... contained bit
@@ -1435,12 +1435,12 @@ PrintScore:
 0E54: B6 02 08            LDA     $0208                     ; Calculated score LSB
 0E57: BD 0E 6F            JSR     $0E6F                     ; Add two digits
 0E5A: 8E 10 5A            LDX     #$105A                    ; Spot for turn count in message
-0E5D: B6 18 E6            LDA     $18E6                     ;{-1_00} Store MSB ...
+0E5D: B6 18 E6            LDA     $18E6                     ; {-1_00} Store MSB ...
 0E60: BD 0E 6F            JSR     $0E6F                     ; ... two digits in buffer
-0E63: B6 18 E7            LDA     $18E7                     ;{-1_00} Store LSB ...
+0E63: B6 18 E7            LDA     $18E7                     ; {-1_00} Store LSB ...
 0E66: BD 0E 6F            JSR     $0E6F                     ; ... two digits in buffer
 0E69: 8E 10 36            LDX     #$1036                    ; "YOU SCORED **** OUT OF 0220, USING *** TURNS."
-0E6C: 7E 08 FC            JMP     $08FC                     ;{PrintUnpacked}  Print message and return
+0E6C: 7E 08 FC            JMP     $08FC                     ; {PrintUnpacked}  Print message and return
 ;
 ; Two digit BCD to ASCII
 0E6F: 1F 89               TFR     A,B                       ; Value to A
@@ -1463,8 +1463,8 @@ Save the current state of the game to tape.
 ```code
 SaveGame:
 0E81: 8E 3C 27            LDX     #$3C27                    ; "Ready Cassette"
-0E84: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print message
-0E87: BD 09 37            JSR     $0937                     ;{ReadKey}  Get a key
+0E84: BD 08 D6            JSR     $08D6                     ; {PrintPackedMessage}  Print message
+0E87: BD 09 37            JSR     $0937                     ; {ReadKey}  Get a key
 0E8A: 81 08               CMPA    #$08                      ; Backspace ...
 0E8C: 27 2A               BEQ     $0EB8                     ; ... abort
 0E8E: 81 0D               CMPA    #$0D                      ; Wait ...
@@ -1494,8 +1494,8 @@ Load the state of the game from tape.
 ```code
 LoadGame:
 0EBB: 8E 3C 27            LDX     #$3C27                    ; "Ready Cassette"
-0EBE: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print message
-0EC1: BD 09 37            JSR     $0937                     ;{ReadKey}  Wait on a key
+0EBE: BD 08 D6            JSR     $08D6                     ; {PrintPackedMessage}  Print message
+0EC1: BD 09 37            JSR     $0937                     ; {ReadKey}  Wait on a key
 0EC4: 81 08               CMPA    #$08                      ; Backspace ...
 0EC6: 27 F0               BEQ     $0EB8                     ; ... abort
 0EC8: 81 0D               CMPA    #$0D                      ; Wait ...
@@ -1517,15 +1517,15 @@ LoadGame:
 0EED: AD 9F A0 06         JSR     [$A006]                   ; Read from tape
 0EF1: 26 0D               BNE     $0F00                     ; Error ... report and try again
 0EF3: BD 0F 0C            JSR     $0F0C                     ; Stop motor
-0EF6: BD 0B D2            JSR     $0BD2                     ;{PrintRoomDescription}  Print room description
+0EF6: BD 0B D2            JSR     $0BD2                     ; {PrintRoomDescription}  Print room description
 0EF9: 10 CE 03 FF         LDS     #$03FF                    ; Reset stack ...
-0EFD: 7E 06 35            JMP     $0635                     ;{MainLoop}  ... and pickup at top of game loop
+0EFD: 7E 06 35            JMP     $0635                     ; {MainLoop}  ... and pickup at top of game loop
 0F00: BD 0F 0C            JSR     $0F0C                     ; Turn motor off
 0F03: 8E 3C 33            LDX     #$3C33                    ; "Checksum Error"
-0F06: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print messagge
-0F09: 7E 0E BB            JMP     $0EBB                     ;{LoadGame}  Try again
+0F06: BD 08 D6            JSR     $08D6                     ; {PrintPackedMessage}  Print messagge
+0F09: 7E 0E BB            JMP     $0EBB                     ; {LoadGame}  Try again
 0F0C: 86 34               LDA     #$34                      ; Motor ...
-0F0E: B7 FF 21            STA     $FF21                     ;{-2_PIA1_CA} ... off
+0F0E: B7 FF 21            STA     $FF21                     ; {-2_PIA1_CA} ... off
 0F11: 39                  RTS                               ;
 ```
 
@@ -1535,7 +1535,7 @@ Print the current score.
 
 ```code
 C_PrintScore:
-0F12: BD 0E 0D            JSR     $0E0D                     ;{PrintScore}  Print score
+0F12: BD 0E 0D            JSR     $0E0D                     ; {PrintScore}  Print score
 0F15: 7E 06 CB            JMP     $06CB                     ; 
 ```
 
@@ -1548,7 +1548,7 @@ use command 9.
 
 ```code
 PrintScoreAndStop:
-0F18: BD 0E 0D            JSR     $0E0D                     ;{PrintScore}  Print score
+0F18: BD 0E 0D            JSR     $0E0D                     ; {PrintScore}  Print score
 0F1B: 20 FE               BRA     $0F1B                     ; Endless loop
 ```
 
@@ -1559,7 +1559,7 @@ This is what the old PLUGH command does.
 ```code
 JumpToTopOfGameLoop:
 0F1D: 10 CE 03 FF         LDS     #$03FF                    ; Forget where we came from ...
-0F21: 7E 06 35            JMP     $0635                     ;{MainLoop}  ... and go back to top of game loop
+0F21: 7E 06 35            JMP     $0635                     ; {MainLoop}  ... and go back to top of game loop
 ```
 
 # General Error Messages 
@@ -1712,7 +1712,7 @@ UnpackMessage:
 10ED: C6 03               LDB     #$03                      ; 3 characters
 10EF: A6 A0               LDA     ,Y+                       ; Get next byte
 10F1: 34 04               PSHS    B                         ; Save B
-10F3: BD 09 45            JSR     $0945                     ;{PrintCharacterAutoWrap}  Print A to screen
+10F3: BD 09 45            JSR     $0945                     ; {PrintCharacterAutoWrap}  Print A to screen
 10F6: 35 04               PULS    B                         ; Restore B
 10F8: 5A                  DECB                              ; All 3 done?
 10F9: 26 F4               BNE     $10EF                     ; Do all 3 characters in this pair
