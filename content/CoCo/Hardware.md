@@ -1,7 +1,6 @@
 
-![](CoCoTech.jpg)
+![CoCo Hardware](CoCoTech.jpg)
 
-<!-- navTitle Hardware -->
 # CoCo Hardware
 
 # References

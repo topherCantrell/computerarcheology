@@ -7,7 +7,7 @@
     +pyramid.js    
 -->
 
-![](Pyramid.jpg)
+![CoCo Pyramid](Pyramid.jpg)
 
 # Pyramid 2000
 

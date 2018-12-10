@@ -4,16 +4,14 @@ Here are the details as I flesh them out.
 
 # General Structure
 
-The landing page of a directory is `README.md`. On the web site, every page has a title and image at the top. Every page has a navigation
-title that might be different (shorter) than the page's title.
+The landing page of a directory is `README.md`. On the web site, every page has an image that appears at the top of the page. Every 
+page has a title that appears in the browser's tab. The page must contain an image link before the first heading. This becomes the page's title image. 
+The image's alternate-text is used as the HTML title.
 
 ```
-![](Madness.jpg)
-<!-- navTitle Madness & Minotaur -->
+![Mad-Min](Madness.jpg)
 # Madness and the Minotaur
 ```
-The page must start with an image link. This becomes the page's title image. The page's title is the first single-hash
-tag. The `navTitle` comment specifies the navigation title. If not given, the page title is used for navigation.
 
 # Deployment Info
 

@@ -13,7 +13,7 @@
         Pyramid
 -->
 
-![](CoCo.jpg)
+![CoCo](CoCo.jpg)
 
 # CoCo
 
