@@ -4,6 +4,7 @@
     +img
     +Arch.jpg
     +favicon.ico
+        Amiga
         CoCo
 -->
 
