@@ -1,4 +1,5 @@
 <!-- code -->
+
 ![](Pyramid.jpg)
 
 # Pyramid Code
@@ -20,10 +21,10 @@ The game uses 65 bytes of memory in low memory beginning at 0x01B0 for temporari
 These temporaries are not persisted in a SAVE.
 
 The game is loaded into RAM, and the game modifies data structures within the
-program's loaded space. Thus the data structures are initialized at loading. The
-game must be reloaded to start over. 
+program's loaded space. Thus the data structures are only initialized at loading. 
+The game must be reloaded to start over. 
 
-```
+```code
 0600: 10 CE 03 FF         LDS     #$03FF                    ; Stack
 
 0604: 8E 01 B1            LDX     #$01B1                    ; Temporaries (not 1B0 ... interesting)
@@ -88,7 +89,7 @@ Return object's location (or location of container) in B<br>
 Return pointer to object's data (or container's data) in X<br>
 Return Z as comparison between object's location and $01BC
 
-```
+```code
 GetObjectInfo:
 0666: 8E 18 8D            LDX     #$188D                    ; Object location table
 0669: BD 06 7C            JSR     $067C                     ; {TwoTableOffset}  A is location
@@ -107,7 +108,7 @@ GetObjectInfo:
 Objects and rooms are numbered beginning with 1. These routines look up two-byte 
 and four-byte values from a table with A as the begins-with-1 offset.
 
-```
+```code
 TwoTableOffset:
 ; X = X + (A-1)*2
 ;
@@ -142,7 +143,7 @@ New location is in $01BC
 
 Return object pointer in X
 
-```
+```code
 MoveObject:
 0690: BD 06 66            JSR     $0666                     ;{GetObjectInfo}  Find object (or object's container)
 0693: 30 01               LEAX    1,X                       ; Object's location
@@ -161,17 +162,19 @@ the script "passes" then this function returns Z=0.
 If there is no script to match the verb or if the script "fails" then this function returns Z=1.
 
 X points to a list of choices for first-word tokens.<br>
-Return with<br>
+Return with
   * Z SET (EQ)   ... no script found OR script was found but it failed
   * Z CLEAR (NE) ... script was found and all commands passed 
 
 Format of word/script description list:
 
+```
 AA LL N0 N1 N2   ; First word AA and script comands (N) for AA. LL is size of command list.<br>
 BB LL N0 N1      ; Second word BB and script commands (N) for BB. LL is size of command list.<br>
 00               ; End of list
-
 ```
+
+```code
 ProcessRoomScript:
 069D: E6 84               LDB     ,X                        ; Get command verb
 069F: 27 FB               BEQ     $069C                     ;  End of list ... out (Z SET (EQ) no matching script)
@@ -198,8 +201,11 @@ are executed one after the other.
 
 If all commands pass then the script "passes".
 
-List format:<br>
+List format:
+
+```
 LL A0 A1 B0 B1 B2 B3 C0 C1 ...   ; LL is length followed by commands A, B, and C ...
+```
 
 X = start of script
 
@@ -207,7 +213,7 @@ Returns
   * Z SET (EQ) failed
   * Z CLEAR (NE) passed
 
-```
+```code
 ProcessCommandList:
 06B4: 1F 13               TFR     X,U                       ; Hold start of script
 06B6: E6 84               LDB     ,X                        ; Length of script
@@ -259,9 +265,8 @@ next subscript).
 
 If the second subscript passes (like the SERPENT is here) then the entire script aborts with a "pass".
 
-```
+```code
 SubScriptAbortIfPass: 
-;
 06E5: 35 10               PULS    X                         ; Script pointer
 06E7: BD 06 B4            JSR     $06B4                     ;{ProcessCommandList}  Run script (Z CLEAR (NE) all passed, Z SET (EQ) a command failed)
 06EA: 34 10               PSHS    X                         ; Script pointer back to stack
@@ -270,6 +275,7 @@ SubScriptAbortIfPass:
 06F0: 35 10               PULS    X                         ; Pop end-of-script pointer
 06F2: 8A 01               ORA     #$01                      ; Script passed ... completely abort processing (with Z CLEAR (NE) all passed)
 06F4: 39                  RTS                               ; Done
+```
 
 # Get Input And Parse 
 
@@ -281,6 +287,7 @@ SubScriptAbortIfPass:
  * 01E8 - object number (noun)
  * 01E9 - gramar type
 
+```code
 GetInputAndParse:
 06F5: BD 09 B3            JSR     $09B3                     ;{PromptAndReadLine}  Fill input buffer
 06F8: 86 0D               LDA     #$0D                      ; Rows left ...
@@ -521,7 +528,7 @@ GetInputAndParse:
 08D2: 5A                  DECB                              ; ... rest of ...
 08D3: 26 F9               BNE     $08CE                     ;  ... destination buffer
 08D5: 39                  RTS                               ; Done
-
+```
 
 # Print Packed Message 
 
@@ -529,6 +536,7 @@ GetInputAndParse:
 
  X = pointer to message structure
 
+```code
 PrintPackedMessage:
 08D6: A6 84               LDA     ,X                        ; Get the length
 08D8: 27 FB               BEQ     $08D5                     ;  None ... out
@@ -547,17 +555,18 @@ PrintPackedMessage:
 08F6: 81 0A               CMPA    #$0A                      ; Mark for another packing?
 08F8: 27 DC               BEQ     $08D6                     ;{PrintPackedMessage}  Yes ... start again
 08FA: 20 E7               BRA     $08E3                     ;  No ... continue this packing
-
+```
 
 # Print an Unpacked Message 
 
 Print an uncompressed message pointed to by X.
 
- Any '@' characters are ignored (allows for padding of words added into a message string).
+Any '@' characters are ignored (allows for padding of words added into a message string).
 
- The messages is terminated by either a 0 or a 1. If the terminator is a 0 then a CR is 
- added. If the terminator is a 1 then no CR is added.
+The messages is terminated by either a 0 or a 1. If the terminator is a 0 then a CR is 
+added. If the terminator is a 1 then no CR is added.
 
+```code
 PrintUnpacked:
 08FC: A6 84               LDA     ,X                        ; Get byte
 08FE: 27 13               BEQ     $0913                     ;  End with CR
@@ -577,12 +586,13 @@ PrintUnpacked:
 0918: 7A 01 B0            DEC     $01B0                     ; Rows left before more
 091B: 2B 01               BMI     $091E                     ;{MorePrompt}  Pause print out with MORE
 091D: 39                  RTS                               ; Done
-
+```
 
 # MorePrompt 
 
- Print MORE and wait for key
+Print MORE and wait for key.
 
+```code
 MorePrompt:
 091E: 34 74               PSHS    U,Y,X,B                   ;
 0920: 86 0D               LDA     #$0D                      ; Reset MORE ...
@@ -711,7 +721,7 @@ PromptAndReadLine:
 0A12: 39                  RTS                               ; Done
 0A13: 86 CF               LDA     #$CF                      ; White-ish block
 0A15: 20 F7               BRA     $0A0E                     ;  Store to cursor and done
-
+```
 
 # Script Commands 
 
@@ -719,13 +729,14 @@ PromptAndReadLine:
  reads 1 or 2 bytes of data from the script. The number of extra bytes read is show 
  for reference in the table.
 
- Script Command Table[[br]]
- *   b = 2 bytes ... message address[[br]]
- *   c = 1 byte  ... object number[[br]]
- *   d = 1 byte  ... room number[[br]]
- *   e = 2 bytes ... target object and container object[[br]] 
- *   f = 2 bytes ... target object and room number[[br]]
+ Script Command Table
+   * b = 2 bytes ... message address
+   * c = 1 byte  ... object number
+   * d = 1 byte  ... room number
+   * e = 2 bytes ... target object and container object 
+   * f = 2 bytes ... target object and room number
 
+```code
 ScriptCommands:
 ;    Address   Number Bytes Type Name
 0A17: 0B 05   ;   1     1    d   MoveToRoomX
@@ -757,14 +768,15 @@ ScriptCommands:
 0A4B: 0E BB   ;  27     0        LoadGame  
 0A4D: 0E 81   ;  28     0        SaveGame
 0A4F: 0F 1D   ;  29     0        JumpToTopOfGameLoop
-
+```
 
 # After Every Step 
 
- This processing takes place after every user input.[[br]]
-  1. Increment the count on the lamp and the number of turns.[[br]]
+ This processing takes place after every user input.
+  1. Increment the count on the lamp and the number of turns.
   2.  Warn the player if the lamp is going dim and change the batteries automatically.
 
+```code
 AfterEveryStep:
 0A51: 86 0F               LDA     #$0F                      ; Lamp (lit version)
 0A53: 8E 18 8D            LDX     #$188D                    ; Object table
@@ -848,22 +860,23 @@ AfterEveryStep:
 0B00: 19                  DAA                               ; Adjust BCD after addition
 0B01: B7 18 E6            STA     $18E6                     ;{-1_00} New MSB
 0B04: 39                  RTS                               ; Done
-
+```
 
 # Command 1: Move To Room X  
 
- This routine moves the player to a new room. If there is light in the new room or light 
- in the old room then the move always works. Otherwise there is a 60% chance the move kills you.
+This routine moves the player to a new room. If there is light in the new room or light 
+in the old room then the move always works. Otherwise there is a 60% chance the move kills you.
 
- If there is light in the new room then the room description is printed.
+If there is light in the new room then the room description is printed.
 
- After every move the code checks the pack for treasures. If there are 2 or more treasures then 
- the Mummy moves them all to room 53 (the hard-to-find room in the maze). Then the code moves the 
- chest to room 53. Up till now the chest has been in room 0 (out of play). The only way to make the 
- chest appear in the maze is to encounter the Mummy!
+After every move the code checks the pack for treasures. If there are 2 or more treasures then 
+the Mummy moves them all to room 53 (the hard-to-find room in the maze). Then the code moves the 
+chest to room 53. Up till now the chest has been in room 0 (out of play). The only way to make the 
+chest appear in the maze is to encounter the Mummy!
 
- Once the chest is in a room (any room) the Mummy no longer appears. You only see the Mummy once.
+Once the chest is in a room (any room) the Mummy no longer appears. You only see the Mummy once.
 
+```code
 MoveToRoomX:
 0B05: 35 10               PULS    X                         ; Processing cursor
 0B07: E6 80               LDB     ,X+                       ; Get room number
@@ -1011,10 +1024,12 @@ PrintObjectsInRoom:
 0C35: 35 04               PULS    B                         ; Restore count
 0C37: 20 D7               BRA     $0C10                     ;  Do all objects
 
+```
 # Command 24: Move Object X To Current Room 
 
- Move the specified object to the current room.
+Move the specified object to the current room.
 
+```code
 MoveObjectXToCurrentRoom:
 0C39: 35 10               PULS    X                         ; Current action
 0C3B: B6 18 E5            LDA     $18E5                     ;{-1_01} Current room
@@ -1023,12 +1038,13 @@ MoveObjectXToCurrentRoom:
 0C43: 34 10               PSHS    X                         ; New action cursor
 0C45: BD 06 90            JSR     $0690                     ;{MoveObject}  Move object to new location
 0C48: 7E 06 CB            JMP     $06CB                     ;  Continue processing
-
+```
 
 # Command 25: Move Object X Into Container Y 
 
- Move the specified object into the specified container object.
+Move the specified object into the specified container object.
 
+```code
 MoveObjectXIntoContainerY:
 0C4B: 35 10               PULS    X                         ; Get object number and container object number
 0C4D: EC 81               LDD     ,X++                      ; ... from cursor
@@ -1042,13 +1058,14 @@ MoveObjectXIntoContainerY:
 0C60: F6 01 BB            LDB     $01BB                     ; Container object
 0C63: E7 84               STB     ,X                        ; Set object's container
 0C65: 7E 0D E8            JMP     $0DE8                     ;{PrintOK}  Print "OK" and pass.
-
+```
 
 # Command 2: Assert Object X Is In Pack 
 
- Make sure the specified object is in the pack. The object may be contained by 
- another object in the pack.
+Make sure the specified object is in the pack. The object may be contained by 
+another object in the pack.
 
+```code
 AssertObjectXIsInPack:
 0C68: 35 10               PULS    X                         ; Action cursor
 0C6A: A6 80               LDA     ,X+                       ; Get value
@@ -1059,15 +1076,16 @@ AssertObjectXIsInPack:
 0C76: 27 03               BEQ     $0C7B                     ;  Got it
 0C78: 7E 06 DF            JMP     $06DF                     ;  Invalid
 0C7B: 7E 06 CB            JMP     $06CB                     ;  Valid
-
+```
 
 # Command 3: Assert Object X Is In Current Room Or Pack 
 
- Make sure the specified object is in the current room or in the pack. 
- If so then it is something that player can "see".
+Make sure the specified object is in the current room or in the pack. 
+If so then it is something that player can "see".
  
- The object may be contained by another object in the room or pack.
+The object may be contained by another object in the room or pack.
 
+```code
 AssertObjectXIsInCurrentRoomOrPack:
 0C7E: 35 10               PULS    X                         ; Action cursor
 0C80: A6 80               LDA     ,X+                       ; Get target object
@@ -1079,13 +1097,14 @@ AssertObjectXIsInCurrentRoomOrPack:
 0C90: 27 E9               BEQ     $0C7B                     ;  Found it
 0C92: B6 01 BB            LDA     $01BB                     ; Try ...
 0C95: 20 D7               BRA     $0C6E                     ;  ... backpack
-
+```
 
 # Command 26: Assert Object X Is In Current Room 
 
- Make sure the specified object is in the current room (either directly or 
- in a container in the room).
+Make sure the specified object is in the current room (either directly or 
+in a container in the room).
 
+```code
 AssertObjectXIsInCurrentRoom:
 0C97: 35 10               PULS    X                         ; Action cursor
 0C99: B6 18 E5            LDA     $18E5                     ;{-1_01} Current room
@@ -1095,13 +1114,14 @@ AssertObjectXIsInCurrentRoom:
 0CA3: BD 06 66            JSR     $0666                     ;{GetObjectInfo}  Check for object in room
 0CA6: 27 D3               BEQ     $0C7B                     ;  OK ... it's here
 0CA8: 7E 06 DF            JMP     $06DF                     ;  Invalid
-
+```
 
 # Command 13: Assert Pack Is Empty Except For Emerald 
 
- Make sure pack is completely empty except for the emerald. In order to get 
- the emerald through a "tight squeeze" everything else must be out of the pack.
+Make sure pack is completely empty except for the emerald. In order to get 
+the emerald through a "tight squeeze" everything else must be out of the pack.
 
+```code
 AssertPackIsEmptyExceptForEmerald:
 0CAB: 8E 18 8D            LDX     #$188D                    ; Object data
 0CAE: C6 01               LDB     #$01                      ; First object
@@ -1116,14 +1136,16 @@ AssertPackIsEmptyExceptForEmerald:
 0CBF: C1 2D               CMPB    #$2D                      ; Done them all?
 0CC1: 26 ED               BNE     $0CB0                     ;  No ... go back
 0CC3: 7E 06 CB            JMP     $06CB                     ;  
+```
 
 # Command 10: Assert Random Is Greater Than X 
 
- Assert that the random count is greater than the specified value. 
- If so then print "You have crawled around in some little holes ...".
+Assert that the random count is greater than the specified value. 
+If so then print "You have crawled around in some little holes ...".
 
- This is used for rooms that have random movement paths.
-
+This is used for rooms that have random movement paths.
+ 
+```code
 AssertRandomIsGreaterThanX:
 0CC6: 35 10               PULS    X                         ; Cursor
 0CC8: E6 80               LDB     ,X+                       ; Comparrison threshold
@@ -1135,15 +1157,16 @@ AssertRandomIsGreaterThanX:
 0CD7: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print message
 0CDA: BD 0B D2            JSR     $0BD2                     ;{PrintRoomDescription}  Print room description
 0CDD: 7E 06 CB            JMP     $06CB                     ;  OK
-
+```
 
 # Command 12: Move To Room X If It Was Last Room 
 
- ?? TODO is this ever used?
+?? TODO is this ever used?
 
- Move player to the specified room, but only if that room was the last room. 
- This is for when you can only go back the way you came.
+Move player to the specified room, but only if that room was the last room. 
+This is for when you can only go back the way you came.
 
+```code
 MoveToRoomXIfItWasLastRoom:
 0CE0: 35 10               PULS    X                         ; Get cursor
 0CE2: E6 80               LDB     ,X+                       ; Target room
@@ -1154,18 +1177,19 @@ MoveToRoomXIfItWasLastRoom:
 0CED: 30 1F               LEAX    -1,X                      ; Back it ..
 0CEF: 34 10               PSHS    X                         ; ... up
 0CF1: 7E 0B 05            JMP     $0B05                     ;{MoveToRoomX}  Move to room N
-
+```
 
 # Command 22: Get User Input Object 
 
- Move the specified object to the pack. If the object is already in the 
- pack then print "You are already carying it". 
- Either way this command ALWAYS passes.
+Move the specified object to the pack. If the object is already in the 
+pack then print "You are already carying it". 
+Either way this command ALWAYS passes.
 
- This is the last script in the general GET handler.
+This is the last script in the general GET handler.
 
- Note that "You are already carying it" is already being checked in the general input routine.
+Note that "You are already carying it" is already being checked in the general input routine.
 
+```code
 GetUserInputObject:
 0CF4: 86 FF               LDA     #$FF                      ; Pack value
 0CF6: B7 01 BC            STA     $01BC                     ; For find
@@ -1177,25 +1201,27 @@ GetUserInputObject:
 0D07: 7E 06 CB            JMP     $06CB                     ;  Passed
 0D0A: F6 01 E7            LDB     $01E7                     ; Requested object
 0D0D: 7E 0D AC            JMP     $0DAC                     ;  Pick up object
-
+```
 
 # Command 4: Print Message X 
 
- Print the specified message (packed message).
+Print the specified message (packed message).
 
+```code
 PrintMessageX:
 0D10: 35 20               PULS    Y                         ; Get cursor
 0D12: AE A1               LDX     ,Y++                      ; Get address of message
 0D14: 34 20               PSHS    Y                         ; Update cursor
 0D16: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print message
 0D19: 7E 06 CB            JMP     $06CB                     ;  Pass
-
+```
 
 # Command 11: Drop Object X 
 
- Move the specified object from the pack to the current room. 
- This does assume the object is in the pack.
+Move the specified object from the pack to the current room. 
+This does assume the object is in the pack.
 
+```code
 DropObjectX:
 0D1C: 35 10               PULS    X                         ; Get object ...
 0D1E: E6 80               LDB     ,X+                       ; ... from cursor
@@ -1206,15 +1232,16 @@ DropObjectX:
 0D2B: 1F 98               TFR     B,A                       ; FOr the move
 0D2D: BD 06 90            JSR     $0690                     ;{MoveObject}  Drop object in current room
 0D30: 7E 0D E8            JMP     $0DE8                     ;{PrintOK}  OK and out
-
+```
 
 # Command 14: Move To Last Room 
 
- Move the player to the "last" room. If there is no "last" 
- room then print an error message.
+Move the player to the "last" room. If there is no "last" 
+room then print an error message.
 
- This command always passes.
+This command always passes.
 
+```code
 MoveToLastRoom:
 0D33: F6 18 EA            LDB     $18EA                     ;{-1_00} Last room number
 0D36: 27 0C               BEQ     $0D44                     ;  There was no last ... error message
@@ -1225,15 +1252,16 @@ MoveToLastRoom:
 0D44: 8E 33 DE            LDX     #$33DE                    ; "I don't remember how you got here ..."
 0D47: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print message
 0D4A: 7E 06 CB            JMP     $06CB                     ;  Pass
-
+```
 
 # Command 15: Print Inventory 
 
- List all the objects in the pack. Object that are contained by 
- objects in the pack are printed too.
+List all the objects in the pack. Object that are contained by 
+objects in the pack are printed too.
 
- This command always passes.
+This command always passes.
 
+```code
 PrintInventory:
 0D4D: B6 18 EB            LDA     $18EB                     ;{-1_00} Do we even have anything?
 0D50: 26 09               BNE     $0D5B                     ;  Yes ... there is something
@@ -1266,23 +1294,25 @@ PrintInventory:
 0D8B: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print object description
 0D8E: 35 04               PULS    B                         ; Restore object number
 0D90: 20 D0               BRA     $0D62                     ;  Do all objects
-
+```
 
 # Command 16: Print Room Description
 
-; Print the current room description and contained objects. If the room is dark then print "it is dark".
-;
-; This command always passes.
+Print the current room description and contained objects. If the room is dark then print "it is dark".
 
+This command always passes.
+
+```code
 C_PrintRoomDescription:
 0D92: BD 0B D2            JSR     $0BD2                     ;{PrintRoomDescription}  Print room description
 0D95: 7E 06 CB            JMP     $06CB                     ;  
-
+```
 
 # Command 17: Assert Object X Matches User Input 
 
- Make sure the input noun matches the specified object.
+Make sure the input noun matches the specified object.
 
+```code
 AssertObjectXMatchesUserInput:
 0D98: 35 10               PULS    X                         ; Get the object ...
 0D9A: E6 80               LDB     ,X+                       ; ... from the cursor
@@ -1290,14 +1320,15 @@ AssertObjectXMatchesUserInput:
 0D9E: F1 01 E7            CMPB    $01E7                     ; Same as user input?
 0DA1: 27 F2               BEQ     $0D95                     ;  Yes ... pass
 0DA3: 7E 06 DF            JMP     $06DF                     ;  Fail
-
+```
 
 # Command 18: Get Object From Room 
 
- Get the specified object from the current room if there is space in the pack and the object is packable.
- * Pack only holds 8 things.
- * Some objects are flagged as "non pick-up-able"
+Get the specified object from the current room if there is space in the pack and the object is packable.
+  * Pack only holds 8 things.
+  * Some objects are flagged as "non pick-up-able"
 
+```code
 GetObjectFromRoom:
 0DA6: 35 10               PULS    X                         ; Get the object's description from the ...
 0DA8: E6 80               LDB     ,X+                       ; ... cursor
@@ -1323,32 +1354,35 @@ GetObjectFromRoom:
 0DDA: B6 01 BB            LDA     $01BB                     ; Object number
 0DDD: BD 06 90            JSR     $0690                     ;{MoveObject}  Move object
 0DE0: 20 06               BRA     $0DE8                     ;{PrintOK}  Print "OK" and out
-
+```
 
 # Command 23: Drop User Input Object 
 
- Drop the object the user requested from the pack.
+Drop the object the user requested from the pack.
 
+```code
 DropUserInputObject:
 0DE2: F6 01 E7            LDB     $01E7                     ; Value from user word
 0DE5: 7E 0D 22            JMP     $0D22                     ;  Drop object
-
+```
 
 # Command 20: Print OK 
 
- Print "OK".
+Print "OK".
 
+```code
 PrintOK:
 0DE8: 8E 33 DA            LDX     #$33DA                    ; "OK"
 0DEB: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print message
 0DEE: 7E 06 CB            JMP     $06CB                     ;  
-
+```
 
 # Command 21: Move Object X To Room Y 
 
- Move the specified object to the specified room. This removes 
- the target object from any container it might be in.
+Move the specified object to the specified room. This removes 
+the target object from any container it might be in.
 
+```code
 MoveObjectXToRoomY:
 0DF1: 35 10               PULS    X                         ; Cursor
 0DF3: EC 81               LDD     ,X++                      ; Get object number and room number
@@ -1362,10 +1396,11 @@ MoveObjectXToRoomY:
 0E06: B6 01 BC            LDA     $01BC                     ; New location
 0E09: A7 84               STA     ,X                        ; Update object location
 0E0B: 20 E1               BRA     $0DEE                     ;  Pass
+```
 
+#  Print Score 
 
-  Print Score 
-
+```code
 PrintScore:
 0E0D: 7F 02 08            CLR     $0208                     ; Calculated score LSB
 0E10: 7F 02 09            CLR     $0209                     ; Calculated score MSB
@@ -1419,12 +1454,13 @@ PrintScore:
 0E7C: 8B 30               ADDA    #$30                      ; Convert to ASCII number
 0E7E: A7 80               STA     ,X+                       ; Store character in buffer
 0E80: 39                  RTS                               ; Done
-
+```
 
 # Command 28: Save Game 
 
- Save the current state of the game to tape.
+Save the current state of the game to tape.
 
+```code
 SaveGame:
 0E81: 8E 3C 27            LDX     #$3C27                    ; "Ready Cassette"
 0E84: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print message
@@ -1449,12 +1485,13 @@ SaveGame:
 0EB1: AD 9F A0 08         JSR     [$A008]                   ; Write to tape
 0EB5: BD 0F 0C            JSR     $0F0C                     ;  Turn motor off
 0EB8: 7E 06 CB            JMP     $06CB                     ;  
-
+```
 
 # Command 27: Load Game 
 
-; Load the state of the game from tape.
+Load the state of the game from tape.
 
+```code
 LoadGame:
 0EBB: 8E 3C 27            LDX     #$3C27                    ; "Ready Cassette"
 0EBE: BD 08 D6            JSR     $08D6                     ;{PrintPackedMessage}  Print message
@@ -1490,52 +1527,58 @@ LoadGame:
 0F0C: 86 34               LDA     #$34                      ; Motor ...
 0F0E: B7 FF 21            STA     $FF21                     ;{-2_PIA1_CA} ... off
 0F11: 39                  RTS                               ;
-
+```
 
 # Command 8: Print Score 
 
- Print the current score.
+Print the current score.
 
-
+```code
 C_PrintScore:
 0F12: BD 0E 0D            JSR     $0E0D                     ;{PrintScore}  Print score
 0F15: 7E 06 CB            JMP     $06CB                     ;  
+```
 
 # Command 5: Print Score And Stop =
 # Command 9: Print Score And Stop =
 
- Print the score and go into an endless loop. When the player dies 
- the scripts use command 5. When the player quits the scripts 
- use command 9.
+Print the score and go into an endless loop. When the player dies 
+the scripts use command 5. When the player quits the scripts 
+use command 9.
 
+```code
 PrintScoreAndStop:
 0F18: BD 0E 0D            JSR     $0E0D                     ;{PrintScore}  Print score
 0F1B: 20 FE               BRA     $0F1B                     ;  Endless loop
+```
 
 # Command 29: Jump To Top Of Game Loop 
 
- This is what the old PLUGH command does.
+This is what the old PLUGH command does.
 
+```code
 JumpToTopOfGameLoop:
 0F1D: 10 CE 03 FF         LDS     #$03FF                    ; Forget where we came from ...
 0F21: 7E 06 35            JMP     $0635                     ;{MainLoop}  ... and go back to top of game loop
-
+```
 
 # General Error Messages 
 
- The code alternates these for general input failures. The first 
- one used is the second message.
+The code alternates these for general input failures. The first 
+one used is the second message.
 
+```code
 AlternatingErrors:
 ; Alternating messages
 0F24: 0F CA  ; Pointer to "WHAT?"
 0F26: 0F D1  ; Pointer to "I DON'T KNOW THAT WORD."
 0F28: 0F E9  ; Pointer to "I DON'T UNDERSTAND."
 0F2A: 0F FD  ; Pointer to "I DON'T KNOW WHAT YOU MEAN."
-
+```
 
 # Specific Error Messages 
 
+```code
 SpecificErrorMessages:
 ; "I SEE NO ",1
 0F2C:  49 20 53 45 45 20 4E 4F 20 01 
@@ -1572,10 +1615,11 @@ SpecificErrorMessages:
 
 ; "I DON'T KNOW WHAT YOU MEAN.",0
 0FFD:  49 20 44 4F 4E 27 54 20 4B 4E 4F 57 20 57 48 41 54 20 59 4F 55 20 4D 45 41 4E 2E 00 
-
+```
 
 # General Messages 
 
+```code
 GeneralMessages:
 ;  " <MORE>",1
 1019:  20 3C 4D 4F 52 45 3E 01 
@@ -1591,12 +1635,12 @@ GeneralMessages:
 
 ; "**** TURNS.",0
 105A:  20 20 20 20 20 54 55 52 4E 53 2E 00 
-
+```
 
 # Unpack Message  
 
- Unpack message pointed to by X and print to screen.[[br]] 
- A = loop count (number of 2 bytes).
+Unpack message pointed to by X and print to screen.<br>
+A = loop count (number of 2 bytes).
 
  Every 2 bytes holds 3 characters. Each character can be from 0 to 39.
 
@@ -1604,6 +1648,7 @@ GeneralMessages:
 
  TODO Decode this
 
+```code
 UnpackMessage:
 1066: B7 01 C1            STA     $01C1                     ;
 1069: 86 01               LDA     #$01                      ;
@@ -1675,16 +1720,17 @@ UnpackMessage:
 10FE: 10 26 FF 6C         LBNE    $106E                     ;  ... pairs of bytes
 1102: FC 01 BA            LDD     $01BA                     ;
 1105: 39                  RTS                               ; Done
-
+```
 
 # Data Section 
 
- Data from here down (no code).
+Data from here down (no code).
 
 ## Character Translation Table 
 
- The packed messages in the game are limited to these characters.
+The packed messages in the game are limited to these characters.
 
+```code
 CharTransTable:
 ; Character translation table
 ;     ?  !  2  .  "  '  &lt;  &gt;  /  0  3  A  B  C  D  E
@@ -1693,13 +1739,14 @@ CharTransTable:
 1116: 46 47 48 49 4A 4B 4C 4D 4E 4F 50 51 52 53 54 55
 ;     V  W  X  Y  Z  -  ,  .
 1126: 56 57 58 59 5A 2D 2C 2E 
+```
 
 ## Room Table 
 
- Each entry is 4 bytes. The first word is the packed room description. 
- The second word is the room's command script.
+Each entry is 4 bytes. The first word is the packed room description. 
+The second word is the room's command script.
 
-
+```code
 RoomTable:
 ;
 ; 81 rooms numbered starting at 1
@@ -1785,15 +1832,15 @@ RoomTable:
 1266:   29 42          17 4E  ; 79
 126A:   29 6C          17 57  ; 80
 126E:   29 BC          17 64  ; 81
-
+```
 
 ## Room Scripts 
 
- These are the specific room scripts. The user input is tried against 
- the room script first and then the general handler script.
+These are the specific room scripts. The user input is tried against 
+the room script first and then the general handler script.
 
+```code
 RoomScripts:
-
 ; room_1 : {
 ;   desc : "YOU ARE STANDING BEFORE THE ENTRANCE OF A PYRAMID. AROUND YOU IS A DESERT.",
 ;   lit  : true,
@@ -2981,14 +3028,15 @@ RoomScripts:
 ; },
 
 17EA: FF        
-
+```
 
 ## Ambient Light Table 
 
- 2 bytes per room
- * 0x4000 means there is light in the room (no need for a lamp)
- * 0x0000 means you better have a lamp
+ 2 bytes per room:
+   * 0x4000 means there is light in the room (no need for a lamp)
+   * 0x0000 means you better have a lamp
 
+```code
 AmbientLight:
 17EB:   40 00  ;  1
 17ED:   40 00  ;  2
@@ -3071,26 +3119,29 @@ AmbientLight:
 1887: 00 00    ; 79
 1889: 00 00    ; 80
 188B: 00 00    ; 81
-
+```
 
 ## Object Data 
 
- This two-byte table contains the object's attributes ("isTreasure" and "isGettable") 
- and the object's current location (a room or inside another object).
+This two-byte table contains the object's attributes ("isTreasure" and "isGettable") 
+and the object's current location (a room or inside another object).
 
- The code references the objects by numeric id, but I have given them unique names 
- in the table below. All object names begin with "#". All word names begin with "_".
+The code references the objects by numeric id, but I have given them unique names 
+in the table below. All object names begin with "#". All word names begin with "_".
 
- The format of the two bytes are:
+The format of the two bytes are:
 
+```
    MCT----- RRRRRRRR
 
-   M - if set, the second byte is an object number (container). if clear, the second byte is a room number.[[br]] 
-   C - if set, object can be picked up.[[br]]
+   M - if set, the second byte is an object number (container). if clear, the second byte is a room number.<br> 
+   C - if set, object can be picked up.<br>
    T - if set, object is treasure.
 
    RRRRRRRR - Second byte is the object's location (containing object or room number).
+```
 
+```code
 ObjectData:
 ; Object data table (2 bytes)
 ;              MCT              # Name             Start location
@@ -3138,9 +3189,11 @@ ObjectData:
 18DF: 60 00  ; 011_00000 00  ; 42 #CHEST              0
 18E1: 60 47  ; 011_00000 47  ; 43 #NEST             Room 71
 18E3: 40 00  ; 010_00000 00  ; 44 #LAMP_dead          0
+```
 
 ## Game Variables 
 
+```code
 GameVariables:
 18E5: 01 ; RoomNumber (start in room 1)
 18E6: 00 ; TurnCountMSB (BCD format)
@@ -3150,10 +3203,11 @@ GameVariables:
 18EA: 00 ; LastRoomNumber
 18EB: 00 ; NumInPack
 18EC: 00 ; * NOT USED *   
-
+```
 
 ## Object Table 
 
+```code
 ObjectDescriptions:
 ; Object descriptions (44 objects)
 ; For packable objects each slot points to a message pair. The first is the long
@@ -3203,11 +3257,13 @@ ObjectDescriptions:
 193F: 2F 44     ; 42 #CHEST            Chest
 1941: 2F 6B     ; 43 #NEST             Nest of golden eggs
 1943: 2B 46     ; 44 #LAMP_dead        Lamp (dead)
+```
 
 ## General Command Handler 
 
- This script is used when the room doesn't have a script for the input command.
+This script is used when the room doesn't have a script for the input command.
 
+```code
 GeneralCommandHandler:
 1945: 01 04     ; _n : [
 1947: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION."],
@@ -3444,11 +3500,12 @@ GeneralCommandHandler:
 1B62: 3B 02     ; _save : [
 1B64: 1C        ;    "SaveGame"]
 1B65: 00
+```
 
 ## Room Descriptions 
 
+```code
 RoomDescriptions:
-
 ;Description for room: 1
 ; YOU ARE STANDING BEFORE THE ENTRANCE OF A PYRAMID. AROUND YOU IS A DESERT.[CR]
 1B66: 18 C7 DE 94 14 55 5E 50 BD 90 5A C4 6A 59 60 5B B1 5F BE 30 15 EB BF 17 98 B8 16 7B 14 14 A8 6B
@@ -3789,12 +3846,13 @@ RoomDescriptions:
 2AEE: 2B C7 DE 94 14 4B 5E 96 96 DB 72 1B 54 AF 91 91 AF 90 64 1A 61 AF 5F 73 C1 59 45 E3 9F 99 96 82
 2B0E: 7B 82 17 4A 5E 86 5F B8 16 7B 14 EE CC 74 C0 B3 63 A3 D0 10 B2 D6 6A DB 72 B9 55 03 D2 C3 9E 8B
 2B2E: 60 57 A7 7B 14 55 A4 09 B7 47 5E 96 D7 D6 B5 D6 9C DB 72 47 B9 77 BE 00
-
+```
 
 ## Object Descriptions 
 
- These are the long (in a room description) and short (in the inventory) strings for each object.
+These are the long (in a room description) and short (in the inventory) strings for each object.
 
+```code
 ObjDescriptions:
 
 ;Description for objects: 14 "Lamp (not lit)",44 "Lamp (dead)"
@@ -4015,10 +4073,11 @@ ObjDescriptions:
 
 ; GLISTENING PEARL[CR]
 307D: 05 C3 6D FF B9 10 99 D2 6A 94 5F 4C 00
-
+```
 
 ## Game Specific Messages 
 
+```code
 GameSpecificMessages:
 
 ; YOU ARE AT THE BOTTOM OF THE PIT WITH A BROKEN NECK.[CR]
@@ -4319,31 +4378,32 @@ GameSpecificMessages:
 3C33: 04 1F 54 A5 54 5B C5 3C 62 4F 52 00
 
 3C3F: 00
-
+```
 
 ## Word Table 
 
- Pyramid has a table of known words. Every word has a grammar that describes how it can be used. 
- For instance, LAMP is a noun. The verb NORTH is a single-word command that requires no noun 
- (in fact it is an error to give one). The verb DROP requires a noun that is in the inventory, 
- but the verb DRINK works on a noun that is in the room or the pack.
+Pyramid has a table of known words. Every word has a grammar that describes how it can be used. 
+For instance, LAMP is a noun. The verb NORTH is a single-word command that requires no noun 
+(in fact it is an error to give one). The verb DROP requires a noun that is in the inventory, 
+but the verb DRINK works on a noun that is in the room or the pack.
 
- Multiple words can refer to the same thing. LAMP and LANTERN, for instance, mean the same 
- thing. So do GET and STEAL.
+Multiple words can refer to the same thing. LAMP and LANTERN, for instance, mean the same 
+thing. So do GET and STEAL.
 
- Since multiple nouns can have the same word for a name the game logic must be careful not to 
- ever have two nouns with the same noun in the same place. The "dead lamp", for instance, is never 
- around when the "lit lamp" is. When checking to see if a noun is accessible the code must check 
- every noun since multiple nouns can have the same name.
+Since multiple nouns can have the same word for a name the game logic must be careful not to 
+ever have two nouns with the same noun in the same place. The "dead lamp", for instance, is never 
+around when the "lit lamp" is. When checking to see if a noun is accessible the code must check 
+every noun since multiple nouns can have the same name.
 
- The code in the game refers to objects and words by numeric ID, but I have given them unique names 
- for code reference. The word names are listed in the table below. All word names begin with "_". 
- All object names begin with "#".
+The code in the game refers to objects and words by numeric ID, but I have given them unique names 
+for code reference. The word names are listed in the table below. All word names begin with "_". 
+All object names begin with "#".
 
- The input routine parses the user input and returns a VERB and a NOUN based on the grammar of the 
- words. The game scripts are assured that the grammar is correct and the noun is something the user 
- has access to (in the pack or room).
+The input routine parses the user input and returns a VERB and a NOUN based on the grammar of the 
+words. The game scripts are assured that the grammar is correct and the noun is something the user 
+has access to (in the pack or room).
 
+```code
 WordTable:
 ; Info + text + data
 ;   Info byte:
@@ -4481,7 +4541,11 @@ WordTable:
 3F08: CC 53 41 56 45            3B        ; 11_001_100 SAVE     _save
 3F0E: CD 50 4C 55 47 48         39        ; 11_001_101 PLUGH    _plugh
 3F15: 00
+```
 
+# Unused 
+
+```code
 Unused:
 ; Unused data on end of program
 3F16: 0D 00 02 88 88 80 FA 00 00 4F 88

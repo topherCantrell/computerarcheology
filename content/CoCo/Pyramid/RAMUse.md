@@ -1,5 +1,5 @@
-<!-- navTitle RAM Use -->
-![](Pyramid.jpg)
+
+![RAM](Pyramid.jpg)
 
 # Pyramid RAM Use
 
