@@ -64,21 +64,21 @@ Check out a [snippet of the original source code](#trs-80-nugget) caught in an u
 
 Have a look at the [game's main loop](Code.md#mainloop). It is really short.
 
-The code is code-within-code. The adventure language processor commands are [here](Code.html#scriptcommands).
+The code is code-within-code. The adventure language processor commands are [here](Code.md#scriptcommands).
 
 The spooky mummy is given life as part of the [Move to Room X](Code.md#movetoroomx) code.
 
 Have a look at all the unpacked messages in the game:
-* [General Messages](Code.html#alternatingerrors)
-* [Room Descriptions](Code.html#roomdescriptions)
-* [Object Descriptions](Code.html#objectdescriptions)
-* [More General Messages](Code.html#gamespecificmessages)
+* [General Messages](Code.md#alternatingerrors)
+* [Room Descriptions](Code.md#roomdescriptions)
+* [Object Descriptions](Code.md#objectdescriptions)
+* [More General Messages](Code.md#gamespecificmessages)
 
-Visit the [Room Scripts](Code.html#roomscripts) to see what you can do in each room. Then visit the 
-[General Command Handler](Code.html#generalcommandhandler) script that runs after the current room
-has a chance to take the command. These "adventure language scripts" are interpreted by the [Script Processor](Code.html#ProcessCommandList).
+Visit the [Room Scripts](Code.md#roomscripts) to see what you can do in each room. Then visit the 
+[General Command Handler](Code.md#generalcommandhandler) script that runs after the current room
+has a chance to take the command. These "adventure language scripts" are interpreted by the [Script Processor](Code.md#ProcessCommandList).
 
-Read through all words that the game understands in the [Word table](Code.html#WordTable).
+Read through all words that the game understands in the [Word table](Code.md#WordTable).
 <!-- } -->
 
 # References
