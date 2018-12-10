@@ -12,6 +12,7 @@ class CodeLine:
     # Label
     # Data
     # Mnemonic
+    # Address
     
     def __init__(self,line,filename=None,line_number=None):
         self._original = line
@@ -34,7 +35,9 @@ class CodeLine:
         
         if len(line)>4:
             try:
-                pass
+                if line[4]==':':
+                    self._address = int(line[0:4],16)
+                    # TODO this is either Data or Code                
             except:
                 pass
         
