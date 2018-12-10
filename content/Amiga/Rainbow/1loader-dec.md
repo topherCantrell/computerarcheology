@@ -1,9 +1,8 @@
-%%title = 1loader_dec
-%%image = Rainbow.jpg
+![1loader-dec](Rainbow.jpg)
 
-This is what the encrypted part looks after decryption
+This is what the encrypted part looks after decryption:
 
-{{{plainCode
+```
 sub_5A68:
                 subq.l  #6,(TRACE_VECTOR).l
                 clr.l   (ACCESS_FAULT).l
@@ -712,4 +711,4 @@ loc_61F4:
                 movea.l a1,a4
                 adda.l  #$C,a4
                 move.l  sp,(TRACE_VECTOR).l
-}}}
+```

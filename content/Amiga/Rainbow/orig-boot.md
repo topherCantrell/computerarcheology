@@ -1,9 +1,8 @@
-%%title= orig_boot
-%%image=Rainbow.jpg
+![orig-boot](Rainbow.jpg)
 
 After running the protection, this is what we end up with, the original boot block in all it's glory:
 
-{{{plainCode
+```
 bootblock:      dc.b 'DOS',0
 checksum:       dc.l $D5245E13
 rootblock:      dc.l 0
@@ -432,4 +431,4 @@ loc_5D98:
                 btst    #ICR_TA,$D00(a1) ; CIA_B_ICR
                 beq.s   loc_5D98
                 rts
-}}}
+```

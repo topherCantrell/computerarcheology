@@ -1,9 +1,8 @@
-%%title= 1loader
-%%image= Rainbow.jpg
+![1loader](Rainbow.jpg)
 
 This is the code loaded by the boot block.
 
-{{{plainCode
+```
 start:
 		pea	disable_cache
 		move.l	(sp)+,($10).l
@@ -455,4 +454,4 @@ encrypted_code:	dc.b $72, $85, $71, $2C, $2F, $18, $6D,	$85
 
 		END
 
-}}}
+```
