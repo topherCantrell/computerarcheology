@@ -19,7 +19,7 @@ I will reverse engineer the copy protection, [Copylock](http://en.wikipedia.org/
 Copylock uses a TVD, trace vector decoder. Every instruction is decrypted, run and then encrypted again before moving on to the next instruction.
 
 Parts:
-  - [block](boot.html) 
-  - [First loader](1loader.html First loader) 
-  - [First loader Decrypted](1loader-dec.html) 
-  - [Original bootloader](orig-boot.html)
+  - [block](boot.md) 
+  - [First loader](1loader.md) 
+  - [First loader Decrypted](1loader-dec.md) 
+  - [Original bootloader](orig-boot.md)
