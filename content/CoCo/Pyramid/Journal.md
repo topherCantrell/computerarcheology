@@ -1,4 +1,4 @@
-![Journal](/img/journal.jpg)
+![Journal](../../img/journal.jpg)
 
 # Journal
 
