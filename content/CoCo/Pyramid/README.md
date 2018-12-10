@@ -20,6 +20,7 @@
 ```
 
 <!-- playMe { -->
+
 # Play Me! 
 Play the game in a CoCo emulator. Click on the green console and press any key.
 
@@ -57,8 +58,9 @@ Pyramid are true, ... But why dwell on that now -- you are here, and adventure
 awaits just a step away." - From the game manual introduction
 
 <!-- tourGuide { -->
+
 # Tour Guide 
-Check out a [snippet of the original source code](#trs80ugget) caught in an uninitialized buffer.
+Check out a [snippet of the original source code](#trs-80-nugget) caught in an uninitialized buffer.
 
 Have a look at the [game's main loop](Code.md#mainloop). It is really short.
 
