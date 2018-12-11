@@ -16,13 +16,13 @@ class CodeLine:
     # mnemonic
     # address
     
-    def __init__(self,line,filename=None,line_number=None):
-        self.original = line
+    def __init__(self,md,filename=None,line_number=None):
+        self.original = md
         self.filename = filename
         self.line_number = line_number
         
-        line = line.strip()
-        
+        line = md.line.strip()
+                
         self.address = None
         self.comment = None
         

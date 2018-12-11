@@ -1,24 +1,27 @@
+import code.markdown_line
+from code.directive_line import Directive
 
 class MemoryTable:
     
     def __init__(self,filename):
         
-        self.entries = []
+        print(":"+filename+":")
         
-        with open(filename,'r') as f:
-            lines = f.readlines()
-            
+        lines = code.markdown_line.load_file(filename)
+        
+        self.entries = []
+                
         in_table = False
         skipped = 0
-        for line in lines:
+        for md in lines:
             if in_table:
-                if not line[0].startswith('|'):
+                if not md.line.startswith('|'):
                     in_table = False
                 else:
                     if skipped<2:
                         skipped+=1
                         continue
-                    cols = line.split('|')
+                    cols = md.line.split('|')
                     addr = cols[1].strip()
                     if addr=='':
                         continue
@@ -33,7 +36,7 @@ class MemoryTable:
                         'description' : cols[3].strip()
                     }) 
             else:
-                if line.startswith('>>> memory'):
+                if type(md) is Directive and md.directive=='memory':
                     in_table = True
                     skipped = 0
      
