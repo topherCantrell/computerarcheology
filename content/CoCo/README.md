@@ -1,4 +1,4 @@
-> deploy:<br>    
+> deploy:<br>
 >   Hardware.md<br>
 >   +CoCo.jpg<br>
 >   +CoCoTech.jpg<br>
@@ -10,7 +10,7 @@
 >   +PIA0.jpg<br>
 >   +PIA1.jpg<br>
 >   +SAM.jpg<br>
->       Pyramid/<br>
+>     Pyramid/<br>
 
 ![CoCo](CoCo.jpg)
 
