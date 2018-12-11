@@ -7,11 +7,13 @@ def _load_directory(d):
     info = web.make_web.read_deploy(d)    
     ret = []
     for e in info:
+        t = e[1]
+        e = e[0]
         if e=='README.md' or e.startswith('+'):
             continue
         if os.path.isdir(os.path.join(d,e)):
             ret.append({
-                'Name' : e,
+                'Name' : [e,t],
                 'Children' : _load_directory(os.path.join(d,e)),
                 'Hidden' : True,
                 'Collapsed' : True,
@@ -23,7 +25,7 @@ def _load_directory(d):
                 # [False,   href,  text]
             })
         else:
-            ret.append(e)
+            ret.append([e,t])
     return ret
 
 '''
@@ -58,10 +60,10 @@ def _make_site_tree_rec(node):
     ret = '<ul>'
     for n in node:
         if type(n) is dict:
-            ret += '<a href="???">'+n['Name']+'<a>'
+            ret += '<li><a href="???">'+n['Name'][0]+'</a></li>'
             ret += _make_site_tree_rec(n['Children'])
         else:
-            ret += '<li><a href="???">'+n+'</a></li>'
+            ret += '<li><a href="???">'+n[0]+'</a></li>'
     ret += '</ul>'
     return ret
 
@@ -70,9 +72,12 @@ _root_navs = _load_directory(ENV.CONTENT_DIR)
 
 def make_site_nav(path):
     global _tree
-    ret = copy.deepcopy(_tree)
+    ret = copy.deepcopy(_root_navs)
+    
+    print(ret)
+    
     # TODO opens and closes here
     # TODO make HTML here
-    return _make_site_tree_rec(_root_navs)
+    return _make_site_tree_rec(ret)
     
     

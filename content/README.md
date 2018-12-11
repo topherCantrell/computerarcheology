@@ -1,12 +1,11 @@
-<!-- deploy
-    +css
-    +js
-    +img
-    +Arch.jpg
-    +favicon.ico
-        Amiga
-        CoCo
--->
+> deploy
+>    +css
+>    +js
+>    +img
+>    +Arch.jpg
+>    +favicon.ico
+>        Amiga
+>        CoCo
 
 ![Computer Archeology](Arch.jpg)
 # Computer Archeology

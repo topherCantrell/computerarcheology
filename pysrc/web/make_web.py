@@ -6,7 +6,7 @@ import web.ENVIRONMENT as ENV
 import web.site_tree
 
 def read_deploy(directory):
-    ret = ['README.md']
+    ret = [['README.md','']]
     with open(directory+'\\README.md', 'r') as f:
         g = ''
         while not g.startswith('<!-- deploy'):        
@@ -17,8 +17,23 @@ def read_deploy(directory):
             if g=='README':
                 continue
             if g.startswith('-->'):
-                break    
-            ret.append(g)
+                break            
+            
+            if ':' in g:
+                i = g.index(':')
+                t = g[i+1:].strip()
+                g = g[0:i].strip()
+                if g.endswith('/'):
+                    g = g[0:-1]
+            else:
+                if g.endswith('/'):
+                    g = g[0:-1]
+                t = g
+                if t.endswith('.md'):
+                    t = t[0:-3]
+            
+            ret.append([g,t])
+            
     
     return ret
 
@@ -92,7 +107,8 @@ def process_markdown(lines,path):
 def deploy_directory(content_current,deploy_current,path):
     deps = read_deploy(content_current)
     for dep in deps:
-        print(content_current+' : '+dep)
+        print(content_current+' : '+str(dep))
+        dep = dep[0]
         if dep.startswith('+'):
             # This is just a blind copy -- no processing
             dep = dep[1:].strip()

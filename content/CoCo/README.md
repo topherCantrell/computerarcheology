@@ -10,7 +10,7 @@
     +PIA0.jpg
     +PIA1.jpg
     +SAM.jpg
-        Pyramid
+        Pyramid/
 -->
 
 ![CoCo](CoCo.jpg)

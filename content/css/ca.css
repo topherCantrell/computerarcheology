@@ -48,10 +48,6 @@ html,
 	margin-bottom:4px;
 }
 
-#siteTree, #siteTree ul, #siteTree li {
-	padding: 0;
-}
-
 #tabs {
 	padding-left: 0px;
 	padding-right: 20px;
@@ -65,29 +61,20 @@ html,
 #pageTree, #pageTree ul, #pageTree li {
 	padding: 0;
 }
-#pageTree ul {
-	margin-left: 12px;
-	list-style: none;	
-}
-#pageTree li {
-	padding-left: 12px;
+#pageTree li {    
+    background-position: 0px 0.4em;
+    padding-left: 12px;
+    background-repeat: no-repeat;  
+    list-style-type: none;    
 }
 
 /* Navigation on the site */
 
-#siteTreee {
+#siteTree {
 	margin-top: 16px;
 }
-
-.selectedPage {
-	font-weight: bold;	
-}
-.selectedPagePath {
-	font-style: italic;
-}
-
-#crumbs li.active {
-	font-weight: bold;
+#siteTree, #siteTree ul, #siteTree li {
+	padding: 0;
 }
 
 #siteTree li {    
@@ -106,6 +93,17 @@ html,
 #siteTree .expanded {
     background-image: url(/img/minusbox.gif);
 }
+
+.selectedPage {
+	font-weight: bold;	
+}
+.selectedPagePath {
+	font-style: italic;
+}
+
+#crumbs li.active {
+	font-weight: bold;
+}	
 
 .playMe {
 	background-color: #dff0d8;

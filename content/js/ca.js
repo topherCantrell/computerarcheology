@@ -64,6 +64,7 @@ function openTree() {
 	
 }
 
+/*
 function prepareList() {
 	
 	// We use the same tree for all pages. This function opens the tree
@@ -89,3 +90,4 @@ function prepareList() {
 $(document).ready( function() {
 	prepareList();	     
 });
+*/

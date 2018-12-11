@@ -32,7 +32,19 @@ class PageTree:
             while self._node['level']!=level:
                 self._node = self._node['parent']
             self._node['children'].append([anchor,text])        
-                
+    
+    '''
+    
+    <ul>
+      <li><a>Dig Sites</a></li>
+      <ul> ... Sites ... </ul>
+      
+      <li><a>Tools</a></li>
+      <ul> ... Tools ... </ul
+      
+    </ul>
+    '''
+                            
     def _to_html_rec(self,node):
         ret = '<ul>'
         for g in node['children']:
@@ -47,4 +59,4 @@ class PageTree:
         # Each string is a <li>
         # Each dict is a <ul>
         ret = self._to_html_rec(self._tree)        
-        return ret[4:-5]
+        return ret
