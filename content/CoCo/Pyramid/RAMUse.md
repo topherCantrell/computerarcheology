@@ -5,7 +5,7 @@
 
 # Variables Kept Outside of Code (Not Saved)
 
-> memory
+>>> memory
 
 | | | |
 | --- | --- | --- |
@@ -97,7 +97,7 @@ These temporaries are NOT persisted in a SAVE.
 
 # Variables Kept in the Code (Saved)
 
-> memory
+>>> memory
 
 | | | | |
 | --- | --- | --- |

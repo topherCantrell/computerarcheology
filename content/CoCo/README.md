@@ -1,16 +1,16 @@
 >>> deploy:<br>
->>   Hardware.md<br>
->   +CoCo.jpg<br>
->   +CoCoTech.jpg<br>
->   +CoCoText.js<br>
->   +color-basic-unravelled.pdf<br>
->   +disk-basic-unravelled.pdf<br>
->   +extended-basic-unravelled.pdf<br>
->   +super-extended-basic-unravelled.pdf<br>
->   +PIA0.jpg<br>
->   +PIA1.jpg<br>
->   +SAM.jpg<br>
->     Pyramid/<br>
+>>>   Hardware.md<br>
+>>>   +CoCo.jpg<br>
+>>>   +CoCoTech.jpg<br>
+>>>   +CoCoText.js<br>
+>>>   +color-basic-unravelled.pdf<br>
+>>>   +disk-basic-unravelled.pdf<br>
+>>>   +extended-basic-unravelled.pdf<br>
+>>>   +super-extended-basic-unravelled.pdf<br>
+>>>   +PIA0.jpg<br>
+>>>   +PIA1.jpg<br>
+>>>   +SAM.jpg<br>
+>>>     Pyramid/<br>
 
 ![CoCo](CoCo.jpg)
 

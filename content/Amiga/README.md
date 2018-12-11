@@ -1,6 +1,6 @@
-> deploy:<br>
->   +Amiga.jpg<br>
->       Rainbow<br>
+>>> deploy:<br>
+>>>   +Amiga.jpg<br>
+>>>       Rainbow<br>
 
 ![Amiga](Amiga.jpg)
 

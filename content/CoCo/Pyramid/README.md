@@ -1,10 +1,10 @@
-> deploy:<br>
->   RAMUse.md<br>
->   Code.md<br>
->   Journal.md<br>
->   +BinaryDataPyramid.js<br>
->   +Pyramid.jpg<br>
->   +pyramid.js<br>
+>>> deploy:<br>
+>>>   RAMUse.md<br>
+>>>   Code.md<br>
+>>>   Journal.md<br>
+>>>   +BinaryDataPyramid.js<br>
+>>>   +Pyramid.jpg<br>
+>>>   +pyramid.js<br>
 
 ![CoCo Pyramid](Pyramid.jpg)
 
@@ -18,7 +18,7 @@
 <script>window.onload = function() {startPyramid("pyramidConsole","pyramidTape");}</script>
 ```
 
-> playMe {
+>>> playMe {
 
 # Play Me! 
 Play the game in a CoCo emulator. Click on the green console and press any key.
@@ -41,7 +41,7 @@ Before the LOAD command you must paste the desired saved-data back into the text
 </div>
 </div>
 ```
-> }
+>>> }
 
 # Code Links
 
@@ -56,7 +56,7 @@ quiet repose. There must be treasures. If even half of the stories about the Los
 Pyramid are true, ... But why dwell on that now -- you are here, and adventure
 awaits just a step away." - From the game manual introduction
 
-> tourGuide {
+>>> tourGuide {
 
 # Tour Guide 
 Check out a [snippet of the original source code](#trs-80-nugget) caught in an uninitialized buffer.
@@ -78,7 +78,7 @@ Visit the [Room Scripts](Code.md#roomscripts) to see what you can do in each roo
 has a chance to take the command. These "adventure language scripts" are interpreted by the [Script Processor](Code.md#ProcessCommandList).
 
 Read through all words that the game understands in the [Word table](Code.md#WordTable).
-> }
+>>> }
 
 # References
 

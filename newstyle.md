@@ -18,12 +18,12 @@ The image's alternate-text is used as the HTML title.
 The entry point README for a directory must contain deployment information for the files and directories within. For instance:
 
 ```
-> deploy:<br>
-> Info.md<br>
-> Other.md<br>
-> +file.jpg<br>
-> +file.jpg<br>
->     SubDirectory<br>
+>>> deploy:<br>
+>>> Info.md<br>
+>>> Other.md<br>
+>>> +file.jpg<br>
+>>> +file.jpg<br>
+>>>     SubDirectory<br>
 ```
 
 Spacing is optional. The `<br>` is optional. A "+" before a file or directory indicates that the file or directory is to be copied to the
@@ -34,11 +34,11 @@ deployment web site but does contribute to the navigation tree.
 The web page allows for special areas like "Play Me" and "Tour Guide". These areas are wrapped in block quote elements like this:
 
 ```
-> playMe {
-> }
+>>> playMe {
+>>> }
 
-> tourGuide {
-> }
+>>> tourGuide {
+>>> }
 ```
 
 # Raw HTML
@@ -62,7 +62,7 @@ Sections of code are placed in code blocks:
 
 Memory maps are defined in regular tables with a leading block quote. Like this:
 ```
-> memory
+>>> memory
 | | | |
 |:-------- |:------- |:----------------- |
 | FF00     | PIA0_DA | I/O data or direction (depends on control setting) |
@@ -75,19 +75,19 @@ Memory maps are defined in regular tables with a leading block quote. Like this:
 
 Disassembly files have this block quote at the top:
 ```
-> code
+>>> code
 ```
 
 You must give the CPU in a block quote near the top (before the first line of disassembly):
 ```
-> cpu 6809
+>>> cpu 6809
 ```
 
 You link the disassembly to other files containing address maps like this:
 ```
-> memoryTable ram  
+>>> memoryTable ram  
 * [RAM Usage](RAMUse.md)
-> memoryTable hard 
+>>> memoryTable hard 
 * [Hardware Info](..\Hardware.md)
 ```
 

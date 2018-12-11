@@ -12,7 +12,7 @@ contains schematics and detailed hardware information. The images below are from
 
 ## PIA 0 
 
-> memory
+>>> memory
 
 | | | |
 |:-------- |:------- |:----------------- |
@@ -25,7 +25,7 @@ contains schematics and detailed hardware information. The images below are from
 
 ## PIA 1 
 
-> memory
+>>> memory
 
 | | | |
 |:-------- |:------- |:----------------- |
@@ -38,7 +38,7 @@ contains schematics and detailed hardware information. The images below are from
 
 ## SAM
 
-> memory
+>>> memory
 
 | | | |
 |:--------- |:---------- |:----------------- |
@@ -62,7 +62,7 @@ The RAM vectors are what programs must change.
 Each vector gets 3 bytes in RAM. The first for the "JMP" opcode followed by the
 address.
 
-> memory
+>>> memory
 
 | | | |
 |:--------- |:----------- |:----------------- |
