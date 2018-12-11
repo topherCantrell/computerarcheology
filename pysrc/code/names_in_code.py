@@ -14,6 +14,7 @@ dirname = os.path.dirname(FILE_NAME)
 
 memory_tables = {}
 
+# Load all the memory tables
 for i in range(len(lines)):
     md = lines[i]
     if type(md) is Directive and md.directive.startswith('memoryTable'):
@@ -31,7 +32,7 @@ for md in lines:
     if type(md) == Block and md.type == 'code':
         code += md.lines[1:-1]
     
-# Gather addresses of each label in the code
+# Get the addresses of each label in the code
 code_labels = {}   
 for i in range(len(code)):
     c = code[i]    
@@ -47,5 +48,6 @@ for i in range(len(code)):
             raise Exception('No address after label '+c.label)                            
         code_labels[c.label] = nc.address
 
-print(code_labels)
-print(memory_tables)
+for c in code:
+    if c.comment and c.comment.startswith('{'):
+        print(c.original.line)
