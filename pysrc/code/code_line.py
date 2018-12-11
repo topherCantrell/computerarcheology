@@ -23,18 +23,19 @@ class CodeLine:
         
         line = line.strip()
         
+        self.address = None
+        self.comment = None
+        
         if ';' in line:
             i = line.index(';')
             self.comment = line[i+1:].strip()
-            line = line[0:i].strip()
-        else:
-            self.comment = None
+            line = line[0:i].strip()                    
         
         self.label = None    
         if not ' ' in line and line.endswith(':'):
             self.type = 'Label'
             self.label = line[0:-1]
-            return
+            return        
         
         if len(line)>4:
             try:
