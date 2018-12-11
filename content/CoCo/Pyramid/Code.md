@@ -5,9 +5,9 @@
 
 # Pyramid Code
 
-> -ram 
+> memoryTable ram 
 * [RAM Usage](RAMUse.md)
-> -hard 
+> memoryTable hard 
 * [Hardware Info](..\Hardware.md)
 
 Loaded from cassette at 0x600 (right after text screen memory).<br>

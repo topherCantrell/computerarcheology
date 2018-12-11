@@ -85,11 +85,11 @@ You must give the CPU in a block quote near the top (before the first line of di
 
 You link the disassembly to other files containing address maps like this:
 ```
-> -ram  
+> memoryTable ram  
 * [RAM Usage](RAMUse.md)
-> -hard 
+> memoryTable hard 
 * [Hardware Info](..\Hardware.md)
 ```
 
-The `-ram` is for RAM variables. The `-hard` is for hardware registers. These have special colorings in the final
-renderings. You can use any name starting with a minus: `-nonvol`.
+The `ram` is for RAM variables. The `hard` is for hardware registers. These have special colorings in the final
+renderings. You can use any name for other types of mapping files.
