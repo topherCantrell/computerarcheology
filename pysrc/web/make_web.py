@@ -9,16 +9,20 @@ def read_deploy(directory):
     ret = [['README.md','']]
     with open(directory+'\\README.md', 'r') as f:
         g = ''
-        while not g.startswith('<!-- deploy'):        
+        while not g.startswith('> deploy:'):        
             g = f.readline()
         
         while True:
             g = f.readline().strip()
-            if g=='README':
-                continue
-            if g.startswith('-->'):
-                break            
+            if not g.startswith('>'):
+                break
+            g = g[1:].strip()
+            if g.endswith('<br>'):
+                g = g[0:-4].strip()
             
+            if g=='README.md':
+                continue
+                       
             if ':' in g:
                 i = g.index(':')
                 t = g[i+1:].strip()
