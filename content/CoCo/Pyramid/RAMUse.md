@@ -99,14 +99,15 @@ These temporaries are NOT persisted in a SAVE.
 
 > memory
 
-||= Address  || Name || Init || Description ||
-|| 18E5      || curRoom              || 01 || RoomNumber (starts in 1) ||
-|| 18E6      || turnsMSB             || 00 || TurnCountMSB (BCD format) ||
-|| 18E7      || turnsLSB             || 00 || TurnCountLSB (BCD format) ||
-|| 18E8      || lampTime             || 00 || LampTime ||
-|| 18E9      || m18E9                || 00 || * NOT USED * ||
-|| 18EA      || lastRoom             || 00 || LastRoomNumber ||
-|| 18EB      || numInPack            || 00 || NumInPack ||
-|| 18EC      || m18EC                || 00 || * NOT USED * ||
+| | | | |
+| --- | --- | --- |
+| 18E5      | curRoom              | 01 RoomNumber (starts in 1) |
+| 18E6      | turnsMSB             | 00 TurnCountMSB (BCD format) |
+| 18E7      | turnsLSB             | 00 TurnCountLSB (BCD format) |
+| 18E8      | lampTime             | 00 LampTime |
+| 18E9      | m18E9                | 00 * NOT USED * |
+| 18EA      | lastRoom             | 00 LastRoomNumber |
+| 18EB      | numInPack            | 00 NumInPack |
+| 18EC      | m18EC                | 00 * NOT USED * |
 
  
