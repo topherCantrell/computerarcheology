@@ -1,5 +1,5 @@
-> deploy:<br>
->   Hardware.md<br>
+>>> deploy:<br>
+>>   Hardware.md<br>
 >   +CoCo.jpg<br>
 >   +CoCoTech.jpg<br>
 >   +CoCoText.js<br>
