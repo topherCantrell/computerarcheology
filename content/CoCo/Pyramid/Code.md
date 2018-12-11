@@ -1,14 +1,13 @@
-<!-- code -->
+> code
+> cpu 6809
 
 ![](Pyramid.jpg)
 
 # Pyramid Code
 
-<!-- cpu 6809 -->
-
-<!-- -ram  --> 
+> -ram 
 * [RAM Usage](RAMUse.md)
-<!-- -hard --> 
+> -hard 
 * [Hardware Info](..\Hardware.md)
 
 Loaded from cassette at 0x600 (right after text screen memory).<br>

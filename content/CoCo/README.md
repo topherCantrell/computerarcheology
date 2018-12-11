@@ -1,17 +1,16 @@
-<!-- deploy    
-    Hardware.md
-    +CoCo.jpg
-    +CoCoTech.jpg
-    +CoCoText.js
-    +color-basic-unravelled.pdf
-    +disk-basic-unravelled.pdf
-    +extended-basic-unravelled.pdf
-    +super-extended-basic-unravelled.pdf
-    +PIA0.jpg
-    +PIA1.jpg
-    +SAM.jpg
-        Pyramid/
--->
+> deploy:<br>    
+>   Hardware.md<br>
+>   +CoCo.jpg<br>
+>   +CoCoTech.jpg<br>
+>   +CoCoText.js<br>
+>   +color-basic-unravelled.pdf<br>
+>   +disk-basic-unravelled.pdf<br>
+>   +extended-basic-unravelled.pdf<br>
+>   +super-extended-basic-unravelled.pdf<br>
+>   +PIA0.jpg<br>
+>   +PIA1.jpg<br>
+>   +SAM.jpg<br>
+>       Pyramid/<br>
 
 ![CoCo](CoCo.jpg)
 

@@ -5,7 +5,8 @@
 
 # Variables Kept Outside of Code (Not Saved)
 
-<!-- memory -->
+> memory
+
 | | | |
 | --- | --- | --- |
 | 007C      | m007C                | |
@@ -96,7 +97,8 @@ These temporaries are NOT persisted in a SAVE.
 
 # Variables Kept in the Code (Saved)
 
-<!-- memory -->
+> memory
+
 ||= Address  || Name || Init || Description ||
 || 18E5      || curRoom              || 01 || RoomNumber (starts in 1) ||
 || 18E6      || turnsMSB             || 00 || TurnCountMSB (BCD format) ||

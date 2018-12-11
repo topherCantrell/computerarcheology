@@ -1,10 +1,9 @@
-<!-- deploy
-  +Rainbow.jpg
-  1loader-dec.md
-  1loader.md
-  boot.md
-  orig-boot.md
--->
+> deploy:<br>
+> +Rainbow.jpg<br>
+> 1loader-dec.md<br>
+> 1loader.md<br>
+> boot.md<br>
+> orig-boot.md<br>
 
 ![Rainbow Islands](Rainbow.jpg)
 

@@ -1,11 +1,11 @@
-> deploy
->    +css
->    +js
->    +img
->    +Arch.jpg
->    +favicon.ico
->        Amiga
->        CoCo
+> deploy:<br>
+>    +css<br>
+>    +js<br>
+>    +img<br>
+>    +Arch.jpg<br>
+>    +favicon.ico<br>
+>        Amiga<br>
+>        CoCo<br>
 
 ![Computer Archeology](Arch.jpg)
 # Computer Archeology
@@ -16,7 +16,7 @@ ideas, and ingenuity in the code -- the programmer's "flavor". There are code ge
 programs buried in the ancient (decades past) ROMs of old. My goal is to dust them off and put them on
 display for all to share. Welcome to my museum!
 
-<!-- {{{playMe -->
+> playMe {
 
 # Play Me!
 
@@ -28,7 +28,7 @@ There are several emulations on this site. If you want to experience the code fo
 * [Pyramid (text adventure on the TRS-80)](TRS80/Pyramid)
 * [Haunted House (text adventure on the TRS-80)](TRS80/HauntedHouse)
 
-<!-- }}} -->
+> }
 
 # Raw Content
 
