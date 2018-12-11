@@ -18,28 +18,27 @@ The image's alternate-text is used as the HTML title.
 The entry point README for a directory must contain deployment information for the files and directories within. For instance:
 
 ```
-<!-- deploy
-  Info.md
-  Other.md
-  +file.jpg
-  +file.jpg
-      SubDirectory
--->
+> deploy:<br>
+> Info.md<br>
+> Other.md<br>
+> +file.jpg<br>
+> +file.jpg<br>
+>     SubDirectory<br>
 ```
 
-Spacing is optional. A "+" before a file or directory indicates that the file or directory is to be copied to the
+Spacing is optional. The `<br>` is optional. A "+" before a file or directory indicates that the file or directory is to be copied to the
 deployment web site but does contribute to the navigation tree.
 
 # Special Areas
 
-The web page allows for special areas like "Play Me" and "Tour Guide". These areas are wrapped in comment blocks like this:
+The web page allows for special areas like "Play Me" and "Tour Guide". These areas are wrapped in block quote elements like this:
 
 ```
-<!-- playMe { -->
-<!-- } -->
+> playMe {
+> }
 
-<!-- tourGuide { -->
-<!-- } -->
+> tourGuide {
+> }
 ```
 
 # Raw HTML
@@ -61,9 +60,9 @@ Sections of code are placed in code blocks:
 
 # Address Maps
 
-Memory maps are defined in regular tables with a leading comment. Like this:
+Memory maps are defined in regular tables with a leading block quote. Like this:
 ```
-<!-- memory -->
+> memory
 | | | |
 |:-------- |:------- |:----------------- |
 | FF00     | PIA0_DA | I/O data or direction (depends on control setting) |
@@ -74,21 +73,21 @@ Memory maps are defined in regular tables with a leading comment. Like this:
 
 # Disassembly Files
 
-Disassembly files have this comment at the top:
+Disassembly files have this block quote at the top:
 ```
-<!-- code -->
+> code
 ```
 
-You must give the CPU in a comment near the top (before the first line of disassembly):
+You must give the CPU in a block quote near the top (before the first line of disassembly):
 ```
-<!-- cpu 6809 -->
+> cpu 6809
 ```
 
 You link the disassembly to other files containing address maps like this:
 ```
-<!-- -ram  --> 
+> -ram  
 * [RAM Usage](RAMUse.md)
-<!-- -hard --> 
+> -hard 
 * [Hardware Info](..\Hardware.md)
 ```
 
