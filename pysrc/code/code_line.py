@@ -29,7 +29,8 @@ class CodeLine:
             line = line[0:i].strip()
         else:
             self.comment = None
-            
+        
+        self.label = None    
         if not ' ' in line and line.endswith(':'):
             self.type = 'Label'
             self.label = line[0:-1]
