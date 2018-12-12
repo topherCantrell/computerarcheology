@@ -78,6 +78,6 @@ def make_site_nav(path):
     
     # TODO opens and closes here
     # TODO make HTML here
-    return _make_site_tree_rec(ret)
+    return _make_site_tree_rec(ret)[4:-5]
     
     

@@ -58,5 +58,6 @@ class PageTree:
     def to_html(self):
         # Each string is a <li>
         # Each dict is a <ul>
-        ret = self._to_html_rec(self._tree)        
+        ret = self._to_html_rec(self._tree)[4:-5]     
+        print(ret)  
         return ret

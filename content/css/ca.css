@@ -58,14 +58,14 @@ html,
 #pageTree {
 	margin-top: 16px;
 }
-#pageTree, #pageTree ul, #pageTree li {
-	padding: 0;
+#pageTree ul {
+	padding-left: 16px;
 }
-#pageTree li {    
-    background-position: 0px 0.4em;
-    padding-left: 12px;
-    background-repeat: no-repeat;  
+#pageTree li {      
     list-style-type: none;    
+}
+#pageTree > :first-child {
+	padding-left: 0px;
 }
 
 /* Navigation on the site */
@@ -73,8 +73,14 @@ html,
 #siteTree {
 	margin-top: 16px;
 }
+#siteTree ul {
+	padding-left: 16px;	
+}
 #siteTree, #siteTree ul, #siteTree li {
-	padding: 0;
+	/*padding: 0;*/
+}
+#siteTree > :first-child {
+	padding-left: 0px;
 }
 
 #siteTree li {    
