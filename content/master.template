@@ -46,8 +46,8 @@
 		</ul>
       </div>
     
-      <div>
-        <ul id="siteTree">
+      <div id="siteTree">
+        <ul >
           <!-- %%SITE_TREE%% -->
         </ul>
       </div>
