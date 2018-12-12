@@ -53,6 +53,13 @@ html,
 	padding-right: 20px;
 }
 
+
+
+
+
+
+
+
 /* Navigation on the page */
 
 #pageTree {
@@ -62,11 +69,25 @@ html,
 	padding-left: 16px;
 }
 #pageTree li {      
+	background-position: 0px 0.4em;
+    padding-left: 12px;
+    background-repeat: no-repeat;  
     list-style-type: none;    
 }
 #pageTree > :first-child {
 	padding-left: 0px;
 }
+
+#pageTree .collapsed {
+    background-image: url(/img/plusbox.gif);
+}
+#pageTree .expanded {
+    background-image: url(/img/minusbox.gif);
+}
+
+
+
+
 
 /* Navigation on the site */
 

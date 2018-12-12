@@ -51,7 +51,7 @@ class PageTree:
             if type(g) is dict:
                 ret += self._to_html_rec(g)
             else:
-                ret = ret + '<li><a href="#'+g[0]+'">'+g[1]+'</a></li>'
+                ret = ret + '<li class="expanded"><a href="#'+g[0]+'">'+g[1]+'</a></li>'
         ret += '</ul>'
         return ret
     
