@@ -1,23 +1,43 @@
-function switchToSiteTab() {   	
-	if($("#siteTab").hasClass("active")) {
-		return;
-	}
-	$("#pageTab").removeClass("active");
-	$("#siteTab").addClass("active");
-	$("#pageTree").addClass("hidden");
-	$("#siteTree").removeClass("hidden");		
-}
 
-function switchToPageTab() {   	
-	if($("#pageTab").hasClass("active")) {
-		return;
-	}
-	$("#siteTab").removeClass("active");
-	$("#pageTab").addClass("active");
-	$("#siteTree").addClass("hidden");
-	$("#pageTree").removeClass("hidden");		
-}
+$(function() {
+	
+	$('#siteTab').on('click', function() {
+		if($("#siteTab").hasClass("active")) {
+			return;
+		}
+		$("#pageTab").removeClass("active");
+		$("#siteTab").addClass("active");
+		$("#pageTree").addClass("hidden");
+		$("#siteTree").removeClass("hidden");
+	});
+	
+	$('#pageTab').on('click', function() {
+		if($("#pageTab").hasClass("active")) {
+			return;
+		}
+		$("#siteTab").removeClass("active");
+		$("#pageTab").addClass("active");
+		$("#siteTree").addClass("hidden");
+		$("#pageTree").removeClass("hidden");
+	});
+	
+	$('.branch').on('click', function(evt) {
+		if (evt.target.localName=='li') {
+			var e = $(this);	
+			if(e.hasClass('expanded')) {
+				e.removeClass('expanded');
+				e.addClass('collapsed');
+			} else {
+				e.removeClass('collapsed');
+				e.addClass('expanded');
+			}		
+			e.next().toggle('medium');          
+		}
+	});
+	
+});
 
+/*
 function openTree() {  
 
 	var x,y,ch;	
@@ -63,6 +83,7 @@ function openTree() {
 	}
 	
 }
+*/
 
 /*
 function prepareList() {

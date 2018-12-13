@@ -1,6 +1,6 @@
 import shutil
 import os
-from web.page_tree import PageTree
+from web.nav_tree import NavTree
 from web.id_mgr import IDMgr
 import web.ENVIRONMENT as ENV
 import web.site_tree
@@ -57,7 +57,7 @@ def process_markdown(lines,path):
     ids = IDMgr()
     
     # Used to build the page's navigation tab
-    page_nav = PageTree()
+    page_nav = NavTree()
     
     # All the different pieces of the page
     ret = {}

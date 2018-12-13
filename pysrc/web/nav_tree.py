@@ -1,5 +1,14 @@
 
-class PageTree:
+'''
+
+A navigation item is a <li> followed by its <ul> of children.
+
+An <li> that has <ul> children is given the class "branch". That creates a +/- box
+to expand/collapse the node.
+
+'''
+
+class NavTree:
     
     def __init__(self):
         
@@ -44,14 +53,26 @@ class PageTree:
       
     </ul>
     '''
+            
+    def expand_all(self,expand=True,node=None):
+        if node==None:
+            node = self._tree
+        for i in range(len(node['children'])):
+            pass
                             
     def _to_html_rec(self,node):
+        if len(node['children'])==0:
+            return ''        
         ret = '<ul>'
-        for g in node['children']:
+        for i in range(len(node['children'])):
+            g = node['children'][i]        
             if type(g) is dict:
                 ret += self._to_html_rec(g)
             else:
-                ret = ret + '<li class="expanded"><a href="#'+g[0]+'">'+g[1]+'</a></li>'
+                if i<len(node['children'])-1 and type(node['children'][i+1])==dict:
+                    ret = ret + '<li class="branch expanded"><a href="#'+g[0]+'">'+g[1]+'</a></li>'
+                else:
+                    ret = ret + '<li><a href="#'+g[0]+'">'+g[1]+'</a></li>'
         ret += '</ul>'
         return ret
     
