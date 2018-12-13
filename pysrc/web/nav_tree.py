@@ -51,9 +51,13 @@ class NavTree:
         
             classes = ''
             if len(node.children)>0:
-                classes += 'branch '                
-                
+                classes += 'branch '  
+                if node.expanded:
+                    classes += 'expanded '
+                else:
+                    classes += 'collapsed '              
             classes = classes.strip()
+            
             if classes!='':
                 ret = ret+'<li class="'+classes+'">'
             else:
@@ -96,5 +100,4 @@ class NavTree:
     
     def to_html(self):                              
         ret = self._to_html_rec(self._tree,True)    
-        print(ret)  
         return ret

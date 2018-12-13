@@ -31,7 +31,7 @@ $(function() {
 				e.removeClass('collapsed');
 				e.addClass('expanded');
 			}		
-			e.next().toggle('medium');          
+			e.find('ul').toggle('fast');          
 		}
 	});
 	
