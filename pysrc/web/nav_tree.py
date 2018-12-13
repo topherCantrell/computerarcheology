@@ -57,9 +57,8 @@ class NavTree:
             if classes!='':
                 ret = ret+'<li class="'+classes+'">'
             else:
-                ret = ret+'<li>'
-                
-            el = 'a'
+                ret = ret+'<li>'               
+            
             classes=''
             if node.expanded and len(node.children)>0:
                 classes += 'expanded '
@@ -67,14 +66,21 @@ class NavTree:
                 classes += 'activeItemPath '
             if node.active_item:
                 classes += 'activeItem '
-                el = 'span'
-            
+            classes = classes.strip()
+                                        
             if node.active_item:
-                pass
-                  
-            
-            ret = ret + node.text
-        
+                # This is active ... a span
+                if len(classes)>0:
+                    ret = ret + '<span classes="'+classes+'">'+node.text+'</span>'
+                else:
+                    ret = ret + '<span>'+node.text+'</span>'                
+            else:
+                # This is not active ... an anchor
+                if len(classes)>0:
+                    ret = ret + '<a href="{anchor}" classes="{classes}">{text}</a>'.format(anchor=node.anchor,classes=classes,text=node.text)
+                else:
+                    ret = ret + '<a href="{anchor}">{text}</a>'.format(anchor=node.anchor,text=node.text)               
+                                
         if len(node.children)>0:
             if not children_only:
                 ret = ret + '<ul>'
