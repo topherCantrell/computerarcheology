@@ -94,7 +94,7 @@ def process_markdown(lines,path):
                 level = level + 1                
             text = line[level:].strip()
             anchor = ids.add_id(text)
-            page_nav.add_page_nav(level,anchor,text)
+            page_nav.add_page_nav(level,text,anchor)
             content += '<h{level} id="{anchor}">{text}</h{level}>\n'.format(level=level,anchor=anchor,text=text)
     
         
