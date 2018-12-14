@@ -11,8 +11,6 @@ class MarkdownLine:
 
 def get_deploy(lines):
     
-    raise Exception('THIS NEEDS WORK')
-    
     ret = [['README.md','']]
     
     found = False
@@ -23,11 +21,27 @@ def get_deploy(lines):
                 g = g.directive
                 if '<br>' in g:
                     g = g[0:g.index('<br>')].strip()
-                ret.append([g,''])
+                if g=='README.md':
+                    continue
+                
+                if ':' in g:
+                    i = g.index(':')
+                    t = g[i+1:].strip()
+                    g = g[0:i].strip()
+                    if g.endswith('/'):
+                        g = g[0:-1]
+                else:
+                    if g.endswith('/'):
+                        g = g[0:-1]
+                    t = g
+                    if t.endswith('.md'):
+                        t = t[0:-3]
+                
+                ret.append([g,t])
             else:
                 return ret
-        else:
-            if type(g) is Directive and g.directive.startswith('deploy:'):
+        else:            
+            if type(g) is Directive :
                 found = True
                 
     return ret

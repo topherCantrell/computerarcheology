@@ -62,26 +62,26 @@ html,
 
 /* Navigation on the page */
 
-#pageTree {
+.navTree {
 	margin-top: 16px;
 }
-#pageTree ul {
+.navTree ul {
 	padding-left: 16px;
 }
-#pageTree li {      
+.navTree li {      
 	background-position: 0px 0.4em;
     padding-left: 12px;
     background-repeat: no-repeat;  
     list-style-type: none;    
 }
-#pageTree > :first-child {
+.navTree > :first-child {
 	padding-left: 0px;
 }
 
-#pageTree .collapsed {
+.navTree .collapsed {
     background-image: url(/img/plusbox.gif);
 }
-#pageTree .expanded {
+.navTree .expanded {
     background-image: url(/img/minusbox.gif);
 }
 
@@ -91,20 +91,20 @@ html,
 
 /* Navigation on the site */
 
-#siteTree {
+#ssiteTree {
 	margin-top: 16px;
 }
-#siteTree ul {
+#ssiteTree ul {
 	padding-left: 16px;	
 }
-#siteTree, #siteTree ul, #siteTree li {
+#ssiteTree, #siteTree ul, #siteTree li {
 	/*padding: 0;*/
 }
-#siteTree > :first-child {
+#ssiteTree > :first-child {
 	padding-left: 0px;
 }
 
-#siteTree li {    
+#ssiteTree li {    
     background-position: 0px 0.4em;
     padding-left: 12px;
     background-repeat: no-repeat;  
@@ -112,19 +112,19 @@ html,
 }
 
 /* Collapsed state for list element */
-#siteTree .collapsed {
+#ssiteTree .collapsed {
     background-image: url(/img/plusbox.gif);
 }
 /* Expanded state for list element
 /* NOTE: This class must be located UNDER the collapsed one */
-#siteTree .expanded {
+#ssiteTree .expanded {
     background-image: url(/img/minusbox.gif);
 }
 
-.selectedPage {
+.sselectedPage {
 	font-weight: bold;	
 }
-.selectedPagePath {
+.sselectedPagePath {
 	font-style: italic;
 }
 

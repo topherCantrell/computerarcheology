@@ -1,10 +1,11 @@
 import os
 import web.ENVIRONMENT as ENV
-import web.make_web
+import code.markdown_line
 import copy
 
 def _load_directory(d):
-    info = web.make_web.read_deploy(d)    
+    lines = code.markdown_line.load_file(d+'/README.md')
+    info = code.markdown_line.get_deploy(lines)  
     ret = []
     for e in info:
         t = e[1]

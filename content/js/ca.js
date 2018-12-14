@@ -31,7 +31,8 @@ $(function() {
 				e.removeClass('collapsed');
 				e.addClass('expanded');
 			}		
-			e.find('ul').toggle('fast');          
+			e.find('ul').toggle('fast');  
+			evt.stopPropagation();
 		}
 	});
 	

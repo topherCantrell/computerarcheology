@@ -3,49 +3,8 @@ import os
 from web.nav_tree import NavTree
 from web.id_mgr import IDMgr
 import web.ENVIRONMENT as ENV
-import web.site_tree
-#import code.markdown_line
-
-def read_deploy(directory):    
-    ret = [['README.md','']]
-    
-    with open(directory+'\\README.md', 'r') as f:
-        g = ''
-        while not g.startswith('>>> deploy:'):        
-            g = f.readline()
-            if g=='':
-                break
-        
-        while True:
-            g = f.readline().strip()
-            if g=='':
-                break
-            if not g.startswith('>>>'):
-                break
-            g = g[3:].strip()
-            if g.endswith('<br>'):
-                g = g[0:-4].strip()
-            
-            if g=='README.md':
-                continue
-                       
-            if ':' in g:
-                i = g.index(':')
-                t = g[i+1:].strip()
-                g = g[0:i].strip()
-                if g.endswith('/'):
-                    g = g[0:-1]
-            else:
-                if g.endswith('/'):
-                    g = g[0:-1]
-                t = g
-                if t.endswith('.md'):
-                    t = t[0:-3]
-            
-            ret.append([g,t])
-            
-    
-    return ret
+import code.markdown_line
+import copy
 
 def substitute(lines,tag,value):
     tag = '<!-- %%'+tag+'%% -->'
@@ -104,9 +63,12 @@ def process_markdown(lines,path):
     ret['PAGE_TREE'] = page_nav.to_html()      
     ret['CONTENT'] = content   
     
+    spec_site_nav = copy.deepcopy(site_nav)
+    # TODO open path
+    
     # TODO     
     ret['BREAD_CRUMBS'] = 'Crumbs'
-    ret['SITE_TREE'] = web.site_tree.make_site_nav(path) # TODO path    
+    ret['SITE_TREE'] = spec_site_nav.to_html()    
     
     # Some basic error checking
     if ret['IMAGE']=='' or ret['TITLE']=='':
@@ -115,12 +77,10 @@ def process_markdown(lines,path):
     return ret
 
 def deploy_directory(content_current,deploy_current,path):
-    # TODO
-    # lines = code.markdown_line.load_file(content_current+'/README.md')
-    # deps = code.markdown_line.get_deploy(content_current)
     
-    deps = read_deploy(content_current)
-    
+    lines = code.markdown_line.load_file(content_current+'/README.md')
+    deps = code.markdown_line.get_deploy(lines)
+                
     for dep in deps:
         print(content_current+' : '+str(dep))
         dep = dep[0]
@@ -161,9 +121,28 @@ def deploy_directory(content_current,deploy_current,path):
                 f.writelines(lines)
                 f.close()
 
+def load_site_directory(d,level,tree=None):
+    
+    if tree==None:
+        tree = NavTree()
+        
+    lines = code.markdown_line.load_file(d+'/README.md')
+    info = code.markdown_line.get_deploy(lines)  
+    
+    for e in info:
+        if e[0]=='README.md' or e[0].startswith('+'):
+            continue
+        if os.path.isdir(os.path.join(d,e[0])):
+            tree.add_page_nav(level,e[0],'++++'+e[1])
+            load_site_directory(os.path.join(d,e[0]),level+1,tree)
+        else:        
+            tree.add_page_nav(level,e[0],'????'+e[1])    
+            
+    return tree
+
 if __name__ == '__main__':
     
-    global site_nav
+    site_nav = load_site_directory(ENV.CONTENT_DIR,1)
     
     if os.path.isdir(ENV.DEPLOY_DIR):
         shutil.rmtree(ENV.DEPLOY_DIR)
