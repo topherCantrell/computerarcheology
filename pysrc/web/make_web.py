@@ -4,9 +4,11 @@ from web.nav_tree import NavTree
 from web.id_mgr import IDMgr
 import web.ENVIRONMENT as ENV
 import web.site_tree
+#import code.markdown_line
 
 def read_deploy(directory):    
     ret = [['README.md','']]
+    
     with open(directory+'\\README.md', 'r') as f:
         g = ''
         while not g.startswith('>>> deploy:'):        
@@ -113,7 +115,12 @@ def process_markdown(lines,path):
     return ret
 
 def deploy_directory(content_current,deploy_current,path):
+    # TODO
+    # lines = code.markdown_line.load_file(content_current+'/README.md')
+    # deps = code.markdown_line.get_deploy(content_current)
+    
     deps = read_deploy(content_current)
+    
     for dep in deps:
         print(content_current+' : '+str(dep))
         dep = dep[0]

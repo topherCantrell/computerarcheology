@@ -8,7 +8,30 @@ class MarkdownLine:
         self.line = line
         self.filename = filename
         self.linenumber = linenumber
+
+def get_deploy(lines):
     
+    raise Exception('THIS NEEDS WORK')
+    
+    ret = [['README.md','']]
+    
+    found = False
+    
+    for g in lines:
+        if found:
+            if type(g) is Directive:
+                g = g.directive
+                if '<br>' in g:
+                    g = g[0:g.index('<br>')].strip()
+                ret.append([g,''])
+            else:
+                return ret
+        else:
+            if type(g) is Directive and g.directive.startswith('deploy:'):
+                found = True
+                
+    return ret
+        
 def load_file(filename):
     
     lines = []
