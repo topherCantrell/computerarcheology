@@ -14,6 +14,8 @@ def substitute(lines,tag,value):
 
 def process_markdown(lines,path):
     
+    print("::"+path+"::")
+    
     # Used to make unique anchor ids on this page    
     ids = IDMgr()
     
@@ -99,7 +101,10 @@ def deploy_directory(content_current,deploy_current,path):
             dst = os.path.join(deploy_current,dep)
             if os.path.isdir(src):
                 os.makedirs(dst)
-                deploy_directory(src,dst,path+'/'+dep)
+                np = path
+                if path=='/':
+                    np = ''
+                deploy_directory(src,dst,np+'/'+dep)
             else:
                 f = open(src,'r')
                 cont = f.readlines()
@@ -121,10 +126,11 @@ def deploy_directory(content_current,deploy_current,path):
                 f.writelines(lines)
                 f.close()
 
-def load_site_directory(d,level,tree=None):
+def load_site_directory(d,level,path,tree=None):
     
     if tree==None:
         tree = NavTree()
+        tree.add_page_nav(1,'Home','/')
         
     lines = code.markdown_line.load_file(d+'/README.md')
     info = code.markdown_line.get_deploy(lines)  
@@ -133,16 +139,17 @@ def load_site_directory(d,level,tree=None):
         if e[0]=='README.md' or e[0].startswith('+'):
             continue
         if os.path.isdir(os.path.join(d,e[0])):
-            tree.add_page_nav(level,e[0],'++++'+e[1])
-            load_site_directory(os.path.join(d,e[0]),level+1,tree)
+            tree.add_page_nav(level,e[1],path+'/'+e[0])
+            load_site_directory(os.path.join(d,e[0]),level+1,path+'/'+e[0],tree)
         else:        
-            tree.add_page_nav(level,e[0],'????'+e[1])    
+            g = e[0].replace('.md','.html')
+            tree.add_page_nav(level,e[1],path+'/'+g)    
             
     return tree
 
 if __name__ == '__main__':
     
-    site_nav = load_site_directory(ENV.CONTENT_DIR,1)
+    site_nav = load_site_directory(ENV.CONTENT_DIR,1,'')   
     
     if os.path.isdir(ENV.DEPLOY_DIR):
         shutil.rmtree(ENV.DEPLOY_DIR)

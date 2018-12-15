@@ -47,7 +47,7 @@
       </div>
     
       <div id="siteTree" class="navTree" >
-        <ul >
+        <ul >          
           <!-- %%SITE_TREE%% -->
         </ul>
       </div>
