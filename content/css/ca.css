@@ -65,14 +65,14 @@ html,
 .navTree {
 	margin-top: 16px;
 }
-.navTree ul {
-	padding-left: 16px;
-}
 .navTree li {      
 	background-position: 0px 0.4em;
     padding-left: 12px;
     background-repeat: no-repeat;  
     list-style-type: none;    
+}
+.navTree ul {
+	padding-left:0px;
 }
 .navTree > :first-child {
 	padding-left: 0px;
@@ -88,43 +88,10 @@ html,
 
 
 
-
-/* Navigation on the site */
-
-#ssiteTree {
-	margin-top: 16px;
-}
-#ssiteTree ul {
-	padding-left: 16px;	
-}
-#ssiteTree, #siteTree ul, #siteTree li {
-	/*padding: 0;*/
-}
-#ssiteTree > :first-child {
-	padding-left: 0px;
-}
-
-#ssiteTree li {    
-    background-position: 0px 0.4em;
-    padding-left: 12px;
-    background-repeat: no-repeat;  
-    list-style-type: none;    
-}
-
-/* Collapsed state for list element */
-#ssiteTree .collapsed {
-    background-image: url(/img/plusbox.gif);
-}
-/* Expanded state for list element
-/* NOTE: This class must be located UNDER the collapsed one */
-#ssiteTree .expanded {
-    background-image: url(/img/minusbox.gif);
-}
-
-.sselectedPage {
+.selectedPage {
 	font-weight: bold;	
 }
-.sselectedPagePath {
+.selectedPagePath {
 	font-style: italic;
 }
 

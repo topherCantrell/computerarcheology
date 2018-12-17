@@ -30,9 +30,9 @@
       <img id="pageImage" src="<!-- %%IMAGE%% -->"/>       
     </div>
     <div id="crumbs">
-      <ol class="breadcrumb">		
+      <ul class="breadcrumb">		
 	    <!-- %%BREAD_CRUMBS%% -->			
-	  </ol> 
+	  </ul> 
     </div>  
   </div>
   

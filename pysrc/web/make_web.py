@@ -12,10 +12,19 @@ def substitute(lines,tag,value):
         if tag in lines[i]:
             lines[i] = lines[i].replace(tag,value)
 
-def process_markdown(lines,path):
+def process_markdown(lines,path,crumb_path):
     
-    print("::"+path+"::")
+    # TODO the path must be a list like: [ [text,anchor],[text,anchor] ]
     
+    #crumbs = path
+    
+    if crumb_path[-1]=='/':
+        crumb_path=crumb_path[0:-1]
+    else:
+        crumb_path=crumb_path+'.html'
+    crumbs = '<li><a>Home</a></li> <li><a>Amiga</a></li> <li><a>What</a></li> <li><a>Now</a></li>'
+    print(crumb_path)
+           
     # Used to make unique anchor ids on this page    
     ids = IDMgr()
     
@@ -67,9 +76,8 @@ def process_markdown(lines,path):
     
     spec_site_nav = copy.deepcopy(site_nav)
     # TODO open path
-    
-    # TODO     
-    ret['BREAD_CRUMBS'] = 'Crumbs'
+        
+    ret['BREAD_CRUMBS'] = crumbs
     ret['SITE_TREE'] = spec_site_nav.to_html()    
     
     # Some basic error checking
@@ -85,6 +93,7 @@ def deploy_directory(content_current,deploy_current,path):
                 
     for dep in deps:
         print(content_current+' : '+str(dep))
+        text = dep[1]
         dep = dep[0]
         if dep.startswith('+'):
             # This is just a blind copy -- no processing
@@ -108,7 +117,7 @@ def deploy_directory(content_current,deploy_current,path):
             else:
                 f = open(src,'r')
                 cont = f.readlines()
-                cont = process_markdown(cont,path)
+                cont = process_markdown(cont,path,path+'/'+text)
                 f = open(os.path.join(ENV.CONTENT_DIR,'master.template'),'r')
                 lines = f.readlines()
                 f.close()
