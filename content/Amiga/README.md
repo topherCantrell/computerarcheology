@@ -1,6 +1,6 @@
 >>> deploy:<br>
 >>>   +Amiga.jpg<br>
->>>       Rainbow<br>
+>>>       Rainbow:Rainbow Islands<br>
 
 ![Amiga](Amiga.jpg)
 

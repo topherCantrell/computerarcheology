@@ -135,30 +135,32 @@ def deploy_directory(content_current,deploy_current,path):
                 f.writelines(lines)
                 f.close()
 
-def load_site_directory(d,level,path,tree=None):
+def load_site_directory(d,level,physical_path,tree=None):
     
     if tree==None:
-        tree = NavTree()
+        tree = NavTree()       
         tree.add_page_nav(1,'Home','/')
         
     lines = code.markdown_line.load_file(d+'/README.md')
     info = code.markdown_line.get_deploy(lines)  
     
-    for e in info:
-        if e[0]=='README.md' or e[0].startswith('+'):
+    for (physical,title) in info:
+        if physical=='README.md' or physical.startswith('+'):
+            # These do not contribute to navigation
             continue
-        if os.path.isdir(os.path.join(d,e[0])):
-            tree.add_page_nav(level,e[1],path+'/'+e[0])
-            load_site_directory(os.path.join(d,e[0]),level+1,path+'/'+e[0],tree)
+        if os.path.isdir(os.path.join(d,physical)):
+            # This is a directory.
+            tree.add_page_nav(level,title,physical_path+'/'+physical)
+            load_site_directory(os.path.join(d,physical),level+1,physical_path+'/'+physical,tree)
         else:        
-            g = e[0].replace('.md','.html')
-            tree.add_page_nav(level,e[1],path+'/'+g)    
+            g = physical.replace('.md','.html')
+            tree.add_page_nav(level,title,physical_path+'/'+g)    
             
     return tree
 
 if __name__ == '__main__':
     
-    site_nav = load_site_directory(ENV.CONTENT_DIR,1,'')   
+    site_nav = load_site_directory(ENV.CONTENT_DIR,1,'')    
     
     if os.path.isdir(ENV.DEPLOY_DIR):
         shutil.rmtree(ENV.DEPLOY_DIR)

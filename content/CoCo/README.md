@@ -1,5 +1,5 @@
 >>> deploy:<br>
->>>   Hardware.md<br>
+>>>   Hardware.md:Hardware Stuff<br>
 >>>   +CoCo.jpg<br>
 >>>   +CoCoTech.jpg<br>
 >>>   +CoCoText.js<br>
@@ -10,7 +10,7 @@
 >>>   +PIA0.jpg<br>
 >>>   +PIA1.jpg<br>
 >>>   +SAM.jpg<br>
->>>     Pyramid/<br>
+>>>     Pyramid:Pyramid<br>
 
 ![CoCo](CoCo.jpg)
 
