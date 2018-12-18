@@ -1,33 +1,48 @@
 
 class NavNode:
     
-    def __init__(self,level,text,anchor):
+    def __init__(self,parent,level,text,anchor):
+        self.parent = parent          # This node's parent (so we can work backwards)
         self.level = level            # Heading level (starts at 0)
         self.children = []            # Child nodes (if any)
+        self.invisibles = []          # Files with no navigation
         self.text = text              # Title shown to the user
         self.anchor = anchor          # The HTML anchor text
         self.expanded = True          # True if the branch is expanded
         self.active_item = False      # True if this item is currently showing
-        self.active_item_path = False # True if this item is in the path of the currently showing item      
+        self.active_item_path = False # True if this item is in the path of the currently showing item
+        
+    def get_full_path(self):        
+        node = self
+        ret = node.anchor
+        while node.parent:
+            ret = node.parent.anchor+'/'+ret
+            node = node.parent
+        if ret.startswith('/'):
+            ret = ret[1:]
+        return ret
+                
 
 class NavTree:
     
     def __init__(self):
         
-        self._tree = NavNode(0,'','') # A root node to hold the first levels        
+        self.root = NavNode(None,0,'','') # A root node to hold the first levels        
                             
     def add_page_nav(self, level, text, anchor):
         
         # Find the parent level
-        node = self._tree
+        node = self.root
         while node.level != (level-1):
             if len(node.children)==0:
                 raise Exception('Missing level before '+text)
             node = node.children[-1] # Last child
             
         # Add the new node to the children
-        n = NavNode(level,text,anchor)
+        n = NavNode(node,level,text,anchor)
         node.children.append(n)                
+        
+        return n
     
     '''
     
@@ -43,7 +58,7 @@ class NavTree:
     </ul>
     '''
                             
-    def _to_html_rec(self,node,children_only=False):
+    def _to_html_rec(self,node,children_only,book_marks):
         
         ret = ''
                 
@@ -71,8 +86,10 @@ class NavTree:
             if node.active_item:
                 classes += 'activeItem '
             classes = classes.strip()
+            
+            print(">>"+str(book_marks)+"<<")
                                         
-            if node.active_item:
+            if node.active_item and not book_marks:
                 # This is active ... a span
                 if len(classes)>0:
                     ret = ret + '<span classes="'+classes+'">'+node.text+'</span>'
@@ -80,16 +97,24 @@ class NavTree:
                     ret = ret + '<span>'+node.text+'</span>'                
             else:
                 # This is not active ... an anchor
-                if len(classes)>0:
-                    ret = ret + '<a href="{anchor}" classes="{classes}">{text}</a>'.format(anchor=node.anchor,classes=classes,text=node.text)
+                if book_marks:
+                    anchor = '#'+node.anchor
                 else:
-                    ret = ret + '<a href="{anchor}">{text}</a>'.format(anchor=node.anchor,text=node.text)               
+                    anchor = '/'+node.get_full_path()
+                    if anchor.endswith('.md'):
+                        anchor = anchor[0:-2]+'html'
+                if len(classes)>0:
+                    ret = ret + '<a href="{anchor}" classes="{classes}">{text}</a>'.format(anchor=anchor,classes=classes,text=node.text)
+                else:
+                    ret = ret + '<a href="{anchor}">{text}</a>'.format(anchor=anchor,text=node.text)     
+                
+                          
                                 
         if len(node.children)>0:
             if not children_only:
                 ret = ret + '<ul>'
             for n in node.children:
-                ret = ret + self._to_html_rec(n)
+                ret = ret + self._to_html_rec(n,False,book_marks)
             if not children_only:
                 ret = ret + '</ul>'
             
@@ -98,6 +123,6 @@ class NavTree:
                 
         return ret
     
-    def to_html(self):                              
-        ret = self._to_html_rec(self._tree,True)    
+    def to_html(self,book_marks=False):                              
+        ret = self._to_html_rec(self.root,True,book_marks)    
         return ret

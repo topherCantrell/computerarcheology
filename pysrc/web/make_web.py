@@ -12,19 +12,10 @@ def substitute(lines,tag,value):
         if tag in lines[i]:
             lines[i] = lines[i].replace(tag,value)
 
-def process_markdown(lines,path,crumb_path):
+def process_markdown(lines,site_nav_node):
     
-    # TODO the path must be a list like: [ [text,anchor],[text,anchor] ]
-    
-    #crumbs = path
-    
-    if crumb_path[-1]=='/':
-        crumb_path=crumb_path[0:-1]
-    else:
-        crumb_path=crumb_path+'.html'
-    crumbs = '<li><a>Home</a></li> <li><a>Amiga</a></li> <li><a>What</a></li> <li><a>Now</a></li>'
-    print(crumb_path)
-           
+    print("CRUMBS:"+site_nav_node.get_full_path())
+               
     # Used to make unique anchor ids on this page    
     ids = IDMgr()
     
@@ -66,18 +57,18 @@ def process_markdown(lines,path,crumb_path):
                 level = level + 1                
             text = line[level:].strip()
             anchor = ids.add_id(text)
-            page_nav.add_page_nav(level,text,'#'+anchor)
+            page_nav.add_page_nav(level,text,anchor)
             content += '<h{level} id="{anchor}">{text}</h{level}>\n'.format(level=level,anchor=anchor,text=text)
     
         
     
-    ret['PAGE_TREE'] = page_nav.to_html()      
+    ret['PAGE_TREE'] = page_nav.to_html(True)      
     ret['CONTENT'] = content   
     
     spec_site_nav = copy.deepcopy(site_nav)
     # TODO open path
         
-    ret['BREAD_CRUMBS'] = crumbs
+    ret['BREAD_CRUMBS'] = 'crumbs'
     ret['SITE_TREE'] = spec_site_nav.to_html()    
     
     # Some basic error checking
@@ -86,85 +77,82 @@ def process_markdown(lines,path,crumb_path):
         
     return ret
 
-def deploy_directory(content_current,deploy_current,path):
+def deploy_directory(current_node):
     
-    lines = code.markdown_line.load_file(content_current+'/README.md')
-    deps = code.markdown_line.get_deploy(lines)
-                
-    for dep in deps:
-        print(content_current+' : '+str(dep))
-        text = dep[1]
-        dep = dep[0]
+    fp_content = os.path.join(ENV.CONTENT_DIR,current_node.get_full_path())
+    fp_deploy  = os.path.join(ENV.DEPLOY_DIR,current_node.get_full_path())
+    if fp_deploy.endswith('\\'):
+        fp_deploy = fp_deploy[:-1]
+    
+    for dep in current_node.invisibles:
         if dep.startswith('+'):
             # This is just a blind copy -- no processing
             dep = dep[1:].strip()
-            src = os.path.join(content_current,dep)
-            dst = os.path.join(deploy_current,dep)                        
+            src = os.path.join(fp_content,dep)
+            dst = os.path.join(fp_deploy,dep)                        
             if os.path.isdir(src):
                 shutil.copytree(src,dst)
             else:
                 shutil.copy(src,dst)
+                
+    for dep in current_node.children:
+        src = os.path.join(fp_content,dep.anchor)
+        dst = os.path.join(fp_deploy,dep.anchor)
+        if os.path.isdir(src):
+            os.makedirs(dst)            
+            deploy_directory(dep)        
         else:
-            # This is a markdown file that needs processing
-            src = os.path.join(content_current,dep)
-            dst = os.path.join(deploy_current,dep)
-            if os.path.isdir(src):
-                os.makedirs(dst)
-                np = path
-                if path=='/':
-                    np = ''
-                deploy_directory(src,dst,np+'/'+dep)
+            f = open(src,'r')
+            cont = f.readlines()
+            cont = process_markdown(cont,dep)
+            f = open(os.path.join(ENV.CONTENT_DIR,'master.template'),'r')
+            lines = f.readlines()
+            f.close()
+            substitute(lines,'TITLE',cont['TITLE'])
+            substitute(lines,'IMAGE',cont['IMAGE'])
+            substitute(lines,'BREAD_CRUMBS',cont['BREAD_CRUMBS'])
+            substitute(lines,'SITE_TREE',cont['SITE_TREE'])
+            substitute(lines,'PAGE_TREE',cont['PAGE_TREE'])
+            substitute(lines,'CONTENT',cont['CONTENT'])                
+            if dep.anchor=='README.md':
+                dep.anchor = 'index.html'
             else:
-                f = open(src,'r')
-                cont = f.readlines()
-                cont = process_markdown(cont,path,path+'/'+text)
-                f = open(os.path.join(ENV.CONTENT_DIR,'master.template'),'r')
-                lines = f.readlines()
-                f.close()
-                substitute(lines,'TITLE',cont['TITLE'])
-                substitute(lines,'IMAGE',cont['IMAGE'])
-                substitute(lines,'BREAD_CRUMBS',cont['BREAD_CRUMBS'])
-                substitute(lines,'SITE_TREE',cont['SITE_TREE'])
-                substitute(lines,'PAGE_TREE',cont['PAGE_TREE'])
-                substitute(lines,'CONTENT',cont['CONTENT'])                
-                if dep=='README.md':
-                    dep = 'index.html'
-                else:
-                    dep = dep[0:-2]+'html'
-                f = open(os.path.join(deploy_current,dep),'w+')
-                f.writelines(lines)
-                f.close()
+                dep.anchor = dep.anchor[0:-2]+'html'
+            f = open(os.path.join(ENV.DEPLOY_DIR,dep.get_full_path()),'w+')
+            f.writelines(lines)
+            f.close()                
 
-def load_site_directory(d,level,physical_path,tree=None):
+def load_site_directory(level=None,tree=None,current_node=None):
     
     if tree==None:
         tree = NavTree()       
-        tree.add_page_nav(1,'Home','/')
+        level = 1
+        current_node = tree.root
         
-    lines = code.markdown_line.load_file(d+'/README.md')
+    src = os.path.join(ENV.CONTENT_DIR,current_node.get_full_path())
+    lines = code.markdown_line.load_file(os.path.join(src,'README.md'))
     info = code.markdown_line.get_deploy(lines)  
-    
-    for (physical,title) in info:
-        if physical=='README.md' or physical.startswith('+'):
+            
+    for directory,title in info:
+        if directory.startswith('+'):            
             # These do not contribute to navigation
-            continue
-        if os.path.isdir(os.path.join(d,physical)):
-            # This is a directory.
-            tree.add_page_nav(level,title,physical_path+'/'+physical)
-            load_site_directory(os.path.join(d,physical),level+1,physical_path+'/'+physical,tree)
+            current_node.invisibles.append(directory)            
+        elif os.path.isdir(os.path.join(src,directory)):
+            # This is a directory. Make an entry and recurse into it
+            n = tree.add_page_nav(level,title,directory)
+            load_site_directory(level+1,tree,n)
         else:        
-            g = physical.replace('.md','.html')
-            tree.add_page_nav(level,title,physical_path+'/'+g)    
+            # This is a file
+            tree.add_page_nav(level,title,directory)    
             
     return tree
 
 if __name__ == '__main__':
     
-    site_nav = load_site_directory(ENV.CONTENT_DIR,1,'')    
+    site_nav = load_site_directory()    
     
     if os.path.isdir(ENV.DEPLOY_DIR):
-        shutil.rmtree(ENV.DEPLOY_DIR)
-    
+        shutil.rmtree(ENV.DEPLOY_DIR)    
     os.makedirs(ENV.DEPLOY_DIR)
     
-    deploy_directory(ENV.CONTENT_DIR,ENV.DEPLOY_DIR,'/')
+    deploy_directory(site_nav.root)
