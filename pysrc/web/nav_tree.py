@@ -86,8 +86,6 @@ class NavTree:
             if node.active_item:
                 classes += 'activeItem '
             classes = classes.strip()
-            
-            print(">>"+str(book_marks)+"<<")
                                         
             if node.active_item and not book_marks:
                 # This is active ... a span

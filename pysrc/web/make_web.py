@@ -5,6 +5,7 @@ from web.id_mgr import IDMgr
 import web.ENVIRONMENT as ENV
 import code.markdown_line
 import copy
+from web.nav_tree import NavNode
 
 def substitute(lines,tag,value):
     tag = '<!-- %%'+tag+'%% -->'
@@ -13,8 +14,19 @@ def substitute(lines,tag,value):
             lines[i] = lines[i].replace(tag,value)
 
 def process_markdown(lines,site_nav_node):
-    
-    print("CRUMBS:"+site_nav_node.get_full_path())
+            
+    cr = []
+    n = site_nav_node
+    if n.anchor != 'README.md':
+        cr.append(n)
+    while n.parent!=None:
+        cr = [n.parent] + cr
+        n = n.parent
+        
+    cr[0] = NavNode(None,1,'Home','')
+    for n in cr:
+        print(n.text+":/"+n.get_full_path())
+    # TODO here is all the info to make breadcrumbs!
                
     # Used to make unique anchor ids on this page    
     ids = IDMgr()
