@@ -21,7 +21,11 @@ class NavNode:
         if ret.startswith('/'):
             ret = ret[1:]
         return ret
-                
+
+def collapse_all(node):
+    node.expanded = False
+    for c in node.children:
+        collapse_all(c)                
 
 class NavTree:
     
@@ -110,7 +114,7 @@ class NavTree:
                                 
         if len(node.children)>0:
             if not children_only:
-                ret = ret + '<ul>'
+                ret = ret + '<ul hidden>'
             for n in node.children:
                 ret = ret + self._to_html_rec(n,False,book_marks)
             if not children_only:

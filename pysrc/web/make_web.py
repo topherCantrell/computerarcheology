@@ -5,7 +5,7 @@ from web.id_mgr import IDMgr
 import web.ENVIRONMENT as ENV
 import code.markdown_line
 import copy
-from web.nav_tree import NavNode
+import web.nav_tree
 
 def substitute(lines,tag,value):
     tag = '<!-- %%'+tag+'%% -->'
@@ -14,6 +14,13 @@ def substitute(lines,tag,value):
             lines[i] = lines[i].replace(tag,value)
 
 def process_markdown(lines,site_nav_node):
+    
+    root = site_nav_node
+    while root.parent:
+        root = root.parent
+    web.nav_tree.collapse_all(root)
+        
+    
             
     cr = []
     n = site_nav_node
@@ -23,7 +30,7 @@ def process_markdown(lines,site_nav_node):
         cr = [n.parent] + cr
         n = n.parent
         
-    cr[0] = NavNode(None,1,'Home','')
+    cr[0] = web.nav_tree.NavNode(None,1,'Home','')
     crumbs = ''
     for n in cr:
         if n==cr[-1]:
