@@ -135,39 +135,39 @@ def deploy_directory(current_node):
                 dep.anchor = dep.anchor[0:-2]+'html'
             f = open(os.path.join(ENV.DEPLOY_DIR,dep.get_full_path()),'w+')
             f.writelines(lines)
-            f.close()                
-
-def load_site_directory(level=None,tree=None,current_node=None):
+            f.close()
+                            
+def load_site_directory():    
     
-    if tree==None:
-        tree = NavTree()       
-        level = 1
-        current_node = tree.root
-        
-    src = os.path.join(ENV.CONTENT_DIR,current_node.get_full_path())
-    lines = code.markdown_line.load_file(os.path.join(src,'README.md'))
-    info = code.markdown_line.get_deploy(lines)  
-            
-    for directory,title in info:
-        if directory.startswith('+'):            
-            # These do not contribute to navigation
-            current_node.invisibles.append(directory)            
-        elif os.path.isdir(os.path.join(src,directory)):
-            # This is a directory. Make an entry and recurse into it
-            n = tree.add_page_nav(level,title,directory)
-            load_site_directory(level+1,tree,n)
-        else:        
-            # This is a file
-            tree.add_page_nav(level,title,directory)    
-            
+    def _load_site_directory_rec(level,tree,current_node):       
+        src = os.path.join(ENV.CONTENT_DIR,current_node.get_full_path())
+        lines = code.markdown_line.load_file(os.path.join(src,'README.md'))
+        info = code.markdown_line.get_deploy(lines)  
+                
+        for directory,title in info:
+            if directory.startswith('+'):           
+                # These do not contribute to navigation
+                current_node.invisibles.append(directory)            
+            elif os.path.isdir(os.path.join(src,directory)):
+                # This is a directory. Make an entry and recurse into it
+                n = tree.add_page_nav(level,title,directory)
+                _load_site_directory_rec(level+1,tree,n)
+            else:        
+                # This is a file
+                tree.add_page_nav(level,title,directory)    
+    
+    tree = NavTree()       
+    level = 1
+    current_node = tree.root    
+    _load_site_directory_rec(level, tree, current_node)    
     return tree
 
 if __name__ == '__main__':
-    
-    site_nav = load_site_directory()    
-    
+       
     if os.path.isdir(ENV.DEPLOY_DIR):
         shutil.rmtree(ENV.DEPLOY_DIR)    
     os.makedirs(ENV.DEPLOY_DIR)
+    
+    site_nav = load_site_directory()   
     
     deploy_directory(site_nav.root)
