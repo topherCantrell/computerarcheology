@@ -41,9 +41,6 @@ def process_markdown(lines,site_nav_node):
                 ret['TITLE'] = ret['IMAGE'][0:ret['IMAGE'].rindex('.')]
             break
         
-        
-       
-        
     # Line by line from the top ... here we go    
     for i in range(len(lines)):
         # Keeping the index in case we have to look backwards
@@ -59,8 +56,11 @@ def process_markdown(lines,site_nav_node):
             anchor = ids.add_id(text)
             page_nav.add_page_nav(level,text,anchor)
             content += '<h{level} id="{anchor}">{text}</h{level}>\n'.format(level=level,anchor=anchor,text=text)
-    
-        
+        else:
+            pass    
+            # TODO here we are! process the markdown lines.
+            # First the "normal" markdown in the writeups
+            # Then add the code processing        
     
     ret['PAGE_TREE'] = page_nav.to_html(True)      
     ret['CONTENT'] = content 
