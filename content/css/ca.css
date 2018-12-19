@@ -53,13 +53,6 @@ html,
 	padding-right: 20px;
 }
 
-
-
-
-
-
-
-
 /* Navigation on the page */
 
 .navTree {
@@ -98,6 +91,7 @@ html,
 #crumbs li.active {
 	font-weight: bold;
 }	
+
 
 .playMe {
 	background-color: #dff0d8;

@@ -24,9 +24,12 @@ def process_markdown(lines,site_nav_node):
         n = n.parent
         
     cr[0] = NavNode(None,1,'Home','')
+    crumbs = ''
     for n in cr:
-        print(n.text+":/"+n.get_full_path())
-    # TODO here is all the info to make breadcrumbs!
+        if n==cr[-1]:
+            crumbs+='<li class="active"><span>'+n.text+'</span></li>'
+        else:
+            crumbs+='<li><a href="/'+n.get_full_path()+'">'+n.text+'</a></li>'    
                
     # Used to make unique anchor ids on this page    
     ids = IDMgr()
@@ -80,7 +83,7 @@ def process_markdown(lines,site_nav_node):
     spec_site_nav = copy.deepcopy(site_nav)
     # TODO open path
         
-    ret['BREAD_CRUMBS'] = 'crumbs'
+    ret['BREAD_CRUMBS'] = crumbs
     ret['SITE_TREE'] = spec_site_nav.to_html()    
     
     # Some basic error checking
