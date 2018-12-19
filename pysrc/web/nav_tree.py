@@ -43,11 +43,6 @@ class NavNode:
                 return c
         return None  
 
-def collapse_all(node):
-    node.expanded = False
-    for c in node.children:
-        collapse_all(c)                
-
 class NavTree:
     
     def __init__(self):
@@ -136,7 +131,12 @@ def _to_html_rec(node,children_only,book_marks):
         ret = ret + '</li>'
             
     return ret
-    
+
+def collapse_all(node):
+    node.expanded = False
+    for c in node.children:
+        collapse_all(c)      
+            
 def to_html(node,book_marks=False):                              
     ret = _to_html_rec(node,True,book_marks)    
     return ret

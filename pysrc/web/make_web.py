@@ -6,15 +6,15 @@ import web.ENVIRONMENT as ENV
 import code.markdown_line
 import copy
 import web.nav_tree
-from py._code.source import cpy_compile
-
-def substitute(lines,tag,value):
-    tag = '<!-- %%'+tag+'%% -->'
-    for i in range(len(lines)):
-        if tag in lines[i]:
-            lines[i] = lines[i].replace(tag,value)
 
 def process_markdown(lines,site_nav_node):  
+    ''' Process a single markdown file
+    
+        params:
+          lines (list): the lines loaded and pre-parsed from the file
+          site_nav_node (NavNode): the navigation node for this file
+          
+    '''
                
     # Used to make unique anchor ids on this page    
     ids = IDMgr()
@@ -114,7 +114,15 @@ def process_markdown(lines,site_nav_node):
     return ret
 
 def deploy_directory(current_node):
+    ''' Recursively deploy a directory
     
+        All files and markdowns in a single directory, and recursively call
+        this function for sub directories.
+        
+        params:
+          current_node (NavNode): the current NavNode deployment information node
+    
+    '''
     fp_content = os.path.join(ENV.CONTENT_DIR,current_node.get_full_path())
     fp_deploy  = os.path.join(ENV.DEPLOY_DIR,current_node.get_full_path())
     if fp_deploy.endswith('\\'):
@@ -131,6 +139,12 @@ def deploy_directory(current_node):
             else:
                 shutil.copy(src,dst)
                 
+    def substitute(lines,tag,value):
+        tag = '<!-- %%'+tag+'%% -->'
+        for i in range(len(lines)):
+            if tag in lines[i]:
+                lines[i] = lines[i].replace(tag,value)
+                        
     for dep in current_node.children:
         src = os.path.join(fp_content,dep.anchor)
         dst = os.path.join(fp_deploy,dep.anchor)
@@ -159,6 +173,10 @@ def deploy_directory(current_node):
             f.close()
                             
 def load_site_directory():    
+    ''' Recursively load all the deployment information
+        Returns:
+            the NavTree of information
+    '''
     
     def _load_site_directory_rec(level,tree,current_node):       
         src = os.path.join(ENV.CONTENT_DIR,current_node.get_full_path())
@@ -185,10 +203,13 @@ def load_site_directory():
 
 if __name__ == '__main__':
        
+    # Remove and recreate the deployment directory (clean)
     if os.path.isdir(ENV.DEPLOY_DIR):
         shutil.rmtree(ENV.DEPLOY_DIR)    
     os.makedirs(ENV.DEPLOY_DIR)
     
+    # Load the site information
     site_nav = load_site_directory()   
     
+    # Process all deployment beginning at the root
     deploy_directory(site_nav.root)
