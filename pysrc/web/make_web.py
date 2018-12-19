@@ -13,43 +13,7 @@ def substitute(lines,tag,value):
         if tag in lines[i]:
             lines[i] = lines[i].replace(tag,value)
 
-def process_markdown(lines,site_nav_node):
-    
-    print("----")
-    # Fully collapse the site nav tree
-    root = site_nav_node
-    while root.parent:
-        root = root.parent
-        web.nav_tree.collapse_all(root)
-    # Work backwards and open up the current path
-    g = site_nav_node
-    g.active_item = True
-    g.expanded = True  
-    g.print_s(False)
-    g.active_item_path = True  
-    while g.parent.anchor:
-        g = g.parent
-        g.expanded = True
-        g.print_s(False)
-        g.active_item_path = True
-           
-    # TODO active/path    
-            
-    cr = []
-    n = site_nav_node
-    if n.anchor != 'README.md':
-        cr.append(n)
-    while n.parent!=None:
-        cr = [n.parent] + cr
-        n = n.parent
-        
-    cr[0] = web.nav_tree.NavNode(None,1,'Home','')
-    crumbs = ''
-    for n in cr:
-        if n==cr[-1]:
-            crumbs+='<li class="active"><span>'+n.text+'</span></li>'
-        else:
-            crumbs+='<li><a href="/'+n.get_full_path()+'">'+n.text+'</a></li>'    
+def process_markdown(lines,site_nav_node):  
                
     # Used to make unique anchor ids on this page    
     ids = IDMgr()
@@ -98,13 +62,47 @@ def process_markdown(lines,site_nav_node):
         
     
     ret['PAGE_TREE'] = page_nav.to_html(True)      
-    ret['CONTENT'] = content   
-    
-    spec_site_nav = copy.deepcopy(site_nav)
-    # TODO open path
+    ret['CONTENT'] = content 
         
+    cr = []
+    n = site_nav_node
+    if n.anchor != 'README.md':
+        cr.append(n)
+    while n.parent!=None:
+        cr = [n.parent] + cr
+        n = n.parent
+        
+    cr[0] = web.nav_tree.NavNode(None,1,'Home','')
+    crumbs = ''
+    for n in cr:
+        if n==cr[-1]:
+            crumbs+='<li class="active"><span>'+n.text+'</span></li>'
+        else:
+            crumbs+='<li><a href="/'+n.get_full_path()+'">'+n.text+'</a></li>'
+            
     ret['BREAD_CRUMBS'] = crumbs
-    ret['SITE_TREE'] = spec_site_nav.to_html()    
+    
+    # Find the root
+    root = site_nav_node
+    while root.parent:
+        root = root.parent
+        
+    # Make a copy. We are about to have our way with it. 
+    cpy = copy.deepcopy(root.children)    
+    
+    # Collapse everything
+    web.nav_tree.collapse_all(root)
+        
+    # Work backwards and open up the current path
+    g = site_nav_node    
+    g.expanded = True    
+    while g.parent:
+        g = g.parent
+        g.expanded = True        
+    
+    ret['SITE_TREE'] = site_nav.to_html()    
+    
+    root.children = cpy
     
     # Some basic error checking
     if ret['IMAGE']=='' or ret['TITLE']=='':
