@@ -36,6 +36,12 @@ class NavNode:
         if ret.startswith('/'):
             ret = ret[1:]
         return ret
+    
+    def find_child_named(self,anchor):
+        for c in self.children:
+            if c.anchor == anchor:
+                return c
+        return None  
 
 def collapse_all(node):
     node.expanded = False
@@ -46,8 +52,8 @@ class NavTree:
     
     def __init__(self):
         
-        self.root = NavNode(None,0,'','') # A root node to hold the first levels        
-                            
+        self.root = NavNode(None,0,'','') # A root node to hold the first levels 
+                                
     def add_page_nav(self, level, text, anchor):
         
         # Find the parent level
@@ -63,6 +69,9 @@ class NavTree:
         
         return n
     
+    def to_html(self,book_marks=False):
+        return to_html(self.root,book_marks)
+    
     '''
     
     <ul>
@@ -77,66 +86,57 @@ class NavTree:
     </ul>
     '''
                             
-    def _to_html_rec(self,node,children_only,book_marks):
-        
-        ret = ''
-                
-        if not children_only:
-        
-            classes = ''
-            if len(node.children)>0:
-                classes += 'branch '  
-                if node.expanded:
-                    classes += 'expanded '
-                else:
-                    classes += 'collapsed '                        
-            classes = classes.strip()
-            
-            if classes!='':
-                ret = ret+'<li class="'+classes+'">'
-            else:
-                ret = ret+'<li>'               
-            
-            classes=''           
-            classes = classes.strip()
-                                        
-            if node.active_item and not book_marks:
-                # This is active ... a span
-                if len(classes)>0:
-                    ret = ret + '<span class="'+classes+'">'+node.text+'</span>'
-                else:
-                    ret = ret + '<span>'+node.text+'</span>'                
-            else:
-                # This is not active ... an anchor
-                if book_marks:
-                    anchor = '#'+node.anchor
-                else:
-                    anchor = '/'+node.get_full_path()
-                    if anchor.endswith('.md'):
-                        anchor = anchor[0:-2]+'html'
-                if len(classes)>0:
-                    ret = ret + '<a href="{anchor}" class="{classes}">{text}</a>'.format(anchor=anchor,classes=classes,text=node.text)
-                else:
-                    ret = ret + '<a href="{anchor}">{text}</a>'.format(anchor=anchor,text=node.text)     
-                
-                          
-                                
-        if len(node.children)>0:
-            if not children_only:
-                if node.expanded:
-                    ret = ret + '<ul>'
-                else:
-                    ret = ret + '<ul hidden>'                
-            for n in node.children:
-                ret = ret + self._to_html_rec(n,False,book_marks)
-            if not children_only:
-                ret = ret + '</ul>'
-            
-        if not children_only:
-            ret = ret + '</li>'
-                
-        return ret
+def _to_html_rec(node,children_only,book_marks):
     
-    def to_html(self,book_marks=False):                              
-        ret = self._to_html_rec(self.root,True,book_marks)    
-        return ret
+    ret = ''
+            
+    if not children_only:
+    
+        classes = ''
+        if len(node.children)>0:
+            classes += 'branch '  
+            if node.expanded:
+                classes += 'expanded '
+            else:
+                classes += 'collapsed '                        
+        classes = classes.strip()
+        
+        if classes!='':
+            ret = ret+'<li class="'+classes+'">'
+        else:
+            ret = ret+'<li>'  
+            
+        # Different anchor syntax for intra/inter page links
+        if book_marks:
+                anchor = '#'+node.anchor
+        else:
+            anchor = '/'+node.get_full_path()
+            if anchor.endswith('.md'):
+                anchor = anchor[0:-2]+'html'
+            
+        if node.active_item:
+            ret = ret + '<span class="activeItem">'+node.text+'</span>' 
+        elif node.active_item_path:
+            ret = ret + '<a href="{anchor}" class="activeItemPath">{text}</a>'.format(anchor=anchor,text=node.text)
+        else:
+            ret = ret + '<a href="{anchor}">{text}</a>'.format(anchor=anchor,text=node.text)                                                      
+                            
+    if len(node.children)>0:
+        if not children_only:
+            if node.expanded:
+                ret = ret + '<ul>'
+            else:
+                ret = ret + '<ul hidden>'                
+        for n in node.children:
+            ret = ret + _to_html_rec(n,False,book_marks)
+        if not children_only:
+            ret = ret + '</ul>'
+        
+    if not children_only:
+        ret = ret + '</li>'
+            
+    return ret
+    
+def to_html(node,book_marks=False):                              
+    ret = _to_html_rec(node,True,book_marks)    
+    return ret

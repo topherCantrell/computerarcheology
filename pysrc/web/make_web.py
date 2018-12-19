@@ -6,6 +6,7 @@ import web.ENVIRONMENT as ENV
 import code.markdown_line
 import copy
 import web.nav_tree
+from py._code.source import cpy_compile
 
 def substitute(lines,tag,value):
     tag = '<!-- %%'+tag+'%% -->'
@@ -88,22 +89,24 @@ def process_markdown(lines,site_nav_node):
         root = root.parent
         
     # Make a copy. We are about to have our way with it. 
-    cpy = copy.deepcopy(root.children)    
+    cpy = copy.deepcopy(root)    
     
     # Collapse everything
-    web.nav_tree.collapse_all(root)
-        
-    # Work backwards and open up the current path
-    g = site_nav_node    
-    g.expanded = True    
-    while g.parent:
-        g = g.parent
-        g.expanded = True        
+    web.nav_tree.collapse_all(cpy)
     
-    ret['SITE_TREE'] = site_nav.to_html()    
+    pics = site_nav_node.get_full_path().split('/')
+    node = cpy
+    for p in pics:
+        node = node.find_child_named(p)
+        node.expanded = True
+        node.active_item_path = True
+    if pics[-1]=='README.md':
+        node.parent.active_item = True
+    else:
+        node.active_item = True
     
-    root.children = cpy
-    
+    ret['SITE_TREE'] = web.nav_tree.to_html(cpy)    
+            
     # Some basic error checking
     if ret['IMAGE']=='' or ret['TITLE']=='':
         raise Exception('IMAGE and TITLE are required')

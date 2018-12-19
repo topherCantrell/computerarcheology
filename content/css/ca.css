@@ -93,6 +93,10 @@ html,
 }	
 
 .activeItemPath {
+	font-style: italic;
+}
+
+.activeItem {
 	font-weight: bold;
 }
 
