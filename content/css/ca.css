@@ -92,6 +92,10 @@ html,
 	font-weight: bold;
 }	
 
+.activeItemPath {
+	font-weight: bold;
+}
+
 
 .playMe {
 	background-color: #dff0d8;

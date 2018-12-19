@@ -15,12 +15,25 @@ def substitute(lines,tag,value):
 
 def process_markdown(lines,site_nav_node):
     
+    print("----")
+    # Fully collapse the site nav tree
     root = site_nav_node
     while root.parent:
         root = root.parent
-    web.nav_tree.collapse_all(root)
-        
-    
+        web.nav_tree.collapse_all(root)
+    # Work backwards and open up the current path
+    g = site_nav_node
+    g.active_item = True
+    g.expanded = True  
+    g.print_s(False)
+    g.active_item_path = True  
+    while g.parent.anchor:
+        g = g.parent
+        g.expanded = True
+        g.print_s(False)
+        g.active_item_path = True
+           
+    # TODO active/path    
             
     cr = []
     n = site_nav_node

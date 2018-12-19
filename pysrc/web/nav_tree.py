@@ -1,7 +1,12 @@
 
-class NavNode:
-    
+next_uid = 0
+
+class NavNode:    
+        
     def __init__(self,parent,level,text,anchor):
+        global next_uid
+        self.uid = next_uid
+        next_uid += 1
         self.parent = parent          # This node's parent (so we can work backwards)
         self.level = level            # Heading level (starts at 0)
         self.children = []            # Child nodes (if any)
@@ -11,7 +16,17 @@ class NavNode:
         self.expanded = True          # True if the branch is expanded
         self.active_item = False      # True if this item is currently showing
         self.active_item_path = False # True if this item is in the path of the currently showing item
-        
+     
+    def print_s(self,recurse=True):
+        if self.parent:
+            par = str(self.parent.uid)
+        else:
+            par = 'ROOT'
+        print('level='+str(self.level)+',anchor='+self.anchor+',id='+str(self.uid)+',parent='+par)
+        if recurse:
+            for c in self.children:
+                c.print_s()
+           
     def get_full_path(self):        
         node = self
         ret = node.anchor
@@ -74,7 +89,7 @@ class NavTree:
                 if node.expanded:
                     classes += 'expanded '
                 else:
-                    classes += 'collapsed '              
+                    classes += 'collapsed '                        
             classes = classes.strip()
             
             if classes!='':
@@ -82,19 +97,13 @@ class NavTree:
             else:
                 ret = ret+'<li>'               
             
-            classes=''
-            if node.expanded and len(node.children)>0:
-                classes += 'expanded '
-            if node.active_item_path:
-                classes += 'activeItemPath '
-            if node.active_item:
-                classes += 'activeItem '
+            classes=''           
             classes = classes.strip()
                                         
             if node.active_item and not book_marks:
                 # This is active ... a span
                 if len(classes)>0:
-                    ret = ret + '<span classes="'+classes+'">'+node.text+'</span>'
+                    ret = ret + '<span class="'+classes+'">'+node.text+'</span>'
                 else:
                     ret = ret + '<span>'+node.text+'</span>'                
             else:
@@ -106,7 +115,7 @@ class NavTree:
                     if anchor.endswith('.md'):
                         anchor = anchor[0:-2]+'html'
                 if len(classes)>0:
-                    ret = ret + '<a href="{anchor}" classes="{classes}">{text}</a>'.format(anchor=anchor,classes=classes,text=node.text)
+                    ret = ret + '<a href="{anchor}" class="{classes}">{text}</a>'.format(anchor=anchor,classes=classes,text=node.text)
                 else:
                     ret = ret + '<a href="{anchor}">{text}</a>'.format(anchor=anchor,text=node.text)     
                 
@@ -114,7 +123,10 @@ class NavTree:
                                 
         if len(node.children)>0:
             if not children_only:
-                ret = ret + '<ul hidden>'
+                if node.expanded:
+                    ret = ret + '<ul>'
+                else:
+                    ret = ret + '<ul hidden>'                
             for n in node.children:
                 ret = ret + self._to_html_rec(n,False,book_marks)
             if not children_only:
