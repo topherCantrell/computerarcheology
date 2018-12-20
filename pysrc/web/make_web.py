@@ -56,11 +56,16 @@ def process_markdown(lines,site_nav_node):
             anchor = ids.add_id(text)
             page_nav.add_page_nav(level,text,anchor)
             content += '<h{level} id="{anchor}">{text}</h{level}>\n'.format(level=level,anchor=anchor,text=text)
-        else:
-            pass    
+        else:               
             # TODO here we are! process the markdown lines.
+            #
+            # []() and ![]()
+            #
+            # TODO didn't we process the directives and blocks already? We did somewhere.
+            #
             # First the "normal" markdown in the writeups
-            # Then add the code processing        
+            # Then add the code processing       
+            content += line + '\n' 
     
     ret['PAGE_TREE'] = page_nav.to_html(True)      
     ret['CONTENT'] = content 
