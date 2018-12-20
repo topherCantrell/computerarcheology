@@ -29,30 +29,49 @@ def process_markdown(lines,site_nav_node):
     content = '' 
         
     # Image and Title ... both before the first header
-    for g in lines:
-        if g.startswith('#'):
+    for md in lines:
+        if type(md) is not code.markdown_line.MarkdownLine:
+            continue
+        if md.line.startswith('#'):
             break
-        if g.startswith('!['):
-            i = g.index('](')
-            ret['TITLE'] = g[2:i].strip()            
-            j = g.rindex(')')
-            ret['IMAGE'] = g[i+2:j].strip()
+        if md.line.startswith('!['):
+            i = md.line.index('](')
+            ret['TITLE'] = md.line[2:i].strip()            
+            j = md.line.rindex(')')
+            ret['IMAGE'] = md.line[i+2:j].strip()
             if ret['TITLE']=='':
                 ret['TITLE'] = ret['IMAGE'][0:ret['IMAGE'].rindex('.')]
             break
         
     # Line by line from the top ... here we go    
-    for i in range(len(lines)):
+    i = -1
+    while i < len(lines)-1:
+        i+=1
         # Keeping the index in case we have to look backwards
-        line = lines[i]
-        line_strip = line.strip()
+        md = lines[i]
+        
+        # Skip over the deploy descriptor
+        if type(md) is code.directive_line.Directive and md.directive.startswith('deploy:'):
+            while type(md) is code.directive_line.Directive:
+                i+=1
+                md = lines[i]                      
+                
+        if type(md) is code.directive_line.Directive:
+            print(":: UNHANDLED DIRECTIVE "+md.directive)
+            continue  
+        
+        if type(md) is code.block_line.Block:
+            print(":: UNHANDLED BLOCK")
+            continue
+                
+        line_strip = md.line.strip()
         
         # Build the page tree while we are processing the file
         if(line_strip.startswith('#')):
             level = 0
-            while line[level]=='#':
+            while line_strip[level]=='#':
                 level = level + 1                
-            text = line[level:].strip()
+            text = line_strip[level:].strip()
             anchor = ids.add_id(text)
             page_nav.add_page_nav(level,text,anchor)
             content += '<h{level} id="{anchor}">{text}</h{level}>\n'.format(level=level,anchor=anchor,text=text)
@@ -65,7 +84,7 @@ def process_markdown(lines,site_nav_node):
             #
             # First the "normal" markdown in the writeups
             # Then add the code processing       
-            content += line + '\n' 
+            content += md.line + '\n' 
     
     ret['PAGE_TREE'] = page_nav.to_html(True)      
     ret['CONTENT'] = content 
@@ -157,9 +176,8 @@ def deploy_directory(current_node):
             os.makedirs(dst)            
             deploy_directory(dep)        
         else:
-            f = open(src,'r')
-            cont = f.readlines()
-            cont = process_markdown(cont,dep)
+            md = code.markdown_line.load_file(src)            
+            cont = process_markdown(md,dep)
             f = open(os.path.join(ENV.CONTENT_DIR,'master.template'),'r')
             lines = f.readlines()
             f.close()
