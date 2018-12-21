@@ -1,6 +1,10 @@
 from code.directive_line import Directive
 from code.block_line import Block
 from code.code_line import CodeLine
+from code.table_line import TableLine
+from code.list_line import ListLine
+from code.paragraph_line import ParagraphLine
+from code.header_line import HeaderLine
 
 class MarkdownLine:
     
@@ -45,6 +49,13 @@ def get_deploy(lines):
                 found = True
                 
     return ret
+
+def is_text_a_list_item(text):
+    g = text.strip()
+    # TODO numbered lists too
+    if g.startswith('-') or g.startswith('*'):
+        return True
+    return False
         
 def load_file(filename):
     
@@ -60,7 +71,7 @@ def load_file(filename):
                 line = line[0:-1]
             lines.append(MarkdownLine(line,filename,len(lines)))
             
-    # Collect all the blocks together
+    # Collect all the formal blocks together
     in_block = False
     lines_n = []
     block = None
@@ -83,14 +94,71 @@ def load_file(filename):
                 lines_n.append(block)
             else:
                 lines_n.append(md)
-    lines = lines_n                   
+    lines = lines_n          
+    
+    # Tables are blocks too ... all the lines that start with '|'    
+    i = len(lines)
+    while i>0:
+        i-=1
+        md = lines[i]
+        if type(md) is MarkdownLine and md.line.strip().startswith('|'):
+            table = TableLine()
+            while type(md) is MarkdownLine and md.line.strip().startswith('|'):
+                table.lines.insert(0,md)
+                del lines[i]
+                i -= 1
+                md = lines[i]
+            lines.insert(i+1,table)                
+    
+    # Lists are blocks too ... all the lines start with a '-' or '*' or 'n. '
+    i = len(lines)
+    while i>0:
+        i-=1
+        md = lines[i]
+        if type(md) is MarkdownLine and is_text_a_list_item(md.line):
+            lst = ListLine()
+            while type(md) is MarkdownLine and is_text_a_list_item(md.line):
+                lst.lines.insert(0,md)
+                del lines[i]
+                i -= 1
+                md = lines[i]
+            lines.insert(i+1,lst)
         
     # Parse directives
-    for i in range(len(lines)):
+    i = len(lines)
+    while i>0:
+        i-=1
         md = lines[i]
         if type(md) is MarkdownLine:            
             if md.line.strip().startswith('>>>'):
                 lines[i] = Directive(md)
+                
+    # Parse headers
+    i = len(lines)
+    while i>0:
+        i-=1
+        md = lines[i]
+        if type(md) is MarkdownLine:            
+            if md.line.strip().startswith('#'):
+                lines[i] = HeaderLine(md)
+                
+    # Everything else is a paragraph
+    i = len(lines)
+    while i>0:
+        i-=1
+        md = lines[i]
+        if type(md) is MarkdownLine:
+            text = ParagraphLine()
+            while type(md) is MarkdownLine:
+                text.lines.insert(0,md)
+                del lines[i]
+                i -= 1
+                if i<0:
+                    break
+                md = lines[i]
+            for g in text.lines:
+                print("::"+g.line+"::")
+            lines.insert(i+1,text)            
                 
     return lines
     

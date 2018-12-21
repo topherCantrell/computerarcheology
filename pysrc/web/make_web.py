@@ -4,8 +4,10 @@ from web.nav_tree import NavTree
 from web.id_mgr import IDMgr
 import web.ENVIRONMENT as ENV
 import code.markdown_line
+import code.list_line
 import copy
 import web.nav_tree
+from code.paragraph_line import ParagraphLine
 
 def process_markdown(lines,site_nav_node):  
     ''' Process a single markdown file
@@ -29,19 +31,25 @@ def process_markdown(lines,site_nav_node):
     content = '' 
         
     # Image and Title ... both before the first header
+    fnd = False
     for md in lines:
-        if type(md) is not code.markdown_line.MarkdownLine:
+        if type(md) is not code.markdown_line.ParagraphLine:
             continue
-        if md.line.startswith('#'):
-            break
-        if md.line.startswith('!['):
-            i = md.line.index('](')
-            ret['TITLE'] = md.line[2:i].strip()            
-            j = md.line.rindex(')')
-            ret['IMAGE'] = md.line[i+2:j].strip()
-            if ret['TITLE']=='':
-                ret['TITLE'] = ret['IMAGE'][0:ret['IMAGE'].rindex('.')]
-            break
+        for m in md.lines:
+            if m.line.strip().startswith('#'):
+                fnd = True
+                break
+            if m.line.startswith('!['):
+                fnd = True
+                i = m.line.index('](')
+                ret['TITLE'] = m.line[2:i].strip()            
+                j = m.line.rindex(')')
+                ret['IMAGE'] = m.line[i+2:j].strip()
+                if ret['TITLE']=='':
+                    ret['TITLE'] = ret['IMAGE'][0:ret['IMAGE'].rindex('.')]
+                break
+        if fnd:
+            break                        
         
     # Line by line from the top ... here we go    
     i = -1
@@ -72,28 +80,31 @@ def process_markdown(lines,site_nav_node):
         if type(md) is code.block_line.Block:
             print(":: UNHANDLED BLOCK")
             continue
-                
-        line_strip = md.line.strip()
         
-        # Build the page tree while we are processing the file
-        if(line_strip.startswith('#')):
+        if type(md) is code.table_line.TableLine:
+            print(":: UNHANDLED TABLE")
+            continue
+        
+        if type(md) is code.list_line.ListLine:
+            print(":: UNHANDLED List")
+            continue
+        
+        if type(md) is code.header_line.HeaderLine:
             level = 0
+            line_strip = md.original.line.strip()
             while line_strip[level]=='#':
                 level = level + 1                
-            text = line_strip[level:].strip()
-            anchor = ids.add_id(text)
-            page_nav.add_page_nav(level,text,anchor)
-            content += '<h{level} id="{anchor}">{text}</h{level}>\n'.format(level=level,anchor=anchor,text=text)
-        else:               
-            # TODO here we are! process the markdown lines.
-            #
-            # []() and ![]()
-            #
-            # TODO didn't we process the directives and blocks already? We did somewhere.
-            #
-            # First the "normal" markdown in the writeups
-            # Then add the code processing       
-            content += md.line + '\n' 
+                text = line_strip[level:].strip()
+                anchor = ids.add_id(text)
+                page_nav.add_page_nav(level,text,anchor)
+                content += '<h{level} id="{anchor}">{text}</h{level}>\n'.format(level=level,anchor=anchor,text=text)        
+                        
+        if type(md) is ParagraphLine:
+            content+='<p>\n'
+            for m in md.lines:                
+                content += m.line + '\n'
+                    
+            content+='</p>\n' 
     
     ret['PAGE_TREE'] = page_nav.to_html(True)      
     ret['CONTENT'] = content 
