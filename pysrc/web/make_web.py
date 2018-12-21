@@ -97,7 +97,8 @@ def process_markdown(lines,site_nav_node):
                 text = line_strip[level:].strip()
                 anchor = ids.add_id(text)
                 page_nav.add_page_nav(level,text,anchor)
-                content += '<h{level} id="{anchor}">{text}</h{level}>\n'.format(level=level,anchor=anchor,text=text)        
+            content += '<h{level} id="{anchor}">{text}</h{level}>\n'.format(level=level,anchor=anchor,text=text)    
+            continue    
                         
         if type(md) is ParagraphLine:
             content+='<p>\n'
