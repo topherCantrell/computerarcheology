@@ -57,6 +57,15 @@ def process_markdown(lines,site_nav_node):
                 md = lines[i]                      
                 
         if type(md) is code.directive_line.Directive:
+            if md.directive.startswith('playMe'):
+                content += '<div class="playMe">'
+                continue
+            if md.directive.startswith('tourGuide'):
+                content += '<div class="tourGuide">'
+                continue
+            if md.directive.startswith('}'):
+                content += '</div>'
+                continue
             print(":: UNHANDLED DIRECTIVE "+md.directive)
             continue  
         

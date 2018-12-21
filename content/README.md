@@ -1,13 +1,15 @@
->>> deploy:<br>
->>>    +css<br>
->>>    +js<br>
->>>    +img<br>
->>>    +Arch.jpg<br>
->>>    +favicon.ico<br>
->>>        Amiga<br>
->>>        CoCo<br>
 
 ![Computer Archeology](Arch.jpg)
+
+>>> deploy:
+>>>    +css
+>>>    +js
+>>>    +img
+>>>    +Arch.jpg
+>>>    +favicon.ico
+>>>        Amiga
+>>>        CoCo
+
 # Computer Archeology
 
 This web site is about digging up old, forgotten computer systems and cracking open the code that ran on them. Think 
