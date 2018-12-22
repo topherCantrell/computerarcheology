@@ -93,17 +93,15 @@ def process_markdown(lines,site_nav_node):
         
         if type(md) is Block:
             content+='<p>UNHANDLED BLOCK</p>'
-            print(":: UNHANDLED BLOCK")
+            print(":: UNHANDLED BLOCK "+md.type)
             continue
         
         if type(md) is Table:
-            content+='<p>UNHANDLED TABLE</p>'
-            print(":: UNHANDLED TABLE")
+            content += md.make_content()            
             continue
         
         if type(md) is ListLine:
-            content+='<p>UNHANDLED LIST</p>'
-            print(":: UNHANDLED List")
+            content+=md.make_content()
             continue
         
         if type(md) is HeaderLine:

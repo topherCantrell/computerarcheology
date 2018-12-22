@@ -11,8 +11,7 @@ def process_markdown(text):
         is_img = False
         if i>0 and text[i-1]=='!':
             m = i-1
-            is_img = True
-            print("GOT IMAGE "+text)
+            is_img = True            
             
         if is_img:
             rep = '<img src="'+text[j+2:k]+'">'
@@ -21,7 +20,13 @@ def process_markdown(text):
         
         text=text[0:m]+rep+text[k+1:]
         
-    # TODO bold, italic
+    # Bold
+    while '**' in text:
+        i = text.index('**')
+        j = text.index('**',i+1)
+        text = text[0:i]+'<strong>'+text[i+2:j-1]+'</strong>'+text[j+2:]
+        
+    # TODO italic
     # TODO `stuff`
         
     return text

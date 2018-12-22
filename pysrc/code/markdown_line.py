@@ -53,7 +53,10 @@ def get_deploy(lines):
 def is_text_a_list_item(text):
     g = text.strip()
     # TODO numbered lists too
-    if g.startswith('-') or g.startswith('*'):
+    if g.startswith('**'):
+        # This is BOLD, not a list
+        return False
+    if g.startswith('- ') or g.startswith('* '):
         return True
     return False
         

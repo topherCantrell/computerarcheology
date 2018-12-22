@@ -1,5 +1,5 @@
 >>> deploy:<br>
->>>   Hardware.md:Hardware Stuff<br>
+>>>   Hardware.md:Hardware<br>
 >>>   +CoCo.jpg<br>
 >>>   +CoCoTech.jpg<br>
 >>>   +CoCoText.js<br>
