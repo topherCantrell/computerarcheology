@@ -37,8 +37,7 @@ in a text file for later use. </p>
 Before the LOAD command you must paste the desired saved-data back into the text area.</p>
 
 <textarea id="pyramidTape" rows="8" style="font-size:8px;width:80ch;" ></textarea>
-</div>
-</div>
+
 </div>
 ```
 >>> }

@@ -4,7 +4,7 @@ The first part that's loaded is the boot block, it's located on the first sector
 
 it looks like this -- taken from the [ADF-faq](http://lclevy.free.fr/adflib/adf_info.html#p41):
 
-```
+```plain
 * BootBlock
 -------------------------------------------------------------------------------
 offset	size    number	name		meaning
@@ -29,7 +29,7 @@ This is the boot block from Rainbow Islands.
 
 The code in the boot block allocates 3584 bytes of memory. Then it reads 3584 bytes from offset 1024 (just after the boot block) from the disk and jumps to it.
 
-```
+```plain
 		dc.b $44 ; D
 		dc.b $4F ; O
 		dc.b $53 ; S

@@ -54,7 +54,7 @@ The game must be reloaded to start over.
 
 # Main Loop
 
-```
+```code
 MainLoop:
 0635: 7F 01 E7            CLR     $01E7                     ; Clear noun (object within reach)
 0638: 7F 01 E8            CLR     $01E8                     ; Clear verb (thorw, north, rub, etc)

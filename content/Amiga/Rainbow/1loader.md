@@ -2,7 +2,7 @@
 
 This is the code loaded by the boot block.
 
-```
+```plain
 start:
 		pea	disable_cache
 		move.l	(sp)+,($10).l

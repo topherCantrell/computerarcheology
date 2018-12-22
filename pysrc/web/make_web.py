@@ -102,8 +102,7 @@ def process_markdown(lines,site_nav_node):
             raise Exception('Unknown directive :'+md.directive+':')
                     
         if type(md) is Block:
-            content+='<p>UNHANDLED BLOCK</p>'
-            print(":: UNHANDLED BLOCK "+md.type)
+            content += md.make_content(code_info)            
             continue
         
         if type(md) is Table:

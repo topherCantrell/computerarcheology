@@ -2,7 +2,7 @@
 
 This is what the encrypted part looks after decryption:
 
-```
+```plain
 sub_5A68:
                 subq.l  #6,(TRACE_VECTOR).l
                 clr.l   (ACCESS_FAULT).l

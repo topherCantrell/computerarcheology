@@ -2,7 +2,7 @@
 
 After running the protection, this is what we end up with, the original boot block in all it's glory:
 
-```
+```plain
 bootblock:      dc.b 'DOS',0
 checksum:       dc.l $D5245E13
 rootblock:      dc.l 0
