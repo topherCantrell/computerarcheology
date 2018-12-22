@@ -13,6 +13,7 @@ contains schematics and detailed hardware information. The images below are from
 ## PIA 0 
 
 >>> memory
+
 |    |     |     |
 | -------- | ------- | ----------------- |
 | FF00     | PIA0_DA | I/O data or direction (depends on control setting) |
@@ -26,7 +27,7 @@ contains schematics and detailed hardware information. The images below are from
 
 >>> memory
 
-| | | |
+|   |   |   |
 |:-------- |:------- |:----------------- |
 | FF20     | PIA1_DA | I/O data or direction (depends on control setting) |
 | FF21     | PIA1_CA | Control |
@@ -38,7 +39,8 @@ contains schematics and detailed hardware information. The images below are from
 ## SAM
 
 >>> memory
-| | | |
+
+|   |   |   |
 |:--------- |:---------- |:----------------- |
 | FFC0:FFC5 | dispMode   | Display mode control |
 | FFC6:FFD3 | dispOffset | Display offset |
@@ -61,7 +63,8 @@ Each vector gets 3 bytes in RAM. The first for the "JMP" opcode followed by the
 address.
 
 >>> memory
-| | | |
+
+|   |   |   |
 |:--------- |:----------- |:----------------- |
 | FFFE:FFFF | vectorReset | Reset/Start vector (A827 ROM) |
 | FFFC:FFFD | vectorNMI   | NMI vector (0109 RAM) |
