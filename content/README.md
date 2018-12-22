@@ -34,7 +34,7 @@ There are several emulations on this site. If you want to experience the code fo
 
 # Raw Content
 
-All of the web content and tools are on github: [https://github.com/topherCantrell/computerarcheology]()
+All of the web content and tools are on github: [https://github.com/topherCantrell/computerarcheology](https://github.com/topherCantrell/computerarcheology)
 
 You can submit merge requests to add your own work. The README file in the repository describes the tools and process.
 

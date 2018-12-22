@@ -4,10 +4,14 @@ from web.nav_tree import NavTree
 from web.id_mgr import IDMgr
 import web.ENVIRONMENT as ENV
 import code.markdown_line
-import code.list_line
 import copy
 import web.nav_tree
-from code.paragraph_line import ParagraphLine
+from code.header_line import HeaderLine
+from code.list_line import ListLine
+from code.paragraph_line import Paragraph
+from code.directive_line import Directive
+from code.block_line import Block
+from code.table_line import Table
 
 def process_markdown(lines,site_nav_node):  
     ''' Process a single markdown file
@@ -32,23 +36,26 @@ def process_markdown(lines,site_nav_node):
         
     # Image and Title ... both before the first header
     fnd = False
-    for md in lines:
-        if type(md) is not code.markdown_line.ParagraphLine:
+    for md in lines:    
+        if type(md) is HeaderLine:
+            break
+        if type(md) is not Paragraph:
             continue
-        for m in md.lines:
-            if m.line.strip().startswith('#'):
-                fnd = True
-                break
-            if m.line.startswith('!['):
-                fnd = True
+        k = 0
+        while k<len(md.lines):
+            m = md.lines[k]            
+            if m.line.startswith('!['):                
                 i = m.line.index('](')
                 ret['TITLE'] = m.line[2:i].strip()            
                 j = m.line.rindex(')')
                 ret['IMAGE'] = m.line[i+2:j].strip()
                 if ret['TITLE']=='':
                     ret['TITLE'] = ret['IMAGE'][0:ret['IMAGE'].rindex('.')]
+                del md.lines[k]
+                fnd = True
                 break
-        if fnd:
+            k+=1
+        if fnd:            
             break                        
         
     # Line by line from the top ... here we go    
@@ -59,12 +66,12 @@ def process_markdown(lines,site_nav_node):
         md = lines[i]
         
         # Skip over the deploy descriptor
-        if type(md) is code.directive_line.Directive and md.directive.startswith('deploy:'):
-            while type(md) is code.directive_line.Directive:
+        if type(md) is Directive and md.directive.startswith('deploy:'):
+            while type(md) is Directive:
                 i+=1
                 md = lines[i]                      
                 
-        if type(md) is code.directive_line.Directive:
+        if type(md) is Directive:
             if md.directive.startswith('playMe'):
                 content += '<div class="playMe">'
                 continue
@@ -74,38 +81,40 @@ def process_markdown(lines,site_nav_node):
             if md.directive.startswith('}'):
                 content += '</div>'
                 continue
+            if md.directive.startswith('memory'):
+                for m in lines[i+1:]:
+                    if type(m) is Table:
+                        m.is_memory = True
+                        break
+                continue                
+            content+='<p>UNHANDED DIRECTIVE '+md.directive+'</p>'
             print(":: UNHANDLED DIRECTIVE "+md.directive)
             continue  
         
-        if type(md) is code.block_line.Block:
+        if type(md) is Block:
+            content+='<p>UNHANDLED BLOCK</p>'
             print(":: UNHANDLED BLOCK")
             continue
         
-        if type(md) is code.table_line.TableLine:
+        if type(md) is Table:
+            content+='<p>UNHANDLED TABLE</p>'
             print(":: UNHANDLED TABLE")
             continue
         
-        if type(md) is code.list_line.ListLine:
+        if type(md) is ListLine:
+            content+='<p>UNHANDLED LIST</p>'
             print(":: UNHANDLED List")
             continue
         
-        if type(md) is code.header_line.HeaderLine:
-            level = 0
-            line_strip = md.original.line.strip()
-            while line_strip[level]=='#':
-                level = level + 1                
-                text = line_strip[level:].strip()
-                anchor = ids.add_id(text)
-                page_nav.add_page_nav(level,text,anchor)
-            content += '<h{level} id="{anchor}">{text}</h{level}>\n'.format(level=level,anchor=anchor,text=text)    
+        if type(md) is HeaderLine:
+            anchor = ids.add_id(md.text)
+            page_nav.add_page_nav(md.level,md.text,anchor)            
+            content += md.make_content(anchor)
             continue    
                         
-        if type(md) is ParagraphLine:
-            content+='<p>\n'
-            for m in md.lines:                
-                content += m.line + '\n'
-                    
-            content+='</p>\n' 
+        if type(md) is Paragraph:
+            content+=md.make_content()
+            #continue 
     
     ret['PAGE_TREE'] = page_nav.to_html(True)      
     ret['CONTENT'] = content 

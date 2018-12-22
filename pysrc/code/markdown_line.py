@@ -1,9 +1,9 @@
 from code.directive_line import Directive
 from code.block_line import Block
 from code.code_line import CodeLine
-from code.table_line import TableLine
+from code.table_line import Table
 from code.list_line import ListLine
-from code.paragraph_line import ParagraphLine
+from code.paragraph_line import Paragraph
 from code.header_line import HeaderLine
 
 class MarkdownLine:
@@ -102,7 +102,7 @@ def load_file(filename):
         i-=1
         md = lines[i]
         if type(md) is MarkdownLine and md.line.strip().startswith('|'):
-            table = TableLine()
+            table = Table()
             while type(md) is MarkdownLine and md.line.strip().startswith('|'):
                 table.lines.insert(0,md)
                 del lines[i]
@@ -148,18 +148,29 @@ def load_file(filename):
         i-=1
         md = lines[i]
         if type(md) is MarkdownLine:
-            text = ParagraphLine()
-            while type(md) is MarkdownLine:
+            text = Paragraph()
+            while type(md) is MarkdownLine and md.line.strip()!='':
                 text.lines.insert(0,md)
                 del lines[i]
                 i -= 1
                 if i<0:
                     break
-                md = lines[i]
-            for g in text.lines:
-                print("::"+g.line+"::")
-            lines.insert(i+1,text)            
-                
+                md = lines[i]            
+            lines.insert(i+1,text)
+            
+    # Remove empty paragraphs
+    i = len(lines)
+    while i>0:
+        i-=1
+        md = lines[i]
+        if type(md) is Paragraph:        
+            pc = 0
+            for m in md.lines:
+                if m.line.strip()!='':
+                    pc+=1
+            if pc==0:
+                del lines[i]    
+           
     return lines
     
 load_file('../../content/CoCo/Pyramid/Code.md')

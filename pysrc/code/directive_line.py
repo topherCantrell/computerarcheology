@@ -1,6 +1,7 @@
 
 class Directive:
     
-    def __init__(self,line):
-        self.original = line
-        self.directive = line.line.strip()[3:].strip()        
+    def __init__(self,md):
+        
+        self.original = md
+        self.directive = md.line.strip()[3:].strip()        
