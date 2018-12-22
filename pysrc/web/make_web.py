@@ -21,6 +21,8 @@ def process_markdown(lines,site_nav_node):
           site_nav_node (NavNode): the navigation node for this file
           
     '''
+    
+    code_info = {}
                
     # Used to make unique anchor ids on this page    
     ids = IDMgr()
@@ -81,16 +83,24 @@ def process_markdown(lines,site_nav_node):
             if md.directive.startswith('}'):
                 content += '</div>'
                 continue
-            if md.directive.startswith('memory'):
+            if md.directive == 'memory':
                 for m in lines[i+1:]:
                     if type(m) is Table:
                         m.is_memory = True
                         break
                 continue                
-            content+='<p>UNHANDED DIRECTIVE '+md.directive+'</p>'
-            print(":: UNHANDLED DIRECTIVE "+md.directive)
-            continue  
-        
+            if md.directive.startswith('cpu'):
+                code_info['cpu'] = md.directive[3:].strip()
+                continue
+            if md.directive.startswith('code'):
+                # TODO any special processing for these? Maybe load the memory tables?
+                continue
+            if md.directive.startswith('memoryTable '):
+                # TODO load the memory table
+                continue
+            
+            raise Exception('Unknown directive :'+md.directive+':')
+                    
         if type(md) is Block:
             content+='<p>UNHANDLED BLOCK</p>'
             print(":: UNHANDLED BLOCK "+md.type)
