@@ -47,6 +47,9 @@ class Block:
         return ret
     
     def make_content_code(self,code_info):
+        # TODO references to RAM
+        # TODO links in jumps
+        print(code_info['memory'])
         return '<pre>'+str(code_info)+'</pre>'
         
         

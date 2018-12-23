@@ -173,7 +173,15 @@ def load_file(filename):
                     pc+=1
             if pc==0:
                 del lines[i]    
-           
+                
+    for i in range(len(lines)):
+        md = lines[i]    
+        if type(md) is Directive and md.directive == 'memory':
+            for m in lines[i+1:]:
+                if type(m) is Table:
+                    m.is_memory = True
+                    break
+        
     return lines
     
 load_file('../../content/CoCo/Pyramid/Code.md')

@@ -12,8 +12,9 @@ from code.paragraph_line import Paragraph
 from code.directive_line import Directive
 from code.block_line import Block
 from code.table_line import Table
+from code.memory_table import MemoryTable
 
-def process_markdown(lines,site_nav_node):  
+def process_markdown(lines,site_nav_node,fp_content):  
     ''' Process a single markdown file
     
         params:
@@ -22,7 +23,11 @@ def process_markdown(lines,site_nav_node):
           
     '''
     
-    code_info = {}
+    #print(fp_content)
+    
+    code_info = {
+        'memory' : {}
+    }
                
     # Used to make unique anchor ids on this page    
     ids = IDMgr()
@@ -83,11 +88,7 @@ def process_markdown(lines,site_nav_node):
             if md.directive.startswith('}'):
                 content += '</div>'
                 continue
-            if md.directive == 'memory':
-                for m in lines[i+1:]:
-                    if type(m) is Table:
-                        m.is_memory = True
-                        break
+            if md.directive == 'memory':                
                 continue                
             if md.directive.startswith('cpu'):
                 code_info['cpu'] = md.directive[3:].strip()
@@ -95,8 +96,12 @@ def process_markdown(lines,site_nav_node):
             if md.directive.startswith('code'):
                 # TODO any special processing for these? Maybe load the memory tables?
                 continue
-            if md.directive.startswith('memoryTable '):
-                # TODO load the memory table
+            if md.directive.startswith('memoryTable '):                
+                name = md.directive[12:].strip()               
+                text = lines[i+1].lines[0].line
+                k = text.index('](')
+                j = text.index(')',k)
+                code_info['memory'][name] = MemoryTable(os.path.join(fp_content,text[k+2:j]))
                 continue
             
             raise Exception('Unknown directive :'+md.directive+':')
@@ -214,7 +219,7 @@ def deploy_directory(current_node):
             deploy_directory(dep)        
         else:
             md = code.markdown_line.load_file(src)            
-            cont = process_markdown(md,dep)
+            cont = process_markdown(md,dep,fp_content)
             f = open(os.path.join(ENV.CONTENT_DIR,'master.template'),'r')
             lines = f.readlines()
             f.close()
