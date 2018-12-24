@@ -1,3 +1,5 @@
+
+
 class Block:
     
     def __init__(self,first):
@@ -10,13 +12,13 @@ class Block:
     def add_line(self,line):
         self.lines.append(line)
         
-    def make_content(self,code_info):
+    def make_content(self,code_info,lines):
                 
         if self.type=='html':
             return self.make_content_html()
         
         if self.type=='code':
-            return self.make_content_code(code_info)
+            return self.make_content_code(code_info,lines)
         
         if self.type=='plain':
             return self.make_content_plain()
@@ -46,10 +48,13 @@ class Block:
         ret += '</pre>'
         return ret
     
-    def make_content_code(self,code_info):
+    def make_content_code(self,code_info,lines):
+        import code.process_code
+        if not 'processed_code' in code_info:
+            code.process_code.process_code(lines,code_info)
         # TODO references to RAM
         # TODO links in jumps
-        print(code_info['memory'])
+        # print(code_info['memory'])
         return '<pre>'+str(code_info)+'</pre>'
         
         

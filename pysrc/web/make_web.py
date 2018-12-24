@@ -1,10 +1,10 @@
 import shutil
 import os
+import copy
 from web.nav_tree import NavTree
 from web.id_mgr import IDMgr
 import web.ENVIRONMENT as ENV
 import code.markdown_line
-import copy
 import web.nav_tree
 from code.header_line import HeaderLine
 from code.list_line import ListLine
@@ -91,7 +91,14 @@ def process_markdown(lines,site_nav_node,fp_content):
             if md.directive == 'memory':                
                 continue                
             if md.directive.startswith('cpu'):
-                code_info['cpu'] = md.directive[3:].strip()
+                name = md.directive[3:].strip()
+                code_info['cpu_name'] = name
+                if name == '6809':
+                    import cpu.cpu_6809
+                    code_info['cpu'] = cpu.cpu_6809.CPU_6809()                
+                else:
+                    raise Exception("Unknown CPU "+name)
+                
                 continue
             if md.directive.startswith('code'):
                 # TODO any special processing for these? Maybe load the memory tables?
@@ -107,7 +114,7 @@ def process_markdown(lines,site_nav_node,fp_content):
             raise Exception('Unknown directive :'+md.directive+':')
                     
         if type(md) is Block:
-            content += md.make_content(code_info)            
+            content += md.make_content(code_info,lines)            
             continue
         
         if type(md) is Table:

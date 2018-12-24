@@ -12,6 +12,7 @@ class MarkdownLine:
         self.line = line
         self.filename = filename
         self.linenumber = linenumber
+        self.code = None # In case we attach a code line
 
 def get_deploy(lines):
     

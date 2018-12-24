@@ -20,8 +20,11 @@ class CodeLine:
         self.original = md
         self.filename = filename
         self.line_number = line_number
+        self.data = None
+        self.mnemonic = None
         
         line = md.line.strip()
+        self.line = line
                 
         self.address = None
         self.comment = None
