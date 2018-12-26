@@ -22,9 +22,14 @@ def process_code(lines,code_info):
                 alias = cpu.pick_opcode_from_aliases(c.mnemonic,ops)
                 if alias == None:
                     raise Exception("Opcode not found "+c.original.line) 
-                ops = [alias]            
+                ops = [alias]    
+            c.opcode = ops[0]        
     
     # TODO look for jumps, addresses, etc
+    for c in code:
+        if c.opcode != None:
+            if cpu.is_bus_x(c.opcode):
+                print(c.original.line+':'+str(c.opcode))
         
     code_info['processed_code'] = code
     
