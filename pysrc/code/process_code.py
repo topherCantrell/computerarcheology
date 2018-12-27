@@ -2,6 +2,20 @@
 
 from code.code_line import CodeLine
 
+def is_hex_digit(d):
+    if d>='0' and d<='9':
+        return True
+    if d>='A' and d<='F':
+        return True
+    
+def find_end_of_hex(s,p=0):
+    while True:
+        if p>=len(s):
+            return p
+        if not is_hex_digit(s[p]):
+            return p
+        p+=1
+
 def process_code(lines,code_info):
     
     code = []
@@ -46,11 +60,23 @@ def process_code(lines,code_info):
     
     '''
             
-    # TODO look for jumps, addresses, etc
     for c in code:
         if c.opcode != None:
-            if cpu.is_bus_x(c.opcode):
-                print(c.original.line+':'+str(c.opcode))
+            if cpu.is_memory_reference(c.opcode):                             
+                i = c.original.line.index('$')
+                j = find_end_of_hex(c.original.line,i+1)
+                link_info = {'opcode_i':i,'opcode_j':j}
+                c.link_info = link_info   
+                addr = int(c.original.line[i+1:j])
+                
+                # TODO now where is this address. Is it in the code? Is it in a table?
+                
+                
+                if cpu.is_bus_x(c.opcode):
+                    print('*'+c.original.line+':'+str(c.opcode))
+                else:
+                    print('%'+c.original.line+':'+str(c.opcode))   
+                print(c.original.line[i:j])         
         
     code_info['processed_code'] = code
     

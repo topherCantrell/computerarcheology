@@ -60,6 +60,12 @@ class CPU_6809:
     def is_bus_rw(self,op):
         return self.is_bus_r(op) and self.is_bus_w(op)
     
+    def is_memory_reference(self,op):
+        s = op['code']
+        if 'p' in s or 's' in s or 't' in s or 'r' in s:
+            return True
+        return False
+    
     def _does_op_fit(self,g,t):
         if len(g) != len(t):
             return False
