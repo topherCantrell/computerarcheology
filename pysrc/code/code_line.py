@@ -23,6 +23,7 @@ class CodeLine:
         self.data = None
         self.mnemonic = None
         self.opcode = None
+        self.link_info = None
         
         line = md.line.strip()
         self.line = line
