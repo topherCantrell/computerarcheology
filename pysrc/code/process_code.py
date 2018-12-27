@@ -45,13 +45,7 @@ def process_code(lines,code_info):
     }
     
     '''
-    
-    # Destination code line: {
-    #    is_target:bool  True if this line should have an ID for an anchor
-    # }
-    
-    # Source code line: {target_line:CodeLine,label:str,i:int,j:int}
-    
+            
     # TODO look for jumps, addresses, etc
     for c in code:
         if c.opcode != None:
