@@ -81,3 +81,11 @@ class CodeLine:
                 pass
             
         self.type = 'Other'            
+
+    def is_address_in(self,addr):
+        if(self.address==None or self.data==None or self.data==[]):
+            return False
+        o = addr - self.address
+        if o>=0 and o<len(self.data):
+            return True
+        return False

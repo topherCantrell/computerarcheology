@@ -24,7 +24,7 @@ def process_code(lines,code_info):
     for md in lines: 
         if str(type(md)) == "<class 'code.block_line.Block'>":     
             for m in md.lines:
-                if type(m) is CodeLine and m.data!=None:
+                if type(m) is CodeLine:
                     code.append(m)   
                             
     for c in code: 
@@ -38,6 +38,8 @@ def process_code(lines,code_info):
                     raise Exception("Opcode not found "+c.original.line) 
                 ops = [alias]    
             c.opcode = ops[0]        
+            
+    # TODO collect the label addresses
     
     '''
     
@@ -67,9 +69,14 @@ def process_code(lines,code_info):
                 j = find_end_of_hex(c.original.line,i+1)
                 link_info = {'opcode_i':i,'opcode_j':j}
                 c.link_info = link_info   
-                addr = int(c.original.line[i+1:j])
+                addr = int(c.original.line[i+1:j],16)
                 
-                # TODO now where is this address. Is it in the code? Is it in a table?
+                for d in code:
+                    if d.is_address_in(addr):
+                        print(":::"+d.original.line)
+                        break
+                
+                # TODO where is this address? Is it in the code? Is it in a table?
                 
                 
                 if cpu.is_bus_x(c.opcode):
