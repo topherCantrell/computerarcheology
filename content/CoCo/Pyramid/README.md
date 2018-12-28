@@ -1,3 +1,5 @@
+![CoCo Pyramid](Pyramid.jpg)
+
 >>> deploy:<br>
 >>>   RAMUse.md<br>
 >>>   Code.md<br>
@@ -5,8 +7,6 @@
 >>>   +BinaryDataPyramid.js<br>
 >>>   +Pyramid.jpg<br>
 >>>   +pyramid.js<br>
-
-![CoCo Pyramid](Pyramid.jpg)
 
 # Pyramid 2000
 
