@@ -1,4 +1,3 @@
-
 ![Computer Archeology](Arch.jpg)
 
 >>> deploy:
@@ -40,11 +39,11 @@ You can submit merge requests to add your own work. The README file in the repos
 
 You can click the "Contact" button at the top and send me corrections and additions. 
 
-If you would like me to add a link here to your own site then send me the information.
+If you would like me to add a link to your own site then send me the information.
  
 # References
 
-If you like Computer Archeology you must visit [Don Hodges amazing site](http://donhodges.com/). He has a series 
+If you like Computer Archeology, you must visit [Don Hodges amazing site](http://donhodges.com/). He has a series 
 of digs into Pac Man, Ms Pac Man, Dig Dug, Donkey Kong, and Defender to name a few. Visit his 
 [Archive](http://donhodges.com/archive.htm) for most of the series.
 
@@ -66,7 +65,7 @@ There is a famous bug in the arcade game Galaga. Shoot everything in the game ex
 fifteen minutes. Eventually it will stop firing, and none of the bees will fire at you again for the rest of the game. 
 Let me lead you into the tomb of Z80 opcodes and show you the mistake in [Galaga](Arcade/Galaga).
 
-Space Invaders was one of (if not the) first arcade games. The 8080 code is littered with "questionable code design". 
+Space Invaders was one of (if not the) first arcade games. The 8080 code is littered with questionable code design. 
 There is a hidden message Easter egg in the code, and I found a subtle bug. 
 Check it out here in [SpaceInvaders](Arcade/SpaceInvaders).
 
@@ -86,7 +85,7 @@ and it is fun to see how different sound boards scheduled long-running effects o
 Check out the sound-board disassemblies of [Moon Patrol](Arcade/MoonPatrol) and [Time Pilot](Arcade/TimePilot) and 
 [Frogger](Arcade/Frogger). 
 
-The running base line in Moon Patrol is a nugget in itself. You can see the beginnings of Domain Specific Languages 
+The running base line in Moon Patrol is a treasure in itself. You can see the beginnings of Domain Specific Languages 
 in these boards that define their own sound-script languages.
 
 ## Adventures in Text 
@@ -100,8 +99,8 @@ without knowing the secrets. They are all described here.
 
 ## TV Console Systems
 
-If you were a child in the 70s chances are you had an Atari2600. The hardware seems designed with the included 
-game [Combat](Atari2600/Combat) in mind. But game developers squeezed out ingenious games using the simple hardware objects. 
+If you were a child in the 70s chances are you had an Atari2600. The hardware seems designed for the included 
+game [Combat](Atari2600/Combat). But game developers squeezed out ingenious games using the simple hardware objects. 
 In [Missile Command](Atari2600/MissileCommand) the player-duplication feature creates the parallel falling missiles.
 
 The 2600 was limited to a direct access of 4K bytes in the cartridge. Many games included several banks of ROM that were 
@@ -115,14 +114,11 @@ The entire game fits in a 4K cartridge and uses only the system's 128 bytes of m
 The [Legend of Zelda](NES/Zelda) for the NES started a long series of wonderful Zelda games spanning all the different
  Nintendo game systems.
 
-Patrik, add whatever you want to the description here.
-
 ## Viruses
 
 Computer viruses are an intriguing part of our computer culture. Let me take you into the assembly workings of two famous but defunct 
 viruses. First I'll show you the [Morris Worm](Virus/Worm) VAX assembly snippet written into a buffer overrun to forge a root shell. Then 
 we'll look at the PC [Stoned](Virus/Stoned) boot sector infector. As tiny and efficient as it is, there is always room for improvement. 
-Let me show you!
 
 ## Amiga
 
@@ -134,7 +130,7 @@ Patrik Sevallius is tackling [Rainbow Islands](Amiga/Rainbow). He is especially 
 You can learn the rules of chess in an afternoon. Becoming GOOD at chess could take a lifetime. Programming is similar: the
 instructions the computer can execute are simple and few. But learning to combine the instructions into a sequence that
 does something -- something creative an engaging -- is more of an art than a science. It takes learning and practice and 
-discipline. It takes talent.
+discipline.
 
 Maybe Legos are a better metaphor. There are relatively few TYPES of pieces you have to work with. You have the 4x4 and the 4x8
 and the 1x8 and so on. Some very creative people have written out sequenced instructions (a program) for combining pieces
@@ -163,7 +159,7 @@ the computer follows one by one.
 
 # Disassembly
 
-If the computer can read the instructions, then you can too! A "disassembler" reads a binary program image and produces human
+If the computer can read the instructions, then you can too! A disassembler reads a binary program image and produces human
 readable mnemonics for each instruction.
 
 It isn't always easy to tell what is data and what is code. Tables and data objects are often scattered between
@@ -181,14 +177,8 @@ in that "ah ha!" moment of understanding.
 There are lots of tools support the archeology efforts. They are all in the 
 [computerarcheology repository on github](https://github.com/topherCantrell/computerarcheology).
 
-## Raw Content
+# Raw Content
 
 The [Raw Content](https://github.com/topherCantrell/computerarcheology/tree/master/content) includes the
 markup files for discussion and code. If you want the clean disassembly file for a particular
 dig site, then look here.
-
-## Archeology Tools
-
-These are my 
-[Assemblers, Disassemblers, Cleaners, etc](https://github.com/topherCantrell/computerarcheology/tree/master/code/tools)
-used to dig into the code. There are several site-specific tools here as well.

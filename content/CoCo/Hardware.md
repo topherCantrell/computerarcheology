@@ -74,3 +74,24 @@ address.
 | FFF4:FFF5 | vectorSWI2  | SWI2 vector (0103 RAM) |
 | FFF2:FFF3 | vectorSWI3  | SWI3 vector (0100 RAM) |
 | FFF0:FFF1 | vector6809  | 6809 exceptions like divide by 0 (A681 ROM) |
+
+# ROM Routines
+
+The first bytes in ROM hold the addresses for common routines. This allows the routines themselves to
+move around in ROM from version to version. 
+
+The Spectral Associates people, who published the disassemblies of the ROMs, made calls directly into 
+many ROM routines in their games (see Madness and the Minotaur). Their games would have broken if the 
+ROMs had ever changed.
+
+>>> memory
+
+|   |   |   |
+|:--------- |:------ |:----------------------------------- |
+| A000:A001 | POLCAT | Polls the keyboard for a character  |
+| A002:A003 | CHROUT | Outputs a character to a device     |
+| A004:A005 | CSRDON | Starts the cassette for reading     |
+| A006:A007 | BLKIN  | Read a block from the cassette      |
+| A008:A009 | BLKOUT | Write a block to the cassette       |
+| A00A:A00B | JOYIN  | Samples all 4 joysticks             |
+| A00C:A00D | WRTLDR | Turns on cassette and writes leader |
