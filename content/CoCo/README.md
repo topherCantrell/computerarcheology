@@ -1,3 +1,5 @@
+![CoCo](CoCo.jpg)
+
 >>> deploy:<br>
 >>>   Hardware.md:Hardware<br>
 >>>   +CoCo.jpg<br>
@@ -11,8 +13,6 @@
 >>>   +PIA1.jpg<br>
 >>>   +SAM.jpg<br>
 >>>     Pyramid:Pyramid<br>
-
-![CoCo](CoCo.jpg)
 
 # CoCo
 
@@ -36,6 +36,3 @@ disassemblies of the CoCo ROMs! Here are those awesome PDFs:
 
 [Super Extended Basic Unravelled](super-extended-basic-unravelled.pdf)
 
-# Disassembled Code
-* [Minotaur and the Minotaur](MadnessMinotaur/)
-* TODO all others here
