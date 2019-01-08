@@ -48,7 +48,7 @@ The game must be reloaded to start over.
 062A: BD 09 37            JSR     $0937                     ; {ReadKey}  wait for key
 062D: 86 01               LDA     #$01                      ; Starting ...
 062F: B7 18 E5            STA     $18E5                     ; {-ram_01} ... room number
-0632: BD 0B D2            JSR     $0BD2                     ; {PrintRoomDescription}  Print room description
+0632: BD 0B D2            JSR     $0BD2                     ; {!+} Print room description
 ```
 
 # Main Loop
