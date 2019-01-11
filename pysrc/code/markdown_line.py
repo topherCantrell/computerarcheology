@@ -185,4 +185,3 @@ def load_file(filename):
         
     return lines
     
-load_file('../../content/CoCo/Pyramid/Code.md')

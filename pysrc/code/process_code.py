@@ -16,7 +16,7 @@ def find_end_of_hex(s,p=0):
             return p
         p+=1
 
-def process_code(lines,code_info):
+def process_code(lines,code_info,skip_no_label_jumps=False):
     
     # We'll use this a lot
     cpu = code_info['cpu']
@@ -123,7 +123,7 @@ def process_code(lines,code_info):
                         d.link_info['is_target']=True
                         if addr in labels:                            
                             entry = labels[addr]
-                            c.link_info['target_label'] = entry['label']
+                            c.link_info['target_label'] = entry['label'] 
                         break
                 
                 # No? Then check all the memory tables we know of
@@ -140,8 +140,8 @@ def process_code(lines,code_info):
                 if not 'target_line' in c.link_info and not 'memory_table' in c.link_info:
                     #print(c.original.line) 
                     code_info['unknown_memory'] = {'address':addr,'line':c}       
-                    del c.link_info    
-                    
+                    c.link_info = None    
+                                                 
                 if c.link_info:
                     # Replace the information in the comment
                     nc = c.comment
@@ -163,19 +163,22 @@ def process_code(lines,code_info):
                             if 'target_label' in c.link_info:
                                 ns = c.link_info['target_label']
                             else:
-                                ns = format(c.link_info['target_line'].address,'04X')
-                        if override:
-                            ns = '{!+'+ns+'}'                                
-                        else:
-                            ns = '{'+ns+'}'
-                            
+                                if skip_no_label_jumps:
+                                    ns = ''
+                                else:
+                                    ns = format(c.link_info['target_line'].address,'04X')
+                                    
                         nc = (nc[0:i]+nc[j:]).strip()
+                        
+                        if override:
+                            nc = '{!+'+ns+'} '+nc
+                        elif skip_no_label_jumps and 'target_line' in c.link_info and not 'target_label' in c.link_info:
+                            nc = nc
+                        else:
+                            nc = '{'+ns+'} '+nc
                             
                         # Replace the existing comment (or prepend a new one)
-                        c.replace_comment(ns+' '+nc)    
-                        print(':'+c.original.line)
-                        
-                        # TODO we may need to change the original line here ... to add the new comment                                                                             
-        
+                        c.replace_comment(nc) 
+                                                                   
     code_info['processed_code'] = code
     

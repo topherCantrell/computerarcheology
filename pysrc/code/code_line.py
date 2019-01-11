@@ -89,7 +89,7 @@ class CodeLine:
         if self._original_comment_start!=None:
             self.original.line = self.original.line[0:self._original_comment_start] + '; '+new_comment
         else:
-            self.original.line = 'WOOT' # self.original.line+' ; '+new_comment
+            self.original.line = self.original.line+' ; '+new_comment
         
     def is_address_in(self,addr):
         if(self.address==None or self.data==None or self.data==[]):
