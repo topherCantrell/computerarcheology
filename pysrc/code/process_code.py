@@ -172,8 +172,8 @@ def process_code(lines,code_info):
                         nc = (nc[0:i]+nc[j:]).strip()
                             
                         # Replace the existing comment (or prepend a new one)
-                            
-                        c.comment = ns+' '+nc
+                        c.replace_comment(ns+' '+nc)    
+                        print(':'+c.original.line)
                         
                         # TODO we may need to change the original line here ... to add the new comment                                                                             
         

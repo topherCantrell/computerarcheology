@@ -30,11 +30,13 @@ class CodeLine:
                 
         self.address = None
         self.comment = None
+        self._original_comment_start = None
         
         if ';' in line:
             i = line.index(';')
             self.comment = line[i+1:].strip()
-            line = line[0:i].strip()                    
+            line = line[0:i].strip()                
+            self._original_comment_start = i
         
         self.label = None    
         if not ' ' in line and line.endswith(':'):
@@ -82,6 +84,13 @@ class CodeLine:
             
         self.type = 'Other'            
 
+    def replace_comment(self,new_comment):
+        self.comment = new_comment
+        if self._original_comment_start!=None:
+            self.original.line = self.original.line[0:self._original_comment_start] + '; '+new_comment
+        else:
+            self.original.line = 'WOOT' # self.original.line+' ; '+new_comment
+        
     def is_address_in(self,addr):
         if(self.address==None or self.data==None or self.data==[]):
             return False
