@@ -11,7 +11,7 @@
 [Hardware Info](..\Hardware.md)
 
 ```code
-C000: 7E C1 18       JMP     $C118           
+C000: 7E C1 18       JMP     $C118            ; 
 
 C003: 30 8D 3F 19    LEAX    $3F19,PC        
 C007: CC 04 00       LDD     #$0400          
@@ -23,20 +23,20 @@ C012: A7 E2          STA     ,-S
 C014: A6 84          LDA     ,X              
 C016: 84 01          ANDA    #$01            
 C018: A8 E4          EORA    ,S              
-C01A: 26 08          BNE     $C024           
+C01A: 26 08          BNE     $C024            ; 
 C01C: 31 3E          LEAY    -2,Y            
-C01E: 26 F4          BNE     $C014           
+C01E: 26 F4          BNE     $C014            ; 
 C020: 32 61          LEAS    1,S             
-C022: 20 11          BRA     $C035           
+C022: 20 11          BRA     $C035            ; 
 C024: 86 01          LDA     #$01            
 C026: 6D E0          TST     ,S+             
-C028: 26 D9          BNE     $C003           
+C028: 26 D9          BNE     $C003            ; 
 C02A: A5 84          BITA    ,X              
-C02C: 27 09          BEQ     $C037           
+C02C: 27 09          BEQ     $C037            ; 
 C02E: 5C             INCB                    
-C02F: 26 F9          BNE     $C02A           
+C02F: 26 F9          BNE     $C02A            ; 
 C031: 0A FF          DEC     <$FF            
-C033: 26 F5          BNE     $C02A           
+C033: 26 F5          BNE     $C02A            ; 
 C035: 4F             CLRA                    
 C036: 39             RTS                     
 C037: 86 1B          LDA     #$1B            
@@ -45,13 +45,13 @@ C03B: 86 04          LDA     #$04
 C03D: 90 FF          SUBA    <$FF            
 C03F: DE FD          LDU     <$FD            
 C041: 10 A3 C4       CMPD    ,U              
-C044: 24 08          BCC     $C04E           
+C044: 24 08          BCC     $C04E            ; 
 C046: 33 4C          LEAU    12,U            
 C048: 0A F7          DEC     <$F7            
-C04A: 26 F5          BNE     $C041           
-C04C: 20 B5          BRA     $C003           
+C04A: 26 F5          BNE     $C041            ; 
+C04C: 20 B5          BRA     $C003            ; 
 C04E: 0D F0          TST     <$F0            
-C050: 27 04          BEQ     $C056           
+C050: 27 04          BEQ     $C056            ; 
 C052: 96 F7          LDA     <$F7            
 C054: 4C             INCA                    
 C055: 39             RTS                     
@@ -63,32 +63,32 @@ C05E: 3D             MUL
 C05F: E3 44          ADDD    4,U             
 C061: E7 45          STB     5,U             
 C063: A0 44          SUBA    4,U             
-C065: 27 25          BEQ     $C08C           
+C065: 27 25          BEQ     $C08C            ; 
 C067: AE 42          LDX     2,U             
 C069: E6 48          LDB     8,U             
 C06B: 8C 05 20       CMPX    #$0520          
-C06E: 25 22          BCS     $C092           
+C06E: 25 22          BCS     $C092            ; 
 C070: 6C 44          INC     4,U             
 C072: 30 88 E0       LEAX    $E0,X           
 C075: AF 42          STX     2,U             
 C077: E7 84          STB     ,X              
 C079: 4A             DECA                    
-C07A: 26 EF          BNE     $C06B           
+C07A: 26 EF          BNE     $C06B            ; 
 C07C: AE 46          LDX     6,U             
 C07E: AC 42          CMPX    2,U             
-C080: 25 04          BCS     $C086           
+C080: 25 04          BCS     $C086            ; 
 C082: AE 42          LDX     2,U             
 C084: AF 46          STX     6,U             
 C086: 0D F9          TST     <$F9            
-C088: 27 02          BEQ     $C08C           
+C088: 27 02          BEQ     $C08C            ; 
 C08A: E7 84          STB     ,X              
 C08C: 0A FB          DEC     <$FB            
 C08E: 10 26 FF 71    LBNE    $FF71           
 C092: 39             RTS                     
 C093: 03 D1          COM     <$D1            
-C095: 02             ???                     
+C095: 02                                  
 C096: F8 02 6D       EORB    $026D           
-C099: 01             ???                     
+C099: 01                                  
 C09A: E8 01          EORB    1,X             
 C09C: 7C 01 36       INC     $0136           
 C09F: 00 F4          NEG     <$F4            
@@ -116,7 +116,7 @@ C0C9: DE FD          LDU     <$FD
 C0CB: C6 1B          LDB     #$1B            
 C0CD: D7 F7          STB     <$F7            
 C0CF: EC 44          LDD     4,U             
-C0D1: 27 34          BEQ     $C107           
+C0D1: 27 34          BEQ     $C107            ; 
 C0D3: 86 40          LDA     #$40            
 C0D5: E6 44          LDB     4,U             
 C0D7: 3D             MUL                     
@@ -126,38 +126,38 @@ C0DC: 3D             MUL
 C0DD: 34 06          PSHS    B,A             
 C0DF: EC 44          LDD     4,U             
 C0E1: A3 E1          SUBD    ,S++            
-C0E3: 24 0B          BCC     $C0F0           
+C0E3: 24 0B          BCC     $C0F0            ; 
 C0E5: 5F             CLRB                    
 C0E6: A6 44          LDA     4,U             
-C0E8: 26 06          BNE     $C0F0           
+C0E8: 26 06          BNE     $C0F0            ; 
 C0EA: 6F 44          CLR     4,U             
 C0EC: 6F 45          CLR     5,U             
-C0EE: 20 17          BRA     $C107           
+C0EE: 20 17          BRA     $C107            ; 
 C0F0: E7 45          STB     5,U             
 C0F2: 40             NEGA                    
 C0F3: AB 44          ADDA    4,U             
-C0F5: 27 10          BEQ     $C107           
+C0F5: 27 10          BEQ     $C107            ; 
 C0F7: AE 42          LDX     2,U             
 C0F9: C6 80          LDB     #$80            
 C0FB: E7 84          STB     ,X              
 C0FD: 30 88 20       LEAX    $20,X           
 C100: 6A 44          DEC     4,U             
 C102: 4A             DECA                    
-C103: 26 F6          BNE     $C0FB           
+C103: 26 F6          BNE     $C0FB            ; 
 C105: AF 42          STX     2,U             
 C107: 0D F9          TST     <$F9            
-C109: 27 06          BEQ     $C111           
+C109: 27 06          BEQ     $C111            ; 
 C10B: AE 46          LDX     6,U             
 C10D: E6 48          LDB     8,U             
 C10F: E7 84          STB     ,X              
 C111: 33 4C          LEAU    12,U            
 C113: 0A F7          DEC     <$F7            
-C115: 26 B8          BNE     $C0CF           
+C115: 26 B8          BNE     $C0CF            ; 
 C117: 39             RTS                     
 
 
-C118: 10 CE 03 FF    LDS     #$03FF          ; Initialize the stack
-C11C: BD C5 15       JSR     $C515           
+C118: 10 CE 03 FF    LDS     #$03FF           ; Initialize the stack
+C11C: BD C5 15       JSR     $C515            ; 
 C11F: CC 02 00       LDD     #$0200          
 C122: 34 06          PSHS    B,A             
 C124: CC 3C 34       LDD     #$3C34          
@@ -172,22 +172,22 @@ C13C: 0F F6          CLR     <$F6
 C13E: 35 40          PULS    U               
 C140: 96 74          LDA     <$74            
 C142: 81 10          CMPA    #$10            
-C144: 24 03          BCC     $C149           
+C144: 24 03          BCC     $C149            ; 
 C146: 8E 0E 00       LDX     #$0E00          
 C149: 86 80          LDA     #$80            
 C14B: A7 C0          STA     ,U+             
 C14D: 30 1F          LEAX    -1,X            
-C14F: 26 FA          BNE     $C14B           
+C14F: 26 FA          BNE     $C14B            ; 
 C151: 0F F0          CLR     <$F0            
 C153: 8E 04 00       LDX     #$0400          
 C156: CC 80 80       LDD     #$8080          
 C159: ED 81          STD     ,X++            
 C15B: 8C 10 00       CMPX    #$1000          
-C15E: 25 F9          BCS     $C159           
-C160: B7 FF C0       STA     $FFC0           
-C163: B7 FF C2       STA     $FFC2           
-C166: B7 FF C5       STA     $FFC5           
-C169: BD C4 1C       JSR     $C41C           
+C15E: 25 F9          BCS     $C159            ; 
+C160: B7 FF C0       STA     $FFC0            ; {hard:dispMode} 
+C163: B7 FF C2       STA     $FFC2            ; {hard:dispMode} 
+C166: B7 FF C5       STA     $FFC5            ; {hard:dispMode} 
+C169: BD C4 1C       JSR     $C41C            ; 
 C16C: 8E 02 00       LDX     #$0200          
 C16F: 9F FD          STX     <$FD            
 C171: CE C0 93       LDU     #$C093          
@@ -207,26 +207,26 @@ C190: 96 FA          LDA     <$FA
 C192: A7 A4          STA     ,Y              
 C194: 31 21          LEAY    1,Y             
 C196: 10 8C 0C 09    CMPY    #$0C09          
-C19A: 26 02          BNE     $C19E           
+C19A: 26 02          BNE     $C19E            ; 
 C19C: 31 21          LEAY    1,Y             
 C19E: 10 8C 0C 13    CMPY    #$0C13          
-C1A2: 26 02          BNE     $C1A6           
+C1A2: 26 02          BNE     $C1A6            ; 
 C1A4: 31 21          LEAY    1,Y             
 C1A6: 96 FA          LDA     <$FA            
 C1A8: A7 80          STA     ,X+             
 C1AA: 8B 10          ADDA    #$10            
 C1AC: 8A 80          ORA     #$80            
 C1AE: 81 BA          CMPA    #$BA            
-C1B0: 27 F8          BEQ     $C1AA           
+C1B0: 27 F8          BEQ     $C1AA            ; 
 C1B2: 81 CA          CMPA    #$CA            
-C1B4: 27 F4          BEQ     $C1AA           
+C1B4: 27 F4          BEQ     $C1AA            ; 
 C1B6: 97 FA          STA     <$FA            
 C1B8: 86 0F          LDA     #$0F            
 C1BA: A7 80          STA     ,X+             
 C1BC: 35 06          PULS    A,B             
 C1BE: ED 81          STD     ,X++            
 C1C0: 0A FF          DEC     <$FF            
-C1C2: 26 BC          BNE     $C180           
+C1C2: 26 BC          BNE     $C180            ; 
 C1C4: 8E 04 04       LDX     #$0404          
 C1C7: C6 19          LDB     #$19            
 C1C9: D7 FF          STB     <$FF            
@@ -235,13 +235,13 @@ C1CD: C6 06          LDB     #$06
 C1CF: A7 84          STA     ,X              
 C1D1: 30 88 20       LEAX    $20,X           
 C1D4: 5A             DECB                    
-C1D5: 26 F8          BNE     $C1CF           
+C1D5: 26 F8          BNE     $C1CF            ; 
 C1D7: 30 89 FF 41    LEAX    $FF41,X         
 C1DB: 0A FF          DEC     <$FF            
-C1DD: 26 EE          BNE     $C1CD           
+C1DD: 26 EE          BNE     $C1CD            ; 
 C1DF: 8E C4 CE       LDX     #$C4CE          
 C1E2: CE 04 05       LDU     #$0405          
-C1E5: BD C4 9A       JSR     $C49A           
+C1E5: BD C4 9A       JSR     $C49A            ; 
 C1E8: CE 05 69       LDU     #$0569          
 C1EB: CC CA 07       LDD     #$CA07          
 C1EE: 8E C4 E6       LDX     #$C4E6          
@@ -249,72 +249,72 @@ C1F1: A7 C4          STA     ,U
 C1F3: A7 4A          STA     10,U            
 C1F5: 33 C9 01 00    LEAU    $0100,U         
 C1F9: 5A             DECB                    
-C1FA: 26 F5          BNE     $C1F1           
+C1FA: 26 F5          BNE     $C1F1            ; 
 C1FC: CE 05 9D       LDU     #$059D          
 C1FF: 8E C4 E6       LDX     #$C4E6          
 C202: C6 07          LDB     #$07            
 C204: 34 44          PSHS    U,B             
-C206: BD C4 9A       JSR     $C49A           
+C206: BD C4 9A       JSR     $C49A            ; 
 C209: 35 44          PULS    B,U             
 C20B: 33 C9 00 C0    LEAU    $00C0,U         
 C20F: C1 05          CMPB    #$05            
-C211: 26 04          BNE     $C217           
+C211: 26 04          BNE     $C217            ; 
 C213: 33 C9 00 C0    LEAU    $00C0,U         
 C217: 5A             DECB                    
-C218: 26 EA          BNE     $C204           
+C218: 26 EA          BNE     $C204            ; 
 C21A: 86 04          LDA     #$04            
 C21C: 97 FB          STA     <$FB            
-C21E: BD C0 03       JSR     $C003           
-C221: BD C0 C9       JSR     $C0C9           
+C21E: BD C0 03       JSR     $C003            ; 
+C221: BD C0 C9       JSR     $C0C9            ; 
 C224: BD A1 C1       JSR     $A1C1           
 C227: 81 44          CMPA    #$44            
-C229: 26 07          BNE     $C232           
+C229: 26 07          BNE     $C232            ; 
 C22B: 03 F6          COM     <$F6            
-C22D: BD C4 1C       JSR     $C41C           
-C230: 20 E8          BRA     $C21A           
+C22D: BD C4 1C       JSR     $C41C            ; 
+C230: 20 E8          BRA     $C21A            ; 
 C232: 81 41          CMPA    #$41            
-C234: 26 0A          BNE     $C240           
-C236: B6 FF 23       LDA     $FF23           
+C234: 26 0A          BNE     $C240            ; 
+C236: B6 FF 23       LDA     $FF23            ; {hard:PIA1_CB} 
 C239: 88 08          EORA    #$08            
-C23B: B7 FF 23       STA     $FF23           
-C23E: 20 DA          BRA     $C21A           
+C23B: B7 FF 23       STA     $FF23            ; {hard:PIA1_CB} 
+C23E: 20 DA          BRA     $C21A            ; 
 C240: 81 20          CMPA    #$20            
-C242: 26 09          BNE     $C24D           
+C242: 26 09          BNE     $C24D            ; 
 C244: BD A1 C1       JSR     $A1C1           
 C247: 84 7F          ANDA    #$7F            
-C249: 27 F9          BEQ     $C244           
-C24B: 20 CD          BRA     $C21A           
+C249: 27 F9          BEQ     $C244            ; 
+C24B: 20 CD          BRA     $C21A            ; 
 C24D: 81 50          CMPA    #$50            
-C24F: 26 1C          BNE     $C26D           
+C24F: 26 1C          BNE     $C26D            ; 
 C251: 03 F9          COM     <$F9            
-C253: 26 C5          BNE     $C21A           
+C253: 26 C5          BNE     $C21A            ; 
 C255: DE FD          LDU     <$FD            
 C257: CC 80 1B       LDD     #$801B          
 C25A: AE 46          LDX     6,U             
 C25C: AC 4A          CMPX    10,U            
-C25E: 27 06          BEQ     $C266           
+C25E: 27 06          BEQ     $C266            ; 
 C260: AC 42          CMPX    2,U             
-C262: 24 02          BCC     $C266           
+C262: 24 02          BCC     $C266            ; 
 C264: A7 84          STA     ,X              
 C266: 33 4C          LEAU    12,U            
 C268: 5A             DECB                    
-C269: 26 EF          BNE     $C25A           
-C26B: 20 AD          BRA     $C21A           
+C269: 26 EF          BNE     $C25A            ; 
+C26B: 20 AD          BRA     $C21A            ; 
 C26D: 81 52          CMPA    #$52            
-C26F: 26 30          BNE     $C2A1           
+C26F: 26 30          BNE     $C2A1            ; 
 C271: DE FD          LDU     <$FD            
 C273: CC 80 1B       LDD     #$801B          
 C276: D7 FF          STB     <$FF            
 C278: E6 44          LDB     4,U             
-C27A: 27 0A          BEQ     $C286           
+C27A: 27 0A          BEQ     $C286            ; 
 C27C: AE 4A          LDX     10,U            
 C27E: 30 88 E0       LEAX    $E0,X           
 C281: A7 84          STA     ,X              
 C283: 5A             DECB                    
-C284: 26 F8          BNE     $C27E           
+C284: 26 F8          BNE     $C27E            ; 
 C286: AE 46          LDX     6,U             
 C288: AC 4A          CMPX    10,U            
-C28A: 27 02          BEQ     $C28E           
+C28A: 27 02          BEQ     $C28E            ; 
 C28C: A7 84          STA     ,X              
 C28E: 6F 44          CLR     4,U             
 C290: 6F 45          CLR     5,U             
@@ -323,35 +323,35 @@ C294: AF 42          STX     2,U
 C296: AF 46          STX     6,U             
 C298: 33 4C          LEAU    12,U            
 C29A: 0A FF          DEC     <$FF            
-C29C: 26 DA          BNE     $C278           
-C29E: 7E C2 1A       JMP     $C21A           
+C29C: 26 DA          BNE     $C278            ; 
+C29E: 7E C2 1A       JMP     $C21A            ; 
 C2A1: 81 46          CMPA    #$46            
-C2A3: 26 0A          BNE     $C2AF           
+C2A3: 26 0A          BNE     $C2AF            ; 
 C2A5: CC 03 0C       LDD     #$030C          
 C2A8: D7 F5          STB     <$F5            
 C2AA: 97 F4          STA     <$F4            
-C2AC: 7E C2 1A       JMP     $C21A           
+C2AC: 7E C2 1A       JMP     $C21A            ; 
 C2AF: 81 53          CMPA    #$53            
-C2B1: 26 0A          BNE     $C2BD           
+C2B1: 26 0A          BNE     $C2BD            ; 
 C2B3: CC 03 01       LDD     #$0301          
 C2B6: 97 F5          STA     <$F5            
 C2B8: D7 F4          STB     <$F4            
-C2BA: 7E C2 1A       JMP     $C21A           
+C2BA: 7E C2 1A       JMP     $C21A            ; 
 C2BD: 81 4B          CMPA    #$4B            
 C2BF: 10 26 FF 57    LBNE    $FF57           
 C2C3: 8E 04 00       LDX     #$0400          
 C2C6: CC 80 80       LDD     #$8080          
 C2C9: ED 81          STD     ,X++            
 C2CB: 8C 0C 00       CMPX    #$0C00          
-C2CE: 25 F9          BCS     $C2C9           
+C2CE: 25 F9          BCS     $C2C9            ; 
 C2D0: 03 F0          COM     <$F0            
-C2D2: B7 FF C4       STA     $FFC4           
-C2D5: B7 FF C3       STA     $FFC3           
+C2D2: B7 FF C4       STA     $FFC4            ; {hard:dispMode} 
+C2D5: B7 FF C3       STA     $FFC3            ; {hard:dispMode} 
 C2D8: 8E 0C 00       LDX     #$0C00          
 C2DB: C6 28          LDB     #$28            
 C2DD: 6F 80          CLR     ,X+             
 C2DF: 5A             DECB                    
-C2E0: 26 FB          BNE     $C2DD           
+C2E0: 26 FB          BNE     $C2DD            ; 
 C2E2: 0F EE          CLR     <$EE            
 C2E4: 0F F1          CLR     <$F1            
 C2E6: 0F FA          CLR     <$FA            
@@ -360,11 +360,11 @@ C2EB: 81 47          CMPA    #$47
 C2ED: 10 27 FE 60    LBEQ    $FE60           
 C2F1: 8E 05 00       LDX     #$0500          
 C2F4: 30 1F          LEAX    -1,X            
-C2F6: 26 FC          BNE     $C2F4           
+C2F6: 26 FC          BNE     $C2F4            ; 
 C2F8: D6 EE          LDB     <$EE            
 C2FA: 5C             INCB                    
 C2FB: C1 14          CMPB    #$14            
-C2FD: 25 01          BCS     $C300           
+C2FD: 25 01          BCS     $C300            ; 
 C2FF: 5F             CLRB                    
 C300: D7 EE          STB     <$EE            
 C302: 58             LSLB                    
@@ -377,19 +377,19 @@ C30C: 5F             CLRB
 C30D: ED 84          STD     ,X              
 C30F: 86 80          LDA     #$80            
 C311: 97 EF          STA     <$EF            
-C313: 8D 37          BSR     $C34C           
-C315: BD C0 03       JSR     $C003           
-C318: 27 CE          BEQ     $C2E8           
+C313: 8D 37          BSR     $C34C            ; 
+C315: BD C0 03       JSR     $C003            ; 
+C318: 27 CE          BEQ     $C2E8            ; 
 C31A: 80 03          SUBA    #$03            
 C31C: 81 17          CMPA    #$17            
-C31E: 24 C8          BCC     $C2E8           
+C31E: 24 C8          BCC     $C2E8            ; 
 C320: C6 A6          LDB     #$A6            
 C322: 3D             MUL                     
 C323: C3 00 80       ADDD    #$0080          
 C326: 97 F2          STA     <$F2            
 C328: 96 F1          LDA     <$F1            
 C32A: 91 F2          CMPA    <$F2            
-C32C: 25 01          BCS     $C32F           
+C32C: 25 01          BCS     $C32F            ; 
 C32E: 4F             CLRA                    
 C32F: 97 F3          STA     <$F3            
 C331: 4C             INCA                    
@@ -404,24 +404,24 @@ C340: 8B 10          ADDA    #$10
 C342: 8A 8F          ORA     #$8F            
 C344: 97 FA          STA     <$FA            
 C346: 97 EF          STA     <$EF            
-C348: 8D 02          BSR     $C34C           
-C34A: 20 9C          BRA     $C2E8           
+C348: 8D 02          BSR     $C34C            ; 
+C34A: 20 9C          BRA     $C2E8            ; 
 C34C: DC F2          LDD     <$F2            
 C34E: 1E 89          EXG     $89             
-C350: 8D 04          BSR     $C356           
+C350: 8D 04          BSR     $C356            ; 
 C352: DC F2          LDD     <$F2            
 C354: 1E 89          EXG     $89             
 C356: DD F2          STD     <$F2            
 C358: CC 11 11       LDD     #$1111          
 C35B: D3 F2          ADDD    <$F2            
-C35D: 8D 17          BSR     $C376           
+C35D: 8D 17          BSR     $C376            ; 
 C35F: CC 0F 0F       LDD     #$0F0F          
 C362: 93 F2          SUBD    <$F2            
-C364: 8D 10          BSR     $C376           
+C364: 8D 10          BSR     $C376            ; 
 C366: CC 11 0F       LDD     #$110F          
 C369: 9B F2          ADDA    <$F2            
 C36B: D0 F3          SUBB    <$F3            
-C36D: 8D 07          BSR     $C376           
+C36D: 8D 07          BSR     $C376            ; 
 C36F: CC 0F 11       LDD     #$0F11          
 C372: 90 F2          SUBA    <$F2            
 C374: DB F3          ADDB    <$F3            
@@ -437,7 +437,7 @@ C384: E7 84          STB     ,X
 C386: E7 88 20       STB     $20,X           
 C389: 39             RTS                     
 C38A: 33 31          LEAU    -15,Y           
-C38C: 2E 35          BGT     $C3C3           
+C38C: 2E 35          BGT     $C3C3            ; 
 C38E: 00 01          NEG     <$01            
 C390: 34 30          PSHS    Y,X             
 C392: 00 01          NEG     <$01            
@@ -445,37 +445,37 @@ C394: 35 30          PULS    X,Y
 C396: 00 01          NEG     <$01            
 C398: 36 33          PSHU    Y,X,A,CC        
 C39A: 00 01          NEG     <$01            
-C39C: 38             ???                     
+C39C: 38                                  
 C39D: 30 00          LEAX    0,X             
-C39F: 01             ???                     
+C39F: 01                                  
 C3A0: 31 30          LEAY    -16,Y           
 C3A2: 30 00          LEAX    0,X             
-C3A4: 01             ???                     
+C3A4: 01                                  
 C3A5: 31 32          LEAY    -14,Y           
 C3A7: 35 00          PULS    $00             
-C3A9: 01             ???                     
+C3A9: 01                                  
 C3AA: 31 36          LEAY    -10,Y           
 C3AC: 30 00          LEAX    0,X             
-C3AE: 01             ???                     
+C3AE: 01                                  
 C3AF: 32 30          LEAS    -16,Y           
 C3B1: 30 00          LEAX    0,X             
-C3B3: 02             ???                     
+C3B3: 02                                  
 C3B4: 32 35          LEAS    -11,Y           
 C3B6: 30 00          LEAX    0,X             
-C3B8: 01             ???                     
+C3B8: 01                                  
 C3B9: 33 31          LEAU    -15,Y           
 C3BB: 35 00          PULS    $00             
-C3BD: 01             ???                     
+C3BD: 01                                  
 C3BE: 34 30          PSHS    Y,X             
 C3C0: 30 00          LEAX    0,X             
-C3C2: 01             ???                     
+C3C2: 01                                  
 C3C3: 35 30          PULS    X,Y             
 C3C5: 30 00          LEAX    0,X             
-C3C7: 01             ???                     
+C3C7: 01                                  
 C3C8: 36 33          PSHU    Y,X,A,CC        
 C3CA: 30 00          LEAX    0,X             
-C3CC: 01             ???                     
-C3CD: 38             ???                     
+C3CC: 01                                  
+C3CD: 38                                  
 C3CE: 30 30          LEAX    -16,Y           
 C3D0: 00 01          NEG     <$01            
 C3D2: 31 30          LEAY    -16,Y           
@@ -505,31 +505,31 @@ C400: 00 01          NEG     <$01
 C402: 36 33          PSHU    Y,X,A,CC        
 C404: 30 30          LEAX    -16,Y           
 C406: 00 01          NEG     <$01            
-C408: 38             ???                     
+C408: 38                                  
 C409: 30 30          LEAX    -16,Y           
 C40B: 30 00          LEAX    0,X             
-C40D: 01             ???                     
+C40D: 01                                  
 C40E: 31 30          LEAY    -16,Y           
 C410: 30 30          LEAX    -16,Y           
 C412: 30 00          LEAX    0,X             
-C414: 01             ???                     
+C414: 01                                  
 C415: 31 32          LEAY    -14,Y           
 C417: 35 30          PULS    X,Y             
 C419: 30 00          LEAX    0,X             
 C41B: 00 8E          NEG     <$8E            
 C41D: C3 8A C6       ADDD    #$8AC6          
-C420: 01             ???                     
+C420: 01                                  
 C421: D7 F7          STB     <$F7            
 C423: CE 0C 40       LDU     #$0C40          
 C426: CC AF AF       LDD     #$AFAF          
 C429: ED C1          STD     ,U++            
 C42B: 11 83 10 00    CMPU    #$1000          
-C42F: 25 F8          BCS     $C429           
+C42F: 25 F8          BCS     $C429            ; 
 C431: CE 0C 40       LDU     #$0C40          
 C434: 34 40          PSHS    U               
 C436: 86 20          LDA     #$20            
 C438: 0A F7          DEC     <$F7            
-C43A: 26 4B          BNE     $C487           
+C43A: 26 4B          BNE     $C487            ; 
 C43C: C6 03          LDB     #$03            
 C43E: D7 F7          STB     <$F7            
 C440: 96 F6          LDA     <$F6            
@@ -545,19 +545,19 @@ C451: 35 02          PULS    A
 C453: A7 C4          STA     ,U              
 C455: 33 C8 20       LEAU    $20,U           
 C458: 5A             DECB                    
-C459: 26 F8          BNE     $C453           
+C459: 26 F8          BNE     $C453            ; 
 C45B: EE E4          LDU     ,S              
 C45D: A6 80          LDA     ,X+             
-C45F: 27 2E          BEQ     $C48F           
+C45F: 27 2E          BEQ     $C48F            ; 
 C461: 81 40          CMPA    #$40            
-C463: 25 08          BCS     $C46D           
+C463: 25 08          BCS     $C46D            ; 
 C465: 80 40          SUBA    #$40            
 C467: 81 20          CMPA    #$20            
-C469: 25 02          BCS     $C46D           
+C469: 25 02          BCS     $C46D            ; 
 C46B: 80 20          SUBA    #$20            
 C46D: D6 F7          LDB     <$F7            
 C46F: C1 03          CMPB    #$03            
-C471: 26 08          BNE     $C47B           
+C471: 26 08          BNE     $C47B            ; 
 C473: D6 F6          LDB     <$F6            
 C475: C4 40          ANDB    #$40            
 C477: 34 04          PSHS    B               
@@ -566,100 +566,100 @@ C47B: C6 06          LDB     #$06
 C47D: A7 C4          STA     ,U              
 C47F: 33 C8 20       LEAU    $20,U           
 C482: 5A             DECB                    
-C483: 26 F8          BNE     $C47D           
-C485: 20 D6          BRA     $C45D           
+C483: 26 F8          BNE     $C47D            ; 
+C485: 20 D6          BRA     $C45D            ; 
 C487: 0D F6          TST     <$F6            
-C489: 26 BB          BNE     $C446           
+C489: 26 BB          BNE     $C446            ; 
 C48B: A6 80          LDA     ,X+             
-C48D: 26 FC          BNE     $C48B           
+C48D: 26 FC          BNE     $C48B            ; 
 C48F: 35 40          PULS    U               
 C491: A6 80          LDA     ,X+             
-C493: 27 04          BEQ     $C499           
+C493: 27 04          BEQ     $C499            ; 
 C495: 33 C6          LEAU    A,U             
-C497: 20 9B          BRA     $C434           
+C497: 20 9B          BRA     $C434            ; 
 C499: 39             RTS                     
 C49A: A6 80          LDA     ,X+             
-C49C: 26 01          BNE     $C49F           
+C49C: 26 01          BNE     $C49F            ; 
 C49E: 39             RTS                     
-C49F: 2B 25          BMI     $C4C6           
+C49F: 2B 25          BMI     $C4C6            ; 
 C4A1: 81 20          CMPA    #$20            
-C4A3: 26 04          BNE     $C4A9           
+C4A3: 26 04          BNE     $C4A9            ; 
 C4A5: 33 41          LEAU    1,U             
-C4A7: 20 F1          BRA     $C49A           
+C4A7: 20 F1          BRA     $C49A            ; 
 C4A9: 81 40          CMPA    #$40            
-C4AB: 25 08          BCS     $C4B5           
+C4AB: 25 08          BCS     $C4B5            ; 
 C4AD: 80 40          SUBA    #$40            
 C4AF: 81 20          CMPA    #$20            
-C4B1: 25 02          BCS     $C4B5           
+C4B1: 25 02          BCS     $C4B5            ; 
 C4B3: 80 20          SUBA    #$20            
 C4B5: A7 C8 20       STA     $20,U           
 C4B8: A7 C8 40       STA     $40,U           
 C4BB: A7 C8 60       STA     $60,U           
 C4BE: A7 C9 00 80    STA     $0080,U         
 C4C2: 33 41          LEAU    1,U             
-C4C4: 20 D4          BRA     $C49A           
+C4C4: 20 D4          BRA     $C49A            ; 
 C4C6: A7 C4          STA     ,U              
 C4C8: A7 C9 00 A0    STA     $00A0,U         
-C4CC: 20 E7          BRA     $C4B5           
-C4CE: 41             ???                     
-C4CF: 55             ???                     
+C4CC: 20 E7          BRA     $C4B5            ; 
+C4CE: 41                                  
+C4CF: 55                                  
 C4D0: 44             LSRA                    
 C4D1: 49             ROLA                    
 C4D2: 4F             CLRA                    
-C4D3: 20 53          BRA     $C528           
+C4D3: 20 53          BRA     $C528            ; 
 C4D5: 50             NEGB                    
-C4D6: 45             ???                     
+C4D6: 45                                  
 C4D7: 43             COMA                    
 C4D8: 54             LSRB                    
-C4D9: 52             ???                     
-C4DA: 55             ???                     
+C4D9: 52                                  
+C4DA: 55                                  
 C4DB: 4D             TSTA                    
-C4DC: 20 41          BRA     $C51F           
-C4DE: 4E             ???                     
-C4DF: 41             ???                     
+C4DC: 20 41          BRA     $C51F            ; 
+C4DE: 4E                                  
+C4DF: 41                                  
 C4E0: 4C             INCA                    
 C4E1: 59             ROLB                    
 C4E2: 5A             DECB                    
-C4E3: 45             ???                     
-C4E4: 52             ???                     
+C4E3: 45                                  
+C4E4: 52                                  
 C4E5: 00 20          NEG     <$20            
-C4E7: 20 35          BRA     $C51E           
+C4E7: 20 35          BRA     $C51E            ; 
 C4E9: 00 20          NEG     <$20            
-C4EB: 20 33          BRA     $C520           
+C4EB: 20 33          BRA     $C520            ; 
 C4ED: 00 20          NEG     <$20            
-C4EF: 20 30          BRA     $C521           
+C4EF: 20 30          BRA     $C521            ; 
 C4F1: 00 20          NEG     <$20            
-C4F3: 2D 33          BLT     $C528           
+C4F3: 2D 33          BLT     $C528            ; 
 C4F5: 00 20          NEG     <$20            
-C4F7: 2D 35          BLT     $C52E           
+C4F7: 2D 35          BLT     $C52E            ; 
 C4F9: 00 2D          NEG     <$2D            
 C4FB: 31 30          LEAY    -16,Y           
 C4FD: 00 2D          NEG     <$2D            
 C4FF: 32 30          LEAS    -16,Y           
 C501: 00 A6          NEG     <$A6            
 C503: 80 27          SUBA    #$27            
-C505: 05             ???                     
+C505: 05                                  
 C506: BD A3 0A       JSR     $A30A           
-C509: 20 F7          BRA     $C502           
+C509: 20 F7          BRA     $C502            ; 
 C50B: 39             RTS                     
 C50C: 8B 10          ADDA    #$10            
 C50E: 8A 8F          ORA     #$8F            
 C510: 81 8F          CMPA    #$8F            
-C512: 27 F8          BEQ     $C50C           
+C512: 27 F8          BEQ     $C50C            ; 
 C514: 39             RTS                     
 
 
 C515: 86 34          LDA     #$34            
-C517: B7 FF 03       STA     $FF03           
-C51A: B7 FF 01       STA     $FF01           
-C51D: B7 FF 23       STA     $FF23           
+C517: B7 FF 03       STA     $FF03            ; {hard:PIA0_CB} 
+C51A: B7 FF 01       STA     $FF01            ; {hard:PIA0_CA} 
+C51D: B7 FF 23       STA     $FF23            ; {hard:PIA1_CB} 
 C520: 86 39          LDA     #$39            
 C522: B7 01 67       STA     $0167           
 C525: BD A9 28       JSR     $A928           
 C528: 86 0D          LDA     #$0D            
-C52A: B7 FF 22       STA     $FF22           
+C52A: B7 FF 22       STA     $FF22            ; {hard:PIA1_DB} 
 C52D: 8E C5 A0       LDX     #$C5A0          
-C530: BD C5 02       JSR     $C502           
+C530: BD C5 02       JSR     $C502            ; 
 
 DrawScreen:
 
@@ -667,171 +667,171 @@ C533: CC 9F 10       LDD     #$9F10          ; 16 '9F's
 C536: 8E 04 00       LDX     #$0400          ;
 C539: A7 80          STA     ,X+             
 C53B: A7 80          STA     ,X+             
-C53D: 8D CD          BSR     $C50C           
+C53D: 8D CD          BSR     $C50C            ; 
 C53F: 5A             DECB                    
-C540: 26 F7          BNE     $C539           
+C540: 26 F7          BNE     $C539            ; 
 C542: C6 0E          LDB     #$0E            
 C544: 30 88 1F       LEAX    $1F,X           
 C547: A7 00          STA     0,X             
 C549: A7 1F          STA     -1,X            
 C54B: 30 88 20       LEAX    $20,X           
-C54E: 8D BC          BSR     $C50C           
+C54E: 8D BC          BSR     $C50C            ; 
 C550: 5A             DECB                    
-C551: 26 F4          BNE     $C547           
+C551: 26 F4          BNE     $C547            ; 
 C553: C6 10          LDB     #$10            
 C555: A7 84          STA     ,X              
 C557: A7 1F          STA     -1,X            
 C559: 30 1E          LEAX    -2,X            
-C55B: 8D AF          BSR     $C50C           
+C55B: 8D AF          BSR     $C50C            ; 
 C55D: 5A             DECB                    
-C55E: 26 F5          BNE     $C555           
+C55E: 26 F5          BNE     $C555            ; 
 C560: 30 88 E1       LEAX    $E1,X           
 C563: C6 0E          LDB     #$0E            
 C565: A7 84          STA     ,X              
 C567: A7 01          STA     1,X             
 C569: 30 88 E0       LEAX    $E0,X           
-C56C: 8D 9E          BSR     $C50C           
+C56C: 8D 9E          BSR     $C50C            ; 
 C56E: 5A             DECB                    
-C56F: 26 F4          BNE     $C565           
+C56F: 26 F4          BNE     $C565            ; 
 C571: 5F             CLRB                    
 C572: 86 09          LDA     #$09            
-C574: 7D FF 03       TST     $FF03           
-C577: 2A FB          BPL     $C574           
-C579: 7D FF 02       TST     $FF02           
+C574: 7D FF 03       TST     $FF03            ; {hard:PIA0_CB} 
+C577: 2A FB          BPL     $C574            ; 
+C579: 7D FF 02       TST     $FF02            ; {hard:PIA0_DB} 
 C57C: 4A             DECA                    
-C57D: 26 F5          BNE     $C574           
+C57D: 26 F5          BNE     $C574            ; 
 C57F: 8E 04 00       LDX     #$0400          
 C582: A6 80          LDA     ,X+             
-C584: 2A 0A          BPL     $C590           
+C584: 2A 0A          BPL     $C590            ; 
 C586: 80 10          SUBA    #$10            
 C588: 8A 8F          ORA     #$8F            
 C58A: 81 8F          CMPA    #$8F            
-C58C: 27 F8          BEQ     $C586           
+C58C: 27 F8          BEQ     $C586            ; 
 C58E: A7 1F          STA     -1,X            
 C590: 8C 06 00       CMPX    #$0600          
-C593: 26 ED          BNE     $C582           
+C593: 26 ED          BNE     $C582            ; 
 C595: BD A1 C1       JSR     $A1C1           
 C598: 84 7F          ANDA    #$7F            
-C59A: 26 03          BNE     $C59F           
+C59A: 26 03          BNE     $C59F            ; 
 C59C: 5A             DECB                    
-C59D: 26 D3          BNE     $C572           
+C59D: 26 D3          BNE     $C572            ; 
 C59F: 39             RTS                     
 
 C5A0: 0D 0D          TST     <$0D            
-C5A2: 20 20          BRA     $C5C4           
-C5A4: 20 20          BRA     $C5C6           
-C5A6: 20 20          BRA     $C5C8           
-C5A8: 20 20          BRA     $C5CA           
-C5AA: 20 41          BRA     $C5ED           
-C5AC: 55             ???                     
+C5A2: 20 20          BRA     $C5C4            ; 
+C5A4: 20 20          BRA     $C5C6            ; 
+C5A6: 20 20          BRA     $C5C8            ; 
+C5A8: 20 20          BRA     $C5CA            ; 
+C5AA: 20 41          BRA     $C5ED            ; 
+C5AC: 55                                  
 C5AD: 44             LSRA                    
 C5AE: 49             ROLA                    
 C5AF: 4F             CLRA                    
-C5B0: 20 53          BRA     $C605           
+C5B0: 20 53          BRA     $C605            ; 
 C5B2: 50             NEGB                    
-C5B3: 45             ???                     
+C5B3: 45                                  
 C5B4: 43             COMA                    
 C5B5: 54             LSRB                    
-C5B6: 52             ???                     
-C5B7: 55             ???                     
+C5B6: 52                                  
+C5B7: 55                                  
 C5B8: 4D             TSTA                    
 C5B9: 0D 20          TST     <$20            
-C5BB: 20 20          BRA     $C5DD           
-C5BD: 20 20          BRA     $C5DF           
-C5BF: 20 20          BRA     $C5E1           
-C5C1: 20 20          BRA     $C5E3           
-C5C3: 20 20          BRA     $C5E5           
-C5C5: 20 41          BRA     $C608           
-C5C7: 4E             ???                     
-C5C8: 41             ???                     
+C5BB: 20 20          BRA     $C5DD            ; 
+C5BD: 20 20          BRA     $C5DF            ; 
+C5BF: 20 20          BRA     $C5E1            ; 
+C5C1: 20 20          BRA     $C5E3            ; 
+C5C3: 20 20          BRA     $C5E5            ; 
+C5C5: 20 41          BRA     $C608            ; 
+C5C7: 4E                                  
+C5C8: 41                                  
 C5C9: 4C             INCA                    
 C5CA: 59             ROLB                    
 C5CB: 5A             DECB                    
-C5CC: 45             ???                     
-C5CD: 52             ???                     
+C5CC: 45                                  
+C5CD: 52                                  
 C5CE: 0D 0D          TST     <$0D            
-C5D0: 20 20          BRA     $C5F2           
-C5D2: 20 20          BRA     $C5F4           
-C5D4: 20 20          BRA     $C5F6           
-C5D6: 20 20          BRA     $C5F8           
-C5D8: 20 20          BRA     $C5FA           
-C5DA: 20 20          BRA     $C5FC           
-C5DC: 20 20          BRA     $C5FE           
-C5DE: 20 42          BRA     $C622           
+C5D0: 20 20          BRA     $C5F2            ; 
+C5D2: 20 20          BRA     $C5F4            ; 
+C5D4: 20 20          BRA     $C5F6            ; 
+C5D6: 20 20          BRA     $C5F8            ; 
+C5D8: 20 20          BRA     $C5FA            ; 
+C5DA: 20 20          BRA     $C5FC            ; 
+C5DC: 20 20          BRA     $C5FE            ; 
+C5DE: 20 42          BRA     $C622            ; 
 C5E0: 59             ROLB                    
 C5E1: 0D 20          TST     <$20            
-C5E3: 20 20          BRA     $C605           
-C5E5: 20 20          BRA     $C607           
-C5E7: 20 20          BRA     $C609           
-C5E9: 20 20          BRA     $C60B           
-C5EB: 20 53          BRA     $C640           
+C5E3: 20 20          BRA     $C605            ; 
+C5E5: 20 20          BRA     $C607            ; 
+C5E7: 20 20          BRA     $C609            ; 
+C5E9: 20 20          BRA     $C60B            ; 
+C5EB: 20 53          BRA     $C640            ; 
 C5ED: 54             LSRB                    
-C5EE: 45             ???                     
+C5EE: 45                                  
 C5EF: 56             RORB                    
-C5F0: 45             ???                     
-C5F1: 20 42          BRA     $C635           
+C5F0: 45                                  
+C5F1: 20 42          BRA     $C635            ; 
 C5F3: 4A             DECA                    
 C5F4: 4F             CLRA                    
-C5F5: 52             ???                     
-C5F6: 4B             ???                     
+C5F5: 52                                  
+C5F6: 4B                                  
 C5F7: 0D 0D          TST     <$0D            
-C5F9: 20 20          BRA     $C61B           
-C5FB: 20 20          BRA     $C61D           
-C5FD: 20 20          BRA     $C61F           
+C5F9: 20 20          BRA     $C61B            ; 
+C5FB: 20 20          BRA     $C61D            ; 
+C5FD: 20 20          BRA     $C61F            ; 
 C5FF: 43             COMA                    
 C600: 4F             CLRA                    
 C601: 50             NEGB                    
 C602: 59             ROLB                    
-C603: 52             ???                     
+C603: 52                                  
 C604: 49             ROLA                    
 C605: 47             ASRA                    
 C606: 48             LSLA                    
 C607: 54             LSRB                    
-C608: 20 28          BRA     $C632           
+C608: 20 28          BRA     $C632            ; 
 C60A: 43             COMA                    
-C60B: 29 20          BVS     $C62D           
+C60B: 29 20          BVS     $C62D            ; 
 C60D: 31 39          LEAY    -7,Y            
-C60F: 38             ???                     
+C60F: 38                                  
 C610: 31 0D          LEAY    13,X            
-C612: 20 20          BRA     $C634           
-C614: 20 20          BRA     $C636           
-C616: 20 20          BRA     $C638           
-C618: 20 20          BRA     $C63A           
-C61A: 20 44          BRA     $C660           
-C61C: 41             ???                     
+C612: 20 20          BRA     $C634            ; 
+C614: 20 20          BRA     $C636            ; 
+C616: 20 20          BRA     $C638            ; 
+C618: 20 20          BRA     $C63A            ; 
+C61A: 20 44          BRA     $C660            ; 
+C61C: 41                                  
 C61D: 54             LSRB                    
-C61E: 41             ???                     
+C61E: 41                                  
 C61F: 53             COMB                    
 C620: 4F             CLRA                    
 C621: 46             RORA                    
 C622: 54             LSRB                    
-C623: 20 49          BRA     $C66E           
-C625: 4E             ???                     
+C623: 20 49          BRA     $C66E            ; 
+C625: 4E                                  
 C626: 43             COMA                    
-C627: 2E 0D          BGT     $C636           
+C627: 2E 0D          BGT     $C636            ; 
 C629: 0D 0D          TST     <$0D            
-C62B: 20 20          BRA     $C64D           
-C62D: 20 20          BRA     $C64F           
-C62F: 20 4C          BRA     $C67D           
+C62B: 20 20          BRA     $C64D            ; 
+C62D: 20 20          BRA     $C64F            ; 
+C62F: 20 4C          BRA     $C67D            ; 
 C631: 49             ROLA                    
 C632: 43             COMA                    
-C633: 45             ???                     
-C634: 4E             ???                     
+C633: 45                                  
+C634: 4E                                  
 C635: 53             COMB                    
-C636: 45             ???                     
+C636: 45                                  
 C637: 44             LSRA                    
-C638: 20 54          BRA     $C68E           
+C638: 20 54          BRA     $C68E            ; 
 C63A: 4F             CLRA                    
-C63B: 20 54          BRA     $C691           
-C63D: 41             ???                     
-C63E: 4E             ???                     
+C63B: 20 54          BRA     $C691            ; 
+C63D: 41                                  
+C63E: 4E                                  
 C63F: 44             LSRA                    
 C640: 59             ROLB                    
-C641: 20 43          BRA     $C686           
+C641: 20 43          BRA     $C686            ; 
 C643: 4F             CLRA                    
-C644: 52             ???                     
+C644: 52                                  
 C645: 50             NEGB                    
-C646: 2E 00          BGT     $C648           
+C646: 2E 00          BGT     $C648            ; 
 C648: 00 00          NEG     <$00            
 C64A: 00 00          NEG     <$00            
 C64C: 00 00          NEG     <$00            
@@ -860,27 +860,27 @@ C678: 00 00          NEG     <$00
 C67A: 00 00          NEG     <$00            
 C67C: 00 00          NEG     <$00            
 C67E: 00 CC          NEG     <$CC            
-C680: FF FF FF       STU     $FFFF           
-C683: FF FF FF       STU     $FFFF           
-C686: FF FF FF       STU     $FFFF           
-C689: FF FF FF       STU     $FFFF           
-C68C: FF FF FF       STU     $FFFF           
-C68F: FF FF FF       STU     $FFFF           
-C692: FF FF FF       STU     $FFFF           
-C695: FF FF FF       STU     $FFFF           
-C698: FF FF FF       STU     $FFFF           
-C69B: FF FF FF       STU     $FFFF           
-C69E: FF FF FF       STU     $FFFF           
-C6A1: FF FF FF       STU     $FFFF           
-C6A4: FF FF FF       STU     $FFFF           
-C6A7: FF FF FF       STU     $FFFF           
-C6AA: FF FF FF       STU     $FFFF           
-C6AD: FF FF FF       STU     $FFFF           
-C6B0: FF FF FF       STU     $FFFF           
-C6B3: FF FF FF       STU     $FFFF           
-C6B6: FF FF FF       STU     $FFFF           
-C6B9: FF FF FF       STU     $FFFF           
-C6BC: FF FF FF       STU     $FFFF           
+C680: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C683: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C686: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C689: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C68C: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C68F: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C692: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C695: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C698: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C69B: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C69E: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C6A1: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C6A4: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C6A7: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C6AA: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C6AD: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C6B0: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C6B3: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C6B6: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C6B9: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C6BC: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
 C6BF: FF 00 00       STU     $0000           
 C6C2: 00 00          NEG     <$00            
 C6C4: 00 00          NEG     <$00            
@@ -913,27 +913,27 @@ C6F8: 00 00          NEG     <$00
 C6FA: 00 00          NEG     <$00            
 C6FC: 00 00          NEG     <$00            
 C6FE: 00 8C          NEG     <$8C            
-C700: FF FF FF       STU     $FFFF           
-C703: FF FF FF       STU     $FFFF           
-C706: FF FF FF       STU     $FFFF           
-C709: FF FF FF       STU     $FFFF           
-C70C: FF FF FF       STU     $FFFF           
-C70F: FF FF FF       STU     $FFFF           
-C712: FF FF FF       STU     $FFFF           
-C715: FF FF FF       STU     $FFFF           
-C718: FF FF FF       STU     $FFFF           
-C71B: FF FF FF       STU     $FFFF           
-C71E: FF FF FF       STU     $FFFF           
-C721: FF FF FF       STU     $FFFF           
-C724: FF FF FF       STU     $FFFF           
-C727: FF FF FF       STU     $FFFF           
-C72A: FF FF FF       STU     $FFFF           
-C72D: FF FF FF       STU     $FFFF           
-C730: FF FF FF       STU     $FFFF           
-C733: FF FF FF       STU     $FFFF           
-C736: FF FF FF       STU     $FFFF           
-C739: FF FF FF       STU     $FFFF           
-C73C: FF FF FF       STU     $FFFF           
+C700: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C703: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C706: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C709: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C70C: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C70F: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C712: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C715: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C718: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C71B: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C71E: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C721: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C724: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C727: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C72A: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C72D: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C730: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C733: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C736: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C739: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C73C: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
 C73F: FF 00 00       STU     $0000           
 C742: 00 00          NEG     <$00            
 C744: 00 00          NEG     <$00            
@@ -966,27 +966,27 @@ C778: 00 00          NEG     <$00
 C77A: 00 00          NEG     <$00            
 C77C: 00 00          NEG     <$00            
 C77E: 00 8C          NEG     <$8C            
-C780: FF FF FF       STU     $FFFF           
-C783: FF FF FF       STU     $FFFF           
-C786: FF FF FF       STU     $FFFF           
-C789: FF FF FF       STU     $FFFF           
-C78C: FF FF FF       STU     $FFFF           
-C78F: FF FF FF       STU     $FFFF           
-C792: FF FF FF       STU     $FFFF           
-C795: FF FF FF       STU     $FFFF           
-C798: FF FF FF       STU     $FFFF           
-C79B: FF FF FF       STU     $FFFF           
-C79E: FF FF FF       STU     $FFFF           
-C7A1: FF FF FF       STU     $FFFF           
-C7A4: FF FF FF       STU     $FFFF           
-C7A7: FF FF FF       STU     $FFFF           
-C7AA: FF FF FF       STU     $FFFF           
-C7AD: FF FF FF       STU     $FFFF           
-C7B0: FF FF FF       STU     $FFFF           
-C7B3: FF FF FF       STU     $FFFF           
-C7B6: FF FF FF       STU     $FFFF           
-C7B9: FF FF FF       STU     $FFFF           
-C7BC: FF FF FF       STU     $FFFF           
+C780: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C783: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C786: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C789: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C78C: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C78F: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C792: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C795: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C798: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C79B: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C79E: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C7A1: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C7A4: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C7A7: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C7AA: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C7AD: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C7B0: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C7B3: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C7B6: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C7B9: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
+C7BC: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
 C7BF: FF 00 00       STU     $0000           
 C7C2: 00 00          NEG     <$00            
 C7C4: 00 00          NEG     <$00            
