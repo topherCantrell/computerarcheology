@@ -1,4 +1,18 @@
+![](Spectrum.jpg)
+
+# Audio Spectrum Analyzer
+
+>>> cpu 6809
+
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
+
+>>> memoryTable hard 
+[Hardware Info](..\Hardware.md)
+
+```code
 C000: 7E C1 18       JMP     $C118           
+
 C003: 30 8D 3F 19    LEAX    $3F19,PC        
 C007: CC 04 00       LDD     #$0400          
 C00A: 1F 02          TFR     D,Y             
@@ -140,7 +154,9 @@ C111: 33 4C          LEAU    12,U
 C113: 0A F7          DEC     <$F7            
 C115: 26 B8          BNE     $C0CF           
 C117: 39             RTS                     
-C118: 10 CE 03 FF    LDS     #$03FF          
+
+
+C118: 10 CE 03 FF    LDS     #$03FF          ; Initialize the stack
 C11C: BD C5 15       JSR     $C515           
 C11F: CC 02 00       LDD     #$0200          
 C122: 34 06          PSHS    B,A             
@@ -631,6 +647,8 @@ C50E: 8A 8F          ORA     #$8F
 C510: 81 8F          CMPA    #$8F            
 C512: 27 F8          BEQ     $C50C           
 C514: 39             RTS                     
+
+
 C515: 86 34          LDA     #$34            
 C517: B7 FF 03       STA     $FF03           
 C51A: B7 FF 01       STA     $FF01           
@@ -642,8 +660,11 @@ C528: 86 0D          LDA     #$0D
 C52A: B7 FF 22       STA     $FF22           
 C52D: 8E C5 A0       LDX     #$C5A0          
 C530: BD C5 02       JSR     $C502           
-C533: CC 9F 10       LDD     #$9F10          
-C536: 8E 04 00       LDX     #$0400          
+
+DrawScreen:
+
+C533: CC 9F 10       LDD     #$9F10          ; 16 '9F's
+C536: 8E 04 00       LDX     #$0400          ;
 C539: A7 80          STA     ,X+             
 C53B: A7 80          STA     ,X+             
 C53D: 8D CD          BSR     $C50C           
@@ -695,6 +716,7 @@ C59A: 26 03          BNE     $C59F
 C59C: 5A             DECB                    
 C59D: 26 D3          BNE     $C572           
 C59F: 39             RTS                     
+
 C5A0: 0D 0D          TST     <$0D            
 C5A2: 20 20          BRA     $C5C4           
 C5A4: 20 20          BRA     $C5C6           
@@ -997,3 +1019,4 @@ C7F8: 00 00          NEG     <$00
 C7FA: 00 00          NEG     <$00            
 C7FC: 00 00          NEG     <$00            
 C7FE: 00 8C          NEG     <$8C            
+```
