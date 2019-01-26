@@ -75,7 +75,7 @@ address.
 | FFF2:FFF3 | vectorSWI3  | SWI3 vector (0100 RAM) |
 | FFF0:FFF1 | vector6809  | 6809 exceptions like divide by 0 (A681 ROM) |
 
-# ROM Routines
+# ROM Vectors
 
 The first bytes in ROM hold the addresses for common routines. This allows the routines themselves to
 move around in ROM from version to version. 
@@ -95,3 +95,13 @@ ROMs had ever changed.
 | A008:A009 | BLKOUT | Write a block to the cassette       |
 | A00A:A00B | JOYIN  | Samples all 4 joysticks             |
 | A00C:A00D | WRTLDR | Turns on cassette and writes leader |
+
+# ROM Routines
+
+>>> memory
+
+|   |   |   |
+|:--------- |:------ |:----------------------------------- |
+| A1C1 | GETKEY      | Get key to A. 0 if no key           |
+| A30A | PRINTCHAR   | Print character A to cursor         |
+| A928 | CLRSCREEN   | Clear the screen                    |

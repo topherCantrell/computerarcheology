@@ -266,7 +266,7 @@ C21A: 86 04          LDA     #$04
 C21C: 97 FB          STA     <$FB            
 C21E: BD C0 03       JSR     $C003            ; 
 C221: BD C0 C9       JSR     $C0C9            ; 
-C224: BD A1 C1       JSR     $A1C1           
+C224: BD A1 C1       JSR     $A1C1            ; {hard:GETKEY} 
 C227: 81 44          CMPA    #$44            
 C229: 26 07          BNE     $C232            ; 
 C22B: 03 F6          COM     <$F6            
@@ -280,7 +280,7 @@ C23B: B7 FF 23       STA     $FF23            ; {hard:PIA1_CB}
 C23E: 20 DA          BRA     $C21A            ; 
 C240: 81 20          CMPA    #$20            
 C242: 26 09          BNE     $C24D            ; 
-C244: BD A1 C1       JSR     $A1C1           
+C244: BD A1 C1       JSR     $A1C1            ; {hard:GETKEY} 
 C247: 84 7F          ANDA    #$7F            
 C249: 27 F9          BEQ     $C244            ; 
 C24B: 20 CD          BRA     $C21A            ; 
@@ -355,7 +355,7 @@ C2E0: 26 FB          BNE     $C2DD            ;
 C2E2: 0F EE          CLR     <$EE            
 C2E4: 0F F1          CLR     <$F1            
 C2E6: 0F FA          CLR     <$FA            
-C2E8: BD A1 C1       JSR     $A1C1           
+C2E8: BD A1 C1       JSR     $A1C1            ; {hard:GETKEY} 
 C2EB: 81 47          CMPA    #$47            
 C2ED: 10 27 FE 60    LBEQ    $FE60           
 C2F1: 8E 05 00       LDX     #$0500          
@@ -639,9 +639,12 @@ C4FF: 32 30          LEAS    -16,Y
 C501: 00 A6          NEG     <$A6            
 C503: 80 27          SUBA    #$27            
 C505: 05                                  
-C506: BD A3 0A       JSR     $A30A           
+C506: BD A3 0A       JSR     $A30A            ; {hard:PRINTCHAR} 
 C509: 20 F7          BRA     $C502            ; 
 C50B: 39             RTS                     
+
+NextColorBlock:
+; For border on splash screen
 C50C: 8B 10          ADDA    #$10            
 C50E: 8A 8F          ORA     #$8F            
 C510: 81 8F          CMPA    #$8F            
@@ -653,23 +656,23 @@ C515: 86 34          LDA     #$34
 C517: B7 FF 03       STA     $FF03            ; {hard:PIA0_CB} 
 C51A: B7 FF 01       STA     $FF01            ; {hard:PIA0_CA} 
 C51D: B7 FF 23       STA     $FF23            ; {hard:PIA1_CB} 
-C520: 86 39          LDA     #$39            
-C522: B7 01 67       STA     $0167           
-C525: BD A9 28       JSR     $A928           
+C520: 86 39          LDA     #$39             ; RTS (do nothing) ...
+C522: B7 01 67       STA     $0167            ; ... to CONSOLE OUT vector
+C525: BD A9 28       JSR     $A928            ; {hard:CLRSCREEN} 
 C528: 86 0D          LDA     #$0D            
 C52A: B7 FF 22       STA     $FF22            ; {hard:PIA1_DB} 
 C52D: 8E C5 A0       LDX     #$C5A0          
 C530: BD C5 02       JSR     $C502            ; 
 
-DrawScreen:
+DrawSplashScreen:
 
-C533: CC 9F 10       LDD     #$9F10          ; 16 '9F's
-C536: 8E 04 00       LDX     #$0400          ;
-C539: A7 80          STA     ,X+             
-C53B: A7 80          STA     ,X+             
-C53D: 8D CD          BSR     $C50C            ; 
-C53F: 5A             DECB                    
-C540: 26 F7          BNE     $C539            ; 
+C533: CC 9F 10       LDD     #$9F10           ; 32 blocks (1 row), starting color pattern 9F
+C536: 8E 04 00       LDX     #$0400           ; Start of screen
+C539: A7 80          STA     ,X+              ; Store ...
+C53B: A7 80          STA     ,X+              ; ... two byte color block
+C53D: 8D CD          BSR     $C50C            ; Make next color
+C53F: 5A             DECB                     ; All row done?
+C540: 26 F7          BNE     $C539            ; No ... do all
 C542: C6 0E          LDB     #$0E            
 C544: 30 88 1F       LEAX    $1F,X           
 C547: A7 00          STA     0,X             
@@ -710,19 +713,21 @@ C58C: 27 F8          BEQ     $C586            ;
 C58E: A7 1F          STA     -1,X            
 C590: 8C 06 00       CMPX    #$0600          
 C593: 26 ED          BNE     $C582            ; 
-C595: BD A1 C1       JSR     $A1C1           
+C595: BD A1 C1       JSR     $A1C1            ; {hard:GETKEY} 
 C598: 84 7F          ANDA    #$7F            
 C59A: 26 03          BNE     $C59F            ; 
 C59C: 5A             DECB                    
 C59D: 26 D3          BNE     $C572            ; 
 C59F: 39             RTS                     
 
+SplashText:
+
 C5A0: 0D 0D          TST     <$0D            
 C5A2: 20 20          BRA     $C5C4            ; 
 C5A4: 20 20          BRA     $C5C6            ; 
 C5A6: 20 20          BRA     $C5C8            ; 
 C5A8: 20 20          BRA     $C5CA            ; 
-C5AA: 20 41          BRA     $C5ED            ; 
+C5AA: 20 41          BRA     $C5ED            ; "AUDIO SPEC..."
 C5AC: 55                                  
 C5AD: 44             LSRA                    
 C5AE: 49             ROLA                    
@@ -832,191 +837,191 @@ C643: 4F             CLRA
 C644: 52                                  
 C645: 50             NEGB                    
 C646: 2E 00          BGT     $C648            ; 
-C648: 00 00          NEG     <$00            
-C64A: 00 00          NEG     <$00            
-C64C: 00 00          NEG     <$00            
-C64E: 00 00          NEG     <$00            
-C650: 00 00          NEG     <$00            
-C652: 00 00          NEG     <$00            
-C654: 00 00          NEG     <$00            
-C656: 00 00          NEG     <$00            
-C658: 00 00          NEG     <$00            
-C65A: 00 00          NEG     <$00            
-C65C: 00 00          NEG     <$00            
-C65E: 00 00          NEG     <$00            
-C660: 00 00          NEG     <$00            
-C662: 00 00          NEG     <$00            
-C664: 00 00          NEG     <$00            
-C666: 00 00          NEG     <$00            
-C668: 00 00          NEG     <$00            
-C66A: 00 00          NEG     <$00            
-C66C: 00 00          NEG     <$00            
-C66E: 00 00          NEG     <$00            
-C670: 00 00          NEG     <$00            
-C672: 00 00          NEG     <$00            
-C674: 00 00          NEG     <$00            
-C676: 00 00          NEG     <$00            
-C678: 00 00          NEG     <$00            
-C67A: 00 00          NEG     <$00            
-C67C: 00 00          NEG     <$00            
-C67E: 00 CC          NEG     <$CC            
-C680: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C683: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C686: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C689: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C68C: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C68F: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C692: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C695: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C698: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C69B: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C69E: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C6A1: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C6A4: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C6A7: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C6AA: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C6AD: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C6B0: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C6B3: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C6B6: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C6B9: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C6BC: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C6BF: FF 00 00       STU     $0000           
-C6C2: 00 00          NEG     <$00            
-C6C4: 00 00          NEG     <$00            
-C6C6: 00 00          NEG     <$00            
-C6C8: 00 00          NEG     <$00            
-C6CA: 00 00          NEG     <$00            
-C6CC: 00 00          NEG     <$00            
-C6CE: 00 00          NEG     <$00            
-C6D0: 00 00          NEG     <$00            
-C6D2: 00 00          NEG     <$00            
-C6D4: 00 00          NEG     <$00            
-C6D6: 00 00          NEG     <$00            
-C6D8: 00 00          NEG     <$00            
-C6DA: 00 00          NEG     <$00            
-C6DC: 00 00          NEG     <$00            
-C6DE: 00 00          NEG     <$00            
-C6E0: 00 00          NEG     <$00            
-C6E2: 00 00          NEG     <$00            
-C6E4: 00 00          NEG     <$00            
-C6E6: 00 00          NEG     <$00            
-C6E8: 00 00          NEG     <$00            
-C6EA: 00 00          NEG     <$00            
-C6EC: 00 00          NEG     <$00            
-C6EE: 00 00          NEG     <$00            
-C6F0: 00 00          NEG     <$00            
-C6F2: 00 00          NEG     <$00            
-C6F4: 00 00          NEG     <$00            
-C6F6: 00 00          NEG     <$00            
-C6F8: 00 00          NEG     <$00            
-C6FA: 00 00          NEG     <$00            
-C6FC: 00 00          NEG     <$00            
-C6FE: 00 8C          NEG     <$8C            
-C700: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C703: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C706: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C709: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C70C: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C70F: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C712: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C715: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C718: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C71B: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C71E: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C721: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C724: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C727: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C72A: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C72D: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C730: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C733: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C736: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C739: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C73C: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C73F: FF 00 00       STU     $0000           
-C742: 00 00          NEG     <$00            
-C744: 00 00          NEG     <$00            
-C746: 00 00          NEG     <$00            
-C748: 00 00          NEG     <$00            
-C74A: 00 00          NEG     <$00            
-C74C: 00 00          NEG     <$00            
-C74E: 00 00          NEG     <$00            
-C750: 00 00          NEG     <$00            
-C752: 00 00          NEG     <$00            
-C754: 00 00          NEG     <$00            
-C756: 00 00          NEG     <$00            
-C758: 00 00          NEG     <$00            
-C75A: 00 00          NEG     <$00            
-C75C: 00 00          NEG     <$00            
-C75E: 00 00          NEG     <$00            
-C760: 00 00          NEG     <$00            
-C762: 00 00          NEG     <$00            
-C764: 00 00          NEG     <$00            
-C766: 00 00          NEG     <$00            
-C768: 00 00          NEG     <$00            
-C76A: 00 00          NEG     <$00            
-C76C: 00 00          NEG     <$00            
-C76E: 00 00          NEG     <$00            
-C770: 00 00          NEG     <$00            
-C772: 00 00          NEG     <$00            
-C774: 00 00          NEG     <$00            
-C776: 00 00          NEG     <$00            
-C778: 00 00          NEG     <$00            
-C77A: 00 00          NEG     <$00            
-C77C: 00 00          NEG     <$00            
-C77E: 00 8C          NEG     <$8C            
-C780: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C783: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C786: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C789: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C78C: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C78F: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C792: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C795: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C798: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C79B: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C79E: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C7A1: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C7A4: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C7A7: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C7AA: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C7AD: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C7B0: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C7B3: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C7B6: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C7B9: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C7BC: FF FF FF       STU     $FFFF            ; {hard:vectorReset} 
-C7BF: FF 00 00       STU     $0000           
-C7C2: 00 00          NEG     <$00            
-C7C4: 00 00          NEG     <$00            
-C7C6: 00 00          NEG     <$00            
-C7C8: 00 00          NEG     <$00            
-C7CA: 00 00          NEG     <$00            
-C7CC: 00 00          NEG     <$00            
-C7CE: 00 00          NEG     <$00            
-C7D0: 00 00          NEG     <$00            
-C7D2: 00 00          NEG     <$00            
-C7D4: 00 00          NEG     <$00            
-C7D6: 00 00          NEG     <$00            
-C7D8: 00 00          NEG     <$00            
-C7DA: 00 00          NEG     <$00            
-C7DC: 00 00          NEG     <$00            
-C7DE: 00 00          NEG     <$00            
-C7E0: 00 00          NEG     <$00            
-C7E2: 00 00          NEG     <$00            
-C7E4: 00 00          NEG     <$00            
-C7E6: 00 00          NEG     <$00            
-C7E8: 00 00          NEG     <$00            
-C7EA: 00 00          NEG     <$00            
-C7EC: 00 00          NEG     <$00            
-C7EE: 00 00          NEG     <$00            
-C7F0: 00 00          NEG     <$00            
-C7F2: 00 00          NEG     <$00            
-C7F4: 00 00          NEG     <$00            
-C7F6: 00 00          NEG     <$00            
-C7F8: 00 00          NEG     <$00            
-C7FA: 00 00          NEG     <$00            
-C7FC: 00 00          NEG     <$00            
-C7FE: 00 8C          NEG     <$8C            
+C648: 00 00             
+C64A: 00 00             
+C64C: 00 00             
+C64E: 00 00             
+C650: 00 00             
+C652: 00 00             
+C654: 00 00             
+C656: 00 00             
+C658: 00 00             
+C65A: 00 00             
+C65C: 00 00             
+C65E: 00 00             
+C660: 00 00             
+C662: 00 00             
+C664: 00 00             
+C666: 00 00             
+C668: 00 00             
+C66A: 00 00             
+C66C: 00 00             
+C66E: 00 00             
+C670: 00 00             
+C672: 00 00             
+C674: 00 00             
+C676: 00 00             
+C678: 00 00             
+C67A: 00 00             
+C67C: 00 00             
+C67E: 00 CC           
+C680: FF FF FF 
+C683: FF FF FF 
+C686: FF FF FF 
+C689: FF FF FF 
+C68C: FF FF FF 
+C68F: FF FF FF 
+C692: FF FF FF 
+C695: FF FF FF 
+C698: FF FF FF 
+C69B: FF FF FF 
+C69E: FF FF FF 
+C6A1: FF FF FF 
+C6A4: FF FF FF 
+C6A7: FF FF FF 
+C6AA: FF FF FF 
+C6AD: FF FF FF 
+C6B0: FF FF FF 
+C6B3: FF FF FF 
+C6B6: FF FF FF 
+C6B9: FF FF FF 
+C6BC: FF FF FF 
+C6BF: FF 00 00          
+C6C2: 00 00             
+C6C4: 00 00             
+C6C6: 00 00             
+C6C8: 00 00             
+C6CA: 00 00             
+C6CC: 00 00             
+C6CE: 00 00             
+C6D0: 00 00             
+C6D2: 00 00             
+C6D4: 00 00             
+C6D6: 00 00             
+C6D8: 00 00             
+C6DA: 00 00             
+C6DC: 00 00             
+C6DE: 00 00             
+C6E0: 00 00             
+C6E2: 00 00             
+C6E4: 00 00             
+C6E6: 00 00             
+C6E8: 00 00             
+C6EA: 00 00             
+C6EC: 00 00             
+C6EE: 00 00             
+C6F0: 00 00             
+C6F2: 00 00             
+C6F4: 00 00             
+C6F6: 00 00             
+C6F8: 00 00             
+C6FA: 00 00             
+C6FC: 00 00             
+C6FE: 00 8C           
+C700: FF FF FF 
+C703: FF FF FF 
+C706: FF FF FF 
+C709: FF FF FF 
+C70C: FF FF FF 
+C70F: FF FF FF 
+C712: FF FF FF 
+C715: FF FF FF 
+C718: FF FF FF 
+C71B: FF FF FF 
+C71E: FF FF FF 
+C721: FF FF FF 
+C724: FF FF FF 
+C727: FF FF FF 
+C72A: FF FF FF 
+C72D: FF FF FF 
+C730: FF FF FF 
+C733: FF FF FF 
+C736: FF FF FF 
+C739: FF FF FF 
+C73C: FF FF FF 
+C73F: FF 00 00          
+C742: 00 00             
+C744: 00 00             
+C746: 00 00             
+C748: 00 00             
+C74A: 00 00             
+C74C: 00 00             
+C74E: 00 00             
+C750: 00 00             
+C752: 00 00             
+C754: 00 00             
+C756: 00 00             
+C758: 00 00             
+C75A: 00 00             
+C75C: 00 00             
+C75E: 00 00             
+C760: 00 00             
+C762: 00 00             
+C764: 00 00             
+C766: 00 00             
+C768: 00 00             
+C76A: 00 00             
+C76C: 00 00             
+C76E: 00 00             
+C770: 00 00             
+C772: 00 00             
+C774: 00 00             
+C776: 00 00             
+C778: 00 00             
+C77A: 00 00             
+C77C: 00 00             
+C77E: 00 8C           
+C780: FF FF FF 
+C783: FF FF FF 
+C786: FF FF FF 
+C789: FF FF FF 
+C78C: FF FF FF 
+C78F: FF FF FF 
+C792: FF FF FF 
+C795: FF FF FF 
+C798: FF FF FF 
+C79B: FF FF FF 
+C79E: FF FF FF 
+C7A1: FF FF FF 
+C7A4: FF FF FF 
+C7A7: FF FF FF 
+C7AA: FF FF FF 
+C7AD: FF FF FF 
+C7B0: FF FF FF 
+C7B3: FF FF FF 
+C7B6: FF FF FF 
+C7B9: FF FF FF 
+C7BC: FF FF FF 
+C7BF: FF 00 00          
+C7C2: 00 00             
+C7C4: 00 00             
+C7C6: 00 00             
+C7C8: 00 00             
+C7CA: 00 00             
+C7CC: 00 00             
+C7CE: 00 00             
+C7D0: 00 00             
+C7D2: 00 00             
+C7D4: 00 00             
+C7D6: 00 00             
+C7D8: 00 00             
+C7DA: 00 00             
+C7DC: 00 00             
+C7DE: 00 00             
+C7E0: 00 00             
+C7E2: 00 00             
+C7E4: 00 00             
+C7E6: 00 00             
+C7E8: 00 00             
+C7EA: 00 00             
+C7EC: 00 00             
+C7EE: 00 00             
+C7F0: 00 00             
+C7F2: 00 00             
+C7F4: 00 00             
+C7F6: 00 00             
+C7F8: 00 00             
+C7FA: 00 00           
+C7FC: 00 00        
+C7FE: 00 8C        
 ```
