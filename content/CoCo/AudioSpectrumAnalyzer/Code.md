@@ -397,7 +397,7 @@ C332: 97 F1          STA     <$F1
 C334: DE F2          LDU     <$F2            
 C336: D6 EE          LDB     <$EE            
 C338: 58             LSLB                    
-C339: 8E 0C 00       LDX     #$0C00          
+C339: 8E 0C 00       LDX     #$0C00           ; Bar header (just above labels)
 C33C: EF 85          STU     B,X             
 C33E: 96 FA          LDA     <$FA            
 C340: 8B 10          ADDA    #$10            
@@ -406,6 +406,7 @@ C344: 97 FA          STA     <$FA
 C346: 97 EF          STA     <$EF            
 C348: 8D 02          BSR     $C34C            ; 
 C34A: 20 9C          BRA     $C2E8            ; 
+;
 C34C: DC F2          LDD     <$F2            
 C34E: 1E 89          EXG     $89             
 C350: 8D 04          BSR     $C356            ; 
@@ -436,98 +437,75 @@ C382: D6 EF          LDB     <$EF
 C384: E7 84          STB     ,X              
 C386: E7 88 20       STB     $20,X           
 C389: 39             RTS                     
-C38A: 33 31          LEAU    -15,Y           
-C38C: 2E 35          BGT     $C3C3            ; 
-C38E: 00 01          NEG     <$01            
-C390: 34 30          PSHS    Y,X             
-C392: 00 01          NEG     <$01            
-C394: 35 30          PULS    X,Y             
-C396: 00 01          NEG     <$01            
-C398: 36 33          PSHU    Y,X,A,CC        
-C39A: 00 01          NEG     <$01            
-C39C: 38                                  
-C39D: 30 00          LEAX    0,X             
-C39F: 01                                  
-C3A0: 31 30          LEAY    -16,Y           
-C3A2: 30 00          LEAX    0,X             
-C3A4: 01                                  
-C3A5: 31 32          LEAY    -14,Y           
-C3A7: 35 00          PULS    $00             
-C3A9: 01                                  
-C3AA: 31 36          LEAY    -10,Y           
-C3AC: 30 00          LEAX    0,X             
-C3AE: 01                                  
-C3AF: 32 30          LEAS    -16,Y           
-C3B1: 30 00          LEAX    0,X             
-C3B3: 02                                  
-C3B4: 32 35          LEAS    -11,Y           
-C3B6: 30 00          LEAX    0,X             
-C3B8: 01                                  
-C3B9: 33 31          LEAU    -15,Y           
-C3BB: 35 00          PULS    $00             
-C3BD: 01                                  
-C3BE: 34 30          PSHS    Y,X             
-C3C0: 30 00          LEAX    0,X             
-C3C2: 01                                  
-C3C3: 35 30          PULS    X,Y             
-C3C5: 30 00          LEAX    0,X             
-C3C7: 01                                  
-C3C8: 36 33          PSHU    Y,X,A,CC        
-C3CA: 30 00          LEAX    0,X             
-C3CC: 01                                  
-C3CD: 38                                  
-C3CE: 30 30          LEAX    -16,Y           
-C3D0: 00 01          NEG     <$01            
-C3D2: 31 30          LEAY    -16,Y           
-C3D4: 30 30          LEAX    -16,Y           
-C3D6: 00 01          NEG     <$01            
-C3D8: 31 32          LEAY    -14,Y           
-C3DA: 35 30          PULS    X,Y             
-C3DC: 00 01          NEG     <$01            
-C3DE: 31 36          LEAY    -10,Y           
-C3E0: 30 30          LEAX    -16,Y           
-C3E2: 00 02          NEG     <$02            
-C3E4: 32 30          LEAS    -16,Y           
-C3E6: 30 30          LEAX    -16,Y           
-C3E8: 00 01          NEG     <$01            
-C3EA: 32 35          LEAS    -11,Y           
-C3EC: 30 30          LEAX    -16,Y           
-C3EE: 00 01          NEG     <$01            
-C3F0: 33 31          LEAU    -15,Y           
-C3F2: 35 30          PULS    X,Y             
-C3F4: 00 01          NEG     <$01            
-C3F6: 34 30          PSHS    Y,X             
-C3F8: 30 30          LEAX    -16,Y           
-C3FA: 00 01          NEG     <$01            
-C3FC: 35 30          PULS    X,Y             
-C3FE: 30 30          LEAX    -16,Y           
-C400: 00 01          NEG     <$01            
-C402: 36 33          PSHU    Y,X,A,CC        
-C404: 30 30          LEAX    -16,Y           
-C406: 00 01          NEG     <$01            
-C408: 38                                  
-C409: 30 30          LEAX    -16,Y           
-C40B: 30 00          LEAX    0,X             
-C40D: 01                                  
-C40E: 31 30          LEAY    -16,Y           
-C410: 30 30          LEAX    -16,Y           
-C412: 30 00          LEAX    0,X             
-C414: 01                                  
-C415: 31 32          LEAY    -14,Y           
-C417: 35 30          PULS    X,Y             
-C419: 30 00          LEAX    0,X             
-C41B: 00 8E          NEG     <$8E            
-C41D: C3 8A C6       ADDD    #$8AC6          
-C420: 01                                  
+
+VertLabs:
+C38A: 33 31 2E 35 00     ; 31.5
+C38F: 01                 ; 1 column
+C390: 34 30 00           ; 40
+C393: 01                 ; 1 column
+C394: 35 30 00           ; 50
+C397: 01                 ; 1 column
+C398: 36 33 00           ; 63
+C39B: 01                 ; 1 column
+C39C: 38 30 00           ; 80
+C39F: 01                 ; 1 column
+C3A0: 31 30 30 00        ; 100
+C3A4: 01                 ; 1 column
+C3A5: 31 32 35 00        ; 125
+C3A9: 01                 ; 1 column
+C3AA: 31 36 30 00        ; 160
+C3AE: 01                 ; 1 column
+C3AF: 32 30 30 00        ; 200
+C3B3: 02                 ; 2 columns
+C3B4: 32 35 30 00        ; 250
+C3B8: 01                 ; 1 column
+C3B9: 33 31 35 00        ; 315
+C3BD: 01                 ; 1 column
+C3BE: 34 30 30 00        ; 400
+C3C2: 01                 ; 1 column
+C3C3: 35 30 30 00        ; 500
+C3C7: 01                 ; 1 column
+C3C8: 36 33 30 00        ; 630
+C3CC: 01                 ; 1 column
+C3CD: 38 30 30 00        ; 800
+C3D1: 01                 ; 1 column
+C3D2: 31 30 30 30 00     ; 1000
+C3D7: 01                 ; 1 column
+C3D8: 31 32 35 30 00     ; 1250
+C3DD: 01                 ; 1 column
+C3DE: 31 36 30 30 00     ; 1600
+C3E3: 02                 ; 2 columns
+C3E4: 32 30 30 30 00     ; 2000
+C3E9: 01                 ; 1 column
+C3EA: 32 35 30 30 00     ; 2500
+C2EF: 01                 ; 1 column
+C3F0: 33 31 35 30 00     ; 3150
+C3F5: 01                 ; 1 column
+C3F6: 34 30 30 30 00     ; 4000
+C3FB: 01                 ; 1 column
+C3FC: 35 30 30 30 00     ; 5000
+C401: 01                 ; 1 column
+C402: 36 33 30 30 00     ; 6300
+C407: 01                 ; 1 column
+C408: 38 30 30 30 00     ; 8000
+C40D: 01                 ; 1 column
+C40E: 31 30 30 30 30 00  ; 10000
+C414: 01                 ; 1 column
+C415: 31 32 35 30 30 00  ; 12500
+C41B: 00                 ; END
+
+C41C: 8E C3 8A       LDX     #$C38A           ; Vertical labels
+C41F: C6 01          LDB     #1                        
 C421: D7 F7          STB     <$F7            
-C423: CE 0C 40       LDU     #$0C40          
-C426: CC AF AF       LDD     #$AFAF          
-C429: ED C1          STD     ,U++            
-C42B: 11 83 10 00    CMPU    #$1000          
+C423: CE 0C 40       LDU     #$0C40           ; Start of labels
+C426: CC AF AF       LDD     #$AFAF           ; Blue block
+C429: ED C1          STD     ,U++             ; Make the label blue
+C42B: 11 83 10 00    CMPU    #$1000           ; ?? Long way ??
 C42F: 25 F8          BCS     $C429            ; 
-C431: CE 0C 40       LDU     #$0C40          
-C434: 34 40          PSHS    U               
-C436: 86 20          LDA     #$20            
+C431: CE 0C 40       LDU     #$0C40           ; Start of labels
+;
+C434: 34 40          PSHS    U                ; Hold this
+C436: 86 20          LDA     #$20             
 C438: 0A F7          DEC     <$F7            
 C43A: 26 4B          BNE     $C487            ; 
 C43C: C6 03          LDB     #$03            
@@ -546,11 +524,11 @@ C453: A7 C4          STA     ,U
 C455: 33 C8 20       LEAU    $20,U           
 C458: 5A             DECB                    
 C459: 26 F8          BNE     $C453            ; 
-C45B: EE E4          LDU     ,S              
-C45D: A6 80          LDA     ,X+             
-C45F: 27 2E          BEQ     $C48F            ; 
-C461: 81 40          CMPA    #$40            
-C463: 25 08          BCS     $C46D            ; 
+C45B: EE E4          LDU     ,S               ; Start of labels
+C45D: A6 80          LDA     ,X+              ; Next from text
+C45F: 27 2E          BEQ     $C48F            ; 0 ... end of this label
+C461: 81 40          CMPA    #$40             ; Printable?
+C463: 25 08          BCS     $C46D            ; No ...
 C465: 80 40          SUBA    #$40            
 C467: 81 20          CMPA    #$20            
 C469: 25 02          BCS     $C46D            ; 
@@ -568,16 +546,18 @@ C47F: 33 C8 20       LEAU    $20,U
 C482: 5A             DECB                    
 C483: 26 F8          BNE     $C47D            ; 
 C485: 20 D6          BRA     $C45D            ; 
+;
 C487: 0D F6          TST     <$F6            
 C489: 26 BB          BNE     $C446            ; 
 C48B: A6 80          LDA     ,X+             
 C48D: 26 FC          BNE     $C48B            ; 
 C48F: 35 40          PULS    U               
-C491: A6 80          LDA     ,X+             
-C493: 27 04          BEQ     $C499            ; 
-C495: 33 C6          LEAU    A,U             
-C497: 20 9B          BRA     $C434            ; 
-C499: 39             RTS                     
+C491: A6 80          LDA     ,X+              ; Column skip
+C493: 27 04          BEQ     $C499            ; 0 ... end of labels
+C495: 33 C6          LEAU    A,U              ; Move over requested columns
+C497: 20 9B          BRA     $C434            ; Next label
+C499: 39             RTS                      ; Out
+
 C49A: A6 80          LDA     ,X+             
 C49C: 26 01          BNE     $C49F            ; 
 C49E: 39             RTS                     
@@ -601,42 +581,19 @@ C4C4: 20 D4          BRA     $C49A            ;
 C4C6: A7 C4          STA     ,U              
 C4C8: A7 C9 00 A0    STA     $00A0,U         
 C4CC: 20 E7          BRA     $C4B5            ; 
-C4CE: 41                                  
-C4CF: 55                                  
-C4D0: 44             LSRA                    
-C4D1: 49             ROLA                    
-C4D2: 4F             CLRA                    
-C4D3: 20 53          BRA     $C528            ; 
-C4D5: 50             NEGB                    
-C4D6: 45                                  
-C4D7: 43             COMA                    
-C4D8: 54             LSRB                    
-C4D9: 52                                  
-C4DA: 55                                  
-C4DB: 4D             TSTA                    
-C4DC: 20 41          BRA     $C51F            ; 
-C4DE: 4E                                  
-C4DF: 41                                  
-C4E0: 4C             INCA                    
-C4E1: 59             ROLB                    
-C4E2: 5A             DECB                    
-C4E3: 45                                  
-C4E4: 52                                  
-C4E5: 00 20          NEG     <$20            
-C4E7: 20 35          BRA     $C51E            ; 
-C4E9: 00 20          NEG     <$20            
-C4EB: 20 33          BRA     $C520            ; 
-C4ED: 00 20          NEG     <$20            
-C4EF: 20 30          BRA     $C521            ; 
-C4F1: 00 20          NEG     <$20            
-C4F3: 2D 33          BLT     $C528            ; 
-C4F5: 00 20          NEG     <$20            
-C4F7: 2D 35          BLT     $C52E            ; 
-C4F9: 00 2D          NEG     <$2D            
-C4FB: 31 30          LEAY    -16,Y           
-C4FD: 00 2D          NEG     <$2D            
-C4FF: 32 30          LEAS    -16,Y           
-C501: 00 
+
+; AUDIO SPECTRUM ANALYZER
+C4CE: 41 55 44 49 4F 20 53 50 45 43 54 52 55 4D 20 41
+C4DE: 4E 41 4C 59 5A 45 52 00
+;
+C4E6: 20 20 35 00 ;   5 
+C4EA: 20 20 33 00 ;   3
+C4EE: 20 20 30 00 ;   0
+;
+C4F2: 20 2D 33 00 ;  -3
+C4F6: 20 2D 35 00 ;  -5
+C4FA: 2D 31 30 00 ; -10
+C4FE: 2D 32 30 00 ; -20
 
 PrintString:
 C502: A6 80          LDA     ,X+              ; Next character 
@@ -755,191 +712,33 @@ C640: 59 20 43 4F 52 50 2E 00
 ; NOT USED
 ; Extra data on the end of the EPROM
 
-C648: 00 00             
-C64A: 00 00             
-C64C: 00 00             
-C64E: 00 00             
-C650: 00 00             
-C652: 00 00             
-C654: 00 00             
-C656: 00 00             
-C658: 00 00             
-C65A: 00 00             
-C65C: 00 00             
-C65E: 00 00             
-C660: 00 00             
-C662: 00 00             
-C664: 00 00             
-C666: 00 00             
-C668: 00 00             
-C66A: 00 00             
-C66C: 00 00             
-C66E: 00 00             
-C670: 00 00             
-C672: 00 00             
-C674: 00 00             
-C676: 00 00             
-C678: 00 00             
-C67A: 00 00             
-C67C: 00 00             
-C67E: 00 CC           
-C680: FF FF FF 
-C683: FF FF FF 
-C686: FF FF FF 
-C689: FF FF FF 
-C68C: FF FF FF 
-C68F: FF FF FF 
-C692: FF FF FF 
-C695: FF FF FF 
-C698: FF FF FF 
-C69B: FF FF FF 
-C69E: FF FF FF 
-C6A1: FF FF FF 
-C6A4: FF FF FF 
-C6A7: FF FF FF 
-C6AA: FF FF FF 
-C6AD: FF FF FF 
-C6B0: FF FF FF 
-C6B3: FF FF FF 
-C6B6: FF FF FF 
-C6B9: FF FF FF 
-C6BC: FF FF FF 
-C6BF: FF 00 00          
-C6C2: 00 00             
-C6C4: 00 00             
-C6C6: 00 00             
-C6C8: 00 00             
-C6CA: 00 00             
-C6CC: 00 00             
-C6CE: 00 00             
-C6D0: 00 00             
-C6D2: 00 00             
-C6D4: 00 00             
-C6D6: 00 00             
-C6D8: 00 00             
-C6DA: 00 00             
-C6DC: 00 00             
-C6DE: 00 00             
-C6E0: 00 00             
-C6E2: 00 00             
-C6E4: 00 00             
-C6E6: 00 00             
-C6E8: 00 00             
-C6EA: 00 00             
-C6EC: 00 00             
-C6EE: 00 00             
-C6F0: 00 00             
-C6F2: 00 00             
-C6F4: 00 00             
-C6F6: 00 00             
-C6F8: 00 00             
-C6FA: 00 00             
-C6FC: 00 00             
-C6FE: 00 8C           
-C700: FF FF FF 
-C703: FF FF FF 
-C706: FF FF FF 
-C709: FF FF FF 
-C70C: FF FF FF 
-C70F: FF FF FF 
-C712: FF FF FF 
-C715: FF FF FF 
-C718: FF FF FF 
-C71B: FF FF FF 
-C71E: FF FF FF 
-C721: FF FF FF 
-C724: FF FF FF 
-C727: FF FF FF 
-C72A: FF FF FF 
-C72D: FF FF FF 
-C730: FF FF FF 
-C733: FF FF FF 
-C736: FF FF FF 
-C739: FF FF FF 
-C73C: FF FF FF 
-C73F: FF 00 00          
-C742: 00 00             
-C744: 00 00             
-C746: 00 00             
-C748: 00 00             
-C74A: 00 00             
-C74C: 00 00             
-C74E: 00 00             
-C750: 00 00             
-C752: 00 00             
-C754: 00 00             
-C756: 00 00             
-C758: 00 00             
-C75A: 00 00             
-C75C: 00 00             
-C75E: 00 00             
-C760: 00 00             
-C762: 00 00             
-C764: 00 00             
-C766: 00 00             
-C768: 00 00             
-C76A: 00 00             
-C76C: 00 00             
-C76E: 00 00             
-C770: 00 00             
-C772: 00 00             
-C774: 00 00             
-C776: 00 00             
-C778: 00 00             
-C77A: 00 00             
-C77C: 00 00             
-C77E: 00 8C           
-C780: FF FF FF 
-C783: FF FF FF 
-C786: FF FF FF 
-C789: FF FF FF 
-C78C: FF FF FF 
-C78F: FF FF FF 
-C792: FF FF FF 
-C795: FF FF FF 
-C798: FF FF FF 
-C79B: FF FF FF 
-C79E: FF FF FF 
-C7A1: FF FF FF 
-C7A4: FF FF FF 
-C7A7: FF FF FF 
-C7AA: FF FF FF 
-C7AD: FF FF FF 
-C7B0: FF FF FF 
-C7B3: FF FF FF 
-C7B6: FF FF FF 
-C7B9: FF FF FF 
-C7BC: FF FF FF 
-C7BF: FF 00 00          
-C7C2: 00 00             
-C7C4: 00 00             
-C7C6: 00 00             
-C7C8: 00 00             
-C7CA: 00 00             
-C7CC: 00 00             
-C7CE: 00 00             
-C7D0: 00 00             
-C7D2: 00 00             
-C7D4: 00 00             
-C7D6: 00 00             
-C7D8: 00 00             
-C7DA: 00 00             
-C7DC: 00 00             
-C7DE: 00 00             
-C7E0: 00 00             
-C7E2: 00 00             
-C7E4: 00 00             
-C7E6: 00 00             
-C7E8: 00 00             
-C7EA: 00 00             
-C7EC: 00 00             
-C7EE: 00 00             
-C7F0: 00 00             
-C7F2: 00 00             
-C7F4: 00 00             
-C7F6: 00 00             
-C7F8: 00 00             
-C7FA: 00 00           
-C7FC: 00 00        
-C7FE: 00 8C        
+C648: 00 00 00 00 00 00 00 00 
+
+C650: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+C660: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+C670: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 CC 
+C680: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
+C690: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
+C6A0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
+C6B0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
+C6C0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+C6D0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+C6E0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+C6F0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 8C 
+C700: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
+C710: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
+C720: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
+C730: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
+C740: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+C750: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+C760: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+C770: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 8C 
+C780: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
+C790: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
+C7A0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
+C7B0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
+C7C0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+C7D0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+C7E0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+C7F0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 8C        
 ```
