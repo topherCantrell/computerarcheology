@@ -636,207 +636,125 @@ C4F9: 00 2D          NEG     <$2D
 C4FB: 31 30          LEAY    -16,Y           
 C4FD: 00 2D          NEG     <$2D            
 C4FF: 32 30          LEAS    -16,Y           
-C501: 00 A6          NEG     <$A6            
-C503: 80 27          SUBA    #$27            
-C505: 05                                  
-C506: BD A3 0A       JSR     $A30A            ; {hard:PRINTCHAR} 
-C509: 20 F7          BRA     $C502            ; 
-C50B: 39             RTS                     
+C501: 00 
+
+PrintString:
+C502: A6 80          LDA     ,X+              ; Next character 
+C504: 27 05          BEQ     $C50B            ; 0 means done                      
+C506: BD A3 0A       JSR     $A30A            ; {hard:PRINTCHAR} print the character 
+C509: 20 F7          BRA     $C502            ; Keep printing
+C50B: 39             RTS                      ; Out
 
 NextColorBlock:
 ; For border on splash screen
-C50C: 8B 10          ADDA    #$10            
-C50E: 8A 8F          ORA     #$8F            
-C510: 81 8F          CMPA    #$8F            
-C512: 27 F8          BEQ     $C50C            ; 
-C514: 39             RTS                     
-
-
-C515: 86 34          LDA     #$34            
-C517: B7 FF 03       STA     $FF03            ; {hard:PIA0_CB} 
-C51A: B7 FF 01       STA     $FF01            ; {hard:PIA0_CA} 
-C51D: B7 FF 23       STA     $FF23            ; {hard:PIA1_CB} 
-C520: 86 39          LDA     #$39             ; RTS (do nothing) ...
-C522: B7 01 67       STA     $0167            ; ... to CONSOLE OUT vector
-C525: BD A9 28       JSR     $A928            ; {hard:CLRSCREEN} 
-C528: 86 0D          LDA     #$0D            
-C52A: B7 FF 22       STA     $FF22            ; {hard:PIA1_DB} 
-C52D: 8E C5 A0       LDX     #$C5A0          
-C530: BD C5 02       JSR     $C502            ; 
+C50C: 8B 10          ADDA    #$10             ; Next ...
+C50E: 8A 8F          ORA     #$8F             ; ... solid ...
+C510: 81 8F          CMPA    #$8F             ; ... color ...
+C512: 27 F8          BEQ     $C50C            ; ... block
+C514: 39             RTS                      ; Out
 
 DrawSplashScreen:
 
+C515: 86 34          LDA     #$34             ; Everything off
+C517: B7 FF 03       STA     $FF03            ; {hard:PIA0_CB} Field sync interrupt off 
+C51A: B7 FF 01       STA     $FF01            ; {hard:PIA0_CA} Horiz sync interrupt off
+C51D: B7 FF 23       STA     $FF23            ; {hard:PIA1_CB} Cart interrupt off
+C520: 86 39          LDA     #$39             ; RTS (do nothing) ...
+C522: B7 01 67       STA     $0167            ; ... to CONSOLE OUT vector
+C525: BD A9 28       JSR     $A928            ; {hard:CLRSCREEN} 
+C528: 86 0D          LDA     #$0D             ; Change to the ...
+C52A: B7 FF 22       STA     $FF22            ; {hard:PIA1_DB} ... "flat" color screen
+C52D: 8E C5 A0       LDX     #$C5A0           ; Splash text
+C530: BD C5 02       JSR     $C502            ; Print the splash text
 C533: CC 9F 10       LDD     #$9F10           ; 32 blocks (1 row), starting color pattern 9F
 C536: 8E 04 00       LDX     #$0400           ; Start of screen
 C539: A7 80          STA     ,X+              ; Store ...
 C53B: A7 80          STA     ,X+              ; ... two byte color block
 C53D: 8D CD          BSR     $C50C            ; Make next color
-C53F: 5A             DECB                     ; All row done?
-C540: 26 F7          BNE     $C539            ; No ... do all
-C542: C6 0E          LDB     #$0E            
-C544: 30 88 1F       LEAX    $1F,X           
-C547: A7 00          STA     0,X             
-C549: A7 1F          STA     -1,X            
-C54B: 30 88 20       LEAX    $20,X           
-C54E: 8D BC          BSR     $C50C            ; 
-C550: 5A             DECB                    
-C551: 26 F4          BNE     $C547            ; 
-C553: C6 10          LDB     #$10            
-C555: A7 84          STA     ,X              
-C557: A7 1F          STA     -1,X            
-C559: 30 1E          LEAX    -2,X            
-C55B: 8D AF          BSR     $C50C            ; 
-C55D: 5A             DECB                    
-C55E: 26 F5          BNE     $C555            ; 
-C560: 30 88 E1       LEAX    $E1,X           
-C563: C6 0E          LDB     #$0E            
-C565: A7 84          STA     ,X              
-C567: A7 01          STA     1,X             
-C569: 30 88 E0       LEAX    $E0,X           
-C56C: 8D 9E          BSR     $C50C            ; 
-C56E: 5A             DECB                    
-C56F: 26 F4          BNE     $C565            ; 
-C571: 5F             CLRB                    
-C572: 86 09          LDA     #$09            
-C574: 7D FF 03       TST     $FF03            ; {hard:PIA0_CB} 
-C577: 2A FB          BPL     $C574            ; 
-C579: 7D FF 02       TST     $FF02            ; {hard:PIA0_DB} 
-C57C: 4A             DECA                    
-C57D: 26 F5          BNE     $C574            ; 
-C57F: 8E 04 00       LDX     #$0400          
-C582: A6 80          LDA     ,X+             
-C584: 2A 0A          BPL     $C590            ; 
-C586: 80 10          SUBA    #$10            
-C588: 8A 8F          ORA     #$8F            
-C58A: 81 8F          CMPA    #$8F            
-C58C: 27 F8          BEQ     $C586            ; 
-C58E: A7 1F          STA     -1,X            
-C590: 8C 06 00       CMPX    #$0600          
-C593: 26 ED          BNE     $C582            ; 
-C595: BD A1 C1       JSR     $A1C1            ; {hard:GETKEY} 
-C598: 84 7F          ANDA    #$7F            
-C59A: 26 03          BNE     $C59F            ; 
-C59C: 5A             DECB                    
-C59D: 26 D3          BNE     $C572            ; 
-C59F: 39             RTS                     
+C53F: 5A             DECB                     ; Top row done?
+C540: 26 F7          BNE     $C539            ; No ... do all of top
+C542: C6 0E          LDB     #$0E             ; 14 rows down the right side
+C544: 30 88 1F       LEAX    $1F,X            ; To the end of the row
+C547: A7 00          STA     0,X              ; Make two byte ...
+C549: A7 1F          STA     -1,X             ; ... color block
+C54B: 30 88 20       LEAX    $20,X            ; Next row
+C54E: 8D BC          BSR     $C50C            ; Next color block
+C550: 5A             DECB                     ; All done?
+C551: 26 F4          BNE     $C547            ; No ... do all of right side
+C553: C6 10          LDB     #$10             ; 32 blocks (1 row) across the bottom
+C555: A7 84          STA     ,X               ; Make two byte ...
+C557: A7 1F          STA     -1,X             ; ... color block
+C559: 30 1E          LEAX    -2,X             ; Moving left along the bottom
+C55B: 8D AF          BSR     $C50C            ; Next block
+C55D: 5A             DECB                     ; Bottom done?
+C55E: 26 F5          BNE     $C555            ; No ... do all of bottom
+C560: 30 88 E1       LEAX    $E1,X            ; Up a row and all the way to the left
+C563: C6 0E          LDB     #$0E             ; 14 rows up the left side
+C565: A7 84          STA     ,X               ; Make two byte ...
+C567: A7 01          STA     1,X              ; ... color block
+C569: 30 88 E0       LEAX    $E0,X            ; Up a row
+C56C: 8D 9E          BSR     $C50C            ; Next color block
+C56E: 5A             DECB                     ; All done?
+C56F: 26 F4          BNE     $C565            ; No ... do all of left side
+C571: 5F             CLRB                     ; Splash screen timer (count to 256)
+C572: 86 09          LDA     #$09             ; Delay of 9 vertical blanks
+C574: 7D FF 03       TST     $FF03            ; {hard:PIA0_CB} Wait for ... 
+C577: 2A FB          BPL     $C574            ; ... vertical blanking flag
+C579: 7D FF 02       TST     $FF02            ; {hard:PIA0_DB} Clear the interrupt flag
+C57C: 4A             DECA                     ; All delay done?
+C57D: 26 F5          BNE     $C574            ; No ... wait
+C57F: 8E 04 00       LDX     #$0400           ; Start of screen
+C582: A6 80          LDA     ,X+              ; Is this a color block?
+C584: 2A 0A          BPL     $C590            ; No ... leave it alone
+C586: 80 10          SUBA    #$10             ; Change ...
+C588: 8A 8F          ORA     #$8F             ; ... color ...
+C58A: 81 8F          CMPA    #$8F             ; ... to ...
+C58C: 27 F8          BEQ     $C586            ; ... next ...
+C58E: A7 1F          STA     -1,X             ; ... color
+C590: 8C 06 00       CMPX    #$0600           ; Finished the whole screen?
+C593: 26 ED          BNE     $C582            ; No ... keep going
+C595: BD A1 C1       JSR     $A1C1            ; {hard:GETKEY} User pressed ... 
+C598: 84 7F          ANDA    #$7F             ; ... ENTER ?
+C59A: 26 03          BNE     $C59F            ; Yes ... out
+C59C: 5A             DECB                     ; Waited roughly 38 seconds?
+C59D: 26 D3          BNE     $C572            ; No ... keep showing splash. Else out.
+C59F: 39             RTS                      ; Out
 
 SplashText:
 
-C5A0: 0D 0D          TST     <$0D            
-C5A2: 20 20          BRA     $C5C4            ; 
-C5A4: 20 20          BRA     $C5C6            ; 
-C5A6: 20 20          BRA     $C5C8            ; 
-C5A8: 20 20          BRA     $C5CA            ; 
-C5AA: 20 41          BRA     $C5ED            ; "AUDIO SPEC..."
-C5AC: 55                                  
-C5AD: 44             LSRA                    
-C5AE: 49             ROLA                    
-C5AF: 4F             CLRA                    
-C5B0: 20 53          BRA     $C605            ; 
-C5B2: 50             NEGB                    
-C5B3: 45                                  
-C5B4: 43             COMA                    
-C5B5: 54             LSRB                    
-C5B6: 52                                  
-C5B7: 55                                  
-C5B8: 4D             TSTA                    
-C5B9: 0D 20          TST     <$20            
-C5BB: 20 20          BRA     $C5DD            ; 
-C5BD: 20 20          BRA     $C5DF            ; 
-C5BF: 20 20          BRA     $C5E1            ; 
-C5C1: 20 20          BRA     $C5E3            ; 
-C5C3: 20 20          BRA     $C5E5            ; 
-C5C5: 20 41          BRA     $C608            ; 
-C5C7: 4E                                  
-C5C8: 41                                  
-C5C9: 4C             INCA                    
-C5CA: 59             ROLB                    
-C5CB: 5A             DECB                    
-C5CC: 45                                  
-C5CD: 52                                  
-C5CE: 0D 0D          TST     <$0D            
-C5D0: 20 20          BRA     $C5F2            ; 
-C5D2: 20 20          BRA     $C5F4            ; 
-C5D4: 20 20          BRA     $C5F6            ; 
-C5D6: 20 20          BRA     $C5F8            ; 
-C5D8: 20 20          BRA     $C5FA            ; 
-C5DA: 20 20          BRA     $C5FC            ; 
-C5DC: 20 20          BRA     $C5FE            ; 
-C5DE: 20 42          BRA     $C622            ; 
-C5E0: 59             ROLB                    
-C5E1: 0D 20          TST     <$20            
-C5E3: 20 20          BRA     $C605            ; 
-C5E5: 20 20          BRA     $C607            ; 
-C5E7: 20 20          BRA     $C609            ; 
-C5E9: 20 20          BRA     $C60B            ; 
-C5EB: 20 53          BRA     $C640            ; 
-C5ED: 54             LSRB                    
-C5EE: 45                                  
-C5EF: 56             RORB                    
-C5F0: 45                                  
-C5F1: 20 42          BRA     $C635            ; 
-C5F3: 4A             DECA                    
-C5F4: 4F             CLRA                    
-C5F5: 52                                  
-C5F6: 4B                                  
-C5F7: 0D 0D          TST     <$0D            
-C5F9: 20 20          BRA     $C61B            ; 
-C5FB: 20 20          BRA     $C61D            ; 
-C5FD: 20 20          BRA     $C61F            ; 
-C5FF: 43             COMA                    
-C600: 4F             CLRA                    
-C601: 50             NEGB                    
-C602: 59             ROLB                    
-C603: 52                                  
-C604: 49             ROLA                    
-C605: 47             ASRA                    
-C606: 48             LSLA                    
-C607: 54             LSRB                    
-C608: 20 28          BRA     $C632            ; 
-C60A: 43             COMA                    
-C60B: 29 20          BVS     $C62D            ; 
-C60D: 31 39          LEAY    -7,Y            
-C60F: 38                                  
-C610: 31 0D          LEAY    13,X            
-C612: 20 20          BRA     $C634            ; 
-C614: 20 20          BRA     $C636            ; 
-C616: 20 20          BRA     $C638            ; 
-C618: 20 20          BRA     $C63A            ; 
-C61A: 20 44          BRA     $C660            ; 
-C61C: 41                                  
-C61D: 54             LSRB                    
-C61E: 41                                  
-C61F: 53             COMB                    
-C620: 4F             CLRA                    
-C621: 46             RORA                    
-C622: 54             LSRB                    
-C623: 20 49          BRA     $C66E            ; 
-C625: 4E                                  
-C626: 43             COMA                    
-C627: 2E 0D          BGT     $C636            ; 
-C629: 0D 0D          TST     <$0D            
-C62B: 20 20          BRA     $C64D            ; 
-C62D: 20 20          BRA     $C64F            ; 
-C62F: 20 4C          BRA     $C67D            ; 
-C631: 49             ROLA                    
-C632: 43             COMA                    
-C633: 45                                  
-C634: 4E                                  
-C635: 53             COMB                    
-C636: 45                                  
-C637: 44             LSRA                    
-C638: 20 54          BRA     $C68E            ; 
-C63A: 4F             CLRA                    
-C63B: 20 54          BRA     $C691            ; 
-C63D: 41                                  
-C63E: 4E                                  
-C63F: 44             LSRA                    
-C640: 59             ROLB                    
-C641: 20 43          BRA     $C686            ; 
-C643: 4F             CLRA                    
-C644: 52                                  
-C645: 50             NEGB                    
-C646: 2E 00          BGT     $C648            ; 
+;                                ;
+;                                ;
+;         AUDIO SPECTRUM         ;
+;            ANALYZER            ;
+;                                ;
+;               BY               ;
+;          STEVE BJORK           ;
+;                                ;
+;     COPYRIGHYT (C) 1981        ;
+;        DATASOFT INC.           ;
+;                                ;
+;                                ;
+;    LICENSED TO TANDY CORP.     ;
+;                                ;
+;                                ;
+;                                ;
+
+; ASCII string (null terminated)
+C5A0: 0D 0D 20 20 20 20 20 20 20 20 20 41 55 44 49 4F
+C5B0: 20 53 50 45 43 54 52 55 4D 0D 20 20 20 20 20 20
+C5C0: 20 20 20 20 20 20 41 4E 41 4C 59 5A 45 52 0D 0D
+C5D0: 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 42
+C5E0: 59 0D 20 20 20 20 20 20 20 20 20 20 53 54 45 56
+C5F0: 45 20 42 4A 4F 52 4B 0D 0D 20 20 20 20 20 20 43
+C600: 4F 50 59 52 49 47 48 54 20 28 43 29 20 31 39 38
+C610: 31 0D 20 20 20 20 20 20 20 20 20 44 41 54 41 53
+C620: 4F 46 54 20 49 4E 43 2E 0D 0D 0D 20 20 20 20 20 
+C630: 4C 49 43 45 4E 53 45 44 20 54 4F 20 54 41 4E 44
+C640: 59 20 43 4F 52 50 2E 00          
+
+; NOT USED
+; Extra data on the end of the EPROM
+
 C648: 00 00             
 C64A: 00 00             
 C64C: 00 00             
