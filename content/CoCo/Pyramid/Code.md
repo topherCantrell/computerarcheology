@@ -82,11 +82,13 @@ contained by another object that is "there". This method looks up the object dat
 the object or the container and returns the location in B and the object 
 pointer (or container pointer) in X.
 
-Object number is in A
+Parameters:
+  * A: object number
 
-Return object's location (or location of container) in B<br>
-Return pointer to object's data (or container's data) in X<br>
-Return Z as comparison between object's location and $01BC
+Return:
+  * B: object's location (or location of container)
+  * X: pointer to object's data (or container's data)
+  * Z: comparison between object's location and $01BC
 
 ```code
 GetObjectInfo:
@@ -137,10 +139,12 @@ FourTableOffset:
 
 This routine moves an object (or its container) to a new location.
 
-Object number is in B<br>
-New location is in $01BC
+Parameters:
+  * B: object number
+  * $01BC: new location
 
-Return object pointer in X
+Return:
+  * X: object pointer
 
 ```code
 MoveObject:
@@ -160,8 +164,10 @@ the script "passes" then this function returns Z=0.
 
 If there is no script to match the verb or if the script "fails" then this function returns Z=1.
 
-X points to a list of choices for first-word tokens.<br>
-Return with
+Parameters:
+  * X: points to a list of choices for first-word tokens
+
+Return:
   * Z SET (EQ)   ... no script found OR script was found but it failed
   * Z CLEAR (NE) ... script was found and all commands passed 
 
@@ -206,9 +212,10 @@ List format:
 LL A0 A1 B0 B1 B2 B3 C0 C1 ...   ; LL is length followed by commands A, B, and C ...
 ```
 
-X = start of script
+Parameters:
+  * X: start of script
 
-Returns 
+Return:
   * Z SET (EQ) failed
   * Z CLEAR (NE) passed
 
@@ -281,10 +288,10 @@ SubScriptAbortIfPass:
  This function prompts the user for a command line and parses it. This function 
  does not return until a usable command line has been entered. 
 
- Returns
- * 01E7 - verb
- * 01E8 - object number (noun)
- * 01E9 - gramar type
+ Return:
+   * 01E7 - verb
+   * 01E8 - object number (noun)
+   * 01E9 - gramar type
 
 ```code
 GetInputAndParse:
@@ -531,9 +538,10 @@ GetInputAndParse:
 
 # Print Packed Message 
 
- Unpack a message (or multiple packed messages) and print.
-
- X = pointer to message structure
+Unpack a message (or multiple packed messages) and print.
+ 
+Parameters:
+  * X: pointer to message structure
 
 ```code
 PrintPackedMessage:
@@ -724,16 +732,16 @@ PromptAndReadLine:
 
 # Script Commands 
 
- This lookup table holds the pointers to the individual script commands. Each command 
- reads 1 or 2 bytes of data from the script. The number of extra bytes read is show 
- for reference in the table.
+This lookup table holds the pointers to the individual script commands. Each command 
+reads 1 or 2 bytes of data from the script. The number of extra bytes read is show 
+for reference in the table.
 
- Script Command Table
-   * b = 2 bytes ... message address
-   * c = 1 byte  ... object number
-   * d = 1 byte  ... room number
-   * e = 2 bytes ... target object and container object 
-   * f = 2 bytes ... target object and room number
+Script Command Table
+  * b = 2 bytes ... message address
+  * c = 1 byte  ... object number
+  * d = 1 byte  ... room number
+  * e = 2 bytes ... target object and container object 
+  * f = 2 bytes ... target object and room number
 
 ```code
 ScriptCommands:
@@ -771,9 +779,9 @@ ScriptCommands:
 
 # After Every Step 
 
- This processing takes place after every user input.
+This processing takes place after every user input.
   1. Increment the count on the lamp and the number of turns.
-  2.  Warn the player if the lamp is going dim and change the batteries automatically.
+  2. Warn the player if the lamp is going dim and change the batteries automatically.
 
 ```code
 AfterEveryStep:
@@ -1538,8 +1546,8 @@ C_PrintScore:
 0F15: 7E 06 CB            JMP     $06CB                     ; 
 ```
 
-# Command 5: Print Score And Stop =
-# Command 9: Print Score And Stop =
+# Command 5: Print Score And Stop
+# Command 9: Print Score And Stop
 
 Print the score and go into an endless loop. When the player dies 
 the scripts use command 5. When the player quits the scripts 
