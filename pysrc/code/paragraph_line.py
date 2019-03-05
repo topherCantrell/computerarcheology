@@ -1,47 +1,25 @@
-def process_markdown(text):
-    
-    # Links and images
-    while '](' in text:
-        j = text.index('](')
-        i = j
-        while i>0 and text[i]!='[':
-            i -= 1       
-        k = text.index(')',j)
-        m = i
-        is_img = False
-        if i>0 and text[i-1]=='!':
-            m = i-1
-            is_img = True            
-            
-        if is_img:
-            rep = '<img src="'+text[j+2:k]+'">'
-        else:
-            rep = '<a href="'+text[j+2:k]+'">'+text[i+1:j]+'</a>'
-        
-        text=text[0:m]+rep+text[k+1:]
-        
-    # Bold
-    while '**' in text:
-        i = text.index('**')
-        j = text.index('**',i+1)
-        text = text[0:i]+'<strong>'+text[i+2:j-1]+'</strong>'+text[j+2:]
-        
-    # TODO italic
-    # TODO `stuff`
-        
-    return text
+import code.markdown_utils
+
 
 class Paragraph:
-    
+    ''' A list of plain markdown lines that make up a paragraph. 
+    Blank lines flag the end of a paragraph.'''
+
     def __init__(self):
-        self.lines = []
-        
+        self._lines = []
+
+    def push_line(self, line):
+        self._lines.insert(0, line)
+
+    def get_lines(self):
+        return self._lines
+
     def make_content(self):
-        if len(self.lines)==0:
+        if len(self._lines) == 0:
             return ''
-        ret='<p>\n'
-        for md in self.lines:                
-            ret += process_markdown(md.line) + '\n'                
-        ret+='</p>\n' 
-        
+        ret = '<p>\n'
+        for md in self._lines:
+            ret += code.markdown_utils.process_markdown(md.text) + '\n'
+        ret += '</p>\n'
+
         return ret

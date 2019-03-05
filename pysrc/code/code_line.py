@@ -7,8 +7,8 @@
 
 
 class CodeLine:
-    # Info about the line: original, line_number, filename
-    # line
+    # Info about the text: original, line_number, filename
+    # text
     # comment
     # label
     # data
@@ -25,8 +25,8 @@ class CodeLine:
         self.opcode = None
         self.link_info = None
         
-        line = md.line.strip()
-        self.line = line
+        line = md.text.strip()
+        self.text = line
                 
         self.address = None
         self.comment = None
@@ -87,9 +87,9 @@ class CodeLine:
     def replace_comment(self,new_comment):
         self.comment = new_comment
         if self._original_comment_start!=None:
-            self.original.line = self.original.line[0:self._original_comment_start] + '; '+new_comment
+            self.original.text = self.original.text[0:self._original_comment_start] + '; '+new_comment
         else:
-            self.original.line = self.original.line+' ; '+new_comment
+            self.original.text = self.original.text+' ; '+new_comment
         
     def is_address_in(self,addr):
         if(self.address==None or self.data==None or self.data==[]):
