@@ -23,12 +23,12 @@ def process_code(lines, code_info, skip_no_label_jumps=False):
     # We'll use this a lot
     cpu = code_info['cpu']
 
-    # Collect all the cod together. Everything else is text.
+    # Collect all the code together. Everything else is text.
     cod = []
     for md in lines:
-        if str(type(md)) == "<class 'cod.block_line.Block'>":
-            for m in md.lines:
-                if type(m) is cod.code_line.CodeLine:
+        if str(type(md)) == "<class 'code.block_line.Block'>":
+            for m in md.get_lines():
+                if type(m) is code.code_line.CodeLine:
                     cod.append(m)
 
     # For all lines with mnemonics: find the opcode for each

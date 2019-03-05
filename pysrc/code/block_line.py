@@ -20,6 +20,9 @@ class Block:
     def add_line(self, line):
         self._lines.append(line)
 
+    def get_lines(self):
+        return self._lines
+
     def make_content(self, code_info, lines):
 
         if self.get_type() == 'html':
@@ -64,8 +67,20 @@ class Block:
         ret = '<pre class="codePreStyle">'
 
         for line in self._lines[1:-1]:
-            #print(line, line.text)
-            ret = ret + line.text + '\n'
+
+            html_out = line.text
+
+            if line.link_info:
+
+                # This is the target of a link. Give it an ID for navigation.
+                # TODO think about moving this target up to the label before or even the section
+                # header above where appropriate?
+                if 'is_target' in line.link_info and line.link_info['is_target']:
+                    html_out = '<span id="' + \
+                        html_out[0:4] + '">' + html_out[0:4] + \
+                        '</span>' + html_out[4:]
+
+            ret = ret + html_out + '\n'
 
         ret = ret + '</pre>'
 
