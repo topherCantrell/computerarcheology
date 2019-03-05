@@ -61,18 +61,16 @@ class Block:
         if not 'processed_code' in code_info:
             code.process_code.process_code(lines, code_info)
 
-        for line in lines:
-            print(line)
+        ret = '<pre class="codePreStyle">'
+
+        for line in self._lines[1:-1]:
+            #print(line, line.text)
+            ret = ret + line.text + '\n'
+
+        ret = ret + '</pre>'
 
         # TODO references to RAM
         # TODO links in jumps
         # print(code_info['memory'])
 
-        # print(lines)
-
-        #ret = '<pre>'
-        # for text in lines:
-        #    ret = ret + text.text + '/n'
-        # return ret + '</pre>'
-        # return ''
-        return '<pre class="codePreStyle">HERE</pre>'
+        return ret
