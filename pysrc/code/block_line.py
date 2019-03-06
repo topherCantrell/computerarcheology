@@ -72,6 +72,12 @@ class Block:
 
             if line.link_info:
 
+                if 'memory_table' in line.link_info:
+                    print('MEMORY TABLE')
+                elif 'target_line' in line.link_info:
+                    print('CODE TARGET')
+                    print(line.link_info)
+
                 # This is the target of a link. Give it an ID for navigation.
                 # TODO think about moving this target up to the label before or even the section
                 # header above where appropriate?
