@@ -72,11 +72,43 @@ class Block:
 
             if line.link_info:
 
-                if 'memory_table' in line.link_info:
+                info = line.link_info
+
+                if 'memory_table' in info:
+                    # For example:
+                    # {
+                    #     'opcode_i': 35, 'opcode_j': 38,
+                    #     'memory_table': <code.memory_table.MemoryTable object at 0x00000170B409F630>,
+                    #     'memory_table_name': 'ram',
+                    #     'memory_table_entry': {
+                    #         'range': [136, 137],
+                    #         'name': 'cursor',
+                    #         'description':
+                    #         'Screen cursor used by BASIC routines'
+                    #     }
+                    # }
+
                     print('MEMORY TABLE')
-                elif 'target_line' in line.link_info:
-                    print('CODE TARGET')
-                    print(line.link_info)
+                    print(line.text)
+                    print(info)
+
+                elif 'target_line' in info:
+                    # For example:
+                    # {
+                    #     'opcode_i': 34, 'opcode_j': 39,
+                    #     'target_line': <code.code_line.CodeLine object at 0x0000021B58E5E668>,
+                    #     'target_label': 'PrintRoomDescription'
+                    # }
+                    dest_anchor = '{:04X}'.format(info['target_line'].address)
+                    opcode_i = info['opcode_i']
+                    opcode_j = info['opcode_j']
+                    target_label = line.text[opcode_i:opcode_j]
+                    if 'target_label' in info:
+                        target_label = info['target_label']
+
+                    # print('CODE TARGET', opcode_i, opcode_j,
+                    #      target_label, dest_anchor)
+                    # print(line.text)
 
                 # This is the target of a link. Give it an ID for navigation.
                 # TODO think about moving this target up to the label before or even the section
