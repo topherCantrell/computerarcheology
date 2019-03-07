@@ -74,6 +74,8 @@ class Block:
 
                 info = line.link_info
 
+                dest_anchor = None
+
                 if 'memory_table' in info:
                     # For example:
                     # {
@@ -88,9 +90,10 @@ class Block:
                     #     }
                     # }
 
-                    print('MEMORY TABLE')
-                    print(line.text)
-                    print(info)
+                    #print('MEMORY TABLE')
+                    # print(line.text)
+                    # print(info)
+                    pass
 
                 elif 'target_line' in info:
                     # For example:
@@ -105,10 +108,28 @@ class Block:
                     target_label = line.text[opcode_i:opcode_j]
                     if 'target_label' in info:
                         target_label = info['target_label']
+                    anch_class = 'addr_code'
+                    anch_title = line.text[opcode_i:opcode_j]
 
                     # print('CODE TARGET', opcode_i, opcode_j,
                     #      target_label, dest_anchor)
                     # print(line.text)
+
+                if dest_anchor:
+                    anchstr = '<a title="{}" class="{}" href="#{}">{}</a>'.format(anch_title, anch_class,
+                                                                                  dest_anchor, target_label)
+                    html_out = (html_out[:opcode_i] +
+                                anchstr + html_out[opcode_j:])
+                    extra_len = len(target_label) - (opcode_j - opcode_i)
+                    #print(target_label, opcode_i, opcode_j, extra_len)
+                    if extra_len > 0:
+                        i = html_out.find(';')
+                        if i >= 0:
+                            j = i
+                            while extra_len > 0 and html_out[i - 1] == ' ':
+                                i -= 1
+                                extra_len -= 1
+                            html_out = html_out[:i] + html_out[j:]
 
                 # This is the target of a link. Give it an ID for navigation.
                 # TODO think about moving this target up to the label before or even the section
