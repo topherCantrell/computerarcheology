@@ -90,10 +90,14 @@ class Block:
                     #     }
                     # }
 
-                    #print('MEMORY TABLE')
-                    # print(line.text)
-                    # print(info)
-                    pass
+                    opcode_i = info['opcode_i']
+                    opcode_j = info['opcode_j']
+                    anch_class = 'addr_' + info['memory_table_name']
+                    dest_anchor = (info['memory_table'].filename +
+                                   '#' + info['memory_table_entry']['name'])
+                    dest_target = 'target="' + info['memory_table_name'] + '"'
+                    anch_title = line.text[opcode_i:opcode_j]
+                    target_label = info['memory_table_entry']['name']
 
                 elif 'target_line' in info:
                     # For example:
@@ -102,7 +106,8 @@ class Block:
                     #     'target_line': <code.code_line.CodeLine object at 0x0000021B58E5E668>,
                     #     'target_label': 'PrintRoomDescription'
                     # }
-                    dest_anchor = '{:04X}'.format(info['target_line'].address)
+                    dest_anchor = '#{:04X}'.format(info['target_line'].address)
+                    dest_target = ''
                     opcode_i = info['opcode_i']
                     opcode_j = info['opcode_j']
                     target_label = line.text[opcode_i:opcode_j]
@@ -111,13 +116,9 @@ class Block:
                     anch_class = 'addr_code'
                     anch_title = line.text[opcode_i:opcode_j]
 
-                    # print('CODE TARGET', opcode_i, opcode_j,
-                    #      target_label, dest_anchor)
-                    # print(line.text)
-
                 if dest_anchor:
-                    anchstr = '<a title="{}" class="{}" href="#{}">{}</a>'.format(anch_title, anch_class,
-                                                                                  dest_anchor, target_label)
+                    anchstr = '<a title="{}" class="{}" href="{}" {}>{}</a>'.format(anch_title, anch_class,
+                                                                                    dest_anchor, dest_target, target_label)
                     html_out = (html_out[:opcode_i] +
                                 anchstr + html_out[opcode_j:])
                     extra_len = len(target_label) - (opcode_j - opcode_i)
@@ -142,9 +143,5 @@ class Block:
             ret = ret + html_out + '\n'
 
         ret = ret + '</pre>'
-
-        # TODO references to RAM
-        # TODO links in jumps
-        # print(code_info['memory'])
 
         return ret

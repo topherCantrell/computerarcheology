@@ -13,6 +13,21 @@ class MemoryTable:
 
         self.entries = []
 
+        i = filename.find('/content')
+        filename = filename[i + 9:]
+        filename = filename.replace('\\', '/')
+        filename = filename.split('/')
+
+        while True:
+            if '..' not in filename:
+                break
+            i = filename.index('..')
+            filename = filename[0:i - 1] + filename[i + 1:]
+
+        filename = '/' + '/'.join(filename)
+        filename = filename.replace('.md', '.html')
+        self.filename = filename
+
         for md in lines:
             if type(md) is code.table_line.Table and md.is_memory:
                 for m in md.get_lines()[2:]:

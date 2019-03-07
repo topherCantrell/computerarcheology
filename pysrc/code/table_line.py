@@ -34,6 +34,12 @@ class Table:
         ret += '<tbody>\n'
         for bod in self._lines[2:]:
             cols = bod.text.split('|')[1:-1]
+
+            if self.is_memory:
+                ret += '<tr id="' + cols[1].strip() + '">'
+            else:
+                ret += '<tr>'
+
             ret += '<tr>'
             for c in cols:
                 ret += '<td>' + \
