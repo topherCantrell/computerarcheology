@@ -4,6 +4,7 @@
 >>> 1loader.md<br>
 >>> boot.md<br>
 >>> orig-boot.md<br>
+>>> Journal.md<br>
 
 ![Rainbow Islands](Rainbow.jpg)
 
