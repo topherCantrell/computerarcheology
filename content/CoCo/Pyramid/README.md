@@ -81,8 +81,8 @@ Read through all words that the game understands in the [Word table](Code.md#Wor
 
 # References
 
-If you seek specific game information, solutions, and online emulators then check out Sean Murphy's wonderful site.[[br]]
-Solutions and info on Pyramid 2000, Raaka-Tu, and Bedlam:[[br]]
+If you seek specific game information, solutions, and online emulators then check out Sean Murphy's wonderful site.<br>
+Solutions and info on Pyramid 2000, Raaka-Tu, and Bedlam:<br>
 [http://www.figmentfly.com](http://www.figmentfly.com)
 
 In August 2007 my article on 
@@ -105,10 +105,9 @@ David Platt's A-code version of Adventure550:
 
 # TRS-80 and CoCo
  
-In 1979 Radio Shack released Robert Arnstein's Pyramid 2000 for the TRS-80 Model I. The game is basically a port of David Platt's A-code 
-Adventure550 with the setting changed to a pyramid instead of a cave. The dungeon layout and error messages are almost identical. Arnstein's 
-version is stripped down a bit to fit on a home computer, and Arnstein developed his own domain specific language and interpreter that is 
-much simpler than Platt's A-code.
+In 1979 Radio Shack released Robert Arnstein's Pyramid 2000 for the TRS-80 Model I. The game is basically a subset of the original  Colossal
+Cave Adventure from Crowther and Woods. The dungeon layout and error messages are almost identical. Arnstein's 
+version is stripped down a bit to fit on a home computer, and Arnstein developed his own domain specific language and interpreter.
 
 The TRS-80 Color Computer hit the market in 1980, but it wasn't until 1982 that 16K models were affordable. It was then that Arnstein ported 
 the Model I version of Pyramid to the CoCo. The CoCo version is even smaller, and we will see in the code where functionality was removed 
@@ -390,3 +389,8 @@ scripts. This code is part of the script command executed when you enter the com
 
 In the CoCo version of the game, PLUGH does nothing. But in the TRS80 version the code run through the scripts for all the rooms and "rolls" 
 the NORTH, SOUTH, EAST, and WEST directions by a random offset! You type NORTH but you go EAST instead.
+
+# Corrections
+
+I had originally said that Arnstein's code was a descendant of Platt's ADV550. Kai Wen Lee points out that it has none of Platt's extensions
+and is more like a subset of the original WOOD0350.

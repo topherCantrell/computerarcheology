@@ -174,8 +174,8 @@ Return:
 Format of word/script description list:
 
 ```
-AA LL N0 N1 N2   ; First word AA and script comands (N) for AA. LL is size of command list.<br>
-BB LL N0 N1      ; Second word BB and script commands (N) for BB. LL is size of command list.<br>
+AA LL N0 N1 N2   ; First word AA and script comands (N) for AA. LL is size of command list.
+BB LL N0 N1      ; Second word BB and script commands (N) for BB. LL is size of command list.
 00               ; End of list
 ```
 
@@ -3141,8 +3141,8 @@ The format of the two bytes are:
 ```
    MCT----- RRRRRRRR
 
-   M - if set, the second byte is an object number (container). if clear, the second byte is a room number.<br> 
-   C - if set, object can be picked up.<br>
+   M - if set, the second byte is an object number (container). if clear, the second byte is a room number. 
+   C - if set, object can be picked up.
    T - if set, object is treasure.
 
    RRRRRRRR - Second byte is the object's location (containing object or room number).
