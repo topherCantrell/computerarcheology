@@ -1,17 +1,21 @@
-%%image = Bedlam.jpg
-%%title = Bedlam Code
-%%cpu   = 6809
-%%-ram  = CoCo/Bedlam/RAMUse.mark /CoCo/Bedlam/RAMUse.html
-%%-hard = CoCo/Hardware.mark /CoCo/Hardware.html
+![](Bedlam.jpg)
 
-* [RAM Usage](RAMUse.html)
-* [Hardware Info](/CoCo/Hardware.html)
+# Bedlam Code
 
- Loaded from cassette at 0x600 (right after text screen memory).
- Executed at 0x0600.
+>>> cpu 6809
+
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
+
+>>> memoryTable hard 
+[Hardware Info](../Hardware.md)
+
+Loaded from cassette at 0x600 (right after text screen memory).<br>
+Executed at 0x0600.
 
 # Start
 
+```code
 Start:
 0600: 86 0D               LDA     #$0D        ; 14 rows left ...
 0602: B7 01 E3            STA     $01E3       ;{-1_tillMORE} ... until MORE prompt
@@ -35,9 +39,11 @@ Start:
 0630: BD 0C 44            JSR     $0C44       ;{ProcessCommand} ... place player object
 0633: 86 0D               LDA     #$0D        ; Print ...
 0635: BD 11 D5            JSR     $11D5       ;{PrintCharacterAutoWrap} ... CR
+```
 
 # Main Loop
 
+```code
 MainLoop: 
 0638: 10 CE 03 FF         LDS     #$03FF      ; Initialize stack
 063C: BD 0B 0D            JSR     $0B0D       ; Get user input
@@ -101,15 +107,17 @@ MainLoop:
 06CC: 34 10               PSHS    X           ; Hold token buffer
 06CE: 4A                  DECA                ; List 1? Verbs?
 06CF: 26 21               BNE     $6F2        ; No ... continue
+```
 
- I believe the goal here was to allow multiple verbs given on an input line
- to be translated to a single verb. The code finds a replacement list for the
- newly given verb and then runs the list two bytes at a time comparing one
- of the entries to the last given verb and storing the second byte if there
- is a match. I believe that is what is SUPPOSED to happen, but I believe the
- code has a bug or two. It actually does nothing at all. The replacement
- list for BEDLAM and RAAKATU is empty so the code is never used anyway.
+I believe the goal here was to allow multiple verbs given on an input line
+to be translated to a single verb. The code finds a replacement list for the
+newly given verb and then runs the list two bytes at a time comparing one
+of the entries to the last given verb and storing the second byte if there
+is a match. I believe that is what is SUPPOSED to happen, but I believe the
+code has a bug or two. It actually does nothing at all. The replacement
+list for BEDLAM and RAAKATU is empty so the code is never used anyway.
 
+```code
 06D1: 8E 13 B2            LDX     #$13B2      ; Multi verb translation list (empty list for BEDLAM and RAAKATU)
 06D4: BD 0A 60            JSR     $0A60       ;{FindSublist} Look for an entry for the given verb
 06D7: 24 13               BCC     $6EC        ; No entry ... use the word as-is
@@ -236,7 +244,6 @@ MainLoop:
 07F2: 30 01               LEAX    1,X         ; ... to ...
 07F4: 30 02               LEAX    2,X         ; ... next entry
 07F6: 7E 07 8C            JMP     $078C       ; Keep looking
-
 
 ; Input processing goes like this:
 ; If this is a phrase given to someone
@@ -586,9 +593,11 @@ CompareXY:
 0A99: 10 BF 01 A9         STY     $01A9       ;{-1_tmp1A9} Do compare ...
 0A9D: BC 01 A9            CMPX    $01A9       ;{-1_tmp1A9} X - Y
 0AA0: 39                  RTS                 ; Done
+```
 
 # Get Input Line
 
+```code
 GetInputLine:
 0AA1: 8E 05 E0            LDX     #$05E0      ; Start of bottom row
 0AA4: BD 0B 64            JSR     $0B64       ; Slide bottom row to right after cursor and draw cursor
@@ -690,9 +699,11 @@ GetInputLine:
 0B67: 86 CF               LDA     #$CF        ; Cursor character (white block)
 0B69: A7 84               STA     ,X          ; Cursor to screen
 0B6B: 39                  RTS                 ; Done
+```
 
 # Get Key
 
+```code
 GetKey:
 0B6C: BD 13 19            JSR     $1319       ;{Com2B_GenerateRandomNumber} Get random number every key
 0B6F: AD 9F A0 00         JSR     [$A000]     ; Get key from user
@@ -704,9 +715,11 @@ GetKey:
 0B7C: 25 02               BCS     $B80        ; Lower .... use it
 0B7E: 8B 40               ADDA    #$40        ; Not really sure why. '!' becomes 'a'.
 0B80: 39                  RTS                 ; Done
+```
 
 # Decode Buffer
 
+```code
 DecodeBuffer:
 ; X=input buffer on screen (1 before)
 ; 1D8=pointer to result token list
@@ -821,9 +834,11 @@ DecodeWord:
 0C3D: 35 10               PULS    X           ; Restore pointer to word
 0C3F: 31 21               LEAY    1,Y         ; Skip word data
 0C41: 7E 0B CC            JMP     $0BCC       ;{DecodeWord} Keep trying
+```
 
 # Process Command
 
+```code
 ProcessCommand:
 ; Either a direct command or a common command
 0C44: A6 80               LDA     ,X+         ; Next in script
@@ -1578,9 +1593,11 @@ PrintPackedMessage:
 11CF: 86 20               LDA     #$20        ; Print ...
 11D1: BD 11 D5            JSR     $11D5       ;{PrintCharacterAutoWrap} ... space on end
 11D4: 39                  RTS                 ; Done
+```
 
 # Print Character
 
+```code
 PrintCharacterAutoWrap:
 ; Print character in A to screen. This handles auto word-wrapping and
 ; auto MORE prompting.
@@ -1647,9 +1664,11 @@ MorePrompt:
 1253: 35 76               PULS    A,B,X,Y,U   ; Restore
 1255: B7 01 BE            STA     $01BE       ;{-1_lastChar} Restore last printed character
 1258: 39                  RTS                 ; Done
+```
 
 # Unpack Bytes
 
+```code
 UnpackBytes:
 ; Unpack three characters stored in 2 bytes pointed to by X and print to screen.
 ; Every 2 bytes holds 3 characters. Each character can be from 0 to 39.
@@ -1759,19 +1778,19 @@ Com2B_GenerateRandomNumber:
 1350: 4F                  CLRA                ;
 1351: 35 14               PULS    B,X         ;
 1353: 39                  RTS                 ;
-
-; -----------------------------------------------------------------------------------------------------------------
+```
 
 # Data Section 
 
-; -----------------------------------------------------------------------------------------------------------------
-     
+```code
 1354: 94 ; Init game
 1355: A3 ; Start of game splash (YOU FEEL AS THOUGH ...)
 1356: AC ; Script for command-given-to-someone
+```
 
 # Command Jump Table
 
+```code
 CommandJumpTable: 
 1357: 0C C2           ; 00
 1359: 0E 24           ; 01
@@ -1842,9 +1861,11 @@ FeedbackPrompts:
 ;           
 ; "-&lt;MORE&gt;"
 13DB: 07 2D  3C 4D 4F 52 45 3E                             
+```
 
 # Phrase List
 
+```code
 PhraseList: 
 13E3: 05 00 00 00 01                                        ; 01: NORTH *     *          *       
 13E8: 06 00 00 00 02                                        ; 02: SOUTH *     *          *       
@@ -1936,9 +1957,11 @@ PhraseList:
 1596: 40 00 80 00 49                                        ; 49: MEET *      u.......   *       
 159B: 40 01 80 80 49                                        ; 49: MEET TO     u.......   u.......                            
 15A0: 00
+```
 
 # Room Descriptions
 
+```code
 RoomDescriptions: 
 15A1: 00 85 9E                                                  ; Script list size=059E
 15A4:   81 3A 00                                                ;   Script number=81 size=003A data=00
@@ -2403,9 +2426,11 @@ RoomDescriptions:
 1B3D:                   B1 7F 5B 21                             ;                   .
 1B41:                 24                                        ;                 Command_24_ENDLESS_LOOP
 ; ENDOF 15A1
+```
 
 # Object Data
 
+```code
 ObjectData:
 ; Objects are referenced by index in this list with the first object being "Object 1".
 ; The first three data bytes are as follows AA BB CC:
@@ -3631,9 +3656,11 @@ ObjectData:
 2F1F:   42 03                                                   ;   Number=42 size=0003
 2F21:     18 00 00                                              ;     room=18 neverUsed=00 bits=00 *       
 ; ENDOF 1B42
+```
 
 # General Commands
 
+```code
 GeneralCommands:
 2F24:   00 84 75 0E 84 72                                       ;   Command_0E_EXECUTE_LIST_WHILE_FAIL size=1138
 2F2A:     0D 28                                                 ;     Command_0D_EXECUTE_LIST_WHILE_PASS size=40
@@ -4105,9 +4132,11 @@ GeneralCommands:
 3391:             6A DB 72 FE 67 89 8D 91 7A 3A                 ;             .
 339B:           06                                              ;           Command_06_PRINT_INVENTORY
 ; ENDOF 2F24
+```
 
 # Helper Commands
 
+```code
 HelperCommands:
 ; List of helper commands. Each is tagged with an ID. In the first case, "81" is a command to
 ; print "ANOTHER SMALL PADDED ROOM."
@@ -4698,9 +4727,11 @@ HelperCommands:
 3BD3:         A9                                                ;         CommonCommand_A9
 3BD4:         8B                                                ;         CommonCommand_8B
 ; ENDOF 339C
+```
 
 # Input Word Tables
 
+```code
 InputWordTables:
 
 ; --- IGNORES --- Maybe for curse words. No words in this list and thus never used.
@@ -4844,4 +4875,4 @@ InputWordTables:
 3EF5: 06 41 52 4F 55 4E 44 0B   ; AROUND   11
 3EFD: 02 4F 4E 0C               ; ON       12
 3F01: 00
- 
+``` 

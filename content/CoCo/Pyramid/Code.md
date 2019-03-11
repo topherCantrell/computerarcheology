@@ -8,7 +8,7 @@
 [RAM Usage](RAMUse.md)
 
 >>> memoryTable hard 
-[Hardware Info](..\Hardware.md)
+[Hardware Info](../Hardware.md)
 
 Loaded from cassette at 0x600 (right after text screen memory).<br>
 Executed at 0x0600.

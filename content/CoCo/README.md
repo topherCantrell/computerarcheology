@@ -12,7 +12,9 @@
 >>>   +PIA0.jpg<br>
 >>>   +PIA1.jpg<br>
 >>>   +SAM.jpg<br>
+>>>     AudioSpectrumAnalyzer:AudioAnalyzer
 >>>     Pyramid:Pyramid<br>
+>>>     Bedlam:Bedlam<br>
 
 # CoCo
 

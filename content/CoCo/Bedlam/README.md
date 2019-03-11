@@ -1,20 +1,28 @@
-%%title = Bedlam
-%%image = Bedlam.jpg
+![Bedlam](Bedlam.jpg)
 
-{{{html
-<div class="playMe">
-<div>
+>>> deploy:<br>
+>>>   RAMUse.md<br>
+>>>   Code.md<br>
+>>>   Journal.md<br>
+>>>   +bedlam.js<br>
+>>>   +BinaryDataBedlam.js<br>
+>>>   +Bedlam.jpg<br>
+
+```html
 <script src="/CoCo/Bedlam/BinaryDataBedlam.js"></script>
 <script src="/js/6809.js"></script>
 <script src="/CoCo/CoCoText.js"></script>
 <script src="/CoCo/Bedlam/bedlam.js"></script>
 <script>window.onload = function() {startBedlam("bedlamConsole");}</script>
-}}}
+```
+
+>>> playMe {
+
 # Play Me!
 
 Play the game in a CoCo emulator. Click on the green console and press any key.<br>
 
-{{{html
+```html
 <textarea readonly id="bedlamConsole" rows="16" style="background-color: #00FF01; color: black;font-family: monospace;font-size:12px;width:33ch;float: left;margin-top:8px" ></textarea>
 
 <table class="caTable" style="float: left;margin-left:8px;margin-top:8px;">
@@ -25,15 +33,14 @@ Play the game in a CoCo emulator. Click on the green console and press any key.<
 <tr><td>backspace</td><td>left-arrow</td><td>Delete character left of cursor</td></tr>
 <tr><td>escape</td><td>clear</td><td>Delete the line</td></tr>
 </table>
+```
 
-</div>
-</div>
-}}}
+>>> }
 
 # Code Links 
 
-* [Disassembled Code](Code.html)
-* [RAM Usage](RAMUse.html)
+* [Disassembled Code](Code.md)
+* [RAM Usage](RAMUse.md)
 
 # Questionnaire 
 
@@ -42,7 +49,8 @@ that you'll find in Bedlam endorses this crazy test. Although the test is mostly
 within the questions and score evaluations are clues which should help you escape Bedlam. You may not recognize the clues in 
 the questionnaire until you try to escape from Bedlam." - From the game manual
 
-{{{tourGuide
+>>> tourGuide {
+
 # Tour Guide
 
 The code is practically a virtual-machine for the game written in adventure-language. The [Main Loop](Code.html#MainLoop) decodes the complex
@@ -58,8 +66,7 @@ at the [Objects and their scripts](Code.html#ObjectData).
 Have a look at the [General Command Script](Code.html#GeneralCommands) that processes commands not handled by the current room.
 
 Look through the game's [list of all known words](Code.html#InputWordTables).
-
-}}}
+>>> }
 
 # References 
 
@@ -74,8 +81,8 @@ Check out Aaron Wolfe's awesome port of Bedlam to the Android platform. He is wo
 
 I will follow Arnstein's adventure language and interpreter as it evolved from Pyramid 2000 to Raaka-Tu and finally to Bedlam. Be sure to 
 visit those pages as well:
-* [Pyramid 2000](/CoCo/Pyramid)
-* [Raaka Tu](/CoCo/RaakaTu)
+* [Pyramid 2000](../Pyramid)
+* [Raaka Tu](../RaakaTu)
 * Bedlam
 
 # A Year Later 
