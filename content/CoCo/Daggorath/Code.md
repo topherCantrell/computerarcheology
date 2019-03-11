@@ -1,20 +1,25 @@
-%%image = Daggorath.jpg
-%%-ram  = Coco/Daggorath/RAMUse.mark /CoCo/Daggorath/RAMUse.html
-%%-hard = Coco/Hardware.mark /CoCo/Hardware.html
-%%cpu   = 6809
+![](Daggorath.jpg)
 
-%%directPage = 200
+# Daggorath Code
+
+>>> cpu 6809
+
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
+
+>>> memoryTable hard 
+[Hardware Info](../Hardware.md)
+
+
+>>> directPage 200
 
 Good info on the math here: [http://archive.li/mJKIz](http://archive.li/mJKIz)
-
-The game's RAM usage is detailed here: 
-[RAM Usage](RAMUse.html)
 
 TODO: what areas are mirrored? how does the flip happen? are graphics/text areas ended differently?
 
 TODO: make a HTML table of links to the SWI routines. Figure out what they all do.
 
-{{{html
+```html
 <script src="/CoCo/Daggorath/daggorath.js"></script>
 <script src="/js/TileEngine.js"></script>
 <script src="/js/BinaryData.js"></script>
@@ -33,14 +38,15 @@ TODO: make a HTML table of links to the SWI routines. Figure out what they all d
         data-colorsName="CS0"
         data-colors='["#808080","#000080"]'>
 </canvas>
-}}}
+```
 
 # Start
 
-C000: CE C0 D1            LDU     #$C0D1           ; {PlayDemo} @@ Play demo game code
+```code
+C000: CE C0 D1            LDU     #$C0D1           ; {PlayDemo} Play demo game code
 C003: 20 03               BRA     $C008            ; Do Demo
 ;
-C005: CE C1 24            LDU     #$C124           ; {PlayGame} @@ Play normal game code
+C005: CE C1 24            LDU     #$C124           ; {PlayGame} Play normal game code
 ;
 C008: 10 CE 10 00         LDS     #$1000           ; Stacks builds to lower from $1000
 C00C: 8E FF 00            LDX     #$FF00           ; PIA0
@@ -187,7 +193,7 @@ C126: CC 10 0B            LDD     #$100B           ; Starting cell (Y=16, X=0B)
 C129: DD 13               STD     <$13             ; {-ram_playerY}       
 C12B: 0F 17               CLR     <$17             ; {-ram_pStrength} MSB of strength (start out weak)      
 C12D: 4F                  CLRA                     ; Initial light level (none)
-C12E: CE D7 D9            LDU     #$D7D9           ; {GameObjects} @@ List of game objects (not demo objects)
+C12E: CE D7 D9            LDU     #$D7D9           ; {GameObjects} List of game objects (not demo objects)
 ;
 C131: 3F                  SWI                      ; Print "PREPARE!"
 C132: 16                                           ; SWI_16:[Print PREPARE](#addr_SWI_16):
@@ -211,7 +217,7 @@ C14D: 20 EA               BRA     $C139            ; Do all game objects
 C14F: 0D 77               TST     <$77             ; {-ram_gameMode}    ?? are we in play-game mode (not demo) ??   
 C151: 27 13               BEQ     $C166            ; Yes ... don't start with the map      
 C153: 0A 9B               DEC     <$9B             ; {-ram_m029B}    ??
-C155: 8E CD B2            LDX     #$CDB2           ; {ShowMap} @@ The routine for drawing ...
+C155: 8E CD B2            LDX     #$CDB2           ; {ShowMap} The routine for drawing ...
 C158: 9F B2               STX     <$B2             ; {-ram_displayFunction} ... the scroll (seer and vision)
 C15A: 0A 94               DEC     <$94             ; {-ram_scrollType} This is a SEER scroll      
 C15C: 3F                  SWI                      ; Redraw the display
@@ -311,8 +317,11 @@ C1F3: 3F                  SWI                      ; Draw ready prompt
 C1F4: 0F                                           ; SWI_F:[Ready command prompt](#addr_SWI_F):
 ; Fall into game loop
 
+```
+
 # Game Loop
 
+```code
 GameLoop: 
 C1F5: CE 02 AB            LDU     #$02AB      
 C1F8: 0F BB               CLR     <$BB             ; {-ram_m02BB}       
@@ -405,9 +414,11 @@ C274: 30 02               LEAX    2,X              ; Next register bit
 C276: 8C FF D4            CMPX    #$FFD4           ; All done?
 C279: 25 F0               BCS     $C26B            ; No ... keep going
 C27B: 35 96               PULS    A,B,X,PC         ; Restore and out
+```
 
 # Interrupt Service 
 
+```code
 InterruptServiceRoutine: 
 C27D: 8E FF 20            LDX     #$FF20           ; 6-bit sound value
 C280: A6 88 E3            LDA     -$1D,X           ; FF03 ... 16.67MS (60Hz) interrupt status
@@ -520,11 +531,13 @@ C34B: 5C                  INCB                     ; Advance the tail ...
 C34C: C4 1F               ANDB    #$1F             ; ... and wrap ...
 C34E: D7 BD               STB     <$BD             ; {-ram_inputTail} ... if needed
 C350: 35 95               PULS    CC,B,X,PC        ; Done
+```
 
 # SWI Handler
 
 TODO discussion about this technique
 
+```code
 SWIHandler:
 ;
 C352: 1C EF               ANDCC   #$EF             ; Re-enable the IRQ 
@@ -726,7 +739,7 @@ SWI_4:
 ;  U: the area descriptor (ignored if <$B7!=0)
 C459: 0D B7               TST     <$B7             ; {-ram_whereToPrint} Put text in command window?   
 C45B: 26 03               BNE     $C460            ; No ... use the requested descriptor      
-C45D: CE 03 90            LDU     #$0390           ; @@ Yes ... print on the upper half of the screen
+C45D: CE 03 90            LDU     #$0390           ; Yes ... print on the upper half of the screen
 C460: AE 44               LDX     4,U              ; Current cursor
 C462: BD C9 B2            JSR     $C9B2            ; {PrintCharCRBS} Draw the character and advance the cursor      
 C465: AC 42               CMPX    2,U              ; Filled this area up?
@@ -1269,11 +1282,13 @@ C74D: 0A B1               DEC     <$B1             ; {-ram_hearHeart}
 C74F: 3F                  SWI                 
 C750: 0D                                           ; SWI_D:[Print contents of hands on status line](#addr_SWI_D):
 ; Fall into LOOK
+```
 
 # LOOK command
 
+```code
 CmdLOOK:
-C751: 8E CE 66            LDX     #$CE66           ; {NormalDisplay} @@ The routine for drawing ...
+C751: 8E CE 66            LDX     #$CE66           ; {NormalDisplay} The routine for drawing ...
 C754: 9F B2               STX     <$B2             ; {-ram_displayFunction} ... then normal game screen       
 C756: 3F                  SWI                      ; Redraw the screen
 C757: 0E                                           ; SWI_E:[Display playing screen](#addr_SWI_E):
@@ -1289,7 +1304,7 @@ C75E: C3 03 98            ADDD    #$0398           ; ... creature count on level
 C761: DD 82               STD     <$82             ; {-ram_m0282} Hold pointer to creature count
 ;
 C763: D6 81               LDB     <$81             ; {-ram_currentLevel} Current level
-C765: 8E CF FD            LDX     #$CFFD           ; {HolesAndLadders} @@ Table of holes and ladders
+C765: 8E CF FD            LDX     #$CFFD           ; {HolesAndLadders} Table of holes and ladders
 C768: 9F 86               STX     <$86             ; {-ram_currentHoles}       
 C76A: A6 80               LDA     ,X+         
 C76C: 2A FC               BPL     $C76A            ;       
@@ -1641,40 +1656,44 @@ C98D: 34 02               PSHS    A
 C98F: DC 5B               LDD     <$5B             ;       
 C991: D3 5D               ADDD    <$5D             ;       
 C993: 20 EF               BRA     $C984            ;       
+```
 
 # SWI Function Table
 
-||= SWI || Address || Function ||
-|| 00   || C384    || Light level ||
-|| 01   || C3A2    || Draw picture X on screen ||
-|| 02   || C448    || Uncompress message m and display ||
-|| 03   || C454    || Display uncompressed message pointed to by X ||
-|| 04   || C459    || Display a single character in A ||
-|| 05   || C46F    || Uncompress message X to buffer ||
-|| 06   || C472    || Uncompress message X to given buffer U ||
-|| 07   || C4CF    || Get random number ||
-|| 08   || C4F3    || Clear display screen ||
-|| 09   || C4F6    || Clear secondary screen ||
-|| 0A   || C4FF    || Clear hand descriptor ||
-|| 0B   || C507    || Clear play field ||
-|| 0C   || C529    || Update heart rate ||
-|| 0D   || C5D9    || Print contents of hands on status line ||
-|| 0E   || C656    || Display playing screen ||
-|| 0F   || C674    || Ready command prompt ||
-|| 10   || C67F    || Pause for 1.35 seconds ||
-|| 11   || C686    || Fill X to U with 0s ||
-|| 12   || C688    || Fill X to U with FFs ||
-|| 13   || C6A4    || Beam on picture pointed to by X ||
-|| 14   || C6A8    || Beam subroutine ||
-|| 15   || C6C5    || Beam subroutine ||
-|| 16   || C6E6    || Print PREPARE ||
-|| 17   || C6FB    || Create object structure ||
-|| 18   || C71F    || Change object to proper name and data ||
-|| 19   || C743    || Bring up normal display ||
-|| 1A   || C759    || Set up level ||
-|| 1B   || C7C8    || Play sound i at full volume ||
-|| 1C   || C7D0    || Play sound A at volume B  ||
+| SWI | Address | Function |
+| --- | --- | --- |
+| SWI | Address | Function |
+| 00   | C384    | Light level |
+| 01   | C3A2    | Draw picture X on screen |
+| 02   | C448    | Uncompress message m and display |
+| 03   | C454    | Display uncompressed message pointed to by X |
+| 04   | C459    | Display a single character in A |
+| 05   | C46F    | Uncompress message X to buffer |
+| 06   | C472    | Uncompress message X to given buffer U |
+| 07   | C4CF    | Get random number |
+| 08   | C4F3    | Clear display screen |
+| 09   | C4F6    | Clear secondary screen |
+| 0A   | C4FF    | Clear hand descriptor |
+| 0B   | C507    | Clear play field |
+| 0C   | C529    | Update heart rate |
+| 0D   | C5D9    | Print contents of hands on status line |
+| 0E   | C656    | Display playing screen |
+| 0F   | C674    | Ready command prompt |
+| 10   | C67F    | Pause for 1.35 seconds |
+| 11   | C686    | Fill X to U with 0s |
+| 12   | C688    | Fill X to U with FFs |
+| 13   | C6A4    | Beam on picture pointed to by X |
+| 14   | C6A8    | Beam subroutine |
+| 15   | C6C5    | Beam subroutine |
+| 16   | C6E6    | Print PREPARE |
+| 17   | C6FB    | Create object structure |
+| 18   | C71F    | Change object to proper name and data |
+| 19   | C743    | Bring up normal display |
+| 1A   | C759    | Set up level |
+| 1B   | C7C8    | Play sound i at full volume |
+| 1C   | C7D0    | Play sound A at volume B  |
 
+```code
 SWIOffsetTable:
 ;
 C995: 00 ;  0: C384 SWI_0:[Light level](#addr_SWI_0):
@@ -2008,7 +2027,7 @@ CBB5: 7D 03 13            TST     $0313            ; Is there anything?
 CBB8: 35 D2               PULS    A,X,U,PC         ; Done
     
 CBBA: 0F 90               CLR     <$90             ; {-ram_m0290}       
-CBBC: 8E D9 6A            LDX     #$D96A           ; {ClassNames} @@ Class names
+CBBC: 8E D9 6A            LDX     #$D96A           ; {ClassNames} Class names
 CBBF: 8D 2B               BSR     $CBEC            ; {DecodeInput}       
 CBC1: 2B 05               BMI     $CBC8            ;       
 CBC3: 27 1A               BEQ     $CBDF            ;       
@@ -2016,11 +2035,11 @@ CBC5: DD 8E               STD     <$8E             ; {-ram_holdIncantWord}
 CBC7: 39                  RTS                 
 ;
 CBC8: 0A 90               DEC     <$90             ; {-ram_m0290}       
-CBCA: 8E D8 F3            LDX     #$D8F3           ; {ProperNames} @@ Proper names
+CBCA: 8E D8 F3            LDX     #$D8F3           ; {ProperNames} Proper names
 CBCD: 8D 18               BSR     $CBE7            ;       
 CBCF: 2F 0E               BLE     $CBDF            ;
 CBD1: DD 8E               STD     <$8E             ; {-ram_holdIncantWord}       
-CBD3: 8E D9 6A            LDX     #$D96A           ; {ClassNames} @@ Class names
+CBD3: 8E D9 6A            LDX     #$D96A           ; {ClassNames} Class names
 CBD6: 8D 14               BSR     $CBEC            ; {DecodeInput}       
 CBD8: 2F 05               BLE     $CBDF            ;
 CBDA: D1 8F               CMPB    <$8F             ; {-ram_holdIncantLen}       
@@ -2085,13 +2104,13 @@ CC2F: 35 F6               PULS    A,B,X,Y,U,PC     ; Done
 GetUserHand:
 ; The second word is LEFT or RIGHT. Return the pointer to the pointer in U and the
 ; pointer to the object in X.
-CC31: 8E D8 D9            LDX     #$D8D9           ; {SecondWords} @@ Second words
+CC31: 8E D8 D9            LDX     #$D8D9           ; {SecondWords} Second words
 CC34: 8D B6               BSR     $CBEC            ; {DecodeInput} Decode the input word      
 CC36: 2F A7               BLE     $CBDF            ; Didn't get a match ... print "???" and abort
-CC38: CE 02 1F            LDU     #$021F           ; @@ Pointer to right hand
+CC38: CE 02 1F            LDU     #$021F           ; Pointer to right hand
 CC3B: 81 01               CMPA    #$01             ; Word was "RIGHT" ?
 CC3D: 27 07               BEQ     $CC46            ; Yes. Return slot and object      
-CC3F: CE 02 1D            LDU     #$021D           ; @@ Pointer to left hand
+CC3F: CE 02 1D            LDU     #$021D           ; Pointer to left hand
 CC42: 81 00               CMPA    #$00             ; Word was "LEFT" ?
 CC44: 26 99               BNE     $CBDF            ; No ... error and abort      
 CC46: AE C4               LDX     ,U               ; Yes. Return slot and object
@@ -2576,20 +2595,20 @@ CEDD: 27 0C               BEQ     $CEEB            ;
 CEDF: 1F 12               TFR     X,Y         
 CEE1: E6 2D               LDB     13,Y        
 CEE3: 58                  ASLB                
-CEE4: 8E DA A3            LDX     #$DAA3           ; {CreaturePictures} @@ Get the picture ...
+CEE4: 8E DA A3            LDX     #$DAA3           ; {CreaturePictures} Get the picture ...
 CEE7: AE 85               LDX     B,X              ; ... of the creature
 CEE9: 8D DD               BSR     $CEC8            ;       
 CEEB: C6 03               LDB     #$03        
-CEED: 8E DC B0            LDX     #$DCB0           ; @@ Draw creature coming ...
+CEED: 8E DC B0            LDX     #$DCB0           ; Draw creature coming ...
 CEF0: 8D C0               BSR     $CEB2            ; ... from left      
 CEF2: C6 01               LDB     #$01        
-CEF4: 8E DC B9            LDX     #$DCB9           ; @@ Draw creature coming ...
+CEF4: 8E DC B9            LDX     #$DCB9           ; Draw creature coming ...
 CEF7: 8D B9               BSR     $CEB2            ; ... from right      
 CEF9: 8E DD 3C            LDX     #$DD3C           ; ?? Part of the hole-in-floor
 CEFC: DC 7C               LDD     <$7C             ; {-ram_drwMazeY}       
 CEFE: BD CF E1            JSR     $CFE1            ; {ScanForHole}       
 CF01: 2B 06               BMI     $CF09            ;       
-CF03: 8E DC C2            LDX     #$DCC2           ; {HoleList} @@ Holes and ladders pictures
+CF03: 8E DC C2            LDX     #$DCC2           ; {HoleList} Holes and ladders pictures
 CF06: 48                  ASLA                
 CF07: AE 86               LDX     A,X         
 CF09: 8D C3               BSR     $CECE            ;       
@@ -2599,7 +2618,7 @@ CF0F: BD CF 53            JSR     $CF53            ; {GetObjectAtCoor}
 CF12: 27 10               BEQ     $CF24            ;       
 CF14: A6 0A               LDA     10,X        
 CF16: 48                  ASLA                
-CF17: 8E D9 EE            LDX     #$D9EE           ; {ClassPictures} @@ Object pictures (by class)
+CF17: 8E D9 EE            LDX     #$D9EE           ; {ClassPictures} Object pictures (by class)
 CF1A: AE 86               LDX     A,X         
 CF1C: 0A 75               DEC     <$75             ; {-ram_m0275}       
 CF1E: 8D AE               BSR     $CECE            ;       
@@ -2722,7 +2741,7 @@ CFCA: ED 4F               STD     15,U             ; Put the creature in the ran
 CFCC: 1F 31               TFR     U,X         
 CFCE: BD C2 5C            JSR     $C25C            ; {ReserveTask}       
 CFD1: AF 45               STX     5,U         
-CFD3: CC D0 41            LDD     #$D041           ; @@ task pointer
+CFD3: CC D0 41            LDD     #$D041           ; task pointer
 CFD6: ED 43               STD     3,U         
 CFD8: A6 06               LDA     6,X         
 CFDA: C6 04               LDB     #$04        
@@ -3037,7 +3056,7 @@ D1C1: 39                  RTS
 ; ?? Task 1 ??                 
 D1C2: 0D B5               TST     <$B5             ; {-ram_m02B5}       
 D1C4: 26 07               BNE     $D1CD            ;       
-D1C6: 8E CD B2            LDX     #$CDB2           ; {ShowMap} @@ Are we showing the ...
+D1C6: 8E CD B2            LDX     #$CDB2           ; {ShowMap} Are we showing the ...
 D1C9: 9C B2               CMPX    <$B2             ; {-ram_displayFunction} ... map display?
 D1CB: 26 04               BNE     $D1D1            ;       
 D1CD: 0F B5               CLR     <$B5             ; {-ram_m02B5}       
@@ -3107,7 +3126,7 @@ D230: 33 41               LEAU    1,U
 D232: 3F                  SWI                      ; Wait for 1.35 seconds
 D233: 10                                           ; SWI_10:[Pause for 1.35 seconds](#addr_SWI_10):
 D234: 8C                  ; CMPX  opcode to skip next instruction
-D235: 8D 15               BSR     ???      
+D235: 8D 15                     
 D237: A6 C0               LDA     ,U+         
 D239: 2A FA               BPL     $D235            ;       
 D23B: 4F                  CLRA                
@@ -3135,7 +3154,7 @@ D25E: 27 1D               BEQ     $D27D            ; Yes ... handle it
 D260: 3F                  SWI                 
 D261: 04                                           ; SWI_4:[Display a single character in A](#addr_SWI_4):
 D262: A7 C0               STA     ,U+              ; Put this character in the buffer
-D264: 8E C6 7C            LDX     #$C67C           ; @@ Cursor data
+D264: 8E C6 7C            LDX     #$C67C           ; Cursor data
 D267: 3F                  SWI                      ; Print cursor
 D268: 03                                           ; SWI_3:[Display uncompressed message pointed to by X](#addr_SWI_3):
 D269: 11 83 03 11         CMPU    #$0311           ; Have we reached the 32 char limit?
@@ -3161,7 +3180,7 @@ D28A: 20 28               BRA     $D2B4            ; Out
 D28C: 00 24 24 1C 24 FF   ; BACK BACK "_" BACK END
        
 ; Execute the command
-D292: 8E D8 94            LDX     #$D894           ; @@ Command first words
+D292: 8E D8 94            LDX     #$D894           ; Command first words
 D295: BD CB EC            JSR     $CBEC            ; {DecodeInput} Check for word match      
 D298: 27 0D               BEQ     $D2A7            ; Blank input ... skip execution       
 D29A: 2A 05               BPL     $D2A1            ; Good command word ... execute the command       
@@ -3180,9 +3199,11 @@ D2B2: 3F                  SWI                      ; Print the command prompt
 D2B3: 0F                                           ; SWI_F:[Ready command prompt](#addr_SWI_F):
 D2B4: DF 11               STU     <$11             ; {-ram_m0211} New start of command       
 D2B6: 35 F6               PULS    A,B,X,Y,U,PC     ; Done
+```
 
 # ATTACK command
 
+```code
 CmdATTACK:
 D2B8: BD CC 31            JSR     $CC31            ; {GetUserHand}       
 D2BB: EE C4               LDU     ,U          
@@ -3410,9 +3431,11 @@ D448: 59                  ROLB
 D449: 49                  ROLA                
 D44A: ED E4               STD     ,S          
 D44C: 35 96               PULS    A,B,X,PC   
+```
 
 # CLIMB command
 
+```code
 CmdCLIMB:
 D44E: DC 13               LDD     <$13             ; {-ram_playerY} Player's coordinates      
 D450: BD CF E1            JSR     $CFE1            ; {ScanForHole} Is there a hole here?      
@@ -3445,11 +3468,12 @@ D47D: 1A                                           ; SWI_1A:[Set up level](#addr
 D47E: 3F                  SWI                      ; Normal display
 D47F: 19                                           ; SWI_19:[Bring up normal display](#addr_SWI_19):
 D480: 39                  RTS                      ; Back to command processing
-
+```
 # EXAMINE command
 
+```code
 CmdEXAMINE:             
-D481: 8E D4 95            LDX     #$D495           ; {DrawInventory} @@ Set the display function ...
+D481: 8E D4 95            LDX     #$D495           ; {DrawInventory} Set the display function ...
 D484: 9F B2               STX     <$B2             ; {-ram_displayFunction} ... to draw the inventory       
 D486: 3F                  SWI                      ; Redraw the screen
 D487: 0E                                           ; SWI_E:[Display playing screen](#addr_SWI_E):
@@ -3461,7 +3485,7 @@ SetForExamine:
 D489: 3F                  SWI                      ; Clear the scratch screen, return pointer to descriptor
 D48A: 09                                           ; SWI_9:[Clear secondary screen](#addr_SWI_9):
 D48B: AE C4               LDX     ,U               ; This is the physical start of the scratch screen
-D48D: CE 03 80            LDU     #$0380           ; @@ Descriptor for the "EXAMINE" screen area
+D48D: CE 03 80            LDU     #$0380           ; Descriptor for the "EXAMINE" screen area
 D490: AF C4               STX     ,U               ; Point to the off-screen area
 D492: 0A B7               DEC     <$B7             ; {-ram_whereToPrint} Printing goes to desired descriptor
 D494: 39                  RTS    
@@ -3544,9 +3568,11 @@ D51B: ED 44               STD     4,U              ; ... column
 D51D: 8C                  ; CMPX  opcode to skip next instruction  
 D51E: 8D DE               BSR     $D4FE            ; Print a line feed      
 D520: 35 96               PULS    A,B,X,PC         ; Done
+```
 
 # GET command
 
+```code
 CmdGET:
 D522: 8D 52               BSR     $D576            ; Pointer for requested hand      
 D524: 26 4D               BNE     $D573            ; Hand isn't empty ... error      
@@ -3567,13 +3593,15 @@ D540: 26 E9               BNE     $D52B            ; Try next object
 D542: AF C4               STX     ,U               ; Object now in hand
 D544: 6C 05               INC     5,X              ; 1 means carried
 D546: E6 0A               LDB     10,X             ; Class
-D548: 8E D9 FA            LDX     #$D9FA           ; {ClassWeights} @@ Weight table
+D548: 8E D9 FA            LDX     #$D9FA           ; {ClassWeights} Weight table
 D54B: E6 85               LDB     B,X              ; Get the weight
 D54D: 4F                  CLRA                     ; Two byte value (positive value)
 D54E: 20 1B               BRA     $D56B            ; Update the player's weight and screen   
+```
 
 # DROP command
 
+```code
 CmdDROP:   
 D550: 8D 24               BSR     $D576            ; Get left or right hand object pointer      
 D552: 27 1F               BEQ     $D573            ; Nothing to drop ... syntax error      
@@ -3586,7 +3614,7 @@ D55C: ED 02               STD     2,X              ; ... player's position ...
 D55E: 96 81               LDA     <$81             ; {-ram_currentLevel} Object on ...      
 D560: A7 04               STA     4,X              ; ... player's level
 D562: E6 0A               LDB     10,X             ; Object class
-D564: 8E D9 FA            LDX     #$D9FA           ; {ClassWeights} @@ Weight table
+D564: 8E D9 FA            LDX     #$D9FA           ; {ClassWeights} Weight table
 D567: E6 85               LDB     B,X              ; Get the weight of the object
 D569: 50                  NEGB                     ; Negative (removing the weight)
 D56A: 1D                  SEX                      ; Two byte value
@@ -3600,9 +3628,11 @@ D571: 20 44               BRA     $D5B7            ; Update hands and screen and
 D573: 7E CB E1            JMP     $CBE1            ;  Print "???" error      
 ;
 D576: 7E CC 31            JMP     $CC31            ; {GetUserHand}  Get user-requested hand object   
+```
 
 # STOW command
 
+```code
 CmdSTOW:  
 D579: 8D FB               BSR     $D576            ; Get the left or right hand object      
 D57B: 27 F6               BEQ     $D573            ; Nothing in that hand ... error      
@@ -3613,14 +3643,16 @@ D583: 4F                  CLRA                     ; Now ...
 D584: 5F                  CLRB                     ; ... empty ...
 D585: ED C4               STD     ,U               ; ... hand
 D587: 20 2E               BRA     $D5B7            ; Update hands, draw screen, done   
+```
 
 # PULL command
 
+```code
 CmdPULL:   
 D589: 8D EB               BSR     $D576            ; Get the left or right hand object      
 D58B: 26 E6               BNE     $D573            ; It isn't empty ... error and out      
 D58D: BD CB BA            JSR     $CBBA            ;       
-D590: 8E 02 29            LDX     #$0229           ; @@ First pack object
+D590: 8E 02 29            LDX     #$0229           ; First pack object
 D593: 1F 12               TFR     X,Y              ;          
 D595: AE 84               LDX     ,X               ;
 D597: 27 DA               BEQ     $D573            ; End of list ... object not found ... error      
@@ -3647,11 +3679,13 @@ D5B8: 0D                                           ; SWI_D:[Print contents of ha
 D5B9: 3F                  SWI                      ; Redraw the screen
 D5BA: 0E                                           ; SWI_E:[Display playing screen](#addr_SWI_E):
 D5BB: 39                  RTS                      ; Done
+```
 
 # INCANT command
 
+```code
 CmdINCANT:
-D5BC: 8E D8 F3            LDX     #$D8F3           ; {ProperNames} @@ Proper names
+D5BC: 8E D8 F3            LDX     #$D8F3           ; {ProperNames} Proper names
 D5BF: BD CB EC            JSR     $CBEC            ; {DecodeInput} Decode the input word      
 D5C2: 2F 2B               BLE     $D5EF            ; Word not found ... fail silently
 D5C4: 0D 7B               TST     <$7B             ; {-ram_perfectMatch}       
@@ -3698,9 +3732,11 @@ D60F: 02                                           ; SWI_2:[Uncompress message m
 D610: C8 00 00 00 00 03 CC 00 81 C5 B8 2E 9D 06 44 F7 BC ; "        OF A NEW WIZARD..."
 ;
 D621: 20 FE               BRA     $D621            ; Infinite loop 
+```
 
 # REVEAL command
 
+```code
 CmdREVEAL:
 D623: BD CC 31            JSR     $CC31            ; {GetUserHand} Get requested left/right hand object
 D626: EE C4               LDU     ,U               ; 0 if there is no object (EMPTY)
@@ -3718,9 +3754,11 @@ D63A: 6F 4B               CLR     11,U             ; Revealed
 D63C: 3F                  SWI                      ; Update the hands line
 D63D: 0D                                           ; SWI_D:[Print contents of hands on status line](#addr_SWI_D):
 D63E: 39                  RTS                      ; Done
+```
 
 # TURN command
 
+```code
 CmdTURN:
 D63F: 8E D8 D9            LDX     #$D8D9           ; Second words
 D642: BD CB EC            JSR     $CBEC            ; {DecodeInput} Decode the user input      
@@ -3775,7 +3813,7 @@ D692: 39                  RTS                      ; Done
 D693: 7E CB E1            JMP     $CBE1            ; Print "???" syntax error
 
 D696: DE B2               LDU     <$B2             ; {-ram_displayFunction} Are we showing ...  
-D698: 11 83 CE 66         CMPU    #$CE66           ; {NormalDisplay} @@ ... the normal game screen?
+D698: 11 83 CE 66         CMPU    #$CE66           ; {NormalDisplay} ... the normal game screen?
 D69C: 26 1B               BNE     $D6B9            ; No, then out. Nothing to display in EXAMINE mode.      
 D69E: 8E 80 80            LDX     #$8080           ; ?? Zoom ?
 D6A1: 9F 4F               STX     <$4F             ; ?? Zoom ?     
@@ -3809,9 +3847,11 @@ D6CA: FF             ; New line
 D6CB: 88 00          ; Move to absolute (0,136)
 D6CD: 88 FF          ; Line to absolute (255,136)
 D6CF: FE             ; End
+```
 
 # MOVE command 
 
+```code
 CmdMOVE:
 D6D0: 8E D8 D9            LDX     #$D8D9           ; {SecondWords} @@
 D6D3: BD CB EC            JSR     $CBEC            ; {DecodeInput} Decode the input word
@@ -3877,9 +3917,11 @@ D738: DD 13               STD     <$13             ; {-ram_playerY}
 D73A: BD C6 60            JSR     $C660            ;       
 D73D: 6D E0               TST     ,S+         
 D73F: 35 86               PULS    A,B,PC      
+```
 
 # USE command
 
+```code
 CmdUSE:
 D741: BD CC 31            JSR     $CC31            ; {GetUserHand} Get requested hand       
 D744: 27 21               BEQ     $D767            ; Nothing in the hand ... fail silently      
@@ -3896,7 +3938,7 @@ D755: 0E                                           ; SWI_E:[Display playing scre
 D756: 39                  RTS                      ; Done
 ;        
 D757: 1F 13               TFR     X,U              ; Object pointer now to U
-D759: 8E D7 6B            LDX     #$D76B           ; {UseFunctions} @@ USE routines per proper name
+D759: 8E D7 6B            LDX     #$D76B           ; {UseFunctions} USE routines per proper name
 D75C: A1 84               CMPA    ,X               ; Is this our object's routine?
 D75E: 27 08               BEQ     $D768            ; Yes ... do it      
 D760: 30 03               LEAX    3,X              ; Next in table
@@ -3963,14 +4005,16 @@ D7AA: 3F                  SWI                      ; Play open-scroll sound
 D7AB: 1B                                           ; SWI_1B:[Play sound i at full volume](#addr_SWI_1B):
 D7AC: 0E                                           ; 0E = Scroll 
 D7AD: 0F AD               CLR     <$AD             ; {-ram_scrollShowing} 0 means scroll is showing      
-D7AF: 8E CD B2            LDX     #$CDB2           ; {ShowMap} @@ Set display to ...
+D7AF: 8E CD B2            LDX     #$CDB2           ; {ShowMap} Set display to ...
 D7B2: 9F B2               STX     <$B2             ; {-ram_displayFunction} ... the map display       
 D7B4: 3F                  SWI                      ; Redraw the screen
 D7B5: 0E                                           ; SWI_E:[Display playing screen](#addr_SWI_E):
 D7B6: 39                  RTS                      ; Done
+```
         
 # ZLOAD command
 
+```code
 CmdZLOAD:
 D7B7: 8D 03               BSR     $D7BC            ; Parse the next word      
 D7B9: 0A B8               DEC     <$B8             ; {-ram_tapeTrigger} Trigger ZLOAD
@@ -3981,9 +4025,11 @@ D7BF: 33 88 20            LEAU    $20,X            ; End is 16 bytes later
 D7C2: 3F                  SWI                      ; Fill scratch buffer with FFs
 D7C3: 12                                           ; SWI_12:[Fill X to U with FFs](#addr_SWI_12):
 D7C4: 7E CB 96            JMP     $CB96            ; {GetNextWord} Parse the next word and return      
+```
 
 # ZSAVE command
 
+```code
 CmdZSAVE:
 D7C7: 8D F3               BSR     $D7BC            ; Parse the next word into the scratch buffer     
 D7C9: BF 00 7E            STX     $007E            ; {-ram_drwMazeCross} This will be the name of the file
@@ -4088,6 +4134,7 @@ D868: 04 0B 11 ; Copy 4 bytes to B11
 D86B: 04 00 00 05                       
  
 D86F: 00                                    ; End of initialization copy list
+```
 
 # Screen Descriptors
 
@@ -4098,6 +4145,7 @@ Each screen is divided into three sections (3*2 = 6 descriptors below):
 * Hands/heart
 * 4 lines of text 
 
+```code
 ScreenDescriptors:
 D870: 10 00 ; Start of upper play-field 0x1000
 D872: 23 00 ; End of play-field (152 rows)
@@ -4122,9 +4170,11 @@ D88C: 00 00
 D88E: 3C 00 ; Start of text lines
 D890: 40 00 ; End of text lines (4*8 rows)
 D892: 00 00    
+```
 
 # First Words 
 
+```code
 ; FirstWords:
 D894: 0F
 D895: 30 03 4A 04 6B    ; 00 "ATTACK"
@@ -4142,9 +4192,11 @@ D8C7: 20 29 59 38       ; 0B "TURN"
 D8CB: 18 2B 32 80       ; 0C "USE"
 D8CF: 28 34 C7 84 80    ; 0D "ZLOAD"
 D8D4: 28 35 30 D8 A0    ; 0E "ZSAVE" 
+```
 
 # Second Words 
 
+```code
 SecondWords:
 D8D9: 06 
 D8DA: 20 18 53 50      ; 00 "LEFT"
@@ -4153,9 +4205,11 @@ D8E3: 20 04 11 AC      ; 02 "BACK"
 D8E7: 30 03 27 D5 C4   ; 03 "AROUND"
 D8EC: 10 2B 00         ; 04 "UP"
 D8EF: 20 08 FB B8      ; 05 "DOWN"                                 
+```
 
 # Proper Names 
 
+```code
 ProperNames:
 ;                           index class text
 D8F3: 19
@@ -4184,9 +4238,11 @@ D959: 20 4C 99 14         ;  15:  01   "FIRE"
 D95D: 20 4E F6 10         ;  16:  01   "GOLD"
 D961: 28 0A D8 53 20      ;  17:  00   "EMPTY"
 D966: 21 48 50 90         ;  18:  05   "DEAD"
+```
 
 # Class Names 
 
+```code
 ClassNames:
 D96A: 06     
 D96B: 28 0C C0 CD 60  ; 00 "FLASK"
@@ -4393,187 +4449,189 @@ DAA2: 04 ; 11 Wooden Sword    4 start 0    3B      3C      3D      3E      --   
 ;          0D Iron Sword         3F
 ;          0F Pine Torch         40
 ;          10 Leather Shield     41
+```
 
 # Check List 
 
 TODO put these tables side-by-side
 
 ## Start With 
-{{{
-|| WOODEN SWORD ||
-|| PINE TORCH ||
-}}}
+
+* WOODEN SWORD 
+* PINE TORCH 
 
 ## Level 0 
-{{{
-|| BLOB || VULCAN RING ||
-|| BLOB || IRON SWORD ||
-|| || ||
-|| CLUB GIANT || LUNAR TORCH ||
-|| CLUB GIANT || LUNAR TORCH ||
-|| CLUB GIANT || PINE TORCH ||
-|| CLUB GIANT || PINE TORCH ||
-|| || ||
-|| SNAKE || LEATHER SHIELD ||
-|| SNAKE  || WOODEN SWORD ||
-|| SNAKE  ||   || 
-|| SNAKE  ||   || 
-|| SNAKE  ||   || 
-|| SNAKE  ||   || 
-|| SNAKE  ||   || 
-|| SNAKE  ||   || 
-|| SNAKE  ||   || 
-|| || ||
-|| SPIDER  ||   || 
-|| SPIDER  ||   || 
-|| SPIDER  ||   || 
-|| SPIDER  ||   || 
-|| SPIDER  ||   || 
-|| SPIDER  ||   || 
-|| SPIDER  ||   || 
-|| SPIDER  ||   || 
-|| SPIDER  ||   || 
-}}}
+| Creature | Carrying |
+| ---      | --- |
+| BLOB | VULCAN RING |
+| BLOB | IRON SWORD |
+| | |
+| CLUB GIANT | LUNAR TORCH |
+| CLUB GIANT | LUNAR TORCH |
+| CLUB GIANT | PINE TORCH |
+| CLUB GIANT | PINE TORCH |
+| | |
+| SNAKE | LEATHER SHIELD |
+| SNAKE  | WOODEN SWORD |
+| SNAKE  |   | 
+| SNAKE  |   | 
+| SNAKE  |   | 
+| SNAKE  |   | 
+| SNAKE  |   | 
+| SNAKE  |   | 
+| SNAKE  |   | 
+| | |
+| SPIDER  |   | 
+| SPIDER  |   | 
+| SPIDER  |   | 
+| SPIDER  |   | 
+| SPIDER  |   | 
+| SPIDER  |   | 
+| SPIDER  |   | 
+| SPIDER  |   | 
+| SPIDER  |   | 
+
 
 ## Level 1
-{{{
-|| HATCHET GIANT || RIME RING ||
-|| HATCHET GIANT || VISION SCROLL ||
-|| HATCHET GIANT || ABYE FLASK ||
-|| HATCHET GIANT || ABYE FLASK ||
-|| HATCHET GIANT || HALE FLASK ||
-|| HATCHET GIANT || SOLAR TORCH ||
-|| || ||
-|| PLAIN KNIGHT || BRONZE SHIELD ||
-|| PLAIN KNIGHT || BRONZE SHIELD ||
-|| PLAIN KNIGHT  || IRON SWORD ||
-|| PLAIN KNIGHT  || LUNAR TORCH ||
-|| PLAIN KNIGHT || LUNAR TORCH ||
-|| PLAIN KNIGHT || PINE TORCH ||
-|| || ||
-|| BLOB || PINE TORCH ||
-|| BLOB || LEATHER SHIELD ||
-|| BLOB || WOODEN SWORD ||
-|| BLOB || ||
-|| BLOB || ||
-|| BLOB || ||
-|| || ||
-|| SNAKE || ||
-|| SNAKE || ||
-|| SNAKE || ||
-|| SNAKE || ||
-|| || ||
-|| SPIDER || ||
-|| SPIDER || ||
-}}}
+| Creature | Carrying |
+| ---      | --- |
+| HATCHET GIANT | RIME RING |
+| HATCHET GIANT | VISION SCROLL |
+| HATCHET GIANT | ABYE FLASK |
+| HATCHET GIANT | ABYE FLASK |
+| HATCHET GIANT | HALE FLASK |
+| HATCHET GIANT | SOLAR TORCH |
+| | |
+| PLAIN KNIGHT | BRONZE SHIELD |
+| PLAIN KNIGHT | BRONZE SHIELD |
+| PLAIN KNIGHT  | IRON SWORD |
+| PLAIN KNIGHT  | LUNAR TORCH |
+| PLAIN KNIGHT | LUNAR TORCH |
+| PLAIN KNIGHT | PINE TORCH |
+| | |
+| BLOB | PINE TORCH |
+| BLOB | LEATHER SHIELD |
+| BLOB | WOODEN SWORD |
+| BLOB | |
+| BLOB | |
+| BLOB | |
+| | |
+| SNAKE | |
+| SNAKE | |
+| SNAKE | |
+| SNAKE | |
+| | |
+| SPIDER | |
+| SPIDER | |
 
 ## Level 2
-{{{
-|| DEMON  || SEER SCROLL ||
-|| || ||
-|| SHIELD KNIGHT || THEWES FLASK ||
-|| SHIELD KNIGHT || VISION SCROLL ||
-|| SHIELD KNIGHT || ABYE FLASK ||
-|| SHIELD KNIGHT || HALE FLASK ||
-|| || ||
-|| SCORPION || SOLAR TORCH ||
-|| SCORPION || BRONZE SHIELD ||
-|| SCORPION  || IRON SWORD ||
-|| SCORPION || LUNAR TORCH ||
-|| SCORPION  || PINE TORCH ||
-|| SCORPION  || LEATHER SHIELD ||
-|| SCORPION || WOODEN SWORD ||
-|| SCORPION ||  ||
-|| || ||
-|| HATCHET GIANT ||  ||
-|| HATCHET GIANT ||  ||
-|| HATCHET GIANT ||  ||
-|| HATCHET GIANT || ||
-|| HATCHET GIANT || ||
-|| HATCHET GIANT || ||
-|| || ||
-|| BLOB || ||
-|| BLOB || ||
-|| BLOB || ||
-|| BLOB || ||
-}}}
+| Creature | Carrying |
+| ---      | --- |
+| DEMON  | SEER SCROLL |
+| | |
+| SHIELD KNIGHT | THEWES FLASK |
+| SHIELD KNIGHT | VISION SCROLL |
+| SHIELD KNIGHT | ABYE FLASK |
+| SHIELD KNIGHT | HALE FLASK |
+| | |
+| SCORPION | SOLAR TORCH |
+| SCORPION | BRONZE SHIELD |
+| SCORPION  | IRON SWORD |
+| SCORPION | LUNAR TORCH |
+| SCORPION  | PINE TORCH |
+| SCORPION  | LEATHER SHIELD |
+| SCORPION | WOODEN SWORD |
+| SCORPION |  |
+| | |
+| HATCHET GIANT |  |
+| HATCHET GIANT |  |
+| HATCHET GIANT |  |
+| HATCHET GIANT | |
+| HATCHET GIANT | |
+| HATCHET GIANT | |
+| | |
+| BLOB | |
+| BLOB | |
+| BLOB | |
+| BLOB | |
 
 ## Level 3
-{{{
-|| GALDROG || JOULE RING ||
-|| GALDROG || ELVISH SWORD ||
-|| GALDROG || MITHRIL SHIELD ||
-|| GALDROG || SEER SCROLL ||
-||  || ||
-|| WRAITH || THEWS FLASK ||
-|| WRAITH || VISION SCROLL ||
-|| WRAITH || ABYE FLASK ||
-|| WRAITH || HALE FLASK ||
-|| WRAITH || SOLAR TORCH ||
-|| WRAITH || BRONZE SHIELD ||
-||  || ||
-|| SHIELD KNIGHT || IRON SWORD ||
-|| SHIELD KNIGHT || LUNAR TORCH ||
-|| SHIELD KNIGHT || PINE TORCH ||
-|| SHIELD KNIGHT || WOODEN SWORD ||
-|| SHIELD KNIGHT || ||
-|| SHIELD KNIGHT || ||
-||  || ||
-|| SCORPION || ||
-|| SCORPION || ||
-|| SCORPION || ||
-|| SCORPION || ||
-|| SCORPION || ||
-|| SCORPION || ||
-|| SCORPION || ||
-|| SCORPION || ||
-}}}
+| Creature | Carrying |
+| ---      | --- |
+| GALDROG | JOULE RING |
+| GALDROG | ELVISH SWORD |
+| GALDROG | MITHRIL SHIELD |
+| GALDROG | SEER SCROLL |
+|  | |
+| WRAITH | THEWS FLASK |
+| WRAITH | VISION SCROLL |
+| WRAITH | ABYE FLASK |
+| WRAITH | HALE FLASK |
+| WRAITH | SOLAR TORCH |
+| WRAITH | BRONZE SHIELD |
+|  | |
+| SHIELD KNIGHT | IRON SWORD |
+| SHIELD KNIGHT | LUNAR TORCH |
+| SHIELD KNIGHT | PINE TORCH |
+| SHIELD KNIGHT | WOODEN SWORD |
+| SHIELD KNIGHT | |
+| SHIELD KNIGHT | |
+|  | |
+| SCORPION | |
+| SCORPION | |
+| SCORPION | |
+| SCORPION | |
+| SCORPION | |
+| SCORPION | |
+| SCORPION | |
+| SCORPION | |
 
 ## Level 4 
-{{{
-|| WIZARD || SUPREME RING ||
-||  || ||
-|| GALDROG || MITHRIL SHIELD ||
-|| GALDROG || SEER SCROLL ||
-|| GALDROG || THEWS FLASK ||
-|| GALDROG || ABYE FLASK ||
-|| GALDROG || HALE FLASK ||
-|| GALDROG || SOLAR TORCH ||
-|| GALDROG || BRONZE SHIELD ||
-|| GALDROG || LUNAR TORCH ||
-||  || ||
-|| WRAITH || PINE TORCH
-|| WRAITH || ||
-|| WRAITH || ||
-|| WRAITH || ||
-||  || ||
-|| SHIELD KNIGHT || ||
-|| SHIELD KNIGHT || ||
-|| SHIELD KNIGHT || ||
-|| SHIELD KNIGHT || ||
-||  || ||
-|| SCORPION || ||
-|| SCORPION || ||
-||  || ||
-|| HATCHET GIANT || ||
-|| HATCHET GIANT || ||
-||  || ||
-|| PLAIN KNIGHT || ||
-|| PLAIN KNIGHT || ||
-||  || ||
-|| BLOB || ||
-|| BLOB || ||
-||  || ||
-|| CLUB GIANT || ||
-|| CLUB GIANT || ||
-||  || ||
-|| SNAKE || ||
-|| SNAKE || ||
-||  || ||
-|| SPIDER || ||
-|| SPIDER || ||
-}}}
+| Creature | Carrying |
+| ---      | --- |
+| WIZARD | SUPREME RING |
+|  | |
+| GALDROG | MITHRIL SHIELD |
+| GALDROG | SEER SCROLL |
+| GALDROG | THEWS FLASK |
+| GALDROG | ABYE FLASK |
+| GALDROG | HALE FLASK |
+| GALDROG | SOLAR TORCH |
+| GALDROG | BRONZE SHIELD |
+| GALDROG | LUNAR TORCH |
+|  | |
+| WRAITH | PINE TORCH
+| WRAITH | |
+| WRAITH | |
+| WRAITH | |
+|  | |
+| SHIELD KNIGHT | |
+| SHIELD KNIGHT | |
+| SHIELD KNIGHT | |
+| SHIELD KNIGHT | |
+|  | |
+| SCORPION | |
+| SCORPION | |
+|  | |
+| HATCHET GIANT | |
+| HATCHET GIANT | |
+|  | |
+| PLAIN KNIGHT | |
+| PLAIN KNIGHT | |
+|  | |
+| BLOB | |
+| BLOB | |
+|  | |
+| CLUB GIANT | |
+| CLUB GIANT | |
+|  | |
+| SNAKE | |
+| SNAKE | |
+|  | |
+| SPIDER | |
+| SPIDER | |
 
+```code
 CreaturePictures:
 DAA3: DE 26 ; Spider        
 DAA5: DF CA ; Snake        
@@ -4602,13 +4660,14 @@ DAFB: 03 20    C0   10       C0      08       03 03 ; Wraith
 DB03: 03 E8    FF   05       FF      03       04 03 ; Galdrog
 DB0B: 03 E8    FF   06       FF      00       0D 07 ; Demon
 DB13: 1F 40    FF   06       FF      00       0D 07 ; Wizard
+```
 
-# Text Characters `visual`
+# Text Characters
 
 Characters are 5x7 printed on 8x8 boundaries. The "extra" rows/columns allow for spacing between the characters. All 7 rows of a character
 are 5-bit-packed into 5 bytes and unpacked every single time needed.
 
-{{{html
+```html
 <canvas width="400" height="260"
      data-getTileDataFunction="Daggorath.get5x7Packed"
          data-address="DB1B"
@@ -4619,8 +4678,9 @@ are 5-bit-packed into 5 bytes and unpacked every single time needed.
                        10,+x,11,+x,12,+x,13,+x,14,+x,15,+x,16,+x,17,*,+y,
                        18,+x,19,+x,1A,+x,1B,+x,1C,+x,1D,+x,1E">
 </canvas>
-}}}
+```
 
+```code
 TextCharacters:
 DB1B: 30 00 00 00 00 ; SPACE 00110 > 00000 00000 00000 00000 00000 00000 00000  .....  ..X..  XXXX.  .XXX.  XXXX.  XXXXX  XXXXX  .XXXX
 DB20: 31 15 18 FE 31 ; A     00110 > 00100 01010 10001 10001 11111 10001 10001  .....  .X.X.  X...X  X...X  X...X  X....  X....  X...X
@@ -4653,10 +4713,11 @@ DBA2: 31 08 42 10 04 ; !     00110 > 00100 00100 00100 00100 00100 00000 00100  
 DBA7: 30 00 00 00 1F ; _     00110 > 00000 00000 00000 00000 00000 00000 11111  .X.X.  ..X..  .X...  ..X..  .....  ..X..  .....
 DBAC: 33 A2 13 10 04 ; ?     00110 > 01110 10001 00001 00110 00100 00000 00100  X...X  ..X..  X....  .....  .....  .....  .....
 DBB1: 30 00 00 00 04 ; .     00110 > 00000 00000 00000 00000 00000 00000 00100  X...X  ..X..  XXXXX  ..X..  XXXXX  ..X..  ..X..
+```
 
-# Heart Pictures `visual`
+# Heart Pictures 
 
-{{{html
+```html
 <canvas width="280" height="80"
      data-getTileDataFunction="Daggorath.get8x7"
          data-address="DBB6"
@@ -4664,8 +4725,9 @@ DBB1: 30 00 00 00 04 ; .     00110 > 00000 00000 00000 00000 00000 00000 00100  
          data-gridY="7"
          data-command="0,1,+x,2,3">
  </canvas>
-}}}
+```
 
+```code
 DBB6: 00 00 01 01 00 00 00
 ; ........
 ; ........
@@ -4723,10 +4785,11 @@ DBF3: DC 7B ; Right wall with physical door
 DBF5: DC A2 ; Right magic door
 DBF7: DC 3C ; Right wall solid
 DBF9: FF    ; End
+```
 
-# Object Pictures  `visual`
+# Object Pictures 
 
-{{{html
+```html
 <canvas width="256" height="152"
   data-canvasFunction="Daggorath.handleDagCanvas"
   data-colors='["#FFFFFF","#000000"]'
@@ -4736,13 +4799,14 @@ DBF9: FF    ; End
   data-yoffs="0"
   data-command="DBFA,DC07,DC0F,DC19,DC21,DC2A">
 </canvas><br>
-}}}
+```
 
-{{{html
+```html
 <canvas width="200" height="60" data-canvasfunction="Daggorath.handleDagCanvas" data-border="false" data-scale="3.0" data-xoffs="-450" data-yoffs="-350" data-command="DBFA">
 </canvas>
-}}}
+```
 
+```code
 ShieldPic:       
 ; Shield
 DBFA: 86 AC         ; Move to absolute (172,134)
@@ -4754,12 +4818,14 @@ DC03: 3E            ;     Short line to relative (-4,6)
 DC04: 04            ;     Short line to relative (8,0)
 DC05: 00            ;     End of short lines
 DC06: FE            ; End of image
+```
 
-{{{html
+```html
 <canvas width="128" height="30" data-canvasfunction="Daggorath.handleDagCanvas" data-border="false" data-scale="3.0" data-xoffs="-140" data-yoffs="-335" data-command="DC07">
 </canvas>
-}}}
+```
 
+```code
 ; Torch
 DC07: 76 3C         ; Move to absolute (60,118)
 DC09: FC            ; Draw short lines
@@ -4768,12 +4834,14 @@ DC0B: FF            ;     Short line to relative (-2,-2)
 DC0C: 2A            ;     Short line to relative (-12,4)
 DC0D: 00            ;     End of short lines
 DC0E: FE            ; End of image
+```
 
-{{{html
+```html
 <canvas width="128" height="45" data-canvasfunction="Daggorath.handleDagCanvas" data-border="false" data-scale="3.0" data-xoffs="-200" data-yoffs="-330" data-command="DC0F">
 </canvas>
-}}}
+```
 
+```code
 ; Sword
 DC0F: 72 50         ; Move to absolute (80,114)
 DC11: 7C 64         ; Line to absolute (100,124)
@@ -4781,12 +4849,14 @@ DC13: FF            ; Start new line
 DC14: 76 52         ; Move to absolute (82,118)
 DC16: 72 56         ; Line to absolute (86,114)
 DC18: FE            ; End of image
+```
 
-{{{html
+```html
 <canvas width="128" height="40" data-canvasfunction="Daggorath.handleDagCanvas" data-border="false" data-scale="3.0" data-xoffs="-420" data-yoffs="-325" data-command="DC19">
 </canvas>
-}}}
+```
 
+```code
 ; Flask
 DC19: 6E A2         ; Move to absolute (162,110)
 DC1B: FC            ; Draw short lines
@@ -4795,12 +4865,14 @@ DC1D: 0E            ;     Short line to relative (-4,0)
 DC1E: B1            ;     Short line to relative (2,-10)
 DC1F: 00            ;     End of short lines
 DC20: FE            ; End of image
+```
 
-{{{html
+```html
 <canvas width="128" height="40" data-canvasfunction="Daggorath.handleDagCanvas" data-border="false" data-scale="3.0" data-xoffs="-120" data-yoffs="-350" data-command="DC21">
 </canvas>
-}}}
+```
 
+```code
 ; Ring
 DC21: 7A 3C         ; Move to absolute (60,122)
 DC23: FC            ; Draw short lines
@@ -4810,12 +4882,14 @@ DC26: FF            ;     Short line to relative (-2,-2)
 DC27: F1            ;     Short line to relative (2,-2)
 DC28: 00            ;     End of short lines
 DC29: FE            ; End of image
+```
 
-{{{html
+```html
 <canvas width="128" height="40" data-canvasfunction="Daggorath.handleDagCanvas" data-border="false" data-scale="3.0" data-xoffs="-530" data-yoffs="-350" data-command="DC2A">
 </canvas>
-}}}
+```
 
+```code
 ; Scroll
 DC2A: 76 C2         ; Move to absolute (194,118)
 DC2C: FC            ; Draw short lines
@@ -4825,10 +4899,11 @@ DC2F: F1            ;     Short line to relative (2,-2)
 DC30: DC            ;     Short line to relative (-8,-6)
 DC31: 00            ;     End of short lines
 DC32: FE            ; End of image
+```
 
-# Walls and Doors `visual`
+# Walls and Doors
 
-{{{html
+```html
 <canvas width="256" height="152"
   data-canvasFunction="Daggorath.handleDagCanvas"
   data-border="true"
@@ -4927,8 +5002,9 @@ DC32: FE            ; End of image
   data-yoffs="0"
   data-command="DC3C">
 </canvas>
-}}}
+```
 
+```code
 ; Left wall
 DC33: 10 1B         ; Move to absolute (27,16)
 DC35: 26 40         ; Line to absolute (64,38)
@@ -5046,9 +5122,11 @@ DCC4: DC CA  ; Ladder through ceiling
 DCC6: DD 2A  ; Hole in floor
 DCC8: DC D0  ; Ladder through floor
 
-# Holes and Ladders `visual`
+```
 
-{{{html
+# Holes and Ladders
+
+```html
 <canvas width="256" height="152"
   data-canvasFunction="Daggorath.handleDagCanvas"
   data-colors='["#FFFFFF","#000000"]'
@@ -5085,8 +5163,9 @@ DCC8: DC D0  ; Ladder through floor
   data-yoffs="0"
   data-command="DCD0">
 </canvas>
-}}}
+```
 
+```code
 ; Ladder through ceiling
 DCCA: FB DC D6 ; Ladder subroutine
 DCCD: FD DD 0E ; Hole in ceiling
@@ -5163,9 +5242,10 @@ DD3B: FF            ; Start new line
 DD3C: 1C 2F         ; Move to absolute (47,28)
 DD3E: 1C D2         ; Line to absolute (210,28)
 DD40: FE            ; End of image
+```
 
-# Club Giant Picture `visual`
-{{{html
+# Club Giant Picture
+```html
 <canvas width="128" height="76"
   data-canvasFunction="Daggorath.handleDagCanvas"
   data-colors='["#FFFFFF","#000000"]'
@@ -5183,8 +5263,9 @@ DD40: FE            ; End of image
   data-yoffs="-275"
   data-command="DD41">
 </canvas>
-}}}
+```
 
+```code
 ClubGiantPic:       
 DD41: 68 62         ; Move to absolute (98,104)
 DD43: FC            ; Draw short lines
@@ -5200,9 +5281,10 @@ DD4C: 29            ;     Short line to relative (-14,4)
 DD4D: 00            ;     End of short lines
 DD4E: FD DD 62      ; Jump to DD62
 ;
+```
 
-# Hatchet Giant Picture `visual`
-{{{html
+# Hatchet Giant Picture
+```html
 <canvas width="128" height="76"
   data-canvasFunction="Daggorath.handleDagCanvas"
   data-colors='["#FFFFFF","#000000"]'
@@ -5220,8 +5302,9 @@ DD4E: FD DD 62      ; Jump to DD62
   data-yoffs="-275"
   data-command="DD51">
 </canvas>
-}}}
+```
 
+```code
 HatchetGiantPic:        
 ; Giant (with hatchet)
 DD51: 68 62         ; Move to absolute (98,104)
@@ -5296,10 +5379,11 @@ DD9F: C5            ;     Short line to relative (10,-8)
 DDA0: BE            ;     Short line to relative (-4,-10)
 DDA1: 00            ;     End of short lines
 DDA2: FE            ; End of image
+```
 
-# Galdrog Picture `visual`
+# Galdrog Picture
 
-{{{html
+```html
 <canvas width="768" height="456"
   data-canvasFunction="Daggorath.handleDagCanvas"
   data-colors='["#FFFFFF","#000000"]'
@@ -5308,8 +5392,9 @@ DDA2: FE            ; End of image
   data-yoffs="0"
   data-command="DDA3">
 </canvas>
-}}}
+```
 
+```code
 GaldrogPic:       
 DDA3: 50 7C         ; Move to absolute (124,80)
 DDA5: 5E 72         ; Line to absolute (114,94)
@@ -5387,10 +5472,11 @@ DE03: 42            ;     Short line to relative (4,8)
 DE04: ED            ;     Short line to relative (-6,-4)
 DE05: 00            ;     End of short lines
 DE06: FE            ; End of image
+```
 
-# Wraith Picture `visual`
+# Wraith Picture
 
-{{{html
+```html
 <canvas width="128" height="76"
   data-canvasFunction="Daggorath.handleDagCanvas"
   data-colors='["#FFFFFF","#000000"]'
@@ -5402,8 +5488,9 @@ DE06: FE            ; End of image
 </canvas><br>
 <canvas width="200" height="220" data-canvasfunction="Daggorath.handleDagCanvas" data-border="false" data-scale="4.5" data-xoffs="-300" data-yoffs="-240" data-command="DE07">
 </canvas>
-}}}
+```
 
+```code
 WraithPic:       
 DE07: 3E 44         ; Move to absolute (68,62)
 DE09: 44 58         ; Line to absolute (88,68)
@@ -5430,9 +5517,10 @@ DE22: 0A            ;     Short line to relative (-12,0)
 DE23: 3D            ;     Short line to relative (-6,6)
 DE24: 00            ;     End of short lines
 DE25: FE            ; End of image
+```
 
-# Spider Picture `visual`
-{{{html
+# Spider Picture 
+```html
 <canvas width="128" height="76"
   data-canvasFunction="Daggorath.handleDagCanvas"
   data-colors='["#FFFFFF","#000000"]'
@@ -5444,8 +5532,9 @@ DE25: FE            ; End of image
 </canvas><br>
 <canvas width="200" height="100" data-canvasfunction="Daggorath.handleDagCanvas" data-colors="[&quot;#FFFFFF&quot;,&quot;#000000&quot;]" data-border="false" data-scale="5.0" data-xoffs="-780" data-yoffs="-550" data-command="DE26">
 </canvas>
-}}}
+```
 
+```code
 SpiderPic:       
 DE26: 7C A0         ; Move to absolute (160,124)
 DE28: FC            ; Draw short lines
@@ -5470,9 +5559,10 @@ DE3B: E1            ;     Short line to relative (2,-4)
 DE3C: 41            ;     Short line to relative (2,8)
 DE3D: 00            ;     End of short lines
 DE3E: FE            ; End of image
+```
 
-# Scorpion Picture `visual`
-{{{html
+# Scorpion Picture
+```html
 <canvas width="128" height="76"
   data-canvasFunction="Daggorath.handleDagCanvas"
   data-colors='["#FFFFFF","#000000"]'
@@ -5484,8 +5574,9 @@ DE3E: FE            ; End of image
 </canvas><br>
 <canvas width="200" height="150" data-canvasfunction="Daggorath.handleDagCanvas" data-colors="[&quot;#FFFFFF&quot;,&quot;#000000&quot;]" data-border="false" data-scale="5.0" data-xoffs="-300" data-yoffs="-500" data-command="DE3F">
 </canvas>
-}}}
+```
 
+```code
 ScorpionPic:                     
 DE3F: 70 4A         ; Move to absolute (74,112)
 DE41: FC            ; Draw short lines
@@ -5511,9 +5602,10 @@ DE55: 20            ;     Short line to relative (0,4)
 DE56: 04            ;     Short line to relative (8,0)
 DE57: 00            ;     End of short lines
 DE58: FE            ; End of image
+```
 
-# Blob Picture `visual`
-{{{html
+# Blob Picture
+```html
 <canvas width="128" height="76"
   data-canvasFunction="Daggorath.handleDagCanvas"
   data-colors='["#FFFFFF","#000000"]'
@@ -5525,8 +5617,9 @@ DE58: FE            ; End of image
 </canvas><br>
 <canvas width="512" height="250" data-canvasfunction="Daggorath.handleDagCanvas" data-colors="[&quot;#FFFFFF&quot;,&quot;#000000&quot;]" data-border="false" data-scale="4.0" data-xoffs="-350" data-yoffs="-300" data-command="DE59">
 </canvas>
-}}}
+```
 
+```code
 BlobPic:
 ;     
 ; Body outline   
@@ -5570,9 +5663,11 @@ DE7B: 6C 74         ; Move to absolute (116,108)
 DE7D: 72 76         ; Line to (118,114)
 DE7F: 78 90         ; Line to (144,120)
 DE81: FE            ; End of image
+```
 
-# Knight Picture `visual`
-{{{html
+# Knight Picture
+
+```html
 <canvas width="128" height="76"
   data-canvasFunction="Daggorath.handleDagCanvas"
   data-colors='["#FFFFFF","#000000"]'
@@ -5584,8 +5679,9 @@ DE81: FE            ; End of image
 </canvas><br>
 <canvas width="400" height="500" data-canvasfunction="Daggorath.handleDagCanvas" data-colors="[&quot;#FFFFFF&quot;,&quot;#000000&quot;]" data-border="false" data-scale="4.0" data-xoffs="-350" data-yoffs="-50" data-command="DE82">
 </canvas>
-}}}
+```
 
+```code
 KnightPic:       
 DE82: 22 7C         ; Move to absolute (124,34)
 DE84: FC            ; Draw short lines
@@ -5604,10 +5700,11 @@ DE96: 40 92         ; Line to absolute (146,64)
 DE98: 3A 8C         ; Line to absolute (140,58)
 DE9A: FD DE B3      ; Jump to DEB3
 ;
+```
 
-# Shield Knight Picture `visual`
+# Shield Knight Picture
 
-{{{html
+```html
 <canvas width="128" height="76"
   data-canvasFunction="Daggorath.handleDagCanvas"
   data-colors='["#FFFFFF","#000000"]'
@@ -5620,8 +5717,9 @@ DE9A: FD DE B3      ; Jump to DEB3
 <canvas width="400" height="500" data-canvasfunction="Daggorath.handleDagCanvas" data-colors="[&quot;#FFFFFF&quot;,&quot;#000000&quot;]" 
 data-border="false" data-scale="4.0" data-xoffs="-350" data-yoffs="-50" data-command="DE9D">
 </canvas>
-}}}
+```
 
+```code
 ShieldKnightPic:       
 DE9D: 1E 7E         ; Line to absolute (126,30)
 DE9F: FC            ; Draw short lines
@@ -5707,9 +5805,10 @@ DF09: 40 60         ; Line to absolute (96,64)
 DF0B: 40 62         ; Line to absolute (98,64)
 DF0D: 14 62         ; Line to absolute (98,20)
 DF0F: FE            ; End of image
+```
 
-# Moon Wizard Picture `visual`
-{{{html
+# Moon Wizard Picture
+```html
 <canvas width="768" height="456"
   data-canvasFunction="Daggorath.handleDagCanvas"
   data-colors='["#FFFFFF","#000000"]'
@@ -5719,8 +5818,9 @@ DF0F: FE            ; End of image
   data-yoffs="0"
   data-command="DF10">
 </canvas>
-}}}
+```
 
+```code
 MoonWizardPic:        
 DF10: 2E 62         ; Move to absolute (98,46)
 DF12: FC            ; Draw short lines
@@ -5759,9 +5859,10 @@ DF33: E2            ;     Short line to relative (4,-4)
 DF34: E0            ;     Short line to relative (0,-4)
 DF35: 00            ;     End of short lines
 DF36: FD DF 65      ; Jump to DF65
+```
 
-# Star Wizard Picture `visual`
-{{{html
+# Star Wizard Picture
+```html
 <canvas width="768" height="456"
   data-canvasFunction="Daggorath.handleDagCanvas"
   data-colors='["#FFFFFF","#000000"]'
@@ -5771,8 +5872,9 @@ DF36: FD DF 65      ; Jump to DF65
   data-yoffs="0"
   data-command="DF39">
 </canvas>
-}}}
+```
 
+```code
 StarWizardPic:
 DF39: 28 56         ; Move to absolute (86,40)
 DF3B: 40 5C         ; Line to absolute (92,64)
@@ -5804,10 +5906,10 @@ DF61: E4            ;     Short line to relative (8,-4)
 DF62: 4D            ;     Short line to relative (-6,8)
 DF63: B0            ;     Short line to relative (0,-10)
 DF64: 00            ;     End of short lines
+```
+# Demon Picture
 
-# Demon Picture `visual`
-
-{{{html
+```html
 <canvas width="768" height="456"
   data-canvasFunction="Daggorath.handleDagCanvas"
   data-colors='["#FFFFFF","#000000"]'
@@ -5817,8 +5919,9 @@ DF64: 00            ;     End of short lines
   data-yoffs="0"
   data-command="DF65">
 </canvas>
-}}}
+```
 
+```code
 DemonPic:        
 DF65: 40 7C         ; Move to absolute (124,64)
 DF67: FC            ; Draw short lines
@@ -5896,9 +5999,10 @@ DFC6: FF            ;     Short line to relative (-2,-2)
 DFC7: 31            ;     Short line to relative (2,6)
 DFC8: 00            ;     End of short lines
 DFC9: FE            ; End of image
+```
 
-# Snake Picture `visual`
-{{{html
+# Snake Picture
+```html
 <canvas width="128" height="76"
   data-canvasFunction="Daggorath.handleDagCanvas"
   data-colors='["#FFFFFF","#000000"]'
@@ -5911,8 +6015,9 @@ DFC9: FE            ; End of image
 <canvas width="200" height="250" data-canvasfunction="Daggorath.handleDagCanvas" data-colors="[&quot;#FFFFFF&quot;,&quot;#000000&quot;]" 
 data-border="false" data-scale="4" data-xoffs="-400" data-yoffs="-300" data-command="DFCA">
 </canvas>
-}}}
+```
 
+```code
 SnakePic:        
 DFCA: 84 82         ; Move to absolute (130,132)
 DFCC: 70 7A         ; Line to absolute (122,112)
@@ -5951,3 +6056,4 @@ DFFB: 00            ;     End of short lines
 DFFC: FE            ; End of image
 
 DFFD: 4B 53 4B ; "KSK" Initials of Keith S. Kiyohara, co-creator of the game
+```

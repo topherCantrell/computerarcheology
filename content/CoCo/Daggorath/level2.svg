@@ -1,5 +1,5 @@
 
-<svg height='850' width='850'>
+<svg height='850' width='850' xmlns="http://www.w3.org/2000/svg">
 <g transform='scale(0.5)'>
 <rect width='1700' height='1700' style='fill:rgb(150,150,150)'/>
 <g transform='translate(200,50)'>

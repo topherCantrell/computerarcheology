@@ -20,6 +20,9 @@ def find_end_of_hex(s, p=0):
 
 def process_code(lines, code_info, skip_no_label_jumps=False):
 
+    if 'dp' not in code_info:
+        code_info['dp'] = 0
+
     # We'll use this a lot
     cpu = code_info['cpu']
 
@@ -131,7 +134,7 @@ def process_code(lines, code_info, skip_no_label_jumps=False):
                 if not 'target_line' in c.link_info:
                     for table in code_info['memory']:
                         tab = code_info['memory'][table]
-                        entry = tab.find_entry(addr)
+                        entry = tab.find_entry(addr + code_info['dp'])
                         if entry:
                             c.link_info['memory_table'] = tab
                             c.link_info['memory_table_name'] = table

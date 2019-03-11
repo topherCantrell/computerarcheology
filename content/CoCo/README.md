@@ -15,6 +15,7 @@
 >>>     AudioSpectrumAnalyzer:AudioAnalyzer
 >>>     Pyramid:Pyramid<br>
 >>>     Bedlam:Bedlam<br>
+>>>     Daggorath:Daggorath<br>
 
 # CoCo
 

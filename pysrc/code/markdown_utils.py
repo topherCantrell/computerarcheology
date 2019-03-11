@@ -23,10 +23,14 @@ def process_markdown(text):
             m = i - 1
             is_img = True
 
+        src = text[j + 2:k]
+        if not src.startswith('http') and src.endswith('.md'):
+            src = src[:-3] + '.html'
+
         if is_img:
-            rep = '<img src="' + text[j + 2:k] + '">'
+            rep = '<img src="' + src + '">'
         else:
-            rep = '<a href="' + text[j + 2:k] + '">' + text[i + 1:j] + '</a>'
+            rep = '<a href="' + src + '">' + text[i + 1:j] + '</a>'
 
         text = text[0:m] + rep + text[k + 1:]
 

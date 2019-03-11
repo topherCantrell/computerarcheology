@@ -116,6 +116,11 @@ def process_markdown(lines, site_nav_node, fp_content):
                     os.path.join(fp_content, text[k + 2:j]))
                 continue
 
+            if md.directive.startswith('directPage '):
+                dp = int(md.directive[11:].strip(), 16)
+                code_info['dp'] = dp
+                continue
+
             raise Exception('Unknown directive :' + md.directive + ':')
 
         if type(md) is Block:

@@ -1,5 +1,17 @@
-%%title = Dungeons of Daggorath
-%%image = Daggorath.jpg
+![Dungeons of Daggorath](Daggorath.jpg)
+
+>>> deploy:<br>
+>>>   Levels.md:Level Maps<br>
+>>>   RAMUse.md<br>
+>>>   Code.md<br>
+>>>   Journal.md<br>
+>>>   +Daggorath.jpg
+>>>   +level1.svg<br>
+>>>   +level2.svg<br>
+>>>   +level3.svg<br>
+>>>   +level4.svg<br>
+>>>   +level5.svg<br>
+>>>   +daggorath.js<br>
 
 TODO Overwrite the cassette code with a routine to ALLRAM. Then I can EXEC the ALLRAM, make
 some POKE tweaks, and then EXEC 49152. Burn a new ROM.
@@ -9,11 +21,11 @@ some POKE tweaks, and then EXEC 49152. Burn a new ROM.
 * [Disassembled Code](Code.html)
 * [RAM Usage](RAMUse.html)
 
-{{{tourGuide
+>>> tourGuide {
 
 # Tour Guide
 
-}}}
+>>> }
 
 # Strategy
 
@@ -32,9 +44,9 @@ objects before they attack you. The more bait you have on the floor the more tim
 You don't have a scroll to navigate by on the first level. You can wander around until you find a hole,
 or use these directions from your starting position to find the hole in the middle:
 
-{{{
+```
 T A, M, T R, M, P L TO, U L, P R SW, T L, M M M, T L, M M M M M M M, T R
-}}}
+```
 
 The door you see down the hall on the left is your guide. When you climb down, this is the direction you want to face.
 

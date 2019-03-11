@@ -13,7 +13,11 @@ import code.process_code
 
 
 # FILE_NAME = '../../content/CoCo/Pyramid/Code.md'
-FILE_NAME = '../../content/CoCo/AudioSpectrumAnalyzer/Code.md'
+# FILE_NAME = '../../content/CoCo/AudioSpectrumAnalyzer/Code.md'
+# FILE_NAME = '../../content/CoCo/Bedlam/Code.md'
+FILE_NAME = '../../content/CoCo/Daggorath/Code.md'
+
+COMMENT_COL = 60
 
 lines = code.markdown_utils.load_file(FILE_NAME)
 dirname = os.path.dirname(FILE_NAME)
@@ -40,7 +44,7 @@ while i < len(lines) - 1:
                 raise Exception("Unknown CPU " + name)
         elif md.directive.startswith('memoryTable '):
             name = md.directive[12:].strip()
-            text = lines[i + 1].lines[0].text
+            text = lines[i + 1].get_lines()[0].text
             k = text.index('](')
             j = text.index(')', k)
             code_info['memory'][name] = code.memory_table.MemoryTable(
@@ -50,15 +54,24 @@ code.process_code.process_code(lines, code_info, skip_no_label_jumps=True)
 
 for md in lines:
     if type(md) is code.block_line.Block:
-        for m in md.lines:
+        for m in md.get_lines():
             if type(m) is code.code_line.CodeLine:
-                print(m.original.text)
+                out = m.original.text
+                if m.mnemonic:
+                    i = out.find(';')
+                    if i >= 0:
+                        a = out[:i]
+                        b = out[i:]
+                        while len(a) < COMMENT_COL:
+                            a = a + ' '
+                        out = a + b
+                print(out)
             else:
                 print(m.text)
     elif type(md) is code.paragraph_line.Paragraph or type(md) is code.list_line.ListLine:
-        for m in md.lines:
-            print(m.text)
+        # for m in md.get_lines():
+        print('WTF???')
     elif type(md) is code.header_line.HeaderLine or type(md) is code.directive_line.Directive:
         print(md.original.text)
     else:
-        print(md.text)
+        print('WTF???')

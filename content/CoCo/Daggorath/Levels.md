@@ -1,5 +1,4 @@
-%%title = Level Maps
-%%image = Daggorath.jpg
+![](Daggorath.jpg)
 
 # Level 1  
 
@@ -16,30 +15,20 @@ The blue dot shows the player's starting position. The player always starts out 
 The map shows holes leading down as solid black squares. Holes in the ceiling are open squares. Ladders have
 either a hole in the floor (going down) or a hole in the ceiling (going up).
 
-{{{html
-%%include level1.svg
-}}}
+![](level1.svg)
 
 # Level 2 
-{{{html
-%%include level2.svg
-}}}
+![](level2.svg)
 
 # Level 3 
-{{{html
-%%include level3.svg
-}}}
+![](level3.svg)
 
 # Level 4 
 
 When you kill the DEMON on level-3 you will be transported to this map in a random square but facing
 the same way you were before transport.
 
-{{{html
-%%include level4.svg
-}}}
+![](level4.svg)
 
 # Level 5 
-{{{html
-%%include level5.svg
-}}}
+![](level5.svg)
