@@ -858,7 +858,7 @@ EndOfBlowup:
 
 
 GameObj2:
-; Game object 2: Allien rolling-shot (targets player specifically)
+; Game object 2: Alien rolling-shot (targets player specifically)
 ;
 ; The 2-byte value at 2038 is where the firing-column-table-pointer would be (see other
 ; shots ... next game objects). This shot doesn't use that table. It targets the player
@@ -871,7 +871,7 @@ GameObj2:
 ;
 ; When the timer is 2 the squiggly-shot/saucer (object 4 ) runs.
 ; When the timer is 1 the plunger-shot (object 3) runs.
-; Whne the timer is 0 this object, the rolling-shot, runs.
+; When the timer is 0 this object, the rolling-shot, runs.
 ;
 0476: E1              POP     HL                  ; Game object data
 0477: 3A 32 1B        LD      A,($1B32)           ; Restore delay from ... 
@@ -1341,7 +1341,7 @@ NewGame:
 07A6: CD 47 19        CALL    $1947               ; {DrawNumCredits} Display number of credits
 07A9: 21 00 00        LD      HL,$0000            ; Score of 0000
 07AC: 22 F8 20        LD      ($20F8),HL          ; {-1_P1ScorL} Clear player-1 score
-07AF: 22 FC 20        LD      ($20FC),HL          ; {-1_P2ScorL} CLear player-2 score
+07AF: 22 FC 20        LD      ($20FC),HL          ; {-1_P2ScorL} Clear player-2 score
 07B2: CD 25 19        CALL    $1925               ; Print player-1 score
 07B5: CD 2B 19        CALL    $192B               ; Print player-2 score
 07B8: CD D7 19        CALL    $19D7               ; {DsableGameTasks} Disable game tasks
@@ -1490,7 +1490,7 @@ SpeedShots:
 08D8: 3A 82 20        LD      A,($2082)           ; {-1_numAliens} Number of aliens on screen
 08DB: FE 09           CP      $09                 ; More than 8?
 08DD: D0              RET     NC                  ; Yes ... leave shot speed alone
-08DE: 3E FB           LD      A,$FB               ; Normally FF (-1) ... now FB (-4)
+08DE: 3E FB           LD      A,$FB               ; Normally FF (-4) ... now FB (-5)
 08E0: 32 7E 20        LD      ($207E),A           ; {-1_alienShotDelta} Speed up alien shots
 08E3: C9              RET                         ; Done
 
