@@ -114,10 +114,11 @@ def load_file(filename):
       filename (str): the path/name of the file to load
 
     Return:
-      list: the loaded lines
+      list,list: the parsed list and the as-is list of loaded lines
     '''
 
     lines = []
+    as_is_lines = []
 
     # Everything comes in as a generic text
     with open(filename, 'r') as f:
@@ -128,8 +129,10 @@ def load_file(filename):
             if line.endswith('\n'):  # Strip off the text feed
                 line = line[0:-1]
             # Collect all the lines
-            lines.append(code.markdown_line.MarkdownLine(
-                line, filename, len(lines)))
+            md = code.markdown_line.MarkdownLine(
+                line, filename, len(lines))
+            lines.append(md)
+            as_is_lines.append(md)
 
     # Collect all the formal blocks together
     in_block = False
@@ -240,4 +243,4 @@ def load_file(filename):
                     m.is_memory = True
                     break
 
-    return lines
+    return lines, as_is_lines

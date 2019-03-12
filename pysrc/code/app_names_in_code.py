@@ -19,7 +19,7 @@ FILE_NAME = '../../content/CoCo/Daggorath/Code.md'
 
 COMMENT_COL = 60
 
-lines = code.markdown_utils.load_file(FILE_NAME)
+lines, as_is_lines = code.markdown_utils.load_file(FILE_NAME)
 dirname = os.path.dirname(FILE_NAME)
 
 code_info = {
@@ -56,8 +56,8 @@ for md in lines:
     if type(md) is code.block_line.Block:
         for m in md.get_lines():
             if type(m) is code.code_line.CodeLine:
-                out = m.original.text
                 if m.mnemonic:
+                    out = m.original.text
                     i = out.find(';')
                     if i >= 0:
                         a = out[:i]
@@ -65,13 +65,7 @@ for md in lines:
                         while len(a) < COMMENT_COL:
                             a = a + ' '
                         out = a + b
-                print(out)
-            else:
-                print(m.text)
-    elif type(md) is code.paragraph_line.Paragraph or type(md) is code.list_line.ListLine:
-        # for m in md.get_lines():
-        print('WTF???')
-    elif type(md) is code.header_line.HeaderLine or type(md) is code.directive_line.Directive:
-        print(md.original.text)
-    else:
-        print('WTF???')
+                        m.original.text = out
+
+for md in as_is_lines:
+    print(md.text)

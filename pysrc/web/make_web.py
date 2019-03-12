@@ -236,7 +236,7 @@ def deploy_directory(current_node):
             os.makedirs(dst)
             deploy_directory(dep)
         else:
-            md = code.markdown_utils.load_file(src)
+            md, _ = code.markdown_utils.load_file(src)
             cont = process_markdown(md, dep, fp_content)
             f = open(os.path.join(ENV.CONTENT_DIR, 'master.template'), 'r')
             lines = f.readlines()
@@ -264,7 +264,8 @@ def load_site_directory():
 
     def _load_site_directory_rec(level, tree, current_node):
         src = os.path.join(ENV.CONTENT_DIR, current_node.get_full_path())
-        lines = code.markdown_utils.load_file(os.path.join(src, 'README.md'))
+        lines, _ = code.markdown_utils.load_file(
+            os.path.join(src, 'README.md'))
         info = code.markdown_utils.get_deploy(lines)
 
         for directory, title in info:

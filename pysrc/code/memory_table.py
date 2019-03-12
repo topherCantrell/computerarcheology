@@ -9,7 +9,7 @@ class MemoryTable:
 
         # print(":"+filename+":")
 
-        lines = code.markdown_utils.load_file(filename)
+        lines, _ = code.markdown_utils.load_file(filename)
 
         self.entries = []
 
