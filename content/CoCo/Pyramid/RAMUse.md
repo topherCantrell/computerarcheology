@@ -1,4 +1,3 @@
-
 ![RAM](Pyramid.jpg)
 
 # Pyramid RAM Use

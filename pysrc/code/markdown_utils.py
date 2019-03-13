@@ -122,8 +122,10 @@ def load_file(filename):
 
     # Everything comes in as a generic text
     with open(filename, 'r') as f:
+        # print(filename)
         while True:
             line = f.readline()
+            # print(line)
             if line == '':  # end of the file
                 break
             if line.endswith('\n'):  # Strip off the text feed

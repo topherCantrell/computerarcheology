@@ -1,19 +1,30 @@
-%%title = Raaka Tu
-%%image =RaakaTu.jpg
+![Raaka Tu](RaakaTu.jpg)
 
-{{{html
-<div class="playMe">
-<div>
+>>> deploy:<br>
+>>>   RAMUse.md<br>
+>>>   Code.md<br>
+>>>   Journal.md<br>
+>>>   +RaakaTu.jpg<br>
+>>>   +BinaryDataRaakaTu.js<br>
+>>>   +raakatu.js<br>
+
+# Raaka Tu
+
+
+```html
 <script src="/CoCo/RaakaTu/BinaryDataRaakaTu.js"></script>
 <script src="/js/6809.js"></script>
 <script src="/CoCo/CoCoText.js"></script>
 <script src="/CoCo/RaakaTu/raakatu.js"></script>
 <script>window.onload = function() {startRaakaTu("raakatuConsole");}</script>
-}}}
-#Play Me!</h1>
+```
+
+>>> playMe {
+
+# Play Me!
 Play the game in a CoCo emulator. Click on the green console and start typing.<br>
 
-{{{html
+```html
 <textarea readonly id="raakatuConsole" rows="16" style="background-color: #00FF01; color: black;font-family: monospace;font-size:12px;width:33ch;float: left;margin-top:8px"></textarea>
 
 <table class="caTable" style="float: left;margin-left:8px;margin-top:8px;">
@@ -24,17 +35,15 @@ Play the game in a CoCo emulator. Click on the green console and start typing.<b
 <tr><td>backspace</td><td>left-arrow</td><td>Delete character left of cursor</td></tr>
 <tr><td>escape</td><td>clear</td><td>Delete the line</td></tr>
 </table>
+```
 
-</div>
-</div>
-
-}}}
+>>> }
 
 
 # Code Links 
 
-* [Disassembled Code](Code.html)
-* [RAM Usage](RAMUse.html)
+* [Disassembled Code](Code.md)
+* [RAM Usage](RAMUse.md)
 
 # The Temple of Raaka-Tu
 
@@ -45,43 +54,43 @@ and wearing a headdress.
 
 "Beware! Beware the temple of Raaka-Tu!" the old woman cries. "Do not go into the jungle - you will never get out!"
 
-- From the game manual introduction
+> From the game manual introduction
 
-{{{tourGuide
+>>> tourGuide {
+
 # Tour Guide 
 
-The code is practically a virtual-machine for the game written in adventure-language. The [Main Loop](Code.html#MainLoop) decodes the complex
+The code is practically a virtual-machine for the game written in adventure-language. The [Main Loop](Code.md#MainLoop) decodes the complex
 user input with nouns, verbs, and prepositions.
 
-Have a look at the [Adventure Language Processor](Code.html#ProcessCommand) and all its complex commands.
+Have a look at the [Adventure Language Processor](Code.md#ProcessCommand) and all its complex commands.
 
-Have a look at the [Phrase List](Code.html#PhraseList) that describes the forms of all known input lines.
+Have a look at the [Phrase List](Code.md#PhraseList) that describes the forms of all known input lines.
 
-In Raaka-Tu, the rooms are objects with descriptions and commands combined. Visit all the [Room Definitions](Code.html#RoomDescriptions)
+In Raaka-Tu, the rooms are objects with descriptions and commands combined. Visit all the [Room Definitions](Code.md#RoomDescriptions)
 for a blast from the past.
 
 There are lots of game objects -- normal things like "rugs" and "rings" and "guards". They all can have complex code scripts
-and may move around on their own (like the "guards" and the "serpent"). Have a look at the [Objects and their scripts](Code.html#ObjectData).
+and may move around on their own (like the "guards" and the "serpent"). Have a look at the [Objects and their scripts](Code.md#ObjectData).
 
-Have a look at the [General Command Script](Code.html#GeneralCommands) that processes commands not handled by the current room.
+Have a look at the [General Command Script](Code.md#GeneralCommands) that processes commands not handled by the current room.
 
-Look through the game's [list of all known words](Code.html#InputWordTables).
-
-}}}
+Look through the game's [list of all known words](Code.md#InputWordTables).
+>>> }
 
 # References
 
-If you seek specific game information, solutions, and online emulators then check out Sean Murphy's wonderful site.[[br]]
-Solutions and info on Pyramid 2000, Raaka-Tu, and Bedlam:[[br]]
+If you seek specific game information, solutions, and online emulators then check out Sean Murphy's wonderful site.<br>
+Solutions and info on Pyramid 2000, Raaka-Tu, and Bedlam:<br>
 [http://www.figmentfly.com](http://www.figmentfly.com)
 
 # The Evolution of the Engine 
 
 I will follow Arnstein's adventure language and interpreter as it evolved from Pyramid 2000 to Raaka-Tu and finally to Bedlam. Be sure to 
 visit those pages as well:
-* [Pyramid 2000](/CoCo/Pyramid)
+* [Pyramid 2000](../Pyramid)
 * Raaka Tu
-* [Bedlam](/CoCo/Bedlam)
+* [Bedlam](../Bedlam)
 
 ## User Input Structure 
 
@@ -128,7 +137,7 @@ with each user turn. Living things like the guards and serpent have field "8" co
 
 Here is the object data for the dead serpent:
 
-{{{
+```
 ; Object_16 DeadSerpent
 29FC:   24 40                                                   ;   Number=24 size=0040
 29FE:     00 00 80                                              ;     room=00 scorePoints=00 bits=80 u.......
@@ -144,7 +153,7 @@ Here is the object data for the dead serpent:
 2A30:           A4 7F 7B 21                                     ;           .
 2A34:     02                                                    ;     02 SHORT NAME
 2A35:       08 E3 59 15 58 3A 62 9E 61                          ;       DEAD SERPENT
-}}}
+```
 
 Fields "2" and "3" are the short and long descriptions of the dead serpent. Field "7" is the script executed if the 
 dead serpent is the 1st noun of a command. Here the script is a list of commands that are executed as long as they 
@@ -161,7 +170,7 @@ other scripts. They are used mainly for commonly printed messages.
 One of my deepest frustrations in Raaka-Tu was never figuring out how to cross 
 the rug-covered pit to the carved wooden door.
 
-{{{
+```
 1586:   82 80 C4 00                                             ;   Script number=82 size=00C4 data=00
 158A:     03 80 AB                                              ;     Data tag=03 size=00AB
 158D:       C7 DE 94 14 4B 5E 83 96 3B 16 B7 B1                 ;       YOU ARE IN A LARGE RECTANGULAR ROOM. ON THE
@@ -193,7 +202,7 @@ the rug-covered pit to the carved wooden door.
 1649:               20 1D                                       ;               Command_20_CHECK_ACTIVE_OBJECT object=1D(USER)
 164B:               8B                                          ;               CommonCommand_8B
 164C:               81                                          ;               CommonCommand_81
-}}}
+```
 
 Room 82 has only 3 commands: WEST, SOUTH, and EAST (where the carved door is). If you try and go east 
 you fall into the pit. Notice the check, however, that makes sure the thing moving east is the player. 
@@ -204,7 +213,7 @@ The 81 is not needed here since CommonCommand_8B actually ends with the 81, whic
 
 The pit appears more complex because there is an object rooted to this room -- the rug:
 
-{{{
+```
 ; Object_03 Rug
 210C:   06 48                                                   ;   Number=06 size=0048
 210E:     82 00 80                                              ;     room=82 scorePoints=00 bits=80 u.......
@@ -237,7 +246,7 @@ The pit appears more complex because there is an object rooted to this room -- t
 213B:             B3 66 17 76 B1 1F 54 C3 B5 F3 8C 5F           ;             ACROSS THE ROOM.
 2147:             BE F3 17 43 DB B9 55 CB B9 5F BE 39           ;             .
 2153:             17 FF 9F                                      ;             .
-}}}
+```
 
 If you pull up the rug or look under it you can see the pit. If you try and cross it you fall in the pit. There is no 
 sequence of commands that let you reach the door. It is just a trap through and through.
@@ -254,10 +263,10 @@ out how to open. But the guards move from place to place on patrol around the te
 figure out their rounds and sneak through them.
 
 Below I have reproduced part of the "Outside Temple" map by Branden Robinson. You can find the 
-complete map on Sean Murphy's site:[[br]]
+complete map on Sean Murphy's site:<br>
 [http://www.figmentfly.com]
 
-{{{
+```
                            +-------+
                            |       |
                            | see   |
@@ -301,7 +310,7 @@ complete map on Sean Murphy's site:[[br]]
                            |       |
                            | 99    |
                            +-------+
-}}}
+```
 
 The temple entrance area is two concentric circles. The "guards" are a single object that patrols the 
 inner circle moving clockwise from 9C to 9D to 9E to 9F and back around. The move-script for the guards 
@@ -322,7 +331,7 @@ after the guards object has moved but before you do. The turn-code (see below) i
 goes like this: "If the guards-object is in room 9C: If the player is in 9A then print ENTER FROM RIGHT 
 else if the player is in 99 then print EXIT TO LEFT" and so on for each room on the inner circle.
 
-{{{
+```
 ; Object_23 Guards
 2EE3:   28 80 CA                                                ;   Number=28 size=00CA
 2EE6:     9C 00 90                                              ;     room=9C scorePoints=00 bits=90 u..P....
@@ -388,5 +397,5 @@ else if the player is in 99 then print EXIT TO LEFT" and so on for each room on 
 2FC7:               03 99 1D                                    ;               Command_03_IS_OBJECT_AT_LOCATION object=1D(USER) location=99
 2FCA:               87                                          ;               CommonCommand_87
 2FCB:         9F 23                                             ;         Command_03_IS_OBJECT_AT_LOCATION object=23(Guards) location=9F
-}}}
+```
 

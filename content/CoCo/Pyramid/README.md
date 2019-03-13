@@ -53,11 +53,14 @@ Before the LOAD command you must paste the desired saved-data back into the text
 untouched by the passage of time, impervious to the elements, still settled in
 quiet repose. There must be treasures. If even half of the stories about the Lost
 Pyramid are true, ... But why dwell on that now -- you are here, and adventure
-awaits just a step away." - From the game manual introduction
+awaits just a step away." 
+
+> From the game manual introduction
 
 >>> tourGuide {
 
 # Tour Guide 
+
 Check out a [snippet of the original source code](#trs-80-nugget) caught in an uninitialized buffer.
 
 Have a look at the [game's main loop](Code.md#mainloop). It is really short.
