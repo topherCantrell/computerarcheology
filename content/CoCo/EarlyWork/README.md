@@ -1,18 +1,15 @@
-<!-- deploy
-+Animal1.jpg
-+Animal2.jpg
-+Animal3.jpg
-+BullsEye1.jpg
-+BullsEye2.jpg
-+Cover80Micro.jpg
-+CoverTRS80News.jpg
-+DOS1.jpg
-+DOS2.jg
--->
+![Early Work](CoverTRS80News.jpg)
 
-![](CoverTRS80News.jpg)
-
-<!-- navTitle Early Work -->
+>>> deploy:<br>
+>>>   +Animal1.jpg<br>
+>>>   +Animal2.jpg<br>
+>>>   +Animal3.jpg<br>
+>>>   +BullsEye1.jpg<br>
+>>>   +BullsEye2.jpg<br>
+>>>   +Cover80Micro.jpg<br>
+>>>   +CoverTRS80News.jpg<br>
+>>>   +DOS1.jpg<br>
+>>>   +DOS2.jpg<br>
 
 # Early CoCo Work
 
@@ -37,10 +34,9 @@ In March of 1986 80 Micro published my article/code "Animal House". I was a seni
 I got paid $125 for the work. Nearly all of the article text was heavily edited -- practically
 rewritten.
 
-No. That is not me on the cover.
+No, that is not me on the cover.
 
 <img src="Cover80Micro.jpg" height="500"></img>
-
 
 <img src="Animal1.jpg" height="500"></img>
 
