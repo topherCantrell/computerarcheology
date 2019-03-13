@@ -1,54 +1,70 @@
-%%title = Madness and the Minotaur
-%%image = Madness.jpg
+![Madness and the Minotaur](Madness.jpg)
 
-# Code Links
+>>> deploy:<br>
+>>>   RAMUse.md<br>
+>>>   Code.md<br>
+>>>   Journal.md<br>
+>>>   +Madness.jpg<br>
+>>>   +inst.cas
+>>>   +first.cas
+>>>   +s_one.cas
+>>>   +s_two.cas
+>>>   +s_three.cas
+>>>   +s_four.cas
+>>>   +s_five.cas
+>>>   +s_six.cas
+>>>   +s_seven.cas
 
-* [Disassembled Code](Code.html)
-* [RAM Usage](RAMUse.html)
+# Madness and the Minotaur
+
+* [Disassembled Code](Code.md)
+* [RAM Usage](RAMUse.md)
 
 # The Labyrinth of King Minos
 
 "Rumor has it that there are treasures hidden in the vicinity of the Labyrinth.
 Are these treasures worth risking life or sanity? If your answer to this question
 is negative or you are plagued with skepticism, it is suggested that you re-evaluate
-your priorities and establish some healthy materialism." - From the game manual introduction
+your priorities and establish some healthy materialism." 
 
-{{{tourGuide
+> From the game manual introduction
+
+>>> tourGuide {
+
 # Tour Guide
 
 Code bugs are always fun to explore. You should visit these:
-* [Error message with POTION](Code.html#CodeBug1)
-* [Error when KILL ORACLE](Code.html#CodeBug2)
-* [ISHTAR does not clear fog poison](Code.html#CodeBug3)
-* [Should fail if overburdeoned](Code.html#CodeBug4)
-* [Missing word WATER from message](Code.html#CodeBug5)
-* [Shadowed jump](Code.html#CodeBug6)
-* [Invisible Oil hides the URN](Code.html#CodeBug7)
-* [YOUR SIGHT IS DIM never gets printed (Joe Hagan)](Code.html#CodeBug8)
+* [Error message with POTION](Code.md#CodeBug1)
+* [Error when KILL ORACLE](Code.md#CodeBug2)
+* [ISHTAR does not clear fog poison](Code.md#CodeBug3)
+* [Should fail if overburdeoned](Code.md#CodeBug4)
+* [Missing word WATER from message](Code.md#CodeBug5)
+* [Shadowed jump](Code.md#CodeBug6)
+* [Invisible Oil hides the URN](Code.md#CodeBug7)
+* [YOUR SIGHT IS DIM never gets printed (Joe Hagan)](Code.md#CodeBug8)
 
-You should see the routines that [Move each Creature](Code.html#MoveCreatures) and the
-routines that [Make Each Creature Attack](Code.html#CreaturesAttack).
+You should see the routines that [Move each Creature](Code.md#MoveCreatures) and the
+routines that [Make Each Creature Attack](Code.md#CreaturesAttack).
 
-Have a look at the [Individual User Commands](Code.html#IndividualCommands) -- especially the
-[Spell Commands](Code.html#UseSpell).
+Have a look at the [Individual User Commands](Code.md#IndividualCommands) -- especially the
+[Spell Commands](Code.md#UseSpell).
 
-Check out the routines that run [Between Certain Rooms](Code.html#BetweenRoomActions) and when you [Enter Certain Rooms](Code.html#EnteringRoomActions).
+Check out the routines that run [Between Certain Rooms](Code.md#BetweenRoomActions) and when you [Enter Certain Rooms](Code.md#EnteringRoomActions).
 
 Read through the text messages of the game:
-* [Item Descriptions](Code.html#ItemDescriptions)
-* [Room Descriptions](Code.html#RoomDescriptions)
-* [Game Messages](Code.html#MiscStrings)
+* [Item Descriptions](Code.md#ItemDescriptions)
+* [Room Descriptions](Code.md#RoomDescriptions)
+* [Game Messages](Code.md#MiscStrings)
 
-Here is the map of all the passages between all 256 rooms: [Dungeon Map](Code.html#PassageConfigurations)
-
-}}}
+Here is the map of all the passages between all 256 rooms: [Dungeon Map](Code.md#PassageConfigurations)
+>>> }
 
 # References
 
-For more information on Madness and the Minotaur check out Sean Murphy's wonderful site:[[br]]
+For more information on Madness and the Minotaur check out Sean Murphy's wonderful site:<br>
 [http://www.figmentfly.com](http://www.figmentfly.com) 
 
-John Layman has translated the 6809 opcodes to x86 to run on a LINUX, BSD, and OSX. Follow his awesome work:[[br]]
+John Layman has translated the 6809 opcodes to x86 to run on a LINUX, BSD, and OSX. Follow his awesome work:<br>
 [http://www.frijid.net/madness/madness.html](http://www.frijid.net/madness/madness.html)
 
 # Text Adventure and Real Time Strategy
@@ -104,7 +120,7 @@ A failed jump can end in instant "death". Or a failed jump can end in a "fumble"
 heaviest object you are carrying in the room you jumped from. Or a failed jump can end in a "stumble" where you don't make the jump and you 
 take a specific amount of damage. Here is the jump table:
 
-{{{
+```
 3BE1: 8F 80 00 97 6D; From 143 "JUMP PIT"   to 151. Required=128 or DEATH
 3BE6: 97 80 80 8F 6D; From 151 "JUMP PIT"   to 143. Required=128 or FUMBLE
 3BEB: 10 80 80 11 2C; From 16  "JUMP POOL"  to 17.  Required=128 or FUMBLE
@@ -138,7 +154,7 @@ take a specific amount of damage. Here is the jump table:
 ; never get discovered. If the RAE_203 is placed in a room with an existing jump then
 ; the jump to the Temple of Zeus doesn't work.
 3C59: 10 8C 80 27 06; From 16  "JUMP DOWN"  to 39.  Required=140 or FUMBLE
-}}}
+```
 
 For instance, the jump description in room 16 says "J:POOL:17:128F". That means you "JUMP POOL" to get to room 17. The jump 
 requires a dexterity of 128 and if you fail you "fumble" an object. All of these jumps except the last are NOT randomized. 
@@ -151,7 +167,7 @@ There are several passages that have action triggers associated with them. You c
 lines between the rooms. The same triggers are used for multiple passages. Like the passage configurations and the jumps, these 
 triggers are NOT randomized. They are the same for every game:
 
-{{{
+```
 ;##BetweenRoomA
 ; If phys minus weight is less than random 64-191 then a climb-up fails.
 ;##BetweenRoomB
@@ -173,7 +189,7 @@ triggers are NOT randomized. They are the same for every game:
 ;##BetweenRoomI
 ; There is a 244 in 255 chance of moving to a random room in the maze on a random floor. 
 ; We flag the main routine to skip movement.
-}}}
+```
 
 I believe the designers had intended for these to be randomizable. The data table is stored in the area that is saved to tape 
 along with the other randomizable things. Also note that action A is applied to the EAST/WEST passage between room 74 and 75. 
@@ -185,7 +201,7 @@ once and then "locked down" in the code.
 There are 36 rooms that are given random "enter actions" at the start of the game. There are only 28 different actions - some are
 used multiple times. The first 30 action are placed at random. The "room with the music" is also placed at random. The other 5 are fixed.
 
-{{{
+```
 ; The first 30 entering-room-actions are placed using this table. The first two
 ; bytes are the lower and upper bounds of room numbers (inclusive) it can appear.
 ; The third byte is ANDed with the room number.
@@ -276,7 +292,7 @@ The actions themselves are described below:
 ; _213 Print LAYER OF MIST EAST WALL.
 ; _232 If we came south to this room and we are carying the pendant then move the 
 ;      pendant to a random room and move us to (or near) the start.
-}}}
+```
 
 # Objects 
 
@@ -291,7 +307,7 @@ Objects are randomly placed using a combination of random ranges, masks, and a t
 outside the maze. The lamp is placed near the starting point so you don't have to search far for it. Objects that are marked 
 PROTECTED are described shortly.
 
-{{{
+```
 ; This script controls how objects are placed and how the flags are initialized.
 ; For range placment the room is ((u-l)&mask)+lower. Table for table placement
 ; is above. Protection does OR #$10. Invisible object does OR #$01.
@@ -363,7 +379,7 @@ PROTECTED are described shortly.
 20D2: 4F ;  79                      
 20D3: 85 ; 133
 20D4: 9E ; 158        
-}}}
+```
      
 Some of the objects have special abilities:
 
@@ -433,7 +449,7 @@ created a handful of possible lists for each object. At startup the game picks a
 
 The lists were carefully constructed to avoid a deadlock. Here are the possible protected-object requirements for each object:
 
-{{{
+```
 ; There are 14 objects in the game that require us to have a combination
 ; of objects to kill/get. This table lists a number of configurations
 ; for each of these objects. On initialization, a random list is chosen
@@ -504,7 +520,7 @@ The lists were carefully constructed to avoid a deadlock. Here are the possible 
 1DE1: 09 13 7C 80     ;   MUSHROOM, GOBLET, BELROG
 1DE5: 2A 7B FF        ;   POWERRING, NERGAL
 1DE8: FF 
-}}}
+```
 
 For instance, to get the POWERRING you might only need to have learned BELROG. Or you might need the SHIELD, SWORD, and AKHIROM. 
 The Oracle will tell you (one object at a time) the required objects for each protected item except the SPELLBOOK. You get the combination 
@@ -517,7 +533,7 @@ you will automatically learn the spell. You have to learn the spells in order. Y
 You have to know VETAR and have the PARCHMENT to learn MITRA. The following table shows what you have to have to learn a spell and the rooms 
 that the spells may appear in (random pick between the first and second room number inclusively).
 
-{{{
+```
 3BC1: 09 01 00 00    ; VETRA:   MUSHROOM and FOOD                   
 3BC5: 0E 37 00 00    ; MITRA:   PARCHMENT and  VETRA                   
 3BC9: 11 38 00 00    ; OKKAN:   TALISMAN and MITRA              
@@ -539,11 +555,12 @@ that the spells may appear in (random pick between the first and second room num
 1D47: 80 A7 ; BELROG  128 - 167  3rd floor (except last 24 rooms ... the maze)
 1D49: 80 FF ; CROM    128 - 255  anywhere on 3rd or 4th floor
 1D4B: 80 FF ; ISHTAR  128 - 255  anywhere on 3rd or 4th floor        
-}}}
+```
     
 Using a spell costs hit points (physical condition). The more powerful the spell, the more it costs. Here are the details of what they 
 cost and what they do:
-{{{
+
+```
 ;##CommandVETAR
 ; Take 10 damage. GET LAMP immediately after it has been blown away. 
 ; Note the SCROLL can be used to retrieve the lamp on the 4th floor.
@@ -565,7 +582,7 @@ cost and what they do:
 ;##CommandISHTAR
 ; Take 24 damage. Move to "exit" point where we drop treasure. This has a limited 
 ; number of uses (randomized at start to 1-4) so use it wisely.
-}}}
+```
 
 There are several places in the dungeon where the lamp gets blown out of your hands. You can use VETAR on your next turn to get it 
 back. If you take a step, VETAR won't work.
@@ -619,11 +636,11 @@ The SPRITE does not attack.
 
 In order to KILL SPRITE, you must have one of the following combinations of objects (the list is chosen at random at the start of the game):
 
-{{{
+```
 1D86: 54 2A 80        ;   SKULL, POWERRING
 1D89: 41 3B 80        ;   FOOD, NERGAL
 1D8C: 43 3A FF        ;   DAGGER, AKHIROM
-}}}
+```
 
 ## Troglodyte 
 
@@ -634,11 +651,11 @@ If the TROGLODYTE is in the room with you it attacks on a twelve second cycle. T
 damage to your physical condition. The chance depends on your room number. In low room numbers (like on the 1st floor) the chance of hitting 
 is low. Try to take it on there!
 
-{{{
+```
 1D4E: 45 0B 38 80     ;   AX, SCEPTER, MITRA
 1D52: 23 7D 80        ;   SPELLBOOK, CROM
 1D55: 43 07 3B FF     ;   DAGGER, SHIELD, NERGAL
-}}}
+```
 
 ## Scorpion 
 
@@ -652,11 +669,11 @@ and even it doesn't work 1/8th of the time. If it doesn't work you have to find 
 
 In order to KILL SCORPION, you must have one of the following combination of objects (the list is chosen at random at the start of the game):
 
-{{{
+```
 1D72: 48 3B 80        ;   FLUTE, NERGAL
 1D75: 14 3D 80        ;   SKULL, CROM
 1D78: 51 2A FF        ;   TALISMAN, POWERRING
-}}}
+```
 
 ## Nymph 
 
@@ -667,11 +684,11 @@ The NYMPH does not attack.
 
 In order to KILL NYMPH, you must have one of the following combination of objects (the list is chosen at random at the start of the game):
 
-{{{
+```
 1D7C: 49 2C 80        ;   MUSHROOM, TRUTHRING
 1D7F: 41 0A 80        ;   FOOD, PENDANT
 1D82: 48 39 FF        ;   FLUTE, OKKAN
-}}}
+```
 
 ## Satyr 
 
@@ -682,11 +699,11 @@ If the SATYR is in the room with you it attacks on a 15 second cycle. On the 1st
 
 In order to KILL SATYR, you must have one of the following combination of objects (the list is chosen at random at the start of the game):
 
-{{{
+```
 1D5A: 46 3B 80        ;   SWORD, NERGAL
 1D5D: 44 2B 38 80     ;   MACE, LIGHTRING, MITRA
 1D61: 23 77 FF        ;   SPELLBOOK, VETAR
-}}}
+```
 
 ## Minotaur 
 
@@ -698,11 +715,11 @@ second it hits with 0 to 70 points of damage to your physical condition.
 
 In order to KILL MINOTAUR you must have one of the following combinations of objects (the list is chosen at random at the start of the game):
 
-{{{
+```
 1D65: 46 07 2A 80     ;   SWORD, SHIELD, POWERRING
 1D69: 44 0F 0B 38 80  ;   MACE, VIAL, SCEPTER, MITRA
 1D6E: 45 3B FF        ;   AX, NERGAL
-}}}
+```
 
 # Healing 
 
@@ -805,24 +822,14 @@ I abandoned the effort when I realized that JavaScript on a web-site (or in Node
 Here is the ZCode as far as I got. Currently you can explore the game's rooms through their natural passages (no jumps). 
 The spells, objects, and creatures are placed. The "protected" lists work. You can learn spells and score points. 
 
- * [madness.inf](madness.inf) (top)
- * [MadGameLoop.inf](MadGameLoop.inf) (main game flow)
- * [MadRooms.inf](MadRooms.inf) (rooms)
- * [MadRoomActions.inf](MadRoomActions.inf) (room actions)
- * [MadPassages.inf](MadPassages.inf) (passage actions)
- * [MadItems.inf](MadItems.inf) (items)
- * [MadSpells.inf](MadSpells.inf) (spells)
- * [MadBlocks.inf](MadBlocks.inf) (blockages)
- * [MadBanner.inf](MadBanner.inf) (tape-banner)
- * [MadDebug.inf](MadDebug.inf) (debug functions)
- * [Madness.z5](Madness.z5) (playable zcode)
+[https://github.com/topherCantrell/computerarcheology/tree/master/content/CoCo/MadnessMinotaur/zcode](https://github.com/topherCantrell/computerarcheology/tree/master/content/CoCo/MadnessMinotaur/zcode)
 
 # Cheats 
 
 You type "CLOADM" to load the game. Then you type "EXEC" to run the game. Between these commands you can make patches to the 
 code with BASIC POKE commands. Here are some useful cheats:
 
-{{{
+```
 39->1A2F    POKE 6703,57    Invulnerable to damage
 21->78D     POKE 1933,33    Lamp doesn't burn oil
 21->11CD    POKE 4557,33    ASK ORACLE any time
@@ -835,7 +842,7 @@ code with BASIC POKE commands. Here are some useful cheats:
 12->80B(3)  POKE 2059,18    Skip creatures attacking
             POKE 2060,18
             POKE 2061,18
-}}}
+```
 
 In making the ZCode port I wrote a debug system that loads from virtual tape to memory at 7000. The system allows you to read
  and write any memory location from inside the game. The system hooks into the "EAT" and the "TIE" commands.
@@ -847,7 +854,7 @@ you to set the room number to anything letting you teleport around the dungeon a
 You load the debug system into memory first with the CLOADM BASIC command. Then you load Madness. 
 Then you make 6 pokes to tie the system to the game's commands. As shown in the comments below:
 
-{{{
+```
 ; cload (instbas.cas) basic poker
 ; cloadm (inst.cas) loads debug to 7000
  
@@ -897,7 +904,7 @@ Then you make 6 pokes to tie the system to the game's commands. As shown in the 
 ;isnumber:
 703D: 80 70    SUBA #$70         ; '0' becomes 0
 703F: 39       RTS               ; Done
-}}}
+```
 
 Here is the virtual COCO tape that contains the debug system: [inst.cas](inst.cas).
 
@@ -908,7 +915,7 @@ You can duplicate my steps with my FIRST.CAS file.
 
 ## TASK 1: LEARN VETAR 
 
-{{{
+```
 SOUTH         ; This is room with music where SPRITE can't go
 
 GET FOOD  
@@ -938,12 +945,12 @@ SOUTH WEST NORTH NORTH WEST WEST SOUTH
 DROP FOOD
 DROP MUSHROOM
 DROP GOLD
-}}}
+```
 [s_one.cas](s_one.cas)
 
 ## TASK 2: LEARN MITRA 
 
-{{{
+```
 NORTH EAST EAST SOUTH SOUTH SOUTH WEST
 JUMP HOLE
 SOUTH DOWN DOWN DOWN EAST NORTH EAST EAST NORTH EAST EAST NORTH NORTH NORTH WEST SOUTH WEST
@@ -961,12 +968,12 @@ DOWN NORTH NORTH EAST
 
 NORTH WEST UP SOUTH EAST EAST SOUTH
 DROP PARCHMENT
-}}}
+```
 [s_two.cas](s_two.cas)
 
 ## TASK 3: LEARN OKKAN 
 
-{{{
+```
 NORTH EAST EAST SOUTH SOUTH SOUTH WEST
 JUMP HOLE
 SOUTH DOWN DOWN DOWN
@@ -980,12 +987,12 @@ DOWN          ; LEARN OKKAN
 UP EAST EAST SOUTH EAST NORTH NORTH NORTH WEST WEST SOUTH
 
 DROP TALISMAN
-}}}
+```
 [s_three.cas](s_three.cas)
 
 ## TASK 4: Get the SWORD and SHIELD 
 
-{{{
+```
 GET PARCHMENT
 NORTH WEST WEST NORTH DOWN
 JUMP PIT
@@ -999,12 +1006,12 @@ DROP PARCHMENT
 NORTH NORTH EAST EAST EAST
 
 GET SHIELD
-}}}
+```
 [s_four.cas](s_four.cas)
 
 ## TASK 5: Get the ROPE and learn AKHIROM
 
-{{{
+```
 WEST WEST WEST SOUTH SOUTH
 DROP SWORD
 DROP SHIELD
@@ -1023,12 +1030,12 @@ NORTH         ; Now know AKHIROM
 
 SOUTH WEST WEST WEST NORTH NORTH NORTH NORTH UP SOUTH EAST EAST SOUTH
 DROP ROPE
-}}}
+```
 [s_five.cas](s_five.cas)
 
 ## TASK 6: Get the SCEPTER and learn NERGAL 
 
-{{{
+```
 NORTH EAST EAST SOUTH SOUTH SOUTH WEST
 JUMP HOLE
 SOUTH DOWN DOWN DOWN EAST NORTH EAST NORTH
@@ -1057,12 +1064,12 @@ JUMP PIT
 JUMP PIT      ; Jumping into the treasure room
 DOWN
 SOUTH
-}}}
+```
 [s_six.cas](s_six.cas)
 
 ## TASK 7: Get VIAL, BELROG, and CROM 
 
-{{{
+```
 GET MUSHROOM
 NORTH WEST WEST NORTH DOWN
 
@@ -1098,7 +1105,7 @@ NORTH WEST
 DROP PENDANT
 JUMP PIT
 DOWN SOUTH
-}}}
+```
 [s_seven.cas](s_seven.cas)
 
 ## TASK 8: Learn ISHTAR
@@ -1111,7 +1118,7 @@ Save-game analysis for 'first.cas'
 
 ## Map 
 
-{{{html
+```html
 <pre>
 <span style="font-size: 8px">                                                                                                                                                                                   
 Floor 1                                                                                                                                                                                                            
@@ -1518,11 +1525,6 @@ Floor 4
 </pre>                                                                                                                                                                                                               
 </span>
 
-}}}                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-## Configuration                                                                                                                                                                                                               
-                                                                                                                                                                                                                   
-{{{
 ***** Object Data *****
 FOOD in room 18
 BOTTLE in room 16
@@ -1749,4 +1751,4 @@ A6BE  : 18:19	Rolling pointer to BASIC rom for random numbers
   00  : FC  time.
   00  : FD
   00  : FE
-}}}
+```

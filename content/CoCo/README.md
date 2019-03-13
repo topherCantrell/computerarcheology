@@ -16,6 +16,7 @@
 >>>      Pyramid:Pyramid<br>
 >>>     RaakaTu:RaakaTu<br>
 >>>     Bedlam:Bedlam<br>
+>>>     MadnessMinotaur:Madness & Minotaur<br>
 >>>     Daggorath:Daggorath<br>
 >>>     Downland:Downland<br>
 >>>     EarlyWork:EarlyWork<br>
