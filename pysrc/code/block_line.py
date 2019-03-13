@@ -140,6 +140,15 @@ class Block:
                         html_out[0:4] + '">' + html_out[0:4] + \
                         '</span>' + html_out[4:]
 
+                # Remove and {...} spec from the comment
+                i = html_out.find(';')
+                if i >= 0:
+                    i = html_out.find('{', i)
+                    if i > 0:
+                        j = html_out.find('}', i)
+                        if j < (len(html_out) - 1) and html_out[j + 1] == ' ':
+                            j = j + 1
+                        html_out = html_out[0:i] + html_out[j + 1:]
             ret = ret + html_out + '\n'
 
         ret = ret + '</pre>'
