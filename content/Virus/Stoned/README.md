@@ -75,13 +75,19 @@ Very few 8086 systems have 256 interrupting devices! The lion's share of the int
 through the INT XX command, where XX is the interrupt number from 00 to FF hex.
 
 The BIOS establishes a few low-level routines that other programs can invoke. INT 10 is a complex video driver that manages the console window. Parameters passed into this 
-function through the registers control a number of sub-functions that do things like loading fonts, scrolling the screen, and printing strings. INT 12 returns the amount of conventional memory in 1K chunks. INT 18 invokes the BASIC ROM (what a language). You can call INT 19 to reboot the machine. Through INT 13, programs can access sectors on disk drives connected to the system.
+function through the registers control a number of sub-functions that do things like loading fonts, scrolling the screen, and printing strings. INT 12 returns the amount of 
+conventional memory in 1K chunks. INT 18 invokes the BASIC ROM (what a language). You can call INT 19 to reboot the machine. Through INT 13, programs can access sectors on 
+disk drives connected to the system.
 
 The ROM designers could have avoided the indirection of interrupt vectors by publishing a list of ROM routine addresses for programs to call directly. The RAM vector allows 
-the BIOS to be upgraded by the operating system loaded from disk. Suppose the DOS designers had come up with a better way to access sectors on a disk. The ROM code is unchangeable, but DOS could change the INT 13 vector to point to the newer routines loaded from disk. Existing programs don't have to be told a new routine address -- they continue to use the routine indirectly through the INT 13 vector.
+the BIOS to be upgraded by the operating system loaded from disk. Suppose the DOS designers had come up with a better way to access sectors on a disk. The ROM code is 
+unchangeable, but DOS could change the INT 13 vector to point to the newer routines loaded from disk. Existing programs don't have to be told a new routine address -- they 
+continue to use the routine indirectly through the INT 13 vector.
 
 To encourage others to design hardware for their computers, IBM published the specs on the hardware bus used in the PC. Other people began to make hardware cards for 
-the PC, which made PCs more attractive. The Intel 8086 chip was available to the public, and other vendors began to use the chip to build PC clones -- machines identical to the IBM PC save for the ROM code. The true PC ROM was the property of IBM, but compatible ROMs only had to mimic the IBM machines by setting up interrupt vectors that pointed to routines that performed the same basic functions.
+the PC, which made PCs more attractive. The Intel 8086 chip was available to the public, and other vendors began to use the chip to build PC clones -- machines identical 
+to the IBM PC save for the ROM code. The true PC ROM was the property of IBM, but compatible ROMs only had to mimic the IBM machines by setting up interrupt vectors that pointed to 
+routines that performed the same basic functions.
 
 There is an obvious disadvantage to "hanging" system calls on indirect software interrupt hooks: any program is free to change any of the vectors at any time. For instance, 
 a program could remember the destination of a specific interrupt, say INT 13, and change the vector to point to a new routine. This new routine could perform some meaningful 
@@ -113,14 +119,14 @@ F000:F80B EA007C000000        JMP        0000:7C00
 ...
 ```
 
-Bootsector programs have to be small; they have to fit in a 512 byte floppy-disk sector. The DOS bootsector simply loads the two hidden system files IO.SYS and 
+Bootsector programs have to be small; they have to fit in a 512 byte sector. The DOS bootsector simply loads the two hidden system files IO.SYS and 
 MSDOS.SYS. MSDOS.SYS contains the DOS interrupt, INT 21. This is a massive interrupt handler with lots of subcommands selected by passing arguments through the 
 AX register. Eventually, the DOS shell COMMAND.COM is loaded into memory. This is simply a program that reads commands from the keyboard and passes them to INT 21.
 
 The Stoned virus discovered in April of 1991 was one of the first computer viruses on the PC scene. It is a special species of virus known as a "bootsctor virus". 
 As the name suggests, viruses of this type infect the bootsector of an operating system's boot disk. As we will see, their operation is eloquent in its simplicity.
 
-The orignal bootsector of an infected disk has been copied elsewhere on the disk and the virus has been placed in the bootsector. When the PC boots up, it unknowingly 
+The original bootsector of an infected disk has been copied elsewhere on the disk and the virus has been placed in the bootsector. When the PC boots up, it unknowingly 
 loads the virus into memory at 0000:7C00 and executes it. The virus moves to a permanent home in upper memory and changes the INT 13 vector to point to a special 
 routine in the virus code. At this point, the virus usually infects any fixed-disk on the system. Then it loads the original bootsector into memory at 0000:7C00 and 
 executes it. DOS loads unaware of the new INT13 routine.
@@ -149,7 +155,8 @@ entry point at location 0000 to the Loader at 00A1.
 There is a 13-byte storage area at 0008. We will see how this memory is used when we get to the walk-through.
 
 Locations 0015 through 00A0 hold the Infector routine -- the replacement INT13 that other programs call when they need to perform disk I/O. The code at 0066 checks 
-to see if the bootsector on the floppy has been infected, and the code at 0079 performs the infection if needed. Location 0035 passes the incoming request to the original INT13.
+to see if the bootsector on the floppy has been infected, and the code at 0079 performs the infection if needed. Location 0035 passes the incoming request to the 
+original INT13.
 
 Locations 00A1 through 01B7 hold the Loader routine -- the code fragment that moves the virus into safe memory, registers the Infector INT13, and executes the 
 original bootsector. Beginning at 00B8, the virus reserves permanent memory at the end of RAM. At 00D8, the virus is transferred to upper memory where execution continues.
