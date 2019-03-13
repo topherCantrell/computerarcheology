@@ -1,7 +1,15 @@
-%%title = Morris Internet Worm
-%%image = Worm.jpg
+![Morris Internet Worm](Worm.jpg)
 
-''TO DO: I want to get the EXACT layout of the buffer contents byte for byte.''
+>>> deploy:<br>
+>>>  Journal.md<br>
+>>>  +Worm.jpg<br>
+>>>  +wormvax.gif<br>
+
+# Morris Internet Worm
+
+```
+TO DO: I want to get the EXACT layout of the buffer contents byte for byte.
+```
 
 On November 2nd, 1988 the famous Internet Worm accidentally escaped author Morris's clutches before he had finished it. The worm was 
 supposed to spread as a single, tiny process running in the background of each infected machine. Instead, the premature version 
@@ -58,7 +66,7 @@ How a function like gets() made it into the standardized C library is a mystery.
 
 # Code Walkthrough
 
-{{{
+```
 ; VAX binary code fragment from the Morris Internet Worm.
 ; Downloaded to the fingerd serving process via the gets() hole.
 ; Performs execve("/bin/sh",0,0)
@@ -71,7 +79,7 @@ pushl	r10		; 1st parameter: pointer to the executable name
 pushl	$3		; 3 parameters on the stack
 movl	sp,ap		; ArgumentPointer points to arguments
 chmk	$3b		; SoftwareException 0x3B = EXECVE call
-}}}
+```
 
 The first two pushes create a single string on the stack (which happens to be exactly eight bytes, two longs). This string, "/bin/sh", is the filename to 
 load in the execve() call.
@@ -98,6 +106,4 @@ cleaned when the original process is torn down.
 
 # Preliminary work on the VAX stack frame 
 
-{{{html
-<img src="wormvax.gif">
-}}}
+![](wormvax.gif)

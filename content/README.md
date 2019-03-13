@@ -8,6 +8,7 @@
 >>>    +favicon.ico
 >>>        Amiga
 >>>        CoCo
+>>>      Virus
 
 # Computer Archeology
 
