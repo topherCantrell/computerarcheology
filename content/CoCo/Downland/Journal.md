@@ -1,14 +1,12 @@
-%%title = Downland
-%%image = downland.jpg
+![Journal](../../img/journal.jpg)
 
-Working on this now.
+# Journal
 
-# Code Links 
+## 3/13/2019
 
-* [Disassembled Code](Code.html)
-* [RAM Usage](RAMUse.html)
+I updated the content to the latest markdown format.
 
-# April 21, 2018
+## April 21, 2018
 
 Getting a clean binary from the actual cartridge I bought on ebay. I put a piece of tape over the cart interrupt.
 The first byte is 0x12, as one of my images shows. Maybe that image is correct? Let me run a checksum and see.
@@ -28,7 +26,7 @@ The stuff appears to go right up FF00 (E000-FEFF).
 Ah ha! The pins on the cartridge connector go nowhere. I checked the "stuff". It is just a ghost of C000-DFFF.
 Good. The cartridge is standard 8K, and I have the binary.
 
-# April 14, 2018
+## April 14, 2018
 
 I can't find any info on what happens when you finish the game. I guess I'll look at the 
 code to find the answer.

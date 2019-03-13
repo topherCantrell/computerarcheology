@@ -1,4 +1,4 @@
-![](Pyramid.jpg)
+![Code](Pyramid.jpg)
 
 # Pyramid Code
 
