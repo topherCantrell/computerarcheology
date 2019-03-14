@@ -120,7 +120,7 @@ html,
 	margin-top:8px;
 }
 
-.codePreStyle {
+.plainCodePreStyle, .codePreStyle {
 	background-color: #FFFFFF;
 	border: 0px solid;
 }

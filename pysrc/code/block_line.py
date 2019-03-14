@@ -36,8 +36,17 @@ class Block:
 
         if self.get_type() == '':
             return self._make_content_none()
+        
+        return self._make_content_styled(self.get_type())
 
-        raise Exception('Unknown block type ' + self.get_type())
+        #raise Exception('Unknown block type ' + self.get_type())
+        
+    def _make_content_styled(self,style):
+        ret = '<pre class="'+style+'PreStyle">\n'
+        for md in self._lines[1:-1]:
+            ret += md.text + '\n'
+        ret += '</pre>'
+        return ret
 
     def _make_content_plain(self):
         ret = '<pre class="block_plainCode">\n'
