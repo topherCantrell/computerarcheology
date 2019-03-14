@@ -36,13 +36,13 @@ class Block:
 
         if self.get_type() == '':
             return self._make_content_none()
-        
+
         return self._make_content_styled(self.get_type())
 
         #raise Exception('Unknown block type ' + self.get_type())
-        
-    def _make_content_styled(self,style):
-        ret = '<pre class="'+style+'PreStyle">\n'
+
+    def _make_content_styled(self, style):
+        ret = '<pre class="' + style + 'PreStyle">\n'
         for md in self._lines[1:-1]:
             ret += md.text + '\n'
         ret += '</pre>'
@@ -144,7 +144,7 @@ class Block:
                 # This is the target of a link. Give it an ID for navigation.
                 # TODO think about moving this target up to the label before or even the section
                 # header above where appropriate?
-                if 'is_target' in line.link_info and line.link_info['is_target']:
+                if 'is_target' in line.link_info:
                     html_out = '<span id="' + \
                         html_out[0:4] + '">' + html_out[0:4] + \
                         '</span>' + html_out[4:]

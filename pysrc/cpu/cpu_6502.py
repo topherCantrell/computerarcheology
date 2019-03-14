@@ -2,34 +2,18 @@ import json
 import os
 
 
-class CPU_6809:
+class CPU_6502:
 
     def __init__(self):
 
-        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '6809.js')) as f:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '6502.js')) as f:
             data = json.load(f)
 
         self.opcodes = []
         self._data_map = {}
 
-        # The "post" forms will be rippled through regular mnemonics
-        self.posts = []
         for entry in data:
-            if 'post' in entry:
-                self.posts.append(entry)
-
-        # Expand the "post" mnemonics
-        for entry in data:
-            if 'mnem' in entry:
-                if 'y' in entry['mnem']:
-                    for post in self.posts:
-                        new_mnem = entry['mnem'].replace('y', post['post'])
-                        new_code = entry['code'].replace('yy', post['code'])
-                        new_entry = {'mnem': new_mnem,
-                                     'code': new_code, 'bus': entry['bus']}
-                        self.opcodes.append(new_entry)
-                else:
-                    self.opcodes.append(entry)
+            self.opcodes.append(entry)
 
         for op in self.opcodes:
             g = op['code'][:2]

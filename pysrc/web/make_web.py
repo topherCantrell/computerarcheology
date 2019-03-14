@@ -99,6 +99,12 @@ def process_markdown(lines, site_nav_node, fp_content):
                 if name == '6809':
                     import cpu.cpu_6809
                     code_info['cpu'] = cpu.cpu_6809.CPU_6809()
+                elif name == '6502':
+                    import cpu.cpu_6502
+                    code_info['cpu'] = cpu.cpu_6502.CPU_6502()
+                elif name == 'DVG':
+                    import cpu.cpu_DVG
+                    code_info['cpu'] = cpu.cpu_DVG.CPU_DVG()
                 else:
                     raise Exception("Unknown CPU " + name)
 

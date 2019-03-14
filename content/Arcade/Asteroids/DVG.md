@@ -1,5 +1,6 @@
-%%image=DVG.jpg
-%%title= Digital Vector Generator (DVG)
+![DVG](DVG.jpg)
+
+# Digital Vector Generator (DVG)
 
 There is a lot of info here:
 
@@ -27,8 +28,8 @@ But in the end all your program can draw is a bunch of lines.
 Detailed information on the DVG from Asteroids: 
 [http://www.jmargolin.com/vgens/aster.pdf](http://www.jmargolin.com/vgens/aster.pdf)
 
-* [Asteroids Vector ROM](../Asteroids/VectorROM.html)
-* [Omega Race Vector ROM](../OmegaRace/VectorROM.html)
+* [Asteroids Vector ROM](VectorROM.md)
+* [Omega Race Vector ROM](../OmegaRace/VectorROM.md)
 
 # Memory Layout
 
@@ -47,15 +48,15 @@ as two-bytes words. The bytes are read little-endian -- least significant byte f
 
 For instance, the main CPU writes four bytes to the shared RAM as follows:
 
-{{{
+```
 8000: BF 36 BF 06
-}}}
+```
 
 The DVG would fetch these bytes as two words LSB first:
 
-{{{
+```
 8000: 36BF 06BF
-}}}
+```
 
 # Screen Geometry
 
@@ -73,7 +74,7 @@ a ROM routine. This allows the same asteroid image to be drawn in different size
 remains in effect until you change it.
 
 The scaling-factor is a power-of-two divisor:
-{{{
+```
    0     /512
    1     /256
    2     /128
@@ -84,16 +85,16 @@ The scaling-factor is a power-of-two divisor:
    7     /4
    8     /2
    9     /1
-}}}
+```
 
 Imagine a sequence that draws a square like this:
-{{{
+```
 MoveTo(0,0,9)   ; Bottom left corner of screen, global-scale of 9 (divide-by-one)
 LineTo(1023,0)  ; To the right 1023
 LineTo(0,1023)  ; Up 1023
 LineTo(-1023,0) ; Left 1023
 LineTo(0,-1023) ; Down 1023
-}}}
+```
 
 If the scale was set to 9 then all the values get divided by 1 (unchanged). The square bounds
 the entire screen. But if the scale was set to 8 then the values get divided by 2 and the 
@@ -108,11 +109,11 @@ scale-factor is added to the global scale-factor to make a "total" scale-factor 
 the vector.
 
 Take these two lines for instance. Assume the global scale-factor is 0:
-{{{
+```
          dx   dy  int  scale
 LineTo (800,   0,  15,  5)
 LineTo (1600,  0,  15,  4)
-}}}
+```
 
 The first line is drawn 50 units to the right since the total scale factor is 0+5 = 5 (divide-by-16). 800/16=50.
 
@@ -125,13 +126,13 @@ The second line would be drawn with a factor of 4+4=8 (divide-by-two). The line 
 
 Thus the added global scale-factor of 4 has made the sequence of lines 16 times larger.
 
-= DVG Opcodes =
+# DVG Opcodes
 
 Most DVG commands are one word (two bytes) long. Some are two words (four bytes).
 
 The upper nibble of the first word is the command. 
 
-{{{
+```
 0 - 9 : VEC  -- a full vector command
     A : CUR  -- set the current (x,y) and global scale-factor
     B : HALT -- end of commands
@@ -139,13 +140,13 @@ The upper nibble of the first word is the command.
     D : RTS  -- return from a vector program subroutine
     E : JMP  -- jump to a location in the vector program
     F : SVEC -- a short vector command
-}}} 
+```
 
 ## VEC
 
 Draw a line from the current (x,y) coordinate.
 
-{{{
+```
 Example:    
              ;  SSSS -mYY YYYY YYYY | BBBB -mXX XXXX XXXX
 87FE 73FE    ;  1000 0111 1111 1110 | 0111 0011 1111 1110
@@ -156,13 +157,13 @@ Example:
    
 VEC  scale=08(/2)    bri=07  x=1022    y=-1022  (511.00, -511.00)
   
-}}}
+```
 
 ## CUR
 
 Set the current (x,y) and global scale-factor.
 
-{{{
+```
 Example:
              ; 1010 00yy yyyy yyyy | SSSS 00xx xxxx xxxx
 A37F 03FF    ; 1010 0011 0111 1111 | 0000 0011 1111 1111
@@ -171,18 +172,18 @@ A37F 03FF    ; 1010 0011 0111 1111 | 0000 0011 1111 1111
    
 CUR  scale=00(/512)  y=895  x=1023
 
-}}}
+```
 
 ## HALT
 
 End the current drawing list.
 
-{{{
+```
 B000         ; 1011 0000 0000 0000
 
 HALT
 
-}}}
+```
  
 ## JSR 
 
@@ -191,7 +192,7 @@ FOUR levels of nested subroutine calls. Be careful.
 
 Note that the target address is the WORD address -- not the byte address.
  
-{{{
+```
 Example:             
              ; 1100 aaaa aaaa aaaa
 CAE4         ; 1100 1010 1110 0100
@@ -203,18 +204,18 @@ In this case:
   
 JSR  $0DC8
 
-}}}
+```
  
 ## RTS
 
 Return from current vector subroutine.
  
-{{{
+```
 D000         ; 1101 0000 0000 0000
 
 RTS
 
-}}}
+```
  
 ## JMP
 
@@ -222,7 +223,7 @@ Jump to a new location in the vector program.
 
 Note that the target address is the WORD address -- not the byte address.
  
-{{{
+```
 Example:
              ; 1110 aaaa aaaa aaaa
 EA0A         ; 1110 1010 0000 1010
@@ -234,7 +235,7 @@ In this case:
   
 JMP  $0C14
 
-}}}
+```
 
 ## SVEC
 
@@ -242,7 +243,7 @@ Use a "short" notation to draw a vector. This does not mean the vector itself
 is necessarily short. It means that the notation is shorter (fewer bits of
 resolution).
 
-{{{
+```
 Example:
         ; 1111 smYY BBBB SmXX
 FF70    ; 1111 1111 0111 0000
@@ -253,4 +254,4 @@ FF70    ; 1111 1111 0111 0000
    
 SVEC scale=01(/256)  bri=07  x=0       y=-3     (0.00, -0.01)
 
-}}}     
+```    

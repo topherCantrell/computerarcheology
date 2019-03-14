@@ -1,14 +1,15 @@
-%%image = Asteroids.jpg
-%%title = Asteroids DVG Vector ROM
-%%cpu   = DVG
+![Asteroids DVG Vector ROM](Asteroids.jpg)
 
-{{{html
+# Asteroids DVG Vector ROM
+
+>>> cpu DVG
+
+```html
 <script src="/Arcade/Asteroids/VectorROM.js"></script>
-
 <script src="/js/BinaryData.js"></script>
 <script src="/js/DVG.js"></script>
 <script src="/js/CANVAS.js"></script>
-}}}
+```
 
 OriginalBinary 035127.02 (Rev 2)
 
@@ -28,21 +29,22 @@ Thanks to [slx7R4GDZM](https://github.com/slx7R4GDZM) for many fixes and discove
 
  For info about the vector generator hardware and opcodes:
 
-[DVG Information](/Arcade/DVG.html)
+[DVG Information](DVG.md)
 
-# Test Pattern `visual`
+# Test Pattern
 
 Diamond pattern across screen with a parallel
 line pattern in the center.
 
-{{{html
+```html
 <canvas width="520" height="520"
   data-canvasFunction="DVG.handleDVGCanvas"
   data-origin="0800"
   data-command="screenScale=0.5,0800">
 </canvas>
-}}}
+```
 
+```code
 0800: 80 A0 00 00    CUR  scale=00(/512)           x=0       y=128     
 0804: 00 70 00 00    VEC  scale=07(/4)   bri=0     x=0       y=0       (0.0000, 0.0000)
 0808: 00 90 FF 73    VEC  scale=09(/1)   bri=7     x=1023    y=0       (1023.0000, 0.0000)
@@ -92,17 +94,19 @@ line pattern in the center.
 0882: 00 F9          SVEC scale=01(/256) bri=0     x=0       y=1       (0.0000, 0.0039)
 0884: 2F F0          SVEC scale=02(/128) bri=2     x=-3      y=0       (-0.0234, 0.0000)
 0886: 7C D0          RTS
+```
 
-# Bank Error `visual`
+# Bank Error 
 
-{{{html
+```html
 <canvas width="500" height="60"
   data-canvasFunction="DVG.handleDVGCanvas"
   data-origin="0800"
   data-command="x=20,y=45,baseScale=1,088C">
 </canvas>
-}}}
+```
 
+```code
 ; In Revision 1 of this ROM, the text is: "PAGE SELECT ERROR"
 
 ; "BANK ERROR"  In this Revision 2
@@ -118,17 +122,19 @@ line pattern in the center.
 089E: F3 CA          JSR  $0DE6
 08A0: DD CA          JSR  $0DBA
 08A2: F3 EA          JMP  $0DE6
+```
 
-# Credits `visual`
+# Credits 
 
-{{{html
+```html
 <canvas width="500" height="60"
   data-canvasFunction="DVG.handleDVGCanvas"
   data-origin="0800"
   data-command="x=20,y=45,baseScale=1,08B8">
 </canvas>
-}}}
+```
 
+```code
 ; In Revision 1 of this ROM the text is "ASTEROIDS BY ATARI"
 
 ; "c 1979 ATARI INC" In this Revision 2
@@ -175,8 +181,9 @@ line pattern in the center.
 08F2: 3C 14 ( 60,  20)
 08F4: 0A 46 ( 10,  70)
 08F6: D8 D8 (-40, -40)
+```
 
-# Shrapnel Patterns `visual`
+# Shrapnel Patterns 
 
 This is used when the player's shot hits something.
 
@@ -185,14 +192,15 @@ clever. You could use one pattern and vary the scale to make it look like it is
 spreading out. But the scale jumps are powers-of-two. These slightly-scaled patterns
 can be used to take up the gaps in the large scaling doubles!
 
-{{{html
+```html
 <canvas width="400" height="100"
   data-canvasFunction="DVG.handleDVGCanvas"
   data-origin="0800"
   data-command="baseScale=0,x=50,y=50,09A0,x=150,y=50,096A,x=250,y=50,092C,x=350,y=50,0900">
 </canvas>
-}}}
+```
 
+```code
 ; Jump table for 4
 08F8: D0 C8          JSR  $09A0
 08FA: B5 C8          JSR  $096A
@@ -290,17 +298,19 @@ can be used to take up the gaps in the large scaling doubles!
 09D6: 40 31 C0 07    VEC  scale=03(/64)  bri=0     x=-960    y=320     (-15.0000, 5.0000)
 09DA: 78 F8          SVEC scale=03(/64)  bri=7     x=0       y=0       (0.0000, 0.0000)
 09DC: 00 D0          RTS
+```
 
-# Rock Patterns `visual`
+# Rock Patterns 
 
-{{{html
+```html
 <canvas width="400" height="100"
   data-canvasFunction="DVG.handleDVGCanvas"
   data-origin="0800"
   data-command="baseScale=0,x=50,y=50,09E6,x=150,y=50,09FE,x=250,y=50,0A1A,x=350,y=50,0A34">
 </canvas>
-}}}
+```
 
+```code
 ; Jump table for 4  
 09DE: F3 C8          JSR  $09E6
 09E0: FF C8          JSR  $09FE
@@ -367,16 +377,18 @@ can be used to take up the gaps in the large scaling doubles!
 0A4A: 69 F9          SVEC scale=03(/64)  bri=6     x=1       y=1       (0.0156, 0.0156)
 0A4C: 7F F2          SVEC scale=02(/128) bri=7     x=-3      y=2       (-0.0234, 0.0156)
 0A4E: 00 D0          RTS  
+```
 
-# UFO `visual`
-{{{html
+# UFO 
+```html
 <canvas width="100" height="75"
   data-canvasFunction="DVG.handleDVGCanvas"
   data-origin="0800"
   data-command="x=50,y=40,baseScale=0,0A52">
 </canvas>
-}}}
+```
 
+```code
 ; Jump table for 1
 0A50: 29 C9          JSR  $0A52
 ;
@@ -393,9 +405,11 @@ can be used to take up the gaps in the large scaling doubles!
 0A68: CD F6          SVEC scale=02(/128) bri=12    x=-1      y=-2      (-0.0078, -0.0234)
 0A6A: DF F6          SVEC scale=02(/128) bri=13    x=-3      y=-2      (-0.0234, -0.0234)
 0A6C: 00 D0          RTS  
+```
 
-# Player Ships `visual`
+# Player Ships 
 
+```code
 ; Table for ships and thrusts based on player's direction.
 ; The addresses are where the ROM appears in the main CPU's
 ; memory map (begins at 5000). Thus 5292 - 5000 + 0800 = 0A92.
@@ -418,8 +432,9 @@ can be used to take up the gaps in the large scaling doubles!
 0A8A: 7A 54 ;{{#ShipDir56:ShipDir56:0}}
 0A8C: 9E 54 ;{{#ShipDir60:ShipDir60:0}}
 0A8E: C2 54 ;{{#ShipDir64:ShipDir64:0}}
+```
 
-{{{html
+```html
 <canvas width="1060" height="100"
   data-canvasFunction="DVG.handleDVGCanvas"
   data-origin="0800"
@@ -443,8 +458,9 @@ can be used to take up the gaps in the large scaling doubles!
     x=1010,y=50,0CC2,0CD4
   ">
 </canvas>
-}}}
+```
 
+```code
 ShipDir0:
 0A90: 0F F6          SVEC scale=02(/128) bri=0     x=-3      y=-2      (-0.0234, -0.0156)
 0A92: C8 FA          SVEC scale=03(/64)  bri=12    x=0       y=2       (0.0000, 0.0313)
@@ -665,19 +681,21 @@ ThrustDir64:
 0CD4: CD FE          SVEC scale=03(/64)  bri=12    x=-1      y=-2      (-0.0156, -0.0469)
 0CD6: CD FA          SVEC scale=03(/64)  bri=12    x=-1      y=2       (-0.0156, 0.0313)
 0CD8: 00 D0          RTS
+```
 
-# Lives `visual`
+# Lives 
 
  Ships in reserve. These are defined so you can draw them one right after the other (three drawn here).
 
-{{{html
+```html
 <canvas width="200" height="100"
   data-canvasFunction="DVG.handleDVGCanvas"
   data-origin="0800"
   data-command="x=50,y=50,baseScale=-1,0CDA,0CDA,0CDA">
 </canvas>
-}}}
-  
+```
+
+```code  
 0CDA: 0E F7          SVEC scale=02(/128) bri=0     x=-2      y=-3      (-0.0156, -0.0234)
 0CDC: 7A F8          SVEC scale=03(/64)  bri=7     x=2       y=0       (0.0313, 0.0000)
 0CDE: 79 FD          SVEC scale=03(/64)  bri=7     x=1       y=-1      (0.0156, -0.0469)
@@ -686,17 +704,19 @@ ThrustDir64:
 0CE8: 79 F9          SVEC scale=03(/64)  bri=7     x=1       y=1       (0.0156, 0.0156)
 0CEA: C0 60 80 02    VEC  scale=06(/8)   bri=0     x=640     y=192     (80.0000, 24.0000)
 0CEE: 9F D0          RTS  
+```
 
-# Characters `visual`
+# Characters 
 
-{{{html
+```html
 <canvas width="500" height="120"
   data-canvasFunction="DVG.handleDVGCanvas"
   data-origin="0800"
   data-command="x=30,y=45,baseScale=1,0CF0,0D00,0D1A,0D26,0D36,0D46,0D54,0D66,0D74,0D82,0D8E,0D9A,0DA4,0DB0,0DBA,0DC6,0DD4,0DE6,x=30,y=90,0DF6,0E04,0E10,0E1C,0E26,0E34,0E3E,0E4C,0E58,0E5C,0E64,0E74,0E82,0E90,0E9E,0EAC,0EB6,0EC6">
 </canvas>
-}}}
+```
 
+```code
 ; "A"
 0CF0: 70 FA          SVEC scale=01(/256) bri=7     x=0       y=2       (0.0000, 0.0078)
 0CF2: 72 F2          SVEC scale=00(/512) bri=7     x=2       y=2       (0.0039, 0.0039)
@@ -1049,8 +1069,11 @@ ThrustDir64:
 0F18: 1A CB          JSR  $0E34 ; {} X 28
 0F1A: 1F CB          JSR  $0E3E ; {} Y 29
 0F1C: 26 CB          JSR  $0E4C ; {} Z 30
+```
 
 # Messages
+
+```code
 ; Message offsets
 0F1E: 0B  ; HIGH SCORES 
 0F1F: 13  ; PLAYER
@@ -1063,16 +1086,18 @@ ThrustDir64:
 0F26: 7D  ; 1 COIN 2 PLAYS 
 0F27: 87  ; 1 COIN 1 PLAY 
 0F28: 91  ; 2 COINS 1 PLAY 
+```
 
  Messages are packed with 3 characters in 2 bytes (3 5-bit characters).
  The upper 15 bits are used. If the last bit is set then the message terminates.
  If the last bit is clear then the next two bytes are parsed UNLESS the parser
  finds a 00000 character. That pattern terminates the message too.
 
- Here is the character map for a 5 bit character (00-1F):[[BR]]
- "@_012ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+ Here is the character map for a 5 bit character (00-1F):<br>
+ "@_012ABCDEFGHIJKLMNOPQRSTUVWXYZ"<br>
  Again ... a 0 ("@") terminates the message
 
+```code
 ; HIGH SCORES
 ; 01100_01101_01011_0 01100_00001_10111_0 00111_10011_10110_0 01001_10111_00000_0
 ; H     I     G       H     _     S       C     O     R       E     S     @ 
@@ -1132,8 +1157,11 @@ ThrustDir64:
 ; 00100_00001_00111_0 10011_01101_10010_0 10111_00001_00011_0 00001_10100_10000_0 00101_11101_00000_0 
 ; 2     _     C       O     I     N       S     _     1       _     P     L       A     Y     @     
 0FAF: 20 4E 9B 64 B8 46 0D 20 2F 40 
+```
 
 # Sine lookup table
+
+```code
 ; Used for vertical thrust (offset by 64 to get cosine for horizontal thrust)
 0FB9: 00 03 06
 0FBC: 09 0C 10 13
@@ -1155,3 +1183,4 @@ ThrustDir64:
 
 ; Extra space
 0FFA: 00 00 00 00 00 00
+```

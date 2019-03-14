@@ -1,14 +1,16 @@
-%%image = Asteroids.jpg
-%%title = Asteroids Code
-%%cpu   = 6502
+![Asteroids](Asteroids.jpg)
 
-%%-ram  = Arcade/Asteroids/RAMUse.mark /Arcade/Asteroids/RAMUse.html
-%%-hard = Arcade/Asteroids/Hardware.mark /Arcade/Asteroids/Hardware.html
+# Asteroids Code
 
-Address Tables:
-* [RAM Usage](RAMUse.html)
-* [Hardware Usage](Hardware.html)
+>>> cpu 6502
 
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
+
+>>> memoryTable hard 
+[Hardware Info](Hardware.md)
+
+```code
 ; Disassembly By Lonnie Howell
 ; displacer2@yahoo.com
 ; NOTE: This code is property of Atari Inc. All requests from said company to remove
@@ -3173,3 +3175,4 @@ Vectors:
 7FFA: 65 7B ; [NMI Vector to 7B65](#NMI)
 7FFC: F3 7C ; [Reset Vector to 7CF3](#RESET)
 7FFE: F3 7C ; [IRQ/BRK Vector (unused) to 7CF3 (RESET)](#RESET)     
+```

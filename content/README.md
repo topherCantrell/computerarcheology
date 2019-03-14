@@ -1,14 +1,15 @@
 ![Computer Archeology](Arch.jpg)
 
->>> deploy:
->>>    +css
->>>    +js
->>>    +img
->>>    +Arch.jpg
->>>    +favicon.ico
->>>        Amiga
->>>        CoCo
->>>      Virus
+>>> deploy:<br>
+>>>    +css<br>
+>>>    +js<br>
+>>>    +img<br>
+>>>    +Arch.jpg<br>
+>>>    +favicon.ico<br>
+>>>        Amiga<br>
+>>>        CoCo<br>
+>>>        Virus<br>
+>>>        Arcade<br>
 
 # Computer Archeology
 

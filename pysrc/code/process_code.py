@@ -113,7 +113,8 @@ def process_code(lines, code_info, skip_no_label_jumps=False):
                 j = find_end_of_hex(c.original.text, i + 1)
                 if c.link_info == None:
                     c.link_info = {}
-                c.link_info = {'opcode_i': i, 'opcode_j': j}
+                c.link_info['opcode_i'] = i
+                c.link_info['opcode_j'] = j
 
                 # This is the referenced memory
                 addr = int(c.original.text[i + 1:j], 16)

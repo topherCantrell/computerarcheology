@@ -1,15 +1,16 @@
-;;%%image=Asteroids.jpg
-;;%%title= Asteroids DVG Vector ROM
-;;%%cpu=DVG
+![Asteroids DVG Vector ROM](Asteroids.jpg)
 
-;;{{{html
-;;<script src="/Arcade/Asteroids/VectorROM.js"></script>
-;;
-;;<script src="/js/BinaryData.js"></script>
-;;<script src="/js/DVG.js"></script>
-;;<script src="/js/CANVAS.js"></script>
-;;}}}
+# Asteroids DVG Vector ROM
 
+```{html
+<script src="/Arcade/Asteroids/VectorROM.js"></script>
+
+<script src="/js/BinaryData.js"></script>
+<script src="/js/DVG.js"></script>
+<script src="/js/CANVAS.js"></script>
+```
+
+```
 ; OriginalBinary 035127.01 (Rev 1)
 
 ;;= TODO =
@@ -1132,3 +1133,4 @@ ThrustDir64:
 
 ; Extra space
 0FFC: 00 00 00 00
+```
