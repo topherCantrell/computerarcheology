@@ -4,6 +4,7 @@
 >>>   Hardware.md<br>
 >>>   RAMUse.md<br>
 >>>   Code.md<br>
+>>>   VectorROM.md<br>
 >>>   DVG.md<br>
 >>>   Journal.md<br>
 >>>   +Asteroids.jpg
