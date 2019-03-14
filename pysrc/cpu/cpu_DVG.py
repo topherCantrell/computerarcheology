@@ -13,28 +13,21 @@ class CPU_DVG:
         self._data_map = {}
 
         for entry in data:
+            entry['code'] = entry['code'].replace('_', '').replace(' ', '')
+            # Note that this are BIT fields ... not BYTE fields like other CPUs
             self.opcodes.append(entry)
 
-        '''
-        for op in self.opcodes:
-            g = op['code'][:2]
-            if g in self._data_map:
-                self._data_map[g].append(op)
-            else:
-                self._data_map[g] = [op]
-        '''
-
     def get_opcode(self, mnem):
-        # for entry in self.opcodes:
-        #    if entry['mnem'] == mnem:
-        #        return entry
+        for entry in self.opcodes:
+            if entry['mnem'] == mnem:
+                return entry
         return None
 
     def get_alias(self, op):
-        # if 'alias' in op:
-        #    return op['alias']
-        # else:
-        return None
+        if 'alias' in op:
+            return op['alias']
+        else:
+            return None
 
     def is_bus_x(self, op):
         return 'x' in op['bus']
@@ -49,10 +42,7 @@ class CPU_DVG:
         return self.is_bus_r(op) and self.is_bus_w(op)
 
     def is_memory_reference(self, op):
-        s = op['code']
-        if 'p' in s or 's' in s or 't' in s or 'r' in s:
-            return True
-        return False
+        return (op['mnem'].startswith('JSR') or op['mnem'].startswith('JMP'))
 
     def _does_op_fit(self, g, t):
         if len(g) != len(t):
@@ -73,11 +63,14 @@ class CPU_DVG:
     def get_opcode_from_data(self, data):
         ret = []
         g = ''
-        for d in data:
-            g = g + '{:02X}'.format(d)
-        if not g[:2] in self._data_map:
-            return []
-        for op in self._data_map[g[:2]]:
+        if len(data) == 2:
+            g = '{:08b}{:08b}'.format(data[1], data[0])
+        elif len(data) == 4:
+            g = '{:08b}{:08b}{:08b}{:08b}'.format(
+                data[1], data[0], data[3], data[2])
+        else:
+            return None
+        for op in self.opcodes:
             if self._does_op_fit(g, op['code']):
                 ret.append(op)
         return ret
