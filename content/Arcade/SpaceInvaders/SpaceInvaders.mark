@@ -453,8 +453,9 @@ copied to a sync-flag at 0x2080 where it remains constant for all the shots betw
 The code uses a common routine to handle all three shots. Each shot task copies its data structure to a common area, calls the handler, 
 and then copies the changed data back to its personal area.
 
-The common handler is responsible for moving each shot. The normal delta Y for the shots is a constant 4 pixel down per step (60 pixels 
-per second). But when there are 8 or fewer aliens on the screen the delta changes up to 5 pixels per step to make the game more difficult.
+The common handler is responsible for moving each shot. The normal delta Y for the shots is a constant 4 pixels down per step. A shot makes
+a step every 3 frames. (4*60/3 = 80 pixels per second). But when there are 8 or fewer aliens on the screen the delta changes up to 5 pixels 
+per step (5*60/3 = 100 pixels per second).
 
 The common handler also initiates the alien shots. Each shot has a move-counter that starts when the shot is dropped and counts up with 
 each step as it falls. The game keeps a constant reload rate that determines how fast the aliens can fire. The game takes the smallest 
