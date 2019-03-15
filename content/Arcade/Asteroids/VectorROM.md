@@ -173,16 +173,14 @@ line pattern in the center.
 08E6: CD F1          SVEC scale=02(/128) bri=12    x=-1      y=1       (-0.0078, 0.0078)
 08E8: C7 F1          SVEC scale=00(/512) bri=12    x=-3      y=1       (-0.0059, 0.0020)
 08EA: C1 FD          SVEC scale=01(/256) bri=12    x=1       y=-1      (0.0039, -0.0117)
-```
 
-```
 ; Ship explosion pieces velocity (x, y)
-08EC: D8 1E (-40,  30)
-08EE: 32 EC ( 50, -20)
-08F0: 00 C4 (  0, -60)
-08F2: 3C 14 ( 60,  20)
-08F4: 0A 46 ( 10,  70)
-08F6: D8 D8 (-40, -40)
+08EC: D8 1E ; (-40,  30)
+08EE: 32 EC ; ( 50, -20)
+08F0: 00 C4 ; (  0, -60)
+08F2: 3C 14 ; ( 60,  20)
+08F4: 0A 46 ; ( 10,  70)
+08F6: D8 D8 ; (-40, -40)
 ```
 
 # Shrapnel Patterns 
@@ -411,7 +409,7 @@ can be used to take up the gaps in the large scaling doubles!
 
 # Player Ships 
 
-```
+```code
 ; Table for ships and thrusts based on player's direction.
 ; The addresses are where the ROM appears in the main CPU's
 ; memory map (begins at 5000). Thus 5292 - 5000 + 0800 = 0A92.
@@ -1099,7 +1097,7 @@ ThrustDir64:
  "@_012ABCDEFGHIJKLMNOPQRSTUVWXYZ"<br>
  Again ... a 0 ("@") terminates the message
 
-```
+```code
 ; HIGH SCORES
 ; 01100_01101_01011_0 01100_00001_10111_0 00111_10011_10110_0 01001_10111_00000_0
 ; H     I     G       H     _     S       C     O     R       E     S     @ 
@@ -1163,7 +1161,7 @@ ThrustDir64:
 
 # Sine lookup table
 
-```
+```code
 ; Used for vertical thrust (offset by 64 to get cosine for horizontal thrust)
 0FB9: 00 03 06
 0FBC: 09 0C 10 13
