@@ -24,8 +24,8 @@ def process_markdown(text):
             is_img = True
 
         src = text[j + 2:k]
-        if not src.startswith('http') and src.endswith('.md'):
-            src = src[:-3] + '.html'
+        if not src.startswith('http'):
+            src = src.replace('.md', '.html')
 
         if is_img:
             rep = '<img src="' + src + '">'

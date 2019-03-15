@@ -3,6 +3,7 @@
 >>> deploy:<br>
 >>>    +Arcade.jpg<br>
 >>>    Asteroids<br>
+>>>    CrazyClimber:Crazy Climber<br>
 
 # Arcade
 

@@ -1,13 +1,19 @@
-%%title = Fixed Code
-%%cpu   = 6809
-%%image = Defender.jpg
+![Fixed Bank](Defender.jpg)
 
-* [RAM Use](RAMUse.html)
-* [Hardware Info](Hardware.html)
+>>> cpu 6809
+
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
+
+>>> memoryTable hard 
+[Hardware Info](Hardware.md)
+
+# Fixed Bank
 
 I have no idea what this first byte is. I now have a theory regarding this, though. 
 I believe this must be set to yield a value of $80 when a checksum is done on this ROM.
 
+```code
 D000: 4A            DECA                     ;
 
 This routine seems to be some sort of chain. Each link has 
@@ -6408,3 +6414,4 @@ FFF8: A0 8F                                  ; IRQ
 FFFA: F6 1F                                  ; SWI (RESET)
 FFFC: F6 1F                                  ; NMI (RESET)
 FFFE: F6 1F                                  ; RESET
+```

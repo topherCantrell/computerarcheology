@@ -1,13 +1,18 @@
-%%title = Defender Bank 1
-%%cpu   = 6809
-%%image = Defender.jpg
+![Defender Bank 1](Defender.jpg)
 
-* [RAM Use](RAMUse.html)
-* [Hardware Info](Hardware.html)
+>>> cpu 6809
 
-Bank1 (write 1 to $D000)
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
 
+>>> memoryTable hard 
+[Hardware Info](Hardware.md)
 
+# Bank1 
+
+(write 1 to $D000)
+
+```code
 ;Small jump table
 C000: 7E C0 06      JMP   $C006              ;
 C003: 7E CC AD      JMP   $CCAD              ;
@@ -1870,3 +1875,4 @@ CFF8: CD
 CFF9: FF D7 70      STU   $D770              ;
 CFFC: F0 00 00      SUBB  $0000              ;
 CFFF: 00 
+```

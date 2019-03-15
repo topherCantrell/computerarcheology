@@ -242,24 +242,28 @@ def deploy_directory(current_node):
             os.makedirs(dst)
             deploy_directory(dep)
         else:
-            md, _ = code.markdown_utils.load_file(src)
-            cont = process_markdown(md, dep, fp_content)
-            f = open(os.path.join(ENV.CONTENT_DIR, 'master.template'), 'r')
-            lines = f.readlines()
-            f.close()
-            substitute(lines, 'TITLE', cont['TITLE'])
-            substitute(lines, 'IMAGE', cont['IMAGE'])
-            substitute(lines, 'BREAD_CRUMBS', cont['BREAD_CRUMBS'])
-            substitute(lines, 'SITE_TREE', cont['SITE_TREE'])
-            substitute(lines, 'PAGE_TREE', cont['PAGE_TREE'])
-            substitute(lines, 'CONTENT', cont['CONTENT'])
-            if dep.anchor == 'README.md':
-                dep.anchor = 'index.html'
+            if not src.endswith('.md'):
+                shutil.copy(src, dst)
             else:
-                dep.anchor = dep.anchor[0:-2] + 'html'
-            f = open(os.path.join(ENV.DEPLOY_DIR, dep.get_full_path()), 'w+')
-            f.writelines(lines)
-            f.close()
+                md, _ = code.markdown_utils.load_file(src)
+                cont = process_markdown(md, dep, fp_content)
+                f = open(os.path.join(ENV.CONTENT_DIR, 'master.template'), 'r')
+                lines = f.readlines()
+                f.close()
+                substitute(lines, 'TITLE', cont['TITLE'])
+                substitute(lines, 'IMAGE', cont['IMAGE'])
+                substitute(lines, 'BREAD_CRUMBS', cont['BREAD_CRUMBS'])
+                substitute(lines, 'SITE_TREE', cont['SITE_TREE'])
+                substitute(lines, 'PAGE_TREE', cont['PAGE_TREE'])
+                substitute(lines, 'CONTENT', cont['CONTENT'])
+                if dep.anchor == 'README.md':
+                    dep.anchor = 'index.html'
+                else:
+                    dep.anchor = dep.anchor[0:-2] + 'html'
+                f = open(os.path.join(ENV.DEPLOY_DIR,
+                                      dep.get_full_path()), 'w+')
+                f.writelines(lines)
+                f.close()
 
 
 def load_site_directory():

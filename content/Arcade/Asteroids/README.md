@@ -7,9 +7,9 @@
 >>>   VectorROM.md<br>
 >>>   DVG.md<br>
 >>>   Journal.md<br>
->>>   +Asteroids.jpg
->>>   +VectorROM.js
->>>   +DVG.jpg
+>>>   +Asteroids.jpg<br>
+>>>   +VectorROM.js<br>
+>>>   +DVG.jpg<br>
 
 # Code Links 
 

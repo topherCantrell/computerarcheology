@@ -1,7 +1,8 @@
-%%title = Defender Hardware
-%%image = Defender.jpg
+![Defender Hardware](Defender.jpg)
 
-{{{
+# Hardware
+
+```
  $0000..$BFFF is always RAM 
      stack pointer is initialized to $BFFF 
      $0000-$97FF Screen RAM 
@@ -53,7 +54,7 @@
   3: Bank3 (defend.7+defend.10) (2x2K) 
   4,5,6: No ROM chips 
   7: Bank7 (defend.6)  (2K) 
-}}}
+```
 
  $D000..$FFFF is always ROM ((defend.1+defend.4)(2x2K)+defend.2(4K)+defend.3(4K))
 
@@ -69,7 +70,7 @@ If you disagree please send me an email with an explanation of why I am wrong. I
 
  From [Sean Riddle's page](http://seanriddle.com/ripper.html)
 
-{{{
+```
 The display is 304 x 256 pixels, using 16 colors at a time out of a hardware palette of 256. 
 The byte at memory location $0000 in the upper left-hand corner of the screen. 
 4 bits are used for each pixel, so that byte displays as 2 pixels, side by side. 
@@ -80,4 +81,4 @@ The bottom left corner of the screen is memory location $00FF.
 Memory location $0100 displays the 3rd and 4th pixels in the top line. 
 Note that the monitor may not display all the pixels, depending on how it is set up. 
 Generally the top and bottom of the display are adjusted off the screen with overscan.
-}}} 
+```

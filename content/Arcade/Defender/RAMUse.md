@@ -1,7 +1,8 @@
-%%title= Defender RAM Use
-%%image=Defender.jpg
+![Defender RAM Use](Defender.jpg)
 
-{{{
+# Defender RAM Use
+
+```
   <$20 (word?) = 
   <$21 (byte?) = 
   <$22 (word) = 
@@ -135,10 +136,10 @@
   <$FD (byte) = 
   <$FE (byte) = 
   <$FF (byte) = 
-}}}
+```
 
 
-{{{
+```
 ; From MAME
 ;	ROM_REGION( 0x19000, "maincpu", 0 )
 ;	ROM_LOAD( "defend.1",     0x0d000, 0x0800, CRC(c3e52d7e) SHA1(a57f5278ffe44248fc73f9925d107f4024ad981a) )
@@ -159,12 +160,13 @@
 
 
 ; Fixed ROM (always available in memory map)
-}}}
+```
 
 
 
 # Fixed Bank ($D000 - $FFFF) subroutines 
 
+```
 ## $D013 
 The same as the routine at $D015 except the source of the value in the X register 
 is provided at an address at 6,X with this entry point.
@@ -431,3 +433,4 @@ All known calls to this rountine are made via a jump to $FC66.
 
 ### Called from:  
 Fixed ROM:  $E823 
+```

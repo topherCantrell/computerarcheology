@@ -1,12 +1,18 @@
-%%title = Defender Bank 7
-%%cpu   = 6809
-%%image = Defender.jpg
+![Defender Bank 7](Defender.jpg)
 
-* [RAM Use](RAMUse.html)
-* [Hardware Info](Hardware.html)
+>>> cpu 6809
 
-; Bank7 (write 7 to $D000)
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
 
+>>> memoryTable hard 
+[Hardware Info](Hardware.md)
+
+# Bank7
+ 
+(write 7 to $D000)
+
+```code
 C000: 7E C0 15      JMP   $C015              ;
 C003: 7E C0 92      JMP   $C092              ;
 C006: 7E C2 62      JMP   $C262              ;
@@ -982,3 +988,4 @@ C7F5: BD CA 57      JSR   $CA57              ;
 C7F8: 8E CC 00      LDX   #$CC00             ;
 C7FB: BD C0 39      JSR   $C039              ;
 C7FE: C5 02         BITB  #$02               ;
+```

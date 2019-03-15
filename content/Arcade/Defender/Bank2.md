@@ -1,13 +1,18 @@
-%%title= Defender Bank 2
-%%cpu=6809
-%%image=Defender.jpg
+![Defender Bank 2](Defender.jpg)
 
-* [RAM Use](RAMUse.html)
-* Hardware Info]([Hardware.html)
+>>> cpu 6809
 
-Bank2 (write 2 to $D000)
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
 
+>>> memoryTable hard 
+[Hardware Info](Hardware.md)
 
+# Bank2 
+
+(write 2 to $D000)
+
+```code
 ;One possible vector and a jump table
 C000: C5 FB         BITB  #$FB               ;points to "0" ASCII in table
 C002: 7E CA A7      JMP   $CAA7              ;
@@ -1915,4 +1920,4 @@ CFF8: CD
 CFF9: FF D7 70      STU   $D770              ;
 CFFC: F0 00 00      SUBB  $0000              ;
 CFFF: 00 
-
+```
