@@ -13,7 +13,7 @@
 I have no idea what this first byte is. I now have a theory regarding this, though. 
 I believe this must be set to yield a value of $80 when a checksum is done on this ROM.
 
-```code
+```plainCode
 D000: 4A            DECA                     ;
 
 This routine seems to be some sort of chain. Each link has 

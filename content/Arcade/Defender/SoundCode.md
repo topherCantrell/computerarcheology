@@ -1,13 +1,19 @@
-%%title = Defender Sound Board Code
-%%image = Defender.jpg
-%%cpu   = 6800
+![Defender Sound Board Code](Defender.jpg)
 
-* [RAM Use](SoundRAMUse.html)
-* [Hardware Info](SoundHardware.html)
+# Defender Sound Board
 
-This is a disassembly of one of two ROM images that I have found for the Defender sound board. The other ROM image is largely the same, but with some 
+cpu 6800
+
+>>> memoryTable hard 
+[Hardware Info](SoundHardware.md)
+
+>>> memoryTable ram 
+[RAM Usage](SoundRAMUse.md)
+
+Harry Hurst. This is a disassembly of one of two ROM images that I have found for the Defender sound board. The other ROM image is largely the same, but with some 
 significant omissions, and rerouting of jumps and subroutines. At this time I do not have any plans to disassemble that ROM.
 
+```plainCode
 F800: FF
  
 RESET:
@@ -841,3 +847,4 @@ FFF8: FC B6  ; IRQ
 FFFA: F8 01  ; SWI (not used -- mapped to RESET)
 FFFC: FD 2F  ; NMI
 FFFE: F8 01  ; RESET
+```

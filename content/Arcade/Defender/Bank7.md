@@ -12,7 +12,7 @@
  
 (write 7 to $D000)
 
-```code
+```plainCode
 C000: 7E C0 15      JMP   $C015              ;
 C003: 7E C0 92      JMP   $C092              ;
 C006: 7E C2 62      JMP   $C262              ;

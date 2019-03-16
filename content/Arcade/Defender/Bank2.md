@@ -12,7 +12,7 @@
 
 (write 2 to $D000)
 
-```code
+```plainCode
 ;One possible vector and a jump table
 C000: C5 FB         BITB  #$FB               ;points to "0" ASCII in table
 C002: 7E CA A7      JMP   $CAA7              ;

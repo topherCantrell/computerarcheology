@@ -12,7 +12,7 @@
 
 (write 3 to $D000)
 
-```code
+```plainCode
 ;Jump table
 C000: 7E C0 76      JMP   $C076              ;
 C003: 7E C0 9C      JMP   $C09C              ;
