@@ -105,9 +105,9 @@ def process_code(lines, code_info, skip_no_label_jumps=False):
             if c.comment and '{!+' in c.comment:
                 memref = True
             elif c.comment and '{!-}' in c.comment:
-                memref = False
+                memref = False                          
 
-            if memref:
+            if memref:               
                 # Record the opcode start and stop
                 i = c.original.text.index('$')
                 j = find_end_of_hex(c.original.text, i + 1)
@@ -118,33 +118,32 @@ def process_code(lines, code_info, skip_no_label_jumps=False):
 
                 # This is the referenced memory
                 addr = int(c.original.text[i + 1:j], 16)
+                                                
+                #  First check all the memory tables we know of   
+                for table in code_info['memory']:                        
+                    tab = code_info['memory'][table]
+                    entry = tab.find_entry(addr + code_info['dp'],c.opcode['bus'])                    
+                    if entry:                        
+                        c.link_info['memory_table'] = tab
+                        c.link_info['memory_table_name'] = table
+                        c.link_info['memory_table_entry'] = entry                
 
-                # First, see if this is in the cod
-                for d in cod:
-                    if d.is_address_in(addr):
-                        c.link_info['target_line'] = d
-                        if d.link_info == None:
-                            d.link_info = {}
-                        d.link_info['is_target'] = True
-                        if addr in labels:
-                            entry = labels[addr]
-                            c.link_info['target_label'] = entry['label']
-                        break
-
-                # No? Then check all the memory tables we know of
-                if not 'target_line' in c.link_info:
-                    for table in code_info['memory']:
-                        tab = code_info['memory'][table]
-                        entry = tab.find_entry(addr + code_info['dp'])
-                        if entry:
-                            c.link_info['memory_table'] = tab
-                            c.link_info['memory_table_name'] = table
-                            c.link_info['memory_table_entry'] = entry
+                # No? see if this is in the code                
+                if not 'target_line' in c.link_info:    
+                    for d in cod:                
+                        if d.is_address_in(addr):
+                            c.link_info['target_line'] = d
+                            if d.link_info == None:
+                                d.link_info = {}
+                            d.link_info['is_target'] = True
+                            if addr in labels:
+                                entry = labels[addr]
+                                c.link_info['target_label'] = entry['label']
+                            break
 
                 # We have no info on these memory addresses. Remove the link
                 # info
                 if not 'target_line' in c.link_info and not 'memory_table' in c.link_info:
-                    # print(c.original.text)
                     code_info['unknown_memory'] = {'address': addr, 'text': c}
                     c.link_info = None
 

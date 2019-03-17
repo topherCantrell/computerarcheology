@@ -229,7 +229,7 @@
 {"mnem":"IN E,(C)",     "code":"ED58",       "bus":""      },
 {"mnem":"IN H,(C)",     "code":"ED60",       "bus":""      },
 {"mnem":"IN L,(C)",     "code":"ED68",       "bus":""      },
-{"mnem":"IN A,(o)",     "code":"DBoo",       "bus":""      },
+{"mnem":"IN A,(o)",     "code":"DBoo",       "bus":"pr"    },
 {"mnem":"INC A",        "code":"3C",         "bus":""      },
 {"mnem":"INC B",        "code":"04",         "bus":""      },
 {"mnem":"INC C",        "code":"0C",         "bus":""      },
