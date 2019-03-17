@@ -733,5 +733,5 @@
 {"mnem":"LD IYH,E",     "code":"FD63",       "bus":""      },
 {"mnem":"XOR IYH",      "code":"FDAC",       "bus":""      },
 {"mnem":"CALL Z,t",     "code":"FDCCtltm",   "bus":""      },
-{"mnem":"RET C",        "code":"FDD8",       "bus":""      },  
+{"mnem":"RET C",        "code":"FDD8",       "bus":""      }
 ]

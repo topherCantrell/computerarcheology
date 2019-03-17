@@ -5,6 +5,7 @@
 >>>    Asteroids<br>
 >>>    CrazyClimber:Crazy Climber<br>
 >>>    Defender<br>
+>>>    Frogger<br>
 
 # Arcade
 

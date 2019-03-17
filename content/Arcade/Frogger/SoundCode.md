@@ -1,12 +1,14 @@
-%%title = Frogger Sound Board
-%%image = Frogger.jpg
-%%-ram  = Arcade/Frogger/SoundRAMUse.mark SoundRAMUse.html
-%%-hard = Arcade/Frogger/SoundHardware.mark SoundHardware.html
-%%cpu   = Z80
+![Frogger Sound Board](Frogger.jpg)
 
- * [RAM Usage](SoundRAMUse.html)
- * [Hardware Info](SoundHardware.html)
+>>> cpu Z80
 
+>>> memoryTable hard 
+[Hardware Info](SoundHardware.md)
+
+>>> memoryTable ram 
+[RAM Usage](SoundRAMUse.md)
+
+```code
 ;I14
 ; Reset program to program entry
 
@@ -17,9 +19,11 @@ START:
 0000: 06 00           LD      B,$00               ; Fill value of 0
 0002: 21 00 40        LD      HL,$4000            ; First location of RAM
 0005: C3 0B 01        JP      $010B               ; Continue init
+```
 
 # Write to AY Chip
 
+```code
 WriteToAY: 
 ; A is address, B is value
 0008: D3 80           OUT     ($80),A             ; {-2_AY_ADDR} Write the address to the AY
@@ -46,9 +50,11 @@ WriteToAY:
 0033: 3E FF           LD      A,$FF               ; Return ...
 0035: C9              RET                         ; ... end processing
 0036: FF FF 
+```
 
 # Interrupt
 
+```code
 Interrupt: 
 ; Interrupt Mode 1 - everything comes here
 ; Command from main processor is on AY Port A
@@ -244,9 +250,11 @@ GetComPriority:
 012F: 21 00 60        LD      HL,$6000            ; Current capacitor filter value (none)
 0132: 22 4E 40        LD      ($404E),HL          ; {-1_curFilter} Hold current
 0135: 77              LD      (HL),A              ; Set the capacitor network hardware
+```
 
 # Main Loop
 
+```code
 MainLoop: 
 ;
 ; Commands are processed for all three voices one by one. Interrupts are turned on for a
@@ -340,9 +348,11 @@ JumpTabler:
 01A4: 56              LD      D,(HL)              ; ... MSB from table
 01A5: EB              EX      DE,HL               ; Address to HL
 01A6: E9              JP      (HL)                ; Take the jump
+```
 
 # Command Init Functions
 
+```code
 CommandInit: 
 ; These functions are called once to initialize a voice function. After that the
 ; corresponding continue-function is called each pass.
@@ -372,7 +382,6 @@ CommandInit:
 01D5: C3 05 ; I17 Race car           
 01D7: 3D 06 ; I18 Pick up mate
 
-
 VCommandInit: 
 ; Call the initialization function for a voice command
 01D9: 21 A7 01        LD      HL,$01A7            ; Initialization functions
@@ -391,9 +400,11 @@ VCommandCont:
 01ED: E5              PUSH    HL                  ; Push return
 01EE: 21 F3 01        LD      HL,$01F3            ; Jump table of commands
 01F1: 18 AA           JR      $19D                ; {JumpTabler} Take the jump
+```
 
 # Command Continue Functions
 
+```code
 CommandCont: 
 ; These functions are called to continue a voice command each pass. They return 0 to continue or
 ; not-zero to terminate the continuation.
@@ -496,9 +507,11 @@ SetAmplitude:
 027F: C6 07           ADD     A,$07               ; Offset to amplitude register
 0281: CF              RST     $08                 ; Write B to voice's amplitude
 0282: C9              RET                         ; Done
+```
 
 # Command Priorities
 
+```code
 CommandPriority: 
 ; One value (0-18) for each command number (0-18). The higher the number the
 ; higher the prioirty. Nobody can preempt command 4 (frog hopping).
@@ -1269,9 +1282,11 @@ WriteAYAL:
 07B1: 32 A6 42        LD      ($42A6),A           ; ??
 07B4: 3E FF           LD      A,$FF               ; Return ...
 07B6: C9              RET                         ; ... end command
+```
 
 # Music
 
+```code
 Music: 
 
 ; 4280 Descriptor voice 1
@@ -1472,9 +1487,11 @@ NoteSets:
 08CD: 07 09  ; 1=3A# ... 30=6D#
 08CF: 0B 09  ; 1=4C  ... 30=6F
 08D1: 0F 09  ; 1=4D  ... 30=6G
+```
 
 # Note Frequencies
 
+```code
 NoteTable: 
 ; Coarse/Fine master note table
 ; AY runs at 1.789750
@@ -1582,9 +1599,11 @@ DelayTable:
 0993: 01 01 00 00 00 00 00 00                                       
 099B: 01 01 00 00 00 00 00 00                                       
 09A3: 01 01 00 00 00 00 00 00                                       
+```
 
 # Song Table
 
+```code
 SongTable: 
 ; Music pointers for all 3 voices for each song. There are 25 songs. Frogger has
 ; a very rich music base.
@@ -4656,9 +4675,11 @@ SongTable:
 16C9: 94              SUB     H                   
 16CA: 8D              ADC     A,L                 
 16CB: C8              RET     Z  
-                  
+```
+
 # Unused Area
-                
+
+```code                
 16CC: FF FF FF FF
 16D0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 16E0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF    
@@ -4679,3 +4700,4 @@ SongTable:
 17D0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF  
 17E0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF  
 17F0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF                  
+```
