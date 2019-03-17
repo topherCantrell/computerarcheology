@@ -1,4 +1,5 @@
-%%title = Frogger Main Board Hardware
-%%image = Frogger.jpg
+![Main Board RAM Use](Frogger.jpg)
+
+# RAM Usage
 
 TODO

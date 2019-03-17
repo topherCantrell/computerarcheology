@@ -126,7 +126,9 @@ def process_code(lines, code_info, skip_no_label_jumps=False):
                     if entry:                        
                         c.link_info['memory_table'] = tab
                         c.link_info['memory_table_name'] = table
-                        c.link_info['memory_table_entry'] = entry                
+                        c.link_info['memory_table_entry'] = entry        
+                        if addr!=entry['range'][0]:
+                            c.link_info['offset'] = addr - entry['range'][0]        
 
                 # No? see if this is in the code                
                 if not 'target_line' in c.link_info:    

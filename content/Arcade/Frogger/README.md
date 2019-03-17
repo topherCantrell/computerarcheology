@@ -6,13 +6,12 @@
 >>>   SoundHardware.md<br>
 >>>   SoundRAMUse.md<br>
 >>>   SoundCode.md<br>
+>>>   Hardware.md<br>
+>>>   Code.md<br>
+>>>   RAMUse.md<br>
+>>>   GFX.md<br>
 >>>   FroggerFix.mp3<br>
-
-
-Hardware.md<br>
-RAMUse.md<br>
-Code.md<br>
-GFX.md<br>
+>>>   Journal.md<br>
 
 # Frogger
 

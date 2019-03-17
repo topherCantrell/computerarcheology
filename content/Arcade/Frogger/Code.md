@@ -1,9 +1,16 @@
-%%title = Frogger Main Board
-%%image = Frogger.jpg
-%%-ram  = Arcade/Frogger/RAMUse.mark RAMUse.html
-%%-hard = Arcade/Frogger/Hardware.mark Hardware.html
-%%cpu   = Z80
+![Frogger Main Board](Frogger.jpg)
 
+# Frogger Main Board
+
+>>> cpu Z80
+
+>>> memoryTable hard 
+[Hardware Info](Hardware.md)
+
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
+
+```code
 0000: 3A 00 40       LD      A,($4000)       ; Is there ...
 0003: FE 55          CP      $55             ; ... an expansion ROM ?
 0005: CA 01 40       JP      Z,$4001         ; Yes ... jump to it
@@ -25,9 +32,11 @@
 0025: 71             LD      (HL),C          
 0026: E1             POP     HL              
 0027: C9             RET                     
+```
 
 # Print a string across the screen (down a column)
 
+```code
 ; Copy across screen left to right (down a column)
 ; DE = string
 ; HL = screen start
@@ -45,9 +54,11 @@ PrintString:
 0034: C9             RET   
                   
 0035: FF FF FF 
+```
          
 # Clear Screen
 
+```code
 There are 32 rows of 32 columns. This clears the screen from right to left one
 column at a time with a noticeable delay between columns.
 
@@ -2725,7 +2736,7 @@ Initialize:
 14C4: 66             LD      H,(HL)          
 14C5: 69             LD      L,C             
 14C6: E9             JP      (HL)            
-14C7: DD             ???                     
+14C7: DD                                  
 14C8: 14             INC     D               
 14C9: EE 14          XOR     $14             
 14CB: FF             RST     $38            
@@ -6377,3 +6388,4 @@ Initialize:
 2FD1: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF     
 2FE1: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF          
 2FF1: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF        
+```

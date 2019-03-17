@@ -91,6 +91,7 @@ class Block:
                     #     'opcode_i': 35, 'opcode_j': 38,
                     #     'memory_table': <code.memory_table.MemoryTable object at 0x00000170B409F630>,
                     #     'memory_table_name': 'ram',
+                    #     'offset': 100,
                     #     'memory_table_entry': {
                     #         'range': [136, 137],
                     #         'name': 'cursor',
@@ -107,6 +108,8 @@ class Block:
                     dest_target = 'target="' + info['memory_table_name'] + '"'
                     anch_title = line.text[opcode_i:opcode_j]
                     target_label = info['memory_table_entry']['name']
+                    if 'offset' in info:
+                        target_label = target_label+'+{:X}'.format(info['offset'])
 
                 elif 'target_line' in info:
                     # For example:

@@ -1,5 +1,6 @@
-%%title = Frogger Graphics ROM
-%%image = Frogger.jpg
+![Frogger Graphics ROM](Frogger.jpg)
+
+# Frogger Graphics ROM
 
 Tiles are 8x8 pixels. Each pixel is 2-bits (4 colors) chosen from a palette.
 
@@ -12,8 +13,8 @@ to match the monitor.
 The D1 and D0 data lines are swapped on the second ROM bank (0800-0FFF). The values shown here
 are after the swap as the system would see them.
 
-{{{html
-<script src="/Arcade/Frogger/Frogger.js"></script>
+```html
+<script src="Frogger.js"></script>
 <script src="/js/TileEngine.js"></script>
 <script src="/js/BinaryData.js"></script>
 <script src="/js/CANVAS.js"></script>
@@ -34,11 +35,11 @@ are after the swap as the system would see them.
        data-colorsName="CS0"
        data-colors='["#808080","#000080","#008000","#800000"]'>
 </canvas>
-}}}
+```
 
-# Text `visual`
+# Text 
 
-{{{html
+```html
  <canvas width="650" height="330"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -50,11 +51,11 @@ are after the swap as the system would see them.
                        18,19,1A,1B,1C,1D,1E,1F,20,21,22,23,24,25,26,27,28,29,
                        2A,2B,4E,4F,,,,,,,,">
  </canvas>
-}}}
+```
 
-# Lives and Level `visual`
+# Lives and Level 
 
-{{{html
+```html
  <canvas width="265" height="65"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -64,11 +65,11 @@ are after the swap as the system would see them.
          data-colors='["#808080","#21DE00","#EA0FE2","#FFFE00"]'
          data-command=":2x1:4C,4D">
  </canvas>
-}}}
+```
 
-# Time `visual`
+# Time 
 
-{{{html
+```html
  <canvas width="265" height="65"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -78,11 +79,11 @@ are after the swap as the system would see them.
          data-colors='["#808080","#21DE00","#EA0FE2","#FFFE00"]'
          data-command=":4x1:C,D,E,F">
  </canvas>
-}}}
+```
 
-# Bonus scores `visual`
+# Bonus scores 
 
-{{{html
+```html
  <canvas width="330" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -92,11 +93,11 @@ are after the swap as the system would see them.
          data-colors='["#808080","#21DE00","#EA0FE2","#FFFE00"]'
          data-command=":5x2:62,60,,66,64,63,61,,67,65">
  </canvas>
-}}}
+```
 
-# Fly (Bonus score) `visual`
+# Fly (Bonus score) 
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -106,11 +107,11 @@ are after the swap as the system would see them.
          data-colors='["#808080","#1DC300","#E03E00","#00C3D9"]'
          data-command=":2x2:2E,2C,2F,2D">
  </canvas>
-}}}
+```
 
-# Car 1 `visual`
+# Car 1 
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -120,11 +121,11 @@ are after the swap as the system would see them.
          data-colors='["#808080","#FFFE00","#FF0000","#9200FA"]'
          data-command=":2x2:52,50,53,51">
  </canvas>
-}}}
+```
 
-# Car 2 `visual`
+# Car 2 
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -134,11 +135,11 @@ are after the swap as the system would see them.
          data-colors='["#808080","#05DBF9","#B9DB4E","#FF42F6"]'
          data-command=":2x2:32,30,33,31">
  </canvas>
-}}}
+```
 
-# Car 3 `visual`
+# Car 3 
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -148,11 +149,11 @@ are after the swap as the system would see them.
          data-colors='["#808080","#DFDDF7","#FF0000","#22DC05"]'
          data-command=":2x2:A2,A0,A3,A1">
  </canvas>
-}}}
+```
 
-# Dozer `visual`
+# Dozer 
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -162,11 +163,11 @@ are after the swap as the system would see them.
          data-colors='["#808080","#DFDDF7","#FF0000","#22DC05"]'
          data-command=":2x2:A6,A4,A7,A5">
  </canvas>
-}}}
+```
 
-# Truck `visual`
+# Truck 
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -176,9 +177,9 @@ are after the swap as the system would see them.
         data-colors='["#808080","#DFDDF7","#FF0000","#22DC05"]'
          data-command=":2x2:AA,A8,AB,A9">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -188,10 +189,10 @@ are after the swap as the system would see them.
          data-colors='["#808080","#DFDDF7","#FF0000","#22DC05"]'
          data-command=":2x2:AE,AC,AF,AD">
  </canvas>
-}}}
+```
 
-# Base (at top) `visual`
-{{{html
+# Base (at top) 
+```html
  <canvas width="330" height="200"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -201,11 +202,11 @@ are after the swap as the system would see them.
          data-colors='["#808080","#24DE02","#FE4403","#202020"]'
          data-command=":5x3:43,40,47,44,43,,41,47,45,,,42,43,46,">
  </canvas>
-}}}
+```
 
-# Grass `visual`
+# Grass 
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -215,11 +216,11 @@ are after the swap as the system would see them.
          data-colors='["#808080","#2C00E4","#9500F6","#E40440"]'
          data-command=":2x2:4A,48,4B,49">
  </canvas>
-}}}
+```
 
-# Logs `visual`
+# Logs 
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -229,9 +230,9 @@ are after the swap as the system would see them.
          data-colors='["#808080","#E7DCE9","#E0694D","#966B4C"]'
          data-command=":2x2:56,54,57,55">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -240,9 +241,9 @@ are after the swap as the system would see them.
          data-gridY="8"         
          data-command=":2x2:5A,58,5B,59">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -251,11 +252,11 @@ are after the swap as the system would see them.
          data-gridY="8"
          data-command=":2x2:5E,5C,5F,5D">
  </canvas>
-}}}
+```
 
-# Frog at home `visual`
+# Frog at home 
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -265,9 +266,9 @@ are after the swap as the system would see them.
          data-colors='["#808080","#24DE02","#FE4403","#00C3DE"]'
          data-command=":2x2:6E,6C,6F,6D">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -276,10 +277,10 @@ are after the swap as the system would see them.
          data-gridY="8"
          data-command=":2x2:FE,FC,FF,FD">
  </canvas>
-}}}
+```
 
-# Player frog `visual`
-{{{html
+# Player frog 
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -289,9 +290,9 @@ are after the swap as the system would see them.
          data-colors='["#808080","#21DE00","#EA0FE2","#FFFE00"]'
          data-command=":2x2:72,70,73,71">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -300,9 +301,9 @@ are after the swap as the system would see them.
          data-gridY="8"
          data-command=":2x2:76,74,77,75">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -311,9 +312,9 @@ are after the swap as the system would see them.
          data-gridY="8"
          data-command=":2x2:7A,78,7B,79">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -322,9 +323,9 @@ are after the swap as the system would see them.
          data-gridY="8"
          data-command=":2x2:7E,7C,7F,7D">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -333,9 +334,9 @@ are after the swap as the system would see them.
          data-gridY="8"
          data-command=":2x2:82,80,83,81">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -344,11 +345,11 @@ are after the swap as the system would see them.
          data-gridY="8"
          data-command=":2x2:86,84,87,85">
  </canvas>
-}}}
+```
 
-# Sinking (turtles and player) `visual`
+# Sinking (turtles and player) 
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -358,9 +359,9 @@ are after the swap as the system would see them.
          data-colors='["#808080","#C6C6DB","#202020","#1DC300"]'
          data-command=":2x2:8A,88,8B,89">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -369,9 +370,9 @@ are after the swap as the system would see them.
          data-gridY="8"
          data-command=":2x2:8E,8C,8F,8D">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -380,9 +381,9 @@ are after the swap as the system would see them.
          data-gridY="8"
          data-command=":2x2:92,90,93,91">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -391,9 +392,9 @@ are after the swap as the system would see them.
          data-gridY="8"
          data-command=":2x2:96,94,97,95">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -402,11 +403,11 @@ are after the swap as the system would see them.
          data-gridY="8"
          data-command=":2x2:9A,98,9B,99">
  </canvas>
-}}}
+```
 
-# Turtles `visual`
+# Turtles 
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -416,9 +417,9 @@ are after the swap as the system would see them.
          data-colors='["#808080","#C3C3D9","#E00000","#1DC300"]'
          data-command=":2x2:36,38,37,35">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -428,9 +429,9 @@ are after the swap as the system would see them.
          data-colors='["#808080","#C3C3D9","#E00000","#1DC300"]'
          data-command=":2x2:3A,3C,3B,39">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -440,11 +441,11 @@ are after the swap as the system would see them.
          data-colors='["#808080","#C3C3D9","#E00000","#1DC300"]'
          data-command=":2x2:3E,3C,3F,3D">
  </canvas>
-}}}
+```
 
-# Otter `visual`
+# Otter 
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -454,9 +455,9 @@ are after the swap as the system would see them.
          data-colors='["#808080","#E7DCE9","#E0694D","#966B4C"]'
          data-command=":2x2:9E,9C,9F,9D">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -465,11 +466,11 @@ are after the swap as the system would see them.
          data-gridY="8"
          data-command=":2x2:E2,E0,E3,E1">
  </canvas>
-}}}
+```
 
-# Snake `visual`
+# Snake 
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -479,9 +480,9 @@ are after the swap as the system would see them.
          data-colors='["#808080","#28E6B3","#97FF00","#F346F0"]'
          data-command=":2x2:B2,B0,B3,B1">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -490,9 +491,9 @@ are after the swap as the system would see them.
          data-gridY="8"
          data-command=":2x2:B6,B4,B7,B5">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -501,9 +502,9 @@ are after the swap as the system would see them.
          data-gridY="8"
          data-command=":2x2:BA,B8,BB,B9">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -512,9 +513,9 @@ are after the swap as the system would see them.
          data-gridY="8"
          data-command=":2x2:BE,BC,BF,BD">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -523,9 +524,9 @@ are after the swap as the system would see them.
          data-gridY="8"
          data-command=":2x2:C2,C0,C3,C1">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -534,11 +535,11 @@ are after the swap as the system would see them.
          data-gridY="8"
          data-command=":2x2:C6,C4,C7,C5">
  </canvas>
-}}}
+```
 
-# Alligator `visual`
+# Alligator 
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -548,9 +549,9 @@ are after the swap as the system would see them.
          data-colors='["#808080","#E7DCE9","#E0694D","#966B4C"]'
          data-command=":2x2:CA,C8,CB,C9">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -559,9 +560,9 @@ are after the swap as the system would see them.
          data-gridY="8"
          data-command=":2x2:CE,CC,CF,CD">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -570,9 +571,9 @@ are after the swap as the system would see them.
          data-gridY="8"
          data-command=":2x2:D2,D0,D3,D1">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -581,11 +582,11 @@ are after the swap as the system would see them.
          data-gridY="8"
          data-command=":2x2:6A,68,6B,69">
  </canvas>
-}}}
+```
 
-# Splash screen letters `visual`
+# Splash screen letters 
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -595,9 +596,9 @@ are after the swap as the system would see them.
           data-colors='["#808080","#1DC300","#D50BCD","#E0E000"]'
          data-command=":2x2:D6,D4,D7,D5">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -606,9 +607,9 @@ are after the swap as the system would see them.
          data-gridY="8"
          data-command=":2x2:DA,D8,DB,D9">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -617,9 +618,9 @@ are after the swap as the system would see them.
          data-gridY="8"
          data-command=":2x2:DE,DC,DF,DD">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -628,9 +629,9 @@ are after the swap as the system would see them.
          data-gridY="8"
          data-command=":2x2:F6,F4,F7,F5">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -639,11 +640,11 @@ are after the swap as the system would see them.
          data-gridY="8"
          data-command=":2x2:FA,F8,FB,F9">
  </canvas>
-}}}
+```
 
-# Player ran over `visual`
+# Player ran over 
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -653,9 +654,9 @@ are after the swap as the system would see them.
          data-colors='["#808080","#E0E000","#E00000","#8500D9"]'
          data-command=":2x2:E6,E4,E7,E5">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -664,9 +665,9 @@ are after the swap as the system would see them.
          data-gridY="8"
          data-command=":2x2:EA,E8,EB,E9">
  </canvas>
-}}}
+```
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -675,11 +676,11 @@ are after the swap as the system would see them.
          data-gridY="8"
          data-command=":2x2:EE,EC,EF,ED">
  </canvas>
-}}}
+```
 
-# Player death `visual`
+# Player death 
 
-{{{html
+```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -689,13 +690,13 @@ are after the swap as the system would see them.
          data-colors='["#808080","#E0E000","#E00000","#8500D9"]'
          data-command=":2x2:F2,F0,F3,F1">
  </canvas>
-}}}
+```
 
-# Full Tile Set `visual`
+# Full Tile Set 
 
 This is the order of all the tiles above in the ROM.
 
-{{{html
+```html
  <canvas width="1040" height="1040"
      data-getTileDataFunction="Frogger.get8x8Data"
          data-labelColor="#FFFFFF"
@@ -720,12 +721,13 @@ This is the order of all the tiles above in the ROM.
                         E0,E1,E2,E3,E4,E5,E6,E7,E8,E9,EA,EB,EC,ED,EE,EF,
                         F0,F1,F2,F3,F4,F5,F6,F7,F8,F9,FA,FB,FC,FD,FE,FF">
  </canvas>
-}}}
+```
 
 # ROM data
 
 TODO show the character "1" completely decoded and rotated.
 
+```plainCode
 0000: 38 7C C2 82 86 7C 38 00 02 02 FE FE 42 02 00 00
 0010: 62 F2 BA 9A 9E CE 46 00 8C DE F2 B2 92 86 04 00
 0020: 08 FE FE C8 68 38 18 00 1C BE A2 A2 A2 E6 E4 00
@@ -983,3 +985,4 @@ TODO show the character "1" completely decoded and rotated.
 0FD0: FF FF FF FF 00 00 00 00 FE FE FE FE 02 00 00 00
 0FE0: 01 03 61 90 97 7F 39 38 E0 F9 FB FF FE FF FC E4
 0FF0: 38 39 7F 97 90 61 03 01 E4 E4 FF FE FF FB F9 E0
+```
