@@ -1,3 +1,4 @@
+CHECK
 [
 {"mnem":"LD (t),SP",    "code":"08tltm",     "bus":""      },
 {"mnem":"STOP b",       "code":"10bb",       "bus":""      },

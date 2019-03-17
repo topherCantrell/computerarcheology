@@ -26,7 +26,8 @@ class CPU_6809:
                         new_mnem = entry['mnem'].replace('y', post['post'])
                         new_code = entry['code'].replace('yy', post['code'])
                         new_entry = {'mnem': new_mnem,
-                                     'code': new_code, 'bus': entry['bus']}
+                                     # 'code': new_code, 'bus': entry['bus']}
+                                     'code': new_code, 'bus': ''}
                         self.opcodes.append(new_entry)
                 else:
                     self.opcodes.append(entry)

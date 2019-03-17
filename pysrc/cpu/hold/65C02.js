@@ -1,3 +1,4 @@
+CHECK
 [
 {"mnem":"BRK",          "code":"00",     "bus":""       },
 {"mnem":"ORA (p,X)",    "code":"01pp",   "bus":"r"      },

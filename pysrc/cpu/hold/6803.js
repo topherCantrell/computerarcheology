@@ -1,3 +1,4 @@
+CHECK
 [
 {"mnem":"NOP",          "code":"01",     "bus":""      },
 {"mnem":"LSRD",         "code":"04",     "bus":""      },
