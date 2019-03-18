@@ -1,21 +1,29 @@
-%%title = Atari 2600 Asteroids
-%%image = A2600Asteroids.jpg
+![Atari 2600 Asteroids](A2600Asteroids.jpg)
 
-[Code](Code.html)
+>>> deploy:<br>
+>>>   +A2600Asteroids.jpg
+>>>   RAMUse.md<br>
+>>>   Code.md<br>
+>>>   ----<br>
+>>>   Journal.md<br>
 
-{{{playMe
+# Atari 2600 Asteroids
+
+[Code](Code.md)
+
+>>> playMe {
 
 # Play Me!
 
 It might take a few seconds for the ROM to load, but play Atari2600 Asteroids here:
 
-[http://javatari.org&ROM=Asteroids](http://javatari.org?ROM=https://github.com/topherCantrell/computerarcheology/blob/master/content/Atari2600/Asteroids/ASTEROID.BIN?raw=true`playMe`)
+[http://javatari.org&ROM=Asteroids](http://javatari.org?ROM=https://github.com/topherCantrell/computerarcheology/blob/master/content/Atari2600/Asteroids/ASTEROID.BIN?raw=true)
 
-}}}
+>>> }
 
 Debug output from Z26.
 
-{{{
+```
 Z26Frame: Loading Z26 log file 'asteroidrun.log' ...
 FRAME: 1097 (4853 clock records)
 FRAME: 1098 (6064 clock records)
@@ -580,4 +588,4 @@ Frame 1098
 279 ................................................................................................................................................................
 
 Z26Frame: done.
-}}}
+```

@@ -1,10 +1,19 @@
-%%image = A2600Asteroids.jpg
-%%title = Atari2600 Asteroids
-%%cpu   = 6502
-%%-ram  = Atari2600/Asteroids/RAMUse.mark /Atari2600/Asteroids/RAMUse.mark
-%%-hard = Atari2600/Stella.mark /Atari2600/Stella.html
+![Atari2600 Asteroids](A2600Asteroids.jpg)
 
-{{{
+# Atari 2600 Asteroids
+
+>>> cpu 6502
+
+>>> memoryTable hard 
+[Hardware Info](../Stella.md)
+
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
+
+
+# Start
+
+```code
 ; The code is designed to run in 2 * 4K bank-switch mode or
 ; flat 8K mode (in 12K map ... D000 to FFFF).
 
@@ -34,10 +43,11 @@
 ; FD       Digit image 1,2  (00F4),F7 combined with (00F4),F8
 ; FE       Digit image 3,4  (00F4),F9 combined with (00F4),FA
 ; FF       Digit image 5,6  (00F4),FB (always a single digit)
-}}}
+```
 
 # Bank 0
 
+```code
 Bank0:
 
 D000: 4C DA F9      JMP   $F9DA               ;{Reset1} Jump to reset vector ... in Bank 1. Good for flat 8K version.
@@ -347,9 +357,11 @@ D212: A9 00         LDA   #$00
 D214: AA            TAX                       
 D215: 4C 03 D0      JMP   $D003               ;
 D218: 4C 2D D4      JMP   $D42D               ;
+```
 
 # Visible Frame
 
+```code
 VisibleFrame:
 
 ; Draw digit lines
@@ -406,9 +418,11 @@ D261: 85 FE         STA   $FE                 ; Hold image pattern
 
 D263: A4 FB         LDY   $FB                 ; Get image pattern ...
 D265: B1 F4         LDA   ($F4),Y             ; ... for DIGIT 5 (always blank) and DIGIT 6
+```
 
 # Code Bug 1
 
+```code
 CodeBug1:
 ; The right digits (5 and 6) probably started out as doubles. This may be left
 ; over from a duplication of the other two-digit combination code. The second
@@ -447,9 +461,11 @@ D299: 85 0D         STA   $0D                 ;{-2_PF0} ... PF0 ...PF0:51
 D29B: 85 0E         STA   $0E                 ;{-2_PF1} ... and PF1 ...PF1:51 
 D29D: B0 02         BCS   $D2A1               ;{DrawOddFieldPlayer} Odd frames ... go handle player
 D29F: 90 52         BCC   $D2F3               ;{DrawEvenFieldAsteroids} Otherwise even frames ... go handle asteroids
+```
 
 # Draw Odd Field Player
 
+```code
 DrawOddFieldPlayer:
 D2A1: A5 FF         LDA   $FF                 ;
 D2A3: 85 0F         STA   $0F                 ;{-2_PF2}PF2:51 
@@ -497,9 +513,11 @@ D2EA: 85 2A         STA   $2A                 ;{-2_HMOVE}HMOVE:53
 D2EC: 86 07         STX   $07                 ;{-2_COLUP1}COLUP1:53 
 D2EE: 85 05         STA   $05                 ;{-2_NUSIZ1}NUSIZ1:53 
 D2F0: 6C E3 00      JMP   ($00E3)             ;
+```
 
 # Draw Even Field Asteroids
 
+```code
 DrawEvenFieldAsteroids:
 D2F3: A5 FF         LDA   $FF                 ;
 D2F5: 85 0F         STA   $0F                 ;{-2_PF2}PF2:51 
@@ -882,9 +900,11 @@ D588: 85 F7         STA   $F7                 ;
 D58A: A9 F0         LDA   #$F0                
 D58C: 85 F8         STA   $F8                 ;
 D58E: 4C F0 DF      JMP   $DFF0               ;{SwitchToBank1} Bank switch to F000
+```
 
 # Reset (Bank 0)
 
+```code
 Reset0:
 ; Reset comes here if in 1st bank. If so we switch banks
 ; and go to the reset in the 2nd bank.
@@ -1358,9 +1378,11 @@ DCCE: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 DCDE: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 DCEE: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 DCFE: 00 00
-     
+```
+
 # Digit Images
 
+```code
 DigitImages:
 DD00: E0 ; ***.....
 DD01: A0 ; *.*.....
@@ -1934,9 +1956,11 @@ DEFC: 00 ; ........
 DEFD: 00 ; ........
 DEFE: 00 ; ........
 DEFF: 00 ; ........
+```
 
 # Asteroid Images
 
+```code
 AsteroidImages:
 ; 16 rows each
 
@@ -2007,9 +2031,11 @@ DF3C: 00 ; ........
 DF3D: 00 ; ........
 DF3E: 00 ; ........
 DF3F: 00 ; ........
+```
 
 # Asteroid Explosions
 
+```
 AsteroidExplosions:
 ; 16 rows each
 DF40: A0 ; *.*.....
@@ -2067,9 +2093,11 @@ DF70: 40 ; .*......
 DF71: 10 ; ...*....
 DF72: 80 ; *.......
 DF73: 20 ; ..*.....
+```
 
 # Ship Images
 
+```
 ShipImages:
 ; 5 rows each. Each image ends with an FF terminator.
 
@@ -2144,9 +2172,11 @@ DFA7: 10 ; ...*....
 DFA8: 10 ; ...*....
 ;
 DFA9: FF ; ********
+```
 
 # Ship Explosions
 
+```
 ShipExplosions:
 DFAA: 10 ; ...*....
 DFAB: 02 ; ......*.
@@ -2171,9 +2201,11 @@ DFB9: 10 ; ...*....
 DFBA: 04 ; .....*..
 ;
 DFBB: FF ; ********
+```
 
 # Shield Image
 
+```code
 ShieldImage:
 DFBC: 38 ; ..***...
 DFBD: 44 ; .*...*..
@@ -2182,18 +2214,22 @@ DFBF: 44 ; .*...*..
 DFC0: 38 ; ..***...
 ;
 DFC1: FF ; ********
+```
 
 # Satellite Image
 
+```code
 SatelliteImage: 
 DFC2: 10 ; ...*....
 DFC3: 7C ; .*****..
 DFC4: 38 ; ..***...
 ;
 DFC5: FF ; ********
+```
 
 # UFO Image
 
+```code
 UFOImage: 
 DFC6: 10 ; ...*....
 DFC7: 38 ; ..***...
@@ -2239,25 +2275,30 @@ DFEC: 00            BRK
 DFED: 00            BRK                       
 DFEE: 00            BRK                       
 DFEF: 00            BRK                       
+```
 
 # Switch to Bank 1
 
+```code
 SwitchToBank1: 
 ; The destination address after the bank switch is in F7.
 DFF0: 8D F9 FF      STA   $FFF9               ; Switch to bank 0 (goto FFF3)
 DFF3: 6C F7 00      JMP   ($00F7)             ; Here after FFF0. Goto target address.
 ; 
 DFF6: 00 00 00 00 ; Padding
+```
 
 # Vectors (Bank 0)
 
+```code
 Vectors0: 
 DFFA: 91 D5       ; NMI vector to D591
 DFFC: 91 D5       ; Reset vector to D591
 DFFE: 91 D5       ; IRQ/BRK vector to D591
-
+```
 # Bank 1
 
+```code
 ;----------------------------------------------------------------------------------------------
 Bank1:
 ; Second 2K bank of ROM.
@@ -2660,9 +2701,11 @@ F30E: 85 C5         STA   $C5                 ;
 F310: A9 08         LDA   #$08                
 F312: 85 C4         STA   $C4                 ;
 F314: 10 DF         BPL   $F2F5               ;
+```
 
 # Vertical Blank
 
+```code
 VerticalBlank:
 F316: A2 FF         LDX   #$FF                ; All 1s
 F318: AD 84 02      LDA   $0284               ;{-2_INTIM} Timer reached zero?INTIM:lots 
@@ -3583,9 +3626,11 @@ F9D0: A6 F5         LDX   $F5                 ;
 F9D2: 30 03         BMI   $F9D7               ;
 F9D4: 4C 27 F9      JMP   $F927               ;
 F9D7: 4C 8E FF      JMP   $FF8E               ;
+```
 
 # Reset (Bank 1)
 
+```code
 Reset1:
 ; Reset comes here if in 2nd ROM bank. The reset in 1st bank does
 ; a bank switch and comes here.
@@ -3596,7 +3641,7 @@ F9DC: A2 FF         LDX   #$FF                ; Set ...
 F9DE: 9A            TXS                       ; ... stack pointer
 F9DF: E8            INX                       ; Now 0
 F9E0: 8A            TXA                       ; Clear ...
-F9E1: 95 00         STA   $00,X               ; ... 1st ...AUDF1:4,12 AUDF0:4,12 CTRLPF:2,10 HMP0:5,13 HMP1:5,13 ENAM1:5,13 RESM0:3,11 RESM1:3,11 VBLANK:1,9 ENAM0:5,13 NUSIZ0:2,10 CXBLPF:8,16 NUSIZ1:2,10 COLUBK:2,10 CXPPMM:8,16 WSYNC:1,9 VDELP1:6,14 VDELP0:6,14 HMBL:5,13 RESMP1:6,14 ENABL:5,13 RESMP0:6,14 PF2:3,11 HMOVE:6,14 CXM1P:7,15 PF0:3,11 PF1:3,11 HMCLR:6,14 INPT0:8,16 INPT5:8,16 INPT4:8,16 COLUPF:2,10 INPT3:8,16 INPT2:8,16 INPT1:8,16 REFP1:3,11 COLUP0:2,10 COLUP1:2,10 CXM0P:7,15 CXCLR:6,14 VDELBL:6,14 REFP0:3,11 HMM1:5,13 HMM0:5,13 CXP0FB:7,15 RESBL:4,12 CXM1FB:7,15 RESP0:3,11 CXP1FB:7,15 RESP1:3,11 AUDC1:4,12 VSYNC:1,9 AUDC0:4,12 GRP1:5,13 CXM0FB:7,15 AUDV0:4,12 GRP0:4,12 AUDV1:4,12 
+F9E1: 95 00         STA   $00,X               ; ... 1st ...
 F9E3: E8            INX                       ; ... 256 bytes ...
 F9E4: D0 FB         BNE   $F9E1               ; ... of address space
 
@@ -4400,19 +4445,24 @@ FFB9: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 FFC9: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 FFD9: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 FFE9: 00 00 00 00 00 00 00    
+```
 
 # Switch to Bank 0
 
+```code
 SwitchToBank0:
 ; The destination address after the bank switch is in F7.
 FFF0: 8D F8 FF      STA   $FFF8               ; Switch to bank 1 (goto DFF3)
 FFF3: 6C F7 00      JMP   ($00F7)             ; Here after DFF0. Goto target address.
 ;
 FFF6: 00 00 00 00 ; Padding   
+```
 
 # Vectors (Bank 1)
 
+```code
 Vectors1:
 FFFA: DA F9       ; NMI vector to F9DA
 FFFC: DA F9       ; Resset vector to F9DA
 FFFE: DA F9       ; IRQ/BRK vector to F9DA
+```
