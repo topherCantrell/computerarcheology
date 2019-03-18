@@ -1,6 +1,6 @@
-%%image = MoonPatrol.jpg
+![Background Tiles](MoonPatrol.jpg)
 
-# Background Tiles `visual`
+# Background Tiles 
 
 This image data is dumped here with mpe-4.3f following mpe-5.3e as
 an 8K block of bytes. In reality the display generator hardware
@@ -13,7 +13,7 @@ The second bit of the pair comes from mpe-4.3f (1000-1FFF here).
 The color set of the tile is independent of the pattern. There
 are 512 tile patterns defined here.
 
-{{{html
+```html
 <script src="/js/BinaryData.js"></script>
 <script src="/Arcade/MoonPatrol/MoonPatrol.js"></script>
 <script src="/js/TileEngine.js"></script>
@@ -31,8 +31,9 @@ are 512 tile patterns defined here.
     data-colors='["#808080","#000000","#0000DE","#009694"]'
     data-command=":16x32:0">
 </canvas>
-}}}
+```
 
+```plainCode
 ;BackgroundTiles
 0000: 00 00 00 00 00 00 00 00 ; 
 0008: 00 10 10 10 00 63 F7 63 ; 
@@ -1061,3 +1062,4 @@ are 512 tile patterns defined here.
 1FE8: 87 9F BF FF FF FF C0 00 ; 
 1FF0: 80 80 81 03 07 07 07 07 ; 
 1FF8: FE FE FE FE FC FC FC FC ; 
+```

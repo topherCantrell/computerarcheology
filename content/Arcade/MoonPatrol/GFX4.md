@@ -1,6 +1,6 @@
-%%image = MoonPatrol.jpg
+![Hills](MoonPatrol.jpg)
 
-# Hills (near background) `visual`
+# Hills (near background) 
 
 This background is a giant 256x64 pixel image. Each pixel is one of 4 colors.
 256*64*2/8 = 4K
@@ -8,21 +8,21 @@ This background is a giant 256x64 pixel image. Each pixel is one of 4 colors.
 Each byte holds 4 pixels. The upper four bits are the first bit-plane and the
 second 4 bits are the second bit plane. Thus the screen mapping looks like this:
 
-{{{
+```
 ROM: abcd_ABCD
 Screen: aA_bB_cC_dD
-}}}
+```
 
 The actual pixel colors come from the table in PROM2 in a jumbled mapping.
 From experimenting, the pixel colors are:
-{{{
+```
 ;             00    01     10     11
 ; Hills:      --    20     00     70
 ; Mountains:  --    C0     00     A0
 ; City:       --    00     77     70
 }}} 
 
-{{{html
+```html
 <script src="/js/BinaryData.js"></script>
 <script src="/Arcade/MoonPatrol/MoonPatrol.js"></script>
 <script src="/js/TileEngine.js"></script>
@@ -41,8 +41,9 @@ From experimenting, the pixel colors are:
         data-colors='["#808080","#009700","#000000","#00DE51"]'
         data-command="0">
 </canvas>
-}}}
+```
 
+```plainCode
 ; For instance, first colored pixel at 008F:
 ; C0    1100_0000 -> 01 01 00 00  Dark Green
 
@@ -303,3 +304,4 @@ From experimenting, the pixel colors are:
 0FD0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
 0FE0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
 0FF0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
+```

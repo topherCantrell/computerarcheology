@@ -1,22 +1,47 @@
-%%title = Moon Patrol
-%%image = MoonPatrol.jpg
+![Moon Patrol](MoonPatrol.jpg)
 
-[See the discussion of the sound board](/Arcade/MoonPatrolSound.html)
+>>> deploy:<br>
+>>>   +MoonPatrol.jpg<br>
+>>>   +MoonPatrol.js<br>
+>>>   Hardware.md<br>
+>>>   RAMUse.md<br>
+>>>   Code.md<br>
+>>>   ----<br>
+>>>   GFX1.md<br>
+>>>   GFX2.md<br>
+>>>   GFX3.md<br>
+>>>   GFX4.md<br>
+>>>   GFX5.md<br>
+>>>   ImageBackgroundColors.md<br>
+>>>   SpriteColors.md<br>
+>>>   SpriteColorSets.md<br>
+>>>   TextColors.md<br>
+>>>   ----<br>
+>>>   MoonPatrolSound.md<br>
+>>>   SoundHardware.md<br>
+>>>   SoundRAMUse.md<br>
+>>>   SoundCode.md<br>
+>>>   ----<br>
+>>>   Journal.md<br>
+
+# Moon Patrol
+
+[See the discussion of the sound board](MoonPatrolSound.md)
 
 # Code Links
 
-* [Main Board Code](Code.html)
-* [GFX1 Background Tiles](GFX1.html)
-* [GFX2 Sprite Tiles](GFX2.html)
-* [GFX3 Mountains Background](GFX3.html)
-* [GFX4 Hills Background](GFX4.html)
-* [GFX5 City Background](GFX5.html)
-* [Text Color Sets](TextColor.htmls)
-* [Image Background Colors](ImageBackgroundColors.html)
-* [Sprite Colors](SpriteColors.html)
-* [Sprite Color Sets](SpriteColorSets.html)
-* [Hardware](Hardware.html)
-* [RAM Usage](RAMTable.html)
+* [Main Board Code](Code.md)
+* [GFX1 Background Tiles](GFX1.md)
+* [GFX2 Sprite Tiles](GFX2.md)
+* [GFX3 Mountains Background](GFX3.md)
+* [GFX4 Hills Background](GFX4.md)
+* [GFX5 City Background](GFX5.md)
+* [Text Color Sets](TextColor.mds)
+* [Image Background Colors](ImageBackgroundColors.md)
+* [Sprite Colors](SpriteColors.md)
+* [Sprite Color Sets](SpriteColorSets.md)
+* [Hardware](Hardware.md)
+* [RAM Usage](RAMTable.md)
 
 # Luna City
 
@@ -59,7 +84,7 @@ The main-loop state machine processes a dynamic list of up to 63 "text" commands
 The game loop begins at 026E with a number of regular function calls made every pass. Then at 0283 all (if any) text-objects run. Meanwhile, the ISR tasks 
 interrupt the main loop and run every vertical blank. The main loop, which is free running, uses the ISR counters for timing.
 
-{{{
+```plainCode
 ; Main loop
 ;
 026E: CD DC 0D       CALL  $0DDC              ; ?? Change terrain
@@ -75,11 +100,11 @@ interrupt the main loop and run every vertical blank. The main loop, which is fr
 ;
 0283: 3A CF E1       LD    A,($E1CF)          ; LSB of head of text command list
 ;
-0286: 21 D0 E1       LD    HL,$E1D0           ; Next available text command pointer ** J02AB
+0286: 21 D0 E1       LD    HL,$E1D0           ; Next available text command pointer * J02AB
 0289: BE             CP    (HL)               ; Have we reached the end of the list?
 028A: 28 E2          JR    Z,$26E             ; Yes ... back to the top
 ;
-}}}
+```
 
 ## Text Commands (Main loop objects)
 
@@ -96,7 +121,7 @@ The third and fourth bytes are a pointer to a text string to draw or erase by th
 copy-to-memory list of characters. There are special command bytes that set the color and add repeated characters (used for spacing). The text 
 system is discussed below.
 
-{{{
+```plainCode
 ;TxtCmdTable
 02D5: 22 06 ; 0622 01 TxtCmd_01 Adjust Score
 02D7: FA 02 ; 02FA 02 TxtCmd_02 Run text script
@@ -109,7 +134,7 @@ system is discussed below.
 02E5: A6 0D ; 0DA6 09 TxtCmd_09 Open crater in ground when alien shot hits
 02E7: 01 12 ; 1201 0A TxtCmd_0A Init "MOON PATROL" splash sequence
 02E9: 18 12 ; 1218 0B TxtCmd_0B Run "MOON PATROL" splash sequence
-}}}
+```
 
 ## Text Scripting 
 To Do

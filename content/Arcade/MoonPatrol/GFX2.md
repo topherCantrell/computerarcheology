@@ -1,4 +1,4 @@
-%%image = MoonPatrol.jpg
+![Sprite Tiles](MoonPatrol.jpg)
 
 # Sprite Tiles
 
@@ -27,9 +27,9 @@ are grouped together to create larger objects. The rendering below shows the ima
 numbers in patterns as they are used in the game. The rendering below uses the 
 color sets for each object as used in the game.
 
-# Blank Tile `visual`
+# Blank Tile 
 
-{{{html
+```html
 <script src="/js/BinaryData.js"></script>
 <script src="/Arcade/MoonPatrol/MoonPatrol.js"></script>
 <script src="/js/TileEngine.js"></script>
@@ -48,28 +48,28 @@ color sets for each object as used in the game.
         data-colors='["#808080","#00001A","#C100AE","#00AEC8"]'
         data-command="0">
 </canvas>
-}}}
+```
 
-# Moon Buggy and 2 Wheel Sizes (2 pictures each) `visual`
-{{{html
+# Moon Buggy and 2 Wheel Sizes (2 pictures each) 
+```html
 <canvas width="900" 
         height="275"
         data-colors="CS0"
         data-command=":2x2:1,2,3,4,+x,+y,+y,+y,+y,+y,+y,+y,+y,5,+x,6,+x,7,+x,8">
 </canvas>
-}}}
+```
 
-# Moon Buggy Crashing `visual`
-{{{html
+# Moon Buggy Crashing 
+```html
 <canvas width="900" 
         height="275"
         data-colors="CS0"
         data-command=":2x2:9,A,B,C,+x,:2x2:D,E,F,10">
 </canvas>
-}}}
+```
 
-# Moon Buggy Explosion  `visual`
-{{{html
+# Moon Buggy Explosion  
+```html
 <canvas width="1200" 
         height="275"
         data-colorsName="CS1"
@@ -80,38 +80,38 @@ color sets for each object as used in the game.
         height="150"         
         data-command=":2x1:23,24,+x,:2x1:25,26,+x,27">
 </canvas>
-}}}
+```
 
-# Player Forward Shot  `visual`
-{{{html
+# Player Forward Shot  
+```html
 <canvas width="900" 
         height="150"         
         data-command="28,+x,29,+x,2A,+x,2B,+x,2C">
 </canvas>
-}}}
+```
 
-# Rocks  `visual`
-{{{html
+# Rocks  
+```html
 <canvas width="900" 
         height="150"    
         data-colorsName="CS4"
         data-colors='["#808080","#845100","#808080","#3E3700"]'     
         data-command="2D,+x,2E,+x,2F,+x,30">
 </canvas>
-}}}
+```
 
-# Boulders `visual`
-{{{html
+# Boulders 
+```html
 <canvas width="900" 
         height="150"    
         data-colorsName="CS4"
         data-colors='["#808080","#845100","#808080","#3E3700"]'     
         data-command="31,+x,32,+x,33,+x,34,+x,36,+x,37">
 </canvas>
-}}}
+```
 
-# Tank-Shot and Tank  `visual`
-{{{html
+# Tank-Shot and Tank  
+```html
 <canvas width="150" 
         height="150"    
         data-colors="CS0"
@@ -123,111 +123,111 @@ color sets for each object as used in the game.
         data-colors='["#808080","#C1C800","#00001A","#C10000"]'    
         data-command="38">
 </canvas>
-}}}
+```
 
-# Alien Speeder (and 2 thrust patterns) `visual`
-{{{html
+# Alien Speeder (and 2 thrust patterns) 
+```html
 <canvas width="900" 
         height="150"
         data-command="7C,+x,7B,+x,:2x1:3A,3B">
 </canvas>
-}}}
+```
 
-# ?? Unknown `visual`
-{{{html
+# ?? Unknown 
+```html
 <canvas width="150" 
         height="150"
         data-colors="CS0"
         data-command="3C">
 </canvas>
-}}}
+```
 
-# Ground Mine `visual`
-{{{html
+# Ground Mine 
+```html
 <canvas width="150" 
         height="150"
         data-colorsName="CSA"
         data-colors='["#808080","#00001A","#C1C8C8","#808080"]'    
         data-command="3D">
 </canvas>
-}}}
+```
 
-# Exploding Rocks/Boulders  `visual`
-{{{html
+# Exploding Rocks/Boulders  
+```html
 <canvas width="900" 
         height="150"
         data-colors="CS1"    
         data-command="3E,+x,3F,+x,40,+x,41">
 </canvas>
-}}}
+```
 
-# Alien Ships (3 kinds with rotations)  `visual`
-{{{html
+# Alien Ships (3 kinds with rotations)  
+```html
 <canvas width="900" 
         height="150"
         data-colorsName="CS7"
         data-colors='["#808080","#C1C800","#6290C8","#C10000"]'    
         data-command="42,+x,+x,+x,43,+x,44,+x,+x,+x,45,+x,46,+x,47">
 </canvas>
-}}}
+```
 
-# Alien Ship Explosion  `visual`
-{{{html
+# Alien Ship Explosion  
+```html
 <canvas width="900" 
         height="150"
         data-colors="CS1"    
         data-command="48,+x,49,+x,4A">
 </canvas>
-}}}
+```
 
-# Alien Ship Shot (bubble alien)  `visual`
-{{{html
+# Alien Ship Shot (bubble alien)  
+```html
 <canvas width="900" 
         height="150"
         data-colors="CS0"    
         data-command="35">
 </canvas>
-}}}
+```
 
-# Alien Ship Shots (fin alien and saucer alien, 3 rotations)  `visual`
-{{{html
+# Alien Ship Shots (fin alien and saucer alien, 3 rotations)  
+```html
 <canvas width="900" 
         height="150"
         data-colors="CS1"    
         data-command="4B,+x,4C,+x,4D">
 </canvas>
-}}}
+```
 
-# Crater-Opening Ground Explosion  `visual`
-{{{html
+# Crater-Opening Ground Explosion  
+```html
 <canvas width="1200" 
         height="375"
         data-colors="CS1"    
         data-command="4E,+x,:2x2:4F,50,51,52,+x,:2x2:53,54,55,56,+x,:2x2:57,58,59,5A,+x,:2x3:5B,5C,5D,5E,5F,60">
 </canvas>
-}}}
+```
 
-# Alien Shot Hitting Ground  `visual`
-{{{html
+# Alien Shot Hitting Ground  
+```html
 <canvas width="1000" 
         height="275"    
         data-colorsName="CS3"
         data-colors='["#808080","#840000","#C1C8C8","#C1C800"]'     
         data-command="61,+x,62,+x,63,+x,:2x2:64,65,66,67,+x,:2x2:68,69,6A,6B">
 </canvas>
-}}}
+```
 
-# ?? Rubble  `visual`
-{{{html
+# ?? Rubble  
+```html
 <canvas width="900" 
         height="275"
         data-colors="CS3"    
         data-command=":1x2:6C,6D,+x,:1x2:6E,6F">
 </canvas>
-}}}
+```
 
-# Space Plant (3 bases and 4 leaves)  `visual`
-{{{html
+# Space Plant (3 bases and 4 leaves)  
+```html
 <canvas width="265" 
         height="150"    
         data-colorsName="CS8"
@@ -245,49 +245,49 @@ color sets for each object as used in the game.
         data-colors='["#808080","#C10000","00C800","#840000"]'     
         data-command="70,+x,73,+x,74,+x,75">
 </canvas>
-}}}
+```
 
-# Shot Hitting Shot  `visual`
-{{{html
+# Shot Hitting Shot  
+```html
 <canvas width="500" 
         height="150"
         data-colors="CS1"    
         data-command="7A">
 </canvas>
-}}}
+```
 
-# Score Indicators `visual`
+# Score Indicators 
  
  Changing color sets changes value. Very clever.[[br]]
  Shown here will all pixels visible.
  
-{{{html
+```html
 <canvas width="500" 
         height="150"
         data-colors="CS0"
         data-command="7D,+x,7E">
 </canvas>
-}}}
+```
 
-# Score Indicators (Color Set 0E)  `visual`
-{{{html
+# Score Indicators (Color Set 0E)  
+```html
 <canvas width="500" 
         height="150"
         data-colorsName="CSE"
         data-colors='["#808080","#C10000","#808080","#C10000"]'
         data-command="7D,+x,7E">
 </canvas>
-}}}
+```
 
-# Score Indicators (Color Set 0F)  `visual`
-{{{html
+# Score Indicators (Color Set 0F)  
+```html
 <canvas width="500" 
         height="150"
         data-colorsName="CSF"
         data-colors='["#808080","#808080","#C10000","#C10000"]'
         data-command="7D,+x,7E">
 </canvas>
-}}}
+```
 
 Each sprite is laid out in 32 bytes (256 pixels, 16*16=256) in each of the two ROMs.
 The data is organized as four 8x8 pixel blocks. The first 8 bytes define the upper
@@ -296,10 +296,10 @@ the sprite. The third 8 bytes define the upper right and the fourth 8 bytes defi
 the lower right. I'll describe these quadrants as A, B, C, and D (lettered in order
 of memory) as follows:
 
-{{{
+```
 AC
 BD
-}}}
+```
 
 The most significant bit of the data goes to the left on the screen. The least
 significant goes to the right. The first byte in an 8-byte quadrant goes on the
@@ -318,16 +318,16 @@ Remember: this is all in hardware, and the lookups are very fast.
 Color bits ... bB : "b" from lower bank (0xxx) and "B" from upper bank (1xxx)
 
 Using color-set-0 as an example, bB:
-{{{
+```
  00 PROM3:0000 (00) transparent
  01 PROM3:0001 (01) black
  10 PROM3:0002 (C6) violet/red
  11 PROM3:0003 (37) turquoise
- }}}
+```
 
 To describe the data layout, I am numbering the pixels as they
 appear on the screen as follows:
-{{{
+```
  Aa7 Aa6 Aa5 Aa4 Aa3 Aa2 Aa1 Aa0   Ca7 Ca6 Ca5 Ca4 Ca3 Ca2 Ca1 Ca0
  Ab7 Ab6 Ab5 Ab4 Ab3 Ab2 Ab1 Ab0   Cb7 Cb6 Cb5 Cb4 Cb3 Cb2 Cb1 Cb0
  Ac7 Ac6 Ac5 Ac4 Ac3 Ac2 Ac1 Ac0   Cc7 Cc6 Cc5 Cc4 Cc3 Cc2 Cc1 Cc0
@@ -345,10 +345,11 @@ appear on the screen as follows:
  Bf7 Bf6 Bf5 Bf4 Bf3 Bf2 Bf1 Bf0   Df7 Df6 Df5 Df4 Df3 Df2 Df1 Df0
  Bg7 Bg6 Bg5 Bg4 Bg3 Bg2 Bg1 Bg0   Dg7 Dg6 Dg5 Dg4 Dg3 Dg2 Dg1 Dg0
  Bh7 Bh6 Bh5 Bh4 Bh3 Bh2 Bh1 Bh0   Dh7 Dh6 Dh5 Dh4 Dh3 Dh2 Dh1 Dh0
- }}}
+```
 
 These individual pixes map to bits in the data as follow for Image 0
 
+```plainCode
 ; Image 0 (bit plane 0 ... see 1000 for bit plane 1)
 ;                    First byte: (MSB) Aa7_Aa6_Aa5_Aa4_Aa3_Aa3_Aa1_Aa0 (LSB)
 0000: 00 00 00 00 00 00 00 00  ; Aa* Ab* Ac* Ad* Ae* Af* Ag* Ah* 
@@ -1389,3 +1390,4 @@ These individual pixes map to bits in the data as follow for Image 0
 1FE8: 00 00 00 00 00 00 00 00 ; 
 1FF0: 00 00 00 00 00 00 00 00 ; 
 1FF8: 00 00 00 00 00 00 00 00 ; 
+```

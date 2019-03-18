@@ -108,6 +108,9 @@ def process_markdown(lines, site_nav_node, fp_content):
                 elif name == 'Z80':
                     import cpu.cpu_Z80
                     code_info['cpu'] = cpu.cpu_Z80.CPU_Z80()
+                elif name == '6803':
+                    import cpu.cpu_6803
+                    code_info['cpu'] = cpu.cpu_6803.CPU_6803()
                 else:
                     raise Exception("Unknown CPU " + name)
 
@@ -245,7 +248,9 @@ def deploy_directory(current_node):
             os.makedirs(dst)
             deploy_directory(dep)
         else:
-            if not src.endswith('.md'):
+            if src.endswith('-'):
+                pass
+            elif not src.endswith('.md'):
                 shutil.copy(src, dst)
             else:
                 md, _ = code.markdown_utils.load_file(src)

@@ -1,7 +1,8 @@
-%%title= Moon Patrol Sound
-%%image=MoonPatrol.jpg
+![Moon Patrol Sound](MoonPatrol.jpg)
 
-[Sound Board Code](/Arcade/MoonPatrol/SoundCode)
+# Mood Patrol Sound
+
+[Sound Board Code](SoundCode.md)
 
 # The Arcade Game
 
@@ -10,7 +11,7 @@ was a bit boring, but the background bass groove was worth the quarter to play. 
 riff stuck in his head. That bass groove is the target of this dig, but I'll also show you three bugs I found in the code.
 
 But first I'll compare the code of three different sound boards and see how each approached sound in a slightly different way. All three boards are disassembled 
-on this site: [Froger](/Arcade/Frogger), [Time Pilot](/Arcade/TimePilot) (both by Konami), and Moon Patrol.
+on this site: [Froger](../Frogger), [Time Pilot](../TimePilot) (both by Konami), and Moon Patrol.
 
 # The Mechanics of Sound
 
@@ -185,22 +186,22 @@ Frogger and Time Pilot treat note number 0 as a rest (silence) no matter what th
 command. Thus there can be 8 special commands.
 
 For Frogger the special commands look like this:
-{{{
+```
 0 Set the base note value to the next byte in the music data
 1 Set the base tempo value to the next byte in the music data
 2 Set the voice's volume to the next byte in the music data
 3 -- 7 Turn voice off and end music processing on the voice (frees the thread for other sounds)
-}}}
+```
 
 For Time Pilot the special commands look like this:
-{{{
+```
 0 Set the base note value to the next byte in the music data
 1 Set the base tempo for the voice to the next byte in the music data
 2 Set the voice's volume to the next byte in the music data
 3 Reset current note's amplitude
 4,5,7 Turn voice off and end the music process on the voice (frees the thread for other sounds)
 6 Jump to new music address (next two bytes in the music data are absolute address)
-}}}
+```
 
 # Moon Patrol Specific 
 
@@ -233,11 +234,11 @@ stores the current script address and jumps to a new target location in the scri
 "call stack" is only one level deep, but you can just ignore the return address making the CALL a GOTO. Very clever. The RETURN command returns the script to the next command 
 after the last executed CALL statement.
 
-{{{
+```
 ;  FF        - STOP  
 ;  FE MM LL  - CALL MMLL 
 ;  F0-FD     - RETURN
-}}}
+```
 
 The sound processor can be configured to decrease the volume of each of the 6 voices independently. The AY chip has an envelope generator that does this automatically, but each 
 chip has only one envelope generator to share among its three voices. This auto-decay functionality lets each voice die out at its own rate.
@@ -248,7 +249,7 @@ The "simple commands" are five "quick" commands that poke single values into reg
 a "continue" bit. If the bit is set, the next command is executed on the same clock tick. This allows you to poke several registers at once with no delay between the writes. 
 If the bit is clear, the next byte from the script is returned as the "delay until next command" value.
 
-{{{
+```
 ;  For all following commands, bit 6 is the multi-bit. If set, the parser is run again and again
 ;  until the bit is clear. Then the return value RV is loaded from the end of the sequence.
 ;
@@ -266,7 +267,7 @@ If the bit is clear, the next byte from the script is returned as the "delay unt
 ;
 ; VOLUME_DECAY_SPEED
 ;   0m1c_11vv NN     *RV    Set volume counter to reload value NN
-}}}
+```
 
 The REGISTER command sets the value of a single 8-bit register on one of the two AY chips. The THREETONE command creates a tone-and-harmony effect on a single chip. Voice A 
 gets the value CCFF. Voice B gets the value CCFF/2. And Voice C gets the value (CCFF/2 + 1). This generates a cool sound for the music effects like "Reaching Goal" 
@@ -288,23 +289,23 @@ Finally, there are three "complex" commands. These commands modify AY registers 
 The C_REGISTER_SAMPLES command reads a list of samples and writes them to a target AY register every N ticks. The "UFO Explosion" is the only effect to use this command. It 
 plays out 24 samples, one sample every 14 ticks, to the noise period register.
 
-{{{
+```
 ;C_REGISTER_SAMPLES
 ;  Set the value of rrrrr to sI at regular intervals. CNT is the number of samples.
 ;  Always return RVAL.
 ;  80 - 9F   100_r_rrrr CNT RVAL s0 s1 s2 ... sN
-}}}
+```
 
 The C_TOGGLE_REGISTER command writes two alternating values to a target register. The CNT defines how many writes will occur, and RVAL defines the delay between each write. 
 This command is never used in any of the scripts.
 
-{{{
+```
 ;C_TOGGLE_REGISTER
 ; (Never used)
 ;  Alternate writing I94 and I98.
 ;  Always return RVAL;
 ;  A0 - BF   101_r_rrrr CNT I94 I98 RVAL
-}}}
+```
 
 The C_SWEEP_VOICE command adds (or subtracts) a delta value to a voice over a period of time. This allows you sweep a voice frequency from a start value to an end value by 
 a defined increment (or decrement). The "Player Missile", for instance, is a single sweep starting at 0020 decrementing by one for 11 steps. There are 4 ticks (16Ms) 
@@ -313,7 +314,7 @@ between each change.
 There are actually two flavors of the sweep command. The first sweeps a single register value. The second sweeps a two-byte voice-pair (fine and coarse). The two-byte form 
 is never used, which is a good thing since there is a bug in the code.
 
-{{{
+```
 ;C_TOGGLE_REGISTER
 ; (Never used)
 ;  Alternate writing I94 and I98.
@@ -328,13 +329,13 @@ is never used, which is a good thing since there is a bug in the code.
 ; (Bug in code ... this function is never used)
 ;  Add delta (DELTA) to fine/coarse pair r0rrr and r0rrr+1. 
 ;  C0 - EF   110_r_1rrr CNT I94 I98 RVAL DELTA
-}}}
+```
 
 # Code Bugs 
 
 Here is the snippet of code that sweeps an AY voice (fine and coarse registers).
 
-{{{
+```plainCode
 FD6E: A6 05       LDA     $05,X                   ;  Delta value from script
 FD70: 36          PSHA                            ;  Hold delta (sign-check shortly)
 FD71: DE D1       LDX     $D1                     ;  Voice number
@@ -356,7 +357,7 @@ FD7E: BD FC DD    JSR     $FCDD                   ;  Write fine value to registe
 FD81: 5C          INCB                            ;  To coarse register
 FD82: A6 94       LDA     $94,X                   ;  Coarse value (SHOULD BE $98)
 FD84: 20 4B       BRA     $FDD1                   ;  Write coarse value to register B and return 4,x
-}}}
+```
 
 At FD73 the code adds the delta to the fine value store in $94,X. At FD7C the code increments $98,X if there was an overflow from the fine value. It would appear 
 that $94,X is the "fine" register and $98,X is the "coarse" register. The JSR at FD7E should write the fine-value from $94,X to the fine-register on the chip. 
@@ -366,7 +367,7 @@ fine-value to the coarse-register.
 I found two more bugs in the code that are really "potential problems". They don't cause errors for the current code but could cause problems in future reuse. 
 Since this code is over 30 years old and nobody uses it anymore, the point is moot.
 
-{{{
+```plainCode
 FF74: BD FC AD    JSR     $FCAD                   ;  Stop all sounds
 ...
 FF83: 86 BE       LDA     #$BE                    ;  10_111_110
@@ -374,7 +375,7 @@ FF83: 86 BE       LDA     #$BE                    ;  10_111_110
 ; The initialization at FCAD sets BA to 10_111_111. The OR here with a 0 is pointless.
 FF85: 9A BA       ORA     $BA                     ;  Flag off all but ...
 FF87: 97 BA       STA     $BA                     ;  ... AY0 tone A (THIS DOESN'T REALLY DO ANYTHING)
-}}}
+```
 
 The routine FCAD sets the value of $00BA to all 10_111_111. The code at FF83 ORs a value with a zero bit. Thus we know this OR does not change anything. Whatever 
 the developer intended to do here is not getting done.
@@ -388,7 +389,7 @@ jumping effect. Since the mixer values are set to 1s (disable sound) the backgro
 The main CPU controls the sound processor by writing a command byte to one of the AY38910's input ports and triggering the IRQ interrupt on the 6803. The sound processor 
 reads the byte, a value from 0 to 31, to request sound functions.
 
-{{{
+```plainCode
 ;ExplosionCommands
 ;  Sample table for 801-played sample stream. First word is pointer to samples. Second
 ;  word is number of samples.
@@ -427,7 +428,7 @@ F45C: F8 4D            ;   1C Opening music (test 11)     AY0:ABC Force sequence
 F45E: F4 A8            ;   1D Reaching goal (test 12)     AY0:ABC Force sequencer0
 F460: F8 EC            ;   1E Congratulations (test 13)   AY0:ABC Force sequencer0
 F462: F9 5F            ;   1F Car explosion (test 14)     AY0:abc Force sequencer0
-}}}
+```
 
 During game play, AY0 (chip 0) is very busy. The background music is dedicated to channels B (with tone) and C (with drum noise), and the effect is dedicated to 
 sequencer 0. Channel A of AY0 handles the "continuous" sound effects: the flying saucers swirling above or the space plant.

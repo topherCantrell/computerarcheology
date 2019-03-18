@@ -1,14 +1,18 @@
-%%image = MoonPatrol.jpg
-%%-ram  = Arcade/MoonPatrol/RAMUse.mark /Arcade/MoonPatrol/RAMUse.html
-%%-hard = Arcade/MoonPatrol/Hardware.mark /Arcade/MoonPatrol/Hardware.html
-%%cpu   = Z80
-%%title = Moon Patrol Code
-  
- * [RAM Usage](RAMUse.html)
- * [Hardware](Hardware.html)
+![Moon Patrol](MoonPatrol.jpg)
+
+# Moon Patrol
+
+>>> cpu Z80
+
+>>> memoryTable hard 
+[Hardware Info](Hardware.md)
+
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
 
 # START
 
+```code
 START: 
 ; Starts here at power up
 ;
@@ -43,9 +47,11 @@ START:
 
 ; Padding to 0x38 IRQ handler
 0032: 00 00 00 00 00 00
+```
 
 # IRQ
 
+```code
 IRQ: 
 ; This is triggered every VBLANK ... 56.74Hz.
 ; -Copy RAM mirror to hardware registers
@@ -65,7 +71,7 @@ IRQ:
 0043: E6 0F          AND   $0F                ; Did we overflow first nibble?
 0045: 20 01          JR    NZ,$48             ; No ... skip bumping second
 0047: 34             INC   (HL)               ; Increment 2nd counter byte
-0048: 23             INC   HL                 ; Next counter byte ** J0045
+0048: 23             INC   HL                 ; Next counter byte * J0045
 0049: 35             DEC   (HL)               ; -1
 004A: 23             INC   HL                 ; Next counter byte
 004B: 35             DEC   (HL)               ; -1
@@ -81,16 +87,18 @@ IRQ:
 005A: 21 4E E0       LD    HL,$E04E           ; Point to counter1 again
 005D: 35             DEC   (HL)               ; Bump back down
 ;
-005E: 10 FE          DJNZ  $5E                ; Inner count 256 ** J005E,J0061
+005E: 10 FE          DJNZ  $5E                ; Inner count 256 * J005E,J0061
 0060: 0D             DEC   C                  ; Outer count ...
 0061: 20 FB          JR    NZ,$5E             ; ... 3 (3*256 total)
 ;
 0063: D9             EXX                      ; Restore main ...
 0064: 08             EX    AF,AF'             ; ... registers
 0065: FB             EI                       ; Reenable interrupts (fall into return)
+```
 
 # NMI
 
+```code
 NMI: 
 ; Ignored
 ;
@@ -101,7 +109,7 @@ StartupCont:
 ;
 ;Startup continues here
 ;
-0068: FB             EI                       ; Enable interrupts ** J0016,J0120,J01D7
+0068: FB             EI                       ; Enable interrupts * J0016,J0120,J01D7
 0069: CD 8A 0B       CALL  $0B8A              ; 
 006C: 3E 01          LD    A,$01              ;
 006E: 32 4D E0       LD    ($E04D),A          ; 
@@ -110,8 +118,8 @@ StartupCont:
 0075: 32 08 E5       LD    ($E508),A          ; 
 0078: C3 B7 0B       JP    $0BB7              ; 
 
-007B: 06 00          LD    B,$00              ; ** J0504
-007D: AF             XOR   A                  ; ** J0091
+007B: 06 00          LD    B,$00              ; * J0504
+007D: AF             XOR   A                  ; * J0091
 007E: 32 4D E0       LD    ($E04D),A          ; 
 0081: 21 46 E0       LD    HL,$E046           ;
 0084: 70             LD    (HL),B             ;
@@ -119,11 +127,11 @@ StartupCont:
 0086: CD 45 07       CALL  $0745              ; 
 0089: CD 8A 0B       CALL  $0B8A              ; 
 008C: C3 B7 0B       JP    $0BB7              ; 
-008F: 06 04          LD    B,$04              ; ** J00EF
+008F: 06 04          LD    B,$04              ; * J00EF
 0091: 18 EA          JR    $7D                ; 
 
 ; ISR game specific (not in service mode)
-0093: CD CB 05       CALL  $05CB              ;{NextSound} Play next waiting sound (if any) ** J0050
+0093: CD CB 05       CALL  $05CB              ;{NextSound} Play next waiting sound (if any) * J0050
 0096: 3A 00 D0       LD    A,($D000)          ;{-2_IN0} Coins and start
 0099: 2F             CPL                      ; Active high
 009A: 32 53 E0       LD    ($E053),A          ;{-1_coinStart} Hold for whoever wants it
@@ -138,18 +146,18 @@ StartupCont:
 00AD: 20 07          JR    NZ,$B6             ; Skip the pause
 ;
 ; Stop-mode switch and start-2 pressed (pause game, but not sound)
-00AF: 3A 00 D0       LD    A,($D000)          ;{-2_IN0} Start buttons ** J00B4
+00AF: 3A 00 D0       LD    A,($D000)          ;{-2_IN0} Start buttons * J00B4
 00B2: E6 01          AND   $01                ; Is start-1 pressed?
 00B4: 20 F9          JR    NZ,$AF             ; No ... wait for it
 ;
-00B6: 3A 04 D0       LD    A,($D004)          ;{-2_DSW2} DSW2 again ** J009F,J00A6,J00AD
+00B6: 3A 04 D0       LD    A,($D004)          ;{-2_DSW2} DSW2 again * J009F,J00A6,J00AD
 00B9: CB 5F          BIT   3,A                ; ?? unused switch
 00BB: 20 06          JR    NZ,$C3             ; Not flipped ... move on
 00BD: 21 F3 E0       LD    HL,$E0F3           ; Bump ...
 00C0: 34             INC   (HL)               ; ... ?? mysterious counter
 00C1: CB 46          BIT   0,(HL)             ; ?? Old code left behind? The flags are never used
 ;
-00C3: FD E5          PUSH  IY                 ; Preserve these ... ** J00BB,J05B7
+00C3: FD E5          PUSH  IY                 ; Preserve these ... * J00BB,J05B7
 00C5: DD E5          PUSH  IX                 ; .. since the others are EXX to safety
 00C7: CD 0E 04       CALL  $040E              ;{CoinsAndCredits} Handle coins and credits
 00CA: 3A 41 E0       LD    A,($E041)          ;{-1_slotModeA} Coin mode slot A
@@ -157,7 +165,7 @@ StartupCont:
 00CE: 20 05          JR    NZ,$D5             ; No ... keep credits
 00D0: 3E 02          LD    A,$02              ; Free play ...
 00D2: 32 48 E0       LD    ($E048),A          ;{-1_Credits} ... always 2 credits
-00D5: 21 46 E0       LD    HL,$E046           ; ** J00CE
+00D5: 21 46 E0       LD    HL,$E046           ; * J00CE
 00D8: 46             LD    B,(HL)             ;
 00D9: CB 78          BIT   7,B                ;
 00DB: 20 15          JR    NZ,$F2             ; 
@@ -171,26 +179,26 @@ StartupCont:
 00EB: 3A 47 E0       LD    A,($E047)          ;{-1_cntTillCred} 
 00EE: A7             AND   A                  ;
 00EF: C2 8F 00       JP    NZ,$008F           ; 
-00F2: CB 40          BIT   0,B                ; ** J00DB
+00F2: CB 40          BIT   0,B                ; * J00DB
 00F4: 28 06          JR    Z,$FC              ; Skip game objects
 00F6: CD 7A 04       CALL  $047A              ;{GetInputs} Get inputs (or demo mode ??)
 00F9: CD EC 01       CALL  $01EC              ;{RunObjects} Run the game objects
-00FC: DD E1          POP   IX                 ; Restore IX and ... ** J00DF,J00E9,J00F4
+00FC: DD E1          POP   IX                 ; Restore IX and ... * J00DF,J00E9,J00F4
 00FE: FD E1          POP   IY                 ; ... IY
 0100: D9             EXX                      ; Restore the other ...
 0101: 08             EX    AF,AF'             ; ... registers
 0102: FB             EI                       ; Re-enable interrupts
 0103: C9             RET                      ; Done with ISR
 
-0104: 36 02          LD    (HL),$02           ; ** J00E5
+0104: 36 02          LD    (HL),$02           ; * J00E5
 0106: 31 00 E8       LD    SP,$E800           ;
 0109: FB             EI                       ;
 010A: CD 29 0D       CALL  $0D29              ; 
-010D: CD 33 05       CALL  $0533              ; ** J0110
+010D: CD 33 05       CALL  $0533              ; * J0110
 0110: 28 FB          JR    Z,$10D             ; 
 0112: CD 38 0B       CALL  $0B38              ; 
 0115: C3 B7 0B       JP    $0BB7              ; 
-0118: 31 00 E8       LD    SP,$E800           ; ** J13F8
+0118: 31 00 E8       LD    SP,$E800           ; * J13F8
 011B: 21 46 E0       LD    HL,$E046           ;
 011E: 35             DEC   (HL)               ;
 011F: FB             EI                       ;
@@ -212,7 +220,7 @@ StartupCont:
 0145: CD 03 06       CALL  $0603              ;{SwapPlayers} 
 0148: C3 B7 0B       JP    $0BB7              ; 
 
-014B: 3E 1B          LD    A,$1B              ; Play ... ** J012E
+014B: 3E 1B          LD    A,$1B              ; Play ... * J012E
 014D: CD 75 0D       CALL  $0D75              ;{AddSound} ... ending music
 0150: 21 46 E0       LD    HL,$E046           ;
 0153: CB 66          BIT   4,(HL)             ;
@@ -231,17 +239,17 @@ StartupCont:
 016F: 3A 15 E5       LD    A,($E515)          ; 
 0172: A7             AND   A                  ;
 0173: C2 B7 0B       JP    NZ,$0BB7           ; 
-0176: 21 02 2B       LD    HL,$2B02           ; "GAME OVER" script ** J0155
+0176: 21 02 2B       LD    HL,$2B02           ; "GAME OVER" script * J0155
 0179: CD 4E 03       CALL  $034E              ;{SlowScript} 
 017C: CD 1C 06       CALL  $061C              ;{WhichPlayer} 
 017F: 28 03          JR    Z,$184             ; 
 0181: CD 03 06       CALL  $0603              ;{SwapPlayers} 
-0184: CD E8 05       CALL  $05E8              ;{Delay3Sec} ** J017F
+0184: CD E8 05       CALL  $05E8              ;{Delay3Sec} * J017F
 0187: CD 29 0D       CALL  $0D29              ; 
 018A: 21 2A 2A       LD    HL,$2A2A           ; "TO COUNTINUE GAME" script
 018D: CD 00 03       CALL  $0300              ;{RunTextScript} Print it
 0190: 3E 11          LD    A,$11              ;
-0192: A7             AND   A                  ; ** J01AE
+0192: A7             AND   A                  ; * J01AE
 0193: 28 3D          JR    Z,$1D2             ; 
 0195: 3D             DEC   A                  ;
 0196: 27             DAA                      ;
@@ -251,7 +259,7 @@ StartupCont:
 019F: CD AE 03       CALL  $03AE              ;{PrintBCD} 
 01A2: 3E 40          LD    A,$40              ;
 01A4: 32 50 E0       LD    ($E050),A          ;{-1_isrCount3} 
-01A7: 3A 50 E0       LD    A,($E050)          ;{-1_isrCount3} ** J01BF,J01C4
+01A7: 3A 50 E0       LD    A,($E050)          ;{-1_isrCount3} * J01BF,J01C4
 01AA: A7             AND   A                  ;
 01AB: 3A 54 E0       LD    A,($E054)          ; 
 01AE: 28 E2          JR    Z,$192             ; 
@@ -262,25 +270,27 @@ StartupCont:
 01B9: CD 74 03       CALL  $0374              ;{FlashScript} 
 01BC: CD 27 05       CALL  $0527              ;{PrintCreds} 
 01BF: 18 E6          JR    $1A7               ; 
-01C1: CD 33 05       CALL  $0533              ; ** J01B4
+01C1: CD 33 05       CALL  $0533              ; * J01B4
 01C4: 28 E1          JR    Z,$1A7             ; 
 01C6: CD DA 01       CALL  $01DA              ; 
 01C9: CD DA 01       CALL  $01DA              ; 
 01CC: CD BF 0C       CALL  $0CBF              ; 
 01CF: C3 B7 0B       JP    $0BB7              ; 
-01D2: F3             DI                       ; ** J0193
+01D2: F3             DI                       ; * J0193
 01D3: AF             XOR   A                  ;
 01D4: 32 46 E0       LD    ($E046),A          ; 
 01D7: C3 68 00       JP    $0068              ;{StartupCont} 
-01DA: 3A 40 E0       LD    A,($E040)          ;{-1_PerCredit} ** C01C6,C01C9
+01DA: 3A 40 E0       LD    A,($E040)          ;{-1_PerCredit} * C01C6,C01C9
 01DD: 32 15 E5       LD    ($E515),A          ; 
 01E0: 21 00 00       LD    HL,$0000           ;
 01E3: 22 00 E5       LD    ($E500),HL         ; 
 01E6: 22 02 E5       LD    ($E502),HL         ; 
 01E9: C3 03 06       JP    $0603              ;{SwapPlayers} 
+```
 
 # RunObjects 
 
+```code
 RunObjects: 
 ; This routine runs up to 32 game object commands in turn. 
 ; There is room for 32 commands of 16 bytes beginning in the buffer at E300.
@@ -289,23 +299,25 @@ RunObjects:
 ; The first byte of each object is the command number. A 0 is invalid. 
 ; The command numbers are indexed in the table beginning with "1".
 ;
-01EC: DD 21 00 E3    LD    IX,$E300           ; Pointer to command buffer (32 slots of 16 bytes) ** C00F9
+01EC: DD 21 00 E3    LD    IX,$E300           ; Pointer to command buffer (32 slots of 16 bytes) * C00F9
 01F0: 3E 20          LD    A,$20              ; 32 command slots
 01F2: 32 E8 E0       LD    ($E0E8),A          ; Hold the count
-01F5: DD 7E 00       LD    A,(IX+$00)         ; Get the command number ** J0209
+01F5: DD 7E 00       LD    A,(IX+$00)         ; Get the command number * J0209
 01F8: 3D             DEC   A                  ; 0 means "invalid"
 01F9: FA 00 02       JP    M,$0200            ; Not a valid command. Skip it
 01FC: 21 0C 02       LD    HL,$020C           ; Routine jump table table
 01FF: EF             RST   0X28               ; Call the routine by index number
-0200: 11 10 00       LD    DE,$0010           ; Bytes to next slot ** J01F9
+0200: 11 10 00       LD    DE,$0010           ; Bytes to next slot * J01F9
 0203: DD 19          ADD   IX,DE              ; Point to next slot
 0205: 21 E8 E0       LD    HL,$E0E8           ; Get current count
 0208: 35             DEC   (HL)               ; Decrement the count
 0209: 20 EA          JR    NZ,$1F5            ; Do all 32 slots
 020B: C9             RET                      ; Done
+```
 
 # Object Commands
 
+```code
 ObjectCommands: 
 ; The calling routine indexes them by subtracting 1 first (0 means invalid).
 ; Thus they are numbered starting with 1 here.
@@ -369,16 +381,17 @@ ObjectCommands:
 027A: CD A7 12       CALL  $12A7              ; ?? Alien sounds
 027D: CD E7 12       CALL  $12E7              ; ??
 0280: CD DC 0D       CALL  $0DDC              ; ?? Change terrain
-;
+```
 
 # Run Text Commands
 
+```code
 RunTxtCmds: 
 ; Run the list of text commands from start to finish
 ;
 0283: 3A CF E1       LD    A,($E1CF)          ;{-1_comListHead} LSB of head of text command list
 ;
-0286: 21 D0 E1       LD    HL,$E1D0           ; Next available text command pointer ** J02AB
+0286: 21 D0 E1       LD    HL,$E1D0           ; Next available text command pointer * J02AB
 0289: BE             CP    (HL)               ; Have we reached the end of the list?
 028A: 28 E2          JR    Z,$26E             ; Yes ... back to the top
 ;
@@ -389,11 +402,11 @@ RunTxtCmds:
 0295: DD 4E 00       LD    C,(IX+$00)         ; Get command address
 0298: CB 21          SLA   C                  ; Two bytes per jump address
 029A: 20 11          JR    NZ,$2AD            ; 0 means no-command. Otherwise run it.
-;
-;
+```
 
 # Remove Text Command
 
+```code
 RemoveTxtCmd: 
 ; Commands are removed from the head of the list as they go
 ; inactive. But commands in the middle of the list must wait for earlier 
@@ -407,13 +420,13 @@ RemoveTxtCmd:
 02A4: 77             LD    (HL),A             ; ... from the head of the list
 ;
 ; After running, all commands return to here
-02A5: DD E5          PUSH  IX                 ; Pointer ... ** J02A0
+02A5: DD E5          PUSH  IX                 ; Pointer ... * J02A0
 02A7: C1             POP   BC                 ; ... to BC
 02A8: 79             LD    A,C                ; LSB plus ...
 02A9: C6 04          ADD   $04                ; ... 4 (next object LSB in A)
 02AB: 18 D9          JR    $286               ; Loop over all objects in list
 ;
-02AD: 06 00          LD    B,$00              ; Reset command value ... ** J029A
+02AD: 06 00          LD    B,$00              ; Reset command value ... * J029A
 02AF: DD 70 00       LD    (IX+$00),B         ; ... so (default) doesn't run again
 02B2: DD 7E 01       LD    A,(IX+$01)         ; Parameter data e.g. ISR count or score-adjust
 02B5: 21 A5 02       LD    HL,$02A5           ; Return to ...
@@ -425,16 +438,18 @@ RemoveTxtCmd:
 02BF: 66             LD    H,(HL)             ; MSB to H
 02C0: 69             LD    L,C                ; Now LSB to L
 02C1: E9             JP    (HL)               ; Jump to routine (return to 2A5)
+```
 
 # New Text Command
 
+```code
 NewTxtCmd: 
 ; Add a new text command to the processing list
 ;   C = Command routine number
 ;   A = Parameter ... like ISR value for next execution or score adjust
 ;   E = Text script LSB
 ;   D = Text script MSB
-02C2: 21 D0 E1       LD    HL,$E1D0           ; LSB of next-available text command ** J0518,C1528,C1778,C1789,C17A3,J17E7,J19CE,C1DE7,C1E7A
+02C2: 21 D0 E1       LD    HL,$E1D0           ; LSB of next-available text command * J0518,C1528,C1778,C1789,C17A3,J17E7,J19CE,C1DE7,C1E7A
 02C5: 6E             LD    L,(HL)             ; Set HL to ...
 02C6: 26 E6          LD    H,$E6              ; ... E6xx
 02C8: 71             LD    (HL),C             ; Set command number
@@ -474,7 +489,7 @@ TxtCmd_03:
 TxtCmd_02:
 ; Run text script from object
 ;
-02FA: DD 6E 02       LD    L,(IX+$02)         ; Get script ... ** C036C
+02FA: DD 6E 02       LD    L,(IX+$02)         ; Get script ... * C036C
 02FD: DD 66 03       LD    H,(IX+$03)         ; ... pointer (fall into run)
 ;
 RunTextScript:
@@ -491,8 +506,8 @@ RunTextScript:
 ; $26   ... 0.3 second delay (NEVER USED)
 ; $27   ... 0.8 second delay (NEVER USED)
 ; 
-0300: CD DB 03       CALL  $03DB              ; Get screen pointer and color from script ** C018D,J0379,C052A,C0548,C074B,C0B47,C0C31,C0C89,C0CEA,C0D06,J1258,C1285,C27EA,C27F3
-0303: 7E             LD    A,(HL)             ; Get command ** J031B,J0320
+0300: CD DB 03       CALL  $03DB              ; Get screen pointer and color from script * C018D,J0379,C052A,C0548,C074B,C0B47,C0C31,C0C89,C0CEA,C0D06,J1258,C1285,C27EA,C27F3
+0303: 7E             LD    A,(HL)             ; Get command * J031B,J0320
 0304: 06 12          LD    B,$12              ; 18 ISR delay (0.3 seconds)
 0306: FE 26          CP    $26                ; 26 ... 
 0308: 28 06          JR    Z,$310             ; ... 0.3 second delay
@@ -502,16 +517,16 @@ RunTextScript:
 ;
 ; value 26 ... 0.3 second delay
 ; value 27 ... 0.8 second delay
-0310: 23             INC   HL                 ; Skip delay command value ** J0308
+0310: 23             INC   HL                 ; Skip delay command value * J0308
 0311: 78             LD    A,B                ; Set ISR ...
 0312: 32 50 E0       LD    ($E050),A          ;{-1_isrCount3} count down
-0315: 3A 50 E0       LD    A,($E050)          ;{-1_isrCount3} ISR counted ... ** J0319
+0315: 3A 50 E0       LD    A,($E050)          ;{-1_isrCount3} ISR counted ... * J0319
 0318: A7             AND   A                  ; ... to 0 ?
 0319: 20 FA          JR    NZ,$315            ; No ... keep waiting
 031B: 18 E6          JR    $303               ; Back to top of loop
 ;
 ; Try other special commands
-031D: CD C9 03       CALL  $03C9              ;{RunTextScript2} Process normal character or command sequence ** J030E
+031D: CD C9 03       CALL  $03C9              ;{RunTextScript2} Process normal character or command sequence * J030E
 0320: 18 E1          JR    $303               ; Back to top of loop
 
 TxtCmd_04:
@@ -526,7 +541,7 @@ TxtCmd_04:
 TxtCmd_05:
 ; Run the text-script but erase it from screen
 ;
-032F: DD 6E 02       LD    L,(IX+$02)         ; Get the ... ** J0328,C033D
+032F: DD 6E 02       LD    L,(IX+$02)         ; Get the ... * J0328,C033D
 0332: DD 66 03       LD    H,(IX+$03)         ; ... script pointer
 0335: 18 44          JR    $37B               ;{EraseScript} Erase the script and done
 
@@ -546,18 +561,18 @@ TxtCmd_08:
 0343: C8             RET   Z                  ; Yes. Leave the command "inactive" and pulled from duty
 0344: 3E 04          LD    A,$04              ; No. Reset the count-down ...
 0346: 32 50 E0       LD    ($E050),A          ;{-1_isrCount3} ... timer to 4 interrupts
-0349: DD 36 00 07    LD    (IX+$00),$07       ; Transition to state 7 ** J033B
+0349: DD 36 00 07    LD    (IX+$00),$07       ; Transition to state 7 * J033B
 034D: C9             RET                      ; Out
 
 SlowScript:
 ; Run a text script, but pause between characters. This is used
 ; in the "between rounds" to show the time and bonus points.
 ;
-034E: CD DB 03       CALL  $03DB              ; Get screen cursor and color ** C015A,C0179,C0754,C078B,C07EB,C2824,C2879,C2886,C290A,C291D,C292A,C2933
-0351: CD C9 03       CALL  $03C9              ;{RunTextScript2} Process one script command (abort takes us back to caller) ** J035F
+034E: CD DB 03       CALL  $03DB              ; Get screen cursor and color 
+0351: CD C9 03       CALL  $03C9              ;{RunTextScript2} Process one script command (abort takes us back to caller) * J035F
 0354: 3E 03          LD    A,$03              ; Set ...
 0356: 32 50 E0       LD    ($E050),A          ;{-1_isrCount3} ... ISR delay
-0359: 3A 50 E0       LD    A,($E050)          ;{-1_isrCount3} Has ISR counted ... ** J035D
+0359: 3A 50 E0       LD    A,($E050)          ;{-1_isrCount3} Has ISR counted ... * J035D
 035C: A7             AND   A                  ; ... this down to zero?
 035D: 20 FA          JR    NZ,$359            ; No ... wait for zero
 035F: 18 F0          JR    $351               ; Keep processing script
@@ -580,14 +595,14 @@ TxtCmd_06:
 0367: 3E 04          LD    A,$04              ; Set count-down timer ...
 0369: 32 50 E0       LD    ($E050),A          ;{-1_isrCount3} ... to 4 interrupts
 036C: CD FA 02       CALL  $02FA              ;{TxtCmd_02} Run object script
-036F: DD 36 00 08    LD    (IX+$00),$08       ; Transition to state 8 ** J0365
+036F: DD 36 00 08    LD    (IX+$00),$08       ; Transition to state 8 * J0365
 0373: C9             RET                      ; Done
 
 FlashScript:
 ; Print or erase the script alternating every 16 interrupts.
 ; This produces a flashing effect
 ;
-0374: 3A 4E E0       LD    A,($E04E)          ;{-1_isrCNT_1} ISR up counter ** C01B9,C0536
+0374: 3A 4E E0       LD    A,($E04E)          ;{-1_isrCNT_1} ISR up counter * C01B9,C0536
 0377: CB 67          BIT   4,A                ; Every 16 interrupts
 0379: 20 85          JR    NZ,$300            ;{RunTextScript} Bit set ... print text (bit cleared ... fall into erase)
 
@@ -597,8 +612,8 @@ EraseScript:
 ; The set-color command is ignored.
 ; The repeat-character is ignored.
 ;
-037B: CD DB 03       CALL  $03DB              ; Load cursor and color from script ** J0335,J0389,C126D,C1327
-037E: 7E             LD    A,(HL)             ; Get next character/command ** J038E,J0391
+037B: CD DB 03       CALL  $03DB              ; Load cursor and color from script * J0335,J0389,C126D,C1327
+037E: 7E             LD    A,(HL)             ; Get next character/command * J038E,J0391
 037F: 23             INC   HL                 ; Next in script
 0380: FE 21          CP    $21                ; Abort script ...
 0382: C8             RET   Z                  ; ... by returning
@@ -612,7 +627,7 @@ EraseScript:
 038D: 13             INC   DE                 ; Back up one
 038E: 18 EE          JR    $37E               ; Keep processing
 ;
-0390: 23             INC   HL                 ; Next in script ** J0385
+0390: 23             INC   HL                 ; Next in script * J0385
 0391: 18 EB          JR    $37E               ; Continue running script
 
 Print3BCD:
@@ -621,21 +636,21 @@ Print3BCD:
 ; HL points to the MSB of the value (2 bytes)
 ; DE points to screen
 ;
-0393: 7E             LD    A,(HL)             ; Get BCD number (most significant) ** C2977
+0393: 7E             LD    A,(HL)             ; Get BCD number (most significant) * C2977
 0394: 13             INC   DE                 ; Skip potentially 0 leading digit
 0395: E6 0F          AND   $0F                ; If the lower digit is 0 then ...
 0397: 28 04          JR    Z,$39D             ; ... skip printing it
 0399: 1B             DEC   DE                 ; We will be printing this digit after all
-039A: CD A6 03       CALL  $03A6              ; Print lower BCD digit ** C2924,C293A,J296E
-039D: 2B             DEC   HL                 ; Next less-significant BCD value ** J0397
+039A: CD A6 03       CALL  $03A6              ; Print lower BCD digit * C2924,C293A,J296E
+039D: 2B             DEC   HL                 ; Next less-significant BCD value * J0397
 039E: 7E             LD    A,(HL)             ; Get BCD number
 039F: 1F             RRA                      ; Isolate ...
 03A0: 1F             RRA                      ; ... upper ...
 03A1: 1F             RRA                      ; ... BCD ...
 03A2: 1F             RRA                      ; ... digit
 03A3: CD A7 03       CALL  $03A7              ; Print digit (without color change)
-03A6: 7E             LD    A,(HL)             ; Get BCD number ** C039A
-03A7: E6 0F          AND   $0F                ; Isolate lower digit ** C03A3
+03A6: 7E             LD    A,(HL)             ; Get BCD number * C039A
+03A7: E6 0F          AND   $0F                ; Isolate lower digit * C03A3
 03A9: C6 30          ADD   $30                ; Make it ASCII (tile number)
 03AB: 12             LD    (DE),A             ; Store it on the screen
 03AC: 13             INC   DE                 ; Advance screen pointer
@@ -645,7 +660,7 @@ PrintBCD:
 ; Print the two digit BCD number in A to screen at DE with color C.
 ; The cursor DE is incremented with each digit.
 ;
-03AE: FD 21 00 04    LD    IY,$0400           ; Set color memory ... ** C019F,J0530,C067E,J2141
+03AE: FD 21 00 04    LD    IY,$0400           ; Set color memory ... * C019F,J0530,C067E,J2141
 03B2: FD 19          ADD   IY,DE              ; ... pointer to same slot as tile pointer
 03B4: F5             PUSH  AF                 ; Hold A
 03B5: 1F             RRA                      ; Do ...
@@ -658,11 +673,11 @@ PrintBCD:
 PrintDigit:
 ; Print number digit in A to screen at DE/IY with color C.
 ;
-03BD: E6 0F          AND   $0F                ; ... BDC digit ** C0166,C03B9,C213B
+03BD: E6 0F          AND   $0F                ; ... BDC digit * C0166,C03B9,C213B
 03BF: C6 30          ADD   $30                ; Convert to number (ASCII)
 ;
 ; Store character A to screen at DE and color C to screen at IY
-03C1: 12             LD    (DE),A             ; Store character (tile number) to screen ** J03D9,C0408
+03C1: 12             LD    (DE),A             ; Store character (tile number) to screen * J03D9,C0408
 03C2: FD 71 00       LD    (IY+$00),C         ; Store background to color memory
 03C5: 13             INC   DE                 ; Next on screen
 03C6: FD 23          INC   IY                 ; Next in color
@@ -680,7 +695,7 @@ RunTextScript2:
 ; $24   ... not checked for (NEVER USED)
 ; $25   ... write a repeated character to screen
 ;
-03C9: 7E             LD    A,(HL)             ; Get command or character from script ** C031D,C0351
+03C9: 7E             LD    A,(HL)             ; Get command or character from script * C031D,C0351
 03CA: 23             INC   HL                 ; Next in script
 03CB: FE 21          CP    $21                ; Abort script?
 03CD: 28 33          JR    Z,$402             ; Yes ... POP return and abort script
@@ -692,7 +707,7 @@ RunTextScript2:
 03D9: 20 E6          JR    NZ,$3C1            ; Normal character (not a command) ... store it to screen
 ;
 ; value 22 ... set screen cursor (tile and color) and load color
-03DB: 5E             LD    E,(HL)             ; Load ... ** C0300,C034E,C037B
+03DB: 5E             LD    E,(HL)             ; Load ... * C0300,C034E,C037B
 03DC: 23             INC   HL                 ; ... the ...
 03DD: 56             LD    D,(HL)             ; ... tile memory ...
 03DE: 23             INC   HL                 ; ... pointer
@@ -700,7 +715,7 @@ RunTextScript2:
 03E3: FD 19          ADD   IY,DE              ; ... plus 400
 ;
 ; value 23 ... load color value
-03E5: 4E             LD    C,(HL)             ; Load color ... ** J03D1
+03E5: 4E             LD    C,(HL)             ; Load color ... * J03D1
 03E6: 23             INC   HL                 ; ... from script
 ;
 TransColor:
@@ -716,7 +731,7 @@ TransColor:
 ; 09 -> 0E (+05) ?? Used for
 ; All other values left alone
 ;
-03E7: 3A F9 E0       LD    A,($E0F9)          ;{-1_champColors} Get champion-color flag ** C0678,C06A9,C0CD7,C2135,C2993
+03E7: 3A F9 E0       LD    A,($E0F9)          ;{-1_champColors} Get champion-color flag * C0678,C06A9,C0CD7,C2135,C2993
 03EA: A7             AND   A                  ; If 0 ...
 03EB: C8             RET   Z                  ; ... skip color translation
 ;
@@ -731,29 +746,31 @@ TransColor:
 03F7: FE 09          CP    $09                ; Value 9?
 03F9: C0             RET   NZ                 ; No ... leave it (9 becomes E)
 ;
-03FA: C6 05          ADD   $05                ; Values 6 and 9 ... ** J03F5
+03FA: C6 05          ADD   $05                ; Values 6 and 9 ... * J03F5
 03FC: 4F             LD    C,A                ; ... become B and E
 03FD: C9             RET                      ; Done
 ;
-03FE: C6 0B          ADD   $0B                ; Values 1 and 2 ... ** J03F1
+03FE: C6 0B          ADD   $0B                ; Values 1 and 2 ... * J03F1
 0400: 4F             LD    C,A                ; ... become C and D
 0401: C9             RET                      ; Done
 ;
 ; value 21 ... abort script (return to caller's caller)
-0402: E1             POP   HL                 ; Don't return to script processor ** J03CD
+0402: E1             POP   HL                 ; Don't return to script processor * J03CD
 0403: C9             RET                      ; Return out of script (abort)
 ;
 ; value 25 ... write a repeated character to screen
-0404: 46             LD    B,(HL)             ; Get the count ** J03D5
+0404: 46             LD    B,(HL)             ; Get the count * J03D5
 0405: 23             INC   HL                 ; Skip count byte
 0406: 7E             LD    A,(HL)             ; Get the character value
 0407: 23             INC   HL                 ; Skip to next
-0408: CD C1 03       CALL  $03C1              ; Write the character/color ** J040B
+0408: CD C1 03       CALL  $03C1              ; Write the character/color * J040B
 040B: 10 FB          DJNZ  $408               ; Do all loops
 040D: C9             RET                      ; Done
+```
 
 # Coins and Credits
 
+```code
 CoinsAndCredits: 
 ; Process coins and credits for each coin slot in turn.
 ;
@@ -762,7 +779,7 @@ CoinsAndCredits:
 ;
 ; When a coin is registered, the slot's hardware coin counter is triggered.
 ;
-040E: 21 3E E0       LD    HL,$E03E           ; Coin and service-credit signal history for slot A ** C00C7
+040E: 21 3E E0       LD    HL,$E03E           ; Coin and service-credit signal history for slot A * C00C7
 0411: 11 41 E0       LD    DE,$E041           ; Slot A coin mode
 0414: 3A 00 D0       LD    A,($D000)          ;{-2_IN0} Current switch values
 0417: 01 02 00       LD    BC,$0002           ; B=0 (coin counter trigger) C=2 (to trigger counter A)
@@ -784,7 +801,7 @@ CoinsAndCredits:
 ; Look at coin-slot signal history and register coins/credits
 ; For the coin signal we capture transitions. For the service-credit
 ; we give a credit every 16 ISRs the button is held down.
-0434: 1F             RRA                      ; Service-credit ... ** C041A,C0429
+0434: 1F             RRA                      ; Service-credit ... * C041A,C0429
 0435: 1F             RRA                      ; ... to ...
 0436: 1F             RRA                      ; ... bit 0 ...
 0437: CB 16          RL    (HL)               ; ... of memory
@@ -805,7 +822,7 @@ CoinsAndCredits:
 044F: 18 19          JR    $46A               ; Yes ... add one credit
 ;
 ; Register coin
-0451: 78             LD    A,B                ; Or in ... ** J0441
+0451: 78             LD    A,B                ; Or in ... * J0441
 0452: B1             OR    C                  ; ... bit to trigger ...
 0453: 47             LD    B,A                ; ... hardware coin counter
 0454: 3E 13          LD    A,$13              ; Play ...
@@ -824,30 +841,32 @@ CoinsAndCredits:
 0467: C0             RET   NZ                 ; No ... out
 0468: AF             XOR   A                  ; Reset the ...
 0469: 77             LD    (HL),A             ; ... coin-till-credit count
-046A: 3C             INC   A                  ; Add one ... ** J044F
+046A: 3C             INC   A                  ; Add one ... * J044F
 046B: 18 02          JR    $46F               ; ... credit
 ;
-046D: D6 08          SUB   $08                ; Drop the bit 4 and add multiple credits for one coin ** J0460
+046D: D6 08          SUB   $08                ; Drop the bit 4 and add multiple credits for one coin * J0460
 ;
 ; Bump credits
 ; Max is 99. They get lost after that.
-046F: 21 48 E0       LD    HL,$E048           ; Will be using the number-of-credits ** J045C,J046B
+046F: 21 48 E0       LD    HL,$E048           ; Will be using the number-of-credits * J045C,J046B
 0472: 86             ADD   A,(HL)             ; Add the new coin credit count
 0473: 27             DAA                      ; Adjust to BCD
 0474: 30 02          JR    NC,$478            ; Didn't overflow ... keep this value
 0476: 3E 99          LD    A,$99              ; Max 99 coins
-0478: 77             LD    (HL),A             ; Store the new number of credits ** J0474
+0478: 77             LD    (HL),A             ; Store the new number of credits * J0474
 0479: C9             RET                      ; Done
+```
 
 # Get Inputs
 
+```code
 GetInputs: 
 ; Get the player inputs (or demo commands if demo mode).
 ; The last inputs are moved to E04B.
 ; Current inputs are in E04A.
 ; Status of start-buttons is in E049.
 ;
-047A: 3A 46 E0       LD    A,($E046)          ; ??Demo mode flag ** C00F6
+047A: 3A 46 E0       LD    A,($E046)          ; ??Demo mode flag * C00F6
 047D: 07             RLCA                     ; ??Are we in demo mode?
 047E: 30 5B          JR    NC,$4DB            ; ??Yes ... go get demo inputs
 ;
@@ -858,7 +877,7 @@ GetInputs:
 048A: 3D             DEC   A                  ; Upright?
 048B: 28 01          JR    Z,$48E             ; Yes ... use player 1
 048D: 13             INC   DE                 ; Cocktail ... use player 2
-048E: 21 4A E0       LD    HL,$E04A           ; Get last ... ** J0485,J048B,J04B3
+048E: 21 4A E0       LD    HL,$E04A           ; Get last ... * J0485,J048B,J04B3
 0491: 7E             LD    A,(HL)             ; ... inputs
 0492: 23             INC   HL                 ; Remember ...
 0493: 77             LD    (HL),A             ; ... last inputs
@@ -871,7 +890,7 @@ GetInputs:
 049B: 77             LD    (HL),A             ; Store the start buttons
 049C: C9             RET                      ; Done
 
-049D: 3A 0B E5       LD    A,($E50B)          ; ** J04E4
+049D: 3A 0B E5       LD    A,($E50B)          ; * J04E4
 04A0: 2A F7 E0       LD    HL,($E0F7)         ; 
 04A3: BE             CP    (HL)               ;
 04A4: 20 13          JR    NZ,$4B9            ; 
@@ -885,10 +904,10 @@ GetInputs:
 04AF: 28 04          JR    Z,$4B5             ; 
 04B1: FE FF          CP    $FF                ;
 04B3: 20 D9          JR    NZ,$48E            ; 
-04B5: 32 E0 E1       LD    ($E1E0),A          ; ** J04AF
+04B5: 32 E0 E1       LD    ($E1E0),A          ; * J04AF
 04B8: C9             RET                      ;
 ;
-04B9: 21 4A E0       LD    HL,$E04A           ; ** J04A4
+04B9: 21 4A E0       LD    HL,$E04A           ; * J04A4
 04BC: 3A E0 E1       LD    A,($E1E0)          ; 
 04BF: A7             AND   A                  ;
 04C0: 28 13          JR    Z,$4D5             ; 
@@ -904,14 +923,14 @@ GetInputs:
 04D2: 36 20          LD    (HL),$20           ;
 04D4: C9             RET                      ;
 ;
-04D5: 7E             LD    A,(HL)             ; ** J04C0,J04D0
+04D5: 7E             LD    A,(HL)             ; * J04C0,J04D0
 04D6: 36 FF          LD    (HL),$FF           ;
 04D8: 23             INC   HL                 ;
 04D9: 77             LD    (HL),A             ;
 04DA: C9             RET                      ;
 
 ; Automated inputs
-04DB: 21 4D E0       LD    HL,$E04D           ; ** J047E
+04DB: 21 4D E0       LD    HL,$E04D           ; * J047E
 04DE: 3A 4E E0       LD    A,($E04E)          ;{-1_isrCNT_1} ISR incrementing counter
 04E1: 47             LD    B,A                ;
 04E2: 7E             LD    A,(HL)             ;
@@ -925,19 +944,19 @@ GetInputs:
 04F0: 38 01          JR    C,$4F3             ; 
 04F2: 34             INC   (HL)               ;
 ;
-04F3: 0E 02          LD    C,$02              ; Value for "left button" ** J04EC,J04F0
+04F3: 0E 02          LD    C,$02              ; Value for "left button" * J04EC,J04F0
 04F5: 21 49 E0       LD    HL,$E049           ; Current button value spot
 04F8: FE 18          CP    $18                ;
 04FA: 38 01          JR    C,$4FD             ; 
 04FC: 0D             DEC   C                  ; Now value for "right button"
-04FD: 71             LD    (HL),C             ; Store left or right button down ** J04FA
+04FD: 71             LD    (HL),C             ; Store left or right button down * J04FA
 04FE: 23             INC   HL                 ; Point to last inputs
 04FF: 36 00          LD    (HL),$00           ; Last inputs now 00 (triggers a transition)
 0501: FE B0          CP    $B0                ;
 0503: D8             RET   C                  ;
 0504: C3 7B 00       JP    $007B              ; 
 ;
-0507: 21 00 E3       LD    HL,$E300           ; MoonBuggy object ** J04E8
+0507: 21 00 E3       LD    HL,$E300           ; MoonBuggy object * J04E8
 050A: 7E             LD    A,(HL)             ; Get the current command
 050B: FE 04          CP    $04                ; Is the buggy in the air?
 050D: 20 0C          JR    NZ,$51B            ; No ... move on
@@ -949,7 +968,7 @@ GetInputs:
 0518: C3 C2 02       JP    $02C2              ;{NewTxtCmd} Add the text-command and out
 
 
-051B: FE 08          CP    $08                ; Buggy-held-in-air sequence? ** J050D
+051B: FE 08          CP    $08                ; Buggy-held-in-air sequence? * J050D
 051D: C8             RET   Z                  ; Yes ... no inputs
 ;
 051E: 21 4A E0       LD    HL,$E04A           ; Current inputs
@@ -957,16 +976,18 @@ GetInputs:
 0523: 23             INC   HL                 ; Last input is ...
 0524: 36 00          LD    (HL),$00           ; ... nothing (register transition)
 0526: C9             RET                      ; Done
+```
 
 # Print Credits
 
+```code
 PrintCreds: 
-0527: 21 E2 2A       LD    HL,$2AE2           ; "CREDIT " script ** C01BC,C0539,C074E
+0527: 21 E2 2A       LD    HL,$2AE2           ; "CREDIT " script * C01BC,C0539,C074E
 052A: CD 00 03       CALL  $0300              ;{RunTextScript} Print it
 052D: 3A 48 E0       LD    A,($E048)          ;{-1_Credits} Number of credits
 0530: C3 AE 03       JP    $03AE              ;{PrintBCD} Print it and out
 
-0533: 21 D1 2A       LD    HL,$2AD1           ; " PUSH BUTTON " script ** C010D,C01C1
+0533: 21 D1 2A       LD    HL,$2AD1           ; " PUSH BUTTON " script * C010D,C01C1
 0536: CD 74 03       CALL  $0374              ;{FlashScript} Print the flashing script
 0539: CD 27 05       CALL  $0527              ;{PrintCreds} Print number of credits
 053C: 21 86 2A       LD    HL,$2A86           ; "ONLY 1 PLAYER" script
@@ -974,7 +995,7 @@ PrintCreds:
 0542: 3D             DEC   A                  ; Only one player?
 0543: 28 03          JR    Z,$548             ; Yes ... leave this message
 0545: 21 97 2A       LD    HL,$2A97           ; "1 OR 2 PLAYERS" script
-0548: CD 00 03       CALL  $0300              ;{RunTextScript} Print it ** J0543
+0548: CD 00 03       CALL  $0300              ;{RunTextScript} Print it * J0543
 054B: 3A 53 E0       LD    A,($E053)          ;{-1_coinStart} 
 054E: E6 03          AND   $03                ;
 0550: C8             RET   Z                  ;
@@ -986,7 +1007,7 @@ PrintCreds:
 055B: 27             DAA                      ;
 055C: C8             RET   Z                  ;
 055D: 06 90          LD    B,$90              ;
-055F: D6 01          SUB   $01                ; ** J0557
+055F: D6 01          SUB   $01                ; * J0557
 0561: 27             DAA                      ;
 0562: F3             DI                       ;
 0563: 32 48 E0       LD    ($E048),A          ;{-1_Credits} 
@@ -1009,7 +1030,7 @@ RegMirror:
 ; E1C4 -> A0 BKG2Y
 ; E1C5 -> C0 BkgControl
 ;
-056D: 21 00 E1       LD    HL,$E100           ; Start of mirror memory ** C003A
+056D: 21 00 E1       LD    HL,$E100           ; Start of mirror memory * C003A
 0570: 11 40 C8       LD    DE,$C840           ; ?? Sprite memory Enemy ships and rocks
 0573: 01 40 00       LD    BC,$0040           ; 40 bytes, 16 sprites
 0576: ED B0          LDIR                     ; E100..E13F to C840..C87F (40 bytes, 16 sprites)
@@ -1029,7 +1050,7 @@ RegMirror:
 058B: 0E 1C          LD    C,$1C              ; Copy ...
 058D: 7E             LD    A,(HL)             ; ... E1C0 ...
 058E: 06 04          LD    B,$04              ; ... to ...
-0590: ED 79          OUT   (C),A              ; ... last ... ** J0593
+0590: ED 79          OUT   (C),A              ; ... last ... * J0593
 0592: 0C             INC   C                  ; ... four ...
 0593: 10 FB          DJNZ  $590               ; ... scroll registers
 ;
@@ -1041,10 +1062,10 @@ RegMirror:
 059C: 7E             LD    A,(HL)             ; Value to be written to BKG1X.
 059D: E6 7F          AND   $7F                ; ... The "protection" chip returns a ...
 059F: 01 40 00       LD    BC,$0040           ; ... mangled ...
-05A2: CB 3F          SRL   A                  ; ... value based on ... ** J05A7
+05A2: CB 3F          SRL   A                  ; ... value based on ... * J05A7
 05A4: 30 01          JR    NC,$5A7            ; ... the value ...
 05A6: 04             INC   B                  ; ... written to ...
-05A7: 20 F9          JR    NZ,$5A2            ; ... BKG1X. We ... ** J05A4
+05A7: 20 F9          JR    NZ,$5A2            ; ... BKG1X. We ... * J05A4
 05A9: 7E             LD    A,(HL)             ; ... calculate ...
 05AA: 07             RLCA                     ; ... what ...
 05AB: E6 01          AND   $01                ; ... it ...
@@ -1062,7 +1083,7 @@ RegMirror:
 05C2: 0E A0          LD    C,$A0              ; BKG2Y
 05C4: ED A3          OUTI                     ; From E1C4 to port A0 (BKG2Y) 
 05C6: 7E             LD    A,(HL)             ; From E1C5 (to BkgControl)
-05C7: 2F             CPL                      ; Reverse bits to active high ** J059A
+05C7: 2F             CPL                      ; Reverse bits to active high * J059A
 05C8: D3 C0          OUT   ($C0),A            ;{-2_BKGCtrl} Turn selected backgrounds on
 05CA: C9             RET                      ; Done
 
@@ -1081,7 +1102,7 @@ NextSound:
 ; and toggles the upper bit of D000 bit low then high. The sound CPU clears the IRQ by accessing
 ; memory $9xxx.
 ; 
-05CB: 2A DD E1       LD    HL,($E1DD)         ;{-1_SndQFront} Get front (L) and back (H) of sound effect queue pointer ** C0093
+05CB: 2A DD E1       LD    HL,($E1DD)         ;{-1_SndQFront} Get front (L) and back (H) of sound effect queue pointer * C0093
 05CE: 7D             LD    A,L                ; Head and tail ...
 05CF: BC             CP    H                  ; ... the same?
 05D0: C8             RET   Z                  ; Yes ... nothing to queue up
@@ -1098,14 +1119,14 @@ NextSound:
 
 Delay1Sec:
 ; Set countdown timer to 1 second and wait for it
-05E4: 3E 40          LD    A,$40              ; About 1 second ** C016C
+05E4: 3E 40          LD    A,$40              ; About 1 second * C016C
 05E6: 18 02          JR    $5EA               ; Wait for it and return
 
 Delay3Sec:
 ; Set countdown timer to 3 seconds and wait for it.
-05E8: 3E C0          LD    A,$C0              ; About 3 seconds ** C0184,J0794,C27E4,C2889,C288E,C28BA
-05EA: 32 50 E0       LD    ($E050),A          ;{-1_isrCount3} Set countdown timer ** J05E6,C2859,C286E
-05ED: 3A 50 E0       LD    A,($E050)          ;{-1_isrCount3} Wait for ... ** J05F1
+05E8: 3E C0          LD    A,$C0              ; About 3 seconds * C0184,J0794,C27E4,C2889,C288E,C28BA
+05EA: 32 50 E0       LD    ($E050),A          ;{-1_isrCount3} Set countdown timer * J05E6,C2859,C286E
+05ED: 3A 50 E0       LD    A,($E050)          ;{-1_isrCount3} Wait for ... * J05F1
 05F0: A7             AND   A                  ; ... count to ...
 05F1: 20 FA          JR    NZ,$5ED            ; ... reach 0
 05F3: C9             RET                      ; Done
@@ -1113,9 +1134,9 @@ Delay3Sec:
 ClearRAM:
 ; Clear RAM from $E000-E6FF.
 ;
-05F4: 21 00 E0       LD    HL,$E000           ; Point to start of RAM ** C000D
+05F4: 21 00 E0       LD    HL,$E000           ; Point to start of RAM * C000D
 05F7: 01 00 07       LD    BC,$0700           ; Number of bytes to clear
-05FA: 36 00          LD    (HL),$00           ; Clear location ** J0600,C0BBD,C0C9E,C0D2F,C0D38,C294E,J2957,C2960
+05FA: 36 00          LD    (HL),$00           ; Clear location * J0600,C0BBD,C0C9E,C0D2F,C0D38,C294E,J2957,C2960
 05FC: 23             INC   HL                 ; Next in RAM
 05FD: 0B             DEC   BC                 ; Decrement counter
 05FE: 78             LD    A,B                ; Is counter ...
@@ -1127,7 +1148,7 @@ SwapPlayers:
 ; This function swaps the data structures for the players as they
 ; alternate playing.
 ;
-0603: 21 46 E0       LD    HL,$E046           ; Game mode ** C013B,C0145,C0169,C0181,J01E9,C0C95,C0CFA,C0D00
+0603: 21 46 E0       LD    HL,$E046           ; Game mode * C013B,C0145,C0169,C0181,J01E9,C0C95,C0CFA,C0D00
 0606: 7E             LD    A,(HL)             ; Get game mode
 0607: EE 08          XOR   $08                ; Change ...
 0609: 77             LD    (HL),A             ; ... players
@@ -1135,7 +1156,7 @@ SwapPlayers:
 060D: 11 18 E5       LD    DE,$E518           ; Pointer to "other" player
 0610: 06 18          LD    B,$18              ; 24 bytes to swap
 ;
-0612: 1A             LD    A,(DE)             ; From other player ** J0619
+0612: 1A             LD    A,(DE)             ; From other player * J0619
 0613: 4F             LD    C,A                ; Now in C
 0614: 7E             LD    A,(HL)             ; From current player
 0615: 12             LD    (DE),A             ; Swap current ...
@@ -1150,7 +1171,7 @@ WhichPlayer:
 ; Return Z if player 1
 ; Return NZ if player 2
 ;
-061C: 3A 46 E0       LD    A,($E046)          ; Get game-mode ** C017C,C066B
+061C: 3A 46 E0       LD    A,($E046)          ; Get game-mode * C017C,C066B
 061F: CB 5F          BIT   3,A                ; Test value of bit-3
 0621: C9             RET                      ; Return in Z flag
 
@@ -1174,8 +1195,8 @@ TxtCmd_01:
 ;
 0631: 11 00 E5       LD    DE,$E500           ; Score for current player
 0634: 06 03          LD    B,$03              ; Do three bytes (6 digits)
-0636: A7             AND   A                  ; Clear carry for first pass ** C2899
-0637: 1A             LD    A,(DE)             ; Add current value ... ** J063D
+0636: A7             AND   A                  ; Clear carry for first pass * C2899
+0637: 1A             LD    A,(DE)             ; Add current value ... * J063D
 0638: 8E             ADC   A,(HL)             ; ... to score offset
 0639: 27             DAA                      ; Adjust to BCD value
 063A: 12             LD    (DE),A             ; New current value
@@ -1188,7 +1209,7 @@ TxtCmd_01:
 0644: 11 00 E5       LD    DE,$E500           ; Current score
 0647: 21 08 E0       LD    HL,$E008           ; High Score
 064A: A7             AND   A                  ; Start with clear carry
-064B: 1A             LD    A,(DE)             ; Compare current ... ** J064F
+064B: 1A             LD    A,(DE)             ; Compare current ... * J064F
 064C: 9E             SBC   (HL)               ; ... to high score
 064D: 23             INC   HL                 ; Next in high
 064E: 13             INC   DE                 ; Next in current
@@ -1204,41 +1225,43 @@ TxtCmd_01:
 0662: 32 0B E0       LD    ($E00B),A          ;{-1_highPoint} Copy to high passed-point
 0665: CD 85 06       CALL  $0685              ;{PrintHigh} Print high-score and high-passed-point
 ;
-0668: 11 84 80       LD    DE,$8084           ; Player 1's score on screen ** J0651,C0CED,C0CFD
+0668: 11 84 80       LD    DE,$8084           ; Player 1's score on screen * J0651,C0CED,C0CFD
 066B: CD 1C 06       CALL  $061C              ;{WhichPlayer} Player 1 or 2?
 066E: 28 03          JR    Z,$673             ; This is player 1 ... we have the right screen location
 0670: 11 A4 80       LD    DE,$80A4           ; Player 2's score on screen (+32 ... one row)
-0673: 21 02 E5       LD    HL,$E502           ; ** J066E
+0673: 21 02 E5       LD    HL,$E502           ; * J066E
 0676: 0E 01          LD    C,$01              ; Color set
 0678: CD E7 03       CALL  $03E7              ;{TransColor} Translate colors
 ;
-067B: 06 03          LD    B,$03              ; Three bytes to print ** J06AD
-067D: 7E             LD    A,(HL)             ; Get BCD double digit ** J0682
+067B: 06 03          LD    B,$03              ; Three bytes to print * J06AD
+067D: 7E             LD    A,(HL)             ; Get BCD double digit * J0682
 067E: CD AE 03       CALL  $03AE              ;{PrintBCD} Print two digits to screen at DE
 0681: 2B             DEC   HL                 ; Back up a byte (these are stored in memory LSB first)
 0682: 10 F9          DJNZ  $67D               ; Do all digits
 0684: C9             RET                      ; Out
+```
 
 # Print High Score
 
+```code
 PrintHigh: 
 ; Print the high-score and high-passed-point.
 ; The color is different for champion course
-0685: 21 0B E0       LD    HL,$E00B           ; Location of high passed-point ** C0665,C0CF0
+0685: 21 0B E0       LD    HL,$E00B           ; Location of high passed-point * C0665,C0CF0
 0688: 7E             LD    A,(HL)             ; Get high passed-point
 0689: 0E 09          LD    C,$09              ; Color for 1st pass through letters
 068B: FE 1B          CP    $1B                ; Rolled past letter 'Z' ?
 068D: 38 04          JR    C,$693             ; No ... keep it
 068F: D6 1A          SUB   $1A                ; Roll back around
 0691: 0E 06          LD    C,$06              ; Color for 2nd pass through letters
-0693: C6 40          ADD   $40                ; Becomes an ASCII letter ** J068D
+0693: C6 40          ADD   $40                ; Becomes an ASCII letter * J068D
 0695: 32 4A 80       LD    ($804A),A          ; Store it to screen
 0698: 3A F9 E0       LD    A,($E0F9)          ;{-1_champColors} Champion ...
 069B: 1F             RRA                      ; ... course?
 069C: 79             LD    A,C                ; Color 
 069D: 30 02          JR    NC,$6A1            ; Normal colors
 069F: C6 05          ADD   $05                ; Champion colors
-06A1: 32 4A 84       LD    ($844A),A          ; Set the color of the high passed-point character ** J069D
+06A1: 32 4A 84       LD    ($844A),A          ; Set the color of the high passed-point character * J069D
 ;
 06A4: 11 43 80       LD    DE,$8043           ; Location of high-score on screen
 06A7: 0E 09          LD    C,$09              ; Color set
@@ -1249,14 +1272,14 @@ PrintHigh:
 CheckExtPlay:
 ; Check and handle extended play based on current score.
 ;
-06AF: 2A 01 E5       LD    HL,($E501)         ; ** C063F
+06AF: 2A 01 E5       LD    HL,($E501)         ; * C063F
 06B2: 3A 45 E0       LD    A,($E045)          ;{-1_extPoints} Extra points setting
 06B5: 3D             DEC   A                  ;
 06B6: F8             RET   M                  ;
 06B7: 3D             DEC   A                  ;
 06B8: 28 01          JR    Z,$6BB             ; 
 06BA: 24             INC   H                  ;
-06BB: CB 2C          SRA   H                  ; ** J06B8
+06BB: CB 2C          SRA   H                  ; * J06B8
 06BD: 25             DEC   H                  ;
 06BE: 3C             INC   A                  ;
 06BF: 7C             LD    A,H                ;
@@ -1264,7 +1287,7 @@ CheckExtPlay:
 06C2: A7             AND   A                  ;
 06C3: 28 02          JR    Z,$6C7             ; 
 06C5: 3E FE          LD    A,$FE              ;
-06C7: 21 03 E5       LD    HL,$E503           ; ** J06C0,J06C3
+06C7: 21 03 E5       LD    HL,$E503           ; * J06C0,J06C3
 06CA: BE             CP    (HL)               ;
 06CB: C0             RET   NZ                 ;
 06CC: 7E             LD    A,(HL)             ;
@@ -1273,18 +1296,18 @@ CheckExtPlay:
 06D0: 34             INC   (HL)               ;
 06D1: 21 15 E5       LD    HL,$E515           ;
 06D4: 34             INC   (HL)               ;
-06D5: 3A 15 E5       LD    A,($E515)          ; ** C0130,C0D09
+06D5: 3A 15 E5       LD    A,($E515)          ; * C0130,C0D09
 06D8: 3D             DEC   A                  ;
 06D9: 28 03          JR    Z,$6DE             ; 
 06DB: 4F             LD    C,A                ;
 06DC: 3E 01          LD    A,$01              ;
-06DE: 21 7C 80       LD    HL,$807C           ; ** J06D9
+06DE: 21 7C 80       LD    HL,$807C           ; * J06D9
 06E1: CD EC 06       CALL  $06EC              ; 
 06E4: CD EC 06       CALL  $06EC              ; 
 06E7: 28 03          JR    Z,$6EC             ; 
 06E9: 79             LD    A,C                ;
 06EA: C6 30          ADD   $30                ;
-06EC: 77             LD    (HL),A             ; ** C06E1,C06E4,J06E7
+06EC: 77             LD    (HL),A             ; * C06E1,C06E4,J06E7
 06ED: 23             INC   HL                 ;
 06EE: A7             AND   A                  ;
 06EF: C8             RET   Z                  ;
@@ -1312,8 +1335,8 @@ ReadSettings:
 ; 0101   1C-4P    1011    +1=   1_100                  4
 ; 0110   1C-3P    1010    +1=   1_011                  3
 ; 0111   1C-2P    1001    +1=   1_010                  2
-; 1000  **1C-1P   1000    +1=   1_001                  1 This option not available in MAME
-; 1001  *7C-1P    0111          0_111 Multi-coin count 7
+; 1000 * 1C-1P   1000    +1=   1_001                  1 This option not available in MAME
+; 1001 * 7C-1P    0111          0_111 Multi-coin count 7
 ; 1010   6C-1P    0110          0_110                  6
 ; 1011   5C-1P    0101          0_101                  5
 ; 1100   4C-1P    0100          0_100                  4
@@ -1345,14 +1368,14 @@ ReadSettings:
 ; 10xx               01xx    01-F5-1 = 1_011                  3
 ; 11xx               00xx    00-F5-1 = 1_010                  2
 ;
-06F2: 21 40 E0       LD    HL,$E040           ; Holds lives-per-credit ** C0010
+06F2: 21 40 E0       LD    HL,$E040           ; Holds lives-per-credit * C0010
 06F5: 3A 03 D0       LD    A,($D003)          ;{-2_DSW1} Read the number of lives-per-credit
 06F8: 47             LD    B,A                ; Hold original in B
 06F9: 3C             INC   A                  ; Value is now 1,2,3, 4
 06FA: E6 03          AND   $03                ; Is it 1,2, or 3?
 06FC: 20 02          JR    NZ,$700            ; Yes ... keep 1,2, or 3
 06FE: 3E 05          LD    A,$05              ; 4 becomes 5 lives
-0700: 77             LD    (HL),A             ; Store lives-per-credit; ** J06FC
+0700: 77             LD    (HL),A             ; Store lives-per-credit; * J06FC
 0701: 23             INC   HL                 ; E041 (holds coin mode for slot A)
 ;
 0702: 78             LD    A,B                ; Original port value just read
@@ -1376,8 +1399,8 @@ ReadSettings:
 0719: CB 5F          BIT   3,A                ; Multi plays per coin?
 071B: 28 01          JR    Z,$71E             ; No ... leave the value alone.
 071D: 3C             INC   A                  ; Multi-plays-per-coin value goes 1-7 with 0 and 1 on the end 
-071E: 77             LD    (HL),A             ; Store coin mode slot A ** J071B
-071F: 23             INC   HL                 ; E042 ... mode for slot B ** J0743
+071E: 77             LD    (HL),A             ; Store coin mode slot A * J071B
+071F: 23             INC   HL                 ; E042 ... mode for slot B * J0743
 0720: 77             LD    (HL),A             ; Same coin mode for slot B
 ;
 0721: 3A 04 D0       LD    A,($D004)          ;{-2_DSW2} Various settings
@@ -1395,7 +1418,7 @@ ReadSettings:
 0731: C9             RET                      ; Done
 ;
 ; Decode coin mode B (two slots)
-0732: 1F             RRA                      ; Skip the ... ** J0711
+0732: 1F             RRA                      ; Skip the ... * J0711
 0733: 1F             RRA                      ; ... extended points field
 0734: 2F             CPL                      ; Straight reverse now
 0735: 47             LD    B,A                ; Hold this
@@ -1411,7 +1434,7 @@ ReadSettings:
 0743: 18 DA          JR    $71F               ; Store it
 
 
-0745: CD 29 0D       CALL  $0D29              ; ** C0086
+0745: CD 29 0D       CALL  $0D29              ; * C0086
 0748: 21 97 2C       LD    HL,$2C97           ; "1982 IREM CORP" script
 074B: CD 00 03       CALL  $0300              ;{RunTextScript} 
 074E: CD 27 05       CALL  $0527              ;{PrintCreds} 
@@ -1440,21 +1463,21 @@ ReadSettings:
 0783: 77             LD    (HL),A             ;
 0784: 2B             DEC   HL                 ;
 0785: 3E 31          LD    A,$31              ;
-0787: 77             LD    (HL),A             ; ** J077F
-0788: 21 54 E0       LD    HL,$E054           ; ** J079D
+0787: 77             LD    (HL),A             ; * J077F
+0788: 21 54 E0       LD    HL,$E054           ; * J079D
 078B: CD 4E 03       CALL  $034E              ;{SlowScript} 
-078E: 3A 47 E0       LD    A,($E047)          ;{-1_cntTillCred} ** J076C,J0792
+078E: 3A 47 E0       LD    A,($E047)          ;{-1_cntTillCred} * J076C,J0792
 0791: A7             AND   A                  ;
 0792: 20 FA          JR    NZ,$78E            ; 
 0794: C3 E8 05       JP    $05E8              ;{Delay3Sec} 
-0797: CD D3 07       CALL  $07D3              ; ** J0761
+0797: CD D3 07       CALL  $07D3              ; * J0761
 079A: CD DD 07       CALL  $07DD              ; 
 079D: 18 E9          JR    $788               ; 
-079F: 21 67 2C       LD    HL,$2C67           ; "1 PLAYER 1 COIN" script ** C0763
+079F: 21 67 2C       LD    HL,$2C67           ; "1 PLAYER 1 COIN" script * C0763
 07A2: ED B0          LDIR                     ;
 07A4: 21 57 E0       LD    HL,$E057           ;
-07A7: 3A 41 E0       LD    A,($E041)          ;{-1_slotModeA} ** J07DB
-07AA: 11 08 00       LD    DE,$0008           ; ** J07E6
+07A7: 3A 41 E0       LD    A,($E041)          ;{-1_slotModeA} * J07DB
+07AA: 11 08 00       LD    DE,$0008           ; * J07E6
 07AD: FE 08          CP    $08                ;
 07AF: 38 12          JR    C,$7C3             ; 
 07B1: C6 28          ADD   $28                ;
@@ -1469,7 +1492,7 @@ ReadSettings:
 07BF: 19             ADD   HL,DE              ;
 07C0: 36 00          LD    (HL),$00           ;
 07C2: C9             RET                      ;
-07C3: 3D             DEC   A                  ; ** J07AF
+07C3: 3D             DEC   A                  ; * J07AF
 07C4: C8             RET   Z                  ;
 07C5: 11 0B 00       LD    DE,$000B           ;
 07C8: 19             ADD   HL,DE              ;
@@ -1479,15 +1502,15 @@ ReadSettings:
 07CF: 19             ADD   HL,DE              ;
 07D0: 36 53          LD    (HL),$53           ;
 07D2: C9             RET                      ;
-07D3: 21 7D 2C       LD    HL,$2C7D           ; "A 1 PLAYER 1 COIN" script ** C0797
+07D3: 21 7D 2C       LD    HL,$2C7D           ; "A 1 PLAYER 1 COIN" script * C0797
 07D6: ED B0          LDIR                     ;
 07D8: 21 5B E0       LD    HL,$E05B           ;
 07DB: 18 CA          JR    $7A7               ; 
-07DD: CD E8 07       CALL  $07E8              ; ** C079A
+07DD: CD E8 07       CALL  $07E8              ; * C079A
 07E0: 21 5B E0       LD    HL,$E05B           ;
 07E3: 3A 42 E0       LD    A,($E042)          ;{-1_slotModeB} 
 07E6: 18 C2          JR    $7AA               ; 
-07E8: 21 54 E0       LD    HL,$E054           ; ** C0766,C07DD
+07E8: 21 54 E0       LD    HL,$E054           ; * C0766,C07DD
 07EB: CD 4E 03       CALL  $034E              ;{SlowScript} 
 07EE: 2A 54 E0       LD    HL,($E054)         ; 
 07F1: 11 40 00       LD    DE,$0040           ;
@@ -1496,18 +1519,18 @@ ReadSettings:
 07F8: 21 57 E0       LD    HL,$E057           ;
 07FB: 34             INC   (HL)               ;
 07FC: C9             RET                      ;
-07FD: 21 77 E2       LD    HL,$E277           ; ** C0E48
+07FD: 21 77 E2       LD    HL,$E277           ; * C0E48
 0800: 06 07          LD    B,$07              ;
-0802: 7E             LD    A,(HL)             ; ** J0807,J080F
+0802: 7E             LD    A,(HL)             ; * J0807,J080F
 0803: A7             AND   A                  ;
 0804: 28 0B          JR    Z,$811             ; 
 0806: 2B             DEC   HL                 ;
 0807: 10 F9          DJNZ  $802               ; 
 0809: C9             RET                      ;
-080A: 21 61 E2       LD    HL,$E261           ; ** C1C54
+080A: 21 61 E2       LD    HL,$E261           ; * C1C54
 080D: 06 12          LD    B,$12              ;
 080F: 18 F1          JR    $802               ; 
-0811: 34             INC   (HL)               ; ** J0804
+0811: 34             INC   (HL)               ; * J0804
 0812: 7D             LD    A,L                ;
 0813: D6 50          SUB   $50                ;
 0815: 87             ADD   A,A                ;
@@ -1523,7 +1546,7 @@ XYToTextPtr:
 ; Return text tile map pointer in HL.
 ; Return X/2 in D (used to draw shot)
 ;
-081B: DD 7E 07       LD    A,(IX+$07)         ; Get the Y coordinate ** C1670,C168F
+081B: DD 7E 07       LD    A,(IX+$07)         ; Get the Y coordinate * C1670,C168F
 081E: E6 F8          AND   $F8                ; Drop the divide-by-eight remainder (1111_1000)
 0820: 6F             LD    L,A                ; To HL
 0821: 26 20          LD    H,$20              ; Will be 40xx ... tile memory
@@ -1539,10 +1562,10 @@ XYToTextPtr:
 082F: 6F             LD    L,A                ; Back to L
 0830: C9             RET                      ; Return pointer in HL
 
-0831: 3A 00 E3       LD    A,($E300)          ;{-1_buggyHandler} ** C162D,C18E0,C1957,C195E,C1A2F,C1E25
+0831: 3A 00 E3       LD    A,($E300)          ;{-1_buggyHandler} * C162D,C18E0,C1957,C195E,C1A2F,C1E25
 0834: FE 06          CP    $06                ;
 0836: 30 7A          JR    NC,$8B2            ; 
-0838: 3A E2 E1       LD    A,($E1E2)          ; ** C1950,C1A22,C1A73
+0838: 3A E2 E1       LD    A,($E1E2)          ; * C1950,C1A22,C1A73
 083B: DD 96 0F       SUB   (IX+$0F)           ;
 083E: ED 44          NEG                      ;
 0840: DD 77 03       LD    (IX+$03),A         ;
@@ -1554,8 +1577,8 @@ XYToTextPtr:
 084D: FE E8          CP    $E8                ;
 084F: 30 67          JR    NC,$8B8            ;{DrawObject} 
 0851: E1             POP   HL                 ;
-0852: DD 36 00 00    LD    (IX+$00),$00       ; ** J143E,J1639,J163E,C1711,J177C,J1B13,J1CE0,C1D98,J1E11,J1E30,J1E38,J1E45,J1E55,J1E9E,J2028,J2039,J20BB,J20CF
-0856: DD 7E 0D       LD    A,(IX+$0D)         ; A = object.layoutIndex ** C1794,J17C1,J1D20,C1E8B
+0852: DD 36 00 00    LD    (IX+$00),$00       ; * J143E,J1639,J163E,C1711,J177C,J1B13,J1CE0,C1D98,J1E11,J1E30,J1E38,J1E45,J1E55,J1E9E,J2028,J2039,J20BB,J20CF
+0856: DD 7E 0D       LD    A,(IX+$0D)         ; A = object.layoutIndex * C1794,J17C1,J1D20,C1E8B
 0859: 37             SCF                      ; A = 2 * object.layoutIndex ...
 085A: 17             RLA                      ; ... + 1
 085B: D8             RET   C                  ; A was >= 0x80 ... not valid
@@ -1564,11 +1587,11 @@ XYToTextPtr:
 085E: 21 18 2E       LD    HL,$2E18           ; 
 0861: 30 01          JR    NC,$864            ; 
 0863: 24             INC   H                  ;
-0864: 5F             LD    E,A                ; DE = ... ** J0861
+0864: 5F             LD    E,A                ; DE = ... * J0861
 0865: 16 00          LD    D,$00              ; ... 4 * object.layoutIndex + 3
 0867: 19             ADD   HL,DE              ;
 0868: 46             LD    B,(HL)             ; B = ObjectLaout[object.layoutIndex].numberOfTiles
-0869: DD 5E 01       LD    E,(IX+$01)         ; ** J20D8
+0869: DD 5E 01       LD    E,(IX+$01)         ; * J20D8
 086C: 16 E1          LD    D,$E1              ;
 086E: 78             LD    A,B                ;
 086F: 17             RLA                      ;
@@ -1583,7 +1606,7 @@ XYToTextPtr:
 087D: D6 5E          SUB   $5E                ;
 087F: 6F             LD    L,A                ;
 0880: 36 00          LD    (HL),$00           ;
-0882: FD 21 00 00    LD    IY,$0000           ; ** J0870,J087A,C089E
+0882: FD 21 00 00    LD    IY,$0000           ; * J0870,J087A,C089E
 0886: FD 19          ADD   IY,DE              ;
 0888: 7B             LD    A,E                ;
 0889: 1F             RRA                      ;
@@ -1593,15 +1616,15 @@ XYToTextPtr:
 088F: 6F             LD    L,A                ;
 0890: 26 E2          LD    H,$E2              ;
 0892: 11 04 00       LD    DE,$0004           ;
-0895: FD 72 02       LD    (IY+$02),D         ; ** J089A
+0895: FD 72 02       LD    (IY+$02),D         ; * J089A
 0898: FD 19          ADD   IY,DE              ;
 089A: 10 F9          DJNZ  $895               ; 
 089C: 72             LD    (HL),D             ;
 089D: C9             RET                      ;
-089E: CD 82 08       CALL  $0882              ; ** J0875
-08A1: 21 74 E1       LD    HL,$E174           ; ** C1746
+089E: CD 82 08       CALL  $0882              ; * J0875
+08A1: 21 74 E1       LD    HL,$E174           ; * C1746
 08A4: 01 00 18       LD    BC,$1800           ;
-08A7: 71             LD    (HL),C             ; ** J08A9
+08A7: 71             LD    (HL),C             ; * J08A9
 08A8: 23             INC   HL                 ;
 08A9: 10 FC          DJNZ  $8A7               ; 
 08AB: 21 D1 E1       LD    HL,$E1D1           ;
@@ -1609,22 +1632,22 @@ XYToTextPtr:
 08AF: 23             INC   HL                 ;
 08B0: 70             LD    (HL),B             ;
 08B1: C9             RET                      ;
-08B2: E1             POP   HL                 ; ** J0836
+08B2: E1             POP   HL                 ; * J0836
 08B3: C9             RET                      ;
-08B4: DD 36 0B 01    LD    (IX+$0B),$01       ; ** J0845
+08B4: DD 36 0B 01    LD    (IX+$0B),$01       ; * J0845
 
 DrawObject:
 ; This routine draws the graphics object associated with the ISR game object.
 ; IX is the ISR Object
 ;
-08B8: DD 7E 0D       LD    A,(IX+$0D)         ; Object number ** J084B,J084F,J1360,J13B9,C13D8,C13FF,J1419,C1484,J1615,J1AED,J1D3F,J1D7F,J1D8D,J1D95,J1EA1,J20AF,J20C1,J20C7
+08B8: DD 7E 0D       LD    A,(IX+$0D)         ; Object number * J084B,J084F,J1360,J13B9,C13D8,C13FF,J1419,C1484,J1615,J1AED,J1D3F,J1D7F,J1D8D,J1D95,J1EA1,J20AF,J20C1,J20C7
 08BB: 07             RLCA                     ; Was upper bit set (Thus A*4>=512)?
 08BC: D8             RET   C                  ; Yes ... skip 
 08BD: 17             RLA                      ; Now *4
 08BE: 21 18 2E       LD    HL,$2E18           ; Base pointer
 08C1: 30 01          JR    NC,$8C4            ; The *4 was all within LSB ... skip
 08C3: 24             INC   H                  ; The *4 overflowed ... bump MSB (there is no shift-left-into-H)
-08C4: 5F             LD    E,A                ; A*4 ... ** J08C1
+08C4: 5F             LD    E,A                ; A*4 ... * J08C1
 08C5: 16 00          LD    D,$00              ; ... now in DE
 08C7: 19             ADD   HL,DE              ; HL = 2E18 + A*4 ( A*4 must be less than 512 )
 08C8: DD 5E 01       LD    E,(IX+$01)         ; LSB of object mirror pointer (4 bytes each)
@@ -1651,7 +1674,7 @@ DrawObject:
 
 ; B = (E03C) - A - 1
 ;
-08ED: 2F             CPL                      ; ** C08E8,C159D,C15CA
+08ED: 2F             CPL                      ; * C08E8,C159D,C15CA
 08EE: 47             LD    B,A                ;
 08EF: 3A 3C E0       LD    A,($E03C)          ; 
 08F2: 80             ADD   A,B                ;
@@ -1703,7 +1726,7 @@ ObjDraw_13: ; Hover craft full boost
 0937: E6 03          AND   $03                ;
 0939: 28 01          JR    Z,$93C             ; 
 093B: 14             INC   D                  ;
-093C: CD 69 09       CALL  $0969              ;{ObjDraw_00} ** J0939
+093C: CD 69 09       CALL  $0969              ;{ObjDraw_00} * J0939
 093F: 16 3B          LD    D,$3B              ;
 0941: 18 1B          JR    $95E               ; 
 
@@ -1721,7 +1744,7 @@ ObjDraw_05: ; Moon buggy explosion 2x1
 ObjDraw_01: ; Hover craft
 095A: CD 69 09       CALL  $0969              ;{ObjDraw_00} 
 095D: 14             INC   D                  ;
-095E: 3E 10          LD    A,$10              ; ** J0941
+095E: 3E 10          LD    A,$10              ; * J0941
 0960: 81             ADD   A,C                ;
 0961: 4F             LD    C,A                ;
 0962: 21 04 00       LD    HL,$0004           ;
@@ -1730,7 +1753,7 @@ ObjDraw_01: ; Hover craft
 0968: EB             EX    DE,HL              ;
 ;
 ObjDraw_00: ;  Rocks, boulders, tank
-0969: DD 7E 0B       LD    A,(IX+$0B)         ; ** J092F,J0932,C093C,C095A,C09E4
+0969: DD 7E 0B       LD    A,(IX+$0B)         ; * J092F,J0932,C093C,C095A,C09E4
 096C: A7             AND   A                  ;
 096D: 79             LD    A,C                ;
 096E: 20 35          JR    NZ,$9A5            ; 
@@ -1745,14 +1768,14 @@ ObjDraw_0E: ; Player forward shot
 ; D=tile
 ; E=flips/color
 ;
-0976: FD 70 00       LD    (IY+$00),B         ; Set Y coordinate ** J0995,J09A3,J09A9,J09B5,J09B8,J0AF2,C0B25,J0B35,J15A9,J15DD
+0976: FD 70 00       LD    (IY+$00),B         ; Set Y coordinate * J0995,J09A3,J09A9,J09B5,J09B8,J0AF2,C0B25,J0B35,J15A9,J15DD
 0979: FD 73 01       LD    (IY+$01),E         ; Set tile flips/color
 097C: FD 72 02       LD    (IY+$02),D         ; Set tile number
 097F: FD 71 03       LD    (IY+$03),C         ; Set X coordinate
 0982: C9             RET                      ; Done
 
 ObjDraw_17: ;  Graphic score 300, 800, 500, or 1000
-0983: DD 7E 08       LD    A,(IX+$08)         ; 3->300 5->500 8->800, 10->1000 ** C0A2D
+0983: DD 7E 08       LD    A,(IX+$08)         ; 3->300 5->500 8->800, 10->1000 * C0A2D
 0986: 1E 07          LD    E,$07              ; Color set (will be 14)
 0988: CB 3F          SRL   A                  ; Lower bit to C
 098A: CB 13          RL    E                  ; Now either 14 or 15 ... correct color set
@@ -1773,10 +1796,10 @@ ObjDraw_0F: ; Alien shot hitting ground 1x1
 09A2: D0             RET   NC                 ;
 09A3: 18 D1          JR    $976               ;{ObjDraw_0E} 
 ;
-09A5: C6 08          ADD   $08                ; ** J096E
+09A5: C6 08          ADD   $08                ; * J096E
 09A7: FE F0          CP    $F0                ;
 09A9: 38 CB          JR    C,$976             ;{ObjDraw_0E} 
-09AB: FD 36 02 00    LD    (IY+$02),$00       ; Blank the tile number ** J0974
+09AB: FD 36 02 00    LD    (IY+$02),$00       ; Blank the tile number * J0974
 09AF: C9             RET                      ;
 
 ObjDraw_16: ;  Buggy wheel
@@ -1806,19 +1829,19 @@ ObjDraw_03: ; Space Plant leaf 2
 09CD: 3E 05          LD    A,$05              ;
 ;
 ObjDraw_02: ; Space Plant leaf 1
-09CF: 80             ADD   A,B                ; ** J09CB
+09CF: 80             ADD   A,B                ; * J09CB
 09D0: 60             LD    H,B                ;
 09D1: 47             LD    B,A                ;
 09D2: 2E 01          LD    L,$01              ;
 09D4: CD E4 09       CALL  $09E4              ; 
 09D7: 11 08 71       LD    DE,$7108           ;
-09DA: 44             LD    B,H                ; ** J09C7
+09DA: 44             LD    B,H                ; * J09C7
 09DB: 21 08 00       LD    HL,$0008           ;
 09DE: EB             EX    DE,HL              ;
 09DF: FD 19          ADD   IY,DE              ;
 09E1: EB             EX    DE,HL              ;
 09E2: 2E 00          LD    L,$00              ;
-09E4: CD 69 09       CALL  $0969              ;{ObjDraw_00} ** C09C1,C09D4,J0A3C
+09E4: CD 69 09       CALL  $0969              ;{ObjDraw_00} * C09C1,C09D4,J0A3C
 09E7: FD 70 04       LD    (IY+$04),B         ;
 09EA: 2D             DEC   L                  ;
 09EB: 20 29          JR    NZ,$A16            ; 
@@ -1826,7 +1849,7 @@ ObjDraw_02: ; Space Plant leaf 1
 09EF: AB             XOR   E                  ;
 09F0: FD 77 05       LD    (IY+$05),A         ;
 09F3: 3E 08          LD    A,$08              ;
-09F5: FD 72 06       LD    (IY+$06),D         ; ** J0A1C
+09F5: FD 72 06       LD    (IY+$06),D         ; * J0A1C
 09F8: 81             ADD   A,C                ;
 09F9: FD 77 07       LD    (IY+$07),A         ;
 09FC: C6 08          ADD   $08                ;
@@ -1838,12 +1861,12 @@ ObjDraw_02: ; Space Plant leaf 1
 0A08: A7             AND   A                  ;
 0A09: 28 06          JR    Z,$A11             ; 
 0A0B: C9             RET                      ;
-0A0C: DD 7E 0B       LD    A,(IX+$0B)         ; ** J0A00
+0A0C: DD 7E 0B       LD    A,(IX+$0B)         ; * J0A00
 0A0F: A7             AND   A                  ;
 0A10: C8             RET   Z                  ;
-0A11: FD 36 06 00    LD    (IY+$06),$00       ; ** J0A09
+0A11: FD 36 06 00    LD    (IY+$06),$00       ; * J0A09
 0A15: C9             RET                      ;
-0A16: 14             INC   D                  ; ** J09EB
+0A16: 14             INC   D                  ; * J09EB
 0A17: FD 73 05       LD    (IY+$05),E         ;
 0A1A: 3E 10          LD    A,$10              ;
 0A1C: 18 D7          JR    $9F5               ; 
@@ -1860,14 +1883,14 @@ ObjDraw_11: ; Space Plant base
 0A29: FE D0          CP    $D0                ;
 0A2B: 30 11          JR    NC,$A3E            ; 
 0A2D: CD 83 09       CALL  $0983              ;{ObjDraw_17} 
-0A30: 11 04 00       LD    DE,$0004           ; ** J0A42
+0A30: 11 04 00       LD    DE,$0004           ; * J0A42
 0A33: FD 19          ADD   IY,DE              ;
 0A35: D1             POP   DE                 ;
 0A36: C1             POP   BC                 ;
 0A37: 2E 00          LD    L,$00              ;
 0A39: FD 75 0A       LD    (IY+$0A),L         ;
 0A3C: 18 A6          JR    $9E4               ; 
-0A3E: FD 36 02 00    LD    (IY+$02),$00       ; ** J0A2B
+0A3E: FD 36 02 00    LD    (IY+$02),$00       ; * J0A2B
 0A42: 18 EC          JR    $A30               ; 
 
 ObjDraw_12: ; Moon buggy crashing in crater
@@ -1884,26 +1907,27 @@ ObjDraw_0A: ;  2x2 Alien shot hitting ground
 ObjDraw_08: ; 2x2 Alien bubble shot opening crater
 0A56: 3E 0D          LD    A,$0D              ; Offset by -$0D when drawing
 ;
-0A58: FD 21 74 E1    LD    IY,$E174           ; ** J0A54
+0A58: FD 21 74 E1    LD    IY,$E174           ; * J0A54
 0A5C: 80             ADD   A,B                ; Offset ...
 0A5D: 47             LD    B,A                ; ... Y coordinate
 0A5E: 3E F8          LD    A,$F8              ; Offset X ...
 0A60: 81             ADD   A,C                ; ... back 8 ...
 0A61: 4F             LD    C,A                ; ... to center on X
 ;
-0A62: AF             XOR   A                  ; X coordinate offset is 0 ** J0A50,J0A93
+0A62: AF             XOR   A                  ; X coordinate offset is 0 * J0A50,J0A93
 0A63: CD 6F 0A       CALL  $0A6F              ;{Draw1x2Sprites} Do top and bottom tiles
 0A66: EB             EX    DE,HL              ; Skip over ...
 0A67: 11 08 00       LD    DE,$0008           ; ... the two ...
 0A6A: FD 19          ADD   IY,DE              ; ... sprite ...
 0A6C: EB             EX    DE,HL              ; ... slots
 0A6D: 3E 10          LD    A,$10              ; X coordinate offset is 16
-;
+```
 
 # Draw 1x2 Sprites
 
+```code
 Draw1x2Sprites: 
-0A6F: 81             ADD   A,C                ; Add the X coordinate offset ** C0A63,C0AB0,C0ACD,C0B13
+0A6F: 81             ADD   A,C                ; Add the X coordinate offset * C0A63,C0AB0,C0ACD,C0B13
 0A70: 6F             LD    L,A                ; Hold in L
 0A71: FD 77 03       LD    (IY+$03),A         ; Set the X coordinate for top sprite
 0A74: FD 77 07       LD    (IY+$07),A         ; Set the X coordinate for the bottom sprite
@@ -1930,7 +1954,7 @@ TrnsSprColor:
 ; it is color-set-C. The only difference is the buggy body is
 ; red on the champion course instead of the usual pink.
 ;
-0A95: 3A F9 E0       LD    A,($E0F9)          ;{-1_champColors} Are we on ... ** C0953,C0A4D,C0A90,C0AE9,C0AFD
+0A95: 3A F9 E0       LD    A,($E0F9)          ;{-1_champColors} Are we on ... * C0953,C0A4D,C0A90,C0AE9,C0AFD
 0A98: 1F             RRA                      ; ... the champion course?
 0A99: D0             RET   NC                 ; No ... leave color set 0
 0A9A: 7B             LD    A,E                ; Get the color set value
@@ -1962,7 +1986,7 @@ ObjDraw_09: ; ??42 ground explosion
 0AC8: FD 19          ADD   IY,DE              ;
 0ACA: EB             EX    DE,HL              ;
 0ACB: 3E 08          LD    A,$08              ;
-0ACD: CD 6F 0A       CALL  $0A6F              ;{Draw1x2Sprites} ** C0AC1
+0ACD: CD 6F 0A       CALL  $0A6F              ;{Draw1x2Sprites} * C0AC1
 0AD0: FD 75 0B       LD    (IY+$0B),L         ;
 0AD3: D6 10          SUB   $10                ;
 0AD5: FD 77 08       LD    (IY+$08),A         ;
@@ -1991,11 +2015,11 @@ ObjDraw_04: ; Moon buggy explosion 3x2
 0B05: 3E 08          LD    A,$08              ;
 0B07: CD 0C 0B       CALL  $0B0C              ; 
 0B0A: 3E 18          LD    A,$18              ;
-0B0C: EB             EX    DE,HL              ; ** C0B07
+0B0C: EB             EX    DE,HL              ; * C0B07
 0B0D: 11 08 00       LD    DE,$0008           ;
 0B10: FD 19          ADD   IY,DE              ;
 0B12: EB             EX    DE,HL              ;
-0B13: CD 6F 0A       CALL  $0A6F              ;{Draw1x2Sprites} ** C0B02
+0B13: CD 6F 0A       CALL  $0A6F              ;{Draw1x2Sprites} * C0B02
 0B16: 7A             LD    A,D                ;
 0B17: C6 02          ADD   $02                ;
 0B19: FD 77 06       LD    (IY+$06),A         ;
@@ -2008,7 +2032,7 @@ ObjDraw_15: ; Bubble alien shot
 0B24: 1C             INC   E                  ;
 ;
 ObjDraw_0D: ; Alien ships and shots
-0B25: CD 76 09       CALL  $0976              ;{ObjDraw_0E} ** J0992,J0B22
+0B25: CD 76 09       CALL  $0976              ;{ObjDraw_0E} * J0992,J0B22
 0B28: DD 7E 01       LD    A,(IX+$01)         ; LSB of object pointer
 0B2B: FE 60          CP    $60                ; Less than 96?
 0B2D: D8             RET   C                  ; Yes ... done
@@ -2025,18 +2049,18 @@ ObjDraw_0D: ; Alien ships and shots
 0B35: C3 76 09       JP    $0976              ;{ObjDraw_0E} ?? Initialize "other" object to same
 
 
-0B38: CD 8E 0C       CALL  $0C8E              ; ** C0112
+0B38: CD 8E 0C       CALL  $0C8E              ; * C0112
 0B3B: CD BF 0C       CALL  $0CBF              ; 
 0B3E: 3A 04 D0       LD    A,($D004)          ;{-2_DSW2}
 0B41: CB 6F          BIT   5,A                ;
 0B43: C0             RET   NZ                 ;
 0B44: 21 A9 2A       LD    HL,$2AA9           ; "PICTURE NUMBER SET" message
 0B47: CD 00 03       CALL  $0300              ;{RunTextScript} 
-0B4A: 3E FF          LD    A,$FF              ; ** J0B68,J0B88
+0B4A: 3E FF          LD    A,$FF              ; * J0B68,J0B88
 0B4C: 32 51 E0       LD    ($E051),A          ;{-1_isrCount4} 
 0B4F: 21 53 E0       LD    HL,$E053           ;
 0B52: 7E             LD    A,(HL)             ;
-0B53: 4E             LD    C,(HL)             ; ** J0B5E
+0B53: 4E             LD    C,(HL)             ; * J0B5E
 0B54: A9             XOR   C                  ;
 0B55: A1             AND   C                  ;
 0B56: 1F             RRA                      ;
@@ -2046,14 +2070,14 @@ ObjDraw_0D: ; Alien ships and shots
 0B5D: 79             LD    A,C                ;
 0B5E: 10 F3          DJNZ  $B53               ; 
 0B60: C9             RET                      ;
-0B61: 21 0E E5       LD    HL,$E50E           ; Current passed point ** J0B57
+0B61: 21 0E E5       LD    HL,$E50E           ; Current passed point * J0B57
 0B64: 7E             LD    A,(HL)             ; Get the current point
 0B65: 3C             INC   A                  ; Increment to next
 0B66: FE 34          CP    $34                ;
 0B68: 30 E0          JR    NC,$B4A            ; 
 0B6A: 77             LD    (HL),A             ; New passed point
 0B6B: 2A 16 E5       LD    HL,($E516)         ; 
-0B6E: 46             LD    B,(HL)             ; ** J0B76
+0B6E: 46             LD    B,(HL)             ; * J0B76
 0B6F: 23             INC   HL                 ;
 0B70: 7E             LD    A,(HL)             ;
 0B71: E6 7F          AND   $7F                ;
@@ -2067,13 +2091,13 @@ ObjDraw_0D: ; Alien ships and shots
 0B82: 22 2E E5       LD    ($E52E),HL         ; 
 0B85: CD 12 0D       CALL  $0D12              ; 
 0B88: 18 C0          JR    $B4A               ; 
-0B8A: CD B1 0C       CALL  $0CB1              ; ** C0069,C0089
+0B8A: CD B1 0C       CALL  $0CB1              ; * C0069,C0089
 0B8D: 21 94 26       LD    HL,$2694           ;
 0B90: 22 16 E5       LD    ($E516),HL         ; 
 0B93: C3 BF 0C       JP    $0CBF              ; 
 
-0B96: 2A 16 E5       LD    HL,($E516)         ; ** C0123,C0BE8
-0B99: 2B             DEC   HL                 ; ** J0BA0,J0BAB
+0B96: 2A 16 E5       LD    HL,($E516)         ; * C0123,C0BE8
+0B99: 2B             DEC   HL                 ; * J0BA0,J0BAB
 0B9A: 7E             LD    A,(HL)             ;
 0B9B: 2B             DEC   HL                 ;
 0B9C: E6 7F          AND   $7F                ;
@@ -2094,7 +2118,7 @@ ObjDraw_0D: ; Alien ships and shots
 0BB6: C9             RET                      ;
 
 
-0BB7: 21 00 E1       LD    HL,$E100           ; Clear sprite mirror ... ** J0078,J008C,J0115,J0138,J0142,J0148,J0173,J01CF,J28A7,J28B7
+0BB7: 21 00 E1       LD    HL,$E100           ; Clear sprite mirror ... * J0078,J008C,J0115,J0138,J0142,J0148,J0173,J01CF,J28A7,J28B7
 0BBA: 01 00 04       LD    BC,$0400           ; ... and game objects ...
 0BBD: CD FA 05       CALL  $05FA              ; ... up to high-score
 ;
@@ -2108,7 +2132,7 @@ ObjDraw_0D: ; Alien ships and shots
 0BD8: 3E 60          LD    A,$60              ;
 0BDA: 06 09          LD    B,$09              ;  ?? This code makes the wheels fly off in a crash ??
 0BDC: 11 10 00       LD    DE,$0010           ;
-0BDF: DD 77 01       LD    (IX+$01),A         ; ** J0BE6
+0BDF: DD 77 01       LD    (IX+$01),A         ; * J0BE6
 0BE2: DD 19          ADD   IX,DE              ;
 0BE4: C6 04          ADD   $04                ;
 0BE6: 10 F7          DJNZ  $BDF               ; 
@@ -2122,7 +2146,7 @@ ObjDraw_0D: ; Alien ships and shots
 0BF3: F2 FA 0B       JP    P,$0BFA            ; 
 0BF6: 3E 07          LD    A,$07              ;
 0BF8: 26 A8          LD    H,$A8              ;
-0BFA: 32 14 E5       LD    ($E514),A          ; ** J0BF3
+0BFA: 32 14 E5       LD    ($E514),A          ; * J0BF3
 0BFD: 22 06 E3       LD    ($E306),HL         ; 
 0C00: 3E 02          LD    A,$02              ;
 0C02: 32 08 E5       LD    ($E508),A          ; 
@@ -2135,7 +2159,7 @@ ObjDraw_0D: ; Alien ships and shots
 0C12: 1F             RRA                      ;
 0C13: 38 01          JR    C,$C16             ; 
 0C15: 04             INC   B                  ;
-0C16: 78             LD    A,B                ; ** J0C13
+0C16: 78             LD    A,B                ; * J0C13
 0C17: 32 C5 E1       LD    ($E1C5),A          ; 
 0C1A: CD 81 29       CALL  $2981              ; 
 0C1D: A7             AND   A                  ;
@@ -2154,16 +2178,16 @@ ObjDraw_0D: ; Alien ships and shots
 0C37: FE 04          CP    $04                ; Is it a 1, 2, or 3?
 0C39: 38 02          JR    C,$C3D             ; Yes keep it
 0C3B: 3E 03          LD    A,$03              ; No ... cap the number at 3
-0C3D: C6 30          ADD   $30                ; Convert to number ** J0C39
+0C3D: C6 30          ADD   $30                ; Convert to number * J0C39
 0C3F: 32 56 81       LD    ($8156),A          ; Change the "1" in the message just printed to the right number
 ;
-0C42: 3E 1C          LD    A,$1C              ; Play intro ... ** J0C8C
+0C42: 3E 1C          LD    A,$1C              ; Play intro ... * J0C8C
 0C44: CD 6F 0D       CALL  $0D6F              ; ... song
 0C47: 3E 40          LD    A,$40              ; Set timer for ...
 0C49: 32 0A E3       LD    ($E30A),A          ; ... intro song to end
 0C4C: 0E 68          LD    C,$68              ;
 0C4E: 21 B6 30       LD    HL,$30B6           ;
-0C51: 46             LD    B,(HL)             ; ** J0C68
+0C51: 46             LD    B,(HL)             ; * J0C68
 0C52: CB 78          BIT   7,B                ;
 0C54: 20 14          JR    NZ,$C6A            ; 
 0C56: 23             INC   HL                 ;
@@ -2173,7 +2197,7 @@ ObjDraw_0D: ; Alien ships and shots
 0C5A: 23             INC   HL                 ;
 0C5B: EB             EX    DE,HL              ;
 ;
-0C5C: 26 83          LD    H,$83              ; In screen tile memory ?? ** J0C65
+0C5C: 26 83          LD    H,$83              ; In screen tile memory ?? * J0C65
 0C5E: 71             LD    (HL),C             ;
 0C5F: 26 87          LD    H,$87              ; In screen color memory ??
 0C61: 70             LD    (HL),B             ;
@@ -2183,33 +2207,33 @@ ObjDraw_0D: ; Alien ships and shots
 0C65: 20 F5          JR    NZ,$C5C            ; 
 0C67: EB             EX    DE,HL              ;
 0C68: 18 E7          JR    $C51               ; 
-0C6A: 3E D3          LD    A,$D3              ; ** J0C54
+0C6A: 3E D3          LD    A,$D3              ; * J0C54
 0C6C: 21 D8 30       LD    HL,$30D8           ;
 0C6F: 11 10 E2       LD    DE,$E210           ;
-0C72: 46             LD    B,(HL)             ; ** J0C7D
+0C72: 46             LD    B,(HL)             ; * J0C7D
 0C73: CB 78          BIT   7,B                ;
 0C75: 20 08          JR    NZ,$C7F            ; 
-0C77: 12             LD    (DE),A             ; ** J0C79
+0C77: 12             LD    (DE),A             ; * J0C79
 0C78: 13             INC   DE                 ;
 0C79: 10 FC          DJNZ  $C77               ; 
 0C7B: 3C             INC   A                  ;
 0C7C: 23             INC   HL                 ;
 0C7D: 18 F3          JR    $C72               ; 
-0C7F: 21 46 E0       LD    HL,$E046           ; ** J0C1E,J0C25,J0C75
+0C7F: 21 46 E0       LD    HL,$E046           ; * J0C1E,J0C25,J0C75
 0C82: 34             INC   (HL)               ;
 0C83: C3 6E 02       JP    $026E              ; ?? Main text loop for game
 
-0C86: 21 47 2A       LD    HL,$2A47           ; "BEGINNER COURSE GO" script ** J0C2C
+0C86: 21 47 2A       LD    HL,$2A47           ; "BEGINNER COURSE GO" script * J0C2C
 0C89: CD 00 03       CALL  $0300              ;{RunTextScript} Print the banner
 0C8C: 18 B4          JR    $C42               ; Back to start-course sequence
 
-0C8E: AF             XOR   A                  ; ** C0B38
+0C8E: AF             XOR   A                  ; * C0B38
 0C8F: 32 4D E0       LD    ($E04D),A          ; 
 0C92: CD 95 0C       CALL  $0C95              ; 
-0C95: CD 03 06       CALL  $0603              ;{SwapPlayers} ** C0C92
+0C95: CD 03 06       CALL  $0603              ;{SwapPlayers} * C0C92
 0C98: 21 00 E5       LD    HL,$E500           ;
 0C9B: 01 16 00       LD    BC,$0016           ;
-0C9E: CD FA 05       CALL  $05FA              ; ** J0CBD
+0C9E: CD FA 05       CALL  $05FA              ; * J0CBD
 0CA1: 32 0F E5       LD    ($E50F),A          ; 
 0CA4: 3A 40 E0       LD    A,($E040)          ;{-1_PerCredit} 
 0CA7: 32 15 E5       LD    ($E515),A          ; 
@@ -2217,27 +2241,27 @@ ObjDraw_0D: ; Alien ships and shots
 0CAD: 22 16 E5       LD    ($E516),HL         ; 
 0CB0: C9             RET                      ;
 
-0CB1: 21 DE 26       LD    HL,$26DE           ; ** C0B8A
+0CB1: 21 DE 26       LD    HL,$26DE           ; * C0B8A
 0CB4: 22 F7 E0       LD    ($E0F7),HL         ; 
 0CB7: 21 03 E5       LD    HL,$E503           ;
 0CBA: 01 11 00       LD    BC,$0011           ;
 0CBD: 18 DF          JR    $C9E               ; 
-0CBF: CD 29 0D       CALL  $0D29              ; ** C01CC,C0B3B,J0B93
-0CC2: 21 21 84       LD    HL,$8421           ; ** C0D90
+0CBF: CD 29 0D       CALL  $0D29              ; * C01CC,C0B3B,J0B93
+0CC2: 21 21 84       LD    HL,$8421           ; * C0D90
 0CC5: 0E 06          LD    C,$06              ;
 0CC7: 3A 0E E5       LD    A,($E50E)          ; Current passed point
 0CCA: FE 1A          CP    $1A                ; Is this the "champion" course
 0CCC: 3E 00          LD    A,$00              ; No ... use
 0CCE: 38 01          JR    C,$CD1             ; ... normal colors
 0CD0: 3C             INC   A                  ; Yes ... flat champ colors
-0CD1: 32 F9 E0       LD    ($E0F9),A          ;{-1_champColors} Store champion colors flag ** J0CCE
+0CD1: 32 F9 E0       LD    ($E0F9),A          ;{-1_champColors} Store champion colors flag * J0CCE
 0CD4: C5             PUSH  BC                 ;
 0CD5: 0E 01          LD    C,$01              ;
 0CD7: CD E7 03       CALL  $03E7              ;{TransColor} 
 0CDA: 79             LD    A,C                ;
 0CDB: C1             POP   BC                 ;
-0CDC: 06 1E          LD    B,$1E              ; ** J0CE5
-0CDE: 77             LD    (HL),A             ; ** J0CE0
+0CDC: 06 1E          LD    B,$1E              ; * J0CE5
+0CDE: 77             LD    (HL),A             ; * J0CE0
 0CDF: 23             INC   HL                 ;
 0CE0: 10 FC          DJNZ  $CDE               ; 
 0CE2: 23             INC   HL                 ;
@@ -2256,30 +2280,30 @@ ObjDraw_0D: ; Alien ships and shots
 0D00: CD 03 06       CALL  $0603              ;{SwapPlayers} 
 0D03: 21 72 2B       LD    HL,$2B72           ; "P2 " status box script
 0D06: CD 00 03       CALL  $0300              ;{RunTextScript} 
-0D09: CD D5 06       CALL  $06D5              ; ** J0CF8
+0D09: CD D5 06       CALL  $06D5              ; * J0CF8
 0D0C: CD 2C 21       CALL  $212C              ; 
 0D0F: CD 8A 29       CALL  $298A              ; 
-0D12: 3A 0E E5       LD    A,($E50E)          ; ** C0B85,J152B,C2866
+0D12: 3A 0E E5       LD    A,($E50E)          ; * C0B85,J152B,C2866
 0D15: 0E 02          LD    C,$02              ;
 0D17: FE 1A          CP    $1A                ;
 0D19: 38 04          JR    C,$D1F             ; 
 0D1B: D6 1A          SUB   $1A                ;
 0D1D: 0E 07          LD    C,$07              ;
-0D1F: C6 40          ADD   $40                ; ** J0D19
+0D1F: C6 40          ADD   $40                ; * J0D19
 ;
-0D21: 32 52 80       LD    ($8052),A          ; Put "point letter" ... ** C0271
+0D21: 32 52 80       LD    ($8052),A          ; Put "point letter" ... * C0271
 0D24: 79             LD    A,C                ; ... in top center ...
 0D25: 32 52 84       LD    ($8452),A          ; ... status area
 0D28: C9             RET                      ; Done
 
 
-0D29: 21 00 80       LD    HL,$8000           ; ** C0013,C010A,C0187,C0745,C0CBF
+0D29: 21 00 80       LD    HL,$8000           ; * C0013,C010A,C0187,C0745,C0CBF
 0D2C: 01 00 08       LD    BC,$0800           ;
 0D2F: CD FA 05       CALL  $05FA              ; 
 0D32: 21 00 E1       LD    HL,$E100           ;
 0D35: 01 C6 00       LD    BC,$00C6           ;
 0D38: CD FA 05       CALL  $05FA              ; 
-0D3B: 3A 43 E0       LD    A,($E043)          ;{-1_cabMode} Cabinet mode ** J0DA3
+0D3B: 3A 43 E0       LD    A,($E043)          ;{-1_cabMode} Cabinet mode * J0DA3
 0D3E: 3D             DEC   A                  ;
 0D3F: 28 09          JR    Z,$D4A             ; 
 0D41: 21 46 E0       LD    HL,$E046           ;
@@ -2287,7 +2311,7 @@ ObjDraw_0D: ; Alien ships and shots
 0D45: CB 5E          BIT   3,(HL)             ;
 0D47: 28 01          JR    Z,$D4A             ; 
 0D49: 3C             INC   A                  ;
-0D4A: 32 4C E0       LD    ($E04C),A          ;{-1_flipValue} ** J0D3F,J0D47
+0D4A: 32 4C E0       LD    ($E04C),A          ;{-1_flipValue} * J0D3F,J0D47
 ;
 0D4D: 21 04 D0       LD    HL,$D004           ;
 0D50: AE             XOR   (HL)               ;
@@ -2298,11 +2322,11 @@ ObjDraw_0D: ; Alien ships and shots
 0D59: 30 03          JR    NC,$D5E            ; 
 0D5B: 14             INC   D                  ;
 0D5C: 36 F1          LD    (HL),$F1           ;
-0D5E: 23             INC   HL                 ; ** J0D59
+0D5E: 23             INC   HL                 ; * J0D59
 0D5F: 72             LD    (HL),D             ;
 0D60: 01 00 40       LD    BC,$4000           ; B=40, C=0
 0D63: AF             XOR   A                  ; A is now 0
-0D64: ED 79          OUT   (C),A              ; Write 0 ... ** J0D67
+0D64: ED 79          OUT   (C),A              ; Write 0 ... * J0D67
 0D66: 0C             INC   C                  ; ... to ports ...
 0D67: 10 FB          DJNZ  $D64               ; ... 00 through 3F
 0D69: F3             DI                       ;
@@ -2310,24 +2334,26 @@ ObjDraw_0D: ; Alien ships and shots
 0D6D: FB             EI                       ;
 0D6E: C9             RET                      ;
 
-0D6F: F3             DI                       ; ** C0C44,J12D1
+0D6F: F3             DI                       ; * C0C44,J12D1
 0D70: CD 75 0D       CALL  $0D75              ;{AddSound} 
 0D73: FB             EI                       ;
 0D74: C9             RET                      ;
+```
 
 # Add Sound
 
+```code
 AddSound: 
 ; Add sound command A to the sound effect queue.
 ;
-0D75: E5             PUSH  HL                 ; Save HL ** C014D,C0D70,C132C,C1375,J13E8,C1522,C1571,J174B,C1768,C1D1D,C1DCC,C27D7,C2854,C2860
+0D75: E5             PUSH  HL                 ; Save HL * C014D,C0D70,C132C,C1375,J13E8,C1522,C1571,J174B,C1768,C1D1D,C1DCC,C27D7,C2854,C2860
 0D76: 21 46 E0       LD    HL,$E046           ;
 0D79: CB 7E          BIT   7,(HL)             ;
 0D7B: E1             POP   HL                 ;
 0D7C: F0             RET   P                  ;
 ;
 AddSound2: 
-0D7D: E5             PUSH  HL                 ; ** C0456,C0D6A
+0D7D: E5             PUSH  HL                 ; * C0456,C0D6A
 0D7E: 2A DE E1       LD    HL,($E1DE)         ;{-1_SndQBack} Get the back (next to store) of the sound queue
 0D81: 26 E0          LD    H,$E0              ; Sound queue is at $E000..$E007
 0D83: 77             LD    (HL),A             ; Store next sound effect to play
@@ -2338,10 +2364,10 @@ AddSound2:
 0D8B: E1             POP   HL                 ; Restore HL
 0D8C: C9             RET                      ; Done
 
-0D8D: CD 48 29       CALL  $2948              ; ** C0C05
+0D8D: CD 48 29       CALL  $2948              ; * C0C05
 0D90: CD C2 0C       CALL  $0CC2              ; 
 0D93: 06 20          LD    B,$20              ;
-0D95: C5             PUSH  BC                 ; ** J0DA1
+0D95: C5             PUSH  BC                 ; * J0DA1
 0D96: CD 06 11       CALL  $1106              ; 
 0D99: 21 E2 E1       LD    HL,$E1E2           ;
 0D9C: 7E             LD    A,(HL)             ;
@@ -2363,13 +2389,13 @@ TxtCmd_09:
 0DB2: 4F             LD    C,A                ;
 0DB3: EB             EX    DE,HL              ;
 0DB4: 11 20 00       LD    DE,$0020           ;
-0DB7: 7E             LD    A,(HL)             ; ** J0DBC
+0DB7: 7E             LD    A,(HL)             ; * J0DBC
 0DB8: A7             AND   A                  ;
 0DB9: 20 03          JR    NZ,$DBE            ; 
 0DBB: 19             ADD   HL,DE              ;
 0DBC: 18 F9          JR    $DB7               ; 
-0DBE: 22 54 E0       LD    ($E054),HL         ; ** J0DB9,J0DD4,J0DDA
-0DC1: 0A             LD    A,(BC)             ; ** J0DCB
+0DBE: 22 54 E0       LD    ($E054),HL         ; * J0DB9,J0DD4,J0DDA
+0DC1: 0A             LD    A,(BC)             ; * J0DCB
 0DC2: 03             INC   BC                 ;
 0DC3: 3D             DEC   A                  ;
 0DC4: C8             RET   Z                  ;
@@ -2378,7 +2404,7 @@ TxtCmd_09:
 0DC9: 77             LD    (HL),A             ;
 0DCA: 19             ADD   HL,DE              ;
 0DCB: 18 F4          JR    $DC1               ; 
-0DCD: 3A 54 E0       LD    A,($E054)          ; ** J0DC5
+0DCD: 3A 54 E0       LD    A,($E054)          ; * J0DC5
 0DD0: 3C             INC   A                  ;
 0DD1: 6F             LD    L,A                ;
 0DD2: E6 1F          AND   $1F                ;
@@ -2387,7 +2413,7 @@ TxtCmd_09:
 0DD7: D6 20          SUB   $20                ;
 0DD9: 6F             LD    L,A                ;
 0DDA: 18 E2          JR    $DBE               ; 
-0DDC: CD 5B 12       CALL  $125B              ; ** C026E,C0280
+0DDC: CD 5B 12       CALL  $125B              ; * C026E,C0280
 0DDF: 3A E2 E1       LD    A,($E1E2)          ; 
 0DE2: 21 09 E5       LD    HL,$E509           ;
 0DE5: 47             LD    B,A                ;
@@ -2410,7 +2436,7 @@ TxtCmd_09:
 0DFF: E6 1F          AND   $1F                ;
 0E01: 20 03          JR    NZ,$E06            ; 
 0E03: CD D6 29       CALL  $29D6              ; 
-0E06: 7B             LD    A,E                ; ** J0DFD,J0E01
+0E06: 7B             LD    A,E                ; * J0DFD,J0E01
 0E07: 2A 16 E5       LD    HL,($E516)         ; 
 0E0A: BE             CP    (HL)               ;
 0E0B: 20 0B          JR    NZ,$E18            ; 
@@ -2420,7 +2446,7 @@ TxtCmd_09:
 0E11: 32 D7 E1       LD    ($E1D7),A          ; 
 0E14: 23             INC   HL                 ;
 0E15: 22 16 E5       LD    ($E516),HL         ; 
-0E18: 21 D7 E1       LD    HL,$E1D7           ; ** J0E0B
+0E18: 21 D7 E1       LD    HL,$E1D7           ; * J0E0B
 0E1B: 7E             LD    A,(HL)             ;
 0E1C: 3D             DEC   A                  ;
 0E1D: F8             RET   M                  ;
@@ -2445,12 +2471,12 @@ TxtCmd_09:
 0E45: A7             AND   A                  ;
 0E46: 28 03          JR    Z,$E4B             ; 
 0E48: CD FD 07       CALL  $07FD              ; 
-0E4B: DD 71 00       LD    (IX+$00),C         ; ** J0E46
+0E4B: DD 71 00       LD    (IX+$00),C         ; * J0E46
 0E4E: C9             RET                      ;
-0E4F: 3E 19          LD    A,$19              ; ** J0E27
+0E4F: 3E 19          LD    A,$19              ; * J0E27
 0E51: 32 70 E3       LD    ($E370),A          ;{-1_??object7??} 
 0E54: C9             RET                      ;
-0E55: 3E 01          LD    A,$01              ; ** J0E8B
+0E55: 3E 01          LD    A,$01              ; * J0E8B
 0E57: 32 DC E1       LD    ($E1DC),A          ; 
 0E5A: 2A E4 E0       LD    HL,($E0E4)         ; 
 0E5D: 7D             LD    A,L                ;
@@ -2479,32 +2505,32 @@ TxtCmd_09:
 0E86: C6 05          ADD   $05                ;
 0E88: 77             LD    (HL),A             ;
 0E89: C9             RET                      ;
-0E8A: 3C             INC   A                  ; ** J0E2B
+0E8A: 3C             INC   A                  ; * J0E2B
 0E8B: 28 C8          JR    Z,$E55             ; 
 0E8D: C6 05          ADD   $05                ;
 0E8F: 32 08 E5       LD    ($E508),A          ; 
 0E92: C9             RET                      ;
-0E93: FD 7E 00       LD    A,(IY+$00)         ; ** C0E3F
+0E93: FD 7E 00       LD    A,(IY+$00)         ; * C0E3F
 0E96: FE 02          CP    $02                ;
 0E98: 28 1B          JR    Z,$EB5             ; 
 0E9A: FE 07          CP    $07                ;
 0E9C: 38 1C          JR    C,$EBA             ; 
-0E9E: 16 00          LD    D,$00              ; ** C0F2D
+0E9E: 16 00          LD    D,$00              ; * C0F2D
 0EA0: FD 5E 05       LD    E,(IY+$05)         ;
 0EA3: DD 21 70 E3    LD    IX,$E370           ;
-0EA7: FD 46 04       LD    B,(IY+$04)         ; ** J0EC1
-0EAA: DD 7E 00       LD    A,(IX+$00)         ; ** J0EB2
+0EA7: FD 46 04       LD    B,(IY+$04)         ; * J0EC1
+0EAA: DD 7E 00       LD    A,(IX+$00)         ; * J0EB2
 0EAD: A7             AND   A                  ;
 0EAE: 28 13          JR    Z,$EC3             ; 
 0EB0: DD 19          ADD   IX,DE              ;
 0EB2: 10 F6          DJNZ  $EAA               ; 
 0EB4: C9             RET                      ;
-0EB5: 21 D7 E1       LD    HL,$E1D7           ; ** J0E98
+0EB5: 21 D7 E1       LD    HL,$E1D7           ; * J0E98
 0EB8: 36 11          LD    (HL),$11           ;
-0EBA: 11 F0 FF       LD    DE,$FFF0           ; ** J0E9C,C0EF9
+0EBA: 11 F0 FF       LD    DE,$FFF0           ; * J0E9C,C0EF9
 0EBD: DD 21 F0 E4    LD    IX,$E4F0           ;
 0EC1: 18 E4          JR    $EA7               ; 
-0EC3: FD 7E 00       LD    A,(IY+$00)         ; ** J0EAE
+0EC3: FD 7E 00       LD    A,(IY+$00)         ; * J0EAE
 0EC6: DD 77 0C       LD    (IX+$0C),A         ;
 0EC9: FD 7E 01       LD    A,(IY+$01)         ;
 0ECC: DD 77 0D       LD    (IX+$0D),A         ;
@@ -2519,7 +2545,7 @@ TxtCmd_09:
 0EE8: DD 36 0E 00    LD    (IX+$0E),$00       ;
 0EEC: FD 4E 02       LD    C,(IY+$02)         ;
 0EEF: C9             RET                      ;
-0EF0: 3C             INC   A                  ; ** J0E30
+0EF0: 3C             INC   A                  ; * J0E30
 0EF1: CA 40 0F       JP    Z,$0F40            ; 
 0EF4: F5             PUSH  AF                 ;
 0EF5: FD 21 4E 10    LD    IY,$104E           ;
@@ -2533,9 +2559,9 @@ TxtCmd_09:
 0F09: C6 80          ADD   $80                ;
 0F0B: 6F             LD    L,A                ;
 0F0C: 6E             LD    L,(HL)             ;
-0F0D: FD 2A E4 E0    LD    IY,($E0E4)         ; ** J0F43
+0F0D: FD 2A E4 E0    LD    IY,($E0E4)         ; * J0F43
 0F11: 11 20 00       LD    DE,$0020           ;
-0F14: 7E             LD    A,(HL)             ; ** J0F20
+0F14: 7E             LD    A,(HL)             ; * J0F20
 0F15: 23             INC   HL                 ;
 0F16: 3D             DEC   A                  ;
 0F17: F2 22 0F       JP    P,$0F22            ; 
@@ -2543,7 +2569,7 @@ TxtCmd_09:
 0F1B: FD 77 00       LD    (IY+$00),A         ;
 0F1E: FD 19          ADD   IY,DE              ;
 0F20: 18 F2          JR    $F14               ; 
-0F22: C8             RET   Z                  ; ** J0F17
+0F22: C8             RET   Z                  ; * J0F17
 0F23: 22 E6 E0       LD    ($E0E6),HL         ; 
 0F26: 3D             DEC   A                  ;
 0F27: 28 11          JR    Z,$F3A             ; 
@@ -2552,16 +2578,16 @@ TxtCmd_09:
 0F30: DD 36 0A 00    LD    (IX+$0A),$00       ;
 0F34: DD 34 0E       INC   (IX+$0E)           ;
 0F37: DD 71 00       LD    (IX+$00),C         ;
-0F3A: 3E 0D          LD    A,$0D              ; ** J0F27
+0F3A: 3E 0D          LD    A,$0D              ; * J0F27
 0F3C: 32 D7 E1       LD    ($E1D7),A          ; 
 0F3F: C9             RET                      ;
-0F40: 2A E6 E0       LD    HL,($E0E6)         ; ** J0EF1
+0F40: 2A E6 E0       LD    HL,($E0E6)         ; * J0EF1
 0F43: 18 C8          JR    $F0D               ; 
-0F45: D6 1F          SUB   $1F                ; ** J0E22
+0F45: D6 1F          SUB   $1F                ; * J0E22
 0F47: FA B7 0F       JP    M,$0FB7            ; 
 0F4A: 21 C5 E1       LD    HL,$E1C5           ;
 0F4D: 0E FF          LD    C,$FF              ;
-0F4F: 23             INC   HL                 ; ** J0F53
+0F4F: 23             INC   HL                 ; * J0F53
 0F50: 0C             INC   C                  ;
 0F51: D6 08          SUB   $08                ;
 0F53: F2 4F 0F       JP    P,$0F4F            ; 
@@ -2581,13 +2607,13 @@ TxtCmd_09:
 0F65: 21 D6 E1       LD    HL,$E1D6           ;
 0F68: 34             INC   (HL)               ;
 0F69: C9             RET                      ;
-0F6A: 77             LD    (HL),A             ; ** J0F58
+0F6A: 77             LD    (HL),A             ; * J0F58
 0F6B: FD 21 70 E3    LD    IY,$E370           ;
 0F6F: 11 10 00       LD    DE,$0010           ;
 0F72: 06 19          LD    B,$19              ;
 0F74: 0D             DEC   C                  ;
 0F75: FA A5 0F       JP    M,$0FA5            ; 
-0F78: FD 7E 00       LD    A,(IY+$00)         ; ** J0F9C
+0F78: FD 7E 00       LD    A,(IY+$00)         ; * J0F9C
 0F7B: D6 22          SUB   $22                ;
 0F7D: FE 06          CP    $06                ;
 0F7F: 30 19          JR    NC,$F9A            ; 
@@ -2599,25 +2625,25 @@ TxtCmd_09:
 0F8A: FE 2A          CP    $2A                ;
 0F8C: 20 01          JR    NZ,$F8F            ; 
 0F8E: 24             INC   H                  ;
-0F8F: 25             DEC   H                  ; ** J0F8C
+0F8F: 25             DEC   H                  ; * J0F8C
 0F90: 20 08          JR    NZ,$F9A            ; 
 0F92: CB 55          BIT   2,L                ;
 0F94: 20 09          JR    NZ,$F9F            ; 
 0F96: FD 36 00 24    LD    (IY+$00),$24       ;
-0F9A: FD 19          ADD   IY,DE              ; ** J0F7F,J0F84,J0F90,J0FA3
+0F9A: FD 19          ADD   IY,DE              ; * J0F7F,J0F84,J0F90,J0FA3
 0F9C: 10 DA          DJNZ  $F78               ; 
 0F9E: C9             RET                      ;
-0F9F: FD 36 0F 01    LD    (IY+$0F),$01       ; ** J0F94
+0F9F: FD 36 0F 01    LD    (IY+$0F),$01       ; * J0F94
 0FA3: 18 F5          JR    $F9A               ; 
-0FA5: FD 7E 00       LD    A,(IY+$00)         ; ** J0F75,J0FB4
+0FA5: FD 7E 00       LD    A,(IY+$00)         ; * J0F75,J0FB4
 0FA8: D6 1E          SUB   $1E                ;
 0FAA: FE 02          CP    $02                ;
 0FAC: 30 04          JR    NC,$FB2            ; 
 0FAE: FD 36 00 24    LD    (IY+$00),$24       ;
-0FB2: FD 19          ADD   IY,DE              ; ** J0FAC
+0FB2: FD 19          ADD   IY,DE              ; * J0FAC
 0FB4: 10 EF          DJNZ  $FA5               ; 
 0FB6: C9             RET                      ;
-0FB7: C6 08          ADD   $08                ; ** J0F47
+0FB7: C6 08          ADD   $08                ; * J0F47
 0FB9: FE 04          CP    $04                ;
 0FBB: 30 08          JR    NC,$FC5            ; 
 0FBD: 21 0B E5       LD    HL,$E50B           ;
@@ -2626,7 +2652,7 @@ TxtCmd_09:
 0FC2: 70             LD    (HL),B             ;
 0FC3: 23             INC   HL                 ;
 0FC4: 77             LD    (HL),A             ;
-0FC5: 3A D5 E1       LD    A,($E1D5)          ; ** J0FBB
+0FC5: 3A D5 E1       LD    A,($E1D5)          ; * J0FBB
 0FC8: A7             AND   A                  ;
 0FC9: C8             RET   Z                  ;
 0FCA: 5F             LD    E,A                ;
@@ -2636,7 +2662,7 @@ TxtCmd_09:
 0FD3: 21 70 E3       LD    HL,$E370           ;
 0FD6: 1E 10          LD    E,$10              ;
 0FD8: 01 3A 05       LD    BC,$053A           ;
-0FDB: 7E             LD    A,(HL)             ; ** J0FE1
+0FDB: 7E             LD    A,(HL)             ; * J0FE1
 0FDC: A7             AND   A                  ;
 0FDD: CA 5D 10       JP    Z,$105D            ; 
 0FE0: 19             ADD   HL,DE              ;
@@ -2676,19 +2702,19 @@ TxtCmd_09:
 1001: 0E 12          LD    C,$12              ;
 1003: F0             RET   P                  ;
 1004: 10 00          DJNZ  $1006              ; 
-1006: 01 00 01       LD    BC,$0100           ; ** J1004
+1006: 01 00 01       LD    BC,$0100           ; * J1004
 1009: 0F             RRCA                     ;
 100A: 12             LD    (DE),A             ;
 100B: F0             RET   P                  ;
 100C: 10 00          DJNZ  $100E              ; 
-100E: 01 00 02       LD    BC,$0200           ; ** J100C
+100E: 01 00 02       LD    BC,$0200           ; * J100C
 1011: 10 12          DJNZ  $1025              ; 
 1013: F0             RET   P                  ;
 1014: 10 00          DJNZ  $1016              ; 
-1016: 01 00 03       LD    BC,$0300           ; ** J1014
+1016: 01 00 03       LD    BC,$0300           ; * J1014
 1019: 11 12 F0       LD    DE,$F012           ;
 101C: 10 00          DJNZ  $101E              ; 
-101E: 01 00 0D       LD    BC,$0D00           ; ** J101C
+101E: 01 00 0D       LD    BC,$0D00           ; * J101C
 1021: 25             DEC   H                  ;
 1022: 12             LD    (DE),A             ;
 1023: FD 
@@ -2699,7 +2725,7 @@ TxtCmd_09:
 1029: 21 1D F0       LD    HL,$F01D           ;
 102C: 05             DEC   B                  ;
 102D: 10 00          DJNZ  $102F              ; 
-102F: 00             NOP                      ; ** J102D
+102F: 00             NOP                      ; * J102D
 1030: 04             INC   B                  ;
 1031: 12             LD    (DE),A             ;
 1032: 16 F4          LD    D,$F4              ;
@@ -2711,7 +2737,7 @@ TxtCmd_09:
 1041: 1B             DEC   DE                 ;
 1042: 16 F0          LD    D,$F0              ;
 1044: 18 10          JR    $1056              ; 
-1046: 01 00 0B       LD    BC,$0B00           ; ** J1034
+1046: 01 00 0B       LD    BC,$0B00           ; * J1034
 1049: 23             INC   HL                 ;
 104A: 17             RLA                      ;
 104B: F0             RET   P                  ;
@@ -2720,19 +2746,19 @@ TxtCmd_09:
 1050: 13             INC   DE                 ;
 1051: 00             NOP                      ;
 1052: 10 00          DJNZ  $1054              ; 
-1054: 00             NOP                      ; ** J1052
+1054: 00             NOP                      ; * J1052
 1055: 00             NOP                      ;
-1056: 4A             LD    C,D                ; ** J1044
+1056: 4A             LD    C,D                ; * J1044
 1057: 14             INC   D                  ;
 1058: 00             NOP                      ;
 1059: 03             INC   BC                 ;
 105A: 40             LD    B,B                ;
 105B: 00             NOP                      ;
 105C: 00             NOP                      ;
-105D: EB             EX    DE,HL              ; ** J0FDD
+105D: EB             EX    DE,HL              ; * J0FDD
 105E: DD 21 00 00    LD    IX,$0000           ;
 1062: DD 19          ADD   IX,DE              ;
-1064: DD 71 0D       LD    (IX+$0D),C         ; ** J1BBD
+1064: DD 71 0D       LD    (IX+$0D),C         ; * J1BBD
 1067: DD 36 09 00    LD    (IX+$09),$00       ;
 106B: DD 36 08 00    LD    (IX+$08),$00       ;
 106F: FD 56 07       LD    D,(IY+$07)         ;
@@ -2765,7 +2791,7 @@ TxtCmd_09:
 10A4: 30 03          JR    NC,$10A9           ; 
 10A6: EE 10          XOR   $10                ;
 10A8: 4F             LD    C,A                ;
-10A9: FD BE 03       CP    (IY+$03)           ; ** J10A4
+10A9: FD BE 03       CP    (IY+$03)           ; * J10A4
 10AC: 17             RLA                      ;
 10AD: DD 77 0C       LD    (IX+$0C),A         ;
 10B0: 79             LD    A,C                ;
@@ -2780,14 +2806,14 @@ TxtCmd_09:
 10BD: CB 38          SRL   B                  ;
 10BF: 0E 2E          LD    C,$2E              ;
 10C1: 18 0F          JR    $10D2              ; 
-10C3: 01 2A 8F       LD    BC,$8F2A           ; ** J108B
+10C3: 01 2A 8F       LD    BC,$8F2A           ; * J108B
 10C6: CB 3A          SRL   D                  ;
 10C8: CB 3A          SRL   D                  ;
 10CA: CB 3A          SRL   D                  ;
 10CC: 3A 14 E5       LD    A,($E514)          ; 
 10CF: EE 1F          XOR   $1F                ;
 10D1: 92             SUB   D                  ;
-10D2: 21 00 31       LD    HL,$3100           ; ** J10C1
+10D2: 21 00 31       LD    HL,$3100           ; * J10C1
 10D5: 85             ADD   A,L                ;
 10D6: 6F             LD    L,A                ;
 10D7: 56             LD    D,(HL)             ;
@@ -2797,26 +2823,26 @@ TxtCmd_09:
 10E0: 90             SUB   B                  ;
 10E1: 30 02          JR    NC,$10E5           ; 
 10E3: ED 44          NEG                      ;
-10E5: 1E FF          LD    E,$FF              ; ** J10E1
-10E7: 1C             INC   E                  ; ** J10E9
+10E5: 1E FF          LD    E,$FF              ; * J10E1
+10E7: 1C             INC   E                  ; * J10E9
 10E8: 92             SUB   D                  ;
 10E9: 30 FC          JR    NC,$10E7           ; 
 10EB: 82             ADD   A,D                ;
 10EC: DD 73 05       LD    (IX+$05),E         ;
 10EF: 06 08          LD    B,$08              ;
-10F1: CB 27          SLA   A                  ; ** J10FB
+10F1: CB 27          SLA   A                  ; * J10FB
 10F3: BA             CP    D                  ;
 10F4: CB 13          RL    E                  ;
 10F6: CB 43          BIT   0,E                ;
 10F8: 20 01          JR    NZ,$10FB           ; 
 10FA: 92             SUB   D                  ;
-10FB: 10 F4          DJNZ  $10F1              ; ** J10F8
+10FB: 10 F4          DJNZ  $10F1              ; * J10F8
 10FD: 7B             LD    A,E                ;
 10FE: 2F             CPL                      ;
 10FF: DD 77 04       LD    (IX+$04),A         ;
 1102: DD 71 00       LD    (IX+$00),C         ;
 1105: C9             RET                      ;
-1106: 21 D9 E1       LD    HL,$E1D9           ; ** C0D96,C0DEE
+1106: 21 D9 E1       LD    HL,$E1D9           ; * C0D96,C0DEE
 1109: 7E             LD    A,(HL)             ;
 110A: A7             AND   A                  ;
 110B: C2 9A 11       JP    NZ,$119A           ; 
@@ -2834,9 +2860,9 @@ TxtCmd_09:
 1122: 85             ADD   A,L                ;
 1123: 10 02          DJNZ  $1127              ; 
 1125: C6 20          ADD   $20                ;
-1127: 6F             LD    L,A                ; ** J1123
+1127: 6F             LD    L,A                ; * J1123
 1128: 4E             LD    C,(HL)             ;
-1129: 3A E2 E1       LD    A,($E1E2)          ; ** J11CE,J11D5,J11E7
+1129: 3A E2 E1       LD    A,($E1E2)          ; * J11CE,J11D5,J11E7
 112C: 1F             RRA                      ;
 112D: 1F             RRA                      ;
 112E: 1F             RRA                      ;
@@ -2849,16 +2875,16 @@ TxtCmd_09:
 113B: 11 20 00       LD    DE,$0020           ;
 113E: 06 07          LD    B,$07              ;
 1140: 3A 14 E5       LD    A,($E514)          ; 
-1143: B8             CP    B                  ; ** J114B
+1143: B8             CP    B                  ; * J114B
 1144: 28 07          JR    Z,$114D            ; 
 1146: 36 00          LD    (HL),$00           ;
 1148: 19             ADD   HL,DE              ;
 1149: FD 19          ADD   IY,DE              ;
 114B: 10 F6          DJNZ  $1143              ; 
-114D: 22 E4 E0       LD    ($E0E4),HL         ; ** J1144
+114D: 22 E4 E0       LD    ($E0E4),HL         ; * J1144
 1150: 71             LD    (HL),C             ;
 1151: FD 36 00 04    LD    (IY+$00),$04       ;
-1155: 19             ADD   HL,DE              ; ** J115E
+1155: 19             ADD   HL,DE              ; * J115E
 1156: FD 19          ADD   IY,DE              ;
 1158: 36 F3          LD    (HL),$F3           ;
 115A: FD 36 00 04    LD    (IY+$00),$04       ;
@@ -2892,14 +2918,14 @@ TxtCmd_09:
 118B: 23             INC   HL                 ;
 118C: 77             LD    (HL),A             ;
 118D: C9             RET                      ;
-118E: 87             ADD   A,A                ; ** J1113
+118E: 87             ADD   A,A                ; * J1113
 118F: C6 7A          ADD   $7A                ;
 1191: 77             LD    (HL),A             ;
 1192: 87             ADD   A,A                ;
 1193: 28 02          JR    Z,$1197            ; 
 1195: 3E 0A          LD    A,$0A              ;
-1197: 32 D8 E1       LD    ($E1D8),A          ; ** J1193
-119A: 4E             LD    C,(HL)             ; ** J110B
+1197: 32 D8 E1       LD    ($E1D8),A          ; * J1193
+119A: 4E             LD    C,(HL)             ; * J110B
 119B: CB 19          RR    C                  ;
 119D: D8             RET   C                  ;
 119E: CB 19          RR    C                  ;
@@ -2913,38 +2939,38 @@ TxtCmd_09:
 11B0: 28 3E          JR    Z,$11F0            ; 
 11B2: 3E 0B          LD    A,$0B              ;
 11B4: 18 27          JR    $11DD              ; 
-11B6: 7E             LD    A,(HL)             ; ** J11A4
+11B6: 7E             LD    A,(HL)             ; * J11A4
 11B7: 21 14 E5       LD    HL,$E514           ;
 11BA: 30 1C          JR    NC,$11D8           ; 
 11BC: A7             AND   A                  ;
 11BD: 20 01          JR    NZ,$11C0           ; 
 11BF: 35             DEC   (HL)               ;
-11C0: C6 F3          ADD   $F3                ; ** J11BD,J11EE
+11C0: C6 F3          ADD   $F3                ; * J11BD,J11EE
 11C2: FE FC          CP    $FC                ;
 11C4: 38 02          JR    C,$11C8            ; 
 11C6: D6 0C          SUB   $0C                ;
-11C8: 4F             LD    C,A                ; ** J11C4
-11C9: C6 03          ADD   $03                ; ** J11CB
+11C8: 4F             LD    C,A                ; * J11C4
+11C9: C6 03          ADD   $03                ; * J11CB
 11CB: FA C9 11       JP    M,$11C9            ; 
 11CE: C2 29 11       JP    NZ,$1129           ; 
 11D1: 79             LD    A,C                ;
 11D2: D6 10          SUB   $10                ;
 11D4: 4F             LD    C,A                ;
 11D5: C3 29 11       JP    $1129              ; 
-11D8: FE 09          CP    $09                ; ** J11BA
+11D8: FE 09          CP    $09                ; * J11BA
 11DA: 20 01          JR    NZ,$11DD           ; 
 11DC: 34             INC   (HL)               ;
-11DD: 2F             CPL                      ; ** J11B4,J11DA
+11DD: 2F             CPL                      ; * J11B4,J11DA
 11DE: C6 F2          ADD   $F2                ;
 11E0: FE F0          CP    $F0                ;
 11E2: 30 02          JR    NC,$11E6           ; 
 11E4: C6 0C          ADD   $0C                ;
-11E6: 4F             LD    C,A                ; ** J11E2
+11E6: 4F             LD    C,A                ; * J11E2
 11E7: C3 29 11       JP    $1129              ; 
-11EA: FE 04          CP    $04                ; ** J11AC
+11EA: FE 04          CP    $04                ; * J11AC
 11EC: 3E 0B          LD    A,$0B              ;
 11EE: 20 D0          JR    NZ,$11C0           ; 
-11F0: 21 D9 E1       LD    HL,$E1D9           ; ** J11B0
+11F0: 21 D9 E1       LD    HL,$E1D9           ; * J11B0
 11F3: 34             INC   (HL)               ;
 11F4: 2A E1 E1       LD    HL,($E1E1)         ; 
 11F7: 22 F1 E0       LD    ($E0F1),HL         ; 
@@ -2956,12 +2982,12 @@ TxtCmd_0A:
 ; Init "MOON PATROL" splash sequence 
 ;
 1201: 21 44 2D       LD    HL,$2D44           ; Data for splash text
-1204: ED 53 EB E0    LD    ($E0EB),DE         ;{-1_splshObjLSB} Will be pointer to screen, but this isn't a pointer to screen memory yet ** J1253
-1208: 22 E9 E0       LD    ($E0E9),HL         ;{-1_splashLSB} Hold pointer to splash text data ** J124D
+1204: ED 53 EB E0    LD    ($E0EB),DE         ;{-1_splshObjLSB} Will be pointer to screen, but this isn't a pointer to screen memory yet * J1253
+1208: 22 E9 E0       LD    ($E0E9),HL         ;{-1_splashLSB} Hold pointer to splash text data * J124D
 120B: 3A 4E E0       LD    A,($E04E)          ;{-1_isrCNT_1} Current ISR
 120E: C6 03          ADD   $03                ; Next action is in current+3
 1210: DD 77 01       LD    (IX+$01),A         ; Set trigger time
-1213: DD 36 00 0B    LD    (IX+$00),$0B       ; Transition to state 0B (running) ** J121E
+1213: DD 36 00 0B    LD    (IX+$00),$0B       ; Transition to state 0B (running) * J121E
 1217: C9             RET                      ; Done
 
 TxtCmd_0B:
@@ -2981,7 +3007,7 @@ TxtCmd_0B:
 122F: 2A E9 E0       LD    HL,($E0E9)         ;{-1_splashLSB} Get data cursor
 1232: 01 20 00       LD    BC,$0020           ; Constant for down one row
 ;
-1235: 7E             LD    A,(HL)             ; Get next data value ** J1247
+1235: 7E             LD    A,(HL)             ; Get next data value * J1247
 1236: 23             INC   HL                 ; Next in script
 1237: 3D             DEC   A                  ; Is this ...
 1238: FE 03          CP    $03                ; ... a special byte?
@@ -3001,7 +3027,7 @@ TxtCmd_0B:
 ; 2 = store cursor and continue (go to next column)
 ; 3 = set screen pointer and continue
 ;
-1249: 3D             DEC   A                  ; Subtract 1 again ** J123A
+1249: 3D             DEC   A                  ; Subtract 1 again * J123A
 124A: FA 55 12       JP    M,$1255            ; Data byte is 1 or 0
 124D: 28 B9          JR    Z,$1208            ; Jump if byte is 2 ... store cursor and continue
 ;
@@ -3011,12 +3037,12 @@ TxtCmd_0B:
 1252: 23             INC   HL                 ; Next in script
 1253: 18 AF          JR    $1204              ; Save pointers and continue
 
-1255: 21 97 2C       LD    HL,$2C97           ; "1982 IREM CORP" script ** J124A
+1255: 21 97 2C       LD    HL,$2C97           ; "1982 IREM CORP" script * J124A
 1258: C3 00 03       JP    $0300              ;{RunTextScript} Print script and return
 
 
 
-125B: 3A 0D E5       LD    A,($E50D)          ; ** C0DDC
+125B: 3A 0D E5       LD    A,($E50D)          ; * C0DDC
 125E: 3D             DEC   A                  ;
 125F: F8             RET   M                  ; No indicator to print ... out
 ;
@@ -3047,8 +3073,8 @@ PrintCaution:
 ; E50D ==2 : Second row, character 18, color 3
 ; E50D ==* : Third row, character 19, color 3
 ;
-1285: CD 00 03       CALL  $0300              ;{RunTextScript} Print "CAUTION" ** J1268
-1288: 3A 0D E5       LD    A,($E50D)          ; ** C1270
+1285: CD 00 03       CALL  $0300              ;{RunTextScript} Print "CAUTION" * J1268
+1288: 3A 0D E5       LD    A,($E50D)          ; * C1270
 128B: 21 55 80       LD    HL,$8055           ; Screen location for caution indicator
 128E: 01 02 13       LD    BC,$1302           ; Caution-bubble character, color set 2
 1291: 11 20 00       LD    DE,$0020           ; Offset for one row
@@ -3062,17 +3088,17 @@ PrintCaution:
 129D: 04             INC   B                  ; Back to 2nd bubble (character 19)
 129E: 19             ADD   HL,DE              ; Next row
 ;
-129F: 70             LD    (HL),B             ; Put bubble ... ** J1295,J129B
+129F: 70             LD    (HL),B             ; Put bubble ... * J1295,J129B
 12A0: 11 00 04       LD    DE,$0400           ; ... on screen ...
 12A3: EB             EX    DE,HL              ; ... with ...
 12A4: 19             ADD   HL,DE              ; ... desired ...
 12A5: 71             LD    (HL),C             ; ... color
 12A6: C9             RET                      ; Done
 
-12A7: 21 70 E3       LD    HL,$E370           ; ** C027A
+12A7: 21 70 E3       LD    HL,$E370           ; * C027A
 12AA: 11 10 00       LD    DE,$0010           ;
 12AD: 01 02 19       LD    BC,$1902           ;
-12B0: 7E             LD    A,(HL)             ; ** J12D5
+12B0: 7E             LD    A,(HL)             ; * J12D5
 12B1: FE 14          CP    $14                ;
 12B3: 28 2A          JR    Z,$12DF            ; 
 12B5: FE 1E          CP    $1E                ;
@@ -3083,28 +3109,28 @@ PrintCaution:
 12BF: 38 13          JR    C,$12D4            ; 
 12C1: FE 2A          CP    $2A                ;
 12C3: 30 0F          JR    NC,$12D4           ; 
-12C5: 3A DF E1       LD    A,($E1DF)          ; ** J12BB
+12C5: 3A DF E1       LD    A,($E1DF)          ; * J12BB
 12C8: 1F             RRA                      ;
 12C9: 1F             RRA                      ;
 12CA: D8             RET   C                  ;
-12CB: 79             LD    A,C                ; ** J12E4
-12CC: 32 DF E1       LD    ($E1DF),A          ; ** J12DD
+12CB: 79             LD    A,C                ; * J12E4
+12CC: 32 DF E1       LD    ($E1DF),A          ; * J12DD
 12CF: C6 15          ADD   $15                ;
 12D1: C3 6F 0D       JP    $0D6F              ; Make flying ship sound and out
 
-12D4: 19             ADD   HL,DE              ; ** J12B7,J12BF,J12C3
+12D4: 19             ADD   HL,DE              ; * J12B7,J12BF,J12C3
 12D5: 10 D9          DJNZ  $12B0              ; 
 12D7: 3A DF E1       LD    A,($E1DF)          ; 
 12DA: A7             AND   A                  ;
 12DB: C8             RET   Z                  ;
 12DC: AF             XOR   A                  ;
 12DD: 18 ED          JR    $12CC              ; 
-12DF: 3A DF E1       LD    A,($E1DF)          ; ** J12B3
+12DF: 3A DF E1       LD    A,($E1DF)          ; * J12B3
 12E2: 1F             RRA                      ;
 12E3: 0D             DEC   C                  ;
 12E4: 30 E5          JR    NC,$12CB           ; 
 12E6: C9             RET                      ;
-12E7: 3A DC E1       LD    A,($E1DC)          ; ** C027D
+12E7: 3A DC E1       LD    A,($E1DC)          ; * C027D
 12EA: A7             AND   A                  ;
 12EB: C8             RET   Z                  ;
 12EC: 3A 4E E0       LD    A,($E04E)          ;{-1_isrCNT_1} 
@@ -3113,7 +3139,7 @@ PrintCaution:
 12F3: E6 07          AND   $07                ;
 12F5: C0             RET   NZ                 ;
 12F6: 3C             INC   A                  ;
-12F7: 3C             INC   A                  ; ** J12F1
+12F7: 3C             INC   A                  ; * J12F1
 12F8: 4F             LD    C,A                ;
 12F9: 2A DA E1       LD    HL,($E1DA)         ; 
 12FC: 7E             LD    A,(HL)             ;
@@ -3121,11 +3147,11 @@ PrintCaution:
 12FF: 28 0A          JR    Z,$130B            ; 
 1301: 3C             INC   A                  ;
 1302: 06 04          LD    B,$04              ;
-1304: C6 05          ADD   $05                ; ** J1308
+1304: C6 05          ADD   $05                ; * J1308
 1306: 28 03          JR    Z,$130B            ; 
 1308: 10 FA          DJNZ  $1304              ; 
 130A: C9             RET                      ;
-130B: 11 00 04       LD    DE,$0400           ; ** J12FF,J1306
+130B: 11 00 04       LD    DE,$0400           ; * J12FF,J1306
 130E: 19             ADD   HL,DE              ;
 130F: 71             LD    (HL),C             ;
 1310: C9             RET                      ;
@@ -3161,8 +3187,8 @@ ISROBJRun_02: ; Buggy running normally
 1343: 7D             LD    A,L                ;
 1344: FE D1          CP    $D1                ;
 1346: 38 02          JR    C,$134A            ; 
-1348: 3E D1          LD    A,$D1              ; ** J1341
-134A: 5F             LD    E,A                ; ** J1346
+1348: 3E D1          LD    A,$D1              ; * J1341
+134A: 5F             LD    E,A                ; * J1346
 134B: CB 3B          SRL   E                  ;
 134D: 83             ADD   A,E                ;
 134E: 2F             CPL                      ;
@@ -3174,14 +3200,14 @@ ISROBJRun_02: ; Buggy running normally
 1356: 67             LD    H,A                ;
 1357: 22 08 E3       LD    ($E308),HL         ; 
 ;
-135A: DD 34 00       INC   (IX+$00)           ; Transition buggy to "next" state (running or jumping) ** J132F
-135D: CD 76 15       CALL  $1576              ; ** J136E
+135A: DD 34 00       INC   (IX+$00)           ; Transition buggy to "next" state (running or jumping) * J132F
+135D: CD 76 15       CALL  $1576              ; * J136E
 1360: C3 B8 08       JP    $08B8              ;{DrawObject} Draw the buggy
 
-1363: CD 8A 14       CALL  $148A              ; ** J1336
-1366: CD 33 15       CALL  $1533              ; ** J131C,J1321
+1363: CD 8A 14       CALL  $148A              ; * J1336
+1366: CD 33 15       CALL  $1533              ; * J131C,J1321
 1369: D6 1C          SUB   $1C                ;
-136B: 32 07 E3       LD    ($E307),A          ;{-1_buggyY} ** J1386
+136B: 32 07 E3       LD    ($E307),A          ;{-1_buggyY} * J1386
 136E: 18 ED          JR    $135D              ; 
 
 ISROBJRun_03: ; Start player jump
@@ -3189,7 +3215,7 @@ ISROBJRun_03: ; Start player jump
 1370: DD 34 00       INC   (IX+$00)           ; Player is now in state "jumping"
 1373: 3E 14          LD    A,$14              ; Play ...
 1375: CD 75 0D       CALL  $0D75              ;{AddSound} ... car jump
-1378: CD 48 15       CALL  $1548              ;{PlayerShot} Check starting player shot ** J13C0
+1378: CD 48 15       CALL  $1548              ;{PlayerShot} Check starting player shot * J13C0
 137B: 2A 0E E3       LD    HL,($E30E)         ; 
 137E: CD A4 14       CALL  $14A4              ; 
 1381: CD 33 15       CALL  $1533              ; 
@@ -3217,7 +3243,7 @@ ISROBJRun_04: ; Handle buggy jumping
 13B0: B8             CP    B                  ;
 13B1: 38 03          JR    C,$13B6            ; 
 13B3: DD 34 00       INC   (IX+$00)           ; Player is now in state "landing"
-13B6: CD AC 15       CALL  $15AC              ; ** J13A5,J13B1
+13B6: CD AC 15       CALL  $15AC              ; * J13A5,J13B1
 13B9: C3 B8 08       JP    $08B8              ;{DrawObject} 
 
 ISROBJRun_05: ; ?? Handle player landing
@@ -3260,7 +3286,7 @@ ISROBJRun_07: ; ?? Handle player crash ?? wheels?
 1405: DD 36 0A 0E    LD    (IX+$0A),$0E       ;
 1409: C9             RET                      ;
 ;
-140A: DD CB 0A 4E    BIT   1,(IX+$0A)         ; ** J13FD
+140A: DD CB 0A 4E    BIT   1,(IX+$0A)         ; * J13FD
 140E: C0             RET   NZ                 ;
 140F: EE 07          XOR   $07                ;
 1411: DD 77 0D       LD    (IX+$0D),A         ;
@@ -3297,7 +3323,7 @@ ISROBJRun_1C:
 1447: 20 02          JR    NZ,$144B           ; 
 1449: 2B             DEC   HL                 ;
 144A: 2B             DEC   HL                 ;
-144B: 22 D8 E0       LD    ($E0D8),HL         ; ** J1447
+144B: 22 D8 E0       LD    ($E0D8),HL         ; * J1447
 144E: 2A DA E0       LD    HL,($E0DA)         ; 
 1451: ED 5B DC E0    LD    DE,($E0DC)         ; 
 1455: 19             ADD   HL,DE              ;
@@ -3322,9 +3348,9 @@ ISROBJRun_1C:
 147E: CB 1B          RR    E                  ;
 1480: 19             ADD   HL,DE              ;
 1481: 22 DC E0       LD    ($E0DC),HL         ; 
-1484: CD B8 08       CALL  $08B8              ;{DrawObject} ** J1463,J146D
+1484: CD B8 08       CALL  $08B8              ;{DrawObject} * J1463,J146D
 1487: C3 EF 20       JP    $20EF              ; 
-148A: 3A 49 E0       LD    A,($E049)          ; ** C1363
+148A: 3A 49 E0       LD    A,($E049)          ; * C1363
 148D: 87             ADD   A,A                ;
 148E: 21 28 30       LD    HL,$3028           ;
 1491: 85             ADD   A,L                ;
@@ -3339,7 +3365,7 @@ ISROBJRun_1C:
 149E: 17             RLA                      ;
 149F: 57             LD    D,A                ;
 14A0: ED 53 1C E3    LD    ($E31C),DE         ; 
-14A4: ED 5B 02 E3    LD    DE,($E302)         ; ** C137E,C138E
+14A4: ED 5B 02 E3    LD    DE,($E302)         ; * C137E,C138E
 14A8: AF             XOR   A                  ;
 14A9: ED 52          SBC   HL,DE              ;
 14AB: 4F             LD    C,A                ;
@@ -3347,10 +3373,10 @@ ISROBJRun_1C:
 14AD: 30 03          JR    NC,$14B2           ; 
 14AF: ED 44          NEG                      ;
 14B1: 0C             INC   C                  ;
-14B2: FE 18          CP    $18                ; ** J14AD
+14B2: FE 18          CP    $18                ; * J14AD
 14B4: 38 02          JR    C,$14B8            ; 
 14B6: 3E 18          LD    A,$18              ;
-14B8: 21 30 30       LD    HL,$3030           ; ** J14B4
+14B8: 21 30 30       LD    HL,$3030           ; * J14B4
 14BB: 85             ADD   A,L                ;
 14BC: 6F             LD    L,A                ;
 14BD: 5E             LD    E,(HL)             ;
@@ -3369,13 +3395,13 @@ ISROBJRun_1C:
 14D0: 23             INC   HL                 ;
 14D1: EB             EX    DE,HL              ;
 14D2: 18 03          JR    $14D7              ; 
-14D4: 0D             DEC   C                  ; ** J14C5
+14D4: 0D             DEC   C                  ; * J14C5
 14D5: 28 57          JR    Z,$152E            ; 
-14D7: A7             AND   A                  ; ** J14D2
+14D7: A7             AND   A                  ; * J14D2
 14D8: ED 52          SBC   HL,DE              ;
 14DA: 30 52          JR    NC,$152E           ; 
-14DC: 11 02 00       LD    DE,$0002           ; ** J14C9
-14DF: 3A 4E E0       LD    A,($E04E)          ;{-1_isrCNT_1} ** J1531
+14DC: 11 02 00       LD    DE,$0002           ; * J14C9
+14DF: 3A 4E E0       LD    A,($E04E)          ;{-1_isrCNT_1} * J1531
 14E2: 1F             RRA                      ;
 14E3: 2A 04 E3       LD    HL,($E304)         ; 
 14E6: ED 5A          ADC   HL,DE              ;
@@ -3404,41 +3430,43 @@ ISROBJRun_1C:
 150F: 28 0F          JR    Z,$1520            ; 
 1511: 38 01          JR    C,$1514            ; 
 1513: 3D             DEC   A                  ;
-1514: D6 05          SUB   $05                ; ** J1511,J1519
+1514: D6 05          SUB   $05                ; * J1511,J1519
 1516: CA C0 27       JP    Z,$27C0            ; 
 1519: 10 F9          DJNZ  $1514              ; 
 151B: FE 06          CP    $06                ;
 151D: CA C0 27       JP    Z,$27C0            ; 
-1520: 3E 10          LD    A,$10              ; Play ... ** J150F
+1520: 3E 10          LD    A,$10              ; Play ... * J150F
 1522: CD 75 0D       CALL  $0D75              ;{AddSound} ... passing point
 1525: AF             XOR   A                  ;
 1526: 0E 01          LD    C,$01              ;
 1528: CD C2 02       CALL  $02C2              ;{NewTxtCmd} 
 152B: C3 12 0D       JP    $0D12              ; 
-152E: 11 FD FF       LD    DE,$FFFD           ; ** J14D5,J14DA
+152E: 11 FD FF       LD    DE,$FFFD           ; * J14D5,J14DA
 1531: 18 AC          JR    $14DF              ; 
 
-1533: 3A 03 E3       LD    A,($E303)          ;{-1_buggyX} ** C1366,C1381,C13A7,C18C3
+1533: 3A 03 E3       LD    A,($E303)          ;{-1_buggyX} * C1366,C1381,C13A7,C18C3
 1536: C6 20          ADD   $20                ;
-1538: 47             LD    B,A                ; ** C10B1,C1467,C157C,C1A83,C1AE5,C1CFA
+1538: 47             LD    B,A                ; * C10B1,C1467,C157C,C1A83,C1AE5,C1CFA
 1539: 3A E2 E1       LD    A,($E1E2)          ; 
 153C: 80             ADD   A,B                ;
-153D: C6 06          ADD   $06                ; ** C0ED7
+153D: C6 06          ADD   $06                ; * C0ED7
 153F: CB 3F          SRL   A                  ;
 1541: CB 3F          SRL   A                  ;
 1543: 6F             LD    L,A                ;
 1544: 26 E2          LD    H,$E2              ;
 1546: 7E             LD    A,(HL)             ;
 1547: C9             RET                      ;
- 
- # Player Shot
- 
+``` 
+
+# Player Shot
+
+```code 
 PlayerShot: 
 ; Check the fire button and initiate a player shot if
 ; there is room (only 1 forward shot and 4 air shots at
 ; a time).
 ;
-1548: 2A 4A E0       LD    HL,($E04A)         ; Current inputs to L, last inputs to H ** C1331,C1378,C1388
+1548: 2A 4A E0       LD    HL,($E04A)         ; Current inputs to L, last inputs to H * C1331,C1378,C1388
 154B: 7C             LD    A,H                ; Last inputs to accumulator
 154C: AD             XOR   L                  ; Bits are only "1" now if inputs have changed
 154D: A5             AND   L                  ; Bits are only "1" now if buttons have transitioned from off to on (pressed)
@@ -3451,10 +3479,10 @@ PlayerShot:
 1557: 3E 0A          LD    A,$0A              ; Init player ...
 1559: 32 20 E3       LD    ($E320),A          ; ... forward shot routine
 ;
-155C: 21 30 E3       LD    HL,$E330           ; Start of player air shot objects ** J1555
+155C: 21 30 E3       LD    HL,$E330           ; Start of player air shot objects * J1555
 155F: 06 04          LD    B,$04              ; Maximum of 4 shots in the air
 1561: 11 10 00       LD    DE,$0010           ; 16 bytes per shot structure
-1564: 7E             LD    A,(HL)             ; Is slot ... ** J1569
+1564: 7E             LD    A,(HL)             ; Is slot ... * J1569
 1565: A7             AND   A                  ; ... available?
 1566: 28 05          JR    Z,$156D            ; Yes ... use this one
 ;
@@ -3463,13 +3491,13 @@ PlayerShot:
 156B: 79             LD    A,C                ; Restore A
 156C: C9             RET                      ; Done ... no air shot
 ; 
-156D: 36 0E          LD    (HL),$0E           ; Init player air shot routine ** J1566
+156D: 36 0E          LD    (HL),$0E           ; Init player air shot routine * J1566
 156F: 3E 12          LD    A,$12              ; Play ...
 1571: CD 75 0D       CALL  $0D75              ;{AddSound} ... missile from car
 1574: 79             LD    A,C                ; Restore A
 1575: C9             RET                      ; Done
 
-1576: 3A 03 E3       LD    A,($E303)          ;{-1_buggyX} ** C135D
+1576: 3A 03 E3       LD    A,($E303)          ;{-1_buggyX} * C135D
 1579: 4F             LD    C,A                ;
 157A: C6 04          ADD   $04                ;
 157C: CD 38 15       CALL  $1538              ; 
@@ -3484,7 +3512,7 @@ PlayerShot:
 158E: 14             INC   D                  ;
 158F: 14             INC   D                  ;
 1590: 3E 0D          LD    A,$0D              ;
-1592: 81             ADD   A,C                ; ** C158A
+1592: 81             ADD   A,C                ; * C158A
 1593: 4F             LD    C,A                ;
 1594: 2C             INC   L                  ;
 1595: 2C             INC   L                  ;
@@ -3495,12 +3523,12 @@ PlayerShot:
 159B: D6 09          SUB   $09                ;
 159D: CD ED 08       CALL  $08ED              ; 
 15A0: 47             LD    B,A                ;
-15A1: FD 23          INC   IY                 ; ** J15C7
+15A1: FD 23          INC   IY                 ; * J15C7
 15A3: FD 23          INC   IY                 ;
 15A5: FD 23          INC   IY                 ;
 15A7: FD 23          INC   IY                 ;
 15A9: C3 76 09       JP    $0976              ;{ObjDraw_0E} 
-15AC: 3A 03 E3       LD    A,($E303)          ;{-1_buggyX} ** C13B6
+15AC: 3A 03 E3       LD    A,($E303)          ;{-1_buggyX} * C13B6
 15AF: 4F             LD    C,A                ;
 15B0: 3A 07 E3       LD    A,($E307)          ;{-1_buggyY} 
 15B3: C6 11          ADD   $11                ;
@@ -3513,10 +3541,10 @@ PlayerShot:
 15C1: 14             INC   D                  ;
 15C2: 14             INC   D                  ;
 15C3: 3E 0D          LD    A,$0D              ;
-15C5: 81             ADD   A,C                ; ** C15BE
+15C5: 81             ADD   A,C                ; * C15BE
 15C6: 4F             LD    C,A                ;
 15C7: 18 D8          JR    $15A1              ; 
-15C9: 0C             INC   C                  ; ** C1581,C15B5
+15C9: 0C             INC   C                  ; * C1581,C15B5
 15CA: CD ED 08       CALL  $08ED              ; 
 15CD: 47             LD    B,A                ;
 15CE: 11 00 05       LD    DE,$0500           ;
@@ -3524,7 +3552,7 @@ PlayerShot:
 15D4: CB 67          BIT   4,A                ;
 15D6: 20 01          JR    NZ,$15D9           ; 
 15D8: 14             INC   D                  ;
-15D9: FD 21 A4 E1    LD    IY,$E1A4           ; ** J15D6
+15D9: FD 21 A4 E1    LD    IY,$E1A4           ; * J15D6
 15DD: C3 76 09       JP    $0976              ;{ObjDraw_0E} 
 
 ISROBJRun_0A: ; Init player forward shot
@@ -3553,14 +3581,14 @@ ISROBJRun_0B: ; Run player forward shot
 160D: 3E 09          LD    A,$09              ; Object_09 First shot image
 160F: 38 01          JR    C,$1612            ; It is odd ... use first shot image
 1611: 3C             INC   A                  ; It is even ... use Object_0A second shot image
-1612: DD 77 0D       LD    (IX+$0D),A         ; Set new shot image ** J160F
+1612: DD 77 0D       LD    (IX+$0D),A         ; Set new shot image * J160F
 1615: C3 B8 08       JP    $08B8              ;{DrawObject} 
 ;
-1618: DD 34 00       INC   (IX+$00)           ; Transition to 0C to show the shot exploding ** J15FD
+1618: DD 34 00       INC   (IX+$00)           ; Transition to 0C to show the shot exploding * J15FD
 161B: DD 36 0A 03    LD    (IX+$0A),$03       ; Three runs before changing sprite image
 161F: DD 36 0D 0B    LD    (IX+$0D),$0B       ; Start with first explosion Object_0B
 ;
-1623: 3A E2 E1       LD    A,($E1E2)          ; ** C1DF7,C1E18
+1623: 3A E2 E1       LD    A,($E1E2)          ; * C1DF7,C1E18
 1626: DD 86 03       ADD   A,(IX+$03)         ;
 1629: DD 77 0F       LD    (IX+$0F),A         ; ?? X offset accounting for speed ??
 162C: C9             RET                      ;
@@ -3642,12 +3670,12 @@ ISROBJRun_0F: ; Run player air shot
 
 ISROBJRun_10: ; Stop player air shot
 ;
-168F: CD 1B 08       CALL  $081B              ;{XYToTextPtr} Get text screen pointer for X,Y coordinates ** J1662,J166B
+168F: CD 1B 08       CALL  $081B              ;{XYToTextPtr} Get text screen pointer for X,Y coordinates * J1662,J166B
 1692: 36 00          LD    (HL),$00           ; Clear the shot from the screen
 1694: DD 36 00 00    LD    (IX+$00),$00       ; Remove the shot object from active duty
 1698: C9             RET                      ; Done
 
-1699: DD 4E 03       LD    C,(IX+$03)         ; ** C18E3,C1953,C195A,C1A2B,C1A8A,C1B16,C1B27
+1699: DD 4E 03       LD    C,(IX+$03)         ; * C18E3,C1953,C195A,C1A2B,C1A8A,C1B16,C1B27
 169C: DD 7E 0C       LD    A,(IX+$0C)         ;
 169F: 87             ADD   A,A                ;
 16A0: 87             ADD   A,A                ;
@@ -3662,7 +3690,7 @@ ISROBJRun_10: ; Stop player air shot
 16B1: 3D             DEC   A                  ;
 16B2: 20 17          JR    NZ,$16CB           ; 
 16B4: 11 0A F0       LD    DE,$F00A           ;
-16B7: 3A 23 E3       LD    A,($E323)          ; ** J16AF
+16B7: 3A 23 E3       LD    A,($E323)          ; * J16AF
 16BA: 82             ADD   A,D                ;
 16BB: 91             SUB   C                  ;
 16BC: FE E8          CP    $E8                ;
@@ -3672,7 +3700,7 @@ ISROBJRun_10: ; Stop player air shot
 16C6: 86             ADD   A,(HL)             ;
 16C7: 83             ADD   A,E                ;
 16C8: F2 4E 17       JP    P,$174E            ; 
-16CB: DD 7E 0C       LD    A,(IX+$0C)         ; ** J16B2,J16BE
+16CB: DD 7E 0C       LD    A,(IX+$0C)         ; * J16B2,J16BE
 16CE: A7             AND   A                  ;
 16CF: F8             RET   M                  ;
 16D0: 23             INC   HL                 ;
@@ -3687,8 +3715,8 @@ ISROBJRun_10: ; Stop player air shot
 16DC: 96             SUB   (HL)               ;
 16DD: 30 01          JR    NC,$16E0           ; 
 16DF: AF             XOR   A                  ;
-16E0: 80             ADD   A,B                ; ** J16DD
-16E1: 23             INC   HL                 ; ** J16DA
+16E0: 80             ADD   A,B                ; * J16DD
+16E1: 23             INC   HL                 ; * J16DA
 16E2: BE             CP    (HL)               ;
 16E3: D2 C4 17       JP    NC,$17C4           ; 
 16E6: 23             INC   HL                 ;
@@ -3709,7 +3737,7 @@ ISROBJRun_10: ; Stop player air shot
 ;
 ; Player crash
 16FC: E1             POP   HL                 ; We won't be returning
-16FD: 3E 07          LD    A,$07              ; Set first command to ... ** J1A1F,J1D9B
+16FD: 3E 07          LD    A,$07              ; Set first command to ... * J1A1F,J1D9B
 16FF: 32 00 E3       LD    ($E300),A          ;{-1_buggyHandler} ... handle player crash
 1702: 3E 03          LD    A,$03              ;
 1704: 32 0D E3       LD    ($E30D),A          ;
@@ -3727,7 +3755,7 @@ ISROBJRun_10: ; Stop player air shot
 1722: 34             INC   (HL)               ;
 1723: 21 C0 E3       LD    HL,$E3C0           ;
 1726: FD 21 DF 30    LD    IY,$30DF           ;
-172A: 36 1C          LD    (HL),$1C           ; ** J1744
+172A: 36 1C          LD    (HL),$1C           ; * J1744
 172C: 23             INC   HL                 ;
 172D: 23             INC   HL                 ;
 172E: 23             INC   HL                 ;
@@ -3749,7 +3777,7 @@ ISROBJRun_10: ; Stop player air shot
 1749: 3E 1F          LD    A,$1F              ; Play ...
 174B: C3 75 0D       JP    $0D75              ;{AddSound} ... car explosion
 
-174E: 3A E2 E1       LD    A,($E1E2)          ; ** J16C8
+174E: 3A E2 E1       LD    A,($E1E2)          ; * J16C8
 1751: DD 86 03       ADD   A,(IX+$03)         ;
 1754: 32 2F E3       LD    ($E32F),A          ; 
 1757: 3E 0D          LD    A,$0D              ;
@@ -3770,7 +3798,7 @@ ISROBJRun_10: ; Stop player air shot
 1778: CD C2 02       CALL  $02C2              ;{NewTxtCmd} 
 177B: E1             POP   HL                 ;
 177C: C3 52 08       JP    $0852              ; 
-177F: 20 13          JR    NZ,$1794           ; ** J1776
+177F: 20 13          JR    NZ,$1794           ; * J1776
 1781: CD F0 17       CALL  $17F0              ; 
 1784: C6 05          ADD   $05                ;
 1786: DD 77 08       LD    (IX+$08),A         ;
@@ -3778,10 +3806,10 @@ ISROBJRun_10: ; Stop player air shot
 178C: DD 34 00       INC   (IX+$00)           ;
 178F: DD 36 0A 00    LD    (IX+$0A),$00       ;
 1793: C9             RET                      ;
-1794: CD 56 08       CALL  $0856              ; ** J177F
+1794: CD 56 08       CALL  $0856              ; * J177F
 1797: CD F0 17       CALL  $17F0              ; 
 179A: 21 10 FB       LD    HL,$FB10           ;
-179D: C6 06          ADD   $06                ; ** J1DF0
+179D: C6 06          ADD   $06                ; * J1DF0
 179F: DD 77 08       LD    (IX+$08),A         ;
 17A2: E5             PUSH  HL                 ;
 17A3: CD C2 02       CALL  $02C2              ;{NewTxtCmd} 
@@ -3796,7 +3824,7 @@ ISROBJRun_10: ; Stop player air shot
 17B9: DD 36 00 21    LD    (IX+$00),$21       ;
 17BD: DD 36 0A 3B    LD    (IX+$0A),$3B       ;
 17C1: C3 56 08       JP    $0856              ; 
-17C4: 47             LD    B,A                ; ** J16E3
+17C4: 47             LD    B,A                ; * J16E3
 17C5: DD 7E 0C       LD    A,(IX+$0C)         ;
 17C8: C6 80          ADD   $80                ;
 17CA: 4F             LD    C,A                ;
@@ -3808,7 +3836,7 @@ ISROBJRun_10: ; Stop player air shot
 17D4: 96             SUB   (HL)               ;
 17D5: FE 04          CP    $04                ;
 17D7: D0             RET   NC                 ;
-17D8: DD 71 0C       LD    (IX+$0C),C         ; ** J17ED
+17D8: DD 71 0C       LD    (IX+$0C),C         ; * J17ED
 17DB: 23             INC   HL                 ;
 17DC: 23             INC   HL                 ;
 17DD: 23             INC   HL                 ;
@@ -3820,16 +3848,16 @@ ISROBJRun_10: ; Stop player air shot
 17E3: E6 0F          AND   $0F                ;
 17E5: 0E 01          LD    C,$01              ;
 17E7: C3 C2 02       JP    $02C2              ;{NewTxtCmd} 
-17EA: 78             LD    A,B                ; ** J17CD,J17D1
+17EA: 78             LD    A,B                ; * J17CD,J17D1
 17EB: FE FC          CP    $FC                ;
 17ED: 30 E9          JR    NC,$17D8           ; 
 17EF: C9             RET                      ;
-17F0: ED 5F          LD    A,R                ; ** C1781,C1797
+17F0: ED 5F          LD    A,R                ; * C1781,C1797
 17F2: E6 03          AND   $03                ;
 17F4: C0             RET   NZ                 ;
 17F5: 3E 02          LD    A,$02              ;
 17F7: C9             RET                      ;
-17F8: 23             INC   HL                 ; ** C1732,C1736
+17F8: 23             INC   HL                 ; * C1732,C1736
 17F9: FD 5E 00       LD    E,(IY+$00)         ;
 17FC: 73             LD    (HL),E             ;
 17FD: 23             INC   HL                 ;
@@ -3857,14 +3885,14 @@ ISROBJRun_09:
 181D: A7             AND   A                  ;
 181E: FA 23 18       JP    M,$1823            ; 
 1821: ED 52          SBC   HL,DE              ;
-1823: 21 03 00       LD    HL,$0003           ; ** J181E
+1823: 21 03 00       LD    HL,$0003           ; * J181E
 1826: 30 03          JR    NC,$182B           ; 
 1828: 21 FE FF       LD    HL,$FFFE           ;
-182B: 3A 4E E0       LD    A,($E04E)          ;{-1_isrCNT_1} ** J1826
+182B: 3A 4E E0       LD    A,($E04E)          ;{-1_isrCNT_1} * J1826
 182E: 1F             RRA                      ;
 182F: 38 01          JR    C,$1832            ; 
 1831: 1D             DEC   E                  ;
-1832: 19             ADD   HL,DE              ; ** J182F
+1832: 19             ADD   HL,DE              ; * J182F
 1833: 22 1A E3       LD    ($E31A),HL         ; 
 1836: ED 5B 04 E3    LD    DE,($E304)         ; 
 183A: A7             AND   A                  ;
@@ -3894,7 +3922,7 @@ ISROBJRun_09:
 186B: 0E 03          LD    C,$03              ;
 186D: ED B8          LDDR                     ;
 186F: E1             POP   HL                 ;
-1870: 22 EF E0       LD    ($E0EF),HL         ; ** J1857
+1870: 22 EF E0       LD    ($E0EF),HL         ; * J1857
 1873: ED 5B F1 E0    LD    DE,($E0F1)         ; 
 1877: 19             ADD   HL,DE              ;
 1878: 3A 08 E5       LD    A,($E508)          ; 
@@ -3906,7 +3934,7 @@ ISROBJRun_09:
 1885: 38 04          JR    C,$188B            ; 
 1887: AF             XOR   A                  ;
 1888: 32 D9 E1       LD    ($E1D9),A          ; 
-188B: 7C             LD    A,H                ; ** J1813,J184C,J187D,J1885
+188B: 7C             LD    A,H                ; * J1813,J184C,J187D,J1885
 188C: 2F             CPL                      ;
 188D: 21 3D E0       LD    HL,$E03D           ;
 1890: 86             ADD   A,(HL)             ;
@@ -3940,10 +3968,10 @@ ISROBJRun_09:
 18C6: FE C4          CP    $C4                ;
 18C8: 30 02          JR    NC,$18CC           ; 
 18CA: 3E C4          LD    A,$C4              ;
-18CC: C6 28          ADD   $28                ; ** J18C8
+18CC: C6 28          ADD   $28                ; * J18C8
 18CE: 30 01          JR    NC,$18D1           ; 
 18D0: AF             XOR   A                  ;
-18D1: 47             LD    B,A                ; ** J18CE
+18D1: 47             LD    B,A                ; * J18CE
 18D2: C6 94          ADD   $94                ;
 18D4: 32 C3 E1       LD    ($E1C3),A          ; 
 18D7: CB 28          SRA   B                  ;
@@ -3971,7 +3999,7 @@ ISROBJRun_1D:
 18FD: FD 21 70 E3    LD    IY,$E370           ;
 1901: 11 10 00       LD    DE,$0010           ;
 1904: 06 05          LD    B,$05              ;
-1906: FD 7E 00       LD    A,(IY+$00)         ; ** J191C
+1906: FD 7E 00       LD    A,(IY+$00)         ; * J191C
 1909: FE 1D          CP    $1D                ;
 190B: 20 0D          JR    NZ,$191A           ; 
 190D: FD 7E 0C       LD    A,(IY+$0C)         ;
@@ -3980,7 +4008,7 @@ ISROBJRun_1D:
 1913: DD 7E 03       LD    A,(IX+$03)         ;
 1916: FD 96 03       SUB   (IY+$03)           ;
 1919: D8             RET   C                  ;
-191A: FD 19          ADD   IY,DE              ; ** J190B,J1911
+191A: FD 19          ADD   IY,DE              ; * J190B,J1911
 191C: 10 E8          DJNZ  $1906              ; 
 191E: DD 7E 07       LD    A,(IX+$07)         ;
 1921: FD 77 07       LD    (IY+$07),A         ;
@@ -4003,7 +4031,7 @@ ISROBJRun_11:
 1948: DD 77 04       LD    (IX+$04),A         ;
 194B: 30 03          JR    NC,$1950           ; 
 194D: DD 35 0F       DEC   (IX+$0F)           ;
-1950: CD 38 08       CALL  $0838              ; ** J194B
+1950: CD 38 08       CALL  $0838              ; * J194B
 1953: CD 99 16       CALL  $1699              ; 
 1956: C9             RET                      ;
 
@@ -4051,7 +4079,7 @@ ISROBJRun_13:
 1997: 82             ADD   A,D                ;
 1998: 47             LD    B,A                ;
 1999: 0D             DEC   C                  ;
-199A: DD 7E 03       LD    A,(IX+$03)         ; ** J1994
+199A: DD 7E 03       LD    A,(IX+$03)         ; * J1994
 199D: 80             ADD   A,B                ;
 199E: D6 1C          SUB   $1C                ;
 19A0: 32 03 E3       LD    ($E303),A          ;{-1_buggyX} 
@@ -4070,7 +4098,7 @@ ISROBJRun_13:
 19BC: 3E 06          LD    A,$06              ;
 19BE: 32 00 E3       LD    ($E300),A          ;{-1_buggyHandler} 
 19C1: C9             RET                      ;
-19C2: 96             SUB   (HL)               ; ** J197B
+19C2: 96             SUB   (HL)               ; * J197B
 19C3: FE 04          CP    $04                ;
 19C5: D0             RET   NC                 ;
 19C6: DD 34 0C       INC   (IX+$0C)           ;
@@ -4094,9 +4122,9 @@ ISROBJRun_14:
 19E5: E6 30          AND   $30                ;
 19E7: 20 02          JR    NZ,$19EB           ; 
 19E9: 3E 30          LD    A,$30              ;
-19EB: 4F             LD    C,A                ; ** J19E7
+19EB: 4F             LD    C,A                ; * J19E7
 19EC: AF             XOR   A                  ;
-19ED: DD 77 0E       LD    (IX+$0E),A         ; ** J19E0
+19ED: DD 77 0E       LD    (IX+$0E),A         ; * J19E0
 19F0: DD 71 0A       LD    (IX+$0A),C         ;
 19F3: 78             LD    A,B                ;
 19F4: FE 04          CP    $04                ;
@@ -4104,14 +4132,14 @@ ISROBJRun_14:
 19F8: EE 07          XOR   $07                ;
 19FA: 3D             DEC   A                  ;
 19FB: 47             LD    B,A                ;
-19FC: C6 06          ADD   $06                ; ** J19F6
+19FC: C6 06          ADD   $06                ; * J19F6
 19FE: DD 46 0C       LD    B,(IX+$0C)         ;
 1A01: 04             INC   B                  ;
 1A02: FA 08 1A       JP    M,$1A08            ; 
 1A05: DD 77 0C       LD    (IX+$0C),A         ;
-1A08: C6 45          ADD   $45                ; ** J1A02
+1A08: C6 45          ADD   $45                ; * J1A02
 1A0A: DD 77 0D       LD    (IX+$0D),A         ;
-1A0D: 3A 20 E3       LD    A,($E320)          ; ** J19D4
+1A0D: 3A 20 E3       LD    A,($E320)          ; * J19D4
 1A10: FE 0F          CP    $0F                ;
 1A12: 38 0E          JR    C,$1A22            ; 
 1A14: C0             RET   NZ                 ;
@@ -4120,7 +4148,7 @@ ISROBJRun_14:
 1A1B: C6 10          ADD   $10                ;
 1A1D: FE 30          CP    $30                ;
 1A1F: DA FD 16       JP    C,$16FD            ; 
-1A22: CD 38 08       CALL  $0838              ; ** J1A12
+1A22: CD 38 08       CALL  $0838              ; * J1A12
 1A25: DD 7E 0C       LD    A,(IX+$0C)         ;
 1A28: FE 06          CP    $06                ;
 1A2A: C8             RET   Z                  ;
@@ -4154,13 +4182,13 @@ ISROBJRun_16:
 1A5E: ED B1          CPIR                     ;
 1A60: 20 01          JR    NZ,$1A63           ; 
 1A62: 7E             LD    A,(HL)             ;
-1A63: DD 77 0D       LD    (IX+$0D),A         ; ** J1A60
-1A66: DD 7E 04       LD    A,(IX+$04)         ; ** J1A4D
+1A63: DD 77 0D       LD    (IX+$0D),A         ; * J1A60
+1A66: DD 7E 04       LD    A,(IX+$04)         ; * J1A4D
 1A69: C6 C0          ADD   $C0                ;
 1A6B: DD 77 04       LD    (IX+$04),A         ;
 1A6E: 30 03          JR    NC,$1A73           ; 
-1A70: DD 35 0F       DEC   (IX+$0F)           ; ** J1A91
-1A73: CD 38 08       CALL  $0838              ; ** J1A6E
+1A70: DD 35 0F       DEC   (IX+$0F)           ; * J1A91
+1A73: CD 38 08       CALL  $0838              ; * J1A6E
 1A76: DD 7E 0C       LD    A,(IX+$0C)         ;
 1A79: D6 04          SUB   $04                ;
 1A7B: CB 27          SLA   A                  ;
@@ -4189,7 +4217,7 @@ ISROBJRun_17:
 1AA7: 19             ADD   HL,DE              ;
 1AA8: 22 72 E3       LD    ($E372),HL         ; 
 1AAB: 18 2C          JR    $1AD9              ; 
-1AAD: DD 36 0A 00    LD    (IX+$0A),$00       ; ** J1AA2
+1AAD: DD 36 0A 00    LD    (IX+$0A),$00       ; * J1AA2
 1AB1: DD 34 00       INC   (IX+$00)           ;
 1AB4: DD 36 0E 80    LD    (IX+$0E),$80       ;
 1AB8: C9             RET                      ;
@@ -4202,7 +4230,7 @@ ISROBJRun_18:
 1ABE: 3A 00 E3       LD    A,($E300)          ;{-1_buggyHandler} 
 1AC1: FE 06          CP    $06                ;
 1AC3: D0             RET   NC                 ;
-1AC4: 3A 4E E0       LD    A,($E04E)          ;{-1_isrCNT_1} ** J1AF3,J1B2D
+1AC4: 3A 4E E0       LD    A,($E04E)          ;{-1_isrCNT_1} * J1AF3,J1B2D
 1AC7: 47             LD    B,A                ;
 1AC8: E6 03          AND   $03                ;
 1ACA: 20 0D          JR    NZ,$1AD9           ; 
@@ -4211,7 +4239,7 @@ ISROBJRun_18:
 1AD1: 28 06          JR    Z,$1AD9            ; 
 1AD3: DD 35 03       DEC   (IX+$03)           ;
 1AD6: DD 35 03       DEC   (IX+$03)           ;
-1AD9: 3A 4E E0       LD    A,($E04E)          ;{-1_isrCNT_1} ** J1AAB,J1ACA,J1AD1,J1B19
+1AD9: 3A 4E E0       LD    A,($E04E)          ;{-1_isrCNT_1} * J1AAB,J1ACA,J1AD1,J1B19
 1ADC: E6 07          AND   $07                ;
 1ADE: 20 0D          JR    NZ,$1AED           ; 
 1AE0: DD 7E 03       LD    A,(IX+$03)         ;
@@ -4219,7 +4247,7 @@ ISROBJRun_18:
 1AE5: CD 38 15       CALL  $1538              ; 
 1AE8: D6 10          SUB   $10                ;
 1AEA: DD 77 07       LD    (IX+$07),A         ;
-1AED: C3 B8 08       JP    $08B8              ;{DrawObject} ** J1ADE
+1AED: C3 B8 08       JP    $08B8              ;{DrawObject} * J1ADE
 
 ISROBJRun_19:
 ;
@@ -4243,7 +4271,7 @@ ISROBJRun_1A:
 1B13: D2 52 08       JP    NC,$0852           ; 
 1B16: CD 99 16       CALL  $1699              ; 
 1B19: 18 BE          JR    $1AD9              ; 
-1B1B: DD 34 00       INC   (IX+$00)           ; ** J1B04
+1B1B: DD 34 00       INC   (IX+$00)           ; * J1B04
 1B1E: DD 36 0A 6E    LD    (IX+$0A),$6E       ;
 1B22: DD 36 0D 23    LD    (IX+$0D),$23       ;
 1B26: C9             RET                      ;
@@ -4257,7 +4285,7 @@ ISROBJRun_1B:
 1B32: DD 35 0B       DEC   (IX+$0B)           ;
 1B35: DD 36 0D 52    LD    (IX+$0D),$52       ;
 1B39: C9             RET                      ;
-1B3A: 21 EE E0       LD    HL,$E0EE           ; ** C0274
+1B3A: 21 EE E0       LD    HL,$E0EE           ; * C0274
 1B3D: 3A 4E E0       LD    A,($E04E)          ;{-1_isrCNT_1} 
 1B40: 96             SUB   (HL)               ;
 1B41: F8             RET   M                  ;
@@ -4267,7 +4295,7 @@ ISROBJRun_1B:
 1B49: 26 E4          LD    H,$E4              ;
 1B4B: 51             LD    D,C                ;
 1B4C: 59             LD    E,C                ;
-1B4D: 6F             LD    L,A                ; ** J1B62
+1B4D: 6F             LD    L,A                ; * J1B62
 1B4E: 7E             LD    A,(HL)             ;
 1B4F: D6 1E          SUB   $1E                ;
 1B51: FE 0A          CP    $0A                ;
@@ -4278,7 +4306,7 @@ ISROBJRun_1B:
 1B5B: 38 63          JR    C,$1BC0            ; 
 1B5D: 0C             INC   C                  ;
 1B5E: 5D             LD    E,L                ;
-1B5F: 7D             LD    A,L                ; ** J1B53,J1B57,J1BC2
+1B5F: 7D             LD    A,L                ; * J1B53,J1B57,J1BC2
 1B60: C6 10          ADD   $10                ;
 1B62: 10 E9          DJNZ  $1B4D              ; 
 1B64: ED 53 D4 E1    LD    ($E1D4),DE         ; 
@@ -4292,19 +4320,19 @@ ISROBJRun_1B:
 1B73: FE 09          CP    $09                ;
 1B75: DA 7A 1B       JP    C,$1B7A            ; 
 1B78: 0E 08          LD    C,$08              ;
-1B7A: 21 FF 2F       LD    HL,$2FFF           ; ** J1B75
+1B7A: 21 FF 2F       LD    HL,$2FFF           ; * J1B75
 1B7D: 09             ADD   HL,BC              ;
 1B7E: 4E             LD    C,(HL)             ;
 1B7F: 06 05          LD    B,$05              ;
 1B81: 21 70 E3       LD    HL,$E370           ;
 1B84: 11 00 00       LD    DE,$0000           ;
-1B87: 7E             LD    A,(HL)             ; ** J1B94
+1B87: 7E             LD    A,(HL)             ; * J1B94
 1B88: A7             AND   A                  ;
 1B89: 28 39          JR    Z,$1BC4            ; 
 1B8B: D6 2F          SUB   $2F                ;
 1B8D: 20 01          JR    NZ,$1B90           ; 
 1B8F: 14             INC   D                  ;
-1B90: 7D             LD    A,L                ; ** J1B8D,J1BC5
+1B90: 7D             LD    A,L                ; * J1B8D,J1BC5
 1B91: C6 10          ADD   $10                ;
 1B93: 6F             LD    L,A                ;
 1B94: 10 F1          DJNZ  $1B87              ; 
@@ -4329,12 +4357,12 @@ ISROBJRun_1B:
 1BB9: FD 19          ADD   IY,DE              ;
 1BBB: 0E 3B          LD    C,$3B              ;
 1BBD: C3 64 10       JP    $1064              ; 
-1BC0: 55             LD    D,L                ; ** J1B5B
+1BC0: 55             LD    D,L                ; * J1B5B
 1BC1: 14             INC   D                  ;
 1BC2: 18 9B          JR    $1B5F              ; 
-1BC4: 5D             LD    E,L                ; ** J1B89
+1BC4: 5D             LD    E,L                ; * J1B89
 1BC5: 18 C9          JR    $1B90              ; 
-1BC7: 3A 4E E0       LD    A,($E04E)          ;{-1_isrCNT_1} ** C0277
+1BC7: 3A 4E E0       LD    A,($E04E)          ;{-1_isrCNT_1} * C0277
 1BCA: 21 52 E0       LD    HL,$E052           ;
 1BCD: AE             XOR   (HL)               ;
 1BCE: E6 1F          AND   $1F                ;
@@ -4343,13 +4371,13 @@ ISROBJRun_1B:
 1BD3: 77             LD    (HL),A             ;
 1BD4: 21 C6 E1       LD    HL,$E1C6           ;
 1BD7: 06 03          LD    B,$03              ;
-1BD9: 7E             LD    A,(HL)             ; ** J1BDE
+1BD9: 7E             LD    A,(HL)             ; * J1BDE
 1BDA: A7             AND   A                  ;
 1BDB: 20 04          JR    NZ,$1BE1           ; 
 1BDD: 23             INC   HL                 ;
 1BDE: 10 F9          DJNZ  $1BD9              ; 
 1BE0: C9             RET                      ;
-1BE1: DD 21 00 E4    LD    IX,$E400           ; ** J1BDB
+1BE1: DD 21 00 E4    LD    IX,$E400           ; * J1BDB
 1BE5: 04             INC   B                  ;
 1BE6: 78             LD    A,B                ;
 1BE7: 48             LD    C,B                ;
@@ -4363,14 +4391,14 @@ ISROBJRun_1B:
 1BF6: 0D             DEC   C                  ;
 1BF7: DD 21 70 E3    LD    IX,$E370           ;
 1BFB: 06 05          LD    B,$05              ;
-1BFD: 11 10 00       LD    DE,$0010           ; ** J1BEC,J1BF2
-1C00: DD 7E 00       LD    A,(IX+$00)         ; ** J1C08
+1BFD: 11 10 00       LD    DE,$0010           ; * J1BEC,J1BF2
+1C00: DD 7E 00       LD    A,(IX+$00)         ; * J1C08
 1C03: A7             AND   A                  ;
 1C04: 28 05          JR    Z,$1C0B            ; 
 1C06: DD 19          ADD   IX,DE              ;
 1C08: 10 F6          DJNZ  $1C00              ; 
 1C0A: C9             RET                      ;
-1C0B: 35             DEC   (HL)               ; ** J1C04
+1C0B: 35             DEC   (HL)               ; * J1C04
 1C0C: 79             LD    A,C                ;
 1C0D: FE 02          CP    $02                ;
 1C0F: 30 43          JR    NC,$1C54           ; 
@@ -4380,7 +4408,7 @@ ISROBJRun_1B:
 1C17: DD 77 0F       LD    (IX+$0F),A         ;
 1C1A: 21 D6 E1       LD    HL,$E1D6           ;
 1C1D: 35             DEC   (HL)               ;
-1C1E: ED 5F          LD    A,R                ; ** J1C57
+1C1E: ED 5F          LD    A,R                ; * J1C57
 1C20: E6 1E          AND   $1E                ;
 1C22: 5F             LD    E,A                ;
 1C23: 16 00          LD    D,$00              ;
@@ -4389,7 +4417,7 @@ ISROBJRun_1B:
 1C29: 38 04          JR    C,$1C2F            ; 
 1C2B: ED 5F          LD    A,R                ;
 1C2D: E6 80          AND   $80                ;
-1C2F: DD 77 0C       LD    (IX+$0C),A         ; ** J1C29
+1C2F: DD 77 0C       LD    (IX+$0C),A         ; * J1C29
 1C32: 21 08 30       LD    HL,$3008           ;
 1C35: 19             ADD   HL,DE              ;
 1C36: 7E             LD    A,(HL)             ;
@@ -4408,7 +4436,7 @@ ISROBJRun_1B:
 1C4F: 7E             LD    A,(HL)             ;
 1C50: DD 77 00       LD    (IX+$00),A         ;
 1C53: C9             RET                      ;
-1C54: CD 0A 08       CALL  $080A              ; ** J1C0F
+1C54: CD 0A 08       CALL  $080A              ; * J1C0F
 1C57: 18 C5          JR    $1C1E              ; 
 1C59: 2B             DEC   HL                 ;
 1C5A: 26 2A          LD    H,$2A              ;
@@ -4429,16 +4457,16 @@ ISROBJRun_1B:
 1C7A: FE 34          CP    $34                ;
 1C7C: 20 04          JR    NZ,$1C82           ; 
 1C7E: DD 36 0D 31    LD    (IX+$0D),$31       ;
-1C82: DD 36 0E 08    LD    (IX+$0E),$08       ; ** J1C7C,J1C90,J1C94
+1C82: DD 36 0E 08    LD    (IX+$0E),$08       ; * J1C7C,J1C90,J1C94
 1C86: C9             RET                      ;
-1C87: DD 34 0E       INC   (IX+$0E)           ; ** J1C6D
+1C87: DD 34 0E       INC   (IX+$0E)           ; * J1C6D
 1C8A: F8             RET   M                  ;
 1C8B: DD 35 0D       DEC   (IX+$0D)           ;
 1C8E: FE 2C          CP    $2C                ;
 1C90: 28 F0          JR    Z,$1C82            ; 
 1C92: FE 32          CP    $32                ;
 1C94: 28 EC          JR    Z,$1C82            ; 
-1C96: DD 36 0E F8    LD    (IX+$0E),$F8       ; ** J1C78
+1C96: DD 36 0E F8    LD    (IX+$0E),$F8       ; * J1C78
 1C9A: C9             RET                      ;
 
 ISROBJRun_2E:
@@ -4453,7 +4481,7 @@ ISROBJRun_2E:
 1CAC: 21 00 00       LD    HL,$0000           ;
 1CAF: A7             AND   A                  ;
 1CB0: ED 52          SBC   HL,DE              ;
-1CB2: DD 75 04       LD    (IX+$04),L         ; ** J1CA9
+1CB2: DD 75 04       LD    (IX+$04),L         ; * J1CA9
 1CB5: DD 74 05       LD    (IX+$05),H         ;
 1CB8: DD 34 00       INC   (IX+$00)           ;
 1CBB: C9             RET                      ;
@@ -4469,22 +4497,22 @@ ISROBJRun_2F:
 1CC9: CB 10          RL    B                  ;
 1CCB: 30 02          JR    NC,$1CCF           ; 
 1CCD: 0E 50          LD    C,$50              ;
-1CCF: DD 7E 08       LD    A,(IX+$08)         ; ** J1CCB
+1CCF: DD 7E 08       LD    A,(IX+$08)         ; * J1CCB
 1CD2: FE 60          CP    $60                ;
 1CD4: 38 01          JR    C,$1CD7            ; 
 1CD6: 0C             INC   C                  ;
-1CD7: DD 71 0D       LD    (IX+$0D),C         ; ** J1CC2,J1CD4
+1CD7: DD 71 0D       LD    (IX+$0D),C         ; * J1CC2,J1CD4
 1CDA: CD FB 20       CALL  $20FB              ; 
 1CDD: 7C             LD    A,H                ;
 1CDE: FE 06          CP    $06                ;
 1CE0: DA 52 08       JP    C,$0852            ; 
 1CE3: 01 05 00       LD    BC,$0005           ;
-1CE6: 22 D6 E0       LD    ($E0D6),HL         ; ** J1D38
+1CE6: 22 D6 E0       LD    ($E0D6),HL         ; * J1D38
 1CE9: 7C             LD    A,H                ;
 1CEA: 2A DC E0       LD    HL,($E0DC)         ; 
 1CED: 09             ADD   HL,BC              ;
 1CEE: 22 DC E0       LD    ($E0DC),HL         ; 
-1CF1: ED 5B DA E0    LD    DE,($E0DA)         ; ** J20A9
+1CF1: ED 5B DA E0    LD    DE,($E0DA)         ; * J20A9
 1CF5: 19             ADD   HL,DE              ;
 1CF6: 22 DA E0       LD    ($E0DA),HL         ; 
 1CF9: 54             LD    D,H                ;
@@ -4502,7 +4530,7 @@ ISROBJRun_2F:
 1D16: 20 05          JR    NZ,$1D1D           ; 
 1D18: DD 36 00 30    LD    (IX+$00),$30       ;
 1D1C: 3D             DEC   A                  ; Sound effect 2 ... missile hitting ground
-1D1D: CD 75 0D       CALL  $0D75              ;{AddSound} Play missile hitting ground or effect played after that ** J1D16
+1D1D: CD 75 0D       CALL  $0D75              ;{AddSound} Play missile hitting ground or effect played after that * J1D16
 1D20: C3 56 08       JP    $0856              ; 
 
 ISROBJRun_2A:
@@ -4516,19 +4544,19 @@ ISROBJRun_2A:
 1D33: ED 52          SBC   HL,DE              ;
 1D35: 01 10 00       LD    BC,$0010           ;
 1D38: 18 AC          JR    $1CE6              ; 
-1D3A: 3A 00 E3       LD    A,($E300)          ;{-1_buggyHandler} ** J1D03
+1D3A: 3A 00 E3       LD    A,($E300)          ;{-1_buggyHandler} * J1D03
 1D3D: FE 06          CP    $06                ;
 1D3F: D2 B8 08       JP    NC,$08B8           ;{DrawObject} 
 1D42: 21 05 06       LD    HL,$0605           ;
 1D45: DD 7E 00       LD    A,(IX+$00)         ;
 1D48: FE 2A          CP    $2A                ;
 1D4A: 30 03          JR    NC,$1D4F           ; 
-1D4C: 21 0B 02       LD    HL,$020B           ; ** J1F7B
-1D4F: FD 21 30 E3    LD    IY,$E330           ; Start of player air-shots (4 of them, 16 bytes each) ** J1D4A
+1D4C: 21 0B 02       LD    HL,$020B           ; * J1F7B
+1D4F: FD 21 30 E3    LD    IY,$E330           ; Start of player air-shots (4 of them, 16 bytes each) * J1D4A
 1D53: 11 10 00       LD    DE,$0010           ; Each structure is 16 bytes
 1D56: 06 04          LD    B,$04              ; There are 4 structures
 ;
-1D58: FD 7E 00       LD    A,(IY+$00)         ; ** J1D75
+1D58: FD 7E 00       LD    A,(IY+$00)         ; * J1D75
 1D5B: FE 0F          CP    $0F                ;
 1D5D: 20 14          JR    NZ,$1D73           ; Not a shot ... move on
 1D5F: FD 7E 07       LD    A,(IY+$07)         ;
@@ -4540,7 +4568,7 @@ ISROBJRun_2A:
 1D6F: 94             SUB   H                  ;
 1D70: BD             CP    L                  ;
 1D71: 38 2B          JR    C,$1D9E            ; 
-1D73: FD 19          ADD   IY,DE              ; Bump to next structure ** J1D5D,J1D67
+1D73: FD 19          ADD   IY,DE              ; Bump to next structure * J1D5D,J1D67
 1D75: 10 E1          DJNZ  $1D58              ; Do all structures
 ;
 1D77: 3A 07 E3       LD    A,($E307)          ;{-1_buggyY} 
@@ -4560,7 +4588,7 @@ ISROBJRun_2A:
 1D9B: C3 FD 16       JP    $16FD              ; 
 
 
-1D9E: FD 34 00       INC   (IY+$00)           ; ?? From E (initial) to F (moved above) ** J1D71
+1D9E: FD 34 00       INC   (IY+$00)           ; ?? From E (initial) to F (moved above) * J1D71
 1DA1: DD 7E 0D       LD    A,(IX+$0D)         ;
 1DA4: FE 37          CP    $37                ;
 1DA6: 38 11          JR    C,$1DB9            ; 
@@ -4571,7 +4599,7 @@ ISROBJRun_2A:
 1DB8: C9             RET                      ;
 
 ; Collision detection ??
-1DB9: 21 C9 E1       LD    HL,$E1C9           ; ** J1DA6
+1DB9: 21 C9 E1       LD    HL,$E1C9           ; * J1DA6
 1DBC: 01 01 05       LD    BC,$0501           ;
 1DBF: FE 31          CP    $31                ;
 1DC1: 30 07          JR    NC,$1DCA           ; 
@@ -4580,7 +4608,7 @@ ISROBJRun_2A:
 1DC5: FE 2A          CP    $2A                ;
 1DC7: 28 01          JR    Z,$1DCA            ; 
 1DC9: 23             INC   HL                 ;
-1DCA: 3E 11          LD    A,$11              ; Play ... ** J1DC1,J1DC7
+1DCA: 3E 11          LD    A,$11              ; Play ... * J1DC1,J1DC7
 1DCC: CD 75 0D       CALL  $0D75              ;{AddSound} ... UFO explosion
 1DCF: 35             DEC   (HL)               ;
 1DD0: 20 08          JR    NZ,$1DDA           ; 
@@ -4590,14 +4618,14 @@ ISROBJRun_2A:
 1DD5: 7E             LD    A,(HL)             ;
 1DD6: FE 03          CP    $03                ;
 1DD8: 30 11          JR    NC,$1DEB           ; 
-1DDA: DD 36 00 20    LD    (IX+$00),$20       ; ** J1DD0
+1DDA: DD 36 00 20    LD    (IX+$00),$20       ; * J1DD0
 1DDE: DD 36 0A 06    LD    (IX+$0A),$06       ;
 1DE2: DD 36 0D 37    LD    (IX+$0D),$37       ;
 1DE6: 78             LD    A,B                ;
 1DE7: CD C2 02       CALL  $02C2              ;{NewTxtCmd} 
 1DEA: C9             RET                      ;
 ;
-1DEB: 21 00 FC       LD    HL,$FC00           ; ** J1DD8
+1DEB: 21 00 FC       LD    HL,$FC00           ; * J1DD8
 1DEE: D6 02          SUB   $02                ;
 1DF0: C3 9D 17       JP    $179D              ; 
 
@@ -4609,7 +4637,7 @@ ISROBJRun_2B:
 1DFC: E6 F8          AND   $F8                ;
 1DFE: C6 06          ADD   $06                ;
 1E00: DD 77 0F       LD    (IX+$0F),A         ;
-1E03: 21 D1 E1       LD    HL,$E1D1           ; ** J1E1B
+1E03: 21 D1 E1       LD    HL,$E1D1           ; * J1E1B
 1E06: 7E             LD    A,(HL)             ;
 1E07: A7             AND   A                  ;
 1E08: 28 13          JR    Z,$1E1D            ; 
@@ -4626,10 +4654,10 @@ ISROBJRun_30:
 1E14: DD 36 0D 43    LD    (IX+$0D),$43       ;
 1E18: CD 23 16       CALL  $1623              ; 
 1E1B: 18 E6          JR    $1E03              ; 
-1E1D: 34             INC   (HL)               ; ** J1E08
+1E1D: 34             INC   (HL)               ; * J1E08
 1E1E: DD 34 00       INC   (IX+$00)           ;
 1E21: DD 36 0A 04    LD    (IX+$0A),$04       ;
-1E25: CD 31 08       CALL  $0831              ; ** J1E3E,J1E4F,J1E5B,J1E81
+1E25: CD 31 08       CALL  $0831              ; * J1E3E,J1E4F,J1E5B,J1E81
 1E28: C9             RET                      ;
 
 ISROBJRun_31:
@@ -4675,9 +4703,9 @@ ISROBJRun_2C:
 1E76: 0E 09          LD    C,$09              ;
 1E78: 3E 01          LD    A,$01              ;
 1E7A: CD C2 02       CALL  $02C2              ;{NewTxtCmd} 
-1E7D: DD 36 0A 02    LD    (IX+$0A),$02       ; ** J1E69
+1E7D: DD 36 0A 02    LD    (IX+$0A),$02       ; * J1E69
 1E81: 18 A2          JR    $1E25              ; 
-1E83: DD 7E 07       LD    A,(IX+$07)         ; ** J1E62
+1E83: DD 7E 07       LD    A,(IX+$07)         ; * J1E62
 1E86: C6 08          ADD   $08                ;
 1E88: DD 77 07       LD    (IX+$07),A         ;
 1E8B: CD 56 08       CALL  $0856              ; 
@@ -4700,7 +4728,7 @@ ISROBJRun_26:
 ISROBJRun_1E:
 ISROBJRun_22:
 ;
-1EAA: DD 34 00       INC   (IX+$00)           ; ** J2016
+1EAA: DD 34 00       INC   (IX+$00)           ; * J2016
 1EAD: DD 7E 0C       LD    A,(IX+$0C)         ;
 1EB0: CB 27          SLA   A                  ;
 1EB2: 28 3D          JR    Z,$1EF1            ; 
@@ -4721,7 +4749,7 @@ ISROBJRun_22:
 1ECC: A7             AND   A                  ;
 1ECD: 21 00 00       LD    HL,$0000           ;
 1ED0: ED 52          SBC   HL,DE              ;
-1ED2: DD 74 05       LD    (IX+$05),H         ; ** J1EC8
+1ED2: DD 74 05       LD    (IX+$05),H         ; * J1EC8
 1ED5: DD 75 04       LD    (IX+$04),L         ;
 1ED8: EE 3F          XOR   $3F                ;
 1EDA: D6 20          SUB   $20                ;
@@ -4735,7 +4763,7 @@ ISROBJRun_22:
 1EEB: C6 20          ADD   $20                ;
 1EED: DD 77 0A       LD    (IX+$0A),A         ;
 1EF0: C9             RET                      ;
-1EF1: 06 01          LD    B,$01              ; ** J1EB2
+1EF1: 06 01          LD    B,$01              ; * J1EB2
 1EF3: DD 7E 07       LD    A,(IX+$07)         ;
 1EF6: FE 44          CP    $44                ;
 1EF8: 38 0C          JR    C,$1F06            ; 
@@ -4746,7 +4774,7 @@ ISROBJRun_22:
 1F02: E6 02          AND   $02                ;
 1F04: 3C             INC   A                  ;
 1F05: 47             LD    B,A                ;
-1F06: 78             LD    A,B                ; ** J1EF8,J1EFE
+1F06: 78             LD    A,B                ; * J1EF8,J1EFE
 1F07: DD 86 0C       ADD   A,(IX+$0C)         ;
 1F0A: DD 77 0C       LD    (IX+$0C),A         ;
 1F0D: ED 5F          LD    A,R                ;
@@ -4764,7 +4792,7 @@ ISROBJRun_1F:
 ISROBJRun_23:
 ISROBJRun_27:
 ;
-1F28: CD 63 1C       CALL  $1C63              ; ** C2009
+1F28: CD 63 1C       CALL  $1C63              ; * C2009
 1F2B: CD DB 20       CALL  $20DB              ; 
 1F2E: DD 7E 0C       LD    A,(IX+$0C)         ;
 1F31: CB 27          SLA   A                  ;
@@ -4788,10 +4816,10 @@ ISROBJRun_27:
 1F5A: D6 07          SUB   $07                ;
 1F5C: 38 02          JR    C,$1F60            ; 
 1F5E: 06 D0          LD    B,$D0              ;
-1F60: 7C             LD    A,H                ; ** J1F56,J1F5C
+1F60: 7C             LD    A,H                ; * J1F56,J1F5C
 1F61: B8             CP    B                  ;
 1F62: 30 1F          JR    NC,$1F83           ; 
-1F64: 2A DA E0       LD    HL,($E0DA)         ; ** J1F81
+1F64: 2A DA E0       LD    HL,($E0DA)         ; * J1F81
 1F67: ED 5B DC E0    LD    DE,($E0DC)         ; 
 1F6B: 19             ADD   HL,DE              ;
 1F6C: 22 DA E0       LD    ($E0DA),HL         ; 
@@ -4800,14 +4828,14 @@ ISROBJRun_27:
 1F72: 38 0F          JR    C,$1F83            ; 
 1F74: FE 70          CP    $70                ;
 1F76: 30 0B          JR    NC,$1F83           ; 
-1F78: CD EF 20       CALL  $20EF              ; ** J1FE8,J203E,J204A
+1F78: CD EF 20       CALL  $20EF              ; * J1FE8,J203E,J204A
 1F7B: C3 4C 1D       JP    $1D4C              ; 
-1F7E: 7C             LD    A,H                ; ** J1F4D
+1F7E: 7C             LD    A,H                ; * J1F4D
 1F7F: FE 16          CP    $16                ;
 1F81: 30 E1          JR    NC,$1F64           ; 
-1F83: DD 35 00       DEC   (IX+$00)           ; ** J1F38,J1F62,J1F72,J1F76,J1FD4,J2011
+1F83: DD 35 00       DEC   (IX+$00)           ; * J1F38,J1F62,J1F72,J1F76,J1FD4,J2011
 1F86: C9             RET                      ;
-1F87: 2A D8 E0       LD    HL,($E0D8)         ; ** J1F33
+1F87: 2A D8 E0       LD    HL,($E0D8)         ; * J1F33
 1F8A: DD 5E 0B       LD    E,(IX+$0B)         ;
 1F8D: 16 00          LD    D,$00              ;
 1F8F: A7             AND   A                  ;
@@ -4821,10 +4849,10 @@ ISROBJRun_27:
 1FA0: 30 04          JR    NC,$1FA6           ; 
 1FA2: ED 5F          LD    A,R                ;
 1FA4: E6 80          AND   $80                ;
-1FA6: DD 86 0C       ADD   A,(IX+$0C)         ; ** J1FA0
+1FA6: DD 86 0C       ADD   A,(IX+$0C)         ; * J1FA0
 1FA9: 3C             INC   A                  ;
 1FAA: DD 77 0C       LD    (IX+$0C),A         ;
-1FAD: EB             EX    DE,HL              ; ** J1F95
+1FAD: EB             EX    DE,HL              ; * J1F95
 1FAE: 2A D6 E0       LD    HL,($E0D6)         ; 
 1FB1: ED 52          SBC   HL,DE              ;
 1FB3: DD 7E 0C       LD    A,(IX+$0C)         ;
@@ -4832,7 +4860,7 @@ ISROBJRun_27:
 1FB7: 38 02          JR    C,$1FBB            ; 
 1FB9: 19             ADD   HL,DE              ;
 1FBA: 19             ADD   HL,DE              ;
-1FBB: ED 5B 04 E3    LD    DE,($E304)         ; ** J1FB7
+1FBB: ED 5B 04 E3    LD    DE,($E304)         ; * J1FB7
 1FBF: ED 52          SBC   HL,DE              ;
 1FC1: 22 D6 E0       LD    ($E0D6),HL         ; 
 1FC4: 2A DC E0       LD    HL,($E0DC)         ; 
@@ -4845,7 +4873,7 @@ ISROBJRun_27:
 1FD1: A7             AND   A                  ;
 1FD2: ED 52          SBC   HL,DE              ;
 1FD4: 38 AD          JR    C,$1F83            ; 
-1FD6: 22 DC E0       LD    ($E0DC),HL         ; ** J1FEC
+1FD6: 22 DC E0       LD    ($E0DC),HL         ; * J1FEC
 1FD9: EB             EX    DE,HL              ;
 1FDA: 2A DA E0       LD    HL,($E0DA)         ; 
 1FDD: A7             AND   A                  ;
@@ -4854,9 +4882,9 @@ ISROBJRun_27:
 1FE1: 38 02          JR    C,$1FE5            ; 
 1FE3: 19             ADD   HL,DE              ;
 1FE4: 19             ADD   HL,DE              ;
-1FE5: 22 DA E0       LD    ($E0DA),HL         ; ** J1FE1
+1FE5: 22 DA E0       LD    ($E0DA),HL         ; * J1FE1
 1FE8: C3 78 1F       JP    $1F78              ; 
-1FEB: 19             ADD   HL,DE              ; ** J1FCF
+1FEB: 19             ADD   HL,DE              ; * J1FCF
 1FEC: 18 E8          JR    $1FD6              ; 
 
 
@@ -4907,14 +4935,14 @@ ISROBJRun_25:
 
 ISROBJRun_28:
 ;
-204D: 3A 03 E3       LD    A,($E303)          ;{-1_buggyX} ** J1EA7
+204D: 3A 03 E3       LD    A,($E303)          ;{-1_buggyX} * J1EA7
 2050: 16 00          LD    D,$00              ;
 2052: C6 10          ADD   $10                ;
 2054: DD 96 03       SUB   (IX+$03)           ;
 2057: 30 03          JR    NC,$205C           ; 
 2059: ED 44          NEG                      ;
 205B: 15             DEC   D                  ;
-205C: 1F             RRA                      ; ** J2057
+205C: 1F             RRA                      ; * J2057
 205D: 1F             RRA                      ;
 205E: 1F             RRA                      ;
 205F: E6 1E          AND   $1E                ;
@@ -4925,7 +4953,7 @@ ISROBJRun_28:
 2068: FE 12          CP    $12                ;
 206A: 38 01          JR    C,$206D            ; 
 206C: 04             INC   B                  ;
-206D: 7E             LD    A,(HL)             ; ** J206A
+206D: 7E             LD    A,(HL)             ; * J206A
 206E: CB 7A          BIT   7,D                ;
 2070: 28 06          JR    Z,$2078            ; 
 2072: 2F             CPL                      ;
@@ -4934,7 +4962,7 @@ ISROBJRun_28:
 2075: 2F             CPL                      ;
 2076: 47             LD    B,A                ;
 2077: 7B             LD    A,E                ;
-2078: DD 77 04       LD    (IX+$04),A         ; ** J2070
+2078: DD 77 04       LD    (IX+$04),A         ; * J2070
 207B: DD 70 05       LD    (IX+$05),B         ;
 207E: 23             INC   HL                 ;
 207F: 5E             LD    E,(HL)             ;
@@ -4943,10 +4971,10 @@ ISROBJRun_28:
 2083: FE 0A          CP    $0A                ;
 2085: 30 01          JR    NC,$2088           ; 
 2087: 14             INC   D                  ;
-2088: DD 72 09       LD    (IX+$09),D         ; ** J2085
+2088: DD 72 09       LD    (IX+$09),D         ; * J2085
 208B: DD 73 08       LD    (IX+$08),E         ;
 208E: DD 36 00 29    LD    (IX+$00),$29       ;
-2092: 2A 1A E3       LD    HL,($E31A)         ; ** C108D
+2092: 2A 1A E3       LD    HL,($E31A)         ; * C108D
 2095: DD 75 0B       LD    (IX+$0B),L         ;
 2098: DD 74 0F       LD    (IX+$0F),H         ;
 209B: C9             RET                      ;
@@ -4981,7 +5009,7 @@ ISROBJRun_21:
 20D2: 06 80          LD    B,$80              ;
 20D4: DD 36 00 00    LD    (IX+$00),$00       ;
 20D8: C3 69 08       JP    $0869              ; 
-20DB: DD E5          PUSH  IX                 ; ** C1433,C1D23,C1F2B,C201D,C20FB
+20DB: DD E5          PUSH  IX                 ; * C1433,C1D23,C1F2B,C201D,C20FB
 20DD: E1             POP   HL                 ;
 20DE: 11 D4 E0       LD    DE,$E0D4           ;
 20E1: 01 0A 00       LD    BC,$000A           ;
@@ -4990,13 +5018,13 @@ ISROBJRun_21:
 20EA: 2A D8 E0       LD    HL,($E0D8)         ; 
 20ED: 19             ADD   HL,DE              ;
 20EE: C9             RET                      ;
-20EF: DD E5          PUSH  IX                 ; ** J1487,C1D00,C1F78
+20EF: DD E5          PUSH  IX                 ; * J1487,C1D00,C1F78
 20F1: D1             POP   DE                 ;
 20F2: 21 D4 E0       LD    HL,$E0D4           ;
 20F5: 01 0A 00       LD    BC,$000A           ;
 20F8: ED B0          LDIR                     ;
 20FA: C9             RET                      ;
-20FB: CD DB 20       CALL  $20DB              ; ** C1CDA,C209F
+20FB: CD DB 20       CALL  $20DB              ; * C1CDA,C209F
 20FE: EB             EX    DE,HL              ;
 20FF: DD 6E 0B       LD    L,(IX+$0B)         ;
 2102: DD 66 0F       LD    H,(IX+$0F)         ;
@@ -5021,9 +5049,9 @@ ISROBJRun_21:
 2123: CE 00          ADC   $00                ;
 2125: 27             DAA                      ;
 2126: 77             LD    (HL),A             ;
-2127: 3E 37          LD    A,$37              ; ** J2114
+2127: 3E 37          LD    A,$37              ; * J2114
 2129: 32 51 E0       LD    ($E051),A          ;{-1_isrCount4} 
-212C: 11 90 80       LD    DE,$8090           ; ** C0D0C
+212C: 11 90 80       LD    DE,$8090           ; * C0D0C
 212F: FD 21 90 84    LD    IY,$8490           ;
 2133: 0E 02          LD    C,$02              ;
 2135: CD E7 03       CALL  $03E7              ;{TransColor} 
@@ -5139,7 +5167,7 @@ ISROBJRun_21:
 27A4: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
 27B4: 00 00 00 00 00 00 00 00 00 00 00 00 
 
-27C0: 21 46 E0       LD    HL,$E046           ; ** J1516,J151D
+27C0: 21 46 E0       LD    HL,$E046           ; * J1516,J151D
 27C3: 35             DEC   (HL)               ;
 27C4: FB             EI                       ;
 27C5: 78             LD    A,B                ;
@@ -5148,7 +5176,7 @@ ISROBJRun_21:
 27CB: CA D2 27       JP    Z,$27D2            ; 
 27CE: A7             AND   A                  ;
 27CF: C2 5E 28       JP    NZ,$285E           ; 
-27D2: CD FA 29       CALL  $29FA              ; ** J27CB
+27D2: CD FA 29       CALL  $29FA              ; * J27CB
 27D5: 3E 1E          LD    A,$1E              ; Play ...
 27D7: CD 75 0D       CALL  $0D75              ;{AddSound} ... congratulations music
 27DA: 21 0F E5       LD    HL,$E50F           ;
@@ -5163,7 +5191,7 @@ ISROBJRun_21:
 27F0: 21 0C 2C       LD    HL,$2C0C           ; "SPECIAL BOUNS POINTS" script
 27F3: CD 00 03       CALL  $0300              ;{RunTextScript} 
 27F6: 3A 13 E5       LD    A,($E513)          ; 
-27F9: 17             RLA                      ; ** J2880
+27F9: 17             RLA                      ; * J2880
 27FA: 17             RLA                      ;
 27FB: 17             RLA                      ;
 27FC: 17             RLA                      ;
@@ -5172,7 +5200,7 @@ ISROBJRun_21:
 2801: 6F             LD    L,A                ;
 2802: 20 01          JR    NZ,$2805           ; 
 2804: 24             INC   H                  ;
-2805: 22 98 E0       LD    ($E098),HL         ; ** J2802
+2805: 22 98 E0       LD    ($E098),HL         ; * J2802
 2808: CD 71 29       CALL  $2971              ; 
 280B: 2A 96 E0       LD    HL,($E096)         ; 
 280E: 56             LD    D,(HL)             ;
@@ -5190,7 +5218,7 @@ ISROBJRun_21:
 2820: 73             LD    (HL),E             ;
 2821: 21 39 2C       LD    HL,$2C39           ; "YOU HAVE BROKEN A RECORD" script
 2824: CD 4E 03       CALL  $034E              ;{SlowScript} 
-2827: 2A 94 E0       LD    HL,($E094)         ; ** J2817,J285C
+2827: 2A 94 E0       LD    HL,($E094)         ; * J2817,J285C
 282A: ED 5B 11 E5    LD    DE,($E511)         ; 
 282E: 7D             LD    A,L                ;
 282F: D6 01          SUB   $01                ;
@@ -5198,7 +5226,7 @@ ISROBJRun_21:
 2832: 6F             LD    L,A                ;
 2833: 30 01          JR    NC,$2836           ; 
 2835: 25             DEC   H                  ;
-2836: 22 94 E0       LD    ($E094),HL         ; ** J2833
+2836: 22 94 E0       LD    ($E094),HL         ; * J2833
 2839: A7             AND   A                  ;
 283A: ED 52          SBC   HL,DE              ;
 283C: 38 50          JR    C,$288E            ; 
@@ -5210,14 +5238,14 @@ ISROBJRun_21:
 2848: 6F             LD    L,A                ;
 2849: 30 01          JR    NC,$284C           ; 
 284B: 24             INC   H                  ;
-284C: 22 98 E0       LD    ($E098),HL         ; ** J2849
+284C: 22 98 E0       LD    ($E098),HL         ; * J2849
 284F: CD 71 29       CALL  $2971              ; 
 2852: 3E 10          LD    A,$10              ; Play ...
 2854: CD 75 0D       CALL  $0D75              ;{AddSound} ... passing point
 2857: 3E 0C          LD    A,$0C              ;
 2859: CD EA 05       CALL  $05EA              ; 
 285C: 18 C9          JR    $2827              ; 
-285E: 3E 1D          LD    A,$1D              ; Play ... ** J27CF
+285E: 3E 1D          LD    A,$1D              ; Play ... * J27CF
 2860: CD 75 0D       CALL  $0D75              ;{AddSound} ... reached goal
 2863: CD D6 29       CALL  $29D6              ; 
 2866: CD 12 0D       CALL  $0D12              ; 
@@ -5231,16 +5259,16 @@ ISROBJRun_21:
 287C: 3A F9 E0       LD    A,($E0F9)          ;{-1_champColors} 
 287F: 3C             INC   A                  ;
 2880: C3 F9 27       JP    $27F9              ; 
-2883: 21 F9 2B       LD    HL,$2BF9           ; "SORRY NO BONUS" script ** J2874
+2883: 21 F9 2B       LD    HL,$2BF9           ; "SORRY NO BONUS" script * J2874
 2886: CD 4E 03       CALL  $034E              ;{SlowScript} 
 2889: CD E8 05       CALL  $05E8              ;{Delay3Sec} 
 288C: 18 0E          JR    $289C              ; 
-288E: CD E8 05       CALL  $05E8              ;{Delay3Sec} ** J283C
+288E: CD E8 05       CALL  $05E8              ;{Delay3Sec} * J283C
 2891: 11 01 E5       LD    DE,$E501           ;
 2894: 21 98 E0       LD    HL,$E098           ;
 2897: 06 02          LD    B,$02              ;
 2899: CD 36 06       CALL  $0636              ; 
-289C: 21 00 00       LD    HL,$0000           ; ** J288C
+289C: 21 00 00       LD    HL,$0000           ; * J288C
 289F: 22 11 E5       LD    ($E511),HL         ; 
 28A2: 21 13 E5       LD    HL,$E513           ;
 28A5: 7E             LD    A,(HL)             ;
@@ -5252,7 +5280,7 @@ ISROBJRun_21:
 28B2: 3E 1A          LD    A,$1A              ;
 28B4: 32 0E E5       LD    ($E50E),A          ; 
 28B7: C3 B7 0B       JP    $0BB7              ; 
-28BA: CD E8 05       CALL  $05E8              ;{Delay3Sec} ** C27ED,C2871
+28BA: CD E8 05       CALL  $05E8              ;{Delay3Sec} * C27ED,C2871
 28BD: CD 5A 29       CALL  $295A              ; 
 28C0: 3A 10 E5       LD    A,($E510)          ; Course number
 28C3: D6 02          SUB   $02                ;
@@ -5260,7 +5288,7 @@ ISROBJRun_21:
 28C7: 3E 0A          LD    A,$0A              ;
 28C9: FA CE 28       JP    M,$28CE            ; 
 28CC: 3E 05          LD    A,$05              ;
-28CE: 5F             LD    E,A                ; ** J28C5,J28C9
+28CE: 5F             LD    E,A                ; * J28C5,J28C9
 28CF: 3A 13 E5       LD    A,($E513)          ; 
 28D2: 01 80 00       LD    BC,$0080           ;
 28D5: FE 08          CP    $08                ;
@@ -5269,7 +5297,7 @@ ISROBJRun_21:
 28DC: FE 03          CP    $03                ;
 28DE: 30 02          JR    NC,$28E2           ; 
 28E0: 0E 20          LD    C,$20              ;
-28E2: ED 43 94 E0    LD    ($E094),BC         ; ** J28D7,J28DE
+28E2: ED 43 94 E0    LD    ($E094),BC         ; * J28D7,J28DE
 28E6: 83             ADD   A,E                ;
 28E7: 87             ADD   A,A                ;
 28E8: 5F             LD    E,A                ;
@@ -5279,7 +5307,7 @@ ISROBJRun_21:
 28F0: FE 03          CP    $03                ;
 28F2: 28 02          JR    Z,$28F6            ; 
 28F4: 1E 14          LD    E,$14              ;
-28F6: 16 00          LD    D,$00              ; ** J28EB,J28F2
+28F6: 16 00          LD    D,$00              ; * J28EB,J28F2
 28F8: 21 0C E0       LD    HL,$E00C           ;
 28FB: 19             ADD   HL,DE              ;
 28FC: 7E             LD    A,(HL)             ;
@@ -5290,13 +5318,13 @@ ISROBJRun_21:
 2904: 70             LD    (HL),B             ;
 2905: 2B             DEC   HL                 ;
 2906: 71             LD    (HL),C             ;
-2907: 21 79 2B       LD    HL,$2B79           ; "TIME TO REACH POINT " script ** J2902
+2907: 21 79 2B       LD    HL,$2B79           ; "TIME TO REACH POINT " script * J2902
 290A: CD 4E 03       CALL  $034E              ;{SlowScript} 
 290D: CD 81 29       CALL  $2981              ; 
 2910: A7             AND   A                  ;
 2911: 20 02          JR    NZ,$2915           ; 
 2913: 3E 1A          LD    A,$1A              ;
-2915: C6 40          ADD   $40                ; ** J2911
+2915: C6 40          ADD   $40                ; * J2911
 2917: 1B             DEC   DE                 ;
 2918: 1B             DEC   DE                 ;
 2919: 12             LD    (DE),A             ;
@@ -5318,21 +5346,21 @@ ISROBJRun_21:
 2944: A7             AND   A                  ;
 2945: ED 52          SBC   HL,DE              ;
 2947: C9             RET                      ;
-2948: 21 00 E1       LD    HL,$E100           ; ** C0D8D,C27E1,C2869
+2948: 21 00 E1       LD    HL,$E100           ; * C0D8D,C27E1,C2869
 294B: 01 A4 00       LD    BC,$00A4           ;
 294E: CD FA 05       CALL  $05FA              ; 
 2951: 01 20 02       LD    BC,$0220           ;
-2954: 21 E0 80       LD    HL,$80E0           ; ** J2966
+2954: 21 E0 80       LD    HL,$80E0           ; * J2966
 2957: C3 FA 05       JP    $05FA              ; 
-295A: 21 00 E1       LD    HL,$E100           ; ** C28BD
+295A: 21 00 E1       LD    HL,$E100           ; * C28BD
 295D: 01 C6 00       LD    BC,$00C6           ;
 2960: CD FA 05       CALL  $05FA              ; 
 2963: 01 20 03       LD    BC,$0320           ;
 2966: 18 EC          JR    $2954              ; 
-2968: 11 D9 81       LD    DE,$81D9           ; ** C283E,C292D
+2968: 11 D9 81       LD    DE,$81D9           ; * C283E,C292D
 296B: 21 95 E0       LD    HL,$E095           ;
 296E: C3 9A 03       JP    $039A              ; 
-2971: 21 99 E0       LD    HL,$E099           ; ** C2808,C284F
+2971: 21 99 E0       LD    HL,$E099           ; * C2808,C284F
 2974: 11 97 82       LD    DE,$8297           ;
 2977: CD 93 03       CALL  $0393              ;{Print3BCD} 
 297A: EB             EX    DE,HL              ;
@@ -5340,24 +5368,24 @@ ISROBJRun_21:
 297D: 23             INC   HL                 ;
 297E: 36 30          LD    (HL),$30           ;
 2980: C9             RET                      ;
-2981: 3A 0E E5       LD    A,($E50E)          ; ** C0C1A,C0E73,C290D,C29AB
+2981: 3A 0E E5       LD    A,($E50E)          ; * C0C1A,C0E73,C290D,C29AB
 2984: FE 1A          CP    $1A                ;
 2986: D8             RET   C                  ;
 2987: D6 1A          SUB   $1A                ;
 2989: C9             RET                      ;
-298A: 21 CC 80       LD    HL,$80CC           ; ** C0D0F
+298A: 21 CC 80       LD    HL,$80CC           ; * C0D0F
 298D: 11 CC 84       LD    DE,$84CC           ;
 2990: 01 02 10       LD    BC,$1002           ;
 2993: CD E7 03       CALL  $03E7              ;{TransColor} 
 2996: 79             LD    A,C                ;
-2997: 36 21          LD    (HL),$21           ; ** J299C
+2997: 36 21          LD    (HL),$21           ; * J299C
 2999: 12             LD    (DE),A             ;
 299A: 23             INC   HL                 ;
 299B: 13             INC   DE                 ;
 299C: 10 F9          DJNZ  $2997              ; 
 299E: 21 CC 80       LD    HL,$80CC           ;
 29A1: 06 05          LD    B,$05              ;
-29A3: 34             INC   (HL)               ; ** J29A7
+29A3: 34             INC   (HL)               ; * J29A7
 29A4: 23             INC   HL                 ;
 29A5: 23             INC   HL                 ;
 29A6: 23             INC   HL                 ;
@@ -5366,31 +5394,31 @@ ISROBJRun_21:
 29AB: CD 81 29       CALL  $2981              ; 
 29AE: 21 CC 80       LD    HL,$80CC           ;
 29B1: 06 05          LD    B,$05              ;
-29B3: FE 05          CP    $05                ; ** J29C1
+29B3: FE 05          CP    $05                ; * J29C1
 29B5: 38 0C          JR    C,$29C3            ; 
 29B7: 16 03          LD    D,$03              ;
-29B9: 36 29          LD    (HL),$29           ; ** J29BD
+29B9: 36 29          LD    (HL),$29           ; * J29BD
 29BB: 23             INC   HL                 ;
 29BC: 15             DEC   D                  ;
 29BD: 20 FA          JR    NZ,$29B9           ; 
 29BF: D6 05          SUB   $05                ;
 29C1: 10 F0          DJNZ  $29B3              ; 
-29C3: 57             LD    D,A                ; ** J29B5
+29C3: 57             LD    D,A                ; * J29B5
 29C4: 87             ADD   A,A                ;
 29C5: 87             ADD   A,A                ;
 29C6: 82             ADD   A,D                ;
 29C7: 5F             LD    E,A                ;
-29C8: FE 08          CP    $08                ; ** J29D4
+29C8: FE 08          CP    $08                ; * J29D4
 29CA: 38 10          JR    C,$29DC            ; 
 29CC: 28 01          JR    Z,$29CF            ; 
 29CE: 3D             DEC   A                  ;
-29CF: 36 29          LD    (HL),$29           ; ** J29CC
+29CF: 36 29          LD    (HL),$29           ; * J29CC
 29D1: 23             INC   HL                 ;
 29D2: D6 08          SUB   $08                ;
 29D4: 18 F2          JR    $29C8              ; 
-29D6: 2A F4 E0       LD    HL,($E0F4)         ; ** C0E03,C2863
+29D6: 2A F4 E0       LD    HL,($E0F4)         ; * C0E03,C2863
 29D9: 3A F6 E0       LD    A,($E0F6)          ; 
-29DC: 3C             INC   A                  ; ** J29CA
+29DC: 3C             INC   A                  ; * J29CA
 29DD: 57             LD    D,A                ;
 29DE: C6 21          ADD   $21                ;
 29E0: CB 66          BIT   4,(HL)             ;
@@ -5399,18 +5427,18 @@ ISROBJRun_21:
 29E6: FE 20          CP    $20                ;
 29E8: 20 01          JR    NZ,$29EB           ; 
 29EA: 3D             DEC   A                  ;
-29EB: 77             LD    (HL),A             ; ** J29E2,J29E8
+29EB: 77             LD    (HL),A             ; * J29E2,J29E8
 29EC: 7A             LD    A,D                ;
 29ED: FE 08          CP    $08                ;
 29EF: 38 02          JR    C,$29F3            ; 
 29F1: AF             XOR   A                  ;
 29F2: 2C             INC   L                  ;
-29F3: 32 F6 E0       LD    ($E0F6),A          ; ** J29EF
+29F3: 32 F6 E0       LD    ($E0F6),A          ; * J29EF
 29F6: 22 F4 E0       LD    ($E0F4),HL         ; 
 29F9: C9             RET                      ;
-29FA: 21 CC 80       LD    HL,$80CC           ; ** C27D2
+29FA: 21 CC 80       LD    HL,$80CC           ; * C27D2
 29FD: 06 0F          LD    B,$0F              ;
-29FF: 36 29          LD    (HL),$29           ; ** J2A02
+29FF: 36 29          LD    (HL),$29           ; * J2A02
 2A01: 23             INC   HL                 ;
 2A02: 10 FB          DJNZ  $29FF              ; 
 2A04: 36 1F          LD    (HL),$1F           ;
@@ -5601,43 +5629,48 @@ CODEBUG2: ; This doesn't appear to be used anywhere. Free-play is implemented by
 2D1C: 55 44 43 33 43 33 21 31 00 9A 51 98 8D 5F B6 30 
 2D2C: D2 06 E3 E3 EF C7 F7 B0 FC 9E 00 8E 03 82 06 77 
 2D3C: 07 6E 08 66 09 5F 0A 59 
+```
 
-;;{{{html
-;;<script src="/js/BinaryData.js"></script>
-;;<script src="/Arcade/MoonPatrol/MoonPatrol.js"></script>
-;;<script src="/js/TileEngine.js"></script>
-;;<script src="/js/CANVAS.js"></script>
-;;}}}
+```html
+<script src="/js/BinaryData.js"></script>
+<script src="MoonPatrol.js"></script>
+<script src="/js/TileEngine.js"></script>
+<script src="/js/CANVAS.js"></script>
+```
 
+```code
 Splash:
 ; Text printing for MOON PATROL on the splash
-;;{{{html
-;;<canvas width="1000" height="330"
-;;data-canvasFunction="TileEngine.handleTileCanvas"
-;;data-file="GFX1.html"
-;;data-getTileDataFunction="MoonPatrol.getBackground8x8Data"
-;;data-pixWidth="8"
-;;data-gridX="8"
-;;data-gridY="8"
-;;data-pixHeight="8"
-;;data-gap="0.25"
-;;data-gridPad="1"
-;;data-colors='["#808080","#00B8FF","FFFFFF","#FF2100"]'
-;;data-command=":14x5:1B0,1B5,1B9,1BE,1C3,,,,,,,,,,
-;;1B1,1B6,1BA,1BF,1C4,1C7,1CB,1CD,1D0,1D3,1D6,1D8,1D9,1DB,
-;;1B2,1B7,1BB,1C0,1C5,1C8,1BF,1BC,1D1,1D4,1D7,1C0,1BC,1C1,
-;;1B3,1B8,1BC,1C1,1C6,1C9,1CC,1CE,1D2,1D5,1BC,1C1,1C5,1DC,
-;;1B4,,1BD,1C2,1BD,1CA,,1CF,1CA,1C2,1BD,1C2,1DA,">
-;;</canvas>
-;;<canvas width="1400" height="330"
-;;data-command=":18x5:1B0,1DD,1E0,1E3,100,100,100,100,1F3,1F7,100,100,100,100,100,100,1C5,1C3,
-;;1B1,1DE,1E1,1E4,1E6,1E9,1ED,1F0,1F4,1F8,1B2,1FD,1FE,1D0,1D3,1D6,1BF,,
-;;1B2,1DF,1E2,1E5,1B2,1EA,1EE,1F1,1F5,1F9,1B3,1B8,1BC,1D1,1D4,1D7,1C0,,
-;;1B3,1B8,,,1E7,1EB,1EF,1F2,1BF,1B0,1FB,,1CE,1D2,1D5,1BC,1FF,,
-;;1B4,,,,1E8,1EC,1B4,,,1FA,1FC,,1CF,1CA,1C2,1BD,1EC,">
-;;</canvas>
-;;}}}
+```
 
+```html
+<canvas width="1000" height="330"
+data-canvasFunction="TileEngine.handleTileCanvas"
+data-file="GFX1.html"
+data-getTileDataFunction="MoonPatrol.getBackground8x8Data"
+data-pixWidth="8"
+data-gridX="8"
+data-gridY="8"
+data-pixHeight="8"
+data-gap="0.25"
+data-gridPad="1"
+data-colors='["#808080","#00B8FF","FFFFFF","#FF2100"]'
+data-command=":14x5:1B0,1B5,1B9,1BE,1C3,,,,,,,,,,
+1B1,1B6,1BA,1BF,1C4,1C7,1CB,1CD,1D0,1D3,1D6,1D8,1D9,1DB,
+1B2,1B7,1BB,1C0,1C5,1C8,1BF,1BC,1D1,1D4,1D7,1C0,1BC,1C1,
+1B3,1B8,1BC,1C1,1C6,1C9,1CC,1CE,1D2,1D5,1BC,1C1,1C5,1DC,
+1B4,,1BD,1C2,1BD,1CA,,1CF,1CA,1C2,1BD,1C2,1DA,">
+</canvas>
+<canvas width="1400" height="330"
+data-command=":18x5:1B0,1DD,1E0,1E3,100,100,100,100,1F3,1F7,100,100,100,100,100,100,1C5,1C3,
+1B1,1DE,1E1,1E4,1E6,1E9,1ED,1F0,1F4,1F8,1B2,1FD,1FE,1D0,1D3,1D6,1BF,,
+1B2,1DF,1E2,1E5,1B2,1EA,1EE,1F1,1F5,1F9,1B3,1B8,1BC,1D1,1D4,1D7,1C0,,
+1B3,1B8,,,1E7,1EB,1EF,1F2,1BF,1B0,1FB,,1CE,1D2,1D5,1BC,1FF,,
+1B4,,,,1E8,1EC,1B4,,,1FA,1FC,,1CF,1CA,1C2,1BD,1EC,">
+</canvas>
+```
+
+```code
 ; This data is a text string with values 1,2, and 3 being special:
 ; 1 = print "1982 IREM CORP" and END
 ; 2 = move to top of next column
@@ -5909,14 +5942,16 @@ ObjectLayout:
 ;
 ; It does use the ISR to manage sprites and ?sounds? however. It COULD be more 
 ; self contained if it didn't.
+```
 
 # Service Mode
 
+```code
 ServiceMode: 
 ; This should really be in the first ROM bank in case there are problems with
 ; the other ROM banks.
 ;
-3300: 3E FF          LD    A,$FF              ; Enable all ... ** J000A
+3300: 3E FF          LD    A,$FF              ; Enable all ... * J000A
 3302: D3 C0          OUT   ($C0),A            ;{-2_BKGCtrl} ... backgrounds
 3304: 32 C5 E1       LD    ($E1C5),A          ; Now ISR disable all backgrounds
 ;
@@ -5934,15 +5969,15 @@ ServiceMode:
 ; Continue with every bit.
 ;
 3314: 3E 01          LD    A,$01              ; Start with bit 0
-3316: 57             LD    D,A                ; Hold bit pattern in D ** J332C
+3316: 57             LD    D,A                ; Hold bit pattern in D * J332C
 3317: 01 00 08       LD    BC,$0800           ; All of RAM ... 2K
 331A: 21 00 E0       LD    HL,$E000           ; Start of RAM
-331D: 7A             LD    A,D                ; Store bit to ... ** J3328
+331D: 7A             LD    A,D                ; Store bit to ... * J3328
 331E: 77             LD    (HL),A             ; ... RAM
 331F: 5E             LD    E,(HL)             ; Did we write the bit ...
 3320: BB             CP    E                  ; ... correctly?
 3321: C2 BB 34       JP    NZ,$34BB           ;{BadRAM} No ... RAM error
-3324: 23             INC   HL                 ; Next in RAM ** J3534
+3324: 23             INC   HL                 ; Next in RAM * J3534
 3325: 0B             DEC   BC                 ; Decrement the count
 3326: 79             LD    A,C                ; More to ...
 3327: B0             OR    B                  ; ... do?
@@ -5958,10 +5993,10 @@ ServiceMode:
 ; value until value reaches 10101010.
 ;
 332E: 16 55          LD    D,$55              ; Alternating bits 01010101
-3330: 7A             LD    A,D                ; Hold bit pattern in D ** J3368
+3330: 7A             LD    A,D                ; Hold bit pattern in D * J3368
 3331: 01 00 08       LD    BC,$0800           ; All of RAM ... 2K
 3334: 21 00 E0       LD    HL,$E000           ; Start of RAM
-3337: 77             LD    (HL),A             ; Store pattern to RAM ** J3343,J3347
+3337: 77             LD    (HL),A             ; Store pattern to RAM * J3343,J3347
 3338: 23             INC   HL                 ; Next in RAM
 3339: 3C             INC   A                  ; Next bit pattern value
 333A: 5F             LD    E,A                ; Hold the pattern
@@ -5975,12 +6010,12 @@ ServiceMode:
 3345: 3E 55          LD    A,$55              ; Restart with 01010101
 3347: 18 EE          JR    $3337              ; Keep going
 ;
-3349: 7A             LD    A,D                ; Starting value again ** J333E
+3349: 7A             LD    A,D                ; Starting value again * J333E
 334A: 01 00 08       LD    BC,$0800           ; All of RAM ... 2K
 334D: 21 00 E0       LD    HL,$E000           ; Back to the start of RAM
-3350: BE             CP    (HL)               ; Do we read what we wrote? ** J335E,J3362
+3350: BE             CP    (HL)               ; Do we read what we wrote? * J335E,J3362
 3351: 20 19          JR    NZ,$336C           ; No ... show the error
-3353: 23             INC   HL                 ; Next in RAM ** J3373
+3353: 23             INC   HL                 ; Next in RAM * J3373
 3354: 3C             INC   A                  ; Next value to write
 3355: 5F             LD    E,A                ; Hold it
 3356: 0B             DEC   BC                 ; Count down
@@ -5993,26 +6028,26 @@ ServiceMode:
 3360: 3E 55          LD    A,$55              ; Restart with 01010101
 3362: 18 EC          JR    $3350              ; Do all of RAM
 ;
-3364: 14             INC   D                  ; Next starting point ** J3359
+3364: 14             INC   D                  ; Next starting point * J3359
 3365: 7A             LD    A,D                ; Have we reached ...
 3366: FE AB          CP    $AB                ; ... end of patterns?
 3368: 20 C6          JR    NZ,$3330           ; No ... do all of RAM starting here
 336A: 18 09          JR    $3375              ; Looks like general purpose RAM is OK
 ;
-336C: 5E             LD    E,(HL)             ; What we read ** J3351
+336C: 5E             LD    E,(HL)             ; What we read * J3351
 336D: 57             LD    D,A                ; What we expected
 336E: AF             XOR   A                  ; Tell error-print where to come back to when START-1 is pressed
 336F: C3 BB 34       JP    $34BB              ;{BadRAM} Go show the error
 ;
-3372: 7A             LD    A,D                ; When restarted after message, put current back to D ** J3531
+3372: 7A             LD    A,D                ; When restarted after message, put current back to D * J3531
 3373: 18 DE          JR    $3353              ; Continue with loop
 
-3375: 31 00 E8       LD    SP,$E800           ; RAM is OK ... we can call routines and use RAM variables ** J336A
+3375: 31 00 E8       LD    SP,$E800           ; RAM is OK ... we can call routines and use RAM variables * J336A
 3378: 3E 01          LD    A,$01              ; Same bit walk we did above
-337A: 57             LD    D,A                ; ...  ** J3397
+337A: 57             LD    D,A                ; ...  * J3397
 337B: 01 00 08       LD    BC,$0800           ; ... 
 337E: 21 00 80       LD    HL,$8000           ; ... 
-3381: 7A             LD    A,D                ; ...  ** J3393
+3381: 7A             LD    A,D                ; ...  * J3393
 3382: 77             LD    (HL),A             ; ... 
 3383: 5E             LD    E,(HL)             ; ...
 3384: BB             CP    E                  ; ...
@@ -6020,7 +6055,7 @@ ServiceMode:
 3387: CD 3B 35       CALL  $353B              ; Print error
 338A: CB 4F          BIT   1,A                ; START-2 pressed?
 338C: CA F5 33       JP    Z,$33F5            ; Yes ... skip past RAM test
-338F: 23             INC   HL                 ; ... ** J3385
+338F: 23             INC   HL                 ; ... * J3385
 3390: 0B             DEC   BC                 ; ...
 3391: 79             LD    A,C                ; ...
 3392: B0             OR    B                  ; ...
@@ -6031,10 +6066,10 @@ ServiceMode:
 3397: 30 E1          JR    NC,$337A           ; Same bit walk we did above
 
 3399: 16 55          LD    D,$55              ; ...
-339B: 7A             LD    A,D                ; ... ** J33D3
+339B: 7A             LD    A,D                ; ... * J33D3
 339C: 01 00 08       LD    BC,$0800           ; ...
 339F: 21 00 80       LD    HL,$8000           ; ...
-33A2: 77             LD    (HL),A             ; ... ** J33AE,J33B2
+33A2: 77             LD    (HL),A             ; ... * J33AE,J33B2
 33A3: 23             INC   HL                 ; ...
 33A4: 3C             INC   A                  ; ...
 33A5: 5F             LD    E,A                ; ...
@@ -6047,12 +6082,12 @@ ServiceMode:
 33AE: 20 F2          JR    NZ,$33A2           ; ...
 33B0: 3E 55          LD    A,$55              ; ...
 33B2: 18 EE          JR    $33A2              ; ...
-33B4: 7A             LD    A,D                ; ... ** J33A9
+33B4: 7A             LD    A,D                ; ... * J33A9
 33B5: 01 00 08       LD    BC,$0800           ; ...
 33B8: 21 00 80       LD    HL,$8000           ; ...
-33BB: BE             CP    (HL)               ; ... ** J33C9,J33CD
+33BB: BE             CP    (HL)               ; ... * J33C9,J33CD
 33BC: 20 19          JR    NZ,$33D7           ; Error out here
-33BE: 23             INC   HL                 ; ... ** J33E2
+33BE: 23             INC   HL                 ; ... * J33E2
 33BF: 3C             INC   A                  ; ...
 33C0: 5F             LD    E,A                ; ...
 33C1: 0B             DEC   BC                 ; ...
@@ -6064,13 +6099,13 @@ ServiceMode:
 33C9: 20 F0          JR    NZ,$33BB           ; ...
 33CB: 3E 55          LD    A,$55              ; ...
 33CD: 18 EC          JR    $33BB              ; ...
-33CF: 14             INC   D                  ; ... ** J33C4
+33CF: 14             INC   D                  ; ... * J33C4
 33D0: 7A             LD    A,D                ; ...
 33D1: FE AB          CP    $AB                ; ...
 33D3: 20 C6          JR    NZ,$339B           ; ...
 33D5: 18 0D          JR    $33E4              ; ...
 
-33D7: 5E             LD    E,(HL)             ; Value read to E ** J33BC
+33D7: 5E             LD    E,(HL)             ; Value read to E * J33BC
 33D8: 57             LD    D,A                ; Expected value to D
 33D9: CD 37 35       CALL  $3537              ; Print error
 33DC: CB 4F          BIT   1,A                ; START-2 pressed?
@@ -6078,13 +6113,13 @@ ServiceMode:
 33E1: 7A             LD    A,D                ; Restore expected
 33E2: 18 DA          JR    $33BE              ; Back to loop
 
-33E4: DD 21 EB 33    LD    IX,$33EB           ; Next line (reuse existing routine) ** J33D5
+33E4: DD 21 EB 33    LD    IX,$33EB           ; Next line (reuse existing routine) * J33D5
 33E8: C3 B1 35       JP    $35B1              ;{ClearVideo} Clear the screen
 33EB: 21 66 3A       LD    HL,$3A66           ; "RAM  OK" message
 33EE: DD 21 F5 33    LD    IX,$33F5           ; Next line (reuse existing routine)
 33F2: C3 65 34       JP    $3465              ;{MultiCopy} Print RAM is OK
 
-33F5: 21 00 E1       LD    HL,$E100           ; Clear ... ** J338C,J33DE,J352C
+33F5: 21 00 E1       LD    HL,$E100           ; Clear ... * J338C,J33DE,J352C
 33F8: 36 00          LD    (HL),$00           ; ... E100 ...
 33FA: 54             LD    D,H                ; ... through ...
 33FB: 5D             LD    E,L                ; ... E1CF ...
@@ -6093,11 +6128,11 @@ ServiceMode:
 3400: ED B0          LDIR                     ; ...
 3402: 21 00 00       LD    HL,$0000           ; Start of ROM
 3405: AF             XOR   A                  ; Start with ...
-3406: 32 00 E7       LD    ($E700),A          ; .. chip 0 ** J3420
+3406: 32 00 E7       LD    ($E700),A          ; .. chip 0 * J3420
 3409: 06 00          LD    B,$00              ; 256 bytes
 340B: 0E 10          LD    C,$10              ; 256*16 = 4K (per chip)
 340D: AF             XOR   A                  ; Zero out A (accumulated XOR)
-340E: AE             XOR   (HL)               ; XOR accumulate byte ** J3410,J3413
+340E: AE             XOR   (HL)               ; XOR accumulate byte * J3410,J3413
 340F: 23             INC   HL                 ; Do ...
 3410: 10 FC          DJNZ  $340E              ; ... all 256
 3412: 0D             DEC   C                  ; Do ...
@@ -6114,7 +6149,7 @@ ServiceMode:
 3422: AF             XOR   A                  ; ??
 3423: D3 1C          OUT   ($1C),A            ;{-2_SCROLLC} ?? Clear Scroll register 0C ??
 3425: FB             EI                       ; ??
-3426: 3A 00 D0       LD    A,($D000)          ;{-2_IN0} Read inputs ** J342B
+3426: 3A 00 D0       LD    A,($D000)          ;{-2_IN0} Read inputs * J342B
 3429: CB 4F          BIT   1,A                ; START-2 pressed?
 342B: 20 F9          JR    NZ,$3426           ; No ... wait for it
 342D: 3E 03          LD    A,$03              ; 3 means first row of options
@@ -6128,11 +6163,11 @@ ROMReport:
 ; Where ss is OK or NG (not good)
 ; Where xx is XOR accumulate (should be FF) from A
 ;
-3435: F5             PUSH  AF                 ; Hold registers ** C3416
+3435: F5             PUSH  AF                 ; Hold registers * C3416
 3436: FE FF          CP    $FF                ; XOR work out to be FF?
 3438: 28 02          JR    Z,$343C            ; Yes ... leave C as 00 (ROM___OK)
 343A: 0E 08          LD    C,$08              ; No ... offset to (ROM___NG)
-343C: 21 86 3A       LD    HL,$3A86           ; OK message ** J3438
+343C: 21 86 3A       LD    HL,$3A86           ; OK message * J3438
 343F: 09             ADD   HL,BC              ; Offset if not OK
 3440: EB             EX    DE,HL              ; Data pointer in DE
 3441: 3A 00 E7       LD    A,($E700)          ; Chip number
@@ -6162,7 +6197,7 @@ MultiCopy:
 ; Each copy begins is defined by a size byte, a two byte destination, and the data. Blocks
 ; are defined in memory right after one another. A size of "0" ends the sequence.
 ;
-3465: 7E             LD    A,(HL)             ; Get count ** J33F2,J3474,J34CB,J3563
+3465: 7E             LD    A,(HL)             ; Get count * J33F2,J3474,J34CB,J3563
 3466: 23             INC   HL                 ; Point to destination
 3467: FE 00          CP    $00                ; Length is 0?
 3469: 28 0B          JR    Z,$3476            ; Yes ... out
@@ -6174,12 +6209,12 @@ MultiCopy:
 3470: 06 00          LD    B,$00              ; MSB of count is 0
 3472: ED B0          LDIR                     ; Copy the data
 3474: 18 EF          JR    $3465              ;{MultiCopy} Do next copy
-3476: DD E9          JP    (IX)               ; Return ** J3469
+3476: DD E9          JP    (IX)               ; Return * J3469
 
 PrintUpperHex:
 ; Print one digit hex value from upper nibble of A to screen at IY
 ;
-3478: 0F             RRCA                     ; Isolate ... ** J34D8,J34EC,J3500,J3514
+3478: 0F             RRCA                     ; Isolate ... * J34D8,J34EC,J3500,J3514
 3479: 0F             RRCA                     ; ... the ...
 347A: 0F             RRCA                     ; ... upper ...
 347B: 0F             RRCA                     ; ... nibble ...
@@ -6188,24 +6223,24 @@ PrintUpperHex:
 3480: FE 3A          CP    $3A                ; Is this a number?
 3482: 38 02          JR    C,$3486            ; Yes ... keep what we have
 3484: C6 07          ADD   $07                ; Further offset to letters
-3486: FD 77 00       LD    (IY+$00),A         ; Put digit on screen ** J3482
+3486: FD 77 00       LD    (IY+$00),A         ; Put digit on screen * J3482
 3489: DD E9          JP    (IX)               ; Return
 
 PrintLowerHex:
 ; Print one digit hex value from lower nibble of A to screen at IY+1
 ;
-348B: E6 0F          AND   $0F                ; Isolate the lower nibble ** J34E0,J34F4,J3508,J351C
+348B: E6 0F          AND   $0F                ; Isolate the lower nibble * J34E0,J34F4,J3508,J351C
 348D: C6 30          ADD   $30                ; Add to ASCII '0'
 348F: FE 3A          CP    $3A                ; Is this a number?
 3491: 38 02          JR    C,$3495            ; Yes ... keep what we have
 3493: C6 07          ADD   $07                ; Further offset to letters
-3495: FD 77 01       LD    (IY+$01),A         ; Put the digit on screen ** J3491
+3495: FD 77 01       LD    (IY+$01),A         ; Put the digit on screen * J3491
 3498: DD E9          JP    (IX)               ; Return
 
 PrintHex:
 ; Print two digit hex value from A to screen at IY and IY+1
 ;
-349A: F5             PUSH  AF                 ; Hold the value ** C3459,C356C,C3574,C357C,C3584
+349A: F5             PUSH  AF                 ; Hold the value * C3459,C356C,C3574,C357C,C3584
 349B: 0F             RRCA                     ; Isolate ...
 349C: 0F             RRCA                     ; ... the ...
 349D: 0F             RRCA                     ; ... upper ...
@@ -6215,14 +6250,14 @@ PrintHex:
 34A3: FE 3A          CP    $3A                ; Is this a number?
 34A5: 38 02          JR    C,$34A9            ; Yes ... keep what we have
 34A7: C6 07          ADD   $07                ; Further offset to letters
-34A9: FD 77 00       LD    (IY+$00),A         ; Put the digit on the screen ** J34A5
+34A9: FD 77 00       LD    (IY+$00),A         ; Put the digit on the screen * J34A5
 34AC: F1             POP   AF                 ; Restore value
 34AD: E6 0F          AND   $0F                ; Isolate the lower nibble
 34AF: C6 30          ADD   $30                ; Add to ASCII '0'
 34B1: FE 3A          CP    $3A                ; Is this a number?
 34B3: 38 02          JR    C,$34B7            ; Yes ... keep what we have
 34B5: C6 07          ADD   $07                ; Further offset to letters
-34B7: FD 77 01       LD    (IY+$01),A         ; Put the digit on the screen ** J34B3
+34B7: FD 77 01       LD    (IY+$01),A         ; Put the digit on the screen * J34B3
 34BA: C9             RET                      ; Done
 
 BadRAM:
@@ -6235,7 +6270,7 @@ BadRAM:
 ;  D = Value written
 ;  E = Value read
 ;
-34BB: 08             EX    AF,AF'             ; Hold status where ... ** J3321,J336F
+34BB: 08             EX    AF,AF'             ; Hold status where ... * J3321,J336F
 34BC: D9             EXX                      ; ... error happened
 34BD: DD 21 C4 34    LD    IX,$34C4           ; Return to next code
 34C1: C3 B1 35       JP    $35B1              ;{ClearVideo} Clear the video and color RAM
@@ -6282,7 +6317,7 @@ BadRAM:
 3518: DD 21 1F 35    LD    IX,$351F           ; Return to next line (don't trust RAM)
 351C: C3 8B 34       JP    $348B              ;{PrintLowerHex} Print the lower nibble of A
 ;
-351F: 3A 00 D0       LD    A,($D000)          ;{-2_IN0} Is START 1 ... ** J3529
+351F: 3A 00 D0       LD    A,($D000)          ;{-2_IN0} Is START 1 ... * J3529
 3522: CB 47          BIT   0,A                ; ... pressed?
 3524: CA 2F 35       JP    Z,$352F            ; Yes ... continue RAM test
 3527: CB 4F          BIT   1,A                ; Is START 2 pressed?
@@ -6291,21 +6326,21 @@ BadRAM:
 352B: 08             EX    AF,AF'             ; Swap back the AF (others already swapped)
 352C: C3 F5 33       JP    $33F5              ; Go to ROM test
 ;
-352F: 08             EX    AF,AF'             ; Swap back the AF (others already swapped) ** J3524
+352F: 08             EX    AF,AF'             ; Swap back the AF (others already swapped) * J3524
 3530: B7             OR    A                  ; Is A a 00?
 3531: CA 72 33       JP    Z,$3372            ; Yes ... return to SET VALUE test
 3534: C3 24 33       JP    $3324              ; No ... return to WALKING BIT test
 
-3537: E5             PUSH  HL                 ; Hold RAM pointer ** C33D9
+3537: E5             PUSH  HL                 ; Hold RAM pointer * C33D9
 3538: D9             EXX                      ; Preserve error state
 3539: 18 09          JR    $3544              ; Do error and return when button pressed
 ;
-353B: E5             PUSH  HL                 ; Hold RAM pointer ** C3387
+353B: E5             PUSH  HL                 ; Hold RAM pointer * C3387
 353C: D9             EXX                      ; Preserve error state
 353D: DD 21 44 35    LD    IX,$3544           ; Return to next line
 3541: C3 B1 35       JP    $35B1              ;{ClearVideo} Clear video
 ;
-3544: 21 00 80       LD    HL,$8000           ; From video RAM ** J3539
+3544: 21 00 80       LD    HL,$8000           ; From video RAM * J3539
 3547: 11 00 E0       LD    DE,$E000           ; To RAM
 354A: 01 A0 04       LD    BC,$04A0           ; All of visible screen
 354D: ED B0          LDIR                     ; Copy screen to RAM (we must put back to continue later)
@@ -6335,14 +6370,14 @@ BadRAM:
 3583: 7B             LD    A,E                ; Actual value
 3584: CD 9A 34       CALL  $349A              ;{PrintHex} Print the actual value
 3587: E1             POP   HL                 ; Restore HL
-3588: 3A 00 D0       LD    A,($D000)          ;{-2_IN0} Read input ** J3593
+3588: 3A 00 D0       LD    A,($D000)          ;{-2_IN0} Read input * J3593
 358B: CB 47          BIT   0,A                ; START-1 pressed?
 358D: 28 06          JR    Z,$3595            ; Yes ... out
 358F: CB 4F          BIT   1,A                ; START-2 pressed?
 3591: 28 10          JR    Z,$35A3            ; Yes ... out
 3593: 18 F3          JR    $3588              ; Wait for something to be pressed
 ;
-3595: D9             EXX                      ; Hold registers ** J358D
+3595: D9             EXX                      ; Hold registers * J358D
 3596: 21 00 E0       LD    HL,$E000           ; Copy ...
 3599: 11 00 80       LD    DE,$8000           ; ... RAM ...
 359C: 01 A0 04       LD    BC,$04A0           ; ... back to ...
@@ -6350,7 +6385,7 @@ BadRAM:
 35A1: D9             EXX                      ; Restore registers
 35A2: C9             RET                      ; Done
 ;
-35A3: 21 A0 84       LD    HL,$84A0           ; Clear A4A0 .. 87FF (part of color RAM) ** J3591
+35A3: 21 A0 84       LD    HL,$84A0           ; Clear A4A0 .. 87FF (part of color RAM) * J3591
 35A6: 36 00          LD    (HL),$00           ; ...
 35A8: 54             LD    D,H                ; ...
 35A9: 5D             LD    E,L                ; ...
@@ -6362,7 +6397,7 @@ BadRAM:
 ClearVideo:
 ; Clear the screen and color RAM. Use IX as the return
 ; address (don't trust RAM)
-35B1: 21 00 84       LD    HL,$8400           ; Clear ... ** J33E8,J34C1,J3541
+35B1: 21 00 84       LD    HL,$8400           ; Clear ... * J33E8,J34C1,J3541
 35B4: 01 FF 03       LD    BC,$03FF           ; ... Color ...
 35B7: 36 00          LD    (HL),$00           ; ... RAM ...
 35B9: 54             LD    D,H                ; ... 8400-87FF
@@ -6377,21 +6412,23 @@ ClearVideo:
 35C8: 13             INC   DE                 ; ...
 35C9: ED B0          LDIR                     ; ...
 35CB: DD E9          JP    (IX)               ; ... RAM is bad ... use IX as return
+```
 
 # Service Menu
 
+```code
 ServiceMenu: 
 ;
 ; Interactive service menu
 ; E701 tracks the row number (3 is the top)
 ;
-35CD: CD AD 38       CALL  $38AD              ;{ClearScreen} Clear screen and color memory ** J3432,J36AF,J3777,J37BD,J3993,J39A6,J3A63
+35CD: CD AD 38       CALL  $38AD              ;{ClearScreen} Clear screen and color memory * J3432,J36AF,J3777,J37BD,J3993,J39A6,J3A63
 35D0: 21 BF 3E       LD    HL,$3EBF           ; Print the six rows ...
 35D3: CD 08 39       CALL  $3908              ;{MultiCopyToRAM} ... of options
 35D6: 3A 01 E7       LD    A,($E701)          ;{-1_menuRow} Current row pointer
 35D9: 06 02          LD    B,$02              ; Color value of 2
 35DB: CD 1C 39       CALL  $391C              ;{MenuColor} Highlight the selected option
-35DE: 3A 00 D0       LD    A,($D000)          ;{-2_IN0} Is start-1 ... ** J360E,J361F,J3630
+35DE: 3A 00 D0       LD    A,($D000)          ;{-2_IN0} Is start-1 ... * J360E,J361F,J3630
 35E1: CB 47          BIT   0,A                ; ... pressed?
 35E3: 20 14          JR    NZ,$35F9           ; No ... skip to Left/Right check
 ;
@@ -6405,7 +6442,7 @@ ServiceMenu:
 35F5: DD 66 01       LD    H,(IX+$01)         ; ... address
 35F8: E9             JP    (HL)               ; Jump to routine
 ;
-35F9: DD 21 02 E7    LD    IX,$E702           ; Scratch area for menu motion ** J35E3
+35F9: DD 21 02 E7    LD    IX,$E702           ; Scratch area for menu motion * J35E3
 35FD: CD DD 38       CALL  $38DD              ; Get L/R and long debounce (can hold down)
 3600: 47             LD    B,A                ; Hold the value for later use
 3601: E6 55          AND   $55                ; 01010101 ... only left bit
@@ -6418,14 +6455,14 @@ ServiceMenu:
 360E: 18 CE          JR    $35DE              ; Back to top to wait on button
 ;
 ; Down the menu
-3610: DD 36 00 55    LD    (IX+$00),$55       ; Button mask ** J3605
+3610: DD 36 00 55    LD    (IX+$00),$55       ; Button mask * J3605
 3614: DD 36 01 08    LD    (IX+$01),$08       ; Stop at row 8 ... bottom of menu
 3618: DD 36 02 01    LD    (IX+$02),$01       ; Row offset (+1 ... down)
 361C: CD 32 36       CALL  $3632              ; Increment row and handle shorter held-down rate
 361F: 18 BD          JR    $35DE              ; Back to top to wait on button
 ;
 ; Up the menu
-3621: DD 36 00 AA    LD    (IX+$00),$AA       ; Button mask ** J360C
+3621: DD 36 00 AA    LD    (IX+$00),$AA       ; Button mask * J360C
 3625: DD 36 01 03    LD    (IX+$01),$03       ; Stop at row 3 ... top of menu
 3629: DD 36 02 FF    LD    (IX+$02),$FF       ; Row offset (-1 ... up)
 362D: CD 32 36       CALL  $3632              ; Decrement row and handle shorter held-down rate
@@ -6433,21 +6470,21 @@ ServiceMenu:
 ;
 ; Bump menu up or down with a shorter held-down
 ; advance rate.
-3632: DD 56 00       LD    D,(IX+$00)         ; Button mask ** C361C,C362D
+3632: DD 56 00       LD    D,(IX+$00)         ; Button mask * C361C,C362D
 3635: 1E 02          LD    E,$02              ; Wait count (outer loop)
 3637: CD C8 38       CALL  $38C8              ; Wait for button to be released
 363A: 28 0E          JR    Z,$364A            ; Released: Bump row (if we can) and highlight and out
-363C: CD 4E 36       CALL  $364E              ; Not released: Bump row (if we can) and highlight ** J3647
+363C: CD 4E 36       CALL  $364E              ; Not released: Bump row (if we can) and highlight * J3647
 363F: DD 56 00       LD    D,(IX+$00)         ; Button mask
 3642: 1E 01          LD    E,$01              ; Wait count (shorter for held-down repeats)
 3644: CD C8 38       CALL  $38C8              ; Wait for button to be released
 3647: 20 F3          JR    NZ,$363C           ; Not released ... keep bumping while held down
 3649: C9             RET                      ; Done
 ;
-364A: CD 4E 36       CALL  $364E              ; Bump row (and highlight) ... ** J363A
+364A: CD 4E 36       CALL  $364E              ; Bump row (and highlight) ... * J363A
 364D: C9             RET                      ; ... if not at edge of menu
 ;
-364E: 3A 01 E7       LD    A,($E701)          ;{-1_menuRow} Current menu row ** C363C,C364A
+364E: 3A 01 E7       LD    A,($E701)          ;{-1_menuRow} Current menu row * C363C,C364A
 3651: DD BE 01       CP    (IX+$01)           ; Are we at the end for this direction?
 3654: C8             RET   Z                  ; Yes ... don't delta
 3655: 06 00          LD    B,$00              ; Un-highlight ...
@@ -6464,7 +6501,7 @@ ServiceDIP:
 3666: CD AD 38       CALL  $38AD              ;{ClearScreen} Clear tiles and colors
 3669: 21 10 3B       LD    HL,$3B10           ; DIP Switch background text
 366C: CD 08 39       CALL  $3908              ;{MultiCopyToRAM} Multi copy the indicator text
-366F: 3A 03 D0       LD    A,($D003)          ;{-2_DSW1} Read DIP switch 1 (lives per coin) ** J36AD
+366F: 3A 03 D0       LD    A,($D003)          ;{-2_DSW1} Read DIP switch 1 (lives per coin) * J36AD
 3672: 21 CB 80       LD    HL,$80CB           ; Screen location
 3675: CD B2 36       CALL  $36B2              ;{PrintBits} Print 8 bit status
 3678: 3A 04 D0       LD    A,($D004)          ;{-2_DSW2} Read DIP switch 2 (coins, service mode)
@@ -6493,14 +6530,14 @@ ServiceDIP:
 ;
 PrintBits:
 ; Print 1's or 0's for 8 bits in A to screen at HL.
-36B2: EE FF          XOR   $FF                ; Reverse TTL inputs (now 1=on) ** C3675,C367E,C3739,C3742,C374B
+36B2: EE FF          XOR   $FF                ; Reverse TTL inputs (now 1=on) * C3675,C367E,C3739,C3742,C374B
 36B4: 06 08          LD    B,$08              ; 8 bits to show
-36B6: 0F             RRCA                     ; Next bit to carry ** J36C1
+36B6: 0F             RRCA                     ; Next bit to carry * J36C1
 36B7: 38 04          JR    C,$36BD            ; Bit a one? Go print a one
 36B9: 36 30          LD    (HL),$30           ; Print a zero
 36BB: 18 02          JR    $36BF              ; Skip printing one
-36BD: 36 31          LD    (HL),$31           ; Print the one ** J36B7
-36BF: 23             INC   HL                 ; Next ... ** J36BB
+36BD: 36 31          LD    (HL),$31           ; Print the one * J36B7
+36BF: 23             INC   HL                 ; Next ... * J36BB
 36C0: 23             INC   HL                 ; ... screen location
 36C1: 10 F3          DJNZ  $36B6              ; Do all 8 bits
 36C3: C9             RET                      ; Done
@@ -6513,11 +6550,11 @@ PrintBits:
 ;  A the value (will be masked)
 ;  B number of 2-bit fields to print
 ;
-36C4: 0F             RRCA                     ; Skip to next ... ** J36E9,C371D
+36C4: 0F             RRCA                     ; Skip to next ... * J36E9,C371D
 ;
-36C5: 0F             RRCA                     ; ... two-bit field ** C36A2
+36C5: 0F             RRCA                     ; ... two-bit field * C36A2
 ;
-36C6: 4F             LD    C,A                ; Hold value in C ** C3690
+36C6: 4F             LD    C,A                ; Hold value in C * C3690
 36C7: C5             PUSH  BC                 ; Hold field count and value
 36C8: DD A6 00       AND   (IX+$00)           ; Keep only target field
 36CB: DD 86 01       ADD   A,(IX+$01)         ; Get string number
@@ -6538,7 +6575,7 @@ PrintBits:
 36E9: 10 D9          DJNZ  $36C4              ; Do all fields
 36EB: C9             RET                      ; Done
 
-36EC: 3A 04 D0       LD    A,($D004)          ;{-2_DSW2} DIP switch 2 ** C36A5
+36EC: 3A 04 D0       LD    A,($D004)          ;{-2_DSW2} DIP switch 2 * C36A5
 36EF: CB 57          BIT   2,A                ; Coin-mode bit is 0 (coin-mode B)?
 36F1: CA 06 37       JP    Z,$3706            ; Yes ... go describe that
 36F4: 21 77 3B       LD    HL,$3B77           ; Blank out ...
@@ -6548,12 +6585,12 @@ PrintBits:
 3702: 06 01          LD    B,$01              ; One field
 3704: 18 10          JR    $3716              ; Print coins per play
 ;
-3706: 21 7F 3C       LD    HL,$3C7F           ; Put the "A" on the end of "COIN MODE" and then ... ** J36F1
+3706: 21 7F 3C       LD    HL,$3C7F           ; Put the "A" on the end of "COIN MODE" and then ... * J36F1
 3709: CD 08 39       CALL  $3908              ;{MultiCopyToRAM} ... print "COIN MODE B" on next line.
 370C: DD 21 92 3C    LD    IX,$3C92           ; Two-field table for slot A ...
 3710: FD 21 96 3C    LD    IY,$3C96           ; ... and slot B
 3714: 06 02          LD    B,$02              ; Two fields to print
-3716: 3A 03 D0       LD    A,($D003)          ;{-2_DSW1} Get the value ** J3704
+3716: 3A 03 D0       LD    A,($D003)          ;{-2_DSW1} Get the value * J3704
 3719: EE FF          XOR   $FF                ; Flip it active high
 371B: 0F             RRCA                     ; Ship first ...
 371C: 0F             RRCA                     ; ... two bits
@@ -6576,7 +6613,7 @@ ServiceIO:
 372A: CD AD 38       CALL  $38AD              ;{ClearScreen} Clear screen tiles and colors
 372D: 21 22 3D       LD    HL,$3D22           ; Print background ...
 3730: CD 08 39       CALL  $3908              ;{MultiCopyToRAM} ... text for I/O display
-3733: 3A 00 D0       LD    A,($D000)          ;{-2_IN0} Read IN0 (coins and starts) ** J3766,J376D
+3733: 3A 00 D0       LD    A,($D000)          ;{-2_IN0} Read IN0 (coins and starts) * J3766,J376D
 3736: 21 CB 80       LD    HL,$80CB           ; Screen coordinates
 3739: CD B2 36       CALL  $36B2              ;{PrintBits} Print the IN0 bits
 373C: 3A 01 D0       LD    A,($D001)          ;{-2_IN1} Read IN1 (buttons, joystick)
@@ -6606,7 +6643,7 @@ ServiceIO:
 ;
 PrintBCD2:
 ; Print 2-digit BCD value in A to screen at HL and HL+1
-377A: F5             PUSH  AF                 ; Hold the value ** C3757,C375E
+377A: F5             PUSH  AF                 ; Hold the value * C3757,C375E
 377B: 0F             RRCA                     ; Get ...
 377C: 0F             RRCA                     ; ... the ...
 377D: 0F             RRCA                     ; ... upper ...
@@ -6624,7 +6661,7 @@ PrintBCD2:
 ; Bump the 4-digit BCD count of ISRs every 64 ISR ticks. The IRQ ticks at 56.74Hz. This is roughly
 ; every 1.1 seconds. Almost once a second. 
 ;
-378C: 21 0F E7       LD    HL,$E70F           ; Point to last counter value (upper 2 bits) ** C374E
+378C: 21 0F E7       LD    HL,$E70F           ; Point to last counter value (upper 2 bits) * C374E
 378F: 3A 4E E0       LD    A,($E04E)          ;{-1_isrCNT_1} Bumped every ISR
 3792: E6 C0          AND   $C0                ; Keep top 2 bits of count (change every 64 ticks)
 3794: BE             CP    (HL)               ; Have the upper 2 bits changed since we last looked?
@@ -6653,7 +6690,7 @@ ServiceSOUNDS:
 37BA: CD C0 37       CALL  $37C0              ; Do the sound input loop
 37BD: C3 CD 35       JP    $35CD              ;{ServiceMenu} Back to service routine
 ;
-37C0: FD 22 0B E7    LD    ($E70B),IY         ;{-1_sndTable} Hold pointer to the sound command table ** C37BA
+37C0: FD 22 0B E7    LD    ($E70B),IY         ;{-1_sndTable} Hold pointer to the sound command table * C37BA
 37C4: E5             PUSH  HL                 ; Hold pointer to multi-copy
 37C5: CD AD 38       CALL  $38AD              ;{ClearScreen} Clear screen (tiles and color)
 37C8: E1             POP   HL                 ; Restore multi-copy
@@ -6671,7 +6708,7 @@ ServiceSOUNDS:
 37E4: CD 7D 38       CALL  $387D              ; Play current menu selection
 37E7: 3E FF          LD    A,$FF              ; Set starting status bits ...
 37E9: 32 11 E7       LD    ($E711),A          ;{-1_startButtons} ... for start-button polling
-37EC: 3A 00 D0       LD    A,($D000)          ;{-2_IN0} Start-2 ... ** J380D,J3815,J3828,J383B,J384C
+37EC: 3A 00 D0       LD    A,($D000)          ;{-2_IN0} Start-2 ... * J380D,J3815,J3828,J383B,J384C
 37EF: CB 4F          BIT   1,A                ; ... pressed?
 37F1: 28 4A          JR    Z,$383D            ; Yes ..
 37F3: CD F2 38       CALL  $38F2              ;{GetStarts} Get starts
@@ -6690,18 +6727,18 @@ ServiceSOUNDS:
 380B: 28 1D          JR    Z,$382A            ; Yes ... go do "up"
 380D: 18 DD          JR    $37EC              ; Neither ... back to start of sound loop
 ;
-380F: CD 72 38       CALL  $3872              ; Turn sounds off ** J37FA
+380F: CD 72 38       CALL  $3872              ; Turn sounds off * J37FA
 3812: CD 7D 38       CALL  $387D              ; Play current selection again
 3815: 18 D5          JR    $37EC              ; Back to sound menu loop
 ;
-3817: DD 36 00 55    LD    (IX+$00),$55       ; Last value was left-held-down ** J3804
+3817: DD 36 00 55    LD    (IX+$00),$55       ; Last value was left-held-down * J3804
 381B: 3A 06 E7       LD    A,($E706)          ;{-1_sndLastRow} Bottom row number in menu
 381E: DD 77 01       LD    (IX+$01),A         ; Store bottom row number (14)
 3821: DD 36 02 01    LD    (IX+$02),$01       ; Down means add 1
 3825: CD 4F 38       CALL  $384F              ; Do delta if possible
 3828: 18 C2          JR    $37EC              ; Back to sound loop
 ;
-382A: DD 36 00 AA    LD    (IX+$00),$AA       ; Last value was right-held-down ** J380B
+382A: DD 36 00 AA    LD    (IX+$00),$AA       ; Last value was right-held-down * J380B
 382E: 3A 07 E7       LD    A,($E707)          ;{-1_sndFirstRow} Top row number in menu
 3831: DD 77 01       LD    (IX+$01),A         ; Store top row number (1)
 3834: DD 36 02 FF    LD    (IX+$02),$FF       ; Up means subtract 1
@@ -6709,7 +6746,7 @@ ServiceSOUNDS:
 383B: 18 AF          JR    $37EC              ; Back to sound loop
 ;
 ; Exit sound
-383D: CD 72 38       CALL  $3872              ; All sounds off ** J37F1
+383D: CD 72 38       CALL  $3872              ; All sounds off * J37F1
 3840: 3E 01          LD    A,$01              ; Do ...
 3842: 0E 20          LD    C,$20              ; ... a ...
 3844: CD 3E 39       CALL  $393E              ; ... pause
@@ -6719,31 +6756,31 @@ ServiceSOUNDS:
 384E: C9             RET                      ; It is held down ... out
 
 ; Bump sound menu up or down with a shorter held-down advance rate.
-384F: CD 72 38       CALL  $3872              ; All sounds off ** C3825,C3838
+384F: CD 72 38       CALL  $3872              ; All sounds off * C3825,C3838
 3852: DD 56 00       LD    D,(IX+$00)         ; Button mask
 3855: 1E 02          LD    E,$02              ; Wait count (outer loop)
 3857: CD C8 38       CALL  $38C8              ; Wait for button to be released
 385A: 28 0F          JR    Z,$386B            ; Released: Bump row, hightlight, and out
-385C: CD 95 38       CALL  $3895              ; Not released: Bump row and hightlight ** J3867
+385C: CD 95 38       CALL  $3895              ; Not released: Bump row and hightlight * J3867
 385F: DD 56 00       LD    D,(IX+$00)         ; Button mask
 3862: 1E 01          LD    E,$01              ; Wait count (shorter for held-down repeats)
 3864: CD C8 38       CALL  $38C8              ; Wait for button to be released
 3867: 20 F3          JR    NZ,$385C           ; Not released ... keep bumping while held down
 3869: 18 03          JR    $386E              ; Done
 ;
-386B: CD 95 38       CALL  $3895              ; Bump selection if possible ** J385A
-386E: CD 7D 38       CALL  $387D              ; Play sound ** J3869
+386B: CD 95 38       CALL  $3895              ; Bump selection if possible * J385A
+386E: CD 7D 38       CALL  $387D              ; Play sound * J3869
 3871: C9             RET                      ; Done
 
 ; Turn off all sounds
-3872: 3E 00          LD    A,$00              ; Reset sound processor and ... ** C37E1,C380F,C383D,C384F
+3872: 3E 00          LD    A,$00              ; Reset sound processor and ... * C37E1,C380F,C383D,C384F
 3874: 32 00 D0       LD    ($D000),A          ; ... disable all sound
 3877: CB FF          SET   7,A                ; Latch ...
 3879: 32 00 D0       LD    ($D000),A          ; ... sound command
 387C: C9             RET                      ; Done
 
 ; Play current sound menu selection
-387D: 3A 05 E7       LD    A,($E705)          ;{-1_sndNumber} Current sound menu selection ** C37E4,C3812,C386E
+387D: 3A 05 E7       LD    A,($E705)          ;{-1_sndNumber} Current sound menu selection * C37E4,C3812,C386E
 3880: 4F             LD    C,A                ; To ...
 3881: 06 00          LD    B,$00              ; ... BC
 3883: FD 2A 0B E7    LD    IY,($E70B)         ;{-1_sndTable} Get sound offset table
@@ -6755,7 +6792,7 @@ ServiceSOUNDS:
 3894: C9             RET                      ; Done
 
 ; Bump sound menu selection if possible
-3895: 3A 05 E7       LD    A,($E705)          ;{-1_sndNumber} Current row number ** C385C,C386B
+3895: 3A 05 E7       LD    A,($E705)          ;{-1_sndNumber} Current row number * C385C,C386B
 3898: DD BE 01       CP    (IX+$01)           ; Are we at the limit?
 389B: C8             RET   Z                  ; Yes ... leave it
 389C: 06 00          LD    B,$00              ; Unhighlight ...
@@ -6770,7 +6807,7 @@ ClearScreen:
 ;
 ; Clear tiles and colors ... 8000-87FF.
 ;
-38AD: 21 00 80       LD    HL,$8000           ; Tile video memory  ** C35CD,C3666,C372A,C376F,C37C5,C3966,C39CB,C3A32
+38AD: 21 00 80       LD    HL,$8000           ; Tile video memory  * C35CD,C3666,C372A,C376F,C37C5,C3966,C39CB,C3A32
 38B0: 01 FF 03       LD    BC,$03FF           ; Count (32x32 tiles)
 38B3: 36 00          LD    (HL),$00           ; Clear first byte
 38B5: 54             LD    D,H                ; Copy source ...
@@ -6778,7 +6815,7 @@ ClearScreen:
 38B7: 13             INC   DE                 ; Start block copy at 8001
 38B8: ED B0          LDIR                     ; Walk the 00 through memory
 ;
-38BA: 21 00 84       LD    HL,$8400           ; Color memory ** C39E8
+38BA: 21 00 84       LD    HL,$8400           ; Color memory * C39E8
 38BD: 01 FF 03       LD    BC,$03FF           ; Count (32x32 tiles)
 38C0: 36 00          LD    (HL),$00           ; Clear first byte
 38C2: 54             LD    D,H                ; Copy source ...
@@ -6791,9 +6828,9 @@ ClearScreen:
 ; D contains button mask (55 or AA)
 ; E contains the outer count time
 ; Return A=0 (released) or mask if still held
-38C8: 0E 00          LD    C,$00              ; Roll around DJNZ count of 256 ** C3637,C3644,C3857,C3864,J38D7
-38CA: 06 0C          LD    B,$0C              ; Inner count of 12 ** J38D4
-38CC: CD E2 38       CALL  $38E2              ;{GetLRs} Get L/R status and long debounce delay ** J38D1
+38C8: 0E 00          LD    C,$00              ; Roll around DJNZ count of 256 * C3637,C3644,C3857,C3864,J38D7
+38CA: 06 0C          LD    B,$0C              ; Inner count of 12 * J38D4
+38CC: CD E2 38       CALL  $38E2              ;{GetLRs} Get L/R status and long debounce delay * J38D1
 38CF: A2             AND   D                  ; Only keep L or R value
 38D0: C8             RET   Z                  ; Return if L or R has been released 4 passes (long time)
 38D1: 10 F9          DJNZ  $38CC              ; Long ...
@@ -6805,7 +6842,7 @@ ClearScreen:
 38DB: A2             AND   D                  ; ... return held down 4 times
 38DC: C9             RET                      ; Done
 ;
-38DD: CD E2 38       CALL  $38E2              ;{GetLRs} Get L/R status ** C35FD,C37FC
+38DD: CD E2 38       CALL  $38E2              ;{GetLRs} Get L/R status * C35FD,C37FC
 38E0: 18 1F          JR    $3901              ; Long debounce delay and out
 
 GetLRs:
@@ -6813,7 +6850,7 @@ GetLRs:
 ; contain the current value and bits 2 and 3 contain the previous value. The returned bits
 ; are active 1 (1 means pressed).
 ;
-38E2: 21 10 E7       LD    HL,$E710           ; Point to LR status bits ** C38CC,C38DD
+38E2: 21 10 E7       LD    HL,$E710           ; Point to LR status bits * C38CC,C38DD
 38E5: 3A 01 D0       LD    A,($D001)          ;{-2_IN1} Read left/right buttons (bits 0 and 1)
 38E8: 1F             RRA                      ; Rotate ...
 38E9: CB 16          RL    (HL)               ; ... LR button ...
@@ -6828,7 +6865,7 @@ GetStarts:
 ; contain the current value and bits 2 and 3 contain the previous value. The returned bits
 ; are active 1 (1 means pressed).
 ;
-38F2: 21 11 E7       LD    HL,$E711           ; Point to start-button status bits ** C37F3,C39A9
+38F2: 21 11 E7       LD    HL,$E711           ; Point to start-button status bits * C37F3,C39A9
 38F5: 3A 00 D0       LD    A,($D000)          ;{-2_IN0} Read start buttons (bits 0 and 1)
 38F8: 1F             RRA                      ; Rotate ...
 38F9: CB 16          RL    (HL)               ; ... start button ...
@@ -6837,9 +6874,9 @@ GetStarts:
 38FE: 7E             LD    A,(HL)             ; Compliment so ...
 38FF: EE FF          XOR   $FF                ; ... 1 means pressed
 ;
-3901: F5             PUSH  AF                 ; Hold status ** J38E0
+3901: F5             PUSH  AF                 ; Hold status * J38E0
 3902: AF             XOR   A                  ; Fast zero
-3903: 3D             DEC   A                  ; Kill time ... ** J3904
+3903: 3D             DEC   A                  ; Kill time ... * J3904
 3904: 20 FD          JR    NZ,$3903           ; ... for debounce
 3906: F1             POP   AF                 ; Restore result
 3907: C9             RET                      ; Return result
@@ -6849,7 +6886,7 @@ MultiCopyToRAM:
 ; LL DD DD NN... LL DD DD NN... 00
 ; LL is byte count, DDDD is destination, NN is data. A count of 00
 ; ends the multiple sets.
-3908: 7E             LD    A,(HL)             ; Is the count ... ** C35D3,C366C,C36F7,C3709,C3730,C37C9,J390F
+3908: 7E             LD    A,(HL)             ; Is the count ... * C35D3,C366C,C36F7,C3709,C3730,C37C9,J390F
 3909: FE 00          CP    $00                ; .. an end marker?
 390B: C8             RET   Z                  ; Yes ... out
 390C: CD 11 39       CALL  $3911              ;{CopyToRAM} Do the copy to RAM
@@ -6860,7 +6897,7 @@ CopyToRAM:
 ; First byte of data is length.
 ; 2nd and 3rd byte of data is destination.
 ;
-3911: 4E             LD    C,(HL)             ; Get BC count ... ** C36E4,C390C
+3911: 4E             LD    C,(HL)             ; Get BC count ... * C36E4,C390C
 3912: 06 00          LD    B,$00              ; ... (MSB = 00)
 3914: 23             INC   HL                 ; Next
 3915: 5E             LD    E,(HL)             ; Get DE ...
@@ -6877,16 +6914,16 @@ MenuColor:
 ; There are two entry points here. One corrects the start-with-3 value and the
 ; other uses C as the row number without adjustment
 ;
-391C: 4F             LD    C,A                ; Hold row number in C ** C35DB,C3657,C3662
+391C: 4F             LD    C,A                ; Hold row number in C * C35DB,C3657,C3662
 391D: D6 03          SUB   $03                ; First row is numbered 3 ... make it 0 based
 391F: 07             RLCA                     ; Two lines per option
 3920: 3C             INC   A                  ; Skip a line at the top
 3921: 18 01          JR    $3924              ; Mark the color
 ;
 MenuColor2:
-3923: 4F             LD    C,A                ; Use the row number given ** C37D7,C389E,C38A9
+3923: 4F             LD    C,A                ; Use the row number given * C37D7,C389E,C38A9
 ;
-3924: C5             PUSH  BC                 ; Hold color and row number ** J3921
+3924: C5             PUSH  BC                 ; Hold color and row number * J3921
 3925: 0E 64          LD    C,$64              ; BC = 0064 ...
 3927: 06 00          LD    B,$00              ; ... flat offset in color RAM
 3929: 60             LD    H,B                ; MSB of HL to 0
@@ -6910,9 +6947,9 @@ MenuColor2:
 Pause:
 ; Do a counted pause ... a 16 bit count down
 ; that rolls A times.
-393C: 0E 00          LD    C,$00              ; MSB 0 ** C3774,J3946
-393E: 06 00          LD    B,$00              ; 256 step ... ** C37DE,C3844,J3943
-3940: 10 FE          DJNZ  $3940              ; ... countdown ** J3940
+393C: 0E 00          LD    C,$00              ; MSB 0 * C3774,J3946
+393E: 06 00          LD    B,$00              ; 256 step ... * C37DE,C3844,J3943
+3940: 10 FE          DJNZ  $3940              ; ... countdown * J3940
 3942: 0D             DEC   C                  ; 256*256 step ...
 3943: 20 F9          JR    NZ,$393E           ; ... countdown
 3945: 3D             DEC   A                  ; All done?
@@ -6925,9 +6962,9 @@ PauseStart:
 ; B is set to 1. Otherwise B is left alone.
 ;
 3949: C5             PUSH  BC                 ; Preserve BC
-394A: 0E 00          LD    C,$00              ; Set 16-bit count ... ** J395D
-394C: 06 00          LD    B,$00              ; ... to 0000 ** J395A
-394E: 10 FE          DJNZ  $394E              ; ... 256 step countdown ** J394E
+394A: 0E 00          LD    C,$00              ; Set 16-bit count ... * J395D
+394C: 06 00          LD    B,$00              ; ... to 0000 * J395A
+394E: 10 FE          DJNZ  $394E              ; ... 256 step countdown * J394E
 3950: F5             PUSH  AF                 ; Hold count (A)
 3951: 3A 00 D0       LD    A,($D000)          ;{-2_IN0} Start-2 ...
 3954: CB 4F          BIT   1,A                ; ... pressed
@@ -6940,7 +6977,7 @@ PauseStart:
 395F: C1             POP   BC                 ; Restore BC
 3960: C9             RET                      ; Return with B unaltered
 ;
-3961: F1             POP   AF                 ; Drop stacked count ** J3956
+3961: F1             POP   AF                 ; Drop stacked count * J3956
 3962: C1             POP   BC                 ; Restore BC
 3963: 06 01          LD    B,$01              ; Return with B=1
 3965: C9             RET                      ; Done
@@ -6966,7 +7003,7 @@ ServiceCHARACTER:
 3977: 21 7D 3E       LD    HL,$3E7D           ; ... sprite ...
 397A: 01 10 00       LD    BC,$0010           ; ... descriptors ...
 397D: ED B0          LDIR                     ; ... to RAM (ISR moves to hardware)
-397F: 3A 00 D0       LD    A,($D000)          ;{-2_IN0} Start-2 ... ** J3984
+397F: 3A 00 D0       LD    A,($D000)          ;{-2_IN0} Start-2 ... * J3984
 3982: CB 4F          BIT   1,A                ; ... pressed?
 3984: 20 F9          JR    NZ,$397F           ; No ... wait
 3986: 21 00 E1       LD    HL,$E100           ; Clear ...
@@ -6987,7 +7024,7 @@ ServiceCOLOR:
 399C: 32 11 E7       LD    ($E711),A          ;{-1_startButtons} ... start bit history
 399F: 18 2A          JR    $39CB              ; Jump right into color screen 1 (letters/numbers)
 ;
-39A1: 3A 00 D0       LD    A,($D000)          ;{-2_IN0} Start-2 ... ** J39B0,J39E6,J3A10,J3A20
+39A1: 3A 00 D0       LD    A,($D000)          ;{-2_IN0} Start-2 ... * J39B0,J39E6,J3A10,J3A20
 39A4: CB 4F          BIT   1,A                ; ... pressed?
 39A6: CA CD 35       JP    Z,$35CD            ;{ServiceMenu} Yes ... back to service routine
 39A9: CD F2 38       CALL  $38F2              ;{GetStarts} Get the start bit status history
@@ -6996,7 +7033,7 @@ ServiceCOLOR:
 39B0: 20 EF          JR    NZ,$39A1           ; Loop back until start-1 goes from off to on
 39B2: 3A 12 E7       LD    A,($E712)          ;{-1_colorScreen} Get current color screen number
 39B5: 3C             INC   A                  ; Bump to next ...
-39B6: 32 12 E7       LD    ($E712),A          ;{-1_colorScreen} ... color screen ** J39C9
+39B6: 32 12 E7       LD    ($E712),A          ;{-1_colorScreen} ... color screen * J39C9
 39B9: FE 01          CP    $01                ; Screen 1 ...
 39BB: 28 0E          JR    Z,$39CB            ; ... letters and numbers
 39BD: FE 02          CP    $02                ; Screen 2 ...
@@ -7008,24 +7045,24 @@ ServiceCOLOR:
 ;
 ; Draw line of letters and numbers on screen. 
 ; With clear color ram, letters are in blue, numbers in white.
-39CB: CD AD 38       CALL  $38AD              ;{ClearScreen} Clear screen and color ram ** J399F,J39BB
+39CB: CD AD 38       CALL  $38AD              ;{ClearScreen} Clear screen and color ram * J399F,J39BB
 39CE: 21 1C 81       LD    HL,$811C           ; Screen location for Z
 39D1: 06 1A          LD    B,$1A              ; 26 letters
 39D3: 3E 5A          LD    A,$5A              ; Tile 90 (Letter Z)
-39D5: 77             LD    (HL),A             ; Put letter on screen ** J39D8
+39D5: 77             LD    (HL),A             ; Put letter on screen * J39D8
 39D6: 2B             DEC   HL                 ; Back up screen pointer
 39D7: 3D             DEC   A                  ; Back up letter
 39D8: 10 FB          DJNZ  $39D5              ; Do all letters
 39DA: 21 0C 82       LD    HL,$820C           ; Screen location for 9
 39DD: 06 0A          LD    B,$0A              ; 10 numbers to do
 39DF: 3E 39          LD    A,$39              ; Tile 57 (Number 9)
-39E1: 77             LD    (HL),A             ; Put number on screen ** J39E4
+39E1: 77             LD    (HL),A             ; Put number on screen * J39E4
 39E2: 2B             DEC   HL                 ; Back up screen pointer
 39E3: 3D             DEC   A                  ; Back up number
 39E4: 10 FB          DJNZ  $39E1              ; Do all numbers
 39E6: 18 B9          JR    $39A1              ; Back to wait on button
 ;
-39E8: CD BA 38       CALL  $38BA              ; Clear color memory ** J39BF
+39E8: CD BA 38       CALL  $38BA              ; Clear color memory * J39BF
 39EB: 21 20 80       LD    HL,$8020           ; Start of first visible row
 39EE: 36 F3          LD    (HL),$F3           ; Tile 243 (a blank tile)
 39F0: 54             LD    D,H                ; Fill ...
@@ -7036,7 +7073,7 @@ ServiceCOLOR:
 ;
 39F8: 21 8D 3E       LD    HL,$3E8D           ; Describes blocks
 39FB: 06 0A          LD    B,$0A              ; 10 blocks of color to draw
-39FD: C5             PUSH  BC                 ; Hold block count ** J3A0E
+39FD: C5             PUSH  BC                 ; Hold block count * J3A0E
 39FE: 5E             LD    E,(HL)             ; Read ...
 39FF: 23             INC   HL                 ; ... screen ...
 3A00: 56             LD    D,(HL)             ; ... pointer
@@ -7054,7 +7091,7 @@ ServiceCOLOR:
 3A0E: 10 ED          DJNZ  $39FD              ; Do all blocks
 3A10: C3 A1 39       JP    $39A1              ; Back to wait on button
 ;
-3A13: 21 20 84       LD    HL,$8420           ; Start of first visible color row ** J39C4
+3A13: 21 20 84       LD    HL,$8420           ; Start of first visible color row * J39C4
 3A16: 36 0C          LD    (HL),$0C           ; Color value "0C" (a red)
 3A18: 54             LD    D,H                ; Destination is ...
 3A19: 5D             LD    E,L                ; ... source ...
@@ -7068,9 +7105,9 @@ TileColorBlock:
 ; A = tile color value
 ; B = number of columns
 ; C = number of rows
-3A23: C5             PUSH  BC                 ; Hold counts ** C3A09,J3A2F
+3A23: C5             PUSH  BC                 ; Hold counts * C3A09,J3A2F
 3A24: E5             PUSH  HL                 ; Hold screen position
-3A25: 77             LD    (HL),A             ; Store tile color number to screen ** J3A27
+3A25: 77             LD    (HL),A             ; Store tile color number to screen * J3A27
 3A26: 23             INC   HL                 ; Next on row
 3A27: 10 FC          DJNZ  $3A25              ; Do all columns on this row
 3A29: E1             POP   HL                 ; Restore screen position
@@ -7089,7 +7126,7 @@ ServiceBEAM:
 3A35: 21 20 80       LD    HL,$8020           ; Tile memory (first visible row)
 3A38: 0E 1E          LD    C,$1E              ; 30 visible columns
 3A3A: 06 0F          LD    B,$0F              ; 15 double rows (first row invisible, last blank)
-3A3C: C5             PUSH  BC                 ; Hold the double row count ** J3A5A
+3A3C: C5             PUSH  BC                 ; Hold the double row count * J3A5A
 3A3D: 06 00          LD    B,$00              ; BC = 001E
 3A3F: 36 94          LD    (HL),$94           ; Tile 148 ... top and right grid lines. This is NOT visible.
 3A41: 54             LD    D,H                ; Hold this ...
@@ -7112,7 +7149,7 @@ ServiceBEAM:
 3A58: EB             EX    DE,HL              ; Restore screen pointer
 3A59: C1             POP   BC                 ; Restore double-row count
 3A5A: 10 E0          DJNZ  $3A3C              ; Do all double rows
-3A5C: 3A 00 D0       LD    A,($D000)          ;{-2_IN0} Wait on ... ** J3A61
+3A5C: 3A 00 D0       LD    A,($D000)          ;{-2_IN0} Wait on ... * J3A61
 3A5F: CB 4F          BIT   1,A                ; ... start-2 ...
 3A61: 20 F9          JR    NZ,$3A5C           ; ... button
 3A63: C3 CD 35       JP    $35CD              ;{ServiceMenu} Return to interactive service mode

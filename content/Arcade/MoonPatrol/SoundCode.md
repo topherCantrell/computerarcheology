@@ -1,11 +1,17 @@
-%%image = MoonPatrol.jpg
-%%-ram  = Arcade/MoonPatrol/SoundRAMUse.mark /Arcade/MoonPatrol/SoundRAMUse.html
-%%-hard = Arcade/MoonPatrol/SoundHardware.mark /Arcade/MoonPatrol/SoundHardware.html
-%%cpu   = 6803
-%%title = Moon Patrol Sound Board Code
+![Sound Code](MoonPatrol.jpg)
+
+# Sound Code
+>>> cpu 6803
+
+>>> memoryTable hard 
+[Hardware Info](SoundHardware.md)
+
+>>> memoryTable ram 
+[RAM Usage](SoundRAMUse.md)
 
 # DAC Explosion Samples
 
+```code
 DACExplosionSamples: 
 ; Interesting. This explosion effect lasting 1/2 second consumes 1/4th of the ROM.
 ; Each byte contains 2 4-bit samples that are played one after the other.
@@ -51,9 +57,11 @@ F3E0: 28 08 20 32 AD EB A9 81 42 89 08 99 01 99 99 88 80 0A 08 33 52 37 10 AB D9
 ; 3     Slightly shorter version of 1 (code plays 3 after 2 automatically)
 ;
 ; 4-15  Unused (perhaps slots for other DAC sounds)
+```
 
 # Explosion Commands
 
+```code
 ExplosionCommands: 
 ;  Sample table for 801-played sample stream. First word is pointer to samples. Second
 ;  word is number of samples.
@@ -74,9 +82,11 @@ F434: 00 00 00 01      ;   0D
 F438: 00 00 00 01      ;   0E
 F43C: 00 00 00 01      ;   0F
 F440: 00 00 00 01      ;       I bet the original goal was to not include 00 and make 16 DAC's from 01 through 10
+```
 
 # Command Scripts
 
+```code
 CommandScripts: 
 F444: F7 E1            ;   10 Passing one point (test 2)  AY1:A Sequencer2. If same ...
 F446: F7 B9            ;   11 UFO explosion (test 3)      AY1:A ... restart. If higher ...
@@ -94,9 +104,11 @@ F45C: F8 4D            ;   1C Opening music (test 11)     AY0:ABC Force sequence
 F45E: F4 A8            ;   1D Reaching goal (test 12)     AY0:ABC Force sequencer0
 F460: F8 EC            ;   1E Congratulations (test 13)   AY0:ABC Force sequencer0
 F462: F9 5F            ;   1F Car explosion (test 14)     AY0:abc Force sequencer0
+```
 
 # End Music
 
+```code
 EndMusic: 
 ;  Script for command $1B - Ending music (test 10)
 F464: 66 F8                            ; MIXER_AND AY0 11_111_000 ...
@@ -123,9 +135,11 @@ F4A5: 67 07                            ; MIXER_OR AY0 00_000_111 ...
 
 ;  Script for command $19, $1A
 F4A7: FF                               ; STOP
+```
 
 # Reaching Goal
 
+```code
 ReachingGoal: 
 ;  Script for command $1D - Reaching goal (test 12)
 F4A8: 66 F8                            ; MIXER_AND AY0 11_111_000 ...
@@ -156,9 +170,11 @@ F4F1: FD                               ; RETURN (1)
 ;  Script for command $15
 F4F2: 67 01                            ; MIXER_OR AY0 00_000_001 ...
 F4F4: FF                               ; STOP
+```
 
 # Space Plant
 
+```code
 SpacePlant: 
 ;  Script for command $16 - Space plant (test 7)
 F4F5: 66 FE                            ; MIXER_AND AY0 11_111_110 ...
@@ -173,9 +189,11 @@ F50A: 00 A7 24                         ; REGISTER AY0:00 A7 (24)
 F50D: 00 7D 24                         ; REGISTER AY0:00 7D (24)
 F510: 00 A7 24                         ; REGISTER AY0:00 A7 (24)
 F513: FE F4 FB                         ; CALL F4FB(1)
+```
 
 # UFO Flying 
 
+```code
 UFOFlying: 
 ;  Script for command $17 - UFO flying (test 8)
 F516: 66 FE                            ; MIXER_AND AY0 11_111_110 ...
@@ -201,9 +219,11 @@ F55D: 48 0C                            ; REGISTER AY0:08 0C ...
 F55F: C0 14 44 01 04                   ;  C_SWEEP_VOICE_REGISTER retister=00 numSteps=14 initFreq=44 deltaFreq=01 timeBetween=04
 F564: C0 18 58 FF 04                   ;  C_SWEEP_VOICE_REGISTER retister=00 numSteps=18 initFreq=58 deltaFreq=FF timeBetween=04
 F569: FE F5 21                         ; CALL F521(1)
+```
 
 # Background Music
 
+```code
 BackgroundMusic: 
 ;  Script for command $18 - Background music (test 9)
 ;
@@ -460,9 +480,11 @@ F7A2: 69 0E        ; 233 SET_VOLUME_AND_RESET_DECAY voice=1 0D ...
 F7A4: 0D 09 20     ; 234 REGISTER AY0:0D 09 (20)                 * B3  248.57944444444445
 F7A7: 0D 09 20     ; 235 REGISTER AY0:0D 09 (20)                 * 
 F7AA: FD           ; 246 RETURN (1)
+```
 
 # Missile 
 
+```code
 Missile: 
 ;  Script for command $12 - Missile from car (test 4)
 F7AB: 76 FE                            ; MIXER_AND AY1 11_111_110 ...
@@ -471,9 +493,11 @@ F7AF: 58 0D                            ; REGISTER AY1:08 0D ...
 F7B1: D0 0B 20 FF 04                   ;  C_SWEEP_VOICE_REGISTER retister=10 numSteps=0B initFreq=20 deltaFreq=FF timeBetween=04
 F7B6: 77 01                            ; MIXER_OR AY1 00_000_001 ...
 F7B8: FF                               ; STOP
+```
 
 # UFO Explosion
 
+```code
 UFOExplosion: 
 ;  Script for command $11 - UFO explosion (test 3)
 F7B9: 76 FE                            ; MIXER_AND AY1 11_111_110 ...
@@ -485,9 +509,11 @@ F7C3: 90 18 0E                         ;  C_REGISTER_SAMPLES register=10 numSamp
 F7C6: 60 50 60 72 60 50 60 72 60 50 60 72 60 50 60 72 60 50 60 72 60 50 60 72
 F7DE: 77 01                            ; MIXER_OR AY1 00_000_001 ...
 F7E0: FF                               ; STOP
+```
 
 # Pass Point
 
+```code
 PassPoint: 
 ;  Script for command $10 - Passing one point (test 2)
 F7E1: 76 FE                            ; MIXER_AND AY1 11_111_110 ...
@@ -498,9 +524,11 @@ F7E9: 5C 14                            ; REGISTER AY1:0C 14 ...
 F7EB: 1D 09 E0                         ; REGISTER AY1:0D 09 (E0)
 F7EE: 77 01                            ; MIXER_OR AY1 00_000_001 ...
 F7F0: FF                               ; STOP
+```
 
 # Coin
 
+```code
 Coin: 
 ;  Script for command $13 - Coin (test 5)
 F7F1: 50 70                            ; REGISTER AY1:00 70 ...
@@ -512,9 +540,11 @@ F7FB: 5C 10                            ; REGISTER AY1:0C 10 ...
 F7FD: 1D 09 E0                         ; REGISTER AY1:0D 09 (E0)
 F800: 77 01                            ; MIXER_OR AY1 00_000_001 ...
 F802: FF                               ; STOP
+```
 
 # Jump
 
+```code
 Jump: 
 ;  Script for command $14 - Car jump (test 6)
 F803: 52 00                            ; REGISTER AY1:02 00 ...
@@ -544,9 +574,11 @@ F843: 5A 09                            ; REGISTER AY1:0A 09 ...
 F845: D4 08 90 01 04                   ;   C_SWEEP_VOICE_REGISTER retister=14 numSteps=08 initFreq=90 deltaFreq=01 timeBetween=04
 F84A: 77 06                            ; MIXER_OR AY1 00_000_110 ...
 F84C: FF                               ; STOP
+```
 
 # Start Music
 
+```code
 StartMusic: 
 ;  Script for command $1C - Opening music (test 11)
 F84D: 6C 14                            ; VOLUME_DECAY_SPEED voice=0 14 ...
@@ -620,9 +652,11 @@ F8E4: 40 7E                            ; REGISTER AY0:00 7E ...
 F8E6: 68 0F                            ; SET_VOLUME_AND_RESET_DECAY voice=0 0F ...
 F8E8: 0D 09 20                         ; REGISTER AY0:0D 09 (20)
 F8EB: FD                               ; RETURN (1)
+```
 
 # Congratulations
 
+```code
 Congratulations: 
 ;  Script for command $1E - Congratulations (test 13)
 F8EC: 66 F8                            ; MIXER_AND AY0 11_111_000 ...
@@ -661,9 +695,11 @@ F952: 20 4F 00 28                      ; THREETONE AY0:00 fine=4F coarse=00 (28)
 F956: 20 6A 00 28                      ; THREETONE AY0:00 fine=6A coarse=00 (28)
 F95A: 20 9F 00 28                      ; THREETONE AY0:00 fine=9F coarse=00 (28)
 F95E: FD                               ; RETURN (1)
+```
 
 # Car Explosion
 
+```code
 CarExplosion: 
 ;  Script for command $1F - Car explosion (test 14)
 F95F: 46 10                            ; REGISTER AY0:06 10 ...
@@ -696,9 +732,11 @@ FA87: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 FAA7: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 FAC7: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 FAE7: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+```
 
 # Start
 
+```code
 START: 
 ;  IRQ2, SWI, and RESET
 ; 
@@ -713,9 +751,11 @@ FB10: C6 0F       LDB     #$0F                    ;  Ouput port
 FB12: BD FC D8    JSR     $FCD8                   ;  Write value A to AY register B (no delay during write)
 FB15: BD FC AD    JSR     $FCAD                   ;  Reset all sounds/scripts
 FB18: 7F 90 00    CLR     $9000                   ;{-2_WATCHDOG}  ??watchdog??
+```
 
 # Sound Loop
 
+```code
 SoundLoop: 
 ;  * Main sound loop
 ; 
@@ -814,9 +854,11 @@ FBCF: D7 BC       STB     $BC                     ;{-1_sndCmd}  ... Sound comman
 FBD1: C6 0F       LDB     #$0F                    ;  AY0 Output B
 FBD3: BD FC DE    JSR     $FCDE                   ;  Send back board status
 FBD6: 7E FB 1B    JMP     $FB1B                   ;{SoundLoop}  Back to top of music loop
+```
 
 # NMI Timer
 
+```code
 NMITimer: 
 ; NMI
 ; Play samples out 801 and 802. On tick ZZZ0000 enable AY sound script processing.
@@ -934,9 +976,11 @@ FC85: A7 AD       STA     $AD,X                   ;  Current counter
 FC87: 09          DEX                             ;  All voices?
 FC88: 26 F0       BNE     $FC7A                   ;  No ... do all
 FC8A: 39          RTS                             ;  Done
+```
 
 # IRQ1 Command Request
 
+```code
 IRQ1CommandRequest: 
 ; Thanks to Leo Bodnar for explaining the sound-command sequence.
 ; The main CPU address D000 (write) is connected to the sound CPU's AY0 sound chip general I/O.
@@ -1088,9 +1132,11 @@ FD5B: 17          TBA                             ;  Check lower ...
 FD5C: 84 0F       ANDA    #$0F                    ;  ... nibble
 FD5E: 81 08       CMPA    #$08                    ;  Greater or equal to 8?
 FD60: 2A 08       BPL     $FD6A                   ;{C_SWEEP_VOICE_PAIR}  Yes ... go sweep register-pair
+```
 
 # C_SWEEP_VOICE_REGISTER
 
+```code
 C_SWEEP_VOICE_REGISTER: 
 ;  Add delta (I98) to current value (I94) and set-register
 ;  C0 - EF   110_r_0rrr CNT I94 I98 RVAL   
@@ -1098,9 +1144,11 @@ FD62: A6 94       LDA     $94,X                   ;  Get current tone value
 FD64: AB 98       ADDA    $98,X                   ;  Add delta
 FD66: A7 94       STA     $94,X                   ;  Store current
 FD68: 20 67       BRA     $FDD1                   ;  Write current to register B (0-6) and return 4,x
+```
 
 # C_SWEEP_VOICE_PAIR
 
+```code
 C_SWEEP_VOICE_PAIR: 
 ; (Bug in code ... this function is never used)
 ;  Add delta (DELTA) to fine/coarse pair r0rrr and r0rrr+1. 
@@ -1116,9 +1164,11 @@ FD77: 32          PULA                            ;  Original delta
 FD78: 2B 0C       BMI     $FD86                   ;  Handle decrementing
 FD7A: 24 02       BCC     $FD7E                   ;{BUG1}  No carry
 FD7C: 6C 98       INC     $98,X                   ;  Increment coarse tone
+```
 
 # BUG 1
 
+```code
 BUG1: 
 ; BUG IN CODE
 ; We did the math above on $94 and $98 as if they were FINE/COARSE. But we write the
@@ -1162,9 +1212,11 @@ FDAC: 6A 90       DEC     $90,X                   ;  All done with this type of 
 FDAE: 27 DC       BEQ     $FD8C                   ;  Yes ... move to next
 FDB0: C1 A0       CMPB    #$A0                    ;  Go if ...
 FDB2: 2A 10       BPL     $FDC4                   ;  ... A0 or above
+```
 
 # C_REGISTER_SAMPLES
 
+```code
 C_REGISTER_SAMPLES: 
 ;  Set the value of rrrrr to sI at regular intervals. CNT is the number of samples.
 ;  Always return RVAL.
@@ -1182,9 +1234,11 @@ FDC3: 39          RTS                             ;  Out
 
 FDC4: C1 C0       CMPB    #$C0                    ;  Go if ...
 FDC6: 2A 93       BPL     $FD5B                   ;  ... C0 or above
+```
 
 # C_TOGGLE_REGISTER
 
+```code
 C_TOGGLE_REGISTER: 
 ; (Never used)
 ;  Alternate writing I94 and I98.
@@ -1211,9 +1265,11 @@ FDDE: DF CD       STX     $CD                     ;{-1_curSeqPtr}  Store new seq
 FDE0: E6 00       LDB     $00,X                   ;  Register number
 FDE2: 2A 03       BPL     $FDE7                   ;{SimpleCommands}  Go handle ...
 FDE4: 7E FE 93    JMP     $FE93                   ;  ... COMPLEX, STOP, CALL, RETURN
+```
 
 # Simple Commands
 
+```code
 SimpleCommands: 
 ;  For all following commands, bit 6 is the multi-bit. If set, the parser is run again and again
 ;  until the bit is clear. Then the return value RV is loaded from the end of the sequence.
@@ -1357,9 +1413,11 @@ FEAF: 27 12       BEQ     $FEC3                   ;{STOP}  Yes ... return FF.
 FEB1: DE D1       LDX     $D1                     ;{-1_curVoice}  Voice number
 FEB3: 5C          INCB                            ;  FE=CALL?
 FEB4: 26 10       BNE     $FEC6                   ;{RETURN}  No ... process return
+```
 
 # CALL
 
+```code
 CALL: 
 ;  FE MM LL  - CALL MMLL 
 FEB6: DC CD       LDD     $CD                     ;{-1_curSeqPtr}  Sequence pointer
@@ -1369,16 +1427,20 @@ FEBC: DE CD       LDX     $CD                     ;{-1_curSeqPtr}  Sequence poin
 FEBE: EE 01       LDX     $01,X                   ;  Get jump address
 FEC0: 86 01       LDA     #$01                    ;  Return 1 (processes again next step)
 FEC2: 39          RTS                             ;  Done
+```
 
 # STOP
 
+```code
 STOP: 
 ;  FF        - STOP  
 FEC3: 86 FF       LDA     #$FF                    ;  END OF SEQUENCE
 FEC5: 39          RTS                             ;  Done
+```
 
 # RETURN
 
+```code
 RETURN: 
 ;  F0-FD     - RETURN
 FEC6: A6 9C       LDA     $9C,X                   ;  Restore ..
@@ -1406,9 +1468,11 @@ FEE0: 39          RTS                             ;  Done
 ; ALL sound command start here
 ; 
 FEE1: 26 06       BNE     $FEE9                   ;  Zero means ...
+```
 
 # Process Command 0
 
+```code
 ProcessCommand0: 
 ; Sound command $00
 ; Reinitialize RAM and disable all sounds
@@ -1418,9 +1482,11 @@ FEE6: 7E FC AD    JMP     $FCAD                   ;  Disable all scripts/sounds 
 FEE9: 81 10       CMPA    #$10                    ;  Vector to ...
 FEEB: 2B 03       BMI     $FEF0                   ;{ProcessCommands01-0F}  ... 01-0F or ...
 FEED: 7E FF 25    JMP     $FF25                   ;  ... 10-1F
+```
 
 # Process Commands 01 - 0F
 
+```code
 ProcessCommands01-0F: 
 ; Sound commands $01 - $0F (samplers played out 801)
 FEF0: 97 CB       STA     $CB                     ;{-1_lastCmd}  Hold command
@@ -1460,9 +1526,11 @@ FF2A: 3A          ABX                             ;  Offset to start of script
 FF2B: EE 00       LDX     $00,X                   ;  Script start
 FF2D: 81 14       CMPA    #$14                    ;  $10 - $14
 FF2F: 2A 1C       BPL     $FF4D                   ;  $14 or above ... go
+```
 
 # Process Commands 10 - 13
 
+```code
 ProcessCommands10-13: 
 ; Commands $10, $11, $12, $13
 ; Start script in mode 0 on sequencer 2 if available
@@ -1482,9 +1550,11 @@ FF4A: D7 BB       STB     $BB                     ;{-1_curMix1}  ... turn it off
 FF4C: 39          RTS                             
 
 FF4D: 26 11       BNE     $FF60                   ;  Go if not exactly $14
+```
 
 # Process Command 14
 
+```code
 ProcessCommand14: 
 ; Command $14
 ; Force script in mode 0 on seqencer 3 no matter what
@@ -1499,9 +1569,11 @@ FF5F: 39          RTS
 
 FF60: 81 18       CMPA    #$18                    ;  $18 or above?
 FF62: 2A 0B       BPL     $FF6F                   ;{ProcessCommands18-1F}  Yes ...
+```
 
 # Process Commands 15 - 17
 
+```code
 ProcessCommands15-17: 
 ; Command $15, $16, $17
 ; For script in mode 0 on sequencer 1 no matter what
@@ -1510,9 +1582,11 @@ FF66: 97 A5       STA     $A5                     ;{-1_cmdSeq2}  Sound command f
 FF68: 7F 00 81    CLR     $0081                   ;{-1_seqV0}  Process sequence 1 next tick
 FF6B: 7F 00 8D    CLR     $008D                   ;{-1_seq2CmdType}  Mode 0 for sequencer 1
 FF6E: 39          RTS                             ;  Done
+```
 
 # Process Commands 18 - 1F
 
+```code
 ProcessCommands18-1F: 
 ; Command $18, 19, 1A, 1B, 1C, 1D, 1E, 1F
 ; Turn off all sounds and start command/script A/X on sequencer 0
@@ -1527,9 +1601,11 @@ FF7B: 97 A4       STA     $A4                     ;{-1_cmdSeq1}  Sound command f
 FF7D: 7F 00 80    CLR     $0080                   ;{-1_seqV0}  Process sequence 0 next tick
 FF80: 7F 00 8C    CLR     $008C                   ;{-1_seq1CmdType}  Force 0 sequencer 0
 FF83: 86 BE       LDA     #$BE                    ;  10_111_110
+```
 
 # BUG 2
 
+```code
 BUG2: 
 ; The initialization at FCAD sets BA to 10_111_111. The OR here with a 0 is pointless.
 FF85: 9A BA       ORA     $BA                     ;{-1_curMix0}  Flag off all but ...
@@ -1540,9 +1616,11 @@ FF8A: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 FFAA: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 FFCA: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 FFEA: 00 00 00 00 00 00
+```
 
 # Vectors
 
+```code
 Vectors: 
 ; Vectors
 FFF0: FB 00                            ;  IRQ2 Serial I/O vector
@@ -1553,4 +1631,4 @@ FFF8: FC 8B                            ;  IRQ1 interrupt strobe 3 vector
 FFFA: FB 00                            ;  SWI vector
 FFFC: FB D9                            ;  Non-maskable (NMI) vector
 FFFE: FB 00                            ;  RESET vector
-
+```
