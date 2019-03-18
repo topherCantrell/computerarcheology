@@ -1,7 +1,6 @@
-%%image = SpaceInvaders.jpg
-%%title = Space Invaders Hardware
+![Space Invaders Hardware](SpaceInvaders.jpg)
 
-# ROM Chips 
+# Hardware
 
 Much of this comes from the comments in the MAME emulator.
  * invaders.h 0000-07FF
@@ -12,7 +11,7 @@ Much of this comes from the comments in the MAME emulator.
 # Interrupts 
 
 The mame/drivers/mw8080bw.c comments have the following information about the interrupts:
-{{{
+```
         The CPU's INT line is asserted via a D flip-flop at E3.
         The flip-flop is clocked by the expression (!(64V | !128V) | VBLANK).
         According to this, the LO to HI transition happens when the vertical
@@ -22,7 +21,7 @@ The mame/drivers/mw8080bw.c comments have the following information about the in
         0xc7 | (64V << 4) | (!64V << 3), giving 0xcf and 0xd7 for the vectors.
         The flip-flop, thus the INT line, is later cleared by the CPU via
         one of its memory access control signals.
-}}}
+```
 
 The value CF is RST 8 and D7 is RST 10.
 
@@ -44,21 +43,22 @@ The screens pixels are on/off (1 bit each). 256*224/8 = 7168 (7K) bytes.
 
 # I/O Ports 
 
-{{{memory
-|| 0000pr || INP0      || See below ||
-|| 0001pr || INP1      || See below ||
-|| 0002pr || INP2      || See below ||
-|| 0003pr || SHFT_IN   || See below ||
+>>> memory
 
-|| 0002pw || SHFTAMNT  || See below ||
-|| 0003pw || SOUND1    || See below ||
-|| 0004pw || SHFT_DATA || See below ||
-|| 0005pw || SOUND2    || See below ||
-|| 0006pw || WATCHDOG  || See below ||
-}}}
+| | | |
+| --- | --- | --- |
+| 0000pr | INP0      | See below |
+| 0001pr | INP1      | See below |
+| 0002pr | INP2      | See below |
+| 0003pr | SHFT_IN   | See below |
+| 0002pw | SHFTAMNT  | See below |
+| 0003pw | SOUND1    | See below |
+| 0004pw | SHFT_DATA | See below |
+| 0005pw | SOUND2    | See below |
+| 0006pw | WATCHDOG  | See below |
 
 These ports are mapped into the 8080's I/O address space (not the memory space):
-{{{
+```
   Read
    00        INPUTS (Mapped in hardware but never used by the code)
    01        INPUTS
@@ -70,7 +70,7 @@ These ports are mapped into the 8080's I/O address space (not the memory space):
    04        shift data
    05        sound bits
    06        watch-dog  
-}}}
+```
 
 Port 07 is also demultiplexed. The schematics say the select signal is wired directly to input-port-0's bit 7. This 
 doesn't make sense. 
@@ -80,8 +80,9 @@ doesn't make sense.
 The 8080 instruction set does not include opcodes for shifting. An 8-bit pixel image must be shifted into a 16-bit word 
 for the desired bit-position on the screen. Space Invaders adds a hardware shift register to help with the math.
 
+```
 16 bit shift register:
-{{{
+
 	f              0	bit
 	xxxxxxxxyyyyyyyy
 	
@@ -105,10 +106,11 @@ for the desired bit-position on the screen. Space Invaders adds a hardware shift
 	xxxxxxxxyyyyyyyy
 	
 	Reading from port 3 returns said result.
-}}}
+```
 
-## Inputs 
-{{{
+## Inputs
+
+```
 Port 0
  bit 0 DIP4 (Seems to be self-test-request read at power up)
  bit 1 Always 1
@@ -141,11 +143,11 @@ Port 2
 
 Port 3
   bit 0-7 Shift register data
-}}}
+```
 
 ## Output
 
-{{{
+```
 Port 2:
  bit 0,1,2 Shift amount
 
@@ -173,6 +175,7 @@ Port 5:
 
 Port 6:
  Watchdog ... read or write to reset
+```
 
 # Screen Geometry 
 
@@ -180,9 +183,8 @@ Port 6:
 
 The map below shows the raster layout. Take this map and rotate it counter clockwise once. Thus the first
 byte is lower left. First "row" ends upper left. Last byte is upper right.
-}}}
 
-{{{ 
+``` 
      2400     2401     2402        ....   241F
      01234567 01234567 01234567    ....   01234567
  
@@ -196,4 +198,4 @@ byte is lower left. First "row" ends upper left. Last byte is upper right.
  
      3FE0     3FE1     3FE2        ....   3FFF
      01234567 01234567 01234567    ....   01234567
-}}}
+```

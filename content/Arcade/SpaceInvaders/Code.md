@@ -1,14 +1,16 @@
-%%image = SpaceInvaders.jpg
-%%title = Space Invaders Code
-%%cpu   = Z80
+![Space Invaders Code](SpaceInvaders.jpg)
 
-%%-ram  = Arcade/SpaceInvaders/RAMUse.mark   /Arcade/SpaceInvaders/RAMUse.html
-%%-hard = Arcade/SpaceInvaders/Hardware.mark /Arcade/SpaceInvaders/Hardware.html
- 
-  * [RAM Usage](RAMUse.html)
-  * [Hardware Info](Hardware.html)
+# Space Invaders
 
-{{{html
+>>> cpu Z80
+
+>>> memoryTable hard 
+[Hardware Info](Hardware.md)
+
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
+
+```html
 <script src="/Arcade/SpaceInvaders/SpaceInvaders.js"></script>
 <script src="/js/TileEngine.js"></script>
 <script src="/js/BinaryData.js"></script>
@@ -30,9 +32,10 @@
        data-colorsName="CS0"
        data-colors='["#808080","#000080"]'>
 </canvas>
-}}}
+```
 
 # TODO
+
 It is never completely finished:
   * TODO Look at the various versions of the ROMs and see what's different
   * TODO Check all X/Y references and make !Xr/Yr or !Xn/Yn
@@ -43,6 +46,8 @@ the code is easier to understand in the context of the rotated screen. The comme
 refer to Xr (X rotated) and Yr.
 
 # Startup and Interrupts
+
+```code
 Reset: 
 ; Execution begins here on power-up and reset.
 0000: 00              NOP                         ; This provides a slot ...
@@ -149,9 +154,11 @@ ScanLine224:
 00A8: CD 4B 02        CALL    $024B               ; Process all game objects (except player object)
 00AB: CD 41 01        CALL    $0141               ; {CursorNextAlien} Advance cursor to next alien (move the alien if it is last one)
 00AE: C3 82 00        JP      $0082               ; Restore and return
+```
 
 # The Aliens
 
+```code
 InitRack:
 ; Initialize the player's rack of aliens. Copy the reference-location and deltas from the
 ; player's data bank.
@@ -353,9 +360,11 @@ ReturnTwo:
 ;
 01CD: E1              POP     HL                  ; Drop return to caller
 01CE: C9              RET                         ; Return to caller's caller
+```
 
 # Misc
 
+```code
 DrawBottomLine:
 ; Draw a 1px line across the player's stash at the bottom of the screen.
 ;
@@ -387,8 +396,11 @@ CopyRAMMirror:
 01E6: 11 00 1B        LD      DE,$1B00            ; RAM mirror in ROM
 01E9: 21 00 20        LD      HL,$2000            ; Start of RAM
 01EC: C3 32 1A        JP      $1A32               ; {BlockCopy} Copy [DE]->[HL] and return
+```
 
 # Copy/Restore Shields
+
+```code
 DrawShieldPl1:
 ; Draw the shields for player 1 (draws it in the buffer in the player's data area).
 ;
@@ -462,9 +474,11 @@ CopyShields:
 ;
 0242: CD 7C 14        CALL    $147C               ; {RememberShields} Remember player's shields
 0245: C3 35 02        JP      $0235               ; Continue with next shield
+```
 
 # Game Objects
 
+```code
 RunGameObjs:
 ; Process game objects. Each game object has a 16 byte structure. The handler routine for the object
 ; is at xx03 and xx04 of the structure. The pointer to xx04 is pushed onto the stack before calling
@@ -1967,9 +1981,11 @@ IniSplashAni:
 MessageCorp:
 ; "TAITO COP"
 0BF7: 13 00 08 13 0E 26 02 0E 0F
+```
 
 # Diagnostics Routine
 
+```code
 The very center 2K of the code map is an expansion area. It originally contained a 1K diagnostics routine
 beginning at 1000. The original code would check bit 0 of port 0 (wired to DIP4) and jump to this routine
 if the switch was flipped. The routine was removed in this Midway version of the code. And it was removed
@@ -4050,9 +4066,11 @@ MessageScore:
 1AE4: 26 12 02 0E 11 04 24 1B 25 26 07 08   
 1AF0: 3F 12 02 0E 11 04 26 12 02 0E 11 04   
 1AFC: 24 1C 25 26                     
+```
 
 # Data From Here Down      
 
+```code
 ;-------------------------- RAM initialization -----------------------------
 ; Coppied to RAM (2000) C0 bytes as initialization.
 ; See the description of RAM at the top of this file for the details on this data.
@@ -4078,10 +4096,11 @@ MesssageP1:
 ; which is the size of this mirror with the added sprite. It should be A0. I believe there was a macro
 ; to size this area and later the splash screens where put in. Some of the data spilled over into this
 ; and the macro automatically included it. No harm.
+```
 
-## Alien Pulling Upside Down 'Y' `visual`
+## Alien Pulling Upside Down 'Y' 
 
-{{{html
+```html
 <canvas width="130" height="65"
      data-getTileDataFunction="SpaceInvaders.get8x16Data"
          data-address="1BA0"
@@ -4089,7 +4108,9 @@ MesssageP1:
          data-gridY="8"
          data-command="0">
 </canvas>
-}}}
+```
+
+```code
 ; Alien sprite type C pulling upside down Y
 AlienSprCYA:
 ; ........
@@ -4116,8 +4137,9 @@ AlienSprCYA:
 
 ; Shot descriptor for splash shooting the extra "C"
 1BC0: 00 10 00 0E 05 00 00 00 00 00 07 D0 1C C8 9B 03
+```
 
-{{{html
+```html
 <canvas width="130" height="65"
      data-getTileDataFunction="SpaceInvaders.get8x16Data"
          data-address="1BD0"
@@ -4125,7 +4147,9 @@ AlienSprCYA:
          data-gridY="8"
          data-command="0">
 </canvas>
-}}}
+```
+
+```code
 AlienSprCYB:
 ; Alien sprite C pulling upside down Y. Note the difference between this and the first picutre
 ; above. The Y is closer to the ship. This gives the effect of the Y kind of "sticking" in the
@@ -4154,10 +4178,11 @@ AlienSprCYB:
 1BF0: 80 00 00 00 00 00 1C 2F 00 00 1C 27 00 00 1C 39 
 
 AlienSprA:
+```
 
-## Alien Images `visual`
+## Alien Images 
 
-{{{html
+```html
 <canvas width="400" height="140"
      data-getTileDataFunction="SpaceInvaders.get8x16Data"
          data-address="1C00"
@@ -4165,7 +4190,9 @@ AlienSprA:
          data-gridY="8"
          data-command="0,+x,1,+x,2,*,+y,3,+x,4,+x,5">
  </canvas>
-}}}
+```
+
+```code
 ; Alien sprite type A,B, and C at positions 0
 ;  ........ ........ ........
 ;  ........ ........ ........
@@ -4208,10 +4235,11 @@ AlienSprB:
 1C30: 00 00 38 7A 7F 6D EC FA FA EC 6D 7F 7A 38 00 00 
 1C40: 00 00 00 0E 18 BE 6D 3D 3C 3D 6D BE 18 0E 00 00 
 1C50: 00 00 00 00 1A 3D 68 FC FC 68 3D 1A 00 00 00 00 
+```
 
-## Player Sprite `visual`
+## Player Sprite 
 
-{{{html
+```html
  <canvas width="400" height="65"
      data-getTileDataFunction="SpaceInvaders.get8x16Data"
          data-address="1C60"
@@ -4219,8 +4247,9 @@ AlienSprB:
          data-gridY="8"
          data-command="0,+x,1,+x,2">
  </canvas>	
-}}}
+```
 
+```code
 PlayerSprite:
 ;  ........
 ;  ........
@@ -4278,10 +4307,11 @@ PlrBlowupSprites:
 ;  *...*...
 ;  ...*..*.
 1C80: 40 08 05 A3 0A 03 5B 0F 27 27 0B 4B 40 84 11 48 
+```
 
-## Player Shot Sprite `visual`
+## Player Shot Sprite 
 
-{{{html
+```html
  <canvas width="10" height="65"
      data-getTileDataFunction="SpaceInvaders.get1x8Data"
          data-address="1C90"
@@ -4289,14 +4319,16 @@ PlrBlowupSprites:
          data-gridY="8"
          data-command="0">
  </canvas>
-}}}
+```
 
+```code
 PlayerShotSpr:
-1C90: 0F    ; ****....      
+1C90: 0F    ; ++++....
+```
         
-## Player Shot Exploding `visual`
+## Player Shot Exploding 
 
-{{{html
+```html
  <canvas width="65" height="65"
      data-getTileDataFunction="SpaceInvaders.get8x8Data"
          data-address="1C91"
@@ -4304,8 +4336,9 @@ PlayerShotSpr:
          data-gridY="8"
          data-command="0">
  </canvas>
-}}}
+```
 
+```code
 ShotExploding:
 ; *..**..*
 ; ..****..
@@ -4342,10 +4375,11 @@ AReloadScoreTab:
 
 MessageTilt:
 1CBC: 13 08 0B 13   ; "TILT"
+```
 
-## Alien Exploding Sprite `visual`
+## Alien Exploding Sprite 
 
-{{{html
+```html
  <canvas width="130" height="65"
      data-getTileDataFunction="SpaceInvaders.get8x16Data"
          data-address="1CC0"
@@ -4353,7 +4387,9 @@ MessageTilt:
          data-gridY="8"
          data-command="0">
  </canvas>
-}}}
+```
+
+```code
 ; Alien exploding sprite
 AlienExplode:
 ;  ........
@@ -4373,10 +4409,11 @@ AlienExplode:
 ;  ........
 ;  ........
 1CC0: 00 08 49 22 14 81 42 00 42 81 14 22 49 08 00 00 
+```
 
-## Squigly Shot Sprite `visual`
+## Squigly Shot Sprite 
 
-{{{html
+```html
  <canvas width="120" height="65"
      data-getTileDataFunction="SpaceInvaders.get8x3Data"
          data-address="1CD0"
@@ -4384,7 +4421,9 @@ AlienExplode:
          data-gridY="8"
          data-command="0,+x,1,+x,2,+x,3">
  </canvas>
-}}}
+```
+
+```code
 ; Squigly shot picture in 4 animation frames
 SquiglyShot:
 1CD0: 44   ; ..*...*.               
@@ -4402,10 +4441,11 @@ SquiglyShot:
 1CD9: 22   ; .*...*..
 1CDA: 54   ; ..*.*.*.
 1CDB: 88   ; ...*...*
+```
 
-## Alien Shot Exploding `visual`
+## Alien Shot Exploding 
 
-{{{html     
+```html     
  <canvas width="65" height="65"
      data-getTileDataFunction="SpaceInvaders.get6x8Data"
          data-address="1CDC"
@@ -4413,7 +4453,9 @@ SquiglyShot:
          data-gridY="8"
          data-command="0">
  </canvas>
-}}}
+```
+
+```code
 ; Alien shot exploding 
 AShotExplo:      
 ; .*.*..*.                                 
@@ -4423,10 +4465,11 @@ AShotExplo:
 ; .****.*.                                  
 ; *.*..*..       
 1CDC: 4A 15 BE 3F 5E 25                                
+```
 
-## Plunger Shot Sprite `visual`
+## Plunger Shot Sprite 
 
-{{{html
+```html
  <canvas width="120" height="65"
      data-getTileDataFunction="SpaceInvaders.get8x3Data"
          data-address="1CE2"
@@ -4434,7 +4477,9 @@ AShotExplo:
          data-gridY="8"
          data-command="0,+x,1,+x,2,+x,3">
  </canvas>
-}}}
+```
+
+```code
 ; Alien shot ... the plunger looking one
 PlungerShot:
 1CE2: 04  ; ..*.....                                  
@@ -4452,10 +4497,11 @@ PlungerShot:
 1CEB: 80  ; .......*                            
 1CEC: FC  ; ..******
 1CED: 80  ; .......*
+```
 
-## Rolling Shot Sprite `visual`
+## Rolling Shot Sprite 
 
-{{{html
+```html
  <canvas width="120" height="65"
      data-getTileDataFunction="SpaceInvaders.get8x3Data"
          data-address="1CEE"
@@ -4463,7 +4509,9 @@ PlungerShot:
          data-gridY="8"
          data-command="0,+x,1,+x,2,+x,3">
  </canvas>
-}}}
+```
+
+```code
 ; Alien shot ... the rolling one
 RollShot:
 1CEE: 00  ; ........                            
@@ -4503,10 +4551,11 @@ ColFireTable:
 ; Perhaps this was originally intended for the "rolling" shot but then the
 ; "rolling" was change to target the player specifically.
 1D15: 05 02 05 04 06 07 08 0A 06 0A 03              
+```
 
-## Shield Image `visual`
+## Shield Image 
 
-{{{html
+```html
  <canvas width="180" height="130"
      data-getTileDataFunction="SpaceInvaders.get16x22Data"
          data-address="1D20"
@@ -4514,8 +4563,9 @@ ColFireTable:
          data-gridY="16"
          data-command="0">
  </canvas>
-}}}
+```
 
+```code
 ShieldImage:
 ; Shield image pattern. 2 x 22 = 44 bytes.
 ;
@@ -4557,10 +4607,11 @@ SaucerScrTab:
 ;
 ; Thus the one and only 300 comes up every 15 shots (after an initial 8).
 1D54: 10 05 05 10 15 10 10 05 30 10 10 10 05 15 10 05                                 
+```
 
-## Flying Saucer Sprite `visual`
+## Flying Saucer Sprite 
 
-{{{html
+```html
  <canvas width="410" height="65"
      data-getTileDataFunction="SpaceInvaders.get8x24Data"
          data-address="1D64"
@@ -4568,8 +4619,9 @@ SaucerScrTab:
          data-gridY="8"
          data-command="0,+x,1">
  </canvas>
-}}}
+```
 
+```code
 SpriteSaucer:
 ; ........
 ; ........
@@ -4683,10 +4735,11 @@ Message20Pts:
 ; the font table firmly at 1E00.
 
 1DFE: 00 00 ; Padding to put font table at 1E00
+```
 
-## Text Character Sprites `visual`
+## Text Character Sprites 
 
-{{{html
+```html
  <canvas width="520" height="520"
      data-getTileDataFunction="SpaceInvaders.get8x8CharData"
          data-labelColor="#FFFFFF"
@@ -4698,7 +4751,9 @@ Message20Pts:
                         20,21,22,23,24,25,26,27,28,29,#UNUSED,2A,2B,2C,2D,2E,2F,
                         30,31,32,33,34,35,36,37,#CS0,38,#UNUSED,39,3A,3B,3C,3D,3E,#CS0,3F">
  </canvas>
-}}}
+```
+
+```code
 ; 8 byte sprites 
 ; The screen is turned so rotate these pictures counter-clockwise.
 ; Some of the font characters at the end were never needed. The ROM overwrites these characters with
@@ -4773,10 +4828,11 @@ Message1Coin:
 DemoCommands:
 ; (1=Right, 2=Left)
 1F74: 01 01 00 00 01 00 02 01 00 02 01 00
+```
 
-## Alien Sprite Carrying 'Y' `visual`
+## Alien Sprite Carrying 'Y' 
 
-{{{html
+```html
  <canvas width="140" height="65"
      data-getTileDataFunction="SpaceInvaders.get8x16Data"
          data-labelColor=""
@@ -4792,8 +4848,9 @@ DemoCommands:
          data-gridY="8"
          data-command="0">
  </canvas>
-}}}
+```
 
+```code
 ; Small alien pushing Y back onto screen
 AlienSprCA:
 ; .....**.
@@ -4887,3 +4944,4 @@ MessagePush:
 1FF3: 0F 14 12 07 26             ; "PUSH " (with space on the end)                                 
 
 1FF8: 00 08 08 08 08 08 00 00               ; 3F:"-"
+```

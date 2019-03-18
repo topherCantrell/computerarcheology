@@ -1,6 +1,13 @@
+![Space Encounters](encounters.jpg)
+
+>>> deploy:<br>
+>>>   +encounters.jpg
+
+# Space Encounters
 
 From MAME:
 
+```
 ROM_START( spcenctr )
 	ROM_REGION( 0x10000, "maincpu", 0 )
 	ROM_LOAD( "4m33.h",     0x0000, 0x0800, CRC(7458b2db) SHA1(c4f41efb8a35fd8bebc75bff0111476affe2b34d) )
@@ -12,3 +19,4 @@ ROM_START( spcenctr )
 	ROM_LOAD( "4m27.b",     0x5000, 0x0800, CRC(098070ab) SHA1(72ae344591df0174353dc2e3d22daf5a70e2261f) )
 	ROM_LOAD( "4m26.a",     0x5800, 0x0800, CRC(7f1d1f44) SHA1(2f4951171a55e7ac072742fa24eceeee6aca7e39) )
 ROM_END
+```

@@ -1,11 +1,19 @@
-%%title = Space Invaders
-%%image = SpaceInvaders.jpg
+![Space Invaders](SpaceInvaders.jpg)
 
-# Code Links
+>>> deploy:<br>
+>>>   +SpaceInvaders.jpg<br>
+>>>   +SpaceInvaders.js<br>
+>>>   Hardware.md<br>
+>>>   RAMUse.md<br>
+>>>   Code.md<br>
+>>>   ----<br>
+>>>   Journal.md
 
-* [Disassembled Code as Z80 opcodes](Code.html)
-* [RAM Usage](RAMUse.html)
-* [Hardware Info](Hardware.html)
+# Space Invaders
+
+* [Disassembled Code as Z80 opcodes](Code.md)
+* [RAM Usage](RAMUse.md)
+* [Hardware Info](Hardware.md)
 
 # Related Projects
 
@@ -52,16 +60,16 @@ in passing:
 The code at 0456 reads a two byte value from memory, increments it, and writes it back. But the code only increments the LSB. The upper 
 byte never changes and is never accessed anywhere else in the code.
 
-{{{
+```plainCode
 0456: 2A 8F 20        LD      HL,($208F)          ; Increments with every shot ...
 0459: 2C              INC     L                   ; ... but only LSB ** ...
 045A: 22 8F 20        LD      ($208F),HL          ; ... used for saucer direction
-}}}
+```
 
 A common shortcut in assembly is to replace a CALL followed by a RET with just a JUMP to the subroutine. At 09AA the shortcut jumps to 
 the very next line of code. An even shorter cut would be to take the jump out completely.
 
-{{{
+```plainCode
 09A5: 23              INC     HL                  ; Load ...
 09A6: 7E              LD      A,(HL)              ; ... the ...
 09A7: 23              INC     HL                  ; ... screen ...
@@ -79,13 +87,13 @@ the very next line of code. An even shorter cut would be to take the jump out co
 ; Display 2 digits in A to screen at HL
 09B2: D5              PUSH    DE                  ; Preserve
 09B3: F5              PUSH    AF                  ; Save for later
-}}}
+```
 
 Assembly programmers do all kinds of "unstructured flow" tricks with the stack. Some of it is confusing and potentially error prone. The 
 code at 0x01A2 breaks out of a routine when D reaches 0. But it doesn't return to the caller -- it discards a slot on the stack returns to 
 the caller's caller (the grand-caller?)! The code makes some dangerous assumptions about who is calling it.
 
-{{{
+```plainCode
 ;##-MoveRefAlien
 ; The "reference alien" is the bottom left. All other aliens are drawn relative to this
 ; reference. This routine moves the reference alien (the delta is set elsewhere) and toggles
@@ -101,23 +109,23 @@ the caller's caller (the grand-caller?)! The code makes some dangerous assumptio
 ;
 01CD: E1              POP     HL                  ; Drop return to caller
 01CE: C9              RET                         ; Return to caller's caller
-}}}
+```
 
 At 0x0A01 the value of A is stuffed into location 0x2067. The very next instruction loads A from 0x2067. This might make sense if any other 
 line of code jumped to 0x0A04. But nobody does.
 
-{{{
+```plainCode
 0A00: F1              POP     AF                  ; Restore ...
 0A01: 32 67 20        LD      ($2067),A           ; ... current player number
 0A04: 3A 67 20        LD      A,($2067)           ; ** Why load this again? Nobody ever jumps to 0A04?
 0A07: 67              LD      H,A                 ; To H
-}}}
+```
 
 The count-aliens routine at 0x15F3 sets the location 0x206B to 1 if there is only one alien left. Nobody every reads the flag from 0x206B. Maybe 
 it was used at one time? At any rate the instructions at 0x160B and 0x160E could have been replaced with just "LD ($2067),A" to save some time 
 and space.
 
-{{{
+```plainCode
 ;##-CountAliens
 ; Count number of aliens remaining in active game and return count 2082 holds the current count.
 ; If only 1, 206B gets a flag of 1 ** but ever nobody checks this
@@ -137,7 +145,7 @@ and space.
 160B: 21 6B 20        LD      HL,$206B            ; Set flag if ...
 160E: 36 01           LD      (HL),$01            ; ... only one alien left
 1610: C9              RET                         ; Out
-}}}
+```
 
 There is a huge empty area in the ROM between 0x0C00 and 0x13FF (2K bytes but not on a 2K ROM chip boundary, which would have saved the cost of 
 a chip). That's 1/4th of the ROM empty, which leaves a lot of space for expansion. And yet it appears the developers felt they were running 
@@ -161,7 +169,7 @@ demo.
 The MAME emulator has trouble with these simultaneous button presses. I was unable to reproduce the sequences in the emulator. I did patch 
 the code to make a simpler sequence: "2 Start" then "1 Start".
 
-{{{
+```plainCode
 ;##-CheckHiddenMes
 ; There is a hidden message "TAITO COP" (with no "R") in the game. It can only be 
 ; displayed in the demonstration game during the splash screens. You must enter
@@ -192,7 +200,7 @@ the code to make a simpler sequence: "2 Start" then "1 Start".
 19B6: 11 F7 0B        LD      DE,$0BF7            ; Message = "TAITO COP" (no R)
 19B9: 0E 09           LD      C,$09               ; Message length
 19BB: C3 F3 08        JP      $08F3               ; Print message and out
-}}}
+```
 
 # Code Bug
 
@@ -320,7 +328,7 @@ was meant to delay between handlings once the object gets started. The alien sho
 The next two bytes in each structure are a pointer to the task's code. This reminds me of a modern day object-oriented virtual function 
 pointer table!
 
-{{{
+```plainCode
 0263: 5E              LD      E,(HL)              ; Get handler address LSB
 0264: 23              INC     HL                  ; xx04
 0265: 56              LD      D,(HL)              ; Get handler address MSB
@@ -335,7 +343,7 @@ pointer table!
 0270: 11 0C 00        LD      DE,$000C            ; Offset to next ... 
 0273: 19              ADD     HL,DE               ; ... game task (C+4=10)
 0274: C3 4B 02        JP      $024B               ; Do next game task
-}}}
+```
 
 The remaining bytes in each object structure are object-specific data.
 
@@ -350,12 +358,12 @@ the screen then the C flag is set, which allows the task to run in the current c
 of the screen then the task routine returns and is executed by the "other" interrupt when the beam has moved on. For instance, 
 here is the check for an alien shot:
 
-{{{
+```plainCode
 ; Move the alien shot
 05C1: 11 7C 20        LD      DE,$207C            ; Alien-shot Y coordinate
 05C4: CD 06 1A        CALL    $1A06               ; Compare to beam position
 05C7: D0              RET     NC                  ; Not the right ISR for this shot
-}}}
+```
 
 ## Game Object 0: Move/draw Player 
 
@@ -368,7 +376,7 @@ slower. There is a line of code that sets the second-byte-timer that would slow 
 
 Here are the last lines few lines of the player's object code:
 
-{{{
+```plainCode
 ; Draw player sprite
 036F: 21 18 20        LD      HL,$2018            ; Active player descriptor
 0372: CD 3B 1A        CALL    $1A3B               ; Load 5 byte sprite descriptor in order: EDLHB
@@ -377,7 +385,7 @@ Here are the last lines few lines of the player's object code:
 037B: 3E 00           LD      A,$00               ; Clear the task timer. Nobody changes this but it could have ...
 037D: 32 12 20        LD      ($2012),A           ; ... been speed set for the player with a value other than 0 (not XORA)
 0380: C9              RET                         ; Out
-}}}
+```
 
 This code first draws the sprite then sets the one-byte timer at 0x2012. Notice that the value loaded into A to set this timer is 00. 
 The timer is already at 00 or this task would never have run. In fact, this is the only place in the code that writes to this memory location.
@@ -387,11 +395,11 @@ one-byte instruction "XOR A" that exclusive-ORs the register with itself. This "
 efficient instruction "LD A,$00" is only used twice in the entire code: here and at 0x00CD. At 0x00CD it was specifically chosen because 
 it does not affect the flags, which are passed to the next instruction.
 
-{{{
+```plainCode
 00CB: FE FE           CP      $FE                 ; Moving left?
 00CD: 3E 00           LD      A,$00               ; Value of 0 for rack-moving-right (not XOR so flags are unaffected)
 00CF: C2 D3 00        JP      NZ,$00D3            ; Not FE ... keep the value 0 for right
-}}}
+```
 
 I suspect at one time the "LD A" had a non-zero value. But a delay of any kind was probably too slow for play.
 
@@ -405,7 +413,7 @@ not appear in the MAME emulator which drives a faster monitor.
 The player task code is straight forward. If the player is blowing up then the code flips back and forth between two images for half a 
 second. If the game is in player-mode then the buttons translate to left or right.
 
-{{{
+```plainCode
 ; Draw player sprite
 036F: 21 18 20        LD      HL,$2018            ; Active player descriptor
 0372: CD 3B 1A        CALL    $1A3B               ; Load 5 byte sprite descriptor in order: EDLHB
@@ -423,7 +431,7 @@ second. If the game is in player-mode then the buttons translate to left or righ
 0387: 3C              INC     A                   ; Bump X coordinate
 0388: 32 1B 20        LD      ($201B),A           ; New X coordinate
 038B: C3 6F 03        JP      $036F               ; Draw player and out
-}}}
+```
 
 The player's fire button is read and debounced in the main game loop at 1618. In demo mode the player always fires, and when the player 
 shot is removed from play a new demo command is read from an 11 byte table. The change of direction in the demo thus depends on the shot 
@@ -477,7 +485,7 @@ which means the tracking shot gets fired more often.
 The flying saucer shares the object-task with the "squiggly" shot. Only one of them can be on the screen at a time. The main loop keeps up 
 with the time-until-saucer.
 
-{{{
+```plainCode
 ;##-TimeToSaucer
 0913: 3A 09 20        LD      A,($2009)           ; Reference alien's X coordinate
 0916: FE 78           CP      $78                 ; Don't process saucer timer ... ($78 is 1st rack Yr)
@@ -492,7 +500,7 @@ with the time-until-saucer.
 0929: 2B              DEC     HL                  ; Decrement the ...
 092A: 22 91 20        LD      ($2091),HL          ; ... time-to-saucer
 092D: C9              RET                         ; Done
-}}}
+```
 
 Game task 4 checks the "time for saucer" flag. If it isn't time or if there is already a squiggly shot going then it handles the 
 squiggly shot. If there are 8 or more aliens on the screen then a saucer begins its journey across the screen.
@@ -501,7 +509,7 @@ The flying saucer's direction is linked to the player's shot count. The lowest b
 saucer comes from. If the saucer appears after an even number of player shots then it comes from the right. After an odd number it comes 
 from the left. The saucer object structure is re-initialized every time the player's shot blows up. Here is the code in Object 1 (player fire):
 
-{{{
+```plainCode
 045D: 3A 84 20        LD      A,($2084)           ; Is saucer ...
 0460: A7              AND     A                   ; ... on screen?
 0461: C0              RET     NZ                  ; Yes ... don't reset it
@@ -518,14 +526,14 @@ from the left. The saucer object structure is re-initialized every time the play
 0473: 23              INC     HL                  ; ... delta Xr
 0474: 70              LD      (HL),B              ; Store delta Xr
 0475: C9              RET                         ; Done
-}}}
+```
 
 The score for shooting the saucer ranges from 50 to 300, and the exact value depends on the number of player shots fired. The table 
 at 0x1D54 contains 16 score values, but a bug in the code at 0x044E treats the table as having 15 values. The saucer data starts out 
 pointing to the first entry. Every time the player's shot blows up the pointer is incremented and wraps back around. Here is the 
 table. You have to append a trailing "0" to every value to get the three digit score.
 
-{{{
+```plainCode
 ; 208D points here to the score given when the saucer is shot. It advances 
 ; every time the player-shot is removed. The code wraps after 15, but there
 ; are 16 values in this table. This is a bug in the code at 044E (thanks to
@@ -533,7 +541,7 @@ table. You have to append a trailing "0" to every value to get the three digit s
 ;
 ; Thus the one and only 300 comes up every 15 shots (after an initial 8).
 1D54: 10 05 05 10 15 10 10 05 30 10 10 10 05 15 10 05 
-}}}
+```
 
 There are five entries of 050, eight entries of 100, two 150s, and only one 300. The 300 score comes up every 15 shots (after an initial 
 eight). It should come up every 16, but again -- the code has a bug.
@@ -568,7 +576,7 @@ changes the timing up just enough to make it difficult to lead the advancing ali
 The speed of the fleet tones does NOT match the actual speed of the alien rack. The delay-between-tones is read from a table and depends on 
 how many aliens are left in play.
 
-{{{
+```plainCode
 ; Alien delay lists. First list is the number of aliens. The second list is the corresponding delay.
 ; This delay is only for the rate of change in the fleet's sound.
 ; The check takes the first num-aliens-value that is lower or the same as the actual num-aliens on screen.
@@ -580,7 +588,7 @@ how many aliens are left in play.
 1A11: 32 2B 24 1C 16 11 0D 0A 08 07 06 05 04 03 02 01
 1A21: 34 2E 27 22 1C 18 15 13 10 0E 0D 0C 0B 09 07 05     
 1A31: FF   ; ** Needless terminator. The list value "1" catches everything.
-}}}
+```
 
 The first value in the table is a delay of 52 interrupts between sounds when there are 50 or more aliens. When there are 55 aliens the 
 step sounds are faster than the rack. When there are 50 aliens the step sounds are slower than the rack.
@@ -593,7 +601,7 @@ you can hear the sudden changes -- especially at the beginning of the game when 
 
 The table at 1DA3 gives the starting Y (rotated) coordinates for the alien rack with each new round.
 
-{{{
+```plainCode
 ;##-AlienStartTable
 ; Starting Y coordinates for aliens at beginning of rounds. The first round is initialized to $78 at 07EA.
 ; After that this table is used for 2nd, 3rd, 4th, 5th, 6th, 7th, 8th, and 9th. The 10th starts over at
@@ -606,7 +614,7 @@ The table at 1DA3 gives the starting Y (rotated) coordinates for the alien rack 
 1DA8: 40                                    
 1DA9: 40                                    
 1DAA: 40   
-}}}
+```
 
 The first wave starts at Y=78 (hex). The next wave starts 16 pixels (one row of the rack) lower at Y=50. Then the rack holds at 48 for 
 three rounds and then 40 for three rounds. The value Y=40 is just above the player's shields.
