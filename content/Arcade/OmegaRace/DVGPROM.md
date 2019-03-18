@@ -1,6 +1,8 @@
-%%image = ORace.jpg
+![DVG PROM](ORace.jpg)
 
-{{{
+# DVG PROM
+
+```
 
      Omega Race has two pairs of the state PROM output
      lines swapped before going into the decoder.
@@ -68,4 +70,4 @@ State 0C - STORE2/
 State 0D - STORE1/
 State 0E - STORE0/
 State 0F - STORE3/
-}}}
+```

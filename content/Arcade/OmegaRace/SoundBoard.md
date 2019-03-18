@@ -1,9 +1,16 @@
-%%image = ORace.jpg
-%%title = Omega Race (Sound Board)
-%%-ram  = Arcade/OmegaRace/SoundRAMUse.mark SoundRAMUse.html
-%%-hard = Arcade/OmegaRace/SoundHardware.mark SoundHardware.html
-%%cpu   = Z80
+![Sound Board](ORace.jpg)
 
+# Sound Board
+
+>>> cpu Z80
+
+>>> memoryTable hard 
+[Hardware Info](SoundHardware.md)
+
+>>> memoryTable ram 
+[RAM Usage](SoundRAMUse.md)
+
+```code
 ; Commands:
 ;    0 - reset sound CPU
 ;    7 - beep used in diagnostics
@@ -1445,3 +1452,4 @@
 07FB: 38 00       JR    C,$7FD             ; 
 07FD: 00          NOP                      
 07FE: 3A 00 
+```

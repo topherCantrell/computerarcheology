@@ -1,9 +1,16 @@
-%%image = ORace.jpg
-%%title = Omega Race (Main Board)
-%%cpu   = Z80
-%%-ram  = Arcade/OmegaRace/RAMUse.mark RAMUse.html
-%%-hard = Arcade/OmegaRace/Hardware.mark Hardware.html
+![Omega Race](ORace.jpg)
 
+# Main Board
+
+>>> cpu Z80
+
+>>> memoryTable hard 
+[Hardware Info](Hardware.md)
+
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
+
+```code
 0000: F3              DI                          ; Turn interrupts off
 0001: ED 56           IM      1                   ; Mode 1 ... everything to $38
 0003: 31 FC 4B        LD      SP,$4BFC            ; Stack at top of RAM (almost)
@@ -55,9 +62,11 @@
 
 ; Padding to NMI destination
 005D: FF FF FF FF FF FF FF FF FF
+```
 
 # NMI
- 
+
+```code 
 ; NMI comes here
 0066: ED 45           RETN                        ; Return from non-maskable interrupt
                   
@@ -197,9 +206,11 @@
 019C: F1              POP     AF                  
 019D: FB              EI                          
 019E: ED 4D           RETI                        
+```
 
 # Setup for Diagnostics
 
+```code
 DiagSetup: 
 ; Init the diagnostic screen (vectors)
 ;
@@ -233,9 +244,11 @@ DiagSetup:
 ; CR/LF
 01C6: 4F 74 FF 06     ; 8026(013) 744F 06FF     LongVector  scale=7 x=6FF y=44F intensity=0 (-767,-79)
 01CA: 00 D0           ; 802A(015) D000          RTS               ; return to caller
+```
 
 # Diagnostics Strings
 
+```code
 DiagString: 
 ; Diagnostic strings ... 8 characters per row
 
@@ -712,9 +725,11 @@ DiagString:
 04E5: 00              NOP                         
 04E6: F0              RET     P                   
 04E7: AA              XOR     D                   
+```
 
 # Diagnostics
 
+```code
 Diagnostics: 
 ; This routine is quite clever. It uses IX and IY as link registers to avoid CALL and
 ; RETURN. After all, if the RAM is not working then CALL/RETURN won't work. The diagnostics
@@ -1067,9 +1082,11 @@ Diagnostics:
 07C9: 36 00           LD      (HL),$00            ; ... except ...
 07CB: ED B0           LDIR                        ; ... 1st with B0 (HALT to DVG)
 07CD: DD E9           JP      (IX)                ; No stack ... link
+```
 
 # Dog and DVG
 
+```code
 DogAndDVG: 
 07CF: 08              EX      AF,AF'              ; Hold A
 07D0: DB 09           IN      A,($09)             ; Bump watchdog
@@ -1089,9 +1106,11 @@ DogAndDVG:
 07E4: D9              EXX                         
 07E5: CB 77           BIT     6,A                 
 07E7: DD E9           JP      (IX)        
+```
 
 # Test ROM        
 
+```code
 TestROM: 
 07E9: 79              LD      A,C                 ; Get LSB of count
 07EA: B7              OR      A                   ; Is it 0?
@@ -1123,9 +1142,11 @@ TestROM:
 0818: EB              EX      DE,HL               ; ... row
 0819: FE 05           CP      $05                 ; Z if OK, NZ if NG
 081B: DD E9           JP      (IX)                ; Return
+```
 
 # Test RAM
 
+```code
 TestRAM: 
 081D: CB 7C           BIT     7,H                 ; Time to feed watchdog?
 081F: 20 07           JR      NZ,$828             ; No ... skip it
@@ -1163,9 +1184,11 @@ TestRAM:
 085E: EB              EX      DE,HL               ; ... on screen
 085F: FE 05           CP      $05                 ; Z if OK, NZ if bad
 0861: DD E9           JP      (IX)                ; Return
+```
 
 # Test NONVOL
 
+```code
 TestNONVOL: 
 0863: FD 21 6A 08     LD      IY,$086A            ; Continue after next
 0867: C3 CF 07        JP      $07CF               ;{DogAndDVG} Feed watchdog and make sure DVG is running
@@ -1218,9 +1241,11 @@ TestNONVOL:
 08BF: FD 21 C6 08     LD      IY,$08C6            
 08C3: C3 CF 07        JP      $07CF               ;{DogAndDVG} 
 08C6: DD E9           JP      (IX)                
+```
 
 # Print String
 
+```code
 PrintString: 
 ; HL = ASCII string
 ; BC = length of string
@@ -7984,9 +8009,11 @@ PrintString:
 3A2B: 80              ADD     A,B                 
 3A2C: 00              NOP                         
 3A2D: 00              NOP            
+```
 
 # Character Vectors
 
+```code
 VTableChars: 
 ; Character DJSR for letters A-Z
 3A2E: 4D CC     ; (DJSR $8C4D)    A
@@ -9099,9 +9126,11 @@ VTableChars:
 3FCE: D0              RET     NC                  
 3FCF: AA              XOR     D                   
 3FD0: CD B3 CD        CALL    $CDB3         ; 
+```
 
 # Number Vectors
 
+```code
 VTableNums: 
 ; Character DJSR calls for numbers and etc      
 3FD3: D3 CD     ; (DJSR $8DD3)   player
@@ -9124,3 +9153,4 @@ VTableNums:
 3FF5: 2E CA     ; (DJSR $8A2E)   circle (no triangle)
 
 3FF7: 01 00 00 00 D6 00 00 00 1F
+```

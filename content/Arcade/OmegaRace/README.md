@@ -1,10 +1,27 @@
-%%title = Omega Race
-%%image = ORace.jpg
+![Omega Race](ORace.jpg)
 
-* [Main Board](MainBoard)
-* [Sound Board](SoundBoard)
-* [Vector ROM](VectorROM)
-* [DVG PROM](DVGPROM)
+>>> deploy:<br>
+>>>   +ORace.jpg<br>
+>>>   +VectorROM.js<br>
+>>>   Hardware.md<br>
+>>>   RAMUse.md<br>
+>>>   MainBoard.md<br>
+>>>   ----<br>
+>>>   SoundHardware.md<br>
+>>>   SoundRAMUse.md<br>
+>>>   SoundBoard.md<br>
+>>>   ----<br>
+>>>  DVGPROM.md<br>
+>>>  VectorROM.md<br>
+>>>  ----<br>
+>>>  Journal.md<br>
+
+# Omega Race
+
+* [Main Board](MainBoard.md)
+* [Sound Board](SoundBoard.md)
+* [Vector ROM](VectorROM.md)
+* [DVG PROM](DVGPROM.md)
 
 # Diagnostics 
 

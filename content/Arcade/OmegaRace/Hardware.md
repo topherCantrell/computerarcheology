@@ -1,24 +1,26 @@
-%%image = ORace.jpg
-%%title = Omega Race Hardware Info
+![Omega Race Hardware Info](ORace.jpg)
 
-{{{memory
-||= Address || Name             || Description ||
-||  09p     || WDOG             || Reset watchdog timer ||
-||  08p     || VGSTART          || Start/ (VG start) ||
-||  0Ap     || SEQRES           || SEQRES/ (VG stop/reset?) ||
-||  0Bp     || RDSTOP           || RDSTOP/ d7 = stop (VG running if 0) ||
-||  10p     || DIPSWC4          || DIP SW C4 (game ship settings) ||
-||  11p     || INPUTA           || Test, P1 Fire, P1 Thrust, Tilt, Coin1, Coin2 ||
-||  12p     || INPUTB           || Player/credit, P2 fire, P2 thrust (cocktail) ||
-||  13p     || OUTPUTA          || Screen flip, LEDs, coin meters ||
-||  14p     || SOUNDCMD         || Sound command (interrupts sound CPU) ||
-||  15p     || ENCODER1         || Encoder 1 ||
-||  16p     || ENCODER2         || Encoder 2 ||
-||  17p     || DIPSWC6          || DIP SW C6 (coin/cocktail settings) ||
-}}}
+# Hardware
 
-{{{
+>>> memory
 
+| | | |
+| --- | --- | --- |
+|  09p     | WDOG             | Reset watchdog timer |
+|  08p     | VGSTART          | Start/ (VG start) |
+|  0Ap     | SEQRES           | SEQRES/ (VG stop/reset?) |
+|  0Bp     | RDSTOP           | RDSTOP/ d7 = stop (VG running if 0) |
+|  10p     | DIPSWC4          | DIP SW C4 (game ship settings) |
+|  11p     | INPUTA           | Test, P1 Fire, P1 Thrust, Tilt, Coin1, Coin2 |
+|  12p     | INPUTB           | Player/credit, P2 fire, P2 thrust (cocktail) |
+|  13p     | OUTPUTA          | Screen flip, LEDs, coin meters |
+|  14p     | SOUNDCMD         | Sound command (interrupts sound CPU) |
+|  15p     | ENCODER1         | Encoder 1 |
+|  16p     | ENCODER2         | Encoder 2 |
+|  17p     | DIPSWC6          | DIP SW C6 (coin/cocktail settings) |
+
+
+```
  /* main CPU */
  /* XTAL101 Crystal @ 12mhz */
  /* through 74LS161, Pin 13 = divide by 4 */
@@ -132,5 +134,4 @@ Memory Map:
             0                    normal
             1                    cocktail
 
-
-}}}
+```

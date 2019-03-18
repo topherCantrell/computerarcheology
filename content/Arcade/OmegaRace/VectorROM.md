@@ -1,16 +1,18 @@
-%%image = ORace.jpg
-%%title = Omega Race DVG Vector ROM 
-%%cpu   = DVG
+![DVG Vector ROM](ORace.jpg)
 
-{{{html
+# Omeg Race DVG Vector ROM
+
+>>> cpu DVG
+
+```html
 <script src="/Arcade/OmegaRace/VectorROM.js"></script>
 <script src="/js/BinaryData.js"></script>
 <script src="/js/DVG.js"></script>
 <script src="/js/CANVAS.js"></script>
-}}}
+```
 
-For info about the vector generator hardware and opcodes:[[br]]
-[DVG Information](/Arcade/DVG.html)
+For info about the vector generator hardware and opcodes:<br>
+[DVG Information](../Asteroids/DVG.html)
 
 The player ship sprites are first and last in the ROM. Each picture draws the player just a
 little rotated CCW from the original position (facing right). Pictures come in pairs. The first
@@ -19,20 +21,23 @@ is drawn right where the ship picture ends.
 
  Note that there is no perfectly vertical picture. In the game you can't point perfectly vertical.
  
+```code
 ShipsA:
 ; The first ship image below shows the thrust pattern.
+```
 
-# Player (Part 1) `visual`
+# Player (Part 1) 
 
-{{{html
+```html
 <canvas width="1225" height="100"
   data-canvasFunction="DVG.handleDVGCanvas"
   data-colors='["#FFFFFF","#FFE55C","#FFE55C","#FFE55C","#FFE55C","#635629","#FFE55C","#FFE55C","#FFE55C","#FFE55C","#FFE55C","#FFE55C","#FFE55C","#FFE55C","#FFE55C","#FFE55C"]'
   data-origin="8000"
   data-command="baseScale=1,x=50,y=50,900E,9000,x=125,y=50,904E,x=200,y=50,9090,x=275,y=50,90D2,x=350,y=50,9116,x=425,y=50,9156,x=500,y=50,9192,x=575,y=50,91D2,x=650,y=50,9212,x=725,y=50,9250,x=800,y=50,9290,x=875,y=50,92D0,x=950,y=50,930C,x=1025,y=50,934C,x=1100,y=50,9390,x=1175,y=50,93D2">
 </canvas>
-}}}
+```
 
+```code
 ; Thrust fragment                                                               
 9000: BF 30 FF 07     VCTR scale=3(/64) x=-3FF y=BF   i=0   (-15.98 ,   2.98 )  
 9004: BF 34 3F F6     VCTR scale=3(/64) x=-23F y=-BF  i=15  ( -8.98 ,  -2.98 )
@@ -356,17 +361,19 @@ ShipsA:
 
 ; ?? not used
 9406: 3C FF           SVEC scale=3(/16) x=0    y=-200 i=3   (  0.00 , -32.00 )
+```
 
-# Enemy Triangle `visual`
+# Enemy Triangle 
 
 Circle enemy with triangle (just one picture)
 
-{{{html
+```html
 <canvas width="100" height="100"
   data-command="baseScale=1,x=50,y=50,9408">
 </canvas>
-}}}
+```
 
+```code
 EnemyTri:
 9408: 00 FA           SVEC scale=1(/64) x=0    y=200  i=0   (  0.00 ,   8.00 )
 940A: BF 36 BF F1     VCTR scale=3(/64) x=1BF  y=-2BF i=15  (  6.98 , -10.98 )
@@ -390,17 +397,19 @@ EnemyTri:
 9452: 3F 45 9F C2     VCTR scale=4(/32) x=29F  y=-13F i=12  ( 20.96 ,  -9.96 )
 9456: 9F 42 3F C1     VCTR scale=4(/32) x=13F  y=29F  i=12  (  9.96 ,  20.96 )
 945A: 00 D0           RTS
+```
 
-# Enemy (no triangle) `visual`
+# Enemy (no triangle) 
 
 Circle enemy (no triangle). There are three pictures for animation.
 
-{{{html
+```html
 <canvas width="250" height="100"
   data-command="baseScale=1,x=50,y=50,945C,x=125,y=50,94A2,x=200,y=50,94E8">
 </canvas>
-}}}
+```
 
+```code
 EnemyNoTri:
 945C: 7F 31 FF 03     VCTR scale=3(/64) x=3FF  y=17F  i=0   ( 15.98 ,   5.98 )
 9460: 7F 32 7F 66     VCTR scale=3(/64) x=-27F y=27F  i=6   ( -9.98 ,   9.98 )
@@ -458,17 +467,19 @@ EnemyNoTri:
 9524: 5F 40 FF 82     VCTR scale=4(/32) x=2FF  y=5F   i=8   ( 23.96 ,   2.96 )
 9528: FF 42 5F 84     VCTR scale=4(/32) x=-5F  y=2FF  i=8   ( -2.96 ,  23.96 )
 952C: 00 D0           RTS
+```
 
-# Enemy Chaser `visual`
+# Enemy Chaser 
 
 Triangle, chasing ememy in different positions
 
-{{{html
+```html
 <canvas width="350" height="100"
   data-command="baseScale=1,x=50,y=50,952E,x=125,y=50,9554,x=200,y=50,957C,x=275,y=50,95A4">
 </canvas>
-}}}
+```
 
+```code
 EnemyChase:
 952E: FF 12 FF D2     VCTR scale=1(/256)x=2FF  y=2FF  i=13  (  2.99 ,   2.99 )
 9532: BF 34 3F D3     VCTR scale=3(/64) x=33F  y=-BF  i=13  ( 12.98 ,  -2.98 )
@@ -517,9 +528,11 @@ EnemyChase:
 95C4: BF 35 BF D2     VCTR scale=3(/64) x=2BF  y=-1BF i=13  ( 10.98 ,  -6.98 )
 95C8: 3F 31 BF D7     VCTR scale=3(/64) x=-3BF y=13F  i=13  (-14.98 ,   4.98 )
 95CC: A7 EB           JMP $974E ; {}
+```
 
-# Lasers `visual`
+# Lasers 
 
+```code
 Lasers:
 ; Laser shots at different angles (just single vectors)
 ;
@@ -651,17 +664,19 @@ Lasers:
 9746: 00 D0           RTS
 9748: 00 30 BF F7     VCTR scale=3(/64) x=-3BF y=0    i=15  (-14.98 ,   0.00 )
 974C: 00 D0           RTS
+```
 
-# Triangles `visual`
+# Triangles 
 
 Single and double
 
-{{{html
+```html
 <canvas width="200" height="100"
   data-command="baseScale=1,x=50,y=50,974E,x=125,y=50,975E">
 </canvas>
-}}}
+```
 
+```code
 Triangles:
 ; Triangle (up)
 974E: 7F 35 FF 02     VCTR scale=3(/64) x=2FF  y=-17F i=0   ( 11.98 ,  -5.98 )
@@ -678,17 +693,19 @@ Triangles:
 976C: FF 33 FF F2     VCTR scale=3(/64) x=2FF  y=3FF  i=15  ( 11.98 ,  15.98 )
 9770: FF F0           SVEC scale=2(/32) x=-200 y=0    i=15  (-16.00 ,   0.00 )
 9772: 00 D0           RTS
+```
 
-# Explosion `visual`
+# Explosion 
 
 Multi-line explosion ... three pictures for animation
 
-{{{html
+```html
 <canvas width="400" height="200"
   data-command="baseScale=1,x=50,y=100,9774,x=150,y=100,97B0,x=300,y=100,9824">
 </canvas>
-}}}
+```
 
+```code
 Explosion:
 9774: BF 32 00 F0     VCTR scale=3(/64) x=0    y=2BF  i=15  (  0.00 ,  10.98 )
 9778: BF 46 00 F0     VCTR scale=4(/32) x=0    y=-2BF i=15  (  0.00 , -21.96 )
@@ -776,17 +793,19 @@ Explosion:
 9890: 7F 32 3F F5     VCTR scale=3(/64) x=-13F y=27F  i=15  ( -4.98 ,   9.98 )
 9894: 3F 47 7F 01     VCTR scale=4(/32) x=17F  y=-33F i=0   ( 11.96 , -25.96 )
 9898: 00 D0           RTS
+```
 
-# Letters `visual`
+# Letters 
 
 Letters of the alphabet
 
-{{{html
+```html
 <canvas width="850" height="40"
   data-command="baseScale=1,x=20,y=30,989A,*,*,*,*,98EE,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*">
 </canvas>
-}}}
+```
 
+```code
 Letters:
 ; A
 ;
@@ -1037,17 +1056,19 @@ Letters:
 9A58: 92 F8           SVEC scale=1(/64) x=200  y=0    i=9   (  8.00 ,   0.00 )
 9A5A: 02 F8           SVEC scale=1(/64) x=200  y=0    i=0   (  8.00 ,   0.00 )
 9A5C: 00 D0           RTS
+```
 
-# Numbers `visual`
+# Numbers 
 
 Numbers and the "space" character
 
-{{{html
+```html
 <canvas width="350" height="40"
   data-command="baseScale=1,x=20,y=30,9A5E,*,*,*,*,*,*,*,*,*">
 </canvas>
-}}}
+```
 
+```code
 Numbers:
 ; 0
 ;
@@ -1172,17 +1193,19 @@ Numbers:
 9B4C: 92 F8           SVEC scale=1(/64) x=200  y=0    i=9   (  8.00 ,   0.00 )
 9B4E: 7F 26 FF 03     VCTR scale=2(/128)x=3FF  y=-27F i=0   (  7.99 ,  -4.99 )
 9B52: 00 D0           RTS
+```
 
-# Special Chars `visual`
+# Special Chars 
 
 Punctuation and special characters
 
-{{{html
+```html
 <canvas width="350" height="100"
   data-command="baseScale=1,x=20,y=30,9B54,9B66,9B84,9B94,9B9A,9BA6">
 </canvas>
-}}}
+```
 
+```code
 Special:
 ; .
 ;
@@ -1254,17 +1277,19 @@ Special:
 9BEE: 00 00 00 00     VCTR scale=0(/512)x=0    y=0    i=0   (  0.00 ,   0.00 )
 9BF2: 00 00 00 00     VCTR scale=0(/512)x=0    y=0    i=0   (  0.00 ,   0.00 )
 9BF6: 00 00 BF 30     VCTR scale=0(/512)x=BF   y=0    i=3   (  0.37 ,   0.00 )
+```
 
-# Player (Part 2) `visual`
+# Player (Part 2) 
 
 More ship/thrust pictures like at start
 
-{{{html
+```html
 <canvas width="1225" height="100"
   data-command="baseScale=1,x=50,y=50,9C06,x=125,y=50,9C46,x=200,y=50,9C88,x=275,y=50,9CCA,x=350,y=50,9D0E,x=425,y=50,9D4E,x=500,y=50,9D8A,x=575,y=50,9DCA,x=650,y=50,9E0A,x=725,y=50,9E48,x=800,y=50,9E88,x=875,y=50,9EC8,x=950,y=50,9F04,x=1025,y=50,9F44,x=1100,y=50,9F88,x=1175,y=50,9FCA">
 </canvas>
-}}}
+```
 
+```code
 ShipsB:
 ; Thrust pattern
 9BFA: FF 03 BF 34     VCTR scale=0(/512)x=-BF  y=3FF  i=3   ( -0.37 ,   1.99 )
@@ -1589,3 +1614,4 @@ ShipsB:
 
 ; ?? not used
 9FFE: FB FF           SVEC scale=3(/16) x=200  y=-200 i=15  ( 32.00 , -32.00 )
+```
