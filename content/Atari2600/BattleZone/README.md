@@ -1,17 +1,25 @@
-%%title = Atari 2600 Battle Zone
-%%image = A2600Battlezone.jpg
+![Battle Zone](A2600Battlezone.jpg)
 
-[Battle Zone Code](Code.html)
+>>> deploy:<br>
+>>>   +A2600Battlezone.jpg<br>
+>>>   RAMUse.md<br>
+>>>   Code.jd<br>
+>>>   ----<br>
+>>>   Journal.md<br>
 
-{{{playMe
+# Battle Zone
+
+[Battle Zone Code](Code.md)
+
+>>> { playMe
 
 # Play Me!
 
 It might take a few seconds for the ROM to load, but play Atari2600 BattleZone here:
 
-[http://javatari.org&ROM=BattleZone](http://javatari.org?ROM=https://github.com/topherCantrell/computerarcheology/blob/master/content/Atari2600/BattleZone/Batlzone.bin?raw=true`playMe`)
+[http://javatari.org&ROM=BattleZone](http://javatari.org?ROM=https://github.com/topherCantrell/computerarcheology/blob/master/content/Atari2600/BattleZone/Batlzone.bin?raw=true)
 
-}}}
+>>> }
 
 # The Banks
 
