@@ -1,6 +1,10 @@
-%%image = Galaga.jpg
-%%cpu   = Z80
+![CPU1 Fix](Galaga.jpg)
 
+#CPU1 Official Fix
+
+>>> cpu Z80
+
+```code
 ; 3N + 3M + 3L + 3K
 
 This is the patched ROM for CPU1 released for the Arcade.
@@ -3510,7 +3514,7 @@ This is the patched ROM for CPU1 released for the Arcade.
 1426: 15             DEC     D               
 1427: D9             EXX                     
 1428: 15             DEC     D               
-1429: ED             ???                     
+1429: ED                                 
 142A: 15             DEC     D               
 142B: FF             RST     0X38            
 142C: 15             DEC     D               
@@ -11228,3 +11232,4 @@ This is the patched ROM for CPU1 released for the Arcade.
 3FFD: FF             RST     0X38            
 3FFE: FF             RST     0X38            
 3FFF: DA 00 00       JP      C,$0000         
+```

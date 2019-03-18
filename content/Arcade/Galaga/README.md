@@ -1,14 +1,23 @@
-%%image = Galaga.jpg
-%%title = Galaga
+![Galaga](Galaga.jpg)
 
-# Galaga No-fire Cheat 
+>>> deploy:<br>
+>>>   CPU1.md
+>>>   CPU2.md
+>>>   CPU3.md
+>>>   CPU1Fix.md
+>>>   +Galaga.jpg
+>>>   +galaga1.jpg
+>>>   +galaga2.jpg
+>>>   Journal.md
+
+# Galaga No-fire Cheat
 
 A snazzier version of this material was published in Circuit Cellar magazine. The editors did a wonderful job cleaning up my writing mess: 
 [Debugging Commercial Code: A Quick Fix for Galaga Code in Circuit Cellar magazine November 2005](http://www.cc-webshop.com/Circuit-Cellar-Issue-184-November-2005-PDF-FI-2005-184.htm).
 
-* [CPU1 (Main Game Controller)](CPU1.html)
-* [CPU2 Game Helper](CPU2.html)
-* [CPU3 Sound Processor](CPU3.html)
+* [CPU1 (Main Game Controller)](CPU1.md)
+* [CPU2 Game Helper](CPU2.md)
+* [CPU3 Sound Processor](CPU3.md)
 
 ## Cheat Instructions
 
@@ -67,7 +76,7 @@ at 0594 to FF defeats the checksum process. The CPU reports the checksum is good
 The first part of the interrupt service routine is rather boring just bumping several timers. But the end of the routine is interesting. The code below shows how the interrupt 
 handler vectors out to individual commands.
 
-{{{
+```plainCode
 055D: 21 3B 00        LD      HL,$003B            ; Jump table
 0560: 79              LD      A,C                 ; Command
 0561: CB 27           SLA     A                   ; *2
@@ -82,12 +91,12 @@ handler vectors out to individual commands.
 056D: C1              POP     BC                  ; Restore BC
 ...
 0034: E9              JP      (HL)                ; Jump to routine pointed to by HL
-}}}
+```
 
 The interrupt handler processes a list of commands supplied in shared memory by CPU1. The above code fetches a two-byte address for each command from a table at 003B and 
 essentially performs a CALL to that address. The code below shows the contents of the jump table in memory at 003B.
 
-{{{
+```plainCode
 ; Jump table for commands
 003B: BE 05       ;RET
 003D: BF 05       ;     Commenting this disables the drawing of the Blue bees and the Big Bees
@@ -97,7 +106,7 @@ essentially performs a CALL to that address. The code below shows the contents o
 0045: EE 05       ;     Commenting this disables player collision detection. Bullets and bees pass under the player undetected.
 0047: BE 05       ; RET
 0049: CA 0E       ; ??Expansion check? Commenting seemed to have no effect.
-}}}
+```
 
 The Z80 is a little-endian machine; the address bytes are stored LSB first. Command0 begins in ROM at 05BE. Note that the instruction at this location is simply a return. 
 Command0 does nothing, and neither do commands 3 and 6. Why are these in the table? Are they placeholders for future expansion? Are they remnants of functionality that got 
@@ -128,7 +137,7 @@ is the continuous-attack pattern characteristic of play at the end of a stage.
 
 I found the initiate bee shot routine by patching around in subcommand 5.
 
-{{{
+```plainCode
 ; Initiate bee shot
 0D54: DD 35 0E        DEC     (IX+$0E)            ; Enough time ellapsed between shots?
 0D57: C2 FA 0D        JP      NZ,$0DFA            ; No ... skip shooting.
@@ -188,7 +197,7 @@ I found the initiate bee shot routine by patching around in subcommand 5.
 0DFF: 11 14 00        LD      DE,$0014            ; Point to next ...
 0E02: DD 19           ADD     IX,DE               ; ... structure
 0E04: C3 E4 08        JP      $08E4               ; Continue with next bee.
-}}}
+```
 
 While patching and exploring the movement subcommands of Command02, we glimpse a strange series of checks beginning at 0D54. These checks are protecting a segment of 
 ode beginning at 0D7D. If all the conditions are not just right, the routine is skipped. We can quickly figure out what this special routine does by patching the code 
@@ -222,7 +231,7 @@ Writing to the screen memory causes a character to appear on the screen. This sn
 eight characters. We can place the instrument in place of Command05 (the player-collision-detection command). Now when the game calls for player collision detection, the 
 status of the shot slots is updated on the screen. We can see how the shot structures are handled by playing the resulting images.
 
-{{{
+```plainCode
 ; This file patches the CPU2 code to show the status of the
 ; shot-slots on the screen.
 
@@ -254,7 +263,7 @@ status of the shot slots is updated on the screen. We can see how the shot struc
 0618: 3A 76 88  LD    A,($8876)
 061B: 32 07 81  LD    ($8107),A 
 061E: C9        RET                   ; No collision 
-}}}
+```
 
 When we play the game, our hypothesis is proven. Initially, the screen shows a line of 0's (evidently character 80) when the slots are empty. When a bee fires, the 0's 
 change to 6's. As the shots vanish off the bottom of the screen, the 6's turn back to 0's.
@@ -264,9 +273,8 @@ until 15 minutes later when they are all corrupt and the bee stops firing. The s
 looks on the game screen. Note in the first screen shot that the first two shot structures are filled by the two shots moving towards the player. In the second screen-shot, 
 all the shot structures are filled, yet there are no visible shots.
 
-{{{html
-<img src="galaga1.jpg"> <img src="galaga2.jpg">
-}}}
+![](galaga1.jpg)
+![](galaga2.jpg)
 
 We now have at least part of the answer. Occasionally a shot structure is given a corrupted shot which never gets removed. Over time, all of the structures get corrupted and 
 the bees can't fire. So where is the code that removes the shots? I suspect we will find it coupled to the code that moves the shot, but where? We don't even know which CPU's 
@@ -285,7 +293,7 @@ We start with CPU1 just as we did before -- with the RST handles in the first 56
 a multiply routine and some buffer fillers. The initialization code squeezed in two instructions before jumping elsewhere. The interrupt handler at 0038 jumps away too. But 
 notice the instruction just after the ISR at 003B. This might be the heart of a jump vector system, and we know from CPU2 how informative that can be.
 
-{{{
+```plainCode
 0000: 3E 10           LD      A,$10               ; Send command ...
 0002: 32 00 71        LD      ($7100),A           ; ... to IO processor
 0005: C3 C4 02        JP      $02C4               ; Continue
@@ -346,7 +354,7 @@ notice the instruction just after the ISR at 003B. This might be the heart of a 
 
 ;======================================================================
 003B: E9              JP      (HL)                ; Indirection to HL
-}}}
+```
 
 If we use the search capability in our text editor, we find that this instruction is CALLed from only one place -- 028E which is deep within the interrupt handler. CPU1 
 must be using interrupt timing to perform command processing just like CPU2. The code below shows the jump table vector from the interrupt handler. You'll note that the 
@@ -354,7 +362,7 @@ jump table is located at 0096 in ROM. We can use our patching technique to uncov
 
 ### Checksum 
 
-{{{
+```plainCode
 0280: 47              LD      B,A                 ;
 0281: 21 96 00        LD      HL,$0096            ; Jump table
 0284: 79              LD      A,C                 ;
@@ -367,13 +375,13 @@ jump table is located at 0096 in ROM. We can use our patching technique to uncov
 028C: EB              EX      DE,HL               ;
 028D: C5              PUSH    BC                  ;
 028E: CD 3B 00        CALL    $003B               ; Redirection to HL
-}}}
+```
 
 But first, we must tackle another problem. Remember that CPU2 performs a checksum on its local ROM and communicates the results through a shared memory location. CPU1 
 also performs the same check on its own ROMs -- probably near the point where the information is fetched from the other two CPUs. CPU2 wrote its checksum to 
 location 9100. If we search CPU1 for a read of location 9100, we uncover the following section of code.
 
-{{{
+```plainCode
 3568: CD 21 35        CALL    $3521               ; Checksum ROM 1
 356B: 34              INC     (HL)                ;
 356C: 0E 00           LD      C,$00               ;
@@ -403,7 +411,7 @@ location 9100. If we search CPU1 for a read of location 9100, we uncover the fol
 359E: 3D              DEC     A                   ; Restore error
 359F: 32 02 91        LD      ($9102),A           ; Save error code
 35A2: C3 35 35        JP      $3535               ; Print ROM/RAM report
-}}}
+```
 
 First CPU1 checks its own four ROM chips. Then it waits for results from CPU2 and CPU3 in turn. The local checksum can be disabled by NOPing out the calls to 3521 
 at each of the four places.
@@ -414,7 +422,7 @@ Now we can patch out the individual commands and observe the results. The code b
 of the entries point to an RET instruction. These commands do absolutely nothing. By changing other entries to point to the same RET (at 083A) we can discover the 
 functionality of the disabled command.
 
-{{{
+```plainCode
 ; Play functions called from ISR
 0096: 3A 08       ;00:RET
 0098: 3B 08       ;01:Draw player
@@ -448,14 +456,14 @@ functionality of the disabled command.
 00D0: 00 20       ;1D:Coordinate free-fighter sequence
 00D2: 3A 08       ;1E:RET
 00D4: 8A 09       ;1F:Process inputs (coins)
-}}}
+```
 
 When we disable Command14, we can't move the ship left or right. When we disable Command 15, we cannot fire a shot. When we comment out Command0D, the bee fire 
 appears on the screen but does not move. We have found the MoveBeeFire code as shown below.
 
 ### MoveBeeFire Function 
 
-{{{
+```plainCode
 ; PLAY COMMAND 0D (Move Bee Fire)
 1EAA: 3A A0 92        LD      A,($92A0)           ;
 1EAD: E6 01           AND     $01                 ;
@@ -507,7 +515,7 @@ appears on the screen but does not move. We have found the MoveBeeFire code as s
 1EEE: 7E              LD      A,(HL)              ; Get Y coordinate
 1EEF: DD 84           ADD     A,IXH               ; Offset Y coordinate
 1EF1: 77              LD      (HL),A              ; New Y coordinate
-}}}
+```
 
 The interesting part of this routine is that it does not access the 8868 flags that CPU2 uses to spot a free shot structure. This routine simply looks at the 
 coordinates and velocity of the shot sprites. Notice the check at 1ECC. If the X coordinate of the sprite is 0, the shot is ignored. Why?
@@ -525,7 +533,7 @@ into memory. We NOP these spots out (there are a number of them) one at a time a
 It turns out to be the instruction at 2588. When we comment out this set, the bee shots "wrap" from the bottom of the screen back to the top over and over again. 
 The code below shows the RemoveBeeShot routine.
 
-{{{
+```plainCode
 ; Jump04,07:
 ; Remove item if Y coordinate is too close to bottom or top of screen.
 255B: 26 93           LD      H,$93               ; Coordinates
@@ -560,7 +568,7 @@ The code below shows the RemoveBeeShot routine.
 2589: 26 93           LD      H,$93               ; Free ...
 258B: 36 00           LD      (HL),$00            ; ... sprite
 258D: C3 24 24        JP      $2424               ; Do next
-}}}
+```
 
 Actually, this code is part of a larger block of code -- the Command0C from the jump table. This is a huge routine that uses another jump table to perform 
 several subcommands. One of these subcommands (subcommand06) removes score indications from the screen after they have been displayed for a couple of seconds. 
@@ -605,7 +613,7 @@ The Command7 routine at 0ECA in CPU2 reads bit 6 from the second set of DIP swit
 is normally off. Command7 simply returns when it sees the switch is off. That leaves a section of ROM available after the conditional jump. We can put our patch (shown below) 
 in that area. When we test it in the emulator, we find that the "no shooting" cheat is corrected.
 
-{{{
+```plainCode
 ; This file patches the CPU2 code to fix the galaga-cheat. It makes
 ; sure a shot is never fired at X=0.
 ;
@@ -627,7 +635,7 @@ in that area. When we test it in the emulator, we find that the "no shooting" ch
 0ED6: 1C        INC    E              ; ... from ...
 0ED7: 2C        INC    L              ; ... 0D95
 0ED8: C3 98 0D  JP     $D98           ; Continue regular flow
-}}}
+```
 
 ## Updates 
 

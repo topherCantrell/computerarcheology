@@ -1,6 +1,10 @@
-%%image = Galaga.jpg
-%%cpu   = Z80
+![CPU3](Galaga.jpg)
 
+# CPU3 Sound Processor
+
+>>> cpu Z80
+
+```code
 ; Sound processor
 
 ; Restart comes here
@@ -2420,3 +2424,4 @@
 0FD0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 0FE0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 0FF0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
+```

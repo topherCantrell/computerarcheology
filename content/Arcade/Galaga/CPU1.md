@@ -1,6 +1,10 @@
-%%image = Galaga.jpg
-%%cpu   = Z80
+![CPU1](Galaga.jpg)
 
+# CPU1
+
+>>> cpu Z80
+
+```code
 ; 3N + 3M + 3L + 3K
 
 ;======================================================================
@@ -8398,3 +8402,4 @@
 3FE0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 3FF0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
 3FFF: D9
+```

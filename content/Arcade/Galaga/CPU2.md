@@ -1,6 +1,10 @@
-%%image = Galaga.jpg
-%%cpu   = Z80
+![CPU2](Galaga.jpg)
 
+# CPU2
+
+>>> cpu Z80
+
+```code
 ;================================================================
 ; Startup comes here
 0000: 31 00 91    LD    SP,$9100           ; Initialize stack
@@ -2646,3 +2650,4 @@
 0FFD: AC          XOR   H                  ;
 0FFE: FF          RST   0X38               ;
 0FFF: FF          RST   0X38               ;
+```
