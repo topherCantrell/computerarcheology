@@ -1,14 +1,25 @@
-%%title = Time Pilot
-%%image = TimePilot.jpg
+![Time Pilot Audio](TimePilot.jpg)
+
+>>> deploy:<br>
+>>>   +TimePilot.jpg<br>
+>>>   SoundHardware.md<br>
+>>>   SoundRAMUse.md<br>
+>>>   SoundCode.md<br>
+>>>   ----<br>
+>>>   Hardware.md<br>
+>>>   RAMUse.md<br>
+>>>   Code.md<br>
+>>>   ----<br>
+>>>   Journal.md<br>
 
 # Time Pilot Audio Board 
 
-[Sound Code](SoundCode.html)
+[Sound Code](SoundCode.md)
 
 In this dig we'll explore the sound effects and music of the Time Pilot game.
 
 But first I'll compare the code of three different sound boards and see how each approached sound in a slightly different way. All three boards 
-are disassembled on this site: [Frogger](/Arcade/Frogger), Time Pilot (both by Konami), and [Moon Patrol](/Arcade/MoonPatrolSound).
+are disassembled on this site: [Frogger](../Frogger), Time Pilot (both by Konami), and [Moon Patrol](../MoonPatrolSound).
 
 ## The Mechanics of Sound 
 
@@ -192,22 +203,22 @@ Frogger and Time Pilot treat note number 0 as a rest (silence) no matter what th
 bits represent a special command. Thus there can be 8 special commands.
 
 For Frogger the special commands look like this:
-{{{
+```
 0 Set the base note value to the next byte in the music data
 1 Set the base tempo value to the next byte in the music data
 2 Set the voice's volume to the next byte in the music data
 3 -- 7 Turn voice off and end music processing on the voice (frees the thread for other sounds)
-}}}
+```
 
 For Time Pilot the special commands look like this:
-{{{
+```
 0 Set the base note value to the next byte in the music data
 1 Set the base tempo for the voice to the next byte in the music data
 2 Set the voice's volume to the next byte in the music data
 3 Reset current note's amplitude
 4,5,7 Turn voice off and end the music process on the voice (frees the thread for other sounds)
 6 Jump to new music address (next two bytes in the music data are absolute address)
-}}}
+```
 
 ## Time Pilot Specific
 
@@ -253,6 +264,6 @@ the modification is configurable per voice.
 
 Byte 10 is never used.
 
-## Corrections ##
+## Corrections
 
 Tony G. pointed out that the company name is "Konami" and not "Kanomi". Thanks Tony.

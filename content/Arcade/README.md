@@ -2,17 +2,16 @@
 
 >>> deploy:<br>
 >>>    +Arcade.jpg<br>
+>>>    OmegaRace:Omega Race<br>
 >>>    Asteroids<br>
 >>>    CrazyClimber:Crazy Climber<br>
 >>>    Defender<br>
 >>>    Frogger<br>
 >>>    Galaga<br>
 >>>    MoonPatrol<br>
-
-OmegaRace<br>
-SpaceEncounters<br>
-SpaceInvaders<br>
-TimePilot<br>
+>>>    SpaceEncounters:Space Encounters<br>
+>>>    SpaceInvaders:Space Invaders<br>
+>>>    TimePilot<br>
 
 # Arcade
 
