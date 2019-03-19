@@ -2062,9 +2062,11 @@ FEFC: 00            BRK
 FEFD: 07                                    
 FEFE: 38            SEC                       
 FEFF: 3F           
+```
 
 # Chess Piece Images
-                       
+   
+```code                    
 ChessPieceImages: 
   
 FF00: 00 ; ........
@@ -2145,9 +2147,11 @@ FF42: 38 ; ..***...
 FF43: 6C ; .**.**..
 FF44: C6 ; **...**.
 FF45: 00 ; ........
+```
 
 # Number Images
 
+```code
 NumberImages: 
 FF46: 30 ; ..**....
 FF47: 30 ; ..**....

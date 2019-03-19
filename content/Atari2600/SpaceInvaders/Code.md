@@ -2002,11 +2002,13 @@ FE91: A9 00          LDA     #$00
 FE93: 85 CE          STA     $CE             
 FE95: 85 D0          STA     $D0             
 FE97: 60             RTS                     
+```
 
 # Startup
 
 All of the 6502 vectors point here.
 
+```code
 FE98: D8             CLD                     
 FE99: 78             SEI                     
 FE9A: A2 00          LDX     #$00            

@@ -117,6 +117,8 @@ def load_file(filename):
       list,list: the parsed list and the as-is list of loaded lines
     '''
 
+    print(filename)
+
     lines = []
     as_is_lines = []
 
