@@ -1,14 +1,18 @@
-%%image = TRS80Pyramid.jpg
-%%title = TRS-80 Pyramid (Model 1 ???)
-%%cpu   = Z80
-%%-ram  = TRS80/Pyramid/RAMUse1.mark /TRS80/Pyramid/RAMUse1.html
-%%-hard = TRS80/Hardware.mark /TRS80/Hardware.html
+![TRS-80 Pyramid](TRS80Pyramid.jpg)
 
-* [RAM Usage](RAMUse2.html)
-* [Hardware Info](/TRS80/Hardware.html)
+# Pyramid (Model 1?)
+
+>>> cpu Z80
+
+>>> memoryTable ram 
+[RAM Usage](RAMUse1.md)
+
+>>> memoryTable hard 
+[Hardware Info](../Hardware.md)
 
 # Start
 
+```code
 Start: 
 
 4200: 31 5C 47    LD    SP,$475C           ; Stack
@@ -4048,19 +4052,19 @@ Start:
 
 7F4D: B9          CP      C               
 7F4E: 7B          LD      A,E             
-7F4F: 10 18       DJNZ    #7F69           
+7F4F: 10 18       DJNZ    $7F69           
 7F51: A8          XOR     B               
 7F52: 5A          LD      E,D             
 7F53: C7          RST     #0              
 7F54: 78          LD      A,B             
 7F55: B0          OR      B               
 7F56: 7D          LD      A,L             
-7F57: E2 8E DE    JP      PO,#DE8E        
+7F57: E2 8E DE    JP      PO,$DE8E        
 7F5A: 85          ADD     A,L             
 7F5B: 84          ADD     A,H             
-7F5C: DB 67       IN      A,(#67)         
+7F5C: DB 67       IN      A,($67)         
 7F5E: 8D          ADC     A,L             
-7F5F: C4 C4 2F    CALL    NZ,#2FC4        
+7F5F: C4 C4 2F    CALL    NZ,$2FC4        
 7F62: FF          RST     #38             
 7F63: CF          RST     #8              
 7F64: 90          SUB     B               
@@ -4084,7 +4088,7 @@ Start:
 7F74: 1D          DEC     E               
 7F75: F5          PUSH    AF              
 7F76: 5C          LD      E,H             
-7F77: C4 AA D7    CALL    NZ,#D7AA        
+7F77: C4 AA D7    CALL    NZ,$D7AA        
 7F7A: 52          LD      D,D             
 7F7B: 44          LD      B,H             
 7F7C: A2          AND     D               
@@ -4094,4 +4098,4 @@ Start:
 7F81: 03          INC     BC              
 7F82: FF          RST     #38             
 7F83: FC        
-
+```

@@ -1,5 +1,7 @@
+![Journal](../../img/journal.jpg)
+
 # Journal
 
-## 2/22/2017
+## 3/19/2019
 
-TODO
+I updated the content to the latest markdown format.

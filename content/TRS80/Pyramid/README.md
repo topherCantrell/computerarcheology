@@ -1,21 +1,33 @@
-%%title = TRS-80 Pyramid
-%%image = TRS80Pyramid.jpg
+![Pyramid](TRS80Pyramid.jpg)
 
-{{{html
-<div class="playMe">
-<div style="padding-left: 20px">
+# TRS80 Pyramid
+>>> deploy:<br>
+>>>   +TRS80Pyramid.jpg<br>
+>>>   +trs80pyramid.js<br>
+>>>   +BinaryDataTRS80Pyramid.js
+>>>   RAMUse.md<br>
+>>>   Code.md<br>
+>>>   ----<br>
+>>>   RAMUse1.md<br>
+>>>   Code1.md<br>
+>>>   ----<br>
+>>>   Journal.md<br>
+
+```html
 <script src="/TRS80/Pyramid/BinaryDataTRS80Pyramid.js"></script>
 <script src="/js/Z80.js"></script>
 <script src="/TRS80/TRS80Text.js"></script>
 <script src="/TRS80/Pyramid/trs80pyramid.js"></script>
 <script>window.onload = function() {startTRS80Pyramid("trs80PyramidConsole","trs80PyramidTape");}</script>
+```
 
-}}}
+>>> playMe {
+
 # Play Me! 
 Play the game in a TRS80 emulator. Click on the black console and press any key.
 
 
-{{{html
+```html
 <textarea id="trs80PyramidConsole" rows="16" style="wrap:hard;background-color: black;color: white;font-family: monospace;font-size:12px;width:65ch;" ></textarea>
 
 <div id="tapeArea" style="display:none">
@@ -30,26 +42,26 @@ Before the LOAD command you must paste the desired saved-data back into the text
 
 <textarea id="trs80PyramidTape" rows="8" style="font-size:8px;width:80ch;" ></textarea>
 </div>
-</div>
-</div>
-}}}
+```
+
+>>> }
 
 # Code Links
 
-* [Disassembled Code](Code.html)
-* [RAM Usage](RAMUse.html)
+* [Disassembled Code](Code.md)
+* [RAM Usage](RAMUse.md)
 
 # Messages for 64 Columns 
 
 The compressed message strings contain spaces to pad the words out to 64 columns (the size of the monitor). For instance:
 
-{{{
+```
 ; IT_IS_NOW_PITCH_DARK.__IF_YOU_PROCEED,_YOU_WILL_LIKELY_FALL_INTOA_PIT.[CR]
 7976: 17 73 7B 4B 7B 09 9A E3 16 9A BD FB 14 6F B2 4B 
 7986: 13 9B 64 1B A1 F9 A6 A7 53 73 5D C7 DE FB 17 F3 
 7996: 8C 8D 8C 53 61 4B 15 F3 8C 9E 7A FB 9D 96 A5 2E 
 79A6: 00 
-}}}
+```
 
 The word "INTO" ends at the right edge of the monitor. The next character "A" is printed at the start
 of the next line.

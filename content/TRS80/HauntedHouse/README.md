@@ -1,35 +1,45 @@
-%%title = Haunted House
-%%image = HauntedHouse.jpg
+![Haunted House](HauntedHouse.jpg)
 
-{{{html
-<div class="playMe">
-<div style="padding-left: 20px">
+# Haunted House
+
+>>> deploy:<br>
+>>>   +BinaryDataHauntedHouse.js<br>
+>>>   +HauntedHouse.jpg<br>
+>>>   +hauntedhouse.js<br>
+>>>   RAMUse1.md<br>
+>>>   RAMUse2.md<br>
+>>>   Code1.md<br>
+>>>   Code2.md<br>
+>>>   ----<br>
+>>>   Journal.md<br>
+
+```html
 <script src="/TRS80/HauntedHouse/BinaryDataHauntedHouse.js"></script>
 <script src="/js/Z80.js"></script>
 <script src="/TRS80/TRS80Text.js"></script>
 <script src="/TRS80/HauntedHouse/hauntedhouse.js"></script>
 <script>window.onload = function() {startHauntedHouse("hauntedConsole");}</script>
+```
 
-}}}
+>>> playMe {
 
 # Play Me!
 Play the game in a TRS80 emulator. Click on the black console and press any key.
 
-{{{html
+```html
 <button id="floorOne" class="btn btn-primary" >1st Floor</button><button id="floorTwo" class="btn btn-primary" style="margin-left:0.5em">2nd Floor</button><p>
 <textarea id="hauntedConsole" rows="16" style="background-color: black;color: white;font-family: monospace;font-size:12px;width:65ch;" ></textarea>
+```
 
-</div>
-</div>
-}}}
+>>> }
 
 
 # Code Links 
 
-* [Disassembled Code 1st Floor](Code1.html)
-* [Disassembled Code 2nd Floor](Code2.html)
-* [RAM Usage 1st Floor](RAMUse1.html)
-* [RAM Usage 2nd Floor](RAMUse2.html)
+* [Disassembled Code 1st Floor](Code1.md)
+* [Disassembled Code 2nd Floor](Code2.md)
+* [RAM Usage 1st Floor](RAMUse1.md)
+* [RAM Usage 2nd Floor](RAMUse2.md)
 
 # Get Out! 
 
@@ -45,11 +55,11 @@ Suddenly, the calm and silence is broken by sounds from within the house!
 # From the mind of Robert Arnstein 
 
 This is one of the many Robert Arnstein text games disassmebled on my site. You can see the evolution of the
-game engine by comparing Haunted House with [Pyramid](/CoCo/Pyramid/index.html),
-[Pyramid for TRS-80](/TRS80/Pyramid/index.html), [RaakaTu](/CoCo/RaakaTu/index.html), and 
-[Bedlam](/CoCo/Bedlam/index.html).
+game engine by comparing Haunted House with [Pyramid](../../CoCo/Pyramid),
+[Pyramid for TRS-80](/TRS80/Pyramid/index.html), [RaakaTu](../..CoCo/RaakaTu), and 
+[Bedlam](../..CoCo/Bedlam).
 
-{{{tourGuide
+>>> tourGuide {
 
 # Tour Guide 
 
@@ -71,7 +81,7 @@ Read through all words that the game understands:
 * [Word 1st Floor](Code1.html#CommandTable)
 * [Word 2nd Floor](Code2.html#CommandTable)
 
-}}}
+>>> }
 
 # References
 

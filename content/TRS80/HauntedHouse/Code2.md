@@ -1,14 +1,18 @@
-%%image = HauntedHouse.jpg
-%%title = Haunted House (2nd Floor)
-%%cpu   = Z80
-%%-ram  = TRS80/HauntedHouse/RAMUse2.mark /TRS80/HauntedHouse/RAMUse2.html
-%%-hard = TRS80/Hardware.mark /TRS80/Hardware.html
+![Haunted House 2nd Floor](HauntedHouse.jpg)
 
-* [RAM Usage](RAMUse2.html)
-* [Hardware Info](/TRS80/Hardware.html)
+# Haunted House Second Floor
+
+>>> cpu Z80
+
+>>> memoryTable ram 
+[RAM Usage](RAMUse2.md)
+
+>>> memoryTable hard 
+[Hardware Info](../Hardware.md)
 
 # Start
 
+```code
 Start: 
 ; The code executes here after loading from tape.
 
@@ -49,9 +53,11 @@ Start:
 43A5: CD 6D 49   CALL    $496D           ; Do nothing (after every command)
 ;
 43A8: C3 74 43   JP      $4374           ; Back to top of input loop
+```
 
 # Get Object Info
 
+```code
 GetObjectInfo:  
 ; Return ZF set if found in desired location
 ; Return HL points to object location structure
@@ -95,9 +101,11 @@ GetObjectInfo:
 43D5: 73         LD      (HL),E          ; Change location
 43D6: 2B         DEC     HL              ; Back to start of object
 43D7: C9         RET                     ; Done
+```
 
 # Process Room Script
 
+```code
 ; Process the user input against the script for a room
 ProcessRoomScript: 
 43D8: 7E         LD      A,(HL)          ; Next command to run
@@ -117,9 +125,11 @@ ProcessRoomScript:
 43EF: CD F6 43   CALL    $43F6           ; Run the command
 43F2: C0         RET     NZ              ; Not zero if the command passed
 43F3: C3 D8 43   JP      $43D8           ; The command failed ... keep running the list of commands
+```
 
 # Run Script
 
+```code
 RunScript: 
 43F6: E5         PUSH    HL              ; Make room for the end point (and hold the current value)
 43F7: 4E         LD      C,(HL)          ; Get the length of the script (length INCLUDES the length byte)
@@ -159,9 +169,11 @@ ScriptCommandFAIL:
 441F: E1         POP     HL              ; Pop the ending spot
 4420: AF         XOR     A               ; Set Zero Flag (FAIL)
 4421: C9         RET                     ; Done
+```
 
 # Script Command 06
 
+```code
 ScriptCommand06: 
 ; SubscriptAbortAllIfPass(...)
 ; Run the subscript. If the subscript passes then abort the current script and
@@ -181,9 +193,11 @@ ScriptCommand06:
 442B: E1         POP     HL              ; End of script
 442C: F6 01      OR      $01             ; Clear Zero Flag (PASS)
 442E: C9         RET                     ; Done
+```
 
 # Parse User Input
-                     
+
+```code                     
 ParseUserInput: 
 442F: CD 0A 46   CALL    $460A           ; Prompt and read line
 4432: CD DA 44   CALL    $44DA           ; Parse the input string
@@ -409,9 +423,11 @@ ParseInputLine:
 45AE: 00       ; 0 if decode is empty, 1 if something was decoded               
 45AF: 00 00    ; Pointer to noun data            
 45B1: 00 00             
+```
 
 # Print Packed
 
+```code
 PrintPacked: 
 ; Unpack a message (or multiple packed message) and print.
 ; HL is pointer to message   
@@ -435,9 +451,11 @@ PrintPacked:
 45CE: 23         INC     HL              ; 
 45CF: CA B3 45   JP      Z,$45B3         ; Yes ... start again
 45D2: C3 BD 45   JP      $45BD           ; No ... continue this packing
+```
  
 # Print Message
-   
+
+```code   
 ; HL points to message terminated by
 ;  - 0 : add a CR on the end and return
 ;  - 1 : no CR on the end and return
@@ -462,9 +480,11 @@ PrintMessage:
 45EE: 78         LD      A,B             ; To A
 45EF: CD 04 46   CALL    $4604           ; Print character
 45F2: C9         RET                     
+```
 
 # Wait For Key
-   
+
+```code   
 WaitForKey: 
 45F3: D5         PUSH    DE              ; Hold DE
 45F4: 3A 83 46   LD      A,($4683)       ; Bump ...
@@ -475,17 +495,21 @@ WaitForKey:
 45FF: CA F4 45   JP      Z,$45F4         ; ... if nothing pressed
 4602: D1         POP     DE              ; Restore DE
 4603: C9         RET                     ; Return key in A
+```
 
 # PrintChar
 
+```code
 PrintChar:       
 4604: D5         PUSH    DE              ; Hold DE
 4605: CD 33 00   CALL    $0033           ; Print the character
 4608: D1         POP     DE              ; Restore DE
 4609: C9         RET; Done
+```
 
 # Prompt And Read Line
 
+```code
 PromptAndReadLine: 
 460A: 06 3A      LD      B,$3A           ; ":" for prompt
 460C: 78         LD      A,B             ; To A for printing
@@ -536,9 +560,11 @@ PromptAndReadLine:
 ; Enter
 465C: 36 00      LD      (HL),$00        ; Put a zero on the end of the buffer        
 465E: C9         RET                     ; Done
+```
 
 # Input Buffer
 
+```code
 ; Input buffer (with some uninitialized leftover data!)
 InputBuffer: 
 ; 32 bytes
@@ -568,9 +594,11 @@ StackRAM:
 46B9: 00
                          
 46BA: 00 00 ; Not used   
+```
 
 # Unpack Message
 
+```code
 UnpackMessage: 
 ; TODO: Decode this. I have a program created by translating this to Java.
 ; It works, but it would be nice to understand the math here.
@@ -672,9 +700,11 @@ UnpackMessage:
 4751: C2 CF 46   JP      NZ,$46CF        ;
 4754: E1         POP     HL              ;
 4755: C9         RET                     ;
+```
 
 # Character Table
 
+```code
 ; Character compression table
 CharTable:                 
 4756: 3F 21 32 20 22 27 3C 3E 2F 30 33                 ; ?!2_"'<>/03
@@ -685,9 +715,11 @@ CharTable:
 477F: 00 ; RAM used by unpack                
 4780: 00 ; RAM used by unpack                    
 4781: 00 ; RAM used by unpack
+```
 
 # Room Information
 
+```code
 RoomInformation: 
 ; First two: description (most rooms look the same)
 ; Second two: room script                     
@@ -701,9 +733,11 @@ RoomInformation:
 479E: DA 4B CE 48 ; 8 DIMLY_LIT_ROOM.[CR]     
     
 ; TODO a word here on duplicate words.
+```
 
 # Room Scripts
 
+```code
 RoomScripts: 
 ; Commands 1
 ; All of these rooms look the same except for this first one you start in
@@ -944,9 +978,11 @@ RoomScripts:
 4910: 04 56 4D    ;               "Print(YOU_FALL_THROUGH_A_TRAP_DOOR_TO_YOUR_DEATH![CR])",               
 4913: 07          ;                   "EndlessLoop()"]                         
 4914: 00          ; } 
+```
   
 # Object Info
- 
+
+```code 
 ObjectInfo: 
 ;
 ; The format of the two bytes are:
@@ -977,9 +1013,11 @@ ObjectInfo:
 492F: 01 ; Current room number (room with hole in the floor)
 
 4930: 00 00 00     
+```
 
 # Object Descriptions
 
+```code
 ObjectDescriptions: 
 ; Object descriptions. Two strings: first is "in room" description. Second
 ; is a shorter "inventory" description.                           
@@ -996,9 +1034,11 @@ ObjectDescriptions:
 4947: 51 4B ; 11 GHOST 11 (live)                
 4949: 51 4B ; 12 GHOST 12 (live)               
 494B: 15 49 ; 13 (open exit marker no description)    
+```
  
 # Script Commands
 
+```code
 ScriptCommands:           
 494D: 6E 49 ;  1 GoToRoom(room)        
 494F: B6 49 ;  2 AssertObjectIsInPack(object)           
@@ -1018,9 +1058,11 @@ ScriptCommands:
 496B: D8 49 ; 16 AssertObjectIsInRoom(object)
              
 496D: C9         RET  ; Run-after-every-command comes here (and does nothing)
+```
 
 # Script Command 01
-                     
+
+```code                     
 ScriptCommand01: 
 ; GoToRoom(room)
 496E: E1         POP     HL              ; Pointer to script
@@ -1029,16 +1071,20 @@ ScriptCommand01:
 4971: E5         PUSH    HL              ; New pointer into script
 4972: 78         LD      A,B             ; Room number to A
 4973: 32 2F 49   LD      ($492F),A       ; Change rooms
+```
 
 # Script Command 05
 
+```code
 ScriptCommand05: 
 ; PrintRoomDescription()   
 4976: CD 7C 49   CALL    $497C           ; Print the room description
 4979: C3 0B 44   JP      $440B           ; ScriptCommandPASS
+```
 
 # Describe Room
 
+```code
 DescribeRoom: 
 ; DescribeCurrentRoom()
 497C: 21 CF 4B   LD      HL,$4BCF        ; "YOU ARE AT THE " message
@@ -1071,9 +1117,11 @@ DescribeRoom:
 49AF: CD B3 45   CALL    $45B3           ; Print description
 49B2: C1         POP     BC              ; Restore object number
 49B3: C3 94 49   JP      $4994           ; Keep checking objects
+```
 
 # Script Command 02 
 
+```code
 ScriptCommand02: 
 ; AssertObjectInPack(object)
 49B6: E1         POP     HL              ; Script pointer
@@ -1084,9 +1132,11 @@ ScriptCommand02:
 49BC: CD AB 43   CALL    $43AB           ; Get object info
 49BF: CA 0B 44   JP      Z,$440B         ; ScriptCommandPASS
 49C2: C3 1E 44   JP      $441E           ; ScriptCommandFAIL
+```
 
 # Script Command 03
 
+```code
 ScriptCommand03: 
 ; AssertObjectIsInRoomOrPack(object) 
 49C5: E1         POP     HL              ; Script pointer
@@ -1100,9 +1150,11 @@ ScriptCommand03:
 49D1: CA 0B 44   JP      Z,$440B         ; Found it ... ScriptCommandPASS
 49D4: 78         LD      A,B             ; Object number again
 49D5: C3 BA 49   JP      $49BA           ; Continue checking the pack
+```
 
 # Script Command 16
 
+```code
 ScriptCommand16: 
 ; AssertObjectIsInRoom(object)
 49D8: E1         POP     HL              ; Script pointer
@@ -1114,9 +1166,11 @@ ScriptCommand16:
 49E0: CD AB 43   CALL    $43AB           ; Find the object
 49E3: CA 0B 44   JP      Z,$440B         ; Found it in room ... ScriptCommandPASS
 49E6: C3 1E 44   JP      $441E           ; ScriptCommandFAIL
+```
 
 # Script Command 14
 
+```code
 ScriptCommand14: 
 ; GetNounToPack()
 49E9: 3A 80 46   LD      A,($4680)       ; Input Noun
@@ -1128,9 +1182,11 @@ ScriptCommand14:
 49F7: 3A 80 46   LD      A,($4680)       ; User input ...
 49FA: 47         LD      B,A             ; ... noun
 49FB: C3 57 4A   JP      $4A57           ; Get object from room
+```
 
 # Script Command 04
 
+```code
 ScriptCommand04: 
 ; PrintMessage(message)
 49FE: E1         POP     HL              ; Get script pointer
@@ -1142,9 +1198,11 @@ ScriptCommand04:
 4A04: EB         EX      DE,HL           ; Message pointer to HL
 4A05: CD B3 45   CALL    $45B3           ; Unpack and print
 4A08: C3 0B 44   JP      $440B           ; ScriptCommandPASS
+```
 
 # Script Command 08
 
+```code
 ScriptCommand08: 
 ; MoveObjectToCurrentRoom(object)
 4A0B: E1         POP     HL              ; Get script pointer
@@ -1157,9 +1215,11 @@ ScriptCommand08:
 4A13: 78         LD      A,B             ; Object number to A
 4A14: CD D1 43   CALL    $43D1           ; Move object
 4A17: C3 79 4A   JP      $4A79           ; Print OK and PASS
+```
 
 # Script Command 09
 
+```code
 ScriptCommand09: 
 ; PrintInventory()
 4A1A: 06 00      LD      B,$00           ; B runs the object numbers
@@ -1185,9 +1245,11 @@ ScriptCommand09:
 4A3D: CD B3 45   CALL    $45B3           ; Print the description
 4A40: C1         POP     BC              ; Restore object number
 4A41: C3 1C 4A   JP      $4A1C           ; Keep going
+```
 
 # Script Command 10
 
+```code
 ScriptCommand10: 
 ; AssertInputNounIs(object)
 4A44: E1         POP     HL              ; Script pointer
@@ -1198,9 +1260,11 @@ ScriptCommand10:
 4A4B: B8         CP      B               ; Are they the same
 4A4C: C2 1E 44   JP      NZ,$441E        ; No ... ScriptCommandFAIL
 4A4F: C3 0B 44   JP      $440B           ; Yes ... ScriptCommandPASS
+```
 
 # Script Command 11
 
+```code
 ScriptCommand11: 
 ; GetObjectFromRoom(object)
 4A52: E1         POP     HL              ; Script pointer
@@ -1221,25 +1285,31 @@ ScriptCommand11:
 4A6A: 1E FF      LD      E,$FF           ; Location is backpack
 4A6C: CD D1 43   CALL    $43D1           ; Move the object
 4A6F: C3 79 4A   JP      $4A79; Print OK and PASS
+```
 
 # Script Command 15
 
+```code
 ScriptCommand15: 
 ; DropNounToCurrentRoom()
 4A72: 3A 80 46   LD      A,($4680)       ; User input
 4A75: 47         LD      B,A             ; To B
 4A76: C3 0F 4A   JP      $4A0F           ; Drop the object in the current room
+```
 
 # Script Command 12
 
+```code
 ScriptCommand12: 
 ; PrintOK
 4A79: 21 07 4C   LD      HL,$4C07        ; "OK"
 4A7C: CD B3 45   CALL    $45B3           ; Print OK
 4A7F: C3 0B 44   JP      $440B           ; ScriptCommandPASS
+```
 
 # Script Command 13
 
+```code
 ScriptCommand13: 
 ; MoveObjectToRoom(object,room)
 4A82: E1         POP     HL              ; Script pointer
@@ -1256,15 +1326,19 @@ ScriptCommand13:
 4A92: 23         INC     HL              ; Next
 4A93: 73         LD      (HL),E          ; Set the room number
 4A94: C3 0B 44   JP      $440B           ; ScriptCommandPASS
+```
 
 # Script Command 07
-        
+
+```code        
 ScriptCommand07: 
 ; EndlessLoop()
 4A97: C3 97 4A   JP      $4A97  ; Infinite loop
+```
 
 # Command Table
 
+```code
 CommandTable:             
 ; aa_bbb_ccc
 ; aa is grammar type:
@@ -1300,9 +1374,11 @@ CommandTable:
 4B0D: 4C 52 45 41 44 09                    ; 01_001_100  READ  09
 4B13: CC 50 4C 55 47 0A                    ; 11_001_100  PLUG  0A
 4B19: 00                                   ; end of list
+```
 
 # General Script
 
+```code
 GeneralScript:                     
 ; When you enter a command, the game tries your input against the script of the current room.
 ; If that script fails then this general script runs to handle common things like GET and DROP
@@ -1331,9 +1407,11 @@ GeneralScript:
 4B49: 09 06 0A 09    ;  "READ" : ["AssertInputNounIs(SWORD)",             
 4B4D: 04 D5 4D       ;            "Print(AN_INSCRIPTION_READS,_"GHOST_KILLER."[CR])"]            
 4B50: 00             ; }
+```
 
 # Compressed Text
-                     
+
+```code                     
 CompressedText: 
 
 ; THERE_IS_A_GHOST_HERE.[CR]
@@ -1461,4 +1539,5 @@ CompressedText:
 4E79: A1 46 72 89 17 DE 14 64 7A 82 17 54 5E 5F A0 3B 
 4E89: F4 C7 DE 2F 17 DA 46 82 17 3B 5E 57 17 40 55 08 
 4E99: 58 81 8D 52 2E 00 
+```
       

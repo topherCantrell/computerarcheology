@@ -105,10 +105,11 @@ def process_code(lines, code_info, skip_no_label_jumps=False):
             if c.comment and '{!+' in c.comment:
                 memref = True
             elif c.comment and '{!-}' in c.comment:
-                memref = False                          
+                memref = False
 
-            if memref:               
+            if memref:
                 # Record the opcode start and stop
+                # print(c.original.text)
                 i = c.original.text.index('$')
                 j = find_end_of_hex(c.original.text, i + 1)
                 if c.link_info == None:
@@ -118,21 +119,22 @@ def process_code(lines, code_info, skip_no_label_jumps=False):
 
                 # This is the referenced memory
                 addr = int(c.original.text[i + 1:j], 16)
-                                                
-                #  First check all the memory tables we know of   
-                for table in code_info['memory']:                        
+
+                #  First check all the memory tables we know of
+                for table in code_info['memory']:
                     tab = code_info['memory'][table]
-                    entry = tab.find_entry(addr + code_info['dp'],c.opcode['bus'])                    
-                    if entry:                        
+                    entry = tab.find_entry(
+                        addr + code_info['dp'], c.opcode['bus'])
+                    if entry:
                         c.link_info['memory_table'] = tab
                         c.link_info['memory_table_name'] = table
-                        c.link_info['memory_table_entry'] = entry        
-                        if addr!=entry['range'][0]:
-                            c.link_info['offset'] = addr - entry['range'][0]        
+                        c.link_info['memory_table_entry'] = entry
+                        if addr != entry['range'][0]:
+                            c.link_info['offset'] = addr - entry['range'][0]
 
-                # No? see if this is in the code                
-                if not 'target_line' in c.link_info:    
-                    for d in cod:                
+                # No? see if this is in the code
+                if not 'target_line' in c.link_info:
+                    for d in cod:
                         if d.is_address_in(addr):
                             c.link_info['target_line'] = d
                             if d.link_info == None:

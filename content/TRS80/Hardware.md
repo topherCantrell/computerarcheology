@@ -1,5 +1,6 @@
-%%title = TRS80 Hardware
-%%image = TRS80Tech.jpg
+![TRS80 Hardware](TRS80Tech.jpg)
+
+# TRS80 Hardware
 
 # Memory Map
  * 0000-2FFF Level 2 ROM

@@ -1,14 +1,18 @@
-%%image = TRS80Pyramid.jpg
-%%title = TRS-80 Pyramid
-%%cpu   = Z80
-%%-ram  = TRS80/Pyramid/RAMUse.mark /TRS80/Pyramid/RAMUse.html
-%%-hard = TRS80/Hardware.mark /TRS80/Hardware.html
+![TRS-80 Pyramid](TRS80Pyramid.jpg)
 
-* [RAM Usage](RAMUse.html)
-* [Hardware Info](/TRS80/Hardware.html)
+# Pyramid
+
+>>> cpu Z80
+
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
+
+>>> memoryTable hard 
+[Hardware Info](../Hardware.md)
 
 # Start
 
+```code
 Start: 
 
 4300: 31 BF 47   LD      SP,$47BF        ; Small stack space
@@ -45,9 +49,11 @@ Start:
 4347: CD AE 45   CALL    $45AE           ; Print message
 434A: CD D9 50   CALL    $50D9           ; After every turn
 434D: C3 19 43   JP      $4319           ; Back to get user input
+```
 
 # Get Object Info
 
+```code
 GetObjectInfo:  
 ; Return ZF set if found in desired location
 ; Return HL points to object location structure
@@ -91,9 +97,11 @@ GetObjectInfo:
 437A: 73         LD      (HL),E          
 437B: 2B         DEC     HL              
 437C: C9         RET                     
+```
 
 # Process Room Script
 
+```code
 ; Process the user input against the script for a room
 ProcessRoomScript: 
 437D: 7E         LD      A,(HL)          
@@ -110,9 +118,11 @@ ProcessRoomScript:
 438F: CD 96 43   CALL    $4396           
 4392: C0         RET     NZ              
 4393: C3 7D 43   JP      $437D           
+```
 
 # Run Script
 
+```code
 RunScript: 
 4396: E5         PUSH    HL              
 4397: 4E         LD      C,(HL)          
@@ -132,9 +142,11 @@ RunScriptCommand:
 43A8: 66         LD      H,(HL)          
 43A9: 6F         LD      L,A             
 43AA: E9         JP      (HL)            
+```
 
 # Script Command PASS
 
+```code
 ScriptCommandPASS:     
 43AB: E1         POP     HL              
 43AC: D1         POP     DE              
@@ -148,17 +160,21 @@ ScriptCommandPASS:
 43B9: C9         RET                     
 43BA: D5         PUSH    DE              
 43BB: C3 9D 43   JP      $439D           
+```
 
 # Script Command FAIL
 
+```code
 ScriptCommandFAIL: 
 43BE: E1         POP     HL              
 43BF: E1         POP     HL              
 43C0: AF         XOR     A               
 43C1: C9         RET                     
+```
 
 # Script Command 06
 
+```code
 ScriptCommand06: 
 ; SubscriptAbortAllIfPass(...)
 ; Run the subscript. If the subscript passes then abort the current script and
@@ -178,9 +194,11 @@ ScriptCommand06:
 43CB: E1         POP     HL              
 43CC: F6 01      OR      $01             
 43CE: C9         RET                     
+```
 
 # Parse User Input
 
+```code
 ParseUserInput: 
 43CF: CD 05 46   CALL    $4605           
 43D2: CD A2 44   CALL    $44A2           
@@ -423,9 +441,11 @@ ParseUserInput:
 45AB: 00                   
 45AC: 00                   
 45AD: 00 
+```
 
 # Print Packed
 
+```code
 PrintPacked: 
 ; Unpack a message (or multiple packed message) and print.
 ; HL is pointer to message                        
@@ -472,9 +492,11 @@ PrintPacked:
 45E9: 78         LD      A,B             
 45EA: CD FF 45   CALL    $45FF           
 45ED: C9         RET                     
+```
 
 # Wait for Key
 
+```code
 WaitForKey: 
 45EE: D5         PUSH    DE              
 45EF: 3A 74 47   LD      A,($4774)       
@@ -485,17 +507,21 @@ WaitForKey:
 45FA: CA EF 45   JP      Z,$45EF         
 45FD: D1         POP     DE              
 45FE: C9         RET                     
+```
 
 # Print Char
 
+```code
 PrintChar:    
 45FF: D5         PUSH    DE              
 4600: CD 33 00   CALL    $0033           
 4603: D1         POP     DE              
 4604: C9         RET                     
+```
 
 # Prompt And Read Line
 
+```code
 PromptAndReadLine: 
 4605: 06 3A      LD      B,$3A           
 4607: 78         LD      A,B             
@@ -544,9 +570,11 @@ PromptAndReadLine:
 4654: C3 10 46   JP      $4610           
 4657: 36 00      LD      (HL),$00        
 4659: C9         RET                     
+```
 
 # Input Buffer
 
+```code
 ; Input buffer (with some uninitialized leftover data!)
 InputBuffer: 
 ;      A  N T  _  M  E  _  T  O  _  D  O  _  W  I  T
@@ -749,9 +777,11 @@ InputBuffer:
 4857: C2 D5 47   JP      NZ,$47D5        
 485A: E1         POP     HL              
 485B: C9         RET         
+```
  
 # Character Table
 
+```code
 ; Character compression table
 CharTable:            
 485C: 3F 21 32 20 22 27 3C 3E 2F 30 33                 ; ?!2_"'<>/03 
@@ -763,13 +793,14 @@ CharTable:
 4885: 00                    
 4886: 00                    
 4887: 00
+```
      
 # Room Table
 
  Each entry is 4 bytes. The first word is the packed room description. 
  The second word is the room's command script.
 
-
+```code
 RoomTable:
 ;
 ; 81 rooms numbered starting at 1
@@ -1703,9 +1734,11 @@ RoomTable:
 4F40: 03         INC     BC              
 4F41: 01 47 00   LD      BC,$0047        
 4F44: FF         RST     0X38           
+```
 
 # Ambient Light Table 
 
+```code
 ; 2 bytes per room
 ; * 0x4000 means there is light in the room (no need for a lamp)
 ; * 0x0000 means you better have a lamp
@@ -1873,9 +1906,11 @@ AmbientLight:
 4FE4: 00         NOP                     
 4FE5: 00         NOP                     
 4FE6: 00         NOP   
+```
 
 # Object Data
 
+```code
 ; This two-byte table contains the object's attributes ("isTreasure" and "isGettable") 
 ; and the object's current location (a room or inside another object).
 ;
@@ -1977,9 +2012,11 @@ ObjectData:
 503C: 47         LD      B,A             
 503D: 40         LD      B,B             
 503E: 00         NOP
+```
 
 # Game Variables                      
 
+```code
 GameVariables:
 503F: 01 00 00   LD      BC,$0000        
 5042: 00         NOP                     
@@ -1987,9 +2024,11 @@ GameVariables:
 5044: 00         NOP                     
 5045: 00         NOP                     
 5046: 00         NOP                     
+```
 
 # Object Table
 
+```code
 ObjectDescriptions:
 ; Object descriptions (44 objects)
 ; For packable objects each slot points to a message pair. The first is the long
@@ -2030,7 +2069,7 @@ ObjectDescriptions:
 506A: 6D         LD      L,L             
 506B: CD 6C EB   CALL    $EB6C           
 506E: 6C         LD      L,H             
-506F: ED         ???                     
+506F: ED                              
 5070: 70         LD      (HL),B          
 5071: 47         LD      B,A             
 5072: 71         LD      (HL),C          
@@ -2070,9 +2109,11 @@ ObjectDescriptions:
 509B: 52         LD      D,D             
 509C: 70         LD      (HL),B          
 509D: 2E 6C      LD      L,$6C           
+```
 
 # Script Commands 
 
+```code
 ; This lookup table holds the pointers to the individual script commands. Each command 
 ; reads 1 or 2 bytes of data from the script. The number of extra bytes read is show 
 ; for reference in the table.
@@ -2115,9 +2156,11 @@ ScriptCommands:
 50D3: F5 55   ;  27     0        LoadGame  
 50D5: 54 56   ;  28     0        SaveGame 
 50D7: 94 56   ;  29     0        RandomizeDirections
+```
 
 # After Every Step 
 
+```code
 ; This processing takes place after every user input.[[br]]
 ;  1. Increment the count on the lamp and the number of turns.[[br]]
 ;  2.  Warn the player if the lamp is going dim and change the batteries automatically.
@@ -2202,9 +2245,11 @@ ScriptCommands:
 5185: 27         DAA                     
 5186: 32 41 50   LD      ($5041),A       
 5189: C9         RET                     
+```
 
 # Command 1: Move To Room X 
 
+```code
 ; This routine moves the player to a new room. If there is light in the new room or light 
 ; in the old room then the move always works. Otherwise there is a 60% chance the move kills you.
 ;
@@ -3495,58 +3540,60 @@ WordTable:
 59AD: 48         LD      C,B             
 59AE: 39         ADD     HL,SP           
 59AF: 00         NOP                     
+```
 
 # General Command Handler 
 
+```code
 ; This script is used when the room doesn't have a script for the input command.
 
 GeneralCommandHandler:
 59B0: 01 04 04   LD      BC,$0404        
-59B3: ED         ???                     
+59B3: ED                              
 59B4: 73         LD      (HL),E          
 59B5: 02         LD      (BC),A          
 59B6: 04         INC     B               
 59B7: 04         INC     B               
-59B8: ED         ???                     
+59B8: ED                              
 59B9: 73         LD      (HL),E          
 59BA: 03         INC     BC              
 59BB: 04         INC     B               
 59BC: 04         INC     B               
-59BD: ED         ???                     
+59BD: ED                              
 59BE: 73         LD      (HL),E          
 59BF: 04         INC     B               
 59C0: 04         INC     B               
 59C1: 04         INC     B               
-59C2: ED         ???                     
+59C2: ED                              
 59C3: 73         LD      (HL),E          
 59C4: 05         DEC     B               
 59C5: 04         INC     B               
 59C6: 04         INC     B               
-59C7: ED         ???                     
+59C7: ED                              
 59C8: 73         LD      (HL),E          
 59C9: 06 04      LD      B,$04           
 59CB: 04         INC     B               
-59CC: ED         ???                     
+59CC: ED                              
 59CD: 73         LD      (HL),E          
 59CE: 07         RLCA                    
 59CF: 04         INC     B               
 59D0: 04         INC     B               
-59D1: ED         ???                     
+59D1: ED                              
 59D2: 73         LD      (HL),E          
 59D3: 08         EX      AF,AF'          
 59D4: 04         INC     B               
 59D5: 04         INC     B               
-59D6: ED         ???                     
+59D6: ED                              
 59D7: 73         LD      (HL),E          
 59D8: 09         ADD     HL,BC           
 59D9: 04         INC     B               
 59DA: 04         INC     B               
-59DB: ED         ???                     
+59DB: ED                              
 59DC: 73         LD      (HL),E          
 59DD: 0A         LD      A,(BC)          
 59DE: 04         INC     B               
 59DF: 04         INC     B               
-59E0: ED         ???                     
+59E0: ED                              
 59E1: 73         LD      (HL),E          
 59E2: 0B         DEC     BC              
 59E3: 04         INC     B               
@@ -3816,12 +3863,12 @@ GeneralCommandHandler:
 5B42: 06 11      LD      B,$11           
 5B44: 17         RLA                     
 5B45: 04         INC     B               
-5B46: DD         ???                     
+5B46: DD                              
 5B47: 77         LD      (HL),A          
 5B48: 07         RLCA                    
 5B49: 06 11      LD      B,$11           
 5B4B: 18 04      JR      $5B51           
-5B4D: DD         ???                     
+5B4D: DD                              
 5B4E: 77         LD      (HL),A          
 5B4F: 07         RLCA                    
 5B50: 06 11      LD      B,$11           
@@ -3943,9 +3990,11 @@ GeneralCommandHandler:
 5BD8: 02         LD      (BC),A          
 5BD9: 1C         INC     E               
 5BDA: 00         NOP
+```
 
 # Room Descriptions
 
+```code
 RoomDescriptions:
 
 ; Description for room: 1
@@ -4290,7 +4339,7 @@ RoomDescriptions:
 
 ; YOU_ARE_AT_THE_EAST_END_OF_THE_TWOPIT_ROOM.__THE_FLOOR_HERE_IS__LITTERED_WITH_THIN_ROCK_SLABS,_WHICH_MAKE_IT_
 ; EASY_TO_DESCEND_THEPITS.__THERE_IS_A_PATH_HERE_BYPASSING_THE_PITS_TO_CONNECT_______PASSAGES_EAST_AND_WEST.__THERE_
-ARE_HOLES_ALL_OVER,_BUT_THE_ONLY_BIG_ONE_IS_ON_THE_WALL_DIRECTLY_OVER_THE_WEST_PIT_WHERE_YOU_____CAN'T_GET_TO_IT.[CR]
+; ARE_HOLES_ALL_OVER,_BUT_THE_ONLY_BIG_ONE_IS_ON_THE_WALL_DIRECTLY_OVER_THE_WEST_PIT_WHERE_YOU_____CAN'T_GET_TO_IT.[CR]
 693F: 70 C7 DE 94 14 43 5E 16 BC DB 72 95 5F 07 BC 33 
 694F: 98 C3 9E 5F BE 91 17 63 A0 14 BC 3F A0 3B F4 5F 
 695F: BE 56 15 44 A0 9F 15 5B B1 4B 7B 43 16 3F C0 66 
@@ -4362,9 +4411,11 @@ ARE_HOLES_ALL_OVER,_BUT_THE_ONLY_BIG_ONE_IS_ON_THE_WALL_DIRECTLY_OVER_THE_WEST_P
 6C02: B1 F7 17 33 49 AB 98 5F BE E4 14 80 A1 B8 16 29 
 6C12: 15 EE DE 3B F4 52 45 65 49 77 47 3A 15 8D 7B 89 
 6C22: 17 82 17 3B 5E 55 13 36 A1 48 2E 00         
+```
 
 # Object Descriptions
 
+```code
 ; These are the long (in a room description) and short (in the inventory) strings for each object.
 
 ObjDescriptions:
@@ -5117,3 +5168,4 @@ ObjDescriptions:
 8002: 43         LD      B,E             
 8003: FF         RST     0X38            
 8004: FF         RST     0X38            
+```
