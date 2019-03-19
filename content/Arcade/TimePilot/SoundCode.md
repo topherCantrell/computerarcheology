@@ -148,7 +148,6 @@ InterruptService:
 
 # Command Buffer
 
-```code
 The command Buffer is kept at 3000 and contains 6 2-byte entries.
 That's one entry for each hardware voice. The first of the two 
 bytes is the command. A zero marks an available slot. The second byte 
@@ -173,6 +172,7 @@ If all commands in the buffer are of higher priority than the new command,
 then the new command is ignored. Otherwise the new command replaces the 
 lowest priority command in the buffer.
 
+```code
 HandleCommand: 
 ; Fetch a command from the port and place it in the
 ; command buffer.

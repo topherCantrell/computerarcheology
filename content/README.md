@@ -6,12 +6,16 @@
 >>>    +img<br>
 >>>    +Arch.jpg<br>
 >>>    +favicon.ico<br>
+>>>    Amiga<br>
+>>>    Arcade<br>
 >>>    Atari2600:Atari 2600<br>
+>>>    CoCo<br>
+>>>    Virus<br>
 
-        Amiga<br>
-        CoCo<br>
-        Virus<br>
-        Arcade<br>
+Gameboy<br>
+Nintendo NES<br>
+TRS80<br>
+Tools<br>
 
 # Computer Archeology
 

@@ -3526,8 +3526,11 @@ DC44: 8E C0 00       LDX     #$C000
 DC47: 9F 61          STX     <$61            
 DC49: E6 84          LDB     ,X              
 DC4B: 35 90          PULS    X,PC            
+```
 
 # IRQ Handler
+
+```code
 IRQHandler:
 DC4D: B6 FF 02       LDA     $FF02                          ; {hard:PIA0_DB} 
 DC50: 0C 14          INC     <$14                           ; {ram:m0014} 

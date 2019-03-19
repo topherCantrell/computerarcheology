@@ -37,6 +37,7 @@ START:
 ;
 ; BASIC's GETCCH routine ... do nothing (lets call to CLOADM succeed)
 032D: 39                  RTS                               ; To A5
+```
 
 # Print a Character
 
@@ -44,6 +45,7 @@ START:
  so that the user can use UP and DOWN to switch between screens. This replaces
  BASIC's one-screen print.
 
+```code
 PrintChar:
 032E: 34 16               PSHS    X,B,A                     ; Save parameters
 0330: 9E 88               LDX     <$88                      ; {ram:scrCursor} Cursor
@@ -551,11 +553,13 @@ OneMinTick:
 
 081E: 10 8E 3E 38         LDY     #$3E38                    ; Start of floor 3
 0822: 8E 00 F3            LDX     #$00F3                    ; Shanking-ground blocked passage queue
+```
 
  Maintains a list of the last 12 rooms that were blocked. As new rooms are blocked
  they go on the end of the list and the rooms at the beginning of the list are 
  pulled off the list and opened. Thus "shaking ground" only affects 12 rooms at a time.
- 
+
+```code 
 0825: 86 03               LDA     #$03                      ; 3 times
 ;
 0827: BD 06 61            JSR     $0661                     ; {Random} Get random number (0-255)
@@ -1403,11 +1407,16 @@ MainGameLoop:
 0D4C: 24 06               BCC     $D54                      ; Yes .. skip message
 0D4E: 8E 2A 44            LDX     #$2A44                    ; YOUR SIGHT IS DIM
 ;
-CodeBug8:
+```
+
+CodeBug8
+
  Joe Hagen found this bug. The code here calls 1066 (PrintMess). The "YOUR SIGHT IS DIM" 
  message at 2A44, however, is packed. The call should be to 102F (PrintPacked). The
  message never appears in the game. Joe modified the code and verified the fix in the
- emulator. Good job, Joe. 
+ emulator. Good job, Joe.
+ 
+```code 
 0D51: BD 10 66            JSR     $1066                     ; {PrintMess} Print the message
 0D54: BD 06 C7            JSR     $06C7                     ; Learn any spell in our room that we can
 0D57: BD 16 A7            JSR     $16A7                     ; {CalculateScore} Calculate score again
@@ -2617,9 +2626,14 @@ CommandISHTAR:
 14CB: 86 CA               LDA     #$CA                      ; Move to treasure room 202 ...
 14CD: 97 00               STA     <$00                      ; {ram:curRoom} ... "NEAR A GREAT FOREST"
 14CF: 97 01               STA     <$01                      ; {ram:lastRoom} Back as well
-CodeBug3:
+```
+
+CodeBug3
+
  All the other leave-room commands reset the MYSTERIOUS FOG counters. This does not.
  If you use ISHTAR to leave the poison fog the count goes on as if you are there.
+ 
+```code
 14D1: 7E 10 17            JMP     $1017                     ; "OK"
 ```
 
@@ -4126,11 +4140,13 @@ EnteringRoomActionPlacment:
 ; _203b
 ; _z (music room that sprite can't go in) Random 16 - 39
 ; _232
+```
 
  This table lists the objects the Oracle will give advice on. They are
  all protected objects listed in the order they appear in the config
  table. Note that the spellbook is missing.
 
+```code
 OracleAdviceTable:
 1E43: 1A ; TROGLODYTE           
 1E44: 1D ; SATYR                                
@@ -6535,8 +6551,10 @@ JumpInfoTable:
 3C4A: 5E 5A 0A 9E 06; From 94  "JUMP DOWN"  to 158. Required=90  or STUMBLE(10)
 3C4F: 40 1E 00 80 6D; From 64  "JUMP PIT"   to 128. Required=30  or DEATH
 3C54: CA 1E 14 A2 06; From 202 "JUMP DOWN"  to 162. Required=30  or STUMBLE(20)
+```
 
-CodeBug6:
+CodeBug6
+
  The source for this last jump is set by the code at 0CC7. This jump is given to the
  same room where the RoomEnterAction_203 (SMALL PIT IN CORNER OF ROOM). A JUMP DOWN
  (into the pit) lands you in room 39 -- The Temple of Zeus. REA_203 is placed at
@@ -6544,6 +6562,8 @@ CodeBug6:
  the first entry in this list for a room. If there is a second jump then it will
  never get discovered. If the RAE_203 is placed in a room with an existing jump then
  the jump to the Temple of Zeus doesn't work.
+ 
+```code
 3C59: 10 8C 80 27 06; From 16  "JUMP DOWN"  to 39.  Required=140 or FUMBLE
 3C5E: 00            
 ```

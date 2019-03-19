@@ -5461,7 +5461,7 @@ ISROBJRun_21:
 2A24: 00 08 00 ; 000800
 2A27: 00 10 00 ; 001000
       
-CODEBUG1 : ;"Continue" is spelled wrong
+; CODEBUG1 : "Continue" is spelled wrong
 2A2A: 08 81 08  ; Screen:8108 Color:8
 2A2D: 54 4F 20 43 4F 55 4E 54 49 4E 55 45 20 47 41 4D 45  ; "TO_COUNTINUE_GAME"
 2A3E: 22  ; Set Cursor and Color
@@ -5477,7 +5477,7 @@ CODEBUG1 : ;"Continue" is spelled wrong
 2A62: 43 48 41 4D 50 49 4F 4E 20 43 4F 55 52 53 45 20 31 20 47 4F 20 5B  ; "CHAMPION_COURSE_1_GO__"
 2A78: 21  ; END OF SCRIPT
 
-CODEBUG2: ; This doesn't appear to be used anywhere. Free-play is implemented by always having 2 credits.
+; CODEBUG2: This doesn't appear to be used anywhere. Free-play is implemented by always having 2 credits.
 2A79: 4C 82 00  ; Screen:824C Color:0
 2A7C: 46 52 45 45 20 50 4C 41 59  ; "FREE_PLAY"
 2A85: 21  ; END OF SCRIPT

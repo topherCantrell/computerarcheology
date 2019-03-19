@@ -7,7 +7,7 @@
 ```code
 ; 3N + 3M + 3L + 3K
 
-This is the patched ROM for CPU1 released for the Arcade.
+; This is the patched ROM for CPU1 released for the Arcade.
 
 0000: 3E 10          LD      A,$10           
 0002: 32 00 71       LD      ($7100),A       

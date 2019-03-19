@@ -1200,7 +1200,7 @@ Com08_CompareObjectToFirstNoun:
 0EEB: 5D                  TSTB                              ; B can't be 0 ... Z=0 error
 0EEC: 39                  RTS                               ; Done
 
-Com09 _CompareObjectToSecondNoun:
+Com09_CompareObjectToSecondNoun:
 0EED: FE 01 CC            LDU     $01CC                     ; {ram:SECOND_NOUN_DATA} 2nd noun data
 0EF0: B6 01 C9            LDA     $01C9                     ; {ram:SECOND_NOUN_NUM} 2nd noun number
 0EF3: 20 E0               BRA     $ED5                      ; Do compare
@@ -1394,9 +1394,11 @@ Com18_CheckVarOwnedByActiveObject:
 104A: 34 10               PSHS    X                         ; Hold script
 104C: BD 11 7D            JSR     $117D                     ; Look up owner object
 104F: 20 E5               BRA     $1036                     ; Check again
+```
 
 # Every Turn
 
+```code
 ; Execute any turn-scripts on the objects
 EveryTurn:  
 1051: 8E 1B 42            LDX     #$1B42                    ; Start of object data

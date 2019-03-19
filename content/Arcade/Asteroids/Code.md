@@ -2533,9 +2533,11 @@ PrintPackedMsg:
 7B61: CA            DEX                       
 7B62: 10 F2         BPL   $7B56               ;      
 7B64: 60            RTS                       
+```
 
 # NMI
 
+```code
 NMI: 
 ; 250Hz interrupt
 7B65: 48            PHA                       ; Save A (flags and PC already saved)
@@ -2767,9 +2769,11 @@ NMI:
 7CED: 8A            TXA                       
 7CEE: 91 02         STA   ($02),Y             
 7CF0: 4C 39 7C      JMP   $7C39               ;
+```
 
 # RESET      
 
+```code
 RESET: 
 ; Set stack and clear decimal-mode     
 7CF3: A2 FE         LDX   #$FE                ; Set stack to ...

@@ -1445,11 +1445,13 @@ Com25_RestartGame:
 
 Com24_EndlessLoop:
 10B5: 20 FE               BRA     $10B5                     ; {Com24_EndlessLoop} Spin forever
+```
 
  This snippet of code is never called by anyone, but this is a print
  for null-terminate ASCII strings. Presumably the PrintScore function
  used this at one time.
 
+```code
 10B7: A6 A0               LDA     ,Y+                       ; Get next character
 10B9: 27 09               BEQ     $10C4                     ; Null means done
 10BB: 34 20               PSHS    Y                         ; Hold Y

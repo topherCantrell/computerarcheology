@@ -1985,7 +1985,6 @@ MessageCorp:
 
 # Diagnostics Routine
 
-```code
 The very center 2K of the code map is an expansion area. It originally contained a 1K diagnostics routine
 beginning at 1000. The original code would check bit 0 of port 0 (wired to DIP4) and jump to this routine
 if the switch was flipped. The routine was removed in this Midway version of the code. And it was removed
@@ -1993,6 +1992,7 @@ in later versions of the TAITO code line.
 
 The original routine is shown here for reference.
 
+```code
 0C00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 0C20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 0C40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00

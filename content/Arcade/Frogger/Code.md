@@ -58,12 +58,12 @@ PrintString:
          
 # Clear Screen
 
-```code
 There are 32 rows of 32 columns. This clears the screen from right to left one
 column at a time with a noticeable delay between columns.
 
 ?? Is the screen rotated?
-         
+
+```code      
 ClearScreen:
 0038: 11 10 20       LD      DE,$2010        ; 32 columns
 003B: 21 00 A8       LD      HL,$A800        ; Start of video RAM
