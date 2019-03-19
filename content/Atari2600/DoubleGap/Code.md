@@ -1,5 +1,14 @@
-%%title = Atari 2600 Double Gap
-%%image = DoubleGap.jpg
+![Double Gap](DoubleGap.jpg)
+
+# Double Gap
+
+>>> cpu 6502
+
+>>> memoryTable hard 
+[Hardware Info](../Stella.md)
+
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
 
 This is the listing file from the assembler. TODO Make the listing file the same
 as the other disassembly files so it web-ifies nicely.

@@ -1,9 +1,16 @@
-%%image = A2600Chess.jpg
-%%title = Atari2600 Chess
-%%cpu   = 6502
-%%-ram  = Atari2600/Chess/RAMUse.mark /Atari2600/Chess/RAMUse.mark
-%%-hard = Atari2600/Stella.mark /Atari2600/Stella.html
+![Chess](A2600Chess.jpg)
 
+# Chess
+
+>>> cpu 6502
+
+>>> memoryTable hard 
+[Hardware Info](../Stella.md)
+
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
+
+```code
 ; EA Skill level (0-7 for 1-8)
 ; F2 Switch debounce timer
 
@@ -13,7 +20,7 @@ F002: A2 FF         LDX   #$FF                ; Set stack to ...
 F004: 9A            TXS                       ; ... top of RAM
 F005: E8            INX                       ; Zero
 F006: 8A            TXA                       ; Zero
-F007: 95 00         STA   $00,X               ; Clear ...AUDF1:4,12 AUDF0:4,12 CTRLPF:2,10 HMP0:5,13 HMP1:5,13 ENAM1:5,13 RESM0:3,11 RESM1:3,11 VBLANK:1,9 ENAM0:5,13 NUSIZ0:2,10 CXBLPF:8,16 NUSIZ1:2,10 COLUBK:2,10 CXPPMM:8,16 WSYNC:1,9 VDELP1:6,14 VDELP0:6,14 HMBL:5,13 RESMP1:6,14 ENABL:5,13 RESMP0:6,14 PF2:3,11 HMOVE:6,14 CXM1P:7,15 PF0:3,11 PF1:3,11 HMCLR:6,14 INPT0:8,16 INPT5:8,16 INPT4:8,16 COLUPF:2,10 INPT3:8,16 INPT2:8,16 INPT1:8,16 REFP1:3,11 COLUP0:2,10 COLUP1:2,10 CXM0P:7,15 CXCLR:6,14 VDELBL:6,14 REFP0:3,11 HMM1:5,13 HMM0:5,13 CXP0FB:7,15 RESBL:4,12 CXM1FB:7,15 RESP0:3,11 CXP1FB:7,15 RESP1:3,11 AUDC1:4,12 VSYNC:1,9 AUDC0:4,12 GRP1:5,13 CXM0FB:7,15 AUDV0:4,12 GRP0:4,12 AUDV1:4,12 
+F007: 95 00         STA   $00,X               ; Clear ...
 F009: E8            INX                       ; ... registers ...
 F00A: D0 FB         BNE   $F007               ; ... and RAM
 F00C: 20 AD F2      JSR   $F2AD               ;
@@ -2287,11 +2294,13 @@ FFF6: 12
 FFF7: 13                                    
 FFF8: 23                                    
 FFF9: 24 
+```
 
 # Vectors
 
+```code
 FFFA: 34 56 
 FFFC: 00 F0 
 FFFE: 00 F0 
-
+```
       

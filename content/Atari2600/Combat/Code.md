@@ -1,10 +1,14 @@
-%%image = A2600Combat.jpg
-%%title = Atari2600 Combat
-%%cpu   = 6502
-%%-ram  = Atari2600/Combat/RAMUse.mark /Atari2600/Combat/RAMUse.html
-%%-hard = Atari2600/Stella.mark /Atari2600/Stella.html
+![Combat](A2600Combat.jpg)
 
-# NTSC
+# Combat NTSC
+
+>>> cpu 6502
+
+>>> memoryTable hard 
+[Hardware Info](../Stella.md)
+
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
 
 This is the NTSC version of the code.
 

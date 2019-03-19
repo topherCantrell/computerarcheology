@@ -1,8 +1,14 @@
-%%image = A2600MissileCommand.jpg
-%%title = Atari2600 Missile Command
-%%cpu   = 6502
-%%-ram  = Atari2600/MissileCommand/RAMUse.mark /Atari2600/MissileCommand/RAMUse.mark
-%%-hard = Atari2600/Stella.mark /Atari2600/Stella.html
+![Missile Command](A2600MissileCommand.jpg)
+
+# Missile Command
+
+>>> cpu 6502
+
+>>> memoryTable hard 
+[Hardware Info](../Stella.md)
+
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
 
 ; 86 P0
 ; 87 P1 

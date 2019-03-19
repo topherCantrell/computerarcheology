@@ -1,10 +1,14 @@
-%%image = A2600Combat.jpg
-%%title = Atari2600 Combat PAL
-%%cpu   = 6502
-%%-ram  = Atari2600/Combat/RAMUse.mark /Atari2600/Combat/RAMUse.html
-%%-hard = Atari2600/Stella.mark /Atari2600/Stella.html
+![Combat PAL](A2600Combat.jpg)
 
-# PAL
+# Combat PAL
+
+>>> cpu 6502
+
+>>> memoryTable hard 
+[Hardware Info](../Stella.md)
+
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
 
 This is the PAL version of the code.
 

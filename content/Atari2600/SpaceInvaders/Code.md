@@ -1,8 +1,14 @@
-%%image = A26Invaders.jpg
-%%title = Atari2600 Space Invaders
-%%cpu   = 6502
-%%-ram  = Atari2600/SpaceInvaders/RAMUse.mark /Atari2600/SpaceInvaders/RAMUse.mark
-%%-hard = Atari2600/Stella.mark /Atari2600/Stella.html
+![Space Invaders](A26Invaders.jpg)
+
+# Space Invaders
+
+>>> cpu 6502
+
+>>> memoryTable hard 
+[Hardware Info](../Stella.md)
+
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
 
 F000: 85 2B          STA     $2B             
 F002: A5 84          LDA     $84             

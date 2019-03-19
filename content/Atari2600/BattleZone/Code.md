@@ -1,9 +1,16 @@
-%%image = A2600Battlezone.jpg
-%%title = Atari2600 Battle Zone
-%%cpu   = 6502
-%%-ram  = Atari2600/BattleZone/RAMUse.mark /Atari2600/BattleZone/RAMUse.mark
-%%-hard = Atari2600/Stella.mark /Atari2600/Stella.html
+![Battle Zone](A2600Battlezone.jpg)
 
+# Battle Zone
+
+>>> cpu 6502
+
+>>> memoryTable hard 
+[Hardware Info](../Stella.md)
+
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
+
+```code
 ; C1 is set to $80 when the player is hit and decrements on eac screen draw until 0.
 ; While C1 is >=$58 the screen kernel alternates Hit/Normal based on the lower bit.
 ; A lower bit of 0 is HIT and a lower bit of 1 is Normal.
@@ -11,11 +18,13 @@
 
 ; Bank 0 is the video kernel. The code switches to it at scanline 39. The code switches
 ; to Bank 1 at scanline 234 for "non-visible" processing.
+```
 
 # Bank 0
 
 # Reset (Bank 0)
 
+```code
 Bank0: 
 Reset0: 
 
@@ -23,9 +32,11 @@ Reset0:
 ; banks reset by switching to bank 1 and executing F003.
 ;
 D000: 8D F9 FF   STA $FFF9           ; Switch to bank 1 (goto F003)
+```
 
 # Bank 0 Entry
 
+```code
 Bank0Entry: 
 ;
 ; This draws the visible part of the screen (starting scanline 40)
@@ -2580,33 +2591,41 @@ DFEA: 8C C0 8D   STY $8DC0           ;
 DFED: F9 FF 4C   SBC $4CFF,Y         ; 
 DFF0: D3 
 DFF1: D7 
+```
 
 # Switch to Bank 1
 
+```code
 SwitchToBank1: 
 ; Switch to bank 1 then goto F019.
 DFF2: 8D F9 FF   STA $FFF9           ; Switch to Bank 0 (goto DFF5 then to F019)
 DFF5: 4C 03 D0   JMP $D003           ;{Bank0Entry} We get here after switching to bank 0
 
 DFF8: 88 00
+```
 
 # Vectors (Bank 0)
 
+```code
 Vectors0: 
 DFFA: 12 A5     ; NMI vector to A512 (no interrupts on 2600)
 DFFC: 00 D0     ; Reset vector to D000
 DFFE: F6 7C     ; IRQ/BRK to 7CF6 (no interrupts on 2600)
+```
 
 # Bank 1
 
+```code
 ;----------------------------------------------------------------------------------------------
 Bank1:
 ; Second 2K bank of ROM.
 
 F000: 00 28 50 
+```
 
 # Reset (Bank 1)
 
+```code
 Reset1: 
 F003: 78         SEI                 ; 
 F004: D8         CLD                 ; 
@@ -2621,9 +2640,11 @@ F011: BD F6 FD   LDA $FDF6,X         ;
 F014: 95 82      STA $82,X           ; 
 F016: CA         DEX                 ; 
 F017: 10 F8      BPL $F011           ; 
+```
 
 # Bank 1 Entry
 
+```code
 Bank1Entry: 
 F019: A9 24      LDA #$24            ; 
 F01B: 8D 96 02   STA $0296           ;{-2_TIM64T} 
@@ -4810,9 +4831,11 @@ FFEC: 8D F8 FF   STA $FFF8           ;
 FFEF: 60         RTS                 ; 
 FFF0: 40         RTI                 ; 
 FFF1: 80 
+```
 
 # Switch to Bank 0
 
+```code
 SwitchToBank0: 
 ; Switch to bank 0 and goto D003.
 FFF2: 8D F8 FF   STA $FFF8           ; Switch to Bank 0 (goto DFF5 then to D003)
@@ -4820,9 +4843,12 @@ FFF5: 4C 19 F0   JMP $F019           ;{Bank1Entry} We get here after switching t
 
 FFF8: 88 00
 
+```
 # Vectors (Bank 1)
 
+```code
 Vectors1: 
 FFFA: 03 02   ; NMI vector to 0203 (no interrupts on 2600)
 FFFC: 03 F0   ; Reset to F003
 FFFE: DB D5   ; IRQ/BRK to D5DB (no interrupts on 2600)
+```

@@ -1,4 +1,4 @@
-![RAM](A2600Battlezone.jpg)
+![RAM Use](A2600MissileCommand.jpg)
 
 # RAM
 

@@ -3,7 +3,7 @@
 >>> deploy:<br>
 >>>   +A2600Battlezone.jpg<br>
 >>>   RAMUse.md<br>
->>>   Code.jd<br>
+>>>   Code.md<br>
 >>>   ----<br>
 >>>   Journal.md<br>
 

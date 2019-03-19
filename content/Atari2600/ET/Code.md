@@ -1,8 +1,14 @@
-%%image = A2600ET.jpg
-%%title = Atari2600 ET
-%%cpu   = 6502
-%%-ram  = Atari2600/ET/RAMUse.mark /Atari2600/ET/RAMUse.mark
-%%-hard = Atari2600/Stella.mark /Atari2600/Stella.html
+![ET](A2600ET.jpg)
+
+# ET
+
+>>> cpu 6502
+
+>>> memoryTable hard 
+[Hardware Info](../Stella.md)
+
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
 
 ; This cartridge uses the "F8" bank-switching hardware. This is a single 8K ROM 
 ; with the switching built into it. You read location FFF8 to switch to bank 0. 
