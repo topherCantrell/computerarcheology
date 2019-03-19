@@ -1,8 +1,16 @@
-%%image = Zelda.jpg
-%%cpu   = 6502
-%%-ram  = NES/Zelda/RAMUse.mark /NES/Zelda/RAMUse.html
-%%-hard = NES/Zelda/Hardware.mark /NES/Zelda/Hardware.html
+![Bank 5](Zelda.jpg)
 
+# Bank 5
+
+>>> cpu 6502
+
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
+
+>>> memoryTable hard 
+[Hardware Info](Hardware.md)
+
+```code
 8000: 20 06 80      JSR   $8006               ; 
 8003: 4C 89 ED      JMP   $ED89               ; 
 8006: A5 E1         LDA   <$E1                ; 
@@ -8152,9 +8160,11 @@ B4A3: A5 EB         LDA   <$EB                ;
 B4A5: 8D 26 05      STA   $0526               ; 
 B4A8: A9 02         LDA   #$02                ;
 B4AA: D0 A0         BNE   $B44C               ; 
+```
 
 # Format BBR
 
+```code
 FormatBBR: 
 ; Clear area in battery backed ram if 6001 and 7FFF aren't 5A.
 ; Also store FF to 652A, 652B, and 652C
@@ -8740,9 +8750,11 @@ BF40: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 
 ; From here down is the same in all banks (except for the origin
 ; difference in bank 7). 
+```
 
 # RESET
 
+```code
 RESET: 
 ;
 ; Configure the MMC1 and jump to E440 (Bank 7) for startup.
@@ -8792,9 +8804,11 @@ BF95: 4C 40 E4      JMP   $E440               ; Start of game
 ; R3 - PRG bank select ***RPPPP
 ;  R PRG RAM enabled. Zelda sends 0, but battery-backed RAM is always enabled.
 ;  PPPP bank select. Zelda switches banks 0-6.
+```
 
 # MMC Control
 
+```code
 MMC_Control: 
 ; Set the MMC Control register (0) to value in A
 BF98: 8D 00 80      STA   $8000               ; MMC Register 0 (control): --edcba ...
@@ -8807,9 +8821,11 @@ BFA4: 8D 00 80      STA   $8000               ; The MMC is write-trigger (write 
 BFA7: 4A            LSR   A                   ; .. has no affect anyway).
 BFA8: 8D 00 80      STA   $8000               ; Bits are written from LSB to MSB ...
 BFAB: 60            RTS                       ; ... only 5 bits
+```
 
 # MMC Bank
 
+```code
 MMC_Bank: 
 ; Set the MMC Bank register (3) to value in A
 BFAC: 8D 00 E0      STA   $E000               ; MMC Register 3 (ROM page switching): --edcba ...
@@ -8827,10 +8843,12 @@ BFC0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 BFD0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 BFE0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 BFF0: FF FF FF FF FF FF FF FF FF FF
+```
 
 # Vectors
 
+```code
 BFFA: 84 E4       ; NMI to E484
 BFFC: 50 BF       ; RESET to BF50
 BFFE: F0 BF       ; IRQ to BFF0 (this bank should never be at end)
-
+```

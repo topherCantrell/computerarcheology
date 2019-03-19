@@ -1,15 +1,23 @@
-%%image = Zelda.jpg
-%%cpu   = 6502
-%%-ram  = NES/Zelda/RAMUse.mark /NES/Zelda/RAMUse.html
-%%-hard = NES/Zelda/Hardware.mark /NES/Zelda/Hardware.html
+![Bank 3](Zelda.jpg)
 
-{{{html
+# Bank 3
+
+>>> cpu 6502
+
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
+
+>>> memoryTable hard 
+[Hardware Info](Hardware.md)
+
+```html
 <script src="/NES/Zelda/zelda.js"></script>
 <script src="/js/BinaryData.js"></script>
 <script src="/js/TileEngine.js"></script>
 <script src="/js/CANVAS.js"></script>
-}}}
+```
 
+```code
 ; Zelda screens come in two main flavors: surface (overworld) and dungeon. There are 10
 ; different dungeons (levels 1-9). In the code level 0 is the surface.
 ;
@@ -78,9 +86,11 @@
 803E: 01 00 ; Size of shared "normal" creatures
 8040: 02 20 ; Size of "normal" creatures
 8042: 04 00 ; Size of bosses
+```
 
 # Configure Tiles
 
+```code
 ConfigureTiles: 
 ;
 ; Configure tiles based on the level from 0 (surface) to 9 (Ganon).
@@ -190,9 +200,11 @@ ConfigureTiles:
 80E4: 8D 06 20      STA   $2006               ; ... VRAM address
 80E7: E8            INX                       ; Get LSB ...
 80E8: BD 30 80      LDA   $8030,X             ; ... of VRAM address
+```
 
 # Copy to VRAM
 
+```code
 CopyToVRAM: 
 ;
 ; Block copy from (00:01) to VRAM (address MSB in A, latch LSB is 0).
@@ -224,9 +236,11 @@ CopyToVRAM:
 8115: D0 D9         BNE   $80F0               ; Yes ... go move all
 8117: EE 1D 05      INC   $051D               ; Next set
 811A: 60            RTS                       ; Done
+```
 
 # Tiles_B_Dungeon
 
+```code
 Tiles_B_Dungeon: 
 ;
 ; Underworld background 130 tiles beginning at $1700 (second bank). Starting with tile number $70
@@ -459,9 +473,11 @@ Tiles_B_Dungeon:
 ;
 891B: 00 00 00 00 00 00 00 00 E7 81 81 01 01 81 81 E7 
 892B: 00 00 00 00 00 00 00 00 E7 81 81 00 00 81 81 E7 
+```
 
 # Tiles_B_Surface
 
+```code
 Tiles_B_Surface: 
 ;
 ; Overworld background tiles 130 tiles beginning at $1700 (second bank). Starting with tile number $70
@@ -694,17 +710,20 @@ Tiles_B_Surface:
 ;
 913B: 80 00 00 00 00 00 00 FF 80 00 00 00 00 00 00 FF 
 914B: FF 00 00 00 00 00 00 FF FF 00 00 00 00 00 00 FF 
+```
 
 # Tiles_S_Surface
 
+```code
 Tiles_S_Surface: 
 ;
 ; Overworld sprite tiles 114 tiles beginning at $08E0 (first bank). Starting with tile number $8E.
 ;
 
 Unknown1: 
+```
 
-{{{html
+```html
 <canvas width="150" height="150"
 data-canvasFunction="TileEngine.handleTileCanvas"
 data-getTileDataFunction="Zelda.getMergedData"
@@ -718,8 +737,9 @@ data-gridPad="1"
 data-address="887B"
 data-command=":1x2:8E,8F">
 </canvas>
-}}}
+```
 
+```code
  ;   22333333    8E
  ;   23332333
  ;   23332333
@@ -739,18 +759,22 @@ data-command=":1x2:8E,8F">
  ;   23333323
  ;   23333323
 916b: CF C7 C7 EF 6F 6D 7D 7D FF FF FF FF FF FF FF FF
+```
 
 # Rock 1
 
+```code
 Rock1: 
+```
 
-{{{html
+```html
 <canvas width="150" height="133"
 data-colors='RedOrangeWhite'
 data-command=":2x2:90,92,91,93">
 </canvas>
-}}}
+```
 
+```code
  ;   .......1    90
  ;   ......33
  ;   ....3132
@@ -792,14 +816,16 @@ data-command=":2x2:90,92,91,93">
 91ab: 9E B6 A2 A4 08 08 90 E0 60 58 7C 78 F0 F0 60 00
 
 Unknown2: 
+```
 
-{{{html
+```html
 <canvas width="300" height="150"
 data-colors='RedOrangeWhite'
 data-command=":1x2:94,95,+x,:1x2:96,97">
 </canvas>
-}}}
+```
 
+```code
  ;   ........    94
  ;   ........
  ;   .....222
@@ -839,18 +865,22 @@ data-command=":1x2:94,95,+x,:1x2:96,97">
  ;   2233....
  ;   ..2.....
 91eb: 00 E0 04 30 00 88 30 00 82 E4 C4 3C 90 A8 F0 20
+```
 
 # Old Man
 
-OldMan: 
+```code
+OldMan:
+``` 
 
-{{{html
+```html
 <canvas width="150" height="133"
 data-colors='RedOrangeWhite'
 data-command=":2x2:98,H98,99,H99">
 </canvas>
-}}}
+```
 
+```code
  ;   .....222    98
  ;   ....3232
  ;   ....22.2
@@ -870,18 +900,22 @@ data-command=":2x2:98,H98,99,H99">
  ;   ....1111
  ;   ...11221
 920b: 7F 7F 77 77 77 2F 0F 19 93 83 81 00 00 00 00 06
+```
 
 # Old Woman
 
+```code
 OldWoman: 
+```
 
-{{{html
+```html
 <canvas width="150" height="133"
 data-colors='RedOrangeWhite'
 data-command=":2x2:9A,H9A,9B,H9B">
 </canvas>
-}}}
+```
 
+```code
  ;   .....111    9A
  ;   ....1133
  ;   ...11333
@@ -901,19 +935,23 @@ data-command=":2x2:9A,H9A,9B,H9B">
  ;   ..1.1111
  ;   ..1.2221
 922b: 7E 5E 5F 5F 57 6F 2F 21 09 29 20 01 01 00 00 0E
+```
 
 # Merchant
 
+```code
 Merchant: 
+```
 
-{{{html
+```html
 <canvas width="150" height="133"
 data-colorsName="OrangeGreenBrown"
 data-colors='["#606060","#B0FF18","#FFAD41","#E66410"]'
 data-command=":2x2:9C,H9C,9D,H9D">
 </canvas>
-}}}
+```
 
+```code
  ;   ....3333    9C
  ;   ...33333
  ;   ...332.2
@@ -933,18 +971,22 @@ data-command=":2x2:9C,H9C,9D,H9D">
  ;   ...3333.
  ;   ....33..
 924b: 7F 4F 47 0F 1F 1F 1E 0C 70 70 79 7F 61 18 1E 0C
+```
 
 # Octo Rock Shot
 
-OctoRockShot: 
+```code
+OctoRockShot:
+``` 
 
-{{{html
+```html
 <canvas width="150" height="133"
 data-colors='RedOrangeWhite'
 data-command=":1x2:9E,9F">
 </canvas>
-}}}
+```
 
+```code
  ;   ........    9E
  ;   ........
  ;   ..223...
@@ -964,18 +1006,22 @@ data-command=":1x2:9E,9F">
  ;   ........
  ;   ........
 926b: 0F 4E 7E 18 00 00 00 00 FF FE 7E 18 00 00 00 00
+```
 
 # Armos Night
 
-ArmosNight: 
+```code
+ArmosNight:
+```
 
-{{{html
+```html
 <canvas width="600" height="133"
 data-colors='RedOrangeWhite'
 data-command=":2x2:A0,A2,A1,A3,+x,:2x2:A4,A6,A5,A7,+x,:2x2:A8,AA,A9,AB,+x,:2x2:AC,AE,AD,AF">
 </canvas>
-}}}
+```
 
+```code
  ;   ...21.22    A0
  ;   ...21221
  ;   ....2231
@@ -1135,18 +1181,22 @@ data-command=":2x2:A0,A2,A1,A3,+x,:2x2:A4,A6,A5,A7,+x,:2x2:A8,AA,A9,AB,+x,:2x2:A
  ;   .2221111
  ;   ........
 936b: 3D 3F FF 3F 3F 7F 0F 00 C2 C2 02 C2 C6 86 70 00
+```
 
 # Octorok
 
-Octorok: 
+```code
+Octorok:
+``` 
 
-{{{html
+```html
 <canvas width="600" height="133"
 data-colors='RedOrangeWhite'
 data-command=":2x2:B0,HB0,B1,HB1,+x,:2x2:B2,HB2,B3,HB3,+x,:2x2:B4,B6,B5,B7,+x,:2x2:B8,BA,B9,BB">
 </canvas>
-}}}
+```
 
+```code
  ;   .....112    B0
  ;   ...11211
  ;   11111111
@@ -1266,18 +1316,22 @@ data-command=":2x2:B0,HB0,B1,HB1,+x,:2x2:B2,HB2,B3,HB3,+x,:2x2:B4,B6,B5,B7,+x,:2
  ;   1.11.11.
  ;   ...1..1.
 942b: FE F7 FD EE FE FC B6 12 C1 48 22 F0 C0 00 00 00
+```
 
 # Leever
 
-Leever: 
+```code
+Leever:
+``` 
 
-{{{html
+```html
 <canvas width="900" height="133"
 data-colors='RedOrangeWhite'
 data-command=":2x2:BC,HBC,BD,HBD,+x,:2x2:BE,HBE,BF,HBF,+x,:2x2:C0,HC0,C1,HC1,+x,:2x2:C2,HC2,C3,HC3,+x,:2x2:C4,HC4,C5,HC5">
 </canvas>
-}}}
+```
 
+```code
  ;   ........    BC
  ;   ........
  ;   ........
@@ -1377,18 +1431,22 @@ data-command=":2x2:BC,HBC,BD,HBD,+x,:2x2:BE,HBE,BF,HBF,+x,:2x2:C0,HC0,C1,HC1,+x,
  ;   ..211121
  ;   ....1..1
 94cb: 0F 37 3D 6F BE F7 1D 09 01 09 02 10 41 08 22 00
+```
 
 # Peahat
 
-Peahat: 
+```code
+Peahat:
+``` 
 
-{{{html
+```html
 <canvas width="600" height="133"
 data-colors='RedOrangeWhite'
 data-command=":2x2:C6,HC6,C7,HC7,+x,:2x2:C8,HC8,C9,HC9">
 </canvas>
-}}}
+```
 
+```code
  ;   .......3    C6
  ;   ......33
  ;   ......31
@@ -1428,18 +1486,22 @@ data-command=":2x2:C6,HC6,C7,HC7,+x,:2x2:C8,HC8,C9,HC9">
  ;   ....11.1
  ;   .......1
 950b: 3C 78 00 10 30 08 0D 01 3F 7F 1F 0F 0F 07 00 00
+```
 
 # Tektike
 
-Tektike: 
+```code
+Tektike:
+``` 
 
-{{{html
+```html
 <canvas width="600" height="133"
 data-colors='RedOrangeWhite'
 data-command=":2x2:CA,HCA,CB,HCB,+x,:2x2:CC,HCC,CD,HCD">
 </canvas>
-}}}
+```
 
+```code
  ;   ........    CA
  ;   ........
  ;   ........
@@ -1479,18 +1541,22 @@ data-command=":2x2:CA,HCA,CB,HCB,+x,:2x2:CC,HCC,CD,HCD">
  ;   .1......
  ;   1.......
 954b: 97 33 70 42 40 40 40 80 0E 0F 07 42 00 00 00 00
+```
 
 # Lynel
 
+```code
 Lynel: 
+```
 
-{{{html
+```html
 <canvas width="900" height="133"
 data-colors='RedOrangeWhite'
 data-command=":2x2:CE,D0,CF,D1,+x,:2x2:D2,D4,D3,D5,+x,:2x2:D6,D8,D7,D9,+x,:2x2:DA,DC,DB,DD">
 </canvas>
-}}}
+```
 
+```code
  ;   ...11121    CE
  ;   .....122
  ;   ....1122
@@ -1652,14 +1718,16 @@ data-command=":2x2:CE,D0,CF,D1,+x,:2x2:D2,D4,D3,D5,+x,:2x2:D6,D8,D7,D9,+x,:2x2:D
 964b: A0 B0 78 F8 F8 F8 78 70 58 40 80 00 00 00 00 00
 
 Unknown3: 
+```
 
-{{{html
+```html
 <canvas width="300" height="133"
 data-colors='RedOrangeWhite'
 data-command=":1x2:DE,DF">
 </canvas>
-}}}
+```
 
+```code
  ;   ........    DE
  ;   ........
  ;   ........
@@ -1679,19 +1747,23 @@ data-command=":1x2:DE,DF">
  ;   ........
  ;   ........
 966b: 37 3F 1E 0C 00 00 00 00 FF FF 7E 1C 00 00 00 00
+```
 
 # Ghini
 
+```code
 Ghini: 
+```
 
-{{{html
+```html
 <canvas width="600" height="133"
 data-colorsName="BlueBlueWhite"
 data-colors='["#606060","#0000BC","#6B8EFF","#FFFFFF"]'
 data-command=":2x2:E0,E2,E1,E3,+x,:2x2:E4,E6,E5,E7">
 </canvas>
-}}}
+```
 
+```code
  ;   .....333    E0
  ;   3..22222
  ;   3.221122
@@ -1771,18 +1843,22 @@ data-command=":2x2:E0,E2,E1,E3,+x,:2x2:E4,E6,E5,E7">
  ;   11111...
  ;   1111....
 96eb: F0 E0 E0 C0 00 F0 F8 F0 F8 F0 F0 E0 C0 00 00 00
+```
 
 # Rock 2
 
+```code
 Rock2: 
+```
 
-{{{html
+```html
 <canvas width="300" height="133"
 data-colors='RedOrangeWhite'
 data-command=":2x2:E8,EA,E9,EB">
 </canvas>
-}}}
+```
 
+```code
  ;   ......22    E8
  ;   ....3223
  ;   ...32112
@@ -1822,18 +1898,22 @@ data-command=":2x2:E8,EA,E9,EB">
  ;   111.....
  ;   11......
 972b: 86 C6 46 4C 4C 78 E0 C0 78 38 B8 B0 B0 80 00 00
+```
 
 # Zola
 
+```code
 Zola: 
+```
 
-{{{html
+```html
 <canvas width="600" height="133"
 data-colors='RedOrangeWhite'
 data-command=":2x2:EC,HEC,ED,HED,+x,+x,+x,:2x2:EE,HEE,EF,HEF">
 </canvas>
-}}}
+```
 
+```code
  ;   31....13    EC
  ;   131..113
  ;   13311213
@@ -1873,18 +1953,22 @@ data-command=":2x2:EC,HEC,ED,HED,+x,+x,+x,:2x2:EE,HEE,EF,HEF">
  ;   ..122.11
  ;   ...11222
 976b: FD FD F3 E3 D3 4F 23 18 F5 75 6D DD 2D 21 18 07
+```
 
 # Moblin
 
-Moblin: 
+```code
+Moblin:
+``` 
 
-{{{html
+```html
 <canvas width="600" height="133"
 data-colors='RedOrangeWhite'
 data-command=":2x2:F0,F2,F1,F3,+x,:2x2:F4,F6,F5,F7,+x,:2x2:F8,FA,F9,FB,+x,:2x2:FC,FE,FD,FF">
 </canvas>
-}}}
+```
 
+```code
  ;   ......22    F0
  ;   .......2
  ;   ....1111
@@ -2044,23 +2128,27 @@ data-command=":2x2:F0,F2,F1,F3,+x,:2x2:F4,F6,F5,F7,+x,:2x2:F8,FA,F9,FB,+x,:2x2:F
  ;   1111222.
  ;   ........
 986b: F0 F8 FA FE FE FA F0 00 0E 06 36 C2 02 06 0E 00
+```
 
 # Tiles_S_358
 
+```code
 ;Tiles_S_358: 
 ;
 ; Creatures levels 3,5, and 8. 34 tiles beginning at $09E0 (first bank). Starting with tile number $9E.
 
 Blank: 
+```
 
-{{{html
+```html
 <canvas width="600" height="66"
 data-address="8E9B"
 data-colors='["#606060","#B8B8F8","#FFA044","#E45C10"]'
 data-command="9E,+x,9F">
 </canvas>
-}}}
+```
 
+```code
  ;   ........    9E
  ;   ........
  ;   ........
@@ -2080,19 +2168,23 @@ data-command="9E,+x,9F">
  ;   ........
  ;   ........
 988b: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+```
 
 # PolsVoice
 
-PolsVoice: 
+```code
+PolsVoice:
+``` 
 
-{{{html
+```html
 <canvas width="600" height="133"
 data-address="8E9B"
 data-colors='["#606060","#B8B8F8","#FFA044","#E45C10"]'
 data-command=":2x2:A0,HA0,A1,HA1,+x,:2x2:A2,HA2,A3,HA3">
 </canvas>
-}}}
+```
 
+```code
  ;   ........    A0
  ;   .22.....
  ;   .222....
@@ -2132,19 +2224,23 @@ data-command=":2x2:A0,HA0,A1,HA1,+x,:2x2:A2,HA2,A3,HA3">
  ;   .3222222
  ;   .222..22
 98cb: 00 22 FA 02 F8 20 40 00 7F 3F 07 1F 07 3F 7F 73
+```
 
 # Gibdo
 
+```code
 Gibdo: 
+```
 
-{{{html
+```html
 <canvas width="600" height="133"
 data-address="8E9B"
 data-colors='BlueBlueWhite'
 data-command=":2x2:A4,A6,A5,A7">
 </canvas>
-}}}
+```
 
+```code
  ;   ......23    A4
  ;   22...211
  ;   333.2131
@@ -2184,19 +2280,23 @@ data-command=":2x2:A4,A6,A5,A7">
  ;   ........
  ;   ........
 990b: 30 C0 18 F0 0E 10 00 00 F0 F0 F8 F8 7E 1E 00 00
+```
 
 # Zol
 
+```code
 Zol: 
+```
 
-{{{html
+```html
 <canvas width="600" height="133"
 data-address="8E9B"
 data-colors='["#606060","#005800","#F9BC22","#FFFFFF"]'
 data-command=":2x2:A8,HA8,A9,HA9,+x,:2x2:AA,HAA,AB,HAB">
 </canvas>
-}}}
+```
 
+```code
  ;   ......11    A8
  ;   .....111
  ;   .....131
@@ -2236,19 +2336,23 @@ data-command=":2x2:A8,HA8,A9,HA9,+x,:2x2:AA,HAA,AB,HAB">
  ;   ..111111
  ;   ...11111
 994b: 1F 3F 7F 7F 7F 7F 3F 1F 00 00 00 00 00 00 00 00
+```
 
 # Darknut
 
-Darknut: 
+```code
+Darknut:
+``` 
 
-{{{html
+```html
 <canvas width="900" height="133"
 data-address="8E9B"
 data-colors='BlueBlueWhite'
 data-command=":2x2:AC,AE,AD,AF,+x,:2x2:B0,B2,B1,B3,+x,:2x2:B4,B6,B5,B7,+x,:2x2:B8,BA,B9,BB,+x,:2x2:BC,BE,BD,BF">
 </canvas>
-}}}
+```
 
+```code
  ;   ....3..1    AC
  ;   ....3221
  ;   ....3222
@@ -2448,25 +2552,31 @@ data-command=":2x2:AC,AE,AD,AF,+x,:2x2:B0,B2,B1,B3,+x,:2x2:B4,B6,B5,B7,+x,:2x2:B
  ;   1111....
  ;   .11.....
 9a8b: F4 FE FF FE 44 3C F0 60 08 3E 3F 3E A8 C0 00 00
+```
 
 # Tiles_S_469
 
+```code
 Tiles_S_469: 
 ;
 ; Creatures levels 4,6, and 9. 34 tiles beginning at $09E0 (first bank). Starting with tile number $9E.
+```
 
 # Lanmola
 
-Lanmola: 
+```code
+Lanmola:
+``` 
 
-{{{html
+```html
 <canvas width="600" height="133"
 data-address="90bb"
 data-colors='RedOrangeWhite'
 data-command=":1x2:9E,9F,+x,:1x2:A0,A1">
 </canvas>
-}}}
+```
 
+```code
  ;   ........    9E
  ;   33....33
  ;   .322223.
@@ -2506,18 +2616,22 @@ data-command=":1x2:9E,9F,+x,:1x2:A0,A1">
  ;   ........
  ;   ........
 9acb: C3 62 C7 6A 7E 34 00 00 3C 1C 38 14 00 00 00 00
+```
 
 # LikeLike
 
-LikeLike: 
+```code
+LikeLike:
+``` 
 
-{{{html
+```html
 <canvas width="600" height="133"
 data-colors='RedOrangeWhite'
 data-command=":2x2:A2,HA2,A3,HA3,+x,:2x2:A4,HA4,A5,HA5,+x,:2x2:A6,HA6,A7,HA7">
 </canvas>
-}}}
+```
 
+```code
  ;   ....2222    A2
  ;   ..221111
  ;   .2111111
@@ -2577,19 +2691,23 @@ data-command=":2x2:A2,HA2,A3,HA3,+x,:2x2:A4,HA4,A5,HA5,+x,:2x2:A6,HA6,A7,HA7">
  ;   ........
  ;   ........
 9b2b: 20 8C 73 20 00 00 00 00 FF 73 8C 78 00 00 00 00
+```
 
 # Zol 2
 
+```code
 Zol2: 
+```
 
-{{{html
+```html
 <canvas width="600" height="133"
 data-colorsName="GreenGreenWhite"
 data-colors='["#606060","#005800","#F9BC22","#FFFFFF"]'
 data-command=":2x2:A8,HA8,A9,HA9,+x,:2x2:AA,HAA,AB,HAB">
 </canvas>
-}}}
+```
 
+```code
  ;   ......11    A8
  ;   .....111
  ;   .....131
@@ -2629,18 +2747,22 @@ data-command=":2x2:A8,HA8,A9,HA9,+x,:2x2:AA,HAA,AB,HAB">
  ;   ..111111
  ;   ...11111
 9b6b: 1F 3F 7F 7F 7F 7F 3F 1F 00 00 00 00 00 00 00 00
+```
 
 # Vire
 
+```code
 Vire: 
+```
 
-{{{html
+```html
 <canvas width="600" height="133"
 data-colors='BlueBlueWhite'
 data-command=":2x2:AC,HAC,AD,HAD,+x,:2x2:AE,HAE,AF,HAF,+x,:2x2:B0,HB0,B1,HB1,+x,:2x2:B2,HB2,B3,HB3">
 </canvas>
-}}}
+```
 
+```code
  ;   ..1.22..    AC
  ;   ..11.222
  ;   .111.232
@@ -2720,18 +2842,22 @@ data-command=":2x2:AC,HAC,AD,HAD,+x,:2x2:AE,HAE,AF,HAF,+x,:2x2:B0,HB0,B1,HB1,+x,
  ;   ....222.
  ;   ...2222.
 9beb: 00 00 10 10 00 00 00 00 3F 3F 2F 0F 0F 0F 0E 1E
+```
 
 # Wizzrobe
 
-Wizzrobe: 
+```code
+Wizzrobe:
+``` 
 
-{{{html
+```html
 <canvas width="600" height="133"
 data-colors='BlueBlueWhite'
 data-command=":2x2:B4,B6,B5,B7,+x,:2x2:B8,BA,B9,BB,+x,:2x2:BC,HBC,BD,HBD,+x,:2x2:BE,HBE,BF,HBF">
 </canvas>
-}}}
+```
 
+```code
  ;   .....222    B4
  ;   ...22222
  ;   ..222222
@@ -2851,25 +2977,31 @@ data-command=":2x2:B4,B6,B5,B7,+x,:2x2:B8,BA,B9,BB,+x,:2x2:BC,HBC,BD,HBD,+x,:2x2
  ;   ...22222
  ;   .2222222
 9cab: 08 04 02 01 10 10 00 00 37 3B 3D 3E 2F 2F 1F 7F
+```
 
 # Tiles_S_Dungeon
 
+```code
 Tiles_S_Dungeon: 
 ;
 ; Common underworld creatures (there aren't many).  16 tiles beginning at $08E0 (first bank). Starting with tile number $8E.
+```
 
 # Bubble
 
-Bubble: 
+```code
+Bubble:
+``` 
 
-{{{html
+```html
 <canvas width="600" height="133"
 data-address="93db"
 data-colors='RedOrangeWhite'
 data-command=":2x2:8E,90,8F,91">
 </canvas>
-}}}
+```
 
+```code
  ;   ......12    8E
  ;   ....3122
  ;   ...11333
@@ -2909,18 +3041,22 @@ data-command=":2x2:8E,90,8F,91">
  ;   3233....
  ;   21......
 9ceb: F6 D4 DA E0 BC 80 B0 40 7E EA EC 7C CC 78 F0 80
+```
 
 # Gel
 
+```code
 Gel: 
+```
 
-{{{html
+```html
 <canvas width="600" height="133"
 data-colors='["#606060","#004058","#008585","#00FFFF"]'
 data-command=":1x2:92,93,+x,:1x2:94,95">
 </canvas>
-}}}
+```
 
+```code
  ;   ........    92
  ;   ........
  ;   ........
@@ -2960,18 +3096,22 @@ data-command=":1x2:92,93,+x,:1x2:94,95">
  ;   ........
  ;   ........
 9d2b: 7E 7E 7E 7E 3C 00 00 00 00 00 00 00 00 00 00 00
+```
 
 # Trap
 
+```code
 Trap: 
+```
 
-{{{html
+```html
 <canvas width="600" height="133"
 data-colors='BlueBlueWhite'
 data-command=":2x2:96,H96,97,H97">
 </canvas>
-}}}
+```
 
+```code
  ;   ......3.    96
  ;   ......3.
  ;   ......3.
@@ -2991,18 +3131,22 @@ data-command=":2x2:96,H96,97,H97">
  ;   ......3.
  ;   ......3.
 9d4b: 0C FC 0B 07 02 02 02 02 03 F3 04 08 02 02 02 02
+```
 
 # Old Man 2
 
-OldMan2: 
+```code
+OldMan2:
+``` 
 
-{{{html
+```html
 <canvas width="600" height="133"
 data-colors='RedOrangeWhite'
 data-command=":2x2:98,H98,99,H99">
 </canvas>
-}}}
+```
 
+```code
  ;   .....222    98
  ;   ...23232
  ;   ...232.2
@@ -3022,18 +3166,22 @@ data-command=":2x2:98,H98,99,H99">
  ;   ....1111
  ;   ...11221
 9d6b: 3F 3F 77 77 67 2F 0F 19 D3 C3 81 00 00 00 00 06
+```
 
 # Keese
 
+```code
 Keese: 
+```
 
-{{{html
+```html
 <canvas width="600" height="133"
 data-colors='BlueBlueWhite'
 data-command=":2x2:9A,H9A,9B,H9B,+x,:2x2:9C,H9C,9D,H9D">
 </canvas>
-}}}
+```
 
+```code
  ;   ........    9A
  ;   ........
  ;   ........
@@ -3073,25 +3221,31 @@ data-command=":2x2:9A,H9A,9B,H9B,+x,:2x2:9C,H9C,9D,H9D">
  ;   ........
  ;   ........
 9dab: 1F 1F 1F 0E 0C 04 00 00 00 00 00 00 00 00 00 00
+```
 
 # Tiles_S_127
 
+```code
 Tiles_S_127: 
 ;
 ; Creatures levels 1,2, and 7.  34 tiles beginning at $09E0 (first bank). Starting with tile number $9E.
+```
 
 # Wall Master 1
 
-WallMaster1: 
+```code
+WallMaster1:
+``` 
 
-{{{html
+```html
 <canvas width="600" height="133"
 data-address="93DB"
 data-colors='BlueBlueWhite'
 data-command=":2x2:AC,AE,AD,AF,+x,:2x2:AC,9E,AD,9F">
 </canvas>
-}}}
+```
 
+```code
  ;   ........    9E
  ;   2.......
  ;   2122....
@@ -3111,19 +3265,23 @@ data-command=":2x2:AC,AE,AD,AF,+x,:2x2:AC,9E,AD,9F">
  ;   111.....
  ;   11......
 9dcb: 64 44 8C 08 18 30 E0 C0 98 B8 70 F0 E0 C0 00 00
+```
 
 # Rope
 
+```code
 Rope: 
+```
 
-{{{html
+```html
 <canvas width="600" height="133"
 data-address="93DB"
 data-colors='RedOrangeWhite'
 data-command=":2x2:A0,A2,A1,A3,+x,:2x2:A4,A6,A5,A7">
 </canvas>
-}}}
+```
 
+```code
  ;   .......2    A0
  ;   ......22
  ;   ......22
@@ -3203,19 +3361,23 @@ data-command=":2x2:A0,A2,A1,A3,+x,:2x2:A4,A6,A5,A7">
  ;   .22211..
  ;   ........
 9e4b: 00 00 18 0C 0E 06 0C 00 FE 78 20 3C F0 FE 70 00
+```
 
 # Stalfos
 
-Stalfos: 
+```code
+Stalfos:
+``` 
 
-{{{html
+```html
 <canvas width="600" height="133"
 data-address="93DB"
 data-colors='RedOrangeWhite'
 data-command=":2x2:A8,AA,A9,AB">
 </canvas>
-}}}
+```
 
+```code
  ;   .....333    A8
  ;   ....3113
  ;   ....3133
@@ -3255,9 +3417,11 @@ data-command=":2x2:A8,AA,A9,AB">
  ;   ..33....
  ;   ..3333..
 9e8b: 06 C6 40 80 60 30 30 3C 06 C0 40 80 60 30 30 3C
+```
 
 # Wall Master 2
 
+```code
 WallMaster2: 
 ;
 ; See WallMaster1 above
@@ -3301,19 +3465,23 @@ WallMaster2:
  ;   1111....
  ;   11......
 9ecb: C1 81 83 82 06 18 F0 C0 0E 0E 1C 7C F8 E0 00 00
+```
 
 # Goriya
 
-Goriya: 
+```code
+Goriya:
+``` 
 
-{{{html
+```html
 <canvas width="600" height="133"
 data-address="93DB"
 data-colors='RedOrangeWhite'
 data-command=":2x2:B0,B2,B1,B3,+x,:2x2:B4,B6,B5,B7,+x,:2x2:B8,BA,B9,BB,+x,:2x2:BC,BE,BD,BF">
 </canvas>
-}}}
+```
 
+```code
  ;   ..2222..    B0
  ;   ....2211
  ;   ......11
@@ -3473,25 +3641,31 @@ data-command=":2x2:B0,B2,B1,B3,+x,:2x2:B4,B6,B5,B7,+x,:2x2:B8,BA,B9,BB,+x,:2x2:B
  ;   2222211.
  ;   ...11111
 9fcb: 70 FF FF FE E0 00 06 1F 88 07 07 06 1C FC F8 00
+```
 
 # Tiles_S_Boss_1257
 
+```code
 Tiles_S_Boss_1257: 
 ;
 ; Bosses for levels 1,2,5, and 7. 64 tiles beginning at $0C00 (first bank). Starting with tile number $C0.
+```
 
 # Aquamentus
 
-Aquamentus: 
+```code
+Aquamentus:
+``` 
 
-{{{html
+```html
 <canvas width="600" height="280"
 data-address="93db"
 data-colors='["#606060","#005400","#C0FF00","#FFFFFF"]'
 data-command=":3x4:C0,C4,C8,C1,C5,C9,C2,C6,CA,C3,C7,CB,+x,+x,:3x4:CC,C4,C8, CD,C5,C9,CE,D0,D2,CF,D1,D3">
 </canvas>
-}}}
+```
 
+```code
  ;   3.......    C0
  ;   .3......
  ;   ..33.222
@@ -3691,18 +3865,22 @@ a0fb: D8 E0 F0 FC FF 00 00 00 DF 1F 0F 03 00 FF FF FF
  ;   222222..
  ;   22222...
 a10b: 00 80 00 00 00 00 00 00 FE 7E FE FE FC FC FC F8
+```
 
 # Digdogger
 
-Digdogger: 
+```code
+Digdogger:
+``` 
 
-{{{html
+```html
 <canvas width="600" height="280"
 data-colors='RedOrangeWhite'
 data-command=":4x4:D4,D6,HD6,HD4,D5,D7,HD7,HD5,VD5,VD7,VHD7,VHD5,VD4,VD6,VHD6,VHD4,+x,:2x2:D8,HD8,D9,HD9,+x,:2x2:DA,HDA,DB,HDB">
 </canvas>
-}}}
+```
 
+```code
 ; The large version is drawn with DA,DB and HDA,HDB (alternating) overlapping to give 
 ; animation to the disk.
 
@@ -3785,12 +3963,15 @@ a17b: 01 18 10 03 67 4F 0F 5F 00 03 0F 1C 1B 37 36 2C
  ;   .....122
  ;   .....11.
 a18b: DF 0F 4F C7 23 30 04 06 2C 36 37 1B 1C 0F 03 00
+```
 
 # Dodongo
 
-Dodongo: 
+```code
+Dodongo:
+``` 
 
-{{{html
+```html
 <canvas width="900" height="140"
 data-colors='RedOrangeWhite'
 data-command=":4x2:DC,DE,E0,E2,DD,DF,E1,E3,+x,:4x2:E4,E6,E8,EA,E5,E7,E9,EB,+x,:4x2:EC,EE,F0,F2,ED,EF,F1,F3">
@@ -3800,8 +3981,9 @@ data-command=":4x2:DC,DE,E0,E2,DD,DF,E1,E3,+x,:4x2:E4,E6,E8,EA,E5,E7,E9,EB,+x,:4
 data-colors='RedOrangeWhite'
 data-command=":2x2:F4,F6,F5,F7,+x,:2x2:F8,HF8,F9,HF9,+x,:2x2:FA,FC,FB,FD,+x,:2x2:FE,HFE,FF,HFF">
 </canvas>
-}}}
+```
 
+```code
  ;   ........    DC
  ;   ........
  ;   ........
@@ -4161,18 +4343,23 @@ a3bb: 00 00 00 00 00 00 00 00 07 1F 7F 7F 7F FF FF FF
  ;   22221222
  ;   .222.122
 a3cb: 00 80 80 40 20 10 08 04 FF 7F 7F BF DF EF F7 73
+```
 
 # Tiles_S_Boss_3468
 
+```code
 Tiles_S_Boss_3468: 
 ;
 ; Bosses levels 3,4,6, and 8.64 tiles beginning at $0C00 (first bank). Starting with tile number $C0.
+```
 
 # Gleeok
 
-Gleeok: 
+```code
+Gleeok:
+``` 
 
-{{{html
+```html
 <canvas width="900" height="280"
 data-address="97DB"
 data-colors='["#606060","#60C040","#00A000","#004040"]'
@@ -4187,8 +4374,9 @@ data-command=":1x2:D2,D3,+x,:1x2:D6,D7,+x,:1x2:D8,D9,+x,+x,+x,:1x2:DA,DB,+x,:1x2
 data-colors="RedOrangeWhite"
 data-command=":2x2:DE,HDE,DF,HDF,+x,:2x2:EE,HEE,EF,HEF">
 </canvas>
-}}}
+```
 
+```code
 ; The second head tiles (EE and EF) are defined later
 
  ;   ........    C0
@@ -4510,12 +4698,15 @@ a5bb: 0E 0F 07 07 0F 0F 0F 07 23 12 B8 58 34 16 30 18
  ;   .....131
  ;   ......11
 a5cb: 03 03 03 03 03 07 07 03 1C 2C 0C 14 0C 08 02 00
+```
 
 # Manhandla
 
-Manhandla: 
+```code
+Manhandla:
+``` 
 
-{{{html
+```html
 <canvas width="900" height="160"
 data-colors="BlueBlueWhite"
 data-command=":2x2:E0,E2,E1,E3,+x,:2x2:E4,E6,E5,E7,+x,:2x2:E8,HE8,E9,HE9,+x,:2x2:EA,HEA,EB,HEB">
@@ -4524,8 +4715,9 @@ data-command=":2x2:E0,E2,E1,E3,+x,:2x2:E4,E6,E5,E7,+x,:2x2:E8,HE8,E9,HE9,+x,:2x2
 <canvas width="900" height="160"
 data-command=":2x2:EC,HEC,ED,HED">
 </canvas>
-}}}
+```
 
+```code
  ;   .....222    E0
  ;   ...22222
  ;   ..222222
@@ -4665,9 +4857,11 @@ a69b: 0F 1F 3F 3F 7F 7F 7F 7F 00 01 19 10 00 01 B1 A0
  ;   11111222
  ;   .1112222
 a6ab: 7E 7C 7C 78 FB FC F8 70 81 83 63 47 04 03 07 0F
+```
 
 # GleeokHead
 
+```code
 GleeokHead: 
 
  ;   2..31133    EE
@@ -4689,12 +4883,15 @@ a6bb: 1F 2F 5F 2F 1F 1F 0F 0F 93 22 58 28 14 56 00 08
  ;   ....3131
  ;   .....311
 a6cb: 0F 1F 17 0F 07 07 0F 07 2C 1C 14 0C 14 10 0A 04
+```
 
 # Gohma
 
+```code
 Gohma: 
+```
 
-{{{html
+```html
 <canvas width="900" height="140"
 data-colors="RedOrangeWhite"
 data-command=":6x2:F0,F2,F4,HF4,F8,FA,F1,F3,F5,HF5,F9,FB">
@@ -4703,8 +4900,9 @@ data-command=":6x2:F0,F2,F4,HF4,F8,FA,F1,F3,F5,HF5,F9,FB">
 <canvas width="900" height="140"
 data-command=":1x2:F6,F7,+x,+x,+x,:2x2:FC,HFC,FD,HFD,+x,+x,+x,:1x2:FE,FF">
 </canvas>
-}}}
+```
 
+```code
  ;   ........    F0
  ;   .......3
  ;   .....223
@@ -4864,27 +5062,33 @@ a7bb: 00 20 30 80 C0 90 98 00 00 00 0C 7F 3F 6F 67 FF
  ;   ..333222
  ;   ..3.....
 a7cb: 00 70 7F 3F 0F 17 38 20 FF FF F8 FC FF 7F 3F 20
+```
 
 # Tiles_S_Boss_9
 
+```code
 Tiles_S_Boss_9: 
 ;
 ; Ganon (Level 9). 64 tiles beginning at $0C00 (first bank). Starting with tile number $C0.
+```
 
 # Ganon
 
+```code
 Ganon: 
 
 ; These are the "Ganon" tiles drawn in a grid. I am still working on
 ; putting them together into pictures.
+```
 
-{{{html
+```html
 <canvas width="800" height="560"
 data-address="9BDB"
 data-command=":1x2:C0,C1,+x,:1x2:C2,C3,+x,:1x2:C4,C5,+x,:1x2:C6,C7,+x,:1x2:C8,C9,+x,:1x2:CA,CB,+x,:1x2:CC,CD,+x,:1x2:CE,CF,+x,*,+y,:1x2:D0,D1,+x,:1x2:D2,D3,+x,:1x2:D4,D5,+x,:1x2:D6,D7,+x,:1x2:D8,D9,+x,:1x2:DA,DB,+x,:1x2:DC,DD,+x,:1x2:DE,DF,+x,*,+y,:1x2:E0,E1,+x,:1x2:E2,E3,+x,:1x2:E4,E5,+x,:1x2:E6,E7,+x,:1x2:E8,E9,+x,:1x2:EA,EB,+x,:1x2:EC,ED,+x,:1x2:EE,EF,+x,*,+y,:1x2:F0,F1,+x,:1x2:F2,F3,+x,:1x2:F4,F5,+x,:1x2:F6,F7">
 </canvas>
-}}}
+```
 
+```code
  ;   ........    C0
  ;   ........
  ;   ......22
@@ -5444,12 +5648,15 @@ ab3b: 07 06 07 1C 18 18 1D 1E 07 0F 0F 1D 1D 1F 1F 19
  ;   ..311111
  ;   .1111111
 ab4b: 37 33 36 0F 3F 3F 3F 7F 38 3C 3B 30 30 20 20 00
+```
 
 # Patra
 
+```code
 Patra: 
+```
 
-{{{html
+```html
 <canvas width="150" height="140"
 data-colors="BlueBlueWhite"
 data-command=":2x2:F8,FA,F9,FB">
@@ -5458,8 +5665,9 @@ data-command=":2x2:F8,FA,F9,FB">
 data-colors="RedOrangeWhite"
 data-command=":1x2:FC,FD,+x,:1x2:FE,FF">
 </canvas>
-}}}
+```
 
+```code
  ;   ........    F8
  ;   ........
  ;   ........
@@ -5700,9 +5908,11 @@ BF40: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 
 ; From here down is the same in all banks (except for the origin
 ; difference in bank 7). 
+```
 
 # RESET
 
+```code
 RESET: 
 ;
 ; Configure the MMC1 and jump to E440 (Bank 7) for startup.
@@ -5752,9 +5962,11 @@ BF95: 4C 40 E4      JMP   $E440               ; Start of game
 ; R3 - PRG bank select ***RPPPP
 ;  R PRG RAM enabled. Zelda sends 0, but battery-backed RAM is always enabled.
 ;  PPPP bank select. Zelda switches banks 0-6.
+```
 
 # MMC Control
 
+```code
 MMC_Control: 
 ; Set the MMC Control register (0) to value in A
 BF98: 8D 00 80      STA   $8000               ; MMC Register 0 (control): --edcba ...
@@ -5767,9 +5979,11 @@ BFA4: 8D 00 80      STA   $8000               ; The MMC is write-trigger (write 
 BFA7: 4A            LSR   A                   ; .. has no affect anyway).
 BFA8: 8D 00 80      STA   $8000               ; Bits are written from LSB to MSB ...
 BFAB: 60            RTS                       ; ... only 5 bits
+```
 
 # MMC Bank
 
+```code
 MMC_Bank: 
 ; Set the MMC Bank register (3) to value in A
 BFAC: 8D 00 E0      STA   $E000               ; MMC Register 3 (ROM page switching): --edcba ...
@@ -5787,9 +6001,12 @@ BFC0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 BFD0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 BFE0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 BFF0: FF FF FF FF FF FF FF FF FF FF
+```
 
 # Vectors
 
+```code
 BFFA: 84 E4       ; NMI to E484
 BFFC: 50 BF       ; RESET to BF50
 BFFE: F0 BF       ; IRQ to BFF0 (this bank should never be at end)
+```

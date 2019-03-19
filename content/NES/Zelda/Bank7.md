@@ -1,8 +1,16 @@
-%%image = Zelda.jpg
-%%cpu   = 6502
-%%-ram  = NES/Zelda/RAMUse.mark /NES/Zelda/RAMUse.html
-%%-hard = NES/Zelda/Hardware.mark /NES/Zelda/Hardware.html
+![Bank 7](Zelda.jpg)
 
+# Bank 7
+
+>>> cpu 6502
+
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
+
+>>> memoryTable hard 
+[Hardware Info](Hardware.md)
+
+```code
 ; Zelda uses the MMC very simply. Zelda has no VROM ... everything is in RAM.
 ;
 ; 011x : Two-screen (10=vertical mirroring, 11=horizontal) 16K fixed C000 and 16K swappable 8000, 8K VROM at PPU 0000
@@ -308,9 +316,11 @@ E3C0: 6D AA 4A B4 25 AB B6 5B 09 56 45 D9 4A 97 DA AA 5A AB 49 02 55 75 D7 4F 48
 E3E0: A4 56 D5 5E B5 25 A4 55 92 DA 6E EA 26 A9 A4 2A A9 DD B4 AD 54 25 51 DB 54 AA 5A B5 56 85 B4 AD 
 E400: 30 65 46 65 5C 65 72 65 88 65 9E 65 B4 65 CA 65 E0 65 F6 65 0C 66 22 66 38 66 4E 66 64 66 7A 66 
 E420: 90 66 A6 66 BC 66 D2 66 E8 66 FE 66 14 67 2A 67 40 67 56 67 6C 67 82 67 98 67 AE 67 C4 67 DA 67 
+```
 
 # Startup
 
+```code
 ; Startup continues here
 Startup: 
 E440: A9 00         LDA   #$00                ;
@@ -342,9 +352,11 @@ E47B: A9 28         LDA   #$28                ;
 E47D: A2 24         LDX   #$24                ; 
 E47F: A0 00         LDY   #$00                ;
 E481: 4C 94 E5      JMP   $E594               ; 
+```
 
 # NMI
 
+```code
 NMI: 
 ;
 ; if(>$5C != 0) Flip name table (alternates between 0 and 2 ... 2000 and 2800)
@@ -475,9 +487,11 @@ E578: 09 80         ORA   #$80                ; Re-enable ...
 E57A: 8D 00 20      STA   $2000               ; ... VBLANK NMIs
 E57D: 85 FF         STA   <$FF                ; New value of 2000
 E57F: 40            RTI                       ; Back to endless loop (wait for next VBLANK)
+```
 
 # Clear Scroll
 
+```code
 ClearScroll: 
 ; Clear the horizontal and vertical scroll origins and
 ; set tile (pattern) address to v1000.
@@ -492,8 +506,10 @@ E58E: 8D 00 20      STA   $2000               ; ... pattern table at VRAM 1000
 E591: 85 FF         STA   <$FF                ; Cached value of 2000
 E593: 60            RTS                       ; Done
 
+```
 # Clear Tiles or Map
 
+```code
 ClearTilesOrMap: 
 ; This routine clears an area of VRRAM. There are two modes: clear-tiles and clear-map.
 ; The value in A is the MSB of the VRAM area, and it selects the fill mode. If the
@@ -543,9 +559,11 @@ E5DC: CA            DEX                       ; Write all ...
 E5DD: D0 FA         BNE   $E5D9               ; ... attribute values
 E5DF: A6 01         LDX   <$01                ; Restore X register
 E5E1: 60            RTS                       ; Done
+```
 
 # SwitchAJumpRet
 
+```code
 SwitchAJumpRet: 
 ; This is an efficient way to jump to a routine based on the value in A (as in
 ; a switch/jump construct). A list of addresses follows the JSR instruction in
@@ -567,9 +585,11 @@ E5EF: C8            INY                       ; ... switched ...
 E5F0: B1 00         LDA   ($00),Y             ; ... jump ...
 E5F2: 85 03         STA   <$03                ; ... value
 E5F4: 6C 02 00      JMP   ($0002)             ; Jump to the desired function
+```
 
 # Hide All Sprites
 
+```code
 HideAllSprites: 
 ; This function hides all 64 sprites by setting their Y coordinates to F8
 ; which is off the bottom of the screen. The memory 200..2FF is DMA transfered
@@ -602,17 +622,21 @@ E61D: B0 EF         BCS   $E60E               ;
 E61F: A9 FF         LDA   #$FF                ;
 E621: 8D 02 03      STA   $0302               ; 
 E624: 60            RTS                       ;
+```
 
 # Disable Video
 
+```code
 DisableVideo: 
 E625: A9 00         LDA   #$00                ; Hide all display ...
 E627: 8D 01 20      STA   $2001               ; ... components
 E62A: 85 FE         STA   <$FE                ; Cached value
 E62C: 60            RTS                       ; Done
+```
 
 # Read Inputs
 
+```code
 ReadInputs: 
 ;
 ; F8 Current inputs for player 1
@@ -695,7 +719,7 @@ E6B6: 17 B5        ; 08 B517
 
 E6B8: A4 98         LDY   <$98                ; 
 E6BA: A9 00         LDA   #$00
-E6BC: F0 E3         BEQ   ???
+E6BC: F0 E3         
 E6BE: 01 02        ; 0C 0201
 E6C0: 04 08        ; 0D 0804
 E6C2: 10 20        ; 0E 2010
@@ -3558,9 +3582,11 @@ FF4F: FF
 
 ; From here down is the same in all banks (except for the origin
 ; difference in bank 7). 
+```
 
 # RESET
 
+```code
 RESET: 
 ;
 ; Configure the MMC1 and jump to E440 (Bank 7) for startup.
@@ -3610,9 +3636,11 @@ FF95: 4C 40 E4      JMP   $E440               ; Start of game
 ; R3 - PRG bank select ***RPPPP
 ;  R PRG RAM enabled. Zelda sends 0, but battery-backed RAM is always enabled.
 ;  PPPP bank select. Zelda switches banks 0-6.
+```
 
 # MMC Control
 
+```code
 MMC_Control: 
 ; Set the MMC Control register (0) to value in A
 FF98: 8D 00 80      STA   $8000               ; MMC Register 0 (control): --edcba ...
@@ -3625,9 +3653,11 @@ FFA4: 8D 00 80      STA   $8000               ; The MMC is write-trigger (write 
 FFA7: 4A            LSR   A                   ; .. has no affect anyway).
 FFA8: 8D 00 80      STA   $8000               ; Bits are written from LSB to MSB ...
 FFAB: 60            RTS                       ; ... only 5 bits
+```
 
 # MMC Bank
 
+```code
 MMC_Bank: 
 ; Set the MMC Bank register (3) to value in A
 FFAC: 8D 00 E0      STA   $E000               ; MMC Register 3 (ROM page switching): --edcba ...
@@ -3647,9 +3677,12 @@ FFE0: FF FF FF FF FF FF FF FF FF FF FF
 
 FFEB: 5A 45 4C 44 41
 FFF0: D7 C8 00 00 38 04 01 04 01 BE
+```
 
 # Vectors
 
+```code
 FFFA: 84 E4       ; NMI to E484
 FFFC: 50 FF       ; RESET to FF50
 FFFE: F0 FF       ; IRQ to FFF0 (vectored)
+```
