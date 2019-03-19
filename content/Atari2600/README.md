@@ -6,14 +6,13 @@
 >>>   +Hardware.jpg<br>
 >>>   Stella.md:Stella (Hardware Info)<br>
 >>>   Asteroids<br>
-
-BattleZone:Battle Zone<br>
-Chess<br>
-Combat<br>
-DoubleGap:Double Gap<br>
-ET<br>
-MissileCommand:Missile Command<br>
-SpaceInvaders:Space Invaders<br>
+>>>   BattleZone:Battle Zone<br>
+>>>   Chess<br>
+>>>   Combat<br>
+>>>   DoubleGap:Double Gap<br>
+>>>   ET<br>
+>>>   MissileCommand:Missile Command<br>
+>>>   SpaceInvaders:Space Invaders<br>
 
 # Atari 2600
 

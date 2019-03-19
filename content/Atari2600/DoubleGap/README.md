@@ -1,7 +1,8 @@
 ![Double Gap](DoubleGap.jpg)
 
 >>> deploy:<br>
->>>   Code.md
+>>>   Code.md<br>
+>>>   DoubleGap.asm<br>
 >>>   ----<br>
 >>>   Journal.md<br>
 
@@ -13,7 +14,7 @@ DoubleGap is a game I made for the Atari2600 to get a feel for what development 
 
 [http://www.youtube.com/watch?v=xcmxLo47WdA Double-Gap Play](http://www.youtube.com/watch?v=xcmxLo47WdA Double-Gap Play)
 
->>> { playMe
+>>> playMe {
 
 # Play Me!
 

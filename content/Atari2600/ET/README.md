@@ -13,7 +13,7 @@
 
 [http://mashable.com/2014/04/26/legend-confirmed-atari-2600-e-t-game-discovered-at-new-mexico-dig](http://mashable.com/2014/04/26/legend-confirmed-atari-2600-e-t-game-discovered-at-new-mexico-dig)
 
->>> { playMe
+>>> playMe {
 
 # Play Me!
 

@@ -10,6 +10,7 @@
 >>> memoryTable ram 
 [RAM Usage](RAMUse.md)
 
+```code
 F000: 85 2B          STA     $2B             
 F002: A5 84          LDA     $84             
 F004: 30 00          BMI     $F006           
@@ -1610,7 +1611,7 @@ FC08: 00             BRK
 FC09: 00             BRK                     
 FC0A: FE FE 7C       INC     $7CFE,X         
 FC0D: FE 38 38       INC     $3838,X         
-FC10: 7C             ???                     
+FC10: 7C                                  
 FC11: 38             SEC                     
 FC12: 38             SEC                     
 FC13: 10 B6          BPL     $FBCB           
@@ -1620,90 +1621,90 @@ FC1B: 4C 14 28       JMP     $2814
 FC1E: B6 BE          LDX     $BE,Y           
 FC20: 5D 5B 24       EOR     $245B,X         
 FC23: 85 66          STA     $66             
-FC25: 64             ???                     
+FC25: 64                                  
 FC26: 28             PLP                     
 FC27: 10 90          BPL     $FBB9           
 FC29: 88             DEY                     
 FC2A: 88             DEY                     
-FC2B: 44             ???                     
-FC2C: 42             ???                     
-FC2D: 42             ???                     
-FC2E: FF             ???                     
-FC2F: DB             ???                     
-FC30: 5A             ???                     
+FC2B: 44                                  
+FC2C: 42                                  
+FC2D: 42                                  
+FC2E: FF                                  
+FC2F: DB                                  
+FC30: 5A                                  
 FC31: 18             CLC                     
 FC32: 09 11          ORA     #$11            
 FC34: 11 22          ORA     ($22),Y         
-FC36: 42             ???                     
-FC37: 42             ???                     
-FC38: FF             ???                     
-FC39: DB             ???                     
+FC36: 42                                  
+FC37: 42                                  
+FC38: FF                                  
+FC39: DB                                  
 FC3A: 7E 18 A5       ROR     $A518,X         
 FC3D: A5 A5          LDA     $A5             
 FC3F: 99 99 A5       STA     $A599,Y         
-FC42: FF             ???                     
-FC43: 5A             ???                     
+FC42: FF                                  
+FC43: 5A                                  
 FC44: 7E 3C 42       ROR     $423C,X         
-FC47: 5A             ???                     
-FC48: 5A             ???                     
-FC49: 5A             ???                     
+FC47: 5A                                  
+FC48: 5A                                  
+FC49: 5A                                  
 FC4A: 99 A5 FF       STA     $FFA5,Y         
-FC4D: 5A             ???                     
+FC4D: 5A                                  
 FC4E: 7E 3C C3       ROR     $C33C,X         
 FC51: 24 18          BIT     $18             
 FC53: 18             CLC                     
 FC54: 18             CLC                     
-FC55: 5A             ???                     
+FC55: 5A                                  
 FC56: BD A5 81       LDA     $81A5,X         
 FC59: 81 24          STA     ($24,X)         
-FC5B: 42             ???                     
+FC5B: 42                                  
 FC5C: 24 A5          BIT     $A5             
 FC5E: 99 99 BD       STA     $BD99,Y         
-FC61: 5A             ???                     
+FC61: 5A                                  
 FC62: 18             CLC                     
 FC63: 00             BRK                     
 FC64: 81 42          STA     ($42,X)         
-FC66: 42             ???                     
+FC66: 42                                  
 FC67: 24 24          BIT     $24             
-FC69: 3C             ???                     
+FC69: 3C                                  
 FC6A: 7E EB 7E       ROR     $7EEB,X         
-FC6D: 3C             ???                     
+FC6D: 3C                                  
 FC6E: 00             BRK                     
 FC6F: 24 5A          BIT     $5A             
-FC71: 42             ???                     
+FC71: 42                                  
 FC72: 24 3C          BIT     $3C             
 FC74: 7E D7 7E       ROR     $7ED7,X         
-FC77: 3C             ???                     
-FC78: 77             ???                     
-FC79: 44             ???                     
-FC7A: 44             ???                     
-FC7B: 44             ???                     
-FC7C: 5C             ???                     
-FC7D: FF             ???                     
-FC7E: F3             ???                     
-FC7F: F3             ???                     
+FC77: 3C                                  
+FC78: 77                                  
+FC79: 44                                  
+FC7A: 44                                  
+FC7B: 44                                  
+FC7C: 5C                                  
+FC7D: FF                                  
+FC7E: F3                                  
+FC7F: F3                                  
 FC80: 7E 3C EE       ROR     $EE3C,X         
-FC83: 22             ???                     
-FC84: 22             ???                     
-FC85: 22             ???                     
-FC86: 3A             ???                     
-FC87: FF             ???                     
-FC88: CF             ???                     
-FC89: CF             ???                     
+FC83: 22                                  
+FC84: 22                                  
+FC85: 22                                  
+FC86: 3A                                  
+FC87: FF                                  
+FC88: CF                                  
+FC89: CF                                  
 FC8A: 7E 3C E7       ROR     $E73C,X         
-FC8D: 42             ???                     
+FC8D: 42                                  
 FC8E: 7E 7E 6B       ROR     $6B7E,X         
 FC91: 3E 98 A4       ROL     $A498,X         
-FC94: 42             ???                     
+FC94: 42                                  
 FC95: 01 C6          ORA     ($C6,X)         
-FC97: 42             ???                     
+FC97: 42                                  
 FC98: 7E 7E 56       ROR     $567E,X         
-FC9B: 7C             ???                     
+FC9B: 7C                                  
 FC9C: 19 25 42       ORA     $4225,Y         
-FC9F: 80             ???                     
+FC9F: 80                                  
 FCA0: 00             BRK                     
 FCA1: 38             SEC                     
-FCA2: 7C             ???                     
+FCA2: 7C                                  
 FCA3: FE FE AA       INC     $AAFE,X         
 FCA6: FE 7C 38       INC     $387C,X         
 FCA9: 00             BRK                     
@@ -1720,88 +1721,88 @@ FCB5: 00             BRK
 FCB6: 00             BRK                     
 FCB7: 01 24          ORA     ($24,X)         
 FCB9: 95 48          STA     $48,X           
-FCBB: C7             ???                     
+FCBB: C7                                  
 FCBC: 24 90          BIT     $90             
 FCBE: 20 40 5D       JSR     $5D40           
-FCC1: BB             ???                     
+FCC1: BB                                  
 FCC2: B6 77          LDX     $77,Y           
 FCC4: CC 2D 7E       CPY     $7E2D           
 FCC7: CD DA 6D       CMP     $6DDA           
-FCCA: 77             ???                     
-FCCB: 77             ???                     
-FCCC: 82             ???                     
-FCCD: 54             ???                     
+FCCA: 77                                  
+FCCB: 77                                  
+FCCC: 82                                  
+FCCD: 54                                  
 FCCE: 25 53          AND     $53             
-FCD0: C3             ???                     
-FCD1: 54             ???                     
-FCD2: 93             ???                     
+FCD0: C3                                  
+FCD1: 54                                  
+FCD2: 93                                  
 FCD3: A5 99          LDA     $99             
 FCD5: 81 28          STA     ($28,X)         
 FCD7: 78             SEI                     
-FCD8: 64             ???                     
+FCD8: 64                                  
 FCD9: 50 3C          BVC     $FD17           
 FCDB: 8C 01 02       STY     $0201           
-FCDE: 04             ???                     
+FCDE: 04                                  
 FCDF: 08             PHP                     
 FCE0: 10 20          BPL     $FD02           
 FCE2: 40             RTI                     
-FCE3: 80             ???                     
-FCE4: 22             ???                     
+FCE3: 80                                  
+FCE4: 22                                  
 FCE5: 16 0C          ASL     $0C,X           
 FCE7: 08             PHP                     
 FCE8: 05 04          ORA     $04             
-FCEA: 03             ???                     
-FCEB: 02             ???                     
+FCEA: 03                                  
+FCEB: 02                                  
 FCEC: 00             BRK                     
 FCED: 20 20 15       JSR     $1520           
 FCF0: 15 10          ORA     $10,X           
-FCF2: 0B             ???                     
-FCF3: 07             ???                     
-FCF4: 07             ???                     
-FCF5: 04             ???                     
+FCF2: 0B                                  
+FCF3: 07                                  
+FCF4: 07                                  
+FCF5: 04                                  
 FCF6: 01 01          ORA     ($01,X)         
-FCF8: 02             ???                     
-FCF9: 02             ???                     
-FCFA: 03             ???                     
-FCFB: 03             ???                     
-FCFC: 03             ???                     
-FCFD: 04             ???                     
+FCF8: 02                                  
+FCF9: 02                                  
+FCFA: 03                                  
+FCFB: 03                                  
+FCFC: 03                                  
+FCFD: 04                                  
 FCFE: 05 0F          ORA     $0F             
 FD00: 0E 0F 00       ASL     $000F           
-FD03: 02             ???                     
+FD03: 02                                  
 FD04: 00             BRK                     
-FD05: 04             ???                     
-FD06: 02             ???                     
-FD07: 34             ???                     
-FD08: 52             ???                     
+FD05: 04                                  
+FD06: 02                                  
+FD07: 34                                  
+FD08: 52                                  
 FD09: CC F6 14       CPY     $14F6           
-FD0C: 0F             ???                     
+FD0C: 0F                                  
 FD0D: 00             BRK                     
-FD0E: E2             ???                     
+FD0E: E2                                  
 FD0F: 05 0A          ORA     $0A             
-FD11: 0F             ???                     
-FD12: 14             ???                     
+FD11: 0F                                  
+FD12: 14                                  
 FD13: BD B4 AB       LDA     $ABB4,X         
-FD16: 54             ???                     
+FD16: 54                                  
 FD17: 59 5E 63       EOR     $635E,Y         
 FD1A: 00             BRK                     
 FD1B: 08             PHP                     
-FD1C: 04             ???                     
-FD1D: 0C             ???                     
+FD1C: 04                                  
+FD1D: 0C                                  
 FD1E: AA             TAX                     
 FD1F: B6 C0          LDX     $C0,Y           
 FD21: CC 3C 7E       CPY     $7E3C           
 FD24: 7E 7E 7E       ROR     $7E7E,X         
-FD27: FF             ???                     
-FD28: FF             ???                     
-FD29: FF             ???                     
-FD2A: C3             ???                     
+FD27: FF                                  
+FD28: FF                                  
+FD29: FF                                  
+FD2A: C3                                  
 FD2B: 05 10          ORA     $10             
 FD2D: 15 20          ORA     $20,X           
 FD2F: 25 30          AND     $30             
 FD31: 00             BRK                     
 FD32: 09 12          ORA     #$12            
-FD34: 1B             ???                     
+FD34: 1B                                  
 FD35: 24 2D          BIT     $2D             
 FD37: 36 01          ROL     $01,X           
 FD39: 00             BRK                     
@@ -1828,9 +1829,9 @@ FD5D: 00             BRK
 FD5E: 00             BRK                     
 FD5F: 00             BRK                     
 FD60: 05 03          ORA     $03             
-FD62: 17             ???                     
-FD63: 2B             ???                     
-FD64: 23             ???                     
+FD62: 17                                  
+FD63: 2B                                  
+FD64: 23                                  
 FD65: 75 B4          ADC     $B4,X           
 FD67: A0 FF          LDY     #$FF            
 FD69: 38             SEC                     
@@ -2099,42 +2100,42 @@ FF46: A0 08          LDY     #$08
 FF48: CA             DEX                     
 FF49: 10 F3          BPL     $FF3E           
 FF4B: 60             RTS                     
-FF4C: 7F             ???                     
-FF4D: BF             ???                     
-FF4E: DF             ???                     
-FF4F: EF             ???                     
-FF50: F7             ???                     
-FF51: FB             ???                     
+FF4C: 7F                                  
+FF4D: BF                                  
+FF4E: DF                                  
+FF4F: EF                                  
+FF50: F7                                  
+FF51: FB                                  
 FF52: FD FE E7       SBC     $E7FE,X         
 FF55: A5 A5          LDA     $A5             
 FF57: A5 E7          LDA     $E7             
-FF59: E7             ???                     
-FF5A: 42             ???                     
-FF5B: 42             ???                     
+FF59: E7                                  
+FF5A: 42                                  
+FF5B: 42                                  
 FF5C: 66 42          ROR     $42             
-FF5E: E7             ???                     
+FF5E: E7                                  
 FF5F: 24 E7          BIT     $E7             
 FF61: 81 E7          STA     ($E7,X)         
-FF63: E7             ???                     
+FF63: E7                                  
 FF64: 81 E7          STA     ($E7,X)         
 FF66: 81 E7          STA     ($E7,X)         
 FF68: 81 81          STA     ($81,X)         
-FF6A: E7             ???                     
+FF6A: E7                                  
 FF6B: A5 A5          LDA     $A5             
-FF6D: E7             ???                     
+FF6D: E7                                  
 FF6E: 81 E7          STA     ($E7,X)         
 FF70: 24 E7          BIT     $E7             
-FF72: E7             ???                     
+FF72: E7                                  
 FF73: A5 E7          LDA     $E7             
 FF75: 24 24          BIT     $24             
 FF77: 81 81          STA     ($81,X)         
 FF79: 81 81          STA     ($81,X)         
-FF7B: E7             ???                     
-FF7C: E7             ???                     
+FF7B: E7                                  
+FF7C: E7                                  
 FF7D: A5 E7          LDA     $E7             
 FF7F: A5 E7          LDA     $E7             
 FF81: 81 81          STA     ($81,X)         
-FF83: E7             ???                     
+FF83: E7                                  
 FF84: A5 E7          LDA     $E7             
 FF86: 00             BRK                     
 FF87: 00             BRK                     
@@ -2143,55 +2144,55 @@ FF89: 00             BRK
 FF8A: 00             BRK                     
 FF8B: 01 16          ORA     ($16,X)         
 FF8D: 09 0A          ORA     #$0A            
-FF8F: 02             ???                     
+FF8F: 02                                  
 FF90: 19 08 0A       ORA     $0A08,Y         
-FF93: 03             ???                     
-FF94: 1F             ???                     
-FF95: 0C             ???                     
+FF93: 03                                  
+FF94: 1F                                  
+FF95: 0C                                  
 FF96: 08             PHP                     
-FF97: 04             ???                     
+FF97: 04                                  
 FF98: 16 0E          ASL     $0E,X           
-FF9A: 07             ???                     
+FF9A: 07                                  
 FF9B: 06 FF          ASL     $FF             
 FF9D: 01 18          ORA     ($18,X)         
-FF9F: 0C             ???                     
-FFA0: 03             ???                     
-FFA1: 03             ???                     
+FF9F: 0C                                  
+FFA0: 03                                  
+FFA1: 03                                  
 FFA2: 16 0C          ASL     $0C,X           
-FFA4: 03             ???                     
+FFA4: 03                                  
 FFA5: 05 14          ORA     $14             
-FFA7: 0C             ???                     
-FFA8: 03             ???                     
-FFA9: 07             ???                     
-FFAA: 12             ???                     
-FFAB: 0C             ???                     
-FFAC: 03             ???                     
+FFA7: 0C                                  
+FFA8: 03                                  
+FFA9: 07                                  
+FFAA: 12                                  
+FFAB: 0C                                  
+FFAC: 03                                  
 FFAD: 09 10          ORA     #$10            
-FFAF: 0C             ???                     
-FFB0: 03             ???                     
-FFB1: 0B             ???                     
+FFAF: 0C                                  
+FFB0: 03                                  
+FFB1: 0B                                  
 FFB2: 0E 0C 03       ASL     $030C           
 FFB5: 0D 0D 0C       ORA     $0C0D           
-FFB8: 03             ???                     
-FFB9: 0F             ???                     
+FFB8: 03                                  
+FFB9: 0F                                  
 FFBA: 10 0C          BPL     $FFC8           
-FFBC: 03             ???                     
+FFBC: 03                                  
 FFBD: 11 3F          ORA     ($3F),Y         
 FFBF: 01 18          ORA     ($18,X)         
 FFC1: 08             PHP                     
-FFC2: 07             ???                     
-FFC3: 04             ???                     
+FFC2: 07                                  
+FFC3: 04                                  
 FFC4: 19 08 05       ORA     $0508,Y         
 FFC7: 10 1C          BPL     $FFE5           
 FFC9: 08             PHP                     
-FFCA: 02             ???                     
+FFCA: 02                                  
 FFCB: 30 1E          BMI     $FFEB           
 FFCD: 08             PHP                     
 FFCE: 01 50          ORA     ($50,X)         
-FFD0: FF             ???                     
+FFD0: FF                                  
 FFD1: 01 18          ORA     ($18,X)         
-FFD3: 03             ???                     
-FFD4: 0C             ???                     
+FFD3: 03                                  
+FFD4: 0C                                  
 FFD5: 09 10          ORA     #$10            
 FFD7: 0A             ASL     A               
 FFD8: 08             PHP                     
@@ -2206,17 +2207,20 @@ FFE9: 49 FF          EOR     #$FF
 FFEB: 10 0D          BPL     $FFFA           
 FFED: 0A             ASL     A               
 FFEE: 08             PHP                     
-FFEF: 07             ???                     
+FFEF: 07                                  
 FFF0: 06 05          ASL     $05             
 FFF2: 06 07          ASL     $07             
-FFF4: 03             ???                     
-FFF5: 04             ???                     
+FFF4: 03                                  
+FFF5: 04                                  
 FFF6: 05 06          ORA     $06             
 FFF8: 00             BRK                     
 FFF9: 00             BRK                
+```
 
 # Vectors 
-     
+
+```code     
 FFFA: 98 FE 
 FFFC: 98 FE         
 FFFE: 98 FE 
+```

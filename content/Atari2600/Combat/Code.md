@@ -12,8 +12,8 @@
 
 This is the NTSC version of the code.
 
-{{{html
-<script src="/Atari2600/Stella.js"></script>
+```html
+<script src="../Stella.js"></script>
 <script src="/js/TileEngine.js"></script>
 <script src="/js/BinaryData.js"></script>
 <script src="/js/CANVAS.js"></script>
@@ -52,9 +52,9 @@ This is the NTSC version of the code.
        data-colorsName="JETP0"
        data-colors='["#783CA4","#6E8454"]'>
 </canvas>
+```
 
-}}}
-
+```code
 F000: 78            SEI                       ; Turn off interrupts 
 F001: D8            CLD                       ; Binary mode (not BCD)
 F002: A2 FF         LDX   #$FF                ; Stack pointer to 1_FF ...
@@ -67,9 +67,11 @@ F00C: 8D 83 02      STA   $0283               ; {-hard_SWBCNT} ... inputs (D4 is
 F00F: 85 88         STA   $88                 ; {-ram_m88} ?? Is this the debounce? Mirror?
 
 F011: 20 A3 F1      JSR   $F1A3               ;
+```
 
 # Main Game Loop
 
+```code
 main:
 F014: 20 32 F0      JSR   $F032               ; {StartTVFrame} Start the next TV frame
 F017: 20 57 F1      JSR   $F157               ; ?? switches ??
@@ -81,9 +83,11 @@ F026: 20 A9 F2      JSR   $F2A9               ;
 F029: 20 F2 F1      JSR   $F1F2               ; Convert the player scores to graphics offsets
 F02C: 20 54 F0      JSR   $F054               ; {DrawVisible} Draw the screen
 F02F: 4C 14 F0      JMP   $F014               ; {main} Back to top of main loop
+```
 
 # Start the TV Frame
 
+```code
 StartTVFrame:
 ; Increment the frame counter and trigger the vertical sync.
 ; The timer is set to time the blanking period.
@@ -104,9 +108,11 @@ F04C: 85 00         STA   $00                 ; {-hard_VSYNC} Release the vertic
 F04E: A9 2B         LDA   #$2B                ; Set timer to 43*64 = 2752 machine ...
 F050: 8D 96 02      STA   $0296               ; {-hard_TIM64T} ... cycles 2752/(228/3) = 36 scanlines
 F053: 60            RTS                       ; Done
+```
 
 # Draw the Visible Screen
 
+```code
 DrawVisible:
 ;
 ; TODO Blurb on Frame 30 and the key
@@ -970,14 +976,15 @@ F5C2: D0 FB         BNE   $F5BF               ; All done?
 F5C4: 60            RTS                       ; No ... back for more
 
 ; -----------------------------------------------------------------------------------------------------------------------------
+```
 
 # Data Area
 
 All data from here down
 
-## Numbers `visual`
+## Numbers 
 
-{{{html
+```html
 <canvas width="900" height="60"
     data-getTileDataFunction="Stella.get8x5Data"
     data-address="F5C5"
@@ -985,7 +992,9 @@ All data from here down
     data-gridY="5"
     data-command="#TANKPLAYFIELD,0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7,+x,8,+x,9">
 </canvas>
-}}}
+```
+
+```code
 F5C5: 0E 0A 0A 0A 0E  ;  0
  ; .... ***.
  ; .... *.*.
@@ -1081,10 +1090,11 @@ F62F: 48 4C 4F 2F 0F EF CF CC
 F637: 00 00 80 80 84 20 88 88
 F63F: 92 48 A4 A4 A9 52 AA AA
 F647: D5 AA DA DA DB 6D EE EE
+```
 
-## Tank Pictures `visual`
+## Tank Pictures 
 
-{{{html
+```html
 <canvas width="1000" height="100"
     data-getTileDataFunction="Stella.get8x8Data"
     data-address="F64F"
@@ -1092,7 +1102,9 @@ F647: D5 AA DA DA DB 6D EE EE
     data-gridY="8"
     data-command="#TANKP0,0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7">
 </canvas>
-}}}
+```
+
+```code
 F64F: 00 FC FC 38 3F 38 FC FC
 F657: 1C 78 FB 7C 1C 1F 3E 18 
 F65F: 19 3A 7C FF DF 0E 1C 18
@@ -1101,10 +1113,11 @@ F66F: 08 08 6B 7F 7F 7F 63 63
 F677: 24 26 9E FF FF 72 70 20
 F67F: 98 5C 3E FF FB 70 38 18
 F687: 38 1E DF 3E 38 F8 7C 18
+```
 
-## Jet Pictures `visual`
+## Jet Pictures 
 
-{{{html
+```html
 <canvas width="1000" height="100"
     data-getTileDataFunction="Stella.get8x8Data"
     data-address="F68F"
@@ -1112,7 +1125,9 @@ F687: 38 1E DF 3E 38 F8 7C 18
     data-gridY="8"
     data-command="#JETP0,0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7">
 </canvas>
-}}}                 
+```
+
+```code                 
 F68F: 60 70 78 FF 78 70 60 00
 F697: 00 C1 FE 7C 78 30 30 30
 F69F: 00 03 06 FC FC 3C 0C 0C
@@ -1121,10 +1136,11 @@ F6AF: 10 10 10 38 7C FE FE 10
 F6B7: 40 20 30 38 3F 3F 78 60
 F6BF: 40 60 3F 1F 1E 1E 18 18
 F6C7: 00 83 7F 3E 1E 0C 0C 0C
+```
 
-## Plane Pictures `visual`
+## Plane Pictures 
 
-{{{html
+```html
 <canvas width="1000" height="100"
     data-getTileDataFunction="Stella.get8x8Data"
     data-address="F6CF"
@@ -1132,7 +1148,9 @@ F6C7: 00 83 7F 3E 1E 0C 0C 0C
     data-gridY="8"
     data-command="#PLANEP0,0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7">
 </canvas>
-}}}        
+```
+
+```code        
 F6CF: 00 8E 84 FF FF 04 0E 00
 F6D7: 00 0E 04 8F 7F 72 07 00        
 F6DF: 10 36 2E 0C 1F B2 E0 40
@@ -1292,10 +1310,11 @@ F7C9: F6 F6 F6 ; Picture pointers MSB
 F7CC: 75 75 75 9A  ; PF0 LSB (add 4 the drawing loop treats this as entries 4 through 16 (1)
 F7D0: 81 99 AA 9D  ; PF1 LSB (add 4)
 F7D4: 8D 99 B6 9D  ; PF2 LSB (add 4)
+```
 
-## Playfields `visual`
+## Playfields 
 
-{{{html
+```html
 <canvas width="410" height="250"
         data-getTileDataFunction="Combat.getPlayfield"
         data-pixWidth="20"
@@ -1316,9 +1335,9 @@ F7D4: 8D 99 B6 9D  ; PF2 LSB (add 4)
         data-gridY="12"
         data-command="#TANKPLAYFIELD,0,H0,*,V0,VH0">
 </canvas><br>
-}}}
+```
 
-{{{html
+```html
 <canvas width="410" height="250"
         data-getTileDataFunction="Combat.getPlayfield"
         data-pixWidth="20"
@@ -1339,9 +1358,9 @@ F7D4: 8D 99 B6 9D  ; PF2 LSB (add 4)
         data-gridY="12"
         data-command="#TANKPLAYFIELD,1,H1,*,V1,VH1">
 </canvas><br> 
-}}}
+```
 
-{{{html
+```html
 <canvas width="410" height="250"
         data-getTileDataFunction="Combat.getPlayfield"
         data-pixWidth="20"
@@ -1362,9 +1381,9 @@ F7D4: 8D 99 B6 9D  ; PF2 LSB (add 4)
         data-gridY="12"
         data-command="#TANKPLAYFIELD,2,H2,*,V2,VH2">
 </canvas><br> 
-}}}
+```
 
-{{{html
+```html
 <canvas width="410" height="250"
         data-getTileDataFunction="Combat.getPlayfield"
         data-pixWidth="20"
@@ -1385,8 +1404,9 @@ F7D4: 8D 99 B6 9D  ; PF2 LSB (add 4)
         data-gridY="12"
         data-command="#PLANEPLAYFIELD,3,H3,*,V3,VH3">
 </canvas><br> 
-}}}
+```
 
+```code
 ; ?? From F1AE
 F7D8: 24 28
 F7DA: 08
@@ -1407,9 +1427,12 @@ F7F0: E9 E2
 F7F2: C1 FF
              
 F7F4: 00 00 00 00 00 00 
+```
 
 # Vectors
 
+```code
 F7FA: 00 00        ; NMI Vector (not used)
 F7FC: 00 F0        ; Reset vector to F000
 F7FE: 0F 11        ; IRQ/vector to 110F (maybe debug hardware?)
+```

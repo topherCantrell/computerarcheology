@@ -10,7 +10,7 @@
 <script src="/js/CANVAS.js"></script>
 }}}
 
-# Person  `visual`
+# Person  
 
 Person?: 
 {{{html
@@ -1618,7 +1618,7 @@ Person?:
 4AFC: 18 18     ; ...33...
 4AFE: 00 00     ; ........
 
-# Digits `visual`
+# Digits 
 
 Digits:
 {{{html

@@ -7,15 +7,13 @@
 >>> memoryTable hard 
 [Hardware Info](../Stella.md)
 
->>> memoryTable ram 
-[RAM Usage](RAMUse.md)
-
 This is the listing file from the assembler. TODO Make the listing file the same
 as the other disassembly files so it web-ifies nicely.
 
 TODO include the assembly input file(s) in the nav list.
+TODO disassemble the output in the usual way. I have the raw ASM file here if needed.
 
-{{{
+```
 ; RAM Usage
 .TMP0      = 128
 .TMP1      = 129
@@ -1207,4 +1205,4 @@ F7FA:
 F7FA: 00 F0         .word main
 F7FC: 00 F0         .word main  ; Reset vector (top of program)
 F7FE: 00 F0         .word main
-}}}
+```

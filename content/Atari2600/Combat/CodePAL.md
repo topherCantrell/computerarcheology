@@ -12,7 +12,7 @@
 
 This is the PAL version of the code.
 
-{{{html
+```html
 <script src="/Atari2600/Stella.js"></script>
 <script src="/js/TileEngine.js"></script>
 <script src="/js/BinaryData.js"></script>
@@ -52,9 +52,9 @@ This is the PAL version of the code.
        data-colorsName="JETP0"
        data-colors='["#783CA4","#6E8454"]'>
 </canvas>
+```
 
-}}}
-
+```code
 F000: 78             SEI                     
 F001: D8             CLD                     
 F002: A2 FF          LDX     #$FF            
@@ -820,16 +820,16 @@ F5B5: E8             INX
 F5B6: 95 A2          STA     $A2,X           
 F5B8: D0 FB          BNE     $F5B5           
 F5BA: 60             RTS                     
-
 ; -----------------------------------------------------------------------------------------------------------------------------
 
+```
 # Data Area
 
 All data from here down
 
-## Numbers `visual`
+## Numbers 
 
-{{{html
+```html
 <canvas width="900" height="60"
     data-getTileDataFunction="Stella.get8x5Data"
     data-address="F5BB"
@@ -837,8 +837,9 @@ All data from here down
     data-gridY="5"
     data-command="#TANKPLAYFIELD,0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7,+x,8,+x,9">
 </canvas>
-}}}
+```
 
+```code
 F5BB: 0E 0A 0A 0A 0E  ;  0
  ; .... ***.
  ; .... *.*.
@@ -963,10 +964,11 @@ F63F: DA
 F640: DA                                 
 F641: DB                                 
 F642: 6D EE EE            
+```
 
-## Tank Pictures `visual`
+## Tank Pictures 
 
-{{{html
+```html
 <canvas width="1000" height="100"
     data-getTileDataFunction="Stella.get8x8Data"
     data-address="F645"
@@ -974,7 +976,9 @@ F642: 6D EE EE
     data-gridY="8"
     data-command="#TANKP0,0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7">
 </canvas 
-}}}
+```
+
+```code
 F645: 00 FC FC 38 3F 38 FC FC             
 F64D: 1C 78 FB 7C 1C 1F 3E 18 
 F655: 19 3A 7C FF DF 0E 1C 18        
@@ -983,10 +987,11 @@ F665: 08 08 6B 7F 7F 7F 63 63
 F66D: 24 26 9E FF FF 72 70 20      
 F675: 98 5C 3E FF FB 70 38 18       
 F67D: 38 1E DF 3E 38 F8 7C 18
+```
 
-## Jet Pictures `visual`
+## Jet Pictures 
 
-{{{html
+```html
 <canvas width="1000" height="100"
     data-getTileDataFunction="Stella.get8x8Data"
     data-address="F685"
@@ -994,7 +999,9 @@ F67D: 38 1E DF 3E 38 F8 7C 18
     data-gridY="8"
     data-command="#JETP0,0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7">
 </canvas>
-}}}        
+```
+
+```code        
 F685: 60 70 78 FF 78 70 60 00            
 F68D: 00 C1 FE 7C 78 30 30 30 
 F695: 00 03 06 FC FC 3C 0C 0C               
@@ -1003,10 +1010,11 @@ F6A5: 10 10 10 38 7C FE FE 10
 F6AD: 40 20 30 38 3F 3F 78 60          
 F6B5: 40 60 3F 1F 1E 1E 18 18           
 F6BD: 00 83 7F 3E 1E 0C 0C 0C       
+```
 
-## Plane Pictures `visual`
+## Plane Pictures 
 
-{{{html
+```html
 <canvas width="1000" height="100"
     data-getTileDataFunction="Stella.get8x8Data"
     data-address="F6C5"
@@ -1014,8 +1022,9 @@ F6BD: 00 83 7F 3E 1E 0C 0C 0C
     data-gridY="8"
     data-command="#PLANEP0,0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7">
 </canvas>
-}}}   
+```   
 
+```code
 F6C5: 00 8E 84 FF FF 04 0E 00 
 F6CD: 00 0E 04 8F 7F 72 07 00                                  
 F6D5: 10 36 2E 0C 1F B2 E0 40                    
@@ -1166,9 +1175,9 @@ F7D4: 6E 6E 6E 9C ; PF0 LSB (add 1 the drawing loop treats this as entries 1 thr
 F7D8: 7D 9B AF 9F ; PF1 LSB (add 1)            
 F7DC: 8C 9B BE 9F ; PF2 LSB (add 1)
 
-## Playfields `visual`
+## Playfields 
 
-{{{html
+```html
 <canvas width="410" height="320"
         data-getTileDataFunction="Combat.getPlayfieldPAL"
         data-pixWidth="20"
@@ -1189,9 +1198,9 @@ F7DC: 8C 9B BE 9F ; PF2 LSB (add 1)
         data-gridY="15"
         data-command="#TANKPLAYFIELD,0,H0,*,V0,VH0">
 </canvas><br>
-}}}
+```
 
-{{{html
+```html
 <canvas width="410" height="320"
         data-getTileDataFunction="Combat.getPlayfieldPAL"
         data-pixWidth="20"
@@ -1212,9 +1221,9 @@ F7DC: 8C 9B BE 9F ; PF2 LSB (add 1)
         data-gridY="15"
         data-command="#TANKPLAYFIELD,1,H1,*,V1,VH1">
 </canvas><br> 
-}}}
+```
 
-{{{html
+```html
 <canvas width="410" height="320"
         data-getTileDataFunction="Combat.getPlayfieldPAL"
         data-pixWidth="20"
@@ -1235,9 +1244,9 @@ F7DC: 8C 9B BE 9F ; PF2 LSB (add 1)
         data-gridY="15"
         data-command="#TANKPLAYFIELD,2,H2,*,V2,VH2">
 </canvas><br> 
-}}}
+```
 
-{{{html
+```html
 <canvas width="410" height="320"
         data-getTileDataFunction="Combat.getPlayfieldPAL"
         data-pixWidth="20"
@@ -1258,8 +1267,9 @@ F7DC: 8C 9B BE 9F ; PF2 LSB (add 1)
         data-gridY="15"
         data-command="#PLANEPLAYFIELD,3,H3,*,V3,VH3">
 </canvas><br> 
-}}}
-                     
+```
+
+```code                  
 F7E0: 24 28                    
 F7E2: 08                                  
 F7E3: 20 00 48                
@@ -1276,9 +1286,12 @@ F7F4: E8
 F7F5: C8                                
 F7F6: E0 C0         
 F7F8: E9 E2      
+```
  
 # Vectors
- 
+
+```code 
 F7FA: C1 FF        ; NMI Vector (not used -- maybe this was a debugger address)         
 F7FC: 00 F0        ; Reset vector to F000
 F7FE: 0F 11        ; IRQ/vector to 110F (maybe debug hardware?)
+```

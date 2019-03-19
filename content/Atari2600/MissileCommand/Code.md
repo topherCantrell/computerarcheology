@@ -10,6 +10,7 @@
 >>> memoryTable ram 
 [RAM Usage](RAMUse.md)
 
+```code
 ; 86 P0
 ; 87 P1 
 ; 88 M0 ?? Positions of the five objects F016 below
@@ -56,9 +57,11 @@ F038: 85 02         STA   $02                 ;{-2_WSYNC} Wait a line ;*WSYNC:lo
 F03A: 85 2A         STA   $2A                 ;{-2_HMOVE} Move all the object ;*HMOVE:lots 
 F03C: 85 02         STA   $02                 ;{-2_WSYNC} Wait another line ;*WSYNC:lots 
 F03E: 60            RTS                       ; Done
+```
 
 # Init
 
+```code
 Init:
 F03F: 78            SEI                       ; Disable interrupts
 F040: D8            CLD                       ; Binary mode (not BCD)
@@ -74,9 +77,11 @@ F04E: A9 87         LDA   #$87
 F050: 85 DB         STA   $DB                 ; ?? TODO ram usage report
 F052: A9 01         LDA   #$01                
 F054: 85 E9         STA   $E9                 ;
+```
 
 # VBLANK
 
+```code
 ; VBLANK begins
 F056: A9 02         LDA   #$02                ; Start ...
 F058: 85 01         STA   $01                 ;{-2_VBLANK} ... the VBLANK    ;VBLANK:32,263
@@ -2255,11 +2260,14 @@ FFF7: 00            BRK
 FFF8: 00            BRK                       
 FFF9: 00            BRK                       
 FFFA: 00            BRK                       
+```
 
 # Vectors 
 
 Same as ET ... the vector bytes look swapped here
 
+```code
 FFFB: F0 00         BEQ   $FFFD               ;
 FFFD: F0 00         BEQ   $FFFF               ;
 FFFF: F0 FF         BEQ   $10000              ;
+```

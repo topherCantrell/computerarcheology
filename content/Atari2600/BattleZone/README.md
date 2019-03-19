@@ -11,7 +11,7 @@
 
 [Battle Zone Code](Code.md)
 
->>> { playMe
+>>> playMe {
 
 # Play Me!
 

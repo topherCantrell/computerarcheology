@@ -10,6 +10,7 @@
 >>> memoryTable ram 
 [RAM Usage](RAMUse.md)
 
+```code
 ; This cartridge uses the "F8" bank-switching hardware. This is a single 8K ROM 
 ; with the switching built into it. You read location FFF8 to switch to bank 0. 
 ; You read location FFF9 to switch to bank 1.
@@ -41,9 +42,11 @@ B024: AA         TAX                 ;
 B025: BD 00 BC   LDA $BC00,X         ; 
 B028: 85 D5      STA <$D5            ; 
 B02A: 4C AB BC   JMP $BCAB           ; 
+```
 
 # Game Logic
 
+```code
 ; The code comes here from F4CE after the switch from bank 1. This is the
 ; vertical retrace period.
 
@@ -1688,9 +1691,11 @@ BCAE: D0 FB      BNE $BCAB           ;
 BCB0: 85 02      STA <$02            ;{-2_WSYNC} WSYNC wait for end of scanline 38
 BCB2: 85 02      STA <$02            ;{-2_WSYNC} WSYNC wait for end of scanline 39
 ; Scanline 40 begins here
+```
 
 # Bank Switch (to bank 1)
 
+```code
 ; Asteroids uses a different scheme to switch banks. It uses overlapping code in 
 ; both banks so that when a switch happens the code continues on to the next 
 ; instruction, but in a different bank.
@@ -2235,15 +2240,19 @@ BFF6: 00         BRK                 ;
 BFF7: 00         BRK                 ; 
 BFF8: 00         BRK                 ; 
 BFF9: 00         BRK                 ; 
+```
 
 # Vectors (Bank 0)
 
+```code
 BFFA: 7F BC  ; NMI vector to BC7F
 BFFC: 7F BC  ; Reset vector to BC7F (Only vector that is used in the Atari2600)
 BFFE: 7F BC  ; IRQ/BRK vector to BC7F
+```
 
 # ROM Bank 1
 
+```code
 F000: AD F8 FF   LDA $FFF8           ; Switch to bank 0
 F003: 4C 7F BC   JMP $BC7F           ; We are now in bank 0. This is a shadow of what's in bank 0 (easier to read but never executed)
 ;
@@ -2878,9 +2887,11 @@ F4CE: A9 40      LDA #$40            ;
 F4D0: 05 E3      ORA <$E3            ; 
 F4D2: 85 E3      STA <$E3            ; 
 ; Near the beginning of scanline 223
+```
 
 # Bank Switch (to bank 0)
 
+```code
 ; Asteroids uses a different scheme to switch banks. It uses overlapping code in 
 ; both banks so that when a switch happens the code continues on to the next 
 ; instruction, but in a different bank.
@@ -2960,9 +2971,11 @@ F541: 85 25      STA <$25            ;{-2_VDELP0}
 F543: 85 26      STA <$26            ;{-2_VDELP1} 
 F545: 85 02      STA <$02            ;{-2_WSYNC} 
 F547: 60         RTS                 ; 
+```
 
 # Visible Screen
 
+```code
 ; The code comes here from BCCC after the switch from bank 0.
 
 ; Near the middle of scanline 40
@@ -4951,11 +4964,14 @@ FFF7: 00         BRK                 ;
 FFF8: 00         BRK                 ; 
 FFF9: 00         BRK                 ; 
 FFFA: 00         BRK                 ; 
+```
 
 # Vectors (Bank 1)
 
+```code
 ; Interesting. These appear to be backwards (the 6502 is little-endian)
 ; F000 would be the correct jump (switches to Bank 0 and starts up)
 FFFB: F0 00      ; NMI vector to 00F0
 FFFD: F0 00      ; Reset vector to 00F0 (Only vector that is used in the Atari2600)
 FFFF: F0 FF      ; IRQ/BRK vector to FF00
+```
