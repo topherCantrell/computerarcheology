@@ -111,6 +111,9 @@ def process_markdown(lines, site_nav_node, fp_content):
                 elif name == '6803':
                     import cpu.cpu_6803
                     code_info['cpu'] = cpu.cpu_6803.CPU_6803()
+                elif name == 'Z80GB':
+                    import cpu.cpu_Z80GB
+                    code_info['cpu'] = cpu.cpu_Z80GB.CPU_Z80GB()
                 else:
                     raise Exception("Unknown CPU " + name)
 
