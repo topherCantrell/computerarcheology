@@ -1,17 +1,25 @@
-%%image = Zelda.jpg
-%%cpu   = 6502
-%%-ram  = NES/Zelda/RAMUse.mark /NES/Zelda/RAMUse.html
-%%-hard = NES/Zelda/Hardware.mark /NES/Zelda/Hardware.html
+![Bank 1](Zelda.jpg)
 
-{{{html
+# Bank 1
+
+>>> cpu 6502
+
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
+
+>>> memoryTable hard 
+[Hardware Info](Hardware.md)
+
+```html
 <script src="/NES/Zelda/zelda.js"></script>
 <script src="/js/BinaryData.js"></script>
 <script src="/js/TileEngine.js"></script>
 <script src="/js/CANVAS.js"></script>
-}}}
+```
 
 # String Table
 
+```code
 StringTable: 
 8000: 4C 80     ; __IT'S DANGEROUS TO GO____ALONE! TAKE THIS.
 8002: 77 80     ; __MASTER USING IT AND___YOU CAN HAVE THIS.
@@ -51,9 +59,11 @@ StringTable:
 8046: 53 85     ; ___PATRA HAS THE MAP.
 8048: 68 85     ; __GO TO THE NEXT ROOM.
 804A: 7E 85     ; _____EYES OF SKULL_____HAS A SECRET.
+```
 
 # Strings
 
+```code
 Strings: 
 804C: 25 25 12 1D 2A 1C 24 0D 0A 17 10 0E                       ; "__IT'S DANGEROUS TO GO"
 8058: 1B 18 1E 1C 24 1D 18 24 10 98                             ; .
@@ -1236,9 +1246,11 @@ Strings:
 ; VRAM address
 8D43: 07 00  ; Sprites   
 8D45: 17 00  ; Background
+```
 
 # Init VRAM
 
+```code
 InitVRAM: 
 ; Duplicated in 1:8012
 ;
@@ -1275,9 +1287,11 @@ InitVRAM:
 8D7E: A9 00         LDA   #$00                ; Reset set ...
 8D80: 8D 1D 05      STA   $051D               ; ... counter
 8D83: 60            RTS                       ; Done
+```
 
 # Copy to VRAM
 
+```code
 CopyToVRAM: 
 ;
 ; Block copy from (00:01) to VRAM (address MSB in A, latch LSB is 0).
@@ -1309,15 +1323,17 @@ CopyToVRAM:
 8DAE: D0 D9         BNE   $8D89               ; Yes ... go move all
 8DB0: EE 1D 05      INC   $051D               ; Next set
 8DB3: 60            RTS                       ; Done
+```
 
-{{{html
+```html
 <canvas data-canvasFunction="TileEngine.handleTileCanvas" data-getTileDataFunction="Zelda.getMergedData" width="0" height="0" data-colorsName="GreenTanBrown" data-colors='["#606060","#80D010","#FC9838","#C84C0C"]'></canvas>
 <canvas width="0" height="0" data-colorsName="RedOrangeWhite" data-colors='["#606060","#B53120","#F9BC22","#F0F0F0"]'></canvas>
 <canvas width="0" height="0" data-colorsName="BlueBlueWhite" data-colors='["#606060","0000BC","#6B8EFF","#FFFFFF"]'></canvas>
-}}}
+```
 
 # Tiles_S_Splash
 
+```code
 Tiles_S_Splash: 
 ;
 ; Copied to VRAM 0700
@@ -1327,10 +1343,11 @@ Tiles_S_Splash:
 ; 
 ; These images must have been developed "on top of" the memory for TileSetC (ROM bank 1) because
 ; some of the tiles "show through" into undefined slots here: 9C, 9D, 9E, 9F and D8, D9, DA, DB.
+```
 
 # Tiles_S_Splash70
 
-{{{html
+```html
  <canvas width="900" height="150"
      data-labelColor="#00C0FF"
      data-pixWidth="8" 
@@ -1345,8 +1362,9 @@ Tiles_S_Splash:
  <canvas width="900" height="150"
      data-command=":1x2:7C,7D,+x,:1x2:7E,7F,+x,:1x2:80,81,+x,:1x2:82,83,+x,:1x2:84,85,+x,:1x2:86,87,+x,:1x2:88,89,+x,:1x2:8A,8B,+x,:1x2:8C,8D">
  </canvas>
-}}}
+```
 
+```code
 Tiles_S_Splash70: 
 Common2: 
  ;   .....333    70
@@ -1648,16 +1666,18 @@ Common2:
  ;   ........
  ;   ........
 8f84: 5F 0E 00 00 00 00 00 00 F0 08 00 00 00 00 00 00
+```
 
 # Tiles_S_Splash8E
 
-{{{html
+```html
 <br>
  <canvas width="900" height="150"
      data-command=":6x2:8E,8F,90,91,92,93,94,95,96,97,98,99,+x,:1x2:9A,9B,+x,:2x2:9C,H9C,9D,H9D,+x,:1x2:9E,9F">
  </canvas>
-}}}
+```
 
+```code
 Tiles_S_Splash8E: 
 Unused1: 
  ;   ........    8E
@@ -1841,16 +1861,18 @@ Unused1:
  ;   ........
  ;   ........
 90a4: 0F 4E 7E 18 00 00 00 00 FF FE 7E 18 00 00 00 00
+```
 
 # Sword Overlap
 
-{{{html
+```html
 <br>
  <canvas width="900" height="150"
      data-command=":1x2:A0,A1">
  </canvas>
-}}}
+```
 
+```code
 SwordOverlap: 
 ;
 ; Part of sword that overlaps ZELDA
@@ -1873,16 +1895,18 @@ SwordOverlap:
  ;   ........
  ;   ........
 90c4: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+```
 
 # Water Above
 
-{{{html
+```html
 <br>
  <canvas width="900" height="150"
      data-command=":1x2:A2,A3,+x,:1x2:A4,A5,+x,:1x2:A6,A7,+x,:1x2:A8,A9,+x,:1x2:AA,AB,+x,:1x2:AC,AD,+x,:1x2:AE,AF,+x,:1x2:B0,B1">
  </canvas>
-}}}
+```
 
+```code
 WaterAbove: 
 ;
 ; Splashing water above the waterfall
@@ -2045,16 +2069,18 @@ WaterAbove:
  ;   2222222.
  ;   22222222
 91c4: 04 10 01 80 00 00 00 00 00 00 00 00 00 3C FE FF
+```
 
 # Water Falling
 
-{{{html
+```html
 <br>
  <canvas width="900" height="150"
      data-command=":1x2:B2,B3,+x,:1x2:B4,B5,+x,:1x2:B6,B7,+x,:1x2:B8,B9,+x,:1x2:BA,BB,+x,:1x2:BC,BD,+x,:1x2:BE,BF,+x,:1x2:C2,C3,+x,:1x2:C4,C5,+x,:1x2:C6,C7,+x,:1x2:C8,C9">
  </canvas>
-}}}
+```
 
+```code
 WaterFalling: 
 ;
 ; Water falling down the waterfall
@@ -2297,16 +2323,18 @@ WaterFalling:
  ;   111.....
  ;   1.......
 9344: FC FC F8 F8 F8 F0 E0 80 00 00 00 00 00 00 00 00
+```
 
 # Vines
 
-{{{html
+```html
 <br>
  <canvas width="900" height="150"
      data-command=":1x2:CA,CB,+x,:1x2:CC,CD,+x,:1x2:CE,CF,+x,:1x2:D2,D3,+x,:1x2:D4,D5,+x,:1x2:D6,D7">
  </canvas>
-}}}
+```
 
+```code
 Vines: 
 ;
 ; These are pieces of vine hanging around the inner boarder on the splash screen
@@ -2449,14 +2477,16 @@ Vines:
  ;   ........
  ;   ........
 9424: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+```
 
-{{{html
+```html
 <br>
  <canvas width="900" height="150"
      data-command=":1x2:D8,D9,+x,:1x2:DA,DB">
  </canvas>
-}}}
+```
 
+```code
 Unused2: 
 ;
 ; Duplicates of TileSetC in bank 1: D8, D9, DA, DB.
@@ -2499,16 +2529,18 @@ Unused2:
  ;   ...111..
  ;   ........
 9464: 0B 13 3D 3F 3F 3F 1C 00 F4 6C 02 00 00 00 00 00
+```
 
 # Sign
 
-{{{html
+```html
 <br>
  <canvas width="500" height="400"
      data-command=":6x6:E4,E2,EC,EE,F8,FA,E4,E3,ED,EF,F9,FB,E4,E6,F0,F2,FC,FE,E5,E7,F1,F3,FD,FF,E8,EA,F4,F6,DC,DE,E9,EB,F5,F7,DD,DF">
  </canvas>
-}}}
+```
 
+```code
 Sign: 
 ;
 ; The sign at the end of the treasure info that says:
@@ -2872,8 +2904,11 @@ Sign:
  ;   .2.22222
  ;   .2.22222
 96a4: 02 01 01 00 00 00 00 00 FE FF DF 5F 5F 5F 5F 5F
+```
 
 # Tiles_B_Splash
+
+```code
 ; ........  ........  ........  ........  .....222  22222222  22222222  22222222  22222222  22222222  22222222  22......  ........  ...11111  11111111  11111111  
 ; ........  ........  ........  ........  ....2222  22222222  22222222  22222222  22222222  22222222  22222222  222.....  ........  ..111111  11111111  11111113  
 ; ........  ...333.3  ..3.3333  ....3...  .3333223  33233332  33322333  22222233  22333322  22222222  22222222  223.....  ........  .1111111  11111111  11111133  
@@ -6215,9 +6250,11 @@ BF40: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 
 ; From here down is the same in all banks (except for the origin
 ; difference in bank 7). 
+```
 
 # RESET
 
+```code
 RESET: 
 ;
 ; Configure the MMC1 and jump to E440 (Bank 7) for startup.
@@ -6267,9 +6304,11 @@ BF95: 4C 40 E4      JMP   $E440               ; Start of game
 ; R3 - PRG bank select ***RPPPP
 ;  R PRG RAM enabled. Zelda sends 0, but battery-backed RAM is always enabled.
 ;  PPPP bank select. Zelda switches banks 0-6.
+```
 
 # MMC Control
 
+```code
 MMC_Control: 
 ; Set the MMC Control register (0) to value in A
 BF98: 8D 00 80      STA   $8000               ; MMC Register 0 (control): --edcba ...
@@ -6282,9 +6321,11 @@ BFA4: 8D 00 80      STA   $8000               ; The MMC is write-trigger (write 
 BFA7: 4A            LSR   A                   ; .. has no affect anyway).
 BFA8: 8D 00 80      STA   $8000               ; Bits are written from LSB to MSB ...
 BFAB: 60            RTS                       ; ... only 5 bits
+```
 
 # MMC Bank
 
+```code
 MMC_Bank: 
 ; Set the MMC Bank register (3) to value in A
 BFAC: 8D 00 E0      STA   $E000               ; MMC Register 3 (ROM page switching): --edcba ...
@@ -6302,9 +6343,12 @@ BFC0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 BFD0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 BFE0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 BFF0: FF FF FF FF FF FF FF FF FF FF
+```
 
 # Vectors
 
+```code
 BFFA: 84 E4       ; NMI to E484
 BFFC: 50 BF       ; RESET to BF50
 BFFE: F0 BF       ; IRQ to BFF0 (this bank should never be at end)
+```

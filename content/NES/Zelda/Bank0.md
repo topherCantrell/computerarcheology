@@ -1,8 +1,16 @@
-%%image = Zelda.jpg
-%%cpu   = 6502
-%%-ram  = NES/Zelda/RAMUse.mark /NES/Zelda/RAMUse.html
-%%-hard = NES/Zelda/Hardware.mark /NES/Zelda/Hardware.html
+![Bank 0](Zelda.jpg)
 
+# Bank 0 (Sound)
+
+>>> cpu 6502
+
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
+
+>>> memoryTable hard 
+[Hardware Info](Hardware.md)
+
+```code
 ; Music descriptor
 ; 00 -> Note delay set (0-4)
 ; 01    -> Pointer to Music
@@ -147,7 +155,7 @@
 
 ; Offsets to music descriptors (0x24 songs)
 8D60: 7D B5 6E 67 7D AD 64 64 75 7D 85 95 7D 8D 95 9D A5 BD C5 CD D5 DD D5 E5 ED 
-      24 2C 34 3C 44 34 4C 54 5C 44 F5 ; Splash screen fragments (19..24)
+8D79: 24 2C 34 3C 44 34 4C 54 5C 44 F5 ; Splash screen fragments (19..24)
 
 ;Song25 (24 from 8D60)
 8D84: 20 8B 94 3B 1D 4F 80 01 
@@ -731,9 +739,11 @@
 9803: 82 26 1E 26 2C 26 2C 32 2C 32 3A 32                       ; 2/3:E4 2/3:C4 2/3:E4 2/3:G4 2/3:E4 2/3:G4
 980F: 3A 26 1E 26 2C 26 2C 32 2C 32 3A 32                       ; 2/3:B-4 2/3:G4 2/3:B-4 2/3:D5 2/3:B-4 2/3:D5
 981B: 3A 83 36 80 1E 1E 1E 1E 85 1E                             ; 2/3:E4 2/3:C4 2/3:E4 2/3:G4 2/3:E4 2/3:G4 2/3:B-4 2/3:G4 2/3:B-4 2/3:D5 2/3:B-4 2/3:D5 2:C5 1/2:C4 1/2:C4 1/2:C4 1/2:C4 4:C4 
+```
 
 # Sound Processing
 
+```code
 SoundProcessing: 
 9825: A5 E0         LDA   <$E0                ; 
 9827: F0 0C         BEQ   $9835               ; 
@@ -759,9 +769,11 @@ SoundProcessing:
 9854: 8D 01 06      STA   $0601               ; Clear the delta-modulation request
 9857: 8D 00 06      STA   $0600               ; 
 985A: 60            RTS                       ;
+```
 
 # Misc Sounds
 
+```code
 MiscSounds: 
 ; Various sound effects played on the square-1 channel. The table of offsets gives the
 ; priority if multiple effects are requested. Thus 1) bouncing-off-shield is higher
@@ -809,9 +821,11 @@ MiscSounds:
 ; in the background).
 ;
 98C9: 4C 46 9D      JMP   $9D46               ; Jump over large data area (area too big for a relative jump)
-;
+```
+
 # Sound Effect
 
+```code
 SndEffect: 
 98CC: AD 04 06      LDA   $0604               ; Sound request
 98CF: 30 F8         BMI   $98C9               ; Sounds suspended .... out
@@ -1000,9 +1014,11 @@ SndEffect:
 9A3A: 4C 85 99      JMP   $9985               ; 
 
 9A3D: 1F 2F 2E 3F 3F 4C 4E 5F 6F 6F 7E 8F 9E AF BE CF DE EF FE FD FE FF FF FE  
+```
 
 # Misc Music
 
+```code
 MiscMusic: 
 ;
 ; Note number ... upper bit set for set delay
@@ -1027,9 +1043,11 @@ MiscMusic:
 9AB7: 8A 08 08 08 85 3C 3A 38 36 3A 38 36 34  ; 8 ?? Spiraling down ?
 9AC4: 38 36 34 32 36 34 32 30 34 32 30 2E 2A  ;
 9AD1: 28 A8 26 00                             ;
+```
 
 # Music Effect
 
+```code
 MusEffect: 
 9AD5: AD 02 06      LDA   $0602               ; Get music effect request
 9AD8: 30 08         BMI   $9AE2               ; 
@@ -1107,10 +1125,11 @@ MusEffect:
 ;
 9B65: 95 96 97 98 99 9A 9B 9C 9D 9E 9F 9F 9F 9F 9F 9F 
 9B75: 9F 9F 9F 9F 9F 9F 9F 9E 9D 9C 9B 9A 99 98 97 96 
-
+```
 
 # Modulation Effect
 
+```code
 DModEffect: 
 ; The request value in 0601 is used as data in the effect getting stored in 608. If the upper bit
 ; of the request is 1 then the D/A is initialized with 7F. Otherwise it is initialized with 00.
@@ -1222,9 +1241,11 @@ NoteOnTri:
 9C4E: 09 08         ORA   #$08                ; Length counter load = 00001
 9C50: 8D 0B 40      STA   $400B               ; Set coarse value [NES] Audio -> Triangle Frequency reg2
 9C53: 60            RTS                       ; Done
+```
 
 # Warble
 
+```code
 Warble: 
 ; Modify X (A<10 do nothing, A:3==1 then --X, A:3==0 then ++X without wrapping)
 ; Warbling counts from 0 up and back around.
@@ -1255,13 +1276,12 @@ Warble:
 9C67: 60            RTS                       ; Done
 
 
-
-
-
 9C68: 4C 2C 9D      JMP   $9D2C               ; Jump to processing music
+```
 
 # Play Music
 
+```code
 PlayMusic: 
 9C6B: AD 00 06      LDA   $0600               ; Get any music request
 9C6E: D0 06         BNE   $9C76               ; There is one ... go start it
@@ -1586,9 +1606,11 @@ Get0NoteLen:
 9EF7: 60            RTS                       ; Done
 
 9EF8: CB 0E 0E 4C 6D 8C CD FF  
+```
 
 # Note Table
 
+```code
 NoteTable: 
 ; Note table (coarse/fine). Frequencies to the duty cycle are 1.79MHz/(N+1).
 ; Frequencies are divided down by 16. There may be some other small factor
@@ -1682,9 +1704,11 @@ NoteTable:
 9FBB: 8B FB F9 9D 6E 3F
  
 9FC1: 1A 1A 1C 1D 1D 1E 1E 1F 1F 1E 1A 19 16 13 11 11 
+```
 
 # Note Delay Set
 
+```code
 NoteDelaySet: 
 ; Each song points to a set of 8 note duration values. For songs with harmony these beats have
 ; to be timed carefully. The comments below are in the form I:T(D) where:
@@ -1953,9 +1977,11 @@ BF40: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 
 ; From here down is the same in all banks (except for the origin
 ; difference in bank 7).
+```
 
 # RESET 
 
+```code
 RESET: 
 ;
 ; Configure the MMC1 and jump to E440 (Bank 7) for startup.
@@ -2005,9 +2031,11 @@ BF95: 4C 40 E4      JMP   $E440               ; Start of game
 ; R3 - PRG bank select ***RPPPP
 ;  R PRG RAM enabled. Zelda sends 0, but battery-backed RAM is always enabled.
 ;  PPPP bank select. Zelda switches banks 0-6.
+```
 
 # MMC Control
 
+```code
 MMC_Control: 
 ; Set the MMC Control register (0) to value in A
 BF98: 8D 00 80      STA   $8000               ; MMC Register 0 (control): --edcba ...
@@ -2020,9 +2048,11 @@ BFA4: 8D 00 80      STA   $8000               ; The MMC is write-trigger (write 
 BFA7: 4A            LSR   A                   ; .. has no affect anyway).
 BFA8: 8D 00 80      STA   $8000               ; Bits are written from LSB to MSB ...
 BFAB: 60            RTS                       ; ... only 5 bits
+```
 
 # MMC Bank
 
+```code
 MMC_Bank: 
 ; Set the MMC Bank register (3) to value in A
 BFAC: 8D 00 E0      STA   $E000               ; MMC Register 3 (ROM page switching): --edcba ...
@@ -2040,9 +2070,12 @@ BFC0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 BFD0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 BFE0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 BFF0: FF FF FF FF FF FF FF FF FF FF
+```
 
 # Vectors
 
+```code
 BFFA: 84 E4       ; NMI to E484
 BFFC: 50 BF       ; RESET to BF50
 BFFE: F0 BF       ; IRQ to BFF0 (this bank should never be at end)
+```

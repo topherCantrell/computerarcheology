@@ -1,15 +1,23 @@
-%%image = Zelda.jpg
-%%cpu   = 6502
-%%-ram  = NES/Zelda/RAMUse.mark /NES/Zelda/RAMUse.html
-%%-hard = NES/Zelda/Hardware.mark /NES/Zelda/Hardware.html
+![Bank 2](Zelda.jpg)
 
-{{{html
+# Bank 2
+
+>>> cpu 6502
+
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
+
+>>> memoryTable hard 
+[Hardware Info](Hardware.md)
+
+```html
 <script src="/NES/Zelda/zelda.js"></script>
 <script src="/js/BinaryData.js"></script>
 <script src="/js/TileEngine.js"></script>
 <script src="/js/CANVAS.js"></script>
-}}}
+```
 
+```code
 ; ROM pointers
 8000: 7F 80     ; 807F (Sprites - Treasures) $700 bytes (112 images)
 8002: 7F 87     ; 877F (Background - Numbers, letters, symbols) $700 bytes (112 images)
@@ -24,9 +32,11 @@
 800C: 00 00     ; Pattern bank 0 (used for sprites)
 800E: 10 00     ; Pattern bank 1 (used for background)  
 8010: 1F 20     ; Pattern bank 1 (used for background) 
+```
 
 # Init VRAM
 
+```code
 InitVRAM: 
 ; Duplicated in 1:8D47
 ;
@@ -61,9 +71,11 @@ InitVRAM:
 8049: A9 00         LDA   #$00                ; Reset set ...
 804B: 8D 1D 05      STA   $051D               ; ... counter
 804E: 60            RTS                       ; Done
+```
 
 # Copy to VRAM
 
+```code
 CopyToVRAM: 
 ;
 ; Block copy from (00:01) to VRAM (address MSB in A, latch LSB is 0).
@@ -95,16 +107,19 @@ CopyToVRAM:
 8079: D0 D9         BNE   $8054               ; Yes ... go move all
 807B: EE 1D 05      INC   $051D               ; Next set
 807E: 60            RTS                       ; Done
+```
 
 # Tiles_S_Common1
 
+```code
 Tiles_S_Common1: 
 ;
 ; This chunk of tiles, beginning with Link, is copied to VRAM from v0000-v06FF (bank 1 tiles 00-6F). 
 ; These are used for 8x16 sprites common to all screens. These are never changed. It is fitting
 ; that Link sprites appear first.
+```
 
-{{{html
+```html
 <canvas data-canvasFunction="TileEngine.handleTileCanvas" data-getTileDataFunction="Zelda.getMergedData"width="0" height="0" data-colorsName="GreenTanBrown" data-colors='["#606060","#80D010","#FC9838","#C84C0C"]'></canvas>
 <canvas width="0" height="0" data-colorsName="RedOrangeWhite" data-colors='["#606060","#B53120","#F9BC22","#F0F0F0"]'></canvas>
 <canvas width="0" height="0" data-colorsName="BlueBlueWhite" data-colors='["#606060","0000BC","#6B8EFF","#FFFFFF"]'></canvas>
@@ -123,8 +138,9 @@ Tiles_S_Common1:
 <canvas width="900" height="150"
      data-command=":2x2:10,12,11,13,+x,:2x2:14,16,15,17,+x,:2x2:18,1A,19,1B">
 </canvas>
-}}}
+```
 
+```code
 ; The images of link holding the shields (large and small) appear later
 ; starting with tile 54.
 
@@ -407,12 +423,15 @@ Tiles_S_Common1:
  ;   ..3333..
  ;   ..3333..
 822f: F7 EF DE EC F0 F8 3C 3C 3F 3F 3E FC 08 18 3C 3C
+```
 
 # Treasure Images
 
-TreasureImages: 
+```code
+TreasureImages:
+``` 
 
-{{{html
+```html
 <canvas width="300" height="150" 
     data-colors="RedOrangeWhite"
     data-command=":1x2:1C,1D,+x,+x,:2x2:1E,H1E,1F,H1F">
@@ -434,8 +453,9 @@ TreasureImages:
  <canvas width="900" height="150" 
      data-command=":1x2:68,69,+x,:1x2:6A,6B,+x,#GreenTanBrown,:1x2:6C,6D,+x,#RedOrangeWhite,:1x2:6E,6F"> 
 </canvas>
-}}}
+```
 
+```code
  ;   ........    1C
  ;   ........
  ;   ........
@@ -1276,8 +1296,11 @@ TreasureImages:
  ;   ...22222
 876f: 00 00 00 00 00 00 00 00 03 03 07 07 0F 0F 1F 1F
 
+```
+
 # Tiles_B_Common1
 
+```code
 Tiles_B_Common1: 
 ;
 ; These are placed in VRAM from v1000-v16FF (bank-2 tiles 00-6F)
@@ -1285,12 +1308,15 @@ Tiles_B_Common1:
 ;
 ; Tiles 70-F1 are filled in with overworld/underworld background tiles (also
 ; splash-screen tiles at beginning).
+```
 
 # Text Images
 
-TextImages: 
+```code
+TextImages:
+``` 
 
-{{{html
+```html
  <canvas width="900" height="280" 
      data-address="877f" 
      data-colors='["#606060","#F0F0F0","#E0E0E0","#8080FF"]' 
@@ -1300,8 +1326,9 @@ TextImages:
  <canvas width="900" height="150" 
      data-command=":8x2:60,61,62,63,64,65,66,67,68,69,6A,6B,6C,6D,6E,6F"> 
  </canvas>
-}}} 
+```
 
+```code
  ;   ..111...    0
  ;   .1..11..
  ;   11...11.
@@ -1990,19 +2017,25 @@ TextImages:
  ;   22222222
  ;   33333333
 8e6f: FF FF 00 FF FF FF 00 FF 00 00 FF FF 00 00 FF FF
+```
 
 # Tiles_B_Common2
 
+```code
 Tiles_B_Common2: 
 
 MiscImages: 
+```
 
-;! <canvas width="900" height="150"
-;!     data-address="7F5F" 
-;!     data-colors="RedOrangeWhite" 
-;!     data-command=":7x2:F2,F3,F4,F5,F6,F7,F8,F9,FA,FB,FC,FD,FE,FF"> 
-;! </canvas> 
+```html
+ <canvas width="900" height="150"
+     data-address="7F5F" 
+     data-colors="RedOrangeWhite" 
+     data-command=":7x2:F2,F3,F4,F5,F6,F7,F8,F9,FA,FB,FC,FD,FE,FF"> 
+ </canvas>
+```
 
+```code
  ;   .11.11..    ; F2
  ;   1111111.
  ;   1111111.
@@ -2624,9 +2657,11 @@ MiscImages:
 9297: 40            RTI                       ;
 9298: 00            BRK                       ;
 9299: 00            BRK                       ;
+```
 
 # Treasure Text
 
+```code
 TreasureText: 
 ;@@@@@@@_ALL_OF_TREASURES_@@@@@@@
 929A: 00 ; Start column 0
@@ -2766,9 +2801,11 @@ TreasureText:
 9499: 06 ; Start column 6
 949A: 15 0E 1D 1D 0E 1B 24 24 24 24 24 24 24 24 0F 18
 94AA: 18 0D FF
+```
 
 # Treasure Info Ptrs
 
+```code
 TrInfoPtrs: 
 ; 
 ; The strings used on the treasure-info screen are varied sized.
@@ -6645,9 +6682,11 @@ BF40: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 
 ; From here down is the same in all banks (except for the origin
 ; difference in bank 7). 
+```
 
 # RESET
 
+```code
 RESET: 
 ;
 ; Configure the MMC1 and jump to E440 (Bank 7) for startup.
@@ -6697,9 +6736,11 @@ BF95: 4C 40 E4      JMP   $E440               ; Start of game
 ; R3 - PRG bank select ***RPPPP
 ;  R PRG RAM enabled. Zelda sends 0, but battery-backed RAM is always enabled.
 ;  PPPP bank select. Zelda switches banks 0-6.
+```
 
 # MMC Control
 
+```code
 MMC_Control: 
 ; Set the MMC Control register (0) to value in A
 BF98: 8D 00 80      STA   $8000               ; MMC Register 0 (control): --edcba ...
@@ -6712,9 +6753,11 @@ BFA4: 8D 00 80      STA   $8000               ; The MMC is write-trigger (write 
 BFA7: 4A            LSR   A                   ; .. has no affect anyway).
 BFA8: 8D 00 80      STA   $8000               ; Bits are written from LSB to MSB ...
 BFAB: 60            RTS                       ; ... only 5 bits
+```
 
 # MMC Bank
 
+```code
 MMC_Bank: 
 ; Set the MMC Bank register (3) to value in A
 BFAC: 8D 00 E0      STA   $E000               ; MMC Register 3 (ROM page switching): --edcba ...
@@ -6732,9 +6775,12 @@ BFC0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 BFD0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 BFE0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 BFF0: FF FF FF FF FF FF FF FF FF FF
+```
 
 # Vectors
 
+```code
 BFFA: 84 E4       ; NMI to E484
 BFFC: 50 BF       ; RESET to BF50
 BFFE: F0 BF       ; IRQ to BFF0 (this bank should never be at end)
+```

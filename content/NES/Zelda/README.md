@@ -1,22 +1,40 @@
-%%title = Zelda
-%%image = Zelda.jpg
+![Zelda](Zelda.jpg)
+
+# The Legend of Zelda
+
+>>> deploy:<br>
+>>>   +Zelda.jpg<br>
+>>>   +ZeldaBanks.jpg<br>
+>>>   +zelda.js<br>
+>>>   Hardware.md<br>
+>>>   RAMUse.md<br>
+>>>   Bank0.md<br>
+>>>   Bank1.md<br>
+>>>   Bank2.md<br>
+   Bank3.md<br>
+   Bank4.md<br>
+   Bank5.md<br>
+   Bank6.md<br>
+   Bank7.md<br>
+   ----<br>
+   Journal.md<br>
 
 # Code
 
-* [Hardware](Hardware.html)
-* [RAM Content](RAMUse.html)
-* [Bank 0 - Audio](Bank0.html)
-* [Bank 1 - Game strings, splash screen tiles](Bank1.html)
-* [Bank 2 - Pregame, common sprite tiles, common background tiles](Bank2.html)
-* [Bank 3 - Overworld and dungeon sprite and background tiles](Bank3.html)
-* [Bank 4](Bank4.html)
-* [Bank 5](Bank5.html)
-* [Bank 6](Bank6.html)
-* [Bank 7 - Common code](Bank7.html)
+* [Hardware](Hardware.md)
+* [RAM Content](RAMUse.md)
+* [Bank 0 - Audio](Bank0.md)
+* [Bank 1 - Game strings, splash screen tiles](Bank1.md)
+* [Bank 2 - Pregame, common sprite tiles, common background tiles](Bank2.md)
+* [Bank 3 - Overworld and dungeon sprite and background tiles](Bank3.md)
+* [Bank 4](Bank4.md)
+* [Bank 5](Bank5.md)
+* [Bank 6](Bank6.md)
+* [Bank 7 - Common code](Bank7.md)
 
 # Simulator File Header 
 
-{{{
+```
 0000: 4E 45 53 1A ; "NES" and DOS end-of-file
 0004: 08 ; 8*16K PRG ROM size
 0005: 00 ; 0*8K CHR ROM size (0 means board uses CHR RAM)
@@ -28,7 +46,7 @@
 0009: 00 ; 0000000_0 : xxxxxxx0 = NTSC TV system
 000A: 00 ; Unofficial flags
 000B: 00 00 00 00 00 ; Unused
-}}}
+```
 
 # Memory Layout 
 
@@ -59,9 +77,7 @@ know about RAM and battery-backed RAM. All of the ROM is packed into a single fi
 The following image shows how binary chunks from the Zelda.nes file map to NES memory. You can use the formulas to convert a code address 
 from the code back to an offset in the Zelda.nes file (for patching).
 
-{{{html
-<img src="ZeldaBanks.jpg">
-}}}
+![](ZeldaBanks.jpg)
  
 # Tile Images
 
@@ -107,7 +123,7 @@ bank 3 (8044) configures the dungeon tiles correctly.
 Note that the dungeon tile sets seem to be different for the second quest. It may be a simple substitution (like use first-quest-level-4 
 for second-quest-level-1). Investigation to come.
 
-{{{html
+```html
 <table border="1">
   <tr>
     <th>Sprite Tiles</th>
@@ -188,7 +204,7 @@ for second-quest-level-1). Investigation to come.
   </tr>
 
 </table>
-}}}
+```
 
 # Name Table Layout 
 
@@ -275,11 +291,11 @@ from a table of eighteen bytes at the very beginning of Bank2. I hope this struc
 
 The massive block of images at the beginning of Bank2 is divided into two large and one smaller chunks:
 
-{{{
+```
 807F -- 877E    Treasure picture images
 877F -- 8E7E    Numbers, letters, punctuation, and symbols
 8E7F -- 8F5E    Misc pictures (??)
-}}}
+```
 With a little more POKEing around I found the letters for the treasure-descriptions in the splash sequence. They are offset exactly 
 as they appear in the 877F area with '0' having a value of 0 and 'A' having a value of 10. The space character is 36 (one after 'Z').
 
@@ -290,9 +306,9 @@ as they appear in the 877F area with '0' having a value of 0 and 'A' having a va
 Just a few instructions into the startup sequence the program makes it to E45B in bank 7. This is an endless loop where the main 
 program spins for ever more. The game is driven by the NMI interrupt tick.
 
-{{{
+```
 E45B: 4C 5B E4    JMP   $E45B         ; ENDLESS LOOP ... interrupt driven
-}}}
+```
 
 # Battery Backed RAM
 
@@ -312,7 +328,7 @@ January 5, 2010
 
 There are seven quick one-shot sound effects that can be played (one at a time) on the square-wave-1 channel. These include:
 
-{{{
+```
 1 Anything bouncing off shield
 2 Enemy death
 3 ??
@@ -320,7 +336,7 @@ There are seven quick one-shot sound effects that can be played (one at a time) 
 5 Letters popping up when someone is talking
 6 Picking a letter when entering a name
 7 The near-death beep (played over and over)
-}}}
+```
 
 Whenever one of these seven is requested it replaces any other effect being played with one exception. The near-heart beeping will 
 NOT preempt an effect in play. The near-heart beeping is an ongoing effect that needs to run behind other effects.
