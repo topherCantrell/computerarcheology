@@ -10,7 +10,7 @@
 >>> memoryTable hard 
 [Hardware Info](../Hardware.md)
 
-```
+```code
 4000: 4D         LD      C,L             
 4001: 61         LD      H,C             
 4002: 6B         LD      L,E             
@@ -2458,7 +2458,7 @@
 4C3C: 41         LD      B,C             
 4C3D: 59         LD      E,C             
 4C3E: FF         RST     0X38            
-4C3F: F2         ???                     
+4C3F: F2                              
 4C40: 20 47      JR      NZ,$4C89        
 4C42: 4F         LD      C,A             
 4C43: 20 54      JR      NZ,$4C99        
@@ -2679,7 +2679,7 @@
 4D52: 20 4D      JR      NZ,$4DA1        
 4D54: 74         LD      (HL),H          
 4D55: 2E 20      LD      L,$20           
-4D57: F2         ???                     
+4D57: F2                              
 4D58: 20 47      JR      NZ,$4DA1        
 4D5A: 6F         LD      L,A             
 4D5B: 70         LD      (HL),B          
@@ -5688,7 +5688,7 @@
 5C9B: 2E 2E      LD      L,$2E           
 5C9D: 2E 2E      LD      L,$2E           
 5C9F: 2E 20      LD      L,$20           
-5CA1: DD         ???                     
+5CA1: DD                              
 5CA2: 3F         CCF                     
 5CA3: 3F         CCF                     
 5CA4: 20 FF      JR      NZ,$5CA5        
@@ -9017,7 +9017,7 @@
 6D58: 2E 2E      LD      L,$2E           
 6D5A: 2E 20      LD      L,$20           
 6D5C: 20 20      JR      NZ,$6D7E        
-6D5E: F2         ???                     
+6D5E: F2                              
 6D5F: 20 F2      JR      NZ,$6D53        
 6D61: 20 F0      JR      NZ,$6D53        
 6D63: 20 F3      JR      NZ,$6D58        
@@ -9183,7 +9183,7 @@
 6E34: 2E 2E      LD      L,$2E           
 6E36: 2E 20      LD      L,$20           
 6E38: 20 20      JR      NZ,$6E5A        
-6E3A: F2         ???                     
+6E3A: F2                              
 6E3B: 20 F0      JR      NZ,$6E2D        
 6E3D: 20 F3      JR      NZ,$6E32        
 6E3F: 20 F0      JR      NZ,$6E31        

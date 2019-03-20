@@ -10,7 +10,7 @@
 >>> memoryTable hard 
 [Hardware Info](../Hardware.md)
 
-```
+```code
 4000: 00         NOP                     
 4001: 00         NOP                     
 4002: 21 A1 22   LD      HL,$22A1        
@@ -738,7 +738,7 @@
 4340: D8         RET     C               
 4341: D9         RETI                    
 4342: DA DB DC   JP      C,$DCDB         
-4345: DD         ???                     
+4345: DD                              
 4346: 00         NOP                     
 4347: 00         NOP                     
 4348: B0         OR      B               
@@ -1027,15 +1027,15 @@
 4483: B9         CP      C               
 4484: 85         ADD     A,L             
 4485: 86         ADD     A,(HL)          
-4486: FD         ???                     
+4486: FD                              
 4487: F3         DI                      
-4488: ED         ???                     
+4488: ED                              
 4489: EE EA      XOR     $EA             
-448B: EB         ???                     
-448C: EC         ???                     
+448B: EB                              
+448C: EC                              
 448D: 87         ADD     A,A             
 448E: F1         POP     AF              
-448F: F2         ???                     
+448F: F2                              
 4490: FE EF      CP      $EF             
 4492: BA         CP      D               
 4493: BB         CP      E               
@@ -4413,10 +4413,10 @@
 52F6: 3E 02      LD      A,$02           
 52F8: E0 A1      LDFF00  ($A1),A         
 52FA: C9         RET                     
-52FB: E4         ???                     
-52FC: E4         ???                     
-52FD: E4         ???                     
-52FE: E4         ???                     
+52FB: E4                              
+52FC: E4                              
+52FD: E4                              
+52FE: E4                              
 52FF: F9         LD      SP,HL           
 5300: F9         LD      SP,HL           
 5301: F9         LD      SP,HL           
@@ -4427,10 +4427,10 @@
 5308: FF         RST     0X38            
 5309: FF         RST     0X38            
 530A: FF         RST     0X38            
-530B: E4         ???                     
-530C: E4         ???                     
-530D: E4         ???                     
-530E: E4         ???                     
+530B: E4                              
+530C: E4                              
+530D: E4                              
+530E: E4                              
 530F: 94         SUB     H               
 5310: 94         SUB     H               
 5311: 94         SUB     H               
@@ -4632,10 +4632,10 @@
 5464: 3E 53      LD      A,$53           
 5466: EA 16 D4   LD      ($D416),A       
 5469: C9         RET                     
-546A: E4         ???                     
-546B: E4         ???                     
-546C: E4         ???                     
-546D: E4         ???                     
+546A: E4                              
+546B: E4                              
+546C: E4                              
+546D: E4                              
 546E: 94         SUB     H               
 546F: 94         SUB     H               
 5470: 94         SUB     H               
@@ -4674,10 +4674,10 @@
 5493: 94         SUB     H               
 5494: 94         SUB     H               
 5495: 94         SUB     H               
-5496: E4         ???                     
-5497: E4         ???                     
-5498: E4         ???                     
-5499: E4         ???                     
+5496: E4                              
+5497: E4                              
+5498: E4                              
+5499: E4                              
 549A: 00         NOP                     
 549B: 00         NOP                     
 549C: 00         NOP                     
@@ -4790,10 +4790,10 @@
 551C: FF         RST     0X38            
 551D: FE FE      CP      $FE             
 551F: FE FD      CP      $FD             
-5521: FD         ???                     
-5522: FD         ???                     
-5523: FD         ???                     
-5524: FD         ???                     
+5521: FD                              
+5522: FD                              
+5523: FD                              
+5524: FD                              
 5525: FE FE      CP      $FE             
 5527: FE FF      CP      $FF             
 5529: 00         NOP                     
@@ -4815,17 +4815,17 @@
 5539: 02         LD      (BC),A          
 553A: 00         NOP                     
 553B: FE FE      CP      $FE             
-553D: FD         ???                     
-553E: FD         ???                     
-553F: FD         ???                     
-5540: FC         ???                     
-5541: FC         ???                     
-5542: FC         ???                     
-5543: FC         ???                     
-5544: FC         ???                     
-5545: FD         ???                     
-5546: FD         ???                     
-5547: FD         ???                     
+553D: FD                              
+553E: FD                              
+553F: FD                              
+5540: FC                              
+5541: FC                              
+5542: FC                              
+5543: FC                              
+5544: FC                              
+5545: FD                              
+5546: FD                              
+5547: FD                              
 5548: FE FE      CP      $FE             
 554A: 00         NOP                     
 554B: 01 01 02   LD      BC,$0201        
@@ -4844,10 +4844,10 @@
 555C: FF         RST     0X38            
 555D: FE FE      CP      $FE             
 555F: FE FD      CP      $FD             
-5561: FD         ???                     
-5562: FD         ???                     
-5563: FD         ???                     
-5564: FD         ???                     
+5561: FD                              
+5562: FD                              
+5563: FD                              
+5564: FD                              
 5565: FE FE      CP      $FE             
 5567: FE FF      CP      $FF             
 5569: 00         NOP                     
@@ -5090,7 +5090,7 @@
 56D5: F9         LD      SP,HL           
 56D6: FA 10 10   LD      A,($1010)       
 56D9: BB         CP      E               
-56DA: DB         ???                     
+56DA: DB                              
 56DB: 0B         DEC     BC              
 56DC: 0B         DEC     BC              
 56DD: 10 10      STOP    $10             
@@ -5325,8 +5325,8 @@
 5801: 30 00      JR      NC,$5803        
 5803: 00         NOP                     
 5804: E8 18      ADD     SP,$18          
-5806: F4         ???                     
-5807: F4         ???                     
+5806: F4                              
+5807: F4                              
 5808: D0         RET     NC              
 5809: 00         NOP                     
 580A: F8 F8      LDHL    SP,$F8          

@@ -10,7 +10,7 @@
 >>> memoryTable hard 
 [Hardware Info](../Hardware.md)
 
-```
+```code
 4000: FA 16 C1   LD      A,($C116)       
 4003: A7         AND     A               
 4004: 20 09      JR      NZ,$400F        
@@ -1312,7 +1312,7 @@
 48AD: CD D0 3D   CALL    $3DD0           
 48B0: C9         RET                     
 48B1: 00         NOP                     
-48B2: FC         ???                     
+48B2: FC                              
 48B3: 76         HALT                    
 48B4: 00         NOP                     
 48B5: 00         NOP                     
@@ -1324,7 +1324,7 @@
 48BB: 7A         LD      A,D             
 48BC: 00         NOP                     
 48BD: 00         NOP                     
-48BE: FC         ???                     
+48BE: FC                              
 48BF: 7C         LD      A,H             
 48C0: 00         NOP                     
 48C1: 00         NOP                     
@@ -1357,7 +1357,7 @@
 48E1: 74         LD      (HL),H          
 48E2: 20 72      JR      NZ,$4956        
 48E4: 20 CD      JR      NZ,$48B3        
-48E6: FD         ???                     
+48E6: FD                              
 48E7: 48         LD      C,B             
 48E8: F0 E7      LD      A,($E7)         
 48EA: 1F         RRA                     
@@ -2181,8 +2181,8 @@
 4EFA: 60         LD      H,B             
 4EFB: 60         LD      H,B             
 4EFC: E2         LDFF00  (C),A           
-4EFD: E3         ???                     
-4EFE: E4         ???                     
+4EFD: E3                              
+4EFE: E4                              
 4EFF: CD 16 50   CALL    $5016           
 4F02: FA 9F C1   LD      A,($C19F)       
 4F05: A7         AND     A               
@@ -2320,7 +2320,7 @@
 4FFB: E0 99      LDFF00  ($99),A         
 4FFD: C9         RET                     
 4FFE: 00         NOP                     
-4FFF: FC         ???                     
+4FFF: FC                              
 5000: 70         LD      (HL),B          
 5001: 00         NOP                     
 5002: 00         NOP                     
@@ -2331,7 +2331,7 @@
 5007: 0C         INC     C               
 5008: 70         LD      (HL),B          
 5009: 20 00      JR      NZ,$500B        
-500B: FC         ???                     
+500B: FC                              
 500C: 74         LD      (HL),H          
 500D: 00         NOP                     
 500E: 00         NOP                     
@@ -2607,7 +2607,7 @@
 51C7: 20 58      JR      NZ,$5221        
 51C9: 20 FA      JR      NZ,$51C5        
 51CB: 74         LD      (HL),H          
-51CC: DB         ???                     
+51CC: DB                              
 51CD: A7         AND     A               
 51CE: C2 76 7E   JP      NZ,$7E76        
 51D1: 11 AA 51   LD      DE,$51AA        
@@ -3579,7 +3579,7 @@
 58AE: 58         LD      E,B             
 58AF: E7         RST     0X20            
 58B0: 58         LD      E,B             
-58B1: FC         ???                     
+58B1: FC                              
 58B2: 58         LD      E,B             
 58B3: 21 10 C2   LD      HL,$C210        
 58B6: 09         ADD     HL,BC           
@@ -3661,11 +3661,11 @@
 5944: 14         INC     D               
 5945: FF         RST     0X38            
 5946: 00         NOP                     
-5947: FC         ???                     
+5947: FC                              
 5948: 04         INC     B               
 5949: 70         LD      (HL),B          
 594A: 00         NOP                     
-594B: FC         ???                     
+594B: FC                              
 594C: 0C         INC     C               
 594D: 72         LD      (HL),D          
 594E: 00         NOP                     
@@ -4447,7 +4447,7 @@
 5EB3: 20 6C      JR      NZ,$5F21        
 5EB5: 20 FA      JR      NZ,$5EB1        
 5EB7: 6B         LD      L,E             
-5EB8: DB         ???                     
+5EB8: DB                              
 5EB9: E6 02      AND     $02             
 5EBB: CA 76 7E   JP      Z,$7E76         
 5EBE: FA 7B DB   LD      A,($DB7B)       
@@ -4497,7 +4497,7 @@
 5F0B: 5F         LD      E,A             
 5F0C: D1         POP     DE              
 5F0D: 5F         LD      E,A             
-5F0E: E3         ???                     
+5F0E: E3                              
 5F0F: 5F         LD      E,A             
 5F10: FA 5F 12   LD      A,($125F)       
 5F13: 60         LD      H,B             
@@ -4834,7 +4834,7 @@
 61A4: 61         LD      H,C             
 61A5: BE         CP      (HL)            
 61A6: 61         LD      H,C             
-61A7: DB         ???                     
+61A7: DB                              
 61A8: 61         LD      H,C             
 61A9: FB         EI                      
 61AA: 61         LD      H,C             
@@ -5250,7 +5250,7 @@
 649F: CD DB 29   CALL    $29DB           
 64A2: E0 DA      LDFF00  ($DA),A         
 64A4: C9         RET                     
-64A5: EC         ???                     
+64A5: EC                              
 64A6: 14         INC     D               
 64A7: CD C6 68   CALL    $68C6           
 64AA: F0 EA      LD      A,($EA)         
@@ -5447,7 +5447,7 @@
 660D: 08 02 00   LD      ($0002),SP      
 6610: 00         NOP                     
 6611: 00         NOP                     
-6612: FC         ???                     
+6612: FC                              
 6613: F8 F0      LDHL    SP,$F0          
 6615: F8 E0      LDHL    SP,$E0          
 6617: 90         SUB     B               
@@ -5633,7 +5633,7 @@
 6721: 00         NOP                     
 6722: 00         NOP                     
 6723: 08 62 00   LD      ($0062),SP      
-6726: FD         ???                     
+6726: FD                              
 6727: F8 6E      LDHL    SP,$6E          
 6729: 20 FD      JR      NZ,$6728        
 672B: 00         NOP                     
@@ -5651,7 +5651,7 @@
 6739: 00         NOP                     
 673A: 00         NOP                     
 673B: 08 66 00   LD      ($0066),SP      
-673E: FD         ???                     
+673E: FD                              
 673F: F8 6E      LDHL    SP,$6E          
 6741: 20 FD      JR      NZ,$6740        
 6743: 00         NOP                     
@@ -5667,17 +5667,17 @@
 6751: 00         NOP                     
 6752: 00         NOP                     
 6753: 08 62 00   LD      ($0062),SP      
-6756: FD         ???                     
+6756: FD                              
 6757: F8 6C      LDHL    SP,$6C          
 6759: 00         NOP                     
-675A: FD         ???                     
+675A: FD                              
 675B: 00         NOP                     
 675C: 6E         LD      L,(HL)          
 675D: 00         NOP                     
-675E: FD         ???                     
+675E: FD                              
 675F: F0 6C      LD      A,($6C)         
 6761: 00         NOP                     
-6762: FD         ???                     
+6762: FD                              
 6763: F8 6E      LDHL    SP,$6E          
 6765: 00         NOP                     
 6766: 00         NOP                     
@@ -5702,14 +5702,14 @@
 6781: 00         NOP                     
 6782: 00         NOP                     
 6783: 08 66 00   LD      ($0066),SP      
-6786: FD         ???                     
+6786: FD                              
 6787: F8 6E      LDHL    SP,$6E          
 6789: 20 FD      JR      NZ,$6788        
 678B: 00         NOP                     
 678C: 6C         LD      L,H             
 678D: 20 FD      JR      NZ,$678C        
 678F: 08 6E 20   LD      ($206E),SP      
-6792: FD         ???                     
+6792: FD                              
 6793: 10 6C      STOP    $6C             
 6795: 20 00      JR      NZ,$6797        
 6797: 00         NOP                     
@@ -5717,7 +5717,7 @@
 6799: 00         NOP                     
 679A: 00         NOP                     
 679B: 08 6A 00   LD      ($006A),SP      
-679E: FD         ???                     
+679E: FD                              
 679F: F8 6E      LDHL    SP,$6E          
 67A1: 20 FD      JR      NZ,$67A0        
 67A3: 00         NOP                     
@@ -5795,7 +5795,7 @@
 67F9: 00         NOP                     
 67FA: 00         NOP                     
 67FB: 08 6A 00   LD      ($006A),SP      
-67FE: FD         ???                     
+67FE: FD                              
 67FF: F8 6E      LDHL    SP,$6E          
 6801: 20 FD      JR      NZ,$6800        
 6803: 00         NOP                     
@@ -5811,14 +5811,14 @@
 6811: 00         NOP                     
 6812: 00         NOP                     
 6813: 08 6A 00   LD      ($006A),SP      
-6816: FD         ???                     
+6816: FD                              
 6817: F8 6E      LDHL    SP,$6E          
 6819: 20 FD      JR      NZ,$6818        
 681B: 00         NOP                     
 681C: 6C         LD      L,H             
 681D: 20 FC      JR      NZ,$681B        
 681F: 08 6E 20   LD      ($206E),SP      
-6822: FC         ???                     
+6822: FC                              
 6823: 10 6C      STOP    $6C             
 6825: 20 00      JR      NZ,$6827        
 6827: 00         NOP                     
@@ -5826,7 +5826,7 @@
 6829: 00         NOP                     
 682A: 00         NOP                     
 682B: 08 6A 00   LD      ($006A),SP      
-682E: FD         ???                     
+682E: FD                              
 682F: F8 6E      LDHL    SP,$6E          
 6831: 20 FD      JR      NZ,$6830        
 6833: 00         NOP                     
@@ -5841,7 +5841,7 @@
 6841: 00         NOP                     
 6842: 00         NOP                     
 6843: 08 6A 00   LD      ($006A),SP      
-6846: FD         ???                     
+6846: FD                              
 6847: F8 6E      LDHL    SP,$6E          
 6849: 20 FD      JR      NZ,$6848        
 684B: 00         NOP                     
@@ -5856,7 +5856,7 @@
 6859: 00         NOP                     
 685A: 00         NOP                     
 685B: 08 6A 00   LD      ($006A),SP      
-685E: FD         ???                     
+685E: FD                              
 685F: F8 6E      LDHL    SP,$6E          
 6861: 20 FD      JR      NZ,$6860        
 6863: 00         NOP                     
@@ -5919,7 +5919,7 @@
 68AB: 00         NOP                     
 68AC: FF         RST     0X38            
 68AD: 00         NOP                     
-68AE: F4         ???                     
+68AE: F4                              
 68AF: F0 6E      LD      A,($6E)         
 68B1: 20 F4      JR      NZ,$68A7        
 68B3: F8 6C      LDHL    SP,$6C          
@@ -6775,7 +6775,7 @@
 6EA2: 20 83      JR      NZ,$6E27        
 6EA4: C9         RET                     
 6EA5: 00         NOP                     
-6EA6: FC         ???                     
+6EA6: FC                              
 6EA7: 60         LD      H,B             
 6EA8: 00         NOP                     
 6EA9: 00         NOP                     
@@ -6786,7 +6786,7 @@
 6EAE: 0C         INC     C               
 6EAF: 60         LD      H,B             
 6EB0: 20 00      JR      NZ,$6EB2        
-6EB2: FC         ???                     
+6EB2: FC                              
 6EB3: 64         LD      H,H             
 6EB4: 00         NOP                     
 6EB5: 00         NOP                     
@@ -6797,7 +6797,7 @@
 6EBA: 0C         INC     C               
 6EBB: 64         LD      H,H             
 6EBC: 20 00      JR      NZ,$6EBE        
-6EBE: FC         ???                     
+6EBE: FC                              
 6EBF: 68         LD      L,B             
 6EC0: 00         NOP                     
 6EC1: 00         NOP                     
@@ -7475,7 +7475,7 @@
 7360: 73         LD      (HL),E          
 7361: 89         ADC     A,C             
 7362: 73         LD      (HL),E          
-7363: D3         ???                     
+7363: D3                              
 7364: 73         LD      (HL),E          
 7365: 42         LD      B,D             
 7366: 74         LD      (HL),H          
@@ -7487,7 +7487,7 @@
 736C: 74         LD      (HL),H          
 736D: B7         OR      A               
 736E: 74         LD      (HL),H          
-736F: EC         ???                     
+736F: EC                              
 7370: 74         LD      (HL),H          
 7371: 08 75 1C   LD      ($1C75),SP      
 7374: 75         LD      (HL),L          
@@ -7532,10 +7532,10 @@
 73C1: F8 08      LDHL    SP,$08          
 73C3: 08 F8 F8   LD      ($F8F8),SP      
 73C6: 08 FC 02   LD      ($02FC),SP      
-73C9: FC         ???                     
+73C9: FC                              
 73CA: 02         LD      (BC),A          
-73CB: FC         ???                     
-73CC: FC         ???                     
+73CB: FC                              
+73CC: FC                              
 73CD: 10 10      STOP    $10             
 73CF: 10 10      STOP    $10             
 73D1: 10 10      STOP    $10             
@@ -8037,7 +8037,7 @@
 7744: 04         INC     B               
 7745: 06 04      LD      B,$04           
 7747: 00         NOP                     
-7748: FC         ???                     
+7748: FC                              
 7749: FA FC CD   LD      A,($CDFC)       
 774C: 91         SUB     C               
 774D: 08 20 20   LD      ($2020),SP      
@@ -8098,7 +8098,7 @@
 77B2: CD 96 77   CALL    $7796           
 77B5: C9         RET                     
 77B6: 00         NOP                     
-77B7: FC         ???                     
+77B7: FC                              
 77B8: 70         LD      (HL),B          
 77B9: 00         NOP                     
 77BA: 00         NOP                     
@@ -8109,7 +8109,7 @@
 77BF: 0C         INC     C               
 77C0: 70         LD      (HL),B          
 77C1: 20 00      JR      NZ,$77C3        
-77C3: FC         ???                     
+77C3: FC                              
 77C4: 74         LD      (HL),H          
 77C5: 00         NOP                     
 77C6: 00         NOP                     
@@ -8120,7 +8120,7 @@
 77CB: 0C         INC     C               
 77CC: 74         LD      (HL),H          
 77CD: 20 00      JR      NZ,$77CF        
-77CF: FC         ???                     
+77CF: FC                              
 77D0: 76         HALT                    
 77D1: 00         NOP                     
 77D2: 00         NOP                     
@@ -8131,7 +8131,7 @@
 77D7: 0C         INC     C               
 77D8: 76         HALT                    
 77D9: 20 00      JR      NZ,$77DB        
-77DB: FC         ???                     
+77DB: FC                              
 77DC: 74         LD      (HL),H          
 77DD: 00         NOP                     
 77DE: 00         NOP                     
@@ -8509,7 +8509,7 @@
 7A7D: 00         NOP                     
 7A7E: FF         RST     0X38            
 7A7F: 01 24 10   LD      BC,$1024        
-7A82: FD         ???                     
+7A82: FD                              
 7A83: 03         INC     BC              
 7A84: 24         INC     H               
 7A85: 00         NOP                     

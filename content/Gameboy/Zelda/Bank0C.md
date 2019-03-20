@@ -43,7 +43,7 @@
  </canvas>
 ```
 
-```
+```code
 Person?: 
 4000: 07 00     ; .....222
 4002: 0B 07     ; ....2133
@@ -1628,16 +1628,22 @@ Person?:
 4AFA: 24 3C     ; ..3113..
 4AFC: 18 18     ; ...33...
 4AFE: 00 00     ; ........
+```
 
 # Digits 
 
+```code
 Digits:
-{{{html
+```
+
+```html
  <canvas width="750" height="64"
      data-address="4000"
      data-command=":10x1:B0,B1,B2,B3,B4,B5,B6,B7,B8,B9">
  </canvas>
-}}}
+```
+
+```code
 4B00: 00 00     ; ........
 4B02: 3C 3C     ; ..3333..
 4B04: 66 66     ; .33..33.

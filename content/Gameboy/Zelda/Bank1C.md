@@ -10,7 +10,7 @@
 >>> memoryTable hard 
 [Hardware Info](../Hardware.md)
 
-```
+```code
 4000: 01 00 5C   LD      BC,$5C00        
 4003: 59         LD      E,C             
 4004: 5C         LD      E,H             
@@ -167,9 +167,9 @@
 40B4: 76         HALT                    
 40B5: BA         CP      D               
 40B6: 76         HALT                    
-40B7: DB         ???                     
+40B7: DB                              
 40B8: 76         HALT                    
-40B9: FC         ???                     
+40B9: FC                              
 40BA: 76         HALT                    
 40BB: 1D         DEC     E               
 40BC: 77         LD      (HL),A          
@@ -313,7 +313,7 @@
 4157: A3         AND     E               
 4158: 60         LD      H,B             
 4159: CE 60      ADC     $60             
-415B: FD         ???                     
+415B: FD                              
 415C: 60         LD      H,B             
 415D: 2D         DEC     L               
 415E: 61         LD      H,C             
@@ -359,7 +359,7 @@
 418C: 6A         LD      L,D             
 418D: 32         LD      (HLD),A         
 418E: 6C         LD      L,H             
-418F: D3         ???                     
+418F: D3                              
 4190: 6C         LD      L,H             
 4191: 81         ADD     A,C             
 4192: 6D         LD      L,L             
@@ -369,7 +369,7 @@
 4197: CE 70      ADC     $70             
 4199: BD         CP      L               
 419A: 71         LD      (HL),C          
-419B: FD         ???                     
+419B: FD                              
 419C: 72         LD      (HL),D          
 419D: 49         LD      C,C             
 419E: 73         LD      (HL),E          
@@ -456,7 +456,7 @@
 41FA: 6C         LD      L,H             
 41FB: BB         CP      E               
 41FC: 6C         LD      L,H             
-41FD: F2         ???                     
+41FD: F2                              
 41FE: 6C         LD      L,H             
 41FF: 51         LD      D,C             
 4200: 6D         LD      L,L             
@@ -725,7 +725,7 @@
 4320: 44         LD      B,H             
 4321: A3         AND     E               
 4322: 44         LD      B,H             
-4323: F2         ???                     
+4323: F2                              
 4324: 44         LD      B,H             
 4325: 71         LD      (HL),C          
 4326: 45         LD      B,L             
@@ -744,7 +744,7 @@
 4334: 48         LD      C,B             
 4335: DA 48 1B   JP      C,$1B48         
 4338: 49         LD      C,C             
-4339: D3         ???                     
+4339: D3                              
 433A: 49         LD      C,C             
 433B: 1E 4A      LD      E,$4A           
 433D: 2F         CPL                     
@@ -870,7 +870,7 @@
 43C6: 5B         LD      E,E             
 43C7: AA         XOR     D               
 43C8: 5B         LD      E,E             
-43C9: EB         ???                     
+43C9: EB                              
 43CA: 5B         LD      E,E             
 43CB: 3C         INC     A               
 43CC: 5C         LD      E,H             
@@ -880,7 +880,7 @@
 43D0: 5C         LD      E,H             
 43D1: 46         LD      B,(HL)          
 43D2: 5D         LD      E,L             
-43D3: F2         ???                     
+43D3: F2                              
 43D4: 5D         LD      E,L             
 43D5: 31 5E 6F   LD      SP,$6F5E        
 43D8: 5E         LD      E,(HL)          
@@ -1020,7 +1020,7 @@
 446C: 74         LD      (HL),H          
 446D: 86         ADD     A,(HL)          
 446E: 74         LD      (HL),H          
-446F: E3         ???                     
+446F: E3                              
 4470: 74         LD      (HL),H          
 4471: 0E 75      LD      C,$75           
 4473: 3F         CCF                     
@@ -1049,7 +1049,7 @@
 448A: 78         LD      A,B             
 448B: F5         PUSH    AF              
 448C: 78         LD      A,B             
-448D: D3         ???                     
+448D: D3                              
 448E: 79         LD      A,C             
 448F: B1         OR      C               
 4490: 7A         LD      A,D             
@@ -1226,17 +1226,17 @@
 4549: D8         RET     C               
 454A: D9         RETI                    
 454B: DA DB DC   JP      C,$DCDB         
-454E: DD         ???                     
+454E: DD                              
 454F: DE DF      SBC     $DF             
 4551: E0 E1      LDFF00  ($E1),A         
 4553: E2         LDFF00  (C),A           
-4554: E3         ???                     
-4555: E4         ???                     
+4554: E3                              
+4555: E4                              
 4556: E5         PUSH    HL              
 4557: E6 E7      AND     $E7             
 4559: E8 E9      ADD     SP,$E9          
 455B: EA EB EC   LD      ($ECEB),A       
-455E: ED         ???                     
+455E: ED                              
 455F: EE EF      XOR     $EF             
 4561: 98         SBC     B               
 4562: 98         SBC     B               
@@ -9293,7 +9293,7 @@
 6CB9: 20 E3      JR      NZ,$6C9E        
 6CBB: 21 20 20   LD      HL,$2020        
 6CBE: 20 20      JR      NZ,$6CE0        
-6CC0: E3         ???                     
+6CC0: E3                              
 6CC1: 21 20 20   LD      HL,$2020        
 6CC4: 20 20      JR      NZ,$6CE6        
 6CC6: 4F         LD      C,A             
@@ -9413,7 +9413,7 @@
 6D64: 20 E3      JR      NZ,$6D49        
 6D66: 21 20 20   LD      HL,$2020        
 6D69: 20 20      JR      NZ,$6D8B        
-6D6B: E3         ???                     
+6D6B: E3                              
 6D6C: 21 20 20   LD      HL,$2020        
 6D6F: 20 20      JR      NZ,$6D91        
 6D71: 20 20      JR      NZ,$6D93        

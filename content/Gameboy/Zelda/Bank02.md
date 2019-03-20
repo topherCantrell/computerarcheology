@@ -10,7 +10,7 @@
 >>> memoryTable hard 
 [Hardware Info](../Hardware.md)
 
-```
+```code
 4000: 06 06      LD      B,$06           
 4002: 06 06      LD      B,$06           
 4004: 06 06      LD      B,$06           
@@ -924,7 +924,7 @@
 45FD: 10 0B      STOP    $0B             
 45FF: 00         NOP                     
 4600: F8 F3      LDHL    SP,$F3          
-4602: ED         ???                     
+4602: ED                              
 4603: F0 F5      LD      A,($F5)         
 4605: 00         NOP                     
 4606: 10 0D      STOP    $0D             
@@ -962,8 +962,8 @@
 462F: 00         NOP                     
 4630: 00         NOP                     
 4631: 00         NOP                     
-4632: FD         ???                     
-4633: FD         ???                     
+4632: FD                              
+4633: FD                              
 4634: 00         NOP                     
 4635: 00         NOP                     
 4636: 00         NOP                     
@@ -992,8 +992,8 @@
 464D: 00         NOP                     
 464E: 00         NOP                     
 464F: 00         NOP                     
-4650: FD         ???                     
-4651: FD         ???                     
+4650: FD                              
+4651: FD                              
 4652: 00         NOP                     
 4653: 00         NOP                     
 4654: 00         NOP                     
@@ -1304,11 +1304,11 @@
 4876: 00         NOP                     
 4877: 00         NOP                     
 4878: 0C         INC     C               
-4879: F4         ???                     
+4879: F4                              
 487A: 00         NOP                     
 487B: 00         NOP                     
 487C: 0C         INC     C               
-487D: F4         ???                     
+487D: F4                              
 487E: 00         NOP                     
 487F: 00         NOP                     
 4880: 00         NOP                     
@@ -1316,7 +1316,7 @@
 4882: 00         NOP                     
 4883: 00         NOP                     
 4884: 14         INC     D               
-4885: EC         ???                     
+4885: EC                              
 4886: 00         NOP                     
 4887: 00         NOP                     
 4888: 0F         RRCA                    
@@ -1335,7 +1335,7 @@
 4895: 00         NOP                     
 4896: 00         NOP                     
 4897: F0 F4      LD      A,($F4)         
-4899: F4         ???                     
+4899: F4                              
 489A: 00         NOP                     
 489B: 10 0C      STOP    $0C             
 489D: 0C         INC     C               
@@ -1348,7 +1348,7 @@
 48A4: 00         NOP                     
 48A5: 00         NOP                     
 48A6: 00         NOP                     
-48A7: EC         ???                     
+48A7: EC                              
 48A8: F1         POP     AF              
 48A9: F1         POP     AF              
 48AA: 00         NOP                     
@@ -1736,10 +1736,10 @@
 4B6C: E0 9D      LDFF00  ($9D),A         
 4B6E: C9         RET                     
 4B6F: 14         INC     D               
-4B70: FC         ???                     
+4B70: FC                              
 4B71: 08 08 0A   LD      ($0A08),SP      
 4B74: 0A         LD      A,(BC)          
-4B75: FC         ???                     
+4B75: FC                              
 4B76: 14         INC     D               
 4B77: CD 35 4C   CALL    $4C35           
 4B7A: 38 08      JR      C,$4B84         
@@ -2022,11 +2022,11 @@
 4D65: 00         NOP                     
 4D66: 00         NOP                     
 4D67: 0C         INC     C               
-4D68: F4         ???                     
+4D68: F4                              
 4D69: 00         NOP                     
 4D6A: 00         NOP                     
 4D6B: 0C         INC     C               
-4D6C: F4         ???                     
+4D6C: F4                              
 4D6D: 00         NOP                     
 4D6E: 00         NOP                     
 4D6F: 00         NOP                     
@@ -2049,7 +2049,7 @@
 4D84: 00         NOP                     
 4D85: 00         NOP                     
 4D86: F0 F4      LD      A,($F4)         
-4D88: F4         ???                     
+4D88: F4                              
 4D89: 00         NOP                     
 4D8A: 10 0C      STOP    $0C             
 4D8C: 0C         INC     C               
@@ -2520,7 +2520,7 @@
 5125: F3         DI                      
 5126: 0E F3      LD      C,$F3           
 5128: F3         DI                      
-5129: FC         ???                     
+5129: FC                              
 512A: 00         NOP                     
 512B: 06 08      LD      B,$08           
 512D: 08 06 04   LD      ($0406),SP      
@@ -2612,12 +2612,12 @@
 51BC: 02         LD      (BC),A          
 51BD: C9         RET                     
 51BE: 04         INC     B               
-51BF: FC         ???                     
-51C0: FC         ???                     
+51BF: FC                              
+51C0: FC                              
 51C1: 04         INC     B               
 51C2: 04         INC     B               
 51C3: 04         INC     B               
-51C4: FC         ???                     
+51C4: FC                              
 51C5: 04         INC     B               
 51C6: F0 9E      LD      A,($9E)         
 51C8: 4F         LD      C,A             
@@ -3240,7 +3240,7 @@
 55F3: 18 00      JR      $55F5           
 55F5: F8 0A      LDHL    SP,$0A          
 55F7: 18 20      JR      $5619           
-55F9: FC         ???                     
+55F9: FC                              
 55FA: 00         NOP                     
 55FB: 18 00      JR      $55FD           
 55FD: FE 08      CP      $08             
@@ -3250,7 +3250,7 @@
 5605: 00         NOP                     
 5606: 0E 18      LD      C,$18           
 5608: 20 02      JR      NZ,$560C        
-560A: FC         ???                     
+560A: FC                              
 560B: 18 00      JR      $560D           
 560D: 02         LD      (BC),A          
 560E: 0C         INC     C               
@@ -4014,7 +4014,7 @@
 5B2E: C7         RST     0X00            
 5B2F: 63         LD      H,E             
 5B30: 5D         LD      E,L             
-5B31: ED         ???                     
+5B31: ED                              
 5B32: 5B         LD      E,E             
 5B33: 3F         CCF                     
 5B34: 5B         LD      E,E             
@@ -5195,7 +5195,7 @@
 630D: 92         SUB     D               
 630E: 01 7F 7F   LD      BC,$7F7F        
 6311: 9C         SBC     H               
-6312: D3         ???                     
+6312: D3                              
 6313: 00         NOP                     
 6314: 7F         LD      A,A             
 6315: 00         NOP                     
@@ -5691,10 +5691,10 @@
 66A8: 08 18 20   LD      ($2018),SP      
 66AB: 00         NOP                     
 66AC: FB         EI                      
-66AD: F4         ???                     
+66AD: F4                              
 66AE: 20 00      JR      NZ,$66B0        
 66B0: FB         EI                      
-66B1: FC         ???                     
+66B1: FC                              
 66B2: 20 20      JR      NZ,$66D4        
 66B4: FB         EI                      
 66B5: 00         NOP                     
@@ -5708,10 +5708,10 @@
 66C1: 14         INC     D               
 66C2: 20 20      JR      NZ,$66E4        
 66C4: 05         DEC     B               
-66C5: F4         ???                     
+66C5: F4                              
 66C6: 20 00      JR      NZ,$66C8        
 66C8: 05         DEC     B               
-66C9: FC         ???                     
+66C9: FC                              
 66CA: 20 00      JR      NZ,$66CC        
 66CC: 05         DEC     B               
 66CD: 00         NOP                     
@@ -5724,19 +5724,19 @@
 66D8: 05         DEC     B               
 66D9: 14         INC     D               
 66DA: 20 00      JR      NZ,$66DC        
-66DC: FD         ???                     
+66DC: FD                              
 66DD: F8 20      LDHL    SP,$20          
 66DF: 00         NOP                     
-66E0: FD         ???                     
+66E0: FD                              
 66E1: 10 20      STOP    $20             
 66E3: 20 FD      JR      NZ,$66E2        
 66E5: 00         NOP                     
 66E6: 20 00      JR      NZ,$66E8        
-66E8: FD         ???                     
+66E8: FD                              
 66E9: 08 20 20   LD      ($2020),SP      
-66EC: FD         ???                     
+66EC: FD                              
 66ED: 08 20 00   LD      ($0020),SP      
-66F0: FD         ???                     
+66F0: FD                              
 66F1: 10 20      STOP    $20             
 66F3: 20 03      JR      NZ,$66F8        
 66F5: F8 20      LDHL    SP,$20          
@@ -5970,18 +5970,18 @@
 6867: 7D         LD      A,L             
 6868: 7D         LD      A,L             
 6869: EE 7D      XOR     $7D             
-686B: ED         ???                     
+686B: ED                              
 686C: 7D         LD      A,L             
 686D: EF         RST     0X28            
-686E: ED         ???                     
+686E: ED                              
 686F: EF         RST     0X28            
-6870: ED         ???                     
+6870: ED                              
 6871: EF         RST     0X28            
 6872: 7D         LD      A,L             
 6873: EF         RST     0X28            
 6874: EF         RST     0X28            
-6875: ED         ???                     
-6876: ED         ???                     
+6875: ED                              
+6876: ED                              
 6877: EF         RST     0X28            
 6878: EF         RST     0X28            
 6879: EF         RST     0X28            
@@ -5989,13 +5989,13 @@
 687B: EF         RST     0X28            
 687C: 7D         LD      A,L             
 687D: EF         RST     0X28            
-687E: ED         ???                     
-687F: ED         ???                     
+687E: ED                              
+687F: ED                              
 6880: 7D         LD      A,L             
 6881: 7D         LD      A,L             
 6882: 7D         LD      A,L             
 6883: 7D         LD      A,L             
-6884: ED         ???                     
+6884: ED                              
 6885: EF         RST     0X28            
 6886: EF         RST     0X28            
 6887: 7D         LD      A,L             
@@ -6011,19 +6011,19 @@
 6891: 7D         LD      A,L             
 6892: 7D         LD      A,L             
 6893: 7D         LD      A,L             
-6894: ED         ???                     
-6895: ED         ???                     
-6896: ED         ???                     
+6894: ED                              
+6895: ED                              
+6896: ED                              
 6897: EF         RST     0X28            
 6898: EF         RST     0X28            
 6899: EF         RST     0X28            
 689A: 7D         LD      A,L             
 689B: 7D         LD      A,L             
 689C: 7D         LD      A,L             
-689D: ED         ???                     
+689D: ED                              
 689E: 7D         LD      A,L             
 689F: 7D         LD      A,L             
-68A0: ED         ???                     
+68A0: ED                              
 68A1: 7D         LD      A,L             
 68A2: 7D         LD      A,L             
 68A3: 7D         LD      A,L             
@@ -6042,7 +6042,7 @@
 68B1: EF         RST     0X28            
 68B2: 7D         LD      A,L             
 68B3: 7D         LD      A,L             
-68B4: ED         ???                     
+68B4: ED                              
 68B5: 7D         LD      A,L             
 68B6: 7D         LD      A,L             
 68B7: 7D         LD      A,L             
@@ -6059,24 +6059,24 @@
 68C2: 7D         LD      A,L             
 68C3: 7D         LD      A,L             
 68C4: 7D         LD      A,L             
-68C5: ED         ???                     
-68C6: ED         ???                     
-68C7: ED         ???                     
-68C8: ED         ???                     
+68C5: ED                              
+68C6: ED                              
+68C7: ED                              
+68C8: ED                              
 68C9: 7D         LD      A,L             
 68CA: 7D         LD      A,L             
 68CB: EF         RST     0X28            
 68CC: EF         RST     0X28            
-68CD: ED         ???                     
+68CD: ED                              
 68CE: EF         RST     0X28            
 68CF: 7D         LD      A,L             
 68D0: 7D         LD      A,L             
 68D1: 7D         LD      A,L             
 68D2: 7D         LD      A,L             
-68D3: ED         ???                     
+68D3: ED                              
 68D4: EF         RST     0X28            
-68D5: ED         ???                     
-68D6: ED         ???                     
+68D5: ED                              
+68D6: ED                              
 68D7: 7D         LD      A,L             
 68D8: 7D         LD      A,L             
 68D9: 7D         LD      A,L             
@@ -6090,7 +6090,7 @@
 68E1: EF         RST     0X28            
 68E2: 7D         LD      A,L             
 68E3: 7D         LD      A,L             
-68E4: ED         ???                     
+68E4: ED                              
 68E5: EF         RST     0X28            
 68E6: 7D         LD      A,L             
 68E7: 7D         LD      A,L             
@@ -6098,7 +6098,7 @@
 68E9: EF         RST     0X28            
 68EA: EF         RST     0X28            
 68EB: 7D         LD      A,L             
-68EC: ED         ???                     
+68EC: ED                              
 68ED: 7D         LD      A,L             
 68EE: 7D         LD      A,L             
 68EF: 7D         LD      A,L             
@@ -6106,15 +6106,15 @@
 68F1: EF         RST     0X28            
 68F2: 7D         LD      A,L             
 68F3: 7D         LD      A,L             
-68F4: ED         ???                     
-68F5: ED         ???                     
+68F4: ED                              
+68F5: ED                              
 68F6: 7D         LD      A,L             
 68F7: 7D         LD      A,L             
 68F8: 7D         LD      A,L             
 68F9: EF         RST     0X28            
 68FA: 7D         LD      A,L             
 68FB: 7D         LD      A,L             
-68FC: ED         ???                     
+68FC: ED                              
 68FD: 7D         LD      A,L             
 68FE: 7D         LD      A,L             
 68FF: 7D         LD      A,L             
@@ -6122,7 +6122,7 @@
 6901: EE 7D      XOR     $7D             
 6903: 7D         LD      A,L             
 6904: EF         RST     0X28            
-6905: ED         ???                     
+6905: ED                              
 6906: 7D         LD      A,L             
 6907: 7D         LD      A,L             
 6908: 7D         LD      A,L             
@@ -6139,7 +6139,7 @@
 6913: 7D         LD      A,L             
 6914: 7D         LD      A,L             
 6915: 7D         LD      A,L             
-6916: ED         ???                     
+6916: ED                              
 6917: EF         RST     0X28            
 6918: 7D         LD      A,L             
 6919: 7D         LD      A,L             
@@ -6150,44 +6150,44 @@
 691E: EF         RST     0X28            
 691F: EF         RST     0X28            
 6920: 7D         LD      A,L             
-6921: ED         ???                     
+6921: ED                              
 6922: 7D         LD      A,L             
 6923: 7D         LD      A,L             
 6924: EE EF      XOR     $EF             
-6926: ED         ???                     
+6926: ED                              
 6927: EF         RST     0X28            
-6928: ED         ???                     
+6928: ED                              
 6929: EF         RST     0X28            
 692A: 7D         LD      A,L             
 692B: 7D         LD      A,L             
 692C: EF         RST     0X28            
-692D: ED         ???                     
-692E: ED         ???                     
+692D: ED                              
+692E: ED                              
 692F: EF         RST     0X28            
 6930: EF         RST     0X28            
-6931: ED         ???                     
+6931: ED                              
 6932: 7D         LD      A,L             
 6933: 7D         LD      A,L             
 6934: 7D         LD      A,L             
 6935: EF         RST     0X28            
 6936: EF         RST     0X28            
 6937: EF         RST     0X28            
-6938: ED         ???                     
+6938: ED                              
 6939: 7D         LD      A,L             
 693A: 7D         LD      A,L             
 693B: 7D         LD      A,L             
 693C: 7D         LD      A,L             
-693D: ED         ???                     
+693D: ED                              
 693E: EF         RST     0X28            
-693F: ED         ???                     
-6940: ED         ???                     
+693F: ED                              
+6940: ED                              
 6941: 7D         LD      A,L             
 6942: 7D         LD      A,L             
 6943: 7D         LD      A,L             
 6944: 7D         LD      A,L             
 6945: 7D         LD      A,L             
 6946: EF         RST     0X28            
-6947: ED         ???                     
+6947: ED                              
 6948: 7D         LD      A,L             
 6949: 7D         LD      A,L             
 694A: 7D         LD      A,L             
@@ -6195,7 +6195,7 @@
 694C: EF         RST     0X28            
 694D: EF         RST     0X28            
 694E: EF         RST     0X28            
-694F: ED         ???                     
+694F: ED                              
 6950: EF         RST     0X28            
 6951: 7D         LD      A,L             
 6952: 7D         LD      A,L             
@@ -6204,7 +6204,7 @@
 6955: 7D         LD      A,L             
 6956: EE 7D      XOR     $7D             
 6958: EF         RST     0X28            
-6959: ED         ???                     
+6959: ED                              
 695A: 7D         LD      A,L             
 695B: 7D         LD      A,L             
 695C: EF         RST     0X28            
@@ -6212,8 +6212,8 @@
 695E: EF         RST     0X28            
 695F: EF         RST     0X28            
 6960: EF         RST     0X28            
-6961: ED         ???                     
-6962: ED         ???                     
+6961: ED                              
+6962: ED                              
 6963: 7D         LD      A,L             
 6964: 7D         LD      A,L             
 6965: 7D         LD      A,L             
@@ -6232,7 +6232,7 @@
 6972: 7D         LD      A,L             
 6973: 7D         LD      A,L             
 6974: 7D         LD      A,L             
-6975: ED         ???                     
+6975: ED                              
 6976: EF         RST     0X28            
 6977: EF         RST     0X28            
 6978: EF         RST     0X28            
@@ -6241,7 +6241,7 @@
 697B: 7D         LD      A,L             
 697C: 7D         LD      A,L             
 697D: 7D         LD      A,L             
-697E: ED         ???                     
+697E: ED                              
 697F: EF         RST     0X28            
 6980: EF         RST     0X28            
 6981: 7D         LD      A,L             
@@ -6250,9 +6250,9 @@
 6984: 7D         LD      A,L             
 6985: 7D         LD      A,L             
 6986: 7D         LD      A,L             
-6987: ED         ???                     
+6987: ED                              
 6988: EF         RST     0X28            
-6989: ED         ???                     
+6989: ED                              
 698A: EF         RST     0X28            
 698B: 7D         LD      A,L             
 698C: 7D         LD      A,L             
@@ -6262,30 +6262,30 @@
 6990: 7D         LD      A,L             
 6991: 7D         LD      A,L             
 6992: 7D         LD      A,L             
-6993: ED         ???                     
+6993: ED                              
 6994: 7D         LD      A,L             
 6995: 7D         LD      A,L             
 6996: 7D         LD      A,L             
 6997: 7D         LD      A,L             
 6998: 7D         LD      A,L             
 6999: 7D         LD      A,L             
-699A: ED         ???                     
+699A: ED                              
 699B: EF         RST     0X28            
-699C: ED         ???                     
+699C: ED                              
 699D: 7D         LD      A,L             
 699E: EF         RST     0X28            
 699F: EF         RST     0X28            
 69A0: 7D         LD      A,L             
-69A1: ED         ???                     
+69A1: ED                              
 69A2: EF         RST     0X28            
 69A3: EF         RST     0X28            
-69A4: ED         ???                     
+69A4: ED                              
 69A5: EF         RST     0X28            
 69A6: EF         RST     0X28            
 69A7: EE EF      XOR     $EF             
-69A9: ED         ???                     
+69A9: ED                              
 69AA: EF         RST     0X28            
-69AB: ED         ???                     
+69AB: ED                              
 69AC: EF         RST     0X28            
 69AD: 7D         LD      A,L             
 69AE: EF         RST     0X28            
@@ -6295,19 +6295,19 @@
 69B2: EF         RST     0X28            
 69B3: 7D         LD      A,L             
 69B4: EF         RST     0X28            
-69B5: ED         ???                     
+69B5: ED                              
 69B6: EF         RST     0X28            
 69B7: EF         RST     0X28            
 69B8: EF         RST     0X28            
 69B9: EF         RST     0X28            
 69BA: 7D         LD      A,L             
 69BB: 7D         LD      A,L             
-69BC: ED         ???                     
-69BD: ED         ???                     
+69BC: ED                              
+69BD: ED                              
 69BE: 7D         LD      A,L             
 69BF: 7D         LD      A,L             
 69C0: EF         RST     0X28            
-69C1: ED         ???                     
+69C1: ED                              
 69C2: 7D         LD      A,L             
 69C3: 7D         LD      A,L             
 69C4: EF         RST     0X28            
@@ -6318,8 +6318,8 @@
 69C9: EF         RST     0X28            
 69CA: 7D         LD      A,L             
 69CB: 7D         LD      A,L             
-69CC: ED         ???                     
-69CD: ED         ???                     
+69CC: ED                              
+69CD: ED                              
 69CE: 7D         LD      A,L             
 69CF: 7D         LD      A,L             
 69D0: 7D         LD      A,L             
@@ -6335,26 +6335,26 @@
 69DB: EF         RST     0X28            
 69DC: EF         RST     0X28            
 69DD: EF         RST     0X28            
-69DE: ED         ???                     
+69DE: ED                              
 69DF: 7D         LD      A,L             
 69E0: EF         RST     0X28            
 69E1: EF         RST     0X28            
 69E2: 7D         LD      A,L             
 69E3: EF         RST     0X28            
-69E4: ED         ???                     
+69E4: ED                              
 69E5: EF         RST     0X28            
 69E6: EF         RST     0X28            
 69E7: 7D         LD      A,L             
 69E8: 7D         LD      A,L             
 69E9: 7D         LD      A,L             
 69EA: 7D         LD      A,L             
-69EB: ED         ???                     
+69EB: ED                              
 69EC: EF         RST     0X28            
 69ED: EF         RST     0X28            
-69EE: ED         ???                     
+69EE: ED                              
 69EF: 7D         LD      A,L             
 69F0: EF         RST     0X28            
-69F1: ED         ???                     
+69F1: ED                              
 69F2: 7D         LD      A,L             
 69F3: EF         RST     0X28            
 69F4: EF         RST     0X28            
@@ -6363,8 +6363,8 @@
 69F7: EF         RST     0X28            
 69F8: EF         RST     0X28            
 69F9: EF         RST     0X28            
-69FA: ED         ???                     
-69FB: ED         ???                     
+69FA: ED                              
+69FB: ED                              
 69FC: EF         RST     0X28            
 69FD: EF         RST     0X28            
 69FE: EF         RST     0X28            
@@ -6388,23 +6388,23 @@
 6A10: 7D         LD      A,L             
 6A11: 7D         LD      A,L             
 6A12: 7D         LD      A,L             
-6A13: ED         ???                     
+6A13: ED                              
 6A14: 7D         LD      A,L             
 6A15: 7D         LD      A,L             
 6A16: EE ED      XOR     $ED             
 6A18: 7D         LD      A,L             
 6A19: 7D         LD      A,L             
-6A1A: ED         ???                     
+6A1A: ED                              
 6A1B: EF         RST     0X28            
 6A1C: EF         RST     0X28            
-6A1D: ED         ???                     
+6A1D: ED                              
 6A1E: EF         RST     0X28            
 6A1F: EF         RST     0X28            
-6A20: ED         ???                     
+6A20: ED                              
 6A21: EF         RST     0X28            
 6A22: EF         RST     0X28            
 6A23: 7D         LD      A,L             
-6A24: ED         ???                     
+6A24: ED                              
 6A25: EF         RST     0X28            
 6A26: EF         RST     0X28            
 6A27: EF         RST     0X28            
@@ -6412,7 +6412,7 @@
 6A29: EF         RST     0X28            
 6A2A: 7D         LD      A,L             
 6A2B: 7D         LD      A,L             
-6A2C: ED         ???                     
+6A2C: ED                              
 6A2D: EF         RST     0X28            
 6A2E: EF         RST     0X28            
 6A2F: EF         RST     0X28            
@@ -6420,32 +6420,32 @@
 6A31: EF         RST     0X28            
 6A32: 7D         LD      A,L             
 6A33: EF         RST     0X28            
-6A34: ED         ???                     
+6A34: ED                              
 6A35: EF         RST     0X28            
-6A36: ED         ???                     
+6A36: ED                              
 6A37: EF         RST     0X28            
 6A38: EF         RST     0X28            
 6A39: EF         RST     0X28            
 6A3A: EF         RST     0X28            
 6A3B: EF         RST     0X28            
-6A3C: ED         ???                     
+6A3C: ED                              
 6A3D: EF         RST     0X28            
 6A3E: EF         RST     0X28            
 6A3F: EF         RST     0X28            
-6A40: ED         ???                     
+6A40: ED                              
 6A41: EF         RST     0X28            
 6A42: EF         RST     0X28            
-6A43: ED         ???                     
+6A43: ED                              
 6A44: 7D         LD      A,L             
 6A45: 7D         LD      A,L             
 6A46: EF         RST     0X28            
 6A47: EF         RST     0X28            
 6A48: 7D         LD      A,L             
 6A49: 7D         LD      A,L             
-6A4A: ED         ???                     
+6A4A: ED                              
 6A4B: 7D         LD      A,L             
-6A4C: ED         ???                     
-6A4D: ED         ???                     
+6A4C: ED                              
+6A4D: ED                              
 6A4E: 7D         LD      A,L             
 6A4F: 7D         LD      A,L             
 6A50: 7D         LD      A,L             
@@ -6462,26 +6462,26 @@
 6A5B: EF         RST     0X28            
 6A5C: EF         RST     0X28            
 6A5D: EF         RST     0X28            
-6A5E: ED         ???                     
+6A5E: ED                              
 6A5F: 7D         LD      A,L             
 6A60: 7D         LD      A,L             
 6A61: 7D         LD      A,L             
 6A62: 7D         LD      A,L             
 6A63: EF         RST     0X28            
-6A64: ED         ???                     
+6A64: ED                              
 6A65: EF         RST     0X28            
 6A66: EF         RST     0X28            
 6A67: 7D         LD      A,L             
 6A68: 7D         LD      A,L             
 6A69: 7D         LD      A,L             
 6A6A: 7D         LD      A,L             
-6A6B: ED         ???                     
+6A6B: ED                              
 6A6C: EF         RST     0X28            
 6A6D: EF         RST     0X28            
-6A6E: ED         ???                     
+6A6E: ED                              
 6A6F: 7D         LD      A,L             
 6A70: EF         RST     0X28            
-6A71: ED         ???                     
+6A71: ED                              
 6A72: 7D         LD      A,L             
 6A73: EF         RST     0X28            
 6A74: EF         RST     0X28            
@@ -8641,16 +8641,16 @@
 7B23: C3 AC 4C   JP      $4CAC           
 7B26: 36 00      LD      (HL),$00        
 7B28: C9         RET                     
-7B29: FC         ???                     
+7B29: FC                              
 7B2A: FF         RST     0X38            
 7B2B: FF         RST     0X38            
 7B2C: FE FE      CP      $FE             
 7B2E: FE FD      CP      $FD             
-7B30: FD         ???                     
-7B31: FD         ???                     
-7B32: FC         ???                     
-7B33: FC         ???                     
-7B34: FC         ???                     
+7B30: FD                              
+7B31: FD                              
+7B32: FC                              
+7B33: FC                              
+7B34: FC                              
 7B35: 00         NOP                     
 7B36: 02         LD      (BC),A          
 7B37: F0 99      LD      A,($99)         
@@ -8688,12 +8688,12 @@
 7B69: 00         NOP                     
 7B6A: 3A         LD      A,(HLD)         
 7B6B: C6 04      ADD     $04             
-7B6D: FC         ???                     
+7B6D: FC                              
 7B6E: 00         NOP                     
 7B6F: 00         NOP                     
 7B70: 00         NOP                     
 7B71: 00         NOP                     
-7B72: FC         ???                     
+7B72: FC                              
 7B73: 04         INC     B               
 7B74: FA 24 C1   LD      A,($C124)       
 7B77: FE 00      CP      $00             
@@ -9129,18 +9129,18 @@
 7E96: 86         ADD     A,(HL)          
 7E97: E0 99      LDFF00  ($99),A         
 7E99: C9         RET                     
-7E9A: FC         ???                     
+7E9A: FC                              
 7E9B: FA F8 F6   LD      A,($F6F8)       
 7E9E: 0C         INC     C               
 7E9F: 00         NOP                     
 7EA0: 00         NOP                     
-7EA1: F4         ???                     
+7EA1: F4                              
 7EA2: 00         NOP                     
 7EA3: 00         NOP                     
 7EA4: 00         NOP                     
 7EA5: 00         NOP                     
 7EA6: 00         NOP                     
-7EA7: F4         ???                     
+7EA7: F4                              
 7EA8: 0C         INC     C               
 7EA9: 00         NOP                     
 7EAA: F0 E7      LD      A,($E7)         

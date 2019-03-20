@@ -10,7 +10,7 @@
 >>> memoryTable hard 
 [Hardware Info](../Hardware.md)
 
-```
+```code
 4000: C3 09 40   JP      $4009           
 4003: C3 FA 4C   JP      $4CFA           
 4006: C3 1E 40   JP      $401E           
@@ -149,7 +149,7 @@
 40C8: 71         LD      (HL),C          
 40C9: D4 71 3C   CALL    NC,$3C71        
 40CC: 72         LD      (HL),D          
-40CD: D3         ???                     
+40CD: D3                              
 40CE: 78         LD      A,B             
 40CF: 23         INC     HL              
 40D0: 4B         LD      C,E             
@@ -1550,7 +1550,7 @@
 49E6: AC         XOR     H               
 49E7: 05         DEC     B               
 49E8: CE 05      ADC     $05             
-49EA: ED         ???                     
+49EA: ED                              
 49EB: 05         DEC     B               
 49EC: 0A         LD      A,(BC)          
 49ED: 06 27      LD      B,$27           
@@ -1624,9 +1624,9 @@
 4A43: 07         RLCA                    
 4A44: D9         RETI                    
 4A45: 07         RLCA                    
-4A46: DB         ???                     
+4A46: DB                              
 4A47: 07         RLCA                    
-4A48: DD         ???                     
+4A48: DD                              
 4A49: 07         RLCA                    
 4A4A: DF         RST     0X18            
 4A4B: 07         RLCA                    
@@ -1660,7 +1660,7 @@
 4A6C: 00         NOP                     
 4A6D: 00         NOP                     
 4A6E: 18 80      JR      $49F0           
-4A70: F2         ???                     
+4A70: F2                              
 4A71: 00         NOP                     
 4A72: 00         NOP                     
 4A73: 18 80      JR      $49F5           
@@ -2017,7 +2017,7 @@
 4C15: 01 A8 01   LD      BC,$01A8        
 4C18: 00         NOP                     
 4C19: 9D         SBC     L               
-4C1A: F4         ???                     
+4C1A: F4                              
 4C1B: 4B         LD      C,E             
 4C1C: 20 99      JR      NZ,$4BB7        
 4C1E: 9B         SBC     E               
@@ -2087,7 +2087,7 @@
 4C63: FF         RST     0X38            
 4C64: 60         LD      H,B             
 4C65: 4C         LD      C,H             
-4C66: EB         ???                     
+4C66: EB                              
 4C67: 4C         LD      C,H             
 4C68: FF         RST     0X38            
 4C69: FF         RST     0X38            
@@ -2888,7 +2888,7 @@
 4FFE: FF         RST     0X38            
 4FFF: FF         RST     0X38            
 5000: 00         NOP                     
-5001: E3         ???                     
+5001: E3                              
 5002: 4A         LD      C,D             
 5003: 0B         DEC     BC              
 5004: 50         LD      D,B             
@@ -2929,7 +2929,7 @@
 5028: 6E         LD      L,(HL)          
 5029: 51         LD      D,C             
 502A: 51         LD      D,C             
-502B: E3         ???                     
+502B: E3                              
 502C: 51         LD      D,C             
 502D: 00         NOP                     
 502E: 00         NOP                     
@@ -2939,11 +2939,11 @@
 5032: 6E         LD      L,(HL)          
 5033: FF         RST     0X38            
 5034: 6D         LD      L,L             
-5035: ED         ???                     
+5035: ED                              
 5036: 50         LD      D,B             
 5037: A8         XOR     B               
 5038: 6E         LD      L,(HL)          
-5039: F2         ???                     
+5039: F2                              
 503A: 50         LD      D,B             
 503B: CD 6D 47   CALL    $476D           
 503E: 51         LD      D,C             
@@ -2962,7 +2962,7 @@
 504B: 2D         DEC     L               
 504C: 6D         LD      L,L             
 504D: 18 6E      JR      $50BD           
-504F: E3         ???                     
+504F: E3                              
 5050: 51         LD      D,C             
 5051: 00         NOP                     
 5052: 00         NOP                     
@@ -3423,7 +3423,7 @@
 52A8: 08 1A 9C   LD      ($9C1A),SP      
 52AB: 00         NOP                     
 52AC: 00         NOP                     
-52AD: E3         ???                     
+52AD: E3                              
 52AE: 4A         LD      C,D             
 52AF: 17         RLA                     
 52B0: 4B         LD      C,E             
@@ -3458,7 +3458,7 @@
 52D3: 6E         LD      L,(HL)          
 52D4: 27         DAA                     
 52D5: 6D         LD      L,L             
-52D6: EB         ???                     
+52D6: EB                              
 52D7: 6D         LD      L,L             
 52D8: 98         SBC     B               
 52D9: 54         LD      D,H             
@@ -3960,9 +3960,9 @@
 5543: D6 52      SUB     $52             
 5545: 59         LD      E,C             
 5546: 6E         LD      L,(HL)          
-5547: EC         ???                     
+5547: EC                              
 5548: 55         LD      D,L             
-5549: EC         ???                     
+5549: EC                              
 554A: 55         LD      D,L             
 554B: 15         DEC     D               
 554C: 56         LD      D,(HL)          
@@ -4108,7 +4108,7 @@
 5653: 30 48      JR      NC,$569D        
 5655: 00         NOP                     
 5656: 00         NOP                     
-5657: F2         ???                     
+5657: F2                              
 5658: 4A         LD      C,D             
 5659: 61         LD      H,C             
 565A: 56         LD      D,(HL)          
@@ -4148,13 +4148,13 @@
 5680: 6D         LD      L,L             
 5681: D2 56 27   JP      NC,$2756        
 5684: 6E         LD      L,(HL)          
-5685: E3         ???                     
+5685: E3                              
 5686: 56         LD      D,(HL)          
 5687: 9B         SBC     E               
 5688: 6D         LD      L,L             
 5689: D2 56 82   JP      NC,$8256        
 568C: 6D         LD      L,L             
-568D: ED         ???                     
+568D: ED                              
 568E: 56         LD      D,(HL)          
 568F: FF         RST     0X38            
 5690: FF         RST     0X38            
@@ -4293,7 +4293,7 @@
 5748: 57         LD      D,A             
 5749: 40         LD      B,B             
 574A: 6E         LD      L,(HL)          
-574B: DB         ???                     
+574B: DB                              
 574C: 57         LD      D,A             
 574D: 9B         SBC     E               
 574E: 6D         LD      L,L             
@@ -4339,13 +4339,13 @@
 577E: 6D         LD      L,L             
 577F: D2 56 27   JP      NC,$2756        
 5782: 6E         LD      L,(HL)          
-5783: E3         ???                     
+5783: E3                              
 5784: 56         LD      D,(HL)          
 5785: 9B         SBC     E               
 5786: 6D         LD      L,L             
 5787: D2 56 82   JP      NC,$8256        
 578A: 6D         LD      L,L             
-578B: ED         ???                     
+578B: ED                              
 578C: 56         LD      D,(HL)          
 578D: FF         RST     0X38            
 578E: FF         RST     0X38            
@@ -5784,7 +5784,7 @@
 5E66: 84         ADD     A,H             
 5E67: AE         XOR     (HL)            
 5E68: 01 00 00   LD      BC,$0000        
-5E6B: E3         ???                     
+5E6B: E3                              
 5E6C: 4A         LD      C,D             
 5E6D: 89         ADC     A,C             
 5E6E: 5E         LD      E,(HL)          
@@ -6284,11 +6284,11 @@
 60CF: 03         INC     BC              
 60D0: 60         LD      H,B             
 60D1: 10 6D      STOP    $6D             
-60D3: E3         ???                     
+60D3: E3                              
 60D4: 60         LD      H,B             
 60D5: FF         RST     0X38            
 60D6: FF         RST     0X38            
-60D7: D3         ???                     
+60D7: D3                              
 60D8: 60         LD      H,B             
 60D9: 09         ADD     HL,BC           
 60DA: 6E         LD      L,(HL)          
@@ -6298,7 +6298,7 @@
 60DE: 5F         LD      E,A             
 60DF: FF         RST     0X38            
 60E0: FF         RST     0X38            
-60E1: D3         ???                     
+60E1: D3                              
 60E2: 60         LD      H,B             
 60E3: A2         AND     D               
 60E4: 28 30      JR      Z,$6116         
@@ -6364,7 +6364,7 @@
 6132: 2E 61      LD      L,$61           
 6134: 8F         ADC     A,A             
 6135: 61         LD      H,C             
-6136: E3         ???                     
+6136: E3                              
 6137: 60         LD      H,B             
 6138: 7C         LD      A,H             
 6139: 6E         LD      L,(HL)          
@@ -6668,11 +6668,11 @@
 62B4: 7D         LD      A,L             
 62B5: 6D         LD      L,L             
 62B6: 10 6D      STOP    $6D             
-62B8: F2         ???                     
+62B8: F2                              
 62B9: 62         LD      H,D             
 62BA: 09         ADD     HL,BC           
 62BB: 6E         LD      L,(HL)          
-62BC: F2         ???                     
+62BC: F2                              
 62BD: 62         LD      H,D             
 62BE: 04         INC     B               
 62BF: 63         LD      H,E             
@@ -6692,13 +6692,13 @@
 62CE: 00         NOP                     
 62CF: 00         NOP                     
 62D0: F0 6D      LD      A,($6D)         
-62D2: F2         ???                     
+62D2: F2                              
 62D3: 62         LD      H,D             
 62D4: E1         POP     HL              
 62D5: 6D         LD      L,L             
 62D6: 94         SUB     H               
 62D7: 6E         LD      L,(HL)          
-62D8: F2         ???                     
+62D8: F2                              
 62D9: 62         LD      H,D             
 62DA: 13         INC     DE              
 62DB: 6E         LD      L,(HL)          
@@ -7041,7 +7041,7 @@
 6490: E9         JP      (HL)            
 6491: 64         LD      H,H             
 6492: 0E 6E      LD      C,$6E           
-6494: F2         ???                     
+6494: F2                              
 6495: 64         LD      H,H             
 6496: 13         INC     DE              
 6497: 6E         LD      L,(HL)          
@@ -7210,7 +7210,7 @@
 6577: 58         LD      E,B             
 6578: 01 01 00   LD      BC,$0001        
 657B: 00         NOP                     
-657C: E3         ???                     
+657C: E3                              
 657D: 4A         LD      C,D             
 657E: 86         ADD     A,(HL)          
 657F: 65         LD      H,L             
@@ -7234,9 +7234,9 @@
 6595: 64         LD      H,H             
 6596: E9         JP      (HL)            
 6597: 64         LD      H,H             
-6598: F2         ???                     
+6598: F2                              
 6599: 64         LD      H,H             
-659A: F2         ???                     
+659A: F2                              
 659B: 64         LD      H,H             
 659C: FB         EI                      
 659D: 64         LD      H,H             
@@ -7280,11 +7280,11 @@
 65D0: 0E 6E      LD      C,$6E           
 65D2: E9         JP      (HL)            
 65D3: 64         LD      H,H             
-65D4: F2         ???                     
+65D4: F2                              
 65D5: 64         LD      H,H             
 65D6: 13         INC     DE              
 65D7: 6E         LD      L,(HL)          
-65D8: F2         ???                     
+65D8: F2                              
 65D9: 64         LD      H,H             
 65DA: CD 6D FB   CALL    $FB6D           
 65DD: 64         LD      H,H             
@@ -7325,7 +7325,7 @@
 660E: BA         CP      D               
 660F: 65         LD      H,L             
 6610: 00         NOP                     
-6611: E3         ???                     
+6611: E3                              
 6612: 4A         LD      C,D             
 6613: 17         RLA                     
 6614: 4B         LD      C,E             
@@ -7655,32 +7655,32 @@
 679C: 00         NOP                     
 679D: D4 4A A7   CALL    NC,$A74A        
 67A0: 67         LD      H,A             
-67A1: FD         ???                     
+67A1: FD                              
 67A2: 67         LD      H,A             
-67A3: D3         ???                     
+67A3: D3                              
 67A4: 67         LD      H,A             
 67A5: 00         NOP                     
 67A6: 00         NOP                     
 67A7: 10 6D      STOP    $6D             
 67A9: 78         LD      A,B             
 67AA: 6D         LD      L,L             
-67AB: DB         ???                     
+67AB: DB                              
 67AC: 68         LD      L,B             
-67AD: DB         ???                     
+67AD: DB                              
 67AE: 68         LD      L,B             
-67AF: DB         ???                     
+67AF: DB                              
 67B0: 68         LD      L,B             
-67B1: DB         ???                     
+67B1: DB                              
 67B2: 68         LD      L,B             
-67B3: DB         ???                     
+67B3: DB                              
 67B4: 68         LD      L,B             
-67B5: DB         ???                     
+67B5: DB                              
 67B6: 68         LD      L,B             
 67B7: 78         LD      A,B             
 67B8: 6D         LD      L,L             
-67B9: DB         ???                     
+67B9: DB                              
 67BA: 68         LD      L,B             
-67BB: DB         ???                     
+67BB: DB                              
 67BC: 68         LD      L,B             
 67BD: 7D         LD      A,L             
 67BE: 6D         LD      L,L             
@@ -7688,7 +7688,7 @@
 67C0: 68         LD      L,B             
 67C1: 78         LD      A,B             
 67C2: 6D         LD      L,L             
-67C3: DB         ???                     
+67C3: DB                              
 67C4: 68         LD      L,B             
 67C5: C4 68 20   CALL    NZ,$2068        
 67C8: 6D         LD      L,L             
@@ -7739,31 +7739,31 @@
 67F8: 68         LD      L,B             
 67F9: FF         RST     0X38            
 67FA: FF         RST     0X38            
-67FB: D3         ???                     
+67FB: D3                              
 67FC: 67         LD      H,A             
 67FD: 09         ADD     HL,BC           
 67FE: 6E         LD      L,(HL)          
-67FF: FC         ???                     
+67FF: FC                              
 6800: 68         LD      L,B             
-6801: FC         ???                     
+6801: FC                              
 6802: 68         LD      L,B             
-6803: FC         ???                     
+6803: FC                              
 6804: 68         LD      L,B             
-6805: FC         ???                     
+6805: FC                              
 6806: 68         LD      L,B             
-6807: FC         ???                     
+6807: FC                              
 6808: 68         LD      L,B             
-6809: FC         ???                     
+6809: FC                              
 680A: 68         LD      L,B             
 680B: 09         ADD     HL,BC           
 680C: 6E         LD      L,(HL)          
-680D: FC         ???                     
+680D: FC                              
 680E: 68         LD      L,B             
-680F: FC         ???                     
+680F: FC                              
 6810: 68         LD      L,B             
 6811: 97         SUB     A               
 6812: 68         LD      L,B             
-6813: FC         ???                     
+6813: FC                              
 6814: 68         LD      L,B             
 6815: 0E 6E      LD      C,$6E           
 6817: C4 68 09   CALL    NZ,$0968        
@@ -7776,7 +7776,7 @@
 6820: 69         LD      L,C             
 6821: FF         RST     0X38            
 6822: FF         RST     0X38            
-6823: FD         ???                     
+6823: FD                              
 6824: 67         LD      H,A             
 6825: A3         AND     E               
 6826: 50         LD      D,B             
@@ -8123,7 +8123,7 @@
 69DB: 01 AE 14   LD      BC,$14AE        
 69DE: 00         NOP                     
 69DF: 00         NOP                     
-69E0: E3         ???                     
+69E0: E3                              
 69E1: 4A         LD      C,D             
 69E2: EA 69 F4   LD      ($F469),A       
 69E5: 69         LD      L,C             
@@ -8706,7 +8706,7 @@
 6C84: 6C         LD      L,H             
 6C85: A5         AND     L               
 6C86: 6C         LD      L,H             
-6C87: D3         ???                     
+6C87: D3                              
 6C88: 6C         LD      L,H             
 6C89: E1         POP     HL              
 6C8A: 6C         LD      L,H             
@@ -8745,7 +8745,7 @@
 6CAC: 6E         LD      L,(HL)          
 6CAD: E9         JP      (HL)            
 6CAE: 6C         LD      L,H             
-6CAF: EB         ???                     
+6CAF: EB                              
 6CB0: 6D         LD      L,L             
 6CB1: 94         SUB     H               
 6CB2: 6E         LD      L,(HL)          
@@ -8765,7 +8765,7 @@
 6CC1: 9D         SBC     L               
 6CC2: 6E         LD      L,(HL)          
 6CC3: F6 6C      OR      $6C             
-6CC5: EB         ???                     
+6CC5: EB                              
 6CC6: 6D         LD      L,L             
 6CC7: 94         SUB     H               
 6CC8: 6E         LD      L,(HL)          
@@ -9011,7 +9011,7 @@
 6DDA: 80         ADD     A,B             
 6DDB: 00         NOP                     
 6DDC: 9D         SBC     L               
-6DDD: E4         ???                     
+6DDD: E4                              
 6DDE: 86         ADD     A,(HL)          
 6DDF: 80         ADD     A,B             
 6DE0: 00         NOP                     
@@ -9209,11 +9209,11 @@
 6EAC: 9E         SBC     (HL)            
 6EAD: D4 4A 00   CALL    NC,$004A        
 6EB0: 9E         SBC     (HL)            
-6EB1: E3         ???                     
+6EB1: E3                              
 6EB2: 4A         LD      C,D             
 6EB3: 00         NOP                     
 6EB4: 9E         SBC     (HL)            
-6EB5: F2         ???                     
+6EB5: F2                              
 6EB6: 4A         LD      C,D             
 6EB7: 00         NOP                     
 6EB8: FF         RST     0X38            
@@ -10145,7 +10145,7 @@
 72A3: 24         INC     H               
 72A4: 00         NOP                     
 72A5: 00         NOP                     
-72A6: E3         ???                     
+72A6: E3                              
 72A7: 4A         LD      C,D             
 72A8: 17         RLA                     
 72A9: 4B         LD      C,E             
@@ -10205,11 +10205,11 @@
 72EF: 46         LD      B,(HL)          
 72F0: 8A         ADC     A,D             
 72F1: 00         NOP                     
-72F2: F2         ???                     
+72F2: F2                              
 72F3: 4A         LD      C,D             
 72F4: 17         RLA                     
 72F5: 4B         LD      C,E             
-72F6: FC         ???                     
+72F6: FC                              
 72F7: 72         LD      (HL),D          
 72F8: 02         LD      (BC),A          
 72F9: 73         LD      (HL),E          
@@ -10600,24 +10600,24 @@
 74B0: 74         LD      (HL),H          
 74B1: 00         NOP                     
 74B2: 00         NOP                     
-74B3: D3         ???                     
+74B3: D3                              
 74B4: 74         LD      (HL),H          
-74B5: EC         ???                     
+74B5: EC                              
 74B6: 74         LD      (HL),H          
-74B7: D3         ???                     
+74B7: D3                              
 74B8: 74         LD      (HL),H          
 74B9: FE 74      CP      $74             
-74BB: D3         ???                     
+74BB: D3                              
 74BC: 74         LD      (HL),H          
 74BD: FE 74      CP      $74             
-74BF: D3         ???                     
+74BF: D3                              
 74C0: 74         LD      (HL),H          
-74C1: EC         ???                     
+74C1: EC                              
 74C2: 74         LD      (HL),H          
-74C3: D3         ???                     
+74C3: D3                              
 74C4: 74         LD      (HL),H          
 74C5: FE 74      CP      $74             
-74C7: D3         ???                     
+74C7: D3                              
 74C8: 74         LD      (HL),H          
 74C9: 05         DEC     B               
 74CA: 75         LD      (HL),L          
@@ -10674,7 +10674,7 @@
 7503: 78         LD      A,B             
 7504: 00         NOP                     
 7505: 9D         SBC     L               
-7506: E3         ???                     
+7506: E3                              
 7507: 00         NOP                     
 7508: 80         ADD     A,B             
 7509: AE         XOR     (HL)            
@@ -10731,7 +10731,7 @@
 7541: 20 AE      JR      NZ,$74F1        
 7543: 01 9C 00   LD      BC,$009C        
 7546: 00         NOP                     
-7547: E3         ???                     
+7547: E3                              
 7548: 4A         LD      C,D             
 7549: 17         RLA                     
 754A: 4B         LD      C,E             
@@ -11044,7 +11044,7 @@
 76B5: FF         RST     0X38            
 76B6: AE         XOR     (HL)            
 76B7: 76         HALT                    
-76B8: EB         ???                     
+76B8: EB                              
 76B9: 76         HALT                    
 76BA: FF         RST     0X38            
 76BB: FF         RST     0X38            
@@ -11469,11 +11469,11 @@
 78D3: 00         NOP                     
 78D4: D4 4A DE   CALL    NC,$DE4A        
 78D7: 78         LD      A,B             
-78D8: E4         ???                     
+78D8: E4                              
 78D9: 78         LD      A,B             
 78DA: EA 78 00   LD      ($0078),A       
 78DD: 00         NOP                     
-78DE: F2         ???                     
+78DE: F2                              
 78DF: 78         LD      A,B             
 78E0: FF         RST     0X38            
 78E1: FF         RST     0X38            
@@ -11482,7 +11482,7 @@
 78E5: 79         LD      A,C             
 78E6: FF         RST     0X38            
 78E7: FF         RST     0X38            
-78E8: E4         ???                     
+78E8: E4                              
 78E9: 78         LD      A,B             
 78EA: B7         OR      A               
 78EB: 79         LD      A,C             
@@ -11490,7 +11490,7 @@
 78ED: 79         LD      A,C             
 78EE: FF         RST     0X38            
 78EF: FF         RST     0X38            
-78F0: EC         ???                     
+78F0: EC                              
 78F1: 78         LD      A,B             
 78F2: 9D         SBC     L               
 78F3: 42         LD      B,D             
@@ -11784,7 +11784,7 @@
 7A58: 9C         SBC     H               
 7A59: 00         NOP                     
 7A5A: 00         NOP                     
-7A5B: F2         ???                     
+7A5B: F2                              
 7A5C: 4A         LD      C,D             
 7A5D: 65         LD      H,L             
 7A5E: 7A         LD      A,D             
@@ -12059,7 +12059,7 @@
 7B8C: AE         XOR     (HL)            
 7B8D: 4A         LD      C,D             
 7B8E: 01 00 9D   LD      BC,$9D00        
-7B91: F4         ???                     
+7B91: F4                              
 7B92: 4B         LD      C,E             
 7B93: 40         LD      B,B             
 7B94: 9B         SBC     E               
@@ -12072,7 +12072,7 @@
 7BA4: 9C         SBC     H               
 7BA5: 00         NOP                     
 7BA6: 00         NOP                     
-7BA7: E3         ???                     
+7BA7: E3                              
 7BA8: 4A         LD      C,D             
 7BA9: B1         OR      C               
 7BAA: 7B         LD      A,E             

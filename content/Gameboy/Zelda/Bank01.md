@@ -10,7 +10,7 @@
 >>> memoryTable hard 
 [Hardware Info](../Hardware.md)
 
-```
+```code
 4000: FA 96 DB   LD      A,($DB96)       
 4003: C7         RST     0X00            
 4004: 10 40      STOP    $40             
@@ -22,7 +22,7 @@
 400B: 40         LD      B,B             
 400C: 73         LD      (HL),E          
 400D: 40         LD      B,B             
-400E: FD         ???                     
+400E: FD                              
 400F: 55         LD      D,L             
 4010: CD CC 1C   CALL    $1CCC           
 4013: CD 22 0B   CALL    $0B22           
@@ -1193,7 +1193,7 @@
 4904: EA 95 
 4906: DB 3E 
 4908: 13 E0 
-490A: F2 C9         RET                     
+490A: F2 C9                        
 490C: CD 07 
 490E: 49 3E 
 
@@ -1689,7 +1689,7 @@
 4BE6: CD 6E 5B   CALL    $5B6E           
 4BE9: FA 96 DB   LD      A,($DB96)       
 4BEC: C7         RST     0X00            
-4BED: FD         ???                     
+4BED: FD                              
 4BEE: 4B         LD      C,E             
 4BEF: 0C         INC     C               
 4BF0: 4C         LD      C,H             
@@ -1815,7 +1815,7 @@
 4CE6: CD 45 44   CALL    $4445           
 4CE9: 18 12      JR      $4CFD           
 4CEB: 99         SBC     C               
-4CEC: E4         ???                     
+4CEC: E4                              
 4CED: 0D         DEC     C               
 4CEE: 7E         LD      A,(HL)          
 4CEF: 7E         LD      A,(HL)          
@@ -1874,7 +1874,7 @@
 4D4F: 35         DEC     (HL)            
 4D50: C9         RET                     
 4D51: 99         SBC     C               
-4D52: E4         ???                     
+4D52: E4                              
 4D53: 0D         DEC     C               
 4D54: 11 04 13   LD      DE,$1304        
 4D57: 14         INC     D               
@@ -2685,17 +2685,17 @@
 52AE: 0D         DEC     C               
 52AF: 11 12 FF   LD      DE,$FF12        
 52B2: 92         SUB     D               
-52B3: F2         ???                     
+52B3: F2                              
 52B4: FF         RST     0X38            
 52B5: 00         NOP                     
 52B6: 92         SUB     D               
 52B7: F1         POP     AF              
-52B8: F2         ???                     
+52B8: F2                              
 52B9: FF         RST     0X38            
 52BA: 8D         ADC     A,L             
 52BB: 92         SUB     D               
-52BC: ED         ???                     
-52BD: F2         ???                     
+52BC: ED                              
+52BD: F2                              
 52BE: FF         RST     0X38            
 52BF: 00         NOP                     
 52C0: 00         NOP                     
@@ -2705,10 +2705,10 @@
 52C4: 00         NOP                     
 52C5: 8D         ADC     A,L             
 52C6: 92         SUB     D               
-52C7: ED         ???                     
-52C8: F2         ???                     
+52C7: ED                              
+52C8: F2                              
 52C9: F1         POP     AF              
-52CA: F2         ???                     
+52CA: F2                              
 52CB: FF         RST     0X38            
 52CC: 00         NOP                     
 52CD: 00         NOP                     
@@ -2716,25 +2716,25 @@
 52CF: 00         NOP                     
 52D0: 8D         ADC     A,L             
 52D1: 92         SUB     D               
-52D2: ED         ???                     
-52D3: F2         ???                     
+52D2: ED                              
+52D3: F2                              
 52D4: 91         SUB     C               
 52D5: 92         SUB     D               
 52D6: F1         POP     AF              
-52D7: F2         ???                     
+52D7: F2                              
 52D8: FF         RST     0X38            
 52D9: 00         NOP                     
 52DA: 00         NOP                     
 52DB: 8D         ADC     A,L             
 52DC: 92         SUB     D               
-52DD: ED         ???                     
-52DE: F2         ???                     
+52DD: ED                              
+52DE: F2                              
 52DF: 91         SUB     C               
 52E0: 92         SUB     D               
-52E1: EC         ???                     
-52E2: ED         ???                     
+52E1: EC                              
+52E2: ED                              
 52E3: F1         POP     AF              
-52E4: F2         ???                     
+52E4: F2                              
 52E5: FF         RST     0X38            
 52E6: 00         NOP                     
 52E7: 00         NOP                     
@@ -2756,7 +2756,7 @@
 52FC: E8 FF      ADD     SP,$FF          
 52FE: E8 EA      ADD     SP,$EA          
 5300: E9         JP      (HL)            
-5301: EB         ???                     
+5301: EB                              
 5302: FF         RST     0X38            
 5303: 00         NOP                     
 5304: 00         NOP                     
@@ -2766,8 +2766,8 @@
 5308: 00         NOP                     
 5309: E8 EA      ADD     SP,$EA          
 530B: E9         JP      (HL)            
-530C: EB         ???                     
-530D: EC         ???                     
+530C: EB                              
+530D: EC                              
 530E: E8 FF      ADD     SP,$FF          
 5310: 00         NOP                     
 5311: 00         NOP                     
@@ -2775,8 +2775,8 @@
 5313: 00         NOP                     
 5314: E8 EA      ADD     SP,$EA          
 5316: E9         JP      (HL)            
-5317: EB         ???                     
-5318: EC         ???                     
+5317: EB                              
+5318: EC                              
 5319: E8 EC      ADD     SP,$EC          
 531B: E9         JP      (HL)            
 531C: FF         RST     0X38            
@@ -2784,8 +2784,8 @@
 531E: 00         NOP                     
 531F: E8 EA      ADD     SP,$EA          
 5321: E9         JP      (HL)            
-5322: EB         ???                     
-5323: EC         ???                     
+5322: EB                              
+5323: EC                              
 5324: E8 EC      ADD     SP,$EC          
 5326: EA EC E9   LD      ($E9EC),A       
 5329: FF         RST     0X38            
@@ -3833,13 +3833,13 @@
 5959: 22         LD      (HLI),A         
 595A: C9         RET                     
 595B: F8 F8      LDHL    SP,$F8          
-595D: F2         ???                     
+595D: F2                              
 595E: 00         NOP                     
 595F: F8 00      LDHL    SP,$00          
-5961: F4         ???                     
+5961: F4                              
 5962: 00         NOP                     
 5963: F8 08      LDHL    SP,$08          
-5965: F4         ???                     
+5965: F4                              
 5966: 20 F8      JR      NZ,$5960        
 5968: 10 F2      STOP    $F2             
 596A: 20 08      JR      NZ,$5974        
@@ -3861,69 +3861,69 @@
 598A: 20 06      JR      NZ,$5992        
 598C: FA F2 40   LD      A,($40F2)       
 598F: 06 02      LD      B,$02           
-5991: F4         ???                     
+5991: F4                              
 5992: 40         LD      B,B             
 5993: 06 06      LD      B,$06           
-5995: F4         ???                     
+5995: F4                              
 5996: 60         LD      H,B             
 5997: 06 0E      LD      B,$0E           
-5999: F2         ???                     
+5999: F2                              
 599A: 60         LD      H,B             
-599B: FC         ???                     
-599C: FC         ???                     
-599D: F2         ???                     
+599B: FC                              
+599C: FC                              
+599D: F2                              
 599E: 00         NOP                     
-599F: FC         ???                     
+599F: FC                              
 59A0: 04         INC     B               
-59A1: F4         ???                     
+59A1: F4                              
 59A2: 00         NOP                     
-59A3: FC         ???                     
+59A3: FC                              
 59A4: 04         INC     B               
-59A5: F4         ???                     
+59A5: F4                              
 59A6: 20 FC      JR      NZ,$59A4        
 59A8: 0C         INC     C               
-59A9: F2         ???                     
+59A9: F2                              
 59AA: 20 04      JR      NZ,$59B0        
-59AC: FC         ???                     
-59AD: F2         ???                     
+59AC: FC                              
+59AD: F2                              
 59AE: 40         LD      B,B             
 59AF: 04         INC     B               
 59B0: 04         INC     B               
-59B1: F4         ???                     
+59B1: F4                              
 59B2: 40         LD      B,B             
 59B3: 04         INC     B               
 59B4: 04         INC     B               
-59B5: F4         ???                     
+59B5: F4                              
 59B6: 60         LD      H,B             
 59B7: 04         INC     B               
 59B8: 0C         INC     C               
-59B9: F2         ???                     
+59B9: F2                              
 59BA: 60         LD      H,B             
 59BB: FE FE      CP      $FE             
-59BD: F2         ???                     
+59BD: F2                              
 59BE: 00         NOP                     
 59BF: FE 04      CP      $04             
-59C1: F4         ???                     
+59C1: F4                              
 59C2: 00         NOP                     
 59C3: FE 04      CP      $04             
-59C5: F4         ???                     
+59C5: F4                              
 59C6: 20 FE      JR      NZ,$59C6        
 59C8: 0A         LD      A,(BC)          
-59C9: F2         ???                     
+59C9: F2                              
 59CA: 20 02      JR      NZ,$59CE        
 59CC: FE F2      CP      $F2             
 59CE: 40         LD      B,B             
 59CF: 02         LD      (BC),A          
 59D0: 04         INC     B               
-59D1: F4         ???                     
+59D1: F4                              
 59D2: 40         LD      B,B             
 59D3: 02         LD      (BC),A          
 59D4: 04         INC     B               
-59D5: F4         ???                     
+59D5: F4                              
 59D6: 60         LD      H,B             
 59D7: 02         LD      (BC),A          
 59D8: 0A         LD      A,(BC)          
-59D9: F2         ???                     
+59D9: F2                              
 59DA: 60         LD      H,B             
 59DB: 20 00      JR      NZ,$59DD        
 59DD: 22         LD      (HLI),A         
@@ -4068,7 +4068,7 @@
 5ACA: 7E         LD      A,(HL)          
 5ACB: 7E         LD      A,(HL)          
 5ACC: 98         SBC     B               
-5ACD: EB         ???                     
+5ACD: EB                              
 5ACE: 06 7E      LD      B,$7E           
 5AD0: 7E         LD      A,(HL)          
 5AD1: 7E         LD      A,(HL)          
@@ -4873,7 +4873,7 @@
 5FE3: A8         XOR     B               
 5FE4: 61         LD      H,C             
 5FE5: C6 61      ADD     $61             
-5FE7: DD         ???                     
+5FE7: DD                              
 5FE8: 61         LD      H,C             
 5FE9: EF         RST     0X28            
 5FEA: 61         LD      H,C             
@@ -4883,7 +4883,7 @@
 5FF0: 62         LD      H,D             
 5FF1: 5D         LD      E,L             
 5FF2: 62         LD      H,D             
-5FF3: FD         ???                     
+5FF3: FD                              
 5FF4: 55         LD      D,L             
 5FF5: 3E 01      LD      A,$01           
 5FF7: EA 67 C1   LD      ($C167),A       
@@ -5028,10 +5028,10 @@
 6143: 94         SUB     H               
 6144: 94         SUB     H               
 6145: 94         SUB     H               
-6146: E4         ???                     
-6147: E4         ???                     
-6148: E4         ???                     
-6149: E4         ???                     
+6146: E4                              
+6147: E4                              
+6148: E4                              
+6149: E4                              
 614A: 00         NOP                     
 614B: 00         NOP                     
 614C: 00         NOP                     
@@ -5661,7 +5661,7 @@
 6555: 65         LD      H,L             
 6556: E0 65      LDFF00  ($65),A         
 6558: F6 65      OR      $65             
-655A: FD         ???                     
+655A: FD                              
 655B: 55         LD      D,L             
 655C: 1A         LD      A,(DE)          
 655D: 66         LD      H,(HL)          
@@ -5842,13 +5842,13 @@
 66CF: 18 DE      JR      $66AF           
 66D1: 30 20      JR      NC,$66F3        
 66D3: 00         NOP                     
-66D4: E4         ???                     
+66D4: E4                              
 66D5: 10 20      STOP    $20             
 66D7: 08 E6 10   LD      ($10E6),SP      
 66DA: 20 10      JR      NZ,$66EC        
 66DC: E8 10      ADD     SP,$10          
 66DE: 20 18      JR      NZ,$66F8        
-66E0: E4         ???                     
+66E0: E4                              
 66E1: 30 30      JR      NC,$6713        
 66E3: 00         NOP                     
 66E4: DE 10      SBC     $10             
@@ -5982,7 +5982,7 @@
 67C6: 1D         DEC     E               
 67C7: 68         LD      L,B             
 67C8: 36 68      LD      (HL),$68        
-67CA: FD         ???                     
+67CA: FD                              
 67CB: 55         LD      D,L             
 67CC: 3E 01      LD      A,$01           
 67CE: EA 67 C1   LD      ($C167),A       
@@ -6116,7 +6116,7 @@
 689A: E5         PUSH    HL              
 689B: E8 EB      ADD     SP,$EB          
 689D: EE F1      XOR     $F1             
-689F: F4         ???                     
+689F: F4                              
 68A0: F7         RST     0X30            
 68A1: FA FD 00   LD      A,($00FD)       
 68A4: 03         INC     BC              
@@ -6154,11 +6154,11 @@
 68D0: F0 F0      LD      A,($F0)         
 68D2: F0 E0      LD      A,($E0)         
 68D4: E2         LDFF00  (C),A           
-68D5: E4         ???                     
+68D5: E4                              
 68D6: E6 E8      AND     $E8             
 68D8: EA EC EE   LD      ($EEEC),A       
 68DB: F0 F2      LD      A,($F2)         
-68DD: F4         ???                     
+68DD: F4                              
 68DE: F6 F8      OR      $F8             
 68E0: FA FC FE   LD      A,($FEFC)       
 68E3: 00         NOP                     
@@ -6196,22 +6196,22 @@
 690D: DF         RST     0X18            
 690E: E0 E2      LDFF00  ($E2),A  
        
-6910: E3         ???                     
+6910: E3                              
 6911: E5         PUSH    HL              
 6912: E6 E8      AND     $E8             
 6914: E9         JP      (HL)            
-6915: EB         ???                     
-6916: EC         ???                     
+6915: EB                              
+6916: EC                              
 6917: EE EF      XOR     $EF             
 6919: F1         POP     AF              
-691A: F2         ???                     
-691B: F4         ???                     
+691A: F2                              
+691B: F4                              
 691C: F5         PUSH    AF              
 691D: F7         RST     0X30            
 691E: F8 FA      LDHL    SP,$FA   
        
 6920: FB         EI                      
-6921: FD         ???                     
+6921: FD                              
 6922: FE 00      CP      $00             
 6924: 01 03 04   LD      BC,$0403        
 6927: 06 07      LD      B,$07           
@@ -6241,14 +6241,14 @@
 694A: F0 F0      LD      A,($F0)         
 694C: F0 F0      LD      A,($F0)         
 694E: E2         LDFF00  (C),A           
-694F: E3         ???                     
+694F: E3                              
 6950: E5         PUSH    HL              
 6951: E6 E8      AND     $E8             
 6953: E9         JP      (HL)            
-6954: EB         ???                     
-6955: EC         ???                     
+6954: EB                              
+6955: EC                              
 6956: EE F0      XOR     $F0             
-6958: F2         ???                     
+6958: F2                              
 6959: F3         DI                      
 695A: F6 F7      OR      $F7             
 695C: F8 F9      LDHL    SP,$F9          
@@ -6284,15 +6284,15 @@
 698A: F0 F0      LD      A,($F0)         
 698C: E1         POP     HL              
 698D: E2         LDFF00  (C),A           
-698E: E4         ???                     
+698E: E4                              
 698F: E5         PUSH    HL              
 6990: E6 E8      AND     $E8             
 6992: E9         JP      (HL)            
 6993: EA EC ED   LD      ($EDEC),A       
 6996: EE F0      XOR     $F0             
 6998: F1         POP     AF              
-6999: F2         ???                     
-699A: F4         ???                     
+6999: F2                              
+699A: F4                              
 699B: F5         PUSH    AF              
 699C: F6 F8      OR      $F8             
 699E: F9         LD      SP,HL           
@@ -6326,15 +6326,15 @@
 69C6: F0 F0      LD      A,($F0)         
 69C8: F0 F0      LD      A,($F0)         
 69CA: F0 E2      LD      A,($E2)         
-69CC: E3         ???                     
-69CD: E4         ???                     
+69CC: E3                              
+69CD: E4                              
 69CE: E5         PUSH    HL              
 69CF: E6 E8      AND     $E8             
 69D1: E9         JP      (HL)            
 69D2: EA EC ED   LD      ($EDEC),A       
 69D5: EE EF      XOR     $EF             
 69D7: F1         POP     AF              
-69D8: F2         ???                     
+69D8: F2                              
 69D9: F3         DI                      
 69DA: F5         PUSH    AF              
 69DB: F6 F8      OR      $F8             
@@ -6366,23 +6366,23 @@
 6A05: F0 F0      LD      A,($F0)         
 6A07: F0 F0      LD      A,($F0)         
 6A09: F0 E3      LD      A,($E3)         
-6A0B: E4         ???                     
+6A0B: E4                              
 6A0C: E5         PUSH    HL              
 6A0D: E6 E7      AND     $E7             
 6A0F: E8 E9      ADD     SP,$E9          
-6A11: EB         ???                     
-6A12: EC         ???                     
-6A13: ED         ???                     
+6A11: EB                              
+6A12: EC                              
+6A13: ED                              
 6A14: EE F0      XOR     $F0             
 6A16: F1         POP     AF              
-6A17: F2         ???                     
+6A17: F2                              
 6A18: F3         DI                      
-6A19: F4         ???                     
+6A19: F4                              
 6A1A: F6 F7      OR      $F7             
 6A1C: F8 F9      LDHL    SP,$F9          
 6A1E: FB         EI                      
-6A1F: FC         ???                     
-6A20: FD         ???                     
+6A1F: FC                              
+6A20: FD                              
 6A21: FE FF      CP      $FF             
 6A23: 00         NOP                     
 6A24: 01 02 03   LD      BC,$0302        
@@ -6416,14 +6416,14 @@
 6A4F: EA EB EC   LD      ($ECEB),A       
 6A52: EE EF      XOR     $EF             
 6A54: F0 F1      LD      A,($F1)         
-6A56: F2         ???                     
+6A56: F2                              
 6A57: F3         DI                      
-6A58: F4         ???                     
+6A58: F4                              
 6A59: F5         PUSH    AF              
 6A5A: F6 F8      OR      $F8             
 6A5C: F9         LD      SP,HL           
 6A5D: FA FB FC   LD      A,($FCFB)       
-6A60: FD         ???                     
+6A60: FD                              
 6A61: FE FF      CP      $FF             
 6A63: 00         NOP                     
 6A64: 01 02 03   LD      BC,$0302        
@@ -6452,17 +6452,17 @@
 6A89: E6 E7      AND     $E7             
 6A8B: E8 E9      ADD     SP,$E9          
 6A8D: EA EB EC   LD      ($ECEB),A       
-6A90: ED         ???                     
+6A90: ED                              
 6A91: EE EF      XOR     $EF             
 6A93: F0 F1      LD      A,($F1)         
-6A95: F2         ???                     
+6A95: F2                              
 6A96: F3         DI                      
-6A97: F4         ???                     
+6A97: F4                              
 6A98: F5         PUSH    AF              
 6A99: F6 F7      OR      $F7             
 6A9B: F8 F9      LDHL    SP,$F9          
 6A9D: FA FB FC   LD      A,($FCFB)       
-6AA0: FD         ???                     
+6AA0: FD                              
 6AA1: FE FF      CP      $FF             
 6AA3: 00         NOP                     
 6AA4: 01 02 03   LD      BC,$0302        
@@ -6492,19 +6492,19 @@
 6AC9: E8 E8      ADD     SP,$E8          
 6ACB: E9         JP      (HL)            
 6ACC: EA EB EC   LD      ($ECEB),A       
-6ACF: ED         ???                     
+6ACF: ED                              
 6AD0: EE EF      XOR     $EF             
 6AD2: F0 F0      LD      A,($F0)         
 6AD4: F1         POP     AF              
-6AD5: F2         ???                     
+6AD5: F2                              
 6AD6: F3         DI                      
-6AD7: F4         ???                     
+6AD7: F4                              
 6AD8: F5         PUSH    AF              
 6AD9: F6 F7      OR      $F7             
 6ADB: F8 F8      LDHL    SP,$F8          
 6ADD: F9         LD      SP,HL           
 6ADE: FA FB FC   LD      A,($FCFB)       
-6AE1: FD         ???                     
+6AE1: FD                              
 6AE2: FE FF      CP      $FF             
 6AE4: 00         NOP                     
 6AE5: 01 02 03   LD      BC,$0302        
@@ -6533,22 +6533,22 @@
 6B06: E7         RST     0X20            
 6B07: E8 E9      ADD     SP,$E9          
 6B09: EA EB EC   LD      ($ECEB),A       
-6B0C: EC         ???                     
-6B0D: EC         ???                     
-6B0E: ED         ???                     
+6B0C: EC                              
+6B0D: EC                              
+6B0E: ED                              
 6B0F: EE EF      XOR     $EF             
 6B11: F0 F1      LD      A,($F1)         
-6B13: F2         ???                     
-6B14: F2         ???                     
+6B13: F2                              
+6B14: F2                              
 6B15: F3         DI                      
-6B16: F4         ???                     
+6B16: F4                              
 6B17: F5         PUSH    AF              
 6B18: F6 F7      OR      $F7             
 6B1A: F7         RST     0X30            
 6B1B: F8 F9      LDHL    SP,$F9          
 6B1D: FA FB FC   LD      A,($FCFB)       
-6B20: FC         ???                     
-6B21: FD         ???                     
+6B20: FC                              
+6B21: FD                              
 6B22: FE FF      CP      $FF             
 6B24: 00         NOP                     
 6B25: 01 02 03   LD      BC,$0302        
@@ -6576,23 +6576,23 @@
 6B44: F0 E9      LD      A,($E9)         
 6B46: E9         JP      (HL)            
 6B47: EA EB EB   LD      ($EBEB),A       
-6B4A: EC         ???                     
-6B4B: ED         ???                     
+6B4A: EC                              
+6B4B: ED                              
 6B4C: EE EE      XOR     $EE             
 6B4E: EF         RST     0X28            
 6B4F: F0 F0      LD      A,($F0)         
 6B51: F1         POP     AF              
-6B52: F2         ???                     
+6B52: F2                              
 6B53: F3         DI                      
-6B54: F4         ???                     
-6B55: F4         ???                     
+6B54: F4                              
+6B55: F4                              
 6B56: F5         PUSH    AF              
 6B57: F6 F7      OR      $F7             
 6B59: F8 F8      LDHL    SP,$F8          
 6B5B: F9         LD      SP,HL           
 6B5C: FA FB FC   LD      A,($FCFB)       
-6B5F: FC         ???                     
-6B60: FD         ???                     
+6B5F: FC                              
+6B60: FD                              
 6B61: FE FF      CP      $FF             
 6B63: 00         NOP                     
 6B64: 00         NOP                     
@@ -6618,28 +6618,28 @@
 6B7F: 15         DEC     D               
 6B80: 16 17      LD      D,$17           
 6B82: 18 18      JR      $6B9C           
-6B84: EB         ???                     
-6B85: EC         ???                     
-6B86: EC         ???                     
-6B87: ED         ???                     
+6B84: EB                              
+6B85: EC                              
+6B86: EC                              
+6B87: ED                              
 6B88: EE EE      XOR     $EE             
 6B8A: EF         RST     0X28            
 6B8B: F0 F0      LD      A,($F0)         
 6B8D: F1         POP     AF              
-6B8E: F2         ???                     
-6B8F: F2         ???                     
+6B8E: F2                              
+6B8F: F2                              
 6B90: F3         DI                      
-6B91: F4         ???                     
-6B92: F4         ???                     
+6B91: F4                              
+6B92: F4                              
 6B93: F5         PUSH    AF              
 6B94: F6 F6      OR      $F6             
 6B96: F7         RST     0X30            
 6B97: F8 F8      LDHL    SP,$F8          
 6B99: F9         LD      SP,HL           
 6B9A: FA FA FB   LD      A,($FBFA)       
-6B9D: FC         ???                     
-6B9E: FC         ???                     
-6B9F: FD         ???                     
+6B9D: FC                              
+6B9E: FC                              
+6B9F: FD                              
 6BA0: FE FE      CP      $FE             
 6BA2: FF         RST     0X38            
 6BA3: 00         NOP                     
@@ -6666,18 +6666,18 @@
 6BC1: 14         INC     D               
 6BC2: 14         INC     D               
 6BC3: 15         DEC     D               
-6BC4: ED         ???                     
+6BC4: ED                              
 6BC5: EE EE      XOR     $EE             
 6BC7: EF         RST     0X28            
 6BC8: F0 F0      LD      A,($F0)         
 6BCA: F1         POP     AF              
 6BCB: F1         POP     AF              
-6BCC: F2         ???                     
-6BCD: F2         ???                     
+6BCC: F2                              
+6BCD: F2                              
 6BCE: F3         DI                      
 6BCF: F3         DI                      
 6BD0: F3         DI                      
-6BD1: F4         ???                     
+6BD1: F4                              
 6BD2: F5         PUSH    AF              
 6BD3: F5         PUSH    AF              
 6BD4: F6 F6      OR      $F6             
@@ -6686,8 +6686,8 @@
 6BD9: F9         LD      SP,HL           
 6BDA: F9         LD      SP,HL           
 6BDB: FA FB FB   LD      A,($FBFB)       
-6BDE: FC         ???                     
-6BDF: FC         ???                     
+6BDE: FC                              
+6BDF: FC                              
 6BE0: FE FF      CP      $FF             
 6BE2: FF         RST     0X38            
 6BE3: 00         NOP                     
@@ -6716,12 +6716,12 @@
 6C03: 13         INC     DE              
 6C04: F0 F1      LD      A,($F1)         
 6C06: F1         POP     AF              
-6C07: F2         ???                     
-6C08: F2         ???                     
+6C07: F2                              
+6C08: F2                              
 6C09: F3         DI                      
 6C0A: F3         DI                      
-6C0B: F4         ???                     
-6C0C: F4         ???                     
+6C0B: F4                              
+6C0C: F4                              
 6C0D: F5         PUSH    AF              
 6C0E: F5         PUSH    AF              
 6C0F: F6 F6      OR      $F6             
@@ -6732,10 +6732,10 @@
 6C16: F9         LD      SP,HL           
 6C17: FA FA FB   LD      A,($FBFA)       
 6C1A: FB         EI                      
-6C1B: FC         ???                     
-6C1C: FC         ???                     
-6C1D: FD         ???                     
-6C1E: FD         ???                     
+6C1B: FC                              
+6C1C: FC                              
+6C1D: FD                              
+6C1E: FD                              
 6C1F: FE FE      CP      $FE             
 6C21: FF         RST     0X38            
 6C22: FF         RST     0X38            
@@ -6766,9 +6766,9 @@
 6C41: 0F         RRCA                    
 6C42: 0F         RRCA                    
 6C43: 10 F3      STOP    $F3             
-6C45: F4         ???                     
-6C46: F4         ???                     
-6C47: F4         ???                     
+6C45: F4                              
+6C46: F4                              
+6C47: F4                              
 6C48: F5         PUSH    AF              
 6C49: F5         PUSH    AF              
 6C4A: F6 F6      OR      $F6             
@@ -6780,11 +6780,11 @@
 6C54: FA FA FA   LD      A,($FAFA)       
 6C57: FB         EI                      
 6C58: FB         EI                      
-6C59: FC         ???                     
-6C5A: FC         ???                     
-6C5B: FC         ???                     
-6C5C: FD         ???                     
-6C5D: FD         ???                     
+6C59: FC                              
+6C5A: FC                              
+6C5B: FC                              
+6C5C: FD                              
+6C5D: FD                              
 6C5E: FE FE      CP      $FE             
 6C60: FF         RST     0X38            
 6C61: FF         RST     0X38            
@@ -6830,12 +6830,12 @@
 6C94: FB         EI                      
 6C95: FB         EI                      
 6C96: FB         EI                      
-6C97: FC         ???                     
-6C98: FC         ???                     
-6C99: FC         ???                     
-6C9A: FD         ???                     
-6C9B: FD         ???                     
-6C9C: FD         ???                     
+6C97: FC                              
+6C98: FC                              
+6C99: FC                              
+6C9A: FD                              
+6C9B: FD                              
+6C9C: FD                              
 6C9D: FE FE      CP      $FE             
 6C9F: FE FF      CP      $FF             
 6CA1: FF         RST     0X38            
@@ -6867,8 +6867,8 @@
 6CC1: 0A         LD      A,(BC)          
 6CC2: 0A         LD      A,(BC)          
 6CC3: 0B         DEC     BC              
-6CC4: FC         ???                     
-6CC5: FC         ???                     
+6CC4: FC                              
+6CC5: FC                              
 6CC6: FB         EI                      
 6CC7: FB         EI                      
 6CC8: FB         EI                      
@@ -6877,14 +6877,14 @@
 6CCD: FA FB FB   LD      A,($FBFB)       
 6CD0: FB         EI                      
 6CD1: FB         EI                      
-6CD2: FC         ???                     
-6CD3: FC         ???                     
-6CD4: FC         ???                     
-6CD5: FC         ???                     
-6CD6: FD         ???                     
-6CD7: FD         ???                     
-6CD8: FD         ???                     
-6CD9: FD         ???                     
+6CD2: FC                              
+6CD3: FC                              
+6CD4: FC                              
+6CD5: FC                              
+6CD6: FD                              
+6CD7: FD                              
+6CD8: FD                              
+6CD9: FD                              
 6CDA: FE FE      CP      $FE             
 6CDC: FE FE      CP      $FE             
 6CDE: FF         RST     0X38            
@@ -6922,17 +6922,17 @@
 6D06: FB         EI                      
 6D07: FB         EI                      
 6D08: FB         EI                      
-6D09: FC         ???                     
-6D0A: FC         ???                     
-6D0B: FC         ???                     
-6D0C: FC         ???                     
-6D0D: FC         ???                     
-6D0E: FC         ???                     
-6D0F: FD         ???                     
-6D10: FD         ???                     
-6D11: FD         ???                     
-6D12: FD         ???                     
-6D13: FD         ???                     
+6D09: FC                              
+6D0A: FC                              
+6D0B: FC                              
+6D0C: FC                              
+6D0D: FC                              
+6D0E: FC                              
+6D0F: FD                              
+6D10: FD                              
+6D11: FD                              
+6D12: FD                              
+6D13: FD                              
 6D14: FE FE      CP      $FE             
 6D16: FE FE      CP      $FE             
 6D18: FE FE      CP      $FE             
@@ -6974,14 +6974,14 @@
 6D41: 05         DEC     B               
 6D42: 05         DEC     B               
 6D43: 05         DEC     B               
-6D44: FD         ???                     
-6D45: FD         ???                     
-6D46: FD         ???                     
-6D47: FD         ???                     
-6D48: FD         ???                     
-6D49: FD         ???                     
-6D4A: FD         ???                     
-6D4B: FD         ???                     
+6D44: FD                              
+6D45: FD                              
+6D46: FD                              
+6D47: FD                              
+6D48: FD                              
+6D49: FD                              
+6D4A: FD                              
+6D4B: FD                              
 6D4C: FE FE      CP      $FE             
 6D4E: FE FE      CP      $FE             
 6D50: FE FE      CP      $FE             
@@ -7202,7 +7202,7 @@
 6ECA: EA 97 DB   LD      ($DB97),A       
 6ECD: FA 96 DB   LD      A,($DB96)       
 6ED0: C7         RST     0X00            
-6ED1: ED         ???                     
+6ED1: ED                              
 6ED2: 6E         LD      L,(HL)          
 6ED3: 11 6F 19   LD      DE,$196F        
 6ED6: 6F         LD      L,A             
@@ -7676,23 +7676,23 @@
 71FB: D8         RET     C               
 71FC: D9         RETI                    
 71FD: DA DB DC   JP      C,$DCDB         
-7200: DD         ???                     
+7200: DD                              
 7201: DE DF      SBC     $DF             
 7203: 9A         SBC     D               
 7204: D6 0F      SUB     $0F             
 7206: E0 E1      LDFF00  ($E1),A         
 7208: E2         LDFF00  (C),A           
-7209: E3         ???                     
-720A: E4         ???                     
+7209: E3                              
+720A: E4                              
 720B: E5         PUSH    HL              
 720C: E6 E7      AND     $E7             
 720E: E8 E9      ADD     SP,$E9          
 7210: EA EB EC   LD      ($ECEB),A       
-7213: ED         ???                     
+7213: ED                              
 7214: EE EF      XOR     $EF             
 7216: CA 71 B7   JP      Z,$B771         
 7219: 71         LD      (HL),C          
-721A: DD         ???                     
+721A: DD                              
 721B: 71         LD      (HL),C          
 721C: A4         AND     H               
 721D: 71         LD      (HL),C          
@@ -9379,7 +9379,7 @@
 7BE0: 51         LD      D,C             
 7BE1: B1         OR      C               
 7BE2: EF         RST     0X28            
-7BE3: EC         ???                     
+7BE3: EC                              
 7BE4: AA         XOR     D               
 7BE5: 4A         LD      C,D             
 7BE6: 0C         INC     C               
@@ -9880,10 +9880,10 @@
 7EA4: 3D         DEC     A               
 7EA5: 3E 3E      LD      A,$3E           
 7EA7: 3F         CCF                     
-7EA8: FD         ???                     
-7EA9: FD         ???                     
-7EAA: FD         ???                     
-7EAB: FD         ???                     
+7EA8: FD                              
+7EA9: FD                              
+7EAA: FD                              
+7EAB: FD                              
 7EAC: FB         EI                      
 7EAD: FB         EI                      
 7EAE: FB         EI                      
@@ -9893,10 +9893,10 @@
 7EB3: FA FF FF   LD      A,($FFFF)       
 7EB6: 54         LD      D,H             
 7EB7: 54         LD      D,H             
-7EB8: FD         ???                     
-7EB9: FD         ???                     
-7EBA: FD         ???                     
-7EBB: FD         ???                     
+7EB8: FD                              
+7EB9: FD                              
+7EBA: FD                              
+7EBB: FD                              
 7EBC: FB         EI                      
 7EBD: FB         EI                      
 7EBE: FF         RST     0X38            
@@ -9906,12 +9906,12 @@
 7EC3: FA FF FF   LD      A,($FFFF)       
 7EC6: 54         LD      D,H             
 7EC7: 54         LD      D,H             
-7EC8: FD         ???                     
-7EC9: FD         ???                     
-7ECA: FD         ???                     
+7EC8: FD                              
+7EC9: FD                              
+7ECA: FD                              
 7ECB: FF         RST     0X38            
-7ECC: FD         ???                     
-7ECD: FD         ???                     
+7ECC: FD                              
+7ECD: FD                              
 7ECE: FB         EI                      
 7ECF: FB         EI                      
 7ED0: 48         LD      C,B             

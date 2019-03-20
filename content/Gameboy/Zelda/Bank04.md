@@ -10,7 +10,7 @@
 >>> memoryTable hard 
 [Hardware Info](../Hardware.md)
 
-```
+```code
 4000: 21 00 C2   LD      HL,$C200        
 4003: 09         ADD     HL,BC           
 4004: 7E         LD      A,(HL)          
@@ -96,7 +96,7 @@
 4094: 40         LD      B,B             
 4095: 5F         LD      E,A             
 4096: 41         LD      B,C             
-4097: FD         ???                     
+4097: FD                              
 4098: 41         LD      B,C             
 4099: F0 99      LD      A,($99)         
 409B: FE 70      CP      $70             
@@ -403,9 +403,9 @@
 42E1: 77         LD      (HL),A          
 42E2: F0 F0      LD      A,($F0)         
 42E4: C7         RST     0X00            
-42E5: EB         ???                     
+42E5: EB                              
 42E6: 42         LD      B,D             
-42E7: F4         ???                     
+42E7: F4                              
 42E8: 42         LD      B,D             
 42E9: FF         RST     0X38            
 42EA: 42         LD      B,D             
@@ -643,7 +643,7 @@
 448B: 3C         INC     A               
 448C: CD 87 3B   CALL    $3B87           
 448F: C9         RET                     
-4490: F4         ???                     
+4490: F4                              
 4491: 0C         INC     C               
 4492: FA 02 D0   LD      A,($D002)       
 4495: 5F         LD      E,A             
@@ -897,11 +897,11 @@
 4659: 14         INC     D               
 465A: 60         LD      H,B             
 465B: 20 00      JR      NZ,$465D        
-465D: F4         ???                     
+465D: F4                              
 465E: 66         LD      H,(HL)          
 465F: 00         NOP                     
 4660: 00         NOP                     
-4661: FC         ???                     
+4661: FC                              
 4662: 68         LD      L,B             
 4663: 00         NOP                     
 4664: 00         NOP                     
@@ -915,7 +915,7 @@
 466D: 14         INC     D               
 466E: 66         LD      H,(HL)          
 466F: 20 F0      JR      NZ,$4661        
-4671: F4         ???                     
+4671: F4                              
 4672: 60         LD      H,B             
 4673: 00         NOP                     
 4674: F0 FC      LD      A,($FC)         
@@ -930,11 +930,11 @@
 4681: 14         INC     D               
 4682: 60         LD      H,B             
 4683: 20 00      JR      NZ,$4685        
-4685: F4         ???                     
+4685: F4                              
 4686: 66         LD      H,(HL)          
 4687: 00         NOP                     
 4688: 00         NOP                     
-4689: FC         ???                     
+4689: FC                              
 468A: 68         LD      L,B             
 468B: 00         NOP                     
 468C: 00         NOP                     
@@ -947,7 +947,7 @@
 4695: 14         INC     D               
 4696: 66         LD      H,(HL)          
 4697: 20 F0      JR      NZ,$4689        
-4699: F4         ???                     
+4699: F4                              
 469A: 60         LD      H,B             
 469B: 00         NOP                     
 469C: F0 FC      LD      A,($FC)         
@@ -963,11 +963,11 @@
 46AA: 6E         LD      L,(HL)          
 46AB: 00         NOP                     
 46AC: 00         NOP                     
-46AD: F4         ???                     
+46AD: F4                              
 46AE: 66         LD      H,(HL)          
 46AF: 00         NOP                     
 46B0: 00         NOP                     
-46B1: FC         ???                     
+46B1: FC                              
 46B2: 68         LD      L,B             
 46B3: 00         NOP                     
 46B4: 00         NOP                     
@@ -985,7 +985,7 @@
 46C0: F0 F4      LD      A,($F4)         
 46C2: 6E         LD      L,(HL)          
 46C3: 20 F0      JR      NZ,$46B5        
-46C5: FC         ???                     
+46C5: FC                              
 46C6: 6C         LD      L,H             
 46C7: 20 F0      JR      NZ,$46B9        
 46C9: 04         INC     B               
@@ -997,10 +997,10 @@
 46D1: 14         INC     D               
 46D2: 60         LD      H,B             
 46D3: 20 00      JR      NZ,$46D5        
-46D5: F4         ???                     
+46D5: F4                              
 46D6: 72         LD      (HL),D          
 46D7: 20 00      JR      NZ,$46D9        
-46D9: FC         ???                     
+46D9: FC                              
 46DA: 70         LD      (HL),B          
 46DB: 20 00      JR      NZ,$46DD        
 46DD: 04         INC     B               
@@ -1130,15 +1130,15 @@
 47BB: 1E 00      LD      E,$00           
 47BD: 10 08      STOP    $08             
 47BF: 1E 60      LD      E,$60           
-47C1: F2         ???                     
+47C1: F2                              
 47C2: FA 30 00   LD      A,($0030)       
-47C5: F2         ???                     
+47C5: F2                              
 47C6: 02         LD      (BC),A          
 47C7: 30 60      JR      NC,$4829        
-47C9: F2         ???                     
+47C9: F2                              
 47CA: 06 30      LD      B,$30           
 47CC: 00         NOP                     
-47CD: F2         ???                     
+47CD: F2                              
 47CE: 0E 30      LD      C,$30           
 47D0: 60         LD      H,B             
 47D1: FE FA      CP      $FA             
@@ -1647,7 +1647,7 @@
 4B6D: 10 FE      STOP    $FE             
 4B6F: FA F4 F0   LD      A,($F0F4)       
 4B72: FE FA      CP      $FA             
-4B74: F4         ???                     
+4B74: F4                              
 4B75: F0 CD      LD      A,($CD)         
 4B77: 91         SUB     C               
 4B78: 08 A7 20   LD      ($20A7),SP      
@@ -1866,15 +1866,15 @@
 4CB2: 1C         INC     E               
 4CB3: 60         LD      H,B             
 4CB4: 20 00      JR      NZ,$4CB6        
-4CB6: EC         ???                     
+4CB6: EC                              
 4CB7: 64         LD      H,H             
 4CB8: 00         NOP                     
 4CB9: 00         NOP                     
-4CBA: F4         ???                     
+4CBA: F4                              
 4CBB: 66         LD      H,(HL)          
 4CBC: 00         NOP                     
 4CBD: 00         NOP                     
-4CBE: FC         ???                     
+4CBE: FC                              
 4CBF: 66         LD      H,(HL)          
 4CC0: 20 00      JR      NZ,$4CC2        
 4CC2: 04         INC     B               
@@ -2163,7 +2163,7 @@
 4E8B: C7         RST     0X00            
 4E8C: A4         AND     H               
 4E8D: 4E         LD      C,(HL)          
-4E8E: EB         ???                     
+4E8E: EB                              
 4E8F: 4E         LD      C,(HL)          
 4E90: 65         LD      H,L             
 4E91: 4F         LD      C,A             
@@ -2171,7 +2171,7 @@
 4E93: 4F         LD      C,A             
 4E94: 10 0C      STOP    $0C             
 4E96: 00         NOP                     
-4E97: F4         ???                     
+4E97: F4                              
 4E98: F0 F4      LD      A,($F4)         
 4E9A: 00         NOP                     
 4E9B: 0C         INC     C               
@@ -2179,7 +2179,7 @@
 4E9D: 0C         INC     C               
 4E9E: 10 0C      STOP    $0C             
 4EA0: 00         NOP                     
-4EA1: F4         ???                     
+4EA1: F4                              
 4EA2: F0 F4      LD      A,($F4)         
 4EA4: 3E 18      LD      A,$18           
 4EA6: CD 31 4B   CALL    $4B31           
@@ -2457,9 +2457,9 @@
 50A0: C7         RST     0X00            
 50A1: A7         AND     A               
 50A2: 50         LD      D,B             
-50A3: E3         ???                     
+50A3: E3                              
 50A4: 50         LD      D,B             
-50A5: ED         ???                     
+50A5: ED                              
 50A6: 50         LD      D,B             
 50A7: CD 91 08   CALL    $0891           
 50AA: 36 80      LD      (HL),$80        
@@ -3901,7 +3901,7 @@
 5A7E: 06 00      LD      B,$00           
 5A80: FA F4 F2   LD      A,($F2F4)       
 5A83: F0 F2      LD      A,($F2)         
-5A85: F4         ???                     
+5A85: F4                              
 5A86: FA 00 06   LD      A,($0600)       
 5A89: 0C         INC     C               
 5A8A: 0E CD      LD      C,$CD           
@@ -4116,7 +4116,7 @@
 5BF9: 5E         LD      E,(HL)          
 5BFA: 00         NOP                     
 5BFB: 0C         INC     C               
-5BFC: F4         ???                     
+5BFC: F4                              
 5BFD: 08 F8 CD   LD      ($CDF8),SP      
 5C00: 9D         SBC     L               
 5C01: 5D         LD      E,L             
@@ -4669,7 +4669,7 @@
 5FCE: C7         RST     0X00            
 5FCF: D5         PUSH    DE              
 5FD0: 5F         LD      E,A             
-5FD1: E3         ???                     
+5FD1: E3                              
 5FD2: 5F         LD      E,A             
 5FD3: 16 60      LD      D,$60           
 5FD5: CD BC 7B   CALL    $7BBC           
@@ -4756,7 +4756,7 @@
 6058: F0 F0      LD      A,($F0)         
 605A: F0 F0      LD      A,($F0)         
 605C: FE 04      CP      $04             
-605E: F2         ???                     
+605E: F2                              
 605F: 00         NOP                     
 6060: F0 FA      LD      A,($FA)         
 6062: 00         NOP                     
@@ -4785,7 +4785,7 @@
 6082: 60         LD      H,B             
 6083: 41         LD      B,C             
 6084: 62         LD      H,D             
-6085: FC         ???                     
+6085: FC                              
 6086: 63         LD      H,E             
 6087: E7         RST     0X20            
 6088: 66         LD      H,(HL)          
@@ -5387,7 +5387,7 @@
 64AF: 09         ADD     HL,BC           
 64B0: 70         LD      (HL),B          
 64B1: C9         RET                     
-64B2: F2         ???                     
+64B2: F2                              
 64B3: 14         INC     D               
 64B4: F0 E7      LD      A,($E7)         
 64B6: 1F         RRA                     
@@ -6435,7 +6435,7 @@
 6C1A: 06 00      LD      B,$00           
 6C1C: FA F4 F2   LD      A,($F2F4)       
 6C1F: F0 F2      LD      A,($F2)         
-6C21: F4         ???                     
+6C21: F4                              
 6C22: FA 00 06   LD      A,($0600)       
 6C25: 0C         INC     C               
 6C26: 0E 10      LD      C,$10           
@@ -6820,7 +6820,7 @@
 6EC5: 71         LD      (HL),C          
 6EC6: AD         XOR     L               
 6EC7: 71         LD      (HL),C          
-6EC8: E3         ???                     
+6EC8: E3                              
 6EC9: 71         LD      (HL),C          
 6ECA: 00         NOP                     
 6ECB: 72         LD      (HL),D          
@@ -7801,7 +7801,7 @@
 75FB: E0 A1      LDFF00  ($A1),A         
 75FD: EA 67 C1   LD      ($C167),A       
 7600: C9         RET                     
-7601: FC         ???                     
+7601: FC                              
 7602: 00         NOP                     
 7603: 04         INC     B               
 7604: 00         NOP                     
@@ -7809,7 +7809,7 @@
 7606: 00         NOP                     
 7607: 04         INC     B               
 7608: 00         NOP                     
-7609: FC         ???                     
+7609: FC                              
 760A: 00         NOP                     
 760B: 21 80 C3   LD      HL,$C380        
 760E: 09         ADD     HL,BC           

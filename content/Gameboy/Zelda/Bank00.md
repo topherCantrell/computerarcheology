@@ -10,7 +10,7 @@
 >>> memoryTable hard 
 [Hardware Info](../Hardware.md)
 
-```
+```code
 ; TODO:
 ; Problems in disassembly. Fix and write REDIS program.
 ; - CB instructions are jacked. CB87 should be RES 0,A and does something else
@@ -823,7 +823,7 @@ Startup:
 069B: 57         LD      D,A             
 069C: 1E 00      LD      E,$00           
 069E: F1         POP     AF              
-069F: CB 37      SET     1,E             
+069F: CB 37      SWAP A             
 06A1: 1F         RRA                     
 06A2: 1F         RRA                     
 06A3: E6 03      AND     $03             
@@ -882,7 +882,7 @@ Startup:
 0702: 57         LD      D,A             
 0703: 1E 00      LD      E,$00           
 0705: F1         POP     AF              
-0706: CB 37      SET     1,E             
+0706: CB 37      SWAP A             
 0708: 1F         RRA                     
 0709: 1F         RRA                     
 070A: E6 03      AND     $03             
@@ -2451,7 +2451,7 @@ SwitchBankSave:
 12E0: D6 08      SUB     $08             
 12E2: E6 F0      AND     $F0             
 12E4: E0 CE      LDFF00  ($CE),A         
-12E6: CB 37      SET     1,E             
+12E6: CB 37      SWAP A             
 12E8: 4F         LD      C,A             
 12E9: 21 A2 12   LD      HL,$12A2        
 12EC: 19         ADD     HL,DE           
@@ -2902,7 +2902,7 @@ SwitchBankSave:
 1623: 21 16 D4   LD      HL,$D416        
 1626: 0E 00      LD      C,$00           
 1628: F0 98      LD      A,($98)         
-162A: CB 37      SET     1,E             
+162A: CB 37      SWAP A             
 162C: E6 0F      AND     $0F             
 162E: 5F         LD      E,A             
 162F: F0 99      LD      A,($99)         
@@ -2952,7 +2952,7 @@ SwitchBankSave:
 167A: CD B9 07   CALL    $07B9           
 167D: E5         PUSH    HL              
 167E: F0 F7      LD      A,($F7)         
-1680: CB 37      SET     1,E             
+1680: CB 37      SWAP A             
 1682: 5F         LD      E,A             
 1683: 16 00      LD      D,$00           
 1685: CB 23      SET     1,E             
@@ -3998,7 +3998,7 @@ SwitchBankSave:
 1D5C: 3E 11      LD      A,$11           
 1D5E: EA 00 21   LD      ($2100),A       
 1D61: FA 00 D0   LD      A,($D000)       
-1D64: CB 37      SET     1,E             
+1D64: CB 37      SWAP A             
 1D66: E6 F0      AND     $F0             
 1D68: 5F         LD      E,A             
 1D69: 16 00      LD      D,$00           
@@ -4022,7 +4022,7 @@ SwitchBankSave:
 1D8C: 3E 13      LD      A,$13           
 1D8E: EA 00 21   LD      ($2100),A       
 1D91: FA 00 D0   LD      A,($D000)       
-1D94: CB 37      SET     1,E             
+1D94: CB 37      SWAP A             
 1D96: E6 F0      AND     $F0             
 1D98: 5F         LD      E,A             
 1D99: 16 00      LD      D,$00           
@@ -4154,7 +4154,7 @@ SwitchBankSave:
 1E99: D6 08      SUB     $08             
 1E9B: E6 F0      AND     $F0             
 1E9D: E0 CE      LDFF00  ($CE),A         
-1E9F: CB 37      SET     1,E             
+1E9F: CB 37      SWAP A             
 1EA1: 4F         LD      C,A             
 1EA2: 21 5F 1E   LD      HL,$1E5F        
 1EA5: 19         ADD     HL,DE           
@@ -4267,7 +4267,7 @@ SwitchBankSave:
 1F7C: CB 43      SET     1,E             
 1F7E: 20 12      JR      NZ,$1F92        
 1F80: F0 CE      LD      A,($CE)         
-1F82: CB 37      SET     1,E             
+1F82: CB 37      SWAP A             
 1F84: E6 0F      AND     $0F             
 1F86: 5F         LD      E,A             
 1F87: F0 CD      LD      A,($CD)         
@@ -4444,7 +4444,7 @@ SwitchBankSave:
 20E9: 09         ADD     HL,BC           
 20EA: 7E         LD      A,(HL)          
 20EB: F5         PUSH    AF              
-20EC: CB 37      SET     1,E             
+20EC: CB 37      SWAP A             
 20EE: E6 F0      AND     $F0             
 20F0: 21 1A C1   LD      HL,$C11A        
 20F3: 09         ADD     HL,BC           
@@ -4458,7 +4458,7 @@ SwitchBankSave:
 20FF: CB 7F      SET     1,E             
 2101: 28 02      JR      Z,$2105         
 2103: 1E F0      LD      E,$F0           
-2105: CB 37      SET     1,E             
+2105: CB 37      SWAP A             
 2107: E6 0F      AND     $0F             
 2109: B3         OR      E               
 210A: CB 1A      SET     1,E             
@@ -4467,7 +4467,7 @@ SwitchBankSave:
 210E: C9         RET                     
 210F: F0 A3      LD      A,($A3)         
 2111: F5         PUSH    AF              
-2112: CB 37      SET     1,E             
+2112: CB 37      SWAP A             
 2114: E6 F0      AND     $F0             
 2116: 21 49 C1   LD      HL,$C149        
 2119: 86         ADD     A,(HL)          
@@ -4479,7 +4479,7 @@ SwitchBankSave:
 2123: CB 7F      SET     1,E             
 2125: 28 02      JR      Z,$2129         
 2127: 1E F0      LD      E,$F0           
-2129: CB 37      SET     1,E             
+2129: CB 37      SWAP A             
 212B: E6 0F      AND     $0F             
 212D: B3         OR      E               
 212E: CB 1A      SET     1,E             
@@ -5470,7 +5470,7 @@ SwitchBankSave:
 281E: F0 00      LD      A,($00)         
 2820: F0 00      LD      A,($00)         
 2822: F0 00      LD      A,($00)         
-2824: CB 37      SET     1,E             
+2824: CB 37      SWAP A             
 2826: 2F         CPL                     
 2827: E6 F0      AND     $F0             
 2829: B0         OR      B               
@@ -5892,7 +5892,7 @@ ClearRAMHL:
 2B2E: F0 F7      LD      A,($F7)         
 2B30: FE 0B      CP      $0B             
 2B32: 30 32      JR      NC,$2B66        
-2B34: CB 37      SET     1,E             
+2B34: CB 37      SWAP A             
 2B36: 4F         LD      C,A             
 2B37: 06 00      LD      B,$00           
 2B39: CB 21      SET     1,E             
@@ -6182,7 +6182,7 @@ ClearRAMHL:
 2DDB: 47         LD      B,A             
 2DDC: 0E 00      LD      C,$00           
 2DDE: F1         POP     AF              
-2DDF: CB 37      SET     1,E             
+2DDF: CB 37      SWAP A             
 2DE1: 1F         RRA                     
 2DE2: 1F         RRA                     
 2DE3: E6 03      AND     $03             
@@ -6356,7 +6356,7 @@ ClearRAMHL:
 2F30: FE 0B      CP      $0B             
 2F32: 30 2B      JR      NC,$2F5F        
 2F34: 21 00 42   LD      HL,$4200        
-2F37: CB 37      SET     1,E             
+2F37: CB 37      SWAP A             
 2F39: 5F         LD      E,A             
 2F3A: 16 00      LD      D,$00           
 2F3C: CB 23      SET     1,E             
@@ -6527,7 +6527,7 @@ ClearRAMHL:
 308C: E6 0F      AND     $0F             
 308E: CD CF 36   CALL    $36CF           
 3091: 0A         LD      A,(BC)          
-3092: CB 37      SET     1,E             
+3092: CB 37      SWAP A             
 3094: E6 0F      AND     $0F             
 3096: CD C9 37   CALL    $37C9           
 3099: 18 04      JR      $309F           
@@ -6840,7 +6840,7 @@ ClearRAMHL:
 32B2: C6 10      ADD     $10             
 32B4: E0 AE      LDFF00  ($AE),A         
 32B6: 0A         LD      A,(BC)          
-32B7: CB 37      SET     1,E             
+32B7: CB 37      SWAP A             
 32B9: E6 F0      AND     $F0             
 32BB: C6 08      ADD     $08             
 32BD: E0 AD      LDFF00  ($AD),A         
@@ -7336,7 +7336,7 @@ ClearRAMHL:
 3636: 19         ADD     HL,DE           
 3637: 77         LD      (HL),A          
 3638: F1         POP     AF              
-3639: CB 37      SET     1,E             
+3639: CB 37      SWAP A             
 363B: E6 F0      AND     $F0             
 363D: 21 D0 C1   LD      HL,$C1D0        
 3640: 19         ADD     HL,DE           
@@ -7531,7 +7531,7 @@ ClearRAMHL:
 379E: 77         LD      (HL),A          
 379F: 0A         LD      A,(BC)          
 37A0: 03         INC     BC              
-37A1: CB 37      SET     1,E             
+37A1: CB 37      SWAP    A             
 37A3: E6 F0      AND     $F0             
 37A5: 21 00 C2   LD      HL,$C200        
 37A8: 19         ADD     HL,DE           

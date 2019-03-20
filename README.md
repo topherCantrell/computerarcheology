@@ -1,12 +1,14 @@
 # Computer Archeology
 
-This project contains the content and tools to generate my [Computer Archeology](http://computerarcheology.com) website.
+This repository contains the content and tools to generate my [Computer Archeology](http://computerarcheology.com) website.
 
 It also contains the archeology tools (disassemblers, assemblers, formatters, etc).
 
-The "art" directory contains images for the READMEs here. The "java" directory contains assemblers and disassemblers and various older tools that need translating to Python.
+The "art" directory contains images for the READMEs here. 
 
 The "content" directory contains the raw files that make up the Computer Archeology website. This is the meat of the project.
+
+The "oldjavasrc" directory contains assemblers and disassemblers and various older tools that need translating to Python.
 
 The "pysrc" directory contains the Python source files. You should run command line tools with this as your current working directory.
 
