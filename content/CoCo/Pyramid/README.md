@@ -1,14 +1,16 @@
 ![CoCo Pyramid](Pyramid.jpg)
 
+# Pyramid 2000
+
 >>> deploy:<br>
->>>   RAMUse.md<br>
->>>   Code.md<br>
->>>   Journal.md<br>
->>>   +BinaryDataPyramid.js<br>
 >>>   +Pyramid.jpg<br>
 >>>   +pyramid.js<br>
+>>>   +BinaryDataPyramid.js<br>
+>>>   RAMUse.md<br>
+>>>   Code.md<br>
+>>>   ----<br>
+>>>   Journal.md<br>
 
-# Pyramid 2000
 
 ```html
 <script src="/CoCo/Pyramid/BinaryDataPyramid.js"></script>

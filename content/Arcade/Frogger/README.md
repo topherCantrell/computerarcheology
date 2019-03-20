@@ -1,19 +1,22 @@
 ![Frogger](Frogger.jpg)
 
+# Frogger
+
 >>> deploy:<br>
 >>>   +Frogger.jpg<br>
 >>>   +Frogger.js<br>
 >>>   SoundHardware.md<br>
 >>>   SoundRAMUse.md<br>
 >>>   SoundCode.md<br>
->>>   Hardware.md<br>
->>>   Code.md<br>
->>>   RAMUse.md<br>
->>>   GFX.md<br>
 >>>   FroggerFix.mp3<br>
+>>>   ----<br>
+>>>   Hardware.md<br>
+>>>   RAMUse.md<br>
+>>>   Code.md<br>
+>>>   ----<br>
+>>>   GFX.md<br>
+>>>   ----<br>
 >>>   Journal.md<br>
-
-# Frogger
 
 # Code Links
 

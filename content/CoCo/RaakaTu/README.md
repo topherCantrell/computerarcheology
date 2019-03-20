@@ -1,15 +1,15 @@
 ![Raaka Tu](RaakaTu.jpg)
 
+# Raaka Tu
+
 >>> deploy:<br>
->>>   RAMUse.md<br>
->>>   Code.md<br>
->>>   Journal.md<br>
 >>>   +RaakaTu.jpg<br>
 >>>   +BinaryDataRaakaTu.js<br>
 >>>   +raakatu.js<br>
-
-# Raaka Tu
-
+>>>   RAMUse.md<br>
+>>>   Code.md<br>
+>>>   ----<br>
+>>>   Journal.md<br>
 
 ```html
 <script src="/CoCo/RaakaTu/BinaryDataRaakaTu.js"></script>

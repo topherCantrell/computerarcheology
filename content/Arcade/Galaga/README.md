@@ -1,13 +1,15 @@
 ![Galaga](Galaga.jpg)
 
 >>> deploy:<br>
->>>   CPU1.md<br>
->>>   CPU2.md<br>
->>>   CPU3.md<br>
->>>   CPU1Fix.md<br>
 >>>   +Galaga.jpg<br>
 >>>   +galaga1.jpg<br>
 >>>   +galaga2.jpg<br>
+>>>   CPU1.md<br>
+>>>   CPU2.md<br>
+>>>   CPU3.md<br>
+>>>   ----<br>
+>>>   CPU1Fix.md<br>
+>>>   ----<br>
 >>>   Journal.md<br>
 
 # Galaga No-fire Cheat

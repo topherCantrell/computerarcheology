@@ -1,9 +1,8 @@
 ![Madness and the Minotaur](Madness.jpg)
 
+# Madness and the Minotaur
+
 >>> deploy:<br>
->>>   RAMUse.md<br>
->>>   Code.md<br>
->>>   Journal.md<br>
 >>>   +Madness.jpg<br>
 >>>   +inst.cas
 >>>   +first.cas
@@ -14,11 +13,13 @@
 >>>   +s_five.cas
 >>>   +s_six.cas
 >>>   +s_seven.cas
+>>>   RAMUse.md<br>
+>>>   Code.md<br>
+>>>   ----<br>
+>>>   Journal.md<br>
 
-# Madness and the Minotaur
-
-* [Disassembled Code](Code.md)
 * [RAM Usage](RAMUse.md)
+* [Disassembled Code](Code.md)
 
 # The Labyrinth of King Minos
 

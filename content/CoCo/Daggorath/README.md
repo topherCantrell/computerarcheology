@@ -1,10 +1,8 @@
 ![Dungeons of Daggorath](Daggorath.jpg)
 
+# Dungeons of Daggorath
+
 >>> deploy:<br>
->>>   Levels.md:Level Maps<br>
->>>   RAMUse.md<br>
->>>   Code.md<br>
->>>   Journal.md<br>
 >>>   +Daggorath.jpg
 >>>   +level1.svg<br>
 >>>   +level2.svg<br>
@@ -12,6 +10,12 @@
 >>>   +level4.svg<br>
 >>>   +level5.svg<br>
 >>>   +daggorath.js<br>
+>>>   RAMUse.md<br>
+>>>   Code.md<br>
+>>>   ----<br>
+>>>   Levels.md:Level Maps<br>
+>>>   ----<br>
+>>>   Journal.md<br>
 
 TODO Overwrite the cassette code with a routine to ALLRAM. Then I can EXEC the ALLRAM, make
 some POKE tweaks, and then EXEC 49152. Burn a new ROM.

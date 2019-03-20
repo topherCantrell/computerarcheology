@@ -1,12 +1,13 @@
 ![AS Analyzer](Spectrum.jpg)
 
+# Audio Spectrum Analyzer
+
 >>> deploy:<br>
+>>>   +Spectrum.jpg<br>
 >>>   RAMUse.md<br>
 >>>   Code.md<br>
->>>   +Spectrum.jpg<br>
+>>>   ----<br>
 >>>   Journal.md<br>
-
-# Audio Spectrum Analyzer
 
 Just getting started. Thanks, Gary Dion.
 

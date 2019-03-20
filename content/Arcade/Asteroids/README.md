@@ -1,21 +1,24 @@
 ![Asteroids](Asteroids.jpg)
 
+# Asteroids
+
 >>> deploy:<br>
+>>>   +Asteroids.jpg<br>
+>>>   +DVG.jpg<br>
+>>>   +VectorROM.js<br>
 >>>   Hardware.md<br>
 >>>   RAMUse.md<br>
 >>>   Code.md<br>
->>>   VectorROM.md<br>
+>>>   ----<br>
 >>>   DVG.md<br>
+>>>   VectorROM.md<br>
+>>>   ----<br>
 >>>   Journal.md<br>
->>>   +Asteroids.jpg<br>
->>>   +VectorROM.js<br>
->>>   +DVG.jpg<br>
 
-# Code Links 
 
-* [Disassembled Code](Code.md)
 * [Hardware Info](Hardware.md)
 * [RAM Usage](RAMUse.md)
+* [Disassembled Code](Code.md)
 * [Vector ROM](VectorROM.md)
 * [Info on the DVG](DVG.md)
 

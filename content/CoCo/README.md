@@ -1,5 +1,7 @@
 ![CoCo](CoCo.jpg)
 
+# CoCo
+
 >>> deploy:<br>
 >>>   Hardware.md:Hardware<br>
 >>>   +CoCo.jpg<br>
@@ -12,16 +14,14 @@
 >>>   +PIA0.jpg<br>
 >>>   +PIA1.jpg<br>
 >>>   +SAM.jpg<br>
->>>     AudioSpectrumAnalyzer:AudioAnalyzer
->>>      Pyramid:Pyramid<br>
->>>     RaakaTu:RaakaTu<br>
->>>     Bedlam:Bedlam<br>
->>>     MadnessMinotaur:Madness & Minotaur<br>
->>>     Daggorath:Daggorath<br>
->>>     Downland:Downland<br>
->>>     EarlyWork:EarlyWork<br>
-
-# CoCo
+>>>   EarlyWork:Early Work<br>
+>>>   Pyramid:Pyramid<br>
+>>>   RaakaTu:Raaka Tu<br>
+>>>   Bedlam:Bedlam<br>
+>>>   MadnessMinotaur:Madness & Minotaur<br>
+>>>   Daggorath:Daggorath<br>
+>>>   Downland:Downland<br>
+>>>   AudioSpectrumAnalyzer:Audio Analyzer<br>
 
 # Technical Reference
 

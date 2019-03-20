@@ -1,12 +1,16 @@
 ![Bedlam](Bedlam.jpg)
 
+# Bedlam
+
 >>> deploy:<br>
+>>>   +bedlam.js<br>
+>>>   +Bedlam.jpg<br>
+>>>   +BinaryDataBedlam.js<br>
 >>>   RAMUse.md<br>
 >>>   Code.md<br>
+>>>   ----<br>
 >>>   Journal.md<br>
->>>   +bedlam.js<br>
->>>   +BinaryDataBedlam.js<br>
->>>   +Bedlam.jpg<br>
+
 
 ```html
 <script src="/CoCo/Bedlam/BinaryDataBedlam.js"></script>
