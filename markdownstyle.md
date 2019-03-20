@@ -73,16 +73,11 @@ Memory maps are defined in regular tables with a leading block quote. Like this:
 
 # Disassembly Files
 
-Disassembly files have this block quote at the top:
-```
->>> code
-```
-
 You must give the CPU in a block quote near the top (before the first line of disassembly):
+
 ```
 >>> cpu 6809
 ```
-
 You link the disassembly to other files containing address maps like this:
 ```
 >>> memoryTable ram  
