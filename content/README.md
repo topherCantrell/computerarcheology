@@ -1,11 +1,13 @@
 ![Computer Archeology](Arch.jpg)
 
+# Computer Archeology
+
 >>> deploy:<br>
+>>>    +Arch.jpg<br>
+>>>    +favicon.ico<br>
 >>>    +css<br>
 >>>    +js<br>
 >>>    +img<br>
->>>    +Arch.jpg<br>
->>>    +favicon.ico<br>
 >>>    Amiga<br>
 >>>    Arcade<br>
 >>>    Atari2600:Atari 2600<br>
@@ -15,8 +17,7 @@
 >>>    TRS80<br>    
 >>>    Virus<br>
 >>>    Tools<br>
-
-# Computer Archeology
+>>>    *Contact<br>
 
 This web site is about digging up old, forgotten computer systems and cracking open the code that ran on them. Think 
 of each program as a different "dig site". I am a nerdy Indiana Jones. My goal is to find the original programmer's spirit, 
@@ -38,13 +39,15 @@ There are several emulations on this site. If you want to experience the code fo
 
 >>> }
 
-# Raw Content
+# Raw Content on GitHub
 
-All of the web content and tools are on github: [https://github.com/topherCantrell/computerarcheology](https://github.com/topherCantrell/computerarcheology)
+This site is auto-generated from the markdown files in a public github repository. All of the web content and tools are 
+here: [https://github.com/topherCantrell/computerarcheology](https://github.com/topherCantrell/computerarcheology). You
+will find plenty of tools -- assemblers, disassemblers, formatters, etc -- and the disassembly text files (free from HTML markup).
 
-You can submit merge requests to add your own work. The README file in the repository describes the tools and process.
+You can submit merge requests through github to add corrections to my work or to add your own work.
 
-You can click the "Contact" button at the top and send me corrections and additions. 
+Or you can click the "Contact" button at the top and send me corrections and additions. 
 
 If you would like me to add a link to your own site then send me the information.
  
@@ -124,8 +127,8 @@ The [Legend of Zelda](NES/Zelda) for the NES started a long series of wonderful 
 ## Viruses
 
 Computer viruses are an intriguing part of our computer culture. Let me take you into the assembly workings of two famous but defunct 
-viruses. First I'll show you the [Morris Worm](Virus/Worm) VAX assembly snippet written into a buffer overrun to forge a root shell. Then 
-we'll look at the PC [Stoned](Virus/Stoned) boot sector infector. As tiny and efficient as it is, there is always room for improvement. 
+viruses. First I'll show you the [Morris Worm](Virus/MorrisWorm) VAX assembly snippet written into a buffer overrun to forge a root shell. 
+Then have a look at the PC [Stoned](Virus/Stoned) boot sector infector. As tiny and efficient as it is, there is always room for improvement. 
 
 ## Amiga
 
@@ -179,13 +182,3 @@ assign labels to code and data. He begins to decipher what the data structures a
 There is no science to this part of the disassembly. This is where your own experience, insight, luck, and long staring result
 in that "ah ha!" moment of understanding.
 
-# Tools
-
-There are lots of tools support the archeology efforts. They are all in the 
-[computerarcheology repository on github](https://github.com/topherCantrell/computerarcheology).
-
-# Raw Content
-
-The [Raw Content](https://github.com/topherCantrell/computerarcheology/tree/master/content) includes the
-markup files for discussion and code. If you want the clean disassembly file for a particular
-dig site, then look here.

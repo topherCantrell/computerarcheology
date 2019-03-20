@@ -6,5 +6,7 @@
 >>>   +NES.jpg
 >>>   Zelda
 
-TODO
+# Disassemblies
 
+  * [Zelda](Zelda)
+  

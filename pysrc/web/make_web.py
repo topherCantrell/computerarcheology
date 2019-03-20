@@ -174,10 +174,13 @@ def process_markdown(lines, site_nav_node, fp_content):
     cr[0] = web.nav_tree.NavNode(None, 1, 'Home', '')
     crumbs = ''
     for n in cr:
+        tt = n.text
+        if tt.startswith('*'):
+            tt = tt[1:]
         if n == cr[-1]:
-            crumbs += '<li class="active"><span>' + n.text + '</span></li>'
+            crumbs += '<li class="active"><span>' + tt + '</span></li>'
         else:
-            crumbs += '<li><a href="/' + n.get_full_path() + '">' + n.text + '</a></li>'
+            crumbs += '<li><a href="/' + n.get_full_path() + '">' + tt + '</a></li>'
 
     ret['BREAD_CRUMBS'] = crumbs
 
@@ -245,8 +248,9 @@ def deploy_directory(current_node):
                 lines[i] = lines[i].replace(tag, value)
 
     for dep in current_node.children:
-        src = os.path.join(fp_content, dep.anchor)
-        dst = os.path.join(fp_deploy, dep.anchor)
+        da = dep.anchor
+        src = os.path.join(fp_content, da)
+        dst = os.path.join(fp_deploy, da)
         if os.path.isdir(src):
             os.makedirs(dst)
             deploy_directory(dep)
@@ -290,6 +294,9 @@ def load_site_directory():
         info = code.markdown_utils.get_deploy(lines)
 
         for directory, title in info:
+            if directory.startswith('*'):
+                current_node.hidden = True
+                directory = directory[1:]
             if directory.startswith('+'):
                 # These do not contribute to navigation
                 current_node.invisibles.append(directory)

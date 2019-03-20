@@ -17,6 +17,7 @@ class NavNode:
         self.anchor = anchor          # The HTML anchor text
         self.expanded = True          # True if the branch is expanded
         self.active_item = False      # True if this item is currently showing
+        self.hidden = False
         # True if this item is in the path of the currently showing item
         self.active_item_path = False
 
@@ -91,6 +92,9 @@ class NavTree:
 def _to_html_rec(node, children_only, book_marks):
 
     ret = ''
+
+    if node.text.startswith('*'):
+        return ret
 
     if not children_only:
 

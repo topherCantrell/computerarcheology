@@ -1,8 +1,8 @@
 ![Misc. Tools](Tools.jpg)
 
-# Misc. Tools
+# Tools
 
 >>> deploy:<br>
 >>>   Blend<br>
 
-TODO
+  * [Blend](Blend)

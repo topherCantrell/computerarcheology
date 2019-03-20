@@ -1,3 +1,7 @@
+![Rainbow Islands](Rainbow.jpg)
+
+# Rainbow Islands
+
 >>> deploy:<br>
 >>> +Rainbow.jpg<br>
 >>> 1loader-dec.md<br>
@@ -6,11 +10,7 @@
 >>> orig-boot.md<br>
 >>> Journal.md<br>
 
-![Rainbow Islands](Rainbow.jpg)
-
-# Rainbow Islands
-
-**Archeologist: Patrik Sevallius**
+**By Archeologist: Patrik Sevallius**
 
 One of my favorite games as a kid.
 

@@ -1,5 +1,9 @@
 ![1loader](Rainbow.jpg)
 
+# 1loader
+
+**By Archeologist: Patrik Sevallius**
+
 This is the code loaded by the boot block.
 
 ```plain

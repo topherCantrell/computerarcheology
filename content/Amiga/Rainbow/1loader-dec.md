@@ -1,5 +1,9 @@
 ![1loader-dec](Rainbow.jpg)
 
+# 1loader-dec
+
+**By Archeologist: Patrik Sevallius**
+
 This is what the encrypted part looks after decryption:
 
 ```plain

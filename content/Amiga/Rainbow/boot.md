@@ -1,5 +1,9 @@
 ![boot](Rainbow.jpg)
 
+# boot
+
+**By Archeologist: Patrik Sevallius**
+
 The first part that's loaded is the boot block, it's located on the first sector of the first track,
 
 it looks like this -- taken from the [ADF-faq](http://lclevy.free.fr/adflib/adf_info.html#p41):

@@ -1,8 +1,13 @@
 ![Virus](Virus.jpg)
 
+# The Computer Virus
+
 >>> deploy:<br>
 >>>  +Virus.jpg<br>
 >>>    MorrisWorm:Morris Worm<br>
 >>>    Stoned<br>
 
-# The Computer Virus
+# Disassemblies
+
+  * [Morris Worm](MorrisWorm)
+  * [Stoned](Stoned)
