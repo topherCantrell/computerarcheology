@@ -3363,6 +3363,7 @@ DB06: 0A 16          DEC     <$16
 DB08: 0B                                  
 DB09: 0E 1B          JMP     <$1B            
 DB0B: FF 8D 47       STU     $8D47           
+
 DB0E: CE DB 32       LDU     #$DB32          
 DB11: 96 52          LDA     <$52            
 DB13: 84 02          ANDA    #$02            
@@ -3380,6 +3381,7 @@ DB2B: 20 F4          BRA     $DB21                          ;
 DB2D: 33 5F          LEAU    -1,U            
 DB2F: 30 1F          LEAX    -1,X            
 DB31: 39             RTS                     
+
 DB32: 00 BB          NEG     <$BB            
 DB34: 00 C3          NEG     <$C3            
 DB36: 34 10          PSHS    X               
@@ -3397,6 +3399,7 @@ DB4E: A7 3F          STA     -1,Y
 DB50: 20 F4          BRA     $DB46                          ; 
 DB52: 6F 3E          CLR     -2,Y            
 DB54: 39             RTS                     
+
 DB55: DD 6E          STD     <$6E            
 DB57: C6 07          LDB     #$07            
 DB59: 8E 00 CB       LDX     #$00CB          
@@ -3415,6 +3418,7 @@ DB76: 8D 05          BSR     $DB7D                          ;
 DB78: D6 6F          LDB     <$6F            
 DB7A: E7 84          STB     ,X              
 DB7C: 39             RTS                     
+
 DB7D: 0F 6B          CLR     <$6B            
 DB7F: DD 6C          STD     <$6C            
 DB81: DC 6E          LDD     <$6E            
@@ -3426,6 +3430,7 @@ DB8B: 20 F6          BRA     $DB83                          ;
 DB8D: 96 6B          LDA     <$6B            
 DB8F: A7 80          STA     ,X+             
 DB91: 39             RTS                     
+
 DB92: 5F             CLRB                    
 DB93: 8E 00 D2       LDX     #$00D2          
 DB96: 33 47          LEAU    7,U             
@@ -3452,20 +3457,25 @@ DBBC: 26 FB          BNE     $DBB9                          ;
 DBBE: 20 F0          BRA     $DBB0                          ; 
 DBC0: 39             RTS                     
 
-DBC1: 0A 10          DEC     <$10            
-DBC3: DC D7          LDD     <$D7            
-DBC5: 34 00          PSHS    $00             
-DBC7: 0A 05          DEC     <$05            
-DBC9: DE 17          LDU     <$17            
-DBCB: 3B             RTI                     
-DBCC: 80 02          SUBA    #$02            
-DBCE: 08 DE          ASL     <$DE            
-DBD0: 7B                                  
-DBD1: 3D             MUL                     
-DBD2: D8 02          EORB    <$02            
-DBD4: 06 DE          ROR     <$DE            
-DBD6: 9B 3E          ADDA    <$3E            
-DBD8: E2 FF 34 46    SBCB    [$3446]         
+DBC1: 0A 10           
+DBC3: DC D7           
+DBC5: 34 00
+            
+DBC7: 0A 05          
+DBC9: DE 17          
+DBCB: 3B 80
+ 
+DBCD: 02 08 
+DBDF: DE 7B                                  
+DBD1: 3D D8
+ 
+DBD3: 02 06 
+DBD5: DE 9B 
+DBD7: 3E E2
+       
+DBD9: FF      ; End of list 
+
+DBDA: 34 46          PSHS    U,B,A         
 DBDC: 4F             CLRA                    
 DBDD: ED E3          STD     ,--S            
 DBDF: 34 16          PSHS    X,B,A           
@@ -3601,6 +3611,9 @@ DCCE: B6 FF 23       LDA     $FF23                          ; {hard:PIA1_CB}
 DCD1: 84 F7          ANDA    #$F7            
 DCD3: B7 FF 23       STA     $FF23                          ; {hard:PIA1_CB} 
 DCD6: 39             RTS                     
+
+
+
 DCD7: 0A 80          DEC     <$80            
 DCD9: 2A A0          BPL     $DC7B                          ; 
 DCDB: 15                                  
