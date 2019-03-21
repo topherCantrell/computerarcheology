@@ -429,9 +429,14 @@ PickUpObject:
 
 # Interrupt Service
 
+The HSYNC (fast) interrupt is turned off. This routine is called 60 times a second, but it only
+performs work once a second.
+
+Emulators can call 0751 once a second instead of 0745 60-times-a-second.
+
 ```code
 InterruptService:
-0745: B6 FF 02            LDA     $FF02                     ; {hard:PIA0_DB} Strobe hardware to reenable interrupt
+0745: B6 FF 02            LDA     $FF02                     ; {hard:PIA0_DB} Strobe hardware to re-enable interrupt
 0748: 0C 3F               INC     <$3F                      ; {ram:ticksTillSec} Interrupt ...
 074A: 96 3F               LDA     <$3F                      ; {ram:ticksTillSec} ... divisor
 074C: 81 3C               CMPA    #$3C                      ; Once ...
@@ -440,7 +445,7 @@ InterruptService:
 ;
 0751: BD 0A 1F            JSR     $0A1F                     ; {MINOTAURAttack} Handle creatures that attack
 0754: 96 45               LDA     <$45                      ; {ram:fogClock} Time spent with MYSTERIOUS FOG
-0756: 81 06               CMPA    #$06                      ; Fog counter reached 6 secods?
+0756: 81 06               CMPA    #$06                      ; Fog counter reached 6 seconds?
 0758: 27 19               BEQ     $773                      ; Yes ... warn the player
 075A: 25 21               BCS     $77D                      ; Less than 6 ... just move on
 075C: 81 0A               CMPA    #$0A                      ; Counter reached 10 seconds?
