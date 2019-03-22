@@ -69,7 +69,7 @@ C075: BD DC C7       JSR     $DCC7                          ;
 C078: 86 01          LDA     #$01            
 C07A: 97 3A          STA     <$3A            
 C07C: BD D1 1A       JSR     $D11A                          ; 
-C07F: 86 0A          LDA     #$0A            
+C07F: 86 0A          LDA     #$0A                           ; Room 10? is this the splash screen?
 C081: 97 39          STA     <$39            
 C083: 86 55          LDA     #$55            
 C085: 97 69          STA     <$69            
@@ -79,7 +79,7 @@ C08D: CC 1C 00       LDD     #$1C00                         ; Display memory ...
 C090: BD CD F7       JSR     $CDF7                          ; {SetDispMem} ... 1C00
 C093: BD CD E3       JSR     $CDE3                          ; {SetVDGMode} 
 C096: BD CE 10       JSR     $CE10                          ; 
-C099: 8E 04 00       LDX     #$0400          
+C099: 8E 04 00       LDX     #$0400                         ; Background "drawing" screen buffer
 C09C: 9F 4E          STX     <$4E            
 C09E: CE CE C4       LDU     #$CEC4          
 C0A1: BD D2 4E       JSR     $D24E                          ; 
@@ -250,6 +250,7 @@ C21B: 97 C2          STA     <$C2
 C21D: 97 CA          STA     <$CA            
 C21F: 97 D2          STA     <$D2            
 C221: 39             RTS                     
+
 C222: 8E 00 B3       LDX     #$00B3          
 C225: 34 50          PSHS    U,X             
 C227: A6 C0          LDA     ,U+             
@@ -263,6 +264,7 @@ C235: A6 C0          LDA     ,U+
 C237: 2B E8          BMI     $C221                          ; 
 C239: A7 80          STA     ,X+             
 C23B: 20 F8          BRA     $C235                          ; 
+
 C23D: 07 C9          ASR     <$C9            
 C23F: 09 0A          ROL     <$0A            
 C241: 0A 47          DEC     <$47            
@@ -364,7 +366,7 @@ C309: 20 10          BRA     $C31B                          ;
 C30B: CE 1C 00       LDU     #$1C00          
 C30E: DF 4E          STU     <$4E            
 C310: BD CD 81       JSR     $CD81                          ; 
-C313: CE 04 00       LDU     #$0400          
+C313: CE 04 00       LDU     #$0400                         ; Background "drawing" screen buffer
 C316: DF 4E          STU     <$4E            
 C318: BD CD 81       JSR     $CD81                          ; 
 C31B: DC 1B          LDD     <$1B            
@@ -735,9 +737,9 @@ C64C: 8E 0F 66       LDX     #$0F66
 C64F: BD D8 E2       JSR     $D8E2                          ; 
 C652: BD C2 01       JSR     $C201                          ; {WaitForIRQ} 
 C655: 1C EF          ANDCC   #$EF            
-C657: CC 04 00       LDD     #$0400          
+C657: CC 04 00       LDD     #$0400                         ; Background "drawing" screen buffer
 C65A: BD CD F7       JSR     $CDF7                          ; {SetDispMem} 
-C65D: 8E 04 00       LDX     #$0400          
+C65D: 8E 04 00       LDX     #$0400                         ; Background "drawing" screen buffer
 C660: EC 81          LDD     ,X++            
 C662: ED 89 17 FE    STD     $17FE,X         
 C666: 8C 1C 00       CMPX    #$1C00          
@@ -1480,16 +1482,18 @@ CC99: C6 12          LDB     #$12
 CC9B: 3D             MUL                     
 CC9C: 33 CB          LEAU    D,U             
 CC9E: EF 2A          STU     10,Y            
-CCA0: 7E D8 60       JMP     $D860                          ; 
+CCA0: 7E D8 60       JMP     $D860                          ;
+ 
 CCA3: 10 8E 01 AA    LDY     #$01AA          
-CCA7: 9E 3B          LDX     <$3B            
-CCA9: 96 39          LDA     <$39            
-CCAB: 48             LSLA                    
-CCAC: AE 86          LDX     A,X             
-CCAE: 30 02          LEAX    2,X             
+CCA7: 9E 3B          LDX     <$3B            ; ??Task list
+CCA9: 96 39          LDA     <$39            ; ?? task to execute
+CCAB: 48             LSLA                    ; Offset 2 bytes per task
+CCAC: AE 86          LDX     A,X             ; Get the jump pointer
+CCAE: 30 02          LEAX    2,X             ; ??Next task?
 CCB0: 39             RTS                     
+
 CCB1: BD CF 1D       JSR     $CF1D                          ; 
-CCB4: 8D ED          BSR     $CCA3                          ; 
+CCB4: 8D ED          BSR     $CCA3                          ; ??Look up task?
 CCB6: A6 84          LDA     ,X              
 CCB8: 27 F6          BEQ     $CCB0                          ; 
 CCBA: E6 01          LDB     1,X             
@@ -1542,7 +1546,7 @@ CD27: 8D 58          BSR     $CD81                          ;
 CD29: 30 88 06       LEAX    $06,X           
 CD2C: A6 84          LDA     ,X              
 CD2E: 26 EF          BNE     $CD1F                          ; 
-CD30: 8E 04 00       LDX     #$0400          
+CD30: 8E 04 00       LDX     #$0400                         ; Background "drawing" screen buffer
 CD33: 9F 4E          STX     <$4E            
 CD35: 17 00 E5       LBSR    $00E5           
 CD38: BE 01 EB       LDX     $01EB           
@@ -1563,15 +1567,16 @@ CD57: A7 84          STA     ,X
 CD59: CC 03 E8       LDD     #$03E8          
 CD5C: 8C DC 1B       CMPX    #$DC1B          
 CD5F: BD DB 0C       JSR     $DB0C                          ; 
-CD62: 8E 04 55       LDX     #$0455          
-CD65: CE DB 04       LDU     #$DB04          
-CD68: BD D8 E2       JSR     $D8E2                          ; 
-CD6B: CE 00 D0       LDU     #$00D0          
-CD6E: 86 24          LDA     #$24            
-CD70: D6 39          LDB     <$39            
-CD72: ED C4          STD     ,U              
-CD74: BD D8 E2       JSR     $D8E2                          ; 
+CD62: 8E 04 55       LDX     #$0455                         ; Spot on screen
+CD65: CE DB 04       LDU     #$DB04                         ; "CHAMBER"
+CD68: BD D8 E2       JSR     $D8E2                          ; Print "CHAMBER"
+CD6B: CE 00 D0       LDU     #$00D0                         ; Buffer for space+number
+CD6E: 86 24          LDA     #$24                           ; Space
+CD70: D6 39          LDB     <$39                           ; Room number
+CD72: ED C4          STD     ,U                             ; Store the two character string
+CD74: BD D8 E2       JSR     $D8E2                          ; Print space+number
 CD77: 7E CF 0F       JMP     $CF0F                          ; 
+
 CD7A: 30 88 06       LEAX    $06,X           
 CD7D: 7E CC B6       JMP     $CCB6                          ; 
 CD80: 39             RTS                     
@@ -1648,18 +1653,18 @@ CE0A: 39             RTS                                    ; Done
 
 CE0B: 8E 1C 00       LDX     #$1C00          
 CE0E: 20 03          BRA     $CE13                          ; 
-CE10: 8E 04 00       LDX     #$0400          
+CE10: 8E 04 00       LDX     #$0400                         ; Background "drawing" screen buffer
 CE13: DC 1B          LDD     <$1B            
 CE15: ED 81          STD     ,X++            
 CE17: 8C 34 00       CMPX    #$3400          
 CE1A: 26 F9          BNE     $CE15                          ; 
 CE1C: 39             RTS                     
 CE1D: 6F E2          CLR     ,-S             
-CE1F: 8E 04 00       LDX     #$0400          
+CE1F: 8E 04 00       LDX     #$0400                         ; Background "drawing" screen buffer
 CE22: 1F 10          TFR     X,D             
 CE24: C5 1F          BITB    #$1F            
 CE26: 26 08          BNE     $CE30                          ; 
-CE28: 10 8E 04 00    LDY     #$0400          
+CE28: 10 8E 04 00    LDY     #$0400                         ; Background "drawing" screen buffer
 CE2C: 31 3F          LEAY    -1,Y            
 CE2E: 26 FC          BNE     $CE2C                          ; 
 CE30: C6 06          LDB     #$06            
@@ -1724,7 +1729,7 @@ CEB2: 0C 0D          INC     <$0D
 CEB4: 0E FF          JMP     <$FF            
 CEB6: BD CE 10       JSR     $CE10                          ; 
 CEB9: BD CD E3       JSR     $CDE3                          ; {SetVDGMode} Set the graphics mode
-CEBC: 8E D2 5A       LDX     #$D25A          
+CEBC: 8E D2 5A       LDX     #$D25A                         ; ? Table of jumps ?
 CEBF: 9F 3B          STX     <$3B            
 CEC1: 0F 39          CLR     <$39            
 CEC3: 39             RTS                     
@@ -2204,30 +2209,38 @@ D247: 38
 D248: 44             LSRA                    
 D249: 18                                  
 D24A: 96 38          LDA     <$38            
-D24C: 96 60          LDA     <$60            
+D24C: 96 60          LDA     <$60   
+
+         
 D24E: 86 01          LDA     #$01            
 D250: 97 20          STA     <$20            
 D252: CC 10 0F       LDD     #$100F          
 D255: DD 21          STD     <$21            
 D257: 7E D5 9E       JMP     $D59E                          ; 
-D25A: D2 6E          SBCB    <$6E            
-D25C: D2 7D          SBCB    <$7D            
-D25E: D2 98          SBCB    <$98            
-D260: D2 BF          SBCB    <$BF            
-D262: D2 EC          SBCB    <$EC            
-D264: D3 07          ADDD    <$07            
-D266: D3 1C          ADDD    <$1C            
-D268: D3 2B          ADDD    <$2B            
-D26A: D3 3A          ADDD    <$3A            
-D26C: D3 49          ADDD    <$49            
-D26E: D3 5E          ADDD    <$5E            
-D270: FF FF A5       STU     $FFA5           
+
+D25A: D2 6E         
+D25C: D2 7D       
+D25E: D2 98       
+D260: D2 BF           
+D262: D2 EC          
+D264: D3 07           
+D266: D3 1C          
+D268: D3 2B        
+D26A: D3 3A           
+D26C: D3 49
+          
+D26E: D3 5E         
+D270: FF FF 
+
+D273: A5           
 D273: 70 00 00       NEG     $0000           
 D276: 1E 72          EXG     $72             
 D278: 87                                  
 D279: 07 01          ASR     <$01            
 D27B: 01                                  
-D27C: 00 D3          NEG     <$D3            
+D27C: 00 
+
+D27D: D3          NEG     <$D3            
 D27E: A0                                  
 D27F: 87                                  
 D280: 05                                  
@@ -2244,6 +2257,7 @@ D290: 04 1E          LSR     <$1E
 D292: 05                                  
 D293: 78 70 06       LSL     $7006           
 D296: 1A 00          ORCC    #$00            
+
 D298: D3 E4          ADDD    <$E4            
 D29A: A5 05          BITA    5,X             
 D29C: 4B                                  
@@ -2263,7 +2277,9 @@ D2B6: 03 12          COM     <$12
 D2B8: 1E 05          EXG     $05             
 D2BA: 87                                  
 D2BB: 70 05 15       NEG     $0515           
-D2BE: 00 D4          NEG     <$D4            
+D2BE: 00 
+
+D2BF: D4          NEG     <$D4            
 D2C0: 26 78          BNE     $D33A                          ; 
 D2C2: 05                                  
 D2C3: 78 70 02       LSL     $7002           
@@ -2289,7 +2305,9 @@ D2E4: 11
 D2E5: 1E 72          EXG     $72             
 D2E7: 1E 07          EXG     $07             
 D2E9: 04 10          LSR     <$10            
-D2EB: 00 D4          NEG     <$D4            
+D2EB: 00 
+
+D2EC: D4          NEG     <$D4            
 D2ED: 67 A5          ASR     B,Y             
 D2EF: 05                                  
 D2F0: A5 70          BITA    -16,S           
@@ -2303,7 +2321,9 @@ D2FD: 70 03 0E       NEG     $030E
 D300: 1E 05          EXG     $05             
 D302: 1E 70          EXG     $70             
 D304: 03 0F          COM     <$0F            
-D306: 00 D4          NEG     <$D4            
+D306: 00 
+
+D307: D4          NEG     <$D4            
 D308: A2                                  
 D309: 87                                  
 D30A: 72                                  
@@ -2316,7 +2336,9 @@ D315: 4B
 D316: 72                                  
 D317: A5 07          BITA    7,X             
 D319: 07 1A          ASR     <$1A            
-D31B: 00 D4          NEG     <$D4            
+D31B: 00 
+
+D31C: D4          NEG     <$D4            
 D31D: D9 78          ADCB    <$78            
 D31F: 72                                  
 D320: 1E 07          EXG     $07             
@@ -2326,7 +2348,9 @@ D324: 3C 72          CWAI    $72
 D326: A5 07          BITA    7,X             
 D328: 05                                  
 D329: 18                                  
-D32A: 00 D4          NEG     <$D4            
+D32A: 00 
+
+D32B: D4          NEG     <$D4            
 D32C: F6 A5 05       LDB     $A505           
 D32F: 4B                                  
 D330: 70 05 1B       NEG     $051B           
@@ -2334,7 +2358,9 @@ D333: 4B
 D334: 72                                  
 D335: A5 07          BITA    7,X             
 D337: 08 1C          ASL     <$1C            
-D339: 00 D5          NEG     <$D5            
+D339: 00 
+
+D33A: D5          NEG     <$D5            
 D33B: 2F A5          BLE     $D2E2                          ; 
 D33D: 05                                  
 D33E: 4B                                  
@@ -2342,7 +2368,9 @@ D33F: 70 07 1D       NEG     $071D
 D342: 2D 72          BLT     $D3B6                          ; 
 D344: 1E 07          EXG     $07             
 D346: 09 1E          ROL     <$1E            
-D348: 00 D5          NEG     <$D5            
+D348: 00 
+
+D349: D5          NEG     <$D5            
 D34A: 61                                  
 D34B: 96 05          LDA     <$05            
 D34D: A5 70          BITA    -16,S           
@@ -2353,7 +2381,9 @@ D355: 08 1F          ASL     <$1F
 D357: A5 72          BITA    -14,S           
 D359: A5 70          BITA    -16,S           
 D35B: 00 21          NEG     <$21            
-D35D: 00 0F          NEG     <$0F            
+D35D: 00 
+
+D35E: 0F          NEG     <$0F            
 D35F: 80 06          SUBA    #$06            
 D361: 0C 80          INC     <$80            
 D363: 04 04          LSR     <$04            
@@ -3097,8 +3127,11 @@ D8DA: 33 C8 20       LEAU    $20,U
 D8DD: 0A 26          DEC     <$26            
 D8DF: 26 DC          BNE     $D8BD                          ; 
 D8E1: 39             RTS                     
-D8E2: 10 8E D9 08    LDY     #$D908          
-D8E6: C6 07          LDB     #$07            
+
+PrintMessage:
+; U has message
+D8E2: 10 8E D9 08    LDY     #$D908     ; Characters          
+D8E6: C6 07          LDB     #$07       ; 7 bytes each     
 D8E8: A6 C0          LDA     ,U+             
 D8EA: 2B 1B          BMI     $D907                          ; 
 D8EC: 3D             MUL                     
@@ -3106,48 +3139,75 @@ D8ED: 31 AB          LEAY    D,Y
 D8EF: C6 07          LDB     #$07            
 D8F1: A6 A0          LDA     ,Y+             
 D8F3: 94 69          ANDA    <$69            
-D8F5: AA 89 18 00    ORA     $1800,X         
+D8F5: AA 89 18 00    ORA     $1800,X         ; Other screen
 D8F9: A7 84          STA     ,X              
-D8FB: 30 88 20       LEAX    $20,X           
+D8FB: 30 88 20       LEAX    $20,X           ; Next row
 D8FE: 5A             DECB                    
 D8FF: 26 F0          BNE     $D8F1                          ; 
 D901: 30 89 FF 21    LEAX    $FF21,X         
-D905: 20 DB          BRA     $D8E2                          ; 
+D905: 20 DB          BRA     $D8E2                          ;
 D907: 39             RTS                     
-D908: 30 CC CC       LEAX    $CC,PC          
-D90B: CC CC CC       LDD     #$CCCC          
-D90E: 30 30          LEAX    -16,Y           
-D910: F0 30 30       SUBB    $3030           
-D913: 30 30          LEAX    -16,Y           
-D915: FC 30 CC       LDD     $30CC           
+
+D908: 30 CC CC               
+D90B: CC CC CC                
+D90E: 30 
+
+D90F: 30                    
+D910: F0 30 30                 
+D913: 30 30                    
+D915: FC 
+
+D916: 30 CC       LDD     $30CC           
 D918: 0C 30          INC     <$30            
 D91A: 30 C0          LEAX    ,U+             
-D91C: FC 30 CC       LDD     $30CC           
+D91C: FC 
+
+D91D: 30 CC       LDD     $30CC           
 D91F: 0C 3C          INC     <$3C            
 D921: 0C CC          INC     <$CC            
-D923: 30 0C          LEAX    12,X            
+D923: 30 
+
+D924: 0C          LEAX    12,X            
 D925: 3C CC          CWAI    $CC             
 D927: FC 0C 0C       LDD     $0C0C           
-D92A: 0C FC          INC     <$FC            
+D92A: 0C 
+
+D92B: FC          INC     <$FC            
 D92C: C0 C0          SUBB    #$C0            
 D92E: FC 0C CC       LDD     $0CCC           
-D931: 30 30          LEAX    -16,Y           
+D931: 30 
+
+; 6
+D932: 30          LEAX    -16,Y           
 D933: CC C0 F0       LDD     #$C0F0          
-D936: CC CC 30       LDD     #$CC30          
+D936: CC CC 30       LDD     #$CC30
+
+; 7          
 D939: FC 0C 30       LDD     $0C30           
 D93C: 30 30          LEAX    -16,Y           
-D93E: C0 C0          SUBB    #$C0            
+D93E: C0 C0          SUBB    #$C0
+
+; 8            
 D940: 30 CC CC       LEAX    $CC,PC          
 D943: 30 CC CC       LEAX    $CC,PC          
-D946: 30 30          LEAX    -16,Y           
+D946: 30 
+
+; 9
+D947: 30          LEAX    -16,Y           
 D948: CC CC 3C       LDD     #$CC3C          
 D94B: 0C CC          INC     <$CC            
-D94D: 30 30          LEAX    -16,Y           
+D94D: 30 
+
+; A
+D94E: 30          LEAX    -16,Y           
 D94F: CC CC FC       LDD     #$CCFC          
 D952: CC CC CC       LDD     #$CCCC          
+; B
 D955: F0 CC CC       SUBB    $CCCC                          ; 
 D958: F0 CC CC       SUBB    $CCCC                          ; 
-D95B: F0 30 CC       SUBB    $30CC           
+D95B: F0 
+
+D95C: 30 CC       SUBB    $30CC           
 D95E: C0 C0          SUBB    #$C0            
 D960: C0 CC          SUBB    #$CC            
 D962: 30                                  
@@ -3222,22 +3282,15 @@ DA10: C0 00          SUBB    #$00
 DA12: 00 00          NEG     <$00            
 DA14: 00 00          NEG     <$00            
 DA16: 00 30          NEG     <$30            
-DA18: 30 0D          LEAX    13,X            
-DA1A: 18                                  
-DA1B: 20 17          BRA     $DA34                          ; 
-DA1D: 15                                  
-DA1E: 0A 17          DEC     <$17            
-DA20: 0D 24          TST     <$24            
-DA22: 1F 01          TFR     D,X             
-DA24: 26 01          BNE     $DA27                          ; 
-DA26: FF 20 1B       STU     $201B           
-DA29: 12             NOP                     
-DA2A: 1D             SEX                     
-DA2B: 1D             SEX                     
-DA2C: 0E 17          JMP     <$17            
-DA2E: 24 0B          BCC     $DA3B                          ; 
-DA30: 22 25          BHI     $DA57                          ; 
-DA32: FF 16 12       STU     $1612           
+DA18: 30 
+
+;      D  O  W  N  L  A  N  D  _
+DA19: 0D 18 20 17 15 0A 17 0D 24 1F 01 26 01 FF 
+
+;      W  R  I  T  T  E  N  _  B  Y  :
+DA27: 20 1B 12 1D 1D 0E 17 24 0B 22 25 FF 
+
+DA33: 16 12       STU     $1612           
 DA35: 0C 11          INC     <$11            
 DA37: 0A 0E          DEC     <$0E            
 DA39: 15                                  
@@ -3358,20 +3411,21 @@ DAFB: 0A 22          DEC     <$22
 DAFD: 0E 1B          JMP     <$1B            
 DAFF: 24 1D          BCC     $DB1E                          ; 
 DB01: 20 18          BRA     $DB1B                          ; 
-DB03: FF 0C 11       STU     $0C11           
-DB06: 0A 16          DEC     <$16            
-DB08: 0B                                  
-DB09: 0E 1B          JMP     <$1B            
-DB0B: FF 8D 47       STU     $8D47           
+DB03: FF 
 
+;      C  H  A  M  B  E  R
+DB04: 0C 11 0A 16 0B 0E 1B FF
+ 
+DB0C: 8D 47          BSR     $DB55           
 DB0E: CE DB 32       LDU     #$DB32          
 DB11: 96 52          LDA     <$52            
 DB13: 84 02          ANDA    #$02            
 DB15: EE C6          LDU     A,U             
 DB17: 8D 79          BSR     $DB92                          ; 
-DB19: 8E 1B 03       LDX     #$1B03          
+DB19: 8E 1B 03       LDX     #$1B03          ; ?? screen coordinates?
 DB1C: 8D 03          BSR     $DB21                          ; 
 DB1E: 7E D8 E2       JMP     $D8E2                          ; 
+
 DB21: A6 C4          LDA     ,U              
 DB23: 2B 08          BMI     $DB2D                          ; 
 DB25: 26 0A          BNE     $DB31                          ; 
