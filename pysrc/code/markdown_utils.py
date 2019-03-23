@@ -6,6 +6,7 @@ import code.list_line
 import code.markdown_line
 import code.paragraph_line
 import code.table_line
+import code.header_line
 
 
 def process_markdown(text):
@@ -95,6 +96,15 @@ def is_text_a_list_item(text):
         return True
     return False
 
+def get_binary(filename):
+    _,_,lines = load_file(filename)
+    ret = []   
+    
+    for line in lines:
+        if line.data:
+            ret = ret + line.data
+    
+    return ret
 
 def load_file(filename):
     '''
@@ -121,6 +131,7 @@ def load_file(filename):
 
     lines = []
     as_is_lines = []
+    code_only = []
 
     # Everything comes in as a generic text
     with open(filename, 'r') as f:
@@ -150,7 +161,9 @@ def load_file(filename):
             else:
                 # Parse the block types while we are here
                 if block.get_type() == 'code':
-                    block.add_line(code.code_line.CodeLine(md))
+                    cod = code.code_line.CodeLine(md)
+                    code_only.append(cod) 
+                    block.add_line(cod)
                 else:
                     block.add_line(md)
         else:
@@ -247,4 +260,4 @@ def load_file(filename):
                     m.is_memory = True
                     break
 
-    return lines, as_is_lines
+    return lines, as_is_lines, code_only

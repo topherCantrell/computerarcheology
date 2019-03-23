@@ -260,7 +260,7 @@ def deploy_directory(current_node):
             elif not src.endswith('.md'):
                 shutil.copy(src, dst)
             else:
-                md, _ = code.markdown_utils.load_file(src)
+                md, _, _ = code.markdown_utils.load_file(src)
                 cont = process_markdown(md, dep, fp_content)
                 f = open(os.path.join(ENV.CONTENT_DIR, 'master.template'), 'r')
                 lines = f.readlines()
@@ -289,7 +289,7 @@ def load_site_directory():
 
     def _load_site_directory_rec(level, tree, current_node):
         src = os.path.join(ENV.CONTENT_DIR, current_node.get_full_path())
-        lines, _ = code.markdown_utils.load_file(
+        lines, _, _ = code.markdown_utils.load_file(
             os.path.join(src, 'README.md'))
         info = code.markdown_utils.get_deploy(lines)
 

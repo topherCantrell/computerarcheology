@@ -1,6 +1,6 @@
 ![Code](downland.jpg)
 
-# Downland Code
+# Downland Code v1.1
 
 >>> cpu 6809
 
@@ -2218,18 +2218,20 @@ D252: CC 10 0F       LDD     #$100F
 D255: DD 21          STD     <$21            
 D257: 7E D5 9E       JMP     $D59E                          ; 
 
-D25A: D2 6E         
-D25C: D2 7D       
-D25E: D2 98       
-D260: D2 BF           
-D262: D2 EC          
-D264: D3 07           
-D266: D3 1C          
-D268: D3 2B        
-D26A: D3 3A           
-D26C: D3 49
-          
-D26E: D3 5E         
+; http://www.cocopedia.com/wiki/index.php/Map_of_Downland
+; The map shows 10 chambers (0 through 9) plus a starting splash screen
+;
+D25A: D2 6E ; Chamber 0         
+D25C: D2 7D ; Chamber 1
+D25E: D2 98 ; Chamber 2
+D260: D2 BF ; Chamber 3
+D262: D2 EC ; Chamber 4
+D264: D3 07 ; Chamber 5
+D266: D3 1C ; Chamber 6
+D268: D3 2B ; Chamber 7
+D26A: D3 3A ; Chamber 8
+D26C: D3 49 ; Chamber 9
+D26E: D3 5E ; Chamber 10 (??The splash screen)
 D270: FF FF 
 
 D273: A5           
@@ -3147,271 +3149,455 @@ D8FF: 26 F0          BNE     $D8F1                          ;
 D901: 30 89 FF 21    LEAX    $FF21,X         
 D905: 20 DB          BRA     $D8E2                          ;
 D907: 39             RTS                     
+```
 
-D908: 30 CC CC               
-D90B: CC CC CC                
-D90E: 30 
+# Characters
 
-D90F: 30                    
-D910: F0 30 30                 
-D913: 30 30                    
-D915: FC 
+```code
+; 0
+D908: 30 CC CC CC CC CC 30
+; ..**....
+; **..**..
+; **..**..
+; **..**..
+; **..**..
+; **..**..
+; ..**....
 
-D916: 30 CC       LDD     $30CC           
-D918: 0C 30          INC     <$30            
-D91A: 30 C0          LEAX    ,U+             
-D91C: FC 
+; 1
+D90F: 30 F0 30 30 30 30 FC
+; ..**....
+; ****....
+; ..**....
+; ..**....
+; ..**....
+; ..**....
+; ******..
 
-D91D: 30 CC       LDD     $30CC           
-D91F: 0C 3C          INC     <$3C            
-D921: 0C CC          INC     <$CC            
-D923: 30 
+; 2
+D916: 30 CC 0C 30 30 C0 FC
+; ..**....
+; **..**..
+; ....**..
+; ..**....
+; ..**....
+; **......
+; ******..
 
-D924: 0C          LEAX    12,X            
-D925: 3C CC          CWAI    $CC             
-D927: FC 0C 0C       LDD     $0C0C           
-D92A: 0C 
+; 3
+D91D: 30 CC 0C 3C 0C CC 30
+; ..**....
+; **..**..
+; ....**..
+; ..****..
+; ....**..
+; **..**..
+; ..**....
 
-D92B: FC          INC     <$FC            
-D92C: C0 C0          SUBB    #$C0            
-D92E: FC 0C CC       LDD     $0CCC           
-D931: 30 
+; 4
+D924: 0C 3C CC FC 0C 0C 0C
+; ....**..
+; ..****..
+; **..**..
+; ******..
+; ....**..
+; ....**..
+; ....**..
+
+; 5
+D92B: FC C0 C0 FC 0C CC 30
+; ******..
+; **......
+; **......
+; ******..
+; ....**..
+; **..**..
+; ..**....
 
 ; 6
-D932: 30          LEAX    -16,Y           
-D933: CC C0 F0       LDD     #$C0F0          
-D936: CC CC 30       LDD     #$CC30
+D932: 30 CC C0 F0 CC CC 30
+; ..**....
+; **..**..
+; **......
+; ****....
+; **..**..
+; **..**..
+; ..**....
 
-; 7          
-D939: FC 0C 30       LDD     $0C30           
-D93C: 30 30          LEAX    -16,Y           
-D93E: C0 C0          SUBB    #$C0
+; 7
+D939: FC 0C 30 30 30 C0 C0
+; ******..
+; ....**..
+; ..**....
+; ..**....
+; ..**....
+; **......
+; **......
 
-; 8            
-D940: 30 CC CC       LEAX    $CC,PC          
-D943: 30 CC CC       LEAX    $CC,PC          
-D946: 30 
+; 8
+D940: 30 CC CC 30 CC CC 30
+; ..**....
+; **..**..
+; **..**..
+; ..**....
+; **..**..
+; **..**..
+; ..**....
+D947: 30 CC CC 3C 0C CC 30
 
 ; 9
-D947: 30          LEAX    -16,Y           
-D948: CC CC 3C       LDD     #$CC3C          
-D94B: 0C CC          INC     <$CC            
-D94D: 30 
+; ..**....
+; **..**..
+; **..**..
+; ..****..
+; ....**..
+; **..**..
+; ..**....
 
 ; A
-D94E: 30          LEAX    -16,Y           
-D94F: CC CC FC       LDD     #$CCFC          
-D952: CC CC CC       LDD     #$CCCC          
+D94E: 30 CC CC FC CC CC CC
+; ..**....
+; **..**..
+; **..**..
+; ******..
+; **..**..
+; **..**..
+; **..**..
+
 ; B
-D955: F0 CC CC       SUBB    $CCCC                          ; 
-D958: F0 CC CC       SUBB    $CCCC                          ; 
-D95B: F0 
+D955: F0 CC CC F0 CC CC F0
+; ****....
+; **..**..
+; **..**..
+; ****....
+; **..**..
+; **..**..
+; ****....
 
-D95C: 30 CC       SUBB    $30CC           
-D95E: C0 C0          SUBB    #$C0            
-D960: C0 CC          SUBB    #$CC            
-D962: 30                                  
-D963: F0 CC CC       SUBB    $CCCC                          ; 
-D966: CC CC CC       LDD     #$CCCC          
-D969: F0 FC C0       SUBB    $FCC0           
-D96C: C0 F0          SUBB    #$F0            
-D96E: C0 C0          SUBB    #$C0            
-D970: FC FC C0       LDD     $FCC0           
-D973: C0 F0          SUBB    #$F0            
-D975: C0 C0          SUBB    #$C0            
-D977: C0 30          SUBB    #$30            
-D979: CC C0 3C       LDD     #$C03C          
-D97C: CC CC 30       LDD     #$CC30          
-D97F: CC CC CC       LDD     #$CCCC          
-D982: FC CC CC       LDD     $CCCC                          ; 
-D985: CC FC 30       LDD     #$FC30          
-D988: 30 30          LEAX    -16,Y           
-D98A: 30 30          LEAX    -16,Y           
-D98C: FC 0C 0C       LDD     $0C0C           
-D98F: 0C 0C          INC     <$0C            
-D991: 0C CC          INC     <$CC            
-D993: 30 CC CC       LEAX    $CC,PC          
-D996: F0 C0 F0       SUBB    $C0F0                          ; 
-D999: CC CC C0       LDD     #$CCC0          
-D99C: C0 C0          SUBB    #$C0            
-D99E: C0 C0          SUBB    #$C0            
-D9A0: C0 FC          SUBB    #$FC            
-D9A2: CC FC FC       LDD     #$FCFC          
-D9A5: CC CC CC       LDD     #$CCCC          
-D9A8: CC CC CC       LDD     #$CCCC          
-D9AB: F0 FC FC       SUBB    $FCFC           
-D9AE: CC CC 30       LDD     #$CC30          
-D9B1: CC CC CC       LDD     #$CCCC          
-D9B4: CC CC 30       LDD     #$CC30          
-D9B7: F0 CC CC       SUBB    $CCCC                          ; 
-D9BA: F0 C0 C0       SUBB    $C0C0                          ; 
-D9BD: C0 30          SUBB    #$30            
-D9BF: CC CC CC       LDD     #$CCCC          
-D9C2: CC FC 3C       LDD     #$FC3C          
-D9C5: F0 CC CC       SUBB    $CCCC                          ; 
-D9C8: F0 F0 CC       SUBB    $F0CC           
-D9CB: CC 30 CC       LDD     #$30CC          
-D9CE: C0 30          SUBB    #$30            
-D9D0: 0C CC          INC     <$CC            
-D9D2: 30 FC 30       LEAX    [$30,PC]        
-D9D5: 30 30          LEAX    -16,Y           
-D9D7: 30 30          LEAX    -16,Y           
-D9D9: 30 CC CC       LEAX    $CC,PC          
-D9DC: CC CC CC       LDD     #$CCCC          
-D9DF: CC 30 CC       LDD     #$30CC          
-D9E2: CC CC CC       LDD     #$CCCC          
-D9E5: CC 30 30       LDD     #$3030          
-D9E8: CC CC CC       LDD     #$CCCC          
-D9EB: CC FC FC       LDD     #$FCFC          
-D9EE: CC CC CC       LDD     #$CCCC          
-D9F1: 30 30          LEAX    -16,Y           
-D9F3: 30 CC CC       LEAX    $CC,PC          
-D9F6: CC CC CC       LDD     #$CCCC          
-D9F9: 30 30          LEAX    -16,Y           
-D9FB: 30 30          LEAX    -16,Y           
-D9FD: FC 0C 30       LDD     $0C30           
-DA00: 30 30          LEAX    -16,Y           
-DA02: C0 FC          SUBB    #$FC            
-DA04: 00 00          NEG     <$00            
-DA06: 00 00          NEG     <$00            
-DA08: 00 00          NEG     <$00            
-DA0A: 00 00          NEG     <$00            
-DA0C: C0 C0          SUBB    #$C0            
-DA0E: 00 C0          NEG     <$C0            
-DA10: C0 00          SUBB    #$00            
-DA12: 00 00          NEG     <$00            
-DA14: 00 00          NEG     <$00            
-DA16: 00 30          NEG     <$30            
-DA18: 30 
+; C
+D95C: 30 CC C0 C0 C0 CC 30
+; ..**....
+; **..**..
+; **......
+; **......
+; **......
+; **..**..
+; ..**....
 
-;      D  O  W  N  L  A  N  D  _
-DA19: 0D 18 20 17 15 0A 17 0D 24 1F 01 26 01 FF 
+; D
+D963: F0 CC CC CC CC CC F0
+; ****....
+; **..**..
+; **..**..
+; **..**..
+; **..**..
+; **..**..
+; ****....
+
+; E
+D96A: FC C0 C0 F0 C0 C0 FC
+; ******..
+; **......
+; **......
+; ****....
+; **......
+; **......
+; ******..
+
+; F
+D971: FC C0 C0 F0 C0 C0 C0
+; ******..
+; **......
+; **......
+; ****....
+; **......
+; **......
+; **......
+
+; G
+D978: 30 CC C0 3C CC CC 30
+; ..**....
+; **..**..
+; **......
+; ..****..
+; **..**..
+; **..**..
+; ..**....
+
+; H
+D97F: CC CC CC FC CC CC CC
+; **..**..
+; **..**..
+; **..**..
+; ******..
+; **..**..
+; **..**..
+; **..**..
+
+; I
+D986: FC 30 30 30 30 30 FC
+; ******..
+; ..**....
+; ..**....
+; ..**....
+; ..**....
+; ..**....
+; ******..
+
+; J
+D98D: 0C 0C 0C 0C 0C CC 30
+; ....**..
+; ....**..
+; ....**..
+; ....**..
+; ....**..
+; **..**..
+; ..**....
+
+; K
+D994: CC CC F0 C0 F0 CC CC
+; **..**..
+; **..**..
+; ****....
+; **......
+; ****....
+; **..**..
+; **..**..
+
+; L
+D99B: C0 C0 C0 C0 C0 C0 FC
+; **......
+; **......
+; **......
+; **......
+; **......
+; **......
+; ******..
+
+; M
+D9A2: CC FC FC CC CC CC CC
+; **..**..
+; ******..
+; ******..
+; **..**..
+; **..**..
+; **..**..
+; **..**..
+
+; N
+D9A9: CC CC F0 FC FC CC CC
+; **..**..
+; **..**..
+; ****....
+; ******..
+; ******..
+; **..**..
+; **..**..
+
+; O
+D9B0: 30 CC CC CC CC CC 30
+; ..**....
+; **..**..
+; **..**..
+; **..**..
+; **..**..
+; **..**..
+; ..**....
+
+; P
+D9B7: F0 CC CC F0 C0 C0 C0
+; ****....
+; **..**..
+; **..**..
+; ****....
+; **......
+; **......
+; **......
+
+; Q
+D9BE: 30 CC CC CC CC FC 3C
+; ..**....
+; **..**..
+; **..**..
+; **..**..
+; **..**..
+; ******..
+; ..****..
+
+; R
+D9C5: F0 CC CC F0 F0 CC CC
+; ****....
+; **..**..
+; **..**..
+; ****....
+; ****....
+; **..**..
+; **..**..
+
+; S
+D9CC: 30 CC C0 30 0C CC 30
+; ..**....
+; **..**..
+; **......
+; ..**....
+; ....**..
+; **..**..
+; ..**....
+
+; T
+D9D3: FC 30 30 30 30 30 30
+; ******..
+; ..**....
+; ..**....
+; ..**....
+; ..**....
+; ..**....
+; ..**....
+
+; U
+D9DA: CC CC CC CC CC CC 30
+; **..**..
+; **..**..
+; **..**..
+; **..**..
+; **..**..
+; **..**..
+; ..**....
+
+; V
+D9E1: CC CC CC CC CC 30 30
+; **..**..
+; **..**..
+; **..**..
+; **..**..
+; **..**..
+; ..**....
+; ..**....
+
+; W
+D9E8: CC CC CC CC FC FC CC
+; **..**..
+; **..**..
+; **..**..
+; **..**..
+; ******..
+; ******..
+; **..**..
+
+; X
+D9EF: CC CC 30 30 30 CC CC
+; **..**..
+; **..**..
+; ..**....
+; ..**....
+; ..**....
+; **..**..
+; **..**..
+
+; Y
+D9F6: CC CC CC 30 30 30 30
+; **..**..
+; **..**..
+; **..**..
+; ..**....
+; ..**....
+; ..**....
+; ..**....
+
+; Z
+D9FD: FC 0C 30 30 30 C0 FC
+; ******..
+; ....**..
+; ..**....
+; ..**....
+; ..**....
+; **......
+; ******..
+
+; SPACE
+DA04: 00 00 00 00 00 00 00
+; ........
+; ........
+; ........
+; ........
+; ........
+; ........
+; ........
+
+; :
+DA0B: 00 C0 C0 00 C0 C0 00
+; ........
+; **......
+; **......
+; ........
+; **......
+; **......
+; ........
+
+; .
+DA12: 00 00 00 00 00 30 30
+; ........
+; ........
+; ........
+; ........
+; ........
+; ..**....
+; ..**....
+```
+
+# Strings
+
+```code
+;      D  O  W  N  L  A  N  D  _  V  1  .  1
+DA19: 0D 18 20 17 15 0A 17 0D 24 1F 01 26 01 FF
 
 ;      W  R  I  T  T  E  N  _  B  Y  :
-DA27: 20 1B 12 1D 1D 0E 17 24 0B 22 25 FF 
+DA27: 20 1B 12 1D 1D 0E 17 24 0B 22 25 FF
 
-DA33: 16 12       STU     $1612           
-DA35: 0C 11          INC     <$11            
-DA37: 0A 0E          DEC     <$0E            
-DA39: 15                                  
-DA3A: 24 0A          BCC     $DA46                          ; 
-DA3C: 12             NOP                     
-DA3D: 0C 11          INC     <$11            
-DA3F: 15                                  
-DA40: 16 0A 22       LBRA    $0A22           
-DA43: 1B                                  
-DA44: FF 0C 18       STU     $0C18           
-DA47: 19             DAA                     
-DA48: 22 1B          BHI     $DA65                          ; 
-DA4A: 12             NOP                     
-DA4B: 10                                  
-DA4C: 11                                  
-DA4D: 1D             SEX                     
-DA4E: 24 01          BCC     $DA51                          ; 
-DA50: 09 08          ROL     <$08            
-DA52: 03 FF          COM     <$FF            
-DA54: 1C 19          ANDCC   #$19            
-DA56: 0E 0C          JMP     <$0C            
-DA58: 1D             SEX                     
-DA59: 1B                                  
-DA5A: 0A 15          DEC     <$15            
-DA5C: 24 0A          BCC     $DA68                          ; 
-DA5E: 1C 1C          ANDCC   #$1C            
-DA60: 18                                  
-DA61: 0C 12          INC     <$12            
-DA63: 0A 1D          DEC     <$1D            
-DA65: 0E 1C          JMP     <$1C            
-DA67: FF 15 12       STU     $1512           
-DA6A: 0C 0E          INC     <$0E            
-DA6C: 17 1C 0E       LBSR    $1C0E           
-DA6F: 0D 24          TST     <$24            
-DA71: 1D             SEX                     
-DA72: 18                                  
-DA73: 24 FF          BCC     $DA74                          ; 
-DA75: 1D             SEX                     
-DA76: 0A 17          DEC     <$17            
-DA78: 0D 22          TST     <$22            
-DA7A: 24 0C          BCC     $DA88                          ; 
-DA7C: 18                                  
-DA7D: 1B                                  
-DA7E: 19             DAA                     
-DA7F: 18                                  
-DA80: 1B                                  
-DA81: 0A 1D          DEC     <$1D            
-DA83: 12             NOP                     
-DA84: 18                                  
-DA85: 17 FF 0A       LBSR    $FF0A           
-DA88: 15                                  
-DA89: 15                                  
-DA8A: 24 1B          BCC     $DAA7                          ; 
-DA8C: 12             NOP                     
-DA8D: 10                                  
-DA8E: 11                                  
-DA8F: 1D             SEX                     
-DA90: 1C 24          ANDCC   #$24            
-DA92: 1B                                  
-DA93: 0E 1C          JMP     <$1C            
-DA95: 0E 1B          JMP     <$1B            
-DA97: 1F 0E          TFR     D,?             
-DA99: 0D FF          TST     <$FF            
-DA9B: 18                                  
-DA9C: 17 0E 24       LBSR    $0E24           
-DA9F: 19             DAA                     
-DAA0: 15                                  
-DAA1: 0A 22          DEC     <$22            
-DAA3: 0E 1B          JMP     <$1B            
-DAA5: FF 1D 20       STU     $1D20           
-DAA8: 18                                  
-DAA9: 24 19          BCC     $DAC4                          ; 
-DAAB: 15                                  
-DAAC: 0A 22          DEC     <$22            
-DAAE: 0E 1B          JMP     <$1B            
-DAB0: FF 11 12       STU     $1112           
-DAB3: 10                                  
-DAB4: 11                                  
-DAB5: 24 1C          BCC     $DAD3                          ; 
-DAB7: 0C 18          INC     <$18            
-DAB9: 1B                                  
-DABA: 0E FF          JMP     <$FF            
-DABC: 19             DAA                     
-DABD: 15                                  
-DABE: 0A 22          DEC     <$22            
-DAC0: 0E 1B          JMP     <$1B            
-DAC2: 24 18          BCC     $DADC                          ; 
-DAC4: 17 0E FF       LBSR    $0EFF           
-DAC7: 19             DAA                     
-DAC8: 15                                  
-DAC9: 0A 22          DEC     <$22            
-DACB: 0E 1B          JMP     <$1B            
-DACD: 24 1D          BCC     $DAEC                          ; 
-DACF: 20 18          BRA     $DAE9                          ; 
-DAD1: FF 19 15       STU     $1915           
-DAD4: 01                                  
-DAD5: FF 19 15       STU     $1915           
-DAD8: 02                                  
-DAD9: FF 10 0E       STU     $100E           
-DADC: 1D             SEX                     
-DADD: 24 1B          BCC     $DAFA                          ; 
-DADF: 0E 0A          JMP     <$0A            
-DAE1: 0D 22          TST     <$22            
-DAE3: 24 19          BCC     $DAFE                          ; 
-DAE5: 15                                  
-DAE6: 0A 22          DEC     <$22            
-DAE8: 0E 1B          JMP     <$1B            
-DAEA: 24 18          BCC     $DB04                          ; 
-DAEC: 17 0E FF       LBSR    $0EFF           
-DAEF: 10                                  
-DAF0: 0E 1D          JMP     <$1D            
-DAF2: 24 1B          BCC     $DB0F                          ; 
-DAF4: 0E 0A          JMP     <$0A            
-DAF6: 0D 22          TST     <$22            
-DAF8: 24 19          BCC     $DB13                          ; 
-DAFA: 15                                  
-DAFB: 0A 22          DEC     <$22            
-DAFD: 0E 1B          JMP     <$1B            
-DAFF: 24 1D          BCC     $DB1E                          ; 
-DB01: 20 18          BRA     $DB1B                          ; 
-DB03: FF 
+;      M  I  C  H  A  E  L  _  A  I  C  H  L  M  A  Y  R
+DA33: 16 12 0C 11 0A 0E 15 24 0A 12 0C 11 15 16 0A 22 1B FF
+
+;      C  O  P  Y  R  I  G  H  T  _  1  9  8  3
+DA45: 0C 18 19 22 1B 12 10 11 1D 24 01 09 08 03 FF
+
+;      S  P  E  C  T  R  A  L  _  A  S  S  O  C  I  A  T  E  S
+DA54: 1C 19 0E 0C 1D 1B 0A 15 24 0A 1C 1C 18 0C 12 0A 1D 0E 1C FF
+
+;      L  I  C  E  N  S  E  D  _  T  O  _
+DA68: 15 12 0C 0E 17 1C 0E 0D 24 1D 18 24 FF
+
+;      T  A  N  D  Y  _  C  O  R  P  O  R  A  T  I  O  N
+DA75: 1D 0A 17 0D 22 24 0C 18 1B 19 18 1B 0A 1D 12 18 17 FF
+
+;      A  L  L  _  R  I  G  H  T  S  _  R  E  S  E  R  V  E  D
+DA87: 0A 15 15 24 1B 12 10 11 1D 1C 24 1B 0E 1C 0E 1B 1F 0E 0D FF
+
+;      O  N  E  _  P  L  A  Y  E  R
+DA9B: 18 17 0E 24 19 15 0A 22 0E 1B FF
+
+;      T  W  O  _  P  L  A  Y  E  R
+DAA6: 1D 20 18 24 19 15 0A 22 0E 1B FF
+
+;      H  I  G  H  _  S  C  O  R  E
+DAB1: 11 12 10 11 24 1C 0C 18 1B 0E FF
+
+;      P  L  A  Y  E  R  _  O  N  E
+DABC: 19 15 0A 22 0E 1B 24 18 17 0E FF
+
+;      P  L  A  Y  E  R  _  T  W  O
+DAC7: 19 15 0A 22 0E 1B 24 1D 20 18 FF
+
+;      P  L  1
+DAD2: 19 15 01 FF
+
+;      P  L  2
+DAD6: 19 15 02 FF
+
+;      G  E  T  _  R  E  A  D  Y  _  P  L  A  Y  E  R  _  O  N  E
+DADA: 10 0E 1D 24 1B 0E 0A 0D 22 24 19 15 0A 22 0E 1B 24 18 17 0E FF
+
+;      G  E  T  _  R  E  A  D  Y  _  P  L  A  Y  E  R  _  T  W  O
+DAEF: 10 0E 1D 24 1B 0E 0A 0D 22 24 19 15 0A 22 0E 1B 24 1D 20 18 FF
 
 ;      C  H  A  M  B  E  R
 DB04: 0C 11 0A 16 0B 0E 1B FF

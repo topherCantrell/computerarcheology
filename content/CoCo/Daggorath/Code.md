@@ -4039,7 +4039,10 @@ D7D2: 0C B8               INC     <$B8                      ; {-ram_tapeTrigger}
 D7D4: 39                  RTS                               ; Done 
 
 ; ############################################### Data from here down ##########################################################
+```
+# Initial Backpack Objects
 
+```code
 ;Initial backpack objects
 ;
 DemoObjects:

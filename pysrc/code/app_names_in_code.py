@@ -22,7 +22,7 @@ FILE_NAME = '../../content/CoCo/MadnessMinotaur/Code.md'
 
 COMMENT_COL = 60
 
-lines, as_is_lines = code.markdown_utils.load_file(FILE_NAME)
+lines, as_is_lines, _ = code.markdown_utils.load_file(FILE_NAME)
 dirname = os.path.dirname(FILE_NAME)
 
 code_info = {
