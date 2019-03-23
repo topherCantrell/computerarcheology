@@ -2242,7 +2242,7 @@ D279: 07 01          ASR     <$01
 D27B: 01                                  
 D27C: 00 
 
-D27D: D3          NEG     <$D3            
+D27D: D3                    
 D27E: A0                                  
 D27F: 87                                  
 D280: 05                                  
@@ -2281,7 +2281,7 @@ D2BA: 87
 D2BB: 70 05 15       NEG     $0515           
 D2BE: 00 
 
-D2BF: D4          NEG     <$D4            
+D2BF: D4                    
 D2C0: 26 78          BNE     $D33A                          ; 
 D2C2: 05                                  
 D2C3: 78 70 02       LSL     $7002           
@@ -2309,7 +2309,7 @@ D2E7: 1E 07          EXG     $07
 D2E9: 04 10          LSR     <$10            
 D2EB: 00 
 
-D2EC: D4          NEG     <$D4            
+D2EC: D4                   
 D2ED: 67 A5          ASR     B,Y             
 D2EF: 05                                  
 D2F0: A5 70          BITA    -16,S           
@@ -2325,7 +2325,7 @@ D302: 1E 70          EXG     $70
 D304: 03 0F          COM     <$0F            
 D306: 00 
 
-D307: D4          NEG     <$D4            
+D307: D4                    
 D308: A2                                  
 D309: 87                                  
 D30A: 72                                  
@@ -2340,7 +2340,7 @@ D317: A5 07          BITA    7,X
 D319: 07 1A          ASR     <$1A            
 D31B: 00 
 
-D31C: D4          NEG     <$D4            
+D31C: D4                  
 D31D: D9 78          ADCB    <$78            
 D31F: 72                                  
 D320: 1E 07          EXG     $07             
@@ -2352,7 +2352,7 @@ D328: 05
 D329: 18                                  
 D32A: 00 
 
-D32B: D4          NEG     <$D4            
+D32B: D4                   
 D32C: F6 A5 05       LDB     $A505           
 D32F: 4B                                  
 D330: 70 05 1B       NEG     $051B           
@@ -2362,7 +2362,7 @@ D335: A5 07          BITA    7,X
 D337: 08 1C          ASL     <$1C            
 D339: 00 
 
-D33A: D5          NEG     <$D5            
+D33A: D5                  
 D33B: 2F A5          BLE     $D2E2                          ; 
 D33D: 05                                  
 D33E: 4B                                  
@@ -2372,7 +2372,7 @@ D344: 1E 07          EXG     $07
 D346: 09 1E          ROL     <$1E            
 D348: 00 
 
-D349: D5          NEG     <$D5            
+D349: D5                 
 D34A: 61                                  
 D34B: 96 05          LDA     <$05            
 D34D: A5 70          BITA    -16,S           
@@ -2385,7 +2385,7 @@ D359: A5 70          BITA    -16,S
 D35B: 00 21          NEG     <$21            
 D35D: 00 
 
-D35E: 0F          NEG     <$0F            
+D35E: 0F                  
 D35F: 80 06          SUBA    #$06            
 D361: 0C 80          INC     <$80            
 D363: 04 04          LSR     <$04            
