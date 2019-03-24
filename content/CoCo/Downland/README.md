@@ -4,6 +4,7 @@
 
 >>> deploy:<br>
 >>>   +downland.jpg
+>>>   +downland.js
 >>>   RAMUse.md<br>
 >>>   Code.md<br>
 >>>   ----<br>

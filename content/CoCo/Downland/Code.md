@@ -10,6 +10,27 @@
 >>> memoryTable hard 
 [Hardware Info](../Hardware.md)
 
+```html
+<script src="downland.js"></script>
+<script src="/js/TileEngine.js"></script>
+<script src="/js/BinaryData.js"></script>
+<script src="/js/CANVAS.js"></script>
+
+<!-- Cache some commonly-used values -->
+<canvas width="0" height="0"
+        data-canvasFunction="TileEngine.handleTileCanvas"
+        data-labelColor=""
+        data-pixWidth="8"
+        data-gridX="8"
+        data-gridY="8"
+        data-pixHeight="8"
+        data-gap="0.25"
+        data-gridPad="10"
+        data-colorsName="CS0"
+        data-colors='["#808080","#000080"]'>
+</canvas>
+```
+
 # Start
 
 ```code
@@ -2234,7 +2255,7 @@ D26C: D3 49 ; Chamber 9
 D26E: D3 5E ; Chamber 10 (??The splash screen)
 D270: FF FF 
 
-D273: A5           
+D272: A5           
 D273: 70 00 00       NEG     $0000           
 D276: 1E 72          EXG     $72             
 D278: 87                                  
@@ -3153,6 +3174,20 @@ D907: 39             RTS
 
 # Characters
 
+```html
+<canvas width="580" height="360"
+     data-getTileDataFunction="Downland.get8x7"
+         data-address="D908"
+         data-gridX="8"
+         data-gridY="8"
+         data-command="0, +x, 1, +x, 2, +x, 3, +x, 4, +x, 5, +x, 6, +x, 7, *, +y,
+                       8, +x, 9, +x, A, +x, B, +x ,C, +x, D, +x, E, +x, F, *, +y,
+                       10,+x,11,+x,12,+x,13,+x,14,+x,15,+x,16,+x,17,+x,*, +y,
+                       18,+x,19,+x,1A,+x,1B,+x,1C,+x,1D,+x,1E,+x,1F,+x,*, +y,
+                       20,+x,21,+x,22,+x,23,+x,24,+x,25,+x,26">
+</canvas>
+```
+
 ```code
 ; 0
 D908: 30 CC CC CC CC CC 30
@@ -3706,7 +3741,7 @@ DBC9: DE 17
 DBCB: 3B 80
  
 DBCD: 02 08 
-DBDF: DE 7B                                  
+DBCF: DE 7B                                  
 DBD1: 3D D8
  
 DBD3: 02 06 
