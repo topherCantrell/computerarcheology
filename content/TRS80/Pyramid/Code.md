@@ -14,7 +14,6 @@
 
 ```code
 Start: 
-
 4300: 31 BF 47   LD      SP,$47BF        ; Small stack space
 4303: 3E 0E      LD      A,$0E           ; Clear ....
 4305: CD 33 00   CALL    $0033           ; ... the screen
@@ -2034,81 +2033,50 @@ ObjectDescriptions:
 ; For packable objects each slot points to a message pair. The first is the long
 ; description and the second is the short (if any).
 ;                  # Name              Description
-5047: 58         LD      E,B             
-5048: 6D         LD      L,L             
-5049: 58         LD      E,B             
-504A: 6D         LD      L,L             
-504B: C0         RET     NZ              
-504C: 47         LD      B,A             
-504D: C0         RET     NZ              
-504E: 47         LD      B,A             
-504F: C0         RET     NZ              
-5050: 47         LD      B,A             
-5051: E1         POP     HL              
-5052: 6E         LD      L,(HL)          
-5053: 45         LD      B,L             
-5054: 6E         LD      L,(HL)          
-5055: 71         LD      (HL),C          
-5056: 6E         LD      L,(HL)          
-5057: B1         OR      C               
-5058: 6E         LD      L,(HL)          
-5059: 00         NOP                     
-505A: 00         NOP                     
-505B: 3A 6D 00   LD      A,($006D)       
-505E: 00         NOP                     
-505F: 00         NOP                     
-5060: 00         NOP                     
-5061: 2E 6C      LD      L,$6C           
-5063: 53         LD      D,E             
-5064: 6C         LD      L,H             
-5065: 75         LD      (HL),L          
-5066: 6C         LD      L,H             
-5067: 9E         SBC     (HL)            
-5068: 6C         LD      L,H             
-5069: 12         LD      (DE),A          
-506A: 6D         LD      L,L             
-506B: CD 6C EB   CALL    $EB6C           
-506E: 6C         LD      L,H             
-506F: ED                              
-5070: 70         LD      (HL),B          
-5071: 47         LD      B,A             
-5072: 71         LD      (HL),C          
-5073: 78         LD      A,B             
-5074: 6D         LD      L,L             
-5075: 78         LD      A,B             
-5076: 6D         LD      L,L             
-5077: B1         OR      C               
-5078: 6D         LD      L,L             
-5079: EC 6D 04   CALL    PE,$046D        
-507C: 6E         LD      L,(HL)          
-507D: 20 6E      JR      NZ,$50ED        
-507F: C0         RET     NZ              
-5080: 47         LD      B,A             
-5081: C0         RET     NZ              
-5082: 47         LD      B,A             
-5083: 14         INC     D               
-5084: 71         LD      (HL),C          
-5085: C5         PUSH    BC              
-5086: 70         LD      (HL),B          
-5087: A2         AND     D               
-5088: 70         LD      (HL),B          
-5089: 7E         LD      A,(HL)          
-508A: 70         LD      (HL),B          
-508B: 30 6F      JR      NC,$50FC        
-508D: 4F         LD      C,A             
-508E: 6F         LD      L,A             
-508F: 7B         LD      A,E             
-5090: 6F         LD      L,A             
-5091: AB         XOR     E               
-5092: 6F         LD      L,A             
-5093: CA 6F EA   JP      Z,$EA6F         
-5096: 6F         LD      L,A             
-5097: 0E 70      LD      C,$70           
-5099: 2B         DEC     HL              
-509A: 70         LD      (HL),B          
-509B: 52         LD      D,D             
-509C: 70         LD      (HL),B          
-509D: 2E 6C      LD      L,$6C           
+5047: 58 6D     ;  1 #bridge_15        Stone bridge room 15      
+5049: 58 6D     ;  2 #bridge_18        Stone bridge room 18
+504B:   C0 47   ;  3                   -Never used         
+504D:   C0 47   ;  4                   -Never used
+504F:   C0 47   ;  5                   -Never used
+5051: E1 6E     ;  6 #MACHINE          Vending Machine
+5053: 45 6E     ;  7 #PLANT_A          Tiny plant
+5055: 71 6E     ;  8 #PLANT_B          Twelve foot beanstalk    
+5057: B1 6E     ;  9 #PLANT_C          Giant beanstalk  
+5059:   00 00   ; 10                   Used in error message ... I think I just lost my appetite            
+505B: 3A 6D     ; 11 #SERPENT          Serpent bars the way
+505D:   00 00   ; 12                   -Never used               
+505F: 00 00     ; 13                   Used in error message ... there is nothing here it wants to eat except you
+5061: 2E 6C     ; 14 #LAMP_off         Lamp (not lit)   
+5063: 53 6C     ; 15 #LAMP_on          Lamp (lit) 
+5065: 75 6C     ; 16 #BOX              Statue box
+5067: 9E 6C     ; 17 #SCEPTER          Scepter
+5069: 12 6D     ; 18 #PILLOW           Pillow
+506B: CD 6C     ; 19 #BIRD             Statue
+506D: EB 6C     ; 20 #BIRD_boxed       Statue in box 
+506F: ED 70     ; 21 #POTTERY          Pottery
+5071: 47 71     ; 22 #PEARL            Pearl
+5073: 78 6D     ; 23 #SARCOPH_full     Sarcophagus with pearl
+5075: 78 6D     ; 24 #SARCOPH_empty    Sarcophagus empty
+5077: B1 6D     ; 25 #MAGAZINES        Magazines   
+5079: EC 6D     ; 26 #FOOD             Food
+507B: 04 6E     ; 27 #BOTTLE           Bottle 
+507D: 20 6E     ; 28 #WATER            Water in the bottle
+507F:   C0 47   ; 29                   Not in a room, never referenced       
+5081:   C0 47   ; 30 #STREAM_56        Stream in room 56  
+5083: 14 71     ; 31 #EMERALD          Emerald    
+5085: C5 70     ; 32 #VASE_pillow      Vase on pillow     
+5087: A2 70     ; 33 #VASE_solo        Vase    
+5089: 7E 70     ; 34 #KEY              Key   
+508B: 30 6F     ; 35 #BATTERIES_fresh  Batteries
+508D: 4F 6F     ; 36 #BATTERIES_worn   Worn-out batteries      
+508F: 7B 6F     ; 37 #GOLD             Gold Nugget       
+5091: AB 6F     ; 38 #DIAMNODS         Diamonds     
+5093: CA 6F     ; 39 #SILVER           Silver
+5095: EA 6F     ; 40 #JEWELRY          Jewelry      
+5097: 0E 70     ; 41 #COINS            Coins    
+5099: 2B 70     ; 42 #CHEST            Chest   
+509B: 52 70     ; 43 #NEST             Nest of golden eggs  
+509D: 2E 6C     ; 44 #LAMP_dead        Lamp (dead)
 ```
 
 # Script Commands 
@@ -2894,7 +2862,28 @@ MoveToRoomX:
 56C5: CD AE 45   CALL    $45AE           
 56C8: 31 BF 47   LD      SP,$47BF        
 56CB: C3 19 43   JP      $4319           
+```
 
+## Word Table 
+
+Pyramid has a table of known words. Every word has a grammar that describes how it can be used. 
+For instance, LAMP is a noun. The verb NORTH is a single-word command that requires no noun 
+(in fact it is an error to give one). The verb DROP requires a noun that is in the inventory, 
+but the verb DRINK works on a noun that is in the room or the pack.
+
+Multiple words can refer to the same thing. LAMP and LANTERN, for instance, mean the same 
+thing. So do GET and STEAL.
+
+Since multiple nouns can have the same word for a name the game logic must be careful not to 
+ever have two nouns with the same noun in the same place. The "dead lamp", for instance, is never 
+around when the "lit lamp" is. When checking to see if a noun is accessible the code must check 
+every noun since multiple nouns can have the same name.
+
+The input routine parses the user input and returns a VERB and a NOUN based on the grammar of the 
+words. The game scripts are assured that the grammar is correct and the noun is something the user 
+has access to (in the pack or room).
+
+```code
 WordTable:
 ; Info + text + data
 ;   Info byte:
@@ -2918,1078 +2907,369 @@ WordTable:
 ;   3) 0x2C dead lamp
 ;
 ; Nouns
-;                               Objects     AA BBB CCC Word     Code-reference   Nouns-referenced
-56CE: 1C         INC     E               
-56CF: 4C         LD      C,H             
-56D0: 41         LD      B,C             
-56D1: 4D         LD      C,L             
-56D2: 50         LD      D,B             
-56D3: 0E 0F      LD      C,$0F           
-56D5: 2C         INC     L               
-56D6: 1E 4C      LD      E,$4C           
-56D8: 41         LD      B,C             
-56D9: 4E         LD      C,(HL)          
-56DA: 54         LD      D,H             
-56DB: 45         LD      B,L             
-56DC: 52         LD      D,D             
-56DD: 0E 0F      LD      C,$0F           
-56DF: 2C         INC     L               
-56E0: 0B         DEC     BC              
-56E1: 42         LD      B,D             
-56E2: 4F         LD      C,A             
-56E3: 58         LD      E,B             
-56E4: 10 0F      DJNZ    $56F5           
-56E6: 53         LD      D,E             
-56E7: 43         LD      B,E             
-56E8: 45         LD      B,L             
-56E9: 50         LD      D,B             
-56EA: 54         LD      D,H             
-56EB: 45         LD      B,L             
-56EC: 52         LD      D,D             
-56ED: 11 14 42   LD      DE,$4214        
-56F0: 49         LD      C,C             
-56F1: 52         LD      D,D             
-56F2: 44         LD      B,H             
-56F3: 13         INC     DE              
-56F4: 14         INC     D               
-56F5: 16 53      LD      D,$53           
-56F7: 54         LD      D,H             
-56F8: 41         LD      B,C             
-56F9: 54         LD      D,H             
-56FA: 55         LD      D,L             
-56FB: 45         LD      B,L             
-56FC: 13         INC     DE              
-56FD: 14         INC     D               
-56FE: 0E 50      LD      C,$50           
-5700: 49         LD      C,C             
-5701: 4C         LD      C,H             
-5702: 4C         LD      C,H             
-5703: 4F         LD      C,A             
-5704: 57         LD      D,A             
-5705: 12         LD      (DE),A          
-5706: 0E 56      LD      C,$56           
-5708: 45         LD      B,L             
-5709: 4C         LD      C,H             
-570A: 56         LD      D,(HL)          
-570B: 45         LD      B,L             
-570C: 54         LD      D,H             
-570D: 12         LD      (DE),A          
-570E: 0E 53      LD      C,$53           
-5710: 45         LD      B,L             
-5711: 52         LD      D,D             
-5712: 50         LD      D,B             
-5713: 45         LD      B,L             
-5714: 4E         LD      C,(HL)          
-5715: 0B         DEC     BC              
-5716: 16 53      LD      D,$53           
-5718: 41         LD      B,C             
-5719: 52         LD      D,D             
-571A: 43         LD      B,E             
-571B: 4F         LD      C,A             
-571C: 50         LD      D,B             
-571D: 17         RLA                     
-571E: 18 0E      JR      $572E           
-5720: 4D         LD      C,L             
-5721: 41         LD      B,C             
-5722: 47         LD      B,A             
-5723: 41         LD      B,C             
-5724: 5A         LD      E,D             
-5725: 49         LD      C,C             
-5726: 19         ADD     HL,DE           
-5727: 0D         DEC     C               
-5728: 49         LD      C,C             
-5729: 53         LD      D,E             
-572A: 53         LD      D,E             
-572B: 55         LD      D,L             
-572C: 45         LD      B,L             
-572D: 19         ADD     HL,DE           
-572E: 0E 45      LD      C,$45           
-5730: 47         LD      B,A             
-5731: 59         LD      E,C             
-5732: 50         LD      D,B             
-5733: 54         LD      D,H             
-5734: 49         LD      C,C             
-5735: 19         ADD     HL,DE           
-5736: 0C         INC     C               
-5737: 46         LD      B,(HL)          
-5738: 4F         LD      C,A             
-5739: 4F         LD      C,A             
-573A: 44         LD      B,H             
-573B: 1A         LD      A,(DE)          
-573C: 0E 42      LD      C,$42           
-573E: 4F         LD      C,A             
-573F: 54         LD      D,H             
-5740: 54         LD      D,H             
-5741: 4C         LD      C,H             
-5742: 45         LD      B,L             
-5743: 1B         DEC     DE              
-5744: 15         DEC     D               
-5745: 57         LD      D,A             
-5746: 41         LD      B,C             
-5747: 54         LD      D,H             
-5748: 45         LD      B,L             
-5749: 52         LD      D,D             
-574A: 1C         INC     E               
-574B: 1E 1D      LD      E,$1D           
-574D: 50         LD      D,B             
-574E: 4C         LD      C,H             
-574F: 41         LD      B,C             
-5750: 4E         LD      C,(HL)          
-5751: 54         LD      D,H             
-5752: 07         RLCA                    
-5753: 08         EX      AF,AF'          
-5754: 09         ADD     HL,BC           
-5755: 1E 42      LD      E,$42           
-5757: 45         LD      B,L             
-5758: 41         LD      B,C             
-5759: 4E         LD      C,(HL)          
-575A: 53         LD      D,E             
-575B: 54         LD      D,H             
-575C: 07         RLCA                    
-575D: 08         EX      AF,AF'          
-575E: 09         ADD     HL,BC           
-575F: 0E 4D      LD      C,$4D           
-5761: 41         LD      B,C             
-5762: 43         LD      B,E             
-5763: 48         LD      C,B             
-5764: 49         LD      C,C             
-5765: 4E         LD      C,(HL)          
-5766: 06 0E      LD      B,$0E           
-5768: 56         LD      D,(HL)          
-5769: 45         LD      B,L             
-576A: 4E         LD      C,(HL)          
-576B: 44         LD      B,H             
-576C: 49         LD      C,C             
-576D: 4E         LD      C,(HL)          
-576E: 06 16      LD      B,$16           
-5770: 42         LD      B,D             
-5771: 41         LD      B,C             
-5772: 54         LD      D,H             
-5773: 54         LD      D,H             
-5774: 45         LD      B,L             
-5775: 52         LD      D,D             
-5776: 23         INC     HL              
-5777: 24         INC     H               
-5778: 0C         INC     C               
-5779: 47         LD      B,A             
-577A: 4F         LD      C,A             
-577B: 4C         LD      C,H             
-577C: 44         LD      B,H             
-577D: 25         DEC     H               
-577E: 0E 4E      LD      C,$4E           
-5780: 55         LD      D,L             
-5781: 47         LD      B,A             
-5782: 47         LD      B,A             
-5783: 45         LD      B,L             
-5784: 54         LD      D,H             
-5785: 25         DEC     H               
-5786: 0E 44      LD      C,$44           
-5788: 49         LD      C,C             
-5789: 41         LD      B,C             
-578A: 4D         LD      C,L             
-578B: 4F         LD      C,A             
-578C: 4E         LD      C,(HL)          
-578D: 26 0E      LD      H,$0E           
-578F: 53         LD      D,E             
-5790: 49         LD      C,C             
-5791: 4C         LD      C,H             
-5792: 56         LD      D,(HL)          
-5793: 45         LD      B,L             
-5794: 52         LD      D,D             
-5795: 27         DAA                     
-5796: 0C         INC     C               
-5797: 42         LD      B,D             
-5798: 41         LD      B,C             
-5799: 52         LD      D,D             
-579A: 53         LD      D,E             
-579B: 27         DAA                     
-579C: 0E 4A      LD      C,$4A           
-579E: 45         LD      B,L             
-579F: 57         LD      D,A             
-57A0: 45         LD      B,L             
-57A1: 4C         LD      C,H             
-57A2: 52         LD      D,D             
-57A3: 28 0D      JR      Z,$57B2         
-57A5: 43         LD      B,E             
-57A6: 4F         LD      C,A             
-57A7: 49         LD      C,C             
-57A8: 4E         LD      C,(HL)          
-57A9: 53         LD      D,E             
-57AA: 29         ADD     HL,HL           
-57AB: 0D         DEC     C               
-57AC: 43         LD      B,E             
-57AD: 48         LD      C,B             
-57AE: 45         LD      B,L             
-57AF: 53         LD      D,E             
-57B0: 54         LD      D,H             
-57B1: 2A 0E 54   LD      HL,($540E)      
-57B4: 52         LD      D,D             
-57B5: 45         LD      B,L             
-57B6: 41         LD      B,C             
-57B7: 53         LD      D,E             
-57B8: 55         LD      D,L             
-57B9: 2A 0C 45   LD      HL,($450C)      
-57BC: 47         LD      B,A             
-57BD: 47         LD      B,A             
-57BE: 53         LD      D,E             
-57BF: 2B         DEC     HL              
-57C0: 0B         DEC     BC              
-57C1: 45         LD      B,L             
-57C2: 47         LD      B,A             
-57C3: 47         LD      B,A             
-57C4: 2B         DEC     HL              
-57C5: 0C         INC     C               
-57C6: 4E         LD      C,(HL)          
-57C7: 45         LD      B,L             
-57C8: 53         LD      D,E             
-57C9: 54         LD      D,H             
-57CA: 2B         DEC     HL              
-57CB: 0B         DEC     BC              
-57CC: 4B         LD      C,E             
-57CD: 45         LD      B,L             
-57CE: 59         LD      E,C             
-57CF: 22 14 56   LD      ($5614),HL      
-57D2: 41         LD      B,C             
-57D3: 53         LD      D,E             
-57D4: 45         LD      B,L             
-57D5: 20 21      JR      NZ,$57F8        
-57D7: 0E 53      LD      C,$53           
-57D9: 48         LD      C,B             
-57DA: 41         LD      B,C             
-57DB: 52         LD      D,D             
-57DC: 44         LD      B,H             
-57DD: 53         LD      D,E             
-57DE: 15         DEC     D               
-57DF: 0E 50      LD      C,$50           
-57E1: 4F         LD      C,A             
-57E2: 54         LD      D,H             
-57E3: 54         LD      D,H             
-57E4: 45         LD      B,L             
-57E5: 52         LD      D,D             
-57E6: 15         DEC     D               
-57E7: 0E 45      LD      C,$45           
-57E9: 4D         LD      C,L             
-57EA: 45         LD      B,L             
-57EB: 52         LD      D,D             
-57EC: 41         LD      B,C             
-57ED: 4C         LD      C,H             
-57EE: 1F         RRA                     
-57EF: 0D         DEC     C               
-57F0: 50         LD      D,B             
-57F1: 45         LD      B,L             
-57F2: 41         LD      B,C             
-57F3: 52         LD      D,D             
-57F4: 4C         LD      C,H             
-57F5: 16 C9      LD      D,$C9           
-57F7: 4E         LD      C,(HL)          
-57F8: 01 CD 4E   LD      BC,$4ECD        
-57FB: 4F         LD      C,A             
-57FC: 52         LD      D,D             
-57FD: 54         LD      D,H             
-57FE: 48         LD      C,B             
-57FF: 01 C9 45   LD      BC,$45C9        
-5802: 02         LD      (BC),A          
-5803: CC 45 41   CALL    Z,$4145         
-5806: 53         LD      D,E             
-5807: 54         LD      D,H             
-5808: 02         LD      (BC),A          
-5809: C9         RET                     
-580A: 53         LD      D,E             
-580B: 03         INC     BC              
-580C: CD 53 4F   CALL    $4F53           
-580F: 55         LD      D,L             
-5810: 54         LD      D,H             
-5811: 48         LD      C,B             
-5812: 03         INC     BC              
-5813: C9         RET                     
-5814: 57         LD      D,A             
-5815: 04         INC     B               
-5816: CC 57 45   CALL    Z,$4557         
-5819: 53         LD      D,E             
-581A: 54         LD      D,H             
-581B: 04         INC     B               
-581C: CA 4E 45   JP      Z,$454E         
-581F: 05         DEC     B               
-5820: CE 4E      ADC     $4E             
-5822: 4F         LD      C,A             
-5823: 52         LD      D,D             
-5824: 54         LD      D,H             
-5825: 48         LD      C,B             
-5826: 45         LD      B,L             
-5827: 05         DEC     B               
-5828: CA 53 45   JP      Z,$4553         
-582B: 06 CE      LD      B,$CE           
-582D: 53         LD      D,E             
-582E: 4F         LD      C,A             
-582F: 55         LD      D,L             
-5830: 54         LD      D,H             
-5831: 48         LD      C,B             
-5832: 45         LD      B,L             
-5833: 06 CA      LD      B,$CA           
-5835: 53         LD      D,E             
-5836: 57         LD      D,A             
-5837: 07         RLCA                    
-5838: CE 53      ADC     $53             
-583A: 4F         LD      C,A             
-583B: 55         LD      D,L             
-583C: 54         LD      D,H             
-583D: 48         LD      C,B             
-583E: 57         LD      D,A             
-583F: 07         RLCA                    
-5840: CA 4E 57   JP      Z,$574E         
-5843: 08         EX      AF,AF'          
-5844: CE 4E      ADC     $4E             
-5846: 4F         LD      C,A             
-5847: 52         LD      D,D             
-5848: 54         LD      D,H             
-5849: 48         LD      C,B             
-584A: 57         LD      D,A             
-584B: 08         EX      AF,AF'          
-584C: C9         RET                     
-584D: 55         LD      D,L             
-584E: 09         ADD     HL,BC           
-584F: CA 55 50   JP      Z,$5055         
-5852: 09         ADD     HL,BC           
-5853: C9         RET                     
-5854: 44         LD      B,H             
-5855: 0A         LD      A,(BC)          
-5856: CC 44 4F   CALL    Z,$4F44         
-5859: 57         LD      D,A             
-585A: 4E         LD      C,(HL)          
-585B: 0A         LD      A,(BC)          
-585C: CA 49 4E   JP      Z,$4E49         
-585F: 0B         DEC     BC              
-5860: CE 49      ADC     $49             
-5862: 4E         LD      C,(HL)          
-5863: 53         LD      D,E             
-5864: 49         LD      C,C             
-5865: 44         LD      B,H             
-5866: 45         LD      B,L             
-5867: 0B         DEC     BC              
-5868: CB 4F      SET     1,E             
-586A: 55         LD      D,L             
-586B: 54         LD      D,H             
-586C: 0C         INC     C               
-586D: CE 4F      ADC     $4F             
-586F: 55         LD      D,L             
-5870: 54         LD      D,H             
-5871: 53         LD      D,E             
-5872: 49         LD      C,C             
-5873: 44         LD      B,H             
-5874: 0C         INC     C               
-5875: CD 43 52   CALL    $5243           
-5878: 4F         LD      C,A             
-5879: 53         LD      D,E             
-587A: 53         LD      D,E             
-587B: 0D         DEC     C               
-587C: CC 4C 45   CALL    Z,$454C         
-587F: 46         LD      B,(HL)          
-5880: 54         LD      D,H             
-5881: 0E CD      LD      C,$CD           
-5883: 52         LD      D,D             
-5884: 49         LD      C,C             
-5885: 47         LD      B,A             
-5886: 48         LD      C,B             
-5887: 54         LD      D,H             
-5888: 0F         RRCA                    
-5889: CC 4A 55   CALL    Z,$554A         
-588C: 4D         LD      C,L             
-588D: 50         LD      D,B             
-588E: 10 CD      DJNZ    $585D           
-5890: 43         LD      B,E             
-5891: 4C         LD      C,H             
-5892: 49         LD      C,C             
-5893: 4D         LD      C,L             
-5894: 42         LD      B,D             
-5895: 11 CD 50   LD      DE,$50CD        
-5898: 41         LD      B,C             
-5899: 4E         LD      C,(HL)          
-589A: 45         LD      B,L             
-589B: 4C         LD      C,H             
-589C: 12         LD      (DE),A          
-589D: CC 42 41   CALL    Z,$4142         
-58A0: 43         LD      B,E             
-58A1: 4B         LD      C,E             
-58A2: 14         INC     D               
-58A3: CC 53 57   CALL    Z,$5753         
-58A6: 49         LD      C,C             
-58A7: 4D         LD      C,L             
-58A8: 16 CA      LD      D,$CA           
-58AA: 4F         LD      C,A             
-58AB: 4E         LD      C,(HL)          
-58AC: 17         RLA                     
-58AD: CB 4F      SET     1,E             
-58AF: 46         LD      B,(HL)          
-58B0: 46         LD      B,(HL)          
-58B1: 18 CC      JR      $587F           
-58B3: 51         LD      D,C             
-58B4: 55         LD      D,L             
-58B5: 49         LD      C,C             
-58B6: 54         LD      D,H             
-58B7: 19         ADD     HL,DE           
-58B8: CC 53 54   CALL    Z,$5453         
-58BB: 4F         LD      C,A             
-58BC: 50         LD      D,B             
-58BD: 19         ADD     HL,DE           
-58BE: CD 53 43   CALL    $4353           
-58C1: 4F         LD      C,A             
-58C2: 52         LD      D,D             
-58C3: 45         LD      B,L             
-58C4: 1A         LD      A,(DE)          
-58C5: CE 49      ADC     $49             
-58C7: 4E         LD      C,(HL)          
-58C8: 56         LD      D,(HL)          
-58C9: 45         LD      B,L             
-58CA: 4E         LD      C,(HL)          
-58CB: 54         LD      D,H             
-58CC: 1B         DEC     DE              
-58CD: CC 4C 4F   CALL    Z,$4F4C         
-58D0: 4F         LD      C,A             
-58D1: 4B         LD      C,E             
-58D2: 1C         INC     E               
-58D3: CC 48 45   CALL    Z,$4548         
-58D6: 4C         LD      C,H             
-58D7: 50         LD      D,B             
-58D8: 1D         DEC     E               
-58D9: CC 46 49   CALL    Z,$4946         
-58DC: 4E         LD      C,(HL)          
-58DD: 44         LD      B,H             
-58DE: 1E 4C      LD      E,$4C           
-58E0: 44         LD      B,H             
-58E1: 52         LD      D,D             
-58E2: 4F         LD      C,A             
-58E3: 50         LD      D,B             
-58E4: 21 4E 52   LD      HL,$524E        
-58E7: 45         LD      B,L             
-58E8: 4C         LD      C,H             
-58E9: 45         LD      B,L             
-58EA: 41         LD      B,C             
-58EB: 53         LD      D,E             
-58EC: 21 4C 46   LD      HL,$464C        
-58EF: 52         LD      D,D             
-58F0: 45         LD      B,L             
-58F1: 45         LD      B,L             
-58F2: 21 4E 44   LD      HL,$444E        
-58F5: 49         LD      C,C             
-58F6: 53         LD      D,E             
-58F7: 43         LD      B,E             
-58F8: 41         LD      B,C             
-58F9: 52         LD      D,D             
-58FA: 21 CD 4C   LD      HL,$4CCD        
-58FD: 49         LD      C,C             
-58FE: 47         LD      B,A             
-58FF: 48         LD      C,B             
-5900: 54         LD      D,H             
-5901: 17         RLA                     
-5902: 4C         LD      C,H             
-5903: 57         LD      D,A             
-5904: 41         LD      B,C             
-5905: 56         LD      D,(HL)          
-5906: 45         LD      B,L             
-5907: 23         INC     HL              
-5908: 4D         LD      C,L             
-5909: 53         LD      D,E             
-590A: 48         LD      C,B             
-590B: 41         LD      B,C             
-590C: 4B         LD      C,E             
-590D: 45         LD      B,L             
-590E: 23         INC     HL              
-590F: 4D         LD      C,L             
-5910: 53         LD      D,E             
-5911: 57         LD      D,A             
-5912: 49         LD      C,C             
-5913: 4E         LD      C,(HL)          
-5914: 47         LD      B,A             
-5915: 23         INC     HL              
-5916: 4C         LD      C,H             
-5917: 50         LD      D,B             
-5918: 4F         LD      C,A             
-5919: 55         LD      D,L             
-591A: 52         LD      D,D             
-591B: 24         INC     H               
-591C: 4B         LD      C,E             
-591D: 52         LD      D,D             
-591E: 55         LD      D,L             
-591F: 42         LD      B,D             
-5920: 25         DEC     H               
-5921: 4D         LD      C,L             
-5922: 54         LD      D,H             
-5923: 48         LD      C,B             
-5924: 52         LD      D,D             
-5925: 4F         LD      C,A             
-5926: 57         LD      D,A             
-5927: 26 4C      LD      H,$4C           
-5929: 54         LD      D,H             
-592A: 4F         LD      C,A             
-592B: 53         LD      D,E             
-592C: 53         LD      D,E             
-592D: 26 4C      LD      H,$4C           
-592F: 46         LD      B,(HL)          
-5930: 49         LD      C,C             
-5931: 4C         LD      C,H             
-5932: 4C         LD      C,H             
-5933: 27         DAA                     
-5934: 8C         ADC     A,H             
-5935: 54         LD      D,H             
-5936: 41         LD      B,C             
-5937: 4B         LD      C,E             
-5938: 45         LD      B,L             
-5939: 28 8B      JR      Z,$58C6         
-593B: 47         LD      B,A             
-593C: 45         LD      B,L             
-593D: 54         LD      D,H             
-593E: 28 8D      JR      Z,$58CD         
-5940: 43         LD      B,E             
-5941: 41         LD      B,C             
-5942: 52         LD      D,D             
-5943: 52         LD      D,D             
-5944: 59         LD      E,C             
-5945: 28 8D      JR      Z,$58D4         
-5947: 43         LD      B,E             
-5948: 41         LD      B,C             
-5949: 54         LD      D,H             
-594A: 43         LD      B,E             
-594B: 48         LD      C,B             
-594C: 28 8D      JR      Z,$58DB         
-594E: 53         LD      D,E             
-594F: 54         LD      D,H             
-5950: 45         LD      B,L             
-5951: 41         LD      B,C             
-5952: 4C         LD      C,H             
-5953: 28 8E      JR      Z,$58E3         
-5955: 43         LD      B,E             
-5956: 41         LD      B,C             
-5957: 50         LD      D,B             
-5958: 54         LD      D,H             
-5959: 55         LD      D,L             
-595A: 52         LD      D,D             
-595B: 28 8C      JR      Z,$58E9         
-595D: 4F         LD      C,A             
-595E: 50         LD      D,B             
-595F: 45         LD      B,L             
-5960: 4E         LD      C,(HL)          
-5961: 29         ADD     HL,HL           
-5962: 8E         ADC     A,(HL)          
-5963: 41         LD      B,C             
-5964: 54         LD      D,H             
-5965: 54         LD      D,H             
-5966: 41         LD      B,C             
-5967: 43         LD      B,E             
-5968: 4B         LD      C,E             
-5969: 2C         INC     L               
-596A: 8C         ADC     A,H             
-596B: 4B         LD      C,E             
-596C: 49         LD      C,C             
-596D: 4C         LD      C,H             
-596E: 4C         LD      C,H             
-596F: 2C         INC     L               
-5970: 8B         ADC     A,E             
-5971: 48         LD      C,B             
-5972: 49         LD      C,C             
-5973: 54         LD      D,H             
-5974: 2C         INC     L               
-5975: 8D         ADC     A,L             
-5976: 46         LD      B,(HL)          
-5977: 49         LD      C,C             
-5978: 47         LD      B,A             
-5979: 48         LD      C,B             
-597A: 54         LD      D,H             
-597B: 2C         INC     L               
-597C: 8C         ADC     A,H             
-597D: 46         LD      B,(HL)          
-597E: 45         LD      B,L             
-597F: 45         LD      B,L             
-5980: 44         LD      B,H             
-5981: 2D         DEC     L               
-5982: 8B         ADC     A,E             
-5983: 45         LD      B,L             
-5984: 41         LD      B,C             
-5985: 54         LD      D,H             
-5986: 2E 8D      LD      L,$8D           
-5988: 44         LD      B,H             
-5989: 52         LD      D,D             
-598A: 49         LD      C,C             
-598B: 4E         LD      C,(HL)          
-598C: 4B         LD      C,E             
-598D: 2F         CPL                     
-598E: 8D         ADC     A,L             
-598F: 42         LD      B,D             
-5990: 52         LD      D,D             
-5991: 45         LD      B,L             
-5992: 41         LD      B,C             
-5993: 4B         LD      C,E             
-5994: 30 8D      JR      NC,$5923        
-5996: 53         LD      D,E             
-5997: 4D         LD      C,L             
-5998: 41         LD      B,C             
-5999: 53         LD      D,E             
-599A: 48         LD      C,B             
-599B: 30 CC      JR      NC,$5969        
-599D: 4C         LD      C,H             
-599E: 4F         LD      C,A             
-599F: 41         LD      B,C             
-59A0: 44         LD      B,H             
-59A1: 3A CC 53   LD      A,($53CC)       
-59A4: 41         LD      B,C             
-59A5: 56         LD      D,(HL)          
-59A6: 45         LD      B,L             
-59A7: 3B         DEC     SP              
-59A8: CD 50 4C   CALL    $4C50           
-59AB: 55         LD      D,L             
-59AC: 47         LD      B,A             
-59AD: 48         LD      C,B             
-59AE: 39         ADD     HL,SP           
-59AF: 00         NOP                     
+;                               Objects     AA BBB CCC Word     
+56CE: 1C 4C 41 4D 50            0E 0F 2C  ; 00_011_100 LAMP
+56D6: 1E 4C 41 4E 54 45 52      0E 0F 2C  ; 00_011_110 LANTER
+56E0: 0B 42 4F 58               10        ; 00_001_011 BOX
+56E5: 0F 53 43 45 50 54 45 52   11        ; 00_001_111 SCEPTER
+56EE: 14 42 49 52 44            13 14     ; 00_010_100 BIRD
+56F5: 16 53 54 41 54 55 45      13 14     ; 00_010_110 STATUE
+56FE: 0E 50 49 4C 4C 4F 57      12        ; 00_001_110 PILLOW
+5706: 0E 56 45 4C 56 45 54      12        ; 00_001_110 VELVET
+570E: 0E 53 45 52 50 45 4E      0B        ; 00_001_110 SERPEN
+5716: 16 53 41 52 43 4F 50      17 18     ; 00_010_110 SARCOP
+571F: 0E 4D 41 47 41 5A 49      19        ; 00_001_110 MAGAZI
+5727: 0D 49 53 53 55 45         19        ; 00_001_101 ISSUE
+572E: 0E 45 47 59 50 54 49      19        ; 00_001_110 EGYPTI
+5736: 0C 46 4F 4F 44            1A        ; 00_001_100 FOOD
+573C: 0E 42 4F 54 54 4C 45      1B        ; 00_001_110 BOTTLE
+5744: 15 57 41 54 45 52         1C 1E     ; 00_010_101 WATER
+574C: 1D 50 4C 41 4E 54         07 08 09  ; 00_011_101 PLANT
+5755: 1E 42 45 41 4E 53 54      07 08 09  ; 00_011_110 BEANST
+575F: 0E 4D 41 43 48 49 4E      06        ; 00_001_110 MACHIN
+5767: 0E 56 45 4E 44 49 4E      06        ; 00_001_110 VENDIN
+576F: 16 42 41 54 54 45 52      23 24     ; 00_010_110 BATTER
+5778: 0C 47 4F 4C 44            25        ; 00_001_100 GOLD
+577E: 0E 4E 55 47 47 45 54      25        ; 00_001_110 NUGGET
+5786: 0E 44 49 41 4D 4F 4E      26        ; 00_001_110 DIAMON
+578E: 0E 53 49 4C 56 45 52      27        ; 00_001_110 SILVER
+5796: 0C 42 41 52 53            27        ; 00_001_100 BARS
+579C: 0E 4A 45 57 45 4C 52      28        ; 00_001_110 JEWELR
+57A4: 0D 43 4F 49 4E 53         29        ; 00_001_101 COINS
+57AB: 0D 43 48 45 53 54         2A        ; 00_001_101 CHEST
+57B2: 0E 54 52 45 41 53 55      2A        ; 00_001_110 TREASU
+57BA: 0C 45 47 47 53            2B        ; 00_001_100 EGGS
+57C0: 0B 45 47 47               2B        ; 00_001_011 EGG
+57C5: 0C 4E 45 53 54            2B        ; 00_001_100 NEST
+57CB: 0B 4B 45 59               22        ; 00_001_011 KEY
+57D0: 14 56 41 53 45            20 21     ; 00_010_100 VASE
+57D7: 0E 53 48 41 52 44 53      15        ; 00_001_110 SHARDS
+57DF: 0E 50 4F 54 54 45 52      15        ; 00_001_110 POTTER
+57E7: 0E 45 4D 45 52 41 4C      1F        ; 00_001_110 EMERAL
+57EF: 0D 50 45 41 52 4C         16        ; 00_001_101 PEARL
+;
+; Verbs
+57F6: C9 4E                     01        ; 11_001_001 N
+57F9: CD 4E 4F 52 54 48         01        ; 11_001_101 NORTH
+5800: C9 45                     02        ; 11_001_001 E
+5803: CC 45 41 53 54            02        ; 11_001_100 EAST
+5809: C9 53                     03        ; 11_001_001 S
+580C: CD 53 4F 55 54 48         03        ; 11_001_101 SOUTH
+5813: C9 57                     04        ; 11_001_001 W
+5816: CC 57 45 53 54            04        ; 11_001_100 WEST
+581C: CA 4E 45                  05        ; 11_001_010 NE
+5820: CE 4E 4F 52 54 48 45      05        ; 11_001_110 NORTHE
+5828: CA 53 45                  06        ; 11_001_010 SE
+582C: CE 53 4F 55 54 48 45      06        ; 11_001_110 SOUTHE
+5834: CA 53 57                  07        ; 11_001_010 SW
+5838: CE 53 4F 55 54 48 57      07        ; 11_001_110 SOUTHW
+5840: CA 4E 57                  08        ; 11_001_010 NW
+5844: CE 4E 4F 52 54 48 57      08        ; 11_001_110 NORTHW
+584C: C9 55                     09        ; 11_001_001 U
+584F: CA 55 50                  09        ; 11_001_010 UP
+5853: C9 44                     0A        ; 11_001_001 D
+5856: CC 44 4F 57 4E            0A        ; 11_001_100 DOWN
+585C: CA 49 4E                  0B        ; 11_001_010 IN
+5860: CE 49 4E 53 49 44 45      0B        ; 11_001_110 INSIDE
+5868: CB 4F 55 54               0C        ; 11_001_011 OUT
+586D: CE 4F 55 54 53 49 44      0C        ; 11_001_110 OUTSID
+5875: CD 43 52 4F 53 53         0D        ; 11_001_101 CROSS
+587C: CC 4C 45 46 54            0E        ; 11_001_100 LEFT
+5882: CD 52 49 47 48 54         0F        ; 11_001_101 RIGHT
+5889: CC 4A 55 4D 50            10        ; 11_001_100 JUMP
+588F: CD 43 4C 49 4D 42         11        ; 11_001_101 CLIMB
+5896: CD 50 41 4E 45 4C         12        ; 11_001_101 PANEL
+589D: CC 42 41 43 4B            14        ; 11_001_100 BACK
+58A3: CC 53 57 49 4D            16        ; 11_001_100 SWIM
+58A9: CA 4F 4E                  17        ; 11_001_010 ON
+58AD: CB 4F 46 46               18        ; 11_001_011 OFF
+58B2: CC 51 55 49 54            19        ; 11_001_100 QUIT
+58B8: CC 53 54 4F 50            19        ; 11_001_100 STOP
+58BE: CD 53 43 4F 52 45         1A        ; 11_001_101 SCORE
+58C5: CE 49 4E 56 45 4E 54      1B        ; 11_001_110 INVENT
+58CD: CC 4C 4F 4F 4B            1C        ; 11_001_100 LOOK
+58D3: CC 48 45 4C 50            1D        ; 11_001_100 HELP
+58D9: CC 46 49 4E 44            1E        ; 11_001_100 FIND
+58DF: 4C 44 52 4F 50            21        ; 01_001_100 DROP
+58E5: 4E 52 45 4C 45 41 53      21        ; 01_001_110 RELEAS
+58ED: 4C 46 52 45 45            21        ; 01_001_100 FREE
+58F3: 4E 44 49 53 43 41 52      21        ; 01_001_110 DISCAR
+58FB: CD 4C 49 47 48 54         17        ; 11_001_101 LIGHT
+5902: 4C 57 41 56 45            23        ; 01_001_100 WAVE
+5908: 4D 53 48 41 4B 45         23        ; 01_001_101 SHAKE
+590F: 4D 53 57 49 4E 47         23        ; 01_001_101 SWING
+5916: 4C 50 4F 55 52            24        ; 01_001_100 POUR
+591C: 4B 52 55 42               25        ; 01_001_011 RUB
+5921: 4D 54 48 52 4F 57         26        ; 01_001_101 THROW
+5928: 4C 54 4F 53 53            26        ; 01_001_100 TOSS
+592E: 4C 46 49 4C 4C            27        ; 01_001_100 FILL
+5934: 8C 54 41 4B 45            28        ; 10_001_100 TAKE
+593A: 8B 47 45 54               28        ; 10_001_011 GET
+593F: 8D 43 41 52 52 59         28        ; 10_001_101 CARRY
+5946: 8D 43 41 54 43 48         28        ; 10_001_101 CATCH
+594D: 8D 53 54 45 41 4C         28        ; 10_001_101 STEAL
+5954: 8E 43 41 50 54 55 52      28        ; 10_001_110 CAPTUR
+595C: 8C 4F 50 45 4E            29        ; 10_001_100 OPEN
+5962: 8E 41 54 54 41 43 4B      2C        ; 10_001_110 ATTACK
+596A: 8C 4B 49 4C 4C            2C        ; 10_001_100 KILL
+5970: 8B 48 49 54               2C        ; 10_001_011 HIT
+5975: 8D 46 49 47 48 54         2C        ; 10_001_101 FIGHT
+597C: 8C 46 45 45 44            2D        ; 10_001_100 FEED
+5982: 8B 45 41 54               2E        ; 10_001_011 EAT
+5987: 8D 44 52 49 4E 4B         2F        ; 10_001_101 DRINK
+598E: 8D 42 52 45 41 4B         30        ; 10_001_101 BREAK
+5995: 8D 53 4D 41 53 48         30        ; 10_001_101 SMASH
+599C: CC 4C 4F 41 44            3A        ; 11_001_100 LOAD
+59A2: CC 53 41 56 45            3B        ; 11_001_100 SAVE
+59A8: CD 50 4C 55 47 48         39        ; 11_001_101 PLUGH       
+59AF: 00                    
 ```
 
 # General Command Handler 
 
+This script is used when the room doesn't have a script for the input command.
+
 ```code
-; This script is used when the room doesn't have a script for the input command.
-
 GeneralCommandHandler:
-59B0: 01 04 04   LD      BC,$0404        
-59B3: ED                              
-59B4: 73         LD      (HL),E          
-59B5: 02         LD      (BC),A          
-59B6: 04         INC     B               
-59B7: 04         INC     B               
-59B8: ED                              
-59B9: 73         LD      (HL),E          
-59BA: 03         INC     BC              
-59BB: 04         INC     B               
-59BC: 04         INC     B               
-59BD: ED                              
-59BE: 73         LD      (HL),E          
-59BF: 04         INC     B               
-59C0: 04         INC     B               
-59C1: 04         INC     B               
-59C2: ED                              
-59C3: 73         LD      (HL),E          
-59C4: 05         DEC     B               
-59C5: 04         INC     B               
-59C6: 04         INC     B               
-59C7: ED                              
-59C8: 73         LD      (HL),E          
-59C9: 06 04      LD      B,$04           
-59CB: 04         INC     B               
-59CC: ED                              
-59CD: 73         LD      (HL),E          
-59CE: 07         RLCA                    
-59CF: 04         INC     B               
-59D0: 04         INC     B               
-59D1: ED                              
-59D2: 73         LD      (HL),E          
-59D3: 08         EX      AF,AF'          
-59D4: 04         INC     B               
-59D5: 04         INC     B               
-59D6: ED                              
-59D7: 73         LD      (HL),E          
-59D8: 09         ADD     HL,BC           
-59D9: 04         INC     B               
-59DA: 04         INC     B               
-59DB: ED                              
-59DC: 73         LD      (HL),E          
-59DD: 0A         LD      A,(BC)          
-59DE: 04         INC     B               
-59DF: 04         INC     B               
-59E0: ED                              
-59E1: 73         LD      (HL),E          
-59E2: 0B         DEC     BC              
-59E3: 04         INC     B               
-59E4: 04         INC     B               
-59E5: 0D         DEC     C               
-59E6: 74         LD      (HL),H          
-59E7: 0C         INC     C               
-59E8: 04         INC     B               
-59E9: 04         INC     B               
-59EA: 0D         DEC     C               
-59EB: 74         LD      (HL),H          
-59EC: 0E 04      LD      C,$04           
-59EE: 04         INC     B               
-59EF: 31 74 0F   LD      SP,$0F74        
-59F2: 04         INC     B               
-59F3: 04         INC     B               
-59F4: 31 74 12   LD      SP,$1274        
-59F7: 04         INC     B               
-59F8: 04         INC     B               
-59F9: 56         LD      D,(HL)          
-59FA: 74         LD      (HL),H          
-59FB: 14         INC     D               
-59FC: 02         LD      (BC),A          
-59FD: 0E 16      LD      C,$16           
-59FF: 04         INC     B               
-5A00: 04         INC     B               
-5A01: 63         LD      H,E             
-5A02: 74         LD      (HL),H          
-5A03: 17         RLA                     
-5A04: 18 07      JR      $5A0D           
-5A06: 0C         INC     C               
-5A07: 02         LD      (BC),A          
-5A08: 0E 15      LD      C,$15           
-5A0A: 0E 00      LD      C,$00           
-5A0C: 15         DEC     D               
-5A0D: 0F         RRCA                    
-5A0E: FF         RST     0X38            
-5A0F: 04         INC     B               
-5A10: 8F         ADC     A,A             
-5A11: 74         LD      (HL),H          
-5A12: 07         RLCA                    
-5A13: 06 02      LD      B,$02           
-5A15: 0F         RRCA                    
-5A16: 04         INC     B               
-5A17: 8F         ADC     A,A             
-5A18: 74         LD      (HL),H          
-5A19: 04         INC     B               
-5A1A: 9F         SBC     A               
-5A1B: 74         LD      (HL),H          
-5A1C: 18 18      JR      $5A36           
-5A1E: 07         RLCA                    
-5A1F: 0C         INC     C               
-5A20: 02         LD      (BC),A          
-5A21: 0F         RRCA                    
-5A22: 15         DEC     D               
-5A23: 0F         RRCA                    
-5A24: 00         NOP                     
-5A25: 15         DEC     D               
-5A26: 0E FF      LD      C,$FF           
-5A28: 04         INC     B               
-5A29: B4         OR      H               
-5A2A: 74         LD      (HL),H          
-5A2B: 07         RLCA                    
-5A2C: 06 02      LD      B,$02           
-5A2E: 0E 04      LD      C,$04           
-5A30: B4         OR      H               
-5A31: 74         LD      (HL),H          
-5A32: 04         INC     B               
-5A33: 9F         SBC     A               
-5A34: 74         LD      (HL),H          
-5A35: 19         ADD     HL,DE           
-5A36: 02         LD      (BC),A          
-5A37: 09         ADD     HL,BC           
-5A38: 1A         LD      A,(DE)          
-5A39: 02         LD      (BC),A          
-5A3A: 08         EX      AF,AF'          
-5A3B: 1B         DEC     DE              
-5A3C: 02         LD      (BC),A          
-5A3D: 0F         RRCA                    
-5A3E: 1C         INC     E               
-5A3F: 02         LD      (BC),A          
-5A40: 10 1D      DJNZ    $5A5F           
-5A42: 04         INC     B               
-5A43: 04         INC     B               
-5A44: C4 74 1E   CALL    NZ,$1E74        
-5A47: 04         INC     B               
-5A48: 04         INC     B               
-5A49: D8         RET     C               
-5A4A: 74         LD      (HL),H          
-5A4B: 28 47      JR      Z,$5A94         
-5A4D: 07         RLCA                    
-5A4E: 06 11      LD      B,$11           
-5A50: 07         RLCA                    
-5A51: 04         INC     B               
-5A52: 61         LD      H,C             
-5A53: 7A         LD      A,D             
-5A54: 07         RLCA                    
-5A55: 17         RLA                     
-5A56: 11 13 07   LD      DE,$0713        
-5A59: 06 02      LD      B,$02           
-5A5B: 11 04 C7   LD      DE,$C704        
-5A5E: 7A         LD      A,D             
-5A5F: 07         RLCA                    
-5A60: 09         ADD     HL,BC           
-5A61: 02         LD      (BC),A          
-5A62: 10 15      DJNZ    $5A79           
-5A64: 13         INC     DE              
-5A65: 00         NOP                     
-5A66: 19         ADD     HL,DE           
-5A67: 14         INC     D               
-5A68: 10 04      DJNZ    $5A6E           
-5A6A: 14         INC     D               
-5A6B: 7B         LD      A,E             
-5A6C: 07         RLCA                    
-5A6D: 0A         LD      A,(BC)          
-5A6E: 11 20 12   LD      DE,$1220        
-5A71: 21 15 20   LD      HL,$2015        
-5A74: 00         NOP                     
-5A75: 18 12      JR      $5A89           
-5A77: 07         RLCA                    
-5A78: 0D         DEC     C               
-5A79: 11 1E 07   LD      DE,$071E        
-5A7C: 06 02      LD      B,$02           
-5A7E: 1C         INC     E               
-5A7F: 04         INC     B               
-5A80: 37         SCF                     
-5A81: 7B         LD      A,E             
-5A82: 19         ADD     HL,DE           
-5A83: 1C         INC     E               
-5A84: 1B         DEC     DE              
-5A85: 07         RLCA                    
-5A86: 0C         INC     C               
-5A87: 11 12 1A   LD      DE,$1A12        
-5A8A: 20 15      JR      NZ,$5AA1        
-5A8C: 20 00      JR      NZ,$5A8E        
-5A8E: 18 21      JR      $5AB1           
-5A90: 12         LD      (DE),A          
-5A91: 12         LD      (DE),A          
-5A92: 16 21      LD      D,$21           
-5A94: 17         RLA                     
-5A95: 07         RLCA                    
-5A96: 14         INC     D               
-5A97: 11 21 15   LD      DE,$1521        
-5A9A: 21 00 07   LD      HL,$0700        
-5A9D: 08         EX      AF,AF'          
-5A9E: 1A         LD      A,(DE)          
-5A9F: 12         LD      (DE),A          
-5AA0: 18 20      JR      $5AC2           
-5AA2: 04         INC     B               
-5AA3: 15         DEC     D               
-5AA4: 7C         LD      A,H             
-5AA5: 18 15      JR      $5ABC           
-5AA7: 04         INC     B               
-5AA8: 3D         DEC     A               
-5AA9: 7C         LD      A,H             
-5AAA: 17         RLA                     
-5AAB: 26 0E      LD      H,$0E           
-5AAD: 07         RLCA                    
-5AAE: 0B         DEC     BC              
-5AAF: 11 21 15   LD      DE,$1521        
-5AB2: 21 00 18   LD      HL,$1800        
-5AB5: 15         DEC     D               
-5AB6: 04         INC     B               
-5AB7: 75         LD      (HL),L          
-5AB8: 7C         LD      A,H             
-5AB9: 17         RLA                     
-5ABA: 29         ADD     HL,HL           
-5ABB: 36 07      LD      (HL),$07        
-5ABD: 1C         INC     E               
-5ABE: 11 17 07   LD      DE,$0717        
-5AC1: 06 02      LD      B,$02           
-5AC3: 17         RLA                     
-5AC4: 04         INC     B               
-5AC5: 01 77 07   LD      BC,$0777        
-5AC8: 0E 02      LD      C,$02           
-5ACA: 22 04 BE   LD      ($BE04),HL      
-5ACD: 76         HALT                    
-5ACE: 15         DEC     D               
-5ACF: 16 40      LD      D,$40           
-5AD1: 15         DEC     D               
-5AD2: 17         RLA                     
-5AD3: 00         NOP                     
-5AD4: 18 18      JR      $5AEE           
-5AD6: 04         INC     B               
-5AD7: 6B         LD      L,E             
-5AD8: 77         LD      (HL),A          
-5AD9: 07         RLCA                    
-5ADA: 14         INC     D               
-5ADB: 11 18 07   LD      DE,$0718        
-5ADE: 06 02      LD      B,$02           
-5AE0: 18 04      JR      $5AE6           
-5AE2: 01 77 07   LD      BC,$0777        
-5AE5: 06 02      LD      B,$02           
-5AE7: 22 04 2D   LD      ($2D04),HL      
-5AEA: 77         LD      (HL),A          
-5AEB: 04         INC     B               
-5AEC: 6B         LD      L,E             
-5AED: 77         LD      (HL),A          
-5AEE: 04         INC     B               
-5AEF: 97         SUB     A               
-5AF0: 77         LD      (HL),A          
-5AF1: 23         INC     HL              
-5AF2: 04         INC     B               
-5AF3: 04         INC     B               
-5AF4: 56         LD      D,(HL)          
-5AF5: 74         LD      (HL),H          
-5AF6: 24         INC     H               
-5AF7: 0E 07      LD      C,$07           
-5AF9: 09         ADD     HL,BC           
-5AFA: 11 1C 15   LD      DE,$151C        
-5AFD: 1C         INC     E               
-5AFE: 00         NOP                     
-5AFF: 04         INC     B               
-5B00: E9         JP      (HL)            
-5B01: 75         LD      (HL),L          
-5B02: 04         INC     B               
-5B03: 08         EX      AF,AF'          
-5B04: 76         HALT                    
-5B05: 25         DEC     H               
-5B06: 12         LD      (DE),A          
-5B07: 07         RLCA                    
-5B08: 06 11      LD      B,$11           
-5B0A: 0E 04      LD      C,$04           
-5B0C: 18 76      JR      $5B84           
-5B0E: 07         RLCA                    
-5B0F: 06 11      LD      B,$11           
-5B11: 0F         RRCA                    
-5B12: 04         INC     B               
-5B13: 18 76      JR      $5B8B           
-5B15: 04         INC     B               
-5B16: 5B         LD      E,E             
-5B17: 76         HALT                    
-5B18: 27         DAA                     
-5B19: 12         LD      (DE),A          
-5B1A: 07         RLCA                    
-5B1B: 06 11      LD      B,$11           
-5B1D: 1B         DEC     DE              
-5B1E: 04         INC     B               
-5B1F: 77         LD      (HL),A          
-5B20: 76         HALT                    
-5B21: 07         RLCA                    
-5B22: 06 11      LD      B,$11           
-5B24: 21 04 D9   LD      HL,$D904        
-5B27: 75         LD      (HL),L          
-5B28: 04         INC     B               
-5B29: AE         XOR     (HL)            
-5B2A: 76         HALT                    
-5B2B: 2C         INC     L               
-5B2C: 2D         DEC     L               
-5B2D: 07         RLCA                    
-5B2E: 09         ADD     HL,BC           
-5B2F: 11 13 15   LD      DE,$1513        
-5B32: 13         INC     DE              
-5B33: 00         NOP                     
-5B34: 04         INC     B               
-5B35: B9         CP      C               
-5B36: 77         LD      (HL),A          
-5B37: 07         RLCA                    
-5B38: 09         ADD     HL,BC           
-5B39: 11 14 15   LD      DE,$1514        
-5B3C: 14         INC     D               
-5B3D: 00         NOP                     
-5B3E: 04         INC     B               
-5B3F: B9         CP      C               
-5B40: 77         LD      (HL),A          
-5B41: 07         RLCA                    
-5B42: 06 11      LD      B,$11           
-5B44: 17         RLA                     
-5B45: 04         INC     B               
-5B46: DD                              
-5B47: 77         LD      (HL),A          
-5B48: 07         RLCA                    
-5B49: 06 11      LD      B,$11           
-5B4B: 18 04      JR      $5B51           
-5B4D: DD                              
-5B4E: 77         LD      (HL),A          
-5B4F: 07         RLCA                    
-5B50: 06 11      LD      B,$11           
-5B52: 0B         DEC     BC              
-5B53: 04         INC     B               
-5B54: 03         INC     BC              
-5B55: 78         LD      A,B             
-5B56: 04         INC     B               
-5B57: 2F         CPL                     
-5B58: 78         LD      A,B             
-5B59: 30 04      JR      NC,$5B5F        
-5B5B: 04         INC     B               
-5B5C: 3F         CCF                     
-5B5D: 78         LD      A,B             
-5B5E: 2E 23      LD      L,$23           
-5B60: 07         RLCA                    
-5B61: 09         ADD     HL,BC           
-5B62: 11 1A 15   LD      DE,$151A        
-5B65: 1A         LD      A,(DE)          
-5B66: 00         NOP                     
-5B67: 04         INC     B               
-5B68: 59         LD      E,C             
-5B69: 78         LD      A,B             
-5B6A: 07         RLCA                    
-5B6B: 06 11      LD      B,$11           
-5B6D: 0A         LD      A,(BC)          
-5B6E: 04         INC     B               
-5B6F: 6E         LD      L,(HL)          
-5B70: 78         LD      A,B             
-5B71: 07         RLCA                    
-5B72: 06 11      LD      B,$11           
-5B74: 13         INC     DE              
-5B75: 04         INC     B               
-5B76: 6E         LD      L,(HL)          
-5B77: 78         LD      A,B             
-5B78: 07         RLCA                    
-5B79: 06 11      LD      B,$11           
-5B7B: 14         INC     D               
-5B7C: 04         INC     B               
-5B7D: 6E         LD      L,(HL)          
-5B7E: 78         LD      A,B             
-5B7F: 04         INC     B               
-5B80: D9         EXX                     
-5B81: 75         LD      (HL),L          
-5B82: 2F         CPL                     
-5B83: 15         DEC     D               
-5B84: 07         RLCA                    
-5B85: 09         ADD     HL,BC           
-5B86: 11 1C 15   LD      DE,$151C        
-5B89: 1C         INC     E               
-5B8A: 00         NOP                     
-5B8B: 04         INC     B               
-5B8C: 9C         SBC     H               
-5B8D: 76         HALT                    
-5B8E: 07         RLCA                    
-5B8F: 06 11      LD      B,$11           
-5B91: 1E 04      LD      E,$04           
-5B93: 86         ADD     A,(HL)          
-5B94: 78         LD      A,B             
-5B95: 04         INC     B               
-5B96: 2F         CPL                     
-5B97: 78         LD      A,B             
-5B98: 2D         DEC     L               
-5B99: 38 07      JR      C,$5BA2         
-5B9B: 06 11      LD      B,$11           
-5B9D: 13         INC     DE              
-5B9E: 04         INC     B               
-5B9F: E1         POP     HL              
-5BA0: 78         LD      A,B             
-5BA1: 07         RLCA                    
-5BA2: 06 11      LD      B,$11           
-5BA4: 14         INC     D               
-5BA5: 04         INC     B               
-5BA6: E1         POP     HL              
-5BA7: 78         LD      A,B             
-5BA8: 07         RLCA                    
-5BA9: 10 11      DJNZ    $5BBC           
-5BAB: 0B         DEC     BC              
-5BAC: 07         RLCA                    
-5BAD: 09         ADD     HL,BC           
-5BAE: 02         LD      (BC),A          
-5BAF: 14         INC     D               
-5BB0: 15         DEC     D               
-5BB1: 14         INC     D               
-5BB2: 00         NOP                     
-5BB3: 04         INC     B               
-5BB4: 2B         DEC     HL              
-5BB5: 79         LD      A,C             
-5BB6: 04         INC     B               
-5BB7: 4C         LD      C,H             
-5BB8: 79         LD      A,C             
-5BB9: 07         RLCA                    
-5BBA: 06 11      LD      B,$11           
-5BBC: 17         RLA                     
-5BBD: 04         INC     B               
-5BBE: A7         AND     A               
-5BBF: 79         LD      A,C             
-5BC0: 07         RLCA                    
-5BC1: 06 11      LD      B,$11           
-5BC3: 18 04      JR      $5BC9           
-5BC5: A7         AND     A               
-5BC6: 79         LD      A,C             
-5BC7: 07         RLCA                    
-5BC8: 06 11      LD      B,$11           
-5BCA: 0D         DEC     C               
-5BCB: 04         INC     B               
-5BCC: 4C         LD      C,H             
-5BCD: 79         LD      A,C             
-5BCE: 04         INC     B               
-5BCF: D9         EXX                     
-5BD0: 75         LD      (HL),L          
-
-5BD1: 39         ADD     HL,SP           ; plugh
-5BD2: 02         LD      (BC),A          
-5BD3: 1D         DEC     E
-               
-5BD4: 3A 02 1B   LD      A,($1B02)       
-5BD7: 3B         DEC     SP              
-5BD8: 02         LD      (BC),A          
-5BD9: 1C         INC     E               
-5BDA: 00         NOP
+59B0: 01 04     ; "N" : [
+59B2: 04 ED 73  ;    "PrintMessageX","THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.[CR]"],
+59B5: 02 04     ; "E" : [
+59B7: 04 ED 73  ;    "PrintMessageX","THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.[CR]"],
+59BA: 03 04     ; "S" : [
+59BC: 04 ED 73  ;    "PrintMessageX","THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.[CR]"],
+59BF: 04 04     ; "W" : [
+59C1: 04 ED 73  ;    "PrintMessageX","THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.[CR]"],
+59C4: 05 04     ; "NE" : [
+59C6: 04 ED 73  ;    "PrintMessageX","THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.[CR]"],
+59C9: 06 04     ; "SE" : [
+59CB: 04 ED 73  ;    "PrintMessageX","THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.[CR]"],
+59CE: 07 04     ; "SW" : [
+59D0: 04 ED 73  ;    "PrintMessageX","THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.[CR]"],
+59D3: 08 04     ; "NW" : [
+59D5: 04 ED 73  ;    "PrintMessageX","THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.[CR]"],
+59D8: 09 04     ; "U" : [
+59DA: 04 ED 73  ;    "PrintMessageX","THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.[CR]"],
+59DD: 0A 04     ; "D" : [
+59DF: 04 ED 73  ;    "PrintMessageX","THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.[CR]"],
+59E2: 0B 04     ; "IN" : [
+59E4: 04 0D 74  ;    "PrintMessageX","I_DON'T_KNOW_IN_FROM_OUT_HERE.__USE_COMPASS_POINTS.[CR]"],
+59E7: 0C 04     ; "OUT" : [
+59E9: 04 0D 74  ;    "PrintMessageX","I_DON'T_KNOW_IN_FROM_OUT_HERE.__USE_COMPASS_POINTS.[CR]"],
+59EC: 0E 04     ; "LEFT" : [
+59EE: 04 31 74  ;    "PrintMessageX","I_AM_UNSURE_HOW_YOU_ARE_FACING.__USE_COMPASS_POINTS.[CR]"],
+59F1: 0F 04     ; "RIGHT" : [
+59F3: 04 31 74  ;    "PrintMessageX","I_AM_UNSURE_HOW_YOU_ARE_FACING.__USE_COMPASS_POINTS.[CR]"],
+59F6: 12 04     ; "PANEL" : [
+59F8: 04 56 74  ;    "PrintMessageX","NOTHING_HAPPENS.[CR]"],
+59FB: 14 02     ; "BACK" : [
+59FD: 0E        ;    "MoveToLastRoom"],
+59FE: 16 04     ; "SWIM" : [
+5A00: 04 63 74  ;    "PrintMessageX","I_DON'T_KNOW_HOW.[CR]"],
+5A03: 17 18     ; "ON" : [
+5A05: 07 0C     ;    "SubScripXtAbortIfPass",[
+5A07: 02 0E     ;        "AssertObjectXIsInPack","#LAMP_off",
+5A09: 15 0E 00  ;        "MoveObjectXToRoomY","#LAMP_off","room_0",
+5A0C: 15 0F FF  ;        "MoveObjectXToRoomY","#LAMP_on","room_255",
+5A0F: 04 8F 74  ;        "PrintMessageX","YOUR_LAMP_IS_NOW_ON.[CR]",
+5A12: 07 06     ;    "SubScripXtAbortIfPass",[
+5A14: 02 0F     ;        "AssertObjectXIsInPack","#LAMP_on",
+5A16: 04 8F 74  ;        "PrintMessageX","YOUR_LAMP_IS_NOW_ON.[CR]",
+5A19: 04 9F 74  ;    "PrintMessageX","YOU_HAVE_NO_SOURCE_OF_LIGHT.[CR]"],
+5A1C: 18 18     ; "OFF" : [
+5A1E: 07 0C     ;    "SubScripXtAbortIfPass",[
+5A20: 02 0F     ;        "AssertObjectXIsInPack","#LAMP_on",
+5A22: 15 0F 00  ;        "MoveObjectXToRoomY","#LAMP_on","room_0",
+5A25: 15 0E FF  ;        "MoveObjectXToRoomY","#LAMP_off","room_255",
+5A28: 04 B4 74  ;        "PrintMessageX","YOUR_LAMP_IS_NOW_OFF.[CR]",
+5A2B: 07 06     ;    "SubScripXtAbortIfPass",[
+5A2D: 02 0E     ;        "AssertObjectXIsInPack","#LAMP_off",
+5A2F: 04 B4 74  ;        "PrintMessageX","YOUR_LAMP_IS_NOW_OFF.[CR]",
+5A32: 04 9F 74  ;    "PrintMessageX","YOU_HAVE_NO_SOURCE_OF_LIGHT.[CR]"],
+5A35: 19 02     ; "QUIT" : [
+5A37: 09        ;    "PrintScoreAndStop"],
+5A38: 1A 02     ; "SCORE" : [
+5A3A: 08        ;    "PrintScore"],
+5A3B: 1B 02     ; "INVENT" : [
+5A3D: 0F        ;    "PrintInventory"],
+5A3E: 1C 02     ; "LOOK" : [
+5A40: 10        ;    "PrintRoomDescription"],
+5A41: 1D 04     ; "HELP" : [
+5A43: 04 C4 74  ;    "PrintMessageX","I'M_AS_CONFUSED_AS_YOU_ARE.[CR]"],
+5A46: 1E 04     ; "FIND" : [
+5A48: 04 D8 74  ;    "PrintMessageX","I_CAN_ONLY_TELL_YOU_WHAT_YOU_SEE_AS_YOU_MOVE_ABOUT_AND__________MANIPULATE_THINGS.__I_CAN_NOT_TELL_YOU_WHERE_REMOTE_THINGS_ARE.[CR]"],
+5A4B: 28 47     ; "TAKE" : [
+5A4D: 07 06     ;    "SubScripXtAbortIfPass",[
+5A4F: 11 07     ;        "AssertObjectXMatchesUserInput","#PLANT_A",
+5A51: 04 61 7A  ;        "PrintMessageX","THE_PLANT_HAS_EXCEPTIONALLY_DEEP_ROOTS_AND_CANNOT_BE_PULLED_____FREE.[CR]",
+5A54: 07 17     ;    "SubScripXtAbortIfPass",[
+5A56: 11 13     ;        "AssertObjectXMatchesUserInput","#BIRD",
+5A58: 07 06     ;        "SubScripXtAbortIfPass",[
+5A5A: 02 11     ;            "AssertObjectXIsInPack","#SCEPTER",
+5A5C: 04 C7 7A  ;            "PrintMessageX","AS_YOU_APPROACH_THE_STATUE,_IT_COMES_TO_LIFE_AND_FLIES_ACROSS___THE_CHAMBER_WHERE_IT_LANDS_AND_RETURNS_TO_STONE.[CR]",
+5A5F: 07 09     ;        "SubScripXtAbortIfPass",[
+5A61: 02 10     ;            "AssertObjectXIsInPack","#BOX",
+5A63: 15 13 00  ;            "MoveObjectXToRoomY","#BIRD","room_0",
+5A66: 19 14 10  ;            "MoveObjectXIntoContainerY","#BIRD_boxed","#BOX",
+5A69: 04 14 7B  ;        "PrintMessageX","YOU_CAN_LIFT_THE_STATUE,_BUT_YOU_CANNOT_CARRY_IT.[CR]",
+5A6C: 07 0A     ;    "SubScripXtAbortIfPass",[
+5A6E: 11 20     ;        "AssertObjectXMatchesUserInput","#VASE_pillow",
+5A70: 12 21     ;        "GetObjectFromRoom","#VASE_solo",
+5A72: 15 20 00  ;        "MoveObjectXToRoomY","#VASE_pillow","room_0",
+5A75: 18 12     ;        "MoveObjectXToCurrentRoom","#PILLOW",
+5A77: 07 0D     ;    "SubScripXtAbortIfPass",[
+5A79: 11 1E     ;        "AssertObjectXMatchesUserInput","#STREAM_56",
+5A7B: 07 06     ;        "SubScripXtAbortIfPass",[
+5A7D: 02 1C     ;            "AssertObjectXIsInPack","#WATER",
+5A7F: 04 37 7B  ;            "PrintMessageX","YOUR_BOTTLE_IS_ALREADY_FULL.[CR]",
+5A82: 19 1C 1B  ;        "MoveObjectXIntoContainerY","#WATER","#BOTTLE",
+5A85: 07 0C     ;    "SubScripXtAbortIfPass",[
+5A87: 11 12     ;        "AssertObjectXMatchesUserInput","#PILLOW",
+5A89: 1A 20     ;        "AssertObjectXIsInCurrentRoom","#VASE_pillow",
+5A8B: 15 20 00  ;        "MoveObjectXToRoomY","#VASE_pillow","room_0",
+5A8E: 18 21     ;        "MoveObjectXToCurrentRoom","#VASE_solo",
+5A90: 12 12     ;        "GetObjectFromRoom","#PILLOW",
+5A92: 16        ;    "GetUserInputObject"],
+5A93: 21 17     ; "DROP" : [
+5A95: 07 14     ;    "SubScripXtAbortIfPass",[
+5A97: 11 21     ;        "AssertObjectXMatchesUserInput","#VASE_solo",
+5A99: 15 21 00  ;        "MoveObjectXToRoomY","#VASE_solo","room_0",
+5A9C: 07 08     ;        "SubScripXtAbortIfPass",[
+5A9E: 1A 12     ;            "AssertObjectXIsInCurrentRoom","#PILLOW",
+5AA0: 18 20     ;            "MoveObjectXToCurrentRoom","#VASE_pillow",
+5AA2: 04 15 7C  ;            "PrintMessageX","THE_VASE_IS_NOW_RESTING,_DELICATELY,_ON_A_VELVET_PILLOW.[CR]",
+5AA5: 18 15     ;        "MoveObjectXToCurrentRoom","#POTTERY",
+5AA7: 04 3D 7C  ;        "PrintMessageX","THE_VASE_DROPS_WITH_A_DELICATE_CRASH.[CR]",
+5AAA: 17        ;    "DropUserInputObject"],
+5AAB: 26 0E     ; "THROW" : [
+5AAD: 07 0B     ;    "SubScripXtAbortIfPass",[
+5AAF: 11 21     ;        "AssertObjectXMatchesUserInput","#VASE_solo",
+5AB1: 15 21 00  ;        "MoveObjectXToRoomY","#VASE_solo","room_0",
+5AB4: 18 15     ;        "MoveObjectXToCurrentRoom","#POTTERY",
+5AB6: 04 75 7C  ;        "PrintMessageX","YOU_HAVE_TAKEN_THE_VASE_AND_HURLED_IT_DELICATELY_TO_THE_GROUND.[CR]",
+5AB9: 17        ;    "DropUserInputObject"],
+5ABA: 29 36     ; "OPEN" : [
+5ABC: 07 1C     ;    "SubScripXtAbortIfPass",[
+5ABE: 11 17     ;        "AssertObjectXMatchesUserInput","#SARCOPH_full",
+5AC0: 07 06     ;        "SubScripXtAbortIfPass",[
+5AC2: 02 17     ;            "AssertObjectXIsInPack","#SARCOPH_full",
+5AC4: 04 01 77  ;            "PrintMessageX","I'D_ADVISE_YOU_TO_PUT_DOWN_THE_SARCOPHAGUS_BEFORE_OPENING_IT!![CR]",
+5AC7: 07 0E     ;        "SubScripXtAbortIfPass",[
+5AC9: 02 22     ;            "AssertObjectXIsInPack","#KEY",
+5ACB: 04 BE 76  ;            "PrintMessageX","A_GLISTENING_PEARL_FALLS_OUT_OF_THE_SARCOPHAGUS_AND_ROLLS_AWAY._THE_SARCOPHAGUS_SNAPS_SHUT_AGAIN.[CR]",
+5ACE: 15 16 40  ;            "MoveObjectXToRoomY","#PEARL","room_64",
+5AD1: 15 17 00  ;            "MoveObjectXToRoomY","#SARCOPH_full","room_0",
+5AD4: 18 18     ;            "MoveObjectXToCurrentRoom","#SARCOPH_empty",
+5AD6: 04 6B 77  ;        "PrintMessageX","YOU_DON'T_HAVE_ANYTHING_STRONG_ENOUGH_TO_OPEN_THE_SARCOPHAGUS.[CR]",
+5AD9: 07 14     ;    "SubScripXtAbortIfPass",[
+5ADB: 11 18     ;        "AssertObjectXMatchesUserInput","#SARCOPH_empty",
+5ADD: 07 06     ;        "SubScripXtAbortIfPass",[
+5ADF: 02 18     ;            "AssertObjectXIsInPack","#SARCOPH_empty",
+5AE1: 04 01 77  ;            "PrintMessageX","I'D_ADVISE_YOU_TO_PUT_DOWN_THE_SARCOPHAGUS_BEFORE_OPENING_IT!![CR]",
+5AE4: 07 06     ;        "SubScripXtAbortIfPass",[
+5AE6: 02 22     ;            "AssertObjectXIsInPack","#KEY",
+5AE8: 04 2D 77  ;            "PrintMessageX","THE_SARCOPHAGUS_CREAKS_OPEN,_REVEALING_NOTHING_INSIDE.__IT______PROMPTLY_SNAPS_SHUT_AGAIN.[CR]",
+5AEB: 04 6B 77  ;        "PrintMessageX","YOU_DON'T_HAVE_ANYTHING_STRONG_ENOUGH_TO_OPEN_THE_SARCOPHAGUS.[CR]",
+5AEE: 04 97 77  ;    "PrintMessageX","I_DON'T_KNOW_HOW_TO_LOCK_OR_UNLOCK_SUCH_A_THING.[CR]"],
+5AF1: 23 04     ; "WAVE" : [
+5AF3: 04 56 74  ;    "PrintMessageX","NOTHING_HAPPENS.[CR]"],
+5AF6: 24 0E     ; "POUR" : [
+5AF8: 07 09     ;    "SubScripXtAbortIfPass",[
+5AFA: 11 1C     ;        "AssertObjectXMatchesUserInput","#WATER",
+5AFC: 15 1C 00  ;        "MoveObjectXToRoomY","#WATER","room_0",
+5AFF: 04 E9 75  ;        "PrintMessageX","YOUR_BOTTLE_IS_EMPTY_AND_THE_GROUND_IS_WET.[CR]",
+5B02: 04 08 76  ;    "PrintMessageX","YOU_CAN'T_POUR_THAT.[CR]"],
+5B05: 25 12     ; "RUB" : [
+5B07: 07 06     ;    "SubScripXtAbortIfPass",[
+5B09: 11 0E     ;        "AssertObjectXMatchesUserInput","#LAMP_off",
+5B0B: 04 18 76  ;        "PrintMessageX","RUBBING_THE_ELECTRIC_LAMP_IS_NOT_PARTICULARLY_REWARDING.________ANYWAY,_NOTHING_EXCITING_HAPPENS.[CR]",
+5B0E: 07 06     ;    "SubScripXtAbortIfPass",[
+5B10: 11 0F     ;        "AssertObjectXMatchesUserInput","#LAMP_on",
+5B12: 04 18 76  ;        "PrintMessageX","RUBBING_THE_ELECTRIC_LAMP_IS_NOT_PARTICULARLY_REWARDING.________ANYWAY,_NOTHING_EXCITING_HAPPENS.[CR]",
+5B15: 04 5B 76  ;    "PrintMessageX","PECULIAR.__NOTHING_UNEXPECTED_HAPPENS.[CR]"],
+5B18: 27 12     ; "FILL" : [
+5B1A: 07 06     ;    "SubScripXtAbortIfPass",[
+5B1C: 11 1B     ;        "AssertObjectXMatchesUserInput","#BOTTLE",
+5B1E: 04 77 76  ;        "PrintMessageX","THERE_IS_NOTHING_HERE_WITH_WHICH_TO_FILL_THE_BOTTLE.[CR]",
+5B21: 07 06     ;    "SubScripXtAbortIfPass",[
+5B23: 11 21     ;        "AssertObjectXMatchesUserInput","#VASE_solo",
+5B25: 04 D9 75  ;        "PrintMessageX","DON'T_BE_RIDICULOUS![CR]",
+5B28: 04 AE 76  ;    "PrintMessageX","YOU_CAN'T_FILL_THAT.[CR]"],
+5B2B: 2C 2D     ; "ATTACK" : [
+5B2D: 07 09     ;    "SubScripXtAbortIfPass",[
+5B2F: 11 13     ;        "AssertObjectXMatchesUserInput","#BIRD",
+5B31: 15 13 00  ;        "MoveObjectXToRoomY","#BIRD","room_0",
+5B34: 04 B9 77  ;        "PrintMessageX","THE_BIRD_STATUE_IS_NOW_DEAD.__ITS_BODY_DISAPPEARS.[CR]",
+5B37: 07 09     ;    "SubScripXtAbortIfPass",[
+5B39: 11 14     ;        "AssertObjectXMatchesUserInput","#BIRD_boxed",
+5B3B: 15 14 00  ;        "MoveObjectXToRoomY","#BIRD_boxed","room_0",
+5B3E: 04 B9 77  ;        "PrintMessageX","THE_BIRD_STATUE_IS_NOW_DEAD.__ITS_BODY_DISAPPEARS.[CR]",
+5B41: 07 06     ;    "SubScripXtAbortIfPass",[
+5B43: 11 17     ;        "AssertObjectXMatchesUserInput","#SARCOPH_full",
+5B45: 04 DD 77  ;        "PrintMessageX","THE_STONE_IS_VERY_STRONG_AND_IS_IMPERVIOUS_TO_ATTACK.[CR]",
+5B48: 07 06     ;    "SubScripXtAbortIfPass",[
+5B4A: 11 18     ;        "AssertObjectXMatchesUserInput","#SARCOPH_empty",
+5B4C: 04 DD 77  ;        "PrintMessageX","THE_STONE_IS_VERY_STRONG_AND_IS_IMPERVIOUS_TO_ATTACK.[CR]",
+5B4F: 07 06     ;    "SubScripXtAbortIfPass",[
+5B51: 11 0B     ;        "AssertObjectXMatchesUserInput","#SERPENT",
+5B53: 04 03 78  ;        "PrintMessageX","ATTACKING_THE_SERPENT_BOTH_DOESN'T_WORK_AND_IS_VERY_DANGEROUS.[CR]",
+5B56: 04 2F 78  ;    "PrintMessageX","YOU_CAN'T_BE_SERIOUS![CR]"],
+5B59: 30 04     ; "BREAK" : [
+5B5B: 04 3F 78  ;    "PrintMessageX","IT_IS_BEYOND_YOUR_POWER_TO_DO_THAT.[CR]"],
+5B5E: 2E 23     ; "EAT" : [
+5B60: 07 09     ;    "SubScripXtAbortIfPass",[
+5B62: 11 1A     ;        "AssertObjectXMatchesUserInput","#FOOD",
+5B64: 15 1A 00  ;        "MoveObjectXToRoomY","#FOOD","room_0",
+5B67: 04 59 78  ;        "PrintMessageX","THANK_YOU,_IT_WAS_DELICIOUS![CR]",
+5B6A: 07 06     ;    "SubScripXtAbortIfPass",[
+5B6C: 11 0A     ;        "AssertObjectXMatchesUserInput","#UNUSED_10",
+5B6E: 04 6E 78  ;        "PrintMessageX","I_THINK_I_JUST_LOST_MY_APPETITE.[CR]",
+5B71: 07 06     ;    "SubScripXtAbortIfPass",[
+5B73: 11 13     ;        "AssertObjectXMatchesUserInput","#BIRD",
+5B75: 04 6E 78  ;        "PrintMessageX","I_THINK_I_JUST_LOST_MY_APPETITE.[CR]",
+5B78: 07 06     ;    "SubScripXtAbortIfPass",[
+5B7A: 11 14     ;        "AssertObjectXMatchesUserInput","#BIRD_boxed",
+5B7C: 04 6E 78  ;        "PrintMessageX","I_THINK_I_JUST_LOST_MY_APPETITE.[CR]",
+5B7F: 04 D9 75  ;    "PrintMessageX","DON'T_BE_RIDICULOUS![CR]"],
+5B82: 2F 15     ; "DRINK" : [
+5B84: 07 09     ;    "SubScripXtAbortIfPass",[
+5B86: 11 1C     ;        "AssertObjectXMatchesUserInput","#WATER",
+5B88: 15 1C 00  ;        "MoveObjectXToRoomY","#WATER","room_0",
+5B8B: 04 9C 76  ;        "PrintMessageX","THE_BOTTLE_IS_NOW_EMPTY.[CR]",
+5B8E: 07 06     ;    "SubScripXtAbortIfPass",[
+5B90: 11 1E     ;        "AssertObjectXMatchesUserInput","#STREAM_56",
+5B92: 04 86 78  ;        "PrintMessageX","YOU_HAVE_TAKEN_A_DRINK_FROM_THE_STREAM.__THE_WATER_TASTES_______STRONGLY_OF_MINERALS,_BUT_IS_NOT_UNPLEASANT.__IT_IS_EXTREMELY___COLD.[CR]",
+5B95: 04 2F 78  ;    "PrintMessageX","YOU_CAN'T_BE_SERIOUS![CR]"],
+5B98: 2D 38     ; "FEED" : [
+5B9A: 07 06     ;    "SubScripXtAbortIfPass",[
+5B9C: 11 13     ;        "AssertObjectXMatchesUserInput","#BIRD",
+5B9E: 04 E1 78  ;        "PrintMessageX","IT'S_NOT_HUNGRY.__BESIDES,_YOU_HAVE_NO_BIRD_SEED.[CR]",
+5BA1: 07 06     ;    "SubScripXtAbortIfPass",[
+5BA3: 11 14     ;        "AssertObjectXMatchesUserInput","#BIRD_boxed",
+5BA5: 04 E1 78  ;        "PrintMessageX","IT'S_NOT_HUNGRY.__BESIDES,_YOU_HAVE_NO_BIRD_SEED.[CR]",
+5BA8: 07 10     ;    "SubScripXtAbortIfPass",[
+5BAA: 11 0B     ;        "AssertObjectXMatchesUserInput","#SERPENT",
+5BAC: 07 09     ;        "SubScripXtAbortIfPass",[
+5BAE: 02 14     ;            "AssertObjectXIsInPack","#BIRD_boxed",
+5BB0: 15 14 00  ;            "MoveObjectXToRoomY","#BIRD_boxed","room_0",
+5BB3: 04 2B 79  ;            "PrintMessageX","THE_SERPENT_HAS_NOW_DEVOURED_YOUR_BIRD_STATUE.[CR]",
+5BB6: 04 4C 79  ;        "PrintMessageX","THERE_IS_NOTHING_HERE_IT_WANTS_TO_EAT_-_EXCEPT_PERHAPS_YOU.[CR]",
+5BB9: 07 06     ;    "SubScripXtAbortIfPass",[
+5BBB: 11 17     ;        "AssertObjectXMatchesUserInput","#SARCOPH_full",
+5BBD: 04 A7 79  ;        "PrintMessageX","I'M_GAME.__WOULD_YOU_CARE_TO_EXPLAIN_HOW?[CR]",
+5BC0: 07 06     ;    "SubScripXtAbortIfPass",[
+5BC2: 11 18     ;        "AssertObjectXMatchesUserInput","#SARCOPH_empty",
+5BC4: 04 A7 79  ;        "PrintMessageX","I'M_GAME.__WOULD_YOU_CARE_TO_EXPLAIN_HOW?[CR]",
+5BC7: 07 06     ;    "SubScripXtAbortIfPass",[
+5BC9: 11 0D     ;        "AssertObjectXMatchesUserInput","#UNUSED_13",
+5BCB: 04 4C 79  ;        "PrintMessageX","THERE_IS_NOTHING_HERE_IT_WANTS_TO_EAT_-_EXCEPT_PERHAPS_YOU.[CR]",
+5BCE: 04 D9 75  ;    "PrintMessageX","DON'T_BE_RIDICULOUS![CR]"],
+5BD1: 39 02     ; "PLUGH" : [
+5BD3: 1D        ;    "RandomizeDirections"],
+5BD4: 3A 02     ; "LOAD" : [
+5BD6: 1B        ;    "LoadGame"],
+5BD7: 3B 02     ; "SAVE" : [
+5BD9: 1C        ;    "SaveGame"],
+5BDA: 00
 ```
 
 # Room Descriptions
