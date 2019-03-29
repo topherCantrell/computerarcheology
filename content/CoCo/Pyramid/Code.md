@@ -1030,8 +1030,8 @@ PrintObjectsInRoom:
 0C32: BD 08 D6            JSR     $08D6                     ; {PrintPackedMessage} Print the object description
 0C35: 35 04               PULS    B                         ; Restore count
 0C37: 20 D7               BRA     $0C10                     ; Do all objects
-
 ```
+
 # Command 24: Move Object X To Current Room 
 
 Move the specified object to the current room.
@@ -3273,10 +3273,6 @@ This script is used when the room doesn't have a script for the input command.
 
 ```code
 GeneralCommandHandler:
-../../content/CoCo/Pyramid/Code.md
-../../content/CoCo/Pyramid/Code.md
-['MoveToRoomX', 'AssertObjectXIsInPack', 'AssertObjectXIsInCurrentRoomOrPack', 'PrintMessageX', 'PrintScoreAndStop', '-', 'SubScripXtAbortIfPass', 'PrintScore', 'PrintScoreAndStop', 'AssertRandomIsGreaterThanX', 'DropObjectX', 'MoveToRoomXIfItWasLastRoom', 'AssertPackIsEmptyExceptForEmerald', 'MoveToLastRoom', 'PrintInventory', 'PrintRoomDescription', 'AssertObjectXMatchesUserInput', 'GetObjectFromRoom', '-', 'PrintOK', 'MoveObjectXToRoomY', 'GetUserInputObject', 'DropUserInputObject', 'MoveObjectXToCurrentRoom', 'MoveObjectXIntoContainerY', 'AssertObjectXIsInCurrentRoom', 'LoadGame', 'SaveGame', 'JumpToTopOfGameLoop']
-['#bridge_15', '#bridge_18', '#UNUSED_3', '#UNUSED_4', '#UNUSED_5', '#MACHINE', '#PLANT_A', '#PLANT_B', '#PLANT_C', '#UNUSED_10', '#SERPENT', '#UNUSED_12', '#UNUSED_13', '#LAMP_off', '#LAMP_on', '#BOX', '#SCEPTER', '#PILLOW', '#BIRD', '#BIRD_boxed', '#POTTERY', '#PEARL', '#SARCOPH_full', '#SARCOPH_empty', '#MAGAZINES', '#FOOD', '#BOTTLE', '#WATER', '#UNUSED_29', '#STREAM_56', '#EMERALD', '#VASE_pillow', '#VASE_solo', '#KEY', '#BATTERIES_fresh', '#BATTERIES_worn', '#GOLD', '#DIAMNODS', '#SILVER', '#JEWELRY', '#COINS', '#CHEST', '#NEST', '#LAMP_dead']
 1945: 01 04     ; "N" : [
 1947: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION.[CR]"],
 194A: 02 04     ; "E" : [
