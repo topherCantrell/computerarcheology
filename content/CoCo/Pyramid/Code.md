@@ -3273,239 +3273,252 @@ This script is used when the room doesn't have a script for the input command.
 
 ```code
 GeneralCommandHandler:
-1945: 01 04     ; _n : [
-1947: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION."],
-194A: 02 04     ; _e : [
-194C: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION."],
-194F: 03 04     ; _s : [
-1951: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION."],
-1954: 04 04     ; _w : [
-1956: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION."],
-1959: 05 04     ; _ne : [
-195B: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION."],
-195E: 06 04     ; _se : [
-1960: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION."],
-1963: 07 04     ; _sw : [
-1965: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION."],
-1968: 08 04     ; _nw : [
-196A: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION."],
-196D: 09 04     ; _u : [
-196F: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION."],
-1972: 0A 04     ; _d : [
-1974: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION."],
-1977: 0B 04     ; _in : [
-1979: 04 33 24  ;    "PrintMessageX","I DON'T KNOW IN FROM OUT HERE. USE COMPASS POINTS."],
-197C: 0C 04     ; _out : [
-197E: 04 33 24  ;    "PrintMessageX","I DON'T KNOW IN FROM OUT HERE. USE COMPASS POINTS."],
-1981: 0E 04     ; _left : [
-1983: 04 33 48  ;    "PrintMessageX","I AM UNSURE HOW YOU ARE FACING. USE COMPASS POINTS."],
-1986: 0F 04     ; _right : [
-1988: 04 33 48  ;    "PrintMessageX","I AM UNSURE HOW YOU ARE FACING. USE COMPASS POINTS."],
-198B: 12 04     ; _panel : [
-198D: 04 33 6C  ;    "PrintMessageX","NOTHING HAPPENS."],
-1990: 14 02     ; _back : [
+../../content/CoCo/Pyramid/Code.md
+../../content/CoCo/Pyramid/Code.md
+['MoveToRoomX', 'AssertObjectXIsInPack', 'AssertObjectXIsInCurrentRoomOrPack', 'PrintMessageX', 'PrintScoreAndStop', '-', 'SubScripXtAbortIfPass', 'PrintScore', 'PrintScoreAndStop', 'AssertRandomIsGreaterThanX', 'DropObjectX', 'MoveToRoomXIfItWasLastRoom', 'AssertPackIsEmptyExceptForEmerald', 'MoveToLastRoom', 'PrintInventory', 'PrintRoomDescription', 'AssertObjectXMatchesUserInput', 'GetObjectFromRoom', '-', 'PrintOK', 'MoveObjectXToRoomY', 'GetUserInputObject', 'DropUserInputObject', 'MoveObjectXToCurrentRoom', 'MoveObjectXIntoContainerY', 'AssertObjectXIsInCurrentRoom', 'LoadGame', 'SaveGame', 'JumpToTopOfGameLoop']
+['#bridge_15', '#bridge_18', '#UNUSED_3', '#UNUSED_4', '#UNUSED_5', '#MACHINE', '#PLANT_A', '#PLANT_B', '#PLANT_C', '#UNUSED_10', '#SERPENT', '#UNUSED_12', '#UNUSED_13', '#LAMP_off', '#LAMP_on', '#BOX', '#SCEPTER', '#PILLOW', '#BIRD', '#BIRD_boxed', '#POTTERY', '#PEARL', '#SARCOPH_full', '#SARCOPH_empty', '#MAGAZINES', '#FOOD', '#BOTTLE', '#WATER', '#UNUSED_29', '#STREAM_56', '#EMERALD', '#VASE_pillow', '#VASE_solo', '#KEY', '#BATTERIES_fresh', '#BATTERIES_worn', '#GOLD', '#DIAMNODS', '#SILVER', '#JEWELRY', '#COINS', '#CHEST', '#NEST', '#LAMP_dead']
+1945: 01 04     ; "N" : [
+1947: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION.[CR]"],
+194A: 02 04     ; "E" : [
+194C: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION.[CR]"],
+194F: 03 04     ; "S" : [
+1951: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION.[CR]"],
+1954: 04 04     ; "W" : [
+1956: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION.[CR]"],
+1959: 05 04     ; "NE" : [
+195B: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION.[CR]"],
+195E: 06 04     ; "SE" : [
+1960: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION.[CR]"],
+1963: 07 04     ; "SW" : [
+1965: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION.[CR]"],
+1968: 08 04     ; "NW" : [
+196A: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION.[CR]"],
+196D: 09 04     ; "U" : [
+196F: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION.[CR]"],
+1972: 0A 04     ; "D" : [
+1974: 04 33 04  ;    "PrintMessageX","THERE IS NO WAY FOR YOU TO GO THAT DIRECTION.[CR]"],
+1977: 0B 04     ; "IN" : [
+1979: 04 33 24  ;    "PrintMessageX","I DON'T KNOW IN FROM OUT HERE. USE COMPASS POINTS.[CR]"],
+197C: 0C 04     ; "OUT" : [
+197E: 04 33 24  ;    "PrintMessageX","I DON'T KNOW IN FROM OUT HERE. USE COMPASS POINTS.[CR]"],
+1981: 0E 04     ; "LEFT" : [
+1983: 04 33 48  ;    "PrintMessageX","I AM UNSURE HOW YOU ARE FACING. USE COMPASS POINTS.[CR]"],
+1986: 0F 04     ; "RIGHT" : [
+1988: 04 33 48  ;    "PrintMessageX","I AM UNSURE HOW YOU ARE FACING. USE COMPASS POINTS.[CR]"],
+198B: 12 04     ; "PANEL" : [
+198D: 04 33 6C  ;    "PrintMessageX","NOTHING HAPPENS.[CR]"],
+1990: 14 02     ; "BACK" : [
 1992: 0E        ;    "MoveToLastRoom"],
-1993: 16 04     ; _swim : [
-1995: 04 33 79  ;    "PrintMessageX","I DON'T KNOW HOW."],
-1998: 17 18     ; _on : [
-199A: 07 0C     ;    "SubScriptXAbortIfPass",[
+1993: 16 04     ; "SWIM" : [
+1995: 04 33 79  ;    "PrintMessageX","I DON'T KNOW HOW.[CR]"],
+1998: 17 18     ; "ON" : [
+199A: 07 0C     ;    "SubScripXtAbortIfPass",[
 199C: 02 0E     ;        "AssertObjectXIsInPack","#LAMP_off",
 199E: 15 0E 00  ;        "MoveObjectXToRoomY","#LAMP_off","room_0",
 19A1: 15 0F FF  ;        "MoveObjectXToRoomY","#LAMP_on","room_255",
-19A4: 04 33 A5  ;        "PrintMessageX","YOUR LAMP IS NOW ON."],
-19A7: 07 06     ;    "SubScriptXAbortIfPass",[
+19A4: 04 33 A5  ;        "PrintMessageX","YOUR LAMP IS NOW ON.[CR]"],
+19A7: 07 06     ;    "SubScripXtAbortIfPass",[
 19A9: 02 0F     ;        "AssertObjectXIsInPack","#LAMP_on",
-19AB: 04 33 A5  ;        "PrintMessageX","YOUR LAMP IS NOW ON."],
-19AE: 04 33 B5  ;    "PrintMessageX","YOU HAVE NO SOURCE OF LIGHT."],
-19B1: 18 18     ; _off : [
-19B3: 07 0C     ;    "SubScriptXAbortIfPass",[
+19AB: 04 33 A5  ;        "PrintMessageX","YOUR LAMP IS NOW ON.[CR]"],
+19AE: 04 33 B5  ;    "PrintMessageX","YOU HAVE NO SOURCE OF LIGHT.[CR]"],
+19B1: 18 18     ; "OFF" : [
+19B3: 07 0C     ;    "SubScripXtAbortIfPass",[
 19B5: 02 0F     ;        "AssertObjectXIsInPack","#LAMP_on",
 19B7: 15 0F 00  ;        "MoveObjectXToRoomY","#LAMP_on","room_0",
 19BA: 15 0E FF  ;        "MoveObjectXToRoomY","#LAMP_off","room_255",
-19BD: 04 33 CA  ;        "PrintMessageX","YOUR LAMP IS NOW OFF."],
-19C0: 07 06     ;    "SubScriptXAbortIfPass",[
+19BD: 04 33 CA  ;        "PrintMessageX","YOUR LAMP IS NOW OFF.[CR]"],
+19C0: 07 06     ;    "SubScripXtAbortIfPass",[
 19C2: 02 0E     ;        "AssertObjectXIsInPack","#LAMP_off",
-19C4: 04 33 CA  ;        "PrintMessageX","YOUR LAMP IS NOW OFF."],
-19C7: 04 33 B5  ;    "PrintMessageX","YOU HAVE NO SOURCE OF LIGHT."],
-19CA: 19 02     ; _quit : [
-19CC: 09        ;    "Quit"],
-19CD: 1A 02     ; _score : [
+19C4: 04 33 CA  ;        "PrintMessageX","YOUR LAMP IS NOW OFF.[CR]"],
+19C7: 04 33 B5  ;    "PrintMessageX","YOU HAVE NO SOURCE OF LIGHT.[CR]"],
+19CA: 19 02     ; "QUIT" : [
+19CC: 09        ;    "PrintScoreAndStop"],
+19CD: 1A 02     ; "SCORE" : [
 19CF: 08        ;    "PrintScore"],
-19D0: 1B 02     ; _inv : [
+19D0: 1B 02     ; "INVENT" : [
 19D2: 0F        ;    "PrintInventory"],
-19D3: 1C 02     ; _look : [
+19D3: 1C 02     ; "LOOK" : [
 19D5: 10        ;    "PrintRoomDescription"],
-19D6: 28 47     ; _get : [
-19D8: 07 06     ;    "SubScriptXAbortIfPass",[
+;
+;
+; These two sequences (and the print strings) are in the TRS80 script but removed for CoCo.
+;5A41: 1D 04     ; "HELP" : [
+;5A43: 04 C4 74  ;    "PrintMessageX","I'M_AS_CONFUSED_AS_YOU_ARE.[CR]"],
+;5A46: 1E 04     ; "FIND" : [
+;5A48: 04 D8 74  ;    "PrintMessageX","I_CAN_ONLY_TELL_YOU_WHAT_YOU_SEE_AS_YOU_MOVE_ABOUT_AND__________MANIPULATE_THINGS.__I_CAN_NOT_TELL_YOU_WHERE_REMOTE_THINGS_ARE.[CR]"],
+;
+;
+19D6: 28 47     ; "TAKE" : [
+19D8: 07 06     ;    "SubScripXtAbortIfPass",[
 19DA: 11 07     ;        "AssertObjectXMatchesUserInput","#PLANT_A",
-19DC: 04 38 EF  ;        "PrintMessageX","THE PLANT HAS EXCEPTIONALLY DEEP ROOTS AND CANNOT BE PULLED FREE."],
-19DF: 07 17     ;    "SubScriptXAbortIfPass",[
+19DC: 04 38 EF  ;        "PrintMessageX","THE PLANT HAS EXCEPTIONALLY DEEP ROOTS AND CANNOT BE PULLED FREE.[CR]"],
+19DF: 07 17     ;    "SubScripXtAbortIfPass",[
 19E1: 11 13     ;        "AssertObjectXMatchesUserInput","#BIRD",
-19E3: 07 06     ;        "SubScriptXAbortIfPass",[
+19E3: 07 06     ;        "SubScripXtAbortIfPass",[
 19E5: 02 11     ;            "AssertObjectXIsInPack","#SCEPTER",
-19E7: 04 39 52  ;            "PrintMessageX","AS YOU APPROACH THE STATUE, IT COMES TO LIFE AND FLIES ACROSS THE CHAMBER WHERE IT LANDS AND RETURNS TO STONE."],
-19EA: 07 09     ;        "SubScriptXAbortIfPass",[
-19EC: 02 10     ;            "AssertObjectXIsInPack","#BOX ",
+19E7: 04 39 52  ;            "PrintMessageX","AS YOU APPROACH THE STATUE, IT COMES TO LIFE AND FLIES ACROSS THE CHAMBER WHERE IT LANDS AND RETURNSTO STONE.[CR]"],
+19EA: 07 09     ;        "SubScripXtAbortIfPass",[
+19EC: 02 10     ;            "AssertObjectXIsInPack","#BOX",
 19EE: 15 13 00  ;            "MoveObjectXToRoomY","#BIRD","room_0",
-19F1: 19 14 10  ;            "MoveObjectXToIntoContainerY","#BIRD_boxed","#BOX "],
-19F4: 04 39 9E  ;        "PrintMessageX","YOU CAN LIFT THE STATUE, BUT YOU CANNOT CARRY IT."],
-19F7: 07 0A     ;    "SubScriptXAbortIfPass",[
+19F1: 19 14 10  ;            "MoveObjectXIntoContainerY","#BIRD_boxed","#BOX"],
+19F4: 04 39 9E  ;        "PrintMessageX","YOU CAN LIFT THE STATUE, BUT YOU CANNOT CARRY IT.[CR]"],
+19F7: 07 0A     ;    "SubScripXtAbortIfPass",[
 19F9: 11 20     ;        "AssertObjectXMatchesUserInput","#VASE_pillow",
-19FB: 12 21     ;        "GetObjectXFromRoom","#VASE_solo",
+19FB: 12 21     ;        "GetObjectFromRoom","#VASE_solo",
 19FD: 15 20 00  ;        "MoveObjectXToRoomY","#VASE_pillow","room_0",
 1A00: 18 12     ;        "MoveObjectXToCurrentRoom","#PILLOW"],
-1A02: 07 0D     ;    "SubScriptXAbortIfPass",[
-1A04: 11 1E     ;        "AssertObjectXMatchesUserInput","#stream_56",
-1A06: 07 06     ;        "SubScriptXAbortIfPass",[
+1A02: 07 0D     ;    "SubScripXtAbortIfPass",[
+1A04: 11 1E     ;        "AssertObjectXMatchesUserInput","#STREAM_56",
+1A06: 07 06     ;        "SubScripXtAbortIfPass",[
 1A08: 02 1C     ;            "AssertObjectXIsInPack","#WATER",
-1A0A: 04 39 C1  ;            "PrintMessageX","YOUR BOTTLE IS ALREADY FULL."],
-1A0D: 19 1C 1B  ;        "MoveObjectXToIntoContainerY","#WATER","#BOTTLE"],
-1A10: 07 0C     ;    "SubScriptXAbortIfPass",[
+1A0A: 04 39 C1  ;            "PrintMessageX","YOUR BOTTLE IS ALREADY FULL.[CR]"],
+1A0D: 19 1C 1B  ;        "MoveObjectXIntoContainerY","#WATER","#BOTTLE"],
+1A10: 07 0C     ;    "SubScripXtAbortIfPass",[
 1A12: 11 12     ;        "AssertObjectXMatchesUserInput","#PILLOW",
 1A14: 1A 20     ;        "AssertObjectXIsInCurrentRoom","#VASE_pillow",
 1A16: 15 20 00  ;        "MoveObjectXToRoomY","#VASE_pillow","room_0",
 1A19: 18 21     ;        "MoveObjectXToCurrentRoom","#VASE_solo",
-1A1B: 12 12     ;        "GetObjectXFromRoom","#PILLOW"],
+1A1B: 12 12     ;        "GetObjectFromRoom","#PILLOW"],
 1A1D: 16        ;    "GetUserInputObject"],
-1A1E: 21 17     ; _drop : [
-1A20: 07 14     ;    "SubScriptXAbortIfPass",[
+1A1E: 21 17     ; "DROP" : [
+1A20: 07 14     ;    "SubScripXtAbortIfPass",[
 1A22: 11 21     ;        "AssertObjectXMatchesUserInput","#VASE_solo",
 1A24: 15 21 00  ;        "MoveObjectXToRoomY","#VASE_solo","room_0",
-1A27: 07 08     ;        "SubScriptXAbortIfPass",[
+1A27: 07 08     ;        "SubScripXtAbortIfPass",[
 1A29: 1A 12     ;            "AssertObjectXIsInCurrentRoom","#PILLOW",
 1A2B: 18 20     ;            "MoveObjectXToCurrentRoom","#VASE_pillow",
-1A2D: 04 3A 95  ;            "PrintMessageX","THE VASE IS NOW RESTING, DELICATELY, ON A VELVET PILLOW."],
+1A2D: 04 3A 95  ;            "PrintMessageX","THE VASE IS NOW RESTING, DELICATELY, ON A VELVET PILLOW.[CR]"],
 1A30: 18 15     ;        "MoveObjectXToCurrentRoom","#POTTERY",
-1A32: 04 3A BD  ;        "PrintMessageX","THE VASE DROPS WITH A DELICATE CRASH."],
+1A32: 04 3A BD  ;        "PrintMessageX","THE VASE DROPS WITH A DELICATE CRASH.[CR]"],
 1A35: 17        ;    "DropUserInputObject"],
-1A36: 26 0E     ; _throw : [
-1A38: 07 0B     ;    "SubScriptXAbortIfPass",[
+1A36: 26 0E     ; "THROW" : [
+1A38: 07 0B     ;    "SubScripXtAbortIfPass",[
 1A3A: 11 21     ;        "AssertObjectXMatchesUserInput","#VASE_solo",
 1A3C: 15 21 00  ;        "MoveObjectXToRoomY","#VASE_solo","room_0",
 1A3F: 18 15     ;        "MoveObjectXToCurrentRoom","#POTTERY",
-1A41: 04 3A F5  ;        "PrintMessageX","YOU HAVE TAKEN THE VASE AND HURLED IT DELICATELY TO THE GROUND."],
+1A41: 04 3A F5  ;        "PrintMessageX","YOU HAVE TAKEN THE VASE AND HURLED IT DELICATELY TO THE GROUND.[CR]"],
 1A44: 17        ;    "DropUserInputObject"],
-1A45: 29 36     ; _open : [
-1A47: 07 1C     ;    "SubScriptXAbortIfPass",[
+1A45: 29 36     ; "OPEN" : [
+1A47: 07 1C     ;    "SubScripXtAbortIfPass",[
 1A49: 11 17     ;        "AssertObjectXMatchesUserInput","#SARCOPH_full",
-1A4B: 07 06     ;        "SubScriptXAbortIfPass",[
+1A4B: 07 06     ;        "SubScripXtAbortIfPass",[
 1A4D: 02 17     ;            "AssertObjectXIsInPack","#SARCOPH_full",
-1A4F: 04 35 A4  ;            "PrintMessageX","I'D ADVISE YOU TO PUT DOWN THE SARCOPHAGUS BEFORE OPENING IT!!"],
-1A52: 07 0E     ;        "SubScriptXAbortIfPass",[
+1A4F: 04 35 A4  ;            "PrintMessageX","I'D ADVISE YOU TO PUT DOWN THE SARCOPHAGUS BEFORE OPENING IT!![CR]"],
+1A52: 07 0E     ;        "SubScripXtAbortIfPass",[
 1A54: 02 22     ;            "AssertObjectXIsInPack","#KEY",
-1A56: 04 35 61  ;            "PrintMessageX","A GLISTENING PEARL FALLS OUT OF THE SARCOPHAGUS AND ROLLS AWAY. THE SARCOPHAGUS SNAPS SHUT AGAIN.",
+1A56: 04 35 61  ;            "PrintMessageX","A GLISTENING PEARL FALLS OUT OF THE SARCOPHAGUS AND ROLLS AWAY. THE SARCOPHAGUS SNAPS SHUTAGAIN.[CR]",
 1A59: 15 16 40  ;            "MoveObjectXToRoomY","#PEARL","room_64",
 1A5C: 15 17 00  ;            "MoveObjectXToRoomY","#SARCOPH_full","room_0",
 1A5F: 18 18     ;            "MoveObjectXToCurrentRoom","#SARCOPH_empty"],
-1A61: 04 36 0A  ;        "PrintMessageX","YOU DON'T HAVE ANYTHING STRONG ENOUGH TO OPEN THE SARCOPHAGUS."],
-1A64: 07 14     ;    "SubScriptXAbortIfPass",[
+1A61: 04 36 0A  ;        "PrintMessageX","YOU DON'T HAVE ANYTHING STRONG ENOUGH TO OPEN THE SARCOPHAGUS.[CR]"],
+1A64: 07 14     ;    "SubScripXtAbortIfPass",[
 1A66: 11 18     ;        "AssertObjectXMatchesUserInput","#SARCOPH_empty",
-1A68: 07 06     ;        "SubScriptXAbortIfPass",[
+1A68: 07 06     ;        "SubScripXtAbortIfPass",[
 1A6A: 02 18     ;            "AssertObjectXIsInPack","#SARCOPH_empty",
-1A6C: 04 35 A4  ;            "PrintMessageX","I'D ADVISE YOU TO PUT DOWN THE SARCOPHAGUS BEFORE OPENING IT!!"],
-1A6F: 07 06     ;        "SubScriptXAbortIfPass",[
+1A6C: 04 35 A4  ;            "PrintMessageX","I'D ADVISE YOU TO PUT DOWN THE SARCOPHAGUS BEFORE OPENING IT!![CR]"],
+1A6F: 07 06     ;        "SubScripXtAbortIfPass",[
 1A71: 02 22     ;            "AssertObjectXIsInPack","#KEY",
-1A73: 04 35 D0  ;            "PrintMessageX","THE SARCOPHAGUS CREAKS OPEN, REVEALING NOTHING INSIDE. IT PROMPTLY SNAPS SHUT AGAIN."],
-1A76: 04 36 0A  ;        "PrintMessageX","YOU DON'T HAVE ANYTHING STRONG ENOUGH TO OPEN THE SARCOPHAGUS."],
-1A79: 04 36 36  ;    "PrintMessageX","I DON'T KNOW HOW TO LOCK OR UNLOCK SUCH A THING."],
-1A7C: 23 04     ; _wave : [
-1A7E: 04 33 6C  ;    "PrintMessageX","NOTHING HAPPENS."],
-1A81: 24 0E     ; _pour : [
-1A83: 07 09     ;    "SubScriptXAbortIfPass",[
+1A73: 04 35 D0  ;            "PrintMessageX","THE SARCOPHAGUS CREAKS OPEN, REVEALING NOTHING INSIDE. IT PROMPTLY SNAPS SHUT AGAIN.[CR]"],
+1A76: 04 36 0A  ;        "PrintMessageX","YOU DON'T HAVE ANYTHING STRONG ENOUGH TO OPEN THE SARCOPHAGUS.[CR]"],
+1A79: 04 36 36  ;    "PrintMessageX","I DON'T KNOW HOW TO LOCK OR UNLOCK SUCH A THING.[CR]"],
+1A7C: 23 04     ; "WAVE" : [
+1A7E: 04 33 6C  ;    "PrintMessageX","NOTHING HAPPENS.[CR]"],
+1A81: 24 0E     ; "POUR" : [
+1A83: 07 09     ;    "SubScripXtAbortIfPass",[
 1A85: 11 1C     ;        "AssertObjectXMatchesUserInput","#WATER",
 1A87: 15 1C 00  ;        "MoveObjectXToRoomY","#WATER","room_0",
-1A8A: 04 34 92  ;        "PrintMessageX","YOUR BOTTLE IS EMPTY AND THE GROUND IS WET."],
-1A8D: 04 34 B1  ;    "PrintMessageX","YOU CAN'T POUR THAT."],
-1A90: 25 12     ; _rub : [
-1A92: 07 06     ;    "SubScriptXAbortIfPass",[
+1A8A: 04 34 92  ;        "PrintMessageX","YOUR BOTTLE IS EMPTY AND THE GROUND IS WET.[CR]"],
+1A8D: 04 34 B1  ;    "PrintMessageX","YOU CAN'T POUR THAT.[CR]"],
+1A90: 25 12     ; "RUB" : [
+1A92: 07 06     ;    "SubScripXtAbortIfPass",[
 1A94: 11 0E     ;        "AssertObjectXMatchesUserInput","#LAMP_off",
-1A96: 04 34 C1  ;        "PrintMessageX","RUBBING THE ELECTRIC LAMP IS NOT PARTICULARLY REWARDING. ANYWAY, NOTHING EXCITING HAPPENS."],
-1A99: 07 06     ;    "SubScriptXAbortIfPass",[
+1A96: 04 34 C1  ;        "PrintMessageX","RUBBING THE ELECTRIC LAMP IS NOT PARTICULARLY REWARDING. ANYWAY, NOTHING EXCITING HAPPENS.[CR]"],
+1A99: 07 06     ;    "SubScripXtAbortIfPass",[
 1A9B: 11 0F     ;        "AssertObjectXMatchesUserInput","#LAMP_on",
-1A9D: 04 34 C1  ;        "PrintMessageX","RUBBING THE ELECTRIC LAMP IS NOT PARTICULARLY REWARDING. ANYWAY, NOTHING EXCITING HAPPENS."],
-1AA0: 04 34 FF  ;    "PrintMessageX","PECULIAR. NOTHING UNEXPECTED HAPPENS."],
-1AA3: 27 12     ; _fill : [
-1AA5: 07 06     ;    "SubScriptXAbortIfPass",[
+1A9D: 04 34 C1  ;        "PrintMessageX","RUBBING THE ELECTRIC LAMP IS NOT PARTICULARLY REWARDING. ANYWAY, NOTHING EXCITING HAPPENS.[CR]"],
+1AA0: 04 34 FF  ;    "PrintMessageX","PECULIAR. NOTHING UNEXPECTED HAPPENS.[CR]"],
+1AA3: 27 12     ; "FILL" : [
+1AA5: 07 06     ;    "SubScripXtAbortIfPass",[
 1AA7: 11 1B     ;        "AssertObjectXMatchesUserInput","#BOTTLE",
-1AA9: 04 35 1A  ;        "PrintMessageX","THERE IS NOTHING HERE WITH WHICH TO FILL THE BOTTLE."],
-1AAC: 07 06     ;    "SubScriptXAbortIfPass",[
+1AA9: 04 35 1A  ;        "PrintMessageX","THERE IS NOTHING HERE WITH WHICH TO FILL THE BOTTLE.[CR]"],
+1AAC: 07 06     ;    "SubScripXtAbortIfPass",[
 1AAE: 11 21     ;        "AssertObjectXMatchesUserInput","#VASE_solo",
-1AB0: 04 34 82  ;        "PrintMessageX","DON'T BE RIDICULOUS!"],
-1AB3: 04 35 51  ;    "PrintMessageX","YOU CAN'T FILL THAT."],
-1AB6: 2C 2D     ; _attack : [
-1AB8: 07 09     ;    "SubScriptXAbortIfPass",[
+1AB0: 04 34 82  ;        "PrintMessageX","DON'T BE RIDICULOUS![CR]"],
+1AB3: 04 35 51  ;    "PrintMessageX","YOU CAN'T FILL THAT.[CR]"],
+1AB6: 2C 2D     ; "ATTACK" : [
+1AB8: 07 09     ;    "SubScripXtAbortIfPass",[
 1ABA: 11 13     ;        "AssertObjectXMatchesUserInput","#BIRD",
 1ABC: 15 13 00  ;        "MoveObjectXToRoomY","#BIRD","room_0",
-1ABF: 04 36 58  ;        "PrintMessageX","THE BIRD STATUE IS NOW DEAD. ITS BODY DISAPPEARS."],
-1AC2: 07 09     ;    "SubScriptXAbortIfPass",[
+1ABF: 04 36 58  ;        "PrintMessageX","THE BIRD STATUE IS NOW DEAD. ITS BODY DISAPPEARS.[CR]"],
+1AC2: 07 09     ;    "SubScripXtAbortIfPass",[
 1AC4: 11 14     ;        "AssertObjectXMatchesUserInput","#BIRD_boxed",
 1AC6: 15 14 00  ;        "MoveObjectXToRoomY","#BIRD_boxed","room_0",
-1AC9: 04 36 58  ;        "PrintMessageX","THE BIRD STATUE IS NOW DEAD. ITS BODY DISAPPEARS."],
-1ACC: 07 06     ;    "SubScriptXAbortIfPass",[
+1AC9: 04 36 58  ;        "PrintMessageX","THE BIRD STATUE IS NOW DEAD. ITS BODY DISAPPEARS.[CR]"],
+1ACC: 07 06     ;    "SubScripXtAbortIfPass",[
 1ACE: 11 17     ;        "AssertObjectXMatchesUserInput","#SARCOPH_full",
-1AD0: 04 36 7B  ;        "PrintMessageX","THE STONE IS VERY STRONG AND IS IMPERVIOUS TO ATTACK."],
-1AD3: 07 06     ;    "SubScriptXAbortIfPass",[
+1AD0: 04 36 7B  ;        "PrintMessageX","THE STONE IS VERY STRONG AND IS IMPERVIOUS TO ATTACK.[CR]"],
+1AD3: 07 06     ;    "SubScripXtAbortIfPass",[
 1AD5: 11 18     ;        "AssertObjectXMatchesUserInput","#SARCOPH_empty",
-1AD7: 04 36 7B  ;        "PrintMessageX","THE STONE IS VERY STRONG AND IS IMPERVIOUS TO ATTACK."],
-1ADA: 07 06     ;    "SubScriptXAbortIfPass",[
+1AD7: 04 36 7B  ;        "PrintMessageX","THE STONE IS VERY STRONG AND IS IMPERVIOUS TO ATTACK.[CR]"],
+1ADA: 07 06     ;    "SubScripXtAbortIfPass",[
 1ADC: 11 0B     ;        "AssertObjectXMatchesUserInput","#SERPENT",
-1ADE: 04 36 A1  ;        "PrintMessageX","ATTACKING THE SERPENT BOTH DOESN'T WORK AND IS VERY DANGEROUS."],
-1AE1: 04 36 CD  ;    "PrintMessageX","YOU CAN'T BE SERIOUS!"],
-1AE4: 30 04     ; _break : [
-1AE6: 04 36 DD  ;    "PrintMessageX","IT IS BEYOND YOUR POWER TO DO THAT."],
-1AE9: 2E 23     ; _eat : [
-1AEB: 07 09     ;    "SubScriptXAbortIfPass",[
+1ADE: 04 36 A1  ;        "PrintMessageX","ATTACKING THE SERPENT BOTH DOESN'T WORK AND IS VERY DANGEROUS.[CR]"],
+1AE1: 04 36 CD  ;    "PrintMessageX","YOU CAN'T BE SERIOUS![CR]"],
+1AE4: 30 04     ; "BREAK" : [
+1AE6: 04 36 DD  ;    "PrintMessageX","IT IS BEYOND YOUR POWER TO DO THAT.[CR]"],
+1AE9: 2E 23     ; "EAT" : [
+1AEB: 07 09     ;    "SubScripXtAbortIfPass",[
 1AED: 11 1A     ;        "AssertObjectXMatchesUserInput","#FOOD",
 1AEF: 15 1A 00  ;        "MoveObjectXToRoomY","#FOOD","room_0",
-1AF2: 04 36 F7  ;        "PrintMessageX","THANK YOU, IT WAS DELICIOUS!"],
-1AF5: 07 06     ;    "SubScriptXAbortIfPass",[
-1AF7: 11 0A     ;        "AssertObjectXMatchesUserInput","#-10-",
-1AF9: 04 37 0C  ;        "PrintMessageX","I THINK I JUST LOST MY APPETITE."],
-1AFC: 07 06     ;    "SubScriptXAbortIfPass",[
+1AF2: 04 36 F7  ;        "PrintMessageX","THANK YOU, IT WAS DELICIOUS![CR]"],
+1AF5: 07 06     ;    "SubScripXtAbortIfPass",[
+1AF7: 11 0A     ;        "AssertObjectXMatchesUserInput","#UNUSED_10",
+1AF9: 04 37 0C  ;        "PrintMessageX","I THINK I JUST LOST MY APPETITE.[CR]"],
+1AFC: 07 06     ;    "SubScripXtAbortIfPass",[
 1AFE: 11 13     ;        "AssertObjectXMatchesUserInput","#BIRD",
-1B00: 04 37 0C  ;        "PrintMessageX","I THINK I JUST LOST MY APPETITE."],
-1B03: 07 06     ;    "SubScriptXAbortIfPass",[
+1B00: 04 37 0C  ;        "PrintMessageX","I THINK I JUST LOST MY APPETITE.[CR]"],
+1B03: 07 06     ;    "SubScripXtAbortIfPass",[
 1B05: 11 14     ;        "AssertObjectXMatchesUserInput","#BIRD_boxed",
-1B07: 04 37 0C  ;        "PrintMessageX","I THINK I JUST LOST MY APPETITE."],
-1B0A: 04 34 82  ;    "PrintMessageX","DON'T BE RIDICULOUS!"],
-1B0D: 2F 15     ; _drink : [
-1B0F: 07 09     ;    "SubScriptXAbortIfPass",[
+1B07: 04 37 0C  ;        "PrintMessageX","I THINK I JUST LOST MY APPETITE.[CR]"],
+1B0A: 04 34 82  ;    "PrintMessageX","DON'T BE RIDICULOUS![CR]"],
+1B0D: 2F 15     ; "DRINK" : [
+1B0F: 07 09     ;    "SubScripXtAbortIfPass",[
 1B11: 11 1C     ;        "AssertObjectXMatchesUserInput","#WATER",
 1B13: 15 1C 00  ;        "MoveObjectXToRoomY","#WATER","room_0",
-1B16: 04 35 3F  ;        "PrintMessageX","THE BOTTLE IS NOW EMPTY."],
-1B19: 07 06     ;    "SubScriptXAbortIfPass",[
-1B1B: 11 1E     ;        "AssertObjectXMatchesUserInput","#stream_56",
-1B1D: 04 37 24  ;        "PrintMessageX","YOU HAVE TAKEN A DRINK FROM THE STREAM. THE WATER TASTES STRONGLY OF MINERALS, BUT IS NOT UNPLEASANT. IT IS EXTREMELY COLD."],
-1B20: 04 36 CD  ;    "PrintMessageX","YOU CAN'T BE SERIOUS!"],
-1B23: 2D 38     ; _feed : [
-1B25: 07 06     ;    "SubScriptXAbortIfPass",[
+1B16: 04 35 3F  ;        "PrintMessageX","THE BOTTLE IS NOW EMPTY.[CR]"],
+1B19: 07 06     ;    "SubScripXtAbortIfPass",[
+1B1B: 11 1E     ;        "AssertObjectXMatchesUserInput","#STREAM_56",
+1B1D: 04 37 24  ;        "PrintMessageX","YOU HAVE TAKEN A DRINK FROM THE STREAM. THE WATER TASTES STRONGLY OF MINERALS, BUT IS NOTUNPLEASANT. IT IS EXTREMELY COLD.[CR]"],
+1B20: 04 36 CD  ;    "PrintMessageX","YOU CAN'T BE SERIOUS![CR]"],
+1B23: 2D 38     ; "FEED" : [
+1B25: 07 06     ;    "SubScripXtAbortIfPass",[
 1B27: 11 13     ;        "AssertObjectXMatchesUserInput","#BIRD",
-1B29: 04 37 78  ;        "PrintMessageX","IT'S NOT HUNGRY. BESIDES, YOU HAVE NO BIRD SEED."],
-1B2C: 07 06     ;    "SubScriptXAbortIfPass",[
+1B29: 04 37 78  ;        "PrintMessageX","IT'S NOT HUNGRY. BESIDES, YOU HAVE NO BIRD SEED.[CR]"],
+1B2C: 07 06     ;    "SubScripXtAbortIfPass",[
 1B2E: 11 14     ;        "AssertObjectXMatchesUserInput","#BIRD_boxed",
-1B30: 04 37 78  ;        "PrintMessageX","IT'S NOT HUNGRY. BESIDES, YOU HAVE NO BIRD SEED."],
-1B33: 07 10     ;    "SubScriptXAbortIfPass",[
+1B30: 04 37 78  ;        "PrintMessageX","IT'S NOT HUNGRY. BESIDES, YOU HAVE NO BIRD SEED.[CR]"],
+1B33: 07 10     ;    "SubScripXtAbortIfPass",[
 1B35: 11 0B     ;        "AssertObjectXMatchesUserInput","#SERPENT",
-1B37: 07 09     ;        "SubScriptXAbortIfPass",[
+1B37: 07 09     ;        "SubScripXtAbortIfPass",[
 1B39: 02 14     ;            "AssertObjectXIsInPack","#BIRD_boxed",
 1B3B: 15 14 00  ;            "MoveObjectXToRoomY","#BIRD_boxed","room_0",
-1B3E: 04 37 C1  ;            "PrintMessageX","THE SERPENT HAS NOW DEVOURED YOUR BIRD STATUE."],
-1B41: 04 37 E2  ;        "PrintMessageX","THERE IS NOTHING HERE IT WANTS TO EAT - EXCEPT PERHAPS YOU."],
-1B44: 07 06     ;    "SubScriptXAbortIfPass",[
+1B3E: 04 37 C1  ;            "PrintMessageX","THE SERPENT HAS NOW DEVOURED YOUR BIRD STATUE.[CR]"],
+1B41: 04 37 E2  ;        "PrintMessageX","THERE IS NOTHING HERE IT WANTS TO EAT - EXCEPT PERHAPS YOU.[CR]"],
+1B44: 07 06     ;    "SubScripXtAbortIfPass",[
 1B46: 11 17     ;        "AssertObjectXMatchesUserInput","#SARCOPH_full",
-1B48: 04 38 3D  ;        "PrintMessageX","I'M GAME. WOULD YOU CARE TO EXPLAIN HOW?"],
-1B4B: 07 06     ;    "SubScriptXAbortIfPass",[
+1B48: 04 38 3D  ;        "PrintMessageX","I'M GAME. WOULD YOU CARE TO EXPLAIN HOW?[CR]"],
+1B4B: 07 06     ;    "SubScripXtAbortIfPass",[
 1B4D: 11 18     ;        "AssertObjectXMatchesUserInput","#SARCOPH_empty",
-1B4F: 04 38 3D  ;        "PrintMessageX","I'M GAME. WOULD YOU CARE TO EXPLAIN HOW?"],
-1B52: 07 06     ;    "SubScriptXAbortIfPass",[
-1B54: 11 0D     ;        "AssertObjectXMatchesUserInput","#-13-",
-1B56: 04 37 E2  ;        "PrintMessageX","THERE IS NOTHING HERE IT WANTS TO EAT - EXCEPT PERHAPS YOU."],
-1B59: 04 34 82  ;    "PrintMessageX","DON'T BE RIDICULOUS!"],
-1B5C: 39 02     ; _plugh : [
+1B4F: 04 38 3D  ;        "PrintMessageX","I'M GAME. WOULD YOU CARE TO EXPLAIN HOW?[CR]"],
+1B52: 07 06     ;    "SubScripXtAbortIfPass",[
+1B54: 11 0D     ;        "AssertObjectXMatchesUserInput","#UNUSED_13",
+1B56: 04 37 E2  ;        "PrintMessageX","THERE IS NOTHING HERE IT WANTS TO EAT - EXCEPT PERHAPS YOU.[CR]"],
+1B59: 04 34 82  ;    "PrintMessageX","DON'T BE RIDICULOUS![CR]"],
+1B5C: 39 02     ; "PLUGH" : [
 1B5E: 1D        ;    "JumpToTopOfGameLoop"],
-1B5F: 3A 02     ; _load : [
+1B5F: 3A 02     ; "LOAD" : [
 1B61: 1B        ;    "LoadGame"],
-1B62: 3B 02     ; _save : [
+1B62: 3B 02     ; "SAVE" : [
 1B64: 1C        ;    "SaveGame"]
 1B65: 00
 ```

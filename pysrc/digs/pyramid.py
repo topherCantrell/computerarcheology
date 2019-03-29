@@ -12,18 +12,25 @@ CONFIG = {
         'ScriptNames': 0x509F,
         'BigEndian': False,
         'ObjNames': 0x5047,
+        'RoomTable': 0x4888 - 0x4300,
+        'AmbientLight': 0x4F45 - 0x4300,
+        'RoomScripts': 0x49CC - 0x4300,
     },
     'CoCo': {
         'origin': 0x600,
-        'code': '../../content/TRS80/Pyramid/Code.md',
+        'code': '../../content/CoCo/Pyramid/Code.md',
         'WordTable': 0x3C40 - 0x600,
         'GeneralCommand': 0x1945 - 0x600,
         'ScriptNames': 0x0A17,
         'BigEndian': True,
         'ObjNames': 0x18ED,
+        'RoomTable': 0x112E - 0x600,
+        'AmbientLight': 0x17EB - 0x600,
+        'RoomScripts': 0x1272 - 0x600,
     }
 }
 
+#CON = CONFIG['CoCo']
 CON = CONFIG['TRS80']
 
 binary = code.markdown_utils.get_binary(CON['code'])
@@ -33,6 +40,13 @@ _, _, code_only = code.markdown_utils.load_file(CON['code'])
 
 word_table = []
 pos = CON['WordTable']
+
+
+def readWord(pos):
+    if CON['BigEndian']:
+        return (binary[pos] << 8) + binary[pos + 1]
+    else:
+        return (binary[pos + 1] << 8) + binary[pos]
 
 
 def padTo(s, leng):
@@ -118,12 +132,46 @@ for i in range(44):
 print(obj_names)
 # printWordTable(word_table)
 
+rooms = []
+pos = CON['RoomTable']
+
+for i in range(81):
+    desc = readWord(pos)
+    pos += 2
+    script = readWord(pos)
+    pos += 2
+    rooms.append({
+        'number': i + 1,
+        'desc': desc,
+        'script': script,
+    })
+
+
+def makeAmbientLight():
+    pos = CON['AmbientLight']
+    for i in range(81):
+        print('{:04X}: {:02X} {:02X}    ;  {}'.format(
+            pos + CON['origin'], binary[pos], binary[pos + 1], i + 1))
+        pos += 2
+
+
+pos = CON['AmbientLight']
+for i in range(81):
+    if binary[pos] == 0x40:
+        rooms[i]['Light'] = True
+    else:
+        rooms[i]['Light'] = False
+    pos += 2
+
+# print(rooms)
+# makeAmbientLight()
+
 
 def getVerb(num):
     for word in word_table:
         if word['info_inf'] != 0 and word['data'][0] == num:
             return word
-    return None
+    return {'text': '??{:02X}??'.format(num)}
 
 
 def getString(addr):
@@ -140,13 +188,6 @@ def getString(addr):
     return ret
 
 
-def readWord(pos):
-    if CON['BigEndian']:
-        return (binary[pos] << 8) + binary[pos + 1]
-    else:
-        return (binary[pos + 1] << 8) + binary[pos]
-
-
 def getObject(num):
     return obj_names[num - 1]
 
@@ -155,9 +196,11 @@ def getRoom(num):
     return "room_" + str(num)
 
 
-def processScript(pos, end, level, last):
+def processScript(pos, end, level, lines):
 
     lev_pad = '    ' * level
+
+    last = ','
 
     while True:
 
@@ -167,32 +210,46 @@ def processScript(pos, end, level, last):
         com = binary[pos]
         pos = pos + 1
 
-        if com == 2 or com == 0x11 or com == 0x12 or com == 0x18 or com == 0x1A:
+        if com == 1:
+            o = binary[pos]
+            pos += 1
+            rm = getRoom(o)
+            lines.append('{:04X}: {:02X} {:02X}     ;{}    "{}","{}"{}'.format(
+                pos - 2 + CON['origin'], com, o, lev_pad, script_names[com - 1], rm, last))
+
+        elif com == 0x0A:
+            o = binary[pos]
+            pos += 1
+            lines.append('{:04X}: {:02X} {:02X}     ;{}    "{}","{}"{}'.format(
+                pos - 2 + CON['origin'], com, o, lev_pad, script_names[com - 1], o, last))
+
+        elif com == 2 or com == 3 or com == 0x11 or com == 0x12 or com == 0x18 or com == 0x1A:
             o = binary[pos]
             pos += 1
             obj = getObject(o)
-            print('{:04X}: {:02X} {:02X}     ;{}    "{}","{}"{}'.format(
+            lines.append('{:04X}: {:02X} {:02X}     ;{}    "{}","{}"{}'.format(
                 pos - 2 + CON['origin'], com, o, lev_pad, script_names[com - 1], obj, last))
 
         elif com == 4:
             msg = readWord(pos)
             pos += 2
             msg_text = getString(msg)
-            print('{:04X}: 04 {:02X} {:02X}  ;{}    "{}","{}"{}'.format(
+            lines.append('{:04X}: 04 {:02X} {:02X}  ;{}    "{}","{}"{}'.format(
                 pos - 3 + CON['origin'], binary[pos - 2], binary[pos - 1], lev_pad, script_names[com - 1], msg_text, last))
 
         elif com == 7:
             slen = binary[pos]
             npos = pos + slen
             pos += 1
-            print('{:04X}: {:02X} {:02X}     ;{}    "{}",['.format(
+            lines.append('{:04X}: {:02X} {:02X}     ;{}    "{}",['.format(
                 pos - 2 + CON['origin'], com, slen, lev_pad, script_names[com - 1]))
-            processScript(pos, npos, level + 1, ',')
-            #print('                ; ]{}'.format(last))
+            processScript(pos, npos, level + 1, lines)
+            g = lines[-1]
+            lines[-1] = g[:-1] + '],'
             pos = npos
 
-        elif com == 9 or com == 8 or com == 0x0F or com == 0x10 or com == 0x14 or com == 0x0E or com == 0x16 or com == 0x17 or com == 0x1D or com == 0x1C or com == 0x1B:
-            print('{:04X}: {:02X}        ;{}    "{}"{}'.format(
+        elif com == 0x0D or com == 5 or com == 9 or com == 8 or com == 0x0F or com == 0x10 or com == 0x14 or com == 0x0E or com == 0x16 or com == 0x17 or com == 0x1D or com == 0x1C or com == 0x1B:
+            lines.append('{:04X}: {:02X}        ;{}    "{}"{}'.format(
                 pos - 1 + CON['origin'], com, lev_pad, script_names[com - 1], last))
 
         elif com == 0x15:
@@ -202,7 +259,7 @@ def processScript(pos, end, level, last):
             r = binary[pos]
             room = getRoom(r)
             pos += 1
-            print('{:04X}: {:02X} {:02X} {:02X}  ;{}    "{}","{}","{}"{}'.format(
+            lines.append('{:04X}: {:02X} {:02X} {:02X}  ;{}    "{}","{}","{}"{}'.format(
                 pos - 3 + CON['origin'], binary[pos - 3], binary[pos - 2], binary[pos - 1], lev_pad, script_names[com - 1], obj, room, last))
 
         elif com == 0x19:
@@ -212,7 +269,7 @@ def processScript(pos, end, level, last):
             c = binary[pos]
             con = getObject(c)
             pos += 1
-            print('{:04X}: {:02X} {:02X} {:02X}  ;{}    "{}","{}","{}"{}'.format(
+            lines.append('{:04X}: {:02X} {:02X} {:02X}  ;{}    "{}","{}","{}"{}'.format(
                 pos - 3 + CON['origin'], binary[pos - 3], binary[pos - 2], binary[pos - 1], lev_pad, script_names[com - 1], obj, con, last))
 
         else:
@@ -221,6 +278,7 @@ def processScript(pos, end, level, last):
 
 def processScriptList(pos):
 
+    lines = []
     while binary[pos] != 0:
         w = binary[pos]
         pos = pos + 1
@@ -230,9 +288,54 @@ def processScriptList(pos):
         pos = pos + 1
         g = '{:04X}: {:02X} {:02X}'.format(pos - 2 + CON['origin'], w, leng)
         g = padTo(g, 16) + '; "' + word['text'] + '" : ['
-        print(g)
-        processScript(pos, npos, 0, '],')
+        lines.append(g)
+        processScript(pos, npos, 0, lines)
+        g = lines[-1]
+        lines[-1] = g[:-1] + '],'
         pos = npos
 
+    return lines
 
-processScriptList(CON['GeneralCommand'])
+
+def findRoomOfScript(pos):
+    pos = pos + CON['origin']
+    for room in rooms:
+        if room['script'] == pos:
+            return room
+    return None
+
+
+def printRooms():
+    pos = CON['RoomScripts']
+    while binary[pos] != 0xFF:
+        room = findRoomOfScript(pos)
+
+        # room_1 : {
+        #   desc : "YOU ARE STANDING BEFORE THE ENTRANCE OF A PYRAMID. AROUND YOU IS A DESERT.",
+        #   lit  : true,
+        #   commands : {
+
+        print('; "room_{}" : '.format(room['number']) + '{')
+        print(';     "desc" : "' + getString(room['desc']) + '",')
+        print(';     "commands" : {')
+
+        lines = processScriptList(pos)
+        for lin in lines:
+            print(lin)
+
+        pos = int(lin[0:4], 16) - CON['origin']
+        lin = lin[5:lin.index(';')].strip().replace(' ', '')
+        pos += int(len(lin) / 2)
+        print('{:04X}: 00'.format(pos + CON['origin']))
+        pos += 1
+
+        print(';     }')
+        print('; },')
+        print()
+
+
+printRooms()
+
+#lines = processScriptList(CON['GeneralCommand'])
+# for lin in lines:
+#    print(lin)

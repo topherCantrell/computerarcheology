@@ -885,854 +885,1191 @@ RoomTable:
 49C0: 21 6A A8 4E
 49C4: 4B 6A B1 4E
 49C8: 9D 6A BE 4E
+```
 
-  
-49CC: 01 03 01   LD      BC,$0103        
-49CF: 02         LD      (BC),A          
-49D0: 02         LD      (BC),A          
-49D1: 03         INC     BC              
-49D2: 01 03 03   LD      BC,$0303        
-49D5: 03         INC     BC              
-49D6: 01 04 04   LD      BC,$0404        
-49D9: 03         INC     BC              
-49DA: 01 05 0B   LD      BC,$0B05        
-49DD: 03         INC     BC              
-49DE: 01 02 00   LD      BC,$0002        
+# Room Scripts
 
-49E1: 03         INC     BC              
-49E2: 03         INC     BC              
-49E3: 01 01 0A   LD      BC,$0A01        
-49E6: 03         INC     BC              
-49E7: 01 07 0C   LD      BC,$0C07        
-49EA: 03         INC     BC              
-49EB: 01 01 12   LD      BC,$1201        
-49EE: 03         INC     BC              
-49EF: 01 1A 00   LD      BC,$001A        
-49F2: 01 03 01   LD      BC,$0103        
-49F5: 06 02      LD      B,$02           
-49F7: 03         INC     BC              
-49F8: 01 03 03   LD      BC,$0303        
-49FB: 03         INC     BC              
-49FC: 01 04 04   LD      BC,$0404        
-49FF: 03         INC     BC              
-4A00: 01 01 00   LD      BC,$0001        
-4A03: 01 03 01   LD      BC,$0103        
-4A06: 01 02 03   LD      BC,$0302        
-4A09: 01 03 03   LD      BC,$0303        
-4A0C: 03         INC     BC              
-4A0D: 01 04 04   LD      BC,$0404        
-4A10: 03         INC     BC              
-4A11: 01 05 00   LD      BC,$0005        
-4A14: 01 03 01   LD      BC,$0103        
-4A17: 06 02      LD      B,$02           
-4A19: 03         INC     BC              
-4A1A: 01 01 03   LD      BC,$0301        
-4A1D: 03         INC     BC              
-4A1E: 01 04 04   LD      BC,$0404        
-4A21: 03         INC     BC              
-4A22: 01 05 00   LD      BC,$0005        
-4A25: 01 03 01   LD      BC,$0103        
-4A28: 06 02      LD      B,$02           
-4A2A: 03         INC     BC              
-4A2B: 01 03 03   LD      BC,$0303        
-4A2E: 03         INC     BC              
-4A2F: 01 01 04   LD      BC,$0401        
-4A32: 03         INC     BC              
-4A33: 01 05 00   LD      BC,$0005        
-4A36: 09         ADD     HL,BC           
-4A37: 03         INC     BC              
-4A38: 01 02 0C   LD      BC,$0C02        
-4A3B: 03         INC     BC              
-4A3C: 01 02 04   LD      BC,$0402        
-4A3F: 03         INC     BC              
-4A40: 01 08 0B   LD      BC,$0B08        
-4A43: 03         INC     BC              
-4A44: 01 08 00   LD      BC,$0008        
-4A47: 02         LD      (BC),A          
-4A48: 03         INC     BC              
-4A49: 01 07 0C   LD      BC,$0C07        
-4A4C: 03         INC     BC              
-4A4D: 01 07 04   LD      BC,$0407        
-4A50: 03         INC     BC              
-4A51: 01 09 0B   LD      BC,$0B09        
-4A54: 03         INC     BC              
-4A55: 01 09 00   LD      BC,$0009        
-4A58: 02         LD      (BC),A          
-4A59: 03         INC     BC              
-4A5A: 01 08 0B   LD      BC,$0B08        
-4A5D: 03         INC     BC              
-4A5E: 01 0A 09   LD      BC,$090A        
-4A61: 03         INC     BC              
-4A62: 01 0A 04   LD      BC,$040A        
-4A65: 03         INC     BC              
-4A66: 01 0A 00   LD      BC,$000A        
-4A69: 0A         LD      A,(BC)          
-4A6A: 03         INC     BC              
-4A6B: 01 09 02   LD      BC,$0209        
-4A6E: 03         INC     BC              
-4A6F: 01 09 0B   LD      BC,$0B09        
-4A72: 03         INC     BC              
-4A73: 01 0B 04   LD      BC,$040B        
-4A76: 03         INC     BC              
-4A77: 01 0B 09   LD      BC,$090B        
-4A7A: 03         INC     BC              
-4A7B: 01 0B 00   LD      BC,$000B        
-4A7E: 02         LD      (BC),A          
-4A7F: 03         INC     BC              
-4A80: 01 0A 04   LD      BC,$040A        
-4A83: 03         INC     BC              
-4A84: 01 0C 00   LD      BC,$000C        
-4A87: 02         LD      (BC),A          
-4A88: 03         INC     BC              
-4A89: 01 0B 0A   LD      BC,$0A0B        
-4A8C: 0B         DEC     BC              
-4A8D: 07         RLCA                    
-4A8E: 07         RLCA                    
-4A8F: 02         LD      (BC),A          
-4A90: 25         DEC     H               
-4A91: 04         INC     B               
-4A92: 71         LD      (HL),C          
-4A93: 71         LD      (HL),C          
-4A94: 05         DEC     B               
-4A95: 01 0D 04   LD      BC,$040D        
-4A98: 04         INC     B               
-4A99: 04         INC     B               
-4A9A: 96         SUB     (HL)            
-4A9B: 71         LD      (HL),C          
-4A9C: 00         NOP                     
-4A9D: 03         INC     BC              
-4A9E: 03         INC     BC              
-4A9F: 01 0E 04   LD      BC,$040E        
-4AA2: 03         INC     BC              
-4AA3: 01 0F 0A   LD      BC,$0A0F        
-4AA6: 03         INC     BC              
-4AA7: 01 10 01   LD      BC,$0110        
-4AAA: 03         INC     BC              
-4AAB: 01 10 09   LD      BC,$0910        
-4AAE: 0A         LD      A,(BC)          
-4AAF: 07         RLCA                    
-4AB0: 06 02      LD      B,$02           
-4AB2: 25         DEC     H               
-4AB3: 04         INC     B               
-4AB4: B6         OR      (HL)            
-4AB5: 71         LD      (HL),C          
-4AB6: 01 0C 02   LD      BC,$020C        
-4AB9: 0A         LD      A,(BC)          
-4ABA: 07         RLCA                    
-4ABB: 06 02      LD      B,$02           
-4ABD: 25         DEC     H               
-4ABE: 04         INC     B               
-4ABF: B6         OR      (HL)            
-4AC0: 71         LD      (HL),C          
-4AC1: 01 0C 20   LD      BC,$200C        
-4AC4: 03         INC     BC              
-4AC5: 01 1A 00   LD      BC,$001A        
-4AC8: 0C         INC     C               
-4AC9: 03         INC     BC              
-4ACA: 01 0D 01   LD      BC,$010D        
-4ACD: 03         INC     BC              
-4ACE: 01 0D 00   LD      BC,$000D        
-4AD1: 02         LD      (BC),A          
-4AD2: 03         INC     BC              
-4AD3: 01 0D 10   LD      BC,$100D        
-4AD6: 0C         INC     C               
-4AD7: 07         RLCA                    
-4AD8: 06 03      LD      B,$03           
-4ADA: 01 04 C8   LD      BC,$C804        
-4ADD: 71         LD      (HL),C          
-4ADE: 04         INC     B               
-4ADF: FA 71 05   JP      M,$0571         
-4AE2: 04         INC     B               
-4AE3: 0A         LD      A,(BC)          
-4AE4: 07         RLCA                    
-4AE5: 05         DEC     B               
-4AE6: 03         INC     BC              
-4AE7: 01 01 12   LD      BC,$1201        
-4AEA: 04         INC     B               
-4AEB: 09         ADD     HL,BC           
-4AEC: 72         LD      (HL),D          
-4AED: 0D         DEC     C               
-4AEE: 05         DEC     B               
-4AEF: 03         INC     BC              
-4AF0: 01 01 12   LD      BC,$1201        
-4AF3: 23         INC     HL              
-4AF4: 18 11      JR      $4B07           
-4AF6: 11 07 0C   LD      DE,$0C07        
-4AF9: 03         INC     BC              
-4AFA: 01 15 01   LD      BC,$0115        
-4AFD: 00         NOP                     
-4AFE: 15         DEC     D               
-4AFF: 02         LD      (BC),A          
-4B00: 00         NOP                     
-4B01: 04         INC     B               
-4B02: DE 7B      SBC     $7B             
-4B04: 18 01      JR      $4B07           
-4B06: 15         DEC     D               
-4B07: 02         LD      (BC),A          
-4B08: 12         LD      (DE),A          
-4B09: 04         INC     B               
-4B0A: F5         PUSH    AF              
-4B0B: 7B         LD      A,E             
-4B0C: 00         NOP                     
-4B0D: 09         ADD     HL,BC           
-4B0E: 03         INC     BC              
-4B0F: 01 0D 02   LD      BC,$020D        
-4B12: 03         INC     BC              
-4B13: 01 0D 03   LD      BC,$030D        
-4B16: 0A         LD      A,(BC)          
-4B17: 07         RLCA                    
-4B18: 06 03      LD      B,$03           
-4B1A: 0B         DEC     BC              
-4B1B: 04         INC     B               
-4B1C: 27         DAA                     
-4B1D: 72         LD      (HL),D          
-4B1E: 01 11 01   LD      BC,$0111        
-4B21: 0A         LD      A,(BC)          
-4B22: 07         RLCA                    
-4B23: 06 03      LD      B,$03           
-4B25: 0B         DEC     BC              
-4B26: 04         INC     B               
-4B27: 27         DAA                     
-4B28: 72         LD      (HL),D          
-4B29: 01 19 04   LD      BC,$0419        
-4B2C: 0A         LD      A,(BC)          
-4B2D: 07         RLCA                    
-4B2E: 06 03      LD      B,$03           
-4B30: 0B         DEC     BC              
-4B31: 04         INC     B               
-4B32: 27         DAA                     
-4B33: 72         LD      (HL),D          
-4B34: 01 18 26   LD      BC,$2618        
-4B37: 10 11      DJNZ    $4B4A           
-4B39: 14         INC     D               
-4B3A: 03         INC     BC              
-4B3B: 0B         DEC     BC              
-4B3C: 15         DEC     D               
-4B3D: 0B         DEC     BC              
-4B3E: 00         NOP                     
-4B3F: 18 13      JR      $4B54           
-4B41: 15         DEC     D               
-4B42: 14         INC     D               
-4B43: 00         NOP                     
-4B44: 04         INC     B               
-4B45: A1         AND     C               
-4B46: 7C         LD      A,H             
-4B47: 00         NOP                     
-4B48: 01 03 01   LD      BC,$0103        
-4B4B: 10 0C      DJNZ    $4B59           
-4B4D: 03         INC     BC              
-4B4E: 01 10 00   LD      BC,$0010        
-4B51: 10 0C      DJNZ    $4B5F           
-4B53: 07         RLCA                    
-4B54: 06 03      LD      B,$03           
-4B56: 02         LD      (BC),A          
-4B57: 04         INC     B               
-4B58: C8         RET     Z               
-4B59: 71         LD      (HL),C          
-4B5A: 04         INC     B               
-4B5B: FA 71 05   JP      M,$0571         
-4B5E: 02         LD      (BC),A          
-4B5F: 0A         LD      A,(BC)          
-4B60: 07         RLCA                    
-4B61: 05         DEC     B               
-4B62: 03         INC     BC              
-4B63: 02         LD      (BC),A          
-4B64: 01 0F 04   LD      BC,$040F        
-4B67: 09         ADD     HL,BC           
-4B68: 72         LD      (HL),D          
-4B69: 01 06 04   LD      BC,$0406        
-4B6C: 3D         DEC     A               
-4B6D: 72         LD      (HL),D          
-4B6E: 01 13 0D   LD      BC,$0D13        
-4B71: 05         DEC     B               
-4B72: 03         INC     BC              
-4B73: 02         LD      (BC),A          
-4B74: 01 0F 23   LD      BC,$230F        
-4B77: 18 11      JR      $4B8A           
-4B79: 11 07 0C   LD      DE,$0C07        
-4B7C: 03         INC     BC              
-4B7D: 02         LD      (BC),A          
-4B7E: 15         DEC     D               
-4B7F: 02         LD      (BC),A          
-4B80: 00         NOP                     
-4B81: 15         DEC     D               
-4B82: 01 00 04   LD      BC,$0400        
-4B85: DE 7B      SBC     $7B             
-4B87: 18 02      JR      $4B8B           
-4B89: 15         DEC     D               
-4B8A: 01 0F 04   LD      BC,$040F        
-4B8D: F5         PUSH    AF              
-4B8E: 7B         LD      A,E             
-4B8F: 00         NOP                     
-4B90: 03         INC     BC              
-4B91: 03         INC     BC              
-4B92: 01 1C 09   LD      BC,$091C        
-4B95: 03         INC     BC              
-4B96: 01 1C 11   LD      BC,$111C        
-4B99: 03         INC     BC              
-4B9A: 01 1C 02   LD      BC,$021C        
-4B9D: 03         INC     BC              
-4B9E: 01 12 01   LD      BC,$0112        
-4BA1: 03         INC     BC              
-4BA2: 01 12 04   LD      BC,$0412        
-4BA5: 03         INC     BC              
-4BA6: 01 14 00   LD      BC,$0014        
-4BA9: 02         LD      (BC),A          
-4BAA: 03         INC     BC              
-4BAB: 01 13 09   LD      BC,$0913        
-4BAE: 03         INC     BC              
-4BAF: 01 13 04   LD      BC,$0413        
-4BB2: 03         INC     BC              
-4BB3: 01 15 01   LD      BC,$0115        
-4BB6: 03         INC     BC              
-4BB7: 01 16 0A   LD      BC,$0A16        
-4BBA: 03         INC     BC              
-4BBB: 01 16 00   LD      BC,$0016        
-4BBE: 02         LD      (BC),A          
-4BBF: 03         INC     BC              
-4BC0: 01 14 01   LD      BC,$0114        
-4BC3: 03         INC     BC              
-4BC4: 01 16 00   LD      BC,$0016        
-4BC7: 04         INC     B               
-4BC8: 03         INC     BC              
-4BC9: 01 14 01   LD      BC,$0114        
-4BCC: 03         INC     BC              
-4BCD: 01 17 02   LD      BC,$0217        
-4BD0: 03         INC     BC              
-4BD1: 01 18 03   LD      BC,$0318        
-4BD4: 03         INC     BC              
-4BD5: 01 15 00   LD      BC,$0015        
-4BD8: 03         INC     BC              
-4BD9: 03         INC     BC              
-4BDA: 01 16 0C   LD      BC,$0C16        
-4BDD: 03         INC     BC              
-4BDE: 01 16 00   LD      BC,$0016        
-4BE1: 02         LD      (BC),A          
-4BE2: 03         INC     BC              
-4BE3: 01 10 0C   LD      BC,$0C10        
-4BE6: 03         INC     BC              
-4BE7: 01 10 04   LD      BC,$0410        
-4BEA: 03         INC     BC              
-4BEB: 01 16 09   LD      BC,$0916        
-4BEE: 03         INC     BC              
-4BEF: 01 16 00   LD      BC,$0016        
-4BF2: 0C         INC     C               
-4BF3: 03         INC     BC              
-4BF4: 01 10 03   LD      BC,$0310        
-4BF7: 03         INC     BC              
-4BF8: 01 10 01   LD      BC,$0110        
-4BFB: 03         INC     BC              
-4BFC: 01 1A 20   LD      BC,$201A        
-4BFF: 03         INC     BC              
-4C00: 01 1A 0A   LD      BC,$0A1A        
-4C03: 03         INC     BC              
-4C04: 01 36 00   LD      BC,$0036        
-4C07: 12         LD      (DE),A          
-4C08: 03         INC     BC              
-4C09: 01 02 03   LD      BC,$0302        
-4C0C: 03         INC     BC              
-4C0D: 01 19 02   LD      BC,$0219        
-4C10: 03         INC     BC              
-4C11: 01 1B 00   LD      BC,$001B        
-4C14: 0A         LD      A,(BC)          
-4C15: 03         INC     BC              
-4C16: 01 1A 20   LD      BC,$201A        
-4C19: 03         INC     BC              
-4C1A: 01 1A 09   LD      BC,$091A        
-4C1D: 03         INC     BC              
-4C1E: 01 0D 00   LD      BC,$000D        
-4C21: 01 03 01   LD      BC,$0103        
-4C24: 1C         INC     E               
-4C25: 02         LD      (BC),A          
-4C26: 03         INC     BC              
-4C27: 01 20 03   LD      BC,$0320        
-4C2A: 03         INC     BC              
-4C2B: 01 1E 04   LD      BC,$041E        
-4C2E: 03         INC     BC              
-4C2F: 01 1D 09   LD      BC,$091D        
-4C32: 03         INC     BC              
-4C33: 01 13 00   LD      BC,$0013        
-4C36: 01 03 01   LD      BC,$0103        
-4C39: 1C         INC     E               
-4C3A: 02         LD      (BC),A          
-4C3B: 03         INC     BC              
-4C3C: 01 33 03   LD      BC,$0333        
-4C3F: 03         INC     BC              
-4C40: 01 1D 04   LD      BC,$041D        
-4C43: 03         INC     BC              
-4C44: 01 1D 00   LD      BC,$001D        
-4C47: 01 03 01   LD      BC,$0103        
-4C4A: 20 02      JR      NZ,$4C4E        
-4C4C: 03         INC     BC              
-4C4D: 01 2A 03   LD      BC,$032A        
-4C50: 03         INC     BC              
-4C51: 01 2B 04   LD      BC,$042B        
-4C54: 03         INC     BC              
-4C55: 01 1C 09   LD      BC,$091C        
-4C58: 03         INC     BC              
-4C59: 01 1F 0A   LD      BC,$0A1F        
-4C5C: 03         INC     BC              
-4C5D: 01 1F 00   LD      BC,$001F        
-4C60: 09         ADD     HL,BC           
-4C61: 03         INC     BC              
-4C62: 01 1E 0A   LD      BC,$0A1E        
-4C65: 03         INC     BC              
-4C66: 01 1E 00   LD      BC,$001E        
-4C69: 02         LD      (BC),A          
-4C6A: 03         INC     BC              
-4C6B: 01 1E 03   LD      BC,$031E        
-4C6E: 03         INC     BC              
-4C6F: 01 21 04   LD      BC,$0421        
-4C72: 03         INC     BC              
-4C73: 01 1C 00   LD      BC,$001C        
-4C76: 01 03 01   LD      BC,$0103        
-4C79: 2C         INC     L               
-4C7A: 02         LD      (BC),A          
-4C7B: 03         INC     BC              
-4C7C: 01 20 03   LD      BC,$0320        
-4C7F: 03         INC     BC              
-4C80: 01 22 0A   LD      BC,$0A22        
-4C83: 03         INC     BC              
-4C84: 01 2D 00   LD      BC,$002D        
-4C87: 02         LD      (BC),A          
-4C88: 03         INC     BC              
-4C89: 01 21 03   LD      BC,$0321        
-4C8C: 03         INC     BC              
-4C8D: 01 23 04   LD      BC,$0423        
-4C90: 03         INC     BC              
-4C91: 01 25 0A   LD      BC,$0A25        
-4C94: 03         INC     BC              
-4C95: 01 26 00   LD      BC,$0026        
-4C98: 01 03 01   LD      BC,$0103        
-4C9B: 24         INC     H               
-4C9C: 02         LD      (BC),A          
-4C9D: 03         INC     BC              
-4C9E: 01 26 03   LD      BC,$0326        
-4CA1: 03         INC     BC              
-4CA2: 01 23 04   LD      BC,$0423        
-4CA5: 03         INC     BC              
-4CA6: 01 22 09   LD      BC,$0922        
-4CA9: 03         INC     BC              
-4CAA: 01 27 0A   LD      BC,$0A27        
-4CAD: 03         INC     BC              
-4CAE: 01 2F 00   LD      BC,$002F        
-4CB1: 01 03 01   LD      BC,$0103        
-4CB4: 24         INC     H               
-4CB5: 02         LD      (BC),A          
-4CB6: 03         INC     BC              
-4CB7: 01 34 04   LD      BC,$0434        
-4CBA: 03         INC     BC              
-4CBB: 01 23 0A   LD      BC,$0A23        
-4CBE: 03         INC     BC              
-4CBF: 01 30 00   LD      BC,$0030        
-4CC2: 02         LD      (BC),A          
-4CC3: 03         INC     BC              
-4CC4: 01 22 04   LD      BC,$0422        
-4CC7: 03         INC     BC              
-4CC8: 01 26 00   LD      BC,$0026        
-4CCB: 02         LD      (BC),A          
-4CCC: 03         INC     BC              
-4CCD: 01 23 03   LD      BC,$0323        
-4CD0: 03         INC     BC              
-4CD1: 01 27 04   LD      BC,$0427        
-4CD4: 03         INC     BC              
-4CD5: 01 25 09   LD      BC,$0925        
-4CD8: 03         INC     BC              
-4CD9: 01 22 00   LD      BC,$0022        
-4CDC: 01 03 01   LD      BC,$0103        
-4CDF: 23         INC     HL              
-4CE0: 03         INC     BC              
-4CE1: 03         INC     BC              
-4CE2: 01 2E 04   LD      BC,$042E        
-4CE5: 03         INC     BC              
-4CE6: 01 26 00   LD      BC,$0026        
-4CE9: 01 03 01   LD      BC,$0103        
-4CEC: 34         INC     (HL)            
-4CED: 04         INC     B               
-4CEE: 03         INC     BC              
-4CEF: 01 29 08   LD      BC,$0829        
-4CF2: 03         INC     BC              
-4CF3: 01 35 00   LD      BC,$0035        
-4CF6: 02         LD      (BC),A          
-4CF7: 03         INC     BC              
-4CF8: 01 28 03   LD      BC,$0328        
-4CFB: 03         INC     BC              
-4CFC: 01 34 04   LD      BC,$0434        
-4CFF: 03         INC     BC              
-4D00: 01 32 00   LD      BC,$0032        
-4D03: 04         INC     B               
-4D04: 03         INC     BC              
-4D05: 01 1E 00   LD      BC,$001E        
-4D08: 02         LD      (BC),A          
-4D09: 03         INC     BC              
-4D0A: 01 1E 00   LD      BC,$001E        
-4D0D: 03         INC     BC              
-4D0E: 03         INC     BC              
-4D0F: 01 21 00   LD      BC,$0021        
-4D12: 09         ADD     HL,BC           
-4D13: 03         INC     BC              
-4D14: 01 21 00   LD      BC,$0021        
-4D17: 04         INC     B               
-4D18: 03         INC     BC              
-4D19: 01 27 00   LD      BC,$0027        
-4D1C: 09         ADD     HL,BC           
-4D1D: 03         INC     BC              
-4D1E: 01 23 00   LD      BC,$0023        
-4D21: 09         ADD     HL,BC           
-4D22: 03         INC     BC              
-4D23: 01 24 00   LD      BC,$0024        
-4D26: 02         LD      (BC),A          
-4D27: 03         INC     BC              
-4D28: 01 34 00   LD      BC,$0034        
-4D2B: 02         LD      (BC),A          
-4D2C: 03         INC     BC              
-4D2D: 01 29 00   LD      BC,$0029        
-4D30: 04         INC     B               
-4D31: 03         INC     BC              
-4D32: 01 1D 21   LD      BC,$211D        
-4D35: 0B         DEC     BC              
-4D36: 11 29 15   LD      DE,$1529        
-4D39: 29         ADD     HL,HL           
-4D3A: 00         NOP                     
-4D3B: 18 23      JR      $4D60           
-4D3D: 04         INC     B               
-4D3E: 58         LD      E,B             
-4D3F: 7C         LD      A,H             
-4D40: 00         NOP                     
-4D41: 01 03 01   LD      BC,$0103        
-4D44: 29         ADD     HL,HL           
-4D45: 02         LD      (BC),A          
-4D46: 03         INC     BC              
-4D47: 01 28 03   LD      BC,$0328        
-4D4A: 03         INC     BC              
-4D4B: 01 31 04   LD      BC,$0431        
-4D4E: 03         INC     BC              
-4D4F: 01 24 0A   LD      BC,$0A24        
-4D52: 03         INC     BC              
-4D53: 01 0B 00   LD      BC,$000B        
-4D56: 06 03      LD      B,$03           
-4D58: 01 28 00   LD      BC,$0028        
-4D5B: 02         LD      (BC),A          
-4D5C: 03         INC     BC              
-4D5D: 01 37 04   LD      BC,$0437        
-4D60: 03         INC     BC              
-4D61: 01 39 09   LD      BC,$0939        
-4D64: 03         INC     BC              
-4D65: 01 19 00   LD      BC,$0019        
-4D68: 04         INC     B               
-4D69: 03         INC     BC              
-4D6A: 01 36 0A   LD      BC,$0A36        
-4D6D: 03         INC     BC              
-4D6E: 01 38 11   LD      BC,$1138        
-4D71: 03         INC     BC              
-4D72: 01 38 00   LD      BC,$0038        
-4D75: 09         ADD     HL,BC           
-4D76: 03         INC     BC              
-4D77: 01 37 0C   LD      BC,$0C37        
-4D7A: 03         INC     BC              
-4D7B: 01 37 11   LD      BC,$1137        
-4D7E: 03         INC     BC              
-4D7F: 01 37 0A   LD      BC,$0A37        
-4D82: 04         INC     B               
-4D83: 04         INC     B               
-4D84: 7B         LD      A,E             
-4D85: 72         LD      (HL),D          
-4D86: 27         DAA                     
-4D87: 0B         DEC     BC              
-4D88: 07         RLCA                    
-4D89: 06 02      LD      B,$02           
-4D8B: 1C         INC     E               
-4D8C: 04         INC     B               
-4D8D: 37         SCF                     
-4D8E: 7B         LD      A,E             
-4D8F: 19         ADD     HL,DE           
-4D90: 1C         INC     E               
-4D91: 1B         DEC     DE              
-4D92: 00         NOP                     
-4D93: 02         LD      (BC),A          
-4D94: 03         INC     BC              
-4D95: 01 36 0A   LD      BC,$0A36        
-4D98: 03         INC     BC              
-4D99: 01 3A 00   LD      BC,$003A        
-4D9C: 01 03 01   LD      BC,$0103        
-4D9F: 3D         DEC     A               
-4DA0: 02         LD      (BC),A          
-4DA1: 03         INC     BC              
-4DA2: 01 3B 04   LD      BC,$043B        
-4DA5: 03         INC     BC              
-4DA6: 01 41 09   LD      BC,$0941        
-4DA9: 03         INC     BC              
-4DAA: 01 39 11   LD      BC,$1139        
-4DAD: 03         INC     BC              
-4DAE: 01 39 00   LD      BC,$0039        
-4DB1: 02         LD      (BC),A          
-4DB2: 03         INC     BC              
-4DB3: 01 3C 04   LD      BC,$043C        
-4DB6: 03         INC     BC              
-4DB7: 01 41 09   LD      BC,$0941        
-4DBA: 03         INC     BC              
-4DBB: 01 3A 00   LD      BC,$003A        
-4DBE: 01 07 07   LD      BC,$0707        
-4DC1: 03         INC     BC              
-4DC2: 0A         LD      A,(BC)          
-4DC3: F0         RET     P               
-4DC4: 01 3B 02   LD      BC,$023B        
-4DC7: 07         RLCA                    
-4DC8: 07         RLCA                    
-4DC9: 03         INC     BC              
-4DCA: 0A         LD      A,(BC)          
-4DCB: F0         RET     P               
-4DCC: 01 3B 03   LD      BC,$033B        
-4DCF: 07         RLCA                    
-4DD0: 07         RLCA                    
-4DD1: 03         INC     BC              
-4DD2: 0A         LD      A,(BC)          
-4DD3: F0         RET     P               
-4DD4: 01 3B 05   LD      BC,$053B        
-4DD7: 07         RLCA                    
-4DD8: 07         RLCA                    
-4DD9: 03         INC     BC              
-4DDA: 0A         LD      A,(BC)          
-4DDB: F0         RET     P               
-4DDC: 01 3B 06   LD      BC,$063B        
-4DDF: 07         RLCA                    
-4DE0: 07         RLCA                    
-4DE1: 03         INC     BC              
-4DE2: 0A         LD      A,(BC)          
-4DE3: F0         RET     P               
-4DE4: 01 3B 07   LD      BC,$073B        
-4DE7: 07         RLCA                    
-4DE8: 07         RLCA                    
-4DE9: 03         INC     BC              
-4DEA: 0A         LD      A,(BC)          
-4DEB: F0         RET     P               
-4DEC: 01 3B 08   LD      BC,$083B        
-4DEF: 07         RLCA                    
-4DF0: 07         RLCA                    
-4DF1: 03         INC     BC              
-4DF2: 0A         LD      A,(BC)          
-4DF3: F0         RET     P               
-4DF4: 01 3B 09   LD      BC,$093B        
-4DF7: 07         RLCA                    
-4DF8: 07         RLCA                    
-4DF9: 03         INC     BC              
-4DFA: 0A         LD      A,(BC)          
-4DFB: F0         RET     P               
-4DFC: 01 3B 04   LD      BC,$043B        
-4DFF: 06 04      LD      B,$04           
-4E01: CF         RST     0X08            
-4E02: 72         LD      (HL),D          
-4E03: 01 3C 00   LD      BC,$003C        
-4E06: 03         INC     BC              
-4E07: 11 07 06   LD      DE,$0607        
-4E0A: 02         LD      (BC),A          
-4E0B: 17         RLA                     
-4E0C: 04         INC     B               
-4E0D: 27         DAA                     
-4E0E: 73         LD      (HL),E          
-4E0F: 07         RLCA                    
-4E10: 06 02      LD      B,$02           
-4E12: 18 04      JR      $4E18           
-4E14: 27         DAA                     
-4E15: 73         LD      (HL),E          
-4E16: 01 3A 09   LD      BC,$093A        
-4E19: 03         INC     BC              
-4E1A: 01 3E 0A   LD      BC,$0A3E        
-4E1D: 03         INC     BC              
-4E1E: 01 3F 00   LD      BC,$003F        
-4E21: 0A         LD      A,(BC)          
-4E22: 03         INC     BC              
-4E23: 01 3D 0C   LD      BC,$0C3D        
-4E26: 03         INC     BC              
-4E27: 01 3D 00   LD      BC,$003D        
-4E2A: 09         ADD     HL,BC           
-4E2B: 03         INC     BC              
-4E2C: 01 3D 0A   LD      BC,$0A3D        
-4E2F: 03         INC     BC              
-4E30: 01 40 00   LD      BC,$0040        
-4E33: 09         ADD     HL,BC           
-4E34: 03         INC     BC              
-4E35: 01 3F 0C   LD      BC,$0C3F        
-4E38: 03         INC     BC              
-4E39: 01 3F 00   LD      BC,$003F        
-4E3C: 02         LD      (BC),A          
-4E3D: 03         INC     BC              
-4E3E: 01 3A 04   LD      BC,$043A        
-4E41: 03         INC     BC              
-4E42: 01 4E 09   LD      BC,$094E        
-4E45: 07         RLCA                    
-4E46: 07         RLCA                    
-4E47: 03         INC     BC              
-4E48: 0A         LD      A,(BC)          
-4E49: CC 01 48   CALL    Z,$4801         
-4E4C: 01 07 07   LD      BC,$0707        
-4E4F: 03         INC     BC              
-4E50: 0A         LD      A,(BC)          
-4E51: CC 01 49   CALL    Z,$4901         
-4E54: 03         INC     BC              
-4E55: 07         RLCA                    
-4E56: 07         RLCA                    
-4E57: 03         INC     BC              
-4E58: 0A         LD      A,(BC)          
-4E59: CC 01 42   CALL    Z,$4201         
-4E5C: 0A         LD      A,(BC)          
-4E5D: 07         RLCA                    
-4E5E: 07         RLCA                    
-4E5F: 03         INC     BC              
-4E60: 0A         LD      A,(BC)          
-4E61: CC 01 3B   CALL    Z,$3B01         
-4E64: 00         NOP                     
-4E65: 01 03 01   LD      BC,$0103        
-4E68: 41         LD      B,C             
-4E69: 03         INC     BC              
-4E6A: 03         INC     BC              
-4E6B: 01 50 00   LD      BC,$0050        
-4E6E: 04         INC     B               
-4E6F: 03         INC     BC              
-4E70: 01 41 0C   LD      BC,$0C41        
-4E73: 03         INC     BC              
-4E74: 01 41 00   LD      BC,$0041        
-4E77: 04         INC     B               
-4E78: 09         ADD     HL,BC           
-4E79: 07         RLCA                    
-4E7A: 04         INC     B               
-4E7B: 0D         DEC     C               
-4E7C: 01 4C 04   LD      BC,$044C        
-4E7F: 53         LD      D,E             
-4E80: 73         LD      (HL),E          
-4E81: 06 03      LD      B,$03           
-4E83: 01 41 00   LD      BC,$0041        
-4E86: 02         LD      (BC),A          
-4E87: 09         ADD     HL,BC           
-4E88: 07         RLCA                    
-4E89: 04         INC     B               
-4E8A: 0D         DEC     C               
-4E8B: 01 49 04   LD      BC,$0449        
-4E8E: 53         LD      D,E             
-4E8F: 73         LD      (HL),E          
-4E90: 0C         INC     C               
-4E91: 09         ADD     HL,BC           
-4E92: 07         RLCA                    
-4E93: 04         INC     B               
-4E94: 0D         DEC     C               
-4E95: 01 49 04   LD      BC,$0449        
-4E98: 53         LD      D,E             
-4E99: 73         LD      (HL),E          
-4E9A: 00         NOP                     
-4E9B: 02         LD      (BC),A          
-4E9C: 03         INC     BC              
-4E9D: 01 41 04   LD      BC,$0441        
-4EA0: 03         INC     BC              
-4EA1: 01 50 0A   LD      BC,$0A50        
-4EA4: 03         INC     BC              
-4EA5: 01 4F 00   LD      BC,$004F        
-4EA8: 09         ADD     HL,BC           
-4EA9: 03         INC     BC              
-4EAA: 01 4E 0C   LD      BC,$0C4E        
-4EAD: 03         INC     BC              
-4EAE: 01 4E 00   LD      BC,$004E        
-4EB1: 02         LD      (BC),A          
-4EB2: 03         INC     BC              
-4EB3: 01 4E 04   LD      BC,$044E        
-4EB6: 03         INC     BC              
-4EB7: 01 42 0A   LD      BC,$0A42        
-4EBA: 03         INC     BC              
-4EBB: 01 51 00   LD      BC,$0051        
-4EBE: 09         ADD     HL,BC           
-4EBF: 03         INC     BC              
-4EC0: 01 50 0C   LD      BC,$0C50        
-4EC3: 03         INC     BC              
-4EC4: 01 50 11   LD      BC,$1150        
-4EC7: 16 07      LD      D,$07           
-4EC9: 08         EX      AF,AF'          
-4ECA: 03         INC     BC              
-4ECB: 09         ADD     HL,BC           
-4ECC: 04         INC     B               
-4ECD: 9E         SBC     (HL)            
-4ECE: 73         LD      (HL),E          
-4ECF: 01 4D 07   LD      BC,$074D        
-4ED2: 06 03      LD      B,$03           
-4ED4: 08         EX      AF,AF'          
-4ED5: 04         INC     B               
-4ED6: CB 73      SET     1,E             
-4ED8: 01 50 04   LD      BC,$0450        
-4EDB: 7D         LD      A,L             
-4EDC: 7D         LD      A,L             
-4EDD: 24         INC     H               
-4EDE: 2F         CPL                     
-4EDF: 11 1C 15   LD      DE,$151C        
-4EE2: 1C         INC     E               
-4EE3: 00         NOP                     
-4EE4: 07         RLCA                    
-4EE5: 0E 03      LD      C,$03           
-4EE7: 07         RLCA                    
-4EE8: 15         DEC     D               
-4EE9: 07         RLCA                    
-4EEA: 00         NOP                     
-4EEB: 18 08      JR      $4EF5           
-4EED: 04         INC     B               
-4EEE: 02         LD      (BC),A          
-4EEF: 7D         LD      A,L             
-4EF0: 04         INC     B               
-4EF1: 71         LD      (HL),C          
-4EF2: 6E         LD      L,(HL)          
-4EF3: 07         RLCA                    
-4EF4: 0E 03      LD      C,$03           
-4EF6: 08         EX      AF,AF'          
-4EF7: 15         DEC     D               
-4EF8: 08         EX      AF,AF'          
-4EF9: 00         NOP                     
-4EFA: 18 09      JR      $4F05           
-4EFC: 04         INC     B               
-4EFD: 29         ADD     HL,HL           
-4EFE: 7D         LD      A,L             
-4EFF: 04         INC     B               
-4F00: B1         OR      C               
-4F01: 6E         LD      L,(HL)          
-4F02: 15         DEC     D               
-4F03: 09         ADD     HL,BC           
-4F04: 00         NOP                     
-4F05: 18 07      JR      $4F0E           
-4F07: 04         INC     B               
-4F08: 59         LD      E,C             
-4F09: 7D         LD      A,L             
-4F0A: 04         INC     B               
-4F0B: 45         LD      B,L             
-4F0C: 6E         LD      L,(HL)          
-4F0D: 00         NOP                     
-4F0E: 02         LD      (BC),A          
-4F0F: 03         INC     BC              
-4F10: 01 51 0A   LD      BC,$0A51        
-4F13: 03         INC     BC              
-4F14: 01 51 11   LD      BC,$1151        
-4F17: 03         INC     BC              
-4F18: 01 51 10   LD      BC,$1051        
-4F1B: 05         DEC     B               
-4F1C: 04         INC     B               
-4F1D: 71         LD      (HL),C          
-4F1E: 71         LD      (HL),C          
-4F1F: 05         DEC     B               
-4F20: 04         INC     B               
-4F21: 03         INC     BC              
-4F22: 01 47 00   LD      BC,$0047        
-4F25: 01 03 01   LD      BC,$0103        
-4F28: 44         LD      B,H             
-4F29: 02         LD      (BC),A          
-4F2A: 03         INC     BC              
-4F2B: 01 46 03   LD      BC,$0346        
-4F2E: 03         INC     BC              
-4F2F: 01 4D 00   LD      BC,$004D        
-4F32: 03         INC     BC              
-4F33: 03         INC     BC              
-4F34: 01 47 0C   LD      BC,$0C47        
-4F37: 03         INC     BC              
-4F38: 01 47 00   LD      BC,$0047        
-4F3B: 03         INC     BC              
-4F3C: 03         INC     BC              
-4F3D: 01 47 0C   LD      BC,$0C47        
-4F40: 03         INC     BC              
-4F41: 01 47 00   LD      BC,$0047        
-4F44: FF         RST     0X38           
+```code
+RoomScripts:  
+; "room_1" : {
+;     "desc" : "YOU_ARE_STANDING_BEFORE_THE_ENTRANCE_OF_A_PYRAMID.__AROUND_YOU__IS_A_DESERT.[CR]",
+;     "commands" : {
+49CC: 01 03     ; "N" : [
+49CE: 01 02     ;    "MoveToRoomX","room_2"],
+49D0: 02 03     ; "E" : [
+49D2: 01 03     ;    "MoveToRoomX","room_3"],
+49D4: 03 03     ; "S" : [
+49D6: 01 04     ;    "MoveToRoomX","room_4"],
+49D8: 04 03     ; "W" : [
+49DA: 01 05     ;    "MoveToRoomX","room_5"],
+49DC: 0B 03     ; "IN" : [
+49DE: 01 02     ;    "MoveToRoomX","room_2"],
+49E0: 00
+;     }
+; },
+
+; "room_2" : {
+;     "desc" : "YOU_ARE_IN_THE_ENTRANCE_TO_THE_PYRAMID.__A_HOLE_IN_THE_FLOOR____LEADS_TO_A_PASSAGE_BENEATH_THE_SURFACE.[CR]",
+;     "commands" : {
+49E1: 03 03     ; "S" : [
+49E3: 01 01     ;    "MoveToRoomX","room_1"],
+49E5: 0A 03     ; "D" : [
+49E7: 01 07     ;    "MoveToRoomX","room_7"],
+49E9: 0C 03     ; "OUT" : [
+49EB: 01 01     ;    "MoveToRoomX","room_1"],
+49ED: 12 03     ; "PANEL" : [
+49EF: 01 1A     ;    "MoveToRoomX","room_26"],
+49F1: 00
+;     }
+; },
+
+; "room_3" : {
+;     "desc" : "YOU_ARE_IN_THE_DESERT.[CR]",
+;     "commands" : {
+49F2: 01 03     ; "N" : [
+49F4: 01 06     ;    "MoveToRoomX","room_6"],
+49F6: 02 03     ; "E" : [
+49F8: 01 03     ;    "MoveToRoomX","room_3"],
+49FA: 03 03     ; "S" : [
+49FC: 01 04     ;    "MoveToRoomX","room_4"],
+49FE: 04 03     ; "W" : [
+4A00: 01 01     ;    "MoveToRoomX","room_1"],
+4A02: 00
+;     }
+; },
+
+; "room_4" : {
+;     "desc" : "YOU_ARE_IN_THE_DESERT.[CR]",
+;     "commands" : {
+4A03: 01 03     ; "N" : [
+4A05: 01 01     ;    "MoveToRoomX","room_1"],
+4A07: 02 03     ; "E" : [
+4A09: 01 03     ;    "MoveToRoomX","room_3"],
+4A0B: 03 03     ; "S" : [
+4A0D: 01 04     ;    "MoveToRoomX","room_4"],
+4A0F: 04 03     ; "W" : [
+4A11: 01 05     ;    "MoveToRoomX","room_5"],
+4A13: 00
+;     }
+; },
+
+; "room_5" : {
+;     "desc" : "YOU_ARE_IN_THE_DESERT.[CR]",
+;     "commands" : {
+4A14: 01 03     ; "N" : [
+4A16: 01 06     ;    "MoveToRoomX","room_6"],
+4A18: 02 03     ; "E" : [
+4A1A: 01 01     ;    "MoveToRoomX","room_1"],
+4A1C: 03 03     ; "S" : [
+4A1E: 01 04     ;    "MoveToRoomX","room_4"],
+4A20: 04 03     ; "W" : [
+4A22: 01 05     ;    "MoveToRoomX","room_5"],
+4A24: 00
+;     }
+; },
+
+; "room_6" : {
+;     "desc" : "YOU_ARE_IN_THE_DESERT.[CR]",
+;     "commands" : {
+4A25: 01 03     ; "N" : [
+4A27: 01 06     ;    "MoveToRoomX","room_6"],
+4A29: 02 03     ; "E" : [
+4A2B: 01 03     ;    "MoveToRoomX","room_3"],
+4A2D: 03 03     ; "S" : [
+4A2F: 01 01     ;    "MoveToRoomX","room_1"],
+4A31: 04 03     ; "W" : [
+4A33: 01 05     ;    "MoveToRoomX","room_5"],
+4A35: 00
+;     }
+; },
+
+; "room_7" : {
+;     "desc" : "YOU_ARE_IN_A_SMALL_CHAMBER_BENEATH_A_HOLE_FROM_THE_SURFACE.__A__LOW_CRAWL_LEADS_INWARD_TO_THE_WEST.__HIEROGLYPHICS_ON_THE_WALL__TRANSLATE,_"CURSE_ALL_WHO_ENTER_THIS_SACRED_CRYPT."[CR]",
+;     "commands" : {
+4A36: 09 03     ; "U" : [
+4A38: 01 02     ;    "MoveToRoomX","room_2"],
+4A3A: 0C 03     ; "OUT" : [
+4A3C: 01 02     ;    "MoveToRoomX","room_2"],
+4A3E: 04 03     ; "W" : [
+4A40: 01 08     ;    "MoveToRoomX","room_8"],
+4A42: 0B 03     ; "IN" : [
+4A44: 01 08     ;    "MoveToRoomX","room_8"],
+4A46: 00
+;     }
+; },
+
+; "room_8" : {
+;     "desc" : "YOU_ARE_CRAWLING_OVER_PEBBLES_IN_A_LOW_PASSAGE.__THERE_IS_A_DIM_LIGHT_AT_THE_EAST_END_OF_THE_PASSAGE.[CR]",
+;     "commands" : {
+4A47: 02 03     ; "E" : [
+4A49: 01 07     ;    "MoveToRoomX","room_7"],
+4A4B: 0C 03     ; "OUT" : [
+4A4D: 01 07     ;    "MoveToRoomX","room_7"],
+4A4F: 04 03     ; "W" : [
+4A51: 01 09     ;    "MoveToRoomX","room_9"],
+4A53: 0B 03     ; "IN" : [
+4A55: 01 09     ;    "MoveToRoomX","room_9"],
+4A57: 00
+;     }
+; },
+
+; "room_9" : {
+;     "desc" : "YOU_ARE_IN_A_ROOM_FILLED_WITH_BROKEN_POTTERY_SHARDS_OF_ANCIENT__EGYPTIAN_CRAFTS.__AN_AWKWARD_CORRIDOR_LEADS_UPWARD_AND_WEST.[CR]",
+;     "commands" : {
+4A58: 02 03     ; "E" : [
+4A5A: 01 08     ;    "MoveToRoomX","room_8"],
+4A5C: 0B 03     ; "IN" : [
+4A5E: 01 0A     ;    "MoveToRoomX","room_10"],
+4A60: 09 03     ; "U" : [
+4A62: 01 0A     ;    "MoveToRoomX","room_10"],
+4A64: 04 03     ; "W" : [
+4A66: 01 0A     ;    "MoveToRoomX","room_10"],
+4A68: 00
+;     }
+; },
+
+; "room_10" : {
+;     "desc" : "YOU_ARE_IN_AN_AWKWARD_SLOPING_EAST/WEST_CORRIDOR.[CR]",
+;     "commands" : {
+4A69: 0A 03     ; "D" : [
+4A6B: 01 09     ;    "MoveToRoomX","room_9"],
+4A6D: 02 03     ; "E" : [
+4A6F: 01 09     ;    "MoveToRoomX","room_9"],
+4A71: 0B 03     ; "IN" : [
+4A73: 01 0B     ;    "MoveToRoomX","room_11"],
+4A75: 04 03     ; "W" : [
+4A77: 01 0B     ;    "MoveToRoomX","room_11"],
+4A79: 09 03     ; "U" : [
+4A7B: 01 0B     ;    "MoveToRoomX","room_11"],
+4A7D: 00
+;     }
+; },
+
+; "room_11" : {
+;     "desc" : "YOU_ARE_IN_A_SPLENDID_CHAMBER_THIRTY_FEET_HIGH.__THE_WALLS_ARE__FROZEN_RIVERS_OF_ORANGE_STONE.__AN_AWKWARD_CORRIDOR_AND_A_GOOD__PASSAGE_EXIT_FROM_THE_EAST_AND_WEST_SIDES_OF_THE_CHAMBER.[CR]",
+;     "commands" : {
+4A7E: 02 03     ; "E" : [
+4A80: 01 0A     ;    "MoveToRoomX","room_10"],
+4A82: 04 03     ; "W" : [
+4A84: 01 0C     ;    "MoveToRoomX","room_12"],
+4A86: 00
+;     }
+; },
+
+; "room_12" : {
+;     "desc" : "AT_YOUR_FEET_IS_A_SMALL_PIT_BREATHING_TRACES_OF_WHITE_MIST.__AN_EAST_PASSAGE_ENDS_HERE_EXCEPT_FOR_A_SMALL_CRACK_LEADING_ON._____ROUGH_STONE_STEPS_LEAD_DOWN_THE_PIT.[CR]",
+;     "commands" : {
+4A87: 02 03     ; "E" : [
+4A89: 01 0B     ;    "MoveToRoomX","room_11"],
+4A8B: 0A 0B     ; "D" : [
+4A8D: 07 07     ;    "SubScripXtAbortIfPass",[
+4A8F: 02 25     ;        "AssertObjectXIsInPack","#GOLD",
+4A91: 04 71 71  ;        "PrintMessageX","YOU_ARE_AT_THE_BOTTOM_OF_THE_PIT_WITH_A_BROKEN_NECK.[CR]",
+4A94: 05        ;        "PrintScoreAndStop"],
+4A95: 01 0D     ;    "MoveToRoomX","room_13"],
+4A97: 04 04     ; "W" : [
+4A99: 04 96 71  ;    "PrintMessageX","THE_CRACK_IS_FAR_TOO_SMALL_FOR_YOU_TO_FOLLOW.[CR]"],
+4A9C: 00
+;     }
+; },
+
+; "room_13" : {
+;     "desc" : "YOU_ARE_AT_ONE_END_OF_A_VAST_HALL_STRETCHING_FORWARD_OUT_OF_____SIGHT_TO_THE_WEST.__THERE_ARE_OPENINGS_TO_EITHER_SIDE.__NEARBY,_A_WIDE_STONE_STAIRCASE_LEADS_DOWNWARD.__THE_HALL_IS_VERY_MUSTY__AND_A_COLD_WIND_BLOWS_UP_THE_STAIRCASE.__THERE_IS_A_PASSAGE_AT__THE_TOP_OF_A_DOME_BEHIND_YOU.__ROUGH_STONE_STEPS_LEAD_UP_THE____DOME.[CR]",
+;     "commands" : {
+4A9D: 03 03     ; "S" : [
+4A9F: 01 0E     ;    "MoveToRoomX","room_14"],
+4AA1: 04 03     ; "W" : [
+4AA3: 01 0F     ;    "MoveToRoomX","room_15"],
+4AA5: 0A 03     ; "D" : [
+4AA7: 01 10     ;    "MoveToRoomX","room_16"],
+4AA9: 01 03     ; "N" : [
+4AAB: 01 10     ;    "MoveToRoomX","room_16"],
+4AAD: 09 0A     ; "U" : [
+4AAF: 07 06     ;    "SubScripXtAbortIfPass",[
+4AB1: 02 25     ;        "AssertObjectXIsInPack","#GOLD",
+4AB3: 04 B6 71  ;        "PrintMessageX","THE_DOME_IS_UNCLIMBABLE.[CR]"],
+4AB6: 01 0C     ;    "MoveToRoomX","room_12"],
+4AB8: 02 0A     ; "E" : [
+4ABA: 07 06     ;    "SubScripXtAbortIfPass",[
+4ABC: 02 25     ;        "AssertObjectXIsInPack","#GOLD",
+4ABE: 04 B6 71  ;        "PrintMessageX","THE_DOME_IS_UNCLIMBABLE.[CR]"],
+4AC1: 01 0C     ;    "MoveToRoomX","room_12"],
+4AC3: 20 03     ; "??20??" : [
+4AC5: 01 1A     ;    "MoveToRoomX","room_26"],
+4AC7: 00
+;     }
+; },
+
+; "room_14" : {
+;     "desc" : "THIS_IS_A_LOW_ROOM_WITH_A_HIEROGLYPH_ON_THE_WALL.__IT_TRANSLATES"YOU_WON'T_GET_IT_UP_THE_STEPS".[CR]",
+;     "commands" : {
+4AC8: 0C 03     ; "OUT" : [
+4ACA: 01 0D     ;    "MoveToRoomX","room_13"],
+4ACC: 01 03     ; "N" : [
+4ACE: 01 0D     ;    "MoveToRoomX","room_13"],
+4AD0: 00
+;     }
+; },
+
+; "room_15" : {
+;     "desc" : "YOU_ARE_ON_THE_EAST_BANK_OF_A_BOTTOMLESS_PIT_STRETCHING_ACROSS__THE_HALL.__THE_MIST_IS_QUITE_THICK_HERE,_AND_THE_PIT_IS_TOO_WIDETO_JUMP.[CR]",
+;     "commands" : {
+4AD1: 02 03     ; "E" : [
+4AD3: 01 0D     ;    "MoveToRoomX","room_13"],
+4AD5: 10 0C     ; "JUMP" : [
+4AD7: 07 06     ;    "SubScripXtAbortIfPass",[
+4AD9: 03 01     ;        "AssertObjectXIsInCurrentRoomOrPack","#bridge_15",
+4ADB: 04 C8 71  ;        "PrintMessageX","I_RESPECTFULLY_SUGGEST_YOU_GO_ACROSS_THE_BRIDGE_INSTEAD_OF______JUMPING.[CR]"],
+4ADE: 04 FA 71  ;    "PrintMessageX","YOU_DIDN'T_MAKE_IT.[CR]",
+4AE1: 05        ;    "PrintScoreAndStop"],
+4AE2: 04 0A     ; "W" : [
+4AE4: 07 05     ;    "SubScripXtAbortIfPass",[
+4AE6: 03 01     ;        "AssertObjectXIsInCurrentRoomOrPack","#bridge_15",
+4AE8: 01 12     ;        "MoveToRoomX","room_18"],
+4AEA: 04 09 72  ;    "PrintMessageX","THERE_IS_NO_WAY_ACROSS_THE_BOTTOMLESS_PIT.[CR]"],
+4AED: 0D 05     ; "CROSS" : [
+4AEF: 03 01     ;    "AssertObjectXIsInCurrentRoomOrPack","#bridge_15",
+4AF1: 01 12     ;    "MoveToRoomX","room_18"],
+4AF3: 23 18     ; "WAVE" : [
+4AF5: 11 11     ;    "AssertObjectXMatchesUserInput","#SCEPTER",
+4AF7: 07 0C     ;    "SubScripXtAbortIfPass",[
+4AF9: 03 01     ;        "AssertObjectXIsInCurrentRoomOrPack","#bridge_15",
+4AFB: 15 01 00  ;        "MoveObjectXToRoomY","#bridge_15","room_0",
+4AFE: 15 02 00  ;        "MoveObjectXToRoomY","#bridge_18","room_0",
+4B01: 04 DE 7B  ;        "PrintMessageX","THE_STONE_BRIDGE_HAS_RETRACTED![CR]"],
+4B04: 18 01     ;    "MoveObjectXToCurrentRoom","#bridge_15",
+4B06: 15 02 12  ;    "MoveObjectXToRoomY","#bridge_18","room_18",
+4B09: 04 F5 7B  ;    "PrintMessageX","A_STONE_BRIDGE_NOW_SPANS_THE_BOTTOMLESS_PIT.[CR]"],
+4B0C: 00
+;     }
+; },
+
+; "room_16" : {
+;     "desc" : "YOU_ARE_IN_THE_PHARAOH'S_CHAMBER,_WITH_PASSAGES_OFF_IN_ALL______DIRECTIONS.[CR]",
+;     "commands" : {
+4B0D: 09 03     ; "U" : [
+4B0F: 01 0D     ;    "MoveToRoomX","room_13"],
+4B11: 02 03     ; "E" : [
+4B13: 01 0D     ;    "MoveToRoomX","room_13"],
+4B15: 03 0A     ; "S" : [
+4B17: 07 06     ;    "SubScripXtAbortIfPass",[
+4B19: 03 0B     ;        "AssertObjectXIsInCurrentRoomOrPack","#SERPENT",
+4B1B: 04 27 72  ;        "PrintMessageX","YOU_CAN'T_GET_BY_THE_SERPENT.[CR]"],
+4B1E: 01 11     ;    "MoveToRoomX","room_17"],
+4B20: 01 0A     ; "N" : [
+4B22: 07 06     ;    "SubScripXtAbortIfPass",[
+4B24: 03 0B     ;        "AssertObjectXIsInCurrentRoomOrPack","#SERPENT",
+4B26: 04 27 72  ;        "PrintMessageX","YOU_CAN'T_GET_BY_THE_SERPENT.[CR]"],
+4B29: 01 19     ;    "MoveToRoomX","room_25"],
+4B2B: 04 0A     ; "W" : [
+4B2D: 07 06     ;    "SubScripXtAbortIfPass",[
+4B2F: 03 0B     ;        "AssertObjectXIsInCurrentRoomOrPack","#SERPENT",
+4B31: 04 27 72  ;        "PrintMessageX","YOU_CAN'T_GET_BY_THE_SERPENT.[CR]"],
+4B34: 01 18     ;    "MoveToRoomX","room_24"],
+4B36: 26 10     ; "THROW" : [
+4B38: 11 14     ;    "AssertObjectXMatchesUserInput","#BIRD_boxed",
+4B3A: 03 0B     ;    "AssertObjectXIsInCurrentRoomOrPack","#SERPENT",
+4B3C: 15 0B 00  ;    "MoveObjectXToRoomY","#SERPENT","room_0",
+4B3F: 18 13     ;    "MoveObjectXToCurrentRoom","#BIRD",
+4B41: 15 14 00  ;    "MoveObjectXToRoomY","#BIRD_boxed","room_0",
+4B44: 04 A1 7C  ;    "PrintMessageX","THE_BIRD_STATUE_COMES_TO_LIFE_AND_ATTACKS_THE_SERPENT_AND_IN_AN_ASTOUNDING_FLURRY,_DRIVES_THE_SERPENT_AWAY.__THE_BIRD_TURNS_BACKINTO_A_STATUE.[CR]"],
+4B47: 00
+;     }
+; },
+
+; "room_17" : {
+;     "desc" : "YOU_ARE_IN_THE_SOUTH_SIDE_CHAMBER.[CR]",
+;     "commands" : {
+4B48: 01 03     ; "N" : [
+4B4A: 01 10     ;    "MoveToRoomX","room_16"],
+4B4C: 0C 03     ; "OUT" : [
+4B4E: 01 10     ;    "MoveToRoomX","room_16"],
+4B50: 00
+;     }
+; },
+
+; "room_18" : {
+;     "desc" : "YOU_ARE_ON_THE_WEST_SIDE_OF_THE_BOTTOMLESS_PIT_IN_THE_HALL_OF___GODS.[CR]",
+;     "commands" : {
+4B51: 10 0C     ; "JUMP" : [
+4B53: 07 06     ;    "SubScripXtAbortIfPass",[
+4B55: 03 02     ;        "AssertObjectXIsInCurrentRoomOrPack","#bridge_18",
+4B57: 04 C8 71  ;        "PrintMessageX","I_RESPECTFULLY_SUGGEST_YOU_GO_ACROSS_THE_BRIDGE_INSTEAD_OF______JUMPING.[CR]"],
+4B5A: 04 FA 71  ;    "PrintMessageX","YOU_DIDN'T_MAKE_IT.[CR]",
+4B5D: 05        ;    "PrintScoreAndStop"],
+4B5E: 02 0A     ; "E" : [
+4B60: 07 05     ;    "SubScripXtAbortIfPass",[
+4B62: 03 02     ;        "AssertObjectXIsInCurrentRoomOrPack","#bridge_18",
+4B64: 01 0F     ;        "MoveToRoomX","room_15"],
+4B66: 04 09 72  ;    "PrintMessageX","THERE_IS_NO_WAY_ACROSS_THE_BOTTOMLESS_PIT.[CR]"],
+4B69: 01 06     ; "N" : [
+4B6B: 04 3D 72  ;    "PrintMessageX","YOU_HAVE_CRAWLED_THROUGH_A_VERY_LOW_WIDE_PASSAGE_PARALLEL_TO_ANDNORTH_OF_THE_HALL_OF_GODS.[CR]",
+4B6E: 01 13     ;    "MoveToRoomX","room_19"],
+4B70: 0D 05     ; "CROSS" : [
+4B72: 03 02     ;    "AssertObjectXIsInCurrentRoomOrPack","#bridge_18",
+4B74: 01 0F     ;    "MoveToRoomX","room_15"],
+4B76: 23 18     ; "WAVE" : [
+4B78: 11 11     ;    "AssertObjectXMatchesUserInput","#SCEPTER",
+4B7A: 07 0C     ;    "SubScripXtAbortIfPass",[
+4B7C: 03 02     ;        "AssertObjectXIsInCurrentRoomOrPack","#bridge_18",
+4B7E: 15 02 00  ;        "MoveObjectXToRoomY","#bridge_18","room_0",
+4B81: 15 01 00  ;        "MoveObjectXToRoomY","#bridge_15","room_0",
+4B84: 04 DE 7B  ;        "PrintMessageX","THE_STONE_BRIDGE_HAS_RETRACTED![CR]"],
+4B87: 18 02     ;    "MoveObjectXToCurrentRoom","#bridge_18",
+4B89: 15 01 0F  ;    "MoveObjectXToRoomY","#bridge_15","room_15",
+4B8C: 04 F5 7B  ;    "PrintMessageX","A_STONE_BRIDGE_NOW_SPANS_THE_BOTTOMLESS_PIT.[CR]"],
+4B8F: 00
+;     }
+; },
+
+; "room_19" : {
+;     "desc" : "YOU_ARE_AT_THE_WEST_END_OF_THE_HALL_OF_GODS.___A_LOW_WIDE_PASS__CONTINUES_WEST_AND_ANOTHER_GOES_NORTH.__TO_THE_SOUTH_IS_A_LITTLEPASSAGE_SIX_FEET_OFF_THE_FLOOR.[CR]",
+;     "commands" : {
+4B90: 03 03     ; "S" : [
+4B92: 01 1C     ;    "MoveToRoomX","room_28"],
+4B94: 09 03     ; "U" : [
+4B96: 01 1C     ;    "MoveToRoomX","room_28"],
+4B98: 11 03     ; "CLIMB" : [
+4B9A: 01 1C     ;    "MoveToRoomX","room_28"],
+4B9C: 02 03     ; "E" : [
+4B9E: 01 12     ;    "MoveToRoomX","room_18"],
+4BA0: 01 03     ; "N" : [
+4BA2: 01 12     ;    "MoveToRoomX","room_18"],
+4BA4: 04 03     ; "W" : [
+4BA6: 01 14     ;    "MoveToRoomX","room_20"],
+4BA8: 00
+;     }
+; },
+
+; "room_20" : {
+;     "desc" : "YOU_ARE_AT_EAST_END_OF_A_VERY_LONG_HALL_APPARENTLY_WITHOUT_SIDE_CHAMBERS.__TO_THE_EAST_A_LOW_WIDE_CRAWL_SLANTS_UP.__TO_THE_NORTHA_ROUND_TWO_FOOT_HOLE_SLANTS_DOWN.[CR]",
+;     "commands" : {
+4BA9: 02 03     ; "E" : [
+4BAB: 01 13     ;    "MoveToRoomX","room_19"],
+4BAD: 09 03     ; "U" : [
+4BAF: 01 13     ;    "MoveToRoomX","room_19"],
+4BB1: 04 03     ; "W" : [
+4BB3: 01 15     ;    "MoveToRoomX","room_21"],
+4BB5: 01 03     ; "N" : [
+4BB7: 01 16     ;    "MoveToRoomX","room_22"],
+4BB9: 0A 03     ; "D" : [
+4BBB: 01 16     ;    "MoveToRoomX","room_22"],
+4BBD: 00
+;     }
+; },
+
+; "room_21" : {
+;     "desc" : "YOU_ARE_AT_THE_WEST_END_OF_A_VERY_LONG_FEATURELESS_HALL.__THE___HALL_JOINS_UP_WITH_A_NARROW_NORTH/SOUTH_PASSAGE.[CR]",
+;     "commands" : {
+4BBE: 02 03     ; "E" : [
+4BC0: 01 14     ;    "MoveToRoomX","room_20"],
+4BC2: 01 03     ; "N" : [
+4BC4: 01 16     ;    "MoveToRoomX","room_22"],
+4BC6: 00
+;     }
+; },
+
+; "room_22" : {
+;     "desc" : "YOU_ARE_AT_A_CROSSOVER_OF_A_HIGH_N/S_PASSAGE_AND_A_LOW_E/W_ONE.[CR]",
+;     "commands" : {
+4BC7: 04 03     ; "W" : [
+4BC9: 01 14     ;    "MoveToRoomX","room_20"],
+4BCB: 01 03     ; "N" : [
+4BCD: 01 17     ;    "MoveToRoomX","room_23"],
+4BCF: 02 03     ; "E" : [
+4BD1: 01 18     ;    "MoveToRoomX","room_24"],
+4BD3: 03 03     ; "S" : [
+4BD5: 01 15     ;    "MoveToRoomX","room_21"],
+4BD7: 00
+;     }
+; },
+
+; "room_23" : {
+;     "desc" : "DEAD_END.[CR]",
+;     "commands" : {
+4BD8: 03 03     ; "S" : [
+4BDA: 01 16     ;    "MoveToRoomX","room_22"],
+4BDC: 0C 03     ; "OUT" : [
+4BDE: 01 16     ;    "MoveToRoomX","room_22"],
+4BE0: 00
+;     }
+; },
+
+; "room_24" : {
+;     "desc" : "YOU_ARE_IN_THE_WEST_THRONE_CHAMBER.__A_PASSAGE_CONTINUES_WEST___AND_UP_FROM_HERE.[CR]",
+;     "commands" : {
+4BE1: 02 03     ; "E" : [
+4BE3: 01 10     ;    "MoveToRoomX","room_16"],
+4BE5: 0C 03     ; "OUT" : [
+4BE7: 01 10     ;    "MoveToRoomX","room_16"],
+4BE9: 04 03     ; "W" : [
+4BEB: 01 16     ;    "MoveToRoomX","room_22"],
+4BED: 09 03     ; "U" : [
+4BEF: 01 16     ;    "MoveToRoomX","room_22"],
+4BF1: 00
+;     }
+; },
+
+; "room_25" : {
+;     "desc" : "YOU_ARE_IN_A_LOW_N/S_PASSAGE_AT_A_HOLE_IN_THE_FLOOR.__THE_HOLE__GOES_DOWN_TO_AN_E/W_PASSAGE.[CR]",
+;     "commands" : {
+4BF2: 0C 03     ; "OUT" : [
+4BF4: 01 10     ;    "MoveToRoomX","room_16"],
+4BF6: 03 03     ; "S" : [
+4BF8: 01 10     ;    "MoveToRoomX","room_16"],
+4BFA: 01 03     ; "N" : [
+4BFC: 01 1A     ;    "MoveToRoomX","room_26"],
+4BFE: 20 03     ; "??20??" : [
+4C00: 01 1A     ;    "MoveToRoomX","room_26"],
+4C02: 0A 03     ; "D" : [
+4C04: 01 36     ;    "MoveToRoomX","room_54"],
+4C06: 00
+;     }
+; },
+
+; "room_26" : {
+;     "desc" : "YOU_ARE_IN_A_LARGE_ROOM,_WITH_A_PASSAGE_TO_THE_SOUTH,_AND_A_WALLOF_BROKEN_ROCK_TO_THE_EAST.__THERE_IS_A_PANEL_ON_THE_NORTH_WALL.[CR]",
+;     "commands" : {
+4C07: 12 03     ; "PANEL" : [
+4C09: 01 02     ;    "MoveToRoomX","room_2"],
+4C0B: 03 03     ; "S" : [
+4C0D: 01 19     ;    "MoveToRoomX","room_25"],
+4C0F: 02 03     ; "E" : [
+4C11: 01 1B     ;    "MoveToRoomX","room_27"],
+4C13: 00
+;     }
+; },
+
+; "room_27" : {
+;     "desc" : "YOU_ARE_IN_THE_CHAMBER_OF_ANUBIS.[CR]",
+;     "commands" : {
+4C14: 0A 03     ; "D" : [
+4C16: 01 1A     ;    "MoveToRoomX","room_26"],
+4C18: 20 03     ; "??20??" : [
+4C1A: 01 1A     ;    "MoveToRoomX","room_26"],
+4C1C: 09 03     ; "U" : [
+4C1E: 01 0D     ;    "MoveToRoomX","room_13"],
+4C20: 00
+;     }
+; },
+
+; "room_28" : {
+;     "desc" : "YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]",
+;     "commands" : {
+4C21: 01 03     ; "N" : [
+4C23: 01 1C     ;    "MoveToRoomX","room_28"],
+4C25: 02 03     ; "E" : [
+4C27: 01 20     ;    "MoveToRoomX","room_32"],
+4C29: 03 03     ; "S" : [
+4C2B: 01 1E     ;    "MoveToRoomX","room_30"],
+4C2D: 04 03     ; "W" : [
+4C2F: 01 1D     ;    "MoveToRoomX","room_29"],
+4C31: 09 03     ; "U" : [
+4C33: 01 13     ;    "MoveToRoomX","room_19"],
+4C35: 00
+;     }
+; },
+
+; "room_29" : {
+;     "desc" : "YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]",
+;     "commands" : {
+4C36: 01 03     ; "N" : [
+4C38: 01 1C     ;    "MoveToRoomX","room_28"],
+4C3A: 02 03     ; "E" : [
+4C3C: 01 33     ;    "MoveToRoomX","room_51"],
+4C3E: 03 03     ; "S" : [
+4C40: 01 1D     ;    "MoveToRoomX","room_29"],
+4C42: 04 03     ; "W" : [
+4C44: 01 1D     ;    "MoveToRoomX","room_29"],
+4C46: 00
+;     }
+; },
+
+; "room_30" : {
+;     "desc" : "YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]",
+;     "commands" : {
+4C47: 01 03     ; "N" : [
+4C49: 01 20     ;    "MoveToRoomX","room_32"],
+4C4B: 02 03     ; "E" : [
+4C4D: 01 2A     ;    "MoveToRoomX","room_42"],
+4C4F: 03 03     ; "S" : [
+4C51: 01 2B     ;    "MoveToRoomX","room_43"],
+4C53: 04 03     ; "W" : [
+4C55: 01 1C     ;    "MoveToRoomX","room_28"],
+4C57: 09 03     ; "U" : [
+4C59: 01 1F     ;    "MoveToRoomX","room_31"],
+4C5B: 0A 03     ; "D" : [
+4C5D: 01 1F     ;    "MoveToRoomX","room_31"],
+4C5F: 00
+;     }
+; },
+
+; "room_31" : {
+;     "desc" : "YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]",
+;     "commands" : {
+4C60: 09 03     ; "U" : [
+4C62: 01 1E     ;    "MoveToRoomX","room_30"],
+4C64: 0A 03     ; "D" : [
+4C66: 01 1E     ;    "MoveToRoomX","room_30"],
+4C68: 00
+;     }
+; },
+
+; "room_32" : {
+;     "desc" : "YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]",
+;     "commands" : {
+4C69: 02 03     ; "E" : [
+4C6B: 01 1E     ;    "MoveToRoomX","room_30"],
+4C6D: 03 03     ; "S" : [
+4C6F: 01 21     ;    "MoveToRoomX","room_33"],
+4C71: 04 03     ; "W" : [
+4C73: 01 1C     ;    "MoveToRoomX","room_28"],
+4C75: 00
+;     }
+; },
+
+; "room_33" : {
+;     "desc" : "YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]",
+;     "commands" : {
+4C76: 01 03     ; "N" : [
+4C78: 01 2C     ;    "MoveToRoomX","room_44"],
+4C7A: 02 03     ; "E" : [
+4C7C: 01 20     ;    "MoveToRoomX","room_32"],
+4C7E: 03 03     ; "S" : [
+4C80: 01 22     ;    "MoveToRoomX","room_34"],
+4C82: 0A 03     ; "D" : [
+4C84: 01 2D     ;    "MoveToRoomX","room_45"],
+4C86: 00
+;     }
+; },
+
+; "room_34" : {
+;     "desc" : "YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]",
+;     "commands" : {
+4C87: 02 03     ; "E" : [
+4C89: 01 21     ;    "MoveToRoomX","room_33"],
+4C8B: 03 03     ; "S" : [
+4C8D: 01 23     ;    "MoveToRoomX","room_35"],
+4C8F: 04 03     ; "W" : [
+4C91: 01 25     ;    "MoveToRoomX","room_37"],
+4C93: 0A 03     ; "D" : [
+4C95: 01 26     ;    "MoveToRoomX","room_38"],
+4C97: 00
+;     }
+; },
+
+; "room_35" : {
+;     "desc" : "YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]",
+;     "commands" : {
+4C98: 01 03     ; "N" : [
+4C9A: 01 24     ;    "MoveToRoomX","room_36"],
+4C9C: 02 03     ; "E" : [
+4C9E: 01 26     ;    "MoveToRoomX","room_38"],
+4CA0: 03 03     ; "S" : [
+4CA2: 01 23     ;    "MoveToRoomX","room_35"],
+4CA4: 04 03     ; "W" : [
+4CA6: 01 22     ;    "MoveToRoomX","room_34"],
+4CA8: 09 03     ; "U" : [
+4CAA: 01 27     ;    "MoveToRoomX","room_39"],
+4CAC: 0A 03     ; "D" : [
+4CAE: 01 2F     ;    "MoveToRoomX","room_47"],
+4CB0: 00
+;     }
+; },
+
+; "room_36" : {
+;     "desc" : "YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]",
+;     "commands" : {
+4CB1: 01 03     ; "N" : [
+4CB3: 01 24     ;    "MoveToRoomX","room_36"],
+4CB5: 02 03     ; "E" : [
+4CB7: 01 34     ;    "MoveToRoomX","room_52"],
+4CB9: 04 03     ; "W" : [
+4CBB: 01 23     ;    "MoveToRoomX","room_35"],
+4CBD: 0A 03     ; "D" : [
+4CBF: 01 30     ;    "MoveToRoomX","room_48"],
+4CC1: 00
+;     }
+; },
+
+; "room_37" : {
+;     "desc" : "YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]",
+;     "commands" : {
+4CC2: 02 03     ; "E" : [
+4CC4: 01 22     ;    "MoveToRoomX","room_34"],
+4CC6: 04 03     ; "W" : [
+4CC8: 01 26     ;    "MoveToRoomX","room_38"],
+4CCA: 00
+;     }
+; },
+
+; "room_38" : {
+;     "desc" : "YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]",
+;     "commands" : {
+4CCB: 02 03     ; "E" : [
+4CCD: 01 23     ;    "MoveToRoomX","room_35"],
+4CCF: 03 03     ; "S" : [
+4CD1: 01 27     ;    "MoveToRoomX","room_39"],
+4CD3: 04 03     ; "W" : [
+4CD5: 01 25     ;    "MoveToRoomX","room_37"],
+4CD7: 09 03     ; "U" : [
+4CD9: 01 22     ;    "MoveToRoomX","room_34"],
+4CDB: 00
+;     }
+; },
+
+; "room_39" : {
+;     "desc" : "YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]",
+;     "commands" : {
+4CDC: 01 03     ; "N" : [
+4CDE: 01 23     ;    "MoveToRoomX","room_35"],
+4CE0: 03 03     ; "S" : [
+4CE2: 01 2E     ;    "MoveToRoomX","room_46"],
+4CE4: 04 03     ; "W" : [
+4CE6: 01 26     ;    "MoveToRoomX","room_38"],
+4CE8: 00
+;     }
+; },
+
+; "room_40" : {
+;     "desc" : "YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]",
+;     "commands" : {
+4CE9: 01 03     ; "N" : [
+4CEB: 01 34     ;    "MoveToRoomX","room_52"],
+4CED: 04 03     ; "W" : [
+4CEF: 01 29     ;    "MoveToRoomX","room_41"],
+4CF1: 08 03     ; "NW" : [
+4CF3: 01 35     ;    "MoveToRoomX","room_53"],
+4CF5: 00
+;     }
+; },
+
+; "room_41" : {
+;     "desc" : "YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]",
+;     "commands" : {
+4CF6: 02 03     ; "E" : [
+4CF8: 01 28     ;    "MoveToRoomX","room_40"],
+4CFA: 03 03     ; "S" : [
+4CFC: 01 34     ;    "MoveToRoomX","room_52"],
+4CFE: 04 03     ; "W" : [
+4D00: 01 32     ;    "MoveToRoomX","room_50"],
+4D02: 00
+;     }
+; },
+
+; "room_42" : {
+;     "desc" : "DEAD_END.[CR]",
+;     "commands" : {
+4D03: 04 03     ; "W" : [
+4D05: 01 1E     ;    "MoveToRoomX","room_30"],
+4D07: 00
+;     }
+; },
+
+; "room_43" : {
+;     "desc" : "DEAD_END.[CR]",
+;     "commands" : {
+4D08: 02 03     ; "E" : [
+4D0A: 01 1E     ;    "MoveToRoomX","room_30"],
+4D0C: 00
+;     }
+; },
+
+; "room_44" : {
+;     "desc" : "DEAD_END.[CR]",
+;     "commands" : {
+4D0D: 03 03     ; "S" : [
+4D0F: 01 21     ;    "MoveToRoomX","room_33"],
+4D11: 00
+;     }
+; },
+
+; "room_45" : {
+;     "desc" : "DEAD_END.[CR]",
+;     "commands" : {
+4D12: 09 03     ; "U" : [
+4D14: 01 21     ;    "MoveToRoomX","room_33"],
+4D16: 00
+;     }
+; },
+
+; "room_46" : {
+;     "desc" : "DEAD_END.[CR]",
+;     "commands" : {
+4D17: 04 03     ; "W" : [
+4D19: 01 27     ;    "MoveToRoomX","room_39"],
+4D1B: 00
+;     }
+; },
+
+; "room_47" : {
+;     "desc" : "DEAD_END.[CR]",
+;     "commands" : {
+4D1C: 09 03     ; "U" : [
+4D1E: 01 23     ;    "MoveToRoomX","room_35"],
+4D20: 00
+;     }
+; },
+
+; "room_48" : {
+;     "desc" : "DEAD_END.[CR]",
+;     "commands" : {
+4D21: 09 03     ; "U" : [
+4D23: 01 24     ;    "MoveToRoomX","room_36"],
+4D25: 00
+;     }
+; },
+
+; "room_49" : {
+;     "desc" : "DEAD_END.[CR]",
+;     "commands" : {
+4D26: 02 03     ; "E" : [
+4D28: 01 34     ;    "MoveToRoomX","room_52"],
+4D2A: 00
+;     }
+; },
+
+; "room_50" : {
+;     "desc" : "DEAD_END.[CR]",
+;     "commands" : {
+4D2B: 02 03     ; "E" : [
+4D2D: 01 29     ;    "MoveToRoomX","room_41"],
+4D2F: 00
+;     }
+; },
+
+; "room_51" : {
+;     "desc" : "DEAD_END.[CR]",
+;     "commands" : {
+4D30: 04 03     ; "W" : [
+4D32: 01 1D     ;    "MoveToRoomX","room_29"],
+4D34: 21 0B     ; "DROP" : [
+4D36: 11 29     ;    "AssertObjectXMatchesUserInput","#COINS",
+4D38: 15 29 00  ;    "MoveObjectXToRoomY","#COINS","room_0",
+4D3B: 18 23     ;    "MoveObjectXToCurrentRoom","#BATTERIES_fresh",
+4D3D: 04 58 7C  ;    "PrintMessageX","THERE_ARE_NOW_SOME_FRESH_BATTERIES_HERE.[CR]"],
+4D40: 00
+;     }
+; },
+
+; "room_52" : {
+;     "desc" : "YOU_ARE_ON_THE_BRINK_OF_A_LARGE_PIT.__YOU_COULD_CLIMB_DOWN,_BUT_YOU_WOULD_NOT_BE_ABLE_TO_CLIMB_BACK_UP.__THE_MAZE_CONTINUES_ON__THIS_LEVEL.[CR]",
+;     "commands" : {
+4D41: 01 03     ; "N" : [
+4D43: 01 29     ;    "MoveToRoomX","room_41"],
+4D45: 02 03     ; "E" : [
+4D47: 01 28     ;    "MoveToRoomX","room_40"],
+4D49: 03 03     ; "S" : [
+4D4B: 01 31     ;    "MoveToRoomX","room_49"],
+4D4D: 04 03     ; "W" : [
+4D4F: 01 24     ;    "MoveToRoomX","room_36"],
+4D51: 0A 03     ; "D" : [
+4D53: 01 0B     ;    "MoveToRoomX","room_11"],
+4D55: 00
+;     }
+; },
+
+; "room_53" : {
+;     "desc" : "DEAD_END.[CR]",
+;     "commands" : {
+4D56: 06 03     ; "SE" : [
+4D58: 01 28     ;    "MoveToRoomX","room_40"],
+4D5A: 00
+;     }
+; },
+
+; "room_54" : {
+;     "desc" : "YOU_ARE_IN_A_DIRTY_BROKEN_PASSAGE.__TO_THE_EAST_IS_A_CRAWL.__TO_THE_WEST_IS_A_LARGE_PASSAGE.__ABOVE_YOU_IS_A_HOLE_TO_ANOTHER____PASSAGE.[CR]",
+;     "commands" : {
+4D5B: 02 03     ; "E" : [
+4D5D: 01 37     ;    "MoveToRoomX","room_55"],
+4D5F: 04 03     ; "W" : [
+4D61: 01 39     ;    "MoveToRoomX","room_57"],
+4D63: 09 03     ; "U" : [
+4D65: 01 19     ;    "MoveToRoomX","room_25"],
+4D67: 00
+;     }
+; },
+
+; "room_55" : {
+;     "desc" : "YOU_ARE_ON_THE_BRINK_OF_A_SMALL_CLEAN_CLIMBABLE_PIT.__A_CRAWL___LEADS_WEST.[CR]",
+;     "commands" : {
+4D68: 04 03     ; "W" : [
+4D6A: 01 36     ;    "MoveToRoomX","room_54"],
+4D6C: 0A 03     ; "D" : [
+4D6E: 01 38     ;    "MoveToRoomX","room_56"],
+4D70: 11 03     ; "CLIMB" : [
+4D72: 01 38     ;    "MoveToRoomX","room_56"],
+4D74: 00
+;     }
+; },
+
+; "room_56" : {
+;     "desc" : "YOU_ARE_IN_THE_BOTTOM_OF_A_SMALL_PIT_WITH_A_LITTLE_STREAM,_WHICHENTERS_AND_EXITS_THROUGH_TINY_SLITS.[CR]",
+;     "commands" : {
+4D75: 09 03     ; "U" : [
+4D77: 01 37     ;    "MoveToRoomX","room_55"],
+4D79: 0C 03     ; "OUT" : [
+4D7B: 01 37     ;    "MoveToRoomX","room_55"],
+4D7D: 11 03     ; "CLIMB" : [
+4D7F: 01 37     ;    "MoveToRoomX","room_55"],
+4D81: 0A 04     ; "D" : [
+4D83: 04 7B 72  ;    "PrintMessageX","YOU_DON'T_FIT_THROUGH_TWO-INCH_SLIT![CR]"],
+4D86: 27 0B     ; "FILL" : [
+4D88: 07 06     ;    "SubScripXtAbortIfPass",[
+4D8A: 02 1C     ;        "AssertObjectXIsInPack","#WATER",
+4D8C: 04 37 7B  ;        "PrintMessageX","YOUR_BOTTLE_IS_ALREADY_FULL.[CR]"],
+4D8F: 19 1C 1B  ;    "MoveObjectXIntoContainerY","#WATER","#BOTTLE"],
+4D92: 00
+;     }
+; },
+
+; "room_57" : {
+;     "desc" : "YOU_ARE_IN_A_THE_ROOM_OF_BES,_WHOSE_PICTURE_IS_ON_THE_WALL._____THERE_IS_A_BIG_HOLE_IN_THE_FLOOR.__THERE_IS_A_PASSAGE_LEADING___EAST.[CR]",
+;     "commands" : {
+4D93: 02 03     ; "E" : [
+4D95: 01 36     ;    "MoveToRoomX","room_54"],
+4D97: 0A 03     ; "D" : [
+4D99: 01 3A     ;    "MoveToRoomX","room_58"],
+4D9B: 00
+;     }
+; },
+
+; "room_58" : {
+;     "desc" : "YOU_ARE_AT_A_COMPLEX_JUNCTION.__A_LOW_HANDS_AND_KNEES_PASSAGE___FROM_THE_NORTH_JOINS_A_HIGHER_CRAWL_FROM_THE_EAST_TO_MAKE_A_____WALKING_PASSAGE_GOING_WEST.__THERE_IS_ALSO_A_LARGE_ROOM_ABOVE.__THE_AIR_IS_DAMP_HERE.[CR]",
+;     "commands" : {
+4D9C: 01 03     ; "N" : [
+4D9E: 01 3D     ;    "MoveToRoomX","room_61"],
+4DA0: 02 03     ; "E" : [
+4DA2: 01 3B     ;    "MoveToRoomX","room_59"],
+4DA4: 04 03     ; "W" : [
+4DA6: 01 41     ;    "MoveToRoomX","room_65"],
+4DA8: 09 03     ; "U" : [
+4DAA: 01 39     ;    "MoveToRoomX","room_57"],
+4DAC: 11 03     ; "CLIMB" : [
+4DAE: 01 39     ;    "MoveToRoomX","room_57"],
+4DB0: 00
+;     }
+; },
+
+; "room_59" : {
+;     "desc" : "YOU_ARE_IN_THE_UNDERWORLD_ANTEROOM_OF_SEKER.__PASSAGES_GO_EAST,_WEST,_AND_UP.__HUMAN_BONES_ARE_STREWN_ABOUT_ON_THE_FLOOR._______HIEROGLYPHICS_ON_THE_WALL_ROUGHLY_TRANSLATE_TO_"THOSE_WHO_______PROCEED_EAST_MAY_NEVER_RETURN."[CR]",
+;     "commands" : {
+4DB1: 02 03     ; "E" : [
+4DB3: 01 3C     ;    "MoveToRoomX","room_60"],
+4DB5: 04 03     ; "W" : [
+4DB7: 01 41     ;    "MoveToRoomX","room_65"],
+4DB9: 09 03     ; "U" : [
+4DBB: 01 3A     ;    "MoveToRoomX","room_58"],
+4DBD: 00
+;     }
+; },
+
+; "room_60" : {
+;     "desc" : "YOU_ARE_AT_THE_LAND_OF_DEAD.__PASSAGES_LEAD_OFF_IN_>ALL<________DIRECTIONS.[CR]",
+;     "commands" : {
+4DBE: 01 07     ; "N" : [
+4DC0: 07 03     ;    "SubScripXtAbortIfPass",[
+4DC2: 0A F0     ;        "AssertRandomIsGreaterThanX","240"],
+4DC4: 01 3B     ;    "MoveToRoomX","room_59"],
+4DC6: 02 07     ; "E" : [
+4DC8: 07 03     ;    "SubScripXtAbortIfPass",[
+4DCA: 0A F0     ;        "AssertRandomIsGreaterThanX","240"],
+4DCC: 01 3B     ;    "MoveToRoomX","room_59"],
+4DCE: 03 07     ; "S" : [
+4DD0: 07 03     ;    "SubScripXtAbortIfPass",[
+4DD2: 0A F0     ;        "AssertRandomIsGreaterThanX","240"],
+4DD4: 01 3B     ;    "MoveToRoomX","room_59"],
+4DD6: 05 07     ; "NE" : [
+4DD8: 07 03     ;    "SubScripXtAbortIfPass",[
+4DDA: 0A F0     ;        "AssertRandomIsGreaterThanX","240"],
+4DDC: 01 3B     ;    "MoveToRoomX","room_59"],
+4DDE: 06 07     ; "SE" : [
+4DE0: 07 03     ;    "SubScripXtAbortIfPass",[
+4DE2: 0A F0     ;        "AssertRandomIsGreaterThanX","240"],
+4DE4: 01 3B     ;    "MoveToRoomX","room_59"],
+4DE6: 07 07     ; "SW" : [
+4DE8: 07 03     ;    "SubScripXtAbortIfPass",[
+4DEA: 0A F0     ;        "AssertRandomIsGreaterThanX","240"],
+4DEC: 01 3B     ;    "MoveToRoomX","room_59"],
+4DEE: 08 07     ; "NW" : [
+4DF0: 07 03     ;    "SubScripXtAbortIfPass",[
+4DF2: 0A F0     ;        "AssertRandomIsGreaterThanX","240"],
+4DF4: 01 3B     ;    "MoveToRoomX","room_59"],
+4DF6: 09 07     ; "U" : [
+4DF8: 07 03     ;    "SubScripXtAbortIfPass",[
+4DFA: 0A F0     ;        "AssertRandomIsGreaterThanX","240"],
+4DFC: 01 3B     ;    "MoveToRoomX","room_59"],
+4DFE: 04 06     ; "W" : [
+4E00: 04 CF 72  ;    "PrintMessageX","YOU_HAVE_CRAWLED_AROUND_IN_SOME_LITTLE_HOLES_AND_FOUND_YOUR_WAY_BLOCKED_BY_A_FALLEN_SLAB.__YOU_ARE_NOW_BACK_IN_THE_MAIN_PASSAGE.[CR]",
+4E03: 01 3C     ;    "MoveToRoomX","room_60"],
+4E05: 00
+;     }
+; },
+
+; "room_61" : {
+;     "desc" : "YOU'RE_IN_A_LARGE_ROOM_WITH_ANCIENT_DRAWINGS_ON_ALL_WALLS.______THE_PICTURES_DEPICT_ATUM,_A_PHARAOH_WEARING_THE_DOUBLE_CROWN.___A_SHALLOW_PASSAGE_PROCEEDS_DOWNWARD,_AND_A_SOMEWHAT_STEEPER_ONE_LEADS_UP.__A_LOW_HANDS_AND_KNEES_PASSAGE_ENTERS_FROM_THE_SOUTH. [CR]",
+;     "commands" : {
+4E06: 03 11     ; "S" : [
+4E08: 07 06     ;    "SubScripXtAbortIfPass",[
+4E0A: 02 17     ;        "AssertObjectXIsInPack","#SARCOPH_full",
+4E0C: 04 27 73  ;        "PrintMessageX","YOU_CAN'T_FIT_THIS_BIG_SARCOPHAGUS_THROUGH_THAT_LITTLE_PASSAGE![CR]"],
+4E0F: 07 06     ;    "SubScripXtAbortIfPass",[
+4E11: 02 18     ;        "AssertObjectXIsInPack","#SARCOPH_empty",
+4E13: 04 27 73  ;        "PrintMessageX","YOU_CAN'T_FIT_THIS_BIG_SARCOPHAGUS_THROUGH_THAT_LITTLE_PASSAGE![CR]"],
+4E16: 01 3A     ;    "MoveToRoomX","room_58"],
+4E18: 09 03     ; "U" : [
+4E1A: 01 3E     ;    "MoveToRoomX","room_62"],
+4E1C: 0A 03     ; "D" : [
+4E1E: 01 3F     ;    "MoveToRoomX","room_63"],
+4E20: 00
+;     }
+; },
+
+; "room_62" : {
+;     "desc" : "YOU_ARE_IN_A_CHAMBER_WHOSE_WALL_CONTAINS_A_PICTURE_OF_A_MAN_____WEARING_THE_LUNAR_DISK_ON_HIS_HEAD.__HE_IS_THE_GOD_KHONS,_THE___MOON_GOD.[CR]",
+;     "commands" : {
+4E21: 0A 03     ; "D" : [
+4E23: 01 3D     ;    "MoveToRoomX","room_61"],
+4E25: 0C 03     ; "OUT" : [
+4E27: 01 3D     ;    "MoveToRoomX","room_61"],
+4E29: 00
+;     }
+; },
+
+; "room_63" : {
+;     "desc" : "YOU_ARE_IN_A_LONG_SLOPING_CORRIDOR_WITH_RAGGED_WALLS._ [CR]",
+;     "commands" : {
+4E2A: 09 03     ; "U" : [
+4E2C: 01 3D     ;    "MoveToRoomX","room_61"],
+4E2E: 0A 03     ; "D" : [
+4E30: 01 40     ;    "MoveToRoomX","room_64"],
+4E32: 00
+;     }
+; },
+
+; "room_64" : {
+;     "desc" : "YOU_ARE_IN_A_CUL-DE-SAC_ABOUT_EIGHT_FEET_ACROSS.[CR]",
+;     "commands" : {
+4E33: 09 03     ; "U" : [
+4E35: 01 3F     ;    "MoveToRoomX","room_63"],
+4E37: 0C 03     ; "OUT" : [
+4E39: 01 3F     ;    "MoveToRoomX","room_63"],
+4E3B: 00
+;     }
+; },
+
+; "room_65" : {
+;     "desc" : "YOU_ARE_IN_THE_CHAMBER_OF_HORUS,_A_LONG_EAST/WEST_PASSAGE_WITH__HOLES_EVERYWHERE.__TO_EXPLORE_AT_RANDOM,_SELECT_NORTH,_SOUTH,___UP,_OR_DOWN.[CR]",
+;     "commands" : {
+4E3C: 02 03     ; "E" : [
+4E3E: 01 3A     ;    "MoveToRoomX","room_58"],
+4E40: 04 03     ; "W" : [
+4E42: 01 4E     ;    "MoveToRoomX","room_78"],
+4E44: 09 07     ; "U" : [
+4E46: 07 03     ;    "SubScripXtAbortIfPass",[
+4E48: 0A CC     ;        "AssertRandomIsGreaterThanX","204"],
+4E4A: 01 48     ;    "MoveToRoomX","room_72"],
+4E4C: 01 07     ; "N" : [
+4E4E: 07 03     ;    "SubScripXtAbortIfPass",[
+4E50: 0A CC     ;        "AssertRandomIsGreaterThanX","204"],
+4E52: 01 49     ;    "MoveToRoomX","room_73"],
+4E54: 03 07     ; "S" : [
+4E56: 07 03     ;    "SubScripXtAbortIfPass",[
+4E58: 0A CC     ;        "AssertRandomIsGreaterThanX","204"],
+4E5A: 01 42     ;    "MoveToRoomX","room_66"],
+4E5C: 0A 07     ; "D" : [
+4E5E: 07 03     ;    "SubScripXtAbortIfPass",[
+4E60: 0A CC     ;        "AssertRandomIsGreaterThanX","204"],
+4E62: 01 3B     ;    "MoveToRoomX","room_59"],
+4E64: 00
+;     }
+; },
+
+; "room_66" : {
+;     "desc" : "YOU_ARE_IN_A_LARGE_LOW_CIRCULAR_CHAMBER_WHOSE_FLOOR_IS_AN_______IMMENSE_SLAB_FALLEN_FROM_THE_CEILING.__EAST_AND_WEST_THERE_ONCE_WHERE_LARGE_PASSAGES,_BUT_THEY_ARE_NOW_FILLED_WITH_SAND.________LOW_SMALL_PASSAGES_GO_NORTH_AND_SOUTH.[CR]",
+;     "commands" : {
+4E65: 01 03     ; "N" : [
+4E67: 01 41     ;    "MoveToRoomX","room_65"],
+4E69: 03 03     ; "S" : [
+4E6B: 01 50     ;    "MoveToRoomX","room_80"],
+4E6D: 00
+;     }
+; },
+
+; "room_72" : {
+;     "desc" : "YOU_ARE_IN_THE_PRIEST'S_BEDROOM.__THE_WALLS_ARE_COVERED_WITH____CURTAINS,_THE_FLOOR_WITH_A_THICK_PILE_CARPET.__MOSS_COVERS_THE__CEILING.[CR]",
+;     "commands" : {
+4E6E: 04 03     ; "W" : [
+4E70: 01 41     ;    "MoveToRoomX","room_65"],
+4E72: 0C 03     ; "OUT" : [
+4E74: 01 41     ;    "MoveToRoomX","room_65"],
+4E76: 00
+;     }
+; },
+
+; "room_73" : {
+;     "desc" : "THIS_IS_THE_CHAMBER_OF_THE_HIGH_PRIEST.___ANCIENT_DRAWINGS_COVERTHE_WALLS.__AN_EXTREMELY_TIGHT_TUNNEL_LEADS_WEST.__IT_LOOKS_LIKEA_TIGHT_SQUEEZE.__ANOTHER_PASSAGE_LEADS_SE.[CR]",
+;     "commands" : {
+4E77: 04 09     ; "W" : [
+4E79: 07 04     ;    "SubScripXtAbortIfPass",[
+4E7B: 0D        ;        "AssertPackIsEmptyExceptForEmerald",
+4E7C: 01 4C     ;        "MoveToRoomX","room_76"],
+4E7E: 04 53 73  ;    "PrintMessageX","SOMETHING_YOU'RE_CARRYING_WON'T_FIT_THROUGH_THE_TUNNEL_WITH_YOU.YOU'D_BEST_TAKE_INVENTORY_AND_DROP_SOMETHING.[CR]"],
+4E81: 06 03     ; "SE" : [
+4E83: 01 41     ;    "MoveToRoomX","room_65"],
+4E85: 00
+;     }
+; },
+
+; "room_76" : {
+;     "desc" : "YOU_ARE_IN_THE_HIGH_PRIEST'S_TREASURE_ROOM_LIT_BY_AN_EERIE_GREENLIGHT.__A_NARROW_TUNNEL_EXITS_TO_THE_EAST.[CR]",
+;     "commands" : {
+4E86: 02 09     ; "E" : [
+4E88: 07 04     ;    "SubScripXtAbortIfPass",[
+4E8A: 0D        ;        "AssertPackIsEmptyExceptForEmerald",
+4E8B: 01 49     ;        "MoveToRoomX","room_73"],
+4E8D: 04 53 73  ;    "PrintMessageX","SOMETHING_YOU'RE_CARRYING_WON'T_FIT_THROUGH_THE_TUNNEL_WITH_YOU.YOU'D_BEST_TAKE_INVENTORY_AND_DROP_SOMETHING.[CR]"],
+4E90: 0C 09     ; "OUT" : [
+4E92: 07 04     ;    "SubScripXtAbortIfPass",[
+4E94: 0D        ;        "AssertPackIsEmptyExceptForEmerald",
+4E95: 01 49     ;        "MoveToRoomX","room_73"],
+4E97: 04 53 73  ;    "PrintMessageX","SOMETHING_YOU'RE_CARRYING_WON'T_FIT_THROUGH_THE_TUNNEL_WITH_YOU.YOU'D_BEST_TAKE_INVENTORY_AND_DROP_SOMETHING.[CR]"],
+4E9A: 00
+;     }
+; },
+
+; "room_78" : {
+;     "desc" : "YOU_ARE_AT_THE_EAST_END_OF_THE_TWOPIT_ROOM.__THE_FLOOR_HERE_IS__LITTERED_WITH_THIN_ROCK_SLABS,_WHICH_MAKE_IT_EASY_TO_DESCEND_THEPITS.__THERE_IS_A_PATH_HERE_BYPASSING_THE_PITS_TO_CONNECT_______PASSAGES_EAST_AND_WEST.__THERE_ARE_HOLES_ALL_OVER,_BUT_THE_ONLY_BIG_ONE_IS_ON_THE_WALL_DIRECTLY_OVER_THE_WEST_PIT_WHERE_YOU_____CAN'T_GET_TO_IT.[CR]",
+;     "commands" : {
+4E9B: 02 03     ; "E" : [
+4E9D: 01 41     ;    "MoveToRoomX","room_65"],
+4E9F: 04 03     ; "W" : [
+4EA1: 01 50     ;    "MoveToRoomX","room_80"],
+4EA3: 0A 03     ; "D" : [
+4EA5: 01 4F     ;    "MoveToRoomX","room_79"],
+4EA7: 00
+;     }
+; },
+
+; "room_79" : {
+;     "desc" : "YOU_ARE_AT_THE_BOTTOM_OF_THE_EASTERN_PIT_IN_THE_TWOPIT_ROOM.[CR]",
+;     "commands" : {
+4EA8: 09 03     ; "U" : [
+4EAA: 01 4E     ;    "MoveToRoomX","room_78"],
+4EAC: 0C 03     ; "OUT" : [
+4EAE: 01 4E     ;    "MoveToRoomX","room_78"],
+4EB0: 00
+;     }
+; },
+
+; "room_80" : {
+;     "desc" : "YOU_ARE_AT_THE_WEST_END_OF_THE_TWOPIT_ROOM.__THERE_IS_A_LARGE___HOLE_IN_THE_WALL_ABOVE_THE_PIT_AT_THIS_END_OF_THE_ROOM.[CR]",
+;     "commands" : {
+4EB1: 02 03     ; "E" : [
+4EB3: 01 4E     ;    "MoveToRoomX","room_78"],
+4EB5: 04 03     ; "W" : [
+4EB7: 01 42     ;    "MoveToRoomX","room_66"],
+4EB9: 0A 03     ; "D" : [
+4EBB: 01 51     ;    "MoveToRoomX","room_81"],
+4EBD: 00
+;     }
+; },
+
+; "room_81" : {
+;     "desc" : "YOU_ARE_AT_THE_BOTTOM_OF_THE_WEST_PIT_IN_THE_TWOPIT_ROOM.__THEREIS_A_LARGE_HOLE_IN_THE_WALL_ABOUT_TWENTY_FIVE_FEET_ABOVE_YOU.[CR]",
+;     "commands" : {
+4EBE: 09 03     ; "U" : [
+4EC0: 01 50     ;    "MoveToRoomX","room_80"],
+4EC2: 0C 03     ; "OUT" : [
+4EC4: 01 50     ;    "MoveToRoomX","room_80"],
+4EC6: 11 16     ; "CLIMB" : [
+4EC8: 07 08     ;    "SubScripXtAbortIfPass",[
+4ECA: 03 09     ;        "AssertObjectXIsInCurrentRoomOrPack","#PLANT_C",
+4ECC: 04 9E 73  ;        "PrintMessageX","YOU_CLAMBER_UP_THE_PLANT_AND_SCURRY_THROUGH_THE_HOLE_AT_THE_TOP.[CR]",
+4ECF: 01 4D     ;        "MoveToRoomX","room_77"],
+4ED1: 07 06     ;    "SubScripXtAbortIfPass",[
+4ED3: 03 08     ;        "AssertObjectXIsInCurrentRoomOrPack","#PLANT_B",
+4ED5: 04 CB 73  ;        "PrintMessageX","YOU'VE_CLIMBED_UP_THE_PLANT_AND_OUT_OF_THE_PIT.[CR]"],
+4ED8: 01 50     ;    "MoveToRoomX","room_80",
+4EDA: 04 7D 7D  ;    "PrintMessageX","THERE_IS_NOTHING_HERE_TO_CLIMB.__USE_UP_OR_OUT_TO_LEAVE_THE_PIT.[CR]"],
+4EDD: 24 2F     ; "POUR" : [
+4EDF: 11 1C     ;    "AssertObjectXMatchesUserInput","#WATER",
+4EE1: 15 1C 00  ;    "MoveObjectXToRoomY","#WATER","room_0",
+4EE4: 07 0E     ;    "SubScripXtAbortIfPass",[
+4EE6: 03 07     ;        "AssertObjectXIsInCurrentRoomOrPack","#PLANT_A",
+4EE8: 15 07 00  ;        "MoveObjectXToRoomY","#PLANT_A","room_0",
+4EEB: 18 08     ;        "MoveObjectXToCurrentRoom","#PLANT_B",
+4EED: 04 02 7D  ;        "PrintMessageX","THE_PLANT_SPURTS_INTO_FURIOUS_GROWTH_FOR_A_FEW_SECONDS.[CR]",
+4EF0: 04 71 6E  ;        "PrintMessageX","THERE_IS_A_TWELVE_FOOT_BEAN_STALK_STRETCHING_UP_OUT_OF_THE_PIT,_BELLOWING_"WATER..._WATER..."[CR]"],
+4EF3: 07 0E     ;    "SubScripXtAbortIfPass",[
+4EF5: 03 08     ;        "AssertObjectXIsInCurrentRoomOrPack","#PLANT_B",
+4EF7: 15 08 00  ;        "MoveObjectXToRoomY","#PLANT_B","room_0",
+4EFA: 18 09     ;        "MoveObjectXToCurrentRoom","#PLANT_C",
+4EFC: 04 29 7D  ;        "PrintMessageX","THE_PLANT_GROWS_EXPLOSIVELY,_ALMOST_FILLING_THE_BOTTOM_OF_THE___PIT.[CR]",
+4EFF: 04 B1 6E  ;        "PrintMessageX","THERE_IS_A_GIGANTIC_BEAN_STALK_STRETCHING_ALL_THE_WAY_UP_TO_THE_HOLE.[CR]"],
+4F02: 15 09 00  ;    "MoveObjectXToRoomY","#PLANT_C","room_0",
+4F05: 18 07     ;    "MoveObjectXToCurrentRoom","#PLANT_A",
+4F07: 04 59 7D  ;    "PrintMessageX","YOU'VE_OVER-WATERED_THE_PLANT!__IT'S_SHRIVELING_UP![CR]",
+4F0A: 04 45 6E  ;    "PrintMessageX","THERE_IS_A_TINY_PLANT_IN_THE_PIT,_MURMURING_"WATER,_WATER,_..."[CR]"],
+4F0D: 00
+;     }
+; },
+
+; "room_77" : {
+;     "desc" : "YOU_ARE_IN_A_LONG,_NARROW_CORRIDOR_STRETCHING_OUT_OF_SIGHT_TO___THE_WEST.__AT_THE_EASTERN_END_IS_A_HOLE_THROUGH_WHICH_YOU_CAN___SEE_A_PROFUSION_OF_LEAVES.[CR]",
+;     "commands" : {
+4F0E: 02 03     ; "E" : [
+4F10: 01 51     ;    "MoveToRoomX","room_81"],
+4F12: 0A 03     ; "D" : [
+4F14: 01 51     ;    "MoveToRoomX","room_81"],
+4F16: 11 03     ; "CLIMB" : [
+4F18: 01 51     ;    "MoveToRoomX","room_81"],
+4F1A: 10 05     ; "JUMP" : [
+4F1C: 04 71 71  ;    "PrintMessageX","YOU_ARE_AT_THE_BOTTOM_OF_THE_PIT_WITH_A_BROKEN_NECK.[CR]",
+4F1F: 05        ;    "PrintScoreAndStop"],
+4F20: 04 03     ; "W" : [
+4F22: 01 47     ;    "MoveToRoomX","room_71"],
+4F24: 00
+;     }
+; },
+
+; "room_71" : {
+;     "desc" : "YOU_ARE_IN_THE_CHAMBER_OF_OSIRIS._THE_CEILING_IS_TOO_HIGH_UP_FORYOUR_LAMP_TO_SHOW_IT.__PASSAGES_LEAD_EAST,_NORTH,_AND_SOUTH.[CR]",
+;     "commands" : {
+4F25: 01 03     ; "N" : [
+4F27: 01 44     ;    "MoveToRoomX","room_68"],
+4F29: 02 03     ; "E" : [
+4F2B: 01 46     ;    "MoveToRoomX","room_70"],
+4F2D: 03 03     ; "S" : [
+4F2F: 01 4D     ;    "MoveToRoomX","room_77"],
+4F31: 00
+;     }
+; },
+
+; "room_70" : {
+;     "desc" : "THE_PASSAGE_HERE_IS_BLOCKED_BY_A_FALLEN_BLOCK.[CR]",
+;     "commands" : {
+4F32: 03 03     ; "S" : [
+4F34: 01 47     ;    "MoveToRoomX","room_71"],
+4F36: 0C 03     ; "OUT" : [
+4F38: 01 47     ;    "MoveToRoomX","room_71"],
+4F3A: 00
+;     }
+; },
+
+; "room_68" : {
+;     "desc" : "YOU_ARE_IN_THE_CHAMBER_OF_NEKHEBET,_A_WOMAN_WITH_THE_HEAD_OF_A__VULTURE,_WEARING_THE_CROWN_OF_EGYPT.__A_PASSAGE_EXITS_TO_THE____SOUTH.[CR]",
+;     "commands" : {
+4F3B: 03 03     ; "S" : [
+4F3D: 01 47     ;    "MoveToRoomX","room_71"],
+4F3F: 0C 03     ; "OUT" : [
+4F41: 01 47     ;    "MoveToRoomX","room_71"],
+4F43: 00
+;     }
+; },
+        
+4F44: FF          
 ```
 
 # Ambient Light Table 
@@ -1743,168 +2080,87 @@ RoomTable:
 ; * 0x0000 means you better have a lamp
 
 AmbientLight: 
-4F45: 40         LD      B,B             
-4F46: 00         NOP                     
-4F47: 40         LD      B,B             
-4F48: 00         NOP                     
-4F49: 40         LD      B,B             
-4F4A: 00         NOP                     
-4F4B: 40         LD      B,B             
-4F4C: 00         NOP                     
-4F4D: 40         LD      B,B             
-4F4E: 00         NOP                     
-4F4F: 40         LD      B,B             
-4F50: 00         NOP                     
-4F51: 40         LD      B,B             
-4F52: 00         NOP                     
-4F53: 00         NOP                     
-4F54: 00         NOP                     
-4F55: 00         NOP                     
-4F56: 00         NOP                     
-4F57: 00         NOP                     
-4F58: 00         NOP                     
-4F59: 00         NOP                     
-4F5A: 00         NOP                     
-4F5B: 00         NOP                     
-4F5C: 00         NOP                     
-4F5D: 00         NOP                     
-4F5E: 00         NOP                     
-4F5F: 00         NOP                     
-4F60: 00         NOP                     
-4F61: 00         NOP                     
-4F62: 00         NOP                     
-4F63: 00         NOP                     
-4F64: 00         NOP                     
-4F65: 00         NOP                     
-4F66: 00         NOP                     
-4F67: 00         NOP                     
-4F68: 00         NOP                     
-4F69: 00         NOP                     
-4F6A: 00         NOP                     
-4F6B: 00         NOP                     
-4F6C: 00         NOP                     
-4F6D: 00         NOP                     
-4F6E: 00         NOP                     
-4F6F: 00         NOP                     
-4F70: 00         NOP                     
-4F71: 00         NOP                     
-4F72: 00         NOP                     
-4F73: 00         NOP                     
-4F74: 00         NOP                     
-4F75: 00         NOP                     
-4F76: 00         NOP                     
-4F77: 00         NOP                     
-4F78: 00         NOP                     
-4F79: 00         NOP                     
-4F7A: 00         NOP                     
-4F7B: 00         NOP                     
-4F7C: 00         NOP                     
-4F7D: 00         NOP                     
-4F7E: 00         NOP                     
-4F7F: 00         NOP                     
-4F80: 00         NOP                     
-4F81: 00         NOP                     
-4F82: 00         NOP                     
-4F83: 00         NOP                     
-4F84: 00         NOP                     
-4F85: 00         NOP                     
-4F86: 00         NOP                     
-4F87: 00         NOP                     
-4F88: 00         NOP                     
-4F89: 00         NOP                     
-4F8A: 00         NOP                     
-4F8B: 00         NOP                     
-4F8C: 00         NOP                     
-4F8D: 00         NOP                     
-4F8E: 00         NOP                     
-4F8F: 00         NOP                     
-4F90: 00         NOP                     
-4F91: 00         NOP                     
-4F92: 00         NOP                     
-4F93: 00         NOP                     
-4F94: 00         NOP                     
-4F95: 00         NOP                     
-4F96: 00         NOP                     
-4F97: 00         NOP                     
-4F98: 00         NOP                     
-4F99: 00         NOP                     
-4F9A: 00         NOP                     
-4F9B: 00         NOP                     
-4F9C: 00         NOP                     
-4F9D: 00         NOP                     
-4F9E: 00         NOP                     
-4F9F: 00         NOP                     
-4FA0: 00         NOP                     
-4FA1: 00         NOP                     
-4FA2: 00         NOP                     
-4FA3: 00         NOP                     
-4FA4: 00         NOP                     
-4FA5: 00         NOP                     
-4FA6: 00         NOP                     
-4FA7: 00         NOP                     
-4FA8: 00         NOP                     
-4FA9: 00         NOP                     
-4FAA: 00         NOP                     
-4FAB: 00         NOP                     
-4FAC: 00         NOP                     
-4FAD: 00         NOP                     
-4FAE: 00         NOP                     
-4FAF: 00         NOP                     
-4FB0: 00         NOP                     
-4FB1: 00         NOP                     
-4FB2: 00         NOP                     
-4FB3: 00         NOP                     
-4FB4: 00         NOP                     
-4FB5: 00         NOP                     
-4FB6: 00         NOP                     
-4FB7: 00         NOP                     
-4FB8: 00         NOP                     
-4FB9: 00         NOP                     
-4FBA: 00         NOP                     
-4FBB: 00         NOP                     
-4FBC: 00         NOP                     
-4FBD: 00         NOP                     
-4FBE: 00         NOP                     
-4FBF: 00         NOP                     
-4FC0: 00         NOP                     
-4FC1: 00         NOP                     
-4FC2: 00         NOP                     
-4FC3: 00         NOP                     
-4FC4: 00         NOP                     
-4FC5: 00         NOP                     
-4FC6: 00         NOP                     
-4FC7: 00         NOP                     
-4FC8: 00         NOP                     
-4FC9: 00         NOP                     
-4FCA: 00         NOP                     
-4FCB: 00         NOP                     
-4FCC: 00         NOP                     
-4FCD: 00         NOP                     
-4FCE: 00         NOP                     
-4FCF: 00         NOP                     
-4FD0: 00         NOP                     
-4FD1: 00         NOP                     
-4FD2: 00         NOP                     
-4FD3: 00         NOP                     
-4FD4: 00         NOP                     
-4FD5: 00         NOP                     
-4FD6: 00         NOP                     
-4FD7: 00         NOP                     
-4FD8: 00         NOP                     
-4FD9: 00         NOP                     
-4FDA: 00         NOP                     
-4FDB: 40         LD      B,B             
-4FDC: 00         NOP                     
-4FDD: 00         NOP                     
-4FDE: 00         NOP                     
-4FDF: 00         NOP                     
-4FE0: 00         NOP                     
-4FE1: 00         NOP                     
-4FE2: 00         NOP                     
-4FE3: 00         NOP                     
-4FE4: 00         NOP                     
-4FE5: 00         NOP                     
-4FE6: 00         NOP   
+4F45:   40 00  ;  1
+4F47:   40 00  ;  2
+4F49:   40 00  ;  3
+4F4B:   40 00  ;  4
+4F4D:   40 00  ;  5
+4F4F:   40 00  ;  6
+4F51:   40 00  ;  7
+4F53: 00 00    ;  8
+4F55: 00 00    ;  9
+4F57: 00 00    ;  10
+4F59: 00 00    ;  11
+4F5B: 00 00    ;  12
+4F5D: 00 00    ;  13
+4F5F: 00 00    ;  14
+4F61: 00 00    ;  15
+4F63: 00 00    ;  16
+4F65: 00 00    ;  17
+4F67: 00 00    ;  18
+4F69: 00 00    ;  19
+4F6B: 00 00    ;  20
+4F6D: 00 00    ;  21
+4F6F: 00 00    ;  22
+4F71: 00 00    ;  23
+4F73: 00 00    ;  24
+4F75: 00 00    ;  25
+4F77: 00 00    ;  26
+4F79: 00 00    ;  27
+4F7B: 00 00    ;  28
+4F7D: 00 00    ;  29
+4F7F: 00 00    ;  30
+4F81: 00 00    ;  31
+4F83: 00 00    ;  32
+4F85: 00 00    ;  33
+4F87: 00 00    ;  34
+4F89: 00 00    ;  35
+4F8B: 00 00    ;  36
+4F8D: 00 00    ;  37
+4F8F: 00 00    ;  38
+4F91: 00 00    ;  39
+4F93: 00 00    ;  40
+4F95: 00 00    ;  41
+4F97: 00 00    ;  42
+4F99: 00 00    ;  43
+4F9B: 00 00    ;  44
+4F9D: 00 00    ;  45
+4F9F: 00 00    ;  46
+4FA1: 00 00    ;  47
+4FA3: 00 00    ;  48
+4FA5: 00 00    ;  49
+4FA7: 00 00    ;  50
+4FA9: 00 00    ;  51
+4FAB: 00 00    ;  52
+4FAD: 00 00    ;  53
+4FAF: 00 00    ;  54
+4FB1: 00 00    ;  55
+4FB3: 00 00    ;  56
+4FB5: 00 00    ;  57
+4FB7: 00 00    ;  58
+4FB9: 00 00    ;  59
+4FBB: 00 00    ;  60
+4FBD: 00 00    ;  61
+4FBF: 00 00    ;  62
+4FC1: 00 00    ;  63
+4FC3: 00 00    ;  64
+4FC5: 00 00    ;  65
+4FC7: 00 00    ;  66
+4FC9: 00 00    ;  67
+4FCB: 00 00    ;  68
+4FCD: 00 00    ;  69
+4FCF: 00 00    ;  70
+4FD1: 00 00    ;  71
+4FD3: 00 00    ;  72
+4FD5: 00 00    ;  73
+4FD7: 00 00    ;  74
+4FD9: 00 00    ;  75
+4FDB:   40 00  ;  76
+4FDD: 00 00    ;  77
+4FDF: 00 00    ;  78
+4FE1: 00 00    ;  79
+4FE3: 00 00    ;  80
+4FE5: 00 00    ;  81
 ```
 
 # Object Data
@@ -3070,20 +3326,20 @@ GeneralCommandHandler:
 5A07: 02 0E     ;        "AssertObjectXIsInPack","#LAMP_off",
 5A09: 15 0E 00  ;        "MoveObjectXToRoomY","#LAMP_off","room_0",
 5A0C: 15 0F FF  ;        "MoveObjectXToRoomY","#LAMP_on","room_255",
-5A0F: 04 8F 74  ;        "PrintMessageX","YOUR_LAMP_IS_NOW_ON.[CR]",
+5A0F: 04 8F 74  ;        "PrintMessageX","YOUR_LAMP_IS_NOW_ON.[CR]"],
 5A12: 07 06     ;    "SubScripXtAbortIfPass",[
 5A14: 02 0F     ;        "AssertObjectXIsInPack","#LAMP_on",
-5A16: 04 8F 74  ;        "PrintMessageX","YOUR_LAMP_IS_NOW_ON.[CR]",
+5A16: 04 8F 74  ;        "PrintMessageX","YOUR_LAMP_IS_NOW_ON.[CR]"],
 5A19: 04 9F 74  ;    "PrintMessageX","YOU_HAVE_NO_SOURCE_OF_LIGHT.[CR]"],
 5A1C: 18 18     ; "OFF" : [
 5A1E: 07 0C     ;    "SubScripXtAbortIfPass",[
 5A20: 02 0F     ;        "AssertObjectXIsInPack","#LAMP_on",
 5A22: 15 0F 00  ;        "MoveObjectXToRoomY","#LAMP_on","room_0",
 5A25: 15 0E FF  ;        "MoveObjectXToRoomY","#LAMP_off","room_255",
-5A28: 04 B4 74  ;        "PrintMessageX","YOUR_LAMP_IS_NOW_OFF.[CR]",
+5A28: 04 B4 74  ;        "PrintMessageX","YOUR_LAMP_IS_NOW_OFF.[CR]"],
 5A2B: 07 06     ;    "SubScripXtAbortIfPass",[
 5A2D: 02 0E     ;        "AssertObjectXIsInPack","#LAMP_off",
-5A2F: 04 B4 74  ;        "PrintMessageX","YOUR_LAMP_IS_NOW_OFF.[CR]",
+5A2F: 04 B4 74  ;        "PrintMessageX","YOUR_LAMP_IS_NOW_OFF.[CR]"],
 5A32: 04 9F 74  ;    "PrintMessageX","YOU_HAVE_NO_SOURCE_OF_LIGHT.[CR]"],
 5A35: 19 02     ; "QUIT" : [
 5A37: 09        ;    "PrintScoreAndStop"],
@@ -3100,34 +3356,34 @@ GeneralCommandHandler:
 5A4B: 28 47     ; "TAKE" : [
 5A4D: 07 06     ;    "SubScripXtAbortIfPass",[
 5A4F: 11 07     ;        "AssertObjectXMatchesUserInput","#PLANT_A",
-5A51: 04 61 7A  ;        "PrintMessageX","THE_PLANT_HAS_EXCEPTIONALLY_DEEP_ROOTS_AND_CANNOT_BE_PULLED_____FREE.[CR]",
+5A51: 04 61 7A  ;        "PrintMessageX","THE_PLANT_HAS_EXCEPTIONALLY_DEEP_ROOTS_AND_CANNOT_BE_PULLED_____FREE.[CR]"],
 5A54: 07 17     ;    "SubScripXtAbortIfPass",[
 5A56: 11 13     ;        "AssertObjectXMatchesUserInput","#BIRD",
 5A58: 07 06     ;        "SubScripXtAbortIfPass",[
 5A5A: 02 11     ;            "AssertObjectXIsInPack","#SCEPTER",
-5A5C: 04 C7 7A  ;            "PrintMessageX","AS_YOU_APPROACH_THE_STATUE,_IT_COMES_TO_LIFE_AND_FLIES_ACROSS___THE_CHAMBER_WHERE_IT_LANDS_AND_RETURNS_TO_STONE.[CR]",
+5A5C: 04 C7 7A  ;            "PrintMessageX","AS_YOU_APPROACH_THE_STATUE,_IT_COMES_TO_LIFE_AND_FLIES_ACROSS___THE_CHAMBER_WHERE_IT_LANDS_AND_RETURNS_TO_STONE.[CR]"],
 5A5F: 07 09     ;        "SubScripXtAbortIfPass",[
 5A61: 02 10     ;            "AssertObjectXIsInPack","#BOX",
 5A63: 15 13 00  ;            "MoveObjectXToRoomY","#BIRD","room_0",
-5A66: 19 14 10  ;            "MoveObjectXIntoContainerY","#BIRD_boxed","#BOX",
-5A69: 04 14 7B  ;        "PrintMessageX","YOU_CAN_LIFT_THE_STATUE,_BUT_YOU_CANNOT_CARRY_IT.[CR]",
+5A66: 19 14 10  ;            "MoveObjectXIntoContainerY","#BIRD_boxed","#BOX"],
+5A69: 04 14 7B  ;        "PrintMessageX","YOU_CAN_LIFT_THE_STATUE,_BUT_YOU_CANNOT_CARRY_IT.[CR]"],
 5A6C: 07 0A     ;    "SubScripXtAbortIfPass",[
 5A6E: 11 20     ;        "AssertObjectXMatchesUserInput","#VASE_pillow",
 5A70: 12 21     ;        "GetObjectFromRoom","#VASE_solo",
 5A72: 15 20 00  ;        "MoveObjectXToRoomY","#VASE_pillow","room_0",
-5A75: 18 12     ;        "MoveObjectXToCurrentRoom","#PILLOW",
+5A75: 18 12     ;        "MoveObjectXToCurrentRoom","#PILLOW"],
 5A77: 07 0D     ;    "SubScripXtAbortIfPass",[
 5A79: 11 1E     ;        "AssertObjectXMatchesUserInput","#STREAM_56",
 5A7B: 07 06     ;        "SubScripXtAbortIfPass",[
 5A7D: 02 1C     ;            "AssertObjectXIsInPack","#WATER",
-5A7F: 04 37 7B  ;            "PrintMessageX","YOUR_BOTTLE_IS_ALREADY_FULL.[CR]",
-5A82: 19 1C 1B  ;        "MoveObjectXIntoContainerY","#WATER","#BOTTLE",
+5A7F: 04 37 7B  ;            "PrintMessageX","YOUR_BOTTLE_IS_ALREADY_FULL.[CR]"],
+5A82: 19 1C 1B  ;        "MoveObjectXIntoContainerY","#WATER","#BOTTLE"],
 5A85: 07 0C     ;    "SubScripXtAbortIfPass",[
 5A87: 11 12     ;        "AssertObjectXMatchesUserInput","#PILLOW",
 5A89: 1A 20     ;        "AssertObjectXIsInCurrentRoom","#VASE_pillow",
 5A8B: 15 20 00  ;        "MoveObjectXToRoomY","#VASE_pillow","room_0",
 5A8E: 18 21     ;        "MoveObjectXToCurrentRoom","#VASE_solo",
-5A90: 12 12     ;        "GetObjectFromRoom","#PILLOW",
+5A90: 12 12     ;        "GetObjectFromRoom","#PILLOW"],
 5A92: 16        ;    "GetUserInputObject"],
 5A93: 21 17     ; "DROP" : [
 5A95: 07 14     ;    "SubScripXtAbortIfPass",[
@@ -3136,39 +3392,39 @@ GeneralCommandHandler:
 5A9C: 07 08     ;        "SubScripXtAbortIfPass",[
 5A9E: 1A 12     ;            "AssertObjectXIsInCurrentRoom","#PILLOW",
 5AA0: 18 20     ;            "MoveObjectXToCurrentRoom","#VASE_pillow",
-5AA2: 04 15 7C  ;            "PrintMessageX","THE_VASE_IS_NOW_RESTING,_DELICATELY,_ON_A_VELVET_PILLOW.[CR]",
+5AA2: 04 15 7C  ;            "PrintMessageX","THE_VASE_IS_NOW_RESTING,_DELICATELY,_ON_A_VELVET_PILLOW.[CR]"],
 5AA5: 18 15     ;        "MoveObjectXToCurrentRoom","#POTTERY",
-5AA7: 04 3D 7C  ;        "PrintMessageX","THE_VASE_DROPS_WITH_A_DELICATE_CRASH.[CR]",
+5AA7: 04 3D 7C  ;        "PrintMessageX","THE_VASE_DROPS_WITH_A_DELICATE_CRASH.[CR]"],
 5AAA: 17        ;    "DropUserInputObject"],
 5AAB: 26 0E     ; "THROW" : [
 5AAD: 07 0B     ;    "SubScripXtAbortIfPass",[
 5AAF: 11 21     ;        "AssertObjectXMatchesUserInput","#VASE_solo",
 5AB1: 15 21 00  ;        "MoveObjectXToRoomY","#VASE_solo","room_0",
 5AB4: 18 15     ;        "MoveObjectXToCurrentRoom","#POTTERY",
-5AB6: 04 75 7C  ;        "PrintMessageX","YOU_HAVE_TAKEN_THE_VASE_AND_HURLED_IT_DELICATELY_TO_THE_GROUND.[CR]",
+5AB6: 04 75 7C  ;        "PrintMessageX","YOU_HAVE_TAKEN_THE_VASE_AND_HURLED_IT_DELICATELY_TO_THE_GROUND.[CR]"],
 5AB9: 17        ;    "DropUserInputObject"],
 5ABA: 29 36     ; "OPEN" : [
 5ABC: 07 1C     ;    "SubScripXtAbortIfPass",[
 5ABE: 11 17     ;        "AssertObjectXMatchesUserInput","#SARCOPH_full",
 5AC0: 07 06     ;        "SubScripXtAbortIfPass",[
 5AC2: 02 17     ;            "AssertObjectXIsInPack","#SARCOPH_full",
-5AC4: 04 01 77  ;            "PrintMessageX","I'D_ADVISE_YOU_TO_PUT_DOWN_THE_SARCOPHAGUS_BEFORE_OPENING_IT!![CR]",
+5AC4: 04 01 77  ;            "PrintMessageX","I'D_ADVISE_YOU_TO_PUT_DOWN_THE_SARCOPHAGUS_BEFORE_OPENING_IT!![CR]"],
 5AC7: 07 0E     ;        "SubScripXtAbortIfPass",[
 5AC9: 02 22     ;            "AssertObjectXIsInPack","#KEY",
 5ACB: 04 BE 76  ;            "PrintMessageX","A_GLISTENING_PEARL_FALLS_OUT_OF_THE_SARCOPHAGUS_AND_ROLLS_AWAY._THE_SARCOPHAGUS_SNAPS_SHUT_AGAIN.[CR]",
 5ACE: 15 16 40  ;            "MoveObjectXToRoomY","#PEARL","room_64",
 5AD1: 15 17 00  ;            "MoveObjectXToRoomY","#SARCOPH_full","room_0",
-5AD4: 18 18     ;            "MoveObjectXToCurrentRoom","#SARCOPH_empty",
-5AD6: 04 6B 77  ;        "PrintMessageX","YOU_DON'T_HAVE_ANYTHING_STRONG_ENOUGH_TO_OPEN_THE_SARCOPHAGUS.[CR]",
+5AD4: 18 18     ;            "MoveObjectXToCurrentRoom","#SARCOPH_empty"],
+5AD6: 04 6B 77  ;        "PrintMessageX","YOU_DON'T_HAVE_ANYTHING_STRONG_ENOUGH_TO_OPEN_THE_SARCOPHAGUS.[CR]"],
 5AD9: 07 14     ;    "SubScripXtAbortIfPass",[
 5ADB: 11 18     ;        "AssertObjectXMatchesUserInput","#SARCOPH_empty",
 5ADD: 07 06     ;        "SubScripXtAbortIfPass",[
 5ADF: 02 18     ;            "AssertObjectXIsInPack","#SARCOPH_empty",
-5AE1: 04 01 77  ;            "PrintMessageX","I'D_ADVISE_YOU_TO_PUT_DOWN_THE_SARCOPHAGUS_BEFORE_OPENING_IT!![CR]",
+5AE1: 04 01 77  ;            "PrintMessageX","I'D_ADVISE_YOU_TO_PUT_DOWN_THE_SARCOPHAGUS_BEFORE_OPENING_IT!![CR]"],
 5AE4: 07 06     ;        "SubScripXtAbortIfPass",[
 5AE6: 02 22     ;            "AssertObjectXIsInPack","#KEY",
-5AE8: 04 2D 77  ;            "PrintMessageX","THE_SARCOPHAGUS_CREAKS_OPEN,_REVEALING_NOTHING_INSIDE.__IT______PROMPTLY_SNAPS_SHUT_AGAIN.[CR]",
-5AEB: 04 6B 77  ;        "PrintMessageX","YOU_DON'T_HAVE_ANYTHING_STRONG_ENOUGH_TO_OPEN_THE_SARCOPHAGUS.[CR]",
+5AE8: 04 2D 77  ;            "PrintMessageX","THE_SARCOPHAGUS_CREAKS_OPEN,_REVEALING_NOTHING_INSIDE.__IT______PROMPTLY_SNAPS_SHUT_AGAIN.[CR]"],
+5AEB: 04 6B 77  ;        "PrintMessageX","YOU_DON'T_HAVE_ANYTHING_STRONG_ENOUGH_TO_OPEN_THE_SARCOPHAGUS.[CR]"],
 5AEE: 04 97 77  ;    "PrintMessageX","I_DON'T_KNOW_HOW_TO_LOCK_OR_UNLOCK_SUCH_A_THING.[CR]"],
 5AF1: 23 04     ; "WAVE" : [
 5AF3: 04 56 74  ;    "PrintMessageX","NOTHING_HAPPENS.[CR]"],
@@ -3176,42 +3432,42 @@ GeneralCommandHandler:
 5AF8: 07 09     ;    "SubScripXtAbortIfPass",[
 5AFA: 11 1C     ;        "AssertObjectXMatchesUserInput","#WATER",
 5AFC: 15 1C 00  ;        "MoveObjectXToRoomY","#WATER","room_0",
-5AFF: 04 E9 75  ;        "PrintMessageX","YOUR_BOTTLE_IS_EMPTY_AND_THE_GROUND_IS_WET.[CR]",
+5AFF: 04 E9 75  ;        "PrintMessageX","YOUR_BOTTLE_IS_EMPTY_AND_THE_GROUND_IS_WET.[CR]"],
 5B02: 04 08 76  ;    "PrintMessageX","YOU_CAN'T_POUR_THAT.[CR]"],
 5B05: 25 12     ; "RUB" : [
 5B07: 07 06     ;    "SubScripXtAbortIfPass",[
 5B09: 11 0E     ;        "AssertObjectXMatchesUserInput","#LAMP_off",
-5B0B: 04 18 76  ;        "PrintMessageX","RUBBING_THE_ELECTRIC_LAMP_IS_NOT_PARTICULARLY_REWARDING.________ANYWAY,_NOTHING_EXCITING_HAPPENS.[CR]",
+5B0B: 04 18 76  ;        "PrintMessageX","RUBBING_THE_ELECTRIC_LAMP_IS_NOT_PARTICULARLY_REWARDING.________ANYWAY,_NOTHING_EXCITING_HAPPENS.[CR]"],
 5B0E: 07 06     ;    "SubScripXtAbortIfPass",[
 5B10: 11 0F     ;        "AssertObjectXMatchesUserInput","#LAMP_on",
-5B12: 04 18 76  ;        "PrintMessageX","RUBBING_THE_ELECTRIC_LAMP_IS_NOT_PARTICULARLY_REWARDING.________ANYWAY,_NOTHING_EXCITING_HAPPENS.[CR]",
+5B12: 04 18 76  ;        "PrintMessageX","RUBBING_THE_ELECTRIC_LAMP_IS_NOT_PARTICULARLY_REWARDING.________ANYWAY,_NOTHING_EXCITING_HAPPENS.[CR]"],
 5B15: 04 5B 76  ;    "PrintMessageX","PECULIAR.__NOTHING_UNEXPECTED_HAPPENS.[CR]"],
 5B18: 27 12     ; "FILL" : [
 5B1A: 07 06     ;    "SubScripXtAbortIfPass",[
 5B1C: 11 1B     ;        "AssertObjectXMatchesUserInput","#BOTTLE",
-5B1E: 04 77 76  ;        "PrintMessageX","THERE_IS_NOTHING_HERE_WITH_WHICH_TO_FILL_THE_BOTTLE.[CR]",
+5B1E: 04 77 76  ;        "PrintMessageX","THERE_IS_NOTHING_HERE_WITH_WHICH_TO_FILL_THE_BOTTLE.[CR]"],
 5B21: 07 06     ;    "SubScripXtAbortIfPass",[
 5B23: 11 21     ;        "AssertObjectXMatchesUserInput","#VASE_solo",
-5B25: 04 D9 75  ;        "PrintMessageX","DON'T_BE_RIDICULOUS![CR]",
+5B25: 04 D9 75  ;        "PrintMessageX","DON'T_BE_RIDICULOUS![CR]"],
 5B28: 04 AE 76  ;    "PrintMessageX","YOU_CAN'T_FILL_THAT.[CR]"],
 5B2B: 2C 2D     ; "ATTACK" : [
 5B2D: 07 09     ;    "SubScripXtAbortIfPass",[
 5B2F: 11 13     ;        "AssertObjectXMatchesUserInput","#BIRD",
 5B31: 15 13 00  ;        "MoveObjectXToRoomY","#BIRD","room_0",
-5B34: 04 B9 77  ;        "PrintMessageX","THE_BIRD_STATUE_IS_NOW_DEAD.__ITS_BODY_DISAPPEARS.[CR]",
+5B34: 04 B9 77  ;        "PrintMessageX","THE_BIRD_STATUE_IS_NOW_DEAD.__ITS_BODY_DISAPPEARS.[CR]"],
 5B37: 07 09     ;    "SubScripXtAbortIfPass",[
 5B39: 11 14     ;        "AssertObjectXMatchesUserInput","#BIRD_boxed",
 5B3B: 15 14 00  ;        "MoveObjectXToRoomY","#BIRD_boxed","room_0",
-5B3E: 04 B9 77  ;        "PrintMessageX","THE_BIRD_STATUE_IS_NOW_DEAD.__ITS_BODY_DISAPPEARS.[CR]",
+5B3E: 04 B9 77  ;        "PrintMessageX","THE_BIRD_STATUE_IS_NOW_DEAD.__ITS_BODY_DISAPPEARS.[CR]"],
 5B41: 07 06     ;    "SubScripXtAbortIfPass",[
 5B43: 11 17     ;        "AssertObjectXMatchesUserInput","#SARCOPH_full",
-5B45: 04 DD 77  ;        "PrintMessageX","THE_STONE_IS_VERY_STRONG_AND_IS_IMPERVIOUS_TO_ATTACK.[CR]",
+5B45: 04 DD 77  ;        "PrintMessageX","THE_STONE_IS_VERY_STRONG_AND_IS_IMPERVIOUS_TO_ATTACK.[CR]"],
 5B48: 07 06     ;    "SubScripXtAbortIfPass",[
 5B4A: 11 18     ;        "AssertObjectXMatchesUserInput","#SARCOPH_empty",
-5B4C: 04 DD 77  ;        "PrintMessageX","THE_STONE_IS_VERY_STRONG_AND_IS_IMPERVIOUS_TO_ATTACK.[CR]",
+5B4C: 04 DD 77  ;        "PrintMessageX","THE_STONE_IS_VERY_STRONG_AND_IS_IMPERVIOUS_TO_ATTACK.[CR]"],
 5B4F: 07 06     ;    "SubScripXtAbortIfPass",[
 5B51: 11 0B     ;        "AssertObjectXMatchesUserInput","#SERPENT",
-5B53: 04 03 78  ;        "PrintMessageX","ATTACKING_THE_SERPENT_BOTH_DOESN'T_WORK_AND_IS_VERY_DANGEROUS.[CR]",
+5B53: 04 03 78  ;        "PrintMessageX","ATTACKING_THE_SERPENT_BOTH_DOESN'T_WORK_AND_IS_VERY_DANGEROUS.[CR]"],
 5B56: 04 2F 78  ;    "PrintMessageX","YOU_CAN'T_BE_SERIOUS![CR]"],
 5B59: 30 04     ; "BREAK" : [
 5B5B: 04 3F 78  ;    "PrintMessageX","IT_IS_BEYOND_YOUR_POWER_TO_DO_THAT.[CR]"],
@@ -3219,56 +3475,56 @@ GeneralCommandHandler:
 5B60: 07 09     ;    "SubScripXtAbortIfPass",[
 5B62: 11 1A     ;        "AssertObjectXMatchesUserInput","#FOOD",
 5B64: 15 1A 00  ;        "MoveObjectXToRoomY","#FOOD","room_0",
-5B67: 04 59 78  ;        "PrintMessageX","THANK_YOU,_IT_WAS_DELICIOUS![CR]",
+5B67: 04 59 78  ;        "PrintMessageX","THANK_YOU,_IT_WAS_DELICIOUS![CR]"],
 5B6A: 07 06     ;    "SubScripXtAbortIfPass",[
 5B6C: 11 0A     ;        "AssertObjectXMatchesUserInput","#UNUSED_10",
-5B6E: 04 6E 78  ;        "PrintMessageX","I_THINK_I_JUST_LOST_MY_APPETITE.[CR]",
+5B6E: 04 6E 78  ;        "PrintMessageX","I_THINK_I_JUST_LOST_MY_APPETITE.[CR]"],
 5B71: 07 06     ;    "SubScripXtAbortIfPass",[
 5B73: 11 13     ;        "AssertObjectXMatchesUserInput","#BIRD",
-5B75: 04 6E 78  ;        "PrintMessageX","I_THINK_I_JUST_LOST_MY_APPETITE.[CR]",
+5B75: 04 6E 78  ;        "PrintMessageX","I_THINK_I_JUST_LOST_MY_APPETITE.[CR]"],
 5B78: 07 06     ;    "SubScripXtAbortIfPass",[
 5B7A: 11 14     ;        "AssertObjectXMatchesUserInput","#BIRD_boxed",
-5B7C: 04 6E 78  ;        "PrintMessageX","I_THINK_I_JUST_LOST_MY_APPETITE.[CR]",
+5B7C: 04 6E 78  ;        "PrintMessageX","I_THINK_I_JUST_LOST_MY_APPETITE.[CR]"],
 5B7F: 04 D9 75  ;    "PrintMessageX","DON'T_BE_RIDICULOUS![CR]"],
 5B82: 2F 15     ; "DRINK" : [
 5B84: 07 09     ;    "SubScripXtAbortIfPass",[
 5B86: 11 1C     ;        "AssertObjectXMatchesUserInput","#WATER",
 5B88: 15 1C 00  ;        "MoveObjectXToRoomY","#WATER","room_0",
-5B8B: 04 9C 76  ;        "PrintMessageX","THE_BOTTLE_IS_NOW_EMPTY.[CR]",
+5B8B: 04 9C 76  ;        "PrintMessageX","THE_BOTTLE_IS_NOW_EMPTY.[CR]"],
 5B8E: 07 06     ;    "SubScripXtAbortIfPass",[
 5B90: 11 1E     ;        "AssertObjectXMatchesUserInput","#STREAM_56",
-5B92: 04 86 78  ;        "PrintMessageX","YOU_HAVE_TAKEN_A_DRINK_FROM_THE_STREAM.__THE_WATER_TASTES_______STRONGLY_OF_MINERALS,_BUT_IS_NOT_UNPLEASANT.__IT_IS_EXTREMELY___COLD.[CR]",
+5B92: 04 86 78  ;        "PrintMessageX","YOU_HAVE_TAKEN_A_DRINK_FROM_THE_STREAM.__THE_WATER_TASTES_______STRONGLY_OF_MINERALS,_BUT_IS_NOT_UNPLEASANT.__IT_IS_EXTREMELY___COLD.[CR]"],
 5B95: 04 2F 78  ;    "PrintMessageX","YOU_CAN'T_BE_SERIOUS![CR]"],
 5B98: 2D 38     ; "FEED" : [
 5B9A: 07 06     ;    "SubScripXtAbortIfPass",[
 5B9C: 11 13     ;        "AssertObjectXMatchesUserInput","#BIRD",
-5B9E: 04 E1 78  ;        "PrintMessageX","IT'S_NOT_HUNGRY.__BESIDES,_YOU_HAVE_NO_BIRD_SEED.[CR]",
+5B9E: 04 E1 78  ;        "PrintMessageX","IT'S_NOT_HUNGRY.__BESIDES,_YOU_HAVE_NO_BIRD_SEED.[CR]"],
 5BA1: 07 06     ;    "SubScripXtAbortIfPass",[
 5BA3: 11 14     ;        "AssertObjectXMatchesUserInput","#BIRD_boxed",
-5BA5: 04 E1 78  ;        "PrintMessageX","IT'S_NOT_HUNGRY.__BESIDES,_YOU_HAVE_NO_BIRD_SEED.[CR]",
+5BA5: 04 E1 78  ;        "PrintMessageX","IT'S_NOT_HUNGRY.__BESIDES,_YOU_HAVE_NO_BIRD_SEED.[CR]"],
 5BA8: 07 10     ;    "SubScripXtAbortIfPass",[
 5BAA: 11 0B     ;        "AssertObjectXMatchesUserInput","#SERPENT",
 5BAC: 07 09     ;        "SubScripXtAbortIfPass",[
 5BAE: 02 14     ;            "AssertObjectXIsInPack","#BIRD_boxed",
 5BB0: 15 14 00  ;            "MoveObjectXToRoomY","#BIRD_boxed","room_0",
-5BB3: 04 2B 79  ;            "PrintMessageX","THE_SERPENT_HAS_NOW_DEVOURED_YOUR_BIRD_STATUE.[CR]",
-5BB6: 04 4C 79  ;        "PrintMessageX","THERE_IS_NOTHING_HERE_IT_WANTS_TO_EAT_-_EXCEPT_PERHAPS_YOU.[CR]",
+5BB3: 04 2B 79  ;            "PrintMessageX","THE_SERPENT_HAS_NOW_DEVOURED_YOUR_BIRD_STATUE.[CR]"],
+5BB6: 04 4C 79  ;        "PrintMessageX","THERE_IS_NOTHING_HERE_IT_WANTS_TO_EAT_-_EXCEPT_PERHAPS_YOU.[CR]"],
 5BB9: 07 06     ;    "SubScripXtAbortIfPass",[
 5BBB: 11 17     ;        "AssertObjectXMatchesUserInput","#SARCOPH_full",
-5BBD: 04 A7 79  ;        "PrintMessageX","I'M_GAME.__WOULD_YOU_CARE_TO_EXPLAIN_HOW?[CR]",
+5BBD: 04 A7 79  ;        "PrintMessageX","I'M_GAME.__WOULD_YOU_CARE_TO_EXPLAIN_HOW?[CR]"],
 5BC0: 07 06     ;    "SubScripXtAbortIfPass",[
 5BC2: 11 18     ;        "AssertObjectXMatchesUserInput","#SARCOPH_empty",
-5BC4: 04 A7 79  ;        "PrintMessageX","I'M_GAME.__WOULD_YOU_CARE_TO_EXPLAIN_HOW?[CR]",
+5BC4: 04 A7 79  ;        "PrintMessageX","I'M_GAME.__WOULD_YOU_CARE_TO_EXPLAIN_HOW?[CR]"],
 5BC7: 07 06     ;    "SubScripXtAbortIfPass",[
 5BC9: 11 0D     ;        "AssertObjectXMatchesUserInput","#UNUSED_13",
-5BCB: 04 4C 79  ;        "PrintMessageX","THERE_IS_NOTHING_HERE_IT_WANTS_TO_EAT_-_EXCEPT_PERHAPS_YOU.[CR]",
+5BCB: 04 4C 79  ;        "PrintMessageX","THERE_IS_NOTHING_HERE_IT_WANTS_TO_EAT_-_EXCEPT_PERHAPS_YOU.[CR]"],
 5BCE: 04 D9 75  ;    "PrintMessageX","DON'T_BE_RIDICULOUS![CR]"],
 5BD1: 39 02     ; "PLUGH" : [
 5BD3: 1D        ;    "RandomizeDirections"],
 5BD4: 3A 02     ; "LOAD" : [
 5BD6: 1B        ;    "LoadGame"],
 5BD7: 3B 02     ; "SAVE" : [
-5BD9: 1C        ;    "SaveGame"],
+5BD9: 1C        ;    "SaveGame"]
 5BDA: 00
 ```
 
@@ -3277,7 +3533,6 @@ GeneralCommandHandler:
 ```code
 RoomDescriptions:
 
-; Description for room: 1
 ; YOU_ARE_STANDING_BEFORE_THE_ENTRANCE_OF_A_PYRAMID.__AROUND_YOU__IS_A_DESERT.[CR]
 5BDB: 19 C7 DE 94 14 55 5E 50 BD 90 5A C4 6A 59 60 5B 
 5BEB: B1 5F BE 30 15 EB BF 17 98 B8 16 7B 14 14 A8 6B 
@@ -4383,69 +4638,10 @@ ObjDescriptions:
 7FD8: 17 20 16 6B A1 23 D1 13 54 1B D0 D5 15 99 16 C2 
 7FE8: B3 21 00 
 
-7FB8: 18 36      JR      $7FF0           
-7FBA: 9F         SBC     A               
-7FBB: 99         SBC     C               
-7FBC: 16 BB      LD      D,$BB           
-7FBE: 06 4E      LD      B,$4E           
-7FC0: 77         LD      (HL),A          
-7FC1: E6 A0      AND     $A0             
-7FC3: 7B         LD      A,E             
-7FC4: 16 E1      LD      D,$E1           
-7FC6: 14         INC     D               
-7FC7: DB 93      IN      A,($93)         
-7FC9: EF         RST     0X28            
-7FCA: B9         CP      C               
-7FCB: 4B         LD      C,E             
-7FCC: 13         INC     DE              
-7FCD: 99         SBC     C               
-7FCE: 16 49      LD      D,$49           
-7FD0: 16 B7      LD      D,$B7           
-7FD2: 98         SBC     B               
-7FD3: 95         SUB     L               
-7FD4: AF         XOR     A               
-7FD5: 2F         CPL                     
-7FD6: 60         LD      H,B             
-7FD7: 89         ADC     A,C             
-7FD8: 17         RLA                     
-7FD9: 20 16      JR      NZ,$7FF1        
-7FDB: 6B         LD      L,E             
-7FDC: A1         AND     C               
-7FDD: 23         INC     HL              
-7FDE: D1         POP     DE              
-7FDF: 13         INC     DE              
-7FE0: 54         LD      D,H             
-7FE1: 1B         DEC     DE              
-7FE2: D0         RET     NC              
-7FE3: D5         PUSH    DE              
-7FE4: 15         DEC     D               
-7FE5: 99         SBC     C               
-7FE6: 16 C2      LD      D,$C2           
-7FE8: B3         OR      E               
-7FE9: 21 00 39   LD      HL,$3900        
-7FEC: 00         NOP                     
-7FED: 39         ADD     HL,SP           
-7FEE: 00         NOP                     
-7FEF: 39         ADD     HL,SP           
-7FF0: 00         NOP                     
-7FF1: 39         ADD     HL,SP           
-7FF2: 00         NOP                     
-7FF3: 39         ADD     HL,SP           
-7FF4: 00         NOP                     
-7FF5: 39         ADD     HL,SP           
-7FF6: 00         NOP                     
-7FF7: 39         ADD     HL,SP           
-7FF8: 00         NOP                     
-7FF9: 39         ADD     HL,SP           
-7FFA: 00         NOP                     
-7FFB: 39         ADD     HL,SP           
-7FFC: 00         NOP                     
-7FFD: 39         ADD     HL,SP           
-7FFE: 00         NOP                     
-7FFF: 47         LD      B,A             
-8000: 78         LD      A,B             
-8001: 00         NOP                     
-8002: 43         LD      B,E             
-8003: FF         RST     0X38            
-8004: FF         RST     0X38            
+; ??
+7FEB: 39 00 39 00 39 00 39 00                 
+7FF3: 39 00 39 00 39 00 39 00                   
+7FFB: 39 00 39 00 47   
+;          
+8000: 78 00 43 FF FF           
 ```

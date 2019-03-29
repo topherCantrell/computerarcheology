@@ -49,6 +49,15 @@ Before the LOAD command you must paste the desired saved-data back into the text
 * [Disassembled Code](Code.md)
 * [RAM Usage](RAMUse.md)
 
+# TRS80 Implementation
+
+The TRS80 Color Computer implementation is identical to the TRS80 implementation except for the general script. The
+TRS80 has a FIND command that prints "I CAN ONLY TELL YOU WHAT YOU SEE AS YOU MOVE ABOUT AND MANIPULATE THINGS. I CAN NOT TELL YOU WHERE REMOTE THINGS ARE." and a HELP command that prints "I'M AS CONFUSED AS YOU ARE.".
+
+These two commands (and their strings) were removed from the CoCo version.
+
+[TRS80 Pyrarmid](../../TRS80/Pyramid)
+
 # The Great Lost Pyramid
 
 "The seal on the entrance is still unbroken -- perhaps the tomb is still intact,

@@ -51,6 +51,15 @@ Before the LOAD command you must paste the desired saved-data back into the text
 * [Disassembled Code](Code.md)
 * [RAM Usage](RAMUse.md)
 
+# CoCo Implementation
+
+The TRS80 Color Computer implementation is identical to the TRS80 implementation except for the general script. The
+TRS80 has a FIND command that prints "I CAN ONLY TELL YOU WHAT YOU SEE AS YOU MOVE ABOUT AND MANIPULATE THINGS. I CAN NOT TELL YOU WHERE REMOTE THINGS ARE." and a HELP command that prints "I'M AS CONFUSED AS YOU ARE.".
+
+These two commands (and their strings) were removed from the CoCo version.
+
+[CoCo Pyrarmid](../../CoCo/Pyramid)
+
 # Messages for 64 Columns 
 
 The compressed message strings contain spaces to pad the words out to 64 columns (the size of the monitor). For instance:
