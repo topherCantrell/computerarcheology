@@ -152,7 +152,7 @@ def process_markdown(lines, site_nav_node, fp_content):
 
         if type(md) is HeaderLine:
             anchor = ids.add_id(md.text)
-            page_nav.add_page_nav(md.level, md.text, anchor)
+            page_nav.add_page_nav(md.level, md.text, anchor, md.display_class)
             content += md.make_content(anchor)
             continue
 
@@ -171,7 +171,7 @@ def process_markdown(lines, site_nav_node, fp_content):
         cr = [n.parent] + cr
         n = n.parent
 
-    cr[0] = web.nav_tree.NavNode(None, 1, 'Home', '')
+    cr[0] = web.nav_tree.NavNode(None, 1, 'Home', '', None)
     crumbs = ''
     for n in cr:
         tt = n.text
@@ -302,11 +302,11 @@ def load_site_directory():
                 current_node.invisibles.append(directory)
             elif os.path.isdir(os.path.join(src, directory)):
                 # This is a directory. Make an entry and recurse into it
-                n = tree.add_page_nav(level, title, directory)
+                n = tree.add_page_nav(level, title, directory, None)
                 _load_site_directory_rec(level + 1, tree, n)
             else:
                 # This is a file
-                tree.add_page_nav(level, title, directory)
+                tree.add_page_nav(level, title, directory, None)
 
     tree = NavTree()
     level = 1

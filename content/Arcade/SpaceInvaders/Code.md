@@ -34,8 +34,6 @@
 </canvas>
 ```
 
-# TODO
-
 It is never completely finished:
   * TODO Look at the various versions of the ROMs and see what's different
   * TODO Check all X/Y references and make !Xr/Yr or !Xn/Yn
@@ -316,7 +314,6 @@ GetAlienCoords:
 019C: 7B              LD      A,E                 ; Restore index
 019D: 3D              DEC     A                   ; We adjusted for 1 column
 019E: C3 95 01        JP      $0195               ; Keep moving over column
-
 
 MoveRefAlien:
 ; The "reference alien" is the bottom left. All other aliens are drawn relative to this
@@ -1337,11 +1334,12 @@ WaitForStart:
 0791: DB 01           IN      A,($01)             ; {-2_INP1} Read player controls
 0793: E6 04           AND     $04                 ; 1Player start button?
 0795: CA 7F 07        JP      Z,$077F             ; No ... wait for button or credit
+```
 
-;=============================================================
+# Start New Game
+
+```code
 NewGame:
-; START NEW GAME
-;
 ; 1 Player start
 0798: 06 99           LD      B,$99               ; Essentially a -1 for DAA
 079A: AF              XOR     A                   ; Clear two player flag
@@ -4011,13 +4009,11 @@ RemoveShip:
 1A8B: 21 01 25        LD      HL,$2501            ; Screen coordinates
 1A8E: E6 0F           AND     $0F                 ; Make sure it is a digit
 1A90: C3 C5 09        JP      $09C5               ; Print number remaining
+```
 
+# Data From Here Down   
 
-
-
-;==========================================================
-; DATA FROM HERE DOWN
-;
+```
 1A93: 00 00       
 
 ; Splash screen animation structure 1
@@ -4066,11 +4062,7 @@ MessageScore:
 1AE4: 26 12 02 0E 11 04 24 1B 25 26 07 08   
 1AF0: 3F 12 02 0E 11 04 26 12 02 0E 11 04   
 1AFC: 24 1C 25 26                     
-```
 
-# Data From Here Down      
-
-```code
 ;-------------------------- RAM initialization -----------------------------
 ; Coppied to RAM (2000) C0 bytes as initialization.
 ; See the description of RAM at the top of this file for the details on this data.
@@ -4098,7 +4090,7 @@ MesssageP1:
 ; and the macro automatically included it. No harm.
 ```
 
-## Alien Pulling Upside Down 'Y' 
+## Alien Pulling Upside Down 'Y' `visual`
 
 ```html
 <canvas width="130" height="65"
@@ -4180,7 +4172,7 @@ AlienSprCYB:
 AlienSprA:
 ```
 
-## Alien Images 
+## Alien Images `visual`
 
 ```html
 <canvas width="400" height="140"
@@ -4237,7 +4229,7 @@ AlienSprB:
 1C50: 00 00 00 00 1A 3D 68 FC FC 68 3D 1A 00 00 00 00 
 ```
 
-## Player Sprite 
+## Player Sprite `visual`
 
 ```html
  <canvas width="400" height="65"
@@ -4309,7 +4301,7 @@ PlrBlowupSprites:
 1C80: 40 08 05 A3 0A 03 5B 0F 27 27 0B 4B 40 84 11 48 
 ```
 
-## Player Shot Sprite 
+## Player Shot Sprite `visual`
 
 ```html
  <canvas width="10" height="65"
@@ -4326,7 +4318,7 @@ PlayerShotSpr:
 1C90: 0F    ; ++++....
 ```
         
-## Player Shot Exploding 
+## Player Shot Exploding `visual`
 
 ```html
  <canvas width="65" height="65"
@@ -4377,7 +4369,7 @@ MessageTilt:
 1CBC: 13 08 0B 13   ; "TILT"
 ```
 
-## Alien Exploding Sprite 
+## Alien Exploding Sprite `visual`
 
 ```html
  <canvas width="130" height="65"
@@ -4411,7 +4403,7 @@ AlienExplode:
 1CC0: 00 08 49 22 14 81 42 00 42 81 14 22 49 08 00 00 
 ```
 
-## Squigly Shot Sprite 
+## Squigly Shot Sprite `visual`
 
 ```html
  <canvas width="120" height="65"
@@ -4443,7 +4435,7 @@ SquiglyShot:
 1CDB: 88   ; ...*...*
 ```
 
-## Alien Shot Exploding 
+## Alien Shot Exploding `visual`
 
 ```html     
  <canvas width="65" height="65"
@@ -4467,7 +4459,7 @@ AShotExplo:
 1CDC: 4A 15 BE 3F 5E 25                                
 ```
 
-## Plunger Shot Sprite 
+## Plunger Shot Sprite `visual`
 
 ```html
  <canvas width="120" height="65"
@@ -4499,7 +4491,7 @@ PlungerShot:
 1CED: 80  ; .......*
 ```
 
-## Rolling Shot Sprite 
+## Rolling Shot Sprite `visual`
 
 ```html
  <canvas width="120" height="65"
@@ -4553,7 +4545,7 @@ ColFireTable:
 1D15: 05 02 05 04 06 07 08 0A 06 0A 03              
 ```
 
-## Shield Image 
+## Shield Image `visual`
 
 ```html
  <canvas width="180" height="130"
@@ -4609,7 +4601,7 @@ SaucerScrTab:
 1D54: 10 05 05 10 15 10 10 05 30 10 10 10 05 15 10 05                                 
 ```
 
-## Flying Saucer Sprite 
+## Flying Saucer Sprite `visual`
 
 ```html
  <canvas width="410" height="65"
@@ -4737,7 +4729,7 @@ Message20Pts:
 1DFE: 00 00 ; Padding to put font table at 1E00
 ```
 
-## Text Character Sprites 
+## Text Character Sprites `visual`
 
 ```html
  <canvas width="520" height="520"
@@ -4830,7 +4822,7 @@ DemoCommands:
 1F74: 01 01 00 00 01 00 02 01 00 02 01 00
 ```
 
-## Alien Sprite Carrying 'Y' 
+## Alien Sprite Carrying 'Y' `visual`
 
 ```html
  <canvas width="140" height="65"
