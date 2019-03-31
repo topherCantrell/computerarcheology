@@ -1,0 +1,69 @@
+CC = gcc
+WINDRES = windres
+
+CFLAGS = -mno-cygwin -O3 -fomit-frame-pointer -Wall -I/usr/local/include
+LFLAGS = -mno-cygwin -s
+LIBALLEG = -L/usr/local/lib -lalleg
+
+
+all: o2em.exe dis48.exe
+
+clean:
+	rm -f audio.o cpu.o cset.o keyboard.o main.o table.o vdc.o vmachine.o debug.o dis48.o timefunc.o voice.o crc32.o vpp_cset.o vpp.o o2em.res
+
+
+o2em.exe:	audio.o cpu.o cset.o keyboard.o main.o table.o vdc.o vmachine.o debug.o timefunc.o voice.o crc32.o vpp_cset.o vpp.o o2em.res
+	$(CC) $(LFLAGS) audio.o cpu.o cset.o keyboard.o main.o table.o vdc.o vmachine.o debug.o timefunc.o voice.o crc32.o vpp_cset.o vpp.o o2em.res -o o2em.exe $(LIBALLEG)
+
+dis48.exe:	dis48.o table.o
+	$(CC) $(LFLAGS) dis48.o table.o -o dis48.exe
+
+
+audio.o:	audio.c audio.h cpu.h types.h config.h vmachine.h
+	$(CC) $(CFLAGS) -c audio.c -o audio.o
+
+cpu.o:	cpu.c cpu.h types.h vmachine.h keyboard.h voice.h vdc.h vpp.h
+	$(CC) $(CFLAGS) -c cpu.c -o cpu.o
+	
+cset.o:	cset.c cset.h types.h 
+	$(CC) $(CFLAGS) -c cset.c -o cset.o
+	
+debug.o:	debug.c debug.h cpu.h keyboard.h vmachine.h audio.h vdc.h table.h
+	$(CC) $(CFLAGS) -c debug.c -o debug.o
+	
+dis48.o:	dis48.c types.h table.h
+	$(CC) $(CFLAGS) -c dis48.c -o dis48.o
+	
+keyboard.o:	keyboard.c keyboard.h types.h cpu.h vmachine.h vdc.h audio.h voice.h vpp.h
+	$(CC) $(CFLAGS) -c keyboard.c -o keyboard.o
+	
+main.o:	main.c crc32.h audio.h vmachine.h config.h vdc.h cpu.h debug.h keyboard.h voice.h
+	$(CC) $(CFLAGS) -c main.c -o main.o
+	
+table.o:	table.c table.h cpu.h
+	$(CC) $(CFLAGS) -c table.c -o table.o
+	
+vdc.o:	vdc.c vdc.h types.h vmachine.h config.h keyboard.h cset.h timefunc.h cpu.h vpp.h
+	$(CC) $(CFLAGS) -c vdc.c -o vdc.o
+	
+vmachine.o:	vmachine.c vmachine.h audio.h types.h cpu.h keyboard.h config.h debug.h vdc.h vpp.h timefunc.h voice.h
+	$(CC) $(CFLAGS) -c vmachine.c -o vmachine.o
+
+timefunc.o: timefunc.c timefunc.h
+	$(CC) $(CFLAGS) -c timefunc.c -o timefunc.o
+
+voice.o: voice.c voice.h vmachine.h cpu.h
+	$(CC) $(CFLAGS) -c voice.c -o voice.o
+
+crc32.o: crc32.c crc32.h
+	$(CC) $(CFLAGS) -c crc32.c -o crc32.o
+
+vpp_cset.o: vpp_cset.c vpp_cset.h
+	$(CC) $(CFLAGS) -c vpp_cset.c -o vpp_cset.o
+
+vpp.o: vpp.c vpp.h types.h vpp_cset.h vmachine.h vdc.h
+	$(CC) $(CFLAGS) -c vpp.c -o vpp.o
+
+o2em.res: o2em.rc o2em.ico
+	$(WINDRES) -O coff -o o2em.res -i o2em.rc
+

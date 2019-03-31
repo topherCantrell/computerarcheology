@@ -132,7 +132,7 @@ def _to_html_rec(node, children_only, book_marks):
                 disp_class + '">' + node.text + '</span>'
         elif node.active_item_path:
             ret = ret + \
-                '<a href="{anchor}" class="activeItemPath ' + disp_class + '">{text}</a>'.format(
+                ('<a href="{anchor}" class="activeItemPath ' + disp_class + '">{text}</a>').format(
                     anchor=anchor, text=node.text)
         else:
             ret = ret + \
