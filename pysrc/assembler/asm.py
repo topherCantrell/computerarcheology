@@ -1,3 +1,7 @@
+import json
+import os
+
+opcodes = None
 
 def load_lines(filename):
     with open(filename, 'r') as f:
@@ -34,6 +38,20 @@ def remove_comments_and_blanks(lines):
             ret.append(line)
     return ret
 
+def _load_CPU(name):
+    global opcodes
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), name)) as f:
+        opcodes = json.load(f)     
+    # TODO parse the opcodes into fragment string for matching
+    
+def _find_opcode(text):
+    match = text.upper()
+    nmatch = ''
+    for i in range(len(match)):
+        c = match[i]
+        #if is_needed()
+    # Keep only whitespace between letters/numbers
+    # Run the list  
 
 def _dir_data(line, labels, defines, pass_number):
     n = line['text'][1:].split(',')
@@ -52,13 +70,34 @@ def _get_numeric(s, labels, defines):
 
 
 def _print_listing(lines, labels, defines):
-    print('labels', labels)
-    print('defines', defines)
-    # TODO
+    print('#### Labels')
+    keys = labels.keys()
+    keys = sorted(keys)
+    for label in keys:
+        print('{:16} = 0x{:04X}'.format(label,labels[label]))
+    print()
+    print('#### Defines')
+    keys = defines.keys()
+    keys = sorted(keys)
+    for define in keys:
+        v = defines[define]
+        if isinstance(v,str):
+            print('{:16} = {}'.format(define,defines[define]))
+        else:
+            print('{:16} = 0x{:04X}'.format(define,defines[define]))
+    print()
+        
     for line in lines:
-        print(line)
-
-
+        addr = ''
+        if 'address' in line:
+            addr = '{:04X}:'.format(line['address'])
+        data = ''
+        if 'data' in line:
+            for d in line['data']:
+                data = data + '{:02X} '.format(d)
+        data = data.strip()
+        print('{} {:16} {}'.format(addr,data,line['original_text']))
+              
 def _write_binary(lines):
     # TODO
     pass
@@ -86,13 +125,17 @@ def assemble(lines):
                     n = n[1:i].strip()
                     if pass_number == 2 and (n in labels or n in defines):
                         raise Exception('Multiply defined: ' + n)
-                    if not n.startswith('_'):
+                    if n.startswith('_'):
+                        if n=='_CPU':
+                            _load_CPU(v+'.js')
+                    else:
                         v = _get_numeric(v, labels, defines)
                     defines[n] = v
 
                 # Data
                 elif n.startswith('. '):  # TODO or n.startswith('.W')
                     _dir_data(line, labels, defines, pass_number)
+                    line['address'] = address
 
                 else:
                     raise Exception('Unknown directive: ' + n)
