@@ -1,6 +1,11 @@
 
 import importlib
-from asm_exception import ASMException
+
+
+class ASMException(Exception):
+    def __init__(self, message, line):
+        super().__init__(message)
+        self.line = line
 
 
 class Assembler:
@@ -111,7 +116,7 @@ class Assembler:
 
     def process_config_define(self, key, value):
         if key == '_CPU':
-            lib = importlib.import_module('cpu_' + value)
+            lib = importlib.import_module('cpu.cpu_' + value)
             self.cpu = lib.get_cpu()
         self.defines[key] = value
 
@@ -165,10 +170,3 @@ class Assembler:
 
                 if 'data' in line:
                     address = address + len(line['data'])
-
-
-if __name__ == '__main__':
-
-    asm = Assembler('hello.asm')
-    asm.assemble()
-    asm.print_listing()
