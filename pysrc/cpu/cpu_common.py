@@ -1,3 +1,5 @@
+from PIL._imaging import fill
+
 
 class CPU:
 
@@ -34,19 +36,63 @@ class CPU:
                 else:
                     op['frags'][-1] = op['frags'][-1] + c
 
-    
-    def fill_in_opcode(self,op,pass_number): # TODO going to need defines and labels to do this
+    def process_fill_term(self, address, op, fill, decode):
+
+        if decode[0] == 'r':
+            # Typical relative offset. Override this method if your CPU does
+            # something different
+            address = address + int(len(op) / 2)
+            fill = fill - address
+            if fill > 127 or fill < -128:
+                raise Exception('Relative jump out of byte range')
+            if fill < 0:
+                fill = fill + 256
+
+        ret = []
+        if len(decode) == 2:
+            if fill > 255:
+                raise Exception('Bigger than a byte: {:04X}'.format(fill))
+            ret.append(fill)
+        else:
+            if decode[1] == 'm':
+                ret.append(fill >> 8)
+                ret.append(fill & 0xFF)
+            else:
+                ret.append(fill & 0xFF)
+                ret.append(fill >> 8)
+
+        return ret
+
+    # TODO going to need defines and labels to do this
+    def fill_in_opcode(self, asm, address, op, pass_number):
         opcode = op[0]
         fill = op[1]
         if pass_number == 0:
-            return [0]* int(len(opcode['code'])/2)
+            return [0] * int(len(opcode['code']) / 2)
         else:
-            print(op)
-            # We can figure out size and endianness (count the lowercase letters and look for t and l)
-            # A way to defer to the specific class
-            # Always defer for relative offsets
-            return [1]* int(len(opcode['code'])/2)
-    
+
+            ret = []
+            code = op[0]['code']
+            fill = op[1]
+            dec = ''
+            for i in range(0, len(code), 2):
+                if code[i].islower():
+                    dec = dec + code[i:i + 2]
+            if dec:
+                fill = asm.parse_numeric(fill)
+
+            fill = self.process_fill_term(address, code, fill, dec)
+            p = 0
+
+            for i in range(0, len(code), 2):
+                if code[i].islower():
+                    ret.append(fill[p])
+                    p += 1
+                else:
+                    ret.append(int(code[i:i + 2], 16))
+
+            return ret
+
     def find_opcode(self, text):
         nmatch = self._remove_unneeded_whitespace(text)
 
@@ -78,6 +124,13 @@ class CPU:
                         # The Z80 has duplicate mnemonic
                         continue
                     if len(found['frags']) > len(ret[0]['frags']):
+                        # The latest candidate has more fragments ... more
+                        # specific. Use it.
+                        ret[0] = found
+                        ret[1] = found_plug
+                    if len(found['frags']) == len(ret[0]['frags']) and len(found['frags'][0]) > len(ret[0]['frags'][0]):
+                        # The latest candidate has a longer 1st fragment ...
+                        # more specific. Use it.
                         ret[0] = found
                         ret[1] = found_plug
 

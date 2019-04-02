@@ -127,30 +127,32 @@ class Assembler:
             address = 0
 
             for line in self.code:
-                n = line['text']
+                try:
+                    n = line['text']
 
-                # Directives start with a '.'
-                if n.startswith('.'):
+                    # Directives start with a '.'
+                    if n.startswith('.'):
 
-                    # Define (key = value)
-                    if '=' in n:
-                        # TODO could be a string with an "=" in it
-                        self.process_define(line, pass_number)
+                        # Define (key = value)
+                        if '=' in n:
+                            # TODO could be a string with an "=" in it
+                            self.process_define(line, pass_number)
 
-                    # Data (list of bytes/words)
-                    elif n.startswith('. '):  # TODO or n.startswith('.W')
-                        self.process_directive_data(line, pass_number)
-                        line['address'] = address
+                        # Data (list of bytes/words)
+                        elif n.startswith('. '):  # TODO or n.startswith('.W')
+                            self.process_directive_data(line, pass_number)
+                            line['address'] = address
 
-                    else:
-                        raise Exception('Unknown directive: ' + n)
+                        else:
+                            raise Exception('Unknown directive: ' + n)
 
-                elif n.endswith(':'):
-                    # Label (or origin)
-                    if pass_number == 1:  # second pass only
+                    elif n.endswith(':'):
+                        # Label (or origin)
                         n = n[:-1].strip()
-                        if n in self.labels or n in self.defines:
-                            raise ASMException('Multiply defined: ' + n, line)
+                        if pass_number == 0:
+                            if n in self.labels or n in self.defines:
+                                raise ASMException(
+                                    'Multiply defined: ' + n, line)
 
                         try:
                             # A number ... this is an origin
@@ -162,11 +164,15 @@ class Assembler:
                             # Not a number ... this is a label to remember
                             self.labels[n] = address
 
-                else:
-                    line['address'] = address
-                    # Opcode
-                    op = self.cpu.find_opcode(n)
-                    line['data'] = self.cpu.fill_in_opcode(op, pass_number)
+                    else:
+                        line['address'] = address
+                        # Opcode
+                        op = self.cpu.find_opcode(n)
+                        line['data'] = self.cpu.fill_in_opcode(
+                            self, address, op, pass_number)
 
-                if 'data' in line:
-                    address = address + len(line['data'])
+                    if 'data' in line:
+                        address = address + len(line['data'])
+
+                except Exception as e:
+                    raise ASMException(e, line)
