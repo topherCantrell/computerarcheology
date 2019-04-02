@@ -34,6 +34,19 @@ class CPU:
                 else:
                     op['frags'][-1] = op['frags'][-1] + c
 
+    
+    def fill_in_opcode(self,op,pass_number): # TODO going to need defines and labels to do this
+        opcode = op[0]
+        fill = op[1]
+        if pass_number == 0:
+            return [0]* int(len(opcode['code'])/2)
+        else:
+            print(op)
+            # We can figure out size and endianness (count the lowercase letters and look for t and l)
+            # A way to defer to the specific class
+            # Always defer for relative offsets
+            return [1]* int(len(opcode['code'])/2)
+    
     def find_opcode(self, text):
         nmatch = self._remove_unneeded_whitespace(text)
 

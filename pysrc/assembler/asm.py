@@ -152,12 +152,7 @@ def assemble(lines):
                 line['address'] = address
                 # Opcode
                 op = CPU.find_opcode(n)
-                if pass_number == 0:
-                    # TODO
-                    line['data'] = [7, 8, 9]
-                else:
-                    # TODO
-                    line['data'] = [7, 8, 9]
+                line['data'] = CPU.fill_in_opcode(op,pass_number)
 
             if 'data' in line:
                 address = address + len(line['data'])

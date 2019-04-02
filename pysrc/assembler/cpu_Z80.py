@@ -759,8 +759,8 @@ class CPU_Z80(cpu_common.CPU):
 
         ret = super().find_opcode(text)
         if ret and ret[1] and ret[1].startswith('(') and ret[1].endswith(')'):
-            raise Exception('Parenthesis not allowed:' + text)
-        return
+            raise Exception('Parenthesis confused me:' + text)
+        return ret
 
 
 SINGLETON = CPU_Z80()
