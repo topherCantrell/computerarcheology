@@ -6,9 +6,9 @@
 0x8000:
 Start:
 
-   LD  A,0x23     ; A constant
-   LD  B,(0x10)
-   LD  H,(DataA)
+   LD  A  , CONST_A + 0x23     ; A constant
+   LD  A,(0x10)
+   LD  HL, ( Da taA  )
    LD  E,CONST_A
    JP  Start
 
