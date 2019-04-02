@@ -1,7 +1,7 @@
-import json
-import os
 
-opcodes = None
+import importlib
+
+CPU = None
 
 
 def load_lines(filename):
@@ -38,57 +38,6 @@ def remove_comments_and_blanks(lines):
             line['text'] = n
             ret.append(line)
     return ret
-
-
-def _load_CPU(name):
-    global opcodes
-    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), name)) as f:
-        opcodes = json.load(f)
-    for op in opcodes:
-        txt = op['mnem']
-        op['frags'] = ['']
-        for i in range(len(txt)):
-            c = txt[i]
-            if c.islower():
-                op['frags'].append(c)
-                if i < (len(txt) - 1):
-                    op['frags'].append('')
-            else:
-                op['frags'][-1] = op['frags'][-1] + c
-
-
-def _is_needed(text, pos):
-    if text[pos] != ' ':
-        return True
-    if (text[pos - 1].isalpha() or text[pos - 1].isdigit()) and (text[pos + 1].isalpha() or text[pos + 1].isdigit()):
-        return True
-    return False
-
-
-def _find_opcode(text):
-    match = text.replace('  ', ' ')
-    nmatch = ''
-    for i in range(len(match)):
-        c = match[i]
-        if c == ' ':
-            if _is_needed(match, i):
-                nmatch = nmatch + c
-        else:
-            nmatch = nmatch + c
-    ret = []
-    for op in opcodes:
-        frags = op['frags']
-        if len(frags) == 1 and not '(' in nmatch:
-            if frags[0] == nmatch.upper():
-                ret.append(op)
-        elif len(frags) == 2 and not '(' in nmatch:
-            if nmatch.upper().startswith(frags[0]) and len(nmatch) > len(frags[0]):
-                ret.append(op)
-        elif len(frags) == 3:
-            if nmatch.upper().startswith(frags[0]) and nmatch.upper().endswith(frags[2]):
-                ret.append(op)
-
-    print(nmatch, ret)
 
 
 def _dir_data(line, labels, defines, pass_number):
@@ -144,6 +93,8 @@ def _write_binary(lines):
 
 def assemble(lines):
 
+    global CPU
+
     labels = {}
     defines = {}
 
@@ -166,7 +117,8 @@ def assemble(lines):
                         raise Exception('Multiply defined: ' + n)
                     if n.startswith('_'):
                         if n == '_CPU':
-                            _load_CPU(v + '.js')
+                            lib = importlib.import_module('cpu_' + v)
+                            CPU = lib.get_cpu()
                     else:
                         v = _get_numeric(v, labels, defines)
                     defines[n] = v
@@ -199,7 +151,7 @@ def assemble(lines):
             else:
                 line['address'] = address
                 # Opcode
-                op = _find_opcode(n)
+                op = CPU.find_opcode(n)
                 if pass_number == 0:
                     # TODO
                     line['data'] = [7, 8, 9]
