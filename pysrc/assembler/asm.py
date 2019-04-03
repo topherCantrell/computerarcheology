@@ -97,9 +97,11 @@ class Assembler:
                 txt = line['original_text']
             print('{} {:16} {}'.format(addr, data, txt))
 
-    def write_binary(self):
-        # TODO
-        pass
+    def write_binary(self, name):
+        with open(name, 'wb') as f:
+            for line in self.lines:
+                if 'data' in line and line['data']:
+                    f.write(bytearray(line['data']))
 
     def process_define(self, line, pass_number):
         n = line['text']

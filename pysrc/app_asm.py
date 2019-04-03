@@ -7,5 +7,6 @@ if __name__ == '__main__':
     try:
         asa.assemble()
         asa.print_listing()
+        asa.write_binary('hello.bin')
     except asm.ASMException as ex:
         print(ex, ex.line)
