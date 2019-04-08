@@ -1,2 +1,0 @@
-.PORT_A = 0xFF00
-.PORT_B = 0xFF20

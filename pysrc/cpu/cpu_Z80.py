@@ -756,7 +756,7 @@ class CPU_Z80(cpu.cpu_common.CPU):
         memory reference to B.
 
         '''
-
+                
         ret = super().find_opcode(text)
         if ret and ret[1] and ret[1].startswith('(') and ret[1].endswith(')'):
             raise Exception('Parenthesis confused me:' + text)

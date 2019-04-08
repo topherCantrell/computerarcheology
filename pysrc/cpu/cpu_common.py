@@ -1,5 +1,3 @@
-from PIL._imaging import fill
-
 
 class CPU:
 
@@ -15,7 +13,12 @@ class CPU:
         return False
 
     def _remove_unneeded_whitespace(self, text):
-        match = text.replace('  ', ' ')
+        match = text
+        while True:
+            g = match.replace('  ', ' ')
+            if g==match:
+                break
+            match = g
         nmatch = ''
         for i in range(len(match)):
             c = match[i]
@@ -26,6 +29,7 @@ class CPU:
     def _make_frags(self):
         for op in self._opcodes:
             txt = op['mnem']
+            txt = self._remove_unneeded_whitespace(txt)
             op['frags'] = ['']
             for i in range(len(txt)):
                 c = txt[i]
@@ -37,7 +41,8 @@ class CPU:
                     op['frags'][-1] = op['frags'][-1] + c
 
     def process_fill_term(self, address, op, fill, decode):
-
+        if not decode:
+            return []
         if decode[0] == 'r':
             # Typical relative offset. Override this method if your CPU does
             # something different
@@ -70,7 +75,7 @@ class CPU:
         if pass_number == 0:
             return [0] * int(len(opcode['code']) / 2)
         else:
-
+            
             ret = []
             code = op[0]['code']
             fill = op[1]
@@ -94,8 +99,7 @@ class CPU:
             return ret
 
     def find_opcode(self, text):
-        nmatch = self._remove_unneeded_whitespace(text)
-
+        nmatch = self._remove_unneeded_whitespace(text)       
         ret = []  # 0 is the opcode
         for op in self._opcodes:
             frags = op['frags']
@@ -105,6 +109,8 @@ class CPU:
                 if frags[0] == nmatch.upper():
                     found = op
                     found_plug = None
+                    # Complete matches are always preferred
+                    return [found,found_plug]
             elif len(frags) == 2:
                 if nmatch.upper().startswith(frags[0]) and len(nmatch) > len(frags[0]):
                     found = op

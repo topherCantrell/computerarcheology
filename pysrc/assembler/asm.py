@@ -1,5 +1,6 @@
 
 import importlib
+import os
 
 
 class ASMException(Exception):
@@ -18,6 +19,10 @@ class Assembler:
         self.cpu = None
 
     def load_lines(self, filename):
+        
+        abs = os.path.abspath(filename)
+        basep = os.path.dirname(abs)
+        
         with open(filename, 'r') as f:
             raw_lines = f.readlines()
 
@@ -29,6 +34,7 @@ class Assembler:
             if n.startswith('.include'):
                 # TODO error checking/reporting
                 n = n[8:].strip()
+                n = os.path.join(basep,n)
                 ret = ret + self.load_lines(n)
                 continue
             ret.append({
@@ -104,6 +110,7 @@ class Assembler:
                     f.write(bytearray(line['data']))
 
     def process_define(self, line, pass_number):
+        
         n = line['text']
         i = n.index('=')
         v = n[i + 1:].strip()
@@ -117,9 +124,9 @@ class Assembler:
             self.defines[n] = v
 
     def process_config_define(self, key, value):
-        if key == '_CPU':
+        if key == '_CPU':         
             lib = importlib.import_module('cpu.cpu_' + value)
-            self.cpu = lib.get_cpu()
+            self.cpu = lib.get_cpu()            
         self.defines[key] = value
 
     def assemble(self):
@@ -129,52 +136,56 @@ class Assembler:
             address = 0
 
             for line in self.code:
-                try:
-                    n = line['text']
+                #try:
+                n = line['text']
 
-                    # Directives start with a '.'
-                    if n.startswith('.'):
+                # Directives start with a '.'
+                if n.startswith('.'):
 
-                        # Define (key = value)
-                        if '=' in n:
-                            # TODO could be a string with an "=" in it
-                            self.process_define(line, pass_number)
+                    # Define (key = value)
+                    if '=' in n:
+                        # TODO could be a string with an "=" in it
+                        self.process_define(line, pass_number)
 
-                        # Data (list of bytes/words)
-                        elif n.startswith('. '):  # TODO or n.startswith('.W')
-                            self.process_directive_data(line, pass_number)
-                            line['address'] = address
-
-                        else:
-                            raise Exception('Unknown directive: ' + n)
-
-                    elif n.endswith(':'):
-                        # Label (or origin)
-                        n = n[:-1].strip()
-                        if pass_number == 0:
-                            if n in self.labels or n in self.defines:
-                                raise ASMException(
-                                    'Multiply defined: ' + n, line)
-
-                        try:
-                            # A number ... this is an origin
-                            if n.upper().startswith('0X'):
-                                address = int(n[2:], 16)
-                            else:
-                                address = int(n)
-                        except:
-                            # Not a number ... this is a label to remember
-                            self.labels[n] = address
+                    # Data (list of bytes/words)
+                    elif n.startswith('. '):  # TODO or n.startswith('.W')
+                        self.process_directive_data(line, pass_number)
+                        line['address'] = address
 
                     else:
-                        line['address'] = address
-                        # Opcode
-                        op = self.cpu.find_opcode(n)
-                        line['data'] = self.cpu.fill_in_opcode(
-                            self, address, op, pass_number)
+                        raise ASMException('Unknown directive: ' + n,line)
 
-                    if 'data' in line:
-                        address = address + len(line['data'])
+                elif n.endswith(':'):
+                    # Label (or origin)
+                    n = n[:-1].strip()
+                    if pass_number == 0:
+                        if n in self.labels or n in self.defines:
+                            raise ASMException(
+                                'Multiply defined: ' + n, line)
 
-                except Exception as e:
-                    raise ASMException(e, line)
+                    try:
+                        # A number ... this is an origin
+                        if n.upper().startswith('0X'):
+                            address = int(n[2:], 16)
+                        else:
+                            address = int(n)
+                    except:
+                        # Not a number ... this is a label to remember
+                        self.labels[n] = address
+
+                else:
+                    line['address'] = address
+                    if not self.cpu:
+                        raise ASMException('No CPU defined',line)
+                    # Opcode
+                    op = self.cpu.find_opcode(n)
+                    if not op:
+                        raise ASMException('Unknown opcode: '+n,line)
+                    line['data'] = self.cpu.fill_in_opcode(
+                        self, address, op, pass_number)
+
+                if 'data' in line:
+                    address = address + len(line['data'])
+
+                #except Exception as e:
+                #    raise ASMException(e, line)
