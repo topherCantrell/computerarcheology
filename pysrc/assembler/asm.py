@@ -71,37 +71,38 @@ class Assembler:
         v = eval(s, None, z)
         return v
 
-    def print_listing(self):
-        print('#### Labels')
-        keys = self.labels.keys()
-        keys = sorted(keys)
-        for label in keys:
-            print('{:16} = 0x{:04X}'.format(label, self.labels[label]))
-        print()
-        print('#### Defines')
-        keys = self.defines.keys()
-        keys = sorted(keys)
-        for define in keys:
-            v = self.defines[define]
-            if isinstance(v, str):
-                print('{:16} = {}'.format(define, v))
-            else:
-                print('{:16} = 0x{:04X}'.format(define, v))
-        print()
-
-        for line in self.lines:
-            addr = ''
-            if 'address' in line:
-                addr = '{:04X}:'.format(line['address'])
-            data = ''
-            if 'data' in line:
-                for d in line['data']:
-                    data = data + '{:02X} '.format(d)
-            data = data.strip()
-            txt = line['text']
-            if 'original_text' in line:
-                txt = line['original_text']
-            print('{} {:16} {}'.format(addr, data, txt))
+    def write_listing(self,fname):
+        with open(fname,'w') as f:
+            f.write('#### Labels\n')
+            keys = self.labels.keys()
+            keys = sorted(keys)
+            for label in keys:
+                f.write('{:16} = 0x{:04X}\n'.format(label, self.labels[label]))
+            f.write('\n')
+            f.write('#### Defines\n')
+            keys = self.defines.keys()
+            keys = sorted(keys)
+            for define in keys:
+                v = self.defines[define]
+                if isinstance(v, str):
+                    f.write('{:16} = {}\n'.format(define, v))
+                else:
+                    f.write('{:16} = 0x{:04X}\n'.format(define, v))
+            f.write('\n')
+    
+            for line in self.lines:
+                addr = ''
+                if 'address' in line:
+                    addr = '{:04X}:'.format(line['address'])
+                data = ''
+                if 'data' in line:
+                    for d in line['data']:
+                        data = data + '{:02X} '.format(d)
+                data = data.strip()
+                txt = line['text']
+                if 'original_text' in line:
+                    txt = line['original_text']
+                f.write('{} {:16} {}\n'.format(addr, data, txt))
 
     def write_binary(self, name):
         with open(name, 'wb') as f:
