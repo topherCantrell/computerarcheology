@@ -3,6 +3,7 @@ class CPU:
 
     def __init__(self, opcodes):
         self._opcodes = opcodes
+        self._make_data_map()
         self._make_frags()
 
     def _is_needed(self, text, pos):
@@ -16,7 +17,7 @@ class CPU:
         match = text
         while True:
             g = match.replace('  ', ' ')
-            if g==match:
+            if g == match:
                 break
             match = g
         nmatch = ''
@@ -25,6 +26,15 @@ class CPU:
             if self._is_needed(match, i):
                 nmatch = nmatch + c
         return nmatch
+
+    def _make_data_map(self):
+        self._data_map = {}
+        for op in self._opcodes:
+            g = op['code'][:2]
+            if g in self._data_map:
+                self._data_map[g].append(op)
+            else:
+                self._data_map[g] = [op]
 
     def _make_frags(self):
         for op in self._opcodes:
@@ -39,6 +49,52 @@ class CPU:
                         op['frags'].append('')
                 else:
                     op['frags'][-1] = op['frags'][-1] + c
+
+    def _does_op_fit(self, g, t):
+        if len(g) != len(t):
+            return False
+        for i in range(len(g)):
+            if t[i].islower():
+                continue
+            if g[i] != t[i]:
+                return False
+        return True
+
+    def pick_opcode_from_aliases(self, mnem, opcodes):
+        for op in opcodes:
+            if op['mnem'].startswith(mnem[0]):
+                return op
+        return None
+
+    def is_bus_x(self, op):
+        return 'x' in op['bus']
+
+    def is_bus_r(self, op):
+        return 'r' in op['bus']
+
+    def is_bus_w(self, op):
+        return 'w' in op['bus']
+
+    def is_bus_rw(self, op):
+        return self.is_bus_r(op) and self.is_bus_w(op)
+
+    def is_memory_reference(self, op):
+        s = op['code']
+        if 'p' in s or 's' in s or 't' in s or 'r' in s:
+            return True
+        return False
+
+    def get_opcode_from_data(self, data):
+        ret = []
+        g = ''
+        for d in data:
+            g = g + '{:02X}'.format(d)
+        if not g[:2] in self._data_map:
+            return []
+        for op in self._data_map[g[:2]]:
+            if self._does_op_fit(g, op['code']):
+                ret.append(op)
+        return ret
 
     def process_fill_term(self, address, op, fill, decode):
         if not decode:
@@ -75,7 +131,7 @@ class CPU:
         if pass_number == 0:
             return [0] * int(len(opcode['code']) / 2)
         else:
-            
+
             ret = []
             code = op[0]['code']
             fill = op[1]
@@ -99,7 +155,7 @@ class CPU:
             return ret
 
     def find_opcode(self, text):
-        nmatch = self._remove_unneeded_whitespace(text)       
+        nmatch = self._remove_unneeded_whitespace(text)
         ret = []  # 0 is the opcode
         for op in self._opcodes:
             frags = op['frags']
@@ -110,7 +166,7 @@ class CPU:
                     found = op
                     found_plug = None
                     # Complete matches are always preferred
-                    return [found,found_plug]
+                    return [found, found_plug]
             elif len(frags) == 2:
                 if nmatch.upper().startswith(frags[0]) and len(nmatch) > len(frags[0]):
                     found = op
