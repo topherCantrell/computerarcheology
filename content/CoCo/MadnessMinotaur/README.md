@@ -18,6 +18,26 @@
 >>>   ----<br>
 >>>   Journal.md<br>
 
+```html
+<script src="BinaryDataMadness.js"></script>
+<script src="/js/6809.js"></script>
+<script src="/CoCo/CoCoText.js"></script>
+<script src="madness.js"></script>
+<script>window.onload = function() {startMadness("madnessConsole","");}</script>
+```
+
+# Play Me! 
+Play the game in a CoCo emulator. Click on the green console and press any key.
+
+```html
+<textarea readonly id="madnessConsole" rows="16" style="background-color: #00FF01; color: black;font-family: monospace;font-size:12px;width:33ch;" ></textarea>
+
+</div>
+```
+>>> }
+
+# Code Links
+
 * [RAM Usage](RAMUse.md)
 * [Disassembled Code](Code.md)
 
