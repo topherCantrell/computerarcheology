@@ -4,15 +4,17 @@
 
 >>> deploy:<br>
 >>>   +Madness.jpg<br>
->>>   +inst.cas
->>>   +first.cas
->>>   +s_one.cas
->>>   +s_two.cas
->>>   +s_three.cas
->>>   +s_four.cas
->>>   +s_five.cas
->>>   +s_six.cas
->>>   +s_seven.cas
+>>>   +madness.js<br>
+>>>   +BinaryDataMadness.js<br>
+>>>   +inst.cas<br>
+>>>   +first.cas<br>
+>>>   +s_one.cas<br>
+>>>   +s_two.cas<br>
+>>>   +s_three.cas<br>
+>>>   +s_four.cas<br>
+>>>   +s_five.cas<br>
+>>>   +s_six.cas<br>
+>>>   +s_seven.cas<br>
 >>>   RAMUse.md<br>
 >>>   Code.md<br>
 >>>   ----<br>
@@ -23,7 +25,9 @@
 <script src="/js/6809.js"></script>
 <script src="/CoCo/CoCoText.js"></script>
 <script src="madness.js"></script>
-<script>window.onload = function() {startMadness("madnessConsole","");}</script>
+<script>
+window.onload = function() {startMadness("madnessConsole","");}
+</script>
 ```
 
 # Play Me! 

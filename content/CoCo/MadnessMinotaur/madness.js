@@ -1,9 +1,43 @@
 function startMadness(consoleElement,tapeElement) {
 	
+	var binData = makeBinaryDataPyramid();
+	var CPU6809 = make6809();
+	
+	var my = {};
+	
+	my.resetVector = 0xCE3;
+	
+	function write(addr,value) {
+		throw "Write to "+addr+" from "+CPU6809.status()['pc'];
+	}
+	
+	function read(addr) {
+		
+		// 6809 reset vector (point to game code at 0600)
+        if(addr===0xFFFE) return my.resetVector>>8;
+        if(addr===0xFFFF) return my.resetVector&0xFF;
+        
+        if(addr>=0x300 && addr<=0x3EB7) {
+        	return binData.read(addr);
+        }
+        
+		throw "Read from "+addr;
+	}
+	
+	CPU6809.init(write,read,function(){});
+	
+	CPU6809.steps(100);
+			
+	// The user input loop is at 0864. It calls A1B1 to blink the cursor
+	// and wait for a key. This is where the JS should hook. The game
+	// interrupts still happen once a second.
+	
+	// Execution begins at 0CE3
+	
 	// The CoCo emulator
-	var CoCoText = makeCoCoText(consoleElement,tapeElement);
+	//var CoCoText = makeCoCoText(consoleElement,tapeElement);
 	// The game code
-	var BinaryData = makeBinaryDataMadness();
+	//var BinaryData = makeBinaryDataMadness();
 	
 	/*
     function write(addr,value) {        
@@ -43,9 +77,11 @@ function startMadness(consoleElement,tapeElement) {
     }
     */
       
+	/*
     BinaryData.loadDataCacheFromURL("Code.html",function() { 
     	CoCoText.init(read,write,function() {CoCoText.runUntilWaitKey();}, 0x0600);
     	CoCoText.runUntilWaitKey();    	  
-    });    
+    });
+    */    
     
 };
