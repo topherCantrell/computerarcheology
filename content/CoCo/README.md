@@ -14,14 +14,7 @@
 >>>   +PIA0.jpg<br>
 >>>   +PIA1.jpg<br>
 >>>   +SAM.jpg<br>
->>>   EarlyWork:Early Work<br>
->>>   Pyramid:Pyramid<br>
->>>   RaakaTu:Raaka Tu<br>
->>>   Bedlam:Bedlam<br>
 >>>   MadnessMinotaur:Madness & Minotaur<br>
->>>   Daggorath:Daggorath<br>
->>>   Downland:Downland<br>
->>>   AudioSpectrumAnalyzer:Audio Analyzer<br>
 
 # Disassemblies
 

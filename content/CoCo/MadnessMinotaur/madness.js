@@ -2,13 +2,29 @@ function startMadness(consoleElement,tapeElement) {
 	
 	var binData = makeBinaryDataPyramid();
 	var CPU6809 = make6809();
-	
+	var ram = Array(0x300);
+	ram.fill(0);
+	var ram2 = Array(0x4000-0x3EB8);
+	ram2.fill(0);
+		
 	var my = {};
 	
 	my.resetVector = 0xCE3;
-	
+			
 	function write(addr,value) {
-		throw "Write to "+addr+" from "+CPU6809.status()['pc'];
+		
+		if(addr<0x300) {
+        	ram[addr] = value;
+        } else if(addr>=0x300 && addr<=0x3EB7) {
+        	binData.write(addr,value);
+        } else if(addr>=0x3EB8 && addr<=0x3FB8) {
+        	ram2[addr-0x3EB8] = value;
+        } 
+        
+        else {		
+        	throw "Write to "+addr+" from "+CPU6809.status()['pc'];
+        }
+		
 	}
 	
 	function read(addr) {
@@ -17,16 +33,61 @@ function startMadness(consoleElement,tapeElement) {
         if(addr===0xFFFE) return my.resetVector>>8;
         if(addr===0xFFFF) return my.resetVector&0xFF;
         
+        if(addr==0xA6) {
+        	console.log('PRINTCHAR');
+        	return 0x39;
+        }
+        
+        if(addr<0x300) {
+        	return ram[addr];
+        }        
         if(addr>=0x300 && addr<=0x3EB7) {
         	return binData.read(addr);
         }
+        if(addr>=0x3EB8 && addr<=0x4000) {
+        	return ram2[addr-0x3EB8];
+        }
         
-		throw "Read from "+addr;
+        // TODO random routine uses ROM bytes. If we are in that routine, return a random value.
+        // PC==0673
+        
+        if(addr>=0xA000 && addr<0xC000 && (CPU6809.status()['pc']==0x0673||CPU6809.status()['pc']==0x0675)) {
+        	// TODO random value
+        	return 20;
+        }
+        
+        if(addr==0xA1C1) {
+        	// TODO Clear the Z flag
+        	// This is the wait-for-key to start the game.
+        	return 0x39;
+        }
+        if(addr==0xA928) {
+        	console.log('CLEARSCREEN');
+        	var i;
+        	for(i=0x400;i<0x600;++i) {
+        		ram[i] = 0x60;
+        	}
+        	ram[0x88] = 0x04;
+        	ram[0x89] = 0x00;
+        	return 0x39;
+        }
+        if(addr==0xA976) {
+        	console.log('Enable sound');
+        	return 0x39;
+        }
+        if(addr==0xA9A2) {
+        	console.log('Sound is DAC');
+        	return 0x39;
+        }
+                
+		throw "Read of "+addr+" from "+CPU6809.status()['pc'];
 	}
 	
 	CPU6809.init(write,read,function(){});
 	
-	CPU6809.steps(100);
+	while(true) {
+		CPU6809.steps(1);
+	}
 			
 	// The user input loop is at 0864. It calls A1B1 to blink the cursor
 	// and wait for a key. This is where the JS should hook. The game
