@@ -2416,6 +2416,7 @@ return {
             case "Y": rY=value;return;
             case "SP": rS=value;return;
             case "U": rU=value;return;
+            case "DP": DP=value;return;
             case "FLAGS": CC=value;return;
         }
     },

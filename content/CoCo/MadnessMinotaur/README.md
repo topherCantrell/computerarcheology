@@ -4,6 +4,7 @@
 
 >>> deploy:<br>
 >>>   +Madness.jpg<br>
+>>>   +splash.jpg<br>
 >>>   +madness.js<br>
 >>>   +BinaryDataMadness.js<br>
 >>>   +inst.cas<br>
@@ -26,15 +27,17 @@
 <script src="/CoCo/CoCoText.js"></script>
 <script src="madness.js"></script>
 <script>
-window.onload = function() {startMadness("madnessConsole","");}
+window.onload = function() {startMadness("splashElement", "madnessConsole","");}
 </script>
 ```
 
 # Play Me! 
-Play the game in a CoCo emulator. Click on the green console and press any key.
+
+Play the game in a CoCo emulator. Click on the splash screen below to open the console and then press any key.
 
 ```html
-<textarea readonly id="madnessConsole" rows="16" style="background-color: #00FF01; color: black;font-family: monospace;font-size:12px;width:33ch;" ></textarea>
+<img id="splashElement" src="splash.jpg">
+<textarea readonly id="madnessConsole" rows="16" style="display:none;background-color: #00FF01; color: black;font-family: monospace;font-size:12px;width:33ch;"></textarea>
 
 </div>
 ```
