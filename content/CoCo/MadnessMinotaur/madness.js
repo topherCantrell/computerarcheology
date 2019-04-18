@@ -16,6 +16,7 @@ function startMadness() {
 	var binData = makeBinaryDataPyramid();
 	var ram = Array(0x5000);
 	var x;
+	var screen=1;
 	for(x=0;x<300;++x) {
 		ram[x] = 0;
 	}
@@ -42,6 +43,10 @@ function startMadness() {
 	//   - servicingInterrupt: the service interrupt code is running
 	//   - interruptDone: the service interrupt code has finished
 	var state = null;
+	
+	var cursorChar = '\u2588';
+	var cursorChar2 = ' ';
+	var cursorCur = cursorChar;
 	
 	var cocoConsole = $('#madnessConsole');
 	
@@ -75,7 +80,16 @@ function startMadness() {
 		
 		if(state=='waitForKey') {
 			var c = evt.keyCode
-			console.log(c);		
+			if(c==38) {
+				screen = 0;				
+				updateScreen();
+				return;
+			}
+			if(c==40) {
+				screen = 1;
+				updateScreen();
+				return;
+			}
 			CPU6809.set('a',c);
 			state='playing';
 			removeCursor();
@@ -101,14 +115,20 @@ function startMadness() {
 	
 	function updateScreen() {
 		// Called anytime the screen memory is twiddled and the
-		// GUI needs refreshing.
-		// TODO allow for flipping
+		// GUI needs refreshing.		
         var t = "";
         var p = 0x400;
+        if(screen==0) {
+        	p = 0x200;
+        }
         for(var y=0;y<16;++y) {
             for(var x=0;x<32;++x) {
                 var c = ram[p++];
-                t = t + CHARMAP[c];
+                if(c==0) {
+                	t = t + cursorCur;                	
+                } else {
+                	t = t + CHARMAP[c];
+                }
             }       
             if(y!=15) t=t+"\n";            
         }
@@ -178,11 +198,16 @@ function startMadness() {
 		cp = ram[0x88]<<8 | ram[0x89];
 		ram[cp]=0;
 		updateScreen();
+		if(cursorCur==cursorChar) {
+			cursorCur = cursorChar2;
+		} else {
+			cursorCur = cursorChar;
+		}
 	}
 	function removeCursor() {
 		cp = ram[0x88]<<8 | ram[0x89];
 		ram[cp]=0x60;
-		updateScreen();
+		updateScreen();		
 	}
 	
 	function read(addr) {
