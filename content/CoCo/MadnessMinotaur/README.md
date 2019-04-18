@@ -27,7 +27,7 @@
 <script src="/CoCo/CoCoText.js"></script>
 <script src="madness.js"></script>
 <script>
-window.onload = function() {startMadness("splashElement", "madnessConsole","");}
+window.onload = function() {startMadness();}
 </script>
 ```
 

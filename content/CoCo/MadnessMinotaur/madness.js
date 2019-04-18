@@ -1,45 +1,7 @@
-function startMadness(splashElement, consoleElement,tapeElement) {
-				
-	var cocoConsole = $('#'+consoleElement);
+// "splashElement", "madnessConsole",""
+function startMadness() {
 	
-	$('#'+splashElement).on('click',function() {
-		$('#'+splashElement).hide();
-		cocoConsole.show();
-		cocoConsole.focus();
-		state='init';
-		runUntilWaitKey();
-	});
-	
-	
-	cocoConsole.keypress(function(evt) {
-		
-		if(state=='init') {
-			// Starting up ... ignore the key
-			return;
-		}
-		
-		if(state=='waitForStart') {
-			// We are waiting to start. Eat the key and start the
-			// CPU running again.
-			state='playing';
-			runUntilWaitKey();
-			return;
-		}
-		
-		if(state=='waitForKey') {
-			var c = String.fromCharCode(evt.charCode);
-			c = c.toUpperCase();
-			c = c.charCodeAt(0);		
-			CPU6809.set('a',c);
-			state='playing';
-			runUntilWaitKey();
-			return;
-		}
-		
-		throw "Unknown state "+state;
-		
-	});
-	
+	// ASCII to CoCo screen printable
 	var CHARMAP = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+
 				  "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+
 				  "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[~]~~"+
@@ -49,6 +11,8 @@ function startMadness(splashElement, consoleElement,tapeElement) {
 				  "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+
 				  "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
 	
+	// It is easier to have the RAM and program data in one array.
+	// Pull the binary into RAM.
 	var binData = makeBinaryDataPyramid();
 	var ram = Array(0x5000);
 	var x;
@@ -62,29 +26,82 @@ function startMadness(splashElement, consoleElement,tapeElement) {
 		ram[x]=0;
 	}
 	
-	var CPU6809 = make6809();
-		
-	var running = true;
-	var state = 'start';
-		
-	var my = {};
-	
-	my.resetVector = 0x300;
-	
-	CPU6809.init(write,read,function(){});
-	// We start in the BASIC environment
+	// Initialize the 6809 CPU.
+	var CPU6809 = make6809();	
+	var resetVector = 0x300;	
+	CPU6809.init(write,read,function(){});	
 	CPU6809.set('sp',0x1FFF);
 	CPU6809.set('dp',0);
 	
-	function runUntilWaitKey() {
-		// TODO interrupts
-		running = true;
-		while(running) {
+	// State's in the running game:
+	//   - null: waiting for the game to start
+	//   - init: running the initialization code
+	//   - waitForStart: the game is waiting for the user to press a key to start
+	//   - waitForKey: the game running is waiting of the user to enter a key
+	//   - playing: the game processing code is running
+	//   - servicingInterrupt: the service interrupt code is running
+	//   - interruptDone: the service interrupt code has finished
+	var state = null;
+	
+	var cocoConsole = $('#madnessConsole');
+	
+	$('#splashElement').on('click',function() {
+		$('#splashElement').hide();
+		cocoConsole.show();
+		cocoConsole.focus();
+		state='init';		
+		runUntilStateChange(); // We assume this is pretty quick
+		// Start the 1s game interrupt
+		setInterval(interrupt,1000);
+	});
+		
+	cocoConsole.keydown(function(evt) {
+		
+		// Consume the event
+        evt.preventDefault();
+		
+		if(state=='init') {
+			// Starting up ... ignore the key
+			return;
+		}
+		
+		if(state=='waitForStart') {
+			// We are waiting to start. Eat the key and run to the
+			// next input wait.
+			state='playing';
+			runUntilStateChange();
+			return;
+		}
+		
+		if(state=='waitForKey') {
+			var c = evt.keyCode
+			console.log(c);		
+			CPU6809.set('a',c);
+			state='playing';
+			removeCursor();
+			runUntilStateChange();
+			return;
+		}
+		
+		throw "Unknown game state "+state;
+		
+	});
+	
+	
+	function runUntilStateChange() {
+		// We assume this is very fast ... fast enough to
+		// run synchronously. The "read" handler will change
+		// the states at key points in the code (like when
+		// the code calls out to wait for a key).
+		var curState = state;
+		while(curState == state) {
 			CPU6809.steps(1);
 		}		
 	}
 	
 	function updateScreen() {
+		// Called anytime the screen memory is twiddled and the
+		// GUI needs refreshing.
 		// TODO allow for flipping
         var t = "";
         var p = 0x400;
@@ -98,7 +115,49 @@ function startMadness(splashElement, consoleElement,tapeElement) {
         cocoConsole.text(t);
     }
 			
+	function interrupt() {
+		
+		// Called by the 1-second timer
+		
+		if(state=='waitForStart') {
+			// We haven't started the code yet. Ignore this.
+			return;
+		}
+		
+		if(state!='waitForKey') {
+			// This better be the state we are in when an interrupt
+			// comes in.
+			throw 'UNEXPECTED STATE FOR INTERRUPT: '+state;
+		}
+		
+		state='servicingInterrupt';
+		
+		// Hold all the registers (INT would push them on the stack)
+		var status = CPU6809.status();
+				
+		// Modified service routine address. We only need the 1s tick.
+		CPU6809.set('pc',0x0751);
+		removeCursor();
+		runUntilStateChange();
+		drawCursor();
+		
+		// Back to the waiting state.
+		state = 'waitForKey';
+		
+		// Restore the registers (RTI would pop these)
+		CPU6809.set('a',status['a']);
+		CPU6809.set('b',status['b']);
+		CPU6809.set('flags',status['flags']);
+		CPU6809.set('pc',status['pc']);
+		CPU6809.set('sp',status['sp']);
+		CPU6809.set('u',status['u']);
+		CPU6809.set('x',status['x']);
+		CPU6809.set('y',status['y']);
+						
+	}
+			
 	function write(addr,value) {
+		// All 6809 writes are handled here
 		
 		if(addr<0x5000) {
         	ram[addr] = value;
@@ -115,11 +174,33 @@ function startMadness(splashElement, consoleElement,tapeElement) {
 		
 	}
 	
+	function drawCursor() {
+		cp = ram[0x88]<<8 | ram[0x89];
+		ram[cp]=0;
+		updateScreen();
+	}
+	function removeCursor() {
+		cp = ram[0x88]<<8 | ram[0x89];
+		ram[cp]=0x60;
+		updateScreen();
+	}
+	
 	function read(addr) {
 		
+		// All 6809 reads are handled here
+		
 		// 6809 reset vector (point to game code at 0600)
-        if(addr===0xFFFE) return my.resetVector>>8;
-        if(addr===0xFFFF) return my.resetVector&0xFF;
+        if(addr===0xFFFE) return resetVector>>8;
+        if(addr===0xFFFF) return resetVector&0xFF;
+        
+        if(addr==0x080E) {
+        	// This is the RTI at the end of the interrupt service
+        	if(state!='servicingInterrupt') {
+        		throw 'RTI but not in interrupt service';
+        	}
+        	state = 'interruptDone';
+        	return 0x12; // NOP (We will be restoring everything)        	
+        }
                 
         if(addr<0x5000) {
         	return ram[addr];
@@ -132,7 +213,7 @@ function startMadness(splashElement, consoleElement,tapeElement) {
         
         if(addr==0xA1B1) {
         	// TODO blink cursor
-        	running = false;
+        	drawCursor();
         	state = 'waitForKey';
         	// We return, but we aren't running. The key-event will set
         	// the A register before starting again.
@@ -141,9 +222,7 @@ function startMadness(splashElement, consoleElement,tapeElement) {
         
         if(addr==0xA1C1) {        	
         	// This is the wait-for-key to start the game.
-        	ram[0x400]=0x61;
         	updateScreen();
-        	running = false;
         	state = 'waitForStart';
         	cc = CPU6809.status()['flags'];
         	cc = cc & 0xFB; // Clear the Z flag.
