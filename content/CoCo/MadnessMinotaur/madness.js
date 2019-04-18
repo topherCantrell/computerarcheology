@@ -30,7 +30,6 @@ function startMadness(splashElement, consoleElement,tapeElement) {
 			var c = String.fromCharCode(evt.charCode);
 			c = c.toUpperCase();
 			c = c.charCodeAt(0);		
-			console.log(c);
 			CPU6809.set('a',c);
 			state='playing';
 			runUntilWaitKey();
@@ -51,12 +50,20 @@ function startMadness(splashElement, consoleElement,tapeElement) {
 				  "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
 	
 	var binData = makeBinaryDataPyramid();
-	var CPU6809 = make6809();
-	var ram = Array(0x300);
-	ram.fill(0);
-	var ram2 = Array(0x5000-0x3EB8);
-	ram2.fill(0);
+	var ram = Array(0x5000);
+	var x;
+	for(x=0;x<300;++x) {
+		ram[x] = 0;
+	}
+	for(x=0x300;x<0x3EB8;++x) {
+		ram[x] = binData.read(x);
+	}
+	for(x=0x3EB8;x<0x5000;++x) {
+		ram[x]=0;
+	}
 	
+	var CPU6809 = make6809();
+		
 	var running = true;
 	var state = 'start';
 		
@@ -83,7 +90,7 @@ function startMadness(splashElement, consoleElement,tapeElement) {
         var p = 0x400;
         for(var y=0;y<16;++y) {
             for(var x=0;x<32;++x) {
-                var c = binData.read(p++);
+                var c = ram[p++];
                 t = t + CHARMAP[c];
             }       
             if(y!=15) t=t+"\n";            
@@ -93,17 +100,11 @@ function startMadness(splashElement, consoleElement,tapeElement) {
 			
 	function write(addr,value) {
 		
-		if(addr<0x300) {
+		if(addr<0x5000) {
         	ram[addr] = value;
-        } else if(addr>=0x300 && addr<=0x3EB7) {
-        	binData.write(addr,value);
-        	
         	if(addr>=0x400 && addr<0x600) {
         		updateScreen();
         	}
-        	
-        } else if(addr>=0x3EB8 && addr<=0x5000) {
-        	ram2[addr-0x3EB8] = value;
         } else if(addr>=0xFF00) {
         	// Ignore writes to hardware
         }
@@ -120,15 +121,9 @@ function startMadness(splashElement, consoleElement,tapeElement) {
         if(addr===0xFFFE) return my.resetVector>>8;
         if(addr===0xFFFF) return my.resetVector&0xFF;
                 
-        if(addr<0x300) {
+        if(addr<0x5000) {
         	return ram[addr];
         }        
-        if(addr>=0x300 && addr<=0x3EB7) {
-        	return binData.read(addr);
-        }
-        if(addr>=0x3EB8 && addr<=0x5000) {
-        	return ram2[addr-0x3EB8];
-        }
         
         // Random routine uses ROM bytes. If we are in that routine, return a random value.                
         if(addr>=0xA000 && addr<=0xC005 && (CPU6809.status()['pc']==0x0673||CPU6809.status()['pc']==0x0675)) {
@@ -155,6 +150,26 @@ function startMadness(splashElement, consoleElement,tapeElement) {
         	CPU6809.set('flags',cc);
         	return 0x39;
         }
+        if(addr==0xA34E) {
+        	// Scroll 2-page screen
+        	
+        	var i;
+        	for(i=0x200;i<0x05E0;++i) {
+        		ram[i] = ram[i+32];
+        	}
+        	
+        	for(i=0x05E0;i<0x600;++i) {
+        		ram[i] = 0x60;
+        	}        	
+        	
+        	ram[0x88] = 0x05;
+        	ram[0x89] = 0xE0;
+        	updateScreen();
+        	return 0x35;
+        }
+        if(addr==0xA34F) {
+        	return 0x96;
+        }
         if(addr==0xA7EB) {
         	// Cas Motor off
         	return 0x39;
@@ -163,7 +178,7 @@ function startMadness(splashElement, consoleElement,tapeElement) {
         	// Clear screen
         	var i;
         	for(i=0x400;i<0x600;++i) {
-        		binData.write(i,0x60);
+        		ram[i] = 0x60;
         	}
         	ram[0x88] = 0x04;
         	ram[0x89] = 0x00;
@@ -172,12 +187,9 @@ function startMadness(splashElement, consoleElement,tapeElement) {
         if(addr==0xA92F) {
         	// Clear 2 page video
         	var i;
-        	for(i=0x200;i<0x300;++i) {
+        	for(i=0x200;i<0x600;++i) {
         		ram[i] = 0x60
-        	}
-        	for(i=0x300;i<0x600;++i) {
-        		binData.write(i,0x60);
-        	}
+        	}        	
         	return 0x39;
         }
         if(addr==0xA976) {

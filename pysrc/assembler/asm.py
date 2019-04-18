@@ -58,6 +58,42 @@ class Assembler:
         return ret
 
     def process_directive_data(self, line, pass_number):
+        
+        line['data'] = []
+        
+        cur_term = ''
+        pos = 1
+        in_string = False
+                        
+        for c in line['text'][1:]:
+            if in_string:
+                if c=='"':
+                    in_string = False
+                    for t in cur_term:
+                        line['data'].append(ord(t))                                    
+                    cur_term = ''
+                else:
+                    cur_term = cur_term + c
+            else:
+                if c=='"':
+                    in_string = True
+                    cur_term = ''
+                elif c==',':
+                    cur_term = cur_term.strip()
+                    if cur_term:
+                        line['data'].append(self.parse_numeric(cur_term))
+                    cur_term = ''
+                else:
+                    cur_term = cur_term + c
+                    
+        if in_string:
+            raise ASMException('Missing closing quotes',line)
+        
+        cur_term = cur_term.strip()
+        if cur_term:
+            line['data'].append(self.parse_numeric(cur_term))
+        
+        """
         n = line['text'][1:].split(',')
         if pass_number == 0:
             line['data'] = [0] * len(n)
@@ -65,6 +101,8 @@ class Assembler:
             line['data'] = []
             for v in n:
                 line['data'].append(self.parse_numeric(v))
+        """
+        
 
     def parse_numeric(self, s):
         z = {**self.labels, **self.defines}

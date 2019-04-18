@@ -902,7 +902,7 @@ MoveNymph:
 0A0D: 34 16               PSHS    X,B,A                     ; Save params
 0A0F: 1F 89               TFR     A,B                       ; Get ...
 0A11: BD 1A 5A            JSR     $1A5A                     ; {GetObject} ... object B
-0A14: A6 02               LDA     2,X                       ; Get the flags
+0A14: A6 02               LDA     2,X                       ; Get the flagslook
 0A16: 84 03               ANDA    #$03                      ; Is this object active?
 0A18: 26 02               BNE     $A1C                      ; No ... C=0
 0A1A: 43                  COMA                              ; C=1
