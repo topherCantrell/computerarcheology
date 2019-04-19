@@ -226,6 +226,20 @@ function startMadness() {
         	state = 'interruptDone';
         	return 0x12; // NOP (We will be restoring everything)        	
         }
+        
+        if(addr==0x0B3E) {
+        	// TODO play sound effect
+        	return 0x39;
+        }
+        
+        if(addr==0x11D) {
+        	// TODO write game to tape
+        	return 0x39;
+        }
+        if(addr==0xA500) {
+        	// TODO read from tape (called twice in a row for 2 blocks)
+        	return 0x39;
+        }
                 
         if(addr<0x5000) {
         	return ram[addr];
