@@ -167,7 +167,7 @@ function startMadness() {
 			return;
 		}
 		
-		console.log('Interrupt');
+		//console.log('Interrupt');
 		state='servicingInterrupt';
 		
 		// Hold all the registers (INT would push them on the stack)
@@ -248,24 +248,21 @@ function startMadness() {
         }
         
         if(addr==0x0B3E) {
-        	// TODO play sound effect
-        	console.log('Sound effect');
+        	var audio = new Audio('flute.wav');
+        	audio.play();
         	return 0x39;
         }
         
         if(addr==0x173F) {
-        	console.log('Entering quiet mode');
         	quietMode=true;
         	return 0xBD;
         }
         if(addr==0x1767) {
-        	console.log('Exiting quiet mode');
         	quietMode=false;
         	return 0x7E;
         }
         
-        if(addr==0x11D) {
-        	// TODO write game to tape
+        if(addr==0x11D) {        	
         	var data = '';
         	var x;
         	// 0200-05FF (engine data and screen)
@@ -277,7 +274,6 @@ function startMadness() {
         		data = data + String.fromCharCode(ram[x]);
         	}
         	$('#cocoTape').val(btoa(data));
-        	console.log(data.length);
         	return 0x39;
         }
         if(addr==0xA500) {
@@ -288,7 +284,6 @@ function startMadness() {
         		return 0x39
         	}        	        	
         	data = atob($('#cocoTape').val());
-        	console.log(data.length);
         	var pos = 0;
         	for(x=0x200;x<0x600;++x) {
         		ram[x] = data.charCodeAt(pos++);        		

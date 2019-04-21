@@ -7,6 +7,7 @@
 >>>   +splash.jpg<br>
 >>>   +madness.js<br>
 >>>   +BinaryDataMadness.js<br>
+>>>   +flute.wav<br>
 >>>   +inst.cas<br>
 >>>   +first.cas<br>
 >>>   +s_one.cas<br>
