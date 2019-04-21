@@ -31,6 +31,8 @@ window.onload = function() {startMadness();}
 </script>
 ```
 
+>>> playMe {
+
 # Play Me! 
 
 Play the game in a CoCo emulator. Click on the splash screen below to open the console and then press any key.
@@ -39,7 +41,23 @@ Play the game in a CoCo emulator. Click on the splash screen below to open the c
 <img id="splashElement" src="splash.jpg">
 <textarea readonly id="madnessConsole" rows="16" style="display:none;background-color: #00FF01; color: black;font-family: monospace;font-size:12px;width:33ch;"></textarea>
 
+<div id="cocoTapeArea">
+W - Return to game<br>
+! - Save game to tape area below<br>
+) - Load game from tape area below<br>
+</p>
+The text area below is the virtual cassette tape. Instead of writing to tape, the emulator writes data as two-digit hex
+values to this text area.
+</p>
+The "!" command will write 2111 bytes (4222 characters)
+to the text box. You must select all the characters (CNTRL-A) and copy them (CNTRL-C). Then store them
+in a text file for later use.
+</p>
+Before the ")" command you must paste the desired saved-data back into the text area.
+</p>
+<textarea id="cocoTape" rows="16" style="font-size:8px;width:80ch;" ></textarea>
 </div>
+
 ```
 >>> }
 

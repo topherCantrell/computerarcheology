@@ -87,6 +87,13 @@ PrintChar:
 
 # Save to Tape
 
+Before calling this, the QUIET routine copies 0000-00FF to 0240-033F.
+Then we write two binary files here:
+  * 0200-05FF (engine data and screen)
+  * 3BC1-3FFF (tables) 
+
+2111 (decimal) bytes written/read.
+
  1D1 -- Write game engine data from 0240-05FF (includes lower 256 bytes at 240).<br>
  This also gets the screen. Empty filename.<br>
 
@@ -100,6 +107,7 @@ PrintChar:
 
 ```code
 SaveToTape:
+
 0375: 8E 01 D1            LDX     #$01D1                    ; 011D: Filename buffer
 0378: 6F 80               CLR     ,X+                       ; 0120: Zero first byte of name
 037A: CC 20 08            LDD     #$2008                    ; 0122: Write 20 (space) ...
@@ -3034,12 +3042,13 @@ CommandQUIET:
 1742: 10 CE 02 37         LDS     #$0237                    ; Need to relocate stack while we work with the area
 1746: 0F 78               CLR     <$78                      ; {ram:m67} File status: CLOSED
 1748: 81 57               CMPA    #$57                      ; 'W'
-174A: 27 1B               BEQ     $1767                     ; 'W' ... ignore (return to game loop)
+174A: 27 1B               BEQ     $1767                     ; 'W' ... return to game loop
 174C: 81 21               CMPA    #$21                      ; '!' ...
 174E: 27 1A               BEQ     $176A                     ; ... Save engine state to tape
 1750: 81 29               CMPA    #$29                      ; ' ')' ... reload game data
 1752: 26 EB               BNE     $173F                     ; {CommandQUIET} Unknown action ... go back and get a valid one
 ;
+; Load
 1754: BD A5 00            JSR     $A500                     ; CLOADM Load engine state (BASIC)
 1757: BD A5 00            JSR     $A500                     ; CLOADM Load game state (BASIC)
 175A: 8E 02 40            LDX     #$0240                    ; Restore 1st 256 bytes
@@ -3051,6 +3060,7 @@ CommandQUIET:
 1765: 26 F9               BNE     $1760                     ; ... 0
 1767: 7E 0D 36            JMP     $0D36                     ; {MainGameLoop} Continue near top of game loop
 ;
+; Save
 176A: 8E 02 40            LDX     #$0240                    ; Engine state
 176D: 5F                  CLRB                              ; Move ...
 176E: DE 8A               LDU     <$8A                      ; {ram:zeroWord} ... 256 ...

@@ -48,6 +48,8 @@ function startMadness() {
 	var cursorChar2 = ' ';
 	var cursorCur = cursorChar;
 	
+	var quietMode = false;
+	
 	var cocoConsole = $('#madnessConsole');
 	
 	$('#splashElement').on('click',function() {
@@ -61,6 +63,11 @@ function startMadness() {
 	});
 		
 	cocoConsole.keydown(function(evt) {
+		
+		var c = evt.keyCode
+		if(c==16) {
+			return;
+		}
 		
 		// Consume the event
         evt.preventDefault();
@@ -79,7 +86,7 @@ function startMadness() {
 		}
 		
 		if(state=='waitForKey') {
-			var c = evt.keyCode
+			//console.log(c);			
 			if(c==38) {
 				screen = 0;				
 				updateScreen();
@@ -89,6 +96,11 @@ function startMadness() {
 				screen = 1;
 				updateScreen();
 				return;
+			}
+			if(c==49 && evt.shiftKey) {
+				c = 33; // !
+			} else if(c==48 && evt.shiftKey) {
+				c = 41; // )
 			}
 			CPU6809.set('a',c);
 			state='playing';
@@ -150,6 +162,12 @@ function startMadness() {
 			throw 'UNEXPECTED STATE FOR INTERRUPT: '+state;
 		}
 		
+		if(quietMode) {
+			// Quiet mode ... no interrupts
+			return;
+		}
+		
+		console.log('Interrupt');
 		state='servicingInterrupt';
 		
 		// Hold all the registers (INT would push them on the stack)
@@ -210,6 +228,8 @@ function startMadness() {
 		updateScreen();		
 	}
 	
+	var readingFirst = true;
+	
 	function read(addr) {
 		
 		// All 6809 reads are handled here
@@ -229,15 +249,54 @@ function startMadness() {
         
         if(addr==0x0B3E) {
         	// TODO play sound effect
+        	console.log('Sound effect');
         	return 0x39;
+        }
+        
+        if(addr==0x173F) {
+        	console.log('Entering quiet mode');
+        	quietMode=true;
+        	return 0xBD;
+        }
+        if(addr==0x1767) {
+        	console.log('Exiting quiet mode');
+        	quietMode=false;
+        	return 0x7E;
         }
         
         if(addr==0x11D) {
         	// TODO write game to tape
+        	var data = '';
+        	var x;
+        	// 0200-05FF (engine data and screen)
+        	// 3BC1-3FFF (tables)
+        	for(x=0x200;x<0x600;++x) {
+        		data = data + String.fromCharCode(ram[x]);
+        	}
+        	for(x=0x3BC1;x<0x4000;++x) {
+        		data = data + String.fromCharCode(ram[x]);
+        	}
+        	$('#cocoTape').val(btoa(data));
+        	console.log(data.length);
         	return 0x39;
         }
         if(addr==0xA500) {
-        	// TODO read from tape (called twice in a row for 2 blocks)
+        	// Two reads in a row. Ignore the first one. We do all the work
+        	// in the second.
+        	if(readingFirst) {
+        		readingFirst = false;
+        		return 0x39
+        	}        	        	
+        	data = atob($('#cocoTape').val());
+        	console.log(data.length);
+        	var pos = 0;
+        	for(x=0x200;x<0x600;++x) {
+        		ram[x] = data.charCodeAt(pos++);        		
+        	}
+        	for(x=0x3BC1;x<0x4000;++x) {
+        		ram[x] = data.charCodeAt(pos++); 
+        	}   
+        	updateScreen();
         	return 0x39;
         }
                 
