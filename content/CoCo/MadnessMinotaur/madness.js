@@ -255,10 +255,11 @@ function startMadness() {
         
         if(addr==0x173F) {
         	quietMode=true;
+        	$('#cocoTapeArea').show();
         	return 0xBD;
         }
         if(addr==0x1767) {
-        	quietMode=false;
+        	quietMode=false;        	
         	return 0x7E;
         }
         
@@ -267,7 +268,7 @@ function startMadness() {
         	var x;
         	// 0200-05FF (engine data and screen)
         	// 3BC1-3FFF (tables)
-        	for(x=0x200;x<0x600;++x) {
+        	for(x=0x240;x<0x600;++x) {
         		data = data + String.fromCharCode(ram[x]);
         	}
         	for(x=0x3BC1;x<0x4000;++x) {
@@ -285,7 +286,7 @@ function startMadness() {
         	}        	        	
         	data = atob($('#cocoTape').val());
         	var pos = 0;
-        	for(x=0x200;x<0x600;++x) {
+        	for(x=0x240;x<0x600;++x) {
         		ram[x] = data.charCodeAt(pos++);        		
         	}
         	for(x=0x3BC1;x<0x4000;++x) {
@@ -305,7 +306,6 @@ function startMadness() {
         }
         
         if(addr==0xA1B1) {
-        	// TODO blink cursor
         	drawCursor();
         	state = 'waitForKey';
         	// We return, but we aren't running. The key-event will set
@@ -326,7 +326,7 @@ function startMadness() {
         	// Scroll 2-page screen
         	
         	var i;
-        	for(i=0x200;i<0x05E0;++i) {
+        	for(i=0x240;i<0x05E0;++i) {
         		ram[i] = ram[i+32];
         	}
         	
@@ -381,3 +381,7 @@ function startMadness() {
 	}		
     
 };
+
+function viewSaveFile(data) {
+	data = atob(data);	
+}

@@ -19,6 +19,7 @@
 >>>   +s_seven.cas<br>
 >>>   RAMUse.md<br>
 >>>   Code.md<br>
+>>>   SaveGameViewer.md<br>
 >>>   ----<br>
 >>>   Journal.md<br>
 
@@ -42,7 +43,7 @@ Play the game in a CoCo emulator. Click on the splash screen below to open the c
 <img id="splashElement" src="splash.jpg">
 <textarea readonly id="madnessConsole" rows="16" style="display:none;background-color: #00FF01; color: black;font-family: monospace;font-size:12px;width:33ch;"></textarea>
 
-<div id="cocoTapeArea">
+<div id="cocoTapeArea" style="display:none">
 W - Return to game<br>
 ! - Save game to tape area below<br>
 ) - Load game from tape area below<br>
@@ -1572,6 +1573,7 @@ Floor 4
 </pre>                                                                                                                                                                                                               
 </span>
 
+<pre>
 ***** Object Data *****
 FOOD in room 18
 BOTTLE in room 16
@@ -1798,4 +1800,5 @@ A6BE  : 18:19	Rolling pointer to BASIC rom for random numbers
   00  : FC  time.
   00  : FD
   00  : FE
+</pre>
 ```
