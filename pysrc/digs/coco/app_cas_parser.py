@@ -12,7 +12,7 @@ def add_leader(data):
     return data
 
 
-def add_filename_block(data, name, id, continuous, exec_addr, load_addr):
+def add_filename_block(data, name, id, is_binary, continuous, exec_addr, load_addr):
     data = data + b'\x55\x3C'
     p = len(data)
     data = data + b'\x00\x0F'
@@ -20,7 +20,10 @@ def add_filename_block(data, name, id, continuous, exec_addr, load_addr):
         raise Exception('Filename must be 8 characters')
     data = data + name.encode()
     data = data + bytes([id])
-    data = data + b'\x00'
+    if is_binary:        
+        data = data + b'\x00'
+    else:
+        data = data + b'\xFF'
     if continuous:
         data = data + b'\x00'
     else:
@@ -139,18 +142,18 @@ while True:
         break
     bin = bin + block['data']
 
-print(base64.b64encode(bin))
+print(base64.b64encode(bin).decode())
 
 # Written as 2 files
 # TODO what is the byte after the id?
 b = add_leader(b'')
-b = add_filename_block(b, '        ', 2, True, 0x673B, 0x0240)
+b = add_filename_block(b, '        ', 2, True, True, 0x673B, 0x0240)
 b = add_leader(b)
 b = add_data(b, bin[0:960])
 b = add_eof_block(b)
 
 b = add_leader(b)
-b = add_filename_block(b, '        ', 2, True, 0x673B, 0x3BC1)
+b = add_filename_block(b, '        ', 2, True, True, 0x673B, 0x3BC1)
 b = add_leader(b)
 b = add_data(b, bin[960:])
 b = add_eof_block(b)
