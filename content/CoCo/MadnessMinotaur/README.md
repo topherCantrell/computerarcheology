@@ -40,24 +40,35 @@ window.onload = function() {startMadness();}
 Play the game in a CoCo emulator. Click on the splash screen below to open the console and then press any key.
 
 ```html
+<p>
 <img id="splashElement" src="splash.jpg">
 <textarea readonly id="madnessConsole" rows="16" style="display:none;background-color: #00FF01; color: black;font-family: monospace;font-size:12px;width:33ch;"></textarea>
+</p>
 
-<div id="cocoTapeArea" style="display:none">
-W - Return to game<br>
-! - Save game to tape area below<br>
-) - Load game from tape area below<br>
+<p>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#cocoTapeArea">Open/Close Virtual Tape</button>
 </p>
-The text area below is the virtual cassette tape. Instead of writing to tape, the emulator writes data as two-digit hex
-values to this text area.
+
+<div class="collapse" id="cocoTapeArea">
+<p>
+To access tape functions, enter the QUIET command. Then press one of the following 3 keys:
+<ul>
+<li>W - Return to game</li>
+<li>! - Save game to tape area below</li>
+<li>) - Load game from tape area below</li>
+</ul>
 </p>
-The "!" command will write 2111 bytes (4222 characters)
-to the text box. You must select all the characters (CNTRL-A) and copy them (CNTRL-C). Then store them
-in a text file for later use.
+<p>
+The text area below is the virtual cassette tape. Instead of writing to tape, the emulator writes base64 encoded data 
+to this text area.
+</p>
+</p>
+The "!" command will write 2111 bytes to the text box. You must select all the characters (CNTRL-A) and copy 
+them (CNTRL-C). Then store them in a text file for later use.
 </p>
 Before the ")" command you must paste the desired saved-data back into the text area.
 </p>
-<textarea id="cocoTape" rows="16" style="font-size:8px;width:80ch;" ></textarea>
+<textarea id="cocoTape" rows="16" style="font-size:8px;width:180ch;" ></textarea>
 </div>
 
 ```

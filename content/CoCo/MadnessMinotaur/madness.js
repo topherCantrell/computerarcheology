@@ -255,7 +255,7 @@ function startMadness() {
         
         if(addr==0x173F) {
         	quietMode=true;
-        	$('#cocoTapeArea').show();
+        	$('#cocoTapeArea').collapse('show');
         	return 0xBD;
         }
         if(addr==0x1767) {
