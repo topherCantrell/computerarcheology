@@ -69,9 +69,11 @@ var ROOM_DESC = [
 
 var FRAGS = {
 		'roomStart' : '<g transform="translate({{x}},{{y}})">'+
-		                '<rect x="0" y="0" width="150" height="150" fill="#{{color}}" stroke="black"/>'+
+		                '<rect x="0" y="0" width="150" height="150" fill="{{color}}" stroke="black"/>'+
 		                '<text x="5" y="15" font-size="10">{{room_num}}: {{room_desc}}</text>',
-		'roomEnd' : '</g>'
+		'roomEnd' : '</g>',
+		
+		'floorSep'  : '<line x1="100" y1="{{y1}}" x2="1825" y2="{{y2}}" stroke="gray"/>'
 }
 
 function sub(s,dict) {
@@ -85,17 +87,42 @@ function sub(s,dict) {
 function viewSaveFile(data) {
 	data = atob(data);
 	
-	subs = {
-			x:'100',
-			y:'100',
-			color:'CFC',
-			room_num:0,
-			room_desc:ROOM_DESC[0]
+	// Fix scrolling for the map
+	$('.content div').css('overflow','unset');
+	
+	var g = '<g transform="scale(0.70)">';
+	var rn;
+	var fn;
+	var x,y,color;
+	for(rn=0;rn<256;++rn) {
+		fn = ~~(rn / 64);
+		x = (rn%64)%8;
+		y = ~~((rn%64)/8);
+		
+		color = '#EEE';
+		if(ROOM_DESC[rn] == 'MAZE') {
+			color = '#CCC';
+		}
+	
+		subs = {
+				x:(150+75)*x+100,
+				y:(150+75)*y+100+2000*fn,
+				color:color,
+				room_num:rn,
+				room_desc:ROOM_DESC[rn]
+		}
+		
+		
+		g = g + sub(FRAGS.roomStart,subs);
+		g = g + FRAGS.roomEnd;
+	
 	}
 	
-	g = '';
-	g = g + sub(FRAGS.roomStart,subs);
-	g = g + FRAGS.roomEnd;
+	for(y=1;y<4;++y) {
+		g = g + sub(FRAGS.floorSep,{y1:y*2000-35,y2:y*2000-35});
+	}
+	
+	g = g + '</g>';
 	
 	
 	$('#svg').html(g);		

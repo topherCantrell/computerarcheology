@@ -6,6 +6,10 @@
 
 Paste the text of your save-game text file into the box below and click the "Show" button.
 
+Leave the box blank to show the game-independent map.
+
+The map is SVG -- you can scroll in and out.
+
 ```html
 </p>
 <textarea id="cocoTape" rows="16" style="font-size:8px;width:80ch;" ></textarea>
@@ -25,7 +29,7 @@ $('#parseData').on('click',function() {
 });
 </script>
 
-<svg id="svg" width="1000" height="1000">
+<svg id="svg" width="1400" height="5600">
 </svg>
 
 ```
