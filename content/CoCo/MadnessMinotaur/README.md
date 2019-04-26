@@ -6,6 +6,7 @@
 >>>   +Madness.jpg<br>
 >>>   +splash.jpg<br>
 >>>   +madness.js<br>
+>>>   +savegame.js<br>
 >>>   +BinaryDataMadness.js<br>
 >>>   +flute.wav<br>
 >>>   +inst.cas<br>

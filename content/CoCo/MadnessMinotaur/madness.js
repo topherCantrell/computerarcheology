@@ -382,6 +382,3 @@ function startMadness() {
     
 };
 
-function viewSaveFile(data) {
-	data = atob(data);	
-}

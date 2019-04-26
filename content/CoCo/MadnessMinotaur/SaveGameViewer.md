@@ -14,7 +14,7 @@ Paste the text of your save-game text file into the box below and click the "Sho
 </p>
 
 <script src="BinaryDataMadness.js"></script>
-<script src="madness.js"></script>
+<script src="savegame.js"></script>
 <script>
 $(function() {
 
@@ -24,6 +24,9 @@ $('#parseData').on('click',function() {
 
 });
 </script>
+
+<svg id="svg" width="1000" height="1000">
+</svg>
 
 ```
 
