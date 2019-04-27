@@ -76,21 +76,27 @@ var FRAGS = {
 		'floorSep'  : '<line x1="100" y1="{{y1}}" x2="1825" y2="{{y2}}" stroke="gray"/>',
 		
 		'doorUp' : '<text x="5" y="30" font-size="10">Up:{{target}}{{action}}</text>',
-		'doorDown': '<text x="145" y="30" font-size="10" text-anchor="end">Down:{{target}}</text>',
+		'doorDown': '<text x="145" y="30" font-size="10" text-anchor="end">Down:{{target}}{{action}}</text>', 
 		
 		'passageTwoWayU' : '<text x="5" y="30" font-size="10">Up:{{target}}{{action}}</text>',	
-		'passageTwoWayD' : '<text x="145" y="30" font-size="10" text-anchor="end">Down:{{target}}</text>',
+		'passageTwoWayTargetU' : '',
+		'passageTwoWayD' : '<text x="145" y="30" font-size="10" text-anchor="end">Down:{{target}}{{action}}</text>',
+		'passageTwoWayTargetD' : '',
 		'passageTwoWayN' : '<line x1="{{n_x1}}" y1="{{n_y1}}" x2="{{n_x2}}" y2="{{n_y2}}" stroke="black"/>',
-		'passageTwoWayS' : '<line x1="{{s_x1}}" y1="{{s_y1}}" x2="{{s_x2}}" y2="{{s_y2}}" stroke="black"/>',	
+		'passageTwoWayTargetN' : '<text x="{{n_tx}}" y="{{n_ty}}" text-anchor="middle">{{action}}</text>',
+		'passageTwoWayS' : '<line x1="{{s_x1}}" y1="{{s_y1}}" x2="{{s_x2}}" y2="{{s_y2}}" stroke="black"/>',
+		'passageTwoWayTargetS' : '<text x="{{s_tx}}" y="{{s_ty}}" text-anchor="middle">{{action}}</text>',	
 		'passageTwoWayE' : '<line x1="{{e_x1}}" y1="{{e_y1}}" x2="{{e_x2}}" y2="{{e_y2}}" stroke="black"/>',
-		'passageTwoWayW' : '<line x1="{{w_x1}}" y1="{{w_y1}}" x2="{{w_x2}}" y2="{{w_y2}}" stroke="black"/>',				
+		'passageTwoWayTargetE' : '<text x="{{e_tx}}" y="{{e_ty}}">{{action}}</text>',
+		'passageTwoWayW' : '<line x1="{{w_x1}}" y1="{{w_y1}}" x2="{{w_x2}}" y2="{{w_y2}}" stroke="black"/>',
+		'passageTwoWayTargetW' : '<text x="{{w_tx}}" y="{{w_ty}}" text-anchor="end">{{action}}</text>',		
 		
 		'neighborNumberU' : '',
 		'neighborNumberD' : '',
-		'neighborNumberN' : '<text x="{{ns_rtx}}" y="{{n_rty}}" text-anchor="middle">{{target}}{{action}}</text>',
-		'neighborNumberE' : '<text x="{{e_rtx}}" y="{{ew_rty}}">{{target}}{{action}}</text>',
-		'neighborNumberW' : '<text x="{{w_rtx}}" y="{{ew_rty}}" text-anchor="end">{{target}}{{action}}</text>',
-		'neighborNumberS' : '<text x="{{ns_rtx}}" y="{{s_rty}}" text-anchor="middle">{{target}}{{action}}</text>',
+		'neighborNumberN' : '<text x="{{ns_rtx}}" y="{{n_rty}}" text-anchor="middle">{{target}}</text>',
+		'neighborNumberE' : '<text x="{{e_rtx}}" y="{{ew_rty}}">{{target}}</text>',
+		'neighborNumberW' : '<text x="{{w_rtx}}" y="{{ew_rty}}" text-anchor="end">{{target}}</text>',
+		'neighborNumberS' : '<text x="{{ns_rtx}}" y="{{s_rty}}" text-anchor="middle">{{target}}</text>',
 		
 }
 
@@ -134,9 +140,57 @@ function getNeighborRoomNumber(rn,dir) {
 	return rn;
 }
 
+var BETWEEN_ROOM_ACTIONS = {
+		0x1AFB : 'A',
+		0x1B20 : 'B',
+		0x1B03 : 'C',
+		0x1B06 : 'D',
+		0x1B09 : 'E',
+		0x1B34 : 'F',
+		0x1B5F : 'G',
+		0x1B43 : 'H',
+		0x1B4A : 'I'
+}
+
+var DIRS = {
+		1 : 'S',
+		2 : 'W',
+		4 : 'E',
+		8 : 'N',
+		16 : 'D',
+		32 : 'U'
+}
+
+var OPPOSITE_DIR = {'U':'D', 'D':'U', 'N':'S', 'E':'W', 'W':'E', 'S':'N'};
+
 function getBetweenRoomAction(rn,dir) {
-	// These are fixed
-	// TODO
+	var p = 0x3B4A;
+	while(true) {		
+		var a = binaryData.read(p);
+		var b = binaryData.read(p+1);
+		if(b==0) break;
+		b = DIRS[b];
+		var c = binaryData.read(p+2)*256 + binaryData.read(p+3);
+		p += 4;	
+		if((rn==a) && (dir==b)) {			
+			return BETWEEN_ROOM_ACTIONS[c];
+		}		
+	}
+	// Just like the code ... run the list in the opposite travel direction
+	var p = 0x3B4A;
+	while(true) {
+		var a = binaryData.read(p);
+		var b = binaryData.read(p+1);
+		if(b==0) break;
+		b = DIRS[b];
+		var c = binaryData.read(p+2)*256 + binaryData.read(p+3);
+		p += 4;	
+		a = getNeighborRoomNumber(a,b);
+		b = OPPOSITE_DIR[b];
+		if( (rn==a) && (dir==b)) {
+			return BETWEEN_ROOM_ACTIONS[c];
+		}		
+	}
 	return '';
 }
 
@@ -170,6 +224,7 @@ function viewSaveFile(data) {
 	var rn;
 	var fn;
 	var x,y,color;
+	var shown = [];
 	for(rn=0;rn<256;++rn) {
 		fn = ~~(rn / 64);
 		x = (rn%64)%8;
@@ -192,8 +247,7 @@ function viewSaveFile(data) {
 		
 		var doors = getRoomDoors(rn);
 		
-		var dirs = 'UDNEWS';
-		var opos = {'U':'D', 'D':'U', 'N':'S', 'E':'W', 'W':'E', 'S':'N'};
+		var dirs = 'UDNEWS';		
 		subs = {
 			'n_x1' : 75,  'n_y1' : 0,   'n_x2' : 75,   'n_y2' : -38,
 			's_x1' : 75,  's_y1' : 150, 's_x2' : 75,   's_y2' : 188,			
@@ -201,8 +255,14 @@ function viewSaveFile(data) {
 			'w_x1' : 0,   'w_y1' : 75,  'w_x2' : -38,  'w_y2' : 75,
 			'n_rty' : -42, 's_rty' : 192, 'e_rtx' : 192, 'w_rtx' : -42,
 			'ns_rtx' : 75, 'ew_rty' : 80,
+			'n_tx' : 85,  'n_ty' : -38,
+			's_tx' : 85,  's_ty' : 188,
+			'e_tx' : 183, 'e_ty' : 90,
+			'w_tx' : -33, 'w_ty' : 90,
 		}
 		for(var i=0;i<dirs.length;++i) {
+			// TODO keep track of actions show between grid rooms and only show them once
+			// TODO on grid edges, show the actions like other grid rooms (not part of room number like Up/Down)
 			var c = dirs[i];
 			var ndn = getNeighborRoomNumber(rn,c);
 			var ndoors = getRoomDoors(ndn);
@@ -210,16 +270,21 @@ function viewSaveFile(data) {
 			subs['target'] = ndn
 			subs['action'] = action
 			if(doors.indexOf(c)>=0) {				
-				if(ndoors.indexOf(opos[c])>=0) {
-					// line connects to neighbor room
-					g = g + sub(FRAGS['passageTwoWay'+c],subs);
-				} else {
-					// line points to neighbor
-					g = g + sub(FRAGS['passageTwoWay'+c],subs);					
-				}	
+				g = g + sub(FRAGS['passageTwoWay'+c],subs);							
 				if(isEdge(rn,c)) {
 					// room number
 					g = g + sub(FRAGS['neighborNumber'+c],subs);	
+					g = g + sub(FRAGS['passageTwoWayTarget'+c],subs);
+				} else if(action!='') {
+					var sn = ''+rn+':'+ndn+':'+action;
+					var sn2 = ''+ndn+':'+rn+':'+action;
+					if(shown.indexOf(sn)<0) {						
+						shown.push(sn);
+						shown.push(sn2);
+						g = g + sub(FRAGS['passageTwoWayTarget'+c],subs);	
+					} else {
+						console.log('skipping')
+					}
 				}
 			} 			
 		}
