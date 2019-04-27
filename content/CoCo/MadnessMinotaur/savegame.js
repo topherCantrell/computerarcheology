@@ -73,7 +73,25 @@ var FRAGS = {
 		                '<text x="5" y="15" font-size="10">{{room_num}}: {{room_desc}}</text>',
 		'roomEnd' : '</g>',
 		
-		'floorSep'  : '<line x1="100" y1="{{y1}}" x2="1825" y2="{{y2}}" stroke="gray"/>'
+		'floorSep'  : '<line x1="100" y1="{{y1}}" x2="1825" y2="{{y2}}" stroke="gray"/>',
+		
+		'doorUp' : '<text x="5" y="30" font-size="10">Up:{{target}}{{action}}</text>',
+		'doorDown': '<text x="145" y="30" font-size="10" text-anchor="end">Down:{{target}}</text>',
+		
+		'passageTwoWayU' : '<text x="5" y="30" font-size="10">Up:{{target}}{{action}}</text>',	
+		'passageTwoWayD' : '<text x="145" y="30" font-size="10" text-anchor="end">Down:{{target}}</text>',
+		'passageTwoWayN' : '<line x1="{{n_x1}}" y1="{{n_y1}}" x2="{{n_x2}}" y2="{{n_y2}}" stroke="black"/>',
+		'passageTwoWayS' : '<line x1="{{s_x1}}" y1="{{s_y1}}" x2="{{s_x2}}" y2="{{s_y2}}" stroke="black"/>',	
+		'passageTwoWayE' : '<line x1="{{e_x1}}" y1="{{e_y1}}" x2="{{e_x2}}" y2="{{e_y2}}" stroke="black"/>',
+		'passageTwoWayW' : '<line x1="{{w_x1}}" y1="{{w_y1}}" x2="{{w_x2}}" y2="{{w_y2}}" stroke="black"/>',				
+		
+		'neighborNumberU' : '',
+		'neighborNumberD' : '',
+		'neighborNumberN' : '<text x="{{ns_rtx}}" y="{{n_rty}}" text-anchor="middle">{{target}}{{action}}</text>',
+		'neighborNumberE' : '<text x="{{e_rtx}}" y="{{ew_rty}}">{{target}}{{action}}</text>',
+		'neighborNumberW' : '<text x="{{w_rtx}}" y="{{ew_rty}}" text-anchor="end">{{target}}{{action}}</text>',
+		'neighborNumberS' : '<text x="{{ns_rtx}}" y="{{s_rty}}" text-anchor="middle">{{target}}{{action}}</text>',
+		
 }
 
 function sub(s,dict) {
@@ -83,8 +101,66 @@ function sub(s,dict) {
 	return s;
 }
 
+binaryData = makeBinaryDataMadness();
+
+function getRoomDoors(rn) {
+	var d = binaryData.read(0x3DB8+rn);
+	//--UDNEWS
+	ret = '--';
+	if((d&32) != 0) ret=ret+'U';
+	else ret=ret+'-';
+	if((d&16) != 0) ret=ret+'D';
+	else ret=ret+'-';
+	if((d&8) != 0) ret=ret+'N';
+	else ret=ret+'-';
+	if((d&4) != 0) ret=ret+'E';
+	else ret=ret+'-';
+	if((d&2) != 0) ret=ret+'W';
+	else ret=ret+'-';
+	if((d&1) != 0) ret=ret+'S';
+	else ret=ret+'-';
+	return ret;		
+}
+
+function getNeighborRoomNumber(rn,dir) {
+	if(dir=='U') rn = rn - 64;
+	else if(dir=='D') rn = rn + 64;
+	else if(dir=='W') rn = rn - 1;
+	else if(dir=='E') rn = rn + 1;
+	else if(dir=='N') rn = rn - 8;
+	else if(dir=='S') rn = rn + 8;
+	if(rn>256) rn=rn-256;
+	if(rn<0) rn=rn+256;
+	return rn;
+}
+
+function getBetweenRoomAction(rn,dir) {
+	// These are fixed
+	// TODO
+	return '';
+}
+
+function isEdge(rn,dir) {
+	fn = ~~(rn / 64);
+	x = (rn%64)%8;
+	y = ~~((rn%64)/8);
+	if(dir=='U') {
+		return fn==0;
+	} else if(dir=='D') {
+		return fn==3;
+	} else if(dir=='N') {
+		return y==0;
+	} else if(dir=='E') {
+		return x==7;
+	} else if(dir=='W') {
+		return x==0;
+	} else if(dir=='S') {
+		return y==7;
+	}	
+}
 
 function viewSaveFile(data) {
+	
 	data = atob(data);
 	
 	// Fix scrolling for the map
@@ -111,9 +187,44 @@ function viewSaveFile(data) {
 				room_num:rn,
 				room_desc:ROOM_DESC[rn]
 		}
+				
+		g = g + sub(FRAGS.roomStart,subs);		
 		
+		var doors = getRoomDoors(rn);
 		
-		g = g + sub(FRAGS.roomStart,subs);
+		var dirs = 'UDNEWS';
+		var opos = {'U':'D', 'D':'U', 'N':'S', 'E':'W', 'W':'E', 'S':'N'};
+		subs = {
+			'n_x1' : 75,  'n_y1' : 0,   'n_x2' : 75,   'n_y2' : -38,
+			's_x1' : 75,  's_y1' : 150, 's_x2' : 75,   's_y2' : 188,			
+			'e_x1' : 150, 'e_y1' : 75,  'e_x2' : 188,  'e_y2' : 75,
+			'w_x1' : 0,   'w_y1' : 75,  'w_x2' : -38,  'w_y2' : 75,
+			'n_rty' : -42, 's_rty' : 192, 'e_rtx' : 192, 'w_rtx' : -42,
+			'ns_rtx' : 75, 'ew_rty' : 80,
+		}
+		for(var i=0;i<dirs.length;++i) {
+			var c = dirs[i];
+			var ndn = getNeighborRoomNumber(rn,c);
+			var ndoors = getRoomDoors(ndn);
+			var action = getBetweenRoomAction(rn,c);
+			subs['target'] = ndn
+			subs['action'] = action
+			if(doors.indexOf(c)>=0) {				
+				if(ndoors.indexOf(opos[c])>=0) {
+					// line connects to neighbor room
+					g = g + sub(FRAGS['passageTwoWay'+c],subs);
+				} else {
+					// line points to neighbor
+					g = g + sub(FRAGS['passageTwoWay'+c],subs);					
+				}	
+				if(isEdge(rn,c)) {
+					// room number
+					g = g + sub(FRAGS['neighborNumber'+c],subs);	
+				}
+			} 			
+		}
+								
+		
 		g = g + FRAGS.roomEnd;
 	
 	}
@@ -122,8 +233,16 @@ function viewSaveFile(data) {
 		g = g + sub(FRAGS.floorSep,{y1:y*2000-35,y2:y*2000-35});
 	}
 	
-	g = g + '</g>';
+	// TODO passages
+	// TODO passage actions
+	// TODO plain jumps
+	// TODO targeted jumps
+	// TODO objects
+	// TODO creatures
+	// TODO player
+	// TODO spells
 	
+	g = g + '</g>';
 	
 	$('#svg').html(g);		
 	

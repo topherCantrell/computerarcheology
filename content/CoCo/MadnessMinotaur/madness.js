@@ -13,7 +13,7 @@ function startMadness() {
 	
 	// It is easier to have the RAM and program data in one array.
 	// Pull the binary into RAM.
-	var binData = makeBinaryDataPyramid();
+	var binData = makeBinaryDataMadness();
 	var ram = Array(0x5000);
 	var x;
 	var screen=1;

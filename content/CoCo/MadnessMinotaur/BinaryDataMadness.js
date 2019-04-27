@@ -1,5 +1,5 @@
 
-function makeBinaryDataPyramid() {
+function makeBinaryDataMadness() {
     
     var dataOrigin = 0x0300;
     var data = [
