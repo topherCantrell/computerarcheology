@@ -43,7 +43,7 @@ var GRAPHICS =
 	'<g transform="translate({{x}},{{y}})">'+
 	'<rect x="0" y="0" width="150" height="150" fill="{{room_color}}" stroke="black"/>' + 
     '<text x="5" y="15" font-size="10">{{room}}: {{description}}</text>' + 
-    '<text x="145" y="15" font-size="10" text-anchor="end">{{enter}}</text>' +     
+    '<text x="145" y="15" font-size="10" text-anchor="end" fill="{{enter_fill}}">{{enter}}</text>' +     
     '<text x="5" y="30" font-size="10">{{U_room}}{{U_action}}</text>' + 
     '<text x="145" y="30" font-size="10" text-anchor="end">{{D_room}}{{D_action}}</text>' +     
     '<text x="75" y="70" font-size="12" text-anchor="middle" fill="red">{{monsters}}</text>' +     
@@ -256,20 +256,108 @@ function getSpell(rn) {
 	ret = '';
 	for(var i=0;i<8;++i) {
 		if(SPELL_INFO[i].room==rn && SPELL_INFO[i].learned==false) {
-			if(ret=='') {
-				// Full name (for now)
-				ret = SPELL_INFO[i].name;
-			} else if(ret.indexOf(',')>=0) {
-				// Add 2 letters to growing list
-				ret = ret + ',' + SPELL_INFO[i].name.substring(0,2);	
-			} else {
-				// Reduce the full name to two letters and add to the growing list
-				ret = ret.substring(0,2)+ ',' + SPELL_INFO[i].name.substring(0,2);	
-			}
-			return SPELL_INFO[i].name;
+			ret = ret + SPELL_INFO[i].name+',';			
 		}
 	}
-	return '';
+	return ret;
+}
+
+var OBJECTS = [];
+var OBJECT_NAMES = [
+	"FOOD",	"BOTTLE", "DAGGER", "MACE", "AX", "SWORD", "SHIELD", "FLUTE", "MUSHROOM", "PENDANT", "SCEPTER", "LAMP",
+	"BASKET", "PARCHMENT", "VIAL", "URN", "TALISMAN", "SCROLL", "GOBLET", "SKULL", "SCARAB", "JEWELBOX", "TABLET", "ROPE",	
+	"SPRITE", "TROGLODYTE", "SCORPION", "NYMPH", "SATYR", "MINOTAUR",
+	"ORACLE",	
+	"GOLD", "SILVER", "DIAMOND", "SPELLBOOK", "RUBY", "FLEECE", "TIARA", "POWDER", "AMULET", "POTION", "POWERRING", 
+	"LIGHTRING","TRUTHRING", "CROWN", "OPAL", "SAPPHIRE"
+]
+function getObjectsInRoom(rn) {	
+	ret = '';
+	for(var i=0;i<OBJECTS.length;++i) {
+		o = OBJECTS[i];
+		if(o['in_pack'] || o['spell_creature'] || !o['accessible']) continue;
+		if(o['room']==rn) {
+			if(o['protected']) ret = ret + '*';
+			ret = ret + o['name']+',';
+		}		
+	}
+	return ret;
+}
+function getMonstersInRoom(rn) {
+	ret = '';
+	for(var i=0;i<OBJECTS.length;++i) {
+		o = OBJECTS[i];
+		if(!o['spell_creature'] || !o['accessible']) continue;
+		if(o['name']=='ORACLE') continue;
+		if(o['room']==rn) {
+			ret = ret + o['name']+',';
+		}		
+	}
+	return ret;
+}
+function isOracleInRoom(rn) {
+	for(var i=0;i<OBJECTS.length;++i) {
+		o = OBJECTS[i];
+		if(o['name']!='ORACLE') continue;
+		if(o['room']==rn) {
+			return true;
+		}		
+	}
+	return false;
+}
+
+function truncList(s) {
+	if(s.endsWith(',')) s=s.substring(0,s.length-1);
+	return s;
+}
+
+ENTER_ROOM_ACTIONS = {
+	0x1B6D:'_a',
+	0x1B70:'_b',
+	0x1B73:'_c',
+	0x1B9C:'_d',
+	0x1BB3:'_e',
+	0x1BB7:'_f',
+	0x1BF9:'_g',
+	0x1C15:'_h',
+	0x1C2C:'_i',
+	0x1C2F:'_j',
+	0x1C32:'_k',
+	0x1C35:'_l',
+	0x1C38:'_m',
+	0x1C3B:'_n',
+	0x1C3E:'_o',
+	0x1C41:'_p',
+	0x1C68:'_q',
+	0x1C7A:'_r',
+	0x1C8D:'_s',
+	0x1CA9:'_t',
+	0x1CCC:'_u',
+	0x1CF0:'_v',
+	0x1D00:'_x',
+	0x1D22:'_203',
+	0x1D27:'_213',
+	0x1CE0:'_32',
+	0x1CD6:'_33',
+	0x1BB4:'_z',
+	0x1D2D:'_232'
+}
+
+function getEnterRoomAction(rn) {
+	ret = '';
+	// These are hardcoded -- even if there is no save game
+	if(rn==203) return '_203';
+	if(rn==213) return '_213';
+	if(rn==32) return '_32';
+	if(rn==33) return '_33';
+	if(rn==232) return '_232';	
+	for(var i=0;i<36;++i) {
+		if(readBinaryData(0x3C8F+i*3)==rn) {
+			var a = readBinaryData(0x3C8F+i*3+1)*256 + readBinaryData(0x3C8F+i*3+2);
+			ret = ret + ENTER_ROOM_ACTIONS[a]+',';
+		}
+	}
+	return ret;
 }
 
 function viewSaveFile(data) {
@@ -279,7 +367,13 @@ function viewSaveFile(data) {
 		SPELL_INFO[i].room = -1;		
 		SPELL_INFO[i].learned = false;
 	}	
-	// TODO reset the last jump to -1
+	// Reset jump
+	JUMPS[24][0] = -1;
+	// Reset current and last room
+	PLAYER = -1;
+	LAST_ROOM = -1;
+	// Reset objects
+	OBJECTS = [];
 	
 	saveGameData = atob(data);
 	
@@ -291,8 +385,27 @@ function viewSaveFile(data) {
 				SPELL_INFO[i].learned = true;
 			}
 		}
+		// The random jump (last in the list)
+		JUMPS[24][0] = readBinaryData(0x3C59);
+		// Player
+		PLAYER = readBinaryData(0);
+		LAST_ROOM = readBinaryData(1);
+		// Objects
+		for(var x=0;x<OBJECT_NAMES.length;++x) {
+			var co = {'name' : OBJECT_NAMES[x]};
+			OBJECTS.push(co);
+			co['room'] = readBinaryData(0x3CFC+x*3+0);
+			var bits = readBinaryData(0x3CFC+x*3+2);
+			co['in_pack'] = (bits&0x80)!=0;
+			co['spell_creature'] = (bits&0x40)!=0;
+			co['required'] = (bits&0x20)!=0;
+			co['protected'] = (bits&0x10)!=0;
+			co['fill_status'] = (bits>>2)&3;
+			co['dead_creature'] = (bits&0x2)!=0;
+			co['accessible'] = (bits&0x1)==0;			
+		}
 	}
-	// TODO last jump room at 0x3C59
+	
 	
 	// Fix scrolling for the map
 	$('.content div').css('overflow','unset');
@@ -315,6 +428,7 @@ function viewSaveFile(data) {
 			room:rn,
 			room_color: '#EEE',
 			enter:'',
+			enter_fill: 'red',
 			up:'',
 			down:'',
 			monsters: '',
@@ -388,24 +502,52 @@ function viewSaveFile(data) {
 		}
 		
 		// Spells
-		subs['spell'] = getSpell(rn);
+		subs['spell'] = truncList(getSpell(rn));
 		if(subs['spell']!='') {
 			subs['spell_fill'] = 'green';
 		}
 		
-		// TODO objects
-		// TODO creatures
-		// TODO player
+		// Player and last room (might be the same)
+		if(rn==LAST_ROOM) {
+			subs['room_color'] = '#EFE';
+		}
+		if(rn==PLAYER) {
+			subs['room_color'] = '#CFC';
+		}
+		
+		// Objects
+		subs['objects'] = truncList(getObjectsInRoom(rn));
+		
+		// Monsters
+		subs['monsters'] = truncList(getMonstersInRoom(rn));
+		
+		// Oracle
+		if(isOracleInRoom(rn)) {
+			subs['oracle'] = 'Oracle';
+			subs['oracle_fill'] = 'blue';
+		}		
+		
+		// Enter room actions		
+		if(rn==213 || rn==32 || rn==33 || rn==203 || rn==232) {
+			// These are fixed ... every game the same
+			subs['enter_fill'] = 'black';
+		}
+		subs['enter'] = truncList(getEnterRoomAction(rn));
+		
+		// TODO blocked passages
+		
+		// TODO data breakdown after map (put it in the HTML but hidden ... fill out and show)
+		
+		// TODO ability to pass in file in URL
 		
 		g = g + sub(GRAPHICS,subs);		
 			
 	}
 	
+	// Floor dividers
 	for(y=1;y<4;++y) {
 		g = g + '<line x1="30" y1="'+(y*2000-35)+'" x2="1900" y2="' + (y*2000-35)+'" stroke="black"/>';
-	}
-	
-	
+	}	
 	
 	g = g + '</g>';
 	
