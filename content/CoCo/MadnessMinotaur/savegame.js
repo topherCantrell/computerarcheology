@@ -253,8 +253,19 @@ var SPELL_INFO = [
 	{name: 'ISHTAR',  learned: false, room: -1}		
 ]
 function getSpell(rn) {
+	ret = '';
 	for(var i=0;i<8;++i) {
 		if(SPELL_INFO[i].room==rn && SPELL_INFO[i].learned==false) {
+			if(ret=='') {
+				// Full name (for now)
+				ret = SPELL_INFO[i].name;
+			} else if(ret.indexOf(',')>=0) {
+				// Add 2 letters to growing list
+				ret = ret + ',' + SPELL_INFO[i].name.substring(0,2);	
+			} else {
+				// Reduce the full name to two letters and add to the growing list
+				ret = ret.substring(0,2)+ ',' + SPELL_INFO[i].name.substring(0,2);	
+			}
 			return SPELL_INFO[i].name;
 		}
 	}

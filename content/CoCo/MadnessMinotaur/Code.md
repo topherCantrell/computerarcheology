@@ -89,7 +89,7 @@ PrintChar:
 
 Before calling this, the QUIET routine copies 0000-00FF to 0240-033F.
 Then we write two binary files here:
-  * 0200-05FF (engine data and screen)
+  * 0240-05FF (engine data and screen)
   * 3BC1-3FFF (tables) 
 
 2111 (decimal) bytes written/read.
