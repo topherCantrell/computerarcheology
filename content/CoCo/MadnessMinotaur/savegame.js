@@ -43,8 +43,10 @@ var GRAPHICS =
 	'<g transform="translate({{x}},{{y}})">'+
 	'<rect x="0" y="0" width="150" height="150" fill="{{room_color}}" stroke="black"/>' + 
     '<text x="5" y="15" font-size="10">{{room}}: {{description}}</text>' + 
-    '<text x="145" y="15" font-size="10" text-anchor="end" fill="{{enter_fill}}">{{enter}}</text>' +     
+    '<text x="145" y="15" font-size="10" text-anchor="end" fill="{{enter_fill}}">{{enter}}</text>' +    
+    '<rect x="2" y="22" width="75" height="12" fill="{{block_up_fill}}"/>'+
     '<text x="5" y="30" font-size="10">{{U_room}}{{U_action}}</text>' + 
+    '<rect x="79" y="22" width="70" height="12" fill="{{block_down_fill}}"/>'+
     '<text x="145" y="30" font-size="10" text-anchor="end">{{D_room}}{{D_action}}</text>' +     
     '<text x="75" y="70" font-size="12" text-anchor="middle" fill="red">{{monsters}}</text>' +     
     '<text x="5" y="45" font-size="10" fill="{{jump_color}}">{{jump}}</text>' + 
@@ -71,6 +73,11 @@ var GRAPHICS =
     
     '<line x1="0" y1="0" x2="150" y2="150" stroke="{{block_1}}"/>' + 
     '<line x1="150" y1="0" x2="0" y2="150" stroke="{{block_2}}"/>' +
+    
+    '<rect x="-10" y="65" width="20" height="20" fill="{{block_west_fill}}" fill-opacity=".80"/>'+
+    '<rect x="140" y="65" width="20" height="20" fill="{{block_east_fill}}" fill-opacity=".80"/>'+
+    '<rect y="-10" x="65" width="20" height="20" fill="{{block_north_fill}}" fill-opacity=".80"/>'+
+    '<rect y="140" x="65" width="20" height="20" fill="{{block_south_fill}}" fill-opacity=".80"/>'+
     
     '</g>'
 
@@ -456,7 +463,13 @@ function viewSaveFile(data) {
 			E_action : '',
 			W_action : '',
 			block_1 : 'none',
-			block_2 : 'none'			
+			block_2 : 'none',
+			block_up_fill : 'none',
+			block_down_fill : 'none',
+			block_north_fill : 'none',
+			block_south_fill : 'none',
+			block_east_fill : 'none',
+			block_west_fill : 'none',
 		}
 					
 		// Maze rooms colored differently
@@ -534,10 +547,17 @@ function viewSaveFile(data) {
 		}
 		subs['enter'] = truncList(getEnterRoomAction(rn));
 		
-		// TODO blocked passages
+		// Blocked passages
 		
-		// TODO data breakdown after map (put it in the HTML but hidden ... fill out and show)
-		
+		var bits = readBinaryData(0x3EB8+rn);
+		if(bits&0x20) subs['block_up_fill'] = '#FCC';
+		if(bits&0x10) subs['block_down_fill'] = '#FCC';
+		if(bits&0x08) subs['block_north_fill'] = '#FCC';
+		if(bits&0x04) subs['block_east_fill'] = '#FCC';
+		if(bits&0x02) subs['block_west_fill'] = '#FCC';
+		if(bits&0x01) subs['block_south_fill'] = '#FCC';
+				
+		// TODO data breakdown after map (put it in the HTML but hidden ... fill out and show)		
 		// TODO ability to pass in file in URL
 		
 		g = g + sub(GRAPHICS,subs);		
