@@ -565,7 +565,7 @@ OneMinTick:
 081B: BD 10 66            JSR     $1066                     ; {PrintMess} Print the message
 
 081E: 10 8E 3E 38         LDY     #$3E38                    ; Start of floor 3
-0822: 8E 00 F3            LDX     #$00F3                    ; Shanking-ground blocked passage queue
+0822: 8E 00 F3            LDX     #$00F3                    ; Shaking-ground blocked passage queue
 ```
 
  Maintains a list of the last 12 rooms that were blocked. As new rooms are blocked
