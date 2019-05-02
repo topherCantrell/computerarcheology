@@ -2,6 +2,10 @@
 
 # Journal
 
+## 5/1/2019
+
+Move my walkthrough to a separate page. That way it can be open next to the emulator.
+
 ## 4/30/2019
 
 I wired the 6809 emulator to the page. You can now play the game

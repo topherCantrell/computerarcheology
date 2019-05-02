@@ -163,18 +163,19 @@
 ;   DD = $80 if learned, 0 if not
 ;
 ;                      Spell    Must have to learn
-3BC1: 09 01 00 00    ; VETRA:   MUSHROOM and FOOD                   
-3BC5: 0E 37 00 00    ; MITRA:   PARCHMENT and  VETRA                   
-3BC9: 11 38 00 00    ; OKKAN:   TALISMAN and MITRA              
-3BCD: 18 39 00 00    ; AKHIROM: ROPE and OKKAN                   
-3BD1: 0B 3A 00 00    ; NERGAL:  SCEPTER and AKHIROM               
-3BD5: 0F 3B 00 00    ; BELROG:  VIAL and NERGAL               
-3BD9: 0A 3C 00 00    ; CROM:    PENDANT and BELROG             
-3BDD: 23 3D 00 00    ; ISHTAR:  SPELLBOOK and CROM
+3BC1: 09 01 00 00    ; VETRA:   MUSHROOM and FOOD     {{decode}}
+3BC5: 0E 37 00 00    ; MITRA:   PARCHMENT and  VETRA  {{decode}}                 
+3BC9: 11 38 00 00    ; OKKAN:   TALISMAN and MITRA    {{decode}}
+3BCD: 18 39 00 00    ; AKHIROM: ROPE and OKKAN        {{decode}}
+3BD1: 0B 3A 00 00    ; NERGAL:  SCEPTER and AKHIROM   {{decode}}
+3BD5: 0F 3B 00 00    ; BELROG:  VIAL and NERGAL       {{decode}}
+3BD9: 0A 3C 00 00    ; CROM:    PENDANT and BELROG    {{decode}}
+3BDD: 23 3D 00 00    ; ISHTAR:  SPELLBOOK and CROM    {{decode}}
     
 ## Jump Info 
 
-; Describes places where you can JUMP.
+; Describes places where you can JUMP. Everything but one byte is static (same every game).
+; The room number of the last jump is set to the room with Enter Room Action _203.
 ;  AA BB CC DD EE
 ;   AA = Starting room
 ;   BB = Compared to (Phys-weight) AND (Phys-bulk) ... see below
@@ -217,7 +218,9 @@
 3C4A: 5E 5A 0A 9E 06; From 94  "JUMP DOWN"  to 158. Required=90  or STUMBLE(10)
 3C4F: 40 1E 00 80 6D; From 64  "JUMP PIT"   to 128. Required=30  or DEATH
 3C54: CA 1E 14 A2 06; From 202 "JUMP DOWN"  to 162. Required=30  or STUMBLE(20)
-3C59: 10 8C 80 27 06; From 16  "JUMP DOWN"  to 39.  Required=140 or FUMBLE
+;
+3C59: {{value}} 8C 80 27 06; From {{decode}}  "JUMP DOWN"  to 39.  Required=140 or FUMBLE
+;
 3C5E: 00          
 
 ; Skipping static table from 3C5F-3C6E (used to place objects below, but never changes)
@@ -235,60 +238,60 @@
 ;   8=pile-of-rocks, 9=_s, 10=_t(rat), 11=_r, 
 ;   Greater than 12: creature number
 ;
-3C6F: 00 2E  ; 46 "OPAL"
-3C71: 00 2F  ; 47 "SAPPHIRE"
-3C73: 00 12  ; 18 "SCROLL"                  
-3C75: 00 15  ; 21 "SCARAB"            
-3C77: 00 16  ; 22 "JEWLBOX"            
-3C79: 00 17  ; 23 "TABLET"            
-3C7B: 00 20  ; 32 "GOLD"            
-3C7D: 00 21  ; 33 "SILVER"            
-3C7F: 00 22  ; 34 "DIAMOND"           
-3C81: 00 24  ; 36 "RUBY"           
-3C83: 00 25  ; 37 "FLEECE"            
-3C85: 00 26  ; 38 "TIARA"           
-3C87: 00 27  ; 39 "POWDER"           
-3C89: 00 28  ; 40 "AMULET"            
-3C8B: 00 29  ; 41 "POTION"           
-3C8D: 00 2D  ; 45 "CROWN"           
+3C6F: 00 2E  ; 46 "OPAL"      {{decode}}
+3C71: 00 2F  ; 47 "SAPPHIRE"  {{decode}}
+3C73: 00 12  ; 18 "SCROLL"    {{decode}}    
+3C75: 00 15  ; 21 "SCARAB"    {{decode}}
+3C77: 00 16  ; 22 "JEWLBOX"   {{decode}}
+3C79: 00 17  ; 23 "TABLET"    {{decode}}
+3C7B: 00 20  ; 32 "GOLD"      {{decode}}
+3C7D: 00 21  ; 33 "SILVER"    {{decode}}
+3C7F: 00 22  ; 34 "DIAMOND"   {{decode}}
+3C81: 00 24  ; 36 "RUBY"      {{decode}}
+3C83: 00 25  ; 37 "FLEECE"    {{decode}}
+3C85: 00 26  ; 38 "TIARA"     {{decode}}
+3C87: 00 27  ; 39 "POWDER"    {{decode}}
+3C89: 00 28  ; 40 "AMULET"    {{decode}}
+3C8B: 00 29  ; 41 "POTION"    {{decode}}
+3C8D: 00 2D  ; 45 "CROWN"     {{decode}}
 
 ## Enter Room Table 
 
-3C8F: 00 1B 6D  ; 0    _a     ; Cave in to next floor if pack heavier than 192. If so move a nd b to random rooms.
-3C92: 00 1B 70  ; 0    _b     ; Cave in to next floor if pack heavier than 128. If so move a nd b to random rooms.
-3C95: 00 1B 73  ; 0    _c     ; Cave in to next floor if pack heavier than 95. If so move a nd b to random rooms.
-3C98: 00 1B 9C  ; 0    _d     ; # If we have VETAR make the pile-of-rocks appear in this room (it stays here).
-3C9B: 00 1B B3  ; 0    _e     ; # Play sound effect. If we play the flute and have the parchment then the LEDGE appears here.
-3C9E: 00 1B B7  ; 0    _f     ; Powerful gust blows lamp out of grasp. 
-3CA1: 00 1B F9  ; 0    _g     ; # Hydra is here. If it is free it pushes us back to last room. 
-3CA4: 00 1C 15  ; 0    _h     ; If we know VETAR or have the SCEPTER, nothing happens. Otherwise we RUN.
-3CA7: 00 1C 2C  ; 0    _i     ; Pushed back if we don't have VETAR.
-3CAA: 00 1C 2F  ; 0    _j     ; Pushed back if we don't have MITRA.
-3CAD: 00 1C 32  ; 0    _k     ; Pushed back if we don't have OKKAN.
-3CB0: 00 1C 35  ; 0    _l     ; Pushed back if we don't have AKHIROM.
-3CB3: 00 1C 38  ; 0    _m     ; Pushed back if we don't have NERGAL.
-3CB6: 00 1C 3B  ; 0    _n     ; Pushed back if we don't have BELROG.
-3CB9: 00 1C 3E  ; 0    _o     ; Pushed back if we don't have CROM.
-3CBC: 00 1C 41  ; 0    _p     ; Pushed back if we don't have ISHTAR.
-3CBF: 00 1C 68  ; 0    _q     ; Start the poison clock (we can't stay here long). 1/3 of the time we give the clock an extra tick.
-3CC2: 00 1C 7A  ; 0    _r     ; # When we enter this room 3 times the treasure is released.
-3CC5: 00 1C 68  ; 0    _q     ; see above 
-3CC8: 00 1C 68  ; 0    _q     ; see above
-3CCB: 00 1C 8D  ; 0    _s     ; # If we have the lamp and it is off then the room drops its treasure. (Strange color walls)
-3CCE: 00 1C A9  ; 0    _t     ; # If we are holding the packrat's trigger treasure (randomized at start) then the packrat drops his treasure.
-3CD1: 00 1C 68  ; 0    _q     ; see above
-3CD4: 00 1C CC  ; 0    _u     ; # If we can see you instantly get the treasure.
-3CD7: 00 1C F0  ; 0    _v     ; Print POOL OF OIL if the lamp can be refilled.
-3CDA: 00 1B B7  ; 0    _f     ; see above
-3CDD: 00 1C E0  ; 0    _32    ; (Same as 32 below)
-3CE0: 00 1D 00  ; 0    _x     ; Add 40 to health and move us a short distance away. 10 minutes must pass before again. 
-3CE3: 00 1D 00  ; 0    _x     ; see above
-3CE6: 00 1D 22  ; 0    _203   ; # Print "SMALL PIT IN CORNER OF ROOM"
+3C8F: {{value}} 1B 6D  ; {{decode}}  _a     ; Cave in to next floor if pack heavier than 192. If so move a nd b to random rooms.
+3C92: {{value}} 1B 70  ; {{decode}}  _b     ; Cave in to next floor if pack heavier than 128. If so move a nd b to random rooms.
+3C95: {{value}} 1B 73  ; {{decode}}  _c     ; Cave in to next floor if pack heavier than 95. If so move a nd b to random rooms.
+3C98: {{value}} 1B 9C  ; {{decode}}  _d     ; If we have VETAR make the pile-of-rocks appear in this room (it stays here).
+3C9B: {{value}} 1B B3  ; {{decode}}  _e     ; Play sound effect. If we play the flute and have the parchment then the LEDGE appears here.
+3C9E: {{value}} 1B B7  ; {{decode}}  _f     ; Powerful gust blows lamp out of grasp. 
+3CA1: {{value}} 1B F9  ; {{decode}}  _g     ; Hydra is here. If it is free it pushes us back to last room. 
+3CA4: {{value}} 1C 15  ; {{decode}}  _h     ; If we know VETAR or have the SCEPTER, nothing happens. Otherwise we RUN.
+3CA7: {{value}} 1C 2C  ; {{decode}}  _i     ; Pushed back if we don't have VETAR.
+3CAA: {{value}} 1C 2F  ; {{decode}}  _j     ; Pushed back if we don't have MITRA.
+3CAD: {{value}} 1C 32  ; {{decode}}  _k     ; Pushed back if we don't have OKKAN.
+3CB0: {{value}} 1C 35  ; {{decode}}  _l     ; Pushed back if we don't have AKHIROM.
+3CB3: {{value}} 1C 38  ; {{decode}}  _m     ; Pushed back if we don't have NERGAL.
+3CB6: {{value}} 1C 3B  ; {{decode}}  _n     ; Pushed back if we don't have BELROG.
+3CB9: {{value}} 1C 3E  ; {{decode}}  _o     ; Pushed back if we don't have CROM.
+3CBC: {{value}} 1C 41  ; {{decode}}  _p     ; Pushed back if we don't have ISHTAR.
+3CBF: {{value}} 1C 68  ; {{decode}}  _q     ; Start the poison clock (we can't stay here long). 1/3 of the time we give the clock an extra tick.
+3CC2: {{value}} 1C 7A  ; {{decode}}  _r     ; When we enter this room 3 times the treasure is released.
+3CC5: {{value}} 1C 68  ; {{decode}}  _q     ; see above 
+3CC8: {{value}} 1C 68  ; {{decode}}  _q     ; see above
+3CCB: {{value}} 1C 8D  ; {{decode}}  _s     ; If we have the lamp and it is off then the room drops its treasure. (Strange color walls)
+3CCE: {{value}} 1C A9  ; {{decode}}  _t     ; If we are holding the packrat's trigger treasure (randomized at start) then the packrat drops his treasure.
+3CD1: {{value}} 1C 68  ; {{decode}}  _q     ; see above
+3CD4: {{value}} 1C CC  ; {{decode}}  _u     ; If we can see you instantly get the treasure.
+3CD7: {{value}} 1C F0  ; {{decode}}  _v     ; Print POOL OF OIL if the lamp can be refilled.
+3CDA: {{value}} 1B B7  ; {{decode}}  _f     ; see above
+3CDD: {{value}} 1C E0  ; {{decode}}  _32    ; (Same as 32 below)
+3CE0: {{value}} 1D 00  ; {{decode}}  _x     ; Add 40 to health and move us a short distance away. 10 minutes must pass before again. 
+3CE3: {{value}} 1D 00  ; {{decode}}  _x     ; see above
+3CE6: {{value}} 1D 22  ; {{decode}}  _203   ; Print "SMALL PIT IN CORNER OF ROOM"
 3CE9: D5 1D 27  ; 213  _213     ; Print "LAYER OF MIST EAST WALL"
 3CEC: 20 1C E0  ; 32   _32      ; If we can't see we take 30 damage.
-3CEF: 21 1C D6  ; 33   _33      ; # If we can see you instantly get the treasure.
+3CEF: 21 1C D6  ; 33   _33      ; If we can see you instantly get the treasure.
 3CF2: CB 1D 22  ; 203  _203     ; Print SMALL PIT IN CORNER OF ROOM.
-3CF5: 00 1B B4  ; 0    _z       ; Room with music (init to room 16 to 39). The sprite can't move objects here.
+3CF5: {{value}} 1B B4  ; {{decode}}  _z       ; Room with music (init to room 16 to 39). The sprite can't move objects here.
 3CF8: E8 1D 2D  ; 232  _232     ; _232 If we came south to this room and carrying pendant move us near start and random room for pendant.
 3CFB: 00
 
@@ -309,68 +312,68 @@
 ;
 ; Objects are not accessible to the player (noun) if x or y are set.
 ;
-3CFC: 00 01 00  ; 1 "FOOD"
-3CFF: 08 02 00  ; 2 "BOTTLE"
-3D02: 28 03 00  ; 3 "DAGGER"
-3D05: 01 04 00  ; 4 "MACE"
-3D08: 01 05 00  ; 5 "AX"
-3D0B: 04 06 10  ; 6 "SWORD"
-3D0E: 08 07 10  ; 7 "SHIELD"
-3D11: 00 08 00  ; 8 "FLUTE"
-3D14: 02 09 00  ; 9 "MUSHROOM"
-3D17: 00 0A 00  ; 10 "PENDANT"
-3D1A: 02 0B 00  ; 11 "SCEPTER"
-3D1D: 02 0C 00  ; 12 "LAMP"
-3D20: 04 0D 00  ; 13 "BASKET"
-3D23: 04 0E 01  ; 14 "PARCHMENT"
-3D26: 04 0F 10  ; 15 "VIAL"
-3D29: 06 10 00  ; 16 "URN"
-3D2C: 06 11 01  ; 17 "TALISMAN"
-3D2F: 0C 12 01  ; 18 "SCROLL"
-3D32: 0C 13 00  ; 19 "GOBLET"
-3D35: 0C 14 10  ; 20 "SKULL"
-3D38: 0C 15 01  ; 21 "SCARAB"
-3D3B: 0D 16 01  ; 22 "JEWELBOX"
-3D3E: 0D 17 01  ; 23 "TABLET"
-3D41: 0D 18 00  ; 24 "ROPE"
-3D44: 0D 19 40  ; 25 "SPRITE"
-3D47: 0E 1A 40  ; 26 "TROGLODYTE"
-3D4A: 0A 1B 40  ; 27 "SCORPION"
-3D4D: 0B 1C 40  ; 28 "NYMPH"
-3D50: 0C 1D 40  ; 29 "SATYR"
-3D53: 9E 1E 40  ; 30 "MINOTAUR"
-3D56: 9E 1F 40  ; 31 "ORACLE"
-3D59: 00 20 01  ; 32 "GOLD"
-3D5C: 00 21 01  ; 33 "SILVER"
-3D5F: 40 22 01  ; 34 "DIAMOND"
-3D62: 40 23 10  ; 35 "SPELLBOOK"
-3D65: 44 24 01  ; 36 "RUBY"
-3D68: 44 25 01  ; 37 "FLEECE"
-3D6B: 00 26 01  ; 38 "TIARA"
-3D6E: 1D 27 01  ; 39 "POWDER"
-3D71: 1D 28 01  ; 40 "AMULET"
-3D74: 43 29 01  ; 41 "POTION"
-3D77: 11 2A 10  ; 42 "POWERRING"
-3D7A: 11 2B 10  ; 43 "LIGHTRING"
-3D7D: 11 2C 10  ; 44 "TRUTHRING"
-3D80: 12 2D 01  ; 45 "CROWN"
-3D83: 00 2E 01  ; 46 "OPAL"
-3D86: 00 2F 01  ; 47 "SAPPHIRE"
-3D89: 00 00 42  ; 48 "NORTH"    
-3D8C: 00 00 42  ; 49 "NORTH"
-3D8F: 00 00 42  ; 50 "NORTH"
-3D92: 00 00 42  ; 51 "NORTH"
-3D95: 00 00 42  ; 52 "NORTH"
-3D98: 00 00 42  ; 53 "NORTH"
-3D9B: 00 00 42  ; 54 "NORTH"
-3D9E: 00 37 42  ; 55 "VETAR"
-3DA1: 00 38 42  ; 56 "MITRA"
-3DA4: 00 39 42  ; 57 "OKKAN"
-3DA7: 00 3A 42  ; 58 "AKHIROM"
-3DAA: 00 3B 42  ; 59 "NERGAL"
-3DAD: 00 3C 42  ; 60 "BELROG"
-3DB0: 00 3D 42  ; 61 "CROM"
-3DB3: 00 3E 42  ; 62 "ISHTAR"
+3CFC: 00 01 00  ; 1 "FOOD"         {{decode}}
+3CFF: 08 02 00  ; 2 "BOTTLE"       {{decode}}
+3D02: 28 03 00  ; 3 "DAGGER"       {{decode}}
+3D05: 01 04 00  ; 4 "MACE"         {{decode}}
+3D08: 01 05 00  ; 5 "AX"           {{decode}}
+3D0B: 04 06 10  ; 6 "SWORD"        {{decode}}
+3D0E: 08 07 10  ; 7 "SHIELD"       {{decode}}
+3D11: 00 08 00  ; 8 "FLUTE"        {{decode}}
+3D14: 02 09 00  ; 9 "MUSHROOM"     {{decode}}
+3D17: 00 0A 00  ; 10 "PENDANT"     {{decode}}
+3D1A: 02 0B 00  ; 11 "SCEPTER"     {{decode}}
+3D1D: 02 0C 00  ; 12 "LAMP"        {{decode}}
+3D20: 04 0D 00  ; 13 "BASKET"      {{decode}}
+3D23: 04 0E 01  ; 14 "PARCHMENT"   {{decode}}
+3D26: 04 0F 10  ; 15 "VIAL"        {{decode}}
+3D29: 06 10 00  ; 16 "URN"         {{decode}}
+3D2C: 06 11 01  ; 17 "TALISMAN"    {{decode}}
+3D2F: 0C 12 01  ; 18 "SCROLL"      {{decode}}
+3D32: 0C 13 00  ; 19 "GOBLET"      {{decode}}
+3D35: 0C 14 10  ; 20 "SKULL"       {{decode}}
+3D38: 0C 15 01  ; 21 "SCARAB"      {{decode}}
+3D3B: 0D 16 01  ; 22 "JEWELBOX"    {{decode}}
+3D3E: 0D 17 01  ; 23 "TABLET"      {{decode}}
+3D41: 0D 18 00  ; 24 "ROPE"        {{decode}}
+3D44: 0D 19 40  ; 25 "SPRITE"      {{decode}}
+3D47: 0E 1A 40  ; 26 "TROGLODYTE"  {{decode}}
+3D4A: 0A 1B 40  ; 27 "SCORPION"    {{decode}}
+3D4D: 0B 1C 40  ; 28 "NYMPH"       {{decode}}
+3D50: 0C 1D 40  ; 29 "SATYR"       {{decode}}
+3D53: 9E 1E 40  ; 30 "MINOTAUR"    {{decode}}
+3D56: 9E 1F 40  ; 31 "ORACLE"      {{decode}}
+3D59: 00 20 01  ; 32 "GOLD"        {{decode}}
+3D5C: 00 21 01  ; 33 "SILVER"      {{decode}}
+3D5F: 40 22 01  ; 34 "DIAMOND"     {{decode}}
+3D62: 40 23 10  ; 35 "SPELLBOOK"   {{decode}}
+3D65: 44 24 01  ; 36 "RUBY"        {{decode}}
+3D68: 44 25 01  ; 37 "FLEECE"      {{decode}}
+3D6B: 00 26 01  ; 38 "TIARA"       {{decode}}
+3D6E: 1D 27 01  ; 39 "POWDER"      {{decode}}
+3D71: 1D 28 01  ; 40 "AMULET"      {{decode}}
+3D74: 43 29 01  ; 41 "POTION"      {{decode}}
+3D77: 11 2A 10  ; 42 "POWERRING"   {{decode}}
+3D7A: 11 2B 10  ; 43 "LIGHTRING"   {{decode}}
+3D7D: 11 2C 10  ; 44 "TRUTHRING"   {{decode}}
+3D80: 12 2D 01  ; 45 "CROWN"       {{decode}}
+3D83: 00 2E 01  ; 46 "OPAL"        {{decode}}
+3D86: 00 2F 01  ; 47 "SAPPHIRE"    {{decode}}
+3D89: 00 00 42  ; 48 "NORTH"       {{decode}}
+3D8C: 00 00 42  ; 49 "NORTH"       {{decode}}
+3D8F: 00 00 42  ; 50 "NORTH"       {{decode}}
+3D92: 00 00 42  ; 51 "NORTH"       {{decode}}
+3D95: 00 00 42  ; 52 "NORTH"       {{decode}}
+3D98: 00 00 42  ; 53 "NORTH"       {{decode}}
+3D9B: 00 00 42  ; 54 "NORTH"       {{decode}}
+3D9E: 00 37 42  ; 55 "VETAR"       {{decode}}
+3DA1: 00 38 42  ; 56 "MITRA"       {{decode}}
+3DA4: 00 39 42  ; 57 "OKKAN"       {{decode}}
+3DA7: 00 3A 42  ; 58 "AKHIROM"     {{decode}}
+3DAA: 00 3B 42  ; 59 "NERGAL"      {{decode}}
+3DAD: 00 3C 42  ; 60 "BELROG"      {{decode}}
+3DB0: 00 3D 42  ; 61 "CROM"        {{decode}}
+3DB3: 00 3E 42  ; 62 "ISHTAR"      {{decode}}
 ;
 3DB6: 00 FF     ; End of list marker
 

@@ -1,6 +1,13 @@
 import base64
 
-with open('../../../content/coco/madnessminotaur/first.cas', 'rb') as f:
+#with open('../../../content/coco/madnessminotaur/first.cas', 'rb') as f:
+#with open('../../../content/coco/madnessminotaur/s_one.cas', 'rb') as f:
+#with open('../../../content/coco/madnessminotaur/s_two.cas', 'rb') as f:
+#with open('../../../content/coco/madnessminotaur/s_three.cas', 'rb') as f:
+#with open('../../../content/coco/madnessminotaur/s_four.cas', 'rb') as f:
+#with open('../../../content/coco/madnessminotaur/s_five.cas', 'rb') as f:
+#with open('../../../content/coco/madnessminotaur/s_six.cas', 'rb') as f:
+with open('../../../content/coco/madnessminotaur/s_seven.cas', 'rb') as f:
     data = f.read()
 
 

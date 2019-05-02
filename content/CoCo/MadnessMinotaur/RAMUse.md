@@ -147,29 +147,19 @@ time.
 
 # Stack
 
->>> memory
-
-| | | |
-| --- | --- | --- |
-| 01FF   | stack  | Stack builds towards 0 (in BASIC's cassette file data buffer) |
+Stack builds from 01FF towards 0 (in BASIC's cassette file data buffer) |
 
 
 # Screen Memory
 
->>> memory
-
 | | | |
 | --- | --- | --- |
-| 0200:03FF | | Screen 0 (in some buffers used by BASIC) |
-| 0400:05FF | | Screen 1 |
+| 0200:03FF | screen0 | Screen 0 (in some buffers used by BASIC) |
+| 0400:05FF | screen1 | Screen 1 |
 
 # Game code 
 
->>> memory
-
-| | | |
-| --- | --- | --- |
-| 0300:3EB7 | | Game loads from tape |
+Game code loads from tape to 0300:3EB7.
 
 # Blocked Passages
 
@@ -177,7 +167,7 @@ time.
 
 | | | |
 | --- | --- | --- |
-| 3EB8:3FB7 | | Block passage table |
+| 3EB8:3FB7 | blocks | Block passage table |
 
 
 # Protected Objects Lists
@@ -186,5 +176,5 @@ time.
 
 | | | |
 | --- | --- | --- |
-| 3FB8:3FFF | | Protected object lists |
+| 3FB8:3FFF | protections | Protected object lists |
 
