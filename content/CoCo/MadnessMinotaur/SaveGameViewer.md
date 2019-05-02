@@ -205,7 +205,7 @@ $('#parseData').on('click',function() {
 3C4F: 40 1E 00 80 6D; From 64  "JUMP PIT"   to 128. Required=30  or DEATH
 3C54: CA 1E 14 A2 06; From 202 "JUMP DOWN"  to 162. Required=30  or STUMBLE(20)
 ;
-3C59: {{value}} 8C 80 27 06; From {{decode}}  "JUMP DOWN"  to 39.  Required=140 or FUMBLE
+3C59: {{value}} 8C 80 27 06; From {{decode}} "JUMP DOWN"  to 39.  Required=140 or FUMBLE
 ;
 3C5E: 00          
 

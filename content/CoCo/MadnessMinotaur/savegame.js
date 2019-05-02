@@ -376,6 +376,14 @@ function findRawTextLine(lines,addr,i) {
 	}
 }
 
+function hexPad(val,n) {
+	ret = val.toString(16).toUpperCase();
+	while(ret.length<n) {
+		ret = '0' + ret;
+	}
+	return ret;
+}
+
 function viewSaveFile(data) {
 	
 	// Reset from last viewing (if any)
@@ -445,6 +453,47 @@ function viewSaveFile(data) {
 			}
 			rawt[i] = g;
 			++i;
+		}
+		
+		// Spells
+		p = 0x3BC1;
+		for(j=0;j<8;++j) {
+			g = rawt[i];
+			a = readBinaryData(p+2);
+			b = readBinaryData(p+3);
+			g = g.substring(0,12)+hexPad(a,2)+' '+hexPad(b,2)+g.substring(17);
+			dec = 'Room '+a+' ';
+			if(b==0) {
+				dec = dec + '(unlearned)';
+			} else {
+				dec = dec + '(LEARNED)';
+			}
+			g = g.substring(0,54)+dec;
+			rawt[i] = g;
+			++i;
+			p = p + 4;
+		}
+		
+		// Jump info
+		i = findRawTextLine(rawt,'3C59',i);
+		g = rawt[i];
+		a = readBinaryData(0x3C59);
+		g = rawt[i];
+		rn = ""+a;
+		while(rn.length<3) rn=rn+' ';
+		rawt[i] = g.substring(0,6)+hexPad(a,2)+g.substring(15,34)+rn+g.substring(44);
+		
+		// Who holds what
+		i = findRawTextLine(rawt,'3C6F',i);
+		p = 0x3C6F;
+		for(j=0;j<16;++j) {
+			g = rawt[i];
+			a = readBinaryData(p);
+			g = g.substring(0,6)+hexPad(a,2)+g.substring(8);
+			// TODO decode
+			rawt[i] = g;
+			++i;
+			p = p + 2;
 		}
 		
 		// Write the data
