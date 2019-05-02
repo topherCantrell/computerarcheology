@@ -367,6 +367,15 @@ function getEnterRoomAction(rn) {
 	return ret;
 }
 
+function findRawTextLine(lines,addr,i) {
+	while(true) {
+		if(lines[i].startsWith(addr+':')) {
+			return i;
+		}
+		++i;
+	}
+}
+
 function viewSaveFile(data) {
 	
 	// Reset from last viewing (if any)
@@ -411,8 +420,43 @@ function viewSaveFile(data) {
 			co['dead_creature'] = (bits&0x2)!=0;
 			co['accessible'] = (bits&0x1)==0;			
 		}
-	}
-	
+		$('#rawData').show();
+		
+		// Template for the raw data
+		var rawt = $('#rawData').html().split('\n');
+		
+		// Fill out the engine memory (1 or 2 bytes)
+		i = findRawTextLine(rawt,'0000',0);
+		j = findRawTextLine(rawt,'3BC1',i);
+		while(i!=j) {
+			g = rawt[i];
+			if(g[0]!='0') {
+				++i;
+				continue;
+			}
+			da = parseInt(g.substring(0,4),16);
+			dd = readBinaryData(da).toString(16).toUpperCase();
+			if(dd.length==1) dd='0'+dd;
+			g = g.substring(0,6)+dd+g.substring(8);
+			if(g[9]!=' ') {
+				dd = readBinaryData(da+1).toString(16).toUpperCase();
+				if(dd.length==1) dd='0'+dd;
+				g = g.substring(0,9)+dd+g.substring(11);
+			}
+			rawt[i] = g;
+			++i;
+		}
+		
+		// Write the data
+		g ='';
+		for(i=0;i<rawt.length;++i) {
+			g = g + rawt[i]+'\n';
+		}
+		$('#rawData').html(g);
+		
+	} else {
+		$('#rawData').hide();
+	}	
 	
 	// Fix scrolling for the map
 	$('.content div').css('overflow','unset');
