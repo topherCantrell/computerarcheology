@@ -1,6 +1,6 @@
 ![Madness and the Minotaur](Madness.jpg)
 
-# Walkthrough of my Game 
+# Walk-Through of my Game 
 
 This is the description of my game experience played using the saved-game info below. 
 You can duplicate my steps with my file:
