@@ -94,7 +94,7 @@ function readBinaryData(addr) {
 	if(addr<0x100) {
 		return saveGameData.charCodeAt(addr);
 	}
-	// 200 - 600
+	// 240 - 600
 	if(addr>=0x240 && addr<0x600) {
 		return saveGameData.charCodeAt(addr-0x240);
 	}
@@ -394,6 +394,36 @@ function doReplaceTarget(s,k,v) {
 	return s.replace('{{'+k+'}}',v);
 }
 
+//ASCII to CoCo screen printable
+var CHARMAP = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+
+			  "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+
+			  "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[~]~~"+
+			  "_!\"#$%&'()*+,-./0123456789:;<=>?"+
+			  "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+
+			  "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+
+			  "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+
+			  "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
+
+var NAMETABLE = {
+	0x19 : 'Sprite',
+	0x1A : 'Troglodyte',
+	0x1B : 'Scorpion',
+	0x1C : 'Nymph',
+	0x1D : 'Satyr',
+	0x1E : 'Minotaur',
+	0x01 : 'Crypt',
+	0x02 : 'Crypt of kings',
+	0x03 : 'Enter-room-action _u',
+	0x04 : 'Enter-room-action _33',
+	0x05 : 'Small pit',
+	0x06 : 'Ledge',
+	0x07 : 'Hydra',
+	0x08 : 'Pile of glowing rocks',
+	0x09 : 'Eerie glow',
+	0x0A : 'Packrat',
+	0x0B : 'Enter-room-action _r',
+}
+
 function viewSaveFile(data) {
 	
 	// Reset from last viewing (if any)
@@ -445,7 +475,7 @@ function viewSaveFile(data) {
 		
 		// Fill out the engine memory (1 or 2 bytes)
 		i = findRawTextLine(rawt,'0000',0);
-		j = findRawTextLine(rawt,'3BC1',i);
+		j = findRawTextLine(rawt,'0340',i);
 		while(i!=j) {
 			g = rawt[i];
 			if(g[0]!='0') {
@@ -483,48 +513,71 @@ function viewSaveFile(data) {
 			++i;
 		}
 		
-		/*		
+		// Saved screen
+		i = findRawTextLine(rawt,'0340',0);
+		j = findRawTextLine(rawt,'3BC1',i);
+		
+		while(i!=j) {
+			g = rawt[i];
+			if(g[0]!='0') {
+				++i;
+				continue;
+			}
+			p = parseInt(g.substring(0,4),16);			
+			
+			s = '';
+			t = '';
+			for(x=0;x<32;++x) {
+				s = s + hexPad(readBinaryData(p+x),2)+' ';
+				t = t + CHARMAP[readBinaryData(p+x)];
+			}
+			
+			g = doReplaceTarget(g,'value',s);
+			rawt[i] = doReplaceTarget(g,'decode',t);
+			++i;
+		}
+						
 		// Spells
 		p = 0x3BC1;
 		for(j=0;j<8;++j) {
 			g = rawt[i];
 			a = readBinaryData(p+2);
 			b = readBinaryData(p+3);
-			g = g.substring(0,12)+hexPad(a,2)+' '+hexPad(b,2)+g.substring(17);
-			dec = 'Room '+a+' ';
+			g = doReplaceTarget(g,'value1',hexPad(a,2));
+			g = doReplaceTarget(g,'value2',hexPad(b,2));
+						dec = 'Room '+a+' ';
 			if(b==0) {
 				dec = dec + '(unlearned)';
 			} else {
 				dec = dec + '(LEARNED)';
 			}
-			g = g.substring(0,54)+dec;
-			rawt[i] = g;
+			rawt[i] = doReplaceTarget(g,'decode',dec);
 			++i;
 			p = p + 4;
 		}
-		
+				
 		// Jump info
 		i = findRawTextLine(rawt,'3C59',i);
 		g = rawt[i];
-		a = readBinaryData(0x3C59);
-		g = rawt[i];
+		a = readBinaryData(0x3C59);		
 		rn = ""+a;
 		while(rn.length<3) rn=rn+' ';
-		rawt[i] = g.substring(0,6)+hexPad(a,2)+g.substring(15,34)+rn+g.substring(44);
 		
+		g = doReplaceTarget(g,'value',hexPad(a,2));
+		rawt[i] = doReplaceTarget(g,'decode',rn);
+				
 		// Who holds what
 		i = findRawTextLine(rawt,'3C6F',i);
 		p = 0x3C6F;
 		for(j=0;j<16;++j) {
 			g = rawt[i];
 			a = readBinaryData(p);
-			g = g.substring(0,6)+hexPad(a,2)+g.substring(8);
-			// TODO decode
+			g = doReplaceTarget(g,'value',hexPad(a,2));			
+			g = doReplaceTarget(g,'decode', NAMETABLE[a]);
 			rawt[i] = g;
 			++i;
 			p = p + 2;
-		}
-		*/
+		}		
 		
 		// Write the data
 		g ='';

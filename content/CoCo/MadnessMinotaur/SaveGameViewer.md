@@ -139,46 +139,46 @@ $('#parseData').on('click',function() {
 00E0: <span class="sg_value">{{mvalue_16}}</span>
 00F0: <span class="sg_value">{{mvalue_3}}</span>
 ;
-00F3: <span class="sg_value">{{value1}}</span>    Room <span class="sg_value">{{decode}}</span>  .
-00F4: <span class="sg_value">{{value1}}</span>    Room <span class="sg_value">{{decode}}</span>  .
-00F5: <span class="sg_value">{{value1}}</span>    Room <span class="sg_value">{{decode}}</span>  .
-00F6: <span class="sg_value">{{value1}}</span>    Room <span class="sg_value">{{decode}}</span>  .
-00F7: <span class="sg_value">{{value1}}</span>    Room <span class="sg_value">{{decode}}</span>  Shifting buffer of rooms blocked by Shaking Ground.
-00F8: <span class="sg_value">{{value1}}</span>    Room <span class="sg_value">{{decode}}</span>  As new rooms are blocked at random, they go on the
-00F9: <span class="sg_value">{{value1}}</span>    Room <span class="sg_value">{{decode}}</span>  end of the list. Rooms are pulled off of the front
-00FA: <span class="sg_value">{{value1}}</span>    Room <span class="sg_value">{{decode}}</span>  of the list and unblocked completely. This keeps
-00FB: <span class="sg_value">{{value1}}</span>    Room <span class="sg_value">{{decode}}</span>  lots of shaking from blocking up the floors over
-00FC: <span class="sg_value">{{value1}}</span>    Room <span class="sg_value">{{decode}}</span>  time.
-00FD: <span class="sg_value">{{value1}}</span>    Room <span class="sg_value">{{decode}}</span>  .
-00FE: <span class="sg_value">{{value1}}</span>    Room <span class="sg_value">{{decode}}</span>  .
-00FF: <span class="sg_value">{{value1}}</span>    Room <span class="sg_value">{{decode}}</span>  .
+00F3: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  .
+00F4: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  .
+00F5: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  .
+00F6: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  .
+00F7: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  Shifting buffer of rooms blocked by Shaking Ground.
+00F8: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  As new rooms are blocked at random, they go on the
+00F9: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  end of the list. Rooms are pulled off of the front
+00FA: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  of the list and unblocked completely. This keeps
+00FB: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  lots of shaking from blocking up the floors over
+00FC: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  time.
+00FD: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  .
+00FE: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  .
+00FF: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  .
 <h2>Screen State</h2>
 ; Text screens stored in save file 0100-03BF
 ; Only the last 6 rows of the 1st screen
-0100: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-0120: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-0140: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-0160: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-0180: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-01A0: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-;
-; All 16 rows of the 2nd screen
-01C0: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-01E0: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-0200: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-0220: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-0240: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-0260: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-0280: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-02A0: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-02C0: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-02E0: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-0300: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-0320: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
 0340: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
 0360: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
 0380: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
 03A0: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
+03C0: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
+03E0: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
+;
+; All 16 rows of the 2nd screen
+0400: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
+0420: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
+0440: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
+0460: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
+0480: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
+04A0: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
+04C0: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
+04E0: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
+0500: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
+0520: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
+0540: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
+0560: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
+0580: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
+05A0: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
+05C0: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
+05E0: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
 <h2>Game Data (3BC1-3FFF stored in save game file 03C0-07FE)</h2>
 <h3>Spells</h3>
 ; Spell data
@@ -276,22 +276,22 @@ $('#parseData').on('click',function() {
 ;   8=pile-of-rocks, 9=_s, 10=_t(rat), 11=_r, 
 ;   Greater than 12: creature number
 ;
-3C6F: <span class="sg_value">{{value}}</span> 2E  ; 46 "OPAL"      <span class="sg_value">{{decode}}</span>
-3C71: <span class="sg_value">{{value}}</span> 2F  ; 47 "SAPPHIRE"  <span class="sg_value">{{decode}}</span>
-3C73: <span class="sg_value">{{value}}</span> 12  ; 18 "SCROLL"    <span class="sg_value">{{decode}}</span>    
-3C75: <span class="sg_value">{{value}}</span> 15  ; 21 "SCARAB"    <span class="sg_value">{{decode}}</span>
-3C77: <span class="sg_value">{{value}}</span> 16  ; 22 "JEWLBOX"   <span class="sg_value">{{decode}}</span>
-3C79: <span class="sg_value">{{value}}</span> 17  ; 23 "TABLET"    <span class="sg_value">{{decode}}</span>
-3C7B: <span class="sg_value">{{value}}</span> 20  ; 32 "GOLD"      <span class="sg_value">{{decode}}</span>
-3C7D: <span class="sg_value">{{value}}</span> 21  ; 33 "SILVER"    <span class="sg_value">{{decode}}</span>
-3C7F: <span class="sg_value">{{value}}</span> 22  ; 34 "DIAMOND"   <span class="sg_value">{{decode}}</span>
-3C81: <span class="sg_value">{{value}}</span> 24  ; 36 "RUBY"      <span class="sg_value">{{decode}}</span>
-3C83: <span class="sg_value">{{value}}</span> 25  ; 37 "FLEECE"    <span class="sg_value">{{decode}}</span>
-3C85: <span class="sg_value">{{value}}</span> 26  ; 38 "TIARA"     <span class="sg_value">{{decode}}</span>
-3C87: <span class="sg_value">{{value}}</span> 27  ; 39 "POWDER"    <span class="sg_value">{{decode}}</span>
-3C89: <span class="sg_value">{{value}}</span> 28  ; 40 "AMULET"    <span class="sg_value">{{decode}}</span>
-3C8B: <span class="sg_value">{{value}}</span> 29  ; 41 "POTION"    <span class="sg_value">{{decode}}</span>
-3C8D: <span class="sg_value">{{value}}</span> 2D  ; 45 "CROWN"     <span class="sg_value">{{decode}}</span>
+3C6F: <span class="sg_value">{{value}}</span> 2E  ; 46 "OPAL"      Held by <span class="sg_value">{{decode}}</span>
+3C71: <span class="sg_value">{{value}}</span> 2F  ; 47 "SAPPHIRE"  Held by <span class="sg_value">{{decode}}</span>
+3C73: <span class="sg_value">{{value}}</span> 12  ; 18 "SCROLL"    Held by <span class="sg_value">{{decode}}</span>    
+3C75: <span class="sg_value">{{value}}</span> 15  ; 21 "SCARAB"    Held by <span class="sg_value">{{decode}}</span>
+3C77: <span class="sg_value">{{value}}</span> 16  ; 22 "JEWLBOX"   Held by <span class="sg_value">{{decode}}</span>
+3C79: <span class="sg_value">{{value}}</span> 17  ; 23 "TABLET"    Held by <span class="sg_value">{{decode}}</span>
+3C7B: <span class="sg_value">{{value}}</span> 20  ; 32 "GOLD"      Held by <span class="sg_value">{{decode}}</span>
+3C7D: <span class="sg_value">{{value}}</span> 21  ; 33 "SILVER"    Held by <span class="sg_value">{{decode}}</span>
+3C7F: <span class="sg_value">{{value}}</span> 22  ; 34 "DIAMOND"   Held by <span class="sg_value">{{decode}}</span>
+3C81: <span class="sg_value">{{value}}</span> 24  ; 36 "RUBY"      Held by <span class="sg_value">{{decode}}</span>
+3C83: <span class="sg_value">{{value}}</span> 25  ; 37 "FLEECE"    Held by <span class="sg_value">{{decode}}</span>
+3C85: <span class="sg_value">{{value}}</span> 26  ; 38 "TIARA"     Held by <span class="sg_value">{{decode}}</span>
+3C87: <span class="sg_value">{{value}}</span> 27  ; 39 "POWDER"    Held by <span class="sg_value">{{decode}}</span>
+3C89: <span class="sg_value">{{value}}</span> 28  ; 40 "AMULET"    Held by <span class="sg_value">{{decode}}</span>
+3C8B: <span class="sg_value">{{value}}</span> 29  ; 41 "POTION"    Held by <span class="sg_value">{{decode}}</span>
+3C8D: <span class="sg_value">{{value}}</span> 2D  ; 45 "CROWN"     Held by <span class="sg_value">{{decode}}</span>
 <h3>Enter Room Table</h3> 
 3C8F: <span class="sg_value">{{value}}</span> 1B 6D  ; <span class="sg_value">{{decode}}</span>  _a     ; Cave in to next floor if pack heavier than 192. If so move a nd b to random rooms.
 3C92: <span class="sg_value">{{value}}</span> 1B 70  ; <span class="sg_value">{{decode}}</span>  _b     ; Cave in to next floor if pack heavier than 128. If so move a nd b to random rooms.
