@@ -43,86 +43,86 @@ $('#parseData').on('click',function() {
 ```plain
 
 <h2>Engine Memory (0000-00FF stored in save game file 0000-00FF)</h2>
-0000: <span class="sg_value">{{value1}}</span>      current room
-0001: <span class="sg_value">{{value1}}</span>      last room
-0002: <span class="sg_value">{{value1}}</span>      direction command bit pattern
-0003: <span class="sg_value">{{value1}}</span>      length of user input
-0004: <span class="sg_value">{{value1}}</span>      weight of pack
-0005: <span class="sg_value">{{value1}}</span>      physical condition
-0006: <span class="sg_value">{{value1}}</span>      bulk of pack
-0007: <span class="sg_value">{{value1}}</span>      decoded object number from noun
-0008: <span class="sg_value">{{value1}}</span>      Accumulated odds of falling (0, 1/8, 2/8, 3/8 ... with each step in the dark)
-0009: <span class="sg_value">{{value1}}</span>      Scorpion sting (0=not, not-zero=number of times)
-000A: <span class="sg_value">{{value1}}</span>      0 if lamp is off, not 0 is on
-000B: <span class="sg_value">{{value1}}</span>      Count of spaces at the end of the row in print routine
-000C: <span class="sg_value">{{value1}}</span>      Set by BetweenRoomACDE if a climb-down failed ... abort the movement
-000D: <span class="sg_value">{{value1}}</span>      pushed back flag (nobody reads this)
-000E: <span class="sg_value">{{value1}}</span>      HydraStatus: AA = tied up, 1 = dead, 0 = free
-000F: <span class="sg_value">{{value1}}</span>      HydraPushedUsBack (must be set to TIE HYDRA)  0 = not, 1 = hydra blocked last move (cleared every direction command)
-0010: <span class="sg_value">{{value1}}</span>      1 if "pile of rocks" has been moved to us
-0011: <span class="sg_value">{{value1}}</span>      1 if "pile of rocks" has been exposed with OKKAN
-0012: <span class="sg_value">{{value1}}</span>      1 if south passage in room 9 is open. 0 if closed. (open with drapes)
-0013: <span class="sg_value">{{value1}}</span>      Count down timer until we can walk through aura and heal again (10 seconds each time)
-0014: <span class="sg_value">{{value1}}</span>      1 if lamp has been blown from pack by entering room routine or failed jump
-0015: <span class="sg_value">{{value1}}</span>      1 if treasure "$0B" has been released
-0016: <span class="sg_value">{{value1}}</span>      NEVER USED
-0017: <span class="sg_value">{{value1}}</span>      Random number for passage-description printing
-0018: <span class="sg_value">{{value1}}</span> <span class="sg_value">{{value2}}</span>   Rolling pointer to BASIC rom for random numbers
-001A: <span class="sg_value">{{value1}}</span>      Number of times advice has been given 0-13
-001B: <span class="sg_value">{{value1}}</span>      Object 0 
-001C: <span class="sg_value">{{value1}}</span>      Object 1
-001D: <span class="sg_value">{{value1}}</span>      Object 2
-001E: <span class="sg_value">{{value1}}</span>      Object 3    Advice table. Object number is stored here. Upper
-001F: <span class="sg_value">{{value1}}</span>      Object 4    bit set if advice has already been given for this
-0020: <span class="sg_value">{{value1}}</span>      Object 5    protected object.
-0021: <span class="sg_value">{{value1}}</span>      Object 6
-0022: <span class="sg_value">{{value1}}</span>      Object 7
-0023: <span class="sg_value">{{value1}}</span>      Object 8
-0024: <span class="sg_value">{{value1}}</span>      Object 9
-0025: <span class="sg_value">{{value1}}</span>      Object 10
-0026: <span class="sg_value">{{value1}}</span>      Object 11
-0027: <span class="sg_value">{{value1}}</span>      Object 12
-0028: <span class="sg_value">{{value1}}</span>      Calculated score
-0029: <span class="sg_value">{{value1}}</span>      NEVER USED
-002A: <span class="sg_value">{{value1}}</span>      Verb command number
-002B: <span class="sg_value">{{value1}}</span>      Noun word number
-002C: <span class="sg_value">{{value1}}</span>      Trigger object to make packrat drop treasure
-002D: <span class="sg_value">{{value1}}</span>      NEVER USED
-002E: <span class="sg_value">{{value1}}</span>      Holder value for BetweenRoomACDE
-002F: <span class="sg_value">{{value1}}</span>      General use lots of places
-0030: <span class="sg_value">{{value1}}</span>      Used in InPack
-0031: <span class="sg_value">{{value1}}</span>      Used in InPack
-0032: <span class="sg_value">{{value1}}</span>      Set by EnteringRoomAction_q (MYSTERIOUS FOG)
-0033: <span class="sg_value">{{value1}}</span>      Current room of HYDRA
-0034: <span class="sg_value">{{value1}}</span>      Number of times more ISHTAR can be used. Random init to 1-4.
-0035: <span class="sg_value">{{value1}}</span>      Room for small pit in corner of room
-0036: <span class="sg_value">{{value1}}</span>      Room of LEDGE
-0037: <span class="sg_value">{{value1}}</span>      Room of "pile of rocks" (OKKAN spell)
-0038: <span class="sg_value">{{value1}}</span> <span class="sg_value">{{value2}}</span>   Oil level of lamp (0 is empty)
-003A: <span class="sg_value">{{value1}}</span>      Number of times lamp can be filled (init to $34 + 4)
-003B: <span class="sg_value">{{value1}}</span> <span class="sg_value">{{value2}}</span>   Pointer to start of input on screen
-003D: <span class="sg_value">{{value1}}</span>      Used in Random-between-0-and-B
-003E: <span class="sg_value">{{value1}}</span>      Time until we can drink from bottle to heal again (16 seconds)
-003F: <span class="sg_value">{{value1}}</span>      Interrupt divisor count (seconds)
-0040: <span class="sg_value">{{value1}}</span>      Interrupt sub divisor (minutes)
-0041: <span class="sg_value">{{value1}}</span>      Minotaur state timer
-0042: <span class="sg_value">{{value1}}</span>      Troglodyte state timer
-0043: <span class="sg_value">{{value1}}</span>      Satyr state timer
-0044: <span class="sg_value">{{value1}}</span>      Scorpion state timer
-0045: <span class="sg_value">{{value1}}</span>      Fog clock runs in room MYSTERIOUS FOG. At 6 seconds we get warned. At 10 we die.
-0046: <span class="sg_value">{{value1}}</span>      Minutes of immunity left (AKHIROM gives 3 minutes)
-0047: <span class="sg_value">{{value1}}</span>      Count of times entering room with EnteringRoomAction_r. 3 times and treasure drops.
-0048: <span class="sg_value">{{value1}}</span>      NEVER USED
-0049: <span class="sg_value">{{value1}}</span>      NEVER USED
-004A: <span class="sg_value">{{value1}}</span> <span class="sg_value">{{value2}}</span>   Continual second counter (nobody uses it)
-004C: <span class="sg_value">{{value1}}</span> <span class="sg_value">{{value2}}</span>   Counts the time in a room. Once 15, no going BACK
-004E: <span class="sg_value">{{value1}}</span>      NEVER USED
-004F: <span class="sg_value">{{value1}}</span>      NEVER USED
-0050: <span class="sg_value">{{value1}}</span>      NEVER USED
-0051: <span class="sg_value">{{value1}}</span>      Used in Oracle advice
-0052: <span class="sg_value">{{value1}}</span>      Used in killing Hydra
-0053: <span class="sg_value">{{value1}}</span>      Used in sound effects
-0054: <span class="sg_value">{{value1}}</span> <span class="sg_value">{{value2}}</span>   Used in tape-write
+0000: <span class="sg_value">{{value1}}</span>      ; current room
+0001: <span class="sg_value">{{value1}}</span>      ; last room
+0002: <span class="sg_value">{{value1}}</span>      ; direction command bit pattern
+0003: <span class="sg_value">{{value1}}</span>      ; length of user input
+0004: <span class="sg_value">{{value1}}</span>      ; weight of pack
+0005: <span class="sg_value">{{value1}}</span>      ; physical condition
+0006: <span class="sg_value">{{value1}}</span>      ; bulk of pack
+0007: <span class="sg_value">{{value1}}</span>      ; decoded object number from noun
+0008: <span class="sg_value">{{value1}}</span>      ; Accumulated odds of falling (0, 1/8, 2/8, 3/8 ... with each step in the dark)
+0009: <span class="sg_value">{{value1}}</span>      ; Scorpion sting (0=not, not-zero=number of times)
+000A: <span class="sg_value">{{value1}}</span>      ; 0 if lamp is off, not 0 is on
+000B: <span class="sg_value">{{value1}}</span>      ; Count of spaces at the end of the row in print routine
+000C: <span class="sg_value">{{value1}}</span>      ; Set by BetweenRoomACDE if a climb-down failed ... abort the movement
+000D: <span class="sg_value">{{value1}}</span>      ; pushed back flag (nobody reads this)
+000E: <span class="sg_value">{{value1}}</span>      ; HydraStatus: AA = tied up, 1 = dead, 0 = free
+000F: <span class="sg_value">{{value1}}</span>      ; HydraPushedUsBack (must be set to TIE HYDRA)  0 = not, 1 = hydra blocked last move (cleared every direction command)
+0010: <span class="sg_value">{{value1}}</span>      ; 1 if "pile of rocks" has been moved to us
+0011: <span class="sg_value">{{value1}}</span>      ; 1 if "pile of rocks" has been exposed with OKKAN
+0012: <span class="sg_value">{{value1}}</span>      ; 1 if south passage in room 9 is open. 0 if closed. (open with drapes)
+0013: <span class="sg_value">{{value1}}</span>      ; Count down timer until we can walk through aura and heal again (10 seconds each time)
+0014: <span class="sg_value">{{value1}}</span>      ; 1 if lamp has been blown from pack by entering room routine or failed jump
+0015: <span class="sg_value">{{value1}}</span>      ; 1 if treasure "$0B" has been released
+0016: <span class="sg_value">{{value1}}</span>      ; NEVER USED
+0017: <span class="sg_value">{{value1}}</span>      ; Random number for passage-description printing
+0018: <span class="sg_value">{{value1}}</span> <span class="sg_value">{{value2}}</span>   ; Rolling pointer to BASIC rom for random numbers
+001A: <span class="sg_value">{{value1}}</span>      ; Number of times advice has been given 0-13
+001B: <span class="sg_value">{{value1}}</span>      ; Object 0 
+001C: <span class="sg_value">{{value1}}</span>      ; Object 1
+001D: <span class="sg_value">{{value1}}</span>      ; Object 2
+001E: <span class="sg_value">{{value1}}</span>      ; Object 3    Advice table. Object number is stored here. Upper
+001F: <span class="sg_value">{{value1}}</span>      ; Object 4    bit set if advice has already been given for this
+0020: <span class="sg_value">{{value1}}</span>      ; Object 5    protected object.
+0021: <span class="sg_value">{{value1}}</span>      ; Object 6
+0022: <span class="sg_value">{{value1}}</span>      ; Object 7
+0023: <span class="sg_value">{{value1}}</span>      ; Object 8
+0024: <span class="sg_value">{{value1}}</span>      ; Object 9
+0025: <span class="sg_value">{{value1}}</span>      ; Object 10
+0026: <span class="sg_value">{{value1}}</span>      ; Object 11
+0027: <span class="sg_value">{{value1}}</span>      ; Object 12
+0028: <span class="sg_value">{{value1}}</span>      ; Calculated score
+0029: <span class="sg_value">{{value1}}</span>      ; NEVER USED
+002A: <span class="sg_value">{{value1}}</span>      ; Verb command number
+002B: <span class="sg_value">{{value1}}</span>      ; Noun word number
+002C: <span class="sg_value">{{value1}}</span>      ; Trigger object to make packrat drop treasure
+002D: <span class="sg_value">{{value1}}</span>      ; NEVER USED
+002E: <span class="sg_value">{{value1}}</span>      ; Holder value for BetweenRoomACDE
+002F: <span class="sg_value">{{value1}}</span>      ; General use lots of places
+0030: <span class="sg_value">{{value1}}</span>      ; Used in InPack
+0031: <span class="sg_value">{{value1}}</span>      ; Used in InPack
+0032: <span class="sg_value">{{value1}}</span>      ; Set by EnteringRoomAction_q (MYSTERIOUS FOG)
+0033: <span class="sg_value">{{value1}}</span>      ; Current room of HYDRA
+0034: <span class="sg_value">{{value1}}</span>      ; Number of times more ISHTAR can be used. Random init to 1-4.
+0035: <span class="sg_value">{{value1}}</span>      ; Room for small pit in corner of room
+0036: <span class="sg_value">{{value1}}</span>      ; Room of LEDGE
+0037: <span class="sg_value">{{value1}}</span>      ; Room of "pile of rocks" (OKKAN spell)
+0038: <span class="sg_value">{{value1}}</span> <span class="sg_value">{{value2}}</span>   ; Oil level of lamp (0 is empty)
+003A: <span class="sg_value">{{value1}}</span>      ; Number of times lamp can be filled (init to $34 + 4)
+003B: <span class="sg_value">{{value1}}</span> <span class="sg_value">{{value2}}</span>   ; Pointer to start of input on screen
+003D: <span class="sg_value">{{value1}}</span>      ; Used in Random-between-0-and-B
+003E: <span class="sg_value">{{value1}}</span>      ; Time until we can drink from bottle to heal again (16 seconds)
+003F: <span class="sg_value">{{value1}}</span>      ; Interrupt divisor count (seconds)
+0040: <span class="sg_value">{{value1}}</span>      ; Interrupt sub divisor (minutes)
+0041: <span class="sg_value">{{value1}}</span>      ; Minotaur state timer
+0042: <span class="sg_value">{{value1}}</span>      ; Troglodyte state timer
+0043: <span class="sg_value">{{value1}}</span>      ; Satyr state timer
+0044: <span class="sg_value">{{value1}}</span>      ; Scorpion state timer
+0045: <span class="sg_value">{{value1}}</span>      ; Fog clock runs in room MYSTERIOUS FOG. At 6 seconds we get warned. At 10 we die.
+0046: <span class="sg_value">{{value1}}</span>      ; Minutes of immunity left (AKHIROM gives 3 minutes)
+0047: <span class="sg_value">{{value1}}</span>      ; Count of times entering room with EnteringRoomAction_r. 3 times and treasure drops.
+0048: <span class="sg_value">{{value1}}</span>      ; NEVER USED
+0049: <span class="sg_value">{{value1}}</span>      ; NEVER USED
+004A: <span class="sg_value">{{value1}}</span> <span class="sg_value">{{value2}}</span>   ; Continual second counter (nobody uses it)
+004C: <span class="sg_value">{{value1}}</span> <span class="sg_value">{{value2}}</span>   ; Counts the time in a room. Once 15, no going BACK
+004E: <span class="sg_value">{{value1}}</span>      ; NEVER USED
+004F: <span class="sg_value">{{value1}}</span>      ; NEVER USED
+0050: <span class="sg_value">{{value1}}</span>      ; NEVER USED
+0051: <span class="sg_value">{{value1}}</span>      ; Used in Oracle advice
+0052: <span class="sg_value">{{value1}}</span>      ; Used in killing Hydra
+0053: <span class="sg_value">{{value1}}</span>      ; Used in sound effects
+0054: <span class="sg_value">{{value1}}</span> <span class="sg_value">{{value2}}</span>   ; Used in tape-write
 ;
 ; 16 byte for decode and word wrap
 0056: <span class="sg_value">{{mvalue_16}}</span>
@@ -139,46 +139,46 @@ $('#parseData').on('click',function() {
 00E0: <span class="sg_value">{{mvalue_16}}</span>
 00F0: <span class="sg_value">{{mvalue_3}}</span>
 ;
-00F3: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  .
-00F4: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  .
-00F5: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  .
-00F6: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  .
-00F7: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  Shifting buffer of rooms blocked by Shaking Ground.
-00F8: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  As new rooms are blocked at random, they go on the
-00F9: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  end of the list. Rooms are pulled off of the front
-00FA: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  of the list and unblocked completely. This keeps
-00FB: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  lots of shaking from blocking up the floors over
-00FC: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  time.
-00FD: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  .
-00FE: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  .
-00FF: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  .
+00F3: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  ;
+00F4: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  ;
+00F5: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  ;
+00F6: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  ;
+00F7: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  ; Shifting buffer of rooms blocked by Shaking Ground.
+00F8: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  ; As new rooms are blocked at random, they go on the
+00F9: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  ; end of the list. Rooms are pulled off of the front
+00FA: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  ; of the list and unblocked completely. This keeps
+00FB: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  ; lots of shaking from blocking up the floors over
+00FC: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  ; time.
+00FD: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  ;
+00FE: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  ;
+00FF: <span class="sg_value">{{value1}}</span>    <span class="sg_value">{{decode}}</span>  ;
 <h2>Screen State</h2>
 ; Text screens stored in save file 0100-03BF
 ; Only the last 6 rows of the 1st screen
-0340: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-0360: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-0380: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-03A0: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-03C0: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-03E0: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
+0340: <span class="sg_value">{{value}}</span> ; <span class="sg_value">{{decode}}</span>
+0360: <span class="sg_value">{{value}}</span> ; <span class="sg_value">{{decode}}</span>
+0380: <span class="sg_value">{{value}}</span> ; <span class="sg_value">{{decode}}</span>
+03A0: <span class="sg_value">{{value}}</span> ; <span class="sg_value">{{decode}}</span>
+03C0: <span class="sg_value">{{value}}</span> ; <span class="sg_value">{{decode}}</span>
+03E0: <span class="sg_value">{{value}}</span> ; <span class="sg_value">{{decode}}</span>
 ;
 ; All 16 rows of the 2nd screen
-0400: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-0420: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-0440: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-0460: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-0480: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-04A0: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-04C0: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-04E0: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-0500: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-0520: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-0540: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-0560: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-0580: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-05A0: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-05C0: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
-05E0: <span class="sg_value">{{value}}</span> <span class="sg_value">{{decode}}</span>
+0400: <span class="sg_value">{{value}}</span> ; <span class="sg_value">{{decode}}</span>
+0420: <span class="sg_value">{{value}}</span> ; <span class="sg_value">{{decode}}</span>
+0440: <span class="sg_value">{{value}}</span> ; <span class="sg_value">{{decode}}</span>
+0460: <span class="sg_value">{{value}}</span> ; <span class="sg_value">{{decode}}</span>
+0480: <span class="sg_value">{{value}}</span> ; <span class="sg_value">{{decode}}</span>
+04A0: <span class="sg_value">{{value}}</span> ; <span class="sg_value">{{decode}}</span>
+04C0: <span class="sg_value">{{value}}</span> ; <span class="sg_value">{{decode}}</span>
+04E0: <span class="sg_value">{{value}}</span> ; <span class="sg_value">{{decode}}</span>
+0500: <span class="sg_value">{{value}}</span> ; <span class="sg_value">{{decode}}</span>
+0520: <span class="sg_value">{{value}}</span> ; <span class="sg_value">{{decode}}</span>
+0540: <span class="sg_value">{{value}}</span> ; <span class="sg_value">{{decode}}</span>
+0560: <span class="sg_value">{{value}}</span> ; <span class="sg_value">{{decode}}</span>
+0580: <span class="sg_value">{{value}}</span> ; <span class="sg_value">{{decode}}</span>
+05A0: <span class="sg_value">{{value}}</span> ; <span class="sg_value">{{decode}}</span>
+05C0: <span class="sg_value">{{value}}</span> ; <span class="sg_value">{{decode}}</span>
+05E0: <span class="sg_value">{{value}}</span> ; <span class="sg_value">{{decode}}</span>
 <h2>Game Data (3BC1-3FFF stored in save game file 03C0-07FE)</h2>
 <h3>Spells</h3>
 ; Spell data
@@ -218,32 +218,32 @@ $('#parseData').on('click',function() {
 ;     CC =    N ... a failure is a stumble. You don't make the jump and
 ;                   take N damage.
 ;
-3BE1: 8F 80 00 97 6D; From 143 "JUMP PIT"   to 151. Required=128 or DEATH
-3BE6: 97 80 80 8F 6D; From 151 "JUMP PIT"   to 143. Required=128 or FUMBLE
-3BEB: 10 80 80 11 2C; From 16  "JUMP POOL"  to 17.  Required=128 or FUMBLE
-3BF0: 11 80 80 10 2C; From 17  "JUMP POOL"  to 16.  Required=128 or FUMBLE
-3BF5: 4E 40 80 56 41; From 78  "JUMP CHASM" to 86.  Required=64  or FUMBLE
-3BFA: 56 40 80 4E 41; From 86  "JUMP CHASM" to 78.  Required=64  or FUMBLE
-3BFF: 2C 0A 0A B6 6D; From 44  "JUMP PIT"   to 182. Required=10  or STUMBLE(10)
-3C04: B6 14 14 2C 6D; From 182 "JUMP PIT"   to 44.  Required=20  or STUMBLE(20)
-3C09: A4 A0 00 CA 6D; From 164 "JUMP PIT"   to 202. Required=160 or DEATH
-3C0E: 85 C0 80 CB 6D; From 133 "JUMP PIT"   to 203. Required=192 or FUMBLE
-3C13: 90 14 14 85 FF; From 144 "JUMP"       to 133. Required=20  or STUMBLE(20)
-3C18: CB 80 1E CA 6D; From 203 "JUMP PIT"   to 202. Required=128 or STUMBLE(30)
-3C1D: D5 46 14 D4 6B; From 213 "JUMP MIST"  to 212. Required=70  or STUMBLE(20)
-3C22: D4 46 14 D5 6B; From 212 "JUMP MIST"  to 213. Required=70  or STUMBLE(20)
-3C27: 23 96 28 22 9F; From 35  "JUMP HOLE"  to 34.  Required=150 or STUMBLE(40)
-3C2C: 22 78 14 23 6D; From 34  "JUMP PIT"   to 35.  Required=120 or STUMBLE(20)
-3C31: 80 64 80 40 05; From 128 "JUMP UP"    to 64.  Required=100 or FUMBLE
-3C36: A6 50 80 66 05; From 166 "JUMP UP"    to 102. Required=80  or FUMBLE
-3C3B: 66 A0 80 26 05; From 102 "JUMP UP"    to 38.  Required=160 or FUMBLE
-3C40: 5C 96 1E 9C 06; From 92  "JUMP DOWN"  to 156. Required=150 or STUMBLE(30)
-3C45: 46 50 14 8C 06; From 70  "JUMP DOWN"  to 140. Required=80  or STUMBLE(20)
-3C4A: 5E 5A 0A 9E 06; From 94  "JUMP DOWN"  to 158. Required=90  or STUMBLE(10)
-3C4F: 40 1E 00 80 6D; From 64  "JUMP PIT"   to 128. Required=30  or DEATH
-3C54: CA 1E 14 A2 06; From 202 "JUMP DOWN"  to 162. Required=30  or STUMBLE(20)
+3BE1: 8F 80 00 97 6D ; From 143 "JUMP PIT"   to 151. Required=128 or DEATH
+3BE6: 97 80 80 8F 6D ; From 151 "JUMP PIT"   to 143. Required=128 or FUMBLE
+3BEB: 10 80 80 11 2C ; From 16  "JUMP POOL"  to 17.  Required=128 or FUMBLE
+3BF0: 11 80 80 10 2C ; From 17  "JUMP POOL"  to 16.  Required=128 or FUMBLE
+3BF5: 4E 40 80 56 41 ; From 78  "JUMP CHASM" to 86.  Required=64  or FUMBLE
+3BFA: 56 40 80 4E 41 ; From 86  "JUMP CHASM" to 78.  Required=64  or FUMBLE
+3BFF: 2C 0A 0A B6 6D ; From 44  "JUMP PIT"   to 182. Required=10  or STUMBLE(10)
+3C04: B6 14 14 2C 6D ; From 182 "JUMP PIT"   to 44.  Required=20  or STUMBLE(20)
+3C09: A4 A0 00 CA 6D ; From 164 "JUMP PIT"   to 202. Required=160 or DEATH
+3C0E: 85 C0 80 CB 6D ; From 133 "JUMP PIT"   to 203. Required=192 or FUMBLE
+3C13: 90 14 14 85 FF ; From 144 "JUMP"       to 133. Required=20  or STUMBLE(20)
+3C18: CB 80 1E CA 6D ; From 203 "JUMP PIT"   to 202. Required=128 or STUMBLE(30)
+3C1D: D5 46 14 D4 6B ; From 213 "JUMP MIST"  to 212. Required=70  or STUMBLE(20)
+3C22: D4 46 14 D5 6B ; From 212 "JUMP MIST"  to 213. Required=70  or STUMBLE(20)
+3C27: 23 96 28 22 9F ; From 35  "JUMP HOLE"  to 34.  Required=150 or STUMBLE(40)
+3C2C: 22 78 14 23 6D ; From 34  "JUMP PIT"   to 35.  Required=120 or STUMBLE(20)
+3C31: 80 64 80 40 05 ; From 128 "JUMP UP"    to 64.  Required=100 or FUMBLE
+3C36: A6 50 80 66 05 ; From 166 "JUMP UP"    to 102. Required=80  or FUMBLE
+3C3B: 66 A0 80 26 05 ; From 102 "JUMP UP"    to 38.  Required=160 or FUMBLE
+3C40: 5C 96 1E 9C 06 ; From 92  "JUMP DOWN"  to 156. Required=150 or STUMBLE(30)
+3C45: 46 50 14 8C 06 ; From 70  "JUMP DOWN"  to 140. Required=80  or STUMBLE(20)
+3C4A: 5E 5A 0A 9E 06 ; From 94  "JUMP DOWN"  to 158. Required=90  or STUMBLE(10)
+3C4F: 40 1E 00 80 6D ; From 64  "JUMP PIT"   to 128. Required=30  or DEATH
+3C54: CA 1E 14 A2 06 ; From 202 "JUMP DOWN"  to 162. Required=30  or STUMBLE(20)
 ;
-3C59: <span class="sg_value">{{value}}</span> 8C 80 27 06; From <span class="sg_value">{{decode}}</span> "JUMP DOWN"  to 39.  Required=140 or FUMBLE
+3C59: <span class="sg_value">{{value}}</span> 8C 80 27 06 ; From <span class="sg_value">{{decode}}</span> "JUMP DOWN"  to 39.  Required=140 or FUMBLE
 ;
 3C5E: 00          
 <h3>Name Table</h3>
@@ -456,7 +456,7 @@ $('#parseData').on('click',function() {
 ; These appear on the map above
 
 ; Floor 1
-3EB8: <span class="sg_value">{{decode}}</span>
+3EB8: <span class="sg_value">{{mvalue}}</span>
 3EC0: <span class="sg_value">{{mvalue}}</span>
 3EC8: <span class="sg_value">{{mvalue}}</span>
 3ED0: <span class="sg_value">{{mvalue}}</span>
@@ -495,36 +495,7 @@ $('#parseData').on('click',function() {
 3FA8: <span class="sg_value">{{mvalue}}</span>
 3FB0: <span class="sg_value">{{mvalue}}</span>
 <h3>Protection Lists</h3> 
-3FB8: 1A              ; TROGLODYTE
-3FB9: 43 07 3B FF     ;   DAGGER (plus bits), SHIELD, NERGAL
-3FBD: 1D              ; SATYR
-3FBE: 23 77 FF        ;   SPELLBOOK, VETAR (plus bits)
-3FC1: 1E              ; MINOTAUR
-3FC2: 45 3B FF        ;   AX (plus bits), NERGAL
-3FC5: 1B              ; SCORPION
-3FC6: 48 3B FF        ;   FLUTE (plus bits), NERGAL
-3FC9: 1C              ; NYMPH
-3FCA: 48 39 FF        ;   FLUTE (plus bits), OKKAN
-3FCD: 19              ; SPRITE
-3FCE: 54 2A FF        ;   SKULL (plus bits), POWERRING
-3FD1: 06              ; SWORD
-3FD2: 0E FF           ;   PARCHMENT
-3FD4: 0F              ; VIAL
-3FD5: 09 77 FF        ;   MUSHROOM, VETAR (plus bits)
-3FD8: 07              ; SHIELD
-3FD9: 06 FF           ;   SWORD
-3FDB: 14              ; SKULL
-3FDC: 0B FF           ;   SCEPTER
-3FDE: 2A              ; POWERRING
-3FDF: 07 0B 0E 79 FF  ;   SHIELD, SCEPTER, PARCHMENT, OKKAN (plus bits)
-3FE4: 2B              ; LIGHTRING
-3FE5: 2A 7D 11 FF     ;   POWERRING, CROM (plus bits), TALISMAN
-3FE9: 2C              ; TRUTHRING
-3FEA: 2B 08 7A FF     ;   LIGHTRING, FLUTE, AKHIROM (plus bits)
-3FEE: 23              ; SPELLBOOK
-3FEF: 09 13 7C FF     ;   MUSHROOM, GOBLET, BELROG (plus bits)
-
-TODO show any data not used but written
+3FB8: 
 ```
 
 ```html

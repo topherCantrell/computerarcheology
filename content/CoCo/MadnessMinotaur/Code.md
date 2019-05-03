@@ -4035,7 +4035,7 @@ SpellLocationLimits:
  There are 14 objects in the game that require us to have a combination
  of objects to kill/get. This table lists a number of configurations
  for each of these objects. On initialization, a random list is chosen
- from the possibile lists for each object. 
+ from the possible lists for each object. 
 
  Note that none of these are treasures, so the game can't be unwinnable because a
  creature carries the object needed to kill it.

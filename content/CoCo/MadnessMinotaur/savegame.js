@@ -424,6 +424,123 @@ var NAMETABLE = {
 	0x0B : 'Enter-room-action _r',
 }
 
+var PROTECTIONS = {
+  0x1A: {
+	  name : 'TROGLODYTE',
+	  items : [
+		  '45 0B 38 FF ; AX, SCEPTER, MITRA',
+		  '23 7D FF ; SPELLBOOK, CROM',
+		  '43 07 3B FF ; DAGGER, SHIELD, NERGAL'
+	  ]
+  },
+  0x1D: {
+	  name : 'SATYR',
+	  items : [
+  '46 3B FF ; SWORD, NERGAL',
+  '44 2B 38 FF ; MACE, LIGHTRING, MITRA',
+  '23 77 FF ; SPELLBOOK, VETAR',
+	  ]
+  },
+  0x1E: {
+	  name : 'MINOTAUR',
+	  items : [
+  '46 07 2A FF ; SWORD, SHIELD, POWERRING',
+  '44 0F 0B 38 FF ; MACE, VIAL, SCEPTER, MITRA',
+  '45 3B FF ; AX, NERGAL',
+	  ]
+  },
+  0x1B: {
+	  name : 'SCORPION',
+	  items : [
+  '48 3B FF ; FLUTE, NERGAL',
+  '14 3D FF ; SKULL, CROM',
+  '51 2A FF ; TALISMAN, POWERRING',
+	  ]
+  },
+  0x1C: {
+	  name : 'NYMPH',
+	  items : [
+  '49 2C FF ; MUSHROOM, TRUTHRING',
+  '41 0A FF ; FOOD, PENDANT',
+  '48 39 FF ; FLUTE, OKKAN',
+	  ]
+  },
+  0x19 : {
+	  name : 'SPRITE',
+	  items : [
+  '54 2A FF ; SKULL, POWERRING',
+  '41 3B FF ; FOOD, NERGAL',
+  '43 3A FF ; DAGGER, AKHIROM',
+	  ]
+  },
+  0x06: {
+	  name : 'SWORD',
+	  items : [
+  '18 FF ; ROPE',
+  '38 FF ; MITRA',
+  '0E FF ; PARCHMENT',
+	  ]
+  },
+  0x0F: {
+	  name : 'VIAL',
+	  items : [
+  '09 77 FF ; MUSHROOM, VETAR',
+  '0E 38 FF ; PARCHMENT, MITRA',
+  '11 38 FF ; TALISMAN, MITRA',
+	  ]
+  },
+  0x07: {
+	  name : 'SHIELD',
+	  items : [
+  '06 FF ; SWORD',
+  '04 FF ; MACE',
+  '03 FF ; DAGGER',
+	  ]
+  },
+  0x14: {
+	  name : 'SKULL',
+	  items : [
+  '11 0A FF ; TALISMAN, PENDANT',
+  '39 FF ; OKKAN',
+  '0B FF ; SCEPTER',
+	  ]
+  },
+  0x2A: {
+	  name : 'POWERRING',
+	  items : [
+  '7C FF ; BELROG',
+  '07 0B 0E 79 FF ; SHIELD, SCEPTER, PARCHMENT, OKKAN',
+  '07 04 14 78 FF ; SHIELD, MACE, SKULL, MITRA',
+  '07 06 7A F ; SHIELD, SWORD, AKHIROM',
+	  ]
+  },
+  0x2B: {
+	  name : 'LIGHTRING',
+	  items : [
+  '2A 7D 11 FF ; POWERRING, CROM, TALISMAN',
+  '2A 05 39 FF ; POWERRING, AX, OKKAN',
+  '2A 18 7B FF ; POWERRING, ROPE, NERGAL',
+	  ]
+  },
+  0x2C: {
+	  name : 'TRUTHRING',
+	  items : [
+  '2B 7D 0D FF ; LIGHTRING, CROM, BASKET',
+  '2B 05 39 FF ; LIGHTRING, AX, OKKAN',
+  '2B 08 7A FF ; LIGHTRING, FLUTE, AKHIROM',
+	  ]
+  },
+  0x23: {
+	  name : 'SPELLBOOK',
+	  items : [
+  '14 08 FF ; SKULL, FLUTE',
+  '0A 7D FF ; PENDANT, CROM',
+  '09 13 7C FF ; MUSHROOM, GOBLET, BELROG',
+  '2A 7B FF ; POWERRING, NERGAL',
+	  ]
+  }
+}
+
 function viewSaveFile(data) {
 	
 	// Reset from last viewing (if any)
@@ -495,6 +612,8 @@ function viewSaveFile(data) {
 				  a = a -256;
 			  }
 			  a = a + 128;
+			  a = ''+a;
+			  while(a.length<3) a=a+' ';
 			  g = doReplaceTarget(g,'decode','Room '+a);			  
 			} else {
 				// Must be mvalue_NN
@@ -601,8 +720,7 @@ function viewSaveFile(data) {
 		
 		// Objects
 		i = findRawTextLine(rawt,'3CFC',i);
-		j = findRawTextLine(rawt,'3DB6',i);
-		
+		j = findRawTextLine(rawt,'3DB6',i);		
 		while(i!=j) {
 			g = rawt[i];
 			if(g[0]!='3') {
@@ -643,6 +761,81 @@ function viewSaveFile(data) {
 			rawt[i] = doReplaceTarget(g,'decode',dec);			
 			++i;			
 		}
+		
+		// Blocked passages
+		i = findRawTextLine(rawt,'3EB8',i);
+		j = findRawTextLine(rawt,'3FB8',i);		
+		while(i!=j) {
+			g = rawt[i];
+			if(g[0]!='3') {
+				++i;
+				continue;
+			}
+			p = parseInt(g.substring(0,4),16);
+			
+			s = '';
+			t = '';
+			for(x=0;x<8;++x) {
+				a = readBinaryData(p+x);
+				s = s + hexPad(a,2)+' ';
+				if((a&32)>0) {t=t+'U';} else {t=t+'.';}
+				if((a&16)>0) {t=t+'D';} else {t=t+'.';}
+				if((a&8)>0) {t=t+'N';} else {t=t+'.';}
+				if((a&4)>0) {t=t+'E';} else {t=t+'.';}
+				if((a&2)>0) {t=t+'W';} else {t=t+'.';}
+				if((a&1)>0) {t=t+'S';} else {t=t+'.';}
+				t = t + ' ';
+			}
+			
+			rawt[i] = doReplaceTarget(g,'mvalue',s+'; '+t);
+			++i;
+		}
+		
+		// Protection lists
+		g = rawt.pop(); 
+		rawt.pop(); // The placeholder address 3FB8:
+		
+		p = 0x3FB8;		
+		for(x=0;x<14;++x) {
+			u = hexPad(p,4)+': '
+			b = readBinaryData(p++);
+			u = u + hexPad(b,2);
+			while(u.length<22) u = u +' ';			
+			ob = PROTECTIONS[b];
+			u = u + '; '+ob.name;
+			if(x==0) u = '<span class="sg_value">'+ u;
+			rawt.push(u);
+			s = '';
+			u = hexPad(p,4)+': ';
+			while(true) {
+				a = readBinaryData(p++);
+				s = s + hexPad(a,2)+' ';
+				if(a==0xFF) break;
+			}
+			u=u+s;
+			for(y=0;y<ob.items.length;++y) {
+				if(ob.items[y].startsWith(s)) {
+					s = ob.items[y];
+					break;
+				}
+			}
+			while(u.length<22) u=u+' ';
+			z = s.indexOf(';');
+			u = u + ';    ' + s.substring(z+1);
+			rawt.push(u);
+		}
+		
+		rawt.push(hexPad(p++,4)+': FF')
+		
+		if(p!=0x4000) {
+			rawt.push('; Unused');
+			u = hexPad(p,4)+':';
+			while(p<0x4000) u = u + ' ' + hexPad(readBinaryData(p++),2);
+			rawt.push(u);
+		}
+		
+		rawt.push('<\span>');
+		rawt.push(g);
 		
 		// Write the data
 		g ='';
