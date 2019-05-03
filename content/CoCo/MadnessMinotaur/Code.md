@@ -564,13 +564,16 @@ OneMinTick:
 0818: 8E 2E 8A            LDX     #$2E8A                    ; "THE GROUND IS SHAKING!"
 081B: BD 10 66            JSR     $1066                     ; {PrintMess} Print the message
 
-081E: 10 8E 3E 38         LDY     #$3E38                    ; Start of floor 3
+081E: 10 8E 3E 38         LDY     #$3E38                    ; Start of floor 3 (signed math coming up)
 0822: 8E 00 F3            LDX     #$00F3                    ; Shaking-ground blocked passage queue
 ```
 
- Maintains a list of the last 12 rooms that were blocked. As new rooms are blocked
+ Maintains a list of the last 13 rooms that were blocked. As new rooms are blocked
  they go on the end of the list and the rooms at the beginning of the list are 
- pulled off the list and opened. Thus "shaking ground" only affects 12 rooms at a time.
+ pulled off the list and opened. Thus "shaking ground" only affects 13 rooms at a time.
+ 
+ Note that the blocked-stack is initialized to 00. The first few unblocks always go
+ to room 128 (1st on floor 3).
 
 ```code 
 0825: 86 03               LDA     #$03                      ; 3 times

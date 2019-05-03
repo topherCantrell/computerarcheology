@@ -384,6 +384,16 @@ function hexPad(val,n) {
 	return ret;
 }
 
+function getReplaceTarget(s) {
+	var i = s.indexOf('{{');
+	var j = s.indexOf('}}');
+	return s.substring(i+2,j);
+}
+
+function doReplaceTarget(s,k,v) {
+	return s.replace('{{'+k+'}}',v);
+}
+
 function viewSaveFile(data) {
 	
 	// Reset from last viewing (if any)
@@ -442,19 +452,38 @@ function viewSaveFile(data) {
 				++i;
 				continue;
 			}
-			da = parseInt(g.substring(0,4),16);
-			dd = readBinaryData(da).toString(16).toUpperCase();
-			if(dd.length==1) dd='0'+dd;
-			g = g.substring(0,6)+dd+g.substring(8);
-			if(g[9]!=' ') {
-				dd = readBinaryData(da+1).toString(16).toUpperCase();
-				if(dd.length==1) dd='0'+dd;
-				g = g.substring(0,9)+dd+g.substring(11);
+			p = parseInt(g.substring(0,4),16);
+			a = readBinaryData(p);
+			b = readBinaryData(p+1);			
+			k = getReplaceTarget(g);
+			if(k=='value1') {
+			  g = doReplaceTarget(g,k,hexPad(a,2));
+			  if(p<0xFF) {
+				  g = doReplaceTarget(g,'value2',hexPad(b,2));
+			  }
+			  if(a>127) {
+				  a = a -256;
+			  }
+			  a = a + 128;
+			  g = doReplaceTarget(g,'decode','Room '+a);			  
+			} else {
+				// Must be mvalue_NN
+				m = k.indexOf('_');
+				z = parseInt(k.substring(m+1));
+				s = '';
+				while(z>0) {
+					s = s + hexPad(readBinaryData(p),2)+' ';
+					++p;
+					--z;
+				}
+				g = doReplaceTarget(g,k,s)
 			}
+									
 			rawt[i] = g;
 			++i;
 		}
 		
+		/*		
 		// Spells
 		p = 0x3BC1;
 		for(j=0;j<8;++j) {
@@ -495,6 +524,7 @@ function viewSaveFile(data) {
 			++i;
 			p = p + 2;
 		}
+		*/
 		
 		// Write the data
 		g ='';

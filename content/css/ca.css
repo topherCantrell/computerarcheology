@@ -167,4 +167,6 @@ html,
 	width: 50%;
 }
 
-
+.sg_value {
+	color: red;
+}
