@@ -292,43 +292,43 @@ $('#parseData').on('click',function() {
 3C89: <span class="sg_value">{{value}}</span> 28  ; 40 "AMULET"    Held by <span class="sg_value">{{decode}}</span>
 3C8B: <span class="sg_value">{{value}}</span> 29  ; 41 "POTION"    Held by <span class="sg_value">{{decode}}</span>
 3C8D: <span class="sg_value">{{value}}</span> 2D  ; 45 "CROWN"     Held by <span class="sg_value">{{decode}}</span>
-<h3>Enter Room Table</h3> 
-3C8F: <span class="sg_value">{{value}}</span> 1B 6D  ; <span class="sg_value">{{decode}}</span>  _a     ; Cave in to next floor if pack heavier than 192. If so move a nd b to random rooms.
-3C92: <span class="sg_value">{{value}}</span> 1B 70  ; <span class="sg_value">{{decode}}</span>  _b     ; Cave in to next floor if pack heavier than 128. If so move a nd b to random rooms.
-3C95: <span class="sg_value">{{value}}</span> 1B 73  ; <span class="sg_value">{{decode}}</span>  _c     ; Cave in to next floor if pack heavier than 95. If so move a nd b to random rooms.
-3C98: <span class="sg_value">{{value}}</span> 1B 9C  ; <span class="sg_value">{{decode}}</span>  _d     ; If we have VETAR make the pile-of-rocks appear in this room (it stays here).
-3C9B: <span class="sg_value">{{value}}</span> 1B B3  ; <span class="sg_value">{{decode}}</span>  _e     ; Play sound effect. If we play the flute and have the parchment then the LEDGE appears here.
-3C9E: <span class="sg_value">{{value}}</span> 1B B7  ; <span class="sg_value">{{decode}}</span>  _f     ; Powerful gust blows lamp out of grasp. 
-3CA1: <span class="sg_value">{{value}}</span> 1B F9  ; <span class="sg_value">{{decode}}</span>  _g     ; Hydra is here. If it is free it pushes us back to last room. 
-3CA4: <span class="sg_value">{{value}}</span> 1C 15  ; <span class="sg_value">{{decode}}</span>  _h     ; If we know VETAR or have the SCEPTER, nothing happens. Otherwise we RUN.
-3CA7: <span class="sg_value">{{value}}</span> 1C 2C  ; <span class="sg_value">{{decode}}</span>  _i     ; Pushed back if we don't have VETAR.
-3CAA: <span class="sg_value">{{value}}</span> 1C 2F  ; <span class="sg_value">{{decode}}</span>  _j     ; Pushed back if we don't have MITRA.
-3CAD: <span class="sg_value">{{value}}</span> 1C 32  ; <span class="sg_value">{{decode}}</span>  _k     ; Pushed back if we don't have OKKAN.
-3CB0: <span class="sg_value">{{value}}</span> 1C 35  ; <span class="sg_value">{{decode}}</span>  _l     ; Pushed back if we don't have AKHIROM.
-3CB3: <span class="sg_value">{{value}}</span> 1C 38  ; <span class="sg_value">{{decode}}</span>  _m     ; Pushed back if we don't have NERGAL.
-3CB6: <span class="sg_value">{{value}}</span> 1C 3B  ; <span class="sg_value">{{decode}}</span>  _n     ; Pushed back if we don't have BELROG.
-3CB9: <span class="sg_value">{{value}}</span> 1C 3E  ; <span class="sg_value">{{decode}}</span>  _o     ; Pushed back if we don't have CROM.
-3CBC: <span class="sg_value">{{value}}</span> 1C 41  ; <span class="sg_value">{{decode}}</span>  _p     ; Pushed back if we don't have ISHTAR.
-3CBF: <span class="sg_value">{{value}}</span> 1C 68  ; <span class="sg_value">{{decode}}</span>  _q     ; Start the poison clock (we can't stay here long). 1/3 of the time we give the clock an extra tick.
-3CC2: <span class="sg_value">{{value}}</span> 1C 7A  ; <span class="sg_value">{{decode}}</span>  _r     ; When we enter this room 3 times the treasure is released.
-3CC5: <span class="sg_value">{{value}}</span> 1C 68  ; <span class="sg_value">{{decode}}</span>  _q     ; see above 
-3CC8: <span class="sg_value">{{value}}</span> 1C 68  ; <span class="sg_value">{{decode}}</span>  _q     ; see above
-3CCB: <span class="sg_value">{{value}}</span> 1C 8D  ; <span class="sg_value">{{decode}}</span>  _s     ; If we have the lamp and it is off then the room drops its treasure. (Strange color walls)
-3CCE: <span class="sg_value">{{value}}</span> 1C A9  ; <span class="sg_value">{{decode}}</span>  _t     ; If we are holding the packrat's trigger treasure (randomized at start) then the packrat drops his treasure.
-3CD1: <span class="sg_value">{{value}}</span> 1C 68  ; <span class="sg_value">{{decode}}</span>  _q     ; see above
-3CD4: <span class="sg_value">{{value}}</span> 1C CC  ; <span class="sg_value">{{decode}}</span>  _u     ; If we can see you instantly get the treasure.
-3CD7: <span class="sg_value">{{value}}</span> 1C F0  ; <span class="sg_value">{{decode}}</span>  _v     ; Print POOL OF OIL if the lamp can be refilled.
-3CDA: <span class="sg_value">{{value}}</span> 1B B7  ; <span class="sg_value">{{decode}}</span>  _f     ; see above
-3CDD: <span class="sg_value">{{value}}</span> 1C E0  ; <span class="sg_value">{{decode}}</span>  _32    ; (Same as 32 below)
-3CE0: <span class="sg_value">{{value}}</span> 1D 00  ; <span class="sg_value">{{decode}}</span>  _x     ; Add 40 to health and move us a short distance away. 10 minutes must pass before again. 
-3CE3: <span class="sg_value">{{value}}</span> 1D 00  ; <span class="sg_value">{{decode}}</span>  _x     ; see above
-3CE6: <span class="sg_value">{{value}}</span> 1D 22  ; <span class="sg_value">{{decode}}</span>  _203   ; Print "SMALL PIT IN CORNER OF ROOM"
-3CE9: D5 1D 27  ; 213  _213     ; Print "LAYER OF MIST EAST WALL"
-3CEC: 20 1C E0  ; 32   _32      ; If we can't see we take 30 damage.
-3CEF: 21 1C D6  ; 33   _33      ; If we can see you instantly get the treasure.
-3CF2: CB 1D 22  ; 203  _203     ; Print SMALL PIT IN CORNER OF ROOM.
-3CF5: <span class="sg_value">{{value}}</span> 1B B4  ; <span class="sg_value">{{decode}}</span>  _z       ; Room with music (init to room 16 to 39). The sprite can't move objects here.
-3CF8: E8 1D 2D  ; 232  _232     ; _232 If we came south to this room and carrying pendant move us near start and random room for pendant.
+<h3>Enter Room Actions</h3> 
+3C8F: <span class="sg_value">{{value}}</span> 1B 6D  ; Room <span class="sg_value">{{decode}}</span>  _a     ; Cave in to next floor if pack heavier than 192. If so move a nd b to random rooms.
+3C92: <span class="sg_value">{{value}}</span> 1B 70  ; Room <span class="sg_value">{{decode}}</span>  _b     ; Cave in to next floor if pack heavier than 128. If so move a nd b to random rooms.
+3C95: <span class="sg_value">{{value}}</span> 1B 73  ; Room <span class="sg_value">{{decode}}</span>  _c     ; Cave in to next floor if pack heavier than 95. If so move a nd b to random rooms.
+3C98: <span class="sg_value">{{value}}</span> 1B 9C  ; Room <span class="sg_value">{{decode}}</span>  _d     ; If we have VETAR make the pile-of-rocks appear in this room (it stays here).
+3C9B: <span class="sg_value">{{value}}</span> 1B B3  ; Room <span class="sg_value">{{decode}}</span>  _e     ; Play sound effect. If we play the flute and have the parchment then the LEDGE appears here.
+3C9E: <span class="sg_value">{{value}}</span> 1B B7  ; Room <span class="sg_value">{{decode}}</span>  _f     ; Powerful gust blows lamp out of grasp. 
+3CA1: <span class="sg_value">{{value}}</span> 1B F9  ; Room <span class="sg_value">{{decode}}</span>  _g     ; Hydra is here. If it is free it pushes us back to last room. 
+3CA4: <span class="sg_value">{{value}}</span> 1C 15  ; Room <span class="sg_value">{{decode}}</span>  _h     ; If we know VETAR or have the SCEPTER, nothing happens. Otherwise we RUN.
+3CA7: <span class="sg_value">{{value}}</span> 1C 2C  ; Room <span class="sg_value">{{decode}}</span>  _i     ; Pushed back if we don't have VETAR.
+3CAA: <span class="sg_value">{{value}}</span> 1C 2F  ; Room <span class="sg_value">{{decode}}</span>  _j     ; Pushed back if we don't have MITRA.
+3CAD: <span class="sg_value">{{value}}</span> 1C 32  ; Room <span class="sg_value">{{decode}}</span>  _k     ; Pushed back if we don't have OKKAN.
+3CB0: <span class="sg_value">{{value}}</span> 1C 35  ; Room <span class="sg_value">{{decode}}</span>  _l     ; Pushed back if we don't have AKHIROM.
+3CB3: <span class="sg_value">{{value}}</span> 1C 38  ; Room <span class="sg_value">{{decode}}</span>  _m     ; Pushed back if we don't have NERGAL.
+3CB6: <span class="sg_value">{{value}}</span> 1C 3B  ; Room <span class="sg_value">{{decode}}</span>  _n     ; Pushed back if we don't have BELROG.
+3CB9: <span class="sg_value">{{value}}</span> 1C 3E  ; Room <span class="sg_value">{{decode}}</span>  _o     ; Pushed back if we don't have CROM.
+3CBC: <span class="sg_value">{{value}}</span> 1C 41  ; Room <span class="sg_value">{{decode}}</span>  _p     ; Pushed back if we don't have ISHTAR.
+3CBF: <span class="sg_value">{{value}}</span> 1C 68  ; Room <span class="sg_value">{{decode}}</span>  _q     ; Start the poison clock (we can't stay here long). 1/3 of the time we give the clock an extra tick.
+3CC2: <span class="sg_value">{{value}}</span> 1C 7A  ; Room <span class="sg_value">{{decode}}</span>  _r     ; When we enter this room 3 times the treasure is released.
+3CC5: <span class="sg_value">{{value}}</span> 1C 68  ; Room <span class="sg_value">{{decode}}</span>  _q     ; see above 
+3CC8: <span class="sg_value">{{value}}</span> 1C 68  ; Room <span class="sg_value">{{decode}}</span>  _q     ; see above
+3CCB: <span class="sg_value">{{value}}</span> 1C 8D  ; Room <span class="sg_value">{{decode}}</span>  _s     ; If we have the lamp and it is off then the room drops its treasure. (Strange color walls)
+3CCE: <span class="sg_value">{{value}}</span> 1C A9  ; Room <span class="sg_value">{{decode}}</span>  _t     ; If we are holding the packrat's trigger treasure (randomized at start) then the packrat drops his treasure.
+3CD1: <span class="sg_value">{{value}}</span> 1C 68  ; Room <span class="sg_value">{{decode}}</span>  _q     ; see above
+3CD4: <span class="sg_value">{{value}}</span> 1C CC  ; Room <span class="sg_value">{{decode}}</span>  _u     ; If we can see you instantly get the treasure.
+3CD7: <span class="sg_value">{{value}}</span> 1C F0  ; Room <span class="sg_value">{{decode}}</span>  _v     ; Print POOL OF OIL if the lamp can be refilled.
+3CDA: <span class="sg_value">{{value}}</span> 1B B7  ; Room <span class="sg_value">{{decode}}</span>  _f     ; see above
+3CDD: <span class="sg_value">{{value}}</span> 1C E0  ; Room <span class="sg_value">{{decode}}</span>  _32    ; (Same as 32 below)
+3CE0: <span class="sg_value">{{value}}</span> 1D 00  ; Room <span class="sg_value">{{decode}}</span>  _x     ; Add 40 to health and move us a short distance away. 10 minutes must pass before again. 
+3CE3: <span class="sg_value">{{value}}</span> 1D 00  ; Room <span class="sg_value">{{decode}}</span>  _x     ; see above
+3CE6: <span class="sg_value">{{value}}</span> 1D 22  ; Room <span class="sg_value">{{decode}}</span>  _203   ; Print "SMALL PIT IN CORNER OF ROOM"
+3CE9: D5 1D 27  ; Room 213  _213   ; Print "LAYER OF MIST EAST WALL"
+3CEC: 20 1C E0  ; Room 32   _32    ; If we can't see we take 30 damage.
+3CEF: 21 1C D6  ; Room 33   _33    ; If we can see you instantly get the treasure.
+3CF2: CB 1D 22  ; Room 203  _203   ; Print SMALL PIT IN CORNER OF ROOM.
+3CF5: <span class="sg_value">{{value}}</span> 1B B4  ; Room <span class="sg_value">{{decode}}</span>  _z       ; Room with music (init to room 16 to 39). The sprite can't move objects here.
+3CF8: E8 1D 2D  ; Room 232  _232   ; _232 If we came south to this room and carrying pendant move us near start and random room for pendant.
 3CFB: 00
 <h3>Object Data</h3> 
 ; AA BB bsdp_PPxy
@@ -346,68 +346,68 @@ $('#parseData').on('click',function() {
 ;
 ; Objects are not accessible to the player (noun) if x or y are set.
 ;
-3CFC: <span class="sg_value">{{mvalue}}</span>  ; 1 "FOOD"         <span class="sg_value">{{decode}}</span>
-3CFF: <span class="sg_value">{{mvalue}}</span>  ; 2 "BOTTLE"       <span class="sg_value">{{decode}}</span>
-3D02: <span class="sg_value">{{mvalue}}</span>  ; 3 "DAGGER"       <span class="sg_value">{{decode}}</span>
-3D05: <span class="sg_value">{{mvalue}}</span>  ; 4 "MACE"         <span class="sg_value">{{decode}}</span>
-3D08: <span class="sg_value">{{mvalue}}</span>  ; 5 "AX"           <span class="sg_value">{{decode}}</span>
-3D0B: <span class="sg_value">{{mvalue}}</span>  ; 6 "SWORD"        <span class="sg_value">{{decode}}</span>
-3D0E: <span class="sg_value">{{mvalue}}</span>  ; 7 "SHIELD"       <span class="sg_value">{{decode}}</span>
-3D11: <span class="sg_value">{{mvalue}}</span>  ; 8 "FLUTE"        <span class="sg_value">{{decode}}</span>
-3D14: <span class="sg_value">{{mvalue}}</span>  ; 9 "MUSHROOM"     <span class="sg_value">{{decode}}</span>
-3D17: <span class="sg_value">{{mvalue}}</span>  ; 10 "PENDANT"     <span class="sg_value">{{decode}}</span>
-3D1A: <span class="sg_value">{{mvalue}}</span>  ; 11 "SCEPTER"     <span class="sg_value">{{decode}}</span>
-3D1D: <span class="sg_value">{{mvalue}}</span>  ; 12 "LAMP"        <span class="sg_value">{{decode}}</span>
-3D20: <span class="sg_value">{{mvalue}}</span>  ; 13 "BASKET"      <span class="sg_value">{{decode}}</span>
-3D23: <span class="sg_value">{{mvalue}}</span>  ; 14 "PARCHMENT"   <span class="sg_value">{{decode}}</span>
-3D26: <span class="sg_value">{{mvalue}}</span>  ; 15 "VIAL"        <span class="sg_value">{{decode}}</span>
-3D29: <span class="sg_value">{{mvalue}}</span>  ; 16 "URN"         <span class="sg_value">{{decode}}</span>
-3D2C: <span class="sg_value">{{mvalue}}</span>  ; 17 "TALISMAN"    <span class="sg_value">{{decode}}</span>
-3D2F: <span class="sg_value">{{mvalue}}</span>  ; 18 "SCROLL"      <span class="sg_value">{{decode}}</span>
-3D32: <span class="sg_value">{{mvalue}}</span>  ; 19 "GOBLET"      <span class="sg_value">{{decode}}</span>
-3D35: <span class="sg_value">{{mvalue}}</span>  ; 20 "SKULL"       <span class="sg_value">{{decode}}</span>
-3D38: <span class="sg_value">{{mvalue}}</span>  ; 21 "SCARAB"      <span class="sg_value">{{decode}}</span>
-3D3B: <span class="sg_value">{{mvalue}}</span>  ; 22 "JEWELBOX"    <span class="sg_value">{{decode}}</span>
-3D3E: <span class="sg_value">{{mvalue}}</span>  ; 23 "TABLET"      <span class="sg_value">{{decode}}</span>
-3D41: <span class="sg_value">{{mvalue}}</span>  ; 24 "ROPE"        <span class="sg_value">{{decode}}</span>
-3D44: <span class="sg_value">{{mvalue}}</span>  ; 25 "SPRITE"      <span class="sg_value">{{decode}}</span>
-3D47: <span class="sg_value">{{mvalue}}</span>  ; 26 "TROGLODYTE"  <span class="sg_value">{{decode}}</span>
-3D4A: <span class="sg_value">{{mvalue}}</span>  ; 27 "SCORPION"    <span class="sg_value">{{decode}}</span>
-3D4D: <span class="sg_value">{{mvalue}}</span>  ; 28 "NYMPH"       <span class="sg_value">{{decode}}</span>
-3D50: <span class="sg_value">{{mvalue}}</span>  ; 29 "SATYR"       <span class="sg_value">{{decode}}</span>
-3D53: <span class="sg_value">{{mvalue}}</span>  ; 30 "MINOTAUR"    <span class="sg_value">{{decode}}</span>
-3D56: <span class="sg_value">{{mvalue}}</span>  ; 31 "ORACLE"      <span class="sg_value">{{decode}}</span>
-3D59: <span class="sg_value">{{mvalue}}</span>  ; 32 "GOLD"        <span class="sg_value">{{decode}}</span>
-3D5C: <span class="sg_value">{{mvalue}}</span>  ; 33 "SILVER"      <span class="sg_value">{{decode}}</span>
-3D5F: <span class="sg_value">{{mvalue}}</span>  ; 34 "DIAMOND"     <span class="sg_value">{{decode}}</span>
-3D62: <span class="sg_value">{{mvalue}}</span>  ; 35 "SPELLBOOK"   <span class="sg_value">{{decode}}</span>
-3D65: <span class="sg_value">{{mvalue}}</span>  ; 36 "RUBY"        <span class="sg_value">{{decode}}</span>
-3D68: <span class="sg_value">{{mvalue}}</span>  ; 37 "FLEECE"      <span class="sg_value">{{decode}}</span>
-3D6B: <span class="sg_value">{{mvalue}}</span>  ; 38 "TIARA"       <span class="sg_value">{{decode}}</span>
-3D6E: <span class="sg_value">{{mvalue}}</span>  ; 39 "POWDER"      <span class="sg_value">{{decode}}</span>
-3D71: <span class="sg_value">{{mvalue}}</span>  ; 40 "AMULET"      <span class="sg_value">{{decode}}</span>
-3D74: <span class="sg_value">{{mvalue}}</span>  ; 41 "POTION"      <span class="sg_value">{{decode}}</span>
-3D77: <span class="sg_value">{{mvalue}}</span>  ; 42 "POWERRING"   <span class="sg_value">{{decode}}</span>
-3D7A: <span class="sg_value">{{mvalue}}</span>  ; 43 "LIGHTRING"   <span class="sg_value">{{decode}}</span>
-3D7D: <span class="sg_value">{{mvalue}}</span>  ; 44 "TRUTHRING"   <span class="sg_value">{{decode}}</span>
-3D80: <span class="sg_value">{{mvalue}}</span>  ; 45 "CROWN"       <span class="sg_value">{{decode}}</span>
-3D83: <span class="sg_value">{{mvalue}}</span>  ; 46 "OPAL"        <span class="sg_value">{{decode}}</span>
-3D86: <span class="sg_value">{{mvalue}}</span>  ; 47 "SAPPHIRE"    <span class="sg_value">{{decode}}</span>
-3D89: <span class="sg_value">{{mvalue}}</span>  ; 48 "NORTH"       <span class="sg_value">{{decode}}</span>
-3D8C: <span class="sg_value">{{mvalue}}</span>  ; 49 "NORTH"       <span class="sg_value">{{decode}}</span>
-3D8F: <span class="sg_value">{{mvalue}}</span>  ; 50 "NORTH"       <span class="sg_value">{{decode}}</span>
-3D92: <span class="sg_value">{{mvalue}}</span>  ; 51 "NORTH"       <span class="sg_value">{{decode}}</span>
-3D95: <span class="sg_value">{{mvalue}}</span>  ; 52 "NORTH"       <span class="sg_value">{{decode}}</span>
-3D98: <span class="sg_value">{{mvalue}}</span>  ; 53 "NORTH"       <span class="sg_value">{{decode}}</span>
-3D9B: <span class="sg_value">{{mvalue}}</span>  ; 54 "NORTH"       <span class="sg_value">{{decode}}</span>
-3D9E: <span class="sg_value">{{mvalue}}</span>  ; 55 "VETAR"       <span class="sg_value">{{decode}}</span>
-3DA1: <span class="sg_value">{{mvalue}}</span>  ; 56 "MITRA"       <span class="sg_value">{{decode}}</span>
-3DA4: <span class="sg_value">{{mvalue}}</span>  ; 57 "OKKAN"       <span class="sg_value">{{decode}}</span>
-3DA7: <span class="sg_value">{{mvalue}}</span>  ; 58 "AKHIROM"     <span class="sg_value">{{decode}}</span>
-3DAA: <span class="sg_value">{{mvalue}}</span>  ; 59 "NERGAL"      <span class="sg_value">{{decode}}</span>
-3DAD: <span class="sg_value">{{mvalue}}</span>  ; 60 "BELROG"      <span class="sg_value">{{decode}}</span>
-3DB0: <span class="sg_value">{{mvalue}}</span>  ; 61 "CROM"        <span class="sg_value">{{decode}}</span>
-3DB3: <span class="sg_value">{{mvalue}}</span>  ; 62 "ISHTAR"      <span class="sg_value">{{decode}}</span>
+3CFC: <span class="sg_value">{{value1}}</span> 01 <span class="sg_value">{{value2}}</span>  ; 1 "FOOD"         <span class="sg_value">{{decode}}</span>
+3CFF: <span class="sg_value">{{value1}}</span> 02 <span class="sg_value">{{value2}}</span>  ; 2 "BOTTLE"       <span class="sg_value">{{decode}}</span>
+3D02: <span class="sg_value">{{value1}}</span> 03 <span class="sg_value">{{value2}}</span>  ; 3 "DAGGER"       <span class="sg_value">{{decode}}</span>
+3D05: <span class="sg_value">{{value1}}</span> 04 <span class="sg_value">{{value2}}</span>  ; 4 "MACE"         <span class="sg_value">{{decode}}</span>
+3D08: <span class="sg_value">{{value1}}</span> 05 <span class="sg_value">{{value2}}</span>  ; 5 "AX"           <span class="sg_value">{{decode}}</span>
+3D0B: <span class="sg_value">{{value1}}</span> 06 <span class="sg_value">{{value2}}</span>  ; 6 "SWORD"        <span class="sg_value">{{decode}}</span>
+3D0E: <span class="sg_value">{{value1}}</span> 07 <span class="sg_value">{{value2}}</span>  ; 7 "SHIELD"       <span class="sg_value">{{decode}}</span>
+3D11: <span class="sg_value">{{value1}}</span> 08 <span class="sg_value">{{value2}}</span>  ; 8 "FLUTE"        <span class="sg_value">{{decode}}</span>
+3D14: <span class="sg_value">{{value1}}</span> 09 <span class="sg_value">{{value2}}</span>  ; 9 "MUSHROOM"     <span class="sg_value">{{decode}}</span>
+3D17: <span class="sg_value">{{value1}}</span> 0A <span class="sg_value">{{value2}}</span>  ; 10 "PENDANT"     <span class="sg_value">{{decode}}</span>
+3D1A: <span class="sg_value">{{value1}}</span> 0B <span class="sg_value">{{value2}}</span>  ; 11 "SCEPTER"     <span class="sg_value">{{decode}}</span>
+3D1D: <span class="sg_value">{{value1}}</span> 0C <span class="sg_value">{{value2}}</span>  ; 12 "LAMP"        <span class="sg_value">{{decode}}</span>
+3D20: <span class="sg_value">{{value1}}</span> 0D <span class="sg_value">{{value2}}</span>  ; 13 "BASKET"      <span class="sg_value">{{decode}}</span>
+3D23: <span class="sg_value">{{value1}}</span> 0E <span class="sg_value">{{value2}}</span>  ; 14 "PARCHMENT"   <span class="sg_value">{{decode}}</span>
+3D26: <span class="sg_value">{{value1}}</span> 0F <span class="sg_value">{{value2}}</span>  ; 15 "VIAL"        <span class="sg_value">{{decode}}</span>
+3D29: <span class="sg_value">{{value1}}</span> 10 <span class="sg_value">{{value2}}</span>  ; 16 "URN"         <span class="sg_value">{{decode}}</span>
+3D2C: <span class="sg_value">{{value1}}</span> 11 <span class="sg_value">{{value2}}</span>  ; 17 "TALISMAN"    <span class="sg_value">{{decode}}</span>
+3D2F: <span class="sg_value">{{value1}}</span> 12 <span class="sg_value">{{value2}}</span>  ; 18 "SCROLL"      <span class="sg_value">{{decode}}</span>
+3D32: <span class="sg_value">{{value1}}</span> 13 <span class="sg_value">{{value2}}</span>  ; 19 "GOBLET"      <span class="sg_value">{{decode}}</span>
+3D35: <span class="sg_value">{{value1}}</span> 14 <span class="sg_value">{{value2}}</span>  ; 20 "SKULL"       <span class="sg_value">{{decode}}</span>
+3D38: <span class="sg_value">{{value1}}</span> 15 <span class="sg_value">{{value2}}</span>  ; 21 "SCARAB"      <span class="sg_value">{{decode}}</span>
+3D3B: <span class="sg_value">{{value1}}</span> 16 <span class="sg_value">{{value2}}</span>  ; 22 "JEWELBOX"    <span class="sg_value">{{decode}}</span>
+3D3E: <span class="sg_value">{{value1}}</span> 17 <span class="sg_value">{{value2}}</span>  ; 23 "TABLET"      <span class="sg_value">{{decode}}</span>
+3D41: <span class="sg_value">{{value1}}</span> 18 <span class="sg_value">{{value2}}</span>  ; 24 "ROPE"        <span class="sg_value">{{decode}}</span>
+3D44: <span class="sg_value">{{value1}}</span> 19 <span class="sg_value">{{value2}}</span>  ; 25 "SPRITE"      <span class="sg_value">{{decode}}</span>
+3D47: <span class="sg_value">{{value1}}</span> 1A <span class="sg_value">{{value2}}</span>  ; 26 "TROGLODYTE"  <span class="sg_value">{{decode}}</span>
+3D4A: <span class="sg_value">{{value1}}</span> 1B <span class="sg_value">{{value2}}</span>  ; 27 "SCORPION"    <span class="sg_value">{{decode}}</span>
+3D4D: <span class="sg_value">{{value1}}</span> 1C <span class="sg_value">{{value2}}</span>  ; 28 "NYMPH"       <span class="sg_value">{{decode}}</span>
+3D50: <span class="sg_value">{{value1}}</span> 1D <span class="sg_value">{{value2}}</span>  ; 29 "SATYR"       <span class="sg_value">{{decode}}</span>
+3D53: <span class="sg_value">{{value1}}</span> 1E <span class="sg_value">{{value2}}</span>  ; 30 "MINOTAUR"    <span class="sg_value">{{decode}}</span>
+3D56: <span class="sg_value">{{value1}}</span> 1F <span class="sg_value">{{value2}}</span>  ; 31 "ORACLE"      <span class="sg_value">{{decode}}</span>
+3D59: <span class="sg_value">{{value1}}</span> 20 <span class="sg_value">{{value2}}</span>  ; 32 "GOLD"        <span class="sg_value">{{decode}}</span>
+3D5C: <span class="sg_value">{{value1}}</span> 21 <span class="sg_value">{{value2}}</span>  ; 33 "SILVER"      <span class="sg_value">{{decode}}</span>
+3D5F: <span class="sg_value">{{value1}}</span> 22 <span class="sg_value">{{value2}}</span>  ; 34 "DIAMOND"     <span class="sg_value">{{decode}}</span>
+3D62: <span class="sg_value">{{value1}}</span> 23 <span class="sg_value">{{value2}}</span>  ; 35 "SPELLBOOK"   <span class="sg_value">{{decode}}</span>
+3D65: <span class="sg_value">{{value1}}</span> 24 <span class="sg_value">{{value2}}</span>  ; 36 "RUBY"        <span class="sg_value">{{decode}}</span>
+3D68: <span class="sg_value">{{value1}}</span> 25 <span class="sg_value">{{value2}}</span>  ; 37 "FLEECE"      <span class="sg_value">{{decode}}</span>
+3D6B: <span class="sg_value">{{value1}}</span> 26 <span class="sg_value">{{value2}}</span>  ; 38 "TIARA"       <span class="sg_value">{{decode}}</span>
+3D6E: <span class="sg_value">{{value1}}</span> 27 <span class="sg_value">{{value2}}</span>  ; 39 "POWDER"      <span class="sg_value">{{decode}}</span>
+3D71: <span class="sg_value">{{value1}}</span> 28 <span class="sg_value">{{value2}}</span>  ; 40 "AMULET"      <span class="sg_value">{{decode}}</span>
+3D74: <span class="sg_value">{{value1}}</span> 29 <span class="sg_value">{{value2}}</span>  ; 41 "POTION"      <span class="sg_value">{{decode}}</span>
+3D77: <span class="sg_value">{{value1}}</span> 2A <span class="sg_value">{{value2}}</span>  ; 42 "POWERRING"   <span class="sg_value">{{decode}}</span>
+3D7A: <span class="sg_value">{{value1}}</span> 2B <span class="sg_value">{{value2}}</span>  ; 43 "LIGHTRING"   <span class="sg_value">{{decode}}</span>
+3D7D: <span class="sg_value">{{value1}}</span> 2C <span class="sg_value">{{value2}}</span>  ; 44 "TRUTHRING"   <span class="sg_value">{{decode}}</span>
+3D80: <span class="sg_value">{{value1}}</span> 2D <span class="sg_value">{{value2}}</span>  ; 45 "CROWN"       <span class="sg_value">{{decode}}</span>
+3D83: <span class="sg_value">{{value1}}</span> 2E <span class="sg_value">{{value2}}</span>  ; 46 "OPAL"        <span class="sg_value">{{decode}}</span>
+3D86: <span class="sg_value">{{value1}}</span> 2F <span class="sg_value">{{value2}}</span>  ; 47 "SAPPHIRE"    <span class="sg_value">{{decode}}</span>
+3D89: <span class="sg_value">{{value1}}</span> 30 <span class="sg_value">{{value2}}</span>  ; 48 "NORTH"       <span class="sg_value">{{decode}}</span>
+3D8C: <span class="sg_value">{{value1}}</span> 31 <span class="sg_value">{{value2}}</span>  ; 49 "NORTH"       <span class="sg_value">{{decode}}</span>
+3D8F: <span class="sg_value">{{value1}}</span> 32 <span class="sg_value">{{value2}}</span>  ; 50 "NORTH"       <span class="sg_value">{{decode}}</span>
+3D92: <span class="sg_value">{{value1}}</span> 33 <span class="sg_value">{{value2}}</span>  ; 51 "NORTH"       <span class="sg_value">{{decode}}</span>
+3D95: <span class="sg_value">{{value1}}</span> 34 <span class="sg_value">{{value2}}</span>  ; 52 "NORTH"       <span class="sg_value">{{decode}}</span>
+3D98: <span class="sg_value">{{value1}}</span> 35 <span class="sg_value">{{value2}}</span>  ; 53 "NORTH"       <span class="sg_value">{{decode}}</span>
+3D9B: <span class="sg_value">{{value1}}</span> 36 <span class="sg_value">{{value2}}</span>  ; 54 "NORTH"       <span class="sg_value">{{decode}}</span>
+3D9E: <span class="sg_value">{{value1}}</span> 37 <span class="sg_value">{{value2}}</span>  ; 55 "VETAR"       <span class="sg_value">{{decode}}</span>
+3DA1: <span class="sg_value">{{value1}}</span> 38 <span class="sg_value">{{value2}}</span>  ; 56 "MITRA"       <span class="sg_value">{{decode}}</span>
+3DA4: <span class="sg_value">{{value1}}</span> 39 <span class="sg_value">{{value2}}</span>  ; 57 "OKKAN"       <span class="sg_value">{{decode}}</span>
+3DA7: <span class="sg_value">{{value1}}</span> 3A <span class="sg_value">{{value2}}</span>  ; 58 "AKHIROM"     <span class="sg_value">{{decode}}</span>
+3DAA: <span class="sg_value">{{value1}}</span> 3B <span class="sg_value">{{value2}}</span>  ; 59 "NERGAL"      <span class="sg_value">{{decode}}</span>
+3DAD: <span class="sg_value">{{value1}}</span> 3C <span class="sg_value">{{value2}}</span>  ; 60 "BELROG"      <span class="sg_value">{{decode}}</span>
+3DB0: <span class="sg_value">{{value1}}</span> 3D <span class="sg_value">{{value2}}</span>  ; 61 "CROM"        <span class="sg_value">{{decode}}</span>
+3DB3: <span class="sg_value">{{value1}}</span> 3E <span class="sg_value">{{value2}}</span>  ; 62 "ISHTAR"      <span class="sg_value">{{decode}}</span>
 ;
 3DB6: 00 FF     ; End of list marker
 <h3>Natural Passages</h3>

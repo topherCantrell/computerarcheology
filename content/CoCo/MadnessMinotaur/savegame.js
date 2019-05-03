@@ -579,6 +579,71 @@ function viewSaveFile(data) {
 			p = p + 2;
 		}		
 		
+		// Enter Room Actions
+		i = findRawTextLine(rawt,'3C8F',i);
+		j = findRawTextLine(rawt,'3CFB',i);
+		
+		while(i!=j) {
+			g = rawt[i];
+			if(g[0]!='3') {
+				++i;
+				continue;
+			}
+			p = parseInt(g.substring(0,4),16);
+			
+			a = readBinaryData(p);
+			g = doReplaceTarget(g,'value',hexPad(a,2));
+			rn = ''+a;
+			while(rn.length<3) rn=rn+' ';
+			rawt[i] = doReplaceTarget(g,'decode',rn);
+			++i;			
+		}
+		
+		// Objects
+		i = findRawTextLine(rawt,'3CFC',i);
+		j = findRawTextLine(rawt,'3DB6',i);
+		
+		while(i!=j) {
+			g = rawt[i];
+			if(g[0]!='3') {
+				++i;
+				continue;
+			}
+			p = parseInt(g.substring(0,4),16);
+			
+			a = readBinaryData(p);
+			b = readBinaryData(p+2);		
+			
+			rn = ''+a;
+						
+			dec = 'Room '+rn;
+			if((b&0x80)>0) {
+				dec = dec + ', in backpack';
+			} 
+			if((b&0x40)>0) {
+				dec = dec + ', spell or creature';
+			} 
+			if((b&0x20)>0) {
+				dec = dec + ', required';
+			} 
+			if((b&0x10)>0) {
+				dec = dec + ', protected';
+			} 
+			dec = dec + ', fill status '+((b>>2)&3);
+			if((b&0x2)>0) {
+				dec = dec + ', spell or dead creature';
+			} 
+			if((b&0x1)>0) {
+				dec = dec + ', carried object or creature';
+			} 
+						
+			g = doReplaceTarget(g,'value1',hexPad(a,2));
+			g = doReplaceTarget(g,'value2',hexPad(b,2));
+			
+			rawt[i] = doReplaceTarget(g,'decode',dec);			
+			++i;			
+		}
+		
 		// Write the data
 		g ='';
 		for(i=0;i<rawt.length;++i) {
