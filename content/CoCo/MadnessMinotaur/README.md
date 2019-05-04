@@ -85,9 +85,10 @@ Before the ")" command you must paste the desired saved-data back into the text 
 ```
 >>> }
 
-# Walkthrough
+# Walk-Through
 
-TODO open my walkthrough in a separate tab and follow along play my game in the emulator here.
+Follow along with [My Game](walkthrough.md) step by step. Open the emulator and save-game viewer and follow along as I win the game.
+I provide my save-files after every major task. You can jump in to my journey at any point.
 
 # Code Links
 

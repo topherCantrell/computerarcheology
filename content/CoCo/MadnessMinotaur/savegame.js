@@ -1009,3 +1009,16 @@ function viewSaveFile(data) {
 	
 }
 
+$(function() {
+	var loc = window.location.toString();
+	var i = loc.indexOf('?');
+	if(i<0) return; // Nothing to load
+	
+	loc = loc.substring(i+1);
+	$.get(loc,function(data) {
+		$('#cocoTape').val(data);
+		viewSaveFile(data);
+	});
+	
+});
+
