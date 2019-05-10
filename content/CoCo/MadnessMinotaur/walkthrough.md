@@ -369,6 +369,25 @@ QUIET ; save to after_9.txt
 
 ## Task 10: Score SILVER
 
+TREASURES:
+  * SILVER       Dropped by "_u" in Room 8 "MARBLE FLOOR
+  * SPELLBOOK    Dropped earlier in Room 179 "MAZE"
+  
+  * GOLD         EERIE GLOW
+  * DIAMNOD      CRYPT
+  * RUBY         LEDGE
+  * FLEECE       SCORPION
+  * TIARA        SMALL PIT
+  * POWDER       SATYR
+  * AMULET       AMULET
+  * POTION       PILE OF GLOWING ROCKS
+  * CROWN        _33
+  * POWERRING    Dropped earlier in Room 10 "TABLE AND CHAIR" start
+  * *LIGHTRIGHT  Room 162 "STONE CROSS" need POWERRING, TALISMAN
+  * *TRUTHRING   Room 133 "DEEP PIT" need LIGHTRING, AX
+  * OPAL         HYDRA
+  * SAPPHIRE     CRYPT OF KINGS
+
 The "_u" handler in Room 8: "MARBLE FLOOR" dropped the SILVER on the floor the first time we
 walked through with the LAMP on. All we have to do is pick it up.
 
@@ -396,5 +415,79 @@ SCORE ; points=90 (out of 240), condition=255 (out of 255)
 QUIET ; save as after_10
 ```
 
-## Task 11: Score ??
+## Task 11: Score SPELLBOOK
 
+We have to trek back through the maze to get to the treasure room. We'll pick up the SPELLBOOK along the way.
+
+```
+JUMP DOWN ; Room 162 "STONE CROSS" (*LIGHTRING)
+SOUTH SOUTH EAST ; Room 179 "MAZE" (SPELLBOOK)
+GET SPELLBOOK
+;
+NORTH DOWN NORTH ; Room 227 "MAZE" out again
+EAST EAST NORTH NORTH ; Room 213 "MAZE"
+JUMP MIST ; Room 212 "MAZE"
+NORTH WEST ; Room 203 "MAZE"
+JUMP PIT ; Room 202 "GREAT FOREST" treasure room
+;
+DROP SPELLBOOK
+
+SCORE ; points=100 (out of 240), condition=255 (out of 255)
+
+QUIET ; save as after_11
+```
+
+## Task 12: Score POWERRING and unlock LIGHTRING
+
+Before we score the POWERRING, we need to use it to unlock the LIGHTRING in Room 162 "STONE CROSS". We also need the
+TALSIMAN we dropped earlier in Room 96 "MUSTY PASSAGE".
+
+```
+DOWN ; Room 10 "TABLE AND CHAIR" start
+;
+GET POWERRING
+WEST WEST NORTH DOWN EAST SOUTH WEST SOUTH SOUTH SOUTH ; Room 96 "MUSTY PASSAGE" (TALISMAN)
+GET TALISMAN
+EAST DOWN EAST ; Room 162 "STONE CROSS" (*LIGHTRING)
+GET LIGHTRING ; Now unlocked
+DROP LIGHTRING
+DROP TALISMAN
+;
+SOUTH DOWN EAST NORTH ; Room 227 "MAZE" out again
+EAST EAST NORTH NORTH ; Room 213 "MAZE"
+JUMP MIST ; Room 212 "MAZE"
+NORTH WEST ; Room 203 "MAZE"
+JUMP PIT ; Room 202 "GREAT FOREST" treasure room
+;
+DROP POWERRING
+
+SCORE ; points=110 (out of 240), condition=255 (out of 255)
+
+QUIET ; save as after_12
+```
+
+## Task 13: Score LIGHTRING
+
+Now back for the LIGHTRING we just unlocked
+
+```
+DOWN ; Room 10 "TABLE AND CHAIR" start
+;
+WEST WEST NORTH DOWN EAST SOUTH WEST SOUTH SOUTH SOUTH ; Room 96 "MUSTY PASSAGE"
+EAST DOWN EAST ; Room 162 "STONE CROSS" (LIGHTRING)
+GET LIGHTRING
+;
+SOUTH DOWN EAST NORTH ; Room 227 "MAZE" out again
+EAST EAST NORTH NORTH ; Room 213 "MAZE"
+JUMP MIST ; Room 212 "MAZE"
+NORTH WEST ; Room 203 "MAZE"
+JUMP PIT ; Room 202 "GREAT FOREST" treasure room
+;
+DROP LIGHTRING
+
+SCORE ; points=120 (out of 240), condition=255 (out of 255)
+
+QUIET ; save as after_13
+```
+
+## Task 14: Score ??
