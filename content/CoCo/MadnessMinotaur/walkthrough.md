@@ -7,220 +7,349 @@ Open the [Emulator on the Main Page](index.html) in a new tab and you can play a
 my game. Use the save-game files after every task. Have a look at the labyrinth with the
 save-vile viewer after every task.
 
-Start of game:
-  * [first.cas](first.cas) (For online mocha emulator) 
-  * [first.txt](first.txt) (For emulator on this page)
-  * [Save Game Viewer - first.txt](SaveGameViewer.html?first.txt) (Open in save-game-viewer)
 
-## TASK 1: LEARN VETAR 
+## General Strategy
+Hard to find your way around. No random movements (move to maze). 240 points max.
+
+Forest treasure room is on the same floor with the maze but not connected to it. Just a convienient
+way to make it UP from start.
+
+TODO In and out of the maze. Can't carry everything around because you have to jump.
+
+Entrance to maze: 
+  * 1way 1st floor 34 south
+  * 1way 3rd floor 161, 162, 163, 164, 165 (all south)
+  * 2way passage action H 3rd floor 167 and 175 (north/south)
+  * 2way 3rd floor 191 and 192 (east/west)
+  
+Exit from maze:
+  * 1way 2nd floor passage action H from 105 north to 97
+  * 1way 4th floor 235 north to 227
+  * 2way passage action H 3rd floor 167 and 175 (north/south)
+  * 2way 3rd floor 191 and 192 (east/west)
+
+Fully connected except the lower right and upper left and edges along the top and bottom.
+
+Action I east/west between 104 and 105 and 105 and 106.
+Action I east/west between 174 and 175 and 175 and 176
+
+
+
+Must JUMP in places, which means your condition must be good. Getting one item at a
+time to make jumping easier. Pushing through rooms that push you back.
+
+random walls blocking. might be different for you. might have to wait it out.
+
+  * Spells: 8*10 Learned
+  * Treasures: 16*10 Dropped at entrance
+  
+start.cas
+
+## Task 1: Learn VETAR
+
+We have to have the LAMP (room 1) to see on lower levels. The LAMP is in the room
+with "_o", which pushes us back at random if we don't have CROM. Every time we
+get pushed, it's 5 points of damage. Nothing to it but to keep trying WEST into
+the room with lamp.
+
+We need the FOOD (room 14) and the MUSHROOM (room 141). We start in room 10.
 
 ```
-SOUTH         ; This is room with music where SPRITE can't go
 
-GET FOOD  
-NORTH
+; We need the lamp for other floors
+;
+NORTH    ; Room 2 "GUARD ROOM" 
+WEST*    ; Room 1 "EMPTY ROOM". You might get pushed back by "_o" trying to get into this room. Keep trying.
 GET LAMP
 LAMP ON
 
-EAST EAST SOUTH SOUTH SOUTH WEST
-JUMP HOLE
-SOUTH EAST EAST EAST EAST EAST DOWN DOWN 
-NORTH         ; 50/50 chance of this failing and putting you in a random room in the maze.
-NORTH         ; Magic spell might push you back. Took me several tries.
-NORTH
+; Down to the mushroom
+;
+EAST SOUTH       ; Back to start Room 10
+WEST WEST NORTH  ; Room 0 "STONE TOWER"
+DOWN             ; Room 64 "GREAT PIT"
+;
+EAST SOUTH WEST SOUTH SOUTH                 ; Room 88 "MUSTY, CORRIDOR" (the "_q" poison is here ... keep moving)
+SOUTH EAST EAST EAST NORTH NORTH EAST SOUTH ; Room 92 "WIDE ROOM" (*SKULL)
+JUMP DOWN                                   ; Room 156 "CAVERN, BONES"
+;
+EAST          ; Room 157 "TWISTING, WINDING" (MACE) 
+NORTH*        ; Room 149 "NARROW WINDING". You might get pushed back by "_k". Keep trying and you'll get through.
+NORTH         ; Room 141 "NARROW TWISTING" (MUSHROOM)
 GET MUSHROOM
-JUMP PIT
-WEST NORTH EAST UP
-UP            ; Took me several tries. It helps to be light as possible.
-WEST SOUTH WEST WEST SOUTH SOUTH 
-EAST          ;  _u ... GOLD appears
-GET GOLD
-NORTH         ; Now know VETAR
 
-SOUTH WEST NORTH NORTH WEST WEST SOUTH
-
-; Drop our objects in room with music where SPRITE can't move them.
-
-DROP FOOD
+; Back up to the food and VETRA
+;
+SOUTH*               ; Room 149 "NARROW WINDING". You might get pushed back by "_k". Keep trying and you'll get through. 
+SOUTH WEST           ; Room 156 "CAVERN, BONES". (You need to be light and healthy to make this climb.)
+UP                   ; Room 92 "WIDE ROOM" (*SKULL)
+NORTH WEST UP        ; Room 19 "ANCIENT CARVINGS"
+EAST NORTH EAST EAST ; Room 14 "BED ROOM" (FOOD, DAGGER)
+GET FOOD
+WEST NORTH WEST WEST ; Room 3 "PILE OF BONES" (VETRA)
+; We now know VETRA
+WEST SOUTH           ; Room 10 "TABLE AND CHAIR"
+DROP FOOD 
 DROP MUSHROOM
-DROP GOLD
-```
-  * [s_one.cas](s_one.cas) 
-  * [s_one.txt](s_one.txt)
-  * [Save Game Viewer - s_one.txt](SaveGameViewer.html?s_one.txt)
 
-## TASK 2: LEARN MITRA 
+SCORE ; points=10 (out of 240), condition=251 (out of 255)
 
+QUIET ; Saved as "after_1.cas"
 ```
-NORTH EAST EAST SOUTH SOUTH SOUTH WEST
-JUMP HOLE
-SOUTH DOWN DOWN DOWN EAST NORTH EAST EAST NORTH EAST EAST NORTH NORTH NORTH WEST SOUTH WEST
+
+## Task 2: Learn MITRA
+
+Getting pushed will drain your health. So will the poison fog in Room 88 "MUSTY, CORRIDOR". So will a creature
+if you got attacked on that run! You can EAT FOOD at this point and/or EAT MUSHROOM to restore your health.
+
+It would be nice to pick up several objects at once, but that makes jumping much more likely to fail. Instead
+we'll make several loops getting one object at a time. Next up is the PARCHMENT Room 206 "Maze".
+
+UP ; Room 202 "GREAT FORREST" Treasure room
+JUMP DOWN ; Room 162 "STONE CROSS" (*LIGHTRING)
+SOUTH ; Room 70 "MAZE"
+DOWN EAST NORTH ; Room 227 "MAZE". It says "maze", but we are really out.
+;
+EAST EAST EAST EAST EAST ; Room 231 "MAZE"
+NORTH NORTH NORTH NORTH ; Room 199 "MAZE"
+WEST SOUTH ; Room 206 "MAZE" (PARCHMENT)
 GET PARCHMENT
+;
+NORTH EAST SOUTH SOUTH WEST WEST ; Room 213 "MAZE"
+JUMP MIST ; Room 212 "MAZE"
+NORTH WEST ; Room 203 "MAZE"
+JUMP PIT ; Room 202 "GREAT FOREST" Treasure room
+;
+; Now back to the 2nd floor for MITRA 
+DOWN ; Room 10 "TABLE AND CHAIR" start
+;
+WEST WEST NORTH DOWN ; 64 great pit
+EAST SOUTH WEST SOUTH SOUTH SOUTH ; Room 96 "MUSTY PASSAGE" (OKKAN)
+EAST EAST ; Room 96 "BROKEN PASSAGE" now  know MITRA
 
-NORTH WEST WEST WEST
-JUMP DOWN
+DROP PARCHMENT 
 
-NORTH NORTH WEST SOUTH WEST WEST SOUTH WEST
-JUMP HOLE
+SCORE ; points=20 (out of 240), condition=251 (out of 255)
 
-WEST WEST
-NORTH         ; Took several tries
-DOWN NORTH NORTH EAST
+QUIET ; save as after_2.cas
 
-NORTH WEST UP SOUTH EAST EAST SOUTH
-DROP PARCHMENT
-```
-  * [s_two.cas](s_two.cas) 
-  * [s_two.txt](s_two.txt)
-  * [Save Game Viewer - s_two.txt](SaveGameViewer.html?s_two.txt)
+## Task 3: Learn OKKAN
 
-## TASK 3: LEARN OKKAN 
+TODO DOWN FROM 10 might land you in a random room. Make your way back to start.
 
-```
-NORTH EAST EAST SOUTH SOUTH SOUTH WEST
-JUMP HOLE
-SOUTH DOWN DOWN DOWN
+WEST DOWN ; Room 161 "LARGE STONE"
+SOUTH DOWN SOUTH ; Room 241 "MAZE" (TALISMAN)
 GET TALISMAN
-
-EAST NORTH EAST EAST NORTH EAST EAST NORTH NORTH NORTH WEST SOUTH WEST NORTH WEST WEST WEST
-JUMP DOWN
-
-NORTH NORTH WEST SOUTH WEST WEST SOUTH WEST NORTH WEST WEST
-DOWN          ; LEARN OKKAN 
-UP EAST EAST SOUTH EAST NORTH NORTH NORTH WEST WEST SOUTH
+;
+EAST EAST NORTH NORTH ; Room 227 "MAZE" Really out
+;
+EAST EAST NORTH NORTH ; Room 213 "MAZE"
+JUMP MIST ; Room 212 "MAZE"
+NORTH WEST ; Room 203 "MAZE"
+JUMP PIT ; Room 202 "GREAT FOREST" Treasure room
+;
+; Now back to the 2nd floor for OKKAN
+DOWN ; Room 10 "TABLE AND CHAIR" start
+;
+WEST WEST NORTH DOWN ; 64 great pit
+EAST SOUTH WEST SOUTH SOUTH SOUTH ; Room 96 "MUSTY PASSAGE" (OKKAN)
 
 DROP TALISMAN
-```
-  * [s_three.cas](s_three.cas) 
-  * [s_three.txt](s_three.txt)
-  * [Save Game Viewer - s_three.txt](SaveGameViewer.html?s_three.txt)
 
-## TASK 4: Get the SWORD and SHIELD 
+SCORE ; points=30 (out of 240), condition=251 (out of 255)
 
-```
-GET PARCHMENT
-NORTH WEST WEST NORTH DOWN
-JUMP PIT
-SOUTH SOUTH
+QUIET ; save as after_3.cas
 
-GET SWORD
+## Task 4: Learn AKHIROM
 
-JUMP
-WEST WEST WEST UP UP SOUTH SOUTH
-DROP PARCHMENT
-NORTH NORTH EAST EAST EAST
+Back around the loop again to get the ROPE from the 4th floor.
 
-GET SHIELD
-```
-  * [s_four.cas](s_four.cas) 
-  * [s_four.txt](s_four.txt)
-  * [Save Game Viewer - s_four.txt](SaveGameViewer.html?s_four.txt)
-
-## TASK 5: Get the ROPE and learn AKHIROM
-
-```
-WEST WEST WEST SOUTH SOUTH
-DROP SWORD
-DROP SHIELD
-NORTH EAST EAST SOUTH SOUTH SOUTH WEST
-JUMP HOLE
-SOUTH DOWN DOWN DOWN EAST NORTH EAST NORTH EAST EAST EAST NORTH 
-NORTH NORTH WEST SOUTH WEST NORTH WEST
+EAST DOWN SOUTH DOWN ; Room 233 "MAZE"
+EAST EAST NORTH; Room 227 "MAZE" out again
+NORTH EAST EAST EAST EAST; Room 223 "MAZE" (ROPE)
 GET ROPE
+;
+; Now back to the 2nd floor for AKHIROM
+NORTH WEST WEST ; Room 213 "MAZE"
+JUMP MIST ; Room 212 "MAZE"
+NORTH WEST ; Room 203 "MAZE"
+JUMP PIT ; Room 202 "GREAT FOREST" Treasure room
+;
+; Now back to the 2nd floor for OKKAN
+DOWN ; Room 10 "TABLE AND CHAIR" start
+;
+WEST WEST NORTH DOWN ; 64 great pit
+EAST SOUTH WEST SOUTH SOUTH SOUTH ; Room 96 "MUSTY PASSAGE"
+EAST EAST EAST NORTH ; Room 91 "STONE TILES" now know AKHIROM
 
-WEST WEST
-JUMP DOWN
-NORTH NORTH WEST NORTH WEST WEST WEST WEST WEST WEST NORTH DOWN EAST
-SOUTH WEST SOUTH SOUTH SOUTH EAST EAST EAST
-
-NORTH         ; Now know AKHIROM
-
-SOUTH WEST WEST WEST NORTH NORTH NORTH NORTH UP SOUTH EAST EAST SOUTH
 DROP ROPE
-```
-  * [s_five.cas](s_five.cas) 
-  * [s_five.txt](s_five.txt)
-  * [Save Game Viewer - s_five.txt](SaveGameViewer.html?s_five.txt)
 
-## TASK 6: Get the SCEPTER and learn NERGAL 
+SCORE ; points=40 (out of 240), condition=251 (out of 255)
 
-```
-NORTH EAST EAST SOUTH SOUTH SOUTH WEST
-JUMP HOLE
-SOUTH DOWN DOWN DOWN EAST NORTH EAST NORTH
+QUIET ; save as after_4.cas
 
+## Task 5: Learn NERGAL
+
+We are halfway through the spells. We need the SCEPTER from the 4th floor. The
+NERGAL spell is in the room with _x, which will heal us and move us to a 
+random room. There is no way around dealing with _x.
+
+SOUTH WEST WEST DOWN SOUTH DOWN ; Room 233 "MAZE"
+EAST EAST NORTH; Room 227 "MAZE" out again
+EAST EAST NORTH NORTH ; Room 213 "MAZE"
+JUMP MIST ; Room 212 "MAZE"
+WEST WEST SOUTH ; Room 218 "MAZE" (SCEPTER)
 GET SCEPTER
+;
+; Now to the 3rd floor for NERGAL
+NORTH EAST EAST NORTH WEST ; Room 203 "MAZE"
+JUMP PIT ; Room 202 "GREAT FOREST" Treasure room
+;
+DOWN ; Room 10 "TABLE AND CHAIR" start
+;
+WEST WEST NORTH DOWN ; 64 great pit
+JUMP PIT ; Room 128 "NARROW TUNNEL"
+;
+SOUTH ; Room 136 "SMALL CAVERN"
+; 
+SOUTH ; Room 144 "HIGH NARROW" walk through an enchanged aura (random placement)
 
-EAST EAST EAST NORTH NORTH NORTH
-WEST SOUTH WEST NORTH WEST WEST WEST
+; This room has _x in it. It heals us 40 health but moves us to a random room
+; on this level (but not the maze). It won't heal/move us again for 10 minutes.
+; We'll come right back to get the spell within that 10 minute window.
 
-JUMP DOWN
+LOOK ; Room 90 "TOMB, SKULL" (*VIAL)
 
-NORTH NORTH WEST NORTH WEST WEST 
-WEST WEST WEST WEST NORTH DOWN
+EAST NORTH UP ; Room 19 "ANCIENT CARVINGS"
+EAST NORTH WEST WEST ; Room 10 "TABLE AND CHAIR" start
+;
+WEST WEST NORTH DOWN ; Room 64 "GREAT PIT
+JUMP PIT ; Room 128 "NARROW TUNNEL"
+;
+SOUTH SOUTH ; Room 144 "HIGH NARROW" now know NERGAL
+NORTH NORTH ; Room 128 "NARROW TUNNEL"
+JUMP UP     ; Room 64 "GREAT PIT 
 
-JUMP PIT
-SOUTH
-
-; I had to wait here for several shakings to open the passage south
-
-SOUTH
-JUMP          ; Now know NERGAL
+UP SOUTH EAST EAST ; Room 10 "TABLE AND CHAIR" start
 
 DROP SCEPTER
 
-JUMP PIT
-JUMP PIT      ; Jumping into the treasure room
-DOWN
-SOUTH
-```
-  * [s_six.cas](s_six.cas) 
-  * [s_six.txt](s_six.txt)
-  * [Save Game Viewer - s_six.txt](SaveGameViewer.html?s_six.txt)
+SCORE ; points=50 (out of 240), condition=255 (out of 255)
 
-## TASK 7: Get VIAL, BELROG, and CROM 
+QUIET ; save as after_5.cas
 
-```
-GET MUSHROOM
-NORTH WEST WEST NORTH DOWN
+## Task 6: Learn BELROG
 
-JUMP PIT
-SOUTH SOUTH
-JUMP
+The BELROG spell requires us to have the VIAL from Room 90 "TOMB, SKULL". The VIAL is protected. We must have the
+PARCHMENT, which we happened to leave near the VIAL in Room 98 "BROKEN PASSAGE".
 
-GET VIAL 
+WEST WEST NORTH DOWN ; Room 64 "GREAT PIT"
+EAST SOUTH WEST SOUTH SOUTH SOUTH ; Room 96 "MUSTY PASSAGE"
+EAST EAST ; Room 98 "BROKEN PASSAGE" (PARCHMENT)
+GET PARCHMENT
+;
+EAST NORTH WEST ; Room 90 "TOMB, SKULL" (*VIAL)
+GET VIAL
+DROP PARCHMENT
+;
+EAST SOUTH WEST WEST DOWN WEST NORTH; Room 152 "GREAT TUNNEL" now know BELROG
 
-JUMP PIT
-JUMP PIT      ; Jumping into the treasure room
-DOWN WEST WEST NORTH DOWN EAST SOUTH EAST EAST EAST
-NORTH EAST EAST
-JUMP DOWN
+DROP VIAL
 
-VETAR         ; Random chance ... I had to recover the lamp
-LAMP ON
+SCORE ; points=60 (out of 240), condition=255 (out of 255)
 
-EAST SOUTH
-SOUTH         ; Now know BELROG
+QUIET ; save as after_6.cas
 
-; Had to wait on a couple of shakes here to unblock north
+## Task 7: Learn CROM
 
-NORTH NORTH
+CROM is in Room 237 "MAZE". We need the PENDANT from Room 146 "NARROW TUNNEL", which is just around the corner
+from where we are.
+
+EAST EAST NORTH ; Room 146 "NARROW TUNNEL" (PENDANT)
 GET PENDANT
+;
+SOUTH SOUTH SOUTH DOWN ; Room 234 "MAZE"
+EAST EAST EAST ; Room 237 "MAZE" now know CROM
 
-SOUTH SOUTH EAST DOWN EAST NORTH NORTH NORTH WEST SOUTH
-WEST NORTH WEST WEST WEST WEST WEST SOUTH SOUTH SOUTH
-EAST SOUTH EAST NORTH NORTH EAST
-EAST          ; Now know CROM
-
-NORTH WEST
 DROP PENDANT
-JUMP PIT
-DOWN SOUTH
-```
-  * [s_seven.cas](s_seven.cas) 
-  * [s_seven.txt](s_seven.txt)
-  * [Save Game Viewer - s_seven.txt](SaveGameViewer.html?s_seven.txt)
 
-## TASK 8: Learn ISHTAR
+SCORE ; points=70 (out of 240), condition=255 (out of 255)
 
-TO BE DONE
+QUIET ; save as after_7.cas
+
+## Task 8: Learn ISHTAR
+
+The final spell is in Room 179 "MAZE". We need the *SPELLBOOK from Room 35 "SERVANT CHAMBER" on the 1st floor. The *SPELLBOOK
+is protected. We must have the *POWERRING to get it. We already have BELROG, which is what we need for the *POWERRING.
+
+So, we must go get the *POWERRING from Room 155 "TWISTING CORRIDOR" and then the *SPELLBOOK from Room 35. Then we go get ISHTAR from Room 179.
+
+WEST WEST NORTH NORTH EAST EAST NORTH ; Room 213 "MAZE"
+JUMP MIST ; Room 212 "MAZE"
+NORTH WEST ; Room 203 "MAZE"
+JUMP PIT ; Room 202 "GREAT FOREST" treasure room
+;
+DOWN ; Room 10 "TABLE AND CHAIR" start
+;
+WEST WEST NORTH DOWN ; 64 great pit
+EAST SOUTH WEST SOUTH SOUTH SOUTH ; Room 96 "MUSTY PASSAGE"
+EAST EAST EAST NORTH NORTH EAST SOUTH ; Room 92 "WIDE ROOM"
+JUMP DOWN ; Room 156 "CAVERN, BONES"
+WEST ; Room 155 "TWISTING CORRIDOR" (*POWERRING)
+GET POWERRING
+;
+EAST SOUTH SOUTH DOWN WEST NORTH ; Room 227 "MAZE" out again
+EAST EAST NORTH NORTH ; Room 213 "MAZE"
+JUMP MIST ; Room 212 "MAZE"
+NORTH WEST ; Room 203 "MAZE"
+JUMP PIT ; Room 202 "GREAT FOREST" treasure room
+;
+DOWN ; Room 10 "TABLE AND CHAIR" start
+;
+EAST EAST SOUTH SOUTH SOUTH ; Room 36 "PANTRY"
+DROP LAMP  ; We have to be light or the floor in the next room will cave in
+WEST ; Room 35 "SERVANT CHAMBERS" (*SPELLBOOK)
+GET SPELLBOOK
+EAST ; Room 36 "PANTRY"
+GET LAMP
+NORTH NORTH NORTH WEST WEST; Room 10 "TABLE AND CHAIR" start
+DROP POWERRING
+
+;
+WEST WEST NORTH DOWN ; 64 great pit
+EAST SOUTH WEST SOUTH SOUTH SOUTH ; Room 96 "MUSTY PASSAGE"
+EAST DOWN SOUTH SOUTH EAST EAST ; Room 179 "MAZE" now know ISHTAR
+
+DROP SPELLBOOK
+
+SCORE ; points=80 (out of 240), condition=255 (out of 255)
+
+QUIET ; save to after_8.txt
+
+## Task 9: Kill the SPRITE
+
+Now for the 16 treasures worth 10 points each. We need to deposit these in the treasure room, but we
+need to kill the SPRITE first. Otherwise the SPRITE might get in the treasure room and move things
+around.
+
+All we need to kill the sprite is the FOOD and NERGAL. The save-game-viewer for after_8 shows the
+SPRITE is in Room 28: "DARK CHAMBER". But it might move to a nearby room before I get to it.
+
+NORTH DOWN NORTH ; Room 227 "MAZE" out again
+EAST EAST NORTH NORTH ; Room 213 "MAZE"
+JUMP MIST ; Room 212 "MAZE"
+NORTH WEST ; Room 203 "MAZE"
+JUMP PIT ; Room 202 "GREAT FOREST" treasure room
+;
+DOWN ; Room 10 "TABLE AND CHAIR" start
+;
+GET FOOD
+EAST EAST SOUTH ; Room 28 "DARK CHAMBER"
+KILL SPRITE
+
+; The SPRITE throws the TABLET to a nearby room. We don't need it.
+
+QUIET ; save to after_9.txt
+
+
+

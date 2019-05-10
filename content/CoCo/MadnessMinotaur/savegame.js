@@ -168,8 +168,16 @@ function getBetweenRoomAction(rn,dir) {
 		b = DIRS[b];
 		var c = binaryData.read(p+2)*256 + binaryData.read(p+3);
 		p += 4;	
-		if((rn==a) && (dir==b)) {			
-			return BETWEEN_ROOM_ACTIONS[c];
+		if((rn==a) && (dir==b)) {		
+			a = BETWEEN_ROOM_ACTIONS[c];
+			if(a=='A' || a=='C' || a=='D' || a=='E') {
+				// These actions only trigger in the UP direction.
+				// Strangely they appear on a few passages in other
+				// directions. They could never trigger. We'll leave
+				// them off the map.			
+				if(dir!='U') continue;
+			}
+			return a;
 		}		
 	}
 	// Just like the code ... run the list in the opposite travel direction
@@ -184,7 +192,15 @@ function getBetweenRoomAction(rn,dir) {
 		a = getNeighborRoomNumber(a,b);
 		b = OPPOSITE_DIR[b];
 		if( (rn==a) && (dir==b)) {
-			return BETWEEN_ROOM_ACTIONS[c];
+			a = BETWEEN_ROOM_ACTIONS[c];
+			if(a=='A' || a=='C' || a=='D' || a=='E') {
+				// These actions only trigger in the UP direction.
+				// Strangely they appear on a few passages in other
+				// directions. They could never trigger. We'll leave
+				// them off the map.			
+				if(dir!='U') continue;
+			}
+			return a;
 		}		
 	}
 	return '';
@@ -924,20 +940,19 @@ function viewSaveFile(data) {
 		for(var i=0;i<dirs.length;++i) {
 			var c = dirs[i];
 			var ndn = getNeighborRoomNumber(rn,c);
-			var ndoors = getRoomDoors(ndn);
 			var action = getBetweenRoomAction(rn,c);
 			if( (c=='U' || c=='D')) {
 				// Up and Down actions need a colon
 				if(action!='') {
 					action = ':'+action;
 				}
-				if(ndn!='') {
+				//if(ndn!='') {
 					if(c=='U') {
 						ndn = 'Up:'+ndn;
 					} else {
 						ndn = 'Down:'+ndn;
 					}
-				}
+				//}
 			}			
 			if(doors.indexOf(c)>=0) {					
 				subs[c+'_action'] = action;

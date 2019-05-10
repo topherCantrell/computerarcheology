@@ -293,9 +293,9 @@ $('#parseData').on('click',function() {
 3C8B: <span class="sg_value">{{value}}</span> 29  ; 41 "POTION"    Held by <span class="sg_value">{{decode}}</span>
 3C8D: <span class="sg_value">{{value}}</span> 2D  ; 45 "CROWN"     Held by <span class="sg_value">{{decode}}</span>
 <h3>Enter Room Actions</h3> 
-3C8F: <span class="sg_value">{{value}}</span> 1B 6D  ; Room <span class="sg_value">{{decode}}</span>  _a     ; Cave in to next floor if pack heavier than 192. If so move a nd b to random rooms.
-3C92: <span class="sg_value">{{value}}</span> 1B 70  ; Room <span class="sg_value">{{decode}}</span>  _b     ; Cave in to next floor if pack heavier than 128. If so move a nd b to random rooms.
-3C95: <span class="sg_value">{{value}}</span> 1B 73  ; Room <span class="sg_value">{{decode}}</span>  _c     ; Cave in to next floor if pack heavier than 95. If so move a nd b to random rooms.
+3C8F: <span class="sg_value">{{value}}</span> 1B 6D  ; Room <span class="sg_value">{{decode}}</span>  _a     ; Cave in to next floor if pack heavier than 192. If so move _a and _b to random rooms.
+3C92: <span class="sg_value">{{value}}</span> 1B 70  ; Room <span class="sg_value">{{decode}}</span>  _b     ; Cave in to next floor if pack heavier than 128. If so move _a and _b to random rooms.
+3C95: <span class="sg_value">{{value}}</span> 1B 73  ; Room <span class="sg_value">{{decode}}</span>  _c     ; Cave in to next floor if pack heavier than 95. If so move _a and _b to random rooms.
 3C98: <span class="sg_value">{{value}}</span> 1B 9C  ; Room <span class="sg_value">{{decode}}</span>  _d     ; If we have VETAR make the pile-of-rocks appear in this room (it stays here).
 3C9B: <span class="sg_value">{{value}}</span> 1B B3  ; Room <span class="sg_value">{{decode}}</span>  _e     ; Play sound effect. If we play the flute and have the parchment then the LEDGE appears here.
 3C9E: <span class="sg_value">{{value}}</span> 1B B7  ; Room <span class="sg_value">{{decode}}</span>  _f     ; Powerful gust blows lamp out of grasp. 

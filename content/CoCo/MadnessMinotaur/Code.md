@@ -3707,13 +3707,13 @@ BetweenRoomG:
 
 ```code
 EnteringRoomAction_a:
-; _a Cave in to next floor (32 damage) if pack heavier than 192. If so move a and b to random rooms.
+; _a Cave in to next floor (32 damage) if pack heavier than 192. If so move _a and _b to random rooms.
 
 EnteringRoomAction_b:
-; _b Cave in to next floor (32 damage) if pack heavier than 128. If so move a and b to random rooms.
+; _b Cave in to next floor (32 damage) if pack heavier than 128. If so move _a and _b to random rooms.
 
 EnteringRoomAction_c:
-; _c Cave in to next floor (32 damage) if pack heavier than 95. If so move a and b to random rooms.
+; _c Cave in to next floor (32 damage) if pack heavier than 95. If so move _a and _b to random rooms.
 1B6D: 86 C0               LDA     #$C0                      ; Weight  192
 1B6F: 8C 86 80            CMPX    #$8680                    ; 128
 1B72: 8C 86 5F            CMPX    #$865F                    ; 95
@@ -6449,49 +6449,62 @@ DirectionDescriptionTable:
 ```
 
 ## Between Room Handlers 
- Between room handlers
- 4 byte entries. 1st byte is room, 2nd byte is direction,
- and 3rd and 4th are routine.
- The code searches the entire list top to bottom with the room/direction we are moving. If no list is
- found then it runs the list again from the target room and backwards direction. There are two handlers
- for 10<->202 UP/DOWN. If you are climbing down you sometimes land in a random room. If you are climbing
- up you have to be in good physical condition. But there is only one handler between 74->75 EAST/WEST. It
- will trigger in either direction.
+ 
+This table defines between-room-actions that happen along a specific direction between two rooms.
+ 
+Each entry is four bytes:
+   The starting room
+   The direction of travel
+   Routine MSB, Routine LSB
+   
+The code searches the entire list top to bottom with the room/direction we are moving. If no entry is
+found then it runs the list again from the target room and backwards direction. Thus most of these
+actions are bidirectional along the passages.
 
-```code         
+There are two handlers for the passage between 10 (start) and 202 (the treasure room). One for
+climbing up from 10 and one for climbing down from 202. This is the only place in the game where a 
+passage has two actions: one for UP and one for DOWN. But this is a very special passage, after all.
+ 
+The handlers A, C, D, and E only take effect in the UP direction. They are designed to make it more 
+difficult to climb when you are hurt and/or carrying a lot of weight. There are several places where
+these actions are assigned to passages other than up/down. In these passages they could never run.
+I've noted these "never run" actions in the table below with an asterisk before the letter. They are
+left out by the save-game-viewer. Why were these no-op actions placed in the table?
+
+``code         
 BetweenRoomHandler:
-3B4A: 4A 04 1A FB ; 1:2:1 --EAST:WEST-- 1:3:1    ; A  If excess physical condition is less than random 40-BF then a climb-up fails.
-3B4E: 53 04 1A FB ; 1:3:2 --EAST:WEST-- 1:4:2    ; A  see above
+3B4A: 4A 04 1A FB ; EAST   74<->75   *A  If excess physical condition is less than random 40-BF then a climb-up fails.
+3B4E: 53 04 1A FB ; EAST   83<->84   *A  see above
 ;
-3B52: CA 10 1B 20 ; 3:2:1 --DOWN:UP-- 0:2:1      ; B  Moves us to start room 10 (or infrequently in a room near the start).
-3B56: 0A 20 1B 03 ; 0:2:1 --UP:DOWN-- 3:2:1      ; C  If excess physical condition is less than 192 then a climb-up fails.
+3B52: CA 10 1B 20 ; DOWN  202-->10    B  Moves us to start room 10 (or infrequently in a room near the start).
+3B56: 0A 20 1B 03 ; UP     10-->202   C  If excess physical condition is less than 192 then a climb-up fails.
 ;
-3B5A: 40 20 1B 06 ; 1:0:0 --UP:DOWN-- 0:0:0      ; D  If excess physical condition is less than 64 then a climb-up fails.
-3B5E: D9 01 1A FB ; 3:1:3 --SOUTH:NORTH-- 3:1:4  ; A  see above
-3B62: 44 20 1B 06 ; 1:4:0 --UP:DOWN-- 0:4:0      ; D  see above
-3B66: 47 20 1A FB ; 1:7:0 --UP:DOWN-- 0:7:0      ; A  see above
-3B6A: 53 20 1B 09 ; 1:3:2 --UP:DOWN-- 0:3:2      ; E  If excess physical condition is less than 128 then a climb-up fails.
-3B6E: 12 01 1B 34 ; 0:2:2 --SOUTH:NORTH-- 0:2:3  ; F  If the lamp is in our pack this moves us to a totally random room. 
-3B72: 59 20 1A FB ; 1:1:3 --UP:DOWN-- 0:1:3      ; A  see above
-3B76: 42 20 1A FB ; 1:2:0 --UP:DOWN-- 0:2:0      ; A  see above
-3B7A: 82 20 1B 06 ; 2:2:0 --UP:DOWN-- 1:2:0      ; D  see above
-3B7E: 87 20 1B 06 ; 2:7:0 --UP:DOWN-- 1:7:0      ; D  see above
-3B82: 96 20 1A FB ; 2:6:2 --UP:DOWN-- 1:6:2      ; A  see above
-3B86: 99 20 1A FB ; 2:1:3 --UP:DOWN-- 1:1:3      ; A  see above
-3B8A: 9C 20 1B 03 ; 2:4:3 --UP:DOWN-- 1:4:3      ; C  see above
-3B8E: 8A 04 1B 5F ; 2:2:1 --EAST:WEST-- 2:3:1    ; G  There is a 50/50 chance of moving to a random room in the first half of the last two floors.
-3B92: D4 08 1B 09 ; 3:4:2 --NORTH:SOUTH-- 3:4:1  ; E  see above
-3B96: 4D 08 1B 03 ; 1:5:1 --NORTH:SOUTH-- 1:5:0  ; C  see above
-3B9A: F3 20 1B 34 ; 3:3:6 --UP:DOWN-- 2:3:6      ; F  see above
-3B9E: F3 10 1B 34 ; 3:3:6 --DOWN:UP-- 0:3:6      ; F  see above
-3BA2: AF 08 1B 43 ; 2:7:5 --NORTH:SOUTH-- 2:7:4  ; H  There is a 50/50 chance of going to a random room in the maze on a random floor.
-3BA6: 69 08 1B 43 ; 1:1:5 --NORTH:SOUTH-- 1:1:4  ; H  see above
-3BAA: AE 04 1B 4A ; 2:6:5 --EAST:WEST-- 2:7:5    ; I  Move to a random room in the maze on a random floor (1 in 36 chance of doing nothing).
-3BAE: 68 04 1B 4A ; 1:0:5 --EAST:WEST-- 1:1:5    ; I  see above
-3BB2: 6A 02 1B 4A ; 1:2:5 --WEST:EAST-- 1:1:5    ; I  see above
-3BB6: B0 02 1B 4A ; 2:0:6 --WEST:EAST-- 2:7:5    ; I  see above
-3BBA: E0 01 1B 5F ; 3:0:4 --SOUTH:NORTH-- 3:0:5  ; G  see above
-
+3B5A: 40 20 1B 06 ; UP     64<->0     D  If excess physical condition is less than 64 then a climb-up fails.
+3B5E: D9 01 1A FB ; SOUTH 217<->225  *A  see above
+3B62: 44 20 1B 06 ; UP     68<->4     D  see above
+3B66: 47 20 1A FB ; UP     71<->7     A  see above
+3B6A: 53 20 1B 09 ; UP     83<->147   E  If excess physical condition is less than 128 then a climb-up fails.
+3B6E: 12 01 1B 34 ; SOUTH  18<->26    F  If the lamp is in our pack this moves us to a totally random room. 
+3B72: 59 20 1A FB ; UP     89<->25    A  see above
+3B76: 42 20 1A FB ; UP     66<->62    A  see above
+3B7A: 82 20 1B 06 ; UP    130<->66    D  see above
+3B7E: 87 20 1B 06 ; UP    135<->71    D  see above
+3B82: 96 20 1A FB ; UP    150<->86    A  see above
+3B86: 99 20 1A FB ; UP    153<->89    A  see above
+3B8A: 9C 20 1B 03 ; UP    156<->92    C  see above
+3B8E: 8A 04 1B 5F ; EAST  138<->139   G  There is a 50/50 chance of moving to a random room in the first half of the last two floors.
+3B92: D4 08 1B 09 ; NORTH 212<->204  *E  see above
+3B96: 4D 08 1B 03 ; NORTH  77<->69   *C  see above
+3B9A: F3 20 1B 34 ; UP    243<->179   F  see above
+3B9E: F3 10 1B 34 ; DOWN  243<->51    F  see above
+3BA2: AF 08 1B 43 ; NORTH 175<->167   H  There is a 50/50 chance of going to a random room in the maze on a random floor.
+3BA6: 69 08 1B 43 ; NORTH 105<->97    H  see above
+3BAA: AE 04 1B 4A ; EAST  174<->175   I  Move to a random room in the maze on a random floor (1 in 36 chance of doing nothing).
+3BAE: 68 04 1B 4A ; EAST  104<->105   I  see above
+3BB2: 6A 02 1B 4A ; WEST  106<->105   I  see above
+3BB6: B0 02 1B 4A ; WEST  176<->175   I  see above
+3BBA: E0 01 1B 5F ; SOUTH 224<->232   G  see above
+;
 3BBE: 00 00 00 
 
 TapeSavePoint:
@@ -6640,9 +6653,9 @@ WhoHolds:
 
 ```code
 ActionWhenEnteringRoom:
-3C8F: 00 1B 6D  ; 0    _a     ; Cave in to next floor if pack heavier than 192. If so move a nd b to random rooms.
-3C92: 00 1B 70  ; 0    _b     ; Cave in to next floor if pack heavier than 128. If so move a nd b to random rooms.
-3C95: 00 1B 73  ; 0    _c     ; Cave in to next floor if pack heavier than 95. If so move a nd b to random rooms.
+3C8F: 00 1B 6D  ; 0    _a     ; Cave in to next floor if pack heavier than 192. If so move _a and _b to random rooms.
+3C92: 00 1B 70  ; 0    _b     ; Cave in to next floor if pack heavier than 128. If so move _a and _b to random rooms.
+3C95: 00 1B 73  ; 0    _c     ; Cave in to next floor if pack heavier than 95. If so move _a and _b to random rooms.
 3C98: 00 1B 9C  ; 0    _d     ; # If we have VETAR make the pile-of-rocks appear in this room (it stays here).
 3C9B: 00 1B B3  ; 0    _e     ; # Play sound effect. If we play the flute and have the parchment then the LEDGE appears here.
 3C9E: 00 1B B7  ; 0    _f     ; Powerful gust blows lamp out of grasp. 
