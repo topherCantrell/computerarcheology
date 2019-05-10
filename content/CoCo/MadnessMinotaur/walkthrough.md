@@ -105,6 +105,7 @@ if you got attacked on that run! You can EAT FOOD at this point and/or EAT MUSHR
 It would be nice to pick up several objects at once, but that makes jumping much more likely to fail. Instead
 we'll make several loops getting one object at a time. Next up is the PARCHMENT Room 206 "Maze".
 
+```
 UP ; Room 202 "GREAT FORREST" Treasure room
 JUMP DOWN ; Room 162 "STONE CROSS" (*LIGHTRING)
 SOUTH ; Room 70 "MAZE"
@@ -132,11 +133,13 @@ DROP PARCHMENT
 SCORE ; points=20 (out of 240), condition=251 (out of 255)
 
 QUIET ; save as after_2.cas
+```
 
 ## Task 3: Learn OKKAN
 
 TODO DOWN FROM 10 might land you in a random room. Make your way back to start.
 
+```
 WEST DOWN ; Room 161 "LARGE STONE"
 SOUTH DOWN SOUTH ; Room 241 "MAZE" (TALISMAN)
 GET TALISMAN
@@ -159,11 +162,13 @@ DROP TALISMAN
 SCORE ; points=30 (out of 240), condition=251 (out of 255)
 
 QUIET ; save as after_3.cas
+```
 
 ## Task 4: Learn AKHIROM
 
 Back around the loop again to get the ROPE from the 4th floor.
 
+```
 EAST DOWN SOUTH DOWN ; Room 233 "MAZE"
 EAST EAST NORTH; Room 227 "MAZE" out again
 NORTH EAST EAST EAST EAST; Room 223 "MAZE" (ROPE)
@@ -187,6 +192,7 @@ DROP ROPE
 SCORE ; points=40 (out of 240), condition=251 (out of 255)
 
 QUIET ; save as after_4.cas
+```
 
 ## Task 5: Learn NERGAL
 
@@ -194,6 +200,7 @@ We are halfway through the spells. We need the SCEPTER from the 4th floor. The
 NERGAL spell is in the room with _x, which will heal us and move us to a 
 random room. There is no way around dealing with _x.
 
+```
 SOUTH WEST WEST DOWN SOUTH DOWN ; Room 233 "MAZE"
 EAST EAST NORTH; Room 227 "MAZE" out again
 EAST EAST NORTH NORTH ; Room 213 "MAZE"
@@ -237,12 +244,14 @@ DROP SCEPTER
 SCORE ; points=50 (out of 240), condition=255 (out of 255)
 
 QUIET ; save as after_5.cas
+```
 
 ## Task 6: Learn BELROG
 
 The BELROG spell requires us to have the VIAL from Room 90 "TOMB, SKULL". The VIAL is protected. We must have the
 PARCHMENT, which we happened to leave near the VIAL in Room 98 "BROKEN PASSAGE".
 
+```
 WEST WEST NORTH DOWN ; Room 64 "GREAT PIT"
 EAST SOUTH WEST SOUTH SOUTH SOUTH ; Room 96 "MUSTY PASSAGE"
 EAST EAST ; Room 98 "BROKEN PASSAGE" (PARCHMENT)
@@ -259,12 +268,14 @@ DROP VIAL
 SCORE ; points=60 (out of 240), condition=255 (out of 255)
 
 QUIET ; save as after_6.cas
+```
 
 ## Task 7: Learn CROM
 
 CROM is in Room 237 "MAZE". We need the PENDANT from Room 146 "NARROW TUNNEL", which is just around the corner
 from where we are.
 
+```
 EAST EAST NORTH ; Room 146 "NARROW TUNNEL" (PENDANT)
 GET PENDANT
 ;
@@ -276,6 +287,7 @@ DROP PENDANT
 SCORE ; points=70 (out of 240), condition=255 (out of 255)
 
 QUIET ; save as after_7.cas
+```
 
 ## Task 8: Learn ISHTAR
 
@@ -284,6 +296,7 @@ is protected. We must have the *POWERRING to get it. We already have BELROG, whi
 
 So, we must go get the *POWERRING from Room 155 "TWISTING CORRIDOR" and then the *SPELLBOOK from Room 35. Then we go get ISHTAR from Room 179.
 
+```
 WEST WEST NORTH NORTH EAST EAST NORTH ; Room 213 "MAZE"
 JUMP MIST ; Room 212 "MAZE"
 NORTH WEST ; Room 203 "MAZE"
@@ -325,6 +338,7 @@ DROP SPELLBOOK
 SCORE ; points=80 (out of 240), condition=255 (out of 255)
 
 QUIET ; save to after_8.txt
+```
 
 ## Task 9: Kill the SPRITE
 
@@ -335,6 +349,7 @@ around.
 All we need to kill the sprite is the FOOD and NERGAL. The save-game-viewer for after_8 shows the
 SPRITE is in Room 28: "DARK CHAMBER". But it might move to a nearby room before I get to it.
 
+```
 NORTH DOWN NORTH ; Room 227 "MAZE" out again
 EAST EAST NORTH NORTH ; Room 213 "MAZE"
 JUMP MIST ; Room 212 "MAZE"
@@ -350,6 +365,36 @@ KILL SPRITE
 ; The SPRITE throws the TABLET to a nearby room. We don't need it.
 
 QUIET ; save to after_9.txt
+```
 
+## Task 10: Score SILVER
 
+The "_u" handler in Room 8: "MARBLE FLOOR" dropped the SILVER on the floor the first time we
+walked through with the LAMP on. All we have to do is pick it up.
+
+TODO blurb in the general on this.
+Unfortunately, we can't carry it UP into the treasure room because of action C (by itself, the
+SILVER is still too heavy. We have to go back through the maze and JUMP in.
+
+```
+NORTH WEST WEST ; Room 10: "TABLE AND CHAIR" start
+DROP FOOD 
+WEST WEST ; Room 8: "MARBLE FLOOR" (SILVER)
+GET SILVER
+
+NORTH DOWN EAST SOUTH WEST SOUTH SOUTH SOUTH EAST ; Room 97 "TWISTING PASSAGE"
+DOWN SOUTH DOWN EAST EAST NORTH; Room 227 "MAZE" out again
+EAST EAST NORTH NORTH ; Room 213 "MAZE"
+JUMP MIST ; Room 212 "MAZE"
+NORTH WEST ; Room 203 "MAZE"
+JUMP PIT ; Room 202 "GREAT FOREST" treasure room
+;
+DROP SILVER
+
+SCORE ; points=90 (out of 240), condition=255 (out of 255)
+
+QUIET ; save as after_10
+```
+
+## Task 11: Score ??
 
