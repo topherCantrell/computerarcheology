@@ -372,10 +372,13 @@ QUIET ; save to after_9.txt
 * Use POWERRING to unlock SAPPHIRE, LIGHTRING. Score POWERRING.
 * Use SAPPHIRE to unlock AMULET. SCORE SAPPHIRE.
 * SCORE AMULET. 
-Use LIGHTRING to unlock TRUTHRING. Score LIGHTRING.
-Score TRUTHRING.
-Use SPELLBOOK to unlock POWDER. Score SPELLBOOK.
-Score POWDER.
+* Use LIGHTRING to unlock TRUTHRING. Score LIGHTRING.
+* Score TRUTHRING.
+* Use SPELLBOOK to unlock POWDER. Score SPELLBOOK.
+* Score POWDER.
+
+Score RUBY "_e" in Room 196 "MAZE" (PARCHMENT, FLUTE, ROPE) PLAY FLUTE, CLIMB LEDGE  
+Score OPAL "_g" Room 70 "FOUL SMELLING" (ROPE,DAGGER) TIE HYDRA, STAB HYDRA
 
 TREASURES:
 
@@ -387,10 +390,9 @@ TREASURES:
   * SPELLBOOK    Dropped earlier in Room 179 "MAZE"
   * POWDER       SATYR (SPELLBOOK)  
 
-  * FLEECE       SCORPION (*SKULL) (SCEPTER)
   * RUBY         "_e" in Room 196 "MAZE" (PARCHMENT, FLUTE, ROPE) PLAY FLUTE, CLIMB LEDGE  
   * OPAL         "_g" Room 70 "FOUL SMELLING" (ROPE,DAGGER) TIE HYDRA, STAB HYDRA
-  
+  * FLEECE       SCORPION (*SKULL) (SCEPTER)
   * SILVER       Dropped by "_u" in Room 8 "MARBLE FLOOR  
   * GOLD         "_s" in Room 216 "MAZE" LAMP OFF
   * DIAMNOD      "_n" in Room 67 "GREAT CRYPT" OPEN CRYPT
@@ -568,7 +570,8 @@ JUMP PIT ; Room 202 "GREAT FOREST" treasure room
 ;
 DROP LIGHTRING
 
-SCORE
+SCORE ; points=120 (out of 240), condition=255 (out of 255)
+; Halfway done!
 
 QUIET ; save as after_13.txt
 
@@ -588,10 +591,61 @@ JUMP PIT ; Room 202 "GREAT FOREST" treasure room
 ;
 DROP TRUTHRING
 
-SCORE
+SCORE ; points=130 (out of 240), condition=255 (out of 255)
 
 QUIET ; save as after_14.txt
 ```
 
-## Task 15: ??
+## Task 15: Score SPELLBOOK
 
+We dropped the SPELLBOOK in Room 179 "MAZE" earlier. We need it to kill the SAYTR to get the POWDER. The
+save-game viewer shows the SATYR in Room 220 "MAZE", but it will might move to a nearby room before we
+get there.
+
+```
+JUMP DOWN ; Room 162 "STONE CROSS"
+SOUTH SOUTH EAST ; Room 179 "MAZE"
+GET SPELLBOOK
+
+NORTH DOWN NORTH EAST ; Room 228 "MAZE"
+KILL SATYR
+NORTH EAST NORTH; Room 213 "MAZE"
+JUMP MIST ; Room 212 "MAZE"
+NORTH WEST ; Room 203 "MAZE"
+JUMP PIT ; Room 202 "GREAT FOREST" treasure room
+;
+DROP SPELLBOOK
+
+SCORE ; points=140 (out of 240), condition=255 (out of 254)
+; The SATYR did ONE damage. I was really lucky.
+; Use the FOOD if you weren't so lucky.
+
+QUIET ; save as after_15.txt
+```
+
+## Task 16: Score the POWDER
+
+The SATYR tosses the POWDER to a nearby room. The save-game viewer shows it
+in Room 229 "MAZE". Let's make the loop and grab it.
+
+```
+JUMP DOWN ; Room 162 "STONE CROSS"
+SOUTH SOUTH EAST ; Room 179 "MAZE"
+
+NORTH DOWN NORTH EAST ; Room 228 "MAZE"
+EAST ; Room 229 "MAZE"
+GET POWDER
+;
+NORTH NORTH ; Room 213 "MAZE"
+JUMP MIST ; Room 212 "MAZE"
+NORTH WEST ; Room 203 "MAZE"
+JUMP PIT ; Room 202 "GREAT FOREST" treasure room
+;
+DROP POWDER
+
+SCORE ; points=150 (out of 240), condition=255 (out of 254)
+
+QUIET ; save as after_16.txt
+```
+
+### Task 17: 
