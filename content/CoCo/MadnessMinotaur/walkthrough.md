@@ -370,8 +370,8 @@ QUIET ; save to after_9.txt
 ## Task 10: Score POWERRING
 
 * Use POWERRING to unlock SAPPHIRE, LIGHTRING. Score POWERRING.
-Use SAPPHIRE to unlock AMULET. SCORE SAPPHIRE.
-SCORE AMULET. 
+* Use SAPPHIRE to unlock AMULET. SCORE SAPPHIRE.
+* SCORE AMULET. 
 Use LIGHTRING to unlock TRUTHRING. Score LIGHTRING.
 Score TRUTHRING.
 Use SPELLBOOK to unlock POWDER. Score SPELLBOOK.
@@ -443,3 +443,69 @@ DROP POWERRING
 SCORE ; points=90 (out of 240), condition=255 (out of 255)
 
 QUIET ; after_10.txt
+```
+
+## Task 11: Score SAPPHIRE
+
+The packrat "_t" Room 131 "STONE CORRIDOR" has the AMULET. If we are carrying the SAPPHIRE then "_t"
+will drop the AMULET.
+
+```
+DOWN ; Room 10 "TABLE AND CHAIR" start
+;
+EAST EAST SOUTH SOUTH SOUTH EAST EAST ; Room 38 "EMPTY CHAMBER"
+DOWN ; Room 102 "ANCIENT KING"
+GET SAPPHIRE
+JUMP UP ; Room 38 "EMPTY CHAMBER"
+WEST WEST NORTH NORTH NORTH WEST WEST WEST WEST NORTH DOWN ; Room 64 "GREAT PIT"
+;
+JUMP PIT ; Room 128 "NARROW TUNNEL"
+SOUTH SOUTH ; Room 144 "HIGH NARROW"
+;
+; ENCHANTED AURA moves us
+;
+LOOK ; Room 129 "SMOOTH MARBLE" we had good luck
+;
+EAST EAST ; Room 131 "STONE CORRIDOR"
+GET AMULET
+;
+WEST SOUTH SOUTH SOUTH SOUTH SOUTH EAST DOWN NORTH ; 227 "MAZE" out again
+;
+DROP AMULET ; Easier to get to here
+;
+EAST EAST NORTH NORTH ; Room 213 "MAZE"
+JUMP MIST ; Room 212 "MAZE"
+NORTH WEST ; Room 203 "MAZE"
+JUMP PIT ; Room 202 "GREAT FOREST" treasure room
+;
+DROP SAPPHIRE
+
+SCORE ; points=100 (out of 240), condition=255 (out of 255)
+
+QUIET ; save as after_11.txt
+```
+## Task 12: Score AMULET
+
+Back around the loop for the AMULET we dropped.
+
+```
+DOWN ; Room 10 "TABLE AND CHAIR" start
+;
+WEST WEST NORTH DOWN ; Room 64 "GREAT PIT"
+EAST SOUTH WEST SOUTH SOUTH SOUTH EAST DOWN SOUTH EAST DOWN EAST NORTH ; 227 "MAZE" out again
+;
+GET AMULET
+;
+EAST EAST NORTH NORTH ; Room 213 "MAZE"
+JUMP MIST ; Room 212 "MAZE"
+NORTH WEST ; Room 203 "MAZE"
+JUMP PIT ; Room 202 "GREAT FOREST" treasure room
+;
+DROP AMULET
+
+SCORE ; points=110 (out of 240), condition=255 (out of 255)
+
+QUIET ; save as after_12.txt 
+```
+
+## Task 13 : Score LIGHTRING
