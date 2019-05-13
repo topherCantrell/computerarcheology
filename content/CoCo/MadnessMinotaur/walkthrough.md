@@ -379,6 +379,7 @@ QUIET ; save to after_9.txt
 
 Score RUBY "_e" in Room 196 "MAZE" (PARCHMENT, FLUTE, ROPE) PLAY FLUTE, CLIMB LEDGE  
 Score OPAL "_g" Room 70 "FOUL SMELLING" (ROPE,DAGGER) TIE HYDRA, STAB HYDRA
+FLEECE       SCORPION (*SKULL) (SCEPTER)
 
 TREASURES:
 
@@ -393,6 +394,7 @@ TREASURES:
   * RUBY         "_e" in Room 196 "MAZE" (PARCHMENT, FLUTE, ROPE) PLAY FLUTE, CLIMB LEDGE  
   * OPAL         "_g" Room 70 "FOUL SMELLING" (ROPE,DAGGER) TIE HYDRA, STAB HYDRA
   * FLEECE       SCORPION (*SKULL) (SCEPTER)
+  
   * SILVER       Dropped by "_u" in Room 8 "MARBLE FLOOR  
   * GOLD         "_s" in Room 216 "MAZE" LAMP OFF
   * DIAMNOD      "_n" in Room 67 "GREAT CRYPT" OPEN CRYPT
@@ -648,4 +650,4 @@ SCORE ; points=150 (out of 240), condition=255 (out of 254)
 QUIET ; save as after_16.txt
 ```
 
-### Task 17: 
+## Task 17:  
