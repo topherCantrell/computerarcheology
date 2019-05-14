@@ -2,61 +2,63 @@
 
 # Walk-Through of my Game 
 
-This is the description of my game experience played using the saved-game info below. 
-Open the [Emulator on the Main Page](index.html) in a new tab and you can play along with 
-my game. Use the save-game files after every task. Have a look at the labyrinth with the
-save-vile viewer after every task.
+This is a walk-through of my game from start to finish. I broke the game up into 25 tasks,
+and I present my save-game files after every task. Open the [Emulator on the Main Page](index.html) in 
+a new tab and you can play along with my game. 
 
+I made heavy use of the save-game viewer along the way. I can't imagine trying to find things
+by wondering around. And I certainly can't imagine figuring out all the secrets without having
+seen the code. This walk-through was challenging enough using the viewer and the code.
+
+You can follow along with my steps, but you won't be able to blindly type them in. There are many random
+elements in the game you have to adjust for:
+
+Passages will block and unblock at random over time. You'll see the GROUND SHAKING. You can either find 
+another route around a blocked passage or wait for the passage to unblock with time. The POWERRING will
+let you walk through blocked passages, but the ring is heavy.
+
+There are several passage-actions and enter-room-actions that might move you to a random room. You might
+have to find your way back onto my path to follow along.
+
+The creatures move around at random. The SPRITE relocates (at random) any objects it finds dropped in the
+rooms. The creatures will attack you (with random damage). You might get hurt where I didn't, and you will
+need to heal up before continuing on my path.
 
 ## General Strategy
-Hard to find your way around. No random movements (move to maze). 240 points max.
 
-Forest treasure room is on the same floor with the maze but not connected to it. Just a convienient
-way to make it UP from start.
+There is limited access to the treasure room, Room 202 "GREAT FOREST". You can go UP from Room 10 "TABLE
+AND CHAIR", the starting room, but you have to be light and healthy. Most of the objects are too heavy
+to take UP by themselves let alone in groups.
 
-TODO In and out of the maze. Can't carry everything around because you have to jump.
+The only other way to get to Room 202 "GREAT FOREST" is to JUMP PIT from Room 164 "NARROW PATH" or 
+JUMP PIT from Room 203 "MAZE". Both of these jumps will fail if you are hurt and/or carrying multiple
+items.
 
-Entrance to maze: 
-  * 1way 1st floor 34 south
-  * 1way 3rd floor 161, 162, 163, 164, 165 (all south)
-  * 2way passage action H 3rd floor 167 and 175 (north/south)
-  * 2way 3rd floor 191 and 192 (east/west)
-  
-Exit from maze:
-  * 1way 2nd floor passage action H from 105 north to 97
-  * 1way 4th floor 235 north to 227
-  * 2way passage action H 3rd floor 167 and 175 (north/south)
-  * 2way 3rd floor 191 and 192 (east/west)
+I used the JUMP PIT from Room 203 "MAZE" exclusively. Thus I carried treasures down to the bottom floor
+one by one and jumped to the treasure room above the first floor. My game is a long series of loops from
+top to bottom and back around.
 
-Fully connected except the lower right and upper left and edges along the top and bottom.
-
-Action I east/west between 104 and 105 and 105 and 106.
-Action I east/west between 174 and 175 and 175 and 176
-
-
-
-Must JUMP in places, which means your condition must be good. Getting one item at a
-time to make jumping easier. Pushing through rooms that push you back.
-
-random walls blocking. might be different for you. might have to wait it out.
-
-  * Spells: 8*10 Learned
-  * Treasures: 16*10 Dropped at entrance
-  
-start.cas
+There are 8 spells to learn (10 points each) and 16 treasures to drop in the treasure room (10 points each). 
+My plan is to learn the spells first, then kill the SPRITE so it wouldn't relocate my treasures, and then 
+score the treasures one by one.
 
 ## Task 1: Learn VETAR
 
-We have to have the LAMP (room 1) to see on lower levels. The LAMP is in the room
+SAVE GAME: after_start.txt
+
+We have to have the LAMP to see on lower levels. The LAMP is in the Room 1 "EMPTY ROOM" along
 with "_o", which pushes us back at random if we don't have CROM. Every time we
-get pushed, it's 5 points of damage. Nothing to it but to keep trying WEST into
+get pushed, it's 5 points of damage. The only thing we can do is keep trying WEST to get into
 the room with lamp.
 
-We need the FOOD (room 14) and the MUSHROOM (room 141). We start in room 10.
+The VETAR spell in Room 3 "PILE OF BONES" requires us to have the FOOD (Room 14 "BEDROOM") and the 
+MUSHROOM (Room 141 "NARROW TWISTING"). 
+
+We start in Room 10 "TABLE AND CHAIR" (start).
 
 ```
 
-; We need the lamp for other floors
+; Get the LAMP
 ;
 NORTH    ; Room 2 "GUARD ROOM" 
 WEST*    ; Room 1 "EMPTY ROOM". You might get pushed back by "_o" trying to get into this room. Keep trying.
@@ -65,11 +67,16 @@ LAMP ON
 
 ; Down to the mushroom
 ;
-EAST SOUTH       ; Back to start Room 10
-WEST WEST NORTH  ; Room 0 "STONE TOWER"
-DOWN             ; Room 64 "GREAT PIT"
+EAST SOUTH ; Back to Room 10 "TABLE AND CHAIR" (start)
+WEST WEST  ; Room 8 "MARBLE FLOOR". This room has "_u", which will drop the SILVER if our LAMP is on. 
+NORTH      ; Room 0 "STONE TOWER"
+DOWN       ; Room 64 "GREAT PIT" (URN)
+
+; The URN has oil in it. When our LAMP runs out, we'll return here to fill it.
 ;
-EAST SOUTH WEST SOUTH SOUTH                 ; Room 88 "MUSTY, CORRIDOR" (the "_q" poison is here ... keep moving)
+EAST ; Room 65 "STONE WALL". This room has "_r" in it. After 3 visits, "_r" drops the SCARAB, which we won't need.
+;
+SOUTH WEST SOUTH SOUTH                      ; Room 88 "MUSTY, CORRIDOR". The "_q" poison is here ... KEEP MOVING
 SOUTH EAST EAST EAST NORTH NORTH EAST SOUTH ; Room 92 "WIDE ROOM" (*SKULL)
 JUMP DOWN                                   ; Room 156 "CAVERN, BONES"
 ;
@@ -87,14 +94,17 @@ NORTH WEST UP        ; Room 19 "ANCIENT CARVINGS"
 EAST NORTH EAST EAST ; Room 14 "BED ROOM" (FOOD, DAGGER)
 GET FOOD
 WEST NORTH WEST WEST ; Room 3 "PILE OF BONES" (VETRA)
+;
 ; We now know VETRA
+;
 WEST SOUTH           ; Room 10 "TABLE AND CHAIR"
-DROP FOOD 
+;
+DROP FOOD            ; These will be here if you need to heal up
 DROP MUSHROOM
 
 SCORE ; points=10 (out of 240), condition=251 (out of 255)
 
-QUIET ; Saved as "after_1.cas"
+QUIET ; Saved as "after_1.txt"
 ```
 
 ## Task 2: Learn MITRA
