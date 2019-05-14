@@ -855,4 +855,62 @@ SCORE ; points=200 (out of 240), condition=255 (out of 254)
 QUIET ; save as after_21.txt
 ```
 
-## Task 22: Score ??
+## Task 22: Score TIARA
+
+The TIARA is held by "_203" in Room 201 "MAZE". We just have to look in the pit -- maybe
+several times.
+
+TODO Maybe _203 should be _201? The map shows _203 in _201 and _203. Error.
+
+```
+JUMP DOWN ; Room 162 "STONE CROSS"
+SOUTH DOWN EAST NORTH ; Room 227 "MAZE" out again
+;
+EAST EAST NORTH NORTH ; Room 213 "MAZE"
+JUMP MIST ; Room 212 "MAZE"
+WEST WEST SOUTH SOUTH WEST NORTH NORTH NORTH ; Room 201 "MAZE"
+LOOK PIT ; Keep looking until you see the TIARA
+GET TIARA
+;
+SOUTH SOUTH SOUTH EAST NORTH NORTH EAST EAST NORTH WEST ; Room 203 "MAZE
+JUMP PIT ; Room 202
+
+DROP TIARA 
+
+SCORE ; points=210 (out of 240), condition=255 (out of 254)
+
+QUIET ; save as after_22.txt
+```
+
+## Task 23: Score CROWN
+
+The CROWN is held by "_33" in Room 33 "DARK, TOWER". Walk in with the LAMP on.
+
+```
+DOWN ; Room 10 "TABLE AND CHAIR"
+;
+; We have to work our way around some blocked passages.
+EAST EAST EAST EAST SOUTH SOUTH WEST WEST SOUTH WEST ; Room 35 "SERVANT CHAMBER"
+JUMP HOLE ; Room 34 SUNKEN PIT
+WEST ; Room 33 "DARK, TOWER"
+GET CROWN
+;
+WEST NORTH DOWN SOUTH EAST DOWN ; Room 161 "LARGE STONE"
+SOUTH DOWN EAST EAST NORTH ; Room 227 "MAZE" out again
+;
+EAST EAST NORTH NORTH ; Room 213 "MAZE"
+JUMP MIST ; Room 212 "MAZE"
+NORTH WEST ; Room 203
+JUMP PIT ; Room 202
+
+DROP CROWN
+
+SCORE ; points=220 (out of 240), condition=255 (out of 254)
+
+QUIET ; save as after_23.txt
+```
+
+## Task 24: Score 
+
+  * POTION       "_d" in Room 8 "MARBLE FLOOR" Dropped earlier 
+  * DIAMNOD      "_n" in Room 67 "GREAT CRYPT" OPEN CRYPT
