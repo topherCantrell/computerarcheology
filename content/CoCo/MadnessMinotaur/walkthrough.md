@@ -376,10 +376,9 @@ QUIET ; save to after_9.txt
 * Score TRUTHRING.
 * Use SPELLBOOK to unlock POWDER. Score SPELLBOOK.
 * Score POWDER.
-
-Score RUBY "_e" in Room 196 "MAZE" (PARCHMENT, FLUTE, ROPE) PLAY FLUTE, CLIMB LEDGE  
-Score OPAL "_g" Room 70 "FOUL SMELLING" (ROPE,DAGGER) TIE HYDRA, STAB HYDRA
-FLEECE       SCORPION (*SKULL) (SCEPTER)
+* Score RUBY "_e" in Room 196 "MAZE" (PARCHMENT, FLUTE, ROPE) PLAY FLUTE, CLIMB LEDGE  
+* Score OPAL "_g" Room 70 "FOUL SMELLING" (ROPE,DAGGER) TIE HYDRA, STAB HYDRA
+* FLEECE       SCORPION (*SKULL) (SCEPTER)
 
 TREASURES:
 
@@ -396,7 +395,7 @@ TREASURES:
   * FLEECE       SCORPION (*SKULL) (SCEPTER)
   
   * SILVER       Dropped by "_u" in Room 8 "MARBLE FLOOR  
-  * GOLD         "_s" in Room 216 "MAZE" LAMP OFF
+  * GOLD         
   * DIAMNOD      "_n" in Room 67 "GREAT CRYPT" OPEN CRYPT
   * TIARA        "_203" in Room 203 "MAZE" LOOK PIT (may take several looks)
   * POTION       "_d" in Room 8 "MARBLE FLOOR" Dropped earlier
@@ -650,4 +649,210 @@ SCORE ; points=150 (out of 240), condition=255 (out of 254)
 QUIET ; save as after_16.txt
 ```
 
-## Task 17:  
+## Task 17: Score RUBY
+
+The RUBY is held by "_e" in Room 196 "MAZE". We have to have the PARCHMENT from Room 90,
+the FLUTE from Room 176 "MAZE", and the ROPE from Room 91.
+
+```
+DOWN ; Room 10 "TABLE AND CHAIR"
+;
+WEST WEST NORTH DOWN ; Room 64 "GREAT PIT"
+EAST SOUTH WEST SOUTH SOUTH SOUTH EAST EAST EAST NORTH ; Room 91 "STONE TILES"
+GET ROPE
+;
+WEST ; Room 90 "TOMB, SKULL"
+GET PARCHMENT
+;
+EAST SOUTH WEST WEST ; Room 97 "TWISTING PASSAGE"
+DOWN SOUTH SOUTH WEST ; Room 176 "MAZE"
+GET FLUTE
+;
+DOWN EAST EAST EAST NORTH NORTH ; Room 227 "MAZE" out again
+EAST EAST EAST EAST NORTH NORTH NORTH NORTH ; Room 199 "MAZE"
+WEST SOUTH WEST NORTH WEST ; Room 196 "MAZE"
+PLAY FLUTE
+CLIMB LEDGE
+GET RUBY
+;
+EAST SOUTH EAST NORTH EAST SOUTH SOUTH WEST WEST ; Room 213 "MAZE"
+DROP FLUTE
+DROP PARCHMENT
+DROP ROPE
+JUMP MIST ; Room 212 "MAZE"
+NORTH WEST ; ROOM 203 "MAZE"
+JUMP PIT
+
+DROP RUBY
+
+SCORE ; points=160 (out of 240), condition=255 (out of 254)
+
+QUIET ; save as after_17.txt
+```
+
+## Task 18: Score OPAL
+
+Now we take on the HYDRA in Room 70 "FOUL SMELLING". For that battle we need the ROPE (just
+dropped in Room 213) and the DAGGER from Room 14 "BED ROOM".
+
+But first we have to refill the LAMP. It has been flickering. We can refill it from the URN
+in Room 64 "GREAT PIT".
+
+```
+DOWN ; Room 10 "TABLE AND CHAIR"
+;
+EAST EAST EAST EAST ; Room 14 "BED ROOM"
+GET DAGGER
+WEST WEST WEST WEST ; Room 10 "TABLE AND CHAIR"
+;
+WEST WEST NORTH DOWN ; Room 64 "GREAT PIT"
+GET URN
+FILL LAMP
+DROP URN
+;
+EAST SOUTH WEST SOUTH SOUTH SOUTH EAST ; Room 97 "TWISTING PASSAGE"
+DROP DAGGER
+;
+DOWN SOUTH DOWN EAST EAST NORTH ; Room 227 "MAZE" out again
+NORTH EAST EAST NORTH ; Room 213
+GET ROPE
+JUMP MIST ; Room 212
+NORTH WEST
+JUMP PIT ;
+;
+
+DOWN ; Room 10 "TABLE AND CHAIR"
+;
+WEST WEST NORTH DOWN ; Room 64 "GREAT PIT"
+EAST SOUTH WEST SOUTH SOUTH SOUTH EAST ; Room 97 "TWISTING PASSAGE"
+GET DAGGER
+EAST EAST NORTH NORTH EAST EAST NORTH NORTH
+
+;
+NORTH EAST EAST NORTH NORTH ; Room 69 "CHILL MIST"
+;
+; TODO might get the lamp blown from us and need to use VETRA
+;
+; The HYDRA is in the room to the EAST. We go in and get pushed back. Then
+; we tie it up (from a distance) and go back in to stab it.
+;
+EAST ; Room 70 "FOUL SMELLING"
+TIE HYDRA
+EAST ; Room 70 "FOUL SMELLING"
+STAB HYDRA
+GET OPAL
+DROP DAGGER
+;
+JUMP DOWN ; Room 140 "NARROW TWISTING"
+EAST SOUTH SOUTH WEST SOUTH ; Room 164 "NARROW PATH
+JUMP PIT ; Room 202 "GREAT FOREST"
+
+DROP OPAL
+
+SCORE ; points=170 (out of 240), condition=255 (out of 254)
+
+QUIET ; save as after_18.txt
+```
+
+## Task 19: Score FLEECE
+
+The SCORPION is carrying the FLEECE. To kill the SCORPION we need the SKULL from Room 92 "WIDE ROOM".
+The SKULL is protected and requires the SCEPTER from the starting room to get.
+
+The save-game viewer shows the SCORPION in Room 14 "BED ROOM", but it might move to a neighboring
+room before we get there.
+
+```
+DOWN ; Room 10 "TABLE AND CHAIRS"
+;
+GET SCEPTER
+;
+WEST WEST NORTH DOWN EAST SOUTH WEST SOUTH SOUTH SOUTH ; Room 96 "MUSTY PASSAGE"
+EAST EAST EAST NORTH NORTH EAST SOUTH ; Room 92 "WIDE ROOM"
+GET SKULL
+; 
+; save game viewer shows the SCORPION on the 1st floor
+;
+NORTH WEST SOUTH SOUTH WEST WEST WEST ; Room 96 "MUSTY PASSAGE"
+NORTH NORTH NORTH EAST NORTH WEST UP ; Room 0 "STONE TOWER"
+;
+SOUTH EAST EAST EAST EAST EAST ; Room 13 "BROKEN TILES"
+KILL SCORPION
+;
+; The FLEECE is thrown to a neighboring room. Search for it or use the save-game viewer.
+;
+WEST ; Room 12 "BROKEN GLASS"
+GET FLEECE
+WEST WEST ; Room 10 "TABLE AND CHAIR" start
+DROP SCEPTER
+DROP SKULL
+;
+WEST WEST NORTH DOWN EAST SOUTH WEST SOUTH SOUTH SOUTH ; Room 96 "MUSTY PASSAGE"
+EAST DOWN SOUTH DOWN EAST EAST NORTH ; Room 227 "MAZE" out again
+EAST EAST NORTH NORTH ; Room 213 "MAZE"
+JUMP MIST ; Room 212 "MAZE"
+NORTH WEST ; Room 203
+JUMP PIT ; Room 202
+
+DROP FLEECE
+
+SCORE ; points=180 (out of 240), condition=255 (out of 254)
+
+QUIET ; save as after_19.txt
+```
+
+## Task 20: Score SILVER
+
+The remaining treasures are easy! We just have to pick them up.
+
+The SILVER was dropped by "_u" in Room 8 early in our game.
+
+```
+DOWN ; Room 10 "TABLE AND CHAIR" start
+;
+WEST WEST ; Room 8 "MARBLE FLOOR"
+GET SILVER
+NORTH DOWN EAST SOUTH WEST SOUTH SOUTH SOUTH EAST ; Room 97 "TWISTING PASSAGES"
+DOWN SOUTH DOWN EAST EAST NORTH ; Room 227 "MAZE" out again
+;
+EAST EAST NORTH NORTH ; Room 213 "MAZE"
+JUMP MIST ; Room 212 "MAZE"
+NORTH WEST ; Room 203
+JUMP PIT ; Room 202
+
+DROP SILVER
+
+SCORE ; points=190 (out of 240), condition=255 (out of 254)
+
+QUIET ; save as after_20.txt
+```
+
+## Task 21: Score GOLD
+
+The GOLD is held by "_s" in Room 152. All we have to do is turn the lamp off in that room.
+
+```
+DOWN ; Room 10 "TABLE AND CHAIR" start
+;
+WEST WEST NORTH DOWN EAST SOUTH WEST SOUTH SOUTH SOUTH EAST DOWN ; Room 161 "LARGE STONE"
+WEST NORTH ; Room 152 "GREAT TUNNEL"
+LAMP OFF
+LOOK
+GET GOLD
+LAMP ON
+;
+SOUTH EAST SOUTH DOWN EAST EAST NORTH ; Room 227 "MAZE" out again
+;
+EAST EAST NORTH NORTH ; Room 213 "MAZE"
+JUMP MIST ; Room 212 "MAZE"
+NORTH WEST ; Room 203
+JUMP PIT ; Room 202
+
+DROP GOLD
+
+SCORE ; points=200 (out of 240), condition=255 (out of 254)
+
+QUIET ; save as after_21.txt
+```
+
+## Task 22: Score ??
