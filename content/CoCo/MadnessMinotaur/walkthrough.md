@@ -912,5 +912,59 @@ QUIET ; save as after_23.txt
 
 ## Task 24: Score 
 
-  * POTION       "_d" in Room 8 "MARBLE FLOOR" Dropped earlier 
-  * DIAMNOD      "_n" in Room 67 "GREAT CRYPT" OPEN CRYPT
+  * POTION       "_d" in Room 216 "MAZE" Pile of glowing rocks
+  
+The POTION is in the "_d" PILE OF GLOWING ROCKS in Room 216. You have to drop everything to open the crypt.
+
+```
+DOWN ; Room 10 "TABLE AND CHAIR"
+;
+WEST WEST NORTH DOWN ; Room 64 "GREAT PIT"
+EAST SOUTH EAST EAST NORTH ; Room 67 "GREAT CRYPT"
+DROP LAMP
+OPEN CRYPT
+GET LAMP
+LAMP ON
+GET DIAMOND
+;
+SOUTH WEST WEST WEST SOUTH SOUTH SOUTH ; Room 96 "MUSTY PASSAGE"
+EAST DOWN SOUTH DOWN EAST EAST NORTH ; Room 227 "MAZE" out again
+;
+EAST EAST NORTH NORTH ; Room 213 "MAZE"
+JUMP MIST ; Room 212 "MAZE"
+NORTH WEST ; Room 203
+JUMP PIT ; Room 202
+
+DROP DIAMOND
+
+SCORE ; points=230 (out of 240), condition=255 (out of 254)
+
+QUIET ; save as after_24.txt
+```
+
+## Task 25: Score POTION
+
+This is it! The last treasure! The "_d" PILE OF ROCKS holds the POTION in Room 216 "MAZE".
+
+```
+JUMP DOWN ; Room 162 "STONE CROSS"
+SOUTH DOWN EAST NORTH; Room 227 "MAZE" out again
+NORTH EAST EAST NORTH ; Room 213 "MAZE"
+JUMP MIST ; Room 212 "MAZE"
+WEST WEST SOUTH SOUTH WEST NORTH WEST ; Room 216 "MAZE"
+;
+OKKAN ; This gets the treasure from the rocks
+;
+GET POTION
+EAST SOUTH EAST NORTH NORTH EAST EAST NORTH WEST ; Room 203 "MAZE"
+JUMP PIT
+
+SCORE ; points=235 (out of 240), condition=244 (out of 254) the spell drained us a bit
+
+QUIET ; save as after_25.txt (just before winning)
+
+DROP POTION
+
+; CONGRATULATIONS!!! YOU WIN!
+
+```
