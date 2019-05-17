@@ -287,7 +287,7 @@ CROM is in Room 237 "MAZE". We need the PENDANT from Room 146 "NARROW TUNNEL", w
 from where we are.
 
 ```
-EAST EAST NORTH ; Room 146 "NARROW TUNNEL" (PENDANT)
+EAST EAST NORTH         ; Room 146 "NARROW TUNNEL" (PENDANT)
 GET PENDANT
 ;
 SOUTH SOUTH SOUTH DOWN  ; Room 234 "MAZE"
@@ -356,27 +356,27 @@ QUIET ; save to "after_8.txt"
 
 Now for the 16 treasures worth 10 points each. We need to deposit these in the treasure room, but we
 need to kill the SPRITE first. Otherwise the SPRITE might get in the treasure room and move things
-around.
+to other rooms.
 
 All we need to kill the sprite is the FOOD and NERGAL. The save-game-viewer for after_8 shows the
-SPRITE is in Room 28: "DARK CHAMBER". But it might move to a nearby room before I get to it.
+SPRITE is in Room 28: "DARK CHAMBER". But it might move to a nearby room before we get to it.
 
 ```
-NORTH DOWN NORTH ; Room 227 "MAZE" out again
+NORTH DOWN NORTH      ; Room 227 "MAZE" out again
 EAST EAST NORTH NORTH ; Room 213 "MAZE"
-JUMP MIST ; Room 212 "MAZE"
-NORTH WEST ; Room 203 "MAZE"
-JUMP PIT ; Room 202 "GREAT FOREST" treasure room
+JUMP MIST             ; Room 212 "MAZE"
+NORTH WEST            ; Room 203 "MAZE"
+JUMP PIT              ; Room 202 "GREAT FOREST" treasure room
 ;
-DOWN ; Room 10 "TABLE AND CHAIR" start
+DOWN                  ; Room 10 "TABLE AND CHAIR" start
 ;
 GET FOOD
-EAST EAST SOUTH ; Room 28 "DARK CHAMBER"
+EAST EAST SOUTH       ; Room 28 "DARK CHAMBER"
 KILL SPRITE
 
 ; The SPRITE throws the TABLET to a nearby room. We don't need it.
 
-QUIET ; save to after_9.txt
+QUIET ; save to "after_9.txt"
 ```
 
 ## Task 10: Score POWERRING
