@@ -1,4 +1,4 @@
-![Madness and the Minotaur](Madness.jpg)
+![Madness and the Minotaur](../Madness.jpg)
 
 # Walk-Through of my Game 
 
