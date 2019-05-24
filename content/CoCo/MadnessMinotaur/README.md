@@ -10,27 +10,11 @@
 >>>   +BinaryDataMadness.js<br>
 >>>   +flute.wav<br>
 >>>   +inst.cas<br>
->>>   +first.cas<br>
->>>   +s_one.cas<br>
->>>   +s_two.cas<br>
->>>   +s_three.cas<br>
->>>   +s_four.cas<br>
->>>   +s_five.cas<br>
->>>   +s_six.cas<br>
->>>   +s_seven.cas<br>
->>>   +first.txt<br>
->>>   +s_one.txt<br>
->>>   +s_two.txt<br>
->>>   +s_three.txt<br>
->>>   +s_four.txt<br>
->>>   +s_five.txt<br>
->>>   +s_six.txt<br>
->>>   +s_seven.txt<br>
+>>>   walkthrough:Walk Through<br>
 >>>   RAMUse.md<br>
 >>>   Code.md<br>
 >>>   ----<br>
 >>>   SaveGameViewer.md<br>
->>>   walkthrough.md:Walk Through<br>
 >>>   ----<br>
 >>>   Journal.md<br>
 
@@ -87,8 +71,8 @@ Before the ")" command you must paste the desired saved-data back into the text 
 
 # Walk-Through
 
-Follow along with [My Game](walkthrough.md) step by step. Open the emulator and save-game viewer and follow along as I win the game.
-I provide my save-files after every major task. You can jump in to my journey at any point.
+Follow along with [My Game](walkthrough) step by step. Open the emulator and save-game viewer and follow along as I win the game.
+You have my save-files after every major task. You can jump in to my journey at any point.
 
 # Code Links
 

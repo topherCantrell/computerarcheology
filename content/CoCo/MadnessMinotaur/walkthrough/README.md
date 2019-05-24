@@ -1,5 +1,68 @@
 ![Madness and the Minotaur](../Madness.jpg)
 
+>>> deploy:<br>
+>>>   after_start.txt<br>
+>>>   after_start.cas<br>
+>>>   after_1.txt<br>
+>>>   after_1.cas<br>
+>>>   after_2.txt<br>
+>>>   after_2.cas<br>
+>>>   after_3.txt<br>
+>>>   after_3.cas<br>
+>>>   after_4.txt<br>
+>>>   after_4.cas<br>
+>>>   after_5.txt<br>
+>>>   after_5.cas<br>
+>>>   after_6.txt<br>
+>>>   after_6.cas<br>
+>>>   after_7.txt<br>
+>>>   after_7.cas<br>
+>>>   after_8.txt<br>
+>>>   after_8.cas<br>
+>>>   after_9.txt<br>
+>>>   after_9.cas<br>
+>>>   after_10.txt<br>
+>>>   after_10.cas<br>
+>>>   after_11.txt<br>
+>>>   after_11.cas<br>
+>>>   after_12.txt<br>
+>>>   after_12.cas<br>
+>>>   after_13.txt<br>
+>>>   after_13.cas<br>
+>>>   after_14.txt<br>
+>>>   after_14.cas<br>
+>>>   after_15.txt<br>
+>>>   after_15.cas<br>
+>>>   after_16.txt<br>
+>>>   after_16.cas<br>
+>>>   after_17.txt<br>
+>>>   after_17.cas<br>
+>>>   after_18.txt<br>
+>>>   after_18.cas<br>
+>>>   after_19.txt<br>
+>>>   after_19.cas<br>
+>>>   after_20.txt<br>
+>>>   after_20.cas<br>
+>>>   after_21.txt<br>
+>>>   after_21.cas<br>
+>>>   after_22.txt<br>
+>>>   after_22.cas<br>
+>>>   after_23.txt<br>
+>>>   after_23.cas<br>
+>>>   after_24.txt<br>
+>>>   after_24.cas<br>
+>>>   after_25.txt<br>
+>>>   after_25.cas<br>
+
+# Save Files
+
+The ".txt" files are for the emulator on this site. Open the files, copy the text, and paste it into the
+emulator's virtual tape area. You can also paste this text into the save-game-viewer's input area.
+
+The ".cas" files are for the online mocha emulator at [http://www.haplessgenius.com/mocha/](http://www.haplessgenius.com/mocha/).
+Mount the "Minotaur" cassette in the emulator, CLOADM, and EXEC. Download the ".cas" file to your computer. In the emulator,
+press "Local File" and pick the ".cas" file. Now do QUIET in the game and ")" to load.
+
 # Walk-Through of my Game 
 
 This is a walk-through of my game from start to finish. I broke the game up into 25 tasks,
@@ -42,9 +105,16 @@ There are 8 spells to learn (10 points each) and 16 treasures to drop in the tre
 My plan is to learn the spells first, then kill the SPRITE so it wouldn't relocate my treasures, and then 
 score the treasures one by one.
 
-## Task 1: Learn VETAR
+## Start of Game Save
 
-SAVE GAME: after_start.txt
+I save immediately after I started the game.
+
+SAVE GAME: 
+  * [after_start.txt](after_start.txt) (Emulator here) 
+  * [after_start.cas](after_start.cas) (JS Mocha)
+  * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_start.txt)
+
+## Task 1: Learn VETAR
 
 We have to have the LAMP to see on lower levels. The LAMP is in the Room 1 "EMPTY ROOM" along
 with "_o", which pushes us back at random if we don't have CROM. Every time we
@@ -107,6 +177,11 @@ SCORE ; points=10 (out of 240), condition=251 (out of 255)
 QUIET ; Saved as "after_1.txt"
 ```
 
+SAVE GAME: 
+  * [after_1.txt](after_start.txt) (Emulator here) 
+  * [after_1.cas](after_start.cas) (JS Mocha)
+  * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_1.txt)
+
 ## Task 2: Learn MITRA
 
 Getting pushed will drain your health. So will the poison fog in Room 88 "MUSTY, CORRIDOR". So will a creature
@@ -145,6 +220,11 @@ SCORE ; points=20 (out of 240), condition=251 (out of 255)
 QUIET ; save as "after_1.cas"
 ```
 
+SAVE GAME: 
+  * [after_2.txt](after_start.txt) (Emulator here) 
+  * [after_2.cas](after_start.cas) (JS Mocha)
+  * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_2.txt)
+
 ## Task 3: Learn OKKAN
 
 We just passed the OKKAN spell in Room 96 "MUSTY PASSAGE". We need the TALISMAN from
@@ -176,6 +256,11 @@ SCORE ; points=30 (out of 240), condition=251 (out of 255)
 QUIET ; save as "after_3.txt"
 ```
 
+SAVE GAME: 
+  * [after_3.txt](after_start.txt) (Emulator here) 
+  * [after_3.cas](after_start.cas) (JS Mocha)
+  * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_3.txt)
+  
 ## Task 4: Learn AKHIROM
 
 Back around the loop again to get the ROPE from the 4th floor.
@@ -204,6 +289,11 @@ SCORE ; points=40 (out of 240), condition=251 (out of 255)
 
 QUIET ; save as "after_4.txt"
 ```
+
+SAVE GAME: 
+  * [after_4.txt](after_start.txt) (Emulator here) 
+  * [after_4.cas](after_start.cas) (JS Mocha)
+  * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_4.txt)
 
 ## Task 5: Learn NERGAL
 
@@ -257,6 +347,11 @@ SCORE ; points=50 (out of 240), condition=255 (out of 255)
 QUIET ; save as "after_5.txt"
 ```
 
+SAVE GAME: 
+  * [after_5.txt](after_start.txt) (Emulator here) 
+  * [after_5.cas](after_start.cas) (JS Mocha)
+  * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_5.txt)
+  
 ## Task 6: Learn BELROG
 
 The BELROG spell requires us to have the VIAL from Room 90 "TOMB, SKULL". The VIAL is protected. We must have the
@@ -281,6 +376,11 @@ SCORE ; points=60 (out of 240), condition=255 (out of 255)
 QUIET ; save as "after_6.txt"
 ```
 
+SAVE GAME: 
+  * [after_6.txt](after_start.txt) (Emulator here) 
+  * [after_6.cas](after_start.cas) (JS Mocha)
+  * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_6.txt)
+  
 ## Task 7: Learn CROM
 
 CROM is in Room 237 "MAZE". We need the PENDANT from Room 146 "NARROW TUNNEL", which is just around the corner
@@ -300,6 +400,11 @@ SCORE ; points=70 (out of 240), condition=255 (out of 255)
 QUIET ; save as "after_7.txt"
 ```
 
+SAVE GAME: 
+  * [after_7.txt](after_start.txt) (Emulator here) 
+  * [after_7.cas](after_start.cas) (JS Mocha)
+  * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_7.txt)
+  
 ## Task 8: Learn ISHTAR
 
 The final spell is in Room 179 "MAZE". We need the *SPELLBOOK from Room 35 "SERVANT CHAMBER" on the 1st floor. The *SPELLBOOK
@@ -352,6 +457,11 @@ SCORE ; points=80 (out of 240), condition=255 (out of 255)
 QUIET ; save to "after_8.txt"
 ```
 
+SAVE GAME: 
+  * [after_8.txt](after_start.txt) (Emulator here) 
+  * [after_8.cas](after_start.cas) (JS Mocha)
+  * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_8.txt)
+  
 ## Task 9: Kill the SPRITE
 
 Now for the 16 treasures worth 10 points each. We need to deposit these in the treasure room, but we
@@ -379,43 +489,35 @@ KILL SPRITE
 QUIET ; save to "after_9.txt"
 ```
 
-## Task 10: Score POWERRING
-
-* Use POWERRING to unlock SAPPHIRE, LIGHTRING. Score POWERRING.
-* Use SAPPHIRE to unlock AMULET. SCORE SAPPHIRE.
-* SCORE AMULET. 
-* Use LIGHTRING to unlock TRUTHRING. Score LIGHTRING.
-* Score TRUTHRING.
-* Use SPELLBOOK to unlock POWDER. Score SPELLBOOK.
-* Score POWDER.
-* Score RUBY "_e" in Room 196 "MAZE" (PARCHMENT, FLUTE, ROPE) PLAY FLUTE, CLIMB LEDGE  
-* Score OPAL "_g" Room 70 "FOUL SMELLING" (ROPE,DAGGER) TIE HYDRA, STAB HYDRA
-* FLEECE       SCORPION (*SKULL) (SCEPTER)
-
-TREASURES:
-
-  * POWERRING    Dropped earlier in Room 10 "TABLE AND CHAIR" start  
-  * SAPPHIRE     Room 102 "ANCIENT KING" (POWERRING) OPEN CRYPT
-  * AMULET       "_t" in Room 131 "STONE CORRIDOR" (SAPPHIRE)    
-  * *LIGHTRING   Room 162 "STONE CROSS" (POWERRING, TALISMAN)
-  * *TRUTHRING   Room 133 "DEEP PIT" (LIGHTRING, AX)
-  * SPELLBOOK    Dropped earlier in Room 179 "MAZE"
-  * POWDER       SATYR (SPELLBOOK)  
-
-  * RUBY         "_e" in Room 196 "MAZE" (PARCHMENT, FLUTE, ROPE) PLAY FLUTE, CLIMB LEDGE  
-  * OPAL         "_g" Room 70 "FOUL SMELLING" (ROPE,DAGGER) TIE HYDRA, STAB HYDRA
-  * FLEECE       SCORPION (*SKULL) (SCEPTER)
+SAVE GAME: 
+  * [after_9.txt](after_start.txt) (Emulator here) 
+  * [after_9.cas](after_start.cas) (JS Mocha)
+  * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_9.txt)
   
-  * SILVER       Dropped by "_u" in Room 8 "MARBLE FLOOR  
-  * GOLD         
-  * DIAMNOD      "_n" in Room 67 "GREAT CRYPT" OPEN CRYPT
-  * TIARA        "_203" in Room 203 "MAZE" LOOK PIT (may take several looks)
-  * POTION       "_d" in Room 8 "MARBLE FLOOR" Dropped earlier
-  * CROWN        "_33" in Room 33 "DARK, TOWER" Walk in with lamp on  
+## Task Order
 
-TODO blurb in the general on this.
-Unfortunately, we can't carry it UP into the treasure room because of action C (by itself, the
-SILVER is still too heavy. We have to go back through the maze and JUMP in.
+There is an order to the objects just as there is an order to the spells. Some objects may be
+needed to unlock others. I used the protections table at the end of the save-game viewer
+to create this ordering:
+
+  * 10. Use POWERRING to unlock SAPPHIRE, LIGHTRING. Score POWERRING.
+  * 11. Use SAPPHIRE to unlock AMULET. Score SAPPHIRE.
+  * 12. Score AMULET. 
+  * 13. Use LIGHTRING to unlock TRUTHRING. Score LIGHTRING.
+  * 14. Score TRUTHRING.
+  * 15. Use SPELLBOOK to unlock POWDER. Score SPELLBOOK.
+  * 16. Score POWDER. (KILL SATYR)
+  * 17. Score RUBY. (PLAY FLUTE and CLIMB LEDGE)
+  * 18. Score OPAL. (STAB HYDRA)
+  * 19. Score FLEECE. (KILL SCORPION)
+  * 20. Score SILVER  
+  * 21. Score GOLD (LAMP OFF)        
+  * 22. Score DIAMNOD (OPEN CRYPT)
+  * 23. Score TIARA (LOOK PIT)
+  * 24. Score POTION
+  * 25. Score CROWN 
+
+## Task 10: Score POWERRING
 
 We left the POWERRING in the start room. We need it to unlock the SPPHIRE and the LIGHTRING. We'll
 unlock those on the way to the treasure room.
@@ -432,10 +534,10 @@ OPEN CRYPT
 ;
 DOWN
 WEST SOUTH DOWN WEST WEST NORTH ; 227 "MAZE" out again
-EAST EAST NORTH NORTH ; Room 213 "MAZE"
-JUMP MIST ; Room 212 "MAZE"
-NORTH WEST ; Room 203 "MAZE"
-JUMP PIT ; Room 202 "GREAT FOREST" treasure room
+EAST EAST NORTH NORTH           ; Room 213 "MAZE"
+JUMP MIST                       ; Room 212 "MAZE"
+NORTH WEST                      ; Room 203 "MAZE"
+JUMP PIT                        ; Room 202 "GREAT FOREST" treasure room
 ;
 DOWN ; Room 10 "TABLE AND CHAIR" start
 ;
@@ -449,9 +551,9 @@ DROP TALISMAN
 SOUTH EAST DOWN NORTH 
 ; 227 "MAZE" out again
 EAST EAST NORTH NORTH ; Room 213 "MAZE"
-JUMP MIST ; Room 212 "MAZE"
-NORTH WEST ; Room 203 "MAZE"
-JUMP PIT ; Room 202 "GREAT FOREST" treasure room
+JUMP MIST             ; Room 212 "MAZE"
+NORTH WEST            ; Room 203 "MAZE"
+JUMP PIT              ; Room 202 "GREAT FOREST" treasure room
 ;
 DROP POWERRING
 
@@ -460,6 +562,11 @@ SCORE ; points=90 (out of 240), condition=255 (out of 255)
 QUIET ; after_10.txt
 ```
 
+SAVE GAME: 
+  * [after_10.txt](after_start.txt) (Emulator here) 
+  * [after_10.cas](after_start.cas) (JS Mocha)
+  * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_10.txt)
+  
 ## Task 11: Score SAPPHIRE
 
 The packrat "_t" Room 131 "STONE CORRIDOR" has the AMULET. If we are carrying the SAPPHIRE then "_t"
@@ -499,6 +606,12 @@ SCORE ; points=100 (out of 240), condition=255 (out of 255)
 
 QUIET ; save as after_11.txt
 ```
+
+SAVE GAME: 
+  * [after_11.txt](after_start.txt) (Emulator here) 
+  * [after_11.cas](after_start.cas) (JS Mocha)
+  * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_11.txt)
+  
 ## Task 12: Score AMULET
 
 Back around the loop for the AMULET we dropped.
@@ -523,6 +636,11 @@ SCORE ; points=110 (out of 240), condition=255 (out of 255)
 QUIET ; save as after_12.txt 
 ```
 
+SAVE GAME: 
+  * [after_12.txt](after_start.txt) (Emulator here) 
+  * [after_12.cas](after_start.cas) (JS Mocha)
+  * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_12.txt)
+  
 ## Task 13 : Score LIGHTRING
 
 We need the LIGHTRING to unlock the TRUTHRING. We already unlocked the LIGHTRING. We also need
@@ -587,7 +705,13 @@ SCORE ; points=120 (out of 240), condition=255 (out of 255)
 ; Halfway done!
 
 QUIET ; save as after_13.txt
+```
 
+SAVE GAME: 
+  * [after_13.txt](after_start.txt) (Emulator here) 
+  * [after_13.cas](after_start.cas) (JS Mocha)
+  * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_13.txt)
+  
 ## Task 14: Score TRUTHRING
 
 Loop back around and get the TRUTHRING.
@@ -608,6 +732,11 @@ SCORE ; points=130 (out of 240), condition=255 (out of 255)
 
 QUIET ; save as after_14.txt
 ```
+
+SAVE GAME: 
+  * [after_14.txt](after_start.txt) (Emulator here) 
+  * [after_14.cas](after_start.cas) (JS Mocha)
+  * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_14.txt)
 
 ## Task 15: Score SPELLBOOK
 
@@ -636,6 +765,11 @@ SCORE ; points=140 (out of 240), condition=255 (out of 254)
 QUIET ; save as after_15.txt
 ```
 
+SAVE GAME: 
+  * [after_15.txt](after_start.txt) (Emulator here) 
+  * [after_15.cas](after_start.cas) (JS Mocha)
+  * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_15.txt)
+  
 ## Task 16: Score the POWDER
 
 The SATYR tosses the POWDER to a nearby room. The save-game viewer shows it
@@ -661,6 +795,11 @@ SCORE ; points=150 (out of 240), condition=255 (out of 254)
 QUIET ; save as after_16.txt
 ```
 
+SAVE GAME: 
+  * [after_16.txt](after_start.txt) (Emulator here) 
+  * [after_16.cas](after_start.cas) (JS Mocha)
+  * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_16.txt)
+  
 ## Task 17: Score RUBY
 
 The RUBY is held by "_e" in Room 196 "MAZE". We have to have the PARCHMENT from Room 90,
@@ -701,6 +840,11 @@ SCORE ; points=160 (out of 240), condition=255 (out of 254)
 
 QUIET ; save as after_17.txt
 ```
+
+SAVE GAME: 
+  * [after_17.txt](after_start.txt) (Emulator here) 
+  * [after_17.cas](after_start.cas) (JS Mocha)
+  * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_17.txt)
 
 ## Task 18: Score OPAL
 
@@ -766,6 +910,11 @@ SCORE ; points=170 (out of 240), condition=255 (out of 254)
 QUIET ; save as after_18.txt
 ```
 
+SAVE GAME: 
+  * [after_18.txt](after_start.txt) (Emulator here) 
+  * [after_18.cas](after_start.cas) (JS Mocha)
+  * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_18.txt)
+
 ## Task 19: Score FLEECE
 
 The SCORPION is carrying the FLEECE. To kill the SCORPION we need the SKULL from Room 92 "WIDE ROOM".
@@ -813,6 +962,11 @@ SCORE ; points=180 (out of 240), condition=255 (out of 254)
 QUIET ; save as after_19.txt
 ```
 
+SAVE GAME: 
+  * [after_19.txt](after_start.txt) (Emulator here) 
+  * [after_19.cas](after_start.cas) (JS Mocha)
+  * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_19.txt)
+
 ## Task 20: Score SILVER
 
 The remaining treasures are easy! We just have to pick them up.
@@ -838,6 +992,11 @@ SCORE ; points=190 (out of 240), condition=255 (out of 254)
 
 QUIET ; save as after_20.txt
 ```
+
+SAVE GAME: 
+  * [after_20.txt](after_start.txt) (Emulator here) 
+  * [after_20.cas](after_start.cas) (JS Mocha)
+  * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_20.txt)
 
 ## Task 21: Score GOLD
 
@@ -867,12 +1026,15 @@ SCORE ; points=200 (out of 240), condition=255 (out of 254)
 QUIET ; save as after_21.txt
 ```
 
+SAVE GAME: 
+  * [after_21.txt](after_start.txt) (Emulator here) 
+  * [after_21.cas](after_start.cas) (JS Mocha)
+  * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_21.txt)
+  
 ## Task 22: Score TIARA
 
 The TIARA is held by "_203" in Room 201 "MAZE". We just have to look in the pit -- maybe
 several times.
-
-TODO Maybe _203 should be _201? The map shows _203 in _201 and _203. Error.
 
 ```
 JUMP DOWN ; Room 162 "STONE CROSS"
@@ -893,6 +1055,11 @@ SCORE ; points=210 (out of 240), condition=255 (out of 254)
 
 QUIET ; save as after_22.txt
 ```
+
+SAVE GAME: 
+  * [after_22.txt](after_start.txt) (Emulator here) 
+  * [after_22.cas](after_start.cas) (JS Mocha)
+  * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_22.txt)
 
 ## Task 23: Score CROWN
 
@@ -922,9 +1089,12 @@ SCORE ; points=220 (out of 240), condition=255 (out of 254)
 QUIET ; save as after_23.txt
 ```
 
+SAVE GAME: 
+  * [after_23.txt](after_start.txt) (Emulator here) 
+  * [after_23.cas](after_start.cas) (JS Mocha)
+  * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_23.txt)
+  
 ## Task 24: Score 
-
-  * POTION       "_d" in Room 216 "MAZE" Pile of glowing rocks
   
 The POTION is in the "_d" PILE OF GLOWING ROCKS in Room 216. You have to drop everything to open the crypt.
 
@@ -954,6 +1124,11 @@ SCORE ; points=230 (out of 240), condition=255 (out of 254)
 QUIET ; save as after_24.txt
 ```
 
+SAVE GAME: 
+  * [after_24.txt](after_start.txt) (Emulator here) 
+  * [after_24.cas](after_start.cas) (JS Mocha)
+  * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_24.txt)
+
 ## Task 25: Score POTION
 
 This is it! The last treasure! The "_d" PILE OF ROCKS holds the POTION in Room 216 "MAZE".
@@ -976,7 +1151,15 @@ SCORE ; points=235 (out of 240), condition=244 (out of 254) the spell drained us
 QUIET ; save as after_25.txt (just before winning)
 
 DROP POTION
+```
 
-; CONGRATULATIONS!!! YOU WIN!
+SAVE GAME: 
+  * [after_25.txt](after_start.txt) (Emulator here) 
+  * [after_25.cas](after_start.cas) (JS Mocha)
+  * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_25.txt)
 
+And the reward:
+
+```
+CONGRATULATIONS!!! YOU WIN!
 ```

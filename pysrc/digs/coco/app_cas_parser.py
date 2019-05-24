@@ -1,15 +1,5 @@
 import base64
 
-#with open('../../../content/coco/madnessminotaur/first.cas', 'rb') as f:
-#with open('../../../content/coco/madnessminotaur/s_one.cas', 'rb') as f:
-#with open('../../../content/coco/madnessminotaur/s_two.cas', 'rb') as f:
-#with open('../../../content/coco/madnessminotaur/s_three.cas', 'rb') as f:
-#with open('../../../content/coco/madnessminotaur/s_four.cas', 'rb') as f:
-#with open('../../../content/coco/madnessminotaur/s_five.cas', 'rb') as f:
-#with open('../../../content/coco/madnessminotaur/s_six.cas', 'rb') as f:
-with open('../../../content/coco/madnessminotaur/s_seven.cas', 'rb') as f:
-    data = f.read()
-
 
 def add_leader(data):
     for i in range(149):
@@ -27,7 +17,7 @@ def add_filename_block(data, name, id, is_binary, continuous, exec_addr, load_ad
         raise Exception('Filename must be 8 characters')
     data = data + name.encode()
     data = data + bytes([id])
-    if is_binary:        
+    if is_binary:
         data = data + b'\x00'
     else:
         data = data + b'\xFF'
@@ -122,49 +112,91 @@ def read_block(data, pos):
     return pos, ret
 
 
-pos = 0
+def read_save_game_cas():
+    pos = 0
 
-# Filename
-pos, block = read_block(data, pos)
-print(block)
-
-# Data
-bin = b''
-while True:
+    # Filename
     pos, block = read_block(data, pos)
-    if block['type'] == 0xFF:
-        break
-    bin = bin + block['data']
+    print(block)
 
-print(len(bin))
+    # Data
+    bin = b''
+    while True:
+        pos, block = read_block(data, pos)
+        if block['type'] == 0xFF:
+            break
+        bin = bin + block['data']
 
-# Filename (second file)
-pos, block = read_block(data, pos)
-print(block)
+    print(len(bin))
 
-# Data (second part)
-while True:
+    # Filename (second file)
     pos, block = read_block(data, pos)
-    if block['type'] == 0xFF:
-        break
-    bin = bin + block['data']
+    print(block)
 
-print(base64.b64encode(bin).decode())
+    # Data (second part)
+    while True:
+        pos, block = read_block(data, pos)
+        if block['type'] == 0xFF:
+            break
+        bin = bin + block['data']
 
-# Written as 2 files
-# TODO what is the byte after the id?
-b = add_leader(b'')
-b = add_filename_block(b, '        ', 2, True, True, 0x673B, 0x0240)
-b = add_leader(b)
-b = add_data(b, bin[0:960])
-b = add_eof_block(b)
-
-b = add_leader(b)
-b = add_filename_block(b, '        ', 2, True, True, 0x673B, 0x3BC1)
-b = add_leader(b)
-b = add_data(b, bin[960:])
-b = add_eof_block(b)
+    return base64.b64encode(bin).decode()
 
 
-with open('test.cas', 'wb') as f:
-    f.write(b)
+def write_save_game_cas(name, bin):
+    # Written as 2 files
+    # TODO what is the byte after the id?
+    b = add_leader(b'')
+    b = add_filename_block(b, '        ', 2, True, True, 0x673B, 0x0240)
+    b = add_leader(b)
+    b = add_data(b, bin[0:960])
+    b = add_eof_block(b)
+
+    b = add_leader(b)
+    b = add_filename_block(b, '        ', 2, True, True, 0x673B, 0x3BC1)
+    b = add_leader(b)
+    b = add_data(b, bin[960:])
+    b = add_eof_block(b)
+    with open(name, 'wb') as f:
+        f.write(b)
+
+
+def read_save_game_txt(name):
+    with open(name, 'r') as f:
+        data = f.read()
+    return base64.b64decode(data)
+
+
+def convert(name):
+    data = read_save_game_txt(
+        '../../../content/coco/madnessminotaur/walkthrough/after_' + name + '.txt')
+    write_save_game_cas(
+        '../../../content/coco/madnessminotaur/walkthrough/after_' + name + '.cas', data)
+
+
+convert('start')
+convert('1')
+convert('2')
+convert('3')
+convert('4')
+convert('5')
+convert('6')
+convert('7')
+convert('8')
+convert('9')
+convert('10')
+convert('11')
+convert('12')
+convert('13')
+convert('14')
+convert('15')
+convert('16')
+convert('17')
+convert('18')
+convert('19')
+convert('20')
+convert('21')
+convert('22')
+convert('23')
+convert('24')
+convert('25')
