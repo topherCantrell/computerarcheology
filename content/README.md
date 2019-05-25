@@ -8,7 +8,17 @@
 >>>    +css<br>
 >>>    +js<br>
 >>>    +img<br>
+>>>    *Contact<br>
+>>>    Amiga<br>
+>>>    Arcade<br>
+>>>    Atari2600<br>
 >>>    CoCo<br>
+>>>    NES<br>
+>>>    Gameboy<br>
+>>>    TRS80<br>
+>>>    Virus<br>
+>>>    ----<br>
+>>>    Tools<br>
 
 This web site is about digging up old, forgotten computer systems and cracking open the code that ran on them. Think 
 of each program as a different "dig site". I am a nerdy Indiana Jones. My goal is to find the original programmer's spirit, 
