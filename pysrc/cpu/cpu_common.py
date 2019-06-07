@@ -112,6 +112,7 @@ class CPU:
         ret = []
         if len(decode) == 2:
             if fill > 255:
+                print(address)
                 raise Exception('Bigger than a byte: {:04X}'.format(fill))
             ret.append(fill)
         else:

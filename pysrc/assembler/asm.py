@@ -19,10 +19,10 @@ class Assembler:
         self.cpu = None
 
     def load_lines(self, filename):
-        
+
         abs = os.path.abspath(filename)
         basep = os.path.dirname(abs)
-        
+
         with open(filename, 'r') as f:
             raw_lines = f.readlines()
 
@@ -34,7 +34,7 @@ class Assembler:
             if n.startswith('.include'):
                 # TODO error checking/reporting
                 n = n[8:].strip()
-                n = os.path.join(basep,n)
+                n = os.path.join(basep, n)
                 ret = ret + self.load_lines(n)
                 continue
             ret.append({
@@ -58,41 +58,45 @@ class Assembler:
         return ret
 
     def process_directive_data(self, line, pass_number):
-        
+
         line['data'] = []
-        
+
         cur_term = ''
         pos = 1
         in_string = False
-                        
+
         for c in line['text'][1:]:
             if in_string:
-                if c=='"':
+                if c == '"':
                     in_string = False
                     for t in cur_term:
-                        line['data'].append(ord(t))                                    
+                        line['data'].append(ord(t))
                     cur_term = ''
                 else:
                     cur_term = cur_term + c
             else:
-                if c=='"':
+                if c == '"':
                     in_string = True
                     cur_term = ''
-                elif c==',':
+                elif c == ',':
                     cur_term = cur_term.strip()
                     if cur_term:
                         line['data'].append(self.parse_numeric(cur_term))
                     cur_term = ''
                 else:
                     cur_term = cur_term + c
-                    
+
         if in_string:
-            raise ASMException('Missing closing quotes',line)
-        
+            raise ASMException('Missing closing quotes', line)
+
         cur_term = cur_term.strip()
         if cur_term:
-            line['data'].append(self.parse_numeric(cur_term))
-        
+            if pass_number == 0:
+                # Let all the addresses settle
+                line['data'].append(0)
+            else:
+                line['data'].append(self.parse_numeric(cur_term))
+
         """
         n = line['text'][1:].split(',')
         if pass_number == 0:
@@ -102,15 +106,14 @@ class Assembler:
             for v in n:
                 line['data'].append(self.parse_numeric(v))
         """
-        
 
     def parse_numeric(self, s):
         z = {**self.labels, **self.defines}
         v = eval(s, None, z)
         return v
 
-    def write_listing(self,fname):
-        with open(fname,'w') as f:
+    def write_listing(self, fname):
+        with open(fname, 'w') as f:
             f.write('#### Labels\n')
             keys = self.labels.keys()
             keys = sorted(keys)
@@ -127,7 +130,7 @@ class Assembler:
                 else:
                     f.write('{:16} = 0x{:04X}\n'.format(define, v))
             f.write('\n')
-    
+
             for line in self.lines:
                 addr = ''
                 if 'address' in line:
@@ -149,7 +152,7 @@ class Assembler:
                     f.write(bytearray(line['data']))
 
     def process_define(self, line, pass_number):
-        
+
         n = line['text']
         i = n.index('=')
         v = n[i + 1:].strip()
@@ -163,9 +166,9 @@ class Assembler:
             self.defines[n] = v
 
     def process_config_define(self, key, value):
-        if key == '_CPU':         
+        if key == '_CPU':
             lib = importlib.import_module('cpu.cpu_' + value)
-            self.cpu = lib.get_cpu()            
+            self.cpu = lib.get_cpu()
         self.defines[key] = value
 
     def assemble(self):
@@ -175,7 +178,8 @@ class Assembler:
             address = 0
 
             for line in self.code:
-                #try:
+                print(line)
+                # try:
                 n = line['text']
 
                 # Directives start with a '.'
@@ -192,7 +196,7 @@ class Assembler:
                         line['address'] = address
 
                     else:
-                        raise ASMException('Unknown directive: ' + n,line)
+                        raise ASMException('Unknown directive: ' + n, line)
 
                 elif n.endswith(':'):
                     # Label (or origin)
@@ -215,16 +219,16 @@ class Assembler:
                 else:
                     line['address'] = address
                     if not self.cpu:
-                        raise ASMException('No CPU defined',line)
+                        raise ASMException('No CPU defined', line)
                     # Opcode
                     op = self.cpu.find_opcode(n)
                     if not op:
-                        raise ASMException('Unknown opcode: '+n,line)
+                        raise ASMException('Unknown opcode: ' + n, line)
                     line['data'] = self.cpu.fill_in_opcode(
                         self, address, op, pass_number)
 
                 if 'data' in line:
                     address = address + len(line['data'])
 
-                #except Exception as e:
+                # except Exception as e:
                 #    raise ASMException(e, line)
