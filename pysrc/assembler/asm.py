@@ -95,7 +95,11 @@ class Assembler:
                 # Let all the addresses settle
                 line['data'].append(0)
             else:
-                line['data'].append(self.parse_numeric(cur_term))
+                dt = cur_term
+                if dt[0]>='0' and dt[0]<='9':
+                    dt = dt.replace('_','')
+                    dt = dt.replace('.','0')
+                line['data'].append(self.parse_numeric(dt))
 
         """
         n = line['text'][1:].split(',')
@@ -178,7 +182,7 @@ class Assembler:
             address = 0
 
             for line in self.code:
-                print(line)
+                #print(line)
                 # try:
                 n = line['text']
 
