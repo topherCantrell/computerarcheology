@@ -182,7 +182,7 @@ class Assembler:
             address = 0
 
             for line in self.code:
-                #print(line)
+                print(line)
                 # try:
                 n = line['text']
 
