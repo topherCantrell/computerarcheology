@@ -182,7 +182,7 @@ class Assembler:
             address = 0
 
             for line in self.code:
-                print(line)
+                #print(line)
                 # try:
                 n = line['text']
 
@@ -225,7 +225,7 @@ class Assembler:
                     if not self.cpu:
                         raise ASMException('No CPU defined', line)
                     # Opcode
-                    op = self.cpu.find_opcode(n)
+                    op = self.cpu.find_opcode(n,self)
                     if not op:
                         raise ASMException('Unknown opcode: ' + n, line)
                     line['data'] = self.cpu.fill_in_opcode(
