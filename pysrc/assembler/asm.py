@@ -149,11 +149,23 @@ class Assembler:
                     txt = line['original_text']
                 f.write('{} {:16} {}\n'.format(addr, data, txt))
 
-    def write_binary(self, name):
+    def write_binary(self, name):        
+        for line in self.lines:
+            if 'address' in line:
+                org = line['address']            
+                break
+                
         with open(name, 'wb') as f:
             for line in self.lines:
                 if 'data' in line and line['data']:
+                    new_org = line['address']
+                    if new_org<org:
+                        raise Exception('Origin problems')
+                    while org<new_org:
+                        f.write(bytearray([0xFF]))
+                        org = org + 1
                     f.write(bytearray(line['data']))
+                    org = org + len(bytearray(line['data']))
 
     def process_define(self, line, pass_number):
 
