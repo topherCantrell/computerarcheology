@@ -57,12 +57,32 @@ class Assembler:
                 ret.append(line)
         return ret
 
+    def _process_data_term(self, line, pass_number, cur_term):
+        is_word = False
+        if(cur_term.startswith('word ')):
+            is_word = True
+            cur_term = cur_term[5:].strip()
+        
+        if cur_term[0]>='0' and cur_term[0]<='9':
+            cur_term = cur_term.replace('_','')
+            cur_term = cur_term.replace('.','0')
+        
+        if pass_number==0:
+            if is_word:
+                return [0,0]
+            else:
+                return [0]
+        else:
+            if is_word:
+                return self.cpu.make_word(self.parse_numeric(cur_term))
+            else:
+                return [self.parse_numeric(cur_term)]        
+    
     def process_directive_data(self, line, pass_number):
 
         line['data'] = []
 
         cur_term = ''
-        pos = 1
         in_string = False
 
         for c in line['text'][1:]:
@@ -81,7 +101,9 @@ class Assembler:
                 elif c == ',':
                     cur_term = cur_term.strip()
                     if cur_term:
-                        line['data'].append(self.parse_numeric(cur_term))
+                        dtt = self._process_data_term(line, pass_number, cur_term)
+                        for d in dtt:
+                            line['data'].append(d)
                     cur_term = ''
                 else:
                     cur_term = cur_term + c
@@ -91,25 +113,9 @@ class Assembler:
 
         cur_term = cur_term.strip()
         if cur_term:
-            if pass_number == 0:
-                # Let all the addresses settle
-                line['data'].append(0)
-            else:
-                dt = cur_term
-                if dt[0]>='0' and dt[0]<='9':
-                    dt = dt.replace('_','')
-                    dt = dt.replace('.','0')
-                line['data'].append(self.parse_numeric(dt))
-
-        """
-        n = line['text'][1:].split(',')
-        if pass_number == 0:
-            line['data'] = [0] * len(n)
-        else:
-            line['data'] = []
-            for v in n:
-                line['data'].append(self.parse_numeric(v))
-        """
+            dtt = self._process_data_term(line, pass_number, cur_term)
+            for d in dtt:
+                line['data'].append(d)  
 
     def parse_numeric(self, s):
         z = {**self.labels, **self.defines}

@@ -60,6 +60,10 @@ class CPU:
                 return False
         return True
 
+    def make_word(self, value):
+        # Little endian in the base class (I had to pick one or the other)
+        return (value & 0xFF, value >> 8)
+
     def pick_opcode_from_aliases(self, mnem, opcodes):
         for op in opcodes:
             if op['mnem'].startswith(mnem[0]):
