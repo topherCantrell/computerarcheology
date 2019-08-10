@@ -2374,11 +2374,12 @@ CFEB: 86 A5          LDA     #$A5
 CFED: B7 10 00       STA     $1000           
 CFF0: 0F 00          CLR     <$00            
 CFF2: A1 8D 40 0A    CMPA    $400A,PC        
-CFF6: 27 1D          BEQ     $D015                          ; 
+CFF6: 27 1D          BEQ     $D015                          ;
+ 
 CFF8: BD D2 BE       JSR     $D2BE                          ; 
 CFFB: CE 04 00       LDU     #$0400          
 CFFE: DF 9E          STU     <$9E            
-D000: BD D4 AE       JSR     $D4AE                          ; Clear 1200 bytes
+D000: BD D4 AE       JSR     $D4AE                          ; Clear 1200 bytes (4K for 3K screen??)
 D003: 8E D2 A1       LDX     #$D2A1          
 D006: EC 81          LDD     ,X++            
 D008: 27 FE          BEQ     $D008                          ; 
@@ -2387,13 +2388,16 @@ D00C: A6 80          LDA     ,X+
 D00E: 97 AD          STA     <$AD            
 D010: BD D6 FA       JSR     $D6FA                          ; 
 D013: 20 F1          BRA     $D006                          ; 
+
+; Hold something down at start for something? Graphics??
 D015: 86 FE          LDA     #$FE            
-D017: C6 08          LDB     #$08            
+D017: C6 08          LDB     #$08                           ; Column 4 
 D019: B7 FF 02       STA     $FF02                          ; {hard:PIA0_DB} 
 D01C: B6 FF 00       LDA     $FF00                          ; {hard:PIA0_DA} 
-D01F: 84 40          ANDA    #$40            
+D01F: 84 40          ANDA    #$40                           ; Row 7
 D021: 26 02          BNE     $D025                          ; 
-D023: C6 10          LDB     #$10            
+D023: C6 10          LDB     #$10
+            
 D025: D7 C5          STB     <$C5            
 D027: BD D2 DE       JSR     $D2DE                          ; 
 D02A: CE 04 00       LDU     #$0400          
@@ -2676,7 +2680,8 @@ D2B5: 6D 6F          TST     15,S
 D2B7: 72                                  
 D2B8: 79 00 1E       ROL     $001E           
 D2BB: 0D 55          TST     <$55            
-D2BD: 69 73          ROL     -13,S           
+D2BD: 69 
+D2BE: 73          ROL     -13,S           
 D2BF: 20 6E          BRA     $D32F                          ; 
 D2C1: 65                                  
 D2C2: 65                                  
@@ -3052,6 +3057,7 @@ D5B8: B6 FF 03       LDA     $FF03                          ; {hard:PIA0_CB}
 D5BB: B6 FF 02       LDA     $FF02                          ; {hard:PIA0_DB} 
 D5BE: BD DD 52       JSR     $DD52                          ; 
 D5C1: 3B             RTI                     
+
 D5C2: 48             LSLA                    
 D5C3: 69 67          ROL     7,S             
 D5C5: 68 20          ASL     0,Y             
