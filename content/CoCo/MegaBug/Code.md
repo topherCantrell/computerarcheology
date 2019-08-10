@@ -2398,8 +2398,8 @@ D01F: 84 40          ANDA    #$40                           ; Row 7
 D021: 26 02          BNE     $D025                          ; 
 D023: C6 10          LDB     #$10
             
-D025: D7 C5          STB     <$C5            
-D027: BD D2 DE       JSR     $D2DE                          ; 
+D025: D7 C5          STB     <$C5                           ; ??
+D027: BD D2 DE       JSR     $D2DE                          ; Set the graphics mode
 D02A: CE 04 00       LDU     #$0400          
 D02D: BD D4 AE       JSR     $D4AE                          ; 
 D030: 8E CF DE       LDX     #$CFDE          
@@ -2698,14 +2698,19 @@ D2D6: 22 42          BHI     $D31A                          ;
 D2D8: 75                                  
 D2D9: 67 00          ASR     0,X             
 D2DB: 00 00          NEG     <$00            
-D2DD: 00 B7          NEG     <$B7            
-D2DF: FF C0 B7       STU     $C0B7                          ; 
-D2E2: FF C2 B7       STU     $C2B7                          ; 
-D2E5: FF C5 B7       STU     $C5B7                          ; 
-D2E8: FF C7 B7       STU     $C7B7                          ; 
-D2EB: FF C8 86       STU     $C886                          ; 
-D2EE: FF B7 FF       STU     $B7FF           
-D2F1: 22 39          BHI     $D32C                          ; 
+D2DD: 00 
+
+SetGraphicsMode:
+; 128x96 4 colors (4 pixels per byte)
+D2DE: B7 FF C0       STA     $FFC0 ; V0 = 0
+D2E1: B7 FF C2       STA     $FFC2 ; V1 = 0
+D2E4: B7 FF C5       STA     $FFC5 ; V2 = 1
+D2E7: B7 FF C7       STA     $FFC7 ; F0 = 1
+D2EA: B7 FF C8       STA     $FFC8 ; F1 = 0
+D2ED: 86 FF          LDA     #$FF  ;
+D2EF: B7 FF 22       STA     $FF22 ; VDG all 1s
+D2F2: 39             RTS
+
 D2F3: 0F C1          CLR     <$C1            
 D2F5: BD D7 A7       JSR     $D7A7                          ; 
 D2F8: 0D B5          TST     <$B5            
@@ -4348,5 +4353,5 @@ DFF3: FF FF FF       STU     $FFFF                          ; {hard:vectorReset}
 DFF6: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
 DFF9: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
 DFFC: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
-DFFF: FF 00 00       STU     $0000           
+DFFF: FF 
 ```

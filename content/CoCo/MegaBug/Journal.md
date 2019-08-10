@@ -2,7 +2,14 @@
 
 # Journal
 
-## 3/11/2019
+## 8/10/2019
 
-I updated the content to the latest markdown format.
+The set-mode was in a sequence of mis-aligned dissassembly. It sets 128x96, 4 pixels per byte.
 
+## 8/9/2019
+
+I was looking for the graphics format, but I'm having a hard time finding the code
+that sets it. Maybe the emulator will help ... tell me what's written to registers
+and when.
+
+Best I can tell by web search and youtube, the graphics mode is 128x96 Color Graphics

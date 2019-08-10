@@ -61,7 +61,22 @@ def compare_source_to_binary(file_name_src, file_name_bin, origin):
 
 
 if __name__ == '__main__':
-    src = '../../content/CoCo/Pyramid/Code.md'
-    bin = '../../content/CoCo/Pyramid/rom/pyramid.bin'
-    org = 0x600
+    
+    src = '../../content/CoCo/MegaBug/Code.md'
+    bin = '../../content/CoCo/MegaBug/MegaBug.bin'
+    org = 0xC000
     print(compare_source_to_binary(src, bin, org))
+    
+    
+    """
+    src = '../../content/Coco/MegaBug/Code.md'
+    org = 0xC000
+    bin = get_binary(src,org)
+    xpos = 0
+    for b in bin:
+        h = '0x{:02X},'.format(b)
+        print(h,end='')
+        xpos+=1
+        if xpos%16 == 0:
+            print()
+    """
