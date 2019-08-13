@@ -2365,7 +2365,7 @@ CFDC: 00 00          NEG     <$00
 ```code            
 Start:
 CFDE: 12             NOP                     
-CFDF: 10 CE 03 F0    LDS     #$03F0          
+CFDF: 10 CE 03 F0    LDS     #$03F0          ; Stack starts here (builds towards 0000)
 CFE3: 0F B3          CLR     <$B3            
 CFE5: 0F B4          CLR     <$B4            
 CFE7: 0F B1          CLR     <$B1            
@@ -2373,14 +2373,14 @@ CFE9: 0F B2          CLR     <$B2
 CFEB: 86 A5          LDA     #$A5            
 CFED: B7 10 00       STA     $1000           
 CFF0: 0F 00          CLR     <$00            
-CFF2: A1 8D 40 0A    CMPA    $400A,PC        
-CFF6: 27 1D          BEQ     $D015                          ;
+CFF2: A1 8D 40 0A    CMPA    $400A,PC        ; This is $1000 if we are running from cartridge
+CFF6: 27 1D          BEQ     $D015           ; This is cartridge ... continue normally
  
-CFF8: BD D2 BE       JSR     $D2BE                          ; 
+CFF8: BD D2 BE       JSR     $D2BE           ; Strange. Not a section of code. 
 CFFB: CE 04 00       LDU     #$0400          
 CFFE: DF 9E          STU     <$9E            
-D000: BD D4 AE       JSR     $D4AE                          ; Clear 1200 bytes (4K for 3K screen??)
-D003: 8E D2 A1       LDX     #$D2A1          
+D000: BD D4 AE       JSR     $D4AE           ; Clear 1200 bytes (4K for 3K screen??)
+D003: 8E D2 A1       LDX     #$D2A1          ;
 D006: EC 81          LDD     ,X++            
 D008: 27 FE          BEQ     $D008                          ; 
 D00A: DD AB          STD     <$AB            
@@ -2681,6 +2681,7 @@ D2B7: 72
 D2B8: 79 00 1E       ROL     $001E           
 D2BB: 0D 55          TST     <$55            
 D2BD: 69 
+
 D2BE: 73          ROL     -13,S           
 D2BF: 20 6E          BRA     $D32F                          ; 
 D2C1: 65                                  
@@ -2915,14 +2916,18 @@ D4A6: 9E 9C          LDX     <$9C
 D4A8: DD 9C          STD     <$9C            
 D4AA: 9F 9A          STX     <$9A            
 D4AC: 35 90          PULS    X,PC            
-D4AE: 34 10          PSHS    X               
-D4B0: 8E 06 00       LDX     #$0600          
-D4B3: 4F             CLRA                    
-D4B4: 5F             CLRB                    
-D4B5: ED C1          STD     ,U++            
-D4B7: 30 1F          LEAX    -1,X            
-D4B9: 26 FA          BNE     $D4B5                          ; 
-D4BB: 35 90          PULS    X,PC            
+
+Clear1200:
+; Clear $1200 bytes at X
+D4AE: 34 10          PSHS    X                          ; Hold X
+D4B0: 8E 06 00       LDX     #$0600                     ; $600 words ($1200 bytes)
+D4B3: 4F             CLRA                               ; 0 to ...
+D4B4: 5F             CLRB                               ; ... D
+D4B5: ED C1          STD     ,U++                       ; Clear memory
+D4B7: 30 1F          LEAX    -1,X                       ; All words done?
+D4B9: 26 FA          BNE     $D4B5                      ; No ... do all 
+D4BB: 35 90          PULS    X,PC                       ; Restore X and out
+
 D4BD: 8E 28 08       LDX     #$2808          
 D4C0: 96 A0          LDA     <$A0            
 D4C2: 97 98          STA     <$98            
@@ -3234,6 +3239,7 @@ D6F3: 39             RTS
 D6F4: 0F AE          CLR     <$AE            
 D6F6: 03 AE          COM     <$AE            
 D6F8: 20 02          BRA     $D6FC                          ; 
+
 D6FA: 0F AE          CLR     <$AE            
 D6FC: A6 80          LDA     ,X+             
 D6FE: 84 7F          ANDA    #$7F            
