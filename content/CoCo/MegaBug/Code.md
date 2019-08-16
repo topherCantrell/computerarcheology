@@ -24,7 +24,7 @@ C000: 7E CF DE       JMP     $CFDE                          ; {Start}
 
 Looks like data from here to the start at CFDE.
 
-## ?? "We Gotcha" audio samples ?? played at D77C
+## "We Gotcha" audio samples played at D77C
 
 ```code
 C003: 1C C0 91 00 B1 00 59 B4 A3 54 4A E5 94 52 71 9E 94 4D 9B 7E 8E 52 70 A4 71 7F 38 AD 97 4E 4A A1
@@ -1374,14 +1374,14 @@ D2EF: B7 FF 22       STA     $FF22 ; VDG all 1s
 D2F2: 39             RTS
 
 D2F3: 0F C1          CLR     <$C1            
-D2F5: BD D7 A7       JSR     $D7A7                          ; 
+D2F5: BD D7 A7       JSR     $D7A7   ; Play the "we gotcha" tone 
 D2F8: 0D B5          TST     <$B5            
 D2FA: 10 27 FD 62    LBEQ    $D060   ; ?? restart game           
 D2FE: DC B1          LDD     <$B1            
 D300: 10 93 B3       CMPD    <$B3            
 D303: 25 02          BCS     $D307                          ; 
 D305: DD B3          STD     <$B3            
-D307: BD D7 7C       JSR     $D77C                          ; 
+D307: BD D7 7C       JSR     $D77C                          ; Play "We Gotcha"
 D30A: 86 04          LDA     #$04            
 D30C: 97 92          STA     <$92                           ; {ram:RequestedPage} 
 D30E: 86 0E          LDA     #$0E            
@@ -1969,11 +1969,15 @@ D773: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA}
 D776: 30 1F          LEAX    -1,X            
 D778: 26 E1          BNE     $D75B                          ; 
 D77A: 35 81          PULS    CC,PC
+```
 
-           
+# Play "We Gotcha!"
+
+```code
+PlayWeGotcha:         
 D77C: 34 01          PSHS    CC              ; Preserve interrupt status
 D77E: 1A 50          ORCC    #$50            ; Disable interrupts
-D780: CE C0 03       LDU     #$C003          ; Audio sample table ?? "we gotcha"
+D780: CE C0 03       LDU     #$C003          ; Audio sample table for "we gotcha"
 D783: 8E 09 5D       LDX     #$095D          ; 2397 samples
 D786: 86 02          LDA     #$02            ; 6-bit ... 
 D788: B7 FF 20       STA     $FF20           ; {hard:PIA1_DA} ... sound off  
@@ -1991,6 +1995,7 @@ D7A0: 86 02          LDA     #$02            ; 6-bit ...
 D7A2: B7 FF 20       STA     $FF20           ; {hard:PIA1_DA} ... sound off 
 D7A5: 35 81          PULS    CC,PC           ; Restore interrupts and out
 
+PlayGotchaTone:
 D7A7: 86 01          LDA     #$01            
 D7A9: 97 A5          STA     <$A5            
 D7AB: 34 01          PSHS    CC              
@@ -2017,6 +2022,7 @@ D7CF: 8E 40 00       LDX     #$4000
 D7D2: 30 1F          LEAX    -1,X            
 D7D4: 26 FC          BNE     $D7D2                          ; 
 D7D6: 35 81          PULS    CC,PC           
+
 D7D8: DC A2          LDD     <$A2            
 D7DA: 80 02          SUBA    #$02            
 D7DC: C0 02          SUBB    #$02            
