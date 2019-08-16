@@ -293,320 +293,121 @@ CAAA: 80 00          SUBA    #$00
 CAAC: 00 80          NEG     <$80            
 CAAE: 00 00          NEG     <$00            
 
-CAB0: 00 00          NEG     <$00            
-CAB2: 00 00          NEG     <$00            
-CAB4: 00 00          NEG     <$00            
-CAB6: 00 00          NEG     <$00            
-CAB8: 00 00          NEG     <$00            
-CABA: 00 00          NEG     <$00            
-CABC: 00 00          NEG     <$00            
-CABE: 00 00          NEG     <$00            
-CAC0: 01                                  
-CAC1: 07 00          ASR     <$00            
-CAC3: 00 00          NEG     <$00            
-CAC5: 00 01          NEG     <$01            
-CAC7: 07 00          ASR     <$00            
-CAC9: 00 00          NEG     <$00            
-CACB: 00 00          NEG     <$00            
-CACD: 00 00          NEG     <$00            
-CACF: 01                                  
-CAD0: 20 08          BRA     $CADA                          ; 
-CAD2: 02                                  
-CAD3: 00 00          NEG     <$00            
-CAD5: 00 01          NEG     <$01            
-CAD7: 05                                  
-CAD8: 01                                  
-CAD9: 01                                  
-CADA: 00 00          NEG     <$00            
-CADC: 14                                  
-CADD: 21 21          BRN     $CB00                          ; 
-CADF: 21 E0          BRN     $CAC1                          ; 
-CAE1: 80 14          SUBA    #$14            
-CAE3: 21 21          BRN     $CB06                          ; 
-CAE5: 21 E1          BRN     $CAC8                          ; 
-CAE7: 81 02          CMPA    #$02            
-CAE9: 02                                  
-CAEA: 02                                  
-CAEB: 02                                  
-CAEC: 02                                  
-CAED: 02                                  
-CAEE: 15                                  
-CAEF: 54             LSRB                    
-CAF0: 00 00          NEG     <$00            
-CAF2: 00 80          NEG     <$80            
-CAF4: 20 51          BRA     $CB47                          ; 
-CAF6: 55                                  
-CAF7: 75                                  
-CAF8: 55                                  
-CAF9: 50             NEGB                    
-CAFA: 55                                  
-CAFB: 11                                  
-CAFC: 55                                  
-CAFD: 51                                  
-CAFE: 55                                  
-CAFF: 51                                  
-CB00: 55                                  
-CB01: 11                                  
-CB02: 55                                  
-CB03: 55                                  
-CB04: 51                                  
-CB05: 55                                  
-CB06: 51                                  
-CB07: 55                                  
-CB08: 95 00          BITA    <$00            
-CB0A: 00 00          NEG     <$00            
-CB0C: 00 00          NEG     <$00            
-CB0E: 00 00          NEG     <$00            
-CB10: 00 00          NEG     <$00            
-CB12: 02                                  
-CB13: 08 20          ASL     <$20            
-CB15: 40             NEGA                    
-CB16: 50             NEGB                    
-CB17: D4 50          ANDB    <$50            
-CB19: 50             NEGB                    
-CB1A: 40             NEGA                    
-CB1B: 00 45          NEG     <$45            
-CB1D: 50             NEGB                    
-CB1E: 50             NEGB                    
-CB1F: 50             NEGB                    
-CB20: 41                                  
-CB21: 00 45          NEG     <$45            
-CB23: 50             NEGB                    
-CB24: 50             NEGB                    
-CB25: 50             NEGB                    
-CB26: 51                                  
-CB27: 50             NEGB                    
-CB28: 28 08          BVC     $CB32                          ; 
-CB2A: 08 08          ASL     <$08            
-CB2C: 08 08          ASL     <$08            
-CB2E: 15                                  
-CB2F: 05                                  
-CB30: 20 80          BRA     $CAB2                          ; 
-CB32: 00 00          NEG     <$00            
-CB34: 00 00          NEG     <$00            
-CB36: 00 00          NEG     <$00            
-CB38: 00 00          NEG     <$00            
-CB3A: 00 00          NEG     <$00            
-CB3C: 00 80          NEG     <$80            
-CB3E: 80 80          SUBA    #$80            
-CB40: E0 78          SUBB    -8,S            
-CB42: 00 80          NEG     <$80            
-CB44: 80 80          SUBA    #$80            
-CB46: E0 78          SUBB    -8,S            
-CB48: 00 00          NEG     <$00            
-CB4A: 00 00          NEG     <$00            
-CB4C: 00 00          NEG     <$00            
-CB4E: 00 50          NEG     <$50            
+; 32 columns, 5 rows
 
-CB50: 00 00          NEG     <$00            
-CB52: 00 00          NEG     <$00            
-CB54: 00 00          NEG     <$00            
-CB56: 00 00          NEG     <$00            
-CB58: 00 00          NEG     <$00            
-CB5A: 00 00          NEG     <$00            
-CB5C: 00 00          NEG     <$00            
-CB5E: 00 00          NEG     <$00            
-CB60: 01                                  
-CB61: 07 00          ASR     <$00            
-CB63: 00 00          NEG     <$00            
-CB65: 00 01          NEG     <$01            
-CB67: 07 00          ASR     <$00            
-CB69: 00 00          NEG     <$00            
-CB6B: 00 00          NEG     <$00            
-CB6D: 01                                  
-CB6E: 00 00          NEG     <$00            
-CB70: 20 08          BRA     $CB7A                          ; 
-CB72: 02                                  
-CB73: 00 00          NEG     <$00            
-CB75: 00 01          NEG     <$01            
-CB77: 05                                  
-CB78: 01                                  
-CB79: 01                                  
-CB7A: 00 00          NEG     <$00            
-CB7C: 14                                  
-CB7D: 21 21          BRN     $CBA0                          ; 
-CB7F: 21 E0          BRN     $CB61                          ; 
-CB81: 80 14          SUBA    #$14            
-CB83: 21 21          BRN     $CBA6                          ; 
-CB85: 21 E1          BRN     $CB68                          ; 
-CB87: 81 02          CMPA    #$02            
-CB89: 02                                  
-CB8A: 02                                  
-CB8B: 02                                  
-CB8C: 15                                  
-CB8D: 54             LSRB                    
-CB8E: 00 00          NEG     <$00            
-CB90: 00 00          NEG     <$00            
-CB92: 00 80          NEG     <$80            
-CB94: 20 51          BRA     $CBE7                          ; 
-CB96: 55                                  
-CB97: 75                                  
-CB98: 55                                  
-CB99: 50             NEGB                    
-CB9A: 55                                  
-CB9B: 11                                  
-CB9C: 55                                  
-CB9D: 51                                  
-CB9E: 55                                  
-CB9F: 51                                  
-CBA0: 55                                  
-CBA1: 11                                  
-CBA2: 55                                  
-CBA3: 55                                  
-CBA4: 51                                  
-CBA5: 55                                  
-CBA6: 51                                  
-CBA7: 55                                  
-CBA8: 95 00          BITA    <$00            
-CBAA: 00 00          NEG     <$00            
-CBAC: 00 00          NEG     <$00            
-CBAE: 00 00          NEG     <$00            
-CBB0: 00 00          NEG     <$00            
-CBB2: 02                                  
-CBB3: 08 20          ASL     <$20            
-CBB5: 40             NEGA                    
-CBB6: 50             NEGB                    
-CBB7: D4 51          ANDB    <$51            
-CBB9: 50             NEGB                    
-CBBA: 40             NEGA                    
-CBBB: 00 45          NEG     <$45            
-CBBD: 50             NEGB                    
-CBBE: 51                                  
-CBBF: 50             NEGB                    
-CBC0: 40             NEGA                    
-CBC1: 00 45          NEG     <$45            
-CBC3: 50             NEGB                    
-CBC4: 50             NEGB                    
-CBC5: 50             NEGB                    
-CBC6: 50             NEGB                    
-CBC7: 50             NEGB                    
-CBC8: 28 08          BVC     $CBD2                          ; 
-CBCA: 08 08          ASL     <$08            
-CBCC: 08 08          ASL     <$08            
-CBCE: 15                                  
-CBCF: 05                                  
-CBD0: 20 80          BRA     $CB52                          ; 
-CBD2: 00 00          NEG     <$00            
-CBD4: 00 00          NEG     <$00            
-CBD6: 00 78          NEG     <$78            
-CBD8: E0 80          SUBB    ,X+             
-CBDA: 80 80          SUBA    #$80            
-CBDC: 00 78          NEG     <$78            
-CBDE: E0 80          SUBB    ,X+             
-CBE0: 80 80          SUBA    #$80            
-CBE2: 00 00          NEG     <$00            
-CBE4: 00 00          NEG     <$00            
-CBE6: 00 00          NEG     <$00            
-CBE8: 00 00          NEG     <$00            
-CBEA: 00 00          NEG     <$00            
-CBEC: 00 00          NEG     <$00            
-CBEE: 00 50          NEG     <$50            
+CAB0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 07 00 00 00 00 01 07 00 00 00 00 00 00 00 01
+CAD0: 20 08 02 00 00 00 01 05 01 01 00 00 14 21 21 21 E0 80 14 21 21 21 E1 81 02 02 02 02 02 02 15 54
+CAF0: 00 00 00 80 20 51 55 75 55 50 55 11 55 51 55 51 55 11 55 55 51 55 51 55 95 00 00 00 00 00 00 00
+CB10: 00 00 02 08 20 40 50 D4 50 50 40 00 45 50 50 50 41 00 45 50 50 50 51 50 28 08 08 08 08 08 15 05
+CB30: 20 80 00 00 00 00 00 00 00 00 00 00 00 80 80 80 E0 78 00 80 80 80 E0 78 00 00 00 00 00 00 00 50
+; .....$...........$..
+; ......$.........$...
+; .......$.......$....
+; ........$.....$.....
+; .........$...$......
+; ........++.++.......
+; .......+++++++......
+; ......+++#++#++.....
+; .......+++++++......
+; .......+++..++......
+; ........+++++.......
+; .........+.+........
+; .....++.+++++.++....
+; .....$.+++.+++..$...
+; .....$.+++++++..$...
+; .....$.+++.+++..$...
+; ...+#$..+++++..+#$..
+; ..+#$....+.+....+#$.
+; .....++.+++++.++....
+; .....$.+++++++..$...
+; .....$.+++.+++..$...
+; .....$.+++++++..$...
+; ...+#$.+++.+++.+#$..
+; ..+#$..+++++++..+#$.
+; .......$$+++.$$.....
+; .......$......$.....
+; .......$......$.....
+; .......$......$.....
+; .......$......$.....
+; .......$......$.....
+; .....+++.....+++....
+; ...++++.......++++..  
 
-CBF0: 00 00          NEG     <$00            
-CBF2: 00 00          NEG     <$00            
-CBF4: 00 00          NEG     <$00            
-CBF6: 00 07          NEG     <$07            
-CBF8: 01                                  
-CBF9: 00 00          NEG     <$00            
-CBFB: 00 00          NEG     <$00            
-CBFD: 07 01          ASR     <$01            
-CBFF: 00 00          NEG     <$00            
-CC01: 00 00          NEG     <$00            
-CC03: 00 00          NEG     <$00            
-CC05: 00 00          NEG     <$00            
-CC07: 00 00          NEG     <$00            
-CC09: 00 00          NEG     <$00            
-CC0B: 00 00          NEG     <$00            
-CC0D: 00 00          NEG     <$00            
-CC0F: 01                                  
-CC10: 02                                  
-CC11: 08 02          ASL     <$02            
-CC13: 00 00          NEG     <$00            
-CC15: 00 01          NEG     <$01            
-CC17: B5 E1 21       BITA    $E121           
-CC1A: 20 20          BRA     $CC3C                          ; 
-CC1C: 14                                  
-CC1D: 81 E1          CMPA    #$E1            
-CC1F: 21 20          BRN     $CC41                          ; 
-CC21: 20 14          BRA     $CC37                          ; 
-CC23: 01                                  
-CC24: 01                                  
-CC25: 01                                  
-CC26: 01                                  
-CC27: 01                                  
-CC28: 02                                  
-CC29: 02                                  
-CC2A: 02                                  
-CC2B: 02                                  
-CC2C: 02                                  
-CC2D: 02                                  
-CC2E: 15                                  
-CC2F: 54             LSRB                    
-CC30: 00 00          NEG     <$00            
-CC32: 00 80          NEG     <$80            
-CC34: 20 51          BRA     $CC87                          ; 
-CC36: 55                                  
-CC37: 75                                  
-CC38: 55                                  
-CC39: 50             NEGB                    
-CC3A: 55                                  
-CC3B: 11                                  
-CC3C: 55                                  
-CC3D: 51                                  
-CC3E: 55                                  
-CC3F: 51                                  
-CC40: 55                                  
-CC41: 11                                  
-CC42: 55                                  
-CC43: 55                                  
-CC44: 51                                  
-CC45: 55                                  
-CC46: 51                                  
-CC47: 55                                  
-CC48: 95 00          BITA    <$00            
-CC4A: 00 00          NEG     <$00            
-CC4C: 00 00          NEG     <$00            
-CC4E: 00 00          NEG     <$00            
-CC50: 02                                  
-CC51: 00 02          NEG     <$02            
-CC53: 08 20          ASL     <$20            
-CC55: 40             NEGA                    
-CC56: 50             NEGB                    
-CC57: D4 50          ANDB    <$50            
-CC59: 50             NEGB                    
-CC5A: 40             NEGA                    
-CC5B: 00 45          NEG     <$45            
-CC5D: 50             NEGB                    
-CC5E: 50             NEGB                    
-CC5F: 50             NEGB                    
-CC60: 41                                  
-CC61: 00 45          NEG     <$45            
-CC63: 50             NEGB                    
-CC64: 50             NEGB                    
-CC65: 50             NEGB                    
-CC66: 51                                  
-CC67: 50             NEGB                    
-CC68: 28 08          BVC     $CC72                          ; 
-CC6A: 08 08          ASL     <$08            
-CC6C: 15                                  
-CC6D: 05                                  
-CC6E: 00 00          NEG     <$00            
-CC70: 00 80          NEG     <$80            
-CC72: 00 00          NEG     <$00            
-CC74: 00 00          NEG     <$00            
-CC76: 00 00          NEG     <$00            
-CC78: 00 00          NEG     <$00            
-CC7A: 00 00          NEG     <$00            
-CC7C: 00 80          NEG     <$80            
-CC7E: 80 80          SUBA    #$80            
-CC80: E0 78          SUBB    -8,S            
-CC82: 00 80          NEG     <$80            
-CC84: 80 80          SUBA    #$80            
-CC86: E0 78          SUBB    -8,S            
-CC88: 00 00          NEG     <$00            
-CC8A: 00 00          NEG     <$00            
-CC8C: 00 50          NEG     <$50            
-CC8E: 00 00          NEG     <$00         
+CB50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 07 00 00 00 00 01 07 00 00 00 00 00 01 00 00
+CB70: 20 08 02 00 00 00 01 05 01 01 00 00 14 21 21 21 E0 80 14 21 21 21 E1 81 02 02 02 02 15 54 00 00
+CB90: 00 00 00 80 20 51 55 75 55 50 55 11 55 51 55 51 55 11 55 55 51 55 51 55 95 00 00 00 00 00 00 00
+CBB0: 00 00 02 08 20 40 50 D4 51 50 40 00 45 50 51 50 40 00 45 50 50 50 50 50 28 08 08 08 08 08 15 05
+CBD0: 20 80 00 00 00 00 00 78 E0 80 80 80 00 78 E0 80 80 80 00 00 00 00 00 00 00 00 00 00 00 00 00 50
+; .....$...........$..
+; ......$.........$...
+; .......$.......$....
+; ........$.....$.....
+; .........$...$......
+; ........++.++.......
+; .......+++++++......
+; ......+++#++#++.+#$.
+; .......+++++++.+#$..
+; .......+++..++..$...
+; ........+++++...$...
+; .........+.+....$...
+; .....++.+++++.++....
+; .....$.+++.+++..+#$.
+; .....$.+++++++.+#$..
+; .....$.+++.+++..$...
+; ...+#$..+++++...$...
+; ..+#$....+.+....$...
+; .....++.+++++.++....
+; .....$.+++++++......
+; .....$.+++.+++......
+; .....$.+++++++......
+; ...+#$.+++.+++......
+; ..+#$..+++++++......
+; .......$$+++.$$.....
+; .......$......$.....
+; .......$......$.....
+; .......$......$.....
+; .....+++......$.....
+; ...++++.......$.....
+; .............+++....
+; ..............++++..     
+
+CBF0: 00 00 00 00 00 00 00 07 01 00 00 00 00 07 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01
+CC10: 02 08 02 00 00 00 01 B5 E1 21 20 20 14 81 E1 21 20 20 14 01 01 01 01 01 02 02 02 02 02 02 15 54
+CC30: 00 00 00 80 20 51 55 75 55 50 55 11 55 51 55 51 55 11 55 55 51 55 51 55 95 00 00 00 00 00 00 00
+CC50: 02 00 02 08 20 40 50 D4 50 50 40 00 45 50 50 50 41 00 45 50 50 50 51 50 28 08 08 08 15 05 00 00
+CC70: 00 80 00 00 00 00 00 00 00 00 00 00 00 80 80 80 E0 78 00 80 80 80 E0 78 00 00 00 00 00 50 00 00
+; .......$.......$....
+; ......$.........$...
+; .......$.......$....
+; ........$.....$.....
+; .........$...$......
+; ........++.++.......
+; .......+++++++......
+; ..+#$#+++#++#++.....
+; ...+#$.+++++++......
+; .....$.+++..++......
+; .....$..+++++.......
+; .....$...+.+........
+; .....++.+++++.++....
+; ..+#$..+++.+++..$...
+; ...+#$.+++++++..$...
+; .....$.+++.+++..$...
+; .....$..+++++..+#$..
+; .....$...+.+....+#$.
+; .....++.+++++.++....
+; .......+++++++..$...
+; .......+++.+++..$...
+; .......+++++++..$...
+; .......+++.+++.+#$..
+; .......+++++++..+#$.
+; .......$$+++.$$.....
+; .......$......$.....
+; .......$......$.....
+; .......$......$.....
+; .......$.....+++....
+; .......$......++++..
+; .....+++............
+; ...++++.............
    
 CC90: 06 0A          ROR     <$0A            
 CC92: 10 2D 00 00    LBLT    $0000           
@@ -1067,9 +868,9 @@ D033: 9F 72          STX     <$72
 D035: 86 55          LDA     #$55            
 D037: 97 71          STA     <$71            
 D039: 1A 50          ORCC    #$50            
-D03B: 8E D5 46       LDX     #$D546          
-D03E: BF 01 0D       STX     $010D                          ; New IRQ interrupt vector
-D041: 0F C7          CLR     <$C7                           ; {ram:VisiblePage} 
+D03B: 8E D5 46       LDX     #$D546          ; New IRQ ...
+D03E: BF 01 0D       STX     $010D           ; ... interrupt vector
+D041: 0F C7          CLR     <$C7                           ; {ram:VisiblePage} (force setting on next interrupt) 
 D043: 86 04          LDA     #$04                           ; Display graphics page 400
 D045: 97 92          STA     <$92                           ; {ram:RequestedPage} CURRENT VISIBILE PAGE
 D047: 0F B6          CLR     <$B6            
@@ -1078,12 +879,12 @@ D04B: 86 34          LDA     #$34
 D04D: B7 FF 01       STA     $FF01                          ; {hard:PIA0_CA} 
 D050: B7 FF 21       STA     $FF21                          ; {hard:PIA1_CA} 
 D053: 8A 08          ORA     #$08            
-D055: A7 8D 2E CA    STA     $2ECA,PC        
+D055: A7 8D 2E CA    STA     $2ECA,PC        ; FF23
 D059: 86 35          LDA     #$35            
 D05B: B7 FF 03       STA     $FF03                          ; {hard:PIA0_CB} 
-D05E: 3C EF          CWAI    $EF             
+D05E: 3C EF          CWAI    $EF             ; Wait for the first interrupt
 ;
-D060: 10 CE 03 F0    LDS     #$03F0          
+D060: 10 CE 03 F0    LDS     #$03F0          ; Set stack just below 1st screen 
 D064: 0F C1          CLR     <$C1            
 D066: 0F B1          CLR     <$B1            
 D068: 0F B2          CLR     <$B2            
@@ -1094,7 +895,7 @@ D070: 0F B6          CLR     <$B6
 D072: 0F C6          CLR     <$C6            
 D074: 96 C5          LDA     <$C5            
 D076: 97 A0          STA     <$A0            
-D078: CE 10 00       LDU     #$1000          
+D078: CE 10 00       LDU     #$1000          ; ?? Setup screen pointers
 D07B: DF 9C          STU     <$9C            
 D07D: CC 1C 00       LDD     #$1C00          
 D080: DD 9A          STD     <$9A            
@@ -1226,7 +1027,7 @@ D1AA: 26 F2          BNE     $D19E                          ;
 D1AC: 86 FF          LDA     #$FF            
 D1AE: 97 C6          STA     <$C6            
 D1B0: BD DA 33       JSR     $DA33                          ; 
-D1B3: BD D4 A2       JSR     $D4A2                          ; 
+D1B3: BD D4 A2       JSR     $D4A2                          ; Swap screen pointers
 D1B6: 97 92          STA     <$92                           ; {ram:RequestedPage} 
 D1B8: 86 0F          LDA     #$0F            
 D1BA: 13             SYNC                    
@@ -1375,8 +1176,8 @@ D2F2: 39             RTS
 
 D2F3: 0F C1          CLR     <$C1            
 D2F5: BD D7 A7       JSR     $D7A7   ; Play the "we gotcha" tone 
-D2F8: 0D B5          TST     <$B5            
-D2FA: 10 27 FD 62    LBEQ    $D060   ; ?? restart game           
+D2F8: 0D B5          TST     <$B5    ; ?? Demo mode (don't say "we gotcha")            
+D2FA: 10 27 FD 62    LBEQ    $D060   ; Restart game ?? splash         
 D2FE: DC B1          LDD     <$B1            
 D300: 10 93 B3       CMPD    <$B3            
 D303: 25 02          BCS     $D307                          ; 
@@ -1386,7 +1187,7 @@ D30A: 86 04          LDA     #$04
 D30C: 97 92          STA     <$92                           ; {ram:RequestedPage} 
 D30E: 86 0E          LDA     #$0E            
 D310: 97 98          STA     <$98            
-D312: CE CB 50       LDU     #$CB50          
+D312: CE CB 50       LDU     #$CB50          ; ?? Dancing bugs somewhere in this code
 D315: 96 98          LDA     <$98            
 D317: 84 01          ANDA    #$01            
 D319: 27 03          BEQ     $D31E                          ; 
@@ -1406,7 +1207,8 @@ D336: BD D5 01       JSR     $D501                          ;
 D339: 10 25 FD 97    LBCS    $FD97           
 D33D: 9E C3          LDX     <$C3            
 D33F: 26 F5          BNE     $D336                          ; 
-D341: 7E D0 60       JMP     $D060                          ; 
+D341: 7E D0 60       JMP     $D060                          ; Now restart the game ?? splash 
+
 D344: 0F C1          CLR     <$C1            
 D346: BD DA 33       JSR     $DA33                          ; 
 D349: BD DA 33       JSR     $DA33                          ; 
@@ -1555,22 +1357,27 @@ D47B: A7 82          STA     ,-X
 D47D: 5A             DECB                    
 D47E: 26 F7          BNE     $D477                          ; 
 D480: 39             RTS                     
-D481: 8E 08 00       LDX     #$0800          
-D484: 86 05          LDA     #$05            
-D486: 97 99          STA     <$99            
-D488: C6 20          LDB     #$20            
-D48A: 34 10          PSHS    X               
-D48C: A6 C0          LDA     ,U+             
-D48E: A7 88 1B       STA     $1B,X           
-D491: A7 84          STA     ,X              
-D493: 30 88 20       LEAX    $20,X           
-D496: 5A             DECB                    
-D497: 26 F3          BNE     $D48C                          ; 
-D499: 35 10          PULS    X               
-D49B: 30 01          LEAX    1,X             
-D49D: 0A 99          DEC     <$99            
-D49F: 26 E7          BNE     $D488                          ; 
-D4A1: 39             RTS                     
+
+; Draw large bugs on both sides of the screen
+
+DrawLargeBugs:
+D481: 8E 08 00       LDX     #$0800          ; Start spot on screen
+D484: 86 05          LDA     #$05            ; Count five ...
+D486: 97 99          STA     <$99            ; ... columns
+D488: C6 20          LDB     #$20            ; 32 rows
+D48A: 34 10          PSHS    X               ; Hold start of column
+D48C: A6 C0          LDA     ,U+             ; Get graphics data
+D48E: A7 88 1B       STA     $1B,X           ; Right side of screen
+D491: A7 84          STA     ,X              ; Left side of screen
+D493: 30 88 20       LEAX    $20,X           ; Next row
+D496: 5A             DECB                    ; All rows done?
+D497: 26 F3          BNE     $D48C           ; Do all 32 rows 
+D499: 35 10          PULS    X               ; Start of column
+D49B: 30 01          LEAX    1,X             ; One column over
+D49D: 0A 99          DEC     <$99            ; All 5 columns done?
+D49F: 26 E7          BNE     $D488           ; No ... do all columns 
+D4A1: 39             RTS                     ; Done
+
 D4A2: 34 10          PSHS    X               
 D4A4: DC 9A          LDD     <$9A            
 D4A6: 9E 9C          LDX     <$9C            
@@ -1834,8 +1641,9 @@ D672: 54             LSRB
 D673: 69 6D          ROL     13,S            
 D675: 65                                  
 D676: 00 00          NEG     <$00            
-D678: 00 34          NEG     <$34            
-D67A: 40             NEGA                    
+D678: 00 
+
+D679: 34 40          PSHS    U
 D67B: DE 90          LDU     <$90            
 D67D: 6F C9 C0 00    CLR     $C000,U         
 D681: CE CD 7A       LDU     #$CD7A          
@@ -1875,6 +1683,7 @@ D6C3: 6A E4          DEC     ,S
 D6C5: 26 CD          BNE     $D694                          ; 
 D6C7: 32 61          LEAS    1,S             
 D6C9: 35 C0          PULS    U,PC            
+
 D6CB: 86 AA          LDA     #$AA            
 D6CD: 97 AD          STA     <$AD            
 D6CF: 34 10          PSHS    X               
@@ -2018,10 +1827,10 @@ D7C8: 5A             DECB
 D7C9: 26 E6          BNE     $D7B1                          ; 
 D7CB: 0C A5          INC     <$A5            
 D7CD: 26 E0          BNE     $D7AF                          ; 
-D7CF: 8E 40 00       LDX     #$4000          
-D7D2: 30 1F          LEAX    -1,X            
-D7D4: 26 FC          BNE     $D7D2                          ; 
-D7D6: 35 81          PULS    CC,PC           
+D7CF: 8E 40 00       LDX     #$4000          ; Long ...
+D7D2: 30 1F          LEAX    -1,X            ; ... delay ...
+D7D4: 26 FC          BNE     $D7D2           ; ... loop 
+D7D6: 35 81          PULS    CC,PC           ; Restore interrupts and out
 
 D7D8: DC A2          LDD     <$A2            
 D7DA: 80 02          SUBA    #$02            
@@ -2202,8 +2011,8 @@ D93B: DC A2          LDD     <$A2
 D93D: BD DA 24       JSR     $DA24                          ; 
 D940: 24 0C          BCC     $D94E                          ; 
 D942: DC A2          LDD     <$A2            
-D944: BD DE 5C       JSR     $DE5C                          ; 
-D947: C4 55          ANDB    #$55            
+D944: BD DE 5C       JSR     $DE5C                          ; Offset from top of first screen
+D947: C4 55          ANDB    #$55                           ; Change color (mask is 01010101)
 D949: 53             COMB                    
 D94A: E4 84          ANDB    ,X              
 D94C: E7 84          STB     ,X              
@@ -2475,6 +2284,8 @@ DB78: 97 92          STA     <$92                           ; {ram:RequestedPage
 DB7A: 13             SYNC                    
 DB7B: 39             RTS                     
 DB7C: AA                                  
+
+; Copy 3K (one screen) from U to 1C00
 DB7D: 8E 1C 00       LDX     #$1C00          
 DB80: 1F 03          TFR     D,U             
 DB82: EC C1          LDD     ,U++            
@@ -2482,13 +2293,16 @@ DB84: ED 81          STD     ,X++
 DB86: 8C 28 00       CMPX    #$2800          
 DB89: 25 F7          BCS     $DB82                          ; 
 DB8B: 39             RTS                     
+
 DB8C: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
 DB8F: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
 DB92: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
 DB95: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
 DB98: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
-DB9B: FF 55 CE       STU     $55CE           
-DB9E: C9 EA          ADCB    #$EA            
+DB9B: FF 
+DB9C: 55 
+
+DB9D: CE C9 EA       LDU     #$C9EA            
 DBA0: 0D A1          TST     <$A1            
 DBA2: 27 03          BEQ     $DBA7                          ; 
 DBA4: CE CA 7A       LDU     #$CA7A          
@@ -2498,6 +2312,7 @@ DBAB: 3D             MUL
 DBAC: 8B 1C          ADDA    #$1C            
 DBAE: 1F 01          TFR     D,X             
 DBB0: 39             RTS                     
+
 DBB1: 8D EA          BSR     $DB9D                          ; 
 DBB3: 86 06          LDA     #$06            
 DBB5: 97 99          STA     <$99            
@@ -2822,23 +2637,31 @@ DE4F: FF 00 00       STU     $0000
 DE52: FF 01 00       STU     $0100           
 DE55: 00 01          NEG     <$01            
 DE57: 00 00          NEG     <$00            
-DE59: 9E 9A          LDX     <$9A            
-DE5B: 10 8E 04 00    LDY     #$0400          
-DE5F: 34 04          PSHS    B               
-DE61: C6 20          LDB     #$20            
-DE63: 3D             MUL                     
-DE64: 30 8B          LEAX    D,X             
-DE66: E6 E4          LDB     ,S              
-DE68: 54             LSRB                    
-DE69: 54             LSRB                    
-DE6A: 3A             ABX                     
-DE6B: E6 E0          LDB     ,S+             
-DE6D: C4 03          ANDB    #$03            
-DE6F: 10 8E DE 76    LDY     #$DE76          
-DE73: E6 A5          LDB     B,Y             
-DE75: 39             RTS                     
-DE76: C0 30          SUBB    #$30            
-DE78: 0C 03          INC     <$03            
+
+; Coordinate Y,X = A,B
+; To memory offset X and pixel map B
+DE59: 9E 9A          LDX     <$9A            ; ?? Top of screen?
+DE5B: 10 8E 04 00    LDY     #$0400          ; Hiding "LDX #$0400" entry at DE5C 
+;DE5C: 8E 04 00 LDX #$400 ; Top of first screen
+DE5F: 34 04          PSHS    B               ; Hold X coordinate
+DE61: C6 20          LDB     #$20            ; Multiply ...
+DE63: 3D             MUL                     ; A (Y coordinate) by 32
+DE64: 30 8B          LEAX    D,X             ; Row offset
+DE66: E6 E4          LDB     ,S              ; Get the X coordinate back
+DE68: 54             LSRB                    ; Divide by ...
+DE69: 54             LSRB                    ; ... four (four pixels per byte)
+DE6A: 3A             ABX                     ; Offset to screen memory
+DE6B: E6 E0          LDB     ,S+             ; Pop the X coordinate back
+DE6D: C4 03          ANDB    #$03            ; Pixel number (left to right)
+DE6F: 10 8E DE 76    LDY     #$DE76          ; Pixel number to white-pixel-pattern
+DE73: E6 A5          LDB     B,Y             ; Get the byte for the pixel
+DE75: 39             RTS                     ; Done
+
+DE76: C0 ; 11000000 
+DE77: 30 ; 00110000
+DE78: 0C ; 00001100
+DE79: 03 ; 00000011
+            
 DE7A: 96 A0          LDA     <$A0            
 DE7C: 97 98          STA     <$98            
 DE7E: 10 8E 28 08    LDY     #$2808          
@@ -3027,9 +2850,6 @@ DFEF: 39             RTS
 DFF0: 1A 01          ORCC    #$01            
 DFF2: 39             RTS                     
 
-DFF3: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
-DFF6: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
-DFF9: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
-DFFC: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
-DFFF: FF 
+; Unused at end
+DFF3: FF FF FF FF FF FF FF FF FF FF FF FF FF 
 ```
