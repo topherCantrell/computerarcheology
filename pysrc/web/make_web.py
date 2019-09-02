@@ -254,8 +254,8 @@ def deploy_directory(current_node):
         if os.path.isdir(src):
             os.makedirs(dst)
             deploy_directory(dep)
-        else:
-            if src.endswith('-'):
+        else:            
+            if da.startswith('#') or src.endswith('-'):
                 pass
             elif not src.endswith('.md'):
                 shutil.copy(src, dst)

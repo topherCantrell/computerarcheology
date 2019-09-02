@@ -91,7 +91,7 @@ var TileEngine = (function() {
 			gap = parseFloat(att);
 		}
 		att = can.getAttribute("data-labelColor");
-		if(att) {
+		if(att || att==="") {
 			labColor = att;
 		}
 		att = can.getAttribute("data-address");
