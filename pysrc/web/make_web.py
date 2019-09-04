@@ -216,7 +216,7 @@ def process_markdown(lines, site_nav_node, fp_content):
     return ret
 
 
-def deploy_directory(current_node,dev_mode):
+def deploy_directory(current_node):
     ''' Recursively deploy a directory
 
         All files and markdowns in a single directory, and recursively call
@@ -249,17 +249,13 @@ def deploy_directory(current_node,dev_mode):
                 lines[i] = lines[i].replace(tag, value)
 
     for dep in current_node.children:
-        dev_ignore = False
-        if dep.startswith('#'):
-            dev_ignore = True
-            dep = dep[1:]
         da = dep.anchor
         src = os.path.join(fp_content, da)
-        dst = os.path.join(fp_deploy, da)        
+        dst = os.path.join(fp_deploy, da)
         if os.path.isdir(src):
             os.makedirs(dst)
             deploy_directory(dep)
-        else:            
+        else:
             if da.startswith('#') or src.endswith('-'):
                 pass
             elif not src.endswith('.md'):
@@ -286,19 +282,26 @@ def deploy_directory(current_node,dev_mode):
                 f.close()
 
 
-def load_site_directory():
+def load_site_directory(dev_mode=False):
     ''' Recursively load all the deployment information
         Returns:
             the NavTree of information
     '''
 
-    def _load_site_directory_rec(level, tree, current_node):
+    def _load_site_directory_rec(level, tree, current_node, dev_mode):
         src = os.path.join(ENV.CONTENT_DIR, current_node.get_full_path())
         lines, _, _ = code.markdown_utils.load_file(
             os.path.join(src, 'README.md'))
         info = code.markdown_utils.get_deploy(lines)
 
         for directory, title in info:
+
+            # In dev mode, we are building a specific set of things and ignoring others
+            # In full mode, we build everything even if it is tagged to ignore
+            if not dev_mode:
+                if directory.startswith('#'):
+                    directory = directory[1:]
+
             if directory.startswith('*'):
                 current_node.hidden = True
                 directory = directory[1:]
@@ -308,7 +311,7 @@ def load_site_directory():
             elif os.path.isdir(os.path.join(src, directory)):
                 # This is a directory. Make an entry and recurse into it
                 n = tree.add_page_nav(level, title, directory, None)
-                _load_site_directory_rec(level + 1, tree, n)
+                _load_site_directory_rec(level + 1, tree, n, dev_mode)
             else:
                 # This is a file
                 tree.add_page_nav(level, title, directory, None)
@@ -316,16 +319,14 @@ def load_site_directory():
     tree = NavTree()
     level = 1
     current_node = tree.root
-    _load_site_directory_rec(level, tree, current_node)
+    _load_site_directory_rec(level, tree, current_node, dev_mode)
     return tree
 
 
 if __name__ == '__main__':
-    
-    #sys.argv = ['make_web','dev']
-    
+
     dev_mode = False
-    if len(sys.argv)>1:
+    if len(sys.argv) > 1:
         if sys.argv[1].startswith('dev'):
             dev_mode = True
 
@@ -333,9 +334,9 @@ if __name__ == '__main__':
     if os.path.isdir(ENV.DEPLOY_DIR):
         shutil.rmtree(ENV.DEPLOY_DIR)
     os.makedirs(ENV.DEPLOY_DIR)
-    
+
     # Load the site information
-    site_nav = load_site_directory()
+    site_nav = load_site_directory(dev_mode)
 
     # Process all deployment beginning at the root
-    deploy_directory(site_nav.root,dev_mode)
+    deploy_directory(site_nav.root)
