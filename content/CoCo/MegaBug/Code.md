@@ -298,7 +298,7 @@ CAAE: 00 00          NEG     <$00
 
 ### Giant Bug Graphics
 
-The bugs are as 32 rows by 5 columns drawn column by column.
+The bugs are defined as 32 rows by 5 columns (of 4 pixels) drawn column by column.
 
 ```html
 <canvas width="180" height="260"

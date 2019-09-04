@@ -1,6 +1,7 @@
 import copy
 import os
 import shutil
+import sys
 
 from code.block_line import Block
 from code.directive_line import Directive
@@ -215,7 +216,7 @@ def process_markdown(lines, site_nav_node, fp_content):
     return ret
 
 
-def deploy_directory(current_node):
+def deploy_directory(current_node,dev_mode):
     ''' Recursively deploy a directory
 
         All files and markdowns in a single directory, and recursively call
@@ -248,9 +249,13 @@ def deploy_directory(current_node):
                 lines[i] = lines[i].replace(tag, value)
 
     for dep in current_node.children:
+        dev_ignore = False
+        if dep.startswith('#'):
+            dev_ignore = True
+            dep = dep[1:]
         da = dep.anchor
         src = os.path.join(fp_content, da)
-        dst = os.path.join(fp_deploy, da)
+        dst = os.path.join(fp_deploy, da)        
         if os.path.isdir(src):
             os.makedirs(dst)
             deploy_directory(dep)
@@ -316,14 +321,21 @@ def load_site_directory():
 
 
 if __name__ == '__main__':
+    
+    #sys.argv = ['make_web','dev']
+    
+    dev_mode = False
+    if len(sys.argv)>1:
+        if sys.argv[1].startswith('dev'):
+            dev_mode = True
 
     # Remove and recreate the deployment directory (clean)
     if os.path.isdir(ENV.DEPLOY_DIR):
         shutil.rmtree(ENV.DEPLOY_DIR)
     os.makedirs(ENV.DEPLOY_DIR)
-
+    
     # Load the site information
     site_nav = load_site_directory()
 
     # Process all deployment beginning at the root
-    deploy_directory(site_nav.root)
+    deploy_directory(site_nav.root,dev_mode)
