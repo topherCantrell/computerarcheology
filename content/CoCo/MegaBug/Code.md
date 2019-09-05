@@ -954,8 +954,8 @@ D0A9: 97 AD          STA     <$AD                           ; {ram:?AD?}
 D0AB: CE CC 90       LDU     #$CC90          
 D0AE: C6 27          LDB     #$27            
 D0B0: D7 98          STB     <$98            
-D0B2: BD D5 01       JSR     $D501                          ; 
-D0B5: 25 1D          BCS     $D0D4                          ; 
+D0B2: BD D5 01       JSR     $D501                          ; User pressed space or joystick button?
+D0B5: 25 1D          BCS     $D0D4                          ; Yes ... ??
 D0B7: EC C4          LDD     ,U              
 D0B9: 27 10          BEQ     $D0CB                          ; 
 D0BB: 8E D5 EF       LDX     #$D5EF          
@@ -968,7 +968,8 @@ D0C8: BD D6 F4       JSR     $D6F4                          ;
 D0CB: BD D7 3F       JSR     $D73F                          ; 
 D0CE: 0A 98          DEC     <$98            
 D0D0: 26 E0          BNE     $D0B2                          ; 
-D0D2: 20 52          BRA     $D126                          ; 
+D0D2: 20 52          BRA     $D126                          ;
+ 
 D0D4: 86 FF          LDA     #$FF            
 D0D6: 97 B5          STA     <$B5            
 D0D8: BD DB 6D       JSR     $DB6D                          ; 
@@ -1476,24 +1477,33 @@ D4FA: 30 03          LEAX    3,X
 D4FC: 0A 98          DEC     <$98            
 D4FE: 26 C4          BNE     $D4C4                          ; 
 D500: 39             RTS                     
-D501: 86 FF          LDA     #$FF            
-D503: B7 FF 02       STA     $FF02                          ; {hard:PIA0_DB} 
-D506: F6 FF 00       LDB     $FF00                          ; {hard:PIA0_DA} 
-D509: C4 01          ANDB    #$01            
+```
+
+## Check for space-bar or button press
+
+Return carry=1 if yes or carry=0 if no. Return FF in C2 if joystick or 00 in C2 if keyboard.
+
+```code
+CheckSpaceOrButton:
+D501: 86 FF          LDA     #$FF                           ; All columns ...
+D503: B7 FF 02       STA     $FF02                          ; {hard:PIA0_DB} ... turned off 
+D506: F6 FF 00       LDB     $FF00                          ; {hard:PIA0_DA}  Check the ...
+D509: C4 01          ANDB    #$01                           ; ... right joystick button
 D50B: 26 05          BNE     $D512                          ; 
-D50D: 97 C2          STA     <$C2            
-D50F: 1A 01          ORCC    #$01            
-D511: 39             RTS                     
-D512: 86 7F          LDA     #$7F            
-D514: B7 FF 02       STA     $FF02                          ; {hard:PIA0_DB} 
-D517: A6 8D 29 E5    LDA     $29E5,PC        
-D51B: 84 08          ANDA    #$08            
-D51D: 26 05          BNE     $D524                          ; 
-D51F: 0F C2          CLR     <$C2            
-D521: 1A 01          ORCC    #$01            
-D523: 39             RTS                     
-D524: 1C FE          ANDCC   #$FE            
-D526: 39             RTS                     
+D50D: 97 C2          STA     <$C2                           ; C2=FF ... using joysticks
+D50F: 1A 01          ORCC    #$01                           ; Carry = 1
+D511: 39             RTS                                    ; Out
+D512: 86 7F          LDA     #$7F                           ; Turn on ...
+D514: B7 FF 02       STA     $FF02                          ; {hard:PIA0_DB} ... upper column 
+D517: A6 8D 29 E5    LDA     $29E5,PC                       ; Read rows FF00
+D51B: 84 08          ANDA    #$08                           ; Space bar pressed?
+D51D: 26 05          BNE     $D524                          ; No ... keep looking
+D51F: 0F C2          CLR     <$C2                           ; C2=0 ... using keyboard
+D521: 1A 01          ORCC    #$01                           ; Carry = 1
+D523: 39             RTS                                    ; Out
+D524: 1C FE          ANDCC   #$FE                           ; Carry = 0
+D526: 39             RTS                                    ; Out
+
 D527: 86 02          LDA     #$02            
 D529: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} 
 D52C: C6 23          LDB     #$23            
@@ -1581,7 +1591,7 @@ D5B6: 9F C3          STX     <$C3
 D5B8: B6 FF 03       LDA     $FF03                          ; {hard:PIA0_CB} 
 D5BB: B6 FF 02       LDA     $FF02                          ; {hard:PIA0_DB} 
 D5BE: BD DD 52       JSR     $DD52                          ; 
-D5C1: 3B             RTI                     
+D5C1: 3B             RTI                     ; Done with interrupt
 
 D5C2: 48             LSLA                    
 D5C3: 69 67          ROL     7,S             
@@ -1999,27 +2009,40 @@ D8B2: 31 21          LEAY    1,Y
 D8B4: 0A 99          DEC     <$99            
 D8B6: 26 D4          BNE     $D88C                          ; 
 D8B8: 35 A0          PULS    Y,PC            
-D8BA: 96 C2          LDA     <$C2            
-D8BC: 26 28          BNE     $D8E6                          ; 
-D8BE: 86 F7          LDA     #$F7            
+```
+
+## Read directional input
+
+Keyboard or joystick -- depending on how the user started the game.
+
+```code
+D8BA: 96 C2          LDA     <$C2            ; Using joystick or keyboard
+D8BC: 26 28          BNE     $D8E6                          ; joystick ... skip to that
+;
+; Read keyboard
+;
+D8BE: 86 F7          LDA     #$F7            ; Column 4 (Up arrow)
 D8C0: C4 01          ANDB    #$01            
 D8C2: D7 A5          STB     <$A5            
 D8C4: 27 02          BEQ     $D8C8                          ; 
-D8C6: 86 DF          LDA     #$DF            
-D8C8: B7 FF 02       STA     $FF02                          ; {hard:PIA0_DB} 
+D8C6: 86 DF          LDA     #$DF            ; Column 6 (Right arrow)
+D8C8: B7 FF 02       STA     $FF02           ; {hard:PIA0_DB} First column on 
 D8CB: 5F             CLRB                    
-D8CC: B6 FF 00       LDA     $FF00                          ; {hard:PIA0_DA} 
-D8CF: 84 08          ANDA    #$08            
-D8D1: 27 10          BEQ     $D8E3                          ; 
-D8D3: 1A 01          ORCC    #$01            
-D8D5: 79 FF 02       ROL     $FF02                          ; {hard:PIA0_DB} 
+D8CC: B6 FF 00       LDA     $FF00           ; {hard:PIA0_DA} Read the rows 
+D8CF: 84 08          ANDA    #$08            ; Up arrow pressed?
+D8D1: 27 10          BEQ     $D8E3           ; Yes ... record and out 
+D8D3: 1A 01          ORCC    #$01            ; Shifting in a 1 to upper column
+D8D5: 79 FF 02       ROL     $FF02           ; {hard:PIA0_DB} Try the next column 
 D8D8: C6 02          LDB     #$02            
-D8DA: B6 FF 00       LDA     $FF00                          ; {hard:PIA0_DA} 
+D8DA: B6 FF 00       LDA     $FF00           ; {hard:PIA0_DA} 
 D8DD: 84 08          ANDA    #$08            
 D8DF: 27 02          BEQ     $D8E3                          ; 
-D8E1: C6 80          LDB     #$80            
+D8E1: C6 80          LDB     #$80            ; Upper bit set means nothing pressed
 D8E3: DB A5          ADDB    <$A5            
 D8E5: 39             RTS                     
+;
+; Read joystick
+;
 D8E6: B6 FF 23       LDA     $FF23                          ; {hard:PIA1_CB} 
 D8E9: 34 02          PSHS    A               
 D8EB: 84 F7          ANDA    #$F7            
@@ -2055,7 +2078,8 @@ D92A: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA}
 D92D: 35 02          PULS    A               
 D92F: B7 FF 23       STA     $FF23                          ; {hard:PIA1_CB} 
 D932: DB A5          ADDB    <$A5            
-D934: 39             RTS                     
+D934: 39             RTS
+                     
 D935: 0D B5          TST     <$B5            
 D937: 10 27 00 AA    LBEQ    $00AA           
 D93B: DC A2          LDD     <$A2            
@@ -2072,8 +2096,8 @@ D950: BD DA 12       JSR     $DA12                          ;
 D953: 24 1D          BCC     $D972                          ; 
 D955: D6 A4          LDB     <$A4            
 D957: C8 01          EORB    #$01            
-D959: BD D8 BA       JSR     $D8BA                          ; 
-D95C: 2B 14          BMI     $D972                          ; 
+D959: BD D8 BA       JSR     $D8BA                          ; Read directional inputs
+D95C: 2B 14          BMI     $D972                          ; Nothing pressed ...
 D95E: D7 A5          STB     <$A5            
 D960: DC A2          LDD     <$A2            
 D962: BD DE 5C       JSR     $DE5C                          ; 
@@ -2083,10 +2107,12 @@ D96A: 25 06          BCS     $D972                          ;
 D96C: 96 A5          LDA     <$A5            
 D96E: 97 A4          STA     <$A4            
 D970: 20 09          BRA     $D97B                          ; 
+;
 D972: D6 A4          LDB     <$A4            
-D974: BD D8 BA       JSR     $D8BA                          ; 
-D977: 2B 02          BMI     $D97B                          ; 
+D974: BD D8 BA       JSR     $D8BA                          ; Read directional inputs
+D977: 2B 02          BMI     $D97B                          ; Nothing pressed ...
 D979: D7 A4          STB     <$A4            
+;
 D97B: DC A2          LDD     <$A2            
 D97D: BD DA 12       JSR     $DA12                          ; 
 D980: 24 0C          BCC     $D98E                          ; 
