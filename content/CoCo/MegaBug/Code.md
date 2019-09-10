@@ -2385,12 +2385,10 @@ DB86: 8C 28 00       CMPX    #$2800
 DB89: 25 F7          BCS     $DB82                          ; 
 DB8B: 39             RTS                     
 
-DB8C: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
-DB8F: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
-DB92: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
-DB95: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
-DB98: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
-DB9B: FF 
+DB8C: FF FF FF FF FF FF       
+DB92: FF FF FF FF FF FF      
+DB98: FF FF FF FF 
+;
 DB9C: 55 
 
 DB9D: CE C9 EA       LDU     #$C9EA            
