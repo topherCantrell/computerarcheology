@@ -872,8 +872,8 @@ CFF0: 0F 00          CLR     <$00
 CFF2: A1 8D 40 0A    CMPA    $400A,PC                       ; This is $1000 if we are running from cartridge
 CFF6: 27 1D          BEQ     $D015                          ; This is cartridge ... continue normally
  
-CFF8: BD D2 BE       JSR     $D2BE                          ; Strange. Not a section of code.
-CFFB: CE 04 00       LDU     #$0400          
+CFF8: BD D2 BE       JSR     $D2BE                          ; Strange. If we are not running in cart, then where is this?
+CFFB: CE 04 00       LDU     #$0400                         ; Start of the text screen
 CFFE: DF 9E          STU     <$9E            
 D000: BD D4 AE       JSR     $D4AE                          ; {Clear1200} Clear 1200 bytes (4K for 3K screen??)
 D003: 8E D2 A1       LDX     #$D2A1                         ;
@@ -1763,22 +1763,23 @@ D6ED: D6 AC          LDB     <$AC                           ; {ram:?AB?}
 D6EF: CB 06          ADDB    #$06            
 D6F1: D7 AC          STB     <$AC                           ; {ram:?AB?} 
 D6F3: 39             RTS                     
+;
 D6F4: 0F AE          CLR     <$AE                           ; {ram:?AE?} 
 D6F6: 03 AE          COM     <$AE                           ; {ram:?AE?} 
 D6F8: 20 02          BRA     $D6FC                          ; 
-
+;
 D6FA: 0F AE          CLR     <$AE                           ; {ram:?AE?} 
 D6FC: A6 80          LDA     ,X+             
 D6FE: 84 7F          ANDA    #$7F            
 D700: 80 20          SUBA    #$20            
-D702: 25 EF          BCS     $D6F3                          ; Out
+D702: 25 EF          BCS     $D6F3                          ; Less than $20 ... out
 D704: 81 06          CMPA    #$06            
 D706: 24 04          BCC     $D70C                          ; 
 D708: 8B 3E          ADDA    #$3E            
 D70A: 20 16          BRA     $D722                          ;
 ; 
-D70C: 80 10          SUBA    #$10            
-D70E: 25 E3          BCS     $D6F3                          ; 
+D70C: 80 10          SUBA    #$10                           ; 
+D70E: 25 E3          BCS     $D6F3                          ; Less than $10 ... out
 D710: 81 0A          CMPA    #$0A            
 D712: 25 0E          BCS     $D722                          ; 
 D714: 80 07          SUBA    #$07            
@@ -1788,6 +1789,7 @@ D71A: 25 06          BCS     $D722                          ;
 D71C: 80 06          SUBA    #$06            
 D71E: 81 3E          CMPA    #$3E            
 D720: 24 D1          BCC     $D6F3                          ; 
+;
 D722: 34 10          PSHS    X               
 D724: BD D6 79       JSR     $D679                          ; 
 D727: 35 10          PULS    X               
@@ -1802,6 +1804,8 @@ D737: 24 02          BCC     $D73B                          ;
 D739: 86 55          LDA     #$55            
 D73B: 97 AD          STA     <$AD                           ; {ram:?AD?} 
 D73D: 20 BD          BRA     $D6FC                          ; 
+
+; Sound of some kind
 D73F: 34 01          PSHS    CC              
 D741: 1A 50          ORCC    #$50            
 D743: EC C4          LDD     ,U              
@@ -2346,20 +2350,26 @@ DB54: 33 C8 14       LEAU    $14,U
 DB57: 0A 99          DEC     <$99            
 DB59: 26 ED          BNE     $DB48                          ; 
 DB5B: 39             RTS                     
-DB5C: 00 55          NEG     <$55            
-DB5E: AA FF 55 FF    ORA     [$55FF]         
-DB62: FF FF AA       STU     $FFAA           
-DB65: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
-DB68: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
-DB6B: FF 55 96       STU     $5596           
-DB6E: 92 81          SBCA    <$81            
-DB70: 1C 27          ANDCC   #$27            
-DB72: 03 5F          COM     <$5F            
+
+DB5C: 00 55
+DB5E: AA FF 55 FF
+DB62: FF FF AA
+DB65: FF FF FF
+DB68: FF FF FF
+DB6B: FF 55
+
+; Copy old graphics page to new page??
+
+DB6D: 96 92          LDA     <$92                           ; {ram:RequestedPage}
+DB6F: 81 1C          CMPA    #$1C  
+DB71: 27 03          BEQ     $DB76
+DB73: 5F             CLRB           
 DB74: 8D 07          BSR     $DB7D                          ; {Copy3K} 
 DB76: 86 1C          LDA     #$1C            
 DB78: 97 92          STA     <$92                           ; {ram:RequestedPage} 
 DB7A: 13             SYNC                    
 DB7B: 39             RTS                     
+;
 DB7C: AA                                  
 ```
 ## Copy3K
