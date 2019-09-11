@@ -2117,34 +2117,17 @@ D5BB: B6 FF 02       LDA     $FF02                          ; {hard:PIA0_DB}
 D5BE: BD DD 52       JSR     $DD52                          ; 
 D5C1: 3B             RTI                     ; Done with interrupt
 
-D5C2: 48             LSLA                    
-D5C3: 69 67          ROL     7,S             
-D5C5: 68 20          ASL     0,Y             
-D5C7: 53             COMB                    
-D5C8: 63 6F          COM     15,S            
-D5CA: 72                                  
-D5CB: 65                                  
-D5CC: 20 00          BRA     $D5CE                          ; 
-D5CE: 20 20          BRA     $D5F0                          ; 
-D5D0: 20 50          BRA     $D622                          ; 
-D5D2: 6C 61          INC     1,S             
-D5D4: 79 20 20       ROL     $2020           
-D5D7: 4D             TSTA                    
-D5D8: 65                                  
-D5D9: 67 61          ASR     1,S             
-D5DB: 22 42          BHI     $D61F                          ; 
-D5DD: 75                                  
-D5DE: 67 00          ASR     0,X             
-D5E0: 53             COMB                    
-D5E1: 63 6F          COM     15,S            
-D5E3: 72                                  
-D5E4: 65                                  
-D5E5: 24 20          BCC     $D607                          ; 
-D5E7: 00 54          NEG     <$54            
-D5E9: 69 6D          ROL     13,S            
-D5EB: 65                                  
-D5EC: 24 20          BCC     $D60E                          ; 
-D5EE: 00 
+D5C2: 48 69 67 68 20 53 63 6F 72 65 20 00
+; High_Score_ 
+
+D5CE: 20 20 20 50 6C 61 79 20 20 4D 65 67 61 22 42 75 67 00
+; ___Play__Mega-Bug
+             
+D5E0: 53 63 6F 72 65 24 20 00 
+; Score:_
+
+D5E8: 54 69 6D 65 24 20 00
+; Time:_ 
 
 D5EF: 07
 D5F0: 2A FF          BPL     $D5F1                          ; 
