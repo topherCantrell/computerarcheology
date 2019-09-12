@@ -488,13 +488,7 @@ CC70: 00 80 00 00 00 00 00 00 00 00 00 00 00 80 80 80 E0 78 00 80 80 80 E0 78 00
 ; .....+++............
 ; ...++++.............
 
-; .....#.#
-; ....#.#.
-; ...#....
-; ..#.##.#
-; ........
-; ........
-; 
+; TODO ?? last data section to decode!
 
 CC90: 06 0A          ROR     <$0A            
 CC92: 10 2D 00 00    LBLT    $0000           
@@ -1685,42 +1679,20 @@ D296: 26 FC          BNE     $D294                          ;
 D298: 9E C3          LDX     <$C3            
 D29A: 10 27 FD C2    LBEQ    $FDC2           
 D29E: 7E D1 C2       JMP     $D1C2                          ; 
- 
-D2A1: 0A 01          DEC     <$01            
-D2A3: AA 31          ORA     -15,Y           
-D2A5: 36 6B          PSHU    S,Y,DP,A,CC     
-D2A7: 20 6F          BRA     $D318                          ; 
-D2A9: 72                                  
-D2AA: 20 6D          BRA     $D319                          ; 
-D2AC: 6F 72          CLR     -14,S           
-D2AE: 65                                  
-D2AF: 20 6F          BRA     $D320                          ; 
-D2B1: 66 20          ROR     0,Y             
-D2B3: 6D 65          TST     5,S             
-D2B5: 6D 6F          TST     15,S            
-D2B7: 72                                  
-D2B8: 79 00 1E       ROL     $001E           
-D2BB: 0D 55          TST     <$55            
-D2BD: 69 
 
-D2BE: 73         
-D2BF: 20 6E          BRA     $D32F                          ; 
-D2C1: 65                                  
-D2C2: 65                                  
-D2C3: 64 65          LSR     5,S             
-D2C5: 64 20          LSR     0,Y             
-D2C7: 74 6F 20       LSR     $6F20           
-D2CA: 70 6C 61       NEG     $6C61           
-D2CD: 79 00 32       ROL     $0032           
-D2D0: 2A FF          BPL     $D2D1                          ; 
-D2D2: 4D             TSTA                    
-D2D3: 65                                  
-D2D4: 67 61          ASR     1,S             
-D2D6: 22 42          BHI     $D31A                          ; 
-D2D8: 75                                  
-D2D9: 67 00          ASR     0,X             
-D2DB: 00 00          NEG     <$00            
-D2DD: 00 
+D2A1: 0A 01 AA 
+D2A4: 31 36 6B 20 6F 72 20 6D 6F 72 65 20 6F 66 20 6D 65 6D 6F 72 79 00
+; 16k_or_more_of_memory
+ 
+D2BA: 1E 0D 55        
+D2BD: 69 73 20 6E 65 65 64 65 64 20 74 6F 20 70 6C 61 79 00 
+; is_needed_to_play
+
+D2CF: 32 2A FF
+D2D2: 4D 65 67 61 22 42 75 67 00 
+; Mega-Bug
+
+D2DB: 00 00 00 
 ```
 
 ## SetGraphicsMode
@@ -2131,64 +2103,43 @@ D5E8: 54 69 6D 65 24 20 00
 
 D5EF: 07 2A FF
 D5F2: 4D 65 67 61 22 42 75 67 00
+; Mega-Bug
     
 D5FB: 17 3C 55 
 D5FE: 42 79 00 
+; By
 
 D601: 21 21 55
 D604: 53 74 65 76 65 20 42 6A 6F 72 6B 00
-; Steve Bjork
+; Steve_Bjork
  
 D610: 31 18 AA
 D613: 43 6F 70 79 72 69 67 68 74 20 31 39 38 32 00
-;
+; Copyright_1982
    
 D622: 3B 1B AA 
 D625: 44 61 74 61 73 6F 66 74 20 49 6E 63 23 00
-;
+; Datasoft_Inc.
 
 D633: 4B 1E 55 
-D636: 4C             INCA                    
-D637: 69 63          ROL     3,S             
-D639: 65                                  
-D63A: 6E 73          JMP     -13,S           
-D63C: 65                                  
-D63D: 64 20          LSR     0,Y             
-D63F: 74 6F 00       LSR     $6F00           
-D642: 55                                  
-D643: 0C 55          INC     <$55            
-D645: 54             LSRB                    
-D646: 61                                  
-D647: 6E 64          JMP     4,S             
-D649: 79 20 43       ROL     $2043           
-D64C: 6F 72          CLR     -14,S           
-D64E: 70 6F 72       NEG     $6F72           
-D651: 61                                  
-D652: 74 69 6F       LSR     $696F           
-D655: 6E 00          JMP     0,X             
-D657: 00 00          NEG     <$00         
-D659: 00 
+D636: 4C 69 63 65 6E 73 65 64 20 74 6F 00
+; Licensed_to
+    
+D642: 55 0C 55     
+D645: 54 61 6E 64 79 20 43 6F 72 70 6F 72 61 74 69 6F 6E 00
+; Tandy_Corporation
 
-D65A: 1B 1E 
-D65C: 55 
-D65D: 57
-D65E: 65                                  
-D65F: 25 6C          BCS     $D6CD                          ; 
-D661: 6C 20          INC     0,Y             
-D663: 47             ASRA                    
-D664: 65                                  
-D665: 74 63 68       LSR     $6368           
-D668: 61                                  
-D669: 00 28          NEG     <$28            
-D66B: 27 AA          BEQ     $D617                          ; 
-D66D: 4E                                  
-D66E: 65                                  
-D66F: 78 74 20       LSL     $7420           
-D672: 54             LSRB                    
-D673: 69 6D          ROL     13,S            
-D675: 65                                  
-D676: 00 00          NEG     <$00            
-D678: 00 
+D657: 00 00 00 
+
+D65A: 1B 1E 55 
+D65D: 57 65 25 6C 6C 20 47 65 74 63 68 61 00
+; We'll_Getcha
+ 
+D66A: 28 27 AA 
+D66D: 4E 65 78 74 20 54 69 6D 65 00
+; Next_Time
+ 
+D677: 00 00 
 
 D679: 34 40          PSHS    U
 D67B: DE 90          LDU     <$90            
@@ -2906,13 +2857,16 @@ DBC5: 0A 99          DEC     <$99
 DBC7: 26 EE          BNE     $DBB7                          ; 
 DBC9: 9F A5          STX     <$A5            
 DBCB: 39             RTS                     
-DBCC: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
-DBCF: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
-DBD2: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
-DBD5: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
-DBD8: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
-DBDB: FF AA C6       STU     $AAC6           
-DBDE: FF 86 5F       STU     $865F           
+
+DBCC: FF FF FF 
+DBCF: FF FF FF
+DBD2: FF FF FF
+DBD5: FF FF FF
+DBD8: FF FF FF
+DBDB: FF AA 
+
+DBDD: C6 FF          LDB     #$FF 
+DBDF: 86 5F          LDA     #$5F
 DBE1: D7 88          STB     <$88            
 DBE3: 8D B8          BSR     $DB9D                          ; 
 DBE5: 30 88 17       LEAX    $17,X           
@@ -2936,12 +2890,14 @@ DC09: 4A             DECA
 DC0A: 26 DE          BNE     $DBEA                          ; 
 DC0C: 39             RTS                     
 
-DC0D: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
-DC10: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
-DC13: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
-DC16: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
-DC19: FF FF FF       STU     $FFFF                          ; {hard:vectorReset} 
-DC1C: FF 34 06       STU     $3406           
+DC0D: FF FF FF
+DC10: FF FF FF
+DC13: FF FF FF
+DC16: FF FF FF
+DC19: FF FF FF
+DC1C: FF 
+
+DC1D: 34 06          PSHS    B,A           
 DC1F: C4 03          ANDB    #$03            
 DC21: 8E DE 76       LDX     #$DE76          
 DC24: E6 85          LDB     B,X             
