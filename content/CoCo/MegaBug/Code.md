@@ -487,131 +487,53 @@ CC70: 00 80 00 00 00 00 00 00 00 00 00 00 00 80 80 80 E0 78 00 80 80 80 E0 78 00
 ; .......$......++++..
 ; .....+++............
 ; ...++++.............
+```
 
-; TODO ?? last data section to decode!
+# La Cucaracha
 
-CC90: 06 0A          ROR     <$0A            
-CC92: 10 2D 00 00    LBLT    $0000           
-CC96: 06 0A          ROR     <$0A            
-CC98: 10 2D 00 00    LBLT    $0000           
-CC9C: 06 0A          ROR     <$0A            
-CC9E: 10 2D 00 00    LBLT    $0000           
-CCA2: 18                                  
-CCA3: 2B 15          BMI     $CCBA                          ; 
-CCA5: 98 0D          EORA    <$0D            
-CCA7: 99 06          ADCA    <$06            
-CCA9: 0A 1B          DEC     <$1B            
-CCAB: 35 10          PULS    X               
-CCAD: 2D 06          BLT     $CCB5                          ; 
-CCAF: 0A 00          DEC     <$00            
-CCB1: 00 00          NEG     <$00            
-CCB3: 00 06          NEG     <$06            
-CCB5: 0A 10          DEC     <$10            
-CCB7: 2D 00          BLT     $CCB9                          ; 
-CCB9: 00 06          NEG     <$06            
-CCBB: 0A 10          DEC     <$10            
-CCBD: 2D 00          BLT     $CCBF                          ; 
-CCBF: 00 06          NEG     <$06            
-CCC1: 0A 10          DEC     <$10            
-CCC3: 2D 00          BLT     $CCC5                          ; 
-CCC5: 00 18          NEG     <$18            
-CCC7: 2B 15          BMI     $CCDE                          ; 
-CCC9: 98 0D          EORA    <$0D            
-CCCB: 99 06          ADCA    <$06            
-CCCD: 0A 1B          DEC     <$1B            
-CCCF: 35 10          PULS    X               
-CCD1: 2D 1E          BLT     $CCF1                          ; 
-CCD3: 35 00          PULS    $00             
-CCD5: 00 00          NEG     <$00            
-CCD7: 00 06          NEG     <$06            
-CCD9: 0A 15          DEC     <$15            
-CCDB: 98 0D          EORA    <$0D            
-CCDD: 99 06          ADCA    <$06            
-CCDF: 0A 15          DEC     <$15            
-CCE1: 98 0D          EORA    <$0D            
-CCE3: 99 06          ADCA    <$06            
-CCE5: 0A 14          DEC     <$14            
-CCE7: 60 0C          NEG     12,X            
-CCE9: 19             DAA                     
-CCEA: 06 0A          ROR     <$0A            
-CCEC: 14                                  
-CCED: 60 0C          NEG     12,X            
-CCEF: 19             DAA                     
-CCF0: 06 0A          ROR     <$0A            
-CCF2: 12             NOP                     
-CCF3: 27 0A          BEQ     $CCFF                          ; 
-CCF5: CB 06          ADDB    #$06            
-CCF7: 0A 12          DEC     <$12            
-CCF9: 27 0A          BEQ     $CD05                          ; 
-CCFB: CB 18          ADDB    #$18            
-CCFD: 2B 10          BMI     $CD0F                          ; 
-CCFF: 2D 0A          BLT     $CD0B                          ; 
-CD01: 2F 06          BLE     $CD09                          ; 
-CD03: 0A 00          DEC     <$00            
-CD05: 00 00          NEG     <$00            
-CD07: 00 06          NEG     <$06            
-CD09: 0A 10          DEC     <$10            
-CD0B: 2D 00          BLT     $CD0D                          ; 
-CD0D: 00 06          NEG     <$06            
-CD0F: 0A 10          DEC     <$10            
-CD11: 2D 00          BLT     $CD13                          ; 
-CD13: 00 06          NEG     <$06            
-CD15: 0A 10          DEC     <$10            
-CD17: 2D 00          BLT     $CD19                          ; 
-CD19: 00 18          NEG     <$18            
-CD1B: 2B 14          BMI     $CD31                          ; 
-CD1D: 60 0C          NEG     12,X            
-CD1F: 19             DAA                     
-CD20: 06 0A          ROR     <$0A            
-CD22: 18                                  
-CD23: 35 10          PULS    X               
-CD25: 2D 06          BLT     $CD2D                          ; 
-CD27: 0A 00          DEC     <$00            
-CD29: 00 00          NEG     <$00            
-CD2B: 00 06          NEG     <$06            
-CD2D: 0A 10          DEC     <$10            
-CD2F: 2D 00          BLT     $CD31                          ; 
-CD31: 00 06          NEG     <$06            
-CD33: 0A 10          DEC     <$10            
-CD35: 2D 00          BLT     $CD37                          ; 
-CD37: 00 06          NEG     <$06            
-CD39: 0A 10          DEC     <$10            
-CD3B: 2D 00          BLT     $CD3D                          ; 
-CD3D: 00 18          NEG     <$18            
-CD3F: 2B 14          BMI     $CD55                          ; 
-CD41: 60 0C          NEG     12,X            
-CD43: 19             DAA                     
-CD44: 06 0A          ROR     <$0A            
-CD46: 18                                  
-CD47: 35 10          PULS    X               
-CD49: 2D 1E          BLT     $CD69                          ; 
-CD4B: 35 00          PULS    $00             
-CD4D: 00 00          NEG     <$00            
-CD4F: 00 06          NEG     <$06            
-CD51: 0A 20          DEC     <$20            
-CD53: 5B                                  
-CD54: 14                                  
-CD55: 60 06          NEG     6,X             
-CD57: 0A 24          DEC     <$24            
-CD59: 51                                  
-CD5A: 15                                  
-CD5B: 98 06          EORA    <$06            
-CD5D: 0A 20          DEC     <$20            
-CD5F: 5B                                  
-CD60: 14                                  
-CD61: 60 06          NEG     6,X             
-CD63: 0A 1C          DEC     <$1C            
-CD65: D2 12          SBCB    <$12            
-CD67: 27 06          BEQ     $CD6F                          ; 
-CD69: 0A 1B          DEC     <$1B            
-CD6B: 35 10          PULS    X               
-CD6D: 2D 06          BLT     $CD75                          ; 
-CD6F: 0A 18          DEC     <$18            
-CD71: 35 18          PULS    DP,X            
-CD73: F4 06 0A       ANDB    $060A           
-CD76: 15                                  
-CD77: 98 0D          EORA    <$0D            
-CD79: 99 
+39 notes (including rests)
+
+```code
+NotesSplash:
+CC90: 06 0A 10 2D 00 00           
+CC96: 06 0A 10 2D 00 00   
+CC9C: 06 0A 10 2D 00 00           
+CCA2: 18 2B 15 98 0D 99 
+CCA8: 06 0A 1B 35 10 2D 
+CCAE: 06 0A 00 00 00 00 
+CCB4: 06 0A 10 2D 00 00 
+CCBA: 06 0A 10 2D 00 00 
+CCC0: 06 0A 10 2D 00 00 
+CCC6: 18 2B 15 98 0D 99 
+CCCC: 06 0A 1B 35 10 2D 
+CCD2: 1E 35 00 00 00 00 
+CCD8: 06 0A 15 98 0D 99 
+CCDE: 06 0A 15 98 0D 99 
+CCE4: 06 0A 14 60 0C 19                     
+CCEA: 06 0A 14 60 0C 19
+CCF0: 06 0A 12 27 0A CB 
+CCF6: 06 0A 12 27 0A CB 
+CCFC: 18 2B 10 2D 0A 2F 
+CD02: 06 0A 00 00 00 00 
+CD08: 06 0A 10 2D 00 00 
+CD0E: 06 0A 10 2D 00 00 
+CD14: 06 0A 10 2D 00 00 
+CD1A: 18 2B 14 60 0C 19         
+CD20: 06 0A 18 35 10 2D 
+CD26: 06 0A 00 00 00 00 
+CD2C: 06 0A 10 2D 00 00 
+CD32: 06 0A 10 2D 00 00 
+CD38: 06 0A 10 2D 00 00 
+CD3E: 18 2B 14 60 0C 19
+CD44: 06 0A 18 35 10 2D 
+CD4A: 1E 35 00 00 00 00 
+CD50: 06 0A 20 5B 14 60 
+CD56: 06 0A 24 51 15 98 
+CD5C: 06 0A 20 5B 14 60 
+CD62: 06 0A 1C D2 12 27 
+CD68: 06 0A 1B 35 10 2D 
+CD6E: 06 0A 18 35 18 F4 
+CD74: 06 0A 15 98 0D 99
 ```
 
 # Character graphics
@@ -1468,24 +1390,24 @@ D0A2: 86 01          LDA     #$01
 D0A4: BD DE 01       JSR     $DE01                          ; 
 D0A7: 86 FF          LDA     #$FF            
 D0A9: 97 AD          STA     <$AD                           ; {ram:?AD?} 
-D0AB: CE CC 90       LDU     #$CC90          
-D0AE: C6 27          LDB     #$27            
-D0B0: D7 98          STB     <$98            
+D0AB: CE CC 90       LDU     #$CC90          ; Song table
+D0AE: C6 27          LDB     #$27            ; 39 notes (including rests) in the song
+D0B0: D7 98          STB     <$98            ; Note counter
 D0B2: BD D5 01       JSR     $D501                          ; User pressed space or joystick button?
-D0B5: 25 1D          BCS     $D0D4                          ; Yes ... ??
-D0B7: EC C4          LDD     ,U              
-D0B9: 27 10          BEQ     $D0CB                          ; 
-D0BB: 8E D5 EF       LDX     #$D5EF          
+D0B5: 25 1D          BCS     $D0D4                          ; Yes ... break out to play game
+D0B7: EC C4          LDD     ,U              ; Get duration
+D0B9: 27 10          BEQ     $D0CB                          ; Hold note??
+D0BB: 8E D5 EF       LDX     #$D5EF          ; "Mega-Bug" text
 D0BE: DC 9A          LDD     <$9A                           ; {ram:?ScreenPointerA} 
 D0C0: DD 9E          STD     <$9E            
-D0C2: EC 81          LDD     ,X++            
+D0C2: EC 81          LDD     ,X++            ; Destination of "Mega-Bug" string
 D0C4: DD AB          STD     <$AB                           ; {ram:?AB?} 
-D0C6: 30 01          LEAX    1,X             
+D0C6: 30 01          LEAX    1,X             ; Skip over color mask
 D0C8: BD D6 F4       JSR     $D6F4                          ; 
-D0CB: BD D7 3F       JSR     $D73F                          ; 
-D0CE: 0A 98          DEC     <$98            
-D0D0: 26 E0          BNE     $D0B2                          ; 
-D0D2: 20 52          BRA     $D126                          ;
+D0CB: BD D7 3F       JSR     $D73F                          ; Play dual note
+D0CE: 0A 98          DEC     <$98            ; All notes played?
+D0D0: 26 E0          BNE     $D0B2                          ; No ... keep playing notes
+D0D2: 20 52          BRA     $D126                          ; Time for the demo game
  
 D0D4: 86 FF          LDA     #$FF            
 D0D6: 97 B5          STA     <$B5            
@@ -1570,7 +1492,7 @@ D193: 0D C6          TST     <$C6
 D195: 26 02          BNE     $D199                          ; 
 D197: C6 27          LDB     #$27            
 D199: D7 98          STB     <$98            
-D19B: CE CC 90       LDU     #$CC90          
+D19B: CE CC 90       LDU     #$CC90          ; Splash music table
 D19E: BD D7 3F       JSR     $D73F                          ; 
 D1A1: 8E 12 00       LDX     #$1200          
 D1A4: 30 1F          LEAX    -1,X            
@@ -2210,10 +2132,10 @@ D6F6: 03 AE          COM     <$AE                           ; {ram:?AE?}
 D6F8: 20 02          BRA     $D6FC                          ; 
 ;
 D6FA: 0F AE          CLR     <$AE                           ; {ram:?AE?} 
-D6FC: A6 80          LDA     ,X+             
-D6FE: 84 7F          ANDA    #$7F            
-D700: 80 20          SUBA    #$20            
-D702: 25 EF          BCS     $D6F3                          ; Less than $20 ... out
+D6FC: A6 80          LDA     ,X+             ; Get character
+D6FE: 84 7F          ANDA    #$7F            ; Drop the upper bit
+D700: 80 20          SUBA    #$20            ; No ASCII below this
+D702: 25 EF          BCS     $D6F3                          ; Less than SPACE ... out
 D704: 81 06          CMPA    #$06            
 D706: 24 04          BCC     $D70C                          ; 
 D708: 8B 3E          ADDA    #$3E            
@@ -2246,24 +2168,26 @@ D739: 86 55          LDA     #$55
 D73B: 97 AD          STA     <$AD                           ; {ram:?AD?} 
 D73D: 20 BD          BRA     $D6FC                          ; 
 
-; Sound of some kind
-D73F: 34 01          PSHS    CC              
-D741: 1A 50          ORCC    #$50            
-D743: EC C4          LDD     ,U              
-D745: 44             LSRA                    
-D746: 56             RORB                    
-D747: 44             LSRA                    
-D748: 56             RORB                    
-D749: 44             LSRA                    
-D74A: 56             RORB                    
-D74B: 34 06          PSHS    B,A             
-D74D: EC C1          LDD     ,U++            
+; Play dual notes (splash music)
+PlayTwoNotes:
+D73F: 34 01          PSHS    CC              ; Hold interrupt status
+D741: 1A 50          ORCC    #$50            ; Turn interrupts off (sound timing loop)
+D743: EC C4          LDD     ,U              ; Duration
+D745: 44             LSRA                    ; Divide by 2 ...
+D746: 56             RORB                    ; ...
+D747: 44             LSRA                    ; ... 4 ...
+D748: 56             RORB                    ; ...
+D749: 44             LSRA                    ; ... 8 ...
+D74A: 56             RORB                    ;
+D74B: 34 06          PSHS    B,A             ; Duration/8 to stack
+D74D: EC C1          LDD     ,U++            ; Duration again
 D74F: A3 E1          SUBD    ,S++            
-D751: 1F 01          TFR     D,X             
-D753: EC C1          LDD     ,U++            
+D751: 1F 01          TFR     D,X             ; Duration to X
+D753: EC C1          LDD     ,U++            ; Note 1
 D755: DD 80          STD     <$80            
-D757: EC C1          LDD     ,U++            
+D757: EC C1          LDD     ,U++            ; Note 2
 D759: DD 82          STD     <$82            
+;
 D75B: 6F E4          CLR     ,S              
 D75D: DC 86          LDD     <$86            
 D75F: D3 82          ADDD    <$82            
@@ -2278,9 +2202,9 @@ D76E: 44             LSRA
 D76F: 44             LSRA                    
 D770: B8 FF 20       EORA    $FF20                          ; {hard:PIA1_DA} 6-bit ...
 D773: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} ... sound
-D776: 30 1F          LEAX    -1,X            
-D778: 26 E1          BNE     $D75B                          ; 
-D77A: 35 81          PULS    CC,PC	                          ; Out
+D776: 30 1F          LEAX    -1,X            ; Note finished?
+D778: 26 E1          BNE     $D75B                          ; No ... keep playing
+D77A: 35 81          PULS    CC,PC	                          ; Restore interrupts and out
 ```
 
 ## Play "We Gotcha!"
