@@ -1,3 +1,6 @@
+../../content/CoCo/MegaBug/Code.md
+../../content/CoCo/MegaBug\RAMUse.md
+../../content/CoCo/MegaBug\../Hardware.md
 ![](megabug.jpg)
 
 # Mega-Bug Code
@@ -1305,24 +1308,24 @@ CFE3: 0F B3          CLR     <$B3
 CFE5: 0F B4          CLR     <$B4            
 CFE7: 0F B1          CLR     <$B1            
 CFE9: 0F B2          CLR     <$B2            
-CFEB: 86 A5          LDA     #$A5            
-CFED: B7 10 00       STA     $1000           
+CFEB: 86 A5          LDA     #$A5                           ; Test value ...
+CFED: B7 10 00       STA     $1000                          ; ... to 1000 (4K)
 CFF0: 0F 00          CLR     <$00            
-CFF2: A1 8D 40 0A    CMPA    $400A,PC                       ; This is $1000 if we are running from cartridge
-CFF6: 27 1D          BEQ     $D015                          ; This is cartridge ... continue normally
+CFF2: A1 8D 40 0A    CMPA    $1000,PC                       ; Did we change the memory?
+CFF6: 27 1D          BEQ     $D015                          ; Yes ... we have enough memory to run
  
-CFF8: BD D2 BE       JSR     $D2BE                          ; Strange. If we are not running in cart, then where is this?
-CFFB: CE 04 00       LDU     #$0400                         ; Start of the text screen
-CFFE: DF 9E          STU     <$9E            
-D000: BD D4 AE       JSR     $D4AE                          ; {Clear1200} Clear 1200 bytes (4K for 3K screen??)
-D003: 8E D2 A1       LDX     #$D2A1                         ;
-D006: EC 81          LDD     ,X++            
-D008: 27 FE          BEQ     $D008                          ; ?? Infinite loop ??
+CFF8: BD D2 BE       JSR     $D2BE                          ; ?? Is this a bug? This is the middle of a message
+CFFB: CE 04 00       LDU     #$0400                         ; Start of the text screen?
+CFFE: DF 9E          STU     <$9E                           ;
+D000: BD D4 AE       JSR     $D4AE                          ; {Clear1200} Clear 1200 bytes (4K for 3K screen?? we aren't in graphics mode)
+D003: 8E D2 A1       LDX     #$D2A1                         ; "16k or more memory is needed..."
+D006: EC 81          LDD     ,X++                           ; Reached end of message lines list?
+D008: 27 FE          BEQ     $D008                          ; Yes ... just spin here forever (we can't run)
 D00A: DD AB          STD     <$AB                           ; {ram:?AB?} 
-D00C: A6 80          LDA     ,X+             
+D00C: A6 80          LDA     ,X+                            ; Get color mask
 D00E: 97 AD          STA     <$AD                           ; {ram:?AD?} 
-D010: BD D6 FA       JSR     $D6FA                          ; 
-D013: 20 F1          BRA     $D006                          ; 
+D010: BD D6 FA       JSR     $D6FA                          ; Print message
+D013: 20 F1          BRA     $D006                          ; Next message line
 
 ; Hold something down at start for something? Graphics??
 D015: 86 FE          LDA     #$FE            
@@ -1353,7 +1356,7 @@ D04B: 86 34          LDA     #$34
 D04D: B7 FF 01       STA     $FF01                          ; {hard:PIA0_CA} 
 D050: B7 FF 21       STA     $FF21                          ; {hard:PIA1_CA} 
 D053: 8A 08          ORA     #$08            
-D055: A7 8D 2E CA    STA     $2ECA,PC                       ; FF23
+D055: A7 8D 2E CA    STA     $FF23,PC                       ;
 D059: 86 35          LDA     #$35            
 D05B: B7 FF 03       STA     $FF03                          ; {hard:PIA0_CB} 
 D05E: 3C EF          CWAI    $EF                            ; Wait for the first interrupt
@@ -1390,22 +1393,22 @@ D0A2: 86 01          LDA     #$01
 D0A4: BD DE 01       JSR     $DE01                          ; 
 D0A7: 86 FF          LDA     #$FF            
 D0A9: 97 AD          STA     <$AD                           ; {ram:?AD?} 
-D0AB: CE CC 90       LDU     #$CC90          ; Song table
-D0AE: C6 27          LDB     #$27            ; 39 notes (including rests) in the song
-D0B0: D7 98          STB     <$98            ; Note counter
-D0B2: BD D5 01       JSR     $D501                          ; User pressed space or joystick button?
+D0AB: CE CC 90       LDU     #$CC90                         ; Song table
+D0AE: C6 27          LDB     #$27                           ; 39 notes (including rests) in the song
+D0B0: D7 98          STB     <$98                           ; Note counter
+D0B2: BD D5 01       JSR     $D501                          ; {CheckSpaceOrButton} User pressed space or joystick button?
 D0B5: 25 1D          BCS     $D0D4                          ; Yes ... break out to play game
-D0B7: EC C4          LDD     ,U              ; Get duration
+D0B7: EC C4          LDD     ,U                             ; Get duration
 D0B9: 27 10          BEQ     $D0CB                          ; Hold note??
-D0BB: 8E D5 EF       LDX     #$D5EF          ; "Mega-Bug" text
+D0BB: 8E D5 EF       LDX     #$D5EF                         ; "Mega-Bug" text
 D0BE: DC 9A          LDD     <$9A                           ; {ram:?ScreenPointerA} 
 D0C0: DD 9E          STD     <$9E            
-D0C2: EC 81          LDD     ,X++            ; Destination of "Mega-Bug" string
+D0C2: EC 81          LDD     ,X++                           ; Destination of "Mega-Bug" string
 D0C4: DD AB          STD     <$AB                           ; {ram:?AB?} 
-D0C6: 30 01          LEAX    1,X             ; Skip over color mask
+D0C6: 30 01          LEAX    1,X                            ; Skip over color mask
 D0C8: BD D6 F4       JSR     $D6F4                          ; 
-D0CB: BD D7 3F       JSR     $D73F                          ; Play dual note
-D0CE: 0A 98          DEC     <$98            ; All notes played?
+D0CB: BD D7 3F       JSR     $D73F                          ; {PlayTwoNotes} Play dual note
+D0CE: 0A 98          DEC     <$98                           ; All notes played?
 D0D0: 26 E0          BNE     $D0B2                          ; No ... keep playing notes
 D0D2: 20 52          BRA     $D126                          ; Time for the demo game
  
@@ -1444,6 +1447,7 @@ D11D: BD D6 CB       JSR     $D6CB                          ;
 D120: 86 C0          LDA     #$C0            
 D122: 97 C0          STA     <$C0            
 D124: 20 38          BRA     $D15E                          ; 
+
 D126: 0F B5          CLR     <$B5            
 D128: BD DB 6D       JSR     $DB6D                          ; 
 D12B: 8E 08 34       LDX     #$0834          
@@ -1492,8 +1496,8 @@ D193: 0D C6          TST     <$C6
 D195: 26 02          BNE     $D199                          ; 
 D197: C6 27          LDB     #$27            
 D199: D7 98          STB     <$98            
-D19B: CE CC 90       LDU     #$CC90          ; Splash music table
-D19E: BD D7 3F       JSR     $D73F                          ; 
+D19B: CE CC 90       LDU     #$CC90                         ; Splash music table
+D19E: BD D7 3F       JSR     $D73F                          ; {PlayTwoNotes} 
 D1A1: 8E 12 00       LDX     #$1200          
 D1A4: 30 1F          LEAX    -1,X            
 D1A6: 26 FC          BNE     $D1A4                          ; 
@@ -1593,7 +1597,7 @@ D281: 81 0D          CMPA    #$0D
 D283: 26 F8          BNE     $D27D                          ; 
 D285: 1C EF          ANDCC   #$EF            
 D287: 7E D1 C2       JMP     $D1C2                          ; 
-D28A: BD D5 01       JSR     $D501                          ; 
+D28A: BD D5 01       JSR     $D501                          ; {CheckSpaceOrButton} 
 D28D: 10 25 FE 43    LBCS    $FE43           
 D291: 8E 08 00       LDX     #$0800          
 D294: 30 1F          LEAX    -1,X            
@@ -1606,8 +1610,8 @@ D2A1: 0A 01 AA
 D2A4: 31 36 6B 20 6F 72 20 6D 6F 72 65 20 6F 66 20 6D 65 6D 6F 72 79 00
 ; 16k_or_more_of_memory
  
-D2BA: 1E 0D 55        
-D2BD: 69 73 20 6E 65 65 64 65 64 20 74 6F 20 70 6C 61 79 00 
+D2BA: 1E 0D 55
+D2BD: 69 73 20 6E 65 65 64 65 64 20 74 6F 20 70 6C 61 79 00        
 ; is_needed_to_play
 
 D2CF: 32 2A FF
@@ -1660,7 +1664,7 @@ D32B: CE CA B0       LDU     #$CAB0
 D32E: BD D4 81       JSR     $D481                          ; {DrawLargeBugs} 
 D331: 8E 01 2C       LDX     #$012C          
 D334: 9F C3          STX     <$C3            
-D336: BD D5 01       JSR     $D501                          ; 
+D336: BD D5 01       JSR     $D501                          ; {CheckSpaceOrButton} 
 D339: 10 25 FD 97    LBCS    $FD97           
 D33D: 9E C3          LDX     <$C3            
 D33F: 26 F5          BNE     $D336                          ; 
@@ -1904,19 +1908,19 @@ Return carry=1 if yes or carry=0 if no. Return FF in C2 if joystick or 00 in C2 
 ```code
 CheckSpaceOrButton:
 D501: 86 FF          LDA     #$FF                           ; All columns ...
-D503: B7 FF 02       STA     $FF02                          ; {hard:PIA0_DB} ... turned off 
-D506: F6 FF 00       LDB     $FF00                          ; {hard:PIA0_DA}  Check the ...
+D503: B7 FF 02       STA     $FF02                          ; {hard:PIA0_DB} ... turned off
+D506: F6 FF 00       LDB     $FF00                          ; {hard:PIA0_DA} Check the ...
 D509: C4 01          ANDB    #$01                           ; ... right joystick button
 D50B: 26 05          BNE     $D512                          ; 
-D50D: 97 C2          STA     <$C2                           ; C2=FF ... using joysticks
+D50D: 97 C2          STA     <$C2                           ; {ram:JoyOrKey} C2=FF ... using joysticks
 D50F: 1A 01          ORCC    #$01                           ; Carry = 1
 D511: 39             RTS                                    ; Out
 D512: 86 7F          LDA     #$7F                           ; Turn on ...
-D514: B7 FF 02       STA     $FF02                          ; {hard:PIA0_DB} ... upper column 
-D517: A6 8D 29 E5    LDA     $29E5,PC                       ; Read rows FF00
+D514: B7 FF 02       STA     $FF02                          ; {hard:PIA0_DB} ... upper column
+D517: A6 8D 29 E5    LDA     $FF00,PC                       ; Read rows
 D51B: 84 08          ANDA    #$08                           ; Space bar pressed?
 D51D: 26 05          BNE     $D524                          ; No ... keep looking
-D51F: 0F C2          CLR     <$C2                           ; C2=0 ... using keyboard
+D51F: 0F C2          CLR     <$C2                           ; {ram:JoyOrKey} C2=0 ... using keyboard
 D521: 1A 01          ORCC    #$01                           ; Carry = 1
 D523: 39             RTS                                    ; Out
 D524: 1C FE          ANDCC   #$FE                           ; Carry = 0
@@ -2009,7 +2013,7 @@ D5B6: 9F C3          STX     <$C3
 D5B8: B6 FF 03       LDA     $FF03                          ; {hard:PIA0_CB} 
 D5BB: B6 FF 02       LDA     $FF02                          ; {hard:PIA0_DB} 
 D5BE: BD DD 52       JSR     $DD52                          ; 
-D5C1: 3B             RTI                     ; Done with interrupt
+D5C1: 3B             RTI                                    ; Done with interrupt
 
 D5C2: 48 69 67 68 20 53 63 6F 72 65 20 00
 ; High_Score_ 
@@ -2132,14 +2136,14 @@ D6F6: 03 AE          COM     <$AE                           ; {ram:?AE?}
 D6F8: 20 02          BRA     $D6FC                          ; 
 ;
 D6FA: 0F AE          CLR     <$AE                           ; {ram:?AE?} 
-D6FC: A6 80          LDA     ,X+             ; Get character
-D6FE: 84 7F          ANDA    #$7F            ; Drop the upper bit
-D700: 80 20          SUBA    #$20            ; No ASCII below this
+D6FC: A6 80          LDA     ,X+                            ; Get character
+D6FE: 84 7F          ANDA    #$7F                           ; Drop the upper bit
+D700: 80 20          SUBA    #$20                           ; No ASCII below this
 D702: 25 EF          BCS     $D6F3                          ; Less than SPACE ... out
 D704: 81 06          CMPA    #$06            
 D706: 24 04          BCC     $D70C                          ; 
 D708: 8B 3E          ADDA    #$3E            
-D70A: 20 16          BRA     $D722                          ;
+D70A: 20 16          BRA     $D722                          ; 
 ; 
 D70C: 80 10          SUBA    #$10                           ; 
 D70E: 25 E3          BCS     $D6F3                          ; Less than $10 ... out
@@ -2170,40 +2174,41 @@ D73D: 20 BD          BRA     $D6FC                          ;
 
 ; Play dual notes (splash music)
 PlayTwoNotes:
-D73F: 34 01          PSHS    CC              ; Hold interrupt status
-D741: 1A 50          ORCC    #$50            ; Turn interrupts off (sound timing loop)
-D743: EC C4          LDD     ,U              ; Duration
-D745: 44             LSRA                    ; Divide by 2 ...
-D746: 56             RORB                    ; ...
-D747: 44             LSRA                    ; ... 4 ...
-D748: 56             RORB                    ; ...
-D749: 44             LSRA                    ; ... 8 ...
-D74A: 56             RORB                    ;
-D74B: 34 06          PSHS    B,A             ; Duration/8 to stack
-D74D: EC C1          LDD     ,U++            ; Duration again
+D73F: 34 01          PSHS    CC                             ; Hold interrupt status
+D741: 1A 50          ORCC    #$50                           ; Turn interrupts off (sound timing loop)
+D743: EC C4          LDD     ,U                             ; Duration
+D745: 44             LSRA                                   ; Divide by 2 ...
+D746: 56             RORB                                   ; ...
+D747: 44             LSRA                                   ; ... 4 ...
+D748: 56             RORB                                   ; ...
+D749: 44             LSRA                                   ; ... 8 ...
+D74A: 56             RORB                                   ;
+D74B: 34 06          PSHS    B,A                            ; Duration/8 to stack
+D74D: EC C1          LDD     ,U++                           ; Duration again (advance U)
 D74F: A3 E1          SUBD    ,S++            
-D751: 1F 01          TFR     D,X             ; Duration to X
-D753: EC C1          LDD     ,U++            ; Note 1
-D755: DD 80          STD     <$80            
-D757: EC C1          LDD     ,U++            ; Note 2
-D759: DD 82          STD     <$82            
+D751: 1F 01          TFR     D,X                            ; Duration to X
+D753: EC C1          LDD     ,U++                           ; Note 1 (advance U)
+D755: DD 80          STD     <$80                           ; {ram:Note1} 
+D757: EC C1          LDD     ,U++                           ; Note 2 (advance U)
+D759: DD 82          STD     <$82                           ; {ram:Note2} 
 ;
 D75B: 6F E4          CLR     ,S              
-D75D: DC 86          LDD     <$86            
-D75F: D3 82          ADDD    <$82            
-D761: DD 86          STD     <$86            
+D75D: DC 86          LDD     <$86                           ; {ram:NoteC2} 
+D75F: D3 82          ADDD    <$82                           ; {ram:Note2} 
+D761: DD 86          STD     <$86                           ; {ram:NoteC2} 
 D763: 66 E4          ROR     ,S              
-D765: DC 84          LDD     <$84            
-D767: D3 80          ADDD    <$80            
-D769: DD 84          STD     <$84            
+D765: DC 84          LDD     <$84                           ; {ram:NoteC1} 
+D767: D3 80          ADDD    <$80                           ; {ram:Note1} 
+D769: DD 84          STD     <$84                           ; {ram:NoteC1} 
 D76B: A6 E4          LDA     ,S              
 D76D: 46             RORA                    
 D76E: 44             LSRA                    
 D76F: 44             LSRA                    
 D770: B8 FF 20       EORA    $FF20                          ; {hard:PIA1_DA} 6-bit ...
 D773: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} ... sound
-D776: 30 1F          LEAX    -1,X            ; Note finished?
+D776: 30 1F          LEAX    -1,X                           ; Note finished?
 D778: 26 E1          BNE     $D75B                          ; No ... keep playing
+;
 D77A: 35 81          PULS    CC,PC	                          ; Restore interrupts and out
 ```
 
@@ -2358,7 +2363,7 @@ D88A: 31 A5          LEAY    B,Y
 D88C: A6 A4          LDA     ,Y              
 D88E: 27 1E          BEQ     $D8AE                          ; 
 D890: 34 50          PSHS    U,X             
-D892: C6 06          LDB     #$06            ; 6 rows
+D892: C6 06          LDB     #$06                           ; 6 rows
 D894: 9C A9          CMPX    <$A9            
 D896: 24 0C          BCC     $D8A4                          ; 
 D898: 9C A7          CMPX    <$A7            
@@ -2368,14 +2373,14 @@ D89E: A4 A4          ANDA    ,Y
 D8A0: AA 84          ORA     ,X              
 D8A2: A7 84          STA     ,X              
 D8A4: 33 41          LEAU    1,U             
-D8A6: 30 88 20       LEAX    $20,X           ; Next row
-D8A9: 5A             DECB                    ; All 6 rows done?
+D8A6: 30 88 20       LEAX    $20,X                          ; Next row
+D8A9: 5A             DECB                                   ; All 6 rows done?
 D8AA: 26 E8          BNE     $D894                          ; No ... go do them all
 D8AC: 35 50          PULS    X,U             
 D8AE: 30 01          LEAX    1,X             
 D8B0: 33 46          LEAU    6,U             
 D8B2: 31 21          LEAY    1,Y             
-D8B4: 0A 99          DEC     <$99            ; ?? count 3 columns ??
+D8B4: 0A 99          DEC     <$99                           ; ?? count 3 columns ??
 D8B6: 26 D4          BNE     $D88C                          ; Do all 3 columns (3*6 = 18 bytes)
 D8B8: 35 A0          PULS    Y,PC            
 ```
@@ -2385,28 +2390,28 @@ D8B8: 35 A0          PULS    Y,PC
 Keyboard or joystick -- depending on how the user started the game.
 
 ```code
-D8BA: 96 C2          LDA     <$C2            ; Using joystick or keyboard
+D8BA: 96 C2          LDA     <$C2                           ; {ram:JoyOrKey} Using joystick or keyboard
 D8BC: 26 28          BNE     $D8E6                          ; joystick ... skip to that
 ;
 ; Read keyboard
 ;
-D8BE: 86 F7          LDA     #$F7            ; Column 4 (Up arrow)
+D8BE: 86 F7          LDA     #$F7                           ; Column 4 (Up arrow)
 D8C0: C4 01          ANDB    #$01            
 D8C2: D7 A5          STB     <$A5            
 D8C4: 27 02          BEQ     $D8C8                          ; 
-D8C6: 86 DF          LDA     #$DF            ; Column 6 (Right arrow)
-D8C8: B7 FF 02       STA     $FF02           ; {hard:PIA0_DB} First column on 
+D8C6: 86 DF          LDA     #$DF                           ; Column 6 (Right arrow)
+D8C8: B7 FF 02       STA     $FF02                          ; {hard:PIA0_DB} First column on
 D8CB: 5F             CLRB                    
-D8CC: B6 FF 00       LDA     $FF00           ; {hard:PIA0_DA} Read the rows 
-D8CF: 84 08          ANDA    #$08            ; Up arrow pressed?
-D8D1: 27 10          BEQ     $D8E3           ; Yes ... record and out 
-D8D3: 1A 01          ORCC    #$01            ; Shifting in a 1 to upper column
-D8D5: 79 FF 02       ROL     $FF02           ; {hard:PIA0_DB} Try the next column 
+D8CC: B6 FF 00       LDA     $FF00                          ; {hard:PIA0_DA} Read the rows
+D8CF: 84 08          ANDA    #$08                           ; Up arrow pressed?
+D8D1: 27 10          BEQ     $D8E3                          ; Yes ... record and out
+D8D3: 1A 01          ORCC    #$01                           ; Shifting in a 1 to upper column
+D8D5: 79 FF 02       ROL     $FF02                          ; {hard:PIA0_DB} Try the next column
 D8D8: C6 02          LDB     #$02            
-D8DA: B6 FF 00       LDA     $FF00           ; {hard:PIA0_DA} 
+D8DA: B6 FF 00       LDA     $FF00                          ; {hard:PIA0_DA} 
 D8DD: 84 08          ANDA    #$08            
 D8DF: 27 02          BEQ     $D8E3                          ; 
-D8E1: C6 80          LDB     #$80            ; Upper bit set means nothing pressed
+D8E1: C6 80          LDB     #$80                           ; Upper bit set means nothing pressed
 D8E3: DB A5          ADDB    <$A5            
 D8E5: 39             RTS                     
 ;
@@ -2579,7 +2584,7 @@ DA36: C6 20          LDB     #$20
 DA38: 6F 80          CLR     ,X+             
 DA3A: 5A             DECB                    
 DA3B: 26 FB          BNE     $DA38                          ; 
-DA3D: 6F 8D 26 7B    CLR     $267B,PC                       ; 00BC
+DA3D: 6F 8D 26 7B    CLR     $00BC,PC                       ;
 DA41: 86 02          LDA     #$02            
 DA43: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} 
 DA46: DC A2          LDD     <$A2            
@@ -2651,7 +2656,7 @@ DAD0: 9B BC          ADDA    <$BC
 DAD2: 97 BB          STA     <$BB            
 DAD4: 24 09          BCC     $DADF                          ; 
 DAD6: 86 40          LDA     #$40            
-DAD8: A8 8D 24 44    EORA    $2444,PC        
+DAD8: A8 8D 24 44    EORA    $FF20,PC        
 DADC: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} 
 DADF: 31 A8 20       LEAY    $20,Y           
 DAE2: 0A 98          DEC     <$98            
@@ -2686,7 +2691,7 @@ DB18: 33 C8 20       LEAU    $20,U
 DB1B: 5A             DECB                    
 DB1C: 26 F4          BNE     $DB12                          ; 
 DB1E: 39             RTS                     
-DB1F: EC 8D 25 7F    LDD     $257F,PC        
+DB1F: EC 8D 25 7F    LDD     $00A2,PC        
 DB23: 80 12          SUBA    #$12            
 DB25: 2A 01          BPL     $DB28                          ; 
 DB27: 4F             CLRA                    
@@ -2725,9 +2730,9 @@ DB6B: FF 55
 
 ; Copy old graphics page to new page??
 
-DB6D: 96 92          LDA     <$92                           ; {ram:RequestedPage}
+DB6D: 96 92          LDA     <$92                           ; {ram:RequestedPage} 
 DB6F: 81 1C          CMPA    #$1C  
-DB71: 27 03          BEQ     $DB76
+DB71: 27 03          BEQ     $DB76                          ; 
 DB73: 5F             CLRB           
 DB74: 8D 07          BSR     $DB7D                          ; {Copy3K} 
 DB76: 86 1C          LDA     #$1C            
@@ -2752,9 +2757,7 @@ DB8B: 39             RTS
 
 DB8C: FF FF FF FF FF FF       
 DB92: FF FF FF FF FF FF      
-DB98: FF FF FF FF 
-;
-DB9C: 55 
+DB98: FF FF FF FF 55 
 
 DB9D: CE C9 EA       LDU     #$C9EA            
 DBA0: 0D A1          TST     <$A1            
@@ -3043,7 +3046,7 @@ DDDE: 30 89 00 80    LEAX    $0080,X
 DDE2: 0A 98          DEC     <$98            
 DDE4: 26 EC          BNE     $DDD2                          ; 
 DDE6: CC 01 3F       LDD     #$013F          
-DDE9: ED 8D 22 D1    STD     $22D1,PC        
+DDE9: ED 8D 22 D1    STD     $00BE,PC        
 DDED: 8E 0A 30       LDX     #$0A30          
 DDF0: 86 CF          LDA     #$CF            
 DDF2: A4 84          ANDA    ,X              

@@ -5,6 +5,10 @@
 >>> memory
 | | | |
 | ----  | ---- | ---- |
+| 80:81 | Note1 | Tone value for note 1 |
+| 82:83 | Note2 | Tone value for note 2 |
+| 84:85 | NoteC1 | Note1 tally count |
+| 86:87 | NoteC2 | Note2 tally count ||
 | AB:AC | ?AB? | |
 | AD    | ?AD? | |
 | AE    | ?AE? | |
