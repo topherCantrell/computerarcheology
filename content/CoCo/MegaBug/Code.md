@@ -1,6 +1,3 @@
-../../content/CoCo/MegaBug/Code.md
-../../content/CoCo/MegaBug\RAMUse.md
-../../content/CoCo/MegaBug\../Hardware.md
 ![](megabug.jpg)
 
 # Mega-Bug Code
@@ -113,7 +110,6 @@ C943: 09 43 27 0D 10 08 50 07 EE 00 35 0B 1D 69 03 00 53 00 51 00 00 18 00 3F 00
 
 ```code
 PlayerGraphics:
-;
 C960: F8 A8 0C 0C A8 F8
 ; #####...
 ; #.#.#...
@@ -234,6 +230,7 @@ C9E4:  00 00 00 00 00 00
 ; ..#.....#...............
 ; ..........#.............
 
+SplashBugs1:
 C9EA:  20 08 05 25 08 00
 C9F0:  00 20 48 40 20 08
 C9F6:  00 00 00 00 00 00
@@ -314,6 +311,7 @@ CA74:  00 00 00 00 00 00
 ; ..#.....#...............
 ; #.......................
 
+SplashBugs2:
 CA7A:  00 08 25 05 08 20
 CA80:  08 20 40 48 20 00
 CA86:  00 00 00 00 00 00
@@ -347,7 +345,8 @@ CAAA:  80 00 00 80 00 00
 
 ### Giant Bug Graphics
 
-The bugs are defined as 32 rows by 5 columns (of 4 pixels) drawn column by column.
+The bugs are defined as 32 rows by 5 columns (of 4 pixels) drawn column by column. Note that the
+colors on the CoCo screen are blended together in spots.
 
 ```html
 <canvas width="180" height="260"
@@ -1318,7 +1317,7 @@ CFF8: BD D2 BE       JSR     $D2BE                          ; ?? Is this a bug? 
 CFFB: CE 04 00       LDU     #$0400                         ; Start of the text screen?
 CFFE: DF 9E          STU     <$9E                           ;
 D000: BD D4 AE       JSR     $D4AE                          ; {Clear1200} Clear 1200 bytes (4K for 3K screen?? we aren't in graphics mode)
-D003: 8E D2 A1       LDX     #$D2A1                         ; "16k or more memory is needed..."
+D003: 8E D2 A1       LDX     #$D2A1                         ; {!+Need16K} "16k or more memory is needed..."
 D006: EC 81          LDD     ,X++                           ; Reached end of message lines list?
 D008: 27 FE          BEQ     $D008                          ; Yes ... just spin here forever (we can't run)
 D00A: DD AB          STD     <$AB                           ; {ram:?AB?} 
@@ -1340,12 +1339,12 @@ D025: D7 C5          STB     <$C5                           ; {ram:??AtBoot??} ?
 D027: BD D2 DE       JSR     $D2DE                          ; {SetGraphicsMode} Set the graphics mode
 D02A: CE 04 00       LDU     #$0400          
 D02D: BD D4 AE       JSR     $D4AE                          ; {Clear1200} 
-D030: 8E CF DE       LDX     #$CFDE                         ; Start routine
+D030: 8E CF DE       LDX     #$CFDE                         ; {!+Start} Start routine
 D033: 9F 72          STX     <$72            
 D035: 86 55          LDA     #$55            
 D037: 97 71          STA     <$71            
 D039: 1A 50          ORCC    #$50            
-D03B: 8E D5 46       LDX     #$D546                         ; New IRQ ...
+D03B: 8E D5 46       LDX     #$D546                         ; {!+IRQ} New IRQ ...
 D03E: BF 01 0D       STX     $010D                          ; ... interrupt vector
 D041: 0F C7          CLR     <$C7                           ; {ram:VisiblePage} (force setting on next interrupt)
 D043: 86 04          LDA     #$04                           ; Display graphics page 400
@@ -1379,7 +1378,7 @@ D080: DD 9A          STD     <$9A                           ; {ram:?ScreenPointe
 D082: BD DB 6D       JSR     $DB6D                          ; 
 D085: CE 04 00       LDU     #$0400          
 D088: BD D4 AE       JSR     $D4AE                          ; {Clear1200} 
-D08B: 8E D5 EF       LDX     #$D5EF          
+D08B: 8E D5 EF       LDX     #$D5EF                         ; {!+StrsCredits} 
 D08E: EC 81          LDD     ,X++            
 D090: 27 10          BEQ     $D0A2                          ; 
 D092: DD AB          STD     <$AB                           ; {ram:?AB?} 
@@ -1393,14 +1392,14 @@ D0A2: 86 01          LDA     #$01
 D0A4: BD DE 01       JSR     $DE01                          ; 
 D0A7: 86 FF          LDA     #$FF            
 D0A9: 97 AD          STA     <$AD                           ; {ram:?AD?} 
-D0AB: CE CC 90       LDU     #$CC90                         ; Song table
+D0AB: CE CC 90       LDU     #$CC90                         ; {!+NotesSplash} Song table
 D0AE: C6 27          LDB     #$27                           ; 39 notes (including rests) in the song
 D0B0: D7 98          STB     <$98                           ; Note counter
 D0B2: BD D5 01       JSR     $D501                          ; {CheckSpaceOrButton} User pressed space or joystick button?
 D0B5: 25 1D          BCS     $D0D4                          ; Yes ... break out to play game
 D0B7: EC C4          LDD     ,U                             ; Get duration
 D0B9: 27 10          BEQ     $D0CB                          ; Hold note??
-D0BB: 8E D5 EF       LDX     #$D5EF                         ; "Mega-Bug" text
+D0BB: 8E D5 EF       LDX     #$D5EF                         ; {!+StrsCredits} "Mega-Bug" text
 D0BE: DC 9A          LDD     <$9A                           ; {ram:?ScreenPointerA} 
 D0C0: DD 9E          STD     <$9E            
 D0C2: EC 81          LDD     ,X++                           ; Destination of "Mega-Bug" string
@@ -1427,7 +1426,7 @@ D0EC: CC 04 00       LDD     #$0400
 D0EF: DD 9E          STD     <$9E            
 D0F1: 86 AA          LDA     #$AA            
 D0F3: 97 AD          STA     <$AD                           ; {ram:?AD?} 
-D0F5: 8E D5 E8       LDX     #$D5E8          
+D0F5: 8E D5 E8       LDX     #$D5E8                         ; {!+StrTime} 
 D0F8: BD D6 FA       JSR     $D6FA                          ; 
 D0FB: 96 AF          LDA     <$AF            
 D0FD: BD D6 D7       JSR     $D6D7                          ; 
@@ -1440,7 +1439,7 @@ D10B: 96 B0          LDA     <$B0
 D10D: BD D6 D7       JSR     $D6D7                          ; 
 D110: CC 54 21       LDD     #$5421          
 D113: DD AB          STD     <$AB                           ; {ram:?AB?} 
-D115: 8E D5 E0       LDX     #$D5E0          
+D115: 8E D5 E0       LDX     #$D5E0                         ; {!+StrScore} 
 D118: BD D6 FA       JSR     $D6FA                          ; 
 D11B: 9E B1          LDX     <$B1            
 D11D: BD D6 CB       JSR     $D6CB                          ; 
@@ -1460,13 +1459,13 @@ D13A: CC 04 13       LDD     #$0413
 D13D: DD AB          STD     <$AB                           ; {ram:?AB?} 
 D13F: CC 04 00       LDD     #$0400          
 D142: DD 9E          STD     <$9E            
-D144: 8E D5 C2       LDX     #$D5C2          
+D144: 8E D5 C2       LDX     #$D5C2                         ; {!+StrHighScore} 
 D147: BD D6 FA       JSR     $D6FA                          ; 
 D14A: 9E B3          LDX     <$B3            
 D14C: BD D6 CB       JSR     $D6CB                          ; 
 D14F: CC 54 04       LDD     #$5404          
 D152: DD AB          STD     <$AB                           ; {ram:?AB?} 
-D154: 8E D5 CE       LDX     #$D5CE          
+D154: 8E D5 CE       LDX     #$D5CE                         ; {!+StrPlayMega} 
 D157: BD D6 FA       JSR     $D6FA                          ; 
 D15A: 86 C0          LDA     #$C0            
 D15C: 97 C0          STA     <$C0            
@@ -1496,7 +1495,7 @@ D193: 0D C6          TST     <$C6
 D195: 26 02          BNE     $D199                          ; 
 D197: C6 27          LDB     #$27            
 D199: D7 98          STB     <$98            
-D19B: CE CC 90       LDU     #$CC90                         ; Splash music table
+D19B: CE CC 90       LDU     #$CC90                         ; {!+NotesSplash} Splash music table
 D19E: BD D7 3F       JSR     $D73F                          ; {PlayTwoNotes} 
 D1A1: 8E 12 00       LDX     #$1200          
 D1A4: 30 1F          LEAX    -1,X            
@@ -1606,6 +1605,7 @@ D298: 9E C3          LDX     <$C3
 D29A: 10 27 FD C2    LBEQ    $FDC2           
 D29E: 7E D1 C2       JMP     $D1C2                          ; 
 
+Need16K:
 D2A1: 0A 01 AA 
 D2A4: 31 36 6B 20 6F 72 20 6D 6F 72 65 20 6F 66 20 6D 65 6D 6F 72 79 00
 ; 16k_or_more_of_memory
@@ -1648,11 +1648,11 @@ D30A: 86 04          LDA     #$04
 D30C: 97 92          STA     <$92                           ; {ram:RequestedPage} 
 D30E: 86 0E          LDA     #$0E            
 D310: 97 98          STA     <$98            
-D312: CE CB 50       LDU     #$CB50                         ; ?? Dancing bugs somewhere in this code
+D312: CE CB 50       LDU     #$CB50                         ; {!+GraBugJumping1} 
 D315: 96 98          LDA     <$98            
 D317: 84 01          ANDA    #$01            
 D319: 27 03          BEQ     $D31E                          ; 
-D31B: CE CB F0       LDU     #$CBF0          
+D31B: CE CB F0       LDU     #$CBF0                         ; {!+GraBugJumping2} 
 D31E: BD D4 81       JSR     $D481                          ; {DrawLargeBugs} 
 D321: 86 0A          LDA     #$0A            
 D323: 13             SYNC                    
@@ -1660,7 +1660,7 @@ D324: 4A             DECA
 D325: 26 FC          BNE     $D323                          ; 
 D327: 0A 98          DEC     <$98            
 D329: 26 E7          BNE     $D312                          ; 
-D32B: CE CA B0       LDU     #$CAB0          
+D32B: CE CA B0       LDU     #$CAB0                         ; {!+GraBugStanding} 
 D32E: BD D4 81       JSR     $D481                          ; {DrawLargeBugs} 
 D331: 8E 01 2C       LDX     #$012C          
 D334: 9F C3          STX     <$C3            
@@ -1755,7 +1755,7 @@ D3F0: 97 A0          STA     <$A0
 D3F2: CE 10 00       LDU     #$1000          
 D3F5: DF 9E          STU     <$9E            
 D3F7: BD D4 AE       JSR     $D4AE                          ; {Clear1200} 
-D3FA: 8E D6 5A       LDX     #$D65A          
+D3FA: 8E D6 5A       LDX     #$D65A                         ; {!+StrNextTime} 
 D3FD: EC 81          LDD     ,X++            
 D3FF: DD AB          STD     <$AB                           ; {ram:?AB?} 
 D401: 27 09          BEQ     $D40C                          ; 
@@ -2015,18 +2015,23 @@ D5BB: B6 FF 02       LDA     $FF02                          ; {hard:PIA0_DB}
 D5BE: BD DD 52       JSR     $DD52                          ; 
 D5C1: 3B             RTI                                    ; Done with interrupt
 
+StrHighScore:
 D5C2: 48 69 67 68 20 53 63 6F 72 65 20 00
 ; High_Score_ 
 
+StrPlayMega:
 D5CE: 20 20 20 50 6C 61 79 20 20 4D 65 67 61 22 42 75 67 00
 ; ___Play__Mega-Bug
-             
+
+StrScore:
 D5E0: 53 63 6F 72 65 24 20 00 
 ; Score:_
 
+StrTime:
 D5E8: 54 69 6D 65 24 20 00
 ; Time:_ 
 
+StrsCredits:
 D5EF: 07 2A FF
 D5F2: 4D 65 67 61 22 42 75 67 00
 ; Mega-Bug
@@ -2057,6 +2062,7 @@ D645: 54 61 6E 64 79 20 43 6F 72 70 6F 72 61 74 69 6F 6E 00
 
 D657: 00 00 00 
 
+StrNextTime:
 D65A: 1B 1E 55 
 D65D: 57 65 25 6C 6C 20 47 65 74 63 68 61 00
 ; We'll_Getcha
@@ -2070,7 +2076,7 @@ D677: 00 00
 D679: 34 40          PSHS    U
 D67B: DE 90          LDU     <$90            
 D67D: 6F C9 C0 00    CLR     $C000,U         
-D681: CE CD 7A       LDU     #$CD7A          
+D681: CE CD 7A       LDU     #$CD7A                         ; {!+GraChars} 
 D684: C6 09          LDB     #$09            
 D686: 3D             MUL                     
 D687: 33 CB          LEAU    D,U             
@@ -2218,7 +2224,7 @@ D77A: 35 81          PULS    CC,PC	                          ; Restore interrupt
 PlayWeGotcha:         
 D77C: 34 01          PSHS    CC                             ; Preserve interrupt status
 D77E: 1A 50          ORCC    #$50                           ; Disable interrupts
-D780: CE C0 03       LDU     #$C003                         ; Audio sample table for "we gotcha"
+D780: CE C0 03       LDU     #$C003                         ; {!+WeGotchaSamples} Audio sample table for "we gotcha"
 D783: 8E 09 5D       LDX     #$095D                         ; 2397 samples
 D786: 86 02          LDA     #$02                           ; 6-bit ... 
 D788: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} ... sound off
@@ -2273,7 +2279,7 @@ D7DC: C0 02          SUBB    #$02
 D7DE: BD DE 59       JSR     $DE59                          ; {CoordToScreenOffset} 
 D7E1: 33 84          LEAU    ,X              
 D7E3: D7 88          STB     <$88            
-D7E5: 10 8E C9 60    LDY     #$C960          
+D7E5: 10 8E C9 60    LDY     #$C960                         ; {!+PlayerGraphics} 
 D7E9: D6 A4          LDB     <$A4            
 D7EB: 86 06          LDA     #$06            
 D7ED: 3D             MUL                     
@@ -2343,7 +2349,7 @@ D861: 3D             MUL
 D862: 0D A1          TST     <$A1            
 D864: 27 03          BEQ     $D869                          ; 
 D866: C3 00 90       ADDD    #$0090          
-D869: CE C9 90       LDU     #$C990          
+D869: CE C9 90       LDU     #$C990                         ; {!+BugGraphics} 
 D86C: 33 CB          LEAU    D,U             
 D86E: 86 12          LDA     #$12            
 D870: D6 8F          LDB     <$8F            
@@ -2495,7 +2501,7 @@ D984: BD DE 5C       JSR     $DE5C                          ;
 D987: 96 A4          LDA     <$A4            
 D989: BD DF 42       JSR     $DF42                          ; 
 D98C: 25 0F          BCS     $D99D                          ; 
-D98E: 8E DE 4F       LDX     #$DE4F          
+D98E: 8E DE 4F       LDX     #$DE4F                         ; {!+TDE4F} 
 D991: D6 A4          LDB     <$A4            
 D993: 58             LSLB                    
 D994: 3A             ABX                     
@@ -2542,7 +2548,7 @@ D9E2: A7 84          STA     ,X
 D9E4: 39             RTS                     
 D9E5: D6 A4          LDB     <$A4            
 D9E7: 58             LSLB                    
-D9E8: 8E DE 4F       LDX     #$DE4F          
+D9E8: 8E DE 4F       LDX     #$DE4F                         ; {!+TDE4F} 
 D9EB: 3A             ABX                     
 D9EC: DC A2          LDD     <$A2            
 D9EE: AB 84          ADDA    ,X              
@@ -2633,7 +2639,7 @@ DAA1: 88 40          EORA    #$40
 DAA3: 97 BD          STA     <$BD            
 DAA5: 8B 40          ADDA    #$40            
 DAA7: 97 BC          STA     <$BC            
-DAA9: 8E DB 5C       LDX     #$DB5C          
+DAA9: 8E DB 5C       LDX     #$DB5C                         ; {!+TDB5C} 
 DAAC: 4F             CLRA                    
 DAAD: D6 89          LDB     <$89            
 DAAF: E4 A4          ANDB    ,Y              
@@ -2721,6 +2727,7 @@ DB57: 0A 99          DEC     <$99
 DB59: 26 ED          BNE     $DB48                          ; 
 DB5B: 39             RTS                     
 
+TDB5C: ; ??
 DB5C: 00 55
 DB5E: AA FF 55 FF
 DB62: FF FF AA
@@ -2759,10 +2766,10 @@ DB8C: FF FF FF FF FF FF
 DB92: FF FF FF FF FF FF      
 DB98: FF FF FF FF 55 
 
-DB9D: CE C9 EA       LDU     #$C9EA            
+DB9D: CE C9 EA       LDU     #$C9EA                         ; {!+SplashBugs1} 
 DBA0: 0D A1          TST     <$A1            
 DBA2: 27 03          BEQ     $DBA7                          ; 
-DBA4: CE CA 7A       LDU     #$CA7A          
+DBA4: CE CA 7A       LDU     #$CA7A                         ; {!+SplashBugs2} 
 DBA7: 96 98          LDA     <$98            
 DBA9: C6 20          LDB     #$20            
 DBAB: 3D             MUL                     
@@ -2826,7 +2833,7 @@ DC1C: FF
 
 DC1D: 34 06          PSHS    B,A           
 DC1F: C4 03          ANDB    #$03            
-DC21: 8E DE 76       LDX     #$DE76          
+DC21: 8E DE 76       LDX     #$DE76                         ; {!+BitPosTable} 
 DC24: E6 85          LDB     B,X             
 DC26: C4 55          ANDB    #$55            
 DC28: D7 88          STB     <$88            
@@ -2858,7 +2865,7 @@ DC59: 8E 08 00       LDX     #$0800
 DC5C: 6F C0          CLR     ,U+             
 DC5E: 30 1F          LEAX    -1,X            
 DC60: 26 FA          BNE     $DC5C                          ; 
-DC62: CE CA B0       LDU     #$CAB0          
+DC62: CE CA B0       LDU     #$CAB0                         ; {!+GraBugStanding} 
 DC65: BD D4 81       JSR     $D481                          ; {DrawLargeBugs} 
 DC68: C6 0E          LDB     #$0E            
 DC6A: 8D D6          BSR     $DC42                          ; 
@@ -2888,7 +2895,7 @@ DC9A: 6F C0          CLR     ,U+
 DC9C: 30 1F          LEAX    -1,X            
 DC9E: 26 FA          BNE     $DC9A                          ; 
 DCA0: 73 29 92       COM     $2992           
-DCA3: CE DE 4F       LDU     #$DE4F          
+DCA3: CE DE 4F       LDU     #$DE4F                         ; {!+TDE4F} 
 DCA6: 10 8E 2A 28    LDY     #$2A28          
 DCAA: 10 9F 8A       STY     <$8A            
 DCAD: CC 08 0A       LDD     #$080A          
@@ -2916,7 +2923,7 @@ DCDD: BD DD 6F       JSR     $DD6F                          ;
 DCE0: 86 FF          LDA     #$FF            
 DCE2: A7 84          STA     ,X              
 DCE4: 0F 88          CLR     <$88            
-DCE6: CE DE 4F       LDU     #$DE4F          
+DCE6: CE DE 4F       LDU     #$DE4F                         ; {!+TDE4F} 
 DCE9: EC C1          LDD     ,U++            
 DCEB: 27 19          BEQ     $DD06                          ; 
 DCED: BD DD 63       JSR     $DD63                          ; 
@@ -3095,10 +3102,9 @@ DE48: 26 F9          BNE     $DE43                          ;
 DE4A: 35 50          PULS    X,U             
 DE4C: 13             SYNC                    
 DE4D: 20 CD          BRA     $DE1C                          ; 
-DE4F: FF 00 00       STU     $0000           
-DE52: FF 01 00       STU     $0100           
-DE55: 00 01          NEG     <$01            
-DE57: 00 00          NEG     <$00            
+
+TDE4F: ; ??
+DE4F: FF 00 00 FF 01 00 00 01 00 00
 ```
 
 ## CoordToScreenOffset
@@ -3120,7 +3126,7 @@ DE69: 54             LSRB                                   ; ... four (four pix
 DE6A: 3A             ABX                                    ; Offset to screen memory
 DE6B: E6 E0          LDB     ,S+                            ; Pop the X coordinate back
 DE6D: C4 03          ANDB    #$03                           ; Pixel number (left to right)
-DE6F: 10 8E DE 76    LDY     #$DE76                         ; Pixel number to white-pixel-pattern
+DE6F: 10 8E DE 76    LDY     #$DE76                         ; {!+BitPosTable} Pixel number to white-pixel-pattern
 DE73: E6 A5          LDB     B,Y                            ; Get the byte for the pixel
 DE75: 39             RTS                                    ; Done
 
@@ -3134,7 +3140,7 @@ DE7A: 96 A0          LDA     <$A0
 DE7C: 97 98          STA     <$98            
 DE7E: 10 8E 28 08    LDY     #$2808          
 DE82: BD DE B6       JSR     $DEB6                          ; 
-DE85: 8E DE 4F       LDX     #$DE4F          
+DE85: 8E DE 4F       LDX     #$DE4F                         ; {!+TDE4F} 
 DE88: E6 22          LDB     2,Y             
 DE8A: 58             LSLB                    
 DE8B: 3A             ABX                     
@@ -3162,7 +3168,7 @@ DEB5: 39             RTS
 DEB6: EC A4          LDD     ,Y              
 DEB8: BD DA 24       JSR     $DA24                          ; 
 DEBB: 24 F8          BCC     $DEB5                          ; 
-DEBD: CE DE 4F       LDU     #$DE4F          
+DEBD: CE DE 4F       LDU     #$DE4F                         ; {!+TDE4F} 
 DEC0: 0F 88          CLR     <$88            
 DEC2: 0F 99          CLR     <$99            
 DEC4: EC C1          LDD     ,U++            
@@ -3260,7 +3266,7 @@ DF7F: 96 A0          LDA     <$A0
 DF81: 97 98          STA     <$98            
 DF83: E6 21          LDB     1,Y             
 DF85: C4 03          ANDB    #$03            
-DF87: 8E DE 76       LDX     #$DE76          
+DF87: 8E DE 76       LDX     #$DE76                         ; {!+BitPosTable} 
 DF8A: E6 85          LDB     B,X             
 DF8C: 34 04          PSHS    B               
 DF8E: A6 A4          LDA     ,Y              
