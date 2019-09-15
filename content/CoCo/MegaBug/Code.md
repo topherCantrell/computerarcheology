@@ -1324,10 +1324,10 @@ D000: BD D4 AE       JSR     $D4AE                          ; {Clear1200} Clear 
 D003: 8E D2 A1       LDX     #$D2A1                         ; {!+Need16K} "16k or more memory is needed..."
 D006: EC 81          LDD     ,X++                           ; Reached end of message lines list?
 D008: 27 FE          BEQ     $D008                          ; Yes ... just spin here forever (we can't run)
-D00A: DD AB          STD     <$AB                           ; {ram:?AB?} 
+D00A: DD AB          STD     <$AB                           ; {ram:PixCoords} Store the coordinates
 D00C: A6 80          LDA     ,X+                            ; Get color mask
-D00E: 97 AD          STA     <$AD                           ; {ram:?AD?} 
-D010: BD D6 FA       JSR     $D6FA                          ; Print message
+D00E: 97 AD          STA     <$AD                           ; {ram:ColorMask} Store the color
+D010: BD D6 FA       JSR     $D6FA                          ; {PrintMsg} Print message
 D013: 20 F1          BRA     $D006                          ; Next message line
 
 ; Hold something down at start for something? Graphics?? Doesn't seem to do anything when
@@ -1337,7 +1337,7 @@ D017: C6 08          LDB     #$08                           ; Column 4
 D019: B7 FF 02       STA     $FF02                          ; {hard:PIA0_DB} 
 D01C: B6 FF 00       LDA     $FF00                          ; {hard:PIA0_DA} 
 D01F: 84 40          ANDA    #$40                           ; Row 7
-D021: 26 02          BNE     $D025                          ;
+D021: 26 02          BNE     $D025                          ; 
 D023: C6 10          LDB     #$10            
 D025: D7 C5          STB     <$C5                           ; {ram:??AtBoot??} ??
 D027: BD D2 DE       JSR     $D2DE                          ; {SetGraphicsMode} Set the graphics mode
@@ -1385,17 +1385,17 @@ D088: BD D4 AE       JSR     $D4AE                          ; {Clear1200}
 D08B: 8E D5 EF       LDX     #$D5EF                         ; {!+StrsCredits} 
 D08E: EC 81          LDD     ,X++            
 D090: 27 10          BEQ     $D0A2                          ; 
-D092: DD AB          STD     <$AB                           ; {ram:?AB?} 
+D092: DD AB          STD     <$AB                           ; {ram:PixCoords} 
 D094: A6 80          LDA     ,X+             
-D096: 97 AD          STA     <$AD                           ; {ram:?AD?} 
+D096: 97 AD          STA     <$AD                           ; {ram:ColorMask} 
 D098: CC 04 00       LDD     #$0400          
 D09B: DD 9E          STD     <$9E            
-D09D: BD D6 FA       JSR     $D6FA                          ; 
+D09D: BD D6 FA       JSR     $D6FA                          ; {PrintMsg} 
 D0A0: 20 EC          BRA     $D08E                          ; 
 D0A2: 86 01          LDA     #$01            
 D0A4: BD DE 01       JSR     $DE01                          ; 
 D0A7: 86 FF          LDA     #$FF            
-D0A9: 97 AD          STA     <$AD                           ; {ram:?AD?} 
+D0A9: 97 AD          STA     <$AD                           ; {ram:ColorMask} 
 D0AB: CE CC 90       LDU     #$CC90                         ; {!+NotesSplash} Song table
 D0AE: C6 27          LDB     #$27                           ; 39 notes (including rests) in the song
 D0B0: D7 98          STB     <$98                           ; Note counter
@@ -1407,9 +1407,9 @@ D0BB: 8E D5 EF       LDX     #$D5EF                         ; {!+StrsCredits} "M
 D0BE: DC 9A          LDD     <$9A                           ; {ram:?ScreenPointerA} 
 D0C0: DD 9E          STD     <$9E            
 D0C2: EC 81          LDD     ,X++                           ; Destination of "Mega-Bug" string
-D0C4: DD AB          STD     <$AB                           ; {ram:?AB?} 
+D0C4: DD AB          STD     <$AB                           ; {ram:PixCoords} 
 D0C6: 30 01          LEAX    1,X                            ; Skip over color mask
-D0C8: BD D6 F4       JSR     $D6F4                          ; 
+D0C8: BD D6 F4       JSR     $D6F4                          ; {PrintMsgChgCol} 
 D0CB: BD D7 3F       JSR     $D73F                          ; {PlayTwoNotes} Play dual note
 D0CE: 0A 98          DEC     <$98                           ; All notes played?
 D0D0: 26 E0          BNE     $D0B2                          ; No ... keep playing notes
@@ -1425,26 +1425,26 @@ D0DF: DD B1          STD     <$B1
 D0E1: CE 04 00       LDU     #$0400          
 D0E4: BD D4 AE       JSR     $D4AE                          ; {Clear1200} Clear 1200 bytes at
 D0E7: CC 05 21       LDD     #$0521          
-D0EA: DD AB          STD     <$AB                           ; {ram:?AB?} 
+D0EA: DD AB          STD     <$AB                           ; {ram:PixCoords} 
 D0EC: CC 04 00       LDD     #$0400          
 D0EF: DD 9E          STD     <$9E            
-D0F1: 86 AA          LDA     #$AA            
-D0F3: 97 AD          STA     <$AD                           ; {ram:?AD?} 
-D0F5: 8E D5 E8       LDX     #$D5E8                         ; {!+StrTime} 
-D0F8: BD D6 FA       JSR     $D6FA                          ; 
+D0F1: 86 AA          LDA     #$AA            ; Set ...
+D0F3: 97 AD          STA     <$AD                           ; {ram:ColorMask} ... message color 
+D0F5: 8E D5 E8       LDX     #$D5E8                         ; {!+StrTime} Pointer to string "Time:_"
+D0F8: BD D6 FA       JSR     $D6FA                          ; {PrintMsg} Print "Time:_"
 D0FB: 96 AF          LDA     <$AF            
 D0FD: BD D6 D7       JSR     $D6D7                          ; 
 D100: 86 42          LDA     #$42            
-D102: BD D6 79       JSR     $D679                          ; 
-D105: 96 AC          LDA     <$AC                           ; {ram:?AB?} 
-D107: 8B 06          ADDA    #$06            
-D109: 97 AC          STA     <$AC                           ; {ram:?AB?} 
+D102: BD D6 79       JSR     $D679                          ; {PrintChar} 
+D105: 96 AC          LDA     <$AC                           ; {ram:PixCoords} 
+D107: 8B 06          ADDA    #$06            ; Next ??digit?? ...
+D109: 97 AC          STA     <$AC                           ; {ram:PixCoords} ... to the right 
 D10B: 96 B0          LDA     <$B0            
 D10D: BD D6 D7       JSR     $D6D7                          ; 
 D110: CC 54 21       LDD     #$5421          
-D113: DD AB          STD     <$AB                           ; {ram:?AB?} 
+D113: DD AB          STD     <$AB                           ; {ram:PixCoords} 
 D115: 8E D5 E0       LDX     #$D5E0                         ; {!+StrScore} 
-D118: BD D6 FA       JSR     $D6FA                          ; 
+D118: BD D6 FA       JSR     $D6FA                          ; {PrintMsg} 
 D11B: 9E B1          LDX     <$B1            
 D11D: BD D6 CB       JSR     $D6CB                          ; 
 D120: 86 C0          LDA     #$C0            
@@ -1458,19 +1458,19 @@ D12E: 9F C3          STX     <$C3
 D130: CE 04 00       LDU     #$0400          
 D133: BD D4 AE       JSR     $D4AE                          ; {Clear1200} 
 D136: 86 AA          LDA     #$AA            
-D138: 97 AD          STA     <$AD                           ; {ram:?AD?} 
+D138: 97 AD          STA     <$AD                           ; {ram:ColorMask} 
 D13A: CC 04 13       LDD     #$0413          
-D13D: DD AB          STD     <$AB                           ; {ram:?AB?} 
+D13D: DD AB          STD     <$AB                           ; {ram:PixCoords} 
 D13F: CC 04 00       LDD     #$0400          
 D142: DD 9E          STD     <$9E            
 D144: 8E D5 C2       LDX     #$D5C2                         ; {!+StrHighScore} 
-D147: BD D6 FA       JSR     $D6FA                          ; 
+D147: BD D6 FA       JSR     $D6FA                          ; {PrintMsg} 
 D14A: 9E B3          LDX     <$B3            
 D14C: BD D6 CB       JSR     $D6CB                          ; 
 D14F: CC 54 04       LDD     #$5404          
-D152: DD AB          STD     <$AB                           ; {ram:?AB?} 
+D152: DD AB          STD     <$AB                           ; {ram:PixCoords} 
 D154: 8E D5 CE       LDX     #$D5CE                         ; {!+StrPlayMega} 
-D157: BD D6 FA       JSR     $D6FA                          ; 
+D157: BD D6 FA       JSR     $D6FA                          ; {PrintMsg} 
 D15A: 86 C0          LDA     #$C0            
 D15C: 97 C0          STA     <$C0            
 D15E: BD DB 6D       JSR     $DB6D                          ; 
@@ -1530,9 +1530,9 @@ D1DB: 96 B8          LDA     <$B8
 D1DD: 94 B5          ANDA    <$B5            
 D1DF: 27 25          BEQ     $D206                          ; 
 D1E1: 86 AA          LDA     #$AA            
-D1E3: 97 AD          STA     <$AD                           ; {ram:?AD?} 
+D1E3: 97 AD          STA     <$AD                           ; {ram:ColorMask} 
 D1E5: CC 54 4B       LDD     #$544B          
-D1E8: DD AB          STD     <$AB                           ; {ram:?AB?} 
+D1E8: DD AB          STD     <$AB                           ; {ram:PixCoords} 
 D1EA: DC 9A          LDD     <$9A                           ; {ram:?ScreenPointerA} 
 D1EC: DD 9E          STD     <$9E            
 D1EE: 9E B1          LDX     <$B1            
@@ -1540,7 +1540,7 @@ D1F0: BD D6 CB       JSR     $D6CB                          ;
 D1F3: 0A B8          DEC     <$B8            
 D1F5: 27 0F          BEQ     $D206                          ; 
 D1F7: CC 54 4B       LDD     #$544B          
-D1FA: DD AB          STD     <$AB                           ; {ram:?AB?} 
+D1FA: DD AB          STD     <$AB                           ; {ram:PixCoords} 
 D1FC: CC 04 00       LDD     #$0400          
 D1FF: DD 9E          STD     <$9E            
 D201: 9E B1          LDX     <$B1            
@@ -1549,29 +1549,29 @@ D206: 96 B9          LDA     <$B9
 D208: 94 B5          ANDA    <$B5            
 D20A: 27 3B          BEQ     $D247                          ; 
 D20C: 86 AA          LDA     #$AA            
-D20E: 97 AD          STA     <$AD                           ; {ram:?AD?} 
+D20E: 97 AD          STA     <$AD                           ; {ram:ColorMask} 
 D210: CC 05 45       LDD     #$0545          
-D213: DD AB          STD     <$AB                           ; {ram:?AB?} 
+D213: DD AB          STD     <$AB                           ; {ram:PixCoords} 
 D215: DC 9A          LDD     <$9A                           ; {ram:?ScreenPointerA} 
 D217: DD 9E          STD     <$9E            
 D219: 96 AF          LDA     <$AF            
 D21B: BD D6 D7       JSR     $D6D7                          ; 
-D21E: 96 AC          LDA     <$AC                           ; {ram:?AB?} 
+D21E: 96 AC          LDA     <$AC                           ; {ram:PixCoords} 
 D220: 8B 06          ADDA    #$06            
-D222: 97 AC          STA     <$AC                           ; {ram:?AB?} 
+D222: 97 AC          STA     <$AC                           ; {ram:PixCoords} 
 D224: 96 B0          LDA     <$B0            
 D226: BD D6 D7       JSR     $D6D7                          ; 
 D229: 0A B9          DEC     <$B9            
 D22B: 27 1A          BEQ     $D247                          ; 
 D22D: CC 05 45       LDD     #$0545          
-D230: DD AB          STD     <$AB                           ; {ram:?AB?} 
+D230: DD AB          STD     <$AB                           ; {ram:PixCoords} 
 D232: CC 04 00       LDD     #$0400          
 D235: DD 9E          STD     <$9E            
 D237: 96 AF          LDA     <$AF            
 D239: BD D6 D7       JSR     $D6D7                          ; 
-D23C: 96 AC          LDA     <$AC                           ; {ram:?AB?} 
+D23C: 96 AC          LDA     <$AC                           ; {ram:PixCoords} 
 D23E: 8B 06          ADDA    #$06            
-D240: 97 AC          STA     <$AC                           ; {ram:?AB?} 
+D240: 97 AC          STA     <$AC                           ; {ram:PixCoords} 
 D242: 96 B0          LDA     <$B0            
 D244: BD D6 D7       JSR     $D6D7                          ; 
 D247: BD DA 33       JSR     $DA33                          ; 
@@ -1691,21 +1691,21 @@ D366: 26 F2          BNE     $D35A                          ;
 D368: 86 02          LDA     #$02            
 D36A: 97 98          STA     <$98            
 D36C: 86 AA          LDA     #$AA            
-D36E: 97 AD          STA     <$AD                           ; {ram:?AD?} 
+D36E: 97 AD          STA     <$AD                           ; {ram:ColorMask} 
 D370: 86 C0          LDA     #$C0            
-D372: 97 88          STA     <$88            
+D372: 97 88          STA     <$88                           ; {ram:BitPos} 
 D374: DE 9A          LDU     <$9A                           ; {ram:?ScreenPointerA} 
 D376: 33 C9 01 C5    LEAU    $01C5,U         
 D37A: 8E 05 C5       LDX     #$05C5          
-D37D: 96 88          LDA     <$88            
-D37F: 94 AD          ANDA    <$AD                           ; {ram:?AD?} 
+D37D: 96 88          LDA     <$88                           ; {ram:BitPos} 
+D37F: 94 AD          ANDA    <$AD                           ; {ram:ColorMask} 
 D381: 97 89          STA     <$89            
 D383: 86 43          LDA     #$43            
 D385: 97 99          STA     <$99            
 D387: C6 16          LDB     #$16            
 D389: A6 80          LDA     ,X+             
 D38B: 88 55          EORA    #$55            
-D38D: 94 88          ANDA    <$88            
+D38D: 94 88          ANDA    <$88                           ; {ram:BitPos} 
 D38F: 26 06          BNE     $D397                          ; 
 D391: 96 89          LDA     <$89            
 D393: A8 C4          EORA    ,U              
@@ -1717,13 +1717,13 @@ D39C: 30 0A          LEAX    10,X
 D39E: 33 4A          LEAU    10,U            
 D3A0: 0A 99          DEC     <$99            
 D3A2: 26 E3          BNE     $D387                          ; 
-D3A4: 04 88          LSR     <$88            
-D3A6: 04 88          LSR     <$88            
+D3A4: 04 88          LSR     <$88                           ; {ram:BitPos} 
+D3A6: 04 88          LSR     <$88                           ; {ram:BitPos} 
 D3A8: 26 CA          BNE     $D374                          ; 
 D3AA: BD D4 A2       JSR     $D4A2                          ; 
-D3AD: 96 AD          LDA     <$AD                           ; {ram:?AD?} 
+D3AD: 96 AD          LDA     <$AD                           ; {ram:ColorMask} 
 D3AF: 8B 55          ADDA    #$55            
-D3B1: 97 AD          STA     <$AD                           ; {ram:?AD?} 
+D3B1: 97 AD          STA     <$AD                           ; {ram:ColorMask} 
 D3B3: 0A 98          DEC     <$98            
 D3B5: 26 B9          BNE     $D370                          ; 
 D3B7: 86 04          LDA     #$04            
@@ -1761,11 +1761,11 @@ D3F5: DF 9E          STU     <$9E
 D3F7: BD D4 AE       JSR     $D4AE                          ; {Clear1200} 
 D3FA: 8E D6 5A       LDX     #$D65A                         ; {!+StrNextTime} 
 D3FD: EC 81          LDD     ,X++            
-D3FF: DD AB          STD     <$AB                           ; {ram:?AB?} 
+D3FF: DD AB          STD     <$AB                           ; {ram:PixCoords} 
 D401: 27 09          BEQ     $D40C                          ; 
 D403: A6 80          LDA     ,X+             
-D405: 97 AD          STA     <$AD                           ; {ram:?AD?} 
-D407: BD D6 FA       JSR     $D6FA                          ; 
+D405: 97 AD          STA     <$AD                           ; {ram:ColorMask} 
+D407: BD D6 FA       JSR     $D6FA                          ; {PrintMsg} 
 D40A: 20 F1          BRA     $D3FD                          ; 
 ;
 D40C: 86 01          LDA     #$01            
@@ -1786,11 +1786,11 @@ D42A: BD D5 27       JSR     $D527                          ;
 D42D: 20 E6          BRA     $D415                          ; 
 D42F: 0F 98          CLR     <$98            
 D431: CC 28 5D       LDD     #$285D          
-D434: DD AB          STD     <$AB                           ; {ram:?AB?} 
+D434: DD AB          STD     <$AB                           ; {ram:PixCoords} 
 D436: 86 FF          LDA     #$FF            
-D438: 97 AD          STA     <$AD                           ; {ram:?AD?} 
+D438: 97 AD          STA     <$AD                           ; {ram:ColorMask} 
 D43A: 86 3F          LDA     #$3F            
-D43C: BD D6 79       JSR     $D679                          ; 
+D43C: BD D6 79       JSR     $D679                          ; {PrintChar} 
 D43F: 86 2D          LDA     #$2D            
 D441: BD D4 67       JSR     $D467                          ; 
 D444: 86 02          LDA     #$02            
@@ -2076,50 +2076,64 @@ D66D: 4E 65 78 74 20 54 69 6D 65 00
 ; Next_Time
  
 D677: 00 00 
+```
 
-D679: 34 40          PSHS    U
-D67B: DE 90          LDU     <$90            
-D67D: 6F C9 C0 00    CLR     $C000,U         
-D681: CE CD 7A       LDU     #$CD7A                         ; {!+GraChars} 
-D684: C6 09          LDB     #$09            
-D686: 3D             MUL                     
-D687: 33 CB          LEAU    D,U             
-D689: DC AB          LDD     <$AB                           ; {ram:?AB?} 
-D68B: 9E 9E          LDX     <$9E            
-D68D: BD DE 5F       JSR     $DE5F                          ; 
-D690: 86 09          LDA     #$09            
-D692: A7 E2          STA     ,-S             
-D694: A6 C0          LDA     ,U+             
-D696: 34 16          PSHS    X,B,A           
-D698: D7 88          STB     <$88            
-D69A: C6 06          LDB     #$06            
-D69C: 96 88          LDA     <$88            
-D69E: 43             COMA                    
-D69F: A4 84          ANDA    ,X              
-D6A1: 68 E4          ASL     ,S              
-D6A3: 24 08          BCC     $D6AD                          ; 
-D6A5: 34 02          PSHS    A               
-D6A7: 96 88          LDA     <$88            
-D6A9: 94 AD          ANDA    <$AD                           ; {ram:?AD?} 
-D6AB: AA E0          ORA     ,S+             
-D6AD: A7 84          STA     ,X              
-D6AF: 04 88          LSR     <$88            
-D6B1: 04 88          LSR     <$88            
-D6B3: 26 06          BNE     $D6BB                          ; 
-D6B5: 30 01          LEAX    1,X             
-D6B7: 86 C0          LDA     #$C0            
-D6B9: 97 88          STA     <$88            
-D6BB: 5A             DECB                    
-D6BC: 26 DE          BNE     $D69C                          ; 
-D6BE: 35 16          PULS    A,B,X           
-D6C0: 30 88 20       LEAX    $20,X           
-D6C3: 6A E4          DEC     ,S              
-D6C5: 26 CD          BNE     $D694                          ; 
-D6C7: 32 61          LEAS    1,S             
-D6C9: 35 C0          PULS    U,PC            
+# Print character
+
+Print the given character to the given X,Y pixel coordinate.
+
+  * A = character
+  * <$AB,<$AC = (y,x)
+  * <$AD = color mask
+  * <$9E = top of screen
+
+```code
+PrintChar:
+D679: 34 40          PSHS    U                              ; Of all the registers, preserve U?
+D67B: DE 90          LDU     <$90                           ; {ram:ScrPtr} ??
+D67D: 6F C9 C0 00    CLR     $C000,U                        ; ??
+D681: CE CD 7A       LDU     #$CD7A                         ; {!+GraChars} Start of character graphics
+D684: C6 09          LDB     #$09                           ; 9 bytes per character
+D686: 3D             MUL                                    ; Point to ...
+D687: 33 CB          LEAU    D,U                            ; ... graphics
+D689: DC AB          LDD     <$AB                           ; {ram:PixCoords} (y,x) coordinate
+D68B: 9E 9E          LDX     <$9E                           ; Top of screen pointer
+D68D: BD DE 5F       JSR     $DE5F                          ; {CoordToScrOffs} Get screen pointer and bit mask
+D690: 86 09          LDA     #$09                           ; Row counter ...
+D692: A7 E2          STA     ,-S                            ; ... on stack
+;
+D694: A6 C0          LDA     ,U+                            ; Get next pixel data
+D696: 34 16          PSHS    X,B,A                          ; Save screen pointer and bit mask
+D698: D7 88          STB     <$88                           ; {ram:BitPos} First pixel bit mask
+D69A: C6 06          LDB     #$06                           ; 6 pixels per character row
+D69C: 96 88          LDA     <$88                           ; {ram:BitPos} Pixel pattern becomes ...
+D69E: 43             COMA                                   ; ... bit mask
+D69F: A4 84          ANDA    ,X                             ; Get byte from screen and mask off pixel
+D6A1: 68 E4          ASL     ,S                             ; Check bit from graphics data
+D6A3: 24 08          BCC     $D6AD                          ; A zero. Leave the pixel off
+D6A5: 34 02          PSHS    A                              ; Hold the screen byte with pixel off
+D6A7: 96 88          LDA     <$88                           ; {ram:BitPos} Get the pixel mask
+D6A9: 94 AD          ANDA    <$AD                           ; {ram:ColorMask} Mask in the desired color
+D6AB: AA E0          ORA     ,S+                            ; Add the pixel color to the byte from the screen
+D6AD: A7 84          STA     ,X                             ; Set pixel on the screen
+D6AF: 04 88          LSR     <$88                           ; {ram:BitPos} Shift mask over ...
+D6B1: 04 88          LSR     <$88                           ; {ram:BitPos} ... one pixel
+D6B3: 26 06          BNE     $D6BB                          ; Still a good mask ... skip reset
+D6B5: 30 01          LEAX    1,X                            ; Next screen byte on row
+D6B7: 86 C0          LDA     #$C0                           ; Reset mask to ...
+D6B9: 97 88          STA     <$88                           ; {ram:BitPos} ... 11_00_00_00
+D6BB: 5A             DECB                                   ; All 6 pixels done?
+D6BC: 26 DE          BNE     $D69C                          ; No ... finish this row
+D6BE: 35 16          PULS    A,B,X                          ; Restore screen pointer and bit mask
+;
+D6C0: 30 88 20       LEAX    $20,X                          ; Next row on screen
+D6C3: 6A E4          DEC     ,S                             ; All 9 bytes of data done?
+D6C5: 26 CD          BNE     $D694                          ; No ... keep going
+D6C7: 32 61          LEAS    1,S                            ; Remove counter from stack
+D6C9: 35 C0          PULS    U,PC                           ; Done
 
 D6CB: 86 AA          LDA     #$AA            
-D6CD: 97 AD          STA     <$AD                           ; {ram:?AD?} 
+D6CD: 97 AD          STA     <$AD                           ; {ram:ColorMask} 
 D6CF: 34 10          PSHS    X               
 D6D1: 35 02          PULS    A               
 D6D3: 8D 02          BSR     $D6D7                          ; 
@@ -2129,58 +2143,67 @@ D6D9: 44             LSRA
 D6DA: 44             LSRA                    
 D6DB: 44             LSRA                    
 D6DC: 44             LSRA                    
-D6DD: BD D6 79       JSR     $D679                          ; 
+D6DD: BD D6 79       JSR     $D679                          ; {PrintChar} 
 D6E0: 35 02          PULS    A               
-D6E2: D6 AC          LDB     <$AC                           ; {ram:?AB?} 
+D6E2: D6 AC          LDB     <$AC                           ; {ram:PixCoords} 
 D6E4: CB 06          ADDB    #$06            
-D6E6: D7 AC          STB     <$AC                           ; {ram:?AB?} 
+D6E6: D7 AC          STB     <$AC                           ; {ram:PixCoords} 
 D6E8: 84 0F          ANDA    #$0F            
-D6EA: BD D6 79       JSR     $D679                          ; 
-D6ED: D6 AC          LDB     <$AC                           ; {ram:?AB?} 
+D6EA: BD D6 79       JSR     $D679                          ; {PrintChar} 
+D6ED: D6 AC          LDB     <$AC                           ; {ram:PixCoords} 
 D6EF: CB 06          ADDB    #$06            
-D6F1: D7 AC          STB     <$AC                           ; {ram:?AB?} 
-D6F3: 39             RTS                     
-;
-D6F4: 0F AE          CLR     <$AE                           ; {ram:?AE?} 
-D6F6: 03 AE          COM     <$AE                           ; {ram:?AE?} 
-D6F8: 20 02          BRA     $D6FC                          ; 
-;
-D6FA: 0F AE          CLR     <$AE                           ; {ram:?AE?} 
+D6F1: D7 AC          STB     <$AC                           ; {ram:PixCoords} 
+D6F3: 39             RTS
+```
+
+# Print message
+Print a message on the screen:
+  * X pointer to message
+  * <$AB,$AC,$AD coordinates and color
+  * <$AE set to one to rotate the color after every letter
+
+```code 
+PrintMsgChgCol:
+D6F4: 0F AE          CLR     <$AE                           ; {ram:ChangeColor} Set auto color ...
+D6F6: 03 AE          COM     <$AE                           ; {ram:ChangeColor} ... to true
+D6F8: 20 02          BRA     $D6FC                          ; Do printing
+
+PrintMsg:
+D6FA: 0F AE          CLR     <$AE                           ; {ram:ChangeColor} Don't change the color each time
 D6FC: A6 80          LDA     ,X+                            ; Get character
 D6FE: 84 7F          ANDA    #$7F                           ; Drop the upper bit
 D700: 80 20          SUBA    #$20                           ; No ASCII below this
 D702: 25 EF          BCS     $D6F3                          ; Less than SPACE ... out
-D704: 81 06          CMPA    #$06            
-D706: 24 04          BCC     $D70C                          ; 
-D708: 8B 3E          ADDA    #$3E            
-D70A: 20 16          BRA     $D722                          ; 
-; 
-D70C: 80 10          SUBA    #$10                           ; 
-D70E: 25 E3          BCS     $D6F3                          ; Less than $10 ... out
-D710: 81 0A          CMPA    #$0A            
-D712: 25 0E          BCS     $D722                          ; 
-D714: 80 07          SUBA    #$07            
-D716: 25 DB          BCS     $D6F3                          ; 
-D718: 81 24          CMPA    #$24            
-D71A: 25 06          BCS     $D722                          ; 
-D71C: 80 06          SUBA    #$06            
-D71E: 81 3E          CMPA    #$3E            
-D720: 24 D1          BCC     $D6F3                          ; 
+D704: 81 06          CMPA    #$06                           ; Is it a symbol (<space>!-.:,)
+D706: 24 04          BCC     $D70C                          ; No ... continue
+D708: 8B 3E          ADDA    #$3E                           ; Yes ... these are at the end of the letters (3E,3F,40,41,42,43)
+D70A: 20 16          BRA     $D722                          ; Print this character
+D70C: 80 10          SUBA    #$10                           ; Is this a symbol less than a number
+D70E: 25 E3          BCS     $D6F3                          ; Yes ... we don't know this one ... out
+D710: 81 0A          CMPA    #$0A                           ; Is this a plain digit?
+D712: 25 0E          BCS     $D722                          ; Yes ... we have it decoded ... print it
+D714: 80 07          SUBA    #$07                           ; A symbol between numbers and 'A' ?
+D716: 25 DB          BCS     $D6F3                          ; Yes ... we don't know this one ... out
+D718: 81 24          CMPA    #$24                           ; An upper-case letter?
+D71A: 25 06          BCS     $D722                          ; Yes ... we have it decoded ... print it
+D71C: 80 06          SUBA    #$06                           ; Skip 6 symbols between upper and lower case
+D71E: 81 3E          CMPA    #$3E                           ; Is this a lower case letter?
+D720: 24 D1          BCC     $D6F3                          ; No ... we don't know this one ... out
 ;
-D722: 34 10          PSHS    X               
-D724: BD D6 79       JSR     $D679                          ; 
-D727: 35 10          PULS    X               
-D729: 96 AC          LDA     <$AC                           ; {ram:?AB?} 
-D72B: 8B 06          ADDA    #$06            
-D72D: 97 AC          STA     <$AC                           ; {ram:?AB?} 
-D72F: 0D AE          TST     <$AE                           ; {ram:?AE?} 
-D731: 27 C9          BEQ     $D6FC                          ; 
-D733: 96 AD          LDA     <$AD                           ; {ram:?AD?} 
-D735: 8B 55          ADDA    #$55            
-D737: 24 02          BCC     $D73B                          ; 
-D739: 86 55          LDA     #$55            
-D73B: 97 AD          STA     <$AD                           ; {ram:?AD?} 
-D73D: 20 BD          BRA     $D6FC                          ; 
+D722: 34 10          PSHS    X                              ; Hold the pointer into the message
+D724: BD D6 79       JSR     $D679                          ; {PrintChar} Print the character
+D727: 35 10          PULS    X                              ; Restore pointer into the message
+D729: 96 AC          LDA     <$AC                           ; {ram:PixCoords} get the X coordinate
+D72B: 8B 06          ADDA    #$06                           ; Next character goes 6 pixels over
+D72D: 97 AC          STA     <$AC                           ; {ram:PixCoords} coordinate for next character
+D72F: 0D AE          TST     <$AE                           ; {ram:ChangeColor} auto color?
+D731: 27 C9          BEQ     $D6FC                          ; No ... just print it
+D733: 96 AD          LDA     <$AD                           ; {ram:ColorMask} Current color
+D735: 8B 55          ADDA    #$55                           ; Cycle among 55, AA, FF
+D737: 24 02          BCC     $D73B                          ; Didn't overflow ... keep this color
+D739: 86 55          LDA     #$55                           ; Restart at color 55
+D73B: 97 AD          STA     <$AD                           ; {ram:ColorMask} New color mask
+D73D: 20 BD          BRA     $D6FC                          ; Do the print
 
 ; Play dual notes (splash music)
 PlayTwoNotes:
@@ -2280,9 +2303,9 @@ D7D6: 35 81          PULS    CC,PC                          ; Restore interrupts
 D7D8: DC A2          LDD     <$A2            
 D7DA: 80 02          SUBA    #$02            
 D7DC: C0 02          SUBB    #$02            
-D7DE: BD DE 59       JSR     $DE59                          ; {CoordToScreenOffset} 
+D7DE: BD DE 59       JSR     $DE59                          ; {CoordToScrOffs9A} 
 D7E1: 33 84          LEAU    ,X              
-D7E3: D7 88          STB     <$88            
+D7E3: D7 88          STB     <$88                           ; {ram:BitPos} 
 D7E5: 10 8E C9 60    LDY     #$C960                         ; {!+PlayerGraphics} 
 D7E9: D6 A4          LDB     <$A4            
 D7EB: 86 06          LDA     #$06            
@@ -2298,19 +2321,19 @@ D7FC: 34 40          PSHS    U
 D7FE: 4D             TSTA                    
 D7FF: 2A 06          BPL     $D807                          ; 
 D801: E6 C4          LDB     ,U              
-D803: DA 88          ORB     <$88            
+D803: DA 88          ORB     <$88                           ; {ram:BitPos} 
 D805: E7 C4          STB     ,U              
 D807: 33 C8 20       LEAU    $20,U           
 D80A: 48             LSLA                    
 D80B: 26 F2          BNE     $D7FF                          ; 
 D80D: 35 40          PULS    U               
-D80F: 96 88          LDA     <$88            
+D80F: 96 88          LDA     <$88                           ; {ram:BitPos} 
 D811: 44             LSRA                    
 D812: 44             LSRA                    
 D813: 26 04          BNE     $D819                          ; 
 D815: 86 C0          LDA     #$C0            
 D817: 33 41          LEAU    1,U             
-D819: 97 88          STA     <$88            
+D819: 97 88          STA     <$88                           ; {ram:BitPos} 
 D81B: 0A 99          DEC     <$99            
 D81D: 26 DB          BNE     $D7FA                          ; 
 D81F: 39             RTS                     
@@ -2361,7 +2384,7 @@ D872: C4 03          ANDB    #$03
 D874: 3D             MUL                     
 D875: 33 C5          LEAU    B,U             
 D877: DC 8E          LDD     <$8E            
-D879: BD DE 59       JSR     $DE59                          ; {CoordToScreenOffset} 
+D879: BD DE 59       JSR     $DE59                          ; {CoordToScrOffs9A} 
 D87C: 86 03          LDA     #$03            
 D87E: 97 99          STA     <$99            
 D880: D6 8F          LDB     <$8F            
@@ -2470,7 +2493,7 @@ D93B: DC A2          LDD     <$A2
 D93D: BD DA 24       JSR     $DA24                          ; 
 D940: 24 0C          BCC     $D94E                          ; 
 D942: DC A2          LDD     <$A2            
-D944: BD DE 5C       JSR     $DE5C                          ; Offset from top of first screen
+D944: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} Offset from top of first screen
 D947: C4 55          ANDB    #$55                           ; Change color (mask is 01010101)
 D949: 53             COMB                    
 D94A: E4 84          ANDB    ,X              
@@ -2484,7 +2507,7 @@ D959: BD D8 BA       JSR     $D8BA                          ; Read directional i
 D95C: 2B 14          BMI     $D972                          ; Nothing pressed ...
 D95E: D7 A5          STB     <$A5            
 D960: DC A2          LDD     <$A2            
-D962: BD DE 5C       JSR     $DE5C                          ; 
+D962: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} 
 D965: 96 A5          LDA     <$A5            
 D967: BD DF 42       JSR     $DF42                          ; 
 D96A: 25 06          BCS     $D972                          ; 
@@ -2501,7 +2524,7 @@ D97B: DC A2          LDD     <$A2
 D97D: BD DA 12       JSR     $DA12                          ; 
 D980: 24 0C          BCC     $D98E                          ; 
 D982: DC A2          LDD     <$A2            
-D984: BD DE 5C       JSR     $DE5C                          ; 
+D984: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} 
 D987: 96 A4          LDA     <$A4            
 D989: BD DF 42       JSR     $DF42                          ; 
 D98C: 25 0F          BCS     $D99D                          ; 
@@ -2517,7 +2540,7 @@ D99D: DC A2          LDD     <$A2
 D99F: BD DA 24       JSR     $DA24                          ; 
 D9A2: 24 40          BCC     $D9E4                          ; 
 D9A4: DC A2          LDD     <$A2            
-D9A6: BD DE 5C       JSR     $DE5C                          ; 
+D9A6: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} 
 D9A9: E7 E2          STB     ,-S             
 D9AB: A6 84          LDA     ,X              
 D9AD: A8 E4          EORA    ,S              
@@ -2600,26 +2623,26 @@ DA43: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA}
 DA46: DC A2          LDD     <$A2            
 DA48: 80 11          SUBA    #$11            
 DA4A: C0 11          SUBB    #$11            
-DA4C: BD DE 59       JSR     $DE59                          ; {CoordToScreenOffset} 
+DA4C: BD DE 59       JSR     $DE59                          ; {CoordToScrOffs9A} 
 DA4F: 33 84          LEAU    ,X              
-DA51: D7 88          STB     <$88            
+DA51: D7 88          STB     <$88                           ; {ram:BitPos} 
 DA53: BD DB 10       JSR     $DB10                          ; 
 DA56: 33 88 20       LEAU    $20,X           
 DA59: DF A7          STU     <$A7            
 DA5B: 33 84          LEAU    ,X              
-DA5D: 04 88          LSR     <$88            
-DA5F: 04 88          LSR     <$88            
+DA5D: 04 88          LSR     <$88                           ; {ram:BitPos} 
+DA5F: 04 88          LSR     <$88                           ; {ram:BitPos} 
 DA61: 26 06          BNE     $DA69                          ; 
 DA63: 33 41          LEAU    1,U             
 DA65: C6 C0          LDB     #$C0            
-DA67: D7 88          STB     <$88            
+DA67: D7 88          STB     <$88                           ; {ram:BitPos} 
 DA69: 86 22          LDA     #$22            
 DA6B: 97 99          STA     <$99            
 DA6D: 0F BD          CLR     <$BD            
 DA6F: 0F A5          CLR     <$A5            
 DA71: DC A2          LDD     <$A2            
 DA73: 83 08 08       SUBD    #$0808          
-DA76: BD DE 5C       JSR     $DE5C                          ; 
+DA76: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} 
 DA79: 31 84          LEAY    ,X              
 DA7B: D7 89          STB     <$89            
 DA7D: 8E 28 C8       LDX     #$28C8          
@@ -2629,11 +2652,11 @@ DA84: 30 85          LEAX    B,X
 DA86: 86 11          LDA     #$11            
 DA88: 97 98          STA     <$98            
 DA8A: 34 70          PSHS    U,Y,X           
-DA8C: 96 88          LDA     <$88            
+DA8C: 96 88          LDA     <$88                           ; {ram:BitPos} 
 DA8E: AA C4          ORA     ,U              
 DA90: A7 C4          STA     ,U              
 DA92: 33 C8 20       LEAU    $20,U           
-DA95: 96 88          LDA     <$88            
+DA95: 96 88          LDA     <$88                           ; {ram:BitPos} 
 DA97: AA 84          ORA     ,X              
 DA99: A7 84          STA     ,X              
 DA9B: 96 BA          LDA     <$BA            
@@ -2648,14 +2671,14 @@ DAAC: 4F             CLRA
 DAAD: D6 89          LDB     <$89            
 DAAF: E4 A4          ANDB    ,Y              
 DAB1: A6 8B          LDA     D,X             
-DAB3: 94 88          ANDA    <$88            
+DAB3: 94 88          ANDA    <$88                           ; {ram:BitPos} 
 DAB5: 34 02          PSHS    A               
-DAB7: 96 88          LDA     <$88            
+DAB7: 96 88          LDA     <$88                           ; {ram:BitPos} 
 DAB9: 43             COMA                    
 DABA: A4 C4          ANDA    ,U              
 DABC: AA E4          ORA     ,S              
 DABE: A7 C4          STA     ,U              
-DAC0: 96 88          LDA     <$88            
+DAC0: 96 88          LDA     <$88                           ; {ram:BitPos} 
 DAC2: 43             COMA                    
 DAC3: A4 C8 20       ANDA    $20,U           
 DAC6: AA E0          ORA     ,S+             
@@ -2672,10 +2695,10 @@ DADF: 31 A8 20       LEAY    $20,Y
 DAE2: 0A 98          DEC     <$98            
 DAE4: 26 C6          BNE     $DAAC                          ; 
 DAE6: DF A9          STU     <$A9            
-DAE8: D6 88          LDB     <$88            
+DAE8: D6 88          LDB     <$88                           ; {ram:BitPos} 
 DAEA: EA C4          ORB     ,U              
 DAEC: E7 C4          STB     ,U              
-DAEE: DC 88          LDD     <$88            
+DAEE: DC 88          LDD     <$88                           ; {ram:BitPos} 
 DAF0: 35 70          PULS    X,Y,U           
 DAF2: 03 A5          COM     <$A5            
 DAF4: 26 08          BNE     $DAFE                          ; 
@@ -2690,11 +2713,11 @@ DB00: 26 06          BNE     $DB08                          ;
 DB02: 86 C0          LDA     #$C0            
 DB04: 33 41          LEAU    1,U             
 DB06: 30 01          LEAX    1,X             
-DB08: DD 88          STD     <$88            
+DB08: DD 88          STD     <$88                           ; {ram:BitPos} 
 DB0A: 0A 99          DEC     <$99            
 DB0C: 10 26 FF 76    LBNE    $FF76           
 DB10: C6 24          LDB     #$24            
-DB12: 96 88          LDA     <$88            
+DB12: 96 88          LDA     <$88                           ; {ram:BitPos} 
 DB14: AA C4          ORA     ,U              
 DB16: A7 C4          STA     ,U              
 DB18: 33 C8 20       LEAU    $20,U           
@@ -2707,11 +2730,11 @@ DB25: 2A 01          BPL     $DB28                          ;
 DB27: 4F             CLRA                    
 DB28: C0 16          SUBB    #$16            
 DB2A: 34 06          PSHS    B,A             
-DB2C: BD DE 59       JSR     $DE59                          ; {CoordToScreenOffset} 
+DB2C: BD DE 59       JSR     $DE59                          ; {CoordToScrOffs9A} 
 DB2F: 1F 13          TFR     X,U             
 DB31: 35 06          PULS    A,B             
 DB33: 97 A5          STA     <$A5            
-DB35: BD DE 5C       JSR     $DE5C                          ; 
+DB35: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} 
 DB38: 86 26          LDA     #$26            
 DB3A: 97 99          STA     <$99            
 DB3C: 9B A5          ADDA    <$A5            
@@ -2805,17 +2828,17 @@ DBDB: FF AA
 
 DBDD: C6 FF          LDB     #$FF 
 DBDF: 86 5F          LDA     #$5F
-DBE1: D7 88          STB     <$88            
+DBE1: D7 88          STB     <$88                           ; {ram:BitPos} 
 DBE3: 8D B8          BSR     $DB9D                          ; 
 DBE5: 30 88 17       LEAX    $17,X           
 DBE8: 86 02          LDA     #$02            
 DBEA: 34 12          PSHS    X,A             
 DBEC: C6 06          LDB     #$06            
-DBEE: 96 88          LDA     <$88            
+DBEE: 96 88          LDA     <$88                           ; {ram:BitPos} 
 DBF0: 43             COMA                    
 DBF1: A4 C0          ANDA    ,U+             
 DBF3: 34 02          PSHS    A               
-DBF5: 96 88          LDA     <$88            
+DBF5: 96 88          LDA     <$88                           ; {ram:BitPos} 
 DBF7: A4 89 F4 00    ANDA    $F400,X         
 DBFB: AA E0          ORA     ,S+             
 DBFD: A7 84          STA     ,X              
@@ -2840,14 +2863,14 @@ DC1F: C4 03          ANDB    #$03
 DC21: 8E DE 76       LDX     #$DE76                         ; {!+BitPosTable} 
 DC24: E6 85          LDB     B,X             
 DC26: C4 55          ANDB    #$55            
-DC28: D7 88          STB     <$88            
+DC28: D7 88          STB     <$88                           ; {ram:BitPos} 
 DC2A: E6 61          LDB     1,S             
 DC2C: 8E 05 C0       LDX     #$05C0          
 DC2F: 54             LSRB                    
 DC30: 54             LSRB                    
 DC31: 3A             ABX                     
 DC32: C6 43          LDB     #$43            
-DC34: 96 88          LDA     <$88            
+DC34: 96 88          LDA     <$88                           ; {ram:BitPos} 
 DC36: AA 84          ORA     ,X              
 DC38: A7 84          STA     ,X              
 DC3A: 30 88 20       LEAX    $20,X           
@@ -2926,7 +2949,7 @@ DCDB: DC 8E          LDD     <$8E
 DCDD: BD DD 6F       JSR     $DD6F                          ; 
 DCE0: 86 FF          LDA     #$FF            
 DCE2: A7 84          STA     ,X              
-DCE4: 0F 88          CLR     <$88            
+DCE4: 0F 88          CLR     <$88                           ; {ram:BitPos} 
 DCE6: CE DE 4F       LDU     #$DE4F                         ; {!+TDE4F} 
 DCE9: EC C1          LDD     ,U++            
 DCEB: 27 19          BEQ     $DD06                          ; 
@@ -2934,23 +2957,23 @@ DCED: BD DD 63       JSR     $DD63                          ;
 DCF0: 25 F7          BCS     $DCE9                          ; 
 DCF2: A6 84          LDA     ,X              
 DCF4: 26 F3          BNE     $DCE9                          ; 
-DCF6: D6 88          LDB     <$88            
+DCF6: D6 88          LDB     <$88                           ; {ram:BitPos} 
 DCF8: 5C             INCB                    
-DCF9: D7 88          STB     <$88            
+DCF9: D7 88          STB     <$88                           ; {ram:BitPos} 
 DCFB: 58             LSLB                    
 DCFC: 8E 27 FE       LDX     #$27FE          
 DCFF: 3A             ABX                     
 DD00: EC 5E          LDD     -2,U            
 DD02: ED 84          STD     ,X              
 DD04: 20 E3          BRA     $DCE9                          ; 
-DD06: 96 88          LDA     <$88            
+DD06: 96 88          LDA     <$88                           ; {ram:BitPos} 
 DD08: 27 2E          BEQ     $DD38                          ; 
 DD0A: CE 28 00       LDU     #$2800          
 DD0D: 4A             DECA                    
 DD0E: 27 0C          BEQ     $DD1C                          ; 
 DD10: BD DD 52       JSR     $DD52                          ; 
 DD13: 84 03          ANDA    #$03            
-DD15: 91 88          CMPA    <$88            
+DD15: 91 88          CMPA    <$88                           ; {ram:BitPos} 
 DD17: 24 F7          BCC     $DD10                          ; 
 DD19: 48             LSLA                    
 DD1A: 33 C6          LEAU    A,U             
@@ -2958,7 +2981,7 @@ DD1C: EC C4          LDD     ,U
 DD1E: DD 93          STD     <$93            
 DD20: BD DD 83       JSR     $DD83                          ; 
 DD23: 0F 97          CLR     <$97            
-DD25: 0A 88          DEC     <$88            
+DD25: 0A 88          DEC     <$88                           ; {ram:BitPos} 
 DD27: 27 08          BEQ     $DD31                          ; 
 DD29: DC 8E          LDD     <$8E            
 DD2B: 9E 8C          LDX     <$8C            
@@ -2978,10 +3001,10 @@ DD48: 24 05          BCC     $DD4F                          ;
 DD4A: DC 93          LDD     <$93            
 DD4C: BD DD 83       JSR     $DD83                          ; 
 DD4F: 7E DC C9       JMP     $DCC9                          ; 
-DD52: DC 90          LDD     <$90            
+DD52: DC 90          LDD     <$90                           ; {ram:ScrPtr} 
 DD54: C3 00 15       ADDD    #$0015          
 DD57: 84 1F          ANDA    #$1F            
-DD59: DD 90          STD     <$90            
+DD59: DD 90          STD     <$90                           ; {ram:ScrPtr} 
 DD5B: C3 A0 00       ADDD    #$A000          
 DD5E: 34 06          PSHS    B,A             
 DD60: A6 F1          LDA     [,S++]          
@@ -3111,15 +3134,21 @@ TDE4F: ; ??
 DE4F: FF 00 00 FF 01 00 00 01 00 00
 ```
 
-## CoordToScreenOffset
+## CoordToScrOffs
+
+Coordinate (y,x) comes in as registers A,B. The top of the screen comes in as register X.
+Or we can look up <$9A or we can use 0400.
+
+Return memory offset in X and pixel map in B.
+
 
 ```code
-; Coordinate Y,X = A,B
-; To memory offset X and pixel map B
-CoordToScreenOffset:
+CoordToScrOffs9A:
 DE59: 9E 9A          LDX     <$9A                           ; {ram:?ScreenPointerA} ?? Top of screen?
-DE5B: 10 8E 04 00    LDY     #$0400                         ; Hiding "LDX #$0400" entry at DE5C 
-;DE5C: 8E 04 00 LDX #$400 ; Top of first screen
+DE5B: 10                                                    ; Hiding "LDX #$0400" entry at DE5C. Becomes "LDY #$0400".
+CoordToScrOffs400:                                                
+DE5C: 8E 04 00       LDX     #$0400                         ; Top of first screen
+CoordToScrOffs: 
 DE5F: 34 04          PSHS    B                              ; Hold X coordinate
 DE61: C6 20          LDB     #$20                           ; Multiply ...
 DE63: 3D             MUL                                    ; A (Y coordinate) by 32
@@ -3156,7 +3185,7 @@ DE94: BD DA 24       JSR     $DA24                          ;
 DE97: 24 16          BCC     $DEAF                          ; 
 DE99: EC A4          LDD     ,Y              
 DE9B: 34 20          PSHS    Y               
-DE9D: BD DE 5C       JSR     $DE5C                          ; 
+DE9D: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} 
 DEA0: 35 20          PULS    Y               
 DEA2: 1F 98          TFR     B,A             
 DEA4: 84 55          ANDA    #$55            
@@ -3173,7 +3202,7 @@ DEB6: EC A4          LDD     ,Y
 DEB8: BD DA 24       JSR     $DA24                          ; 
 DEBB: 24 F8          BCC     $DEB5                          ; 
 DEBD: CE DE 4F       LDU     #$DE4F                         ; {!+TDE4F} 
-DEC0: 0F 88          CLR     <$88            
+DEC0: 0F 88          CLR     <$88                           ; {ram:BitPos} 
 DEC2: 0F 99          CLR     <$99            
 DEC4: EC C1          LDD     ,U++            
 DEC6: 48             LSLA                    
@@ -3181,53 +3210,53 @@ DEC7: 58             LSLB
 DEC8: AB A4          ADDA    ,Y              
 DECA: EB 21          ADDB    1,Y             
 DECC: 34 20          PSHS    Y               
-DECE: BD DE 5C       JSR     $DE5C                          ; 
+DECE: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} 
 DED1: 35 20          PULS    Y               
 DED3: 34 04          PSHS    B               
 DED5: E6 84          LDB     ,X              
 DED7: C8 AA          EORB    #$AA            
 DED9: E4 E0          ANDB    ,S+             
 DEDB: 26 0C          BNE     $DEE9                          ; 
-DEDD: D6 88          LDB     <$88            
+DEDD: D6 88          LDB     <$88                           ; {ram:BitPos} 
 DEDF: 8E 28 00       LDX     #$2800          
 DEE2: 3A             ABX                     
 DEE3: 96 99          LDA     <$99            
 DEE5: A7 84          STA     ,X              
-DEE7: 0C 88          INC     <$88            
+DEE7: 0C 88          INC     <$88                           ; {ram:BitPos} 
 DEE9: 96 99          LDA     <$99            
 DEEB: 4C             INCA                    
 DEEC: 97 99          STA     <$99            
 DEEE: 81 04          CMPA    #$04            
 DEF0: 25 D2          BCS     $DEC4                          ; 
-DEF2: 0D 88          TST     <$88            
+DEF2: 0D 88          TST     <$88                           ; {ram:BitPos} 
 DEF4: 26 29          BNE     $DF1F                          ; 
 DEF6: EC A4          LDD     ,Y              
 DEF8: BD DA 12       JSR     $DA12                          ; 
 DEFB: 24 B8          BCC     $DEB5                          ; 
 DEFD: EC A4          LDD     ,Y              
 DEFF: 34 20          PSHS    Y               
-DF01: BD DE 5C       JSR     $DE5C                          ; 
+DF01: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} 
 DF04: 35 20          PULS    Y               
 DF06: CE 28 00       LDU     #$2800          
-DF09: 0F 88          CLR     <$88            
+DF09: 0F 88          CLR     <$88                           ; {ram:BitPos} 
 DF0B: 4F             CLRA                    
 DF0C: 34 12          PSHS    X,A             
 DF0E: 8D 32          BSR     $DF42                          ; 
 DF10: 35 12          PULS    A,X             
 DF12: 25 06          BCS     $DF1A                          ; 
-DF14: D6 88          LDB     <$88            
+DF14: D6 88          LDB     <$88                           ; {ram:BitPos} 
 DF16: A7 C0          STA     ,U+             
-DF18: 0C 88          INC     <$88            
+DF18: 0C 88          INC     <$88                           ; {ram:BitPos} 
 DF1A: 4C             INCA                    
 DF1B: 81 04          CMPA    #$04            
 DF1D: 25 ED          BCS     $DF0C                          ; 
-DF1F: 96 88          LDA     <$88            
+DF1F: 96 88          LDA     <$88                           ; {ram:BitPos} 
 DF21: CE 28 00       LDU     #$2800          
 DF24: 4A             DECA                    
 DF25: 27 16          BEQ     $DF3D                          ; 
 DF27: BD DD 52       JSR     $DD52                          ; 
 DF2A: 84 03          ANDA    #$03            
-DF2C: 91 88          CMPA    <$88            
+DF2C: 91 88          CMPA    <$88                           ; {ram:BitPos} 
 DF2E: 24 F7          BCC     $DF27                          ; 
 DF30: CE 28 00       LDU     #$2800          
 DF33: 33 C6          LEAU    A,U             
@@ -3265,7 +3294,7 @@ DF71: 10 8E 28 08    LDY     #$2808
 DF75: 0D A1          TST     <$A1            
 DF77: 2A 04          BPL     $DF7D                          ; 
 DF79: 10 8E 28 68    LDY     #$2868          
-DF7D: D7 88          STB     <$88            
+DF7D: D7 88          STB     <$88                           ; {ram:BitPos} 
 DF7F: 96 A0          LDA     <$A0            
 DF81: 97 98          STA     <$98            
 DF83: E6 21          LDB     1,Y             
@@ -3287,18 +3316,18 @@ DF9F: 30 8B          LEAX    D,X
 DFA1: D3 9A          ADDD    <$9A                           ; {ram:?ScreenPointerA} 
 DFA3: 1F 03          TFR     D,U             
 DFA5: A6 E4          LDA     ,S              
-DFA7: 94 88          ANDA    <$88            
+DFA7: 94 88          ANDA    <$88                           ; {ram:BitPos} 
 DFA9: 43             COMA                    
 DFAA: A4 84          ANDA    ,X              
 DFAC: E6 E0          LDB     ,S+             
 DFAE: 34 02          PSHS    A               
 DFB0: C4 55          ANDB    #$55            
-DFB2: D4 88          ANDB    <$88            
+DFB2: D4 88          ANDB    <$88                           ; {ram:BitPos} 
 DFB4: EA E0          ORB     ,S+             
 DFB6: E7 C4          STB     ,U              
 DFB8: 96 A1          LDA     <$A1            
 DFBA: 2A 09          BPL     $DFC5                          ; 
-DFBC: 96 88          LDA     <$88            
+DFBC: 96 88          LDA     <$88                           ; {ram:BitPos} 
 DFBE: 26 05          BNE     $DFC5                          ; 
 DFC0: EC A8 A0       LDD     $A0,Y           
 DFC3: ED A4          STD     ,Y              
