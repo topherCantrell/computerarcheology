@@ -1313,7 +1313,11 @@ CFF0: 0F 00          CLR     <$00
 CFF2: A1 8D 40 0A    CMPA    $1000,PC                       ; Did we change the memory?
 CFF6: 27 1D          BEQ     $D015                          ; Yes ... we have enough memory to run
  
-CFF8: BD D2 BE       JSR     $D2BE                          ; ?? Is this a bug? This is the middle of a message
+; BUG. This should be "JSR $D2DE" to set the graphics mode. I tested with the
+; change and I get the error message. Otherwise the text screen shows garbage.
+;
+CFF8: BD D2 BE       JSR     $D2BE                          ; BUG. This should be D2DE to set the graphics mode.
+;
 CFFB: CE 04 00       LDU     #$0400                         ; Start of the text screen?
 CFFE: DF 9E          STU     <$9E                           ;
 D000: BD D4 AE       JSR     $D4AE                          ; {Clear1200} Clear 1200 bytes (4K for 3K screen?? we aren't in graphics mode)
@@ -1326,15 +1330,15 @@ D00E: 97 AD          STA     <$AD                           ; {ram:?AD?}
 D010: BD D6 FA       JSR     $D6FA                          ; Print message
 D013: 20 F1          BRA     $D006                          ; Next message line
 
-; Hold something down at start for something? Graphics??
+; Hold something down at start for something? Graphics?? Doesn't seem to do anything when
+; tweaked either way.
 D015: 86 FE          LDA     #$FE            
 D017: C6 08          LDB     #$08                           ; Column 4 
 D019: B7 FF 02       STA     $FF02                          ; {hard:PIA0_DB} 
 D01C: B6 FF 00       LDA     $FF00                          ; {hard:PIA0_DA} 
 D01F: 84 40          ANDA    #$40                           ; Row 7
-D021: 26 02          BNE     $D025                          ; 
-D023: C6 10          LDB     #$10
-            
+D021: 26 02          BNE     $D025                          ;
+D023: C6 10          LDB     #$10            
 D025: D7 C5          STB     <$C5                           ; {ram:??AtBoot??} ??
 D027: BD D2 DE       JSR     $D2DE                          ; {SetGraphicsMode} Set the graphics mode
 D02A: CE 04 00       LDU     #$0400          
