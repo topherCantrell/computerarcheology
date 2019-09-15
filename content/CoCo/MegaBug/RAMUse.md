@@ -17,6 +17,10 @@
 | AB:AC | PixCoords | Coordinates on the screen (y,x) |
 | AD    | ColorMask | A color mask for printing characters |
 | AE    | ChangeColor | Rotate the color mask after every character (for splash) |
+| AF    | NumMinutes | Number of minutes in game time BCD |
+| B0    | NumSeconds | Number of seconds in game time BCD |
+| B1:B2 | Score | Game score BCD |
+| B3:B4 | HighScore | Hight score BDC |
 | C2    | JoyOrKey | FF if player is using joystick or 00 if player is using keyboard |
 | C5    | ??AtBoot??    | set to 8 normally or $10 if ENTER pressed at start |
 | C7    | VisiblePage   | Upper byte of address of visible screen page (04 or ??) |
