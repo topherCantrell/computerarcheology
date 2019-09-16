@@ -178,6 +178,23 @@ C98A: 30 FC CC 78 48 78
 # Bug Graphics
 3 columns of 6 rows (18 bytes each). 4 pictures each with 4 shifts (16 total).
 
+```html
+<canvas width="180" height="260"
+        data-labelColor=""
+        data-canvasFunction="TileEngine.handleTileCanvas"
+        data-getTileDataFunction="Megabug.getGraphicsLargeBug"
+        height="150"
+        data-pixWidth="8"
+        data-gridX="20"
+        data-gridY="32"
+        data-pixHeight="8"
+        data-gap="0.25"
+        data-gridPad="1"
+        data-colorsName="LargeBug"
+        data-colors='["#404040","#007FFF","#FFC846","#C8F0FF"]'
+        data-command="CAB0">
+```
+
 ```code
 BugGraphics:
 C990:  08 20 15 15 20 82
