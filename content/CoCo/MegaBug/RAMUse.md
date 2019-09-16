@@ -22,7 +22,7 @@
 | B0    | NumSeconds | Number of seconds in game time BCD |
 | B1:B2 | Score | Game score BCD |
 | B3:B4 | HighScore | High score BDC |
-| B5    | LiveOrDemo | 0 if demo game, not 0 if live game
+| B5    | LiveOrDemo | 0 if demo game, not 0 if live game |
 | C2    | JoyOrKey | FF if player is using joystick or 00 if player is using keyboard |
 | C5    | ??AtBoot??    | set to 8 normally or $10 if ENTER pressed at start |
 | C7    | VisiblePage   | Upper byte of address of visible screen page (04 or ??) |
