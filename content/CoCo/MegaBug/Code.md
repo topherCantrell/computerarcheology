@@ -1635,37 +1635,39 @@ D2E1: B7 FF C2       STA     $FFC2                          ; {hard:dispMode} V1
 D2E4: B7 FF C5       STA     $FFC5                          ; {hard:dispMode} V2 = 1
 D2E7: B7 FF C7       STA     $FFC7                          ; {hard:dispOffset} F0 = 1
 D2EA: B7 FF C8       STA     $FFC8                          ; {hard:dispOffset} F1 = 0
-D2ED: 86 FF          LDA     #$FF                           ;
-D2EF: B7 FF 22       STA     $FF22                          ; {hard:PIA1_DB} VDG all 1s
+D2ED: 86 FF          LDA     #$FF                           ; VDG ...
+D2EF: B7 FF 22       STA     $FF22                          ; {hard:PIA1_DB} ... all 1s
 D2F2: 39             RTS
 
-D2F3: 0F C1          CLR     <$C1            
+D2F3: 0F C1          CLR     <$C1            ; ??
 D2F5: BD D7 A7       JSR     $D7A7                          ; {PlayGotchaTone} Play the "we gotcha" tone
-D2F8: 0D B5          TST     <$B5                           ; ?? Demo mode (don't say "we gotcha")            
-D2FA: 10 27 FD 62    LBEQ    $D060                          ; Restart game ?? splash
-D2FE: DC B1          LDD     <$B1                           ; {ram:Score} 
-D300: 10 93 B3       CMPD    <$B3                           ; {ram:HighScore} 
-D303: 25 02          BCS     $D307                          ; 
-D305: DD B3          STD     <$B3                           ; {ram:HighScore} 
+D2F8: 0D B5          TST     <$B5                           ; Are we in demo mode (don't say "we gotcha")?            
+D2FA: 10 27 FD 62    LBEQ    $D060                          ; Yes ... restart splash
+D2FE: DC B1          LDD     <$B1                           ; {ram:Score} Is the current score ...
+D300: 10 93 B3       CMPD    <$B3                           ; {ram:HighScore} ... a new high score
+D303: 25 02          BCS     $D307                          ; No ... leave old high score
+D305: DD B3          STD     <$B3                           ; {ram:HighScore} this is the new high score
 D307: BD D7 7C       JSR     $D77C                          ; {PlayWeGotcha} Play "We Gotcha"
+;
 D30A: 86 04          LDA     #$04            
 D30C: 97 92          STA     <$92                           ; {ram:RequestedPage} 
-D30E: 86 0E          LDA     #$0E            
-D310: 97 98          STA     <$98            
-D312: CE CB 50       LDU     #$CB50                         ; {!+GraBugJumping1} 
-D315: 96 98          LDA     <$98            
-D317: 84 01          ANDA    #$01            
-D319: 27 03          BEQ     $D31E                          ; 
-D31B: CE CB F0       LDU     #$CBF0                         ; {!+GraBugJumping2} 
-D31E: BD D4 81       JSR     $D481                          ; {DrawLargeBugs} 
-D321: 86 0A          LDA     #$0A            
-D323: 13             SYNC                    
-D324: 4A             DECA                    
-D325: 26 FC          BNE     $D323                          ; 
-D327: 0A 98          DEC     <$98            
-D329: 26 E7          BNE     $D312                          ; 
-D32B: CE CA B0       LDU     #$CAB0                         ; {!+GraBugStanding} 
-D32E: BD D4 81       JSR     $D481                          ; {DrawLargeBugs} 
+D30E: 86 0E          LDA     #$0E            ; Set counter ...
+D310: 97 98          STA     <$98            ; ... for 14 jumping animations
+D312: CE CB 50       LDU     #$CB50                         ; {!+GraBugJumping1} Graphics first position
+D315: 96 98          LDA     <$98            ; Is this an ...
+D317: 84 01          ANDA    #$01            ; ... even count?
+D319: 27 03          BEQ     $D31E                          ; Yes ... use 1st graphics
+D31B: CE CB F0       LDU     #$CBF0                         ; {!+GraBugJumping2} No ... use second graphics
+D31E: BD D4 81       JSR     $D481                          ; {DrawLargeBugs} Draw the jumping bug
+D321: 86 0A          LDA     #$0A            ; Pause ...
+D323: 13             SYNC                    ; ... for ...
+D324: 4A             DECA                    ; ... 10 ...
+D325: 26 FC          BNE     $D323                          ; ... interrupts 
+D327: 0A 98          DEC     <$98            ; Decrement the jump count
+D329: 26 E7          BNE     $D312                          ; Do all jumps
+D32B: CE CA B0       LDU     #$CAB0                         ; {!+GraBugStanding} Back to ... 
+D32E: BD D4 81       JSR     $D481                          ; {DrawLargeBugs} ... standing bug
+;
 D331: 8E 01 2C       LDX     #$012C          
 D334: 9F C3          STX     <$C3            
 D336: BD D5 01       JSR     $D501                          ; {CheckSpaceOrButton} 
@@ -1979,6 +1981,9 @@ D56F: 25 1C          BCS     $D58D                          ;
 D571: 0F B6          CLR     <$B6            
 D573: DC B1          LDD     <$B1                           ; {ram:Score} 
 D575: 27 16          BEQ     $D58D                          ; 
+;
+; The player either gets 10 points for eating a dot or -1 for not eating a dot
+;
 D577: 86 02          LDA     #$02            
 D579: 97 B8          STA     <$B8            
 D57B: 96 B2          LDA     <$B2                           ; {ram:Score} 
@@ -1991,6 +1996,7 @@ D586: 96 B1          LDA     <$B1                           ; {ram:Score}
 D588: 8B 99          ADDA    #$99            
 D58A: 19             DAA                     
 D58B: 97 B1          STA     <$B1                           ; {ram:Score} 
+;
 D58D: 96 B7          LDA     <$B7            
 D58F: 4C             INCA                    
 D590: 97 B7          STA     <$B7            
@@ -1999,17 +2005,19 @@ D594: 25 1A          BCS     $D5B0                          ;
 D596: 0F B7          CLR     <$B7            
 D598: 86 02          LDA     #$02            
 D59A: 97 B9          STA     <$B9            
-D59C: 96 B0          LDA     <$B0                           ; {ram:NumSeconds} 
-D59E: 8B 01          ADDA    #$01            
-D5A0: 19             DAA                     
-D5A1: 97 B0          STA     <$B0                           ; {ram:NumSeconds} 
-D5A3: 81 60          CMPA    #$60            
-D5A5: 25 09          BCS     $D5B0                          ; 
-D5A7: 0F B0          CLR     <$B0                           ; {ram:NumSeconds} 
-D5A9: 96 AF          LDA     <$AF                           ; {ram:NumMinutes} 
-D5AB: 8B 01          ADDA    #$01            
-D5AD: 19             DAA                     
-D5AE: 97 AF          STA     <$AF                           ; {ram:NumMinutes} 
+;
+D59C: 96 B0          LDA     <$B0                           ; {ram:NumSeconds} Add ... 
+D59E: 8B 01          ADDA    #$01            ; ... one to  number of seconds
+D5A0: 19             DAA                     ; Adjust for BCD
+D5A1: 97 B0          STA     <$B0                           ; {ram:NumSeconds} New number of seconds 
+D5A3: 81 60          CMPA    #$60            ; Did we overflow into minutes?
+D5A5: 25 09          BCS     $D5B0                          ; No ... this is it
+D5A7: 0F B0          CLR     <$B0                           ; {ram:NumSeconds} Roll seconds back to 0
+D5A9: 96 AF          LDA     <$AF                           ; {ram:NumMinutes} Add ...
+D5AB: 8B 01          ADDA    #$01            ; ... one to number of minutes
+D5AD: 19             DAA                     ; Adjust for BCD
+D5AE: 97 AF          STA     <$AF                           ; {ram:NumMinutes} New number of minutes
+; 
 D5B0: 9E C3          LDX     <$C3            
 D5B2: 27 04          BEQ     $D5B8                          ; 
 D5B4: 30 1F          LEAX    -1,X            
@@ -2233,25 +2241,25 @@ D749: 44             LSRA                                   ; ... 8 ...
 D74A: 56             RORB                                   ;
 D74B: 34 06          PSHS    B,A                            ; Duration/8 to stack
 D74D: EC C1          LDD     ,U++                           ; Duration again (advance U)
-D74F: A3 E1          SUBD    ,S++            
+D74F: A3 E1          SUBD    ,S++            ;
 D751: 1F 01          TFR     D,X                            ; Duration to X
 D753: EC C1          LDD     ,U++                           ; Note 1 (advance U)
 D755: DD 80          STD     <$80                           ; {ram:Note1} 
 D757: EC C1          LDD     ,U++                           ; Note 2 (advance U)
 D759: DD 82          STD     <$82                           ; {ram:Note2} 
 ;
-D75B: 6F E4          CLR     ,S              
+D75B: 6F E4          CLR     ,S              ;
 D75D: DC 86          LDD     <$86                           ; {ram:NoteC2} 
 D75F: D3 82          ADDD    <$82                           ; {ram:Note2} 
 D761: DD 86          STD     <$86                           ; {ram:NoteC2} 
-D763: 66 E4          ROR     ,S              
+D763: 66 E4          ROR     ,S              ;
 D765: DC 84          LDD     <$84                           ; {ram:NoteC1} 
 D767: D3 80          ADDD    <$80                           ; {ram:Note1} 
 D769: DD 84          STD     <$84                           ; {ram:NoteC1} 
-D76B: A6 E4          LDA     ,S              
-D76D: 46             RORA                    
-D76E: 44             LSRA                    
-D76F: 44             LSRA                    
+D76B: A6 E4          LDA     ,S              ;
+D76D: 46             RORA                    ;
+D76E: 44             LSRA                    ;
+D76F: 44             LSRA                    ;
 D770: B8 FF 20       EORA    $FF20                          ; {hard:PIA1_DA} 6-bit ...
 D773: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} ... sound
 D776: 30 1F          LEAX    -1,X                           ; Note finished?
@@ -2626,6 +2634,8 @@ DA2C: C4 01          ANDB    #$01
 DA2E: 26 F1          BNE     $DA21                          ; 
 DA30: 1A 01          ORCC    #$01            
 DA32: 39             RTS                     
+
+; ?? Line of bugs in the "next time" splash ??
 
 DA33: 8E 28 C8       LDX     #$28C8          
 DA36: C6 20          LDB     #$20            
