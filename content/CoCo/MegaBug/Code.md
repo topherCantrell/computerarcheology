@@ -1593,7 +1593,7 @@ D1CC: BD DE 7A       JSR     $DE7A                          ;
 D1CF: BD DF 68       JSR     $DF68                          ; 
 D1D2: BD D9 35       JSR     $D935                          ; 
 D1D5: DC BE          LDD     <$BE            
-D1D7: 10 27 01 69    LBEQ    $0169           
+D1D7: 10 27 01 69    LBEQ    $D344           
 D1DB: 96 B8          LDA     <$B8            
 D1DD: 94 B5          ANDA    <$B5                           ; {ram:LiveOrDemo} 
 D1DF: 27 25          BEQ     $D206                          ; 
@@ -1654,14 +1654,14 @@ D25B: 13             SYNC
 D25C: DC A2          LDD     <$A2            
 D25E: DD 8E          STD     <$8E            
 D260: BD DF CC       JSR     $DFCC                          ; 
-D263: 10 25 00 8C    LBCS    $008C           
+D263: 10 25 00 8C    LBCS    $D2F3           ; Death
 D267: 0D B5          TST     <$B5                           ; {ram:LiveOrDemo} 
 D269: 27 1F          BEQ     $D28A                          ; 
 D26B: AD 9F A0 00    JSR     [$A000]                        ; {hard:POLCAT} 
 D26F: 81 03          CMPA    #$03            
-D271: 10 27 FD EB    LBEQ    $FDEB           
+D271: 10 27 FD EB    LBEQ    $??           
 D275: 81 0D          CMPA    #$0D            
-D277: 10 26 FF 47    LBNE    $FF47           
+D277: 10 26 FF 47    LBNE    $??           
 D27B: 1A 50          ORCC    #$50            
 D27D: AD 9F A0 00    JSR     [$A000]                        ; {hard:POLCAT} 
 D281: 81 0D          CMPA    #$0D            
@@ -1669,12 +1669,12 @@ D283: 26 F8          BNE     $D27D                          ;
 D285: 1C EF          ANDCC   #$EF            
 D287: 7E D1 C2       JMP     $D1C2                          ; 
 D28A: BD D5 01       JSR     $D501                          ; {CheckSpaceOrButton} 
-D28D: 10 25 FE 43    LBCS    $FE43           
+D28D: 10 25 FE 43    LBCS    $??           
 D291: 8E 08 00       LDX     #$0800          
 D294: 30 1F          LEAX    -1,X            
 D296: 26 FC          BNE     $D294                          ; 
 D298: 9E C3          LDX     <$C3            
-D29A: 10 27 FD C2    LBEQ    $FDC2           
+D29A: 10 27 FD C2    LBEQ    $??           
 D29E: 7E D1 C2       JMP     $D1C2                          ; 
 
 Need16K:
@@ -1706,6 +1706,8 @@ D2EA: B7 FF C8       STA     $FFC8                          ; {hard:dispOffset} 
 D2ED: 86 FF          LDA     #$FF                           ; VDG ...
 D2EF: B7 FF 22       STA     $FF22                          ; {hard:PIA1_DB} ... all 1s
 D2F2: 39             RTS
+
+; TODO how do we get here? No other code references this! And yet we DO get here!
 
 D2F3: 0F C1          CLR     <$C1                           ; ??
 D2F5: BD D7 A7       JSR     $D7A7                          ; {PlayGotchaTone} Play the "we gotcha" tone
@@ -1739,7 +1741,7 @@ D32E: BD D4 81       JSR     $D481                          ; {DrawLargeBugs} ..
 D331: 8E 01 2C       LDX     #$012C          
 D334: 9F C3          STX     <$C3            
 D336: BD D5 01       JSR     $D501                          ; {CheckSpaceOrButton} 
-D339: 10 25 FD 97    LBCS    $FD97           
+D339: 10 25 FD 97    LBCS    $??           
 D33D: 9E C3          LDX     <$C3            
 D33F: 26 F5          BNE     $D336                          ; 
 D341: 7E D0 60       JMP     $D060                          ; Now restart the game ?? splash
@@ -2448,6 +2450,7 @@ D83E: 31 23          LEAY    3,Y
 D840: 0A 98          DEC     <$98                           ; {ram:JumpCnt} 
 D842: 26 E4          BNE     $D828                          ; 
 D844: 39             RTS                     
+
 D845: 34 20          PSHS    Y               
 D847: EC A4          LDD     ,Y              
 D849: 90 A2          SUBA    <$A2            
@@ -2579,7 +2582,7 @@ D932: DB A5          ADDB    <$A5
 D934: 39             RTS
                      
 D935: 0D B5          TST     <$B5                           ; {ram:LiveOrDemo} 
-D937: 10 27 00 AA    LBEQ    $00AA           
+D937: 10 27 00 AA    LBEQ    $??           
 D93B: DC A2          LDD     <$A2            
 D93D: BD DA 24       JSR     $DA24                          ; 
 D940: 24 0C          BCC     $D94E                          ; 
@@ -2808,7 +2811,7 @@ DB04: 33 41          LEAU    1,U
 DB06: 30 01          LEAX    1,X             
 DB08: DD 88          STD     <$88                           ; {ram:BitPos} 
 DB0A: 0A 99          DEC     <$99            
-DB0C: 10 26 FF 76    LBNE    $FF76           
+DB0C: 10 26 FF 76    LBNE    $??           
 DB10: C6 24          LDB     #$24            
 DB12: 96 88          LDA     <$88                           ; {ram:BitPos} 
 DB14: AA C4          ORA     ,U              
@@ -3032,7 +3035,7 @@ DCC4: 26 EC          BNE     $DCB2                          ;
 DCC6: 10 9F 8C       STY     <$8C            
 DCC9: 9E 8A          LDX     <$8A            
 DCCB: 9C 8C          CMPX    <$8C            
-DCCD: 10 27 00 FA    LBEQ    $00FA           
+DCCD: 10 27 00 FA    LBEQ    $??           
 DCD1: EC 81          LDD     ,X++            
 DCD3: DD 8E          STD     <$8E            
 DCD5: 9F 8A          STX     <$8A            
