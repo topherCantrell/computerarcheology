@@ -108,6 +108,27 @@ C943: 09 43 27 0D 10 08 50 07 EE 00 35 0B 1D 69 03 00 53 00 51 00 00 18 00 3F 00
 # Player graphics 
 6 bytes per image, 2 images per direction, 4 directions
 
+```html
+<canvas width="300" height="160"
+        data-labelColor="#F00000"
+        data-canvasFunction="TileEngine.handleTileCanvas"
+        data-getTileDataFunction="Megabug.getPlayer"
+        data-pixWidth="8"
+        data-gridX="8"
+        data-gridY="9"
+        data-pixHeight="8"
+        data-gap="0.25"
+        data-gridPad="1"
+        data-colorsName="SmallBugs"
+        data-colors='["#404040","#F0F0F0"]'
+        data-gridX="4"
+        data-gridY="2"
+        data-address="C960"
+        data-command="0,+x,1,+x,2,+x,3,*,+y,
+                      4,+x,5,+x,6,+x,7">
+</canvas>
+```
+
 ```code
 PlayerGraphics:
 C960: F8 A8 0C 0C A8 F8
@@ -179,13 +200,13 @@ C98A: 30 FC CC 78 48 78
 3 columns of 6 rows (18 bytes each). 4 pictures each with 4 shifts (16 total).
 
 ```html
-<canvas width="180" height="500"
+<canvas width="450" height="250"
         data-labelColor=""
         data-canvasFunction="TileEngine.handleTileCanvas"
         data-getTileDataFunction="Megabug.getSmallBug"
         data-pixWidth="8"
-        data-gridX="20"
-        data-gridY="32"
+        data-gridX="12"
+        data-gridY="6"
         data-pixHeight="8"
         data-gap="0.25"
         data-gridPad="1"
@@ -193,10 +214,12 @@ C98A: 30 FC CC 78 48 78
         data-colors='["#404040","#007FFF","#FFC846","#C8F0FF"]'
         data-gridX="4"
         data-gridY="4"
+        data-address="C990"
         data-command="0,+x,+x,1,+x,2,+x,3,*,+y,
                       4,+x,+x,5,+x,6,+x,7,*,+y,
-                      8,+x,+x,9,+x,10,+x,11,*,+y,
-                      12,+x,+x,13,+x,14,+x,15,*,+y">
+                      8,+x,+x,9,+x,A,+x,B,*,+y,
+                      C,+x,+x,D,+x,E,+x,F,*,+y">
+</canvas>
 ```
 
 ```code
@@ -362,7 +385,7 @@ CAAA:  80 00 00 80 00 00
 ; ...%........
 ```
 
-### Giant Bug Graphics
+# Giant Bug Graphics
 
 The bugs are defined as 32 rows by 5 columns (of 4 pixels) drawn column by column. Note that the
 colors on the CoCo screen are blended together in spots.
@@ -560,10 +583,36 @@ CD74: 06 0A 15 98 0D 99
 # Character graphics
 
 68 total characters:
-  - 0-9
-  - A-Z
-  - a-z
-  - <space>!-.:,
+  * 0-9
+  * A-Z
+  * a-z
+  * <space>!-.:,
+  
+```html
+<canvas width="720" height="560"
+        data-labelColor="#F0F0F0"
+        data-canvasFunction="TileEngine.handleTileCanvas"
+        data-getTileDataFunction="Megabug.getCharacter"
+        data-pixWidth="8"
+        data-gridX="8"
+        data-gridY="9"
+        data-pixHeight="8"
+        data-gap="0.25"
+        data-gridPad="1"
+        data-colorsName="SmallBugs"
+        data-colors='["#404040","#007FFF","#FFC846","#C8F0FF"]'
+        data-gridX="10"
+        data-gridY="7"
+        data-address="CD7A"
+        data-command="0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7,+x,8,+x,9,*,+y,
+                      A,+x,B,+x,C,+x,D,+x,E,+x,F,+x,10,+x,11,+x,12,+x,13,*,+y,
+                      14,+x,15,+x,16,+x,17,+x,18,+x,19,+x,1A,+x,1B,+x,1C,+x,1D,*,+y,
+                      1E,+x,1F,+x,20,+x,21,+x,22,+x,23,+x,24,+x,25,+x,26,+x,27,*,+y,
+                      28,+x,29,+x,2A,+x,2B,+x,2C,+x,2D,+x,2E,+x,2F,+x,30,+x,31,*,+y,
+                      32,+x,33,+x,34,+x,35,+x,36,+x,37,+x,38,+x,39,+x,3A,+x,3B,*,+y,
+                      3C,+x,3D,+x,3E,+x,3F,+x,40,+x,41,+x,42,+x,43,+x">
+</canvas>
+```
 
 ```code
 GraChars:

@@ -3,6 +3,62 @@
 var Megabug = (function() {
 	
 	var my = {}
+	
+	function padBinaryTo8Bits(value) {
+    	var ret = value.toString(2);
+    	while(ret.length<8) ret="0"+ret;
+    	return ret;
+    }
+	
+	my.getPlayer = function(number, address) {
+		var dat = BinaryData.getData(address+number*6,6)
+		
+		ret = []
+		for(var y=0;y<6;++y) {
+			var b = padBinaryTo8Bits(dat[y])
+			for(var x=0;x<8;++x) {
+				ret.push(parseInt(b.substring(x,x+1),2))
+			}
+		}
+				
+		return ret
+		
+	}
+	
+	my.getCharacter = function(number, address) {
+		
+		var dat = BinaryData.getData(address+number*9,9)
+		
+		ret = []
+		for(var y=0;y<9;++y) {
+			var b = padBinaryTo8Bits(dat[y])
+			for(var x=0;x<8;++x) {
+				ret.push(parseInt(b.substring(x,x+1),2))
+			}
+		}
+				
+		return ret
+	}
+	
+	my.getSmallBug = function(number, address) {
+		
+		var dat = BinaryData.getData(address+number*18,18)
+		
+		ret = []
+		
+		for(var y=0;y<6;++y) {
+			for(var x=0;x<3;++x) {			
+				var b = padBinaryTo8Bits(dat[x*6+y])
+				for(p=0;p<4;++p) {
+					var s = b.substring(p*2,p*2+2)
+					ret.push(parseInt(s,2))
+				}
+			}
+		}
+		
+		return ret
+		
+	};
 			
 	my.getGraphicsLargeBug = function(bugAddress) {	
 		
