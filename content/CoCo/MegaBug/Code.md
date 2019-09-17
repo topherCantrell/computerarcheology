@@ -179,20 +179,24 @@ C98A: 30 FC CC 78 48 78
 3 columns of 6 rows (18 bytes each). 4 pictures each with 4 shifts (16 total).
 
 ```html
-<canvas width="180" height="260"
+<canvas width="180" height="500"
         data-labelColor=""
         data-canvasFunction="TileEngine.handleTileCanvas"
-        data-getTileDataFunction="Megabug.getGraphicsLargeBug"
-        height="150"
+        data-getTileDataFunction="Megabug.getSmallBug"
         data-pixWidth="8"
         data-gridX="20"
         data-gridY="32"
         data-pixHeight="8"
         data-gap="0.25"
         data-gridPad="1"
-        data-colorsName="LargeBug"
+        data-colorsName="SmallBugs"
         data-colors='["#404040","#007FFF","#FFC846","#C8F0FF"]'
-        data-command="CAB0">
+        data-gridX="4"
+        data-gridY="4"
+        data-command="0,+x,+x,1,+x,2,+x,3,*,+y,
+                      4,+x,+x,5,+x,6,+x,7,*,+y,
+                      8,+x,+x,9,+x,10,+x,11,*,+y,
+                      12,+x,+x,13,+x,14,+x,15,*,+y">
 ```
 
 ```code
