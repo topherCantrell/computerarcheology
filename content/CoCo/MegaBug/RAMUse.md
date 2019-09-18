@@ -10,11 +10,13 @@
 | 84:85 | NoteC1 | Note1 tally count |
 | 86:87 | NoteC2 | Note2 tally count |
 | 88    | BitPos | Pixel position while printing |
+| 8E:8F | Temp2 | Used to check coordinates and other ?? |
 | 90:91 | RndSeed | Used to fetch bytes from ROM as random numbers |
 | 92    | RequestedPage | Upper byte of address of visible screen page (04 or ??) |
-| 98    | JumpCnt | Used to count 14 jumps when player gets eaten |
+| 98    | Temp1 | General use |
 | 9A:9B | ?ScreenPointerA | |
 | 9C:9D | ?ScreenPointerB | |
+| A0    | NumBugs | Number of bugs in game | 
 | A2:A3 | PlayerCoords | Player's coordinates on the screen (y,x) |
 | A4    | PlayerDir | Player's facing direction |
 | AB:AC | PixCoords | Coordinates on the screen (y,x) |
@@ -35,3 +37,5 @@ Graphics pages (3K each)
   * 0400 - 0FFF
   * 1000 - 1BFF
   * 1C00 - 27FF
+  
+The data on the bugs is kept in an array at $2808. 3 bytes each: y,x,dir
