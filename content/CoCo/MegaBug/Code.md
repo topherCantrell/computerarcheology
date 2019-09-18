@@ -21,11 +21,11 @@
 C000: 7E CF DE       JMP     $CFDE                          ; {Start} 
 ```
 
-## Data
+# Data
 
 Looks like data from here to the start at CFDE.
 
-### "We Gotcha" audio samples played at D77C
+## "We Gotcha" voice samples
 
 ```code
 WeGotchaSamples:
@@ -106,7 +106,7 @@ C923: 25 D4 10 42 1D 24 53 05 D6 E2 09 2C 18 0D 01 0C 00 5B D8 05 09 0B 22 46 05
 C943: 09 43 27 0D 10 08 50 07 EE 00 35 0B 1D 69 03 00 53 00 51 00 00 18 00 3F 00 00 87 00 3C 
 ```
 
-# Player graphics 
+## Player graphics 
 6 bytes per image, 2 images per direction, 4 directions
 
 ```html
@@ -197,7 +197,7 @@ C98A: 30 FC CC 78 48 78
 ; .####...
 ```
 
-# Bug Graphics
+## Bug Graphics
 3 columns of 6 rows (18 bytes each). 4 pictures each with 4 shifts (16 total).
 
 ```html
@@ -386,7 +386,7 @@ CAAA:  80 00 00 80 00 00
 ; ...%........
 ```
 
-# Giant Bug Graphics
+## Giant Bug Graphics
 
 The bugs are defined as 32 rows by 5 columns (of 4 pixels) drawn column by column. Note that the
 colors on the CoCo screen are blended together in spots.
@@ -534,7 +534,7 @@ CC70: 00 80 00 00 00 00 00 00 00 00 00 00 00 80 80 80 E0 78 00 80 80 80 E0 78 00
 ; ...++++.............
 ```
 
-# La Cucaracha
+## La Cucaracha Song
 
 39 notes (including rests)
 
@@ -581,7 +581,7 @@ CD6E: 06 0A 18 35 18 F4
 CD74: 06 0A 15 98 0D 99
 ```
 
-# Character graphics
+## Character graphics
 
 68 total characters:
   * 0-9
@@ -1366,7 +1366,7 @@ CFD5:  20 20 40 00 00 00 00 00 00
 ; ........
 ```
 
-## Start
+# Start
 
 ```code            
 Start:
@@ -1595,8 +1595,8 @@ D1CA: 2A 03          BPL     $D1CF                          ;
 D1CC: BD DE 7A       JSR     $DE7A                          ; ?? Move bugs ??
 D1CF: BD DF 68       JSR     $DF68                          ; ?? Draw bugs ??
 D1D2: BD D9 35       JSR     $D935                          ; ?? Move player ??
-D1D5: DC BE          LDD     <$BE            
-D1D7: 10 27 01 69    LBEQ    $D344                          ; 
+D1D5: DC BE          LDD     <$BE                           ; {ram:DotsLeft} How many dots are left to be eaten?
+D1D7: 10 27 01 69    LBEQ    $D344                          ; None ... player wins
 D1DB: 96 B8          LDA     <$B8                           ; ?? flag to draw score ??
 D1DD: 94 B5          ANDA    <$B5                           ; {ram:LiveOrDemo} Is this the demo game?
 D1DF: 27 25          BEQ     $D206                          ; Yes ... skip drawing score
@@ -1703,7 +1703,7 @@ D2D2: 4D 65 67 61 22 42 75 67 00
 D2DB: 00 00 00 
 ```
 
-## SetGraphicsMode
+# SetGraphicsMode
 
 ```code
 SetGraphicsMode:
@@ -1843,24 +1843,24 @@ D3EB: 4C             INCA
 D3EC: 81 20          CMPA    #$20            
 D3EE: 24 02          BCC     $D3F2                          ; 
 D3F0: 97 A0          STA     <$A0                           ; {ram:NumBugs} 
-D3F2: CE 10 00       LDU     #$1000          
-D3F5: DF 9E          STU     <$9E            
-D3F7: BD D4 AE       JSR     $D4AE                          ; {Clear1200} 
-D3FA: 8E D6 5A       LDX     #$D65A                         ; {!+StrNextTime} 
-D3FD: EC 81          LDD     ,X++            
-D3FF: DD AB          STD     <$AB                           ; {ram:PixCoords} 
-D401: 27 09          BEQ     $D40C                          ; 
-D403: A6 80          LDA     ,X+             
-D405: 97 AD          STA     <$AD                           ; {ram:ColorMask} 
-D407: BD D6 FA       JSR     $D6FA                          ; {PrintMsg} 
-D40A: 20 F1          BRA     $D3FD                          ; 
+D3F2: CE 10 00       LDU     #$1000          ; Using 2nd ...
+D3F5: DF 9E          STU     <$9E            ; ... screen
+D3F7: BD D4 AE       JSR     $D4AE                          ; {Clear1200} Clear the screen
+D3FA: 8E D6 5A       LDX     #$D65A                         ; {!+StrNextTime} The "we'll getcha next time" string 
+D3FD: EC 81          LDD     ,X++            ; Set the ...
+D3FF: DD AB          STD     <$AB                           ; {ram:PixCoords} ... destination coordinates 
+D401: 27 09          BEQ     $D40C                          ; All strings printed ... move on
+D403: A6 80          LDA     ,X+             ; Set the ...
+D405: 97 AD          STA     <$AD                           ; {ram:ColorMask} ... color mask 
+D407: BD D6 FA       JSR     $D6FA                          ; {PrintMsg} Print this message
+D40A: 20 F1          BRA     $D3FD                          ; Go back for all messages
 ;
 D40C: 86 01          LDA     #$01            
 D40E: 97 98          STA     <$98                           ; {ram:Temp1} 
 D410: 8E C0 00       LDX     #$C000          
 D413: 9F A5          STX     <$A5            
-D415: 86 06          LDA     #$06            
-D417: 8D 4E          BSR     $D467                          ; 
+D415: 86 06          LDA     #$06            ; Delay for ...
+D417: 8D 4E          BSR     $D467                          ; ... 6 interrupts (10th of a second) 
 D419: 8D 51          BSR     $D46C                          ; 
 D41B: 96 98          LDA     <$98                           ; {ram:Temp1} 
 D41D: 8B 02          ADDA    #$02            
@@ -1895,10 +1895,17 @@ D45D: 20 E5          BRA     $D444                          ;
 D45F: 86 64          LDA     #$64            
 D461: BD D4 67       JSR     $D467                          ; 
 D464: 7E D0 E7       JMP     $D0E7                          ; 
-D467: 13             SYNC                    
-D468: 4A             DECA                    
-D469: 26 FC          BNE     $D467                          ; 
-D46B: 39             RTS                     
+```
+
+# Delay for N syncs
+
+```code
+DelaySyncs:
+D467: 13             SYNC                    ; Wait for interrupt
+D468: 4A             DECA                    ; all syncs done?
+D469: 26 FC          BNE     $D467                          ; No ... keep syncing
+D46B: 39             RTS                     ; Done
+
 D46C: 9E A5          LDX     <$A5            
 D46E: C6 80          LDB     #$80            
 D470: 6F 82          CLR     ,-X             
@@ -1912,7 +1919,7 @@ D47E: 26 F7          BNE     $D477                          ;
 D480: 39             RTS                     
 ```
 
-## Draw large bugs
+# Draw large bugs
 
 ```code
 ; Draw large bugs on both sides of the screen
@@ -1943,7 +1950,7 @@ D4AA: 9F 9A          STX     <$9A                           ; {ram:?ScreenPointe
 D4AC: 35 90          PULS    X,PC            
 ```
 
-## Clear1200
+# Clear1200
 
 ```code
 Clear1200:
@@ -1993,7 +2000,7 @@ D4FE: 26 C4          BNE     $D4C4                          ;
 D500: 39             RTS                     
 ```
 
-## Check for space-bar or button press
+# Check for space-bar or button press
 
 Return carry=1 if yes or carry=0 if no. Return FF in C2 if joystick or 00 in C2 if keyboard.
 
@@ -2035,7 +2042,7 @@ D542: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA}
 D545: 39             RTS
 ```
 
-## IRQ Service Routine
+# IRQ Service Routine
 
 ```code
 IRQ:
@@ -2114,7 +2121,12 @@ D5B8: B6 FF 03       LDA     $FF03                          ; {hard:PIA0_CB} Ena
 D5BB: B6 FF 02       LDA     $FF02                          ; {hard:PIA0_DB} ... to fire again
 D5BE: BD DD 52       JSR     $DD52                          ; {GetRandom} Advance the random number generator
 D5C1: 3B             RTI                                    ; Done with interrupt
+```
+# Text processing
 
+## Text strings
+
+```code
 StrHighScore:
 D5C2: 48 69 67 68 20 53 63 6F 72 65 20 00
 ; High_Score_ 
@@ -2174,7 +2186,7 @@ D66D: 4E 65 78 74 20 54 69 6D 65 00
 D677: 00 00 
 ```
 
-# Print character
+## Print character
 
 Print the given character to the given X,Y pixel coordinate.
 
@@ -2229,7 +2241,7 @@ D6C7: 32 61          LEAS    1,S                            ; Remove counter fro
 D6C9: 35 C0          PULS    U,PC                           ; Done
 ```
 
-# Print four digit number
+## Print four digit number
 
 Color set to AA, value in X. 
 
@@ -2243,7 +2255,7 @@ D6D3: 8D 02          BSR     $D6D7                          ; {PrintTwoDigits} P
 D6D5: 35 02          PULS    A                              ; Get the lower 2 digits and fall into print
 ```
 
-# Print two digit number
+## Print two digit number
 
 BCD number in A.
 
@@ -2267,7 +2279,7 @@ D6F1: D7 AC          STB     <$AC                           ; {ram:PixCoords} ..
 D6F3: 39             RTS                                    ; Done
 ```
 
-# Print message
+## Print message
 Print a message on the screen:
   * X pointer to message
   * <$AB,$AC,$AD coordinates and color
@@ -2315,7 +2327,13 @@ D737: 24 02          BCC     $D73B                          ; Didn't overflow ..
 D739: 86 55          LDA     #$55                           ; Restart at color 55
 D73B: 97 AD          STA     <$AD                           ; {ram:ColorMask} New color mask
 D73D: 20 BD          BRA     $D6FC                          ; Do the print
+```
 
+# Audio
+
+## Play music
+
+```code
 ; Play dual notes (splash music)
 PlayTwoNotes:
 D73F: 34 01          PSHS    CC                             ; Hold interrupt status
@@ -2530,7 +2548,7 @@ D8B6: 26 D4          BNE     $D88C                          ; Do all 3 columns (
 D8B8: 35 A0          PULS    Y,PC            
 ```
 
-## Read directional input
+# Read directional input
 
 Keyboard or joystick -- depending on how the user started the game.
 
@@ -2673,10 +2691,10 @@ D9C7: 97 B1          STA     <$B1                           ; {ram:Score}
 D9C9: 86 02          LDA     #$02            
 D9CB: 97 B8          STA     <$B8            
 D9CD: 0F B6          CLR     <$B6                           ; {ram:ISRCountScore} 
-D9CF: DE BE          LDU     <$BE            
-D9D1: 27 04          BEQ     $D9D7                          ; 
-D9D3: 33 5F          LEAU    -1,U            
-D9D5: DF BE          STU     <$BE            
+D9CF: DE BE          LDU     <$BE                           ; {ram:DotsLeft} 
+D9D1: 27 04          BEQ     $D9D7                          ; ?? why would this ever be 0? We stop when it reaches 0
+D9D3: 33 5F          LEAU    -1,U            ; Player just ate ...
+D9D5: DF BE          STU     <$BE                           ; {ram:DotsLeft} ... a dot 
 D9D7: 1F 98          TFR     B,A             
 D9D9: 53             COMB                    
 D9DA: E4 84          ANDB    ,X              
@@ -2885,12 +2903,12 @@ DB73: 5F             CLRB
 DB74: 8D 07          BSR     $DB7D                          ; {Copy3K} 
 DB76: 86 1C          LDA     #$1C            
 DB78: 97 92          STA     <$92                           ; {ram:RequestedPage} 
-DB7A: 13             SYNC                    
+DB7A: 13             SYNC                                   ; Wait for ISR to change the page
 DB7B: 39             RTS                     
 ;
 DB7C: AA                                  
 ```
-## Copy3K
+# Copy3K
 
 ```code
 ; Copy 3K (one screen) from U to 1C00
@@ -3120,6 +3138,8 @@ DD4C: BD DD 83       JSR     $DD83                          ;
 DD4F: 7E DC C9       JMP     $DCC9                          ; 
 ```
 
+# Random number
+
 ```code
 GetRandom:
 DD52: DC 90          LDD     <$90                           ; {ram:RndSeed} Get pointer for random numbers
@@ -3204,8 +3224,8 @@ DDDC: 25 F5          BCS     $DDD3                          ;
 DDDE: 30 89 00 80    LEAX    $0080,X                        ; ?? 4 rows per cell?
 DDE2: 0A 98          DEC     <$98                           ; {ram:Temp1} 
 DDE4: 26 EC          BNE     $DDD2                          ; 
-DDE6: CC 01 3F       LDD     #$013F          
-DDE9: ED 8D 22 D1    STD     $00BE,PC        
+DDE6: CC 01 3F       LDD     #$013F                         ; Number of dots ...
+DDE9: ED 8D 22 D1    STD     $00BE,PC                       ; ... left in the maze
 DDED: 8E 0A 30       LDX     #$0A30          
 DDF0: 86 CF          LDA     #$CF            
 DDF2: A4 84          ANDA    ,X              
@@ -3259,7 +3279,7 @@ TDE4F: ; ??
 DE4F: FF 00 00 FF 01 00 00 01 00 00
 ```
 
-## CoordToScrOffs
+# CoordToScrOffs
 
 Coordinate (y,x) comes in as registers A,B. The top of the screen comes in as register X.
 Or we can look up <$9A or we can use 0400.
@@ -3491,7 +3511,7 @@ DFF0: 1A 01          ORCC    #$01                           ; Return C=1 ... the
 DFF2: 39             RTS                     
 ```
 
-## Unused
+# Unused
 
 ```code
 ; Unused at end

@@ -29,6 +29,7 @@
 | B5    | LiveOrDemo | 0 if demo game, not 0 if live game |
 | B6    | ISRCountScore | Counts ISRs in live game mode to decrement score once a second |
 | B7    | ISRCountTime  | Counts ISRs in live game to increment the time once a second |
+| BE:BF | DotsLeft | Number of dots left to be eaten in the maze |
 | C2    | JoyOrKey | FF if player is using joystick or 00 if player is using keyboard |
 | C5    | ??AtBoot??    | set to 8 normally or $10 if ENTER pressed at start |
 | C7    | VisiblePage   | Upper byte of address of visible screen page (04 or ??) |
