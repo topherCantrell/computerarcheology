@@ -301,6 +301,7 @@ def load_site_directory(dev_mode=False):
             if not dev_mode:
                 if directory.startswith('#'):
                     directory = directory[1:]
+                if title.startswith('#'):
                     title = title[1:]
 
             if directory.startswith('*'):

@@ -1,6 +1,6 @@
 ![Megabug](megabug.jpg)
 
-# Pyramid 2000
+# Megabug
 
 >>> deploy:<br>
 >>>   +megabug.jpg<br>
@@ -14,3 +14,13 @@
 
 * [Disassembled Code](Code.md)
 * [RAM Usage](RAMUse.md)
+
+>>> tourGuide {
+
+# Tour Guide
+  * The copy-protection that writes to ROM
+  * Using the top of the stack as a register
+  * The graphics
+  * The bug in the code around the "You need 16k" message
+
+>>> }

@@ -1,6 +1,6 @@
 ![RAM](megabug.jpg)
 
-# Game variables DP=??
+# Game variables
 
 >>> memory
 | | | |

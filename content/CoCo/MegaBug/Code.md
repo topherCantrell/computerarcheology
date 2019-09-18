@@ -11,7 +11,7 @@
 [Hardware Info](../Hardware.md)
 
 ```html
-<script src="/CoCo/MegaBug/megabug.js"></script>
+<script src="/CoCo/Megabug/megabug.js"></script>
 <script src="/js/TileEngine.js"></script>
 <script src="/js/BinaryData.js"></script>
 <script src="/js/CANVAS.js"></script>
