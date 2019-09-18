@@ -301,6 +301,7 @@ def load_site_directory(dev_mode=False):
             if not dev_mode:
                 if directory.startswith('#'):
                     directory = directory[1:]
+                    title = title[1:]
 
             if directory.startswith('*'):
                 current_node.hidden = True
@@ -324,7 +325,7 @@ def load_site_directory(dev_mode=False):
 
 
 if __name__ == '__main__':
-    
+
     dev_mode = False
     if len(sys.argv) > 1:
         if sys.argv[1].startswith('dev'):
