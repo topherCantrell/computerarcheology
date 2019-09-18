@@ -1371,14 +1371,14 @@ CFD5:  20 20 40 00 00 00 00 00 00
 Start:
 CFDE: 12             NOP                     
 CFDF: 10 CE 03 F0    LDS     #$03F0                         ; Stack starts here (builds towards 0000)
-CFE3: 0F B3          CLR     <$B3                           ; {ram:HighScore} 
-CFE5: 0F B4          CLR     <$B4                           ; {ram:HighScore} 
-CFE7: 0F B1          CLR     <$B1                           ; {ram:Score} 
-CFE9: 0F B2          CLR     <$B2                           ; {ram:Score} 
+CFE3: 0F B3          CLR     <$B3                           ; {ram:HighScore} Clear ...
+CFE5: 0F B4          CLR     <$B4                           ; {ram:HighScore} ... high score
+CFE7: 0F B1          CLR     <$B1                           ; {ram:Score} Clear ...
+CFE9: 0F B2          CLR     <$B2                           ; {ram:Score} ... current score
 CFEB: 86 A5          LDA     #$A5                           ; Test value ...
 CFED: B7 10 00       STA     $1000                          ; ... to 1000 (4K)
-CFF0: 0F 00          CLR     <$00            
-CFF2: A1 8D 40 0A    CMPA    $1000,PC                       ; Did we change the memory?
+CFF0: 0F 00          CLR     <$00                           ; Clears 1000 if it ghosts
+CFF2: A1 8D 40 0A    CMPA    $1000,PC                       ; Did we change the memory (and it isn't a ghost)?
 CFF6: 27 1D          BEQ     $D015                          ; Yes ... we have enough memory to run
  
 ; BUG. This should be "JSR $D2DE" to set the graphics mode. I tested with the
@@ -1387,7 +1387,7 @@ CFF6: 27 1D          BEQ     $D015                          ; Yes ... we have en
 CFF8: BD D2 BE       JSR     $D2BE                          ; BUG. This should be D2DE to set the graphics mode.
 ;
 CFFB: CE 04 00       LDU     #$0400                         ; Start of the text screen?
-CFFE: DF 9E          STU     <$9E                           ;
+CFFE: DF 9E          STU     <$9E                           ; ??
 D000: BD D4 AE       JSR     $D4AE                          ; {Clear1200} Clear 1200 bytes (4K for 3K screen?? we aren't in graphics mode)
 D003: 8E D2 A1       LDX     #$D2A1                         ; {!+Need16K} "16k or more memory is needed..."
 D006: EC 81          LDD     ,X++                           ; Reached end of message lines list?
@@ -1421,7 +1421,7 @@ D03E: BF 01 0D       STX     $010D                          ; ... interrupt vect
 D041: 0F C7          CLR     <$C7                           ; {ram:VisiblePage} (force setting on next interrupt)
 D043: 86 04          LDA     #$04                           ; Display graphics page 400
 D045: 97 92          STA     <$92                           ; {ram:RequestedPage} CURRENT VISIBILE PAGE
-D047: 0F B6          CLR     <$B6            
+D047: 0F B6          CLR     <$B6                           ; {ram:ISRCountScore} 
 D049: 0F C1          CLR     <$C1            
 D04B: 86 34          LDA     #$34            
 D04D: B7 FF 01       STA     $FF01                          ; {hard:PIA0_CA} 
@@ -1438,8 +1438,8 @@ D066: 0F B1          CLR     <$B1                           ; {ram:Score}
 D068: 0F B2          CLR     <$B2                           ; {ram:Score} 
 D06A: 0F B9          CLR     <$B9            
 D06C: 0F B8          CLR     <$B8            
-D06E: 0F B7          CLR     <$B7            
-D070: 0F B6          CLR     <$B6            
+D06E: 0F B7          CLR     <$B7                           ; {ram:ISRCountTime} 
+D070: 0F B6          CLR     <$B6                           ; {ram:ISRCountScore} 
 D072: 0F C6          CLR     <$C6            
 D074: 96 C5          LDA     <$C5                           ; {ram:??AtBoot??} 
 D076: 97 A0          STA     <$A0            
@@ -1473,7 +1473,7 @@ D0B7: EC C4          LDD     ,U                             ; Get duration
 D0B9: 27 10          BEQ     $D0CB                          ; Hold note??
 D0BB: 8E D5 EF       LDX     #$D5EF                         ; {!+StrsCredits} "Mega-Bug" text
 D0BE: DC 9A          LDD     <$9A                           ; {ram:?ScreenPointerA} 
-D0C0: DD 9E          STD     <$9E            
+D0C0: DD 9E          STD     <$9E                           ; ??
 D0C2: EC 81          LDD     ,X++                           ; Destination of "Mega-Bug" string
 D0C4: DD AB          STD     <$AB                           ; {ram:PixCoords} 
 D0C6: 30 01          LEAX    1,X                            ; Skip over color mask
@@ -1483,8 +1483,8 @@ D0CE: 0A 98          DEC     <$98                           ; {ram:JumpCnt} All 
 D0D0: 26 E0          BNE     $D0B2                          ; No ... keep playing notes
 D0D2: 20 52          BRA     $D126                          ; Time for the demo game
  
-D0D4: 86 FF          LDA     #$FF            
-D0D6: 97 B5          STA     <$B5                           ; {ram:LiveOrDemo} 
+D0D4: 86 FF          LDA     #$FF                           ; This is a ...
+D0D6: 97 B5          STA     <$B5                           ; {ram:LiveOrDemo} ... live-player game
 D0D8: BD DB 6D       JSR     $DB6D                          ; 
 D0DB: 4F             CLRA                                   ; 0 minutes
 D0DC: 5F             CLRB                                   ; 0 seconds
@@ -1519,7 +1519,8 @@ D120: 86 C0          LDA     #$C0
 D122: 97 C0          STA     <$C0            
 D124: 20 38          BRA     $D15E                          ; 
 
-D126: 0F B5          CLR     <$B5                           ; {ram:LiveOrDemo} 
+; Start demo game
+D126: 0F B5          CLR     <$B5                           ; {ram:LiveOrDemo} This is a demo game
 D128: BD DB 6D       JSR     $DB6D                          ; 
 D12B: 8E 08 34       LDX     #$0834          
 D12E: 9F C3          STX     <$C3            
@@ -1541,13 +1542,14 @@ D154: 8E D5 CE       LDX     #$D5CE                         ; {!+StrPlayMega} "P
 D157: BD D6 FA       JSR     $D6FA                          ; {PrintMsg} Print "Play Mega-Bug"
 D15A: 86 C0          LDA     #$C0            
 D15C: 97 C0          STA     <$C0            
+;
 D15E: BD DB 6D       JSR     $DB6D                          ; 
-D161: 0F B6          CLR     <$B6            
-D163: 0F B7          CLR     <$B7            
-D165: 86 31          LDA     #$31            
-D167: C6 41          LDB     #$41            
-D169: DD A2          STD     <$A2            
-D16B: 0F A4          CLR     <$A4            
+D161: 0F B6          CLR     <$B6                           ; {ram:ISRCountScore} Once per second counter for score decrement
+D163: 0F B7          CLR     <$B7                           ; {ram:ISRCountTime} Once per second counter for time increment
+D165: 86 31          LDA     #$31                           ; Player starting Y coordinate 49
+D167: C6 41          LDB     #$41                           ; Player starting X coordinate 65
+D169: DD A2          STD     <$A2                           ; {ram:PlayerCoords} Set player coordinates
+D16B: 0F A4          CLR     <$A4                           ; {ram:PlayerDir} Player direction (facing up)
 D16D: BD D4 BD       JSR     $D4BD                          ; 
 D170: BD DC 56       JSR     $DC56                          ; 
 D173: 0F BA          CLR     <$BA            
@@ -1589,14 +1591,16 @@ D1C2: BD DF 70       JSR     $DF70                          ;
 D1C5: BD DB 1F       JSR     $DB1F                          ; 
 D1C8: 03 A1          COM     <$A1            
 D1CA: 2A 03          BPL     $D1CF                          ; 
-D1CC: BD DE 7A       JSR     $DE7A                          ; 
-D1CF: BD DF 68       JSR     $DF68                          ; 
-D1D2: BD D9 35       JSR     $D935                          ; 
+D1CC: BD DE 7A       JSR     $DE7A                          ; ?? Move bugs ??
+D1CF: BD DF 68       JSR     $DF68                          ; ?? Draw bugs ??
+D1D2: BD D9 35       JSR     $D935                          ; ?? Move player ??
 D1D5: DC BE          LDD     <$BE            
-D1D7: 10 27 01 69    LBEQ    $D344           
-D1DB: 96 B8          LDA     <$B8            
-D1DD: 94 B5          ANDA    <$B5                           ; {ram:LiveOrDemo} 
-D1DF: 27 25          BEQ     $D206                          ; 
+D1D7: 10 27 01 69    LBEQ    $D344                          ; 
+D1DB: 96 B8          LDA     <$B8                           ; ?? flag to draw score ??
+D1DD: 94 B5          ANDA    <$B5                           ; {ram:LiveOrDemo} Is this the demo game?
+D1DF: 27 25          BEQ     $D206                          ; Yes ... skip drawing score
+;
+; Draw score
 D1E1: 86 AA          LDA     #$AA            
 D1E3: 97 AD          STA     <$AD                           ; {ram:ColorMask} 
 D1E5: CC 54 4B       LDD     #$544B                         ; (84,75) 84 rows down, 75 pixels across
@@ -1613,9 +1617,12 @@ D1FC: CC 04 00       LDD     #$0400
 D1FF: DD 9E          STD     <$9E            
 D201: 9E B1          LDX     <$B1                           ; {ram:Score} Current score
 D203: BD D6 CB       JSR     $D6CB                          ; {PrintFourDigits} print score
-D206: 96 B9          LDA     <$B9            
+;
+D206: 96 B9          LDA     <$B9                           ; ?? Flag to draw time ??
 D208: 94 B5          ANDA    <$B5                           ; {ram:LiveOrDemo} 
 D20A: 27 3B          BEQ     $D247                          ; 
+;
+; Print time 
 D20C: 86 AA          LDA     #$AA                           ; Set ...
 D20E: 97 AD          STA     <$AD                           ; {ram:ColorMask} ... color
 D210: CC 05 45       LDD     #$0545                         ; (5,69) 5 rows down, 69 pixels across
@@ -1642,6 +1649,8 @@ D23E: 8B 06          ADDA    #$06
 D240: 97 AC          STA     <$AC                           ; {ram:PixCoords} 
 D242: 96 B0          LDA     <$B0                           ; {ram:NumSeconds} 
 D244: BD D6 D7       JSR     $D6D7                          ; {PrintTwoDigits} 
+;
+; 
 D247: BD DA 33       JSR     $DA33                          ; 
 D24A: 0D BA          TST     <$BA            
 D24C: 27 02          BEQ     $D250                          ; 
@@ -1651,17 +1660,20 @@ D253: BD D8 20       JSR     $D820                          ;
 D256: BD D4 A2       JSR     $D4A2                          ; 
 D259: 97 92          STA     <$92                           ; {ram:RequestedPage} 
 D25B: 13             SYNC                    
-D25C: DC A2          LDD     <$A2            
+D25C: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
 D25E: DD 8E          STD     <$8E            
 D260: BD DF CC       JSR     $DFCC                          ; 
-D263: 10 25 00 8C    LBCS    $D2F3           ; Death
+
+D263: 10 25 00 8C    LBCS    $D2F3                          ; {PlayerDied} Death
+
+
 D267: 0D B5          TST     <$B5                           ; {ram:LiveOrDemo} 
 D269: 27 1F          BEQ     $D28A                          ; 
 D26B: AD 9F A0 00    JSR     [$A000]                        ; {hard:POLCAT} 
 D26F: 81 03          CMPA    #$03            
-D271: 10 27 FD EB    LBEQ    $??           
+D271: 10 27 FD EB    LBEQ    $D060                          ; 
 D275: 81 0D          CMPA    #$0D            
-D277: 10 26 FF 47    LBNE    $??           
+D277: 10 26 FF 47    LBNE    $D1C2                          ; 
 D27B: 1A 50          ORCC    #$50            
 D27D: AD 9F A0 00    JSR     [$A000]                        ; {hard:POLCAT} 
 D281: 81 0D          CMPA    #$0D            
@@ -1669,12 +1681,12 @@ D283: 26 F8          BNE     $D27D                          ;
 D285: 1C EF          ANDCC   #$EF            
 D287: 7E D1 C2       JMP     $D1C2                          ; 
 D28A: BD D5 01       JSR     $D501                          ; {CheckSpaceOrButton} 
-D28D: 10 25 FE 43    LBCS    $??           
+D28D: 10 25 FE 43    LBCS    $D0D4                          ; 
 D291: 8E 08 00       LDX     #$0800          
 D294: 30 1F          LEAX    -1,X            
 D296: 26 FC          BNE     $D294                          ; 
 D298: 9E C3          LDX     <$C3            
-D29A: 10 27 FD C2    LBEQ    $??           
+D29A: 10 27 FD C2    LBEQ    $D060                          ; 
 D29E: 7E D1 C2       JMP     $D1C2                          ; 
 
 Need16K:
@@ -1706,9 +1718,14 @@ D2EA: B7 FF C8       STA     $FFC8                          ; {hard:dispOffset} 
 D2ED: 86 FF          LDA     #$FF                           ; VDG ...
 D2EF: B7 FF 22       STA     $FF22                          ; {hard:PIA1_DB} ... all 1s
 D2F2: 39             RTS
+```
 
-; TODO how do we get here? No other code references this! And yet we DO get here!
+# Player Died
 
+When the player touches a bug, the code comes here.
+
+```code
+PlayerDied:
 D2F3: 0F C1          CLR     <$C1                           ; ??
 D2F5: BD D7 A7       JSR     $D7A7                          ; {PlayGotchaTone} Play the "we gotcha" tone
 D2F8: 0D B5          TST     <$B5                           ; {ram:LiveOrDemo} Are we in demo mode (don't say "we gotcha")?
@@ -1741,7 +1758,7 @@ D32E: BD D4 81       JSR     $D481                          ; {DrawLargeBugs} ..
 D331: 8E 01 2C       LDX     #$012C          
 D334: 9F C3          STX     <$C3            
 D336: BD D5 01       JSR     $D501                          ; {CheckSpaceOrButton} 
-D339: 10 25 FD 97    LBCS    $??           
+D339: 10 25 FD 97    LBCS    $D0D4                          ; 
 D33D: 9E C3          LDX     <$C3            
 D33F: 26 F5          BNE     $D336                          ; 
 D341: 7E D0 60       JMP     $D060                          ; Now restart the game ?? splash
@@ -1942,17 +1959,18 @@ D4B7: 30 1F          LEAX    -1,X                           ; All words done?
 D4B9: 26 FA          BNE     $D4B5                          ; No ... do all
 D4BB: 35 90          PULS    X,PC                           ; Restore X and out
 
+; ?? Draw maze?
 D4BD: 8E 28 08       LDX     #$2808          
 D4C0: 96 A0          LDA     <$A0            
 D4C2: 97 98          STA     <$98                           ; {ram:JumpCnt} 
-D4C4: BD DD 52       JSR     $DD52                          ; 
+D4C4: BD DD 52       JSR     $DD52                          ; {GetRandom} 
 D4C7: 84 7C          ANDA    #$7C            
 D4C9: 81 40          CMPA    #$40            
 D4CB: 24 F7          BCC     $D4C4                          ; 
 D4CD: 8B 11          ADDA    #$11            
 D4CF: A7 88 60       STA     $60,X           
 D4D2: A7 84          STA     ,X              
-D4D4: BD DD 52       JSR     $DD52                          ; 
+D4D4: BD DD 52       JSR     $DD52                          ; {GetRandom} 
 D4D7: 84 7C          ANDA    #$7C            
 D4D9: 81 50          CMPA    #$50            
 D4DB: 24 F7          BCC     $D4D4                          ; 
@@ -1960,12 +1978,12 @@ D4DD: 8B 19          ADDA    #$19
 D4DF: A7 88 61       STA     $61,X           
 D4E2: A7 01          STA     1,X             
 D4E4: EC 84          LDD     ,X              
-D4E6: 90 A2          SUBA    <$A2            
+D4E6: 90 A2          SUBA    <$A2                           ; {ram:PlayerCoords} 
 D4E8: 2A 01          BPL     $D4EB                          ; 
 D4EA: 40             NEGA                    
 D4EB: 81 0A          CMPA    #$0A            
 D4ED: 25 D5          BCS     $D4C4                          ; 
-D4EF: D0 A3          SUBB    <$A3            
+D4EF: D0 A3          SUBB    <$A3                           ; {ram:PlayerCoords} 
 D4F1: 2A 01          BPL     $D4F4                          ; 
 D4F3: 50             NEGB                    
 D4F4: C1 0A          CMPB    #$0A            
@@ -2041,41 +2059,41 @@ D55F: 5A             DECB                                   ; All bits done?
 D560: 26 F2          BNE     $D554                          ; No ... set all 5 bits
 
 D562: 96 C1          LDA     <$C1            
-D564: 94 B5          ANDA    <$B5                           ; {ram:LiveOrDemo} 
-D566: 27 48          BEQ     $D5B0                          ; 
-D568: 96 B6          LDA     <$B6            
-D56A: 4C             INCA                    
-D56B: 97 B6          STA     <$B6            
-D56D: 81 3C          CMPA    #$3C            
-D56F: 25 1C          BCS     $D58D                          ; 
-D571: 0F B6          CLR     <$B6            
-D573: DC B1          LDD     <$B1                           ; {ram:Score} 
-D575: 27 16          BEQ     $D58D                          ; 
+D564: 94 B5          ANDA    <$B5                           ; {ram:LiveOrDemo} Are we in the demo?
+D566: 27 48          BEQ     $D5B0                          ; Yes ... skip score count down
+D568: 96 B6          LDA     <$B6                           ; {ram:ISRCountScore} Bump ...
+D56A: 4C             INCA                                   ; ... interrupt ...
+D56B: 97 B6          STA     <$B6                           ; {ram:ISRCountScore} ... counter
+D56D: 81 3C          CMPA    #$3C                           ; Has it been 60 interrupts (1 second) ?
+D56F: 25 1C          BCS     $D58D                          ; No ... not time to adjust the score
+D571: 0F B6          CLR     <$B6                           ; {ram:ISRCountScore} Yes ... reset interrupt counter back to 0
+D573: DC B1          LDD     <$B1                           ; {ram:Score} Is the score 0000?
+D575: 27 16          BEQ     $D58D                          ; Yes ... leave it alone
 ;
-; The player either gets 10 points for eating a dot or -1 for not eating a dot
+; The player loses 1 point a second if no dot is eaten
+D577: 86 02          LDA     #$02                           ; ??
+D579: 97 B8          STA     <$B8                           ; ??
+D57B: 96 B2          LDA     <$B2                           ; {ram:Score} Get score LSB
+D57D: 8B 99          ADDA    #$99                           ; Subtract 1 (BCD math)
+D57F: 19             DAA                                    ; Adjust for BCD
+D580: 97 B2          STA     <$B2                           ; {ram:Score} New score LSB
+D582: 81 99          CMPA    #$99                           ; Do we need to take 1 from MSB?
+D584: 26 07          BNE     $D58D                          ; No ... just the LSB
+D586: 96 B1          LDA     <$B1                           ; {ram:Score} Get score MSB
+D588: 8B 99          ADDA    #$99                           ; Subtract 1 (BCD math)
+D58A: 19             DAA                                    ; Adjust for BCD
+D58B: 97 B1          STA     <$B1                           ; {ram:Score} New score MSB
 ;
-D577: 86 02          LDA     #$02            
-D579: 97 B8          STA     <$B8            
-D57B: 96 B2          LDA     <$B2                           ; {ram:Score} 
-D57D: 8B 99          ADDA    #$99            
-D57F: 19             DAA                     
-D580: 97 B2          STA     <$B2                           ; {ram:Score} 
-D582: 81 99          CMPA    #$99            
-D584: 26 07          BNE     $D58D                          ; 
-D586: 96 B1          LDA     <$B1                           ; {ram:Score} 
-D588: 8B 99          ADDA    #$99            
-D58A: 19             DAA                     
-D58B: 97 B1          STA     <$B1                           ; {ram:Score} 
+D58D: 96 B7          LDA     <$B7                           ; {ram:ISRCountTime} Bump ...
+D58F: 4C             INCA                                   ; ... interrupt ...
+D590: 97 B7          STA     <$B7                           ; {ram:ISRCountTime} ... counter
+D592: 81 3C          CMPA    #$3C                           ; Has it been 60 interrupts (1 second) ?
+D594: 25 1A          BCS     $D5B0                          ; No ... not time to adjust the time
+D596: 0F B7          CLR     <$B7                           ; {ram:ISRCountTime} Yes ... reset interrupt counter back to 0
+D598: 86 02          LDA     #$02                           ; ??
+D59A: 97 B9          STA     <$B9                           ; ??
 ;
-D58D: 96 B7          LDA     <$B7            
-D58F: 4C             INCA                    
-D590: 97 B7          STA     <$B7            
-D592: 81 3C          CMPA    #$3C            
-D594: 25 1A          BCS     $D5B0                          ; 
-D596: 0F B7          CLR     <$B7            
-D598: 86 02          LDA     #$02            
-D59A: 97 B9          STA     <$B9            
-;
+; The timer goes up once a second
 D59C: 96 B0          LDA     <$B0                           ; {ram:NumSeconds} Add ...
 D59E: 8B 01          ADDA    #$01                           ; ... one to  number of seconds
 D5A0: 19             DAA                                    ; Adjust for BCD
@@ -2088,13 +2106,15 @@ D5AB: 8B 01          ADDA    #$01                           ; ... one to number 
 D5AD: 19             DAA                                    ; Adjust for BCD
 D5AE: 97 AF          STA     <$AF                           ; {ram:NumMinutes} New number of minutes
 ; 
-D5B0: 9E C3          LDX     <$C3            
-D5B2: 27 04          BEQ     $D5B8                          ; 
-D5B4: 30 1F          LEAX    -1,X            
-D5B6: 9F C3          STX     <$C3            
-D5B8: B6 FF 03       LDA     $FF03                          ; {hard:PIA0_CB} 
-D5BB: B6 FF 02       LDA     $FF02                          ; {hard:PIA0_DB} 
-D5BE: BD DD 52       JSR     $DD52                          ; 
+D5B0: 9E C3          LDX     <$C3                           ; ??
+D5B2: 27 04          BEQ     $D5B8                          ; ??
+D5B4: 30 1F          LEAX    -1,X                           ; ??
+D5B6: 9F C3          STX     <$C3                           ; ??
+;
+; Allow interrupt to happen again
+D5B8: B6 FF 03       LDA     $FF03                          ; {hard:PIA0_CB} Enable interrupt ...
+D5BB: B6 FF 02       LDA     $FF02                          ; {hard:PIA0_DB} ... to fire again
+D5BE: BD DD 52       JSR     $DD52                          ; {GetRandom} Advance the random number generator
 D5C1: 3B             RTI                                    ; Done with interrupt
 
 StrHighScore:
@@ -2167,9 +2187,9 @@ Print the given character to the given X,Y pixel coordinate.
 
 ```code
 PrintChar:
-D679: 34 40          PSHS    U                              ; Of all the registers, preserve U?
-D67B: DE 90          LDU     <$90                           ; {ram:ScrPtr} ??
-D67D: 6F C9 C0 00    CLR     $C000,U                        ; ??
+D679: 34 40          PSHS    U                              ; Of all the registers, preserve U
+D67B: DE 90          LDU     <$90                           ; {ram:RndSeed} Copy protection ...
+D67D: 6F C9 C0 00    CLR     $C000,U                        ; ... mangle random part of code if running in all-ram mode
 D681: CE CD 7A       LDU     #$CD7A                         ; {!+GraChars} Start of character graphics
 D684: C6 09          LDB     #$09                           ; 9 bytes per character
 D686: 3D             MUL                                    ; Point to ...
@@ -2393,14 +2413,14 @@ D7D2: 30 1F          LEAX    -1,X                           ; ... delay ...
 D7D4: 26 FC          BNE     $D7D2                          ; ... loop
 D7D6: 35 81          PULS    CC,PC                          ; Restore interrupts and out
 
-D7D8: DC A2          LDD     <$A2            
+D7D8: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
 D7DA: 80 02          SUBA    #$02            
 D7DC: C0 02          SUBB    #$02            
 D7DE: BD DE 59       JSR     $DE59                          ; {CoordToScrOffs9A} 
 D7E1: 33 84          LEAU    ,X              
 D7E3: D7 88          STB     <$88                           ; {ram:BitPos} 
 D7E5: 10 8E C9 60    LDY     #$C960                         ; {!+PlayerGraphics} 
-D7E9: D6 A4          LDB     <$A4            
+D7E9: D6 A4          LDB     <$A4                           ; {ram:PlayerDir} 
 D7EB: 86 06          LDA     #$06            
 D7ED: 3D             MUL                     
 D7EE: 0D A1          TST     <$A1            
@@ -2435,12 +2455,12 @@ D820: 10 8E 28 08    LDY     #$2808
 D824: 96 A0          LDA     <$A0            
 D826: 97 98          STA     <$98                           ; {ram:JumpCnt} 
 D828: EC A4          LDD     ,Y              
-D82A: 90 A2          SUBA    <$A2            
+D82A: 90 A2          SUBA    <$A2                           ; {ram:PlayerCoords} 
 D82C: 2A 01          BPL     $D82F                          ; 
 D82E: 40             NEGA                    
 D82F: 81 0B          CMPA    #$0B            
 D831: 24 0B          BCC     $D83E                          ; 
-D833: D0 A3          SUBB    <$A3            
+D833: D0 A3          SUBB    <$A3                           ; {ram:PlayerCoords} 
 D835: 2A 01          BPL     $D838                          ; 
 D837: 50             NEGB                    
 D838: C1 0B          CMPB    #$0B            
@@ -2453,12 +2473,12 @@ D844: 39             RTS
 
 D845: 34 20          PSHS    Y               
 D847: EC A4          LDD     ,Y              
-D849: 90 A2          SUBA    <$A2            
-D84B: D0 A3          SUBB    <$A3            
+D849: 90 A2          SUBA    <$A2                           ; {ram:PlayerCoords} 
+D84B: D0 A3          SUBB    <$A3                           ; {ram:PlayerCoords} 
 D84D: 48             LSLA                    
 D84E: 58             LSLB                    
-D84F: 9B A2          ADDA    <$A2            
-D851: DB A3          ADDB    <$A3            
+D84F: 9B A2          ADDA    <$A2                           ; {ram:PlayerCoords} 
+D851: DB A3          ADDB    <$A3                           ; {ram:PlayerCoords} 
 D853: C0 02          SUBB    #$02            
 D855: 80 02          SUBA    #$02            
 D857: DD 8E          STD     <$8E            
@@ -2582,58 +2602,58 @@ D932: DB A5          ADDB    <$A5
 D934: 39             RTS
                      
 D935: 0D B5          TST     <$B5                           ; {ram:LiveOrDemo} 
-D937: 10 27 00 AA    LBEQ    $??           
-D93B: DC A2          LDD     <$A2            
+D937: 10 27 00 AA    LBEQ    $D9E5                          ; 
+D93B: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
 D93D: BD DA 24       JSR     $DA24                          ; 
 D940: 24 0C          BCC     $D94E                          ; 
-D942: DC A2          LDD     <$A2            
+D942: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
 D944: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} Offset from top of first screen
 D947: C4 55          ANDB    #$55                           ; Change color (mask is 01010101)
 D949: 53             COMB                    
 D94A: E4 84          ANDB    ,X              
 D94C: E7 84          STB     ,X              
-D94E: DC A2          LDD     <$A2            
+D94E: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
 D950: BD DA 12       JSR     $DA12                          ; 
 D953: 24 1D          BCC     $D972                          ; 
-D955: D6 A4          LDB     <$A4            
+D955: D6 A4          LDB     <$A4                           ; {ram:PlayerDir} 
 D957: C8 01          EORB    #$01            
 D959: BD D8 BA       JSR     $D8BA                          ; Read directional inputs
 D95C: 2B 14          BMI     $D972                          ; Nothing pressed ...
 D95E: D7 A5          STB     <$A5            
-D960: DC A2          LDD     <$A2            
+D960: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
 D962: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} 
 D965: 96 A5          LDA     <$A5            
 D967: BD DF 42       JSR     $DF42                          ; 
 D96A: 25 06          BCS     $D972                          ; 
 D96C: 96 A5          LDA     <$A5            
-D96E: 97 A4          STA     <$A4            
+D96E: 97 A4          STA     <$A4                           ; {ram:PlayerDir} 
 D970: 20 09          BRA     $D97B                          ; 
 ;
-D972: D6 A4          LDB     <$A4            
+D972: D6 A4          LDB     <$A4                           ; {ram:PlayerDir} 
 D974: BD D8 BA       JSR     $D8BA                          ; Read directional inputs
 D977: 2B 02          BMI     $D97B                          ; Nothing pressed ...
-D979: D7 A4          STB     <$A4            
+D979: D7 A4          STB     <$A4                           ; {ram:PlayerDir} 
 ;
-D97B: DC A2          LDD     <$A2            
+D97B: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
 D97D: BD DA 12       JSR     $DA12                          ; 
 D980: 24 0C          BCC     $D98E                          ; 
-D982: DC A2          LDD     <$A2            
+D982: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
 D984: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} 
-D987: 96 A4          LDA     <$A4            
+D987: 96 A4          LDA     <$A4                           ; {ram:PlayerDir} 
 D989: BD DF 42       JSR     $DF42                          ; 
 D98C: 25 0F          BCS     $D99D                          ; 
 D98E: 8E DE 4F       LDX     #$DE4F                         ; {!+TDE4F} 
-D991: D6 A4          LDB     <$A4            
+D991: D6 A4          LDB     <$A4                           ; {ram:PlayerDir} 
 D993: 58             LSLB                    
 D994: 3A             ABX                     
-D995: DC A2          LDD     <$A2            
+D995: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
 D997: AB 84          ADDA    ,X              
 D999: EB 01          ADDB    1,X             
-D99B: DD A2          STD     <$A2            
-D99D: DC A2          LDD     <$A2            
+D99B: DD A2          STD     <$A2                           ; {ram:PlayerCoords} 
+D99D: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
 D99F: BD DA 24       JSR     $DA24                          ; 
 D9A2: 24 40          BCC     $D9E4                          ; 
-D9A4: DC A2          LDD     <$A2            
+D9A4: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
 D9A6: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} 
 D9A9: E7 E2          STB     ,-S             
 D9AB: A6 84          LDA     ,X              
@@ -2654,7 +2674,7 @@ D9C6: 19             DAA
 D9C7: 97 B1          STA     <$B1                           ; {ram:Score} 
 D9C9: 86 02          LDA     #$02            
 D9CB: 97 B8          STA     <$B8            
-D9CD: 0F B6          CLR     <$B6            
+D9CD: 0F B6          CLR     <$B6                           ; {ram:ISRCountScore} 
 D9CF: DE BE          LDU     <$BE            
 D9D1: 27 04          BEQ     $D9D7                          ; 
 D9D3: 33 5F          LEAU    -1,U            
@@ -2667,21 +2687,21 @@ D9DE: 84 AA          ANDA    #$AA
 D9E0: AA E0          ORA     ,S+             
 D9E2: A7 84          STA     ,X              
 D9E4: 39             RTS                     
-D9E5: D6 A4          LDB     <$A4            
+D9E5: D6 A4          LDB     <$A4                           ; {ram:PlayerDir} 
 D9E7: 58             LSLB                    
 D9E8: 8E DE 4F       LDX     #$DE4F                         ; {!+TDE4F} 
 D9EB: 3A             ABX                     
-D9EC: DC A2          LDD     <$A2            
+D9EC: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
 D9EE: AB 84          ADDA    ,X              
 D9F0: EB 01          ADDB    1,X             
 D9F2: DD 8E          STD     <$8E            
 D9F4: BD DF CC       JSR     $DFCC                          ; 
 D9F7: 24 08          BCC     $DA01                          ; 
-D9F9: 96 A4          LDA     <$A4            
+D9F9: 96 A4          LDA     <$A4                           ; {ram:PlayerDir} 
 D9FB: 88 02          EORA    #$02            
-D9FD: 97 A4          STA     <$A4            
+D9FD: 97 A4          STA     <$A4                           ; {ram:PlayerDir} 
 D9FF: 20 0E          BRA     $DA0F                          ; 
-DA01: DC A2          LDD     <$A2            
+DA01: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
 DA03: BD DA 12       JSR     $DA12                          ; 
 DA06: 24 07          BCC     $DA0F                          ; 
 DA08: 10 8E 00 A2    LDY     #$00A2          
@@ -2716,7 +2736,7 @@ DA3B: 26 FB          BNE     $DA38                          ;
 DA3D: 6F 8D 26 7B    CLR     $00BC,PC                       ;
 DA41: 86 02          LDA     #$02            
 DA43: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} 
-DA46: DC A2          LDD     <$A2            
+DA46: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
 DA48: 80 11          SUBA    #$11            
 DA4A: C0 11          SUBB    #$11            
 DA4C: BD DE 59       JSR     $DE59                          ; {CoordToScrOffs9A} 
@@ -2736,7 +2756,7 @@ DA69: 86 22          LDA     #$22
 DA6B: 97 99          STA     <$99            
 DA6D: 0F BD          CLR     <$BD            
 DA6F: 0F A5          CLR     <$A5            
-DA71: DC A2          LDD     <$A2            
+DA71: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
 DA73: 83 08 08       SUBD    #$0808          
 DA76: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} 
 DA79: 31 84          LEAY    ,X              
@@ -2811,7 +2831,7 @@ DB04: 33 41          LEAU    1,U
 DB06: 30 01          LEAX    1,X             
 DB08: DD 88          STD     <$88                           ; {ram:BitPos} 
 DB0A: 0A 99          DEC     <$99            
-DB0C: 10 26 FF 76    LBNE    $??           
+DB0C: 10 26 FF 76    LBNE    $DA86                          ; 
 DB10: C6 24          LDB     #$24            
 DB12: 96 88          LDA     <$88                           ; {ram:BitPos} 
 DB14: AA C4          ORA     ,U              
@@ -2889,10 +2909,10 @@ DB8C: FF FF FF FF FF FF
 DB92: FF FF FF FF FF FF      
 DB98: FF FF FF FF 55 
 
-DB9D: CE C9 EA       LDU     #$C9EA                         ; {!+SplashBugs1} 
+DB9D: CE C9 EA       LDU     #$C9EA                         ; {!+} 
 DBA0: 0D A1          TST     <$A1            
 DBA2: 27 03          BEQ     $DBA7                          ; 
-DBA4: CE CA 7A       LDU     #$CA7A                         ; {!+SplashBugs2} 
+DBA4: CE CA 7A       LDU     #$CA7A                         ; {!+} 
 DBA7: 96 98          LDA     <$98                           ; {ram:JumpCnt} 
 DBA9: C6 20          LDB     #$20            
 DBAB: 3D             MUL                     
@@ -2983,6 +3003,8 @@ DC4F: A7 80          STA     ,X+
 DC51: 5A             DECB                    
 DC52: 26 FB          BNE     $DC4F                          ; 
 DC54: 35 86          PULS    A,B,PC          
+
+; ?? Draw maze??
 DC56: CE 06 00       LDU     #$0600          
 DC59: 8E 08 00       LDX     #$0800          
 DC5C: 6F C0          CLR     ,U+             
@@ -3013,7 +3035,7 @@ DC8E: 26 F8          BNE     $DC88                          ;
 DC90: 5C             INCB                    
 DC91: BD DC 1D       JSR     $DC1D                          ; 
 DC94: CE 28 E8       LDU     #$28E8          
-DC97: 8E 01 40       LDX     #$0140          
+DC97: 8E 01 40       LDX     #$0140                         ; ?? 320 dots? Cells?
 DC9A: 6F C0          CLR     ,U+             
 DC9C: 30 1F          LEAX    -1,X            
 DC9E: 26 FA          BNE     $DC9A                          ; 
@@ -3033,9 +3055,10 @@ DCC0: ED A1          STD     ,Y++
 DCC2: EC C4          LDD     ,U              
 DCC4: 26 EC          BNE     $DCB2                          ; 
 DCC6: 10 9F 8C       STY     <$8C            
+;
 DCC9: 9E 8A          LDX     <$8A            
 DCCB: 9C 8C          CMPX    <$8C            
-DCCD: 10 27 00 FA    LBEQ    $??           
+DCCD: 10 27 00 FA    LBEQ    $DDCB                          ; 
 DCD1: EC 81          LDD     ,X++            
 DCD3: DD 8E          STD     <$8E            
 DCD5: 9F 8A          STX     <$8A            
@@ -3067,7 +3090,7 @@ DD08: 27 2E          BEQ     $DD38                          ;
 DD0A: CE 28 00       LDU     #$2800          
 DD0D: 4A             DECA                    
 DD0E: 27 0C          BEQ     $DD1C                          ; 
-DD10: BD DD 52       JSR     $DD52                          ; 
+DD10: BD DD 52       JSR     $DD52                          ; {GetRandom} 
 DD13: 84 03          ANDA    #$03            
 DD15: 91 88          CMPA    <$88                           ; {ram:BitPos} 
 DD17: 24 F7          BCC     $DD10                          ; 
@@ -3091,20 +3114,25 @@ DD3A: 26 13          BNE     $DD4F                          ;
 DD3C: DC 93          LDD     <$93            
 DD3E: BD DD 63       JSR     $DD63                          ; 
 DD41: 25 0C          BCS     $DD4F                          ; 
-DD43: BD DD 52       JSR     $DD52                          ; 
+DD43: BD DD 52       JSR     $DD52                          ; {GetRandom} 
 DD46: 91 C0          CMPA    <$C0            
 DD48: 24 05          BCC     $DD4F                          ; 
 DD4A: DC 93          LDD     <$93            
 DD4C: BD DD 83       JSR     $DD83                          ; 
 DD4F: 7E DC C9       JMP     $DCC9                          ; 
-DD52: DC 90          LDD     <$90                           ; {ram:ScrPtr} 
-DD54: C3 00 15       ADDD    #$0015          
-DD57: 84 1F          ANDA    #$1F            
-DD59: DD 90          STD     <$90                           ; {ram:ScrPtr} 
-DD5B: C3 A0 00       ADDD    #$A000          
-DD5E: 34 06          PSHS    B,A             
-DD60: A6 F1          LDA     [,S++]          
-DD62: 39             RTS                     
+```
+
+```code
+GetRandom:
+DD52: DC 90          LDD     <$90                           ; {ram:RndSeed} Get pointer for random numbers
+DD54: C3 00 15       ADDD    #$0015                         ; Bump it by 21
+DD57: 84 1F          ANDA    #$1F                           ; Confine pointer to ROM
+DD59: DD 90          STD     <$90                           ; {ram:RndSeed} New pointer for random numbers
+DD5B: C3 A0 00       ADDD    #$A000                         ; Offset into ROM
+DD5E: 34 06          PSHS    B,A                            ; Get randomish ...
+DD60: A6 F1          LDA     [,S++]                         ; ... byte from ROM
+DD62: 39             RTS                                    ; Return it
+;
 DD63: DB 8F          ADDB    <$8F            
 DD65: C1 14          CMPB    #$14            
 DD67: 24 17          BCC     $DD80                          ; 
@@ -3122,6 +3150,7 @@ DD7D: 1C FE          ANDCC   #$FE
 DD7F: 39             RTS                     
 DD80: 1A 01          ORCC    #$01            
 DD82: 39             RTS                     
+
 DD83: 9B 8E          ADDA    <$8E            
 DD85: DB 8F          ADDB    <$8F            
 DD87: DD 95          STD     <$95            
@@ -3143,6 +3172,7 @@ DDA2: A6 84          LDA     ,X
 DDA4: 84 03          ANDA    #$03            
 DDA6: A7 84          STA     ,X              
 DDA8: 39             RTS                     
+;
 DDA9: 25 02          BCS     $DDAD                          ; 
 DDAB: D6 8F          LDB     <$8F            
 DDAD: 48             LSLA                    
@@ -3161,7 +3191,8 @@ DDC2: A7 84          STA     ,X
 DDC4: 30 88 20       LEAX    $20,X           
 DDC7: 5A             DECB                    
 DDC8: 26 F4          BNE     $DDBE                          ; 
-DDCA: 39             RTS                     
+DDCA: 39             RTS
+                     
 DDCB: 8E 06 26       LDX     #$0626          
 DDCE: 86 10          LDA     #$10            
 DDD0: 97 98          STA     <$98                           ; {ram:JumpCnt} 
@@ -3172,7 +3203,7 @@ DDD7: A7 85          STA     B,X
 DDD9: 5C             INCB                    
 DDDA: C1 14          CMPB    #$14            
 DDDC: 25 F5          BCS     $DDD3                          ; 
-DDDE: 30 89 00 80    LEAX    $0080,X         
+DDDE: 30 89 00 80    LEAX    $0080,X                        ; ?? 4 rows per cell?
 DDE2: 0A 98          DEC     <$98                           ; {ram:JumpCnt} 
 DDE4: 26 EC          BNE     $DDD2                          ; 
 DDE6: CC 01 3F       LDD     #$013F          
@@ -3350,7 +3381,7 @@ DF1F: 96 88          LDA     <$88                           ; {ram:BitPos}
 DF21: CE 28 00       LDU     #$2800          
 DF24: 4A             DECA                    
 DF25: 27 16          BEQ     $DF3D                          ; 
-DF27: BD DD 52       JSR     $DD52                          ; 
+DF27: BD DD 52       JSR     $DD52                          ; {GetRandom} 
 DF2A: 84 03          ANDA    #$03            
 DF2C: 91 88          CMPA    <$88                           ; {ram:BitPos} 
 DF2E: 24 F7          BCC     $DF27                          ; 
