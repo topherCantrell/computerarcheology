@@ -18,8 +18,27 @@
 ```
 
 ```code
-C000: 7E CF DE       JMP     $CFDE                          ; {Start} 
+C000: 7E CF DE       JMP     $CFDE                          ; {Start}
 ```
+
+# Screen management
+
+The game uses 3 screen buffers: 0400, 0C00, and 1C00. I modified the ISR to continually show each screen (no switching). Thus
+I was able to see how they are being used.
+
+In the splash mode (beginning of the game):
+  * The splash message is drawn completely on 0400
+  * The 1000 is blank except for a few pixels at the top left
+  * The scroll bars and flashy color Mega-Bug are drawn completely on 1C00
+  
+In game mode:
+  * The maze is drawn completely on 0400 along with the user's path
+  * The users sees the graphics on 1000 and 1C00 alternately
+  
+In between rounds:
+  * 0400 is blank
+  * 1000 the entire message is printed on this screen
+  * 1C00 shows the animations
 
 # Data
 
@@ -1381,10 +1400,17 @@ CFED: B7 10 00       STA     $1000                          ; ... to 1000 (4K)
 CFF0: 0F 00          CLR     <$00                           ; Clears 1000 if it ghosts
 CFF2: A1 8D 40 0A    CMPA    $1000,PC                       ; Did we change the memory (and it isn't a ghost)?
 CFF6: 27 1D          BEQ     $D015                          ; Yes ... we have enough memory to run
- 
-; BUG. This should be "JSR $D2DE" to set the graphics mode. I tested with the
-; change and I get the error message. Otherwise the text screen shows garbage.
-;
+```
+
+# Code bug 1
+
+This next line should be "JSR $D2DE" to set the graphics mode. I tested with the
+change and I get the error message. Otherwise the text screen shows garbage.
+
+"D2DE" instead of "D2BE". Interesting that it is off by 32. Wasn't this assembled
+by a tool that managed the addresses?
+
+```code
 CFF8: BD D2 BE       JSR     $D2BE                          ; BUG. This should be D2DE to set the graphics mode.
 ;
 CFFB: CE 04 00       LDU     #$0400                         ; Start of the text screen?
