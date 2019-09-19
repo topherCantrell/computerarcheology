@@ -1580,7 +1580,7 @@ D167: C6 41          LDB     #$41                           ; Player starting X 
 D169: DD A2          STD     <$A2                           ; {ram:PlayerCoords} Set player coordinates
 D16B: 0F A4          CLR     <$A4                           ; {ram:PlayerDir} Player direction (facing up)
 D16D: BD D4 BD       JSR     $D4BD                          ; ?? place bugs
-D170: BD DC 56       JSR     $DC56                          ; {DrawMaze} ?? draw maze?
+D170: BD DC 56       JSR     $DC56                          ; {DrawMaze} Draw the random maze
 D173: 0F BA          CLR     <$BA            
 D175: 8E 06 00       LDX     #$0600          
 D178: CE 04 00       LDU     #$0400          
@@ -3023,39 +3023,46 @@ DC16: FF FF FF
 DC19: FF FF FF
 DC1C: FF 
 
-DC1D: 34 06          PSHS    B,A           
-DC1F: C4 03          ANDB    #$03            
-DC21: 8E DE 76       LDX     #$DE76                         ; {!+BitPosTable} 
-DC24: E6 85          LDB     B,X             
-DC26: C4 55          ANDB    #$55            
-DC28: D7 88          STB     <$88                           ; {ram:BitPos} 
-DC2A: E6 61          LDB     1,S             
-DC2C: 8E 05 C0       LDX     #$05C0          
-DC2F: 54             LSRB                    
-DC30: 54             LSRB                    
-DC31: 3A             ABX                     
-DC32: C6 43          LDB     #$43            
-DC34: 96 88          LDA     <$88                           ; {ram:BitPos} 
-DC36: AA 84          ORA     ,X              
-DC38: A7 84          STA     ,X              
-DC3A: 30 88 20       LEAX    $20,X           
-DC3D: 5A             DECB                    
-DC3E: 26 F4          BNE     $DC34                          ; 
-DC40: 35 86          PULS    A,B,PC          
+; Draw a 67 pixel line down the maze
+DrawVertLine:
+DC1D: 34 06          PSHS    B,A                            ; Hold D
+DC1F: C4 03          ANDB    #$03                           ; Get ...
+DC21: 8E DE 76       LDX     #$DE76                         ; {!+BitPosTable} ... the
+DC24: E6 85          LDB     B,X                            ; ... bitmask for the X coordinate
+DC26: C4 55          ANDB    #$55                           ; Mask in the color
+DC28: D7 88          STB     <$88                           ; {ram:BitPos} We'll use this a lot
+DC2A: E6 61          LDB     1,S                            ; Restore the X coordinate
+DC2C: 8E 05 C0       LDX     #$05C0                         ; 14 rows down the 1st screen buffer
+DC2F: 54             LSRB                                   ; 4 pixels ...
+DC30: 54             LSRB                                   ; ... per byte
+DC31: 3A             ABX                                    ; Point to screen where the line goes
+DC32: C6 43          LDB     #$43                           ; 67 rows down
+DC34: 96 88          LDA     <$88                           ; {ram:BitPos} Line bit position
+DC36: AA 84          ORA     ,X                             ; Add the line ...
+DC38: A7 84          STA     ,X                             ; ... to the screen
+DC3A: 30 88 20       LEAX    $20,X                          ; Next row
+DC3D: 5A             DECB                                   ; All the way down?
+DC3E: 26 F4          BNE     $DC34                          ; Do all pixels
+DC40: 35 86          PULS    A,B,PC                         ; Done
 
-DC42: 34 06          PSHS    B,A             
-DC44: 86 20          LDA     #$20            
-DC46: 3D             MUL                     
-DC47: C3 04 06       ADDD    #$0406          
-DC4A: 1F 01          TFR     D,X             
-DC4C: CC 55 14       LDD     #$5514          
-DC4F: A7 80          STA     ,X+             
-DC51: 5A             DECB                    
-DC52: 26 FB          BNE     $DC4F                          ; 
-DC54: 35 86          PULS    A,B,PC
+; Draw an 80 pixel line across maze
+DrawHorzLine:
+DC42: 34 06          PSHS    B,A                            ; Hold D
+DC44: 86 20          LDA     #$20                           ; Number of rows in B ...
+DC46: 3D             MUL                                    ; ... to offset in D
+DC47: C3 04 06       ADDD    #$0406                         ; First screen buffer plus 6 columns over to maze
+DC4A: 1F 01          TFR     D,X                            ; To index register
+DC4C: CC 55 14       LDD     #$5514                         ; 20 bytes of 55
+DC4F: A7 80          STA     ,X+                            ; Draw an 80 pixel ...
+DC51: 5A             DECB                                   ; ... horizontal ...
+DC52: 26 FB          BNE     $DC4F                          ; ... line
+DC54: 35 86          PULS    A,B,PC                         ; Done
 ```
 
 # Draw the maze
+
+The code starts by drawing a grid of lines ... all walls in the maze closed. And make a double line around
+the edges of the maze.
 
 ```code 
 DrawMaze:
@@ -3064,30 +3071,30 @@ DC59: 8E 08 00       LDX     #$0800                         ; 64 rows for maze a
 DC5C: 6F C0          CLR     ,U+                            ; Clear ...
 DC5E: 30 1F          LEAX    -1,X                           ; ... the ...
 DC60: 26 FA          BNE     $DC5C                          ; ... maze area
-DC62: CE CA B0       LDU     #$CAB0                         ; {!+GraBugStanding} 
-DC65: BD D4 81       JSR     $D481                          ; {DrawLargeBugs} 
-DC68: C6 0E          LDB     #$0E            
-DC6A: 8D D6          BSR     $DC42                          ; 
-DC6C: 5C             INCB                    
-DC6D: 8D D3          BSR     $DC42                          ; 
-DC6F: 86 10          LDA     #$10            
-DC71: CB 04          ADDB    #$04            
-DC73: BD DC 42       JSR     $DC42                          ; 
-DC76: 4A             DECA                    
-DC77: 26 F8          BNE     $DC71                          ; 
-DC79: 5C             INCB                    
-DC7A: BD DC 42       JSR     $DC42                          ; 
-DC7D: C6 16          LDB     #$16            
-DC7F: BD DC 1D       JSR     $DC1D                          ; 
-DC82: 5C             INCB                    
-DC83: BD DC 1D       JSR     $DC1D                          ; 
-DC86: 86 14          LDA     #$14            
-DC88: CB 04          ADDB    #$04            
-DC8A: BD DC 1D       JSR     $DC1D                          ; 
-DC8D: 4A             DECA                    
-DC8E: 26 F8          BNE     $DC88                          ; 
-DC90: 5C             INCB                    
-DC91: BD DC 1D       JSR     $DC1D                          ; 
+DC62: CE CA B0       LDU     #$CAB0                         ; {!+GraBugStanding} Draw the ...
+DC65: BD D4 81       JSR     $D481                          ; {DrawLargeBugs} ... large bugs on each side of the maze
+DC68: C6 0E          LDB     #$0E                           ; 15 rows down to top of maze
+DC6A: 8D D6          BSR     $DC42                          ; {DrawHorLine} Draw line
+DC6C: 5C             INCB                                   ; Make it a ...
+DC6D: 8D D3          BSR     $DC42                          ; {DrawHorLine} ... 2 row double line
+DC6F: 86 10          LDA     #$10                           ; 16 cell rows in the maze
+DC71: CB 04          ADDB    #$04                           ; Start of next row
+DC73: BD DC 42       JSR     $DC42                          ; {DrawHorLine} Draw a line
+DC76: 4A             DECA                                   ; Do all ...
+DC77: 26 F8          BNE     $DC71                          ; ... 16 rows
+DC79: 5C             INCB                                   ; Double line ...
+DC7A: BD DC 42       JSR     $DC42                          ; {DrawHorLine} ... at bottom of maze
+DC7D: C6 16          LDB     #$16                           ; Maze starts at X=22
+DC7F: BD DC 1D       JSR     $DC1D                          ; {DrawVertLine} Draw a single line down the maze
+DC82: 5C             INCB                                   ; Make it ...
+DC83: BD DC 1D       JSR     $DC1D                          ; {DrawVertLine} ... a double line
+DC86: 86 14          LDA     #$14                           ; 20 cell columns in the maze
+DC88: CB 04          ADDB    #$04                           ; Start of next column
+DC8A: BD DC 1D       JSR     $DC1D                          ; {DrawVertLine} Draw a line
+DC8D: 4A             DECA                                   ; All columns done?
+DC8E: 26 F8          BNE     $DC88                          ; No ... do all 20 columns
+DC90: 5C             INCB                                   ; Make the right side of ...
+DC91: BD DC 1D       JSR     $DC1D                          ; {DrawVertLine} ... the maze a double line
 DC94: CE 28 E8       LDU     #$28E8          
 DC97: 8E 01 40       LDX     #$0140                         ; ?? 320 dots? Cells?
 DC9A: 6F C0          CLR     ,U+             
@@ -3188,7 +3195,7 @@ DD5B: C3 A0 00       ADDD    #$A000                         ; Offset into ROM
 DD5E: 34 06          PSHS    B,A                            ; Get randomish ...
 DD60: A6 F1          LDA     [,S++]                         ; ... byte from ROM
 DD62: 39             RTS                                    ; Return it
-;
+
 DD63: DB 8F          ADDB    <$8F                           ; {ram:Temp2} 
 DD65: C1 14          CMPB    #$14            
 DD67: 24 17          BCC     $DD80                          ; 
