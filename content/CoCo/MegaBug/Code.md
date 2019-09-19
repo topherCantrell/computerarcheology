@@ -18,7 +18,7 @@
 ```
 
 ```code
-C000: 7E CF DE       JMP     $CFDE                          ; {Start}
+C000: 7E CF DE       JMP     $CFDE                          ; {Start} 
 ```
 
 # Screen management
@@ -1413,10 +1413,10 @@ by a tool that managed the addresses?
 ```code
 CFF8: BD D2 BE       JSR     $D2BE                          ; BUG. This should be D2DE to set the graphics mode.
 ;
-CFFB: CE 04 00       LDU     #$0400                         ; Start of the text screen?
-CFFE: DF 9E          STU     <$9E                           ; ??
-D000: BD D4 AE       JSR     $D4AE                          ; {Clear1200} Clear 1200 bytes (4K for 3K screen?? we aren't in graphics mode)
-D003: 8E D2 A1       LDX     #$D2A1                         ; {!+Need16K} "16k or more memory is needed..."
+CFFB: CE 04 00       LDU     #$0400                         ; Start of the first ...
+CFFE: DF 9E          STU     <$9E                           ; {ram:CurrentScreen} ... screen buffer
+D000: BD D4 AE       JSR     $D4AE                          ; {Clear1200} Clear the screen
+D003: 8E D2 A1       LDX     #$D2A1                         ; {!+Need16K} "16k or more memory is needed..." string
 D006: EC 81          LDD     ,X++                           ; Reached end of message lines list?
 D008: 27 FE          BEQ     $D008                          ; Yes ... just spin here forever (we can't run)
 D00A: DD AB          STD     <$AB                           ; {ram:PixCoords} Store the coordinates
@@ -1425,24 +1425,24 @@ D00E: 97 AD          STA     <$AD                           ; {ram:ColorMask} St
 D010: BD D6 FA       JSR     $D6FA                          ; {PrintMsg} Print message
 D013: 20 F1          BRA     $D006                          ; Next message line
 
-; Hold something down at start for something? Graphics?? Doesn't seem to do anything when
-; tweaked either way.
-D015: 86 FE          LDA     #$FE            
-D017: C6 08          LDB     #$08                           ; Column 4 
-D019: B7 FF 02       STA     $FF02                          ; {hard:PIA0_DB} 
-D01C: B6 FF 00       LDA     $FF00                          ; {hard:PIA0_DA} 
-D01F: 84 40          ANDA    #$40                           ; Row 7
-D021: 26 02          BNE     $D025                          ; 
-D023: C6 10          LDB     #$10            
-D025: D7 C5          STB     <$C5                           ; {ram:??AtBoot??} ??
+; Hold ENTER down for "pro mode" -- start with 16 bugs instead of the usual 8
+D015: 86 FE          LDA     #$FE                           ; Column with ENTER key
+D017: C6 08          LDB     #$08                           ; Game usually starts with 8 bugs 
+D019: B7 FF 02       STA     $FF02                          ; {hard:PIA0_DB} Set the keyboard column
+D01C: B6 FF 00       LDA     $FF00                          ; {hard:PIA0_DA} Read the rows
+D01F: 84 40          ANDA    #$40                           ; Row with the ENTER key
+D021: 26 02          BNE     $D025                          ; Not pressed ... start with 8 bugs
+D023: C6 10          LDB     #$10                           ; Pressed ... start with 16 bugs
+;
+D025: D7 C5          STB     <$C5                           ; {ram:NumStartBugs} Number of bugs to start the game with
 D027: BD D2 DE       JSR     $D2DE                          ; {SetGraphicsMode} Set the graphics mode
-D02A: CE 04 00       LDU     #$0400          
-D02D: BD D4 AE       JSR     $D4AE                          ; {Clear1200} 
+D02A: CE 04 00       LDU     #$0400                         ; Start of first screen buffer
+D02D: BD D4 AE       JSR     $D4AE                          ; {Clear1200} Clear the first screen buffer
 D030: 8E CF DE       LDX     #$CFDE                         ; {!+Start} Start routine
 D033: 9F 72          STX     <$72            
 D035: 86 55          LDA     #$55            
 D037: 97 71          STA     <$71            
-D039: 1A 50          ORCC    #$50            
+D039: 1A 50          ORCC    #$50                           ; IRQ off
 D03B: 8E D5 46       LDX     #$D546                         ; {!+IRQ} New IRQ ...
 D03E: BF 01 0D       STX     $010D                          ; ... interrupt vector
 D041: 0F C7          CLR     <$C7                           ; {ram:VisiblePage} (force setting on next interrupt)
@@ -1458,18 +1458,19 @@ D055: A7 8D 2E CA    STA     $FF23,PC                       ;
 D059: 86 35          LDA     #$35            
 D05B: B7 FF 03       STA     $FF03                          ; {hard:PIA0_CB} 
 D05E: 3C EF          CWAI    $EF                            ; Wait for the first interrupt
-;
+
+SplashMode:
 D060: 10 CE 03 F0    LDS     #$03F0                         ; Set stack just below 1st screen 
 D064: 0F C1          CLR     <$C1            
-D066: 0F B1          CLR     <$B1                           ; {ram:Score} 
-D068: 0F B2          CLR     <$B2                           ; {ram:Score} 
+D066: 0F B1          CLR     <$B1                           ; {ram:Score} Initialize current score ...
+D068: 0F B2          CLR     <$B2                           ; {ram:Score} ... to zero
 D06A: 0F B9          CLR     <$B9            
 D06C: 0F B8          CLR     <$B8            
-D06E: 0F B7          CLR     <$B7                           ; {ram:ISRCountTime} 
-D070: 0F B6          CLR     <$B6                           ; {ram:ISRCountScore} 
+D06E: 0F B7          CLR     <$B7                           ; {ram:ISRCountTime} Initialize 1 sec timer for TIME display
+D070: 0F B6          CLR     <$B6                           ; {ram:ISRCountScore} Initialize 1 sec timer for losing a point
 D072: 0F C6          CLR     <$C6            
-D074: 96 C5          LDA     <$C5                           ; {ram:??AtBoot??} 
-D076: 97 A0          STA     <$A0                           ; {ram:NumBugs} 
+D074: 96 C5          LDA     <$C5                           ; {ram:NumStartBugs} Number of bugs to start the game (8 or 16)
+D076: 97 A0          STA     <$A0                           ; {ram:NumBugs} Initialize the number of bugs
 D078: CE 10 00       LDU     #$1000                         ; ?? Setup screen pointers
 D07B: DF 9C          STU     <$9C                           ; {ram:?ScreenPointerB} 
 D07D: CC 1C 00       LDD     #$1C00          
@@ -1484,7 +1485,7 @@ D092: DD AB          STD     <$AB                           ; {ram:PixCoords}
 D094: A6 80          LDA     ,X+             
 D096: 97 AD          STA     <$AD                           ; {ram:ColorMask} 
 D098: CC 04 00       LDD     #$0400          
-D09B: DD 9E          STD     <$9E            
+D09B: DD 9E          STD     <$9E                           ; {ram:CurrentScreen} 
 D09D: BD D6 FA       JSR     $D6FA                          ; {PrintMsg} 
 D0A0: 20 EC          BRA     $D08E                          ; 
 D0A2: 86 01          LDA     #$01            
@@ -1495,12 +1496,12 @@ D0AB: CE CC 90       LDU     #$CC90                         ; {!+NotesSplash} So
 D0AE: C6 27          LDB     #$27                           ; 39 notes (including rests) in the song
 D0B0: D7 98          STB     <$98                           ; {ram:Temp1} Note counter
 D0B2: BD D5 01       JSR     $D501                          ; {CheckSpaceOrButton} User pressed space or joystick button?
-D0B5: 25 1D          BCS     $D0D4                          ; Yes ... break out to play game
+D0B5: 25 1D          BCS     $D0D4                          ; {LiveGame} Yes ... break out to play game
 D0B7: EC C4          LDD     ,U                             ; Get duration
 D0B9: 27 10          BEQ     $D0CB                          ; Hold note??
 D0BB: 8E D5 EF       LDX     #$D5EF                         ; {!+StrsCredits} "Mega-Bug" text
 D0BE: DC 9A          LDD     <$9A                           ; {ram:?ScreenPointerA} 
-D0C0: DD 9E          STD     <$9E                           ; ??
+D0C0: DD 9E          STD     <$9E                           ; {ram:CurrentScreen} ??
 D0C2: EC 81          LDD     ,X++                           ; Destination of "Mega-Bug" string
 D0C4: DD AB          STD     <$AB                           ; {ram:PixCoords} 
 D0C6: 30 01          LEAX    1,X                            ; Skip over color mask
@@ -1509,7 +1510,8 @@ D0CB: BD D7 3F       JSR     $D73F                          ; {PlayTwoNotes} Pla
 D0CE: 0A 98          DEC     <$98                           ; {ram:Temp1} All notes played?
 D0D0: 26 E0          BNE     $D0B2                          ; No ... keep playing notes
 D0D2: 20 52          BRA     $D126                          ; Time for the demo game
- 
+
+LiveGame: 
 D0D4: 86 FF          LDA     #$FF                           ; This is a ...
 D0D6: 97 B5          STA     <$B5                           ; {ram:LiveOrDemo} ... live-player game
 D0D8: BD DB 6D       JSR     $DB6D                          ; 
@@ -1517,12 +1519,12 @@ D0DB: 4F             CLRA                                   ; 0 minutes
 D0DC: 5F             CLRB                                   ; 0 seconds
 D0DD: DD AF          STD     <$AF                           ; {ram:NumMinutes} Initialize game time to 00:00
 D0DF: DD B1          STD     <$B1                           ; {ram:Score} Initialize score to 0000
-D0E1: CE 04 00       LDU     #$0400          
-D0E4: BD D4 AE       JSR     $D4AE                          ; {Clear1200} Clear 1200 bytes at
+D0E1: CE 04 00       LDU     #$0400                         ; Clear ...
+D0E4: BD D4 AE       JSR     $D4AE                          ; {Clear1200} ... first screen buffer
 D0E7: CC 05 21       LDD     #$0521                         ; (5,33) 5 rows down, 33 pixels across
 D0EA: DD AB          STD     <$AB                           ; {ram:PixCoords} 
-D0EC: CC 04 00       LDD     #$0400          
-D0EF: DD 9E          STD     <$9E            
+D0EC: CC 04 00       LDD     #$0400                         ; Drawing on ...
+D0EF: DD 9E          STD     <$9E                           ; {ram:CurrentScreen} ... first screen buffer
 D0F1: 86 AA          LDA     #$AA                           ; Set ...
 D0F3: 97 AD          STA     <$AD                           ; {ram:ColorMask} ... message color
 D0F5: 8E D5 E8       LDX     #$D5E8                         ; {!+StrTime} Pointer to string "Time:_"
@@ -1532,7 +1534,7 @@ D0FD: BD D6 D7       JSR     $D6D7                          ; {PrintTwoDigits} p
 D100: 86 42          LDA     #$42                           ; Colon
 D102: BD D6 79       JSR     $D679                          ; {PrintChar} print colon in time
 D105: 96 AC          LDA     <$AC                           ; {ram:PixCoords} Next ...
-D107: 8B 06          ADDA    #$06                           ; Next ??digit?? ... to ...
+D107: 8B 06          ADDA    #$06                           ; ... screen location to ...
 D109: 97 AC          STA     <$AC                           ; {ram:PixCoords} ... the right
 D10B: 96 B0          LDA     <$B0                           ; {ram:NumSeconds} Number of seconds
 D10D: BD D6 D7       JSR     $D6D7                          ; {PrintTwoDigits} print seconds
@@ -1549,16 +1551,16 @@ D124: 20 38          BRA     $D15E                          ;
 ; Start demo game
 D126: 0F B5          CLR     <$B5                           ; {ram:LiveOrDemo} This is a demo game
 D128: BD DB 6D       JSR     $DB6D                          ; 
-D12B: 8E 08 34       LDX     #$0834          
-D12E: 9F C3          STX     <$C3            
-D130: CE 04 00       LDU     #$0400          
-D133: BD D4 AE       JSR     $D4AE                          ; {Clear1200} 
+D12B: 8E 08 34       LDX     #$0834                         ; Number of passes in ...
+D12E: 9F C3          STX     <$C3                           ; {ram:DemoTimer} ... demo game
+D130: CE 04 00       LDU     #$0400                         ; Clear the ...
+D133: BD D4 AE       JSR     $D4AE                          ; {Clear1200} ... first screen buffer
 D136: 86 AA          LDA     #$AA                           ; Set the ...
 D138: 97 AD          STA     <$AD                           ; {ram:ColorMask} ... color
 D13A: CC 04 13       LDD     #$0413                         ; (4,19) 4 rows down, 19 pixels across
 D13D: DD AB          STD     <$AB                           ; {ram:PixCoords} screen coords
 D13F: CC 04 00       LDD     #$0400          
-D142: DD 9E          STD     <$9E            
+D142: DD 9E          STD     <$9E                           ; {ram:CurrentScreen} 
 D144: 8E D5 C2       LDX     #$D5C2                         ; {!+StrHighScore} "High Score" string
 D147: BD D6 FA       JSR     $D6FA                          ; {PrintMsg} print "High Score"
 D14A: 9E B3          LDX     <$B3                           ; {ram:HighScore} Get the high score
@@ -1570,15 +1572,15 @@ D157: BD D6 FA       JSR     $D6FA                          ; {PrintMsg} Print "
 D15A: 86 C0          LDA     #$C0            
 D15C: 97 C0          STA     <$C0            
 ;
-D15E: BD DB 6D       JSR     $DB6D                          ; 
+D15E: BD DB 6D       JSR     $DB6D                          ; ?? Copy buffer at 0400 to drawing page
 D161: 0F B6          CLR     <$B6                           ; {ram:ISRCountScore} Once per second counter for score decrement
 D163: 0F B7          CLR     <$B7                           ; {ram:ISRCountTime} Once per second counter for time increment
 D165: 86 31          LDA     #$31                           ; Player starting Y coordinate 49
 D167: C6 41          LDB     #$41                           ; Player starting X coordinate 65
 D169: DD A2          STD     <$A2                           ; {ram:PlayerCoords} Set player coordinates
 D16B: 0F A4          CLR     <$A4                           ; {ram:PlayerDir} Player direction (facing up)
-D16D: BD D4 BD       JSR     $D4BD                          ; 
-D170: BD DC 56       JSR     $DC56                          ; 
+D16D: BD D4 BD       JSR     $D4BD                          ; ?? place bugs
+D170: BD DC 56       JSR     $DC56                          ; {DrawMaze} ?? draw maze?
 D173: 0F BA          CLR     <$BA            
 D175: 8E 06 00       LDX     #$0600          
 D178: CE 04 00       LDU     #$0400          
@@ -1606,12 +1608,12 @@ D1AA: 26 F2          BNE     $D19E                          ;
 D1AC: 86 FF          LDA     #$FF            
 D1AE: 97 C6          STA     <$C6            
 D1B0: BD DA 33       JSR     $DA33                          ; 
-D1B3: BD D4 A2       JSR     $D4A2                          ; Swap screen pointers
-D1B6: 97 92          STA     <$92                           ; {ram:RequestedPage} 
-D1B8: 86 0F          LDA     #$0F            
-D1BA: 13             SYNC                    
-D1BB: 4A             DECA                    
-D1BC: 26 FC          BNE     $D1BA                          ; 
+D1B3: BD D4 A2       JSR     $D4A2                          ; {SwapScreenPointers} Swap screen pointers
+D1B6: 97 92          STA     <$92                           ; {ram:RequestedPage} A set to same as 9C by swap
+D1B8: 86 0F          LDA     #$0F                           ; Delay ...
+D1BA: 13             SYNC                                   ; ... for ...
+D1BB: 4A             DECA                                   ; ... 16 ...
+D1BC: 26 FC          BNE     $D1BA                          ; Syncs
 D1BE: 86 FF          LDA     #$FF            
 D1C0: 97 C1          STA     <$C1            
 D1C2: BD DF 70       JSR     $DF70                          ; 
@@ -1628,20 +1630,20 @@ D1DD: 94 B5          ANDA    <$B5                           ; {ram:LiveOrDemo} I
 D1DF: 27 25          BEQ     $D206                          ; Yes ... skip drawing score
 ;
 ; Draw score
-D1E1: 86 AA          LDA     #$AA            
-D1E3: 97 AD          STA     <$AD                           ; {ram:ColorMask} 
+D1E1: 86 AA          LDA     #$AA                           ; Score ...
+D1E3: 97 AD          STA     <$AD                           ; {ram:ColorMask} ... color
 D1E5: CC 54 4B       LDD     #$544B                         ; (84,75) 84 rows down, 75 pixels across
 D1E8: DD AB          STD     <$AB                           ; {ram:PixCoords} Set coordinates
 D1EA: DC 9A          LDD     <$9A                           ; {ram:?ScreenPointerA} 
-D1EC: DD 9E          STD     <$9E            
+D1EC: DD 9E          STD     <$9E                           ; {ram:CurrentScreen} 
 D1EE: 9E B1          LDX     <$B1                           ; {ram:Score} Current score
 D1F0: BD D6 CB       JSR     $D6CB                          ; {PrintFourDigits} print score
 D1F3: 0A B8          DEC     <$B8            
 D1F5: 27 0F          BEQ     $D206                          ; 
 D1F7: CC 54 4B       LDD     #$544B          
 D1FA: DD AB          STD     <$AB                           ; {ram:PixCoords} 
-D1FC: CC 04 00       LDD     #$0400          
-D1FF: DD 9E          STD     <$9E            
+D1FC: CC 04 00       LDD     #$0400                         ; Draw on the ...
+D1FF: DD 9E          STD     <$9E                           ; {ram:CurrentScreen} ... 1st screen buffer
 D201: 9E B1          LDX     <$B1                           ; {ram:Score} Current score
 D203: BD D6 CB       JSR     $D6CB                          ; {PrintFourDigits} print score
 ;
@@ -1655,7 +1657,7 @@ D20E: 97 AD          STA     <$AD                           ; {ram:ColorMask} ..
 D210: CC 05 45       LDD     #$0545                         ; (5,69) 5 rows down, 69 pixels across
 D213: DD AB          STD     <$AB                           ; {ram:PixCoords} set coords
 D215: DC 9A          LDD     <$9A                           ; {ram:?ScreenPointerA} 
-D217: DD 9E          STD     <$9E            
+D217: DD 9E          STD     <$9E                           ; {ram:CurrentScreen} 
 D219: 96 AF          LDA     <$AF                           ; {ram:NumMinutes} Print ...
 D21B: BD D6 D7       JSR     $D6D7                          ; {PrintTwoDigits} ... minutes
 D21E: 96 AC          LDA     <$AC                           ; {ram:PixCoords} Next ...
@@ -1667,15 +1669,15 @@ D229: 0A B9          DEC     <$B9
 D22B: 27 1A          BEQ     $D247                          ; 
 D22D: CC 05 45       LDD     #$0545          
 D230: DD AB          STD     <$AB                           ; {ram:PixCoords} 
-D232: CC 04 00       LDD     #$0400          
-D235: DD 9E          STD     <$9E            
-D237: 96 AF          LDA     <$AF                           ; {ram:NumMinutes} 
-D239: BD D6 D7       JSR     $D6D7                          ; {PrintTwoDigits} 
-D23C: 96 AC          LDA     <$AC                           ; {ram:PixCoords} 
-D23E: 8B 06          ADDA    #$06            
-D240: 97 AC          STA     <$AC                           ; {ram:PixCoords} 
-D242: 96 B0          LDA     <$B0                           ; {ram:NumSeconds} 
-D244: BD D6 D7       JSR     $D6D7                          ; {PrintTwoDigits} 
+D232: CC 04 00       LDD     #$0400                         ; Draw on ...
+D235: DD 9E          STD     <$9E                           ; {ram:CurrentScreen} ... 1st screen buffer
+D237: 96 AF          LDA     <$AF                           ; {ram:NumMinutes} Print ...
+D239: BD D6 D7       JSR     $D6D7                          ; {PrintTwoDigits} ... number of minutes
+D23C: 96 AC          LDA     <$AC                           ; {ram:PixCoords} Skip to where ...
+D23E: 8B 06          ADDA    #$06                           ; ... seconds are ...
+D240: 97 AC          STA     <$AC                           ; {ram:PixCoords} ... printed
+D242: 96 B0          LDA     <$B0                           ; {ram:NumSeconds} Print ...
+D244: BD D6 D7       JSR     $D6D7                          ; {PrintTwoDigits} ... number of seconds
 ;
 ; 
 D247: BD DA 33       JSR     $DA33                          ; 
@@ -1684,34 +1686,36 @@ D24C: 27 02          BEQ     $D250                          ;
 D24E: 0A BA          DEC     <$BA            
 D250: BD D7 D8       JSR     $D7D8                          ; 
 D253: BD D8 20       JSR     $D820                          ; 
-D256: BD D4 A2       JSR     $D4A2                          ; 
+D256: BD D4 A2       JSR     $D4A2                          ; {SwapScreenPointers} 
 D259: 97 92          STA     <$92                           ; {ram:RequestedPage} 
-D25B: 13             SYNC                    
+D25B: 13             SYNC                                   ; Wait for screens to swap
 D25C: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} Player coordinates
 D25E: DD 8E          STD     <$8E                           ; {ram:Temp2} The collision checker uses this temporary
 D260: BD DF CC       JSR     $DFCC                          ; {CheckCollision} Did the player collide with a bug?
 D263: 10 25 00 8C    LBCS    $D2F3                          ; {PlayerDied} Yes ... end of game
-D267: 0D B5          TST     <$B5                           ; {ram:LiveOrDemo} 
-D269: 27 1F          BEQ     $D28A                          ; 
-D26B: AD 9F A0 00    JSR     [$A000]                        ; {hard:POLCAT} 
-D26F: 81 03          CMPA    #$03            
-D271: 10 27 FD EB    LBEQ    $D060                          ; 
-D275: 81 0D          CMPA    #$0D            
-D277: 10 26 FF 47    LBNE    $D1C2                          ; 
-D27B: 1A 50          ORCC    #$50            
-D27D: AD 9F A0 00    JSR     [$A000]                        ; {hard:POLCAT} 
-D281: 81 0D          CMPA    #$0D            
-D283: 26 F8          BNE     $D27D                          ; 
-D285: 1C EF          ANDCC   #$EF            
-D287: 7E D1 C2       JMP     $D1C2                          ; 
-D28A: BD D5 01       JSR     $D501                          ; {CheckSpaceOrButton} 
-D28D: 10 25 FE 43    LBCS    $D0D4                          ; 
-D291: 8E 08 00       LDX     #$0800          
-D294: 30 1F          LEAX    -1,X            
-D296: 26 FC          BNE     $D294                          ; 
-D298: 9E C3          LDX     <$C3            
-D29A: 10 27 FD C2    LBEQ    $D060                          ; 
-D29E: 7E D1 C2       JMP     $D1C2                          ; 
+D267: 0D B5          TST     <$B5                           ; {ram:LiveOrDemo} Are we in demo mode?
+D269: 27 1F          BEQ     $D28A                          ; Yes ... skip the pause
+D26B: AD 9F A0 00    JSR     [$A000]                        ; {hard:POLCAT} Get a character from the keyboard
+D26F: 81 03          CMPA    #$03                           ; BREAK?
+D271: 10 27 FD EB    LBEQ    $D060                          ; {SplashMode} Yes ... jump to splash mode
+D275: 81 0D          CMPA    #$0D                           ; ENTER?
+D277: 10 26 FF 47    LBNE    $D1C2                          ; No ... back to top of game loop
+D27B: 1A 50          ORCC    #$50                           ; Turn interrupts off
+D27D: AD 9F A0 00    JSR     [$A000]                        ; {hard:POLCAT} Get a character from the keyboard
+D281: 81 0D          CMPA    #$0D                           ; ENTER to un-pause?
+D283: 26 F8          BNE     $D27D                          ; No ... keep waiting
+D285: 1C EF          ANDCC   #$EF                           ; Re-enable interrupts
+D287: 7E D1 C2       JMP     $D1C2                          ; Back to top of game loop
+;
+; We know we are in demo mode
+D28A: BD D5 01       JSR     $D501                          ; {CheckSpaceOrButton} User wants to start a game?
+D28D: 10 25 FE 43    LBCS    $D0D4                          ; {LiveGame} Yes ... start a live game
+D291: 8E 08 00       LDX     #$0800                         ; Short ...
+D294: 30 1F          LEAX    -1,X                           ; ... ...
+D296: 26 FC          BNE     $D294                          ; ... delay
+D298: 9E C3          LDX     <$C3                           ; {ram:DemoTimer} Time to end the demo game?
+D29A: 10 27 FD C2    LBEQ    $D060                          ; {SplashMode} Yes ... back to the top of splash mode
+D29E: 7E D1 C2       JMP     $D1C2                          ; No ... keep playing the demo game
 
 Need16K:
 D2A1: 0A 01 AA 
@@ -1753,7 +1757,7 @@ PlayerDied:
 D2F3: 0F C1          CLR     <$C1                           ; ??
 D2F5: BD D7 A7       JSR     $D7A7                          ; {PlayGotchaTone} Play the "we gotcha" tone
 D2F8: 0D B5          TST     <$B5                           ; {ram:LiveOrDemo} Are we in demo mode (don't say "we gotcha")?
-D2FA: 10 27 FD 62    LBEQ    $D060                          ; Yes ... restart splash
+D2FA: 10 27 FD 62    LBEQ    $D060                          ; {SplashMode} Yes ... restart splash
 D2FE: DC B1          LDD     <$B1                           ; {ram:Score} Is the current score ...
 D300: 10 93 B3       CMPD    <$B3                           ; {ram:HighScore} ... a new high score
 D303: 25 02          BCS     $D307                          ; No ... leave old high score
@@ -1779,13 +1783,15 @@ D329: 26 E7          BNE     $D312                          ; Do all jumps
 D32B: CE CA B0       LDU     #$CAB0                         ; {!+GraBugStanding} Back to ...
 D32E: BD D4 81       JSR     $D481                          ; {DrawLargeBugs} ... standing bug
 ;
-D331: 8E 01 2C       LDX     #$012C          
-D334: 9F C3          STX     <$C3            
-D336: BD D5 01       JSR     $D501                          ; {CheckSpaceOrButton} 
-D339: 10 25 FD 97    LBCS    $D0D4                          ; 
-D33D: 9E C3          LDX     <$C3            
-D33F: 26 F5          BNE     $D336                          ; 
-D341: 7E D0 60       JMP     $D060                          ; Now restart the game ?? splash
+; Give the user 3 seconds to start another game immediately. 
+; Otherwise go back to the splash mode.
+D331: 8E 01 2C       LDX     #$012C                         ; About 3 seconds
+D334: 9F C3          STX     <$C3                           ; {ram:DemoTimer} Let the ISR count this down
+D336: BD D5 01       JSR     $D501                          ; {CheckSpaceOrButton} User press button or space?
+D339: 10 25 FD 97    LBCS    $D0D4                          ; {LiveGame} Yes ... start a live game
+D33D: 9E C3          LDX     <$C3                           ; {ram:DemoTimer} Timer expired?
+D33F: 26 F5          BNE     $D336                          ; No ... keep waiting
+D341: 7E D0 60       JMP     $D060                          ; {SplashMode} Yes ... restart the splash mode
 
 D344: 0F C1          CLR     <$C1            
 D346: BD DA 33       JSR     $DA33                          ; 
@@ -1833,7 +1839,7 @@ D3A2: 26 E3          BNE     $D387                          ;
 D3A4: 04 88          LSR     <$88                           ; {ram:BitPos} 
 D3A6: 04 88          LSR     <$88                           ; {ram:BitPos} 
 D3A8: 26 CA          BNE     $D374                          ; 
-D3AA: BD D4 A2       JSR     $D4A2                          ; 
+D3AA: BD D4 A2       JSR     $D4A2                          ; {SwapScreenPointers} 
 D3AD: 96 AD          LDA     <$AD                           ; {ram:ColorMask} 
 D3AF: 8B 55          ADDA    #$55            
 D3B1: 97 AD          STA     <$AD                           ; {ram:ColorMask} 
@@ -1869,15 +1875,15 @@ D3EB: 4C             INCA
 D3EC: 81 20          CMPA    #$20            
 D3EE: 24 02          BCC     $D3F2                          ; 
 D3F0: 97 A0          STA     <$A0                           ; {ram:NumBugs} 
-D3F2: CE 10 00       LDU     #$1000          ; Using 2nd ...
-D3F5: DF 9E          STU     <$9E            ; ... screen
+D3F2: CE 10 00       LDU     #$1000                         ; Using 2nd ...
+D3F5: DF 9E          STU     <$9E                           ; {ram:CurrentScreen} ... screen
 D3F7: BD D4 AE       JSR     $D4AE                          ; {Clear1200} Clear the screen
-D3FA: 8E D6 5A       LDX     #$D65A                         ; {!+StrNextTime} The "we'll getcha next time" string 
-D3FD: EC 81          LDD     ,X++            ; Set the ...
-D3FF: DD AB          STD     <$AB                           ; {ram:PixCoords} ... destination coordinates 
+D3FA: 8E D6 5A       LDX     #$D65A                         ; {!+StrNextTime} The "we'll getcha next time" string
+D3FD: EC 81          LDD     ,X++                           ; Set the ...
+D3FF: DD AB          STD     <$AB                           ; {ram:PixCoords} ... destination coordinates
 D401: 27 09          BEQ     $D40C                          ; All strings printed ... move on
-D403: A6 80          LDA     ,X+             ; Set the ...
-D405: 97 AD          STA     <$AD                           ; {ram:ColorMask} ... color mask 
+D403: A6 80          LDA     ,X+                            ; Set the ...
+D405: 97 AD          STA     <$AD                           ; {ram:ColorMask} ... color mask
 D407: BD D6 FA       JSR     $D6FA                          ; {PrintMsg} Print this message
 D40A: 20 F1          BRA     $D3FD                          ; Go back for all messages
 ;
@@ -1885,8 +1891,8 @@ D40C: 86 01          LDA     #$01
 D40E: 97 98          STA     <$98                           ; {ram:Temp1} 
 D410: 8E C0 00       LDX     #$C000          
 D413: 9F A5          STX     <$A5            
-D415: 86 06          LDA     #$06            ; Delay for ...
-D417: 8D 4E          BSR     $D467                          ; ... 6 interrupts (10th of a second) 
+D415: 86 06          LDA     #$06                           ; Delay for ...
+D417: 8D 4E          BSR     $D467                          ; {DelaySyncs} ... 6 interrupts (10th of a second)
 D419: 8D 51          BSR     $D46C                          ; 
 D41B: 96 98          LDA     <$98                           ; {ram:Temp1} 
 D41D: 8B 02          ADDA    #$02            
@@ -1905,9 +1911,9 @@ D438: 97 AD          STA     <$AD                           ; {ram:ColorMask}
 D43A: 86 3F          LDA     #$3F            
 D43C: BD D6 79       JSR     $D679                          ; {PrintChar} 
 D43F: 86 2D          LDA     #$2D            
-D441: BD D4 67       JSR     $D467                          ; 
+D441: BD D4 67       JSR     $D467                          ; {DelaySyncs} 
 D444: 86 02          LDA     #$02            
-D446: 8D 1F          BSR     $D467                          ; 
+D446: 8D 1F          BSR     $D467                          ; {DelaySyncs} 
 D448: BD DB DD       JSR     $DBDD                          ; 
 D44B: 96 98          LDA     <$98                           ; {ram:Temp1} 
 D44D: 8B 02          ADDA    #$02            
@@ -1919,7 +1925,7 @@ D458: 03 A1          COM     <$A1
 D45A: BD D5 27       JSR     $D527                          ; 
 D45D: 20 E5          BRA     $D444                          ; 
 D45F: 86 64          LDA     #$64            
-D461: BD D4 67       JSR     $D467                          ; 
+D461: BD D4 67       JSR     $D467                          ; {DelaySyncs} 
 D464: 7E D0 E7       JMP     $D0E7                          ; 
 ```
 
@@ -1927,10 +1933,10 @@ D464: 7E D0 E7       JMP     $D0E7                          ;
 
 ```code
 DelaySyncs:
-D467: 13             SYNC                    ; Wait for interrupt
-D468: 4A             DECA                    ; all syncs done?
-D469: 26 FC          BNE     $D467                          ; No ... keep syncing
-D46B: 39             RTS                     ; Done
+D467: 13             SYNC                                   ; Wait for interrupt
+D468: 4A             DECA                                   ; all syncs done?
+D469: 26 FC          BNE     $D467                          ; {DelaySyncs} No ... keep syncing
+D46B: 39             RTS                                    ; Done
 
 D46C: 9E A5          LDX     <$A5            
 D46E: C6 80          LDB     #$80            
@@ -1968,12 +1974,13 @@ D49D: 0A 99          DEC     <$99                           ; All 5 columns done
 D49F: 26 E7          BNE     $D488                          ; No ... do all columns
 D4A1: 39             RTS                                    ; Done
 
-D4A2: 34 10          PSHS    X               
-D4A4: DC 9A          LDD     <$9A                           ; {ram:?ScreenPointerA} 
-D4A6: 9E 9C          LDX     <$9C                           ; {ram:?ScreenPointerB} 
-D4A8: DD 9C          STD     <$9C                           ; {ram:?ScreenPointerB} 
-D4AA: 9F 9A          STX     <$9A                           ; {ram:?ScreenPointerA} 
-D4AC: 35 90          PULS    X,PC            
+SwapScreenPointers:
+D4A2: 34 10          PSHS    X                              ; Preserve X
+D4A4: DC 9A          LDD     <$9A                           ; {ram:?ScreenPointerA} Swap ...
+D4A6: 9E 9C          LDX     <$9C                           ; {ram:?ScreenPointerB} ... 9A ...
+D4A8: DD 9C          STD     <$9C                           ; {ram:?ScreenPointerB} ... and ...
+D4AA: 9F 9A          STX     <$9A                           ; {ram:?ScreenPointerA} ... 9C
+D4AC: 35 90          PULS    X,PC                           ; Done
 ```
 
 # Clear1200
@@ -1990,7 +1997,7 @@ D4B7: 30 1F          LEAX    -1,X                           ; All words done?
 D4B9: 26 FA          BNE     $D4B5                          ; No ... do all
 D4BB: 35 90          PULS    X,PC                           ; Restore X and out
 
-; ?? Draw maze?
+; ?? Place bugs?
 D4BD: 8E 28 08       LDX     #$2808          
 D4C0: 96 A0          LDA     <$A0                           ; {ram:NumBugs} 
 D4C2: 97 98          STA     <$98                           ; {ram:Temp1} 
@@ -2137,10 +2144,10 @@ D5AB: 8B 01          ADDA    #$01                           ; ... one to number 
 D5AD: 19             DAA                                    ; Adjust for BCD
 D5AE: 97 AF          STA     <$AF                           ; {ram:NumMinutes} New number of minutes
 ; 
-D5B0: 9E C3          LDX     <$C3                           ; ??
-D5B2: 27 04          BEQ     $D5B8                          ; ??
-D5B4: 30 1F          LEAX    -1,X                           ; ??
-D5B6: 9F C3          STX     <$C3                           ; ??
+D5B0: 9E C3          LDX     <$C3                           ; {ram:DemoTimer} Count ...
+D5B2: 27 04          BEQ     $D5B8                          ; ... down ...
+D5B4: 30 1F          LEAX    -1,X                           ; ... the ...
+D5B6: 9F C3          STX     <$C3                           ; {ram:DemoTimer} ... demo game timer
 ;
 ; Allow interrupt to happen again
 D5B8: B6 FF 03       LDA     $FF03                          ; {hard:PIA0_CB} Enable interrupt ...
@@ -2231,7 +2238,7 @@ D684: C6 09          LDB     #$09                           ; 9 bytes per charac
 D686: 3D             MUL                                    ; Point to ...
 D687: 33 CB          LEAU    D,U                            ; ... graphics
 D689: DC AB          LDD     <$AB                           ; {ram:PixCoords} (y,x) coordinate
-D68B: 9E 9E          LDX     <$9E                           ; Top of screen pointer
+D68B: 9E 9E          LDX     <$9E                           ; {ram:CurrentScreen} Top of screen pointer
 D68D: BD DE 5F       JSR     $DE5F                          ; {CoordToScrOffs} Get screen pointer and bit mask
 D690: 86 09          LDA     #$09                           ; Row counter ...
 D692: A7 E2          STA     ,-S                            ; ... on stack
@@ -2719,8 +2726,8 @@ D9CB: 97 B8          STA     <$B8
 D9CD: 0F B6          CLR     <$B6                           ; {ram:ISRCountScore} 
 D9CF: DE BE          LDU     <$BE                           ; {ram:DotsLeft} 
 D9D1: 27 04          BEQ     $D9D7                          ; ?? why would this ever be 0? We stop when it reaches 0
-D9D3: 33 5F          LEAU    -1,U            ; Player just ate ...
-D9D5: DF BE          STU     <$BE                           ; {ram:DotsLeft} ... a dot 
+D9D3: 33 5F          LEAU    -1,U                           ; Player just ate ...
+D9D5: DF BE          STU     <$BE                           ; {ram:DotsLeft} ... a dot
 D9D7: 1F 98          TFR     B,A             
 D9D9: 53             COMB                    
 D9DA: E4 84          ANDB    ,X              
@@ -3035,6 +3042,7 @@ DC3A: 30 88 20       LEAX    $20,X
 DC3D: 5A             DECB                    
 DC3E: 26 F4          BNE     $DC34                          ; 
 DC40: 35 86          PULS    A,B,PC          
+
 DC42: 34 06          PSHS    B,A             
 DC44: 86 20          LDA     #$20            
 DC46: 3D             MUL                     
@@ -3044,14 +3052,18 @@ DC4C: CC 55 14       LDD     #$5514
 DC4F: A7 80          STA     ,X+             
 DC51: 5A             DECB                    
 DC52: 26 FB          BNE     $DC4F                          ; 
-DC54: 35 86          PULS    A,B,PC          
+DC54: 35 86          PULS    A,B,PC
+```
 
-; ?? Draw maze??
-DC56: CE 06 00       LDU     #$0600          
-DC59: 8E 08 00       LDX     #$0800          
-DC5C: 6F C0          CLR     ,U+             
-DC5E: 30 1F          LEAX    -1,X            
-DC60: 26 FA          BNE     $DC5C                          ; 
+# Draw the maze
+
+```code 
+DrawMaze:
+DC56: CE 06 00       LDU     #$0600                         ; 16 rows down on 1st screen buffer
+DC59: 8E 08 00       LDX     #$0800                         ; 64 rows for maze area
+DC5C: 6F C0          CLR     ,U+                            ; Clear ...
+DC5E: 30 1F          LEAX    -1,X                           ; ... the ...
+DC60: 26 FA          BNE     $DC5C                          ; ... maze area
 DC62: CE CA B0       LDU     #$CAB0                         ; {!+GraBugStanding} 
 DC65: BD D4 81       JSR     $D481                          ; {DrawLargeBugs} 
 DC68: C6 0E          LDB     #$0E            

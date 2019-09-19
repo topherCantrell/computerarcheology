@@ -16,6 +16,7 @@
 | 98    | Temp1 | General use |
 | 9A:9B | ?ScreenPointerA | |
 | 9C:9D | ?ScreenPointerB | |
+| 9E:9F | CurrentScreen | Pointer to the screen buffer being drawn on |
 | A0    | NumBugs | Number of bugs in game | 
 | A2:A3 | PlayerCoords | Player's coordinates on the screen (y,x) |
 | A4    | PlayerDir | Player's facing direction |
@@ -31,7 +32,8 @@
 | B7    | ISRCountTime  | Counts ISRs in live game to increment the time once a second |
 | BE:BF | DotsLeft | Number of dots left to be eaten in the maze |
 | C2    | JoyOrKey | FF if player is using joystick or 00 if player is using keyboard |
-| C5    | ??AtBoot??    | set to 8 normally or $10 if ENTER pressed at start |
+| C3:C4 | DemoTimer | Count-down by the ISR used to time the demo play (and direct restart after losing) |
+| C5    | NumStartBugs  | Hold ENTER down at powerup to start the game with 16 bugs |
 | C7    | VisiblePage   | Upper byte of address of visible screen page (04 or ??) |
 
 Graphics pages (3K each)
