@@ -294,6 +294,7 @@ C9E4:  00 00 00 00 00 00
 ; .%..%.......
 ; .....%......
 
+SplashBug1:
 C9EA:  20 08 05 25 08 00
 C9F0:  00 20 48 40 20 08
 C9F6:  00 00 00 00 00 00
@@ -374,6 +375,7 @@ CA74:  00 00 00 00 00 00
 ; .%..%.......
 ; %...........
 
+SplashBug2:
 CA7A:  00 08 25 05 08 20
 CA80:  08 20 40 48 20 00
 CA86:  00 00 00 00 00 00
@@ -1590,7 +1592,7 @@ D181: ED C9 18 00    STD     $1800,U
 D185: 33 42          LEAU    2,U             
 D187: 30 1F          LEAX    -1,X            
 D189: 26 F0          BNE     $D17B                          ; 
-D18B: 0F A1          CLR     <$A1            
+D18B: 0F A1          CLR     <$A1                           ; {ram:Temp3} 
 D18D: 0D B5          TST     <$B5                           ; {ram:LiveOrDemo} 
 D18F: 27 1F          BEQ     $D1B0                          ; 
 D191: C6 13          LDB     #$13            
@@ -1618,7 +1620,7 @@ D1BE: 86 FF          LDA     #$FF
 D1C0: 97 C1          STA     <$C1            
 D1C2: BD DF 70       JSR     $DF70                          ; 
 D1C5: BD DB 1F       JSR     $DB1F                          ; 
-D1C8: 03 A1          COM     <$A1            
+D1C8: 03 A1          COM     <$A1                           ; {ram:Temp3} 
 D1CA: 2A 03          BPL     $D1CF                          ; 
 D1CC: BD DE 7A       JSR     $DE7A                          ; ?? Move bugs ??
 D1CF: BD DF 68       JSR     $DF68                          ; ?? Draw bugs ??
@@ -1876,7 +1878,6 @@ D3EC: 81 20          CMPA    #$20
 D3EE: 24 02          BCC     $D3F2                          ; 
 D3F0: 97 A0          STA     <$A0                           ; {ram:NumBugs} 
 D3F2: CE 10 00       LDU     #$1000                         ; Using 2nd ...
-D3F5: DF 9E          STU     <$9E                           ; {ram:CurrentScreen} ... screen
 D3F7: BD D4 AE       JSR     $D4AE                          ; {Clear1200} Clear the screen
 D3FA: 8E D6 5A       LDX     #$D65A                         ; {!+StrNextTime} The "we'll getcha next time" string
 D3FD: EC 81          LDD     ,X++                           ; Set the ...
@@ -1899,8 +1900,8 @@ D41D: 8B 02          ADDA    #$02
 D41F: 97 98          STA     <$98                           ; {ram:Temp1} 
 D421: 81 59          CMPA    #$59            
 D423: 24 0A          BCC     $D42F                          ; 
-D425: BD DB B1       JSR     $DBB1                          ; 
-D428: 03 A1          COM     <$A1            
+D425: BD DB B1       JSR     $DBB1                          ; {DrawSplashBugLine} 
+D428: 03 A1          COM     <$A1                           ; {ram:Temp3} Flip between bug pictures each time
 D42A: BD D5 27       JSR     $D527                          ; 
 D42D: 20 E6          BRA     $D415                          ; 
 D42F: 0F 98          CLR     <$98                           ; {ram:Temp1} 
@@ -1921,7 +1922,7 @@ D44F: 97 98          STA     <$98                           ; {ram:Temp1}
 D451: 81 58          CMPA    #$58            
 D453: 24 0A          BCC     $D45F                          ; 
 D455: BD DB E0       JSR     $DBE0                          ; 
-D458: 03 A1          COM     <$A1            
+D458: 03 A1          COM     <$A1                           ; {ram:Temp3} 
 D45A: BD D5 27       JSR     $D527                          ; 
 D45D: 20 E5          BRA     $D444                          ; 
 D45F: 86 64          LDA     #$64            
@@ -2472,7 +2473,7 @@ D7E5: 10 8E C9 60    LDY     #$C960                         ; {!+PlayerGraphics}
 D7E9: D6 A4          LDB     <$A4                           ; {ram:PlayerDir} 
 D7EB: 86 06          LDA     #$06            
 D7ED: 3D             MUL                     
-D7EE: 0D A1          TST     <$A1            
+D7EE: 0D A1          TST     <$A1                           ; {ram:Temp3} 
 D7F0: 2A 02          BPL     $D7F4                          ; 
 D7F2: CB 18          ADDB    #$18            
 D7F4: 31 A5          LEAY    B,Y             
@@ -2536,7 +2537,7 @@ D85B: 84 01          ANDA    #$01
 D85D: 88 01          EORA    #$01            
 D85F: C6 48          LDB     #$48            
 D861: 3D             MUL                     
-D862: 0D A1          TST     <$A1            
+D862: 0D A1          TST     <$A1                           ; {ram:Temp3} 
 D864: 27 03          BEQ     $D869                          ; 
 D866: C3 00 90       ADDD    #$0090          
 D869: CE C9 90       LDU     #$C990                         ; {!+BugGraphics} 
@@ -2958,31 +2959,37 @@ DB8C: FF FF FF FF FF FF
 DB92: FF FF FF FF FF FF      
 DB98: FF FF FF FF 55 
 
-DB9D: CE C9 EA       LDU     #$C9EA                         ; {!+} 
-DBA0: 0D A1          TST     <$A1            
-DBA2: 27 03          BEQ     $DBA7                          ; 
-DBA4: CE CA 7A       LDU     #$CA7A                         ; {!+} 
-DBA7: 96 98          LDA     <$98                           ; {ram:Temp1} 
-DBA9: C6 20          LDB     #$20            
-DBAB: 3D             MUL                     
-DBAC: 8B 1C          ADDA    #$1C            
-DBAE: 1F 01          TFR     D,X             
-DBB0: 39             RTS                     
+GetSplashBugInfo:
+; Return start of bug row in X
+; Return bug graphics pointer in U
+; A1 0 or not 0 picks picture
+; 98 y coordinate
+DB9D: CE C9 EA       LDU     #$C9EA                         ; {!+SplashBug1} Picture of bug
+DBA0: 0D A1          TST     <$A1                           ; {ram:Temp3} Use this picture or the other?
+DBA2: 27 03          BEQ     $DBA7                          ; Keep this one or ...
+DBA4: CE CA 7A       LDU     #$CA7A                         ; {!+SplashBug2} ... use the other
+DBA7: 96 98          LDA     <$98                           ; {ram:Temp1} Get the Y coordinate
+DBA9: C6 20          LDB     #$20                           ; Convert to ...
+DBAB: 3D             MUL                                    ; ... row offset
+DBAC: 8B 1C          ADDA    #$1C                           ; Drawing on the 3rd screen buffer
+DBAE: 1F 01          TFR     D,X                            ; To X for return
+DBB0: 39             RTS                                    ; Done
 
-DBB1: 8D EA          BSR     $DB9D                          ; 
-DBB3: 86 06          LDA     #$06            
-DBB5: 97 99          STA     <$99            
-DBB7: C6 10          LDB     #$10            
-DBB9: D7 A5          STB     <$A5            
-DBBB: E6 46          LDB     6,U             
-DBBD: A6 C0          LDA     ,U+             
-DBBF: ED 81          STD     ,X++            
-DBC1: 0A A5          DEC     <$A5            
-DBC3: 26 FA          BNE     $DBBF                          ; 
-DBC5: 0A 99          DEC     <$99            
-DBC7: 26 EE          BNE     $DBB7                          ; 
-DBC9: 9F A5          STX     <$A5            
-DBCB: 39             RTS                     
+DrawSplashBugLine:
+DBB1: 8D EA          BSR     $DB9D                          ; {GetSplashBugInfo} Get the splash bug info (X=screen, U=picture)
+DBB3: 86 06          LDA     #$06                           ; 6 rows in the bug graphics
+DBB5: 97 99          STA     <$99                           ; Counter
+DBB7: C6 10          LDB     #$10                           ; 16 words (32 bytes) across the screen
+DBB9: D7 A5          STB     <$A5                           ; Counter
+DBBB: E6 46          LDB     6,U                            ; 1st byte of second column of graphics
+DBBD: A6 C0          LDA     ,U+                            ; 1st byte of first column graphics
+DBBF: ED 81          STD     ,X++                           ; 2 bytes to the screen
+DBC1: 0A A5          DEC     <$A5                           ; All done on this row of bugs?
+DBC3: 26 FA          BNE     $DBBF                          ; No ... do them all
+DBC5: 0A 99          DEC     <$99                           ; All 6 rows done?
+DBC7: 26 EE          BNE     $DBB7                          ; No .. do them all
+DBC9: 9F A5          STX     <$A5                           ; ?? remember this for something
+DBCB: 39             RTS                                    ; Done
 
 DBCC: FF FF FF 
 DBCF: FF FF FF
@@ -2994,7 +3001,7 @@ DBDB: FF AA
 DBDD: C6 FF          LDB     #$FF 
 DBDF: 86 5F          LDA     #$5F
 DBE1: D7 88          STB     <$88                           ; {ram:BitPos} 
-DBE3: 8D B8          BSR     $DB9D                          ; 
+DBE3: 8D B8          BSR     $DB9D                          ; {GetSplashBugInfo} 
 DBE5: 30 88 17       LEAX    $17,X           
 DBE8: 86 02          LDA     #$02            
 DBEA: 34 12          PSHS    X,A             
@@ -3074,16 +3081,16 @@ DC60: 26 FA          BNE     $DC5C                          ; ... maze area
 DC62: CE CA B0       LDU     #$CAB0                         ; {!+GraBugStanding} Draw the ...
 DC65: BD D4 81       JSR     $D481                          ; {DrawLargeBugs} ... large bugs on each side of the maze
 DC68: C6 0E          LDB     #$0E                           ; 15 rows down to top of maze
-DC6A: 8D D6          BSR     $DC42                          ; {DrawHorLine} Draw line
+DC6A: 8D D6          BSR     $DC42                          ; {DrawHorzLine} Draw line
 DC6C: 5C             INCB                                   ; Make it a ...
-DC6D: 8D D3          BSR     $DC42                          ; {DrawHorLine} ... 2 row double line
+DC6D: 8D D3          BSR     $DC42                          ; {DrawHorzLine} ... 2 row double line
 DC6F: 86 10          LDA     #$10                           ; 16 cell rows in the maze
 DC71: CB 04          ADDB    #$04                           ; Start of next row
-DC73: BD DC 42       JSR     $DC42                          ; {DrawHorLine} Draw a line
+DC73: BD DC 42       JSR     $DC42                          ; {DrawHorzLine} Draw a line
 DC76: 4A             DECA                                   ; Do all ...
 DC77: 26 F8          BNE     $DC71                          ; ... 16 rows
 DC79: 5C             INCB                                   ; Double line ...
-DC7A: BD DC 42       JSR     $DC42                          ; {DrawHorLine} ... at bottom of maze
+DC7A: BD DC 42       JSR     $DC42                          ; {DrawHorzLine} ... at bottom of maze
 DC7D: C6 16          LDB     #$16                           ; Maze starts at X=22
 DC7F: BD DC 1D       JSR     $DC1D                          ; {DrawVertLine} Draw a single line down the maze
 DC82: 5C             INCB                                   ; Make it ...
@@ -3481,7 +3488,7 @@ DF6A: 10 8E 28 08    LDY     #$2808
 DF6E: 20 0D          BRA     $DF7D                          ; 
 DF70: 5F             CLRB                    
 DF71: 10 8E 28 08    LDY     #$2808          
-DF75: 0D A1          TST     <$A1            
+DF75: 0D A1          TST     <$A1                           ; {ram:Temp3} 
 DF77: 2A 04          BPL     $DF7D                          ; 
 DF79: 10 8E 28 68    LDY     #$2868          
 DF7D: D7 88          STB     <$88                           ; {ram:BitPos} 
@@ -3515,7 +3522,7 @@ DFB0: C4 55          ANDB    #$55
 DFB2: D4 88          ANDB    <$88                           ; {ram:BitPos} 
 DFB4: EA E0          ORB     ,S+             
 DFB6: E7 C4          STB     ,U              
-DFB8: 96 A1          LDA     <$A1            
+DFB8: 96 A1          LDA     <$A1                           ; {ram:Temp3} 
 DFBA: 2A 09          BPL     $DFC5                          ; 
 DFBC: 96 88          LDA     <$88                           ; {ram:BitPos} 
 DFBE: 26 05          BNE     $DFC5                          ; 

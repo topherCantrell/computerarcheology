@@ -18,6 +18,7 @@
 | 9C:9D | ?ScreenPointerB | |
 | 9E:9F | CurrentScreen | Pointer to the screen buffer being drawn on |
 | A0    | NumBugs | Number of bugs in game | 
+| A1    | Temp3 | Used in picking the picture when drawing the line of bugs between rounds |
 | A2:A3 | PlayerCoords | Player's coordinates on the screen (y,x) |
 | A4    | PlayerDir | Player's facing direction |
 | AB:AC | PixCoords | Coordinates on the screen (y,x) |
