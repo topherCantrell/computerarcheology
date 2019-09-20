@@ -43,3 +43,5 @@ Graphics pages (3K each)
   * 1C00 - 27FF
   
 The data on the bugs is kept in an array at $2808. 3 bytes each: y,x,dir
+
+28E8-2A27: array of bytes, one per cell, 20*10 cells

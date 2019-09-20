@@ -1878,7 +1878,7 @@ D3EC: 81 20          CMPA    #$20
 D3EE: 24 02          BCC     $D3F2                          ; 
 D3F0: 97 A0          STA     <$A0                           ; {ram:NumBugs} 
 D3F2: CE 10 00       LDU     #$1000                         ; Using 2nd ...
-D3F5: DF 9E          STU     <$9E                           ; ... screen buffer for drawing
+D3F5: DF 9E          STU     <$9E                           ; {ram:CurrentScreen} ... screen buffer for drawing
 D3F7: BD D4 AE       JSR     $D4AE                          ; {Clear1200} Clear the screen
 D3FA: 8E D6 5A       LDX     #$D65A                         ; {!+StrNextTime} The "we'll getcha next time" string
 D3FD: EC 81          LDD     ,X++                           ; Set the ...
@@ -2697,7 +2697,7 @@ D984: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400
 D987: 96 A4          LDA     <$A4                           ; {ram:PlayerDir} 
 D989: BD DF 42       JSR     $DF42                          ; 
 D98C: 25 0F          BCS     $D99D                          ; 
-D98E: 8E DE 4F       LDX     #$DE4F                         ; {!+TDE4F} 
+D98E: 8E DE 4F       LDX     #$DE4F                         ; {!+DirOffset} 
 D991: D6 A4          LDB     <$A4                           ; {ram:PlayerDir} 
 D993: 58             LSLB                    
 D994: 3A             ABX                     
@@ -2744,7 +2744,7 @@ D9E2: A7 84          STA     ,X
 D9E4: 39             RTS                     
 D9E5: D6 A4          LDB     <$A4                           ; {ram:PlayerDir} 
 D9E7: 58             LSLB                    
-D9E8: 8E DE 4F       LDX     #$DE4F                         ; {!+TDE4F} 
+D9E8: 8E DE 4F       LDX     #$DE4F                         ; {!+DirOffset} 
 D9EB: 3A             ABX                     
 D9EC: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
 D9EE: AB 84          ADDA    ,X              
@@ -2939,7 +2939,7 @@ DB6D: 96 92          LDA     <$92                           ; {ram:RequestedPage
 DB6F: 81 1C          CMPA    #$1C  
 DB71: 27 03          BEQ     $DB76                          ; 
 DB73: 5F             CLRB           
-DB74: 8D 07          BSR     $DB7D                          ; {Copy3K} 
+DB74: 8D 07          BSR     $DB7D                          ; {Copy3KtoLast} 
 DB76: 86 1C          LDA     #$1C            
 DB78: 97 92          STA     <$92                           ; {ram:RequestedPage} 
 DB7A: 13             SYNC                                   ; Wait for ISR to change the page
@@ -2947,18 +2947,18 @@ DB7B: 39             RTS
 ;
 DB7C: AA                                  
 ```
-# Copy3K
+# Copy3KtoLast
 
 ```code
-; Copy 3K (one screen) from U to 1C00
-Copy3K:
-DB7D: 8E 1C 00       LDX     #$1C00          
-DB80: 1F 03          TFR     D,U             
-DB82: EC C1          LDD     ,U++            
-DB84: ED 81          STD     ,X++            
-DB86: 8C 28 00       CMPX    #$2800          
-DB89: 25 F7          BCS     $DB82                          ; 
-DB8B: 39             RTS                     
+; Copy 3K (one screen) from screen pointed to by D to 3rd screen buffer at 1C00
+Copy3KtoLast:
+DB7D: 8E 1C 00       LDX     #$1C00                         ; Pointer to last screen buffer
+DB80: 1F 03          TFR     D,U                            ; Pointer to U
+DB82: EC C1          LDD     ,U++                           ; From the other buffer ...
+DB84: ED 81          STD     ,X++                           ; ... to the buffer starting at 1C00
+DB86: 8C 28 00       CMPX    #$2800                         ; All Done?
+DB89: 25 F7          BCS     $DB82                          ; No ... keep copying
+DB8B: 39             RTS                                    ; Done
 
 DB8C: FF FF FF FF FF FF       
 DB92: FF FF FF FF FF FF      
@@ -3107,31 +3107,33 @@ DC8D: 4A             DECA                                   ; All columns done?
 DC8E: 26 F8          BNE     $DC88                          ; No ... do all 20 columns
 DC90: 5C             INCB                                   ; Make the right side of ...
 DC91: BD DC 1D       JSR     $DC1D                          ; {DrawVertLine} ... the maze a double line
-DC94: CE 28 E8       LDU     #$28E8
-DC97: 8E 01 40       LDX     #$0140                         ; ?? 320 dots? Cells?
-DC9A: 6F C0          CLR     ,U+             
-DC9C: 30 1F          LEAX    -1,X            
-DC9E: 26 FA          BNE     $DC9A                          ;
-DCA0: 73 29 92       COM     $2992
-DCA3: CE DE 4F       LDU     #$DE4F                         ; {!+TDE4F} 
-DCA6: 10 8E 2A 28    LDY     #$2A28          
-DCAA: 10 9F 8A       STY     <$8A            
-DCAD: CC 08 0A       LDD     #$080A          
-DCB0: DD 8E          STD     <$8E                           ; {ram:Temp2} 
-DCB2: EC C4          LDD     ,U              
-DCB4: BD DD 63       JSR     $DD63                          ;
-
-;DCB7: 1A 55 27 FE
-
-DCB7: 63 84          COM     ,X
-DCB9: EC C1          LDD     ,U++            
-DCBB: BD DD 83       JSR     $DD83                          ;
-DCBE: DC 95          LDD     <$95            
-DCC0: ED A1          STD     ,Y++
-DCC2: EC C4          LDD     ,U              
-DCC4: 26 EC          BNE     $DCB2                          ;
-DCC6: 10 9F 8C       STY     <$8C            
 ;
+DC94: CE 28 E8       LDU     #$28E8                         ; ?? one byte per cell data structure
+DC97: 8E 01 40       LDX     #$0140                         ; 16*20 = 320 cells in the maze
+DC9A: 6F C0          CLR     ,U+                            ; Clear the ?? data
+DC9C: 30 1F          LEAX    -1,X                           ; All done?
+DC9E: 26 FA          BNE     $DC9A                          ; Do all
+; 
+DCA0: 73 29 92       COM     $2992                          ; Cell 170 (y=8, x=10) exact center ... mark it ?? visited
+DCA3: CE DE 4F       LDU     #$DE4F                         ; {!+DirOffset} Direction offset table
+DCA6: 10 8E 2A 28    LDY     #$2A28                         ; ?? one past end of cell table
+DCAA: 10 9F 8A       STY     <$8A            
+;
+DCAD: CC 08 0A       LDD     #$080A                         ; y=8,x=10 ... the middle cell of the maze
+DCB0: DD 8E          STD     <$8E                           ; {ram:Temp2} The target square
+DCB2: EC C4          LDD     ,U                             ; Get the offset for this direction
+DCB4: BD DD 63       JSR     $DD63                          ; {GetPtrToNeighborCell} Get cell pointer
+DCB7: 63 84          COM     ,X                             ; Note it is ?? visited
+DCB9: EC C1          LDD     ,U++                           ; Get the offset for this direction and advance pointer
+DCBB: BD DD 83       JSR     $DD83                          ; {OpenCellWall} Erase the wall in this direction (the center cell is always all open)
+DCBE: DC 95          LDD     <$95                           ; Target cell in direction 
+DCC0: ED A1          STD     ,Y++                           ; ?? remember this to build maze from?
+DCC2: EC C4          LDD     ,U                             ; Done all directions?
+DCC4: 26 EC          BNE     $DCB2                          ; No ... keep going
+
+; 1A 55 27 FE
+
+DCC6: 10 9F 8C       STY     <$8C    
 DCC9: 9E 8A          LDX     <$8A
 DCCB: 9C 8C          CMPX    <$8C            
 DCCD: 10 27 00 FA    LBEQ    $DDCB                          ; 
@@ -3145,10 +3147,10 @@ DCDD: BD DD 6F       JSR     $DD6F                          ;
 DCE0: 86 FF          LDA     #$FF            
 DCE2: A7 84          STA     ,X              
 DCE4: 0F 88          CLR     <$88                           ; {ram:BitPos} 
-DCE6: CE DE 4F       LDU     #$DE4F                         ; {!+TDE4F} 
+DCE6: CE DE 4F       LDU     #$DE4F                         ; {!+DirOffset} 
 DCE9: EC C1          LDD     ,U++            
 DCEB: 27 19          BEQ     $DD06                          ; 
-DCED: BD DD 63       JSR     $DD63                          ; 
+DCED: BD DD 63       JSR     $DD63                          ; {GetPtrToNeighborCell} 
 DCF0: 25 F7          BCS     $DCE9                          ; 
 DCF2: A6 84          LDA     ,X              
 DCF4: 26 F3          BNE     $DCE9                          ; 
@@ -3174,7 +3176,7 @@ DD19: 48             LSLA
 DD1A: 33 C6          LEAU    A,U             
 DD1C: EC C4          LDD     ,U              
 DD1E: DD 93          STD     <$93            
-DD20: BD DD 83       JSR     $DD83                          ; 
+DD20: BD DD 83       JSR     $DD83                          ; {OpenCellWall} 
 DD23: 0F 97          CLR     <$97            
 DD25: 0A 88          DEC     <$88                           ; {ram:BitPos} 
 DD27: 27 08          BEQ     $DD31                          ; 
@@ -3188,13 +3190,13 @@ DD35: 7E DC DB       JMP     $DCDB                          ;
 DD38: 0D 97          TST     <$97            
 DD3A: 26 13          BNE     $DD4F                          ; 
 DD3C: DC 93          LDD     <$93            
-DD3E: BD DD 63       JSR     $DD63                          ; 
+DD3E: BD DD 63       JSR     $DD63                          ; {GetPtrToNeighborCell} 
 DD41: 25 0C          BCS     $DD4F                          ; 
 DD43: BD DD 52       JSR     $DD52                          ; {GetRandom} 
 DD46: 91 C0          CMPA    <$C0            
 DD48: 24 05          BCC     $DD4F                          ; 
 DD4A: DC 93          LDD     <$93            
-DD4C: BD DD 83       JSR     $DD83                          ; 
+DD4C: BD DD 83       JSR     $DD83                          ; {OpenCellWall} 
 DD4F: 7E DC C9       JMP     $DCC9                          ; 
 ```
 
@@ -3211,66 +3213,79 @@ DD5E: 34 06          PSHS    B,A                            ; Get randomish ...
 DD60: A6 F1          LDA     [,S++]                         ; ... byte from ROM
 DD62: 39             RTS                                    ; Return it
 
-DD63: DB 8F          ADDB    <$8F                           ; {ram:Temp2} 
-DD65: C1 14          CMPB    #$14            
-DD67: 24 17          BCC     $DD80                          ; 
-DD69: 9B 8E          ADDA    <$8E                           ; {ram:Temp2} 
-DD6B: 81 10          CMPA    #$10            
-DD6D: 24 11          BCC     $DD80                          ; 
-DD6F: 34 04          PSHS    B               
-DD71: 6F E2          CLR     ,-S             
-DD73: C6 14          LDB     #$14            
-DD75: 3D             MUL                     
-DD76: E3 E1          ADDD    ,S++            
-DD78: 8E 28 E8       LDX     #$28E8          
-DD7B: 30 8B          LEAX    D,X             
-DD7D: 1C FE          ANDCC   #$FE            
-DD7F: 39             RTS                     
-DD80: 1A 01          ORCC    #$01            
-DD82: 39             RTS                     
-
-; ?? Open up a cell wall?
-DD83: 9B 8E          ADDA    <$8E                           ; {ram:Temp2} 
-DD85: DB 8F          ADDB    <$8F                           ; {ram:Temp2} 
-DD87: DD 95          STD     <$95            
-DD89: D1 8F          CMPB    <$8F                           ; {ram:Temp2} 
-DD8B: 26 1C          BNE     $DDA9                          ; 
-DD8D: 91 8E          CMPA    <$8E                           ; {ram:Temp2} 
-DD8F: 25 02          BCS     $DD93                          ; 
-DD91: 96 8E          LDA     <$8E                           ; {ram:Temp2} 
-DD93: 48             LSLA                    
-DD94: 48             LSLA                    
-DD95: 34 04          PSHS    B               
-DD97: C6 20          LDB     #$20            
-DD99: 3D             MUL                     
-DD9A: C3 06 66       ADDD    #$0666          
-DD9D: 1F 01          TFR     D,X             
-DD9F: E6 E0          LDB     ,S+             
-DDA1: 3A             ABX                     
-DDA2: A6 84          LDA     ,X              
-DDA4: 84 03          ANDA    #$03            
-DDA6: A7 84          STA     ,X              
-DDA8: 39             RTS                     
+GetPtrToNeighborCell:
+; 8E:8F = reference cell
+; A = y offset
+; B = x offset
+; Return C=1 if invalid
+; Return C=0 if valid and X=pointer to target cell data
 ;
-DDA9: 25 02          BCS     $DDAD                          ; 
-DDAB: D6 8F          LDB     <$8F                           ; {ram:Temp2} 
-DDAD: 48             LSLA                    
-DDAE: 48             LSLA                    
-DDAF: 34 04          PSHS    B               
-DDB1: C6 20          LDB     #$20            
-DDB3: 3D             MUL                     
-DDB4: C3 06 06       ADDD    #$0606          
-DDB7: 1F 01          TFR     D,X             
-DDB9: E6 E0          LDB     ,S+             
-DDBB: 3A             ABX                     
-DDBC: C6 03          LDB     #$03            ; 3 pixels to erase down the right side of the cell
-DDBE: A6 84          LDA     ,X              ; From screen
-DDC0: 84 FC          ANDA    #$FC            ; Mask off the far right bit
-DDC2: A7 84          STA     ,X              ; Back to the screen
-DDC4: 30 88 20       LEAX    $20,X           ; Next row
-DDC7: 5A             DECB                    ; All pixels done?
+DD63: DB 8F          ADDB    <$8F                           ; {ram:Temp2} Target cell X coordinate
+DD65: C1 14          CMPB    #$14                           ; Is the X >= 20? (too far right)
+DD67: 24 17          BCC     $DD80                          ; Yes ... return Carry=1
+DD69: 9B 8E          ADDA    <$8E                           ; {ram:Temp2} Target cell Y coordinate
+DD6B: 81 10          CMPA    #$10                           ; Is the Y >= 16? (too far down)
+DD6D: 24 11          BCC     $DD80                          ; Yes ... return Carry=1
+DD6F: 34 04          PSHS    B                              ; Hold target cell X coordinate
+DD71: 6F E2          CLR     ,-S                            ; Make a MSB of 0 (stack is now 00:B)
+DD73: C6 14          LDB     #$14                           ; 20 cells ...
+DD75: 3D             MUL                                    ; ... per row
+DD76: E3 E1          ADDD    ,S++                           ; X,Y cell number to single cell index
+DD78: 8E 28 E8       LDX     #$28E8                         ; ?? data structure?
+DD7B: 30 8B          LEAX    D,X                            ; ??
+DD7D: 1C FE          ANDCC   #$FE                           ; Valid cell (X points to data ??)
+DD7F: 39             RTS                                    ; Done
+;
+DD80: 1A 01          ORCC    #$01                           ; Invalid cell
+DD82: 39             RTS                                    ; Done
+
+OpenCellWall:
+; 8E:8F = reference cell
+; A = y offset
+; B = x offset
+; Return target cell Y,X in 95:96
+DD83: 9B 8E          ADDA    <$8E                           ; {ram:Temp2} add offset Y to reference Y
+DD85: DB 8F          ADDB    <$8F                           ; {ram:Temp2} add offset X to reference X
+DD87: DD 95          STD     <$95                           ; Hold target cell Y,X
+DD89: D1 8F          CMPB    <$8F                           ; {ram:Temp2} did we change X (left or right)?
+DD8B: 26 1C          BNE     $DDA9                          ; Yes ... go do left/right
+;
+DD8D: 91 8E          CMPA    <$8E                           ; {ram:Temp2} did we go up?
+DD8F: 25 02          BCS     $DD93                          ; Yes ... use the wall in target cell
+DD91: 96 8E          LDA     <$8E                           ; {ram:Temp2} No ... use the wall in the reference cell
+DD93: 48             LSLA                                   ; Y multiplied ...
+DD94: 48             LSLA                                   ; ... by 4
+DD95: 34 04          PSHS    B                              ; Hold the X
+DD97: C6 20          LDB     #$20                           ; 32 bytes ...
+DD99: 3D             MUL                                    ; ... per row
+DD9A: C3 06 66       ADDD    #$0666                         ; Start of wall (bottom wall of cell)
+DD9D: 1F 01          TFR     D,X                            ; Pointer to X
+DD9F: E6 E0          LDB     ,S+                            ; Get the X coordinate back
+DDA1: 3A             ABX                                    ; 4-pixels per cell ... point to the cell lower/left corner (because 666)
+DDA2: A6 84          LDA     ,X                             ; Get the 4 pixels from the screen
+DDA4: 84 03          ANDA    #$03                           ; Mask off left most 3
+DDA6: A7 84          STA     ,X                             ; Erase the line on the screen
+DDA8: 39             RTS                                    ; Done
+;
+DDA9: 25 02          BCS     $DDAD                          ; Going left ... use the target cell wall
+DDAB: D6 8F          LDB     <$8F                           ; {ram:Temp2} Going right ... use the reference cell wall
+DDAD: 48             LSLA                                   ; Four pixels ...
+DDAE: 48             LSLA                                   ; ... per cell
+DDAF: 34 04          PSHS    B                              ; Hold X
+DDB1: C6 20          LDB     #$20                           ; 32 bytes ...
+DDB3: 3D             MUL                                    ; ... per row
+DDB4: C3 06 06       ADDD    #$0606                         ; Start of wall (upper left corner ... erasing right wall)
+DDB7: 1F 01          TFR     D,X                            ; Pointer to X
+DDB9: E6 E0          LDB     ,S+                            ; Get the X coordinate back
+DDBB: 3A             ABX                                    ; 4-pixels per cell ... point to the cell upper/left corner
+DDBC: C6 03          LDB     #$03                           ; 3 pixels to erase down the right side of the cell
+DDBE: A6 84          LDA     ,X                             ; From screen
+DDC0: 84 FC          ANDA    #$FC                           ; Mask off the far right bit
+DDC2: A7 84          STA     ,X                             ; Back to the screen
+DDC4: 30 88 20       LEAX    $20,X                          ; Next row
+DDC7: 5A             DECB                                   ; All pixels done?
 DDC8: 26 F4          BNE     $DDBE                          ; Do them all
-DDCA: 39             RTS                     ; Done
+DDCA: 39             RTS                                    ; Done
                      
 DDCB: 8E 06 26       LDX     #$0626          
 DDCE: 86 10          LDA     #$10            
@@ -3336,8 +3351,12 @@ DE4A: 35 50          PULS    X,U
 DE4C: 13             SYNC                    
 DE4D: 20 CD          BRA     $DE1C                          ; 
 
-TDE4F: ; ??
-DE4F: FF 00 00 FF 01 00 00 01 00 00
+DirOffset: 
+DE4F: FF 00 ; 0 (up)    Y-1, X 
+DE51: 00 FF ; 1 (left)  Y,   X-1
+DE53: 01 00 ; 2 (down)  Y+1, X
+DE55: 00 01 ; 3 (right) Y,   X+1
+DE57: 00 00 ; end of list
 ```
 
 # CoordToScrOffs
@@ -3379,7 +3398,7 @@ DE7A: 96 A0          LDA     <$A0                           ; {ram:NumBugs}
 DE7C: 97 98          STA     <$98                           ; {ram:Temp1} 
 DE7E: 10 8E 28 08    LDY     #$2808          
 DE82: BD DE B6       JSR     $DEB6                          ; 
-DE85: 8E DE 4F       LDX     #$DE4F                         ; {!+TDE4F} 
+DE85: 8E DE 4F       LDX     #$DE4F                         ; {!+DirOffset} 
 DE88: E6 22          LDB     2,Y             
 DE8A: 58             LSLB                    
 DE8B: 3A             ABX                     
@@ -3407,7 +3426,7 @@ DEB5: 39             RTS
 DEB6: EC A4          LDD     ,Y              
 DEB8: BD DA 24       JSR     $DA24                          ; 
 DEBB: 24 F8          BCC     $DEB5                          ; 
-DEBD: CE DE 4F       LDU     #$DE4F                         ; {!+TDE4F} 
+DEBD: CE DE 4F       LDU     #$DE4F                         ; {!+DirOffset} 
 DEC0: 0F 88          CLR     <$88                           ; {ram:BitPos} 
 DEC2: 0F 99          CLR     <$99            
 DEC4: EC C1          LDD     ,U++            
