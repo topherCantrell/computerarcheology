@@ -1795,8 +1795,9 @@ D33D: 9E C3          LDX     <$C3                           ; {ram:DemoTimer} Ti
 D33F: 26 F5          BNE     $D336                          ; No ... keep waiting
 D341: 7E D0 60       JMP     $D060                          ; {SplashMode} Yes ... restart the splash mode
 
+; Player wins
 D344: 0F C1          CLR     <$C1            
-D346: BD DA 33       JSR     $DA33                          ; 
+D346: BD DA 33       JSR     $DA33                          ; ?? flashing the maze? doubtful
 D349: BD DA 33       JSR     $DA33                          ; 
 D34C: BD DA 33       JSR     $DA33                          ; 
 D34F: 86 04          LDA     #$04            
@@ -1910,7 +1911,7 @@ D431: CC 28 5D       LDD     #$285D
 D434: DD AB          STD     <$AB                           ; {ram:PixCoords} 
 D436: 86 FF          LDA     #$FF            
 D438: 97 AD          STA     <$AD                           ; {ram:ColorMask} 
-D43A: 86 3F          LDA     #$3F            
+D43A: 86 3F          LDA     #$3F                           ; "!"
 D43C: BD D6 79       JSR     $D679                          ; {PrintChar} 
 D43F: 86 2D          LDA     #$2D            
 D441: BD D4 67       JSR     $D467                          ; {DelaySyncs} 
@@ -2060,21 +2061,22 @@ D523: 39             RTS                                    ; Out
 D524: 1C FE          ANDCC   #$FE                           ; Carry = 0
 D526: 39             RTS                                    ; Out
 
-D527: 86 02          LDA     #$02            
+; ?? sound of bugs moving in between-round
+D527: 86 02          LDA     #$02                           ;
 D529: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} 
-D52C: C6 23          LDB     #$23            
-D52E: 1F 98          TFR     B,A             
-D530: 4A             DECA                    
+D52C: C6 23          LDB     #$23                           ;
+D52E: 1F 98          TFR     B,A                            ;
+D530: 4A             DECA                                   ;
 D531: 26 FD          BNE     $D530                          ; 
 D533: B6 FF 20       LDA     $FF20                          ; {hard:PIA1_DA} 
-D536: 88 40          EORA    #$40            
+D536: 88 40          EORA    #$40                           ;
 D538: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} 
-D53B: 5C             INCB                    
-D53C: C1 41          CMPB    #$41            
+D53B: 5C             INCB                                   ;
+D53C: C1 41          CMPB    #$41                           ;
 D53E: 25 EE          BCS     $D52E                          ; 
-D540: 86 02          LDA     #$02            
+D540: 86 02          LDA     #$02                           ;
 D542: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} 
-D545: 39             RTS
+D545: 39             RTS                                    ; Done
 ```
 
 # IRQ Service Routine
@@ -2790,7 +2792,7 @@ DA3A: 5A             DECB
 DA3B: 26 FB          BNE     $DA38                          ; 
 DA3D: 6F 8D 26 7B    CLR     $00BC,PC                       ;
 DA41: 86 02          LDA     #$02            
-DA43: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} 
+DA43: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} Sound
 DA46: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
 DA48: 80 11          SUBA    #$11            
 DA4A: C0 11          SUBB    #$11            
@@ -2858,7 +2860,7 @@ DACB: 33 C8 40       LEAU    $40,U
 DACE: 96 BB          LDA     <$BB            
 DAD0: 9B BC          ADDA    <$BC            
 DAD2: 97 BB          STA     <$BB            
-DAD4: 24 09          BCC     $DADF                          ; 
+DAD4: 24 09          BCC     $DADF                          ; Skip sound
 DAD6: 86 40          LDA     #$40            
 DAD8: A8 8D 24 44    EORA    $FF20,PC        
 DADC: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} 
@@ -2887,6 +2889,7 @@ DB06: 30 01          LEAX    1,X
 DB08: DD 88          STD     <$88                           ; {ram:BitPos} 
 DB0A: 0A 99          DEC     <$99            
 DB0C: 10 26 FF 76    LBNE    $DA86                          ; 
+ 
 DB10: C6 24          LDB     #$24            
 DB12: 96 88          LDA     <$88                           ; {ram:BitPos} 
 DB14: AA C4          ORA     ,U              
@@ -2895,6 +2898,7 @@ DB18: 33 C8 20       LEAU    $20,U
 DB1B: 5A             DECB                    
 DB1C: 26 F4          BNE     $DB12                          ; 
 DB1E: 39             RTS                     
+
 DB1F: EC 8D 25 7F    LDD     $00A2,PC        
 DB23: 80 12          SUBA    #$12            
 DB25: 2A 01          BPL     $DB28                          ; 
@@ -3130,13 +3134,12 @@ DCBE: DC 95          LDD     <$95                           ; Target cell in dir
 DCC0: ED A1          STD     ,Y++                           ; ?? remember this to build maze from?
 DCC2: EC C4          LDD     ,U                             ; Done all directions?
 DCC4: 26 EC          BNE     $DCB2                          ; No ... keep going
-
-; 1A 55 27 FE
-
 DCC6: 10 9F 8C       STY     <$8C    
+;
 DCC9: 9E 8A          LDX     <$8A
 DCCB: 9C 8C          CMPX    <$8C            
-DCCD: 10 27 00 FA    LBEQ    $DDCB                          ; 
+DCCD: 10 27 00 FA    LBEQ    $DDCB                          ; {DrawDots} Done with maze. Draw dots and out.
+;
 DCD1: EC 81          LDD     ,X++            
 DCD3: DD 8E          STD     <$8E                           ; {ram:Temp2} 
 DCD5: 9F 8A          STX     <$8A            
@@ -3168,8 +3171,8 @@ DD08: 27 2E          BEQ     $DD38                          ;
 DD0A: CE 28 00       LDU     #$2800          
 DD0D: 4A             DECA                    
 DD0E: 27 0C          BEQ     $DD1C                          ; 
-DD10: BD DD 52       JSR     $DD52                          ; {GetRandom} 
-DD13: 84 03          ANDA    #$03            
+DD10: BD DD 52       JSR     $DD52                          ; {GetRandom} Get random ...
+DD13: 84 03          ANDA    #$03                           ; ... direction
 DD15: 91 88          CMPA    <$88                           ; {ram:BitPos} 
 DD17: 24 F7          BCC     $DD10                          ; 
 DD19: 48             LSLA                    
@@ -3187,6 +3190,7 @@ DD2F: 9F 8C          STX     <$8C
 DD31: DC 95          LDD     <$95            
 DD33: DD 8E          STD     <$8E                           ; {ram:Temp2} 
 DD35: 7E DC DB       JMP     $DCDB                          ; 
+ 
 DD38: 0D 97          TST     <$97            
 DD3A: 26 13          BNE     $DD4F                          ; 
 DD3C: DC 93          LDD     <$93            
@@ -3287,25 +3291,26 @@ DDC7: 5A             DECB                                   ; All pixels done?
 DDC8: 26 F4          BNE     $DDBE                          ; Do them all
 DDCA: 39             RTS                                    ; Done
                      
-DDCB: 8E 06 26       LDX     #$0626          
-DDCE: 86 10          LDA     #$10            
-DDD0: 97 98          STA     <$98                           ; {ram:Temp1} 
-DDD2: 5F             CLRB                    
-DDD3: A6 85          LDA     B,X             
-DDD5: 8A 30          ORA     #$30            
-DDD7: A7 85          STA     B,X             
-DDD9: 5C             INCB                    
-DDDA: C1 14          CMPB    #$14            
-DDDC: 25 F5          BCS     $DDD3                          ; 
-DDDE: 30 89 00 80    LEAX    $0080,X                        ; ?? 4 rows per cell?
-DDE2: 0A 98          DEC     <$98                           ; {ram:Temp1} 
-DDE4: 26 EC          BNE     $DDD2                          ; 
+DrawDots:
+DDCB: 8E 06 26       LDX     #$0626                         ; First dot in maze
+DDCE: 86 10          LDA     #$10                           ; 16 Rows in the maze
+DDD0: 97 98          STA     <$98                           ; {ram:Temp1} row counter
+DDD2: 5F             CLRB                                   ; Column counter starts at 0
+DDD3: A6 85          LDA     B,X                            ; Get the value from the screen
+DDD5: 8A 30          ORA     #$30                           ; Add a white ...
+DDD7: A7 85          STA     B,X                            ; ... dot to the cell
+DDD9: 5C             INCB                                   ; Next column
+DDDA: C1 14          CMPB    #$14                           ; Done 20 across?
+DDDC: 25 F5          BCS     $DDD3                          ; No ... finish this row
+DDDE: 30 89 00 80    LEAX    $0080,X                        ; 4 rows per cell ... next row of cells
+DDE2: 0A 98          DEC     <$98                           ; {ram:Temp1} All 16 cells done?
+DDE4: 26 EC          BNE     $DDD2                          ; No ... do all rows
 DDE6: CC 01 3F       LDD     #$013F                         ; Number of dots ...
 DDE9: ED 8D 22 D1    STD     $00BE,PC                       ; ... left in the maze
-DDED: 8E 0A 30       LDX     #$0A30          
-DDF0: 86 CF          LDA     #$CF            
-DDF2: A4 84          ANDA    ,X              
-DDF4: A7 84          STA     ,X              
+DDED: 8E 0A 30       LDX     #$0A30                         ; Center cell of the maze
+DDF0: 86 CF          LDA     #$CF                           ; Erase ...
+DDF2: A4 84          ANDA    ,X                             ; ... the center ...
+DDF4: A7 84          STA     ,X                             ; ... dot
 DDF6: 86 FF          LDA     #$FF            
 DDF8: 97 A5          STA     <$A5            
 DDFA: 8D 05          BSR     $DE01                          ; 
@@ -3313,21 +3318,22 @@ DDFC: 86 04          LDA     #$04                           ; Request show page 
 DDFE: 97 92          STA     <$92                           ; {ram:RequestedPage} 
 DE00: 39             RTS                     
 
+; ?? dual white line scroll on
 DE01: C6 20          LDB     #$20            
 DE03: 3D             MUL                     
 DE04: D7 A5          STB     <$A5            
-DE06: 86 30          LDA     #$30            
-DE08: 97 98          STA     <$98                           ; {ram:Temp1} 
+DE06: 86 30          LDA     #$30                           ; 48 rows + 48 rows = 96 (full screen)
+DE08: 97 98          STA     <$98                           ; {ram:Temp1} Count passes
 DE0A: 8E 21 E0       LDX     #$21E0          
 DE0D: 33 88 20       LEAU    $20,X           
 DE10: 0D A5          TST     <$A5            
 DE12: 2B 28          BMI     $DE3C                          ; 
-DE14: 8E 1C 00       LDX     #$1C00          
-DE17: CE 27 E0       LDU     #$27E0          
+DE14: 8E 1C 00       LDX     #$1C00                         ; Top of screen
+DE17: CE 27 E0       LDU     #$27E0                         ; Bottom of screen
 DE1A: 20 20          BRA     $DE3C                          ; 
 DE1C: C6 20          LDB     #$20            
 DE1E: 34 50          PSHS    U,X             
-DE20: A6 89 E8 00    LDA     $E800,X         
+DE20: A6 89 E8 00    LDA     $E800,X                        ; ?? Erase last while line with real data
 DE24: A7 80          STA     ,X+             
 DE26: A6 C9 E8 00    LDA     $E800,U         
 DE2A: A7 C0          STA     ,U+             
@@ -3341,14 +3347,14 @@ DE36: 33 C6          LEAU    A,U
 DE38: 0A 98          DEC     <$98                           ; {ram:Temp1} 
 DE3A: 27 C4          BEQ     $DE00                          ; 
 DE3C: 34 50          PSHS    U,X             
-DE3E: CC FF 20       LDD     #$FF20          
+DE3E: CC FF 20       LDD     #$FF20                         ; 32 FFs ... this is the white line
 DE41: 2B 00          BMI     $DE43                          ; 
-DE43: A7 80          STA     ,X+             
+DE43: A7 80          STA     ,X+                            ; ?? Draw the white lines
 DE45: A7 C0          STA     ,U+             
 DE47: 5A             DECB                    
 DE48: 26 F9          BNE     $DE43                          ; 
 DE4A: 35 50          PULS    X,U             
-DE4C: 13             SYNC                    
+DE4C: 13             SYNC                                   ; Wait for horizontal blanking
 DE4D: 20 CD          BRA     $DE1C                          ; 
 
 DirOffset: 
