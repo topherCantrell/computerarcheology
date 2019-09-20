@@ -1878,6 +1878,7 @@ D3EC: 81 20          CMPA    #$20
 D3EE: 24 02          BCC     $D3F2                          ; 
 D3F0: 97 A0          STA     <$A0                           ; {ram:NumBugs} 
 D3F2: CE 10 00       LDU     #$1000                         ; Using 2nd ...
+D3F5: DF 9E          STU     <$9E                           ; ... screen buffer for drawing
 D3F7: BD D4 AE       JSR     $D4AE                          ; {Clear1200} Clear the screen
 D3FA: 8E D6 5A       LDX     #$D65A                         ; {!+StrNextTime} The "we'll getcha next time" string
 D3FD: EC 81          LDD     ,X++                           ; Set the ...
@@ -2085,8 +2086,12 @@ D546: 96 92          LDA     <$92                           ; {ram:RequestedPage
 D548: 91 C7          CMPA    <$C7                           ; {ram:VisiblePage} Already set?
 D54A: 27 16          BEQ     $D562                          ; Yes ... nothing to do
 D54C: 97 C7          STA     <$C7                           ; {ram:VisiblePage} This is the new set page
-D54E: 44             LSRA                                   ; Offset is 512 byte boundary ... ignore the LSB
-D54F: C6 05          LDB     #$05                           ; 6 registers (bits) to poke
+
+;D54E: 44             LSRA                                   ; Offset is 512 byte boundary ... ignore the LSB
+;D54F: C6 05          LDB     #$05                           ; 6 registers (bits) to poke
+
+D54E: CC 02 05 ; TOPHER MOD
+
 D551: 8E FF C6       LDX     #$FFC6                         ; Display offset
 D554: 44             LSRA                                   ; Is this bit a 0?
 D555: 24 06          BCC     $D55D                          ; Yes ... go clear it
@@ -3102,29 +3107,32 @@ DC8D: 4A             DECA                                   ; All columns done?
 DC8E: 26 F8          BNE     $DC88                          ; No ... do all 20 columns
 DC90: 5C             INCB                                   ; Make the right side of ...
 DC91: BD DC 1D       JSR     $DC1D                          ; {DrawVertLine} ... the maze a double line
-DC94: CE 28 E8       LDU     #$28E8          
+DC94: CE 28 E8       LDU     #$28E8
 DC97: 8E 01 40       LDX     #$0140                         ; ?? 320 dots? Cells?
 DC9A: 6F C0          CLR     ,U+             
 DC9C: 30 1F          LEAX    -1,X            
-DC9E: 26 FA          BNE     $DC9A                          ; 
-DCA0: 73 29 92       COM     $2992           
+DC9E: 26 FA          BNE     $DC9A                          ;
+DCA0: 73 29 92       COM     $2992
 DCA3: CE DE 4F       LDU     #$DE4F                         ; {!+TDE4F} 
 DCA6: 10 8E 2A 28    LDY     #$2A28          
 DCAA: 10 9F 8A       STY     <$8A            
 DCAD: CC 08 0A       LDD     #$080A          
 DCB0: DD 8E          STD     <$8E                           ; {ram:Temp2} 
 DCB2: EC C4          LDD     ,U              
-DCB4: BD DD 63       JSR     $DD63                          ; 
-DCB7: 63 84          COM     ,X              
+DCB4: BD DD 63       JSR     $DD63                          ;
+
+;DCB7: 1A 55 27 FE
+
+DCB7: 63 84          COM     ,X
 DCB9: EC C1          LDD     ,U++            
-DCBB: BD DD 83       JSR     $DD83                          ; 
+DCBB: BD DD 83       JSR     $DD83                          ;
 DCBE: DC 95          LDD     <$95            
-DCC0: ED A1          STD     ,Y++            
+DCC0: ED A1          STD     ,Y++
 DCC2: EC C4          LDD     ,U              
-DCC4: 26 EC          BNE     $DCB2                          ; 
+DCC4: 26 EC          BNE     $DCB2                          ;
 DCC6: 10 9F 8C       STY     <$8C            
 ;
-DCC9: 9E 8A          LDX     <$8A            
+DCC9: 9E 8A          LDX     <$8A
 DCCB: 9C 8C          CMPX    <$8C            
 DCCD: 10 27 00 FA    LBEQ    $DDCB                          ; 
 DCD1: EC 81          LDD     ,X++            
@@ -3221,6 +3229,7 @@ DD7F: 39             RTS
 DD80: 1A 01          ORCC    #$01            
 DD82: 39             RTS                     
 
+; ?? Open up a cell wall?
 DD83: 9B 8E          ADDA    <$8E                           ; {ram:Temp2} 
 DD85: DB 8F          ADDB    <$8F                           ; {ram:Temp2} 
 DD87: DD 95          STD     <$95            
@@ -3254,14 +3263,14 @@ DDB4: C3 06 06       ADDD    #$0606
 DDB7: 1F 01          TFR     D,X             
 DDB9: E6 E0          LDB     ,S+             
 DDBB: 3A             ABX                     
-DDBC: C6 03          LDB     #$03            
-DDBE: A6 84          LDA     ,X              
-DDC0: 84 FC          ANDA    #$FC            
-DDC2: A7 84          STA     ,X              
-DDC4: 30 88 20       LEAX    $20,X           
-DDC7: 5A             DECB                    
-DDC8: 26 F4          BNE     $DDBE                          ; 
-DDCA: 39             RTS
+DDBC: C6 03          LDB     #$03            ; 3 pixels to erase down the right side of the cell
+DDBE: A6 84          LDA     ,X              ; From screen
+DDC0: 84 FC          ANDA    #$FC            ; Mask off the far right bit
+DDC2: A7 84          STA     ,X              ; Back to the screen
+DDC4: 30 88 20       LEAX    $20,X           ; Next row
+DDC7: 5A             DECB                    ; All pixels done?
+DDC8: 26 F4          BNE     $DDBE                          ; Do them all
+DDCA: 39             RTS                     ; Done
                      
 DDCB: 8E 06 26       LDX     #$0626          
 DDCE: 86 10          LDA     #$10            
