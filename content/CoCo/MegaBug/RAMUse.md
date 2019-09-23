@@ -32,6 +32,7 @@
 | B6    | ISRCountScore | Counts ISRs in live game mode to decrement score once a second |
 | B7    | ISRCountTime  | Counts ISRs in live game to increment the time once a second |
 | BE:BF | DotsLeft | Number of dots left to be eaten in the maze |
+| C1    | ShowingGame | FF if game screen is showing. 00 if other things are being shown. |
 | C2    | JoyOrKey | FF if player is using joystick or 00 if player is using keyboard |
 | C3:C4 | DemoTimer | Count-down by the ISR used to time the demo play (and direct restart after losing) |
 | C5    | NumStartBugs  | Hold ENTER down at powerup to start the game with 16 bugs |
