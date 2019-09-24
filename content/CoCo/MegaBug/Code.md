@@ -1593,7 +1593,7 @@ D181: ED C9 18 00    STD     $1800,U
 D185: 33 42          LEAU    2,U             
 D187: 30 1F          LEAX    -1,X            
 D189: 26 F0          BNE     $D17B                          ; 
-D18B: 0F A1          CLR     <$A1                           ; {ram:Temp3} 
+D18B: 0F A1          CLR     <$A1                           ; {ram:MouthOpen} Mouth starts open
 D18D: 0D B5          TST     <$B5                           ; {ram:LiveOrDemo} 
 D18F: 27 1F          BEQ     $D1B0                          ; 
 D191: C6 13          LDB     #$13            
@@ -1621,10 +1621,10 @@ D1BE: 86 FF          LDA     #$FF                           ; This IS the ...
 D1C0: 97 C1          STA     <$C1                           ; {ram:ShowingGame} ... main game screen display
 D1C2: BD DF 70       JSR     $DF70                          ; 
 D1C5: BD DB 1F       JSR     $DB1F                          ; 
-D1C8: 03 A1          COM     <$A1                           ; {ram:Temp3} 
-D1CA: 2A 03          BPL     $D1CF                          ; 
-D1CC: BD DE 7A       JSR     $DE7A                          ; Move bugs ??
-D1CF: BD DF 68       JSR     $DF68                          ; ?? Draw bugs ??
+D1C8: 03 A1          COM     <$A1                           ; {ram:MouthOpen} Change mouth (open or closed)
+D1CA: 2A 03          BPL     $D1CF                          ; Don't move the bugs when mouth is open
+D1CC: BD DE 7A       JSR     $DE7A                          ; ?? Move bugs
+D1CF: BD DF 68       JSR     $DF68                          ; ?? Draw bugs
 D1D2: BD D9 35       JSR     $D935                          ; ?? Move player ??
 D1D5: DC BE          LDD     <$BE                           ; {ram:DotsLeft} How many dots are left to be eaten?
 D1D7: 10 27 01 69    LBEQ    $D344                          ; None ... player wins
@@ -1904,7 +1904,7 @@ D41F: 97 98          STA     <$98                           ; {ram:Temp1}
 D421: 81 59          CMPA    #$59            
 D423: 24 0A          BCC     $D42F                          ; 
 D425: BD DB B1       JSR     $DBB1                          ; {DrawSplashBugLine} 
-D428: 03 A1          COM     <$A1                           ; {ram:Temp3} Flip between bug pictures each time
+D428: 03 A1          COM     <$A1                           ; {ram:MouthOpen} Flip between bug pictures each time
 D42A: BD D5 27       JSR     $D527                          ; 
 D42D: 20 E6          BRA     $D415                          ; 
 D42F: 0F 98          CLR     <$98                           ; {ram:Temp1} 
@@ -1925,7 +1925,7 @@ D44F: 97 98          STA     <$98                           ; {ram:Temp1}
 D451: 81 58          CMPA    #$58            
 D453: 24 0A          BCC     $D45F                          ; 
 D455: BD DB E0       JSR     $DBE0                          ; 
-D458: 03 A1          COM     <$A1                           ; {ram:Temp3} 
+D458: 03 A1          COM     <$A1                           ; {ram:MouthOpen} 
 D45A: BD D5 27       JSR     $D527                          ; 
 D45D: 20 E5          BRA     $D444                          ; 
 D45F: 86 64          LDA     #$64            
@@ -2488,7 +2488,7 @@ D7E5: 10 8E C9 60    LDY     #$C960                         ; {!+PlayerGraphics}
 D7E9: D6 A4          LDB     <$A4                           ; {ram:PlayerDir} Player's direction
 D7EB: 86 06          LDA     #$06                           ; 6 bytes per ...
 D7ED: 3D             MUL                                    ; ... direction
-D7EE: 0D A1          TST     <$A1                           ; {ram:Temp3} ?? odd/even counter for mouth
+D7EE: 0D A1          TST     <$A1                           ; {ram:MouthOpen} ?? odd/even counter for mouth
 D7F0: 2A 02          BPL     $D7F4                          ; Yes ... keep this open mouth image
 D7F2: CB 18          ADDB    #$18                           ; No ... use the ... 
 D7F4: 31 A5          LEAY    B,Y                            ; ... closed-mouth image
@@ -2558,7 +2558,7 @@ D85B: 84 01          ANDA    #$01
 D85D: 88 01          EORA    #$01            
 D85F: C6 48          LDB     #$48            
 D861: 3D             MUL                     
-D862: 0D A1          TST     <$A1                           ; {ram:Temp3} 
+D862: 0D A1          TST     <$A1                           ; {ram:MouthOpen} 
 D864: 27 03          BEQ     $D869                          ; 
 D866: C3 00 90       ADDD    #$0090          
 D869: CE C9 90       LDU     #$C990                         ; {!+BugGraphics} 
@@ -2990,7 +2990,7 @@ GetSplashBugInfo:
 ; A1 0 or not 0 picks picture
 ; 98 y coordinate
 DB9D: CE C9 EA       LDU     #$C9EA                         ; {!+SplashBug1} Picture of bug
-DBA0: 0D A1          TST     <$A1                           ; {ram:Temp3} Use this picture or the other?
+DBA0: 0D A1          TST     <$A1                           ; {ram:MouthOpen} Use this picture or the other?
 DBA2: 27 03          BEQ     $DBA7                          ; Keep this one or ...
 DBA4: CE CA 7A       LDU     #$CA7A                         ; {!+SplashBug2} ... use the other
 DBA7: 96 98          LDA     <$98                           ; {ram:Temp1} Get the Y coordinate
@@ -3542,12 +3542,13 @@ DF61: C4 10          ANDB    #$10
 DF63: 26 ED          BNE     $DF52                          ; 
 DF65: 1C FE          ANDCC   #$FE            
 DF67: 39             RTS                     
+
 DF68: C6 FF          LDB     #$FF            
 DF6A: 10 8E 28 08    LDY     #$2808          
 DF6E: 20 0D          BRA     $DF7D                          ; 
 DF70: 5F             CLRB                    
 DF71: 10 8E 28 08    LDY     #$2808          
-DF75: 0D A1          TST     <$A1                           ; {ram:Temp3} 
+DF75: 0D A1          TST     <$A1                           ; {ram:MouthOpen} 
 DF77: 2A 04          BPL     $DF7D                          ; 
 DF79: 10 8E 28 68    LDY     #$2868          
 DF7D: D7 88          STB     <$88                           ; {ram:BitPos} 
@@ -3581,7 +3582,7 @@ DFB0: C4 55          ANDB    #$55
 DFB2: D4 88          ANDB    <$88                           ; {ram:BitPos} 
 DFB4: EA E0          ORB     ,S+             
 DFB6: E7 C4          STB     ,U              
-DFB8: 96 A1          LDA     <$A1                           ; {ram:Temp3} 
+DFB8: 96 A1          LDA     <$A1                           ; {ram:MouthOpen} 
 DFBA: 2A 09          BPL     $DFC5                          ; 
 DFBC: 96 88          LDA     <$88                           ; {ram:BitPos} 
 DFBE: 26 05          BNE     $DFC5                          ; 
