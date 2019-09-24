@@ -1893,34 +1893,34 @@ D405: 97 AD          STA     <$AD                           ; {ram:ColorMask} ..
 D407: BD D6 FA       JSR     $D6FA                          ; {PrintMsg} Print this message
 D40A: 20 F1          BRA     $D3FD                          ; Go back for all messages
 ;
-D40C: 86 01          LDA     #$01            ; Start the line of bugs ...
-D40E: 97 98          STA     <$98                           ; {ram:Temp1} ... on line 1 
+D40C: 86 01          LDA     #$01                           ; Start the line of bugs ...
+D40E: 97 98          STA     <$98                           ; {ram:Temp1} ... on line 1
 D410: 8E C0 00       LDX     #$C000          
 D413: 9F A5          STX     <$A5            
 D415: 86 06          LDA     #$06                           ; Delay for ...
 D417: 8D 4E          BSR     $D467                          ; {DelaySyncs} ... 6 interrupts (10th of a second)
 D419: 8D 51          BSR     $D46C                          ; 
 D41B: 96 98          LDA     <$98                           ; {ram:Temp1} Move the ...
-D41D: 8B 02          ADDA    #$02            ; ... bug line ...
-D41F: 97 98          STA     <$98                           ; {ram:Temp1} ... down 2 pixels 
-D421: 81 59          CMPA    #$59            ; All done?
-D423: 24 0A          BCC     $D42F                          ; Yes ... move on 
+D41D: 8B 02          ADDA    #$02                           ; ... bug line ...
+D41F: 97 98          STA     <$98                           ; {ram:Temp1} ... down 2 pixels
+D421: 81 59          CMPA    #$59                           ; All done?
+D423: 24 0A          BCC     $D42F                          ; Yes ... move on
 D425: BD DB B1       JSR     $DBB1                          ; {DrawSplashBugLine} Draw the line of bugs
 D428: 03 A1          COM     <$A1                           ; {ram:MouthOpen} Flip between bug pictures each time
-D42A: BD D5 27       JSR     $D527                          ; Make the sound of the bugs moving
+D42A: BD D5 27       JSR     $D527                          ; {SoundBugLine} Make the sound of the bugs moving
 D42D: 20 E6          BRA     $D415                          ; Move the bugs all the way down the screen
 ;
 D42F: 0F 98          CLR     <$98                           ; {ram:Temp1} Start the lone bug at Y=0??
-D431: CC 28 5D       LDD     #$285D          ; Location to print ...
-D434: DD AB          STD     <$AB                           ; {ram:PixCoords} ... the "!" 
-D436: 86 FF          LDA     #$FF            ; White ...
-D438: 97 AD          STA     <$AD                           ; {ram:ColorMask} ... color 
+D431: CC 28 5D       LDD     #$285D                         ; Location to print ...
+D434: DD AB          STD     <$AB                           ; {ram:PixCoords} ... the "!"
+D436: 86 FF          LDA     #$FF                           ; White ...
+D438: 97 AD          STA     <$AD                           ; {ram:ColorMask} ... color
 D43A: 86 3F          LDA     #$3F                           ; The "!" character
 D43C: BD D6 79       JSR     $D679                          ; {PrintChar} print the "!"
-D43F: 86 2D          LDA     #$2D            ; Delay for ...
-D441: BD D4 67       JSR     $D467                          ; {DelaySyncs} ... 3/4th second 
-D444: 86 02          LDA     #$02            ; Delay for ...
-D446: 8D 1F          BSR     $D467                          ; {DelaySyncs} ... two interrupts 
+D43F: 86 2D          LDA     #$2D                           ; Delay for ...
+D441: BD D4 67       JSR     $D467                          ; {DelaySyncs} ... 3/4th second
+D444: 86 02          LDA     #$02                           ; Delay for ...
+D446: 8D 1F          BSR     $D467                          ; {DelaySyncs} ... two interrupts
 D448: BD DB DD       JSR     $DBDD                          ; 
 D44B: 96 98          LDA     <$98                           ; {ram:Temp1} 
 D44D: 8B 02          ADDA    #$02            
@@ -1929,12 +1929,12 @@ D451: 81 58          CMPA    #$58
 D453: 24 0A          BCC     $D45F                          ; 
 D455: BD DB E0       JSR     $DBE0                          ; 
 D458: 03 A1          COM     <$A1                           ; {ram:MouthOpen} Next bug picture
-D45A: BD D5 27       JSR     $D527                          ; 
+D45A: BD D5 27       JSR     $D527                          ; {SoundBugLine} 
 D45D: 20 E5          BRA     $D444                          ; 
 ;
-D45F: 86 64          LDA     #$64            ; Long 1.6 second ...
-D461: BD D4 67       JSR     $D467                          ; {DelaySyncs} ... delay 
-D464: 7E D0 E7       JMP     $D0E7                          ; Back to the live game loop
+D45F: 86 64          LDA     #$64                           ; Long 1.6 second ...
+D461: BD D4 67       JSR     $D467                          ; {DelaySyncs} ... delay
+D464: 7E D0 E7       JMP     $D0E7                          ; {LiveGameLoop} Back to the live game loop
 ```
 
 # Delay for N syncs
@@ -1946,13 +1946,13 @@ D468: 4A             DECA                                   ; all syncs done?
 D469: 26 FC          BNE     $D467                          ; {DelaySyncs} No ... keep syncing
 D46B: 39             RTS                                    ; Done
 
-D46C: 9E A5          LDX     <$A5            ; ?? This starts at C000 ??
+D46C: 9E A5          LDX     <$A5                           ; ?? This starts at C000 ??
 D46E: C6 80          LDB     #$80            
 D470: 6F 82          CLR     ,-X             
 D472: 5A             DECB                    
 D473: 26 FB          BNE     $D470                          ; 
-D475: C6 40          LDB     #$40            ; ?? This loop copies over the text from 0400.
-D477: A6 89 F3 FF    LDA     $F3FF,X         ; -3073
+D475: C6 40          LDB     #$40                           ; ?? This loop copies over the text from 0400.
+D477: A6 89 F3 FF    LDA     $F3FF,X                        ; -3073
 D47B: A7 82          STA     ,-X             
 D47D: 5A             DECB                    
 D47E: 26 F7          BNE     $D477                          ; 
@@ -2550,65 +2550,65 @@ D842: 26 E4          BNE     $D828                          ; ... all bugs
 D844: 39             RTS                                    ; Out
 
 DrawOneBug:
-D845: 34 20          PSHS    Y               
-D847: EC A4          LDD     ,Y              
-D849: 90 A2          SUBA    <$A2                           ; {ram:PlayerCoords} 
-D84B: D0 A3          SUBB    <$A3                           ; {ram:PlayerCoords} 
-D84D: 48             LSLA                    
-D84E: 58             LSLB                    
-D84F: 9B A2          ADDA    <$A2                           ; {ram:PlayerCoords} 
-D851: DB A3          ADDB    <$A3                           ; {ram:PlayerCoords} 
-D853: C0 02          SUBB    #$02            
-D855: 80 02          SUBA    #$02            
-D857: DD 8E          STD     <$8E                           ; {ram:Temp2} 
-D859: A6 22          LDA     2,Y             
-D85B: 84 01          ANDA    #$01            
-D85D: 88 01          EORA    #$01            
-D85F: C6 48          LDB     #$48            
-D861: 3D             MUL                     
-D862: 0D A1          TST     <$A1                           ; {ram:MouthOpen} 
-D864: 27 03          BEQ     $D869                          ; 
-D866: C3 00 90       ADDD    #$0090          
-D869: CE C9 90       LDU     #$C990                         ; {!+BugGraphics} 
-D86C: 33 CB          LEAU    D,U             
-D86E: 86 12          LDA     #$12            
-D870: D6 8F          LDB     <$8F                           ; {ram:Temp2} 
-D872: C4 03          ANDB    #$03            
-D874: 3D             MUL                     
-D875: 33 C5          LEAU    B,U             
-D877: DC 8E          LDD     <$8E                           ; {ram:Temp2} 
+D845: 34 20          PSHS    Y                              ; Hold pointer to data structure
+D847: EC A4          LDD     ,Y                             ; Get the bug's coordinates
+D849: 90 A2          SUBA    <$A2                           ; {ram:PlayerCoords} (Yb - Yp)*2 + Yp
+D84B: D0 A3          SUBB    <$A3                           ; {ram:PlayerCoords} (Xb - Xp)*2 + Xp
+D84D: 48             LSLA                                   ; ...
+D84E: 58             LSLB                                   ; ...
+D84F: 9B A2          ADDA    <$A2                           ; {ram:PlayerCoords} ...
+D851: DB A3          ADDB    <$A3                           ; {ram:PlayerCoords} ...
+D853: C0 02          SUBB    #$02                           ; Offset from center of bug ...
+D855: 80 02          SUBA    #$02                           ; ... to upper left
+D857: DD 8E          STD     <$8E                           ; {ram:Temp2} Hold these pixel coordinates
+D859: A6 22          LDA     2,Y                            ; Get the bug's direction
+D85B: 84 01          ANDA    #$01                           ; 1=up/down, 0=left/right
+D85D: 88 01          EORA    #$01                           ; Reverse that: 1=left/right, 0=up/down
+D85F: C6 48          LDB     #$48                           ; Each set of pictures is 18 bytes * 4 pictures = $48
+D861: 3D             MUL                                    ; D points to the left/right or up/down pictures
+D862: 0D A1          TST     <$A1                           ; {ram:MouthOpen} First or second position?
+D864: 27 03          BEQ     $D869                          ; First ... use the pointer we have
+D866: C3 00 90       ADDD    #$0090                         ; Offset to the next set of pictures
+D869: CE C9 90       LDU     #$C990                         ; {!+BugGraphics} Pointer to graphics
+D86C: 33 CB          LEAU    D,U                            ; Point to the correct set of pictures (same pic, 4 shifts)
+D86E: 86 12          LDA     #$12                           ; 18 bytes per picture
+D870: D6 8F          LDB     <$8F                           ; {ram:Temp2} X coordinate
+D872: C4 03          ANDB    #$03                           ; 4 shifts and 4 pixels per byte
+D874: 3D             MUL                                    ; Offset to ...
+D875: 33 C5          LEAU    B,U                            ; ... target shifted picture
+D877: DC 8E          LDD     <$8E                           ; {ram:Temp2} Bug coordinates
 D879: BD DE 59       JSR     $DE59                          ; {CoordToScrOffs9A} 
-D87C: 86 03          LDA     #$03            
-D87E: 97 99          STA     <$99            
-D880: D6 8F          LDB     <$8F                           ; {ram:Temp2} 
-D882: 54             LSRB                    
-D883: 54             LSRB                    
+D87C: 86 03          LDA     #$03                           ; 3 columns ...
+D87E: 97 99          STA     <$99                           ; ... in the bug
+D880: D6 8F          LDB     <$8F                           ; {ram:Temp2} X coordinate
+D882: 54             LSRB                                   ; Divide by ...
+D883: 54             LSRB                                   ; ... 4 (4 pixels per byte)
 D884: C4 1F          ANDB    #$1F            
-D886: 10 8E 28 C8    LDY     #$28C8          
+D886: 10 8E 28 C8    LDY     #$28C8                         ; Bug color mask??
 D88A: 31 A5          LEAY    B,Y             
 D88C: A6 A4          LDA     ,Y              
 D88E: 27 1E          BEQ     $D8AE                          ; 
 D890: 34 50          PSHS    U,X             
 D892: C6 06          LDB     #$06                           ; 6 rows
-D894: 9C A9          CMPX    <$A9            
-D896: 24 0C          BCC     $D8A4                          ; 
-D898: 9C A7          CMPX    <$A7            
-D89A: 25 08          BCS     $D8A4                          ; 
-D89C: A6 C4          LDA     ,U              
-D89E: A4 A4          ANDA    ,Y              
-D8A0: AA 84          ORA     ,X              
-D8A2: A7 84          STA     ,X              
-D8A4: 33 41          LEAU    1,U             
+D894: 9C A9          CMPX    <$A9                           ; ?? magnifier extents?
+D896: 24 0C          BCC     $D8A4                          ; Not in the magnifier ... skip
+D898: 9C A7          CMPX    <$A7                           ; ?? magnifier extents
+D89A: 25 08          BCS     $D8A4                          ; Not in the magnifier ... skip
+D89C: A6 C4          LDA     ,U                             ; Get the bug graphics
+D89E: A4 A4          ANDA    ,Y                             ; Color the graphics
+D8A0: AA 84          ORA     ,X                             ; Add in existing pixels from the screen
+D8A2: A7 84          STA     ,X                             ; And back to the screen
+D8A4: 33 41          LEAU    1,U                            ; Next graphics byte
 D8A6: 30 88 20       LEAX    $20,X                          ; Next row
 D8A9: 5A             DECB                                   ; All 6 rows done?
 D8AA: 26 E8          BNE     $D894                          ; No ... go do them all
-D8AC: 35 50          PULS    X,U             
-D8AE: 30 01          LEAX    1,X             
-D8B0: 33 46          LEAU    6,U             
-D8B2: 31 21          LEAY    1,Y             
-D8B4: 0A 99          DEC     <$99                           ; ?? count 3 columns ??
+D8AC: 35 50          PULS    X,U                            ; Restore top of bug and graphics
+D8AE: 30 01          LEAX    1,X                            ; 1 byte over on the screen
+D8B0: 33 46          LEAU    6,U                            ; 6 bytes over in the graphics to the next column
+D8B2: 31 21          LEAY    1,Y                            ; ?? color
+D8B4: 0A 99          DEC     <$99                           ; All 3 columns of the bug done?
 D8B6: 26 D4          BNE     $D88C                          ; Do all 3 columns (3*6 = 18 bytes)
-D8B8: 35 A0          PULS    Y,PC            
+D8B8: 35 A0          PULS    Y,PC                           ; Out
 ```
 
 # Read directional input
