@@ -1524,6 +1524,8 @@ D0DD: DD AF          STD     <$AF                           ; {ram:NumMinutes} I
 D0DF: DD B1          STD     <$B1                           ; {ram:Score} Initialize score to 0000
 D0E1: CE 04 00       LDU     #$0400                         ; Clear ...
 D0E4: BD D4 AE       JSR     $D4AE                          ; {Clear1200} ... first screen buffer
+;
+LiveGameLoop:
 D0E7: CC 05 21       LDD     #$0521                         ; (5,33) 5 rows down, 33 pixels across
 D0EA: DD AB          STD     <$AB                           ; {ram:PixCoords} 
 D0EC: CC 04 00       LDD     #$0400                         ; Drawing on ...
@@ -1891,33 +1893,34 @@ D405: 97 AD          STA     <$AD                           ; {ram:ColorMask} ..
 D407: BD D6 FA       JSR     $D6FA                          ; {PrintMsg} Print this message
 D40A: 20 F1          BRA     $D3FD                          ; Go back for all messages
 ;
-D40C: 86 01          LDA     #$01            
-D40E: 97 98          STA     <$98                           ; {ram:Temp1} 
+D40C: 86 01          LDA     #$01            ; Start the line of bugs ...
+D40E: 97 98          STA     <$98                           ; {ram:Temp1} ... on line 1 
 D410: 8E C0 00       LDX     #$C000          
 D413: 9F A5          STX     <$A5            
 D415: 86 06          LDA     #$06                           ; Delay for ...
 D417: 8D 4E          BSR     $D467                          ; {DelaySyncs} ... 6 interrupts (10th of a second)
 D419: 8D 51          BSR     $D46C                          ; 
-D41B: 96 98          LDA     <$98                           ; {ram:Temp1} 
-D41D: 8B 02          ADDA    #$02            
-D41F: 97 98          STA     <$98                           ; {ram:Temp1} 
-D421: 81 59          CMPA    #$59            
-D423: 24 0A          BCC     $D42F                          ; 
-D425: BD DB B1       JSR     $DBB1                          ; {DrawSplashBugLine} 
+D41B: 96 98          LDA     <$98                           ; {ram:Temp1} Move the ...
+D41D: 8B 02          ADDA    #$02            ; ... bug line ...
+D41F: 97 98          STA     <$98                           ; {ram:Temp1} ... down 2 pixels 
+D421: 81 59          CMPA    #$59            ; All done?
+D423: 24 0A          BCC     $D42F                          ; Yes ... move on 
+D425: BD DB B1       JSR     $DBB1                          ; {DrawSplashBugLine} Draw the line of bugs
 D428: 03 A1          COM     <$A1                           ; {ram:MouthOpen} Flip between bug pictures each time
-D42A: BD D5 27       JSR     $D527                          ; 
-D42D: 20 E6          BRA     $D415                          ; 
-D42F: 0F 98          CLR     <$98                           ; {ram:Temp1} 
-D431: CC 28 5D       LDD     #$285D          
-D434: DD AB          STD     <$AB                           ; {ram:PixCoords} 
-D436: 86 FF          LDA     #$FF            
-D438: 97 AD          STA     <$AD                           ; {ram:ColorMask} 
-D43A: 86 3F          LDA     #$3F                           ; "!"
-D43C: BD D6 79       JSR     $D679                          ; {PrintChar} 
-D43F: 86 2D          LDA     #$2D            
-D441: BD D4 67       JSR     $D467                          ; {DelaySyncs} 
-D444: 86 02          LDA     #$02            
-D446: 8D 1F          BSR     $D467                          ; {DelaySyncs} 
+D42A: BD D5 27       JSR     $D527                          ; Make the sound of the bugs moving
+D42D: 20 E6          BRA     $D415                          ; Move the bugs all the way down the screen
+;
+D42F: 0F 98          CLR     <$98                           ; {ram:Temp1} Start the lone bug at Y=0??
+D431: CC 28 5D       LDD     #$285D          ; Location to print ...
+D434: DD AB          STD     <$AB                           ; {ram:PixCoords} ... the "!" 
+D436: 86 FF          LDA     #$FF            ; White ...
+D438: 97 AD          STA     <$AD                           ; {ram:ColorMask} ... color 
+D43A: 86 3F          LDA     #$3F                           ; The "!" character
+D43C: BD D6 79       JSR     $D679                          ; {PrintChar} print the "!"
+D43F: 86 2D          LDA     #$2D            ; Delay for ...
+D441: BD D4 67       JSR     $D467                          ; {DelaySyncs} ... 3/4th second 
+D444: 86 02          LDA     #$02            ; Delay for ...
+D446: 8D 1F          BSR     $D467                          ; {DelaySyncs} ... two interrupts 
 D448: BD DB DD       JSR     $DBDD                          ; 
 D44B: 96 98          LDA     <$98                           ; {ram:Temp1} 
 D44D: 8B 02          ADDA    #$02            
@@ -1925,12 +1928,13 @@ D44F: 97 98          STA     <$98                           ; {ram:Temp1}
 D451: 81 58          CMPA    #$58            
 D453: 24 0A          BCC     $D45F                          ; 
 D455: BD DB E0       JSR     $DBE0                          ; 
-D458: 03 A1          COM     <$A1                           ; {ram:MouthOpen} 
+D458: 03 A1          COM     <$A1                           ; {ram:MouthOpen} Next bug picture
 D45A: BD D5 27       JSR     $D527                          ; 
 D45D: 20 E5          BRA     $D444                          ; 
-D45F: 86 64          LDA     #$64            
-D461: BD D4 67       JSR     $D467                          ; {DelaySyncs} 
-D464: 7E D0 E7       JMP     $D0E7                          ; 
+;
+D45F: 86 64          LDA     #$64            ; Long 1.6 second ...
+D461: BD D4 67       JSR     $D467                          ; {DelaySyncs} ... delay 
+D464: 7E D0 E7       JMP     $D0E7                          ; Back to the live game loop
 ```
 
 # Delay for N syncs
@@ -1942,13 +1946,13 @@ D468: 4A             DECA                                   ; all syncs done?
 D469: 26 FC          BNE     $D467                          ; {DelaySyncs} No ... keep syncing
 D46B: 39             RTS                                    ; Done
 
-D46C: 9E A5          LDX     <$A5            
+D46C: 9E A5          LDX     <$A5            ; ?? This starts at C000 ??
 D46E: C6 80          LDB     #$80            
 D470: 6F 82          CLR     ,-X             
 D472: 5A             DECB                    
 D473: 26 FB          BNE     $D470                          ; 
-D475: C6 40          LDB     #$40            
-D477: A6 89 F3 FF    LDA     $F3FF,X         
+D475: C6 40          LDB     #$40            ; ?? This loop copies over the text from 0400.
+D477: A6 89 F3 FF    LDA     $F3FF,X         ; -3073
 D47B: A7 82          STA     ,-X             
 D47D: 5A             DECB                    
 D47E: 26 F7          BNE     $D477                          ; 
@@ -2061,8 +2065,12 @@ D521: 1A 01          ORCC    #$01                           ; Carry = 1
 D523: 39             RTS                                    ; Out
 D524: 1C FE          ANDCC   #$FE                           ; Carry = 0
 D526: 39             RTS                                    ; Out
+```
 
-; ?? sound of bugs moving in between-round
+# Sound of bug line
+
+```code
+SoundBugLine:
 D527: 86 02          LDA     #$02                           ;
 D529: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} 
 D52C: C6 23          LDB     #$23                           ;
@@ -2090,10 +2098,10 @@ D548: 91 C7          CMPA    <$C7                           ; {ram:VisiblePage} 
 D54A: 27 16          BEQ     $D562                          ; Yes ... nothing to do
 D54C: 97 C7          STA     <$C7                           ; {ram:VisiblePage} This is the new set page
 
-;D54E: 44             LSRA                                   ; Offset is 512 byte boundary ... ignore the LSB
-;D54F: C6 05          LDB     #$05                           ; 6 registers (bits) to poke
+D54E: 44             LSRA                                   ; Offset is 512 byte boundary ... ignore the LSB
+D54F: C6 05          LDB     #$05                           ; 6 registers (bits) to poke
 
-D54E: CC 02 05 ; TOPHER MOD ??
+;D54E: CC 02 05 ; TOPHER MOD ??
 
 D551: 8E FF C6       LDX     #$FFC6                         ; Display offset
 D554: 44             LSRA                                   ; Is this bit a 0?
@@ -3321,7 +3329,11 @@ DDDC: 25 F5          BCS     $DDD3                          ; No ... finish this
 DDDE: 30 89 00 80    LEAX    $0080,X                        ; 4 rows per cell ... next row of cells
 DDE2: 0A 98          DEC     <$98                           ; {ram:Temp1} All 16 cells done?
 DDE4: 26 EC          BNE     $DDD2                          ; No ... do all rows
-DDE6: CC 01 3F       LDD     #$013F                         ; Number of dots ...
+
+DDE6: CC 00 08 ; TOPHER MOD ??
+
+
+;DDE6: CC 01 3F       LDD     #$013F                         ; Number of dots ...
 DDE9: ED 8D 22 D1    STD     $00BE,PC                       ; ... left in the maze
 DDED: 8E 0A 30       LDX     #$0A30                         ; Center cell of the maze
 DDF0: 86 CF          LDA     #$CF                           ; Erase ...
