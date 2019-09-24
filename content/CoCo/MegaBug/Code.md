@@ -1,6 +1,3 @@
-../../content/CoCo/MegaBug/Code.md
-../../content/CoCo/MegaBug\RAMUse.md
-../../content/CoCo/MegaBug\../Hardware.md
 ![](megabug.jpg)
 
 # Mega-Bug Code
@@ -1494,10 +1491,10 @@ D09B: DD 9E          STD     <$9E                           ; {ram:CurrentScreen
 D09D: BD D6 FA       JSR     $D6FA                          ; {PrintMsg} Print the next string
 D0A0: 20 EC          BRA     $D08E                          ; Go back and print all the credit strings
 ;
-D0A2: 86 01          LDA     #$01            
-D0A4: BD DE 01       JSR     $DE01                          ; {WhiteLineScroll} 
-D0A7: 86 FF          LDA     #$FF            
-D0A9: 97 AD          STA     <$AD                           ; {ram:ColorMask} 
+D0A2: 86 01          LDA     #$01                           ; Scroll the text ...
+D0A4: BD DE 01       JSR     $DE01                          ; {WhiteLineScroll} ... outside to inside
+D0A7: 86 FF          LDA     #$FF                           ; Set the color mask ...
+D0A9: 97 AD          STA     <$AD                           ; {ram:ColorMask} ... to white
 D0AB: CE CC 90       LDU     #$CC90                         ; {!+NotesSplash} Song table
 D0AE: C6 27          LDB     #$27                           ; 39 notes (including rests) in the song
 D0B0: D7 98          STB     <$98                           ; {ram:Temp1} Note counter
@@ -1690,8 +1687,8 @@ D247: BD DA 33       JSR     $DA33                          ;
 D24A: 0D BA          TST     <$BA            
 D24C: 27 02          BEQ     $D250                          ; 
 D24E: 0A BA          DEC     <$BA            
-D250: BD D7 D8       JSR     $D7D8                          ; 
-D253: BD D8 20       JSR     $D820                          ; 
+D250: BD D7 D8       JSR     $D7D8                          ; {DrawMouth} Draw the mouth
+D253: BD D8 20       JSR     $D820                          ; {DrawBugs} 
 D256: BD D4 A2       JSR     $D4A2                          ; {SwapScreenPointers} 
 D259: 97 92          STA     <$92                           ; {ram:RequestedPage} 
 D25B: 13             SYNC                                   ; Wait for screens to swap
@@ -1874,8 +1871,8 @@ D3D8: 13             SYNC
 D3D9: BD DB 6D       JSR     $DB6D                          ; 
 D3DC: CE 04 00       LDU     #$0400          
 D3DF: BD D4 AE       JSR     $D4AE                          ; {Clear1200} 
-D3E2: 86 01          LDA     #$01            
-D3E4: BD DE 01       JSR     $DE01                          ; {WhiteLineScroll} 
+D3E2: 86 01          LDA     #$01                           ; Scroll the screen ...
+D3E4: BD DE 01       JSR     $DE01                          ; {WhiteLineScroll} ... outside to inside
 D3E7: 04 C0          LSR     <$C0            
 D3E9: 96 A0          LDA     <$A0                           ; {ram:NumBugs} 
 D3EB: 4C             INCA                    
@@ -2473,65 +2470,78 @@ D7CF: 8E 40 00       LDX     #$4000                         ; Long ...
 D7D2: 30 1F          LEAX    -1,X                           ; ... delay ...
 D7D4: 26 FC          BNE     $D7D2                          ; ... loop
 D7D6: 35 81          PULS    CC,PC                          ; Restore interrupts and out
+```
 
-D7D8: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
-D7DA: 80 02          SUBA    #$02            
-D7DC: C0 02          SUBB    #$02            
-D7DE: BD DE 59       JSR     $DE59                          ; {CoordToScrOffs9A} 
-D7E1: 33 84          LEAU    ,X              
-D7E3: D7 88          STB     <$88                           ; {ram:BitPos} 
-D7E5: 10 8E C9 60    LDY     #$C960                         ; {!+PlayerGraphics} 
-D7E9: D6 A4          LDB     <$A4                           ; {ram:PlayerDir} 
-D7EB: 86 06          LDA     #$06            
-D7ED: 3D             MUL                     
-D7EE: 0D A1          TST     <$A1                           ; {ram:Temp3} 
-D7F0: 2A 02          BPL     $D7F4                          ; 
-D7F2: CB 18          ADDB    #$18            
-D7F4: 31 A5          LEAY    B,Y             
-D7F6: 86 06          LDA     #$06            
-D7F8: 97 99          STA     <$99            
-D7FA: A6 A0          LDA     ,Y+             
-D7FC: 34 40          PSHS    U               
-D7FE: 4D             TSTA                    
-D7FF: 2A 06          BPL     $D807                          ; 
-D801: E6 C4          LDB     ,U              
-D803: DA 88          ORB     <$88                           ; {ram:BitPos} 
-D805: E7 C4          STB     ,U              
-D807: 33 C8 20       LEAU    $20,U           
-D80A: 48             LSLA                    
-D80B: 26 F2          BNE     $D7FF                          ; 
-D80D: 35 40          PULS    U               
-D80F: 96 88          LDA     <$88                           ; {ram:BitPos} 
-D811: 44             LSRA                    
-D812: 44             LSRA                    
-D813: 26 04          BNE     $D819                          ; 
-D815: 86 C0          LDA     #$C0            
-D817: 33 41          LEAU    1,U             
-D819: 97 88          STA     <$88                           ; {ram:BitPos} 
-D81B: 0A 99          DEC     <$99            
-D81D: 26 DB          BNE     $D7FA                          ; 
-D81F: 39             RTS                     
+# Draw mouth
 
-D820: 10 8E 28 08    LDY     #$2808          
-D824: 96 A0          LDA     <$A0                           ; {ram:NumBugs} 
-D826: 97 98          STA     <$98                           ; {ram:Temp1} 
-D828: EC A4          LDD     ,Y              
-D82A: 90 A2          SUBA    <$A2                           ; {ram:PlayerCoords} 
-D82C: 2A 01          BPL     $D82F                          ; 
-D82E: 40             NEGA                    
-D82F: 81 0B          CMPA    #$0B            
-D831: 24 0B          BCC     $D83E                          ; 
-D833: D0 A3          SUBB    <$A3                           ; {ram:PlayerCoords} 
-D835: 2A 01          BPL     $D838                          ; 
-D837: 50             NEGB                    
-D838: C1 0B          CMPB    #$0B            
-D83A: 24 02          BCC     $D83E                          ; 
-D83C: 8D 07          BSR     $D845                          ; 
-D83E: 31 23          LEAY    3,Y             
-D840: 0A 98          DEC     <$98                           ; {ram:Temp1} 
-D842: 26 E4          BNE     $D828                          ; 
-D844: 39             RTS                     
+A1 is 0 for open or 1 for closed mouth.
 
+```code
+DrawMouth:
+D7D8: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} Get the player's coordinates
+D7DA: 80 02          SUBA    #$02                           ; From center pixel ...
+D7DC: C0 02          SUBB    #$02                           ; ... to upper left corner
+D7DE: BD DE 59       JSR     $DE59                          ; {CoordToScrOffs9A} Draw pointer
+D7E1: 33 84          LEAU    ,X                             ; Keep it in U
+D7E3: D7 88          STB     <$88                           ; {ram:BitPos} Keep the bit position
+D7E5: 10 8E C9 60    LDY     #$C960                         ; {!+PlayerGraphics} Mouth graphics
+D7E9: D6 A4          LDB     <$A4                           ; {ram:PlayerDir} Player's direction
+D7EB: 86 06          LDA     #$06                           ; 6 bytes per ...
+D7ED: 3D             MUL                                    ; ... direction
+D7EE: 0D A1          TST     <$A1                           ; {ram:Temp3} ?? odd/even counter for mouth
+D7F0: 2A 02          BPL     $D7F4                          ; Yes ... keep this open mouth image
+D7F2: CB 18          ADDB    #$18                           ; No ... use the ... 
+D7F4: 31 A5          LEAY    B,Y                            ; ... closed-mouth image
+D7F6: 86 06          LDA     #$06                           ; 6 columns ...
+D7F8: 97 99          STA     <$99                           ; ... to draw
+D7FA: A6 A0          LDA     ,Y+                            ; Get the next row of graphics data
+D7FC: 34 40          PSHS    U                              ; Hold the draw pointer
+D7FE: 4D             TSTA                                   ; Check the next graphics bit
+D7FF: 2A 06          BPL     $D807                          ; Not set ... skip drawing it
+D801: E6 C4          LDB     ,U                             ; From the screen
+D803: DA 88          ORB     <$88                           ; {ram:BitPos} Set the bit
+D805: E7 C4          STB     ,U                             ; Back to the screen
+D807: 33 C8 20       LEAU    $20,U                          ; Next row on screen
+D80A: 48             LSLA                                   ; Next bit in graphics
+D80B: 26 F2          BNE     $D7FF                          ; Go back for all pixels in this graphics
+D80D: 35 40          PULS    U                              ; Restore the draw pointer to the top of the picture
+D80F: 96 88          LDA     <$88                           ; {ram:BitPos} Advance ...
+D811: 44             LSRA                                   ; ... the ...
+D812: 44             LSRA                                   ; ... pixel position
+D813: 26 04          BNE     $D819                          ; Still good ... use it
+D815: 86 C0          LDA     #$C0                           ; Reset to first bit position ...
+D817: 33 41          LEAU    1,U                            ; ... in next byte to the right
+D819: 97 88          STA     <$88                           ; {ram:BitPos} New bit position
+D81B: 0A 99          DEC     <$99                           ; All columns done?
+D81D: 26 DB          BNE     $D7FA                          ; No ... do them all
+D81F: 39             RTS                                    ; Out
+```
+
+# Draw bugs
+
+```code
+DrawBugs:
+D820: 10 8E 28 08    LDY     #$2808                         ; Bugs data structure
+D824: 96 A0          LDA     <$A0                           ; {ram:NumBugs} Counter for ...
+D826: 97 98          STA     <$98                           ; {ram:Temp1} ... number of bugs
+D828: EC A4          LDD     ,Y                             ; Get the bug's coordinates
+D82A: 90 A2          SUBA    <$A2                           ; {ram:PlayerCoords} Compare to player's Y
+D82C: 2A 01          BPL     $D82F                          ; Absolute ...
+D82E: 40             NEGA                                   ; ... value
+D82F: 81 0B          CMPA    #$0B                           ; 13 or less (visible in the magnifier) ?
+D831: 24 0B          BCC     $D83E                          ; No ... this bug isn't visible
+D833: D0 A3          SUBB    <$A3                           ; {ram:PlayerCoords} Compare to player's X
+D835: 2A 01          BPL     $D838                          ; Absolute ...
+D837: 50             NEGB                                   ; ... value
+D838: C1 0B          CMPB    #$0B                           ; 13 or less (visible in the magnifier) ?
+D83A: 24 02          BCC     $D83E                          ; No ... this bug isn't visible
+D83C: 8D 07          BSR     $D845                          ; {DrawOneBug} This bug is visible ... draw it
+D83E: 31 23          LEAY    3,Y                            ; Next bug structure
+D840: 0A 98          DEC     <$98                           ; {ram:Temp1} Do ...
+D842: 26 E4          BNE     $D828                          ; ... all bugs
+D844: 39             RTS                                    ; Out
+
+DrawOneBug:
 D845: 34 20          PSHS    Y               
 D847: EC A4          LDD     ,Y              
 D849: 90 A2          SUBA    <$A2                           ; {ram:PlayerCoords} 
@@ -2787,7 +2797,7 @@ DA2E: 26 F1          BNE     $DA21                          ;
 DA30: 1A 01          ORCC    #$01            
 DA32: 39             RTS                     
 
-; ?? Line of bugs in the "next time" splash ??
+; ?? Player eats dot? Magnifier?
 
 DA33: 8E 28 C8       LDX     #$28C8          
 DA36: C6 20          LDB     #$20            
@@ -2893,6 +2903,8 @@ DB06: 30 01          LEAX    1,X
 DB08: DD 88          STD     <$88                           ; {ram:BitPos} 
 DB0A: 0A 99          DEC     <$99            
 DB0C: 10 26 FF 76    LBNE    $DA86                          ; 
+ 
+; ?? Vertical line of 36 pixels ??
  
 DB10: C6 24          LDB     #$24            
 DB12: 96 88          LDA     <$88                           ; {ram:BitPos} 
