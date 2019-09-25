@@ -45,6 +45,9 @@ while i < len(lines) - 1:
             if name == '6809':
                 import cpu.cpu_6809
                 code_info['cpu'] = cpu.cpu_6809.CPU_6809()
+            elif name == '6502':
+                import cpu.cpu_6502
+                code_info['cpu'] = cpu.cpu_6502.CPU_6502()
             else:
                 raise Exception("Unknown CPU " + name)
         elif md.directive.startswith('memoryTable '):
