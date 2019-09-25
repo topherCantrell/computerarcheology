@@ -1,6 +1,6 @@
-![Entombed](Entombed.jpg)
+![Entombed](entombed.jpg)
 
-# Chess
+# Entombed
 
 >>> cpu 6502
 
