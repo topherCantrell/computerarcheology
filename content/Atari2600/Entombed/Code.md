@@ -1,11 +1,25 @@
+![Entombed](Entombed.jpg)
+
+# Chess
+
+>>> cpu 6502
+
+>>> memoryTable hard 
+[Hardware Info](../Stella.md)
+
+>>> memoryTable ram 
+[RAM Usage](RAMUse.md)
+
+```code
 B000: 4C 85 B0       JMP     $B085           
+
 B003: 00             BRK                     
 B004: 38             SEC                     
-B005: 44             ???                     
-B006: 44             ???                     
-B007: 44             ???                     
-B008: 44             ???                     
-B009: 44             ???                     
+B005: 44                                  
+B006: 44                                  
+B007: 44                                  
+B008: 44                                  
+B009: 44                                  
 B00A: 38             SEC                     
 B00B: 00             BRK                     
 B00C: 38             SEC                     
@@ -13,62 +27,62 @@ B00D: 10 10          BPL     $B01F
 B00F: 10 10          BPL     $B021           
 B011: 30 10          BMI     $B023           
 B013: 00             BRK                     
-B014: 7C             ???                     
+B014: 7C                                  
 B015: 40             RTI                     
 B016: 40             RTI                     
 B017: 38             SEC                     
-B018: 04             ???                     
-B019: 44             ???                     
+B018: 04                                  
+B019: 44                                  
 B01A: 38             SEC                     
 B01B: 00             BRK                     
 B01C: 38             SEC                     
-B01D: 44             ???                     
-B01E: 04             ???                     
+B01D: 44                                  
+B01E: 04                                  
 B01F: 18             CLC                     
-B020: 04             ???                     
-B021: 44             ???                     
+B020: 04                                  
+B021: 44                                  
 B022: 38             SEC                     
 B023: 00             BRK                     
 B024: 08             PHP                     
 B025: 08             PHP                     
-B026: 7C             ???                     
+B026: 7C                                  
 B027: 48             PHA                     
 B028: 28             PLP                     
 B029: 18             CLC                     
 B02A: 08             PHP                     
 B02B: 00             BRK                     
 B02C: 38             SEC                     
-B02D: 44             ???                     
-B02E: 04             ???                     
-B02F: 04             ???                     
+B02D: 44                                  
+B02E: 04                                  
+B02F: 04                                  
 B030: 78             SEI                     
 B031: 40             RTI                     
-B032: 7C             ???                     
+B032: 7C                                  
 B033: 00             BRK                     
 B034: 38             SEC                     
-B035: 44             ???                     
-B036: 44             ???                     
+B035: 44                                  
+B036: 44                                  
 B037: 78             SEI                     
 B038: 40             RTI                     
 B039: 20 1C 00       JSR     $001C           
 B03C: 20 20 20       JSR     $2020           
 B03F: 10 08          BPL     $B049           
-B041: 04             ???                     
-B042: 7C             ???                     
+B041: 04                                  
+B042: 7C                                  
 B043: 00             BRK                     
 B044: 38             SEC                     
-B045: 44             ???                     
-B046: 44             ???                     
+B045: 44                                  
+B046: 44                                  
 B047: 38             SEC                     
-B048: 44             ???                     
-B049: 44             ???                     
+B048: 44                                  
+B049: 44                                  
 B04A: 38             SEC                     
 B04B: 00             BRK                     
 B04C: 70 08          BVS     $B056           
-B04E: 04             ???                     
-B04F: 3C             ???                     
-B050: 44             ???                     
-B051: 44             ???                     
+B04E: 04                                  
+B04F: 3C                                  
+B050: 44                                  
+B051: 44                                  
 B052: 38             SEC                     
 B053: 00             BRK                     
 B054: 00             BRK                     
@@ -78,35 +92,40 @@ B057: 00             BRK
 B058: 00             BRK                     
 B059: 00             BRK                     
 B05A: 00             BRK                     
-B05B: 3C             ???                     
-B05C: 42             ???                     
+B05B: 3C                                  
+B05C: 42                                  
 B05D: 99 91 99       STA     $9991,Y         
-B060: 42             ???                     
-B061: 3C             ???                     
+B060: 42                                  
+B061: 3C                                  
 B062: 00             BRK                     
 B063: 40             RTI                     
 B064: 40             RTI                     
 B065: 11 87          ORA     ($87),Y         
 B067: 40             RTI                     
-B068: 80             ???                     
-B069: 0F             ???                     
-B06A: 04             ???                     
-B06B: 04             ???                     
+B068: 80                                  
+B069: 0F                                  
+B06A: 04                                  
+B06B: 04                                  
 B06C: 01 00          ORA     ($00,X)         
-B06E: 03             ???                     
+B06E: 03                                  
 B06F: B0 03          BCS     $B074           
 B071: B0 03          BCS     $B076           
 B073: B0 03          BCS     $B078           
 B075: B0 04          BCS     $B07B           
 B077: 18             CLC                     
-B078: 13             ???                     
+B078: 13                                  
 B079: BE 33 01       LDX     $0133,Y         
-B07C: 0C             ???                     
+B07C: 0C                                  
 B07D: 09 62          ORA     #$62            
-B07F: BF             ???                     
+B07F: BF                                  
 B080: 6D BF 78       ADC     $78BF           
-B083: BF             ???                     
+B083: BF                                  
 B084: 8A             TXA                     
+```
+
+# Start
+
+```code
 B085: 78             SEI                     
 B086: D8             CLD                     
 B087: A9 01          LDA     #$01            
@@ -637,15 +656,16 @@ B4AA: CA             DEX
 B4AB: D0 F3          BNE     $B4A0           
 B4AD: 86 A1          STX     $A1             
 B4AF: 60             RTS                     
+
 B4B0: 09 09          ORA     #$09            
 B4B2: 09 82          ORA     #$82            
 B4B4: 00             BRK                     
 B4B5: 00             BRK                     
-B4B6: 82             ???                     
-B4B7: 82             ???                     
+B4B6: 82                                  
+B4B7: 82                                  
 B4B8: 09 09          ORA     #$09            
 B4BA: 09 09          ORA     #$09            
-B4BC: 82             ???                     
+B4BC: 82                                  
 B4BD: 00             BRK                     
 B4BE: 00             BRK                     
 B4BF: 00             BRK                     
@@ -655,13 +675,16 @@ B4C4: 00             BRK
 B4C5: 00             BRK                     
 B4C6: 00             BRK                     
 B4C7: 00             BRK                     
-B4C8: 82             ???                     
+B4C8: 82                                  
 B4C9: 00             BRK                     
 B4CA: 09 82          ORA     #$82            
-B4CC: 82             ???                     
+B4CC: 82                                  
 B4CD: 00             BRK                     
 B4CE: 00             BRK                     
 B4CF: 00             BRK                     
+```
+
+```code
 B4D0: 18             CLC                     
 B4D1: F0 01          BEQ     $B4D4           
 B4D3: 38             SEC                     
@@ -684,6 +707,7 @@ B4F0: 05 81          ORA     $81
 B4F2: 85 80          STA     $80             
 B4F4: 26 87          ROL     $87             
 B4F6: 60             RTS                     
+
 B4F7: A5 D6          LDA     $D6             
 B4F9: 20 5C B7       JSR     $B75C           
 B4FC: A2 00          LDX     #$00            
@@ -732,9 +756,11 @@ B551: D0 05          BNE     $B558
 B553: A9 08          LDA     #$08            
 B555: 85 0B          STA     $0B             
 B557: 60             RTS                     
+
 B558: A9 00          LDA     #$00            
 B55A: 85 0B          STA     $0B             
-B55C: 60             RTS                     
+B55C: 60             RTS
+                     
 B55D: A5 F4          LDA     $F4             
 B55F: F0 08          BEQ     $B569           
 B561: A9 80          LDA     #$80            
@@ -1063,17 +1089,19 @@ B7BC: 8A             TXA
 B7BD: 69 04          ADC     #$04            
 B7BF: AA             TAX                     
 B7C0: 60             RTS                     
-B7C1: 14             ???                     
-B7C2: 1C             ???                     
+
+B7C1: 14                                  
+B7C2: 1C                                  
 B7C3: 24 2C          BIT     $2C             
 B7C5: 4C 44 3C       JMP     $3C44           
-B7C8: 34             ???                     
-B7C9: 54             ???                     
-B7CA: 5C             ???                     
-B7CB: 64             ???                     
+B7C8: 34                                  
+B7C9: 54                                  
+B7CA: 5C                                  
+B7CB: 64                                  
 B7CC: 6C 8C 84       JMP     ($848C)         
-B7CF: 7C             ???                     
-B7D0: 74             ???                     
+B7CF: 7C                                  
+B7D0: 74
+                                  
 B7D1: E0 00          CPX     #$00            
 B7D3: F0 08          BEQ     $B7DD           
 B7D5: A5 EE          LDA     $EE             
@@ -1729,29 +1757,30 @@ BCC3: E6 DE          INC     $DE
 BCC5: 65 DD          ADC     $DD             
 BCC7: 85 DD          STA     $DD             
 BCC9: 60             RTS                     
-BCCA: 53             ???                     
+
+BCCA: 53                                  
 BCCB: B0 7C          BCS     $BD49           
-BCCD: 7C             ???                     
-BCCE: 44             ???                     
-BCCF: 44             ???                     
-BCD0: 44             ???                     
-BCD1: 44             ???                     
-BCD2: 44             ???                     
+BCCD: 7C                                  
+BCCE: 44                                  
+BCCF: 44                                  
+BCD0: 44                                  
+BCD1: 44                                  
+BCD2: 44                                  
 BCD3: 00             BRK                     
 BCD4: F8             SED                     
 BCD5: F8             SED                     
 BCD6: 08             PHP                     
 BCD7: 08             PHP                     
 BCD8: F8             SED                     
-BCD9: 80             ???                     
+BCD9: 80                                  
 BCDA: F8             SED                     
 BCDB: 00             BRK                     
-BCDC: FA             ???                     
-BCDD: FA             ???                     
-BCDE: 8B             ???                     
+BCDC: FA                                  
+BCDD: FA                                  
+BCDE: 8B                                  
 BCDF: 9A             TXS                     
-BCE0: 82             ???                     
-BCE1: 8B             ???                     
+BCE0: 82                                  
+BCE1: 8B                                  
 BCE2: F8             SED                     
 BCE3: 00             BRK                     
 BCE4: A2 A2          LDX     #$A2            
@@ -1767,11 +1796,11 @@ BCF4: 00             BRK
 BCF5: 00             BRK                     
 BCF6: 00             BRK                     
 BCF7: 00             BRK                     
-BCF8: 0F             ???                     
-BCF9: 0F             ???                     
-BCFA: 0F             ???                     
+BCF8: 0F                                  
+BCF9: 0F                                  
+BCFA: 0F                                  
 BCFB: 0D 0B 09       ORA     $090B           
-BCFE: 07             ???                     
+BCFE: 07                                  
 BCFF: 00             BRK                     
 BD00: 00             BRK                     
 BD01: 00             BRK                     
@@ -2290,13 +2319,16 @@ BF09: 00             BRK
 BF0A: 00             BRK                     
 BF0B: 00             BRK                     
 BF0C: 66 24          ROR     $24             
-BF0E: 3C             ???                     
+BF0E: 3C                                  
 BF0F: 18             CLC                     
-BF10: 7C             ???                     
-BF11: 54             ???                     
+BF10: 7C                                  
+BF11: 54                                  
 BF12: 66 00          ROR     $00             
 BF14: 00             BRK                     
 BF15: 00             BRK                     
+```
+
+```code
 BF16: A9 02          LDA     #$02            
 BF18: 85 02          STA     $02             
 BF1A: 85 01          STA     $01             
@@ -2322,6 +2354,7 @@ BF43: 60             RTS
 BF44: AD 84 02       LDA     $0284           
 BF47: D0 FB          BNE     $BF44           
 BF49: 60             RTS                     
+
 BF4A: CC BC D4       CPY     $D4BC           
 BF4D: BC DC BC       LDY     $BCDC,X         
 BF50: E4 BC          CPX     $BC             
@@ -2334,105 +2367,105 @@ BF5D: B0 13          BCS     $BF72
 BF5F: B0 0B          BCS     $BF6C           
 BF61: B0 00          BCS     $BF63           
 BF63: 00             BRK                     
-BF64: 12             ???                     
-BF65: 13             ???                     
-BF66: 12             ???                     
+BF64: 12                                  
+BF65: 13                                  
+BF66: 12                                  
 BF67: 1D 1D 13       ORA     $131D,X         
-BF6A: 12             ???                     
-BF6B: 13             ???                     
-BF6C: 12             ???                     
+BF6A: 12                                  
+BF6B: 13                                  
+BF6C: 12                                  
 BF6D: 00             BRK                     
 BF6E: 00             BRK                     
-BF6F: 0F             ???                     
-BF70: 0B             ???                     
-BF71: 07             ???                     
-BF72: 0F             ???                     
-BF73: 0B             ???                     
-BF74: 07             ???                     
-BF75: 0F             ???                     
-BF76: 0B             ???                     
-BF77: 07             ???                     
+BF6F: 0F                                  
+BF70: 0B                                  
+BF71: 07                                  
+BF72: 0F                                  
+BF73: 0B                                  
+BF74: 07                                  
+BF75: 0F                                  
+BF76: 0B                                  
+BF77: 07                                  
 BF78: 00             BRK                     
 BF79: 00             BRK                     
-BF7A: 0C             ???                     
-BF7B: 0C             ???                     
-BF7C: 0C             ???                     
-BF7D: 0C             ???                     
-BF7E: 0C             ???                     
-BF7F: 0C             ???                     
-BF80: 0C             ???                     
-BF81: 0C             ???                     
-BF82: 0C             ???                     
+BF7A: 0C                                  
+BF7B: 0C                                  
+BF7C: 0C                                  
+BF7D: 0C                                  
+BF7E: 0C                                  
+BF7F: 0C                                  
+BF80: 0C                                  
+BF81: 0C                                  
+BF82: 0C                                  
 BF83: 00             BRK                     
 BF84: 00             BRK                     
-BF85: 03             ???                     
-BF86: 04             ???                     
+BF85: 03                                  
+BF86: 04                                  
 BF87: 05 06          ORA     $06             
-BF89: 07             ???                     
+BF89: 07                                  
 BF8A: 08             PHP                     
 BF8B: 09 0A          ORA     #$0A            
-BF8D: 0B             ???                     
+BF8D: 0B                                  
 BF8E: 00             BRK                     
 BF8F: 00             BRK                     
-BF90: 0F             ???                     
-BF91: 0F             ???                     
-BF92: 0F             ???                     
-BF93: 0F             ???                     
-BF94: 0F             ???                     
-BF95: 0F             ???                     
-BF96: 0F             ???                     
-BF97: 0F             ???                     
-BF98: 0F             ???                     
+BF90: 0F                                  
+BF91: 0F                                  
+BF92: 0F                                  
+BF93: 0F                                  
+BF94: 0F                                  
+BF95: 0F                                  
+BF96: 0F                                  
+BF97: 0F                                  
+BF98: 0F                                  
 BF99: 00             BRK                     
 BF9A: 00             BRK                     
-BF9B: 04             ???                     
-BF9C: 04             ???                     
-BF9D: 04             ???                     
-BF9E: 04             ???                     
-BF9F: 04             ???                     
-BFA0: 04             ???                     
-BFA1: 04             ???                     
-BFA2: 04             ???                     
-BFA3: 04             ???                     
+BF9B: 04                                  
+BF9C: 04                                  
+BF9D: 04                                  
+BF9E: 04                                  
+BF9F: 04                                  
+BFA0: 04                                  
+BFA1: 04                                  
+BFA2: 04                                  
+BFA3: 04                                  
 BFA4: 00             BRK                     
 BFA5: 00             BRK                     
 BFA6: 0D 0C 0B       ORA     $0B0C           
 BFA9: 0A             ASL     A               
 BFAA: 09 0A          ORA     #$0A            
-BFAC: 0B             ???                     
-BFAD: 0C             ???                     
+BFAC: 0B                                  
+BFAD: 0C                                  
 BFAE: 0D 00 00       ORA     $0000           
 BFB1: 05 0A          ORA     $0A             
-BFB3: 0F             ???                     
+BFB3: 0F                                  
 BFB4: 05 0A          ORA     $0A             
-BFB6: 0F             ???                     
-BFB7: 0F             ???                     
+BFB6: 0F                                  
+BFB7: 0F                                  
 BFB8: 0A             ASL     A               
-BFB9: 0F             ???                     
+BFB9: 0F                                  
 BFBA: 00             BRK                     
 BFBB: 00             BRK                     
-BFBC: 0C             ???                     
-BFBD: 0B             ???                     
+BFBC: 0C                                  
+BFBD: 0B                                  
 BFBE: 0A             ASL     A               
 BFBF: 09 08          ORA     #$08            
 BFC1: 06 05          ASL     $05             
-BFC3: 04             ???                     
+BFC3: 04                                  
 BFC4: 01 00          ORA     ($00,X)         
 BFC6: 00             BRK                     
 BFC7: 1D 1D 1D       ORA     $1D1D,X         
 BFCA: 18             CLC                     
 BFCB: 18             CLC                     
-BFCC: 1F             ???                     
-BFCD: 1F             ???                     
-BFCE: 1F             ???                     
-BFCF: 1F             ???                     
+BFCC: 1F                                  
+BFCD: 1F                                  
+BFCE: 1F                                  
+BFCF: 1F                                  
 BFD0: 00             BRK                     
 BFD1: 00             BRK                     
 BFD2: 05 07          ORA     $07             
 BFD4: 09 0B          ORA     #$0B            
-BFD6: 0C             ???                     
+BFD6: 0C                                  
 BFD7: 0D 0E 0F       ORA     $0F0E           
-BFDA: 0F             ???                     
+BFDA: 0F                                  
 BFDB: 00             BRK                     
 BFDC: 00             BRK                     
 BFDD: 01 01          ORA     ($01,X)         
@@ -2443,7 +2476,7 @@ BFE4: 08             PHP
 BFE5: 08             PHP                     
 BFE6: 00             BRK                     
 BFE7: 00             BRK                     
-BFE8: 17             ???                     
+BFE8: 17                                  
 BFE9: 18             CLC                     
 BFEA: 19 18 17       ORA     $1718,Y         
 BFED: 19 18 17       ORA     $1718,Y         
@@ -2454,8 +2487,13 @@ BFF5: 00             BRK
 BFF6: 00             BRK                     
 BFF7: 0A             ASL     A               
 BFF8: 00             BRK                     
-BFF9: 05 0A          ORA     $0A             
-BFFB: 0F             ???                     
-BFFC: 00             BRK                     
-BFFD: B0 00          BCS     $BFFF           
-BFFF: B0 00          BCS     $C001           
+BFF9: 05      
+```
+
+# Vectors
+
+```code      
+BFFA: 0A 0F 
+BFFC: 00 B0 
+BFFE: 00 B0      
+```

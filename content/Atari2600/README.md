@@ -12,6 +12,7 @@
 >>>   Chess<br>
 >>>   Combat<br>
 >>>   DoubleGap:Double Gap<br>
+>>>   Entombed<br>
 >>>   ET<br>
 >>>   MissileCommand:Missile Command<br>
 >>>   SpaceInvaders:Space Invaders<br>
@@ -27,6 +28,7 @@
   * [Combat](Combat)
   * [Double Gap](DoubleGap)
   * [ET](ET)
+  * [Entombed](Entombed)
   * [Missile Command](MissileCommand)
   * [Space Invaders](SpaceInvaders)
 
