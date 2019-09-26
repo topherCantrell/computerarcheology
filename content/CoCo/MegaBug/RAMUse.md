@@ -14,9 +14,9 @@
 | 90:91 | RndSeed | Used to fetch bytes from ROM as random numbers |
 | 92    | RequestedPage | Upper byte of address of visible screen page (04 or ??) |
 | 98    | Temp1 | General use |
-| 9A:9B | ?ScreenPointerA | |
-| 9C:9D | ?ScreenPointerB | |
-| 9E:9F | CurrentScreen | Pointer to the screen buffer being drawn on |
+| 9A:9B | DrawingScreenPtr | The screen that is currently being drawn on (1000 or 1C00) |
+| 9C:9D | VisibleScreenPtr | The screen that is currently being shown (1000 or 1C00) |
+| 9E:9F | ScreenPtr | Pointer to the screen buffer being drawn on (1000, 1C00, or 0400) |
 | A0    | NumBugs | Number of bugs in game | 
 | A1    | MouthOpen | 0 if mouth is open or 1 if mouth is closed. Used as a temporary between rounds. |
 | A2:A3 | PlayerCoords | Player's coordinates on the screen (y,x) |

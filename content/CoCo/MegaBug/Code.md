@@ -1416,7 +1416,7 @@ by a tool that managed the addresses?
 CFF8: BD D2 BE       JSR     $D2BE                          ; BUG. This should be D2DE to set the graphics mode.
 ;
 CFFB: CE 04 00       LDU     #$0400                         ; Start of the first ...
-CFFE: DF 9E          STU     <$9E                           ; {ram:CurrentScreen} ... screen buffer
+CFFE: DF 9E          STU     <$9E                           ; {ram:ScreenPtr} ... screen buffer
 D000: BD D4 AE       JSR     $D4AE                          ; {Clear1200} Clear the screen
 D003: 8E D2 A1       LDX     #$D2A1                         ; {!+Need16K} "16k or more memory is needed..." string
 D006: EC 81          LDD     ,X++                           ; Reached end of message lines list?
@@ -1473,11 +1473,11 @@ D070: 0F B6          CLR     <$B6                           ; {ram:ISRCountScore
 D072: 0F C6          CLR     <$C6            
 D074: 96 C5          LDA     <$C5                           ; {ram:NumStartBugs} Number of bugs to start the game (8 or 16)
 D076: 97 A0          STA     <$A0                           ; {ram:NumBugs} Initialize the number of bugs
-D078: CE 10 00       LDU     #$1000                         ; ?? Setup screen pointers
-D07B: DF 9C          STU     <$9C                           ; {ram:?ScreenPointerB} 
-D07D: CC 1C 00       LDD     #$1C00          
-D080: DD 9A          STD     <$9A                           ; {ram:?ScreenPointerA} 
-D082: BD DB 6D       JSR     $DB6D                          ; 
+D078: CE 10 00       LDU     #$1000                         ; Start buffer 1000 as the ... 
+D07B: DF 9C          STU     <$9C                           ; {ram:VisibleScreenPtr} ... screen to show while drawing
+D07D: CC 1C 00       LDD     #$1C00                         ; Start buffer 1C00 as the ...
+D080: DD 9A          STD     <$9A                           ; {ram:DrawingScreenPtr} ... screen to draw on
+D082: BD DB 6D       JSR     $DB6D                          ; {CopyScreen} Copy screen 0400 to 1C00 and show 1C00
 D085: CE 04 00       LDU     #$0400                         ; Clear the ...
 D088: BD D4 AE       JSR     $D4AE                          ; {Clear1200} ... first screen buffer
 D08B: 8E D5 EF       LDX     #$D5EF                         ; {!+StrsCredits} Pointer to the credits strings
@@ -1487,7 +1487,7 @@ D092: DD AB          STD     <$AB                           ; {ram:PixCoords} St
 D094: A6 80          LDA     ,X+                            ; And the ...
 D096: 97 AD          STA     <$AD                           ; {ram:ColorMask} ... color mask
 D098: CC 04 00       LDD     #$0400                         ; Drawing to ...
-D09B: DD 9E          STD     <$9E                           ; {ram:CurrentScreen} ... the first screen buffer
+D09B: DD 9E          STD     <$9E                           ; {ram:ScreenPtr} ... the first screen buffer
 D09D: BD D6 FA       JSR     $D6FA                          ; {PrintMsg} Print the next string
 D0A0: 20 EC          BRA     $D08E                          ; Go back and print all the credit strings
 ;
@@ -1503,8 +1503,8 @@ D0B5: 25 1D          BCS     $D0D4                          ; {LiveGame} Yes ...
 D0B7: EC C4          LDD     ,U                             ; Get duration
 D0B9: 27 10          BEQ     $D0CB                          ; It never is 0000 in our table. Skip printing for whatever reason.
 D0BB: 8E D5 EF       LDX     #$D5EF                         ; {!+StrsCredits} "Mega-Bug" text
-D0BE: DC 9A          LDD     <$9A                           ; {ram:?ScreenPointerA} 
-D0C0: DD 9E          STD     <$9E                           ; {ram:CurrentScreen} ??
+D0BE: DC 9A          LDD     <$9A                           ; {ram:DrawingScreenPtr} The screen buffer ...
+D0C0: DD 9E          STD     <$9E                           ; {ram:ScreenPtr} ... to draw on
 D0C2: EC 81          LDD     ,X++                           ; Destination of "Mega-Bug" string
 D0C4: DD AB          STD     <$AB                           ; {ram:PixCoords} 
 D0C6: 30 01          LEAX    1,X                            ; Skip over color mask
@@ -1517,7 +1517,7 @@ D0D2: 20 52          BRA     $D126                          ; Time for the demo 
 LiveGame: 
 D0D4: 86 FF          LDA     #$FF                           ; This is a ...
 D0D6: 97 B5          STA     <$B5                           ; {ram:LiveOrDemo} ... live-player game
-D0D8: BD DB 6D       JSR     $DB6D                          ; 
+D0D8: BD DB 6D       JSR     $DB6D                          ; {CopyScreen} 
 D0DB: 4F             CLRA                                   ; 0 minutes
 D0DC: 5F             CLRB                                   ; 0 seconds
 D0DD: DD AF          STD     <$AF                           ; {ram:NumMinutes} Initialize game time to 00:00
@@ -1529,7 +1529,7 @@ LiveGameLoop:
 D0E7: CC 05 21       LDD     #$0521                         ; (5,33) 5 rows down, 33 pixels across
 D0EA: DD AB          STD     <$AB                           ; {ram:PixCoords} 
 D0EC: CC 04 00       LDD     #$0400                         ; Drawing on ...
-D0EF: DD 9E          STD     <$9E                           ; {ram:CurrentScreen} ... first screen buffer
+D0EF: DD 9E          STD     <$9E                           ; {ram:ScreenPtr} ... first screen buffer
 D0F1: 86 AA          LDA     #$AA                           ; Set ...
 D0F3: 97 AD          STA     <$AD                           ; {ram:ColorMask} ... message color
 D0F5: 8E D5 E8       LDX     #$D5E8                         ; {!+StrTime} Pointer to string "Time:_"
@@ -1555,7 +1555,7 @@ D124: 20 38          BRA     $D15E                          ;
 
 ; Start demo game
 D126: 0F B5          CLR     <$B5                           ; {ram:LiveOrDemo} This is a demo game
-D128: BD DB 6D       JSR     $DB6D                          ; 
+D128: BD DB 6D       JSR     $DB6D                          ; {CopyScreen} 
 D12B: 8E 08 34       LDX     #$0834                         ; Number of passes in ...
 D12E: 9F C3          STX     <$C3                           ; {ram:DemoTimer} ... demo game
 D130: CE 04 00       LDU     #$0400                         ; Clear the ...
@@ -1565,7 +1565,7 @@ D138: 97 AD          STA     <$AD                           ; {ram:ColorMask} ..
 D13A: CC 04 13       LDD     #$0413                         ; (4,19) 4 rows down, 19 pixels across
 D13D: DD AB          STD     <$AB                           ; {ram:PixCoords} screen coords
 D13F: CC 04 00       LDD     #$0400          
-D142: DD 9E          STD     <$9E                           ; {ram:CurrentScreen} 
+D142: DD 9E          STD     <$9E                           ; {ram:ScreenPtr} 
 D144: 8E D5 C2       LDX     #$D5C2                         ; {!+StrHighScore} "High Score" string
 D147: BD D6 FA       JSR     $D6FA                          ; {PrintMsg} print "High Score"
 D14A: 9E B3          LDX     <$B3                           ; {ram:HighScore} Get the high score
@@ -1577,7 +1577,7 @@ D157: BD D6 FA       JSR     $D6FA                          ; {PrintMsg} Print "
 D15A: 86 C0          LDA     #$C0            
 D15C: 97 C0          STA     <$C0            
 ;
-D15E: BD DB 6D       JSR     $DB6D                          ; ?? Copy buffer at 0400 to drawing page
+D15E: BD DB 6D       JSR     $DB6D                          ; {CopyScreen} Copy the visible screen to 1C00 and show it
 D161: 0F B6          CLR     <$B6                           ; {ram:ISRCountScore} Once per second counter for score decrement
 D163: 0F B7          CLR     <$B7                           ; {ram:ISRCountTime} Once per second counter for time increment
 D165: 86 31          LDA     #$31                           ; Player starting Y coordinate 49
@@ -1627,10 +1627,10 @@ D1C8: 03 A1          COM     <$A1                           ; {ram:MouthOpen} Ch
 D1CA: 2A 03          BPL     $D1CF                          ; Don't move the bugs when mouth is open
 D1CC: BD DE 7A       JSR     $DE7A                          ; ?? Move bugs
 D1CF: BD DF 68       JSR     $DF68                          ; ?? Draw bugs
-D1D2: BD D9 35       JSR     $D935                          ; ?? Move player ??
+D1D2: BD D9 35       JSR     $D935                          ; ?? Move player
 D1D5: DC BE          LDD     <$BE                           ; {ram:DotsLeft} How many dots are left to be eaten?
 D1D7: 10 27 01 69    LBEQ    $D344                          ; None ... player wins
-D1DB: 96 B8          LDA     <$B8                           ; ?? flag to draw score ??
+D1DB: 96 B8          LDA     <$B8                           ; ?? flag to draw score
 D1DD: 94 B5          ANDA    <$B5                           ; {ram:LiveOrDemo} Is this the demo game?
 D1DF: 27 25          BEQ     $D206                          ; Yes ... skip drawing score
 ;
@@ -1639,8 +1639,8 @@ D1E1: 86 AA          LDA     #$AA                           ; Score ...
 D1E3: 97 AD          STA     <$AD                           ; {ram:ColorMask} ... color
 D1E5: CC 54 4B       LDD     #$544B                         ; (84,75) 84 rows down, 75 pixels across
 D1E8: DD AB          STD     <$AB                           ; {ram:PixCoords} Set coordinates
-D1EA: DC 9A          LDD     <$9A                           ; {ram:?ScreenPointerA} 
-D1EC: DD 9E          STD     <$9E                           ; {ram:CurrentScreen} 
+D1EA: DC 9A          LDD     <$9A                           ; {ram:DrawingScreenPtr} Draw on the ...
+D1EC: DD 9E          STD     <$9E                           ; {ram:ScreenPtr} ... invisible screen
 D1EE: 9E B1          LDX     <$B1                           ; {ram:Score} Current score
 D1F0: BD D6 CB       JSR     $D6CB                          ; {PrintFourDigits} print score
 D1F3: 0A B8          DEC     <$B8            
@@ -1648,11 +1648,11 @@ D1F5: 27 0F          BEQ     $D206                          ;
 D1F7: CC 54 4B       LDD     #$544B          
 D1FA: DD AB          STD     <$AB                           ; {ram:PixCoords} 
 D1FC: CC 04 00       LDD     #$0400                         ; Draw on the ...
-D1FF: DD 9E          STD     <$9E                           ; {ram:CurrentScreen} ... 1st screen buffer
+D1FF: DD 9E          STD     <$9E                           ; {ram:ScreenPtr} ... 1st screen buffer
 D201: 9E B1          LDX     <$B1                           ; {ram:Score} Current score
 D203: BD D6 CB       JSR     $D6CB                          ; {PrintFourDigits} print score
 ;
-D206: 96 B9          LDA     <$B9                           ; ?? Flag to draw time ??
+D206: 96 B9          LDA     <$B9                           ; ?? Flag to draw time
 D208: 94 B5          ANDA    <$B5                           ; {ram:LiveOrDemo} 
 D20A: 27 3B          BEQ     $D247                          ; 
 ;
@@ -1661,8 +1661,8 @@ D20C: 86 AA          LDA     #$AA                           ; Set ...
 D20E: 97 AD          STA     <$AD                           ; {ram:ColorMask} ... color
 D210: CC 05 45       LDD     #$0545                         ; (5,69) 5 rows down, 69 pixels across
 D213: DD AB          STD     <$AB                           ; {ram:PixCoords} set coords
-D215: DC 9A          LDD     <$9A                           ; {ram:?ScreenPointerA} 
-D217: DD 9E          STD     <$9E                           ; {ram:CurrentScreen} 
+D215: DC 9A          LDD     <$9A                           ; {ram:DrawingScreenPtr} Draw on the ...
+D217: DD 9E          STD     <$9E                           ; {ram:ScreenPtr} ... invisible screen
 D219: 96 AF          LDA     <$AF                           ; {ram:NumMinutes} Print ...
 D21B: BD D6 D7       JSR     $D6D7                          ; {PrintTwoDigits} ... minutes
 D21E: 96 AC          LDA     <$AC                           ; {ram:PixCoords} Next ...
@@ -1675,7 +1675,7 @@ D22B: 27 1A          BEQ     $D247                          ;
 D22D: CC 05 45       LDD     #$0545          
 D230: DD AB          STD     <$AB                           ; {ram:PixCoords} 
 D232: CC 04 00       LDD     #$0400                         ; Draw on ...
-D235: DD 9E          STD     <$9E                           ; {ram:CurrentScreen} ... 1st screen buffer
+D235: DD 9E          STD     <$9E                           ; {ram:ScreenPtr} ... 1st screen buffer
 D237: 96 AF          LDA     <$AF                           ; {ram:NumMinutes} Print ...
 D239: BD D6 D7       JSR     $D6D7                          ; {PrintTwoDigits} ... number of minutes
 D23C: 96 AC          LDA     <$AC                           ; {ram:PixCoords} Skip to where ...
@@ -1819,7 +1819,7 @@ D36C: 86 AA          LDA     #$AA
 D36E: 97 AD          STA     <$AD                           ; {ram:ColorMask} 
 D370: 86 C0          LDA     #$C0            
 D372: 97 88          STA     <$88                           ; {ram:BitPos} 
-D374: DE 9A          LDU     <$9A                           ; {ram:?ScreenPointerA} 
+D374: DE 9A          LDU     <$9A                           ; {ram:DrawingScreenPtr} 
 D376: 33 C9 01 C5    LEAU    $01C5,U         
 D37A: 8E 05 C5       LDX     #$05C5          
 D37D: 96 88          LDA     <$88                           ; {ram:BitPos} 
@@ -1870,7 +1870,7 @@ D3D2: 26 E9          BNE     $D3BD                          ;
 D3D4: 86 04          LDA     #$04            
 D3D6: 97 92          STA     <$92                           ; {ram:RequestedPage} 
 D3D8: 13             SYNC                    
-D3D9: BD DB 6D       JSR     $DB6D                          ; 
+D3D9: BD DB 6D       JSR     $DB6D                          ; {CopyScreen} 
 D3DC: CE 04 00       LDU     #$0400          
 D3DF: BD D4 AE       JSR     $D4AE                          ; {Clear1200} 
 D3E2: 86 01          LDA     #$01                           ; Scroll the screen ...
@@ -1882,7 +1882,7 @@ D3EC: 81 20          CMPA    #$20
 D3EE: 24 02          BCC     $D3F2                          ; 
 D3F0: 97 A0          STA     <$A0                           ; {ram:NumBugs} 
 D3F2: CE 10 00       LDU     #$1000                         ; Using 2nd ...
-D3F5: DF 9E          STU     <$9E                           ; {ram:CurrentScreen} ... screen buffer for drawing
+D3F5: DF 9E          STU     <$9E                           ; {ram:ScreenPtr} ... screen buffer for drawing
 D3F7: BD D4 AE       JSR     $D4AE                          ; {Clear1200} Clear the screen
 D3FA: 8E D6 5A       LDX     #$D65A                         ; {!+StrNextTime} The "we'll getcha next time" string
 D3FD: EC 81          LDD     ,X++                           ; Set the ...
@@ -1946,7 +1946,7 @@ D468: 4A             DECA                                   ; all syncs done?
 D469: 26 FC          BNE     $D467                          ; {DelaySyncs} No ... keep syncing
 D46B: 39             RTS                                    ; Done
 
-D46C: 9E A5          LDX     <$A5                           ; ?? This starts at C000 ??
+D46C: 9E A5          LDX     <$A5                           ; ?? This starts at C000
 D46E: C6 80          LDB     #$80            
 D470: 6F 82          CLR     ,-X             
 D472: 5A             DECB                    
@@ -1984,10 +1984,10 @@ D4A1: 39             RTS                                    ; Done
 
 SwapScreenPointers:
 D4A2: 34 10          PSHS    X                              ; Preserve X
-D4A4: DC 9A          LDD     <$9A                           ; {ram:?ScreenPointerA} Swap ...
-D4A6: 9E 9C          LDX     <$9C                           ; {ram:?ScreenPointerB} ... 9A ...
-D4A8: DD 9C          STD     <$9C                           ; {ram:?ScreenPointerB} ... and ...
-D4AA: 9F 9A          STX     <$9A                           ; {ram:?ScreenPointerA} ... 9C
+D4A4: DC 9A          LDD     <$9A                           ; {ram:DrawingScreenPtr} Swap ...
+D4A6: 9E 9C          LDX     <$9C                           ; {ram:VisibleScreenPtr} ... 9A (drawing) ...
+D4A8: DD 9C          STD     <$9C                           ; {ram:VisibleScreenPtr} ... and ...
+D4AA: 9F 9A          STX     <$9A                           ; {ram:DrawingScreenPtr} ... 9C (visible)
 D4AC: 35 90          PULS    X,PC                           ; Done
 ```
 
@@ -2255,7 +2255,7 @@ D684: C6 09          LDB     #$09                           ; 9 bytes per charac
 D686: 3D             MUL                                    ; Point to ...
 D687: 33 CB          LEAU    D,U                            ; ... graphics
 D689: DC AB          LDD     <$AB                           ; {ram:PixCoords} (y,x) coordinate
-D68B: 9E 9E          LDX     <$9E                           ; {ram:CurrentScreen} Top of screen pointer
+D68B: 9E 9E          LDX     <$9E                           ; {ram:ScreenPtr} Top of screen pointer
 D68D: BD DE 5F       JSR     $DE5F                          ; {CoordToScrOffs} Get screen pointer and bit mask
 D690: 86 09          LDA     #$09                           ; Row counter ...
 D692: A7 E2          STA     ,-S                            ; ... on stack
@@ -2960,20 +2960,26 @@ DB62: FF FF AA
 DB65: FF FF FF
 DB68: FF FF FF
 DB6B: FF 55
+```
 
-; Copy old graphics page to new page??
+# Copy screen
 
-DB6D: 96 92          LDA     <$92                           ; {ram:RequestedPage} 
-DB6F: 81 1C          CMPA    #$1C  
-DB71: 27 03          BEQ     $DB76                          ; 
-DB73: 5F             CLRB           
-DB74: 8D 07          BSR     $DB7D                          ; {Copy3KtoLast} 
-DB76: 86 1C          LDA     #$1C            
-DB78: 97 92          STA     <$92                           ; {ram:RequestedPage} 
+The destination is always 1C00. Copy the screen we are currently showing to 1C00 (skip this
+if we are already showing 1C00). Ensure that the copied screen 1C00 is visible.
+
+```code
+CopyScreen:
+DB6D: 96 92          LDA     <$92                           ; {ram:RequestedPage} Are we showing ...
+DB6F: 81 1C          CMPA    #$1C                           ; ... the last screen?
+DB71: 27 03          BEQ     $DB76                          ; Yes ... skip the copy
+DB73: 5F             CLRB                                   ; LSB is 0
+DB74: 8D 07          BSR     $DB7D                          ; {Copy3KtoLast} Copy screen point to by 92 to the 1C00
+DB76: 86 1C          LDA     #$1C                           ; Now switch visible ...
+DB78: 97 92          STA     <$92                           ; {ram:RequestedPage} ... to 1C00
 DB7A: 13             SYNC                                   ; Wait for ISR to change the page
 DB7B: 39             RTS                     
 ;
-DB7C: AA                                  
+DB7C: AA                                  ; ?? a left-over reserve-byte in the code?
 ```
 # Copy3KtoLast
 
@@ -3412,7 +3418,7 @@ Return memory offset in X and pixel map in B.
 
 ```code
 CoordToScrOffs9A:
-DE59: 9E 9A          LDX     <$9A                           ; {ram:?ScreenPointerA} ?? Top of screen?
+DE59: 9E 9A          LDX     <$9A                           ; {ram:DrawingScreenPtr} Top of the drawing screen
 DE5B: 10                                                    ; Hiding "LDX #$0400" entry at DE5C. Becomes "LDY #$0400".
 CoordToScrOffs400:                                                
 DE5C: 8E 04 00       LDX     #$0400                         ; Top of first screen
@@ -3582,7 +3588,7 @@ DF99: 54             LSRB
 DF9A: E3 E1          ADDD    ,S++            
 DF9C: 8E 04 00       LDX     #$0400          
 DF9F: 30 8B          LEAX    D,X             
-DFA1: D3 9A          ADDD    <$9A                           ; {ram:?ScreenPointerA} 
+DFA1: D3 9A          ADDD    <$9A                           ; {ram:DrawingScreenPtr} 
 DFA3: 1F 03          TFR     D,U             
 DFA5: A6 E4          LDA     ,S              
 DFA7: 94 88          ANDA    <$88                           ; {ram:BitPos} 
