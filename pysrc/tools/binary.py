@@ -61,18 +61,17 @@ def compare_source_to_binary(file_name_src, file_name_bin, origin):
 
 
 if __name__ == '__main__':
-    
-    #src = '../../content/CoCo/MegaBug/Code.md'
-    #bin = '../../content/CoCo/MegaBug/MegaBug.bin'
-    #org = 0xC000
-    
-    src = '../../content/Atari2600/Entombed/Code.md'
-    bin = '../../content/Atari2600/Entombed/Entombed.bin'
-    org = 0xB000
-    
+
+    src = '../../content/CoCo/MegaBug/Code.md'
+    bin = '../../content/CoCo/MegaBug/MegaBug.bin'
+    org = 0xC000
+
+    #src = '../../content/Atari2600/Entombed/Code.md'
+    #bin = '../../content/Atari2600/Entombed/Entombed.bin'
+    #org = 0xB000
+
     print(compare_source_to_binary(src, bin, org))
-    
-    
+
     """
     src = '../../content/Coco/MegaBug/Code.md'
     org = 0xC000
