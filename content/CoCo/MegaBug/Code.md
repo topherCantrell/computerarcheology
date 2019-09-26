@@ -2101,7 +2101,7 @@ D54C: 97 C7          STA     <$C7                           ; {ram:VisiblePage} 
 D54E: 44             LSRA                                   ; Offset is 512 byte boundary ... ignore the LSB
 D54F: C6 05          LDB     #$05                           ; 6 registers (bits) to poke
 
-;D54E: CC 02 05 ; TOPHER MOD ??
+;D54E: CC 02 05 ; TOPHER MOD ?? Always show the 0400 screen
 
 D551: 8E FF C6       LDX     #$FFC6                         ; Display offset
 D554: 44             LSRA                                   ; Is this bit a 0?
@@ -3336,8 +3336,7 @@ DDDE: 30 89 00 80    LEAX    $0080,X                        ; 4 rows per cell ..
 DDE2: 0A 98          DEC     <$98                           ; {ram:Temp1} All 16 cells done?
 DDE4: 26 EC          BNE     $DDD2                          ; No ... do all rows
 
-DDE6: CC 00 08 ; TOPHER MOD ??
-
+;DDE6: CC 00 08 ; TOPHER MOD ?? End level after just 8 dots
 
 ;DDE6: CC 01 3F       LDD     #$013F                         ; Number of dots ...
 DDE9: ED 8D 22 D1    STD     $00BE,PC                       ; ... left in the maze
