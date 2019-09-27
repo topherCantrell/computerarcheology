@@ -10,17 +10,17 @@
 | 84:85 | NoteC1 | Note1 tally count |
 | 86:87 | NoteC2 | Note2 tally count |
 | 88    | BitPos | Pixel position while printing |
-| 89    | m89?? | ?? |
-| 8A    | m8A?? | ?? |
-| 8C:8D | m8C?? | ?? |
+| 89    | m89m?? | ?? |
+| 8A:8B | m8Am?? | ?? |
+| 8C:8D | m8Cm?? | ?? |
 | 8E:8F | Temp2 | Used to check coordinates and other ?? |
 | 90:91 | RndSeed | Used to fetch bytes from ROM as random numbers |
 | 92    | RequestedPage | Upper byte of address of visible screen page (04 or ??) |
-| 93:94 | m94?? | ?? |
-| 95    | m95?? | ?? |
-| 97    | m97?? | ?? |
+| 93:94 | m94m?? | ?? |
+| 95:96 | m95m?? | ?? |
+| 97    | m97m?? | ?? |
 | 98    | Temp1 | General use |
-| 99    | m99?? | ?? |
+| 99    | m99m?? | ?? |
 | 9A:9B | DrawingScreenPtr | The screen that is currently being drawn on (1000 or 1C00) |
 | 9C:9D | VisibleScreenPtr | The screen that is currently being shown (1000 or 1C00) |
 | 9E:9F | ScreenPtr | Pointer to the screen buffer being drawn on (1000, 1C00, or 0400) |
@@ -28,9 +28,10 @@
 | A1    | MouthOpen | 0 if mouth is open or 1 if mouth is closed. Used as a temporary between rounds. |
 | A2:A3 | PlayerCoords | Player's coordinates on the screen (y,x) |
 | A4    | PlayerDir | Player's facing direction |
-| A5    | mA5?? | ?? |
-| A7:A8 | mA7?? | ?? |
-| A9    | mA9?? | ?? |
+| A5    | mA5m?? | ?? |
+| A6    | NeverUsed1 | ?? |
+| A7:A8 | mA7m?? | ?? |
+| A9:AA | mA9m?? | ?? |
 | AB:AC | PixCoords | Coordinates on the screen (y,x) |
 | AD    | ColorMask | A color mask for printing characters |
 | AE    | ChangeColor | Rotate the color mask after every character (for splash) |
@@ -41,19 +42,19 @@
 | B5    | LiveOrDemo | 0 if demo game, not 0 if live game |
 | B6    | ISRCountScore | Counts ISRs in live game mode to decrement score once a second |
 | B7    | ISRCountTime  | Counts ISRs in live game to increment the time once a second |
-| B8    | mB8?? | ?? |
-| B9    | mB9?? | ?? |
-| BA    | mBA?? | ?? |
-| BB    | mBB?? | ?? |
-| BC    | mBC?? | ?? |
-| BD    | mBD?? | ?? |
+| B8    | mB8m?? | ?? |
+| B9    | mB9m?? | ?? |
+| BA    | mBAm?? | ?? |
+| BB    | mBBm?? | ?? |
+| BC    | mBCm?? | ?? |
+| BD    | mBDm?? | ?? |
 | BE:BF | DotsLeft | Number of dots left to be eaten in the maze |
-| C0    | mC0?? | ?? |
+| C0    | mC0m?? | ?? |
 | C1    | ShowingGame | FF if game screen is showing. 00 if other things are being shown. |
 | C2    | JoyOrKey | FF if player is using joystick or 00 if player is using keyboard |
 | C3:C4 | DemoTimer | Count-down by the ISR used to time the demo play (and direct restart after losing) |
 | C5    | NumStartBugs  | Hold ENTER down at powerup to start the game with 16 bugs |
-| C6    | mC6?? | ?? |
+| C6    | mC6m?? | ?? |
 | C7    | VisiblePage   | Upper byte of address of visible screen page (04 or ??) |
 
 Graphics pages (3K each)
