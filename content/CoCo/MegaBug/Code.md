@@ -3108,7 +3108,7 @@ DC54: 35 86          PULS    A,B,PC                         ; Done
 # Draw the maze
 
 The code starts by drawing a grid of lines ... all walls in the maze closed. And make a double line around
-the edges of the maze.
+the edges of the maze. The code ends with filling the maze with dots (except the very center).
 
 ```code 
 DrawMaze:
@@ -3175,16 +3175,17 @@ DCD3: DD 8E          STD     <$8E                           ; {ram:Temp2}
 DCD5: 9F 8A          STX     <$8A                           ; {ram:m8Am??} 
 DCD7: 86 FF          LDA     #$FF            
 DCD9: 97 97          STA     <$97                           ; {ram:m97m??} 
+;
 DCDB: DC 8E          LDD     <$8E                           ; {ram:Temp2} 
 DCDD: BD DD 6F       JSR     $DD6F                          ; 
 DCE0: 86 FF          LDA     #$FF            
 DCE2: A7 84          STA     ,X              
 DCE4: 0F 88          CLR     <$88                           ; {ram:BitPos} 
-DCE6: CE DE 4F       LDU     #$DE4F                         ; {!+DirOffset} 
-DCE9: EC C1          LDD     ,U++            
-DCEB: 27 19          BEQ     $DD06                          ; 
-DCED: BD DD 63       JSR     $DD63                          ; {GetPtrToNeighborCell} 
-DCF0: 25 F7          BCS     $DCE9                          ; 
+DCE6: CE DE 4F       LDU     #$DE4F                         ; {!+DirOffset} Start of direction-offset table 
+DCE9: EC C1          LDD     ,U++            ; Get next direction offset
+DCEB: 27 19          BEQ     $DD06                          ; All done ... move on
+DCED: BD DD 63       JSR     $DD63                          ; {GetPtrToNeighborCell} Get pointer to the neighbor cell
+DCF0: 25 F7          BCS     $DCE9                          ; Not valid ... try next direction
 DCF2: A6 84          LDA     ,X              
 DCF4: 26 F3          BNE     $DCE9                          ; 
 DCF6: D6 88          LDB     <$88                           ; {ram:BitPos} 
@@ -3471,6 +3472,7 @@ DEAF: 31 23          LEAY    3,Y
 DEB1: 0A 98          DEC     <$98                           ; {ram:Temp1} 
 DEB3: 26 CD          BNE     $DE82                          ; 
 DEB5: 39             RTS                     
+
 DEB6: EC A4          LDD     ,Y              
 DEB8: BD DA 24       JSR     $DA24                          ; 
 DEBB: 24 F8          BCC     $DEB5                          ; 
