@@ -4072,9 +4072,9 @@ DCD7: 86 FF          LDA     #$FF
 DCD9: 97 97          STA     <$97                           ; {ram:m97m??} 
 ;
 DCDB: DC 8E          LDD     <$8E                           ; {ram:Temp2} 
-DCDD: BD DD 6F       JSR     $DD6F                          ; 
-DCE0: 86 FF          LDA     #$FF            
-DCE2: A7 84          STA     ,X              
+DCDD: BD DD 6F       JSR     $DD6F                          ; Get cell pointer
+DCE0: 86 FF          LDA     #$FF            ; Mark the ...
+DCE2: A7 84          STA     ,X              ; ... cell ??visited
 DCE4: 0F 88          CLR     <$88                           ; {ram:BitPos} 
 DCE6: CE DE 4F       LDU     #$DE4F                         ; {!+DirOffset} Start of direction-offset table
 DCE9: EC C1          LDD     ,U++                           ; Get next direction offset
@@ -4083,9 +4083,9 @@ DCED: BD DD 63       JSR     $DD63                          ; {GetPtrToNeighborC
 DCF0: 25 F7          BCS     $DCE9                          ; Not valid ... try next direction (turn counter clockwise)
 DCF2: A6 84          LDA     ,X                             ; Is this cell ??visited
 DCF4: 26 F3          BNE     $DCE9                          ; Yes ... try next direction
-DCF6: D6 88          LDB     <$88                           ; {ram:BitPos} 
-DCF8: 5C             INCB                    
-DCF9: D7 88          STB     <$88                           ; {ram:BitPos} 
+DCF6: D6 88          LDB     <$88                           ; {ram:BitPos} ?? Bump the ...
+DCF8: 5C             INCB                    ; ... count of ...
+DCF9: D7 88          STB     <$88                           ; {ram:BitPos} ... ?? unvisited 
 DCFB: 58             LSLB                                   ; * 2 entries in table
 DCFC: 8E 27 FE       LDX     #$27FE          
 DCFF: 3A             ABX                     
@@ -4093,8 +4093,8 @@ DD00: EC 5E          LDD     -2,U                           ; Back up a directio
 DD02: ED 84          STD     ,X                             ; ?? Hold this
 DD04: 20 E3          BRA     $DCE9                          ; Next direction
 ;
-DD06: 96 88          LDA     <$88                           ; {ram:BitPos} 
-DD08: 27 2E          BEQ     $DD38                          ; {EndOfRun} End of run
+DD06: 96 88          LDA     <$88                           ; {ram:BitPos} How many neighbors are unvisited?
+DD08: 27 2E          BEQ     $DD38                          ; {EndOfRun} None ... end of run
 DD0A: CE 28 00       LDU     #$2800          
 DD0D: 4A             DECA                    
 DD0E: 27 0C          BEQ     $DD1C                          ; 
@@ -4161,6 +4161,8 @@ DD67: 24 17          BCC     $DD80                          ; Yes ... return Car
 DD69: 9B 8E          ADDA    <$8E                           ; {ram:Temp2} Target cell Y coordinate
 DD6B: 81 10          CMPA    #$10                           ; Is the Y >= 16? (too far down)
 DD6D: 24 11          BCC     $DD80                          ; Yes ... return Carry=1
+;
+GetPtrToNeighNoCheck:
 DD6F: 34 04          PSHS    B                              ; Hold target cell X coordinate
 DD71: 6F E2          CLR     ,-S                            ; Make a MSB of 0 (stack is now 00:B)
 DD73: C6 14          LDB     #$14                           ; 20 cells ...
