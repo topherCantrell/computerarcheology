@@ -11,13 +11,13 @@
 | 86:87 | NoteC2 | Note2 tally count |
 | 88    | BitPos | Pixel position while printing |
 | 89    | m89m?? | ?? |
-| 8A:8B | m8Am?? | ?? |
-| 8C:8D | m8Cm?? | ?? |
+| 8A:8B | HeadCellList | Start of the list of cells needing visiting in the maze draw |
+| 8C:8D | EndCellList | End of the list (+1) of cells needing visiting |
 | 8E:8F | Temp2 | Used to check coordinates and other ?? |
 | 90:91 | RndSeed | Used to fetch bytes from ROM as random numbers |
 | 92    | RequestedPage | Upper byte of address of visible screen page (04 or ??) |
 | 93:94 | m94m?? | ?? |
-| 95:96 | m95m?? | ?? |
+| 95:96 | TargetCell | The target cell last used by the open-cell-wall function |
 | 97    | m97m?? | ?? |
 | 98    | Temp1 | General use |
 | 99    | m99m?? | ?? |
@@ -49,7 +49,7 @@
 | BC    | mBCm?? | ?? |
 | BD    | mBDm?? | ?? |
 | BE:BF | DotsLeft | Number of dots left to be eaten in the maze |
-| C0    | mC0m?? | ?? |
+| C0    | MazeLoopiness | Controls the loopiness of the maze. If RND>=<$C0 then dead-end, otherwise a loop. Starts at $C0 and divides by two each level (more dead-ends)  |
 | C1    | ShowingGame | FF if game screen is showing. 00 if other things are being shown. |
 | C2    | JoyOrKey | FF if player is using joystick or 00 if player is using keyboard |
 | C3:C4 | DemoTimer | Count-down by the ISR used to time the demo play (and direct restart after losing) |
@@ -64,4 +64,6 @@ Graphics pages (3K each)
   
 The data on the bugs is kept in an array at $2808. 3 bytes each: y,x,dir
 
+27FE-???: holds a list of directions during maze drawing??
 28E8-2A27: array of bytes, one per cell, 20*10 cells
+2A28-????: array of words, coordinates of cells we have visited in drawing the maze
