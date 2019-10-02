@@ -109,7 +109,7 @@ def process_code(lines, code_info, skip_no_label_jumps=False):
 
             if memref:
                 # Record the opcode start and stop
-                print(c.original.text)
+                # print(c.original.text)
                 i = c.original.text.index('$')
                 j = find_end_of_hex(c.original.text, i + 1)
                 if c.link_info == None:

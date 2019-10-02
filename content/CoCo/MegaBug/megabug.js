@@ -83,3 +83,28 @@ var Megabug = (function() {
 	return my
 
 }());
+
+
+function drawMaze() {
+	ctx = $('#mazeArea')[0].getContext('2d')
+	
+	var ox = 5
+	var oy = 5	
+	ctx.beginPath()	
+	for(var y=0;y<16;++y) {
+		for(var x=0;x<20;++x) {
+			ctx.moveTo(ox+x*16, oy+y*16)
+			ctx.lineTo(ox+x*16+16, oy+y*16)
+			ctx.moveTo(ox+x*16, oy+y*16)
+			ctx.lineTo(ox+x*16, oy+y*16+16)
+		}
+	}
+	ctx.moveTo(ox, oy+16*16)
+	ctx.lineTo(ox+20*16, oy+16*16)
+	ctx.moveTo(ox+20*16, oy)
+	ctx.lineTo(ox+20*16, oy+16*16)
+	//ctx.moveTo(ox+x*16, oy+y*16)
+	//ctx.lineTo(ox+x*16, oy+y*16+16)
+	
+	ctx.stroke()
+}
