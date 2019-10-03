@@ -1,10 +1,12 @@
+import os
+
 import tornado.ioloop
 import tornado.web
-import os
+
 
 root = os.path.dirname(__file__)
 
-cont = os.path.join(root,'../../deploy')
+cont = os.path.join(root, '../../deploy')
 print(cont)
 
 handlers = [

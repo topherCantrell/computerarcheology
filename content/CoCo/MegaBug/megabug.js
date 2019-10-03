@@ -85,7 +85,15 @@ var Megabug = (function() {
 }());
 
 
+var lineDefs = Array(20*16)
+for(var x=0;x<20*16;++x) {
+	lineDefs[x] = 3
+}
+
 function drawMaze() {
+	
+	// 1=bottom
+	// 2=right
 	ctx = $('#mazeArea')[0].getContext('2d')
 	
 	var ox = 5
@@ -93,18 +101,21 @@ function drawMaze() {
 	ctx.beginPath()	
 	for(var y=0;y<16;++y) {
 		for(var x=0;x<20;++x) {
-			ctx.moveTo(ox+x*16, oy+y*16)
-			ctx.lineTo(ox+x*16+16, oy+y*16)
-			ctx.moveTo(ox+x*16, oy+y*16)
-			ctx.lineTo(ox+x*16, oy+y*16+16)
+			var d = lineDefs[y*20+x]
+			if(d&1) { // bottom
+				ctx.moveTo(ox+x*16, oy+y*16+16)
+				ctx.lineTo(ox+x*16+16, oy+y*16+16)
+			}
+			if(d&2) { // right
+				ctx.moveTo(ox+x*16+16, oy+y*16)
+				ctx.lineTo(ox+x*16+16, oy+y*16+16)
+			}
 		}
 	}
-	ctx.moveTo(ox, oy+16*16)
-	ctx.lineTo(ox+20*16, oy+16*16)
-	ctx.moveTo(ox+20*16, oy)
-	ctx.lineTo(ox+20*16, oy+16*16)
-	//ctx.moveTo(ox+x*16, oy+y*16)
-	//ctx.lineTo(ox+x*16, oy+y*16+16)
+	ctx.moveTo(ox, oy)
+	ctx.lineTo(ox+20*16, oy)
+	ctx.moveTo(ox, oy)
+	ctx.lineTo(ox, oy+16*16)	
 	
 	ctx.stroke()
 }
@@ -119,6 +130,9 @@ function runMazeGen() {
 	for(x=0;x<0x4000;++x) {
 		ram1[x] = 0
 	}
+	
+	var looping = parseInt($('#loopiness').val())
+	ram1[0xC0] = looping
 		
 	// Initialize the 6809 CPU.
 	var CPU6809 = make6809()
@@ -132,7 +146,9 @@ function runMazeGen() {
 	}
 	
 	console.log('Done')
-			
+	
+	drawMaze()
+					
 	function write(addr,value) {
 		if(addr<0x4000) {
 			ram1[addr] = value
@@ -162,6 +178,26 @@ function runMazeGen() {
 		
 		if(addr<0x4000) {
 			return ram1[addr]
+		}
+		
+		if(addr==0xDD93) {
+			// A = Y, B = X
+			var y = CPU6809.status()['a']
+			var x = CPU6809.status()['b']
+			console.log('Clearing cell bottom '+x+','+y)	
+			lineDefs[y*20+x] = lineDefs[y*20+x] & 0xFE
+			//drawMaze()
+			return 0x39 // RTS
+		}
+		
+		if(addr==0xDDAD) {
+			// A = Y, B = X
+			var y = CPU6809.status()['a']
+			var x = CPU6809.status()['b']
+			console.log('Clearing cell left '+x+','+y)
+			lineDefs[y*20+x] = lineDefs[y*20+x] & 0xFD
+			//drawMaze()
+			return 0x39 // RTS
 		}
 						
 		// TODO specific ROM addresses for graphics

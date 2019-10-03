@@ -3114,7 +3114,7 @@ the edges of the maze. The code ends with filling the maze with dots (except the
 
 ```html
 <canvas id="mazeArea" width="330" height="266" style="border: 1px solid black"></canvas><br>
-Loopiness: <input value="192" style="width:3em"><br>
+Loopiness: <input id="loopiness" value="192" style="width:3em"><br>
 <button class="btn btn-primary" style="margin-top:8px" onclick="runMazeGen()">Draw Maze</button>
 ```
 
@@ -3303,6 +3303,7 @@ DD8B: 26 1C          BNE     $DDA9                          ; Yes ... go do left
 DD8D: 91 8E          CMPA    <$8E                           ; {ram:Temp2} did we go up?
 DD8F: 25 02          BCS     $DD93                          ; Yes ... use the wall in target cell
 DD91: 96 8E          LDA     <$8E                           ; {ram:Temp2} No ... use the wall in the reference cell
+;
 DD93: 48             LSLA                                   ; Y multiplied ...
 DD94: 48             LSLA                                   ; ... by 4
 DD95: 34 04          PSHS    B                              ; Hold the X
@@ -3319,6 +3320,7 @@ DDA8: 39             RTS                                    ; Done
 ;
 DDA9: 25 02          BCS     $DDAD                          ; Going left ... use the target cell wall
 DDAB: D6 8F          LDB     <$8F                           ; {ram:Temp2} Going right ... use the reference cell wall
+;
 DDAD: 48             LSLA                                   ; Four pixels ...
 DDAE: 48             LSLA                                   ; ... per cell
 DDAF: 34 04          PSHS    B                              ; Hold X
