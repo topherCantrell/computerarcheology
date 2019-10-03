@@ -108,3 +108,69 @@ function drawMaze() {
 	
 	ctx.stroke()
 }
+
+var binData = makeBinaryDataMegabug();
+
+function runMazeGen() {
+	
+	console.log('Starting')
+	var x
+	var ram1 = Array(0x4000)
+	for(x=0;x<0x4000;++x) {
+		ram1[x] = 0
+	}
+		
+	// Initialize the 6809 CPU.
+	var CPU6809 = make6809()
+	CPU6809.init(write,read,function(){})	
+	CPU6809.set('sp',0x1FFF)
+	CPU6809.set('dp',0)
+	
+	var running = true
+	while(running) {
+		CPU6809.steps(100)
+	}
+	
+	console.log('Done')
+			
+	function write(addr,value) {
+		if(addr<0x4000) {
+			ram1[addr] = value
+		}
+        
+        else {		
+        	throw "Write to "+addr+" from "+CPU6809.status()['pc'];
+        }		
+	}
+			
+	function read(addr) {	
+						
+		if(addr==0xFFFE) {
+			return 0xDC
+		} else if(addr==0xFFFF) {
+			return 0x94
+		}
+		
+		if(addr==0xDDCB) {
+			running=false
+			return 0x12
+		}
+		
+		if(addr>=0xA000 && addr<0xC000) {
+			return Math.floor(Math.random()*256)
+		}
+		
+		if(addr<0x4000) {
+			return ram1[addr]
+		}
+						
+		// TODO specific ROM addresses for graphics
+		
+		if(addr<0xE000 && addr>=0xC000) {
+			return binData.read(addr)
+		}
+		
+		throw "Read of "+addr+" from "+CPU6809.status()['pc'];
+	}		
+    
+}

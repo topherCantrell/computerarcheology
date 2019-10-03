@@ -11,6 +11,8 @@
 [Hardware Info](../Hardware.md)
 
 ```html
+<script src="/js/6809.js"></script>
+<script src="/CoCo/Megabug/BinaryDataMegabug.js"></script>
 <script src="/CoCo/Megabug/megabug.js"></script>
 <script src="/js/TileEngine.js"></script>
 <script src="/js/BinaryData.js"></script>
@@ -2098,10 +2100,10 @@ D548: 91 C7          CMPA    <$C7                           ; {ram:VisiblePage} 
 D54A: 27 16          BEQ     $D562                          ; Yes ... nothing to do
 D54C: 97 C7          STA     <$C7                           ; {ram:VisiblePage} This is the new set page
 
-;D54E: 44             LSRA                                   ; Offset is 512 byte boundary ... ignore the LSB
-;D54F: C6 05          LDB     #$05                           ; 6 registers (bits) to poke
+D54E: 44             LSRA                                   ; Offset is 512 byte boundary ... ignore the LSB
+D54F: C6 05          LDB     #$05                           ; 6 registers (bits) to poke
 
-D54E: CC 02 05 ; TOPHER MOD ?? Always show the 0400 screen
+;D54E: CC 02 05 ; TOPHER MOD ?? Always show the 0400 screen
 
 D551: 8E FF C6       LDX     #$FFC6                         ; Display offset
 D554: 44             LSRA                                   ; Is this bit a 0?
@@ -3113,7 +3115,7 @@ the edges of the maze. The code ends with filling the maze with dots (except the
 ```html
 <canvas id="mazeArea" width="330" height="266" style="border: 1px solid black"></canvas><br>
 Loopiness: <input value="192" style="width:3em"><br>
-<button class="btn btn-primary" style="margin-top:8px" onclick="drawMaze()">Draw Maze</button>
+<button class="btn btn-primary" style="margin-top:8px" onclick="runMazeGen()">Draw Maze</button>
 ```
 
 ```code 
@@ -3154,7 +3156,7 @@ DC9A: 6F C0          CLR     ,U+                            ; Clear the ?? data
 DC9C: 30 1F          LEAX    -1,X                           ; All done?
 DC9E: 26 FA          BNE     $DC9A                          ; Do all
 ; 
-DCA0: 73 29 92       COM     $2992                          ; Cell 170 (y=8, x=10) exact center ... mark it ?? visited
+DCA0: 73 29 92       COM     $2992                          ; Cell 170 (y=8, x=10) close to center ... mark it ?? visited
 DCA3: CE DE 4F       LDU     #$DE4F                         ; {!+DirOffset} Direction offset table
 DCA6: 10 8E 2A 28    LDY     #$2A28                         ; Build a list of cells to ...
 DCAA: 10 9F 8A       STY     <$8A                           ; {ram:HeadCellList} ... ??visit
