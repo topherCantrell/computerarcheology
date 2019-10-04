@@ -3116,6 +3116,7 @@ the edges of the maze. The code ends with filling the maze with dots (except the
 <canvas id="mazeArea" width="330" height="266" style="border: 1px solid black"></canvas><br>
 Loopiness: <input id="loopiness" value="192" style="width:3em"><br>
 <button class="btn btn-primary" style="margin-top:8px" onclick="runMazeGen()">Draw Maze</button>
+<button class="btn btn-primary" style="margin-top:8px" onclick="stepMazeGen()">Step Draw Maze</button>
 ```
 
 ```code 
