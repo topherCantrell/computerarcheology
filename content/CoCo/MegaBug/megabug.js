@@ -244,20 +244,26 @@ function initMazeGen() {
 		
 		if(addr==0xDD93) {
 			// A = Y, B = X
+			var yy = ram1[0x8E]
+			var xx = ram1[0x8F]
 			var y = CPU6809.status()['a']
 			var x = CPU6809.status()['b']
 			console.log('Clearing cell bottom '+x+','+y)	
-			lineDefs[y*20+x] = (lineDefs[y*20+x] & 0xFFFFE) | (runColor<<12)
+			lineDefs[y*20+x] = (lineDefs[y*20+x] & 0xFFFFE)
+			//lineDefs[yy*20+xx] = lineDefs[yy*20+xx] | (runColor<<12)
 			state = "graphics"
 			return 0x39 // RTS
 		}
 		
 		if(addr==0xDDAD) {
 			// A = Y, B = X
+			var yy = ram1[0x8E]
+			var xx = ram1[0x8F]
 			var y = CPU6809.status()['a']
 			var x = CPU6809.status()['b']
 			console.log('Clearing cell left '+x+','+y)
-			lineDefs[y*20+x] = (lineDefs[y*20+x] & 0xFFFFD) | (runColor<<12)
+			lineDefs[y*20+x] = (lineDefs[y*20+x] & 0xFFFFD)
+			//lineDefs[yy*20+xx] = lineDefs[yy*20+xx] | (runColor<<12)
 			state = "graphics"
 			return 0x39 // RTS
 		}
