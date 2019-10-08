@@ -54,8 +54,8 @@
 | C2    | JoyOrKey | FF if player is using joystick or 00 if player is using keyboard |
 | C3:C4 | DemoTimer | Count-down by the ISR used to time the demo play (and direct restart after losing) |
 | C5    | NumStartBugs  | Hold ENTER down at powerup to start the game with 16 bugs |
-| C6    | mC6m?? | ?? |
-| C7    | VisiblePage   | Upper byte of address of visible screen page (04 or ??) |
+| C6    | PlayShortSong | 00 if we should play the long song or FF if we already have (and should play the short song) |
+| C7    | VisiblePage   | Upper byte of address of visible screen page  |
 
 Graphics pages (3K each)
   * 0400 - 0FFF

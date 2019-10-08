@@ -1472,7 +1472,7 @@ D06A: 0F B9          CLR     <$B9                           ; {ram:mB9m??}
 D06C: 0F B8          CLR     <$B8                           ; {ram:mB8m??} 
 D06E: 0F B7          CLR     <$B7                           ; {ram:ISRCountTime} Initialize 1 sec timer for TIME display
 D070: 0F B6          CLR     <$B6                           ; {ram:ISRCountScore} Initialize 1 sec timer for losing a point
-D072: 0F C6          CLR     <$C6                           ; {ram:mC6m??} 
+D072: 0F C6          CLR     <$C6                           ; {ram:mC6m??} We have not played the full song
 D074: 96 C5          LDA     <$C5                           ; {ram:NumStartBugs} Number of bugs to start the game (8 or 16)
 D076: 97 A0          STA     <$A0                           ; {ram:NumBugs} Initialize the number of bugs
 D078: CE 10 00       LDU     #$1000                         ; Start buffer 1000 as the ... 
@@ -1519,7 +1519,7 @@ D0D2: 20 52          BRA     $D126                          ; Time for the demo 
 LiveGame: 
 D0D4: 86 FF          LDA     #$FF                           ; This is a ...
 D0D6: 97 B5          STA     <$B5                           ; {ram:LiveOrDemo} ... live-player game
-D0D8: BD DB 6D       JSR     $DB6D                          ; {CopyScreen} 
+D0D8: BD DB 6D       JSR     $DB6D                          ; {CopyScreen} Copy screen 0400 to 1C00 and show 1C00
 D0DB: 4F             CLRA                                   ; 0 minutes
 D0DC: 5F             CLRB                                   ; 0 seconds
 D0DD: DD AF          STD     <$AF                           ; {ram:NumMinutes} Initialize game time to 00:00
@@ -1551,13 +1551,13 @@ D115: 8E D5 E0       LDX     #$D5E0                         ; {!+StrScore} Messa
 D118: BD D6 FA       JSR     $D6FA                          ; {PrintMsg} Print "Score:_"
 D11B: 9E B1          LDX     <$B1                           ; {ram:Score} Print ...
 D11D: BD D6 CB       JSR     $D6CB                          ; {PrintFourDigits} ... the score
-D120: 86 C0          LDA     #$C0            
-D122: 97 C0          STA     <$C0                           ; {ram:MazeLoopiness} 
-D124: 20 38          BRA     $D15E                          ; 
+D120: 86 C0          LDA     #$C0            ; Initial maze "loopiness" ...
+D122: 97 C0          STA     <$C0                           ; {ram:MazeLoopiness} ... as levels progress, they become more "dead-end-y" 
+D124: 20 38          BRA     $D15E                          ; Jump to game play
 
 ; Start demo game
 D126: 0F B5          CLR     <$B5                           ; {ram:LiveOrDemo} This is a demo game
-D128: BD DB 6D       JSR     $DB6D                          ; {CopyScreen} 
+D128: BD DB 6D       JSR     $DB6D                          ; {CopyScreen} Copy screen 0400 to 1C00 and show 1C00
 D12B: 8E 08 34       LDX     #$0834                         ; Number of passes in ...
 D12E: 9F C3          STX     <$C3                           ; {ram:DemoTimer} ... demo game
 D130: CE 04 00       LDU     #$0400                         ; Clear the ...
@@ -1566,8 +1566,8 @@ D136: 86 AA          LDA     #$AA                           ; Set the ...
 D138: 97 AD          STA     <$AD                           ; {ram:ColorMask} ... color
 D13A: CC 04 13       LDD     #$0413                         ; (4,19) 4 rows down, 19 pixels across
 D13D: DD AB          STD     <$AB                           ; {ram:PixCoords} screen coords
-D13F: CC 04 00       LDD     #$0400          
-D142: DD 9E          STD     <$9E                           ; {ram:ScreenPtr} 
+D13F: CC 04 00       LDD     #$0400          ; Use the first ...
+D142: DD 9E          STD     <$9E                           ; {ram:ScreenPtr} ... screen buffer 
 D144: 8E D5 C2       LDX     #$D5C2                         ; {!+StrHighScore} "High Score" string
 D147: BD D6 FA       JSR     $D6FA                          ; {PrintMsg} print "High Score"
 D14A: 9E B3          LDX     <$B3                           ; {ram:HighScore} Get the high score
@@ -1576,8 +1576,8 @@ D14F: CC 54 04       LDD     #$5404                         ;(84,4) 84 rows down
 D152: DD AB          STD     <$AB                           ; {ram:PixCoords} Set coordinates
 D154: 8E D5 CE       LDX     #$D5CE                         ; {!+StrPlayMega} "Play Mega-Bug" string
 D157: BD D6 FA       JSR     $D6FA                          ; {PrintMsg} Print "Play Mega-Bug"
-D15A: 86 C0          LDA     #$C0            
-D15C: 97 C0          STA     <$C0                           ; {ram:MazeLoopiness} 
+D15A: 86 C0          LDA     #$C0            ; Initial maze "loopiness" ...
+D15C: 97 C0          STA     <$C0                           ; {ram:MazeLoopiness} ... as levels progress, they become more "dead-end-y" 
 ;
 D15E: BD DB 6D       JSR     $DB6D                          ; {CopyScreen} Copy the visible screen to 1C00 and show it
 D161: 0F B6          CLR     <$B6                           ; {ram:ISRCountScore} Once per second counter for score decrement
@@ -1598,22 +1598,24 @@ D185: 33 42          LEAU    2,U                            ; ... screen 1000
 D187: 30 1F          LEAX    -1,X                           ; ...
 D189: 26 F0          BNE     $D17B                          ; ... and 1C00
 D18B: 0F A1          CLR     <$A1                           ; {ram:MouthOpen} Mouth starts open
-D18D: 0D B5          TST     <$B5                           ; {ram:LiveOrDemo} 
-D18F: 27 1F          BEQ     $D1B0                          ; 
-D191: C6 13          LDB     #$13            
-D193: 0D C6          TST     <$C6                           ; {ram:mC6m??} 
-D195: 26 02          BNE     $D199                          ; 
-D197: C6 27          LDB     #$27            
-D199: D7 98          STB     <$98                           ; {ram:Temp1} 
+D18D: 0D B5          TST     <$B5                           ; {ram:LiveOrDemo} Live or demo? 
+D18F: 27 1F          BEQ     $D1B0                          ; Demo ... skip playing music
+;
+D191: C6 13          LDB     #$13            ; Limited 19 notes
+D193: 0D C6          TST     <$C6                           ; {ram:mC6m??} Have we already played this music? 
+D195: 26 02          BNE     $D199                          ; Yes ... use a shorter version
+D197: C6 27          LDB     #$27            ; No ... use the full version
+D199: D7 98          STB     <$98                           ; {ram:Temp1}  Number of notes to play
 D19B: CE CC 90       LDU     #$CC90                         ; {!+NotesSplash} Splash music table
-D19E: BD D7 3F       JSR     $D73F                          ; {PlayTwoNotes} 
-D1A1: 8E 12 00       LDX     #$1200          
-D1A4: 30 1F          LEAX    -1,X            
-D1A6: 26 FC          BNE     $D1A4                          ; 
-D1A8: 0A 98          DEC     <$98                           ; {ram:Temp1} 
-D1AA: 26 F2          BNE     $D19E                          ; 
-D1AC: 86 FF          LDA     #$FF            
-D1AE: 97 C6          STA     <$C6                           ; {ram:mC6m??} 
+D19E: BD D7 3F       JSR     $D73F                          ; {PlayTwoNotes} Play a note from the song
+D1A1: 8E 12 00       LDX     #$1200          ; Long ...
+D1A4: 30 1F          LEAX    -1,X            ; ... delay ...
+D1A6: 26 FC          BNE     $D1A4                          ; ... between notes 
+D1A8: 0A 98          DEC     <$98                           ; {ram:Temp1} Have we played all the notes?
+D1AA: 26 F2          BNE     $D19E                          ; No ... go back for them all
+D1AC: 86 FF          LDA     #$FF            ; Note that we ...
+D1AE: 97 C6          STA     <$C6                           ; {ram:mC6m??} ... have played the full song
+; 
 D1B0: BD DA 33       JSR     $DA33                          ; 
 D1B3: BD D4 A2       JSR     $D4A2                          ; {SwapScreenPointers} Swap screen pointers
 D1B6: 97 92          STA     <$92                           ; {ram:RequestedPage} A set to same as 9C by swap
@@ -1752,7 +1754,7 @@ D2E7: B7 FF C7       STA     $FFC7                          ; {hard:dispOffset} 
 D2EA: B7 FF C8       STA     $FFC8                          ; {hard:dispOffset} F1 = 0
 D2ED: 86 FF          LDA     #$FF                           ; VDG ...
 D2EF: B7 FF 22       STA     $FF22                          ; {hard:PIA1_DB} ... all 1s
-D2F2: 39             RTS
+D2F2: 39             RTS                             ; Done
 ```
 
 # Player Died
@@ -1872,7 +1874,7 @@ D3D2: 26 E9          BNE     $D3BD                          ;
 D3D4: 86 04          LDA     #$04            
 D3D6: 97 92          STA     <$92                           ; {ram:RequestedPage} 
 D3D8: 13             SYNC                    
-D3D9: BD DB 6D       JSR     $DB6D                          ; {CopyScreen} 
+D3D9: BD DB 6D       JSR     $DB6D                          ; {CopyScreen} Copy screen 0400 to 1C00 and show 1C00
 D3DC: CE 04 00       LDU     #$0400          
 D3DF: BD D4 AE       JSR     $D4AE                          ; {Clear1200} 
 D3E2: 86 01          LDA     #$01                           ; Scroll the screen ...
@@ -3284,9 +3286,9 @@ DD71: 6F E2          CLR     ,-S                            ; Make a MSB of 0 (s
 DD73: C6 14          LDB     #$14                           ; 20 cells ...
 DD75: 3D             MUL                                    ; ... per row
 DD76: E3 E1          ADDD    ,S++                           ; X,Y cell number to single cell index
-DD78: 8E 28 E8       LDX     #$28E8                         ; ?? data structure?
-DD7B: 30 8B          LEAX    D,X                            ; ??
-DD7D: 1C FE          ANDCC   #$FE                           ; Valid cell (X points to data ??)
+DD78: 8E 28 E8       LDX     #$28E8                         ; Pointer into ...
+DD7B: 30 8B          LEAX    D,X                            ; ... "visited" structure
+DD7D: 1C FE          ANDCC   #$FE                           ; Valid cell (X points to data visited data)
 DD7F: 39             RTS                                    ; Done
 ;
 DD80: 1A 01          ORCC    #$01                           ; Invalid cell
@@ -3656,10 +3658,10 @@ DFE9: 0A 98          DEC     <$98                           ; {ram:Temp1} All bu
 DFEB: 26 E6          BNE     $DFD3                          ; No ... keep looking
 ; 
 DFED: 1C FE          ANDCC   #$FE                           ; Return C=0 ... the player did NOT hit a bug
-DFEF: 39             RTS                     
+DFEF: 39             RTS                     ; Done
 ;
 DFF0: 1A 01          ORCC    #$01                           ; Return C=1 ... the player hit a bug
-DFF2: 39             RTS                     
+DFF2: 39             RTS                     ; Done
 ```
 
 # Unused
