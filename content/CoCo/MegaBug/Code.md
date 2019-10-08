@@ -3153,14 +3153,14 @@ DC91: BD DC 1D       JSR     $DC1D                          ; {DrawVertLine} ...
 ;
 DC94: CE 28 E8       LDU     #$28E8                         ; "visited" flags: one byte per cell data structure
 DC97: 8E 01 40       LDX     #$0140                         ; 16*20 = 320 cells in the maze
-DC9A: 6F C0          CLR     ,U+                            ; Clear the ?? data
+DC9A: 6F C0          CLR     ,U+                            ; Clear the has-been-visited flags
 DC9C: 30 1F          LEAX    -1,X                           ; All done?
 DC9E: 26 FA          BNE     $DC9A                          ; Do all
 ; 
-DCA0: 73 29 92       COM     $2992                          ; Cell 170 (y=8, x=10) close to center ... mark it ?? visited
+DCA0: 73 29 92       COM     $2992                          ; Cell 170 (y=8, x=10) close to center ... mark it visited
 DCA3: CE DE 4F       LDU     #$DE4F                         ; {!+DirOffset} Direction offset table
 DCA6: 10 8E 2A 28    LDY     #$2A28                         ; Build a list of cells to ...
-DCAA: 10 9F 8A       STY     <$8A                           ; {ram:HeadCellList} ... ??visit
+DCAA: 10 9F 8A       STY     <$8A                           ; {ram:HeadCellList} ... visit
 ;
 DCAD: CC 08 0A       LDD     #$080A                         ; y=8,x=10 ... the middle cell of the maze
 DCB0: DD 8E          STD     <$8E                           ; {ram:Temp2} The target square
@@ -3170,29 +3170,29 @@ DCB7: 63 84          COM     ,X                             ; Note it is visited
 DCB9: EC C1          LDD     ,U++                           ; Get the offset for this direction and advance pointer
 DCBB: BD DD 83       JSR     $DD83                          ; {OpenCellWall} Erase the wall in this direction (the center cell is always all open)
 DCBE: DC 95          LDD     <$95                           ; {ram:TargetCell} Target cell in direction
-DCC0: ED A1          STD     ,Y++                           ; Add this cell to our list of cells to ??visit
+DCC0: ED A1          STD     ,Y++                           ; Add this cell to our list of cells to re-visit
 DCC2: EC C4          LDD     ,U                             ; Done all directions?
 DCC4: 26 EC          BNE     $DCB2                          ; No ... keep going
-DCC6: 10 9F 8C       STY     <$8C                           ; {ram:EndCellList} This is the end of the list of cells to ??visit
+DCC6: 10 9F 8C       STY     <$8C                           ; {ram:EndCellList} This is the end of the list of cells to re-visit
 ;
 DCC9: 9E 8A          LDX     <$8A                           ; {ram:HeadCellList} Are there any ...
-DCCB: 9C 8C          CMPX    <$8C                           ; {ram:EndCellList} ... cells to ??visit?
+DCCB: 9C 8C          CMPX    <$8C                           ; {ram:EndCellList} ... cells to re-visit?
 DCCD: 10 27 00 FA    LBEQ    $DDCB                          ; {DrawDots} No ... done with maze. Draw dots and out.
 ;
 DCD1: EC 81          LDD     ,X++                           ; Pop next cell to visit from the head of the list
 DCD3: DD 8E          STD     <$8E                           ; {ram:Temp2} This is our target cell now
 DCD5: 9F 8A          STX     <$8A                           ; {ram:HeadCellList} Update the head of the list pointer
-DCD7: 86 FF          LDA     #$FF            ; We'll clear this ...
-DCD9: 97 97          STA     <$97                           ; {ram:m97m??} ... if we open a wall 
+DCD7: 86 FF          LDA     #$FF                           ; We'll clear this ...
+DCD9: 97 97          STA     <$97                           ; {ram:WallOpened} ... if we open a wall
 ;
 ; Build a list of directions to unvisited cells.
 ; 2800 holds the list
 ; 88 holds the number in the list
-DCDB: DC 8E          LDD     <$8E                           ; {ram:Temp2} Get the "visited" data pointer ... 
-DCDD: BD DD 6F       JSR     $DD6F                          ; ... for the current cell
-DCE0: 86 FF          LDA     #$FF            ; Mark the ...
-DCE2: A7 84          STA     ,X              ; ... cell as visited
-DCE4: 0F 88          CLR     <$88                           ; {ram:BitPos} Number of unvisited neighbors 
+DCDB: DC 8E          LDD     <$8E                           ; {ram:Temp2} Get the "visited" data pointer ...
+DCDD: BD DD 6F       JSR     $DD6F                          ; {GetPtrToNeighNoCheck} ... for the current cell
+DCE0: 86 FF          LDA     #$FF                           ; Mark the ...
+DCE2: A7 84          STA     ,X                             ; ... cell as visited
+DCE4: 0F 88          CLR     <$88                           ; {ram:BitPos} Number of unvisited neighbors
 DCE6: CE DE 4F       LDU     #$DE4F                         ; {!+DirOffset} Start of direction-offset table
 DCE9: EC C1          LDD     ,U++                           ; Get next direction offset
 DCEB: 27 19          BEQ     $DD06                          ; All four directions done ... move on
@@ -3201,55 +3201,53 @@ DCF0: 25 F7          BCS     $DCE9                          ; Not valid ... try 
 DCF2: A6 84          LDA     ,X                             ; Is this cell visited
 DCF4: 26 F3          BNE     $DCE9                          ; Yes ... try next direction
 DCF6: D6 88          LDB     <$88                           ; {ram:BitPos} Bump the ...
-DCF8: 5C             INCB                    ; ... count of ...
-DCF9: D7 88          STB     <$88                           ; {ram:BitPos} ... unvisited neighbors 
+DCF8: 5C             INCB                                   ; ... count of ...
+DCF9: D7 88          STB     <$88                           ; {ram:BitPos} ... unvisited neighbors
 DCFB: 58             LSLB                                   ; * 2 entries in table
-DCFC: 8E 27 FE       LDX     #$27FE          ; We start with 1 ... at 2800
-DCFF: 3A             ABX                     ; Offset into
+DCFC: 8E 27 FE       LDX     #$27FE                         ; We start with 1 ... at 2800
+DCFF: 3A             ABX                                    ; Offset into
 DD00: EC 5E          LDD     -2,U                           ; This is the direction we are using (we did a U++ on it earlier)
 DD02: ED 84          STD     ,X                             ; Store this direction offset
 DD04: 20 E3          BRA     $DCE9                          ; Do all 4
 ;
 DD06: 96 88          LDA     <$88                           ; {ram:BitPos} Number of directions we can go
 DD08: 27 2E          BEQ     $DD38                          ; {EndOfRun} We are blocked ... end of run
-DD0A: CE 28 00       LDU     #$2800          ; Start of possible directions
-DD0D: 4A             DECA                    ; Just one item in the list?
+DD0A: CE 28 00       LDU     #$2800                         ; Start of possible directions
+DD0D: 4A             DECA                                   ; Just one item in the list?
 DD0E: 27 0C          BEQ     $DD1C                          ; Yes ... only one choice to make
 DD10: BD DD 52       JSR     $DD52                          ; {GetRandom} Get random ...
 DD13: 84 03          ANDA    #$03                           ; ... direction
 DD15: 91 88          CMPA    <$88                           ; {ram:BitPos} Make sure the random ...
 DD17: 24 F7          BCC     $DD10                          ; ... number is in our table
-DD19: 48             LSLA                    ; Two bytes each
-DD1A: 33 C6          LEAU    A,U             ; Offset into table
-DD1C: EC C4          LDD     ,U              ; Store ...
-DD1E: DD 93          STD     <$93                           ; {ram:m94m??} ... new direction 
+DD19: 48             LSLA                                   ; Two bytes each
+DD1A: 33 C6          LEAU    A,U                            ; Offset into table
+DD1C: EC C4          LDD     ,U                             ; Store ...
+DD1E: DD 93          STD     <$93                           ; {ram:GenDirection} ... new direction
 DD20: BD DD 83       JSR     $DD83                          ; {OpenCellWall} Open wall in the new direction
-DD23: 0F 97          CLR     <$97                           ; {ram:m97m??} Note that we opened a wall
+DD23: 0F 97          CLR     <$97                           ; {ram:WallOpened} Note that we opened a wall
 DD25: 0A 88          DEC     <$88                           ; {ram:BitPos} Was there only one free neighbor?
 DD27: 27 08          BEQ     $DD31                          ; Yes ... no need to revisit this
 DD29: DC 8E          LDD     <$8E                           ; {ram:Temp2} Otherwise ...
 DD2B: 9E 8C          LDX     <$8C                           ; {ram:EndCellList} ... add this ...
-DD2D: ED 81          STD     ,X++            ; ... to the ...
-DD2F: 9F 8C          STX     <$8C                           ; {ram:EndCellList} ... need to visit list 
+DD2D: ED 81          STD     ,X++                           ; ... to the ...
+DD2F: 9F 8C          STX     <$8C                           ; {ram:EndCellList} ... need to visit list
 ;
-DD31: DC 95          LDD     <$95                           ; {ram:TargetCell} Continue to ... 
+DD31: DC 95          LDD     <$95                           ; {ram:TargetCell} Continue to ...
 DD33: DD 8E          STD     <$8E                           ; {ram:Temp2} ... the cell we just ...
 DD35: 7E DC DB       JMP     $DCDB                          ; ... opened into
  
 EndOfRun:
-DD38: 0D 97          TST     <$97                           ; {ram:m97m??} Did we open a wall?
+DD38: 0D 97          TST     <$97                           ; {ram:WallOpened} Did we open a wall?
 DD3A: 26 13          BNE     $DD4F                          ; No ... no loops allowed here
-DD3C: DC 93          LDD     <$93                           ; {ram:m94m??} Direction we came in
+DD3C: DC 93          LDD     <$93                           ; {ram:GenDirection} Direction we came in
 DD3E: BD DD 63       JSR     $DD63                          ; {GetPtrToNeighborCell} If the neighbor in this direction ...
 DD41: 25 0C          BCS     $DD4F                          ; ... is not a valid cell then skip opening to it
 DD43: BD DD 52       JSR     $DD52                          ; {GetRandom} There is a chance that this run ends as a loop or as a block
 DD46: 91 C0          CMPA    <$C0                           ; {ram:MazeLoopiness} The "loopiness" divides down level by level
 DD48: 24 05          BCC     $DD4F                          ; Skip the final open ... leave this run as a dead-end
-DD4A: DC 93          LDD     <$93                           ; {ram:m94m??} Join this run ...
+DD4A: DC 93          LDD     <$93                           ; {ram:GenDirection} Join this run ...
 DD4C: BD DD 83       JSR     $DD83                          ; {OpenCellWall} ... to another cell (make a loop)
 DD4F: 7E DC C9       JMP     $DCC9                          ; Back for another run
-
-; ?? Seems to make a run until it gets trapped (hits another run). Then 50/50 chance of opening into it or making a loop
 
 ```
 
