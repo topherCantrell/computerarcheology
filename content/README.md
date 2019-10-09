@@ -9,6 +9,7 @@
 >>>    +js<br>
 >>>    +img<br>
 >>>    *Contact<br>
+>>>    *Journal<br>
 >>>    #Amiga<br>
 >>>    #Arcade<br>
 >>>    #Atari2600<br>
@@ -46,7 +47,8 @@ This site is auto-generated from the markdown files in a public github repositor
 here: [https://github.com/topherCantrell/computerarcheology](https://github.com/topherCantrell/computerarcheology). You
 will find plenty of tools -- assemblers, disassemblers, formatters, etc -- and the disassembly text files (free from HTML markup).
 
-You can submit merge requests through github to add corrections to my work or to add your own work.
+Want to add your own disassembly to this site? Or want to enhance/correct my work? Fork the github repo and send me
+a merge request -- I'll add your work to the museum. 
 
 Or you can click the "Contact" button at the top and send me corrections and additions. 
 

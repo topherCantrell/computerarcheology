@@ -2,6 +2,10 @@
 
 # Journal
 
+## 10/8/2019
+
+I'm in the wrap-up now! I worked a bit on the "move the bugs" routine.
+
 ## 8/10/2019
 
 The set-mode was in a sequence of mis-aligned dissassembly. It sets 128x96, 4 pixels per byte.

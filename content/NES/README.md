@@ -4,7 +4,7 @@
 
 >>> deploy:<br>
 >>>   +NES.jpg
->>>   Zelda
+>>>   Zelda:Zelda 5%
 
 # Disassemblies
 

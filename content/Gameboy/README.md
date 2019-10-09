@@ -5,7 +5,7 @@
 >>> deploy:<br>
 >>>   +Gameboy.jpg<br>
 >>>   Hardware.md<br>
->>>   Zelda<br>
+>>>   Zelda:Link's Awakening 1%<br>
 
 # Disassemblies
 

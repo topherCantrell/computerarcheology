@@ -22,7 +22,8 @@
   <div class="top">
     <div id="help">
       <ul class="nav navbar-nav">
-        <li><a href="/Contact/">Contact</a></li>       
+        <li><a href="/Contact/">Contact</a></li>
+        <li><a href="/Journal/">Journal</a></li>        
       </ul>
     </div>
     <div id="banner">

@@ -4,7 +4,7 @@
 
 >>> deploy:<br>
 >>>  +Virus.jpg<br>
->>>    MorrisWorm:Morris Worm<br>
+>>>    MorrisWorm:Morris Worm 1%<br>
 >>>    Stoned<br>
 
 # Disassemblies

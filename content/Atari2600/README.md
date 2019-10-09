@@ -7,15 +7,15 @@
 >>>   +Atari2600.jpg<br>
 >>>   +Hardware.jpg<br>
 >>>   Stella.md:Stella (Hardware Info)<br>
->>>   Asteroids<br>
->>>   BattleZone:Battle Zone<br>
->>>   Chess<br>
->>>   Combat<br>
+>>>   Asteroids 5%<br>
+>>>   BattleZone:Battle Zone 1%<br>
+>>>   Chess 1%<br>
+>>>   Combat 10%<br>
 >>>   DoubleGap:Double Gap<br>
->>>   Entombed<br>
->>>   ET<br>
->>>   MissileCommand:Missile Command<br>
->>>   SpaceInvaders:Space Invaders<br>
+>>>   Entombed 1%<br>
+>>>   ET 1%<br>
+>>>   MissileCommand:Missile Command 1%<br>
+>>>   SpaceInvaders:Space Invaders 1%<br>
 
 # Links
   * [http://www.randomterrain.com/atari-2600-memories-tutorial-andrew-davie-01.html](http://www.randomterrain.com/atari-2600-memories-tutorial-andrew-davie-01.html)

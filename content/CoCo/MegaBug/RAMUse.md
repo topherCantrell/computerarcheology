@@ -13,14 +13,14 @@
 | 89    | m89m?? | ?? |
 | 8A:8B | HeadCellList | Start of the list of cells needing visiting in the maze draw |
 | 8C:8D | EndCellList | End of the list (+1) of cells needing visiting |
-| 8E:8F | Temp2 | Used to check coordinates and other ?? |
+| 8E:8F | Temp1 | Used to check coordinates and other ?? |
 | 90:91 | RndSeed | Used to fetch bytes from ROM as random numbers |
 | 92    | RequestedPage | Upper byte of address of visible screen page (04 or ??) |
 | 93:94 | GenDirection | Current direction in maze generation |
 | 95:96 | TargetCell | The target cell last used by the open-cell-wall function |
 | 97    | WallOpened | Maze generation. 00 if a wall was opened during the dig run |
-| 98    | Temp1 | General use |
-| 99    | m99m?? | ?? |
+| 98    | Temp2 | General use |
+| 99    | Temp3 | General use (used as a counter in finding possible directions for a bug) |
 | 9A:9B | DrawingScreenPtr | The screen that is currently being drawn on (1000 or 1C00) |
 | 9C:9D | VisibleScreenPtr | The screen that is currently being shown (1000 or 1C00) |
 | 9E:9F | ScreenPtr | Pointer to the screen buffer being drawn on (1000, 1C00, or 0400) |
@@ -65,5 +65,6 @@ Graphics pages (3K each)
 The data on the bugs is kept in an array at $2808. 3 bytes each: y,x,dir
 
   * 2800:2807: during maze generation, list of unvisited neighbors (2 bytes * 4 possible)
+  * 2808:2868: data on up to 32 bugs ... 3 bytes each (y,x,dir)
   * 28E8:2A27: array of bytes, one per cell, 20*10 cells. 00=not visited, FF=visited
   * 2A28:????: array of words, coordinates of cells we need to revisit in the maze generation

@@ -4,15 +4,15 @@
 
 >>> deploy:<br>
 >>>    +Arcade.jpg<br>
->>>    Asteroids<br>
->>>    CrazyClimber:Crazy Climber<br>
->>>    Defender<br>
->>>    Frogger<br>
+>>>    Asteroids 80%<br>
+>>>    CrazyClimber:Crazy Climber 100%<br>
+>>>    Defender 75%<br>
+>>>    Frogger (Sound)<br>
 >>>    Galaga<br>
->>>    MoonPatrol:Moon Patrol<br>
->>>    OmegaRace:Omega Race<br>
+>>>    MoonPatrol:Moon Patrol 75%<br>
+>>>    OmegaRace:Omega Race 10%<br>
 >>>    SpaceInvaders:Space Invaders<br>
->>>    TimePilot:Time Pilot<br>
+>>>    TimePilot:Time Pilot (Sound)<br>
 
 [https://en.wikipedia.org/wiki/Arcade_game](https://en.wikipedia.org/wiki/Arcade_game)
 

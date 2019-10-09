@@ -19,10 +19,10 @@
 >>>   #RaakaTu:Raaka Tu<br>
 >>>   #Bedlam:Bedlam<br>
 >>>   #MadnessMinotaur:Madness & Minotaur<br>
->>>   Megabug<br>
->>>   #Daggorath:Daggorath<br>
->>>   #Downland:Downland<br>
->>>   #AudioSpectrumAnalyzer:Audio Analyzer<br>
+>>>   Megabug 90%<br>
+>>>   #Daggorath:Daggorath 40%<br>
+>>>   #Downland:Downland 5%<br>
+>>>   #AudioSpectrumAnalyzer:Audio Analyzer 5%<br>
 
 # Disassemblies
 
