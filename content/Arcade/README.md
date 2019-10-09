@@ -4,10 +4,10 @@
 
 >>> deploy:<br>
 >>>    +Arcade.jpg<br>
->>>    Asteroids 80%<br>
+>>>    Asteroids:Asteroids 80%<br>
 >>>    CrazyClimber:Crazy Climber 100%<br>
->>>    Defender 75%<br>
->>>    Frogger (Sound)<br>
+>>>    Defender:Defender 75%<br>
+>>>    Frogger:Frogger (Sound)<br>
 >>>    Galaga<br>
 >>>    MoonPatrol:Moon Patrol 75%<br>
 >>>    OmegaRace:Omega Race 10%<br>

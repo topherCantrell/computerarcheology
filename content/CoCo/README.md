@@ -19,7 +19,7 @@
 >>>   #RaakaTu:Raaka Tu<br>
 >>>   #Bedlam:Bedlam<br>
 >>>   #MadnessMinotaur:Madness & Minotaur<br>
->>>   Megabug 90%<br>
+>>>   Megabug:Megabug 90%<br>
 >>>   #Daggorath:Daggorath 40%<br>
 >>>   #Downland:Downland 5%<br>
 >>>   #AudioSpectrumAnalyzer:Audio Analyzer 5%<br>
