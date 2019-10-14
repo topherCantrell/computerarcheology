@@ -42,8 +42,8 @@
 | B5    | LiveOrDemo | 0 if demo game, not 0 if live game |
 | B6    | ISRCountScore | Counts ISRs in live game mode to decrement score once a second |
 | B7    | ISRCountTime  | Counts ISRs in live game to increment the time once a second |
-| B8    | mB8m?? | ?? |
-| B9    | mB9m?? | ?? |
+| B8    | DrawScore | 0 to skip drawing the score or non-zero to draw it |
+| B9    | DrawCountSecs | 0 to skip drawing seconds-count or non-zero to draw it |
 | BA    | mBAm?? | ?? |
 | BB    | mBBm?? | ?? |
 | BC    | mBCm?? | ?? |

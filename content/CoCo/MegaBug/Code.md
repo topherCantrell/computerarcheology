@@ -1468,8 +1468,8 @@ D060: 10 CE 03 F0    LDS     #$03F0                         ; Set stack just bel
 D064: 0F C1          CLR     <$C1                           ; {ram:ShowingGame} We are NOT showing the game screen
 D066: 0F B1          CLR     <$B1                           ; {ram:Score} Initialize current score ...
 D068: 0F B2          CLR     <$B2                           ; {ram:Score} ... to zero
-D06A: 0F B9          CLR     <$B9                           ; {ram:mB9m??} 
-D06C: 0F B8          CLR     <$B8                           ; {ram:mB8m??} 
+D06A: 0F B9          CLR     <$B9                           ; {ram:DrawCountSecs} Don't draw the seconds-count
+D06C: 0F B8          CLR     <$B8                           ; {ram:DrawScore} Don't draw the score
 D06E: 0F B7          CLR     <$B7                           ; {ram:ISRCountTime} Initialize 1 sec timer for TIME display
 D070: 0F B6          CLR     <$B6                           ; {ram:ISRCountScore} Initialize 1 sec timer for losing a point
 D072: 0F C6          CLR     <$C6                           ; {ram:PlayShortSong} We have not played the full song
@@ -1634,9 +1634,9 @@ D1CF: BD DF 68       JSR     $DF68                          ; ?? Draw bugs
 D1D2: BD D9 35       JSR     $D935                          ; ?? Move player
 D1D5: DC BE          LDD     <$BE                           ; {ram:DotsLeft} How many dots are left to be eaten?
 D1D7: 10 27 01 69    LBEQ    $D344                          ; None ... player wins
-D1DB: 96 B8          LDA     <$B8                           ; {ram:mB8m??} ?? flag to draw score
+D1DB: 96 B8          LDA     <$B8                           ; {ram:DrawScore} Draw the score?
 D1DD: 94 B5          ANDA    <$B5                           ; {ram:LiveOrDemo} Is this the demo game?
-D1DF: 27 25          BEQ     $D206                          ; Yes ... skip drawing score
+D1DF: 27 25          BEQ     $D206                          ; Either of those ... skip drawing score
 ;
 ; Draw score
 D1E1: 86 AA          LDA     #$AA                           ; Score ...
@@ -1647,18 +1647,18 @@ D1EA: DC 9A          LDD     <$9A                           ; {ram:DrawingScreen
 D1EC: DD 9E          STD     <$9E                           ; {ram:ScreenPtr} ... invisible screen
 D1EE: 9E B1          LDX     <$B1                           ; {ram:Score} Current score
 D1F0: BD D6 CB       JSR     $D6CB                          ; {PrintFourDigits} print score
-D1F3: 0A B8          DEC     <$B8                           ; {ram:mB8m??} 
-D1F5: 27 0F          BEQ     $D206                          ; 
-D1F7: CC 54 4B       LDD     #$544B          
-D1FA: DD AB          STD     <$AB                           ; {ram:PixCoords} 
+D1F3: 0A B8          DEC     <$B8                           ; {ram:DrawScore} Need to draw the score?
+D1F5: 27 0F          BEQ     $D206                          ; No ... skip it on the background
+D1F7: CC 54 4B       LDD     #$544B                         ; Coordinates for ...
+D1FA: DD AB          STD     <$AB                           ; {ram:PixCoords} ... the score
 D1FC: CC 04 00       LDD     #$0400                         ; Draw on the ...
 D1FF: DD 9E          STD     <$9E                           ; {ram:ScreenPtr} ... 1st screen buffer
 D201: 9E B1          LDX     <$B1                           ; {ram:Score} Current score
 D203: BD D6 CB       JSR     $D6CB                          ; {PrintFourDigits} print score
 ;
-D206: 96 B9          LDA     <$B9                           ; {ram:mB9m??} ?? Flag to draw time
-D208: 94 B5          ANDA    <$B5                           ; {ram:LiveOrDemo} 
-D20A: 27 3B          BEQ     $D247                          ; 
+D206: 96 B9          LDA     <$B9                           ; {ram:DrawCountSecs} Flag to draw time ...
+D208: 94 B5          ANDA    <$B5                           ; {ram:LiveOrDemo} ... and live/demo flag
+D20A: 27 3B          BEQ     $D247                          ; Skip drawing the seconds-count
 ;
 ; Print time 
 D20C: 86 AA          LDA     #$AA                           ; Set ...
@@ -1674,10 +1674,10 @@ D220: 8B 06          ADDA    #$06                           ; ... to ...
 D222: 97 AC          STA     <$AC                           ; {ram:PixCoords} ... right
 D224: 96 B0          LDA     <$B0                           ; {ram:NumSeconds} Print ...
 D226: BD D6 D7       JSR     $D6D7                          ; {PrintTwoDigits} ... seconds
-D229: 0A B9          DEC     <$B9                           ; {ram:mB9m??} 
-D22B: 27 1A          BEQ     $D247                          ; 
-D22D: CC 05 45       LDD     #$0545          
-D230: DD AB          STD     <$AB                           ; {ram:PixCoords} 
+D229: 0A B9          DEC     <$B9                           ; {ram:DrawCountSecs} Need to draw the seconds-count?
+D22B: 27 1A          BEQ     $D247                          ; No ... skip it
+D22D: CC 05 45       LDD     #$0545                         ; Coordinates on the screen ...
+D230: DD AB          STD     <$AB                           ; {ram:PixCoords} ... for the seconds-count
 D232: CC 04 00       LDD     #$0400                         ; Draw on ...
 D235: DD 9E          STD     <$9E                           ; {ram:ScreenPtr} ... 1st screen buffer
 D237: 96 AF          LDA     <$AF                           ; {ram:NumMinutes} Print ...
@@ -2130,8 +2130,8 @@ D573: DC B1          LDD     <$B1                           ; {ram:Score} Is the
 D575: 27 16          BEQ     $D58D                          ; Yes ... leave it alone
 ;
 ; The player loses 1 point a second if no dot is eaten
-D577: 86 02          LDA     #$02                           ; ??
-D579: 97 B8          STA     <$B8                           ; {ram:mB8m??} ??
+D577: 86 02          LDA     #$02                           ; Draw the score for ...
+D579: 97 B8          STA     <$B8                           ; {ram:DrawScore} ... two interrupts (both screens)
 D57B: 96 B2          LDA     <$B2                           ; {ram:Score} Get score LSB
 D57D: 8B 99          ADDA    #$99                           ; Subtract 1 (BCD math)
 D57F: 19             DAA                                    ; Adjust for BCD
@@ -2149,8 +2149,8 @@ D590: 97 B7          STA     <$B7                           ; {ram:ISRCountTime}
 D592: 81 3C          CMPA    #$3C                           ; Has it been 60 interrupts (1 second) ?
 D594: 25 1A          BCS     $D5B0                          ; No ... not time to adjust the time
 D596: 0F B7          CLR     <$B7                           ; {ram:ISRCountTime} Yes ... reset interrupt counter back to 0
-D598: 86 02          LDA     #$02                           ; ??
-D59A: 97 B9          STA     <$B9                           ; {ram:mB9m??} ??
+D598: 86 02          LDA     #$02                           ; Redraw the seconds-count for ...
+D59A: 97 B9          STA     <$B9                           ; {ram:DrawCountSecs} ... two interrupts (both screen buffers)
 ;
 ; The timer goes up once a second
 D59C: 96 B0          LDA     <$B0                           ; {ram:NumSeconds} Add ...
@@ -2755,8 +2755,8 @@ D9C2: 96 B1          LDA     <$B1                           ; {ram:Score}
 D9C4: 89 00          ADCA    #$00            
 D9C6: 19             DAA                     
 D9C7: 97 B1          STA     <$B1                           ; {ram:Score} 
-D9C9: 86 02          LDA     #$02            
-D9CB: 97 B8          STA     <$B8                           ; {ram:mB8m??} 
+D9C9: 86 02          LDA     #$02                           ; Draw the score ...
+D9CB: 97 B8          STA     <$B8                           ; {ram:DrawScore} ... two times (two screen buffers)
 D9CD: 0F B6          CLR     <$B6                           ; {ram:ISRCountScore} 
 D9CF: DE BE          LDU     <$BE                           ; {ram:DotsLeft} 
 D9D1: 27 04          BEQ     $D9D7                          ; ?? why would this ever be 0? We stop when it reaches 0
