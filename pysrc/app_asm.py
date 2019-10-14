@@ -5,7 +5,7 @@ from assembler import asm
 
 if __name__ == '__main__':
 
-    asm_file = '../../doublegap/DoubleGap.asm'
+    asm_file = '../content/Atari2600/DoubleGap/DoubleGap.asm'
 
     abpath = os.path.abspath(asm_file)
     i = abpath.rindex('.')

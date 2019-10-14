@@ -11,6 +11,7 @@ import code.memory_table
 import code.paragraph_line
 import code.process_code
 
+# TODO: make this command/line/IDE friendly. Only set this if the commandline is empty.
 
 # FILE_NAME = '../../content/CoCo/Pyramid/Code.md'
 # FILE_NAME = '../../content/CoCo/AudioSpectrumAnalyzer/Code.md'

@@ -1,4 +1,28 @@
 
+'''
+  p - memory address (one byte)
+  t - memory address (two bytes)
+  b - constant (one byte)
+  w - constant (two byte)  
+  r - branch relative offset (one byte)  
+  s - branch relative offset (two byte)  
+  
+  y - indexed form (6809)
+  z - two register set (6809)
+  x - push register set S (6809)
+  y - pull register set S (6809)
+  u - push register set U (6809)
+  v - pull register set U (6809)
+  
+  The "bus" field shows how a memory address (p or t) is used:
+  - "" mnemonic does not contain a memory address
+  - "r" memory address is read
+  - "w" memory address is written
+  - "rw" memory address is read and written
+  - "x" memory address is code (jump destination)
+'''
+
+
 class CPU:
 
     def __init__(self, opcodes):
@@ -6,7 +30,7 @@ class CPU:
         self._make_data_map()
         self._make_frags()
 
-    def _is_needed(self, text, pos):
+    def _is_space_needed(self, text, pos):
         if text[pos] != ' ':
             return True
         if (text[pos - 1].isalpha() or text[pos - 1].isdigit()) and (text[pos + 1].isalpha() or text[pos + 1].isdigit()):
@@ -23,7 +47,7 @@ class CPU:
         nmatch = ''
         for i in range(len(match)):
             c = match[i]
-            if self._is_needed(match, i):
+            if self._is_space_needed(match, i):
                 nmatch = nmatch + c
         return nmatch
 
@@ -129,7 +153,6 @@ class CPU:
 
         return ret
 
-    # TODO going to need defines and labels to do this
     def fill_in_opcode(self, asm, address, op, pass_number):
         opcode = op[0]
         fill = op[1]

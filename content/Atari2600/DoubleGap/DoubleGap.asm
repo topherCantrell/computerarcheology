@@ -1,7 +1,7 @@
-.cpu 6502
+._CPU = 6502
 
 ; Hardware definitions
-.include "stella.asm"
+.include stella.asm
 
 ; RAM Usage
 .TMP0      = 128
@@ -956,104 +956,104 @@ MUSICA:
                                            
 MA_SONG_1:
                                            
-     .byte    MUSCMD_CONTROL, 12
-     .byte    MUSCMD_VOLUME,  15 ; Volume (full)
+     .byte  MUSCMD_CONTROL, 12
+     .byte  MUSCMD_VOLUME,  15 ; Volume (full)
                                            
 MA1_01:
-     .byte    MUS_DEL_3  +  15
-     .byte    MUS_DEL_1  +  MUS_REST
-     .byte    MUS_DEL_3  +  15
-     .byte    MUS_DEL_1  +  MUS_REST
-     .byte    MUS_DEL_1  +  7
-     .byte    MUS_DEL_1  +  MUS_REST
-     .byte    MUS_DEL_1  +  7
-     .byte    MUS_DEL_1  +  MUS_REST
-     .byte    MUS_DEL_2  +  MUS_REST
-     .byte    MUS_DEL_1  +  8
-     .byte    MUS_DEL_1  +  MUS_REST
-     .byte    MUS_DEL_4  +  MUS_REST
-     .byte    MUS_DEL_2  +  17
-     .byte    MUS_DEL_2  +  MUS_REST
-     .byte    MUS_DEL_2  +  17
-     .byte    MUS_DEL_2  +  MUS_REST
-     .byte    MUS_DEL_3  +  16
-     .byte    MUS_DEL_1  +  MUS_REST
-     .byte    MUSCMD_JUMP, (MA1_END - MA1_01) ; Repeat back to top
+     .byte  MUS_DEL_3  +  15
+     .byte  MUS_DEL_1  +  MUS_REST
+     .byte  MUS_DEL_3  +  15
+     .byte  MUS_DEL_1  +  MUS_REST
+     .byte  MUS_DEL_1  +  7
+     .byte  MUS_DEL_1  +  MUS_REST
+     .byte  MUS_DEL_1  +  7
+     .byte  MUS_DEL_1  +  MUS_REST
+     .byte  MUS_DEL_2  +  MUS_REST
+     .byte  MUS_DEL_1  +  8
+     .byte  MUS_DEL_1  +  MUS_REST
+     .byte  MUS_DEL_4  +  MUS_REST
+     .byte  MUS_DEL_2  +  17
+     .byte  MUS_DEL_2  +  MUS_REST
+     .byte  MUS_DEL_2  +  17
+     .byte  MUS_DEL_2  +  MUS_REST
+     .byte  MUS_DEL_3  +  16
+     .byte  MUS_DEL_1  +  MUS_REST
+     .byte  MUSCMD_JUMP, (MA1_END - MA1_01) ; Repeat back to top
 MA1_END:
                                            
 MA_SONG_2:
-     .byte    MUSCMD_CONTROL, 12
-     .byte    MUSCMD_VOLUME,  15
+     .byte  MUSCMD_CONTROL, 12
+     .byte  MUSCMD_VOLUME,  15
                                            
 MA2_01:
-     .byte    MUS_DEL_1  +  15
-     .byte    MUS_DEL_1  +  MUS_REST
-     .byte    MUS_DEL_1  +  15
-     .byte    MUS_DEL_1  +  MUS_REST
-     .byte    MUS_DEL_2  +  MUS_REST
-     .byte    MUS_DEL_4  +  7
-     .byte    MUS_DEL_4  +  MUS_REST
-     .byte    MUS_DEL_2  +  15
-     .byte    MUS_DEL_4  +  MUS_REST
-     .byte    MUS_DEL_2  +  12
-     .byte    MUS_DEL_2  +  MUS_REST
-     .byte    MUS_DEL_2  +  15
-     .byte    MUS_DEL_2  +  MUS_REST
-     .byte    MUS_DEL_2  +  17
-     .byte    MUS_DEL_2  +  MUS_REST
-     .byte    MUSCMD_JUMP, (MA2_END - MA2_01) ; Repeat back to top
+     .byte  MUS_DEL_1  +  15
+     .byte  MUS_DEL_1  +  MUS_REST
+     .byte  MUS_DEL_1  +  15
+     .byte  MUS_DEL_1  +  MUS_REST
+     .byte  MUS_DEL_2  +  MUS_REST
+     .byte  MUS_DEL_4  +  7
+     .byte  MUS_DEL_4  +  MUS_REST
+     .byte  MUS_DEL_2  +  15
+     .byte  MUS_DEL_4  +  MUS_REST
+     .byte  MUS_DEL_2  +  12
+     .byte  MUS_DEL_2  +  MUS_REST
+     .byte  MUS_DEL_2  +  15
+     .byte  MUS_DEL_2  +  MUS_REST
+     .byte  MUS_DEL_2  +  17
+     .byte  MUS_DEL_2  +  MUS_REST
+     .byte  MUSCMD_JUMP, (MA2_END - MA2_01) ; Repeat back to top
 MA2_END:
                                            
 MUSICB:
                                            
 MB_SONG_1:
                                            
-     .byte    MUSCMD_CONTROL, 8
-     .byte    MUSCMD_VOLUME,  8 ; Volume (half)
+     .byte  MUSCMD_CONTROL, 8
+     .byte  MUSCMD_VOLUME,  8 ; Volume (half)
                                            
 MB1_01:
-     .byte    MUS_DEL_1  +  10
-     .byte    MUS_DEL_1  +  MUS_REST
-     .byte    MUS_DEL_1  +  20
-     .byte    MUS_DEL_1  +  MUS_REST
-     .byte    MUS_DEL_1  +  30
-     .byte    MUS_DEL_1  +  MUS_REST
-     .byte    MUS_DEL_1  +  15
-     .byte    MUS_DEL_1  +  MUS_REST
-     .byte    MUS_DEL_1  +  10
-     .byte    MUS_DEL_1  +  MUS_REST
-     .byte    MUS_DEL_1  +  20
-     .byte    MUS_DEL_1  +  MUS_REST
-     .byte    MUS_DEL_1  +  30
-     .byte    MUS_DEL_1  +  MUS_REST
-     .byte    MUS_DEL_1  +  15
-     .byte    MUS_DEL_1  +  MUS_REST
-     .byte    MUSCMD_JUMP, (MB1_END - MB1_01) ; Repeat back to top
+     .byte  MUS_DEL_1  +  10
+     .byte  MUS_DEL_1  +  MUS_REST
+     .byte  MUS_DEL_1  +  20
+     .byte  MUS_DEL_1  +  MUS_REST
+     .byte  MUS_DEL_1  +  30
+     .byte  MUS_DEL_1  +  MUS_REST
+     .byte  MUS_DEL_1  +  15
+     .byte  MUS_DEL_1  +  MUS_REST
+     .byte  MUS_DEL_1  +  10
+     .byte  MUS_DEL_1  +  MUS_REST
+     .byte  MUS_DEL_1  +  20
+     .byte  MUS_DEL_1  +  MUS_REST
+     .byte  MUS_DEL_1  +  30
+     .byte  MUS_DEL_1  +  MUS_REST
+     .byte  MUS_DEL_1  +  15
+     .byte  MUS_DEL_1  +  MUS_REST
+     .byte  MUSCMD_JUMP, (MB1_END - MB1_01) ; Repeat back to top
 MB1_END:
                                            
 MB_SONG_2:
                                            
-     .byte    MUSCMD_CONTROL, 8
-     .byte    MUSCMD_VOLUME,  8
+     .byte  MUSCMD_CONTROL, 8
+     .byte  MUSCMD_VOLUME,  8
                                            
 MB2_01:
-     .byte    MUS_DEL_1  +  1
-     .byte    MUS_DEL_1  +  MUS_REST
-     .byte    MUS_DEL_1  +  1
-     .byte    MUS_DEL_1  +  MUS_REST
-     .byte    MUS_DEL_1  +  1
-     .byte    MUS_DEL_1  +  MUS_REST
-     .byte    MUS_DEL_1  +  1
-     .byte    MUS_DEL_1  +  MUS_REST
-     .byte    MUS_DEL_1  +  30
-     .byte    MUS_DEL_1  +  MUS_REST
-     .byte    MUS_DEL_1  +  30
-     .byte    MUS_DEL_1  +  MUS_REST
-     .byte    MUS_DEL_1  +  30
-     .byte    MUS_DEL_1  +  MUS_REST
-     .byte    MUS_DEL_1  +  30
-     .byte    MUS_DEL_1  +  MUS_REST
-     .byte    MUSCMD_JUMP, (MB2_END - MB2_01) ; Repeat back to top
+     .byte  MUS_DEL_1  +  1
+     .byte  MUS_DEL_1  +  MUS_REST
+     .byte  MUS_DEL_1  +  1
+     .byte  MUS_DEL_1  +  MUS_REST
+     .byte  MUS_DEL_1  +  1
+     .byte  MUS_DEL_1  +  MUS_REST
+     .byte  MUS_DEL_1  +  1
+     .byte  MUS_DEL_1  +  MUS_REST
+     .byte  MUS_DEL_1  +  30
+     .byte  MUS_DEL_1  +  MUS_REST
+     .byte  MUS_DEL_1  +  30
+     .byte  MUS_DEL_1  +  MUS_REST
+     .byte  MUS_DEL_1  +  30
+     .byte  MUS_DEL_1  +  MUS_REST
+     .byte  MUS_DEL_1  +  30
+     .byte  MUS_DEL_1  +  MUS_REST
+     .byte  MUSCMD_JUMP, (MB2_END - MB2_01) ; Repeat back to top
 MB2_END:
 
 SKILL_VALUES:
@@ -1068,126 +1068,125 @@ SKILL_VALUES:
      ;  A 255 on the end of the table indicates the end
 
      ;       Wall  Inc  Delay   Gap       MA                 MB
-     .byte    0,     1,   3,     0  ,MA_SONG_1-MUSICA , MB_SONG_1-MUSICB
-     .byte    4,     1,   2,     0  ,MA_SONG_2-MUSICA , MB_SONG_2-MUSICB
-     .byte    8,     1,   1,     0  ,MA_SONG_1-MUSICA , MB_SONG_1-MUSICB
-     .byte    16,    1,   1,     1  ,MA_SONG_2-MUSICA , MB_SONG_2-MUSICB
-     .byte    24,    1,   1,     3  ,MA_SONG_1-MUSICA , MB_SONG_1-MUSICB
-     .byte    32,    1,   1,     7  ,MA_SONG_2-MUSICA , MB_SONG_2-MUSICB
-     .byte    40,    1,   1,    15  ,MA_SONG_1-MUSICA , MB_SONG_1-MUSICB
-     .byte    48,    2,   1,     0  ,MA_SONG_2-MUSICA , MB_SONG_2-MUSICB
-     .byte    64,    2,   1,     1  ,MA_SONG_1-MUSICA , MB_SONG_1-MUSICB
-     .byte    80,    2,   1,     3  ,MA_SONG_2-MUSICA , MB_SONG_2-MUSICB
-     .byte    96 ,   2,   1,     7  ,MA_SONG_1-MUSICA , MB_SONG_1-MUSICB
-     .byte    255
+     .byte  0,     1,   3,     0  ,MA_SONG_1-MUSICA , MB_SONG_1-MUSICB
+     .byte  4,     1,   2,     0  ,MA_SONG_2-MUSICA , MB_SONG_2-MUSICB
+     .byte  8,     1,   1,     0  ,MA_SONG_1-MUSICA , MB_SONG_1-MUSICB
+     .byte  16,    1,   1,     1  ,MA_SONG_2-MUSICA , MB_SONG_2-MUSICB
+     .byte  24,    1,   1,     3  ,MA_SONG_1-MUSICA , MB_SONG_1-MUSICB
+     .byte  32,    1,   1,     7  ,MA_SONG_2-MUSICA , MB_SONG_2-MUSICB
+     .byte  40,    1,   1,    15  ,MA_SONG_1-MUSICA , MB_SONG_1-MUSICB
+     .byte  48,    2,   1,     0  ,MA_SONG_2-MUSICA , MB_SONG_2-MUSICB
+     .byte  64,    2,   1,     1  ,MA_SONG_1-MUSICA , MB_SONG_1-MUSICB
+     .byte  80,    2,   1,     3  ,MA_SONG_2-MUSICA , MB_SONG_2-MUSICB
+     .byte  96 ,   2,   1,     7  ,MA_SONG_1-MUSICA , MB_SONG_1-MUSICB
+     .byte  255
                                            
 GR_PLAYER:
      ;  Image for players (8x8)
-     .subs .=0, *=1
      ;
-     .byte    0b__...*....
-     .byte    0b__...*....
-     .byte    0b__..*.*...
-     .byte    0b__..*.*...
-     .byte    0b__.*.*.*..
-     .byte    0b__.*.*.*..
-     .byte    0b__*.*.*.*.
-     .byte    0b__.*****..
+     .byte  0b__...1....
+     .byte  0b__...1....
+     .byte  0b__..1.1...
+     .byte  0b__..1.1...
+     .byte  0b__.1.1.1..
+     .byte  0b__.1.1.1..
+     .byte  0b__1.1.1.1.
+     .byte  0b__.11111..
                                            
 DIGITS:
      ;  Images for numbers
      ;  We only need 5 rows, but the extra space on the end makes each digit 8 rows,
      ;  which makes it the multiplication easier.
 
-     .byte   0b__....***.  ; 0 (leading 0 is blank)
-     .byte   0b__....*.*.
-     .byte   0b__....*.*.
-     .byte   0b__....*.*.
-     .byte   0b__....***.
-     .byte   0b__........
-     .byte   0b__........
-     .byte   0b__........
+     .byte 0b__....111.  ; 0 (leading 0 is blank)
+     .byte 0b__....1.1.
+     .byte 0b__....1.1.
+     .byte 0b__....1.1.
+     .byte 0b__....111.
+     .byte 0b__........
+     .byte 0b__........
+     .byte 0b__........
 
-     .byte   0b__..*...*.  ; 1
-     .byte   0b__..*...*.
-     .byte   0b__..*...*.
-     .byte   0b__..*...*.
-     .byte   0b__..*...*.
-     .byte   0b__........
-     .byte   0b__........
-     .byte   0b__........
+     .byte 0b__..1...1.  ; 1
+     .byte 0b__..1...1.
+     .byte 0b__..1...1.
+     .byte 0b__..1...1.
+     .byte 0b__..1...1.
+     .byte 0b__........
+     .byte 0b__........
+     .byte 0b__........
 
-     .byte   0b__***.***.  ; 2
-     .byte   0b__..*...*.
-     .byte   0b__***.***.
-     .byte   0b__*...*...
-     .byte   0b__***.***.
-     .byte   0b__........
-     .byte   0b__........
-     .byte   0b__........
+     .byte 0b__111.111.  ; 2
+     .byte 0b__..1...1.
+     .byte 0b__111.111.
+     .byte 0b__1...1...
+     .byte 0b__111.111.
+     .byte 0b__........
+     .byte 0b__........
+     .byte 0b__........
 
-     .byte   0b__***.***.  ; 3
-     .byte   0b__..*...*.
-     .byte   0b__.**..**.
-     .byte   0b__..*...*.
-     .byte   0b__***.***.
-     .byte   0b__........
-     .byte   0b__........
-     .byte   0b__........
+     .byte 0b__111.111.  ; 3
+     .byte 0b__..1...1.
+     .byte 0b__.11..11.
+     .byte 0b__..1...1.
+     .byte 0b__111.111.
+     .byte 0b__........
+     .byte 0b__........
+     .byte 0b__........
 
-     .byte   0b__*.*.*.*.  ; 4
-     .byte   0b__*.*.*.*.
-     .byte   0b__***.***.
-     .byte   0b__..*...*.
-     .byte   0b__..*...*.
-     .byte   0b__........
-     .byte   0b__........
-     .byte   0b__........
+     .byte 0b__1.1.1.1.  ; 4
+     .byte 0b__1.1.1.1.
+     .byte 0b__111.111.
+     .byte 0b__..1...1.
+     .byte 0b__..1...1.
+     .byte 0b__........
+     .byte 0b__........
+     .byte 0b__........
 
-     .byte   0b__***.***. ; 5
-     .byte   0b__*...*...
-     .byte   0b__***.***.
-     .byte   0b__..*...*.
-     .byte   0b__***.***.
-     .byte   0b__........
-     .byte   0b__........
-     .byte   0b__........
+     .byte 0b__111.111. ; 5
+     .byte 0b__1...1...
+     .byte 0b__111.111.
+     .byte 0b__..1...1.
+     .byte 0b__111.111.
+     .byte 0b__........
+     .byte 0b__........
+     .byte 0b__........
 
-     .byte   0b__***.***. ; 6
-     .byte   0b__*...*...
-     .byte   0b__***.***.
-     .byte   0b__*.*.*.*.
-     .byte   0b__***.***.
-     .byte   0b__........
-     .byte   0b__........
-     .byte   0b__........
+     .byte 0b__111.111. ; 6
+     .byte 0b__1...1...
+     .byte 0b__111.111.
+     .byte 0b__1.1.1.1.
+     .byte 0b__111.111.
+     .byte 0b__........
+     .byte 0b__........
+     .byte 0b__........
 
-     .byte   0b__***.***. ; 7
-     .byte   0b__..*...*.
-     .byte   0b__..*...*.
-     .byte   0b__..*...*.
-     .byte   0b__..*...*.
-     .byte   0b__........
-     .byte   0b__........
-     .byte   0b__........
+     .byte 0b__111.111. ; 7
+     .byte 0b__..1...1.
+     .byte 0b__..1...1.
+     .byte 0b__..1...1.
+     .byte 0b__..1...1.
+     .byte 0b__........
+     .byte 0b__........
+     .byte 0b__........
 
-     .byte   0b__***.***. ; 8
-     .byte   0b__*.*.*.*.
-     .byte   0b__***.***.
-     .byte   0b__*.*.*.*.
-     .byte   0b__***.***.
-     .byte   0b__........
-     .byte   0b__........
-     .byte   0b__........
+     .byte 0b__111.111. ; 8
+     .byte 0b__1.1.1.1.
+     .byte 0b__111.111.
+     .byte 0b__1.1.1.1.
+     .byte 0b__111.111.
+     .byte 0b__........
+     .byte 0b__........
+     .byte 0b__........
 
-     .byte   0b__***.***. ; 9
-     .byte   0b__*.*.*.*.
-     .byte   0b__***.***.
-     .byte   0b__..*...*.
-     .byte   0b__***.***.
-     .byte   0b__........
-     .byte   0b__........
-     .byte   0b__........
+     .byte 0b__111.111. ; 9
+     .byte 0b__1.1.1.1.
+     .byte 0b__111.111.
+     .byte 0b__..1...1.
+     .byte 0b__111.111.
+     .byte 0b__........
+     .byte 0b__........
+     .byte 0b__........
 
 F7FA:
 	 ; 6502 vectors

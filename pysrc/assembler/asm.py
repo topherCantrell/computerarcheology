@@ -62,6 +62,9 @@ class Assembler:
         if(cur_term.startswith('word ')):
             is_word = True
             cur_term = cur_term[5:].strip()
+        elif(cur_term.startswith('byte ')):
+            is_word = False
+            cur_term = cur_term[5:].strip()
         
         if cur_term[0]>='0' and cur_term[0]<='9':
             cur_term = cur_term.replace('_','')
@@ -213,7 +216,7 @@ class Assembler:
                         self.process_define(line, pass_number)
 
                     # Data (list of bytes/words)
-                    elif n.startswith('. '):  # TODO or n.startswith('.W')
+                    elif n.startswith('. ') or n.startswith('.word ') or n.startswith('.byte '):
                         self.process_directive_data(line, pass_number)
                         line['address'] = address
 

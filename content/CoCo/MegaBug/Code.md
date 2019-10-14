@@ -2819,44 +2819,45 @@ DA38: 6F 80          CLR     ,X+
 DA3A: 5A             DECB                    
 DA3B: 26 FB          BNE     $DA38                          ; 
 DA3D: 6F 8D 26 7B    CLR     $00BC,PC                       ;
-DA41: 86 02          LDA     #$02            
-DA43: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} Sound
-DA46: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
-DA48: 80 11          SUBA    #$11            
-DA4A: C0 11          SUBB    #$11            
-DA4C: BD DE 59       JSR     $DE59                          ; {CoordToScrOffs9A} 
-DA4F: 33 84          LEAU    ,X              
-DA51: D7 88          STB     <$88                           ; {ram:BitPos} 
-DA53: BD DB 10       JSR     $DB10                          ; 
-DA56: 33 88 20       LEAU    $20,X           
-DA59: DF A7          STU     <$A7                           ; {ram:mA7m??} 
-DA5B: 33 84          LEAU    ,X              
-DA5D: 04 88          LSR     <$88                           ; {ram:BitPos} 
-DA5F: 04 88          LSR     <$88                           ; {ram:BitPos} 
-DA61: 26 06          BNE     $DA69                          ; 
-DA63: 33 41          LEAU    1,U             
-DA65: C6 C0          LDB     #$C0            
-DA67: D7 88          STB     <$88                           ; {ram:BitPos} 
-DA69: 86 22          LDA     #$22            
-DA6B: 97 99          STA     <$99                           ; {ram:Temp3} 
+DA41: 86 02          LDA     #$02            ; Sound level ...
+DA43: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} ... off
+DA46: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} Get the player's coordinates
+DA48: 80 11          SUBA    #$11            ; Back up to ...
+DA4A: C0 11          SUBB    #$11            ; ... upper left corner
+DA4C: BD DE 59       JSR     $DE59                          ; {CoordToScrOffs9A} Get the screen pointer/bit-pos 
+DA4F: 33 84          LEAU    ,X              ; Memory pointer to U
+DA51: D7 88          STB     <$88                           ; {ram:BitPos} Bit position to 88 
+DA53: BD DB 10       JSR     $DB10                          ; Draw the left side of the magnifier
+DA56: 33 88 20       LEAU    $20,X           ; Row where we draw ...
+DA59: DF A7          STU     <$A7                           ; {ram:mA7m??} ... the bottom line 
+DA5B: 33 84          LEAU    ,X              ; Back to the top of the magnifier
+DA5D: 04 88          LSR     <$88                           ; {ram:BitPos} Shift over ...
+DA5F: 04 88          LSR     <$88                           ; {ram:BitPos} ... one pixel
+DA61: 26 06          BNE     $DA69                          ; We didn't overflow ... keep it
+DA63: 33 41          LEAU    1,U             ; We overflowed ...
+DA65: C6 C0          LDB     #$C0            ; ... start over with the first pixel next byte
+DA67: D7 88          STB     <$88                           ; {ram:BitPos} New pixel position
+DA69: 86 22          LDA     #$22            ; 34 pixels in horizontal line (we already have 2 on the edges)
+DA6B: 97 99          STA     <$99                           ; {ram:Temp3} Keep the pixel counter
 DA6D: 0F BD          CLR     <$BD                           ; {ram:mBDm??} 
 DA6F: 0F A5          CLR     <$A5                           ; {ram:mA5m??} 
 DA71: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
 DA73: 83 08 08       SUBD    #$0808          
 DA76: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} 
-DA79: 31 84          LEAY    ,X              
-DA7B: D7 89          STB     <$89                           ; {ram:m89m??} 
+DA79: 31 84          LEAY    ,X              ; Y points to source maze
+DA7B: D7 89          STB     <$89                           ; {ram:m89m??} Bit position on the source maze
 DA7D: 8E 28 C8       LDX     #$28C8          
-DA80: 1F 30          TFR     U,D             
-DA82: C4 1F          ANDB    #$1F            
+DA80: 1F 30          TFR     U,D             ; Screen pointer to D for math
+DA82: C4 1F          ANDB    #$1F            ; Just keep the X value
 DA84: 30 85          LEAX    B,X             
-DA86: 86 11          LDA     #$11            
-DA88: 97 98          STA     <$98                           ; {ram:Temp2} 
-DA8A: 34 70          PSHS    U,Y,X           
-DA8C: 96 88          LDA     <$88                           ; {ram:BitPos} 
-DA8E: AA C4          ORA     ,U              
-DA90: A7 C4          STA     ,U              
-DA92: 33 C8 20       LEAU    $20,U           
+;
+DA86: 86 11          LDA     #$11            ; 17 rows (doubles to 34)
+DA88: 97 98          STA     <$98                           ; {ram:Temp2} Row counter 
+DA8A: 34 70          PSHS    U,Y,X           ; Hold these while we draw the column
+DA8C: 96 88          LDA     <$88                           ; {ram:BitPos} Bit position
+DA8E: AA C4          ORA     ,U              ; Top of the ...
+DA90: A7 C4          STA     ,U              ; ... magnifier is solid
+DA92: 33 C8 20       LEAU    $20,U           ; Next row down
 DA95: 96 88          LDA     <$88                           ; {ram:BitPos} 
 DA97: AA 84          ORA     ,X              
 DA99: A7 84          STA     ,X              
@@ -2866,25 +2867,27 @@ DA9F: 96 BD          LDA     <$BD                           ; {ram:mBDm??}
 DAA1: 88 40          EORA    #$40            
 DAA3: 97 BD          STA     <$BD                           ; {ram:mBDm??} 
 DAA5: 8B 40          ADDA    #$40            
-DAA7: 97 BC          STA     <$BC                           ; {ram:mBCm??} 
+DAA7: 97 BC          STA     <$BC                           ; {ram:mBCm??}
+; 
 DAA9: 8E DB 5C       LDX     #$DB5C                         ; {!+TDB5C} 
-DAAC: 4F             CLRA                    
+DAAC: 4F             CLRA                    ; MSB of offset is 0
 DAAD: D6 89          LDB     <$89                           ; {ram:m89m??} 
 DAAF: E4 A4          ANDB    ,Y              
-DAB1: A6 8B          LDA     D,X             
-DAB3: 94 88          ANDA    <$88                           ; {ram:BitPos} 
-DAB5: 34 02          PSHS    A               
-DAB7: 96 88          LDA     <$88                           ; {ram:BitPos} 
-DAB9: 43             COMA                    
-DABA: A4 C4          ANDA    ,U              
-DABC: AA E4          ORA     ,S              
-DABE: A7 C4          STA     ,U              
-DAC0: 96 88          LDA     <$88                           ; {ram:BitPos} 
-DAC2: 43             COMA                    
-DAC3: A4 C8 20       ANDA    $20,U           
-DAC6: AA E0          ORA     ,S+             
-DAC8: A7 C8 20       STA     $20,U           
-DACB: 33 C8 40       LEAU    $40,U           
+DAB1: A6 8B          LDA     D,X
+;             
+DAB3: 94 88          ANDA    <$88                           ; {ram:BitPos} The doubled bit ...
+DAB5: 34 02          PSHS    A               ; ... to the stack
+DAB7: 96 88          LDA     <$88                           ; {ram:BitPos} Current bit position
+DAB9: 43             COMA                    ; Now a mask
+DABA: A4 C4          ANDA    ,U              ; Erase pixel coming from screen
+DABC: AA E4          ORA     ,S              ; Add in our new pixel
+DABE: A7 C4          STA     ,U              ; Update the screen
+DAC0: 96 88          LDA     <$88                           ; {ram:BitPos} Current bit position again 
+DAC2: 43             COMA                    ; Now a mask
+DAC3: A4 C8 20       ANDA    $20,U           ; Erase pixel coming from screen (next row down)
+DAC6: AA E0          ORA     ,S+             ; Add in our new pixel
+DAC8: A7 C8 20       STA     $20,U      ; Update the screen (next row down)
+DACB: 33 C8 40       LEAU    $40,U         ; Advance the screen 2 rows (we are doubling)
 DACE: 96 BB          LDA     <$BB                           ; {ram:mBBm??} 
 DAD0: 9B BC          ADDA    <$BC                           ; {ram:mBCm??} 
 DAD2: 97 BB          STA     <$BB                           ; {ram:mBBm??} 
@@ -2892,44 +2895,44 @@ DAD4: 24 09          BCC     $DADF                          ; Skip sound
 DAD6: 86 40          LDA     #$40            
 DAD8: A8 8D 24 44    EORA    $FF20,PC        
 DADC: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} 
-DADF: 31 A8 20       LEAY    $20,Y           
+DADF: 31 A8 20       LEAY    $20,Y           ; Next row in the source maze
 DAE2: 0A 98          DEC     <$98                           ; {ram:Temp2} 
 DAE4: 26 C6          BNE     $DAAC                          ; 
 DAE6: DF A9          STU     <$A9                           ; {ram:mA9m??} 
-DAE8: D6 88          LDB     <$88                           ; {ram:BitPos} 
-DAEA: EA C4          ORB     ,U              
-DAEC: E7 C4          STB     ,U              
+DAE8: D6 88          LDB     <$88                           ; {ram:BitPos} Magnifier ...
+DAEA: EA C4          ORB     ,U              ; ... bottom edge ...
+DAEC: E7 C4          STB     ,U              ; ... is solid
 DAEE: DC 88          LDD     <$88                           ; {ram:BitPos} 
 DAF0: 35 70          PULS    X,Y,U           
-DAF2: 03 A5          COM     <$A5                           ; {ram:mA5m??} 
-DAF4: 26 08          BNE     $DAFE                          ; 
-DAF6: 54             LSRB                    
-DAF7: 54             LSRB                    
-DAF8: 26 04          BNE     $DAFE                          ; 
-DAFA: 31 21          LEAY    1,Y             
-DAFC: C6 C0          LDB     #$C0            
-DAFE: 44             LSRA                    
-DAFF: 44             LSRA                    
-DB00: 26 06          BNE     $DB08                          ; 
-DB02: 86 C0          LDA     #$C0            
-DB04: 33 41          LEAU    1,U             
+DAF2: 03 A5          COM     <$A5                           ; {ram:mA5m??} Only advance the source ...
+DAF4: 26 08          BNE     $DAFE                          ; ... every other pass (we are doubling)
+DAF6: 54             LSRB                    ; Next pixel ...
+DAF7: 54             LSRB                    ; ... from the source maze
+DAF8: 26 04          BNE     $DAFE                          ; Hasn't overflowed ... keep it
+DAFA: 31 21          LEAY    1,Y             ; It did overflow ... next byte over and ...
+DAFC: C6 C0          LDB     #$C0            ; ... first pixel
+DAFE: 44             LSRA                    ; Next bit position ...
+DAFF: 44             LSRA                    ; ... on the screen
+DB00: 26 06          BNE     $DB08                          ; Hasn't overflowed ... keep it
+DB02: 86 C0          LDA     #$C0            ; It did overflow ... first pixel and ...
+DB04: 33 41          LEAU    1,U             ; Next byte over
 DB06: 30 01          LEAX    1,X             
-DB08: DD 88          STD     <$88                           ; {ram:BitPos} 
-DB0A: 0A 99          DEC     <$99                           ; {ram:Temp3} 
-DB0C: 10 26 FF 76    LBNE    $DA86                          ; 
+DB08: DD 88          STD     <$88                           ; {ram:BitPos} New bit position (source and destination) 
+DB0A: 0A 99          DEC     <$99                           ; {ram:Temp3} Do all ...
+DB0C: 10 26 FF 76    LBNE    $DA86                          ; ... the columns
  
-; ?? Vertical line of 36 pixels ??
- 
-DB10: C6 24          LDB     #$24            
-DB12: 96 88          LDA     <$88                           ; {ram:BitPos} 
-DB14: AA C4          ORA     ,U              
-DB16: A7 C4          STA     ,U              
-DB18: 33 C8 20       LEAU    $20,U           
-DB1B: 5A             DECB                    
-DB1C: 26 F4          BNE     $DB12                          ; 
-DB1E: 39             RTS                     
+;Vertical line of 36 pixels
+MagVertLine: 
+DB10: C6 24          LDB     #$24            ; 36 pixels down the screen for the magnifier
+DB12: 96 88          LDA     <$88                           ; {ram:BitPos} Bit position for the line
+DB14: AA C4          ORA     ,U              ; Set the bit ...
+DB16: A7 C4          STA     ,U              ; ... on the screen
+DB18: 33 C8 20       LEAU    $20,U           ; Next row down
+DB1B: 5A             DECB                    ; All 36 rows done?
+DB1C: 26 F4          BNE     $DB12                          ; No ... keep doing them all
+DB1E: 39             RTS                     ; Out
 
-DB1F: EC 8D 25 7F    LDD     $00A2,PC        
+DB1F: EC 8D 25 7F    LDD     $00A2,PC        ; Player coordinates
 DB23: 80 12          SUBA    #$12            
 DB25: 2A 01          BPL     $DB28                          ; 
 DB27: 4F             CLRA                    
@@ -2959,13 +2962,18 @@ DB57: 0A 99          DEC     <$99                           ; {ram:Temp3}
 DB59: 26 ED          BNE     $DB48                          ; 
 DB5B: 39             RTS                     
 
-TDB5C: ; ??
-DB5C: 00 55
-DB5E: AA FF 55 FF
-DB62: FF FF AA
-DB65: FF FF FF
-DB68: FF FF FF
-DB6B: FF 55
+PixelValues: 
+; Possible lookup values are:
+; 00,01,02,03 (far right pixel)
+; 00,04,08,0C (second from right)
+; 00,10,20,30
+; 00,40,80,C0 (left most pixel)
+;
+; This sparse table is sprinkled through the code. I bet that
+; was challenging to declare in the assembly source!
+;
+;     00 01 02 03 04          08          0C          10
+DB5C: 00 55 AA FF 55 FF FF FF AA FF FF FF FF FF FF FF 55
 ```
 
 # Copy screen
@@ -2985,7 +2993,8 @@ DB78: 97 92          STA     <$92                           ; {ram:RequestedPage
 DB7A: 13             SYNC                                   ; Wait for ISR to change the page
 DB7B: 39             RTS                     
 ;
-DB7C: AA                                  ; ?? a left-over reserve-byte in the code?
+;     20
+DB7C: AA                                  ; Continued DB5C table
 ```
 # Copy3KtoLast
 
@@ -3000,9 +3009,8 @@ DB86: 8C 28 00       CMPX    #$2800                         ; All Done?
 DB89: 25 F7          BCS     $DB82                          ; No ... keep copying
 DB8B: 39             RTS                                    ; Done
 
-DB8C: FF FF FF FF FF FF       
-DB92: FF FF FF FF FF FF      
-DB98: FF FF FF FF 55 
+;     30                                              40
+DB8C: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 55 ; Continued DB5C table
 
 GetSplashBugInfo:
 ; Return start of bug row in X
@@ -3036,12 +3044,8 @@ DBC7: 26 EE          BNE     $DBB7                          ; No .. do them all
 DBC9: 9F A5          STX     <$A5                           ; {ram:mA5m??} ?? remember this for something
 DBCB: 39             RTS                                    ; Done
 
-DBCC: FF FF FF 
-DBCF: FF FF FF
-DBD2: FF FF FF
-DBD5: FF FF FF
-DBD8: FF FF FF
-DBDB: FF AA 
+;     70                                              80
+DBCC: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF AA ; Continued DB5C table 
 
 DBDD: C6 FF          LDB     #$FF 
 DBDF: 86 5F          LDA     #$5F
@@ -3068,12 +3072,8 @@ DC09: 4A             DECA
 DC0A: 26 DE          BNE     $DBEA                          ; 
 DC0C: 39             RTS                     
 
-DC0D: FF FF FF
-DC10: FF FF FF
-DC13: FF FF FF
-DC16: FF FF FF
-DC19: FF FF FF
-DC1C: FF 
+;     B1                                           C0
+DC0D: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF ; Continued DB5C table
 
 ; Draw a 67 pixel line down the maze
 DrawVertLine:
@@ -3495,7 +3495,7 @@ DEA4: 84 55          ANDA    #$55                           ; Set the color
 DEA6: A4 84          ANDA    ,X                             ; Is this bug over a dot?
 DEA8: 26 05          BNE     $DEAF                          ; Yes ... skip erasing
 DEAA: 53             COMB                                   ; Now a bit mask
-DEAB: E4 84          ANDB    ,X                             ; Erase the NOOOO ... eating a dot here ...
+DEAB: E4 84          ANDB    ,X                             ; ??Erase the NOOOO ... eating a dot here ...
 DEAD: E7 84          STB     ,X                             ; ... from the screen ??
 ;
 DEAF: 31 23          LEAY    3,Y                            ; Next bug structure

@@ -66,5 +66,6 @@ The data on the bugs is kept in an array at $2808. 3 bytes each: y,x,dir
 
   * 2800:2807: during maze generation, list of unvisited neighbors (2 bytes * 4 possible)
   * 2808:2868: data on up to 32 bugs ... 3 bytes each (y,x,dir)
+  * 28C8:28E7: ??in player-eats-dots
   * 28E8:2A27: array of bytes, one per cell, 20*10 cells. 00=not visited, FF=visited
   * 2A28:????: array of words, coordinates of cells we need to revisit in the maze generation
