@@ -1616,7 +1616,7 @@ D1AA: 26 F2          BNE     $D19E                          ; No ... go back for
 D1AC: 86 FF          LDA     #$FF                           ; Note that we ...
 D1AE: 97 C6          STA     <$C6                           ; {ram:PlayShortSong} ... have played the full song
 ; 
-D1B0: BD DA 33       JSR     $DA33                          ; {DrawMagnifier} 
+D1B0: BD DA 33       JSR     $DA33                          ; {DrawMagnifier} Draw the magnifier
 D1B3: BD D4 A2       JSR     $D4A2                          ; {SwapScreenPointers} Swap screen pointers
 D1B6: 97 92          STA     <$92                           ; {ram:RequestedPage} A set to same as 9C by swap
 D1B8: 86 0F          LDA     #$0F                           ; Delay ...
@@ -1629,11 +1629,11 @@ D1C2: BD DF 70       JSR     $DF70                          ;
 D1C5: BD DB 1F       JSR     $DB1F                          ; 
 D1C8: 03 A1          COM     <$A1                           ; {ram:MouthOpen} Change mouth (open or closed)
 D1CA: 2A 03          BPL     $D1CF                          ; Don't move the bugs when mouth is open
-D1CC: BD DE 7A       JSR     $DE7A                          ; {MoveBugs} ?? Move bugs
+D1CC: BD DE 7A       JSR     $DE7A                          ; {MoveBugs} Move the bugs
 D1CF: BD DF 68       JSR     $DF68                          ; ?? Draw bugs
 D1D2: BD D9 35       JSR     $D935                          ; ?? Move player
 D1D5: DC BE          LDD     <$BE                           ; {ram:DotsLeft} How many dots are left to be eaten?
-D1D7: 10 27 01 69    LBEQ    $D344                          ; None ... player wins
+D1D7: 10 27 01 69    LBEQ    $D344                          ; {PlayerWins} None ... player wins
 D1DB: 96 B8          LDA     <$B8                           ; {ram:DrawScore} Draw the score?
 D1DD: 94 B5          ANDA    <$B5                           ; {ram:LiveOrDemo} Is this the demo game?
 D1DF: 27 25          BEQ     $D206                          ; Either of those ... skip drawing score
@@ -1803,13 +1803,14 @@ D33F: 26 F5          BNE     $D336                          ; No ... keep waitin
 D341: 7E D0 60       JMP     $D060                          ; {SplashMode} Yes ... restart the splash mode
 
 ; Player wins
+PlayerWins:
 D344: 0F C1          CLR     <$C1                           ; {ram:ShowingGame} We are NOT showing the game screen
-D346: BD DA 33       JSR     $DA33                          ; {DrawMagnifier} ?? flashing the maze? doubtful
-D349: BD DA 33       JSR     $DA33                          ; {DrawMagnifier} 
-D34C: BD DA 33       JSR     $DA33                          ; {DrawMagnifier} 
-D34F: 86 04          LDA     #$04            
-D351: 97 92          STA     <$92                           ; {ram:RequestedPage} 
-D353: 13             SYNC                    
+D346: BD DA 33       JSR     $DA33                          ; {DrawMagnifier} Why draw ...
+D349: BD DA 33       JSR     $DA33                          ; {DrawMagnifier} ... the magnifier ...
+D34C: BD DA 33       JSR     $DA33                          ; {DrawMagnifier} ... three times??
+D34F: 86 04          LDA     #$04                           ; Switch to the ...
+D351: 97 92          STA     <$92                           ; {ram:RequestedPage} ... first page (with the maze on it)
+D353: 13             SYNC                                   ; Wait for the screen to change
 D354: 8E 06 00       LDX     #$0600          
 D357: CE 04 00       LDU     #$0400          
 D35A: EC C1          LDD     ,U++            
@@ -1828,7 +1829,7 @@ D376: 33 C9 01 C5    LEAU    $01C5,U
 D37A: 8E 05 C5       LDX     #$05C5          
 D37D: 96 88          LDA     <$88                           ; {ram:BitPos} 
 D37F: 94 AD          ANDA    <$AD                           ; {ram:ColorMask} 
-D381: 97 89          STA     <$89                           ; {ram:m89m??} 
+D381: 97 89          STA     <$89                           ; {ram:BitPosSrc} 
 D383: 86 43          LDA     #$43            
 D385: 97 99          STA     <$99                           ; {ram:Temp3} 
 D387: C6 16          LDB     #$16            
@@ -1836,7 +1837,7 @@ D389: A6 80          LDA     ,X+
 D38B: 88 55          EORA    #$55            
 D38D: 94 88          ANDA    <$88                           ; {ram:BitPos} 
 D38F: 26 06          BNE     $D397                          ; 
-D391: 96 89          LDA     <$89                           ; {ram:m89m??} 
+D391: 96 89          LDA     <$89                           ; {ram:BitPosSrc} 
 D393: A8 C4          EORA    ,U              
 D395: A7 C4          STA     ,U              
 D397: 33 41          LEAU    1,U             
@@ -1899,7 +1900,7 @@ D40A: 20 F1          BRA     $D3FD                          ; Go back for all me
 ;
 D40C: 86 01          LDA     #$01                           ; Start the line of bugs ...
 D40E: 97 98          STA     <$98                           ; {ram:Temp2} ... on line 1
-D410: 8E C0 00       LDX     #$C000          
+D410: 8E C0 00       LDX     #$C000                         ; ??
 D413: 9F A5          STX     <$A5                           ; {ram:HorzDoubler} 
 D415: 86 06          LDA     #$06                           ; Delay for ...
 D417: 8D 4E          BSR     $D467                          ; {DelaySyncs} ... 6 interrupts (10th of a second)
@@ -2010,23 +2011,23 @@ D4B9: 26 FA          BNE     $D4B5                          ; No ... do all
 D4BB: 35 90          PULS    X,PC                           ; Restore X and out
 
 PlaceBugs:
-D4BD: 8E 28 08       LDX     #$2808          
-D4C0: 96 A0          LDA     <$A0                           ; {ram:NumBugs} 
-D4C2: 97 98          STA     <$98                           ; {ram:Temp2} 
+D4BD: 8E 28 08       LDX     #$2808                         ; Data on bugs (3 bytes each)
+D4C0: 96 A0          LDA     <$A0                           ; {ram:NumBugs} Number of bugs to place
+D4C2: 97 98          STA     <$98                           ; {ram:Temp2} Use this as a counter
 D4C4: BD DD 52       JSR     $DD52                          ; {GetRandom} Get random Y coordinate
 D4C7: 84 7C          ANDA    #$7C                           ; Power of 4 and no negatives
 D4C9: 81 40          CMPA    #$40                           ; 64 ... height of maze
 D4CB: 24 F7          BCC     $D4C4                          ; Out of bounds ... try again
 D4CD: 8B 11          ADDA    #$11                           ; Offset to 1st row in maze
-D4CF: A7 88 60       STA     $60,X                          ; ??
-D4D2: A7 84          STA     ,X                             ; ??
+D4CF: A7 88 60       STA     $60,X                          ; Store bug's second set of X coordinate
+D4D2: A7 84          STA     ,X                             ; Store bug's X coordinate
 D4D4: BD DD 52       JSR     $DD52                          ; {GetRandom} Get random X coordinate
 D4D7: 84 7C          ANDA    #$7C                           ; Power of 4 and no negatives
 D4D9: 81 50          CMPA    #$50                           ; 80 ... width of maze
 D4DB: 24 F7          BCC     $D4D4                          ; Out of bounds ... try again
 D4DD: 8B 19          ADDA    #$19                           ; Offset to first column in maze
-D4DF: A7 88 61       STA     $61,X                          ; ??
-D4E2: A7 01          STA     1,X                            ; ??
+D4DF: A7 88 61       STA     $61,X                          ; Store bug's second set of Y coordinate
+D4E2: A7 01          STA     1,X                            ; The bug's Y coordinate
 D4E4: EC 84          LDD     ,X                             ; The bug coordinates we just set
 D4E6: 90 A2          SUBA    <$A2                           ; {ram:PlayerCoords} Compare the Y to the player's Y
 D4E8: 2A 01          BPL     $D4EB                          ; Absolute ...
@@ -2105,7 +2106,7 @@ D54C: 97 C7          STA     <$C7                           ; {ram:VisiblePage} 
 D54E: 44             LSRA                                   ; Offset is 512 byte boundary ... ignore the LSB
 D54F: C6 05          LDB     #$05                           ; 6 registers (bits) to poke
 
-;D54E: CC 02 05 ; TOPHER MOD ?? Always show the 0400 screen
+;D54E: CC 02 05 ; TOPHER MOD Always show the 0400 screen
 
 D551: 8E FF C6       LDX     #$FFC6                         ; Display offset
 D554: 44             LSRA                                   ; Is this bit a 0?
@@ -2587,16 +2588,16 @@ D87E: 97 99          STA     <$99                           ; {ram:Temp3} ... in
 D880: D6 8F          LDB     <$8F                           ; {ram:Temp1} X coordinate
 D882: 54             LSRB                                   ; Divide by ...
 D883: 54             LSRB                                   ; ... 4 (4 pixels per byte)
-D884: C4 1F          ANDB    #$1F            
-D886: 10 8E 28 C8    LDY     #$28C8                         ; ?? Something to do with drawing on the magnifier
-D88A: 31 A5          LEAY    B,Y             
-D88C: A6 A4          LDA     ,Y              
-D88E: 27 1E          BEQ     $D8AE                          ; 
-D890: 34 50          PSHS    U,X             
+D884: C4 1F          ANDB    #$1F                           ; Now we have a screen column number
+D886: 10 8E 28 C8    LDY     #$28C8                         ; Column-has-content flags
+D88A: 31 A5          LEAY    B,Y                            ; The draw-magnifier ...
+D88C: A6 A4          LDA     ,Y                             ; ... made a note if this column has magnified data
+D88E: 27 1E          BEQ     $D8AE                          ; No data ... skip this column
+D890: 34 50          PSHS    U,X                            ; Hold these while we draw
 D892: C6 06          LDB     #$06                           ; 6 rows
-D894: 9C A9          CMPX    <$A9                           ; {ram:MagnifierExtents} ?? magnifier extents?
+D894: 9C A9          CMPX    <$A9                           ; {ram:MagnifierEnd} The end of the magnifier
 D896: 24 0C          BCC     $D8A4                          ; Not in the magnifier ... skip
-D898: 9C A7          CMPX    <$A7                           ; {ram:mA7m??} ?? magnifier extents
+D898: 9C A7          CMPX    <$A7                           ; {ram:MagnifierStart} The beginning of the magnifier
 D89A: 25 08          BCS     $D8A4                          ; Not in the magnifier ... skip
 D89C: A6 C4          LDA     ,U                             ; Get the bug graphics
 D89E: A4 A4          ANDA    ,Y                             ; Color the graphics
@@ -2609,7 +2610,7 @@ D8AA: 26 E8          BNE     $D894                          ; No ... go do them 
 D8AC: 35 50          PULS    X,U                            ; Restore top of bug and graphics
 D8AE: 30 01          LEAX    1,X                            ; 1 byte over on the screen
 D8B0: 33 46          LEAU    6,U                            ; 6 bytes over in the graphics to the next column
-D8B2: 31 21          LEAY    1,Y                            ; ?? color
+D8B2: 31 21          LEAY    1,Y                            ; Next column-has-content flag 
 D8B4: 0A 99          DEC     <$99                           ; {ram:Temp3} All 3 columns of the bug done?
 D8B6: 26 D4          BNE     $D88C                          ; Do all 3 columns (3*6 = 18 bytes)
 D8B8: 35 A0          PULS    Y,PC                           ; Out
@@ -2818,13 +2819,13 @@ Draw the magnified area of the screen and make the eat-dot sound if requested.
 
 ```code
 DrawMagnifier:
-DA33: 8E 28 C8       LDX     #$28C8                         ;
-DA36: C6 20          LDB     #$20                           ;
-DA38: 6F 80          CLR     ,X+                            ;
-DA3A: 5A             DECB                                   ;
-DA3B: 26 FB          BNE     $DA38                          ; ?? Something to do with drawing the bugs on the magnifier
+DA33: 8E 28 C8       LDX     #$28C8                         ; Clear ... 
+DA36: C6 20          LDB     #$20                           ; ... the ...
+DA38: 6F 80          CLR     ,X+                            ; ... 32 column ...
+DA3A: 5A             DECB                                   ; ... has content ...
+DA3B: 26 FB          BNE     $DA38                          ; ... flags
 ;
-DA3D: 6F 8D 26 7B    CLR     $00BC,PC                       ;
+DA3D: 6F 8D 26 7B    CLR     $00BC,PC                       ; {!+ram:EatSnd2} Sound magic
 DA41: 86 02          LDA     #$02                           ; Sound level ...
 DA43: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} ... off
 DA46: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} Get the player's coordinates
@@ -2834,8 +2835,8 @@ DA4C: BD DE 59       JSR     $DE59                          ; {CoordToScrOffs9A}
 DA4F: 33 84          LEAU    ,X                             ; Memory pointer to U
 DA51: D7 88          STB     <$88                           ; {ram:BitPos} Bit position to 88
 DA53: BD DB 10       JSR     $DB10                          ; {MagVertLine} Draw the left side of the magnifier
-DA56: 33 88 20       LEAU    $20,X                          ; Row where we draw ...
-DA59: DF A7          STU     <$A7                           ; {ram:mA7m??} ... the bottom line
+DA56: 33 88 20       LEAU    $20,X                          ; Remember where ...
+DA59: DF A7          STU     <$A7                           ; {ram:MagnifierStart} ... the magnifier starts
 DA5B: 33 84          LEAU    ,X                             ; Back to the top of the magnifier
 DA5D: 04 88          LSR     <$88                           ; {ram:BitPos} Shift over ...
 DA5F: 04 88          LSR     <$88                           ; {ram:BitPos} ... one pixel
@@ -2845,18 +2846,18 @@ DA65: C6 C0          LDB     #$C0                           ; ... start over wit
 DA67: D7 88          STB     <$88                           ; {ram:BitPos} New pixel position
 DA69: 86 22          LDA     #$22                           ; 34 pixels in horizontal line (we already have 2 on the edges)
 DA6B: 97 99          STA     <$99                           ; {ram:Temp3} Keep the pixel counter
-DA6D: 0F BD          CLR     <$BD                           ; {ram:mBDm??} 
+DA6D: 0F BD          CLR     <$BD                           ; {ram:EatSnd3} 
 DA6F: 0F A5          CLR     <$A5                           ; {ram:HorzDoubler} 
 DA71: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
 DA73: 83 08 08       SUBD    #$0808                         ; 8 cells left, 8 cells up -- that's where the magnifier starts
 DA76: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} Get the pointer to the screen and the bit mask
 DA79: 31 84          LEAY    ,X                             ; Y now points to source maze
-DA7B: D7 89          STB     <$89                           ; {ram:m89m??} Bit position on the source maze
+DA7B: D7 89          STB     <$89                           ; {ram:BitPosSrc} Bit position on the source maze
 
-DA7D: 8E 28 C8       LDX     #$28C8                         ; 
-DA80: 1F 30          TFR     U,D                            ; 
-DA82: C4 1F          ANDB    #$1F                           ; ?? something to do with drawing bugs on magnifier
-DA84: 30 85          LEAX    B,X                            ; 
+DA7D: 8E 28 C8       LDX     #$28C8                         ; Column-has-content flags
+DA80: 1F 30          TFR     U,D                            ; Screen pointer to D for math
+DA82: C4 1F          ANDB    #$1F                           ; Just the column number
+DA84: 30 85          LEAX    B,X                            ; Offset to the first column-has-content flag
 
 DA86: 86 11          LDA     #$11                           ; 17 rows (doubles to 34)
 DA88: 97 98          STA     <$98                           ; {ram:Temp2} Row counter
@@ -2866,21 +2867,21 @@ DA8E: AA C4          ORA     ,U                             ; Top of the ...
 DA90: A7 C4          STA     ,U                             ; ... magnifier is solid
 DA92: 33 C8 20       LEAU    $20,U                          ; Next row down
 
-DA95: 96 88          LDA     <$88                           ; {ram:BitPos} 
-DA97: AA 84          ORA     ,X                             ; 
-DA99: A7 84          STA     ,X                             ; 
+DA95: 96 88          LDA     <$88                           ; {ram:BitPos} Bit position
+DA97: AA 84          ORA     ,X                             ; Mark this screen column ...
+DA99: A7 84          STA     ,X                             ; ... as having content (a bug can now be drawn in this column)
 
 DA9B: 96 BA          LDA     <$BA                           ; {ram:MakeEatSound} Make the eat-dot sound?
 DA9D: 27 0A          BEQ     $DAA9                          ; No ... skip the sound change
-DA9F: 96 BD          LDA     <$BD                           ; {ram:mBDm??} 
-DAA1: 88 40          EORA    #$40            
-DAA3: 97 BD          STA     <$BD                           ; {ram:mBDm??} 
-DAA5: 8B 40          ADDA    #$40            
-DAA7: 97 BC          STA     <$BC                           ; {ram:mBCm??} 
+DA9F: 96 BD          LDA     <$BD                           ; {ram:EatSnd3} Do ...
+DAA1: 88 40          EORA    #$40                           ; ... the ...
+DAA3: 97 BD          STA     <$BD                           ; {ram:EatSnd3} ... sound ...
+DAA5: 8B 40          ADDA    #$40                           ; ...  ...
+DAA7: 97 BC          STA     <$BC                           ; {ram:EatSnd2} ... magic
 ; 
 DAA9: 8E DB 5C       LDX     #$DB5C                         ; {!+PixelColorDouble} Pixel color mask lookup table (fast)
 DAAC: 4F             CLRA                                   ; MSB of offset is 0
-DAAD: D6 89          LDB     <$89                           ; {ram:m89m??} Take the bit position from the source screen ...
+DAAD: D6 89          LDB     <$89                           ; {ram:BitPosSrc} Take the bit position from the source screen ...
 DAAF: E4 A4          ANDB    ,Y                             ; ... and get the isolated pixel value (aa_bb_cc_dd)
 DAB1: A6 8B          LDA     D,X                            ; Look that value up in the sparse table to get a color mask
 ;             
@@ -2897,10 +2898,10 @@ DAC3: A4 C8 20       ANDA    $20,U                          ; Erase pixel coming
 DAC6: AA E0          ORA     ,S+                            ; Add in our new pixel
 DAC8: A7 C8 20       STA     $20,U                          ; Update the screen (next row down)
 DACB: 33 C8 40       LEAU    $40,U                          ; Advance the screen 2 rows (we are doubling)
-DACE: 96 BB          LDA     <$BB                           ; {ram:mBBm??} 
-DAD0: 9B BC          ADDA    <$BC                           ; {ram:mBCm??} 
-DAD2: 97 BB          STA     <$BB                           ; {ram:mBBm??} 
-DAD4: 24 09          BCC     $DADF                          ; Skip sound
+DACE: 96 BB          LDA     <$BB                           ; {ram:EatSnd1} Do the ...
+DAD0: 9B BC          ADDA    <$BC                           ; {ram:EatSnd2} ... sound ...
+DAD2: 97 BB          STA     <$BB                           ; {ram:EatSnd1} ... magic
+DAD4: 24 09          BCC     $DADF                          ; Skip sound (there are two beeps played when a dot is eaten)
 ;
 DAD6: 86 40          LDA     #$40                           ; Toggle ...
 DAD8: A8 8D 24 44    EORA    $FF20,PC                       ; ... sound ...
@@ -2909,7 +2910,7 @@ DADC: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} ...
 DADF: 31 A8 20       LEAY    $20,Y                          ; Next row in the source maze
 DAE2: 0A 98          DEC     <$98                           ; {ram:Temp2} All rows done?
 DAE4: 26 C6          BNE     $DAAC                          ; No ... do all 34 rows
-DAE6: DF A9          STU     <$A9                           ; {ram:MagnifierExtents} Remember the bottom of the magnifier
+DAE6: DF A9          STU     <$A9                           ; {ram:MagnifierEnd} Remember the bottom of the magnifier
 DAE8: D6 88          LDB     <$88                           ; {ram:BitPos} Magnifier ...
 DAEA: EA C4          ORB     ,U                             ; ... bottom edge ...
 DAEC: E7 C4          STB     ,U                             ; ... is solid
