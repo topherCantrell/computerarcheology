@@ -1588,7 +1588,7 @@ D169: DD A2          STD     <$A2                           ; {ram:PlayerCoords}
 D16B: 0F A4          CLR     <$A4                           ; {ram:PlayerDir} Player direction (facing up)
 D16D: BD D4 BD       JSR     $D4BD                          ; {PlaceBugs} Place the bugs in the maze
 D170: BD DC 56       JSR     $DC56                          ; {DrawMaze} Draw the random maze
-D173: 0F BA          CLR     <$BA                           ; {ram:mBAm??} 
+D173: 0F BA          CLR     <$BA                           ; {ram:MakeEatSound} 
 D175: 8E 06 00       LDX     #$0600                         ; Copy ...
 D178: CE 04 00       LDU     #$0400                         ; ... screen buffer 0400 ...
 D17B: EC C4          LDD     ,U                             ; ... to ...
@@ -1616,7 +1616,7 @@ D1AA: 26 F2          BNE     $D19E                          ; No ... go back for
 D1AC: 86 FF          LDA     #$FF                           ; Note that we ...
 D1AE: 97 C6          STA     <$C6                           ; {ram:PlayShortSong} ... have played the full song
 ; 
-D1B0: BD DA 33       JSR     $DA33                          ; 
+D1B0: BD DA 33       JSR     $DA33                          ; {DrawMagnifier} 
 D1B3: BD D4 A2       JSR     $D4A2                          ; {SwapScreenPointers} Swap screen pointers
 D1B6: 97 92          STA     <$92                           ; {ram:RequestedPage} A set to same as 9C by swap
 D1B8: 86 0F          LDA     #$0F                           ; Delay ...
@@ -1689,10 +1689,10 @@ D242: 96 B0          LDA     <$B0                           ; {ram:NumSeconds} P
 D244: BD D6 D7       JSR     $D6D7                          ; {PrintTwoDigits} ... number of seconds
 ;
 ; 
-D247: BD DA 33       JSR     $DA33                          ; 
-D24A: 0D BA          TST     <$BA                           ; {ram:mBAm??} 
+D247: BD DA 33       JSR     $DA33                          ; {DrawMagnifier} Draw the magnifier
+D24A: 0D BA          TST     <$BA                           ; {ram:MakeEatSound} 
 D24C: 27 02          BEQ     $D250                          ; 
-D24E: 0A BA          DEC     <$BA                           ; {ram:mBAm??} 
+D24E: 0A BA          DEC     <$BA                           ; {ram:MakeEatSound} 
 D250: BD D7 D8       JSR     $D7D8                          ; {DrawMouth} Draw the mouth
 D253: BD D8 20       JSR     $D820                          ; {DrawBugs} 
 D256: BD D4 A2       JSR     $D4A2                          ; {SwapScreenPointers} 
@@ -1804,9 +1804,9 @@ D341: 7E D0 60       JMP     $D060                          ; {SplashMode} Yes .
 
 ; Player wins
 D344: 0F C1          CLR     <$C1                           ; {ram:ShowingGame} We are NOT showing the game screen
-D346: BD DA 33       JSR     $DA33                          ; ?? flashing the maze? doubtful
-D349: BD DA 33       JSR     $DA33                          ; 
-D34C: BD DA 33       JSR     $DA33                          ; 
+D346: BD DA 33       JSR     $DA33                          ; {DrawMagnifier} ?? flashing the maze? doubtful
+D349: BD DA 33       JSR     $DA33                          ; {DrawMagnifier} 
+D34C: BD DA 33       JSR     $DA33                          ; {DrawMagnifier} 
 D34F: 86 04          LDA     #$04            
 D351: 97 92          STA     <$92                           ; {ram:RequestedPage} 
 D353: 13             SYNC                    
@@ -1856,14 +1856,14 @@ D3B1: 97 AD          STA     <$AD                           ; {ram:ColorMask}
 D3B3: 0A 98          DEC     <$98                           ; {ram:Temp2} 
 D3B5: 26 B9          BNE     $D370                          ; 
 D3B7: 86 04          LDA     #$04            
-D3B9: 97 A5          STA     <$A5                           ; {ram:mA5m??} 
+D3B9: 97 A5          STA     <$A5                           ; {ram:HorzDoubler} 
 D3BB: C6 28          LDB     #$28            
-D3BD: 96 A5          LDA     <$A5                           ; {ram:mA5m??} 
+D3BD: 96 A5          LDA     <$A5                           ; {ram:HorzDoubler} 
 D3BF: 8B 0C          ADDA    #$0C            
 D3C1: 81 28          CMPA    #$28            
 D3C3: 25 02          BCS     $D3C7                          ; 
 D3C5: 86 04          LDA     #$04            
-D3C7: 97 A5          STA     <$A5                           ; {ram:mA5m??} 
+D3C7: 97 A5          STA     <$A5                           ; {ram:HorzDoubler} 
 D3C9: 97 92          STA     <$92                           ; {ram:RequestedPage} 
 D3CB: 86 06          LDA     #$06            
 D3CD: 13             SYNC                    
@@ -1900,7 +1900,7 @@ D40A: 20 F1          BRA     $D3FD                          ; Go back for all me
 D40C: 86 01          LDA     #$01                           ; Start the line of bugs ...
 D40E: 97 98          STA     <$98                           ; {ram:Temp2} ... on line 1
 D410: 8E C0 00       LDX     #$C000          
-D413: 9F A5          STX     <$A5                           ; {ram:mA5m??} 
+D413: 9F A5          STX     <$A5                           ; {ram:HorzDoubler} 
 D415: 86 06          LDA     #$06                           ; Delay for ...
 D417: 8D 4E          BSR     $D467                          ; {DelaySyncs} ... 6 interrupts (10th of a second)
 D419: 8D 51          BSR     $D46C                          ; 
@@ -1950,7 +1950,7 @@ D468: 4A             DECA                                   ; all syncs done?
 D469: 26 FC          BNE     $D467                          ; {DelaySyncs} No ... keep syncing
 D46B: 39             RTS                                    ; Done
 
-D46C: 9E A5          LDX     <$A5                           ; {ram:mA5m??} ?? This starts at C000
+D46C: 9E A5          LDX     <$A5                           ; {ram:HorzDoubler} ?? This starts at C000
 D46E: C6 80          LDB     #$80            
 D470: 6F 82          CLR     ,-X             
 D472: 5A             DECB                    
@@ -2457,17 +2457,17 @@ D7A5: 35 81          PULS    CC,PC                          ; Restore interrupts
 ```code
 PlayGotchaTone:
 D7A7: 86 01          LDA     #$01                           ;
-D7A9: 97 A5          STA     <$A5                           ; {ram:mA5m??} 
+D7A9: 97 A5          STA     <$A5                           ; {ram:HorzDoubler} 
 D7AB: 34 01          PSHS    CC                             ; Hold interrupt bit
 D7AD: 1A 50          ORCC    #$50                           ; Disable interrupts
 D7AF: C6 02          LDB     #$02                           ;
-D7B1: 96 A5          LDA     <$A5                           ; {ram:mA5m??} 
+D7B1: 96 A5          LDA     <$A5                           ; {ram:HorzDoubler} 
 D7B3: 4A             DECA                                   ;
 D7B4: 12             NOP                                    ;
 D7B5: 26 FC          BNE     $D7B3                          ; 
 D7B7: 86 C2          LDA     #$C2                           ;
 D7B9: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} 
-D7BC: 96 A5          LDA     <$A5                           ; {ram:mA5m??} 
+D7BC: 96 A5          LDA     <$A5                           ; {ram:HorzDoubler} 
 D7BE: 40             NEGA                                   ;
 D7BF: 4A             DECA                                   ;
 D7C0: 12             NOP                                    ;
@@ -2476,7 +2476,7 @@ D7C3: 86 02          LDA     #$02                           ;
 D7C5: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} 
 D7C8: 5A             DECB                                   ;
 D7C9: 26 E6          BNE     $D7B1                          ; 
-D7CB: 0C A5          INC     <$A5                           ; {ram:mA5m??} 
+D7CB: 0C A5          INC     <$A5                           ; {ram:HorzDoubler} 
 D7CD: 26 E0          BNE     $D7AF                          ; 
 D7CF: 8E 40 00       LDX     #$4000                         ; Long ...
 D7D2: 30 1F          LEAX    -1,X                           ; ... delay ...
@@ -2588,13 +2588,13 @@ D880: D6 8F          LDB     <$8F                           ; {ram:Temp1} X coor
 D882: 54             LSRB                                   ; Divide by ...
 D883: 54             LSRB                                   ; ... 4 (4 pixels per byte)
 D884: C4 1F          ANDB    #$1F            
-D886: 10 8E 28 C8    LDY     #$28C8                         ; Bug color mask??
+D886: 10 8E 28 C8    LDY     #$28C8                         ; ?? Something to do with drawing on the magnifier
 D88A: 31 A5          LEAY    B,Y             
 D88C: A6 A4          LDA     ,Y              
 D88E: 27 1E          BEQ     $D8AE                          ; 
 D890: 34 50          PSHS    U,X             
 D892: C6 06          LDB     #$06                           ; 6 rows
-D894: 9C A9          CMPX    <$A9                           ; {ram:mA9m??} ?? magnifier extents?
+D894: 9C A9          CMPX    <$A9                           ; {ram:MagnifierExtents} ?? magnifier extents?
 D896: 24 0C          BCC     $D8A4                          ; Not in the magnifier ... skip
 D898: 9C A7          CMPX    <$A7                           ; {ram:mA7m??} ?? magnifier extents
 D89A: 25 08          BCS     $D8A4                          ; Not in the magnifier ... skip
@@ -2627,7 +2627,7 @@ D8BC: 26 28          BNE     $D8E6                          ; joystick ... skip 
 ;
 D8BE: 86 F7          LDA     #$F7                           ; Column 4 (Up arrow)
 D8C0: C4 01          ANDB    #$01            
-D8C2: D7 A5          STB     <$A5                           ; {ram:mA5m??} 
+D8C2: D7 A5          STB     <$A5                           ; {ram:HorzDoubler} 
 D8C4: 27 02          BEQ     $D8C8                          ; 
 D8C6: 86 DF          LDA     #$DF                           ; Column 6 (Right arrow)
 D8C8: B7 FF 02       STA     $FF02                          ; {hard:PIA0_DB} First column on
@@ -2642,7 +2642,7 @@ D8DA: B6 FF 00       LDA     $FF00                          ; {hard:PIA0_DA}
 D8DD: 84 08          ANDA    #$08            
 D8DF: 27 02          BEQ     $D8E3                          ; 
 D8E1: C6 80          LDB     #$80                           ; Upper bit set means nothing pressed
-D8E3: DB A5          ADDB    <$A5                           ; {ram:mA5m??} 
+D8E3: DB A5          ADDB    <$A5                           ; {ram:HorzDoubler} 
 D8E5: 39             RTS                     
 ;
 ; Read joystick
@@ -2654,7 +2654,7 @@ D8ED: B7 FF 23       STA     $FF23                          ; {hard:PIA1_CB}
 D8F0: B6 FF 20       LDA     $FF20                          ; {hard:PIA1_DA} 
 D8F3: 34 02          PSHS    A               
 D8F5: C4 01          ANDB    #$01            
-D8F7: D7 A5          STB     <$A5                           ; {ram:mA5m??} 
+D8F7: D7 A5          STB     <$A5                           ; {ram:HorzDoubler} 
 D8F9: C8 01          EORB    #$01            
 D8FB: 58             LSLB                    
 D8FC: 58             LSLB                    
@@ -2681,7 +2681,7 @@ D928: 35 02          PULS    A
 D92A: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} 
 D92D: 35 02          PULS    A               
 D92F: B7 FF 23       STA     $FF23                          ; {hard:PIA1_CB} 
-D932: DB A5          ADDB    <$A5                           ; {ram:mA5m??} 
+D932: DB A5          ADDB    <$A5                           ; {ram:HorzDoubler} 
 D934: 39             RTS
                      
 D935: 0D B5          TST     <$B5                           ; {ram:LiveOrDemo} 
@@ -2702,13 +2702,13 @@ D955: D6 A4          LDB     <$A4                           ; {ram:PlayerDir}
 D957: C8 01          EORB    #$01            
 D959: BD D8 BA       JSR     $D8BA                          ; Read directional inputs
 D95C: 2B 14          BMI     $D972                          ; Nothing pressed ...
-D95E: D7 A5          STB     <$A5                           ; {ram:mA5m??} 
+D95E: D7 A5          STB     <$A5                           ; {ram:HorzDoubler} 
 D960: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
 D962: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} 
-D965: 96 A5          LDA     <$A5                           ; {ram:mA5m??} 
+D965: 96 A5          LDA     <$A5                           ; {ram:HorzDoubler} 
 D967: BD DF 42       JSR     $DF42                          ; 
 D96A: 25 06          BCS     $D972                          ; 
-D96C: 96 A5          LDA     <$A5                           ; {ram:mA5m??} 
+D96C: 96 A5          LDA     <$A5                           ; {ram:HorzDoubler} 
 D96E: 97 A4          STA     <$A4                           ; {ram:PlayerDir} 
 D970: 20 09          BRA     $D97B                          ; 
 ;
@@ -2744,7 +2744,7 @@ D9AD: A8 E4          EORA    ,S
 D9AF: A4 E0          ANDA    ,S+             
 D9B1: 26 24          BNE     $D9D7                          ; 
 D9B3: 86 03          LDA     #$03            
-D9B5: 97 BA          STA     <$BA                           ; {ram:mBAm??} 
+D9B5: 97 BA          STA     <$BA                           ; {ram:MakeEatSound} 
 D9B7: 96 B5          LDA     <$B5                           ; {ram:LiveOrDemo} 
 D9B9: 27 1C          BEQ     $D9D7                          ; 
 D9BB: 96 B2          LDA     <$B2                           ; {ram:Score} 
@@ -2810,129 +2810,140 @@ DA2C: C4 01          ANDB    #$01
 DA2E: 26 F1          BNE     $DA21                          ; 
 DA30: 1A 01          ORCC    #$01            
 DA32: 39             RTS                     
+```
 
-; ?? Player eats dot? Magnifier?
+# Draw Magnifier
 
-DA33: 8E 28 C8       LDX     #$28C8          
-DA36: C6 20          LDB     #$20            
-DA38: 6F 80          CLR     ,X+             
-DA3A: 5A             DECB                    
-DA3B: 26 FB          BNE     $DA38                          ; 
+Draw the magnified area of the screen and make the eat-dot sound if requested.
+
+```code
+DrawMagnifier:
+DA33: 8E 28 C8       LDX     #$28C8                         ;
+DA36: C6 20          LDB     #$20                           ;
+DA38: 6F 80          CLR     ,X+                            ;
+DA3A: 5A             DECB                                   ;
+DA3B: 26 FB          BNE     $DA38                          ; ?? Something to do with drawing the bugs on the magnifier
+;
 DA3D: 6F 8D 26 7B    CLR     $00BC,PC                       ;
-DA41: 86 02          LDA     #$02            ; Sound level ...
+DA41: 86 02          LDA     #$02                           ; Sound level ...
 DA43: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} ... off
 DA46: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} Get the player's coordinates
-DA48: 80 11          SUBA    #$11            ; Back up to ...
-DA4A: C0 11          SUBB    #$11            ; ... upper left corner
-DA4C: BD DE 59       JSR     $DE59                          ; {CoordToScrOffs9A} Get the screen pointer/bit-pos 
-DA4F: 33 84          LEAU    ,X              ; Memory pointer to U
-DA51: D7 88          STB     <$88                           ; {ram:BitPos} Bit position to 88 
-DA53: BD DB 10       JSR     $DB10                          ; Draw the left side of the magnifier
-DA56: 33 88 20       LEAU    $20,X           ; Row where we draw ...
-DA59: DF A7          STU     <$A7                           ; {ram:mA7m??} ... the bottom line 
-DA5B: 33 84          LEAU    ,X              ; Back to the top of the magnifier
+DA48: 80 11          SUBA    #$11                           ; Back up to ...
+DA4A: C0 11          SUBB    #$11                           ; ... upper left corner
+DA4C: BD DE 59       JSR     $DE59                          ; {CoordToScrOffs9A} Get the screen pointer/bit-pos
+DA4F: 33 84          LEAU    ,X                             ; Memory pointer to U
+DA51: D7 88          STB     <$88                           ; {ram:BitPos} Bit position to 88
+DA53: BD DB 10       JSR     $DB10                          ; {MagVertLine} Draw the left side of the magnifier
+DA56: 33 88 20       LEAU    $20,X                          ; Row where we draw ...
+DA59: DF A7          STU     <$A7                           ; {ram:mA7m??} ... the bottom line
+DA5B: 33 84          LEAU    ,X                             ; Back to the top of the magnifier
 DA5D: 04 88          LSR     <$88                           ; {ram:BitPos} Shift over ...
 DA5F: 04 88          LSR     <$88                           ; {ram:BitPos} ... one pixel
 DA61: 26 06          BNE     $DA69                          ; We didn't overflow ... keep it
-DA63: 33 41          LEAU    1,U             ; We overflowed ...
-DA65: C6 C0          LDB     #$C0            ; ... start over with the first pixel next byte
+DA63: 33 41          LEAU    1,U                            ; We overflowed ...
+DA65: C6 C0          LDB     #$C0                           ; ... start over with the first pixel next byte
 DA67: D7 88          STB     <$88                           ; {ram:BitPos} New pixel position
-DA69: 86 22          LDA     #$22            ; 34 pixels in horizontal line (we already have 2 on the edges)
+DA69: 86 22          LDA     #$22                           ; 34 pixels in horizontal line (we already have 2 on the edges)
 DA6B: 97 99          STA     <$99                           ; {ram:Temp3} Keep the pixel counter
 DA6D: 0F BD          CLR     <$BD                           ; {ram:mBDm??} 
-DA6F: 0F A5          CLR     <$A5                           ; {ram:mA5m??} 
+DA6F: 0F A5          CLR     <$A5                           ; {ram:HorzDoubler} 
 DA71: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
-DA73: 83 08 08       SUBD    #$0808          
-DA76: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} 
-DA79: 31 84          LEAY    ,X              ; Y points to source maze
+DA73: 83 08 08       SUBD    #$0808                         ; 8 cells left, 8 cells up -- that's where the magnifier starts
+DA76: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} Get the pointer to the screen and the bit mask
+DA79: 31 84          LEAY    ,X                             ; Y now points to source maze
 DA7B: D7 89          STB     <$89                           ; {ram:m89m??} Bit position on the source maze
-DA7D: 8E 28 C8       LDX     #$28C8          
-DA80: 1F 30          TFR     U,D             ; Screen pointer to D for math
-DA82: C4 1F          ANDB    #$1F            ; Just keep the X value
-DA84: 30 85          LEAX    B,X             
-;
-DA86: 86 11          LDA     #$11            ; 17 rows (doubles to 34)
-DA88: 97 98          STA     <$98                           ; {ram:Temp2} Row counter 
-DA8A: 34 70          PSHS    U,Y,X           ; Hold these while we draw the column
+
+DA7D: 8E 28 C8       LDX     #$28C8                         ; 
+DA80: 1F 30          TFR     U,D                            ; 
+DA82: C4 1F          ANDB    #$1F                           ; ?? something to do with drawing bugs on magnifier
+DA84: 30 85          LEAX    B,X                            ; 
+
+DA86: 86 11          LDA     #$11                           ; 17 rows (doubles to 34)
+DA88: 97 98          STA     <$98                           ; {ram:Temp2} Row counter
+DA8A: 34 70          PSHS    U,Y,X                          ; Hold these while we draw the column
 DA8C: 96 88          LDA     <$88                           ; {ram:BitPos} Bit position
-DA8E: AA C4          ORA     ,U              ; Top of the ...
-DA90: A7 C4          STA     ,U              ; ... magnifier is solid
-DA92: 33 C8 20       LEAU    $20,U           ; Next row down
+DA8E: AA C4          ORA     ,U                             ; Top of the ...
+DA90: A7 C4          STA     ,U                             ; ... magnifier is solid
+DA92: 33 C8 20       LEAU    $20,U                          ; Next row down
+
 DA95: 96 88          LDA     <$88                           ; {ram:BitPos} 
-DA97: AA 84          ORA     ,X              
-DA99: A7 84          STA     ,X              
-DA9B: 96 BA          LDA     <$BA                           ; {ram:mBAm??} 
-DA9D: 27 0A          BEQ     $DAA9                          ; 
+DA97: AA 84          ORA     ,X                             ; 
+DA99: A7 84          STA     ,X                             ; 
+
+DA9B: 96 BA          LDA     <$BA                           ; {ram:MakeEatSound} Make the eat-dot sound?
+DA9D: 27 0A          BEQ     $DAA9                          ; No ... skip the sound change
 DA9F: 96 BD          LDA     <$BD                           ; {ram:mBDm??} 
 DAA1: 88 40          EORA    #$40            
 DAA3: 97 BD          STA     <$BD                           ; {ram:mBDm??} 
 DAA5: 8B 40          ADDA    #$40            
-DAA7: 97 BC          STA     <$BC                           ; {ram:mBCm??}
+DAA7: 97 BC          STA     <$BC                           ; {ram:mBCm??} 
 ; 
-DAA9: 8E DB 5C       LDX     #$DB5C                         ; {!+TDB5C} 
-DAAC: 4F             CLRA                    ; MSB of offset is 0
-DAAD: D6 89          LDB     <$89                           ; {ram:m89m??} 
-DAAF: E4 A4          ANDB    ,Y              
-DAB1: A6 8B          LDA     D,X
+DAA9: 8E DB 5C       LDX     #$DB5C                         ; {!+PixelColorDouble} Pixel color mask lookup table (fast)
+DAAC: 4F             CLRA                                   ; MSB of offset is 0
+DAAD: D6 89          LDB     <$89                           ; {ram:m89m??} Take the bit position from the source screen ...
+DAAF: E4 A4          ANDB    ,Y                             ; ... and get the isolated pixel value (aa_bb_cc_dd)
+DAB1: A6 8B          LDA     D,X                            ; Look that value up in the sparse table to get a color mask
 ;             
-DAB3: 94 88          ANDA    <$88                           ; {ram:BitPos} The doubled bit ...
-DAB5: 34 02          PSHS    A               ; ... to the stack
+DAB3: 94 88          ANDA    <$88                           ; {ram:BitPos} That's the color of the magnified bit
+DAB5: 34 02          PSHS    A                              ; Put the value on the stack for easy access
 DAB7: 96 88          LDA     <$88                           ; {ram:BitPos} Current bit position
-DAB9: 43             COMA                    ; Now a mask
-DABA: A4 C4          ANDA    ,U              ; Erase pixel coming from screen
-DABC: AA E4          ORA     ,S              ; Add in our new pixel
-DABE: A7 C4          STA     ,U              ; Update the screen
-DAC0: 96 88          LDA     <$88                           ; {ram:BitPos} Current bit position again 
-DAC2: 43             COMA                    ; Now a mask
-DAC3: A4 C8 20       ANDA    $20,U           ; Erase pixel coming from screen (next row down)
-DAC6: AA E0          ORA     ,S+             ; Add in our new pixel
-DAC8: A7 C8 20       STA     $20,U      ; Update the screen (next row down)
-DACB: 33 C8 40       LEAU    $40,U         ; Advance the screen 2 rows (we are doubling)
+DAB9: 43             COMA                                   ; Now a mask
+DABA: A4 C4          ANDA    ,U                             ; Erase pixel coming from screen
+DABC: AA E4          ORA     ,S                             ; Add in our new pixel
+DABE: A7 C4          STA     ,U                             ; Update the screen
+DAC0: 96 88          LDA     <$88                           ; {ram:BitPos} Current bit position again
+DAC2: 43             COMA                                   ; Now a mask
+DAC3: A4 C8 20       ANDA    $20,U                          ; Erase pixel coming from screen (next row down)
+DAC6: AA E0          ORA     ,S+                            ; Add in our new pixel
+DAC8: A7 C8 20       STA     $20,U                          ; Update the screen (next row down)
+DACB: 33 C8 40       LEAU    $40,U                          ; Advance the screen 2 rows (we are doubling)
 DACE: 96 BB          LDA     <$BB                           ; {ram:mBBm??} 
 DAD0: 9B BC          ADDA    <$BC                           ; {ram:mBCm??} 
 DAD2: 97 BB          STA     <$BB                           ; {ram:mBBm??} 
 DAD4: 24 09          BCC     $DADF                          ; Skip sound
-DAD6: 86 40          LDA     #$40            
-DAD8: A8 8D 24 44    EORA    $FF20,PC        
-DADC: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} 
-DADF: 31 A8 20       LEAY    $20,Y           ; Next row in the source maze
-DAE2: 0A 98          DEC     <$98                           ; {ram:Temp2} 
-DAE4: 26 C6          BNE     $DAAC                          ; 
-DAE6: DF A9          STU     <$A9                           ; {ram:mA9m??} 
+;
+DAD6: 86 40          LDA     #$40                           ; Toggle ...
+DAD8: A8 8D 24 44    EORA    $FF20,PC                       ; ... sound ...
+DADC: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} ... value
+; 
+DADF: 31 A8 20       LEAY    $20,Y                          ; Next row in the source maze
+DAE2: 0A 98          DEC     <$98                           ; {ram:Temp2} All rows done?
+DAE4: 26 C6          BNE     $DAAC                          ; No ... do all 34 rows
+DAE6: DF A9          STU     <$A9                           ; {ram:MagnifierExtents} Remember the bottom of the magnifier
 DAE8: D6 88          LDB     <$88                           ; {ram:BitPos} Magnifier ...
-DAEA: EA C4          ORB     ,U              ; ... bottom edge ...
-DAEC: E7 C4          STB     ,U              ; ... is solid
+DAEA: EA C4          ORB     ,U                             ; ... bottom edge ...
+DAEC: E7 C4          STB     ,U                             ; ... is solid
 DAEE: DC 88          LDD     <$88                           ; {ram:BitPos} 
-DAF0: 35 70          PULS    X,Y,U           
-DAF2: 03 A5          COM     <$A5                           ; {ram:mA5m??} Only advance the source ...
+DAF0: 35 70          PULS    X,Y,U                          ; Restore
+DAF2: 03 A5          COM     <$A5                           ; {ram:HorzDoubler} Only advance the source ...
 DAF4: 26 08          BNE     $DAFE                          ; ... every other pass (we are doubling)
-DAF6: 54             LSRB                    ; Next pixel ...
-DAF7: 54             LSRB                    ; ... from the source maze
+DAF6: 54             LSRB                                   ; Next pixel ...
+DAF7: 54             LSRB                                   ; ... from the source maze
 DAF8: 26 04          BNE     $DAFE                          ; Hasn't overflowed ... keep it
-DAFA: 31 21          LEAY    1,Y             ; It did overflow ... next byte over and ...
-DAFC: C6 C0          LDB     #$C0            ; ... first pixel
-DAFE: 44             LSRA                    ; Next bit position ...
-DAFF: 44             LSRA                    ; ... on the screen
+DAFA: 31 21          LEAY    1,Y                            ; It did overflow ... next byte over and ...
+DAFC: C6 C0          LDB     #$C0                           ; ... first pixel
+DAFE: 44             LSRA                                   ; Next bit position ...
+DAFF: 44             LSRA                                   ; ... on the screen
 DB00: 26 06          BNE     $DB08                          ; Hasn't overflowed ... keep it
-DB02: 86 C0          LDA     #$C0            ; It did overflow ... first pixel and ...
-DB04: 33 41          LEAU    1,U             ; Next byte over
-DB06: 30 01          LEAX    1,X             
-DB08: DD 88          STD     <$88                           ; {ram:BitPos} New bit position (source and destination) 
+DB02: 86 C0          LDA     #$C0                           ; It did overflow ... first pixel and ...
+DB04: 33 41          LEAU    1,U                            ; Next byte over
+DB06: 30 01          LEAX    1,X                            ; Advance our mystery table pointer (table is never read)
+DB08: DD 88          STD     <$88                           ; {ram:BitPos} New bit position (source and destination)
 DB0A: 0A 99          DEC     <$99                           ; {ram:Temp3} Do all ...
 DB0C: 10 26 FF 76    LBNE    $DA86                          ; ... the columns
  
 ;Vertical line of 36 pixels
 MagVertLine: 
-DB10: C6 24          LDB     #$24            ; 36 pixels down the screen for the magnifier
+DB10: C6 24          LDB     #$24                           ; 36 pixels down the screen for the magnifier
 DB12: 96 88          LDA     <$88                           ; {ram:BitPos} Bit position for the line
-DB14: AA C4          ORA     ,U              ; Set the bit ...
-DB16: A7 C4          STA     ,U              ; ... on the screen
-DB18: 33 C8 20       LEAU    $20,U           ; Next row down
-DB1B: 5A             DECB                    ; All 36 rows done?
+DB14: AA C4          ORA     ,U                             ; Set the bit ...
+DB16: A7 C4          STA     ,U                             ; ... on the screen
+DB18: 33 C8 20       LEAU    $20,U                          ; Next row down
+DB1B: 5A             DECB                                   ; All 36 rows done?
 DB1C: 26 F4          BNE     $DB12                          ; No ... keep doing them all
-DB1E: 39             RTS                     ; Out
+DB1E: 39             RTS                                    ; Out
 
-DB1F: EC 8D 25 7F    LDD     $00A2,PC        ; Player coordinates
+DB1F: EC 8D 25 7F    LDD     $00A2,PC                       ; Player coordinates
 DB23: 80 12          SUBA    #$12            
 DB25: 2A 01          BPL     $DB28                          ; 
 DB27: 4F             CLRA                    
@@ -2941,15 +2952,15 @@ DB2A: 34 06          PSHS    B,A
 DB2C: BD DE 59       JSR     $DE59                          ; {CoordToScrOffs9A} 
 DB2F: 1F 13          TFR     X,U             
 DB31: 35 06          PULS    A,B             
-DB33: 97 A5          STA     <$A5                           ; {ram:mA5m??} 
+DB33: 97 A5          STA     <$A5                           ; {ram:HorzDoubler} 
 DB35: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} 
 DB38: 86 26          LDA     #$26            
 DB3A: 97 99          STA     <$99                           ; {ram:Temp3} 
-DB3C: 9B A5          ADDA    <$A5                           ; {ram:mA5m??} 
+DB3C: 9B A5          ADDA    <$A5                           ; {ram:HorzDoubler} 
 DB3E: 81 60          CMPA    #$60            
 DB40: 25 06          BCS     $DB48                          ; 
 DB42: 86 60          LDA     #$60            
-DB44: 90 A5          SUBA    <$A5                           ; {ram:mA5m??} 
+DB44: 90 A5          SUBA    <$A5                           ; {ram:HorzDoubler} 
 DB46: 97 99          STA     <$99                           ; {ram:Temp3} 
 DB48: C6 0C          LDB     #$0C            
 DB4A: A6 80          LDA     ,X+             
@@ -2960,18 +2971,37 @@ DB51: 30 88 14       LEAX    $14,X
 DB54: 33 C8 14       LEAU    $14,U           
 DB57: 0A 99          DEC     <$99                           ; {ram:Temp3} 
 DB59: 26 ED          BNE     $DB48                          ; 
-DB5B: 39             RTS                     
+DB5B: 39             RTS
+```
 
-PixelValues: 
-; Possible lookup values are:
-; 00,01,02,03 (far right pixel)
-; 00,04,08,0C (second from right)
-; 00,10,20,30
-; 00,40,80,C0 (left most pixel)
-;
-; This sparse table is sprinkled through the code. I bet that
-; was challenging to declare in the assembly source!
-;
+# Pixel Color Mask
+
+The pixel doubler routine needs a function to convert a pixel value like 00_00_00_10 from the small (original)
+screen to a color mask like 10_10_10_10 to use in two bits on the magnified screen.
+
+The doubler always works on one pixel value like 00_00_00_10 or 00_00_10_00 or 00_10_00_00 or 10_00_00_00.
+All four of these values must yield 10_10_10_10.
+
+The mapping function needs to be very fast since it is used to magnify 34*34 bits. A lookup table is the
+fastest way -- take the pixel's value and look it up in a 256 byte table. Trade ROM space for speed.
+
+There are four possible pixels. Each pixel has 2 bits -- 4 possible values per pixel. The possible values
+for our mask-making can be enumerated:
+  * 00,01,02,03 (far right pixel)
+  * 00,04,08,0C (second from right)
+  * 00,10,20,30
+  * 00,40,80,C0 (left most pixel)
+  
+The zeros are all the same (producing 00_00_00_00). Thus there are only 13 possible values out of 256 that
+need to be converted. The rest of the values in the 256 byte table don't matter since they will never be
+used.
+
+Rather than waste this space, the game sprinkles code into the large sections between values. The lookup
+table goes from DB5C to DC5B. But several routines fill in the unused areas.
+
+```code                     
+
+PixelColorDouble: 
 ;     00 01 02 03 04          08          0C          10
 DB5C: 00 55 AA FF 55 FF FF FF AA FF FF FF FF FF FF FF 55
 ```
@@ -3033,15 +3063,15 @@ DBB1: 8D EA          BSR     $DB9D                          ; {GetSplashBugInfo}
 DBB3: 86 06          LDA     #$06                           ; 6 rows in the bug graphics
 DBB5: 97 99          STA     <$99                           ; {ram:Temp3} Counter
 DBB7: C6 10          LDB     #$10                           ; 16 words (32 bytes) across the screen
-DBB9: D7 A5          STB     <$A5                           ; {ram:mA5m??} Counter
+DBB9: D7 A5          STB     <$A5                           ; {ram:HorzDoubler} Counter
 DBBB: E6 46          LDB     6,U                            ; 1st byte of second column of graphics
 DBBD: A6 C0          LDA     ,U+                            ; 1st byte of first column graphics
 DBBF: ED 81          STD     ,X++                           ; 2 bytes to the screen
-DBC1: 0A A5          DEC     <$A5                           ; {ram:mA5m??} All done on this row of bugs?
+DBC1: 0A A5          DEC     <$A5                           ; {ram:HorzDoubler} All done on this row of bugs?
 DBC3: 26 FA          BNE     $DBBF                          ; No ... do them all
 DBC5: 0A 99          DEC     <$99                           ; {ram:Temp3} All 6 rows done?
 DBC7: 26 EE          BNE     $DBB7                          ; No .. do them all
-DBC9: 9F A5          STX     <$A5                           ; {ram:mA5m??} ?? remember this for something
+DBC9: 9F A5          STX     <$A5                           ; {ram:HorzDoubler} ?? remember this for something
 DBCB: 39             RTS                                    ; Done
 
 ;     70                                              80
@@ -3370,7 +3400,7 @@ DDF0: 86 CF          LDA     #$CF                           ; Erase ...
 DDF2: A4 84          ANDA    ,X                             ; ... the center ...
 DDF4: A7 84          STA     ,X                             ; ... dot
 DDF6: 86 FF          LDA     #$FF                           ; Scroll from ...
-DDF8: 97 A5          STA     <$A5                           ; {ram:mA5m??} ... inside to outside
+DDF8: 97 A5          STA     <$A5                           ; {ram:HorzDoubler} ... inside to outside
 DDFA: 8D 05          BSR     $DE01                          ; {WhiteLineScroll} Scroll 0400 onto the visible screen
 DDFC: 86 04          LDA     #$04                           ; Request to show ...
 DDFE: 97 92          STA     <$92                           ; {ram:RequestedPage} ... page 0400 (so we can draw on 1C00)
@@ -3385,12 +3415,12 @@ A=-1 for inside out or 1 for outside in. This always scrolls the data from 0400 
 WhiteLineScroll:
 DE01: C6 20          LDB     #$20                           ; A is -1 or 1
 DE03: 3D             MUL                                    ; Now -32 or 32
-DE04: D7 A5          STB     <$A5                           ; {ram:mA5m??} Scroll offset (scroll on or scroll off)
+DE04: D7 A5          STB     <$A5                           ; {ram:HorzDoubler} Scroll offset (scroll on or scroll off)
 DE06: 86 30          LDA     #$30                           ; 48 rows + 48 rows = 96 (full screen)
 DE08: 97 98          STA     <$98                           ; {ram:Temp2} Count passes
 DE0A: 8E 21 E0       LDX     #$21E0                         ; Middle ...
 DE0D: 33 88 20       LEAU    $20,X                          ; ... two rows
-DE10: 0D A5          TST     <$A5                           ; {ram:mA5m??} Scrolling inside out or outside in?
+DE10: 0D A5          TST     <$A5                           ; {ram:HorzDoubler} Scrolling inside out or outside in?
 DE12: 2B 28          BMI     $DE3C                          ; Inside out ... keep the center of the screen
 DE14: 8E 1C 00       LDX     #$1C00                         ; Else use the top of screen ...
 DE17: CE 27 E0       LDU     #$27E0                         ; ... and bottom of screen
@@ -3406,7 +3436,7 @@ DE2A: A7 C0          STA     ,U+                            ; ... to the visible
 DE2C: 5A             DECB                                   ; All the row done?
 DE2D: 26 F1          BNE     $DE20                          ; No ... do the whole row
 DE2F: 35 50          PULS    X,U                            ; Restore the pointers
-DE31: 96 A5          LDA     <$A5                           ; {ram:mA5m??} Scroll line offset
+DE31: 96 A5          LDA     <$A5                           ; {ram:HorzDoubler} Scroll line offset
 DE33: 30 86          LEAX    A,X                            ; The top line goes one way ...
 DE35: 40             NEGA                                   ; ... and the bottom goes ...
 DE36: 33 C6          LEAU    A,U                            ; ... the other

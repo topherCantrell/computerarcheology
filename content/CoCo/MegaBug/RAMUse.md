@@ -28,10 +28,10 @@
 | A1    | MouthOpen | 0 if mouth is open or 1 if mouth is closed. Used as a temporary between rounds. |
 | A2:A3 | PlayerCoords | Player's coordinates on the screen (y,x) |
 | A4    | PlayerDir | Player's facing direction |
-| A5    | mA5m?? | ?? |
+| A5    | HorzDoubler | Flag used to double the horizontal pixels when magnified |
 | A6    | NeverUsed1 | ?? |
 | A7:A8 | mA7m?? | ?? |
-| A9:AA | mA9m?? | ?? |
+| A9:AA | MagnifierExtents | The last |
 | AB:AC | PixCoords | Coordinates on the screen (y,x) |
 | AD    | ColorMask | A color mask for printing characters |
 | AE    | ChangeColor | Rotate the color mask after every character (for splash) |
@@ -44,7 +44,7 @@
 | B7    | ISRCountTime  | Counts ISRs in live game to increment the time once a second |
 | B8    | DrawScore | 0 to skip drawing the score or non-zero to draw it |
 | B9    | DrawCountSecs | 0 to skip drawing seconds-count or non-zero to draw it |
-| BA    | mBAm?? | ?? |
+| BA    | MakeEatSound | Non-zero to play the eat-dot-sound |
 | BB    | mBBm?? | ?? |
 | BC    | mBCm?? | ?? |
 | BD    | mBDm?? | ?? |
