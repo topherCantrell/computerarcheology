@@ -2102,7 +2102,6 @@ D546: 96 92          LDA     <$92                           ; {ram:RequestedPage
 D548: 91 C7          CMPA    <$C7                           ; {ram:VisiblePage} Already set?
 D54A: 27 16          BEQ     $D562                          ; Yes ... nothing to do
 D54C: 97 C7          STA     <$C7                           ; {ram:VisiblePage} This is the new set page
-
 D54E: 44             LSRA                                   ; Offset is 512 byte boundary ... ignore the LSB
 D54F: C6 05          LDB     #$05                           ; 6 registers (bits) to poke
 
@@ -2408,19 +2407,18 @@ D753: EC C1          LDD     ,U++                           ; Note 1 (advance U)
 D755: DD 80          STD     <$80                           ; {ram:Note1} 
 D757: EC C1          LDD     ,U++                           ; Note 2 (advance U)
 D759: DD 82          STD     <$82                           ; {ram:Note2} 
-;
-D75B: 6F E4          CLR     ,S                             ;
-D75D: DC 86          LDD     <$86                           ; {ram:NoteC2} 
-D75F: D3 82          ADDD    <$82                           ; {ram:Note2} 
-D761: DD 86          STD     <$86                           ; {ram:NoteC2} 
-D763: 66 E4          ROR     ,S                             ;
-D765: DC 84          LDD     <$84                           ; {ram:NoteC1} 
-D767: D3 80          ADDD    <$80                           ; {ram:Note1} 
-D769: DD 84          STD     <$84                           ; {ram:NoteC1} 
-D76B: A6 E4          LDA     ,S                             ;
-D76D: 46             RORA                                   ;
-D76E: 44             LSRA                                   ;
-D76F: 44             LSRA                                   ;
+D75B: 6F E4          CLR     ,S                             ; Sound ...
+D75D: DC 86          LDD     <$86                           ; {ram:NoteC2} ...
+D75F: D3 82          ADDD    <$82                           ; {ram:Note2} ...
+D761: DD 86          STD     <$86                           ; {ram:NoteC2} ...
+D763: 66 E4          ROR     ,S                             ; ...
+D765: DC 84          LDD     <$84                           ; {ram:NoteC1} ...
+D767: D3 80          ADDD    <$80                           ; {ram:Note1} ...
+D769: DD 84          STD     <$84                           ; {ram:NoteC1} ...
+D76B: A6 E4          LDA     ,S                             ; ...
+D76D: 46             RORA                                   ; ...
+D76E: 44             LSRA                                   ; ...
+D76F: 44             LSRA                                   ; ... magic
 D770: B8 FF 20       EORA    $FF20                          ; {hard:PIA1_DA} 6-bit ...
 D773: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} ... sound
 D776: 30 1F          LEAX    -1,X                           ; Note finished?
@@ -2457,28 +2455,28 @@ D7A5: 35 81          PULS    CC,PC                          ; Restore interrupts
 
 ```code
 PlayGotchaTone:
-D7A7: 86 01          LDA     #$01                           ;
-D7A9: 97 A5          STA     <$A5                           ; {ram:HorzDoubler} 
+D7A7: 86 01          LDA     #$01                           ; Sound ...
+D7A9: 97 A5          STA     <$A5                           ; {ram:HorzDoubler} ... magic
 D7AB: 34 01          PSHS    CC                             ; Hold interrupt bit
 D7AD: 1A 50          ORCC    #$50                           ; Disable interrupts
-D7AF: C6 02          LDB     #$02                           ;
-D7B1: 96 A5          LDA     <$A5                           ; {ram:HorzDoubler} 
-D7B3: 4A             DECA                                   ;
-D7B4: 12             NOP                                    ;
-D7B5: 26 FC          BNE     $D7B3                          ; 
-D7B7: 86 C2          LDA     #$C2                           ;
-D7B9: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} 
-D7BC: 96 A5          LDA     <$A5                           ; {ram:HorzDoubler} 
-D7BE: 40             NEGA                                   ;
-D7BF: 4A             DECA                                   ;
-D7C0: 12             NOP                                    ;
-D7C1: 26 FC          BNE     $D7BF                          ; 
-D7C3: 86 02          LDA     #$02                           ;
-D7C5: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} 
-D7C8: 5A             DECB                                   ;
-D7C9: 26 E6          BNE     $D7B1                          ; 
-D7CB: 0C A5          INC     <$A5                           ; {ram:HorzDoubler} 
-D7CD: 26 E0          BNE     $D7AF                          ; 
+D7AF: C6 02          LDB     #$02                           ; Sound ...
+D7B1: 96 A5          LDA     <$A5                           ; {ram:HorzDoubler} ...
+D7B3: 4A             DECA                                   ; ...
+D7B4: 12             NOP                                    ; ...
+D7B5: 26 FC          BNE     $D7B3                          ; ...
+D7B7: 86 C2          LDA     #$C2                           ; ...
+D7B9: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} ...
+D7BC: 96 A5          LDA     <$A5                           ; {ram:HorzDoubler} ...
+D7BE: 40             NEGA                                   ; ...
+D7BF: 4A             DECA                                   ; ...
+D7C0: 12             NOP                                    ; ...
+D7C1: 26 FC          BNE     $D7BF                          ; ...
+D7C3: 86 02          LDA     #$02                           ; ...
+D7C5: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} ...
+D7C8: 5A             DECB                                   ; ...
+D7C9: 26 E6          BNE     $D7B1                          ; ...
+D7CB: 0C A5          INC     <$A5                           ; {ram:HorzDoubler} ...
+D7CD: 26 E0          BNE     $D7AF                          ; ... magic
 D7CF: 8E 40 00       LDX     #$4000                         ; Long ...
 D7D2: 30 1F          LEAX    -1,X                           ; ... delay ...
 D7D4: 26 FC          BNE     $D7D2                          ; ... loop
@@ -2501,7 +2499,7 @@ D7E5: 10 8E C9 60    LDY     #$C960                         ; {!+PlayerGraphics}
 D7E9: D6 A4          LDB     <$A4                           ; {ram:PlayerDir} Player's direction
 D7EB: 86 06          LDA     #$06                           ; 6 bytes per ...
 D7ED: 3D             MUL                                    ; ... direction
-D7EE: 0D A1          TST     <$A1                           ; {ram:MouthOpen} ?? odd/even counter for mouth
+D7EE: 0D A1          TST     <$A1                           ; {ram:MouthOpen} Odd/even counter for mouth
 D7F0: 2A 02          BPL     $D7F4                          ; Yes ... keep this open mouth image
 D7F2: CB 18          ADDB    #$18                           ; No ... use the ... 
 D7F4: 31 A5          LEAY    B,Y                            ; ... closed-mouth image
@@ -2620,75 +2618,83 @@ D8B8: 35 A0          PULS    Y,PC                           ; Out
 
 Keyboard or joystick -- depending on how the user started the game.
 
+If B comes in as 1, then this routine looks for left/right. Otherwise this routine looks for up/down.
+
+Returns direction in B: 0=Up,1=Left,2=Down,3=Right. Upper bit set if nothing selected.
+
 ```code
+UserDirInput:
 D8BA: 96 C2          LDA     <$C2                           ; {ram:JoyOrKey} Using joystick or keyboard
 D8BC: 26 28          BNE     $D8E6                          ; joystick ... skip to that
 ;
 ; Read keyboard
 ;
 D8BE: 86 F7          LDA     #$F7                           ; Column 4 (Up arrow)
-D8C0: C4 01          ANDB    #$01            
-D8C2: D7 A5          STB     <$A5                           ; {ram:HorzDoubler} 
-D8C4: 27 02          BEQ     $D8C8                          ; 
-D8C6: 86 DF          LDA     #$DF                           ; Column 6 (Right arrow)
+D8C0: C4 01          ANDB    #$01                           ; 1 means up/down, 0 means left/right
+D8C2: D7 A5          STB     <$A5                           ; {ram:HorzDoubler} hold onto this
+D8C4: 27 02          BEQ     $D8C8                          ; B==0 ... up/down requested
+D8C6: 86 DF          LDA     #$DF                           ; Column 5 (Left arrow)
 D8C8: B7 FF 02       STA     $FF02                          ; {hard:PIA0_DB} First column on
-D8CB: 5F             CLRB                    
-D8CC: B6 FF 00       LDA     $FF00                          ; {hard:PIA0_DA} Read the rows
-D8CF: 84 08          ANDA    #$08                           ; Up arrow pressed?
+D8CB: 5F             CLRB                                   ; Value added to <$A5 for UP/LEFT
+D8CC: B6 FF 00       LDA     $FF00                          ; {hard:PIA0_DA} Read the arrow row
+D8CF: 84 08          ANDA    #$08                           ; Arrow pressed?
 D8D1: 27 10          BEQ     $D8E3                          ; Yes ... record and out
 D8D3: 1A 01          ORCC    #$01                           ; Shifting in a 1 to upper column
-D8D5: 79 FF 02       ROL     $FF02                          ; {hard:PIA0_DB} Try the next column
-D8D8: C6 02          LDB     #$02            
-D8DA: B6 FF 00       LDA     $FF00                          ; {hard:PIA0_DA} 
-D8DD: 84 08          ANDA    #$08            
-D8DF: 27 02          BEQ     $D8E3                          ; 
+D8D5: 79 FF 02       ROL     $FF02                          ; {hard:PIA0_DB} Try the next column to the right
+D8D8: C6 02          LDB     #$02                           ; Value added to <$A5 for DOWN/RIGHT
+D8DA: B6 FF 00       LDA     $FF00                          ; {hard:PIA0_DA} Read the arrow row
+D8DD: 84 08          ANDA    #$08                           ; Arrow pressed?
+D8DF: 27 02          BEQ     $D8E3                          ; Yes ... record and out
 D8E1: C6 80          LDB     #$80                           ; Upper bit set means nothing pressed
-D8E3: DB A5          ADDB    <$A5                           ; {ram:HorzDoubler} 
-D8E5: 39             RTS                     
+D8E3: DB A5          ADDB    <$A5                           ; {ram:HorzDoubler} Result in B
+D8E5: 39             RTS                                    ; Done
 ;
 ; Read joystick
 ;
-D8E6: B6 FF 23       LDA     $FF23                          ; {hard:PIA1_CB} 
-D8E9: 34 02          PSHS    A               
-D8EB: 84 F7          ANDA    #$F7            
-D8ED: B7 FF 23       STA     $FF23                          ; {hard:PIA1_CB} 
-D8F0: B6 FF 20       LDA     $FF20                          ; {hard:PIA1_DA} 
-D8F3: 34 02          PSHS    A               
-D8F5: C4 01          ANDB    #$01            
-D8F7: D7 A5          STB     <$A5                           ; {ram:HorzDoubler} 
-D8F9: C8 01          EORB    #$01            
-D8FB: 58             LSLB                    
-D8FC: 58             LSLB                    
-D8FD: 58             LSLB                    
-D8FE: 34 04          PSHS    B               
-D900: F6 FF 01       LDB     $FF01                          ; {hard:PIA0_CA} 
-D903: C4 F7          ANDB    #$F7            
-D905: EA E0          ORB     ,S+             
-D907: F7 FF 01       STB     $FF01                          ; {hard:PIA0_CA} 
-D90A: 5F             CLRB                    
-D90B: 86 22          LDA     #$22            
-D90D: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} 
-D910: 7D FF 00       TST     $FF00                          ; {hard:PIA0_DA} 
-D913: 2A 0E          BPL     $D923                          ; 
-D915: 86 DF          LDA     #$DF            
-D917: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} 
-D91A: C6 02          LDB     #$02            
-D91C: 7D FF 00       TST     $FF00                          ; {hard:PIA0_DA} 
-D91F: 2B 02          BMI     $D923                          ; 
-D921: C6 80          LDB     #$80            
-D923: 86 34          LDA     #$34            
-D925: B7 FF 01       STA     $FF01                          ; {hard:PIA0_CA} 
-D928: 35 02          PULS    A               
-D92A: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} 
-D92D: 35 02          PULS    A               
-D92F: B7 FF 23       STA     $FF23                          ; {hard:PIA1_CB} 
-D932: DB A5          ADDB    <$A5                           ; {ram:HorzDoubler} 
-D934: 39             RTS
-                     
-D935: 0D B5          TST     <$B5                           ; {ram:LiveOrDemo} 
-D937: 10 27 00 AA    LBEQ    $D9E5                          ; 
+D8E6: B6 FF 23       LDA     $FF23                          ; {hard:PIA1_CB} Hold onto value ...
+D8E9: 34 02          PSHS    A                              ; ... we need to change it to find the joystick values
+D8EB: 84 F7          ANDA    #$F7                           ; Disable ...
+D8ED: B7 FF 23       STA     $FF23                          ; {hard:PIA1_CB} ... sound
+D8F0: B6 FF 20       LDA     $FF20                          ; {hard:PIA1_DA} Hold current ...
+D8F3: 34 02          PSHS    A                              ; Sound value
+D8F5: C4 01          ANDB    #$01                           ; 1=Left/Right, 0=Up/Down
+D8F7: D7 A5          STB     <$A5                           ; {ram:HorzDoubler} Hold onto requested direction
+D8F9: C8 01          EORB    #$01                           ; FE=Left/Right, FF=Up/Down
+D8FB: 58             LSLB                                   ; Direction ...
+D8FC: 58             LSLB                                   ; ... to ...
+D8FD: 58             LSLB                                   ; ... SEL 1 (LSB of two analog MUX select lines)
+D8FE: 34 04          PSHS    B                              ; For easy math 
+D900: F6 FF 01       LDB     $FF01                          ; {hard:PIA0_CA} Get the current MUX value
+D903: C4 F7          ANDB    #$F7                           ; Set to 0 ...
+D905: EA E0          ORB     ,S+                            ; ... and then to 1 or 0 based on direction
+D907: F7 FF 01       STB     $FF01                          ; {hard:PIA0_CA} Activate the right analog axis
+D90A: 5F             CLRB                                   ; Value added to <$A5 for UP/LEFT
+D90B: 86 22          LDA     #$22                           ; Low output analog ...
+D90D: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} ... threshold value
+D910: 7D FF 00       TST     $FF00                          ; {hard:PIA0_DA} Axis under the threshold?
+D913: 2A 0E          BPL     $D923                          ; Yes ... keep UP/LEFT
+D915: 86 DF          LDA     #$DF                           ; High output analog ...
+D917: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} ... threshold value
+D91A: C6 02          LDB     #$02                           ; Value added to <$A5 for DOWN/RIGHT
+D91C: 7D FF 00       TST     $FF00                          ; {hard:PIA0_DA} Axis over the threshold?
+D91F: 2B 02          BMI     $D923                          ; Yes ... keep DOWN/RIGHT
+D921: C6 80          LDB     #$80                           ; Upper bit means nothing selected
+;
+D923: 86 34          LDA     #$34                           ; Put FF01 to ...
+D925: B7 FF 01       STA     $FF01                          ; {hard:PIA0_CA} ... 0 for SEL 1
+D928: 35 02          PULS    A                              ; Restore ...
+D92A: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} ... sound value
+D92D: 35 02          PULS    A                              ; Re-enable ...
+D92F: B7 FF 23       STA     $FF23                          ; {hard:PIA1_CB} ... sound
+D932: DB A5          ADDB    <$A5                           ; {ram:HorzDoubler} Result in B
+D934: 39             RTS                                    ; Done
+```
+
+```code                     
+D935: 0D B5          TST     <$B5                           ; {ram:LiveOrDemo} Is this a demo game?
+D937: 10 27 00 AA    LBEQ    $D9E5                          ; Yes ...
 D93B: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
-D93D: BD DA 24       JSR     $DA24                          ; 
+D93D: BD DA 24       JSR     $DA24                          ; {CheckAlignOddEven} 
 D940: 24 0C          BCC     $D94E                          ; 
 D942: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
 D944: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} Offset from top of first screen
@@ -2697,11 +2703,11 @@ D949: 53             COMB
 D94A: E4 84          ANDB    ,X              
 D94C: E7 84          STB     ,X              
 D94E: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
-D950: BD DA 12       JSR     $DA12                          ; 
+D950: BD DA 12       JSR     $DA12                          ; {CheckWallAlign} 
 D953: 24 1D          BCC     $D972                          ; 
 D955: D6 A4          LDB     <$A4                           ; {ram:PlayerDir} 
 D957: C8 01          EORB    #$01            
-D959: BD D8 BA       JSR     $D8BA                          ; Read directional inputs
+D959: BD D8 BA       JSR     $D8BA                          ; {UserDirInput} Read directional inputs
 D95C: 2B 14          BMI     $D972                          ; Nothing pressed ...
 D95E: D7 A5          STB     <$A5                           ; {ram:HorzDoubler} 
 D960: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
@@ -2714,12 +2720,12 @@ D96E: 97 A4          STA     <$A4                           ; {ram:PlayerDir}
 D970: 20 09          BRA     $D97B                          ; 
 ;
 D972: D6 A4          LDB     <$A4                           ; {ram:PlayerDir} 
-D974: BD D8 BA       JSR     $D8BA                          ; Read directional inputs
+D974: BD D8 BA       JSR     $D8BA                          ; {UserDirInput} Read directional inputs
 D977: 2B 02          BMI     $D97B                          ; Nothing pressed ...
 D979: D7 A4          STB     <$A4                           ; {ram:PlayerDir} 
 ;
 D97B: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
-D97D: BD DA 12       JSR     $DA12                          ; 
+D97D: BD DA 12       JSR     $DA12                          ; {CheckWallAlign} 
 D980: 24 0C          BCC     $D98E                          ; 
 D982: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
 D984: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} 
@@ -2735,7 +2741,7 @@ D997: AB 84          ADDA    ,X
 D999: EB 01          ADDB    1,X             
 D99B: DD A2          STD     <$A2                           ; {ram:PlayerCoords} 
 D99D: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
-D99F: BD DA 24       JSR     $DA24                          ; 
+D99F: BD DA 24       JSR     $DA24                          ; {CheckAlignOddEven} 
 D9A2: 24 40          BCC     $D9E4                          ; 
 D9A4: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
 D9A6: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} 
@@ -2770,47 +2776,55 @@ D9DC: 34 04          PSHS    B
 D9DE: 84 AA          ANDA    #$AA            
 D9E0: AA E0          ORA     ,S+             
 D9E2: A7 84          STA     ,X              
-D9E4: 39             RTS                     
-D9E5: D6 A4          LDB     <$A4                           ; {ram:PlayerDir} 
-D9E7: 58             LSLB                    
-D9E8: 8E DE 4F       LDX     #$DE4F                         ; {!+DirOffset} 
-D9EB: 3A             ABX                     
-D9EC: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
-D9EE: AB 84          ADDA    ,X              
-D9F0: EB 01          ADDB    1,X             
-D9F2: DD 8E          STD     <$8E                           ; {ram:Temp1} 
-D9F4: BD DF CC       JSR     $DFCC                          ; {CheckCollision} 
-D9F7: 24 08          BCC     $DA01                          ; 
-D9F9: 96 A4          LDA     <$A4                           ; {ram:PlayerDir} 
-D9FB: 88 02          EORA    #$02            
-D9FD: 97 A4          STA     <$A4                           ; {ram:PlayerDir} 
-D9FF: 20 0E          BRA     $DA0F                          ; 
-DA01: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
-DA03: BD DA 12       JSR     $DA12                          ; 
-DA06: 24 07          BCC     $DA0F                          ; 
-DA08: 10 8E 00 A2    LDY     #$00A2          
-DA0C: BD DE FD       JSR     $DEFD                          ; 
-DA0F: 7E D9 7B       JMP     $D97B                          ; 
-DA12: 80 11          SUBA    #$11            
-DA14: 84 03          ANDA    #$03            
-DA16: 26 09          BNE     $DA21                          ; 
-DA18: C0 19          SUBB    #$19            
-DA1A: C4 03          ANDB    #$03            
-DA1C: 26 03          BNE     $DA21                          ; 
-DA1E: 1A 01          ORCC    #$01            
-DA20: 39             RTS
-;                     
-DA21: 1C FE          ANDCC   #$FE            
-DA23: 39             RTS                     
+D9E4: 39             RTS                    
+ 
+D9E5: D6 A4          LDB     <$A4                           ; {ram:PlayerDir} Get the player's direction
+D9E7: 58             LSLB                                   ; 2 offset bytes per direction
+D9E8: 8E DE 4F       LDX     #$DE4F                         ; {!+DirOffset} Point to ...
+D9EB: 3A             ABX                                    ; ... the offsets for current direction
+D9EC: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} Add player's ...
+D9EE: AB 84          ADDA    ,X                             ; ... coordinates to ...
+D9F0: EB 01          ADDB    1,X                            ; ... the offset
+D9F2: DD 8E          STD     <$8E                           ; {ram:Temp1} This is where we go
+D9F4: BD DF CC       JSR     $DFCC                          ; {CheckCollision} Did we run into a bug?
+D9F7: 24 08          BCC     $DA01                          ; No ... ??
+D9F9: 96 A4          LDA     <$A4                           ; {ram:PlayerDir} Turn the ...
+D9FB: 88 02          EORA    #$02                           ; ... player ...
+D9FD: 97 A4          STA     <$A4                           ; {ram:PlayerDir} ... around 180 degrees
+D9FF: 20 0E          BRA     $DA0F                          ; And keep going
+;
+DA01: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} Player coordinates
+DA03: BD DA 12       JSR     $DA12                          ; {CheckWallAlign} Did the player hit a wall?
+DA06: 24 07          BCC     $DA0F                          ; No ... keep going in that direction
+DA08: 10 8E 00 A2    LDY     #$00A2                         ; Point to player coordinates
+DA0C: BD DE FD       JSR     $DEFD                          ; Make a random turn
+DA0F: 7E D9 7B       JMP     $D97B                          ; ??
 
-DA24: 80 11          SUBA    #$11            
-DA26: 84 01          ANDA    #$01            
-DA28: 26 F7          BNE     $DA21                          ; 
-DA2A: C0 19          SUBB    #$19            
-DA2C: C4 01          ANDB    #$01            
-DA2E: 26 F1          BNE     $DA21                          ; 
-DA30: 1A 01          ORCC    #$01            
-DA32: 39             RTS                     
+CheckWallAlign:
+; Return Carry=1 if object is aligned to where a wall might be
+DA12: 80 11          SUBA    #$11                           ; Offset Y to top of maze
+DA14: 84 03          ANDA    #$03                           ; Y coordinate aligned?
+DA16: 26 09          BNE     $DA21                          ; No ... return not-aligned
+DA18: C0 19          SUBB    #$19                           ; Offset X from left of maze
+DA1A: C4 03          ANDB    #$03                           ; X coordinate aligned?
+DA1C: 26 03          BNE     $DA21                          ; No ... return not-aligned
+;
+DA1E: 1A 01          ORCC    #$01                           ; X and Y are aligned to the edge of the cell
+DA20: 39             RTS			                                 ; Done
+;                     
+DA21: 1C FE          ANDCC   #$FE                           ; Object is not aligned to the edge of the cell
+DA23: 39             RTS                                    ; Done
+
+CheckAlignOddEven: ; ??
+DA24: 80 11          SUBA    #$11                           ; Offset Y to top of maze
+DA26: 84 01          ANDA    #$01                           ; Is this an "odd" position?
+DA28: 26 F7          BNE     $DA21                          ; Yes ... return Carry=0
+DA2A: C0 19          SUBB    #$19                           ; Offset X to left of maze
+DA2C: C4 01          ANDB    #$01                           ; Is this an "odd" position?
+DA2E: 26 F1          BNE     $DA21                          ; Yes ... return Carry=0
+;
+DA30: 1A 01          ORCC    #$01                           ; This is an "even" position. Carry =1
+DA32: 39             RTS                                    ; Done
 ```
 
 # Draw Magnifier
@@ -2943,7 +2957,9 @@ DB18: 33 C8 20       LEAU    $20,U                          ; Next row down
 DB1B: 5A             DECB                                   ; All 36 rows done?
 DB1C: 26 F4          BNE     $DB12                          ; No ... keep doing them all
 DB1E: 39             RTS                                    ; Out
+```
 
+```code
 DB1F: EC 8D 25 7F    LDD     $00A2,PC                       ; Player coordinates
 DB23: 80 12          SUBA    #$12            
 DB25: 2A 01          BPL     $DB28                          ; 
@@ -3515,7 +3531,7 @@ DE8C: EC A4          LDD     ,Y                             ; Get the bug's curr
 DE8E: AB 84          ADDA    ,X                             ; Offset the Y ...
 DE90: EB 01          ADDB    1,X                            ; ... and the X
 DE92: ED A4          STD     ,Y                             ; New coordinate
-DE94: BD DA 24       JSR     $DA24                          ; 
+DE94: BD DA 24       JSR     $DA24                          ; {CheckAlignOddEven} 
 DE97: 24 16          BCC     $DEAF                          ; Skip drawing this bug
 DE99: EC A4          LDD     ,Y                             ; Bug's coordinates
 DE9B: 34 20          PSHS    Y                              ; Hold for a second
@@ -3535,7 +3551,7 @@ DEB3: 26 CD          BNE     $DE82                          ; ... the bugs
 DEB5: 39             RTS                                    ; Done
 
 DEB6: EC A4          LDD     ,Y                             ; Get the bug's Y,X coordinate
-DEB8: BD DA 24       JSR     $DA24                          ; 
+DEB8: BD DA 24       JSR     $DA24                          ; {CheckAlignOddEven} 
 DEBB: 24 F8          BCC     $DEB5                          ; ?? Out
 DEBD: CE DE 4F       LDU     #$DE4F                         ; {!+DirOffset} 
 ;
@@ -3570,53 +3586,56 @@ DEF0: 25 D2          BCS     $DEC4                          ; No ... go back for
 DEF2: 0D 88          TST     <$88                           ; {ram:BitPos} Did we find any
 DEF4: 26 29          BNE     $DF1F                          ; 
 DEF6: EC A4          LDD     ,Y              
-DEF8: BD DA 12       JSR     $DA12                          ; 
+DEF8: BD DA 12       JSR     $DA12                          ; {CheckWallAlign} 
 DEFB: 24 B8          BCC     $DEB5                          ; 
-DEFD: EC A4          LDD     ,Y              
-DEFF: 34 20          PSHS    Y               
-DF01: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} 
-DF04: 35 20          PULS    Y               
-DF06: CE 28 00       LDU     #$2800          
-DF09: 0F 88          CLR     <$88                           ; {ram:BitPos} 
-DF0B: 4F             CLRA                    
-DF0C: 34 12          PSHS    X,A             
-DF0E: 8D 32          BSR     $DF42                          ; 
-DF10: 35 12          PULS    A,X             
-DF12: 25 06          BCS     $DF1A                          ; 
-DF14: D6 88          LDB     <$88                           ; {ram:BitPos} 
-DF16: A7 C0          STA     ,U+             
-DF18: 0C 88          INC     <$88                           ; {ram:BitPos} 
-DF1A: 4C             INCA                    
-DF1B: 81 04          CMPA    #$04            
-DF1D: 25 ED          BCS     $DF0C                          ; 
-DF1F: 96 88          LDA     <$88                           ; {ram:BitPos} 
-DF21: CE 28 00       LDU     #$2800          
-DF24: 4A             DECA                    
-DF25: 27 16          BEQ     $DF3D                          ; 
-DF27: BD DD 52       JSR     $DD52                          ; {GetRandom} 
-DF2A: 84 03          ANDA    #$03            
-DF2C: 91 88          CMPA    <$88                           ; {ram:BitPos} 
-DF2E: 24 F7          BCC     $DF27                          ; 
-DF30: CE 28 00       LDU     #$2800          
-DF33: 33 C6          LEAU    A,U             
-DF35: A6 C4          LDA     ,U              
-DF37: A8 22          EORA    2,Y             
-DF39: 81 02          CMPA    #$02            
-DF3B: 27 EA          BEQ     $DF27                          ; 
-DF3D: A6 C4          LDA     ,U              
-DF3F: A7 22          STA     2,Y             
-DF41: 39             RTS                     
+;
+; Get a random available direction (but not a 180 turn unless we have to)
+DEFD: EC A4          LDD     ,Y                             ; Get coordinates
+DEFF: 34 20          PSHS    Y                              ; Hold this over function call
+DF01: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} convert to screen coordinates
+DF04: 35 20          PULS    Y                              ; Restore after function call
+DF06: CE 28 00       LDU     #$2800                         ; List of available directions
+DF09: 0F 88          CLR     <$88                           ; {ram:BitPos} Number of available directions
+DF0B: 4F             CLRA                                   ; Start with direction 0
+DF0C: 34 12          PSHS    X,A                            ; Hold this over the function call
+DF0E: 8D 32          BSR     $DF42                          ; Check the direction
+DF10: 35 12          PULS    A,X                            ; Restore after call
+DF12: 25 06          BCS     $DF1A                          ; There is a wall in that direction ... don't add this
+DF14: D6 88          LDB     <$88                           ; {ram:BitPos} ?? Why? This is never used.
+DF16: A7 C0          STA     ,U+                            ; Add the available direction to our list
+DF18: 0C 88          INC     <$88                           ; {ram:BitPos} Bump the count of availables
+DF1A: 4C             INCA                                   ; Next direction
+DF1B: 81 04          CMPA    #$04                           ; All directions tried?
+DF1D: 25 ED          BCS     $DF0C                          ; No ... go back for them all
+;
+DF1F: 96 88          LDA     <$88                           ; {ram:BitPos} Number of available directions
+DF21: CE 28 00       LDU     #$2800                         ; List of availables
+DF24: 4A             DECA                                   ; Just one available?
+DF25: 27 16          BEQ     $DF3D                          ; Yes ... we have to use the only one
+DF27: BD DD 52       JSR     $DD52                          ; {GetRandom} Get a random ...
+DF2A: 84 03          ANDA    #$03                           ; ... number
+DF2C: 91 88          CMPA    <$88                           ; {ram:BitPos} More than the number of directions we have?
+DF2E: 24 F7          BCC     $DF27                          ; Yes ... go back and try again
+DF30: CE 28 00       LDU     #$2800                         ; ?? Hey ... U already has this in it
+DF33: 33 C6          LEAU    A,U                            ; Get desired ...
+DF35: A6 C4          LDA     ,U                             ; ... direction
+DF37: A8 22          EORA    2,Y                            ; Are we picking ...
+DF39: 81 02          CMPA    #$02                           ; ... a 180 degree turn?
+DF3B: 27 EA          BEQ     $DF27                          ; Yes ... don't do that ... try again
+DF3D: A6 C4          LDA     ,U                             ; Get the new direction
+DF3F: A7 22          STA     2,Y                            ; Store it
+DF41: 39             RTS                                    ; Done
 
 DF42: 85 01          BITA    #$01            
 DF44: 27 0F          BEQ     $DF55                          ; 
 DF46: 85 02          BITA    #$02            
 DF48: 26 02          BNE     $DF4C                          ; 
 DF4A: 30 1F          LEAX    -1,X            
-DF4C: E6 84          LDB     ,X              
-DF4E: C4 01          ANDB    #$01            
-DF50: 27 13          BEQ     $DF65                          ; 
-DF52: 1A 01          ORCC    #$01            
-DF54: 39             RTS                     
+DF4C: E6 84          LDB     ,X                             ; Get value from screen
+DF4E: C4 01          ANDB    #$01                           ; Is there a wall there?
+DF50: 27 13          BEQ     $DF65                          ; No ... go clear the carry
+DF52: 1A 01          ORCC    #$01                           ; Yes ... set the carry if there is a wall
+DF54: 39             RTS                                    ; Done
 ;
 DF55: 30 88 40       LEAX    $40,X           
 DF58: 85 02          BITA    #$02            
