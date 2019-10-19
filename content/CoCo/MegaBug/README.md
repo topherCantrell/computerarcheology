@@ -19,9 +19,21 @@
 >>> tourGuide {
 
 # Tour Guide
-  * The copy-protection that writes to ROM
   * Using the top of the stack as a register
   * The graphics
   * The bug in the code around the "You need 16k" message
-
 >>> }
+
+# History
+https://en.wikipedia.org/wiki/Dung_Beetles_(video_game)
+1982 by Datasoft. Steve Bjork ported it to CoCo ... still licensed by Datasoft.
+http://www.lcurtisboyle.com/nitros9/megabug.html
+
+# Maze Generator
+Loopiness
+
+# Screen Buffers
+Maze drawn on the 1st screen. Mouth and bugs drawn on the magnifier.
+
+# We Gotcha
+Audio samples

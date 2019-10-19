@@ -2815,7 +2815,8 @@ DA20: 39             RTS			                                 ; Done
 DA21: 1C FE          ANDCC   #$FE                           ; Object is not aligned to the edge of the cell
 DA23: 39             RTS                                    ; Done
 
-CheckAlignOddEven: ; ??
+CheckAlignOddEven:
+; Return Carry=1 for "even" and Carry=0 for odd
 DA24: 80 11          SUBA    #$11                           ; Offset Y to top of maze
 DA26: 84 01          ANDA    #$01                           ; Is this an "odd" position?
 DA28: 26 F7          BNE     $DA21                          ; Yes ... return Carry=0
@@ -3531,19 +3532,19 @@ DE8C: EC A4          LDD     ,Y                             ; Get the bug's curr
 DE8E: AB 84          ADDA    ,X                             ; Offset the Y ...
 DE90: EB 01          ADDB    1,X                            ; ... and the X
 DE92: ED A4          STD     ,Y                             ; New coordinate
-DE94: BD DA 24       JSR     $DA24                          ; {CheckAlignOddEven} 
-DE97: 24 16          BCC     $DEAF                          ; Skip drawing this bug
+DE94: BD DA 24       JSR     $DA24                          ; {CheckAlignOddEven} Is the coordinate an "even" one?
+DE97: 24 16          BCC     $DEAF                          ; No ... skip drawing this bug (they are drawn every other)
 DE99: EC A4          LDD     ,Y                             ; Bug's coordinates
 DE9B: 34 20          PSHS    Y                              ; Hold for a second
 DE9D: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} Get the screen pointer to X
 DEA0: 35 20          PULS    Y                              ; Y coordinates again
 DEA2: 1F 98          TFR     B,A                            ; Pixel map of the bug on the screen
 DEA4: 84 55          ANDA    #$55                           ; Set the color
-DEA6: A4 84          ANDA    ,X                             ; Is this bug over a dot?
-DEA8: 26 05          BNE     $DEAF                          ; Yes ... skip erasing
-DEAA: 53             COMB                                   ; Now a bit mask
-DEAB: E4 84          ANDB    ,X                             ; ??Erase the NOOOO ... eating a dot here ...
-DEAD: E7 84          STB     ,X                             ; ... from the screen ??
+DEA6: A4 84          ANDA    ,X                             ; Is there a player-trail dot here (a regular dot results in not-zero)
+DEA8: 26 05          BNE     $DEAF                          ; Yes ... leave it alone
+DEAA: 53             COMB                                   ; Now a mask
+DEAB: E4 84          ANDB    ,X                             ; Erase whatever dot ...
+DEAD: E7 84          STB     ,X                             ; ... is there (erases player-trail)
 ;
 DEAF: 31 23          LEAY    3,Y                            ; Next bug structure
 DEB1: 0A 98          DEC     <$98                           ; {ram:Temp2} Do all ...
@@ -3551,11 +3552,11 @@ DEB3: 26 CD          BNE     $DE82                          ; ... the bugs
 DEB5: 39             RTS                                    ; Done
 
 DEB6: EC A4          LDD     ,Y                             ; Get the bug's Y,X coordinate
-DEB8: BD DA 24       JSR     $DA24                          ; {CheckAlignOddEven} 
-DEBB: 24 F8          BCC     $DEB5                          ; ?? Out
-DEBD: CE DE 4F       LDU     #$DE4F                         ; {!+DirOffset} 
+DEB8: BD DA 24       JSR     $DA24                          ; {CheckAlignOddEven} Odd or even coordinates? 
+DEBB: 24 F8          BCC     $DEB5                          ; Between cells ... don't change direction
 ;
-; Build a list of possible directions in 2800 (one byte each) 
+; Look for player-trail in all directions
+DEBD: CE DE 4F       LDU     #$DE4F                         ; {!+DirOffset} Direction offset table
 DEC0: 0F 88          CLR     <$88                           ; {ram:BitPos} Number of possible directions found
 DEC2: 0F 99          CLR     <$99                           ; {ram:Temp3} Current direction we are checking
 DEC4: EC C1          LDD     ,U++                           ; Get offset for this direction
@@ -3570,24 +3571,24 @@ DED3: 34 04          PSHS    B                              ; Bit pos to stack
 DED5: E6 84          LDB     ,X                             ; From screen
 DED7: C8 AA          EORB    #$AA                           ; Color
 DED9: E4 E0          ANDB    ,S+                            ; Check bit on screen
-DEDB: 26 0C          BNE     $DEE9                          ; Set. This is a wall. Can't go this way ... skip it
-DEDD: D6 88          LDB     <$88                           ; {ram:BitPos} Number of available directions
-DEDF: 8E 28 00       LDX     #$2800                         ; List of possible directions
+DEDB: 26 0C          BNE     $DEE9                          ; This is NOT a player-trail. Don't record this direction
+DEDD: D6 88          LDB     <$88                           ; {ram:BitPos} Number of player-trail directions
+DEDF: 8E 28 00       LDX     #$2800                         ; List of player-trail directions
 DEE2: 3A             ABX                                    ; Offset to next entry
-DEE3: 96 99          LDA     <$99                           ; {ram:Temp3} Remember we can ...
+DEE3: 96 99          LDA     <$99                           ; {ram:Temp3} Remember we should ...
 DEE5: A7 84          STA     ,X                             ; ... go this way
-DEE7: 0C 88          INC     <$88                           ; {ram:BitPos} Bump number of possible directions
+DEE7: 0C 88          INC     <$88                           ; {ram:BitPos} Bump number of player-trail directions
 DEE9: 96 99          LDA     <$99                           ; {ram:Temp3} Count up ...
 DEEB: 4C             INCA                                   ; ... to next ...
 DEEC: 97 99          STA     <$99                           ; {ram:Temp3} ... direction
 DEEE: 81 04          CMPA    #$04                           ; All 4 directions checked?
 DEF0: 25 D2          BCS     $DEC4                          ; No ... go back for all
 ;
-DEF2: 0D 88          TST     <$88                           ; {ram:BitPos} Did we find any
-DEF4: 26 29          BNE     $DF1F                          ; 
-DEF6: EC A4          LDD     ,Y              
-DEF8: BD DA 12       JSR     $DA12                          ; {CheckWallAlign} 
-DEFB: 24 B8          BCC     $DEB5                          ; 
+DEF2: 0D 88          TST     <$88                           ; {ram:BitPos} Did we find any player-trail directions?
+DEF4: 26 29          BNE     $DF1F                          ; Yes ... go pick one of these
+DEF6: EC A4          LDD     ,Y                             ; Bug coordinates
+DEF8: BD DA 12       JSR     $DA12                          ; {CheckWallAlign} Are we between cells? 
+DEFB: 24 B8          BCC     $DEB5                          ; Yes ... can't change directions here ... out
 ;
 ; Get a random available direction (but not a 180 turn unless we have to)
 DEFD: EC A4          LDD     ,Y                             ; Get coordinates
@@ -3646,15 +3647,21 @@ DF61: C4 10          ANDB    #$10
 DF63: 26 ED          BNE     $DF52                          ; 
 DF65: 1C FE          ANDCC   #$FE            
 DF67: 39             RTS                     
+```
 
+```code
+;??DrawBugs:
 DF68: C6 FF          LDB     #$FF            
 DF6A: 10 8E 28 08    LDY     #$2808          
-DF6E: 20 0D          BRA     $DF7D                          ; 
+DF6E: 20 0D          BRA     $DF7D                          ;
+; 
+;?? Erase bug
 DF70: 5F             CLRB                    
 DF71: 10 8E 28 08    LDY     #$2808          
 DF75: 0D A1          TST     <$A1                           ; {ram:MouthOpen} 
 DF77: 2A 04          BPL     $DF7D                          ; 
-DF79: 10 8E 28 68    LDY     #$2868          
+DF79: 10 8E 28 68    LDY     #$2868
+;          
 DF7D: D7 88          STB     <$88                           ; {ram:BitPos} 
 DF7F: 96 A0          LDA     <$A0                           ; {ram:NumBugs} 
 DF81: 97 98          STA     <$98                           ; {ram:Temp2} 
