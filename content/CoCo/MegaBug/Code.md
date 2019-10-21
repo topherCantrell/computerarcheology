@@ -1625,12 +1625,12 @@ D1BB: 4A             DECA                                   ; ... 16 ...
 D1BC: 26 FC          BNE     $D1BA                          ; Syncs
 D1BE: 86 FF          LDA     #$FF                           ; This IS the ...
 D1C0: 97 C1          STA     <$C1                           ; {ram:ShowingGame} ... main game screen display
-D1C2: BD DF 70       JSR     $DF70                          ; 
+D1C2: BD DF 70       JSR     $DF70                          ; {EraseBugDot:} 
 D1C5: BD DB 1F       JSR     $DB1F                          ; 
 D1C8: 03 A1          COM     <$A1                           ; {ram:MouthOpen} Change mouth (open or closed)
 D1CA: 2A 03          BPL     $D1CF                          ; Don't move the bugs when mouth is open
 D1CC: BD DE 7A       JSR     $DE7A                          ; {MoveBugs} Move the bugs
-D1CF: BD DF 68       JSR     $DF68                          ; ?? Draw bugs
+D1CF: BD DF 68       JSR     $DF68                          ; {DrawBugDot} ?? Draw bugs
 D1D2: BD D9 35       JSR     $D935                          ; ?? Move player
 D1D5: DC BE          LDD     <$BE                           ; {ram:DotsLeft} How many dots are left to be eaten?
 D1D7: 10 27 01 69    LBEQ    $D344                          ; {PlayerWins} None ... player wins
@@ -3523,8 +3523,8 @@ MoveBugs:
 DE7A: 96 A0          LDA     <$A0                           ; {ram:NumBugs} Number of bugs in the game
 DE7C: 97 98          STA     <$98                           ; {ram:Temp2} To a temporary counter
 DE7E: 10 8E 28 08    LDY     #$2808                         ; Data on all the bugs
-DE82: BD DE B6       JSR     $DEB6                          ; 
-DE85: 8E DE 4F       LDX     #$DE4F                         ; {!+DirOffset} 
+DE82: BD DE B6       JSR     $DEB6                          ; Return if this bug is between cells
+DE85: 8E DE 4F       LDX     #$DE4F                         ; {!+DirOffset} Direction table
 DE88: E6 22          LDB     2,Y                            ; Bug's direction
 DE8A: 58             LSLB                                   ; Two bytes per direction
 DE8B: 3A             ABX                                    ; Get direction offset
@@ -3552,7 +3552,7 @@ DEB3: 26 CD          BNE     $DE82                          ; ... the bugs
 DEB5: 39             RTS                                    ; Done
 
 DEB6: EC A4          LDD     ,Y                             ; Get the bug's Y,X coordinate
-DEB8: BD DA 24       JSR     $DA24                          ; {CheckAlignOddEven} Odd or even coordinates? 
+DEB8: BD DA 24       JSR     $DA24                          ; {CheckAlignOddEven} Odd or even coordinates?
 DEBB: 24 F8          BCC     $DEB5                          ; Between cells ... don't change direction
 ;
 ; Look for player-trail in all directions
@@ -3587,7 +3587,7 @@ DEF0: 25 D2          BCS     $DEC4                          ; No ... go back for
 DEF2: 0D 88          TST     <$88                           ; {ram:BitPos} Did we find any player-trail directions?
 DEF4: 26 29          BNE     $DF1F                          ; Yes ... go pick one of these
 DEF6: EC A4          LDD     ,Y                             ; Bug coordinates
-DEF8: BD DA 12       JSR     $DA12                          ; {CheckWallAlign} Are we between cells? 
+DEF8: BD DA 12       JSR     $DA12                          ; {CheckWallAlign} Are we between cells?
 DEFB: 24 B8          BCC     $DEB5                          ; Yes ... can't change directions here ... out
 ;
 ; Get a random available direction (but not a 180 turn unless we have to)
@@ -3626,83 +3626,91 @@ DF3B: 27 EA          BEQ     $DF27                          ; Yes ... don't do t
 DF3D: A6 C4          LDA     ,U                             ; Get the new direction
 DF3F: A7 22          STA     2,Y                            ; Store it
 DF41: 39             RTS                                    ; Done
-
-DF42: 85 01          BITA    #$01            
-DF44: 27 0F          BEQ     $DF55                          ; 
-DF46: 85 02          BITA    #$02            
-DF48: 26 02          BNE     $DF4C                          ; 
-DF4A: 30 1F          LEAX    -1,X            
+;
+; Check for wall
+; A is direction
+DF42: 85 01          BITA    #$01                           ; Up or down?
+DF44: 27 0F          BEQ     $DF55                          ; Yes ... go handle up/down
+DF46: 85 02          BITA    #$02                           ; Must be left/right. Is it right?
+DF48: 26 02          BNE     $DF4C                          ; Yes ... use what we got
+DF4A: 30 1F          LEAX    -1,X                           ; Back up one byte on screen
 DF4C: E6 84          LDB     ,X                             ; Get value from screen
 DF4E: C4 01          ANDB    #$01                           ; Is there a wall there?
 DF50: 27 13          BEQ     $DF65                          ; No ... go clear the carry
 DF52: 1A 01          ORCC    #$01                           ; Yes ... set the carry if there is a wall
 DF54: 39             RTS                                    ; Done
 ;
-DF55: 30 88 40       LEAX    $40,X           
-DF58: 85 02          BITA    #$02            
-DF5A: 26 03          BNE     $DF5F                          ; 
-DF5C: 30 88 80       LEAX    $80,X           
-DF5F: E6 84          LDB     ,X              
-DF61: C4 10          ANDB    #$10            
-DF63: 26 ED          BNE     $DF52                          ; 
-DF65: 1C FE          ANDCC   #$FE            
-DF67: 39             RTS                     
+DF55: 30 88 40       LEAX    $40,X                          ; 2 rows down
+DF58: 85 02          BITA    #$02                           ; This is up/down. Is it down?
+DF5A: 26 03          BNE     $DF5F                          ; Yes ... use what we got
+DF5C: 30 88 80       LEAX    $80,X                          ; 4 rows down to next cell
+DF5F: E6 84          LDB     ,X                             ; Get value from screen
+DF61: C4 10          ANDB    #$10                           ; Is there a wall there?
+DF63: 26 ED          BNE     $DF52                          ; Yes ... set the carry
+DF65: 1C FE          ANDCC   #$FE                           ; Carry clear means no wall
+DF67: 39             RTS                                    ; Done
 ```
 
+# Bug dots
+
+Drawing and erasing the bugs on the non-magnified maze.
+
+?? When we erase, we copy the second-set coordinate to the first-set. Need to comment on what this first/second is.
+
 ```code
-;??DrawBugs:
-DF68: C6 FF          LDB     #$FF            
-DF6A: 10 8E 28 08    LDY     #$2808          
-DF6E: 20 0D          BRA     $DF7D                          ;
+DrawBugDot:
+DF68: C6 FF          LDB     #$FF                           ; We are drawing the bug
+DF6A: 10 8E 28 08    LDY     #$2808                         ; First set of bug coordinates
+DF6E: 20 0D          BRA     $DF7D                          ; Common code
 ; 
-;?? Erase bug
-DF70: 5F             CLRB                    
-DF71: 10 8E 28 08    LDY     #$2808          
-DF75: 0D A1          TST     <$A1                           ; {ram:MouthOpen} 
-DF77: 2A 04          BPL     $DF7D                          ; 
-DF79: 10 8E 28 68    LDY     #$2868
+EraseBugDot::
+DF70: 5F             CLRB                                   ; We are erasing the bug
+DF71: 10 8E 28 08    LDY     #$2808                         ; Second set of bug coordinates
+DF75: 0D A1          TST     <$A1                           ; {ram:MouthOpen} Is the mouth open?
+DF77: 2A 04          BPL     $DF7D                          ; Yes ... keep the first set of coordinates
+DF79: 10 8E 28 68    LDY     #$2868                         ; No ... switch to the second set of coordinates
 ;          
-DF7D: D7 88          STB     <$88                           ; {ram:BitPos} 
-DF7F: 96 A0          LDA     <$A0                           ; {ram:NumBugs} 
-DF81: 97 98          STA     <$98                           ; {ram:Temp2} 
-DF83: E6 21          LDB     1,Y             
-DF85: C4 03          ANDB    #$03            
-DF87: 8E DE 76       LDX     #$DE76                         ; {!+BitPosTable} 
-DF8A: E6 85          LDB     B,X             
-DF8C: 34 04          PSHS    B               
-DF8E: A6 A4          LDA     ,Y              
-DF90: C6 20          LDB     #$20            
-DF92: 3D             MUL                     
-DF93: 34 06          PSHS    B,A             
-DF95: 4F             CLRA                    
-DF96: E6 21          LDB     1,Y             
-DF98: 54             LSRB                    
-DF99: 54             LSRB                    
-DF9A: E3 E1          ADDD    ,S++            
-DF9C: 8E 04 00       LDX     #$0400          
-DF9F: 30 8B          LEAX    D,X             
-DFA1: D3 9A          ADDD    <$9A                           ; {ram:DrawingScreenPtr} 
-DFA3: 1F 03          TFR     D,U             
-DFA5: A6 E4          LDA     ,S              
-DFA7: 94 88          ANDA    <$88                           ; {ram:BitPos} 
-DFA9: 43             COMA                    
-DFAA: A4 84          ANDA    ,X              
-DFAC: E6 E0          LDB     ,S+             
-DFAE: 34 02          PSHS    A               
-DFB0: C4 55          ANDB    #$55            
-DFB2: D4 88          ANDB    <$88                           ; {ram:BitPos} 
-DFB4: EA E0          ORB     ,S+             
-DFB6: E7 C4          STB     ,U              
-DFB8: 96 A1          LDA     <$A1                           ; {ram:MouthOpen} 
-DFBA: 2A 09          BPL     $DFC5                          ; 
-DFBC: 96 88          LDA     <$88                           ; {ram:BitPos} 
-DFBE: 26 05          BNE     $DFC5                          ; 
-DFC0: EC A8 A0       LDD     $A0,Y           
-DFC3: ED A4          STD     ,Y              
-DFC5: 31 23          LEAY    3,Y             
-DFC7: 0A 98          DEC     <$98                           ; {ram:Temp2} 
-DFC9: 26 B8          BNE     $DF83                          ; 
-DFCB: 39             RTS                     
+DF7D: D7 88          STB     <$88                           ; {ram:BitPos} Store the color mask
+DF7F: 96 A0          LDA     <$A0                           ; {ram:NumBugs} Number of bugs
+DF81: 97 98          STA     <$98                           ; {ram:Temp2} Use this as a counter
+DF83: E6 21          LDB     1,Y                            ; X coordinate
+DF85: C4 03          ANDB    #$03                           ; Make a ...
+DF87: 8E DE 76       LDX     #$DE76                         ; {!+BitPosTable} ... quick ...
+DF8A: E6 85          LDB     B,X                            ; ... bit position
+DF8C: 34 04          PSHS    B                              ; Hold the bit position
+DF8E: A6 A4          LDA     ,Y                             ; Y coordinate
+DF90: C6 20          LDB     #$20                           ; 32 bytes ...
+DF92: 3D             MUL                                    ; ... per row
+DF93: 34 06          PSHS    B,A                            ; Store row pointer
+DF95: 4F             CLRA                                   ; MSB of 0
+DF96: E6 21          LDB     1,Y                            ; Y coordinate again
+DF98: 54             LSRB                                   ; 4 pixels ...
+DF99: 54             LSRB                                   ; ... per byte
+DF9A: E3 E1          ADDD    ,S++                           ; Now screen pointer to bug in D
+DF9C: 8E 04 00       LDX     #$0400                         ; Offset on ...
+DF9F: 30 8B          LEAX    D,X                            ; ... the first screen buffer (to X)
+DFA1: D3 9A          ADDD    <$9A                           ; {ram:DrawingScreenPtr} Offset to drawing ...
+DFA3: 1F 03          TFR     D,U                            ; ... buffer (to U)
+DFA5: A6 E4          LDA     ,S                             ; Bug's bit position
+DFA7: 94 88          ANDA    <$88                           ; {ram:BitPos} color mask (either on or off)
+DFA9: 43             COMA                                   ; Mask the bug's bit from ...
+DFAA: A4 84          ANDA    ,X                             ; ... the screen
+DFAC: E6 E0          LDB     ,S+                            ; Bit position
+DFAE: 34 02          PSHS    A                              ; Now store the screen value on the stack
+DFB0: C4 55          ANDB    #$55                           ; Bug's color
+DFB2: D4 88          ANDB    <$88                           ; {ram:BitPos} Draw the bug ...
+DFB4: EA E0          ORB     ,S+                            ; ... on the screen (or leave it off)
+DFB6: E7 C4          STB     ,U                             ; And on the drawing screen
+DFB8: 96 A1          LDA     <$A1                           ; {ram:MouthOpen} Is the mouth open?
+DFBA: 2A 09          BPL     $DFC5                          ; Yes ... skip copy
+DFBC: 96 88          LDA     <$88                           ; {ram:BitPos} Are we drawing or erasing a bug?
+DFBE: 26 05          BNE     $DFC5                          ; Drawing ... skip copy
+DFC0: EC A8 A0       LDD     $A0,Y                          ; Copy 2nd set of coordinates ...
+DFC3: ED A4          STD     ,Y                             ; ... to first set
+DFC5: 31 23          LEAY    3,Y                            ; Next bug
+DFC7: 0A 98          DEC     <$98                           ; {ram:Temp2} Do ...
+DFC9: 26 B8          BNE     $DF83                          ; ... all the bugs
+DFCB: 39             RTS                                    ; Done
 ```
 
 # Check collision between bugs and player
