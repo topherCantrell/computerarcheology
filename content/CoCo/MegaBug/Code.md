@@ -1623,14 +1623,14 @@ D1B8: 86 0F          LDA     #$0F                           ; Delay ...
 D1BA: 13             SYNC                                   ; ... for ...
 D1BB: 4A             DECA                                   ; ... 16 ...
 D1BC: 26 FC          BNE     $D1BA                          ; Syncs
-D1BE: 86 FF          LDA     #$FF                           ; This IS the ...
+D1BE: 86 FF          LDA     #$FF                           ; This is the ...
 D1C0: 97 C1          STA     <$C1                           ; {ram:ShowingGame} ... main game screen display
-D1C2: BD DF 70       JSR     $DF70                          ; {EraseBugDot:} 
-D1C5: BD DB 1F       JSR     $DB1F                          ; 
+D1C2: BD DF 70       JSR     $DF70                          ; {EraseBugDot} 
+D1C5: BD DB 1F       JSR     $DB1F                          ; ?? Erase magnifier 
 D1C8: 03 A1          COM     <$A1                           ; {ram:MouthOpen} Change mouth (open or closed)
 D1CA: 2A 03          BPL     $D1CF                          ; Don't move the bugs when mouth is open
 D1CC: BD DE 7A       JSR     $DE7A                          ; {MoveBugs} Move the bugs
-D1CF: BD DF 68       JSR     $DF68                          ; {DrawBugDot} ?? Draw bugs
+D1CF: BD DF 68       JSR     $DF68                          ; {DrawBugDot} Draw bugs as dots
 D1D2: BD D9 35       JSR     $D935                          ; ?? Move player
 D1D5: DC BE          LDD     <$BE                           ; {ram:DotsLeft} How many dots are left to be eaten?
 D1D7: 10 27 01 69    LBEQ    $D344                          ; {PlayerWins} None ... player wins
@@ -1926,13 +1926,13 @@ D43F: 86 2D          LDA     #$2D                           ; Delay for ...
 D441: BD D4 67       JSR     $D467                          ; {DelaySyncs} ... 3/4th second
 D444: 86 02          LDA     #$02                           ; Delay for ...
 D446: 8D 1F          BSR     $D467                          ; {DelaySyncs} ... two interrupts
-D448: BD DB DD       JSR     $DBDD                          ; 
+D448: BD DB DD       JSR     $DBDD                          ; {EraseLoneSplash} 
 D44B: 96 98          LDA     <$98                           ; {ram:Temp2} 
 D44D: 8B 02          ADDA    #$02            
 D44F: 97 98          STA     <$98                           ; {ram:Temp2} 
 D451: 81 58          CMPA    #$58            
 D453: 24 0A          BCC     $D45F                          ; 
-D455: BD DB E0       JSR     $DBE0                          ; 
+D455: BD DB E0       JSR     $DBE0                          ; {DrawLoneSplash} 
 D458: 03 A1          COM     <$A1                           ; {ram:MouthOpen} Next bug picture
 D45A: BD D5 27       JSR     $D527                          ; {SoundBugLine} 
 D45D: 20 E5          BRA     $D444                          ; 
@@ -2876,7 +2876,7 @@ DA84: 30 85          LEAX    B,X                            ; Offset to the firs
 
 DA86: 86 11          LDA     #$11                           ; 17 rows (doubles to 34)
 DA88: 97 98          STA     <$98                           ; {ram:Temp2} Row counter
-DA8A: 34 70          PSHS    U,Y,X                          ; Hold these while we draw the column
+DA8A: 34 70          PSHS    U,Y,X                          ; Hold these for next pass
 DA8C: 96 88          LDA     <$88                           ; {ram:BitPos} Bit position
 DA8E: AA C4          ORA     ,U                             ; Top of the ...
 DA90: A7 C4          STA     ,U                             ; ... magnifier is solid
@@ -2961,6 +2961,7 @@ DB1E: 39             RTS                                    ; Out
 ```
 
 ```code
+EraseMagnifier:
 DB1F: EC 8D 25 7F    LDD     $00A2,PC                       ; Player coordinates
 DB23: 80 12          SUBA    #$12            
 DB25: 2A 01          BPL     $DB28                          ; 
@@ -2972,7 +2973,7 @@ DB2F: 1F 13          TFR     X,U
 DB31: 35 06          PULS    A,B             
 DB33: 97 A5          STA     <$A5                           ; {ram:HorzDoubler} 
 DB35: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} 
-DB38: 86 26          LDA     #$26            
+DB38: 86 26          LDA     #$26            ; 38 rows
 DB3A: 97 99          STA     <$99                           ; {ram:Temp3} 
 DB3C: 9B A5          ADDA    <$A5                           ; {ram:HorzDoubler} 
 DB3E: 81 60          CMPA    #$60            
@@ -2980,16 +2981,16 @@ DB40: 25 06          BCS     $DB48                          ;
 DB42: 86 60          LDA     #$60            
 DB44: 90 A5          SUBA    <$A5                           ; {ram:HorzDoubler} 
 DB46: 97 99          STA     <$99                           ; {ram:Temp3} 
-DB48: C6 0C          LDB     #$0C            
-DB4A: A6 80          LDA     ,X+             
-DB4C: A7 C0          STA     ,U+             
-DB4E: 5A             DECB                    
-DB4F: 26 F9          BNE     $DB4A                          ; 
-DB51: 30 88 14       LEAX    $14,X           
-DB54: 33 C8 14       LEAU    $14,U           
-DB57: 0A 99          DEC     <$99                           ; {ram:Temp3} 
-DB59: 26 ED          BNE     $DB48                          ; 
-DB5B: 39             RTS
+DB48: C6 0C          LDB     #$0C            ; 12 bytes
+DB4A: A6 80          LDA     ,X+             ; Copy from base ...
+DB4C: A7 C0          STA     ,U+             ; ... to drawing page
+DB4E: 5A             DECB                    ; All bytes on the row done?
+DB4F: 26 F9          BNE     $DB4A                          ; No ... go back for all
+DB51: 30 88 14       LEAX    $14,X           ; Start of ...
+DB54: 33 C8 14       LEAU    $14,U           ; ... next row
+DB57: 0A 99          DEC     <$99                           ; {ram:Temp3} Do ... 
+DB59: 26 ED          BNE     $DB48                          ; ... all rows
+DB5B: 39             RTS                     ; Done
 ```
 
 # Pixel Color Mask
@@ -3039,7 +3040,7 @@ DB74: 8D 07          BSR     $DB7D                          ; {Copy3KtoLast} Cop
 DB76: 86 1C          LDA     #$1C                           ; Now switch visible ...
 DB78: 97 92          STA     <$92                           ; {ram:RequestedPage} ... to 1C00
 DB7A: 13             SYNC                                   ; Wait for ISR to change the page
-DB7B: 39             RTS                     
+DB7B: 39             RTS                                    ; Done
 ;
 ;     20
 DB7C: AA                                  ; Continued DB5C table
@@ -3095,30 +3096,35 @@ DBCB: 39             RTS                                    ; Done
 ;     70                                              80
 DBCC: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF AA ; Continued DB5C table 
 
-DBDD: C6 FF          LDB     #$FF 
-DBDF: 86 5F          LDA     #$5F
-DBE1: D7 88          STB     <$88                           ; {ram:BitPos} 
-DBE3: 8D B8          BSR     $DB9D                          ; {GetSplashBugInfo} 
-DBE5: 30 88 17       LEAX    $17,X           
-DBE8: 86 02          LDA     #$02            
-DBEA: 34 12          PSHS    X,A             
-DBEC: C6 06          LDB     #$06            
-DBEE: 96 88          LDA     <$88                           ; {ram:BitPos} 
-DBF0: 43             COMA                    
-DBF1: A4 C0          ANDA    ,U+             
-DBF3: 34 02          PSHS    A               
-DBF5: 96 88          LDA     <$88                           ; {ram:BitPos} 
-DBF7: A4 89 F4 00    ANDA    $F400,X         
-DBFB: AA E0          ORA     ,S+             
-DBFD: A7 84          STA     ,X              
-DBFF: 30 88 20       LEAX    $20,X           
-DC02: 5A             DECB                    
-DC03: 26 E9          BNE     $DBEE                          ; 
-DC05: 35 12          PULS    A,X             
-DC07: 30 01          LEAX    1,X             
-DC09: 4A             DECA                    
-DC0A: 26 DE          BNE     $DBEA                          ; 
-DC0C: 39             RTS                     
+; ?? Seems to erase the lone bug in the splash screen
+
+EraseLoneSplash:
+DBDD: C6 FF          LDB     #$FF                           ; Erasing splash bug
+DBDF: 86           ; LDA     #$5F (hides the CLRB)
+DrawLoneSplash: 
+DBE0: 5F             CLRB                                   ; Drawing splash bug
+DBE1: D7 88          STB     <$88                           ; {ram:BitPos} Hold the OR pattern
+DBE3: 8D B8          BSR     $DB9D                          ; {GetSplashBugInfo} Get info on the splash bug row (U=graphics, X=screen)
+DBE5: 30 88 17       LEAX    $17,X                          ; Lone bug is 23 columns over
+DBE8: 86 02          LDA     #$02                           ; 2 columns to do
+DBEA: 34 12          PSHS    X,A                            ; Hold the pointer and the count
+DBEC: C6 06          LDB     #$06                           ; 6 rows to do
+DBEE: 96 88          LDA     <$88                           ; {ram:BitPos} Get the OR pattern
+DBF0: 43             COMA                                   ; Now a mask
+DBF1: A4 C0          ANDA    ,U+                            ; Keep or ditch the graphics
+DBF3: 34 02          PSHS    A                              ; Hold the new graphics byte
+DBF5: 96 88          LDA     <$88                           ; {ram:BitPos} The OR pattern again
+DBF7: A4 89 F4 00    ANDA    $F400,X                        ; -3K (other screen where the text is printed)
+DBFB: AA E0          ORA     ,S+                            ; Combine graphics (if any) and text
+DBFD: A7 84          STA     ,X                             ; To the screen
+DBFF: 30 88 20       LEAX    $20,X                          ; Next row
+DC02: 5A             DECB                                   ; All 6 rows done?
+DC03: 26 E9          BNE     $DBEE                          ; No ... go pack
+DC05: 35 12          PULS    A,X                            ; Pop the pointer and the count
+DC07: 30 01          LEAX    1,X                            ; To the right one byte
+DC09: 4A             DECA                                   ; All 2 columns done?
+DC0A: 26 DE          BNE     $DBEA                          ; No ... go do them all
+DC0C: 39             RTS                                    ; Done
 
 ;     B1                                           C0
 DC0D: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF ; Continued DB5C table
@@ -3409,7 +3415,7 @@ DDDE: 30 89 00 80    LEAX    $0080,X                        ; 4 rows per cell ..
 DDE2: 0A 98          DEC     <$98                           ; {ram:Temp2} All 16 cells done?
 DDE4: 26 EC          BNE     $DDD2                          ; No ... do all rows
 
-;DDE6: CC 00 08 ; TOPHER MOD ?? End level after just 8 dots
+;DDE6: CC 00 04 ; TOPHER MOD End level after just 4 dots
 
 DDE6: CC 01 3F       LDD     #$013F                         ; Number of dots ...
 DDE9: ED 8D 22 D1    STD     $00BE,PC                       ; ... left in the maze
@@ -3663,7 +3669,7 @@ DF68: C6 FF          LDB     #$FF                           ; We are drawing the
 DF6A: 10 8E 28 08    LDY     #$2808                         ; First set of bug coordinates
 DF6E: 20 0D          BRA     $DF7D                          ; Common code
 ; 
-EraseBugDot::
+EraseBugDot:
 DF70: 5F             CLRB                                   ; We are erasing the bug
 DF71: 10 8E 28 08    LDY     #$2808                         ; Second set of bug coordinates
 DF75: 0D A1          TST     <$A1                           ; {ram:MouthOpen} Is the mouth open?
