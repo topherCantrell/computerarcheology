@@ -1625,8 +1625,8 @@ D1BB: 4A             DECA                                   ; ... 16 ...
 D1BC: 26 FC          BNE     $D1BA                          ; Syncs
 D1BE: 86 FF          LDA     #$FF                           ; This is the ...
 D1C0: 97 C1          STA     <$C1                           ; {ram:ShowingGame} ... main game screen display
-D1C2: BD DF 70       JSR     $DF70                          ; {EraseBugDot} 
-D1C5: BD DB 1F       JSR     $DB1F                          ; {EraseMagnifier} ?? Erase magnifier
+D1C2: BD DF 70       JSR     $DF70                          ; {EraseBugDot} Erase the bugs as dots
+D1C5: BD DB 1F       JSR     $DB1F                          ; {EraseMagnifier} Erase magnifier
 D1C8: 03 A1          COM     <$A1                           ; {ram:MouthOpen} Change mouth (open or closed)
 D1CA: 2A 03          BPL     $D1CF                          ; Don't move the bugs when mouth is open
 D1CC: BD DE 7A       JSR     $DE7A                          ; {MoveBugs} Move the bugs
@@ -1807,85 +1807,95 @@ PlayerWins:
 D344: 0F C1          CLR     <$C1                           ; {ram:ShowingGame} We are NOT showing the game screen
 D346: BD DA 33       JSR     $DA33                          ; {DrawMagnifier} Why draw ...
 D349: BD DA 33       JSR     $DA33                          ; {DrawMagnifier} ... the magnifier ...
-D34C: BD DA 33       JSR     $DA33                          ; {DrawMagnifier} ... three times??
+D34C: BD DA 33       JSR     $DA33                          ; {DrawMagnifier} ... three times? Maybe for a small delay?
+;
+; Copy the source maze to the other two screen buffers
 D34F: 86 04          LDA     #$04                           ; Switch to the ...
 D351: 97 92          STA     <$92                           ; {ram:RequestedPage} ... first page (with the maze on it)
 D353: 13             SYNC                                   ; Wait for the screen to change
-D354: 8E 06 00       LDX     #$0600          
-D357: CE 04 00       LDU     #$0400          
-D35A: EC C1          LDD     ,U++            
-D35C: ED C9 0B FE    STD     $0BFE,U         
-D360: ED C9 17 FE    STD     $17FE,U         
-D364: 30 1F          LEAX    -1,X            
-D366: 26 F2          BNE     $D35A                          ; 
-D368: 86 02          LDA     #$02            
-D36A: 97 98          STA     <$98                           ; {ram:Temp2} 
-D36C: 86 AA          LDA     #$AA            
-D36E: 97 AD          STA     <$AD                           ; {ram:ColorMask} 
-D370: 86 C0          LDA     #$C0            
-D372: 97 88          STA     <$88                           ; {ram:BitPos} 
+D354: 8E 06 00       LDX     #$0600          ; 1.5K words = 3.0K bytes
+D357: CE 04 00       LDU     #$0400          ; Start of first screen buffer
+D35A: EC C1          LDD     ,U++            ; Copy maze source ...
+D35C: ED C9 0B FE    STD     $0BFE,U         ; To second screen buffer and ...
+D360: ED C9 17 FE    STD     $17FE,U         ; ... third screen buffer
+D364: 30 1F          LEAX    -1,X            ; All done?
+D366: 26 F2          BNE     $D35A                          ; No ... copy all of screen
+; 
+; Change the maze colors on the other two screen buffers
+D368: 86 02          LDA     #$02            ; Two screens to change
+D36A: 97 98          STA     <$98                           ; {ram:Temp2} Keep the counter here 
+D36C: 86 AA          LDA     #$AA            ; First color ...
+D36E: 97 AD          STA     <$AD                           ; {ram:ColorMask} ... mask 
+D370: 86 C0          LDA     #$C0            ; First ...
+D372: 97 88          STA     <$88                           ; {ram:BitPos} ... pixel 
 D374: DE 9A          LDU     <$9A                           ; {ram:DrawingScreenPtr} 
-D376: 33 C9 01 C5    LEAU    $01C5,U         
-D37A: 8E 05 C5       LDX     #$05C5          
-D37D: 96 88          LDA     <$88                           ; {ram:BitPos} 
-D37F: 94 AD          ANDA    <$AD                           ; {ram:ColorMask} 
-D381: 97 89          STA     <$89                           ; {ram:BitPosSrc} 
-D383: 86 43          LDA     #$43            
-D385: 97 99          STA     <$99                           ; {ram:Temp3} 
-D387: C6 16          LDB     #$16            
-D389: A6 80          LDA     ,X+             
-D38B: 88 55          EORA    #$55            
-D38D: 94 88          ANDA    <$88                           ; {ram:BitPos} 
-D38F: 26 06          BNE     $D397                          ; 
-D391: 96 89          LDA     <$89                           ; {ram:BitPosSrc} 
-D393: A8 C4          EORA    ,U              
-D395: A7 C4          STA     ,U              
-D397: 33 41          LEAU    1,U             
-D399: 5A             DECB                    
-D39A: 26 ED          BNE     $D389                          ; 
-D39C: 30 0A          LEAX    10,X            
-D39E: 33 4A          LEAU    10,U            
-D3A0: 0A 99          DEC     <$99                           ; {ram:Temp3} 
-D3A2: 26 E3          BNE     $D387                          ; 
-D3A4: 04 88          LSR     <$88                           ; {ram:BitPos} 
-D3A6: 04 88          LSR     <$88                           ; {ram:BitPos} 
-D3A8: 26 CA          BNE     $D374                          ; 
-D3AA: BD D4 A2       JSR     $D4A2                          ; {SwapScreenPointers} 
-D3AD: 96 AD          LDA     <$AD                           ; {ram:ColorMask} 
-D3AF: 8B 55          ADDA    #$55            
-D3B1: 97 AD          STA     <$AD                           ; {ram:ColorMask} 
-D3B3: 0A 98          DEC     <$98                           ; {ram:Temp2} 
-D3B5: 26 B9          BNE     $D370                          ; 
-D3B7: 86 04          LDA     #$04            
-D3B9: 97 A5          STA     <$A5                           ; {ram:HorzDoubler} 
-D3BB: C6 28          LDB     #$28            
-D3BD: 96 A5          LDA     <$A5                           ; {ram:HorzDoubler} 
-D3BF: 8B 0C          ADDA    #$0C            
-D3C1: 81 28          CMPA    #$28            
-D3C3: 25 02          BCS     $D3C7                          ; 
-D3C5: 86 04          LDA     #$04            
-D3C7: 97 A5          STA     <$A5                           ; {ram:HorzDoubler} 
-D3C9: 97 92          STA     <$92                           ; {ram:RequestedPage} 
-D3CB: 86 06          LDA     #$06            
-D3CD: 13             SYNC                    
-D3CE: 4A             DECA                    
-D3CF: 26 FC          BNE     $D3CD                          ; 
-D3D1: 5A             DECB                    
-D3D2: 26 E9          BNE     $D3BD                          ; 
-D3D4: 86 04          LDA     #$04            
-D3D6: 97 92          STA     <$92                           ; {ram:RequestedPage} 
-D3D8: 13             SYNC                    
+D376: 33 C9 01 C5    LEAU    $01C5,U         ; Where the maze starts on the drawing screen
+D37A: 8E 05 C5       LDX     #$05C5          ; Where the maze starts on the original source screen
+D37D: 96 88          LDA     <$88                           ; {ram:BitPos} Get bit position
+D37F: 94 AD          ANDA    <$AD                           ; {ram:ColorMask} Set the color
+D381: 97 89          STA     <$89                           ; {ram:BitPosSrc} Hold the target color
+D383: 86 43          LDA     #$43            ; 67 rows in the maze
+D385: 97 99          STA     <$99                           ; {ram:Temp3} Counter here
+D387: C6 16          LDB     #$16            ; 22 bytes across maze
+D389: A6 80          LDA     ,X+             ; Value from maze source
+D38B: 88 55          EORA    #$55            ; Is this bit part ...
+D38D: 94 88          ANDA    <$88                           ; {ram:BitPos} ... of the maze? 
+D38F: 26 06          BNE     $D397                          ; No ... leave this byte alone
+D391: 96 89          LDA     <$89                           ; {ram:BitPosSrc} Target color mask
+D393: A8 C4          EORA    ,U              ; Change the color ...
+D395: A7 C4          STA     ,U              ; ... on the drawing screen
+D397: 33 41          LEAU    1,U             ; Next byte in maze on drawing screen
+D399: 5A             DECB                    ; All bytes on this row done?
+D39A: 26 ED          BNE     $D389                          ; No ... go do all 22 bytes
+D39C: 30 0A          LEAX    10,X            ; 10 bytes to ...
+D39E: 33 4A          LEAU    10,U            ; ... start of next row in maze
+D3A0: 0A 99          DEC     <$99                           ; {ram:Temp3} All 67 rows done?
+D3A2: 26 E3          BNE     $D387                          ; No ... do them all
+D3A4: 04 88          LSR     <$88                           ; {ram:BitPos} Next bit ...
+D3A6: 04 88          LSR     <$88                           ; {ram:BitPos} ... to the right
+D3A8: 26 CA          BNE     $D374                          ; All sets of 4 pixels done? No ... go back and do the next
+D3AA: BD D4 A2       JSR     $D4A2                          ; {SwapScreenPointers} Switch drawing screens
+D3AD: 96 AD          LDA     <$AD                           ; {ram:ColorMask} Change ...
+D3AF: 8B 55          ADDA    #$55            ; ... to next ...
+D3B1: 97 AD          STA     <$AD                           ; {ram:ColorMask} ... color 
+D3B3: 0A 98          DEC     <$98                           ; {ram:Temp2} All screens done?
+D3B5: 26 B9          BNE     $D370                          ; No ... back for all
+;
+; Flash the maze wall as a reward
+D3B7: 86 04          LDA     #$04            ; Start with first ...
+D3B9: 97 A5          STA     <$A5                           ; {ram:HorzDoubler} ... screen buffer 
+D3BB: C6 28          LDB     #$28            ; Flashing 24 times
+D3BD: 96 A5          LDA     <$A5                           ; {ram:HorzDoubler} Get current screen offset 
+D3BF: 8B 0C          ADDA    #$0C            ; Move to the next screen buffer
+D3C1: 81 28          CMPA    #$28            ; All 3 screens shown?
+D3C3: 25 02          BCS     $D3C7                          ; No ... keep this
+D3C5: 86 04          LDA     #$04            ; Yes ... back up to first screen
+D3C7: 97 A5          STA     <$A5                           ; {ram:HorzDoubler} New screen to show 
+D3C9: 97 92          STA     <$92                           ; {ram:RequestedPage} Request ISR to switch to this one
+D3CB: 86 06          LDA     #$06            ; Delay ...
+D3CD: 13             SYNC                    ; ... of ...
+D3CE: 4A             DECA                    ; ... six ...
+D3CF: 26 FC          BNE     $D3CD                          ; ... interrupts 
+D3D1: 5A             DECB                    ; All 28 flashes done?
+D3D2: 26 E9          BNE     $D3BD                          ; No ... do all flashes 
+;
+; White-line-scroll the screen to erase it
+D3D4: 86 04          LDA     #$04            ; Show the source ...
+D3D6: 97 92          STA     <$92                           ; {ram:RequestedPage} ... screen ... 
+D3D8: 13             SYNC                    ; ... buffer
 D3D9: BD DB 6D       JSR     $DB6D                          ; {CopyScreen} Copy screen 0400 to 1C00 and show 1C00
-D3DC: CE 04 00       LDU     #$0400          
-D3DF: BD D4 AE       JSR     $D4AE                          ; {Clear1200} 
+D3DC: CE 04 00       LDU     #$0400          ; Clear the ...
+D3DF: BD D4 AE       JSR     $D4AE                          ; {Clear1200} ... first screen buffer 
 D3E2: 86 01          LDA     #$01                           ; Scroll the screen ...
 D3E4: BD DE 01       JSR     $DE01                          ; {WhiteLineScroll} ... outside to inside
-D3E7: 04 C0          LSR     <$C0                           ; {ram:MazeLoopiness} This make it tougher -- less loopy
+D3E7: 04 C0          LSR     <$C0                           ; {ram:MazeLoopiness} Make the next maze tougher -- less loopy
 D3E9: 96 A0          LDA     <$A0                           ; {ram:NumBugs} Number of bugs in the game
 D3EB: 4C             INCA                                   ; Getting tougher ... one more bug
 D3EC: 81 20          CMPA    #$20                           ; Max of 32 reached?
 D3EE: 24 02          BCC     $D3F2                          ; Yes ... leave it at 32
 D3F0: 97 A0          STA     <$A0                           ; {ram:NumBugs} New number of bugs
+;
+; Ready the "We'll get you next time!" text
 D3F2: CE 10 00       LDU     #$1000                         ; Using 2nd ...
 D3F5: DF 9E          STU     <$9E                           ; {ram:ScreenPtr} ... screen buffer for drawing
 D3F7: BD D4 AE       JSR     $D4AE                          ; {Clear1200} Clear the screen
@@ -1898,13 +1908,14 @@ D405: 97 AD          STA     <$AD                           ; {ram:ColorMask} ..
 D407: BD D6 FA       JSR     $D6FA                          ; {PrintMsg} Print this message
 D40A: 20 F1          BRA     $D3FD                          ; Go back for all messages
 ;
+; Line of bugs to scroll the text onto the screen
 D40C: 86 01          LDA     #$01                           ; Start the line of bugs ...
 D40E: 97 98          STA     <$98                           ; {ram:Temp2} ... on line 1
-D410: 8E C0 00       LDX     #$C000                         ; ??
+D410: 8E C0 00       LDX     #$C000                         ; This is ROM ... first call to "erase" won't do anything (ROM is read-only)
 D413: 9F A5          STX     <$A5                           ; {ram:HorzDoubler} 
 D415: 86 06          LDA     #$06                           ; Delay for ...
 D417: 8D 4E          BSR     $D467                          ; {DelaySyncs} ... 6 interrupts (10th of a second)
-D419: 8D 51          BSR     $D46C                          ; 
+D419: 8D 51          BSR     $D46C                          ; Erase the last bug line (do nothing first pass)
 D41B: 96 98          LDA     <$98                           ; {ram:Temp2} Move the ...
 D41D: 8B 02          ADDA    #$02                           ; ... bug line ...
 D41F: 97 98          STA     <$98                           ; {ram:Temp2} ... down 2 pixels
@@ -1915,7 +1926,8 @@ D428: 03 A1          COM     <$A1                           ; {ram:MouthOpen} Fl
 D42A: BD D5 27       JSR     $D527                          ; {SoundBugLine} Make the sound of the bugs moving
 D42D: 20 E6          BRA     $D415                          ; Move the bugs all the way down the screen
 ;
-D42F: 0F 98          CLR     <$98                           ; {ram:Temp2} Start the lone bug at Y=0??
+; Lone-bug scroll the "!" onto the screen
+D42F: 0F 98          CLR     <$98                           ; {ram:Temp2} Start the lone bug at Y=0
 D431: CC 28 5D       LDD     #$285D                         ; Location to print ...
 D434: DD AB          STD     <$AB                           ; {ram:PixCoords} ... the "!"
 D436: 86 FF          LDA     #$FF                           ; White ...
@@ -1926,17 +1938,18 @@ D43F: 86 2D          LDA     #$2D                           ; Delay for ...
 D441: BD D4 67       JSR     $D467                          ; {DelaySyncs} ... 3/4th second
 D444: 86 02          LDA     #$02                           ; Delay for ...
 D446: 8D 1F          BSR     $D467                          ; {DelaySyncs} ... two interrupts
-D448: BD DB DD       JSR     $DBDD                          ; {EraseLoneSplash} 
-D44B: 96 98          LDA     <$98                           ; {ram:Temp2} 
-D44D: 8B 02          ADDA    #$02            
-D44F: 97 98          STA     <$98                           ; {ram:Temp2} 
-D451: 81 58          CMPA    #$58            
-D453: 24 0A          BCC     $D45F                          ; 
-D455: BD DB E0       JSR     $DBE0                          ; {DrawLoneSplash} 
+D448: BD DB DD       JSR     $DBDD                          ; {EraseLoneSplash} Erase the lone bug
+D44B: 96 98          LDA     <$98                           ; {ram:Temp2} Y coordinate
+D44D: 8B 02          ADDA    #$02            ; Add two ...
+D44F: 97 98          STA     <$98                           ; {ram:Temp2} ... rows 
+D451: 81 58          CMPA    #$58            ; Reached the bottom?
+D453: 24 0A          BCC     $D45F                          ; Yes ... done
+D455: BD DB E0       JSR     $DBE0                          ; {DrawLoneSplash} Draw the lone bug 
 D458: 03 A1          COM     <$A1                           ; {ram:MouthOpen} Next bug picture
-D45A: BD D5 27       JSR     $D527                          ; {SoundBugLine} 
-D45D: 20 E5          BRA     $D444                          ; 
+D45A: BD D5 27       JSR     $D527                          ; {SoundBugLine} Make the bug sound
+D45D: 20 E5          BRA     $D444                          ; Move the lone bug all the way down
 ;
+; Delay and back to live game loop
 D45F: 86 64          LDA     #$64                           ; Long 1.6 second ...
 D461: BD D4 67       JSR     $D467                          ; {DelaySyncs} ... delay
 D464: 7E D0 E7       JMP     $D0E7                          ; {LiveGameLoop} Back to the live game loop
@@ -1951,17 +1964,20 @@ D468: 4A             DECA                                   ; all syncs done?
 D469: 26 FC          BNE     $D467                          ; {DelaySyncs} No ... keep syncing
 D46B: 39             RTS                                    ; Done
 
-D46C: 9E A5          LDX     <$A5                           ; {ram:HorzDoubler} ?? This starts at C000
-D46E: C6 80          LDB     #$80            
-D470: 6F 82          CLR     ,-X             
-D472: 5A             DECB                    
-D473: 26 FB          BNE     $D470                          ; 
-D475: C6 40          LDB     #$40                           ; ?? This loop copies over the text from 0400.
-D477: A6 89 F3 FF    LDA     $F3FF,X                        ; -3073
-D47B: A7 82          STA     ,-X             
-D47D: 5A             DECB                    
-D47E: 26 F7          BNE     $D477                          ; 
-D480: 39             RTS                     
+EraseBugLine:
+; A bug occupies 6 rows. Erasing the row means 4 rows of blank at the bottom and 2 rows of
+; text at the top.
+D46C: 9E A5          LDX     <$A5                           ; {ram:HorzDoubler} Current end of bug row
+D46E: C6 80          LDB     #$80            ; Erase ...
+D470: 6F 82          CLR     ,-X             ; ... four ...
+D472: 5A             DECB                    ; ... ...
+D473: 26 FB          BNE     $D470                          ; ... rows
+D475: C6 40          LDB     #$40                           ; Copy two rows
+D477: A6 89 F3 FF    LDA     $F3FF,X                        ; -3073 ... from the text screen
+D47B: A7 82          STA     ,-X             ; To this screen
+D47D: 5A             DECB                    ; Copy ...
+D47E: 26 F7          BNE     $D477                          ; ... two rows of the text 
+D480: 39             RTS                     ; Done
 ```
 
 # Draw large bugs
@@ -2690,20 +2706,21 @@ D932: DB A5          ADDB    <$A5                           ; {ram:HorzDoubler} 
 D934: 39             RTS                                    ; Done
 ```
 
-```code                     
+```code
+MovePlayer:                     
 D935: 0D B5          TST     <$B5                           ; {ram:LiveOrDemo} Is this a demo game?
-D937: 10 27 00 AA    LBEQ    $D9E5                          ; Yes ...
-D93B: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
-D93D: BD DA 24       JSR     $DA24                          ; {CheckAlignOddEven} 
-D940: 24 0C          BCC     $D94E                          ; 
-D942: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
+D937: 10 27 00 AA    LBEQ    $D9E5                          ; Yes ... move at random
+D93B: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} Get the player coordinates
+D93D: BD DA 24       JSR     $DA24                          ; {CheckAlignOddEven} Time to leave a trail dot??
+D940: 24 0C          BCC     $D94E                          ; No ... skip it
+D942: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} Our coordinates 
 D944: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} Offset from top of first screen
 D947: C4 55          ANDB    #$55                           ; Change color (mask is 01010101)
-D949: 53             COMB                    
+D949: 53             COMB                    ;
 D94A: E4 84          ANDB    ,X              
-D94C: E7 84          STB     ,X              
-D94E: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
-D950: BD DA 12       JSR     $DA12                          ; {CheckWallAlign} 
+D94C: E7 84          STB     ,X            ; ??
+D94E: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} Player's coordinate
+D950: BD DA 12       JSR     $DA12                          ; {CheckWallAlign} Are we between cells?
 D953: 24 1D          BCC     $D972                          ; 
 D955: D6 A4          LDB     <$A4                           ; {ram:PlayerDir} 
 D957: C8 01          EORB    #$01            
@@ -2724,6 +2741,7 @@ D974: BD D8 BA       JSR     $D8BA                          ; {UserDirInput} Rea
 D977: 2B 02          BMI     $D97B                          ; Nothing pressed ...
 D979: D7 A4          STB     <$A4                           ; {ram:PlayerDir} 
 ;
+; Common to live/demo
 D97B: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
 D97D: BD DA 12       JSR     $DA12                          ; {CheckWallAlign} 
 D980: 24 0C          BCC     $D98E                          ; 
@@ -2778,6 +2796,7 @@ D9E0: AA E0          ORA     ,S+
 D9E2: A7 84          STA     ,X              
 D9E4: 39             RTS                    
  
+DemoMoves:
 D9E5: D6 A4          LDB     <$A4                           ; {ram:PlayerDir} Get the player's direction
 D9E7: 58             LSLB                                   ; 2 offset bytes per direction
 D9E8: 8E DE 4F       LDX     #$DE4F                         ; {!+DirOffset} Point to ...
@@ -2810,7 +2829,7 @@ DA1A: C4 03          ANDB    #$03                           ; X coordinate align
 DA1C: 26 03          BNE     $DA21                          ; No ... return not-aligned
 ;
 DA1E: 1A 01          ORCC    #$01                           ; X and Y are aligned to the edge of the cell
-DA20: 39             RTS			                                 ; Done
+DA20: 39             RTS			                             ; Done
 ;                     
 DA21: 1C FE          ANDCC   #$FE                           ; Object is not aligned to the edge of the cell
 DA23: 39             RTS                                    ; Done
@@ -3416,9 +3435,9 @@ DDDE: 30 89 00 80    LEAX    $0080,X                        ; 4 rows per cell ..
 DDE2: 0A 98          DEC     <$98                           ; {ram:Temp2} All 16 cells done?
 DDE4: 26 EC          BNE     $DDD2                          ; No ... do all rows
 
-;DDE6: CC 00 04 ; TOPHER MOD End level after just 4 dots
+DDE6: CC 00 04 ; TOPHER MOD End level after just 4 dots
 
-DDE6: CC 01 3F       LDD     #$013F                         ; Number of dots ...
+;DDE6: CC 01 3F       LDD     #$013F                         ; Number of dots ...
 DDE9: ED 8D 22 D1    STD     $00BE,PC                       ; ... left in the maze
 DDED: 8E 0A 30       LDX     #$0A30                         ; Center cell of the maze
 DDF0: 86 CF          LDA     #$CF                           ; Erase ...
