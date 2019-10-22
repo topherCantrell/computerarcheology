@@ -1626,7 +1626,7 @@ D1BC: 26 FC          BNE     $D1BA                          ; Syncs
 D1BE: 86 FF          LDA     #$FF                           ; This is the ...
 D1C0: 97 C1          STA     <$C1                           ; {ram:ShowingGame} ... main game screen display
 D1C2: BD DF 70       JSR     $DF70                          ; {EraseBugDot} 
-D1C5: BD DB 1F       JSR     $DB1F                          ; ?? Erase magnifier 
+D1C5: BD DB 1F       JSR     $DB1F                          ; {EraseMagnifier} ?? Erase magnifier
 D1C8: 03 A1          COM     <$A1                           ; {ram:MouthOpen} Change mouth (open or closed)
 D1CA: 2A 03          BPL     $D1CF                          ; Don't move the bugs when mouth is open
 D1CC: BD DE 7A       JSR     $DE7A                          ; {MoveBugs} Move the bugs
@@ -2963,34 +2963,35 @@ DB1E: 39             RTS                                    ; Out
 ```code
 EraseMagnifier:
 DB1F: EC 8D 25 7F    LDD     $00A2,PC                       ; Player coordinates
-DB23: 80 12          SUBA    #$12            
-DB25: 2A 01          BPL     $DB28                          ; 
-DB27: 4F             CLRA                    
-DB28: C0 16          SUBB    #$16            
-DB2A: 34 06          PSHS    B,A             
-DB2C: BD DE 59       JSR     $DE59                          ; {CoordToScrOffs9A} 
-DB2F: 1F 13          TFR     X,U             
-DB31: 35 06          PULS    A,B             
-DB33: 97 A5          STA     <$A5                           ; {ram:HorzDoubler} 
-DB35: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} 
-DB38: 86 26          LDA     #$26            ; 38 rows
-DB3A: 97 99          STA     <$99                           ; {ram:Temp3} 
-DB3C: 9B A5          ADDA    <$A5                           ; {ram:HorzDoubler} 
-DB3E: 81 60          CMPA    #$60            
-DB40: 25 06          BCS     $DB48                          ; 
-DB42: 86 60          LDA     #$60            
-DB44: 90 A5          SUBA    <$A5                           ; {ram:HorzDoubler} 
-DB46: 97 99          STA     <$99                           ; {ram:Temp3} 
-DB48: C6 0C          LDB     #$0C            ; 12 bytes
-DB4A: A6 80          LDA     ,X+             ; Copy from base ...
-DB4C: A7 C0          STA     ,U+             ; ... to drawing page
-DB4E: 5A             DECB                    ; All bytes on the row done?
+DB23: 80 12          SUBA    #$12                           ; Top of magnifier
+DB25: 2A 01          BPL     $DB28                          ; Limit to the ...
+DB27: 4F             CLRA                                   ; ... top of the screen
+DB28: C0 16          SUBB    #$16                           ; Left of magnifier
+DB2A: 34 06          PSHS    B,A                            ; Hold upper left X,Y
+DB2C: BD DE 59       JSR     $DE59                          ; {CoordToScrOffs9A} Get a screen offset ...
+DB2F: 1F 13          TFR     X,U                            ; ... to U (where we are erasing)
+DB31: 35 06          PULS    A,B                            ; Pull the coordinates
+DB33: 97 A5          STA     <$A5                           ; {ram:HorzDoubler} Keep Y coordinate here
+DB35: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} Pointer to pure maze (source of erase)
+DB38: 86 26          LDA     #$26                           ; 38 rows
+DB3A: 97 99          STA     <$99                           ; {ram:Temp3} Counter here
+DB3C: 9B A5          ADDA    <$A5                           ; {ram:HorzDoubler} This is how far we'll go in Y
+DB3E: 81 60          CMPA    #$60                           ; Past the end of the screen?
+DB40: 25 06          BCS     $DB48                          ; No ... keep it
+DB42: 86 60          LDA     #$60                           ; Yes ... limit
+DB44: 90 A5          SUBA    <$A5                           ; {ram:HorzDoubler} ... number ...
+DB46: 97 99          STA     <$99                           ; {ram:Temp3} ... of rows
+; 
+DB48: C6 0C          LDB     #$0C                           ; 12 bytes
+DB4A: A6 80          LDA     ,X+                            ; Copy from base ...
+DB4C: A7 C0          STA     ,U+                            ; ... to drawing page
+DB4E: 5A             DECB                                   ; All bytes on the row done?
 DB4F: 26 F9          BNE     $DB4A                          ; No ... go back for all
-DB51: 30 88 14       LEAX    $14,X           ; Start of ...
-DB54: 33 C8 14       LEAU    $14,U           ; ... next row
-DB57: 0A 99          DEC     <$99                           ; {ram:Temp3} Do ... 
+DB51: 30 88 14       LEAX    $14,X                          ; Start of ...
+DB54: 33 C8 14       LEAU    $14,U                          ; ... next row
+DB57: 0A 99          DEC     <$99                           ; {ram:Temp3} Do ...
 DB59: 26 ED          BNE     $DB48                          ; ... all rows
-DB5B: 39             RTS                     ; Done
+DB5B: 39             RTS                                    ; Done
 ```
 
 # Pixel Color Mask
