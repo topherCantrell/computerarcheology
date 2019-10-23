@@ -3197,6 +3197,8 @@ DC54: 35 86          PULS    A,B,PC                         ; Done
 The code starts by drawing a grid of lines ... all walls in the maze closed. And make a double line around
 the edges of the maze. The code ends with filling the maze with dots (except the very center).
 
+?? TODO Lots of discussion needed here
+
 ```html
 <canvas id="mazeArea" width="330" height="266" style="border: 1px solid black"></canvas><br>
 Loopiness: <input id="loopiness" value="192" style="width:3em"><br>
@@ -3337,6 +3339,9 @@ DD4F: 7E DC C9       JMP     $DCC9                          ; Back for another r
 ```
 
 # Random number
+
+The random number generator pulls values from the BASIC ROM from A000 to BFFF. The
+pointer starts at A000 and bumps up by 21 before each new number.
 
 ```code
 GetRandom:
@@ -3520,7 +3525,6 @@ Or we can look up <$9A or we can use 0400.
 
 Return memory offset in X and pixel map in B.
 
-
 ```code
 CoordToScrOffs9A:
 DE59: 9E 9A          LDX     <$9A                           ; {ram:DrawingScreenPtr} Top of the drawing screen
@@ -3551,6 +3555,15 @@ DE79: 03 ; 00000011
 
 # Move the Bugs
 
+This code drives the bugs. First it makes sure that the bug is completely in a cell (not between two cells).
+
+First, erase any player trail dot. Then build a list of directions with player trail dots. If there are any,
+pick one of these directions.
+
+Otherwise, build a list of directions that are open. There must be at least one (the bug can always go
+back the way it came). Pick one of these directions.
+
+
 ```code
 MoveBugs:            
 DE7A: 96 A0          LDA     <$A0                           ; {ram:NumBugs} Number of bugs in the game
@@ -3566,14 +3579,15 @@ DE8E: AB 84          ADDA    ,X                             ; Offset the Y ...
 DE90: EB 01          ADDB    1,X                            ; ... and the X
 DE92: ED A4          STD     ,Y                             ; New coordinate
 DE94: BD DA 24       JSR     $DA24                          ; {CheckAlignOddEven} Is the coordinate an "even" one?
-DE97: 24 16          BCC     $DEAF                          ; No ... skip drawing this bug (they are drawn every other)
+DE97: 24 16          BCC     $DEAF                          ; No ... skip erasing the player trail
+;
 DE99: EC A4          LDD     ,Y                             ; Bug's coordinates
 DE9B: 34 20          PSHS    Y                              ; Hold for a second
 DE9D: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} Get the screen pointer to X
 DEA0: 35 20          PULS    Y                              ; Y coordinates again
 DEA2: 1F 98          TFR     B,A                            ; Pixel map of the bug on the screen
 DEA4: 84 55          ANDA    #$55                           ; Set the color
-DEA6: A4 84          ANDA    ,X                             ; Is there a player-trail dot here (a regular dot results in not-zero)
+DEA6: A4 84          ANDA    ,X                             ; Is there an edible dot here (a regular dot results in not-zero)
 DEA8: 26 05          BNE     $DEAF                          ; Yes ... leave it alone
 DEAA: 53             COMB                                   ; Now a mask
 DEAB: E4 84          ANDB    ,X                             ; Erase whatever dot ...
@@ -3583,10 +3597,10 @@ DEAF: 31 23          LEAY    3,Y                            ; Next bug structure
 DEB1: 0A 98          DEC     <$98                           ; {ram:Temp2} Do all ...
 DEB3: 26 CD          BNE     $DE82                          ; ... the bugs
 DEB5: 39             RTS                                    ; Done
-
+;
 DEB6: EC A4          LDD     ,Y                             ; Get the bug's Y,X coordinate
 DEB8: BD DA 24       JSR     $DA24                          ; {CheckAlignOddEven} Odd or even coordinates?
-DEBB: 24 F8          BCC     $DEB5                          ; Between cells ... don't change direction
+DEBB: 24 F8          BCC     $DEB5                          ; Not time to change ... out
 ;
 ; Look for player-trail in all directions
 DEBD: CE DE 4F       LDU     #$DE4F                         ; {!+DirOffset} Direction offset table
@@ -3659,10 +3673,18 @@ DF3B: 27 EA          BEQ     $DF27                          ; Yes ... don't do t
 DF3D: A6 C4          LDA     ,U                             ; Get the new direction
 DF3F: A7 22          STA     2,Y                            ; Store it
 DF41: 39             RTS                                    ; Done
-;
-; Check for wall
-; A is direction
-; Return C=1 if there is a wall, C=0 if no wall
+```
+
+# Check for wall
+
+A holds the direction. This code assumes that the coordinate to test is not
+between cells. The calling code must make sure that a wall is at least possible.
+
+Return:
+  * C=1 if there IS a wall
+  * C=0 if there is NOT a wall
+
+```code
 CheckForWall:
 DF42: 85 01          BITA    #$01                           ; Up or down?
 DF44: 27 0F          BEQ     $DF55                          ; Yes ... go handle up/down
@@ -3688,7 +3710,9 @@ DF67: 39             RTS                                    ; Done
 
 # Bug dots
 
-Drawing and erasing the bugs on the non-magnified maze.
+Drawing and erasing the bugs on the non-magnified maze. They are just 1-pixel dots in the maze.
+
+There are two functions here: one to draw the dots and one to erase them.
 
 ```code
 DrawBugDot:
@@ -3747,6 +3771,13 @@ DFCB: 39             RTS                                    ; Done
 ```
 
 # Check collision between bugs and player
+
+The check is a simple rectangle comparison. If the player's coordinates are within 2x2 of
+a bug then a collision has occurred.
+
+Return:
+  * C=0 No collision
+  * C=1 Collision
 
 ```code
 CheckCollision:
