@@ -20,7 +20,7 @@
 ```
 
 ```code
-C000: 7E CF DE       JMP     $CFDE                          ; {Start} 
+C000: 7E CF DE       JMP     $CFDE                          ; {Start} Skip over data section
 ```
 
 # Screen management
@@ -1508,7 +1508,7 @@ D0BB: 8E D5 EF       LDX     #$D5EF                         ; {!+StrsCredits} "M
 D0BE: DC 9A          LDD     <$9A                           ; {ram:DrawingScreenPtr} The screen buffer ...
 D0C0: DD 9E          STD     <$9E                           ; {ram:ScreenPtr} ... to draw on
 D0C2: EC 81          LDD     ,X++                           ; Destination of "Mega-Bug" string
-D0C4: DD AB          STD     <$AB                           ; {ram:PixCoords} 
+D0C4: DD AB          STD     <$AB                           ; {ram:PixCoords} Store screen coordinates
 D0C6: 30 01          LEAX    1,X                            ; Skip over color mask
 D0C8: BD D6 F4       JSR     $D6F4                          ; {PrintMsgChgCol} Print with alternating colors
 D0CB: BD D7 3F       JSR     $D73F                          ; {PlayTwoNotes} Play dual note
@@ -1529,7 +1529,7 @@ D0E4: BD D4 AE       JSR     $D4AE                          ; {Clear1200} ... fi
 ;
 LiveGameLoop:
 D0E7: CC 05 21       LDD     #$0521                         ; (5,33) 5 rows down, 33 pixels across
-D0EA: DD AB          STD     <$AB                           ; {ram:PixCoords} 
+D0EA: DD AB          STD     <$AB                           ; {ram:PixCoords} Store screen coordinates
 D0EC: CC 04 00       LDD     #$0400                         ; Drawing on ...
 D0EF: DD 9E          STD     <$9E                           ; {ram:ScreenPtr} ... first screen buffer
 D0F1: 86 AA          LDA     #$AA                           ; Set ...
@@ -1572,7 +1572,7 @@ D144: 8E D5 C2       LDX     #$D5C2                         ; {!+StrHighScore} "
 D147: BD D6 FA       JSR     $D6FA                          ; {PrintMsg} print "High Score"
 D14A: 9E B3          LDX     <$B3                           ; {ram:HighScore} Get the high score
 D14C: BD D6 CB       JSR     $D6CB                          ; {PrintFourDigits} Print 4 digits
-D14F: CC 54 04       LDD     #$5404                         ;(84,4) 84 rows down, 4 pixels across
+D14F: CC 54 04       LDD     #$5404                         ; (84,4) 84 rows down, 4 pixels across
 D152: DD AB          STD     <$AB                           ; {ram:PixCoords} Set coordinates
 D154: 8E D5 CE       LDX     #$D5CE                         ; {!+StrPlayMega} "Play Mega-Bug" string
 D157: BD D6 FA       JSR     $D6FA                          ; {PrintMsg} Print "Play Mega-Bug"
@@ -1690,13 +1690,13 @@ D244: BD D6 D7       JSR     $D6D7                          ; {PrintTwoDigits} .
 ;
 ; 
 D247: BD DA 33       JSR     $DA33                          ; {DrawMagnifier} Draw the magnifier
-D24A: 0D BA          TST     <$BA                           ; {ram:MakeEatSound} 
-D24C: 27 02          BEQ     $D250                          ; 
-D24E: 0A BA          DEC     <$BA                           ; {ram:MakeEatSound} 
+D24A: 0D BA          TST     <$BA                           ; {ram:MakeEatSound} Do we make the eat dot sound?
+D24C: 27 02          BEQ     $D250                          ; No ... skip doing it
+D24E: 0A BA          DEC     <$BA                           ; {ram:MakeEatSound} Yes ... make the sound
 D250: BD D7 D8       JSR     $D7D8                          ; {DrawMouth} Draw the mouth
-D253: BD D8 20       JSR     $D820                          ; {DrawBugs} 
-D256: BD D4 A2       JSR     $D4A2                          ; {SwapScreenPointers} 
-D259: 97 92          STA     <$92                           ; {ram:RequestedPage} 
+D253: BD D8 20       JSR     $D820                          ; {DrawBugs} Draw the bugs on the magnifier
+D256: BD D4 A2       JSR     $D4A2                          ; {SwapScreenPointers} Swap drawing ...
+D259: 97 92          STA     <$92                           ; {ram:RequestedPage} ... and display screens
 D25B: 13             SYNC                                   ; Wait for screens to swap
 D25C: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} Player coordinates
 D25E: DD 8E          STD     <$8E                           ; {ram:Temp1} The collision checker uses this temporary
@@ -1912,7 +1912,7 @@ D40A: 20 F1          BRA     $D3FD                          ; Go back for all me
 D40C: 86 01          LDA     #$01                           ; Start the line of bugs ...
 D40E: 97 98          STA     <$98                           ; {ram:Temp2} ... on line 1
 D410: 8E C0 00       LDX     #$C000                         ; This is ROM ... first call to "erase" won't do anything (ROM is read-only)
-D413: 9F A5          STX     <$A5                           ; {ram:HorzDoubler} 
+D413: 9F A5          STX     <$A5                           ; {ram:HorzDoubler} Where to erase (filled in by the draw-line-of-bugs)
 D415: 86 06          LDA     #$06                           ; Delay for ...
 D417: 8D 4E          BSR     $D467                          ; {DelaySyncs} ... 6 interrupts (10th of a second)
 D419: 8D 51          BSR     $D46C                          ; {EraseBugLine} Erase the last bug line (do nothing first pass)
@@ -2596,7 +2596,7 @@ D872: C4 03          ANDB    #$03                           ; 4 shifts and 4 pix
 D874: 3D             MUL                                    ; Offset to ...
 D875: 33 C5          LEAU    B,U                            ; ... target shifted picture
 D877: DC 8E          LDD     <$8E                           ; {ram:Temp1} Bug coordinates
-D879: BD DE 59       JSR     $DE59                          ; {CoordToScrOffs9A} 
+D879: BD DE 59       JSR     $DE59                          ; {CoordToScrOffs9A} Get screen pointer
 D87C: 86 03          LDA     #$03                           ; 3 columns ...
 D87E: 97 99          STA     <$99                           ; {ram:Temp3} ... in the bug
 D880: D6 8F          LDB     <$8F                           ; {ram:Temp1} X coordinate
@@ -2634,7 +2634,8 @@ D8B8: 35 A0          PULS    Y,PC                           ; Out
 
 Keyboard or joystick -- depending on how the user started the game.
 
-If B comes in as 1, then this routine looks for left/right. Otherwise this routine looks for up/down.
+If B comes in as 1 or 3, then this routine looks for left/right. Otherwise this routine looks for up/down. This
+matches the direction bits.
 
 Returns direction in B: 0=Up,1=Left,2=Down,3=Right. Upper bit set if nothing selected.
 
@@ -2711,90 +2712,98 @@ MovePlayer:
 D935: 0D B5          TST     <$B5                           ; {ram:LiveOrDemo} Is this a demo game?
 D937: 10 27 00 AA    LBEQ    $D9E5                          ; {DemoMoves} Yes ... move at random
 D93B: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} Get the player coordinates
-D93D: BD DA 24       JSR     $DA24                          ; {CheckAlignOddEven} Time to leave a trail dot??
+D93D: BD DA 24       JSR     $DA24                          ; {CheckAlignOddEven} Might be over a dot that needs changing?
 D940: 24 0C          BCC     $D94E                          ; No ... skip it
+;
+; This changes the dot to a trail, but this code is only for the live game. And it isn't
+; needed since the code at the bottom (common to live and demo) draws the trail too.
+;
 D942: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} Our coordinates
 D944: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} Offset from top of first screen
-D947: C4 55          ANDB    #$55                           ; Change color (mask is 01010101)
-D949: 53             COMB                                   ;
-D94A: E4 84          ANDB    ,X              
-D94C: E7 84          STB     ,X                             ; ??
+D947: C4 55          ANDB    #$55                           ; Change ...
+D949: 53             COMB                                   ; ... any ...
+D94A: E4 84          ANDB    ,X                             ; ... dot ...
+D94C: E7 84          STB     ,X                             ; ... to trail
+;
 D94E: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} Player's coordinate
 D950: BD DA 12       JSR     $DA12                          ; {CheckWallAlign} Are we between cells?
-D953: 24 1D          BCC     $D972                          ; 
-D955: D6 A4          LDB     <$A4                           ; {ram:PlayerDir} 
-D957: C8 01          EORB    #$01            
-D959: BD D8 BA       JSR     $D8BA                          ; {UserDirInput} Read directional inputs
-D95C: 2B 14          BMI     $D972                          ; Nothing pressed ...
-D95E: D7 A5          STB     <$A5                           ; {ram:HorzDoubler} 
-D960: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
-D962: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} 
-D965: 96 A5          LDA     <$A5                           ; {ram:HorzDoubler} 
-D967: BD DF 42       JSR     $DF42                          ; 
-D96A: 25 06          BCS     $D972                          ; 
-D96C: 96 A5          LDA     <$A5                           ; {ram:HorzDoubler} 
-D96E: 97 A4          STA     <$A4                           ; {ram:PlayerDir} 
-D970: 20 09          BRA     $D97B                          ; 
+D953: 24 1D          BCC     $D972                          ; Yes ... skip orthogonal change (can still reverse)
+D955: D6 A4          LDB     <$A4                           ; {ram:PlayerDir} Player's current direction
+D957: C8 01          EORB    #$01                           ; Check for changing ...
+D959: BD D8 BA       JSR     $D8BA                          ; {UserDirInput} ... orthogonally
+D95C: 2B 14          BMI     $D972                          ; Nothing requested ... look for reversing
+D95E: D7 A5          STB     <$A5                           ; {ram:HorzDoubler} This is the requested direction
+D960: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} Player coordinates
+D962: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} Pointer to source maze
+D965: 96 A5          LDA     <$A5                           ; {ram:HorzDoubler} Requested direction
+D967: BD DF 42       JSR     $DF42                          ; {CheckForWall} Check for a wall in that direction
+D96A: 25 06          BCS     $D972                          ; There is a wall ... we can't go that way
+D96C: 96 A5          LDA     <$A5                           ; {ram:HorzDoubler} No wall ... this is ...
+D96E: 97 A4          STA     <$A4                           ; {ram:PlayerDir} ... the new direction
+D970: 20 09          BRA     $D97B                          ; Continue
 ;
-D972: D6 A4          LDB     <$A4                           ; {ram:PlayerDir} 
-D974: BD D8 BA       JSR     $D8BA                          ; {UserDirInput} Read directional inputs
-D977: 2B 02          BMI     $D97B                          ; Nothing pressed ...
-D979: D7 A4          STB     <$A4                           ; {ram:PlayerDir} 
+D972: D6 A4          LDB     <$A4                           ; {ram:PlayerDir} Current direction
+D974: BD D8 BA       JSR     $D8BA                          ; {UserDirInput} Maybe reversing?
+D977: 2B 02          BMI     $D97B                          ; No ... move on
+D979: D7 A4          STB     <$A4                           ; {ram:PlayerDir} Yes ... either same direction or reversing
 ;
 ; Common to live/demo
-D97B: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
-D97D: BD DA 12       JSR     $DA12                          ; {CheckWallAlign} 
-D980: 24 0C          BCC     $D98E                          ; 
-D982: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
-D984: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} 
-D987: 96 A4          LDA     <$A4                           ; {ram:PlayerDir} 
-D989: BD DF 42       JSR     $DF42                          ; 
-D98C: 25 0F          BCS     $D99D                          ; 
-D98E: 8E DE 4F       LDX     #$DE4F                         ; {!+DirOffset} 
-D991: D6 A4          LDB     <$A4                           ; {ram:PlayerDir} 
-D993: 58             LSLB                    
-D994: 3A             ABX                     
-D995: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
-D997: AB 84          ADDA    ,X              
-D999: EB 01          ADDB    1,X             
-D99B: DD A2          STD     <$A2                           ; {ram:PlayerCoords} 
-D99D: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
-D99F: BD DA 24       JSR     $DA24                          ; {CheckAlignOddEven} 
-D9A2: 24 40          BCC     $D9E4                          ; 
-D9A4: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
-D9A6: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} 
-D9A9: E7 E2          STB     ,-S             
-D9AB: A6 84          LDA     ,X              
-D9AD: A8 E4          EORA    ,S              
-D9AF: A4 E0          ANDA    ,S+             
-D9B1: 26 24          BNE     $D9D7                          ; 
-D9B3: 86 03          LDA     #$03            
-D9B5: 97 BA          STA     <$BA                           ; {ram:MakeEatSound} 
-D9B7: 96 B5          LDA     <$B5                           ; {ram:LiveOrDemo} 
-D9B9: 27 1C          BEQ     $D9D7                          ; 
-D9BB: 96 B2          LDA     <$B2                           ; {ram:Score} 
-D9BD: 8B 10          ADDA    #$10            
-D9BF: 19             DAA                     
-D9C0: 97 B2          STA     <$B2                           ; {ram:Score} 
-D9C2: 96 B1          LDA     <$B1                           ; {ram:Score} 
-D9C4: 89 00          ADCA    #$00            
-D9C6: 19             DAA                     
-D9C7: 97 B1          STA     <$B1                           ; {ram:Score} 
+D97B: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} Player's coordinates
+D97D: BD DA 12       JSR     $DA12                          ; {CheckWallAlign} Are we between cells?
+D980: 24 0C          BCC     $D98E                          ; Yes ... we know we can move forward
+D982: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} Players coordinate
+D984: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} Pointer to source maze
+D987: 96 A4          LDA     <$A4                           ; {ram:PlayerDir} Is there a wall ...
+D989: BD DF 42       JSR     $DF42                          ; {CheckForWall} ... in our current direction?
+D98C: 25 0F          BCS     $D99D                          ; Yes ... no more moving in that direction
+D98E: 8E DE 4F       LDX     #$DE4F                         ; {!+DirOffset} Get ...
+D991: D6 A4          LDB     <$A4                           ; {ram:PlayerDir} ... coordinate ...
+D993: 58             LSLB                                   ; ... offsets for ...
+D994: 3A             ABX                                    ; ... current direction
+D995: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} Move ...
+D997: AB 84          ADDA    ,X                             ; ... the ...
+D999: EB 01          ADDB    1,X                            ; ... player
+D99B: DD A2          STD     <$A2                           ; {ram:PlayerCoords} New corrdiantes
+; 
+D99D: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} Player coordinates
+D99F: BD DA 24       JSR     $DA24                          ; {CheckAlignOddEven} Could we be over a dot?
+D9A2: 24 40          BCC     $D9E4                          ; No ... no need to check
+D9A4: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} Pointer to ...
+D9A6: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} ... maze source
+D9A9: E7 E2          STB     ,-S                            ; Bit position to the stack
+D9AB: A6 84          LDA     ,X                             ; Is the ...
+D9AD: A8 E4          EORA    ,S                             ; ... player over ...
+D9AF: A4 E0          ANDA    ,S+                            ; ... a dot?
+D9B1: 26 24          BNE     $D9D7                          ; Not a dot ... skip sound
+;
+D9B3: 86 03          LDA     #$03                           ; Make eat-a-dot-sound ...
+D9B5: 97 BA          STA     <$BA                           ; {ram:MakeEatSound} ... next time we draw the magnifier
+D9B7: 96 B5          LDA     <$B5                           ; {ram:LiveOrDemo} Is this a demo game?
+D9B9: 27 1C          BEQ     $D9D7                          ; Yes ... skip adjusting the score
+D9BB: 96 B2          LDA     <$B2                           ; {ram:Score} 10 points ...
+D9BD: 8B 10          ADDA    #$10                           ; ... for ...
+D9BF: 19             DAA                                    ; ... eating ...
+D9C0: 97 B2          STA     <$B2                           ; {ram:Score} ... a dot
+D9C2: 96 B1          LDA     <$B1                           ; {ram:Score} Carry ...
+D9C4: 89 00          ADCA    #$00                           ; ... into ...
+D9C6: 19             DAA                                    ; ... upper ...
+D9C7: 97 B1          STA     <$B1                           ; {ram:Score} ... byte
 D9C9: 86 02          LDA     #$02                           ; Draw the score ...
 D9CB: 97 B8          STA     <$B8                           ; {ram:DrawScore} ... two times (two screen buffers)
-D9CD: 0F B6          CLR     <$B6                           ; {ram:ISRCountScore} 
-D9CF: DE BE          LDU     <$BE                           ; {ram:DotsLeft} 
-D9D1: 27 04          BEQ     $D9D7                          ; ?? why would this ever be 0? We stop when it reaches 0
+D9CD: 0F B6          CLR     <$B6                           ; {ram:ISRCountScore} Flag to update the score
+D9CF: DE BE          LDU     <$BE                           ; {ram:DotsLeft} Current count of dots eaten
+D9D1: 27 04          BEQ     $D9D7                          ; Why would this ever be 0? We stop the game when it reaches 0
 D9D3: 33 5F          LEAU    -1,U                           ; Player just ate ...
 D9D5: DF BE          STU     <$BE                           ; {ram:DotsLeft} ... a dot
-D9D7: 1F 98          TFR     B,A             
-D9D9: 53             COMB                    
-D9DA: E4 84          ANDB    ,X              
-D9DC: 34 04          PSHS    B               
-D9DE: 84 AA          ANDA    #$AA            
-D9E0: AA E0          ORA     ,S+             
-D9E2: A7 84          STA     ,X              
-D9E4: 39             RTS                    
+;
+D9D7: 1F 98          TFR     B,A                            ; Bit position
+D9D9: 53             COMB                                   ; Leave ...
+D9DA: E4 84          ANDB    ,X                             ; ...
+D9DC: 34 04          PSHS    B                              ; ... a ...
+D9DE: 84 AA          ANDA    #$AA                           ; ...
+D9E0: AA E0          ORA     ,S+                            ; ... trail ...
+D9E2: A7 84          STA     ,X                             ; ... behind
+D9E4: 39             RTS                                    ; Done
  
 DemoMoves:
 D9E5: D6 A4          LDB     <$A4                           ; {ram:PlayerDir} Get the player's direction
@@ -2806,7 +2815,7 @@ D9EE: AB 84          ADDA    ,X                             ; ... coordinates to
 D9F0: EB 01          ADDB    1,X                            ; ... the offset
 D9F2: DD 8E          STD     <$8E                           ; {ram:Temp1} This is where we go
 D9F4: BD DF CC       JSR     $DFCC                          ; {CheckCollision} Did we run into a bug?
-D9F7: 24 08          BCC     $DA01                          ; No ... ??
+D9F7: 24 08          BCC     $DA01                          ; No ... keep going
 D9F9: 96 A4          LDA     <$A4                           ; {ram:PlayerDir} Turn the ...
 D9FB: 88 02          EORA    #$02                           ; ... player ...
 D9FD: 97 A4          STA     <$A4                           ; {ram:PlayerDir} ... around 180 degrees
@@ -2880,9 +2889,9 @@ DA65: C6 C0          LDB     #$C0                           ; ... start over wit
 DA67: D7 88          STB     <$88                           ; {ram:BitPos} New pixel position
 DA69: 86 22          LDA     #$22                           ; 34 pixels in horizontal line (we already have 2 on the edges)
 DA6B: 97 99          STA     <$99                           ; {ram:Temp3} Keep the pixel counter
-DA6D: 0F BD          CLR     <$BD                           ; {ram:EatSnd3} 
-DA6F: 0F A5          CLR     <$A5                           ; {ram:HorzDoubler} 
-DA71: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} 
+DA6D: 0F BD          CLR     <$BD                           ; {ram:EatSnd3} Sound magic
+DA6F: 0F A5          CLR     <$A5                           ; {ram:HorzDoubler} Clear the doubler flag
+DA71: DC A2          LDD     <$A2                           ; {ram:PlayerCoords} Player's coordiante
 DA73: 83 08 08       SUBD    #$0808                         ; 8 cells left, 8 cells up -- that's where the magnifier starts
 DA76: BD DE 5C       JSR     $DE5C                          ; {CoordToScrOffs400} Get the pointer to the screen and the bit mask
 DA79: 31 84          LEAY    ,X                             ; Y now points to source maze
@@ -2948,7 +2957,7 @@ DAE6: DF A9          STU     <$A9                           ; {ram:MagnifierEnd}
 DAE8: D6 88          LDB     <$88                           ; {ram:BitPos} Magnifier ...
 DAEA: EA C4          ORB     ,U                             ; ... bottom edge ...
 DAEC: E7 C4          STB     ,U                             ; ... is solid
-DAEE: DC 88          LDD     <$88                           ; {ram:BitPos} 
+DAEE: DC 88          LDD     <$88                           ; {ram:BitPos} Bit positions
 DAF0: 35 70          PULS    X,Y,U                          ; Restore
 DAF2: 03 A5          COM     <$A5                           ; {ram:HorzDoubler} Only advance the source ...
 DAF4: 26 08          BNE     $DAFE                          ; ... every other pass (we are doubling)
@@ -3110,13 +3119,11 @@ DBC1: 0A A5          DEC     <$A5                           ; {ram:HorzDoubler} 
 DBC3: 26 FA          BNE     $DBBF                          ; No ... do them all
 DBC5: 0A 99          DEC     <$99                           ; {ram:Temp3} All 6 rows done?
 DBC7: 26 EE          BNE     $DBB7                          ; No .. do them all
-DBC9: 9F A5          STX     <$A5                           ; {ram:HorzDoubler} ?? remember this for something
+DBC9: 9F A5          STX     <$A5                           ; {ram:HorzDoubler} Remember this for erasing
 DBCB: 39             RTS                                    ; Done
 
 ;     70                                              80
 DBCC: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF AA ; Continued DB5C table 
-
-; ?? Seems to erase the lone bug in the splash screen
 
 EraseLoneSplash:
 DBDD: C6 FF          LDB     #$FF                           ; Erasing splash bug
@@ -3435,9 +3442,9 @@ DDDE: 30 89 00 80    LEAX    $0080,X                        ; 4 rows per cell ..
 DDE2: 0A 98          DEC     <$98                           ; {ram:Temp2} All 16 cells done?
 DDE4: 26 EC          BNE     $DDD2                          ; No ... do all rows
 
-DDE6: CC 00 04 ; TOPHER MOD End level after just 4 dots
+;DDE6: CC 00 04 ; TOPHER MOD End level after just 4 dots
 
-;DDE6: CC 01 3F       LDD     #$013F                         ; Number of dots ...
+DDE6: CC 01 3F       LDD     #$013F                         ; Number of dots ...
 DDE9: ED 8D 22 D1    STD     $00BE,PC                       ; ... left in the maze
 DDED: 8E 0A 30       LDX     #$0A30                         ; Center cell of the maze
 DDF0: 86 CF          LDA     #$CF                           ; Erase ...
@@ -3489,7 +3496,7 @@ DE3A: 27 C4          BEQ     $DE00                          ; Yes ... out
 ;
 DE3C: 34 50          PSHS    U,X                            ; Hold the line pointers
 DE3E: CC FF 20       LDD     #$FF20                         ; 32 FFs ... this is the white line
-DE41: 2B 00          BMI     $DE43                          ; ?? Why are we branching to the next line?
+DE41: 2B 00          BMI     $DE43                          ; ?Why? Branching to the next line? Code personality.
 DE43: A7 80          STA     ,X+                            ; Draw the two ....
 DE45: A7 C0          STA     ,U+                            ; ... white lines
 DE47: 5A             DECB                                   ; Row done?
@@ -3625,10 +3632,10 @@ DF06: CE 28 00       LDU     #$2800                         ; List of available 
 DF09: 0F 88          CLR     <$88                           ; {ram:BitPos} Number of available directions
 DF0B: 4F             CLRA                                   ; Start with direction 0
 DF0C: 34 12          PSHS    X,A                            ; Hold this over the function call
-DF0E: 8D 32          BSR     $DF42                          ; Check the direction
+DF0E: 8D 32          BSR     $DF42                          ; {CheckForWall} Check the direction
 DF10: 35 12          PULS    A,X                            ; Restore after call
 DF12: 25 06          BCS     $DF1A                          ; There is a wall in that direction ... don't add this
-DF14: D6 88          LDB     <$88                           ; {ram:BitPos} ?? Why? This is never used.
+DF14: D6 88          LDB     <$88                           ; {ram:BitPos} ?Why? This is never used? Code personality.
 DF16: A7 C0          STA     ,U+                            ; Add the available direction to our list
 DF18: 0C 88          INC     <$88                           ; {ram:BitPos} Bump the count of availables
 DF1A: 4C             INCA                                   ; Next direction
@@ -3643,7 +3650,7 @@ DF27: BD DD 52       JSR     $DD52                          ; {GetRandom} Get a 
 DF2A: 84 03          ANDA    #$03                           ; ... number
 DF2C: 91 88          CMPA    <$88                           ; {ram:BitPos} More than the number of directions we have?
 DF2E: 24 F7          BCC     $DF27                          ; Yes ... go back and try again
-DF30: CE 28 00       LDU     #$2800                         ; ?? Hey ... U already has this in it
+DF30: CE 28 00       LDU     #$2800                         ; ?Why? Hey ... U already has this in it. Code personality.
 DF33: 33 C6          LEAU    A,U                            ; Get desired ...
 DF35: A6 C4          LDA     ,U                             ; ... direction
 DF37: A8 22          EORA    2,Y                            ; Are we picking ...
@@ -3655,6 +3662,8 @@ DF41: 39             RTS                                    ; Done
 ;
 ; Check for wall
 ; A is direction
+; Return C=1 if there is a wall, C=0 if no wall
+CheckForWall:
 DF42: 85 01          BITA    #$01                           ; Up or down?
 DF44: 27 0F          BEQ     $DF55                          ; Yes ... go handle up/down
 DF46: 85 02          BITA    #$02                           ; Must be left/right. Is it right?
@@ -3680,8 +3689,6 @@ DF67: 39             RTS                                    ; Done
 # Bug dots
 
 Drawing and erasing the bugs on the non-magnified maze.
-
-?? When we erase, we copy the second-set coordinate to the first-set. Need to comment on what this first/second is.
 
 ```code
 DrawBugDot:
