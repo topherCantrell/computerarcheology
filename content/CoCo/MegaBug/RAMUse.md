@@ -13,9 +13,9 @@
 | 89    | BitPosSrc | Pixel position of the source while drawing the magnifier |
 | 8A:8B | HeadCellList | Start of the list of cells needing visiting in the maze draw |
 | 8C:8D | EndCellList | End of the list (+1) of cells needing visiting |
-| 8E:8F | Temp1 | Used to check coordinates and other ?? |
+| 8E:8F | Temp1 | Used to check coordinates and other |
 | 90:91 | RndSeed | Used to fetch bytes from ROM as random numbers |
-| 92    | RequestedPage | Upper byte of address of visible screen page (04 or ??) |
+| 92    | RequestedPage | Upper byte of address of visible screen page (04, 10, or 1C) |
 | 93:94 | GenDirection | Current direction in maze generation |
 | 95:96 | TargetCell | The target cell last used by the open-cell-wall function |
 | 97    | WallOpened | Maze generation. 00 if a wall was opened during the dig run |
@@ -65,8 +65,8 @@ Graphics pages (3K each)
 The data on the bugs is kept in an array at $2808. 3 bytes each: y,x,dir
 
   * 2800:2807: during maze generation, list of unvisited neighbors (2 bytes * 4 possible)
-  * 2808:2868: data on up to 32 bugs ... 3 bytes each (y,x,dir)
-  * 2868:28C7: ?? duplicate of the previous data (y,x,dir) ?? Seems to be two sets of data for mouth open/close times ??
+  * 2808:2868: 1st set of data on up to 32 bugs ... 3 bytes each (y,x,dir)
+  * 2868:28C7: 2nd set (starts as a duplicate of 1st) of bug data (y,x,dir). Two sets of data for mouth open/close times
   * 28C8:28E7: column-has-content flags set by the draw-magnifier routine and read by the draw-bug routine
   * 28E8:2A27: array of bytes, one per cell, 20*10 cells. 00=not visited, FF=visited
-  * 2A28:????: array of words, coordinates of cells we need to revisit in the maze generation
+  * 2A28:?   : array of words, coordinates of cells we need to revisit in the maze generation
