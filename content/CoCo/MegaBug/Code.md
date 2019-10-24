@@ -1409,7 +1409,8 @@ CFF6: 27 1D          BEQ     $D015                          ; Yes ... we have en
 # Code bug
 
 This next line should be "JSR $D2DE" to set the graphics mode. I tested with the
-change and I get the error message. Otherwise the text screen shows garbage.
+change and I get the error message. Otherwise the text screen shows garbage. (NOP out
+the "BEQ $D015" to see the error)
 
 "D2DE" instead of "D2BE". Interesting that it is off by 32. Wasn't this assembled
 by a tool that managed the addresses?
