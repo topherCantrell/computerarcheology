@@ -5,7 +5,7 @@
 >>> deploy:<br>
 >>>    +Arcade.jpg<br>
 >>>    Asteroids:Asteroids 80%<br>
->>>    CrazyClimber:Crazy Climber 100%<br>
+>>>    CrazyClimber:Crazy Climber<br>
 >>>    Defender:Defender 75%<br>
 >>>    Frogger:Frogger (Sound)<br>
 >>>    Galaga<br>
