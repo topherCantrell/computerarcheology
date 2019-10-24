@@ -1406,7 +1406,7 @@ CFF2: A1 8D 40 0A    CMPA    $1000,PC                       ; Did we change the 
 CFF6: 27 1D          BEQ     $D015                          ; Yes ... we have enough memory to run
 ```
 
-# Code bug 1
+# Code bug
 
 This next line should be "JSR $D2DE" to set the graphics mode. I tested with the
 change and I get the error message. Otherwise the text screen shows garbage.
@@ -3556,6 +3556,14 @@ DE3A: 27 C4          BEQ     $DE00                          ; Yes ... out
 ;
 DE3C: 34 50          PSHS    U,X                            ; Hold the line pointers
 DE3E: CC FF 20       LDD     #$FF20                         ; 32 FFs ... this is the white line
+```
+
+# Quirks
+
+There are several areas of questionable code here. These little quirks give the code personality. For instance, why are
+we branching to the next line? Search for "?Why?" on this page to see others.
+
+```code
 DE41: 2B 00          BMI     $DE43                          ; ?Why? Branching to the next line? Code personality.
 DE43: A7 80          STA     ,X+                            ; Draw the two ....
 DE45: A7 C0          STA     ,U+                            ; ... white lines
