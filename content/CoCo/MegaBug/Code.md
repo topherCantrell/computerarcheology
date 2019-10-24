@@ -1452,7 +1452,7 @@ D03E: BF 01 0D       STX     $010D                          ; ... interrupt vect
 D041: 0F C7          CLR     <$C7                           ; {ram:VisiblePage} (force setting on next interrupt)
 D043: 86 04          LDA     #$04                           ; Display graphics page 400
 D045: 97 92          STA     <$92                           ; {ram:RequestedPage} CURRENT VISIBILE PAGE
-D047: 0F B6          CLR     <$B6                           ; {ram:ISRCountScore} 
+D047: 0F B6          CLR     <$B6                           ; {ram:ISRCountScore} Initialize 1 sec timer for losing a point
 D049: 0F C1          CLR     <$C1                           ; {ram:ShowingGame} We are NOT showing the game screen
 D04B: 86 34          LDA     #$34                           ; Initialize ...
 D04D: B7 FF 01       STA     $FF01                          ; {hard:PIA0_CA} ... PIA1 A ...
@@ -1462,7 +1462,15 @@ D055: A7 8D 2E CA    STA     $FF23,PC                       ; ... six-bit sound
 D059: 86 35          LDA     #$35                           ; Enable ...
 D05B: B7 FF 03       STA     $FF03                          ; {hard:PIA0_CB} ... 60ms interrupt
 D05E: 3C EF          CWAI    $EF                            ; Wait for the first interrupt
+```
 
+# Splash mode
+
+Scroll the credit text onto the screen. Then play the music while reprinting the "Mega-Bug" name
+in rolling colors changing after each note. Then play a demo game with random direction
+changes.
+
+```code
 SplashMode:
 D060: 10 CE 03 F0    LDS     #$03F0                         ; Set stack just below 1st screen 
 D064: 0F C1          CLR     <$C1                           ; {ram:ShowingGame} We are NOT showing the game screen
@@ -1759,7 +1767,14 @@ D2F2: 39             RTS                                    ; Done
 
 # Player Died
 
-When the player touches a bug, the code comes here.
+When the player touches a bug, the code comes here. The code plays the "we gotcha" tone, and if it is a demo
+game then the code returns to the splash mode.
+
+If this is a live game, the code updates the high score if needed and plays the "we gotcha" audio samples. Then
+the large bugs on the side dance a little.
+
+The code waits 3 seconds for the player to immediately start a new game. Otherwise the code goes to the
+splash mode.
 
 ```code
 PlayerDied:
@@ -1773,8 +1788,8 @@ D303: 25 02          BCS     $D307                          ; No ... leave old h
 D305: DD B3          STD     <$B3                           ; {ram:HighScore} this is the new high score
 D307: BD D7 7C       JSR     $D77C                          ; {PlayWeGotcha} Play "We Gotcha"
 ;
-D30A: 86 04          LDA     #$04            
-D30C: 97 92          STA     <$92                           ; {ram:RequestedPage} 
+D30A: 86 04          LDA     #$04                           ; Show the ...
+D30C: 97 92          STA     <$92                           ; {ram:RequestedPage} ... maze screen in buffer 1
 D30E: 86 0E          LDA     #$0E                           ; Set counter ...
 D310: 97 98          STA     <$98                           ; {ram:Temp2} ... for 14 jumping animations
 D312: CE CB 50       LDU     #$CB50                         ; {!+GraBugJumping1} Graphics first position
@@ -1801,7 +1816,20 @@ D339: 10 25 FD 97    LBCS    $D0D4                          ; {LiveGame} Yes ...
 D33D: 9E C3          LDX     <$C3                           ; {ram:DemoTimer} Timer expired?
 D33F: 26 F5          BNE     $D336                          ; No ... keep waiting
 D341: 7E D0 60       JMP     $D060                          ; {SplashMode} Yes ... restart the splash mode
+```
 
+# Player wins
+
+The code copies the maze to all three screen buffer and changes the color of the maze walls on each. Then,
+it loops the screen one by one for a flashing effect.
+
+Next, the code wipes the screen using the white scrolling lines.
+
+A line of bugs marches down the screen from top to bottom leaving the text "We'll getcha next time" in their wake.
+Then a lone bug quickly marches down to draw the exclamation point. The maze loopiness is divided by two (starts at 192),
+there is a small delay, and the next game begins.
+
+```code
 ; Player wins
 PlayerWins:
 D344: 0F C1          CLR     <$C1                           ; {ram:ShowingGame} We are NOT showing the game screen
@@ -1982,6 +2010,9 @@ D480: 39             RTS                                    ; Done
 
 # Draw large bugs
 
+Since the bugs are single-pixel dots on the maze screen, they are drawn in graphics
+on the magnifier if they are seen.
+
 ```code
 ; Draw large bugs on both sides of the screen
 
@@ -2111,6 +2142,11 @@ D545: 39             RTS                                    ; Done
 
 # IRQ Service Routine
 
+First, this routine changes the hardware graphics page to any requested new page.
+
+Then it bumps the time value every second. Every second the player doesn't eat a dot, the
+score drops by 1. 
+
 ```code
 IRQ:
 ; Set the desired display page                 
@@ -2139,7 +2175,7 @@ D566: 27 48          BEQ     $D5B0                          ; Yes ... skip score
 D568: 96 B6          LDA     <$B6                           ; {ram:ISRCountScore} Bump ...
 D56A: 4C             INCA                                   ; ... interrupt ...
 D56B: 97 B6          STA     <$B6                           ; {ram:ISRCountScore} ... counter
-D56D: 81 3C          CMPA    #$3C                           ; Has it been 60 interrupts (1 second) ?
+D56D: 81 3C          CMPA    #$3C                           ; Has it been 60 interrupts (1 second) without eating a dot?
 D56F: 25 1C          BCS     $D58D                          ; No ... not time to adjust the score
 D571: 0F B6          CLR     <$B6                           ; {ram:ISRCountScore} Yes ... reset interrupt counter back to 0
 D573: DC B1          LDD     <$B1                           ; {ram:Score} Is the score 0000?
@@ -2467,6 +2503,7 @@ D7A0: 86 02          LDA     #$02                           ; 6-bit ...
 D7A2: B7 FF 20       STA     $FF20                          ; {hard:PIA1_DA} ... sound off
 D7A5: 35 81          PULS    CC,PC                          ; Restore interrupts and out
 ```
+
 ## Play "gotcha" tone
 
 ```code
@@ -2544,7 +2581,7 @@ D81D: 26 DB          BNE     $D7FA                          ; No ... do them all
 D81F: 39             RTS                                    ; Out
 ```
 
-# Draw bugs
+# Draw bugs (magnified)
 
 ```code
 DrawBugs:
@@ -2706,6 +2743,8 @@ D92F: B7 FF 23       STA     $FF23                          ; {hard:PIA1_CB} ...
 D932: DB A5          ADDB    <$A5                           ; {ram:HorzDoubler} Result in B
 D934: 39             RTS                                    ; Done
 ```
+
+# Move the player
 
 ```code
 MovePlayer:                     
@@ -2988,6 +3027,11 @@ DB1C: 26 F4          BNE     $DB12                          ; No ... keep doing 
 DB1E: 39             RTS                                    ; Out
 ```
 
+# Erase magnifier
+
+This code copies the maze from the source screen buffer over the magnifier to erase it back to ground state on the
+current drawing buffer.
+
 ```code
 EraseMagnifier:
 DB1F: EC 8D 25 7F    LDD     $00A2,PC                       ; Player coordinates
@@ -3194,10 +3238,21 @@ DC54: 35 86          PULS    A,B,PC                         ; Done
 
 # Draw the maze
 
-The code starts by drawing a grid of lines ... all walls in the maze closed. And make a double line around
-the edges of the maze. The code ends with filling the maze with dots (except the very center).
+The maze is drawn right onto the first screen buffer (0400). The code draws all possible walls and then carves the
+maze out with a number of runs. A run twists and turns for a random number of cells or until it is blocked. 
 
-?? TODO Lots of discussion needed here
+At the end of each run, the last wall is either left in place (dead-end) or opened into the neighbor (a loop). The 
+choice is a random picked weighted by a "loopiness" variable. The higher the "loopiness" value, the more likely
+the run will end in a loop. A value of zero means all runs end in a dead end.
+
+With each level cleared, the loopiness divides down. The mazes become harder and harder (fewer loops ... more dead-ends
+to get trapped in.
+
+As a run clears out walls, the code builds a list of cells to "revisit" as the starting point of the next run. When the
+list is empty, the maze is full and ready for play.
+
+You can see the actual maze generation code in action below. A 6809 emulator runs the real maze-drawing code to generate
+the maze in the canvas below.
 
 ```html
 <canvas id="mazeArea" width="330" height="266" style="border: 1px solid black"></canvas><br>
