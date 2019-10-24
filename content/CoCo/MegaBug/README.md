@@ -16,10 +16,15 @@
 * [Disassembled Code](Code.md)
 * [RAM Usage](RAMUse.md)
 
+# Cold Winter nights
+
+I remember playing this game on cold winter nights during Christmas break in high school.
+
 >>> tourGuide {
 
 # Tour Guide
-  * The maze generator
+  Check out the [maze generator code](Code.md#draw-the-maze). You can run the code to generate mazes right on the page. Click the "step" button to see the maze drawn in slow motion.
+  
   * The game graphics
   * Using the top of the stack as a register  
   * The bug in the code around the "You need 16k" message

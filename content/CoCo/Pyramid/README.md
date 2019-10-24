@@ -74,7 +74,7 @@ awaits just a step away."
 
 Check out a [snippet of the original source code](#trs-80-nugget) caught in an uninitialized buffer.
 
-Have a look at the [game's main loop](Code.md#mainloop). It is really short.
+Have a look at the [game's main loop](Code.md#MainLoop). It is really short.
 
 The code is code-within-code. The adventure language processor commands are [here](Code.md#scriptcommands).
 
