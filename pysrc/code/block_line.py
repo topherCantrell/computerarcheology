@@ -135,6 +135,13 @@ class Block:
                                 anchstr + html_out[opcode_j:])
                     extra_len = len(target_label) - (opcode_j - opcode_i)
                     #print(target_label, opcode_i, opcode_j, extra_len)
+                    if extra_len < 0:
+                        i = html_out.find(';')
+                        if i >= 0:
+                            while extra_len < 0:                                
+                                extra_len += 1
+                                html_out = html_out[:i] + ' ' + html_out[i:]
+                                  
                     if extra_len > 0:
                         i = html_out.find(';')
                         if i >= 0:
@@ -147,12 +154,12 @@ class Block:
                 # This is the target of a link. Give it an ID for navigation.
                 # TODO think about moving this target up to the label before or even the section
                 # header above where appropriate?
-                if 'is_target' in line.link_info:
+                if 'is_target' in line.link_info:                    
                     html_out = '<span id="' + \
                         html_out[0:4] + '">' + html_out[0:4] + \
                         '</span>' + html_out[4:]
 
-                # Remove and {...} spec from the comment
+                # Remove and {...} spec from the comment                
                 i = html_out.find(';')
                 if i >= 0:
                     i = html_out.find('{', i)

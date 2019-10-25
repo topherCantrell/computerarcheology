@@ -157,7 +157,7 @@ def process_code(lines, code_info, skip_no_label_jumps=False):
                     if not nc:
                         nc = ''
 
-                    if not '{!-}' in nc:
+                    if not '{!-}' in nc:                        
                         if '{' in nc:
                             i = nc.index('{')
                             j = nc.index('}') + 1
