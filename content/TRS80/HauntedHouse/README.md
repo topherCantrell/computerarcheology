@@ -63,23 +63,23 @@ game engine by comparing Haunted House with [Pyramid](../../CoCo/Pyramid),
 
 # Tour Guide 
 
-The code is code-within-code. The adventure language processor commands are [here](Code1.html#ScriptCommands).
+The code is code-within-code. The adventure language processor commands are [here](Code1.html#script-commands).
 
 Have a look at all the unpacked messages in the game:
-* [First Floor Messages](Code1.html#CompressedText)
-* [Second Floor Messages](Code2.html#CompressedText)
+* [First Floor Messages](Code1.html#compressed-text)
+* [Second Floor Messages](Code2.html#compressed-text)
 
 Visit the room scripts to see what you can do in each room. Then visit the general script that runs after the 
 current room has a chance to take the command. These "adventure language scripts" are interpreted by 
-the [Script Processor](Code1.html#RunScript).
-* [Room scripts 1st floor](Code1.html#RoomScripts)
-* [General Script 1st floor](Code1.html#GeneralScript)
-* [Room scripts 2nd floor](Code2.html#RoomScripts)
-* [General Script 2nd floor](Code2.html#GeneralScript)
+the [Script Processor](Code1.html#run-script).
+* [Room scripts 1st floor](Code1.html#room-scripts)
+* [General Script 1st floor](Code1.html#general-script)
+* [Room scripts 2nd floor](Code2.html#room-scripts)
+* [General Script 2nd floor](Code2.html#general-script)
 
 Read through all words that the game understands:
-* [Word 1st Floor](Code1.html#CommandTable)
-* [Word 2nd Floor](Code2.html#CommandTable)
+* [Word 1st Floor](Code1.html#command-table)
+* [Word 2nd Floor](Code2.html#command-table)
 
 >>> }
 

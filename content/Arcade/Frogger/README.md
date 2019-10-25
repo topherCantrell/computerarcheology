@@ -38,7 +38,7 @@ since the game's release in 1981. Until now.
 >>> tourGuide {
 
 # Tour Guide 
-Listen to the hidden music: [Hidden Music](#HiddenMusic)
+Listen to the hidden music: [Hidden Music](#hidden-music)
 
 >>> }
 

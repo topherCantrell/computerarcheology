@@ -34,9 +34,9 @@ Lonnie Howell started the comments. Mark McDougall picked up where he left up.
 Mark's work is amazing.
 
 You should browse the [Vector ROM](VectorROM.md) and see the game images. For instance:
-* [UFO](VectorROM.md#UFO)
-* [Asteroids](VectorROM.md#RockPatterns)
-* [Player Ships](VectorROM.md#PlayerShips)
+* [UFO](VectorROM.md#ufo)
+* [Asteroids](VectorROM.md#rock-patterns)
+* [Player Ships](VectorROM.md#player-ships)
 
 And many more.
 

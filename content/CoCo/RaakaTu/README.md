@@ -60,22 +60,22 @@ and wearing a headdress.
 
 # Tour Guide 
 
-The code is practically a virtual-machine for the game written in adventure-language. The [Main Loop](Code.md#MainLoop) decodes the complex
+The code is practically a virtual-machine for the game written in adventure-language. The [Main Loop](Code.md#main-loop) decodes the complex
 user input with nouns, verbs, and prepositions.
 
-Have a look at the [Adventure Language Processor](Code.md#ProcessCommand) and all its complex commands.
+Have a look at the [Adventure Language Processor](Code.md#process-command) and all its complex commands.
 
-Have a look at the [Phrase List](Code.md#PhraseList) that describes the forms of all known input lines.
+Have a look at the [Phrase List](Code.md#phrase-list) that describes the forms of all known input lines.
 
-In Raaka-Tu, the rooms are objects with descriptions and commands combined. Visit all the [Room Definitions](Code.md#RoomDescriptions)
+In Raaka-Tu, the rooms are objects with descriptions and commands combined. Visit all the [Room Definitions](Code.md#room-descriptions)
 for a blast from the past.
 
 There are lots of game objects -- normal things like "rugs" and "rings" and "guards". They all can have complex code scripts
-and may move around on their own (like the "guards" and the "serpent"). Have a look at the [Objects and their scripts](Code.md#ObjectData).
+and may move around on their own (like the "guards" and the "serpent"). Have a look at the [Objects and their scripts](Code.md#object-data).
 
-Have a look at the [General Command Script](Code.md#GeneralCommands) that processes commands not handled by the current room.
+Have a look at the [General Command Script](Code.md#general-commands) that processes commands not handled by the current room.
 
-Look through the game's [list of all known words](Code.md#InputWordTables).
+Look through the game's [list of all known words](Code.md#input-word-tables).
 >>> }
 
 # References

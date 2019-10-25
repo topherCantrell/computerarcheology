@@ -93,29 +93,29 @@ your priorities and establish some healthy materialism."
 # Tour Guide
 
 Code bugs are always fun to explore. You should visit these:
-* [Error message with POTION](Code.md#CodeBug1)
-* [Error when KILL ORACLE](Code.md#CodeBug2)
-* [ISHTAR does not clear fog poison](Code.md#CodeBug3)
-* [Should fail if overburdeoned](Code.md#CodeBug4)
-* [Missing word WATER from message](Code.md#CodeBug5)
-* [Shadowed jump](Code.md#CodeBug6)
-* [Invisible Oil hides the URN](Code.md#CodeBug7)
-* [YOUR SIGHT IS DIM never gets printed (Joe Hagan)](Code.md#CodeBug8)
+* [Error message with POTION](Code.md#code-bug-1)
+* [Error when KILL ORACLE](Code.md#code-bug-2)
+* [ISHTAR does not clear fog poison](Code.md#code-bug-3)
+* [Should fail if overburdeoned](Code.md#code-bug-4)
+* [Missing word WATER from message](Code.md#code-bug-5)
+* [Shadowed jump](Code.md#code-bug-6)
+* [Invisible Oil hides the URN](Code.md#code-bug-7)
+* [YOUR SIGHT IS DIM never gets printed (Joe Hagan)](Code.md#code-bug-8)
 
-You should see the routines that [Move each Creature](Code.md#MoveCreatures) and the
-routines that [Make Each Creature Attack](Code.md#CreaturesAttack).
+You should see the routines that [Move each Creature](Code.md#move-creatures) and the
+routines that [Make Each Creature Attack](Code.md#creatures-attack).
 
-Have a look at the [Individual User Commands](Code.md#IndividualCommands) -- especially the
-[Spell Commands](Code.md#UseSpell).
+Have a look at the [Individual User Commands](Code.md#individual-commands) -- especially the
+[Spell Commands](Code.md#use-spell).
 
-Check out the routines that run [Between Certain Rooms](Code.md#BetweenRoomActions) and when you [Enter Certain Rooms](Code.md#EnteringRoomActions).
+Check out the routines that run [Between Certain Rooms](Code.md#between-room-actions) and when you [Enter Certain Rooms](Code.md#entering-room-actions).
 
 Read through the text messages of the game:
-* [Item Descriptions](Code.md#ItemDescriptions)
-* [Room Descriptions](Code.md#RoomDescriptions)
-* [Game Messages](Code.md#MiscStrings)
+* [Item Descriptions](Code.md#item-descriptions)
+* [Room Descriptions](Code.md#room-descriptions)
+* [Game Messages](Code.md#misc-strings)
 
-Here is the map of all the passages between all 256 rooms: [Dungeon Map](Code.md#PassageConfigurations)
+Here is the map of all the passages between all 256 rooms: [Dungeon Map](Code.md#passage-configuration)
 >>> }
 
 # References

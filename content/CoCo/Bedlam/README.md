@@ -57,19 +57,19 @@ the questionnaire until you try to escape from Bedlam." - From the game manual
 
 # Tour Guide
 
-The code is practically a virtual-machine for the game written in adventure-language. The [Main Loop](Code.html#MainLoop) decodes the complex
+The code is practically a virtual-machine for the game written in adventure-language. The [Main Loop](Code.html#main-loop) decodes the complex
 user input with nouns, verbs, adjectives, and prepositions.
 
-Have a look at the [Adventure Language Processor](Code.html#ProcessCommand) and all its complex commands.
+Have a look at the [Adventure Language Processor](Code.html#process-command) and all its complex commands.
 
-Have a look at the [Phrase List](Code.html#PhraseList) that describes the forms of all known input lines.
+Have a look at the [Phrase List](Code.html#phrase-list) that describes the forms of all known input lines.
 
-The Bedlam game has fewer rooms and more object interactions. Visit all the [Room Definitions](Code.html#RoomDescriptions). Then have a look 
-at the [Objects and their scripts](Code.html#ObjectData).
+The Bedlam game has fewer rooms and more object interactions. Visit all the [Room Definitions](Code.html#room-descriptions). Then have a look 
+at the [Objects and their scripts](Code.html#object-data).
 
-Have a look at the [General Command Script](Code.html#GeneralCommands) that processes commands not handled by the current room.
+Have a look at the [General Command Script](Code.html#general-commands) that processes commands not handled by the current room.
 
-Look through the game's [list of all known words](Code.html#InputWordTables).
+Look through the game's [list of all known words](Code.html#input-word-tables).
 >>> }
 
 # References 

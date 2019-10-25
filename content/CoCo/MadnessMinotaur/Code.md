@@ -1346,6 +1346,11 @@ PlaceEnterRoomActions:
 ; Place SMALL PIT and JUMP to 39 with its action
 0CC2: B6 3C E6            LDA     $3CE6                     ; We just placed the SMALL PIT action
 0CC5: 97 35               STA     <$35                      ; {ram:smallPitRoom} Put the SMALL PIT there
+```
+
+# Code Bug 6
+
+```code
 0CC7: B7 3C 59            STA     $3C59                     ; {CodeBug6} Put the "JUMP DOWN" to room 39 with the pit
 ;
 ; Count on ISHTAR
@@ -1425,7 +1430,7 @@ MainGameLoop:
 ;
 ```
 
-CodeBug8
+# Code Bug 8
 
  Joe Hagen found this bug. The code here calls 1066 (PrintMess). The "YOUR SIGHT IS DIM" 
  message at 2A44, however, is packed. The call should be to 102F (PrintPacked). The
@@ -2305,6 +2310,11 @@ CommandDRINK:
 12E1: 81 BA               CMPA    #$BA                      ; "SPRITE"
 12E3: 27 0F               BEQ     $12F4                     ; {DrinkSPRITE} Error for drinking the sprite (get it? the soda?)
 12E5: 81 B6               CMPA    #$B6                      ; "POTION"
+```
+
+## Code Bug 1
+
+```code
 12E7: 27 17               BEQ     $1300                     ; {CodeBug1} Yes ... go handle potion
 12E9: 81 FF               CMPA    #$FF                      ; No noun?
 12EB: 10 27 FD AA         LBEQ    $1099                     ; {ComWHAT} No noun ... "DRINK WHAT?" and out
@@ -2644,7 +2654,7 @@ CommandISHTAR:
 14CF: 97 01               STA     <$01                      ; {ram:lastRoom} Back as well
 ```
 
-CodeBug3
+### Code Bug 3
 
  All the other leave-room commands reset the MYSTERIOUS FOG counters. This does not.
  If you use ISHTAR to leave the poison fog the count goes on as if you are there.
@@ -2712,6 +2722,11 @@ FillLamp:
 1527: 91 00               CMPA    <$00                      ; {ram:curRoom} In current room?
 1529: 26 09               BNE     $1534                     ; No ... try URN
 152B: BD 1C F8            JSR     $1CF8                     ; Can the lamp be refilled?
+```
+
+## Code Bug 7
+
+```code
 CodeBug7:
 ; If you try to fill from the URN in this room and the oil is not visible yet, you will fail.
 152E: 27 04               BEQ     $1534                     ; No ... error
@@ -3090,6 +3105,11 @@ CommandKILL:
 178D: 24 0C               BCC     $179B                     ; {KillCreature} No ... something to attack
 ;
 178F: 81 1F               CMPA    #$1F                      ; Killing the "ORACLE"?
+```
+
+## Code Bug 2
+
+```code
 1791: 27 1B               BEQ     $17AE                     ; {CodeBug2} Yes ... error message (code bug)
 1793: 8E 2A C0            LDX     #$2AC0                    ; "DON'T BE RIDICULOUS."
 1796: 20 40               BRA     $17D8                     ; Print and out
@@ -3641,6 +3661,11 @@ BetweenRoomE:
 1B11: 26 0C               BNE     $1B1F                     ; No ... do nothing
 1B13: 96 05               LDA     <$05                      ; {ram:condition} Compare ...
 1B15: 90 04               SUBA    <$04                      ; {ram:weight} ... phys - weight
+```
+
+# Code Bug 4
+
+```code
 CodeBug4:
 ; I think if we are overburdeoned it should jump to 1B1D and fail the move.
 1B17: 25 06               BCS     $1B1F                     ; Overburdoned ... nothing happens
@@ -5931,7 +5956,11 @@ MiscStrings:
 ; Message 16
 ; THERE IS A POOL OF OIL ON THE FLOOR.
 2A31: 30 08 2C 67 F1 34 35 40 FF
+```
 
+## Code Bug 5
+
+```code
 CodeBug5:
 ; This message is only used for "THERE IS NO WATER HERE." The
 ; word "WATER" was left out.
@@ -6584,7 +6613,7 @@ JumpInfoTable:
 3C54: CA 1E 14 A2 06; From 202 "JUMP DOWN"  to 162. Required=30  or STUMBLE(20)
 ```
 
-CodeBug6
+## Code Bug 6
 
  The source for this last jump is set by the code at 0CC7. This jump is given to the
  same room where the RoomEnterAction_203 (SMALL PIT IN CORNER OF ROOM). A JUMP DOWN

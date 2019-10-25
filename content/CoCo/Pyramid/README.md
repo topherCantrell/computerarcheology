@@ -74,23 +74,23 @@ awaits just a step away."
 
 Check out a [snippet of the original source code](#trs-80-nugget) caught in an uninitialized buffer.
 
-Have a look at the [game's main loop](Code.md#MainLoop). It is really short.
+Have a look at the [game's main loop](Code.md#main-loop). It is really short.
 
-The code is code-within-code. The adventure language processor commands are [here](Code.md#scriptcommands).
+The code is code-within-code. The adventure language processor commands are [here](Code.md#script-commands).
 
-The spooky mummy is given life as part of the [Move to Room X](Code.md#movetoroomx) code.
+The spooky mummy is given life as part of the [Move to Room X](Code.md#command-1-move-to-room-x) code.
 
 Have a look at all the unpacked messages in the game:
-* [General Messages](Code.md#alternatingerrors)
-* [Room Descriptions](Code.md#roomdescriptions)
-* [Object Descriptions](Code.md#objectdescriptions)
-* [More General Messages](Code.md#gamespecificmessages)
+* [General Messages](Code.md#general-error-messages)
+* [Room Descriptions](Code.md#room-descriptions)
+* [Object Descriptions](Code.md#object-descriptions)
+* [More General Messages](Code.md#game-specific-messages)
 
-Visit the [Room Scripts](Code.md#roomscripts) to see what you can do in each room. Then visit the 
-[General Command Handler](Code.md#generalcommandhandler) script that runs after the current room
-has a chance to take the command. These "adventure language scripts" are interpreted by the [Script Processor](Code.md#ProcessCommandList).
+Visit the [Room Scripts](Code.md#room-scripts) to see what you can do in each room. Then visit the 
+[General Command Handler](Code.md#general-command-handler) script that runs after the current room
+has a chance to take the command. These "adventure language scripts" are interpreted by the [Script Processor](Code.md#process-command-list).
 
-Read through all words that the game understands in the [Word table](Code.md#WordTable).
+Read through all words that the game understands in the [Word table](Code.md#word-table).
 >>> }
 
 # References
