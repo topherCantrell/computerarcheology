@@ -85,14 +85,14 @@ bits of the 6-bit DAC toggling between all-on and all-off. A list of 2397 bytes 
 
 This list of delays appears first in ROM -- well, after a 3-byte jump over the data section.
 
-TODO link to the sample player
+[Play "We Gotcha!"](Code.md#play-we-gotcha)
 
 # Random values
 
 The code uses the BASIC ROM from A000 to BFFF as a table of random values. A rolling pointer starts at A000 and
 advances by 21 before each read. I need to do an analysis to see just how "random" that process is.
 
-TODO link to the random generator
+[Random number generator](Code.md#random-number)
 
 # Inputs
 
@@ -103,7 +103,7 @@ The directional-input code is clever. You pass in the direction axis you want to
 During game-play, the code first checks to see if you want to make an orthogonal change and then checks to see if you
 want to make a 180 degree reverse back the way you came.
 
-TODO link to the input 
+[Read directional input](Code.md#read-directional-input)
 
 # A Code Bug
 
