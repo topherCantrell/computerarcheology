@@ -6,6 +6,8 @@
 >>>   +megabug.jpg<br>
 >>>   +megabug.js<br>
 >>>   +BinaryDataMegabug.js<br>
+>>>   +bug.jpg<br>
+>>>   +lowram.jpg<br>
 >>>   RAMUse.md<br>
 >>>   Code.md<br>
 >>>   ----<br>
@@ -107,17 +109,70 @@ want to make a 180 degree reverse back the way you came.
 
 # A Code Bug
 
-When the code first
-The "not enough memory" bug.
+At startup, the code checks to see that more than 4K RAM is present. The CoCo came in 4K, 16K, 32K, and 64K versions.
+The code can't run in 8K, but since that was never a product, as long as there is more than 4K, the code will start.
 
-TODO link to the bug
+But if there is only 4K of RAM, the game wants to print a message on the screen. Trouble begins at CFF8 with a
+jump-subroutine to D2BE. That address is data within the error message itself. It isn't a valid code address. Assuming
+the "garbage code" does return with no damage, the routine continues to clear the screen and print the message.
+
+[Code bug](Code.md#code-bug)
+
+The problem is that the video display is still in text mode, and the display is set to 0000 -- not 0400 where the message
+is drawn. Instead of the colorful message on the graphics screen, we end up with garbage on the text screen as seen here:
+
+![](bug.jpg)
+
+Maybe the code meant to jump to D2DE instead? This function does change the graphics mode, but it doesn't set the
+display pointer. The upper part of the screen shows memory beginning at 0000. That area holds BASIC's variables and the game's 
+own variables and stack. You can patch the code to change the address and play it in the emulator (or burn a new ROM). If you 
+watch the screen carefully at startup, you can see the pixels flicker as the code changes its variables and stack while it draws 
+the message.
+
+As you look at the picture below, consider: nobody has ever seen this message before.
+
+![](lowram.jpg)
 
 # The pixel doubler table
 
-TODO link to the table
+The pixel doubler routine needs a function to convert a pixel value like 00_00_00_10 from the small (original)
+screen to a color mask like 10_10_10_10 to use in two bits on the magnified screen.
+
+The doubler always works on one pixel value like 00_00_00_10 or 00_00_10_00 or 00_10_00_00 or 10_00_00_00.
+All four of these values must yield 10_10_10_10.
+
+The mapping function needs to be very fast since it is used to magnify 34*34 bits. A lookup table is the
+fastest way -- take the pixel's value and look it up in a 256 byte table. Trade ROM space for speed.
+
+There are four possible pixels. Each pixel has 2 bits -- 4 possible values per pixel. The possible values
+for our mask-making can be enumerated:
+  * 00,01,02,03 (far right pixel)
+  * 00,04,08,0C (second from right)
+  * 00,10,20,30
+  * 00,40,80,C0 (left most pixel)
+  
+The zeros are all the same (producing 00_00_00_00). Thus there are only 13 possible values out of 256 that
+need to be converted. The rest of the values in the 256 byte table don't matter since they will never be
+used.
+
+Rather than waste this space, the game sprinkles code into the large sections between values. The lookup
+table goes from DB5C to DC5B. But several routines fill in the unused areas.
+
+![](Code.md#pixel-color-mask)
 
 # Maze Generator
 
-Loopiness. Copy text from code for detail.
+The maze is drawn right onto the first screen buffer (0400). The code draws all possible walls and then carves the
+maze out with a number of runs. A run twists and turns for a random number of cells or until it is blocked. 
 
-TODO link to the code
+At the end of each run, the last wall is either left in place (dead-end) or opened into the neighbor (a loop). The 
+choice is a random picked weighted by a "loopiness" variable. The higher the "loopiness" value, the more likely
+the run will end in a loop. A value of zero means all runs end in a dead end.
+
+With each level cleared, the loopiness divides down. The mazes become harder and harder (fewer loops ... more dead-ends
+to get trapped in.
+
+As a run clears out walls, the code builds a list of cells to "revisit" as the starting point of the next run. When the
+list is empty, the maze is full and ready for play.
+
+![](Code.md#draw-the-maze)

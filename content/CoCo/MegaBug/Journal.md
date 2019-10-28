@@ -2,6 +2,10 @@
 
 # Journal
 
+## 10/28/2019
+
+That was a fun dig! I think that's all for Mega-Bug for now.
+
 ## 10/8/2019
 
 I'm in the wrap-up now! I worked a bit on the "move the bugs" routine.

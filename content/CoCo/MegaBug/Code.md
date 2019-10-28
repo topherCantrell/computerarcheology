@@ -1404,20 +1404,25 @@ CFED: B7 10 00       STA     $1000                          ; ... to 1000 (4K)
 CFF0: 0F 00          CLR     <$00                           ; Clears 1000 if it ghosts
 CFF2: A1 8D 40 0A    CMPA    $1000,PC                       ; Did we change the memory (and it isn't a ghost)?
 CFF6: 27 1D          BEQ     $D015                          ; Yes ... we have enough memory to run
+
+;CFF6: 12 12 ; NOP NOP ; This removes the branch and forces the code to always fall into the error message
+
 ```
 
 # Code bug
 
 This next line should be "JSR $D2DE" to set the graphics mode. I tested with the
 change and I get the error message. Otherwise the text screen shows garbage. (NOP out
-the "BEQ $D015" to see the error)
+the "CFF6: BEQ $D015" to see the error)
 
 "D2DE" instead of "D2BE". Interesting that it is off by 32. Wasn't this assembled
 by a tool that managed the addresses?
 
 ```code
-CFF8: BD D2 BE       JSR     $D2BE                          ; BUG. This should be D2DE to set the graphics mode.
-;
+CFF8: BD D2 BE       JSR     $D2BE                          ; BUG. This address is a section of data ... not code
+
+;CFF8: BD D2 DE ;      JSR     $D2DE ; This will change the mode ... but not the display page
+
 CFFB: CE 04 00       LDU     #$0400                         ; Start of the first ...
 CFFE: DF 9E          STU     <$9E                           ; {ram:ScreenPtr} ... screen buffer
 D000: BD D4 AE       JSR     $D4AE                          ; {Clear1200} Clear the screen
@@ -2158,7 +2163,7 @@ D54C: 97 C7          STA     <$C7                           ; {ram:VisiblePage} 
 D54E: 44             LSRA                                   ; Offset is 512 byte boundary ... ignore the LSB
 D54F: C6 05          LDB     #$05                           ; 6 registers (bits) to poke
 
-;D54E: CC 02 05 ; TOPHER MOD Always show the 0400 screen
+;D54E: CC 02 05 ; Always show the 0400 screen (or pick another screen)
 
 D551: 8E FF C6       LDX     #$FFC6                         ; Display offset
 D554: 44             LSRA                                   ; Is this bit a 0?
@@ -3503,7 +3508,7 @@ DDDE: 30 89 00 80    LEAX    $0080,X                        ; 4 rows per cell ..
 DDE2: 0A 98          DEC     <$98                           ; {ram:Temp2} All 16 cells done?
 DDE4: 26 EC          BNE     $DDD2                          ; No ... do all rows
 
-;DDE6: CC 00 04 ; TOPHER MOD End level after just 4 dots
+;DDE6: CC 00 04 ; End level after just 4 dots (quick access to the reward screen)
 
 DDE6: CC 01 3F       LDD     #$013F                         ; Number of dots ...
 DDE9: ED 8D 22 D1    STD     $00BE,PC                       ; ... left in the maze
