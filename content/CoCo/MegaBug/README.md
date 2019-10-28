@@ -158,7 +158,7 @@ used.
 Rather than waste this space, the game sprinkles code into the large sections between values. The lookup
 table goes from DB5C to DC5B. But several routines fill in the unused areas.
 
-![](Code.md#pixel-color-mask)
+[Pixel Color Mask](Code.md#pixel-color-mask)
 
 # Maze Generator
 
@@ -175,4 +175,4 @@ to get trapped in.
 As a run clears out walls, the code builds a list of cells to "revisit" as the starting point of the next run. When the
 list is empty, the maze is full and ready for play.
 
-![](Code.md#draw-the-maze)
+[Maze Generator](Code.md#draw-the-maze)
