@@ -4,8 +4,11 @@ import tools.binary
 
 class SpriteStrategy:
 
-    def getTileSize(self):
+    def get_tile_size(self):
         return 16
+
+    def get_tile_data(self, num, im_data):
+        print(num)
 
 
 moon_patrol_bg_colors = {
@@ -165,10 +168,14 @@ for sprite_set in images:
         im_layout = image[1]
         im_set = image[2]
         im_layout = im_layout.split('/')
+        print(im_layout)
         for x in range(len(im_layout)):
             im_layout[x] = im_layout[x].split(',')
             for y in range(len(im_layout[x])):
                 im_layout[x][y] = int(im_layout[x][y], 16)
-        print(im_layout)
+        for y in range(len(im_layout)):
+            for x in range(len(im_layout[y])):
+                im_layout[y][x] = set_strategy.get_tile_data(im_layout[y][x], im_data)
+
 
 #make_png(text_to_data(tank, 16, 16), colors, 5, 'test.png')
