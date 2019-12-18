@@ -217,6 +217,32 @@ images = [
         ['alienShotB', '4C', 1],
         ['alienShotC', '4D', 1],
 
+        ['craterExplosionA', '4E', 1],
+        ['craterExplosionB', '4F,50/51,52', 1],
+        ['craterExplosionC', '53,54/55,56', 1],
+        ['craterExplosionD', '57,58/59,5A', 1],
+        ['craterExplosionE', '5B,5C/5D,5E/5F,60', 1],
+
+        ['alienShotGroundA', '61', 3],
+        ['alienShotGroundB', '62', 3],
+        ['alienShotGroundC', '63', 3],
+        ['alienShotGroundD', '64,65/66,67', 3],
+        ['alienShotGroundE', '68,69/6A,6B', 3],
+
+        ['rubbleA', '6C/6D', 3],
+        ['rubbleB', '6E/6F', 3],
+
+        # Space plant
+
+        ['shotsHitting', '7A', 1],
+
+        ['score300', '7D', 14],
+        ['score500', '7D', 15],
+        ['score800', '7E', 14],
+        ['score1000', '7E', 15],
+
+
+
 
     ],
 ]
