@@ -89,9 +89,7 @@ var MoonPatrol = (function() {
 	
 	my.getBackgroundImage = function() {
 		
-		var j = 0;
-		
-	    var data = BinaryData.getData(0,4096);
+		var data = BinaryData.getData(0,4096);
 		var ret = [];
 		for(var x=0;x<4096;++x) {
 			var a = data[x].toString(2);

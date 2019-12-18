@@ -2,6 +2,30 @@ import png
 import tools.binary
 
 
+def _get_binary_string(value):
+    a = bin(value)[2:]
+    while len(a) < 8:
+        a = '0' + a
+    return a
+
+
+class BackgroundStrategy:
+
+    def get_tile_size(self):
+        return 256, 64
+
+    def get_tile_data(self, num, im_data):
+        #ret = [0] * 256 * 64
+        ret = []
+        for x in range(4096):
+            a = _get_binary_string(im_data[x])
+            ret.append(int(a[4] + a[0], 2))
+            ret.append(int(a[5] + a[1], 2))
+            ret.append(int(a[6] + a[2], 2))
+            ret.append(int(a[7] + a[3], 2))
+        return ret
+
+
 class SpriteStrategy:
 
     def _get_binary_string(self, value):
@@ -15,15 +39,15 @@ class SpriteStrategy:
         plane1 = im_data[tile_address:tile_address + 8]
         plane2 = im_data[tile_address + 0x1000:tile_address + 0x1000 + 8]
         for x in range(8):
-            a = self._get_binary_string(plane1[x])
-            b = self._get_binary_string(plane2[x])
+            a = _get_binary_string(plane1[x])
+            b = _get_binary_string(plane2[x])
             for y in range(8):
                 ming = a[y] + b[y]
                 ret.append(int(ming, 2))
         return ret
 
     def get_tile_size(self):
-        return 16
+        return 16, 16
 
     def get_tile_data(self, num, im_data):
         ret = []
@@ -60,6 +84,12 @@ moon_patrol_bg_colors = {
     'mC0': (0, 0, 255),
     'mA0': (0, 151, 174),
 }
+
+moon_patrol_im_sets = [
+    [moon_patrol_bg_colors['m00'], moon_patrol_bg_colors['m20'], moon_patrol_bg_colors['m00'], moon_patrol_bg_colors['m70']],
+    [moon_patrol_bg_colors['m00'], moon_patrol_bg_colors['mC0'], moon_patrol_bg_colors['m00'], moon_patrol_bg_colors['mA0']],
+    [moon_patrol_bg_colors['m00'], moon_patrol_bg_colors['m00'], moon_patrol_bg_colors['m77'], moon_patrol_bg_colors['m70']],
+]
 
 moon_patrol_bg_sets = [
     [moon_patrol_bg_colors['m00'], moon_patrol_bg_colors['m20'], moon_patrol_bg_colors['m00'], moon_patrol_bg_colors['m70']],
@@ -154,86 +184,99 @@ moon_patrol_txt_sets = [
 
 images = [
     [
-        'GFX2', SpriteStrategy(), moon_patrol_sp_sets,
-        ['buggy', '1,2/3,4', 0],
-        ['redBuggy', '1,2/3,4', 12],
-        ['wheelLargeA', '5', 0],
-        ['wheelLargeB', '6', 0],
-        ['wheelSmallA', '7', 0],
-        ['wheelSmallB', '8', 0],
-        ['buggyCrashA', '9,A/B,C', 0],
-        ['buggyCrashB', 'D,E/F,10', 0],
-        ['buggyExplosionA', '11,12,13/14,15,16', 1],
-        ['buggyExplosionB', '17,18,19/1A,1B,1C', 1],
-        ['buggyExplosionC', '1D,1E,1F/20,21,22', 1],
-        ['buggyExplosionD', '23,24', 1],
-        ['buggyExplosionE', '25,26', 1],
-        ['buggyExplosionF', '27', 1],
-        ['playerShotA', '28', 1],
-        ['playerShotB', '29', 1],
-        ['playerShotC', '2A', 1],
-        ['playerShotD', '2B', 1],
-        ['playerShotE', '2C', 1],
-        ['rockA', '2D', 4],
-        ['rockB', '2E', 4],
-        ['rockC', '2F', 4],
-        ['rockD', '30', 4],
-        ['boulderA', '31', 4],
-        ['boulderB', '32', 4],
-        ['boulderC', '33', 4],
-        ['boulderD', '34', 4],
-        ['boulderE', '36', 4],
-        ['boulderF', '37', 4],
-        ['tank', '38', 9],
-        ['tankShot', '39', 9],
-        ['speederA', '3A,3B', 9],
-        ['speederB', '7B,3B', 9],
-        ['speederC', '7C,3B', 9],
-        ['mine', '3D', 0xA],
-        ['explodingRockA', '3E', 1],
-        ['explodingRockB', '3F', 1],
-        ['explodingRockC', '40', 1],
-        ['explodingRockDA', '41', 1],
-        ['alien1', '42', 7],
-        ['alien2A', '43', 7],
-        ['alien2B', '44', 7],
-        ['alien3A', '45', 7],
-        ['alien3B', '46', 7],
-        ['alien3C', '47', 7],
-        ['alienExplosionA', '48', 1],
-        ['alienExplosionB', '49', 1],
-        ['alienExplosionC', '4A', 1],
-        ['alienBubbleShot', '35', 0],
-        ['alienShotA', '4B', 1],
-        ['alienShotB', '4C', 1],
-        ['alienShotC', '4D', 1],
-        ['craterExplosionA', '4E', 1],
-        ['craterExplosionB', '4F,50/51,52', 1],
-        ['craterExplosionC', '53,54/55,56', 1],
-        ['craterExplosionD', '57,58/59,5A', 1],
-        ['craterExplosionE', '5B,5C/5D,5E/5F,60', 1],
-        ['alienShotGroundA', '61', 3],
-        ['alienShotGroundB', '62', 3],
-        ['alienShotGroundC', '63', 3],
-        ['alienShotGroundD', '64,65/66,67', 3],
-        ['alienShotGroundE', '68,69/6A,6B', 3],
-        ['rubbleA', '6C/6D', 3],
-        ['rubbleB', '6E/6F', 3],
-        ['shotsHitting', '7A', 1],
-        ['score300', '7D', 14],
-        ['score500', '7D', 15],
-        ['score800', '7E', 14],
-        ['score1000', '7E', 15],
-        ['unknown', '3C', 1],
-        ['plantLeavesA', '70', 2],
-        ['plantLeavesB', '73', 2],
-        ['plantLeavesC', '74', 2],
-        ['plantLeavesD', '75', 2],
-        ['plantA', '71,72', 8],
-        ['plantB', '76,77', 8],
-        ['plantC', '78,79', 8],
+        'GFX3', BackgroundStrategy(), moon_patrol_im_sets,
+        ['bgMountains', '0', 1],
+    ],
+    [
+        'GFX4', BackgroundStrategy(), moon_patrol_im_sets,
+        ['bgHills', '0', 0],
+    ],
+    [
+        'GFX5', BackgroundStrategy(), moon_patrol_im_sets,
+        ['bgCity', '0', 2],
     ],
 ]
+
+hold = [[
+    'GFX2', SpriteStrategy(), moon_patrol_sp_sets,
+    ['buggy', '1,2/3,4', 0],
+    ['redBuggy', '1,2/3,4', 12],
+    ['wheelLargeA', '5', 0],
+    ['wheelLargeB', '6', 0],
+    ['wheelSmallA', '7', 0],
+    ['wheelSmallB', '8', 0],
+    ['buggyCrashA', '9,A/B,C', 0],
+    ['buggyCrashB', 'D,E/F,10', 0],
+    ['buggyExplosionA', '11,12,13/14,15,16', 1],
+    ['buggyExplosionB', '17,18,19/1A,1B,1C', 1],
+    ['buggyExplosionC', '1D,1E,1F/20,21,22', 1],
+    ['buggyExplosionD', '23,24', 1],
+    ['buggyExplosionE', '25,26', 1],
+    ['buggyExplosionF', '27', 1],
+    ['playerShotA', '28', 1],
+    ['playerShotB', '29', 1],
+    ['playerShotC', '2A', 1],
+    ['playerShotD', '2B', 1],
+    ['playerShotE', '2C', 1],
+    ['rockA', '2D', 4],
+    ['rockB', '2E', 4],
+    ['rockC', '2F', 4],
+    ['rockD', '30', 4],
+    ['boulderA', '31', 4],
+    ['boulderB', '32', 4],
+    ['boulderC', '33', 4],
+    ['boulderD', '34', 4],
+    ['boulderE', '36', 4],
+    ['boulderF', '37', 4],
+    ['tank', '38', 9],
+    ['tankShot', '39', 9],
+    ['speederA', '3A,3B', 9],
+    ['speederB', '7B,3B', 9],
+    ['speederC', '7C,3B', 9],
+    ['mine', '3D', 0xA],
+    ['explodingRockA', '3E', 1],
+    ['explodingRockB', '3F', 1],
+    ['explodingRockC', '40', 1],
+    ['explodingRockDA', '41', 1],
+    ['alien1', '42', 7],
+    ['alien2A', '43', 7],
+    ['alien2B', '44', 7],
+    ['alien3A', '45', 7],
+    ['alien3B', '46', 7],
+    ['alien3C', '47', 7],
+    ['alienExplosionA', '48', 1],
+    ['alienExplosionB', '49', 1],
+    ['alienExplosionC', '4A', 1],
+    ['alienBubbleShot', '35', 0],
+    ['alienShotA', '4B', 1],
+    ['alienShotB', '4C', 1],
+    ['alienShotC', '4D', 1],
+    ['craterExplosionA', '4E', 1],
+    ['craterExplosionB', '4F,50/51,52', 1],
+    ['craterExplosionC', '53,54/55,56', 1],
+    ['craterExplosionD', '57,58/59,5A', 1],
+    ['craterExplosionE', '5B,5C/5D,5E/5F,60', 1],
+    ['alienShotGroundA', '61', 3],
+    ['alienShotGroundB', '62', 3],
+    ['alienShotGroundC', '63', 3],
+    ['alienShotGroundD', '64,65/66,67', 3],
+    ['alienShotGroundE', '68,69/6A,6B', 3],
+    ['rubbleA', '6C/6D', 3],
+    ['rubbleB', '6E/6F', 3],
+    ['shotsHitting', '7A', 1],
+    ['score300', '7D', 14],
+    ['score500', '7D', 15],
+    ['score800', '7E', 14],
+    ['score1000', '7E', 15],
+    ['unknown', '3C', 1],
+    ['plantLeavesA', '70', 2],
+    ['plantLeavesB', '73', 2],
+    ['plantLeavesC', '74', 2],
+    ['plantLeavesD', '75', 2],
+    ['plantA', '71,72', 8],
+    ['plantB', '76,77', 8],
+    ['plantC', '78,79', 8],
+]]
 
 
 def text_to_data(data, width, height, mapping={'.': 0, '1': 1, '2': 2, '3': 3}):
@@ -274,7 +317,6 @@ for sprite_set in images:
         im_layout = image[1]
         im_set = image[2]
         im_layout = im_layout.split('/')
-        # print(im_layout)
         for x in range(len(im_layout)):
             im_layout[x] = im_layout[x].split(',')
             for y in range(len(im_layout[x])):
@@ -283,8 +325,8 @@ for sprite_set in images:
             for x in range(len(im_layout[y])):
                 im_layout[y][x] = set_strategy.get_tile_data(im_layout[y][x], im_data)
 
-        rows = len(im_layout) * ts
-        cols = len(im_layout[0]) * ts
+        rows = len(im_layout) * ts[1]
+        cols = len(im_layout[0]) * ts[0]
 
         pix_data = []
         for c in range(rows):
@@ -292,9 +334,10 @@ for sprite_set in images:
 
         for tile_row in range(len(im_layout)):
             for tile_col in range(len(im_layout[tile_row])):
-                for ro in range(ts):
-                    for co in range(ts):
-                        pix_data[tile_row * ts + ro][tile_col * ts + co] = im_layout[tile_row][tile_col][ro * ts + co]
+                for ro in range(ts[1]):
+                    for co in range(ts[0]):
+                        d = im_layout[tile_row][tile_col][ro * ts[0] + co]
+                        pix_data[tile_row * ts[1] + ro][tile_col * ts[0] + co] = d
 
         make_png(pix_data, set_color_set[im_set], 5, im_name + '.png')
 
