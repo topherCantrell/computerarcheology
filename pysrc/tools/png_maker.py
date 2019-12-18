@@ -169,90 +169,69 @@ images = [
         ['buggyExplosionD', '23,24', 1],
         ['buggyExplosionE', '25,26', 1],
         ['buggyExplosionF', '27', 1],
-
         ['playerShotA', '28', 1],
         ['playerShotB', '29', 1],
         ['playerShotC', '2A', 1],
         ['playerShotD', '2B', 1],
         ['playerShotE', '2C', 1],
-
         ['rockA', '2D', 4],
         ['rockB', '2E', 4],
         ['rockC', '2F', 4],
         ['rockD', '30', 4],
-
         ['boulderA', '31', 4],
         ['boulderB', '32', 4],
         ['boulderC', '33', 4],
         ['boulderD', '34', 4],
         ['boulderE', '36', 4],
         ['boulderF', '37', 4],
-
         ['tank', '38', 9],
         ['tankShot', '39', 9],
-
         ['speederA', '3A,3B', 9],
         ['speederB', '7B,3B', 9],
         ['speederC', '7C,3B', 9],
-
         ['mine', '3D', 0xA],
-
         ['explodingRockA', '3E', 1],
         ['explodingRockB', '3F', 1],
         ['explodingRockC', '40', 1],
         ['explodingRockDA', '41', 1],
-
         ['alien1', '42', 7],
         ['alien2A', '43', 7],
         ['alien2B', '44', 7],
         ['alien3A', '45', 7],
         ['alien3B', '46', 7],
         ['alien3C', '47', 7],
-
         ['alienExplosionA', '48', 1],
         ['alienExplosionB', '49', 1],
         ['alienExplosionC', '4A', 1],
-
         ['alienBubbleShot', '35', 0],
         ['alienShotA', '4B', 1],
         ['alienShotB', '4C', 1],
         ['alienShotC', '4D', 1],
-
         ['craterExplosionA', '4E', 1],
         ['craterExplosionB', '4F,50/51,52', 1],
         ['craterExplosionC', '53,54/55,56', 1],
         ['craterExplosionD', '57,58/59,5A', 1],
         ['craterExplosionE', '5B,5C/5D,5E/5F,60', 1],
-
         ['alienShotGroundA', '61', 3],
         ['alienShotGroundB', '62', 3],
         ['alienShotGroundC', '63', 3],
         ['alienShotGroundD', '64,65/66,67', 3],
         ['alienShotGroundE', '68,69/6A,6B', 3],
-
         ['rubbleA', '6C/6D', 3],
         ['rubbleB', '6E/6F', 3],
-
-        # Space plant
-
         ['shotsHitting', '7A', 1],
-
         ['score300', '7D', 14],
         ['score500', '7D', 15],
         ['score800', '7E', 14],
         ['score1000', '7E', 15],
-
         ['unknown', '3C', 1],
-
         ['plantLeavesA', '70', 2],
         ['plantLeavesB', '73', 2],
         ['plantLeavesC', '74', 2],
         ['plantLeavesD', '75', 2],
-
         ['plantA', '71,72', 8],
         ['plantB', '76,77', 8],
         ['plantC', '78,79', 8],
-
     ],
 ]
 
