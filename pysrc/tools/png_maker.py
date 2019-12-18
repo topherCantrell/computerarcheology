@@ -4,11 +4,49 @@ import tools.binary
 
 class SpriteStrategy:
 
-    def get_tile_size(self):
-        return 16
+    def _get_binary_string(self, value):
+        a = bin(value)[2:]
+        while len(a) < 8:
+            a = '0' + a
+        return a
+
+    def _get_sprite_quadrant_data(self, tile_address, im_data):
+        ret = []
+        plane1 = im_data[tile_address:tile_address + 8]
+        plane2 = im_data[tile_address + 0x1000:tile_address + 0x1000 + 8]
+        for x in range(8):
+            a = self._get_binary_string(plane1[x])
+            b = self._get_binary_string(plane2[x])
+            for y in range(8):
+                ming = a[y] + b[y]
+                ret.append(int(ming, 2))
+        return ret
 
     def get_tile_data(self, num, im_data):
-        print(num)
+        ret = []
+        a = self._get_sprite_quadrant_data(num * 32, im_data)
+        b = self._get_sprite_quadrant_data(num * 32 + 8, im_data)
+        c = self._get_sprite_quadrant_data(num * 32 + 16, im_data)
+        d = self._get_sprite_quadrant_data(num * 32 + 24, im_data)
+        cnta = 0
+        cntb = 0
+        for y in range(8):
+            for x in range(8):
+                ret.append(a[cnta])
+                cnta += 1
+            for x in range(8):
+                ret.append(c[cntb])
+                cntb += 1
+        cnta = 0
+        cntb = 0
+        for y in range(8):
+            for x in range(8):
+                ret.append(b[cnta])
+                cnta += 1
+            for x in range(8):
+                ret.append(d[cntb])
+                cntb += 1
+        return ret
 
 
 moon_patrol_bg_colors = {
@@ -168,7 +206,7 @@ for sprite_set in images:
         im_layout = image[1]
         im_set = image[2]
         im_layout = im_layout.split('/')
-        print(im_layout)
+        # print(im_layout)
         for x in range(len(im_layout)):
             im_layout[x] = im_layout[x].split(',')
             for y in range(len(im_layout[x])):
@@ -176,6 +214,9 @@ for sprite_set in images:
         for y in range(len(im_layout)):
             for x in range(len(im_layout[y])):
                 im_layout[y][x] = set_strategy.get_tile_data(im_layout[y][x], im_data)
+        print(im_layout)
+        break
+    break
 
 
 #make_png(text_to_data(tank, 16, 16), colors, 5, 'test.png')
