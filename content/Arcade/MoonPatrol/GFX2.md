@@ -231,7 +231,7 @@ color sets for each object as used in the game.
 <canvas width="265" 
         height="150"    
         data-colorsName="CS8"
-        data-colors='["#808080","#C10000","00AEC8","#005100"]'     
+        data-colors='["#808080","#C10000","#00AEC8","#005100"]'     
         data-command=":2x1:78,79">
 </canvas>
 <canvas width="600" 
@@ -242,7 +242,7 @@ color sets for each object as used in the game.
 <canvas width="600" 
         height="150"    
         data-colorsName="CS2"
-        data-colors='["#808080","#C10000","00C800","#840000"]'     
+        data-colors='["#808080","#C10000","#00C800","#840000"]'     
         data-command="70,+x,73,+x,74,+x,75">
 </canvas>
 ```

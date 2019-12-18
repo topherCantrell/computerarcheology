@@ -156,6 +156,7 @@ images = [
     [
         'GFX2', SpriteStrategy(), moon_patrol_sp_sets,
         ['buggy', '1,2/3,4', 0],
+        ['redBuggy', '1,2/3,4', 12],
         ['wheelLargeA', '5', 0],
         ['wheelLargeB', '6', 0],
         ['wheelSmallA', '7', 0],
@@ -241,8 +242,16 @@ images = [
         ['score800', '7E', 14],
         ['score1000', '7E', 15],
 
+        ['unknown', '3C', 1],
 
+        ['plantLeavesA', '70', 2],
+        ['plantLeavesB', '73', 2],
+        ['plantLeavesC', '74', 2],
+        ['plantLeavesD', '75', 2],
 
+        ['plantA', '71,72', 8],
+        ['plantB', '76,77', 8],
+        ['plantC', '78,79', 8],
 
     ],
 ]
