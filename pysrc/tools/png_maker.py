@@ -22,6 +22,9 @@ class SpriteStrategy:
                 ret.append(int(ming, 2))
         return ret
 
+    def get_tile_size(self):
+        return 16
+
     def get_tile_data(self, num, im_data):
         ret = []
         a = self._get_sprite_quadrant_data(num * 32, im_data)
@@ -165,6 +168,56 @@ images = [
         ['buggyExplosionD', '23,24', 1],
         ['buggyExplosionE', '25,26', 1],
         ['buggyExplosionF', '27', 1],
+
+        ['playerShotA', '28', 1],
+        ['playerShotB', '29', 1],
+        ['playerShotC', '2A', 1],
+        ['playerShotD', '2B', 1],
+        ['playerShotE', '2C', 1],
+
+        ['rockA', '2D', 4],
+        ['rockB', '2E', 4],
+        ['rockC', '2F', 4],
+        ['rockD', '30', 4],
+
+        ['boulderA', '31', 4],
+        ['boulderB', '32', 4],
+        ['boulderC', '33', 4],
+        ['boulderD', '34', 4],
+        ['boulderE', '36', 4],
+        ['boulderF', '37', 4],
+
+        ['tank', '38', 9],
+        ['tankShot', '39', 9],
+
+        ['speederA', '3A,3B', 9],
+        ['speederB', '7B,3B', 9],
+        ['speederC', '7C,3B', 9],
+
+        ['mine', '3D', 0xA],
+
+        ['explodingRockA', '3E', 1],
+        ['explodingRockB', '3F', 1],
+        ['explodingRockC', '40', 1],
+        ['explodingRockDA', '41', 1],
+
+        ['alien1', '42', 7],
+        ['alien2A', '43', 7],
+        ['alien2B', '44', 7],
+        ['alien3A', '45', 7],
+        ['alien3B', '46', 7],
+        ['alien3C', '47', 7],
+
+        ['alienExplosionA', '48', 1],
+        ['alienExplosionB', '49', 1],
+        ['alienExplosionC', '4A', 1],
+
+        ['alienBubbleShot', '35', 0],
+        ['alienShotA', '4B', 1],
+        ['alienShotB', '4C', 1],
+        ['alienShotC', '4D', 1],
+
+
     ],
 ]
 
@@ -200,6 +253,7 @@ for sprite_set in images:
     set_fname = sprite_set[0]
     set_strategy = sprite_set[1]
     set_color_set = sprite_set[2]
+    ts = set_strategy.get_tile_size()
     im_data = tools.binary.get_binary('../../content/Arcade/MoonPatrol/' + set_fname + '.md', 0)
     for image in sprite_set[3:]:
         im_name = image[0]
@@ -214,9 +268,21 @@ for sprite_set in images:
         for y in range(len(im_layout)):
             for x in range(len(im_layout[y])):
                 im_layout[y][x] = set_strategy.get_tile_data(im_layout[y][x], im_data)
-        print(im_layout)
-        break
-    break
+
+        rows = len(im_layout) * ts
+        cols = len(im_layout[0]) * ts
+
+        pix_data = []
+        for c in range(rows):
+            pix_data.append([0] * cols)
+
+        for tile_row in range(len(im_layout)):
+            for tile_col in range(len(im_layout[tile_row])):
+                for ro in range(ts):
+                    for co in range(ts):
+                        pix_data[tile_row * ts + ro][tile_col * ts + co] = im_layout[tile_row][tile_col][ro * ts + co]
+
+        make_png(pix_data, set_color_set[im_set], 5, im_name + '.png')
 
 
 #make_png(text_to_data(tank, 16, 16), colors, 5, 'test.png')
