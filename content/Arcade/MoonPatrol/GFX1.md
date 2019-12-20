@@ -19,7 +19,7 @@ are 512 tile patterns defined here.
 <script src="/js/TileEngine.js"></script>
 <script src="/js/CANVAS.js"></script>
 
-<canvas width="1200" height="2100"  
+<canvas width="1200" height="2010"  
     data-canvasFunction="TileEngine.handleTileCanvas"
     data-getTileDataFunction="MoonPatrol.getBackground8x8Data"
     data-pixWidth="8"
@@ -30,6 +30,23 @@ are 512 tile patterns defined here.
     data-gridPad="1"
     data-colors='["#808080","#000000","#0000DE","#009694"]'
     data-command=":16x32:0">
+</canvas>
+```
+
+# Starting Point
+
+Lots of color-set changes here.
+
+```html
+<canvas width="1200" height="330"    
+    data-colors='["#808080","#000000","#0000DE","#009694"]'
+    data-command="+x,+x,+x,+x,+x,+x,+x,+x,68,*,
+    +x,+x,+x,+x,+x,+x,+x,+x,69,6A,6B,*,
+    6C,6D,6E,6F,70,71,72,73,74,75,76,77,78,79,7A,7B,*,
+    7C,7D,7E,7F,80,81,82,83,84,85,86,87,88,89,8A,8B,8C,*,
+    +x,+x,+x,+x,+x,+x,+x,+x, +x,+x,+x,+x,+x,+x,+x,+x, +x,+x,+x,+x,+x,+x,+x,+x, +x,+x,+x,+x,+x,+x,+x,+x, 
+    +x,+x,+x,+x,+x,+x,+x,+x, +x,+x,+x,+x,+x,+x,+x,+x, 8D,8E,8F,90,91
+    ">
 </canvas>
 ```
 
