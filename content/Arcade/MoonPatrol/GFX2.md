@@ -34,6 +34,30 @@ color sets for each object as used in the game.
 <script src="/Arcade/MoonPatrol/MoonPatrol.js"></script>
 <script src="/js/TileEngine.js"></script>
 <script src="/js/CANVAS.js"></script>
+
+<script>
+  TileEngine.setColorMap(
+    {
+        'CS0' : ['#808080','#00001A','#C100AE','#00AEC8'],
+        'CS1' : ["#808080","#84C800","#C100AE","#C10000"], 
+        'CS2' : ["#808080","#C10000","#00C800","#840000"],
+        'CS3' : ["#808080","#840000","#C1C8C8","#C1C800"],       
+        'CS4' : ["#808080","#845100","#808080","#3E3700"],
+        'CS5' : [],
+        'CS6' : [],
+        'CS7' : ["#808080","#C1C800","#6290C8","#C10000"],	
+        'CS8' : ["#808080","#C10000","#00AEC8","#005100"],
+        'CS9' : ["#808080","#C1C800","#00001A","#C10000"],
+        'CSA' : ["#808080","#00001A","#C1C8C8","#808080"],
+        'CSB' : [],
+        'CSC' : [],
+        'CSD' : [],
+        'CSE' : ["#808080","#C10000","#808080","#C10000"],        
+        'CSF' : ["#808080","#808080","#C10000","#C10000"],        
+    }
+  )
+</script>
+
 <canvas width="150" 
         data-canvasFunction="TileEngine.handleTileCanvas"
         data-getTileDataFunction="MoonPatrol.getSprite16x16Data"
@@ -44,8 +68,7 @@ color sets for each object as used in the game.
         data-pixHeight="8"
         data-gap="0.25"
         data-gridPad="1"
-        data-colorsName="CS0"
-        data-colors='["#808080","#00001A","#C100AE","#00AEC8"]'
+        data-colors="CS0"
         data-command="0">
 </canvas>
 ```
@@ -72,8 +95,7 @@ color sets for each object as used in the game.
 ```html
 <canvas width="1200" 
         height="275"
-        data-colorsName="CS1"
-        data-colors='["#808080","#84C800","#C100AE","#C10000"]'
+        data-colors='CS1'
         data-command=":3x2:11,12,13,14,15,16,+x,:3x2:17,18,19,1A,1B,1C,+x,:3x2:1D,1E,1F,20,21,22">
 </canvas><br>
 <canvas width="900" 
@@ -93,9 +115,8 @@ color sets for each object as used in the game.
 # Rocks  
 ```html
 <canvas width="900" 
-        height="150"    
-        data-colorsName="CS4"
-        data-colors='["#808080","#845100","#808080","#3E3700"]'     
+        height="150"
+        data-colors='CS4'     
         data-command="2D,+x,2E,+x,2F,+x,30">
 </canvas>
 ```
@@ -103,8 +124,7 @@ color sets for each object as used in the game.
 # Boulders 
 ```html
 <canvas width="900" 
-        height="150"    
-        data-colorsName="CS4"
+        height="150" 
         data-colors='["#808080","#845100","#808080","#3E3700"]'     
         data-command="31,+x,32,+x,33,+x,34,+x,36,+x,37">
 </canvas>
@@ -119,7 +139,6 @@ color sets for each object as used in the game.
 </canvas>
 <canvas width="900" 
         height="150"    
-        data-colorsName="CS9"
         data-colors='["#808080","#C1C800","#00001A","#C10000"]'    
         data-command="38">
 </canvas>
@@ -146,7 +165,6 @@ color sets for each object as used in the game.
 ```html
 <canvas width="150" 
         height="150"
-        data-colorsName="CSA"
         data-colors='["#808080","#00001A","#C1C8C8","#808080"]'    
         data-command="3D">
 </canvas>
@@ -165,7 +183,6 @@ color sets for each object as used in the game.
 ```html
 <canvas width="900" 
         height="150"
-        data-colorsName="CS7"
         data-colors='["#808080","#C1C800","#6290C8","#C10000"]'    
         data-command="42,+x,+x,+x,43,+x,44,+x,+x,+x,45,+x,46,+x,47">
 </canvas>
@@ -211,7 +228,6 @@ color sets for each object as used in the game.
 ```html
 <canvas width="1000" 
         height="275"    
-        data-colorsName="CS3"
         data-colors='["#808080","#840000","#C1C8C8","#C1C800"]'     
         data-command="61,+x,62,+x,63,+x,:2x2:64,65,66,67,+x,:2x2:68,69,6A,6B">
 </canvas>
@@ -230,7 +246,6 @@ color sets for each object as used in the game.
 ```html
 <canvas width="265" 
         height="150"    
-        data-colorsName="CS8"
         data-colors='["#808080","#C10000","#00AEC8","#005100"]'     
         data-command=":2x1:78,79">
 </canvas>
@@ -241,7 +256,6 @@ color sets for each object as used in the game.
 </canvas><br>
 <canvas width="600" 
         height="150"    
-        data-colorsName="CS2"
         data-colors='["#808080","#C10000","#00C800","#840000"]'     
         data-command="70,+x,73,+x,74,+x,75">
 </canvas>
@@ -273,7 +287,6 @@ color sets for each object as used in the game.
 ```html
 <canvas width="500" 
         height="150"
-        data-colorsName="CSE"
         data-colors='["#808080","#C10000","#808080","#C10000"]'
         data-command="7D,+x,7E">
 </canvas>
@@ -283,7 +296,6 @@ color sets for each object as used in the game.
 ```html
 <canvas width="500" 
         height="150"
-        data-colorsName="CSF"
         data-colors='["#808080","#808080","#C10000","#C10000"]'
         data-command="7D,+x,7E">
 </canvas>

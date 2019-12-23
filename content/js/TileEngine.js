@@ -132,11 +132,18 @@ var TileEngine = (function() {
 		var xo = 0;
 		var yo = 0;
 		var lastHeight = 8;
+		var showCS = false
+		var cs = ''
 	
 		for(var x=0;x<command.length;++x) {		
 			command[x] = command[x].trim();
 			if(command[x].charAt(0)=='#') {
-				colors = colorMap[command[x].substring(1)];
+				if(command[x].charAt(1)=='#') {
+					cs = ''
+				} else {				
+					colors = colorMap[command[x].substring(1)];
+					cs = command[x].substring(1)
+				}
 			} else if(command[x]=="*") {
 				xo = 0;
 				yo = yo + lastHeight*pixHeight;
@@ -163,13 +170,13 @@ var TileEngine = (function() {
 							var val = parseInt(lastCommand,16)+1;
 							lastCommand = val.toString(16);						
 						}
-						singleTileCommand(context,xo+xx*pixWidth*gridX+xx*gridPad,yo+yy*pixHeight*gridY+yy*gridPad,gridX,gridY,lastCommand);
+						singleTileCommand(context,xo+xx*pixWidth*gridX+xx*gridPad,yo+yy*pixHeight*gridY+yy*gridPad,gridX,gridY,lastCommand,cs);
 					}
 				}			
 				--x;
 				xo = xo + pixWidth*width*gridX;
 			} else {			
-				singleTileCommand(context,xo,yo,gridX,gridY,command[x]);
+				singleTileCommand(context,xo,yo,gridX,gridY,command[x],cs);
 				xo = xo + pixWidth*gridX;
 				lastHeight = gridY;
 			}
@@ -183,6 +190,10 @@ var TileEngine = (function() {
 		}
 	};
 	
+	my.setColorMap = function(colors) {
+		colorMap = colors
+	}
+	
 	/**
      * This function draws a single tile specification. A tile spec is a number with optional
      * prepended V (vertical mirroring) or H (horizontal mirroring) or both. This function
@@ -194,13 +205,17 @@ var TileEngine = (function() {
      * @param gridY    number of pixels down
      * @param com      the tile command
      */
-    function singleTileCommand(context,xo,yo,gridX,gridY,com) {
+    function singleTileCommand(context,xo,yo,gridX,gridY,com,cs='') {
         
         var hmirror = false;
         var vmirror = false;
     
         com = com.toString();
         var ocom = com.trim();
+        
+        if(cs!='') {
+        	ocom = ocom+' ('+cs+')'
+        }
     
         if(com.charAt(0)=='V') {
             vmirror = true;

@@ -19,6 +19,52 @@ are 512 tile patterns defined here.
 <script src="/js/TileEngine.js"></script>
 <script src="/js/CANVAS.js"></script>
 
+<script>
+
+COL00 = '#808080'
+COL01 = '#210000'
+COL07 = '#FF0000'
+COL0F = '#FF2100'
+COL28 = '#00B800'
+COL3F = '#FFFF00'
+COL5C = '#976851'
+COL67 = '#FF9751'
+COL87 = '#FF00AE'
+COL91 = '#2147AE'
+COL9D = '#B868AE'
+COLBD = '#B8FFAE'
+COLC8 = '#0021FF'
+COLE8 = '#00B8FF'
+COLFF = '#FFFFFF'
+
+TileEngine.setColorMap(
+    {
+        '00' : [COL00,COLE8,COLFF,COL0F],
+        '01' : [COLC8,COL0F,COL3F,COLC8], 
+        '02' : [COLE8,COL01,COL0F,COLC8],
+        '03' : [COLE8,COL28,COL87,COL00],       
+        '04' : [COL00,COL67,COL00,COL5C],
+        '05' : [COL67,COL01,COL00,COL00],
+        '06' : [COLC8,COL87,COL01,COLE8],
+        '07' : [COLE8,COL87,COL00,COL00],	
+        '08' : [COL00,COLFF,COL00,COL00],
+        '09' : [COLC8,COL01,COL0F,COL00],
+        '0A' : [COLE8,COL87,COL00,COL00],
+        '0B' : [COL9D,COL87,COL91,COLE8],
+        '0C' : [COL9D,COL0F,COL3F,COL9D],
+        '0D' : [COLE8,COL01,COL0F,COL9D],
+        '0E' : [COL9D,COL01,COL0F,COL00],        
+        '0F' : [COL00,COL01,COLBD,COLE8], 
+        '10' : [COL00,COL67,COLBD,COLE8],
+        '11' : [COL00,COL07,COLBD,COLE8], 
+        '12' : [COL00,COL67,COLBD,COLE8],
+        '13' : [COL00,COL67,COLBD,COL01],       
+        '14' : [COL00,COL67,COLE8,COL01],       
+    }
+  )
+
+</script>
+
 <canvas width="1200" height="2010"  
     data-canvasFunction="TileEngine.handleTileCanvas"
     data-getTileDataFunction="MoonPatrol.getBackground8x8Data"
@@ -40,10 +86,10 @@ Lots of color-set changes here.
 ```html
 <canvas width="1200" height="330"    
     data-colors='["#808080","#000000","#0000DE","#009694"]'
-    data-command="+x,+x,+x,+x,+x,+x,+x,+x,68,*,
+    data-command="+x,+x,+x,+x,+x,+x,+x,+x,#0F,68,*,
     +x,+x,+x,+x,+x,+x,+x,+x,69,6A,6B,*,
     6C,6D,6E,6F,70,71,72,73,74,75,76,77,78,79,7A,7B,*,
-    7C,7D,7E,7F,80,81,82,83,84,85,86,87,88,89,8A,8B,8C,*,
+    #13,7C,7D,7E,7F,80,81,82,83,84,85,86,87,88,89,8A,8B,8C,*,
     +x,+x,+x,+x,+x,+x,+x,+x, +x,+x,+x,+x,+x,+x,+x,+x, +x,+x,+x,+x,+x,+x,+x,+x, +x,+x,+x,+x,+x,+x,+x,+x, 
     +x,+x,+x,+x,+x,+x,+x,+x, +x,+x,+x,+x,+x,+x,+x,+x, 8D,8E,8F,90,91
     ">
