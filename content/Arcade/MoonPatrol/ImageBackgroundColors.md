@@ -2,6 +2,10 @@
 
 # Image Background Colors
 
+| ROM      | Size | Content  | Ofs  | CRC      | SHA1                                     |
+| -------- | ---- | -------- | ---- | -------- | ---------------------------------------- |
+| mpc-3.1m |   32 | bg_pal   |    0 | 6a57eff2 | 2d1c12dab5915da2ccd466e39436c88be434d634 |
+
 This ROM defines the colors used for the image backgrounds (not the text background).
 
 ```

@@ -1,6 +1,11 @@
 ![City](MoonPatrol.jpg)
 
 # City (far background) 
+
+| ROM      | Size | Content  | Ofs  | CRC      | SHA1                                     |
+| -------- | ---- | -------- | ---- | -------- | ---------------------------------------- |
+| mpe-3.3h | 4096 | bg2      |    0 | a0919392 | 8a090cb8d483a3d67c7360058e3fdd70e151cd62 |
+
 This background is a giant 256x64 pixel image. Each pixel is one of 4 colors.
 256*64*2/8 = 4K
 

@@ -2,6 +2,10 @@
 
 # Far Background (Mountains) 
 
+| ROM      | Size | Content  | Ofs  | CRC      | SHA1                                     |
+| -------- | ---- | -------- | ---- | -------- | ---------------------------------------- |
+| mpe-1.3l | 4096 | bg0      |    0 | c46a7f72 | 8bb7c9acaf6833fb6c0575b015991b873a305a84 |
+
 This background is a giant 256x64 pixel image. Each pixel is one of 4 colors.
 256*64*2/8 = 4K
 

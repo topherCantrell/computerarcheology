@@ -2,6 +2,10 @@
 
 # Text Colors
 
+| ROM      | Size | Content  | Ofs  | CRC      | SHA1                                     |
+| -------- | ---- | -------- | ---- | -------- | ---------------------------------------- |
+| mpc-4.2a |  512 | tx_pal   |    0 | 07f99284 | dfc52958f2520e1ce4446dd4c84c91413bbacf76 |
+
 ```plainCode
 ; Colors used in color sets:
 ;

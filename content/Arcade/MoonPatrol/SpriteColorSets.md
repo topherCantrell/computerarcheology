@@ -2,6 +2,10 @@
 
 # Sprite Color Sets
 
+| ROM      | Size | Content  | Ofs  | CRC      | SHA1                                     |
+| -------- | ---- | -------- | ---- | -------- | ---------------------------------------- |
+| mpc-2.2h |  256 | spr_clut |    0 | 7ae4cd97 | bc0662fac82ffe65f02092d912b2c2b0c7a8ac2b |
+
 The lower 6 bits of the 2nd byte of the sprite structure contains a color-set value.
 Thus there could be 64 color-set's (00..3F). The Moon Patrol hardware appears to
 mask off the upper bit making 32 color-sets (00..1F) with set 0x20 masking to 0x00.

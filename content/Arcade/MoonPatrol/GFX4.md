@@ -2,6 +2,10 @@
 
 # Hills (near background) 
 
+| ROM      | Size | Content  | Ofs  | CRC      | SHA1                                     |
+| -------- | ---- | -------- | ---- | -------- | ---------------------------------------- |
+| mpe-2.3k | 4096 | bg1      |    0 | c7aa1fb0 | 14c6c76e1d0db2c0745e5d6d33ea6945fac8e9ee |
+
 This background is a giant 256x64 pixel image. Each pixel is one of 4 colors.
 256*64*2/8 = 4K
 
