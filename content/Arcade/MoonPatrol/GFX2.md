@@ -2,6 +2,11 @@
 
 # Sprite Tiles
 
+| ROM      | Size | Content  | Ofs  | CRC      | SHA1                                     |
+| -------- | ---- | -------- | ---- | -------- | ---------------------------------------- |
+| mpb-2.3m | 4096 | sp       |    0 | 707ace5e | 93c682e13e74bce29ced3a87bffb29569c114c3b |
+| mpb-1.3n | 4096 | sp       | 1000 | 9b72133a | 1393ef92ae1ad58a4b62ca1660c0793d30a8b5e2 |
+
 The image data is dumped here with ROM mpb-1.3n following mb-2.3m as an 8K block
 of bytes. In reality the display generator hardware reads both ROMs as a single
 4K block of words. The corresponding bits from each ROM are organized as

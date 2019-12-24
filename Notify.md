@@ -6,6 +6,12 @@ switchoff49@gmail.com
 Leo Bodnar
 leo@leobodnar.com
 
+Guy Shavit <gushavi@gmail.com>
+
+# Defender
+
+Lord Sméagol <lordsmeagol4u@gmail.com>
+
 # Time Pilot
 
 Trevor Senn

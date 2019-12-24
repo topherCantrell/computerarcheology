@@ -137,6 +137,7 @@ var TileEngine = (function() {
 	
 		for(var x=0;x<command.length;++x) {		
 			command[x] = command[x].trim();
+			console.log(command[x])
 			if(command[x].charAt(0)=='#') {
 				if(command[x].charAt(1)=='#') {
 					cs = ''
@@ -163,9 +164,10 @@ var TileEngine = (function() {
 					for(var xx=0;xx<width;++xx) {
 						if(x<command.length) {
 							if(command[x].charAt(0)=='#') {
-								colors = colorMap[command[x++].substring(1)];
+								colors = colorMap[command[x].substring(1)];
+								cs = command[x++].substring(1)
 							}
-							lastCommand = command[x++];
+							lastCommand = command[x++].trim();
 						} else {
 							var val = parseInt(lastCommand,16)+1;
 							lastCommand = val.toString(16);						

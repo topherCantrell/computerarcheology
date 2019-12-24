@@ -2,29 +2,24 @@
 
 # Hardware
 
-| ROM      | Size | Content  | Ofs  | CRC      | SHA1                                     |
-| -------- | ---- | -------- | ---- | -------- | ---------------------------------------- |
-| mp-s1.1a | 4096 | sound    | 7000 | 561d3108 | 4998c68a9e9a8002251fa8f07aa1082444a9dc80 |
-| mpa-1.3m | 4096 | maincpu  |    0 | 5873a860 | 8c03726d6e049c3edbc277440184e31679f78258 |
-| mpa-2.3l | 4096 | maincpu  | 1000 | f4b85974 | dfb2efb57378a20af6f20569f4360cde95596f93 |
-| mpa-3.3k | 4096 | maincpu  | 2000 | 2e1a598c | 112c3c9678db8a8540a8df3708020c87fd10c91b |
-| mpa-4.3j | 4096 | maincpu  | 3000 | dd05b587 | 727961b0dafa4a96b580d51013336db2a18aff1e |
-
-| mpb-2.3m | 4096 | sp       |    0 | 707ace5e | 93c682e13e74bce29ced3a87bffb29569c114c3b |
-| mpb-1.3n | 4096 | sp       | 1000 | 9b72133a | 1393ef92ae1ad58a4b62ca1660c0793d30a8b5e2 |
-
-| mpc-2.2h |  256 | spr_clut |    0 | 7ae4cd97 | bc0662fac82ffe65f02092d912b2c2b0c7a8ac2b | SpriteColorSets.md
-
-| mpc-1.1f |   32 | spr_pal  |    0 | 26979b13 | 8c41a8cce4f3384c392a9f7a223a50d7be0e14a5 | SpriteColors.md
-| mpc-3.1m |   32 | bg_pal   |    0 | 6a57eff2 | 2d1c12dab5915da2ccd466e39436c88be434d634 | ImageBackgroundColors.md
-| mpc-4.2a |  512 | tx_pal   |    0 | 07f99284 | dfc52958f2520e1ce4446dd4c84c91413bbacf76 | TextColors.md
-
-| mpe-1.3l | 4096 | bg0      |    0 | c46a7f72 | 8bb7c9acaf6833fb6c0575b015991b873a305a84 | GFX3.md
-| mpe-2.3k | 4096 | bg1      |    0 | c7aa1fb0 | 14c6c76e1d0db2c0745e5d6d33ea6945fac8e9ee | GFX4.md
-| mpe-3.3h | 4096 | bg2      |    0 | a0919392 | 8a090cb8d483a3d67c7360058e3fdd70e151cd62 | GFX5.md
-
-| mpe-5.3e | 4096 | tx       |    0 | e3ee7f75 | b03d0d56150d3e9da4a4c871338097b4f450b649 |
-| mpe-4.3f | 4096 | tx       | 1000 | cca6d023 | fecb3059fb09897a096add9452b50aec55c07545 |
+| ROM      | Size | Content  | Ofs  | CRC      | SHA1                                     | Disassembly |
+| -------- | ---- | -------- | ---- | -------- | ---------------------------------------- | ----------- |
+| mp-s1.1a | 4096 | sound    | 7000 | 561d3108 | 4998c68a9e9a8002251fa8f07aa1082444a9dc80 | SoundCode.md             |
+| mpa-1.3m | 4096 | maincpu  |    0 | 5873a860 | 8c03726d6e049c3edbc277440184e31679f78258 | Code.md                  |
+| mpa-2.3l | 4096 | maincpu  | 1000 | f4b85974 | dfb2efb57378a20af6f20569f4360cde95596f93 | Code.md                  |
+| mpa-3.3k | 4096 | maincpu  | 2000 | 2e1a598c | 112c3c9678db8a8540a8df3708020c87fd10c91b | Code.md                  |
+| mpa-4.3j | 4096 | maincpu  | 3000 | dd05b587 | 727961b0dafa4a96b580d51013336db2a18aff1e | Code.md                  |
+| mpb-2.3m | 4096 | sp       |    0 | 707ace5e | 93c682e13e74bce29ced3a87bffb29569c114c3b | GFX2.md                  |
+| mpb-1.3n | 4096 | sp       | 1000 | 9b72133a | 1393ef92ae1ad58a4b62ca1660c0793d30a8b5e2 | GFX2.md                  |
+| mpc-2.2h |  256 | spr_clut |    0 | 7ae4cd97 | bc0662fac82ffe65f02092d912b2c2b0c7a8ac2b | SpriteColorSets.md       |
+| mpc-1.1f |   32 | spr_pal  |    0 | 26979b13 | 8c41a8cce4f3384c392a9f7a223a50d7be0e14a5 | SpriteColors.md          |
+| mpc-3.1m |   32 | bg_pal   |    0 | 6a57eff2 | 2d1c12dab5915da2ccd466e39436c88be434d634 | ImageBackgroundColors.md |
+| mpc-4.2a |  512 | tx_pal   |    0 | 07f99284 | dfc52958f2520e1ce4446dd4c84c91413bbacf76 | TextColors.md            |
+| mpe-1.3l | 4096 | bg0      |    0 | c46a7f72 | 8bb7c9acaf6833fb6c0575b015991b873a305a84 | GFX3.md                  |
+| mpe-2.3k | 4096 | bg1      |    0 | c7aa1fb0 | 14c6c76e1d0db2c0745e5d6d33ea6945fac8e9ee | GFX4.md                  |
+| mpe-3.3h | 4096 | bg2      |    0 | a0919392 | 8a090cb8d483a3d67c7360058e3fdd70e151cd62 | GFX5.md                  |
+| mpe-5.3e | 4096 | tx       |    0 | e3ee7f75 | b03d0d56150d3e9da4a4c871338097b4f450b649 | GFX1.md                  |
+| mpe-4.3f | 4096 | tx       | 1000 | cca6d023 | fecb3059fb09897a096add9452b50aec55c07545 | GFX1.md                  |
 
 
 >>> memory

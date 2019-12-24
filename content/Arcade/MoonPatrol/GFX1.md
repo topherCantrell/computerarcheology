@@ -2,6 +2,11 @@
 
 # Background Tiles 
 
+| ROM      | Size | Content  | Ofs  | CRC      | SHA1                                     |
+| -------- | ---- | -------- | ---- | -------- | ---------------------------------------- |
+| mpe-5.3e | 4096 | tx       |    0 | e3ee7f75 | b03d0d56150d3e9da4a4c871338097b4f450b649 |
+| mpe-4.3f | 4096 | tx       | 1000 | cca6d023 | fecb3059fb09897a096add9452b50aec55c07545 |
+
 This image data is dumped here with mpe-4.3f following mpe-5.3e as
 an 8K block of bytes. In reality the display generator hardware
 reads both ROMs at the same time as a 4K block of words. This data
@@ -59,13 +64,14 @@ TileEngine.setColorMap(
         '11' : [COL00,COL07,COLBD,COLE8], 
         '12' : [COL00,COL67,COLBD,COLE8],
         '13' : [COL00,COL67,COLBD,COL01],       
-        '14' : [COL00,COL67,COLE8,COL01],       
+        '14' : [COL00,COL67,COLE8,COL01],      
+        '*': ['#808080','#800000','#008000','#000080'], 
     }
   )
 
 </script>
 
-<canvas width="1200" height="2010"  
+<canvas width="1200" height="2084"  
     data-canvasFunction="TileEngine.handleTileCanvas"
     data-getTileDataFunction="MoonPatrol.getBackground8x8Data"
     data-pixWidth="8"
@@ -75,26 +81,92 @@ TileEngine.setColorMap(
     data-gap="0.25"
     data-gridPad="1"
     data-colors='["#808080","#000000","#0000DE","#009694"]'
-    data-command=":16x32:0">
+    data-command=":16x32:#01,0,1,2,#*,3,4,5,6,7,8,9,A,B,#01,C,D,E,F,
+                         10,11,#*,12,13,14,#02,15,16,17,18,19,1A,1B,1C,1D,1E,1F,
+                         20,21,22,23,24,25,26,27,28,29,#*,2A,2B,2C,2D,2E,2F,
+                         30,31,32,33,34,35,36,37,38,39,#02,3A,3B,3C,3D,3E,#*,3F,
+                         40,41,42,43,44,45,46,47,48,49,4A,4B,4C,4D,4E,4F,
+                         50,51,52,53,54,55,56,57,58,59,5A,5B,5C,5D,5E,5F,#00,
+                         60,61,62,63,64,65,66,67,#0F,68,69,6A,6B,6C,6D,6E,6F,
+                         70,#11,71,72,73,74,75,76,77,78,79,7A,7B,#13,7C,7D,7E,#12,7F,
+                         80,#13,81,82,83,84,#0F,85,#14,86,#12,87,88,89,8A,8B,8C,8D,8E,8F, 
+                         90,91,92,93,94,95,96,97,98,99,9A,9B,9C,9D,9E,9F,#04,
+                         A0,A1,A2,A3,A4,A5,A6,A7,A8,A9,AA,AB,AC,AD,AE,AF,
+                         B0,B1,B2,B3,B4,B5,B6,B7,B8,B9,BA,BB,BC,BD,BE,BF,
+                         C0,C1,C2,C3,C4,C5,C6,C7,C8,C9,CA,CB,CC,CD,CE,CF,
+                         D0,D1,D2,D3,D4,D5,D6,D7,D8,D9,DA,DB,DC,DD,DE,DF,
+                         E0,E1,E2,E3,E4,E5,E6,E7,E8,E9,EA,EB,EC,ED,EE,EF,
+                         F0,F1,F2,F3,F4,F5,F6,F7,F8,F9,FA,FB,FC,FD,FE,FF,
+                         100,101,102,103,104,105,106,107,108,109,10A,10B,10C,10D,10E,10F,
+                         110,111,112,113,114,115,116,117,118,119,11A,11B,11C,11D,11E,11F,
+                         120,121,122,123,124,125,126,127,128,129,12A,12B,12C,12D,12E,12F,
+                         130,131,132,133,134,135,136,137,138,139,13A,13B,13C,13D,13E,13F,
+                         140,141,142,143,144,145,146,147,148,149,14A,14B,14C,14D,14E,14F,
+                         150,151,152,153,154,155,156,157,158,159,15A,15B,15C,15D,15E,15F,
+                         160,161,162,163,164,165,166,167,168,169,16A,16B,16C,16D,16E,16F,
+                         170,171,172,173,174,175,176,177,178,179,17A,17B,17C,17D,17E,17F,
+                         180,181,182,183,184,185,186,187,188,189,18A,18B,18C,18D,18E,18F,
+                         190,191,192,193,194,195,196,197,198,199,19A,19B,19C,19D,19E,19F,
+                         1A0,1A1,1A2,1A3,1A4,1A5,1A6,1A7,1A8,1A9,1AA,1AB,1AC,1AD,1AE,1AF,#00,
+                         1B0,1B1,1B2,1B3,1B4,1B5,1B6,1B7,1B8,1B9,1BA,1BB,1BC,1BD,1BE,1BF,
+                         1C0,1C1,1C2,1C3,1C4,1C5,1C6,1C7,1C8,1C9,1CA,1CB,1CC,1CD,1CE,1CF,
+                         1D0,1D1,1D2,1D3,1D4,1D5,1D6,1D7,1D8,1D9,1DA,1DB,1DC,1DD,1DE,1DF,
+                         1E0,1E1,1E2,1E3,1E4,1E5,1E6,1E7,1E8,1E9,1EA,1EB,1EC,1ED,1EE,1EF,
+                         1F0,1F1,1F2,1F3,1F4,1F5,1F6,1F7,1F8,1F9,1FA,1FB,1FC,1FD,1FE,1FF,">
 </canvas>
 ```
 
 # Starting Point
 
-Lots of color-set changes here.
+This is drawn from the tiles above. TODO: Show where this is coded in the main code
+
+Note: lots of different color-sets used here.
 
 ```html
 <canvas width="1200" height="330"    
+    data-gap="0.25"
+    data-gridPad="1"
     data-colors='["#808080","#000000","#0000DE","#009694"]'
-    data-command="+x,+x,+x,+x,+x,+x,+x,+x,#0F,68,*,
-    +x,+x,+x,+x,+x,+x,+x,+x,69,6A,6B,*,
-    6C,6D,6E,6F,70,71,72,73,74,75,76,77,78,79,7A,7B,*,
-    #13,7C,7D,7E,7F,80,81,82,83,84,85,86,87,88,89,8A,8B,8C,*,
-    +x,+x,+x,+x,+x,+x,+x,+x, +x,+x,+x,+x,+x,+x,+x,+x, +x,+x,+x,+x,+x,+x,+x,+x, +x,+x,+x,+x,+x,+x,+x,+x, 
-    +x,+x,+x,+x,+x,+x,+x,+x, +x,+x,+x,+x,+x,+x,+x,+x, 8D,8E,8F,90,91
-    ">
+    
+    data-command=":17x5:,#0F,68,,,,,,,,,,,,,,,,
+                  ,69,6A,6B,,,,,,,,,,,,,,
+                  6C,6D,6E,6F,70,#11,71,72,73,74,75,76,77,78,79,7A,7B,,#13,7C,7D,7E,#12,7F,80,#13,81,82,83,84,#0F,85,#14,86,#12,87,88,89,8A,8B,8C,
+                  ,,,,,,8D,8E,8F,90,91,,,,,,">
 </canvas>
 ```
+
+# Moon Patrol
+
+This is drawn from the tiles above using color set 00. The structure is drawn in the main code from a table at 2D44 there.
+
+```html
+<canvas width="1000" height="330"
+data-canvasFunction="TileEngine.handleTileCanvas"
+data-file="GFX1.html"
+data-getTileDataFunction="MoonPatrol.getBackground8x8Data"
+data-pixWidth="8"
+data-gridX="8"
+data-gridY="8"
+data-pixHeight="8"
+data-gap="0.25"
+data-gridPad="1"
+data-colors='00'
+data-command=":14x5:1B0,1B5,1B9,1BE,1C3,,,,,,,,,,
+1B1,1B6,1BA,1BF,1C4,1C7,1CB,1CD,1D0,1D3,1D6,1D8,1D9,1DB,
+1B2,1B7,1BB,1C0,1C5,1C8,1BF,1BC,1D1,1D4,1D7,1C0,1BC,1C1,
+1B3,1B8,1BC,1C1,1C6,1C9,1CC,1CE,1D2,1D5,1BC,1C1,1C5,1DC,
+1B4,,1BD,1C2,1BD,1CA,,1CF,1CA,1C2,1BD,1C2,1DA,">
+</canvas>
+<canvas width="1400" height="330"
+data-command=":18x5:1B0,1DD,1E0,1E3,100,100,100,100,1F3,1F7,100,100,100,100,100,100,1C5,1C3,
+1B1,1DE,1E1,1E4,1E6,1E9,1ED,1F0,1F4,1F8,1B2,1FD,1FE,1D0,1D3,1D6,1BF,,
+1B2,1DF,1E2,1E5,1B2,1EA,1EE,1F1,1F5,1F9,1B3,1B8,1BC,1D1,1D4,1D7,1C0,,
+1B3,1B8,,,1E7,1EB,1EF,1F2,1BF,1B0,1FB,,1CE,1D2,1D5,1BC,1FF,,
+1B4,,,,1E8,1EC,1B4,,,1FA,1FC,,1CF,1CA,1C2,1BD,1EC,">
+</canvas>
+```
+
+# Raw Tile Data
 
 ```plainCode
 ;BackgroundTiles

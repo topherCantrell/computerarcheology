@@ -3,6 +3,10 @@
 # Sound Code
 >>> cpu 6803
 
+| ROM      | Size | Content  | Ofs  | CRC      | SHA1                                     |
+| -------- | ---- | -------- | ---- | -------- | ---------------------------------------- |
+| mp-s1.1a | 4096 | sound    | 7000 | 561d3108 | 4998c68a9e9a8002251fa8f07aa1082444a9dc80 |
+
 >>> memoryTable hard 
 [Hardware Info](SoundHardware.md)
 

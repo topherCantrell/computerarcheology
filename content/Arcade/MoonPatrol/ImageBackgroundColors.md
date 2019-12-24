@@ -11,11 +11,16 @@ This ROM defines the colors used for the image backgrounds (not the text backgro
 ```
 ; The comments in MAME say:
 ;
-; /* the palette is a 32x8 PROM with many colors repeated. The address of */
-; /* the colors to pick is as follows: */
-; /* xbb00: mountains */
-; /* 0xxbb: hills */
-; /* 1xxbb: city */
+; // the palette is a 32x8 PROM with many colors repeated. The address of 
+; // the colors to pick is as follows: 
+; // xbb00: mountains 
+; // 0xxbb: hills 
+; // 1xxbb: city 
+
+; The bb must be the pixel value (00,01,10,11).
+; The xx must be the assigned color set.
+
+; ?? What values of XX does the code set in the hardware?
 
 ; Pixel colors by experimenting
 ;             00    01     10     11
@@ -24,7 +29,7 @@ This ROM defines the colors used for the image backgrounds (not the text backgro
 ; City:       --    00     77     70
 
 ; Colors used in color sets:
-;
+;       R  G  B
 ; 20    00 97 00 <FONT style="BACKGROUND-COLOR:#009700">&nbsp;&nbsp;&nbsp;&nbsp;</FONT>
 ; 70    00 DE 51 <FONT style="BACKGROUND-COLOR:#00DE51">&nbsp;&nbsp;&nbsp;&nbsp;</FONT>
 ; 77    FF DE 51 <FONT style="BACKGROUND-COLOR:#FFDE51">&nbsp;&nbsp;&nbsp;&nbsp;</FONT>

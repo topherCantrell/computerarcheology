@@ -4,6 +4,13 @@
 
 >>> cpu Z80
 
+| ROM      | Size | Content  | Ofs  | CRC      | SHA1                                     |
+| -------- | ---- | -------- | ---- | -------- | ---------------------------------------- |
+| mpa-1.3m | 4096 | maincpu  |    0 | 5873a860 | 8c03726d6e049c3edbc277440184e31679f78258 |
+| mpa-2.3l | 4096 | maincpu  | 1000 | f4b85974 | dfb2efb57378a20af6f20569f4360cde95596f93 |
+| mpa-3.3k | 4096 | maincpu  | 2000 | 2e1a598c | 112c3c9678db8a8540a8df3708020c87fd10c91b |
+| mpa-4.3j | 4096 | maincpu  | 3000 | dd05b587 | 727961b0dafa4a96b580d51013336db2a18aff1e |
+
 >>> memoryTable hard 
 [Hardware Info](Hardware.md)
 
@@ -5654,7 +5661,7 @@ data-gridY="8"
 data-pixHeight="8"
 data-gap="0.25"
 data-gridPad="1"
-data-colors='["#808080","#00B8FF","FFFFFF","#FF2100"]'
+data-colors='["#808080","#00B8FF","#FFFFFF","#FF2100"]'
 data-command=":14x5:1B0,1B5,1B9,1BE,1C3,,,,,,,,,,
 1B1,1B6,1BA,1BF,1C4,1C7,1CB,1CD,1D0,1D3,1D6,1D8,1D9,1DB,
 1B2,1B7,1BB,1C0,1C5,1C8,1BF,1BC,1D1,1D4,1D7,1C0,1BC,1C1,

@@ -36,7 +36,7 @@ The color 0C (purple) is not referenced by any color set.
 000D: E8 ; C1 90 00  <FONT style="BACKGROUND-COLOR:#C19000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> gold
 000E: 6F ; 62 90 C8  <FONT style="BACKGROUND-COLOR:#6290C8">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> sky blue
 000F: 18 ; 00 51 00  <FONT style="BACKGROUND-COLOR:#005100">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> dark green
-;
+
 ; Unused (transparent)
 ; 
 0010: 00 00 00 00 

@@ -8,7 +8,7 @@
 
 ```plainCode
 ; Colors used in color sets:
-;
+;       R  G  B
 ; 01    21 00 00 <FONT style="BACKGROUND-COLOR:#210000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT>
 ; 07    FF 00 00 <FONT style="BACKGROUND-COLOR:#FF0000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT>
 ; 0F    FF 21 00 <FONT style="BACKGROUND-COLOR:#FF2100">&nbsp;&nbsp;&nbsp;&nbsp;</FONT>
