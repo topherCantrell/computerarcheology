@@ -182,15 +182,7 @@ moon_patrol_txt_sets = [
     [moon_patrol_txt_colors['m00'], moon_patrol_txt_colors['m67'], moon_patrol_txt_colors['mE8'], moon_patrol_txt_colors['m01'], ],
 ]
 
-images1 = [
-    [
-        'GFX1', TileStrategy(), moon_patrol_im_sets,
-        ['bgMountains', '0', 1],
-    ],
-
-]
-
-images2 = [
+images = [
     [
         'GFX3', BackgroundStrategy(), moon_patrol_im_sets,
         ['bgMountains', '0', 1],
@@ -205,7 +197,7 @@ images2 = [
     ],
 ]
 
-images1 = [[
+hold = [[
     'GFX2', SpriteStrategy(), moon_patrol_sp_sets,
     ['buggy', '1,2/3,4', 0],
     ['redBuggy', '1,2/3,4', 12],
