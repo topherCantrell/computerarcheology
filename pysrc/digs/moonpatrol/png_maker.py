@@ -182,7 +182,9 @@ moon_patrol_txt_sets = [
     [moon_patrol_txt_colors['m00'], moon_patrol_txt_colors['m67'], moon_patrol_txt_colors['mE8'], moon_patrol_txt_colors['m01'], ],
 ]
 
-images = [
+images = []
+
+images1 = [
     [
         'GFX3', BackgroundStrategy(), moon_patrol_im_sets,
         ['bgMountains', '0', 1],
@@ -197,7 +199,7 @@ images = [
     ],
 ]
 
-hold = [[
+images2 = [[
     'GFX2', SpriteStrategy(), moon_patrol_sp_sets,
     ['buggy', '1,2/3,4', 0],
     ['redBuggy', '1,2/3,4', 12],
@@ -340,6 +342,67 @@ for sprite_set in images:
                         pix_data[tile_row * ts[1] + ro][tile_col * ts[0] + co] = d
 
         make_png(pix_data, set_color_set[im_set], 5, im_name + '.png')
+
+
+def make_tile(data, number, color):
+
+    ret = []
+
+    dataA = data[number * 8:number * 8 + 8]  # BinaryData.getData(tileAddress*8,8);
+    dataB = data[number * 8 + 4096:number * 8 + 4096 + 8]  # BinaryData.getData(tileAddress*8+4096,8);
+
+    for x in range(8):
+        row = []
+        a = bin(dataA[x])[2:]
+        while len(a) < 8:
+            a = '0' + a
+        b = bin(dataB[x])[2:]
+        while len(b) < 8:
+            b = '0' + b
+        row.append(int(a[0] + b[0], 2))
+        row.append(int(a[1] + b[1], 2))
+        row.append(int(a[2] + b[2], 2))
+        row.append(int(a[3] + b[3], 2))
+        row.append(int(a[4] + b[4], 2))
+        row.append(int(a[5] + b[5], 2))
+        row.append(int(a[6] + b[6], 2))
+        row.append(int(a[7] + b[7], 2))
+        ret.append(row)
+
+    tn = f'tile_{hex(number)[2:].upper()}.png'
+    make_png(ret, moon_patrol_txt_sets[color], 5,tn )
+
+
+im_data = tools.binary.get_binary('../../../content/Arcade/MoonPatrol/GFX1.md', 0)
+
+cs = 0x0F
+
+for x in range(0x68,0x102):
+    if x==0x71:
+        cs = 0x11
+    elif x==0x7C:
+        cs = 0x13
+    elif x==0x7F:
+        cs = 0x12
+    elif x==0x81:
+        cs = 0x13
+    elif x==0x85:
+        cs = 0x0F
+    elif x==0x86:
+        cs = 0x14
+    elif x==0xA0:
+        cs = 0x04
+    make_tile(im_data, x, cs)
+    
+for x in range(0x1B0,0x200):
+    make_tile(im_data,x,0)
+    
+start_point = [
+    0x9A,0x68,0x9A,0x9A,0x9A,0x9A,0x9A,0x9A,0x9A,0x9A,0x9A,0x9A,0x9A,0x9A,0x9A,0x9A,0x9A,
+    0x9A,0x69,0x6A,0x6B,0x9A,0x9A,0x9A,0x9A,0x9A,0x9A,0x9A,0x9A,0x9A,0x9A,0x9A,0x9A,0x9A,
+    0x6C,0x6D,0x6E,0x6F,0x70,0x71,0x72,0x73,0x74,0x75,0x76,0x77,0x78,0x79,0x7A,0x7B,0x9A,
+    0x9A,0x9A,0x9A,0x9A,0x9A,0x9A,0x8D,0x8E,0x8F,0x90,0x91,0x9A,0x9A,0x9A,0x9A,0x9A,0x9A,
+]
 
 
 #make_png(text_to_data(tank, 16, 16), colors, 5, 'test.png')
