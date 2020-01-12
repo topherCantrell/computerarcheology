@@ -10,6 +10,8 @@
 >>> memoryTable ram 
 [RAM Usage](RAMUse.md)
 
+# Start
+
 ```code
 B000: D8             CLD                     
 B001: A2 FF          LDX     #$FF            
@@ -895,6 +897,11 @@ B6DB: 4C C3 F6       JMP     $F6C3
 B6DE: A5 CD          LDA     $CD             
 B6E0: 18             CLC                     
 B6E1: 60             RTS                     
+```
+
+# Data
+
+```code
 B6E2: 31 21          AND     ($21),Y         
 B6E4: 00             BRK                     
 B6E5: 10 00          BPL     $B6E7           
@@ -1013,31 +1020,82 @@ B788: 3C             ???
 B789: 84 08          STY     $08             
 B78B: 90 20          BCC     $B7AD           
 B78D: 1C             ???                     
-B78E: 24 0E          BIT     $0E             
-B790: 0A             ASL     A               
-B791: 0A             ASL     A               
-B792: 0A             ASL     A               
-B793: 0E 22 22       ASL     $2222           
-B796: 22             ???                     
-B797: 22             ???                     
-B798: 22             ???                     
-B799: EE 22 EE       INC     $EE22           
-B79C: 88             DEY                     
-B79D: EE EE 22       INC     $22EE           
-B7A0: 66 22          ROR     $22             
-B7A2: EE AA AA       INC     $AAAA           
-B7A5: EE 22 22       INC     $2222           
-B7A8: EE 88 EE       INC     $EE88           
-B7AB: 22             ???                     
-B7AC: EE EE 88       INC     $88EE           
-B7AF: EE AA EE       INC     $EEAA           
-B7B2: EE 22 22       INC     $2222           
-B7B5: 22             ???                     
-B7B6: 22             ???                     
-B7B7: EE AA EE       INC     $EEAA           
-B7BA: AA             TAX                     
-B7BB: EE EE AA       INC     $AAEE           
-B7BE: EE 22 EE       INC     $EE22           
+B78E: 24 
+```
+
+## Numbers
+
+```code
+B78F: 0E 0A 0A 0A 0E ;  0
+ ; .... ***.
+ ; .... *.*.
+ ; .... *.*.
+ ; .... *.*.
+ ; .... ****
+ 
+B794: 22 22 22 22 22 ; 11    
+; ..*. ..*.
+; ..*. ..*.
+; ..*. ..*.
+; ..*. ..*.
+; ..*. ..*.
+              
+B799: EE 22 EE 88 EE ; 22
+; ***. ***.
+; ..*. ..*.
+; ***. ***.
+; *... *...
+; ***. ***.
+
+B79E: EE 22 66 22 EE ; 33
+; ***. ***.
+; ..*. ..*.
+; .**. .**.
+; ..*. ..*.
+; ***. ***.
+
+B7A3: AA AA EE 22 22 ; 44       
+; *.*. *.*.
+; *.*. *.*.
+; ***. ***.
+; ..*. ..*.
+   
+B7A8: EE 88 EE 22 EE ; 55
+; ***. ***.
+; *... *...
+; ***. ***.
+; ..*. ..*.
+; ***. ***.
+
+B7AD: EE 88 EE AA EE ; 66     
+; ***. ***.
+; *... *...
+; ***. ***.
+; *.*. *.*.
+; ***. ***.
+    
+B7B2: EE 22 22 22 22 ; 77                
+; ***. ***.
+; ..*. ..*.
+; ..*. ..*.
+; ..*. ..*.
+; ..*. ..*.
+
+B7B7: EE AA EE AA EE ; 88
+; ***. ***.
+; *.*. *.*.
+; ***. ***.
+; *.*. *.*.
+; ***. ***.
+
+B7BC: EE AA EE 22 EE ; 99
+; ***. ***.
+; *.*. *.*.
+; ***. ***.
+; ..*. ..*.
+; ***. ***.  
+
+                
 B7C1: 00             BRK                     
 B7C2: 08             PHP                     
 B7C3: 14             ???                     
@@ -1080,9 +1138,13 @@ B7F2: 7E 07 0A       ROR     $0A07,X
 B7F5: 01 C1          ORA     ($C1,X)         
 B7F7: BB             ???                     
 B7F8: B7             ???                     
-B7F9: 53             ???                     
-B7FA: 51 4D          EOR     ($4D),Y         
-B7FC: 00             BRK                     
-B7FD: F0 00          BEQ     $B7FF           
-B7FF: 00             BRK                     
+B7F9: 53             ???     
+```
+
+# Vectors
+
+```code                
+B7FA: 51 4D     
+B7FC: 00 F0   ; Start at the top
+B7FE: 00 00                     
 ```code
