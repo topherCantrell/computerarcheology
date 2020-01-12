@@ -11,9 +11,9 @@
 >>>    *Contact<br>
 >>>    *Journal<br>
 >>>    #Amiga<br>
->>>    Arcade<br>
+>>>    #Arcade<br>
 >>>    #Atari2600<br>
->>>    #CoCo<br>
+>>>    CoCo<br>
 >>>    #NES<br>
 >>>    #Gameboy<br>
 >>>    #TRS80<br>

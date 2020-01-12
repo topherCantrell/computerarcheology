@@ -123,7 +123,7 @@ C096: 54                  LSRB                              ; ... ...
 C097: 54                  LSRB                              ; ... ...
 C098: D7 8D               STB     <$8D                      ; {-ram_m028D} ... first appear on level
 C09A: 3F                  SWI                               ; Make an instance of the object
-C09B: 17                                           ; SWI_17:[Create object structure](#addr_SWI_17):
+C09B: 17                  ; 17: [Create object structure](#SWI_17) 
 C09C: 6A 05               DEC     5,X                       ; Object isn't in any list (room, player, monster)
 C09E: 5C                  INCB                              ; Next object on next level
 C09F: C1 05               CMPB    #$05                      ; Past level 4?
@@ -138,11 +138,12 @@ C0AE: 25 DC               BCS     $C08C                     ; Not end of table .
 C0B0: CE 03 88            LDU     #$0388                    ;
 C0B3: 0A B7               DEC     <$B7                      ; {-ram_whereToPrint} Printing goes to desired descriptor
 C0B5: 3F                  SWI                 
-C0B6: 0A                                           ; SWI_A:[Clear hand descriptor](#addr_SWI_A):
+C0B6: 0A                  ; 0A: [Clear hand descriptor](#SWI_A)
 C0B7: 3F                  SWI                 
-C0B8: 02                                           ; SWI_2:[Uncompress message m and display](#addr_SWI_2):
+C0B8: 02                  ; 02: [Uncompress message m and display](#SWI_2)
 ;
-C0B9: F8 DF 0C C9 27 45 00 02 65 C1 03 52 39 3C 00 68 DA CC 63 09 48 ; "COPYRIGHT  DYNA MICRO  MCMLXXXII"
+; "COPYRIGHT  DYNA MICRO  MCMLXXXII"
+C0B9: F8 DF 0C C9 27 45 00 02 65 C1 03 52 39 3C 00 68 DA CC 63 09 48 
 ;           
 C0CE: 0F B7               CLR     <$B7                      ; {-ram_whereToPrint} Printing goes to command area
 C0D0: 39                  RTS                               ; Done
@@ -537,6 +538,41 @@ C350: 35 95               PULS    CC,B,X,PC                 ; Done
 
 TODO discussion about this technique
 
+TODO Immediate data and address links
+
+
+| SWI  | Immediate Data | Address | Function |
+| ---- | ----           | ----    | ----     |
+| 00   | | | Set light level |
+| 01   | | | Draw picture X on screen | |
+| 02   | | | Uncompress message m and display | |
+| 03   | | | Display uncompressed message X | |
+| 04   | | | Display a single character A | |
+| 05   | | | Uncompress message X to buffer | |
+| 06   | | | Uncompress message X to buffer U | |
+| 07   | | | Get random number | |
+| 08   | | | Clear display screen | |
+| 09   | | | Clear secondary screen | |
+| 0A   | | | Clear hand descriptor | |
+| 0B   | | | Clear play field | |
+| 0C   | | | Update heart rate | |
+| 0D   | | | Print hands | |
+| 0E   | | | Display playing screen | |
+| 0F   | | | Ready command prompt | |
+| 10   | | | Pause for 1.35 seconds | |
+| 11   | | | Fill X to U with 0s | |
+| 12   | | | Fill X to U with FFs | |
+| 13   | | | Beam on picture X | |
+| 14   | | | Beam subroutine | |
+| 15   | | | Beam subroutine | |
+| 16   | | | Print PREPARE | |
+| 17   | | | Create object structure | |
+| 18   | | | Change object to proper | |
+| 19   | | | Bring up normal display | |
+| 1A   | | | Build level | |
+| 1B   | | | Play sound i at full volume | |
+| 1C   | | | Play sound A at volume B | |
+
 ```code
 SWIHandler:
 ;
@@ -554,7 +590,7 @@ C366: AF E3               STX     ,--S                      ; Push the address o
 C368: EC 63               LDD     3,S                       ; A and B passed from caller
 C36A: AE 66               LDX     6,S                       ; X from the caller
 C36C: EE 6A               LDU     10,S                      ; U from the caller
-C36E: AD F1               JSR     [,S++]                    ; Do the SWI routine
+C36E: AD F1               JSR     [,S++]                    ; Call the SWI routine
 C370: 3B                  RTI                               ; Return to caller
 
 SWI2Handler:
