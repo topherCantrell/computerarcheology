@@ -1,4 +1,7 @@
+from _sqlite3 import Row
+
 import png
+
 import tools.binary
 
 
@@ -182,15 +185,9 @@ moon_patrol_txt_sets = [
     [moon_patrol_txt_colors['m00'], moon_patrol_txt_colors['m67'], moon_patrol_txt_colors['mE8'], moon_patrol_txt_colors['m01'], ],
 ]
 
+images = []
+
 images1 = [
-    [
-        'GFX1', TileStrategy(), moon_patrol_im_sets,
-        ['bgMountains', '0', 1],
-    ],
-
-]
-
-images2 = [
     [
         'GFX3', BackgroundStrategy(), moon_patrol_im_sets,
         ['bgMountains', '0', 1],
@@ -205,7 +202,7 @@ images2 = [
     ],
 ]
 
-images1 = [[
+images2 = [[
     'GFX2', SpriteStrategy(), moon_patrol_sp_sets,
     ['buggy', '1,2/3,4', 0],
     ['redBuggy', '1,2/3,4', 12],
@@ -299,8 +296,7 @@ def text_to_data(data, width, height, mapping={'.': 0, '1': 1, '2': 2, '3': 3}):
         ret.append(row)
     return ret
 
-
-def make_png(data, colors, pixel_size, fname):
+def get_png_data(data,colors,pixel_size):
     img = []
     for y in range(len(data)):
         for yy in range(pixel_size):
@@ -309,6 +305,11 @@ def make_png(data, colors, pixel_size, fname):
                 for xx in range(pixel_size):
                     row = row + colors[data[y][x]]
             img.append(row)
+    return img
+    
+
+def make_png(data, colors, pixel_size, fname):    
+    img = get_png_data(data,colors,pixel_size)
     with open(fname, 'wb') as f:
         w = png.Writer(len(data[0]) * pixel_size, len(data) * pixel_size, greyscale=False, transparent=(0, 0, 0))
         w.write(f, img)
@@ -349,5 +350,126 @@ for sprite_set in images:
 
         make_png(pix_data, set_color_set[im_set], 5, im_name + '.png')
 
+def get_tile_data(data,number):
+    ret = []
+    
+    dataA = data[number * 8:number * 8 + 8]  # BinaryData.getData(tileAddress*8,8);
+    dataB = data[number * 8 + 4096:number * 8 + 4096 + 8]  # BinaryData.getData(tileAddress*8+4096,8);
 
-#make_png(text_to_data(tank, 16, 16), colors, 5, 'test.png')
+    for x in range(8):
+        row = []
+        a = bin(dataA[x])[2:]
+        while len(a) < 8:
+            a = '0' + a
+        b = bin(dataB[x])[2:]
+        while len(b) < 8:
+            b = '0' + b
+        row.append(int(a[0] + b[0], 2))
+        row.append(int(a[1] + b[1], 2))
+        row.append(int(a[2] + b[2], 2))
+        row.append(int(a[3] + b[3], 2))
+        row.append(int(a[4] + b[4], 2))
+        row.append(int(a[5] + b[5], 2))
+        row.append(int(a[6] + b[6], 2))
+        row.append(int(a[7] + b[7], 2))
+        ret.append(row)
+        
+    return ret
+    
+def make_tile(data, number, color): 
+       
+    ret = get_tile_data(data,number)
+    
+    tn = f'tile_{hex(number)[2:].upper()}.png'
+    make_png(ret, moon_patrol_txt_sets[color], 5,tn )
+
+
+im_data = tools.binary.get_binary('../../../content/Arcade/MoonPatrol/GFX1.md', 0)
+
+cs = 0x0F
+
+for x in range(0x68,0x102):
+    if x==0x71:
+        cs = 0x11
+    elif x==0x7C:
+        cs = 0x13
+    elif x==0x7F:
+        cs = 0x12
+    elif x==0x81:
+        cs = 0x13
+    elif x==0x85:
+        cs = 0x0F
+    elif x==0x86:
+        cs = 0x14
+    elif x==0x87:
+        cs = 0x12
+    elif x==0xA0:
+        cs = 0x04
+    make_tile(im_data, x, cs)
+    
+for x in range(0x1B0,0x200):
+    make_tile(im_data,x,0)
+    
+def process_tile_picture(txt):
+    txt = txt.replace('\n','')
+    txt = txt.replace(' ','')
+    rows = txt.split('|')
+    ret = []
+    cs = 0
+    for row in rows:
+        ret.append(row.split(','))
+    for y in range(len(ret)):
+        for x in range(len(ret[y])):            
+            c = ret[y][x]
+            i = c.find('@')
+            if i>=0:
+                cs = int(c[i+1:],16)
+                c = c[0:i]
+            ret[y][x] = (int(c,16),cs)
+    return ret
+
+def make_tile_picture(data,txt,colors,pixel_size,name):
+    tiles = process_tile_picture(txt)    
+    
+    for y in range(len(tiles)):
+        for x in range(len(tiles[y])):
+            dat = get_tile_data(im_data,tiles[y][x][0])
+            cs = tiles[y][x][1]
+            tiles[y][x] = get_png_data(dat,colors[cs],pixel_size)
+            
+    final_data = []    
+    for y in range(len(tiles)):        
+        for yy in range(len(tiles[y][0])):
+            row = ()
+            for x in range(len(tiles[y])):
+                row = row + tiles[y][x][yy]
+            final_data.append(row)
+            
+    with open(name, 'wb') as f:
+        w = png.Writer(len(tiles[0]) * 8 * pixel_size, len(tiles) * 8 * pixel_size, greyscale=False, transparent=(0, 0, 0))
+        w.write(f, final_data)
+
+sp = '''
+    9A@0F, 68, 9A, 9A, 9A, 9A, 9A, 9A, 9A, 9A, 9A, 9A, 9A, 9A, 9A, 9A, 9A | 
+    9A, 69, 6A, 6B, 9A, 9A, 9A, 9A, 9A, 9A, 9A, 9A, 9A, 9A, 9A, 9A, 9A |
+    6C, 6D, 6E, 6F, 70, 71@11, 72, 73, 74, 75, 76, 77, 78, 79, 7A, 7B, 9A |
+    7C@13, 7D, 7E, 7F@12, 80, 81@13, 82, 83, 84, 85@0F, 86@14, 87@12, 88, 89, 8A, 8B, 8C |
+    F3, F3, F3, F3, F3, F3, 8D, 8E, 8F, 90, 91, F3, F3, F3, F3, F3, F3'''
+                
+moon_t = '''
+   1B0@0, 1B5, 1B9, 1BE, 1C3, 9A, 9A, 9A, 9A, 9A, 9A, 9A, 9A, 9A |
+   1B1, 1B6, 1BA, 1BF, 1C4, 1C7, 1CB, 1CD, 1D0, 1D3, 1D6, 1D8, 1D9, 1DB |
+   1B2, 1B7, 1BB, 1C0, 1C5, 1C8, 1BF, 1BC, 1D1, 1D4, 1D7, 1C0, 1BC, 1C1 |
+   1B3, 1B8, 1BC, 1C1, 1C6, 1C9, 1CC, 1CE, 1D2, 1D5, 1BC, 1C1, 1C5, 1DC |
+   1B4,  9A, 1BD, 1C2, 1BD, 1CA,  9A, 1CF, 1CA, 1C2, 1BD, 1C2, 1DA,  9A'''
+        
+patrol_t = '''
+   1B0@0,1DD,1E0,1E3,100,100,100,100,1F3,1F7,100,100,100,100,100,100,1C5,1C3 |
+   1B1,  1DE,1E1,1E4,1E6,1E9,1ED,1F0,1F4,1F8,1B2,1FD,1FE,1D0,1D3,1D6,1BF, 9F |
+   1B2,  1DF,1E2,1E5,1B2,1EA,1EE,1F1,1F5,1F9,1B3,1B8,1BC,1D1,1D4,1D7,1C0, 9F |
+   1B3,  1B8, 9F, 9F,1E7,1EB,1EF,1F2,1BF,1B0,1FB, 9F,1CE,1D2,1D5,1BC,1FF, 9F |
+   1B4,   9F, 9F, 9F,1E8,1EC,1B4, 9F, 9F,1FA,1FC, 9F,1CF,1CA,1C2,1BD,1EC, 9F'''
+
+make_tile_picture(im_data,sp,moon_patrol_txt_sets,5,'starting.png')
+make_tile_picture(im_data,moon_t,moon_patrol_txt_sets,5,'moon.png')
+make_tile_picture(im_data,patrol_t,moon_patrol_txt_sets,5,'patrol.png')
