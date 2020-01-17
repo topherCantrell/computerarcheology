@@ -5,10 +5,10 @@
   t - memory address (two bytes)
   b - constant (one byte)
   w - constant (two byte)  
-  r - branch relative offset (one byte)  
-  s - branch relative offset (two byte)  
+  r - memory branch relative offset (one byte)  
+  s - memory branch relative offset (two byte)  
   
-  The "bus" field shows how a memory address (p or t) is used:
+  The "bus" field shows how a memory address (p, q, t, r, s) is used:
   - "" mnemonic does not contain a memory address
   - "r" memory address is read
   - "w" memory address is written
