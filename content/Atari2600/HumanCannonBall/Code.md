@@ -1,6 +1,6 @@
 ![HumanCannonBall](humancannonball.jpg)
 
-# Entombed
+# Human Cannon Ball
 
 >>> cpu 6502
 
@@ -13,35 +13,35 @@
 # Start
 
 ```code
-B000: D8             CLD                     
-B001: A2 FF          LDX     #$FF            
-B003: 9A             TXS                     
-B004: E8             INX                     
-B005: 8A             TXA                     
-B006: 95 04          STA     $04,X           
-B008: E8             INX                     
-B009: D0 FB          BNE     $B006           
-B00B: A9 F7          LDA     #$F7            
-B00D: 85 85          STA     $85             
-B00F: 20 55 F3       JSR     $F355           
-B012: C8             INY                     
-B013: F0 37          BEQ     $B04C           
-B015: F6 9B          INC     $9B,X           
-B017: 94 0B          STY     $0B,X           
-B019: CA             DEX                     
-B01A: D0 F9          BNE     $B015           
-B01C: 84 2B          STY     $2B             
-B01E: AD 80 02       LDA     $0280           
-B021: 49 FF          EOR     #$FF            
-B023: F0 02          BEQ     $B027           
-B025: 85 9D          STA     $9D             
-B027: AD 82 02       LDA     $0282           
-B02A: 4A             LSR     A               
-B02B: B0 10          BCS     $B03D           
-B02D: 20 5A F5       JSR     $F55A           
-B030: C8             INY                     
-B031: 84 B5          STY     $B5             
-B033: 84 B6          STY     $B6             
+F000: D8             CLD                     
+F001: A2 FF          LDX     #$FF            
+F003: 9A             TXS                     
+F004: E8             INX                     
+F005: 8A             TXA                     
+F06: 95 04          STA     $04,X           
+F008: E8             INX                     
+F009: D0 FB          BNE     $B006           
+F00B: A9 F7          LDA     #$F7            
+F00D: 85 85          STA     $85             
+F00F: 20 55 F3       JSR     $F355           
+F012: C8             INY                     
+F013: F0 37          BEQ     $B04C           
+F015: F6 9B          INC     $9B,X           
+F017: 94 0B          STY     $0B,X           
+F019: CA             DEX                     
+F01A: D0 F9          BNE     $B015           
+F01C: 84 2B          STY     $2B             
+F01E: AD 80 02       LDA     $0280           
+F021: 49 FF          EOR     #$FF            
+F023: F0 02          BEQ     $B027           
+F025: 85 9D          STA     $9D             
+F027: AD 82 02       LDA     $0282           
+F02A: 4A             LSR     A               
+F02B: B0 10          BCS     $B03D           
+F02D: 20 5A F5       JSR     $F55A           
+F030: C8             INY                     
+F031: 84 B5          STY     $B5             
+F033: 84 B6          STY     $B6             
 B035: 84 B7          STY     $B7             
 B037: A0 40          LDY     #$40            
 B039: 84 B4          STY     $B4             
@@ -139,7 +139,7 @@ B0F8: 90 02          BCC     $B0FC
 B0FA: 29 06          AND     #$06            
 B0FC: 95 C4          STA     $C4,X           
 B0FE: A4 BE          LDY     $BE             
-B100: B9 8F F7       LDA     $F78F,Y         
+B100: B9 8F F7       LDA     $F78F,Y         ; Graphics for the numbers
 B103: 29 F0          AND     #$F0            
 B105: 85 CE          STA     $CE             
 B107: A4 BA          LDY     $BA             
