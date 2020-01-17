@@ -1,18 +1,12 @@
 
 '''
   p - memory address (one byte)
+  q - memory address (one byte) used for opcodes with multiple Ps
   t - memory address (two bytes)
   b - constant (one byte)
   w - constant (two byte)  
   r - branch relative offset (one byte)  
   s - branch relative offset (two byte)  
-  
-  y - indexed form (6809)
-  z - two register set (6809)
-  x - push register set S (6809)
-  y - pull register set S (6809)
-  u - push register set U (6809)
-  v - pull register set U (6809)
   
   The "bus" field shows how a memory address (p or t) is used:
   - "" mnemonic does not contain a memory address
@@ -20,6 +14,19 @@
   - "w" memory address is written
   - "rw" memory address is read and written
   - "x" memory address is code (jump destination)
+  
+  * 6809 specific
+  y - indexed form (6809)
+  z - two register set (6809)
+  x - push register set S (6809)
+  y - pull register set S (6809)
+  u - push register set U (6809)
+  v - pull register set U (6809)
+  
+  * 8051 specific
+  z - bit address (one byte)
+  y - 11-bit address (one byte -- 3 bits in the opcode)  
+
 '''
 
 

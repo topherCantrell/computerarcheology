@@ -134,7 +134,7 @@ OPCODES = [
     {"mnem": "ANL C,b", "code": "82bb", "bus": ""},
     {"mnem": "MOVC A,@A+PC", "code": "83", "bus": ""},
     {"mnem": "DIV AB", "code": "84", "bus": ""},
-    {"mnem": "MOV p,p", "code": "85pppp", "bus": ""},  # TODO: think about this. Maybe a qq?
+    {"mnem": "MOV p,q", "code": "85ppqq", "bus": ""},
     {"mnem": "MOV p,@R0", "code": "86pp", "bus": ""},
     {"mnem": "MOV p,@R1", "code": "87pp", "bus": ""},
     {"mnem": "MOV p,R0", "code": "88pp", "bus": ""},
