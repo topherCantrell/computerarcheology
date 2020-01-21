@@ -34,3 +34,12 @@ class Test_CPUs(unittest.TestCase):
         opc = cp.find_opcodes_for_binary([0x10, 0xA3, 0x9D, 1, 2])
         self.assertTrue(len(opc) == 1)
         self.assertTrue(opc[0].get_mnemonic() == 'CMPD [k,PC]')
+
+    def test_binary_to_string(self):
+
+        cp = cpu.cpu_common.CPU.get_cpu('6809')
+        binary = [0x10, 0xA3, 0x9D, 1, 2]
+        opc = cp.find_opcodes_for_binary(binary)
+
+        out = opc[0].binary_to_string(0x1000, binary)
+        print(out)

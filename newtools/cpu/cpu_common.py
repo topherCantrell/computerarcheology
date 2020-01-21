@@ -1,3 +1,4 @@
+from cpu.opcode import Opcode
 
 '''
   p - memory address (one byte)
@@ -36,32 +37,6 @@
 
 class CPUException(Exception):
     pass
-
-
-class Opcode():
-
-    def __init__(self, info: dict):
-        self._info = info
-        self._mnemonic = info['mnem']
-        self._bus = info['bus']
-        self._code = []
-        code = info['code']
-        for i in range(0, len(code), 2):
-            frag = code[i:i + 2]
-            if frag.islower():
-                self._code.append(frag)
-            else:
-                self._code.append(int(frag, 16))
-
-    def get_mnemonic(self):
-        return self._mnemonic
-
-    def get_code(self):
-        return self._code
-
-    def get_bus(self):
-        # TODO: maybe accessors like 'is_read'
-        return self._bus
 
 
 class CPU:
@@ -116,6 +91,7 @@ class CPU:
         self._quick_codes = {}
         for op in opcodes:
             opc = self.make_opcode(op)
+            opc._cpu = self
             self._opcodes.append(opc)
             key = opc.get_code()[0]
             if not isinstance(key, int):
