@@ -27,3 +27,10 @@ class Test_CPUs(unittest.TestCase):
 
         cp = cpu.cpu_common.CPU.get_cpu('Z80GB')
         self.assertTrue(cp != None)
+
+    def test_disassembly(self):
+
+        cp = cpu.cpu_common.CPU.get_cpu('6809')
+        opc = cp.find_opcodes_for_binary([0x10, 0xA3, 0x9D, 1, 2])
+        self.assertTrue(len(opc) == 1)
+        self.assertTrue(opc[0].get_mnemonic() == 'CMPD [k,PC]')

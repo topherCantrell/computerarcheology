@@ -512,7 +512,7 @@ class CPU_6809(cpu.cpu_common.CPU):
 
     def __init__(self):
 
-        self._opcodes = []
+        expanded_opcodes = []
 
         # Expand the "post" mnemonics
         for entry in OPCODES:
@@ -523,6 +523,8 @@ class CPU_6809(cpu.cpu_common.CPU):
                     new_entry = {'mnem': new_mnem,
                                  # 'code': new_code, 'bus': entry['bus']}
                                  'code': new_code, 'bus': ''}
-                    self._opcodes.append(new_entry)
+                    expanded_opcodes.append(new_entry)
             else:
-                self._opcodes.append(entry)
+                expanded_opcodes.append(entry)
+
+        super().__init__(expanded_opcodes)
