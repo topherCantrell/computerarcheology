@@ -114,6 +114,30 @@ class CPU:
 
         return Opcode(info)
 
+    def _binary_to_string_fill(self, address, binary, opcode, fills, two_bytes, ind):
+        '''Fill in an opcode data value
+
+        Different processors might override this for their own special needs. The 
+        Opcode's "binary_to_string" defers to this method.
+
+        Args:
+            address (int): the address of the opcode
+            binary (list): the binary data for the opcode
+            opcode (Opcode): the Opcode
+            fills (dict): dictionary of fill-in values (add to this)
+            two_bytes (list): list of two-byte fill-in values (add to this)
+            ind (int): bytes index of the fill-in (binary and opcode)
+
+        '''
+        spec = opcode.get_code()[ind]
+        val = binary[ind]
+        if spec[0] not in fills:
+            fills[spec[0]] = 0
+        if spec[1] == 'm':
+            val = val * 256
+            two_bytes.append(spec[0])
+        fills[spec[0]] += val
+
     def find_opcodes_for_binary(self, binary: list, start: int=0, exact: bool=False)->list:
         '''Find the opcode that matches the binary (a disassembly operation)
 
@@ -128,6 +152,8 @@ class CPU:
         possible = self._quick_codes[binary[0]]
 
         ret = []
+
+        # TODO: handle relative jumps
 
         for oc in possible:
             code = oc.get_code()

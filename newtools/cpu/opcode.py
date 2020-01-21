@@ -34,14 +34,43 @@ class Opcode():
         # For example [0x10, 0xA3, 0x9D, 1, 2]
         # 1000: 10 A3 9D 01 02      CMPD   [$0102,PC]
 
+        # Spacing for the disassembly fields
         spa = self.get_field_spacing()
 
+        # Address
         add = '{:04X}'.format(address)
 
+        # Data
         ds = ''
-        for d in binary:
-            ds = ds + '{:02X} '.format(d)
-
+        for i in range(len(binary)):
+            ds = ds + '{:02X} '.format(binary[i])
         ds = ds.ljust(spa['data'], ' ')
 
-        return f'{add}: {ds}'
+        fills = {}
+        tbs = []
+        for i in range(len(binary)):
+            g = self._code[i]
+            if isinstance(g, str):
+                # Call out to the specific CPU in case it has specials
+                self._cpu._binary_to_string_fill(address, binary, self, fills, tbs, i)
+
+        mn = self.get_mnemonic()
+
+        # TODO: factory these out for overrides (6809 register sets, etc)
+
+        for f in fills:
+            if f in tbs:
+                nv = '${:04X}'.format(fills[f])
+            else:
+                nv = '${:02X}'.format(fills[f])
+            mn = mn.replace(f, nv)
+
+        i = mn.find(' ')
+        if i >= 0:
+            a = mn[0:i]
+            b = mn[i + 1:]
+            mn = a.ljust(spa['mnemonic'][0]) + b.ljust(spa['mnemonic'][1])
+        else:
+            mn = mn.ljust(spa['mnemonic'][0] + spa['mnemonic'][1])
+
+        return f'{add}: {ds}{mn}'
