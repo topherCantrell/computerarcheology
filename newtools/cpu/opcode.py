@@ -46,6 +46,7 @@ class Opcode():
             ds = ds + '{:02X} '.format(binary[i])
         ds = ds.ljust(spa['data'], ' ')
 
+        # All the fill ins
         fills = {}
         tbs = []
         for i in range(len(binary)):
@@ -54,17 +55,21 @@ class Opcode():
                 # Call out to the specific CPU in case it has specials
                 self._cpu._binary_to_string_fill(address, binary, self, fills, tbs, i)
 
+        # Fill in the mnemonic
         mn = self.get_mnemonic()
-
-        # TODO: factory these out for overrides (6809 register sets, etc)
-
         for f in fills:
             if f in tbs:
-                nv = '${:04X}'.format(fills[f])
+                # Numeric fill ins
+                if isinstance(tbs[f], int):
+                    nv = '${:04X}'.format(fills[f])
+                else:
+                    nv = '${:02X}'.format(fills[f])
             else:
-                nv = '${:02X}'.format(fills[f])
+                # String fill ins
+                nv = tbs[f]
             mn = mn.replace(f, nv)
 
+        # Two-word mnemonic spacing
         i = mn.find(' ')
         if i >= 0:
             a = mn[0:i]
@@ -73,4 +78,9 @@ class Opcode():
         else:
             mn = mn.ljust(spa['mnemonic'][0] + spa['mnemonic'][1])
 
+        # We need location information to replace with links, etc
+
+        # TODO:How about things like this: 'DJNZ $102,$200' where the first is data and the second code
+
+        # Final form
         return f'{add}: {ds}{mn}'
