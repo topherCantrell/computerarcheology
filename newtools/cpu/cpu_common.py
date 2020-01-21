@@ -1,6 +1,10 @@
 from cpu.opcode import Opcode
 
 '''
+  
+  Most opcodes contain at most one fill-in, like "LDA #b" or "JSR r". These will have one bus
+  description. Some have multiple like "MOV p,q". For these
+
   p - memory address (one byte)
   q - memory address (one byte) used for opcodes with multiple Ps
   t - memory address (two bytes)
@@ -10,10 +14,10 @@ from cpu.opcode import Opcode
   s - memory branch relative offset (two byte)  
   
   The "bus" field shows how a memory address (p, q, t, r, s) is used:
-  - "" mnemonic does not contain a memory address
+  - "-" mnemonic does not contain a memory address
   - "r" memory address is read
   - "w" memory address is written
-  - "rw" memory address is read and written
+  - "c" memory address is read and written
   - "x" memory address is code (jump destination)
   
   * 6809 specific
@@ -100,6 +104,15 @@ class CPU:
                 self._quick_codes[key].append(opc)
             else:
                 self._quick_codes[key] = [opc]
+             
+            # Show opcodes with more than 1 fill-in   
+            #letters = []
+            #for d in opc.get_code():
+            #    if isinstance(d,str):
+            #        if not d[0] in letters:
+            #            letters.append(d[0])
+            #if len(letters)>1:
+            #    print(opc.get_mnemonic())
 
     def make_opcode(self, info: dict)->Opcode:
         '''Create an opcode from the given info.
@@ -138,7 +151,7 @@ class CPU:
             two_bytes.append(spec[0])
         fills[spec[0]] += val
 
-    def find_opcodes_for_binary(self, binary: list, start: int=0, exact: bool=False)->list:
+    def find_opcodes_for_binary(self, binary: list, start: int=0, end: int=-1,exact: bool=False)->list:
         '''Find the opcode that matches the binary (a disassembly operation)
 
         Args:
@@ -146,8 +159,11 @@ class CPU:
             start (int): starting point in the bytes [default is 0]
             exact (bool): True if the opcode must match the given bytes exactly [default is False]
         Returns:
-            list[Opcode]: The opcodes information (TODO: maybe an object?)
+            list[Opcode]: The opcodes information 
         '''
+        
+        if end<0:
+            end = len(binary)
 
         possible = self._quick_codes[binary[0]]
 
@@ -156,11 +172,12 @@ class CPU:
         # TODO: handle relative jumps
 
         for oc in possible:
-            code = oc.get_code()
-            pos = 0
+            if exact and len(oc.get_code())!=(end-start):
+                continue
+            code = oc.get_code()            
             could_be = True
             for b in range(len(code)):
-                if b >= len(binary) + start:
+                if b >= end + start:
                     could_be = False
                     break
                 if isinstance(code[b], str):

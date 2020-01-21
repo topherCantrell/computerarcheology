@@ -53,23 +53,10 @@ class Opcode():
             g = self._code[i]
             if isinstance(g, str):
                 # Call out to the specific CPU in case it has specials
-                self._cpu._binary_to_string_fill(address, binary, self, fills, tbs, i)
-
-        # Fill in the mnemonic
-        mn = self.get_mnemonic()
-        for f in fills:
-            if f in tbs:
-                # Numeric fill ins
-                if isinstance(tbs[f], int):
-                    nv = '${:04X}'.format(fills[f])
-                else:
-                    nv = '${:02X}'.format(fills[f])
-            else:
-                # String fill ins
-                nv = tbs[f]
-            mn = mn.replace(f, nv)
-
+                self._cpu._binary_to_string_fill(address, binary, self, fills, tbs, i)       
+        
         # Two-word mnemonic spacing
+        mn = self.get_mnemonic()
         i = mn.find(' ')
         if i >= 0:
             a = mn[0:i]
@@ -77,10 +64,28 @@ class Opcode():
             mn = a.ljust(spa['mnemonic'][0]) + b.ljust(spa['mnemonic'][1])
         else:
             mn = mn.ljust(spa['mnemonic'][0] + spa['mnemonic'][1])
-
-        # We need location information to replace with links, etc
-
-        # TODO:How about things like this: 'DJNZ $102,$200' where the first is data and the second code
-
-        # Final form
-        return f'{add}: {ds}{mn}'
+        
+        # Build the basic form
+        base = f'{add}: {ds}{mn}'
+            
+        # Fill-ins
+        fill_info = {}
+        for f in fills:            
+            if isinstance(fills[f],int):
+                numeric = True            
+                if f in tbs:
+                    nv = '${:04X}'.format(fills[f])
+                else:
+                    nv = '${:02X}'.format(fills[f])
+            else:
+                # String fill ins (things like register pairs and register lists
+                numeric = False
+                nv = fills[f]
+            # The web-tool needs to replace these with HTML links    
+            i = base.find(f)
+            if i>=0:                          
+                base = base.replace(f, nv)
+                if numeric:
+                    fill_info[f] = {'fill': nv, 'start' : i}
+            
+        return base, fill_info

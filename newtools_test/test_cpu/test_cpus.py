@@ -41,5 +41,5 @@ class Test_CPUs(unittest.TestCase):
         binary = [0x10, 0xA3, 0x9D, 1, 2]
         opc = cp.find_opcodes_for_binary(binary)
 
-        out = opc[0].binary_to_string(0x1000, binary)
-        print(out)
+        out,info = opc[0].binary_to_string(0x1000, binary)
+        print(out,info)
