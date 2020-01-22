@@ -3,7 +3,8 @@ from cpu.opcode import Opcode
 '''
   
   Most opcodes contain at most one fill-in, like "LDA #b" or "JSR r". These will have one bus
-  description. Some have multiple like "MOV p,q". For these
+  description. Some have multiple like "MOV p,q". For these cases, the "bus" field is 
+  formated as "p:w,q:r,etc"
 
   p - memory address (one byte)
   q - memory address (one byte) used for opcodes with multiple Ps
@@ -14,10 +15,10 @@ from cpu.opcode import Opcode
   s - memory branch relative offset (two byte)  
   
   The "bus" field shows how a memory address (p, q, t, r, s) is used:
-  - "-" mnemonic does not contain a memory address
+  - "" mnemonic does not contain a memory address
   - "r" memory address is read
   - "w" memory address is written
-  - "c" memory address is read and written
+  - "rw" memory address is read and written
   - "x" memory address is code (jump destination)
   
   * 6809 specific
