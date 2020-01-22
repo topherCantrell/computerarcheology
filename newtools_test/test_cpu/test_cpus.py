@@ -46,3 +46,25 @@ class Test_CPUs(unittest.TestCase):
         out = cp.binary_to_string(opc, 0x1000, binary, fills)
 
         print(out)
+
+    def test_one_byte_relative(self):
+
+        cp = cpu.cpu_common.CPU.get_cpu('6809')
+        binary = [0x26, 0xF9]
+        opc = cp.find_opcodes_for_binary(binary)[0]
+        fills = cp.get_mnemonic_fills(opc, 0xC050, binary)
+
+        out = cp.binary_to_string(opc, 0xC050, binary, fills)
+
+        print(out)
+
+    def test_two_byte_relative(self):
+
+        cp = cpu.cpu_common.CPU.get_cpu('6809')
+        binary = [0x10, 0x26, 0xDE, 0xAF]
+        opc = cp.find_opcodes_for_binary(binary)[0]
+        fills = cp.get_mnemonic_fills(opc, 0xC174, binary)
+
+        out = cp.binary_to_string(opc, 0xC174, binary, fills)
+
+        print(out)

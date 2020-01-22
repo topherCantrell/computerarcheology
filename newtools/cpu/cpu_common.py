@@ -50,7 +50,7 @@ class CPU:
 
     @staticmethod
     def get_cpu(name: str):
-        '''Get the CPU by name
+        '''Get the CPU singleton by name
 
         Args:
             name (str): The CPU's name
@@ -60,6 +60,8 @@ class CPU:
 
         if name in CPU.cpu_singletons:
             return CPU.cpu_singletons[name]
+
+        # Delayed imports ... only for the processors we need
 
         cp = None
         if name == '6502':
@@ -119,58 +121,20 @@ class CPU:
     def make_opcode(self, info: dict)->Opcode:
         '''Create an opcode from the given info.
 
-        This is a method to allow for overrides
+        This is a factory method to allow for overrides
 
         Args:
             info (dict): the opcode information
         Returns:
             Opcode: factoried opcode
         '''
-
         return Opcode(info)
-
-    def _binary_to_string_fill(self, address, binary, opcode, fills, ind):
-        '''Fill in an opcode data value
-
-        Different processors might override this for their own special needs. The 
-        "binary_to_string" defers to this method.
-
-        Args:
-            address (int): the address of the opcode
-            binary (list): the binary data for the opcode
-            opcode (Opcode): the Opcode
-            fills (dict): dictionary of fill-in values (add to this)
-            two_bytes (list): list of two-byte fill-in values (add to this)
-            ind (int): bytes index of the fill-in (binary and opcode)
-
-        '''
-        # Find/make the fill-in entry
-        spec = opcode.code[ind]
-        if spec[0] not in fills:
-            fills[spec[0]] = {'sub_value': '$00', 'visual_size': 3}
-            entry = fills[spec[0]]
-            ov = 0
-        else:
-            entry = fills[spec[0]]
-            ov = int(entry['sub_value'][1:], 16)
-
-        # New numeric value
-        val = binary[ind]
-        if spec[1] == 'm':
-            val = val * 256
-            entry['visual_size'] = 5
-        val += ov
-
-        # New substitution string
-        fs = '${:0' + str(entry['visual_size'] - 1) + 'X}'
-        entry['sub_value'] = fs.format(val)
 
     def get_field_spacing(self):
         '''Return the field spacing for disassembly
 
         Returns:
             dict: spacing for parts of disassembly
-
         '''
         return {
             'address_size': 4,  # Number of digits
@@ -179,6 +143,17 @@ class CPU:
         }
 
     def binary_to_string(self, opcode: Opcode, address: int, binary: list, fills: dict):
+        '''Make a disassembly string from the given info
+
+        Args:
+            opcode (Opcode): the opcode
+            address (int): the address of the opcode
+            binary (list): the opcode data
+            fills (dict): the opcode fill-in information
+
+        Returns:
+            The complete disassembly string        
+        '''
 
         # Spacing for the disassembly fields
         spa = self.get_field_spacing()
@@ -216,13 +191,75 @@ class CPU:
 
         return base
 
-    def get_mnemonic_fills(self, opcode: Opcode, address: int, binary: list):
-        '''
+    def _binary_to_string_fill(self, address: int, binary: list, opcode: Opcode, fills: dict, ind: int):
+        '''Fill in an opcode data value
+
+        Different processors might override this for their own special needs. The 
+        "binary_to_string" defers to this method.
+
+        Entries are added to fills for example:
             'p' : {
-                'sub_value' : '$1024', # The actual value (string or int)
-                'visual_size' : 4      #  Number of printed characters in sub (might include HTML)
+                'sub_value' : '$1024', # The actual value (string)
+                'visual_size' : 5      # Number of printed characters in sub (might include HTML)
+                'numeric_value' : 0    # Actual numeric value 
             }
+
+        Args:
+            address (int): the address of the opcode
+            binary (list): the binary data for the opcode
+            opcode (Opcode): the Opcode
+            fills (dict): dictionary of fill-in values (add to this)            
+            ind (int): bytes index of the fill-in (binary and opcode)
+
         '''
+        # Find/make the fill-in entry
+        spec = opcode.code[ind]
+        if spec[0] not in fills:
+            fills[spec[0]] = {'sub_value': '$00', 'visual_size': 3, 'numeric_value': 0}
+            entry = fills[spec[0]]
+        else:
+            entry = fills[spec[0]]
+
+        ov = entry['numeric_value']
+
+        # New numeric value
+        val = binary[ind]
+        if spec[1] == 'm':
+            val = val * 256
+            entry['visual_size'] = 5
+        val += ov
+        entry['numeric_value'] = val
+
+        # New substitution string
+        fs = '${:0' + str(entry['visual_size'] - 1) + 'X}'
+
+        if spec[0] == 'r':
+            # One byte relative (from start of next instruction)
+            fa = address + len(opcode.code)
+            fa = fa + (val - 256)
+            entry['relative_target'] = fa
+            val = fa
+        elif spec[0] == 's':
+            # Two byte relative (from start of next instruction)
+            fa = address + len(opcode.code)
+            fa = fa + (val - 65536)
+            entry['relative_target'] = fa
+            val = fa
+
+        entry['sub_value'] = fs.format(val)
+
+    def get_mnemonic_fills(self, opcode: Opcode, address: int, binary: list):
+        '''Get all the fill-in information for a given opcode
+
+        Args:
+            opcode (Opcode): the opcode
+            address (int): the address of the opcode
+            binary (list): the binary data for the opcode
+
+        Returns:
+            dict: all the fill ins
+        '''
+
         code = opcode.code
         fills = {}
         for i in range(len(binary)):
@@ -234,7 +271,7 @@ class CPU:
         return fills
 
     def find_opcodes_for_binary(self, binary: list, start: int=0, end: int=-1, exact: bool=False)->list:
-        '''Find the opcode that matches the binary (a disassembly operation)
+        '''Find the opcodes that matches the binary (a disassembly operation)
 
         Args:
             binary (list[int]): the bytes to disassemble
@@ -250,8 +287,6 @@ class CPU:
         possible = self._quick_codes[binary[0]]
 
         ret = []
-
-        # TODO: handle relative jumps
 
         for oc in possible:
             if exact and len(oc.code) != (end - start):
