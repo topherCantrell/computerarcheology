@@ -23,7 +23,7 @@ class Assembler:
 
         This method also recurses into include files.
 
-        The information on a line like is:
+        The information about a line looks like is:
         {
             'file_name': 'test.asm',
             'line_number' : 4
@@ -84,7 +84,17 @@ class Assembler:
                 ret.append(line)
         return ret
 
-    def _process_data_term(self, line, pass_number, cur_term):
+    def process_data_term(self, line, pass_number: int, cur_term: str):
+        '''Process a numerical value
+
+        Args:
+            line: the code line
+            pass_number: 0 or 1
+            cur_term: the term to parse
+        Returns:
+            List: a list of bytes (first-pass return all 0s)
+
+        '''
         is_word = False
         if(cur_term.startswith('word ')):
             is_word = True
@@ -95,7 +105,6 @@ class Assembler:
 
         if cur_term[0] >= '0' and cur_term[0] <= '9':
             cur_term = cur_term.replace('_', '')
-            cur_term = cur_term.replace('.', '0')
 
         if pass_number == 0:
             if is_word:
@@ -108,7 +117,15 @@ class Assembler:
             else:
                 return [self.parse_numeric(cur_term)]
 
-    def process_directive_data(self, line, pass_number):
+    def process_directive_data(self, line, pass_number: int):
+        '''Process a data directive
+
+        Creates the data list for a data-directive command
+
+        Args:
+            line : the code line
+            pass_number : 0 or 1
+        '''
 
         line['data'] = []
 
@@ -131,7 +148,7 @@ class Assembler:
                 elif c == ',':
                     cur_term = cur_term.strip()
                     if cur_term:
-                        dtt = self._process_data_term(line, pass_number, cur_term)
+                        dtt = self.process_data_term(line, pass_number, cur_term)
                         for d in dtt:
                             line['data'].append(d)
                     cur_term = ''
@@ -143,38 +160,66 @@ class Assembler:
 
         cur_term = cur_term.strip()
         if cur_term:
-            dtt = self._process_data_term(line, pass_number, cur_term)
+            dtt = self.process_data_term(line, pass_number, cur_term)
             for d in dtt:
                 line['data'].append(d)
 
-    def parse_numeric(self, s):
+    def parse_numeric(self, s: str):
+        '''Parse a numeric expression
+
+        Uses the python eval to evalutate expressions,
+
+        Args:
+            s (str): the expression
+
+        Returns:
+            The evaluation value
+        '''
         z = {**self.labels, **self.defines}
         v = eval(s, None, z)
         return v
 
-    def process_define(self, line, pass_number):
+    def process_define(self, line, pass_number: int):
+        '''Process a define
+
+        Defines are of the form .VAR = VALUE. This method adds to the
+        growing list of defines.
+
+        Args:
+            line : the code line
+            pass_number (int): 0 or 1
+
+        '''
 
         n = line['text']
         i = n.index('=')
         v = n[i + 1:].strip()
         n = n[1:i].strip()
         if pass_number == 2 and (n in self.labels or n in self.defines):
+            # Second pass ... handle multiply-defined errors
             raise ASMException('Multiply defined: ' + n, line)
         if n.startswith('_'):
+            # Handle configs
             self.process_config_define(n, v)
         else:
+            # Must be a numeric expression
             v = self.parse_numeric(v)
             self.defines[n] = v
 
-    def process_config_define(self, key, value):
+    def process_config_define(self, key: str, value: str):
+        '''Process config defines
+
+        Config defines are of the form ._VAR = VALUE.
+        '''
         if key == '_CPU':
             self.cpu = CPU.get_cpu(value)
+            if not self.cpu._opcodes[0].frags:
+                self.cpu.make_frags()
         self.defines[key] = value
 
-    def process_directive_data(self, line, pass_number):
-        pass
-
     def assemble(self):
+        '''Two-pass assembly
+        '''
 
         for pass_number in range(2):
 
@@ -186,8 +231,10 @@ class Assembler:
 
                 if n.startswith('.'):
                     # Define (key = value)
-                    if '=' in n:
-                        # TODO could be a string with an "=" in it
+                    i = n.find('"')  # In case the right side is a string, which might have '=' in it.
+                    if i < 0:
+                        i = len(n)
+                    if n.find('=') < i:
                         self.process_define(line, pass_number)
 
                     # Data (list of bytes/words)
@@ -220,11 +267,10 @@ class Assembler:
                     if not self.cpu:
                         raise ASMException('No CPU defined', line)
                     # Opcode
-                    op = self.cpu.find_opcode(n, self)
+                    op = self.cpu.find_opcode_for_text(n, self)
                     if not op:
                         raise ASMException('Unknown opcode: ' + n, line)
-                    line['data'] = self.cpu.fill_in_opcode(
-                        self, address, op, pass_number)
+                    line['data'] = self.cpu.fill_in_opcode(self, address, op, pass_number)
 
                 if 'data' in line:
                     address = address + len(line['data'])

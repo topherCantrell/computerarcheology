@@ -7,6 +7,7 @@ class Opcode():
 
     def __init__(self, info: dict):
         self.cpu = None
+        self.frags = None  # For assembly
         self.info = info
         self.mnemonic = info['mnem']
         self.bus = info['bus']
