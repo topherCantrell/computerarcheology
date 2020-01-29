@@ -10,9 +10,18 @@ for op in CPU.OPCODES:
         
     c = op['code']
     
-    b = op['bus']
+    if 'bus' in op:
+        b = op['bus']
+    elif 'use' in op:
+        b = op['use']  
+        
+    b = '"'+b+'",'
+    b = b.ljust(10)
+    
+    c = '"'+c+'",'
+    c=c.ljust(20)
     
     m = '"'+m+'",'
     m = m.ljust(20)
         
-    print('{"mnemonic":'+m+'},')
+    print('{"mnemonic":'+m+'"code":'+c+    '"use":'+b+   '},')
