@@ -1,4 +1,4 @@
-import cpu.cpu_common
+import cpu.base_cpu
 
 OPCODES = [
     {"mnem": "LDY #w", "code": "108Ewmwl", "bus": ""},
@@ -508,7 +508,7 @@ POSTS = [
 # TODO: LDA $FF00,PC ; PC relative
 
 
-class CPU_6809(cpu.cpu_common.CPU):
+class CPU_6809(cpu.base_cpu.CPU):
 
     def __init__(self):
 

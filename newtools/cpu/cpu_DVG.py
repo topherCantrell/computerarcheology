@@ -1,4 +1,4 @@
-import cpu.cpu_common
+import cpu.base_cpu
 
 OPCODES = [
     {"mnem": "VEC SCALE=0, BRI=b, X=x, Y=y",
@@ -37,10 +37,10 @@ OPCODES = [
         "details": "h is upper bit of c, g is lower bit", "bus": ""}
 ]
 
-import cpu.cpu_common
+import cpu.base_cpu
 
 
-class CPU_DVG(cpu.cpu_common.CPU):
+class CPU_DVG(cpu.base_cpu.CPU):
 
     def __init__(self):
         self._opcodes = []

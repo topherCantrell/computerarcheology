@@ -1,4 +1,4 @@
-import cpu.cpu_common
+import cpu.base_cpu
 
 OPCODES = [
     {"mnem": "LD (t),SP", "code": "08tltm", "bus": "w"},
@@ -556,7 +556,7 @@ OPCODES = [
 ]
 
 
-class CPU_Z80GB(cpu.cpu_common.CPU):
+class CPU_Z80GB(cpu.base_cpu.CPU):
 
     def __init__(self):
         super().__init__(OPCODES)

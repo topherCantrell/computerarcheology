@@ -1,4 +1,4 @@
-import cpu.cpu_common
+import cpu.base_cpu
 
 OPCODES = [
     {"mnem": "NOP", "code": "01", "bus": ""},
@@ -229,7 +229,7 @@ OPCODES = [
 ]
 
 
-class CPU_6803(cpu.cpu_common.CPU):
+class CPU_6803(cpu.base_cpu.CPU):
 
     def __init__(self):
         super().__init__(OPCODES)

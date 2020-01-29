@@ -1,4 +1,4 @@
-import cpu.cpu_common
+import cpu.base_cpu
 
 # http://www.keil.com/support/man/docs/is51/is51_opcodes.htm
 
@@ -261,7 +261,7 @@ OPCODES = [
 ]
 
 
-class CPU_8052(cpu.cpu_common.CPU):
+class CPU_8052(cpu.base_cpu.CPU):
 
     def __init__(self):
         super().__init__(OPCODES)
