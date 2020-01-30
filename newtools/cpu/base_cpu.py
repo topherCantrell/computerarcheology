@@ -20,7 +20,7 @@
   
   The "use" field describes how the substitutions are used:
     - const (an immediate constant)
-    - ram   (address is a regular read/write memory access)
+    - data  (address is a regular read/write memory access)
     - code  (address is a code destination for jumps)
     - port  (address is a port read/write memory access)
     
