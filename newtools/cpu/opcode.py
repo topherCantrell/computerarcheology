@@ -9,8 +9,7 @@ class Opcode():
         self.cpu = None
         self.frags = None  # For assembly
         self.info = info
-        self.mnemonic = info['mnemonic']
-        self.bus = info['use']
+        self.mnemonic = info['mnemonic']        
         self.code = []
         code = info['code']
         for i in range(0, len(code), 2):
@@ -19,3 +18,10 @@ class Opcode():
                 self.code.append(frag)
             else:
                 self.code.append(int(frag, 16))
+        self.use = {}
+        use = info['use']
+        if use:
+            use = use.split(',')
+            for u in use:
+                i = u.index('=')
+                self.use[u[:i].strip()]=u[i+1:].strip()

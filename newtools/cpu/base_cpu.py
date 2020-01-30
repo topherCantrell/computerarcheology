@@ -95,3 +95,4 @@ class CPU(cpu.base_assembly.BaseAssembly, cpu.base_disassembly.BaseDisassembly):
             Opcode: factoried opcode
         '''
         return Opcode(info)
+    
