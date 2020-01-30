@@ -16,7 +16,7 @@ for op in CPU.OPCODES:
         b = op['use']  
         
     b = '"'+b+'",'
-    b = b.ljust(10)
+    b = b.ljust(28)
     
     c = '"'+c+'",'
     c=c.ljust(20)
