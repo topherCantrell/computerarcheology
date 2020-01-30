@@ -9,8 +9,8 @@ class Opcode():
         self.cpu = None
         self.frags = None  # For assembly
         self.info = info
-        self.mnemonic = info['mnem']
-        self.bus = info['bus']
+        self.mnemonic = info['mnemonic']
+        self.bus = info['use']
         self.code = []
         code = info['code']
         for i in range(0, len(code), 2):

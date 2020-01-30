@@ -1,5 +1,6 @@
 
-import cpu.cpu_8052 as CPU
+#import cpu.cpu_8052 as CPU
+import cpu.cpu_6502 as CPU
 
 
 for op in CPU.OPCODES:
@@ -16,7 +17,7 @@ for op in CPU.OPCODES:
         b = op['use']  
         
     b = '"'+b+'",'
-    b = b.ljust(28)
+    b = b.ljust(16)
     
     c = '"'+c+'",'
     c=c.ljust(20)
@@ -24,4 +25,4 @@ for op in CPU.OPCODES:
     m = '"'+m+'",'
     m = m.ljust(20)
         
-    print('{"mnemonic":'+m+'"code":'+c+    '"use":'+b+   '},')
+    print('    {"mnemonic":'+m+'"code":'+c+    '"use":'+b+   '},')
