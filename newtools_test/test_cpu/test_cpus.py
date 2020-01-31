@@ -13,14 +13,14 @@ class Test_CPUs(unittest.TestCase):
         cp = cpu.cpu_manager.get_cpu_by_name('6803')
         self.assertTrue(cp != None)
 
-        #cp = cpu.cpu_manager.get_cpu_by_name('6809')
-        #self.assertTrue(cp != None)
+        cp = cpu.cpu_manager.get_cpu_by_name('6809')
+        self.assertTrue(cp != None)
 
         cp = cpu.cpu_manager.get_cpu_by_name('8052')
         self.assertTrue(cp != None)
 
-        #cp = cpu.cpu_manager.get_cpu_by_name('DVG')
-        #self.assertTrue(cp != None)
+        cp = cpu.cpu_manager.get_cpu_by_name('DVG')
+        self.assertTrue(cp != None)
 
         #cp = cpu.cpu_manager.get_cpu_by_name('Z80')
         #self.assertTrue(cp != None)
@@ -50,7 +50,11 @@ class Test_CPUs(unittest.TestCase):
         self.opcode_fillin_sanity(cp)
         cp = cpu.cpu_manager.get_cpu_by_name('6803')
         self.opcode_fillin_sanity(cp)
+        cp = cpu.cpu_manager.get_cpu_by_name('6809')
+        self.opcode_fillin_sanity(cp)
         cp = cpu.cpu_manager.get_cpu_by_name('8052')
+        self.opcode_fillin_sanity(cp)
+        cp = cpu.cpu_manager.get_cpu_by_name('DVG')
         self.opcode_fillin_sanity(cp)
         
         
