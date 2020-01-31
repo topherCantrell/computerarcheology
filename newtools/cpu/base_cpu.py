@@ -39,6 +39,11 @@
     _puls  Register list (pull from S)
     _pshu  Register list (push to U)
     _pulu  Register list (pull from U)
+    _bp    BasePage *
+    
+    * The 6809 has a BP register (not always 00). Thus address 0010 and address >10 could be different.
+    Other processors have shortcuts for 1 byte addresses, but the upper byte is always 00 such
+    that 0010 and >10 are the same.
   
   Qualifiers - 8051 specific  
     _bit  Bit address
