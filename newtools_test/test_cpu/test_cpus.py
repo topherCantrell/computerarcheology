@@ -22,11 +22,11 @@ class Test_CPUs(unittest.TestCase):
         cp = cpu.cpu_manager.get_cpu_by_name('DVG')
         self.assertTrue(cp != None)
 
-        #cp = cpu.cpu_manager.get_cpu_by_name('Z80')
-        #self.assertTrue(cp != None)
+        cp = cpu.cpu_manager.get_cpu_by_name('Z80')
+        self.assertTrue(cp != None)
 
-        #cp = cpu.cpu_manager.get_cpu_by_name('Z80GB')
-        #self.assertTrue(cp != None)
+        cp = cpu.cpu_manager.get_cpu_by_name('Z80GB')
+        self.assertTrue(cp != None)
         
     def opcode_fillin_sanity(self,cp):        
         for op in cp._opcodes:
@@ -42,7 +42,7 @@ class Test_CPUs(unittest.TestCase):
                 continue                
             self.assertTrue(len(lets),len(bs))
             for let in lets:
-                #print('##',let,'##',bs)
+                #print('##',let,'##',bs,'##',op.mnemonic)
                 self.assertTrue(let in bs)
                 
     def test_opcode_sanity(self):
@@ -55,6 +55,10 @@ class Test_CPUs(unittest.TestCase):
         cp = cpu.cpu_manager.get_cpu_by_name('8052')
         self.opcode_fillin_sanity(cp)
         cp = cpu.cpu_manager.get_cpu_by_name('DVG')
+        self.opcode_fillin_sanity(cp)
+        cp = cpu.cpu_manager.get_cpu_by_name('Z80')
+        self.opcode_fillin_sanity(cp)
+        cp = cpu.cpu_manager.get_cpu_by_name('Z80GB')
         self.opcode_fillin_sanity(cp)
         
         

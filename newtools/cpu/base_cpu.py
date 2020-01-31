@@ -18,6 +18,8 @@
   Multibyte substitutions list the order of the bytes. 0 is the least significant, 1 is next, and so on.
   A little-endian address would be: a0a1
   
+  TODO: this "use" about picking a set of labels to search for matches
+  
   The "use" field describes how the substitutions are used:
     - const (an immediate constant)
     - data  (address is a regular read/write memory access)

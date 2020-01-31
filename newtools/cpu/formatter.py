@@ -2,9 +2,10 @@
 #import cpu.cpu_8052 as CPU
 #import cpu.cpu_6502 as CPU
 #import cpu.cpu_6803 as CPU
-import cpu.cpu_6809 as CPU
+#import cpu.cpu_6809 as CPU
+#import cpu.cpu_Z80 as CPU
+import cpu.cpu_Z80GB as CPU
 
-"""
 for op in CPU.OPCODES:
     if 'mnem' in op:
         m = op['mnem']
@@ -26,27 +27,7 @@ for op in CPU.OPCODES:
     
     m = '"'+m+'",'
     m = m.ljust(20)
-    """
+    
         
-    #print('    {"mnemonic":'+m+'"code":'+c+    '"use":'+b+   '},')
+    print('    {"mnemonic":'+m+'"code":'+c+    '"use":'+b+   '},')
 
-
-for op in CPU.POSTS:
-    m = op['post']        
-    c = op['code']
-    
-    if 'use' in op:
-        b = op['use']
-    else:
-        b = ''  
-        
-    b = '"'+b+'",'
-    b = b.ljust(16)
-    
-    c = '"'+c+'",'
-    c=c.ljust(20)
-    
-    m = '"'+m+'",'
-    m = m.ljust(20)
-        
-    print('    {"post":'+m+'"code":'+c+    '"use":'+b+   '},')
