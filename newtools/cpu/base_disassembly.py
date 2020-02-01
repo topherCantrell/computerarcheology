@@ -100,7 +100,7 @@ class BaseDisassembly:
 
         # New numeric value
         val = binary[ind]
-        if spec[1] == 'm':
+        if spec[1] == '1':
             val = val * 256
             entry['visual_size'] = 5
         val += ov

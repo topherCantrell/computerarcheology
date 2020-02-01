@@ -60,16 +60,15 @@ class Test_CPUs(unittest.TestCase):
         self.opcode_fillin_sanity(cp)
         cp = cpu.cpu_manager.get_cpu_by_name('Z80GB')
         self.opcode_fillin_sanity(cp)
-        
-        
 
-    """
+    
     def test_disassembly(self):
 
         cp = cpu.cpu_manager.get_cpu_by_name('6809')
         opc = cp.find_opcodes_for_binary([0x10, 0xA3, 0x9D, 1, 2])
         self.assertTrue(len(opc) == 1)
-        self.assertTrue(opc[0].mnemonic == 'CMPD [k,PC]')
+        opc = opc[0]
+        self.assertTrue(opc.mnemonic == 'CMPD [k,PC]')    
 
     def test_binary_to_string(self):
 
@@ -79,7 +78,9 @@ class Test_CPUs(unittest.TestCase):
         opc = cp.find_opcodes_for_binary(binary)[0]
 
         fills = cp.get_mnemonic_fills(opc, 0x1000, binary)
-        out = cp.binary_to_string(opc, 0x1000, binary, fills)
+        out = cp.binary_to_string(opc, 0x1000, binary, fills)        
+                
+        self.assertTrue(out.strip()=='1000: 10 A3 9D 01 02  CMPD    [$1107,PC]')   
 
     def test_one_byte_relative(self):
 
@@ -89,6 +90,7 @@ class Test_CPUs(unittest.TestCase):
         fills = cp.get_mnemonic_fills(opc, 0xC050, binary)
 
         out = cp.binary_to_string(opc, 0xC050, binary, fills)    
+        self.assertTrue(out.strip()=='C050: 26 F9           BNE     $C04B')
 
     def test_two_byte_relative(self):
 
@@ -98,5 +100,6 @@ class Test_CPUs(unittest.TestCase):
         fills = cp.get_mnemonic_fills(opc, 0xC174, binary)
 
         out = cp.binary_to_string(opc, 0xC174, binary, fills)
-    """
+        self.assertTrue(out.strip()=='C174: 10 26 DE AF     LBNE    $A027')
+    
 
