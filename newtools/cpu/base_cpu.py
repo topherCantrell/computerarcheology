@@ -32,6 +32,10 @@
     - _rw The adress is read and written back to
 
   The _pcr qualifier indicates the actual address is relative to the program counter.
+  
+  Size:
+    - _s1 The substitution is 1 byte (default if not given)
+    - _s2 The substitution is 2 byte 
    
   Some processors have their own substitution qualifiers.
   

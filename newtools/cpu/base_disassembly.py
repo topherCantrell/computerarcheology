@@ -109,7 +109,10 @@ class BaseDisassembly:
         # New substitution string
         fs = '${:0' + str(entry['visual_size'] - 1) + 'X}'
 
-        if spec[0] == 'r':
+        if '_pcr' in opcode.use[spec[0]]:
+            
+            print(opcode.use)
+            
             # One byte relative (from start of next instruction)
             fa = address + len(opcode.code)
             fa = fa + (val - 256)
