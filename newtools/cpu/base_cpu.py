@@ -33,7 +33,7 @@
 
   The _pcr qualifier indicates the actual address is relative to the program counter.
   
-  Size:
+  Size (calculated):
     - _s1 The substitution is 1 byte (default if not given)
     - _s2 The substitution is 2 byte 
    

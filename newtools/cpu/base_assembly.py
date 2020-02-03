@@ -92,7 +92,7 @@ class BaseAssembly:
 
         # Ignorable whitespace
         nmatch = self.remove_unneeded_whitespace(text)
-
+        
         ret = []
         for op in self._opcodes:
             frags = op.frags

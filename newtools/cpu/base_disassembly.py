@@ -69,6 +69,8 @@ class BaseDisassembly:
 
     def binary_to_string_fill(self, address: int, binary: list, opcode: Opcode, fills: dict, ind: int):
         '''Fill in an opcode data value
+        
+        # TODO: clunky with the multi-byte values.
 
         Different processors might override this for their own special needs. The 
         "binary_to_string" defers to this method.
@@ -107,24 +109,27 @@ class BaseDisassembly:
         entry['numeric_value'] = val
 
         # New substitution string
-        fs = '${:0' + str(entry['visual_size'] - 1) + 'X}'
+        fs = '${:0' + str(entry['visual_size'] - 1) + 'X}'        
 
-        if '_pcr' in opcode.use[spec[0]]:
-            
-            print(opcode.use)
-            
-            # One byte relative (from start of next instruction)
-            fa = address + len(opcode.code)
-            fa = fa + (val - 256)
+        if 'pcr' in opcode.use[spec[0]]:
+            if 's1' in opcode.use[spec[0]]:
+                # One byte relative (from start of next instruction)
+                fa = address + len(opcode.code)
+                if val<0x80:
+                    fa = fa + val
+                else:
+                    fa = fa + (val - 256)                
+            else:
+                # TODO: support for more than s1,s2
+                # Two byte relative (from start of next instruction)
+                fa = address + len(opcode.code)
+                if val<0x8000:
+                    fa = fa + val
+                else:
+                    fa = fa + (val - 65536)
             entry['relative_target'] = fa
             val = fa
-        elif spec[0] == 's':
-            # Two byte relative (from start of next instruction)
-            fa = address + len(opcode.code)
-            fa = fa + (val - 65536)
-            entry['relative_target'] = fa
-            val = fa
-
+        
         entry['sub_value'] = fs.format(val)
 
     def get_mnemonic_fills(self, opcode: Opcode, address: int, binary: list):

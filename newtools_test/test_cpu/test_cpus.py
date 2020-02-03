@@ -80,6 +80,7 @@ class Test_CPUs(unittest.TestCase):
         fills = cp.get_mnemonic_fills(opc, 0x1000, binary)
         out = cp.binary_to_string(opc, 0x1000, binary, fills)        
                 
+        print('##',out)
         self.assertTrue(out.strip()=='1000: 10 A3 9D 01 02  CMPD    [$1107,PC]')   
 
     def test_one_byte_relative(self):

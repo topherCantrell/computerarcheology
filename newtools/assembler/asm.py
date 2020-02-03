@@ -1,6 +1,6 @@
 import os
 
-from cpu.cpu_common import CPU
+from cpu.base_cpu import CPU
 
 
 class ASMException(Exception):
@@ -213,6 +213,7 @@ class Assembler:
         '''
         if key == '_CPU':
             self.cpu = CPU.get_cpu(value)
+            self.cpu.init_assembly()
             if not self.cpu._opcodes[0].frags:
                 self.cpu.make_frags()
         self.defines[key] = value
