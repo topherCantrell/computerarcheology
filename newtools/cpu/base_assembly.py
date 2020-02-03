@@ -1,3 +1,5 @@
+class AssemblyException(Exception):
+    pass
 
 class BaseAssembly:
 
@@ -15,7 +17,7 @@ class BaseAssembly:
 
         for op in self._opcodes:
             txt = op.mnemonic
-            txt = self.remove_unneeded_whitespace(txt)
+            txt = self.remove_unneeded_whitespace(txt)            
             op.frags = ['']
             for i in range(len(txt)):
                 c = txt[i]
@@ -68,6 +70,8 @@ class BaseAssembly:
             if self.is_space_needed(match, i):
                 nmatch = nmatch + c
         return nmatch
+    
+    NON_SUB_CHARS = '@#$~!?[]{}|' # Add as needed
 
     def find_opcode_for_text(self, text: str, assembler):
         '''Find the one opcode that matches this line of text
@@ -91,67 +95,66 @@ class BaseAssembly:
             size_override = 0
 
         # Ignorable whitespace
-        nmatch = self.remove_unneeded_whitespace(text)
+        nmatch = self.remove_unneeded_whitespace(text)                
         
-        ret = []
+        possibles = []
+        shortest_frag = 10000
         for op in self._opcodes:
-            frags = op.frags
-            if len(frags) == 1:
-                if frags[0] == nmatch.upper():
-                    ret.append([op, None])
-            elif len(frags) == 2:
-                if nmatch.upper().startswith(frags[0]) and len(nmatch) > len(frags[0]):
-                    ret.append([op, nmatch[len(frags[0]):]])
-            elif len(frags) == 3:
-                if nmatch.upper().startswith(frags[0]) and nmatch.upper().endswith(frags[2]):
-                    ret.append([op, nmatch[len(frags[0]):-len(frags[2])]])
-
-        if not ret:
-            return []
-
-        if len(ret) == 1:
-            return ret[0]
-
-        num_small = 1000
-        num_large = 0
-        for r in ret:
-            x = len(r[0].frags)
-            if x < num_small:
-                num_small = x
-            if x > num_large:
-                num_large = x
-
-        # if num_small is 1, it means we have an exact match -- use that
-        # otherwise use the match with the largest fragments
-        if num_small == 1:
-            num_large = num_small
-
-        for x in range(len(ret) - 1, -1, -1):
-            if len(ret[x][0].frags) != num_large:
-                del ret[x]
-
-        if len(ret) == 1:
-            return ret[0]
-
-        if len(ret) == 2 and ret[0][0].frags[0] == ret[1][0].frags[0]:
-            if size_override == 0:
-                try:
-                    val = assembler.parse_numeric(ret[0][1])
-                except:
-                    val = 256
-                if val < 256:
-                    size_override = 1
+            remain = nmatch
+            for fi in range(len(op.frags)):
+                if not remain:
+                    # We've reached the end of the test
+                    # '' means match, None means no match
+                    break
+                # Next fragment of the opcode being tested
+                frag = op.frags[fi]            
+                if not frag[0].islower():
+                    if remain.startswith(frag):
+                        # This is a static fragment ... just peel it off
+                        remain = remain[len(frag):]
+                    else:
+                        # This is a static fragment that doesn't match
+                        remain = None # This opcode can't match
                 else:
-                    size_override = 2
-            if size_override == 1:
-                if len(ret[0][0].code) < len(ret[1][0].code):
-                    return ret[0]
-                else:
-                    return ret[1]
-            elif size_override == 2:
-                if len(ret[0][0].code) > len(ret[1][0].code):
-                    return ret[0]
-                else:
-                    return ret[1]
-
-        return []
+                    # This is a substitution
+                    if fi==len(op.frags)-1:
+                        # This is the last fragment ... match the rest of the line
+                        i = len(remain)
+                    else:                        
+                        # Find the next fragment
+                        i = remain.find(op.frags[fi+1])
+                    if i>=0:
+                        term = remain[:i]                        
+                        remain = remain[i:]
+                        for c in self.NON_SUB_CHARS:
+                            # These characters can't be in substitution parameters
+                            if c in term:
+                                remain = None
+                                break                                           
+                    else:                
+                        remain = None
+            if remain != None:
+                # This opcode is a potential ... add it to the list
+                possibles.append(op)
+                if len(op.frags)<shortest_frag:
+                    shortest_frag = len(op.frags)
+        
+        # Rule out all but the most exact matches
+        for i in range(len(possibles)-1,-1,-1):
+            if len(possibles[i].frags)!=shortest_frag:
+                del possibles[i]
+                
+        if not possibles:
+            # Not found
+            return None
+        
+        if len(possibles)>1:
+            # Multiple found
+            for pos in possibles:
+                print(pos.frags)
+            raise AssemblyException('Multiple Matches')
+            # TODO: size override can narrow down the list maybe look for first frag matching maybe pick the smallest if not specified
+        
+        # Exactly one found
+        return possibles[0]        
+       

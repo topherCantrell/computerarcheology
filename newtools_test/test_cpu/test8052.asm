@@ -3,5 +3,6 @@
 
 0x0000:
 
-     MOV  A , #10     ; Put 10 in the accumulator
+    JMP    @A+DPTR
+    MOV    A , #10     ; Put 10 in the accumulator
 
