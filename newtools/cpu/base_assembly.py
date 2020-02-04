@@ -29,28 +29,13 @@ class BaseAssembly:
                 else:
                     op.frags[-1] = op.frags[-1] + c
 
-    def is_space_needed(self, text: str, pos: int):
-        '''Return true if the target character in the string is needed.
-
-        Args:
-            text (str): the string
-            pos (int): position in the string
-        Returns:
-            boolean: True if the character is needed or False if not
-
-
-        Only whitespace can be not-needed. Spaces between letters and numbers is always needed.
-        The rest can go.
-        '''
-        if text[pos] != ' ':
-            # Just in case
-            return True
-        if (text[pos - 1].isalpha() or text[pos - 1].isdigit()) and (text[pos + 1].isalpha() or text[pos + 1].isdigit()):
-            return True
-        return False
-
     def remove_unneeded_whitespace(self, text: str):
         '''Remove unneeded whitespace from a string
+        
+        Opcodes are generally of the form:
+            LDA  (p,X)
+        Usually just one space (the first space) in the whole thing. We remove
+        all others.
 
         Args:
             text (str): the string
@@ -58,23 +43,32 @@ class BaseAssembly:
         Returns:
             str: the processed string
         '''
-        match = text
-        while True:
-            g = match.replace('  ', ' ')
-            if g == match:
-                break
-            match = g
-        nmatch = ''
-        for i in range(len(match)):
-            c = match[i]
-            if self.is_space_needed(match, i):
-                nmatch = nmatch + c
-        return nmatch
+        
+        i = text.find(' ')
+        if i>=0:
+            ret = text[0:i+1]+text[i+1:].replace(' ','')
+        else:
+            ret = text.replace(' ','')
+            
+        return ret.strip()
+        
+        #match = text
+        #while True:
+        #    g = match.replace('  ', ' ')
+        #    if g == match:
+        #        break
+        #    match = g
+        #nmatch = ''
+        #for i in range(len(match)):
+        #    c = match[i]
+        #    if self.is_space_needed(match, i):
+        #        nmatch = nmatch + c
+        #return nmatch
     
     NON_SUB_CHARS = '@#$~!?[]{}|' # Add as needed
 
     def find_opcode_for_text(self, text: str, assembler):
-        '''Find the one opcode that matches this line of text
+        '''Find the one opcode that best matches this line of text
 
         Args:
             text (str): the line of code
@@ -83,16 +77,6 @@ class BaseAssembly:
         Returns:
             Opcode: the requested opcode (or None)
         '''
-
-        # Addressing mode overrides
-        if '>' in text:
-            size_override = 2
-            text = text.replace('>', '')
-        elif '<' in text:
-            size_override = 1
-            text = text.replace('<', '')
-        else:
-            size_override = 0
 
         # Ignorable whitespace
         nmatch = self.remove_unneeded_whitespace(text)                
@@ -143,18 +127,31 @@ class BaseAssembly:
         for i in range(len(possibles)-1,-1,-1):
             if len(possibles[i].frags)!=shortest_frag:
                 del possibles[i]
-                
-        if not possibles:
+        
+        n = len(possibles)
+                        
+        if n==0:
             # Not found
             return None
         
-        if len(possibles)>1:
-            # Multiple found
-            for pos in possibles:
-                print(pos.frags)
-            raise AssemblyException('Multiple Matches')
-            # TODO: size override can narrow down the list maybe look for first frag matching maybe pick the smallest if not specified
+        if n==1:
+            return possibles[0]                
         
-        # Exactly one found
-        return possibles[0]        
+        # Multiple found. Try and pick one.
+        
+        if n==2 and possibles[0].frags[0]==possibles[1].frags[0]:
+            # Special, common case where we can override the addressing mode
+            sz = 's2'            
+            if '_default_base_page' in assembler.defines and assembler.defines['_default_base_page']=='true':
+                sz = 's1'
+            if '>' in text:
+                sz = 's2'
+            elif '<' in text:
+                sz = 's1'
+            for op in possibles:
+                for u in op.use:
+                    if sz in op.use[u]:
+                        return op
+        
+        raise AssemblyException('Multiple Matches')
        
