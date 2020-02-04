@@ -1,6 +1,6 @@
 import os
 
-from cpu.base_cpu import CPU
+import cpu.cpu_manager
 
 
 class ASMException(Exception):
@@ -105,6 +105,7 @@ class Assembler:
 
         if cur_term[0] >= '0' and cur_term[0] <= '9':
             cur_term = cur_term.replace('_', '')
+            cur_term = cur_term.replace('.','0')
 
         if pass_number == 0:
             if is_word:
@@ -192,6 +193,7 @@ class Assembler:
         '''
 
         n = line['text']
+        #print('##',n)
         i = n.index('=')
         v = n[i + 1:].strip()
         n = n[1:i].strip()
@@ -212,7 +214,7 @@ class Assembler:
         Config defines are of the form ._VAR = VALUE.
         '''
         if key == '_CPU':
-            self.cpu = CPU.get_cpu(value)
+            self.cpu = cpu.cpu_manager.get_cpu_by_name(value)
             self.cpu.init_assembly()
             if not self.cpu._opcodes[0].frags:
                 self.cpu.make_frags()
@@ -235,7 +237,8 @@ class Assembler:
                     i = n.find('"')  # In case the right side is a string, which might have '=' in it.
                     if i < 0:
                         i = len(n)
-                    if n.find('=') < i:
+                    j = n.find('=')
+                    if j < i and j>=0:
                         self.process_define(line, pass_number)
 
                     # Data (list of bytes/words)
@@ -271,10 +274,65 @@ class Assembler:
                     op = self.cpu.find_opcode_for_text(n, self)
                     if not op:
                         raise ASMException('Unknown opcode: ' + n, line)
-                    line['data'] = self.cpu.fill_in_opcode(self, address, op, pass_number)
+                    
+                    line['data'] = [1,2,3,4]
+                    
+                    # TODO: here
+                    #line['data'] = self.cpu.fill_in_opcode(self, address, op, pass_number)
 
                 if 'data' in line:
                     address = address + len(line['data'])
+
+    def write_listing(self, fname):
+        with open(fname, 'w') as f:
+            f.write('#### Labels\n')
+            keys = self.labels.keys()
+            keys = sorted(keys)
+            for label in keys:
+                f.write('{:16} = 0x{:04X}\n'.format(label, self.labels[label]))
+            f.write('\n')
+            f.write('#### Defines\n')
+            keys = self.defines.keys()
+            keys = sorted(keys)
+            for define in keys:
+                v = self.defines[define]
+                if isinstance(v, str):
+                    f.write('{:16} = {}\n'.format(define, v))
+                else:
+                    f.write('{:16} = 0x{:04X}\n'.format(define, v))
+            f.write('\n')
+
+            for line in self.lines:
+                addr = ''
+                if 'address' in line:
+                    addr = '{:04X}:'.format(line['address'])
+                data = ''
+                if 'data' in line:
+                    for d in line['data']:
+                        data = data + '{:02X} '.format(d)
+                data = data.strip()
+                txt = line['text']
+                if 'original_text' in line:
+                    txt = line['original_text']
+                f.write('{} {:16} {}\n'.format(addr, data, txt))
+
+    def write_binary(self, name):        
+        for line in self.lines:
+            if 'address' in line:
+                org = line['address']            
+                break
+                
+        with open(name, 'wb') as f:
+            for line in self.lines:
+                if 'data' in line and line['data']:
+                    new_org = line['address']
+                    if new_org<org:
+                        raise Exception('Origin problems')
+                    while org<new_org:
+                        f.write(bytearray([0xFF]))
+                        org = org + 1
+                    f.write(bytearray(line['data']))
+                    org = org + len(bytearray(line['data']))
 
 
 if __name__ == '__main__':

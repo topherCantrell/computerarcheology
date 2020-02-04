@@ -107,3 +107,8 @@ class CPU(cpu.base_assembly.BaseAssembly, cpu.base_disassembly.BaseDisassembly):
         '''
         return Opcode(info)
     
+    def make_word(self,term):
+        # Little Endian in the base class
+        a = term & 0xFF
+        b = (term >> 8)&0xFF
+        return [a,b]
