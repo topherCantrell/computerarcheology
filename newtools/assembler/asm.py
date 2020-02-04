@@ -273,12 +273,10 @@ class Assembler:
                     # Opcode
                     op = self.cpu.find_opcode_for_text(n, self)
                     if not op:
-                        raise ASMException('Unknown opcode: ' + n, line)
-                    
-                    line['data'] = [1,2,3,4]
-                    
+                        raise ASMException('Unknown opcode: ' + n, line)                    
+                                        
                     # TODO: here
-                    #line['data'] = self.cpu.fill_in_opcode(self, address, op, pass_number)
+                    line['data'] = self.cpu.fill_in_opcode(n, self, address, op, pass_number)
 
                 if 'data' in line:
                     address = address + len(line['data'])
