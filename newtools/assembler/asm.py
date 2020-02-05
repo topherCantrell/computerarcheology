@@ -176,6 +176,9 @@ class Assembler:
         Returns:
             The evaluation value
         '''
+        # TODO: I don't like this here. We need to parse these out while selecting opcodes.
+        s = s.replace('>','')
+        s = s.replace('<','')
         z = {**self.labels, **self.defines}
         v = eval(s, None, z)
         return v

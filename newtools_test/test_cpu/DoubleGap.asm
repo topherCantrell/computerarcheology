@@ -1,5 +1,4 @@
 ._CPU = 6502
-._default_base_page = true
 
 ; Hardware definitions
 .include stella.asm

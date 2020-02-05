@@ -134,12 +134,14 @@ class BaseAssembly:
             return (possibles[0],possibles_info[0])                
         
         # Multiple found. Try and pick one.
-        
+                
         if n==2 and possibles[0].frags[0]==possibles[1].frags[0]:
             # Special, common case where we can override the addressing mode
+            # The mode might be forced with "<" or ">"
+            # If not, we might have the address defined. If so, pick based on value.
             sz = 's2'            
-            if '_default_base_page' in assembler.defines and assembler.defines['_default_base_page']=='true':
-                sz = 's1'
+            #if '_default_base_page' in assembler.defines and assembler.defines['_default_base_page']=='true':
+            #    sz = 's1'
             if '>' in text:
                 sz = 's2'
             elif '<' in text:
@@ -152,16 +154,25 @@ class BaseAssembly:
         
         raise AssemblyException('Multiple Matches')
     
-    def fill_in_opcode(self, text, asm, address, op, pass_number):        
+    def fill_in_opcode(self, text, asm, address, op, pass_number):      
+        opcode = op[0]
+        info = op[1]  
         if pass_number == 0:            
-            return [0] * len(op[0].code)
-        else:
+            return [0] * len(opcode.code)
+        else:            
+            for key in info:
+                val = asm.parse_numeric(str(info[key]))
+                info[key] = [info[key],val]                
             ret = []
-            for c in op[0].code:
+            for c in opcode.code:
                 if isinstance(c,str):
-                    # TODO: fill in magic
-                    print('##',text,op[1])
-                    ret.append(0x99)
+                    numval = info[c[0]][1]
+                    # TODO: PCR
+                    if c[1]=='1':
+                        ret.append((numval>>8)&0xFF)
+                    else:
+                        ret.append((numval&0xFF))                    
+                    #print('##',text,info,opcode.use)                    
                 else:
                     ret.append(c)
             return ret
