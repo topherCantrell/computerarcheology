@@ -36,7 +36,7 @@
 .MUSBIND   = 167
 .MUSBVOL   = 168
 
-F000:
+0xF000:
 main:
     SEI                       ; Turn off interrupts
     CLD                       ; Clear the "decimal" flag
@@ -1188,7 +1188,7 @@ DIGITS:
      .byte 0b__........
      .byte 0b__........
 
-F7FA:
+0xF7FA:
 	 ; 6502 vectors
      .word main
      .word main  ; Reset vector (top of program)
