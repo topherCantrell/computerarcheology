@@ -32,11 +32,11 @@ class BaseAssembly:
     def remove_unneeded_whitespace(self, text: str):
         '''Remove unneeded whitespace from a string
         
-        Opcodes are generally of the form:
+        ASSUMPTION: All opcodes are of the form
             LDA  (p,X)
-        Usually just one space (the first space) in the whole thing. We remove
-        all others.
-
+        There are at most TWO terms separated by whitespace. All other whitespace
+        can be removed.
+        
         Args:
             text (str): the string
 
