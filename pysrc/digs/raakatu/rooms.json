@@ -1,0 +1,1445 @@
+
+[
+
+  {
+    "name": "Small room granite walls",
+    "description": "YOU ARE IN A SMALL ROOM WITH GRANITE WALLS AND FLOOR. THERE IS A SMALL OPENING TO THE EAST AND A LARGE HOLE IN THE CEILING.",
+    "user_input_handler": [
+      "switch", "compare_input_to", 
+        "EAST * * *", 
+          ["move_ACTIVE_and_look", "Oriental rug"]              
+    ]
+  },
+  
+  {
+    "name": "Oriental rug",
+    "description": "YOU ARE IN A LARGE RECTANGULAR ROOM. ON THE FLOOR OF THE EAST SIDE OF THE ROOM IS AN INTRICATE ORIENTAL RUG STRETCHING BETWEEN THE NORTH AND SOUTH WALLS. IN THE EAST WALL IS A HUGE CARVED WOODEN DOOR. TO THE SOUTH, A SMALL HOLE LEADS TO A DARK PASSAGE WAY.",
+    "user_input_handler": [
+      "switch", "compare_input_to", 
+        "WEST * * *",    
+          ["move_ACTIVE_and_look","small room granite walls"],
+        "SOUTH * * *",   
+          ["move_ACTIVE_and_look","Dark passage"],
+        "EAST * * *", 
+          ["while_pass",           
+            ["is_ACTIVE_this(object)","PLAYER",
+            "function(DeathByHiddenRugSpike)",
+            "function(ResetGame)"]
+          ]              
+      ]           
+  },
+  
+  {
+    "name": "Dark passage",
+    "description": "YOU ARE IN A DARK PASSAGE WAY WHICH SLOPES UP AND TO THE SOUTH.",
+    "user_input_handler": [      
+      "switch", "compare_input_to",
+        "NORTH * * *",
+          ["move_ACTIVE_and_look","Oriental rug"],            
+        "SOUTH * * *",
+          ["move_ACTIVE_and_look","Top of a passage"]
+    ]         
+  },
+  
+  {
+    "name": "Top of a passage",
+    "description": "YOU ARE AT THE TOP OF A PASSAGE WHICH SLOPES DOWN AND TO THE NORTH. THERE IS A CORRIDOR TO THE EAST AND ANOTHER TO THE WEST.",
+    "user_input_handler": [
+      "switch", "compare_input_to",
+        "NORTH * * *",
+          ["move_ACTIVE_and_look","Dark passage"],
+        "WEST * * *",
+          ["move_ACTIVE_and_look","Small room"],
+        "EAST * * *",
+          ["move_ACTIVE_and_look","T-shaped room 1"]          
+    ]
+  },
+  
+  {
+    "name": "T-shaped room 1",
+    "description": "THIS IS A T SHAPED ROOM WITH EXITS EAST, SOUTH, AND WEST.",
+    "user_input_handler": [
+      "switch", "compare_input_to",
+        "WEST * * *",
+            ["move_ACTIVE_and_look","Top of a passage"],
+        "SOUTH * * *",
+            ["move_ACTIVE_and_look","Gray stone walls 1"],
+          "EAST * * *", 
+            ["while_pass",
+              ["move_ACTIVE_and_look","Triangular room",
+              "-- The ACTIVE object could be lots of things. For the player, we reset the game anyway. For anything else, we just ignore the statue (thus the reverse) --",
+              "execute_and_reverse_status", "while_pass",
+                  ["is_ACTIVE_this(object)","PLAYER",
+                 "is_in_pack_or_current_room(object)","STATUE",
+                 "function(DeathByStatue)"]
+              ]
+            ]
+    ]
+  },
+  
+  {
+    "name": "Gray stone walls 1",
+    "description": "YOU ARE IN A ROOM WITH GRAY STONE WALLS. PASSAGES LEAD NORTH AND EAST.",
+    "user_input_handler": [
+      "switch","compare_input_to",
+        "NORTH * * *",
+            ["move_ACTIVE_and_look","T-shaped room 1"],
+        "EAST * * *",
+            ["move_ACTIVE_and_look","Round room high walls 1"]
+    ]
+  },
+  
+  
+  
+  
+  
+  
+  {
+    "name": "Round room high walls 1",
+    "description": "THIS IS A ROUND ROOM WITH HIGH WALLS. THE ONLY OPENING IS TO THE WEST.",
+    "user_input_handler": [
+      "switch", "compare_input_to",
+        "GET ..C..... * *",
+            ["while_pass:",              
+                ["is_first_noun(object)","RING",
+                "move_ACTIVE(room)","Round room high walls 2",
+                "fail()"
+                ]
+            ],
+        "WEST * * *",
+            ["move_ACTIVE_and_look","Gray stone walls 1"]
+    ]    
+  },
+  
+  
+  
+  
+  {
+    "name": "Triangular room",
+    "description": "YOU ARE IN A TRIANGULAR ROOM WITH OPENINGS IN THE EAST AND WEST CORNERS. THERE IS A STATUE IN THE SOUTH CORNER WITH BOW AND ARROW.",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "WEST * * *",
+            [
+              "while_fail:",
+              [
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "is_ACTIVE_this(object)",
+                      "PLAYER"
+                    ],
+                    [
+                      "is_in_pack_or_current_room(object)",
+                      "STATUE"
+                    ],
+                    [
+                      "function(DeathByStatue)"
+                    ]
+                  ]
+                ],
+                [
+                  "move_ACTIVE_and_look(room='T-shaped room 1')"
+                ]
+              ]
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "EAST * * *",
+            [
+              "while_fail:",
+              [
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "is_ACTIVE_this(object)",
+                      "PLAYER"
+                    ],
+                    [
+                      "is_in_pack_or_current_room(object)",
+                      "STATUE"
+                    ],
+                    [
+                      "function(DeathByStatue)"
+                    ]
+                  ]
+                ],
+                [
+                  "move_ACTIVE_and_look(room='South end central hall')"
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "South end central hall",
+    "description": "YOU ARE AT THE SOUTH END OF THE GREAT CENTRAL HALLWAY. EXITS EXIST IN THE EAST AND WEST WALLS.",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "WEST * * *",
+            [
+              "while_pass:",
+              [
+                [
+                  "move_ACTIVE_and_look(room='Triangular room')"
+                ],
+                [
+                  "execute_and_reverse_status:"
+                ],
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "is_ACTIVE_this(object)",
+                      "PLAYER"
+                    ],
+                    [
+                      "is_in_pack_or_current_room(object)",
+                      "STATUE"
+                    ],
+                    [
+                      "function(DeathByStatue)"
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "NORTH * * *",
+            [
+              "move_ACTIVE_and_look(room='North end central hall')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "EAST * * *",
+            [
+              "move_ACTIVE_and_look(room='T-shaped room 2')"
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "T-shaped room 2",
+    "description": "THIS IS A T SHAPED ROOM WITH EXITS EAST, SOUTH, AND WEST.",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "WEST * * *",
+            [
+              "move_ACTIVE_and_look(room='South end central hall')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "SOUTH * * *",
+            [
+              "move_ACTIVE_and_look(room='Grey stone walls 2')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "EAST * * *",
+            [
+              "move_ACTIVE_and_look(room='Petite chamber')"
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "Grey stone walls 2",
+    "description": "YOU ARE IN A ROOM WITH GREY STONE WALLS. PASSAGES LEAD NORTH AND EAST.",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "NORTH * * *",
+            [
+              "move_ACTIVE_and_look(room='T-shaped room 2')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "EAST * * *",
+            [
+              "move_ACTIVE_and_look(room='Round room high walls 2')"
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "Round room high walls 2",
+    "description": "THIS IS A ROUND ROOM WITH HIGH WALLS. THE ONLY OPENING IS TO THE WEST.",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "GET ..C..... * *",
+            [
+              "while_pass:",
+              [
+                [
+                  "is_first_noun(object)",
+                  "RING"
+                ],
+                [
+                  "move_ACTIVE(room)",
+                  "Round room high walls 1"
+                ],
+                [
+                  "fail()"
+                ]
+              ]
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "WEST * * *",
+            [
+              "move_ACTIVE_and_look(room='Grey stone walls 2')"
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "Petite chamber",
+    "description": "YOU ARE IN A PETITE CHAMBER. THERE IS A LARGER ROOM TO THE NORTH AND A PASSAGE TO THE WEST.",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "WEST * * *",
+            [
+              "move_ACTIVE_and_look(room='T-shaped room 2')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "NORTH * * *",
+            [
+              "move_ACTIVE_and_look(room='Smells of decaying flesh')"
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "Smells of decaying flesh",
+    "description": "YOU ARE IN A LARGE ROOM WHICH SMELLS OF DECAYING FLESH. THERE ARE EXITS NORTH AND SOUTH.",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "SOUTH * * *",
+            [
+              "move_ACTIVE_and_look(room='Petite chamber')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "NORTH * * *",
+            [
+              "while_fail:",
+              [
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "is_in_pack_or_current_room(object)",
+                      "GARGOY"
+                    ],
+                    [
+                      "is_ACTIVE_this(object)",
+                      "PLAYER"
+                    ],
+                    [
+                      "print(msg)",
+                      "THE GARGOYLE BLOCKS THE WAY NORTH."
+                    ]
+                  ]
+                ],
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "is_ACTIVE_this(object)",
+                      "PLAYER"
+                    ],
+                    [
+                      "is_in_pack_or_current_room(object)",
+                      "GARGOY"
+                    ],
+                    [
+                      "move_to(object,room)",
+                      "Room_00"
+                    ],
+                    [
+                      "move_to(object,room)",
+                      "Smells of decaying flesh"
+                    ],
+                    [
+                      "print(msg)",
+                      "THE GARGOYLE COMES TO LIFE AND JUMPS DOWN TO BLOCK YOUR WAY!"
+                    ]
+                  ]
+                ],
+                [
+                  "move_ACTIVE_and_look(room='Tall room')"
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "Tall room",
+    "description": "THIS IS A TALL ROOM CARVED OF STONE WITH A SINGLE EXIT TO THE SOUTH. ",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "SOUTH * * *",
+            [
+              "move_ACTIVE_and_look(room='Smells of decaying flesh')"
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "North end central hall",
+    "description": "YOU ARE AT THE NORTH END OF THE GREAT CENTRAL HALLWAY. EXITS EXIST IN THE EAST AND WEST WALLS. THERE IS A DOOR ON THE NORTH WALL.",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "SOUTH * * *",
+            [
+              "move_ACTIVE_and_look(room='South end central hall')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "EAST * * *",
+            [
+              "move_ACTIVE_and_look(room='Very small room')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "NORTH * * *",
+            [
+              "while_fail:",
+              [
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "is_in_pack_or_current_room(object)",
+                      "DOOR"
+                    ],
+                    [
+                      "print(msg)",
+                      "THE DOOR BLOCKS PASSAGE."
+                    ]
+                  ]
+                ],
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "move_ACTIVE_and_look(room='Vault')"
+                    ],
+                    [
+                      "move_to(object,room)",
+                      "Vault"
+                    ],
+                    [
+                      "print(msg)",
+                      "THE DOOR CLOSES BEHIND YOU."
+                    ],
+                    [
+                      "move_to(object,room)",
+                      "Room_00"
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "WEST * * *",
+            [
+              "move_ACTIVE_and_look(room='Entrance long dark tunnel west')"
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "Vault",
+    "description": "YOU ARE IN A VAULT WITH A LARGE DOOR TO THE SOUTH. ",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "SOUTH * * *",
+            [
+              "while_fail:",
+              [
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "is_in_pack_or_current_room(object)",
+                      "DOOR"
+                    ],
+                    [
+                      "print(msg)",
+                      "THE DOOR IS SHUT. "
+                    ]
+                  ]
+                ],
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "move_ACTIVE_and_look(room='North end central hall')"
+                    ],
+                    [
+                      "move_to(object,room)",
+                      "North end central hall"
+                    ],
+                    [
+                      "print(msg)",
+                      "THE DOOR CLOSES AGAIN."
+                    ],
+                    [
+                      "move_to(object,room)",
+                      "Room_00"
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "OPEN u....... * *",
+            [
+              "while_fail:",
+              [
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "is_first_noun(object)",
+                      "DOOR"
+                    ],
+                    [
+                      "print(msg)",
+                      "ITS ALREADY OPEN. "
+                    ]
+                  ]
+                ],
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "is_first_noun(object)",
+                      "DOOR"
+                    ],
+                    [
+                      "move_to(object,room)",
+                      "Vault"
+                    ],
+                    [
+                      "move_to(object,room)",
+                      "Room_00"
+                    ],
+                    [
+                      "print(msg)",
+                      "SCRUUUUUNG THE DOOR OPENS. "
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "Entrance long dark tunnel west",
+    "description": "YOU ARE AT THE ENTRANCE TO A LONG DARK TUNNEL WHICH LEADS WEST. THERE IS A PASSAGE EAST.",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "EAST * * *",
+            [
+              "move_ACTIVE_and_look(room='North end central hall')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "WEST * * *",
+            [
+              "move_ACTIVE_and_look(room='Dark tunnel')"
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "Dark tunnel",
+    "description": "YOU ARE IN THE DARK TUNNEL.",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "EAST * * *",
+            [
+              "move_ACTIVE_and_look(room='Entrance long dark tunnel west')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "WEST * * *",
+            [
+              "move_ACTIVE_and_look(room='Entrance long dark tunnel east')"
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "Entrance long dark tunnel east",
+    "description": "YOU ARE AT THE ENTRANCE TO A LONG DARK TUNNEL WHICH LEADS EAST. THERE IS A PASSAGE WEST.",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "EAST * * *",
+            [
+              "move_ACTIVE_and_look(room='Dark tunnel')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "WEST * * *",
+            [
+              "while_fail:",
+              [
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "is_ACTIVE_this(object)",
+                      "PLAYER"
+                    ],
+                    [
+                      "is_located(room,object)",
+                      "Room_00",
+                      "SERPEN"
+                    ],
+                    [
+                      "move_to(object,room)",
+                      "Large room"
+                    ],
+                    [
+                      "fail()"
+                    ]
+                  ]
+                ],
+                [
+                  "move_ACTIVE_and_look(room='Large room')"
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "Large room",
+    "description": "YOU ARE IN A LARGE ROOM WITH A SINGLE EXIT EAST.",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "CLIMB * IN *",
+            [
+              "function(EnterSecretPassage)"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "CLIMB u....... * *",
+            [
+              "function(EnterSecretPassage)"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "EAST * * *",
+            [
+              "move_ACTIVE_and_look(room='Entrance long dark tunnel east')"
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "Dense dark damp jungle",
+    "description": "YOU ARE IN A DENSE DARK DAMP JUNGLE.",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "NORTH * * *",
+            [
+              "move_ACTIVE_and_look(room='Dense damp dark jungle')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "SOUTH * * *",
+            [
+              "move_ACTIVE_and_look(room='Damp dark dense jungle')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "WEST * * *",
+            [
+              "move_ACTIVE_and_look(room='Dark dense damp jungle')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "EAST * * *",
+            [
+              "move_ACTIVE_and_look(room='Damp dark dense jungle')"
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "Dark dense damp jungle",
+    "description": "YOU ARE IN A DARK DENSE DAMP JUNGLE.",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "NORTH * * *",
+            [
+              "move_ACTIVE_and_look(room='Dark damp dense jungle')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "SOUTH * * *",
+            [
+              "move_ACTIVE_and_look(room='Dense dark damp jungle')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "EAST * * *",
+            [
+              "move_ACTIVE_and_look(room='Dense damp dark jungle')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "WEST * * *",
+            [
+              "move_ACTIVE_and_look(room='See east wall')"
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "See east wall",
+    "description": "THROUGH THE JUNGLE YOU SEE THE EAST WALL OF A GREAT TEMPLE. ",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "NORTH * * *",
+            [
+              "move_ACTIVE_and_look(room='See north wall')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "SOUTH * * *",
+            [
+              "move_ACTIVE_and_look(room='Stands south wall')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "EAST * * *",
+            [
+              "move_ACTIVE_and_look(room='Dark dense damp jungle')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "WEST * * *",
+            [
+              "move_ACTIVE_and_look(room='At east wall')"
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "Stands south wall",
+    "description": "IN A CLEARING BEFORE YOU STANDS THE SOUTH WALL OF A GREAT TEMPLE. ",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "NORTH * * *",
+            [
+              "move_ACTIVE_and_look(room='At south wall')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "SOUTH * * *",
+            [
+              "move_ACTIVE_and_look(room='Dense dark damp jungle')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "EAST * * *",
+            [
+              "move_ACTIVE_and_look(room='See east wall')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "WEST * * *",
+            [
+              "move_ACTIVE_and_look(room='See bronze gates')"
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "See bronze gates",
+    "description": "THROUGH THE DENSE UNDERGROWTH, YOU CAN SEE THE GREAT BRONZE GATES ON THE WEST WALL OF THE TEMPLE.",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "NORTH * * *",
+            [
+              "move_ACTIVE_and_look(room='See north wall')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "SOUTH * * *",
+            [
+              "move_ACTIVE_and_look(room='Stands south wall')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "EAST * * *",
+            [
+              "move_ACTIVE_and_look(room='Standing west entrance')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "WEST * * *",
+            [
+              "move_ACTIVE_and_look(room='Damp dark dense jungle')"
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "See north wall",
+    "description": "THROUGH A GAP IN THE JUNGLE YOU CAN SEE THE NORTH WALL OF A MAGNIFICENT TEMPLE.",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "NORTH * * *",
+            [
+              "move_ACTIVE_and_look(room='Dark damp dense jungle')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "SOUTH * * *",
+            [
+              "move_ACTIVE_and_look(room='At north wall')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "WEST * * *",
+            [
+              "move_ACTIVE_and_look(room='See bronze gates')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "EAST * * *",
+            [
+              "move_ACTIVE_and_look(room='See east wall')"
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "Standing west entrance",
+    "description": "YOU ARE STANDING BEFORE THE WEST ENTRANCE OF THE TEMPLE. ",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "NORTH * * *",
+            [
+              "move_ACTIVE_and_look(room='At north wall')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "SOUTH * * *",
+            [
+              "move_ACTIVE_and_look(room='At south wall')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "WEST * * *",
+            [
+              "move_ACTIVE_and_look(room='See bronze gates')"
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "At north wall",
+    "description": "YOU ARE AT THE NORTH WALL. ",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "NORTH * * *",
+            [
+              "move_ACTIVE_and_look(room='See north wall')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "EAST * * *",
+            [
+              "move_ACTIVE_and_look(room='At east wall')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "CLIMB u....... * *",
+            [
+              "while_pass:",
+              [
+                [
+                  "is_first_noun(object)",
+                  "VINE"
+                ],
+                [
+                  "while_fail:",
+                  [
+                    [
+                      "while_pass:",
+                      [
+                        [
+                          "is_less_equal_last_random(value)",
+                          127
+                        ],
+                        [
+                          "print(msg)",
+                          "YOU CLIMB TO THE ROOF.  AS YOU STEP ON THE ROOF, IT COLLAPSES. "
+                        ],
+                        [
+                          "move_to(object,room)",
+                          "Room_00"
+                        ],
+                        [
+                          "move_to(object,room)",
+                          "Room_FF"
+                        ],
+                        [
+                          "move_to(object,room)",
+                          "Room_FF"
+                        ],
+                        [
+                          "move_to(object,room)",
+                          "Room_FF"
+                        ],
+                        [
+                          "move_to(object,room)",
+                          "Room_FF"
+                        ],
+                        [
+                          "move_to(object,room)",
+                          "Room_FF"
+                        ],
+                        [
+                          "move_to(object,room)",
+                          "Room_FF"
+                        ],
+                        [
+                          "move_to(object,room)",
+                          "Room_FF"
+                        ],
+                        [
+                          "move_to(object,room)",
+                          "Room_FF"
+                        ],
+                        [
+                          "move_to(object,room)",
+                          "Room_FF"
+                        ],
+                        [
+                          "move_to(object,room)",
+                          "Room_FF"
+                        ],
+                        [
+                          "move_to(object,room)",
+                          "Room_00"
+                        ],
+                        [
+                          "move_ACTIVE_and_look(room='Small room granite walls')"
+                        ]
+                      ]
+                    ],
+                    [
+                      "print(msg)",
+                      "AS YOU CLIMB, THE VINE GIVES WAY AND YOU FALL TO THE GROUND."
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "WEST * * *",
+            [
+              "move_ACTIVE_and_look(room='Standing west entrance')"
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "At east wall",
+    "description": "YOU ARE AT THE EAST WALL.",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "NORTH * * *",
+            [
+              "move_ACTIVE_and_look(room='At north wall')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "SOUTH * * *",
+            [
+              "move_ACTIVE_and_look(room='At south wall')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "EAST * * *",
+            [
+              "move_ACTIVE_and_look(room='See east wall')"
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "At south wall",
+    "description": "YOU ARE AT THE SOUTH WALL. ",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "WEST * * *",
+            [
+              "move_ACTIVE_and_look(room='Standing west entrance')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "EAST * * *",
+            [
+              "move_ACTIVE_and_look(room='At east wall')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "SOUTH * * *",
+            [
+              "move_ACTIVE_and_look(room='Stands south wall')"
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "Very small room",
+    "description": "YOU ARE IN A VERY SMALL ROOM. ",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "WEST * * *",
+            [
+              "move_ACTIVE_and_look(room='North end central hall')"
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "Small room",
+    "description": "YOU ARE IN A SMALL ROOM WITH A SINGLE EXIT EAST.",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "EAST * * *",
+            [
+              "move_ACTIVE_and_look(room='Top of a passage')"
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "Dark damp dense jungle",
+    "description": "YOU ARE IN A DARK DAMP DENSE JUNGLE.",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "EAST * * *",
+            [
+              "move_ACTIVE_and_look(room='Damp dark dense jungle')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "NORTH * * *",
+            [
+              "move_ACTIVE_and_look(room='Dense dark damp jungle')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "SOUTH * * *",
+            [
+              "move_ACTIVE_and_look(room='Dense damp dark jungle')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "WEST * * *",
+            [
+              "move_ACTIVE_and_look(room='Dark dense damp jungle')"
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "Dense damp dark jungle",
+    "description": "YOU ARE IN A DENSE DAMP DARK JUNGLE.",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "EAST * * *",
+            [
+              "move_ACTIVE_and_look(room='Damp dark dense jungle')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "NORTH * * *",
+            [
+              "move_ACTIVE_and_look(room='Dark damp dense jungle')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "SOUTH * * *",
+            [
+              "move_ACTIVE_and_look(room='Dense dark damp jungle')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "WEST * * *",
+            [
+              "move_ACTIVE_and_look(room='Dark dense damp jungle')"
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "Damp dark dense jungle",
+    "description": "YOU ARE IN A DAMP DARK DENSE JUNGLE.",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "EAST * * *",
+            [
+              "move_ACTIVE_and_look(room='Dense damp dark jungle')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "NORTH * * *",
+            [
+              "move_ACTIVE_and_look(room='Dark damp dense jungle')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "SOUTH * * *",
+            [
+              "move_ACTIVE_and_look(room='Dense dark damp jungle')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "WEST * * *",
+            [
+              "move_ACTIVE_and_look(room='Dense damp dark jungle')"
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "Secret passage",
+    "description": "YOU ARE IN THE SECRET PASSAGE WHICH LEADS EAST. ",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "EAST * * *",
+            [
+              "move_ACTIVE_and_look(room='End of the passage')"
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "End of the passage",
+    "description": "YOU ARE AT THE END OF THE PASSAGE. THERE IS A HOLE IN THE CEILING.",
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "WEST * * *",
+            [
+              "move_ACTIVE_and_look(room='Secret passage')"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "CLIMB u....... * *",
+            [
+              "while_pass:",
+              [
+                [
+                  "is_first_noun(object)",
+                  "HOLE"
+                ],
+                [
+                  "function(SealUpHole)"
+                ]
+              ]
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "CLIMB * IN *",
+            [
+              "while_pass:",
+              [
+                [
+                  "is_first_noun(object)",
+                  "HOLE"
+                ],
+                [
+                  "function(SealUpHole)"
+                ]
+              ]
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "CLIMB * OUT *",
+            [
+              "while_pass:",
+              [
+                [
+                  "is_first_noun(object)",
+                  "HOLE"
+                ],
+                [
+                  "function(SealUpHole)"
+                ]
+              ]
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "??? Phrase 33 not found",
+            [
+              "function(SealUpHole)"
+            ]
+          ]
+        ]
+      ]
+    ]
+  }
+]

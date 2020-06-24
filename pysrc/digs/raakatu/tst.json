@@ -1,0 +1,10 @@
+{
+    "name": "Small room granite walls",
+    "description": "YOU ARE IN A SMALL ROOM WITH GRANITE WALLS AND FLOOR. THERE IS A SMALL OPENING TO THE EAST AND A LARGE HOLE IN THE CEILING.",
+    "user_input_handler": [      
+        "switch", "compare_input_to(phrase)", [
+        	"EAST * * *", "move_ACTIVE_and_look(room='Oriental rug')"
+        ]     
+    ]
+    
+}
