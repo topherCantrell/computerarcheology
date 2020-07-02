@@ -1,0 +1,589 @@
+[
+  {
+    "type": "ignores",
+    "words": []
+  },
+  {
+    "type": "verbs",
+    "words": [
+      {
+        "word": "READ",
+        "id": 1
+      },
+      {
+        "word": "GET",
+        "id": 9
+      },
+      {
+        "word": "THROW",
+        "id": 3
+      },
+      {
+        "word": "ATTACK",
+        "id": 4
+      },
+      {
+        "word": "KILL",
+        "id": 4
+      },
+      {
+        "word": "HIT",
+        "id": 4
+      },
+      {
+        "word": "DESTRO",
+        "id": 4
+      },
+      {
+        "word": "NORTH",
+        "id": 5
+      },
+      {
+        "word": "N",
+        "id": 5
+      },
+      {
+        "word": "SOUTH",
+        "id": 6
+      },
+      {
+        "word": "S",
+        "id": 6
+      },
+      {
+        "word": "EAST",
+        "id": 7
+      },
+      {
+        "word": "E",
+        "id": 7
+      },
+      {
+        "word": "WEST",
+        "id": 8
+      },
+      {
+        "word": "W",
+        "id": 8
+      },
+      {
+        "word": "TAKE",
+        "id": 9
+      },
+      {
+        "word": "CARRY",
+        "id": 9
+      },
+      {
+        "word": "DROP",
+        "id": 10
+      },
+      {
+        "word": "PUT",
+        "id": 10
+      },
+      {
+        "word": "INVENT",
+        "id": 11
+      },
+      {
+        "word": "LOOK",
+        "id": 12
+      },
+      {
+        "word": "GIVE",
+        "id": 13
+      },
+      {
+        "word": "OFFER",
+        "id": 13
+      },
+      {
+        "word": "EXAMIN",
+        "id": 14
+      },
+      {
+        "word": "DESCRI",
+        "id": 14
+      },
+      {
+        "word": "SEARCH",
+        "id": 14
+      },
+      {
+        "word": "OPEN",
+        "id": 15
+      },
+      {
+        "word": "PULL",
+        "id": 16
+      },
+      {
+        "word": "LIGHT",
+        "id": 17
+      },
+      {
+        "word": "BURN",
+        "id": 17
+      },
+      {
+        "word": "IGNITE",
+        "id": 17
+      },
+      {
+        "word": "EAT",
+        "id": 18
+      },
+      {
+        "word": "TASTE",
+        "id": 18
+      },
+      {
+        "word": "BLOW",
+        "id": 19
+      },
+      {
+        "word": "EXTING",
+        "id": 20
+      },
+      {
+        "word": "CLIMB",
+        "id": 21
+      },
+      {
+        "word": "ASCEND",
+        "id": 21
+      },
+      {
+        "word": "DESCEN",
+        "id": 21
+      },
+      {
+        "word": "RUB",
+        "id": 22
+      },
+      {
+        "word": "WIPE",
+        "id": 22
+      },
+      {
+        "word": "POLISH",
+        "id": 22
+      },
+      {
+        "word": "DIAGNO",
+        "id": 23
+      },
+      {
+        "word": "FIND",
+        "id": 26
+      },
+      {
+        "word": "LIFT",
+        "id": 28
+      },
+      {
+        "word": "STEP",
+        "id": 29
+      },
+      {
+        "word": "WAIT",
+        "id": 31
+      },
+      {
+        "word": "STAY",
+        "id": 31
+      },
+      {
+        "word": "JUMP",
+        "id": 32
+      },
+      {
+        "word": "GO",
+        "id": 33
+      },
+      {
+        "word": "RUN",
+        "id": 33
+      },
+      {
+        "word": "LEFT",
+        "id": 33
+      },
+      {
+        "word": "RIGHT",
+        "id": 33
+      },
+      {
+        "word": "ENTER",
+        "id": 33
+      },
+      {
+        "word": "PUSH",
+        "id": 16
+      },
+      {
+        "word": "MOVE",
+        "id": 16
+      },
+      {
+        "word": "KICK",
+        "id": 35
+      },
+      {
+        "word": "FEED",
+        "id": 36
+      },
+      {
+        "word": "DRINK",
+        "id": 37
+      },
+      {
+        "word": "USE",
+        "id": 38
+      },
+      {
+        "word": "SAY",
+        "id": 39
+      },
+      {
+        "word": "SCORE",
+        "id": 40
+      },
+      {
+        "word": "POUR",
+        "id": 41
+      },
+      {
+        "word": "FILL",
+        "id": 42
+      },
+      {
+        "word": "SCREAM",
+        "id": 43
+      },
+      {
+        "word": "YELL",
+        "id": 43
+      },
+      {
+        "word": "QUIT",
+        "id": 45
+      },
+      {
+        "word": "STOP",
+        "id": 45
+      },
+      {
+        "word": "YES",
+        "id": 47
+      },
+      {
+        "word": "NO",
+        "id": 48
+      },
+      {
+        "word": "PLUGH",
+        "id": 50
+      },
+      {
+        "word": "LEAVE",
+        "id": 44
+      },
+      {
+        "word": "PICK",
+        "id": 52
+      },
+      {
+        "word": "LOAD",
+        "id": 54
+      },
+      {
+        "word": "SAVE",
+        "id": 55
+      }
+    ]
+  },
+  {
+    "type": "nouns",
+    "words": [
+      {
+        "word": "BOTTLE",
+        "id": 1
+      },
+      {
+        "word": "POTION",
+        "id": 3
+      },
+      {
+        "word": "RUG",
+        "id": 6
+      },
+      {
+        "word": "DOOR",
+        "id": 9
+      },
+      {
+        "word": "FOOD",
+        "id": 12
+      },
+      {
+        "word": "STATUE",
+        "id": 13
+      },
+      {
+        "word": "SWORD",
+        "id": 14
+      },
+      {
+        "word": "GARGOY",
+        "id": 15
+      },
+      {
+        "word": "RING",
+        "id": 18
+      },
+      {
+        "word": "GEM",
+        "id": 19
+      },
+      {
+        "word": "LEVER",
+        "id": 22
+      },
+      {
+        "word": "PLAQUE",
+        "id": 24
+      },
+      {
+        "word": "RUNES",
+        "id": 24
+      },
+      {
+        "word": "SIGN",
+        "id": 24
+      },
+      {
+        "word": "MESSAG",
+        "id": 24
+      },
+      {
+        "word": "CANDLE",
+        "id": 25
+      },
+      {
+        "word": "LAMP",
+        "id": 27
+      },
+      {
+        "word": "CHOPST",
+        "id": 30
+      },
+      {
+        "word": "HAND",
+        "id": 31
+      },
+      {
+        "word": "HANDS",
+        "id": 31
+      },
+      {
+        "word": "COIN",
+        "id": 32
+      },
+      {
+        "word": "SLOT",
+        "id": 33
+      },
+      {
+        "word": "ALTAR",
+        "id": 34
+      },
+      {
+        "word": "IDOL",
+        "id": 35
+      },
+      {
+        "word": "SERPEN",
+        "id": 36
+      },
+      {
+        "word": "SNAKE",
+        "id": 36
+      },
+      {
+        "word": "WALL",
+        "id": 37
+      },
+      {
+        "word": "WALLS",
+        "id": 37
+      },
+      {
+        "word": "VINE",
+        "id": 38
+      },
+      {
+        "word": "VINES",
+        "id": 38
+      },
+      {
+        "word": "GATE",
+        "id": 39
+      },
+      {
+        "word": "GATES",
+        "id": 39
+      },
+      {
+        "word": "GUARD",
+        "id": 40
+      },
+      {
+        "word": "GUARDS",
+        "id": 40
+      },
+      {
+        "word": "ROOM",
+        "id": 42
+      },
+      {
+        "word": "FLOOR",
+        "id": 43
+      },
+      {
+        "word": "EXIT",
+        "id": 44
+      },
+      {
+        "word": "PASSAG",
+        "id": 45
+      },
+      {
+        "word": "HOLE",
+        "id": 46
+      },
+      {
+        "word": "CORRID",
+        "id": 47
+      },
+      {
+        "word": "BOW",
+        "id": 49
+      },
+      {
+        "word": "ARROW",
+        "id": 50
+      },
+      {
+        "word": "HALLWA",
+        "id": 51
+      },
+      {
+        "word": "CHAMBE",
+        "id": 52
+      },
+      {
+        "word": "VAULT",
+        "id": 53
+      },
+      {
+        "word": "ENTRAN",
+        "id": 54
+      },
+      {
+        "word": "TUNNEL",
+        "id": 55
+      },
+      {
+        "word": "JUNGLE",
+        "id": 56
+      },
+      {
+        "word": "TEMPLE",
+        "id": 57
+      },
+      {
+        "word": "PIT",
+        "id": 58
+      },
+      {
+        "word": "CEILIN",
+        "id": 59
+      },
+      {
+        "word": "ROOF",
+        "id": 59
+      }
+    ]
+  },
+  {
+    "type": "adjectives",
+    "words": []
+  },
+  {
+    "type": "prepositions",
+    "words": [
+      {
+        "word": "TO",
+        "id": 1
+      },
+      {
+        "word": "WITH",
+        "id": 2
+      },
+      {
+        "word": "AT",
+        "id": 3
+      },
+      {
+        "word": "UNDER",
+        "id": 4
+      },
+      {
+        "word": "IN",
+        "id": 5
+      },
+      {
+        "word": "INTO",
+        "id": 5
+      },
+      {
+        "word": "INSIDE",
+        "id": 5
+      },
+      {
+        "word": "OUT",
+        "id": 6
+      },
+      {
+        "word": "OUTSID",
+        "id": 6
+      },
+      {
+        "word": "UP",
+        "id": 7
+      },
+      {
+        "word": "DOWN",
+        "id": 8
+      },
+      {
+        "word": "OVER",
+        "id": 9
+      },
+      {
+        "word": "BEHIND",
+        "id": 10
+      },
+      {
+        "word": "AROUND",
+        "id": 11
+      },
+      {
+        "word": "ON",
+        "id": 12
+      }
+    ]
+  }
+]

@@ -1,7 +1,8 @@
 
 import code.markdown_utils
 
-binary = code.markdown_utils.get_binary('../../../content/CoCo/Downland/Code.md')
+#binary = code.markdown_utils.get_binary('../../../content/CoCo/Downland/Code.md')
+binary = code.markdown_utils.get_binary('../../../content/CoCo/megabug/Code.md')
 
 #with open('../../../content/CoCo/Downland/downland1_0.bin','rb') as f:
 #    binary = f.read()

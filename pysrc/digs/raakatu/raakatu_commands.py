@@ -132,6 +132,9 @@ class UnknownCommand2(BaseCommand):
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._unknown)+' ; '+self.command_name+' unknown='+U.hex2(self._unknown)      
         print(U.indent_code(s,ident))        
         return pos+2
+    
+    def tojson(self):
+        return [self.command_name,self._unknown]
        
 class UnknownCommand22(BaseCommand):
     
@@ -152,6 +155,13 @@ class UnknownCommand22(BaseCommand):
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._unknown)+' ; '+self.command_name+' unknown='+U.hex2(self._unknown)
         print(U.indent_code(s,ident))        
         return pos+2
+    
+    @classmethod
+    def tojson_switch(cls,cdata):
+        return [cls.command_name,cdata[0]]
+    
+    def tojson(self):
+        return [self.command_name,self._unknown]
     
 class UnknownCommand28(BaseCommand):
     
@@ -339,6 +349,9 @@ class AttackObject(BaseCommand):
         s =  U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._points)+' ; '+self.command_name+' points='+U.hex2(self._points)
         print(U.indent_code(s,ident))        
         return pos+2
+    
+    def tojson(self):
+        return [self.command_name,self._points]
         
 class CompareObjectToSecondNoun(BaseCommand):
     
@@ -362,6 +375,13 @@ class CompareObjectToSecondNoun(BaseCommand):
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._object)+' ; '+self.command_name+' object='+U.hex2(self._object)+'('+DECODE_NOUN(self._object)+')'
         print(U.indent_code(s,ident))        
         return pos+2
+    
+    @classmethod
+    def tojson_switch(cls,cdata):
+        return [cls.command_name,DECODE_NOUN(cdata[0])]
+    
+    def tojson(self):
+        return [self.command_name,DECODE_NOUN(self._object)]
         
 class MoveActiveObjectToRoomAndLook(BaseCommand):
     
@@ -383,7 +403,7 @@ class MoveActiveObjectToRoomAndLook(BaseCommand):
         return pos+2
     
     def tojson(self):
-        return [self.fill_json_params("'"+DECODE_ROOM(self._room)+"'")]
+        return [self.command_name,DECODE_ROOM(self._room)]        
         #return [self.command_name,DECODE_ROOM(self._room)]
     
 class PrintSecondNounShortName(BaseCommand):
@@ -447,6 +467,9 @@ class CheckObjectBits(BaseCommand):
         print(U.indent_code(s,ident))        
         return pos+2
     
+    def tojson(self):
+        return [self.command_name,DECODE_BITS(self._bits)]
+    
 class ExecutePhrase(BaseCommand):
     
     command_value = 0x21
@@ -476,6 +499,9 @@ class ExecutePhrase(BaseCommand):
              ' ; '+self.command_name+' phrase='+DECODE_PHRASE(self._phrase)+' firstNoun='+fn+' secondNoun='+sn)
         print(U.indent_code(s,ident))        
         return pos+4
+    
+    def tojson(self):
+        return [self.command_name,DECODE_PHRASE(self._phrase),DECODE_NOUN(self._first_noun),DECODE_NOUN(self._second_noun)]
 
 class RestartGame(BaseCommand):
     
@@ -742,6 +768,9 @@ class SwapObjects(BaseCommand):
         print(U.indent_code(s,ident))        
         return pos+3
     
+    def tojson(self):
+        return [self.command_name,self._object_a,self._object_b]
+    
 class PickUpObject(BaseCommand):
     
     command_value = 0x0F
@@ -781,6 +810,9 @@ class SetVarObject(BaseCommand):
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._object)+' ; '+self.command_name+' object='+U.hex2(self._object)+'('+DECODE_NOUN(self._object)+')'
         print(U.indent_code(s,ident))        
         return pos+2
+    
+    def tojson(self):
+        return [self.command_name,DECODE_NOUN(self._object)]
     
 class IsLessEqualRandom(BaseCommand):
     
@@ -916,6 +948,9 @@ class Heal(BaseCommand):
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._points)+' ; '+self.command_name+' value='+U.hex2(self._points)    
         print(U.indent_code(s,ident))        
         return pos+2
+    
+    def tojson(self):
+        return [self.command_name,self._points]
     
 class WhilePass(BaseCommand):
     

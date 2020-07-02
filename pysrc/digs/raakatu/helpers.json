@@ -1,0 +1,564 @@
+[
+  {
+    "number": 129,
+    "name": "ResetGame",
+    "script": [
+      [
+        "while_pass:",
+        [
+          [
+            "print2(msg)",
+            "YOU'RE DEAD. TRY AGAIN. "
+          ],
+          [
+            "function(ResetDungeon)"
+          ],
+          [
+            "move_to(object,room)",
+            "Small room granite walls"
+          ],
+          [
+            "move_to(object,room)",
+            "Top of a passage"
+          ],
+          [
+            "move_to(object,room)",
+            "Triangular room"
+          ],
+          [
+            "move_to(object,room)",
+            "Room_00"
+          ],
+          [
+            "move_to(object,room)",
+            "Round room high walls 2"
+          ],
+          [
+            "move_to(object,room)",
+            "Small room"
+          ],
+          [
+            "move_to(object,room)",
+            "Smells of decaying flesh"
+          ],
+          [
+            "move_to(object,room)",
+            "Large room"
+          ],
+          [
+            "move_to(object,room)",
+            "Vault"
+          ],
+          [
+            "move_to(object,room)",
+            "Room_00"
+          ],
+          [
+            "move_to(object,room)",
+            "Entrance long dark tunnel west"
+          ],
+          [
+            "move_to(object,room)",
+            "Room_00"
+          ],
+          [
+            "move_to(object,room)",
+            "Very small room"
+          ],
+          [
+            "move_to(object,room)",
+            "Room_00"
+          ],
+          [
+            "move_to(object,room)",
+            "Room_00"
+          ],
+          [
+            "move_to(object,room)",
+            "Standing west entrance"
+          ],
+          [
+            "move_to(object,room)",
+            "Room_00"
+          ],
+          [
+            "move_to(object,room)",
+            "Room_00"
+          ],
+          [
+            "move_to(object,room)",
+            "Tall room"
+          ],
+          [
+            "move_to(object,room)",
+            "Standing west entrance"
+          ],
+          [
+            "move_to(object,room)",
+            "Room_00"
+          ],
+          [
+            "move_to(object,room)",
+            "Room_00"
+          ],
+          [
+            "set_VAR(object)",
+            "SERPEN"
+          ],
+          [
+            "heal_VAR(points)",
+            60
+          ],
+          [
+            "set_VAR(object)",
+            "PLAYER"
+          ],
+          [
+            "heal_VAR(points)",
+            70
+          ],
+          [
+            "move_to(object,room)",
+            "Dense dark damp jungle"
+          ],
+          [
+            "restart_game()"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "number": 130,
+    "name": "DeathByStatue",
+    "script": [
+      [
+        "while_pass:",
+        [
+          [
+            "print2(msg)",
+            "THE STATUE RELEASES THE ARROW WHICH PENETRATES YOUR HEART."
+          ],
+          [
+            "function(ResetGame)"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "number": 131,
+    "name": "Manipulate",
+    "script": [
+      [
+        "while_pass:",
+        [
+          [
+            "while_fail:",
+            [
+              [
+                "while_pass:",
+                [
+                  [
+                    "is_first_noun(object)",
+                    "LEVER"
+                  ],
+                  [
+                    "move_to(object,room)",
+                    "Room_00"
+                  ],
+                  [
+                    "set_VAR(object)",
+                    "LEVER"
+                  ],
+                  [
+                    "fail()"
+                  ]
+                ]
+              ],
+              [
+                "while_pass:",
+                [
+                  [
+                    "is_first_noun(object)",
+                    "GEM"
+                  ],
+                  [
+                    "move_to(object,room)",
+                    "Room_00"
+                  ],
+                  [
+                    "set_VAR(object)",
+                    "GEM"
+                  ],
+                  [
+                    "fail()"
+                  ]
+                ]
+              ],
+              [
+                "while_pass:",
+                [
+                  [
+                    "check_VAR(bits)",
+                    "...P...."
+                  ],
+                  [
+                    "print(msg)",
+                    "I DON'T THINK THE "
+                  ],
+                  [
+                    "print_VAR"
+                  ],
+                  [
+                    "print(msg)",
+                    "WILL COOPERATE."
+                  ]
+                ]
+              ],
+              [
+                "while_pass:",
+                [
+                  [
+                    "execute_and_reverse_status:"
+                  ],
+                  [
+                    "check_VAR(bits)",
+                    "..C....."
+                  ],
+                  [
+                    "print(msg)",
+                    "YOU ARE QUITE INCAPABLE OF REMOVING THE"
+                  ],
+                  [
+                    "print_VAR"
+                  ],
+                  [
+                    "function(PrintPeriod)"
+                  ]
+                ]
+              ],
+              [
+                "is_VAR_owned_by_ACTIVE()"
+              ],
+              [
+                "while_pass:",
+                [
+                  [
+                    "pick_up_VAR()"
+                  ],
+                  [
+                    "print_VAR"
+                  ],
+                  [
+                    "print(msg)",
+                    "TAKEN."
+                  ]
+                ]
+              ]
+            ]
+          ],
+          [
+            "is_VAR_owned_by_ACTIVE()"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "number": 132,
+    "name": "PrintPeriod",
+    "script": [
+      [
+        "print(msg)",
+        ".  "
+      ]
+    ]
+  },
+  {
+    "number": 133,
+    "name": "PrintGuardsMarchRight",
+    "script": [
+      [
+        "print2(msg)",
+        "A GROUP OF GUARDS MARCHES AROUND THE CORNER TO YOUR RIGHT."
+      ]
+    ]
+  },
+  {
+    "number": 135,
+    "name": "PrintGuardsDisappearLeft",
+    "script": [
+      [
+        "print2(msg)",
+        "A GROUP OF GUARDS DISAPPEARS AROUND THE CORNER TO YOUR LEFT."
+      ]
+    ]
+  },
+  {
+    "number": 134,
+    "name": "PrintGuardsAroundCorner",
+    "script": [
+      [
+        "print2(msg)",
+        "A GROUP OF GUARDS COMES AROUND THE CORNER."
+      ]
+    ]
+  },
+  {
+    "number": 136,
+    "name": "PrintTheNOUNIsNotBurning",
+    "script": [
+      [
+        "while_pass:",
+        [
+          [
+            "print(msg)",
+            "THE"
+          ],
+          [
+            "print_second_noun"
+          ],
+          [
+            "print(msg)",
+            "IS NOT BURING. "
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "number": 146,
+    "name": "PrintScore",
+    "script": [
+      [
+        "print2(msg)",
+        "OUT OF A POSSIBLE FIFTY, YOUR SCORE IS "
+      ]
+    ]
+  },
+  {
+    "number": 137,
+    "name": "PrintCantJumpThatFar",
+    "script": [
+      [
+        "print2(msg)",
+        "YOU CAN'T JUMP THAT FAR!"
+      ]
+    ]
+  },
+  {
+    "number": 138,
+    "name": "DeathByRugSpike",
+    "script": [
+      [
+        "while_pass:",
+        [
+          [
+            "print2(msg)",
+            "YOU LAND ON A SPIKE AT THE BOTTOM OF THE PIT WHICH THE RUG COVERED."
+          ],
+          [
+            "function(ResetGame)"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "number": 139,
+    "name": "DeathByHiddenRugSpike",
+    "script": [
+      [
+        "while_pass:",
+        [
+          [
+            "print2(msg)",
+            "YOU REALIZE WHILE YOU'RE FALLING THAT THE RUG COVERED A PIT. THE BOTTOM OF THE PIT IS COVERED WITH SPIKES ABOUT FOUR FEET TALL - YOU DON'T HAVE TIME TO MEASURE THEM EXACTLY. "
+          ],
+          [
+            "function(ResetGame)"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "number": 140,
+    "name": "PrintDiscoverPit",
+    "script": [
+      [
+        "print2(msg)",
+        "YOU DISCOVER A DEEP DARK PIT WHICH EXTENDS FROM THE NORTH TO THE SOUTH WALL. THE PIT IS TOO BROAD TO JUMP."
+      ]
+    ]
+  },
+  {
+    "number": 141,
+    "name": "PrintStatueTooHeavy",
+    "script": [
+      [
+        "print(msg)",
+        "THE STATUE IS MUCH TOO HEAVY FOR YOU TO MOVE."
+      ]
+    ]
+  },
+  {
+    "number": 142,
+    "name": "PrintMoveAlter",
+    "script": [
+      [
+        "print(msg)",
+        "UGH! WITH GREAT DIFFICULTY YOU MANAGE TO MOVE THE ALTAR AND YOU DISCOVER A SECRET PASSAGE."
+      ]
+    ]
+  },
+  {
+    "number": 143,
+    "name": "EnterSecretPassage",
+    "script": [
+      [
+        "while_pass:",
+        [
+          [
+            "is_first_noun(object)",
+            "PASSAG"
+          ],
+          [
+            "move_ACTIVE_and_look(room)",
+            "Secret passage"
+          ],
+          [
+            "function(PrinteAlterMovesBack)"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "number": 144,
+    "name": "PrinteAlterMovesBack",
+    "script": [
+      [
+        "print2(msg)",
+        "THE ALTAR MOVES BACK TO SEAL THE HOLE ABOVE YOU."
+      ]
+    ]
+  },
+  {
+    "number": 145,
+    "name": "SealUpHole",
+    "script": [
+      [
+        "while_pass:",
+        [
+          [
+            "print2(msg)",
+            "AS YOU CLIMB OUT OF THE HOLE, IT SEEMS TO MAGICALLY SEAL UP BEHIND YOU. "
+          ],
+          [
+            "move_ACTIVE_and_look(room)",
+            "At south wall"
+          ],
+          [
+            "function(ResetDungeon)"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "number": 147,
+    "name": "InvalidClimbInOrOut",
+    "script": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "CLIMB * IN *",
+            [
+              "function(PrintUseDirections)"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "CLIMB * OUT *",
+            [
+              "function(PrintUseDirections)"
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "number": 148,
+    "name": "PrintUseDirections",
+    "script": [
+      [
+        "print2(msg)",
+        "PLEASE USE DIRECTIONS N,S,E, OR W."
+      ]
+    ]
+  },
+  {
+    "number": 149,
+    "name": "ResetDungeon",
+    "script": [
+      [
+        "while_pass:",
+        [
+          [
+            "move_to(object,room)",
+            "Room_FF"
+          ],
+          [
+            "move_to(object,room)",
+            "Room_00"
+          ],
+          [
+            "move_to(object,room)",
+            "Room_00"
+          ],
+          [
+            "move_to(object,room)",
+            "Room_00"
+          ],
+          [
+            "move_to(object,room)",
+            "Room_00"
+          ],
+          [
+            "move_to(object,room)",
+            "Room_00"
+          ],
+          [
+            "move_to(object,room)",
+            "Room_00"
+          ],
+          [
+            "move_to(object,room)",
+            "Room_00"
+          ],
+          [
+            "move_to(object,room)",
+            "Room_00"
+          ],
+          [
+            "move_to(object,room)",
+            "Room_00"
+          ],
+          [
+            "move_to(object,room)",
+            "Room_00"
+          ],
+          [
+            "move_to(object,room)",
+            "Room_1D"
+          ]
+        ]
+      ]
+    ]
+  }
+]

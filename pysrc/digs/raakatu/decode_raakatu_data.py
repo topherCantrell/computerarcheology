@@ -8,11 +8,13 @@ import json
 # Nothing in the code ... best we can do is make lists here
 
 OBJECT_SHORT_NAMES = {
+    0x00 : 'nowhere',
     0x01 : 'BOTTLE', # Word is not in CoCo version
     0x1D : 'PLAYER',
     0x24 : 'GUARD REPORTER',
     0x2E : 'CORNER',
-    0x3C : 'AMBIENT SOUNDS'
+    0x3C : 'AMBIENT SOUNDS',
+    0xFF : 'everywhere',
 }
 
 ROOM_SHORT_NAMES = {
@@ -185,6 +187,16 @@ class Raaka:
         pos = self._print_word_list('nouns',pos)
         pos = self._print_word_list('adjectives',pos)
         pos = self._print_word_list('prepositions',pos)
+        
+    def tojson_words(self):
+        ret = []
+        for types in ['ignores','verbs','nouns','adjectives','prepositions']:
+            sub = []
+            for w in self._words[types]:
+                wj = {'word':w['text'],'id':w['num']}
+                sub.append(wj)
+            ret.append({'type':types,'words':sub})        
+        return ret
     
     def load_phrases(self):
         pos = self._phrase_data
@@ -229,7 +241,34 @@ class Raaka:
                     return wrt+' '+na+' '+w2+' '+nb
         return "??? Phrase "+U.hex2(number)+" not found"
                 
-    
+    def tojson_phrases(self):
+        ret = []
+        for phr in self._phrases:            
+            wr = self.find_word('verbs',phr[0])
+            if wr:
+                wrt = wr['text']
+            else:
+                wrt = '??'
+                
+            if phr[1]:
+                w2 = self.find_word('prepositions',phr[1])['text']
+            else:
+                w2 = '*'
+                
+            na = OBJ.decode_noun(phr[2])
+            nb = OBJ.decode_noun(phr[3])
+            
+            r = {'verb':wrt}
+            if na!='*':
+                r['first_noun'] = na
+            if w2!='*':
+                r['preposition'] = w2
+            if nb!='*':
+                r['second_noun'] = nb            
+            
+            ret.append(r)
+        return ret
+        
     def print_phrases(self):
         pos = self._phrase_data
         
@@ -420,7 +459,21 @@ class Raaka:
         pos += len(pre)
         self._general_commands.print_assembly(pos,0)
         
+    def tojson_general(self):
+        return self._general_commands.tojson()
+    
+    def tojson_helpers(self):
+        ret = []
+        for common in self._helper_commands:
+            h = {'number':common['number'],'name':DECODE_HELPER_NAME(common['number'])}
+            ret.append(h)
+            scr = []
+            for com in common['script']:
+                scr.append(com.tojson())
+            h['script'] = scr
+        return ret
         
+                
     def print_helper_commands(self):        
         data = b''
         for common in self._helper_commands:
@@ -458,7 +511,7 @@ class Raaka:
             for att in room['attributes']:
                 att.tojson(r)
             
-        return ret
+        return ret    
         
     def print_room_descriptions(self):
         data = b''
@@ -490,7 +543,22 @@ class Raaka:
             pos += len(pre)+1
             for att in room['attributes']:
                 pos = att.print_assembly(pos,1)                      
+    
+    def tojson_objects(self):
+        ret = []
         
+        num = 1
+        for obj in self._objects:
+            r = {'name' : self.find_noun_word(num),'location' : DECODE_ROOM_NAME(obj['location']), 'score':obj['score'], 'bits':OBJ.decode_noun(obj['bits'],False)}
+            num += 1
+            
+            ret.append(r)
+            
+            for att in obj['attributes']:
+                att.tojson(r)
+            
+        return ret
+                
     def print_object_data(self):
         
         data = b''
@@ -562,28 +630,43 @@ INFO_COCO = {
 }
 
 trs80 = Raaka(INFO_TRS80)
-#trs80.print_general_commands()
-#trs80.print_helper_commands()
-#trs80.print_room_descriptions()
-#trs80.print_object_data()
-#trs80.print_words()
-#trs80.print_phrases()
-
-js = trs80.tojson_room_descriptions()
-
-print('#',js)
-js = json.dumps(js,indent=2)
-
-print(js)
-
 #coco = Raaka(INFO_COCO)
-#coco.print_general_commands()
-#coco.print_helper_commands()
-#coco.print_room_descriptions()
-#coco.print_object_data()
 
-#coco.print_words()
-#coco.print_phrases()
+plat = trs80
+#plat.print_general_commands()
+#plat.print_helper_commands()
+#plat.print_room_descriptions()
+#plat.print_object_data()
+#plat.print_words()
+#plat.print_phrases()
+
+with open('rooms.json','w') as f:
+    js = plat.tojson_room_descriptions()
+    js = json.dumps(js,indent=2)
+    f.write(js)
+with open('objects.json','w') as f:
+    js = plat.tojson_objects()
+    js = json.dumps(js,indent=2)
+    f.write(js)    
+with open('general.json','w') as f:
+    js = plat.tojson_general()
+    js = json.dumps(js,indent=2)
+    f.write(js)    
+with open('helpers.json','w') as f:
+    js = plat.tojson_helpers()
+    js = json.dumps(js,indent=2)
+    f.write(js)    
+with open('words.json','w') as f:
+    js = plat.tojson_words()
+    js = json.dumps(js,indent=2)
+    f.write(js)
+with open('phrases.json','w') as f:
+    js = plat.tojson_phrases()
+    js = json.dumps(js,indent=2)
+    f.write(js)
+
+#plat.print_words()
+#plat.print_phrases()
 
 """
 with open('generated.txt') as f:

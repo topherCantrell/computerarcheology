@@ -1,0 +1,2262 @@
+[
+  {
+    "name": "BOTTLE",
+    "location": "Small room granite walls",
+    "score": 0,
+    "bits": "u.C.....",
+    "description": "THERE IS A SMALL BOTTLE SITTING ON THE FLOOR.",
+    "short_name": "SMALL BOTTLE",
+    "handler_if_first_noun": [
+      [
+        "while_pass:",
+        [
+          [
+            "compare_input_to(phrase)",
+            "OPEN u....... * *"
+          ],
+          [
+            "print(msg)",
+            "THE BOTTLE IS ALREADY OPEN."
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "POTION",
+    "location": "Room_00",
+    "score": 0,
+    "bits": "........"
+  },
+  {
+    "name": "RUG",
+    "location": "Oriental rug",
+    "score": 0,
+    "bits": "u.......",
+    "short_name": "RUG",
+    "handler_if_first_noun": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "LOOK * UNDER u.......",
+            [
+              "function(PrintDiscoverPit)"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "CLIMB * IN *",
+            [
+              "function(DeathByRugSpike)"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "??? Phrase 33 not found",
+            [
+              "function(DeathByRugSpike)"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "JUMP * OVER u.......",
+            [
+              "function(DeathByRugSpike)"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "JUMP * ON u.......",
+            [
+              "function(DeathByHiddenRugSpike)"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "PULL * UP u.......",
+            [
+              "function(PrintDiscoverPit)"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "GO * AROUND u.......",
+            [
+              "print(msg)",
+              "YOU CAN'T, THE RUG STRETCHES ALL THE WAY ACROSS THE ROOM."
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "DOOR",
+    "location": "Oriental rug",
+    "score": 0,
+    "bits": "u....X..",
+    "short_name": "DOOR",
+    "handler_if_first_noun": [
+      [
+        "while_fail:",
+        [
+          [
+            "while_pass:",
+            [
+              [
+                "compare_input_to(phrase)",
+                "READ .....X.. * *"
+              ],
+              [
+                "print(msg)",
+                "THE CARVINGS ON THE DOOR SAY, \"DO NOT ENTER.\""
+              ]
+            ]
+          ],
+          [
+            "while_pass:",
+            [
+              [
+                "execute_and_reverse_status:"
+              ],
+              [
+                "compare_input_to(phrase)",
+                "LOOK * AT u......."
+              ],
+              [
+                "print(msg)",
+                "YOU'LL HAVE TO GO TO THE EAST SIDE OF THE ROOM TO DO THAT."
+              ]
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "FOOD",
+    "location": "Top of a passage",
+    "score": 0,
+    "bits": "u.C.....",
+    "description": "THERE IS FOOD HERE.",
+    "handler_if_first_noun": [
+      [
+        "while_pass:",
+        [
+          [
+            "compare_input_to(phrase)",
+            "EAT u....... * *"
+          ],
+          [
+            "print(msg)",
+            "BURP! "
+          ],
+          [
+            "move_to(object,room)",
+            "Room_00"
+          ],
+          [
+            "set_VAR(object)",
+            "PLAYER"
+          ],
+          [
+            "heal_VAR(points)",
+            15
+          ]
+        ]
+      ]
+    ],
+    "short_name": "FOOD"
+  },
+  {
+    "name": "STATUE",
+    "location": "Triangular room",
+    "score": 0,
+    "bits": "u.......",
+    "short_name": "STATUE",
+    "handler_if_first_noun": [
+      [
+        "while_pass:",
+        [
+          [
+            "compare_input_to(phrase)",
+            "PULL u....... * *"
+          ],
+          [
+            "function(PrintStatueTooHeavy)"
+          ]
+        ]
+      ]
+    ],
+    "description": "THE STATUE IS FACING THE EAST DOOR. "
+  },
+  {
+    "name": "STATUE",
+    "location": "Room_00",
+    "score": 0,
+    "bits": "u.......",
+    "short_name": "STATUE",
+    "handler_if_first_noun": [
+      [
+        "while_pass:",
+        [
+          [
+            "compare_input_to(phrase)",
+            "PULL u....... * *"
+          ],
+          [
+            "function(PrintStatueTooHeavy)"
+          ]
+        ]
+      ]
+    ],
+    "description": "THE STATUE IS FACING THE WEST DOOR. "
+  },
+  {
+    "name": "RING",
+    "location": "Round room high walls 2",
+    "score": 5,
+    "bits": "u.C..X..",
+    "description": "A RING OF FINEST GOLD IS HERE.",
+    "short_name": "GOLD RING",
+    "handler_if_first_noun": [
+      [
+        "while_pass:",
+        [
+          [
+            "compare_input_to(phrase)",
+            "READ .....X.. * *"
+          ],
+          [
+            "print(msg)",
+            "THE INSCRIPTION READS, \"RING OF MOTION.\""
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "SWORD",
+    "location": "Small room",
+    "score": 0,
+    "bits": "uvC..X..",
+    "description": "THERE IS A LARGE SWORD LAYING NEARBY.",
+    "handler_if_first_noun": [
+      [
+        "while_pass:",
+        [
+          [
+            "compare_input_to(phrase)",
+            "READ .....X.. * *"
+          ],
+          [
+            "print(msg)",
+            "\"PROPERTY OF LIEYUCHNEBST\" "
+          ]
+        ]
+      ]
+    ],
+    "short_name": "LARGE SWORD "
+  },
+  {
+    "name": "GARGOY",
+    "location": "Smells of decaying flesh",
+    "score": 0,
+    "bits": "u.......",
+    "description": "THERE IS A HIDEOUS STONE GARGOYLE PERCHED ON A LEDGE ABOVE THE NORTH PASSAGE. ",
+    "handler_if_first_noun": [
+      [
+        "while_pass:",
+        [
+          [
+            "compare_input_to(phrase)",
+            "LOOK * AT u......."
+          ],
+          [
+            "print(msg)",
+            "THERE APPEARS TO BE DRIED BLOOD ON HIS CLAWS!"
+          ]
+        ]
+      ]
+    ],
+    "short_name": "STONE GARGOYLE "
+  },
+  {
+    "name": "ALTAR",
+    "location": "Large room",
+    "score": 0,
+    "bits": "u.......",
+    "description": "BEFORE YOU STANDS AN ALTAR, STAINED WITH THE BLOOD OF COUNTLESS SACRIFICES.",
+    "handler_if_first_noun": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "PULL u....... * *",
+            [
+              "function(PrintMoveAlter)"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "LOOK * UNDER u.......",
+            [
+              "function(PrintMoveAlter)"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "CLIMB * UNDER u.......",
+            [
+              "while_pass:",
+              [
+                [
+                  "move_ACTIVE_and_look(room)",
+                  "Secret passage"
+                ],
+                [
+                  "function(PrinteAlterMovesBack)"
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    ],
+    "short_name": "BLOOD STAINED ALTAR"
+  },
+  {
+    "name": "IDOL",
+    "location": "Large room",
+    "score": 5,
+    "bits": "u.C.....",
+    "description": "A GOLDEN IDOL STANDS IN THE CENTER OF THE ROOM. ",
+    "short_name": "GOLDEN IDOL "
+  },
+  {
+    "name": "GATE",
+    "location": "Standing west entrance",
+    "score": 0,
+    "bits": "u.......",
+    "description": "GREAT BRONZE GATES ENGRAVED WITH IMAGES OF SERPENTS STAND SILENTLY BEFORE YOU.",
+    "handler_if_first_noun": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "OPEN u....... * *",
+            [
+              "print(msg)",
+              "THE GATES ARE LOCKED, YOU CAN NOT OPEN THEM. "
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "CLIMB * IN *",
+            [
+              "print(msg)",
+              "THE GATES ARE CLOSED."
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "CLIMB u....... * *",
+            [
+              "print(msg)",
+              "THE GATES ARE TOO SMOOTH TO CLIMB."
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "JUMP * OVER u.......",
+            [
+              "function(PrintCantJumpThatFar)"
+            ]
+          ]
+        ]
+      ]
+    ],
+    "short_name": "BRONZE GATES"
+  },
+  {
+    "name": "LEVER",
+    "location": "Vault",
+    "score": 0,
+    "bits": "u.C.....",
+    "short_name": "LEVER ",
+    "description": "A BEJEWELED LEVER IS ON ONE WALL.",
+    "handler_if_first_noun": [
+      [
+        "while_pass:",
+        [
+          [
+            "compare_input_to(phrase)",
+            "PULL u....... * *"
+          ],
+          [
+            "print(msg)",
+            "A TRAP DOOR OPENS ABOVE YOU.  GOLD DUST FILLS THE ROOM AND DROWNS YOU."
+          ],
+          [
+            "function(ResetGame)"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "LEVER",
+    "location": "Room_00",
+    "score": 5,
+    "bits": "u.C.....",
+    "description": "A BEJEWELED LEVER IS HERE. ",
+    "short_name": "BEJEWELED LEVER",
+    "handler_if_first_noun": [
+      [
+        "while_pass:",
+        [
+          [
+            "compare_input_to(phrase)",
+            "PULL u....... * *"
+          ],
+          [
+            "print(msg)",
+            "THE LEVER CAN NO LONGER BE PULLED."
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "PLAQUE",
+    "location": "Vault",
+    "score": 0,
+    "bits": "u....X..",
+    "handler_if_first_noun": [
+      [
+        "while_pass:",
+        [
+          [
+            "compare_input_to(phrase)",
+            "READ .....X.. * *"
+          ],
+          [
+            "print(msg)",
+            "UNTOLD RICHES LIE WITHIN REACH, HERE- TO ANY KNOWING, LIVING CREATURE. BE WARY THOUGH, NO MATTER WHAT THY CREED, THAT THOU HARNESS AND LIMIT THY POWERFUL GREED.  PULL THE LEVER TO GAIN THY WEALTH, BE PREPARED TO ... "
+          ]
+        ]
+      ]
+    ],
+    "description": "THERE IS A PLAQUE ON THE WALL ABOVE THE LEVER.",
+    "short_name": "PLAQUE"
+  },
+  {
+    "name": "CANDLE",
+    "location": "Entrance long dark tunnel west",
+    "score": 0,
+    "bits": "u.C.A...",
+    "description": "A CANDLE IS IN THE ROOM.",
+    "short_name": "CANDLE",
+    "handler_if_first_noun": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "LIGHT u...A... WITH u...A...",
+            [
+              "while_fail:",
+              [
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "compare_to_second_noun(object)",
+                      "LAMP"
+                    ],
+                    [
+                      "swap(object_a,object_b)",
+                      17,
+                      18
+                    ],
+                    [
+                      "print(msg)",
+                      "THE CANDLE IS NOW BURNING, A SWEET SCENT PERMEATES THE ROOM."
+                    ]
+                  ]
+                ],
+                [
+                  "function(PrintTheNOUNIsNotBurning)"
+                ]
+              ]
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "EAT u....... * *",
+            [
+              "while_pass:",
+              [
+                [
+                  "print(msg)",
+                  "TASTES WAXY, ITS POISONOUS!"
+                ],
+                [
+                  "function(ResetGame)"
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "CANDLE",
+    "location": "Room_00",
+    "score": 0,
+    "bits": "u.C.A...",
+    "description": "A CANDLE IS BURNING DIMLY. ",
+    "short_name": "BURNING CANDLE ",
+    "handler_if_first_noun": [
+      [
+        "while_fail:",
+        [
+          [
+            "while_pass:",
+            [
+              [
+                "while_fail:",
+                [
+                  [
+                    "compare_input_to(phrase)",
+                    "??? Phrase 13 not found"
+                  ],
+                  [
+                    "compare_input_to(phrase)",
+                    "LIGHT u...A... WITH u...A..."
+                  ]
+                ]
+              ],
+              [
+                "print(msg)",
+                "THE CANDLE IS ALREADY BURNING."
+              ]
+            ]
+          ],
+          [
+            "while_pass:",
+            [
+              [
+                "compare_input_to(phrase)",
+                "DROP * OUT u...A..."
+              ],
+              [
+                "swap(object_a,object_b)",
+                17,
+                18
+              ],
+              [
+                "print(msg)",
+                "THE CANDLE IS EXTINGUISHED."
+              ]
+            ]
+          ],
+          [
+            "while_pass:",
+            [
+              [
+                "compare_input_to(phrase)",
+                "EAT u....... * *"
+              ],
+              [
+                "print(msg)",
+                "YOU REALLY SHOULD PUT IT OUT FIRST. "
+              ]
+            ]
+          ]
+        ]
+      ]
+    ],
+    "handler_every_turn": [
+      [
+        "while_pass:",
+        [
+          [
+            "print2(msg)",
+            "THE LIGHT FROM THE CANDLE SEEMS TO BE GROWING DIMMER. "
+          ],
+          [
+            "switch",
+            [
+              [
+                "is_in_pack_or_current_room(object)",
+                "PLAYER",
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "set_VAR(object)",
+                      "PLAYER"
+                    ],
+                    [
+                      "attack_VAR(points)",
+                      20
+                    ],
+                    [
+                      "fail()"
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "is_in_pack_or_current_room(object)",
+                "GARGOY",
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "set_VAR(object)",
+                      "GARGOY"
+                    ],
+                    [
+                      "attack_VAR(points)",
+                      50
+                    ],
+                    [
+                      "fail()"
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "is_in_pack_or_current_room(object)",
+                "SERPEN",
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "set_VAR(object)",
+                      "SERPEN"
+                    ],
+                    [
+                      "attack_VAR(points)",
+                      15
+                    ],
+                    [
+                      "fail()"
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "PLAQUE",
+    "location": "Entrance long dark tunnel west",
+    "score": 0,
+    "bits": "u....X..",
+    "handler_if_first_noun": [
+      [
+        "while_pass:",
+        [
+          [
+            "compare_input_to(phrase)",
+            "READ .....X.. * *"
+          ],
+          [
+            "print(msg)",
+            "INTO THE TUNNEL ENTERS THE SEEKER, BRAVELY AND WISELY HE GOES. FOR HE WILL RECOGNIZE THE REAPER, AS THE LIGHT BEFORE HIM GLOWS."
+          ]
+        ]
+      ]
+    ],
+    "description": "THERE ARE CRYPTIC RUNES ABOVE THE TUNNEL. ",
+    "short_name": "RUNES "
+  },
+  {
+    "name": "LAMP",
+    "location": "Very small room",
+    "score": 0,
+    "bits": "u.C.AX..",
+    "description": "THERE IS A BURNING LAMP HERE. ",
+    "handler_if_first_noun": [
+      [
+        "while_fail:",
+        [
+          [
+            "while_pass:",
+            [
+              [
+                "while_fail:",
+                [
+                  [
+                    "compare_input_to(phrase)",
+                    "??? Phrase 13 not found"
+                  ],
+                  [
+                    "compare_input_to(phrase)",
+                    "LIGHT u...A... WITH u...A..."
+                  ]
+                ]
+              ],
+              [
+                "print(msg)",
+                "THE LAMP IS ALREADY BURNING."
+              ]
+            ]
+          ],
+          [
+            "switch",
+            [
+              [
+                "compare_input_to(phrase)",
+                "DROP * OUT u...A...",
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "swap(object_a,object_b)",
+                      40,
+                      20
+                    ],
+                    [
+                      "print(msg)",
+                      "THE LAMP IS OUT."
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "compare_input_to(phrase)",
+                "RUB u....... * *",
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "print(msg)",
+                      "THE LAMP GOES OUT. YOU MUST HAVE RUBBED IT THE WRONG WAY!"
+                    ],
+                    [
+                      "swap(object_a,object_b)",
+                      40,
+                      20
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "compare_input_to(phrase)",
+                "READ .....X.. * *",
+                [
+                  "print(msg)",
+                  "THE LAMP IS COVERED WITH TARNISH AND YOU CAN'T READ IT."
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    ],
+    "short_name": "BURNING LAMP"
+  },
+  {
+    "name": "SERPEN",
+    "location": "Room_00",
+    "score": 0,
+    "bits": "u..P....",
+    "description": "A LARGE SERPENT LIES COILED ON THE FLOOR. ",
+    "max_points": 60,
+    "current_points": 60,
+    "handler_if_first_noun": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "ATTACK ...P.... WITH .v......",
+            [
+              "while_pass:",
+              [
+                [
+                  "set_VAR_to_first_noun()"
+                ],
+                [
+                  "compare_to_second_noun(object)",
+                  "SWORD"
+                ],
+                [
+                  "switch",
+                  [
+                    [
+                      "is_less_equal_last_random(value)",
+                      153,
+                      [
+                        "while_pass:",
+                        [
+                          [
+                            "print(msg)",
+                            "YOUR"
+                          ],
+                          [
+                            "print_second_noun"
+                          ],
+                          [
+                            "print(msg)",
+                            "SINKS TO THE HILT IN THE SERPENT'S SCALY BODY!"
+                          ],
+                          [
+                            "attack_VAR(points)",
+                            17
+                          ]
+                        ]
+                      ]
+                    ],
+                    [
+                      "is_less_equal_last_random(value)",
+                      204,
+                      [
+                        "while_pass:",
+                        [
+                          [
+                            "print(msg)",
+                            "YOUR"
+                          ],
+                          [
+                            "print_second_noun"
+                          ],
+                          [
+                            "print(msg)",
+                            "THROWS A SHOWER OF SPARKS AS IT GLANCES OFF THE WALL! "
+                          ]
+                        ]
+                      ]
+                    ],
+                    [
+                      "is_less_equal_last_random(value)",
+                      255,
+                      [
+                        "while_pass:",
+                        [
+                          [
+                            "print(msg)",
+                            "THE SERPENT'S HEAD IS SEVERED FROM HIS BODY! A MAGNIFICENT BLOW!"
+                          ],
+                          [
+                            "attack_VAR(points)",
+                            255
+                          ]
+                        ]
+                      ]
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "EAT u....... * *",
+            [
+              "print(msg)",
+              "BETTER KILL IT FIRST!"
+            ]
+          ]
+        ]
+      ]
+    ],
+    "handler_every_turn": [
+      [
+        "while_pass:",
+        [
+          [
+            "while_fail:",
+            [
+              [
+                "while_pass:",
+                [
+                  [
+                    "execute_and_reverse_status:"
+                  ],
+                  [
+                    "is_in_pack_or_current_room(object)",
+                    "PLAYER"
+                  ],
+                  [
+                    "switch",
+                    [
+                      [
+                        "compare_input_to(phrase)",
+                        "WEST * * *",
+                        [
+                          "execute_phrase(phrase,first_noun,second_noun)",
+                          "\"04: WEST    *         *       *         \"",
+                          "nowhere",
+                          "nowhere"
+                        ]
+                      ],
+                      [
+                        "compare_input_to(phrase)",
+                        "EAST * * *",
+                        [
+                          "execute_phrase(phrase,first_noun,second_noun)",
+                          "\"03: EAST    *         *       *         \"",
+                          "nowhere",
+                          "nowhere"
+                        ]
+                      ],
+                      [
+                        "compare_input_to(phrase)",
+                        "NORTH * * *",
+                        [
+                          "execute_phrase(phrase,first_noun,second_noun)",
+                          "\"01: NORTH   *         *       *         \"",
+                          "nowhere",
+                          "nowhere"
+                        ]
+                      ],
+                      [
+                        "compare_input_to(phrase)",
+                        "SOUTH * * *",
+                        [
+                          "execute_phrase(phrase,first_noun,second_noun)",
+                          "\"02: SOUTH   *         *       *         \"",
+                          "nowhere",
+                          "nowhere"
+                        ]
+                      ]
+                    ]
+                  ],
+                  [
+                    "print2(msg)",
+                    "THE SERPENT PURSUES YOU AND"
+                  ]
+                ]
+              ],
+              [
+                "print2(msg)",
+                "THE SERPENT "
+              ]
+            ]
+          ],
+          [
+            "while_pass:",
+            [
+              [
+                "is_in_pack_or_current_room(object)",
+                "PLAYER"
+              ],
+              [
+                "set_VAR(object)",
+                "PLAYER"
+              ],
+              [
+                "switch",
+                [
+                  [
+                    "is_less_equal_last_random(value)",
+                    51,
+                    [
+                      "while_pass:",
+                      [
+                        [
+                          "print2(msg)",
+                          "STRIKES, POISON COURSES THROUGH YOUR VEINS!"
+                        ],
+                        [
+                          "attack_VAR(points)",
+                          20
+                        ]
+                      ]
+                    ]
+                  ],
+                  [
+                    "is_less_equal_last_random(value)",
+                    153,
+                    [
+                      "print2(msg)",
+                      "STRIKES, YOU DODGE HIS LUNGE! "
+                    ]
+                  ],
+                  [
+                    "is_less_equal_last_random(value)",
+                    204,
+                    [
+                      "while_pass:",
+                      [
+                        [
+                          "print2(msg)",
+                          "COILS RAPIDLY AROUND YOU AND CONSTRICTS!"
+                        ],
+                        [
+                          "attack_VAR(points)",
+                          20
+                        ]
+                      ]
+                    ]
+                  ],
+                  [
+                    "is_less_equal_last_random(value)",
+                    255,
+                    [
+                      "print2(msg)",
+                      "GATHERS ITSELF FOR AN ATTACK. "
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    ],
+    "on_death_handler": [
+      [
+        "while_pass:",
+        [
+          [
+            "print2(msg)",
+            "THE SERPENT IS DEAD. "
+          ],
+          [
+            "swap(object_a,object_b)",
+            21,
+            22
+          ]
+        ]
+      ]
+    ],
+    "short_name": "SERPENT"
+  },
+  {
+    "name": "SERPEN",
+    "location": "Room_00",
+    "score": 0,
+    "bits": "u.......",
+    "description": "A LARGE DEAD SERPENT LIES ON THE FLOOR.",
+    "handler_if_first_noun": [
+      [
+        "while_pass:",
+        [
+          [
+            "compare_input_to(phrase)",
+            "EAT u....... * *"
+          ],
+          [
+            "print(msg)",
+            "I'VE LOST MY APPETITE!"
+          ]
+        ]
+      ]
+    ],
+    "short_name": "DEAD SERPENT"
+  },
+  {
+    "name": "HAND",
+    "location": "Room_FF",
+    "score": 0,
+    "bits": "u.......",
+    "short_name": "HANDS "
+  },
+  {
+    "name": "COIN",
+    "location": "Standing west entrance",
+    "score": 5,
+    "bits": "u.C..X..",
+    "description": "THERE IS A COIN ON THE GROUND.",
+    "handler_if_first_noun": [
+      [
+        "while_pass:",
+        [
+          [
+            "compare_input_to(phrase)",
+            "READ .....X.. * *"
+          ],
+          [
+            "print(msg)",
+            "\"PRAISED BE RAAKA-TU\""
+          ]
+        ]
+      ]
+    ],
+    "short_name": "COIN"
+  },
+  {
+    "name": "SLOT",
+    "location": "Triangular room",
+    "score": 0,
+    "bits": "u.......",
+    "description": "THERE IS A TINY SLOT CUT IN THE NORTH WALL.",
+    "short_name": "TINY SLOT",
+    "handler_if_second_noun": [
+      [
+        "while_pass:",
+        [
+          [
+            "compare_input_to(phrase)",
+            "DROP u....... IN u......."
+          ],
+          [
+            "while_fail:",
+            [
+              [
+                "while_pass:",
+                [
+                  [
+                    "execute_and_reverse_status:"
+                  ],
+                  [
+                    "is_first_noun(object)",
+                    "COIN"
+                  ],
+                  [
+                    "print(msg)",
+                    "THE"
+                  ],
+                  [
+                    "print_first_noun()"
+                  ],
+                  [
+                    "print(msg)",
+                    "IS TOO BIG TO FIT IN SUCH A TINY SLOT. "
+                  ]
+                ]
+              ],
+              [
+                "while_pass:",
+                [
+                  [
+                    "move_to(object,room)",
+                    "Room_00"
+                  ],
+                  [
+                    "move_to(object,room)",
+                    "Triangular room"
+                  ],
+                  [
+                    "move_to(object,room)",
+                    "Room_00"
+                  ],
+                  [
+                    "print(msg)",
+                    "THE STATUE TURNS TO FACE THE WEST DOOR."
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "PLAQUE",
+    "location": "Triangular room",
+    "score": 0,
+    "bits": "u....X..",
+    "description": "THERE IS A MESSAGE CARVED UNDER THE SLOT. ",
+    "short_name": "CARVED MESSAGE ",
+    "handler_if_first_noun": [
+      [
+        "while_pass:",
+        [
+          [
+            "compare_input_to(phrase)",
+            "READ .....X.. * *"
+          ],
+          [
+            "print(msg)",
+            "THE MESSAGE SAYS, \"SAFE PASSAGE FOR A PRICE.\""
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "DOOR",
+    "location": "North end central hall",
+    "score": 0,
+    "bits": "u.......",
+    "description": "THE DOOR IS CLOSED.",
+    "short_name": "DOOR",
+    "handler_if_first_noun": [
+      [
+        "while_pass:",
+        [
+          [
+            "compare_input_to(phrase)",
+            "OPEN u....... * *"
+          ],
+          [
+            "move_to(object,room)",
+            "Room_00"
+          ],
+          [
+            "move_to(object,room)",
+            "North end central hall"
+          ],
+          [
+            "print(msg)",
+            "RRRRREEEEEEK - THE DOOR IS OPEN. "
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "DOOR",
+    "location": "Room_00",
+    "score": 0,
+    "bits": "u.......",
+    "description": "THE DOOR IS STANDING OPEN. ",
+    "short_name": "DOOR",
+    "handler_if_first_noun": [
+      [
+        "while_pass:",
+        [
+          [
+            "compare_input_to(phrase)",
+            "OPEN u....... * *"
+          ],
+          [
+            "print(msg)",
+            "ITS ALREADY OPEN. "
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "PLAYER",
+    "location": "Dense dark damp jungle",
+    "score": 0,
+    "bits": "u.......",
+    "on_death_handler": [
+      [
+        "while_fail:",
+        [
+          [
+            "switch",
+            [
+              [
+                "is_ACTIVE_this(object)",
+                "PLAYER",
+                [
+                  "function(ResetGame)"
+                ]
+              ],
+              [
+                "is_ACTIVE_this(object)",
+                "GUARD",
+                [
+                  "function(ResetGame)"
+                ]
+              ]
+            ]
+          ],
+          [
+            "while_pass:",
+            [
+              [
+                "print2(msg)",
+                "YOU PASS OUT. WHEN YOU AWAKEN, YOU FIND YOURSELF CHAINED TO A BLOOD STAINED ALTAR. A PRIEST IS KNEELING OVER YOU WITH A KNIFE. IT LOOKS LIKE THIS IS IT. "
+              ],
+              [
+                "function(ResetGame)"
+              ]
+            ]
+          ]
+        ]
+      ]
+    ],
+    "handler_every_turn": [
+      [
+        "while_pass:",
+        [
+          [
+            "set_VAR(object)",
+            "PLAYER"
+          ],
+          [
+            "heal_VAR(points)",
+            5
+          ]
+        ]
+      ]
+    ],
+    "max_points": 70,
+    "current_points": 70
+  },
+  {
+    "name": "GARGOY",
+    "location": "Room_00",
+    "score": 0,
+    "bits": "u..P....",
+    "description": "THERE IS A HIDEOUS GARGOYLE BLOCKING THE NORTH PASSAGE.",
+    "short_name": "GARGOYLE ",
+    "max_points": 255,
+    "current_points": 255,
+    "handler_if_first_noun": [
+      [
+        "while_pass:",
+        [
+          [
+            "compare_input_to(phrase)",
+            "EAT u....... * *"
+          ],
+          [
+            "print(msg)",
+            "HE'LL EAT YOU LONG BEFORE YOU'LL EAT HIM! "
+          ]
+        ]
+      ]
+    ],
+    "handler_every_turn": [
+      [
+        "while_pass:",
+        [
+          [
+            "is_in_pack_or_current_room(object)",
+            "PLAYER"
+          ],
+          [
+            "set_VAR(object)",
+            "PLAYER"
+          ],
+          [
+            "execute_and_reverse_status:"
+          ],
+          [
+            "is_in_pack_or_current_room(object)",
+            "CANDLE"
+          ],
+          [
+            "switch",
+            [
+              [
+                "is_less_equal_last_random(value)",
+                25,
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "print2(msg)",
+                      "THE GARGOYLE GORES YOU WITH HIS HORN AND RIPS YOUR GUTS OUT!"
+                    ],
+                    [
+                      "attack_VAR(points)",
+                      255
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "is_less_equal_last_random(value)",
+                63,
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "print2(msg)",
+                      "THE GARGOYLE CLAWS YOU ACROSS THE CHEST!"
+                    ],
+                    [
+                      "attack_VAR(points)",
+                      50
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "is_less_equal_last_random(value)",
+                100,
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "print2(msg)",
+                      "YOU FEEL THE GNASHING OF THE GARGOYLE'S TEETH IN YOUR SIDE! "
+                    ],
+                    [
+                      "attack_VAR(points)",
+                      50
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "is_less_equal_last_random(value)",
+                163,
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "print2(msg)",
+                      "THE CLAWS OF THE GARGOYLE RIP THROUGH YOUR ARM IN AN ATTEMPT TO REACH YOUR BODY! "
+                    ],
+                    [
+                      "attack_VAR(points)",
+                      25
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "is_less_equal_last_random(value)",
+                225,
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "print2(msg)",
+                      "THE GARGOYLE LUNGES AT YOUR FACE BUT YOU PULL BACK.  HE BITES YOUR SHOULDER INSTEAD!"
+                    ],
+                    [
+                      "attack_VAR(points)",
+                      25
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "is_less_equal_last_random(value)",
+                255,
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "print2(msg)",
+                      "YOU DODGE THE GARGOYLE'S HORN."
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    ],
+    "on_death_handler": [
+      [
+        "while_pass:",
+        [
+          [
+            "print2(msg)",
+            "THE GARGOYLE TAKES A FINAL BREATH AND THEN EXPIRES."
+          ],
+          [
+            "move_to(object,room)",
+            "Room_00"
+          ],
+          [
+            "move_to(object,room)",
+            "Smells of decaying flesh"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "GARGOY",
+    "location": "Room_00",
+    "score": 0,
+    "bits": "u.......",
+    "description": "THERE IS THE DEAD CARCASS OF AN UGLY GARGOYLE NEARBY. ",
+    "handler_if_first_noun": [
+      [
+        "while_pass:",
+        [
+          [
+            "compare_input_to(phrase)",
+            "EAT u....... * *"
+          ],
+          [
+            "print(msg)",
+            "UGH! I THINK I'M GOING TO BE SICK!"
+          ]
+        ]
+      ]
+    ],
+    "short_name": "DEAD GARGOYLE"
+  },
+  {
+    "name": "WALL",
+    "location": "Room_FF",
+    "score": 0,
+    "bits": "u.......",
+    "handler_if_first_noun": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "CLIMB u....... * *",
+            [
+              "print(msg)",
+              "YOU CAN NOT CLIMB THE WALL, IT IS TOO SMOOTH."
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "JUMP * OVER u.......",
+            [
+              "function(PrintCantJumpThatFar)"
+            ]
+          ]
+        ]
+      ]
+    ],
+    "short_name": "WALL"
+  },
+  {
+    "name": "VINE",
+    "location": "At north wall",
+    "score": 0,
+    "bits": "u.......",
+    "description": "A LARGE NETWORK OF VINES CLINGS TO THE WALL. ",
+    "short_name": "VINES "
+  },
+  {
+    "name": "CHOPST",
+    "location": "Tall room",
+    "score": 5,
+    "bits": "u.C.....",
+    "description": "THERE IS A GOLDEN CHOPSTICK HERE.",
+    "short_name": "GOLDEN CHOPSTICK"
+  },
+  {
+    "name": "GUARD",
+    "location": "Standing west entrance",
+    "score": 0,
+    "bits": "u..P....",
+    "description": "SEVERAL GUARDS CARRYING LETHAL CROSSBOWS TURN TO FACE YOU.",
+    "handler_every_turn": [
+      [
+        "while_fail:",
+        [
+          [
+            "while_pass:",
+            [
+              [
+                "execute_and_reverse_status:"
+              ],
+              [
+                "is_in_pack_or_current_room(object)",
+                "PLAYER"
+              ],
+              [
+                "switch",
+                [
+                  [
+                    "is_located(room,object)",
+                    "Standing west entrance",
+                    "GUARD",
+                    [
+                      "while_pass:",
+                      [
+                        [
+                          "move_ACTIVE_and_look(room)",
+                          "At north wall"
+                        ],
+                        [
+                          "is_in_pack_or_current_room(object)",
+                          "PLAYER"
+                        ],
+                        [
+                          "function(PrintGuardsAroundCorner)"
+                        ]
+                      ]
+                    ]
+                  ],
+                  [
+                    "is_located(room,object)",
+                    "At south wall",
+                    "GUARD",
+                    [
+                      "while_pass:",
+                      [
+                        [
+                          "move_ACTIVE_and_look(room)",
+                          "Standing west entrance"
+                        ],
+                        [
+                          "is_in_pack_or_current_room(object)",
+                          "PLAYER"
+                        ],
+                        [
+                          "function(PrintGuardsAroundCorner)"
+                        ]
+                      ]
+                    ]
+                  ],
+                  [
+                    "is_located(room,object)",
+                    "At east wall",
+                    "GUARD",
+                    [
+                      "while_pass:",
+                      [
+                        [
+                          "move_ACTIVE_and_look(room)",
+                          "At south wall"
+                        ],
+                        [
+                          "is_in_pack_or_current_room(object)",
+                          "PLAYER"
+                        ],
+                        [
+                          "function(PrintGuardsAroundCorner)"
+                        ]
+                      ]
+                    ]
+                  ],
+                  [
+                    "is_located(room,object)",
+                    "At north wall",
+                    "GUARD",
+                    [
+                      "while_pass:",
+                      [
+                        [
+                          "move_ACTIVE_and_look(room)",
+                          "At east wall"
+                        ],
+                        [
+                          "is_in_pack_or_current_room(object)",
+                          "PLAYER"
+                        ],
+                        [
+                          "function(PrintGuardsAroundCorner)"
+                        ]
+                      ]
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "fail()"
+              ]
+            ]
+          ],
+          [
+            "while_pass:",
+            [
+              [
+                "is_in_pack_or_current_room(object)",
+                "PLAYER"
+              ],
+              [
+                "set_VAR(object)",
+                "PLAYER"
+              ],
+              [
+                "print2(msg)",
+                "\"STOP! INFIDEL DOG!\", THE GUARDS LEVEL THEIR CROSSBOWS AND LOOSE THEIR BOLTS! YOUR BODY FALLS TO THE GROUND RIDDLED WITH THE SHAFTS!"
+              ],
+              [
+                "function(ResetGame)"
+              ]
+            ]
+          ]
+        ]
+      ]
+    ],
+    "short_name": "GUARDS"
+  },
+  {
+    "name": "GUARD REPORTER",
+    "location": "Room_1D",
+    "score": 0,
+    "bits": "........",
+    "handler_every_turn": [
+      [
+        "switch",
+        [
+          [
+            "is_located(room,object)",
+            "Standing west entrance",
+            "GUARD",
+            [
+              "while_fail:",
+              [
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "is_located(room,object)",
+                      "See bronze gates",
+                      "PLAYER"
+                    ],
+                    [
+                      "function(PrintGuardsMarchRight)"
+                    ]
+                  ]
+                ],
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "is_located(room,object)",
+                      "Stands south wall",
+                      "PLAYER"
+                    ],
+                    [
+                      "function(PrintGuardsDisappearLeft)"
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ],
+          [
+            "is_located(room,object)",
+            "At south wall",
+            "GUARD",
+            [
+              "while_fail:",
+              [
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "is_located(room,object)",
+                      "Stands south wall",
+                      "PLAYER"
+                    ],
+                    [
+                      "function(PrintGuardsMarchRight)"
+                    ]
+                  ]
+                ],
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "is_located(room,object)",
+                      "See east wall",
+                      "PLAYER"
+                    ],
+                    [
+                      "function(PrintGuardsDisappearLeft)"
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ],
+          [
+            "is_located(room,object)",
+            "At east wall",
+            "GUARD",
+            [
+              "while_fail:",
+              [
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "is_located(room,object)",
+                      "See east wall",
+                      "PLAYER"
+                    ],
+                    [
+                      "function(PrintGuardsMarchRight)"
+                    ]
+                  ]
+                ],
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "is_located(room,object)",
+                      "See north wall",
+                      "PLAYER"
+                    ],
+                    [
+                      "function(PrintGuardsDisappearLeft)"
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ],
+          [
+            "is_located(room,object)",
+            "At north wall",
+            "GUARD",
+            [
+              "while_fail:",
+              [
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "is_located(room,object)",
+                      "See north wall",
+                      "PLAYER"
+                    ],
+                    [
+                      "function(PrintGuardsMarchRight)"
+                    ]
+                  ]
+                ],
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "is_located(room,object)",
+                      "See bronze gates",
+                      "PLAYER"
+                    ],
+                    [
+                      "function(PrintGuardsDisappearLeft)"
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "GEM",
+    "location": "Standing west entrance",
+    "score": 0,
+    "bits": "u.C.....",
+    "short_name": "PRECIOUS GEM",
+    "handler_every_turn": [
+      [
+        "while_pass:",
+        [
+          [
+            "is_located(room,object)",
+            "Standing west entrance",
+            "GEM"
+          ],
+          [
+            "switch",
+            [
+              [
+                "is_less_equal_last_random(value)",
+                51,
+                [
+                  "move_to(object,room)",
+                  "South end central hall"
+                ]
+              ],
+              [
+                "is_less_equal_last_random(value)",
+                102,
+                [
+                  "move_to(object,room)",
+                  "Entrance long dark tunnel east"
+                ]
+              ],
+              [
+                "is_less_equal_last_random(value)",
+                153,
+                [
+                  "move_to(object,room)",
+                  "Gray stone walls 1"
+                ]
+              ],
+              [
+                "is_less_equal_last_random(value)",
+                204,
+                [
+                  "move_to(object,room)",
+                  "Smells of decaying flesh"
+                ]
+              ],
+              [
+                "is_less_equal_last_random(value)",
+                255,
+                [
+                  "move_to(object,room)",
+                  "Dark passage"
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "GEM",
+    "location": "Room_00",
+    "score": 5,
+    "bits": "u.C.....",
+    "short_name": "PRECIOUS GEM",
+    "description": "THERE IS A PRECIOUS GEM HERE. "
+  },
+  {
+    "name": "ROOM",
+    "location": "Room_FF",
+    "score": 0,
+    "bits": "........",
+    "short_name": "ROOM",
+    "handler_if_first_noun": [
+      [
+        "while_pass:",
+        [
+          [
+            "compare_input_to(phrase)",
+            "LOOK * AT u......."
+          ],
+          [
+            "is_in_pack_or_current_room(object)",
+            "GEM"
+          ],
+          [
+            "print(msg)",
+            "YOU DISCOVER A PRECIOUS GEM HIDDEN IN A CREVICE."
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "LAMP",
+    "location": "Room_00",
+    "score": 0,
+    "bits": "u.C.AX..",
+    "short_name": "LAMP",
+    "description": "THERE IS A LAMP HERE.",
+    "handler_if_first_noun": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "LIGHT u...A... WITH u...A...",
+            [
+              "while_fail:",
+              [
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "compare_to_second_noun(object)",
+                      "CANDLE"
+                    ],
+                    [
+                      "swap(object_a,object_b)",
+                      40,
+                      20
+                    ],
+                    [
+                      "print(msg)",
+                      "THE LAMP IS NOW BURNING."
+                    ]
+                  ]
+                ],
+                [
+                  "function(PrintTheNOUNIsNotBurning)"
+                ]
+              ]
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "RUB u....... * *",
+            [
+              "print(msg)",
+              "WHO DO YOU THINK YOU ARE, ALADDIN?"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "READ .....X.. * *",
+            [
+              "print(msg)",
+              "\"DO NOT RUB\""
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "FLOOR",
+    "location": "Room_00",
+    "score": 0,
+    "bits": "u.......",
+    "short_name": "FLOOR "
+  },
+  {
+    "name": "EXIT",
+    "location": "Room_00",
+    "score": 0,
+    "bits": "u.......",
+    "handler_if_first_noun": [
+      [
+        "function(InvalidClimbInOrOut)"
+      ]
+    ],
+    "short_name": "EXIT"
+  },
+  {
+    "name": "PASSAG",
+    "location": "Room_00",
+    "score": 0,
+    "bits": "u.......",
+    "handler_if_first_noun": [
+      [
+        "function(InvalidClimbInOrOut)"
+      ]
+    ],
+    "short_name": "PASSAGE"
+  },
+  {
+    "name": "HOLE",
+    "location": "Room_00",
+    "score": 0,
+    "bits": "u.......",
+    "handler_if_first_noun": [
+      [
+        "function(InvalidClimbInOrOut)"
+      ]
+    ],
+    "short_name": "HOLE"
+  },
+  {
+    "name": "CORRID",
+    "location": "Room_00",
+    "score": 0,
+    "bits": "u.......",
+    "handler_if_first_noun": [
+      [
+        "function(InvalidClimbInOrOut)"
+      ]
+    ],
+    "short_name": "CORRIDOR "
+  },
+  {
+    "name": "CORNER",
+    "location": "Room_00",
+    "score": 0,
+    "bits": "u.......",
+    "short_name": "CORNER"
+  },
+  {
+    "name": "BOW",
+    "location": "Triangular room",
+    "score": 0,
+    "bits": "u.......",
+    "short_name": "BOW"
+  },
+  {
+    "name": "ARROW",
+    "location": "Triangular room",
+    "score": 0,
+    "bits": "u.......",
+    "short_name": "ARROW "
+  },
+  {
+    "name": "HALLWA",
+    "location": "Room_00",
+    "score": 0,
+    "bits": "u.......",
+    "handler_if_first_noun": [
+      [
+        "function(InvalidClimbInOrOut)"
+      ]
+    ],
+    "short_name": "HALLWAY"
+  },
+  {
+    "name": "CHAMBE",
+    "location": "Petite chamber",
+    "score": 0,
+    "bits": "u.......",
+    "short_name": "CHAMBER"
+  },
+  {
+    "name": "VAULT",
+    "location": "Vault",
+    "score": 0,
+    "bits": "u.......",
+    "short_name": "VAULT "
+  },
+  {
+    "name": "ENTRAN",
+    "location": "Room_00",
+    "score": 0,
+    "bits": "u.......",
+    "handler_if_first_noun": [
+      [
+        "function(InvalidClimbInOrOut)"
+      ]
+    ],
+    "short_name": "ENTRANCE "
+  },
+  {
+    "name": "TUNNEL",
+    "location": "Room_00",
+    "score": 0,
+    "bits": "u.......",
+    "handler_if_first_noun": [
+      [
+        "function(InvalidClimbInOrOut)"
+      ]
+    ],
+    "short_name": "TUNNEL"
+  },
+  {
+    "name": "JUNGLE",
+    "location": "Room_FF",
+    "score": 0,
+    "bits": "u.......",
+    "handler_if_first_noun": [
+      [
+        "function(InvalidClimbInOrOut)"
+      ]
+    ],
+    "short_name": "JUNGLE"
+  },
+  {
+    "name": "TEMPLE",
+    "location": "Room_FF",
+    "score": 0,
+    "bits": "u.......",
+    "handler_if_first_noun": [
+      [
+        "function(InvalidClimbInOrOut)"
+      ]
+    ],
+    "short_name": "TEMPLE"
+  },
+  {
+    "name": "SERPEN",
+    "location": "Standing west entrance",
+    "score": 0,
+    "bits": "u.......",
+    "short_name": "SERPENTS "
+  },
+  {
+    "name": "PIT",
+    "location": "Oriental rug",
+    "score": 0,
+    "bits": "u.......",
+    "handler_if_first_noun": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "CLIMB * IN *",
+            [
+              "function(DeathByRugSpike)"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "??? Phrase 33 not found",
+            [
+              "function(DeathByRugSpike)"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "JUMP * OVER u.......",
+            [
+              "function(DeathByRugSpike)"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "GO * AROUND u.......",
+            [
+              "print(msg)",
+              "THERE IS NO WAY AROUND THE PIT."
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "CLIMB u....... * *",
+            [
+              "function(DeathByRugSpike)"
+            ]
+          ]
+        ]
+      ]
+    ],
+    "short_name": "PIT"
+  },
+  {
+    "name": "CEILIN",
+    "location": "Room_00",
+    "score": 0,
+    "bits": "u.......",
+    "short_name": "CEILING"
+  },
+  {
+    "name": "ALTAR",
+    "location": "Secret passage",
+    "score": 0,
+    "bits": "u.......",
+    "short_name": "ALTER ",
+    "handler_if_first_noun": [
+      [
+        "while_pass:",
+        [
+          [
+            "compare_input_to(phrase)",
+            "PULL u....... * *"
+          ],
+          [
+            "print(msg)",
+            "YOU CAN NOT MOVE THE ALTER FROM BENEATH IT, IT IS TOO HEAVY."
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "AMBIENT SOUNDS",
+    "location": "Room_1D",
+    "score": 0,
+    "bits": "u.......",
+    "handler_every_turn": [
+      [
+        "switch",
+        [
+          [
+            "is_less_equal_last_random(value)",
+            127,
+            [
+              "print2(msg)",
+              "YOU HEAR THE DISTANT CRIES OF WILD ANIMALS."
+            ]
+          ],
+          [
+            "is_less_equal_last_random(value)",
+            245,
+            [
+              "fail()"
+            ]
+          ],
+          [
+            "is_less_equal_last_random(value)",
+            255,
+            [
+              "print2(msg)",
+              "YOU ARE DOUSED BY A BRIEF TROPICAL RAIN SHOWER. "
+            ]
+          ]
+        ]
+      ]
+    ]
+  }
+]

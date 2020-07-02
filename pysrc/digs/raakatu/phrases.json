@@ -1,0 +1,469 @@
+[
+  {
+    "verb": "NORTH"
+  },
+  {
+    "verb": "SOUTH"
+  },
+  {
+    "verb": "EAST"
+  },
+  {
+    "verb": "WEST"
+  },
+  {
+    "verb": "GET",
+    "first_noun": "..C....."
+  },
+  {
+    "verb": "PICK",
+    "preposition": "UP",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "PICK",
+    "first_noun": "u.......",
+    "preposition": "UP"
+  },
+  {
+    "verb": "DROP",
+    "first_noun": "..C....."
+  },
+  {
+    "verb": "DROP",
+    "first_noun": "u.......",
+    "preposition": "IN",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "DROP",
+    "preposition": "OUT",
+    "second_noun": "u...A..."
+  },
+  {
+    "verb": "INVENT"
+  },
+  {
+    "verb": "READ",
+    "first_noun": ".....X.."
+  },
+  {
+    "verb": "ATTACK",
+    "first_noun": "...P....",
+    "preposition": "WITH",
+    "second_noun": ".v......"
+  },
+  {
+    "verb": "LOOK"
+  },
+  {
+    "verb": "LOOK",
+    "preposition": "AT",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "LOOK",
+    "preposition": "UNDER",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "LOOK",
+    "preposition": "IN",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "THROW",
+    "first_noun": ".v......",
+    "preposition": "AT",
+    "second_noun": "...P...."
+  },
+  {
+    "verb": "THROW",
+    "first_noun": "u.......",
+    "preposition": "IN",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "THROW",
+    "preposition": "DOWN",
+    "second_noun": "..C....."
+  },
+  {
+    "verb": "THROW",
+    "first_noun": "u.......",
+    "preposition": "TO",
+    "second_noun": "...P...."
+  },
+  {
+    "verb": "GIVE",
+    "first_noun": "u.......",
+    "preposition": "TO",
+    "second_noun": "...P...."
+  },
+  {
+    "verb": "EXAMIN",
+    "first_noun": "u......."
+  },
+  {
+    "verb": "EXAMIN",
+    "preposition": "IN",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "OPEN",
+    "first_noun": "u......."
+  },
+  {
+    "verb": "OPEN",
+    "first_noun": "u.......",
+    "preposition": "WITH",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "PULL",
+    "first_noun": "u......."
+  },
+  {
+    "verb": "PULL",
+    "preposition": "DOWN",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "PULL",
+    "preposition": "OUT",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "PULL",
+    "first_noun": "u.......",
+    "preposition": "OUT"
+  },
+  {
+    "verb": "PULL",
+    "preposition": "UP",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "PULL",
+    "first_noun": "u.......",
+    "preposition": "UP"
+  },
+  {
+    "verb": "LIGHT",
+    "first_noun": "u...A...",
+    "preposition": "WITH",
+    "second_noun": "u...A..."
+  },
+  {
+    "verb": "EAT",
+    "first_noun": "u......."
+  },
+  {
+    "verb": "BLOW",
+    "preposition": "OUT",
+    "second_noun": "u...A..."
+  },
+  {
+    "verb": "EXTING",
+    "first_noun": "u...A..."
+  },
+  {
+    "verb": "CLIMB",
+    "first_noun": "u......."
+  },
+  {
+    "verb": "CLIMB",
+    "preposition": "UP",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "CLIMB",
+    "preposition": "DOWN",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "CLIMB",
+    "preposition": "OVER",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "CLIMB",
+    "preposition": "ON",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "CLIMB",
+    "preposition": "IN"
+  },
+  {
+    "verb": "CLIMB",
+    "preposition": "IN",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "CLIMB",
+    "preposition": "OUT"
+  },
+  {
+    "verb": "CLIMB",
+    "preposition": "OUT",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "CLIMB",
+    "preposition": "UNDER",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "RUB",
+    "first_noun": "u......."
+  },
+  {
+    "verb": "DIAGNO"
+  },
+  {
+    "verb": "??"
+  },
+  {
+    "verb": "NORTH",
+    "preposition": "TO"
+  },
+  {
+    "verb": "SOUTH",
+    "preposition": "TO"
+  },
+  {
+    "verb": "EAST",
+    "preposition": "TO"
+  },
+  {
+    "verb": "WEST",
+    "preposition": "TO"
+  },
+  {
+    "verb": "DROP",
+    "preposition": "DOWN",
+    "second_noun": "..C....."
+  },
+  {
+    "verb": "DROP",
+    "first_noun": "..C.....",
+    "preposition": "DOWN"
+  },
+  {
+    "verb": "DROP",
+    "first_noun": "..C.....",
+    "preposition": "BEHIND",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "DROP",
+    "first_noun": "..C.....",
+    "preposition": "UNDER",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "DROP",
+    "first_noun": "..C.....",
+    "preposition": "ON",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "LOOK",
+    "preposition": "UP"
+  },
+  {
+    "verb": "LOOK",
+    "preposition": "DOWN"
+  },
+  {
+    "verb": "LOOK",
+    "first_noun": "u.......",
+    "preposition": "OVER"
+  },
+  {
+    "verb": "LOOK",
+    "preposition": "OVER",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "LOOK",
+    "preposition": "AROUND"
+  },
+  {
+    "verb": "LOOK",
+    "preposition": "BEHIND"
+  },
+  {
+    "verb": "LOOK",
+    "preposition": "AROUND",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "LOOK",
+    "preposition": "BEHIND",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "LOOK",
+    "preposition": "OUT"
+  },
+  {
+    "verb": "YES"
+  },
+  {
+    "verb": "NO"
+  },
+  {
+    "verb": "PLUGH"
+  },
+  {
+    "verb": "SCREAM"
+  },
+  {
+    "verb": "QUIT"
+  },
+  {
+    "verb": "LEAVE"
+  },
+  {
+    "verb": "LEAVE",
+    "first_noun": "..C....."
+  },
+  {
+    "verb": "GO"
+  },
+  {
+    "verb": "GO",
+    "preposition": "TO",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "GO",
+    "preposition": "IN",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "GO",
+    "preposition": "OUT",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "GO",
+    "preposition": "UNDER",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "GO",
+    "preposition": "UP",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "GO",
+    "preposition": "DOWN",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "GO",
+    "preposition": "AROUND",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "KICK",
+    "first_noun": "u......."
+  },
+  {
+    "verb": "KICK",
+    "preposition": "DOWN",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "KICK",
+    "preposition": "IN",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "FEED",
+    "first_noun": "...P....",
+    "preposition": "WITH",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "FEED",
+    "first_noun": "u.......",
+    "preposition": "TO",
+    "second_noun": "...P...."
+  },
+  {
+    "verb": "USE",
+    "first_noun": "u......."
+  },
+  {
+    "verb": "SCORE"
+  },
+  {
+    "verb": "LIFT",
+    "first_noun": "u......."
+  },
+  {
+    "verb": "WAIT"
+  },
+  {
+    "verb": "WAIT",
+    "preposition": "AROUND"
+  },
+  {
+    "verb": "GET",
+    "preposition": "UP"
+  },
+  {
+    "verb": "FIND",
+    "first_noun": "u......."
+  },
+  {
+    "verb": "JUMP",
+    "preposition": "OVER",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "JUMP",
+    "preposition": "IN",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "JUMP",
+    "preposition": "OUT",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "JUMP",
+    "preposition": "ON",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "STEP",
+    "preposition": "OVER",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "STEP",
+    "preposition": "IN",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "STEP",
+    "preposition": "OUT",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "STEP",
+    "preposition": "ON",
+    "second_noun": "u......."
+  },
+  {
+    "verb": "LOAD"
+  },
+  {
+    "verb": "SAVE"
+  }
+]

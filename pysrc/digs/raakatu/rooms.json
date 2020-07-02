@@ -1,119 +1,256 @@
-
 [
-
   {
     "name": "Small room granite walls",
     "description": "YOU ARE IN A SMALL ROOM WITH GRANITE WALLS AND FLOOR. THERE IS A SMALL OPENING TO THE EAST AND A LARGE HOLE IN THE CEILING.",
     "user_input_handler": [
-      "switch", "compare_input_to", 
-        "EAST * * *", 
-          ["move_ACTIVE_and_look", "Oriental rug"]              
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "EAST * * *",
+            [
+              "move_ACTIVE_and_look(room)",
+              "Oriental rug"
+            ]
+          ]
+        ]
+      ]
     ]
   },
-  
   {
     "name": "Oriental rug",
     "description": "YOU ARE IN A LARGE RECTANGULAR ROOM. ON THE FLOOR OF THE EAST SIDE OF THE ROOM IS AN INTRICATE ORIENTAL RUG STRETCHING BETWEEN THE NORTH AND SOUTH WALLS. IN THE EAST WALL IS A HUGE CARVED WOODEN DOOR. TO THE SOUTH, A SMALL HOLE LEADS TO A DARK PASSAGE WAY.",
     "user_input_handler": [
-      "switch", "compare_input_to", 
-        "WEST * * *",    
-          ["move_ACTIVE_and_look","small room granite walls"],
-        "SOUTH * * *",   
-          ["move_ACTIVE_and_look","Dark passage"],
-        "EAST * * *", 
-          ["while_pass",           
-            ["is_ACTIVE_this(object)","PLAYER",
-            "function(DeathByHiddenRugSpike)",
-            "function(ResetGame)"]
-          ]              
-      ]           
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "WEST * * *",
+            [
+              "move_ACTIVE_and_look(room)",
+              "Small room granite walls"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "SOUTH * * *",
+            [
+              "move_ACTIVE_and_look(room)",
+              "Dark passage"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "EAST * * *",
+            [
+              "while_pass:",
+              [
+                [
+                  "is_ACTIVE_this(object)",
+                  "PLAYER"
+                ],
+                [
+                  "function(DeathByHiddenRugSpike)"
+                ],
+                [
+                  "function(ResetGame)"
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    ]
   },
-  
   {
     "name": "Dark passage",
     "description": "YOU ARE IN A DARK PASSAGE WAY WHICH SLOPES UP AND TO THE SOUTH.",
-    "user_input_handler": [      
-      "switch", "compare_input_to",
-        "NORTH * * *",
-          ["move_ACTIVE_and_look","Oriental rug"],            
-        "SOUTH * * *",
-          ["move_ACTIVE_and_look","Top of a passage"]
-    ]         
+    "user_input_handler": [
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "NORTH * * *",
+            [
+              "move_ACTIVE_and_look(room)",
+              "Oriental rug"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "SOUTH * * *",
+            [
+              "move_ACTIVE_and_look(room)",
+              "Top of a passage"
+            ]
+          ]
+        ]
+      ]
+    ]
   },
-  
   {
     "name": "Top of a passage",
     "description": "YOU ARE AT THE TOP OF A PASSAGE WHICH SLOPES DOWN AND TO THE NORTH. THERE IS A CORRIDOR TO THE EAST AND ANOTHER TO THE WEST.",
     "user_input_handler": [
-      "switch", "compare_input_to",
-        "NORTH * * *",
-          ["move_ACTIVE_and_look","Dark passage"],
-        "WEST * * *",
-          ["move_ACTIVE_and_look","Small room"],
-        "EAST * * *",
-          ["move_ACTIVE_and_look","T-shaped room 1"]          
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "NORTH * * *",
+            [
+              "move_ACTIVE_and_look(room)",
+              "Dark passage"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "WEST * * *",
+            [
+              "move_ACTIVE_and_look(room)",
+              "Small room"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "EAST * * *",
+            [
+              "move_ACTIVE_and_look(room)",
+              "T-shaped room 1"
+            ]
+          ]
+        ]
+      ]
     ]
   },
-  
   {
     "name": "T-shaped room 1",
     "description": "THIS IS A T SHAPED ROOM WITH EXITS EAST, SOUTH, AND WEST.",
     "user_input_handler": [
-      "switch", "compare_input_to",
-        "WEST * * *",
-            ["move_ACTIVE_and_look","Top of a passage"],
-        "SOUTH * * *",
-            ["move_ACTIVE_and_look","Gray stone walls 1"],
-          "EAST * * *", 
-            ["while_pass",
-              ["move_ACTIVE_and_look","Triangular room",
-              "-- The ACTIVE object could be lots of things. For the player, we reset the game anyway. For anything else, we just ignore the statue (thus the reverse) --",
-              "execute_and_reverse_status", "while_pass",
-                  ["is_ACTIVE_this(object)","PLAYER",
-                 "is_in_pack_or_current_room(object)","STATUE",
-                 "function(DeathByStatue)"]
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "WEST * * *",
+            [
+              "move_ACTIVE_and_look(room)",
+              "Top of a passage"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "SOUTH * * *",
+            [
+              "move_ACTIVE_and_look(room)",
+              "Gray stone walls 1"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "EAST * * *",
+            [
+              "while_pass:",
+              [
+                [
+                  "move_ACTIVE_and_look(room)",
+                  "Triangular room"
+                ],
+                [
+                  "execute_and_reverse_status:"
+                ],
+                [
+                  "while_pass:",
+                  [
+                    [
+                      "is_ACTIVE_this(object)",
+                      "PLAYER"
+                    ],
+                    [
+                      "is_in_pack_or_current_room(object)",
+                      "STATUE"
+                    ],
+                    [
+                      "function(DeathByStatue)"
+                    ]
+                  ]
+                ]
               ]
             ]
+          ]
+        ]
+      ]
     ]
   },
-  
   {
     "name": "Gray stone walls 1",
     "description": "YOU ARE IN A ROOM WITH GRAY STONE WALLS. PASSAGES LEAD NORTH AND EAST.",
     "user_input_handler": [
-      "switch","compare_input_to",
-        "NORTH * * *",
-            ["move_ACTIVE_and_look","T-shaped room 1"],
-        "EAST * * *",
-            ["move_ACTIVE_and_look","Round room high walls 1"]
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "NORTH * * *",
+            [
+              "move_ACTIVE_and_look(room)",
+              "T-shaped room 1"
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "EAST * * *",
+            [
+              "move_ACTIVE_and_look(room)",
+              "Round room high walls 1"
+            ]
+          ]
+        ]
+      ]
     ]
   },
-  
-  
-  
-  
-  
-  
   {
     "name": "Round room high walls 1",
     "description": "THIS IS A ROUND ROOM WITH HIGH WALLS. THE ONLY OPENING IS TO THE WEST.",
     "user_input_handler": [
-      "switch", "compare_input_to",
-        "GET ..C..... * *",
-            ["while_pass:",              
-                ["is_first_noun(object)","RING",
-                "move_ACTIVE(room)","Round room high walls 2",
-                "fail()"
+      [
+        "switch",
+        [
+          [
+            "compare_input_to(phrase)",
+            "GET ..C..... * *",
+            [
+              "while_pass:",
+              [
+                [
+                  "is_first_noun(object)",
+                  "RING"
+                ],
+                [
+                  "move_ACTIVE(room)",
+                  "Round room high walls 2"
+                ],
+                [
+                  "fail()"
                 ]
-            ],
-        "WEST * * *",
-            ["move_ACTIVE_and_look","Gray stone walls 1"]
-    ]    
+              ]
+            ]
+          ],
+          [
+            "compare_input_to(phrase)",
+            "WEST * * *",
+            [
+              "move_ACTIVE_and_look(room)",
+              "Gray stone walls 1"
+            ]
+          ]
+        ]
+      ]
+    ]
   },
-  
-  
-  
-  
   {
     "name": "Triangular room",
     "description": "YOU ARE IN A TRIANGULAR ROOM WITH OPENINGS IN THE EAST AND WEST CORNERS. THERE IS A STATUE IN THE SOUTH CORNER WITH BOW AND ARROW.",
@@ -144,7 +281,8 @@
                   ]
                 ],
                 [
-                  "move_ACTIVE_and_look(room='T-shaped room 1')"
+                  "move_ACTIVE_and_look(room)",
+                  "T-shaped room 1"
                 ]
               ]
             ]
@@ -172,7 +310,8 @@
                   ]
                 ],
                 [
-                  "move_ACTIVE_and_look(room='South end central hall')"
+                  "move_ACTIVE_and_look(room)",
+                  "South end central hall"
                 ]
               ]
             ]
@@ -195,7 +334,8 @@
               "while_pass:",
               [
                 [
-                  "move_ACTIVE_and_look(room='Triangular room')"
+                  "move_ACTIVE_and_look(room)",
+                  "Triangular room"
                 ],
                 [
                   "execute_and_reverse_status:"
@@ -223,14 +363,16 @@
             "compare_input_to(phrase)",
             "NORTH * * *",
             [
-              "move_ACTIVE_and_look(room='North end central hall')"
+              "move_ACTIVE_and_look(room)",
+              "North end central hall"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "EAST * * *",
             [
-              "move_ACTIVE_and_look(room='T-shaped room 2')"
+              "move_ACTIVE_and_look(room)",
+              "T-shaped room 2"
             ]
           ]
         ]
@@ -248,21 +390,24 @@
             "compare_input_to(phrase)",
             "WEST * * *",
             [
-              "move_ACTIVE_and_look(room='South end central hall')"
+              "move_ACTIVE_and_look(room)",
+              "South end central hall"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "SOUTH * * *",
             [
-              "move_ACTIVE_and_look(room='Grey stone walls 2')"
+              "move_ACTIVE_and_look(room)",
+              "Grey stone walls 2"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "EAST * * *",
             [
-              "move_ACTIVE_and_look(room='Petite chamber')"
+              "move_ACTIVE_and_look(room)",
+              "Petite chamber"
             ]
           ]
         ]
@@ -280,14 +425,16 @@
             "compare_input_to(phrase)",
             "NORTH * * *",
             [
-              "move_ACTIVE_and_look(room='T-shaped room 2')"
+              "move_ACTIVE_and_look(room)",
+              "T-shaped room 2"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "EAST * * *",
             [
-              "move_ACTIVE_and_look(room='Round room high walls 2')"
+              "move_ACTIVE_and_look(room)",
+              "Round room high walls 2"
             ]
           ]
         ]
@@ -325,7 +472,8 @@
             "compare_input_to(phrase)",
             "WEST * * *",
             [
-              "move_ACTIVE_and_look(room='Grey stone walls 2')"
+              "move_ACTIVE_and_look(room)",
+              "Grey stone walls 2"
             ]
           ]
         ]
@@ -343,14 +491,16 @@
             "compare_input_to(phrase)",
             "WEST * * *",
             [
-              "move_ACTIVE_and_look(room='T-shaped room 2')"
+              "move_ACTIVE_and_look(room)",
+              "T-shaped room 2"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "NORTH * * *",
             [
-              "move_ACTIVE_and_look(room='Smells of decaying flesh')"
+              "move_ACTIVE_and_look(room)",
+              "Smells of decaying flesh"
             ]
           ]
         ]
@@ -368,7 +518,8 @@
             "compare_input_to(phrase)",
             "SOUTH * * *",
             [
-              "move_ACTIVE_and_look(room='Petite chamber')"
+              "move_ACTIVE_and_look(room)",
+              "Petite chamber"
             ]
           ],
           [
@@ -420,7 +571,8 @@
                   ]
                 ],
                 [
-                  "move_ACTIVE_and_look(room='Tall room')"
+                  "move_ACTIVE_and_look(room)",
+                  "Tall room"
                 ]
               ]
             ]
@@ -440,7 +592,8 @@
             "compare_input_to(phrase)",
             "SOUTH * * *",
             [
-              "move_ACTIVE_and_look(room='Smells of decaying flesh')"
+              "move_ACTIVE_and_look(room)",
+              "Smells of decaying flesh"
             ]
           ]
         ]
@@ -458,14 +611,16 @@
             "compare_input_to(phrase)",
             "SOUTH * * *",
             [
-              "move_ACTIVE_and_look(room='South end central hall')"
+              "move_ACTIVE_and_look(room)",
+              "South end central hall"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "EAST * * *",
             [
-              "move_ACTIVE_and_look(room='Very small room')"
+              "move_ACTIVE_and_look(room)",
+              "Very small room"
             ]
           ],
           [
@@ -491,7 +646,8 @@
                   "while_pass:",
                   [
                     [
-                      "move_ACTIVE_and_look(room='Vault')"
+                      "move_ACTIVE_and_look(room)",
+                      "Vault"
                     ],
                     [
                       "move_to(object,room)",
@@ -514,7 +670,8 @@
             "compare_input_to(phrase)",
             "WEST * * *",
             [
-              "move_ACTIVE_and_look(room='Entrance long dark tunnel west')"
+              "move_ACTIVE_and_look(room)",
+              "Entrance long dark tunnel west"
             ]
           ]
         ]
@@ -551,7 +708,8 @@
                   "while_pass:",
                   [
                     [
-                      "move_ACTIVE_and_look(room='North end central hall')"
+                      "move_ACTIVE_and_look(room)",
+                      "North end central hall"
                     ],
                     [
                       "move_to(object,room)",
@@ -628,14 +786,16 @@
             "compare_input_to(phrase)",
             "EAST * * *",
             [
-              "move_ACTIVE_and_look(room='North end central hall')"
+              "move_ACTIVE_and_look(room)",
+              "North end central hall"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "WEST * * *",
             [
-              "move_ACTIVE_and_look(room='Dark tunnel')"
+              "move_ACTIVE_and_look(room)",
+              "Dark tunnel"
             ]
           ]
         ]
@@ -653,14 +813,16 @@
             "compare_input_to(phrase)",
             "EAST * * *",
             [
-              "move_ACTIVE_and_look(room='Entrance long dark tunnel west')"
+              "move_ACTIVE_and_look(room)",
+              "Entrance long dark tunnel west"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "WEST * * *",
             [
-              "move_ACTIVE_and_look(room='Entrance long dark tunnel east')"
+              "move_ACTIVE_and_look(room)",
+              "Entrance long dark tunnel east"
             ]
           ]
         ]
@@ -678,7 +840,8 @@
             "compare_input_to(phrase)",
             "EAST * * *",
             [
-              "move_ACTIVE_and_look(room='Dark tunnel')"
+              "move_ACTIVE_and_look(room)",
+              "Dark tunnel"
             ]
           ],
           [
@@ -709,7 +872,8 @@
                   ]
                 ],
                 [
-                  "move_ACTIVE_and_look(room='Large room')"
+                  "move_ACTIVE_and_look(room)",
+                  "Large room"
                 ]
               ]
             ]
@@ -743,7 +907,8 @@
             "compare_input_to(phrase)",
             "EAST * * *",
             [
-              "move_ACTIVE_and_look(room='Entrance long dark tunnel east')"
+              "move_ACTIVE_and_look(room)",
+              "Entrance long dark tunnel east"
             ]
           ]
         ]
@@ -761,28 +926,32 @@
             "compare_input_to(phrase)",
             "NORTH * * *",
             [
-              "move_ACTIVE_and_look(room='Dense damp dark jungle')"
+              "move_ACTIVE_and_look(room)",
+              "Dense damp dark jungle"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "SOUTH * * *",
             [
-              "move_ACTIVE_and_look(room='Damp dark dense jungle')"
+              "move_ACTIVE_and_look(room)",
+              "Damp dark dense jungle"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "WEST * * *",
             [
-              "move_ACTIVE_and_look(room='Dark dense damp jungle')"
+              "move_ACTIVE_and_look(room)",
+              "Dark dense damp jungle"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "EAST * * *",
             [
-              "move_ACTIVE_and_look(room='Damp dark dense jungle')"
+              "move_ACTIVE_and_look(room)",
+              "Damp dark dense jungle"
             ]
           ]
         ]
@@ -800,28 +969,32 @@
             "compare_input_to(phrase)",
             "NORTH * * *",
             [
-              "move_ACTIVE_and_look(room='Dark damp dense jungle')"
+              "move_ACTIVE_and_look(room)",
+              "Dark damp dense jungle"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "SOUTH * * *",
             [
-              "move_ACTIVE_and_look(room='Dense dark damp jungle')"
+              "move_ACTIVE_and_look(room)",
+              "Dense dark damp jungle"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "EAST * * *",
             [
-              "move_ACTIVE_and_look(room='Dense damp dark jungle')"
+              "move_ACTIVE_and_look(room)",
+              "Dense damp dark jungle"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "WEST * * *",
             [
-              "move_ACTIVE_and_look(room='See east wall')"
+              "move_ACTIVE_and_look(room)",
+              "See east wall"
             ]
           ]
         ]
@@ -839,28 +1012,32 @@
             "compare_input_to(phrase)",
             "NORTH * * *",
             [
-              "move_ACTIVE_and_look(room='See north wall')"
+              "move_ACTIVE_and_look(room)",
+              "See north wall"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "SOUTH * * *",
             [
-              "move_ACTIVE_and_look(room='Stands south wall')"
+              "move_ACTIVE_and_look(room)",
+              "Stands south wall"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "EAST * * *",
             [
-              "move_ACTIVE_and_look(room='Dark dense damp jungle')"
+              "move_ACTIVE_and_look(room)",
+              "Dark dense damp jungle"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "WEST * * *",
             [
-              "move_ACTIVE_and_look(room='At east wall')"
+              "move_ACTIVE_and_look(room)",
+              "At east wall"
             ]
           ]
         ]
@@ -878,28 +1055,32 @@
             "compare_input_to(phrase)",
             "NORTH * * *",
             [
-              "move_ACTIVE_and_look(room='At south wall')"
+              "move_ACTIVE_and_look(room)",
+              "At south wall"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "SOUTH * * *",
             [
-              "move_ACTIVE_and_look(room='Dense dark damp jungle')"
+              "move_ACTIVE_and_look(room)",
+              "Dense dark damp jungle"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "EAST * * *",
             [
-              "move_ACTIVE_and_look(room='See east wall')"
+              "move_ACTIVE_and_look(room)",
+              "See east wall"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "WEST * * *",
             [
-              "move_ACTIVE_and_look(room='See bronze gates')"
+              "move_ACTIVE_and_look(room)",
+              "See bronze gates"
             ]
           ]
         ]
@@ -917,28 +1098,32 @@
             "compare_input_to(phrase)",
             "NORTH * * *",
             [
-              "move_ACTIVE_and_look(room='See north wall')"
+              "move_ACTIVE_and_look(room)",
+              "See north wall"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "SOUTH * * *",
             [
-              "move_ACTIVE_and_look(room='Stands south wall')"
+              "move_ACTIVE_and_look(room)",
+              "Stands south wall"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "EAST * * *",
             [
-              "move_ACTIVE_and_look(room='Standing west entrance')"
+              "move_ACTIVE_and_look(room)",
+              "Standing west entrance"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "WEST * * *",
             [
-              "move_ACTIVE_and_look(room='Damp dark dense jungle')"
+              "move_ACTIVE_and_look(room)",
+              "Damp dark dense jungle"
             ]
           ]
         ]
@@ -956,28 +1141,32 @@
             "compare_input_to(phrase)",
             "NORTH * * *",
             [
-              "move_ACTIVE_and_look(room='Dark damp dense jungle')"
+              "move_ACTIVE_and_look(room)",
+              "Dark damp dense jungle"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "SOUTH * * *",
             [
-              "move_ACTIVE_and_look(room='At north wall')"
+              "move_ACTIVE_and_look(room)",
+              "At north wall"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "WEST * * *",
             [
-              "move_ACTIVE_and_look(room='See bronze gates')"
+              "move_ACTIVE_and_look(room)",
+              "See bronze gates"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "EAST * * *",
             [
-              "move_ACTIVE_and_look(room='See east wall')"
+              "move_ACTIVE_and_look(room)",
+              "See east wall"
             ]
           ]
         ]
@@ -995,21 +1184,24 @@
             "compare_input_to(phrase)",
             "NORTH * * *",
             [
-              "move_ACTIVE_and_look(room='At north wall')"
+              "move_ACTIVE_and_look(room)",
+              "At north wall"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "SOUTH * * *",
             [
-              "move_ACTIVE_and_look(room='At south wall')"
+              "move_ACTIVE_and_look(room)",
+              "At south wall"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "WEST * * *",
             [
-              "move_ACTIVE_and_look(room='See bronze gates')"
+              "move_ACTIVE_and_look(room)",
+              "See bronze gates"
             ]
           ]
         ]
@@ -1027,14 +1219,16 @@
             "compare_input_to(phrase)",
             "NORTH * * *",
             [
-              "move_ACTIVE_and_look(room='See north wall')"
+              "move_ACTIVE_and_look(room)",
+              "See north wall"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "EAST * * *",
             [
-              "move_ACTIVE_and_look(room='At east wall')"
+              "move_ACTIVE_and_look(room)",
+              "At east wall"
             ]
           ],
           [
@@ -1110,7 +1304,8 @@
                           "Room_00"
                         ],
                         [
-                          "move_ACTIVE_and_look(room='Small room granite walls')"
+                          "move_ACTIVE_and_look(room)",
+                          "Small room granite walls"
                         ]
                       ]
                     ],
@@ -1127,7 +1322,8 @@
             "compare_input_to(phrase)",
             "WEST * * *",
             [
-              "move_ACTIVE_and_look(room='Standing west entrance')"
+              "move_ACTIVE_and_look(room)",
+              "Standing west entrance"
             ]
           ]
         ]
@@ -1145,21 +1341,24 @@
             "compare_input_to(phrase)",
             "NORTH * * *",
             [
-              "move_ACTIVE_and_look(room='At north wall')"
+              "move_ACTIVE_and_look(room)",
+              "At north wall"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "SOUTH * * *",
             [
-              "move_ACTIVE_and_look(room='At south wall')"
+              "move_ACTIVE_and_look(room)",
+              "At south wall"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "EAST * * *",
             [
-              "move_ACTIVE_and_look(room='See east wall')"
+              "move_ACTIVE_and_look(room)",
+              "See east wall"
             ]
           ]
         ]
@@ -1177,21 +1376,24 @@
             "compare_input_to(phrase)",
             "WEST * * *",
             [
-              "move_ACTIVE_and_look(room='Standing west entrance')"
+              "move_ACTIVE_and_look(room)",
+              "Standing west entrance"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "EAST * * *",
             [
-              "move_ACTIVE_and_look(room='At east wall')"
+              "move_ACTIVE_and_look(room)",
+              "At east wall"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "SOUTH * * *",
             [
-              "move_ACTIVE_and_look(room='Stands south wall')"
+              "move_ACTIVE_and_look(room)",
+              "Stands south wall"
             ]
           ]
         ]
@@ -1209,7 +1411,8 @@
             "compare_input_to(phrase)",
             "WEST * * *",
             [
-              "move_ACTIVE_and_look(room='North end central hall')"
+              "move_ACTIVE_and_look(room)",
+              "North end central hall"
             ]
           ]
         ]
@@ -1227,7 +1430,8 @@
             "compare_input_to(phrase)",
             "EAST * * *",
             [
-              "move_ACTIVE_and_look(room='Top of a passage')"
+              "move_ACTIVE_and_look(room)",
+              "Top of a passage"
             ]
           ]
         ]
@@ -1245,28 +1449,32 @@
             "compare_input_to(phrase)",
             "EAST * * *",
             [
-              "move_ACTIVE_and_look(room='Damp dark dense jungle')"
+              "move_ACTIVE_and_look(room)",
+              "Damp dark dense jungle"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "NORTH * * *",
             [
-              "move_ACTIVE_and_look(room='Dense dark damp jungle')"
+              "move_ACTIVE_and_look(room)",
+              "Dense dark damp jungle"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "SOUTH * * *",
             [
-              "move_ACTIVE_and_look(room='Dense damp dark jungle')"
+              "move_ACTIVE_and_look(room)",
+              "Dense damp dark jungle"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "WEST * * *",
             [
-              "move_ACTIVE_and_look(room='Dark dense damp jungle')"
+              "move_ACTIVE_and_look(room)",
+              "Dark dense damp jungle"
             ]
           ]
         ]
@@ -1284,28 +1492,32 @@
             "compare_input_to(phrase)",
             "EAST * * *",
             [
-              "move_ACTIVE_and_look(room='Damp dark dense jungle')"
+              "move_ACTIVE_and_look(room)",
+              "Damp dark dense jungle"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "NORTH * * *",
             [
-              "move_ACTIVE_and_look(room='Dark damp dense jungle')"
+              "move_ACTIVE_and_look(room)",
+              "Dark damp dense jungle"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "SOUTH * * *",
             [
-              "move_ACTIVE_and_look(room='Dense dark damp jungle')"
+              "move_ACTIVE_and_look(room)",
+              "Dense dark damp jungle"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "WEST * * *",
             [
-              "move_ACTIVE_and_look(room='Dark dense damp jungle')"
+              "move_ACTIVE_and_look(room)",
+              "Dark dense damp jungle"
             ]
           ]
         ]
@@ -1323,28 +1535,32 @@
             "compare_input_to(phrase)",
             "EAST * * *",
             [
-              "move_ACTIVE_and_look(room='Dense damp dark jungle')"
+              "move_ACTIVE_and_look(room)",
+              "Dense damp dark jungle"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "NORTH * * *",
             [
-              "move_ACTIVE_and_look(room='Dark damp dense jungle')"
+              "move_ACTIVE_and_look(room)",
+              "Dark damp dense jungle"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "SOUTH * * *",
             [
-              "move_ACTIVE_and_look(room='Dense dark damp jungle')"
+              "move_ACTIVE_and_look(room)",
+              "Dense dark damp jungle"
             ]
           ],
           [
             "compare_input_to(phrase)",
             "WEST * * *",
             [
-              "move_ACTIVE_and_look(room='Dense damp dark jungle')"
+              "move_ACTIVE_and_look(room)",
+              "Dense damp dark jungle"
             ]
           ]
         ]
@@ -1362,7 +1578,8 @@
             "compare_input_to(phrase)",
             "EAST * * *",
             [
-              "move_ACTIVE_and_look(room='End of the passage')"
+              "move_ACTIVE_and_look(room)",
+              "End of the passage"
             ]
           ]
         ]
@@ -1380,7 +1597,8 @@
             "compare_input_to(phrase)",
             "WEST * * *",
             [
-              "move_ACTIVE_and_look(room='Secret passage')"
+              "move_ACTIVE_and_look(room)",
+              "Secret passage"
             ]
           ],
           [

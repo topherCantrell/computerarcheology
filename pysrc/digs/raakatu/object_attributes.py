@@ -21,7 +21,10 @@ class ShortName:
         print(U.indent_code(s,ident))
         pos += len(pre)
         pos = RTC.PrintMessage.print_assembly_text(pos,ident+1,self._raw_data,self._text)             
-        return pos    
+        return pos   
+    
+    def tojson(self,parent):
+        parent['short_name'] = self._text 
  
 class Description:
     
@@ -116,8 +119,12 @@ class HandlerAsSecondNoun:
         return pos
     
     def tojson(self,parent):
-        parent['handler_if_second_noun'] = 'TODO'
-        raise Exception('IMPLEMENT ME')
+        
+        script = []
+        parent['handler_if_second_noun'] = script
+        for com in self._script:
+            script.append(com.tojson())
+        
    
 class HandlerAsFirstNoun:
     
@@ -151,8 +158,11 @@ class HandlerAsFirstNoun:
         return pos
     
     def tojson(self,parent):
-        parent['handler_if_first_noun'] = 'TODO'
-        raise Exception('IMPLEMENT ME')
+        script = []
+        parent['handler_if_first_noun'] = script
+        for com in self._script:
+            script.append(com.tojson())
+        
   
 class HandlerTurn:
     
@@ -186,8 +196,10 @@ class HandlerTurn:
         return pos
     
     def tojson(self,parent):
-        parent['handler_every_turn'] = 'TODO'
-        raise Exception('IMPLEMENT ME')
+        script = []
+        parent['handler_every_turn'] = script
+        for com in self._script:
+            script.append(com.tojson())        
     
 class HandlerDeath:
     
@@ -221,9 +233,11 @@ class HandlerDeath:
         return pos
     
     def tojson(self,parent):
-        parent['on_death_handler'] = 'TODO'
-        raise Exception('IMPLEMENT ME')
-    
+        script = []
+        parent['on_death_handler'] = script
+        for com in self._script:
+            script.append(com.tojson())        
+            
 class HitPoints:
     
     command_value = 9
@@ -247,8 +261,8 @@ class HitPoints:
         return pos+2
     
     def tojson(self,parent):
-        parent['hit_points'] = 'TODO'
-        raise Exception('IMPLEMENT ME')
+        parent['max_points'] = self._max
+        parent['current_points'] = self._current      
 
 def decode_noun(n,collapse_zero=True):
     if collapse_zero and n==0:
