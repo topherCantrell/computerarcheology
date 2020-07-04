@@ -13,11 +13,11 @@
 # Start
 
 ```code
-4300: 31 FF 7F       LD      SP,$7FFF        
+4300: 31 FF 7F       LD      SP,$7FFF        ; Stack starts at the end of RAM
 4303: 21 80 3F       LD      HL,$3F80        
 4306: 22 20 40       LD      ($4020),HL      
-4309: 3E 1D          LD      A,$1D           
-430B: 32 20 50       LD      ($5020),A       
+4309: 3E 1D          LD      A,$1D           ; Player object ...
+430B: 32 20 50       LD      ($5020),A       ; ... is the active object number
 430E: 3E 96          LD      A,$96           
 4310: 47             LD      B,A             
 4311: 32 23 50       LD      ($5023),A       
@@ -27,21 +27,21 @@
 431D: CD D0 49       CALL    $49D0           
 4320: 31 FF 7F       LD      SP,$7FFF        
 4323: CD 8F 47       CALL    $478F           
-4326: 97             SUB     A               
-4327: 32 05 50       LD      ($5005),A       
-432A: 32 08 50       LD      ($5008),A       
-432D: 32 0A 50       LD      ($500A),A       
-4330: 32 00 50       LD      ($5000),A       
-4333: 32 01 50       LD      ($5001),A       
-4336: 32 07 50       LD      ($5007),A       
-4339: 32 06 50       LD      ($5006),A       
-433C: 32 02 50       LD      ($5002),A       
-433F: 32 03 50       LD      ($5003),A       
-4342: 32 0D 50       LD      ($500D),A       
-4345: 32 11 50       LD      ($5011),A       
-4348: 32 17 50       LD      ($5017),A       
-434B: 3E 1D          LD      A,$1D           
-434D: 32 20 50       LD      ($5020),A       
+4326: 97             SUB     A               ; Make a zero
+4327: 32 05 50       LD      ($5005),A       ; Clear ...
+432A: 32 08 50       LD      ($5008),A       ; ...
+432D: 32 0A 50       LD      ($500A),A       ; ...
+4330: 32 00 50       LD      ($5000),A       ; ...
+4333: 32 01 50       LD      ($5001),A       ; ...
+4336: 32 07 50       LD      ($5007),A       ; ...
+4339: 32 06 50       LD      ($5006),A       ; ...
+433C: 32 02 50       LD      ($5002),A       ; ...
+433F: 32 03 50       LD      ($5003),A       ; ...
+4342: 32 0D 50       LD      ($500D),A       ; ...
+4345: 32 11 50       LD      ($5011),A       ; ...
+4348: 32 17 50       LD      ($5017),A       ; ... game state
+434B: 3E 1D          LD      A,$1D           ; Player object ...
+434D: 32 20 50       LD      ($5020),A       ; ... is the active object number
 4350: 47             LD      B,A             
 4351: CD 83 4E       CALL    $4E83           
 4354: 22 21 50       LD      ($5021),HL      
@@ -95,24 +95,27 @@
 43B7: 4E             LD      C,(HL)          
 43B8: 23             INC     HL              
 43B9: E5             PUSH    HL              
-43BA: 3D             DEC     A               
-43BB: C2 E2 43       JP      NZ,$43E2        
-43BE: 21 B7 50       LD      HL,$50B7        
-43C1: CD ED 46       CALL    $46ED           
-43C4: D2 DB 43       JP      NC,$43DB        
-43C7: CD 05 47       CALL    $4705           
-43CA: CD 19 47       CALL    $4719           
-43CD: D2 DB 43       JP      NC,$43DB        
-43D0: 3A 01 50       LD      A,($5001)       
-43D3: BE             CP      (HL)            
-43D4: 23             INC     HL              
-43D5: 7E             LD      A,(HL)          
-43D6: 23             INC     HL              
-43D7: C2 CA 43       JP      NZ,$43CA        
-43DA: 47             LD      B,A             
-43DB: 78             LD      A,B             
-43DC: 32 01 50       LD      ($5001),A       
-43DF: C3 35 44       JP      $4435           
+
+43BA: 3D             DEC     A               ; List 1? Verbs?
+43BB: C2 E2 43       JP      NZ,$43E2        ; No ... continue
+43BE: 21 B7 50       LD      HL,$50B7        ; Multi verb translation list (empty)
+43C1: CD ED 46       CALL    $46ED           ; Look for an entry for the given verb
+43C4: D2 DB 43       JP      NC,$43DB        ; No entry ... use the word as-is
+43C7: CD 05 47       CALL    $4705           ; Skip length of entry
+43CA: CD 19 47       CALL    $4719           ; End of list?
+43CD: D2 DB 43       JP      NC,$43DB        ; Yes ... this input is the verb
+43D0: 3A 01 50       LD      A,($5001)       ; Does the current verb match ...
+43D3: BE             CP      (HL)            ; ... this entry?
+43D4: 23             INC     HL              ; Bump to next
+43D5: 7E             LD      A,(HL)          ; Get replacement
+43D6: 23             INC     HL              ; Bump to next
+43D7: C2 CA 43       JP      NZ,$43CA        ; It does not match ... keep looking
+43DA: 47             LD      B,A             ; This entry from the table is the new word
+;
+43DB: 78             LD      A,B             ; Store the ...
+43DC: 32 01 50       LD      ($5001),A       ; ... new verb
+43DF: C3 35 44       JP      $4435           ; Continue with next word
+
 43E2: 3D             DEC     A               
 43E3: C2 1F 44       JP      NZ,$441F        
 43E6: 3A 03 50       LD      A,($5003)       
@@ -2226,6 +2229,8 @@ InputWordTables:
 564C: 02 4F 4E 0C               ; ON       0C
 5650: 00
 ```
+
+## Object Data
 
 ```
 ; 5651 - 681F

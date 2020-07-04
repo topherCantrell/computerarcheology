@@ -1,3 +1,5 @@
+import tools.format as FORM
+
 def line_to_data(line):
 
     if ';' in line:
@@ -33,6 +35,21 @@ def line_to_data(line):
 
     return org, ret
 
+def get_binary_lines(content,origin):
+    
+    data = bytearray()
+
+    for line in content:
+        org, d = line_to_data(line)
+        if d != None:
+            if org != origin:
+                raise Exception("Origin does not match. Expected " +
+                                FORM.shex4(origin) + " but got " + FORM.shex4(org))
+            data.extend(d)
+            origin = origin + len(d)
+
+    return data
+
 
 def get_binary(file_name, origin):
     with open(file_name) as file:
@@ -45,7 +62,7 @@ def get_binary(file_name, origin):
         if d != None:
             if org != origin:
                 raise Exception("Origin does not match. Expected " +
-                                hex(origin) + " but got " + hex(org))
+                                FORM.shex4(origin) + " but got " + FORM.shex4(org))
             data.extend(d)
             origin = origin + len(d)
 
@@ -56,31 +73,25 @@ def compare_source_to_binary(file_name_src, file_name_bin, origin):
     with open(file_name_bin, mode='rb') as file:
         bindata = file.read()
     srcdata = get_binary(file_name_src, origin)
-
-    return len(bindata) == len(srcdata), (bindata == srcdata)
-
-
-if __name__ == '__main__':
-
-    src = '../../content/CoCo/MegaBug/Code.md'
-    bin = '../../content/CoCo/MegaBug/MegaBug.bin'
-    org = 0xC000
-
-    #src = '../../content/Atari2600/Entombed/Code.md'
-    #bin = '../../content/Atari2600/Entombed/Entombed.bin'
-    #org = 0xB000
-
-    print(compare_source_to_binary(src, bin, org))
-
-    """
-    src = '../../content/Coco/MegaBug/Code.md'
-    org = 0xC000
-    bin = get_binary(src,org)
-    xpos = 0
-    for b in bin:
-        h = '0x{:02X},'.format(b)
-        print(h,end='')
-        xpos+=1
-        if xpos%16 == 0:
-            print()
-    """
+    
+    if len(bindata) == len(srcdata) and (bindata == srcdata):
+        return True
+    
+    if len(bindata)!=len(srcdata):
+        print('Binary length:',FORM.shex4(len(bindata)))
+        print('Code length  :',FORM.shex4(len(srcdata)))
+        
+    mx = len(bindata)
+    if len(srcdata)<mx:
+        mx = len(srcdata)
+    fd = -1
+    for i in range(mx):
+        if srcdata[i]!=bindata[i]:
+            fd = i
+            print('here')
+            break
+        
+    if fd>0:
+        print('First difference:',FORM.shex4(origin+fd))
+    
+    return False

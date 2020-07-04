@@ -40,9 +40,9 @@ class CommonCommand:
     def get_assembly(self):
         return bytes([self._number])
     
-    def print_assembly(self,pos,ident):        
+    def print_assembly(self,pos,ident,out):        
         s = U.hex4(pos)+': '+U.hex2(self._number)+' ; '+U.hex2(self._number)+'('+DECODE_HELPER(self._number)+')'
-        print(U.indent_code(s,ident))         
+        out.append(U.indent_code(s,ident))         
         return pos+1
     
     def tojson(self):
@@ -50,7 +50,7 @@ class CommonCommand:
     
 class BaseCommand:
     
-    def get_assembly(self):        
+    def get_assembly(self,_out):        
         ret = bytes([self.command_value])
         x = self.command_length
         if x is None:
@@ -88,9 +88,9 @@ class MoveActiveObjectToRoom(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value,self._room])   
     
-    def print_assembly(self,pos,ident):        
+    def print_assembly(self,pos,ident,out):        
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._room)+' ; '+self.command_name+' room='+U.hex2(self._room)+'('+DECODE_ROOM(self._room) +')'
-        print(U.indent_code(s,ident))       
+        out.append(U.indent_code(s,ident))       
         return pos+2
     
     def tojson(self):
@@ -109,9 +109,9 @@ class PrintInventory(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value])   
     
-    def print_assembly(self,pos,ident):  
+    def print_assembly(self,pos,ident,out):  
         s =  U.hex4(pos)+': '+U.hex2(self.command_value)+' ; '+self.command_name     
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+1
     
     def tojson(self):
@@ -128,9 +128,9 @@ class UnknownCommand2(BaseCommand):
         self._raw_data = data           
         self._unknown = data[0]
         
-    def print_assembly(self,pos,ident):  
+    def print_assembly(self,pos,ident,out):  
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._unknown)+' ; '+self.command_name+' unknown='+U.hex2(self._unknown)      
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+2
     
     def tojson(self):
@@ -151,9 +151,9 @@ class UnknownCommand22(BaseCommand):
         self._raw_data = data     
         self._unknown = data[0]
         
-    def print_assembly(self,pos,ident):        
+    def print_assembly(self,pos,ident,out):        
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._unknown)+' ; '+self.command_name+' unknown='+U.hex2(self._unknown)
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+2
     
     @classmethod
@@ -176,9 +176,9 @@ class UnknownCommand28(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value])    
     
-    def print_assembly(self,pos,ident):   
+    def print_assembly(self,pos,ident,out):   
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' ; '+self.command_name      
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+1
     
     def tojson(self):
@@ -197,9 +197,9 @@ class UnknownCommand27(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value])   
     
-    def print_assembly(self,pos,ident):        
+    def print_assembly(self,pos,ident,out):        
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' ; '+self.command_name
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+1
     
     def tojson(self):
@@ -218,9 +218,9 @@ class EndlessLoop(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value])   
     
-    def print_assembly(self,pos,ident):       
+    def print_assembly(self,pos,ident,out):       
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' ; '+self.command_name 
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+1
     
     def tojson(self):
@@ -239,9 +239,9 @@ class PrintScore(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value])   
     
-    def print_assembly(self,pos,ident):        
+    def print_assembly(self,pos,ident,out):        
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' ; '+self.command_name
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+1
     
     def tojson(self):
@@ -260,9 +260,9 @@ class PrintRoomDescription(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value])   
     
-    def print_assembly(self,pos,ident):    
+    def print_assembly(self,pos,ident,out):    
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' ; '+self.command_name    
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+1
     
     def tojson(self):
@@ -281,9 +281,9 @@ class SetVarObjectToSecondNoun(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value])   
     
-    def print_assembly(self,pos,ident):        
+    def print_assembly(self,pos,ident,out):        
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' ; '+self.command_name
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+1
     
     def tojson(self):
@@ -295,9 +295,9 @@ class DropObject(BaseCommand):
     command_name = 'drop_VAR()'
     command_length = 0
     
-    def print_assembly(self,pos,ident):   
+    def print_assembly(self,pos,ident,out):   
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' ; '+self.command_name    
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+1
     
     def parse_binary(self,data):    
@@ -323,9 +323,9 @@ class SetVarObjectToFirstNoun(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value])     
     
-    def print_assembly(self,pos,ident):        
+    def print_assembly(self,pos,ident,out):        
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' ; '+self.command_name
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+1
     
     def tojson(self):
@@ -345,9 +345,9 @@ class AttackObject(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value,self._points])   
     
-    def print_assembly(self,pos,ident):       
+    def print_assembly(self,pos,ident,out):       
         s =  U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._points)+' ; '+self.command_name+' points='+U.hex2(self._points)
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+2
     
     def tojson(self):
@@ -371,9 +371,9 @@ class CompareObjectToSecondNoun(BaseCommand):
     def get_switch_comment(cs,cdata):
         return cs.command_name+' object='+U.hex2(cdata[0])+'('+DECODE_NOUN(cdata[0])+')'
     
-    def print_assembly(self,pos,ident):        
+    def print_assembly(self,pos,ident,out):        
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._object)+' ; '+self.command_name+' object='+U.hex2(self._object)+'('+DECODE_NOUN(self._object)+')'
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+2
     
     @classmethod
@@ -397,9 +397,9 @@ class MoveActiveObjectToRoomAndLook(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value,self._room])
     
-    def print_assembly(self,pos,ident):      
+    def print_assembly(self,pos,ident,out):      
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._room)+' ; '+self.command_name+' room='+U.hex2(self._room)+'('+DECODE_ROOM(self._room)+')'
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+2
     
     def tojson(self):
@@ -419,9 +419,9 @@ class PrintSecondNounShortName(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value])   
     
-    def print_assembly(self,pos,ident):        
+    def print_assembly(self,pos,ident,out):        
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' ; '+self.command_name
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+1
     
     def tojson(self):
@@ -440,9 +440,9 @@ class PrintVarShortName(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value])   
     
-    def print_assembly(self,pos,ident):        
+    def print_assembly(self,pos,ident,out):        
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' ; '+self.command_name
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+1
     
     def tojson(self):
@@ -462,9 +462,9 @@ class CheckObjectBits(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value,self._bits])   
     
-    def print_assembly(self,pos,ident):     
+    def print_assembly(self,pos,ident,out):     
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._bits)+' ; '+self.command_name+' bits='+U.hex2(self._bits)+'('+DECODE_BITS(self._bits)+')'
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+2
     
     def tojson(self):
@@ -486,7 +486,7 @@ class ExecutePhrase(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value,self._phrase,self._first_noun,self._second_noun])
     
-    def print_assembly(self,pos,ident):     
+    def print_assembly(self,pos,ident,out):     
         
         fn = '00'
         if self._first_noun:
@@ -497,7 +497,7 @@ class ExecutePhrase(BaseCommand):
         
         s = (U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._phrase)+' '+U.hex2(self._first_noun)+' '+U.hex2(self._second_noun)+
              ' ; '+self.command_name+' phrase='+DECODE_PHRASE(self._phrase)+' firstNoun='+fn+' secondNoun='+sn)
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+4
     
     def tojson(self):
@@ -516,9 +516,9 @@ class RestartGame(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value])   
     
-    def print_assembly(self,pos,ident):        
+    def print_assembly(self,pos,ident,out):        
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' ; '+self.command_name
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+1
     
     def tojson(self):
@@ -542,9 +542,9 @@ class CheckActiveObject(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value,self._object])    
     
-    def print_assembly(self,pos,ident):    
+    def print_assembly(self,pos,ident,out):    
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._object)+' ; '+self.command_name+' object='+U.hex2(self._object)+'('+DECODE_NOUN(self._object)+')'    
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+2
     
     @classmethod
@@ -567,9 +567,9 @@ class ProcessPhraseByRoomFirstSecond(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value])
     
-    def print_assembly(self,pos,ident):    
+    def print_assembly(self,pos,ident,out):    
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' ; '+self.command_name    
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+1
     
     def tojson(self):
@@ -594,10 +594,10 @@ class IsObjectAtLocation(BaseCommand):
     def get_switch_comment(cs,cdata):
         return cs.command_name+' room='+U.hex2(cdata[0])+'('+DECODE_ROOM(cdata[0])+')'+' object='+U.hex2(cdata[1])+'('+DECODE_NOUN(cdata[1])+')'
     
-    def print_assembly(self,pos,ident):  
+    def print_assembly(self,pos,ident,out):  
         s = (U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._room)+' '+U.hex2(self._object)+
               ' ; '+self.command_name+' room='+U.hex2(self._room)+'('+DECODE_ROOM(self._room)+')'+' object='+U.hex2(self._object)+'('+DECODE_NOUN(self._object)+')')      
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+3
     
     def tojson(self):
@@ -620,9 +620,9 @@ class Fail(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value])   
     
-    def print_assembly(self,pos,ident):      
+    def print_assembly(self,pos,ident,out):      
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' ; '+self.command_name  
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+1
     
     def tojson(self):
@@ -641,9 +641,9 @@ class IsVarOwnedBy(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value])   
     
-    def print_assembly(self,pos,ident):      
+    def print_assembly(self,pos,ident,out):      
         s =  U.hex4(pos)+': '+U.hex2(self.command_value)+' ; '+self.command_name 
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+1
     
     def tojson(self):
@@ -662,9 +662,9 @@ class PrintFirstNounShortName(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value])   
     
-    def print_assembly(self,pos,ident):        
+    def print_assembly(self,pos,ident,out):        
         s =U.hex4(pos)+': '+U.hex2(self.command_value)+' ; '+self.command_name 
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+1
     
     def tojson(self):
@@ -684,9 +684,9 @@ class CompareObjectToFirstNoun(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value,self._object])    
     
-    def print_assembly(self,pos,ident):      
+    def print_assembly(self,pos,ident,out):      
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._object)+' ; '+self.command_name+' object='+U.hex2(self._object)+'('+DECODE_NOUN(self._object)+')'
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+2
     
     def tojson(self):
@@ -710,9 +710,9 @@ class IsObjectInRoomOrPack(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value,self._object])  
     
-    def print_assembly(self,pos,ident):     
+    def print_assembly(self,pos,ident,out):     
         s =U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._object)+' ; '+self.command_name+' object='+U.hex2(self._object)+'('+DECODE_NOUN(self._object)+')'    
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+2
     
     def tojson(self):
@@ -736,12 +736,12 @@ class PrintMessage2(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value])+BaseCommand.make_length_bytes(len(self._raw_data))+self._raw_data
     
-    def print_assembly(self,pos,ident):        
+    def print_assembly(self,pos,ident,out):        
         pre = bytes([self.command_value])+BaseCommand.make_length_bytes(len(self._raw_data))
         s = U.hex4(pos)+': '+U.dump_bytes(pre)+' ; '+self.command_name+' size='+U.hex4(len(self._raw_data))
-        print(U.indent_code(s,ident))
+        out.append(U.indent_code(s,ident))
         pos+=len(pre)
-        pos = PrintMessage.print_assembly_text(pos,ident+1,self._raw_data,self._text)             
+        pos = PrintMessage.print_assembly_text(pos,ident+1,self._raw_data,self._text,out)             
         return pos
     
     def tojson(self):
@@ -762,10 +762,10 @@ class SwapObjects(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value,self._object_a,self._object_b])
     
-    def print_assembly(self,pos,ident):        
+    def print_assembly(self,pos,ident,out):        
         s = (U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._object_a)+' '+U.hex2(self._object_b)+
               ' ; '+self.command_name+' object_a='+'('+DECODE_NOUN(self._object_a)+')'+ U.hex2(self._object_a)+' object_b='+U.hex2(self._object_b)+'('+DECODE_NOUN(self._object_b)+')')
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+3
     
     def tojson(self):
@@ -784,9 +784,9 @@ class PickUpObject(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value])   
     
-    def print_assembly(self,pos,ident):        
+    def print_assembly(self,pos,ident,out):        
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' ; '+self.command_name
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+1
     
     def tojson(self):
@@ -806,9 +806,9 @@ class SetVarObject(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value,self._object])
     
-    def print_assembly(self,pos,ident):       
+    def print_assembly(self,pos,ident,out):       
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._object)+' ; '+self.command_name+' object='+U.hex2(self._object)+'('+DECODE_NOUN(self._object)+')'
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+2
     
     def tojson(self):
@@ -832,9 +832,9 @@ class IsLessEqualRandom(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value,self._value])  
     
-    def print_assembly(self,pos,ident):   
+    def print_assembly(self,pos,ident,out):   
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._value)+' ; '+self.command_name+' number='+U.hex2(self._value)     
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+2
     
     def tojson(self):
@@ -861,16 +861,16 @@ class WhileFail(BaseCommand):
             
         return data       
     
-    def print_assembly(self,pos,ident):
+    def print_assembly(self,pos,ident,out):
         data = b''
         for com in self._script:
             data = data + com.get_assembly() 
         pre = bytes([self.command_value])+BaseCommand.make_length_bytes(len(data))
         s = U.hex4(pos)+': '+U.dump_bytes(pre)+' ; '+self.command_name+' size='+U.hex4(len(data)) 
-        print(U.indent_code(s,ident))
+        out.append(U.indent_code(s,ident))
         pos+=len(pre)
         for com in self._script:
-            pos = com.print_assembly(pos,ident+1)
+            pos = com.print_assembly(pos,ident+1,out)
         return pos
     
     def parse_binary(self,data):    
@@ -898,9 +898,9 @@ class ExecuteReverseStatus(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value])    
     
-    def print_assembly(self,pos,ident):      
+    def print_assembly(self,pos,ident,out):      
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' ; '+self.command_name  
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+1
     
     def tojson(self):
@@ -921,10 +921,10 @@ class MoveObject(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value,self._object,self._room])
     
-    def print_assembly(self,pos,ident):    
+    def print_assembly(self,pos,ident,out):    
         s =  (U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._object)+' '+U.hex2(self._room)+
               ' ; '+self.command_name+' object='+U.hex2(self._object)+'('+DECODE_NOUN(self._object)+') room='+U.hex2(self._room)+'('+DECODE_ROOM(self._room)+')')   
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+3
     
     def tojson(self):
@@ -944,9 +944,9 @@ class Heal(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value,self._points])
     
-    def print_assembly(self,pos,ident):    
+    def print_assembly(self,pos,ident,out):    
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._points)+' ; '+self.command_name+' value='+U.hex2(self._points)    
-        print(U.indent_code(s,ident))        
+        out.append(U.indent_code(s,ident))        
         return pos+2
     
     def tojson(self):
@@ -971,16 +971,16 @@ class WhilePass(BaseCommand):
         #print('get_assembly', self.command_name,U.hexlist(data))    
         return data
     
-    def print_assembly(self,pos,ident):
+    def print_assembly(self,pos,ident,out):
         data = b''
         for com in self._script:
             data = data + com.get_assembly() 
         pre = bytes([self.command_value])+BaseCommand.make_length_bytes(len(data))
         s = U.hex4(pos)+': '+U.dump_bytes(pre)+' ; '+self.command_name+' size='+U.hex4(len(data))
-        print(U.indent_code(s,ident))
+        out.append(U.indent_code(s,ident))
         pos+=len(pre)
         for com in self._script:
-            pos = com.print_assembly(pos,ident+1)
+            pos = com.print_assembly(pos,ident+1,out)
         return pos
     
     def tojson(self):
@@ -996,7 +996,7 @@ class PrintMessage(BaseCommand):
     command_length = None # Variable length
     
     @staticmethod
-    def print_assembly_text(pos,ident,raw,text):
+    def print_assembly_text(pos,ident,raw,text,out):
         # Only 16 bytes of data.
         # Only 40 characters of text.
         data = []
@@ -1022,7 +1022,7 @@ class PrintMessage(BaseCommand):
             
         for i in range(len(data)):
             s = U.hex4(pos)+': '+U.dump_bytes(data[i])+' ; '+chars[i]
-            print(U.indent_code(s,ident))
+            out.append(U.indent_code(s,ident))
             pos += len(data[i])
             
         return pos            
@@ -1035,12 +1035,12 @@ class PrintMessage(BaseCommand):
     def get_assembly(self):
         return bytes([self.command_value])+BaseCommand.make_length_bytes(len(self._raw_data))+self._raw_data
     
-    def print_assembly(self,pos,ident):        
+    def print_assembly(self,pos,ident,out):        
         pre = bytes([self.command_value])+BaseCommand.make_length_bytes(len(self._raw_data))
         s = U.hex4(pos)+': '+U.dump_bytes(pre)+' ; '+self.command_name+' size='+U.hex4(len(self._raw_data))
-        print(U.indent_code(s,ident))
+        out.append(U.indent_code(s,ident))
         pos+=len(pre)
-        pos = PrintMessage.print_assembly_text(pos,ident+1,self._raw_data,self._text)             
+        pos = PrintMessage.print_assembly_text(pos,ident+1,self._raw_data,self._text,out)             
         return pos
     
     def tojson(self):
@@ -1064,10 +1064,10 @@ class CompareToPhrase(BaseCommand):
     def get_switch_comment(cs,cdata):
         return cs.command_name+' phrase='+DECODE_PHRASE(int(cdata[0]))
     
-    def print_assembly(self,pos,ident):
+    def print_assembly(self,pos,ident,out):
         
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._phrase)+' ; '+self.command_name+' phrase='+DECODE_PHRASE(self._phrase)
-        print(U.indent_code(s,ident)) 
+        out.append(U.indent_code(s,ident)) 
         # TODO decode the phrase
                 
         return pos+2
@@ -1124,7 +1124,7 @@ class Switch(BaseCommand):
         
         return ret
     
-    def print_assembly(self,pos,ident):
+    def print_assembly(self,pos,ident,out):
         
         data = bytes([self._command])
         
@@ -1137,25 +1137,25 @@ class Switch(BaseCommand):
         scm = SCRIPT_COMMANDS[self._command]
         pre = bytes([self.command_value])+BaseCommand.make_length_bytes(len(data))+bytes([self._command])
         s = U.hex4(pos)+': '+U.dump_bytes(pre)+' ; '+self.command_name+'('+scm.command_name+'): size='+U.hex4(len(data))
-        print(U.indent_code(s,ident))
+        out.append(U.indent_code(s,ident))
         pos+=len(pre)
         
         #s = U.hex4(pos)+': '+U.hex2(self._command)+' ; '+scm.command_name
-        #print(U.indent_code(s,ident))
+        #out.append(U.indent_code(s,ident))
         #pos+=1
         
         for case in self._cases:            
             cd = bytes(case[0])
             #cn = SCRIPT_COMMANDS[self.command_value].command_name
             s = U.hex4(pos)+': '+U.dump_bytes(cd)+' ; '+scm.get_switch_comment(cd)
-            print(U.indent_code(s,ident+1))
+            out.append(U.indent_code(s,ident+1))
             pos += len(cd)
             asm = case[1][0].get_assembly()         
             sz = BaseCommand.make_length_bytes(len(asm))
             s = U.hex4(pos)+': '+U.dump_bytes(sz)+' ; IF_NOT_GOTO address='+U.hex4(len(asm)+pos+1)
-            print(U.indent_code(s,ident+1))
+            out.append(U.indent_code(s,ident+1))
             pos += len(sz)
-            pos = case[1][0].print_assembly(pos,ident+2)
+            pos = case[1][0].print_assembly(pos,ident+2,out)
                 
         return pos
             

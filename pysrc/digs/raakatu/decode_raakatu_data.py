@@ -5,6 +5,9 @@ from digs.raakatu import object_attributes as OBJ
 from digs.raakatu import extract_code as EC
 import json
 
+from tools import binary
+from tools import format as FORM
+
 # Nothing in the code ... best we can do is make lists here
 
 OBJECT_SHORT_NAMES = {
@@ -165,8 +168,8 @@ class Raaka:
         RTC.set_decode_bits(OBJ.decode_noun)
         return words
 
-    def _print_word_list(self,wtype,pos):
-        print('; --- '+wtype.upper()+' ---')        
+    def _print_word_list(self,wtype,pos,out):
+        out.append('; --- '+wtype.upper()+' ---')        
         for w in self._words[wtype]:               
             s = U.hex4(pos)+': ';
             s += U.hex2(len(w['text']))+' '        
@@ -174,19 +177,19 @@ class Raaka:
                 s += U.hex2(ord(c)) + ' '       
             s += U.hex2(w['num'])
             s = s.ljust(32)+'; '+w['text'].ljust(9)+U.hex2(w['num'])    
-            print(s)
+            out.append(s)
             pos += len(w['text'])+2
-        print(U.hex4(pos)+': 00')
-        print(';')
+        out.append(U.hex4(pos)+': 00')
+        out.append(';')
         return pos+1
         
-    def print_words(self):
+    def print_words(self,out):
         pos = self._word_data
-        pos = self._print_word_list('ignores',pos)
-        pos = self._print_word_list('verbs',pos)
-        pos = self._print_word_list('nouns',pos)
-        pos = self._print_word_list('adjectives',pos)
-        pos = self._print_word_list('prepositions',pos)
+        pos = self._print_word_list('ignores',pos,out)
+        pos = self._print_word_list('verbs',pos,out)
+        pos = self._print_word_list('nouns',pos,out)
+        pos = self._print_word_list('adjectives',pos,out)
+        pos = self._print_word_list('prepositions',pos,out)
         
     def tojson_words(self):
         ret = []
@@ -269,7 +272,7 @@ class Raaka:
             ret.append(r)
         return ret
         
-    def print_phrases(self):
+    def print_phrases(self,out):
         pos = self._phrase_data
         
         for phr in self._phrases:
@@ -293,10 +296,10 @@ class Raaka:
                                                                                   
             com = '; '+U.hex2(phr[-1])+': '+wrt.ljust(8) + na.ljust(10) +  w2.ljust(8)  + nb.ljust(10)
                             
-            print(s,com)  
+            out.append(s+' '+com)  
             pos += 5
             
-        print(U.hex4(pos)+': 00')
+        out.append(U.hex4(pos)+': 00')
     
     def read_length(self,pos,data=None):
         if not data:        
@@ -446,7 +449,7 @@ class Raaka:
             if self._binary[start+i] != data[i]:
                 raise Exception('DIFFERENT '+U.hex4(start+i)+': '+U.hex2(data[i])+' '+U.hex2(self._binary[start+i]))
             
-    def print_general_commands(self):          
+    def print_general_commands(self,out):          
         
         data = self._general_commands.get_assembly()        
         pre = bytes([0])+RTC.BaseCommand.make_length_bytes(len(data))
@@ -454,10 +457,10 @@ class Raaka:
                 
         pos = self._general_commands_data
         s = U.hex4(pos)+': '+U.dump_bytes(pre)+' ; size='+U.hex4(len(data))
-        print(U.indent_code(s,0))
+        out.append(U.indent_code(s,0))
         
         pos += len(pre)
-        self._general_commands.print_assembly(pos,0)
+        self._general_commands.print_assembly(pos,0,out)
         
     def tojson_general(self):
         return self._general_commands.tojson()
@@ -474,7 +477,7 @@ class Raaka:
         return ret
         
                 
-    def print_helper_commands(self):        
+    def print_helper_commands(self,out):        
         data = b''
         for common in self._helper_commands:
             cdata = b''
@@ -486,7 +489,7 @@ class Raaka:
         
         pos = self._helper_commands_data
         s = U.hex4(pos)+': '+U.dump_bytes(pre)+' ; size='+U.hex4(len(data))
-        print(U.indent_code(s,0))
+        out.append(U.indent_code(s,0))
         pos += len(pre)
                        
         for helper in self._helper_commands:
@@ -495,12 +498,12 @@ class Raaka:
                 cdata = cdata + com.get_assembly()              
             pre = bytes([helper['number']]) + RTC.BaseCommand.make_length_bytes(len(cdata))
             s = U.hex4(pos)+': '+U.dump_bytes(pre)+' ; Function='+U.hex2(helper['number'])+'('+DECODE_HELPER_NAME(helper['number'])+') size='+U.hex4(len(cdata))
-            print(';')
-            print('; '+DECODE_HELPER_NAME(helper['number']))
-            print(U.indent_code(s,0))
+            out.append(';')
+            out.append('; '+DECODE_HELPER_NAME(helper['number']))
+            out.append(U.indent_code(s,0))
             pos += len(pre)            
             for com in helper['script']:
-                pos = com.print_assembly(pos,0)
+                pos = com.print_assembly(pos,0,out)
         
     def tojson_room_descriptions(self):
         ret = []
@@ -513,7 +516,7 @@ class Raaka:
             
         return ret    
         
-    def print_room_descriptions(self):
+    def print_room_descriptions(self,out):
         data = b''
         for room in self._room_descriptions:            
             adata = b''
@@ -527,7 +530,7 @@ class Raaka:
         self.compare_binary(self._room_descriptions_data,pre+data)
         pos = self._room_descriptions_data
         s = U.hex4(pos)+': '+U.dump_bytes(pre)+' ; '
-        print(U.indent_code(s,0))
+        out.append(U.indent_code(s,0))
         pos += len(pre)
         
         for room in self._room_descriptions:
@@ -535,14 +538,14 @@ class Raaka:
             for att in room['attributes']:
                 d = att.get_assembly()
                 adata = adata  + d                        
-            print(';')
-            print('; '+DECODE_ROOM_NAME(room['room']))
+            out.append(';')
+            out.append('; '+DECODE_ROOM_NAME(room['room']))
             pre = bytes([room['room']]) + RTC.BaseCommand.make_length_bytes(len(adata)+1)
             s = U.hex4(pos)+': '+U.dump_bytes(pre)+' '+U.hex2(room['data'])+' ; roomNumber='+U.hex2(room['room'])+'('+DECODE_ROOM_NAME(room['room'])+')'+' size='+U.hex4(len(adata)+1)+' data='+U.hex2(room['data'])
-            print(U.indent_code(s,0))
+            out.append(U.indent_code(s,0))
             pos += len(pre)+1
             for att in room['attributes']:
-                pos = att.print_assembly(pos,1)                      
+                pos = att.print_assembly(pos,1,out)                      
     
     def tojson_objects(self):
         ret = []
@@ -559,7 +562,7 @@ class Raaka:
             
         return ret
                 
-    def print_object_data(self):
+    def print_object_data(self,out):
         
         data = b''
         for obj in self._objects:
@@ -577,14 +580,14 @@ class Raaka:
         self.compare_binary(self._object_data,pre+data)
         
         s = U.hex4(pos)+': '+U.dump_bytes(pre)+' ; size='+U.hex4(len(data))
-        print(U.indent_code(s,0))
+        out.append(U.indent_code(s,0))
         pos += len(pre)
         
         num = 1
         data = b''
         for obj in self._objects:
-            print(';')
-            print('; Object_'+U.hex2(num)+' "'+self.find_noun_word(num)+'"')
+            out.append(';')
+            out.append('; Object_'+U.hex2(num)+' "'+self.find_noun_word(num)+'"')
             num+=1
             aa = obj['location']
             bb = obj['score']
@@ -595,16 +598,70 @@ class Raaka:
                 adata = adata  + d           
             pre = bytes([obj['word']])+RTC.BaseCommand.make_length_bytes(len(adata))
             s = U.hex4(pos)+': '+U.dump_bytes(pre)+' ; word='+U.hex2(obj['word'])+' size='+U.hex4(len(adata))
-            print(U.indent_code(s,0))                  
+            out.append(U.indent_code(s,0))                  
             pos += len(pre)
             s = U.hex4(pos)+': '+U.hex2(aa)+' '+U.hex2(bb)+' '+U.hex2(cc)+' ; room='+U.hex2(aa)+' scorePoints='+U.hex2(bb)+' bits='+U.hex2(cc)
-            print(U.indent_code(s,0))
+            out.append(U.indent_code(s,0))
             pos += 3
             
             for att in obj['attributes']:
-                pos = att.print_assembly(pos,1)
+                pos = att.print_assembly(pos,1,out)
                 
         return pos 
+    
+def merge_into(filename,newlines):
+    nc = -1
+    for g in newlines:
+        nc+=1
+        if not g.startswith(';'):    
+            origin = int(g[0:4],16)
+            break
+        
+    endpos = 0
+    while True:
+        endpos -= 1
+        g = newlines[endpos]
+        if not g.startswith(';'):
+            endpos = int(g[0:4],16)
+            break
+        
+    orgstr = FORM.shex4(origin)+':'
+    endstr = FORM.shex4(endpos)+':'
+        
+    new_data = binary.get_binary_lines(newlines,origin)
+    with open(filename) as f:
+        code = f.readlines()
+        
+    pos = -1
+    while True:
+        pos += 1
+        if code[pos].startswith(orgstr):
+            break
+        
+    epos = pos    
+    while True:
+        epos += 1
+        if code[epos].startswith(endstr):
+            break
+        
+    while nc:
+        pos-=1
+        nc-=1
+        if not code[pos].startswith(';'):
+            raise Exception('Expected leading comments')        
+        
+    org_data = binary.get_binary_lines(code[pos:epos+1],origin)
+    if org_data!=new_data:
+        raise Exception('The binary of the new lines does not match the binary of the old')
+    
+    with open(filename+'tmp','w') as f:
+        for i in range(pos):
+            f.write(code[i])
+        for g in newlines:
+            f.write(g+'\n')
+        for i in range(epos+1,len(code)):
+            f.write(code[i])
+    
              
         
 INFO_TRS80 = {
@@ -629,17 +686,30 @@ INFO_COCO = {
     'room_descriptions_data' : 0x1523,
 }
 
-trs80 = Raaka(INFO_TRS80)
-#coco = Raaka(INFO_COCO)
+#trs80 = Raaka(INFO_TRS80)
+coco = Raaka(INFO_COCO)
+fn = '../../../content/CoCo/RaakaTu/Code.md'
+plat = coco
+out = []
+plat.print_general_commands(out)
+merge_into(fn,out)
+out = []
+plat.print_helper_commands(out)
+merge_into(fn,out)
+out = []
+plat.print_room_descriptions(out)
+merge_into(fn,out)
+out = []
+plat.print_object_data(out)
+merge_into(fn,out)
+out = []
+plat.print_words(out)
+merge_into(fn,out)
+out = []
+plat.print_phrases(out)
+merge_into(fn,out)
 
-plat = trs80
-#plat.print_general_commands()
-#plat.print_helper_commands()
-#plat.print_room_descriptions()
-#plat.print_object_data()
-#plat.print_words()
-#plat.print_phrases()
-
+"""
 with open('rooms.json','w') as f:
     js = plat.tojson_room_descriptions()
     js = json.dumps(js,indent=2)
@@ -664,6 +734,7 @@ with open('phrases.json','w') as f:
     js = plat.tojson_phrases()
     js = json.dumps(js,indent=2)
     f.write(js)
+"""
 
 #plat.print_words()
 #plat.print_phrases()

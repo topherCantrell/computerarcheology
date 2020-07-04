@@ -15,12 +15,12 @@ class ShortName:
     def get_assembly(self): 
         return bytes([self.command_value])+RTC.BaseCommand.make_length_bytes(len(self._raw_data))+self._raw_data    
     
-    def print_assembly(self,pos,ident):
+    def print_assembly(self,pos,ident,out):
         pre = bytes([self.command_value]) + RTC.BaseCommand.make_length_bytes(len(self._raw_data))
         s = U.hex4(pos)+': '+U.dump_bytes(pre)+' ; '+self.command_name
-        print(U.indent_code(s,ident))
+        out.append(U.indent_code(s,ident))
         pos += len(pre)
-        pos = RTC.PrintMessage.print_assembly_text(pos,ident+1,self._raw_data,self._text)             
+        pos = RTC.PrintMessage.print_assembly_text(pos,ident+1,self._raw_data,self._text,out)             
         return pos   
     
     def tojson(self,parent):
@@ -39,12 +39,12 @@ class Description:
     def get_assembly(self): 
         return bytes([self.command_value])+RTC.BaseCommand.make_length_bytes(len(self._raw_data))+self._raw_data
     
-    def print_assembly(self,pos,ident):
+    def print_assembly(self,pos,ident,out):
         pre = bytes([self.command_value]) + RTC.BaseCommand.make_length_bytes(len(self._raw_data))
         s = U.hex4(pos)+': '+U.dump_bytes(pre)+' ; '+self.command_name
-        print(U.indent_code(s,ident))
+        out.append(U.indent_code(s,ident))
         pos += len(pre)
-        pos = RTC.PrintMessage.print_assembly_text(pos,ident+1,self._raw_data,self._text)             
+        pos = RTC.PrintMessage.print_assembly_text(pos,ident+1,self._raw_data,self._text,out)             
         return pos
     
     def tojson(self,parent):
@@ -66,18 +66,18 @@ class CommandScript:
             data = data + com.get_assembly()
         return bytes([self.command_value])+RTC.BaseCommand.make_length_bytes(len(data))+data
     
-    def print_assembly(self,pos,ident):
+    def print_assembly(self,pos,ident,out):
         
         data = b''
         for com in self._command:
             data = data + com.get_assembly()            
         pre = bytes([self.command_value]) + RTC.BaseCommand.make_length_bytes(len(data))
         s = U.hex4(pos)+': '+U.dump_bytes(pre)+' ; '+self.command_name
-        print(U.indent_code(s,ident))  
+        out.append(U.indent_code(s,ident))  
         pos += len(pre)
         
         for com in self._command:
-            pos = com.print_assembly(pos,ident+1)
+            pos = com.print_assembly(pos,ident+1,out)
         
         return pos
     
@@ -103,18 +103,18 @@ class HandlerAsSecondNoun:
             data = data + com.get_assembly()
         return bytes([self.command_value])+RTC.BaseCommand.make_length_bytes(len(data))+data
     
-    def print_assembly(self,pos,ident):
+    def print_assembly(self,pos,ident,out):
         
         data = b''
         for com in self._script:
             data = data + com.get_assembly()            
         pre = bytes([self.command_value]) + RTC.BaseCommand.make_length_bytes(len(data))
         s = U.hex4(pos)+': '+U.dump_bytes(pre)+' ; '+self.command_name
-        print(U.indent_code(s,ident)) 
+        out.append(U.indent_code(s,ident)) 
         pos += len(pre)
         
         for com in self._script:
-            pos = com.print_assembly(pos,ident+1)
+            pos = com.print_assembly(pos,ident+1,out)
         
         return pos
     
@@ -142,18 +142,18 @@ class HandlerAsFirstNoun:
             data = data + com.get_assembly()
         return bytes([self.command_value])+RTC.BaseCommand.make_length_bytes(len(data))+data
     
-    def print_assembly(self,pos,ident):
+    def print_assembly(self,pos,ident,out):
         
         data = b''
         for com in self._script:
             data = data + com.get_assembly()            
         pre = bytes([self.command_value]) + RTC.BaseCommand.make_length_bytes(len(data))
         s = U.hex4(pos)+': '+U.dump_bytes(pre)+' ; '+self.command_name
-        print(U.indent_code(s,ident)) 
+        out.append(U.indent_code(s,ident)) 
         pos += len(pre)
         
         for com in self._script:
-            pos = com.print_assembly(pos,ident+1)
+            pos = com.print_assembly(pos,ident+1,out)
         
         return pos
     
@@ -180,18 +180,18 @@ class HandlerTurn:
             data = data + com.get_assembly()
         return bytes([self.command_value])+RTC.BaseCommand.make_length_bytes(len(data))+data
     
-    def print_assembly(self,pos,ident):
+    def print_assembly(self,pos,ident,out):
         
         data = b''
         for com in self._script:
             data = data + com.get_assembly()            
         pre = bytes([self.command_value]) + RTC.BaseCommand.make_length_bytes(len(data))
         s = U.hex4(pos)+': '+U.dump_bytes(pre)+' ; '+self.command_name
-        print(U.indent_code(s,ident)) 
+        out.append(U.indent_code(s,ident)) 
         pos += len(pre)
         
         for com in self._script:
-            pos = com.print_assembly(pos,ident+1)
+            pos = com.print_assembly(pos,ident+1,out)
         
         return pos
     
@@ -217,18 +217,18 @@ class HandlerDeath:
             data = data + com.get_assembly()
         return bytes([self.command_value])+RTC.BaseCommand.make_length_bytes(len(data))+data
     
-    def print_assembly(self,pos,ident):
+    def print_assembly(self,pos,ident,out):
         
         data = b''
         for com in self._script:
             data = data + com.get_assembly()            
         pre = bytes([self.command_value]) + RTC.BaseCommand.make_length_bytes(len(data))
         s = U.hex4(pos)+': '+U.dump_bytes(pre)+' ; '+self.command_name
-        print(U.indent_code(s,ident)) 
+        out.append(U.indent_code(s,ident)) 
         pos += len(pre)
         
         for com in self._script:
-            pos = com.print_assembly(pos,ident+1)
+            pos = com.print_assembly(pos,ident+1,out)
         
         return pos
     
@@ -252,12 +252,12 @@ class HitPoints:
     def get_assembly(self): 
         return bytes([self.command_value])+RTC.BaseCommand.make_length_bytes(len(self._raw_data))+bytes([self._max,self._current])   
     
-    def print_assembly(self,pos,ident):
+    def print_assembly(self,pos,ident,out):
         s = U.hex4(pos)+': '+U.hex2(self.command_value)+' 02 ; HIT POINTS'
-        print(U.indent_code(s,ident)) 
+        out.append(U.indent_code(s,ident)) 
         pos+=2
         s = U.hex4(pos)+': '+U.hex2(self._max)+' '+U.hex2(self._current)+' ; maxHitPoints='+U.hex2(self._max)+' currentHitPoints='+U.hex2(self._current)
-        print(U.indent_code(s,ident)) 
+        out.append(U.indent_code(s,ident)) 
         return pos+2
     
     def tojson(self,parent):
