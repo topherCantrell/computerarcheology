@@ -4792,3 +4792,7 @@ InputWordTables:
 3F13: 02 4F 4E 0C               ; ON       12
 3F17: 00
 ```
+
+```code
+3F18: 03 CE 80 01 03 00 00 40 FF
+```
