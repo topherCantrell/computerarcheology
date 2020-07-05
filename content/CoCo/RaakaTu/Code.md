@@ -829,7 +829,8 @@ ProcessCommand:
 0C24: 48                  ASLA                              ; Jump to ...
 0C25: 6E B6               JMP     [A,Y]                     ; ... command
 
-Com0D_ExecutePassingList:
+Com_0D_while_pass:
+; while_pass:
 ; Execute a list of commands until one fails.
 ; Return Z=1 (pass) if all commands passed. 
 ; Abort and return Z=0 (fail) if any failed.
@@ -847,7 +848,8 @@ Com0D_ExecutePassingList:
 0C3D: 4F                  CLRA                              ; Z=1 ... success
 0C3E: 39                  RTS                               ; Done
 
-Com0E_ExecuteFailingList:
+Com_0E_while_fail:
+; while_fail:
 ; Execute a list of commands until one passes.
 ; Abort and return Z=1 (pass) if any passed.
 ; Return Z=0 (fail) if all commands failed. 
@@ -865,7 +867,8 @@ Com0E_ExecuteFailingList:
 0C55: 8A 01               ORA     #$01                      ; Return fail
 0C57: 39                  RTS                               ; Done
 
-Com0B_Switch:
+Com_0B_switch:
+; switch:
 ; If no case-command passes:
 ;   Return Z=0 (fail)
 ; Else
@@ -889,7 +892,8 @@ Com0B_Switch:
 0C7E: 35 10               PULS    X                         ; Restore script
 0C80: 39                  RTS                               ; Done
 
-Com00_MoveActiveObjectToRoomAndLook:
+Com_00_move_ACTIVE_and_look:
+; move_ACTIVE_and_look(room)
 0C81: BD 0C 8D            JSR     $0C8D                     ; {Com19_MoveActiveObjectToRoom} Move active object to new room
 0C84: 34 10               PSHS    X                         ; Hold script
 0C86: BD 0D 4A            JSR     $0D4A                     ; Print room description and objects
@@ -897,7 +901,8 @@ Com00_MoveActiveObjectToRoomAndLook:
 0C8B: 4F                  CLRA                              ; OK
 0C8C: 39                  RTS                               ; Done
 
-Com19_MoveActiveObjectToRoom:
+Com_19_move_ACTIVE:
+; move_ACTIVE(room)
 0C8D: A6 80               LDA     ,X+                       ; New room number
 0C8F: 34 10               PSHS    X                         ; Hold script
 0C91: B7 01 D5            STA     $01D5                     ; {ram:CUR_ROOM} Store new actvie room number
@@ -913,7 +918,8 @@ Com19_MoveActiveObjectToRoom:
 0CAC: 4F                  CLRA                              ; OK
 0CAD: 39                  RTS                               ; Done
 
-Com1A_SetVarObjectTo1stNoun:
+Com_1A_set_VAR_to_first_noun:
+; set_VAR_to_first_noun()
 0CAE: FE 01 C6            LDU     $01C6                     ; {ram:FIRST_NOUN_DATA} Copy 1st noun ...
 0CB1: FF 01 C0            STU     $01C0                     ; {ram:VAR_OBJ_DATA} ... data pointer
 0CB4: B6 01 C3            LDA     $01C3                     ; {ram:FIRST_NOUN_NUM} Copy 1st noun ...
@@ -921,7 +927,8 @@ Com1A_SetVarObjectTo1stNoun:
 0CBA: 4F                  CLRA                              ; Z=1 for OK
 0CBB: 39                  RTS                               ; Done
 
-Com1B_SetVarObjectTo2ndNoun:
+Com_1B_set_VAR_to_second_noun:
+; set_VAR_to_second_noun()
 0CBC: FE 01 CC            LDU     $01CC                     ; {ram:SECOND_NOUN_DATA} Copy 2nd noun ...
 0CBF: FF 01 C0            STU     $01C0                     ; {ram:VAR_OBJ_DATA} ... data pointer
 0CC2: B6 01 C9            LDA     $01C9                     ; {ram:SECOND_NOUN_NUM} Copy 2nd noun ...
@@ -929,7 +936,8 @@ Com1B_SetVarObjectTo2ndNoun:
 0CC8: 4F                  CLRA                              ; Z=1 for OK
 0CC9: 39                  RTS                               ; Done
 
-Com1C_SetVarObject:
+Com_1C_set_VAR:
+; set_VAR(object)
 0CCA: E6 80               LDB     ,X+                       ; Get object number from script
 0CCC: 34 10               PSHS    X                         ; Hold script pointer
 0CCE: F7 01 BF            STB     $01BF                     ; {ram:VAR_OBJ_NUMBER} Store target object number
@@ -940,7 +948,8 @@ Com1C_SetVarObject:
 0CDB: 4F                  CLRA                              ; Return OK
 0CDC: 39                  RTS                               ; Done
 
-Com21_RunGeneralWithTempPhrase:
+Com_21_execute_phrase:
+; execute_phrase(phrase,first_noun,second_noun)
 0CDD: FE 01 C6            LDU     $01C6                     ; {ram:FIRST_NOUN_DATA} 1st noun data ...
 0CE0: 34 40               PSHS    U                         ; ... on stack
 0CE2: FE 01 CC            LDU     $01CC                     ; {ram:SECOND_NOUN_DATA} 2nd noun data ...
@@ -986,8 +995,9 @@ Com21_RunGeneralWithTempPhrase:
 0D49: 39                  RTS                               ; Done
 
 ; Print room description
-0D4A: B6 01 D2            LDA     $01D2                     ; {ram:ACTIVE_OBJ_NUM} Actiuve object number
-0D4D: 81 1D               CMPA    #$1D                      ; Is this the SYSTEM object?
+PrintRoomDescription:
+0D4A: B6 01 D2            LDA     $01D2                     ; {ram:ACTIVE_OBJ_NUM} Active object number
+0D4D: 81 1D               CMPA    #$1D                      ; Is this the player object?
 0D4F: 26 F8               BNE     $D49                      ; No ... return
 0D51: BE 01 D6            LDX     $01D6                     ; {ram:CUR_ROOM_DATA} Current room script
 0D54: BD 0A 42            JSR     $0A42                     ; {SkipIDLoadEnd} Skip length
@@ -1021,7 +1031,8 @@ Com21_RunGeneralWithTempPhrase:
 0D90: 25 D9               BCS     $D6B                      ; No ... keep printing
 0D92: 39                  RTS                               ; Done
 
-Com01_IsObjectInPackOrRoom:
+Com_01_is_in_pack_or_current_room:
+; is_in_pack_or_current_room(object)
 0D93: E6 80               LDB     ,X+                       ; Get object number from script
 0D95: 34 10               PSHS    X                         ; Hold script pointer
 0D97: BD 11 33            JSR     $1133                     ; Get object data
@@ -1029,16 +1040,19 @@ Com01_IsObjectInPackOrRoom:
 0D9D: 35 10               PULS    X                         ; Restore script
 0D9F: 39                  RTS                               ; Out
 
-Com20_CheckActiveObject:
+Com_20_is_ACTIVE_this:
+; is_ACTIVE_this(object)
 0DA0: B6 01 D2            LDA     $01D2                     ; {ram:ACTIVE_OBJ_NUM} Active object
 0DA3: A1 80               CMPA    ,X+                       ; Matches target?
 0DA5: 39                  RTS                               ; Done
 
-Com02_CheckObjectIsOwnedByActive:
+Com_02_is_owned_by_ACTIVE:
+; is_owned_by_ACTIVE(object)
 0DA6: E6 80               LDB     ,X+                       ;
 0DA8: 7E 0F 5F            JMP     $0F5F                     ; 
 
-Com03_IsObjectYAtX:
+Com_03_is_located:
+; is_located(room,object)
 ; Check to see if an object is at a target location.
 0DAB: EC 81               LDD     ,X++                      ; Room and object
 0DAD: 34 10               PSHS    X                         ; Hold script
@@ -1050,18 +1064,21 @@ Com03_IsObjectYAtX:
 0DBD: 35 10               PULS    X                         ; Restore script
 0DBF: 39                  RTS                               ; Out
 
-Com0C_FAIL:
+Com_0C_fail:
+; fail()
 ; Always fail
 0DC0: 8A 01               ORA     #$01                      ; Set the fail flag
 0DC2: 39                  RTS                               ; Done
 
-Com04_PrintSYSTEMOrPlayerMessage:
+Com_04_print:
+; print(msg)
 0DC3: B6 01 D2            LDA     $01D2                     ; {ram:ACTIVE_OBJ_NUM} Active object
 0DC6: 81 1D               CMPA    #$1D                      ; Is this the player?
 
 0DC8: 26 0E               BNE     $DD8                      ; No ... must be system
 
-Com1F_PrintMessage:
+Com_1F_print2:
+; print2(msg)
 0DCA: C6 1D               LDB     #$1D                      ; Player number
 0DCC: 34 10               PSHS    X                         ; Hold script
 0DCE: BD 11 33            JSR     $1133                     ; Look up Player
@@ -1075,12 +1092,14 @@ Com1F_PrintMessage:
 0DE2: 4F                  CLRA                              ; OK
 0DE3: 39                  RTS                               ; Done
 
-Com07_Look:
+Com_07_print_room_description:
+; print_room_description()
 0DE4: BD 0D 4A            JSR     $0D4A                     ; Print room description
 0DE7: 4F                  CLRA                              ; OK
 0DE8: 39                  RTS                               ; Done
 
-Com06_Inventory:
+Com_06_print_inventory:
+; print_inventory()
 0DE9: 34 10               PSHS    X                         ; Hold script pointer
 0DEB: 86 0D               LDA     #$0D                      ; Print ...
 0DED: BD 11 84            JSR     $1184                     ; {PrintCharacterAutoWrap} ... CR
@@ -1109,7 +1128,8 @@ Com06_Inventory:
 0E20: 35 10               PULS    X                         ; Restore script pointer
 0E22: 39                  RTS                               ; Done
 
-Com08_CompareObjectToFirstNoun:
+Com_08_is_first_noun:
+; is_first_noun(object)
 0E23: FE 01 C6            LDU     $01C6                     ; {ram:FIRST_NOUN_DATA} 1st noun data
 0E26: B6 01 C3            LDA     $01C3                     ; {ram:FIRST_NOUN_NUM} 1st noun number
 ;
@@ -1126,17 +1146,20 @@ Com08_CompareObjectToFirstNoun:
 0E3F: 5D                  TSTB                              ; B can't be 0 ... Z=0 error
 0E40: 39                  RTS                               ; Done
 
-Com09_CompareObjectToSecondNoun:
+Com_09_compare_to_second_noun:
+; compare_to_second_noun(object)
 0E41: FE 01 CC            LDU     $01CC                     ; {ram:SECOND_NOUN_DATA} 2nd noun data
 0E44: B6 01 C9            LDA     $01C9                     ; {ram:SECOND_NOUN_NUM} 2nd noun number
 0E47: 20 E0               BRA     $E29                      ; Do compare
 
-Com0A_CompareToPhraseForm:
+Com_0A_compare_input_to:
+; compare_input_to(phrase)
 0E49: E6 80               LDB     ,X+                       ; Compare from script ...
 0E4B: F1 01 D1            CMPB    $01D1                     ; {ram:PHRASE_FORM} ... to phrase form
 0E4E: 39                  RTS                               ; Done
 
-Com0F_PickUpObject:
+Com_0F_pick_up_VAR:
+; pick_up_VAR()
 ; Move noun object to pack.
 0E4F: 34 10               PSHS    X                         ; Hold script
 0E51: BE 01 C0            LDX     $01C0                     ; {ram:VAR_OBJ_DATA} Pointer to noun object
@@ -1147,7 +1170,8 @@ Com0F_PickUpObject:
 0E5D: 35 10               PULS    X                         ; Restore script
 0E5F: 39                  RTS                               ; Done
 
-Com10_DropObject:
+Com_10_drop_VAR:
+; drop_VAR()
 ; Move noun object to current room.
 0E60: 34 10               PSHS    X                         ; Hold script
 0E62: BE 01 C0            LDX     $01C0                     ; {ram:VAR_OBJ_DATA} Pointer to noun object
@@ -1158,7 +1182,8 @@ Com10_DropObject:
 0E6F: 4F                  CLRA                              ; Done
 0E70: 39                  RTS                               ; Out
 
-Com13_PhraseWithRoom1st2nd:
+Com_13_process_phrase_by_room_first_second:
+; process_phrase_by_room_first_second()
 0E71: 34 10               PSHS    X                         ; Save script
 0E73: BE 01 D6            LDX     $01D6                     ; {ram:CUR_ROOM_DATA} Current room script
 0E76: BD 0A 42            JSR     $0A42                     ; {SkipIDLoadEnd} Skip id and length
@@ -1196,13 +1221,15 @@ Com13_PhraseWithRoom1st2nd:
 0EC5: 35 10               PULS    X                         ; Restore script pointer
 0EC7: 39                  RTS                               ; Done
 
-Com16_PrintVarShortName:
+Com_16_print_VAR:
+; print_VAR()
 0EC8: 34 10               PSHS    X                         ; Save script pointer
 0ECA: BE 01 C0            LDX     $01C0                     ; {ram:VAR_OBJ_DATA} Var noun data
 0ECD: B6 01 BF            LDA     $01BF                     ; {ram:VAR_OBJ_NUMBER} Var noun index
 0ED0: 20 08               BRA     $EDA                      ; Print short name
 
-Com11_Print1stNounShortName:
+Com_11_print_first_noun:
+; print_first_noun()
 0ED2: 34 10               PSHS    X                         ; Save script pointer
 0ED4: BE 01 C6            LDX     $01C6                     ; {ram:FIRST_NOUN_DATA} 1st noun data
 0ED7: B6 01 C3            LDA     $01C3                     ; {ram:FIRST_NOUN_NUM} 1st noun index
@@ -1225,13 +1252,15 @@ Com11_Print1stNounShortName:
 0EFD: 4F                  CLRA                              ; Return ...
 0EFE: 39                  RTS                               ; ... OK
 
-Com12_Print2ndNounShortName:
+Com_12_print_second_noun:
+; print_second_noun()
 0EFF: 34 10               PSHS    X                         ; Save script pointer
 0F01: BE 01 CC            LDX     $01CC                     ; {ram:SECOND_NOUN_DATA} 2nd noun data
 0F04: B6 01 C9            LDA     $01C9                     ; {ram:SECOND_NOUN_NUM} 2nd noun index
 0F07: 20 D1               BRA     $EDA                      ; Print short name
 
-Com15_CheckObjBits:
+Com_15_check_VAR:
+; check_VAR(bits)
 ; Check target bits in an object.
 0F09: 34 10               PSHS    X                         ; Hold script pointer
 0F0B: BE 01 C0            LDX     $01C0                     ; {ram:VAR_OBJ_DATA} Input object pointer
@@ -1250,7 +1279,8 @@ Com15_CheckObjBits:
 0F25: 8A 01               ORA     #$01                      ; Set error
 0F27: 39                  RTS                               ; Return
 
-Com14_ExecuteCommandAndReverseReturn:
+Com_14_execute_and_reverse_status:
+; execute_and_reverse_status:
 0F28: BD 0C 03            JSR     $0C03                     ; {ProcessCommand} Execute command
 0F2B: 26 03               BNE     $F30                      ; Command returned a non-zero ... return zero
 0F2D: 8A 01               ORA     #$01                      ; Command returned a zero ... return non-zero
@@ -1258,7 +1288,8 @@ Com14_ExecuteCommandAndReverseReturn:
 0F30: 4F                  CLRA                              ; Zero
 0F31: 39                  RTS                               ; Done
 
-Com17_MoveObjectXToLocationY:
+Com_17_move_to:
+; move_to(object,room)
 0F32: E6 80               LDB     ,X+                       ; Get object number
 0F34: 34 10               PSHS    X                         ; Hold script
 0F36: BD 11 33            JSR     $1133                     ; Find object
@@ -1270,7 +1301,8 @@ Com17_MoveObjectXToLocationY:
 0F44: 4F                  CLRA                              ; OK
 0F45: 39                  RTS                               ; Done
 
-Com18_CheckVarOwnedByActiveObject:
+Com_18_is_VAR_owned_by_ACTIVE:
+; is_VAR_owned_by_ACTIVE()
 0F46: 34 10               PSHS    X                         ; Save script pointer
 0F48: BE 01 C0            LDX     $01C0                     ; {ram:VAR_OBJ_DATA} Var object data
 0F4B: BD 0A 42            JSR     $0A42                     ; {SkipIDLoadEnd} Skip length
@@ -1330,7 +1362,8 @@ Com18_CheckVarOwnedByActiveObject:
 0FCB: 35 20               PULS    Y                         ; Restore
 0FCD: 20 A0               BRA     $F6F                      ; Next object
 
-Com05_IsRandomLessOrEqual:
+Com_05_is_less_equal_last_random:
+; is_less_equal_last_random(value)
 0FCF: B6 13 38            LDA     $1338                     ; Random value
 0FD2: A1 80               CMPA    ,X+                       ; Compare random value to script
 0FD4: 25 05               BCS     $FDB                      ; If less than ... OK
@@ -1340,7 +1373,8 @@ Com05_IsRandomLessOrEqual:
 0FDB: 4F                  CLRA                              ; Less than or equal ... OK
 0FDC: 39                  RTS                               ; Done
 
-Com1D_AttackObject:
+Com_1D_attack_VAR:
+; attack_VAR(points)
 0FDD: A6 80               LDA     ,X+                       ; Get attack value
 0FDF: B7 01 AB            STA     $01AB                     ; {ram:tmp1AB} Hold attack value
 0FE2: 34 10               PSHS    X                         ; Hold script
@@ -1379,7 +1413,8 @@ Com1D_AttackObject:
 1022: 35 10               PULS    X                         ; ... stack
 1024: 20 E7               BRA     $100D                     ; Return OK
 
-Com1E_SwapObjects:
+Com_1E_swap:
+; swap(object_a,object_b)
 1026: E6 80               LDB     ,X+                       ; 1st object number
 1028: A6 80               LDA     ,X+                       ; 2nd object
 102A: B7 01 AB            STA     $01AB                     ; {ram:tmp1AB} Hold second object
@@ -1399,7 +1434,8 @@ Com1E_SwapObjects:
 104A: 4F                  CLRA                              ; Z=1 OK
 104B: 39                  RTS                               ; Done
 
-Com22_CompareHealthToValue:
+Com_22_is_less_equal_health:
+; is_less_equal_health(points)
 104C: A6 80               LDA     ,X+                       ; Get value
 104E: 34 10               PSHS    X                         ; Hold script pointer
 1050: B7 01 AB            STA     $01AB                     ; {ram:tmp1AB} Hold value
@@ -1422,7 +1458,8 @@ Com22_CompareHealthToValue:
 1077: 4F                  CLRA                              ; OK
 1078: 39                  RTS                               ; Done
 
-Com23_HealVarObject:
+Com_23_heal_VAR:
+; heal_VAR(points)
 1079: A6 80               LDA     ,X+                       ; Get healing value
 107B: B7 01 AB            STA     $01AB                     ; {ram:tmp1AB} Hold it
 107E: 34 10               PSHS    X                         ; Hold script
@@ -1443,7 +1480,8 @@ Com23_HealVarObject:
 10A4: E7 84               STB     ,X                        ; ... new health
 10A6: 20 CD               BRA     $1075                     ; OK out
 
-Com25_RestartGame:
+Com_25_restart_game:
+; restart_game()
 ; No return to script
 10A8: 86 0D               LDA     #$0D                      ; Print first ...
 10AA: BD 11 84            JSR     $1184                     ; {PrintCharacterAutoWrap} ... CR
@@ -1451,7 +1489,8 @@ Com25_RestartGame:
 10AF: BD 11 84            JSR     $1184                     ; {PrintCharacterAutoWrap} ... CR
 10B2: 7E 06 0C            JMP     $060C                     ; Restart game
 
-Com24_EndlessLoop:
+Com_24_endless_loop:
+; endless_loop()
 10B5: 20 FE               BRA     $10B5                     ; {Com24_EndlessLoop} Spin forever
 ```
 
@@ -1468,7 +1507,8 @@ Com24_EndlessLoop:
 10C2: 20 F3               BRA     $10B7                     ; Keep going
 10C4: 39                  RTS                               ; Done
 
-Com26_PrintScore:
+Com_26_print_score:
+; print_score()
 ; Second byte of object data is points. If the object is in the
 ; treasure room (dropped or carried) it counts double.
 10C5: 34 10               PSHS    X           
@@ -1749,45 +1789,45 @@ UnpackBytes:
 
 ```code
 CommandJumpTable: 
-12E5: 0C 81  ; 00            
-12E7: 0D 93  ; 01            
-12E9: 0D A6  ; 02            
-12EB: 0D AB  ; 03            
-12ED: 0D C3  ; 04            
-12EF: 0F CF  ; 05            
-12F1: 0D E9  ; 06            
-12F3: 0D E4  ; 07            
-12F5: 0E 23  ; 08            
-12F7: 0E 41  ; 09           
-12F9: 0E 49  ; 0A            
-12FB: 0C 58  ; 0B            
-12FD: 0D C0  ; 0C           
-12FF: 0C 27  ; 0D           
-1301: 0C 3F  ; 0E            
-1303: 0E 4F  ; 0F           
-1305: 0E 60  ; 10            
-1307: 0E D2  ; 11           
-1309: 0E FF  ; 12            
-130B: 0E 71  ; 13            
-130D: 0F 28  ; 14           
-130F: 0F 09  ; 15            
-1311: 0E C8  ; 16            
-1313: 0F 32  ; 17            
-1315: 0F 46  ; 18            
-1317: 0C 8D  ; 19           
-1319: 0C AE  ; 1A           
-131B: 0C BC  ; 1B            
-131D: 0C CA  ; 1C           
-131F: 0F DD  ; 1D            
-1321: 10 26  ; 1E
-1323: 0D CA  ; 1F          
-1325: 0D A0  ; 20            
-1327: 0C DD  ; 21            
-1329: 10 4C  ; 22                
-132B: 10 79  ; 23               
-132D: 10 B5  ; 24                
-132F: 10 A8  ; 25               
-1331: 10 C5  ; 26
+12E5: 0C 81  ; 00 move_ACTIVE_and_look(room)
+12E7: 0D 93  ; 01 is_in_pack_or_current_room(object)
+12E9: 0D A6  ; 02 is_owned_by_ACTIVE(object)
+12EB: 0D AB  ; 03 is_located(room,object)
+12ED: 0D C3  ; 04 print(msg)
+12EF: 0F CF  ; 05 is_less_equal_last_random(value)
+12F1: 0D E9  ; 06 print_inventory()
+12F3: 0D E4  ; 07 print_room_description()
+12F5: 0E 23  ; 08 is_first_noun(object)
+12F7: 0E 41  ; 09 compare_to_second_noun(object)
+12F9: 0E 49  ; 0A compare_input_to(phrase)
+12FB: 0C 58  ; 0B switch:
+12FD: 0D C0  ; 0C fail()
+12FF: 0C 27  ; 0D while_pass:
+1301: 0C 3F  ; 0E while_fail:
+1303: 0E 4F  ; 0F pick_up_VAR()
+1305: 0E 60  ; 10 drop_VAR()
+1307: 0E D2  ; 11 print_first_noun()
+1309: 0E FF  ; 12 print_second_noun()
+130B: 0E 71  ; 13 process_phrase_by_room_first_second()
+130D: 0F 28  ; 14 execute_and_reverse_status:
+130F: 0F 09  ; 15 check_VAR(bits)
+1311: 0E C8  ; 16 print_VAR()
+1313: 0F 32  ; 17 move_to(object,room)
+1315: 0F 46  ; 18 is_VAR_owned_by_ACTIVE()
+1317: 0C 8D  ; 19 move_ACTIVE(room)
+1319: 0C AE  ; 1A set_VAR_to_first_noun()
+131B: 0C BC  ; 1B set_VAR_to_second_noun()
+131D: 0C CA  ; 1C set_VAR(object)
+131F: 0F DD  ; 1D attack_VAR(points)
+1321: 10 26  ; 1E swap(object_a,object_b)
+1323: 0D CA  ; 1F print2(msg)
+1325: 0D A0  ; 20 is_ACTIVE_this(object)
+1327: 0C DD  ; 21 execute_phrase(phrase,first_noun,second_noun)
+1329: 10 4C  ; 22 is_less_equal_health(points)
+132B: 10 79  ; 23 heal_VAR(points)
+132D: 10 B5  ; 24 endless_loop()
+132F: 10 A8  ; 25 restart_game()
+1331: 10 C5  ; 26 print_score()
   
 ; Multi-verb replacement list (code doesn't work that uses this anyway)              
 1333: 00  ; List is the length. List is pointed to by 1331 which is ignored
@@ -1947,7 +1987,7 @@ RoomDescriptions:
 157B:     CF 98                                                        ;     ~
 157D:   04 07                                                          ;   04 COMMAND
 157F:     0B 05 0A                                                     ;     switch(compare_input_to(phrase)): size=0005
-1582:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+1582:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 1583:       02                                                         ;       IF_NOT_GOTO address=1586
 1584:         00 82                                                    ;         move_ACTIVE_and_look(room) room=82(Oriental rug)
 ;
@@ -1967,13 +2007,13 @@ RoomDescriptions:
 162D:     35 49 DB 16 D3 B9 9B 6C 1B D0 2E                             ;     ~
 1638:   04 13                                                          ;   04 COMMAND
 163A:     0B 11 0A                                                     ;     switch(compare_input_to(phrase)): size=0011
-163D:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+163D:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 163E:       02                                                         ;       IF_NOT_GOTO address=1641
 163F:         00 81                                                    ;         move_ACTIVE_and_look(room) room=81(Small room granite walls)
-1641:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+1641:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 1642:       02                                                         ;       IF_NOT_GOTO address=1645
 1643:         00 83                                                    ;         move_ACTIVE_and_look(room) room=83(Dark passage)
-1645:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+1645:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 1646:       06                                                         ;       IF_NOT_GOTO address=164D
 1647:         0D 04                                                    ;         while_pass: size=0004
 1649:           20 1D                                                  ;           is_ACTIVE_this(object) object=1D(PLAYER)
@@ -1988,10 +2028,10 @@ RoomDescriptions:
 1672:     16 58 D6 9C DB 72 47 B9 77 BE                                ;     ~
 167C:   04 0B                                                          ;   04 COMMAND
 167E:     0B 09 0A                                                     ;     switch(compare_input_to(phrase)): size=0009
-1681:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+1681:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 1682:       02                                                         ;       IF_NOT_GOTO address=1685
 1683:         00 82                                                    ;         move_ACTIVE_and_look(room) room=82(Oriental rug)
-1685:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+1685:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 1686:       02                                                         ;       IF_NOT_GOTO address=1689
 1687:         00 84                                                    ;         move_ACTIVE_and_look(room) room=84(Top of a passage)
 ;
@@ -2006,13 +2046,13 @@ RoomDescriptions:
 16DE:     66 62 2E                                                     ;     ~
 16E1:   04 0F                                                          ;   04 COMMAND
 16E3:     0B 0D 0A                                                     ;     switch(compare_input_to(phrase)): size=000D
-16E6:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+16E6:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 16E7:       02                                                         ;       IF_NOT_GOTO address=16EA
 16E8:         00 83                                                    ;         move_ACTIVE_and_look(room) room=83(Dark passage)
-16EA:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+16EA:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 16EB:       02                                                         ;       IF_NOT_GOTO address=16EE
 16EC:         00 A1                                                    ;         move_ACTIVE_and_look(room) room=A1(Small room)
-16EE:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+16EE:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 16EF:       02                                                         ;       IF_NOT_GOTO address=16F2
 16F0:         00 85                                                    ;         move_ACTIVE_and_look(room) room=85(T-shaped room 1)
 ;
@@ -2024,13 +2064,13 @@ RoomDescriptions:
 1717:     8E 48 F7 17 17 BA                                            ;     ~
 171D:   04 19                                                          ;   04 COMMAND
 171F:     0B 17 0A                                                     ;     switch(compare_input_to(phrase)): size=0017
-1722:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+1722:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 1723:       02                                                         ;       IF_NOT_GOTO address=1726
 1724:         00 84                                                    ;         move_ACTIVE_and_look(room) room=84(Top of a passage)
-1726:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+1726:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 1727:       02                                                         ;       IF_NOT_GOTO address=172A
 1728:         00 86                                                    ;         move_ACTIVE_and_look(room) room=86(Gray stone walls 1)
-172A:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+172A:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 172B:       0C                                                         ;       IF_NOT_GOTO address=1738
 172C:         0D 0A                                                    ;         while_pass: size=000A
 172E:           00 88                                                  ;           move_ACTIVE_and_look(room) room=88(Triangular room)
@@ -2048,10 +2088,10 @@ RoomDescriptions:
 175D:     CE B5 86 5F 99 16 C2 B3 90 14 07 58 66 49 2E                 ;     ~
 176C:   04 0B                                                          ;   04 COMMAND
 176E:     0B 09 0A                                                     ;     switch(compare_input_to(phrase)): size=0009
-1771:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+1771:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 1772:       02                                                         ;       IF_NOT_GOTO address=1775
 1773:         00 85                                                    ;         move_ACTIVE_and_look(room) room=85(T-shaped room 1)
-1775:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+1775:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 1776:       02                                                         ;       IF_NOT_GOTO address=1779
 1777:         00 87                                                    ;         move_ACTIVE_and_look(room) room=87(Round room high walls 1)
 ;
@@ -2063,13 +2103,13 @@ RoomDescriptions:
 179E:     F0 A4 91 7A D5 15 89 17 82 17 59 5E 66 62 2E                 ;     ~
 17AD:   04 10                                                          ;   04 COMMAND
 17AF:     0B 0E 0A                                                     ;     switch(compare_input_to(phrase)): size=000E
-17B2:       05                                                         ;       compare_input_to(phrase) phrase="05: GET     *       ..C.....  *         "
+17B2:       05                                                         ;       compare_input_to(phrase) phrase="05: GET     ..C.....  *       *         "
 17B3:       07                                                         ;       IF_NOT_GOTO address=17BB
 17B4:         0D 05                                                    ;         while_pass: size=0005
 17B6:           08 08                                                  ;           is_first_noun(object) object=08(RING)
-17B8:           19 8C                                                  ;           move_ACTIVE(room) room=8CRound room high walls 2
+17B8:           19 8C                                                  ;           move_ACTIVE(room) room=8C(Round room high walls 2)
 17BA:           0C                                                     ;           fail()
-17BB:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+17BB:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 17BC:       02                                                         ;       IF_NOT_GOTO address=17BF
 17BD:         00 86                                                    ;         move_ACTIVE_and_look(room) room=86(Gray stone walls 1)
 ;
@@ -2084,7 +2124,7 @@ RoomDescriptions:
 1814:     8E 48 94 14 09 B3 2E                                         ;     ~
 181B:   04 1D                                                          ;   04 COMMAND
 181D:     0B 1B 0A                                                     ;     switch(compare_input_to(phrase)): size=001B
-1820:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+1820:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 1821:       0B                                                         ;       IF_NOT_GOTO address=182D
 1822:         0E 09                                                    ;         while_fail: size=0009
 1824:           0D 05                                                  ;           while_pass: size=0005
@@ -2092,7 +2132,7 @@ RoomDescriptions:
 1828:             01 07                                                ;             is_in_pack_or_current_room(object) object=07(STATUE)
 182A:             82                                                   ;             82(DeathByStatue)
 182B:           00 85                                                  ;           move_ACTIVE_and_look(room) room=85(T-shaped room 1)
-182D:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+182D:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 182E:       0B                                                         ;       IF_NOT_GOTO address=183A
 182F:         0E 09                                                    ;         while_fail: size=0009
 1831:           0D 05                                                  ;           while_pass: size=0005
@@ -2110,7 +2150,7 @@ RoomDescriptions:
 186F:     47 5E 66 49 90 14 19 58 66 62 F3 17 0D 8D 2E                 ;     ~
 187E:   04 19                                                          ;   04 COMMAND
 1880:     0B 17 0A                                                     ;     switch(compare_input_to(phrase)): size=0017
-1883:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+1883:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 1884:       0C                                                         ;       IF_NOT_GOTO address=1891
 1885:         0D 0A                                                    ;         while_pass: size=000A
 1887:           00 88                                                  ;           move_ACTIVE_and_look(room) room=88(Triangular room)
@@ -2119,10 +2159,10 @@ RoomDescriptions:
 188C:             20 1D                                                ;             is_ACTIVE_this(object) object=1D(PLAYER)
 188E:             01 06                                                ;             is_in_pack_or_current_room(object) object=06(STATUE)
 1890:             82                                                   ;             82(DeathByStatue)
-1891:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+1891:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 1892:       02                                                         ;       IF_NOT_GOTO address=1895
 1893:         00 90                                                    ;         move_ACTIVE_and_look(room) room=90(North end central hall)
-1895:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+1895:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 1896:       02                                                         ;       IF_NOT_GOTO address=1899
 1897:         00 8A                                                    ;         move_ACTIVE_and_look(room) room=8A(T-shaped room 2)
 ;
@@ -2134,13 +2174,13 @@ RoomDescriptions:
 18BE:     8E 48 F7 17 17 BA                                            ;     ~
 18C4:   04 0F                                                          ;   04 COMMAND
 18C6:     0B 0D 0A                                                     ;     switch(compare_input_to(phrase)): size=000D
-18C9:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+18C9:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 18CA:       02                                                         ;       IF_NOT_GOTO address=18CD
 18CB:         00 89                                                    ;         move_ACTIVE_and_look(room) room=89(South end central hall)
-18CD:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+18CD:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 18CE:       02                                                         ;       IF_NOT_GOTO address=18D1
 18CF:         00 8B                                                    ;         move_ACTIVE_and_look(room) room=8B(Grey stone walls 2)
-18D1:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+18D1:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 18D2:       02                                                         ;       IF_NOT_GOTO address=18D5
 18D3:         00 8D                                                    ;         move_ACTIVE_and_look(room) room=8D(Petite chamber)
 ;
@@ -2152,10 +2192,10 @@ RoomDescriptions:
 18FA:     CE B5 86 5F 99 16 C2 B3 90 14 07 58 66 49 2E                 ;     ~
 1909:   04 0B                                                          ;   04 COMMAND
 190B:     0B 09 0A                                                     ;     switch(compare_input_to(phrase)): size=0009
-190E:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+190E:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 190F:       02                                                         ;       IF_NOT_GOTO address=1912
 1910:         00 8A                                                    ;         move_ACTIVE_and_look(room) room=8A(T-shaped room 2)
-1912:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+1912:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 1913:       02                                                         ;       IF_NOT_GOTO address=1916
 1914:         00 8C                                                    ;         move_ACTIVE_and_look(room) room=8C(Round room high walls 2)
 ;
@@ -2167,13 +2207,13 @@ RoomDescriptions:
 193B:     F0 A4 91 7A D5 15 89 17 82 17 59 5E 66 62 2E                 ;     ~
 194A:   04 10                                                          ;   04 COMMAND
 194C:     0B 0E 0A                                                     ;     switch(compare_input_to(phrase)): size=000E
-194F:       05                                                         ;       compare_input_to(phrase) phrase="05: GET     *       ..C.....  *         "
+194F:       05                                                         ;       compare_input_to(phrase) phrase="05: GET     ..C.....  *       *         "
 1950:       07                                                         ;       IF_NOT_GOTO address=1958
 1951:         0D 05                                                    ;         while_pass: size=0005
 1953:           08 08                                                  ;           is_first_noun(object) object=08(RING)
-1955:           19 87                                                  ;           move_ACTIVE(room) room=87Round room high walls 1
+1955:           19 87                                                  ;           move_ACTIVE(room) room=87(Round room high walls 1)
 1957:           0C                                                     ;           fail()
-1958:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+1958:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 1959:       02                                                         ;       IF_NOT_GOTO address=195C
 195A:         00 8B                                                    ;         move_ACTIVE_and_look(room) room=8B(Grey stone walls 2)
 ;
@@ -2186,10 +2226,10 @@ RoomDescriptions:
 1991:     65 49 77 47 89 17 82 17 59 5E 66 62 2E                       ;     ~
 199E:   04 0B                                                          ;   04 COMMAND
 19A0:     0B 09 0A                                                     ;     switch(compare_input_to(phrase)): size=0009
-19A3:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+19A3:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 19A4:       02                                                         ;       IF_NOT_GOTO address=19A7
 19A5:         00 8A                                                    ;         move_ACTIVE_and_look(room) room=8A(T-shaped room 2)
-19A7:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+19A7:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 19A8:       02                                                         ;       IF_NOT_GOTO address=19AB
 19A9:         00 8E                                                    ;         move_ACTIVE_and_look(room) room=8E(Smells of decaying flesh)
 ;
@@ -2202,10 +2242,10 @@ RoomDescriptions:
 19E1:     04 9A 53 BE 8E 48 61 17 82 C6 2E                             ;     ~
 19EC:   04 62                                                          ;   04 COMMAND
 19EE:     0B 60 0A                                                     ;     switch(compare_input_to(phrase)): size=0060
-19F1:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+19F1:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 19F2:       02                                                         ;       IF_NOT_GOTO address=19F5
 19F3:         00 8D                                                    ;         move_ACTIVE_and_look(room) room=8D(Petite chamber)
-19F5:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+19F5:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 19F6:       59                                                         ;       IF_NOT_GOTO address=1A50
 19F7:         0E 57                                                    ;         while_fail: size=0057
 19F9:           0D 1D                                                  ;           while_pass: size=001D
@@ -2233,7 +2273,7 @@ RoomDescriptions:
 1A75:     47 5E 96 D7 89 17 82 17 55 5E 36 A1 9B 76                    ;     ~
 1A83:   04 07                                                          ;   04 COMMAND
 1A85:     0B 05 0A                                                     ;     switch(compare_input_to(phrase)): size=0005
-1A88:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+1A88:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 1A89:       02                                                         ;       IF_NOT_GOTO address=1A8C
 1A8A:         00 8E                                                    ;         move_ACTIVE_and_look(room) room=8E(Smells of decaying flesh)
 ;
@@ -2248,13 +2288,13 @@ RoomDescriptions:
 1AE2:     C2 B3 F3 17 17 8D                                            ;     ~
 1AE8:   04 47                                                          ;   04 COMMAND
 1AEA:     0B 45 0A                                                     ;     switch(compare_input_to(phrase)): size=0045
-1AED:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+1AED:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 1AEE:       02                                                         ;       IF_NOT_GOTO address=1AF1
 1AEF:         00 89                                                    ;         move_ACTIVE_and_look(room) room=89(South end central hall)
-1AF1:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+1AF1:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 1AF2:       02                                                         ;       IF_NOT_GOTO address=1AF5
 1AF3:         00 A0                                                    ;         move_ACTIVE_and_look(room) room=A0(Very small room)
-1AF5:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+1AF5:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 1AF6:       36                                                         ;       IF_NOT_GOTO address=1B2D
 1AF7:         0E 34                                                    ;         while_fail: size=0034
 1AF9:           0D 14                                                  ;           while_pass: size=0014
@@ -2268,7 +2308,7 @@ RoomDescriptions:
 1B18:               5F BE 09 15 A3 A0 C9 54 B5 B7 AF 14 90 73 1B 58    ;               THE DOOR CLOSES BEHIND YOU.
 1B28:               3F A1                                              ;               ~
 1B2A:             17 1C 00                                             ;             move_to(object,room) object=1C(DOOR) room=00(Room_00)
-1B2D:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+1B2D:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 1B2E:       02                                                         ;       IF_NOT_GOTO address=1B31
 1B2F:         00 92                                                    ;         move_ACTIVE_and_look(room) room=92(Entrance long dark tunnel west)
 ;
@@ -2280,7 +2320,7 @@ RoomDescriptions:
 1B57:     9B 76                                                        ;     ~
 1B59:   04 68                                                          ;   04 COMMAND
 1B5B:     0B 66 0A                                                     ;     switch(compare_input_to(phrase)): size=0066
-1B5E:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+1B5E:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 1B5F:       2F                                                         ;       IF_NOT_GOTO address=1B8F
 1B60:         0E 2D                                                    ;         while_fail: size=002D
 1B62:           0D 10                                                  ;           while_pass: size=0010
@@ -2293,7 +2333,7 @@ RoomDescriptions:
 1B7B:             04 0F                                                ;             print(msg) size=000F
 1B7D:               5F BE 09 15 A3 A0 C9 54 B5 B7 89 14 D0 47 2E       ;               THE DOOR CLOSES AGAIN.
 1B8C:             17 1C 00                                             ;             move_to(object,room) object=1C(DOOR) room=00(Room_00)
-1B8F:       11                                                         ;       compare_input_to(phrase) phrase="11: OPEN    *       u.......  *         "
+1B8F:       11                                                         ;       compare_input_to(phrase) phrase="11: OPEN    u.......  *       *         "
 1B90:       32                                                         ;       IF_NOT_GOTO address=1BC3
 1B91:         0E 30                                                    ;         while_fail: size=0030
 1B93:           0D 10                                                  ;           while_pass: size=0010
@@ -2317,10 +2357,10 @@ RoomDescriptions:
 1BF8:     7B 14 55 A4 09 B7 47 5E 66 49 2E                             ;     ~
 1C03:   04 0B                                                          ;   04 COMMAND
 1C05:     0B 09 0A                                                     ;     switch(compare_input_to(phrase)): size=0009
-1C08:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+1C08:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 1C09:       02                                                         ;       IF_NOT_GOTO address=1C0C
 1C0A:         00 90                                                    ;         move_ACTIVE_and_look(room) room=90(North end central hall)
-1C0C:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+1C0C:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 1C0D:       02                                                         ;       IF_NOT_GOTO address=1C10
 1C0E:         00 93                                                    ;         move_ACTIVE_and_look(room) room=93(Dark tunnel)
 ;
@@ -2331,10 +2371,10 @@ RoomDescriptions:
 1C25:     57 61                                                        ;     ~
 1C27:   04 0B                                                          ;   04 COMMAND
 1C29:     0B 09 0A                                                     ;     switch(compare_input_to(phrase)): size=0009
-1C2C:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+1C2C:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 1C2D:       02                                                         ;       IF_NOT_GOTO address=1C30
 1C2E:         00 92                                                    ;         move_ACTIVE_and_look(room) room=92(Entrance long dark tunnel west)
-1C30:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+1C30:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 1C31:       02                                                         ;       IF_NOT_GOTO address=1C34
 1C32:         00 94                                                    ;         move_ACTIVE_and_look(room) room=94(Entrance long dark tunnel east)
 ;
@@ -2347,10 +2387,10 @@ RoomDescriptions:
 1C69:     7B 14 55 A4 09 B7 59 5E 66 62 2E                             ;     ~
 1C74:   04 18                                                          ;   04 COMMAND
 1C76:     0B 16 0A                                                     ;     switch(compare_input_to(phrase)): size=0016
-1C79:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+1C79:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 1C7A:       02                                                         ;       IF_NOT_GOTO address=1C7D
 1C7B:         00 93                                                    ;         move_ACTIVE_and_look(room) room=93(Dark tunnel)
-1C7D:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+1C7D:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 1C7E:       0F                                                         ;       IF_NOT_GOTO address=1C8E
 1C7F:         0E 0D                                                    ;         while_fail: size=000D
 1C81:           0D 09                                                  ;           while_pass: size=0009
@@ -2367,13 +2407,13 @@ RoomDescriptions:
 1CA3:     56 D1 03 71 5B 17 BE 98 47 5E 96 D7 23 15 17 BA              ;     IT EAST.
 1CB3:   04 0D                                                          ;   04 COMMAND
 1CB5:     0B 0B 0A                                                     ;     switch(compare_input_to(phrase)): size=000B
-1CB8:       36                                                         ;       compare_input_to(phrase) phrase="36: CLIMB   IN      *         *         "
+1CB8:       36                                                         ;       compare_input_to(phrase) phrase="36: CLIMB   *         IN      *         "
 1CB9:       01                                                         ;       IF_NOT_GOTO address=1CBB
 1CBA:         8F                                                       ;         8F(EnterSecretPassage)
-1CBB:       17                                                         ;       compare_input_to(phrase) phrase="17: CLIMB   *       u.......  *         "
+1CBB:       17                                                         ;       compare_input_to(phrase) phrase="17: CLIMB   u.......  *       *         "
 1CBC:       01                                                         ;       IF_NOT_GOTO address=1CBE
 1CBD:         8F                                                       ;         8F(EnterSecretPassage)
-1CBE:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+1CBE:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 1CBF:       02                                                         ;       IF_NOT_GOTO address=1CC2
 1CC0:         00 94                                                    ;         move_ACTIVE_and_look(room) room=94(Entrance long dark tunnel east)
 ;
@@ -2384,16 +2424,16 @@ RoomDescriptions:
 1CD7:     4F 59 0C A3 91 C5 FF 8B                                      ;     ~
 1CDF:   04 13                                                          ;   04 COMMAND
 1CE1:     0B 11 0A                                                     ;     switch(compare_input_to(phrase)): size=0011
-1CE4:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+1CE4:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 1CE5:       02                                                         ;       IF_NOT_GOTO address=1CE8
 1CE6:         00 A3                                                    ;         move_ACTIVE_and_look(room) room=A3(Dense damp dark jungle)
-1CE8:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+1CE8:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 1CE9:       02                                                         ;       IF_NOT_GOTO address=1CEC
 1CEA:         00 A4                                                    ;         move_ACTIVE_and_look(room) room=A4(Damp dark dense jungle)
-1CEC:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+1CEC:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 1CED:       02                                                         ;       IF_NOT_GOTO address=1CF0
 1CEE:         00 97                                                    ;         move_ACTIVE_and_look(room) room=97(Dark dense damp jungle)
-1CF0:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+1CF0:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 1CF1:       02                                                         ;       IF_NOT_GOTO address=1CF4
 1CF2:         00 A4                                                    ;         move_ACTIVE_and_look(room) room=A4(Damp dark dense jungle)
 ;
@@ -2404,16 +2444,16 @@ RoomDescriptions:
 1D09:     4F 59 0C A3 91 C5 FF 8B                                      ;     ~
 1D11:   04 13                                                          ;   04 COMMAND
 1D13:     0B 11 0A                                                     ;     switch(compare_input_to(phrase)): size=0011
-1D16:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+1D16:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 1D17:       02                                                         ;       IF_NOT_GOTO address=1D1A
 1D18:         00 A2                                                    ;         move_ACTIVE_and_look(room) room=A2(Dark damp dense jungle)
-1D1A:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+1D1A:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 1D1B:       02                                                         ;       IF_NOT_GOTO address=1D1E
 1D1C:         00 96                                                    ;         move_ACTIVE_and_look(room) room=96(Dense dark damp jungle)
-1D1E:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+1D1E:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 1D1F:       02                                                         ;       IF_NOT_GOTO address=1D22
 1D20:         00 A3                                                    ;         move_ACTIVE_and_look(room) room=A3(Dense damp dark jungle)
-1D22:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+1D22:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 1D23:       02                                                         ;       IF_NOT_GOTO address=1D26
 1D24:         00 98                                                    ;         move_ACTIVE_and_look(room) room=98(See east wall)
 ;
@@ -2425,16 +2465,16 @@ RoomDescriptions:
 1D4B:     96 5F 7F 17 E6 93 DB 63                                      ;     ~
 1D53:   04 13                                                          ;   04 COMMAND
 1D55:     0B 11 0A                                                     ;     switch(compare_input_to(phrase)): size=0011
-1D58:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+1D58:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 1D59:       02                                                         ;       IF_NOT_GOTO address=1D5C
 1D5A:         00 9B                                                    ;         move_ACTIVE_and_look(room) room=9B(See north wall)
-1D5C:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+1D5C:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 1D5D:       02                                                         ;       IF_NOT_GOTO address=1D60
 1D5E:         00 99                                                    ;         move_ACTIVE_and_look(room) room=99(Stands south wall)
-1D60:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+1D60:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 1D61:       02                                                         ;       IF_NOT_GOTO address=1D64
 1D62:         00 97                                                    ;         move_ACTIVE_and_look(room) room=97(Dark dense damp jungle)
-1D64:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+1D64:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 1D65:       02                                                         ;       IF_NOT_GOTO address=1D68
 1D66:         00 9E                                                    ;         move_ACTIVE_and_look(room) room=9E(At east wall)
 ;
@@ -2446,16 +2486,16 @@ RoomDescriptions:
 1D8D:     83 64 84 15 96 5F 7F 17 E6 93 DB 63                          ;     ~
 1D99:   04 13                                                          ;   04 COMMAND
 1D9B:     0B 11 0A                                                     ;     switch(compare_input_to(phrase)): size=0011
-1D9E:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+1D9E:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 1D9F:       02                                                         ;       IF_NOT_GOTO address=1DA2
 1DA0:         00 9F                                                    ;         move_ACTIVE_and_look(room) room=9F(At south wall)
-1DA2:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+1DA2:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 1DA3:       02                                                         ;       IF_NOT_GOTO address=1DA6
 1DA4:         00 96                                                    ;         move_ACTIVE_and_look(room) room=96(Dense dark damp jungle)
-1DA6:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+1DA6:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 1DA7:       02                                                         ;       IF_NOT_GOTO address=1DAA
 1DA8:         00 98                                                    ;         move_ACTIVE_and_look(room) room=98(See east wall)
-1DAA:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+1DAA:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 1DAB:       02                                                         ;       IF_NOT_GOTO address=1DAE
 1DAC:         00 9A                                                    ;         move_ACTIVE_and_look(room) room=9A(See bronze gates)
 ;
@@ -2469,16 +2509,16 @@ RoomDescriptions:
 1DF3:     2E                                                           ;     ~
 1DF4:   04 13                                                          ;   04 COMMAND
 1DF6:     0B 11 0A                                                     ;     switch(compare_input_to(phrase)): size=0011
-1DF9:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+1DF9:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 1DFA:       02                                                         ;       IF_NOT_GOTO address=1DFD
 1DFB:         00 9B                                                    ;         move_ACTIVE_and_look(room) room=9B(See north wall)
-1DFD:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+1DFD:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 1DFE:       02                                                         ;       IF_NOT_GOTO address=1E01
 1DFF:         00 99                                                    ;         move_ACTIVE_and_look(room) room=99(Stands south wall)
-1E01:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+1E01:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 1E02:       02                                                         ;       IF_NOT_GOTO address=1E05
 1E03:         00 9C                                                    ;         move_ACTIVE_and_look(room) room=9C(Standing west entrance)
-1E05:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+1E05:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 1E06:       02                                                         ;       IF_NOT_GOTO address=1E09
 1E07:         00 A4                                                    ;         move_ACTIVE_and_look(room) room=A4(Damp dark dense jungle)
 ;
@@ -2491,16 +2531,16 @@ RoomDescriptions:
 1E3E:     EF BD FF A5 2E                                               ;     ~
 1E43:   04 13                                                          ;   04 COMMAND
 1E45:     0B 11 0A                                                     ;     switch(compare_input_to(phrase)): size=0011
-1E48:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+1E48:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 1E49:       02                                                         ;       IF_NOT_GOTO address=1E4C
 1E4A:         00 A2                                                    ;         move_ACTIVE_and_look(room) room=A2(Dark damp dense jungle)
-1E4C:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+1E4C:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 1E4D:       02                                                         ;       IF_NOT_GOTO address=1E50
 1E4E:         00 9D                                                    ;         move_ACTIVE_and_look(room) room=9D(At north wall)
-1E50:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+1E50:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 1E51:       02                                                         ;       IF_NOT_GOTO address=1E54
 1E52:         00 9A                                                    ;         move_ACTIVE_and_look(room) room=9A(See bronze gates)
-1E54:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+1E54:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 1E55:       02                                                         ;       IF_NOT_GOTO address=1E58
 1E56:         00 98                                                    ;         move_ACTIVE_and_look(room) room=98(See east wall)
 ;
@@ -2512,13 +2552,13 @@ RoomDescriptions:
 1E7D:     7F 17 E6 93 DB 63                                            ;     ~
 1E83:   04 0F                                                          ;   04 COMMAND
 1E85:     0B 0D 0A                                                     ;     switch(compare_input_to(phrase)): size=000D
-1E88:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+1E88:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 1E89:       02                                                         ;       IF_NOT_GOTO address=1E8C
 1E8A:         00 9D                                                    ;         move_ACTIVE_and_look(room) room=9D(At north wall)
-1E8C:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+1E8C:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 1E8D:       02                                                         ;       IF_NOT_GOTO address=1E90
 1E8E:         00 9F                                                    ;         move_ACTIVE_and_look(room) room=9F(At south wall)
-1E90:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+1E90:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 1E91:       02                                                         ;       IF_NOT_GOTO address=1E94
 1E92:         00 9A                                                    ;         move_ACTIVE_and_look(room) room=9A(See bronze gates)
 ;
@@ -2529,13 +2569,13 @@ RoomDescriptions:
 1EAA:     9B 8F                                                        ;     ~
 1EAC:   04 80 9B                                                       ;   04 COMMAND
 1EAF:     0B 80 98 0A                                                  ;     switch(compare_input_to(phrase)): size=0098
-1EB3:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+1EB3:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 1EB4:       02                                                         ;       IF_NOT_GOTO address=1EB7
 1EB5:         00 9B                                                    ;         move_ACTIVE_and_look(room) room=9B(See north wall)
-1EB7:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+1EB7:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 1EB8:       02                                                         ;       IF_NOT_GOTO address=1EBB
 1EB9:         00 9E                                                    ;         move_ACTIVE_and_look(room) room=9E(At east wall)
-1EBB:       17                                                         ;       compare_input_to(phrase) phrase="17: CLIMB   *       u.......  *         "
+1EBB:       17                                                         ;       compare_input_to(phrase) phrase="17: CLIMB   u.......  *       *         "
 1EBC:       80 88                                                      ;       IF_NOT_GOTO address=1F45
 1EBE:         0D 80 85                                                 ;         while_pass: size=0085
 1EC1:           08 21                                                  ;           is_first_noun(object) object=21(VINE)
@@ -2563,7 +2603,7 @@ RoomDescriptions:
 1F1E:               4B 49 C7 DE DE 14 64 7A 16 EE DB 72 10 CB 49 5E    ;               AS YOU CLIMB, THE VINE GIVES WAY AND YOU
 1F2E:               CF 7B D9 B5 3B 4A 8E 48 51 18 48 C2 46 48 89 17    ;               FALL TO THE GROUND.
 1F3E:               82 17 49 5E 07 B3 57 98                            ;               ~
-1F46:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+1F46:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 1F47:       02                                                         ;       IF_NOT_GOTO address=1F4A
 1F48:         00 9C                                                    ;         move_ACTIVE_and_look(room) room=9C(Standing west entrance)
 ;
@@ -2574,13 +2614,13 @@ RoomDescriptions:
 1F5F:     2E                                                           ;     ~
 1F60:   04 0F                                                          ;   04 COMMAND
 1F62:     0B 0D 0A                                                     ;     switch(compare_input_to(phrase)): size=000D
-1F65:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+1F65:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 1F66:       02                                                         ;       IF_NOT_GOTO address=1F69
 1F67:         00 9D                                                    ;         move_ACTIVE_and_look(room) room=9D(At north wall)
-1F69:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+1F69:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 1F6A:       02                                                         ;       IF_NOT_GOTO address=1F6D
 1F6B:         00 9F                                                    ;         move_ACTIVE_and_look(room) room=9F(At south wall)
-1F6D:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+1F6D:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 1F6E:       02                                                         ;       IF_NOT_GOTO address=1F71
 1F6F:         00 98                                                    ;         move_ACTIVE_and_look(room) room=98(See east wall)
 ;
@@ -2591,13 +2631,13 @@ RoomDescriptions:
 1F86:     9B 8F                                                        ;     ~
 1F88:   04 0F                                                          ;   04 COMMAND
 1F8A:     0B 0D 0A                                                     ;     switch(compare_input_to(phrase)): size=000D
-1F8D:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+1F8D:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 1F8E:       02                                                         ;       IF_NOT_GOTO address=1F91
 1F8F:         00 9C                                                    ;         move_ACTIVE_and_look(room) room=9C(Standing west entrance)
-1F91:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+1F91:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 1F92:       02                                                         ;       IF_NOT_GOTO address=1F95
 1F93:         00 9E                                                    ;         move_ACTIVE_and_look(room) room=9E(At east wall)
-1F95:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+1F95:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 1F96:       02                                                         ;       IF_NOT_GOTO address=1F99
 1F97:         00 99                                                    ;         move_ACTIVE_and_look(room) room=99(Stands south wall)
 ;
@@ -2608,7 +2648,7 @@ RoomDescriptions:
 1FAE:     01 B3 DB 95                                                  ;     ~
 1FB2:   04 07                                                          ;   04 COMMAND
 1FB4:     0B 05 0A                                                     ;     switch(compare_input_to(phrase)): size=0005
-1FB7:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+1FB7:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 1FB8:       02                                                         ;       IF_NOT_GOTO address=1FBB
 1FB9:         00 90                                                    ;         move_ACTIVE_and_look(room) room=90(North end central hall)
 ;
@@ -2619,7 +2659,7 @@ RoomDescriptions:
 1FD0:     56 D1 03 71 5B 17 BE 98 47 5E 96 D7 23 15 17 BA              ;     IT EAST.
 1FE0:   04 07                                                          ;   04 COMMAND
 1FE2:     0B 05 0A                                                     ;     switch(compare_input_to(phrase)): size=0005
-1FE5:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+1FE5:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 1FE6:       02                                                         ;       IF_NOT_GOTO address=1FE9
 1FE7:         00 84                                                    ;         move_ACTIVE_and_look(room) room=84(Top of a passage)
 ;
@@ -2630,16 +2670,16 @@ RoomDescriptions:
 1FFE:     9D 61 4C 5E 91 C5 FF 8B                                      ;     ~
 2006:   04 13                                                          ;   04 COMMAND
 2008:     0B 11 0A                                                     ;     switch(compare_input_to(phrase)): size=0011
-200B:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+200B:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 200C:       02                                                         ;       IF_NOT_GOTO address=200F
 200D:         00 A4                                                    ;         move_ACTIVE_and_look(room) room=A4(Damp dark dense jungle)
-200F:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+200F:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 2010:       02                                                         ;       IF_NOT_GOTO address=2013
 2011:         00 96                                                    ;         move_ACTIVE_and_look(room) room=96(Dense dark damp jungle)
-2013:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+2013:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 2014:       02                                                         ;       IF_NOT_GOTO address=2017
 2015:         00 A3                                                    ;         move_ACTIVE_and_look(room) room=A3(Dense damp dark jungle)
-2017:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+2017:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 2018:       02                                                         ;       IF_NOT_GOTO address=201B
 2019:         00 97                                                    ;         move_ACTIVE_and_look(room) room=97(Dark dense damp jungle)
 ;
@@ -2650,16 +2690,16 @@ RoomDescriptions:
 2030:     54 59 CC 83 91 C5 FF 8B                                      ;     ~
 2038:   04 13                                                          ;   04 COMMAND
 203A:     0B 11 0A                                                     ;     switch(compare_input_to(phrase)): size=0011
-203D:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+203D:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 203E:       02                                                         ;       IF_NOT_GOTO address=2041
 203F:         00 A4                                                    ;         move_ACTIVE_and_look(room) room=A4(Damp dark dense jungle)
-2041:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+2041:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 2042:       02                                                         ;       IF_NOT_GOTO address=2045
 2043:         00 A2                                                    ;         move_ACTIVE_and_look(room) room=A2(Dark damp dense jungle)
-2045:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+2045:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 2046:       02                                                         ;       IF_NOT_GOTO address=2049
 2047:         00 96                                                    ;         move_ACTIVE_and_look(room) room=96(Dense dark damp jungle)
-2049:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+2049:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 204A:       02                                                         ;       IF_NOT_GOTO address=204D
 204B:         00 97                                                    ;         move_ACTIVE_and_look(room) room=97(Dark dense damp jungle)
 ;
@@ -2670,16 +2710,16 @@ RoomDescriptions:
 2062:     9D 61 4C 5E 91 C5 FF 8B                                      ;     ~
 206A:   04 13                                                          ;   04 COMMAND
 206C:     0B 11 0A                                                     ;     switch(compare_input_to(phrase)): size=0011
-206F:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+206F:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 2070:       02                                                         ;       IF_NOT_GOTO address=2073
 2071:         00 A3                                                    ;         move_ACTIVE_and_look(room) room=A3(Dense damp dark jungle)
-2073:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+2073:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 2074:       02                                                         ;       IF_NOT_GOTO address=2077
 2075:         00 A2                                                    ;         move_ACTIVE_and_look(room) room=A2(Dark damp dense jungle)
-2077:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+2077:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 2078:       02                                                         ;       IF_NOT_GOTO address=207B
 2079:         00 96                                                    ;         move_ACTIVE_and_look(room) room=96(Dense dark damp jungle)
-207B:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+207B:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 207C:       02                                                         ;       IF_NOT_GOTO address=207F
 207D:         00 A3                                                    ;         move_ACTIVE_and_look(room) room=A3(Dense damp dark jungle)
 ;
@@ -2690,7 +2730,7 @@ RoomDescriptions:
 2094:     D3 B9 9B 6C 23 D1 13 54 E3 8B 0B 5C 95 5F 9B C1              ;     S EAST.
 20A4:   04 07                                                          ;   04 COMMAND
 20A6:     0B 05 0A                                                     ;     switch(compare_input_to(phrase)): size=0005
-20A9:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+20A9:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 20AA:       02                                                         ;       IF_NOT_GOTO address=20AD
 20AB:         00 A6                                                    ;         move_ACTIVE_and_look(room) room=A6(End of the passage)
 ;
@@ -2702,20 +2742,20 @@ RoomDescriptions:
 20D2:     DB 8B 83 7A 5F BE D7 14 43 7A CF 98                          ;     ~
 20DE:   04 1F                                                          ;   04 COMMAND
 20E0:     0B 1D 0A                                                     ;     switch(compare_input_to(phrase)): size=001D
-20E3:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+20E3:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 20E4:       02                                                         ;       IF_NOT_GOTO address=20E7
 20E5:         00 A5                                                    ;         move_ACTIVE_and_look(room) room=A5(Secret passage)
-20E7:       17                                                         ;       compare_input_to(phrase) phrase="17: CLIMB   *       u.......  *         "
+20E7:       17                                                         ;       compare_input_to(phrase) phrase="17: CLIMB   u.......  *       *         "
 20E8:       05                                                         ;       IF_NOT_GOTO address=20EE
 20E9:         0D 03                                                    ;         while_pass: size=0003
 20EB:           08 2C                                                  ;           is_first_noun(object) object=2C(HOLE)
 20ED:           91                                                     ;           91(SealUpHole)
-20EE:       36                                                         ;       compare_input_to(phrase) phrase="36: CLIMB   IN      *         *         "
+20EE:       36                                                         ;       compare_input_to(phrase) phrase="36: CLIMB   *         IN      *         "
 20EF:       05                                                         ;       IF_NOT_GOTO address=20F5
 20F0:         0D 03                                                    ;         while_pass: size=0003
 20F2:           08 2C                                                  ;           is_first_noun(object) object=2C(HOLE)
 20F4:           91                                                     ;           91(SealUpHole)
-20F5:       37                                                         ;       compare_input_to(phrase) phrase="37: CLIMB   OUT     *         *         "
+20F5:       37                                                         ;       compare_input_to(phrase) phrase="37: CLIMB   *         OUT     *         "
 20F6:       05                                                         ;       IF_NOT_GOTO address=20FC
 20F7:         0D 03                                                    ;         while_pass: size=0003
 20F9:           08 2C                                                  ;           is_first_noun(object) object=2C(HOLE)
@@ -2761,7 +2801,7 @@ ObjectData:
 ;
 20FF: 00 91 3A                                                         ; size=113A
 ;
-; Object_01 "??01"
+; Object_01 "BOTTLE"
 2102: 01 03                                                            ; word=01 size=0003
 2104: 00 00 00                                                         ; room=00 scorePoints=00 bits=00
 ;
@@ -2776,25 +2816,25 @@ ObjectData:
 2113:     E9 B3                                                        ;     RUG
 2115:   07 3F                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 2117:     0B 3D 0A                                                     ;     switch(compare_input_to(phrase)): size=003D
-211A:       0C                                                         ;       compare_input_to(phrase) phrase="0C: LOOK    UNDER   *         u.......  "
+211A:       0C                                                         ;       compare_input_to(phrase) phrase="0C: LOOK    *         UNDER   u.......  "
 211B:       01                                                         ;       IF_NOT_GOTO address=211D
 211C:         8C                                                       ;         8C(PrintDiscoverPit)
-211D:       36                                                         ;       compare_input_to(phrase) phrase="36: CLIMB   IN      *         *         "
+211D:       36                                                         ;       compare_input_to(phrase) phrase="36: CLIMB   *         IN      *         "
 211E:       01                                                         ;       IF_NOT_GOTO address=2120
 211F:         8A                                                       ;         8A(DeathByRugSpike)
 2120:       33                                                         ;       compare_input_to(phrase) phrase=??? Phrase 33 not found
 2121:       01                                                         ;       IF_NOT_GOTO address=2123
 2122:         8A                                                       ;         8A(DeathByRugSpike)
-2123:       34                                                         ;       compare_input_to(phrase) phrase="34: JUMP    OVER    *         u.......  "
+2123:       34                                                         ;       compare_input_to(phrase) phrase="34: JUMP    *         OVER    u.......  "
 2124:       01                                                         ;       IF_NOT_GOTO address=2126
 2125:         8A                                                       ;         8A(DeathByRugSpike)
 2126:       35                                                         ;       compare_input_to(phrase) phrase=??? Phrase 35 not found
 2127:       01                                                         ;       IF_NOT_GOTO address=2129
 2128:         8B                                                       ;         8B(DeathByHiddenRugSpike)
-2129:       2D                                                         ;       compare_input_to(phrase) phrase="2D: PULL    UP      *         u.......  "
+2129:       2D                                                         ;       compare_input_to(phrase) phrase="2D: PULL    *         UP      u.......  "
 212A:       01                                                         ;       IF_NOT_GOTO address=212C
 212B:         8C                                                       ;         8C(PrintDiscoverPit)
-212C:       26                                                         ;       compare_input_to(phrase) phrase="26: GO      AROUND  *         u.......  "
+212C:       26                                                         ;       compare_input_to(phrase) phrase="26: GO      *         AROUND  u.......  "
 212D:       28                                                         ;       IF_NOT_GOTO address=2156
 212E:         04 26                                                    ;         print(msg) size=0026
 2130:           C7 DE D3 14 E6 96 16 EE DB 72 E9 B3 66 17 76 B1        ;           YOU CAN'T, THE RUG STRETCHES ALL THE WAY
@@ -2809,13 +2849,13 @@ ObjectData:
 2160:   07 54                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 2162:     0E 52                                                        ;     while_fail: size=0052
 2164:       0D 22                                                      ;       while_pass: size=0022
-2166:         0A 08                                                    ;         compare_input_to(phrase) phrase="08: READ    *       .....X..  *         "
+2166:         0A 08                                                    ;         compare_input_to(phrase) phrase="08: READ    .....X..  *       *         "
 2168:         04 1E                                                    ;         print(msg) size=001E
 216A:           5F BE D3 14 13 B4 C5 98 C0 16 82 17 46 5E 44 A0        ;           THE CARVINGS ON THE DOOR SAY, "DO NOT EN
 217A:           53 17 B3 E0 49 1B 99 16 07 BC BF 9A 1C B5              ;           TER."
 2188:       0D 2C                                                      ;       while_pass: size=002C
 218A:         14                                                       ;         execute_and_reverse_status:
-218B:         0A 0B                                                    ;         compare_input_to(phrase) phrase="0B: LOOK    AT      *         u.......  "
+218B:         0A 0B                                                    ;         compare_input_to(phrase) phrase="0B: LOOK    *         AT      u.......  "
 218D:         04 27                                                    ;         print(msg) size=0027
 218F:           C7 DE C6 22 9B 15 5B CA 6B BF 2B 6E 6B BF 5F BE        ;           YOU'LL HAVE TO GO TO THE EAST SIDE OF TH
 219F:           23 15 F3 B9 46 B8 51 5E 96 64 DB 72 01 B3 56 90        ;           E ROOM TO DO THAT.
@@ -2828,7 +2868,7 @@ ObjectData:
 21BD:     5F BE 5B B1 4B 7B 01 68 0A 58 2F 62 2E                       ;     THERE IS FOOD HERE.
 21CA:   07 11                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 21CC:     0D 0F                                                        ;     while_pass: size=000F
-21CE:       0A 15                                                      ;       compare_input_to(phrase) phrase="15: EAT     *       u.......  *         "
+21CE:       0A 15                                                      ;       compare_input_to(phrase) phrase="15: EAT     u.......  *       *         "
 21D0:       04 04                                                      ;       print(msg) size=0004
 21D2:         F4 4F AB A2                                              ;         BURP!
 21D6:       17 05 00                                                   ;       move_to(object,room) object=05(FOOD) room=00(Room_00)
@@ -2844,7 +2884,7 @@ ObjectData:
 21E9:     FB B9 67 C0                                                  ;     STATUE
 21ED:   07 05                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 21EF:     0D 03                                                        ;     while_pass: size=0003
-21F1:       0A 12                                                      ;       compare_input_to(phrase) phrase="12: PULL    *       u.......  *         "
+21F1:       0A 12                                                      ;       compare_input_to(phrase) phrase="12: PULL    u.......  *       *         "
 21F3:       8D                                                         ;       8D(PrintStatueTooHeavy)
 21F4:   03 18                                                          ;   03 DESCRIPTION
 21F6:     5F BE 66 17 8F 49 4B 5E C8 B5 DB 46 AB 98 5F BE              ;     THE STATUE IS FACING THE EAST DOOR.
@@ -2857,7 +2897,7 @@ ObjectData:
 2215:     FB B9 67 C0                                                  ;     STATUE
 2219:   07 05                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 221B:     0D 03                                                        ;     while_pass: size=0003
-221D:       0A 12                                                      ;       compare_input_to(phrase) phrase="12: PULL    *       u.......  *         "
+221D:       0A 12                                                      ;       compare_input_to(phrase) phrase="12: PULL    u.......  *       *         "
 221F:       8D                                                         ;       8D(PrintStatueTooHeavy)
 2220:   03 18                                                          ;   03 DESCRIPTION
 2222:     5F BE 66 17 8F 49 4B 5E C8 B5 DB 46 AB 98 5F BE              ;     THE STATUE IS FACING THE WEST DOOR.
@@ -2873,7 +2913,7 @@ ObjectData:
 2257:     3E 6E 14 58 91 7A                                            ;     GOLD RING
 225D:   07 21                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 225F:     0D 1F                                                        ;     while_pass: size=001F
-2261:       0A 08                                                      ;       compare_input_to(phrase) phrase="08: READ    *       .....X..  *         "
+2261:       0A 08                                                      ;       compare_input_to(phrase) phrase="08: READ    .....X..  *       *         "
 2263:       04 1B                                                      ;       print(msg) size=001B
 2265:         5F BE D0 15 64 B7 EE 7A C0 7A 2F 17 0D 47 FC ED          ;         THE INSCRIPTION READS, "RING OF MOTION."
 2275:         10 B2 D1 6A 8F 64 03 A1 27 A0 22                         ;         ~
@@ -2886,7 +2926,7 @@ ObjectData:
 2297:     4B 4A AB 98 63 98 03 B1 2E                                   ;     ~
 22A0:   07 18                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 22A2:     0D 16                                                        ;     while_pass: size=0016
-22A4:       0A 08                                                      ;       compare_input_to(phrase) phrase="08: READ    *       .....X..  *         "
+22A4:       0A 08                                                      ;       compare_input_to(phrase) phrase="08: READ    .....X..  *       *         "
 22A6:       04 12                                                      ;       print(msg) size=0012
 22A8:         2C 1D 5F A0 D3 B3 B8 16 43 16 57 63 28 54 BD 5F          ;         "PROPERTY OF LIEYUCHNEBST"
 22B8:         23 BC                                                    ;         ~
@@ -2903,7 +2943,7 @@ ObjectData:
 22FB:     09 B7 DB 63                                                  ;     ~
 22FF:   07 24                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 2301:     0D 22                                                        ;     while_pass: size=0022
-2303:       0A 0B                                                      ;       compare_input_to(phrase) phrase="0B: LOOK    AT      *         u.......  "
+2303:       0A 0B                                                      ;       compare_input_to(phrase) phrase="0B: LOOK    *         AT      u.......  "
 2305:       04 1E                                                      ;       print(msg) size=001E
 2307:         5F BE 5B B1 EA 48 94 5F D6 B5 C4 9C 46 5E 07 B2          ;         THERE APPEARS TO BE DRIED BLOOD ON HIS C
 2317:         04 58 81 8D 11 58 8A 96 4B 7B BB 54 C9 D2                ;         LAWS!
@@ -2920,13 +2960,13 @@ ObjectData:
 2368:     6F 62                                                        ;     ~
 236A:   07 10                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 236C:     0B 0E 0A                                                     ;     switch(compare_input_to(phrase)): size=000E
-236F:       12                                                         ;       compare_input_to(phrase) phrase="12: PULL    *       u.......  *         "
+236F:       12                                                         ;       compare_input_to(phrase) phrase="12: PULL    u.......  *       *         "
 2370:       01                                                         ;       IF_NOT_GOTO address=2372
 2371:         8E                                                       ;         8E(PrintMoveAlter)
-2372:       0C                                                         ;       compare_input_to(phrase) phrase="0C: LOOK    UNDER   *         u.......  "
+2372:       0C                                                         ;       compare_input_to(phrase) phrase="0C: LOOK    *         UNDER   u.......  "
 2373:       01                                                         ;       IF_NOT_GOTO address=2375
 2374:         8E                                                       ;         8E(PrintMoveAlter)
-2375:       38                                                         ;       compare_input_to(phrase) phrase="38: CLIMB   UNDER   *         u.......  "
+2375:       38                                                         ;       compare_input_to(phrase) phrase="38: CLIMB   *         UNDER   u.......  "
 2376:       05                                                         ;       IF_NOT_GOTO address=237C
 2377:         0D 03                                                    ;         while_pass: size=0003
 2379:           00 A5                                                  ;           move_ACTIVE_and_look(room) room=A5(Secret passage)
@@ -2953,21 +2993,21 @@ ObjectData:
 23F4:     5B 5E 3F A1                                                  ;     ~
 23F8:   07 55                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 23FA:     0B 53 0A                                                     ;     switch(compare_input_to(phrase)): size=0053
-23FD:       11                                                         ;       compare_input_to(phrase) phrase="11: OPEN    *       u.......  *         "
+23FD:       11                                                         ;       compare_input_to(phrase) phrase="11: OPEN    u.......  *       *         "
 23FE:       20                                                         ;       IF_NOT_GOTO address=241F
 23FF:         04 1E                                                    ;         print(msg) size=001E
 2401:           5F BE 73 15 F5 BD 94 14 4E 5E 5D 9E 16 60 51 18        ;           THE GATES ARE LOCKED, YOU CAN NOT OPEN T
 2411:           45 C2 83 48 06 9A C2 16 83 61 5F BE DB 95              ;           HEM.
-241F:       36                                                         ;       compare_input_to(phrase) phrase="36: CLIMB   IN      *         *         "
+241F:       36                                                         ;       compare_input_to(phrase) phrase="36: CLIMB   *         IN      *         "
 2420:       10                                                         ;       IF_NOT_GOTO address=2431
 2421:         04 0E                                                    ;         print(msg) size=000E
 2423:           5F BE 73 15 F5 BD 94 14 45 5E 85 8D 17 60              ;           THE GATES ARE CLOSED.
-2431:       17                                                         ;       compare_input_to(phrase) phrase="17: CLIMB   *       u.......  *         "
+2431:       17                                                         ;       compare_input_to(phrase) phrase="17: CLIMB   u.......  *       *         "
 2432:       19                                                         ;       IF_NOT_GOTO address=244C
 2433:         04 17                                                    ;         print(msg) size=0017
 2435:           5F BE 73 15 F5 BD 94 14 56 5E 2B A0 F1 B8 02 A1        ;           THE GATES ARE TOO SMOOTH TO CLIMB.
 2445:           89 17 DE 14 64 7A 2E                                   ;           ~
-244C:       34                                                         ;       compare_input_to(phrase) phrase="34: JUMP    OVER    *         u.......  "
+244C:       34                                                         ;       compare_input_to(phrase) phrase="34: JUMP    *         OVER    u.......  "
 244D:       01                                                         ;       IF_NOT_GOTO address=244F
 244E:         89                                                       ;         89(PrintCantJumpThatFar)
 244F:   02 08                                                          ;   02 SHORT_NAME
@@ -2983,7 +3023,7 @@ ObjectData:
 2476:     0F A0 F3 17 17 8D                                            ;     ~
 247C:   07 36                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 247E:     0D 34                                                        ;     while_pass: size=0034
-2480:       0A 12                                                      ;       compare_input_to(phrase) phrase="12: PULL    *       u.......  *         "
+2480:       0A 12                                                      ;       compare_input_to(phrase) phrase="12: PULL    u.......  *       *         "
 2482:       04 2F                                                      ;       print(msg) size=002F
 2484:         56 45 D2 B0 09 15 A3 A0 5F A0 8B 9A B9 46 5B CA          ;         A TRAP DOOR OPENS ABOVE YOU.  GOLD DUST
 2494:         C7 DE 3B F4 3E 6E 06 58 66 C6 53 15 0D 8D 82 17          ;         FILLS THE ROOM AND DROWNS YOU.
@@ -3000,7 +3040,7 @@ ObjectData:
 24CF:     6C 4D F7 62 E6 8B 3F 16 74 CA                                ;     BEJEWELED LEVER
 24D9:   07 1D                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 24DB:     0D 1B                                                        ;     while_pass: size=001B
-24DD:       0A 12                                                      ;       compare_input_to(phrase) phrase="12: PULL    *       u.......  *         "
+24DD:       0A 12                                                      ;       compare_input_to(phrase) phrase="12: PULL    u.......  *       *         "
 24DF:       04 17                                                      ;       print(msg) size=0017
 24E1:         5F BE 3F 16 74 CA D3 14 90 96 CE 9C 11 A0 23 62          ;         THE LEVER CAN NO LONGER BE PULLED.
 24F1:         5B 4D 6E A7 E6 8B 2E                                     ;         ~
@@ -3010,7 +3050,7 @@ ObjectData:
 24FB: 91 00 84                                                         ; room=91 scorePoints=00 bits=84
 24FE:   07 80 98                                                       ;   07 COMMAND HANDLING IF FIRST NOUN
 2501:     0D 80 95                                                     ;     while_pass: size=0095
-2504:       0A 08                                                      ;       compare_input_to(phrase) phrase="08: READ    *       .....X..  *         "
+2504:       0A 08                                                      ;       compare_input_to(phrase) phrase="08: READ    .....X..  *       *         "
 2506:       04 80 90                                                   ;       print(msg) size=0090
 2509:         9E C5 BE 9F 33 17 1F 54 CE B5 1B 79 56 D1 90 73          ;         UNTOLD RICHES LIE WITHIN REACH, HERE- TO
 2519:         2F 17 DA 46 0A EE 2F 62 D6 E7 C3 9C 7B 9B 19 87          ;         ANY KNOWING, LIVING CREATURE. BE WARY T
@@ -3036,7 +3076,7 @@ ObjectData:
 25D9:     10 53 FF 5A                                                  ;     CANDLE
 25DD:   07 52                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 25DF:     0B 50 0A                                                     ;     switch(compare_input_to(phrase)): size=0050
-25E2:       14                                                         ;       compare_input_to(phrase) phrase="14: LIGHT   WITH    u...A...  u...A...  "
+25E2:       14                                                         ;       compare_input_to(phrase) phrase="14: LIGHT   u...A...  WITH    u...A...  "
 25E3:       34                                                         ;       IF_NOT_GOTO address=2618
 25E4:         0E 32                                                    ;         while_fail: size=0032
 25E6:           0D 2F                                                  ;           while_pass: size=002F
@@ -3047,7 +3087,7 @@ ObjectData:
 25FF:               33 70 55 45 A7 D0 15 BC B0 53 12 BC 37 62 96 5F    ;               PERMEATES THE ROOM.
 260F:               4B 62 5F BE 39 17 FF 9F                            ;               ~
 2617:           88                                                     ;           88(PrintTheNOUNIsNotBurning)
-2618:       15                                                         ;       compare_input_to(phrase) phrase="15: EAT     *       u.......  *         "
+2618:       15                                                         ;       compare_input_to(phrase) phrase="15: EAT     u.......  *       *         "
 2619:       17                                                         ;       IF_NOT_GOTO address=2631
 261A:         0D 15                                                    ;         while_pass: size=0015
 261C:           04 12                                                  ;           print(msg) size=0012
@@ -3068,18 +3108,18 @@ ObjectData:
 265B:       0D 1C                                                      ;       while_pass: size=001C
 265D:         0E 04                                                    ;         while_fail: size=0004
 265F:           0A 13                                                  ;           compare_input_to(phrase) phrase=??? Phrase 13 not found
-2661:           0A 14                                                  ;           compare_input_to(phrase) phrase="14: LIGHT   WITH    u...A...  u...A...  "
+2661:           0A 14                                                  ;           compare_input_to(phrase) phrase="14: LIGHT   u...A...  WITH    u...A...  "
 2663:         04 14                                                    ;         print(msg) size=0014
 2665:           5F BE D3 14 46 98 4B 5E C3 B5 EF 8D 13 47 BF 14        ;           THE CANDLE IS ALREADY BURNING.
 2675:           D3 B2 CF 98                                            ;           ~
 2679:       0D 19                                                      ;       while_pass: size=0019
-267B:         0A 16                                                    ;         compare_input_to(phrase) phrase="16: DROP    OUT     *         u...A...  "
+267B:         0A 16                                                    ;         compare_input_to(phrase) phrase="16: DROP    *         OUT     u...A...  "
 267D:         1E 11 12                                                 ;         swap(object_a,object_b) object_a=(CANDLE)11 object_b=12(CANDLE)
 2680:         04 12                                                    ;         print(msg) size=0012
 2682:           5F BE D3 14 46 98 4B 5E C7 B5 43 D9 C7 98 5A 7B        ;           THE CANDLE IS EXTINGUISHED.
 2692:           17 60                                                  ;           ~
 2694:       0D 1C                                                      ;       while_pass: size=001C
-2696:         0A 15                                                    ;         compare_input_to(phrase) phrase="15: EAT     *       u.......  *         "
+2696:         0A 15                                                    ;         compare_input_to(phrase) phrase="15: EAT     u.......  *       *         "
 2698:         04 18                                                    ;         print(msg) size=0018
 269A:           C7 DE 2F 17 46 48 55 DB 87 74 B3 8B 76 A7 D6 15        ;           YOU REALLY SHOULD PUT IT OUT FIRST.
 26AA:           C7 16 08 BC 3D 7B 9B C1                                ;           ~
@@ -3114,7 +3154,7 @@ ObjectData:
 26FD: 92 00 84                                                         ; room=92 scorePoints=00 bits=84
 2700:   07 5B                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 2702:     0D 59                                                        ;     while_pass: size=0059
-2704:       0A 08                                                      ;       compare_input_to(phrase) phrase="08: READ    *       .....X..  *         "
+2704:       0A 08                                                      ;       compare_input_to(phrase) phrase="08: READ    .....X..  *       *         "
 2706:       04 55                                                      ;       print(msg) size=0055
 2708:         9E 7A D6 9C DB 72 70 C0 6E 98 30 15 F4 BD D6 B5          ;         INTO THE TUNNEL ENTERS THE SEEKER, BRAVE
 2718:         DB 72 A7 B7 B4 85 04 EE D8 B0 53 61 90 14 19 58          ;         LY AND WISELY HE GOES. FOR HE WILL RECOG
@@ -3139,18 +3179,18 @@ ObjectData:
 27A3:       0D 1B                                                      ;       while_pass: size=001B
 27A5:         0E 04                                                    ;         while_fail: size=0004
 27A7:           0A 13                                                  ;           compare_input_to(phrase) phrase=??? Phrase 13 not found
-27A9:           0A 14                                                  ;           compare_input_to(phrase) phrase="14: LIGHT   WITH    u...A...  u...A...  "
+27A9:           0A 14                                                  ;           compare_input_to(phrase) phrase="14: LIGHT   u...A...  WITH    u...A...  "
 27AB:         04 13                                                    ;         print(msg) size=0013
 27AD:           5F BE 3B 16 D3 93 4B 7B 4C 48 86 5F 44 DB 38 C6        ;           THE LAMP IS ALREADY BURNING.
 27BD:           91 7A 2E                                               ;           ~
 27C0:       0B 6D 0A                                                   ;       switch(compare_input_to(phrase)): size=006D
-27C3:         16                                                       ;         compare_input_to(phrase) phrase="16: DROP    OUT     *         u...A...  "
+27C3:         16                                                       ;         compare_input_to(phrase) phrase="16: DROP    *         OUT     u...A...  "
 27C4:         12                                                       ;         IF_NOT_GOTO address=27D7
 27C5:           0D 10                                                  ;           while_pass: size=0010
 27C7:             1E 28 14                                             ;             swap(object_a,object_b) object_a=(LAMP)28 object_b=14(LAMP)
 27CA:             04 0B                                                ;             print(msg) size=000B
 27CC:               5F BE 3B 16 D3 93 4B 7B 36 A1 2E                   ;               THE LAMP IS OUT.
-27D7:         18                                                       ;         compare_input_to(phrase) phrase="18: RUB     *       u.......  *         "
+27D7:         18                                                       ;         compare_input_to(phrase) phrase="18: RUB     u.......  *       *         "
 27D8:         2D                                                       ;         IF_NOT_GOTO address=2806
 27D9:           0D 2B                                                  ;           while_pass: size=002B
 27DB:             04 26                                                ;             print(msg) size=0026
@@ -3158,7 +3198,7 @@ ObjectData:
 27ED:               66 C6 9B 15 5B CA E4 B3 66 4D D6 15 82 17 59 5E    ;               IT THE WRONG WAY!
 27FD:               00 B3 D9 6A 39 4A                                  ;               ~
 2803:             1E 28 14                                             ;             swap(object_a,object_b) object_a=(LAMP)28 object_b=14(LAMP)
-2806:         08                                                       ;         compare_input_to(phrase) phrase="08: READ    *       .....X..  *         "
+2806:         08                                                       ;         compare_input_to(phrase) phrase="08: READ    .....X..  *       *         "
 2807:         27                                                       ;         IF_NOT_GOTO address=282F
 2808:           04 25                                                  ;           print(msg) size=0025
 280A:             5F BE 3B 16 D3 93 4B 7B 48 55 2F 62 19 58 82 7B      ;             THE LAMP IS COVERED WITH TARNISH AND YOU
@@ -3177,7 +3217,7 @@ ObjectData:
 285F:   3C 3C                                                          ;   maxHitPoints=3C currentHitPoints=3C
 2861:   07 80 B3                                                       ;   07 COMMAND HANDLING IF FIRST NOUN
 2864:     0B 80 B0 0A                                                  ;     switch(compare_input_to(phrase)): size=00B0
-2868:       09                                                         ;       compare_input_to(phrase) phrase="09: ATTACK  WITH    ...P....  .v......  "
+2868:       09                                                         ;       compare_input_to(phrase) phrase="09: ATTACK  ...P....  WITH    .v......  "
 2869:       80 9A                                                      ;       IF_NOT_GOTO address=2904
 286B:         0D 80 97                                                 ;         while_pass: size=0097
 286E:           1A                                                     ;           set_VAR_to_first_noun()
@@ -3211,7 +3251,7 @@ ObjectData:
 28E8:                   74 CA F3 5F 79 68 4A 90 4B 7B F6 4E EB DA 4F 45;                   ODY! A MAGNIFICENT BLOW!
 28F8:                   80 47 53 79 B0 53 04 BC 89 8D 21               ;                   ~
 2903:                 1D FF                                            ;                 attack_VAR(points) points=FF
-2905:       15                                                         ;       compare_input_to(phrase) phrase="15: EAT     *       u.......  *         "
+2905:       15                                                         ;       compare_input_to(phrase) phrase="15: EAT     u.......  *       *         "
 2906:       10                                                         ;       IF_NOT_GOTO address=2917
 2907:         04 0E                                                    ;         print(msg) size=000E
 2909:           76 4D F4 BD 1B 16 F3 8C 73 7B 14 67 F1 B9              ;           BETTER KILL IT FIRST!
@@ -3222,18 +3262,18 @@ ObjectData:
 2921:           14                                                     ;           execute_and_reverse_status:
 2922:           01 1D                                                  ;           is_in_pack_or_current_room(object) object=1D(PLAYER)
 2924:           0B 19 0A                                               ;           switch(compare_input_to(phrase)): size=0019
-2927:             04                                                   ;             compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+2927:             04                                                   ;             compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 2928:             04                                                   ;             IF_NOT_GOTO address=292D
-2929:               21 04 00 00                                        ;               execute_phrase(phrase,first_noun,second_noun) phrase="04: WEST    *       *         *         " firstNoun=00 secondNoun=00
-292D:             03                                                   ;             compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+2929:               21 04 00 00                                        ;               execute_phrase(phrase,first_noun,second_noun) phrase="04: WEST    *         *       *         " firstNoun=00 secondNoun=00
+292D:             03                                                   ;             compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 292E:             04                                                   ;             IF_NOT_GOTO address=2933
-292F:               21 03 00 00                                        ;               execute_phrase(phrase,first_noun,second_noun) phrase="03: EAST    *       *         *         " firstNoun=00 secondNoun=00
-2933:             01                                                   ;             compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+292F:               21 03 00 00                                        ;               execute_phrase(phrase,first_noun,second_noun) phrase="03: EAST    *         *       *         " firstNoun=00 secondNoun=00
+2933:             01                                                   ;             compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 2934:             04                                                   ;             IF_NOT_GOTO address=2939
-2935:               21 01 00 00                                        ;               execute_phrase(phrase,first_noun,second_noun) phrase="01: NORTH   *       *         *         " firstNoun=00 secondNoun=00
-2939:             02                                                   ;             compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+2935:               21 01 00 00                                        ;               execute_phrase(phrase,first_noun,second_noun) phrase="01: NORTH   *         *       *         " firstNoun=00 secondNoun=00
+2939:             02                                                   ;             compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 293A:             04                                                   ;             IF_NOT_GOTO address=293F
-293B:               21 02 00 00                                        ;               execute_phrase(phrase,first_noun,second_noun) phrase="02: SOUTH   *       *         *         " firstNoun=00 secondNoun=00
+293B:               21 02 00 00                                        ;               execute_phrase(phrase,first_noun,second_noun) phrase="02: SOUTH   *         *       *         " firstNoun=00 secondNoun=00
 293F:           1F 12                                                  ;           print2(msg) size=0012
 2941:             5F BE 57 17 1F B3 B3 9A 74 A7 27 BA DB B5 1B A1      ;             THE SERPENT PURSUES YOU AND
 2951:             8E 48                                                ;             ~
@@ -3283,7 +3323,7 @@ ObjectData:
 2A13:     D1 B5 96 96 DB 72 89 67 C7 A0                                ;     ~
 2A1D:   07 15                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 2A1F:     0D 13                                                        ;     while_pass: size=0013
-2A21:       0A 15                                                      ;       compare_input_to(phrase) phrase="15: EAT     *       u.......  *         "
+2A21:       0A 15                                                      ;       compare_input_to(phrase) phrase="15: EAT     u.......  *       *         "
 2A23:       04 0F                                                      ;       print(msg) size=000F
 2A25:         A8 77 4E 5E E6 A0 7B 16 92 14 F6 A4 7F 7B 21             ;         I'VE LOST MY APPETITE!
 2A34:   02 08                                                          ;   02 SHORT_NAME
@@ -3303,7 +3343,7 @@ ObjectData:
 2A60:     07 B3 57 98                                                  ;     ~
 2A64:   07 14                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 2A66:     0D 12                                                        ;     while_pass: size=0012
-2A68:       0A 08                                                      ;       compare_input_to(phrase) phrase="08: READ    *       .....X..  *         "
+2A68:       0A 08                                                      ;       compare_input_to(phrase) phrase="08: READ    .....X..  *       *         "
 2A6A:       04 0E                                                      ;       print(msg) size=000E
 2A6C:         2C 1D D5 47 F3 5F 5B 4D C3 B0 1D 85 5C C0                ;         "PRAISED BE RAAKA-TU"
 2A7A:   02 03                                                          ;   02 SHORT_NAME
@@ -3319,7 +3359,7 @@ ObjectData:
 2AA5:     90 BE 55 DB 86 8D                                            ;     TINY SLOT
 2AAB:   06 53                                                          ;   06 COMMAND HANDLING IF SECOND NOUN
 2AAD:     0D 51                                                        ;     while_pass: size=0051
-2AAF:       0A 0F                                                      ;       compare_input_to(phrase) phrase="0F: DROP    IN      u.......  u.......  "
+2AAF:       0A 0F                                                      ;       compare_input_to(phrase) phrase="0F: DROP    u.......  IN      u.......  "
 2AB1:       0E 4D                                                      ;       while_fail: size=004D
 2AB3:         0D 24                                                    ;         while_pass: size=0024
 2AB5:           14                                                     ;           execute_and_reverse_status:
@@ -3348,7 +3388,7 @@ ObjectData:
 2B25:     14 53 66 CA 67 16 D3 B9 9B 6C                                ;     CARVED MESSAGE
 2B2F:   07 24                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 2B31:     0D 22                                                        ;     while_pass: size=0022
-2B33:       0A 08                                                      ;       compare_input_to(phrase) phrase="08: READ    *       .....X..  *         "
+2B33:       0A 08                                                      ;       compare_input_to(phrase) phrase="08: READ    .....X..  *       *         "
 2B35:       04 1E                                                      ;       print(msg) size=001E
 2B37:         5F BE 67 16 D3 B9 9B 6C 1B B7 33 BB 93 1D 5B 66          ;         THE MESSAGE SAYS, "SAFE PASSAGE FOR A PR
 2B47:         55 A4 09 B7 48 5E A3 A0 52 45 05 B2 DC 63                ;         ICE."
@@ -3362,7 +3402,7 @@ ObjectData:
 2B6B:     81 5B 52                                                     ;     DOOR
 2B6E:   07 22                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 2B70:     0D 20                                                        ;     while_pass: size=0020
-2B72:       0A 11                                                      ;       compare_input_to(phrase) phrase="11: OPEN    *       u.......  *         "
+2B72:       0A 11                                                      ;       compare_input_to(phrase) phrase="11: OPEN    u.......  *       *         "
 2B74:       17 1B 00                                                   ;       move_to(object,room) object=1B(DOOR) room=00(Room_00)
 2B77:       17 1C 90                                                   ;       move_to(object,room) object=1C(DOOR) room=90(North end central hall)
 2B7A:       04 16                                                      ;       print(msg) size=0016
@@ -3379,7 +3419,7 @@ ObjectData:
 2BAD:     81 5B 52                                                     ;     DOOR
 2BB0:   07 12                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 2BB2:     0D 10                                                        ;     while_pass: size=0010
-2BB4:       0A 11                                                      ;       compare_input_to(phrase) phrase="11: OPEN    *       u.......  *         "
+2BB4:       0A 11                                                      ;       compare_input_to(phrase) phrase="11: OPEN    u.......  *       *         "
 2BB6:       04 0C                                                      ;       print(msg) size=000C
 2BB8:         8D 7B 8E 14 63 B1 FB 5C 5F A0 1B 9C                      ;         ITS ALREADY OPEN.
 ;
@@ -3425,7 +3465,7 @@ ObjectData:
 2C85:   FF FF                                                          ;   maxHitPoints=FF currentHitPoints=FF
 2C87:   07 22                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 2C89:     0D 20                                                        ;     while_pass: size=0020
-2C8B:       0A 15                                                      ;       compare_input_to(phrase) phrase="15: EAT     *       u.......  *         "
+2C8B:       0A 15                                                      ;       compare_input_to(phrase) phrase="15: EAT     u.......  *       *         "
 2C8D:       04 1C                                                      ;       print(msg) size=001C
 2C8F:         DD 72 F3 8C 96 5F 51 18 4E C2 11 A0 AF 14 04 68          ;         HE'LL EAT YOU LONG BEFORE YOU'LL EAT HIM
 2C9F:         5B 5E 1D A1 F3 8C 96 5F A3 15 EB 8F                      ;         !
@@ -3501,7 +3541,7 @@ ObjectData:
 2E2C:     2C 49 DB E0                                                  ;     ~
 2E30:   07 1D                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 2E32:     0D 1B                                                        ;     while_pass: size=001B
-2E34:       0A 15                                                      ;       compare_input_to(phrase) phrase="15: EAT     *       u.......  *         "
+2E34:       0A 15                                                      ;       compare_input_to(phrase) phrase="15: EAT     u.......  *       *         "
 2E36:       04 17                                                      ;       print(msg) size=0017
 2E38:         7A C4 CB 06 82 17 95 7A BD 15 49 90 50 9F D6 6A          ;         UGH! I THINK I'M GOING TO BE SICK!
 2E48:         C4 9C 55 5E DD 78 21                                     ;         ~
@@ -3513,12 +3553,12 @@ ObjectData:
 2E5C: FF 00 80                                                         ; room=FF scorePoints=00 bits=80
 2E5F:   07 28                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 2E61:     0B 26 0A                                                     ;     switch(compare_input_to(phrase)): size=0026
-2E64:       17                                                         ;       compare_input_to(phrase) phrase="17: CLIMB   *       u.......  *         "
+2E64:       17                                                         ;       compare_input_to(phrase) phrase="17: CLIMB   u.......  *       *         "
 2E65:       20                                                         ;       IF_NOT_GOTO address=2E86
 2E66:         04 1E                                                    ;         print(msg) size=001E
 2E68:           C7 DE D3 14 90 96 F3 A0 C3 54 A3 91 5F BE F3 17        ;           YOU CAN NOT CLIMB THE WALL, IT IS TOO SM
 2E78:           16 8D D6 15 D5 15 89 17 D5 9C C1 93 77 BE              ;           OOTH.
-2E86:       34                                                         ;       compare_input_to(phrase) phrase="34: JUMP    OVER    *         u.......  "
+2E86:       34                                                         ;       compare_input_to(phrase) phrase="34: JUMP    *         OVER    u.......  "
 2E87:       01                                                         ;       IF_NOT_GOTO address=2E89
 2E88:         89                                                       ;         89(PrintCantJumpThatFar)
 2E89:   02 03                                                          ;   02 SHORT_NAME
@@ -3677,7 +3717,7 @@ ObjectData:
 305C:     01 B3 4D                                                     ;     ROOM
 305F:   07 28                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 3061:     0D 26                                                        ;     while_pass: size=0026
-3063:       0A 0B                                                      ;       compare_input_to(phrase) phrase="0B: LOOK    AT      *         u.......  "
+3063:       0A 0B                                                      ;       compare_input_to(phrase) phrase="0B: LOOK    *         AT      u.......  "
 3065:       01 25                                                      ;       is_in_pack_or_current_room(object) object=25(GEM)
 3067:       04 20                                                      ;       print(msg) size=0020
 3069:         C7 DE 03 15 61 B7 74 CA 7B 14 EF A6 51 54 4B C6          ;         YOU DISCOVER A PRECIOUS GEM HIDDEN IN A
@@ -3692,7 +3732,7 @@ ObjectData:
 3095:     5F BE 5B B1 4B 7B 4E 45 72 48 9F 15 7F B1                    ;     THERE IS A LAMP HERE.
 30A3:   07 48                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 30A5:     0B 46 0A                                                     ;     switch(compare_input_to(phrase)): size=0046
-30A8:       14                                                         ;       compare_input_to(phrase) phrase="14: LIGHT   WITH    u...A...  u...A...  "
+30A8:       14                                                         ;       compare_input_to(phrase) phrase="14: LIGHT   u...A...  WITH    u...A...  "
 30A9:       1C                                                         ;       IF_NOT_GOTO address=30C6
 30AA:         0E 1A                                                    ;         while_fail: size=001A
 30AC:           0D 17                                                  ;           while_pass: size=0017
@@ -3701,12 +3741,12 @@ ObjectData:
 30B3:             04 10                                                ;             print(msg) size=0010
 30B5:               5F BE 3B 16 D3 93 4B 7B 09 9A BF 14 D3 B2 CF 98    ;               THE LAMP IS NOW BURNING.
 30C5:           88                                                     ;           88(PrintTheNOUNIsNotBurning)
-30C6:       18                                                         ;       compare_input_to(phrase) phrase="18: RUB     *       u.......  *         "
+30C6:       18                                                         ;       compare_input_to(phrase) phrase="18: RUB     u.......  *       *         "
 30C7:       19                                                         ;       IF_NOT_GOTO address=30E1
 30C8:         04 17                                                    ;         print(msg) size=0017
 30CA:           29 D1 09 15 51 18 56 C2 90 73 DB 83 1B A1 2F 49        ;           WHO DO YOU THINK YOU ARE, ALADDIN?
 30DA:           03 EE 46 8B 90 5A 3F                                   ;           ~
-30E1:       08                                                         ;       compare_input_to(phrase) phrase="08: READ    *       .....X..  *         "
+30E1:       08                                                         ;       compare_input_to(phrase) phrase="08: READ    .....X..  *       *         "
 30E2:       0A                                                         ;       IF_NOT_GOTO address=30ED
 30E3:         04 08                                                    ;         print(msg) size=0008
 30E5:           49 1B 99 16 14 BC A4 C3                                ;           "DO NOT RUB"
@@ -3830,21 +3870,21 @@ ObjectData:
 31BF: 82 00 80                                                         ; room=82 scorePoints=00 bits=80
 31C2:   07 28                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 31C4:     0B 26 0A                                                     ;     switch(compare_input_to(phrase)): size=0026
-31C7:       36                                                         ;       compare_input_to(phrase) phrase="36: CLIMB   IN      *         *         "
+31C7:       36                                                         ;       compare_input_to(phrase) phrase="36: CLIMB   *         IN      *         "
 31C8:       01                                                         ;       IF_NOT_GOTO address=31CA
 31C9:         8A                                                       ;         8A(DeathByRugSpike)
 31CA:       33                                                         ;       compare_input_to(phrase) phrase=??? Phrase 33 not found
 31CB:       01                                                         ;       IF_NOT_GOTO address=31CD
 31CC:         8A                                                       ;         8A(DeathByRugSpike)
-31CD:       34                                                         ;       compare_input_to(phrase) phrase="34: JUMP    OVER    *         u.......  "
+31CD:       34                                                         ;       compare_input_to(phrase) phrase="34: JUMP    *         OVER    u.......  "
 31CE:       01                                                         ;       IF_NOT_GOTO address=31D0
 31CF:         8A                                                       ;         8A(DeathByRugSpike)
-31D0:       26                                                         ;       compare_input_to(phrase) phrase="26: GO      AROUND  *         u.......  "
+31D0:       26                                                         ;       compare_input_to(phrase) phrase="26: GO      *         AROUND  u.......  "
 31D1:       17                                                         ;       IF_NOT_GOTO address=31E9
 31D2:         04 15                                                    ;         print(msg) size=0015
 31D4:           5F BE 5B B1 4B 7B EB 99 1B D0 94 14 30 A1 16 58        ;           THERE IS NO WAY AROUND THE PIT.
 31E4:           DB 72 96 A5 2E                                         ;           ~
-31E9:       17                                                         ;       compare_input_to(phrase) phrase="17: CLIMB   *       u.......  *         "
+31E9:       17                                                         ;       compare_input_to(phrase) phrase="17: CLIMB   u.......  *       *         "
 31EA:       01                                                         ;       IF_NOT_GOTO address=31EC
 31EB:         8A                                                       ;         8A(DeathByRugSpike)
 31EC:   02 02                                                          ;   02 SHORT_NAME
@@ -3863,7 +3903,7 @@ ObjectData:
 3203:     4E 48 23 62                                                  ;     ALTER
 3207:   07 2E                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 3209:     0D 2C                                                        ;     while_pass: size=002C
-320B:       0A 12                                                      ;       compare_input_to(phrase) phrase="12: PULL    *       u.......  *         "
+320B:       0A 12                                                      ;       compare_input_to(phrase) phrase="12: PULL    u.......  *       *         "
 320D:       04 28                                                      ;       print(msg) size=0028
 320F:         C7 DE D3 14 90 96 F3 A0 C8 93 56 5E DB 72 4E 48          ;         YOU CAN NOT MOVE THE ALTER FROM BENEATH
 321F:         23 62 79 68 44 90 8F 61 82 49 D6 15 0B EE 0B BC          ;         IT, IT IS TOO HEAVY.
@@ -3884,10 +3924,10 @@ GeneralCommands:
 323F: 0E 85 B8                                                         ; while_fail: size=05B8
 3242:   0D 2C                                                          ;   while_pass: size=002C
 3244:     0E 08                                                        ;     while_fail: size=0008
-3246:       0A 01                                                      ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
-3248:       0A 02                                                      ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
-324A:       0A 03                                                      ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
-324C:       0A 04                                                      ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+3246:       0A 01                                                      ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
+3248:       0A 02                                                      ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
+324A:       0A 03                                                      ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
+324C:       0A 04                                                      ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 324E:     0E 20                                                        ;     while_fail: size=0020
 3250:       13                                                         ;       process_phrase_by_room_first_second()
 3251:       0D 1D                                                      ;       while_pass: size=001D
@@ -3896,7 +3936,7 @@ GeneralCommands:
 3265:           73 49 94 5A E6 5F C0 7A 2E                             ;           ~
 326E:         20 1D                                                    ;         is_ACTIVE_this(object) object=1D(PLAYER)
 3270:   0B 85 83 0A                                                    ;   switch(compare_input_to(phrase)): size=0583
-3274:     05                                                           ;     compare_input_to(phrase) phrase="05: GET     *       ..C.....  *         "
+3274:     05                                                           ;     compare_input_to(phrase) phrase="05: GET     ..C.....  *       *         "
 3275:     21                                                           ;     IF_NOT_GOTO address=3297
 3276:       0E 1F                                                      ;       while_fail: size=001F
 3278:         0D 19                                                    ;         while_pass: size=0019
@@ -3911,14 +3951,14 @@ GeneralCommands:
 3294:         83                                                       ;         83(Manipulate)
 3295:         14                                                       ;         execute_and_reverse_status:
 3296:         0C                                                       ;         fail()
-3297:     06                                                           ;     compare_input_to(phrase) phrase="06: DROP    *       ..C.....  *         "
+3297:     06                                                           ;     compare_input_to(phrase) phrase="06: DROP    ..C.....  *       *         "
 3298:     0C                                                           ;     IF_NOT_GOTO address=32A5
 3299:       0D 0A                                                      ;       while_pass: size=000A
 329B:         1A                                                       ;         set_VAR_to_first_noun()
 329C:         10                                                       ;         drop_VAR()
 329D:         04 06                                                    ;         print(msg) size=0006
 329F:           F9 5B 9F A6 9B 5D                                      ;           DROPPED.
-32A5:     08                                                           ;     compare_input_to(phrase) phrase="08: READ    *       .....X..  *         "
+32A5:     08                                                           ;     compare_input_to(phrase) phrase="08: READ    .....X..  *       *         "
 32A6:     17                                                           ;     IF_NOT_GOTO address=32BE
 32A7:       0E 15                                                      ;       while_fail: size=0015
 32A9:         13                                                       ;         process_phrase_by_room_first_second()
@@ -3927,7 +3967,7 @@ GeneralCommands:
 32AE:             89 74 D3 14 9B 96 1B A1 63 B1 16 58 DB 72            ;             HOW CAN YOU READ THE
 32BC:           11                                                     ;           print_first_noun()
 32BD:           84                                                     ;           84(PrintPeriod)
-32BE:     11                                                           ;     compare_input_to(phrase) phrase="11: OPEN    *       u.......  *         "
+32BE:     11                                                           ;     compare_input_to(phrase) phrase="11: OPEN    u.......  *       *         "
 32BF:     16                                                           ;     IF_NOT_GOTO address=32D6
 32C0:       0E 14                                                      ;       while_fail: size=0014
 32C2:         13                                                       ;         process_phrase_by_room_first_second()
@@ -3936,7 +3976,7 @@ GeneralCommands:
 32C7:             EB 99 0F A0 D3 14 91 96 F0 A4 82 17 45               ;             NO ONE CAN OPEN THE
 32D4:           11                                                     ;           print_first_noun()
 32D5:           84                                                     ;           84(PrintPeriod)
-32D6:     12                                                           ;     compare_input_to(phrase) phrase="12: PULL    *       u.......  *         "
+32D6:     12                                                           ;     compare_input_to(phrase) phrase="12: PULL    u.......  *       *         "
 32D7:     21                                                           ;     IF_NOT_GOTO address=32F9
 32D8:       0E 1F                                                      ;       while_fail: size=001F
 32DA:         13                                                       ;         process_phrase_by_room_first_second()
@@ -3947,7 +3987,7 @@ GeneralCommands:
 32F2:           11                                                     ;           print_first_noun()
 32F3:           04 04                                                  ;           print(msg) size=0004
 32F5:             49 48 7F 98                                          ;             ALONE.
-32F9:     09                                                           ;     compare_input_to(phrase) phrase="09: ATTACK  WITH    ...P....  .v......  "
+32F9:     09                                                           ;     compare_input_to(phrase) phrase="09: ATTACK  ...P....  WITH    .v......  "
 32FA:     81 37                                                        ;     IF_NOT_GOTO address=3432
 32FC:       0E 81 34                                                   ;       while_fail: size=0134
 32FF:         14                                                       ;         execute_and_reverse_status:
@@ -4039,10 +4079,10 @@ GeneralCommands:
 3428:             11                                                   ;             print_first_noun()
 3429:             04 08                                                ;             print(msg) size=0008
 342B:               4B 7B 92 C5 37 49 17 60                            ;               IS UNHARMED.
-3433:     0A                                                           ;     compare_input_to(phrase) phrase="0A: LOOK    *       *         *         "
+3433:     0A                                                           ;     compare_input_to(phrase) phrase="0A: LOOK    *         *       *         "
 3434:     01                                                           ;     IF_NOT_GOTO address=3436
 3435:       07                                                         ;       print_room_description()
-3436:     15                                                           ;     compare_input_to(phrase) phrase="15: EAT     *       u.......  *         "
+3436:     15                                                           ;     compare_input_to(phrase) phrase="15: EAT     u.......  *       *         "
 3437:     29                                                           ;     IF_NOT_GOTO address=3461
 3438:       0E 27                                                      ;       while_fail: size=0027
 343A:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4053,7 +4093,7 @@ GeneralCommands:
 344D:           04 12                                                  ;           print(msg) size=0012
 344F:             47 D2 C8 8B F3 23 55 BD DB BD 41 6E 03 58 99 9B      ;             WOULDN'T TASTE GOOD ANYWAY.
 345F:             5F 4A                                                ;             ~
-3461:     17                                                           ;     compare_input_to(phrase) phrase="17: CLIMB   *       u.......  *         "
+3461:     17                                                           ;     compare_input_to(phrase) phrase="17: CLIMB   u.......  *       *         "
 3462:     51                                                           ;     IF_NOT_GOTO address=34B4
 3463:       0E 4F                                                      ;       while_fail: size=004F
 3465:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4073,7 +4113,7 @@ GeneralCommands:
 34A3:           11                                                     ;           print_first_noun()
 34A4:           04 0E                                                  ;           print(msg) size=000E
 34A6:             73 7B 47 D2 C8 8B F3 23 EE 72 1B A3 3F A1            ;             IT WOULDN'T HELP YOU.
-34B4:     16                                                           ;     compare_input_to(phrase) phrase="16: DROP    OUT     *         u...A...  "
+34B4:     16                                                           ;     compare_input_to(phrase) phrase="16: DROP    *         OUT     u...A...  "
 34B5:     16                                                           ;     IF_NOT_GOTO address=34CC
 34B6:       0E 14                                                      ;       while_fail: size=0014
 34B8:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4083,7 +4123,7 @@ GeneralCommands:
 34BF:           11                                                     ;           print_first_noun()
 34C0:           04 0A                                                  ;           print(msg) size=000A
 34C2:             4B 7B 06 9A BF 14 D3 B2 CF 98                        ;             IS NOT BURNING.
-34CC:     18                                                           ;     compare_input_to(phrase) phrase="18: RUB     *       u.......  *         "
+34CC:     18                                                           ;     compare_input_to(phrase) phrase="18: RUB     u.......  *       *         "
 34CD:     35                                                           ;     IF_NOT_GOTO address=3503
 34CE:       0E 33                                                      ;       while_fail: size=0033
 34D0:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4101,7 +4141,7 @@ GeneralCommands:
 34F1:           11                                                     ;           print_first_noun()
 34F2:           04 0F                                                  ;           print(msg) size=000F
 34F4:             81 8D CB 87 A5 94 04 71 8E 62 23 62 09 9A 2E         ;             LOOKS MUCH BETTER NOW.
-3503:     0B                                                           ;     compare_input_to(phrase) phrase="0B: LOOK    AT      *         u.......  "
+3503:     0B                                                           ;     compare_input_to(phrase) phrase="0B: LOOK    *         AT      u.......  "
 3504:     3A                                                           ;     IF_NOT_GOTO address=353F
 3505:       0E 38                                                      ;       while_fail: size=0038
 3507:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4119,7 +4159,7 @@ GeneralCommands:
 3537:             B9 46 73 C6 5F BE                                    ;             ~
 353D:           11                                                     ;           print_first_noun()
 353E:           84                                                     ;           84(PrintPeriod)
-353F:     0C                                                           ;     compare_input_to(phrase) phrase="0C: LOOK    UNDER   *         u.......  "
+353F:     0C                                                           ;     compare_input_to(phrase) phrase="0C: LOOK    *         UNDER   u.......  "
 3540:     1A                                                           ;     IF_NOT_GOTO address=355B
 3541:       0E 18                                                      ;       while_fail: size=0018
 3543:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4129,7 +4169,7 @@ GeneralCommands:
 3558:             45                                                   ;             ~
 3559:           11                                                     ;           print_first_noun()
 355A:           84                                                     ;           84(PrintPeriod)
-355B:     10                                                           ;     compare_input_to(phrase) phrase="10: LOOK    IN      *         u.......  "
+355B:     10                                                           ;     compare_input_to(phrase) phrase="10: LOOK    *         IN      u.......  "
 355C:     18                                                           ;     IF_NOT_GOTO address=3575
 355D:       0E 16                                                      ;       while_fail: size=0016
 355F:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4138,12 +4178,12 @@ GeneralCommands:
 3564:             5F BE 5D B1 D0 B5 02 A1 91 7A D0 15 82 17 45         ;             THERE'S NOTHING IN THE
 3573:           11                                                     ;           print_first_noun()
 3574:           84                                                     ;           84(PrintPeriod)
-3575:     1B                                                           ;     compare_input_to(phrase) phrase="1B: LOOK    AROUND  *         u.......  "
+3575:     1B                                                           ;     compare_input_to(phrase) phrase="1B: LOOK    *         AROUND  u.......  "
 3576:     20                                                           ;     IF_NOT_GOTO address=3597
 3577:       0E 1E                                                      ;       while_fail: size=001E
 3579:         13                                                       ;         process_phrase_by_room_first_second()
 357A:         0D 03                                                    ;         while_pass: size=0003
-357C:           08 00                                                  ;           is_first_noun(object) object=00(??00)
+357C:           08 00                                                  ;           is_first_noun(object) object=00(nowhere)
 357E:           07                                                     ;           print_room_description()
 357F:         0D 16                                                    ;         while_pass: size=0016
 3581:           04 12                                                  ;           print(msg) size=0012
@@ -4151,12 +4191,12 @@ GeneralCommands:
 3593:             5F BE                                                ;             ~
 3595:           11                                                     ;           print_first_noun()
 3596:           84                                                     ;           84(PrintPeriod)
-3597:     1C                                                           ;     compare_input_to(phrase) phrase="1C: LOOK    BEHIND  *         u.......  "
+3597:     1C                                                           ;     compare_input_to(phrase) phrase="1C: LOOK    *         BEHIND  u.......  "
 3598:     34                                                           ;     IF_NOT_GOTO address=35CD
 3599:       0E 32                                                      ;       while_fail: size=0032
 359B:         13                                                       ;         process_phrase_by_room_first_second()
 359C:         0D 17                                                    ;         while_pass: size=0017
-359E:           08 00                                                  ;           is_first_noun(object) object=00(??00)
+359E:           08 00                                                  ;           is_first_noun(object) object=00(nowhere)
 35A0:           04 13                                                  ;           print(msg) size=0013
 35A2:             5F BE 5B B1 4B 7B 06 9A 90 73 C4 6A A3 60 33 98      ;             THERE IS NOTHING BEHIND YOU.
 35B2:             C7 DE 2E                                             ;             ~
@@ -4166,36 +4206,36 @@ GeneralCommands:
 35C9:             5F BE                                                ;             ~
 35CB:           11                                                     ;           print_first_noun()
 35CC:           84                                                     ;           84(PrintPeriod)
-35CD:     21                                                           ;     compare_input_to(phrase) phrase="21: PLUGH   *       *         *         "
+35CD:     21                                                           ;     compare_input_to(phrase) phrase="21: PLUGH   *         *       *         "
 35CE:     0A                                                           ;     IF_NOT_GOTO address=35D9
 35CF:       04 08                                                      ;       print(msg) size=0008
 35D1:         B5 6C 8E C5 EB 72 AB BB                                  ;         GESUNDHEIT!
-35D9:     22                                                           ;     compare_input_to(phrase) phrase="22: SCREAM  *       *         *         "
+35D9:     22                                                           ;     compare_input_to(phrase) phrase="22: SCREAM  *         *       *         "
 35DA:     12                                                           ;     IF_NOT_GOTO address=35ED
 35DB:       04 10                                                      ;       print(msg) size=0010
 35DD:         5B E0 27 60 31 60 41 A0 49 A0 89 D3 89 D3 69 CE          ;         YYYEEEEEOOOOOOWWWWWWWW!!
-35ED:     23                                                           ;     compare_input_to(phrase) phrase="23: QUIT    *       *         *         "
+35ED:     23                                                           ;     compare_input_to(phrase) phrase="23: QUIT    *         *       *         "
 35EE:     05                                                           ;     IF_NOT_GOTO address=35F4
 35EF:       0D 03                                                      ;       while_pass: size=0003
 35F1:         92                                                       ;         92(PrintScore)
 35F2:         26                                                       ;         print_score()
 35F3:         24                                                       ;         endless_loop()
-35F4:     2C                                                           ;     compare_input_to(phrase) phrase="2C: SCORE   *       *         *         "
+35F4:     2C                                                           ;     compare_input_to(phrase) phrase="2C: SCORE   *         *       *         "
 35F5:     04                                                           ;     IF_NOT_GOTO address=35FA
 35F6:       0D 02                                                      ;       while_pass: size=0002
 35F8:         92                                                       ;         92(PrintScore)
 35F9:         26                                                       ;         print_score()
 35FA:     3E                                                           ;     compare_input_to(phrase) phrase=??? Phrase 3E not found
 35FB:     01                                                           ;     IF_NOT_GOTO address=35FD
-35FC:       27                                                         ;       unknown_27(x)
+35FC:       27                                                         ;       load_game()
 35FD:     3F                                                           ;     compare_input_to(phrase) phrase=??? Phrase 3F not found
 35FE:     01                                                           ;     IF_NOT_GOTO address=3600
-35FF:       28                                                         ;       unknown_28(x)
-3600:     25                                                           ;     compare_input_to(phrase) phrase="25: LEAVE   *       *         *         "
+35FF:       28                                                         ;       save_game()
+3600:     25                                                           ;     compare_input_to(phrase) phrase="25: LEAVE   *         *       *         "
 3601:     0D                                                           ;     IF_NOT_GOTO address=360F
 3602:       04 0B                                                      ;       print(msg) size=000B
 3604:         03 C0 7B 14 94 5A E6 5F C0 7A 2E                         ;         TRY A DIRECTION.
-360F:     26                                                           ;     compare_input_to(phrase) phrase="26: GO      AROUND  *         u.......  "
+360F:     26                                                           ;     compare_input_to(phrase) phrase="26: GO      *         AROUND  u.......  "
 3610:     24                                                           ;     IF_NOT_GOTO address=3635
 3611:       0E 22                                                      ;       while_fail: size=0022
 3613:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4209,16 +4249,16 @@ GeneralCommands:
 3620:             40 D2 F3 23 F6 8B 51 18 52 C2 65 49 21               ;             WON'T LET YOU PASS!
 362D:         04 06                                                    ;         print(msg) size=0006
 362F:           09 9A FA 17 70 49                                      ;           NOW WHAT?
-3635:     3D                                                           ;     compare_input_to(phrase) phrase="3D: GO      TO      *         u.......  "
+3635:     3D                                                           ;     compare_input_to(phrase) phrase="3D: GO      *         TO      u.......  "
 3636:     01                                                           ;     IF_NOT_GOTO address=3638
 3637:       94                                                         ;       94(PrintUseDirections)
-3638:     27                                                           ;     compare_input_to(phrase) phrase="27: KICK    *       u.......  *         "
+3638:     27                                                           ;     compare_input_to(phrase) phrase="27: KICK    u.......  *       *         "
 3639:     0E                                                           ;     IF_NOT_GOTO address=3648
 363A:       0E 0C                                                      ;       while_fail: size=000C
 363C:         13                                                       ;         process_phrase_by_room_first_second()
 363D:         04 09                                                    ;         print(msg) size=0009
 363F:           25 A1 AB 70 3B 95 77 BF 21                             ;           OUCH! MY TOE!
-3648:     28                                                           ;     compare_input_to(phrase) phrase="28: FEED    WITH    ...P....  u.......  "
+3648:     28                                                           ;     compare_input_to(phrase) phrase="28: FEED    ...P....  WITH    u.......  "
 3649:     0A                                                           ;     IF_NOT_GOTO address=3654
 364A:       0E 08                                                      ;       while_fail: size=0008
 364C:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4227,7 +4267,7 @@ GeneralCommands:
 3650:           15 10                                                  ;           check_VAR(bits) bits=10(...P....)
 3652:           96                                                     ;           96(PrintGoodWayToLoseHand)
 3653:         97                                                       ;         97(PrintMouthImGame)
-3654:     29                                                           ;     compare_input_to(phrase) phrase="29: FEED    TO      u.......  ...P....  "
+3654:     29                                                           ;     compare_input_to(phrase) phrase="29: FEED    u.......  TO      ...P....  "
 3655:     0A                                                           ;     IF_NOT_GOTO address=3660
 3656:       0E 08                                                      ;       while_fail: size=0008
 3658:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4236,11 +4276,11 @@ GeneralCommands:
 365C:           15 10                                                  ;           check_VAR(bits) bits=10(...P....)
 365E:           96                                                     ;           96(PrintGoodWayToLoseHand)
 365F:         97                                                       ;         97(PrintMouthImGame)
-3660:     2F                                                           ;     compare_input_to(phrase) phrase="2F: WAIT    *       *         *         "
+3660:     2F                                                           ;     compare_input_to(phrase) phrase="2F: WAIT    *         *       *         "
 3661:     07                                                           ;     IF_NOT_GOTO address=3669
 3662:       04 05                                                      ;       print(msg) size=0005
 3664:         9B 29 57 C6 3E                                           ;         <PAUSE>
-3669:     2D                                                           ;     compare_input_to(phrase) phrase="2D: PULL    UP      *         u.......  "
+3669:     2D                                                           ;     compare_input_to(phrase) phrase="2D: PULL    *         UP      u.......  "
 366A:     09                                                           ;     IF_NOT_GOTO address=3674
 366B:       0E 07                                                      ;       while_fail: size=0007
 366D:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4254,12 +4294,12 @@ GeneralCommands:
 3676:       0E 02                                                      ;       while_fail: size=0002
 3678:         13                                                       ;         process_phrase_by_room_first_second()
 3679:         98                                                       ;         98(PrintGiantLeapForYou)
-367A:     34                                                           ;     compare_input_to(phrase) phrase="34: JUMP    OVER    *         u.......  "
+367A:     34                                                           ;     compare_input_to(phrase) phrase="34: JUMP    *         OVER    u.......  "
 367B:     04                                                           ;     IF_NOT_GOTO address=3680
 367C:       0E 02                                                      ;       while_fail: size=0002
 367E:         13                                                       ;         process_phrase_by_room_first_second()
 367F:         98                                                       ;         98(PrintGiantLeapForYou)
-3680:     36                                                           ;     compare_input_to(phrase) phrase="36: CLIMB   IN      *         *         "
+3680:     36                                                           ;     compare_input_to(phrase) phrase="36: CLIMB   *         IN      *         "
 3681:     17                                                           ;     IF_NOT_GOTO address=3699
 3682:       0E 15                                                      ;       while_fail: size=0015
 3684:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4268,7 +4308,7 @@ GeneralCommands:
 3689:             C7 DE D3 14 E6 96 77 15 0B BC 96 96 DB 72            ;             YOU CAN'T GET IN THE
 3697:           11                                                     ;           print_first_noun()
 3698:           84                                                     ;           84(PrintPeriod)
-3699:     37                                                           ;     compare_input_to(phrase) phrase="37: CLIMB   OUT     *         *         "
+3699:     37                                                           ;     compare_input_to(phrase) phrase="37: CLIMB   *         OUT     *         "
 369A:     15                                                           ;     IF_NOT_GOTO address=36B0
 369B:       0E 13                                                      ;       while_fail: size=0013
 369D:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4277,7 +4317,7 @@ GeneralCommands:
 36A2:             C7 DE 94 14 85 61 0B BC 96 96 DB 72                  ;             YOU AREN'T IN THE
 36AE:           11                                                     ;           print_first_noun()
 36AF:           84                                                     ;           84(PrintPeriod)
-36B0:     38                                                           ;     compare_input_to(phrase) phrase="38: CLIMB   UNDER   *         u.......  "
+36B0:     38                                                           ;     compare_input_to(phrase) phrase="38: CLIMB   *         UNDER   u.......  "
 36B1:     20                                                           ;     IF_NOT_GOTO address=36D2
 36B2:       0E 1E                                                      ;       while_fail: size=001E
 36B4:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4287,7 +4327,7 @@ GeneralCommands:
 36C9:             B0 17 F4 59 82 17 45                                 ;             ~
 36D0:           11                                                     ;           print_first_noun()
 36D1:           84                                                     ;           84(PrintPeriod)
-36D2:     39                                                           ;     compare_input_to(phrase) phrase="39: THROW   IN      u.......  u.......  "
+36D2:     39                                                           ;     compare_input_to(phrase) phrase="39: THROW   u.......  IN      u.......  "
 36D3:     1D                                                           ;     IF_NOT_GOTO address=36F1
 36D4:       0E 1B                                                      ;       while_fail: size=001B
 36D6:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4295,7 +4335,7 @@ GeneralCommands:
 36D9:           04 16                                                  ;           print(msg) size=0016
 36DB:             C7 DE FB 17 F3 8C 58 72 56 5E D2 9C 73 C6 73 7B      ;             YOU WILL HAVE TO PUT IT IN THERE.
 36EB:             83 7A 5F BE 7F B1                                    ;             ~
-36F1:     3A                                                           ;     compare_input_to(phrase) phrase="3A: OPEN    WITH    u.......  u.......  "
+36F1:     3A                                                           ;     compare_input_to(phrase) phrase="3A: OPEN    u.......  WITH    u.......  "
 36F2:     1E                                                           ;     IF_NOT_GOTO address=3711
 36F3:       0E 1C                                                      ;       while_fail: size=001C
 36F5:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4307,7 +4347,7 @@ GeneralCommands:
 3709:             56 D1 16 71 DB 72                                    ;             WITH THE
 370F:           12                                                     ;           print_second_noun
 3710:           84                                                     ;           84(PrintPeriod)
-3711:     0D                                                           ;     compare_input_to(phrase) phrase="0D: THROW   AT      .v......  ...P....  "
+3711:     0D                                                           ;     compare_input_to(phrase) phrase="0D: THROW   .v......  AT      ...P....  "
 3712:     34                                                           ;     IF_NOT_GOTO address=3747
 3713:       0E 32                                                      ;       while_fail: size=0032
 3715:         0D 2E                                                    ;         while_pass: size=002E
@@ -4333,7 +4373,7 @@ GeneralCommands:
 3744:             13                                                   ;             process_phrase_by_room_first_second()
 3745:         14                                                       ;         execute_and_reverse_status:
 3746:         0C                                                       ;         fail()
-3747:     0E                                                           ;     compare_input_to(phrase) phrase="0E: THROW   TO      u.......  ...P....  "
+3747:     0E                                                           ;     compare_input_to(phrase) phrase="0E: THROW   u.......  TO      ...P....  "
 3748:     39                                                           ;     IF_NOT_GOTO address=3782
 3749:       0E 37                                                      ;       while_fail: size=0037
 374B:         0D 1B                                                    ;         while_pass: size=001B
@@ -4352,7 +4392,7 @@ GeneralCommands:
 376F:           12                                                     ;           print_second_noun
 3770:           04 10                                                  ;           print(msg) size=0010
 3772:             60 7B F3 23 D5 46 EE 61 91 7A BC 14 AF 78 5B BB      ;             ISN'T ACCEPTING BRIBES.
-3782:     0F                                                           ;     compare_input_to(phrase) phrase="0F: DROP    IN      u.......  u.......  "
+3782:     0F                                                           ;     compare_input_to(phrase) phrase="0F: DROP    u.......  IN      u.......  "
 3783:     19                                                           ;     IF_NOT_GOTO address=379D
 3784:       0E 17                                                      ;       while_fail: size=0017
 3786:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4364,7 +4404,7 @@ GeneralCommands:
 3790:             40 D2 F3 23 16 67 D0 15 82 17 45                     ;             WON'T FIT IN THE
 379B:           12                                                     ;           print_second_noun
 379C:           84                                                     ;           84(PrintPeriod)
-379D:     14                                                           ;     compare_input_to(phrase) phrase="14: LIGHT   WITH    u...A...  u...A...  "
+379D:     14                                                           ;     compare_input_to(phrase) phrase="14: LIGHT   u...A...  WITH    u...A...  "
 379E:     3B                                                           ;     IF_NOT_GOTO address=37DA
 379F:       0D 39                                                      ;       while_pass: size=0039
 37A1:         1B                                                       ;         set_VAR_to_second_noun()
@@ -4388,7 +4428,7 @@ GeneralCommands:
 37D2:               56 D1 16 71 DB 72                                  ;               WITH THE
 37D8:             12                                                   ;             print_second_noun
 37D9:             84                                                   ;             84(PrintPeriod)
-37DA:     07                                                           ;     compare_input_to(phrase) phrase="07: INVENT  *       *         *         "
+37DA:     07                                                           ;     compare_input_to(phrase) phrase="07: INVENT  *         *       *         "
 37DB:     1A                                                           ;     IF_NOT_GOTO address=37F6
 37DC:       0D 18                                                      ;       while_pass: size=0018
 37DE:         04 15                                                    ;         print(msg) size=0015
@@ -4414,7 +4454,7 @@ HelperCommands:
 3801:   1F 10                                                          ;   print2(msg) size=0010
 3803:     C7 DE AF 23 FF 14 17 47 8C 17 43 DB 0B 6C 1B 9C              ;     YOU'RE DEAD. TRY AGAIN.
 3813:   95                                                             ;   95(ResetDungeon)
-3814:   17 01 81                                                       ;   move_to(object,room) object=01(??01) room=81(Small room granite walls)
+3814:   17 01 81                                                       ;   move_to(object,room) object=01(BOTTLE) room=81(Small room granite walls)
 3817:   17 05 84                                                       ;   move_to(object,room) object=05(FOOD) room=84(Top of a passage)
 381A:   17 06 88                                                       ;   move_to(object,room) object=06(STATUE) room=88(Triangular room)
 381D:   17 07 00                                                       ;   move_to(object,room) object=07(STATUE) room=00(Room_00)
@@ -4606,10 +4646,10 @@ HelperCommands:
 ; InvalidClimbInOrOut
 3B7E: 93 09                                                            ; Function=93(InvalidClimbInOrOut) size=0009
 3B80: 0B 07 0A                                                         ; switch(compare_input_to(phrase)): size=0007
-3B83:   36                                                             ;   compare_input_to(phrase) phrase="36: CLIMB   IN      *         *         "
+3B83:   36                                                             ;   compare_input_to(phrase) phrase="36: CLIMB   *         IN      *         "
 3B84:   01                                                             ;   IF_NOT_GOTO address=3B86
 3B85:     94                                                           ;     94(PrintUseDirections)
-3B86:   37                                                             ;   compare_input_to(phrase) phrase="37: CLIMB   OUT     *         *         "
+3B86:   37                                                             ;   compare_input_to(phrase) phrase="37: CLIMB   *         OUT     *         "
 3B87:   01                                                             ;   IF_NOT_GOTO address=3B89
 3B88:     94                                                           ;     94(PrintUseDirections)
 ;
@@ -4660,137 +4700,148 @@ HelperCommands:
 
 ```code
 InputWordTables:
-; --- IGNORES --- Maybe for curse words. No words in this list and thus never used.
-3C29: 00                
-;  
-; --- VERBS ---   
-3C2A: 04 52 45 41 44 01         ; READ     1
-3C30: 03 47 45 54 09            ; GET      9
-3C35: 05 54 48 52 4F 57 03      ; THROW    3
-3C3C: 06 41 54 54 41 43 4B 04   ; ATTACK   4
-3C44: 04 4B 49 4C 4C 04         ; KILL     4
-3C4A: 03 48 49 54 04            ; HIT      4
-3C4F: 05 4E 4F 52 54 48 05      ; NORTH    5
-3C56: 01 4E 05                  ; N        5
-3C59: 05 53 4F 55 54 48 06      ; SOUTH    6
-3C60: 01 53 06                  ; S        6
-3C63: 04 45 41 53 54 07         ; EAST     7
-3C69: 01 45 07                  ; E        7
-3C6C: 04 57 45 53 54 08         ; WEST     8
-3C72: 01 57 08                  ; W        8
-3C75: 04 54 41 4B 45 09         ; TAKE     9
-3C7B: 04 44 52 4F 50 0A         ; DROP     10
-3C81: 03 50 55 54 0A            ; PUT      10
-3C86: 06 49 4E 56 45 4E 54 0B   ; INVENT   11
-3C8E: 04 4C 4F 4F 4B 0C         ; LOOK     12
-3C94: 04 47 49 56 45 0D         ; GIVE     13
-3C9A: 05 4F 46 46 45 52 0D      ; OFFER    13
-3CA1: 06 45 58 41 4D 49 4E 0E   ; EXAMIN   14
-3CA9: 06 53 45 41 52 43 48 0E   ; SEARCH   14
-3CB1: 04 4F 50 45 4E 0F         ; OPEN     15
-3CB7: 04 50 55 4C 4C 10         ; PULL     16
-3CBD: 05 4C 49 47 48 54 11      ; LIGHT    17
-3CC4: 04 42 55 52 4E 11         ; BURN     17
-3CCA: 03 45 41 54 12            ; EAT      18
-3CCF: 05 54 41 53 54 45 12      ; TASTE    18
-3CD6: 04 42 4C 4F 57 13         ; BLOW     19
-3CDC: 06 45 58 54 49 4E 47 14   ; EXTING   20
-3CE4: 05 43 4C 49 4D 42 15      ; CLIMB    21
-3CEB: 03 52 55 42 16            ; RUB      22
-3CF0: 04 57 49 50 45 16         ; WIPE     22
-3CF6: 06 50 4F 4C 49 53 48 16   ; POLISH   22
-3CFE: 04 4C 49 46 54 1C         ; LIFT     28
-3D04: 04 57 41 49 54 1F         ; WAIT     31
-3D0A: 04 53 54 41 59 1F         ; STAY     31
-3D10: 04 4A 55 4D 50 20         ; JUMP     32
-3D16: 02 47 4F 21               ; GO       33
-3D1A: 03 52 55 4E 21            ; RUN      33
-3D1F: 05 45 4E 54 45 52 21      ; ENTER    33
-3D26: 04 50 55 53 48 10         ; PUSH     16
-3D2C: 04 4D 4F 56 45 10         ; MOVE     16
-3D32: 04 4B 49 43 4B 23         ; KICK     35
-3D38: 04 46 45 45 44 24         ; FEED     36
-3D3E: 05 53 43 4F 52 45 28      ; SCORE    40
-3D45: 06 53 43 52 45 41 4D 2B   ; SCREAM   43
-3D4D: 04 59 45 4C 4C 2B         ; YELL     43
-3D53: 04 51 55 49 54 2D         ; QUIT     45
-3D59: 04 53 54 4F 50 2D         ; STOP     45
-3D5F: 05 50 4C 55 47 48 32      ; PLUGH    50
-3D66: 05 4C 45 41 56 45 2C      ; LEAVE    44
-3D6D: 04 50 49 43 4B 34         ; PICK     52
+; --- IGNORES ---
+3C29: 00
+;
+; --- VERBS ---
+3C2A: 04 52 45 41 44 01         ; READ     01
+3C30: 03 47 45 54 09            ; GET      09
+3C35: 05 54 48 52 4F 57 03      ; THROW    03
+3C3C: 06 41 54 54 41 43 4B 04   ; ATTACK   04
+3C44: 04 4B 49 4C 4C 04         ; KILL     04
+3C4A: 03 48 49 54 04            ; HIT      04
+3C4F: 05 4E 4F 52 54 48 05      ; NORTH    05
+3C56: 01 4E 05                  ; N        05
+3C59: 05 53 4F 55 54 48 06      ; SOUTH    06
+3C60: 01 53 06                  ; S        06
+3C63: 04 45 41 53 54 07         ; EAST     07
+3C69: 01 45 07                  ; E        07
+3C6C: 04 57 45 53 54 08         ; WEST     08
+3C72: 01 57 08                  ; W        08
+3C75: 04 54 41 4B 45 09         ; TAKE     09
+3C7B: 04 44 52 4F 50 0A         ; DROP     0A
+3C81: 03 50 55 54 0A            ; PUT      0A
+3C86: 06 49 4E 56 45 4E 54 0B   ; INVENT   0B
+3C8E: 04 4C 4F 4F 4B 0C         ; LOOK     0C
+3C94: 04 47 49 56 45 0D         ; GIVE     0D
+3C9A: 05 4F 46 46 45 52 0D      ; OFFER    0D
+3CA1: 06 45 58 41 4D 49 4E 0E   ; EXAMIN   0E
+3CA9: 06 53 45 41 52 43 48 0E   ; SEARCH   0E
+3CB1: 04 4F 50 45 4E 0F         ; OPEN     0F
+3CB7: 04 50 55 4C 4C 10         ; PULL     10
+3CBD: 05 4C 49 47 48 54 11      ; LIGHT    11
+3CC4: 04 42 55 52 4E 11         ; BURN     11
+3CCA: 03 45 41 54 12            ; EAT      12
+3CCF: 05 54 41 53 54 45 12      ; TASTE    12
+3CD6: 04 42 4C 4F 57 13         ; BLOW     13
+3CDC: 06 45 58 54 49 4E 47 14   ; EXTING   14
+3CE4: 05 43 4C 49 4D 42 15      ; CLIMB    15
+3CEB: 03 52 55 42 16            ; RUB      16
+3CF0: 04 57 49 50 45 16         ; WIPE     16
+3CF6: 06 50 4F 4C 49 53 48 16   ; POLISH   16
+3CFE: 04 4C 49 46 54 1C         ; LIFT     1C
+3D04: 04 57 41 49 54 1F         ; WAIT     1F
+3D0A: 04 53 54 41 59 1F         ; STAY     1F
+3D10: 04 4A 55 4D 50 20         ; JUMP     20
+3D16: 02 47 4F 21               ; GO       21
+3D1A: 03 52 55 4E 21            ; RUN      21
+3D1F: 05 45 4E 54 45 52 21      ; ENTER    21
+3D26: 04 50 55 53 48 10         ; PUSH     10
+3D2C: 04 4D 4F 56 45 10         ; MOVE     10
+3D32: 04 4B 49 43 4B 23         ; KICK     23
+3D38: 04 46 45 45 44 24         ; FEED     24
+3D3E: 05 53 43 4F 52 45 28      ; SCORE    28
+3D45: 06 53 43 52 45 41 4D 2B   ; SCREAM   2B
+3D4D: 04 59 45 4C 4C 2B         ; YELL     2B
+3D53: 04 51 55 49 54 2D         ; QUIT     2D
+3D59: 04 53 54 4F 50 2D         ; STOP     2D
+3D5F: 05 50 4C 55 47 48 32      ; PLUGH    32
+3D66: 05 4C 45 41 56 45 2C      ; LEAVE    2C
+3D6D: 04 50 49 43 4B 34         ; PICK     34
 3D73: 00
 ;
 ; --- NOUNS ---
-3D74: 06 50 4F 54 49 4F 4E 03   ; POTION   3
-3D7C: 03 52 55 47 06            ; RUG      6
-3D81: 04 44 4F 4F 52 09         ; DOOR     9
-3D87: 04 46 4F 4F 44 0C         ; FOOD     12
-3D8D: 06 53 54 41 54 55 45 0D   ; STATUE   13
-3D95: 05 53 57 4F 52 44 0E      ; SWORD    14
-3D9C: 06 47 41 52 47 4F 59 0F   ; GARGOY   15
-3DA4: 04 52 49 4E 47 12         ; RING     18
-3DAA: 03 47 45 4D 13            ; GEM      19
-3DAF: 05 4C 45 56 45 52 16      ; LEVER    22
-3DB6: 06 50 4C 41 51 55 45 18   ; PLAQUE   24
-3DBE: 05 52 55 4E 45 53 18      ; RUNES    24
-3DC5: 04 53 49 47 4E 18         ; SIGN     24
-3DCB: 06 4D 45 53 53 41 47 18   ; MESSAG   24
-3DD3: 06 43 41 4E 44 4C 45 19   ; CANDLE   25
-3DDB: 04 4C 41 4D 50 1B         ; LAMP     27
-3DE1: 06 43 48 4F 50 53 54 1E   ; CHOPST   30
-3DE9: 04 48 41 4E 44 1F         ; HAND     31
-3DEF: 05 48 41 4E 44 53 1F      ; HANDS    31
-3DF6: 04 43 4F 49 4E 20         ; COIN     32
-3DFC: 04 53 4C 4F 54 21         ; SLOT     33
-3E02: 05 41 4C 54 41 52 22      ; ALTAR    34
-3E09: 04 49 44 4F 4C 23         ; IDOL     35
-3E0F: 06 53 45 52 50 45 4E 24   ; SERPEN   36
-3E17: 05 53 4E 41 4B 45 24      ; SNAKE    36
-3E1E: 04 57 41 4C 4C 25         ; WALL     37
-3E24: 05 57 41 4C 4C 53 25      ; WALLS    37
-3E2B: 04 56 49 4E 45 26         ; VINE     38
-3E31: 05 56 49 4E 45 53 26      ; VINES    38
-3E38: 04 47 41 54 45 27         ; GATE     39
-3E3E: 05 47 41 54 45 53 27      ; GATES    39
-3E45: 05 47 55 41 52 44 28      ; GUARD    40
-3E4C: 06 47 55 41 52 44 53 28   ; GUARDS   40
-3E54: 04 52 4F 4F 4D 2A         ; ROOM     42
-3E5A: 05 46 4C 4F 4F 52 2B      ; FLOOR    43
-3E61: 04 45 58 49 54 2C         ; EXIT     44
-3E67: 06 50 41 53 53 41 47 2D   ; PASSAG   45
-3E6F: 04 48 4F 4C 45 2E         ; HOLE     46
-3E75: 06 43 4F 52 52 49 44 2F   ; CORRID   47
-3E7D: 03 42 4F 57 31            ; BOW      49
-3E82: 05 41 52 52 4F 57 32      ; ARROW    50
-3E89: 06 48 41 4C 4C 57 41 33   ; HALLWA   51
-3E91: 06 43 48 41 4D 42 45 34   ; CHAMBE   52
-3E99: 05 56 41 55 4C 54 35      ; VAULT    53
-3EA0: 06 45 4E 54 52 41 4E 36   ; ENTRAN   54
-3EA8: 06 54 55 4E 4E 45 4C 37   ; TUNNEL   55
-3EB0: 06 4A 55 4E 47 4C 45 38   ; JUNGLE   56
-3EB8: 06 54 45 4D 50 4C 45 39   ; TEMPLE   57
-3EC0: 03 50 49 54 3A            ; PIT      58
-3EC5: 06 43 45 49 4C 49 4E 3B   ; CEILIN   59
+3D74: 06 50 4F 54 49 4F 4E 03   ; POTION   03
+3D7C: 03 52 55 47 06            ; RUG      06
+3D81: 04 44 4F 4F 52 09         ; DOOR     09
+3D87: 04 46 4F 4F 44 0C         ; FOOD     0C
+3D8D: 06 53 54 41 54 55 45 0D   ; STATUE   0D
+3D95: 05 53 57 4F 52 44 0E      ; SWORD    0E
+3D9C: 06 47 41 52 47 4F 59 0F   ; GARGOY   0F
+3DA4: 04 52 49 4E 47 12         ; RING     12
+3DAA: 03 47 45 4D 13            ; GEM      13
+3DAF: 05 4C 45 56 45 52 16      ; LEVER    16
+3DB6: 06 50 4C 41 51 55 45 18   ; PLAQUE   18
+3DBE: 05 52 55 4E 45 53 18      ; RUNES    18
+3DC5: 04 53 49 47 4E 18         ; SIGN     18
+3DCB: 06 4D 45 53 53 41 47 18   ; MESSAG   18
+3DD3: 06 43 41 4E 44 4C 45 19   ; CANDLE   19
+3DDB: 04 4C 41 4D 50 1B         ; LAMP     1B
+3DE1: 06 43 48 4F 50 53 54 1E   ; CHOPST   1E
+3DE9: 04 48 41 4E 44 1F         ; HAND     1F
+3DEF: 05 48 41 4E 44 53 1F      ; HANDS    1F
+3DF6: 04 43 4F 49 4E 20         ; COIN     20
+3DFC: 04 53 4C 4F 54 21         ; SLOT     21
+3E02: 05 41 4C 54 41 52 22      ; ALTAR    22
+3E09: 04 49 44 4F 4C 23         ; IDOL     23
+3E0F: 06 53 45 52 50 45 4E 24   ; SERPEN   24
+3E17: 05 53 4E 41 4B 45 24      ; SNAKE    24
+3E1E: 04 57 41 4C 4C 25         ; WALL     25
+3E24: 05 57 41 4C 4C 53 25      ; WALLS    25
+3E2B: 04 56 49 4E 45 26         ; VINE     26
+3E31: 05 56 49 4E 45 53 26      ; VINES    26
+3E38: 04 47 41 54 45 27         ; GATE     27
+3E3E: 05 47 41 54 45 53 27      ; GATES    27
+3E45: 05 47 55 41 52 44 28      ; GUARD    28
+3E4C: 06 47 55 41 52 44 53 28   ; GUARDS   28
+3E54: 04 52 4F 4F 4D 2A         ; ROOM     2A
+3E5A: 05 46 4C 4F 4F 52 2B      ; FLOOR    2B
+3E61: 04 45 58 49 54 2C         ; EXIT     2C
+3E67: 06 50 41 53 53 41 47 2D   ; PASSAG   2D
+3E6F: 04 48 4F 4C 45 2E         ; HOLE     2E
+3E75: 06 43 4F 52 52 49 44 2F   ; CORRID   2F
+3E7D: 03 42 4F 57 31            ; BOW      31
+3E82: 05 41 52 52 4F 57 32      ; ARROW    32
+3E89: 06 48 41 4C 4C 57 41 33   ; HALLWA   33
+3E91: 06 43 48 41 4D 42 45 34   ; CHAMBE   34
+3E99: 05 56 41 55 4C 54 35      ; VAULT    35
+3EA0: 06 45 4E 54 52 41 4E 36   ; ENTRAN   36
+3EA8: 06 54 55 4E 4E 45 4C 37   ; TUNNEL   37
+3EB0: 06 4A 55 4E 47 4C 45 38   ; JUNGLE   38
+3EB8: 06 54 45 4D 50 4C 45 39   ; TEMPLE   39
+3EC0: 03 50 49 54 3A            ; PIT      3A
+3EC5: 06 43 45 49 4C 49 4E 3B   ; CEILIN   3B
 3ECD: 00
 ;
 ; --- ADJECTIVES ---
 3ECE: 00
 ;
 ; --- PREPOSITIONS ---
-3ECF: 02 54 4F 01               ; TO       1
-3ED3: 04 57 49 54 48 02         ; WITH     2
-3ED9: 02 41 54 03               ; AT       3
-3EDD: 05 55 4E 44 45 52 04      ; UNDER    4
-3EE4: 02 49 4E 05               ; IN       5
-3EE8: 04 49 4E 54 4F 05         ; INTO     5
-3EEE: 03 4F 55 54 06            ; OUT      6
-3EF3: 02 55 50 07               ; UP       7
-3EF7: 04 44 4F 57 4E 08         ; DOWN     8
-3EFD: 04 4F 56 45 52 09         ; OVER     9
-3F03: 06 42 45 48 49 4E 44 0A   ; BEHIND   10
-3F0B: 06 41 52 4F 55 4E 44 0B   ; AROUND   11
-3F13: 02 4F 4E 0C               ; ON       12
+3ECF: 02 54 4F 01               ; TO       01
+3ED3: 04 57 49 54 48 02         ; WITH     02
+3ED9: 02 41 54 03               ; AT       03
+3EDD: 05 55 4E 44 45 52 04      ; UNDER    04
+3EE4: 02 49 4E 05               ; IN       05
+3EE8: 04 49 4E 54 4F 05         ; INTO     05
+3EEE: 03 4F 55 54 06            ; OUT      06
+3EF3: 02 55 50 07               ; UP       07
+3EF7: 04 44 4F 57 4E 08         ; DOWN     08
+3EFD: 04 4F 56 45 52 09         ; OVER     09
+3F03: 06 42 45 48 49 4E 44 0A   ; BEHIND   0A
+3F0B: 06 41 52 4F 55 4E 44 0B   ; AROUND   0B
+3F13: 02 4F 4E 0C               ; ON       0C
 3F17: 00
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
 ```
 
 ```code

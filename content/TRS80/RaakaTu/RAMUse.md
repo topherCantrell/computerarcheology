@@ -1,4 +1,4 @@
-![RAM Use](TRS80Pyramid.jpg)
+![RAM Use](trs80raakatu.jpg)
 
 # RAM Use
 
@@ -6,6 +6,7 @@
 
 | | | |
 | --- | --- | --- |
+| 4020:4021 | screenPtr             | next screen memory to print to |
 | 4FF5:4FF6 | tmp1A7                | used in decoding the input |                   
 | 4FF7      | tmp1A9                | used in comparing X to Y |                     
 | 4FF8      | not1AA                | never used |

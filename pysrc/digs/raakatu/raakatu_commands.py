@@ -120,39 +120,39 @@ class PrintInventory(BaseCommand):
 class UnknownCommand2(BaseCommand):
     
     command_value = 0x02
-    command_name = 'unknown_02(x)'
+    command_name = 'is_owned_by_ACTIVE(object)'
     command_length = 1
     
     def parse_binary(self,data):    
         #print(self.command_name)    
         self._raw_data = data           
-        self._unknown = data[0]
+        self._object = data[0]
         
     def print_assembly(self,pos,ident,out):  
-        s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._unknown)+' ; '+self.command_name+' unknown='+U.hex2(self._unknown)      
+        s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._object)+' ; '+self.command_name+' object='+U.hex2(self._object)+'('+DECODE_NOUN(self._object)+')'    
         out.append(U.indent_code(s,ident))        
         return pos+2
     
     def tojson(self):
-        return [self.command_name,self._unknown]
+        return [self.command_name,self._object]
        
 class UnknownCommand22(BaseCommand):
     
     command_value = 0x22
-    command_name = 'unknown_22(x)'
+    command_name = 'is_less_equal_health(points)'
     command_length = 1
     
     @classmethod
     def get_switch_comment(cs,cdata):
-        return cs.command_name+' unknown='+U.hex2(cdata[0])
+        return cs.command_name+' points='+U.hex2(cdata[0])
     
     def parse_binary(self,data):    
         #print(self.command_name)    
         self._raw_data = data     
-        self._unknown = data[0]
+        self._points = data[0]
         
     def print_assembly(self,pos,ident,out):        
-        s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._unknown)+' ; '+self.command_name+' unknown='+U.hex2(self._unknown)
+        s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._points)+' ; '+self.command_name+' points='+U.hex2(self._points)
         out.append(U.indent_code(s,ident))        
         return pos+2
     
@@ -166,7 +166,7 @@ class UnknownCommand22(BaseCommand):
 class UnknownCommand28(BaseCommand):
     
     command_value = 0x28
-    command_name = 'unknown_28(x)'
+    command_name = 'save_game()'
     command_length = 0
     
     def parse_binary(self,data):    
@@ -187,7 +187,7 @@ class UnknownCommand28(BaseCommand):
 class UnknownCommand27(BaseCommand):
     
     command_value = 0x27
-    command_name = 'unknown_27(x)'
+    command_name = 'load_game()'
     command_length = 0
     
     def parse_binary(self,data):    
@@ -1173,51 +1173,52 @@ class Switch(BaseCommand):
         return cdata
 
 COMMAND_INFO = [
-    IsObjectInRoomOrPack,            0x01, '1', 'is_in_pack_or_current_room(object)',
-    UnknownCommand2,                 0x02, '1', 'unknown_02(x)',
-    IsObjectAtLocation,              0x03, '2', 'is_located(room,object)',
-    PrintMessage,                    0x04, 'v', 'print(msg)',
-    IsLessEqualRandom,               0x05, '1', 'is_less_equal_last_random(value)',
-    PrintInventory,                  0x06, '0', 'print_inventory()',
-    PrintRoomDescription,            0x07, '0', 'print_room_description()',
-    CompareObjectToFirstNoun,        0x08, '1', 'is_first_noun(object)',
-    CompareObjectToSecondNoun,       0x09, '1', 'compare_to_second_noun(object)',
-    CompareToPhrase,                 0x0A, '1', 'compare_input_to(phrase)',
-    Switch,                          0x0B, 'v', 'switch:',
-    Fail,                            0x0C, '0', 'fail()',
-    WhilePass,                       0x0D, 'v', 'while_pass:',
-    WhileFail,                       0x0E, 'v', 'while_fail:',
-    PickUpObject,                    0x0F, '0', 'pick_up_VAR()',
-    DropObject,                      0x10, '0', 'drop_VAR()',
-    PrintFirstNounShortName,         0x11, '0', 'print_first_noun()',
-    PrintSecondNounShortName,        0x12, '0', 'print_second_noun()',
-    ProcessPhraseByRoomFirstSecond,  0x13, '0', 'process_phrase_by_room_first_second()',
-    ExecuteReverseStatus,            0x14, '0', 'execute_and_reverse_status:',
-    CheckObjectBits,                 0x15, '1', 'check_VAR(bits)',
-    PrintVarShortName,               0x16, '0', 'print_VAR()',
-    MoveObject,                      0x17, '2', 'move_to(object,room)',
-    IsVarOwnedBy,                    0x18, '0', 'is_VAR_owned_by_ACTIVE()',
-    MoveActiveObjectToRoom,          0x19, '1', 'move_ACTIVE(room)',
-    SetVarObjectToFirstNoun,         0x1A, '0', 'set_VAR_to_first_noun()',
-    SetVarObjectToSecondNoun,        0x1B, '0', 'set_VAR_to_second_noun()',
-    SetVarObject,                    0x1C, '1', 'set_VAR(object)',
-    AttackObject,                    0x1D, '1', 'attack_VAR(points)',
-    SwapObjects,                     0x1E, '2', 'swap(object_a,object_b)',
-    PrintMessage2,                   0x1F, 'v', 'print2(msg)',
-    CheckActiveObject,               0x20, '1', 'is_ACTIVE_this(object)',
-    ExecutePhrase,                   0x21, '3', 'execute_phrase(phrase,first_noun,second_noun)',
-    UnknownCommand22,                0x22, '1', 'unknown_22(x)',
-    Heal,                            0x23, '1', 'heal_VAR(points)',
-    EndlessLoop,                     0x24, '0', 'endless_loop()',
-    RestartGame,                     0x25, '0', 'restart_game()',
-    PrintScore,                      0x26, '0', 'print_score()',
-    UnknownCommand27,                0x27, '1', 'unknown_27(x)',
-    UnknownCommand28,                0x28, '1', 'unknown_28(x)',    
+    [MoveActiveObjectToRoomAndLook,   0x00, '1', 'move_ACTIVE_and_look(room)'],
+    [IsObjectInRoomOrPack,            0x01, '1', 'is_in_pack_or_current_room(object)'],
+    [UnknownCommand2,                 0x02, '1', 'is_owned_by_ACTIVE(object)'],
+    [IsObjectAtLocation,              0x03, '2', 'is_located(room,object)'],
+    [PrintMessage,                    0x04, 'v', 'print(msg)'],
+    [IsLessEqualRandom,               0x05, '1', 'is_less_equal_last_random(value)'],
+    [PrintInventory,                  0x06, '0', 'print_inventory()'],
+    [PrintRoomDescription,            0x07, '0', 'print_room_description()'],
+    [CompareObjectToFirstNoun,        0x08, '1', 'is_first_noun(object)'],
+    [CompareObjectToSecondNoun,       0x09, '1', 'compare_to_second_noun(object)'],
+    [CompareToPhrase,                 0x0A, '1', 'compare_input_to(phrase)'],
+    [Switch,                          0x0B, 'v', 'switch:'],
+    [Fail,                            0x0C, '0', 'fail()'],
+    [WhilePass,                       0x0D, 'v', 'while_pass:'],
+    [WhileFail,                       0x0E, 'v', 'while_fail:'],
+    [PickUpObject,                    0x0F, '0', 'pick_up_VAR()'],
+    [DropObject,                      0x10, '0', 'drop_VAR()'],
+    [PrintFirstNounShortName,         0x11, '0', 'print_first_noun()'],
+    [PrintSecondNounShortName,        0x12, '0', 'print_second_noun()'],
+    [ProcessPhraseByRoomFirstSecond,  0x13, '0', 'process_phrase_by_room_first_second()'],
+    [ExecuteReverseStatus,            0x14, '0', 'execute_and_reverse_status:'],
+    [CheckObjectBits,                 0x15, '1', 'check_VAR(bits)'],
+    [PrintVarShortName,               0x16, '0', 'print_VAR()'],
+    [MoveObject,                      0x17, '2', 'move_to(object,room)'],
+    [IsVarOwnedBy,                    0x18, '0', 'is_VAR_owned_by_ACTIVE()'],
+    [MoveActiveObjectToRoom,          0x19, '1', 'move_ACTIVE(room)'],
+    [SetVarObjectToFirstNoun,         0x1A, '0', 'set_VAR_to_first_noun()'],
+    [SetVarObjectToSecondNoun,        0x1B, '0', 'set_VAR_to_second_noun()'],
+    [SetVarObject,                    0x1C, '1', 'set_VAR(object)'],
+    [AttackObject,                    0x1D, '1', 'attack_VAR(points)'],
+    [SwapObjects,                     0x1E, '2', 'swap(object_a,object_b)'],
+    [PrintMessage2,                   0x1F, 'v', 'print2(msg)'],
+    [CheckActiveObject,               0x20, '1', 'is_ACTIVE_this(object)'],
+    [ExecutePhrase,                   0x21, '3', 'execute_phrase(phrase,first_noun,second_noun)'],
+    [UnknownCommand22,                0x22, '1', 'is_less_equal_health(points)'],
+    [Heal,                            0x23, '1', 'heal_VAR(points)'],
+    [EndlessLoop,                     0x24, '0', 'endless_loop()'],
+    [RestartGame,                     0x25, '0', 'restart_game()'],
+    [PrintScore,                      0x26, '0', 'print_score()'],
+    [UnknownCommand27,                0x27, '1', 'load_game()'], 
+    [UnknownCommand28,                0x28, '1', 'save_game()'],  
 ]
 
         
 SCRIPT_COMMANDS = {
-MoveActiveObjectToRoomAndLook.command_value : MoveActiveObjectToRoomAndLook, # (00) : 1 move_ACTIVE_and_look(room)
+    MoveActiveObjectToRoomAndLook.command_value : MoveActiveObjectToRoomAndLook, # (00) : 1 move_ACTIVE_and_look(room)
     IsObjectInRoomOrPack.command_value : IsObjectInRoomOrPack, # (01) : 1 is_in_pack_or_current_room(object)
     UnknownCommand2.command_value : UnknownCommand2, # (02) : 1 unknown_02(x)
     IsObjectAtLocation.command_value : IsObjectAtLocation, # (03) : 2 is_located(room,object)
@@ -1256,8 +1257,8 @@ MoveActiveObjectToRoomAndLook.command_value : MoveActiveObjectToRoomAndLook, # (
     EndlessLoop.command_value : EndlessLoop, # (24) endless_loop()
     RestartGame.command_value : RestartGame, # (25) restart_game()
     PrintScore.command_value : PrintScore, # (26) print_score()
-    UnknownCommand27.command_value : UnknownCommand27, # (27) unknown_27(x)
-    UnknownCommand28.command_value : UnknownCommand28, # (28) unknown_28(x)
+    UnknownCommand27.command_value : UnknownCommand27, # (27) load_game()
+    UnknownCommand28.command_value : UnknownCommand28, # (28) save_game()
 }
 
 def read_length(pos,data):    

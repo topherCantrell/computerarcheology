@@ -13,373 +13,419 @@
 # Start
 
 ```code
-4300: 31 FF 7F       LD      SP,$7FFF        ; Stack starts at the end of RAM
-4303: 21 80 3F       LD      HL,$3F80        
-4306: 22 20 40       LD      ($4020),HL      
-4309: 3E 1D          LD      A,$1D           ; Player object ...
-430B: 32 20 50       LD      ($5020),A       ; ... is the active object number
-430E: 3E 96          LD      A,$96           
-4310: 47             LD      B,A             
-4311: 32 23 50       LD      ($5023),A       
-4314: 21 1F 68       LD      HL,$681F        
-4317: CD ED 46       CALL    $46ED           
-431A: 22 24 50       LD      ($5024),HL      
-431D: CD D0 49       CALL    $49D0           
-4320: 31 FF 7F       LD      SP,$7FFF        
-4323: CD 8F 47       CALL    $478F           
-4326: 97             SUB     A               ; Make a zero
-4327: 32 05 50       LD      ($5005),A       ; Clear ...
-432A: 32 08 50       LD      ($5008),A       ; ...
-432D: 32 0A 50       LD      ($500A),A       ; ...
-4330: 32 00 50       LD      ($5000),A       ; ...
-4333: 32 01 50       LD      ($5001),A       ; ...
-4336: 32 07 50       LD      ($5007),A       ; ...
-4339: 32 06 50       LD      ($5006),A       ; ...
-433C: 32 02 50       LD      ($5002),A       ; ...
-433F: 32 03 50       LD      ($5003),A       ; ...
-4342: 32 0D 50       LD      ($500D),A       ; ...
-4345: 32 11 50       LD      ($5011),A       ; ...
-4348: 32 17 50       LD      ($5017),A       ; ... game state
-434B: 3E 1D          LD      A,$1D           ; Player object ...
-434D: 32 20 50       LD      ($5020),A       ; ... is the active object number
+Start:
+4300: 31 FF 7F       LD      SP,$7FFF                       ; Stack starts at the end of RAM
+4303: 21 80 3F       LD      HL,$3F80        ; Initial screen start
+4306: 22 20 40       LD      ($4020),HL                     ; {ram:screenPtr} 
+4309: 3E 1D          LD      A,$1D                          ; Player object ...
+430B: 32 20 50       LD      ($5020),A                      ; {ram:ACTIVE_OBJ_NUM} ... is the active object number
+430E: 3E 96          LD      A,$96                          ; Starting ...
+4310: 47             LD      B,A                            ; ...
+4311: 32 23 50       LD      ($5023),A                      ; {ram:CUR_ROOM} ... room
+4314: 21 1F 68       LD      HL,$681F                       ; {!+RoomDescriptions} 
+4317: CD ED 46       CALL    $46ED                          ; {FindSublist} 
+431A: 22 24 50       LD      ($5024),HL                     ; {ram:CUR_ROOM_DATA} 
+431D: CD D0 49       CALL    $49D0                          ; {PrintRoomDescription} Print room description
+```
+
+# Main Loop
+
+```code
+MainLoop: 
+4320: 31 FF 7F       LD      SP,$7FFF                       ; Reset stack to end of RAM
+4323: CD 8F 47       CALL    $478F                          ; Get user input
+
+4326: 97             SUB     A                              ; Make a zero
+4327: 32 05 50       LD      ($5005),A                      ; {ram:adjWord} Clear ...
+432A: 32 08 50       LD      ($5008),A                      ; {ram:lsbAdj1} ...
+432D: 32 0A 50       LD      ($500A),A                      ; {ram:lsbCursor} ...
+4330: 32 00 50       LD      ($5000),A                      ; {ram:tmp1B2} ...
+4333: 32 01 50       LD      ($5001),A                      ; {ram:verbWord} ...
+4336: 32 07 50       LD      ($5007),A                      ; {ram:not1B9} ...
+4339: 32 06 50       LD      ($5006),A                      ; {ram:commandTarg} ...
+433C: 32 02 50       LD      ($5002),A                      ; {ram:perpWord} ...
+433F: 32 03 50       LD      ($5003),A                      ; {ram:prepGiven} ...
+4342: 32 0D 50       LD      ($500D),A                      ; {ram:VAR_OBJ_NUMBER} ...
+4345: 32 11 50       LD      ($5011),A                      ; {ram:FIRST_NOUN_NUM} ...
+4348: 32 17 50       LD      ($5017),A                      ; {ram:SECOND_NOUN_NUM} ... game state
+
+434B: 3E 1D          LD      A,$1D                          ; Player object ...
+434D: 32 20 50       LD      ($5020),A                      ; {ram:ACTIVE_OBJ_NUM} ... is the active object number
 4350: 47             LD      B,A             
-4351: CD 83 4E       CALL    $4E83           
-4354: 22 21 50       LD      ($5021),HL      
-4357: CD 05 47       CALL    $4705           
+4351: CD 83 4E       CALL    $4E83                          ; 
+4354: 22 21 50       LD      ($5021),HL                     ; {ram:ACTIVE_OBJ_DATA} 
+4357: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 435A: 7E             LD      A,(HL)          
-435B: 32 23 50       LD      ($5023),A       
+435B: 32 23 50       LD      ($5023),A                      ; {ram:CUR_ROOM} 
 435E: 47             LD      B,A             
-435F: 21 1F 68       LD      HL,$681F        
-4362: CD ED 46       CALL    $46ED           
-4365: 22 24 50       LD      ($5024),HL      
+435F: 21 1F 68       LD      HL,$681F                       ; {!+RoomDescriptions} 
+4362: CD ED 46       CALL    $46ED                          ; {FindSublist} 
+4365: 22 24 50       LD      ($5024),HL                     ; {ram:CUR_ROOM_DATA} 
 4368: 21 47 50       LD      HL,$5047        
-436B: 22 26 50       LD      ($5026),HL      
+436B: 22 26 50       LD      ($5026),HL                     ; {ram:nextToken} 
 436E: 36 00          LD      (HL),$00        
 4370: 21 C0 3F       LD      HL,$3FC0        
-4373: CD E2 47       CALL    $47E2           
-4376: CA 89 43       JP      Z,$4389         
+4373: CD E2 47       CALL    $47E2                          ; 
+4376: CA 89 43       JP      Z,$4389                        ; 
 4379: 7E             LD      A,(HL)          
 437A: FE 20          CP      $20             
-437C: CA 73 43       JP      Z,$4373         
+437C: CA 73 43       JP      Z,$4373                        ; 
 437F: 7D             LD      A,L             
 4380: FE FF          CP      $FF             
-4382: CA 89 43       JP      Z,$4389         
+4382: CA 89 43       JP      Z,$4389                        ; 
 4385: 23             INC     HL              
-4386: C3 79 43       JP      $4379           
+4386: C3 79 43       JP      $4379                          ; 
 4389: 7D             LD      A,L             
 438A: FE FF          CP      $FF             
-438C: C2 73 43       JP      NZ,$4373        
-438F: 2A 26 50       LD      HL,($5026)      
+438C: C2 73 43       JP      NZ,$4373                       ; 
+438F: 2A 26 50       LD      HL,($5026)                     ; {ram:nextToken} 
 4392: 36 00          LD      (HL),$00        
 4394: 21 47 50       LD      HL,$5047        
 4397: 7E             LD      A,(HL)          
 4398: A7             AND     A               
-4399: CA 39 44       JP      Z,$4439         
+4399: CA 39 44       JP      Z,$4439                        ; 
 439C: FE 02          CP      $02             
-439E: C2 AF 43       JP      NZ,$43AF        
+439E: C2 AF 43       JP      NZ,$43AF                       ; 
 43A1: 23             INC     HL              
 43A2: 7E             LD      A,(HL)          
 43A3: 2B             DEC     HL              
 43A4: FE 06          CP      $06             
-43A6: D2 AF 43       JP      NC,$43AF        
-43A9: 32 06 50       LD      ($5006),A       
+43A6: D2 AF 43       JP      NC,$43AF                       ; 
+43A9: 32 06 50       LD      ($5006),A                      ; {ram:commandTarg} 
 43AC: 23             INC     HL              
 43AD: 23             INC     HL              
 43AE: 23             INC     HL              
 43AF: 7E             LD      A,(HL)          
 43B0: 23             INC     HL              
 43B1: A7             AND     A               
-43B2: CA 39 44       JP      Z,$4439         
+43B2: CA 39 44       JP      Z,$4439                        ; 
 43B5: 46             LD      B,(HL)          
 43B6: 23             INC     HL              
 43B7: 4E             LD      C,(HL)          
 43B8: 23             INC     HL              
 43B9: E5             PUSH    HL              
 
-43BA: 3D             DEC     A               ; List 1? Verbs?
-43BB: C2 E2 43       JP      NZ,$43E2        ; No ... continue
-43BE: 21 B7 50       LD      HL,$50B7        ; Multi verb translation list (empty)
-43C1: CD ED 46       CALL    $46ED           ; Look for an entry for the given verb
-43C4: D2 DB 43       JP      NC,$43DB        ; No entry ... use the word as-is
-43C7: CD 05 47       CALL    $4705           ; Skip length of entry
-43CA: CD 19 47       CALL    $4719           ; End of list?
-43CD: D2 DB 43       JP      NC,$43DB        ; Yes ... this input is the verb
-43D0: 3A 01 50       LD      A,($5001)       ; Does the current verb match ...
-43D3: BE             CP      (HL)            ; ... this entry?
-43D4: 23             INC     HL              ; Bump to next
-43D5: 7E             LD      A,(HL)          ; Get replacement
-43D6: 23             INC     HL              ; Bump to next
-43D7: C2 CA 43       JP      NZ,$43CA        ; It does not match ... keep looking
-43DA: 47             LD      B,A             ; This entry from the table is the new word
+43BA: 3D             DEC     A                              ; List 1? Verbs?
+43BB: C2 E2 43       JP      NZ,$43E2                       ; No ... continue
+43BE: 21 B7 50       LD      HL,$50B7                       ; Multi verb translation list (empty)
+43C1: CD ED 46       CALL    $46ED                          ; {FindSublist} Look for an entry for the given verb
+43C4: D2 DB 43       JP      NC,$43DB                       ; No entry ... use the word as-is
+43C7: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} Skip length of entry
+43CA: CD 19 47       CALL    $4719                          ; {CompareXY} End of list?
+43CD: D2 DB 43       JP      NC,$43DB                       ; Yes ... this input is the verb
+43D0: 3A 01 50       LD      A,($5001)                      ; {ram:verbWord} Does the current verb match ...
+43D3: BE             CP      (HL)                           ; ... this entry?
+43D4: 23             INC     HL                             ; Bump to next
+43D5: 7E             LD      A,(HL)                         ; Get replacement
+43D6: 23             INC     HL                             ; Bump to next
+43D7: C2 CA 43       JP      NZ,$43CA                       ; It does not match ... keep looking
+43DA: 47             LD      B,A                            ; This entry from the table is the new word
 ;
-43DB: 78             LD      A,B             ; Store the ...
-43DC: 32 01 50       LD      ($5001),A       ; ... new verb
-43DF: C3 35 44       JP      $4435           ; Continue with next word
+43DB: 78             LD      A,B                            ; Store the ...
+43DC: 32 01 50       LD      ($5001),A                      ; {ram:verbWord} ... new verb
+43DF: C3 35 44       JP      $4435                          ; Continue with next word
 
-43E2: 3D             DEC     A               
-43E3: C2 1F 44       JP      NZ,$441F        
-43E6: 3A 03 50       LD      A,($5003)       
+43E2: 3D             DEC     A                              ;List 2? Nouns?
+43E3: C2 1F 44       JP      NZ,$441F                       ; 
+43E6: 3A 03 50       LD      A,($5003)                      ; {ram:prepGiven} 
 43E9: A7             AND     A               
-43EA: CA 0D 44       JP      Z,$440D         
+43EA: CA 0D 44       JP      Z,$440D                        ; 
 43ED: 21 17 50       LD      HL,$5017        
 43F0: 70             LD      (HL),B          
 43F1: 23             INC     HL              
-43F2: 3A 05 50       LD      A,($5005)       
+43F2: 3A 05 50       LD      A,($5005)                      ; {ram:adjWord} 
 43F5: 77             LD      (HL),A          
 43F6: 23             INC     HL              
-43F7: 3A 08 50       LD      A,($5008)       
+43F7: 3A 08 50       LD      A,($5008)                      ; {ram:lsbAdj1} 
 43FA: 77             LD      (HL),A          
 43FB: A7             AND     A               
-43FC: C2 00 44       JP      NZ,$4400        
+43FC: C2 00 44       JP      NZ,$4400                       ; 
 43FF: 71             LD      (HL),C          
 4400: 97             SUB     A               
-4401: 32 05 50       LD      ($5005),A       
-4404: 32 03 50       LD      ($5003),A       
-4407: 32 08 50       LD      ($5008),A       
-440A: C3 35 44       JP      $4435           
-440D: 2A 11 50       LD      HL,($5011)      
-4410: 22 17 50       LD      ($5017),HL      
-4413: 3A 13 50       LD      A,($5013)       
-4416: 32 19 50       LD      ($5019),A       
+4401: 32 05 50       LD      ($5005),A                      ; {ram:adjWord} 
+4404: 32 03 50       LD      ($5003),A                      ; {ram:prepGiven} 
+4407: 32 08 50       LD      ($5008),A                      ; {ram:lsbAdj1} 
+440A: C3 35 44       JP      $4435                          ; 
+440D: 2A 11 50       LD      HL,($5011)                     ; {ram:FIRST_NOUN_NUM} 
+4410: 22 17 50       LD      ($5017),HL                     ; {ram:SECOND_NOUN_NUM} 
+4413: 3A 13 50       LD      A,($5013)                      ; {ram:firstNounLSB} 
+4416: 32 19 50       LD      ($5019),A                      ; {ram:secondNounLSB} 
 4419: 21 11 50       LD      HL,$5011        
-441C: C3 F0 43       JP      $43F0           
-441F: 3D             DEC     A               
-4420: C2 2E 44       JP      NZ,$442E        
+441C: C3 F0 43       JP      $43F0                          ; 
+
+441F: 3D             DEC     A                              ; List 3? Adjectives?
+4420: C2 2E 44       JP      NZ,$442E                       ; 
 4423: 78             LD      A,B             
-4424: 32 05 50       LD      ($5005),A       
+4424: 32 05 50       LD      ($5005),A                      ; {ram:adjWord} 
 4427: 79             LD      A,C             
-4428: 32 08 50       LD      ($5008),A       
-442B: C3 35 44       JP      $4435           
-442E: 78             LD      A,B             
-442F: 32 02 50       LD      ($5002),A       
-4432: 32 03 50       LD      ($5003),A       
+4428: 32 08 50       LD      ($5008),A                      ; {ram:lsbAdj1} 
+442B: C3 35 44       JP      $4435                          ; 
+
+442E: 78             LD      A,B                            ; Must be a preposition
+442F: 32 02 50       LD      ($5002),A                      ; {ram:perpWord} 
+4432: 32 03 50       LD      ($5003),A                      ; {ram:prepGiven} 
 4435: E1             POP     HL              
-4436: C3 AF 43       JP      $43AF           
-4439: 3A 01 50       LD      A,($5001)       
-443C: A7             AND     A               
-443D: CA 85 46       JP      Z,$4685         
+4436: C3 AF 43       JP      $43AF                          ; 
+
+4439: 3A 01 50       LD      A,($5001)                      ; {ram:verbWord} Verb ...
+443C: A7             AND     A                              ; ... given?
+443D: CA 85 46       JP      Z,$4685                        ; No ... ?VERB? error
 4440: 21 17 50       LD      HL,$5017        
-4443: CD 2A 45       CALL    $452A           
-4446: 22 1A 50       LD      ($501A),HL      
+4443: CD 2A 45       CALL    $452A                          ; 
+4446: 22 1A 50       LD      ($501A),HL                     ; {ram:SECOND_NOUN_DATA} 
 4449: 21 11 50       LD      HL,$5011        
-444C: CD 2A 45       CALL    $452A           
-444F: 22 14 50       LD      ($5014),HL      
+444C: CD 2A 45       CALL    $452A                          ; 
+444F: 22 14 50       LD      ($5014),HL                     ; {ram:FIRST_NOUN_DATA} 
 4452: 97             SUB     A               
-4453: 32 03 50       LD      ($5003),A       
-4456: 2A 14 50       LD      HL,($5014)      
-4459: 3A 11 50       LD      A,($5011)       
+4453: 32 03 50       LD      ($5003),A                      ; {ram:prepGiven} 
+4456: 2A 14 50       LD      HL,($5014)                     ; {ram:FIRST_NOUN_DATA} 
+4459: 3A 11 50       LD      A,($5011)                      ; {ram:FIRST_NOUN_NUM} 
 445C: A7             AND     A               
-445D: CA 66 44       JP      Z,$4466         
-4460: CD 05 47       CALL    $4705           
+445D: CA 66 44       JP      Z,$4466                        ; 
+4460: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 4463: 23             INC     HL              
 4464: 23             INC     HL              
 4465: 7E             LD      A,(HL)          
-4466: 32 16 50       LD      ($5016),A       
-4469: 2A 1A 50       LD      HL,($501A)      
-446C: 3A 17 50       LD      A,($5017)       
+4466: 32 16 50       LD      ($5016),A                      ; {ram:firstNounParams} 
+4469: 2A 1A 50       LD      HL,($501A)                     ; {ram:SECOND_NOUN_DATA} 
+446C: 3A 17 50       LD      A,($5017)                      ; {ram:SECOND_NOUN_NUM} 
 446F: A7             AND     A               
-4470: CA 79 44       JP      Z,$4479         
-4473: CD 05 47       CALL    $4705           
+4470: CA 79 44       JP      Z,$4479                        ; 
+4473: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 4476: 23             INC     HL              
 4477: 23             INC     HL              
 4478: 7E             LD      A,(HL)          
-4479: 32 1C 50       LD      ($501C),A       
+4479: 32 1C 50       LD      ($501C),A                      ; {ram:secondNounParams} 
 447C: 21 B9 50       LD      HL,$50B9        
 447F: 7E             LD      A,(HL)          
 4480: A7             AND     A               
-4481: CA 3B 46       JP      Z,$463B         
-4484: 3A 01 50       LD      A,($5001)       
+4481: CA 3B 46       JP      Z,$463B                        ; 
+4484: 3A 01 50       LD      A,($5001)                      ; {ram:verbWord} 
 4487: BE             CP      (HL)            
 4488: 23             INC     HL              
-4489: C2 EB 44       JP      NZ,$44EB        
+4489: C2 EB 44       JP      NZ,$44EB                       ; 
 448C: 7E             LD      A,(HL)          
-448D: 32 04 50       LD      ($5004),A       
-4490: 3A 02 50       LD      A,($5002)       
+448D: 32 04 50       LD      ($5004),A                      ; {ram:phrasePrep} 
+4490: 3A 02 50       LD      A,($5002)                      ; {ram:perpWord} 
 4493: A7             AND     A               
-4494: CA 9B 44       JP      Z,$449B         
+4494: CA 9B 44       JP      Z,$449B                        ; 
 4497: BE             CP      (HL)            
-4498: C2 EB 44       JP      NZ,$44EB        
+4498: C2 EB 44       JP      NZ,$44EB                       ; 
 449B: 23             INC     HL              
 449C: 7E             LD      A,(HL)          
 449D: A7             AND     A               
-449E: CA B7 44       JP      Z,$44B7         
-44A1: 3A 11 50       LD      A,($5011)       
+449E: CA B7 44       JP      Z,$44B7                        ; 
+44A1: 3A 11 50       LD      A,($5011)                      ; {ram:FIRST_NOUN_NUM} 
 44A4: A7             AND     A               
-44A5: C2 BE 44       JP      NZ,$44BE        
-44A8: 3A 0A 50       LD      A,($500A)       
-44AB: 32 0B 50       LD      ($500B),A       
+44A5: C2 BE 44       JP      NZ,$44BE                       ; 
+44A8: 3A 0A 50       LD      A,($500A)                      ; {ram:lsbCursor} 
+44AB: 32 0B 50       LD      ($500B),A                      ; {ram:lsbError} 
 44AE: 11 11 50       LD      DE,$5011        
-44B1: CD CB 45       CALL    $45CB           
-44B4: C3 BE 44       JP      $44BE           
-44B7: 3A 11 50       LD      A,($5011)       
+44B1: CD CB 45       CALL    $45CB                          ; 
+44B4: C3 BE 44       JP      $44BE                          ; 
+44B7: 3A 11 50       LD      A,($5011)                      ; {ram:FIRST_NOUN_NUM} 
 44BA: A7             AND     A               
-44BB: C2 3B 46       JP      NZ,$463B        
+44BB: C2 3B 46       JP      NZ,$463B                       ; 
 44BE: 23             INC     HL              
 44BF: 7E             LD      A,(HL)          
 44C0: A7             AND     A               
-44C1: CA DF 44       JP      Z,$44DF         
-44C4: 3A 17 50       LD      A,($5017)       
+44C1: CA DF 44       JP      Z,$44DF                        ; 
+44C4: 3A 17 50       LD      A,($5017)                      ; {ram:SECOND_NOUN_NUM} 
 44C7: A7             AND     A               
-44C8: C2 E6 44       JP      NZ,$44E6        
-44CB: 3A 09 50       LD      A,($5009)       
-44CE: 32 0B 50       LD      ($500B),A       
+44C8: C2 E6 44       JP      NZ,$44E6                       ; 
+44CB: 3A 09 50       LD      A,($5009)                      ; {ram:lsbVerb} 
+44CE: 32 0B 50       LD      ($500B),A                      ; {ram:lsbError} 
 44D1: 3E 01          LD      A,$01           
-44D3: 32 03 50       LD      ($5003),A       
+44D3: 32 03 50       LD      ($5003),A                      ; {ram:prepGiven} 
 44D6: 11 17 50       LD      DE,$5017        
-44D9: CD CB 45       CALL    $45CB           
-44DC: C3 E6 44       JP      $44E6           
-44DF: 3A 17 50       LD      A,($5017)       
+44D9: CD CB 45       CALL    $45CB                          ; 
+44DC: C3 E6 44       JP      $44E6                          ; 
+44DF: 3A 17 50       LD      A,($5017)                      ; {ram:SECOND_NOUN_NUM} 
 44E2: A7             AND     A               
-44E3: C2 3B 46       JP      NZ,$463B        
+44E3: C2 3B 46       JP      NZ,$463B                       ; 
 44E6: 23             INC     HL              
 44E7: 7E             LD      A,(HL)          
-44E8: C3 F2 44       JP      $44F2           
+44E8: C3 F2 44       JP      $44F2                          ; 
 44EB: 23             INC     HL              
 44EC: 23             INC     HL              
 44ED: 23             INC     HL              
 44EE: 23             INC     HL              
-44EF: C3 7F 44       JP      $447F           
-44F2: 32 1F 50       LD      ($501F),A       
+44EF: C3 7F 44       JP      $447F                          ; 
+
+; Unlike BEDLAM, there is no giving a command to something else. Just
+; ignore any commanded object and give the phrase to the user.
+
+44F2: 32 1F 50       LD      ($501F),A                      ; {ram:PHRASE_FORM} 
 44F5: 21 FF 3F       LD      HL,$3FFF        
-44F8: 22 20 40       LD      ($4020),HL      
+44F8: 22 20 40       LD      ($4020),HL                     ; {ram:screenPtr} 
 44FB: 3E 0D          LD      A,$0D           
-44FD: CD 0D 4F       CALL    $4F0D           
-4500: 3A 11 50       LD      A,($5011)       
+44FD: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
+4500: 3A 11 50       LD      A,($5011)                      ; {ram:FIRST_NOUN_NUM} 
 4503: A7             AND     A               
-4504: C2 13 45       JP      NZ,$4513        
-4507: 2A 1A 50       LD      HL,($501A)      
-450A: 22 14 50       LD      ($5014),HL      
-450D: 3A 17 50       LD      A,($5017)       
-4510: 32 11 50       LD      ($5011),A       
+4504: C2 13 45       JP      NZ,$4513                       ; 
+4507: 2A 1A 50       LD      HL,($501A)                     ; {ram:SECOND_NOUN_DATA} 
+450A: 22 14 50       LD      ($5014),HL                     ; {ram:FIRST_NOUN_DATA} 
+450D: 3A 17 50       LD      A,($5017)                      ; {ram:SECOND_NOUN_NUM} 
+4510: 32 11 50       LD      ($5011),A                      ; {ram:FIRST_NOUN_NUM} 
 4513: 21 FB 73       LD      HL,$73FB        
-4516: CD 05 47       CALL    $4705           
-4519: CD 94 48       CALL    $4894           
-451C: CD D5 4B       CALL    $4BD5           
+4516: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
+4519: CD 94 48       CALL    $4894                          ; 
+451C: CD D5 4B       CALL    $4BD5                          ; 
 451F: 3E 0D          LD      A,$0D           
-4521: CD 0D 4F       CALL    $4F0D           
-4524: 3A 1F 50       LD      A,($501F)       
-4527: C3 20 43       JP      $4320           
+4521: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
+4524: 3A 1F 50       LD      A,($501F)                      ; {ram:PHRASE_FORM} 
+4527: C3 20 43       JP      $4320                          ; {MainLoop} Top of game loop
+
+; This function decodes the NOUN descriptor pointed to by X. The AJECTIVE-NOUN
+; pair is compared to all objects in the room (and pack). If no adjective
+; is given and there are multiple matching objects (like multiple doors with
+; different colors) then the "?WHICH?" prompt is given. If there is no 
+; matching object then "?WHAT?" is given. If this function returns then
+; the mapping was successful.
+;
+; @param HL pointer to the noun descriptor to decode
+; @return A index of target object
+; @return HL pointer to target object data
+
 452A: 97             SUB     A               
-452B: 32 0D 50       LD      ($500D),A       
+452B: 32 0D 50       LD      ($500D),A                      ; {ram:VAR_OBJ_NUMBER} 
 452E: 7E             LD      A,(HL)          
-452F: 32 00 50       LD      ($5000),A       
+452F: 32 00 50       LD      ($5000),A                      ; {ram:tmp1B2} 
 4532: 47             LD      B,A             
 4533: A7             AND     A               
 4534: C8             RET     Z               
 4535: 23             INC     HL              
 4536: 7E             LD      A,(HL)          
-4537: 32 05 50       LD      ($5005),A       
+4537: 32 05 50       LD      ($5005),A                      ; {ram:adjWord} 
 453A: 23             INC     HL              
 453B: 7E             LD      A,(HL)          
-453C: 32 1D 50       LD      ($501D),A       
-453F: 21 51 56       LD      HL,$5651        
-4542: CD ED 46       CALL    $46ED           
-4545: D2 97 45       JP      NC,$4597        
+453C: 32 1D 50       LD      ($501D),A                      ; {ram:tmp1CF} 
+453F: 21 51 56       LD      HL,$5651                       ; {!+ObjectData} 
+4542: CD ED 46       CALL    $46ED                          ; {FindSublist} 
+4545: D2 97 45       JP      NC,$4597                       ; 
 4548: D5             PUSH    DE              
 4549: E5             PUSH    HL              
-454A: CD A6 45       CALL    $45A6           
-454D: C2 A2 45       JP      NZ,$45A2        
-4550: 3A 05 50       LD      A,($5005)       
+454A: CD A6 45       CALL    $45A6                          ; 
+454D: C2 A2 45       JP      NZ,$45A2                       ; 
+4550: 3A 05 50       LD      A,($5005)                      ; {ram:adjWord} 
 4553: A7             AND     A               
-4554: CA 79 45       JP      Z,$4579         
+4554: CA 79 45       JP      Z,$4579                        ; 
 4557: E1             POP     HL              
 4558: E5             PUSH    HL              
-4559: CD 05 47       CALL    $4705           
+4559: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 455C: 01 03 00       LD      BC,$0003        
 455F: 09             ADD     HL,BC           
 4560: 06 01          LD      B,$01           
-4562: CD F1 46       CALL    $46F1           
-4565: D2 79 45       JP      NC,$4579        
-4568: CD 05 47       CALL    $4705           
-456B: CD 19 47       CALL    $4719           
-456E: D2 A2 45       JP      NC,$45A2        
-4571: 3A 05 50       LD      A,($5005)       
+4562: CD F1 46       CALL    $46F1                          ; 
+4565: D2 79 45       JP      NC,$4579                       ; 
+4568: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
+456B: CD 19 47       CALL    $4719                          ; {CompareXY} 
+456E: D2 A2 45       JP      NC,$45A2                       ; 
+4571: 3A 05 50       LD      A,($5005)                      ; {ram:adjWord} 
 4574: BE             CP      (HL)            
 4575: 23             INC     HL              
-4576: C2 6B 45       JP      NZ,$456B        
+4576: C2 6B 45       JP      NZ,$456B                       ; 
 4579: E1             POP     HL              
-457A: 3A 0D 50       LD      A,($500D)       
+457A: 3A 0D 50       LD      A,($500D)                      ; {ram:VAR_OBJ_NUMBER} 
 457D: A7             AND     A               
-457E: C2 7C 46       JP      NZ,$467C        
+457E: C2 7C 46       JP      NZ,$467C                       ; 
 4581: 7E             LD      A,(HL)          
-4582: 32 0D 50       LD      ($500D),A       
-4585: 22 0E 50       LD      ($500E),HL      
-4588: CD 05 47       CALL    $4705           
+4582: 32 0D 50       LD      ($500D),A                      ; {ram:VAR_OBJ_NUMBER} 
+4585: 22 0E 50       LD      ($500E),HL                     ; {ram:VAR_OBJ_DATA} 
+4588: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 458B: EB             EX      DE,HL           
 458C: D1             POP     DE              
-458D: 3A 00 50       LD      A,($5000)       
+458D: 3A 00 50       LD      A,($5000)                      ; {ram:tmp1B2} 
 4590: 47             LD      B,A             
-4591: CD F1 46       CALL    $46F1           
-4594: DA 48 45       JP      C,$4548         
-4597: 3A 0D 50       LD      A,($500D)       
-459A: 2A 0E 50       LD      HL,($500E)      
+4591: CD F1 46       CALL    $46F1                          ; 
+4594: DA 48 45       JP      C,$4548                        ; 
+4597: 3A 0D 50       LD      A,($500D)                      ; {ram:VAR_OBJ_NUMBER} 
+459A: 2A 0E 50       LD      HL,($500E)                     ; {ram:VAR_OBJ_DATA} 
 459D: A7             AND     A               
 459E: C0             RET     NZ              
-459F: C3 32 46       JP      $4632           
+459F: C3 32 46       JP      $4632                          ; 
 45A2: E1             POP     HL              
-45A3: C3 88 45       JP      $4588           
-45A6: CD 05 47       CALL    $4705           
-45A9: 3A 23 50       LD      A,($5023)       
+45A3: C3 88 45       JP      $4588                          ; 
+
+; This function checks if the target object is in the current room or being
+; held by the active object.
+
+; @param X pointer to target object
+; @return Z=1 for yes or Z=0 for no
+
+45A6: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
+45A9: 3A 23 50       LD      A,($5023)                      ; {ram:CUR_ROOM} 
 45AC: BE             CP      (HL)            
 45AD: C8             RET     Z               
 45AE: 7E             LD      A,(HL)          
 45AF: A7             AND     A               
-45B0: CA C8 45       JP      Z,$45C8         
+45B0: CA C8 45       JP      Z,$45C8                        ; 
 45B3: 3C             INC     A               
 45B4: C8             RET     Z               
 45B5: 3D             DEC     A               
-45B6: FA C8 45       JP      M,$45C8         
+45B6: FA C8 45       JP      M,$45C8                        ; 
 45B9: 46             LD      B,(HL)          
-45BA: 3A 20 50       LD      A,($5020)       
+45BA: 3A 20 50       LD      A,($5020)                      ; {ram:ACTIVE_OBJ_NUM} 
 45BD: B8             CP      B               
 45BE: C8             RET     Z               
-45BF: 21 51 56       LD      HL,$5651        
-45C2: CD ED 46       CALL    $46ED           
-45C5: DA A6 45       JP      C,$45A6         
+45BF: 21 51 56       LD      HL,$5651                       ; {!+ObjectData} 
+45C2: CD ED 46       CALL    $46ED                          ; {FindSublist} 
+45C5: DA A6 45       JP      C,$45A6                        ; 
 45C8: F6 01          OR      $01             
 45CA: C9             RET                     
+
+; This function fills the noun descriptor pointed to by Y with the object
+; in current room or on user that matches the parameter value from the
+; phrase script. If there is not exactly one such object then flash an error
+; like "WITH ?WHAT?" using the current preposition or just "?WHAT?" if there
+; isn't one.
+;
+; @param DE pointer to noun descriptor to fill
+; @param HL pointer to phrase data
+; @return descriptor filled out with object
+
 45CB: E5             PUSH    HL              
 45CC: 97             SUB     A               
-45CD: 32 00 50       LD      ($5000),A       
+45CD: 32 00 50       LD      ($5000),A                      ; {ram:tmp1B2} 
 45D0: D5             PUSH    DE              
 45D1: 4E             LD      C,(HL)          
-45D2: 21 51 56       LD      HL,$5651        
-45D5: CD 05 47       CALL    $4705           
-45D8: CD 19 47       CALL    $4719           
-45DB: D2 16 46       JP      NC,$4616        
+45D2: 21 51 56       LD      HL,$5651                       ; {!+ObjectData} 
+45D5: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
+45D8: CD 19 47       CALL    $4719                          ; {CompareXY} 
+45DB: D2 16 46       JP      NC,$4616                       ; 
 45DE: D5             PUSH    DE              
 45DF: E5             PUSH    HL              
-45E0: CD A6 45       CALL    $45A6           
+45E0: CD A6 45       CALL    $45A6                          ; 
 45E3: E1             POP     HL              
-45E4: C2 10 46       JP      NZ,$4610        
+45E4: C2 10 46       JP      NZ,$4610                       ; 
 45E7: 46             LD      B,(HL)          
-45E8: 22 26 50       LD      ($5026),HL      
-45EB: CD 05 47       CALL    $4705           
+45E8: 22 26 50       LD      ($5026),HL                     ; {ram:nextToken} 
+45EB: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 45EE: 23             INC     HL              
 45EF: 23             INC     HL              
 45F0: 7E             LD      A,(HL)          
 45F1: A1             AND     C               
 45F2: B9             CP      C               
-45F3: C2 0B 46       JP      NZ,$460B        
-45F6: 3A 00 50       LD      A,($5000)       
+45F3: C2 0B 46       JP      NZ,$460B                       ; 
+45F6: 3A 00 50       LD      A,($5000)                      ; {ram:tmp1B2} 
 45F9: A7             AND     A               
-45FA: C2 44 46       JP      NZ,$4644        
+45FA: C2 44 46       JP      NZ,$4644                       ; 
 45FD: 78             LD      A,B             
-45FE: 32 00 50       LD      ($5000),A       
+45FE: 32 00 50       LD      ($5000),A                      ; {ram:tmp1B2} 
 4601: 7E             LD      A,(HL)          
-4602: 32 05 50       LD      ($5005),A       
-4605: 2A 26 50       LD      HL,($5026)      
-4608: 22 47 50       LD      ($5047),HL      
+4602: 32 05 50       LD      ($5005),A                      ; {ram:adjWord} 
+4605: 2A 26 50       LD      HL,($5026)                     ; {ram:nextToken} 
+4608: 22 47 50       LD      ($5047),HL                     ; 
 460B: EB             EX      DE,HL           
 460C: D1             POP     DE              
-460D: C3 D8 45       JP      $45D8           
-4610: CD 05 47       CALL    $4705           
-4613: C3 0B 46       JP      $460B           
-4616: 3A 00 50       LD      A,($5000)       
+460D: C3 D8 45       JP      $45D8                          ; 
+4610: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
+4613: C3 0B 46       JP      $460B                          ; 
+4616: 3A 00 50       LD      A,($5000)                      ; {ram:tmp1B2} 
 4619: A7             AND     A               
-461A: CA 44 46       JP      Z,$4644         
+461A: CA 44 46       JP      Z,$4644                        ; 
 461D: D1             POP     DE              
-461E: 2A 47 50       LD      HL,($5047)      
+461E: 2A 47 50       LD      HL,($5047)                     ; 
 4621: 12             LD      (DE),A          
 4622: 13             INC     DE              
 4623: 13             INC     DE              
@@ -390,87 +436,87 @@
 4628: 7C             LD      A,H             
 4629: 12             LD      (DE),A          
 462A: 13             INC     DE              
-462B: 3A 05 50       LD      A,($5005)       
+462B: 3A 05 50       LD      A,($5005)                      ; {ram:adjWord} 
 462E: 12             LD      (DE),A          
 462F: E1             POP     HL              
 4630: 97             SUB     A               
 4631: C9             RET                     
 4632: 11 2F 50       LD      DE,$502F        
-4635: 3A 1D 50       LD      A,($501D)       
-4638: C3 8A 46       JP      $468A           
+4635: 3A 1D 50       LD      A,($501D)                      ; {ram:tmp1CF} 
+4638: C3 8A 46       JP      $468A                          ; 
 463B: 11 3E 50       LD      DE,$503E        
-463E: 3A 09 50       LD      A,($5009)       
-4641: C3 8A 46       JP      $468A           
-4644: 3A 03 50       LD      A,($5003)       
+463E: 3A 09 50       LD      A,($5009)                      ; {ram:lsbVerb} 
+4641: C3 8A 46       JP      $468A                          ; 
+4644: 3A 03 50       LD      A,($5003)                      ; {ram:prepGiven} 
 4647: A7             AND     A               
-4648: CA 73 46       JP      Z,$4673         
-464B: 3A 02 50       LD      A,($5002)       
+4648: CA 73 46       JP      Z,$4673                        ; 
+464B: 3A 02 50       LD      A,($5002)                      ; {ram:perpWord} 
 464E: A7             AND     A               
-464F: C2 73 46       JP      NZ,$4673        
+464F: C2 73 46       JP      NZ,$4673                       ; 
 4652: 16 00          LD      D,$00           
 4654: 21 F8 55       LD      HL,$55F8        
 4657: 7E             LD      A,(HL)          
 4658: A7             AND     A               
-4659: CA 73 46       JP      Z,$4673         
+4659: CA 73 46       JP      Z,$4673                        ; 
 465C: E5             PUSH    HL              
 465D: 5E             LD      E,(HL)          
 465E: 23             INC     HL              
 465F: 19             ADD     HL,DE           
-4660: 3A 04 50       LD      A,($5004)       
+4660: 3A 04 50       LD      A,($5004)                      ; {ram:phrasePrep} 
 4663: BE             CP      (HL)            
-4664: CA 6C 46       JP      Z,$466C         
+4664: CA 6C 46       JP      Z,$466C                        ; 
 4667: 23             INC     HL              
 4668: C1             POP     BC              
-4669: C3 57 46       JP      $4657           
+4669: C3 57 46       JP      $4657                          ; 
 466C: D1             POP     DE              
-466D: 3A 0B 50       LD      A,($500B)       
-4670: CD C6 46       CALL    $46C6           
+466D: 3A 0B 50       LD      A,($500B)                      ; {ram:lsbError} 
+4670: CD C6 46       CALL    $46C6                          ; 
 4673: 11 2F 50       LD      DE,$502F        
-4676: 3A 0B 50       LD      A,($500B)       
-4679: C3 8A 46       JP      $468A           
+4676: 3A 0B 50       LD      A,($500B)                      ; {ram:lsbError} 
+4679: C3 8A 46       JP      $468A                          ; 
 467C: 11 36 50       LD      DE,$5036        
-467F: 3A 1D 50       LD      A,($501D)       
-4682: C3 8A 46       JP      $468A           
+467F: 3A 1D 50       LD      A,($501D)                      ; {ram:tmp1CF} 
+4682: C3 8A 46       JP      $468A                          ; 
 4685: 11 28 50       LD      DE,$5028        
 4688: 3E C0          LD      A,$C0           
 468A: 31 FF 7F       LD      SP,$7FFF        
 468D: 21 C0 3F       LD      HL,$3FC0        
-4690: CD C6 46       CALL    $46C6           
+4690: CD C6 46       CALL    $46C6                          ; 
 4693: 1A             LD      A,(DE)          
 4694: 4F             LD      C,A             
 4695: E5             PUSH    HL              
 4696: 36 20          LD      (HL),$20        
 4698: 23             INC     HL              
 4699: 0D             DEC     C               
-469A: C2 96 46       JP      NZ,$4696        
-469D: CD BB 46       CALL    $46BB           
+469A: C2 96 46       JP      NZ,$4696                       ; 
+469D: CD BB 46       CALL    $46BB                          ; 
 46A0: E1             POP     HL              
 46A1: 05             DEC     B               
-46A2: C2 B5 46       JP      NZ,$46B5        
+46A2: C2 B5 46       JP      NZ,$46B5                       ; 
 46A5: 1A             LD      A,(DE)          
 46A6: 3C             INC     A               
 46A7: 4F             LD      C,A             
-46A8: CD 9E 47       CALL    $479E           
+46A8: CD 9E 47       CALL    $479E                          ; 
 46AB: 0D             DEC     C               
-46AC: C2 A8 46       JP      NZ,$46A8        
-46AF: CD 22 47       CALL    $4722           
-46B2: C3 26 43       JP      $4326           
-46B5: CD D5 46       CALL    $46D5           
-46B8: C3 93 46       JP      $4693           
+46AC: C2 A8 46       JP      NZ,$46A8                       ; 
+46AF: CD 22 47       CALL    $4722                          ; 
+46B2: C3 26 43       JP      $4326                          ; 
+46B5: CD D5 46       CALL    $46D5                          ; 
+46B8: C3 93 46       JP      $4693                          ; 
 46BB: 3E 32          LD      A,$32           
 46BD: 0D             DEC     C               
-46BE: C2 BD 46       JP      NZ,$46BD        
+46BE: C2 BD 46       JP      NZ,$46BD                       ; 
 46C1: 3D             DEC     A               
-46C2: C2 BD 46       JP      NZ,$46BD        
+46C2: C2 BD 46       JP      NZ,$46BD                       ; 
 46C5: C9             RET                     
 46C6: 6F             LD      L,A             
 46C7: 1A             LD      A,(DE)          
 46C8: 3C             INC     A               
 46C9: 4F             LD      C,A             
 46CA: D5             PUSH    DE              
-46CB: CD B5 47       CALL    $47B5           
+46CB: CD B5 47       CALL    $47B5                          ; 
 46CE: 0D             DEC     C               
-46CF: C2 CB 46       JP      NZ,$46CB        
+46CF: C2 CB 46       JP      NZ,$46CB                       ; 
 46D2: D1             POP     DE              
 46D3: 06 08          LD      B,$08           
 46D5: 1A             LD      A,(DE)          
@@ -483,33 +529,51 @@
 46DC: 23             INC     HL              
 46DD: 13             INC     DE              
 46DE: 0D             DEC     C               
-46DF: C2 DA 46       JP      NZ,$46DA        
+46DF: C2 DA 46       JP      NZ,$46DA                       ; 
 46E2: 2C             INC     L               
 46E3: 7D             LD      A,L             
-46E4: 32 0B 50       LD      ($500B),A       
-46E7: CD BB 46       CALL    $46BB           
+46E4: 32 0B 50       LD      ($500B),A                      ; {ram:lsbError} 
+46E7: CD BB 46       CALL    $46BB                          ; 
 46EA: E1             POP     HL              
 46EB: D1             POP     DE              
-46EC: C9             RET                     
+46EC: C9             RET               
+```
+
+# Find Sublist
+
+```code
+FindSublist: 
+; Find a sublist by ID within a master list.
+; X=pointer to master list
+; B=sublist ID
+; Return sublist pointer in X
+; Return C=0 if not found, C=1 if found      
 46ED: 23             INC     HL              
-46EE: CD 06 47       CALL    $4706           
-46F1: CD 19 47       CALL    $4719           
+46EE: CD 06 47       CALL    $4706                          ; {LoadEnd} 
+46F1: CD 19 47       CALL    $4719                          ; {CompareXY} 
 46F4: D0             RET     NC              
 46F5: 78             LD      A,B             
 46F6: BE             CP      (HL)            
-46F7: CA 03 47       JP      Z,$4703         
+46F7: CA 03 47       JP      Z,$4703                        ; 
 46FA: D5             PUSH    DE              
-46FB: CD 05 47       CALL    $4705           
+46FB: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 46FE: EB             EX      DE,HL           
 46FF: D1             POP     DE              
-4700: C3 F1 46       JP      $46F1           
+4700: C3 F1 46       JP      $46F1                          ; 
+;
 4703: 37             SCF                     
 4704: C9             RET                     
+
+SkipIDLoadEnd:
+; Skip the ID byte and load the end of the list in Y.
 4705: 23             INC     HL              
+;
+LoadEnd:
+; Load the end of the list in Y.
 4706: 16 00          LD      D,$00           
 4708: 7E             LD      A,(HL)          
 4709: E6 80          AND     $80             
-470B: CA 13 47       JP      Z,$4713         
+470B: CA 13 47       JP      Z,$4713                        ; 
 470E: 7E             LD      A,(HL)          
 470F: E6 7F          AND     $7F             
 4711: 57             LD      D,A             
@@ -520,74 +584,84 @@
 4716: 19             ADD     HL,DE           
 4717: EB             EX      DE,HL           
 4718: C9             RET                     
+
+CompareXY:
+; Compare X to Y (flags = X - Y)
 4719: 7C             LD      A,H             
 471A: BA             CP      D               
 471B: C0             RET     NZ              
 471C: 7D             LD      A,L             
 471D: BB             CP      E               
 471E: C9             RET                     
+```
+
+# Get Input Line
+
+```code
+GetInputLine:
 471F: 21 C0 3F       LD      HL,$3FC0        
-4722: CD D0 47       CALL    $47D0           
-4725: CD D6 47       CALL    $47D6           
+4722: CD D0 47       CALL    $47D0                          ; 
+4725: CD D6 47       CALL    $47D6                          ; 
 4728: FE 18          CP      $18             
-472A: CA 56 47       JP      Z,$4756         
+472A: CA 56 47       JP      Z,$4756                        ; 
 472D: FE 19          CP      $19             
-472F: CA 66 47       JP      Z,$4766         
+472F: CA 66 47       JP      Z,$4766                        ; 
 4732: FE 09          CP      $09             
-4734: CA 76 47       JP      Z,$4776         
+4734: CA 76 47       JP      Z,$4776                        ; 
 4737: FE 0D          CP      $0D             
-4739: CA 8B 47       JP      Z,$478B         
+4739: CA 8B 47       JP      Z,$478B                        ; 
 473C: FE 1F          CP      $1F             
-473E: CA 8F 47       JP      Z,$478F         
+473E: CA 8F 47       JP      Z,$478F                        ; 
 4741: FE 08          CP      $08             
-4743: CA 7E 47       JP      Z,$477E         
+4743: CA 7E 47       JP      Z,$477E                        ; 
 4746: 47             LD      B,A             
 4747: 7D             LD      A,L             
 4748: FE FF          CP      $FF             
-474A: CA 25 47       JP      Z,$4725         
+474A: CA 25 47       JP      Z,$4725                        ; 
 474D: 78             LD      A,B             
-474E: CD B5 47       CALL    $47B5           
+474E: CD B5 47       CALL    $47B5                          ; 
 4751: 77             LD      (HL),A          
 4752: 23             INC     HL              
-4753: C3 25 47       JP      $4725           
+4753: C3 25 47       JP      $4725                          ; 
 4756: 7D             LD      A,L             
 4757: FE C0          CP      $C0             
-4759: CA 25 47       JP      Z,$4725         
+4759: CA 25 47       JP      Z,$4725                        ; 
 475C: 2B             DEC     HL              
 475D: 7E             LD      A,(HL)          
 475E: 23             INC     HL              
 475F: 77             LD      (HL),A          
 4760: 2B             DEC     HL              
 4761: 36 8F          LD      (HL),$8F        
-4763: C3 25 47       JP      $4725           
+4763: C3 25 47       JP      $4725                          ; 
 4766: 7D             LD      A,L             
 4767: FE FF          CP      $FF             
-4769: CA 25 47       JP      Z,$4725         
+4769: CA 25 47       JP      Z,$4725                        ; 
 476C: 23             INC     HL              
 476D: 7E             LD      A,(HL)          
 476E: 2B             DEC     HL              
 476F: 77             LD      (HL),A          
 4770: 23             INC     HL              
 4771: 36 8F          LD      (HL),$8F        
-4773: C3 25 47       JP      $4725           
-4776: CD 9E 47       CALL    $479E           
+4773: C3 25 47       JP      $4725                          ; 
+4776: CD 9E 47       CALL    $479E                          ; 
 4779: 36 8F          LD      (HL),$8F        
-477B: C3 25 47       JP      $4725           
+477B: C3 25 47       JP      $4725                          ; 
 477E: 7D             LD      A,L             
 477F: FE C0          CP      $C0             
-4781: CA 25 47       JP      Z,$4725         
+4781: CA 25 47       JP      Z,$4725                        ; 
 4784: 2B             DEC     HL              
-4785: CD 9E 47       CALL    $479E           
-4788: C3 25 47       JP      $4725           
-478B: CD 9E 47       CALL    $479E           
+4785: CD 9E 47       CALL    $479E                          ; 
+4788: C3 25 47       JP      $4725                          ; 
+478B: CD 9E 47       CALL    $479E                          ; 
 478E: C9             RET                     
-478F: 21 C0 3F       LD      HL,$3FC0        
-4792: 06 40          LD      B,$40           
-4794: 36 20          LD      (HL),$20        
-4796: 23             INC     HL              
-4797: 05             DEC     B               
-4798: C2 94 47       JP      NZ,$4794        
-479B: C3 1F 47       JP      $471F           
+;
+478F: 21 C0 3F       LD      HL,$3FC0        ; Start of bottom row
+4792: 06 40          LD      B,$40           ; 64 characters on the row
+4794: 36 20          LD      (HL),$20        ; Clear ...
+4796: 23             INC     HL              ; ... the ...
+4797: 05             DEC     B               ; ... bottom ...
+4798: C2 94 47       JP      NZ,$4794                       ; ... row 
+479B: C3 1F 47       JP      $471F                          ; {GetInputLine} Go get another key
 479E: 54             LD      D,H             
 479F: 5D             LD      E,L             
 47A0: 45             LD      B,L             
@@ -602,14 +676,14 @@
 47AB: 77             LD      (HL),A          
 47AC: 2C             INC     L               
 47AD: 1C             INC     E               
-47AE: C2 AA 47       JP      NZ,$47AA        
+47AE: C2 AA 47       JP      NZ,$47AA                       ; 
 47B1: 36 20          LD      (HL),$20        
 47B3: 68             LD      L,B             
 47B4: C9             RET                     
 47B5: F5             PUSH    AF              
 47B6: 7D             LD      A,L             
 47B7: FE FF          CP      $FF             
-47B9: CA CE 47       JP      Z,$47CE         
+47B9: CA CE 47       JP      Z,$47CE                        ; 
 47BC: 45             LD      B,L             
 47BD: 21 FF 3F       LD      HL,$3FFF        
 47C0: 11 FE 3F       LD      DE,$3FFE        
@@ -619,134 +693,153 @@
 47C6: 1B             DEC     DE              
 47C7: 7D             LD      A,L             
 47C8: B8             CP      B               
-47C9: C2 C3 47       JP      NZ,$47C3        
+47C9: C2 C3 47       JP      NZ,$47C3                       ; 
 47CC: 36 20          LD      (HL),$20        
 47CE: F1             POP     AF              
 47CF: C9             RET                     
-47D0: CD B5 47       CALL    $47B5           
-47D3: 36 8F          LD      (HL),$8F        
-47D5: C9             RET                     
-47D6: CD D3 4F       CALL    $4FD3           
-47D9: CD 2B 00       CALL    $002B           
-47DC: A7             AND     A               
-47DD: CA D6 47       JP      Z,$47D6         
-47E0: C9             RET                     
+;
+47D0: CD B5 47       CALL    $47B5                          ; Slide row over from cursor
+47D3: 36 8F          LD      (HL),$8F        ; Cursor character
+47D5: C9             RET                     ; Done
+
+GetKey:
+47D6: CD D3 4F       CALL    $4FD3                          ; {GetRandom}  Get random number ever key stroke
+47D9: CD 2B 00       CALL    $002B           ; Read the keyboard
+47DC: A7             AND     A               ; Did we get one?
+47DD: CA D6 47       JP      Z,$47D6                        ; No ... keep waiting
+47E0: C9             RET                     ; Return the key
+```
+
+# Decode Buffer
+
+```code
+DecodeBuffer:
+; X=input buffer on screen (1 before)
+; 1D8=pointer to result token list
+; Return 1CF LSB of first word
+; Return 1BB LSB of next word
+; Return list of 3-byte tokens filled into buffer pointed to by 1D8:
+;   NN WW PP
+;     NN = list number
+;     WW = word number
+;     PP = LSB of word on screen
+;
 47E1: 23             INC     HL              
 47E2: 7D             LD      A,L             
-47E3: 32 1D 50       LD      ($501D),A       
+47E3: 32 1D 50       LD      ($501D),A                      ; {ram:tmp1CF} 
 47E6: FE FF          CP      $FF             
 47E8: C8             RET     Z               
 47E9: 7E             LD      A,(HL)          
 47EA: FE 20          CP      $20             
-47EC: CA E1 47       JP      Z,$47E1         
+47EC: CA E1 47       JP      Z,$47E1                        ; {DecodeBuffer} 
 47EF: FE 41          CP      $41             
-47F1: DA E1 47       JP      C,$47E1         
+47F1: DA E1 47       JP      C,$47E1                        ; {DecodeBuffer} 
 47F4: 11 C2 52       LD      DE,$52C2        
-47F7: CD 2E 48       CALL    $482E           
-47FA: CA E2 47       JP      Z,$47E2         
+47F7: CD 2E 48       CALL    $482E                          ; 
+47FA: CA E2 47       JP      Z,$47E2                        ; 
 47FD: 06 01          LD      B,$01           
 47FF: 13             INC     DE              
-4800: CD 2E 48       CALL    $482E           
-4803: CA 0F 48       JP      Z,$480F         
+4800: CD 2E 48       CALL    $482E                          ; 
+4803: CA 0F 48       JP      Z,$480F                        ; 
 4806: 04             INC     B               
 4807: 78             LD      A,B             
 4808: FE 05          CP      $05             
-480A: C2 FF 47       JP      NZ,$47FF        
+480A: C2 FF 47       JP      NZ,$47FF                       ; 
 480D: A7             AND     A               
 480E: C9             RET                     
 480F: EB             EX      DE,HL           
-4810: 2A 26 50       LD      HL,($5026)      
+4810: 2A 26 50       LD      HL,($5026)                     ; {ram:nextToken} 
 4813: 70             LD      (HL),B          
 4814: 23             INC     HL              
 4815: 77             LD      (HL),A          
 4816: 23             INC     HL              
-4817: 3A 1D 50       LD      A,($501D)       
+4817: 3A 1D 50       LD      A,($501D)                      ; {ram:tmp1CF} 
 481A: 77             LD      (HL),A          
 481B: 23             INC     HL              
-481C: 22 26 50       LD      ($5026),HL      
+481C: 22 26 50       LD      ($5026),HL                     ; {ram:nextToken} 
 481F: EB             EX      DE,HL           
 4820: 78             LD      A,B             
 4821: FE 01          CP      $01             
-4823: C2 2C 48       JP      NZ,$482C        
-4826: 3A 09 50       LD      A,($5009)       
-4829: 32 0A 50       LD      ($500A),A       
+4823: C2 2C 48       JP      NZ,$482C                       ; 
+4826: 3A 09 50       LD      A,($5009)                      ; {ram:lsbVerb} 
+4829: 32 0A 50       LD      ($500A),A                      ; {ram:lsbCursor} 
 482C: 97             SUB     A               
 482D: C9             RET                     
 482E: 1A             LD      A,(DE)          
 482F: A7             AND     A               
-4830: C2 36 48       JP      NZ,$4836        
+4830: C2 36 48       JP      NZ,$4836                       ; 
 4833: F6 01          OR      $01             
 4835: C9             RET                     
 4836: 4F             LD      C,A             
-4837: 32 1E 50       LD      ($501E),A       
+4837: 32 1E 50       LD      ($501E),A                      ; {ram:tmp1DO} 
 483A: E5             PUSH    HL              
 483B: 13             INC     DE              
 483C: 7E             LD      A,(HL)          
 483D: FE 20          CP      $20             
-483F: CA 8A 48       JP      Z,$488A         
+483F: CA 8A 48       JP      Z,$488A                        ; 
 4842: 7D             LD      A,L             
 4843: A7             AND     A               
-4844: CA 8A 48       JP      Z,$488A         
+4844: CA 8A 48       JP      Z,$488A                        ; 
 4847: 7E             LD      A,(HL)          
 4848: FE 41          CP      $41             
-484A: D2 51 48       JP      NC,$4851        
+484A: D2 51 48       JP      NC,$4851                       ; 
 484D: 23             INC     HL              
-484E: C3 3C 48       JP      $483C           
+484E: C3 3C 48       JP      $483C                          ; 
 4851: 1A             LD      A,(DE)          
 4852: BE             CP      (HL)            
-4853: C2 8A 48       JP      NZ,$488A        
+4853: C2 8A 48       JP      NZ,$488A                       ; 
 4856: 13             INC     DE              
 4857: 23             INC     HL              
 4858: 0D             DEC     C               
-4859: C2 3C 48       JP      NZ,$483C        
-485C: 3A 1E 50       LD      A,($501E)       
+4859: C2 3C 48       JP      NZ,$483C                       ; 
+485C: 3A 1E 50       LD      A,($501E)                      ; {ram:tmp1DO} 
 485F: FE 06          CP      $06             
-4861: CA 6F 48       JP      Z,$486F         
+4861: CA 6F 48       JP      Z,$486F                        ; 
 4864: 7E             LD      A,(HL)          
 4865: FE 41          CP      $41             
-4867: DA 6F 48       JP      C,$486F         
+4867: DA 6F 48       JP      C,$486F                        ; 
 486A: FE 20          CP      $20             
-486C: C2 8F 48       JP      NZ,$488F        
+486C: C2 8F 48       JP      NZ,$488F                       ; 
 486F: 1A             LD      A,(DE)          
 4870: D1             POP     DE              
 4871: 4F             LD      C,A             
 4872: 7E             LD      A,(HL)          
 4873: FE 20          CP      $20             
-4875: CA 82 48       JP      Z,$4882         
+4875: CA 82 48       JP      Z,$4882                        ; 
 4878: 7D             LD      A,L             
 4879: FE FF          CP      $FF             
-487B: CA 84 48       JP      Z,$4884         
+487B: CA 84 48       JP      Z,$4884                        ; 
 487E: 23             INC     HL              
-487F: C3 72 48       JP      $4872           
+487F: C3 72 48       JP      $4872                          ; 
 4882: 7D             LD      A,L             
 4883: 3C             INC     A               
-4884: 32 09 50       LD      ($5009),A       
+4884: 32 09 50       LD      ($5009),A                      ; {ram:lsbVerb} 
 4887: 97             SUB     A               
 4888: 79             LD      A,C             
 4889: C9             RET                     
 488A: 13             INC     DE              
 488B: 0D             DEC     C               
-488C: C2 8A 48       JP      NZ,$488A        
+488C: C2 8A 48       JP      NZ,$488A                       ; 
 488F: E1             POP     HL              
 4890: 13             INC     DE              
-4891: C3 2E 48       JP      $482E           
+4891: C3 2E 48       JP      $482E                          ; 
 4894: 7E             LD      A,(HL)          
 4895: 47             LD      B,A             
 4896: 23             INC     HL              
 4897: E6 80          AND     $80             
-4899: CA B0 48       JP      Z,$48B0         
+4899: CA B0 48       JP      Z,$48B0                        ; 
 489C: E5             PUSH    HL              
 489D: D5             PUSH    DE              
 489E: 21 CD 7B       LD      HL,$7BCD        
-48A1: CD ED 46       CALL    $46ED           
-48A4: D2 AD 48       JP      NC,$48AD        
-48A7: CD 05 47       CALL    $4705           
-48AA: CD 94 48       CALL    $4894           
+48A1: CD ED 46       CALL    $46ED                          ; {FindSublist} 
+48A4: D2 AD 48       JP      NC,$48AD                       ; 
+48A7: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
+48AA: CD 94 48       CALL    $4894                          ; 
 48AD: D1             POP     DE              
 48AE: E1             POP     HL              
 48AF: C9             RET                     
 48B0: 78             LD      A,B             
-48B1: 11 66 50       LD      DE,$5066        
+48B1: 11 66 50       LD      DE,$5066                       ; Command jump table
 48B4: 07             RLCA                    
 48B5: 83             ADD     A,E             
 48B6: 5F             LD      E,A             
@@ -754,109 +847,136 @@
 48B8: CE 00          ADC     $00             
 48BA: 57             LD      D,A             
 48BB: 1A             LD      A,(DE)          
-48BC: 32 C5 48       LD      ($48C5),A       
+48BC: 32 C5 48       LD      ($48C5),A                      ; 
 48BF: 13             INC     DE              
 48C0: 1A             LD      A,(DE)          
-48C1: 32 C6 48       LD      ($48C6),A       
-48C4: C3 C4 48       JP      $48C4           
-48C7: CD 06 47       CALL    $4706           
-48CA: CD 19 47       CALL    $4719           
-48CD: D2 DA 48       JP      NC,$48DA        
+48C1: 32 C6 48       LD      ($48C6),A                      ; 
+48C4: C3 C4 48       JP      $48C4                          ; 
+
+Com_0D_while_pass:
+; while_pass:
+48C7: CD 06 47       CALL    $4706                          ; {LoadEnd} 
+48CA: CD 19 47       CALL    $4719                          ; {CompareXY} 
+48CD: D2 DA 48       JP      NC,$48DA                       ; 
 48D0: D5             PUSH    DE              
-48D1: CD 94 48       CALL    $4894           
+48D1: CD 94 48       CALL    $4894                          ; 
 48D4: D1             POP     DE              
-48D5: CA CA 48       JP      Z,$48CA         
+48D5: CA CA 48       JP      Z,$48CA                        ; 
 48D8: EB             EX      DE,HL           
 48D9: C9             RET                     
 48DA: EB             EX      DE,HL           
 48DB: 97             SUB     A               
 48DC: C9             RET                     
-48DD: CD 06 47       CALL    $4706           
-48E0: CD 19 47       CALL    $4719           
-48E3: D2 F0 48       JP      NC,$48F0        
+
+Com_0E_while_fail:
+; while_fail:
+48DD: CD 06 47       CALL    $4706                          ; {LoadEnd} 
+48E0: CD 19 47       CALL    $4719                          ; {CompareXY} 
+48E3: D2 F0 48       JP      NC,$48F0                       ; 
 48E6: D5             PUSH    DE              
-48E7: CD 94 48       CALL    $4894           
+48E7: CD 94 48       CALL    $4894                          ; 
 48EA: D1             POP     DE              
-48EB: C2 E0 48       JP      NZ,$48E0        
+48EB: C2 E0 48       JP      NZ,$48E0                       ; 
 48EE: EB             EX      DE,HL           
 48EF: C9             RET                     
 48F0: EB             EX      DE,HL           
 48F1: F6 01          OR      $01             
 48F3: C9             RET                     
-48F4: CD 06 47       CALL    $4706           
+
+Com_0B_switch:
+; switch:
+48F4: CD 06 47       CALL    $4706                          ; {LoadEnd} 
 48F7: 46             LD      B,(HL)          
 48F8: 23             INC     HL              
-48F9: CD 19 47       CALL    $4719           
-48FC: D2 F0 48       JP      NC,$48F0        
+48F9: CD 19 47       CALL    $4719                          ; {CompareXY} 
+48FC: D2 F0 48       JP      NC,$48F0                       ; 
 48FF: D5             PUSH    DE              
 4900: C5             PUSH    BC              
 4901: 78             LD      A,B             
-4902: CD B1 48       CALL    $48B1           
+4902: CD B1 48       CALL    $48B1                          ; 
 4905: C1             POP     BC              
-4906: CA 11 49       JP      Z,$4911         
-4909: CD 06 47       CALL    $4706           
+4906: CA 11 49       JP      Z,$4911                        ; 
+4909: CD 06 47       CALL    $4706                          ; {LoadEnd} 
 490C: EB             EX      DE,HL           
 490D: D1             POP     DE              
-490E: C3 F9 48       JP      $48F9           
-4911: CD 06 47       CALL    $4706           
-4914: CD 94 48       CALL    $4894           
+490E: C3 F9 48       JP      $48F9                          ; 
+4911: CD 06 47       CALL    $4706                          ; {LoadEnd} 
+4914: CD 94 48       CALL    $4894                          ; 
 4917: E1             POP     HL              
 4918: C9             RET                     
-4919: CD 23 49       CALL    $4923           
+
+Com_00_move_ACTIVE_and_look:
+; move_ACTIVE_and_look(room)
+4919: CD 23 49       CALL    $4923                          ; {Com_19_move_ACTIVE} 
 491C: E5             PUSH    HL              
-491D: CD D0 49       CALL    $49D0           
+491D: CD D0 49       CALL    $49D0                          ; {PrintRoomDescription} 
 4920: E1             POP     HL              
 4921: 97             SUB     A               
 4922: C9             RET                     
+
+Com_19_move_ACTIVE:
+; move_ACTIVE(room)
 4923: 7E             LD      A,(HL)          
 4924: 23             INC     HL              
 4925: E5             PUSH    HL              
-4926: 32 23 50       LD      ($5023),A       
+4926: 32 23 50       LD      ($5023),A                      ; {ram:CUR_ROOM} 
 4929: 47             LD      B,A             
-492A: 21 1F 68       LD      HL,$681F        
-492D: CD ED 46       CALL    $46ED           
-4930: 22 24 50       LD      ($5024),HL      
-4933: 2A 21 50       LD      HL,($5021)      
-4936: CD 05 47       CALL    $4705           
-4939: 3A 23 50       LD      A,($5023)       
+492A: 21 1F 68       LD      HL,$681F                       ; {!+RoomDescriptions} 
+492D: CD ED 46       CALL    $46ED                          ; {FindSublist} 
+4930: 22 24 50       LD      ($5024),HL                     ; {ram:CUR_ROOM_DATA} 
+4933: 2A 21 50       LD      HL,($5021)                     ; {ram:ACTIVE_OBJ_DATA} 
+4936: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
+4939: 3A 23 50       LD      A,($5023)                      ; {ram:CUR_ROOM} 
 493C: 77             LD      (HL),A          
 493D: E1             POP     HL              
 493E: 97             SUB     A               
 493F: C9             RET                     
+
+Com_1A_set_VAR_to_first_noun:
+; set_VAR_to_first_noun()
 4940: E5             PUSH    HL              
-4941: 2A 14 50       LD      HL,($5014)      
-4944: 22 0E 50       LD      ($500E),HL      
-4947: 3A 11 50       LD      A,($5011)       
-494A: 32 0D 50       LD      ($500D),A       
+4941: 2A 14 50       LD      HL,($5014)                     ; {ram:FIRST_NOUN_DATA} 
+4944: 22 0E 50       LD      ($500E),HL                     ; {ram:VAR_OBJ_DATA} 
+4947: 3A 11 50       LD      A,($5011)                      ; {ram:FIRST_NOUN_NUM} 
+494A: 32 0D 50       LD      ($500D),A                      ; {ram:VAR_OBJ_NUMBER} 
 494D: E1             POP     HL              
 494E: 97             SUB     A               
 494F: C9             RET                     
+
+Com_1B_set_VAR_to_second_noun:
+; set_VAR_to_second_noun()
 4950: E5             PUSH    HL              
-4951: 2A 1A 50       LD      HL,($501A)      
-4954: 22 0E 50       LD      ($500E),HL      
-4957: 3A 17 50       LD      A,($5017)       
-495A: 32 0D 50       LD      ($500D),A       
+4951: 2A 1A 50       LD      HL,($501A)                     ; {ram:SECOND_NOUN_DATA} 
+4954: 22 0E 50       LD      ($500E),HL                     ; {ram:VAR_OBJ_DATA} 
+4957: 3A 17 50       LD      A,($5017)                      ; {ram:SECOND_NOUN_NUM} 
+495A: 32 0D 50       LD      ($500D),A                      ; {ram:VAR_OBJ_NUMBER} 
 495D: E1             POP     HL              
 495E: 97             SUB     A               
 495F: C9             RET                     
+
+Com_1C_set_VAR:
+; set_VAR(object)
 4960: 46             LD      B,(HL)          
 4961: 23             INC     HL              
 4962: E5             PUSH    HL              
 4963: 78             LD      A,B             
-4964: 32 0D 50       LD      ($500D),A       
-4967: CD 83 4E       CALL    $4E83           
-496A: 22 0E 50       LD      ($500E),HL      
+4964: 32 0D 50       LD      ($500D),A                      ; {ram:VAR_OBJ_NUMBER} 
+4967: CD 83 4E       CALL    $4E83                          ; 
+496A: 22 0E 50       LD      ($500E),HL                     ; {ram:VAR_OBJ_DATA} 
 496D: E1             POP     HL              
 496E: 97             SUB     A               
 496F: C9             RET                     
+
+Com_21_execute_phrase:
+; execute_phrase(phrase,first_noun,second_noun)
 4970: EB             EX      DE,HL           
-4971: 2A 14 50       LD      HL,($5014)      
+4971: 2A 14 50       LD      HL,($5014)                     ; {ram:FIRST_NOUN_DATA} 
 4974: E5             PUSH    HL              
-4975: 2A 1A 50       LD      HL,($501A)      
+4975: 2A 1A 50       LD      HL,($501A)                     ; {ram:SECOND_NOUN_DATA} 
 4978: E5             PUSH    HL              
-4979: 3A 11 50       LD      A,($5011)       
+4979: 3A 11 50       LD      A,($5011)                      ; {ram:FIRST_NOUN_NUM} 
 497C: 47             LD      B,A             
-497D: 3A 17 50       LD      A,($5017)       
+497D: 3A 17 50       LD      A,($5017)                      ; {ram:SECOND_NOUN_NUM} 
 4980: 4F             LD      C,A             
 4981: C5             PUSH    BC              
 4982: 3A 0A 00       LD      A,($000A)       
@@ -872,89 +992,107 @@
 4990: 23             INC     HL              
 4991: E5             PUSH    HL              
 4992: 78             LD      A,B             
-4993: 32 11 50       LD      ($5011),A       
+4993: 32 11 50       LD      ($5011),A                      ; {ram:FIRST_NOUN_NUM} 
 4996: A7             AND     A               
-4997: CA A0 49       JP      Z,$49A0         
-499A: CD 83 4E       CALL    $4E83           
-499D: 22 14 50       LD      ($5014),HL      
+4997: CA A0 49       JP      Z,$49A0                        ; 
+499A: CD 83 4E       CALL    $4E83                          ; 
+499D: 22 14 50       LD      ($5014),HL                     ; {ram:FIRST_NOUN_DATA} 
 49A0: 79             LD      A,C             
-49A1: 32 17 50       LD      ($5017),A       
+49A1: 32 17 50       LD      ($5017),A                      ; {ram:SECOND_NOUN_NUM} 
 49A4: A7             AND     A               
-49A5: CA AE 49       JP      Z,$49AE         
-49A8: CD 83 4E       CALL    $4E83           
-49AB: 22 1A 50       LD      ($501A),HL      
+49A5: CA AE 49       JP      Z,$49AE                        ; 
+49A8: CD 83 4E       CALL    $4E83                          ; 
+49AB: 22 1A 50       LD      ($501A),HL                     ; {ram:SECOND_NOUN_DATA} 
 49AE: 21 FB 73       LD      HL,$73FB        
-49B1: CD 05 47       CALL    $4705           
-49B4: CD 94 48       CALL    $4894           
+49B1: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
+49B4: CD 94 48       CALL    $4894                          ; 
 49B7: D1             POP     DE              
 49B8: C1             POP     BC              
 49B9: 78             LD      A,B             
 49BA: 32 0A 00       LD      ($000A),A       
 49BD: C1             POP     BC              
 49BE: 78             LD      A,B             
-49BF: 32 11 50       LD      ($5011),A       
+49BF: 32 11 50       LD      ($5011),A                      ; {ram:FIRST_NOUN_NUM} 
 49C2: 79             LD      A,C             
-49C3: 32 17 50       LD      ($5017),A       
+49C3: 32 17 50       LD      ($5017),A                      ; {ram:SECOND_NOUN_NUM} 
 49C6: E1             POP     HL              
-49C7: 22 1A 50       LD      ($501A),HL      
+49C7: 22 1A 50       LD      ($501A),HL                     ; {ram:SECOND_NOUN_DATA} 
 49CA: E1             POP     HL              
-49CB: 22 14 50       LD      ($5014),HL      
+49CB: 22 14 50       LD      ($5014),HL                     ; {ram:FIRST_NOUN_DATA} 
 49CE: EB             EX      DE,HL           
 49CF: C9             RET                     
-49D0: 3A 20 50       LD      A,($5020)       
+
+; Print room description
+PrintRoomDescription:
+49D0: 3A 20 50       LD      A,($5020)                      ; {ram:ACTIVE_OBJ_NUM} 
 49D3: FE 1D          CP      $1D             
 49D5: C0             RET     NZ              
-49D6: 2A 24 50       LD      HL,($5024)      
-49D9: CD 05 47       CALL    $4705           
+49D6: 2A 24 50       LD      HL,($5024)                     ; {ram:CUR_ROOM_DATA} 
+49D9: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 49DC: 23             INC     HL              
 49DD: 06 03          LD      B,$03           
-49DF: CD F1 46       CALL    $46F1           
-49E2: D2 E9 49       JP      NC,$49E9        
+49DF: CD F1 46       CALL    $46F1                          ; 
+49E2: D2 E9 49       JP      NC,$49E9                       ; 
 49E5: 23             INC     HL              
-49E6: CD 9B 4E       CALL    $4E9B           
-49E9: 21 51 56       LD      HL,$5651        
-49EC: CD 05 47       CALL    $4705           
+49E6: CD 9B 4E       CALL    $4E9B                          ; 
+;
+; Print object descriptions
+;
+49E9: 21 51 56       LD      HL,$5651                       ; {!+ObjectData} 
+49EC: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 49EF: D5             PUSH    DE              
-49F0: CD 05 47       CALL    $4705           
-49F3: 3A 23 50       LD      A,($5023)       
+49F0: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
+49F3: 3A 23 50       LD      A,($5023)                      ; {ram:CUR_ROOM} 
 49F6: BE             CP      (HL)            
-49F7: C2 0B 4A       JP      NZ,$4A0B        
+49F7: C2 0B 4A       JP      NZ,$4A0B                       ; 
 49FA: 23             INC     HL              
 49FB: 23             INC     HL              
 49FC: 23             INC     HL              
 49FD: 06 03          LD      B,$03           
-49FF: CD F1 46       CALL    $46F1           
-4A02: D2 0B 4A       JP      NC,$4A0B        
+49FF: CD F1 46       CALL    $46F1                          ; 
+4A02: D2 0B 4A       JP      NC,$4A0B                       ; 
 4A05: 23             INC     HL              
 4A06: D5             PUSH    DE              
-4A07: CD 9B 4E       CALL    $4E9B           
+4A07: CD 9B 4E       CALL    $4E9B                          ; 
 4A0A: D1             POP     DE              
 4A0B: EB             EX      DE,HL           
 4A0C: D1             POP     DE              
-4A0D: CD 19 47       CALL    $4719           
-4A10: DA EF 49       JP      C,$49EF         
+4A0D: CD 19 47       CALL    $4719                          ; {CompareXY} 
+4A10: DA EF 49       JP      C,$49EF                        ; 
 4A13: C9             RET                     
+
+Com_01_is_in_pack_or_current_room:
+; is_in_pack_or_current_room(object)
 4A14: 46             LD      B,(HL)          
 4A15: 23             INC     HL              
 4A16: E5             PUSH    HL              
-4A17: CD 83 4E       CALL    $4E83           
-4A1A: CD A6 45       CALL    $45A6           
+4A17: CD 83 4E       CALL    $4E83                          ; 
+4A1A: CD A6 45       CALL    $45A6                          ; 
 4A1D: E1             POP     HL              
 4A1E: C9             RET                     
-4A1F: 3A 20 50       LD      A,($5020)       
+
+Com_20_is_ACTIVE_this:
+; is_ACTIVE_this(object)
+4A1F: 3A 20 50       LD      A,($5020)                      ; {ram:ACTIVE_OBJ_NUM} 
 4A22: BE             CP      (HL)            
 4A23: 23             INC     HL              
 4A24: C9             RET                     
+
+Com_02_is_owned_by_ACTIVE:
+; is_owned_by_ACTIVE(object)
 4A25: 46             LD      B,(HL)          
 4A26: 23             INC     HL              
-4A27: C3 CE 4B       JP      $4BCE           
+4A27: C3 CE 4B       JP      $4BCE                          ; 
+
+Com_03_is_located:
+; is_located(room,object)
 4A2A: 4E             LD      C,(HL)          
 4A2B: 23             INC     HL              
 4A2C: 46             LD      B,(HL)          
 4A2D: 23             INC     HL              
 4A2E: E5             PUSH    HL              
-4A2F: CD 83 4E       CALL    $4E83           
-4A32: CD 05 47       CALL    $4705           
+4A2F: CD 83 4E       CALL    $4E83                          ; 
+4A32: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 4A35: 5E             LD      E,(HL)          
 4A36: 23             INC     HL              
 4A37: 7E             LD      A,(HL)          
@@ -962,177 +1100,222 @@
 4A39: 7B             LD      A,E             
 4A3A: B9             CP      C               
 4A3B: C9             RET                     
+
+Com_0C_fail:
+; fail()
 4A3C: F6 01          OR      $01             
 4A3E: C9             RET                     
-4A3F: 3A 20 50       LD      A,($5020)       
+
+Com_04_print:
+; print(msg)
+4A3F: 3A 20 50       LD      A,($5020)                      ; {ram:ACTIVE_OBJ_NUM} 
 4A42: FE 1D          CP      $1D             
-4A44: C2 54 4A       JP      NZ,$4A54        
+4A44: C2 54 4A       JP      NZ,$4A54                       ; 
+
+Com_1F_print2:
+; print2(msg)
 4A47: 06 1D          LD      B,$1D           
 4A49: E5             PUSH    HL              
-4A4A: CD 83 4E       CALL    $4E83           
-4A4D: CD A6 45       CALL    $45A6           
+4A4A: CD 83 4E       CALL    $4E83                          ; 
+4A4D: CD A6 45       CALL    $45A6                          ; 
 4A50: E1             POP     HL              
-4A51: CA 5B 4A       JP      Z,$4A5B         
-4A54: CD 06 47       CALL    $4706           
+4A51: CA 5B 4A       JP      Z,$4A5B                        ; 
+4A54: CD 06 47       CALL    $4706                          ; {LoadEnd} 
 4A57: EB             EX      DE,HL           
-4A58: C3 5E 4A       JP      $4A5E           
-4A5B: CD 9B 4E       CALL    $4E9B           
+4A58: C3 5E 4A       JP      $4A5E                          ; 
+4A5B: CD 9B 4E       CALL    $4E9B                          ; 
 4A5E: 97             SUB     A               
 4A5F: C9             RET                     
-4A60: CD D0 49       CALL    $49D0           
+
+Com_07_print_room_description:
+; print_room_description()
+4A60: CD D0 49       CALL    $49D0                          ; {PrintRoomDescription} 
 4A63: 97             SUB     A               
 4A64: C9             RET                     
+
+Com_06_print_inventory:
+; print_inventory()
 4A65: E5             PUSH    HL              
 4A66: 3E 0D          LD      A,$0D           
-4A68: CD 0D 4F       CALL    $4F0D           
-4A6B: 21 51 56       LD      HL,$5651        
-4A6E: CD 05 47       CALL    $4705           
-4A71: CD 19 47       CALL    $4719           
-4A74: D2 99 4A       JP      NC,$4A99        
+4A68: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
+4A6B: 21 51 56       LD      HL,$5651                       ; {!+ObjectData} 
+4A6E: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
+4A71: CD 19 47       CALL    $4719                          ; {CompareXY} 
+4A74: D2 99 4A       JP      NC,$4A99                       ; 
 4A77: D5             PUSH    DE              
-4A78: CD 05 47       CALL    $4705           
+4A78: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 4A7B: 46             LD      B,(HL)          
-4A7C: 3A 20 50       LD      A,($5020)       
+4A7C: 3A 20 50       LD      A,($5020)                      ; {ram:ACTIVE_OBJ_NUM} 
 4A7F: B8             CP      B               
-4A80: C2 94 4A       JP      NZ,$4A94        
+4A80: C2 94 4A       JP      NZ,$4A94                       ; 
 4A83: 23             INC     HL              
 4A84: 23             INC     HL              
 4A85: 23             INC     HL              
 4A86: 06 02          LD      B,$02           
-4A88: CD F1 46       CALL    $46F1           
-4A8B: D2 94 4A       JP      NC,$4A94        
+4A88: CD F1 46       CALL    $46F1                          ; 
+4A8B: D2 94 4A       JP      NC,$4A94                       ; 
 4A8E: 23             INC     HL              
 4A8F: D5             PUSH    DE              
-4A90: CD 92 4E       CALL    $4E92           
+4A90: CD 92 4E       CALL    $4E92                          ; 
 4A93: D1             POP     DE              
 4A94: EB             EX      DE,HL           
 4A95: D1             POP     DE              
-4A96: C3 71 4A       JP      $4A71           
+4A96: C3 71 4A       JP      $4A71                          ; 
 4A99: 97             SUB     A               
 4A9A: E1             POP     HL              
 4A9B: C9             RET                     
+
+Com_08_is_first_noun:
+; is_first_noun(object)
 4A9C: E5             PUSH    HL              
-4A9D: 2A 14 50       LD      HL,($5014)      
-4AA0: 3A 11 50       LD      A,($5011)       
-4AA3: 22 26 50       LD      ($5026),HL      
+4A9D: 2A 14 50       LD      HL,($5014)                     ; {ram:FIRST_NOUN_DATA} 
+4AA0: 3A 11 50       LD      A,($5011)                      ; {ram:FIRST_NOUN_NUM} 
+4AA3: 22 26 50       LD      ($5026),HL                     ; {ram:nextToken} 
 4AA6: E1             POP     HL              
 4AA7: A7             AND     A               
-4AA8: CA BD 4A       JP      Z,$4ABD         
+4AA8: CA BD 4A       JP      Z,$4ABD                        ; 
 4AAB: 46             LD      B,(HL)          
 4AAC: 23             INC     HL              
 4AAD: E5             PUSH    HL              
-4AAE: CD 83 4E       CALL    $4E83           
+4AAE: CD 83 4E       CALL    $4E83                          ; 
 4AB1: EB             EX      DE,HL           
 4AB2: E1             POP     HL              
-4AB3: 3A 26 50       LD      A,($5026)       
+4AB3: 3A 26 50       LD      A,($5026)                      ; {ram:nextToken} 
 4AB6: BB             CP      E               
 4AB7: C0             RET     NZ              
-4AB8: 3A 27 50       LD      A,($5027)       
+4AB8: 3A 27 50       LD      A,($5027)                      ; {ram:nextToken} 
 4ABB: BA             CP      D               
 4ABC: C9             RET                     
 4ABD: B8             CP      B               
 4ABE: C9             RET                     
+
+Com_09_compare_to_second_noun:
+; compare_to_second_noun(object)
 4ABF: E5             PUSH    HL              
-4AC0: 2A 1A 50       LD      HL,($501A)      
-4AC3: 3A 17 50       LD      A,($5017)       
-4AC6: C3 A3 4A       JP      $4AA3           
+4AC0: 2A 1A 50       LD      HL,($501A)                     ; {ram:SECOND_NOUN_DATA} 
+4AC3: 3A 17 50       LD      A,($5017)                      ; {ram:SECOND_NOUN_NUM} 
+4AC6: C3 A3 4A       JP      $4AA3                          ; 
+
+Com_0A_compare_input_to:
+; compare_input_to(phrase)
 4AC9: 46             LD      B,(HL)          
 4ACA: 23             INC     HL              
-4ACB: 3A 1F 50       LD      A,($501F)       
+4ACB: 3A 1F 50       LD      A,($501F)                      ; {ram:PHRASE_FORM} 
 4ACE: B8             CP      B               
 4ACF: C9             RET                     
+
+Com_0F_pick_up_VAR:
+; pick_up_VAR()
 4AD0: E5             PUSH    HL              
-4AD1: 2A 0E 50       LD      HL,($500E)      
-4AD4: CD 05 47       CALL    $4705           
-4AD7: 3A 20 50       LD      A,($5020)       
+4AD1: 2A 0E 50       LD      HL,($500E)                     ; {ram:VAR_OBJ_DATA} 
+4AD4: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
+4AD7: 3A 20 50       LD      A,($5020)                      ; {ram:ACTIVE_OBJ_NUM} 
 4ADA: 77             LD      (HL),A          
 4ADB: 97             SUB     A               
 4ADC: E1             POP     HL              
 4ADD: C9             RET                     
+
+Com_10_drop_VAR:
+; drop_VAR()
 4ADE: E5             PUSH    HL              
-4ADF: 2A 0E 50       LD      HL,($500E)      
-4AE2: CD 05 47       CALL    $4705           
-4AE5: 3A 23 50       LD      A,($5023)       
+4ADF: 2A 0E 50       LD      HL,($500E)                     ; {ram:VAR_OBJ_DATA} 
+4AE2: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
+4AE5: 3A 23 50       LD      A,($5023)                      ; {ram:CUR_ROOM} 
 4AE8: 77             LD      (HL),A          
 4AE9: 97             SUB     A               
 4AEA: E1             POP     HL              
 4AEB: C9             RET                     
+
+Com_13_process_phrase_by_room_first_second:
+; process_phrase_by_room_first_second()
 4AEC: E5             PUSH    HL              
-4AED: 2A 24 50       LD      HL,($5024)      
-4AF0: CD 05 47       CALL    $4705           
+4AED: 2A 24 50       LD      HL,($5024)                     ; {ram:CUR_ROOM_DATA} 
+4AF0: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 4AF3: 23             INC     HL              
 4AF4: 06 04          LD      B,$04           
-4AF6: CD F1 46       CALL    $46F1           
-4AF9: D2 05 4B       JP      NC,$4B05        
-4AFC: CD 05 47       CALL    $4705           
-4AFF: CD 94 48       CALL    $4894           
-4B02: CA 48 4B       JP      Z,$4B48         
-4B05: 3A 17 50       LD      A,($5017)       
+4AF6: CD F1 46       CALL    $46F1                          ; 
+4AF9: D2 05 4B       JP      NC,$4B05                       ; 
+4AFC: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
+4AFF: CD 94 48       CALL    $4894                          ; 
+4B02: CA 48 4B       JP      Z,$4B48                        ; 
+4B05: 3A 17 50       LD      A,($5017)                      ; {ram:SECOND_NOUN_NUM} 
 4B08: A7             AND     A               
-4B09: CA 26 4B       JP      Z,$4B26         
-4B0C: 2A 1A 50       LD      HL,($501A)      
-4B0F: CD 05 47       CALL    $4705           
+4B09: CA 26 4B       JP      Z,$4B26                        ; 
+4B0C: 2A 1A 50       LD      HL,($501A)                     ; {ram:SECOND_NOUN_DATA} 
+4B0F: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 4B12: 23             INC     HL              
 4B13: 23             INC     HL              
 4B14: 23             INC     HL              
 4B15: 06 06          LD      B,$06           
-4B17: CD F1 46       CALL    $46F1           
-4B1A: D2 26 4B       JP      NC,$4B26        
-4B1D: CD 05 47       CALL    $4705           
-4B20: CD 94 48       CALL    $4894           
-4B23: CA 48 4B       JP      Z,$4B48         
-4B26: 3A 11 50       LD      A,($5011)       
+4B17: CD F1 46       CALL    $46F1                          ; 
+4B1A: D2 26 4B       JP      NC,$4B26                       ; 
+4B1D: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
+4B20: CD 94 48       CALL    $4894                          ; 
+4B23: CA 48 4B       JP      Z,$4B48                        ; 
+4B26: 3A 11 50       LD      A,($5011)                      ; {ram:FIRST_NOUN_NUM} 
 4B29: A7             AND     A               
-4B2A: C2 31 4B       JP      NZ,$4B31        
+4B2A: C2 31 4B       JP      NZ,$4B31                       ; 
 4B2D: E1             POP     HL              
 4B2E: F6 01          OR      $01             
 4B30: C9             RET                     
-4B31: 2A 14 50       LD      HL,($5014)      
-4B34: CD 05 47       CALL    $4705           
+4B31: 2A 14 50       LD      HL,($5014)                     ; {ram:FIRST_NOUN_DATA} 
+4B34: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 4B37: 23             INC     HL              
 4B38: 23             INC     HL              
 4B39: 23             INC     HL              
 4B3A: 06 07          LD      B,$07           
-4B3C: CD F1 46       CALL    $46F1           
-4B3F: D2 2D 4B       JP      NC,$4B2D        
-4B42: CD 05 47       CALL    $4705           
-4B45: CD 94 48       CALL    $4894           
+4B3C: CD F1 46       CALL    $46F1                          ; 
+4B3F: D2 2D 4B       JP      NC,$4B2D                       ; 
+4B42: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
+4B45: CD 94 48       CALL    $4894                          ; 
 4B48: E1             POP     HL              
 4B49: C9             RET                     
+
+Com_16_print_VAR:
+; print_VAR()
 4B4A: E5             PUSH    HL              
-4B4B: 2A 0E 50       LD      HL,($500E)      
-4B4E: 3A 0D 50       LD      A,($500D)       
-4B51: C3 5B 4B       JP      $4B5B           
+4B4B: 2A 0E 50       LD      HL,($500E)                     ; {ram:VAR_OBJ_DATA} 
+4B4E: 3A 0D 50       LD      A,($500D)                      ; {ram:VAR_OBJ_NUMBER} 
+4B51: C3 5B 4B       JP      $4B5B                          ; 
+
+Com_11_print_first_noun:
+; print_first_noun()
 4B54: E5             PUSH    HL              
-4B55: 2A 14 50       LD      HL,($5014)      
-4B58: 3A 11 50       LD      A,($5011)       
+4B55: 2A 14 50       LD      HL,($5014)                     ; {ram:FIRST_NOUN_DATA} 
+4B58: 3A 11 50       LD      A,($5011)                      ; {ram:FIRST_NOUN_NUM} 
 4B5B: A7             AND     A               
-4B5C: CA 48 4B       JP      Z,$4B48         
-4B5F: 3A 20 50       LD      A,($5020)       
+4B5C: CA 48 4B       JP      Z,$4B48                        ; 
+4B5F: 3A 20 50       LD      A,($5020)                      ; {ram:ACTIVE_OBJ_NUM} 
 4B62: FE 1D          CP      $1D             
-4B64: C2 79 4B       JP      NZ,$4B79        
-4B67: CD 05 47       CALL    $4705           
+4B64: C2 79 4B       JP      NZ,$4B79                       ; 
+4B67: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 4B6A: 23             INC     HL              
 4B6B: 23             INC     HL              
 4B6C: 23             INC     HL              
 4B6D: 06 02          LD      B,$02           
-4B6F: CD F1 46       CALL    $46F1           
-4B72: D2 79 4B       JP      NC,$4B79        
+4B6F: CD F1 46       CALL    $46F1                          ; 
+4B72: D2 79 4B       JP      NC,$4B79                       ; 
 4B75: 23             INC     HL              
-4B76: CD 9B 4E       CALL    $4E9B           
+4B76: CD 9B 4E       CALL    $4E9B                          ; 
 4B79: E1             POP     HL              
 4B7A: 97             SUB     A               
 4B7B: C9             RET                     
+
+Com_12_print_second_noun:
+; print_second_noun()
 4B7C: E5             PUSH    HL              
-4B7D: 3A 17 50       LD      A,($5017)       
-4B80: 2A 1A 50       LD      HL,($501A)      
-4B83: C3 5B 4B       JP      $4B5B           
+4B7D: 3A 17 50       LD      A,($5017)                      ; {ram:SECOND_NOUN_NUM} 
+4B80: 2A 1A 50       LD      HL,($501A)                     ; {ram:SECOND_NOUN_DATA} 
+4B83: C3 5B 4B       JP      $4B5B                          ; 
+
+Com_15_check_VAR:
+; check_VAR(bits)
 4B86: E5             PUSH    HL              
-4B87: 2A 0E 50       LD      HL,($500E)      
-4B8A: 3A 0D 50       LD      A,($500D)       
+4B87: 2A 0E 50       LD      HL,($500E)                     ; {ram:VAR_OBJ_DATA} 
+4B8A: 3A 0D 50       LD      A,($500D)                      ; {ram:VAR_OBJ_NUMBER} 
 4B8D: A7             AND     A               
-4B8E: CA 2D 4B       JP      Z,$4B2D         
-4B91: CD 05 47       CALL    $4705           
+4B8E: CA 2D 4B       JP      Z,$4B2D                        ; 
+4B91: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 4B94: 23             INC     HL              
 4B95: 23             INC     HL              
 4B96: 7E             LD      A,(HL)          
@@ -1141,17 +1324,23 @@
 4B99: AE             XOR     (HL)            
 4B9A: 23             INC     HL              
 4B9B: C9             RET                     
-4B9C: CD 94 48       CALL    $4894           
-4B9F: C2 A5 4B       JP      NZ,$4BA5        
+
+Com_14_execute_and_reverse_status:
+; execute_and_reverse_status:
+4B9C: CD 94 48       CALL    $4894                          ; 
+4B9F: C2 A5 4B       JP      NZ,$4BA5                       ; 
 4BA2: F6 01          OR      $01             
 4BA4: C9             RET                     
 4BA5: 97             SUB     A               
 4BA6: C9             RET                     
+
+Com_17_move_to:
+; move_to(object,room)
 4BA7: 46             LD      B,(HL)          
 4BA8: 23             INC     HL              
 4BA9: E5             PUSH    HL              
-4BAA: CD 83 4E       CALL    $4E83           
-4BAD: CD 05 47       CALL    $4705           
+4BAA: CD 83 4E       CALL    $4E83                          ; 
+4BAD: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 4BB0: D1             POP     DE              
 4BB1: 1A             LD      A,(DE)          
 4BB2: 77             LD      (HL),A          
@@ -1159,132 +1348,146 @@
 4BB4: 23             INC     HL              
 4BB5: 97             SUB     A               
 4BB6: C9             RET                     
+
+Com_18_is_VAR_owned_by_ACTIVE:
+; is_VAR_owned_by_ACTIVE()
 4BB7: E5             PUSH    HL              
-4BB8: 2A 0E 50       LD      HL,($500E)      
-4BBB: CD 05 47       CALL    $4705           
+4BB8: 2A 0E 50       LD      HL,($500E)                     ; {ram:VAR_OBJ_DATA} 
+4BBB: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 4BBE: 46             LD      B,(HL)          
 4BBF: 78             LD      A,B             
 4BC0: A7             AND     A               
 4BC1: E1             POP     HL              
-4BC2: CA C8 45       JP      Z,$45C8         
-4BC5: 3A 20 50       LD      A,($5020)       
+4BC2: CA C8 45       JP      Z,$45C8                        ; 
+4BC5: 3A 20 50       LD      A,($5020)                      ; {ram:ACTIVE_OBJ_NUM} 
 4BC8: B8             CP      B               
 4BC9: C8             RET     Z               
 4BCA: 78             LD      A,B             
 4BCB: E6 80          AND     $80             
 4BCD: C0             RET     NZ              
+
 4BCE: E5             PUSH    HL              
-4BCF: CD 83 4E       CALL    $4E83           
-4BD2: C3 BB 4B       JP      $4BBB           
-4BD5: 21 51 56       LD      HL,$5651        
+4BCF: CD 83 4E       CALL    $4E83                          ; 
+4BD2: C3 BB 4B       JP      $4BBB                          ; 
+
+4BD5: 21 51 56       LD      HL,$5651                       ; {!+ObjectData} 
 4BD8: 97             SUB     A               
-4BD9: 32 1E 50       LD      ($501E),A       
-4BDC: CD 05 47       CALL    $4705           
-4BDF: CD 19 47       CALL    $4719           
+4BD9: 32 1E 50       LD      ($501E),A                      ; {ram:tmp1DO} 
+4BDC: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
+4BDF: CD 19 47       CALL    $4719                          ; {CompareXY} 
 4BE2: D0             RET     NC              
-4BE3: 3A 1E 50       LD      A,($501E)       
+4BE3: 3A 1E 50       LD      A,($501E)                      ; {ram:tmp1DO} 
 4BE6: 3C             INC     A               
-4BE7: 32 1E 50       LD      ($501E),A       
+4BE7: 32 1E 50       LD      ($501E),A                      ; {ram:tmp1DO} 
 4BEA: D5             PUSH    DE              
-4BEB: CD 05 47       CALL    $4705           
+4BEB: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 4BEE: 4E             LD      C,(HL)          
 4BEF: D5             PUSH    DE              
 4BF0: 7E             LD      A,(HL)          
 4BF1: A7             AND     A               
-4BF2: CA 3A 4C       JP      Z,$4C3A         
+4BF2: CA 3A 4C       JP      Z,$4C3A                        ; 
 4BF5: 23             INC     HL              
 4BF6: 23             INC     HL              
 4BF7: 23             INC     HL              
 4BF8: 06 08          LD      B,$08           
-4BFA: CD F1 46       CALL    $46F1           
-4BFD: D2 3A 4C       JP      NC,$4C3A        
-4C00: CD 05 47       CALL    $4705           
+4BFA: CD F1 46       CALL    $46F1                          ; 
+4BFD: D2 3A 4C       JP      NC,$4C3A                       ; 
+4C00: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 4C03: E5             PUSH    HL              
-4C04: CD D3 4F       CALL    $4FD3           
-4C07: 3A 1E 50       LD      A,($501E)       
-4C0A: 32 20 50       LD      ($5020),A       
+4C04: CD D3 4F       CALL    $4FD3                          ; {GetRandom} 
+4C07: 3A 1E 50       LD      A,($501E)                      ; {ram:tmp1DO} 
+4C0A: 32 20 50       LD      ($5020),A                      ; {ram:ACTIVE_OBJ_NUM} 
 4C0D: 47             LD      B,A             
-4C0E: CD 83 4E       CALL    $4E83           
-4C11: 22 21 50       LD      ($5021),HL      
+4C0E: CD 83 4E       CALL    $4E83                          ; 
+4C11: 22 21 50       LD      ($5021),HL                     ; {ram:ACTIVE_OBJ_DATA} 
 4C14: 79             LD      A,C             
 4C15: A7             AND     A               
-4C16: FA 29 4C       JP      M,$4C29         
+4C16: FA 29 4C       JP      M,$4C29                        ; 
 4C19: 47             LD      B,A             
-4C1A: CD 83 4E       CALL    $4E83           
-4C1D: CD 05 47       CALL    $4705           
+4C1A: CD 83 4E       CALL    $4E83                          ; 
+4C1D: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 4C20: 7E             LD      A,(HL)          
 4C21: A7             AND     A               
-4C22: C2 15 4C       JP      NZ,$4C15        
+4C22: C2 15 4C       JP      NZ,$4C15                       ; 
 4C25: E1             POP     HL              
-4C26: C3 3A 4C       JP      $4C3A           
-4C29: 32 23 50       LD      ($5023),A       
-4C2C: 21 1F 68       LD      HL,$681F        
+4C26: C3 3A 4C       JP      $4C3A                          ; 
+4C29: 32 23 50       LD      ($5023),A                      ; {ram:CUR_ROOM} 
+4C2C: 21 1F 68       LD      HL,$681F                       ; {!+RoomDescriptions} 
 4C2F: 47             LD      B,A             
-4C30: CD ED 46       CALL    $46ED           
-4C33: 22 24 50       LD      ($5024),HL      
+4C30: CD ED 46       CALL    $46ED                          ; {FindSublist} 
+4C33: 22 24 50       LD      ($5024),HL                     ; {ram:CUR_ROOM_DATA} 
 4C36: E1             POP     HL              
-4C37: CD 94 48       CALL    $4894           
+4C37: CD 94 48       CALL    $4894                          ; 
 4C3A: E1             POP     HL              
 4C3B: D1             POP     DE              
-4C3C: C3 DF 4B       JP      $4BDF           
-4C3F: 3A F9 4F       LD      A,($4FF9)       
+4C3C: C3 DF 4B       JP      $4BDF                          ; 
+
+Com_05_is_less_equal_last_random:
+; is_less_equal_last_random(value)
+4C3F: 3A F9 4F       LD      A,($4FF9)                      ; {ram:tmp1AB} 
 4C42: BE             CP      (HL)            
 4C43: 23             INC     HL              
-4C44: DA 4D 4C       JP      C,$4C4D         
-4C47: CA 4D 4C       JP      Z,$4C4D         
+4C44: DA 4D 4C       JP      C,$4C4D                        ; 
+4C47: CA 4D 4C       JP      Z,$4C4D                        ; 
 4C4A: F6 01          OR      $01             
 4C4C: C9             RET                     
 4C4D: 97             SUB     A               
 4C4E: C9             RET                     
+
+Com_1D_attack_VAR:
+; attack_VAR(points)
 4C4F: 4E             LD      C,(HL)          
 4C50: 23             INC     HL              
 4C51: E5             PUSH    HL              
-4C52: 2A 0E 50       LD      HL,($500E)      
-4C55: CD 05 47       CALL    $4705           
+4C52: 2A 0E 50       LD      HL,($500E)                     ; {ram:VAR_OBJ_DATA} 
+4C55: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 4C58: 23             INC     HL              
 4C59: 23             INC     HL              
 4C5A: 23             INC     HL              
 4C5B: E5             PUSH    HL              
 4C5C: D5             PUSH    DE              
 4C5D: 06 09          LD      B,$09           
-4C5F: CD F1 46       CALL    $46F1           
-4C62: D2 8A 4C       JP      NC,$4C8A        
-4C65: CD 05 47       CALL    $4705           
+4C5F: CD F1 46       CALL    $46F1                          ; 
+4C62: D2 8A 4C       JP      NC,$4C8A                       ; 
+4C65: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 4C68: 23             INC     HL              
 4C69: 7E             LD      A,(HL)          
 4C6A: 91             SUB     C               
-4C6B: D2 6F 4C       JP      NC,$4C6F        
+4C6B: D2 6F 4C       JP      NC,$4C6F                       ; 
 4C6E: 97             SUB     A               
 4C6F: 77             LD      (HL),A          
 4C70: D1             POP     DE              
 4C71: E1             POP     HL              
 4C72: A7             AND     A               
-4C73: CA 79 4C       JP      Z,$4C79         
+4C73: CA 79 4C       JP      Z,$4C79                        ; 
 4C76: 97             SUB     A               
 4C77: E1             POP     HL              
 4C78: C9             RET                     
 4C79: 06 0A          LD      B,$0A           
-4C7B: CD F1 46       CALL    $46F1           
-4C7E: D2 76 4C       JP      NC,$4C76        
-4C81: CD 05 47       CALL    $4705           
-4C84: CD 94 48       CALL    $4894           
-4C87: C3 76 4C       JP      $4C76           
+4C7B: CD F1 46       CALL    $46F1                          ; 
+4C7E: D2 76 4C       JP      NC,$4C76                       ; 
+4C81: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
+4C84: CD 94 48       CALL    $4894                          ; 
+4C87: C3 76 4C       JP      $4C76                          ; 
 4C8A: D1             POP     DE              
 4C8B: E1             POP     HL              
-4C8C: C3 76 4C       JP      $4C76           
+4C8C: C3 76 4C       JP      $4C76                          ; 
+
+Com_1E_swap:
+; swap(object_a,object_b)
 4C8F: 46             LD      B,(HL)          
 4C90: 23             INC     HL              
 4C91: 4E             LD      C,(HL)          
 4C92: 23             INC     HL              
 4C93: E5             PUSH    HL              
-4C94: CD 83 4E       CALL    $4E83           
-4C97: CD 05 47       CALL    $4705           
+4C94: CD 83 4E       CALL    $4E83                          ; 
+4C97: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 4C9A: 5E             LD      E,(HL)          
 4C9B: 41             LD      B,C             
 4C9C: E5             PUSH    HL              
 4C9D: D5             PUSH    DE              
-4C9E: CD 83 4E       CALL    $4E83           
-4CA1: CD 05 47       CALL    $4705           
+4C9E: CD 83 4E       CALL    $4E83                          ; 
+4CA1: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 4CA4: D1             POP     DE              
 4CA5: 7E             LD      A,(HL)          
 4CA6: 73             LD      (HL),E          
@@ -1293,68 +1496,83 @@
 4CA9: E1             POP     HL              
 4CAA: 97             SUB     A               
 4CAB: C9             RET                     
+
+Com_22_is_less_equal_health:
+; is_less_equal_health(points)
 4CAC: 4E             LD      C,(HL)          
 4CAD: 23             INC     HL              
 4CAE: E5             PUSH    HL              
-4CAF: 2A 0E 50       LD      HL,($500E)      
-4CB2: CD 05 47       CALL    $4705           
+4CAF: 2A 0E 50       LD      HL,($500E)                     ; {ram:VAR_OBJ_DATA} 
+4CB2: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 4CB5: 23             INC     HL              
 4CB6: 23             INC     HL              
 4CB7: 23             INC     HL              
 4CB8: 06 09          LD      B,$09           
-4CBA: CD F1 46       CALL    $46F1           
-4CBD: D2 CC 4C       JP      NC,$4CCC        
-4CC0: CD 05 47       CALL    $4705           
+4CBA: CD F1 46       CALL    $46F1                          ; 
+4CBD: D2 CC 4C       JP      NC,$4CCC                       ; 
+4CC0: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 4CC3: 23             INC     HL              
 4CC4: 7E             LD      A,(HL)          
 4CC5: B9             CP      C               
-4CC6: DA D0 4C       JP      C,$4CD0         
-4CC9: CA D0 4C       JP      Z,$4CD0         
+4CC6: DA D0 4C       JP      C,$4CD0                        ; 
+4CC9: CA D0 4C       JP      Z,$4CD0                        ; 
 4CCC: E1             POP     HL              
 4CCD: F6 01          OR      $01             
 4CCF: C9             RET                     
 4CD0: 97             SUB     A               
 4CD1: E1             POP     HL              
 4CD2: C9             RET                     
+
+Com_23_heal_VAR:
+; heal_VAR(points)
 4CD3: 4E             LD      C,(HL)          
 4CD4: 23             INC     HL              
 4CD5: E5             PUSH    HL              
-4CD6: 2A 0E 50       LD      HL,($500E)      
-4CD9: CD 05 47       CALL    $4705           
+4CD6: 2A 0E 50       LD      HL,($500E)                     ; {ram:VAR_OBJ_DATA} 
+4CD9: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 4CDC: 23             INC     HL              
 4CDD: 23             INC     HL              
 4CDE: 23             INC     HL              
 4CDF: 06 09          LD      B,$09           
-4CE1: CD F1 46       CALL    $46F1           
-4CE4: D2 D0 4C       JP      NC,$4CD0        
-4CE7: CD 05 47       CALL    $4705           
+4CE1: CD F1 46       CALL    $46F1                          ; 
+4CE4: D2 D0 4C       JP      NC,$4CD0                       ; 
+4CE7: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 4CEA: 56             LD      D,(HL)          
 4CEB: 23             INC     HL              
 4CEC: 7E             LD      A,(HL)          
 4CED: 81             ADD     A,C             
 4CEE: BA             CP      D               
-4CEF: DA F3 4C       JP      C,$4CF3         
+4CEF: DA F3 4C       JP      C,$4CF3                        ; 
 4CF2: 7A             LD      A,D             
 4CF3: 77             LD      (HL),A          
-4CF4: C3 D0 4C       JP      $4CD0           
+4CF4: C3 D0 4C       JP      $4CD0                          ; 
+
+Com_25_restart_game:
+; restart_game()
 4CF7: 3E 0D          LD      A,$0D           
-4CF9: CD 0D 4F       CALL    $4F0D           
+4CF9: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
 4CFC: 3E 0D          LD      A,$0D           
-4CFE: CD 0D 4F       CALL    $4F0D           
-4D01: C3 00 43       JP      $4300           
-4D04: C3 04 4D       JP      $4D04           
+4CFE: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
+4D01: C3 00 43       JP      $4300                          ; {Start} 
+
+Com_24_endless_loop:
+; endless_loop()
+4D04: C3 04 4D       JP      $4D04                          ; {Com_24_endless_loop} 
+
+Com_27_load_game:
+; load_game()
 4D07: E5             PUSH    HL              
 4D08: 11 9E 4D       LD      DE,$4D9E        
-4D0B: CD AF 4D       CALL    $4DAF           
-4D0E: CD D6 47       CALL    $47D6           
+4D0B: CD AF 4D       CALL    $4DAF                          ; 
+4D0E: CD D6 47       CALL    $47D6                          ; 
 4D11: FE 08          CP      $08             
-4D13: CA D0 4C       JP      Z,$4CD0         
+4D13: CA D0 4C       JP      Z,$4CD0                        ; 
 4D16: FE 0D          CP      $0D             
-4D18: C2 0E 4D       JP      NZ,$4D0E        
+4D18: C2 0E 4D       JP      NZ,$4D0E                       ; 
 4D1B: 97             SUB     A               
 4D1C: CD 12 02       CALL    $0212           
 4D1F: CD 96 02       CALL    $0296           
-4D22: 21 51 56       LD      HL,$5651        
+4D22: 21 51 56       LD      HL,$5651                       ; {!+ObjectData} 
 4D25: 01 CE 11       LD      BC,$11CE        
 4D28: 04             INC     B               
 4D29: 0E 00          LD      C,$00           
@@ -1374,7 +1592,7 @@
 4D3F: 5F             LD      E,A             
 4D40: 23             INC     HL              
 4D41: 0D             DEC     C               
-4D42: C2 34 4D       JP      NZ,$4D34        
+4D42: C2 34 4D       JP      NZ,$4D34                       ; 
 4D45: E5             PUSH    HL              
 4D46: D5             PUSH    DE              
 4D47: C5             PUSH    BC              
@@ -1383,33 +1601,33 @@
 4D4C: D1             POP     DE              
 4D4D: E1             POP     HL              
 4D4E: BB             CP      E               
-4D4F: C2 89 4D       JP      NZ,$4D89        
+4D4F: C2 89 4D       JP      NZ,$4D89                       ; 
 4D52: 05             DEC     B               
-4D53: C2 29 4D       JP      NZ,$4D29        
+4D53: C2 29 4D       JP      NZ,$4D29                       ; 
 4D56: CD F8 01       CALL    $01F8           
 4D59: 31 FF 7F       LD      SP,$7FFF        
 4D5C: 3E 1D          LD      A,$1D           
-4D5E: 32 20 50       LD      ($5020),A       
+4D5E: 32 20 50       LD      ($5020),A                      ; {ram:ACTIVE_OBJ_NUM} 
 4D61: 47             LD      B,A             
-4D62: CD 83 4E       CALL    $4E83           
-4D65: 22 21 50       LD      ($5021),HL      
-4D68: CD 05 47       CALL    $4705           
+4D62: CD 83 4E       CALL    $4E83                          ; 
+4D65: 22 21 50       LD      ($5021),HL                     ; {ram:ACTIVE_OBJ_DATA} 
+4D68: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 4D6B: 7E             LD      A,(HL)          
-4D6C: 32 23 50       LD      ($5023),A       
+4D6C: 32 23 50       LD      ($5023),A                      ; {ram:CUR_ROOM} 
 4D6F: 47             LD      B,A             
-4D70: 21 1F 68       LD      HL,$681F        
-4D73: CD ED 46       CALL    $46ED           
-4D76: 22 24 50       LD      ($5024),HL      
+4D70: 21 1F 68       LD      HL,$681F                       ; {!+RoomDescriptions} 
+4D73: CD ED 46       CALL    $46ED                          ; {FindSublist} 
+4D76: 22 24 50       LD      ($5024),HL                     ; {ram:CUR_ROOM_DATA} 
 4D79: 3E 0D          LD      A,$0D           
-4D7B: CD 0D 4F       CALL    $4F0D           
-4D7E: CD D0 49       CALL    $49D0           
+4D7B: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
+4D7E: CD D0 49       CALL    $49D0                          ; {PrintRoomDescription} 
 4D81: 3E 0D          LD      A,$0D           
-4D83: CD 0D 4F       CALL    $4F0D           
-4D86: C3 23 43       JP      $4323           
+4D83: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
+4D86: C3 23 43       JP      $4323                          ; 
 4D89: CD F8 01       CALL    $01F8           
 4D8C: 11 95 4D       LD      DE,$4D95        
-4D8F: CD AF 4D       CALL    $4DAF           
-4D92: C3 0E 4D       JP      $4D0E           
+4D8F: CD AF 4D       CALL    $4DAF                          ; 
+4D92: C3 0E 4D       JP      $4D0E                          ; 
 4D95: 0D             DEC     C               
 4D96: 43             LD      B,E             
 4D97: 48             LD      C,B             
@@ -1425,7 +1643,7 @@
 4DA1: 41             LD      B,C             
 4DA2: 44             LD      B,H             
 4DA3: 59             LD      E,C             
-4DA4: 20 43          JR      NZ,$4DE9        
+4DA4: 20 43          JR      NZ,$4DE9                       ; 
 4DA6: 41             LD      B,C             
 4DA7: 53             LD      D,E             
 4DA8: 53             LD      D,E             
@@ -1439,22 +1657,25 @@
 4DB0: A7             AND     A               
 4DB1: C8             RET     Z               
 4DB2: D5             PUSH    DE              
-4DB3: CD 0D 4F       CALL    $4F0D           
+4DB3: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
 4DB6: D1             POP     DE              
 4DB7: 13             INC     DE              
-4DB8: C3 AF 4D       JP      $4DAF           
+4DB8: C3 AF 4D       JP      $4DAF                          ; 
+
+Com_28_save_game:
+; save_game()
 4DBB: E5             PUSH    HL              
 4DBC: 11 9E 4D       LD      DE,$4D9E        
-4DBF: CD AF 4D       CALL    $4DAF           
-4DC2: CD D6 47       CALL    $47D6           
+4DBF: CD AF 4D       CALL    $4DAF                          ; 
+4DC2: CD D6 47       CALL    $47D6                          ; 
 4DC5: FE 08          CP      $08             
-4DC7: CA D0 4C       JP      Z,$4CD0         
+4DC7: CA D0 4C       JP      Z,$4CD0                        ; 
 4DCA: FE 0D          CP      $0D             
-4DCC: C2 C2 4D       JP      NZ,$4DC2        
+4DCC: C2 C2 4D       JP      NZ,$4DC2                       ; 
 4DCF: 97             SUB     A               
 4DD0: CD 12 02       CALL    $0212           
 4DD3: CD 87 02       CALL    $0287           
-4DD6: 21 51 56       LD      HL,$5651        
+4DD6: 21 51 56       LD      HL,$5651                       ; {!+ObjectData} 
 4DD9: 01 CE 11       LD      BC,$11CE        
 4DDC: 04             INC     B               
 4DDD: 0E 00          LD      C,$00           
@@ -1472,7 +1693,7 @@
 4DEC: E1             POP     HL              
 4DED: 23             INC     HL              
 4DEE: 0D             DEC     C               
-4DEF: C2 E0 4D       JP      NZ,$4DE0        
+4DEF: C2 E0 4D       JP      NZ,$4DE0                       ; 
 4DF2: 7B             LD      A,E             
 4DF3: E5             PUSH    HL              
 4DF4: D5             PUSH    DE              
@@ -1482,49 +1703,52 @@
 4DFA: D1             POP     DE              
 4DFB: E1             POP     HL              
 4DFC: 05             DEC     B               
-4DFD: C2 DD 4D       JP      NZ,$4DDD        
+4DFD: C2 DD 4D       JP      NZ,$4DDD                       ; 
 4E00: CD F8 01       CALL    $01F8           
-4E03: C3 D0 4C       JP      $4CD0           
+4E03: C3 D0 4C       JP      $4CD0                          ; 
+
+Com_26_print_score:
+; print_score()
 4E06: E5             PUSH    HL              
 4E07: 97             SUB     A               
-4E08: 32 FD 4F       LD      ($4FFD),A       
-4E0B: 32 FE 4F       LD      ($4FFE),A       
-4E0E: 3A 23 50       LD      A,($5023)       
+4E08: 32 FD 4F       LD      ($4FFD),A                      ; {ram:not1AF} 
+4E0B: 32 FE 4F       LD      ($4FFE),A                      ; {ram:not1B0} 
+4E0E: 3A 23 50       LD      A,($5023)                      ; {ram:CUR_ROOM} 
 4E11: FE 96          CP      $96             
-4E13: C2 1B 4E       JP      NZ,$4E1B        
+4E13: C2 1B 4E       JP      NZ,$4E1B                       ; 
 4E16: 3E 01          LD      A,$01           
-4E18: 32 FE 4F       LD      ($4FFE),A       
-4E1B: 21 51 56       LD      HL,$5651        
-4E1E: CD 05 47       CALL    $4705           
-4E21: CD 19 47       CALL    $4719           
-4E24: D2 5A 4E       JP      NC,$4E5A        
+4E18: 32 FE 4F       LD      ($4FFE),A                      ; {ram:not1B0} 
+4E1B: 21 51 56       LD      HL,$5651                       ; {!+ObjectData} 
+4E1E: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
+4E21: CD 19 47       CALL    $4719                          ; {CompareXY} 
+4E24: D2 5A 4E       JP      NC,$4E5A                       ; 
 4E27: D5             PUSH    DE              
-4E28: CD 05 47       CALL    $4705           
+4E28: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 4E2B: 7E             LD      A,(HL)          
 4E2C: 47             LD      B,A             
 4E2D: FE 96          CP      $96             
-4E2F: CA 37 4E       JP      Z,$4E37         
+4E2F: CA 37 4E       JP      Z,$4E37                        ; 
 4E32: FE 1D          CP      $1D             
-4E34: C2 55 4E       JP      NZ,$4E55        
+4E34: C2 55 4E       JP      NZ,$4E55                       ; 
 4E37: 23             INC     HL              
-4E38: 3A FD 4F       LD      A,($4FFD)       
+4E38: 3A FD 4F       LD      A,($4FFD)                      ; {ram:not1AF} 
 4E3B: 86             ADD     A,(HL)          
 4E3C: 27             DAA                     
-4E3D: 32 FD 4F       LD      ($4FFD),A       
+4E3D: 32 FD 4F       LD      ($4FFD),A                      ; {ram:not1AF} 
 4E40: 78             LD      A,B             
 4E41: FE 96          CP      $96             
-4E43: CA 4D 4E       JP      Z,$4E4D         
-4E46: 3A FE 4F       LD      A,($4FFE)       
+4E43: CA 4D 4E       JP      Z,$4E4D                        ; 
+4E46: 3A FE 4F       LD      A,($4FFE)                      ; {ram:not1B0} 
 4E49: A7             AND     A               
-4E4A: CA 55 4E       JP      Z,$4E55         
-4E4D: 3A FD 4F       LD      A,($4FFD)       
+4E4A: CA 55 4E       JP      Z,$4E55                        ; 
+4E4D: 3A FD 4F       LD      A,($4FFD)                      ; {ram:not1AF} 
 4E50: 86             ADD     A,(HL)          
 4E51: 27             DAA                     
-4E52: 32 FD 4F       LD      ($4FFD),A       
+4E52: 32 FD 4F       LD      ($4FFD),A                      ; {ram:not1AF} 
 4E55: EB             EX      DE,HL           
 4E56: D1             POP     DE              
-4E57: C3 21 4E       JP      $4E21           
-4E5A: 3A FD 4F       LD      A,($4FFD)       
+4E57: C3 21 4E       JP      $4E21                          ; 
+4E5A: 3A FD 4F       LD      A,($4FFD)                      ; {ram:not1AF} 
 4E5D: 0F             RRCA                    
 4E5E: 0F             RRCA                    
 4E5F: 0F             RRCA                    
@@ -1532,36 +1756,36 @@
 4E61: E6 0F          AND     $0F             
 4E63: C6 30          ADD     $30             
 4E65: 47             LD      B,A             
-4E66: CD 0D 4F       CALL    $4F0D           
-4E69: 3A FD 4F       LD      A,($4FFD)       
+4E66: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
+4E69: 3A FD 4F       LD      A,($4FFD)                      ; {ram:not1AF} 
 4E6C: E6 0F          AND     $0F             
 4E6E: C6 30          ADD     $30             
 4E70: 47             LD      B,A             
-4E71: CD 0D 4F       CALL    $4F0D           
+4E71: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
 4E74: 3E 2E          LD      A,$2E           
 4E76: 47             LD      B,A             
-4E77: CD 0D 4F       CALL    $4F0D           
+4E77: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
 4E7A: 3E 20          LD      A,$20           
 4E7C: 47             LD      B,A             
-4E7D: CD 0D 4F       CALL    $4F0D           
+4E7D: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
 4E80: E1             POP     HL              
 4E81: 97             SUB     A               
 4E82: C9             RET                     
-4E83: 21 51 56       LD      HL,$5651        
-4E86: CD 05 47       CALL    $4705           
+4E83: 21 51 56       LD      HL,$5651                       ; {!+ObjectData} 
+4E86: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 4E89: 05             DEC     B               
 4E8A: C8             RET     Z               
-4E8B: CD 05 47       CALL    $4705           
+4E8B: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
 4E8E: EB             EX      DE,HL           
-4E8F: C3 89 4E       JP      $4E89           
-4E92: CD 9B 4E       CALL    $4E9B           
+4E8F: C3 89 4E       JP      $4E89                          ; 
+4E92: CD 9B 4E       CALL    $4E9B                          ; 
 4E95: 3E 0D          LD      A,$0D           
-4E97: CD 0D 4F       CALL    $4F0D           
+4E97: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
 4E9A: C9             RET                     
 4E9B: 01 00 00       LD      BC,$0000        
 4E9E: 7E             LD      A,(HL)          
 4E9F: E6 80          AND     $80             
-4EA1: CA A9 4E       JP      Z,$4EA9         
+4EA1: CA A9 4E       JP      Z,$4EA9                        ; 
 4EA4: 7E             LD      A,(HL)          
 4EA5: E6 7F          AND     $7F             
 4EA7: 47             LD      B,A             
@@ -1570,75 +1794,82 @@
 4EAA: 23             INC     HL              
 4EAB: 78             LD      A,B             
 4EAC: A7             AND     A               
-4EAD: C2 B6 4E       JP      NZ,$4EB6        
+4EAD: C2 B6 4E       JP      NZ,$4EB6                       ; 
 4EB0: 79             LD      A,C             
 4EB1: FE 02          CP      $02             
-4EB3: DA F9 4E       JP      C,$4EF9         
-4EB6: CD 3D 4F       CALL    $4F3D           
+4EB3: DA F9 4E       JP      C,$4EF9                        ; 
+4EB6: CD 3D 4F       CALL    $4F3D                          ; 
 4EB9: 0B             DEC     BC              
 4EBA: 0B             DEC     BC              
-4EBB: 3A 20 40       LD      A,($4020)       
+4EBB: 3A 20 40       LD      A,($4020)                      ; {ram:screenPtr} 
 4EBE: FE FB          CP      $FB             
-4EC0: DA AB 4E       JP      C,$4EAB         
+4EC0: DA AB 4E       JP      C,$4EAB                        ; 
 4EC3: E5             PUSH    HL              
-4EC4: 2A 20 40       LD      HL,($4020)      
+4EC4: 2A 20 40       LD      HL,($4020)                     ; {ram:screenPtr} 
 4EC7: 11 BF FF       LD      DE,$FFBF        
 4ECA: 19             ADD     HL,DE           
 4ECB: 3E 0D          LD      A,$0D           
-4ECD: CD 0D 4F       CALL    $4F0D           
+4ECD: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
 4ED0: 3E 20          LD      A,$20           
-4ED2: 32 0C 50       LD      ($500C),A       
+4ED2: 32 0C 50       LD      ($500C),A                      ; {ram:lastChar} 
 4ED5: 7E             LD      A,(HL)          
 4ED6: FE 20          CP      $20             
-4ED8: CA DF 4E       JP      Z,$4EDF         
+4ED8: CA DF 4E       JP      Z,$4EDF                        ; 
 4EDB: 2B             DEC     HL              
-4EDC: C3 D5 4E       JP      $4ED5           
+4EDC: C3 D5 4E       JP      $4ED5                          ; 
 4EDF: 23             INC     HL              
 4EE0: 7E             LD      A,(HL)          
 4EE1: FE 20          CP      $20             
-4EE3: CA F5 4E       JP      Z,$4EF5         
+4EE3: CA F5 4E       JP      Z,$4EF5                        ; 
 4EE6: 36 20          LD      (HL),$20        
 4EE8: FE 1B          CP      $1B             
-4EEA: D2 EF 4E       JP      NC,$4EEF        
+4EEA: D2 EF 4E       JP      NC,$4EEF                       ; 
 4EED: C6 40          ADD     $40             
-4EEF: CD 0D 4F       CALL    $4F0D           
-4EF2: C3 DF 4E       JP      $4EDF           
+4EEF: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
+4EF2: C3 DF 4E       JP      $4EDF                          ; 
 4EF5: E1             POP     HL              
-4EF6: C3 AB 4E       JP      $4EAB           
+4EF6: C3 AB 4E       JP      $4EAB                          ; 
 4EF9: 79             LD      A,C             
 4EFA: A7             AND     A               
-4EFB: CA 07 4F       JP      Z,$4F07         
+4EFB: CA 07 4F       JP      Z,$4F07                        ; 
 4EFE: 7E             LD      A,(HL)          
-4EFF: CD 0D 4F       CALL    $4F0D           
+4EFF: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
 4F02: 23             INC     HL              
 4F03: 0D             DEC     C               
-4F04: C3 F9 4E       JP      $4EF9           
+4F04: C3 F9 4E       JP      $4EF9                          ; 
 4F07: 3E 20          LD      A,$20           
-4F09: CD 0D 4F       CALL    $4F0D           
+4F09: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
 4F0C: C9             RET                     
-4F0D: F5             PUSH    AF              
-4F0E: 3A 0C 50       LD      A,($500C)       
-4F11: FE 20          CP      $20             
-4F13: C2 35 4F       JP      NZ,$4F35        
-4F16: F1             POP     AF              
-4F17: FE 20          CP      $20             
-4F19: C8             RET     Z               
-4F1A: FE 2E          CP      $2E             
-4F1C: CA 29 4F       JP      Z,$4F29         
-4F1F: FE 3F          CP      $3F             
-4F21: CA 29 4F       JP      Z,$4F29         
-4F24: FE 21          CP      $21             
-4F26: C2 36 4F       JP      NZ,$4F36        
-4F29: E5             PUSH    HL              
-4F2A: 2A 20 40       LD      HL,($4020)      
-4F2D: 2B             DEC     HL              
-4F2E: 22 20 40       LD      ($4020),HL      
-4F31: E1             POP     HL              
-4F32: C3 36 4F       JP      $4F36           
-4F35: F1             POP     AF              
-4F36: 32 0C 50       LD      ($500C),A       
-4F39: CD 33 00       CALL    $0033           
-4F3C: C9             RET                     
+
+PrintCharacterAutoWrap:
+; Print character in A to screen. This handles auto word-wrapping and
+; auto MORE prompting.
+;
+4F0D: F5             PUSH    AF                             ; Hold A
+4F0E: 3A 0C 50       LD      A,($500C)                      ; {ram:lastChar} Was the last character printed ...
+4F11: FE 20          CP      $20                            ; ... a space?
+4F13: C2 35 4F       JP      NZ,$4F35                       ; No ... print this
+4F16: F1             POP     AF                             ; Restore
+4F17: FE 20          CP      $20                            ; Space now?
+4F19: C8             RET     Z                              ; Yes ... just ignore
+4F1A: FE 2E          CP      $2E                            ; A '.' ?
+4F1C: CA 29 4F       JP      Z,$4F29                        ; Yes. Ignore leading space.
+4F1F: FE 3F          CP      $3F                            ; A '?' ?
+4F21: CA 29 4F       JP      Z,$4F29                        ; Yes. Ignore leading space.
+4F24: FE 21          CP      $21                            ; A '!' ?
+4F26: C2 36 4F       JP      NZ,$4F36                       ; Yes. Ignore leading space.
+4F29: E5             PUSH    HL                             ; Back screen ...
+4F2A: 2A 20 40       LD      HL,($4020)                     ; {ram:screenPtr} ... pointer ...
+4F2D: 2B             DEC     HL                             ; ... up over ...
+4F2E: 22 20 40       LD      ($4020),HL                     ; {ram:screenPtr} ... ignored ...
+4F31: E1             POP     HL                             ; ... space
+4F32: C3 36 4F       JP      $4F36                          ; Store and print
+;
+4F35: F1             POP     AF                             ; Restore char to print
+4F36: 32 0C 50       LD      ($500C),A                      ; {ram:lastChar} Last printed character
+4F39: CD 33 00       CALL    $0033                          ; {hard:PrintChar} TRS80 print character
+4F3C: C9             RET                                    ; Done
+
 4F3D: 11 CF 4F       LD      DE,$4FCF        
 4F40: C5             PUSH    BC              
 4F41: 06 03          LD      B,$03           
@@ -1655,7 +1886,7 @@
 4F4D: E5             PUSH    HL              
 4F4E: C5             PUSH    BC              
 4F4F: 21 28 00       LD      HL,$0028        
-4F52: 22 CD 4F       LD      ($4FCD),HL      
+4F52: 22 CD 4F       LD      ($4FCD),HL                     ; 
 4F55: 21 85 4F       LD      HL,$4F85        
 4F58: 36 11          LD      (HL),$11        
 4F5A: 01 00 00       LD      BC,$0000        
@@ -1668,25 +1899,25 @@
 4F63: 57             LD      D,A             
 4F64: 35             DEC     (HL)            
 4F65: E1             POP     HL              
-4F66: CA 86 4F       JP      Z,$4F86         
+4F66: CA 86 4F       JP      Z,$4F86                        ; 
 4F69: 3E 00          LD      A,$00           
 4F6B: CE 00          ADC     $00             
 4F6D: 29             ADD     HL,HL           
 4F6E: 44             LD      B,H             
 4F6F: 85             ADD     A,L             
-4F70: 2A CD 4F       LD      HL,($4FCD)      
+4F70: 2A CD 4F       LD      HL,($4FCD)                     ; 
 4F73: 95             SUB     L               
 4F74: 4F             LD      C,A             
 4F75: 78             LD      A,B             
 4F76: 9C             SBC     H               
 4F77: 47             LD      B,A             
 4F78: C5             PUSH    BC              
-4F79: D2 7E 4F       JP      NC,$4F7E        
+4F79: D2 7E 4F       JP      NC,$4F7E                       ; 
 4F7C: 09             ADD     HL,BC           
 4F7D: E3             EX      (SP),HL         
 4F7E: 21 85 4F       LD      HL,$4F85        
 4F81: 3F             CCF                     
-4F82: C3 5E 4F       JP      $4F5E           
+4F82: C3 5E 4F       JP      $4F5E                          ; 
 4F85: 00             NOP                     
 4F86: 01 A4 4F       LD      BC,$4FA4        
 4F89: 09             ADD     HL,BC           
@@ -1696,65 +1927,39 @@
 4F8D: 77             LD      (HL),A          
 4F8E: 2B             DEC     HL              
 4F8F: 05             DEC     B               
-4F90: C2 4D 4F       JP      NZ,$4F4D        
+4F90: C2 4D 4F       JP      NZ,$4F4D                       ; 
 4F93: 21 CF 4F       LD      HL,$4FCF        
 4F96: 06 03          LD      B,$03           
 4F98: 7E             LD      A,(HL)          
-4F99: CD 0D 4F       CALL    $4F0D           
+4F99: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
 4F9C: 23             INC     HL              
 4F9D: 05             DEC     B               
-4F9E: C2 98 4F       JP      NZ,$4F98        
+4F9E: C2 98 4F       JP      NZ,$4F98                       ; 
 4FA1: E1             POP     HL              
 4FA2: C1             POP     BC              
 4FA3: C9             RET                     
-4FA4: 3F             CCF                     
-4FA5: 21 32 20       LD      HL,$2032        
-4FA8: 22 27 3C       LD      ($3C27),HL      
-4FAB: 3E 2F          LD      A,$2F           
-4FAD: 30 33          JR      NC,$4FE2        
-4FAF: 41             LD      B,C             
-4FB0: 42             LD      B,D             
-4FB1: 43             LD      B,E             
-4FB2: 44             LD      B,H             
-4FB3: 45             LD      B,L             
-4FB4: 46             LD      B,(HL)          
-4FB5: 47             LD      B,A             
-4FB6: 48             LD      C,B             
-4FB7: 49             LD      C,C             
-4FB8: 4A             LD      C,D             
-4FB9: 4B             LD      C,E             
-4FBA: 4C             LD      C,H             
-4FBB: 4D             LD      C,L             
-4FBC: 4E             LD      C,(HL)          
-4FBD: 4F             LD      C,A             
-4FBE: 50             LD      D,B             
-4FBF: 51             LD      D,C             
-4FC0: 52             LD      D,D             
-4FC1: 53             LD      D,E             
-4FC2: 54             LD      D,H             
-4FC3: 55             LD      D,L             
-4FC4: 56             LD      D,(HL)          
-4FC5: 57             LD      D,A             
-4FC6: 58             LD      E,B             
-4FC7: 59             LD      E,C             
-4FC8: 5A             LD      E,D             
-4FC9: 2D             DEC     L               
-4FCA: 2C             INC     L               
-4FCB: 2E 00          LD      L,$00           
-4FCD: 00             NOP                     
-4FCE: 00             NOP                     
-4FCF: 00             NOP                     
-4FD0: 00             NOP                     
-4FD1: 00             NOP                     
-4FD2: 00             NOP                     
+
+; Character translation table
+;     ?  !  2  _  "  '  <  >  /  0  3  A  B  C  D  E
+4FA4: 3F 21 32 20 22 27 3C 3E 2F 30 33 41 42 43 44 45   
+;     F  G  H  I  J  K  L  M  N  O  P  Q  R  S  T  U                     
+4FB4: 46 47 48 49 4A 4B 4C 4D 4E 4F 50 51 52 53 54 55    
+;     V  W  X  Y  Z  -  ,  .                            
+4FC4: 56 57 58 59 5A 2D 2C 2E 
+
+; Temporaries for decompression algorithm above 
+4FCC: 00 00 00 00 00 00 00
+  
+; Generate random number               
+GetRandom:
 4FD3: C5             PUSH    BC              
 4FD4: E5             PUSH    HL              
-4FD5: 2A F9 4F       LD      HL,($4FF9)      
+4FD5: 2A F9 4F       LD      HL,($4FF9)                     ; {ram:tmp1AB} 
 4FD8: 06 17          LD      B,$17           
 4FDA: 7D             LD      A,L             
 4FDB: E6 06          AND     $06             
 4FDD: 37             SCF                     
-4FDE: EA E2 4F       JP      PE,$4FE2        
+4FDE: EA E2 4F       JP      PE,$4FE2                       ; 
 4FE1: 3F             CCF                     
 4FE2: 7C             LD      A,H             
 4FE3: 1F             RRA                     
@@ -1764,61 +1969,59 @@
 4FE7: E6 FE          AND     $FE             
 4FE9: 6F             LD      L,A             
 4FEA: 05             DEC     B               
-4FEB: C2 DB 4F       JP      NZ,$4FDB        
-4FEE: 22 F9 4F       LD      ($4FF9),HL      
+4FEB: C2 DB 4F       JP      NZ,$4FDB                       ; 
+4FEE: 22 F9 4F       LD      ($4FF9),HL                     ; {ram:tmp1AB} 
 4FF1: 7C             LD      A,H             
 4FF2: E1             POP     HL              
 4FF3: C1             POP     BC              
 4FF4: C9             RET                     
-4FF5: 12             LD      (DE),A          
-4FF6: 23             INC     HL              
-4FF7: 44             LD      B,H             
-4FF8: 1D             DEC     E               
-4FF9: 27             DAA                     
-4FFA: 4D             LD      C,L             
-4FFB: 2D             DEC     L               
-4FFC: 13             INC     DE              
-4FFD: 00             NOP                     
-4FFE: 00             NOP                     
-4FFF: 00             NOP                     
-5000: 00             NOP                     
-5001: 00             NOP                     
-5002: 00             NOP                     
-5003: 00             NOP                     
-5004: 00             NOP                     
-5005: 00             NOP                     
-5006: 00             NOP                     
-5007: 00             NOP                     
-5008: 00             NOP                     
-5009: 00             NOP                     
-500A: 00             NOP                     
-500B: 00             NOP                     
-500C: 00             NOP                     
-500D: 00             NOP                     
-500E: 00             NOP                     
-500F: 00             NOP                     
-5010: 00             NOP                     
-5011: 00             NOP                     
-5012: 00             NOP                     
-5013: 00             NOP                     
-5014: 00             NOP                     
-5015: 00             NOP                     
-5016: 00             NOP                     
-5017: 00             NOP                     
-5018: 00             NOP                     
-5019: 00             NOP                     
-501A: 00             NOP                     
-501B: 00             NOP                     
-501C: 00             NOP                     
-501D: 00             NOP                     
-501E: 00             NOP                     
-501F: 00             NOP                     
-5020: 1D             DEC     E               
-5021: 00             NOP                     
-5022: 00             NOP                     
-5023: 81             ADD     A,C             
-5024: 22 68 48       LD      ($4868),HL      
-5027: 50             LD      D,B      
+
+; Random number seed
+4FF5: 12 23 44 1D            
+4FF9: 27 4D 2D 13            
+
+; Game variables
+4FFD: 00                                  
+4FFE: 00                                  
+4FFF: 00                                  
+5000: 00                                  
+5001: 00                                  
+5002: 00                                  
+5003: 00                                  
+5004: 00                                  
+5005: 00                                  
+5006: 00                                  
+5007: 00                                  
+5008: 00                                  
+5009: 00                                  
+500A: 00                                  
+500B: 00                                  
+500C: 00                                  
+500D: 00                                  
+500E: 00                                  
+500F: 00                                  
+5010: 00                                  
+5011: 00                                  
+5012: 00                                  
+5013: 00                                  
+5014: 00                                  
+5015: 00                                  
+5016: 00                                  
+5017: 00                                  
+5018: 00                                  
+5019: 00                                  
+501A: 00                                  
+501B: 00                                  
+501C: 00                                
+501D: 00                              
+501E: 00                                
+501F: 00                              
+5020: 1D                         
+5021: 00                               
+5022: 00                              
+5023: 81                        
+5024: 22 68 48       
+5027: 50               
 ```
        
 ## Feedback Prompts
@@ -1838,7 +2041,7 @@ FeedbackPrompts:
 503E: 08 3F 50 48 52 41 53 45 3F
 ```
 
-```                 
+```code                 
 5047: D4 00 00       CALL    NC,$0000        
 504A: 00             NOP                     
 504B: 00             NOP                     
@@ -1867,81 +2070,55 @@ FeedbackPrompts:
 5062: 00             NOP                     
 5063: 00             NOP                     
 5064: 00             NOP                     
-5065: 00             NOP                     
-5066: 19             ADD     HL,DE           
-5067: 49             LD      C,C             
-5068: 14             INC     D               
-5069: 4A             LD      C,D             
-506A: 25             DEC     H               
-506B: 4A             LD      C,D             
-506C: 2A 4A 3F       LD      HL,($3F4A)      
-506F: 4A             LD      C,D             
-5070: 3F             CCF                     
-5071: 4C             LD      C,H             
-5072: 65             LD      H,L             
-5073: 4A             LD      C,D             
-5074: 60             LD      H,B             
-5075: 4A             LD      C,D             
-5076: 9C             SBC     H               
-5077: 4A             LD      C,D             
-5078: BF             CP      A               
-5079: 4A             LD      C,D             
-507A: C9             RET                     
-507B: 4A             LD      C,D             
-507C: F4 48 3C       CALL    P,$3C48         
-507F: 4A             LD      C,D             
-5080: C7             RST     0X00            
-5081: 48             LD      C,B             
-5082: DD             ???                     
-5083: 48             LD      C,B             
-5084: D0             RET     NC              
-5085: 4A             LD      C,D             
-5086: DE 4A          SBC     $4A             
-5088: 54             LD      D,H             
-5089: 4B             LD      C,E             
-508A: 7C             LD      A,H             
-508B: 4B             LD      C,E             
-508C: EC 4A 9C       CALL    PE,$9C4A        
-508F: 4B             LD      C,E             
-5090: 86             ADD     A,(HL)          
-5091: 4B             LD      C,E             
-5092: 4A             LD      C,D             
-5093: 4B             LD      C,E             
-5094: A7             AND     A               
-5095: 4B             LD      C,E             
-5096: B7             OR      A               
-5097: 4B             LD      C,E             
-5098: 23             INC     HL              
-5099: 49             LD      C,C             
-509A: 40             LD      B,B             
-509B: 49             LD      C,C             
-509C: 50             LD      D,B             
-509D: 49             LD      C,C             
-509E: 60             LD      H,B             
-509F: 49             LD      C,C             
-50A0: 4F             LD      C,A             
-50A1: 4C             LD      C,H             
-50A2: 8F             ADC     A,A             
-50A3: 4C             LD      C,H             
-50A4: 47             LD      B,A             
-50A5: 4A             LD      C,D             
-50A6: 1F             RRA                     
-50A7: 4A             LD      C,D             
-50A8: 70             LD      (HL),B          
-50A9: 49             LD      C,C             
-50AA: AC             XOR     H               
-50AB: 4C             LD      C,H             
-50AC: D3 4C          OUT     ($4C),A         
-50AE: 04             INC     B               
-50AF: 4D             LD      C,L             
-50B0: F7             RST     0X30            
-50B1: 4C             LD      C,H             
-50B2: 06 4E          LD      B,$4E           
-50B4: 07             RLCA                    
-50B5: 4D             LD      C,L             
-50B6: BB             CP      E               
-50B7: 4D             LD      C,L             
-50B8: 00             NOP 
+5065: 00             NOP    
+```
+
+## Command Jump Table
+
+```code           
+CommandJumpTable:      
+5066: 19 49  ; 00 move_ACTIVE_and_look(room)
+5068: 14 4A  ; 01 is_in_pack_or_current_room(object)
+506A: 25 4A  ; 02 is_owned_by_ACTIVE(object)
+506C: 2A 4A  ; 03 is_located(room,object)
+506E: 3F 4A  ; 04 print(msg)
+5070: 3F 4C  ; 05 is_less_equal_last_random(value)
+5072: 65 4A  ; 06 print_inventory()
+5074: 60 4A  ; 07 print_room_description()
+5076: 9C 4A  ; 08 is_first_noun(object)
+5078: BF 4A  ; 09 compare_to_second_noun(object)
+507A: C9 4A  ; 0A compare_input_to(phrase)
+507C: F4 48  ; 0B switch:
+507E: 3C 4A  ; 0C fail()
+5080: C7 48  ; 0D while_pass:
+5082: DD 48  ; 0E while_fail:
+5084: D0 4A  ; 0F pick_up_VAR()
+5086: DE 4A  ; 10 drop_VAR()
+5088: 54 4B  ; 11 print_first_noun()
+508A: 7C 4B  ; 12 print_second_noun()
+508C: EC 4A  ; 13 process_phrase_by_room_first_second()
+508E: 9C 4B  ; 14 execute_and_reverse_status:
+5090: 86 4B  ; 15 check_VAR(bits)
+5092: 4A 4B  ; 16 print_VAR()
+5094: A7 4B  ; 17 move_to(object,room)
+5096: B7 4B  ; 18 is_VAR_owned_by_ACTIVE()
+5098: 23 49  ; 19 move_ACTIVE(room)
+509A: 40 49  ; 1A set_VAR_to_first_noun()
+509C: 50 49  ; 1B set_VAR_to_second_noun()
+509E: 60 49  ; 1C set_VAR(object)
+50A0: 4F 4C  ; 1D attack_VAR(points)
+50A2: 8F 4C  ; 1E swap(object_a,object_b)
+50A4: 47 4A  ; 1F print2(msg)
+50A6: 1F 4A  ; 20 is_ACTIVE_this(object)
+50A8: 70 49  ; 21 execute_phrase(phrase,first_noun,second_noun)
+50AA: AC 4C  ; 22 is_less_equal_health(points)
+50AC: D3 4C  ; 23 heal_VAR(points)
+50AE: 04 4D  ; 24 endless_loop()
+50B0: F7 4C  ; 25 restart_game()
+50B2: 06 4E  ; 26 print_score()
+50B4: 07 4D  ; 27 load_game()
+50B6: BB 4D  ; 28 save_game()
+50B8: 00
 ```
 
 ## Phrase List
@@ -2071,7 +2248,7 @@ PhraseList:
 
 # Input Word tables
 
-```   
+```code  
 InputWordTables:
 ; --- IGNORES ---
 52C2: 00
@@ -2228,11 +2405,18 @@ InputWordTables:
 5644: 06 41 52 4F 55 4E 44 0B   ; AROUND   0B
 564C: 02 4F 4E 0C               ; ON       0C
 5650: 00
+;
+;
+;
+;
+;
+;
+;
 ```
 
 ## Object Data
 
-```
+```code
 ; 5651 - 681F
 ObjectData:
 5651: 00 91 CB                                                         ; size=11CB
@@ -2247,7 +2431,7 @@ ObjectData:
 567B:     E3 B8 F3 8C 06 4F FF BE                                      ;     SMALL BOTTLE
 5683:   07 18                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 5685:     0D 16                                                        ;     while_pass: size=0016
-5687:       0A 11                                                      ;       compare_input_to(phrase) phrase="11: OPEN    *       u.......  *         "
+5687:       0A 11                                                      ;       compare_input_to(phrase) phrase="11: OPEN    u.......  *       *         "
 5689:       04 12                                                      ;       print(msg) size=0012
 568B:         5F BE B9 14 46 C0 4B 5E C3 B5 EF 8D 13 47 C2 16          ;         THE BOTTLE IS ALREADY OPEN.
 569B:         A7 61                                                    ;         ~
@@ -2263,25 +2447,25 @@ ObjectData:
 56A9:     E9 B3                                                        ;     RUG
 56AB:   07 3F                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 56AD:     0B 3D 0A                                                     ;     switch(compare_input_to(phrase)): size=003D
-56B0:       0C                                                         ;       compare_input_to(phrase) phrase="0C: LOOK    UNDER   *         u.......  "
+56B0:       0C                                                         ;       compare_input_to(phrase) phrase="0C: LOOK    *         UNDER   u.......  "
 56B1:       01                                                         ;       IF_NOT_GOTO address=56B3
 56B2:         8C                                                       ;         8C(PrintDiscoverPit)
-56B3:       36                                                         ;       compare_input_to(phrase) phrase="36: CLIMB   IN      *         *         "
+56B3:       36                                                         ;       compare_input_to(phrase) phrase="36: CLIMB   *         IN      *         "
 56B4:       01                                                         ;       IF_NOT_GOTO address=56B6
 56B5:         8A                                                       ;         8A(DeathByRugSpike)
 56B6:       33                                                         ;       compare_input_to(phrase) phrase=??? Phrase 33 not found
 56B7:       01                                                         ;       IF_NOT_GOTO address=56B9
 56B8:         8A                                                       ;         8A(DeathByRugSpike)
-56B9:       34                                                         ;       compare_input_to(phrase) phrase="34: JUMP    OVER    *         u.......  "
+56B9:       34                                                         ;       compare_input_to(phrase) phrase="34: JUMP    *         OVER    u.......  "
 56BA:       01                                                         ;       IF_NOT_GOTO address=56BC
 56BB:         8A                                                       ;         8A(DeathByRugSpike)
-56BC:       35                                                         ;       compare_input_to(phrase) phrase="35: JUMP    ON      *         u.......  "
+56BC:       35                                                         ;       compare_input_to(phrase) phrase="35: JUMP    *         ON      u.......  "
 56BD:       01                                                         ;       IF_NOT_GOTO address=56BF
 56BE:         8B                                                       ;         8B(DeathByHiddenRugSpike)
-56BF:       2D                                                         ;       compare_input_to(phrase) phrase="2D: PULL    UP      *         u.......  "
+56BF:       2D                                                         ;       compare_input_to(phrase) phrase="2D: PULL    *         UP      u.......  "
 56C0:       01                                                         ;       IF_NOT_GOTO address=56C2
 56C1:         8C                                                       ;         8C(PrintDiscoverPit)
-56C2:       26                                                         ;       compare_input_to(phrase) phrase="26: GO      AROUND  *         u.......  "
+56C2:       26                                                         ;       compare_input_to(phrase) phrase="26: GO      *         AROUND  u.......  "
 56C3:       28                                                         ;       IF_NOT_GOTO address=56EC
 56C4:         04 26                                                    ;         print(msg) size=0026
 56C6:           C7 DE D3 14 E6 96 16 EE DB 72 E9 B3 66 17 76 B1        ;           YOU CAN'T, THE RUG STRETCHES ALL THE WAY
@@ -2296,13 +2480,13 @@ ObjectData:
 56F6:   07 54                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 56F8:     0E 52                                                        ;     while_fail: size=0052
 56FA:       0D 22                                                      ;       while_pass: size=0022
-56FC:         0A 08                                                    ;         compare_input_to(phrase) phrase="08: READ    *       .....X..  *         "
+56FC:         0A 08                                                    ;         compare_input_to(phrase) phrase="08: READ    .....X..  *       *         "
 56FE:         04 1E                                                    ;         print(msg) size=001E
 5700:           5F BE D3 14 13 B4 C5 98 C0 16 82 17 46 5E 44 A0        ;           THE CARVINGS ON THE DOOR SAY, "DO NOT EN
 5710:           53 17 B3 E0 49 1B 99 16 07 BC BF 9A 1C B5              ;           TER."
 571E:       0D 2C                                                      ;       while_pass: size=002C
 5720:         14                                                       ;         execute_and_reverse_status:
-5721:         0A 0B                                                    ;         compare_input_to(phrase) phrase="0B: LOOK    AT      *         u.......  "
+5721:         0A 0B                                                    ;         compare_input_to(phrase) phrase="0B: LOOK    *         AT      u.......  "
 5723:         04 27                                                    ;         print(msg) size=0027
 5725:           C7 DE C6 22 9B 15 5B CA 6B BF 2B 6E 6B BF 5F BE        ;           YOU'LL HAVE TO GO TO THE EAST SIDE OF TH
 5735:           23 15 F3 B9 46 B8 51 5E 96 64 DB 72 01 B3 56 90        ;           E ROOM TO DO THAT.
@@ -2315,7 +2499,7 @@ ObjectData:
 5753:     5F BE 5B B1 4B 7B 01 68 0A 58 2F 62 2E                       ;     THERE IS FOOD HERE.
 5760:   07 11                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 5762:     0D 0F                                                        ;     while_pass: size=000F
-5764:       0A 15                                                      ;       compare_input_to(phrase) phrase="15: EAT     *       u.......  *         "
+5764:       0A 15                                                      ;       compare_input_to(phrase) phrase="15: EAT     u.......  *       *         "
 5766:       04 04                                                      ;       print(msg) size=0004
 5768:         F4 4F AB A2                                              ;         BURP!
 576C:       17 05 00                                                   ;       move_to(object,room) object=05(FOOD) room=00(Room_00)
@@ -2331,7 +2515,7 @@ ObjectData:
 577F:     FB B9 67 C0                                                  ;     STATUE
 5783:   07 05                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 5785:     0D 03                                                        ;     while_pass: size=0003
-5787:       0A 12                                                      ;       compare_input_to(phrase) phrase="12: PULL    *       u.......  *         "
+5787:       0A 12                                                      ;       compare_input_to(phrase) phrase="12: PULL    u.......  *       *         "
 5789:       8D                                                         ;       8D(PrintStatueTooHeavy)
 578A:   03 18                                                          ;   03 DESCRIPTION
 578C:     5F BE 66 17 8F 49 4B 5E C8 B5 DB 46 AB 98 5F BE              ;     THE STATUE IS FACING THE EAST DOOR.
@@ -2344,7 +2528,7 @@ ObjectData:
 57AB:     FB B9 67 C0                                                  ;     STATUE
 57AF:   07 05                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 57B1:     0D 03                                                        ;     while_pass: size=0003
-57B3:       0A 12                                                      ;       compare_input_to(phrase) phrase="12: PULL    *       u.......  *         "
+57B3:       0A 12                                                      ;       compare_input_to(phrase) phrase="12: PULL    u.......  *       *         "
 57B5:       8D                                                         ;       8D(PrintStatueTooHeavy)
 57B6:   03 18                                                          ;   03 DESCRIPTION
 57B8:     5F BE 66 17 8F 49 4B 5E C8 B5 DB 46 AB 98 5F BE              ;     THE STATUE IS FACING THE WEST DOOR.
@@ -2360,7 +2544,7 @@ ObjectData:
 57ED:     3E 6E 14 58 91 7A                                            ;     GOLD RING
 57F3:   07 21                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 57F5:     0D 1F                                                        ;     while_pass: size=001F
-57F7:       0A 08                                                      ;       compare_input_to(phrase) phrase="08: READ    *       .....X..  *         "
+57F7:       0A 08                                                      ;       compare_input_to(phrase) phrase="08: READ    .....X..  *       *         "
 57F9:       04 1B                                                      ;       print(msg) size=001B
 57FB:         5F BE D0 15 64 B7 EE 7A C0 7A 2F 17 0D 47 FC ED          ;         THE INSCRIPTION READS, "RING OF MOTION."
 580B:         10 B2 D1 6A 8F 64 03 A1 27 A0 22                         ;         ~
@@ -2373,7 +2557,7 @@ ObjectData:
 582D:     4B 4A AB 98 63 98 03 B1 2E                                   ;     ~
 5836:   07 18                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 5838:     0D 16                                                        ;     while_pass: size=0016
-583A:       0A 08                                                      ;       compare_input_to(phrase) phrase="08: READ    *       .....X..  *         "
+583A:       0A 08                                                      ;       compare_input_to(phrase) phrase="08: READ    .....X..  *       *         "
 583C:       04 12                                                      ;       print(msg) size=0012
 583E:         2C 1D 5F A0 D3 B3 B8 16 43 16 57 63 28 54 BD 5F          ;         "PROPERTY OF LIEYUCHNEBST"
 584E:         23 BC                                                    ;         ~
@@ -2390,7 +2574,7 @@ ObjectData:
 5891:     09 B7 DB 63                                                  ;     ~
 5895:   07 24                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 5897:     0D 22                                                        ;     while_pass: size=0022
-5899:       0A 0B                                                      ;       compare_input_to(phrase) phrase="0B: LOOK    AT      *         u.......  "
+5899:       0A 0B                                                      ;       compare_input_to(phrase) phrase="0B: LOOK    *         AT      u.......  "
 589B:       04 1E                                                      ;       print(msg) size=001E
 589D:         5F BE 5B B1 EA 48 94 5F D6 B5 C4 9C 46 5E 07 B2          ;         THERE APPEARS TO BE DRIED BLOOD ON HIS C
 58AD:         04 58 81 8D 11 58 8A 96 4B 7B BB 54 C9 D2                ;         LAWS!
@@ -2407,13 +2591,13 @@ ObjectData:
 58FE:     6F 62                                                        ;     ~
 5900:   07 10                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 5902:     0B 0E 0A                                                     ;     switch(compare_input_to(phrase)): size=000E
-5905:       12                                                         ;       compare_input_to(phrase) phrase="12: PULL    *       u.......  *         "
+5905:       12                                                         ;       compare_input_to(phrase) phrase="12: PULL    u.......  *       *         "
 5906:       01                                                         ;       IF_NOT_GOTO address=5908
 5907:         8E                                                       ;         8E(PrintMoveAlter)
-5908:       0C                                                         ;       compare_input_to(phrase) phrase="0C: LOOK    UNDER   *         u.......  "
+5908:       0C                                                         ;       compare_input_to(phrase) phrase="0C: LOOK    *         UNDER   u.......  "
 5909:       01                                                         ;       IF_NOT_GOTO address=590B
 590A:         8E                                                       ;         8E(PrintMoveAlter)
-590B:       38                                                         ;       compare_input_to(phrase) phrase="38: CLIMB   UNDER   *         u.......  "
+590B:       38                                                         ;       compare_input_to(phrase) phrase="38: CLIMB   *         UNDER   u.......  "
 590C:       05                                                         ;       IF_NOT_GOTO address=5912
 590D:         0D 03                                                    ;         while_pass: size=0003
 590F:           00 A5                                                  ;           move_ACTIVE_and_look(room) room=A5(Secret passage)
@@ -2440,21 +2624,21 @@ ObjectData:
 598A:     5B 5E 3F A1                                                  ;     ~
 598E:   07 55                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 5990:     0B 53 0A                                                     ;     switch(compare_input_to(phrase)): size=0053
-5993:       11                                                         ;       compare_input_to(phrase) phrase="11: OPEN    *       u.......  *         "
+5993:       11                                                         ;       compare_input_to(phrase) phrase="11: OPEN    u.......  *       *         "
 5994:       20                                                         ;       IF_NOT_GOTO address=59B5
 5995:         04 1E                                                    ;         print(msg) size=001E
 5997:           5F BE 73 15 F5 BD 94 14 4E 5E 5D 9E 16 60 51 18        ;           THE GATES ARE LOCKED, YOU CAN NOT OPEN T
 59A7:           45 C2 83 48 06 9A C2 16 83 61 5F BE DB 95              ;           HEM.
-59B5:       36                                                         ;       compare_input_to(phrase) phrase="36: CLIMB   IN      *         *         "
+59B5:       36                                                         ;       compare_input_to(phrase) phrase="36: CLIMB   *         IN      *         "
 59B6:       10                                                         ;       IF_NOT_GOTO address=59C7
 59B7:         04 0E                                                    ;         print(msg) size=000E
 59B9:           5F BE 73 15 F5 BD 94 14 45 5E 85 8D 17 60              ;           THE GATES ARE CLOSED.
-59C7:       17                                                         ;       compare_input_to(phrase) phrase="17: CLIMB   *       u.......  *         "
+59C7:       17                                                         ;       compare_input_to(phrase) phrase="17: CLIMB   u.......  *       *         "
 59C8:       19                                                         ;       IF_NOT_GOTO address=59E2
 59C9:         04 17                                                    ;         print(msg) size=0017
 59CB:           5F BE 73 15 F5 BD 94 14 56 5E 2B A0 F1 B8 02 A1        ;           THE GATES ARE TOO SMOOTH TO CLIMB.
 59DB:           89 17 DE 14 64 7A 2E                                   ;           ~
-59E2:       34                                                         ;       compare_input_to(phrase) phrase="34: JUMP    OVER    *         u.......  "
+59E2:       34                                                         ;       compare_input_to(phrase) phrase="34: JUMP    *         OVER    u.......  "
 59E3:       01                                                         ;       IF_NOT_GOTO address=59E5
 59E4:         89                                                       ;         89(PrintCantJumpThatFar)
 59E5:   02 08                                                          ;   02 SHORT_NAME
@@ -2470,7 +2654,7 @@ ObjectData:
 5A0C:     0F A0 F3 17 17 8D                                            ;     ~
 5A12:   07 36                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 5A14:     0D 34                                                        ;     while_pass: size=0034
-5A16:       0A 12                                                      ;       compare_input_to(phrase) phrase="12: PULL    *       u.......  *         "
+5A16:       0A 12                                                      ;       compare_input_to(phrase) phrase="12: PULL    u.......  *       *         "
 5A18:       04 2F                                                      ;       print(msg) size=002F
 5A1A:         56 45 D2 B0 09 15 A3 A0 5F A0 8B 9A B9 46 5B CA          ;         A TRAP DOOR OPENS ABOVE YOU.  GOLD DUST
 5A2A:         C7 DE 3B F4 3E 6E 06 58 66 C6 53 15 0D 8D 82 17          ;         FILLS THE ROOM AND DROWNS YOU.
@@ -2487,7 +2671,7 @@ ObjectData:
 5A65:     6C 4D F7 62 E6 8B 3F 16 74 CA                                ;     BEJEWELED LEVER
 5A6F:   07 1D                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 5A71:     0D 1B                                                        ;     while_pass: size=001B
-5A73:       0A 12                                                      ;       compare_input_to(phrase) phrase="12: PULL    *       u.......  *         "
+5A73:       0A 12                                                      ;       compare_input_to(phrase) phrase="12: PULL    u.......  *       *         "
 5A75:       04 17                                                      ;       print(msg) size=0017
 5A77:         5F BE 3F 16 74 CA D3 14 90 96 CE 9C 11 A0 23 62          ;         THE LEVER CAN NO LONGER BE PULLED.
 5A87:         5B 4D 6E A7 E6 8B 2E                                     ;         ~
@@ -2497,7 +2681,7 @@ ObjectData:
 5A91: 91 00 84                                                         ; room=91 scorePoints=00 bits=84
 5A94:   07 80 98                                                       ;   07 COMMAND HANDLING IF FIRST NOUN
 5A97:     0D 80 95                                                     ;     while_pass: size=0095
-5A9A:       0A 08                                                      ;       compare_input_to(phrase) phrase="08: READ    *       .....X..  *         "
+5A9A:       0A 08                                                      ;       compare_input_to(phrase) phrase="08: READ    .....X..  *       *         "
 5A9C:       04 80 90                                                   ;       print(msg) size=0090
 5A9F:         9E C5 BE 9F 33 17 1F 54 CE B5 1B 79 56 D1 90 73          ;         UNTOLD RICHES LIE WITHIN REACH, HERE- TO
 5AAF:         2F 17 DA 46 0A EE 2F 62 D6 E7 C3 9C 7B 9B 19 87          ;         ANY KNOWING, LIVING CREATURE. BE WARY T
@@ -2523,7 +2707,7 @@ ObjectData:
 5B6F:     10 53 FF 5A                                                  ;     CANDLE
 5B73:   07 52                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 5B75:     0B 50 0A                                                     ;     switch(compare_input_to(phrase)): size=0050
-5B78:       14                                                         ;       compare_input_to(phrase) phrase="14: LIGHT   WITH    u...A...  u...A...  "
+5B78:       14                                                         ;       compare_input_to(phrase) phrase="14: LIGHT   u...A...  WITH    u...A...  "
 5B79:       34                                                         ;       IF_NOT_GOTO address=5BAE
 5B7A:         0E 32                                                    ;         while_fail: size=0032
 5B7C:           0D 2F                                                  ;           while_pass: size=002F
@@ -2534,7 +2718,7 @@ ObjectData:
 5B95:               33 70 55 45 A7 D0 15 BC B0 53 12 BC 37 62 96 5F    ;               PERMEATES THE ROOM.
 5BA5:               4B 62 5F BE 39 17 FF 9F                            ;               ~
 5BAD:           88                                                     ;           88(PrintTheNOUNIsNotBurning)
-5BAE:       15                                                         ;       compare_input_to(phrase) phrase="15: EAT     *       u.......  *         "
+5BAE:       15                                                         ;       compare_input_to(phrase) phrase="15: EAT     u.......  *       *         "
 5BAF:       17                                                         ;       IF_NOT_GOTO address=5BC7
 5BB0:         0D 15                                                    ;         while_pass: size=0015
 5BB2:           04 12                                                  ;           print(msg) size=0012
@@ -2555,18 +2739,18 @@ ObjectData:
 5BF1:       0D 1C                                                      ;       while_pass: size=001C
 5BF3:         0E 04                                                    ;         while_fail: size=0004
 5BF5:           0A 13                                                  ;           compare_input_to(phrase) phrase=??? Phrase 13 not found
-5BF7:           0A 14                                                  ;           compare_input_to(phrase) phrase="14: LIGHT   WITH    u...A...  u...A...  "
+5BF7:           0A 14                                                  ;           compare_input_to(phrase) phrase="14: LIGHT   u...A...  WITH    u...A...  "
 5BF9:         04 14                                                    ;         print(msg) size=0014
 5BFB:           5F BE D3 14 46 98 4B 5E C3 B5 EF 8D 13 47 BF 14        ;           THE CANDLE IS ALREADY BURNING.
 5C0B:           D3 B2 CF 98                                            ;           ~
 5C0F:       0D 19                                                      ;       while_pass: size=0019
-5C11:         0A 16                                                    ;         compare_input_to(phrase) phrase="16: DROP    OUT     *         u...A...  "
+5C11:         0A 16                                                    ;         compare_input_to(phrase) phrase="16: DROP    *         OUT     u...A...  "
 5C13:         1E 11 12                                                 ;         swap(object_a,object_b) object_a=(CANDLE)11 object_b=12(CANDLE)
 5C16:         04 12                                                    ;         print(msg) size=0012
 5C18:           5F BE D3 14 46 98 4B 5E C7 B5 43 D9 C7 98 5A 7B        ;           THE CANDLE IS EXTINGUISHED.
 5C28:           17 60                                                  ;           ~
 5C2A:       0D 1C                                                      ;       while_pass: size=001C
-5C2C:         0A 15                                                    ;         compare_input_to(phrase) phrase="15: EAT     *       u.......  *         "
+5C2C:         0A 15                                                    ;         compare_input_to(phrase) phrase="15: EAT     u.......  *       *         "
 5C2E:         04 18                                                    ;         print(msg) size=0018
 5C30:           C7 DE 2F 17 46 48 55 DB 87 74 B3 8B 76 A7 D6 15        ;           YOU REALLY SHOULD PUT IT OUT FIRST.
 5C40:           C7 16 08 BC 3D 7B 9B C1                                ;           ~
@@ -2601,7 +2785,7 @@ ObjectData:
 5C93: 92 00 84                                                         ; room=92 scorePoints=00 bits=84
 5C96:   07 5B                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 5C98:     0D 59                                                        ;     while_pass: size=0059
-5C9A:       0A 08                                                      ;       compare_input_to(phrase) phrase="08: READ    *       .....X..  *         "
+5C9A:       0A 08                                                      ;       compare_input_to(phrase) phrase="08: READ    .....X..  *       *         "
 5C9C:       04 55                                                      ;       print(msg) size=0055
 5C9E:         9E 7A D6 9C DB 72 70 C0 6E 98 30 15 F4 BD D6 B5          ;         INTO THE TUNNEL ENTERS THE SEEKER, BRAVE
 5CAE:         DB 72 A7 B7 B4 85 04 EE D8 B0 53 61 90 14 19 58          ;         LY AND WISELY HE GOES. FOR HE WILL RECOG
@@ -2626,18 +2810,18 @@ ObjectData:
 5D39:       0D 1B                                                      ;       while_pass: size=001B
 5D3B:         0E 04                                                    ;         while_fail: size=0004
 5D3D:           0A 13                                                  ;           compare_input_to(phrase) phrase=??? Phrase 13 not found
-5D3F:           0A 14                                                  ;           compare_input_to(phrase) phrase="14: LIGHT   WITH    u...A...  u...A...  "
+5D3F:           0A 14                                                  ;           compare_input_to(phrase) phrase="14: LIGHT   u...A...  WITH    u...A...  "
 5D41:         04 13                                                    ;         print(msg) size=0013
 5D43:           5F BE 3B 16 D3 93 4B 7B 4C 48 86 5F 44 DB 38 C6        ;           THE LAMP IS ALREADY BURNING.
 5D53:           91 7A 2E                                               ;           ~
 5D56:       0B 6D 0A                                                   ;       switch(compare_input_to(phrase)): size=006D
-5D59:         16                                                       ;         compare_input_to(phrase) phrase="16: DROP    OUT     *         u...A...  "
+5D59:         16                                                       ;         compare_input_to(phrase) phrase="16: DROP    *         OUT     u...A...  "
 5D5A:         12                                                       ;         IF_NOT_GOTO address=5D6D
 5D5B:           0D 10                                                  ;           while_pass: size=0010
 5D5D:             1E 28 14                                             ;             swap(object_a,object_b) object_a=(LAMP)28 object_b=14(LAMP)
 5D60:             04 0B                                                ;             print(msg) size=000B
 5D62:               5F BE 3B 16 D3 93 4B 7B 36 A1 2E                   ;               THE LAMP IS OUT.
-5D6D:         18                                                       ;         compare_input_to(phrase) phrase="18: RUB     *       u.......  *         "
+5D6D:         18                                                       ;         compare_input_to(phrase) phrase="18: RUB     u.......  *       *         "
 5D6E:         2D                                                       ;         IF_NOT_GOTO address=5D9C
 5D6F:           0D 2B                                                  ;           while_pass: size=002B
 5D71:             04 26                                                ;             print(msg) size=0026
@@ -2645,7 +2829,7 @@ ObjectData:
 5D83:               66 C6 9B 15 5B CA E4 B3 66 4D D6 15 82 17 59 5E    ;               IT THE WRONG WAY!
 5D93:               00 B3 D9 6A 39 4A                                  ;               ~
 5D99:             1E 28 14                                             ;             swap(object_a,object_b) object_a=(LAMP)28 object_b=14(LAMP)
-5D9C:         08                                                       ;         compare_input_to(phrase) phrase="08: READ    *       .....X..  *         "
+5D9C:         08                                                       ;         compare_input_to(phrase) phrase="08: READ    .....X..  *       *         "
 5D9D:         27                                                       ;         IF_NOT_GOTO address=5DC5
 5D9E:           04 25                                                  ;           print(msg) size=0025
 5DA0:             5F BE 3B 16 D3 93 4B 7B 48 55 2F 62 19 58 82 7B      ;             THE LAMP IS COVERED WITH TARNISH AND YOU
@@ -2664,7 +2848,7 @@ ObjectData:
 5DF5:   3C 3C                                                          ;   maxHitPoints=3C currentHitPoints=3C
 5DF7:   07 80 B3                                                       ;   07 COMMAND HANDLING IF FIRST NOUN
 5DFA:     0B 80 B0 0A                                                  ;     switch(compare_input_to(phrase)): size=00B0
-5DFE:       09                                                         ;       compare_input_to(phrase) phrase="09: ATTACK  WITH    ...P....  .v......  "
+5DFE:       09                                                         ;       compare_input_to(phrase) phrase="09: ATTACK  ...P....  WITH    .v......  "
 5DFF:       80 9A                                                      ;       IF_NOT_GOTO address=5E9A
 5E01:         0D 80 97                                                 ;         while_pass: size=0097
 5E04:           1A                                                     ;           set_VAR_to_first_noun()
@@ -2698,7 +2882,7 @@ ObjectData:
 5E7E:                   74 CA F3 5F 79 68 4A 90 4B 7B F6 4E EB DA 4F 45;                   ODY! A MAGNIFICENT BLOW!
 5E8E:                   80 47 53 79 B0 53 04 BC 89 8D 21               ;                   ~
 5E99:                 1D FF                                            ;                 attack_VAR(points) points=FF
-5E9B:       15                                                         ;       compare_input_to(phrase) phrase="15: EAT     *       u.......  *         "
+5E9B:       15                                                         ;       compare_input_to(phrase) phrase="15: EAT     u.......  *       *         "
 5E9C:       10                                                         ;       IF_NOT_GOTO address=5EAD
 5E9D:         04 0E                                                    ;         print(msg) size=000E
 5E9F:           76 4D F4 BD 1B 16 F3 8C 73 7B 14 67 F1 B9              ;           BETTER KILL IT FIRST!
@@ -2709,18 +2893,18 @@ ObjectData:
 5EB7:           14                                                     ;           execute_and_reverse_status:
 5EB8:           01 1D                                                  ;           is_in_pack_or_current_room(object) object=1D(PLAYER)
 5EBA:           0B 19 0A                                               ;           switch(compare_input_to(phrase)): size=0019
-5EBD:             04                                                   ;             compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+5EBD:             04                                                   ;             compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 5EBE:             04                                                   ;             IF_NOT_GOTO address=5EC3
-5EBF:               21 04 00 00                                        ;               execute_phrase(phrase,first_noun,second_noun) phrase="04: WEST    *       *         *         " firstNoun=00 secondNoun=00
-5EC3:             03                                                   ;             compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+5EBF:               21 04 00 00                                        ;               execute_phrase(phrase,first_noun,second_noun) phrase="04: WEST    *         *       *         " firstNoun=00 secondNoun=00
+5EC3:             03                                                   ;             compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 5EC4:             04                                                   ;             IF_NOT_GOTO address=5EC9
-5EC5:               21 03 00 00                                        ;               execute_phrase(phrase,first_noun,second_noun) phrase="03: EAST    *       *         *         " firstNoun=00 secondNoun=00
-5EC9:             01                                                   ;             compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+5EC5:               21 03 00 00                                        ;               execute_phrase(phrase,first_noun,second_noun) phrase="03: EAST    *         *       *         " firstNoun=00 secondNoun=00
+5EC9:             01                                                   ;             compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 5ECA:             04                                                   ;             IF_NOT_GOTO address=5ECF
-5ECB:               21 01 00 00                                        ;               execute_phrase(phrase,first_noun,second_noun) phrase="01: NORTH   *       *         *         " firstNoun=00 secondNoun=00
-5ECF:             02                                                   ;             compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+5ECB:               21 01 00 00                                        ;               execute_phrase(phrase,first_noun,second_noun) phrase="01: NORTH   *         *       *         " firstNoun=00 secondNoun=00
+5ECF:             02                                                   ;             compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 5ED0:             04                                                   ;             IF_NOT_GOTO address=5ED5
-5ED1:               21 02 00 00                                        ;               execute_phrase(phrase,first_noun,second_noun) phrase="02: SOUTH   *       *         *         " firstNoun=00 secondNoun=00
+5ED1:               21 02 00 00                                        ;               execute_phrase(phrase,first_noun,second_noun) phrase="02: SOUTH   *         *       *         " firstNoun=00 secondNoun=00
 5ED5:           1F 12                                                  ;           print2(msg) size=0012
 5ED7:             5F BE 57 17 1F B3 B3 9A 74 A7 27 BA DB B5 1B A1      ;             THE SERPENT PURSUES YOU AND
 5EE7:             8E 48                                                ;             ~
@@ -2770,7 +2954,7 @@ ObjectData:
 5FA9:     D1 B5 96 96 DB 72 89 67 C7 A0                                ;     ~
 5FB3:   07 15                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 5FB5:     0D 13                                                        ;     while_pass: size=0013
-5FB7:       0A 15                                                      ;       compare_input_to(phrase) phrase="15: EAT     *       u.......  *         "
+5FB7:       0A 15                                                      ;       compare_input_to(phrase) phrase="15: EAT     u.......  *       *         "
 5FB9:       04 0F                                                      ;       print(msg) size=000F
 5FBB:         A8 77 4E 5E E6 A0 7B 16 92 14 F6 A4 7F 7B 21             ;         I'VE LOST MY APPETITE!
 5FCA:   02 08                                                          ;   02 SHORT_NAME
@@ -2790,7 +2974,7 @@ ObjectData:
 5FF6:     07 B3 57 98                                                  ;     ~
 5FFA:   07 14                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 5FFC:     0D 12                                                        ;     while_pass: size=0012
-5FFE:       0A 08                                                      ;       compare_input_to(phrase) phrase="08: READ    *       .....X..  *         "
+5FFE:       0A 08                                                      ;       compare_input_to(phrase) phrase="08: READ    .....X..  *       *         "
 6000:       04 0E                                                      ;       print(msg) size=000E
 6002:         2C 1D D5 47 F3 5F 5B 4D C3 B0 1D 85 5C C0                ;         "PRAISED BE RAAKA-TU"
 6010:   02 03                                                          ;   02 SHORT_NAME
@@ -2806,7 +2990,7 @@ ObjectData:
 603B:     90 BE 55 DB 86 8D                                            ;     TINY SLOT
 6041:   06 53                                                          ;   06 COMMAND HANDLING IF SECOND NOUN
 6043:     0D 51                                                        ;     while_pass: size=0051
-6045:       0A 0F                                                      ;       compare_input_to(phrase) phrase="0F: DROP    IN      u.......  u.......  "
+6045:       0A 0F                                                      ;       compare_input_to(phrase) phrase="0F: DROP    u.......  IN      u.......  "
 6047:       0E 4D                                                      ;       while_fail: size=004D
 6049:         0D 24                                                    ;         while_pass: size=0024
 604B:           14                                                     ;           execute_and_reverse_status:
@@ -2835,7 +3019,7 @@ ObjectData:
 60BB:     14 53 66 CA 67 16 D3 B9 9B 6C                                ;     CARVED MESSAGE
 60C5:   07 24                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 60C7:     0D 22                                                        ;     while_pass: size=0022
-60C9:       0A 08                                                      ;       compare_input_to(phrase) phrase="08: READ    *       .....X..  *         "
+60C9:       0A 08                                                      ;       compare_input_to(phrase) phrase="08: READ    .....X..  *       *         "
 60CB:       04 1E                                                      ;       print(msg) size=001E
 60CD:         5F BE 67 16 D3 B9 9B 6C 1B B7 33 BB 93 1D 5B 66          ;         THE MESSAGE SAYS, "SAFE PASSAGE FOR A PR
 60DD:         55 A4 09 B7 48 5E A3 A0 52 45 05 B2 DC 63                ;         ICE."
@@ -2849,7 +3033,7 @@ ObjectData:
 6101:     81 5B 52                                                     ;     DOOR
 6104:   07 22                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 6106:     0D 20                                                        ;     while_pass: size=0020
-6108:       0A 11                                                      ;       compare_input_to(phrase) phrase="11: OPEN    *       u.......  *         "
+6108:       0A 11                                                      ;       compare_input_to(phrase) phrase="11: OPEN    u.......  *       *         "
 610A:       17 1B 00                                                   ;       move_to(object,room) object=1B(DOOR) room=00(Room_00)
 610D:       17 1C 90                                                   ;       move_to(object,room) object=1C(DOOR) room=90(North end central hall)
 6110:       04 16                                                      ;       print(msg) size=0016
@@ -2866,7 +3050,7 @@ ObjectData:
 6143:     81 5B 52                                                     ;     DOOR
 6146:   07 12                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 6148:     0D 10                                                        ;     while_pass: size=0010
-614A:       0A 11                                                      ;       compare_input_to(phrase) phrase="11: OPEN    *       u.......  *         "
+614A:       0A 11                                                      ;       compare_input_to(phrase) phrase="11: OPEN    u.......  *       *         "
 614C:       04 0C                                                      ;       print(msg) size=000C
 614E:         8D 7B 8E 14 63 B1 FB 5C 5F A0 1B 9C                      ;         ITS ALREADY OPEN.
 ;
@@ -2912,7 +3096,7 @@ ObjectData:
 621B:   FF FF                                                          ;   maxHitPoints=FF currentHitPoints=FF
 621D:   07 22                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 621F:     0D 20                                                        ;     while_pass: size=0020
-6221:       0A 15                                                      ;       compare_input_to(phrase) phrase="15: EAT     *       u.......  *         "
+6221:       0A 15                                                      ;       compare_input_to(phrase) phrase="15: EAT     u.......  *       *         "
 6223:       04 1C                                                      ;       print(msg) size=001C
 6225:         DD 72 F3 8C 96 5F 51 18 4E C2 11 A0 AF 14 04 68          ;         HE'LL EAT YOU LONG BEFORE YOU'LL EAT HIM
 6235:         5B 5E 1D A1 F3 8C 96 5F A3 15 EB 8F                      ;         !
@@ -2988,7 +3172,7 @@ ObjectData:
 63C2:     2C 49 DB E0                                                  ;     ~
 63C6:   07 1D                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 63C8:     0D 1B                                                        ;     while_pass: size=001B
-63CA:       0A 15                                                      ;       compare_input_to(phrase) phrase="15: EAT     *       u.......  *         "
+63CA:       0A 15                                                      ;       compare_input_to(phrase) phrase="15: EAT     u.......  *       *         "
 63CC:       04 17                                                      ;       print(msg) size=0017
 63CE:         7A C4 CB 06 82 17 95 7A BD 15 49 90 50 9F D6 6A          ;         UGH! I THINK I'M GOING TO BE SICK!
 63DE:         C4 9C 55 5E DD 78 21                                     ;         ~
@@ -3000,12 +3184,12 @@ ObjectData:
 63F2: FF 00 80                                                         ; room=FF scorePoints=00 bits=80
 63F5:   07 28                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 63F7:     0B 26 0A                                                     ;     switch(compare_input_to(phrase)): size=0026
-63FA:       17                                                         ;       compare_input_to(phrase) phrase="17: CLIMB   *       u.......  *         "
+63FA:       17                                                         ;       compare_input_to(phrase) phrase="17: CLIMB   u.......  *       *         "
 63FB:       20                                                         ;       IF_NOT_GOTO address=641C
 63FC:         04 1E                                                    ;         print(msg) size=001E
 63FE:           C7 DE D3 14 90 96 F3 A0 C3 54 A3 91 5F BE F3 17        ;           YOU CAN NOT CLIMB THE WALL, IT IS TOO SM
 640E:           16 8D D6 15 D5 15 89 17 D5 9C C1 93 77 BE              ;           OOTH.
-641C:       34                                                         ;       compare_input_to(phrase) phrase="34: JUMP    OVER    *         u.......  "
+641C:       34                                                         ;       compare_input_to(phrase) phrase="34: JUMP    *         OVER    u.......  "
 641D:       01                                                         ;       IF_NOT_GOTO address=641F
 641E:         89                                                       ;         89(PrintCantJumpThatFar)
 641F:   02 03                                                          ;   02 SHORT_NAME
@@ -3164,7 +3348,7 @@ ObjectData:
 65F2:     01 B3 4D                                                     ;     ROOM
 65F5:   07 28                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 65F7:     0D 26                                                        ;     while_pass: size=0026
-65F9:       0A 0B                                                      ;       compare_input_to(phrase) phrase="0B: LOOK    AT      *         u.......  "
+65F9:       0A 0B                                                      ;       compare_input_to(phrase) phrase="0B: LOOK    *         AT      u.......  "
 65FB:       01 25                                                      ;       is_in_pack_or_current_room(object) object=25(GEM)
 65FD:       04 20                                                      ;       print(msg) size=0020
 65FF:         C7 DE 03 15 61 B7 74 CA 7B 14 EF A6 51 54 4B C6          ;         YOU DISCOVER A PRECIOUS GEM HIDDEN IN A
@@ -3179,7 +3363,7 @@ ObjectData:
 662B:     5F BE 5B B1 4B 7B 4E 45 72 48 9F 15 7F B1                    ;     THERE IS A LAMP HERE.
 6639:   07 48                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 663B:     0B 46 0A                                                     ;     switch(compare_input_to(phrase)): size=0046
-663E:       14                                                         ;       compare_input_to(phrase) phrase="14: LIGHT   WITH    u...A...  u...A...  "
+663E:       14                                                         ;       compare_input_to(phrase) phrase="14: LIGHT   u...A...  WITH    u...A...  "
 663F:       1C                                                         ;       IF_NOT_GOTO address=665C
 6640:         0E 1A                                                    ;         while_fail: size=001A
 6642:           0D 17                                                  ;           while_pass: size=0017
@@ -3188,12 +3372,12 @@ ObjectData:
 6649:             04 10                                                ;             print(msg) size=0010
 664B:               5F BE 3B 16 D3 93 4B 7B 09 9A BF 14 D3 B2 CF 98    ;               THE LAMP IS NOW BURNING.
 665B:           88                                                     ;           88(PrintTheNOUNIsNotBurning)
-665C:       18                                                         ;       compare_input_to(phrase) phrase="18: RUB     *       u.......  *         "
+665C:       18                                                         ;       compare_input_to(phrase) phrase="18: RUB     u.......  *       *         "
 665D:       19                                                         ;       IF_NOT_GOTO address=6677
 665E:         04 17                                                    ;         print(msg) size=0017
 6660:           29 D1 09 15 51 18 56 C2 90 73 DB 83 1B A1 2F 49        ;           WHO DO YOU THINK YOU ARE, ALADDIN?
 6670:           03 EE 46 8B 90 5A 3F                                   ;           ~
-6677:       08                                                         ;       compare_input_to(phrase) phrase="08: READ    *       .....X..  *         "
+6677:       08                                                         ;       compare_input_to(phrase) phrase="08: READ    .....X..  *       *         "
 6678:       0A                                                         ;       IF_NOT_GOTO address=6683
 6679:         04 08                                                    ;         print(msg) size=0008
 667B:           49 1B 99 16 14 BC A4 C3                                ;           "DO NOT RUB"
@@ -3317,21 +3501,21 @@ ObjectData:
 6755: 82 00 80                                                         ; room=82 scorePoints=00 bits=80
 6758:   07 28                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 675A:     0B 26 0A                                                     ;     switch(compare_input_to(phrase)): size=0026
-675D:       36                                                         ;       compare_input_to(phrase) phrase="36: CLIMB   IN      *         *         "
+675D:       36                                                         ;       compare_input_to(phrase) phrase="36: CLIMB   *         IN      *         "
 675E:       01                                                         ;       IF_NOT_GOTO address=6760
 675F:         8A                                                       ;         8A(DeathByRugSpike)
 6760:       33                                                         ;       compare_input_to(phrase) phrase=??? Phrase 33 not found
 6761:       01                                                         ;       IF_NOT_GOTO address=6763
 6762:         8A                                                       ;         8A(DeathByRugSpike)
-6763:       34                                                         ;       compare_input_to(phrase) phrase="34: JUMP    OVER    *         u.......  "
+6763:       34                                                         ;       compare_input_to(phrase) phrase="34: JUMP    *         OVER    u.......  "
 6764:       01                                                         ;       IF_NOT_GOTO address=6766
 6765:         8A                                                       ;         8A(DeathByRugSpike)
-6766:       26                                                         ;       compare_input_to(phrase) phrase="26: GO      AROUND  *         u.......  "
+6766:       26                                                         ;       compare_input_to(phrase) phrase="26: GO      *         AROUND  u.......  "
 6767:       17                                                         ;       IF_NOT_GOTO address=677F
 6768:         04 15                                                    ;         print(msg) size=0015
 676A:           5F BE 5B B1 4B 7B EB 99 1B D0 94 14 30 A1 16 58        ;           THERE IS NO WAY AROUND THE PIT.
 677A:           DB 72 96 A5 2E                                         ;           ~
-677F:       17                                                         ;       compare_input_to(phrase) phrase="17: CLIMB   *       u.......  *         "
+677F:       17                                                         ;       compare_input_to(phrase) phrase="17: CLIMB   u.......  *       *         "
 6780:       01                                                         ;       IF_NOT_GOTO address=6782
 6781:         8A                                                       ;         8A(DeathByRugSpike)
 6782:   02 02                                                          ;   02 SHORT_NAME
@@ -3350,7 +3534,7 @@ ObjectData:
 6799:     4E 48 23 62                                                  ;     ALTER
 679D:   07 2E                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
 679F:     0D 2C                                                        ;     while_pass: size=002C
-67A1:       0A 12                                                      ;       compare_input_to(phrase) phrase="12: PULL    *       u.......  *         "
+67A1:       0A 12                                                      ;       compare_input_to(phrase) phrase="12: PULL    u.......  *       *         "
 67A3:       04 28                                                      ;       print(msg) size=0028
 67A5:         C7 DE D3 14 90 96 F3 A0 C8 93 56 5E DB 72 4E 48          ;         YOU CAN NOT MOVE THE ALTER FROM BENEATH
 67B5:         23 62 79 68 44 90 8F 61 82 49 D6 15 0B EE 0B BC          ;         IT, IT IS TOO HEAVY.
@@ -3394,7 +3578,7 @@ RoomDescriptions:
 6877:     CF 98                                                        ;     ~
 6879:   04 07                                                          ;   04 COMMAND
 687B:     0B 05 0A                                                     ;     switch(compare_input_to(phrase)): size=0005
-687E:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+687E:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 687F:       02                                                         ;       IF_NOT_GOTO address=6882
 6880:         00 82                                                    ;         move_ACTIVE_and_look(room) room=82(Oriental rug)
 ;
@@ -3414,13 +3598,13 @@ RoomDescriptions:
 6929:     35 49 DB 16 D3 B9 9B 6C 1B D0 2E                             ;     ~
 6934:   04 13                                                          ;   04 COMMAND
 6936:     0B 11 0A                                                     ;     switch(compare_input_to(phrase)): size=0011
-6939:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+6939:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 693A:       02                                                         ;       IF_NOT_GOTO address=693D
 693B:         00 81                                                    ;         move_ACTIVE_and_look(room) room=81(Small room granite walls)
-693D:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+693D:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 693E:       02                                                         ;       IF_NOT_GOTO address=6941
 693F:         00 83                                                    ;         move_ACTIVE_and_look(room) room=83(Dark passage)
-6941:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+6941:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 6942:       06                                                         ;       IF_NOT_GOTO address=6949
 6943:         0D 04                                                    ;         while_pass: size=0004
 6945:           20 1D                                                  ;           is_ACTIVE_this(object) object=1D(PLAYER)
@@ -3435,10 +3619,10 @@ RoomDescriptions:
 696E:     16 58 D6 9C DB 72 47 B9 77 BE                                ;     ~
 6978:   04 0B                                                          ;   04 COMMAND
 697A:     0B 09 0A                                                     ;     switch(compare_input_to(phrase)): size=0009
-697D:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+697D:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 697E:       02                                                         ;       IF_NOT_GOTO address=6981
 697F:         00 82                                                    ;         move_ACTIVE_and_look(room) room=82(Oriental rug)
-6981:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+6981:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 6982:       02                                                         ;       IF_NOT_GOTO address=6985
 6983:         00 84                                                    ;         move_ACTIVE_and_look(room) room=84(Top of a passage)
 ;
@@ -3453,13 +3637,13 @@ RoomDescriptions:
 69DA:     66 62 2E                                                     ;     ~
 69DD:   04 0F                                                          ;   04 COMMAND
 69DF:     0B 0D 0A                                                     ;     switch(compare_input_to(phrase)): size=000D
-69E2:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+69E2:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 69E3:       02                                                         ;       IF_NOT_GOTO address=69E6
 69E4:         00 83                                                    ;         move_ACTIVE_and_look(room) room=83(Dark passage)
-69E6:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+69E6:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 69E7:       02                                                         ;       IF_NOT_GOTO address=69EA
 69E8:         00 A1                                                    ;         move_ACTIVE_and_look(room) room=A1(Small room)
-69EA:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+69EA:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 69EB:       02                                                         ;       IF_NOT_GOTO address=69EE
 69EC:         00 85                                                    ;         move_ACTIVE_and_look(room) room=85(T-shaped room 1)
 ;
@@ -3471,13 +3655,13 @@ RoomDescriptions:
 6A13:     8E 48 F7 17 17 BA                                            ;     ~
 6A19:   04 19                                                          ;   04 COMMAND
 6A1B:     0B 17 0A                                                     ;     switch(compare_input_to(phrase)): size=0017
-6A1E:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+6A1E:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 6A1F:       02                                                         ;       IF_NOT_GOTO address=6A22
 6A20:         00 84                                                    ;         move_ACTIVE_and_look(room) room=84(Top of a passage)
-6A22:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+6A22:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 6A23:       02                                                         ;       IF_NOT_GOTO address=6A26
 6A24:         00 86                                                    ;         move_ACTIVE_and_look(room) room=86(Gray stone walls 1)
-6A26:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+6A26:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 6A27:       0C                                                         ;       IF_NOT_GOTO address=6A34
 6A28:         0D 0A                                                    ;         while_pass: size=000A
 6A2A:           00 88                                                  ;           move_ACTIVE_and_look(room) room=88(Triangular room)
@@ -3495,10 +3679,10 @@ RoomDescriptions:
 6A59:     CE B5 86 5F 99 16 C2 B3 90 14 07 58 66 49 2E                 ;     ~
 6A68:   04 0B                                                          ;   04 COMMAND
 6A6A:     0B 09 0A                                                     ;     switch(compare_input_to(phrase)): size=0009
-6A6D:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+6A6D:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 6A6E:       02                                                         ;       IF_NOT_GOTO address=6A71
 6A6F:         00 85                                                    ;         move_ACTIVE_and_look(room) room=85(T-shaped room 1)
-6A71:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+6A71:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 6A72:       02                                                         ;       IF_NOT_GOTO address=6A75
 6A73:         00 87                                                    ;         move_ACTIVE_and_look(room) room=87(Round room high walls 1)
 ;
@@ -3510,13 +3694,13 @@ RoomDescriptions:
 6A9A:     F0 A4 91 7A D5 15 89 17 82 17 59 5E 66 62 2E                 ;     ~
 6AA9:   04 10                                                          ;   04 COMMAND
 6AAB:     0B 0E 0A                                                     ;     switch(compare_input_to(phrase)): size=000E
-6AAE:       05                                                         ;       compare_input_to(phrase) phrase="05: GET     *       ..C.....  *         "
+6AAE:       05                                                         ;       compare_input_to(phrase) phrase="05: GET     ..C.....  *       *         "
 6AAF:       07                                                         ;       IF_NOT_GOTO address=6AB7
 6AB0:         0D 05                                                    ;         while_pass: size=0005
 6AB2:           08 08                                                  ;           is_first_noun(object) object=08(RING)
-6AB4:           19 8C                                                  ;           move_ACTIVE(room) room=8CRound room high walls 2
+6AB4:           19 8C                                                  ;           move_ACTIVE(room) room=8C(Round room high walls 2)
 6AB6:           0C                                                     ;           fail()
-6AB7:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+6AB7:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 6AB8:       02                                                         ;       IF_NOT_GOTO address=6ABB
 6AB9:         00 86                                                    ;         move_ACTIVE_and_look(room) room=86(Gray stone walls 1)
 ;
@@ -3531,7 +3715,7 @@ RoomDescriptions:
 6B10:     8E 48 94 14 09 B3 2E                                         ;     ~
 6B17:   04 1D                                                          ;   04 COMMAND
 6B19:     0B 1B 0A                                                     ;     switch(compare_input_to(phrase)): size=001B
-6B1C:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+6B1C:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 6B1D:       0B                                                         ;       IF_NOT_GOTO address=6B29
 6B1E:         0E 09                                                    ;         while_fail: size=0009
 6B20:           0D 05                                                  ;           while_pass: size=0005
@@ -3539,7 +3723,7 @@ RoomDescriptions:
 6B24:             01 07                                                ;             is_in_pack_or_current_room(object) object=07(STATUE)
 6B26:             82                                                   ;             82(DeathByStatue)
 6B27:           00 85                                                  ;           move_ACTIVE_and_look(room) room=85(T-shaped room 1)
-6B29:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+6B29:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 6B2A:       0B                                                         ;       IF_NOT_GOTO address=6B36
 6B2B:         0E 09                                                    ;         while_fail: size=0009
 6B2D:           0D 05                                                  ;           while_pass: size=0005
@@ -3557,7 +3741,7 @@ RoomDescriptions:
 6B6B:     47 5E 66 49 90 14 19 58 66 62 F3 17 0D 8D 2E                 ;     ~
 6B7A:   04 19                                                          ;   04 COMMAND
 6B7C:     0B 17 0A                                                     ;     switch(compare_input_to(phrase)): size=0017
-6B7F:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+6B7F:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 6B80:       0C                                                         ;       IF_NOT_GOTO address=6B8D
 6B81:         0D 0A                                                    ;         while_pass: size=000A
 6B83:           00 88                                                  ;           move_ACTIVE_and_look(room) room=88(Triangular room)
@@ -3566,10 +3750,10 @@ RoomDescriptions:
 6B88:             20 1D                                                ;             is_ACTIVE_this(object) object=1D(PLAYER)
 6B8A:             01 06                                                ;             is_in_pack_or_current_room(object) object=06(STATUE)
 6B8C:             82                                                   ;             82(DeathByStatue)
-6B8D:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+6B8D:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 6B8E:       02                                                         ;       IF_NOT_GOTO address=6B91
 6B8F:         00 90                                                    ;         move_ACTIVE_and_look(room) room=90(North end central hall)
-6B91:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+6B91:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 6B92:       02                                                         ;       IF_NOT_GOTO address=6B95
 6B93:         00 8A                                                    ;         move_ACTIVE_and_look(room) room=8A(T-shaped room 2)
 ;
@@ -3581,13 +3765,13 @@ RoomDescriptions:
 6BBA:     8E 48 F7 17 17 BA                                            ;     ~
 6BC0:   04 0F                                                          ;   04 COMMAND
 6BC2:     0B 0D 0A                                                     ;     switch(compare_input_to(phrase)): size=000D
-6BC5:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+6BC5:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 6BC6:       02                                                         ;       IF_NOT_GOTO address=6BC9
 6BC7:         00 89                                                    ;         move_ACTIVE_and_look(room) room=89(South end central hall)
-6BC9:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+6BC9:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 6BCA:       02                                                         ;       IF_NOT_GOTO address=6BCD
 6BCB:         00 8B                                                    ;         move_ACTIVE_and_look(room) room=8B(Grey stone walls 2)
-6BCD:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+6BCD:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 6BCE:       02                                                         ;       IF_NOT_GOTO address=6BD1
 6BCF:         00 8D                                                    ;         move_ACTIVE_and_look(room) room=8D(Petite chamber)
 ;
@@ -3599,10 +3783,10 @@ RoomDescriptions:
 6BF6:     CE B5 86 5F 99 16 C2 B3 90 14 07 58 66 49 2E                 ;     ~
 6C05:   04 0B                                                          ;   04 COMMAND
 6C07:     0B 09 0A                                                     ;     switch(compare_input_to(phrase)): size=0009
-6C0A:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+6C0A:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 6C0B:       02                                                         ;       IF_NOT_GOTO address=6C0E
 6C0C:         00 8A                                                    ;         move_ACTIVE_and_look(room) room=8A(T-shaped room 2)
-6C0E:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+6C0E:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 6C0F:       02                                                         ;       IF_NOT_GOTO address=6C12
 6C10:         00 8C                                                    ;         move_ACTIVE_and_look(room) room=8C(Round room high walls 2)
 ;
@@ -3614,13 +3798,13 @@ RoomDescriptions:
 6C37:     F0 A4 91 7A D5 15 89 17 82 17 59 5E 66 62 2E                 ;     ~
 6C46:   04 10                                                          ;   04 COMMAND
 6C48:     0B 0E 0A                                                     ;     switch(compare_input_to(phrase)): size=000E
-6C4B:       05                                                         ;       compare_input_to(phrase) phrase="05: GET     *       ..C.....  *         "
+6C4B:       05                                                         ;       compare_input_to(phrase) phrase="05: GET     ..C.....  *       *         "
 6C4C:       07                                                         ;       IF_NOT_GOTO address=6C54
 6C4D:         0D 05                                                    ;         while_pass: size=0005
 6C4F:           08 08                                                  ;           is_first_noun(object) object=08(RING)
-6C51:           19 87                                                  ;           move_ACTIVE(room) room=87Round room high walls 1
+6C51:           19 87                                                  ;           move_ACTIVE(room) room=87(Round room high walls 1)
 6C53:           0C                                                     ;           fail()
-6C54:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+6C54:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 6C55:       02                                                         ;       IF_NOT_GOTO address=6C58
 6C56:         00 8B                                                    ;         move_ACTIVE_and_look(room) room=8B(Grey stone walls 2)
 ;
@@ -3633,10 +3817,10 @@ RoomDescriptions:
 6C8D:     65 49 77 47 89 17 82 17 59 5E 66 62 2E                       ;     ~
 6C9A:   04 0B                                                          ;   04 COMMAND
 6C9C:     0B 09 0A                                                     ;     switch(compare_input_to(phrase)): size=0009
-6C9F:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+6C9F:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 6CA0:       02                                                         ;       IF_NOT_GOTO address=6CA3
 6CA1:         00 8A                                                    ;         move_ACTIVE_and_look(room) room=8A(T-shaped room 2)
-6CA3:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+6CA3:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 6CA4:       02                                                         ;       IF_NOT_GOTO address=6CA7
 6CA5:         00 8E                                                    ;         move_ACTIVE_and_look(room) room=8E(Smells of decaying flesh)
 ;
@@ -3649,10 +3833,10 @@ RoomDescriptions:
 6CDD:     04 9A 53 BE 8E 48 61 17 82 C6 2E                             ;     ~
 6CE8:   04 62                                                          ;   04 COMMAND
 6CEA:     0B 60 0A                                                     ;     switch(compare_input_to(phrase)): size=0060
-6CED:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+6CED:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 6CEE:       02                                                         ;       IF_NOT_GOTO address=6CF1
 6CEF:         00 8D                                                    ;         move_ACTIVE_and_look(room) room=8D(Petite chamber)
-6CF1:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+6CF1:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 6CF2:       59                                                         ;       IF_NOT_GOTO address=6D4C
 6CF3:         0E 57                                                    ;         while_fail: size=0057
 6CF5:           0D 1D                                                  ;           while_pass: size=001D
@@ -3680,7 +3864,7 @@ RoomDescriptions:
 6D71:     47 5E 96 D7 89 17 82 17 55 5E 36 A1 9B 76                    ;     ~
 6D7F:   04 07                                                          ;   04 COMMAND
 6D81:     0B 05 0A                                                     ;     switch(compare_input_to(phrase)): size=0005
-6D84:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+6D84:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 6D85:       02                                                         ;       IF_NOT_GOTO address=6D88
 6D86:         00 8E                                                    ;         move_ACTIVE_and_look(room) room=8E(Smells of decaying flesh)
 ;
@@ -3695,13 +3879,13 @@ RoomDescriptions:
 6DDE:     C2 B3 F3 17 17 8D                                            ;     ~
 6DE4:   04 47                                                          ;   04 COMMAND
 6DE6:     0B 45 0A                                                     ;     switch(compare_input_to(phrase)): size=0045
-6DE9:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+6DE9:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 6DEA:       02                                                         ;       IF_NOT_GOTO address=6DED
 6DEB:         00 89                                                    ;         move_ACTIVE_and_look(room) room=89(South end central hall)
-6DED:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+6DED:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 6DEE:       02                                                         ;       IF_NOT_GOTO address=6DF1
 6DEF:         00 A0                                                    ;         move_ACTIVE_and_look(room) room=A0(Very small room)
-6DF1:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+6DF1:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 6DF2:       36                                                         ;       IF_NOT_GOTO address=6E29
 6DF3:         0E 34                                                    ;         while_fail: size=0034
 6DF5:           0D 14                                                  ;           while_pass: size=0014
@@ -3715,7 +3899,7 @@ RoomDescriptions:
 6E14:               5F BE 09 15 A3 A0 C9 54 B5 B7 AF 14 90 73 1B 58    ;               THE DOOR CLOSES BEHIND YOU.
 6E24:               3F A1                                              ;               ~
 6E26:             17 1C 00                                             ;             move_to(object,room) object=1C(DOOR) room=00(Room_00)
-6E29:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+6E29:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 6E2A:       02                                                         ;       IF_NOT_GOTO address=6E2D
 6E2B:         00 92                                                    ;         move_ACTIVE_and_look(room) room=92(Entrance long dark tunnel west)
 ;
@@ -3727,7 +3911,7 @@ RoomDescriptions:
 6E53:     9B 76                                                        ;     ~
 6E55:   04 68                                                          ;   04 COMMAND
 6E57:     0B 66 0A                                                     ;     switch(compare_input_to(phrase)): size=0066
-6E5A:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+6E5A:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 6E5B:       2F                                                         ;       IF_NOT_GOTO address=6E8B
 6E5C:         0E 2D                                                    ;         while_fail: size=002D
 6E5E:           0D 10                                                  ;           while_pass: size=0010
@@ -3740,7 +3924,7 @@ RoomDescriptions:
 6E77:             04 0F                                                ;             print(msg) size=000F
 6E79:               5F BE 09 15 A3 A0 C9 54 B5 B7 89 14 D0 47 2E       ;               THE DOOR CLOSES AGAIN.
 6E88:             17 1C 00                                             ;             move_to(object,room) object=1C(DOOR) room=00(Room_00)
-6E8B:       11                                                         ;       compare_input_to(phrase) phrase="11: OPEN    *       u.......  *         "
+6E8B:       11                                                         ;       compare_input_to(phrase) phrase="11: OPEN    u.......  *       *         "
 6E8C:       32                                                         ;       IF_NOT_GOTO address=6EBF
 6E8D:         0E 30                                                    ;         while_fail: size=0030
 6E8F:           0D 10                                                  ;           while_pass: size=0010
@@ -3764,10 +3948,10 @@ RoomDescriptions:
 6EF4:     7B 14 55 A4 09 B7 47 5E 66 49 2E                             ;     ~
 6EFF:   04 0B                                                          ;   04 COMMAND
 6F01:     0B 09 0A                                                     ;     switch(compare_input_to(phrase)): size=0009
-6F04:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+6F04:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 6F05:       02                                                         ;       IF_NOT_GOTO address=6F08
 6F06:         00 90                                                    ;         move_ACTIVE_and_look(room) room=90(North end central hall)
-6F08:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+6F08:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 6F09:       02                                                         ;       IF_NOT_GOTO address=6F0C
 6F0A:         00 93                                                    ;         move_ACTIVE_and_look(room) room=93(Dark tunnel)
 ;
@@ -3778,10 +3962,10 @@ RoomDescriptions:
 6F21:     57 61                                                        ;     ~
 6F23:   04 0B                                                          ;   04 COMMAND
 6F25:     0B 09 0A                                                     ;     switch(compare_input_to(phrase)): size=0009
-6F28:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+6F28:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 6F29:       02                                                         ;       IF_NOT_GOTO address=6F2C
 6F2A:         00 92                                                    ;         move_ACTIVE_and_look(room) room=92(Entrance long dark tunnel west)
-6F2C:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+6F2C:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 6F2D:       02                                                         ;       IF_NOT_GOTO address=6F30
 6F2E:         00 94                                                    ;         move_ACTIVE_and_look(room) room=94(Entrance long dark tunnel east)
 ;
@@ -3794,10 +3978,10 @@ RoomDescriptions:
 6F65:     7B 14 55 A4 09 B7 59 5E 66 62 2E                             ;     ~
 6F70:   04 18                                                          ;   04 COMMAND
 6F72:     0B 16 0A                                                     ;     switch(compare_input_to(phrase)): size=0016
-6F75:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+6F75:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 6F76:       02                                                         ;       IF_NOT_GOTO address=6F79
 6F77:         00 93                                                    ;         move_ACTIVE_and_look(room) room=93(Dark tunnel)
-6F79:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+6F79:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 6F7A:       0F                                                         ;       IF_NOT_GOTO address=6F8A
 6F7B:         0E 0D                                                    ;         while_fail: size=000D
 6F7D:           0D 09                                                  ;           while_pass: size=0009
@@ -3814,13 +3998,13 @@ RoomDescriptions:
 6F9F:     56 D1 03 71 5B 17 BE 98 47 5E 96 D7 23 15 17 BA              ;     IT EAST.
 6FAF:   04 0D                                                          ;   04 COMMAND
 6FB1:     0B 0B 0A                                                     ;     switch(compare_input_to(phrase)): size=000B
-6FB4:       36                                                         ;       compare_input_to(phrase) phrase="36: CLIMB   IN      *         *         "
+6FB4:       36                                                         ;       compare_input_to(phrase) phrase="36: CLIMB   *         IN      *         "
 6FB5:       01                                                         ;       IF_NOT_GOTO address=6FB7
 6FB6:         8F                                                       ;         8F(EnterSecretPassage)
-6FB7:       17                                                         ;       compare_input_to(phrase) phrase="17: CLIMB   *       u.......  *         "
+6FB7:       17                                                         ;       compare_input_to(phrase) phrase="17: CLIMB   u.......  *       *         "
 6FB8:       01                                                         ;       IF_NOT_GOTO address=6FBA
 6FB9:         8F                                                       ;         8F(EnterSecretPassage)
-6FBA:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+6FBA:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 6FBB:       02                                                         ;       IF_NOT_GOTO address=6FBE
 6FBC:         00 94                                                    ;         move_ACTIVE_and_look(room) room=94(Entrance long dark tunnel east)
 ;
@@ -3831,16 +4015,16 @@ RoomDescriptions:
 6FD3:     4F 59 0C A3 91 C5 FF 8B                                      ;     ~
 6FDB:   04 13                                                          ;   04 COMMAND
 6FDD:     0B 11 0A                                                     ;     switch(compare_input_to(phrase)): size=0011
-6FE0:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+6FE0:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 6FE1:       02                                                         ;       IF_NOT_GOTO address=6FE4
 6FE2:         00 A3                                                    ;         move_ACTIVE_and_look(room) room=A3(Dense damp dark jungle)
-6FE4:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+6FE4:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 6FE5:       02                                                         ;       IF_NOT_GOTO address=6FE8
 6FE6:         00 A4                                                    ;         move_ACTIVE_and_look(room) room=A4(Damp dark dense jungle)
-6FE8:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+6FE8:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 6FE9:       02                                                         ;       IF_NOT_GOTO address=6FEC
 6FEA:         00 97                                                    ;         move_ACTIVE_and_look(room) room=97(Dark dense damp jungle)
-6FEC:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+6FEC:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 6FED:       02                                                         ;       IF_NOT_GOTO address=6FF0
 6FEE:         00 A4                                                    ;         move_ACTIVE_and_look(room) room=A4(Damp dark dense jungle)
 ;
@@ -3851,16 +4035,16 @@ RoomDescriptions:
 7005:     4F 59 0C A3 91 C5 FF 8B                                      ;     ~
 700D:   04 13                                                          ;   04 COMMAND
 700F:     0B 11 0A                                                     ;     switch(compare_input_to(phrase)): size=0011
-7012:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+7012:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 7013:       02                                                         ;       IF_NOT_GOTO address=7016
 7014:         00 A2                                                    ;         move_ACTIVE_and_look(room) room=A2(Dark damp dense jungle)
-7016:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+7016:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 7017:       02                                                         ;       IF_NOT_GOTO address=701A
 7018:         00 96                                                    ;         move_ACTIVE_and_look(room) room=96(Dense dark damp jungle)
-701A:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+701A:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 701B:       02                                                         ;       IF_NOT_GOTO address=701E
 701C:         00 A3                                                    ;         move_ACTIVE_and_look(room) room=A3(Dense damp dark jungle)
-701E:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+701E:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 701F:       02                                                         ;       IF_NOT_GOTO address=7022
 7020:         00 98                                                    ;         move_ACTIVE_and_look(room) room=98(See east wall)
 ;
@@ -3872,16 +4056,16 @@ RoomDescriptions:
 7047:     96 5F 7F 17 E6 93 DB 63                                      ;     ~
 704F:   04 13                                                          ;   04 COMMAND
 7051:     0B 11 0A                                                     ;     switch(compare_input_to(phrase)): size=0011
-7054:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+7054:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 7055:       02                                                         ;       IF_NOT_GOTO address=7058
 7056:         00 9B                                                    ;         move_ACTIVE_and_look(room) room=9B(See north wall)
-7058:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+7058:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 7059:       02                                                         ;       IF_NOT_GOTO address=705C
 705A:         00 99                                                    ;         move_ACTIVE_and_look(room) room=99(Stands south wall)
-705C:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+705C:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 705D:       02                                                         ;       IF_NOT_GOTO address=7060
 705E:         00 97                                                    ;         move_ACTIVE_and_look(room) room=97(Dark dense damp jungle)
-7060:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+7060:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 7061:       02                                                         ;       IF_NOT_GOTO address=7064
 7062:         00 9E                                                    ;         move_ACTIVE_and_look(room) room=9E(At east wall)
 ;
@@ -3893,16 +4077,16 @@ RoomDescriptions:
 7089:     83 64 84 15 96 5F 7F 17 E6 93 DB 63                          ;     ~
 7095:   04 13                                                          ;   04 COMMAND
 7097:     0B 11 0A                                                     ;     switch(compare_input_to(phrase)): size=0011
-709A:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+709A:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 709B:       02                                                         ;       IF_NOT_GOTO address=709E
 709C:         00 9F                                                    ;         move_ACTIVE_and_look(room) room=9F(At south wall)
-709E:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+709E:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 709F:       02                                                         ;       IF_NOT_GOTO address=70A2
 70A0:         00 96                                                    ;         move_ACTIVE_and_look(room) room=96(Dense dark damp jungle)
-70A2:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+70A2:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 70A3:       02                                                         ;       IF_NOT_GOTO address=70A6
 70A4:         00 98                                                    ;         move_ACTIVE_and_look(room) room=98(See east wall)
-70A6:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+70A6:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 70A7:       02                                                         ;       IF_NOT_GOTO address=70AA
 70A8:         00 9A                                                    ;         move_ACTIVE_and_look(room) room=9A(See bronze gates)
 ;
@@ -3916,16 +4100,16 @@ RoomDescriptions:
 70EF:     2E                                                           ;     ~
 70F0:   04 13                                                          ;   04 COMMAND
 70F2:     0B 11 0A                                                     ;     switch(compare_input_to(phrase)): size=0011
-70F5:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+70F5:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 70F6:       02                                                         ;       IF_NOT_GOTO address=70F9
 70F7:         00 9B                                                    ;         move_ACTIVE_and_look(room) room=9B(See north wall)
-70F9:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+70F9:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 70FA:       02                                                         ;       IF_NOT_GOTO address=70FD
 70FB:         00 99                                                    ;         move_ACTIVE_and_look(room) room=99(Stands south wall)
-70FD:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+70FD:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 70FE:       02                                                         ;       IF_NOT_GOTO address=7101
 70FF:         00 9C                                                    ;         move_ACTIVE_and_look(room) room=9C(Standing west entrance)
-7101:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+7101:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 7102:       02                                                         ;       IF_NOT_GOTO address=7105
 7103:         00 A4                                                    ;         move_ACTIVE_and_look(room) room=A4(Damp dark dense jungle)
 ;
@@ -3938,16 +4122,16 @@ RoomDescriptions:
 713A:     EF BD FF A5 2E                                               ;     ~
 713F:   04 13                                                          ;   04 COMMAND
 7141:     0B 11 0A                                                     ;     switch(compare_input_to(phrase)): size=0011
-7144:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+7144:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 7145:       02                                                         ;       IF_NOT_GOTO address=7148
 7146:         00 A2                                                    ;         move_ACTIVE_and_look(room) room=A2(Dark damp dense jungle)
-7148:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+7148:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 7149:       02                                                         ;       IF_NOT_GOTO address=714C
 714A:         00 9D                                                    ;         move_ACTIVE_and_look(room) room=9D(At north wall)
-714C:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+714C:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 714D:       02                                                         ;       IF_NOT_GOTO address=7150
 714E:         00 9A                                                    ;         move_ACTIVE_and_look(room) room=9A(See bronze gates)
-7150:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+7150:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 7151:       02                                                         ;       IF_NOT_GOTO address=7154
 7152:         00 98                                                    ;         move_ACTIVE_and_look(room) room=98(See east wall)
 ;
@@ -3959,13 +4143,13 @@ RoomDescriptions:
 7179:     7F 17 E6 93 DB 63                                            ;     ~
 717F:   04 0F                                                          ;   04 COMMAND
 7181:     0B 0D 0A                                                     ;     switch(compare_input_to(phrase)): size=000D
-7184:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+7184:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 7185:       02                                                         ;       IF_NOT_GOTO address=7188
 7186:         00 9D                                                    ;         move_ACTIVE_and_look(room) room=9D(At north wall)
-7188:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+7188:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 7189:       02                                                         ;       IF_NOT_GOTO address=718C
 718A:         00 9F                                                    ;         move_ACTIVE_and_look(room) room=9F(At south wall)
-718C:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+718C:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 718D:       02                                                         ;       IF_NOT_GOTO address=7190
 718E:         00 9A                                                    ;         move_ACTIVE_and_look(room) room=9A(See bronze gates)
 ;
@@ -3976,13 +4160,13 @@ RoomDescriptions:
 71A6:     9B 8F                                                        ;     ~
 71A8:   04 80 9B                                                       ;   04 COMMAND
 71AB:     0B 80 98 0A                                                  ;     switch(compare_input_to(phrase)): size=0098
-71AF:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+71AF:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 71B0:       02                                                         ;       IF_NOT_GOTO address=71B3
 71B1:         00 9B                                                    ;         move_ACTIVE_and_look(room) room=9B(See north wall)
-71B3:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+71B3:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 71B4:       02                                                         ;       IF_NOT_GOTO address=71B7
 71B5:         00 9E                                                    ;         move_ACTIVE_and_look(room) room=9E(At east wall)
-71B7:       17                                                         ;       compare_input_to(phrase) phrase="17: CLIMB   *       u.......  *         "
+71B7:       17                                                         ;       compare_input_to(phrase) phrase="17: CLIMB   u.......  *       *         "
 71B8:       80 88                                                      ;       IF_NOT_GOTO address=7241
 71BA:         0D 80 85                                                 ;         while_pass: size=0085
 71BD:           08 21                                                  ;           is_first_noun(object) object=21(VINE)
@@ -4010,7 +4194,7 @@ RoomDescriptions:
 721A:               4B 49 C7 DE DE 14 64 7A 16 EE DB 72 10 CB 49 5E    ;               AS YOU CLIMB, THE VINE GIVES WAY AND YOU
 722A:               CF 7B D9 B5 3B 4A 8E 48 51 18 48 C2 46 48 89 17    ;               FALL TO THE GROUND.
 723A:               82 17 49 5E 07 B3 57 98                            ;               ~
-7242:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+7242:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 7243:       02                                                         ;       IF_NOT_GOTO address=7246
 7244:         00 9C                                                    ;         move_ACTIVE_and_look(room) room=9C(Standing west entrance)
 ;
@@ -4021,13 +4205,13 @@ RoomDescriptions:
 725B:     2E                                                           ;     ~
 725C:   04 0F                                                          ;   04 COMMAND
 725E:     0B 0D 0A                                                     ;     switch(compare_input_to(phrase)): size=000D
-7261:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+7261:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 7262:       02                                                         ;       IF_NOT_GOTO address=7265
 7263:         00 9D                                                    ;         move_ACTIVE_and_look(room) room=9D(At north wall)
-7265:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+7265:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 7266:       02                                                         ;       IF_NOT_GOTO address=7269
 7267:         00 9F                                                    ;         move_ACTIVE_and_look(room) room=9F(At south wall)
-7269:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+7269:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 726A:       02                                                         ;       IF_NOT_GOTO address=726D
 726B:         00 98                                                    ;         move_ACTIVE_and_look(room) room=98(See east wall)
 ;
@@ -4038,13 +4222,13 @@ RoomDescriptions:
 7282:     9B 8F                                                        ;     ~
 7284:   04 0F                                                          ;   04 COMMAND
 7286:     0B 0D 0A                                                     ;     switch(compare_input_to(phrase)): size=000D
-7289:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+7289:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 728A:       02                                                         ;       IF_NOT_GOTO address=728D
 728B:         00 9C                                                    ;         move_ACTIVE_and_look(room) room=9C(Standing west entrance)
-728D:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+728D:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 728E:       02                                                         ;       IF_NOT_GOTO address=7291
 728F:         00 9E                                                    ;         move_ACTIVE_and_look(room) room=9E(At east wall)
-7291:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+7291:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 7292:       02                                                         ;       IF_NOT_GOTO address=7295
 7293:         00 99                                                    ;         move_ACTIVE_and_look(room) room=99(Stands south wall)
 ;
@@ -4055,7 +4239,7 @@ RoomDescriptions:
 72AA:     01 B3 DB 95                                                  ;     ~
 72AE:   04 07                                                          ;   04 COMMAND
 72B0:     0B 05 0A                                                     ;     switch(compare_input_to(phrase)): size=0005
-72B3:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+72B3:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 72B4:       02                                                         ;       IF_NOT_GOTO address=72B7
 72B5:         00 90                                                    ;         move_ACTIVE_and_look(room) room=90(North end central hall)
 ;
@@ -4066,7 +4250,7 @@ RoomDescriptions:
 72CC:     56 D1 03 71 5B 17 BE 98 47 5E 96 D7 23 15 17 BA              ;     IT EAST.
 72DC:   04 07                                                          ;   04 COMMAND
 72DE:     0B 05 0A                                                     ;     switch(compare_input_to(phrase)): size=0005
-72E1:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+72E1:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 72E2:       02                                                         ;       IF_NOT_GOTO address=72E5
 72E3:         00 84                                                    ;         move_ACTIVE_and_look(room) room=84(Top of a passage)
 ;
@@ -4077,16 +4261,16 @@ RoomDescriptions:
 72FA:     9D 61 4C 5E 91 C5 FF 8B                                      ;     ~
 7302:   04 13                                                          ;   04 COMMAND
 7304:     0B 11 0A                                                     ;     switch(compare_input_to(phrase)): size=0011
-7307:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+7307:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 7308:       02                                                         ;       IF_NOT_GOTO address=730B
 7309:         00 A4                                                    ;         move_ACTIVE_and_look(room) room=A4(Damp dark dense jungle)
-730B:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+730B:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 730C:       02                                                         ;       IF_NOT_GOTO address=730F
 730D:         00 96                                                    ;         move_ACTIVE_and_look(room) room=96(Dense dark damp jungle)
-730F:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+730F:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 7310:       02                                                         ;       IF_NOT_GOTO address=7313
 7311:         00 A3                                                    ;         move_ACTIVE_and_look(room) room=A3(Dense damp dark jungle)
-7313:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+7313:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 7314:       02                                                         ;       IF_NOT_GOTO address=7317
 7315:         00 97                                                    ;         move_ACTIVE_and_look(room) room=97(Dark dense damp jungle)
 ;
@@ -4097,16 +4281,16 @@ RoomDescriptions:
 732C:     54 59 CC 83 91 C5 FF 8B                                      ;     ~
 7334:   04 13                                                          ;   04 COMMAND
 7336:     0B 11 0A                                                     ;     switch(compare_input_to(phrase)): size=0011
-7339:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+7339:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 733A:       02                                                         ;       IF_NOT_GOTO address=733D
 733B:         00 A4                                                    ;         move_ACTIVE_and_look(room) room=A4(Damp dark dense jungle)
-733D:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+733D:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 733E:       02                                                         ;       IF_NOT_GOTO address=7341
 733F:         00 A2                                                    ;         move_ACTIVE_and_look(room) room=A2(Dark damp dense jungle)
-7341:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+7341:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 7342:       02                                                         ;       IF_NOT_GOTO address=7345
 7343:         00 96                                                    ;         move_ACTIVE_and_look(room) room=96(Dense dark damp jungle)
-7345:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+7345:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 7346:       02                                                         ;       IF_NOT_GOTO address=7349
 7347:         00 97                                                    ;         move_ACTIVE_and_look(room) room=97(Dark dense damp jungle)
 ;
@@ -4117,16 +4301,16 @@ RoomDescriptions:
 735E:     9D 61 4C 5E 91 C5 FF 8B                                      ;     ~
 7366:   04 13                                                          ;   04 COMMAND
 7368:     0B 11 0A                                                     ;     switch(compare_input_to(phrase)): size=0011
-736B:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+736B:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 736C:       02                                                         ;       IF_NOT_GOTO address=736F
 736D:         00 A3                                                    ;         move_ACTIVE_and_look(room) room=A3(Dense damp dark jungle)
-736F:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
+736F:       01                                                         ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
 7370:       02                                                         ;       IF_NOT_GOTO address=7373
 7371:         00 A2                                                    ;         move_ACTIVE_and_look(room) room=A2(Dark damp dense jungle)
-7373:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
+7373:       02                                                         ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
 7374:       02                                                         ;       IF_NOT_GOTO address=7377
 7375:         00 96                                                    ;         move_ACTIVE_and_look(room) room=96(Dense dark damp jungle)
-7377:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+7377:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 7378:       02                                                         ;       IF_NOT_GOTO address=737B
 7379:         00 A3                                                    ;         move_ACTIVE_and_look(room) room=A3(Dense damp dark jungle)
 ;
@@ -4137,7 +4321,7 @@ RoomDescriptions:
 7390:     D3 B9 9B 6C 23 D1 13 54 E3 8B 0B 5C 95 5F 9B C1              ;     S EAST.
 73A0:   04 07                                                          ;   04 COMMAND
 73A2:     0B 05 0A                                                     ;     switch(compare_input_to(phrase)): size=0005
-73A5:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
+73A5:       03                                                         ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
 73A6:       02                                                         ;       IF_NOT_GOTO address=73A9
 73A7:         00 A6                                                    ;         move_ACTIVE_and_look(room) room=A6(End of the passage)
 ;
@@ -4149,20 +4333,20 @@ RoomDescriptions:
 73CE:     DB 8B 83 7A 5F BE D7 14 43 7A CF 98                          ;     ~
 73DA:   04 1F                                                          ;   04 COMMAND
 73DC:     0B 1D 0A                                                     ;     switch(compare_input_to(phrase)): size=001D
-73DF:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+73DF:       04                                                         ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 73E0:       02                                                         ;       IF_NOT_GOTO address=73E3
 73E1:         00 A5                                                    ;         move_ACTIVE_and_look(room) room=A5(Secret passage)
-73E3:       17                                                         ;       compare_input_to(phrase) phrase="17: CLIMB   *       u.......  *         "
+73E3:       17                                                         ;       compare_input_to(phrase) phrase="17: CLIMB   u.......  *       *         "
 73E4:       05                                                         ;       IF_NOT_GOTO address=73EA
 73E5:         0D 03                                                    ;         while_pass: size=0003
 73E7:           08 2C                                                  ;           is_first_noun(object) object=2C(HOLE)
 73E9:           91                                                     ;           91(SealUpHole)
-73EA:       36                                                         ;       compare_input_to(phrase) phrase="36: CLIMB   IN      *         *         "
+73EA:       36                                                         ;       compare_input_to(phrase) phrase="36: CLIMB   *         IN      *         "
 73EB:       05                                                         ;       IF_NOT_GOTO address=73F1
 73EC:         0D 03                                                    ;         while_pass: size=0003
 73EE:           08 2C                                                  ;           is_first_noun(object) object=2C(HOLE)
 73F0:           91                                                     ;           91(SealUpHole)
-73F1:       37                                                         ;       compare_input_to(phrase) phrase="37: CLIMB   OUT     *         *         "
+73F1:       37                                                         ;       compare_input_to(phrase) phrase="37: CLIMB   *         OUT     *         "
 73F2:       05                                                         ;       IF_NOT_GOTO address=73F8
 73F3:         0D 03                                                    ;         while_pass: size=0003
 73F5:           08 2C                                                  ;           is_first_noun(object) object=2C(HOLE)
@@ -4174,16 +4358,16 @@ RoomDescriptions:
 
 # General Commands
 
-``` 
+```code 
 ; 73FB - 7BCB
 73FB: 00 87 CF                                                         ; size=07CF
 73FE: 0E 87 CC                                                         ; while_fail: size=07CC
 7401:   0D 2C                                                          ;   while_pass: size=002C
 7403:     0E 08                                                        ;     while_fail: size=0008
-7405:       0A 01                                                      ;       compare_input_to(phrase) phrase="01: NORTH   *       *         *         "
-7407:       0A 02                                                      ;       compare_input_to(phrase) phrase="02: SOUTH   *       *         *         "
-7409:       0A 03                                                      ;       compare_input_to(phrase) phrase="03: EAST    *       *         *         "
-740B:       0A 04                                                      ;       compare_input_to(phrase) phrase="04: WEST    *       *         *         "
+7405:       0A 01                                                      ;       compare_input_to(phrase) phrase="01: NORTH   *         *       *         "
+7407:       0A 02                                                      ;       compare_input_to(phrase) phrase="02: SOUTH   *         *       *         "
+7409:       0A 03                                                      ;       compare_input_to(phrase) phrase="03: EAST    *         *       *         "
+740B:       0A 04                                                      ;       compare_input_to(phrase) phrase="04: WEST    *         *       *         "
 740D:     0E 20                                                        ;     while_fail: size=0020
 740F:       13                                                         ;       process_phrase_by_room_first_second()
 7410:       0D 1D                                                      ;       while_pass: size=001D
@@ -4192,7 +4376,7 @@ RoomDescriptions:
 7424:           73 49 94 5A E6 5F C0 7A 2E                             ;           ~
 742D:         20 1D                                                    ;         is_ACTIVE_this(object) object=1D(PLAYER)
 742F:   0B 87 97 0A                                                    ;   switch(compare_input_to(phrase)): size=0797
-7433:     05                                                           ;     compare_input_to(phrase) phrase="05: GET     *       ..C.....  *         "
+7433:     05                                                           ;     compare_input_to(phrase) phrase="05: GET     ..C.....  *       *         "
 7434:     21                                                           ;     IF_NOT_GOTO address=7456
 7435:       0E 1F                                                      ;       while_fail: size=001F
 7437:         0D 19                                                    ;         while_pass: size=0019
@@ -4207,14 +4391,14 @@ RoomDescriptions:
 7453:         83                                                       ;         83(Manipulate)
 7454:         14                                                       ;         execute_and_reverse_status:
 7455:         0C                                                       ;         fail()
-7456:     06                                                           ;     compare_input_to(phrase) phrase="06: DROP    *       ..C.....  *         "
+7456:     06                                                           ;     compare_input_to(phrase) phrase="06: DROP    ..C.....  *       *         "
 7457:     0C                                                           ;     IF_NOT_GOTO address=7464
 7458:       0D 0A                                                      ;       while_pass: size=000A
 745A:         1A                                                       ;         set_VAR_to_first_noun()
 745B:         10                                                       ;         drop_VAR()
 745C:         04 06                                                    ;         print(msg) size=0006
 745E:           F9 5B 9F A6 9B 5D                                      ;           DROPPED.
-7464:     08                                                           ;     compare_input_to(phrase) phrase="08: READ    *       .....X..  *         "
+7464:     08                                                           ;     compare_input_to(phrase) phrase="08: READ    .....X..  *       *         "
 7465:     17                                                           ;     IF_NOT_GOTO address=747D
 7466:       0E 15                                                      ;       while_fail: size=0015
 7468:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4223,7 +4407,7 @@ RoomDescriptions:
 746D:             89 74 D3 14 9B 96 1B A1 63 B1 16 58 DB 72            ;             HOW CAN YOU READ THE
 747B:           11                                                     ;           print_first_noun()
 747C:           84                                                     ;           84(PrintPeriod)
-747D:     11                                                           ;     compare_input_to(phrase) phrase="11: OPEN    *       u.......  *         "
+747D:     11                                                           ;     compare_input_to(phrase) phrase="11: OPEN    u.......  *       *         "
 747E:     16                                                           ;     IF_NOT_GOTO address=7495
 747F:       0E 14                                                      ;       while_fail: size=0014
 7481:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4232,7 +4416,7 @@ RoomDescriptions:
 7486:             EB 99 0F A0 D3 14 91 96 F0 A4 82 17 45               ;             NO ONE CAN OPEN THE
 7493:           11                                                     ;           print_first_noun()
 7494:           84                                                     ;           84(PrintPeriod)
-7495:     12                                                           ;     compare_input_to(phrase) phrase="12: PULL    *       u.......  *         "
+7495:     12                                                           ;     compare_input_to(phrase) phrase="12: PULL    u.......  *       *         "
 7496:     21                                                           ;     IF_NOT_GOTO address=74B8
 7497:       0E 1F                                                      ;       while_fail: size=001F
 7499:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4243,7 +4427,7 @@ RoomDescriptions:
 74B1:           11                                                     ;           print_first_noun()
 74B2:           04 04                                                  ;           print(msg) size=0004
 74B4:             49 48 7F 98                                          ;             ALONE.
-74B8:     09                                                           ;     compare_input_to(phrase) phrase="09: ATTACK  WITH    ...P....  .v......  "
+74B8:     09                                                           ;     compare_input_to(phrase) phrase="09: ATTACK  ...P....  WITH    .v......  "
 74B9:     81 37                                                        ;     IF_NOT_GOTO address=75F1
 74BB:       0E 81 34                                                   ;       while_fail: size=0134
 74BE:         14                                                       ;         execute_and_reverse_status:
@@ -4335,10 +4519,10 @@ RoomDescriptions:
 75E7:             11                                                   ;             print_first_noun()
 75E8:             04 08                                                ;             print(msg) size=0008
 75EA:               4B 7B 92 C5 37 49 17 60                            ;               IS UNHARMED.
-75F2:     0A                                                           ;     compare_input_to(phrase) phrase="0A: LOOK    *       *         *         "
+75F2:     0A                                                           ;     compare_input_to(phrase) phrase="0A: LOOK    *         *       *         "
 75F3:     01                                                           ;     IF_NOT_GOTO address=75F5
 75F4:       07                                                         ;       print_room_description()
-75F5:     15                                                           ;     compare_input_to(phrase) phrase="15: EAT     *       u.......  *         "
+75F5:     15                                                           ;     compare_input_to(phrase) phrase="15: EAT     u.......  *       *         "
 75F6:     29                                                           ;     IF_NOT_GOTO address=7620
 75F7:       0E 27                                                      ;       while_fail: size=0027
 75F9:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4349,7 +4533,7 @@ RoomDescriptions:
 760C:           04 12                                                  ;           print(msg) size=0012
 760E:             47 D2 C8 8B F3 23 55 BD DB BD 41 6E 03 58 99 9B      ;             WOULDN'T TASTE GOOD ANYWAY.
 761E:             5F 4A                                                ;             ~
-7620:     17                                                           ;     compare_input_to(phrase) phrase="17: CLIMB   *       u.......  *         "
+7620:     17                                                           ;     compare_input_to(phrase) phrase="17: CLIMB   u.......  *       *         "
 7621:     51                                                           ;     IF_NOT_GOTO address=7673
 7622:       0E 4F                                                      ;       while_fail: size=004F
 7624:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4369,7 +4553,7 @@ RoomDescriptions:
 7662:           11                                                     ;           print_first_noun()
 7663:           04 0E                                                  ;           print(msg) size=000E
 7665:             73 7B 47 D2 C8 8B F3 23 EE 72 1B A3 3F A1            ;             IT WOULDN'T HELP YOU.
-7673:     16                                                           ;     compare_input_to(phrase) phrase="16: DROP    OUT     *         u...A...  "
+7673:     16                                                           ;     compare_input_to(phrase) phrase="16: DROP    *         OUT     u...A...  "
 7674:     16                                                           ;     IF_NOT_GOTO address=768B
 7675:       0E 14                                                      ;       while_fail: size=0014
 7677:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4379,7 +4563,7 @@ RoomDescriptions:
 767E:           11                                                     ;           print_first_noun()
 767F:           04 0A                                                  ;           print(msg) size=000A
 7681:             4B 7B 06 9A BF 14 D3 B2 CF 98                        ;             IS NOT BURNING.
-768B:     18                                                           ;     compare_input_to(phrase) phrase="18: RUB     *       u.......  *         "
+768B:     18                                                           ;     compare_input_to(phrase) phrase="18: RUB     u.......  *       *         "
 768C:     35                                                           ;     IF_NOT_GOTO address=76C2
 768D:       0E 33                                                      ;       while_fail: size=0033
 768F:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4397,7 +4581,7 @@ RoomDescriptions:
 76B0:           11                                                     ;           print_first_noun()
 76B1:           04 0F                                                  ;           print(msg) size=000F
 76B3:             81 8D CB 87 A5 94 04 71 8E 62 23 62 09 9A 2E         ;             LOOKS MUCH BETTER NOW.
-76C2:     0B                                                           ;     compare_input_to(phrase) phrase="0B: LOOK    AT      *         u.......  "
+76C2:     0B                                                           ;     compare_input_to(phrase) phrase="0B: LOOK    *         AT      u.......  "
 76C3:     3A                                                           ;     IF_NOT_GOTO address=76FE
 76C4:       0E 38                                                      ;       while_fail: size=0038
 76C6:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4415,7 +4599,7 @@ RoomDescriptions:
 76F6:             B9 46 73 C6 5F BE                                    ;             ~
 76FC:           11                                                     ;           print_first_noun()
 76FD:           84                                                     ;           84(PrintPeriod)
-76FE:     0C                                                           ;     compare_input_to(phrase) phrase="0C: LOOK    UNDER   *         u.......  "
+76FE:     0C                                                           ;     compare_input_to(phrase) phrase="0C: LOOK    *         UNDER   u.......  "
 76FF:     1A                                                           ;     IF_NOT_GOTO address=771A
 7700:       0E 18                                                      ;       while_fail: size=0018
 7702:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4425,7 +4609,7 @@ RoomDescriptions:
 7717:             45                                                   ;             ~
 7718:           11                                                     ;           print_first_noun()
 7719:           84                                                     ;           84(PrintPeriod)
-771A:     10                                                           ;     compare_input_to(phrase) phrase="10: LOOK    IN      *         u.......  "
+771A:     10                                                           ;     compare_input_to(phrase) phrase="10: LOOK    *         IN      u.......  "
 771B:     18                                                           ;     IF_NOT_GOTO address=7734
 771C:       0E 16                                                      ;       while_fail: size=0016
 771E:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4434,12 +4618,12 @@ RoomDescriptions:
 7723:             5F BE 5D B1 D0 B5 02 A1 91 7A D0 15 82 17 45         ;             THERE'S NOTHING IN THE
 7732:           11                                                     ;           print_first_noun()
 7733:           84                                                     ;           84(PrintPeriod)
-7734:     1B                                                           ;     compare_input_to(phrase) phrase="1B: LOOK    AROUND  *         u.......  "
+7734:     1B                                                           ;     compare_input_to(phrase) phrase="1B: LOOK    *         AROUND  u.......  "
 7735:     20                                                           ;     IF_NOT_GOTO address=7756
 7736:       0E 1E                                                      ;       while_fail: size=001E
 7738:         13                                                       ;         process_phrase_by_room_first_second()
 7739:         0D 03                                                    ;         while_pass: size=0003
-773B:           08 00                                                  ;           is_first_noun(object) object=00(??00)
+773B:           08 00                                                  ;           is_first_noun(object) object=00(nowhere)
 773D:           07                                                     ;           print_room_description()
 773E:         0D 16                                                    ;         while_pass: size=0016
 7740:           04 12                                                  ;           print(msg) size=0012
@@ -4447,12 +4631,12 @@ RoomDescriptions:
 7752:             5F BE                                                ;             ~
 7754:           11                                                     ;           print_first_noun()
 7755:           84                                                     ;           84(PrintPeriod)
-7756:     1C                                                           ;     compare_input_to(phrase) phrase="1C: LOOK    BEHIND  *         u.......  "
+7756:     1C                                                           ;     compare_input_to(phrase) phrase="1C: LOOK    *         BEHIND  u.......  "
 7757:     34                                                           ;     IF_NOT_GOTO address=778C
 7758:       0E 32                                                      ;       while_fail: size=0032
 775A:         13                                                       ;         process_phrase_by_room_first_second()
 775B:         0D 17                                                    ;         while_pass: size=0017
-775D:           08 00                                                  ;           is_first_noun(object) object=00(??00)
+775D:           08 00                                                  ;           is_first_noun(object) object=00(nowhere)
 775F:           04 13                                                  ;           print(msg) size=0013
 7761:             5F BE 5B B1 4B 7B 06 9A 90 73 C4 6A A3 60 33 98      ;             THERE IS NOTHING BEHIND YOU.
 7771:             C7 DE 2E                                             ;             ~
@@ -4462,50 +4646,50 @@ RoomDescriptions:
 7788:             5F BE                                                ;             ~
 778A:           11                                                     ;           print_first_noun()
 778B:           84                                                     ;           84(PrintPeriod)
-778C:     1D                                                           ;     compare_input_to(phrase) phrase="1D: LOOK    OUT     *         *         "
+778C:     1D                                                           ;     compare_input_to(phrase) phrase="1D: LOOK    *         OUT     *         "
 778D:     16                                                           ;     IF_NOT_GOTO address=77A4
 778E:       04 14                                                      ;       print(msg) size=0014
 7790:         9F 77 AF 14 91 7A 95 14 D3 14 68 B1 33 C5 4B 49          ;         I'M BEING AS CAREFUL AS I CAN!
 77A0:         45 77 81 48                                              ;         ~
-77A4:     1E                                                           ;     compare_input_to(phrase) phrase="1E: YES     *       *         *         "
+77A4:     1E                                                           ;     compare_input_to(phrase) phrase="1E: YES     *         *       *         "
 77A5:     04                                                           ;     IF_NOT_GOTO address=77AA
 77A6:       04 02                                                      ;       print(msg) size=0002
 77A8:         E9 99                                                    ;         NO!
-77AA:     1F                                                           ;     compare_input_to(phrase) phrase="1F: NO      *       *         *         "
+77AA:     1F                                                           ;     compare_input_to(phrase) phrase="1F: NO      *         *       *         "
 77AB:     05                                                           ;     IF_NOT_GOTO address=77B1
 77AC:       04 03                                                      ;       print(msg) size=0003
 77AE:         35 DD 21                                                 ;         YES!
-77B1:     21                                                           ;     compare_input_to(phrase) phrase="21: PLUGH   *       *         *         "
+77B1:     21                                                           ;     compare_input_to(phrase) phrase="21: PLUGH   *         *       *         "
 77B2:     0A                                                           ;     IF_NOT_GOTO address=77BD
 77B3:       04 08                                                      ;       print(msg) size=0008
 77B5:         B5 6C 8E C5 EB 72 AB BB                                  ;         GESUNDHEIT!
-77BD:     22                                                           ;     compare_input_to(phrase) phrase="22: SCREAM  *       *         *         "
+77BD:     22                                                           ;     compare_input_to(phrase) phrase="22: SCREAM  *         *       *         "
 77BE:     12                                                           ;     IF_NOT_GOTO address=77D1
 77BF:       04 10                                                      ;       print(msg) size=0010
 77C1:         5B E0 27 60 31 60 41 A0 49 A0 89 D3 89 D3 69 CE          ;         YYYEEEEEOOOOOOWWWWWWWW!!
-77D1:     23                                                           ;     compare_input_to(phrase) phrase="23: QUIT    *       *         *         "
+77D1:     23                                                           ;     compare_input_to(phrase) phrase="23: QUIT    *         *       *         "
 77D2:     05                                                           ;     IF_NOT_GOTO address=77D8
 77D3:       0D 03                                                      ;       while_pass: size=0003
 77D5:         92                                                       ;         92(PrintScore)
 77D6:         26                                                       ;         print_score()
 77D7:         24                                                       ;         endless_loop()
-77D8:     2C                                                           ;     compare_input_to(phrase) phrase="2C: SCORE   *       *         *         "
+77D8:     2C                                                           ;     compare_input_to(phrase) phrase="2C: SCORE   *         *       *         "
 77D9:     04                                                           ;     IF_NOT_GOTO address=77DE
 77DA:       0D 02                                                      ;       while_pass: size=0002
 77DC:         92                                                       ;         92(PrintScore)
 77DD:         26                                                       ;         print_score()
-77DE:     3E                                                           ;     compare_input_to(phrase) phrase="3E: LOAD    *       *         *         "
+77DE:     3E                                                           ;     compare_input_to(phrase) phrase="3E: LOAD    *         *       *         "
 77DF:     01                                                           ;     IF_NOT_GOTO address=77E1
-77E0:       27                                                         ;       unknown_27(x)
-77E1:     3F                                                           ;     compare_input_to(phrase) phrase="3F: SAVE    *       *         *         "
+77E0:       27                                                         ;       load_game()
+77E1:     3F                                                           ;     compare_input_to(phrase) phrase="3F: SAVE    *         *       *         "
 77E2:     01                                                           ;     IF_NOT_GOTO address=77E4
-77E3:       28                                                         ;       unknown_28(x)
-77E4:     25                                                           ;     compare_input_to(phrase) phrase="25: LEAVE   *       *         *         "
+77E3:       28                                                         ;       save_game()
+77E4:     25                                                           ;     compare_input_to(phrase) phrase="25: LEAVE   *         *       *         "
 77E5:     20                                                           ;     IF_NOT_GOTO address=7806
 77E6:       04 1E                                                      ;       print(msg) size=001E
 77E8:         C7 DE AF 23 99 16 09 BC 8E 62 91 7A 90 14 FA DF          ;         YOU'RE NOT GETTING ANYWHERE, TRY A DIREC
 77F8:         2F 62 16 EE 7B B4 46 45 2F 7B 03 56 27 A0                ;         TION.
-7806:     26                                                           ;     compare_input_to(phrase) phrase="26: GO      AROUND  *         u.......  "
+7806:     26                                                           ;     compare_input_to(phrase) phrase="26: GO      *         AROUND  u.......  "
 7807:     24                                                           ;     IF_NOT_GOTO address=782C
 7808:       0E 22                                                      ;       while_fail: size=0022
 780A:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4519,16 +4703,16 @@ RoomDescriptions:
 7817:             40 D2 F3 23 F6 8B 51 18 52 C2 65 49 21               ;             WON'T LET YOU PASS!
 7824:         04 06                                                    ;         print(msg) size=0006
 7826:           09 9A FA 17 70 49                                      ;           NOW WHAT?
-782C:     3D                                                           ;     compare_input_to(phrase) phrase="3D: GO      TO      *         u.......  "
+782C:     3D                                                           ;     compare_input_to(phrase) phrase="3D: GO      *         TO      u.......  "
 782D:     01                                                           ;     IF_NOT_GOTO address=782F
 782E:       94                                                         ;       94(PrintUseDirections)
-782F:     27                                                           ;     compare_input_to(phrase) phrase="27: KICK    *       u.......  *         "
+782F:     27                                                           ;     compare_input_to(phrase) phrase="27: KICK    u.......  *       *         "
 7830:     0E                                                           ;     IF_NOT_GOTO address=783F
 7831:       0E 0C                                                      ;       while_fail: size=000C
 7833:         13                                                       ;         process_phrase_by_room_first_second()
 7834:         04 09                                                    ;         print(msg) size=0009
 7836:           25 A1 AB 70 3B 95 77 BF 21                             ;           OUCH! MY TOE!
-783F:     28                                                           ;     compare_input_to(phrase) phrase="28: FEED    WITH    ...P....  u.......  "
+783F:     28                                                           ;     compare_input_to(phrase) phrase="28: FEED    ...P....  WITH    u.......  "
 7840:     40                                                           ;     IF_NOT_GOTO address=7881
 7841:       0E 3E                                                      ;       while_fail: size=003E
 7843:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4544,7 +4728,7 @@ RoomDescriptions:
 7877:           11                                                     ;           print_first_noun()
 7878:           04 07                                                  ;           print(msg) size=0007
 787A:             10 53 F3 23 96 5F 21                                 ;             CAN'T EAT!
-7881:     29                                                           ;     compare_input_to(phrase) phrase="29: FEED    TO      u.......  ...P....  "
+7881:     29                                                           ;     compare_input_to(phrase) phrase="29: FEED    u.......  TO      ...P....  "
 7882:     38                                                           ;     IF_NOT_GOTO address=78BB
 7883:       0E 36                                                      ;       while_fail: size=0036
 7885:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4560,20 +4744,20 @@ RoomDescriptions:
 78A2:           04 17                                                  ;           print(msg) size=0017
 78A4:             43 79 C7 DE D3 14 88 96 8E 7A 7B 14 C7 93 76 BE      ;             IF YOU CAN FIND A MOUTH, I'M GAME!
 78B4:             BD 15 49 90 67 48 21                                 ;             ~
-78BB:     2A                                                           ;     compare_input_to(phrase) phrase="2A: USE     *       u.......  *         "
+78BB:     2A                                                           ;     compare_input_to(phrase) phrase="2A: USE     u.......  *       *         "
 78BC:     0F                                                           ;     IF_NOT_GOTO address=78CC
 78BD:       04 0D                                                      ;       print(msg) size=000D
 78BF:         FF A5 57 49 AF 14 62 17 DB 5F 05 67 2E                   ;         PLEASE BE SPECIFIC.
-78CC:     2F                                                           ;     compare_input_to(phrase) phrase="2F: WAIT    *       *         *         "
+78CC:     2F                                                           ;     compare_input_to(phrase) phrase="2F: WAIT    *         *       *         "
 78CD:     07                                                           ;     IF_NOT_GOTO address=78D5
 78CE:       04 05                                                      ;       print(msg) size=0005
 78D0:         9B 29 57 C6 3E                                           ;         <PAUSE>
-78D5:     31                                                           ;     compare_input_to(phrase) phrase="31: FIND    *       u.......  *         "
+78D5:     31                                                           ;     compare_input_to(phrase) phrase="31: FIND    u.......  *       *         "
 78D6:     17                                                           ;     IF_NOT_GOTO address=78EE
 78D7:       04 15                                                      ;       print(msg) size=0015
 78D9:         36 9F D6 15 CB 23 39 49 8E C5 9F 15 5B B1 3F B9          ;         OH, IT'S AROUND HERE SOMEWHERE.
 78E9:         FA 62 2F 62 2E                                           ;         ~
-78EE:     2D                                                           ;     compare_input_to(phrase) phrase="2D: PULL    UP      *         u.......  "
+78EE:     2D                                                           ;     compare_input_to(phrase) phrase="2D: PULL    *         UP      u.......  "
 78EF:     09                                                           ;     IF_NOT_GOTO address=78F9
 78F0:       0E 07                                                      ;       while_fail: size=0007
 78F2:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4590,21 +4774,21 @@ RoomDescriptions:
 7900:           0F A0 5F 17 46 48 66 17 D3 61 04 68 63 16 5B 99        ;           ONE SMALL STEP FOR MANKIND, ONE GIANT LE
 7910:           56 98 C0 16 49 5E 90 78 0E BC 92 5F 59 15 9B AF        ;           AP FOR YOU!
 7920:           19 A1                                                  ;           ~
-7922:     34                                                           ;     compare_input_to(phrase) phrase="34: JUMP    OVER    *         u.......  "
+7922:     34                                                           ;     compare_input_to(phrase) phrase="34: JUMP    *         OVER    u.......  "
 7923:     23                                                           ;     IF_NOT_GOTO address=7947
 7924:       0E 21                                                      ;       while_fail: size=0021
 7926:         13                                                       ;         process_phrase_by_room_first_second()
 7927:         04 1E                                                    ;         print(msg) size=001E
 7929:           C7 DE 95 AF D5 C3 65 62 D5 15 67 16 67 49 66 B1        ;           YOUR SUCCESS IS MEASURED IN LEAPS AND BO
 7939:           D0 15 3F 16 ED 48 90 14 04 58 30 A1 09 5C              ;           UNDS!
-7947:     35                                                           ;     compare_input_to(phrase) phrase="35: JUMP    ON      *         u.......  "
+7947:     35                                                           ;     compare_input_to(phrase) phrase="35: JUMP    *         ON      u.......  "
 7948:     1C                                                           ;     IF_NOT_GOTO address=7965
 7949:       0E 1A                                                      ;       while_fail: size=001A
 794B:         13                                                       ;         process_phrase_by_room_first_second()
 794C:         04 17                                                    ;         print(msg) size=0017
 794E:           C7 DE 73 21 76 4D F4 BD F3 17 9A BD FA 17 2F 62        ;           YOU'D BETTER WATCH WHERE YOU STEP!
 795E:           51 18 55 C2 F2 BD 21                                   ;           ~
-7965:     36                                                           ;     compare_input_to(phrase) phrase="36: CLIMB   IN      *         *         "
+7965:     36                                                           ;     compare_input_to(phrase) phrase="36: CLIMB   *         IN      *         "
 7966:     17                                                           ;     IF_NOT_GOTO address=797E
 7967:       0E 15                                                      ;       while_fail: size=0015
 7969:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4613,7 +4797,7 @@ RoomDescriptions:
 796E:             C7 DE D3 14 E6 96 77 15 0B BC 96 96 DB 72            ;             YOU CAN'T GET IN THE
 797C:           11                                                     ;           print_first_noun()
 797D:           84                                                     ;           84(PrintPeriod)
-797E:     37                                                           ;     compare_input_to(phrase) phrase="37: CLIMB   OUT     *         *         "
+797E:     37                                                           ;     compare_input_to(phrase) phrase="37: CLIMB   *         OUT     *         "
 797F:     15                                                           ;     IF_NOT_GOTO address=7995
 7980:       0E 13                                                      ;       while_fail: size=0013
 7982:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4622,7 +4806,7 @@ RoomDescriptions:
 7987:             C7 DE 94 14 85 61 0B BC 96 96 DB 72                  ;             YOU AREN'T IN THE
 7993:           11                                                     ;           print_first_noun()
 7994:           84                                                     ;           84(PrintPeriod)
-7995:     38                                                           ;     compare_input_to(phrase) phrase="38: CLIMB   UNDER   *         u.......  "
+7995:     38                                                           ;     compare_input_to(phrase) phrase="38: CLIMB   *         UNDER   u.......  "
 7996:     20                                                           ;     IF_NOT_GOTO address=79B7
 7997:       0E 1E                                                      ;       while_fail: size=001E
 7999:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4632,7 +4816,7 @@ RoomDescriptions:
 79AE:             B0 17 F4 59 82 17 45                                 ;             ~
 79B5:           11                                                     ;           print_first_noun()
 79B6:           84                                                     ;           84(PrintPeriod)
-79B7:     39                                                           ;     compare_input_to(phrase) phrase="39: THROW   IN      u.......  u.......  "
+79B7:     39                                                           ;     compare_input_to(phrase) phrase="39: THROW   u.......  IN      u.......  "
 79B8:     1D                                                           ;     IF_NOT_GOTO address=79D6
 79B9:       0E 1B                                                      ;       while_fail: size=001B
 79BB:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4640,7 +4824,7 @@ RoomDescriptions:
 79BE:           04 16                                                  ;           print(msg) size=0016
 79C0:             C7 DE FB 17 F3 8C 58 72 56 5E D2 9C 73 C6 73 7B      ;             YOU WILL HAVE TO PUT IT IN THERE.
 79D0:             83 7A 5F BE 7F B1                                    ;             ~
-79D6:     3A                                                           ;     compare_input_to(phrase) phrase="3A: OPEN    WITH    u.......  u.......  "
+79D6:     3A                                                           ;     compare_input_to(phrase) phrase="3A: OPEN    u.......  WITH    u.......  "
 79D7:     1E                                                           ;     IF_NOT_GOTO address=79F6
 79D8:       0E 1C                                                      ;       while_fail: size=001C
 79DA:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4652,7 +4836,7 @@ RoomDescriptions:
 79EE:             56 D1 16 71 DB 72                                    ;             WITH THE
 79F4:           12                                                     ;           print_second_noun
 79F5:           84                                                     ;           84(PrintPeriod)
-79F6:     0D                                                           ;     compare_input_to(phrase) phrase="0D: THROW   AT      .v......  ...P....  "
+79F6:     0D                                                           ;     compare_input_to(phrase) phrase="0D: THROW   .v......  AT      ...P....  "
 79F7:     34                                                           ;     IF_NOT_GOTO address=7A2C
 79F8:       0E 32                                                      ;       while_fail: size=0032
 79FA:         0D 2E                                                    ;         while_pass: size=002E
@@ -4678,7 +4862,7 @@ RoomDescriptions:
 7A29:             13                                                   ;             process_phrase_by_room_first_second()
 7A2A:         14                                                       ;         execute_and_reverse_status:
 7A2B:         0C                                                       ;         fail()
-7A2C:     0E                                                           ;     compare_input_to(phrase) phrase="0E: THROW   TO      u.......  ...P....  "
+7A2C:     0E                                                           ;     compare_input_to(phrase) phrase="0E: THROW   u.......  TO      ...P....  "
 7A2D:     39                                                           ;     IF_NOT_GOTO address=7A67
 7A2E:       0E 37                                                      ;       while_fail: size=0037
 7A30:         0D 1B                                                    ;         while_pass: size=001B
@@ -4697,7 +4881,7 @@ RoomDescriptions:
 7A54:           12                                                     ;           print_second_noun
 7A55:           04 10                                                  ;           print(msg) size=0010
 7A57:             60 7B F3 23 D5 46 EE 61 91 7A BC 14 AF 78 5B BB      ;             ISN'T ACCEPTING BRIBES.
-7A67:     0F                                                           ;     compare_input_to(phrase) phrase="0F: DROP    IN      u.......  u.......  "
+7A67:     0F                                                           ;     compare_input_to(phrase) phrase="0F: DROP    u.......  IN      u.......  "
 7A68:     19                                                           ;     IF_NOT_GOTO address=7A82
 7A69:       0E 17                                                      ;       while_fail: size=0017
 7A6B:         13                                                       ;         process_phrase_by_room_first_second()
@@ -4709,45 +4893,45 @@ RoomDescriptions:
 7A75:             40 D2 F3 23 16 67 D0 15 82 17 45                     ;             WON'T FIT IN THE
 7A80:           12                                                     ;           print_second_noun
 7A81:           84                                                     ;           84(PrintPeriod)
-7A82:     19                                                           ;     compare_input_to(phrase) phrase="19: DIAGNO  *       *         *         "
+7A82:     19                                                           ;     compare_input_to(phrase) phrase="19: DIAGNO  *         *       *         "
 7A83:     80 EB                                                        ;     IF_NOT_GOTO address=7B6F
 7A85:       0D 80 E8                                                   ;       while_pass: size=00E8
 7A88:         1C 1D                                                    ;         set_VAR(object) object=1D(PLAYER)
-7A8A:         0B 80 E3 22                                              ;         switch(unknown_22(x)): size=00E3
-7A8E:           05                                                     ;           unknown_22(x) unknown=05
+7A8A:         0B 80 E3 22                                              ;         switch(is_less_equal_health(points)): size=00E3
+7A8E:           05                                                     ;           is_less_equal_health(points) points=05
 7A8F:           24                                                     ;           IF_NOT_GOTO address=7AB4
 7A90:             04 22                                                ;             print(msg) size=0022
 7A92:               C7 DE 94 14 51 5E 9B 96 34 A1 3B 16 F3 B9 E9 8B    ;               YOU ARE ON YOUR LAST LEGS. ANYTHING COUL
 7AA2:               5B BB A3 48 63 BE AB 98 47 55 B3 8B 4E 86 1B 8A    ;               D KILL YOU!
 7AB2:               19 A1                                              ;               ~
-7AB4:           14                                                     ;           unknown_22(x) unknown=14
+7AB4:           14                                                     ;           is_less_equal_health(points) points=14
 7AB5:           1C                                                     ;           IF_NOT_GOTO address=7AD2
 7AB6:             04 1A                                                ;             print(msg) size=001A
 7AB8:               0F A0 71 16 5B B1 41 6E 0B 58 3F 99 7B B4 8E 48    ;               ONE MORE GOOD INJURY AND YOU'VE HAD IT!
 7AC8:               51 18 A8 C2 4A 5E F3 46 71 7B                      ;               ~
-7AD2:           23                                                     ;           unknown_22(x) unknown=23
+7AD2:           23                                                     ;           is_less_equal_health(points) points=23
 7AD3:           22                                                     ;           IF_NOT_GOTO address=7AF6
 7AD4:             04 20                                                ;             print(msg) size=0020
 7AD6:               C7 DE 94 14 48 5E 2E 60 91 7A 17 17 7F 7B CE 15    ;               YOU ARE FEELING QUITE ILL. I PRESCRIBE C
 7AE6:               9B 8F 52 77 75 B1 B3 55 5B 4D 17 53 91 BE 2B 96    ;               AUTION!
-7AF6:           33                                                     ;           unknown_22(x) unknown=33
+7AF6:           33                                                     ;           is_less_equal_health(points) points=33
 7AF7:           32                                                     ;           IF_NOT_GOTO address=7B2A
 7AF8:             04 30                                                ;             print(msg) size=0030
 7AFA:               C7 DE 94 14 50 5E F3 A0 67 66 90 8C D7 6A 16 A3    ;               YOU ARE NOT FEELING UP TO PAR. YOU SHOUL
 7B0A:               D2 9C 47 49 51 18 55 C2 87 74 B3 8B 4D BD 44 5E    ;               D TAKE BETTER CARE OF YOURSELF.
 7B1A:               8E 62 23 62 14 53 51 5E 9B 64 34 A1 AE B7 1B 6A    ;               ~
-7B2A:           44                                                     ;           unknown_22(x) unknown=44
+7B2A:           44                                                     ;           is_less_equal_health(points) points=44
 7B2B:           24                                                     ;           IF_NOT_GOTO address=7B50
 7B2C:             04 22                                                ;             print(msg) size=0022
 7B2E:               C7 DE AF 23 4F 15 43 61 AB 98 EF A6 53 C0 81 15    ;               YOU'RE FEELING PRETTY GOOD UNDER THE CIR
 7B3E:               73 9E 8E C5 23 62 5F BE DB 14 27 B1 66 94 8D 48    ;               CUMSTANCES.
 7B4E:               6F 62                                              ;               ~
-7B50:           FF                                                     ;           unknown_22(x) unknown=FF
+7B50:           FF                                                     ;           is_less_equal_health(points) points=FF
 7B51:           1E                                                     ;           IF_NOT_GOTO address=7B70
 7B52:             04 1C                                                ;             print(msg) size=001C
 7B54:               C7 DE 4F 15 33 61 4B 49 41 6E 03 58 D6 B5 DB 72    ;               YOU FEEL AS GOOD AS THE DAY YOU WERE BOR
 7B64:               5B 59 51 18 59 C2 2F 62 B9 14 E7 B2                ;               N.
-7B70:     14                                                           ;     compare_input_to(phrase) phrase="14: LIGHT   WITH    u...A...  u...A...  "
+7B70:     14                                                           ;     compare_input_to(phrase) phrase="14: LIGHT   u...A...  WITH    u...A...  "
 7B71:     3B                                                           ;     IF_NOT_GOTO address=7BAD
 7B72:       0D 39                                                      ;       while_pass: size=0039
 7B74:         1B                                                       ;         set_VAR_to_second_noun()
@@ -4771,7 +4955,7 @@ RoomDescriptions:
 7BA5:               56 D1 16 71 DB 72                                  ;               WITH THE
 7BAB:             12                                                   ;             print_second_noun
 7BAC:             84                                                   ;             84(PrintPeriod)
-7BAD:     07                                                           ;     compare_input_to(phrase) phrase="07: INVENT  *       *         *         "
+7BAD:     07                                                           ;     compare_input_to(phrase) phrase="07: INVENT  *         *       *         "
 7BAE:     1A                                                           ;     IF_NOT_GOTO address=7BC9
 7BAF:       0D 18                                                      ;       while_pass: size=0018
 7BB1:         04 15                                                    ;         print(msg) size=0015
@@ -4784,7 +4968,7 @@ RoomDescriptions:
 
 # Helper Commands
 
-```
+```code
 ; 7BCD - 7F9F
 7BCD: 00 83 CF                                                         ; size=03CF
 ;
@@ -4986,10 +5170,10 @@ RoomDescriptions:
 ; InvalidClimbInOrOut
 7F51: 93 09                                                            ; Function=93(InvalidClimbInOrOut) size=0009
 7F53: 0B 07 0A                                                         ; switch(compare_input_to(phrase)): size=0007
-7F56:   36                                                             ;   compare_input_to(phrase) phrase="36: CLIMB   IN      *         *         "
+7F56:   36                                                             ;   compare_input_to(phrase) phrase="36: CLIMB   *         IN      *         "
 7F57:   01                                                             ;   IF_NOT_GOTO address=7F59
 7F58:     94                                                           ;     94(PrintUseDirections)
-7F59:   37                                                             ;   compare_input_to(phrase) phrase="37: CLIMB   OUT     *         *         "
+7F59:   37                                                             ;   compare_input_to(phrase) phrase="37: CLIMB   *         OUT     *         "
 7F5A:   01                                                             ;   IF_NOT_GOTO address=7F5C
 7F5B:     94                                                           ;     94(PrintUseDirections)
 ;
@@ -5016,7 +5200,7 @@ RoomDescriptions:
 7F9C:   17 3C 1D                                                       ;   move_to(object,room) object=3C(AMBIENT SOUNDS) room=1D(Room_1D)
 ```
 
-```
+```code
 ; Stack Space
 7F9F: 00 FF 00 FF 00 FF 00 FF 00 FF 00 FF 00 FF 00 FF
 7FAF: 00 FF 00 FF 00 FF 00 FF 00 FF 00 FF 00 FF 00 FF       

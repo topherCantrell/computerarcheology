@@ -102,7 +102,7 @@ def process_code(lines, code_info, skip_no_label_jumps=False):
         if c.opcode != None:
 
             memref = cpu.is_memory_reference(c.opcode)
-            if c.comment and '{!+' in c.comment:
+            if c.comment and '{!' in c.comment:
                 memref = True
             elif c.comment and '{!-}' in c.comment:
                 memref = False
@@ -110,7 +110,7 @@ def process_code(lines, code_info, skip_no_label_jumps=False):
             if memref:
                 # Record the opcode start and stop
                 # print(c.original.text)
-                i = c.original.text.index('$')
+                i = c.original.text.index('$')                
                 j = find_end_of_hex(c.original.text, i + 1)
                 if c.link_info == None:
                     c.link_info = {}
@@ -119,12 +119,12 @@ def process_code(lines, code_info, skip_no_label_jumps=False):
 
                 # This is the referenced memory
                 addr = int(c.original.text[i + 1:j], 16)
-
+                                                
                 #  First check all the memory tables we know of
                 for table in code_info['memory']:
                     tab = code_info['memory'][table]
                     entry = tab.find_entry(
-                        addr + code_info['dp'], c.opcode['bus'])
+                        addr + code_info['dp'], c.opcode['bus'])                    
                     if entry:
                         c.link_info['memory_table'] = tab
                         c.link_info['memory_table_name'] = table
@@ -147,17 +147,17 @@ def process_code(lines, code_info, skip_no_label_jumps=False):
 
                 # We have no info on these memory addresses. Remove the link
                 # info
-                if not 'target_line' in c.link_info and not 'memory_table' in c.link_info:
+                if not 'target_line' in c.link_info and not 'memory_table' in c.link_info:                    
                     code_info['unknown_memory'] = {'address': addr, 'text': c}
                     c.link_info = None
-
+                               
                 if c.link_info:
-                    # Replace the information in the comment
+                    # Replace the information in the comment                    
                     nc = c.comment
                     if not nc:
                         nc = ''
 
-                    if not '{!-}' in nc:                        
+                    if not '{!-}' in nc:                                              
                         if '{' in nc:
                             i = nc.index('{')
                             j = nc.index('}') + 1
@@ -166,9 +166,11 @@ def process_code(lines, code_info, skip_no_label_jumps=False):
                             i = 0
                             j = 0
                             override = False
-                        if 'memory_table' in c.link_info:
+                            
+                            
+                        if 'memory_table' in c.link_info:                            
                             ns = c.link_info['memory_table_name'] + ':' + \
-                                c.link_info['memory_table_entry']['name']
+                                c.link_info['memory_table_entry']['name']                            
                         else:
                             if 'target_label' in c.link_info:
                                 ns = c.link_info['target_label']
@@ -183,8 +185,8 @@ def process_code(lines, code_info, skip_no_label_jumps=False):
 
                         if override:
                             nc = '{!+' + ns + '} ' + nc
-                        elif skip_no_label_jumps and 'target_line' in c.link_info and not 'target_label' in c.link_info:
-                            nc = nc
+                        elif skip_no_label_jumps and not 'memory_table_name' in c.link_info and 'target_line' in c.link_info and not 'target_label' in c.link_info:
+                            nc = nc                            
                         else:
                             nc = '{' + ns + '} ' + nc
 

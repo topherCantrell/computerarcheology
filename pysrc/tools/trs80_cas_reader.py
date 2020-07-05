@@ -1,7 +1,8 @@
 # http://www.trs-80.com/wordpress/zaps-patches-pokes-tips/tape-and-file-formats-structures/
 
-name = '../../content/TRS80/RaakaTu/raaka.cas'
+#name = '../../content/TRS80/RaakaTu/raaka.cas'
 #name = '../../content/TRS80/HauntedHouse/haunt.cas'
+name = '../../content/TRS80/Bedlam/BEDLAM.CAS'
 
 with open(name,'rb') as f:
     data = f.read()

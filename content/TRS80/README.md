@@ -10,11 +10,14 @@
 >>>   HauntedHouse<br>
 >>>   Pyramid<br>
 >>>   RaakaTu<br>
+>>>   Bedlam<br>
 
 # Disassemblies
 
   * [Haunted House](HauntedHouse)
   * [Pyramid](Pyramid)
+  * [RaakaTu](RaakaTu)
+  * [Bedlam](Bedlam)
 
 # Technical Reference
 

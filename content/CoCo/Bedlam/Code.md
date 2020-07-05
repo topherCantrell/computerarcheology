@@ -4878,3 +4878,9 @@ InputWordTables:
 3EFD: 02 4F 4E 0C               ; ON       12
 3F01: 00
 ``` 
+
+```code
+3F02: FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
+3F10: DF FF DF FF 80 40 0D 00 03 4B 89 2C 00 87 55 00 
+3F20: 00
+```

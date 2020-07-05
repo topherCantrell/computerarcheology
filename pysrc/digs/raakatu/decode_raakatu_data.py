@@ -114,6 +114,7 @@ class Raaka:
         self._general_commands_data = config['general_commands_data']
         self._helper_commands_data = config['helper_commands_data']
         self._room_descriptions_data = config['room_descriptions_data']
+        self._command_table = config['command_table']
         
         with open(get_content_path(self._file),'rb') as f:
             self._binary = bytes([0]*self._origin)+f.read()
@@ -609,6 +610,65 @@ class Raaka:
                 
         return pos 
     
+    def fix_command_names(self,fn):
+        with open(fn) as f:
+            code = f.readlines()
+        org_data = binary.get_binary_lines(code,self._origin)
+        coco = False
+        if 'CoCo' in fn:
+            coco = True
+        table = RTC.COMMAND_INFO
+        for ent in table:
+            #print(ent)
+            ofs = ent[1]*2+self._command_table-self._origin
+            a = org_data[ofs]
+            b = org_data[ofs+1]
+            if coco:
+                p = a*256+b
+            else:
+                p = b*256+a
+            if len(ent)==4:
+                ent.append(p)
+            else:
+                ent[4] = p
+            #print(FORM.shex4(p))
+            
+        # First, fixt the names in the table itself
+        max = len(table)
+        if coco:
+            max-=2
+        org = FORM.shex4(self._command_table)+':'
+        for pos in range(len(code)):
+            if code[pos].startswith(org):                
+                break
+        for x in range(max):
+            g = code[pos][0:13]+'; '+FORM.shex2(table[x][1])+' '+table[x][3]
+            code[pos] = g+'\n'
+            pos+=1            
+            
+        # Track down the command code and make sure it is labeled correctly
+        for x in range(max):
+            ent = table[x]
+            org = FORM.shex4(ent[-1])+':'
+            for pos in range(len(code)):
+                if code[pos].startswith(org):
+                    break
+            while not code[pos].startswith('Com_'):
+                pos-=1
+            
+            g = ent[-2]
+            i = g.find('(')
+            if i<0:
+                i = g.find(':')
+            g = g[0:i]
+            
+            g = 'Com_'+FORM.shex2(ent[1])+'_'+g+':'
+            code[pos] = g+'\n'
+            code[pos+1] = '; '+ent[-2]+'\n'    
+            
+        with open(fn,'w') as f:
+            f.writelines(code)
+    
 def merge_into(filename,newlines):
     nc = -1
     for g in newlines:
@@ -654,14 +714,13 @@ def merge_into(filename,newlines):
     if org_data!=new_data:
         raise Exception('The binary of the new lines does not match the binary of the old')
     
-    with open(filename+'tmp','w') as f:
+    with open(filename,'w') as f:
         for i in range(pos):
             f.write(code[i])
         for g in newlines:
             f.write(g+'\n')
         for i in range(epos+1,len(code)):
             f.write(code[i])
-    
              
         
 INFO_TRS80 = {
@@ -673,6 +732,7 @@ INFO_TRS80 = {
     'general_commands_data' : 0x73FB,
     'helper_commands_data' : 0x7BCD,
     'room_descriptions_data' : 0x681F,
+    'command_table': 0x5066,
 }
 
 INFO_COCO = {
@@ -684,9 +744,10 @@ INFO_COCO = {
     'general_commands_data' : 0x323C,
     'helper_commands_data' : 0x37FA,
     'room_descriptions_data' : 0x1523,
+    'command_table': 0x12E5,
 }
 
-#trs80 = Raaka(INFO_TRS80)
+
 coco = Raaka(INFO_COCO)
 fn = '../../../content/CoCo/RaakaTu/Code.md'
 plat = coco
@@ -708,6 +769,32 @@ merge_into(fn,out)
 out = []
 plat.print_phrases(out)
 merge_into(fn,out)
+
+plat.fix_command_names(fn)
+
+trs80 = Raaka(INFO_TRS80)
+fn = '../../../content/TRS80/RaakaTu/Code.md'
+plat = trs80
+out = []
+plat.print_general_commands(out)
+merge_into(fn,out)
+out = []
+plat.print_helper_commands(out)
+merge_into(fn,out)
+out = []
+plat.print_room_descriptions(out)
+merge_into(fn,out)
+out = []
+plat.print_object_data(out)
+merge_into(fn,out)
+out = []
+plat.print_words(out)
+merge_into(fn,out)
+out = []
+plat.print_phrases(out)
+merge_into(fn,out)
+
+plat.fix_command_names(fn)
 
 """
 with open('rooms.json','w') as f:

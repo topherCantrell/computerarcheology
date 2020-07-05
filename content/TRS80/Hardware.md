@@ -16,3 +16,11 @@
  * C000-FFFF Still more RAM in a 48K machine
 
 Start of user RAM for program storage: 42E9
+
+# RAM Use
+
+>>> memory
+
+| | | |
+| --- | --- | --- |
+| 0033 | PrintChar | Print a character to the screen |

@@ -13,15 +13,17 @@ import code.process_code
 
 # TODO: make this command/line/IDE friendly. Only set this if the commandline is empty.
 
-# FILE_NAME = '../../content/CoCo/Pyramid/Code.md'
+#FILE_NAME = '../../content/CoCo/Pyramid/Code.md'
 # FILE_NAME = '../../content/CoCo/AudioSpectrumAnalyzer/Code.md'
 # FILE_NAME = '../../content/CoCo/Bedlam/Code.md'
-FILE_NAME = '../../content/CoCo/Daggorath/Code.md'
+#FILE_NAME = '../../content/CoCo/Daggorath/Code.md'
 # FILE_NAME = '../../content/CoCo/Downland/Code.md'
 # FILE_NAME = '../../content/CoCo/RaakaTu/Code.md'
 # FILE_NAME = '../../content/CoCo/MadnessMinotaur/Code.md'
 #FILE_NAME = '../../content/CoCo/MegaBug/Code.md'
 #FILE_NAME = '../../content/Atari2600/Entombed/Code.md'
+FILE_NAME = '../../content/TRS80/RaakaTu/Code.md'
+#FILE_NAME = '../../content/TRS80/Pyramid/Code.md'
 
 COMMENT_COL = 60
 
@@ -49,6 +51,9 @@ while i < len(lines) - 1:
             elif name == '6502':
                 import cpu.cpu_6502
                 code_info['cpu'] = cpu.cpu_6502.CPU_6502()
+            elif name == 'Z80':
+                import cpu.cpu_Z80
+                code_info['cpu'] = cpu.cpu_Z80.CPU_Z80()
             else:
                 raise Exception("Unknown CPU " + name)
         elif md.directive.startswith('memoryTable '):
@@ -58,6 +63,7 @@ while i < len(lines) - 1:
             j = text.index(')', k)
             code_info['memory'][name] = code.memory_table.MemoryTable(
                 os.path.join(dirname, text[k + 2:j]))
+            #print(code_info['memory'][name].entries)
 
 code.process_code.process_code(lines, code_info, skip_no_label_jumps=True)
 
