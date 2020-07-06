@@ -1148,7 +1148,9 @@ Com_04_PrintSYSTEMOrPlayerMessage:
 0E6A: 27 19               BEQ     $E85                      ; Yes ... do print
 0E6C: 81 13               CMPA    #$13                      ; Is this the Player?
 0E6E: 26 0E               BNE     $E7E                      ; No ... skip printing
+
 Com_1F_PrintMessage:
+;
 0E70: C6 13               LDB     #$13                      ; Player number
 0E72: 34 10               PSHS    X                         ; Hold script
 0E74: BD 11 7D            JSR     $117D                     ; Look up Player
