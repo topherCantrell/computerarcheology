@@ -813,7 +813,7 @@ list for BEDLAM and RAAKATU is empty so the code is never used anyway.
 4914: C3 14 49       JP      $4914  
 
 Com_0D_while_pass:
-; while_pass:         
+; while_pass:
 4917: CD 56 47       CALL    $4756           
 491A: CD 69 47       CALL    $4769           
 491D: D2 2A 49       JP      NC,$492A        
@@ -827,8 +827,8 @@ Com_0D_while_pass:
 492B: 97             SUB     A               
 492C: C9             RET                     
 
-Com_:
-;
+Com_0E_while_fail:
+; while_fail:
 492D: CD 56 47       CALL    $4756           
 4930: CD 69 47       CALL    $4769           
 4933: D2 40 49       JP      NC,$4940        
@@ -842,8 +842,8 @@ Com_:
 4941: F6 01          OR      $01             
 4943: C9             RET                     
 
-Com_:
-;
+Com_0B_switch:
+; switch:
 4944: CD 56 47       CALL    $4756           
 4947: 46             LD      B,(HL)          
 4948: 23             INC     HL              
@@ -864,8 +864,8 @@ Com_:
 4967: E1             POP     HL              
 4968: C9             RET                     
 
-Com_00:
-;
+Com_00_move_ACTIVE_and_look:
+; move_ACTIVE_and_look(room)
 4969: CD 73 49       CALL    $4973           
 496C: E5             PUSH    HL              
 496D: CD 20 4A       CALL    $4A20           
@@ -873,8 +873,8 @@ Com_00:
 4971: 97             SUB     A               
 4972: C9             RET            
 
-Com_:
-;         
+Com_19_move_ACTIVE:
+; move_ACTIVE(room)
 4973: 7E             LD      A,(HL)          
 4974: 23             INC     HL              
 4975: E5             PUSH    HL              
@@ -891,8 +891,8 @@ Com_:
 498E: 97             SUB     A               
 498F: C9             RET                     
 
-Com_:
-;
+Com_1A_set_VAR_to_first_noun:
+; set_VAR_to_first_noun()
 4990: E5             PUSH    HL              
 4991: 2A 72 4F       LD      HL,($4F72)      
 4994: 22 6C 4F       LD      ($4F6C),HL      
@@ -902,8 +902,8 @@ Com_:
 499E: 97             SUB     A               
 499F: C9             RET                     
 
-Com_:
-;
+Com_1B_set_VAR_to_second_noun:
+; set_VAR_to_second_noun()
 49A0: E5             PUSH    HL              
 49A1: 2A 78 4F       LD      HL,($4F78)      
 49A4: 22 6C 4F       LD      ($4F6C),HL      
@@ -913,8 +913,8 @@ Com_:
 49AE: 97             SUB     A               
 49AF: C9             RET                     
 
-Com_:
-;
+Com_1C_set_VAR:
+; set_VAR(object)
 49B0: 46             LD      B,(HL)          
 49B1: 23             INC     HL              
 49B2: E5             PUSH    HL              
@@ -926,8 +926,8 @@ Com_:
 49BE: 97             SUB     A               
 49BF: C9             RET                     
 
-Com_:
-;
+Com_21_execute_phrase:
+; execute_phrase(phrase,first_noun,second_noun)
 49C0: EB             EX      DE,HL           
 49C1: 2A 72 4F       LD      HL,($4F72)      
 49C4: E5             PUSH    HL              
@@ -1060,15 +1060,15 @@ Com_:
 4AB5: E1             POP     HL              
 4AB6: C9             RET                     
 
-Com_:
-;
+Com_20_is_ACTIVE_this:
+; is_ACTIVE_this(object)
 4AB7: 3A 7E 4F       LD      A,($4F7E)       
 4ABA: BE             CP      (HL)            
 4ABB: 23             INC     HL              
 4ABC: C9             RET                     
 
-Com_:
-;
+Com_2C_set_ACTIVE:
+; set_ACTIVE(object)
 4ABD: 46             LD      B,(HL)          
 4ABE: 23             INC     HL              
 4ABF: E5             PUSH    HL              
@@ -1080,14 +1080,14 @@ Com_:
 4ACB: 97             SUB     A               
 4ACC: C9             RET                     
 
-Com_:
-;
+Com_02_is_owned_by_ACTIVE:
+; is_owned_by_ACTIVE(object)
 4ACD: 46             LD      B,(HL)          
 4ACE: 23             INC     HL              
 4ACF: C3 BE 4C       JP      $4CBE           
 
-Com_:
-;
+Com_03_is_located:
+; is_located(room,object)
 4AD2: 4E             LD      C,(HL)          
 4AD3: 23             INC     HL              
 4AD4: 46             LD      B,(HL)          
@@ -1103,21 +1103,21 @@ Com_:
 4AE2: B9             CP      C               
 4AE3: C9             RET                     
 
-Com_0C_:
-;
+Com_0C_fail:
+; fail()
 4AE4: F6 01          OR      $01             
 4AE6: C9             RET                 
  
-Com_04_:   
-;
+Com_04_print:
+; print(msg)
 4AE7: 3A 7E 4F       LD      A,($4F7E)       
 4AEA: FE 38          CP      $38             
 4AEC: CA 08 4B       JP      Z,$4B08         
 4AEF: FE 13          CP      $13             
 4AF1: C2 01 4B       JP      NZ,$4B01        
 
-Com_:
-;
+Com_1F_print2:
+; print2(msg)
 4AF4: 06 13          LD      B,$13           
 4AF6: E5             PUSH    HL              
 4AF7: CD E1 4D       CALL    $4DE1           
@@ -1131,14 +1131,14 @@ Com_:
 4B0B: 97             SUB     A               
 4B0C: C9             RET                     
 
-Com_:
-;
+Com_07_print_room_description:
+; print_room_description()
 4B0D: CD 20 4A       CALL    $4A20           
 4B10: 97             SUB     A               
 4B11: C9             RET                     
 
 Com_06_print_inventory:
-;
+; print_inventory()
 4B12: E5             PUSH    HL              
 4B13: 3E 0D          LD      A,$0D           
 4B15: CD 6B 4E       CALL    $4E6B           
@@ -1172,8 +1172,8 @@ Com_06_print_inventory:
 4B4D: E1             POP     HL              
 4B4E: C9             RET                     
 
-Com_:
-;
+Com_08_is_first_noun:
+; is_first_noun(object)
 4B4F: E5             PUSH    HL              
 4B50: 2A 72 4F       LD      HL,($4F72)      
 4B53: 3A 6F 4F       LD      A,($4F6F)       
@@ -1196,30 +1196,30 @@ Com_:
 4B70: B8             CP      B               
 4B71: C9             RET                     
 
-Com_:
-;
+Com_09_compare_to_second_noun:
+; compare_to_second_noun(object)
 4B72: E5             PUSH    HL              
 4B73: 2A 78 4F       LD      HL,($4F78)      
 4B76: 3A 75 4F       LD      A,($4F75)       
 4B79: C3 56 4B       JP      $4B56           
 
-Com_:
-;
+Com_2D_is_VAR:
+; is_VAR(object)
 4B7C: E5             PUSH    HL              
 4B7D: 2A 6C 4F       LD      HL,($4F6C)      
 4B80: 3A 6B 4F       LD      A,($4F6B)       
 4B83: C3 56 4B       JP      $4B56           
 
-Com_:
-;
+Com_0A_compare_input_to:
+; compare_input_to(phrase)
 4B86: 46             LD      B,(HL)          
 4B87: 23             INC     HL              
 4B88: 3A 7D 4F       LD      A,($4F7D)       
 4B8B: B8             CP      B               
 4B8C: C9             RET                     
 
-Com_:
-;
+Com_0F_pick_up_VAR:
+; pick_up_VAR()
 4B8D: E5             PUSH    HL              
 4B8E: 2A 6C 4F       LD      HL,($4F6C)      
 4B91: CD 55 47       CALL    $4755           
@@ -1229,8 +1229,8 @@ Com_:
 4B99: E1             POP     HL              
 4B9A: C9             RET                     
 
-Com_:
-;
+Com_13_process_phrase_by_room_first_second:
+; process_phrase_by_room_first_second()
 4B9B: E5             PUSH    HL              
 4B9C: 2A 6C 4F       LD      HL,($4F6C)      
 4B9F: CD 55 47       CALL    $4755           
@@ -1285,15 +1285,15 @@ Com_:
 4C05: E1             POP     HL              
 4C06: C9             RET                     
 
-Com_:
-;
+Com_16_print_VAR:
+; print_VAR()
 4C07: E5             PUSH    HL              
 4C08: 2A 6C 4F       LD      HL,($4F6C)      
 4C0B: 3A 6B 4F       LD      A,($4F6B)       
 4C0E: C3 18 4C       JP      $4C18           
 
-Com_:
-;
+Com_11_print_first_noun:
+; print_first_noun()
 4C11: E5             PUSH    HL              
 4C12: 2A 72 4F       LD      HL,($4F72)      
 4C15: 3A 6F 4F       LD      A,($4F6F)       
@@ -1318,15 +1318,15 @@ Com_:
 4C3C: 97             SUB     A               
 4C3D: C9             RET             
 
-Com_:
-;        
+Com_12_print_second_noun:
+; print_second_noun()
 4C3E: E5             PUSH    HL              
 4C3F: 3A 75 4F       LD      A,($4F75)       
 4C42: 2A 78 4F       LD      HL,($4F78)      
 4C45: C3 18 4C       JP      $4C18           
 
-Com_:
-;
+Com_15_check_VAR:
+; check_VAR(bits)
 4C48: E5             PUSH    HL              
 4C49: 2A 6C 4F       LD      HL,($4F6C)      
 4C4C: 3A 6B 4F       LD      A,($4F6B)       
@@ -1342,8 +1342,8 @@ Com_:
 4C5C: 23             INC     HL              
 4C5D: C9             RET                     
 
-Com_:
-;
+Com_29_toggle_open_VAR:
+; toggle_open_VAR()
 4C5E: E5             PUSH    HL              
 4C5F: 2A 6C 4F       LD      HL,($4F6C)      
 4C62: 3A 6B 4F       LD      A,($4F6B)       
@@ -1359,8 +1359,8 @@ Com_:
 4C73: 97             SUB     A               
 4C74: C9             RET                     
 
-Com_:
-;
+Com_2A_toggle_lock_VAR:
+; toggle_lock_VAR()
 4C75: E5             PUSH    HL              
 4C76: 2A 6C 4F       LD      HL,($4F6C)      
 4C79: 3A 6B 4F       LD      A,($4F6B)       
@@ -1376,8 +1376,8 @@ Com_:
 4C8A: 97             SUB     A               
 4C8B: C9             RET                     
 
-Com_:
-;
+Com_14_execute_and_reverse_status:
+; execute_and_reverse_status:
 4C8C: CD E4 48       CALL    $48E4           
 4C8F: C2 95 4C       JP      NZ,$4C95        
 4C92: F6 01          OR      $01             
@@ -1385,8 +1385,8 @@ Com_:
 4C95: 97             SUB     A               
 4C96: C9             RET                     
 
-Com_:
-;
+Com_17_move_to:
+; move_to(object,room)
 4C97: 46             LD      B,(HL)          
 4C98: 23             INC     HL              
 4C99: E5             PUSH    HL              
@@ -1400,8 +1400,8 @@ Com_:
 4CA5: 97             SUB     A               
 4CA6: C9             RET                     
 
-Com_:
-;
+Com_18_is_VAR_owned_by_ACTIVE:
+; is_VAR_owned_by_ACTIVE()
 4CA7: E5             PUSH    HL              
 4CA8: 2A 6C 4F       LD      HL,($4F6C)      
 4CAB: CD 55 47       CALL    $4755           
@@ -1471,8 +1471,8 @@ Com_:
 4D2B: D1             POP     DE              
 4D2C: C3 CF 4C       JP      $4CCF           
 
-Com_:
-;
+Com_05_is_less_equal_last_random:
+; is_less_equal_last_random(value)
 4D2F: 3A 57 4F       LD      A,($4F57)       
 4D32: BE             CP      (HL)            
 4D33: 23             INC     HL              
@@ -1483,8 +1483,8 @@ Com_:
 4D3D: 97             SUB     A               
 4D3E: C9             RET                     
 
-Com_:
-;
+Com_1D_attack_VAR:
+; attack_VAR(points)
 4D3F: 4E             LD      C,(HL)          
 4D40: 23             INC     HL              
 4D41: E5             PUSH    HL              
@@ -1522,8 +1522,8 @@ Com_:
 4D7B: E1             POP     HL              
 4D7C: C3 66 4D       JP      $4D66           
 
-Com_:
-;
+Com_1E_swap:
+; swap(object_a,object_b)
 4D7F: 46             LD      B,(HL)          
 4D80: 23             INC     HL              
 4D81: 4E             LD      C,(HL)          
@@ -1549,8 +1549,8 @@ Com_:
 4D9D: E1             POP     HL              
 4D9E: C9             RET                     
 
-Com_:
-;
+Com_23_heal_VAR:
+; heal_VAR(points)
 4D9F: 4E             LD      C,(HL)          
 4DA0: 23             INC     HL              
 4DA1: E5             PUSH    HL              
@@ -1573,8 +1573,8 @@ Com_:
 4DBF: 77             LD      (HL),A          
 4DC0: C3 9C 4D       JP      $4D9C           
 
-Com_:
-;
+Com_25_restart_game:
+; restart_game()
 4DC3: 3A 7E 4F       LD      A,($4F7E)       
 4DC6: FE 13          CP      $13             
 4DC8: C2 D0 4D       JP      NZ,$4DD0        
@@ -1583,8 +1583,8 @@ Com_:
 4DD0: 97             SUB     A               
 4DD1: C9             RET                     
 
-Com_:
-;
+Com_24_endless_loop:
+; endless_loop()
 4DD2: C3 D2 4D       JP      $4DD2           
 4DD5: 1A             LD      A,(DE)          
 4DD6: A7             AND     A               
@@ -1595,8 +1595,8 @@ Com_:
 4DDD: 13             INC     DE              
 4DDE: C3 D5 4D       JP      $4DD5           
 
-Com_:
-;
+Com_26_print_score:
+; print_score()
 4DE1: 21 61 55       LD      HL,$5561        
 4DE4: CD 55 47       CALL    $4755           
 4DE7: 05             DEC     B               
@@ -1798,8 +1798,8 @@ Com_:
 4F2F: 00             NOP                     
 4F30: 00             NOP                     
 
-Com_:
-;
+Com_2B_generate_random:
+; generate_random()
 4F31: C5             PUSH    BC              
 4F32: E5             PUSH    HL              
 4F33: 2A 57 4F       LD      HL,($4F57)      
@@ -1942,52 +1942,52 @@ Com_:
 
 ```code
 CommandJumpTable:              
-4FC8: 69 49        ; 
-4FCA: AC 4A        ; 
-4FCC: CD 4A        ; 
-4FCE: D2 4A        ; 
-4FD0: E7 4A        ; 
-4FD2: 2F 4D        ; 
-4FD4: 12 4B        ; 
-4FD6: 0D 4B        ; 07      
-4FD8: 4F 4B        ; 
-4FDA: 72 4B        ; 
-4FDC: 86 4B        ; 
-4FDE: 44 49        ; 
-4FE0: E4 4A        ; 
-4FE2: 17 49        ; 0D
-4FE4: 2D 49        ; 
-4FE6: 8D 4B        ;         
-4FE8: 9B 4B        ; 10       
-4FEA: 11 4C        ; 
-4FEC: 3E 4C        ;      
-4FEE: A9 4B        ;    
-4FF0: 8C 4C        ;          
-4FF2: 48 4C        ;        
-4FF4: 07 4C        ;       
-4FF6: 97 4C        ;         
-4FF8: A7 4C        ; 18       
-4FFA: 73 49        ;       
-4FFC: 90 49        ;          
-4FFE: A0 49        ;     
-5000: B0 49        ; 
-5002: 3F 4D        ;    
-5004: 7F 4D        ; 
-5006: F4 4A        ; 
-5008: B7 4A        ; 20
-500A: C0 49        ; 
-500C: 00 00        ;    
-500E: 9F 4D        ;       
-5010: D2 4D        ; 
-5012: C3 4D        ;      
-5014: E1 4D        ;  
-5016: 00 00        ; 
-5018: 00 00        ; 
-501A: 5E 4C        ; 
-501C: 75 4C        ; 
-501E: 31 4F        ; 
-5020: BD 4A        ;  
-5022: 7C 4B        ; 2D
+4FC8: 69 49  ; 00 move_ACTIVE_and_look(room)
+4FCA: AC 4A  ; 01 is_in_pack_or_current_room(object)
+4FCC: CD 4A  ; 02 is_owned_by_ACTIVE(object)
+4FCE: D2 4A  ; 03 is_located(room,object)
+4FD0: E7 4A  ; 04 print(msg)
+4FD2: 2F 4D  ; 05 is_less_equal_last_random(value)
+4FD4: 12 4B  ; 06 print_inventory()
+4FD6: 0D 4B  ; 07 print_room_description()
+4FD8: 4F 4B  ; 08 is_first_noun(object)
+4FDA: 72 4B  ; 09 compare_to_second_noun(object)
+4FDC: 86 4B  ; 0A compare_input_to(phrase)
+4FDE: 44 49  ; 0B switch:
+4FE0: E4 4A  ; 0C fail()
+4FE2: 17 49  ; 0D while_pass:
+4FE4: 2D 49  ; 0E while_fail:
+4FE6: 8D 4B  ; 0F pick_up_VAR()
+4FE8: 9B 4B  ; 10 drop_VAR()
+4FEA: 11 4C  ; 11 print_first_noun()
+4FEC: 3E 4C  ; 12 print_second_noun()
+4FEE: A9 4B  ; 13 process_phrase_by_room_first_second()
+4FF0: 8C 4C  ; 14 execute_and_reverse_status:
+4FF2: 48 4C  ; 15 check_VAR(bits)
+4FF4: 07 4C  ; 16 print_VAR()
+4FF6: 97 4C  ; 17 move_to(object,room)
+4FF8: A7 4C  ; 18 is_VAR_owned_by_ACTIVE()
+4FFA: 73 49  ; 19 move_ACTIVE(room)
+4FFC: 90 49  ; 1A set_VAR_to_first_noun()
+4FFE: A0 49  ; 1B set_VAR_to_second_noun()
+5000: B0 49  ; 1C set_VAR(object)
+5002: 3F 4D  ; 1D attack_VAR(points)
+5004: 7F 4D  ; 1E swap(object_a,object_b)
+5006: F4 4A  ; 1F print2(msg)
+5008: B7 4A  ; 20 is_ACTIVE_this(object)
+500A: C0 49  ; 21 execute_phrase(phrase,first_noun,second_noun)
+500C: 00 00  ; 22 is_less_equal_health(points)
+500E: 9F 4D  ; 23 heal_VAR(points)
+5010: D2 4D  ; 24 endless_loop()
+5012: C3 4D  ; 25 restart_game()
+5014: E1 4D  ; 26 print_score()
+5016: 00 00  ; 27 load_game()
+5018: 00 00  ; 28 save_game()
+501A: 5E 4C  ; 29 toggle_open_VAR()
+501C: 75 4C  ; 2A toggle_lock_VAR()
+501E: 31 4F  ; 2B generate_random()
+5020: BD 4A  ; 2C set_ACTIVE(object)
+5022: 7C 4B  ; 2D is_VAR(object)
 5024: 00        
 ```
 
