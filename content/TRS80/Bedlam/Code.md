@@ -826,6 +826,9 @@ Com_0D_while_pass:
 492A: EB             EX      DE,HL           
 492B: 97             SUB     A               
 492C: C9             RET                     
+
+Com_:
+;
 492D: CD 56 47       CALL    $4756           
 4930: CD 69 47       CALL    $4769           
 4933: D2 40 49       JP      NC,$4940        
@@ -838,6 +841,9 @@ Com_0D_while_pass:
 4940: EB             EX      DE,HL           
 4941: F6 01          OR      $01             
 4943: C9             RET                     
+
+Com_:
+;
 4944: CD 56 47       CALL    $4756           
 4947: 46             LD      B,(HL)          
 4948: 23             INC     HL              
@@ -866,7 +872,9 @@ Com_00:
 4970: E1             POP     HL              
 4971: 97             SUB     A               
 4972: C9             RET            
-         
+
+Com_:
+;         
 4973: 7E             LD      A,(HL)          
 4974: 23             INC     HL              
 4975: E5             PUSH    HL              
@@ -882,6 +890,9 @@ Com_00:
 498D: E1             POP     HL              
 498E: 97             SUB     A               
 498F: C9             RET                     
+
+Com_:
+;
 4990: E5             PUSH    HL              
 4991: 2A 72 4F       LD      HL,($4F72)      
 4994: 22 6C 4F       LD      ($4F6C),HL      
@@ -890,6 +901,9 @@ Com_00:
 499D: E1             POP     HL              
 499E: 97             SUB     A               
 499F: C9             RET                     
+
+Com_:
+;
 49A0: E5             PUSH    HL              
 49A1: 2A 78 4F       LD      HL,($4F78)      
 49A4: 22 6C 4F       LD      ($4F6C),HL      
@@ -898,6 +912,9 @@ Com_00:
 49AD: E1             POP     HL              
 49AE: 97             SUB     A               
 49AF: C9             RET                     
+
+Com_:
+;
 49B0: 46             LD      B,(HL)          
 49B1: 23             INC     HL              
 49B2: E5             PUSH    HL              
@@ -908,6 +925,9 @@ Com_00:
 49BD: E1             POP     HL              
 49BE: 97             SUB     A               
 49BF: C9             RET                     
+
+Com_:
+;
 49C0: EB             EX      DE,HL           
 49C1: 2A 72 4F       LD      HL,($4F72)      
 49C4: E5             PUSH    HL              
@@ -1029,17 +1049,26 @@ Com_00:
 4AA9: 8A             ADC     A,D             
 4AAA: 8B             ADC     A,E             
 4AAB: 8C             ADC     A,H             
-4AAC: 46             LD      B,(HL)          
+4AAC: 46             LD      B,(HL)   
+
+Com_:
+;
 4AAD: 23             INC     HL              
 4AAE: E5             PUSH    HL              
 4AAF: CD E1 4D       CALL    $4DE1           
 4AB2: CD F9 45       CALL    $45F9           
 4AB5: E1             POP     HL              
 4AB6: C9             RET                     
+
+Com_:
+;
 4AB7: 3A 7E 4F       LD      A,($4F7E)       
 4ABA: BE             CP      (HL)            
 4ABB: 23             INC     HL              
 4ABC: C9             RET                     
+
+Com_:
+;
 4ABD: 46             LD      B,(HL)          
 4ABE: 23             INC     HL              
 4ABF: E5             PUSH    HL              
@@ -1050,9 +1079,15 @@ Com_00:
 4ACA: E1             POP     HL              
 4ACB: 97             SUB     A               
 4ACC: C9             RET                     
+
+Com_:
+;
 4ACD: 46             LD      B,(HL)          
 4ACE: 23             INC     HL              
 4ACF: C3 BE 4C       JP      $4CBE           
+
+Com_:
+;
 4AD2: 4E             LD      C,(HL)          
 4AD3: 23             INC     HL              
 4AD4: 46             LD      B,(HL)          
@@ -1074,11 +1109,15 @@ Com_0C_:
 4AE6: C9             RET                 
  
 Com_04_:   
+;
 4AE7: 3A 7E 4F       LD      A,($4F7E)       
 4AEA: FE 38          CP      $38             
 4AEC: CA 08 4B       JP      Z,$4B08         
 4AEF: FE 13          CP      $13             
 4AF1: C2 01 4B       JP      NZ,$4B01        
+
+Com_:
+;
 4AF4: 06 13          LD      B,$13           
 4AF6: E5             PUSH    HL              
 4AF7: CD E1 4D       CALL    $4DE1           
@@ -1091,11 +1130,15 @@ Com_04_:
 4B08: CD F9 4D       CALL    $4DF9           
 4B0B: 97             SUB     A               
 4B0C: C9             RET                     
+
+Com_:
+;
 4B0D: CD 20 4A       CALL    $4A20           
 4B10: 97             SUB     A               
 4B11: C9             RET                     
 
 Com_06_print_inventory:
+;
 4B12: E5             PUSH    HL              
 4B13: 3E 0D          LD      A,$0D           
 4B15: CD 6B 4E       CALL    $4E6B           
@@ -1128,6 +1171,9 @@ Com_06_print_inventory:
 4B4C: 97             SUB     A               
 4B4D: E1             POP     HL              
 4B4E: C9             RET                     
+
+Com_:
+;
 4B4F: E5             PUSH    HL              
 4B50: 2A 72 4F       LD      HL,($4F72)      
 4B53: 3A 6F 4F       LD      A,($4F6F)       
@@ -1149,19 +1195,31 @@ Com_06_print_inventory:
 4B6F: C9             RET                     
 4B70: B8             CP      B               
 4B71: C9             RET                     
+
+Com_:
+;
 4B72: E5             PUSH    HL              
 4B73: 2A 78 4F       LD      HL,($4F78)      
 4B76: 3A 75 4F       LD      A,($4F75)       
 4B79: C3 56 4B       JP      $4B56           
+
+Com_:
+;
 4B7C: E5             PUSH    HL              
 4B7D: 2A 6C 4F       LD      HL,($4F6C)      
 4B80: 3A 6B 4F       LD      A,($4F6B)       
 4B83: C3 56 4B       JP      $4B56           
+
+Com_:
+;
 4B86: 46             LD      B,(HL)          
 4B87: 23             INC     HL              
 4B88: 3A 7D 4F       LD      A,($4F7D)       
 4B8B: B8             CP      B               
 4B8C: C9             RET                     
+
+Com_:
+;
 4B8D: E5             PUSH    HL              
 4B8E: 2A 6C 4F       LD      HL,($4F6C)      
 4B91: CD 55 47       CALL    $4755           
@@ -1170,6 +1228,9 @@ Com_06_print_inventory:
 4B98: 97             SUB     A               
 4B99: E1             POP     HL              
 4B9A: C9             RET                     
+
+Com_:
+;
 4B9B: E5             PUSH    HL              
 4B9C: 2A 6C 4F       LD      HL,($4F6C)      
 4B9F: CD 55 47       CALL    $4755           
@@ -1185,6 +1246,9 @@ Com_06_print_inventory:
 4BB1: 06 04          LD      B,$04           
 4BB3: CD 41 47       CALL    $4741           
 4BB6: D2 C2 4B       JP      NC,$4BC2        
+
+Com_:
+;
 4BB9: CD 55 47       CALL    $4755           
 4BBC: CD E4 48       CALL    $48E4           
 4BBF: CA 05 4C       JP      Z,$4C05         
@@ -1220,10 +1284,16 @@ Com_06_print_inventory:
 4C02: CD E4 48       CALL    $48E4           
 4C05: E1             POP     HL              
 4C06: C9             RET                     
+
+Com_:
+;
 4C07: E5             PUSH    HL              
 4C08: 2A 6C 4F       LD      HL,($4F6C)      
 4C0B: 3A 6B 4F       LD      A,($4F6B)       
 4C0E: C3 18 4C       JP      $4C18           
+
+Com_:
+;
 4C11: E5             PUSH    HL              
 4C12: 2A 72 4F       LD      HL,($4F72)      
 4C15: 3A 6F 4F       LD      A,($4F6F)       
@@ -1246,11 +1316,17 @@ Com_06_print_inventory:
 4C38: CD F9 4D       CALL    $4DF9           
 4C3B: E1             POP     HL              
 4C3C: 97             SUB     A               
-4C3D: C9             RET                     
+4C3D: C9             RET             
+
+Com_:
+;        
 4C3E: E5             PUSH    HL              
 4C3F: 3A 75 4F       LD      A,($4F75)       
 4C42: 2A 78 4F       LD      HL,($4F78)      
 4C45: C3 18 4C       JP      $4C18           
+
+Com_:
+;
 4C48: E5             PUSH    HL              
 4C49: 2A 6C 4F       LD      HL,($4F6C)      
 4C4C: 3A 6B 4F       LD      A,($4F6B)       
@@ -1265,6 +1341,9 @@ Com_06_print_inventory:
 4C5B: AE             XOR     (HL)            
 4C5C: 23             INC     HL              
 4C5D: C9             RET                     
+
+Com_:
+;
 4C5E: E5             PUSH    HL              
 4C5F: 2A 6C 4F       LD      HL,($4F6C)      
 4C62: 3A 6B 4F       LD      A,($4F6B)       
@@ -1279,6 +1358,9 @@ Com_06_print_inventory:
 4C72: E1             POP     HL              
 4C73: 97             SUB     A               
 4C74: C9             RET                     
+
+Com_:
+;
 4C75: E5             PUSH    HL              
 4C76: 2A 6C 4F       LD      HL,($4F6C)      
 4C79: 3A 6B 4F       LD      A,($4F6B)       
@@ -1293,12 +1375,18 @@ Com_06_print_inventory:
 4C89: E1             POP     HL              
 4C8A: 97             SUB     A               
 4C8B: C9             RET                     
+
+Com_:
+;
 4C8C: CD E4 48       CALL    $48E4           
 4C8F: C2 95 4C       JP      NZ,$4C95        
 4C92: F6 01          OR      $01             
 4C94: C9             RET                     
 4C95: 97             SUB     A               
 4C96: C9             RET                     
+
+Com_:
+;
 4C97: 46             LD      B,(HL)          
 4C98: 23             INC     HL              
 4C99: E5             PUSH    HL              
@@ -1311,6 +1399,9 @@ Com_06_print_inventory:
 4CA4: 23             INC     HL              
 4CA5: 97             SUB     A               
 4CA6: C9             RET                     
+
+Com_:
+;
 4CA7: E5             PUSH    HL              
 4CA8: 2A 6C 4F       LD      HL,($4F6C)      
 4CAB: CD 55 47       CALL    $4755           
@@ -1379,6 +1470,9 @@ Com_06_print_inventory:
 4D2A: E1             POP     HL              
 4D2B: D1             POP     DE              
 4D2C: C3 CF 4C       JP      $4CCF           
+
+Com_:
+;
 4D2F: 3A 57 4F       LD      A,($4F57)       
 4D32: BE             CP      (HL)            
 4D33: 23             INC     HL              
@@ -1388,6 +1482,9 @@ Com_06_print_inventory:
 4D3C: C9             RET                     
 4D3D: 97             SUB     A               
 4D3E: C9             RET                     
+
+Com_:
+;
 4D3F: 4E             LD      C,(HL)          
 4D40: 23             INC     HL              
 4D41: E5             PUSH    HL              
@@ -1424,6 +1521,9 @@ Com_06_print_inventory:
 4D7A: D1             POP     DE              
 4D7B: E1             POP     HL              
 4D7C: C3 66 4D       JP      $4D66           
+
+Com_:
+;
 4D7F: 46             LD      B,(HL)          
 4D80: 23             INC     HL              
 4D81: 4E             LD      C,(HL)          
@@ -1448,6 +1548,9 @@ Com_06_print_inventory:
 4D9C: 97             SUB     A               
 4D9D: E1             POP     HL              
 4D9E: C9             RET                     
+
+Com_:
+;
 4D9F: 4E             LD      C,(HL)          
 4DA0: 23             INC     HL              
 4DA1: E5             PUSH    HL              
@@ -1469,6 +1572,9 @@ Com_06_print_inventory:
 4DBE: 7A             LD      A,D             
 4DBF: 77             LD      (HL),A          
 4DC0: C3 9C 4D       JP      $4D9C           
+
+Com_:
+;
 4DC3: 3A 7E 4F       LD      A,($4F7E)       
 4DC6: FE 13          CP      $13             
 4DC8: C2 D0 4D       JP      NZ,$4DD0        
@@ -1476,6 +1582,9 @@ Com_06_print_inventory:
 4DCD: CD 6B 4E       CALL    $4E6B           
 4DD0: 97             SUB     A               
 4DD1: C9             RET                     
+
+Com_:
+;
 4DD2: C3 D2 4D       JP      $4DD2           
 4DD5: 1A             LD      A,(DE)          
 4DD6: A7             AND     A               
@@ -1485,6 +1594,9 @@ Com_06_print_inventory:
 4DDC: D1             POP     DE              
 4DDD: 13             INC     DE              
 4DDE: C3 D5 4D       JP      $4DD5           
+
+Com_:
+;
 4DE1: 21 61 55       LD      HL,$5561        
 4DE4: CD 55 47       CALL    $4755           
 4DE7: 05             DEC     B               
@@ -1685,6 +1797,9 @@ Com_06_print_inventory:
 4F2E: 00             NOP                     
 4F2F: 00             NOP                     
 4F30: 00             NOP                     
+
+Com_:
+;
 4F31: C5             PUSH    BC              
 4F32: E5             PUSH    HL              
 4F33: 2A 57 4F       LD      HL,($4F57)      

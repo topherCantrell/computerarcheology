@@ -240,9 +240,10 @@ out = []
 plat.print_phrases(out)
 plat.merge_into(out)
 
-"""
+
 plat.fix_command_names()
 
+"""
 with open('rooms_raaka_trs80.json','w') as f:
     js = plat.tojson_room_descriptions()
     js = json.dumps(js,indent=2)

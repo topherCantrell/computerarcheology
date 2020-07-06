@@ -595,6 +595,9 @@ class Decoder:
         for x in range(mx):
             ent = table[x]
             org = FORM.shex4(ent[-1])+':'
+            if org=='0000:':
+                continue
+            
             for pos in range(len(code)):
                 if code[pos].startswith(org):
                     break
