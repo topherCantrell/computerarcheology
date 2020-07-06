@@ -1,17 +1,16 @@
-from content_path import get_content_path
 
-source = ('CoCo/RaakaTu/RaakaTu.bin',0x0600)
-target = ('TRS80/RaakaTu/RAAKA.bin',0x4300)
+source = ('../../content/TRS80/Bedlam/BEDLAM.bin',0x0600)
+target = ('../../content/CoCo/Bedlam/Bedlam.bin',0x4300)
 #source_start = 0x3C2A
 #source_len = 10
 
-source_start = 0x152B
+source_start = 0x13E3
 source_len = 20
 
-with open(get_content_path(source[0]),'rb') as f:
+with open(source[0],'rb') as f:
     source_data = f.read()
     
-with open(get_content_path(target[0]),'rb') as f:
+with open(target[0],'rb') as f:
     target_data = f.read()
     
 sp = source_start-source[1]

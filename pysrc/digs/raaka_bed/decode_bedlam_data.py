@@ -174,13 +174,13 @@ INFO_TRS80 = {
     'binfile'  : '../../../content/TRS80/Bedlam/BEDLAM.bin',
     'codefile' : '../../../content/TRS80/Bedlam/Code.md',
     'origin' : 0x4300,
-    #'word_data' : 0x52C2,
-    #'phrase_data' : 0x50B9,
-    #'object_data' : 0x5651,
-    #'general_commands_data' : 0x73FB,
-    #'helper_commands_data' : 0x7BCD,
-    #'room_descriptions_data' : 0x681F,
-    #'command_table': 0x5066,
+    'word_data' : 0x5234,
+    'phrase_data' : 0x5025,
+    'object_data' : 0x5561,
+    'general_commands_data' : 0x6FA2,
+    'helper_commands_data' : 0x75E5,
+    'room_descriptions_data' : 0x6A01,
+    'command_table': 0x4FC8,
 }
 
 INFO_COCO = {
@@ -219,11 +219,12 @@ plat.merge_into(out)
 
 plat.fix_command_names()
 
-"""
 trs80 = Decoder(INFO_TRS80,OBJECT_SHORT_NAMES,ROOM_SHORT_NAMES,HELPER_SHORT_NAMES)
 plat = trs80
 out = []
 plat.print_general_commands(out)
+
+"""
 plat.merge_into(out)
 out = []
 plat.print_helper_commands(out)

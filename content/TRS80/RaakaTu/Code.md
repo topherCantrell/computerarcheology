@@ -2405,13 +2405,6 @@ InputWordTables:
 5644: 06 41 52 4F 55 4E 44 0B   ; AROUND   0B
 564C: 02 4F 4E 0C               ; ON       0C
 5650: 00
-;
-;
-;
-;
-;
-;
-;
 ```
 
 ## Object Data

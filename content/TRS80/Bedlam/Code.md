@@ -1,4 +1,4 @@
-![TRS-80 RaakaTu](trs80bedlam.jpg)
+![TRS-80 Bedlam](trs80bedlam.jpg)
 
 # Bedlam
 
@@ -810,7 +810,10 @@ list for BEDLAM and RAAKATU is empty so the code is never used anyway.
 490F: 13             INC     DE              
 4910: 1A             LD      A,(DE)          
 4911: 32 16 49       LD      ($4916),A       
-4914: C3 14 49       JP      $4914           
+4914: C3 14 49       JP      $4914  
+
+Com_0D_while_pass:
+; while_pass:         
 4917: CD 56 47       CALL    $4756           
 491A: CD 69 47       CALL    $4769           
 491D: D2 2A 49       JP      NC,$492A        
@@ -854,12 +857,16 @@ list for BEDLAM and RAAKATU is empty so the code is never used anyway.
 4964: CD E4 48       CALL    $48E4           
 4967: E1             POP     HL              
 4968: C9             RET                     
+
+Com_00:
+;
 4969: CD 73 49       CALL    $4973           
 496C: E5             PUSH    HL              
 496D: CD 20 4A       CALL    $4A20           
 4970: E1             POP     HL              
 4971: 97             SUB     A               
-4972: C9             RET                     
+4972: C9             RET            
+         
 4973: 7E             LD      A,(HL)          
 4974: 23             INC     HL              
 4975: E5             PUSH    HL              
@@ -1060,8 +1067,13 @@ list for BEDLAM and RAAKATU is empty so the code is never used anyway.
 4AE1: 7B             LD      A,E             
 4AE2: B9             CP      C               
 4AE3: C9             RET                     
+
+Com_0C_:
+;
 4AE4: F6 01          OR      $01             
-4AE6: C9             RET                     
+4AE6: C9             RET                 
+ 
+Com_04_:   
 4AE7: 3A 7E 4F       LD      A,($4F7E)       
 4AEA: FE 38          CP      $38             
 4AEC: CA 08 4B       JP      Z,$4B08         
@@ -1082,6 +1094,8 @@ list for BEDLAM and RAAKATU is empty so the code is never used anyway.
 4B0D: CD 20 4A       CALL    $4A20           
 4B10: 97             SUB     A               
 4B11: C9             RET                     
+
+Com_06_print_inventory:
 4B12: E5             PUSH    HL              
 4B13: 3E 0D          LD      A,$0D           
 4B15: CD 6B 4E       CALL    $4E6B           
@@ -1805,89 +1819,66 @@ list for BEDLAM and RAAKATU is empty so the code is never used anyway.
 4FC3: 00             NOP                     
 4FC4: 00             NOP                     
 4FC5: 00             NOP                     
-4FC6: 94             SUB     H               
-4FC7: A3             AND     E               
-4FC8: 69             LD      L,C             
-4FC9: 49             LD      C,C             
-4FCA: AC             XOR     H               
-4FCB: 4A             LD      C,D             
-4FCC: CD 4A D2       CALL    $D24A           
-4FCF: 4A             LD      C,D             
-4FD0: E7             RST     0X20            
-4FD1: 4A             LD      C,D             
-4FD2: 2F             CPL                     
-4FD3: 4D             LD      C,L             
-4FD4: 12             LD      (DE),A          
-4FD5: 4B             LD      C,E             
-4FD6: 0D             DEC     C               
-4FD7: 4B             LD      C,E             
-4FD8: 4F             LD      C,A             
-4FD9: 4B             LD      C,E             
-4FDA: 72             LD      (HL),D          
-4FDB: 4B             LD      C,E             
-4FDC: 86             ADD     A,(HL)          
-4FDD: 4B             LD      C,E             
-4FDE: 44             LD      B,H             
-4FDF: 49             LD      C,C             
-4FE0: E4 4A 17       CALL    PO,$174A        
-4FE3: 49             LD      C,C             
-4FE4: 2D             DEC     L               
-4FE5: 49             LD      C,C             
-4FE6: 8D             ADC     A,L             
-4FE7: 4B             LD      C,E             
-4FE8: 9B             SBC     E               
-4FE9: 4B             LD      C,E             
-4FEA: 11 4C 3E       LD      DE,$3E4C        
-4FED: 4C             LD      C,H             
-4FEE: A9             XOR     C               
-4FEF: 4B             LD      C,E             
-4FF0: 8C             ADC     A,H             
-4FF1: 4C             LD      C,H             
-4FF2: 48             LD      C,B             
-4FF3: 4C             LD      C,H             
-4FF4: 07             RLCA                    
-4FF5: 4C             LD      C,H             
-4FF6: 97             SUB     A               
-4FF7: 4C             LD      C,H             
-4FF8: A7             AND     A               
-4FF9: 4C             LD      C,H             
-4FFA: 73             LD      (HL),E          
-4FFB: 49             LD      C,C             
-4FFC: 90             SUB     B               
-4FFD: 49             LD      C,C             
-4FFE: A0             AND     B               
-4FFF: 49             LD      C,C             
-5000: B0             OR      B               
-5001: 49             LD      C,C             
-5002: 3F             CCF                     
-5003: 4D             LD      C,L             
-5004: 7F             LD      A,A             
-5005: 4D             LD      C,L             
-5006: F4 4A B7       CALL    P,$B74A         
-5009: 4A             LD      C,D             
-500A: C0             RET     NZ              
-500B: 49             LD      C,C             
-500C: 00             NOP                     
-500D: 00             NOP                     
-500E: 9F             SBC     A               
-500F: 4D             LD      C,L             
-5010: D2 4D C3       JP      NC,$C34D        
-5013: 4D             LD      C,L             
-5014: E1             POP     HL              
-5015: 4D             LD      C,L             
-5016: 00             NOP                     
-5017: 00             NOP                     
-5018: 00             NOP                     
-5019: 00             NOP                     
-501A: 5E             LD      E,(HL)          
-501B: 4C             LD      C,H             
-501C: 75             LD      (HL),L          
-501D: 4C             LD      C,H             
-501E: 31 4F BD       LD      SP,$BD4F        
-5021: 4A             LD      C,D             
-5022: 7C             LD      A,H             
-5023: 4B             LD      C,E             
-5024: 00             NOP                     
+4FC6: 94           
+4FC7: A3 
+```
+
+# Command Jump Table
+
+```code
+CommandJumpTable:              
+4FC8: 69 49        ; 
+4FCA: AC 4A        ; 
+4FCC: CD 4A        ; 
+4FCE: D2 4A        ; 
+4FD0: E7 4A        ; 
+4FD2: 2F 4D        ; 
+4FD4: 12 4B        ; 
+4FD6: 0D 4B        ; 07      
+4FD8: 4F 4B        ; 
+4FDA: 72 4B        ; 
+4FDC: 86 4B        ; 
+4FDE: 44 49        ; 
+4FE0: E4 4A        ; 
+4FE2: 17 49        ; 0D
+4FE4: 2D 49        ; 
+4FE6: 8D 4B        ;         
+4FE8: 9B 4B        ; 10       
+4FEA: 11 4C        ; 
+4FEC: 3E 4C        ;      
+4FEE: A9 4B        ;    
+4FF0: 8C 4C        ;          
+4FF2: 48 4C        ;        
+4FF4: 07 4C        ;       
+4FF6: 97 4C        ;         
+4FF8: A7 4C        ; 18       
+4FFA: 73 49        ;       
+4FFC: 90 49        ;          
+4FFE: A0 49        ;     
+5000: B0 49        ; 
+5002: 3F 4D        ;    
+5004: 7F 4D        ; 
+5006: F4 4A        ; 
+5008: B7 4A        ; 20
+500A: C0 49        ; 
+500C: 00 00        ;    
+500E: 9F 4D        ;       
+5010: D2 4D        ; 
+5012: C3 4D        ;      
+5014: E1 4D        ;  
+5016: 00 00        ; 
+5018: 00 00        ; 
+501A: 5E 4C        ; 
+501C: 75 4C        ; 
+501E: 31 4F        ; 
+5020: BD 4A        ;  
+5022: 7C 4B        ; 2D
+5024: 00        
+```
+
+# Phrase List
+
+```code
 5025: 05             DEC     B               
 5026: 00             NOP                     
 5027: 00             NOP                     
@@ -2320,6 +2311,13 @@ list for BEDLAM and RAAKATU is empty so the code is never used anyway.
 5231: 49             LD      C,C             
 5232: 00             NOP                     
 5233: AC             XOR     H               
+```
+
+# Input Word Tables
+
+```code
+InputWordTables:
+
 5234: 00             NOP                     
 5235: 03             INC     BC              
 5236: 47             LD      B,A             
@@ -3055,7 +3053,13 @@ list for BEDLAM and RAAKATU is empty so the code is never used anyway.
 555D: 4F             LD      C,A             
 555E: 4E             LD      C,(HL)          
 555F: 0C             INC     C               
-5560: 00             NOP                     
+5560: 00             NOP                  
+```
+
+## Object Data
+
+```code
+ObjectData:   
 5561: 00             NOP                     
 5562: 94             SUB     H               
 5563: 9D             SBC     L               
@@ -7387,6 +7391,12 @@ list for BEDLAM and RAAKATU is empty so the code is never used anyway.
 69FD: 03             INC     BC              
 69FE: 18 00          JR      $6A00           
 6A00: 00             NOP                     
+```
+
+# Room Descriptions
+
+```code
+RoomDescriptions: 
 6A01: 00             NOP                     
 6A02: 85             ADD     A,L             
 6A03: 9E             SBC     (HL)            
@@ -8595,7 +8605,14 @@ list for BEDLAM and RAAKATU is empty so the code is never used anyway.
 6F9D: B1             OR      C               
 6F9E: 7F             LD      A,A             
 6F9F: 5B             LD      E,E             
-6FA0: 21 24 00       LD      HL,$0024        
+6FA0: 21 24 
+```
+
+# General Commands
+
+```code
+GeneralCommands:
+6FA2: 00       LD      HL,$0024        
 6FA3: 86             ADD     A,(HL)          
 6FA4: 40             LD      B,B             
 6FA5: 0E 86          LD      C,$86           
@@ -9881,7 +9898,14 @@ list for BEDLAM and RAAKATU is empty so the code is never used anyway.
 75E0: 8D             ADC     A,L             
 75E1: 91             SUB     C               
 75E2: 7A             LD      A,D             
-75E3: 3A 06 00       LD      A,($0006)       
+75E3: 3A 06 
+```
+
+# Helper Commands
+
+```code
+HelperCommands:
+75E5: 00   
 75E6: 87             ADD     A,A             
 75E7: AE             XOR     (HL)            
 75E8: 81             ADD     A,C             
