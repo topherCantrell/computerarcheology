@@ -1,5 +1,5 @@
-from digs.raakatu import unpacker
-import digs.raakatu.raakatu_commands as RTC
+from digs.raaka_bed import unpacker
+import digs.raaka_bed.commands as RTC
 import util.util as U
 
 class ShortName:
@@ -263,45 +263,6 @@ class HitPoints:
     def tojson(self,parent):
         parent['max_points'] = self._max
         parent['current_points'] = self._current      
-
-def decode_noun(n,collapse_zero=True):
-    if collapse_zero and n==0:
-        return '*'
-    ret = ''
-    if n&0x80:
-        ret=ret+'u'
-    else:
-        ret=ret+'.'
-    if n&0x40:
-        ret = ret + 'v'
-    else:
-        ret = ret + '.'
-    if n&0x20:
-        ret = ret + 'C'
-    else:
-        ret = ret + '.'
-    if n&0x10:
-        ret = ret + 'P'
-    else:
-        ret = ret + '.'
-    if n&0x08:
-        ret = ret + 'A'
-    else:
-        ret = ret + '.'
-    if n&0x04:
-        ret = ret + 'X'
-    else:
-        ret = ret + '.'
-    if n&0x02:
-        ret = ret + 'O'
-    else:
-        ret = ret + '.'
-    if n&0x01:
-        ret = ret + 'L'
-    else:
-        ret = ret + '.'
-        
-    return ret
 
 OBJ_ATTRIBUTES = {
     ShortName.command_value : ShortName,

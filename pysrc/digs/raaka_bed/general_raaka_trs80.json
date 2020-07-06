@@ -866,14 +866,14 @@
           "compare_input_to(phrase)",
           "LOAD * * *",
           [
-            "unknown_27(x)"
+            "load_game()"
           ]
         ],
         [
           "compare_input_to(phrase)",
           "SAVE * * *",
           [
-            "unknown_28(x)"
+            "save_game()"
           ]
         ],
         [
@@ -1454,7 +1454,7 @@
                 "switch",
                 [
                   [
-                    "unknown_22(x)",
+                    "is_less_equal_health(points)",
                     5,
                     [
                       "print(msg)",
@@ -1462,7 +1462,7 @@
                     ]
                   ],
                   [
-                    "unknown_22(x)",
+                    "is_less_equal_health(points)",
                     20,
                     [
                       "print(msg)",
@@ -1470,7 +1470,7 @@
                     ]
                   ],
                   [
-                    "unknown_22(x)",
+                    "is_less_equal_health(points)",
                     35,
                     [
                       "print(msg)",
@@ -1478,7 +1478,7 @@
                     ]
                   ],
                   [
-                    "unknown_22(x)",
+                    "is_less_equal_health(points)",
                     51,
                     [
                       "print(msg)",
@@ -1486,7 +1486,7 @@
                     ]
                   ],
                   [
-                    "unknown_22(x)",
+                    "is_less_equal_health(points)",
                     68,
                     [
                       "print(msg)",
@@ -1494,7 +1494,7 @@
                     ]
                   ],
                   [
-                    "unknown_22(x)",
+                    "is_less_equal_health(points)",
                     255,
                     [
                       "print(msg)",

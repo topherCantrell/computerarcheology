@@ -1,31 +1,6 @@
-from digs.raakatu import unpacker
+from digs.raaka_bed import unpacker
 import util.util as U
-
-DECODE_PHRASE = None
-DECODE_NOUN = None
-DECODE_HELPER = None
-DECODE_ROOM = None
-DECODE_BITS = None
-
-def set_decode_phrase(fn):
-    global DECODE_PHRASE
-    DECODE_PHRASE = fn
-    
-def set_decode_noun(fn):
-    global DECODE_NOUN
-    DECODE_NOUN = fn
-    
-def set_decode_helper(fn):
-    global DECODE_HELPER
-    DECODE_HELPER = fn
-    
-def set_decode_room(fn):
-    global DECODE_ROOM
-    DECODE_ROOM = fn
-    
-def set_decode_bits(fn):
-    global DECODE_BITS
-    DECODE_BITS = fn
+from digs.raaka_bed import decoder_functions as FUN
 
 class CommonCommand:
     
@@ -41,12 +16,12 @@ class CommonCommand:
         return bytes([self._number])
     
     def print_assembly(self,pos,ident,out):        
-        s = U.hex4(pos)+': '+U.hex2(self._number)+' ; '+U.hex2(self._number)+'('+DECODE_HELPER(self._number)+')'
+        s = U.hex4(pos)+': '+U.hex2(self._number)+' ; '+U.hex2(self._number)+'('+FUN.decode_helper_name(self._number)+')'
         out.append(U.indent_code(s,ident))         
         return pos+1
     
     def tojson(self):
-        return ['function('+DECODE_HELPER(self._number)+')']
+        return ['function('+FUN.decode_helper_name(self._number)+')']
     
 class BaseCommand:
     
@@ -89,12 +64,12 @@ class MoveActiveObjectToRoom(BaseCommand):
         return bytes([self.command_value,self._room])   
     
     def print_assembly(self,pos,ident,out):        
-        s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._room)+' ; '+self.command_name+' room='+U.hex2(self._room)+'('+DECODE_ROOM(self._room) +')'
+        s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._room)+' ; '+self.command_name+' room='+U.hex2(self._room)+'('+FUN.decode_room_name(self._room) +')'
         out.append(U.indent_code(s,ident))       
         return pos+2
     
     def tojson(self):
-        return [self.command_name,DECODE_ROOM(self._room)]
+        return [self.command_name,FUN.decode_room_name(self._room)]
     
 class PrintInventory(BaseCommand):
     
@@ -117,7 +92,7 @@ class PrintInventory(BaseCommand):
     def tojson(self):
         return [self.command_name]
 
-class UnknownCommand2(BaseCommand):
+class IsOwnedBy(BaseCommand):
     
     command_value = 0x02
     command_name = 'is_owned_by_ACTIVE(object)'
@@ -129,14 +104,14 @@ class UnknownCommand2(BaseCommand):
         self._object = data[0]
         
     def print_assembly(self,pos,ident,out):  
-        s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._object)+' ; '+self.command_name+' object='+U.hex2(self._object)+'('+DECODE_NOUN(self._object)+')'    
+        s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._object)+' ; '+self.command_name+' object='+U.hex2(self._object)+'('+FUN.decode_noun(self._object)+')'    
         out.append(U.indent_code(s,ident))        
         return pos+2
     
     def tojson(self):
         return [self.command_name,self._object]
        
-class UnknownCommand22(BaseCommand):
+class ComapreHealth(BaseCommand):
     
     command_value = 0x22
     command_name = 'is_less_equal_health(points)'
@@ -161,9 +136,9 @@ class UnknownCommand22(BaseCommand):
         return [cls.command_name,cdata[0]]
     
     def tojson(self):
-        return [self.command_name,self._unknown]
+        return [self.command_name,self._points]
     
-class UnknownCommand28(BaseCommand):
+class Save(BaseCommand):
     
     command_value = 0x28
     command_name = 'save_game()'
@@ -184,7 +159,7 @@ class UnknownCommand28(BaseCommand):
     def tojson(self):
         return [self.command_name]
         
-class UnknownCommand27(BaseCommand):
+class Load(BaseCommand):
     
     command_value = 0x27
     command_name = 'load_game()'
@@ -369,19 +344,19 @@ class CompareObjectToSecondNoun(BaseCommand):
     
     @classmethod
     def get_switch_comment(cs,cdata):
-        return cs.command_name+' object='+U.hex2(cdata[0])+'('+DECODE_NOUN(cdata[0])+')'
+        return cs.command_name+' object='+U.hex2(cdata[0])+'('+FUN.decode_noun(cdata[0])+')'
     
     def print_assembly(self,pos,ident,out):        
-        s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._object)+' ; '+self.command_name+' object='+U.hex2(self._object)+'('+DECODE_NOUN(self._object)+')'
+        s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._object)+' ; '+self.command_name+' object='+U.hex2(self._object)+'('+FUN.decode_noun(self._object)+')'
         out.append(U.indent_code(s,ident))        
         return pos+2
     
     @classmethod
     def tojson_switch(cls,cdata):
-        return [cls.command_name,DECODE_NOUN(cdata[0])]
+        return [cls.command_name,FUN.decode_noun(cdata[0])]
     
     def tojson(self):
-        return [self.command_name,DECODE_NOUN(self._object)]
+        return [self.command_name,FUN.decode_noun(self._object)]
         
 class MoveActiveObjectToRoomAndLook(BaseCommand):
     
@@ -398,12 +373,12 @@ class MoveActiveObjectToRoomAndLook(BaseCommand):
         return bytes([self.command_value,self._room])
     
     def print_assembly(self,pos,ident,out):      
-        s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._room)+' ; '+self.command_name+' room='+U.hex2(self._room)+'('+DECODE_ROOM(self._room)+')'
+        s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._room)+' ; '+self.command_name+' room='+U.hex2(self._room)+'('+FUN.decode_room_name(self._room)+')'
         out.append(U.indent_code(s,ident))        
         return pos+2
     
     def tojson(self):
-        return [self.command_name,DECODE_ROOM(self._room)]        
+        return [self.command_name,FUN.decode_room_name(self._room)]        
         #return [self.command_name,DECODE_ROOM(self._room)]
     
 class PrintSecondNounShortName(BaseCommand):
@@ -463,12 +438,12 @@ class CheckObjectBits(BaseCommand):
         return bytes([self.command_value,self._bits])   
     
     def print_assembly(self,pos,ident,out):     
-        s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._bits)+' ; '+self.command_name+' bits='+U.hex2(self._bits)+'('+DECODE_BITS(self._bits)+')'
+        s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._bits)+' ; '+self.command_name+' bits='+U.hex2(self._bits)+'('+FUN.decode_object_bits(self._bits)+')'
         out.append(U.indent_code(s,ident))        
         return pos+2
     
     def tojson(self):
-        return [self.command_name,DECODE_BITS(self._bits)]
+        return [self.command_name,FUN.decode_object_bits(self._bits)]
     
 class ExecutePhrase(BaseCommand):
     
@@ -490,18 +465,18 @@ class ExecutePhrase(BaseCommand):
         
         fn = '00'
         if self._first_noun:
-            fn = U.hex2(self._first_noun)+'('+DECODE_NOUN(self._first_noun)+')'
+            fn = U.hex2(self._first_noun)+'('+FUN.decode_noun(self._first_noun)+')'
         sn = '00'
         if self._second_noun:
-            sn = U.hex2(self._second_noun)+'('+DECODE_NOUN(self._second_noun)+')'
+            sn = U.hex2(self._second_noun)+'('+FUN.decode_noun(self._second_noun)+')'
         
         s = (U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._phrase)+' '+U.hex2(self._first_noun)+' '+U.hex2(self._second_noun)+
-             ' ; '+self.command_name+' phrase='+DECODE_PHRASE(self._phrase)+' firstNoun='+fn+' secondNoun='+sn)
+             ' ; '+self.command_name+' phrase='+FUN.decode_phrase(self._phrase)+' firstNoun='+fn+' secondNoun='+sn)
         out.append(U.indent_code(s,ident))        
         return pos+4
     
     def tojson(self):
-        return [self.command_name,DECODE_PHRASE(self._phrase),DECODE_NOUN(self._first_noun),DECODE_NOUN(self._second_noun)]
+        return [self.command_name,FUN.decode_phrase(self._phrase),FUN.decode_noun(self._first_noun),FUN.decode_noun(self._second_noun)]
 
 class RestartGame(BaseCommand):
     
@@ -537,22 +512,22 @@ class CheckActiveObject(BaseCommand):
         
     @classmethod
     def get_switch_comment(cs,cdata):
-        return cs.command_name+' object='+U.hex2(cdata[0])+'('+DECODE_NOUN(cdata[0])+')'
+        return cs.command_name+' object='+U.hex2(cdata[0])+'('+FUN.decode_noun(cdata[0])+')'
         
     def get_assembly(self):
         return bytes([self.command_value,self._object])    
     
     def print_assembly(self,pos,ident,out):    
-        s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._object)+' ; '+self.command_name+' object='+U.hex2(self._object)+'('+DECODE_NOUN(self._object)+')'    
+        s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._object)+' ; '+self.command_name+' object='+U.hex2(self._object)+'('+FUN.decode_noun(self._object)+')'    
         out.append(U.indent_code(s,ident))        
         return pos+2
     
     @classmethod
     def tojson_switch(cls,cdata):
-        return [cls.command_name,DECODE_NOUN(cdata[0])]
+        return [cls.command_name,FUN.decode_noun(cdata[0])]
     
     def tojson(self):
-        return [self.command_name,DECODE_NOUN(self._object)]
+        return [self.command_name,FUN.decode_noun(self._object)]
     
 class ProcessPhraseByRoomFirstSecond(BaseCommand):
     
@@ -592,20 +567,20 @@ class IsObjectAtLocation(BaseCommand):
     
     @classmethod
     def get_switch_comment(cs,cdata):
-        return cs.command_name+' room='+U.hex2(cdata[0])+'('+DECODE_ROOM(cdata[0])+')'+' object='+U.hex2(cdata[1])+'('+DECODE_NOUN(cdata[1])+')'
+        return cs.command_name+' room='+U.hex2(cdata[0])+'('+FUN.decode_room_name(cdata[0])+')'+' object='+U.hex2(cdata[1])+'('+FUN.decode_noun(cdata[1])+')'
     
     def print_assembly(self,pos,ident,out):  
         s = (U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._room)+' '+U.hex2(self._object)+
-              ' ; '+self.command_name+' room='+U.hex2(self._room)+'('+DECODE_ROOM(self._room)+')'+' object='+U.hex2(self._object)+'('+DECODE_NOUN(self._object)+')')      
+              ' ; '+self.command_name+' room='+U.hex2(self._room)+'('+FUN.decode_room_name(self._room)+')'+' object='+U.hex2(self._object)+'('+FUN.decode_noun(self._object)+')')      
         out.append(U.indent_code(s,ident))        
         return pos+3
     
     def tojson(self):
-        return [self.command_name,DECODE_ROOM(self._room),DECODE_NOUN(self._object)]
+        return [self.command_name,FUN.decode_room_name(self._room),FUN.decode_noun(self._object)]
     
     @classmethod
     def tojson_switch(cls,cdata):
-        return [cls.command_name,DECODE_ROOM(cdata[0]),DECODE_NOUN(cdata[1])]
+        return [cls.command_name,FUN.decode_room_name(cdata[0]),FUN.decode_noun(cdata[1])]
     
 class Fail(BaseCommand):
     
@@ -685,12 +660,12 @@ class CompareObjectToFirstNoun(BaseCommand):
         return bytes([self.command_value,self._object])    
     
     def print_assembly(self,pos,ident,out):      
-        s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._object)+' ; '+self.command_name+' object='+U.hex2(self._object)+'('+DECODE_NOUN(self._object)+')'
+        s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._object)+' ; '+self.command_name+' object='+U.hex2(self._object)+'('+FUN.decode_noun(self._object)+')'
         out.append(U.indent_code(s,ident))        
         return pos+2
     
     def tojson(self):
-        return [self.command_name,DECODE_NOUN(self._object)]
+        return [self.command_name,FUN.decode_noun(self._object)]
     
 class IsObjectInRoomOrPack(BaseCommand):
     
@@ -705,22 +680,22 @@ class IsObjectInRoomOrPack(BaseCommand):
         
     @classmethod
     def get_switch_comment(cs,cdata):
-        return cs.command_name+' object='+U.hex2(cdata[0]) +'('+DECODE_NOUN(cdata[0])+')'
+        return cs.command_name+' object='+U.hex2(cdata[0]) +'('+FUN.decode_noun(cdata[0])+')'
         
     def get_assembly(self):
         return bytes([self.command_value,self._object])  
     
     def print_assembly(self,pos,ident,out):     
-        s =U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._object)+' ; '+self.command_name+' object='+U.hex2(self._object)+'('+DECODE_NOUN(self._object)+')'    
+        s =U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._object)+' ; '+self.command_name+' object='+U.hex2(self._object)+'('+FUN.decode_noun(self._object)+')'    
         out.append(U.indent_code(s,ident))        
         return pos+2
     
     def tojson(self):
-        return [self.command_name,DECODE_NOUN(self._object)]
+        return [self.command_name,FUN.decode_noun(self._object)]
     
     @classmethod
     def tojson_switch(cls,cdata):
-        return [cls.command_name,DECODE_NOUN(cdata[0])]
+        return [cls.command_name,FUN.decode_noun(cdata[0])]
     
 class PrintMessage2(BaseCommand):
     
@@ -764,7 +739,7 @@ class SwapObjects(BaseCommand):
     
     def print_assembly(self,pos,ident,out):        
         s = (U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._object_a)+' '+U.hex2(self._object_b)+
-              ' ; '+self.command_name+' object_a='+'('+DECODE_NOUN(self._object_a)+')'+ U.hex2(self._object_a)+' object_b='+U.hex2(self._object_b)+'('+DECODE_NOUN(self._object_b)+')')
+              ' ; '+self.command_name+' object_a='+'('+FUN.decode_noun(self._object_a)+')'+ U.hex2(self._object_a)+' object_b='+U.hex2(self._object_b)+'('+FUN.decode_noun(self._object_b)+')')
         out.append(U.indent_code(s,ident))        
         return pos+3
     
@@ -807,12 +782,12 @@ class SetVarObject(BaseCommand):
         return bytes([self.command_value,self._object])
     
     def print_assembly(self,pos,ident,out):       
-        s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._object)+' ; '+self.command_name+' object='+U.hex2(self._object)+'('+DECODE_NOUN(self._object)+')'
+        s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._object)+' ; '+self.command_name+' object='+U.hex2(self._object)+'('+FUN.decode_noun(self._object)+')'
         out.append(U.indent_code(s,ident))        
         return pos+2
     
     def tojson(self):
-        return [self.command_name,DECODE_NOUN(self._object)]
+        return [self.command_name,FUN.decode_noun(self._object)]
     
 class IsLessEqualRandom(BaseCommand):
     
@@ -923,12 +898,12 @@ class MoveObject(BaseCommand):
     
     def print_assembly(self,pos,ident,out):    
         s =  (U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._object)+' '+U.hex2(self._room)+
-              ' ; '+self.command_name+' object='+U.hex2(self._object)+'('+DECODE_NOUN(self._object)+') room='+U.hex2(self._room)+'('+DECODE_ROOM(self._room)+')')   
+              ' ; '+self.command_name+' object='+U.hex2(self._object)+'('+FUN.decode_noun(self._object)+') room='+U.hex2(self._room)+'('+FUN.decode_room_name(self._room)+')')   
         out.append(U.indent_code(s,ident))        
         return pos+3
     
     def tojson(self):
-        return [self.command_name,DECODE_ROOM(self._room)]
+        return [self.command_name,FUN.decode_room_name(self._room)]
     
 class Heal(BaseCommand):
     
@@ -1062,22 +1037,22 @@ class CompareToPhrase(BaseCommand):
 
     @classmethod
     def get_switch_comment(cs,cdata):
-        return cs.command_name+' phrase='+DECODE_PHRASE(int(cdata[0]))
+        return cs.command_name+' phrase='+FUN.decode_phrase(int(cdata[0]))
     
     def print_assembly(self,pos,ident,out):
         
-        s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._phrase)+' ; '+self.command_name+' phrase='+DECODE_PHRASE(self._phrase)
+        s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._phrase)+' ; '+self.command_name+' phrase='+FUN.decode_phrase(self._phrase)
         out.append(U.indent_code(s,ident)) 
         # TODO decode the phrase
                 
         return pos+2
     
     def tojson(self):
-        return [self.command_name,DECODE_PHRASE(self._phrase,full=False)]
+        return [self.command_name,FUN.decode_phrase(self._phrase,full=False)]
     
     @classmethod
     def tojson_switch(cs,cdata):
-        return [cs.command_name,DECODE_PHRASE(cdata[0],full=False)]
+        return [cs.command_name,FUN.decode_phrase(cdata[0],full=False)]
     
 class Switch(BaseCommand):
     
@@ -1172,10 +1147,139 @@ class Switch(BaseCommand):
                         
         return cdata
 
+class ToggleOpen(BaseCommand):
+    
+    command_value = 0x29
+    command_name = 'print_open_VAR()'
+    command_length = 0
+    
+    def parse_binary(self,data):    
+        #print(self.command_name)    
+        self._raw_data = data 
+        
+    def get_assembly(self):
+        return bytes([self.command_value])   
+    
+    def print_assembly(self,pos,ident,out):  
+        s =  U.hex4(pos)+': '+U.hex2(self.command_value)+' ; '+self.command_name     
+        out.append(U.indent_code(s,ident))        
+        return pos+1
+    
+    def tojson(self):
+        return [self.command_name]
+
+class ToggleLock(BaseCommand):
+    
+    command_value = 0x2A
+    command_name = 'toggle_lock_VAR()'
+    command_length = 0
+    
+    def parse_binary(self,data):    
+        #print(self.command_name)    
+        self._raw_data = data 
+        
+    def get_assembly(self):
+        return bytes([self.command_value])   
+    
+    def print_assembly(self,pos,ident,out):  
+        s =  U.hex4(pos)+': '+U.hex2(self.command_value)+' ; '+self.command_name     
+        out.append(U.indent_code(s,ident))        
+        return pos+1
+    
+    def tojson(self):
+        return [self.command_name]
+
+class GenerateRandom(BaseCommand):
+    
+    command_value = 0x2B
+    command_name = 'generate_random()'
+    command_length = 0
+    
+    def parse_binary(self,data):    
+        #print(self.command_name)    
+        self._raw_data = data 
+        
+    def get_assembly(self):
+        return bytes([self.command_value])   
+    
+    def print_assembly(self,pos,ident,out):  
+        s =  U.hex4(pos)+': '+U.hex2(self.command_value)+' ; '+self.command_name     
+        out.append(U.indent_code(s,ident))        
+        return pos+1
+    
+    def tojson(self):
+        return [self.command_name]
+
+class SetActive(BaseCommand):
+    
+    command_value = 0x2C
+    command_name = 'set_ACTIVE(object)'
+    command_length = 1
+    
+    def parse_binary(self,data):        
+        #print(self.command_name)
+        self._raw_data = data
+        self._object = data[0]        
+        
+    def get_assembly(self):
+        return bytes([self.command_value,self._object])
+
+    @classmethod
+    def get_switch_comment(cs,cdata):
+        return cs.command_name+' object='+U.hex2(int(cdata[0]))+'('+FUN.decode_noun(int(cdata[0]))+')'
+    
+    def print_assembly(self,pos,ident,out):
+        
+        s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._object)+' ; '+self.command_name+' object='+U.hex2(self._object)+'('+FUN.decode_noun(self._object)+')'
+        out.append(U.indent_code(s,ident)) 
+                
+        return pos+2
+    
+    def tojson(self):
+        return [self.command_name,FUN.decode_noun(self._object)]
+    
+    @classmethod
+    def tojson_switch(cs,cdata):
+        return [cs.command_name,FUN.decode_noun(cdata[0])]
+
+class CompareToVAR(BaseCommand):
+    
+    command_value = 0x2D
+    command_name = 'compare_to_VAR(object)'
+    command_length = 1
+    
+    def parse_binary(self,data):        
+        #print(self.command_name)
+        self._raw_data = data
+        self._phrase = data[0]        
+        
+    def get_assembly(self):
+        return bytes([self.command_value,self._phrase])
+
+    @classmethod
+    def get_switch_comment(cs,cdata):
+        return cs.command_name+' phrase='+FUN.decode_phrase(int(cdata[0]))
+    
+    def print_assembly(self,pos,ident,out):
+        
+        s = U.hex4(pos)+': '+U.hex2(self.command_value)+' '+U.hex2(self._phrase)+' ; '+self.command_name+' phrase='+FUN.decode_phrase(self._phrase)
+        out.append(U.indent_code(s,ident)) 
+        # TODO decode the phrase
+                
+        return pos+2
+    
+    def tojson(self):
+        return [self.command_name,FUN.decode_phrase(self._phrase,full=False)]
+    
+    @classmethod
+    def tojson_switch(cs,cdata):
+        return [cs.command_name,FUN.decode_phrase(cdata[0],full=False)]
+
+
 COMMAND_INFO = [
     [MoveActiveObjectToRoomAndLook,   0x00, '1', 'move_ACTIVE_and_look(room)'],
     [IsObjectInRoomOrPack,            0x01, '1', 'is_in_pack_or_current_room(object)'],
-    [UnknownCommand2,                 0x02, '1', 'is_owned_by_ACTIVE(object)'],
+    [IsOwnedBy,                       0x02, '1', 'is_owned_by_ACTIVE(object)'],
     [IsObjectAtLocation,              0x03, '2', 'is_located(room,object)'],
     [PrintMessage,                    0x04, 'v', 'print(msg)'],
     [IsLessEqualRandom,               0x05, '1', 'is_less_equal_last_random(value)'],
@@ -1207,20 +1311,28 @@ COMMAND_INFO = [
     [PrintMessage2,                   0x1F, 'v', 'print2(msg)'],
     [CheckActiveObject,               0x20, '1', 'is_ACTIVE_this(object)'],
     [ExecutePhrase,                   0x21, '3', 'execute_phrase(phrase,first_noun,second_noun)'],
-    [UnknownCommand22,                0x22, '1', 'is_less_equal_health(points)'],
+    [ComapreHealth,                   0x22, '1', 'is_less_equal_health(points)'],
     [Heal,                            0x23, '1', 'heal_VAR(points)'],
     [EndlessLoop,                     0x24, '0', 'endless_loop()'],
     [RestartGame,                     0x25, '0', 'restart_game()'],
     [PrintScore,                      0x26, '0', 'print_score()'],
-    [UnknownCommand27,                0x27, '1', 'load_game()'], 
-    [UnknownCommand28,                0x28, '1', 'save_game()'],  
+    # TRS80 only
+    [Load,                            0x27, '1', 'load_game()'], 
+    [Save,                            0x28, '1', 'save_game()'],  
+    # Bedlam only
+    [ToggleOpen,                      0x29, '0', 'toggle_open_VAR()'],
+    [ToggleLock,                      0x2A, '0', 'toggle_lock_VAR()'],
+    [GenerateRandom,                  0x2B, '0', 'generate_random()'],
+    [SetActive,                       0x2C, '1', 'set_ACTIVE(object)'],
+    [CompareToVAR,                    0x2D, '1', 'is_VAR(object)'],
+    
 ]
 
         
 SCRIPT_COMMANDS = {
     MoveActiveObjectToRoomAndLook.command_value : MoveActiveObjectToRoomAndLook, # (00) : 1 move_ACTIVE_and_look(room)
     IsObjectInRoomOrPack.command_value : IsObjectInRoomOrPack, # (01) : 1 is_in_pack_or_current_room(object)
-    UnknownCommand2.command_value : UnknownCommand2, # (02) : 1 unknown_02(x)
+    IsOwnedBy.command_value : IsOwnedBy, # (02) : 
     IsObjectAtLocation.command_value : IsObjectAtLocation, # (03) : 2 is_located(room,object)
     PrintMessage.command_value : PrintMessage, # (04) : var print(msg)
     IsLessEqualRandom.command_value : IsLessEqualRandom, # (05) : 1 is_less_equal_last_random(value)
@@ -1252,13 +1364,20 @@ SCRIPT_COMMANDS = {
     PrintMessage2.command_value : PrintMessage2, # (1F) : var print2(msg)
     CheckActiveObject.command_value : CheckActiveObject, # (20) : 1 is_ACTIVE_this(object)
     ExecutePhrase.command_value : ExecutePhrase, # (21) : 3 execute_phrase(phrase,first_noun,second_noun)
-    UnknownCommand22.command_value : UnknownCommand22, # (22) : 1 unknown_22(x)
+    ComapreHealth.command_value : ComapreHealth, # (22) : 
     Heal.command_value : Heal, # (23) : 1 heal_VAR(points)
     EndlessLoop.command_value : EndlessLoop, # (24) endless_loop()
     RestartGame.command_value : RestartGame, # (25) restart_game()
     PrintScore.command_value : PrintScore, # (26) print_score()
-    UnknownCommand27.command_value : UnknownCommand27, # (27) load_game()
-    UnknownCommand28.command_value : UnknownCommand28, # (28) save_game()
+    # TRS80 only
+    Load.command_value : Load, # (27) load_game()
+    Save.command_value : Save, # (28) save_game()
+    # Bedlam only
+    ToggleOpen.command_value : ToggleOpen, # (29)
+    ToggleLock.command_value : ToggleLock, # (2A)
+    GenerateRandom.command_value : GenerateRandom, # (2B)
+    SetActive.command_value : SetActive, # (2C)
+    CompareToVAR.command_value : CompareToVAR, # (2D)
 }
 
 def read_length(pos,data):    
@@ -1290,18 +1409,3 @@ def decode_script(sdata):
         pos += csz           
                 
     return ret    
-    
-if __name__ == '__main__':
-    for i in range(41):    
-        cmd = SCRIPT_COMMANDS[i]
-        if cmd.command_length is None:
-            cb = ': var'
-        elif cmd.command_length==0:
-            cb = ''
-        else:
-            cb = ': '+str(cmd.command_length)
-        cn = cmd.__name__
-        print(f'    {cn}.command_value : {cn}, # ({U.hex2(cmd.command_value)}) {cb}')
-        
-
-

@@ -898,7 +898,7 @@
                         "WEST * * *",
                         [
                           "execute_phrase(phrase,first_noun,second_noun)",
-                          "\"04: WEST    *         *       *         \"",
+                          "\"04: WEST * * *\"",
                           "nowhere",
                           "nowhere"
                         ]
@@ -908,7 +908,7 @@
                         "EAST * * *",
                         [
                           "execute_phrase(phrase,first_noun,second_noun)",
-                          "\"03: EAST    *         *       *         \"",
+                          "\"03: EAST * * *\"",
                           "nowhere",
                           "nowhere"
                         ]
@@ -918,7 +918,7 @@
                         "NORTH * * *",
                         [
                           "execute_phrase(phrase,first_noun,second_noun)",
-                          "\"01: NORTH   *         *       *         \"",
+                          "\"01: NORTH * * *\"",
                           "nowhere",
                           "nowhere"
                         ]
@@ -928,7 +928,7 @@
                         "SOUTH * * *",
                         [
                           "execute_phrase(phrase,first_noun,second_noun)",
-                          "\"02: SOUTH   *         *       *         \"",
+                          "\"02: SOUTH * * *\"",
                           "nowhere",
                           "nowhere"
                         ]
