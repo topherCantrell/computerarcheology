@@ -657,6 +657,15 @@ class Decoder:
             
         org_data = binary.get_binary_lines(code[pos:epos+1],origin)
         if org_data!=new_data:
+            print(len(org_data),len(new_data))
+            fp = -1
+            for i in range(len(org_data)):
+                if org_data[i] != new_data[i]:
+                    fp = i + origin
+                    break
+            print(fp)
+            print(org_data==new_data[0:-1])
+                
             raise Exception('The binary of the new lines does not match the binary of the old')
         
         with open(self._codefile,'w') as f:

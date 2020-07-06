@@ -1879,437 +1879,112 @@ CommandJumpTable:
 # Phrase List
 
 ```code
-5025: 05             DEC     B               
-5026: 00             NOP                     
-5027: 00             NOP                     
-5028: 00             NOP                     
-5029: 01 06 00       LD      BC,$0006        
-502C: 00             NOP                     
-502D: 00             NOP                     
-502E: 02             LD      (BC),A          
-502F: 07             RLCA                    
-5030: 00             NOP                     
-5031: 00             NOP                     
-5032: 00             NOP                     
-5033: 03             INC     BC              
-5034: 08             EX      AF,AF'          
-5035: 00             NOP                     
-5036: 00             NOP                     
-5037: 00             NOP                     
-5038: 04             INC     B               
-5039: 09             ADD     HL,BC           
-503A: 00             NOP                     
-503B: 20 00          JR      NZ,$503D        
-503D: 05             DEC     B               
-503E: 09             ADD     HL,BC           
-503F: 02             LD      (BC),A          
-5040: 20 20          JR      NZ,$5062        
-5042: 43             LD      B,E             
-5043: 34             INC     (HL)            
-5044: 07             RLCA                    
-5045: 00             NOP                     
-5046: 80             ADD     A,B             
-5047: 05             DEC     B               
-5048: 34             INC     (HL)            
-5049: 07             RLCA                    
-504A: 80             ADD     A,B             
-504B: 00             NOP                     
-504C: 05             DEC     B               
-504D: 0A             LD      A,(BC)          
-504E: 00             NOP                     
-504F: 20 00          JR      NZ,$5051        
-5051: 06 0A          LD      B,$0A           
-5053: 05             DEC     B               
-5054: 80             ADD     A,B             
-5055: 80             ADD     A,B             
-5056: 0F             RRCA                    
-5057: 0B             DEC     BC              
-5058: 00             NOP                     
-5059: 00             NOP                     
-505A: 00             NOP                     
-505B: 07             RLCA                    
-505C: 04             INC     B               
-505D: 02             LD      (BC),A          
-505E: 10 40          DJNZ    $50A0           
-5060: 09             ADD     HL,BC           
-5061: 04             INC     B               
-5062: 00             NOP                     
-5063: 10 00          DJNZ    $5065           
-5065: 09             ADD     HL,BC           
-5066: 0C             INC     C               
-5067: 00             NOP                     
-5068: 00             NOP                     
-5069: 00             NOP                     
-506A: 0A             LD      A,(BC)          
-506B: 0C             INC     C               
-506C: 03             INC     BC              
-506D: 00             NOP                     
-506E: 80             ADD     A,B             
-506F: 0B             DEC     BC              
-5070: 0C             INC     C               
-5071: 04             INC     B               
-5072: 00             NOP                     
-5073: 80             ADD     A,B             
-5074: 0C             INC     C               
-5075: 0C             INC     C               
-5076: 05             DEC     B               
-5077: 00             NOP                     
-5078: 80             ADD     A,B             
-5079: 10 03          DJNZ    $507E           
-507B: 03             INC     BC              
-507C: 40             LD      B,B             
-507D: 10 0D          DJNZ    $508C           
-507F: 03             INC     BC              
-5080: 05             DEC     B               
-5081: 80             ADD     A,B             
-5082: 80             ADD     A,B             
-5083: 39             ADD     HL,SP           
-5084: 03             INC     BC              
-5085: 08             EX      AF,AF'          
-5086: 00             NOP                     
-5087: 20 06          JR      NZ,$508F        
-5089: 03             INC     BC              
-508A: 01 80 10       LD      BC,$1080        
-508D: 0E 0D          LD      C,$0D           
-508F: 01 80 10       LD      BC,$1080        
-5092: 0E 0E          LD      C,$0E           
-5094: 00             NOP                     
-5095: 80             ADD     A,B             
-5096: 00             NOP                     
-5097: 0B             DEC     BC              
-5098: 0E 05          LD      C,$05           
-509A: 00             NOP                     
-509B: 80             ADD     A,B             
-509C: 0B             DEC     BC              
-509D: 0F             RRCA                    
-509E: 00             NOP                     
-509F: 02             LD      (BC),A          
-50A0: 00             NOP                     
-50A1: 11 0F 02       LD      DE,$020F        
-50A4: 02             LD      (BC),A          
-50A5: 80             ADD     A,B             
-50A6: 3A 38 00       LD      A,($0038)       
-50A9: 08             EX      AF,AF'          
-50AA: 00             NOP                     
-50AB: 40             LD      B,B             
-50AC: 39             ADD     HL,SP           
-50AD: 02             LD      (BC),A          
-50AE: 08             EX      AF,AF'          
-50AF: 80             ADD     A,B             
-50B0: 41             LD      B,C             
-50B1: 3A 02 01       LD      A,($0102)       
-50B4: 80             ADD     A,B             
-50B5: 42             LD      B,D             
-50B6: 10 00          DJNZ    $50B8           
-50B8: 80             ADD     A,B             
-50B9: 00             NOP                     
-50BA: 12             LD      (DE),A          
-50BB: 10 08          DJNZ    $50C5           
-50BD: 00             NOP                     
-50BE: 80             ADD     A,B             
-50BF: 12             LD      (DE),A          
-50C0: 10 08          DJNZ    $50CA           
-50C2: 80             ADD     A,B             
-50C3: 00             NOP                     
-50C4: 12             LD      (DE),A          
-50C5: 10 06          DJNZ    $50CD           
-50C7: 00             NOP                     
-50C8: 80             ADD     A,B             
-50C9: 05             DEC     B               
-50CA: 10 06          DJNZ    $50D2           
-50CC: 80             ADD     A,B             
-50CD: 00             NOP                     
-50CE: 05             DEC     B               
-50CF: 10 07          DJNZ    $50D8           
-50D1: 00             NOP                     
-50D2: 80             ADD     A,B             
-50D3: 2D             DEC     L               
-50D4: 10 07          DJNZ    $50DD           
-50D6: 80             ADD     A,B             
-50D7: 00             NOP                     
-50D8: 2D             DEC     L               
-50D9: 12             LD      (DE),A          
-50DA: 00             NOP                     
-50DB: 80             ADD     A,B             
-50DC: 00             NOP                     
-50DD: 15             DEC     D               
-50DE: 15             DEC     D               
-50DF: 00             NOP                     
-50E0: 80             ADD     A,B             
-50E1: 00             NOP                     
-50E2: 17             RLA                     
-50E3: 15             DEC     D               
-50E4: 07             RLCA                    
-50E5: 00             NOP                     
-50E6: 80             ADD     A,B             
-50E7: 17             RLA                     
-50E8: 15             DEC     D               
-50E9: 08             EX      AF,AF'          
-50EA: 00             NOP                     
-50EB: 80             ADD     A,B             
-50EC: 17             RLA                     
-50ED: 15             DEC     D               
-50EE: 09             ADD     HL,BC           
-50EF: 00             NOP                     
-50F0: 80             ADD     A,B             
-50F1: 17             RLA                     
-50F2: 15             DEC     D               
-50F3: 0C             INC     C               
-50F4: 00             NOP                     
-50F5: 80             ADD     A,B             
-50F6: 17             RLA                     
-50F7: 15             DEC     D               
-50F8: 05             DEC     B               
-50F9: 00             NOP                     
-50FA: 00             NOP                     
-50FB: 36 15          LD      (HL),$15        
-50FD: 05             DEC     B               
-50FE: 00             NOP                     
-50FF: 80             ADD     A,B             
-5100: 36 15          LD      (HL),$15        
-5102: 06 00          LD      B,$00           
-5104: 00             NOP                     
-5105: 37             SCF                     
-5106: 15             DEC     D               
-5107: 06 00          LD      B,$00           
-5109: 80             ADD     A,B             
-510A: 37             SCF                     
-510B: 15             DEC     D               
-510C: 04             INC     B               
-510D: 00             NOP                     
-510E: 80             ADD     A,B             
-510F: 38 18          JR      C,$5129         
-5111: 00             NOP                     
-5112: 00             NOP                     
-5113: 00             NOP                     
-5114: 1A             LD      A,(DE)          
-5115: 05             DEC     B               
-5116: 01 00 00       LD      BC,$0000        
-5119: 01 06 01       LD      BC,$0106        
-511C: 00             NOP                     
-511D: 00             NOP                     
-511E: 02             LD      (BC),A          
-511F: 07             RLCA                    
-5120: 01 00 00       LD      BC,$0000        
-5123: 03             INC     BC              
-5124: 08             EX      AF,AF'          
-5125: 01 00 00       LD      BC,$0000        
-5128: 04             INC     B               
-5129: 0A             LD      A,(BC)          
-512A: 08             EX      AF,AF'          
-512B: 00             NOP                     
-512C: 20 06          JR      NZ,$5134        
-512E: 0A             LD      A,(BC)          
-512F: 08             EX      AF,AF'          
-5130: 20 00          JR      NZ,$5132        
-5132: 06 0A          LD      B,$0A           
-5134: 0A             LD      A,(BC)          
-5135: 20 80          JR      NZ,$50B7        
-5137: 06 0A          LD      B,$0A           
-5139: 04             INC     B               
-513A: 20 80          JR      NZ,$50BC        
-513C: 06 0A          LD      B,$0A           
-513E: 0C             INC     C               
-513F: 20 80          JR      NZ,$50C1        
-5141: 06 0C          LD      B,$0C           
-5143: 07             RLCA                    
-5144: 00             NOP                     
-5145: 00             NOP                     
-5146: 0A             LD      A,(BC)          
-5147: 0C             INC     C               
-5148: 08             EX      AF,AF'          
-5149: 00             NOP                     
-514A: 00             NOP                     
-514B: 0A             LD      A,(BC)          
-514C: 0C             INC     C               
-514D: 09             ADD     HL,BC           
-514E: 80             ADD     A,B             
-514F: 00             NOP                     
-5150: 0B             DEC     BC              
-5151: 0C             INC     C               
-5152: 09             ADD     HL,BC           
-5153: 00             NOP                     
-5154: 80             ADD     A,B             
-5155: 0A             LD      A,(BC)          
-5156: 0C             INC     C               
-5157: 0B             DEC     BC              
-5158: 00             NOP                     
-5159: 00             NOP                     
-515A: 0A             LD      A,(BC)          
-515B: 0C             INC     C               
-515C: 0A             LD      A,(BC)          
-515D: 00             NOP                     
-515E: 00             NOP                     
-515F: 0A             LD      A,(BC)          
-5160: 0C             INC     C               
-5161: 0B             DEC     BC              
-5162: 00             NOP                     
-5163: 80             ADD     A,B             
-5164: 1B             DEC     DE              
-5165: 0C             INC     C               
-5166: 0A             LD      A,(BC)          
-5167: 00             NOP                     
-5168: 80             ADD     A,B             
-5169: 1C             INC     E               
-516A: 0C             INC     C               
-516B: 06 00          LD      B,$00           
-516D: 00             NOP                     
-516E: 1D             DEC     E               
-516F: 32 00 00       LD      ($0000),A       
-5172: 00             NOP                     
-5173: 21 2B 00       LD      HL,$002B        
-5176: 00             NOP                     
-5177: 00             NOP                     
-5178: 22 2D 00       LD      ($002D),HL      
-517B: 00             NOP                     
-517C: 00             NOP                     
-517D: 23             INC     HL              
-517E: 3B             DEC     SP              
-517F: 00             NOP                     
-5180: 00             NOP                     
-5181: 00             NOP                     
-5182: 44             LD      B,H             
-5183: 3B             DEC     SP              
-5184: 00             NOP                     
-5185: 10 00          DJNZ    $5187           
-5187: 45             LD      B,L             
-5188: 3B             DEC     SP              
-5189: 01 00 00       LD      BC,$0000        
-518C: 44             LD      B,H             
-518D: 3B             DEC     SP              
-518E: 01 00 10       LD      BC,$1000        
-5191: 45             LD      B,L             
-5192: 3B             DEC     SP              
-5193: 01 10 00       LD      BC,$0010        
-5196: 45             LD      B,L             
-5197: 3C             INC     A               
-5198: 00             NOP                     
-5199: 00             NOP                     
-519A: 00             NOP                     
-519B: 46             LD      B,(HL)          
-519C: 3C             INC     A               
-519D: 00             NOP                     
-519E: 80             ADD     A,B             
-519F: 00             NOP                     
-51A0: 47             LD      B,A             
-51A1: 21 00 00       LD      HL,$0000        
-51A4: 00             NOP                     
-51A5: 25             DEC     H               
-51A6: 21 01 00       LD      HL,$0001        
-51A9: 80             ADD     A,B             
-51AA: 3D             DEC     A               
-51AB: 21 05 00       LD      HL,$0005        
-51AE: 80             ADD     A,B             
-51AF: 36 21          LD      (HL),$21        
-51B1: 06 00          LD      B,$00           
-51B3: 80             ADD     A,B             
-51B4: 37             SCF                     
-51B5: 21 04 00       LD      HL,$0004        
-51B8: 80             ADD     A,B             
-51B9: 38 21          JR      C,$51DC         
-51BB: 07             RLCA                    
-51BC: 00             NOP                     
-51BD: 80             ADD     A,B             
-51BE: 17             RLA                     
-51BF: 21 08 00       LD      HL,$0008        
-51C2: 80             ADD     A,B             
-51C3: 17             RLA                     
-51C4: 21 0B 00       LD      HL,$000B        
-51C7: 80             ADD     A,B             
-51C8: 26 23          LD      H,$23           
-51CA: 00             NOP                     
-51CB: 80             ADD     A,B             
-51CC: 00             NOP                     
-51CD: 27             DAA                     
-51CE: 23             INC     HL              
-51CF: 08             EX      AF,AF'          
-51D0: 00             NOP                     
-51D1: 80             ADD     A,B             
-51D2: 27             DAA                     
-51D3: 23             INC     HL              
-51D4: 05             DEC     B               
-51D5: 00             NOP                     
-51D6: 80             ADD     A,B             
-51D7: 27             DAA                     
-51D8: 24             INC     H               
-51D9: 02             LD      (BC),A          
-51DA: 10 80          DJNZ    $515C           
-51DC: 28 24          JR      Z,$5202         
-51DE: 01 80 10       LD      BC,$1080        
-51E1: 29             ADD     HL,HL           
-51E2: 1C             INC     E               
-51E3: 00             NOP                     
-51E4: 80             ADD     A,B             
-51E5: 00             NOP                     
-51E6: 2D             DEC     L               
-51E7: 1F             RRA                     
-51E8: 00             NOP                     
-51E9: 00             NOP                     
-51EA: 00             NOP                     
-51EB: 2F             CPL                     
-51EC: 1F             RRA                     
-51ED: 0B             DEC     BC              
-51EE: 00             NOP                     
-51EF: 00             NOP                     
-51F0: 2F             CPL                     
-51F1: 09             ADD     HL,BC           
-51F2: 07             RLCA                    
-51F3: 00             NOP                     
-51F4: 00             NOP                     
-51F5: 2F             CPL                     
-51F6: 20 09          JR      NZ,$5201        
-51F8: 00             NOP                     
-51F9: 80             ADD     A,B             
-51FA: 34             INC     (HL)            
-51FB: 20 05          JR      NZ,$5202        
-51FD: 00             NOP                     
-51FE: 80             ADD     A,B             
-51FF: 36 20          LD      (HL),$20        
-5201: 06 00          LD      B,$00           
-5203: 80             ADD     A,B             
-5204: 37             SCF                     
-5205: 3D             DEC     A               
-5206: 00             NOP                     
-5207: 80             ADD     A,B             
-5208: 00             NOP                     
-5209: 48             LD      C,B             
-520A: 3E 08          LD      A,$08           
-520C: 80             ADD     A,B             
-520D: 00             NOP                     
-520E: 48             LD      C,B             
-520F: 3E 08          LD      A,$08           
-5211: 00             NOP                     
-5212: 80             ADD     A,B             
-5213: 48             LD      C,B             
-5214: 09             ADD     HL,BC           
-5215: 08             EX      AF,AF'          
-5216: 00             NOP                     
-5217: 80             ADD     A,B             
-5218: 48             LD      C,B             
-5219: 09             ADD     HL,BC           
-521A: 08             EX      AF,AF'          
-521B: 80             ADD     A,B             
-521C: 00             NOP                     
-521D: 48             LD      C,B             
-521E: 3F             CCF                     
-521F: 00             NOP                     
-5220: 00             NOP                     
-5221: 00             NOP                     
-5222: 4A             LD      C,D             
-5223: 3F             CCF                     
-5224: 02             LD      (BC),A          
-5225: 00             NOP                     
-5226: 00             NOP                     
-5227: 4A             LD      C,D             
-5228: 40             LD      B,B             
-5229: 00             NOP                     
-522A: 80             ADD     A,B             
-522B: 00             NOP                     
-522C: 49             LD      C,C             
-522D: 40             LD      B,B             
-522E: 01 80 80       LD      BC,$8080        
-5231: 49             LD      C,C             
-5232: 00             NOP                     
+5025: 05 00 00 00 01  ; 01: NORTH   *         *       *         
+502A: 06 00 00 00 02  ; 02: SOUTH   *         *       *         
+502F: 07 00 00 00 03  ; 03: EAST    *         *       *         
+5034: 08 00 00 00 04  ; 04: WEST    *         *       *         
+5039: 09 00 20 00 05  ; 05: GET     ..C.....  *       *         
+503E: 09 02 20 20 43  ; 43: GET     ..C.....  WITH    ..C.....  
+5043: 34 07 00 80 05  ; 05: PICK    *         UP      u.......  
+5048: 34 07 80 00 05  ; 05: PICK    u.......  UP      *         
+504D: 0A 00 20 00 06  ; 06: DROP    ..C.....  *       *         
+5052: 0A 05 80 80 0F  ; 0F: DROP    u.......  IN      u.......  
+5057: 0B 00 00 00 07  ; 07: INVENT  *         *       *         
+505C: 04 02 10 40 09  ; 09: ATTACK  ...P....  WITH    .v......  
+5061: 04 00 10 00 09  ; 09: ATTACK  ...P....  *       *         
+5066: 0C 00 00 00 0A  ; 0A: LOOK    *         *       *         
+506B: 0C 03 00 80 0B  ; 0B: LOOK    *         AT      u.......  
+5070: 0C 04 00 80 0C  ; 0C: LOOK    *         UNDER   u.......  
+5075: 0C 05 00 80 10  ; 10: LOOK    *         IN      u.......  
+507A: 03 03 40 10 0D  ; 0D: THROW   .v......  AT      ...P....  
+507F: 03 05 80 80 39  ; 39: THROW   u.......  IN      u.......  
+5084: 03 08 00 20 06  ; 06: THROW   *         DOWN    ..C.....  
+5089: 03 01 80 10 0E  ; 0E: THROW   u.......  TO      ...P....  
+508E: 0D 01 80 10 0E  ; 0E: GIVE    u.......  TO      ...P....  
+5093: 0E 00 80 00 0B  ; 0B: EXAMIN  u.......  *       *         
+5098: 0E 05 00 80 0B  ; 0B: EXAMIN  *         IN      u.......  
+509D: 0F 00 02 00 11  ; 11: OPEN    ......O.  *       *         
+50A2: 0F 02 02 80 3A  ; 3A: OPEN    ......O.  WITH    u.......  
+50A7: 38 00 08 00 40  ; 40: CLOSE   ....A...  *       *         
+50AC: 39 02 08 80 41  ; 41: LOCK    ....A...  WITH    u.......  
+50B1: 3A 02 01 80 42  ; 42: UNLOCK  .......L  WITH    u.......  
+50B6: 10 00 80 00 12  ; 12: PULL    u.......  *       *         
+50BB: 10 08 00 80 12  ; 12: PULL    *         DOWN    u.......  
+50C0: 10 08 80 00 12  ; 12: PULL    u.......  DOWN    *         
+50C5: 10 06 00 80 05  ; 05: PULL    *         OUT     u.......  
+50CA: 10 06 80 00 05  ; 05: PULL    u.......  OUT     *         
+50CF: 10 07 00 80 2D  ; 2D: PULL    *         UP      u.......  
+50D4: 10 07 80 00 2D  ; 2D: PULL    u.......  UP      *         
+50D9: 12 00 80 00 15  ; 15: EAT     u.......  *       *         
+50DE: 15 00 80 00 17  ; 17: CLIMB   u.......  *       *         
+50E3: 15 07 00 80 17  ; 17: CLIMB   *         UP      u.......  
+50E8: 15 08 00 80 17  ; 17: CLIMB   *         DOWN    u.......  
+50ED: 15 09 00 80 17  ; 17: CLIMB   *         OVER    u.......  
+50F2: 15 0C 00 80 17  ; 17: CLIMB   *         ON      u.......  
+50F7: 15 05 00 00 36  ; 36: CLIMB   *         IN      *         
+50FC: 15 05 00 80 36  ; 36: CLIMB   *         IN      u.......  
+5101: 15 06 00 00 37  ; 37: CLIMB   *         OUT     *         
+5106: 15 06 00 80 37  ; 37: CLIMB   *         OUT     u.......  
+510B: 15 04 00 80 38  ; 38: CLIMB   *         UNDER   u.......  
+5110: 18 00 00 00 1A  ; 1A: ??      *         *       *         
+5115: 05 01 00 00 01  ; 01: NORTH   *         TO      *         
+511A: 06 01 00 00 02  ; 02: SOUTH   *         TO      *         
+511F: 07 01 00 00 03  ; 03: EAST    *         TO      *         
+5124: 08 01 00 00 04  ; 04: WEST    *         TO      *         
+5129: 0A 08 00 20 06  ; 06: DROP    *         DOWN    ..C.....  
+512E: 0A 08 20 00 06  ; 06: DROP    ..C.....  DOWN    *         
+5133: 0A 0A 20 80 06  ; 06: DROP    ..C.....  BEHIND  u.......  
+5138: 0A 04 20 80 06  ; 06: DROP    ..C.....  UNDER   u.......  
+513D: 0A 0C 20 80 06  ; 06: DROP    ..C.....  ON      u.......  
+5142: 0C 07 00 00 0A  ; 0A: LOOK    *         UP      *         
+5147: 0C 08 00 00 0A  ; 0A: LOOK    *         DOWN    *         
+514C: 0C 09 80 00 0B  ; 0B: LOOK    u.......  OVER    *         
+5151: 0C 09 00 80 0A  ; 0A: LOOK    *         OVER    u.......  
+5156: 0C 0B 00 00 0A  ; 0A: LOOK    *         AROUND  *         
+515B: 0C 0A 00 00 0A  ; 0A: LOOK    *         BEHIND  *         
+5160: 0C 0B 00 80 1B  ; 1B: LOOK    *         AROUND  u.......  
+5165: 0C 0A 00 80 1C  ; 1C: LOOK    *         BEHIND  u.......  
+516A: 0C 06 00 00 1D  ; 1D: LOOK    *         OUT     *         
+516F: 32 00 00 00 21  ; 21: PLUGH   *         *       *         
+5174: 2B 00 00 00 22  ; 22: SCREAM  *         *       *         
+5179: 2D 00 00 00 23  ; 23: QUIT    *         *       *         
+517E: 3B 00 00 00 44  ; 44: HELLO   *         *       *         
+5183: 3B 00 10 00 45  ; 45: HELLO   ...P....  *       *         
+5188: 3B 01 00 00 44  ; 44: HELLO   *         TO      *         
+518D: 3B 01 00 10 45  ; 45: HELLO   *         TO      ...P....  
+5192: 3B 01 10 00 45  ; 45: HELLO   ...P....  TO      *         
+5197: 3C 00 00 00 46  ; 46: WHAT    *         *       *         
+519C: 3C 00 80 00 47  ; 47: WHAT    u.......  *       *         
+51A1: 21 00 00 00 25  ; 25: GO      *         *       *         
+51A6: 21 01 00 80 3D  ; 3D: GO      *         TO      u.......  
+51AB: 21 05 00 80 36  ; 36: GO      *         IN      u.......  
+51B0: 21 06 00 80 37  ; 37: GO      *         OUT     u.......  
+51B5: 21 04 00 80 38  ; 38: GO      *         UNDER   u.......  
+51BA: 21 07 00 80 17  ; 17: GO      *         UP      u.......  
+51BF: 21 08 00 80 17  ; 17: GO      *         DOWN    u.......  
+51C4: 21 0B 00 80 26  ; 26: GO      *         AROUND  u.......  
+51C9: 23 00 80 00 27  ; 27: KICK    u.......  *       *         
+51CE: 23 08 00 80 27  ; 27: KICK    *         DOWN    u.......  
+51D3: 23 05 00 80 27  ; 27: KICK    *         IN      u.......  
+51D8: 24 02 10 80 28  ; 28: FEED    ...P....  WITH    u.......  
+51DD: 24 01 80 10 29  ; 29: FEED    u.......  TO      ...P....  
+51E2: 1C 00 80 00 2D  ; 2D: LIFT    u.......  *       *         
+51E7: 1F 00 00 00 2F  ; 2F: WAIT    *         *       *         
+51EC: 1F 0B 00 00 2F  ; 2F: WAIT    *         AROUND  *         
+51F1: 09 07 00 00 2F  ; 2F: GET     *         UP      *         
+51F6: 20 09 00 80 34  ; 34: JUMP    *         OVER    u.......  
+51FB: 20 05 00 80 36  ; 36: JUMP    *         IN      u.......  
+5200: 20 06 00 80 37  ; 37: JUMP    *         OUT     u.......  
+5205: 3D 00 80 00 48  ; 48: LOWER   u.......  *       *         
+520A: 3E 08 80 00 48  ; 48: LET     u.......  DOWN    *         
+520F: 3E 08 00 80 48  ; 48: LET     *         DOWN    u.......  
+5214: 09 08 00 80 48  ; 48: GET     *         DOWN    u.......  
+5219: 09 08 80 00 48  ; 48: GET     u.......  DOWN    *         
+521E: 3F 00 00 00 4A  ; 4A: COME    *         *       *         
+5223: 3F 02 00 00 4A  ; 4A: COME    *         WITH    *         
+5228: 40 00 80 00 49  ; 49: MEET    u.......  *       *         
+522D: 40 01 80 80 49  ; 49: MEET    u.......  TO      u.......  
+5232: 00
 5233: AC             XOR     H               
 ```
 
@@ -2318,5079 +1993,1378 @@ CommandJumpTable:
 ```code
 InputWordTables:
 
-5234: 00             NOP                     
-5235: 03             INC     BC              
-5236: 47             LD      B,A             
-5237: 45             LD      B,L             
-5238: 54             LD      D,H             
-5239: 09             ADD     HL,BC           
-523A: 04             INC     B               
-523B: 47             LD      B,A             
-523C: 52             LD      D,D             
-523D: 41             LD      B,C             
-523E: 42             LD      B,D             
-523F: 09             ADD     HL,BC           
-5240: 05             DEC     B               
-5241: 54             LD      D,H             
-5242: 48             LD      C,B             
-5243: 52             LD      D,D             
-5244: 4F             LD      C,A             
-5245: 57             LD      D,A             
-5246: 03             INC     BC              
-5247: 06 41          LD      B,$41           
-5249: 54             LD      D,H             
-524A: 54             LD      D,H             
-524B: 41             LD      B,C             
-524C: 43             LD      B,E             
-524D: 4B             LD      C,E             
-524E: 04             INC     B               
-524F: 05             DEC     B               
-5250: 42             LD      B,D             
-5251: 52             LD      D,D             
-5252: 45             LD      B,L             
-5253: 41             LD      B,C             
-5254: 4B             LD      C,E             
-5255: 04             INC     B               
-5256: 04             INC     B               
-5257: 4B             LD      C,E             
-5258: 49             LD      C,C             
-5259: 4C             LD      C,H             
-525A: 4C             LD      C,H             
-525B: 04             INC     B               
-525C: 03             INC     BC              
-525D: 48             LD      C,B             
-525E: 49             LD      C,C             
-525F: 54             LD      D,H             
-5260: 04             INC     B               
-5261: 05             DEC     B               
-5262: 4E             LD      C,(HL)          
-5263: 4F             LD      C,A             
-5264: 52             LD      D,D             
-5265: 54             LD      D,H             
-5266: 48             LD      C,B             
-5267: 05             DEC     B               
-5268: 01 4E 05       LD      BC,$054E        
-526B: 05             DEC     B               
-526C: 53             LD      D,E             
-526D: 4F             LD      C,A             
-526E: 55             LD      D,L             
-526F: 54             LD      D,H             
-5270: 48             LD      C,B             
-5271: 06 01          LD      B,$01           
-5273: 53             LD      D,E             
-5274: 06 04          LD      B,$04           
-5276: 45             LD      B,L             
-5277: 41             LD      B,C             
-5278: 53             LD      D,E             
-5279: 54             LD      D,H             
-527A: 07             RLCA                    
-527B: 01 45 07       LD      BC,$0745        
-527E: 04             INC     B               
-527F: 57             LD      D,A             
-5280: 45             LD      B,L             
-5281: 53             LD      D,E             
-5282: 54             LD      D,H             
-5283: 08             EX      AF,AF'          
-5284: 01 57 08       LD      BC,$0857        
-5287: 04             INC     B               
-5288: 54             LD      D,H             
-5289: 41             LD      B,C             
-528A: 4B             LD      C,E             
-528B: 45             LD      B,L             
-528C: 09             ADD     HL,BC           
-528D: 05             DEC     B               
-528E: 43             LD      B,E             
-528F: 41             LD      B,C             
-5290: 52             LD      D,D             
-5291: 52             LD      D,D             
-5292: 59             LD      E,C             
-5293: 09             ADD     HL,BC           
-5294: 04             INC     B               
-5295: 44             LD      B,H             
-5296: 52             LD      D,D             
-5297: 4F             LD      C,A             
-5298: 50             LD      D,B             
-5299: 0A             LD      A,(BC)          
-529A: 03             INC     BC              
-529B: 50             LD      D,B             
-529C: 55             LD      D,L             
-529D: 54             LD      D,H             
-529E: 0A             LD      A,(BC)          
-529F: 06 49          LD      B,$49           
-52A1: 4E             LD      C,(HL)          
-52A2: 56             LD      D,(HL)          
-52A3: 45             LD      B,L             
-52A4: 4E             LD      C,(HL)          
-52A5: 54             LD      D,H             
-52A6: 0B             DEC     BC              
-52A7: 04             INC     B               
-52A8: 4C             LD      C,H             
-52A9: 4F             LD      C,A             
-52AA: 4F             LD      C,A             
-52AB: 4B             LD      C,E             
-52AC: 0C             INC     C               
-52AD: 04             INC     B               
-52AE: 47             LD      B,A             
-52AF: 49             LD      C,C             
-52B0: 56             LD      D,(HL)          
-52B1: 45             LD      B,L             
-52B2: 0D             DEC     C               
-52B3: 05             DEC     B               
-52B4: 4F             LD      C,A             
-52B5: 46             LD      B,(HL)          
-52B6: 46             LD      B,(HL)          
-52B7: 45             LD      B,L             
-52B8: 52             LD      D,D             
-52B9: 0D             DEC     C               
-52BA: 06 45          LD      B,$45           
-52BC: 58             LD      E,B             
-52BD: 41             LD      B,C             
-52BE: 4D             LD      C,L             
-52BF: 49             LD      C,C             
-52C0: 4E             LD      C,(HL)          
-52C1: 0E 06          LD      C,$06           
-52C3: 53             LD      D,E             
-52C4: 45             LD      B,L             
-52C5: 41             LD      B,C             
-52C6: 52             LD      D,D             
-52C7: 43             LD      B,E             
-52C8: 48             LD      C,B             
-52C9: 0E 04          LD      C,$04           
-52CB: 4F             LD      C,A             
-52CC: 50             LD      D,B             
-52CD: 45             LD      B,L             
-52CE: 4E             LD      C,(HL)          
-52CF: 0F             RRCA                    
-52D0: 04             INC     B               
-52D1: 50             LD      D,B             
-52D2: 55             LD      D,L             
-52D3: 4C             LD      C,H             
-52D4: 4C             LD      C,H             
-52D5: 10 03          DJNZ    $52DA           
-52D7: 45             LD      B,L             
-52D8: 41             LD      B,C             
-52D9: 54             LD      D,H             
-52DA: 12             LD      (DE),A          
-52DB: 05             DEC     B               
-52DC: 43             LD      B,E             
-52DD: 4C             LD      C,H             
-52DE: 49             LD      C,C             
-52DF: 4D             LD      C,L             
-52E0: 42             LD      B,D             
-52E1: 15             DEC     D               
-52E2: 06 41          LD      B,$41           
-52E4: 53             LD      D,E             
-52E5: 43             LD      B,E             
-52E6: 45             LD      B,L             
-52E7: 4E             LD      C,(HL)          
-52E8: 44             LD      B,H             
-52E9: 15             DEC     D               
-52EA: 06 44          LD      B,$44           
-52EC: 45             LD      B,L             
-52ED: 53             LD      D,E             
-52EE: 43             LD      B,E             
-52EF: 45             LD      B,L             
-52F0: 4E             LD      C,(HL)          
-52F1: 15             DEC     D               
-52F2: 04             INC     B               
-52F3: 4C             LD      C,H             
-52F4: 49             LD      C,C             
-52F5: 46             LD      B,(HL)          
-52F6: 54             LD      D,H             
-52F7: 1C             INC     E               
-52F8: 04             INC     B               
-52F9: 57             LD      D,A             
-52FA: 41             LD      B,C             
-52FB: 49             LD      C,C             
-52FC: 54             LD      D,H             
-52FD: 1F             RRA                     
-52FE: 04             INC     B               
-52FF: 53             LD      D,E             
-5300: 54             LD      D,H             
-5301: 41             LD      B,C             
-5302: 59             LD      E,C             
-5303: 1F             RRA                     
-5304: 04             INC     B               
-5305: 4A             LD      C,D             
-5306: 55             LD      D,L             
-5307: 4D             LD      C,L             
-5308: 50             LD      D,B             
-5309: 20 02          JR      NZ,$530D        
-530B: 47             LD      B,A             
-530C: 4F             LD      C,A             
-530D: 21 03 52       LD      HL,$5203        
-5310: 55             LD      D,L             
-5311: 4E             LD      C,(HL)          
-5312: 21 04 4C       LD      HL,$4C04        
-5315: 45             LD      B,L             
-5316: 46             LD      B,(HL)          
-5317: 54             LD      D,H             
-5318: 21 05 52       LD      HL,$5205        
-531B: 49             LD      C,C             
-531C: 47             LD      B,A             
-531D: 48             LD      C,B             
-531E: 54             LD      D,H             
-531F: 21 05 45       LD      HL,$4505        
-5322: 4E             LD      C,(HL)          
-5323: 54             LD      D,H             
-5324: 45             LD      B,L             
-5325: 52             LD      D,D             
-5326: 21 04 50       LD      HL,$5004        
-5329: 55             LD      D,L             
-532A: 53             LD      D,E             
-532B: 48             LD      C,B             
-532C: 10 04          DJNZ    $5332           
-532E: 4D             LD      C,L             
-532F: 4F             LD      C,A             
-5330: 56             LD      D,(HL)          
-5331: 45             LD      B,L             
-5332: 10 04          DJNZ    $5338           
-5334: 4B             LD      C,E             
-5335: 49             LD      C,C             
-5336: 43             LD      B,E             
-5337: 4B             LD      C,E             
-5338: 23             INC     HL              
-5339: 04             INC     B               
-533A: 46             LD      B,(HL)          
-533B: 45             LD      B,L             
-533C: 45             LD      B,L             
-533D: 44             LD      B,H             
-533E: 24             INC     H               
-533F: 06 53          LD      B,$53           
-5341: 43             LD      B,E             
-5342: 52             LD      D,D             
-5343: 45             LD      B,L             
-5344: 41             LD      B,C             
-5345: 4D             LD      C,L             
-5346: 2B             DEC     HL              
-5347: 04             INC     B               
-5348: 59             LD      E,C             
-5349: 45             LD      B,L             
-534A: 4C             LD      C,H             
-534B: 4C             LD      C,H             
-534C: 2B             DEC     HL              
-534D: 04             INC     B               
-534E: 51             LD      D,C             
-534F: 55             LD      D,L             
-5350: 49             LD      C,C             
-5351: 54             LD      D,H             
-5352: 2D             DEC     L               
-5353: 04             INC     B               
-5354: 53             LD      D,E             
-5355: 54             LD      D,H             
-5356: 4F             LD      C,A             
-5357: 50             LD      D,B             
-5358: 2D             DEC     L               
-5359: 05             DEC     B               
-535A: 50             LD      D,B             
-535B: 4C             LD      C,H             
-535C: 55             LD      D,L             
-535D: 47             LD      B,A             
-535E: 48             LD      C,B             
-535F: 32 04 50       LD      ($5004),A       
-5362: 49             LD      C,C             
-5363: 43             LD      B,E             
-5364: 4B             LD      C,E             
-5365: 34             INC     (HL)            
-5366: 05             DEC     B               
-5367: 43             LD      B,E             
-5368: 4C             LD      C,H             
-5369: 4F             LD      C,A             
-536A: 53             LD      D,E             
-536B: 45             LD      B,L             
-536C: 38 04          JR      C,$5372         
-536E: 4C             LD      C,H             
-536F: 4F             LD      C,A             
-5370: 43             LD      B,E             
-5371: 4B             LD      C,E             
-5372: 39             ADD     HL,SP           
-5373: 06 55          LD      B,$55           
-5375: 4E             LD      C,(HL)          
-5376: 4C             LD      C,H             
-5377: 4F             LD      C,A             
-5378: 43             LD      B,E             
-5379: 4B             LD      C,E             
-537A: 3A 05 48       LD      A,($4805)       
-537D: 45             LD      B,L             
-537E: 4C             LD      C,H             
-537F: 4C             LD      C,H             
-5380: 4F             LD      C,A             
-5381: 3B             DEC     SP              
-5382: 02             LD      (BC),A          
-5383: 48             LD      C,B             
-5384: 49             LD      C,C             
-5385: 3B             DEC     SP              
-5386: 03             INC     BC              
-5387: 42             LD      B,D             
-5388: 4F             LD      C,A             
-5389: 57             LD      D,A             
-538A: 3B             DEC     SP              
-538B: 05             DEC     B               
-538C: 47             LD      B,A             
-538D: 52             LD      D,D             
-538E: 45             LD      B,L             
-538F: 45             LD      B,L             
-5390: 54             LD      D,H             
-5391: 3B             DEC     SP              
-5392: 04             INC     B               
-5393: 57             LD      D,A             
-5394: 48             LD      C,B             
-5395: 41             LD      B,C             
-5396: 54             LD      D,H             
-5397: 3C             INC     A               
-5398: 03             INC     BC              
-5399: 57             LD      D,A             
-539A: 48             LD      C,B             
-539B: 59             LD      E,C             
-539C: 3C             INC     A               
-539D: 03             INC     BC              
-539E: 48             LD      C,B             
-539F: 4F             LD      C,A             
-53A0: 57             LD      D,A             
-53A1: 3C             INC     A               
-53A2: 05             DEC     B               
-53A3: 57             LD      D,A             
-53A4: 48             LD      C,B             
-53A5: 45             LD      B,L             
-53A6: 52             LD      D,D             
-53A7: 45             LD      B,L             
-53A8: 3C             INC     A               
-53A9: 03             INC     BC              
-53AA: 57             LD      D,A             
-53AB: 48             LD      C,B             
-53AC: 4F             LD      C,A             
-53AD: 3C             INC     A               
-53AE: 04             INC     B               
-53AF: 57             LD      D,A             
-53B0: 48             LD      C,B             
-53B1: 45             LD      B,L             
-53B2: 4E             LD      C,(HL)          
-53B3: 3C             INC     A               
-53B4: 05             DEC     B               
-53B5: 4C             LD      C,H             
-53B6: 4F             LD      C,A             
-53B7: 57             LD      D,A             
-53B8: 45             LD      B,L             
-53B9: 52             LD      D,D             
-53BA: 3D             DEC     A               
-53BB: 05             DEC     B               
-53BC: 55             LD      D,L             
-53BD: 4E             LD      C,(HL)          
-53BE: 54             LD      D,H             
-53BF: 49             LD      C,C             
-53C0: 45             LD      B,L             
-53C1: 3D             DEC     A               
-53C2: 03             INC     BC              
-53C3: 4C             LD      C,H             
-53C4: 45             LD      B,L             
-53C5: 54             LD      D,H             
-53C6: 3E 04          LD      A,$04           
-53C8: 43             LD      B,E             
-53C9: 4F             LD      C,A             
-53CA: 4D             LD      C,L             
-53CB: 45             LD      B,L             
-53CC: 3F             CCF                     
-53CD: 06 46          LD      B,$46           
-53CF: 4F             LD      C,A             
-53D0: 4C             LD      C,H             
-53D1: 4C             LD      C,H             
-53D2: 4F             LD      C,A             
-53D3: 57             LD      D,A             
-53D4: 3F             CCF                     
-53D5: 04             INC     B               
-53D6: 4D             LD      C,L             
-53D7: 45             LD      B,L             
-53D8: 45             LD      B,L             
-53D9: 54             LD      D,H             
-53DA: 40             LD      B,B             
-53DB: 06 49          LD      B,$49           
-53DD: 4E             LD      C,(HL)          
-53DE: 54             LD      D,H             
-53DF: 52             LD      D,D             
-53E0: 4F             LD      C,A             
-53E1: 44             LD      B,H             
-53E2: 40             LD      B,B             
-53E3: 00             NOP                     
-53E4: 03             INC     BC              
-53E5: 4B             LD      C,E             
-53E6: 45             LD      B,L             
-53E7: 59             LD      E,C             
-53E8: 16 04          LD      D,$04           
-53EA: 50             LD      D,B             
-53EB: 49             LD      C,C             
-53EC: 4C             LD      C,H             
-53ED: 4C             LD      C,H             
-53EE: 17             RLA                     
-53EF: 04             INC     B               
-53F0: 48             LD      C,B             
-53F1: 4F             LD      C,A             
-53F2: 4F             LD      C,A             
-53F3: 4B             LD      C,E             
-53F4: 18 04          JR      $53FA           
-53F6: 44             LD      B,H             
-53F7: 4F             LD      C,A             
-53F8: 4F             LD      C,A             
-53F9: 52             LD      D,D             
-53FA: 0B             DEC     BC              
-53FB: 06 43          LD      B,$43           
-53FD: 41             LD      B,C             
-53FE: 42             LD      B,D             
-53FF: 49             LD      C,C             
-5400: 4E             LD      C,(HL)          
-5401: 45             LD      B,L             
-5402: 19             ADD     HL,DE           
-5403: 06 52          LD      B,$52           
-5405: 45             LD      B,L             
-5406: 46             LD      B,(HL)          
-5407: 52             LD      D,D             
-5408: 49             LD      C,C             
-5409: 47             LD      B,A             
-540A: 1A             LD      A,(DE)          
-540B: 06 48          LD      B,$48           
-540D: 41             LD      B,C             
-540E: 4D             LD      C,L             
-540F: 42             LD      B,D             
-5410: 55             LD      D,L             
-5411: 52             LD      D,D             
-5412: 1B             DEC     DE              
-5413: 06 42          LD      B,$42           
-5415: 55             LD      D,L             
-5416: 52             LD      D,D             
-5417: 47             LD      B,A             
-5418: 45             LD      B,L             
-5419: 52             LD      D,D             
-541A: 1B             DEC     DE              
-541B: 04             INC     B               
-541C: 4D             LD      C,L             
-541D: 45             LD      B,L             
-541E: 41             LD      B,C             
-541F: 54             LD      D,H             
-5420: 1B             DEC     DE              
-5421: 03             INC     BC              
-5422: 44             LD      B,H             
-5423: 4F             LD      C,A             
-5424: 47             LD      B,A             
-5425: 08             EX      AF,AF'          
-5426: 04             INC     B               
-5427: 48             LD      C,B             
-5428: 41             LD      B,C             
-5429: 4E             LD      C,(HL)          
-542A: 44             LD      B,H             
-542B: 1F             RRA                     
-542C: 05             DEC     B               
-542D: 48             LD      C,B             
-542E: 41             LD      B,C             
-542F: 4E             LD      C,(HL)          
-5430: 44             LD      B,H             
-5431: 53             LD      D,E             
-5432: 1F             RRA                     
-5433: 06 4E          LD      B,$4E           
-5435: 41             LD      B,C             
-5436: 50             LD      D,B             
-5437: 4F             LD      C,A             
-5438: 4C             LD      C,H             
-5439: 45             LD      B,L             
-543A: 02             LD      (BC),A          
-543B: 06 42          LD      B,$42           
-543D: 4F             LD      C,A             
-543E: 4E             LD      C,(HL)          
-543F: 41             LD      B,C             
-5440: 50             LD      D,B             
-5441: 41             LD      B,C             
-5442: 02             LD      (BC),A          
-5443: 03             INC     BC              
-5444: 52             LD      D,D             
-5445: 41             LD      B,C             
-5446: 59             LD      E,C             
-5447: 03             INC     BC              
-5448: 04             INC     B               
-5449: 58             LD      E,B             
-544A: 52             LD      D,D             
-544B: 41             LD      B,C             
-544C: 59             LD      E,C             
-544D: 03             INC     BC              
-544E: 06 4A          LD      B,$4A           
-5450: 4F             LD      C,A             
-5451: 48             LD      C,B             
-5452: 4E             LD      C,(HL)          
-5453: 53             LD      D,E             
-5454: 4F             LD      C,A             
-5455: 03             INC     BC              
-5456: 06 48          LD      B,$48           
-5458: 4F             LD      C,A             
-5459: 55             LD      D,L             
-545A: 44             LD      B,H             
-545B: 49             LD      C,C             
-545C: 4E             LD      C,(HL)          
-545D: 04             INC     B               
-545E: 06 50          LD      B,$50           
-5460: 49             LD      C,C             
-5461: 43             LD      B,E             
-5462: 41             LD      B,C             
-5463: 53             LD      D,E             
-5464: 53             LD      D,E             
-5465: 05             DEC     B               
-5466: 06 4D          LD      B,$4D           
-5468: 45             LD      B,L             
-5469: 52             LD      D,D             
-546A: 4C             LD      C,H             
-546B: 49             LD      C,C             
-546C: 4E             LD      C,(HL)          
-546D: 06 06          LD      B,$06           
-546F: 44             LD      B,H             
-5470: 4F             LD      C,A             
-5471: 43             LD      B,E             
-5472: 54             LD      D,H             
-5473: 4F             LD      C,A             
-5474: 52             LD      D,D             
-5475: 07             RLCA                    
-5476: 05             DEC     B               
-5477: 4E             LD      C,(HL)          
-5478: 55             LD      D,L             
-5479: 52             LD      D,D             
-547A: 53             LD      D,E             
-547B: 45             LD      B,L             
-547C: 01 06 54       LD      BC,$5406        
-547F: 48             LD      C,B             
-5480: 45             LD      B,L             
-5481: 52             LD      D,D             
-5482: 41             LD      B,C             
-5483: 50             LD      D,B             
-5484: 01 04 57       LD      BC,$5704        
-5487: 41             LD      B,C             
-5488: 4C             LD      C,H             
-5489: 4C             LD      C,H             
-548A: 25             DEC     H               
-548B: 05             DEC     B               
-548C: 57             LD      D,A             
-548D: 41             LD      B,C             
-548E: 4C             LD      C,H             
-548F: 4C             LD      C,H             
-5490: 53             LD      D,E             
-5491: 25             DEC     H               
-5492: 04             INC     B               
-5493: 52             LD      D,D             
-5494: 4F             LD      C,A             
-5495: 4F             LD      C,A             
-5496: 4D             LD      C,L             
-5497: 2A 04 43       LD      HL,($4304)      
-549A: 45             LD      B,L             
-549B: 4C             LD      C,H             
-549C: 4C             LD      C,H             
-549D: 2A 06 4F       LD      HL,($4F06)      
-54A0: 46             LD      B,(HL)          
-54A1: 46             LD      B,(HL)          
-54A2: 49             LD      C,C             
-54A3: 43             LD      B,E             
-54A4: 45             LD      B,L             
-54A5: 2A 04 53       LD      HL,($5304)      
-54A8: 48             LD      C,B             
-54A9: 45             LD      B,L             
-54AA: 44             LD      B,H             
-54AB: 2A 05 46       LD      HL,($4605)      
-54AE: 4C             LD      C,H             
-54AF: 4F             LD      C,A             
-54B0: 4F             LD      C,A             
-54B1: 52             LD      D,D             
-54B2: 2B             DEC     HL              
-54B3: 04             INC     B               
-54B4: 45             LD      B,L             
-54B5: 58             LD      E,B             
-54B6: 49             LD      C,C             
-54B7: 54             LD      D,H             
-54B8: 2C             INC     L               
-54B9: 04             INC     B               
-54BA: 48             LD      C,B             
-54BB: 4F             LD      C,A             
-54BC: 4C             LD      C,H             
-54BD: 45             LD      B,L             
-54BE: 19             ADD     HL,DE           
-54BF: 06 48          LD      B,$48           
-54C1: 41             LD      B,C             
-54C2: 4C             LD      C,H             
-54C3: 4C             LD      C,H             
-54C4: 57             LD      D,A             
-54C5: 41             LD      B,C             
-54C6: 33             INC     SP              
-54C7: 06 45          LD      B,$45           
-54C9: 4E             LD      C,(HL)          
-54CA: 54             LD      D,H             
-54CB: 52             LD      D,D             
-54CC: 41             LD      B,C             
-54CD: 4E             LD      C,(HL)          
-54CE: 36 06          LD      (HL),$06        
-54D0: 43             LD      B,E             
-54D1: 45             LD      B,L             
-54D2: 49             LD      C,C             
-54D3: 4C             LD      C,H             
-54D4: 49             LD      C,C             
-54D5: 4E             LD      C,(HL)          
-54D6: 3B             DEC     SP              
-54D7: 04             INC     B               
-54D8: 52             LD      D,D             
-54D9: 4F             LD      C,A             
-54DA: 4F             LD      C,A             
-54DB: 46             LD      B,(HL)          
-54DC: 3B             DEC     SP              
-54DD: 00             NOP                     
-54DE: 03             INC     BC              
-54DF: 52             LD      D,D             
-54E0: 45             LD      B,L             
-54E1: 44             LD      B,H             
-54E2: 13             INC     DE              
-54E3: 05             DEC     B               
-54E4: 47             LD      B,A             
-54E5: 52             LD      D,D             
-54E6: 45             LD      B,L             
-54E7: 45             LD      B,L             
-54E8: 4E             LD      C,(HL)          
-54E9: 14             INC     D               
-54EA: 04             INC     B               
-54EB: 42             LD      B,D             
-54EC: 4C             LD      C,H             
-54ED: 55             LD      D,L             
-54EE: 45             LD      B,L             
-54EF: 15             DEC     D               
-54F0: 06 53          LD      B,$53           
-54F2: 45             LD      B,L             
-54F3: 43             LD      B,E             
-54F4: 52             LD      D,D             
-54F5: 45             LD      B,L             
-54F6: 54             LD      D,H             
-54F7: 3D             DEC     A               
-54F8: 06 50          LD      B,$50           
-54FA: 41             LD      B,C             
-54FB: 49             LD      C,C             
-54FC: 4E             LD      C,(HL)          
-54FD: 54             LD      D,H             
-54FE: 45             LD      B,L             
-54FF: 3E 00          LD      A,$00           
-5501: 02             LD      (BC),A          
-5502: 54             LD      D,H             
-5503: 4F             LD      C,A             
-5504: 01 04 57       LD      BC,$5704        
-5507: 49             LD      C,C             
-5508: 54             LD      D,H             
-5509: 48             LD      C,B             
-550A: 02             LD      (BC),A          
-550B: 05             DEC     B               
-550C: 55             LD      D,L             
-550D: 53             LD      D,E             
-550E: 49             LD      C,C             
-550F: 4E             LD      C,(HL)          
-5510: 47             LD      B,A             
-5511: 02             LD      (BC),A          
-5512: 02             LD      (BC),A          
-5513: 41             LD      B,C             
-5514: 54             LD      D,H             
-5515: 03             INC     BC              
-5516: 05             DEC     B               
-5517: 55             LD      D,L             
-5518: 4E             LD      C,(HL)          
-5519: 44             LD      B,H             
-551A: 45             LD      B,L             
-551B: 52             LD      D,D             
-551C: 04             INC     B               
-551D: 02             LD      (BC),A          
-551E: 49             LD      C,C             
-551F: 4E             LD      C,(HL)          
-5520: 05             DEC     B               
-5521: 04             INC     B               
-5522: 49             LD      C,C             
-5523: 4E             LD      C,(HL)          
-5524: 54             LD      D,H             
-5525: 4F             LD      C,A             
-5526: 05             DEC     B               
-5527: 06 49          LD      B,$49           
-5529: 4E             LD      C,(HL)          
-552A: 53             LD      D,E             
-552B: 49             LD      C,C             
-552C: 44             LD      B,H             
-552D: 45             LD      B,L             
-552E: 05             DEC     B               
-552F: 03             INC     BC              
-5530: 4F             LD      C,A             
-5531: 55             LD      D,L             
-5532: 54             LD      D,H             
-5533: 06 06          LD      B,$06           
-5535: 4F             LD      C,A             
-5536: 55             LD      D,L             
-5537: 54             LD      D,H             
-5538: 53             LD      D,E             
-5539: 49             LD      C,C             
-553A: 44             LD      B,H             
-553B: 06 02          LD      B,$02           
-553D: 55             LD      D,L             
-553E: 50             LD      D,B             
-553F: 07             RLCA                    
-5540: 04             INC     B               
-5541: 44             LD      B,H             
-5542: 4F             LD      C,A             
-5543: 57             LD      D,A             
-5544: 4E             LD      C,(HL)          
-5545: 08             EX      AF,AF'          
-5546: 04             INC     B               
-5547: 4F             LD      C,A             
-5548: 56             LD      D,(HL)          
-5549: 45             LD      B,L             
-554A: 52             LD      D,D             
-554B: 09             ADD     HL,BC           
-554C: 06 42          LD      B,$42           
-554E: 45             LD      B,L             
-554F: 48             LD      C,B             
-5550: 49             LD      C,C             
-5551: 4E             LD      C,(HL)          
-5552: 44             LD      B,H             
-5553: 0A             LD      A,(BC)          
-5554: 06 41          LD      B,$41           
-5556: 52             LD      D,D             
-5557: 4F             LD      C,A             
-5558: 55             LD      D,L             
-5559: 4E             LD      C,(HL)          
-555A: 44             LD      B,H             
-555B: 0B             DEC     BC              
-555C: 02             LD      (BC),A          
-555D: 4F             LD      C,A             
-555E: 4E             LD      C,(HL)          
-555F: 0C             INC     C               
-5560: 00             NOP                  
+; --- IGNORES ---
+5234: 00
+;
+; --- VERBS ---
+5235: 03 47 45 54 09            ; GET      09
+523A: 04 47 52 41 42 09         ; GRAB     09
+5240: 05 54 48 52 4F 57 03      ; THROW    03
+5247: 06 41 54 54 41 43 4B 04   ; ATTACK   04
+524F: 05 42 52 45 41 4B 04      ; BREAK    04
+5256: 04 4B 49 4C 4C 04         ; KILL     04
+525C: 03 48 49 54 04            ; HIT      04
+5261: 05 4E 4F 52 54 48 05      ; NORTH    05
+5268: 01 4E 05                  ; N        05
+526B: 05 53 4F 55 54 48 06      ; SOUTH    06
+5272: 01 53 06                  ; S        06
+5275: 04 45 41 53 54 07         ; EAST     07
+527B: 01 45 07                  ; E        07
+527E: 04 57 45 53 54 08         ; WEST     08
+5284: 01 57 08                  ; W        08
+5287: 04 54 41 4B 45 09         ; TAKE     09
+528D: 05 43 41 52 52 59 09      ; CARRY    09
+5294: 04 44 52 4F 50 0A         ; DROP     0A
+529A: 03 50 55 54 0A            ; PUT      0A
+529F: 06 49 4E 56 45 4E 54 0B   ; INVENT   0B
+52A7: 04 4C 4F 4F 4B 0C         ; LOOK     0C
+52AD: 04 47 49 56 45 0D         ; GIVE     0D
+52B3: 05 4F 46 46 45 52 0D      ; OFFER    0D
+52BA: 06 45 58 41 4D 49 4E 0E   ; EXAMIN   0E
+52C2: 06 53 45 41 52 43 48 0E   ; SEARCH   0E
+52CA: 04 4F 50 45 4E 0F         ; OPEN     0F
+52D0: 04 50 55 4C 4C 10         ; PULL     10
+52D6: 03 45 41 54 12            ; EAT      12
+52DB: 05 43 4C 49 4D 42 15      ; CLIMB    15
+52E2: 06 41 53 43 45 4E 44 15   ; ASCEND   15
+52EA: 06 44 45 53 43 45 4E 15   ; DESCEN   15
+52F2: 04 4C 49 46 54 1C         ; LIFT     1C
+52F8: 04 57 41 49 54 1F         ; WAIT     1F
+52FE: 04 53 54 41 59 1F         ; STAY     1F
+5304: 04 4A 55 4D 50 20         ; JUMP     20
+530A: 02 47 4F 21               ; GO       21
+530E: 03 52 55 4E 21            ; RUN      21
+5313: 04 4C 45 46 54 21         ; LEFT     21
+5319: 05 52 49 47 48 54 21      ; RIGHT    21
+5320: 05 45 4E 54 45 52 21      ; ENTER    21
+5327: 04 50 55 53 48 10         ; PUSH     10
+532D: 04 4D 4F 56 45 10         ; MOVE     10
+5333: 04 4B 49 43 4B 23         ; KICK     23
+5339: 04 46 45 45 44 24         ; FEED     24
+533F: 06 53 43 52 45 41 4D 2B   ; SCREAM   2B
+5347: 04 59 45 4C 4C 2B         ; YELL     2B
+534D: 04 51 55 49 54 2D         ; QUIT     2D
+5353: 04 53 54 4F 50 2D         ; STOP     2D
+5359: 05 50 4C 55 47 48 32      ; PLUGH    32
+5360: 04 50 49 43 4B 34         ; PICK     34
+5366: 05 43 4C 4F 53 45 38      ; CLOSE    38
+536D: 04 4C 4F 43 4B 39         ; LOCK     39
+5373: 06 55 4E 4C 4F 43 4B 3A   ; UNLOCK   3A
+537B: 05 48 45 4C 4C 4F 3B      ; HELLO    3B
+5382: 02 48 49 3B               ; HI       3B
+5386: 03 42 4F 57 3B            ; BOW      3B
+538B: 05 47 52 45 45 54 3B      ; GREET    3B
+5392: 04 57 48 41 54 3C         ; WHAT     3C
+5398: 03 57 48 59 3C            ; WHY      3C
+539D: 03 48 4F 57 3C            ; HOW      3C
+53A2: 05 57 48 45 52 45 3C      ; WHERE    3C
+53A9: 03 57 48 4F 3C            ; WHO      3C
+53AE: 04 57 48 45 4E 3C         ; WHEN     3C
+53B4: 05 4C 4F 57 45 52 3D      ; LOWER    3D
+53BB: 05 55 4E 54 49 45 3D      ; UNTIE    3D
+53C2: 03 4C 45 54 3E            ; LET      3E
+53C7: 04 43 4F 4D 45 3F         ; COME     3F
+53CD: 06 46 4F 4C 4C 4F 57 3F   ; FOLLOW   3F
+53D5: 04 4D 45 45 54 40         ; MEET     40
+53DB: 06 49 4E 54 52 4F 44 40   ; INTROD   40
+53E3: 00
+;
+; --- NOUNS ---
+53E4: 03 4B 45 59 16            ; KEY      16
+53E9: 04 50 49 4C 4C 17         ; PILL     17
+53EF: 04 48 4F 4F 4B 18         ; HOOK     18
+53F5: 04 44 4F 4F 52 0B         ; DOOR     0B
+53FB: 06 43 41 42 49 4E 45 19   ; CABINE   19
+5403: 06 52 45 46 52 49 47 1A   ; REFRIG   1A
+540B: 06 48 41 4D 42 55 52 1B   ; HAMBUR   1B
+5413: 06 42 55 52 47 45 52 1B   ; BURGER   1B
+541B: 04 4D 45 41 54 1B         ; MEAT     1B
+5421: 03 44 4F 47 08            ; DOG      08
+5426: 04 48 41 4E 44 1F         ; HAND     1F
+542C: 05 48 41 4E 44 53 1F      ; HANDS    1F
+5433: 06 4E 41 50 4F 4C 45 02   ; NAPOLE   02
+543B: 06 42 4F 4E 41 50 41 02   ; BONAPA   02
+5443: 03 52 41 59 03            ; RAY      03
+5448: 04 58 52 41 59 03         ; XRAY     03
+544E: 06 4A 4F 48 4E 53 4F 03   ; JOHNSO   03
+5456: 06 48 4F 55 44 49 4E 04   ; HOUDIN   04
+545E: 06 50 49 43 41 53 53 05   ; PICASS   05
+5466: 06 4D 45 52 4C 49 4E 06   ; MERLIN   06
+546E: 06 44 4F 43 54 4F 52 07   ; DOCTOR   07
+5476: 05 4E 55 52 53 45 01      ; NURSE    01
+547D: 06 54 48 45 52 41 50 01   ; THERAP   01
+5485: 04 57 41 4C 4C 25         ; WALL     25
+548B: 05 57 41 4C 4C 53 25      ; WALLS    25
+5492: 04 52 4F 4F 4D 2A         ; ROOM     2A
+5498: 04 43 45 4C 4C 2A         ; CELL     2A
+549E: 06 4F 46 46 49 43 45 2A   ; OFFICE   2A
+54A6: 04 53 48 45 44 2A         ; SHED     2A
+54AC: 05 46 4C 4F 4F 52 2B      ; FLOOR    2B
+54B3: 04 45 58 49 54 2C         ; EXIT     2C
+54B9: 04 48 4F 4C 45 19         ; HOLE     19
+54BF: 06 48 41 4C 4C 57 41 33   ; HALLWA   33
+54C7: 06 45 4E 54 52 41 4E 36   ; ENTRAN   36
+54CF: 06 43 45 49 4C 49 4E 3B   ; CEILIN   3B
+54D7: 04 52 4F 4F 46 3B         ; ROOF     3B
+54DD: 00
+;
+; --- ADJECTIVES ---
+54DE: 03 52 45 44 13            ; RED      13
+54E3: 05 47 52 45 45 4E 14      ; GREEN    14
+54EA: 04 42 4C 55 45 15         ; BLUE     15
+54F0: 06 53 45 43 52 45 54 3D   ; SECRET   3D
+54F8: 06 50 41 49 4E 54 45 3E   ; PAINTE   3E
+5500: 00
+;
+; --- PREPOSITIONS ---
+5501: 02 54 4F 01               ; TO       01
+5505: 04 57 49 54 48 02         ; WITH     02
+550B: 05 55 53 49 4E 47 02      ; USING    02
+5512: 02 41 54 03               ; AT       03
+5516: 05 55 4E 44 45 52 04      ; UNDER    04
+551D: 02 49 4E 05               ; IN       05
+5521: 04 49 4E 54 4F 05         ; INTO     05
+5527: 06 49 4E 53 49 44 45 05   ; INSIDE   05
+552F: 03 4F 55 54 06            ; OUT      06
+5534: 06 4F 55 54 53 49 44 06   ; OUTSID   06
+553C: 02 55 50 07               ; UP       07
+5540: 04 44 4F 57 4E 08         ; DOWN     08
+5546: 04 4F 56 45 52 09         ; OVER     09
+554C: 06 42 45 48 49 4E 44 0A   ; BEHIND   0A
+5554: 06 41 52 4F 55 4E 44 0B   ; AROUND   0B
+555C: 02 4F 4E 0C               ; ON       0C
+5560: 00
 ```
 
 ## Object Data
 
 ```code
 ObjectData:   
-5561: 00             NOP                     
-5562: 94             SUB     H               
-5563: 9D             SBC     L               
-5564: 0B             DEC     BC              
-5565: 12             LD      (DE),A          
-5566: 85             ADD     A,L             
-5567: 00             NOP                     
-5568: 88             ADC     A,B             
-5569: 03             INC     BC              
-556A: 01 84 01       LD      BC,$0184        
-556D: 01 14 02       LD      BC,$0214        
-5570: 07             RLCA                    
-5571: AF             XOR     A               
-5572: 6E             LD      L,(HL)          
-5573: 83             ADD     A,E             
-5574: 61             LD      H,C             
-5575: 81             ADD     A,C             
-5576: 5B             LD      E,E             
-5577: 52             LD      D,D             
-5578: 0B             DEC     BC              
-5579: 12             LD      (DE),A          
-557A: 84             ADD     A,H             
-557B: 00             NOP                     
-557C: 8A             ADC     A,D             
-557D: 03             INC     BC              
-557E: 01 86 01       LD      BC,$0186        
-5581: 01 14 02       LD      BC,$0214        
-5584: 07             RLCA                    
-5585: AF             XOR     A               
-5586: 6E             LD      L,(HL)          
-5587: 83             ADD     A,E             
-5588: 61             LD      H,C             
-5589: 81             ADD     A,C             
-558A: 5B             LD      E,E             
-558B: 52             LD      D,D             
-558C: 0B             DEC     BC              
-558D: 11 84 00       LD      DE,$0084        
-5590: 8B             ADC     A,E             
-5591: 03             INC     BC              
-5592: 01 87 01       LD      BC,$0187        
-5595: 01 13 02       LD      BC,$0213        
-5598: 06 66          LD      B,$66           
-559A: B1             OR      C               
-559B: 09             ADD     HL,BC           
-559C: 15             DEC     D               
-559D: A3             AND     E               
-559E: A0             AND     B               
-559F: 0B             DEC     BC              
-55A0: 11 86 00       LD      DE,$0086        
-55A3: 88             ADC     A,B             
-55A4: 03             INC     BC              
-55A5: 01 85 01       LD      BC,$0185        
-55A8: 01 13 02       LD      BC,$0213        
-55AB: 06 66          LD      B,$66           
-55AD: B1             OR      C               
-55AE: 09             ADD     HL,BC           
-55AF: 15             DEC     D               
-55B0: A3             AND     E               
-55B1: A0             AND     B               
-55B2: 0B             DEC     BC              
-55B3: 12             LD      (DE),A          
-55B4: 88             ADC     A,B             
-55B5: 00             NOP                     
-55B6: 8A             ADC     A,D             
-55B7: 03             INC     BC              
-55B8: 01 84 01       LD      BC,$0184        
-55BB: 01 14 02       LD      BC,$0214        
-55BE: 07             RLCA                    
-55BF: AF             XOR     A               
-55C0: 6E             LD      L,(HL)          
-55C1: 83             ADD     A,E             
-55C2: 61             LD      H,C             
-55C3: 81             ADD     A,C             
-55C4: 5B             LD      E,E             
-55C5: 52             LD      D,D             
-55C6: 0B             DEC     BC              
-55C7: 12             LD      (DE),A          
-55C8: 87             ADD     A,A             
-55C9: 00             NOP                     
-55CA: 88             ADC     A,B             
-55CB: 03             INC     BC              
-55CC: 01 86 01       LD      BC,$0186        
-55CF: 01 14 02       LD      BC,$0214        
-55D2: 07             RLCA                    
-55D3: AF             XOR     A               
-55D4: 6E             LD      L,(HL)          
-55D5: 83             ADD     A,E             
-55D6: 61             LD      H,C             
-55D7: 81             ADD     A,C             
-55D8: 5B             LD      E,E             
-55D9: 52             LD      D,D             
-55DA: 0B             DEC     BC              
-55DB: 11 87 00       LD      DE,$0087        
-55DE: 8B             ADC     A,E             
-55DF: 03             INC     BC              
-55E0: 01 87 01       LD      BC,$0187        
-55E3: 01 13 02       LD      BC,$0213        
-55E6: 06 66          LD      B,$66           
-55E8: B1             OR      C               
-55E9: 09             ADD     HL,BC           
-55EA: 15             DEC     D               
-55EB: A3             AND     E               
-55EC: A0             AND     B               
-55ED: 0B             DEC     BC              
-55EE: 11 89 00       LD      DE,$0089        
-55F1: 88             ADC     A,B             
-55F2: 03             INC     BC              
-55F3: 01 85 01       LD      BC,$0185        
-55F6: 01 13 02       LD      BC,$0213        
-55F9: 06 66          LD      B,$66           
-55FB: B1             OR      C               
-55FC: 09             ADD     HL,BC           
-55FD: 15             DEC     D               
-55FE: A3             AND     E               
-55FF: A0             AND     B               
-5600: 0B             DEC     BC              
-5601: 12             LD      (DE),A          
-5602: 8B             ADC     A,E             
-5603: 00             NOP                     
-5604: 88             ADC     A,B             
-5605: 03             INC     BC              
-5606: 01 84 01       LD      BC,$0184        
-5609: 01 14 02       LD      BC,$0214        
-560C: 07             RLCA                    
-560D: AF             XOR     A               
-560E: 6E             LD      L,(HL)          
-560F: 83             ADD     A,E             
-5610: 61             LD      H,C             
-5611: 81             ADD     A,C             
-5612: 5B             LD      E,E             
-5613: 52             LD      D,D             
-5614: 0B             DEC     BC              
-5615: 12             LD      (DE),A          
-5616: 8A             ADC     A,D             
-5617: 00             NOP                     
-5618: 8A             ADC     A,D             
-5619: 03             INC     BC              
-561A: 01 86 01       LD      BC,$0186        
-561D: 01 14 02       LD      BC,$0214        
-5620: 07             RLCA                    
-5621: AF             XOR     A               
-5622: 6E             LD      L,(HL)          
-5623: 83             ADD     A,E             
-5624: 61             LD      H,C             
-5625: 81             ADD     A,C             
-5626: 5B             LD      E,E             
-5627: 52             LD      D,D             
-5628: 0B             DEC     BC              
-5629: 11 8A 00       LD      DE,$008A        
-562C: 8B             ADC     A,E             
-562D: 03             INC     BC              
-562E: 01 87 01       LD      BC,$0187        
-5631: 01 13 02       LD      BC,$0213        
-5634: 06 66          LD      B,$66           
-5636: B1             OR      C               
-5637: 09             ADD     HL,BC           
-5638: 15             DEC     D               
-5639: A3             AND     E               
-563A: A0             AND     B               
-563B: 0B             DEC     BC              
-563C: 12             LD      (DE),A          
-563D: 8D             ADC     A,L             
-563E: 00             NOP                     
-563F: 88             ADC     A,B             
-5640: 03             INC     BC              
-5641: 01 84 01       LD      BC,$0184        
-5644: 01 14 02       LD      BC,$0214        
-5647: 07             RLCA                    
-5648: AF             XOR     A               
-5649: 6E             LD      L,(HL)          
-564A: 83             ADD     A,E             
-564B: 61             LD      H,C             
-564C: 81             ADD     A,C             
-564D: 5B             LD      E,E             
-564E: 52             LD      D,D             
-564F: 0B             DEC     BC              
-5650: 12             LD      (DE),A          
-5651: 8C             ADC     A,H             
-5652: 00             NOP                     
-5653: 8A             ADC     A,D             
-5654: 03             INC     BC              
-5655: 01 86 01       LD      BC,$0186        
-5658: 01 14 02       LD      BC,$0214        
-565B: 07             RLCA                    
-565C: AF             XOR     A               
-565D: 6E             LD      L,(HL)          
-565E: 83             ADD     A,E             
-565F: 61             LD      H,C             
-5660: 81             ADD     A,C             
-5661: 5B             LD      E,E             
-5662: 52             LD      D,D             
-5663: 0B             DEC     BC              
-5664: 11 8F 00       LD      DE,$008F        
-5667: 88             ADC     A,B             
-5668: 03             INC     BC              
-5669: 01 85 01       LD      BC,$0185        
-566C: 01 13 02       LD      BC,$0213        
-566F: 06 66          LD      B,$66           
-5671: B1             OR      C               
-5672: 09             ADD     HL,BC           
-5673: 15             DEC     D               
-5674: A3             AND     E               
-5675: A0             AND     B               
-5676: 0B             DEC     BC              
-5677: 11 8F 00       LD      DE,$008F        
-567A: 8A             ADC     A,D             
-567B: 02             LD      (BC),A          
-567C: 06 8F          LD      B,$8F           
-567E: 4E             LD      C,(HL)          
-567F: 46             LD      B,(HL)          
-5680: 5E             LD      E,(HL)          
-5681: 44             LD      B,H             
-5682: A0             AND     B               
-5683: 01 01 15       LD      BC,$1501        
-5686: 03             INC     BC              
-5687: 01 88 0B       LD      BC,$0B88        
-568A: 11 90 00       LD      DE,$0090        
-568D: 88             ADC     A,B             
-568E: 03             INC     BC              
-568F: 01 89 01       LD      BC,$0189        
-5692: 01 15 02       LD      BC,$0215        
-5695: 06 8F          LD      B,$8F           
-5697: 4E             LD      C,(HL)          
-5698: 46             LD      B,(HL)          
-5699: 5E             LD      E,(HL)          
-569A: 44             LD      B,H             
-569B: A0             AND     B               
-569C: 0B             DEC     BC              
-569D: 11 91 00       LD      DE,$0091        
-56A0: 8A             ADC     A,D             
-56A1: 03             INC     BC              
-56A2: 01 89 01       LD      BC,$0189        
-56A5: 01 15 02       LD      BC,$0215        
-56A8: 06 8F          LD      B,$8F           
-56AA: 4E             LD      C,(HL)          
-56AB: 46             LD      B,(HL)          
-56AC: 5E             LD      E,(HL)          
-56AD: 44             LD      B,H             
-56AE: A0             AND     B               
-56AF: 0B             DEC     BC              
-56B0: 11 94 00       LD      DE,$0094        
-56B3: 88             ADC     A,B             
-56B4: 03             INC     BC              
-56B5: 01 88 01       LD      BC,$0188        
-56B8: 01 15 02       LD      BC,$0215        
-56BB: 06 8F          LD      B,$8F           
-56BD: 4E             LD      C,(HL)          
-56BE: 46             LD      B,(HL)          
-56BF: 5E             LD      E,(HL)          
-56C0: 44             LD      B,H             
-56C1: A0             AND     B               
-56C2: FF             RST     0X38            
-56C3: 42             LD      B,D             
-56C4: 88             ADC     A,B             
-56C5: 00             NOP                     
-56C6: 80             ADD     A,B             
-56C7: 08             EX      AF,AF'          
-56C8: 06 0D          LD      B,$0D           
-56CA: 04             INC     B               
-56CB: 03             INC     BC              
-56CC: 13             INC     DE              
-56CD: 3A 9B 0A       LD      A,($0A9B)       
-56D0: 31 0D 2F       LD      SP,$2F0D        
-56D3: 1F             RRA                     
-56D4: 29             ADD     HL,HL           
-56D5: C7             RST     0X00            
-56D6: DE DB          SBC     $DB             
-56D8: 16 CB          LD      D,$CB           
-56DA: B9             CP      C               
-56DB: 36 A1          LD      (HL),$A1        
-56DD: B0             OR      B               
-56DE: 17             RLA                     
-56DF: F4 59 82       CALL    P,$8259         
-56E2: 17             RLA                     
-56E3: 73             LD      (HL),E          
-56E4: 49             LD      C,C             
-56E5: 55             LD      D,L             
-56E6: 8B             ADC     A,E             
-56E7: 03             INC     BC              
-56E8: BC             CP      H               
-56E9: 3B             DEC     SP              
-56EA: C0             RET     NZ              
-56EB: AF             XOR     A               
-56EC: 54             LD      D,H             
-56ED: 51             LD      D,C             
-56EE: 18 43          JR      $5733           
-56F0: C2 0D D0       JP      NZ,$D00D        
-56F3: 83             ADD     A,E             
-56F4: 61             LD      H,C             
-56F5: 83             ADD     A,E             
-56F6: 7A             LD      A,D             
-56F7: C7             RST     0X00            
-56F8: DE 85          SBC     $85             
-56FA: AF             XOR     A               
-56FB: 46             LD      B,(HL)          
-56FC: 61             LD      H,C             
-56FD: 2E 2C          LD      L,$2C           
-56FF: 13             INC     DE              
-5700: 19             ADD     HL,DE           
-5701: 88             ADC     A,B             
-5702: 09             ADD     HL,BC           
-5703: 02             LD      (BC),A          
-5704: 46             LD      B,(HL)          
-5705: 46             LD      B,(HL)          
-5706: 16 21          LD      D,$21           
-5708: 00             NOP                     
-5709: 00             NOP                     
-570A: A0             AND     B               
-570B: 03             INC     BC              
-570C: 12             LD      (DE),A          
-570D: 04             INC     B               
-570E: 10 5F          DJNZ    $576F           
-5710: BE             CP      (HL)            
-5711: 5B             LD      E,E             
-5712: B1             OR      C               
-5713: 4B             LD      C,E             
-5714: 7B             LD      A,E             
-5715: 54             LD      D,H             
-5716: 45             LD      B,L             
-5717: F3             DI                      
-5718: 5F             LD      E,A             
-5719: BB             CP      E               
-571A: 85             ADD     A,L             
-571B: 9F             SBC     A               
-571C: 15             DEC     D               
-571D: 7F             LD      A,A             
-571E: B1             OR      C               
-571F: 01 01 13       LD      BC,$1301        
-5722: 02             LD      (BC),A          
-5723: 05             DEC     B               
-5724: 66             LD      H,(HL)          
-5725: B1             OR      C               
-5726: 17             RLA                     
-5727: 16 59          LD      D,$59           
-5729: 17             RLA                     
-572A: 34             INC     (HL)            
-572B: 82             ADD     A,D             
-572C: 00             NOP                     
-572D: A0             AND     B               
-572E: 03             INC     BC              
-572F: 01 9D 07       LD      BC,$079D        
-5732: 24             INC     H               
-5733: 0D             DEC     C               
-5734: 22 0A 15       LD      ($150A),HL      
-5737: 04             INC     B               
-5738: 1E A7          LD      E,$A7           
-573A: B7             OR      A               
-573B: 4B             LD      C,E             
-573C: 94             SUB     H               
-573D: 15             DEC     D               
-573E: B2             OR      D               
-573F: DE 88          SBC     $88             
-5741: BF             CP      A               
-5742: 14             INC     D               
-5743: 11 BC 2F       LD      DE,$2FBC        
-5746: F7             RST     0X30            
-5747: 87             ADD     A,A             
-5748: 15             DEC     D               
-5749: 91             SUB     C               
-574A: 8D             ADC     A,L             
-574B: A7             AND     A               
-574C: 15             DEC     D               
-574D: 7F             LD      A,A             
-574E: 93             SUB     E               
-574F: 99             SBC     C               
-5750: 16 28          LD      D,$28           
-5752: 15             DEC     D               
-5753: 65             LD      H,L             
-5754: 66             LD      H,(HL)          
-5755: 83             ADD     A,E             
-5756: BB             CP      E               
-5757: 02             LD      (BC),A          
-5758: 06 8F          LD      B,$8F           
-575A: 4E             LD      C,(HL)          
-575B: 52             LD      D,D             
-575C: 5E             LD      E,(HL)          
-575D: 46             LD      B,(HL)          
-575E: 7A             LD      A,D             
-575F: 18 2C          JR      $578D           
-5761: 81             ADD     A,C             
-5762: 00             NOP                     
-5763: A0             AND     B               
-5764: 03             INC     BC              
-5765: 1D             DEC     E               
-5766: 04             INC     B               
-5767: 1B             DEC     DE              
-5768: 5F             LD      E,A             
-5769: BE             CP      (HL)            
-576A: 5B             LD      E,E             
-576B: B1             OR      C               
-576C: 4B             LD      C,E             
-576D: 7B             LD      A,E             
-576E: 4E             LD      C,(HL)          
-576F: 45             LD      B,L             
-5770: 11 A0 9B       LD      DE,$9BA0        
-5773: 15             DEC     D               
-5774: 46             LD      B,(HL)          
-5775: 98             SBC     B               
-5776: 59             LD      E,C             
-5777: 5E             LD      E,(HL)          
-5778: 8E             ADC     A,(HL)          
-5779: 7A             LD      A,D             
-577A: 6B             LD      L,E             
-577B: A1             AND     C               
-577C: 81             ADD     A,C             
-577D: 74             LD      (HL),H          
-577E: CA 83 2F       JP      Z,$2F83         
-5781: 62             LD      H,D             
-5782: 2E 02          LD      L,$02           
-5784: 08             EX      AF,AF'          
-5785: 50             LD      D,B             
-5786: D1             POP     DE              
-5787: 89             ADC     A,C             
-5788: 5B             LD      E,E             
-5789: A9             XOR     C               
-578A: 15             DEC     D               
-578B: 8B             ADC     A,E             
-578C: 9F             SBC     A               
-578D: 19             ADD     HL,DE           
-578E: 80             ADD     A,B             
-578F: 9C             SBC     H               
-5790: 82             ADD     A,D             
-5791: 00             NOP                     
-5792: 83             ADD     A,E             
-5793: 03             INC     BC              
-5794: 2A 04 28       LD      HL,($2804)      
-5797: 03             INC     BC              
-5798: A0             AND     B               
-5799: 0F             RRCA                    
-579A: A0             AND     B               
-579B: F3             DI                      
-579C: 17             RLA                     
-579D: F3             DI                      
-579E: 8C             ADC     A,H             
-579F: 4B             LD      C,E             
-57A0: 7B             LD      A,E             
-57A1: 45             LD      B,L             
-57A2: 45             LD      B,L             
-57A3: B3             OR      E               
-57A4: 46             LD      B,(HL)          
-57A5: 76             HALT                    
-57A6: 98             SBC     B               
-57A7: 56             LD      D,(HL)          
-57A8: F4 DB 72       CALL    P,$72DB         
-57AB: 04             INC     B               
-57AC: 53             LD      D,E             
-57AD: 8F             ADC     A,A             
-57AE: 7A             LD      A,D             
-57AF: 0A             LD      A,(BC)          
-57B0: BC             CP      H               
-57B1: 4B             LD      C,E             
-57B2: 49             LD      C,C             
-57B3: 56             LD      D,(HL)          
-57B4: 45             LD      B,L             
-57B5: A3             AND     E               
-57B6: 7A             LD      A,D             
-57B7: A9             XOR     C               
-57B8: 15             DEC     D               
-57B9: DB 8B          IN      A,($8B)         
-57BB: 83             ADD     A,E             
-57BC: 7A             LD      A,D             
-57BD: 97             SUB     A               
-57BE: 7B             LD      A,E             
-57BF: 07             RLCA                    
-57C0: 64             LD      H,H             
-57C1: 0E 62          LD      C,$62           
-57C3: 0D             DEC     C               
-57C4: 23             INC     HL              
-57C5: 0E 06          LD      C,$06           
-57C7: 0A             LD      A,(BC)          
-57C8: 42             LD      B,D             
-57C9: 0A             LD      A,(BC)          
-57CA: 3A 0A 11       LD      A,($110A)       
-57CD: 04             INC     B               
-57CE: 19             ADD     HL,DE           
-57CF: C7             RST     0X00            
-57D0: DE D3          SBC     $D3             
-57D2: 14             INC     D               
-57D3: E6 96          AND     $96             
-57D5: 57             LD      D,A             
-57D6: 17             RLA                     
-57D7: 5B             LD      E,E             
-57D8: 61             LD      H,C             
-57D9: 6B             LD      L,E             
-57DA: BF             CP      A               
-57DB: 96             SUB     (HL)            
-57DC: C5             PUSH    BC              
-57DD: 5D             LD      E,L             
-57DE: 9E             SBC     (HL)            
-57DF: 82             ADD     A,D             
-57E0: 17             RLA                     
-57E1: 45             LD      B,L             
-57E2: 5E             LD      E,(HL)          
-57E3: B3             OR      E               
-57E4: 46             LD      B,(HL)          
-57E5: 76             HALT                    
-57E6: 98             SBC     B               
-57E7: 2E 0D          LD      L,$0D           
-57E9: 3B             DEC     SP              
-57EA: 0E 04          LD      C,$04           
-57EC: 0A             LD      A,(BC)          
-57ED: 10 0A          DJNZ    $57F9           
-57EF: 0B             DEC     BC              
-57F0: 03             INC     BC              
-57F1: 82             ADD     A,D             
-57F2: 3B             DEC     SP              
-57F3: 04             INC     B               
-57F4: 30 0C          JR      NC,$5802        
-57F6: BA             CP      D               
-57F7: D0             RET     NC              
-57F8: 47             LD      B,A             
-57F9: 91             SUB     C               
-57FA: 7A             LD      A,D             
-57FB: 89             ADC     A,C             
-57FC: 17             RLA                     
-57FD: 57             LD      D,A             
-57FE: 17             RLA                     
-57FF: 56             LD      D,(HL)          
-5800: 5E             LD      E,(HL)          
-5801: F9             LD      SP,HL           
-5802: 74             LD      (HL),H          
-5803: 7A             LD      A,D             
-5804: C4 82 17       CALL    NZ,$1782        
-5807: 56             LD      D,(HL)          
-5808: 5E             LD      E,(HL)          
-5809: A3             AND     E               
-580A: 7A             LD      A,D             
-580B: A9             XOR     C               
-580C: 15             DEC     D               
-580D: FE 8B          CP      $8B             
-580F: 51             LD      D,C             
-5810: 18 45          JR      $5857           
-5812: C2 83 48       JP      NZ,$4883        
-5815: F5             PUSH    AF              
-5816: 81             ADD     A,C             
-5817: 0F             RRCA                    
-5818: BC             CP      H               
-5819: 17             RLA                     
-581A: 48             LD      C,B             
-581B: C7             RST     0X00            
-581C: 16 03          LD      D,$03           
-581E: BC             CP      H               
-581F: 2F             CPL                     
-5820: 17             RLA                     
-5821: 0D             DEC     C               
-5822: 58             LD      E,B             
-5823: 5F             LD      E,A             
-5824: 63             LD      H,E             
-5825: 02             LD      (BC),A          
-5826: 05             DEC     B               
-5827: 04             INC     B               
-5828: 53             LD      D,E             
-5829: 8F             ADC     A,A             
-582A: 7A             LD      A,D             
-582B: 54             LD      D,H             
-582C: 1A             LD      A,(DE)          
-582D: 80             ADD     A,B             
-582E: C9             RET                     
-582F: 92             SUB     D               
-5830: 00             NOP                     
-5831: 8A             ADC     A,D             
-5832: 03             INC     BC              
-5833: 2E 04          LD      L,$04           
-5835: 2C             INC     L               
-5836: 83             ADD     A,E             
-5837: 7A             LD      A,D             
-5838: 5F             LD      E,A             
-5839: BE             CP      (HL)            
-583A: 99             SBC     C               
-583B: 16 C2          LD      D,$C2           
-583D: B3             OR      E               
-583E: 95             SUB     L               
-583F: 5F             LD      E,A             
-5840: 05             DEC     B               
-5841: BC             CP      H               
-5842: B8             CP      B               
-5843: A0             AND     B               
-5844: 23             INC     HL              
-5845: 62             LD      H,D             
-5846: C3 9E 5F       JP      $5F9E           
-5849: BE             CP      (HL)            
-584A: 39             ADD     HL,SP           
-584B: 17             RLA                     
-584C: DB 9F          IN      A,($9F)         
-584E: 5F             LD      E,A             
-584F: BE             CP      (HL)            
-5850: 5B             LD      E,E             
-5851: B1             OR      C               
-5852: 4B             LD      C,E             
-5853: 7B             LD      A,E             
-5854: 4E             LD      C,(HL)          
-5855: 45             LD      B,L             
-5856: 31 49 54       LD      SP,$5449        
-5859: 5E             LD      E,(HL)          
-585A: 5C             LD      E,H             
-585B: 60             LD      H,B             
-585C: 77             LD      (HL),A          
-585D: 79             LD      A,C             
-585E: D6 B0          SUB     $B0             
-5860: A3             AND     E               
-5861: A0             AND     B               
-5862: 06 3D          LD      B,$3D           
-5864: 0D             DEC     C               
-5865: 3B             DEC     SP              
-5866: 0A             LD      A,(BC)          
-5867: 0F             RRCA                    
-5868: 1B             DEC     DE              
-5869: 0D             DEC     C               
-586A: 0C             INC     C               
-586B: 15             DEC     D               
-586C: 02             LD      (BC),A          
-586D: A9             XOR     C               
-586E: 04             INC     B               
-586F: 07             RLCA                    
-5870: 4B             LD      C,E             
-5871: 7B             LD      A,E             
-5872: C9             RET                     
-5873: 54             LD      D,H             
-5874: A6             AND     (HL)            
-5875: B7             OR      A               
-5876: 2E A8          LD      L,$A8           
-5878: 04             INC     B               
-5879: 08             EX      AF,AF'          
-587A: CE 65          ADC     $65             
-587C: 0B             DEC     BC              
-587D: 8E             ADC     A,(HL)          
-587E: 36 A1          LD      (HL),$A1        
-5880: B8             CP      B               
-5881: 16 A9          LD      D,$A9           
-5883: 04             INC     B               
-5884: 1A             LD      A,(DE)          
-5885: 1E A0          LD      E,$A0           
-5887: D6 9C          SUB     $9C             
-5889: DB 72          IN      A,($72)         
-588B: 89             ADC     A,C             
-588C: 67             LD      H,A             
-588D: A3             AND     E               
-588E: A0             AND     B               
-588F: 68             LD      L,B             
-5890: 4D             LD      C,L             
-5891: AF             XOR     A               
-5892: A0             AND     B               
-5893: C7             RST     0X00            
-5894: DE D3          SBC     $D3             
-5896: 14             INC     D               
-5897: 85             ADD     A,L             
-5898: 96             SUB     (HL)            
-5899: 85             ADD     A,L             
-589A: 8D             ADC     A,L             
-589B: 4B             LD      C,E             
-589C: 5E             LD      E,(HL)          
-589D: 9B             SBC     E               
-589E: C1             POP     BC              
-589F: 1A             LD      A,(DE)          
-58A0: 10 07          DJNZ    $58A9           
-58A2: 4B             LD      C,E             
-58A3: 0D             DEC     C               
-58A4: 49             LD      C,C             
-58A5: 0A             LD      A,(BC)          
-58A6: 11 1A 15       LD      DE,$151A        
-58A9: 02             LD      (BC),A          
-58AA: 03             INC     BC              
-58AB: 18 42          JR      $58EF           
-58AD: 29             ADD     HL,HL           
-58AE: 17             RLA                     
-58AF: 19             ADD     HL,DE           
-58B0: 92             SUB     D               
-58B1: 17             RLA                     
-58B2: 42             LD      B,D             
-58B3: 00             NOP                     
-58B4: 04             INC     B               
-58B5: 38 1F          JR      C,$58D6         
-58B7: D1             POP     DE              
-58B8: 9B             SBC     E               
-58B9: 96             SUB     (HL)            
-58BA: 1B             DEC     DE              
-58BB: A1             AND     C               
-58BC: 5F             LD      E,A             
-58BD: A0             AND     B               
-58BE: 96             SUB     (HL)            
-58BF: 96             SUB     (HL)            
-58C0: DB 72          IN      A,($72)         
-58C2: 68             LD      L,B             
-58C3: B1             OR      C               
-58C4: 09             ADD     HL,BC           
-58C5: B2             OR      D               
-58C6: 2B             DEC     HL              
-58C7: 62             LD      H,D             
-58C8: 84             ADD     A,H             
-58C9: BF             CP      A               
-58CA: 15             DEC     D               
-58CB: EE E7          XOR     $E7             
-58CD: 9F             SBC     A               
-58CE: 9B             SBC     E               
-58CF: 15             DEC     D               
-58D0: BF             CP      A               
-58D1: 91             SUB     C               
-58D2: B7             OR      A               
-58D3: B1             OR      C               
-58D4: 8F             ADC     A,A             
-58D5: AF             XOR     A               
-58D6: 96             SUB     (HL)            
-58D7: 5F             LD      E,A             
-58D8: 4B             LD      C,E             
-58D9: 15             DEC     D               
-58DA: 0D             DEC     C               
-58DB: 8D             ADC     A,L             
-58DC: C7             RST     0X00            
-58DD: 16 11          LD      D,$11           
-58DF: BC             CP      H               
-58E0: 8B             ADC     A,E             
-58E1: 64             LD      H,H             
-58E2: 11 BC C9       LD      DE,$C9BC        
-58E5: 9A             SBC     D               
-58E6: 82             ADD     A,D             
-58E7: 17             RLA                     
-58E8: 48             LD      C,B             
-58E9: 5E             LD      E,(HL)          
-58EA: 81             ADD     A,C             
-58EB: 8D             ADC     A,L             
-58EC: 1B             DEC     DE              
-58ED: B5             OR      L               
-58EE: 02             LD      (BC),A          
-58EF: 08             EX      AF,AF'          
-58F0: 68             LD      L,B             
-58F1: B1             OR      C               
-58F2: 09             ADD     HL,BC           
-58F3: B2             OR      D               
-58F4: 2B             DEC     HL              
-58F5: 62             LD      H,D             
-58F6: 84             ADD     A,H             
-58F7: BF             CP      A               
-58F8: 1B             DEC     DE              
-58F9: 6E             LD      L,(HL)          
-58FA: 00             NOP                     
-58FB: 00             NOP                     
-58FC: A0             AND     B               
-58FD: 03             INC     BC              
-58FE: 19             ADD     HL,DE           
-58FF: 04             INC     B               
-5900: 17             RLA                     
-5901: 5F             LD      E,A             
-5902: BE             CP      (HL)            
-5903: 5B             LD      E,E             
-5904: B1             OR      C               
-5905: 4B             LD      C,E             
-5906: 7B             LD      A,E             
-5907: 3F             CCF                     
-5908: B9             CP      C               
-5909: 4A             LD      C,D             
-590A: 5E             LD      E,(HL)          
-590B: 64             LD      H,H             
-590C: 48             LD      C,B             
-590D: 31 C6 23       LD      SP,$23C6        
-5910: 62             LD      H,D             
-5911: 23             INC     HL              
-5912: 92             SUB     D               
-5913: 0A             LD      A,(BC)          
-5914: BC             CP      H               
-5915: 2F             CPL                     
-5916: 62             LD      H,D             
-5917: 2E 06          LD      L,$06           
-5919: 16 0D          LD      D,$0D           
-591B: 14             INC     D               
-591C: 0A             LD      A,(BC)          
-591D: 0F             RRCA                    
-591E: 0E 10          LD      C,$10           
-5920: 0D             DEC     C               
-5921: 06 08          LD      B,$08           
-5923: 15             DEC     D               
-5924: 17             RLA                     
-5925: 15             DEC     D               
-5926: 19             ADD     HL,DE           
-5927: A0             AND     B               
-5928: 0D             DEC     C               
-5929: 06 08          LD      B,$08           
-592B: 39             ADD     HL,SP           
-592C: 17             RLA                     
-592D: 39             ADD     HL,SP           
-592E: 19             ADD     HL,DE           
-592F: A0             AND     B               
-5930: 07             RLCA                    
-5931: 2A 0D 28       LD      HL,($280D)      
-5934: 0A             LD      A,(BC)          
-5935: 15             DEC     D               
-5936: 04             INC     B               
-5937: 21 F4 4F       LD      HL,$4FF4        
-593A: AB             XOR     E               
-593B: A2             AND     D               
-593C: AB             XOR     E               
-593D: AD             XOR     L               
-593E: DB BD          IN      A,($BD)         
-5940: 41             LD      B,C             
-5941: 6E             LD      L,(HL)          
-5942: 73             LD      (HL),E          
-5943: 5D             LD      E,L             
-5944: F6 4F          OR      $4F             
-5946: 7B             LD      A,E             
-5947: 14             INC     D               
-5948: 96             SUB     (HL)            
-5949: 8C             ADC     A,H             
-594A: FF             RST     0X38            
-594B: BE             CP      (HL)            
-594C: 2B             DEC     HL              
-594D: 17             RLA                     
-594E: 5B             LD      E,E             
-594F: B1             OR      C               
-5950: 04             INC     B               
-5951: 68             LD      L,B             
-5952: 7B             LD      A,E             
-5953: 16 7B          LD      D,$7B           
-5955: 17             RLA                     
-5956: FF             RST     0X38            
-5957: B9             CP      C               
-5958: 2E 17          LD      L,$17           
-595A: 19             ADD     HL,DE           
-595B: 00             NOP                     
-595C: 02             LD      (BC),A          
-595D: 0A             LD      A,(BC)          
-595E: 4F             LD      C,A             
-595F: 72             LD      (HL),D          
-5960: F4 4F B4       CALL    P,$B44F         
-5963: 6C             LD      L,H             
-5964: 67             LD      H,A             
-5965: 16 73          LD      D,$73           
-5967: 49             LD      C,C             
-5968: 08             EX      AF,AF'          
-5969: 81             ADD     A,C             
-596A: 03             INC     BC              
-596B: 93             SUB     E               
-596C: 00             NOP                     
-596D: 90             SUB     B               
-596E: 03             INC     BC              
-596F: 33             INC     SP              
-5970: 04             INC     B               
-5971: 31 58 45       LD      SP,$4558        
-5974: DB 78          IN      A,($78)         
-5976: 35             DEC     (HL)            
-5977: A1             AND     C               
-5978: 87             ADD     A,A             
-5979: 15             DEC     D               
-597A: 2E 49          LD      L,$49           
-597C: 09             ADD     HL,BC           
-597D: 15             DEC     D               
-597E: CB 6A          BIT     5,D             
-5980: C5             PUSH    BC              
-5981: B5             OR      L               
-5982: 4B             LD      C,E             
-5983: 72             LD      (HL),D          
-5984: 66             LD      H,(HL)          
-5985: 98             SBC     B               
-5986: 89             ADC     A,C             
-5987: 17             RLA                     
-5988: 82             ADD     A,D             
-5989: 17             RLA                     
-598A: 55             LD      D,L             
-598B: 5E             LD      E,(HL)          
-598C: 36 A1          LD      (HL),$A1        
-598E: 19             ADD     HL,DE           
-598F: 71             LD      (HL),C          
-5990: 46             LD      B,(HL)          
-5991: 48             LD      C,B             
-5992: B6             OR      (HL)            
-5993: 14             INC     D               
-5994: 5D             LD      E,L             
-5995: 9E             SBC     (HL)            
-5996: 91             SUB     C               
-5997: 7A             LD      A,D             
-5998: 82             ADD     A,D             
-5999: 17             RLA                     
-599A: 55             LD      D,L             
-599B: 5E             LD      E,(HL)          
-599C: 36 A1          LD      (HL),$A1        
-599E: 07             RLCA                    
-599F: 71             LD      (HL),C          
-59A0: 96             SUB     (HL)            
-59A1: D7             RST     0X10            
-59A2: 2E 07          LD      L,$07           
-59A4: 01 A1 06       LD      BC,$06A1        
-59A7: 01 A1 0A       LD      BC,$0AA1        
-59AA: 1C             INC     E               
-59AB: 0D             DEC     C               
-59AC: 1A             LD      A,(DE)          
-59AD: 1F             RRA                     
-59AE: 15             DEC     D               
-59AF: C7             RST     0X00            
-59B0: DE 4F          SBC     $4F             
-59B2: 24             INC     H               
-59B3: 63             LD      H,E             
-59B4: 16 C9          LD      D,$C9           
-59B6: 97             SUB     A               
-59B7: F3             DI                      
-59B8: 5F             LD      E,A             
-59B9: 6B             LD      L,E             
-59BA: BF             CP      A               
-59BB: 4E             LD      C,(HL)          
-59BC: 86             ADD     A,(HL)          
-59BD: 16 8A          LD      D,$8A           
-59BF: DB 72          IN      A,($72)         
-59C1: 79             LD      A,C             
-59C2: 5B             LD      E,E             
-59C3: 2E 1E          LD      L,$1E           
-59C5: 1A             LD      A,(DE)          
-59C6: 3C             INC     A               
-59C7: 08             EX      AF,AF'          
-59C8: 80             ADD     A,B             
-59C9: 94             SUB     H               
-59CA: 0E 80          LD      C,$80           
-59CC: 91             SUB     C               
-59CD: 0D             DEC     C               
-59CE: 7D             LD      A,L             
-59CF: 0A             LD      A,(BC)          
-59D0: 09             ADD     HL,BC           
-59D1: 1C             INC     E               
-59D2: 13             INC     DE              
-59D3: 0B             DEC     BC              
-59D4: 77             LD      (HL),A          
-59D5: 05             DEC     B               
-59D6: 55             LD      D,L             
-59D7: 22 0D 20       LD      ($200D),HL      
-59DA: 1F             RRA                     
-59DB: 1C             INC     E               
-59DC: 5F             LD      E,A             
-59DD: BE             CP      (HL)            
-59DE: 09             ADD     HL,BC           
-59DF: 15             DEC     D               
-59E0: D6 6A          SUB     $6A             
-59E2: 94             SUB     H               
-59E3: 5F             LD      E,A             
-59E4: C3 B5 1B       JP      $1BB5           
-59E7: BC             CP      H               
-59E8: 34             INC     (HL)            
-59E9: A1             AND     C               
-59EA: 3F             CCF                     
-59EB: 16 C3          LD      D,$C3           
-59ED: 6A             LD      L,D             
-59EE: 33             INC     SP              
-59EF: 98             SBC     B               
-59F0: EB             EX      DE,HL           
-59F1: 5B             LD      E,E             
-59F2: CB D2          SET     2,D             
-59F4: 89             ADC     A,C             
-59F5: 4E             LD      C,(HL)          
-59F6: 71             LD      (HL),C          
-59F7: 9E             SBC     (HL)            
-59F8: 1D             DEC     E               
-59F9: 06 AF          LD      B,$AF           
-59FB: 26 0D          LD      H,$0D           
-59FD: 24             INC     H               
-59FE: 1F             RRA                     
-59FF: 20 5F          JR      NZ,$5A60        
-5A01: BE             CP      (HL)            
-5A02: 09             ADD     HL,BC           
-5A03: 15             DEC     D               
-5A04: C4 6A 7F       CALL    NZ,$7F6A        
-5A07: 7B             LD      A,E             
-5A08: DB B5          IN      A,($B5)         
-5A0A: 34             INC     (HL)            
-5A0B: A1             AND     C               
-5A0C: 94             SUB     H               
-5A0D: 14             INC     D               
-5A0E: 43             LD      B,E             
-5A0F: 90             SUB     B               
-5A10: 33             INC     SP              
-5A11: 98             SBC     B               
-5A12: C7             RST     0X00            
-5A13: DE E4          SBC     $E4             
-5A15: 14             INC     D               
-5A16: 91             SUB     C               
-5A17: 7A             LD      A,D             
-5A18: 59             LD      E,C             
-5A19: 5E             LD      E,(HL)          
-5A1A: 82             ADD     A,D             
-5A1B: 7B             LD      A,E             
-5A1C: DB 16          IN      A,($16)         
-5A1E: 81             ADD     A,C             
-5A1F: 7A             LD      A,D             
-5A20: 1D             DEC     E               
-5A21: 07             RLCA                    
-5A22: FF             RST     0X38            
-5A23: 28 1F          JR      Z,$5A44         
-5A25: 26 5F          LD      H,$5F           
-5A27: BE             CP      (HL)            
-5A28: 09             ADD     HL,BC           
-5A29: 15             DEC     D               
-5A2A: CE 6A          ADC     $6A             
-5A2C: 91             SUB     C               
-5A2D: C5             PUSH    BC              
-5A2E: 4B             LD      C,E             
-5A2F: 62             LD      H,D             
-5A30: 04             INC     B               
-5A31: 68             LD      L,B             
-5A32: 51             LD      D,C             
-5A33: 18 23          JR      $5A58           
-5A35: C6 65          ADD     $65             
-5A37: 98             SBC     B               
-5A38: 33             INC     SP              
-5A39: 89             ADC     A,C             
-5A3A: F6 4F          OR      $4F             
-5A3C: 51             LD      D,C             
-5A3D: 18 52          JR      $5A91           
-5A3F: C2 46 C5       JP      NZ,$C546        
-5A42: AB             XOR     E               
-5A43: 14             INC     D               
-5A44: 8B             ADC     A,E             
-5A45: 54             LD      D,H             
-5A46: 83             ADD     A,E             
-5A47: 7A             LD      A,D             
-5A48: 8F             ADC     A,A             
-5A49: BE             CP      (HL)            
-5A4A: EB             EX      DE,HL           
-5A4B: 5D             LD      E,L             
-5A4C: 1F             RRA                     
-5A4D: 10 41          DJNZ    $5A90           
-5A4F: 1E C3          LD      E,$C3           
-5A51: 9E             SBC     (HL)            
-5A52: B9             CP      C               
-5A53: 6E             LD      L,(HL)          
-5A54: B3             OR      E               
-5A55: D1             POP     DE              
-5A56: 41             LD      B,C             
-5A57: D2 99 64       JP      NC,$6499        
-5A5A: 38 A0          JR      C,$59FC         
-5A5C: E3             EX      (SP),HL         
-5A5D: 06 09          LD      B,$09           
-5A5F: 02             LD      (BC),A          
-5A60: 46             LD      B,(HL)          
-5A61: 46             LD      B,(HL)          
-5A62: 02             LD      (BC),A          
-5A63: 0A             LD      A,(BC)          
-5A64: 5F             LD      E,A             
-5A65: BE             CP      (HL)            
-5A66: D3 17          OUT     ($17),A         
-5A68: 51             LD      D,C             
-5A69: 54             LD      D,H             
-5A6A: 4B             LD      C,E             
-5A6B: C6 79          ADD     $79             
-5A6D: 5B             LD      E,E             
-5A6E: 16 24          LD      D,$24           
-5A70: 8E             ADC     A,(HL)          
-5A71: 00             NOP                     
-5A72: A0             AND     B               
-5A73: 03             INC     BC              
-5A74: 14             INC     D               
-5A75: 04             INC     B               
-5A76: 12             LD      (DE),A          
-5A77: 5F             LD      E,A             
-5A78: BE             CP      (HL)            
-5A79: 5B             LD      E,E             
-5A7A: B1             OR      C               
-5A7B: 4B             LD      C,E             
-5A7C: 7B             LD      A,E             
-5A7D: 49             LD      C,C             
-5A7E: 45             LD      B,L             
-5A7F: 67             LD      H,A             
-5A80: B1             OR      C               
-5A81: 8D             ADC     A,L             
-5A82: 96             SUB     (HL)            
-5A83: 3B             DEC     SP              
-5A84: 63             LD      H,E             
-5A85: F4 72 DB       CALL    P,$DB72         
-5A88: 63             LD      H,E             
-5A89: 01 01 14       LD      BC,$1401        
-5A8C: 02             LD      (BC),A          
-5A8D: 06 AF          LD      B,$AF           
-5A8F: 6E             LD      L,(HL)          
-5A90: 83             ADD     A,E             
-5A91: 61             LD      H,C             
-5A92: BB             CP      E               
-5A93: 85             ADD     A,L             
-5A94: 03             INC     BC              
-5A95: 81             ADD     A,C             
-5A96: 60             LD      H,B             
-5A97: 00             NOP                     
-5A98: 00             NOP                     
-5A99: 90             SUB     B               
-5A9A: 03             INC     BC              
-5A9B: 18 04          JR      $5AA1           
-5A9D: 16 DB          LD      D,$DB           
-5A9F: B0             OR      B               
-5AA0: 57             LD      D,A             
-5AA1: 17             RLA                     
-5AA2: 75             LD      (HL),L          
-5AA3: 61             LD      H,C             
-5AA4: 89             ADC     A,C             
-5AA5: 17             RLA                     
-5AA6: AF             XOR     A               
-5AA7: 14             INC     D               
-5AA8: 3B             DEC     SP              
-5AA9: 15             DEC     D               
-5AAA: D0             RET     NC              
-5AAB: 60             LD      H,B             
-5AAC: D6 6A          SUB     $6A             
-5AAE: DB 72          IN      A,($72)         
-5AB0: 0E D0          LD      C,$D0           
-5AB2: 2F             CPL                     
-5AB3: 8E             ADC     A,(HL)          
-5AB4: 09             ADD     HL,BC           
-5AB5: 02             LD      (BC),A          
-5AB6: 46             LD      B,(HL)          
-5AB7: 46             LD      B,(HL)          
-5AB8: 0B             DEC     BC              
-5AB9: 81             ADD     A,C             
-5ABA: 2D             DEC     L               
-5ABB: 0E 81          LD      C,$81           
-5ABD: 2A 0D 80       LD      HL,($800D)      
-5AC0: DF             RST     0X18            
-5AC1: 0E 0A          LD      C,$0A           
-5AC3: 0A             LD      A,(BC)          
-5AC4: 01 0A 02       LD      BC,$020A        
-5AC7: 0A             LD      A,(BC)          
-5AC8: 03             INC     BC              
-5AC9: 0A             LD      A,(BC)          
-5ACA: 04             INC     B               
-5ACB: 0A             LD      A,(BC)          
-5ACC: 0A             LD      A,(BC)          
-5ACD: 1F             RRA                     
-5ACE: 0F             RRCA                    
-5ACF: DB B0          IN      A,($B0)         
-5AD1: 2F             CPL                     
-5AD2: 17             RLA                     
-5AD3: 84             ADD     A,H             
-5AD4: A6             AND     (HL)            
-5AD5: 0B             DEC     BC              
-5AD6: C0             RET     NZ              
-5AD7: DB 72          IN      A,($72)         
-5AD9: 10 53          DJNZ    $5B2E           
-5ADB: 57             LD      D,A             
-5ADC: 17             RLA                     
-5ADD: 45             LD      B,L             
-5ADE: 1C             INC     E               
-5ADF: 38 10          JR      C,$5AF1         
-5AE1: 2C             INC     L               
-5AE2: 38 0E          JR      C,$5AF2         
-5AE4: 80             ADD     A,B             
-5AE5: B8             CP      B               
-5AE6: 0D             DEC     C               
-5AE7: 33             INC     SP              
-5AE8: 01 3D 1F       LD      BC,$1F3D        
-5AEB: 2E 55          LD      L,$55           
-5AED: 45             LD      B,L             
-5AEE: E4 5F 73       CALL    PO,$735F        
-5AF1: 62             LD      H,D             
-5AF2: 81             ADD     A,C             
-5AF3: 5B             LD      E,E             
-5AF4: 8A             ADC     A,D             
-5AF5: AF             XOR     A               
-5AF6: 2F             CPL                     
-5AF7: 62             LD      H,D             
-5AF8: 19             ADD     HL,DE           
-5AF9: EE 85          XOR     $85             
-5AFB: 73             LD      (HL),E          
-5AFC: 0F             RRCA                    
-5AFD: 71             LD      (HL),C          
-5AFE: 3B             DEC     SP              
-5AFF: 4A             LD      C,D             
-5B00: E3             EX      (SP),HL         
-5B01: 8B             ADC     A,E             
-5B02: 16 58          LD      D,$58           
-5B04: C7             RST     0X00            
-5B05: 9C             SBC     H               
-5B06: 53             LD      D,E             
-5B07: B7             OR      A               
-5B08: FF             RST     0X38            
-5B09: A4             AND     H               
-5B0A: AF             XOR     A               
-5B0B: 14             INC     D               
-5B0C: 46             LD      B,(HL)          
-5B0D: B8             CP      B               
-5B0E: 4B             LD      C,E             
-5B0F: 62             LD      H,D             
-5B10: 5B             LD      E,E             
-5B11: BE             CP      (HL)            
-5B12: 73             LD      (HL),E          
-5B13: C1             POP     BC              
-5B14: 5F             LD      E,A             
-5B15: BE             CP      (HL)            
-5B16: 5B             LD      E,E             
-5B17: B1             OR      C               
-5B18: 4B             LD      C,E             
-5B19: 7B             LD      A,E             
-5B1A: 0C             INC     C               
-5B1B: 0D             DEC     C               
-5B1C: 3D             DEC     A               
-5B1D: 03             INC     BC              
-5B1E: 00             NOP                     
-5B1F: 22 03 88       LD      ($8803),HL      
-5B22: 1C             INC     E               
-5B23: 1F             RRA                     
-5B24: 34             INC     (HL)            
-5B25: 5B             LD      E,E             
-5B26: BE             CP      (HL)            
-5B27: 04             INC     B               
-5B28: BC             CP      H               
-5B29: 51             LD      D,C             
-5B2A: 63             LD      H,E             
-5B2B: 33             INC     SP              
-5B2C: 98             SBC     B               
-5B2D: 5F             LD      E,A             
-5B2E: BE             CP      (HL)            
-5B2F: 99             SBC     C               
-5B30: 16 C2          LD      D,$C2           
-5B32: B3             OR      E               
-5B33: F3             DI                      
-5B34: 17             RLA                     
-5B35: F3             DI                      
-5B36: 8C             ADC     A,H             
-5B37: 4B             LD      C,E             
-5B38: 7B             LD      A,E             
-5B39: 52             LD      D,D             
-5B3A: 45             LD      B,L             
-5B3B: E5             PUSH    HL              
-5B3C: A0             AND     B               
-5B3D: B6             OR      (HL)            
-5B3E: 78             LD      A,B             
-5B3F: 47             LD      B,A             
-5B40: 5E             LD      E,(HL)          
-5B41: 53             LD      D,E             
-5B42: B7             OR      A               
-5B43: DB A4          IN      A,($A4)         
-5B45: 07             RLCA                    
-5B46: B3             OR      E               
-5B47: FF             RST     0X38            
-5B48: BD             CP      L               
-5B49: AF             XOR     A               
-5B4A: 14             INC     D               
-5B4B: 46             LD      B,(HL)          
-5B4C: B8             CP      B               
-5B4D: 4B             LD      C,E             
-5B4E: 62             LD      H,D             
-5B4F: 5B             LD      E,E             
-5B50: BE             CP      (HL)            
-5B51: 73             LD      (HL),E          
-5B52: C1             POP     BC              
-5B53: 5F             LD      E,A             
-5B54: BE             CP      (HL)            
-5B55: 5B             LD      E,E             
-5B56: B1             OR      C               
-5B57: 4B             LD      C,E             
-5B58: 7B             LD      A,E             
-5B59: 0C             INC     C               
-5B5A: 0D             DEC     C               
-5B5B: 06 0A          LD      B,$0A           
-5B5D: 03             INC     BC              
-5B5E: 21 03 00       LD      HL,$0003        
-5B61: 00             NOP                     
-5B62: 0D             DEC     C               
-5B63: 06 0A          LD      B,$0A           
-5B65: 04             INC     B               
-5B66: 21 04 00       LD      HL,$0004        
-5B69: 00             NOP                     
-5B6A: 0D             DEC     C               
-5B6B: 06 0A          LD      B,$0A           
-5B6D: 01 21 01       LD      BC,$0121        
-5B70: 00             NOP                     
-5B71: 00             NOP                     
-5B72: 0D             DEC     C               
-5B73: 06 0A          LD      B,$0A           
-5B75: 02             LD      (BC),A          
-5B76: 21 02 00       LD      HL,$0002        
-5B79: 00             NOP                     
-5B7A: 1F             RRA                     
-5B7B: 22 06 9A       LD      ($9A06),HL      
-5B7E: 90             SUB     B               
-5B7F: 73             LD      (HL),E          
-5B80: 5B             LD      E,E             
-5B81: 70             LD      (HL),B          
-5B82: B7             OR      A               
-5B83: 1C             INC     E               
-5B84: F3             DI                      
-5B85: B9             CP      C               
-5B86: 5B             LD      E,E             
-5B87: 4D             LD      C,L             
-5B88: 3F             CCF                     
-5B89: B9             CP      C               
-5B8A: 4E             LD      C,(HL)          
-5B8B: 5E             LD      E,(HL)          
-5B8C: 86             ADD     A,(HL)          
-5B8D: 5F             LD      E,A             
-5B8E: C3 EA 66       JP      $66EA           
-5B91: 98             SBC     B               
-5B92: F3             DI                      
-5B93: 17             RLA                     
-5B94: 0D             DEC     C               
-5B95: 8D             ADC     A,L             
-5B96: E3             EX      (SP),HL         
-5B97: 06 DB          LD      B,$DB           
-5B99: 72             LD      (HL),D          
-5B9A: 1B             DEC     DE              
-5B9B: B7             OR      A               
-5B9C: 5B             LD      E,E             
-5B9D: BB             CP      E               
-5B9E: 2C             INC     L               
-5B9F: 1C             INC     E               
-5BA0: 0D             DEC     C               
-5BA1: 45             LD      B,L             
-5BA2: 0E 06          LD      C,$06           
-5BA4: 0A             LD      A,(BC)          
-5BA5: 11 0A 42       LD      DE,$420A        
-5BA8: 0A             LD      A,(BC)          
-5BA9: 09             ADD     HL,BC           
-5BAA: 1F             RRA                     
-5BAB: 3B             DEC     SP              
-5BAC: DB B0          IN      A,($B0)         
-5BAE: 63             LD      H,E             
-5BAF: 16 B5          LD      D,$B5           
-5BB1: 85             ADD     A,L             
-5BB2: 7B             LD      A,E             
-5BB3: 14             INC     D               
-5BB4: 67             LD      H,A             
-5BB5: 66             LD      H,(HL)          
-5BB6: 7F             LD      A,A             
-5BB7: 4E             LD      C,(HL)          
-5BB8: 96             SUB     (HL)            
-5BB9: 14             INC     D               
-5BBA: EF             RST     0X28            
-5BBB: BD             CP      L               
-5BBC: 33             INC     SP              
-5BBD: A7             AND     A               
-5BBE: 8E             ADC     A,(HL)          
-5BBF: 48             LD      C,B             
-5BC0: 82             ADD     A,D             
-5BC1: 17             RLA                     
-5BC2: 83             ADD     A,E             
-5BC3: 61             LD      H,C             
-5BC4: EB             EX      DE,HL           
-5BC5: 5B             LD      E,E             
-5BC6: CB D2          SET     2,D             
-5BC8: C5             PUSH    BC              
-5BC9: 4C             LD      C,H             
-5BCA: 5B             LD      E,E             
-5BCB: 89             ADC     A,C             
-5BCC: A1             AND     C               
-5BCD: 1D             DEC     E               
-5BCE: 83             ADD     A,E             
-5BCF: B3             OR      E               
-5BD0: 0B             DEC     BC              
-5BD1: EE 4F          XOR     $4F             
-5BD3: 24             INC     H               
-5BD4: AF             XOR     A               
-5BD5: 14             INC     D               
-5BD6: 83             ADD     A,E             
-5BD7: 61             LD      H,C             
-5BD8: D6 B0          SUB     $B0             
-5BDA: F4 72 90       CALL    P,$9072         
-5BDD: 14             INC     D               
-5BDE: 6B             LD      L,E             
-5BDF: 61             LD      H,C             
-5BE0: CE 51          ADC     $51             
-5BE2: 7F             LD      A,A             
-5BE3: 49             LD      C,C             
-5BE4: F9             LD      SP,HL           
-5BE5: 8E             ADC     A,(HL)          
-5BE6: 22 9A 08       LD      ($089A),HL      
-5BE9: 06 0D          LD      B,$0D           
-5BEB: 04             INC     B               
-5BEC: 9C             SBC     H               
-5BED: 1C             INC     E               
-5BEE: 1C             INC     E               
-5BEF: 9E             SBC     (HL)            
-5BF0: 07             RLCA                    
-5BF1: 01 AB 02       LD      BC,$02AB        
-5BF4: 02             LD      (BC),A          
-5BF5: DB B0          IN      A,($B0)         
-5BF7: 03             INC     BC              
-5BF8: 80             ADD     A,B             
-5BF9: AE             XOR     (HL)            
-5BFA: 00             NOP                     
-5BFB: 00             NOP                     
-5BFC: 90             SUB     B               
-5BFD: 03             INC     BC              
-5BFE: 80             ADD     A,B             
-5BFF: A8             XOR     B               
-5C00: 0D             DEC     C               
-5C01: 80             ADD     A,B             
-5C02: A5             AND     L               
-5C03: 04             INC     B               
-5C04: 80             ADD     A,B             
-5C05: 9F             SBC     A               
-5C06: 4F             LD      C,A             
-5C07: 45             LD      B,L             
-5C08: 83             ADD     A,E             
-5C09: 48             LD      C,B             
-5C0A: 83             ADD     A,E             
-5C0B: 7A             LD      A,D             
-5C0C: 94             SUB     H               
-5C0D: 5A             LD      E,D             
-5C0E: FB             EI                      
-5C0F: C0             RET     NZ              
-5C10: 4F             LD      C,A             
-5C11: A1             AND     C               
-5C12: CE B0          ADC     $B0             
-5C14: 0B             DEC     BC              
-5C15: 8E             ADC     A,(HL)          
-5C16: 8E             ADC     A,(HL)          
-5C17: 48             LD      C,B             
-5C18: F7             RST     0X30            
-5C19: 17             RLA                     
-5C1A: 33             INC     SP              
-5C1B: 49             LD      C,C             
-5C1C: AB             XOR     E               
-5C1D: 98             SBC     B               
-5C1E: 39             ADD     HL,SP           
-5C1F: 6E             LD      L,(HL)          
-5C20: BF             CP      A               
-5C21: 6D             LD      L,L             
-5C22: C3 B5 AC       JP      $ACB5           
-5C25: A6             AND     (HL)            
-5C26: 05             DEC     B               
-5C27: 9E             SBC     (HL)            
-5C28: F5             PUSH    AF              
-5C29: 72             LD      (HL),D          
-5C2A: 51             LD      D,C             
-5C2B: 18 43          JR      $5C70           
-5C2D: C2 33 98       JP      NZ,$9833        
-5C30: 9E             SBC     (HL)            
-5C31: 7A             LD      A,D             
-5C32: F6 B2          OR      $B2             
-5C34: D7             RST     0X10            
-5C35: C3 CA B5       JP      $B5CA           
-5C38: 75             LD      (HL),L          
-5C39: 7A             LD      A,D             
-5C3A: 40             LD      B,B             
-5C3B: 61             LD      H,C             
-5C3C: 3C             INC     A               
-5C3D: F4 79 73       CALL    P,$7379         
-5C40: 7B             LD      A,E             
-5C41: 16 8B          LD      D,$8B           
-5C43: 16 1B          LD      D,$1B           
-5C45: 92             SUB     D               
-5C46: 4B             LD      C,E             
-5C47: 7B             LD      A,E             
-5C48: EB             EX      DE,HL           
-5C49: D8             RET     C               
-5C4A: 4C             LD      C,H             
-5C4B: DB 28          IN      A,($28)         
-5C4D: 9F             SBC     A               
-5C4E: 40             LD      B,B             
-5C4F: B9             CP      C               
-5C50: 04             INC     B               
-5C51: EE 73          XOR     $73             
-5C53: C6 C7          ADD     $C7             
-5C55: DE D3          SBC     $D3             
-5C57: 14             INC     D               
-5C58: 85             ADD     A,L             
-5C59: 96             SUB     (HL)            
-5C5A: 46             LD      B,(HL)          
-5C5B: 48             LD      C,B             
-5C5C: 67             LD      H,A             
-5C5D: 16 2B          LD      D,$2B           
-5C5F: 17             RLA                     
-5C60: DB E0          IN      A,($E0)         
-5C62: 4A             LD      C,D             
-5C63: 77             LD      (HL),A          
-5C64: CF             RST     0X08            
-5C65: 49             LD      C,C             
-5C66: 2C             INC     L               
-5C67: 18 3B          JR      $5CA4           
-5C69: 4A             LD      C,D             
-5C6A: 15             DEC     D               
-5C6B: CB C0          SET     0,B             
-5C6D: 7A             LD      A,D             
-5C6E: 1B             DEC     DE              
-5C6F: EE 1B          XOR     $1B             
-5C71: A1             AND     C               
-5C72: 19             ADD     HL,DE           
-5C73: 87             ADD     A,A             
-5C74: 5B             LD      E,E             
-5C75: D4 1B B7       CALL    NC,$B71B        
-5C78: 1B             DEC     DE              
-5C79: EE 1B          XOR     $1B             
-5C7B: A1             AND     C               
-5C7C: 76             HALT                    
-5C7D: 4D             LD      C,L             
-5C7E: F4 BD 9B       CALL    P,$9BBD         
-5C81: 15             DEC     D               
-5C82: 5B             LD      E,E             
-5C83: CA 5B BE       JP      Z,$BE5B         
-5C86: 15             DEC     D               
-5C87: BC             CP      H               
-5C88: 86             ADD     A,(HL)          
-5C89: A6             AND     (HL)            
-5C8A: C0             RET     NZ              
-5C8B: 16 51          LD      D,$51           
-5C8D: 18 23          JR      $5CB2           
-5C8F: C6 E8          ADD     $E8             
-5C91: 8B             ADC     A,E             
-5C92: 0E BC          LD      C,$BC           
-5C94: 91             SUB     C               
-5C95: C5             PUSH    BC              
-5C96: DA 14 DD       JP      C,$DD14         
-5C99: 5F             LD      E,A             
-5C9A: F3             DI                      
-5C9B: 5F             LD      E,A             
-5C9C: 7B             LD      A,E             
-5C9D: 50             LD      D,B             
-5C9E: 46             LD      B,(HL)          
-5C9F: 45             LD      B,L             
-5CA0: 66             LD      H,(HL)          
-5CA1: 9E             SBC     (HL)            
-5CA2: A1             AND     C               
-5CA3: A0             AND     B               
-5CA4: 22 1E 1C       LD      ($1C1E),HL      
-5CA7: 1D             DEC     E               
-5CA8: 02             LD      (BC),A          
-5CA9: 77             LD      (HL),A          
-5CAA: 00             NOP                     
-5CAB: 00             NOP                     
-5CAC: 90             SUB     B               
-5CAD: 03             INC     BC              
-5CAE: 01 97 02       LD      BC,$0297        
-5CB1: 06 D2          LD      B,$D2           
-5CB3: 97             SUB     A               
-5CB4: BF             CP      A               
-5CB5: 9F             SBC     A               
-5CB6: 03             INC     BC              
-5CB7: A0             AND     B               
-5CB8: 0B             DEC     BC              
-5CB9: 58             LD      E,B             
-5CBA: 0E 56          LD      C,$56           
-5CBC: 0D             DEC     C               
-5CBD: 53             LD      D,E             
-5CBE: 0E 06          LD      C,$06           
-5CC0: 0A             LD      A,(BC)          
-5CC1: 11 0A 42       LD      DE,$420A        
-5CC4: 0A             LD      A,(BC)          
-5CC5: 09             ADD     HL,BC           
-5CC6: 1A             LD      A,(DE)          
-5CC7: 15             DEC     D               
-5CC8: 08             EX      AF,AF'          
-5CC9: 1F             RRA                     
-5CCA: 46             LD      B,(HL)          
-5CCB: D2 97 BF       JP      NC,$BF97        
-5CCE: 9F             SBC     A               
-5CCF: 03             INC     BC              
-5CD0: A0             AND     B               
-5CD1: AB             XOR     E               
-5CD2: 6E             LD      L,(HL)          
-5CD3: 8B             ADC     A,E             
-5CD4: 4F             LD      C,A             
-5CD5: 96             SUB     (HL)            
-5CD6: 7B             LD      A,E             
-5CD7: BF             CP      A               
-5CD8: 14             INC     D               
-5CD9: 0A             LD      A,(BC)          
-5CDA: BC             CP      H               
-5CDB: 45             LD      B,L             
-5CDC: 5E             LD      E,(HL)          
-5CDD: 85             ADD     A,L             
-5CDE: 48             LD      C,B             
-5CDF: 04             INC     B               
-5CE0: BC             CP      H               
-5CE1: 01 C4 4B       LD      BC,$4BC4        
-5CE4: 5E             LD      E,(HL)          
-5CE5: AB             XOR     E               
-5CE6: BB             CP      E               
-5CE7: DB 72          IN      A,($72)         
-5CE9: 74             LD      (HL),H          
-5CEA: C0             RET     NZ              
-5CEB: 8B             ADC     A,E             
-5CEC: 9A             SBC     D               
-5CED: 6B             LD      L,E             
-5CEE: BF             CP      A               
-5CEF: C7             RST     0X00            
-5CF0: DE 90          SBC     $90             
-5CF2: 14             INC     D               
-5CF3: 0F             RRCA                    
-5CF4: 58             LD      E,B             
-5CF5: 64             LD      H,H             
-5CF6: C5             PUSH    BC              
-5CF7: F5             PUSH    AF              
-5CF8: 8B             ADC     A,E             
-5CF9: 61             LD      H,C             
-5CFA: 17             RLA                     
-5CFB: 36 92          LD      (HL),$92        
-5CFD: 90             SUB     B               
-5CFE: 73             LD      (HL),E          
-5CFF: C3 6A 07       JP      $076A           
-5D02: 4F             LD      C,A             
-5D03: 04             INC     B               
-5D04: BC             CP      H               
-5D05: D0             RET     NC              
-5D06: 60             LD      H,B             
-5D07: D4 6A 82       CALL    NC,$826A        
-5D0A: 49             LD      C,C             
-5D0B: 23             INC     HL              
-5D0C: 62             LD      H,D             
-5D0D: 94             SUB     H               
-5D0E: BE             CP      (HL)            
-5D0F: 17             RLA                     
-5D10: 60             LD      H,B             
-5D11: 9A             SBC     D               
-5D12: 07             RLCA                    
-5D13: 01 AB 08       LD      BC,$08AB        
-5D16: 06 0D          LD      B,$0D           
-5D18: 04             INC     B               
-5D19: 9C             SBC     H               
-5D1A: 1C             INC     E               
-5D1B: 1E 9E          LD      E,$9E           
-5D1D: 09             ADD     HL,BC           
-5D1E: 02             LD      (BC),A          
-5D1F: 46             LD      B,(HL)          
-5D20: 46             LD      B,(HL)          
-5D21: 02             LD      (BC),A          
-5D22: 0B             DEC     BC              
-5D23: 00             NOP                     
-5D24: 00             NOP                     
-5D25: 90             SUB     B               
-5D26: 03             INC     BC              
-5D27: 06 0D          LD      B,$0D           
-5D29: 04             INC     B               
-5D2A: 96             SUB     (HL)            
-5D2B: 1E 1E          LD      E,$1E           
-5D2D: 1F             RRA                     
-5D2E: 02             LD      (BC),A          
-5D2F: 80             ADD     A,B             
-5D30: 97             SUB     A               
-5D31: 00             NOP                     
-5D32: 00             NOP                     
-5D33: 90             SUB     B               
-5D34: 03             INC     BC              
-5D35: 01 97 02       LD      BC,$0297        
-5D38: 06 D2          LD      B,$D2           
-5D3A: 97             SUB     A               
-5D3B: BF             CP      A               
-5D3C: 9F             SBC     A               
-5D3D: 03             INC     BC              
-5D3E: A0             AND     B               
-5D3F: 0B             DEC     BC              
-5D40: 78             LD      A,B             
-5D41: 0E 76          LD      C,$76           
-5D43: 0D             DEC     C               
-5D44: 73             LD      (HL),E          
-5D45: 0E 06          LD      C,$06           
-5D47: 0A             LD      A,(BC)          
-5D48: 11 0A 42       LD      DE,$420A        
-5D4B: 0A             LD      A,(BC)          
-5D4C: 09             ADD     HL,BC           
-5D4D: 1A             LD      A,(DE)          
-5D4E: 15             DEC     D               
-5D4F: 08             EX      AF,AF'          
-5D50: 0E 66          LD      C,$66           
-5D52: 0D             DEC     C               
-5D53: 49             LD      C,C             
-5D54: 15             DEC     D               
-5D55: 02             LD      (BC),A          
-5D56: 1F             RRA                     
-5D57: 0A             LD      A,(BC)          
-5D58: D2 97 BF       JP      NC,$BF97        
-5D5B: 9F             SBC     A               
-5D5C: 03             INC     BC              
-5D5D: A0             AND     B               
-5D5E: AB             XOR     E               
-5D5F: 6E             LD      L,(HL)          
-5D60: 8B             ADC     A,E             
-5D61: 4F             LD      C,A             
-5D62: A8             XOR     B               
-5D63: 1F             RRA                     
-5D64: 0C             INC     C               
-5D65: 8E             ADC     A,(HL)          
-5D66: 48             LD      C,B             
-5D67: BF             CP      A               
-5D68: 14             INC     D               
-5D69: 0D             DEC     C               
-5D6A: BA             CP      D               
-5D6B: D6 15          SUB     $15             
-5D6D: C2 16 81       JP      NZ,$8116        
-5D70: 61             LD      H,C             
-5D71: 29             ADD     HL,HL           
-5D72: 0E 29          LD      C,$29           
-5D74: 0D             DEC     C               
-5D75: 25             DEC     H               
-5D76: 08             EX      AF,AF'          
-5D77: 3D             DEC     A               
-5D78: 1F             RRA                     
-5D79: 20 5F          JR      NZ,$5DDA        
-5D7B: BE             CP      (HL)            
-5D7C: 57             LD      D,A             
-5D7D: 17             RLA                     
-5D7E: AF             XOR     A               
-5D7F: 55             LD      D,L             
-5D80: 06 BC          LD      B,$BC           
-5D82: 44             LD      B,H             
-5D83: A0             AND     B               
-5D84: 3F             CCF                     
-5D85: 16 0D          LD      D,$0D           
-5D87: 47             LD      B,A             
-5D88: 89             ADC     A,C             
-5D89: 17             RLA                     
-5D8A: 35             DEC     (HL)            
-5D8B: 15             DEC     D               
-5D8C: 12             LD      (DE),A          
-5D8D: 53             LD      D,E             
-5D8E: EB             EX      DE,HL           
-5D8F: 5D             LD      E,L             
-5D90: C7             RST     0X00            
-5D91: DE 4F          SBC     $4F             
-5D93: 24             INC     H               
-5D94: 63             LD      H,E             
-5D95: 16 DB          LD      D,$DB           
-5D97: 59             LD      E,C             
-5D98: 71             LD      (HL),C          
-5D99: 7B             LD      A,E             
-5D9A: 24             INC     H               
-5D9B: 14             INC     D               
-5D9C: 0C             INC     C               
-5D9D: 0D             DEC     C               
-5D9E: 19             ADD     HL,DE           
-5D9F: 1F             RRA                     
-5DA0: 0E D2          LD      C,$D2           
-5DA2: 97             SUB     A               
-5DA3: BF             CP      A               
-5DA4: 9F             SBC     A               
-5DA5: 03             INC     BC              
-5DA6: A0             AND     B               
-5DA7: 72             LD      (HL),D          
-5DA8: B1             OR      C               
-5DA9: BE             CP      (HL)            
-5DAA: A0             AND     B               
-5DAB: D6 B5          SUB     $B5             
-5DAD: 56             LD      D,(HL)          
-5DAE: 72             LD      (HL),D          
-5DAF: A8             XOR     B               
-5DB0: 1F             RRA                     
-5DB1: 06 4B          LD      B,$4B           
-5DB3: 7B             LD      A,E             
-5DB4: 5F             LD      E,A             
-5DB5: A0             AND     B               
-5DB6: 1B             DEC     DE              
-5DB7: 9C             SBC     H               
-5DB8: 9A             SBC     D               
-5DB9: 07             RLCA                    
-5DBA: 01 AB 08       LD      BC,$08AB        
-5DBD: 06 0D          LD      B,$0D           
-5DBF: 04             INC     B               
-5DC0: 9C             SBC     H               
-5DC1: 1C             INC     E               
-5DC2: 20 9E          JR      NZ,$5D62        
-5DC4: 09             ADD     HL,BC           
-5DC5: 02             LD      (BC),A          
-5DC6: 46             LD      B,(HL)          
-5DC7: 46             LD      B,(HL)          
-5DC8: 02             LD      (BC),A          
-5DC9: 0B             DEC     BC              
-5DCA: 00             NOP                     
-5DCB: 00             NOP                     
-5DCC: 90             SUB     B               
-5DCD: 03             INC     BC              
-5DCE: 06 0D          LD      B,$0D           
-5DD0: 04             INC     B               
-5DD1: 96             SUB     (HL)            
-5DD2: 1E 20          LD      E,$20           
-5DD4: 21 05 25       LD      HL,$2505        
-5DD7: 00             NOP                     
-5DD8: 00             NOP                     
-5DD9: 90             SUB     B               
-5DDA: 03             INC     BC              
-5DDB: 01 99 02       LD      BC,$0299        
-5DDE: 05             DEC     B               
-5DDF: 85             ADD     A,L             
-5DE0: A5             AND     L               
-5DE1: 65             LD      H,L             
-5DE2: 49             LD      C,C             
-5DE3: 4F             LD      C,A             
-5DE4: 0B             DEC     BC              
-5DE5: 01 9A 07       LD      BC,$079A        
-5DE8: 01 AB 08       LD      BC,$08AB        
-5DEB: 0C             INC     C               
-5DEC: 0E 0A          LD      C,$0A           
-5DEE: 0D             DEC     C               
-5DEF: 04             INC     B               
-5DF0: 9C             SBC     H               
-5DF1: 1C             INC     E               
-5DF2: 22 9E 14       LD      ($149E),HL      
-5DF5: 1C             INC     E               
-5DF6: 3F             CCF                     
-5DF7: 10 09          DJNZ    $5E02           
-5DF9: 02             LD      (BC),A          
-5DFA: 46             LD      B,(HL)          
-5DFB: 46             LD      B,(HL)          
-5DFC: 05             DEC     B               
-5DFD: 0B             DEC     BC              
-5DFE: 00             NOP                     
-5DFF: 00             NOP                     
-5E00: 90             SUB     B               
-5E01: 03             INC     BC              
-5E02: 06 0D          LD      B,$0D           
-5E04: 04             INC     B               
-5E05: 98             SBC     B               
-5E06: 1E 22          LD      E,$22           
-5E08: 23             INC     HL              
-5E09: 05             DEC     B               
-5E0A: 34             INC     (HL)            
-5E0B: 00             NOP                     
-5E0C: 00             NOP                     
-5E0D: 90             SUB     B               
-5E0E: 03             INC     BC              
-5E0F: 01 99 02       LD      BC,$0299        
-5E12: 05             DEC     B               
-5E13: 85             ADD     A,L             
-5E14: A5             AND     L               
-5E15: 65             LD      H,L             
-5E16: 49             LD      C,C             
-5E17: 4F             LD      C,A             
-5E18: 07             RLCA                    
-5E19: 01 AB 0B       LD      BC,$0BAB        
-5E1C: 01 9A 08       LD      BC,$089A        
-5E1F: 1B             DEC     DE              
-5E20: 0E 19          LD      C,$19           
-5E22: 0D             DEC     C               
-5E23: 08             EX      AF,AF'          
-5E24: 14             INC     D               
-5E25: 03             INC     BC              
-5E26: 88             ADC     A,B             
-5E27: 24             INC     H               
-5E28: 1C             INC     E               
-5E29: 3F             CCF                     
-5E2A: 10 0C          DJNZ    $5E38           
-5E2C: 0D             DEC     C               
-5E2D: 07             RLCA                    
-5E2E: 03             INC     BC              
-5E2F: 88             ADC     A,B             
-5E30: 24             INC     H               
-5E31: 17             RLA                     
-5E32: 3E 88          LD      A,$88           
-5E34: 0C             INC     C               
-5E35: 0D             DEC     C               
-5E36: 04             INC     B               
-5E37: 9C             SBC     H               
-5E38: 1C             INC     E               
-5E39: 24             INC     H               
-5E3A: 9E             SBC     (HL)            
-5E3B: 09             ADD     HL,BC           
-5E3C: 02             LD      (BC),A          
-5E3D: 46             LD      B,(HL)          
-5E3E: 46             LD      B,(HL)          
-5E3F: 05             DEC     B               
-5E40: 0B             DEC     BC              
-5E41: 00             NOP                     
-5E42: 00             NOP                     
-5E43: 90             SUB     B               
-5E44: 03             INC     BC              
-5E45: 06 0D          LD      B,$0D           
-5E47: 04             INC     B               
-5E48: 98             SBC     B               
-5E49: 1E 24          LD      E,$24           
-5E4B: 25             DEC     H               
-5E4C: 06 80          LD      B,$80           
-5E4E: FD                                  
-5E4F: 00             NOP                     
-5E50: 00             NOP                     
-5E51: 90             SUB     B               
-5E52: 03             INC     BC              
-5E53: 25             DEC     H               
-5E54: 04             INC     B               
-5E55: 23             INC     HL              
-5E56: 34             INC     (HL)            
-5E57: 92             SUB     D               
-5E58: 90             SUB     B               
-5E59: 8C             ADC     A,H             
-5E5A: D5             PUSH    DE              
-5E5B: 15             DEC     D               
-5E5C: 8F             ADC     A,A             
-5E5D: 16 2C          LD      D,$2C           
-5E5F: 49             LD      C,C             
-5E60: B3             OR      E               
-5E61: E0             RET     PO              
-5E62: 1B             DEC     DE              
-5E63: 54             LD      D,H             
-5E64: C3 9A AB       JP      $AB9A           
-5E67: 98             SBC     B               
-5E68: 8E             ADC     A,(HL)          
-5E69: 48             LD      C,B             
-5E6A: 77             LD      (HL),A          
-5E6B: 15             DEC     D               
-5E6C: 03             INC     BC              
-5E6D: BA             CP      D               
-5E6E: 2E 56          LD      L,$56           
-5E70: 83             ADD     A,E             
-5E71: 49             LD      C,C             
-5E72: AB             XOR     E               
-5E73: 98             SBC     B               
-5E74: 73             LD      (HL),E          
-5E75: 49             LD      C,C             
-5E76: C7             RST     0X00            
-5E77: DE 2E          SBC     $2E             
-5E79: 02             LD      (BC),A          
-5E7A: 04             INC     B               
-5E7B: 34             INC     (HL)            
-5E7C: 92             SUB     D               
-5E7D: 90             SUB     B               
-5E7E: 8C             ADC     A,H             
-5E7F: 0B             DEC     BC              
-5E80: 01 9A 07       LD      BC,$079A        
-5E83: 01 AB 08       LD      BC,$08AB        
-5E86: 80             ADD     A,B             
-5E87: C0             RET     NZ              
-5E88: 0E 80          LD      C,$80           
-5E8A: BD             CP      L               
-5E8B: 0D             DEC     C               
-5E8C: 04             INC     B               
-5E8D: 9C             SBC     H               
-5E8E: 1C             INC     E               
-5E8F: 26 9E          LD      H,$9E           
-5E91: 0B             DEC     BC              
-5E92: 80             ADD     A,B             
-5E93: B4             OR      H               
-5E94: 05             DEC     B               
-5E95: 08             EX      AF,AF'          
-5E96: 30 1F          JR      NC,$5EB7        
-5E98: 2E 34          LD      L,$34           
-5E9A: 92             SUB     D               
-5E9B: 90             SUB     B               
-5E9C: 8C             ADC     A,H             
-5E9D: 53             LD      D,E             
-5E9E: 17             RLA                     
-5E9F: 6E             LD      L,(HL)          
-5EA0: DF             RST     0X18            
-5EA1: 6E             LD      L,(HL)          
-5EA2: 13             INC     DE              
-5EA3: 71             LD      (HL),C          
-5EA4: 61             LD      H,C             
-5EA5: F3             DI                      
-5EA6: 9B             SBC     E               
-5EA7: 45             LD      B,L             
-5EA8: 77             LD      (HL),A          
-5EA9: EF             RST     0X28            
-5EAA: 9F             SBC     A               
-5EAB: 8E             ADC     A,(HL)          
-5EAC: 48             LD      C,B             
-5EAD: 51             LD      D,C             
-5EAE: 18 EB          JR      $5E9B           
-5EB0: C1             POP     BC              
-5EB1: 78             LD      A,B             
-5EB2: B1             OR      C               
-5EB3: 8E             ADC     A,(HL)          
-5EB4: 5F             LD      E,A             
-5EB5: 89             ADC     A,C             
-5EB6: 17             RLA                     
-5EB7: 67             LD      H,A             
-5EB8: 16 82          LD      D,$82           
-5EBA: 17             RLA                     
-5EBB: 46             LD      B,(HL)          
-5EBC: 5E             LD      E,(HL)          
-5EBD: 44             LD      B,H             
-5EBE: A0             AND     B               
-5EBF: B8             CP      B               
-5EC0: 16 35          LD      D,$35           
-5EC2: 15             DEC     D               
-5EC3: 12             LD      (DE),A          
-5EC4: 53             LD      D,E             
-5EC5: EC 5D 10       CALL    PE,$105D        
-5EC8: 42             LD      B,D             
-5EC9: 1F             RRA                     
-5ECA: 40             LD      B,B             
-5ECB: 34             INC     (HL)            
-5ECC: 92             SUB     D               
-5ECD: 90             SUB     B               
-5ECE: 8C             ADC     A,H             
-5ECF: 77             LD      (HL),A          
-5ED0: 15             DEC     D               
-5ED1: 0F             RRCA                    
-5ED2: BA             CP      D               
-5ED3: 75             LD      (HL),L          
-5ED4: B1             OR      C               
-5ED5: 96             SUB     (HL)            
-5ED6: 14             INC     D               
-5ED7: 51             LD      D,C             
-5ED8: 18 43          JR      $5F1D           
-5EDA: C2 33 98       JP      NZ,$9833        
-5EDD: 1B             DEC     DE              
-5EDE: B7             OR      A               
-5EDF: 33             INC     SP              
-5EE0: BB             CP      E               
-5EE1: FB             EI                      
-5EE2: 1B             DEC     DE              
-5EE3: 10 53          DJNZ    $5F38           
-5EE5: F3             DI                      
-5EE6: 23             INC     HL              
-5EE7: 8E             ADC     A,(HL)          
-5EE8: C5             PUSH    BC              
-5EE9: 3D             DEC     A               
-5EEA: 62             LD      H,D             
-5EEB: 50             LD      D,B             
-5EEC: BD             CP      L               
-5EED: 0B             DEC     BC              
-5EEE: 58             LD      E,B             
-5EEF: 9B             SBC     E               
-5EF0: C1             POP     BC              
-5EF1: 4F             LD      C,A             
-5EF2: 77             LD      (HL),A          
-5EF3: 66             LD      H,(HL)          
-5EF4: C6 9B          ADD     $9B             
-5EF6: 15             DEC     D               
-5EF7: 5B             LD      E,E             
-5EF8: CA 40 55       JP      Z,$5540         
-5EFB: F4 81 F3       CALL    P,$F381         
-5EFE: 5F             LD      E,A             
-5EFF: 5F             LD      E,A             
-5F00: BE             CP      (HL)            
-5F01: 04             INC     B               
-5F02: 18 11          JR      $5F15           
-5F04: A0             AND     B               
-5F05: FF             RST     0X38            
-5F06: 14             INC     D               
-5F07: C0             RET     NZ              
-5F08: 93             SUB     E               
-5F09: 63             LD      H,E             
-5F0A: F4 18 3B       CALL    P,$3B18         
-5F0D: 1F             RRA                     
-5F0E: 39             ADD     HL,SP           
-5F0F: 34             INC     (HL)            
-5F10: 92             SUB     D               
-5F11: 90             SUB     B               
-5F12: 8C             ADC     A,H             
-5F13: E9             JP      (HL)            
-5F14: 16 9E          LD      D,$9E           
-5F16: 7A             LD      A,D             
-5F17: C3 B5 1B       JP      $1BB5           
-5F1A: BC             CP      H               
-5F1B: 3E A1          LD      A,$A1           
-5F1D: 6F             LD      L,A             
-5F1E: 13             INC     DE              
-5F1F: 1B             DEC     DE              
-5F20: DD                                  
-5F21: C3 9E 77       JP      $779E           
-5F24: 98             SBC     B               
-5F25: F9             LD      SP,HL           
-5F26: BF             CP      A               
-5F27: F3             DI                      
-5F28: 9B             SBC     E               
-5F29: 14             INC     D               
-5F2A: D0             RET     NC              
-5F2B: 11 BC 8A       LD      DE,$8ABC        
-5F2E: 64             LD      H,H             
-5F2F: 0E 9F          LD      C,$9F           
-5F31: FF             RST     0X38            
-5F32: 14             INC     D               
-5F33: C0             RET     NZ              
-5F34: 93             SUB     E               
-5F35: 09             ADD     HL,BC           
-5F36: 15             DEC     D               
-5F37: 82             ADD     A,D             
-5F38: 17             RLA                     
-5F39: 59             LD      E,C             
-5F3A: DB 46          IN      A,($46)         
-5F3C: 7A             LD      A,D             
-5F3D: 16 EE          LD      D,$EE           
-5F3F: F0             RET     P               
-5F40: 72             LD      (HL),D          
-5F41: AF             XOR     A               
-5F42: 14             INC     D               
-5F43: 81             ADD     A,C             
-5F44: 15             DEC     D               
-5F45: 59             LD      E,C             
-5F46: 98             SBC     B               
-5F47: 22 09 02       LD      ($0209),HL      
-5F4A: 46             LD      B,(HL)          
-5F4B: 46             LD      B,(HL)          
-5F4C: 06 6E          LD      B,$6E           
-5F4E: 00             NOP                     
-5F4F: 00             NOP                     
-5F50: 90             SUB     B               
-5F51: 03             INC     BC              
-5F52: 69             LD      L,C             
-5F53: 0D             DEC     C               
-5F54: 67             LD      H,A             
-5F55: 04             INC     B               
-5F56: 62             LD      H,D             
-5F57: 83             ADD     A,E             
-5F58: 48             LD      C,B             
-5F59: 8D             ADC     A,L             
-5F5A: 48             LD      C,B             
-5F5B: 30 79          JR      NC,$5FD6        
-5F5D: 0F             RRCA                    
-5F5E: BC             CP      H               
-5F5F: 83             ADD     A,E             
-5F60: 48             LD      C,B             
-5F61: 83             ADD     A,E             
-5F62: 7A             LD      A,D             
-5F63: 44             LD      B,H             
-5F64: 45             LD      B,L             
-5F65: 45             LD      B,L             
-5F66: 8B             ADC     A,E             
-5F67: C5             PUSH    BC              
-5F68: 83             ADD     A,E             
-5F69: 73             LD      (HL),E          
-5F6A: 8D             ADC     A,L             
-5F6B: C3 83 33       JP      $3383           
-5F6E: 98             SBC     B               
-5F6F: 7B             LD      A,E             
-5F70: A6             AND     (HL)            
-5F71: BF             CP      A               
-5F72: 9A             SBC     D               
-5F73: 0A             LD      A,(BC)          
-5F74: 58             LD      E,B             
-5F75: 73             LD      (HL),E          
-5F76: 49             LD      C,C             
-5F77: B5             OR      L               
-5F78: 6C             LD      L,H             
-5F79: 74             LD      (HL),H          
-5F7A: C0             RET     NZ              
-5F7B: 4B             LD      C,E             
-5F7C: 62             LD      H,D             
-5F7D: 73             LD      (HL),E          
-5F7E: 49             LD      C,C             
-5F7F: C7             RST     0X00            
-5F80: DE FC          SBC     $FC             
-5F82: ED                                  
-5F83: EF             RST     0X28            
-5F84: 59             LD      E,C             
-5F85: 01 A0 BB       LD      BC,$BBA0        
-5F88: 15             DEC     D               
-5F89: 58             LD      E,B             
-5F8A: 72             LD      (HL),D          
-5F8B: 55             LD      D,L             
-5F8C: 5E             LD      E,(HL)          
-5F8D: 6F             LD      L,A             
-5F8E: C5             PUSH    BC              
-5F8F: 0F             RRCA                    
-5F90: A0             AND     B               
-5F91: 1B             DEC     DE              
-5F92: 58             LD      E,B             
-5F93: 19             ADD     HL,DE           
-5F94: A1             AND     C               
-5F95: BB             CP      E               
-5F96: 15             DEC     D               
-5F97: 5B             LD      E,E             
-5F98: 48             LD      C,B             
-5F99: C7             RST     0X00            
-5F9A: DE 8F          SBC     $8F             
-5F9C: AF             XOR     A               
-5F9D: 66             LD      H,(HL)          
-5F9E: 49             LD      C,C             
-5F9F: 46             LD      B,(HL)          
-5FA0: 62             LD      H,D             
-5FA1: 67             LD      H,A             
-5FA2: 16 83          LD      D,$83           
-5FA4: B2             OR      D               
-5FA5: 2B             DEC     HL              
-5FA6: 96             SUB     (HL)            
-5FA7: C7             RST     0X00            
-5FA8: DE 77          SBC     $77             
-5FAA: 16 F3          LD      D,$F3           
-5FAC: B9             CP      C               
-5FAD: 2F             CPL                     
-5FAE: 9E             SBC     (HL)            
-5FAF: 4F             LD      C,A             
-5FB0: DB 45          IN      A,($45)         
-5FB2: DB EF          IN      A,($EF)         
-5FB4: 9F             SBC     A               
-5FB5: 8E             ADC     A,(HL)          
-5FB6: 48             LD      C,B             
-5FB7: E3             EX      (SP),HL         
-5FB8: 06 1E          LD      B,$1E           
-5FBA: 26 27          LD      H,$27           
-5FBC: 07             RLCA                    
-5FBD: 54             LD      D,H             
-5FBE: 00             NOP                     
-5FBF: 00             NOP                     
-5FC0: 80             ADD     A,B             
-5FC1: 03             INC     BC              
-5FC2: 27             DAA                     
-5FC3: 04             INC     B               
-5FC4: 25             DEC     H               
-5FC5: 5F             LD      E,A             
-5FC6: BE             CP      (HL)            
-5FC7: 7C             LD      A,H             
-5FC8: 13             INC     DE              
-5FC9: 8E             ADC     A,(HL)          
-5FCA: 5F             LD      E,A             
-5FCB: 86             ADD     A,(HL)          
-5FCC: 19             ADD     HL,DE           
-5FCD: 66             LD      H,(HL)          
-5FCE: 9E             SBC     (HL)            
-5FCF: A3             AND     E               
-5FD0: A0             AND     B               
-5FD1: 03             INC     BC              
-5FD2: BA             CP      D               
-5FD3: F3             DI                      
-5FD4: 8C             ADC     A,H             
-5FD5: 87             ADD     A,A             
-5FD6: 8C             ADC     A,H             
-5FD7: D7             RST     0X10            
-5FD8: B5             OR      L               
-5FD9: 21 98 95       LD      HL,$9598        
-5FDC: 9A             SBC     D               
-5FDD: C7             RST     0X00            
-5FDE: 7A             LD      A,D             
-5FDF: CB B5          RES     6,L             
-5FE1: 96             SUB     (HL)            
-5FE2: 96             SUB     (HL)            
-5FE3: DB 72          IN      A,($72)         
-5FE5: 44             LD      B,H             
-5FE6: 55             LD      D,L             
-5FE7: 74             LD      (HL),H          
-5FE8: 98             SBC     B               
-5FE9: 2E 02          LD      L,$02           
-5FEB: 0C             INC     C               
-5FEC: 8D             ADC     A,L             
-5FED: C5             PUSH    BC              
-5FEE: 0D             DEC     C               
-5FEF: A0             AND     B               
-5FF0: C7             RST     0X00            
-5FF1: 7A             LD      A,D             
-5FF2: C6 B5          ADD     $B5             
-5FF4: 66             LD      H,(HL)          
-5FF5: 9E             SBC     (HL)            
-5FF6: A3             AND     E               
-5FF7: A0             AND     B               
-5FF8: 0B             DEC     BC              
-5FF9: 14             INC     D               
-5FFA: 1F             RRA                     
-5FFB: 12             LD      (DE),A          
-5FFC: 5F             LD      E,A             
-5FFD: BE             CP      (HL)            
-5FFE: 09             ADD     HL,BC           
-5FFF: 15             DEC     D               
-6000: 09             ADD     HL,BC           
-6001: 56             LD      D,(HL)          
-6002: 8B             ADC     A,E             
-6003: AF             XOR     A               
-6004: D7             RST     0X10            
-6005: B5             OR      L               
-6006: 21 98 95       LD      HL,$9598        
-6009: 9A             SBC     D               
-600A: C7             RST     0X00            
-600B: 7A             LD      A,D             
-600C: 5B             LD      E,E             
-600D: BB             CP      E               
-600E: 09             ADD     HL,BC           
-600F: 02             LD      (BC),A          
-6010: 46             LD      B,(HL)          
-6011: 01 07 80       LD      BC,$8007        
-6014: F5             PUSH    AF              
-6015: 00             NOP                     
-6016: 00             NOP                     
-6017: 90             SUB     B               
-6018: 03             INC     BC              
-6019: 80             ADD     A,B             
-601A: EF             RST     0X28            
-601B: 0D             DEC     C               
-601C: 80             ADD     A,B             
-601D: EC 04 80       CALL    PE,$8004        
-6020: E6 5F          AND     $5F             
-6022: BE             CP      (HL)            
-6023: 5B             LD      E,E             
-6024: B1             OR      C               
-6025: 4B             LD      C,E             
-6026: 7B             LD      A,E             
-6027: 4F             LD      C,A             
-6028: 45             LD      B,L             
-6029: 83             ADD     A,E             
-602A: 48             LD      C,B             
-602B: 83             ADD     A,E             
-602C: 7A             LD      A,D             
-602D: 55             LD      D,L             
-602E: 45             LD      B,L             
-602F: EB             EX      DE,HL           
-6030: BF             CP      A               
-6031: 73             LD      (HL),E          
-6032: 7B             LD      A,E             
-6033: C5             PUSH    BC              
-6034: 7E             LD      A,(HL)          
-6035: B6             OR      (HL)            
-6036: 85             ADD     A,L             
-6037: D0             RET     NC              
-6038: 15             DEC     D               
-6039: 82             ADD     A,D             
-603A: 17             RLA                     
-603B: 45             LD      B,L             
-603C: 5E             LD      E,(HL)          
-603D: B8             CP      B               
-603E: A0             AND     B               
-603F: 47             LD      B,A             
-6040: 62             LD      H,D             
-6041: 9F             SBC     A               
-6042: 15             DEC     D               
-6043: 49             LD      C,C             
-6044: 16 A5          LD      D,$A5           
-6046: 9F             SBC     A               
-6047: B2             OR      D               
-6048: 17             RLA                     
-6049: 96             SUB     (HL)            
-604A: 14             INC     D               
-604B: 51             LD      D,C             
-604C: 18 43          JR      $6091           
-604E: C2 33 98       JP      NZ,$9833        
-6051: AF             XOR     A               
-6052: 94             SUB     H               
-6053: 7F             LD      A,A             
-6054: 4E             LD      C,(HL)          
-6055: 33             INC     SP              
-6056: BB             CP      E               
-6057: FA 1C FF       JP      M,$FF1C         
-605A: F9             LD      SP,HL           
-605B: 73             LD      (HL),E          
-605C: 7B             LD      A,E             
-605D: 4B             LD      C,E             
-605E: 7B             LD      A,E             
-605F: F4 BD 04       CALL    P,$04BD         
-6062: B2             OR      D               
-6063: FF             RST     0X38            
-6064: 8B             ADC     A,E             
-6065: F6 F9          OR      $F9             
-6067: DB 72          IN      A,($72)         
-6069: 75             LD      (HL),L          
-606A: 5B             LD      E,E             
-606B: 84             ADD     A,H             
-606C: BF             CP      A               
-606D: 9B             SBC     E               
-606E: 15             DEC     D               
-606F: C4 B5 E1       CALL    NZ,$E1B5        
-6072: 5F             LD      E,A             
-6073: 1B             DEC     DE              
-6074: 92             SUB     D               
-6075: 5F             LD      E,A             
-6076: BE             CP      (HL)            
-6077: DB 16          IN      A,($16)         
-6079: 87             ADD     A,A             
-607A: BE             CP      (HL)            
-607B: B3             OR      E               
-607C: 9A             SBC     D               
-607D: 8E             ADC     A,(HL)          
-607E: 48             LD      C,B             
-607F: 82             ADD     A,D             
-6080: 17             RLA                     
-6081: 52             LD      D,D             
-6082: 5E             LD      E,(HL)          
-6083: 83             ADD     A,E             
-6084: 49             LD      C,C             
-6085: 9E             SBC     (HL)            
-6086: 61             LD      H,C             
-6087: 82             ADD     A,D             
-6088: 17             RLA                     
-6089: 46             LD      B,(HL)          
-608A: 5E             LD      E,(HL)          
-608B: 66             LD      H,(HL)          
-608C: 9E             SBC     (HL)            
-608D: C7             RST     0X00            
-608E: A0             AND     B               
-608F: EE F9          XOR     $F9             
-6091: 66             LD      H,(HL)          
-6092: 7B             LD      A,E             
-6093: 83             ADD     A,E             
-6094: 61             LD      H,C             
-6095: 6B             LD      L,E             
-6096: BF             CP      A               
-6097: 3F             CCF                     
-6098: 92             SUB     D               
-6099: EB             EX      DE,HL           
-609A: F9             LD      SP,HL           
-609B: 8F             ADC     A,A             
-609C: 14             INC     D               
-609D: 82             ADD     A,D             
-609E: 17             RLA                     
-609F: 46             LD      B,(HL)          
-60A0: 5E             LD      E,(HL)          
-60A1: 66             LD      H,(HL)          
-60A2: 9E             SBC     (HL)            
-60A3: C7             RST     0X00            
-60A4: A0             AND     B               
-60A5: FB             EI                      
-60A6: F9             LD      SP,HL           
-60A7: 1B             DEC     DE              
-60A8: A1             AND     C               
-60A9: B5             OR      L               
-60AA: 94             SUB     H               
-60AB: 09             ADD     HL,BC           
-60AC: BC             CP      H               
-60AD: D6 9C          SUB     $9C             
-60AF: D6 9C          SUB     $9C             
-60B1: DB 72          IN      A,($72)         
-60B3: B6             OR      (HL)            
-60B4: 49             LD      C,C             
-60B5: 84             ADD     A,H             
-60B6: 74             LD      (HL),H          
-60B7: 83             ADD     A,E             
-60B8: 7B             LD      A,E             
-60B9: 4B             LD      C,E             
-60BA: 62             LD      H,D             
-60BB: 8E             ADC     A,(HL)          
-60BC: 48             LD      C,B             
-60BD: 7F             LD      A,A             
-60BE: 17             RLA                     
-60BF: F3             DI                      
-60C0: 8C             ADC     A,H             
-60C1: 5F             LD      E,A             
-60C2: BE             CP      (HL)            
-60C3: 51             LD      D,C             
-60C4: 90             SUB     B               
-60C5: 96             SUB     (HL)            
-60C6: 64             LD      H,H             
-60C7: 95             SUB     L               
-60C8: 73             LD      (HL),E          
-60C9: 8C             ADC     A,H             
-60CA: 17             RLA                     
-60CB: CF             RST     0X08            
-60CC: 49             LD      C,C             
-60CD: 13             INC     DE              
-60CE: BA             CP      D               
-60CF: CA 06 3C       JP      Z,$3C06         
-60D2: C6 B3          ADD     $B3             
-60D4: E0             RET     PO              
-60D5: 68             LD      L,B             
-60D6: 4D             LD      C,L             
-60D7: AF             XOR     A               
-60D8: A0             AND     B               
-60D9: D6 15          SUB     $15             
-60DB: D5             PUSH    DE              
-60DC: 15             DEC     D               
-60DD: 89             ADC     A,C             
-60DE: 17             RLA                     
-60DF: CE 9C          ADC     $9C             
-60E1: 7F             LD      A,A             
-60E2: 49             LD      C,C             
-60E3: 63             LD      H,E             
-60E4: F4 95 73       CALL    P,$7395         
-60E7: 3B             DEC     SP              
-60E8: 15             DEC     D               
-60E9: 4B             LD      C,E             
-60EA: 62             LD      H,D             
-60EB: FE B2          CP      $B2             
-60ED: 04             INC     B               
-60EE: 8A             ADC     A,D             
-60EF: DD 46 D0       LD      B,(IX+$D0)      
-60F2: 15             DEC     D               
-60F3: 6B             LD      L,E             
-60F4: BF             CP      A               
-60F5: 95             SUB     L               
-60F6: 73             LD      (HL),E          
-60F7: 9F             SBC     A               
-60F8: 15             DEC     D               
-60F9: F3             DI                      
-60FA: 46             LD      B,(HL)          
-60FB: 8E             ADC     A,(HL)          
-60FC: 48             LD      C,B             
-60FD: 9F             SBC     A               
-60FE: 15             DEC     D               
-60FF: DB 16          IN      A,($16)         
-6101: D7             RST     0X10            
-6102: B9             CP      C               
-6103: D1             POP     DE              
-6104: B5             OR      L               
-6105: 97             SUB     A               
-6106: C6 1E          ADD     $1E             
-6108: 28 29          JR      Z,$6133         
-610A: 04             INC     B               
-610B: 81             ADD     A,C             
-610C: 0A             LD      A,(BC)          
-610D: 00             NOP                     
-610E: 00             NOP                     
-610F: 90             SUB     B               
-6110: 03             INC     BC              
-6111: 29             ADD     HL,HL           
-6112: 04             INC     B               
-6113: 27             DAA                     
-6114: 87             ADD     A,A             
-6115: 74             LD      (HL),H          
-6116: 90             SUB     B               
-6117: 5A             LD      E,D             
-6118: 4B             LD      C,E             
-6119: 77             LD      (HL),A          
-611A: D9             EXX                     
-611B: B5             OR      L               
-611C: 16 B2          LD      D,$B2           
-611E: 90             SUB     B               
-611F: 73             LD      (HL),E          
-6120: 5B             LD      E,E             
-6121: 70             LD      (HL),B          
-6122: FD 1B          DEC     DE              
-6124: F3             DI                      
-6125: 8C             ADC     A,H             
-6126: 5B             LD      E,E             
-6127: 4D             LD      C,L             
-6128: 89             ADC     A,C             
-6129: 5B             LD      E,E             
-612A: 88             ADC     A,B             
-612B: 96             SUB     (HL)            
-612C: FF             RST     0X38            
-612D: B2             OR      D               
-612E: 9F             SBC     A               
-612F: 15             DEC     D               
-6130: 5B             LD      E,E             
-6131: B1             OR      C               
-6132: 83             ADD     A,E             
-6133: 7A             LD      A,D             
-6134: 4F             LD      C,A             
-6135: 45             LD      B,L             
-6136: 9F             SBC     A               
-6137: 7A             LD      A,D             
-6138: D9             EXX                     
-6139: BD             CP      L               
-613A: 22 02 05       LD      ($0502),HL      
-613D: 87             ADD     A,A             
-613E: 74             LD      (HL),H          
-613F: 90             SUB     B               
-6140: 5A             LD      E,D             
-6141: 49             LD      C,C             
-6142: 07             RLCA                    
-6143: 80             ADD     A,B             
-6144: CB 0D          RRC     L               
-6146: 80             ADD     A,B             
-6147: C8             RET     Z               
-6148: 0E 04          LD      C,$04           
-614A: 0A             LD      A,(BC)          
-614B: 48             LD      C,B             
-614C: 0A             LD      A,(BC)          
-614D: 12             LD      (DE),A          
-614E: 04             INC     B               
-614F: 80             ADD     A,B             
-6150: BC             CP      H               
-6151: C7             RST     0X00            
-6152: DE 3F          SBC     $3F             
-6154: 16 0A          LD      D,$0A           
-6156: BC             CP      H               
-6157: 26 A1          LD      H,$A1           
-6159: 93             SUB     E               
-615A: 7A             LD      A,D             
-615B: 09             ADD     HL,BC           
-615C: 15             DEC     D               
-615D: 26 D2          LD      H,$D2           
-615F: BF             CP      A               
-6160: 14             INC     D               
-6161: 1B             DEC     DE              
-6162: BC             CP      H               
-6163: 1B             DEC     DE              
-6164: A1             AND     C               
-6165: 2F             CPL                     
-6166: 49             LD      C,C             
-6167: B0             OR      B               
-6168: 17             RLA                     
-6169: B6             OR      (HL)            
-616A: 46             LD      B,(HL)          
-616B: 56             LD      D,(HL)          
-616C: 5E             LD      E,(HL)          
-616D: D4 9C 71       CALL    NC,$719C        
-6170: 61             LD      H,C             
-6171: 5B             LD      E,E             
-6172: CA 95 73       JP      Z,$7395         
-6175: 66             LD      H,(HL)          
-6176: 17             RLA                     
-6177: CB B0          RES     6,B             
-6179: 0C             INC     C               
-617A: BC             CP      H               
-617B: DD 46 97       LD      B,(IX+$97)      
-617E: 62             LD      H,D             
-617F: A9             XOR     C               
-6180: 15             DEC     D               
-6181: 03             INC     BC              
-6182: C4 FB 98       CALL    NZ,$98FB        
-6185: 1B             DEC     DE              
-6186: B7             OR      A               
-6187: 33             INC     SP              
-6188: BB             CP      E               
-6189: 91             SUB     C               
-618A: 1E 46          LD      E,$46           
-618C: C2 08 79       JP      NZ,$7908        
-618F: F3             DI                      
-6190: 23             INC     HL              
-6191: 58             LD      E,B             
-6192: 72             LD      (HL),D          
-6193: 56             LD      D,(HL)          
-6194: 5E             LD      E,(HL)          
-6195: C6 9C          ADD     $9C             
-6197: D6 9C          SUB     $9C             
-6199: 56             LD      D,(HL)          
-619A: 72             LD      (HL),D          
-619B: CB 06          RLC     (HL)            
-619D: 01 18 3E       LD      BC,$3E18        
-61A0: C5             PUSH    BC              
-61A1: 9B             SBC     E               
-61A2: 15             DEC     D               
-61A3: 5B             LD      E,E             
-61A4: CA 67 4D       JP      Z,$4D67         
-61A7: 86             ADD     A,(HL)          
-61A8: 96             SUB     (HL)            
-61A9: 80             ADD     A,B             
-61AA: A1             AND     C               
-61AB: D0             RET     NC              
-61AC: 15             DEC     D               
-61AD: 7B             LD      A,E             
-61AE: 14             INC     D               
-61AF: D0             RET     NC              
-61B0: 92             SUB     D               
-61B1: 7F             LD      A,A             
-61B2: C6 44          ADD     $44             
-61B4: F4 73 C6       CALL    P,$C673         
-61B7: 9E             SBC     (HL)            
-61B8: 77             LD      (HL),A          
-61B9: 15             DEC     D               
-61BA: 8A             ADC     A,D             
-61BB: 8E             ADC     A,(HL)          
-61BC: BE             CP      (HL)            
-61BD: 16 8A          LD      D,$8A           
-61BF: 17             RLA                     
-61C0: 48             LD      C,B             
-61C1: 51             LD      D,C             
-61C2: 18 59          JR      $621D           
-61C4: C2 82 7B       JP      NZ,$7B82        
-61C7: 67             LD      H,A             
-61C8: 16 FA          LD      D,$FA           
-61CA: 17             RLA                     
-61CB: 83             ADD     A,E             
-61CC: 61             LD      H,C             
-61CD: 47             LD      B,A             
-61CE: 77             LD      (HL),A          
-61CF: 53             LD      D,E             
-61D0: B7             OR      A               
-61D1: FE A4          CP      $A4             
-61D3: FF             RST     0X38            
-61D4: 15             DEC     D               
-61D5: F3             DI                      
-61D6: B9             CP      C               
-61D7: 4B             LD      C,E             
-61D8: 49             LD      C,C             
-61D9: 41             LD      B,C             
-61DA: B9             CP      C               
-61DB: 83             ADD     A,E             
-61DC: 96             SUB     (HL)            
-61DD: CB B5          RES     6,L             
-61DF: 77             LD      (HL),A          
-61E0: 15             DEC     D               
-61E1: 11 BC 73       LD      DE,$73BC        
-61E4: C6 C3          ADD     $C3             
-61E6: 9E             SBC     (HL)            
-61E7: 63             LD      H,E             
-61E8: BE             CP      (HL)            
-61E9: D6 B5          SUB     $B5             
-61EB: 90             SUB     B               
-61EC: 73             LD      (HL),E          
-61ED: 6C             LD      L,H             
-61EE: 6A             LD      L,D             
-61EF: 9F             SBC     A               
-61F0: 15             DEC     D               
-61F1: AF             XOR     A               
-61F2: 14             INC     D               
-61F3: 50             LD      D,B             
-61F4: 6D             LD      L,L             
-61F5: D9             EXX                     
-61F6: B5             OR      L               
-61F7: 75             LD      (HL),L          
-61F8: B1             OR      C               
-61F9: 03             INC     BC              
-61FA: BF             CP      A               
-61FB: AB             XOR     E               
-61FC: 98             SBC     B               
-61FD: 56             LD      D,(HL)          
-61FE: D1             POP     DE              
-61FF: 0A             LD      A,(BC)          
-6200: 71             LD      (HL),C          
-6201: 4B             LD      C,E             
-6202: 7B             LD      A,E             
-6203: 0C             INC     C               
-6204: BA             CP      D               
-6205: D6 47          SUB     $47             
-6207: EB             EX      DE,HL           
-6208: 15             DEC     D               
-6209: 97             SUB     A               
-620A: 54             LD      D,H             
-620B: 9B             SBC     E               
-620C: C1             POP     BC              
-620D: 1E 2A          LD      E,$2A           
-620F: 2C             INC     L               
-6210: 0B             DEC     BC              
-6211: 01 9A 09       LD      BC,$099A        
-6214: 02             LD      (BC),A          
-6215: 46             LD      B,(HL)          
-6216: 46             LD      B,(HL)          
-6217: 04             INC     B               
-6218: 80             ADD     A,B             
-6219: D9             EXX                     
-621A: 00             NOP                     
-621B: 00             NOP                     
-621C: 90             SUB     B               
-621D: 03             INC     BC              
-621E: 80             ADD     A,B             
-621F: D3 0D          OUT     ($0D),A         
-6221: 80             ADD     A,B             
-6222: D0             RET     NC              
-6223: 04             INC     B               
-6224: 80             ADD     A,B             
-6225: CA 5F BE       JP      Z,$BE5F         
-6228: 5B             LD      E,E             
-6229: B1             OR      C               
-622A: 4B             LD      C,E             
-622B: 7B             LD      A,E             
-622C: 48             LD      C,B             
-622D: 45             LD      B,L             
-622E: 98             SBC     B               
-622F: C5             PUSH    BC              
-6230: 4E             LD      C,(HL)          
-6231: DB 3D          IN      A,($3D)         
-6233: A0             AND     B               
-6234: 91             SUB     C               
-6235: 7A             LD      A,D             
-6236: 63             LD      H,E             
-6237: 16 8A          LD      D,$8A           
-6239: 96             SUB     (HL)            
-623A: 91             SUB     C               
-623B: 48             LD      C,B             
-623C: 91             SUB     C               
-623D: 7A             LD      A,D             
-623E: 83             ADD     A,E             
-623F: 17             RLA                     
-6240: F3             DI                      
-6241: 5F             LD      E,A             
-6242: 56             LD      D,(HL)          
-6243: D1             POP     DE              
-6244: 03             INC     BC              
-6245: 71             LD      (HL),C          
-6246: 39             ADD     HL,SP           
-6247: 17             RLA                     
-6248: DB A4          IN      A,($A4)         
-624A: 7B             LD      A,E             
-624B: 50             LD      D,B             
-624C: 95             SUB     L               
-624D: 73             LD      (HL),E          
-624E: 4F             LD      C,A             
-624F: 15             DEC     D               
-6250: 73             LD      (HL),E          
-6251: 62             LD      H,D             
-6252: 6B             LD      L,E             
-6253: BF             CP      A               
-6254: 5F             LD      E,A             
-6255: BE             CP      (HL)            
-6256: D7             RST     0X10            
-6257: 14             INC     D               
-6258: 43             LD      B,E             
-6259: 7A             LD      A,D             
-625A: CF             RST     0X08            
-625B: 98             SBC     B               
-625C: 9F             SBC     A               
-625D: 15             DEC     D               
-625E: D5             PUSH    DE              
-625F: 15             DEC     D               
-6260: F7             RST     0X30            
-6261: 17             RLA                     
-6262: 33             INC     SP              
-6263: 49             LD      C,C             
-6264: AB             XOR     E               
-6265: 98             SBC     B               
-6266: 55             LD      D,L             
-6267: 45             LD      B,L             
-6268: EB             EX      DE,HL           
-6269: BF             CP      A               
-626A: 73             LD      (HL),E          
-626B: 7B             LD      A,E             
-626C: C5             PUSH    BC              
-626D: 7E             LD      A,(HL)          
-626E: B6             OR      (HL)            
-626F: 85             ADD     A,L             
-6270: 4A             LD      C,D             
-6271: F4 56 5E       CALL    P,$5E56         
-6274: 38 C6          JR      C,$623C         
-6276: CA B5 4B       JP      Z,$4BB5         
-6279: 7B             LD      A,E             
-627A: E3             EX      (SP),HL         
-627B: 72             LD      (HL),D          
-627C: 16 58          LD      D,$58           
-627E: 73             LD      (HL),E          
-627F: A1             AND     C               
-6280: 33             INC     SP              
-6281: B1             OR      C               
-6282: C7             RST     0X00            
-6283: DE FC          SBC     $FC             
-6285: ED                                  
-6286: EE 72          XOR     $72             
-6288: 69             LD      L,C             
-6289: 8D             ADC     A,L             
-628A: BB             CP      E               
-628B: 15             DEC     D               
-628C: 5B             LD      E,E             
-628D: 48             LD      C,B             
-628E: 5F             LD      E,A             
-628F: BE             CP      (HL)            
-6290: 84             ADD     A,H             
-6291: 15             DEC     D               
-6292: 96             SUB     (HL)            
-6293: 5F             LD      E,A             
-6294: A9             XOR     C               
-6295: 15             DEC     D               
-6296: 03             INC     BC              
-6297: C4 F9 98       CALL    NZ,$98F9        
-629A: 99             SBC     C               
-629B: 16 B9          LD      D,$B9           
-629D: 14             INC     D               
-629E: 4D             LD      C,L             
-629F: 98             SBC     B               
-62A0: D3 14          OUT     ($14),A         
-62A2: 8A             ADC     A,D             
-62A3: 96             SUB     (HL)            
-62A4: BE             CP      (HL)            
-62A5: 9F             SBC     A               
-62A6: 67             LD      H,A             
-62A7: 16 10          LD      D,$10           
-62A9: EE CE          XOR     $CE             
-62AB: 9C             SBC     H               
-62AC: 5D             LD      E,L             
-62AD: 9E             SBC     (HL)            
-62AE: C5             PUSH    BC              
-62AF: B5             OR      L               
-62B0: 83             ADD     A,E             
-62B1: 48             LD      C,B             
-62B2: 75             LD      (HL),L          
-62B3: B1             OR      C               
-62B4: 66             LD      H,(HL)          
-62B5: 7B             LD      A,E             
-62B6: 67             LD      H,A             
-62B7: 16 D9          LD      D,$D9           
-62B9: 06 D6          LD      B,$D6           
-62BB: 47             LD      B,A             
-62BC: 0E EE          LD      C,$EE           
-62BE: 73             LD      (HL),E          
-62BF: 62             LD      H,D             
-62C0: 1B             DEC     DE              
-62C1: 92             SUB     D               
-62C2: 29             ADD     HL,HL           
-62C3: B8             CP      B               
-62C4: DB CE          IN      A,($CE)         
-62C6: 19             ADD     HL,DE           
-62C7: A1             AND     C               
-62C8: BB             CP      E               
-62C9: 15             DEC     D               
-62CA: 10 53          DJNZ    $631F           
-62CC: 77             LD      (HL),A          
-62CD: 15             DEC     D               
-62CE: 17             RLA                     
-62CF: BC             CP      H               
-62D0: C4 B5 02       CALL    NZ,$02B5        
-62D3: A1             AND     C               
-62D4: C7             RST     0X00            
-62D5: 16 11          LD      D,$11           
-62D7: BC             CP      H               
-62D8: 96             SUB     (HL)            
-62D9: 64             LD      H,H             
-62DA: 95             SUB     L               
-62DB: 73             LD      (HL),E          
-62DC: E6 16          AND     $16             
-62DE: D7             RST     0X10            
-62DF: 46             LD      B,(HL)          
-62E0: E3             EX      (SP),HL         
-62E1: 06 DB          LD      B,$DB           
-62E3: 72             LD      (HL),D          
-62E4: 69             LD      L,C             
-62E5: 4D             LD      C,L             
-62E6: 9D             SBC     L               
-62E7: 7A             LD      A,D             
-62E8: 04             INC     B               
-62E9: 18 79          JR      $6364           
-62EB: 79             LD      A,C             
-62EC: 90             SUB     B               
-62ED: 8C             ADC     A,H             
-62EE: 5B             LD      E,E             
-62EF: 70             LD      (HL),B          
-62F0: 1E 2A          LD      E,$2A           
-62F2: 2B             DEC     HL              
-62F3: 04             INC     B               
-62F4: 80             ADD     A,B             
-62F5: 93             SUB     E               
-62F6: 00             NOP                     
-62F7: 00             NOP                     
-62F8: 90             SUB     B               
-62F9: 03             INC     BC              
-62FA: 36 04          LD      (HL),$04        
-62FC: 34             INC     (HL)            
-62FD: 87             ADD     A,A             
-62FE: 74             LD      (HL),H          
-62FF: 90             SUB     B               
-6300: 5A             LD      E,D             
-6301: 4B             LD      C,E             
-6302: 77             LD      (HL),A          
-6303: D9             EXX                     
-6304: B5             OR      L               
-6305: 75             LD      (HL),L          
-6306: B1             OR      C               
-6307: 03             INC     BC              
-6308: BF             CP      A               
-6309: AB             XOR     E               
-630A: 98             SBC     B               
-630B: 56             LD      D,(HL)          
-630C: D1             POP     DE              
-630D: 0A             LD      A,(BC)          
-630E: 71             LD      (HL),C          
-630F: 4B             LD      C,E             
-6310: 7B             LD      A,E             
-6311: 0C             INC     C               
-6312: BA             CP      D               
-6313: D6 47          SUB     $47             
-6315: EB             EX      DE,HL           
-6316: 15             DEC     D               
-6317: 97             SUB     A               
-6318: 54             LD      D,H             
-6319: 9B             SBC     E               
-631A: C1             POP     BC              
-631B: FD 1B          DEC     DE              
-631D: F3             DI                      
-631E: 8C             ADC     A,H             
-631F: 5B             LD      E,E             
-6320: 4D             LD      C,L             
-6321: 36 A1          LD      (HL),$A1        
-6323: B8             CP      B               
-6324: 16 82          LD      D,$82           
-6326: 17             RLA                     
-6327: 4B             LD      C,E             
-6328: 7B             LD      A,E             
-6329: 83             ADD     A,E             
-632A: 7A             LD      A,D             
-632B: EB             EX      DE,HL           
-632C: 99             SBC     C               
-632D: 8F             ADC     A,A             
-632E: BE             CP      (HL)            
-632F: EC 5D 02       CALL    PE,$025D        
-6332: 05             DEC     B               
-6333: 87             ADD     A,A             
-6334: 74             LD      (HL),H          
-6335: 90             SUB     B               
-6336: 5A             LD      E,D             
-6337: 49             LD      C,C             
-6338: 08             EX      AF,AF'          
-6339: 45             LD      B,L             
-633A: 0E 43          LD      C,$43           
-633C: 0D             DEC     C               
-633D: 04             INC     B               
-633E: 9C             SBC     H               
-633F: 1C             INC     E               
-6340: 2C             INC     L               
-6341: 9E             SBC     (HL)            
-6342: 0B             DEC     BC              
-6343: 3B             DEC     SP              
-6344: 05             DEC     B               
-6345: 08             EX      AF,AF'          
-6346: 1A             LD      A,(DE)          
-6347: 1F             RRA                     
-6348: 18 87          JR      $62D1           
-634A: 74             LD      (HL),H          
-634B: 90             SUB     B               
-634C: 5A             LD      E,D             
-634D: 4F             LD      C,A             
-634E: 77             LD      (HL),A          
-634F: 64             LD      H,H             
-6350: C5             PUSH    BC              
-6351: F5             PUSH    AF              
-6352: 8B             ADC     A,E             
-6353: FC ED A3       CALL    M,$A3ED         
-6356: 48             LD      C,B             
-6357: 6B             LD      L,E             
-6358: 16 F6          LD      D,$F6           
-635A: 9A             SBC     D               
-635B: 50             LD      D,B             
-635C: 5E             LD      E,(HL)          
-635D: 8F             ADC     A,A             
-635E: A1             AND     C               
-635F: DC F9 10       CALL    C,$10F9         
-6362: 1C             INC     E               
-6363: 1F             RRA                     
-6364: 1A             LD      A,(DE)          
-6365: 87             ADD     A,A             
-6366: 74             LD      (HL),H          
-6367: 90             SUB     B               
-6368: 5A             LD      E,D             
-6369: 46             LD      B,(HL)          
-636A: 77             LD      (HL),A          
-636B: DE 5F          SBC     $5F             
-636D: 2F             CPL                     
-636E: 49             LD      C,C             
-636F: 33             INC     SP              
-6370: BB             CP      E               
-6371: FD 1B          DEC     DE              
-6373: 5B             LD      E,E             
-6374: CA 47 48       JP      Z,$4847         
-6377: E6 A0          AND     $A0             
-6379: 81             ADD     A,C             
-637A: 15             DEC     D               
-637B: 0B             DEC     BC              
-637C: BC             CP      H               
-637D: AC             XOR     H               
-637E: BB             CP      E               
-637F: 07             RLCA                    
-6380: 01 AB 0B       LD      BC,$0BAB        
-6383: 01 9A 09       LD      BC,$099A        
-6386: 02             LD      (BC),A          
-6387: 46             LD      B,(HL)          
-6388: 46             LD      B,(HL)          
-6389: 01 81 CA       LD      BC,$CA81        
-638C: 8E             ADC     A,(HL)          
-638D: 00             NOP                     
-638E: 90             SUB     B               
-638F: 03             INC     BC              
-6390: 60             LD      H,B             
-6391: 04             INC     B               
-6392: 5E             LD      E,(HL)          
-6393: 5F             LD      E,A             
-6394: BE             CP      (HL)            
-6395: 5B             LD      E,E             
-6396: B1             OR      C               
-6397: 4B             LD      C,E             
-6398: 7B             LD      A,E             
-6399: 58             LD      E,B             
-639A: 45             LD      B,L             
-639B: 43             LD      B,E             
-639C: 62             LD      H,D             
-639D: 3B             DEC     SP              
-639E: 16 B7          LD      D,$B7           
-63A0: B1             OR      C               
-63A1: 01 18 90       LD      BC,$9018        
-63A4: 91             SUB     C               
-63A5: 0C             INC     C               
-63A6: 15             DEC     D               
-63A7: 65             LD      H,L             
-63A8: 62             LD      H,D             
-63A9: F3             DI                      
-63AA: 5F             LD      E,A             
-63AB: 83             ADD     A,E             
-63AC: 7A             LD      A,D             
-63AD: 57             LD      D,A             
-63AE: 45             LD      B,L             
-63AF: 08             EX      AF,AF'          
-63B0: 99             SBC     C               
-63B1: B7             OR      A               
-63B2: A0             AND     B               
-63B3: 9F             SBC     A               
-63B4: 15             DEC     D               
-63B5: 7F             LD      A,A             
-63B6: B1             OR      C               
-63B7: 5A             LD      E,D             
-63B8: 17             RLA                     
-63B9: 4E             LD      C,(HL)          
-63BA: 5E             LD      E,(HL)          
-63BB: 3D             DEC     A               
-63BC: A0             AND     B               
-63BD: CE B5          ADC     $B5             
-63BF: 17             RLA                     
-63C0: 7A             LD      A,D             
-63C1: 82             ADD     A,D             
-63C2: 17             RLA                     
-63C3: 54             LD      D,H             
-63C4: 5E             LD      E,(HL)          
-63C5: C6 9F          ADD     $9F             
-63C7: 23             INC     HL              
-63C8: 62             LD      H,D             
-63C9: F4 59 7B       CALL    P,$7B59         
-63CC: 50             LD      D,B             
-63CD: A7             AND     A               
-63CE: AD             XOR     L               
-63CF: A7             AND     A               
-63D0: 61             LD      H,C             
-63D1: 5A             LD      E,D             
-63D2: 17             RLA                     
-63D3: 4A             LD      C,D             
-63D4: 5E             LD      E,(HL)          
-63D5: 4B             LD      C,E             
-63D6: 49             LD      C,C             
-63D7: 4C             LD      C,H             
-63D8: 45             LD      B,L             
-63D9: 79             LD      A,C             
-63DA: 47             LD      B,A             
-63DB: F3             DI                      
-63DC: 5F             LD      E,A             
-63DD: 53             LD      D,E             
-63DE: B7             OR      A               
-63DF: 8C             ADC     A,H             
-63E0: AF             XOR     A               
-63E1: 66             LD      H,(HL)          
-63E2: C6 AF          ADD     $AF             
-63E4: 14             INC     D               
-63E5: 89             ADC     A,C             
-63E6: 8D             ADC     A,L             
-63E7: 9F             SBC     A               
-63E8: 15             DEC     D               
-63E9: 8A             ADC     A,D             
-63EA: AF             XOR     A               
-63EB: D4 47 90       CALL    NC,$9047        
-63EE: 8C             ADC     A,H             
-63EF: DB 63          IN      A,($63)         
-63F1: 02             LD      (BC),A          
-63F2: 06 5F          LD      B,$5F           
-63F4: BE             CP      (HL)            
-63F5: 9F             SBC     A               
-63F6: 16 97          LD      D,$97           
-63F8: B3             OR      E               
-63F9: 0B             DEC     BC              
-63FA: 01 9A 07       LD      BC,$079A        
-63FD: 01 AB 08       LD      BC,$08AB        
-6400: 81             ADD     A,C             
-6401: 50             LD      D,B             
-6402: 0D             DEC     C               
-6403: 81             ADD     A,C             
-6404: 4D             LD      C,L             
-6405: 01 13 0E       LD      BC,$0E13        
-6408: 81             ADD     A,C             
-6409: 48             LD      C,B             
-640A: 0D             DEC     C               
-640B: 71             LD      (HL),C          
-640C: 0A             LD      A,(BC)          
-640D: 03             INC     BC              
-640E: 1F             RRA                     
-640F: 6D             LD      L,L             
-6410: 1F             RRA                     
-6411: B8             CP      B               
-6412: 8F             ADC     A,A             
-6413: 17             RLA                     
-6414: DD                                  
-6415: B2             OR      D               
-6416: 89             ADC     A,C             
-6417: 17             RLA                     
-6418: 14             INC     D               
-6419: D0             RET     NC              
-641A: 1B             DEC     DE              
-641B: 58             LD      E,B             
-641C: 1B             DEC     DE              
-641D: A1             AND     C               
-641E: 8E             ADC     A,(HL)          
-641F: 48             LD      C,B             
-6420: 53             LD      D,E             
-6421: 17             RLA                     
-6422: 6E             LD      L,(HL)          
-6423: DF             RST     0X18            
-6424: 79             LD      A,C             
-6425: 13             INC     DE              
-6426: AB             XOR     E               
-6427: 70             LD      (HL),B          
-6428: C7             RST     0X00            
-6429: DE 77          SBC     $77             
-642B: 16 F3          LD      D,$F3           
-642D: B9             CP      C               
-642E: 5B             LD      E,E             
-642F: 4D             LD      C,L             
-6430: F4 72 48       CALL    P,$4872         
-6433: 5E             LD      E,(HL)          
-6434: A3             AND     E               
-6435: A0             AND     B               
-6436: EF             RST     0X28            
-6437: BF             CP      A               
-6438: 87             ADD     A,A             
-6439: 49             LD      C,C             
-643A: 9E             SBC     (HL)            
-643B: 61             LD      H,C             
-643C: 4C             LD      C,H             
-643D: F4 66 C6       CALL    P,$C666         
-6440: E1             POP     HL              
-6441: 14             INC     D               
-6442: 1B             DEC     DE              
-6443: 92             SUB     D               
-6444: 09             ADD     HL,BC           
-6445: B2             OR      D               
-6446: 33             INC     SP              
-6447: 75             LD      (HL),L          
-6448: 4F             LD      C,A             
-6449: A1             AND     C               
-644A: 8A             ADC     A,D             
-644B: AF             XOR     A               
-644C: 2F             CPL                     
-644D: 62             LD      H,D             
-644E: FF             RST     0X38            
-644F: F9             LD      SP,HL           
-6450: 95             SUB     L               
-6451: 19             ADD     HL,DE           
-6452: DB 72          IN      A,($72)         
-6454: B5             OR      L               
-6455: 6C             LD      L,H             
-6456: 74             LD      (HL),H          
-6457: C0             RET     NZ              
-6458: 4B             LD      C,E             
-6459: 62             LD      H,D             
-645A: 89             ADC     A,C             
-645B: BF             CP      A               
-645C: 2E 49          LD      L,$49           
-645E: 61             LD      H,C             
-645F: 17             RLA                     
-6460: 36 92          LD      (HL),$92        
-6462: 90             SUB     B               
-6463: 73             LD      (HL),E          
-6464: D9             EXX                     
-6465: 6A             LD      L,D             
-6466: 85             ADD     A,L             
-6467: 73             LD      (HL),E          
-6468: 0E 71          LD      C,$71           
-646A: 3D             DEC     A               
-646B: A0             AND     B               
-646C: CE B5          ADC     $B5             
-646E: 17             RLA                     
-646F: 7A             LD      A,D             
-6470: 90             SUB     B               
-6471: 14             INC     D               
-6472: 2E 15          LD      L,$15           
-6474: E6 5F          AND     $5F             
-6476: 05             DEC     B               
-6477: B2             OR      D               
-6478: E1             POP     HL              
-6479: 14             INC     D               
-647A: DA C3 2E       JP      C,$2EC3         
-647D: 0D             DEC     C               
-647E: 80             ADD     A,B             
-647F: D2 1F 73       JP      NC,$731F        
-6482: 91             SUB     C               
-6483: 1E A4          LD      E,$A4           
-6485: C2 50 5E       JP      NZ,$5E50        
-6488: F3             DI                      
-6489: A0             AND     B               
-648A: 41             LD      B,C             
-648B: 55             LD      D,L             
-648C: F4 A4 83       CALL    P,$83A4         
-648F: 49             LD      C,C             
-6490: CF             RST     0X08            
-6491: 98             SBC     B               
-6492: DC F9 15       CALL    C,$15F9         
-6495: EE 55          XOR     $55             
-6497: 4A             LD      C,D             
-6498: 82             ADD     A,D             
-6499: 17             RLA                     
-649A: 50             LD      D,B             
-649B: 5E             LD      E,(HL)          
-649C: 3D             DEC     A               
-649D: C6 43          ADD     $43             
-649F: 5E             LD      E,(HL)          
-64A0: D5             PUSH    DE              
-64A1: B5             OR      L               
-64A2: DB 72          IN      A,($72)         
-64A4: 70             LD      (HL),B          
-64A5: 8E             ADC     A,(HL)          
-64A6: B5             OR      L               
-64A7: 6C             LD      L,H             
-64A8: 85             ADD     A,L             
-64A9: 14             INC     D               
-64AA: 05             DEC     B               
-64AB: B3             OR      E               
-64AC: D6 B5          SUB     $B5             
-64AE: DB 72          IN      A,($72)         
-64B0: 01 B3 43       LD      BC,$43B3        
-64B3: 90             SUB     B               
-64B4: 33             INC     SP              
-64B5: 98             SBC     B               
-64B6: 45             LD      B,L             
-64B7: BD             CP      L               
-64B8: BF             CP      A               
-64B9: 86             ADD     A,(HL)          
-64BA: DB B5          IN      A,($B5)         
-64BC: 3F             CCF                     
-64BD: A1             AND     C               
-64BE: 5A             LD      E,D             
-64BF: 17             RLA                     
-64C0: 46             LD      B,(HL)          
-64C1: 5E             LD      E,(HL)          
-64C2: C9             RET                     
-64C3: B0             OR      B               
-64C4: DB B5          IN      A,($B5)         
-64C6: 1B             DEC     DE              
-64C7: A1             AND     C               
-64C8: 6B             LD      L,E             
-64C9: BF             CP      A               
-64CA: 5F             LD      E,A             
-64CB: BE             CP      (HL)            
-64CC: E1             POP     HL              
-64CD: 14             INC     D               
-64CE: DA C3 90       JP      C,$90C3         
-64D1: 14             INC     D               
-64D2: 15             DEC     D               
-64D3: 58             LD      E,B             
-64D4: EB             EX      DE,HL           
-64D5: BF             CP      A               
-64D6: 0B             DEC     BC              
-64D7: A7             AND     A               
-64D8: C7             RST     0X00            
-64D9: DE D0          SBC     $D0             
-64DB: 15             DEC     D               
-64DC: 56             LD      D,(HL)          
-64DD: F4 F0 72       CALL    P,$72F0         
-64E0: 5A             LD      E,D             
-64E1: 17             RLA                     
-64E2: 52             LD      D,D             
-64E3: 5E             LD      E,(HL)          
-64E4: 46             LD      B,(HL)          
-64E5: C5             PUSH    BC              
-64E6: C3 B5 91       JP      $91B5           
-64E9: 96             SUB     (HL)            
-64EA: D0             RET     NC              
-64EB: 92             SUB     D               
-64EC: 35             DEC     (HL)            
-64ED: A1             AND     C               
-64EE: 3F             CCF                     
-64EF: 16 74          LD      D,$74           
-64F1: CA 90 14       JP      Z,$1490         
-64F4: 44             LD      B,H             
-64F5: 0E 24          LD      C,$24           
-64F7: 03             INC     BC              
-64F8: 13             INC     DE              
-64F9: 3A 1F 1F       LD      A,($1F1F)       
-64FC: C7             RST     0X00            
-64FD: DE 3A          SBC     $3A             
-64FF: 15             DEC     D               
-6500: F4 A4 30       CALL    P,$30A4         
-6503: 79             LD      A,C             
-6504: 9B             SBC     E               
-6505: 53             LD      D,E             
-6506: 5F             LD      E,A             
-6507: BE             CP      (HL)            
-6508: AE             XOR     (HL)            
-6509: 17             RLA                     
-650A: 8F             ADC     A,A             
-650B: BE             CP      (HL)            
-650C: 7F             LD      A,A             
-650D: 49             LD      C,C             
-650E: 89             ADC     A,C             
-650F: 14             INC     D               
-6510: 23             INC     HL              
-6511: A0             AND     B               
-6512: CF             RST     0X08            
-6513: 06 2D          LD      B,$2D           
-6515: 62             LD      H,D             
-6516: 5F             LD      E,A             
-6517: 79             LD      A,C             
-6518: 13             INC     DE              
-6519: 8D             ADC     A,L             
-651A: 2C             INC     L               
-651B: 1F             RRA                     
-651C: 0A             LD      A,(BC)          
-651D: C7             RST     0X00            
-651E: DE DB          SBC     $DB             
-6520: 16 CB          LD      D,$CB           
-6522: B9             CP      C               
-6523: 36 A1          LD      (HL),$A1        
-6525: FF             RST     0X38            
-6526: F9             LD      SP,HL           
-6527: 2C             INC     L               
-6528: 13             INC     DE              
-6529: 19             ADD     HL,DE           
-652A: 88             ADC     A,B             
-652B: 17             RLA                     
-652C: 1B             DEC     DE              
-652D: 8E             ADC     A,(HL)          
-652E: 17             RLA                     
-652F: 41             LD      B,C             
-6530: 8C             ADC     A,H             
-6531: 1C             INC     E               
-6532: 05             DEC     B               
-6533: 0E 03          LD      C,$03           
-6535: 15             DEC     D               
-6536: 02             LD      (BC),A          
-6537: 29             ADD     HL,HL           
-6538: 1C             INC     E               
-6539: 06 0E          LD      B,$0E           
-653B: 04             INC     B               
-653C: 14             INC     D               
-653D: 15             DEC     D               
-653E: 02             LD      (BC),A          
-653F: 29             ADD     HL,HL           
-6540: 1F             RRA                     
-6541: 10 C7          DJNZ    $650A           
-6543: DE 99          SBC     $99             
-6545: 14             INC     D               
-6546: 17             RLA                     
-6547: 48             LD      C,B             
-6548: 8B             ADC     A,E             
-6549: 96             SUB     (HL)            
-654A: 9B             SBC     E               
-654B: 96             SUB     (HL)            
-654C: 34             INC     (HL)            
-654D: A1             AND     C               
-654E: D7             RST     0X10            
-654F: 14             INC     D               
-6550: 17             RLA                     
-6551: 8D             ADC     A,L             
-6552: 09             ADD     HL,BC           
-6553: 02             LD      (BC),A          
-6554: 46             LD      B,(HL)          
-6555: 46             LD      B,(HL)          
-6556: 07             RLCA                    
-6557: 81             ADD     A,C             
-6558: AE             XOR     (HL)            
-6559: 00             NOP                     
-655A: 00             NOP                     
-655B: 90             SUB     B               
-655C: 03             INC     BC              
-655D: 01 9F 02       LD      BC,$029F        
-6560: 07             RLCA                    
-6561: 5F             LD      E,A             
-6562: BE             CP      (HL)            
-6563: 09             ADD     HL,BC           
-6564: 15             DEC     D               
-6565: 09             ADD     HL,BC           
-6566: 56             LD      D,(HL)          
-6567: 52             LD      D,D             
-6568: 08             EX      AF,AF'          
-6569: 81             ADD     A,C             
-656A: 95             SUB     L               
-656B: 0E 81          LD      C,$81           
-656D: 92             SUB     D               
-656E: 0D             DEC     C               
-656F: 1C             INC     E               
-6570: 14             INC     D               
-6571: 01 13 9B       LD      BC,$9B13        
-6574: 1F             RRA                     
-6575: 15             DEC     D               
-6576: C7             RST     0X00            
-6577: DE 9F          SBC     $9F             
-6579: 15             DEC     D               
-657A: 23             INC     HL              
-657B: 49             LD      C,C             
-657C: 50             LD      D,B             
-657D: 45             LD      B,L             
-657E: 55             LD      D,L             
-657F: 9F             SBC     A               
-6580: 43             LD      B,E             
-6581: 5E             LD      E,(HL)          
-6582: 33             INC     SP              
-6583: 98             SBC     B               
-6584: C7             RST     0X00            
-6585: DE 99          SBC     $99             
-6587: 16 85          LD      D,$85           
-6589: BE             CP      (HL)            
-658A: 45             LD      B,L             
-658B: 9F             SBC     A               
-658C: 0D             DEC     C               
-658D: 81             ADD     A,C             
-658E: 71             LD      (HL),C          
-658F: 01 13 1F       LD      BC,$1F13        
-6592: 0C             INC     C               
-6593: 5F             LD      E,A             
-6594: BE             CP      (HL)            
-6595: 09             ADD     HL,BC           
-6596: 15             DEC     D               
-6597: 09             ADD     HL,BC           
-6598: 56             LD      D,(HL)          
-6599: 95             SUB     L               
-659A: AF             XOR     A               
-659B: 55             LD      D,L             
-659C: 4A             LD      C,D             
-659D: FB             EI                      
-659E: ED                                  
-659F: 0B             DEC     BC              
-65A0: 81             ADD     A,C             
-65A1: 5E             LD      E,(HL)          
-65A2: 05             DEC     B               
-65A3: 33             INC     SP              
-65A4: 42             LD      B,D             
-65A5: 1F             RRA                     
-65A6: 40             LD      B,B             
-65A7: 91             SUB     C               
-65A8: 1E 43          LD      E,$43           
-65AA: C2 5B B1       JP      NZ,$B15B        
-65AD: 06 9A          LD      B,$9A           
-65AF: AF             XOR     A               
-65B0: 14             INC     D               
-65B1: 91             SUB     C               
-65B2: 7A             LD      A,D             
-65B3: 7B             LD      A,E             
-65B4: 14             INC     D               
-65B5: 41             LD      B,C             
-65B6: 6E             LD      L,(HL)          
-65B7: 0E 58          LD      C,$58           
-65B9: 8E             ADC     A,(HL)          
-65BA: 7B             LD      A,E             
-65BB: DB 8B          IN      A,($8B)         
-65BD: 56             LD      D,(HL)          
-65BE: A4             AND     H               
-65BF: 30 79          JR      NC,$663A        
-65C1: AB             XOR     E               
-65C2: BB             CP      E               
-65C3: 09             ADD     HL,BC           
-65C4: 9A             SBC     D               
-65C5: 2F             CPL                     
-65C6: 17             RLA                     
-65C7: 74             LD      (HL),H          
-65C8: C0             RET     NZ              
-65C9: 96             SUB     (HL)            
-65CA: 96             SUB     (HL)            
-65CB: DB 9C          IN      A,($9C)         
-65CD: 34             INC     (HL)            
-65CE: A1             AND     C               
-65CF: D7             RST     0X10            
-65D0: 14             INC     D               
-65D1: 16 8D          LD      D,$8D           
-65D3: C4 16 51       CALL    NZ,$5116        
-65D6: 18 59          JR      $6631           
-65D8: C2 46 7A       JP      NZ,$7A46        
-65DB: 8F             ADC     A,A             
-65DC: 16 F3          LD      D,$F3           
-65DE: 5F             LD      E,A             
-65DF: 4E             LD      C,(HL)          
-65E0: 45             LD      B,L             
-65E1: 39             ADD     HL,SP           
-65E2: 9E             SBC     (HL)            
-65E3: 7F             LD      A,A             
-65E4: BF             CP      A               
-65E5: EC DA 66       CALL    PE,$66DA        
-65E8: 20 1F          JR      NZ,$6609        
-65EA: 1E FB          LD      E,$FB           
-65EC: 1B             DEC     DE              
-65ED: B9             CP      C               
-65EE: 6E             LD      L,(HL)          
-65EF: D6 CE          SUB     $CE             
-65F1: 2F             CPL                     
-65F2: 7B             LD      A,E             
-65F3: 11 58 86       LD      DE,$8658        
-65F6: 64             LD      H,H             
-65F7: 8E             ADC     A,(HL)          
-65F8: 5F             LD      E,A             
-65F9: 91             SUB     C               
-65FA: 7A             LD      A,D             
-65FB: FB             EI                      
-65FC: 17             RLA                     
-65FD: 53             LD      D,E             
-65FE: BE             CP      (HL)            
-65FF: C7             RST     0X00            
-6600: DE D0          SBC     $D0             
-6602: 15             DEC     D               
-6603: 74             LD      (HL),H          
-6604: 66             LD      H,(HL)          
-6605: C4 7A 6C       CALL    NZ,$6C7A        
-6608: B5             OR      L               
-6609: 99             SBC     C               
-660A: 22 1F 20       LD      ($201F),HL      
-660D: 3A 1E 73       LD      A,($731E)       
-6610: 49             LD      C,C             
-6611: 2F             CPL                     
-6612: 49             LD      C,C             
-6613: 51             LD      D,C             
-6614: 18 46          JR      $665C           
-6616: C2 50 9F       JP      NZ,$9F50        
-6619: CA 6A 2F       JP      Z,$2F6A         
-661C: 62             LD      H,D             
-661D: 89             ADC     A,C             
-661E: 00             NOP                     
-661F: D9             EXX                     
-6620: 9C             SBC     H               
-6621: F4 72 5B       CALL    P,$5B72         
-6624: 5E             LD      E,(HL)          
-6625: 1B             DEC     DE              
-6626: A1             AND     C               
-6627: 6E             LD      L,(HL)          
-6628: 4D             LD      C,L             
-6629: 11 A0 E3       LD      DE,$E3A0        
-662C: 06 FF          LD      B,$FF           
-662E: 80             ADD     A,B             
-662F: D0             RET     NC              
-6630: 0D             DEC     C               
-6631: 80             ADD     A,B             
-6632: CD 1F 80       CALL    $801F           
-6635: B4             OR      H               
-6636: FD 1B          DEC     DE              
-6638: 43             LD      B,E             
-6639: 90             SUB     B               
-663A: 6B             LD      L,E             
-663B: 68             LD      L,B             
-663C: F3             DI                      
-663D: 78             LD      A,B             
-663E: 9F             SBC     A               
-663F: 77             LD      (HL),A          
-6640: 81             ADD     A,C             
-6641: 15             DEC     D               
-6642: 91             SUB     C               
-6643: 7A             LD      A,D             
-6644: 89             ADC     A,C             
-6645: 17             RLA                     
-6646: 9B             SBC     E               
-6647: 15             DEC     D               
-6648: 5B             LD      E,E             
-6649: CA 6B BF       JP      Z,$BF6B         
-664C: 58             LD      E,B             
-664D: 6D             LD      L,L             
-664E: 5B             LD      E,E             
-664F: 5E             LD      E,(HL)          
-6650: 1B             DEC     DE              
-6651: A1             AND     C               
-6652: 48             LD      C,B             
-6653: 45             LD      B,L             
-6654: 00             NOP                     
-6655: B3             OR      E               
-6656: 4E             LD      C,(HL)          
-6657: BD             CP      L               
-6658: 49             LD      C,C             
-6659: 16 06          LD      D,$06           
-665B: 4F             LD      C,A             
-665C: FB             EI                      
-665D: 9F             SBC     A               
-665E: E3             EX      (SP),HL         
-665F: 06 DB          LD      B,$DB           
-6661: 72             LD      (HL),D          
-6662: 03             INC     BC              
-6663: BA             CP      D               
-6664: A5             AND     L               
-6665: 54             LD      D,H             
-6666: 51             LD      D,C             
-6667: 18 59          JR      $66C2           
-6669: C2 82 7B       JP      NZ,$7B82        
-666C: A3             AND     E               
-666D: 15             DEC     D               
-666E: CA B5 E9       JP      Z,$E9B5         
-6671: DE 90          SBC     $90             
-6673: 14             INC     D               
-6674: 1B             DEC     DE              
-6675: 58             LD      E,B             
-6676: 1B             DEC     DE              
-6677: A1             AND     C               
-6678: 55             LD      D,L             
-6679: A4             AND     H               
-667A: D1             POP     DE              
-667B: B5             OR      L               
-667C: 97             SUB     A               
-667D: C6 FA          ADD     $FA             
-667F: 17             RLA                     
-6680: 83             ADD     A,E             
-6681: 61             LD      H,C             
-6682: C7             RST     0X00            
-6683: DE 99          SBC     $99             
-6685: 14             INC     D               
-6686: 17             RLA                     
-6687: 48             LD      C,B             
-6688: F3             DI                      
-6689: 9B             SBC     E               
-668A: C7             RST     0X00            
-668B: DE 4F          SBC     $4F             
-668D: 15             DEC     D               
-668E: 33             INC     SP              
-668F: 61             LD      H,C             
-6690: 3F             CCF                     
-6691: B9             CP      C               
-6692: FA 62 73       JP      M,$7362         
-6695: 49             LD      C,C             
-6696: 8E             ADC     A,(HL)          
-6697: 7A             LD      A,D             
-6698: 50             LD      D,B             
-6699: 79             LD      A,C             
-669A: 2F             CPL                     
-669B: 62             LD      H,D             
-669C: B3             OR      E               
-669D: 9A             SBC     D               
-669E: 6B             LD      L,E             
-669F: BF             CP      A               
-66A0: C7             RST     0X00            
-66A1: DE 95          SBC     $95             
-66A3: AF             XOR     A               
-66A4: 3C             INC     A               
-66A5: C6 30          ADD     $30             
-66A7: A1             AND     C               
-66A8: 90             SUB     B               
-66A9: 5A             LD      E,D             
-66AA: EF             RST     0X28            
-66AB: 6E             LD      L,(HL)          
-66AC: 51             LD      D,C             
-66AD: 18 50          JR      $66FF           
-66AF: C2 03 A1       JP      NZ,$A103        
-66B2: 9B             SBC     E               
-66B3: 53             LD      D,E             
-66B4: 89             ADC     A,C             
-66B5: 4E             LD      C,(HL)          
-66B6: 73             LD      (HL),E          
-66B7: 9E             SBC     (HL)            
-66B8: 03             INC     BC              
-66B9: A0             AND     B               
-66BA: C7             RST     0X00            
-66BB: DE 89          SBC     $89             
-66BD: AF             XOR     A               
-66BE: 80             ADD     A,B             
-66BF: A1             AND     C               
-66C0: 04             INC     B               
-66C1: EE 73          XOR     $73             
-66C3: C6 73          ADD     $73             
-66C5: 7B             LD      A,E             
-66C6: 77             LD      (HL),A          
-66C7: 5B             LD      E,E             
-66C8: 05             DEC     B               
-66C9: B9             CP      C               
-66CA: 15             DEC     D               
-66CB: BC             CP      H               
-66CC: 2F             CPL                     
-66CD: 60             LD      H,B             
-66CE: 89             ADC     A,C             
-66CF: 17             RLA                     
-66D0: B9             CP      C               
-66D1: 14             INC     D               
-66D2: 5F             LD      E,A             
-66D3: BE             CP      (HL)            
-66D4: 9B             SBC     E               
-66D5: AF             XOR     A               
-66D6: 3F             CCF                     
-66D7: A1             AND     C               
-66D8: 51             LD      D,C             
-66D9: 18 48          JR      $6723           
-66DB: C2 2E 60       JP      NZ,$602E        
-66DE: 43             LD      B,E             
-66DF: 16 9B          LD      D,$9B           
-66E1: 85             ADD     A,L             
-66E2: 10 D0          DJNZ    $66B4           
-66E4: F4 59 91       CALL    P,$9159         
-66E7: 7A             LD      A,D             
-66E8: FF             RST     0X38            
-66E9: F9             LD      SP,HL           
-66EA: 1C             INC     E               
-66EB: 05             DEC     B               
-66EC: 0E 03          LD      C,$03           
-66EE: 15             DEC     D               
-66EF: 02             LD      (BC),A          
-66F0: 29             ADD     HL,HL           
-66F1: 1C             INC     E               
-66F2: 06 0E          LD      B,$0E           
-66F4: 04             INC     B               
-66F5: 14             INC     D               
-66F6: 15             DEC     D               
-66F7: 02             LD      (BC),A          
-66F8: 29             ADD     HL,HL           
-66F9: 2C             INC     L               
-66FA: 13             INC     DE              
-66FB: 17             RLA                     
-66FC: 3A 13 19       LD      A,($1913)       
-66FF: 88             ADC     A,B             
-6700: 0B             DEC     BC              
-6701: 01 9A 09       LD      BC,$099A        
-6704: 02             LD      (BC),A          
-6705: 46             LD      B,(HL)          
-6706: 46             LD      B,(HL)          
-6707: 25             DEC     H               
-6708: 0C             INC     C               
-6709: FF             RST     0X38            
-670A: 00             NOP                     
-670B: 80             ADD     A,B             
-670C: 07             RLCA                    
-670D: 01 A4 02       LD      BC,$02A4        
-6710: 04             INC     B               
-6711: 0E D0          LD      C,$D0           
-6713: 0B             DEC     BC              
-6714: 8E             ADC     A,(HL)          
-6715: 2A 0B FF       LD      HL,($FF0B)      
-6718: 00             NOP                     
-6719: 80             ADD     A,B             
-671A: 07             RLCA                    
-671B: 01 A4 02       LD      BC,$02A4        
-671E: 03             INC     BC              
-671F: 01 B3 4D       LD      BC,$4DB3        
-6722: 2B             DEC     HL              
-6723: 09             ADD     HL,BC           
-6724: FF             RST     0X38            
-6725: 00             NOP                     
-6726: 80             ADD     A,B             
-6727: 02             LD      (BC),A          
-6728: 04             INC     B               
-6729: 89             ADC     A,C             
-672A: 67             LD      H,A             
-672B: A3             AND     E               
-672C: A0             AND     B               
-672D: 2C             INC     L               
-672E: 08             EX      AF,AF'          
-672F: FF             RST     0X38            
-6730: 00             NOP                     
-6731: 80             ADD     A,B             
-6732: 02             LD      (BC),A          
-6733: 03             INC     BC              
-6734: 23             INC     HL              
-6735: 63             LD      H,E             
-6736: 54             LD      D,H             
-6737: 30 0C          JR      NC,$6745        
-6739: FF             RST     0X38            
-673A: 00             NOP                     
-673B: 80             ADD     A,B             
-673C: 07             RLCA                    
-673D: 01 A4 02       LD      BC,$02A4        
-6740: 04             INC     B               
-6741: 44             LD      B,H             
-6742: 55             LD      D,L             
-6743: 74             LD      (HL),H          
-6744: 98             SBC     B               
-6745: 33             INC     SP              
-6746: 0D             DEC     C               
-6747: FF             RST     0X38            
-6748: 00             NOP                     
-6749: 80             ADD     A,B             
-674A: 07             RLCA                    
-674B: 01 A4 02       LD      BC,$02A4        
-674E: 05             DEC     B               
-674F: 4E             LD      C,(HL)          
-6750: 72             LD      (HL),D          
-6751: B3             OR      E               
-6752: 8E             ADC     A,(HL)          
-6753: 59             LD      E,C             
-6754: 36 0B          LD      (HL),$0B        
-6756: FF             RST     0X38            
-6757: 00             NOP                     
-6758: 80             ADD     A,B             
-6759: 02             LD      (BC),A          
-675A: 06 9E          LD      B,$9E           
-675C: 61             LD      H,C             
-675D: D0             RET     NC              
-675E: B0             OR      B               
-675F: 9B             SBC     E               
-6760: 53             LD      D,E             
-6761: 3B             DEC     SP              
-6762: 0A             LD      A,(BC)          
-6763: FF             RST     0X38            
-6764: 00             NOP                     
-6765: 80             ADD     A,B             
-6766: 02             LD      (BC),A          
-6767: 05             DEC     B               
-6768: AB             XOR     E               
-6769: 53             LD      D,E             
-676A: 90             SUB     B               
-676B: 8C             ADC     A,H             
-676C: 47             LD      B,A             
-676D: 1F             RRA                     
-676E: 09             ADD     HL,BC           
-676F: 13             INC     DE              
-6770: 00             NOP                     
-6771: C0             RET     NZ              
-6772: 02             LD      (BC),A          
-6773: 04             INC     B               
-6774: 50             LD      D,B             
-6775: 72             LD      (HL),D          
-6776: 0B             DEC     BC              
-6777: 5C             LD      E,H             
-6778: 20 03          JR      NZ,$677D        
-677A: 00             NOP                     
-677B: 00             NOP                     
-677C: 80             ADD     A,B             
-677D: 17             RLA                     
-677E: 32 82 00       LD      ($0082),A       
-6781: A0             AND     B               
-6782: 03             INC     BC              
-6783: 01 9D 07       LD      BC,$079D        
-6786: 22 0D 20       LD      ($200D),HL      
-6789: 0A             LD      A,(BC)          
-678A: 15             DEC     D               
-678B: 04             INC     B               
-678C: 1C             INC     E               
-678D: 2E 6F          LD      L,$6F           
-678F: AB             XOR     E               
-6790: A2             AND     D               
-6791: 37             SCF                     
-6792: 6E             LD      L,(HL)          
-6793: C6 B5          ADD     $B5             
-6795: 80             ADD     A,B             
-6796: A1             AND     C               
-6797: 9B             SBC     E               
-6798: 15             DEC     D               
-6799: 31 B1 47       LD      SP,$47B1        
-679C: 18 5A          JR      $67F8           
-679E: 53             LD      D,E             
-679F: 16 EE          LD      D,$EE           
-67A1: 66             LD      H,(HL)          
-67A2: 49             LD      C,C             
-67A3: 4B             LD      C,E             
-67A4: 62             LD      H,D             
-67A5: F8             RET     M               
-67A6: 49             LD      C,C             
-67A7: 31 C5 02       LD      SP,$02C5        
-67AA: 06 8F          LD      B,$8F           
-67AC: 4E             LD      C,(HL)          
-67AD: 52             LD      D,D             
-67AE: 5E             LD      E,(HL)          
-67AF: 46             LD      B,(HL)          
-67B0: 7A             LD      A,D             
-67B1: 3C             INC     A               
-67B2: 03             INC     BC              
-67B3: 00             NOP                     
-67B4: 00             NOP                     
-67B5: 00             NOP                     
-67B6: 16 80          LD      D,$80           
-67B8: 85             ADD     A,L             
-67B9: 82             ADD     A,D             
-67BA: 00             NOP                     
-67BB: 80             ADD     A,B             
-67BC: 02             LD      (BC),A          
-67BD: 05             DEC     B               
-67BE: 66             LD      H,(HL)          
-67BF: B1             OR      C               
-67C0: 17             RLA                     
-67C1: 16 59          LD      D,$59           
-67C3: 01 01 13       LD      BC,$1301        
-67C6: 07             RLCA                    
-67C7: 76             HALT                    
-67C8: 0E 74          LD      C,$74           
-67CA: 0D             DEC     C               
-67CB: 30 0A          JR      NC,$67D7        
-67CD: 43             LD      B,E             
-67CE: 09             ADD     HL,BC           
-67CF: 16 03          LD      D,$03           
-67D1: 82             ADD     A,D             
-67D2: 3B             DEC     SP              
-67D3: 03             INC     BC              
-67D4: 00             NOP                     
-67D5: 14             INC     D               
-67D6: 17             RLA                     
-67D7: 3B             DEC     SP              
-67D8: 00             NOP                     
-67D9: 17             RLA                     
-67DA: 14             INC     D               
-67DB: 13             INC     DE              
-67DC: 04             INC     B               
-67DD: 1E C7          LD      E,$C7           
-67DF: DE 77          SBC     $77             
-67E1: 15             DEC     D               
-67E2: 16 BC          LD      D,$BC           
-67E4: DB 72          IN      A,($72)         
-67E6: BB             CP      E               
-67E7: 85             ADD     A,L             
-67E8: FB             EI                      
-67E9: 17             RLA                     
-67EA: 53             LD      D,E             
-67EB: BE             CP      (HL)            
-67EC: 5F             LD      E,A             
-67ED: BE             CP      (HL)            
-67EE: A9             XOR     C               
-67EF: 15             DEC     D               
-67F0: AF             XOR     A               
-67F1: 9F             SBC     A               
-67F2: 2F             CPL                     
-67F3: 17             RLA                     
-67F4: 0D             DEC     C               
-67F5: 58             LD      E,B             
-67F6: 3B             DEC     SP              
-67F7: 63             LD      H,E             
-67F8: 4D             LD      C,L             
-67F9: BD             CP      L               
-67FA: A7             AND     A               
-67FB: 61             LD      H,C             
-67FC: 0D             DEC     C               
-67FD: 24             INC     H               
-67FE: 0A             LD      A,(BC)          
-67FF: 05             DEC     B               
-6800: 04             INC     B               
-6801: 20 C7          JR      NZ,$67CA        
-6803: DE D3          SBC     $D3             
-6805: 14             INC     D               
-6806: 90             SUB     B               
-6807: 96             SUB     (HL)            
-6808: F3             DI                      
-6809: A0             AND     B               
-680A: 85             ADD     A,L             
-680B: A6             AND     (HL)            
-680C: 44             LD      B,H             
-680D: B8             CP      B               
-680E: FB             EI                      
-680F: 8E             ADC     A,(HL)          
-6810: 63             LD      H,E             
-6811: B1             OR      C               
-6812: 13             INC     DE              
-6813: 54             LD      D,H             
-6814: 9E             SBC     (HL)            
-6815: 7A             LD      A,D             
-6816: D6 9C          SUB     $9C             
-6818: 56             LD      D,(HL)          
-6819: 72             LD      (HL),D          
-681A: 83             ADD     A,E             
-681B: 17             RLA                     
-681C: 7B             LD      A,E             
-681D: 9B             SBC     E               
-681E: 7E             LD      A,(HL)          
-681F: 74             LD      (HL),H          
-6820: EB             EX      DE,HL           
-6821: 5D             LD      E,L             
-6822: 0D             DEC     C               
-6823: 1A             LD      A,(DE)          
-6824: 0A             LD      A,(BC)          
-6825: 43             LD      B,E             
-6826: 04             INC     B               
-6827: 14             INC     D               
-6828: C7             RST     0X00            
-6829: DE D3          SBC     $D3             
-682B: 14             INC     D               
-682C: E6 96          AND     $96             
-682E: 77             LD      (HL),A          
-682F: 15             DEC     D               
-6830: 16 BC          LD      D,$BC           
-6832: DB 72          IN      A,($72)         
-6834: 66             LD      H,(HL)          
-6835: B1             OR      C               
-6836: 17             RLA                     
-6837: 16 59          LD      D,$59           
-6839: DB 82          IN      A,($82)         
-683B: 7B             LD      A,E             
-683C: A9             XOR     C               
-683D: 8B             ADC     A,E             
-683E: 08             EX      AF,AF'          
-683F: 20 00          JR      NZ,$6841        
-6841: 00             NOP                     
-6842: A0             AND     B               
-6843: 02             LD      (BC),A          
-6844: 06 E3          LD      B,$E3           
-6846: 59             LD      E,C             
-6847: 06 58          LD      B,$58           
-6849: EB             EX      DE,HL           
-684A: 9E             SBC     (HL)            
-684B: 03             INC     BC              
-684C: 13             INC     DE              
-684D: 04             INC     B               
-684E: 11 5F BE       LD      DE,$BE5F        
-6851: 5B             LD      E,E             
-6852: B1             OR      C               
-6853: 4B             LD      C,E             
-6854: 7B             LD      A,E             
-6855: 46             LD      B,(HL)          
-6856: 45             LD      B,L             
-6857: 86             ADD     A,(HL)          
-6858: 5F             LD      E,A             
-6859: 09             ADD     HL,BC           
-685A: 15             DEC     D               
-685B: CA 6A 2F       JP      Z,$2F6A         
-685E: 62             LD      H,D             
-685F: 2E 0B          LD      L,$0B           
-6861: 42             LD      B,D             
-6862: 00             NOP                     
-6863: 00             NOP                     
-6864: 8A             ADC     A,D             
-6865: 07             RLCA                    
-6866: 30 0D          JR      NC,$6875        
-6868: 2E 0A          LD      L,$0A           
-686A: 11 04 2A       LD      DE,$2A04        
-686D: 5F             LD      E,A             
-686E: BE             CP      (HL)            
-686F: 57             LD      D,A             
-6870: 17             RLA                     
-6871: AF             XOR     A               
-6872: 55             LD      D,L             
-6873: 06 BC          LD      B,$BC           
-6875: 44             LD      B,H             
-6876: A0             AND     B               
-6877: D5             PUSH    DE              
-6878: 15             DEC     D               
-6879: 66             LD      H,(HL)          
-687A: 17             RLA                     
-687B: DD                                  
-687C: C3 5B F4       JP      $F45B           
-687F: 1B             DEC     DE              
-6880: A1             AND     C               
-6881: 2F             CPL                     
-6882: 49             LD      C,C             
-6883: 99             SBC     C               
-6884: 16 15          LD      D,$15           
-6886: BC             CP      H               
-6887: F9             LD      SP,HL           
-6888: BF             CP      A               
-6889: AB             XOR     E               
-688A: 98             SBC     B               
-688B: 99             SBC     C               
-688C: 61             LD      H,C             
-688D: 7A             LD      A,D             
-688E: C4 89 17       CALL    NZ,$1789        
-6891: C2 16 83       JP      NZ,$8316        
-6894: 61             LD      H,C             
-6895: 97             SUB     A               
-6896: 7B             LD      A,E             
-6897: 02             LD      (BC),A          
-6898: 08             EX      AF,AF'          
-6899: A5             AND     L               
-689A: B7             OR      A               
-689B: 76             HALT                    
-689C: B1             OR      C               
-689D: 09             ADD     HL,BC           
-689E: 15             DEC     D               
-689F: A3             AND     E               
-68A0: A0             AND     B               
-68A1: 01 01 3D       LD      BC,$3D01        
-68A4: 0B             DEC     BC              
-68A5: 76             HALT                    
-68A6: 00             NOP                     
-68A7: 00             NOP                     
-68A8: 8A             ADC     A,D             
-68A9: 02             LD      (BC),A          
-68AA: 08             EX      AF,AF'          
-68AB: 4B             LD      C,E             
-68AC: A4             AND     H               
-68AD: BF             CP      A               
-68AE: 9A             SBC     D               
-68AF: 06 58          LD      B,$58           
-68B1: 44             LD      B,H             
-68B2: A0             AND     B               
-68B3: 03             INC     BC              
-68B4: 24             INC     H               
-68B5: 04             INC     B               
-68B6: 22 03 A0       LD      ($A003),HL      
-68B9: 5F             LD      E,A             
-68BA: BE             CP      (HL)            
-68BB: 99             SBC     C               
-68BC: 16 C2          LD      D,$C2           
-68BE: B3             OR      E               
-68BF: F3             DI                      
-68C0: 17             RLA                     
-68C1: F3             DI                      
-68C2: 8C             ADC     A,H             
-68C3: 4B             LD      C,E             
-68C4: 7B             LD      A,E             
-68C5: 0F             RRCA                    
-68C6: A0             AND     B               
-68C7: B8             CP      B               
-68C8: 16 E3          LD      D,$E3           
-68CA: 16 15          LD      D,$15           
-68CC: 53             LD      D,E             
-68CD: 2D             DEC     L               
-68CE: B9             CP      C               
-68CF: D2 B5 D0       JP      NC,$D0B5        
-68D2: 47             LD      B,A             
-68D3: E6 BD          AND     $BD             
-68D5: 09             ADD     HL,BC           
-68D6: 15             DEC     D               
-68D7: BD             CP      L               
-68D8: A0             AND     B               
-68D9: 07             RLCA                    
-68DA: 3E 0D          LD      A,$0D           
-68DC: 3C             INC     A               
-68DD: 0E 0A          LD      C,$0A           
-68DF: 0A             LD      A,(BC)          
-68E0: 11 0A 3A       LD      DE,$3A0A        
-68E3: 0A             LD      A,(BC)          
-68E4: 41             LD      B,C             
-68E5: 0A             LD      A,(BC)          
-68E6: 42             LD      B,D             
-68E7: 0A             LD      A,(BC)          
-68E8: 40             LD      B,B             
-68E9: 04             INC     B               
-68EA: 2D             DEC     L               
-68EB: 5F             LD      E,A             
-68EC: BE             CP      (HL)            
-68ED: DB 16          IN      A,($16)         
-68EF: 9E             SBC     (HL)            
-68F0: 7A             LD      A,D             
-68F1: F3             DI                      
-68F2: 5F             LD      E,A             
-68F3: 81             ADD     A,C             
-68F4: 5B             LD      E,E             
-68F5: 91             SUB     C               
-68F6: AF             XOR     A               
-68F7: F0             RET     P               
-68F8: A4             AND     H               
-68F9: D6 B5          SUB     $B5             
-68FB: D4 9C CF       CALL    NC,$CF9C        
-68FE: 62             LD      H,D             
-68FF: 33             INC     SP              
-6900: 48             LD      C,B             
-6901: 83             ADD     A,E             
-6902: 48             LD      C,B             
-6903: 55             LD      D,L             
-6904: 62             LD      H,D             
-6905: DF             RST     0X18            
-6906: 48             LD      C,B             
-6907: 39             ADD     HL,SP           
-6908: 17             RLA                     
-6909: 7F             LD      A,A             
-690A: C6 DB          ADD     $DB             
-690C: 06 1B          LD      B,$1B           
-690E: A1             AND     C               
-690F: 58             LD      E,B             
-6910: 72             LD      (HL),D          
-6911: 47             LD      B,A             
-6912: 5E             LD      E,(HL)          
-6913: 53             LD      D,E             
-6914: B7             OR      A               
-6915: E6 A4          AND     $A4             
-6917: 21 24 01       LD      HL,$0124        
-691A: 01 3E 0B       LD      BC,$0B3E        
-691D: 3E 00          LD      A,$00           
-691F: 00             NOP                     
-6920: 80             ADD     A,B             
-6921: 02             LD      (BC),A          
-6922: 08             EX      AF,AF'          
-6923: 4B             LD      C,E             
-6924: A4             AND     H               
-6925: BF             CP      A               
-6926: 9A             SBC     D               
-6927: 06 58          LD      B,$58           
-6929: 44             LD      B,H             
-692A: A0             AND     B               
-692B: 07             RLCA                    
-692C: 2C             INC     L               
-692D: 0D             DEC     C               
-692E: 2A 0E 0A       LD      HL,($0A0E)      
-6931: 0A             LD      A,(BC)          
-6932: 11 0A 3A       LD      DE,$3A0A        
-6935: 0A             LD      A,(BC)          
-6936: 40             LD      B,B             
-6937: 0A             LD      A,(BC)          
-6938: 41             LD      B,C             
-6939: 0A             LD      A,(BC)          
-693A: 42             LD      B,D             
-693B: 04             INC     B               
-693C: 1C             INC     E               
-693D: 2F             CPL                     
-693E: 49             LD      C,C             
-693F: 51             LD      D,C             
-6940: 18 45          JR      $6987           
-6942: C2 DC B0       JP      NZ,$B0DC        
-6945: C3 DA 73       JP      $73DA           
-6948: 7B             LD      A,E             
-6949: 4B             LD      C,E             
-694A: 7B             LD      A,E             
-694B: F5             PUSH    AF              
-694C: 81             ADD     A,C             
-694D: 03             INC     BC              
-694E: BC             CP      H               
-694F: DB 16          IN      A,($16)         
-6951: 9E             SBC     (HL)            
-6952: 7A             LD      A,D             
-6953: F3             DI                      
-6954: 5F             LD      E,A             
-6955: 81             ADD     A,C             
-6956: 5B             LD      E,E             
-6957: 2B             DEC     HL              
-6958: AF             XOR     A               
-6959: 01 01 3E       LD      BC,$3E01        
-695C: 0B             DEC     BC              
-695D: 12             LD      (DE),A          
-695E: 99             SBC     C               
-695F: 00             NOP                     
-6960: 8B             ADC     A,E             
-6961: 03             INC     BC              
-6962: 01 86 01       LD      BC,$0186        
-6965: 01 14 02       LD      BC,$0214        
-6968: 07             RLCA                    
-6969: AF             XOR     A               
-696A: 6E             LD      L,(HL)          
-696B: 83             ADD     A,E             
-696C: 61             LD      H,C             
-696D: 81             ADD     A,C             
-696E: 5B             LD      E,E             
-696F: 52             LD      D,D             
-6970: 16 80          LD      D,$80           
-6972: 89             ADC     A,C             
-6973: 8C             ADC     A,H             
-6974: 00             NOP                     
-6975: 80             ADD     A,B             
-6976: 02             LD      (BC),A          
-6977: 06 AF          LD      B,$AF           
-6979: 6E             LD      L,(HL)          
-697A: 83             ADD     A,E             
-697B: 61             LD      H,C             
-697C: BB             CP      E               
-697D: 85             ADD     A,L             
-697E: 01 01 14       LD      BC,$1401        
-6981: 07             RLCA                    
-6982: 79             LD      A,C             
-6983: 0E 77          LD      C,$77           
-6985: 0D             DEC     C               
-6986: 32 0A 43       LD      ($430A),A       
-6989: 09             ADD     HL,BC           
-698A: 16 03          LD      D,$03           
-698C: 8C             ADC     A,H             
-698D: 41             LD      B,C             
-698E: 03             INC     BC              
-698F: 8E             ADC     A,(HL)          
-6990: 1B             DEC     DE              
-6991: 17             RLA                     
-6992: 41             LD      B,C             
-6993: 00             NOP                     
-6994: 17             RLA                     
-6995: 1B             DEC     DE              
-6996: 13             INC     DE              
-6997: 04             INC     B               
-6998: 20 C7          JR      NZ,$6961        
-699A: DE 77          SBC     $77             
-699C: 15             DEC     D               
-699D: 16 BC          LD      D,$BC           
-699F: DB 72          IN      A,($72)         
-69A1: BB             CP      E               
-69A2: 85             ADD     A,L             
-69A3: FB             EI                      
-69A4: 17             RLA                     
-69A5: 53             LD      D,E             
-69A6: BE             CP      (HL)            
-69A7: 5F             LD      E,A             
-69A8: BE             CP      (HL)            
-69A9: A9             XOR     C               
-69AA: 15             DEC     D               
-69AB: AF             XOR     A               
-69AC: 9F             SBC     A               
-69AD: 84             ADD     A,H             
-69AE: 15             DEC     D               
-69AF: 30 60          JR      NC,$6A11        
-69B1: 17             RLA                     
-69B2: 16 56          LD      D,$56           
-69B4: DB 17          IN      A,($17)         
-69B6: 48             LD      C,B             
-69B7: 1B             DEC     DE              
-69B8: 9C             SBC     H               
-69B9: 0D             DEC     C               
-69BA: 23             INC     HL              
-69BB: 0A             LD      A,(BC)          
-69BC: 05             DEC     B               
-69BD: 04             INC     B               
-69BE: 1F             RRA                     
-69BF: C7             RST     0X00            
-69C0: DE D3          SBC     $D3             
-69C2: 14             INC     D               
-69C3: 90             SUB     B               
-69C4: 96             SUB     (HL)            
-69C5: F3             DI                      
-69C6: A0             AND     B               
-69C7: 63             LD      H,E             
-69C8: B1             OR      C               
-69C9: 13             INC     DE              
-69CA: 54             LD      D,H             
-69CB: 5F             LD      E,A             
-69CC: BE             CP      (HL)            
-69CD: 84             ADD     A,H             
-69CE: 15             DEC     D               
-69CF: 30 60          JR      NC,$6A31        
-69D1: 17             RLA                     
-69D2: 16 48          LD      D,$48           
-69D4: DB FF          IN      A,($FF)         
-69D6: B2             OR      D               
-69D7: C7             RST     0X00            
-69D8: 16 0A          LD      D,$0A           
-69DA: BC             CP      H               
-69DB: 2F             CPL                     
-69DC: 62             LD      H,D             
-69DD: 2E 0D          LD      L,$0D           
-69DF: 1C             INC     E               
-69E0: 0A             LD      A,(BC)          
-69E1: 43             LD      B,E             
-69E2: 04             INC     B               
-69E3: 16 C7          LD      D,$C7           
-69E5: DE D3          SBC     $D3             
-69E7: 14             INC     D               
-69E8: E6 96          AND     $96             
-69EA: 77             LD      (HL),A          
-69EB: 15             DEC     D               
-69EC: 16 BC          LD      D,$BC           
-69EE: DB 72          IN      A,($72)         
-69F0: AF             XOR     A               
-69F1: 6E             LD      L,(HL)          
-69F2: 83             ADD     A,E             
-69F3: 61             LD      H,C             
-69F4: BB             CP      E               
-69F5: 85             ADD     A,L             
-69F6: FB             EI                      
-69F7: 17             RLA                     
-69F8: 53             LD      D,E             
-69F9: BE             CP      (HL)            
-69FA: A9             XOR     C               
-69FB: 8B             ADC     A,E             
-69FC: 42             LD      B,D             
-69FD: 03             INC     BC              
-69FE: 18 00          JR      $6A00           
-6A00: 00             NOP                     
+5561: 00 94 9D                                                         ; size=149D
+;
+; Object_01 "GreenDoorA"
+5564: 0B 12                                                            ; word=0B size=0012
+5566: 85 00 88                                                         ; room=85 scorePoints=00 bits=88
+5569:   03 01                                                          ;   03 DESCRIPTION
+556B:     84                                                           ;     84(PrintSouthWallGreenDoor)
+556C:   01 01                                                          ;   01 ADJECTIVES
+556E:   14                                                             ;   TODO WORD
+556F:   02 07                                                          ;   02 SHORT_NAME
+5571:     AF 6E 83 61 81 5B 52                                         ;     GREEN DOOR
+;
+; Object_02 "GreenDoorB"
+5578: 0B 12                                                            ; word=0B size=0012
+557A: 84 00 8A                                                         ; room=84 scorePoints=00 bits=8A
+557D:   03 01                                                          ;   03 DESCRIPTION
+557F:     86                                                           ;     86(PrintNorthWallGreedDoor)
+5580:   01 01                                                          ;   01 ADJECTIVES
+5582:   14                                                             ;   TODO WORD
+5583:   02 07                                                          ;   02 SHORT_NAME
+5585:     AF 6E 83 61 81 5B 52                                         ;     GREEN DOOR
+;
+; Object_03 "RedDoorA"
+558C: 0B 11                                                            ; word=0B size=0011
+558E: 84 00 8B                                                         ; room=84 scorePoints=00 bits=8B
+5591:   03 01                                                          ;   03 DESCRIPTION
+5593:     87                                                           ;     87(PrintSouthWallRedDOor)
+5594:   01 01                                                          ;   01 ADJECTIVES
+5596:   13                                                             ;   TODO WORD
+5597:   02 06                                                          ;   02 SHORT_NAME
+5599:     66 B1 09 15 A3 A0                                            ;     RED DOOR
+;
+; Object_04 "RedDoorB"
+559F: 0B 11                                                            ; word=0B size=0011
+55A1: 86 00 88                                                         ; room=86 scorePoints=00 bits=88
+55A4:   03 01                                                          ;   03 DESCRIPTION
+55A6:     85                                                           ;     85(PrintNorthWallRedDoor)
+55A7:   01 01                                                          ;   01 ADJECTIVES
+55A9:   13                                                             ;   TODO WORD
+55AA:   02 06                                                          ;   02 SHORT_NAME
+55AC:     66 B1 09 15 A3 A0                                            ;     RED DOOR
+;
+; Object_05 "GreenDoorC"
+55B2: 0B 12                                                            ; word=0B size=0012
+55B4: 88 00 8A                                                         ; room=88 scorePoints=00 bits=8A
+55B7:   03 01                                                          ;   03 DESCRIPTION
+55B9:     84                                                           ;     84(PrintSouthWallGreenDoor)
+55BA:   01 01                                                          ;   01 ADJECTIVES
+55BC:   14                                                             ;   TODO WORD
+55BD:   02 07                                                          ;   02 SHORT_NAME
+55BF:     AF 6E 83 61 81 5B 52                                         ;     GREEN DOOR
+;
+; Object_06 "GreedDoorD"
+55C6: 0B 12                                                            ; word=0B size=0012
+55C8: 87 00 88                                                         ; room=87 scorePoints=00 bits=88
+55CB:   03 01                                                          ;   03 DESCRIPTION
+55CD:     86                                                           ;     86(PrintNorthWallGreedDoor)
+55CE:   01 01                                                          ;   01 ADJECTIVES
+55D0:   14                                                             ;   TODO WORD
+55D1:   02 07                                                          ;   02 SHORT_NAME
+55D3:     AF 6E 83 61 81 5B 52                                         ;     GREEN DOOR
+;
+; Object_07 "RedDoorC"
+55DA: 0B 11                                                            ; word=0B size=0011
+55DC: 87 00 8B                                                         ; room=87 scorePoints=00 bits=8B
+55DF:   03 01                                                          ;   03 DESCRIPTION
+55E1:     87                                                           ;     87(PrintSouthWallRedDOor)
+55E2:   01 01                                                          ;   01 ADJECTIVES
+55E4:   13                                                             ;   TODO WORD
+55E5:   02 06                                                          ;   02 SHORT_NAME
+55E7:     66 B1 09 15 A3 A0                                            ;     RED DOOR
+;
+; Object_08 "RedDoorD"
+55ED: 0B 11                                                            ; word=0B size=0011
+55EF: 89 00 88                                                         ; room=89 scorePoints=00 bits=88
+55F2:   03 01                                                          ;   03 DESCRIPTION
+55F4:     85                                                           ;     85(PrintNorthWallRedDoor)
+55F5:   01 01                                                          ;   01 ADJECTIVES
+55F7:   13                                                             ;   TODO WORD
+55F8:   02 06                                                          ;   02 SHORT_NAME
+55FA:     66 B1 09 15 A3 A0                                            ;     RED DOOR
+;
+; Object_09 "GreenDoorE"
+5600: 0B 12                                                            ; word=0B size=0012
+5602: 8B 00 88                                                         ; room=8B scorePoints=00 bits=88
+5605:   03 01                                                          ;   03 DESCRIPTION
+5607:     84                                                           ;     84(PrintSouthWallGreenDoor)
+5608:   01 01                                                          ;   01 ADJECTIVES
+560A:   14                                                             ;   TODO WORD
+560B:   02 07                                                          ;   02 SHORT_NAME
+560D:     AF 6E 83 61 81 5B 52                                         ;     GREEN DOOR
+;
+; Object_0A "GreenDoorF"
+5614: 0B 12                                                            ; word=0B size=0012
+5616: 8A 00 8A                                                         ; room=8A scorePoints=00 bits=8A
+5619:   03 01                                                          ;   03 DESCRIPTION
+561B:     86                                                           ;     86(PrintNorthWallGreedDoor)
+561C:   01 01                                                          ;   01 ADJECTIVES
+561E:   14                                                             ;   TODO WORD
+561F:   02 07                                                          ;   02 SHORT_NAME
+5621:     AF 6E 83 61 81 5B 52                                         ;     GREEN DOOR
+;
+; Object_0B "RedDoorE"
+5628: 0B 11                                                            ; word=0B size=0011
+562A: 8A 00 8B                                                         ; room=8A scorePoints=00 bits=8B
+562D:   03 01                                                          ;   03 DESCRIPTION
+562F:     87                                                           ;     87(PrintSouthWallRedDOor)
+5630:   01 01                                                          ;   01 ADJECTIVES
+5632:   13                                                             ;   TODO WORD
+5633:   02 06                                                          ;   02 SHORT_NAME
+5635:     66 B1 09 15 A3 A0                                            ;     RED DOOR
+;
+; Object_0C "GreenDoorG"
+563B: 0B 12                                                            ; word=0B size=0012
+563D: 8D 00 88                                                         ; room=8D scorePoints=00 bits=88
+5640:   03 01                                                          ;   03 DESCRIPTION
+5642:     84                                                           ;     84(PrintSouthWallGreenDoor)
+5643:   01 01                                                          ;   01 ADJECTIVES
+5645:   14                                                             ;   TODO WORD
+5646:   02 07                                                          ;   02 SHORT_NAME
+5648:     AF 6E 83 61 81 5B 52                                         ;     GREEN DOOR
+;
+; Object_0D "GreenDoorH"
+564F: 0B 12                                                            ; word=0B size=0012
+5651: 8C 00 8A                                                         ; room=8C scorePoints=00 bits=8A
+5654:   03 01                                                          ;   03 DESCRIPTION
+5656:     86                                                           ;     86(PrintNorthWallGreedDoor)
+5657:   01 01                                                          ;   01 ADJECTIVES
+5659:   14                                                             ;   TODO WORD
+565A:   02 07                                                          ;   02 SHORT_NAME
+565C:     AF 6E 83 61 81 5B 52                                         ;     GREEN DOOR
+;
+; Object_0E "RedDoorF"
+5663: 0B 11                                                            ; word=0B size=0011
+5665: 8F 00 88                                                         ; room=8F scorePoints=00 bits=88
+5668:   03 01                                                          ;   03 DESCRIPTION
+566A:     85                                                           ;     85(PrintNorthWallRedDoor)
+566B:   01 01                                                          ;   01 ADJECTIVES
+566D:   13                                                             ;   TODO WORD
+566E:   02 06                                                          ;   02 SHORT_NAME
+5670:     66 B1 09 15 A3 A0                                            ;     RED DOOR
+;
+; Object_0F "BlueDoorA"
+5676: 0B 11                                                            ; word=0B size=0011
+5678: 8F 00 8A                                                         ; room=8F scorePoints=00 bits=8A
+567B:   02 06                                                          ;   02 SHORT_NAME
+567D:     8F 4E 46 5E 44 A0                                            ;     BLUE DOOR
+5683:   01 01                                                          ;   01 ADJECTIVES
+5685:   15                                                             ;   TODO WORD
+5686:   03 01                                                          ;   03 DESCRIPTION
+5688:     88                                                           ;     88(PrintEastWallBlueDoor)
+;
+; Object_10 "BlueDoorB"
+5689: 0B 11                                                            ; word=0B size=0011
+568B: 90 00 88                                                         ; room=90 scorePoints=00 bits=88
+568E:   03 01                                                          ;   03 DESCRIPTION
+5690:     89                                                           ;     89(PrintWestWallBlueDoor)
+5691:   01 01                                                          ;   01 ADJECTIVES
+5693:   15                                                             ;   TODO WORD
+5694:   02 06                                                          ;   02 SHORT_NAME
+5696:     8F 4E 46 5E 44 A0                                            ;     BLUE DOOR
+;
+; Object_11 "BlueDoorC"
+569C: 0B 11                                                            ; word=0B size=0011
+569E: 91 00 8A                                                         ; room=91 scorePoints=00 bits=8A
+56A1:   03 01                                                          ;   03 DESCRIPTION
+56A3:     89                                                           ;     89(PrintWestWallBlueDoor)
+56A4:   01 01                                                          ;   01 ADJECTIVES
+56A6:   15                                                             ;   TODO WORD
+56A7:   02 06                                                          ;   02 SHORT_NAME
+56A9:     8F 4E 46 5E 44 A0                                            ;     BLUE DOOR
+;
+; Object_12 "BlueDoorD"
+56AF: 0B 11                                                            ; word=0B size=0011
+56B1: 94 00 88                                                         ; room=94 scorePoints=00 bits=88
+56B4:   03 01                                                          ;   03 DESCRIPTION
+56B6:     88                                                           ;     88(PrintEastWallBlueDoor)
+56B7:   01 01                                                          ;   01 ADJECTIVES
+56B9:   15                                                             ;   TODO WORD
+56BA:   02 06                                                          ;   02 SHORT_NAME
+56BC:     8F 4E 46 5E 44 A0                                            ;     BLUE DOOR
+;
+; Object_13 "PLAYER"
+56C2: FF 42                                                            ; word=FF size=0042
+56C4: 88 00 80                                                         ; room=88 scorePoints=00 bits=80
+56C7:   08 06                                                          ;   08 TURN SCRIPT
+56C9:     0D 04                                                        ;     while_pass: size=0004
+56CB:       03 13 3A                                                   ;       is_located(room,object) room=13(Room_13) object=3A(Object3A)
+56CE:       9B                                                         ;       9B(??PrintDirs)
+56CF:   0A 31                                                          ;   0A UPON DEATH SCRIPT
+56D1:     0D 2F                                                        ;     while_pass: size=002F
+56D3:       1F 29                                                      ;       print2(msg) size=0029
+56D5:         C7 DE DB 16 CB B9 36 A1 B0 17 F4 59 82 17 73 49          ;         YOU PASS OUT UNDER THAT LAST ATTACK. YOU
+56E5:         55 8B 03 BC 3B C0 AF 54 51 18 43 C2 0D D0 83 61          ;         AWAKEN IN YOUR CELL.
+56F5:         83 7A C7 DE 85 AF 46 61 2E                               ;         ~
+56FE:       2C 13                                                      ;       set_ACTIVE(object) object=13(PLAYER)
+5700:       19 88                                                      ;       move_ACTIVE(room) room=88(Small square room)
+5702:   09 02                                                          ;   HIT POINTS
+5704:   46 46                                                          ;   maxHitPoints=46 currentHitPoints=46
+;
+; Object_14 "RedKeyA"
+5706: 16 21                                                            ; word=16 size=0021
+5708: 00 00 A0                                                         ; room=00 scorePoints=00 bits=A0
+570B:   03 12                                                          ;   03 DESCRIPTION
+570D:     04 10                                                        ;     print(msg) size=0010
+570F:       5F BE 5B B1 4B 7B 54 45 F3 5F BB 85 9F 15 7F B1            ;       THERE IS A RED KEY HERE.
+571F:   01 01                                                          ;   01 ADJECTIVES
+5721:   13                                                             ;   TODO WORD
+5722:   02 05                                                          ;   02 SHORT_NAME
+5724:     66 B1 17 16 59                                               ;     RED KEY
+;
+; Object_15 "BluePillA"
+5729: 17 34                                                            ; word=17 size=0034
+572B: 82 00 A0                                                         ; room=82 scorePoints=00 bits=A0
+572E:   03 01                                                          ;   03 DESCRIPTION
+5730:     9D                                                           ;     9D(PrintBluePill)
+5731:   07 24                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
+5733:     0D 22                                                        ;     while_pass: size=0022
+5735:       0A 15                                                      ;       compare_input_to(phrase) phrase="15: EAT u....... * *"
+5737:       04 1E                                                      ;       print(msg) size=001E
+5739:         A7 B7 4B 94 15 B2 DE 88 BF 14 11 BC 2F F7 87 15          ;         SEEMS RISKY, BUT O.K. GULP! HMMM. NO EFF
+5749:         91 8D A7 15 7F 93 99 16 28 15 65 66 83 BB                ;         ECT?
+5757:   02 06                                                          ;   02 SHORT_NAME
+5759:     8F 4E 52 5E 46 7A                                            ;     BLUE PILL
+;
+; Object_16 "WindowHook"
+575F: 18 2C                                                            ; word=18 size=002C
+5761: 81 00 A0                                                         ; room=81 scorePoints=00 bits=A0
+5764:   03 1D                                                          ;   03 DESCRIPTION
+5766:     04 1B                                                        ;     print(msg) size=001B
+5768:       5F BE 5B B1 4B 7B 4E 45 11 A0 9B 15 46 98 59 5E            ;       THERE IS A LONG HANDLE WINDOW HOOK HERE.
+5778:       8E 7A 6B A1 81 74 CA 83 2F 62 2E                           ;       ~
+5783:   02 08                                                          ;   02 SHORT_NAME
+5785:     50 D1 89 5B A9 15 8B 9F                                      ;     WINDOW HOOK
+;
+; Object_17 "Cabinet"
+578D: 19 80 9C                                                         ; word=19 size=009C
+5790: 82 00 83                                                         ; room=82 scorePoints=00 bits=83
+5793:   03 2A                                                          ;   03 DESCRIPTION
+5795:     04 28                                                        ;     print(msg) size=0028
+5797:       03 A0 0F A0 F3 17 F3 8C 4B 7B 45 45 B3 46 76 98            ;       ON ONE WALL IS A CABINET. THE CABINET HA
+57A7:       56 F4 DB 72 04 53 8F 7A 0A BC 4B 49 56 45 A3 7A            ;       S A TINY HOLE IN IT.
+57B7:       A9 15 DB 8B 83 7A 97 7B                                    ;       ~
+57BF:   07 64                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
+57C1:     0E 62                                                        ;     while_fail: size=0062
+57C3:       0D 23                                                      ;       while_pass: size=0023
+57C5:         0E 06                                                    ;         while_fail: size=0006
+57C7:           0A 42                                                  ;           compare_input_to(phrase) phrase="42: UNLOCK .......L WITH u......."
+57C9:           0A 3A                                                  ;           compare_input_to(phrase) phrase="3A: OPEN ......O. WITH u......."
+57CB:           0A 11                                                  ;           compare_input_to(phrase) phrase="11: OPEN ......O. * *"
+57CD:         04 19                                                    ;         print(msg) size=0019
+57CF:           C7 DE D3 14 E6 96 57 17 5B 61 6B BF 96 C5 5D 9E        ;           YOU CAN'T SEEM TO UNLOCK THE CABINET.
+57DF:           82 17 45 5E B3 46 76 98 2E                             ;           ~
+57E8:       0D 3B                                                      ;       while_pass: size=003B
+57EA:         0E 04                                                    ;         while_fail: size=0004
+57EC:           0A 10                                                  ;           compare_input_to(phrase) phrase="10: LOOK * IN u......."
+57EE:           0A 0B                                                  ;           compare_input_to(phrase) phrase="0B: LOOK * AT u......."
+57F0:         03 82 3B                                                 ;         is_located(room,object) room=82(Dispensary) object=3B(RedKeyB)
+57F3:         04 30                                                    ;         print(msg) size=0030
+57F5:           0C BA D0 47 91 7A 89 17 57 17 56 5E F9 74 7A C4        ;           STRAINING TO SEE THROUGH THE TINY HOLE,
+5805:           82 17 56 5E A3 7A A9 15 FE 8B 51 18 45 C2 83 48        ;           YOU CAN JUST MAKE OUT A RED KEY.
+5815:           F5 81 0F BC 17 48 C7 16 03 BC 2F 17 0D 58 5F 63        ;           ~
+5825:   02 05                                                          ;   02 SHORT_NAME
+5827:     04 53 8F 7A 54                                               ;     CABINET
+;
+; Object_18 "Refrigerator"
+582C: 1A 80 C9                                                         ; word=1A size=00C9
+582F: 92 00 8A                                                         ; room=92 scorePoints=00 bits=8A
+5832:   03 2E                                                          ;   03 DESCRIPTION
+5834:     04 2C                                                        ;     print(msg) size=002C
+5836:       83 7A 5F BE 99 16 C2 B3 95 5F 05 BC B8 A0 23 62            ;       IN THE NORTHEAST CORNER OF THE ROOM THER
+5846:       C3 9E 5F BE 39 17 DB 9F 5F BE 5B B1 4B 7B 4E 45            ;       E IS A LARGE REFRIGERATOR
+5856:       31 49 54 5E 5C 60 77 79 D6 B0 A3 A0                        ;       ~
+5862:   06 3D                                                          ;   06 COMMAND HANDLING IF SECOND NOUN
+5864:     0D 3B                                                        ;     while_pass: size=003B
+5866:       0A 0F                                                      ;       compare_input_to(phrase) phrase="0F: DROP u....... IN u......."
+5868:       1B                                                         ;       set_VAR_to_second_noun()
+5869:       0D 0C                                                      ;       while_pass: size=000C
+586B:         15 02                                                    ;         check_VAR(bits) bits=02(......O.)
+586D:         A9                                                       ;         A9(PrintTheSecondNoun)
+586E:         04 07                                                    ;         print(msg) size=0007
+5870:           4B 7B C9 54 A6 B7 2E                                   ;           IS CLOSED.
+5877:       A8                                                         ;       A8(PrintTheFirstNoun)
+5878:       04 08                                                      ;       print(msg) size=0008
+587A:         CE 65 0B 8E 36 A1 B8 16                                  ;         FALLS OUT OF
+5882:       A9                                                         ;       A9(PrintTheSecondNoun)
+5883:       04 1A                                                      ;       print(msg) size=001A
+5885:         1E A0 D6 9C DB 72 89 67 A3 A0 68 4D AF A0 C7 DE          ;         ONTO THE FLOOR BEFOREYOU CAN CLOSE IT.
+5895:         D3 14 85 96 85 8D 4B 5E 9B C1                            ;         ~
+589F:       1A                                                         ;       set_VAR_to_first_noun()
+58A0:       10                                                         ;       drop_VAR()
+58A1:   07 4B                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
+58A3:     0D 49                                                        ;     while_pass: size=0049
+58A5:       0A 11                                                      ;       compare_input_to(phrase) phrase="11: OPEN ......O. * *"
+58A7:       1A                                                         ;       set_VAR_to_first_noun()
+58A8:       15 02                                                      ;       check_VAR(bits) bits=02(......O.)
+58AA:       03 18 42                                                   ;       is_located(room,object) room=18(Room_18) object=42(Object42)
+58AD:       29                                                         ;       print_open_VAR()
+58AE:       17 19 92                                                   ;       move_to(object,room) object=19(HamburgerMeat) room=92(Kitchen)
+58B1:       17 42 00                                                   ;       move_to(object,room) object=42(Object42) room=00(Room_00)
+58B4:       04 38                                                      ;       print(msg) size=0038
+58B6:         1F D1 9B 96 1B A1 5F A0 96 96 DB 72 68 B1 09 B2          ;         WHEN YOU OPEN THE REFRIGERATOR, SOME HAM
+58C6:         2B 62 84 BF 15 EE E7 9F 9B 15 BF 91 B7 B1 8F AF          ;         BURGER MEAT FALLS OUT OF IT ONTO THE FLO
+58D6:         96 5F 4B 15 0D 8D C7 16 11 BC 8B 64 11 BC C9 9A          ;         OR.
+58E6:         82 17 48 5E 81 8D 1B B5                                  ;         ~
+58EE:   02 08                                                          ;   02 SHORT_NAME
+58F0:     68 B1 09 B2 2B 62 84 BF                                      ;     REFRIGERATOR
+;
+; Object_19 "HamburgerMeat"
+58F8: 1B 6E                                                            ; word=1B size=006E
+58FA: 00 00 A0                                                         ; room=00 scorePoints=00 bits=A0
+58FD:   03 19                                                          ;   03 DESCRIPTION
+58FF:     04 17                                                        ;     print(msg) size=0017
+5901:       5F BE 5B B1 4B 7B 3F B9 4A 5E 64 48 31 C6 23 62            ;       THERE IS SOME HAMBURGER MEAT HERE.
+5911:       23 92 0A BC 2F 62 2E                                       ;       ~
+5918:   06 16                                                          ;   06 COMMAND HANDLING IF SECOND NOUN
+591A:     0D 14                                                        ;     while_pass: size=0014
+591C:       0A 0F                                                      ;       compare_input_to(phrase) phrase="0F: DROP u....... IN u......."
+591E:       0E 10                                                      ;       while_fail: size=0010
+5920:         0D 06                                                    ;         while_pass: size=0006
+5922:           08 15                                                  ;           is_first_noun(object) object=15(BluePillA)
+5924:           17 15 19                                               ;           move_to(object,room) object=15(BluePillA) room=19(Room_19)
+5927:           A0                                                     ;           A0(PrintPillInHamburger)
+5928:         0D 06                                                    ;         while_pass: size=0006
+592A:           08 39                                                  ;           is_first_noun(object) object=39(BluePillB)
+592C:           17 39 19                                               ;           move_to(object,room) object=39(BluePillB) room=19(Room_19)
+592F:           A0                                                     ;           A0(PrintPillInHamburger)
+5930:   07 2A                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
+5932:     0D 28                                                        ;     while_pass: size=0028
+5934:       0A 15                                                      ;       compare_input_to(phrase) phrase="15: EAT u....... * *"
+5936:       04 21                                                      ;       print(msg) size=0021
+5938:         F4 4F AB A2 AB AD DB BD 41 6E 73 5D F6 4F 7B 14          ;         BURP! QUITE GOOD, BUT A LITTLE RARE FOR
+5948:         96 8C FF BE 2B 17 5B B1 04 68 7B 16 7B 17 FF B9          ;         MY TASTE.
+5958:         2E                                                       ;         ~
+5959:       17 19 00                                                   ;       move_to(object,room) object=19(HamburgerMeat) room=00(Room_00)
+595C:   02 0A                                                          ;   02 SHORT_NAME
+595E:     4F 72 F4 4F B4 6C 67 16 73 49                                ;     HAMBURGER MEAT
+;
+; Object_1A "GuardDog"
+5968: 08 81 03                                                         ; word=08 size=0103
+596B: 93 00 90                                                         ; room=93 scorePoints=00 bits=90
+596E:   03 33                                                          ;   03 DESCRIPTION
+5970:     04 31                                                        ;     print(msg) size=0031
+5972:       58 45 DB 78 35 A1 87 15 2E 49 09 15 CB 6A C5 B5            ;       A VICIOUS GUARD DOG IS CHAINED TO THE SO
+5982:       4B 72 66 98 89 17 82 17 55 5E 36 A1 19 71 46 48            ;       UTH WALL BLOCKING THE SOUTH EXIT.
+5992:       B6 14 5D 9E 91 7A 82 17 55 5E 36 A1 07 71 96 D7            ;       ~
+59A2:       2E                                                         ;       ~
+59A3:   07 01                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
+59A5:     A1                                                           ;     A1(FeedDogMeat)
+59A6:   06 01                                                          ;   06 COMMAND HANDLING IF SECOND NOUN
+59A8:     A1                                                           ;     A1(FeedDogMeat)
+59A9:   0A 1C                                                          ;   0A UPON DEATH SCRIPT
+59AB:     0D 1A                                                        ;     while_pass: size=001A
+59AD:       1F 15                                                      ;       print2(msg) size=0015
+59AF:         C7 DE 4F 24 63 16 C9 97 F3 5F 6B BF 4E 86 16 8A          ;         YOU'VE MANAGED TO KILL THE DOG.
+59BF:         DB 72 79 5B 2E                                           ;         ~
+59C4:       1E 1A 3C                                                   ;       swap(object_a,object_b) object_a=(GuardDog)1A object_b=3C(DeadDog)
+59C7:   08 80 94                                                       ;   08 TURN SCRIPT
+59CA:     0E 80 91                                                     ;     while_fail: size=0091
+59CD:       0D 7D                                                      ;       while_pass: size=007D
+59CF:         0A 09                                                    ;         compare_input_to(phrase) phrase="09: ATTACK ...P.... WITH .v......"
+59D1:         1C 13                                                    ;         set_VAR(object) object=13(PLAYER)
+59D3:         0B 77 05                                                 ;         switch(is_less_equal_last_random(value)): size=0077
+59D6:           55                                                     ;           is_less_equal_last_random(value) value=55
+59D7:           22                                                     ;           IF_NOT_GOTO address=59FA
+59D8:             0D 20                                                ;             while_pass: size=0020
+59DA:               1F 1C                                              ;               print2(msg) size=001C
+59DC:                 5F BE 09 15 D6 6A 94 5F C3 B5 1B BC 34 A1 3F 16  ;                 THE DOG TEARS AT YOUR LEG AND DRAWS BLOO
+59EC:                 C3 6A 33 98 EB 5B CB D2 89 4E 71 9E              ;                 D!
+59F8:               1D 06                                              ;               attack_VAR(points) points=06
+59FA:           AF                                                     ;           is_less_equal_last_random(value) value=AF
+59FB:           26                                                     ;           IF_NOT_GOTO address=5A22
+59FC:             0D 24                                                ;             while_pass: size=0024
+59FE:               1F 20                                              ;               print2(msg) size=0020
+5A00:                 5F BE 09 15 C4 6A 7F 7B DB B5 34 A1 94 14 43 90  ;                 THE DOG BITES YOUR ARM AND YOU CRINGE WI
+5A10:                 33 98 C7 DE E4 14 91 7A 59 5E 82 7B DB 16 81 7A  ;                 TH PAIN!
+5A20:               1D 07                                              ;               attack_VAR(points) points=07
+5A22:           FF                                                     ;           is_less_equal_last_random(value) value=FF
+5A23:           28                                                     ;           IF_NOT_GOTO address=5A4C
+5A24:             1F 26                                                ;             print2(msg) size=0026
+5A26:               5F BE 09 15 CE 6A 91 C5 4B 62 04 68 51 18 23 C6    ;               THE DOG LUNGES FOR YOUR NECK, BUT YOU PU
+5A36:               65 98 33 89 F6 4F 51 18 52 C2 46 C5 AB 14 8B 54    ;               LL BACK IN TIME!
+5A46:               83 7A 8F BE EB 5D                                  ;               ~
+5A4C:       1F 10                                                      ;       print2(msg) size=0010
+5A4E:         41 1E C3 9E B9 6E B3 D1 41 D2 99 64 38 A0 E3 06          ;         "WOOF GROWL WOOF WOOF!"
+5A5E:   09 02                                                          ;   HIT POINTS
+5A60:   46 46                                                          ;   maxHitPoints=46 currentHitPoints=46
+5A62:   02 0A                                                          ;   02 SHORT_NAME
+5A64:     5F BE D3 17 51 54 4B C6 79 5B                                ;     THE VICIOUS DOG
+;
+; Object_1B "GreenKeyA"
+5A6E: 16 24                                                            ; word=16 size=0024
+5A70: 8E 00 A0                                                         ; room=8E scorePoints=00 bits=A0
+5A73:   03 14                                                          ;   03 DESCRIPTION
+5A75:     04 12                                                        ;     print(msg) size=0012
+5A77:       5F BE 5B B1 4B 7B 49 45 67 B1 8D 96 3B 63 F4 72            ;       THERE IS A GREEN KEY HERE.
+5A87:       DB 63                                                      ;       ~
+5A89:   01 01                                                          ;   01 ADJECTIVES
+5A8B:   14                                                             ;   TODO WORD
+5A8C:   02 06                                                          ;   02 SHORT_NAME
+5A8E:     AF 6E 83 61 BB 85                                            ;     GREEN KEY
+;
+; Object_1C "RayA"
+5A94: 03 81 60                                                         ; word=03 size=0160
+5A97: 00 00 90                                                         ; room=00 scorePoints=00 bits=90
+5A9A:   03 18                                                          ;   03 DESCRIPTION
+5A9C:     04 16                                                        ;     print(msg) size=0016
+5A9E:       DB B0 57 17 75 61 89 17 AF 14 3B 15 D0 60 D6 6A            ;       RAY SEEMS TO BE EYEING THE WALLS.
+5AAE:       DB 72 0E D0 2F 8E                                          ;       ~
+5AB4:   09 02                                                          ;   HIT POINTS
+5AB6:   46 46                                                          ;   maxHitPoints=46 currentHitPoints=46
+5AB8:   0B 81 2D                                                       ;   0B COMMAND HANDLING IF GIVEN COMMAND
+5ABB:     0E 81 2A                                                     ;     while_fail: size=012A
+5ABE:       0D 80 DF                                                   ;       while_pass: size=00DF
+5AC1:         0E 0A                                                    ;         while_fail: size=000A
+5AC3:           0A 01                                                  ;           compare_input_to(phrase) phrase="01: NORTH * * *"
+5AC5:           0A 02                                                  ;           compare_input_to(phrase) phrase="02: SOUTH * * *"
+5AC7:           0A 03                                                  ;           compare_input_to(phrase) phrase="03: EAST * * *"
+5AC9:           0A 04                                                  ;           compare_input_to(phrase) phrase="04: WEST * * *"
+5ACB:           0A 0A                                                  ;           compare_input_to(phrase) phrase="0A: LOOK * * *"
+5ACD:         1F 0F                                                    ;         print2(msg) size=000F
+5ACF:           DB B0 2F 17 84 A6 0B C0 DB 72 10 53 57 17 45           ;           RAY REPORTS HE CAN SEE
+5ADE:         1C 38                                                    ;         set_VAR(object) object=38(SYSTEM)
+5AE0:         10                                                       ;         drop_VAR()
+5AE1:         2C 38                                                    ;         set_ACTIVE(object) object=38(SYSTEM)
+5AE3:         0E 80 B8                                                 ;         while_fail: size=00B8
+5AE6:           0D 33                                                  ;           while_pass: size=0033
+5AE8:             01 3D                                                ;             is_in_pack_or_current_room(object) object=3D(SecretDoor)
+5AEA:             1F 2E                                                ;             print2(msg) size=002E
+5AEC:               55 45 E4 5F 73 62 81 5B 8A AF 2F 62 19 EE 85 73    ;               A SECRET DOOR HERE, WHICH MAY LEAD TO ES
+5AFC:               0F 71 3B 4A E3 8B 16 58 C7 9C 53 B7 FF A4 AF 14    ;               CAPE. BESIDES THAT, THERE IS
+5B0C:               46 B8 4B 62 5B BE 73 C1 5F BE 5B B1 4B 7B          ;               ~
+5B1A:             0C                                                   ;             fail()
+5B1B:           0D 3D                                                  ;           while_pass: size=003D
+5B1D:             03 00 22                                             ;             is_located(room,object) room=00(Room_00) object=22(PicassoA)
+5B20:             03 88 1C                                             ;             is_located(room,object) room=88(Small square room) object=1C(RayA)
+5B23:             1F 34                                                ;             print2(msg) size=0034
+5B25:               5B BE 04 BC 51 63 33 98 5F BE 99 16 C2 B3 F3 17    ;               THAT BEYOND THE NORTH WALL IS A POSSIBLE
+5B35:               F3 8C 4B 7B 52 45 E5 A0 B6 78 47 5E 53 B7 DB A4    ;               ESCAPE ROUTE. BESIDES THAT, THERE IS
+5B45:               07 B3 FF BD AF 14 46 B8 4B 62 5B BE 73 C1 5F BE    ;               ~
+5B55:               5B B1 4B 7B                                        ;               ~
+5B59:             0C                                                   ;             fail()
+5B5A:           0D 06                                                  ;           while_pass: size=0006
+5B5C:             0A 03                                                ;             compare_input_to(phrase) phrase="03: EAST * * *"
+5B5E:             21 03 00 00                                          ;             execute_phrase(phrase,first_noun,second_noun) phrase="03: EAST * * *" firstNoun=00 secondNoun=00
+5B62:           0D 06                                                  ;           while_pass: size=0006
+5B64:             0A 04                                                ;             compare_input_to(phrase) phrase="04: WEST * * *"
+5B66:             21 04 00 00                                          ;             execute_phrase(phrase,first_noun,second_noun) phrase="04: WEST * * *" firstNoun=00 secondNoun=00
+5B6A:           0D 06                                                  ;           while_pass: size=0006
+5B6C:             0A 01                                                ;             compare_input_to(phrase) phrase="01: NORTH * * *"
+5B6E:             21 01 00 00                                          ;             execute_phrase(phrase,first_noun,second_noun) phrase="01: NORTH * * *" firstNoun=00 secondNoun=00
+5B72:           0D 06                                                  ;           while_pass: size=0006
+5B74:             0A 02                                                ;             compare_input_to(phrase) phrase="02: SOUTH * * *"
+5B76:             21 02 00 00                                          ;             execute_phrase(phrase,first_noun,second_noun) phrase="02: SOUTH * * *" firstNoun=00 secondNoun=00
+5B7A:           1F 22                                                  ;           print2(msg) size=0022
+5B7C:             06 9A 90 73 5B 70 B7 1C F3 B9 5B 4D 3F B9 4E 5E      ;             NOTHING. "MUST BE SOME LEAD-LINED WALLS!
+5B8C:             86 5F C3 EA 66 98 F3 17 0D 8D E3 06 DB 72 1B B7      ;             " HE SAYS.
+5B9C:             5B BB                                                ;             ~
+5B9E:         2C 1C                                                    ;         set_ACTIVE(object) object=1C(RayA)
+5BA0:       0D 45                                                      ;       while_pass: size=0045
+5BA2:         0E 06                                                    ;         while_fail: size=0006
+5BA4:           0A 11                                                  ;           compare_input_to(phrase) phrase="11: OPEN ......O. * *"
+5BA6:           0A 42                                                  ;           compare_input_to(phrase) phrase="42: UNLOCK .......L WITH u......."
+5BA8:           0A 09                                                  ;           compare_input_to(phrase) phrase="09: ATTACK ...P.... WITH .v......"
+5BAA:         1F 3B                                                    ;         print2(msg) size=003B
+5BAC:           DB B0 63 16 B5 85 7B 14 67 66 7F 4E 96 14 EF BD        ;           RAY MAKES A FEEBLE ATTEMPT AND THEN DRAW
+5BBC:           33 A7 8E 48 82 17 83 61 EB 5B CB D2 C5 4C 5B 89        ;           S BACK. "SORRY, I'VE BEEN RATHER ANEMIC
+5BCC:           A1 1D 83 B3 0B EE 4F 24 AF 14 83 61 D6 B0 F4 72        ;           LATELY!"
+5BDC:           90 14 6B 61 CE 51 7F 49 F9 8E 22                       ;           ~
+5BE7:       9A                                                         ;       9A(??CommandResponse)
+5BE8:   08 06                                                          ;   08 TURN SCRIPT
+5BEA:     0D 04                                                        ;     while_pass: size=0004
+5BEC:       9C                                                         ;       9C(??MoveHoudiniC)
+5BED:       1C 1C                                                      ;       set_VAR(object) object=1C(RayA)
+5BEF:       9E                                                         ;       9E(PrintObjectEntersRoom)
+5BF0:   07 01                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
+5BF2:     AB                                                           ;     AB(AttackPerson)
+5BF3:   02 02                                                          ;   02 SHORT_NAME
+5BF5:     DB B0                                                        ;     RAY
+;
+; Object_1D "RayB"
+5BF7: 03 80 AE                                                         ; word=03 size=00AE
+5BFA: 00 00 90                                                         ; room=00 scorePoints=00 bits=90
+5BFD:   03 80 A8                                                       ;   03 DESCRIPTION
+5C00:     0D 80 A5                                                     ;     while_pass: size=00A5
+5C03:       04 80 9F                                                   ;       print(msg) size=009F
+5C06:         4F 45 83 48 83 7A 94 5A FB C0 4F A1 CE B0 0B 8E          ;         A MAN IN DIRTY OVERALLS AND WEARING GOGG
+5C16:         8E 48 F7 17 33 49 AB 98 39 6E BF 6D C3 B5 AC A6          ;         LES APPROACHES YOU AND INTRODUCES HIMSEL
+5C26:         05 9E F5 72 51 18 43 C2 33 98 9E 7A F6 B2 D7 C3          ;         F. "HI! MY NAME IS XRAY JOHNSON, BUT YOU
+5C36:         CA B5 75 7A 40 61 3C F4 79 73 7B 16 8B 16 1B 92          ;         CAN CALL ME RAY. I HAVE XRAY VISION, YO
+5C46:         4B 7B EB D8 4C DB 28 9F 40 B9 04 EE 73 C6 C7 DE          ;         U KNOW. SAY, YOU BETTER HAVE THAT SPOT O
+5C56:         D3 14 85 96 46 48 67 16 2B 17 DB E0 4A 77 CF 49          ;         N YOUR LEFT LUNG CHECKED BY A DOCTOR!"
+5C66:         2C 18 3B 4A 15 CB C0 7A 1B EE 1B A1 19 87 5B D4          ;         ~
+5C76:         1B B7 1B EE 1B A1 76 4D F4 BD 9B 15 5B CA 5B BE          ;         ~
+5C86:         15 BC 86 A6 C0 16 51 18 23 C6 E8 8B 0E BC 91 C5          ;         ~
+5C96:         DA 14 DD 5F F3 5F 7B 50 46 45 66 9E A1 A0 22             ;         ~
+5CA5:       1E 1C 1D                                                   ;       swap(object_a,object_b) object_a=(RayA)1C object_b=1D(RayB)
+;
+; Object_1E "NapoleanA"
+5CA8: 02 77                                                            ; word=02 size=0077
+5CAA: 00 00 90                                                         ; room=00 scorePoints=00 bits=90
+5CAD:   03 01                                                          ;   03 DESCRIPTION
+5CAF:     97                                                           ;     97(PrintNapolean)
+5CB0:   02 06                                                          ;   02 SHORT_NAME
+5CB2:     D2 97 BF 9F 03 A0                                            ;     NAPOLEON
+5CB8:   0B 58                                                          ;   0B COMMAND HANDLING IF GIVEN COMMAND
+5CBA:     0E 56                                                        ;     while_fail: size=0056
+5CBC:       0D 53                                                      ;       while_pass: size=0053
+5CBE:         0E 06                                                    ;         while_fail: size=0006
+5CC0:           0A 11                                                  ;           compare_input_to(phrase) phrase="11: OPEN ......O. * *"
+5CC2:           0A 42                                                  ;           compare_input_to(phrase) phrase="42: UNLOCK .......L WITH u......."
+5CC4:           0A 09                                                  ;           compare_input_to(phrase) phrase="09: ATTACK ...P.... WITH .v......"
+5CC6:         1A                                                       ;         set_VAR_to_first_noun()
+5CC7:         15 08                                                    ;         check_VAR(bits) bits=08(....A...)
+5CC9:         1F 46                                                    ;         print2(msg) size=0046
+5CCB:           D2 97 BF 9F 03 A0 AB 6E 8B 4F 96 7B BF 14 0A BC        ;           NAPOLEON GRABS IT, BUT HE CAN'T BUDGE IT
+5CDB:           45 5E 85 48 04 BC 01 C4 4B 5E AB BB DB 72 74 C0        ;           ! HE TURNS TO YOU AND MUMBLES SOMETHING
+5CEB:           8B 9A 6B BF C7 DE 90 14 0F 58 64 C5 F5 8B 61 17        ;           ABOUT BEING RATHER TIRED.
+5CFB:           36 92 90 73 C3 6A 07 4F 04 BC D0 60 D4 6A 82 49        ;           ~
+5D0B:           23 62 94 BE 17 60                                      ;           ~
+5D11:       9A                                                         ;       9A(??CommandResponse)
+5D12:   07 01                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
+5D14:     AB                                                           ;     AB(AttackPerson)
+5D15:   08 06                                                          ;   08 TURN SCRIPT
+5D17:     0D 04                                                        ;     while_pass: size=0004
+5D19:       9C                                                         ;       9C(??MoveHoudiniC)
+5D1A:       1C 1E                                                      ;       set_VAR(object) object=1E(NapoleanA)
+5D1C:       9E                                                         ;       9E(PrintObjectEntersRoom)
+5D1D:   09 02                                                          ;   HIT POINTS
+5D1F:   46 46                                                          ;   maxHitPoints=46 currentHitPoints=46
+;
+; Object_1F "Object1F"
+5D21: 02 0B                                                            ; word=02 size=000B
+5D23: 00 00 90                                                         ; room=00 scorePoints=00 bits=90
+5D26:   03 06                                                          ;   03 DESCRIPTION
+5D28:     0D 04                                                        ;     while_pass: size=0004
+5D2A:       96                                                         ;       96(PrintNapoleanIntro)
+5D2B:       1E 1E 1F                                                   ;       swap(object_a,object_b) object_a=(NapoleanA)1E object_b=1F(Object1F)
+;
+; Object_20 "NapoleanB"
+5D2E: 02 80 97                                                         ; word=02 size=0097
+5D31: 00 00 90                                                         ; room=00 scorePoints=00 bits=90
+5D34:   03 01                                                          ;   03 DESCRIPTION
+5D36:     97                                                           ;     97(PrintNapolean)
+5D37:   02 06                                                          ;   02 SHORT_NAME
+5D39:     D2 97 BF 9F 03 A0                                            ;     NAPOLEON
+5D3F:   0B 78                                                          ;   0B COMMAND HANDLING IF GIVEN COMMAND
+5D41:     0E 76                                                        ;     while_fail: size=0076
+5D43:       0D 73                                                      ;       while_pass: size=0073
+5D45:         0E 06                                                    ;         while_fail: size=0006
+5D47:           0A 11                                                  ;           compare_input_to(phrase) phrase="11: OPEN ......O. * *"
+5D49:           0A 42                                                  ;           compare_input_to(phrase) phrase="42: UNLOCK .......L WITH u......."
+5D4B:           0A 09                                                  ;           compare_input_to(phrase) phrase="09: ATTACK ...P.... WITH .v......"
+5D4D:         1A                                                       ;         set_VAR_to_first_noun()
+5D4E:         15 08                                                    ;         check_VAR(bits) bits=08(....A...)
+5D50:         0E 66                                                    ;         while_fail: size=0066
+5D52:           0D 49                                                  ;           while_pass: size=0049
+5D54:             15 02                                                ;             check_VAR(bits) bits=02(......O.)
+5D56:             1F 0A                                                ;             print2(msg) size=000A
+5D58:               D2 97 BF 9F 03 A0 AB 6E 8B 4F                      ;               NAPOLEON GRABS
+5D62:             A8                                                   ;             A8(PrintTheFirstNoun)
+5D63:             1F 0C                                                ;             print2(msg) size=000C
+5D65:               8E 48 BF 14 0D BA D6 15 C2 16 81 61                ;               AND BUSTS IT OPEN!
+5D71:             29                                                   ;             print_open_VAR()
+5D72:             0E 29                                                ;             while_fail: size=0029
+5D74:               0D 25                                              ;               while_pass: size=0025
+5D76:                 08 3D                                            ;                 is_first_noun(object) object=3D(SecretDoor)
+5D78:                 1F 20                                            ;                 print2(msg) size=0020
+5D7A:                   5F BE 57 17 AF 55 06 BC 44 A0 3F 16 0D 47 89 17;                   THE SECRET DOOR LEADS TO ESCAPE! YOU'VE
+5D8A:                   35 15 12 53 EB 5D C7 DE 4F 24 63 16 DB 59 71 7B;                   MADE IT!
+5D9A:                 24                                               ;                 endless_loop()
+5D9B:               14                                                 ;               execute_and_reverse_status:
+5D9C:               0C                                                 ;               fail()
+5D9D:           0D 19                                                  ;           while_pass: size=0019
+5D9F:             1F 0E                                                ;             print2(msg) size=000E
+5DA1:               D2 97 BF 9F 03 A0 72 B1 BE A0 D6 B5 56 72          ;               NAPOLEON REPORTS THAT
+5DAF:             A8                                                   ;             A8(PrintTheFirstNoun)
+5DB0:             1F 06                                                ;             print2(msg) size=0006
+5DB2:               4B 7B 5F A0 1B 9C                                  ;               IS OPEN.
+5DB8:       9A                                                         ;       9A(??CommandResponse)
+5DB9:   07 01                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
+5DBB:     AB                                                           ;     AB(AttackPerson)
+5DBC:   08 06                                                          ;   08 TURN SCRIPT
+5DBE:     0D 04                                                        ;     while_pass: size=0004
+5DC0:       9C                                                         ;       9C(??MoveHoudiniC)
+5DC1:       1C 20                                                      ;       set_VAR(object) object=20(NapoleanB)
+5DC3:       9E                                                         ;       9E(PrintObjectEntersRoom)
+5DC4:   09 02                                                          ;   HIT POINTS
+5DC6:   46 46                                                          ;   maxHitPoints=46 currentHitPoints=46
+;
+; Object_21 "Object21"
+5DC8: 02 0B                                                            ; word=02 size=000B
+5DCA: 00 00 90                                                         ; room=00 scorePoints=00 bits=90
+5DCD:   03 06                                                          ;   03 DESCRIPTION
+5DCF:     0D 04                                                        ;     while_pass: size=0004
+5DD1:       96                                                         ;       96(PrintNapoleanIntro)
+5DD2:       1E 20 21                                                   ;       swap(object_a,object_b) object_a=(NapoleanB)20 object_b=21(Object21)
+;
+; Object_22 "PicassoA"
+5DD5: 05 25                                                            ; word=05 size=0025
+5DD7: 00 00 90                                                         ; room=00 scorePoints=00 bits=90
+5DDA:   03 01                                                          ;   03 DESCRIPTION
+5DDC:     99                                                           ;     99(PrintPicasso)
+5DDD:   02 05                                                          ;   02 SHORT_NAME
+5DDF:     85 A5 65 49 4F                                               ;     PICASSO
+5DE4:   0B 01                                                          ;   0B COMMAND HANDLING IF GIVEN COMMAND
+5DE6:     9A                                                           ;     9A(??CommandResponse)
+5DE7:   07 01                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
+5DE9:     AB                                                           ;     AB(AttackPerson)
+5DEA:   08 0C                                                          ;   08 TURN SCRIPT
+5DEC:     0E 0A                                                        ;     while_fail: size=000A
+5DEE:       0D 04                                                      ;       while_pass: size=0004
+5DF0:         9C                                                       ;         9C(??MoveHoudiniC)
+5DF1:         1C 22                                                    ;         set_VAR(object) object=22(PicassoA)
+5DF3:         9E                                                       ;         9E(PrintObjectEntersRoom)
+5DF4:       14                                                         ;       execute_and_reverse_status:
+5DF5:       1C 3F                                                      ;       set_VAR(object) object=3F(PaintedDoorB)
+5DF7:       10                                                         ;       drop_VAR()
+5DF8:   09 02                                                          ;   HIT POINTS
+5DFA:   46 46                                                          ;   maxHitPoints=46 currentHitPoints=46
+;
+; Object_23 "Object23"
+5DFC: 05 0B                                                            ; word=05 size=000B
+5DFE: 00 00 90                                                         ; room=00 scorePoints=00 bits=90
+5E01:   03 06                                                          ;   03 DESCRIPTION
+5E03:     0D 04                                                        ;     while_pass: size=0004
+5E05:       98                                                         ;       98(PrintPicassoIntro)
+5E06:       1E 22 23                                                   ;       swap(object_a,object_b) object_a=(PicassoA)22 object_b=23(Object23)
+;
+; Object_24 "PicassoB"
+5E09: 05 34                                                            ; word=05 size=0034
+5E0B: 00 00 90                                                         ; room=00 scorePoints=00 bits=90
+5E0E:   03 01                                                          ;   03 DESCRIPTION
+5E10:     99                                                           ;     99(PrintPicasso)
+5E11:   02 05                                                          ;   02 SHORT_NAME
+5E13:     85 A5 65 49 4F                                               ;     PICASSO
+5E18:   07 01                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
+5E1A:     AB                                                           ;     AB(AttackPerson)
+5E1B:   0B 01                                                          ;   0B COMMAND HANDLING IF GIVEN COMMAND
+5E1D:     9A                                                           ;     9A(??CommandResponse)
+5E1E:   08 1B                                                          ;   08 TURN SCRIPT
+5E20:     0E 19                                                        ;     while_fail: size=0019
+5E22:       0D 08                                                      ;       while_pass: size=0008
+5E24:         14                                                       ;         execute_and_reverse_status:
+5E25:         03 88 24                                                 ;         is_located(room,object) room=88(Small square room) object=24(PicassoB)
+5E28:         1C 3F                                                    ;         set_VAR(object) object=3F(PaintedDoorB)
+5E2A:         10                                                       ;         drop_VAR()
+5E2B:         0C                                                       ;         fail()
+5E2C:       0D 07                                                      ;       while_pass: size=0007
+5E2E:         03 88 24                                                 ;         is_located(room,object) room=88(Small square room) object=24(PicassoB)
+5E31:         17 3E 88                                                 ;         move_to(object,room) object=3E(PaintedDoorA) room=88(Small square room)
+5E34:         0C                                                       ;         fail()
+5E35:       0D 04                                                      ;       while_pass: size=0004
+5E37:         9C                                                       ;         9C(??MoveHoudiniC)
+5E38:         1C 24                                                    ;         set_VAR(object) object=24(PicassoB)
+5E3A:         9E                                                       ;         9E(PrintObjectEntersRoom)
+5E3B:   09 02                                                          ;   HIT POINTS
+5E3D:   46 46                                                          ;   maxHitPoints=46 currentHitPoints=46
+;
+; Object_25 "Object25"
+5E3F: 05 0B                                                            ; word=05 size=000B
+5E41: 00 00 90                                                         ; room=00 scorePoints=00 bits=90
+5E44:   03 06                                                          ;   03 DESCRIPTION
+5E46:     0D 04                                                        ;     while_pass: size=0004
+5E48:       98                                                         ;       98(PrintPicassoIntro)
+5E49:       1E 24 25                                                   ;       swap(object_a,object_b) object_a=(PicassoB)24 object_b=25(Object25)
+;
+; Object_26 "MerlinA"
+5E4C: 06 80 FD                                                         ; word=06 size=00FD
+5E4F: 00 00 90                                                         ; room=00 scorePoints=00 bits=90
+5E52:   03 25                                                          ;   03 DESCRIPTION
+5E54:     04 23                                                        ;     print(msg) size=0023
+5E56:       34 92 90 8C D5 15 8F 16 2C 49 B3 E0 1B 54 C3 9A            ;       MERLIN IS NEARBY, CHANTING AND GESTICULA
+5E66:       AB 98 8E 48 77 15 03 BA 2E 56 83 49 AB 98 73 49            ;       TING AT YOU.
+5E76:       C7 DE 2E                                                   ;       ~
+5E79:   02 04                                                          ;   02 SHORT_NAME
+5E7B:     34 92 90 8C                                                  ;     MERLIN
+5E7F:   0B 01                                                          ;   0B COMMAND HANDLING IF GIVEN COMMAND
+5E81:     9A                                                           ;     9A(??CommandResponse)
+5E82:   07 01                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
+5E84:     AB                                                           ;     AB(AttackPerson)
+5E85:   08 80 C0                                                       ;   08 TURN SCRIPT
+5E88:     0E 80 BD                                                     ;     while_fail: size=00BD
+5E8B:       0D 04                                                      ;       while_pass: size=0004
+5E8D:         9C                                                       ;         9C(??MoveHoudiniC)
+5E8E:         1C 26                                                    ;         set_VAR(object) object=26(MerlinA)
+5E90:         9E                                                       ;         9E(PrintObjectEntersRoom)
+5E91:       0B 80 B4 05                                                ;       switch(is_less_equal_last_random(value)): size=00B4
+5E95:         08                                                       ;         is_less_equal_last_random(value) value=08
+5E96:         30                                                       ;         IF_NOT_GOTO address=5EC7
+5E97:           1F 2E                                                  ;           print2(msg) size=002E
+5E99:             34 92 90 8C 53 17 6E DF 6E 13 71 61 F3 9B 45 77      ;             MERLIN SAYS, "DEMON, I COMMAND YOU! REVE
+5EA9:             EF 9F 8E 48 51 18 EB C1 78 B1 8E 5F 89 17 67 16      ;             AL TO ME THE DOOR OF ESCAPE!"
+5EB9:             82 17 46 5E 44 A0 B8 16 35 15 12 53 EC 5D            ;             ~
+5EC7:         10                                                       ;         is_less_equal_last_random(value) value=10
+5EC8:         42                                                       ;         IF_NOT_GOTO address=5F0B
+5EC9:           1F 40                                                  ;           print2(msg) size=0040
+5ECB:             34 92 90 8C 77 15 0F BA 75 B1 96 14 51 18 43 C2      ;             MERLIN GESTURES AT YOU AND SAYS, "I CAN'
+5EDB:             33 98 1B B7 33 BB FB 1B 10 53 F3 23 8E C5 3D 62      ;             T UNDERSTAND IT. I MUST HAVE CONJURED TH
+5EEB:             50 BD 0B 58 9B C1 4F 77 66 C6 9B 15 5B CA 40 55      ;             E WRONG DEMON."
+5EFB:             F4 81 F3 5F 5F BE 04 18 11 A0 FF 14 C0 93 63 F4      ;             ~
+5F0B:         18                                                       ;         is_less_equal_last_random(value) value=18
+5F0C:         3B                                                       ;         IF_NOT_GOTO address=5F48
+5F0D:           1F 39                                                  ;           print2(msg) size=0039
+5F0F:             34 92 90 8C E9 16 9E 7A C3 B5 1B BC 3E A1 6F 13      ;             MERLIN POINTS AT YOU, "EYE OF NEUTRON, W
+5F1F:             1B DD C3 9E 77 98 F9 BF F3 9B 14 D0 11 BC 8A 64      ;             ART OF HOG, DEMON DO THY WILL, THEN BE G
+5F2F:             0E 9F FF 14 C0 93 09 15 82 17 59 DB 46 7A 16 EE      ;             ONE!"
+5F3F:             F0 72 AF 14 81 15 59 98 22                           ;             ~
+5F48:   09 02                                                          ;   HIT POINTS
+5F4A:   46 46                                                          ;   maxHitPoints=46 currentHitPoints=46
+;
+; Object_27 "MerlinB"
+5F4C: 06 6E                                                            ; word=06 size=006E
+5F4E: 00 00 90                                                         ; room=00 scorePoints=00 bits=90
+5F51:   03 69                                                          ;   03 DESCRIPTION
+5F53:     0D 67                                                        ;     while_pass: size=0067
+5F55:       04 62                                                      ;       print(msg) size=0062
+5F57:         83 48 8D 48 30 79 0F BC 83 48 83 7A 44 45 45 8B          ;         AN ANCIENT MAN IN A BLACK CLOAK AND POIN
+5F67:         C5 83 73 8D C3 83 33 98 7B A6 BF 9A 0A 58 73 49          ;         TED HAT GESTURES AT YOU, "DEMON! I HAVE
+5F77:         B5 6C 74 C0 4B 62 73 49 C7 DE FC ED EF 59 01 A0          ;         SUMMONED YOU! I AM YOUR MASTER, MERLIN!
+5F87:         BB 15 58 72 55 5E 6F C5 0F A0 1B 58 19 A1 BB 15          ;         YOU MUST OBEY MY COMMAND!"
+5F97:         5B 48 C7 DE 8F AF 66 49 46 62 67 16 83 B2 2B 96          ;         ~
+5FA7:         C7 DE 77 16 F3 B9 2F 9E 4F DB 45 DB EF 9F 8E 48          ;         ~
+5FB7:         E3 06                                                    ;         ~
+5FB9:       1E 26 27                                                   ;       swap(object_a,object_b) object_a=(MerlinA)26 object_b=27(MerlinB)
+;
+; Object_28 "UnconsciousDoctorA"
+5FBC: 07 54                                                            ; word=07 size=0054
+5FBE: 00 00 80                                                         ; room=00 scorePoints=00 bits=80
+5FC1:   03 27                                                          ;   03 DESCRIPTION
+5FC3:     04 25                                                        ;     print(msg) size=0025
+5FC5:       5F BE 7C 13 8E 5F 86 19 66 9E A3 A0 03 BA F3 8C            ;       THE "REAL" DOCTOR STILL LIES UNCONSCIOUS
+5FD5:       87 8C D7 B5 21 98 95 9A C7 7A CB B5 96 96 DB 72            ;       IN THE CORNER.
+5FE5:       44 55 74 98 2E                                             ;       ~
+5FEA:   02 0C                                                          ;   02 SHORT_NAME
+5FEC:     8D C5 0D A0 C7 7A C6 B5 66 9E A3 A0                          ;     UNCONCIOUS DOCTOR
+5FF8:   0B 14                                                          ;   0B COMMAND HANDLING IF GIVEN COMMAND
+5FFA:     1F 12                                                        ;     print2(msg) size=0012
+5FFC:       5F BE 09 15 09 56 8B AF D7 B5 21 98 95 9A C7 7A            ;       THE DOCTOR IS UNCONSCIOUS.
+600C:       5B BB                                                      ;       ~
+600E:   09 02                                                          ;   HIT POINTS
+6010:   46 01                                                          ;   maxHitPoints=46 currentHitPoints=01
+;
+; Object_29 "UnconsciousDoctorB"
+6012: 07 80 F5                                                         ; word=07 size=00F5
+6015: 00 00 90                                                         ; room=00 scorePoints=00 bits=90
+6018:   03 80 EF                                                       ;   03 DESCRIPTION
+601B:     0D 80 EC                                                     ;     while_pass: size=00EC
+601E:       04 80 E6                                                   ;       print(msg) size=00E6
+6021:         5F BE 5B B1 4B 7B 4F 45 83 48 83 7A 55 45 EB BF          ;         THERE IS A MAN IN A STRAIT JACKET IN THE
+6031:         73 7B C5 7E B6 85 D0 15 82 17 45 5E B8 A0 47 62          ;         CORNER. HE LOOKS UP AT YOU AND MUMBLES,
+6041:         9F 15 49 16 A5 9F B2 17 96 14 51 18 43 C2 33 98          ;         "OH...IT IS TERRIBLE...THE DOCTOR HAS B
+6051:         AF 94 7F 4E 33 BB FA 1C FF F9 73 7B 4B 7B F4 BD          ;         ECOME THE PATIENT AND THE PATIENT THE DO
+6061:         04 B2 FF 8B F6 F9 DB 72 75 5B 84 BF 9B 15 C4 B5          ;         CTOR...LISTEN TO ME...I AM THE DOCTOR...
+6071:         E1 5F 1B 92 5F BE DB 16 87 BE B3 9A 8E 48 82 17          ;         YOU MUST GO TO THE AUTHORITIES AND TELL
+6081:         52 5E 83 49 9E 61 82 17 46 5E 66 9E C7 A0 EE F9          ;         THEM OF THIS TRAVESTY! HURRY, BEFORE IT
+6091:         66 7B 83 61 6B BF 3F 92 EB F9 8F 14 82 17 46 5E          ;         IS TOO LATE." HIS EYES ROLL BACK INTO HI
+60A1:         66 9E C7 A0 FB F9 1B A1 B5 94 09 BC D6 9C D6 9C          ;         S HEAD AND HE PASSES OUT.
+60B1:         DB 72 B6 49 84 74 83 7B 4B 62 8E 48 7F 17 F3 8C          ;         ~
+60C1:         5F BE 51 90 96 64 95 73 8C 17 CF 49 13 BA CA 06          ;         ~
+60D1:         3C C6 B3 E0 68 4D AF A0 D6 15 D5 15 89 17 CE 9C          ;         ~
+60E1:         7F 49 63 F4 95 73 3B 15 4B 62 FE B2 04 8A DD 46          ;         ~
+60F1:         D0 15 6B BF 95 73 9F 15 F3 46 8E 48 9F 15 DB 16          ;         ~
+6101:         D7 B9 D1 B5 97 C6                                        ;         ~
+6107:       1E 28 29                                                   ;       swap(object_a,object_b) object_a=(UnconsciousDoctorA)28 object_b=29(UnconsciousDoctorB)
+;
+; Object_2A "HoudiniA"
+610A: 04 81 0A                                                         ; word=04 size=010A
+610D: 00 00 90                                                         ; room=00 scorePoints=00 bits=90
+6110:   03 29                                                          ;   03 DESCRIPTION
+6112:     04 27                                                        ;     print(msg) size=0027
+6114:       87 74 90 5A 4B 77 D9 B5 16 B2 90 73 5B 70 FD 1B            ;       HOUDINI IS WRITHING. "I'LL BE DOWN FROM
+6124:       F3 8C 5B 4D 89 5B 88 96 FF B2 9F 15 5B B1 83 7A            ;       HERE IN A MINUTE!"
+6134:       4F 45 9F 7A D9 BD 22                                       ;       ~
+613B:   02 05                                                          ;   02 SHORT_NAME
+613D:     87 74 90 5A 49                                               ;     HOUDINI
+6142:   07 80 CB                                                       ;   07 COMMAND HANDLING IF FIRST NOUN
+6145:     0D 80 C8                                                     ;     while_pass: size=00C8
+6148:       0E 04                                                      ;       while_fail: size=0004
+614A:         0A 48                                                    ;         compare_input_to(phrase) phrase="48: LOWER u....... * *"
+614C:         0A 12                                                    ;         compare_input_to(phrase) phrase="12: PULL u....... * *"
+614E:       04 80 BC                                                   ;       print(msg) size=00BC
+6151:         C7 DE 3F 16 0A BC 26 A1 93 7A 09 15 26 D2 BF 14          ;         YOU LET HOUDINI DOWN, BUT YOU ARE UNABLE
+6161:         1B BC 1B A1 2F 49 B0 17 B6 46 56 5E D4 9C 71 61          ;         TO REMOVE HIS STRAIT JACKET. HOUDINI SA
+6171:         5B CA 95 73 66 17 CB B0 0C BC DD 46 97 62 A9 15          ;         YS, "YOU DIDN'T HAVE TO DO THAT! I WOULD
+6181:         03 C4 FB 98 1B B7 33 BB 91 1E 46 C2 08 79 F3 23          ;         HAVE BEEN DOWN IN A MINUTE. BUT I'LL ST
+6191:         58 72 56 5E C6 9C D6 9C 56 72 CB 06 01 18 3E C5          ;         ILL TAKE YOU WITH ME WHEN I ESCAPE, JUST
+61A1:         9B 15 5B CA 67 4D 86 96 80 A1 D0 15 7B 14 D0 92          ;         AS SOON AS I GET OUT OF THIS THING!" HE
+61B1:         7F C6 44 F4 73 C6 9E 77 15 8A 8E BE 16 8A 17 48          ;         BEGINS WRESTLING WITH HIS STRAIT JACKET
+61C1:         51 18 59 C2 82 7B 67 16 FA 17 83 61 47 77 53 B7          ;         .
+61D1:         FE A4 FF 15 F3 B9 4B 49 41 B9 83 96 CB B5 77 15          ;         ~
+61E1:         11 BC 73 C6 C3 9E 63 BE D6 B5 90 73 6C 6A 9F 15          ;         ~
+61F1:         AF 14 50 6D D9 B5 75 B1 03 BF AB 98 56 D1 0A 71          ;         ~
+6201:         4B 7B 0C BA D6 47 EB 15 97 54 9B C1                      ;         ~
+620D:       1E 2A 2C                                                   ;       swap(object_a,object_b) object_a=(HoudiniA)2A object_b=2C(HoudiniC)
+6210:   0B 01                                                          ;   0B COMMAND HANDLING IF GIVEN COMMAND
+6212:     9A                                                           ;     9A(??CommandResponse)
+6213:   09 02                                                          ;   HIT POINTS
+6215:   46 46                                                          ;   maxHitPoints=46 currentHitPoints=46
+;
+; Object_2B "HoudiniB"
+6217: 04 80 D9                                                         ; word=04 size=00D9
+621A: 00 00 90                                                         ; room=00 scorePoints=00 bits=90
+621D:   03 80 D3                                                       ;   03 DESCRIPTION
+6220:     0D 80 D0                                                     ;     while_pass: size=00D0
+6223:       04 80 CA                                                   ;       print(msg) size=00CA
+6226:         5F BE 5B B1 4B 7B 48 45 98 C5 4E DB 3D A0 91 7A          ;         THERE IS A FUNNY LOOKING MAN HANGING TIE
+6236:         63 16 8A 96 91 48 91 7A 83 17 F3 5F 56 D1 03 71          ;         D WITH A ROPE BY HIS FEET TO THE CEILING
+6246:         39 17 DB A4 7B 50 95 73 4F 15 73 62 6B BF 5F BE          ;         . HE IS WEARING A STRAIT JACKET. HE TURN
+6256:         D7 14 43 7A CF 98 9F 15 D5 15 F7 17 33 49 AB 98          ;         S HIS HEAD TOWARD YOU, "HELLO! I AM THE
+6266:         55 45 EB BF 73 7B C5 7E B6 85 4A F4 56 5E 38 C6          ;         GREAT HOUDINI! NO BONDS CAN HOLD ME, NO
+6276:         CA B5 4B 7B E3 72 16 58 73 A1 33 B1 C7 DE FC ED          ;         LOCKS CAN RESIST ME! WAIT, LET ME SHOW Y
+6286:         EE 72 69 8D BB 15 5B 48 5F BE 84 15 96 5F A9 15          ;         OU! I CAN GET US BOTH OUT OF THIS PLACE!
+6296:         03 C4 F9 98 99 16 B9 14 4D 98 D3 14 8A 96 BE 9F          ;         " HE BEGINS WRIGGLING.
+62A6:         67 16 10 EE CE 9C 5D 9E C5 B5 83 48 75 B1 66 7B          ;         ~
+62B6:         67 16 D9 06 D6 47 0E EE 73 62 1B 92 29 B8 DB CE          ;         ~
+62C6:         19 A1 BB 15 10 53 77 15 17 BC C4 B5 02 A1 C7 16          ;         ~
+62D6:         11 BC 96 64 95 73 E6 16 D7 46 E3 06 DB 72 69 4D          ;         ~
+62E6:         9D 7A 04 18 79 79 90 8C 5B 70                            ;         ~
+62F0:       1E 2A 2B                                                   ;       swap(object_a,object_b) object_a=(HoudiniA)2A object_b=2B(HoudiniB)
+;
+; Object_2C "HoudiniC"
+62F3: 04 80 93                                                         ; word=04 size=0093
+62F6: 00 00 90                                                         ; room=00 scorePoints=00 bits=90
+62F9:   03 36                                                          ;   03 DESCRIPTION
+62FB:     04 34                                                        ;     print(msg) size=0034
+62FD:       87 74 90 5A 4B 77 D9 B5 75 B1 03 BF AB 98 56 D1            ;       HOUDINI IS WRESTLING WITH HIS STRAIT JAC
+630D:       0A 71 4B 7B 0C BA D6 47 EB 15 97 54 9B C1 FD 1B            ;       KET. "I'LL BE OUT OF THIS IN NO TIME!"
+631D:       F3 8C 5B 4D 36 A1 B8 16 82 17 4B 7B 83 7A EB 99            ;       ~
+632D:       8F BE EC 5D                                                ;       ~
+6331:   02 05                                                          ;   02 SHORT_NAME
+6333:     87 74 90 5A 49                                               ;     HOUDINI
+6338:   08 45                                                          ;   08 TURN SCRIPT
+633A:     0E 43                                                        ;     while_fail: size=0043
+633C:       0D 04                                                      ;       while_pass: size=0004
+633E:         9C                                                       ;         9C(??MoveHoudiniC)
+633F:         1C 2C                                                    ;         set_VAR(object) object=2C(HoudiniC)
+6341:         9E                                                       ;         9E(PrintObjectEntersRoom)
+6342:       0B 3B 05                                                   ;       switch(is_less_equal_last_random(value)): size=003B
+6345:         08                                                       ;         is_less_equal_last_random(value) value=08
+6346:         1A                                                       ;         IF_NOT_GOTO address=6361
+6347:           1F 18                                                  ;           print2(msg) size=0018
+6349:             87 74 90 5A 4F 77 64 C5 F5 8B FC ED A3 48 6B 16      ;             HOUDINI MUMBLES, "ANY MINUTE NOW..."
+6359:             F6 9A 50 5E 8F A1 DC F9                              ;             ~
+6361:         10                                                       ;         is_less_equal_last_random(value) value=10
+6362:         1C                                                       ;         IF_NOT_GOTO address=637F
+6363:           1F 1A                                                  ;           print2(msg) size=001A
+6365:             87 74 90 5A 46 77 DE 5F 2F 49 33 BB FD 1B 5B CA      ;             HOUDINI DECLARES, "I'VE ALMOST GOT IT!"
+6375:             47 48 E6 A0 81 15 0B BC AC BB                        ;             ~
+637F:   07 01                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
+6381:     AB                                                           ;     AB(AttackPerson)
+6382:   0B 01                                                          ;   0B COMMAND HANDLING IF GIVEN COMMAND
+6384:     9A                                                           ;     9A(??CommandResponse)
+6385:   09 02                                                          ;   HIT POINTS
+6387:   46 46                                                          ;   maxHitPoints=46 currentHitPoints=46
+;
+; Object_2D "Woman"
+6389: 01 81 CA                                                         ; word=01 size=01CA
+638C: 8E 00 90                                                         ; room=8E scorePoints=00 bits=90
+638F:   03 60                                                          ;   03 DESCRIPTION
+6391:     04 5E                                                        ;     print(msg) size=005E
+6393:       5F BE 5B B1 4B 7B 58 45 43 62 3B 16 B7 B1 01 18            ;       THERE IS A VERY LARGE WOMAN DRESSED IN A
+63A3:       90 91 0C 15 65 62 F3 5F 83 7A 57 45 08 99 B7 A0            ;       UNIFORM HERE. SHE LOOKS LIKE THE ROLLER
+63B3:       9F 15 7F B1 5A 17 4E 5E 3D A0 CE B5 17 7A 82 17            ;       DERBY QUEEN. SHE HAS A JAGGED SCAR JUST
+63C3:       54 5E C6 9F 23 62 F4 59 7B 50 A7 AD A7 61 5A 17            ;       BELOW HER HAIRLINE.
+63D3:       4A 5E 4B 49 4C 45 79 47 F3 5F 53 B7 8C AF 66 C6            ;       ~
+63E3:       AF 14 89 8D 9F 15 8A AF D4 47 90 8C DB 63                  ;       ~
+63F1:   02 06                                                          ;   02 SHORT_NAME
+63F3:     5F BE 9F 16 97 B3                                            ;     THE NURSE
+63F9:   0B 01                                                          ;   0B COMMAND HANDLING IF GIVEN COMMAND
+63FB:     9A                                                           ;     9A(??CommandResponse)
+63FC:   07 01                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
+63FE:     AB                                                           ;     AB(AttackPerson)
+63FF:   08 81 50                                                       ;   08 TURN SCRIPT
+6402:     0D 81 4D                                                     ;     while_pass: size=014D
+6405:       01 13                                                      ;       is_in_pack_or_current_room(object) object=13(PLAYER)
+6407:       0E 81 48                                                   ;       while_fail: size=0148
+640A:         0D 71                                                    ;         while_pass: size=0071
+640C:           0A 03                                                  ;           compare_input_to(phrase) phrase="03: EAST * * *"
+640E:           1F 6D                                                  ;           print2(msg) size=006D
+6410:             1F B8 8F 17 DD B2 89 17 14 D0 1B 58 1B A1 8E 48      ;             SHE TURNS TOWARD YOU AND SAYS, "OH! YOU
+6420:             53 17 6E DF 79 13 AB 70 C7 DE 77 16 F3 B9 5B 4D      ;             MUST BE HERE FOR TREATMENT. JUST COME RI
+6430:             F4 72 48 5E A3 A0 EF BF 87 49 9E 61 4C F4 66 C6      ;             GHT OVER HERE..." SHE GESTURES TOWARD SO
+6440:             E1 14 1B 92 09 B2 33 75 4F A1 8A AF 2F 62 FF F9      ;             METHING WHICH LOOKS LIKE AN ELECTRIC COU
+6450:             95 19 DB 72 B5 6C 74 C0 4B 62 89 BF 2E 49 61 17      ;             CH.
+6460:             36 92 90 73 D9 6A 85 73 0E 71 3D A0 CE B5 17 7A      ;             ~
+6470:             90 14 2E 15 E6 5F 05 B2 E1 14 DA C3 2E               ;             ~
+647D:         0D 80 D2                                                 ;         while_pass: size=00D2
+6480:           1F 73                                                  ;           print2(msg) size=0073
+6482:             91 1E A4 C2 50 5E F3 A0 41 55 F4 A4 83 49 CF 98      ;             "YOU'RE NOT COOPERATING...", SAYS THE NU
+6492:             DC F9 15 EE 55 4A 82 17 50 5E 3D C6 43 5E D5 B5      ;             RSE AS SHE LUNGES ACROSS THE ROOM AND TA
+64A2:             DB 72 70 8E B5 6C 85 14 05 B3 D6 B5 DB 72 01 B3      ;             CKLES YOU. SHE DRAGS YOU TO THE COUCH AN
+64B2:             43 90 33 98 45 BD BF 86 DB B5 3F A1 5A 17 46 5E      ;             D STRAPS YOU IN. THEN SHE PULLS AN OMINO
+64C2:             C9 B0 DB B5 1B A1 6B BF 5F BE E1 14 DA C3 90 14      ;             US LEVER AND
+64D2:             15 58 EB BF 0B A7 C7 DE D0 15 56 F4 F0 72 5A 17      ;             ~
+64E2:             52 5E 46 C5 C3 B5 91 96 D0 92 35 A1 3F 16 74 CA      ;             ~
+64F2:             90 14 44                                             ;             ~
+64F5:           0E 24                                                  ;           while_fail: size=0024
+64F7:             03 13 3A                                             ;             is_located(room,object) room=13(Room_13) object=3A(Object3A)
+64FA:             1F 1F                                                ;             print2(msg) size=001F
+64FC:               C7 DE 3A 15 F4 A4 30 79 9B 53 5F BE AE 17 8F BE    ;               YOU EXPERIENCE THE ULTIMATE AGONY! MERCI
+650C:               7F 49 89 14 23 A0 CF 06 2D 62 5F 79 13 8D 2C       ;               FULLY,
+651B:           1F 0A                                                  ;           print2(msg) size=000A
+651D:             C7 DE DB 16 CB B9 36 A1 FF F9                        ;             YOU PASS OUT...
+6527:           2C 13                                                  ;           set_ACTIVE(object) object=13(PLAYER)
+6529:           19 88                                                  ;           move_ACTIVE(room) room=88(Small square room)
+652B:           17 1B 8E                                               ;           move_to(object,room) object=1B(GreenKeyA) room=8E(Electroshock room)
+652E:           17 41 8C                                               ;           move_to(object,room) object=41(GreenKeyB) room=8C(East end east-west hall)
+6531:           1C 05                                                  ;           set_VAR(object) object=05(GreenDoorC)
+6533:           0E 03                                                  ;           while_fail: size=0003
+6535:             15 02                                                ;             check_VAR(bits) bits=02(......O.)
+6537:             29                                                   ;             print_open_VAR()
+6538:           1C 06                                                  ;           set_VAR(object) object=06(GreedDoorD)
+653A:           0E 04                                                  ;           while_fail: size=0004
+653C:             14                                                   ;             execute_and_reverse_status:
+653D:             15 02                                                ;             check_VAR(bits) bits=02(......O.)
+653F:             29                                                   ;             print_open_VAR()
+6540:           1F 10                                                  ;           print2(msg) size=0010
+6542:             C7 DE 99 14 17 48 8B 96 9B 96 34 A1 D7 14 17 8D      ;             YOU AWAKEN IN YOUR CELL.
+6552:   09 02                                                          ;   HIT POINTS
+6554:   46 46                                                          ;   maxHitPoints=46 currentHitPoints=46
+;
+; Object_2E "Doctor"
+6556: 07 81 AE                                                         ; word=07 size=01AE
+6559: 00 00 90                                                         ; room=00 scorePoints=00 bits=90
+655C:   03 01                                                          ;   03 DESCRIPTION
+655E:     9F                                                           ;     9F(PrintUnshavenMan)
+655F:   02 07                                                          ;   02 SHORT_NAME
+6561:     5F BE 09 15 09 56 52                                         ;     THE DOCTOR
+6568:   08 81 95                                                       ;   08 TURN SCRIPT
+656B:     0E 81 92                                                     ;     while_fail: size=0192
+656E:       0D 1C                                                      ;       while_pass: size=001C
+6570:         14                                                       ;         execute_and_reverse_status:
+6571:         01 13                                                    ;         is_in_pack_or_current_room(object) object=13(PLAYER)
+6573:         9B                                                       ;         9B(??PrintDirs)
+6574:         1F 15                                                    ;         print2(msg) size=0015
+6576:           C7 DE 9F 15 23 49 50 45 55 9F 43 5E 33 98 C7 DE        ;           YOU HEAR A NOISE AND YOU NOTICE
+6586:           99 16 85 BE 45                                         ;           ~
+658B:         9F                                                       ;         9F(PrintUnshavenMan)
+658C:       0D 81 71                                                   ;       while_pass: size=0171
+658F:         01 13                                                    ;         is_in_pack_or_current_room(object) object=13(PLAYER)
+6591:         1F 0C                                                    ;         print2(msg) size=000C
+6593:           5F BE 09 15 09 56 95 AF 55 4A FB ED                    ;           THE DOCTOR SAYS,
+659F:         0B 81 5E 05                                              ;         switch(is_less_equal_last_random(value)): size=015E
+65A3:           33                                                     ;           is_less_equal_last_random(value) value=33
+65A4:           42                                                     ;           IF_NOT_GOTO address=65E7
+65A5:             1F 40                                                ;             print2(msg) size=0040
+65A7:               91 1E 43 C2 5B B1 06 9A AF 14 91 7A 7B 14 41 6E    ;               "YOU ARE NOT BEING A GOOD LITTLE PATIENT
+65B7:               0E 58 8E 7B DB 8B 56 A4 30 79 AB BB 09 9A 2F 17    ;               ! NOW RETURN TO YOUR CELL, OR YOU WILL N
+65C7:               74 C0 96 96 DB 9C 34 A1 D7 14 16 8D C4 16 51 18    ;               EED A LOBOTOMY!"
+65D7:               59 C2 46 7A 8F 16 F3 5F 4E 45 39 9E 7F BF EC DA    ;               ~
+65E7:           66                                                     ;           is_less_equal_last_random(value) value=66
+65E8:           20                                                     ;           IF_NOT_GOTO address=6609
+65E9:             1F 1E                                                ;             print2(msg) size=001E
+65EB:               FB 1B B9 6E D6 CE 2F 7B 11 58 86 64 8E 5F 91 7A    ;               "I GROW TIRED OF DEALING WITH YOU INFERI
+65FB:               FB 17 53 BE C7 DE D0 15 74 66 C4 7A 6C B5          ;               ORS!"
+6609:           99                                                     ;           is_less_equal_last_random(value) value=99
+660A:           22                                                     ;           IF_NOT_GOTO address=662D
+660B:             1F 20                                                ;             print2(msg) size=0020
+660D:               3A 1E 73 49 2F 49 51 18 46 C2 50 9F CA 6A 2F 62    ;               "WHAT ARE YOU DOING HERE? GO WHERE YOU B
+661D:               89 00 D9 9C F4 72 5B 5E 1B A1 6E 4D 11 A0 E3 06    ;               ELONG!"
+662D:           FF                                                     ;           is_less_equal_last_random(value) value=FF
+662E:           80 D0                                                  ;           IF_NOT_GOTO address=66FF
+6630:             0D 80 CD                                             ;             while_pass: size=00CD
+6633:               1F 80 B4                                           ;               print2(msg) size=00B4
+6636:                 FD 1B 43 90 6B 68 F3 78 9F 77 81 15 91 7A 89 17  ;                 "I'M AFRAID I'M GOING TO HAVE TO GIVE YO
+6646:                 9B 15 5B CA 6B BF 58 6D 5B 5E 1B A1 48 45 00 B3  ;                 U A FRONTAL LOBOTOMY!" HE STICKS YOU WIT
+6656:                 4E BD 49 16 06 4F FB 9F E3 06 DB 72 03 BA A5 54  ;                 H HIS HYPO AND YOU PASS OUT. WHEN YOU AW
+6666:                 51 18 59 C2 82 7B A3 15 CA B5 E9 DE 90 14 1B 58  ;                 AKEN, YOU FEEL SOMEWHAT INDIFFERENT TO Y
+6676:                 1B A1 55 A4 D1 B5 97 C6 FA 17 83 61 C7 DE 99 14  ;                 OUR SURROUNDINGS. YOU NOTICE BLOOD ON YO
+6686:                 17 48 F3 9B C7 DE 4F 15 33 61 3F B9 FA 62 73 49  ;                 UR GOWN, BUT IT DOESN'T SEEM TO BOTHER Y
+6696:                 8E 7A 50 79 2F 62 B3 9A 6B BF C7 DE 95 AF 3C C6  ;                 OU. YOU FEEL LIKE WANDERING...
+66A6:                 30 A1 90 5A EF 6E 51 18 50 C2 03 A1 9B 53 89 4E  ;                 ~
+66B6:                 73 9E 03 A0 C7 DE 89 AF 80 A1 04 EE 73 C6 73 7B  ;                 ~
+66C6:                 77 5B 05 B9 15 BC 2F 60 89 17 B9 14 5F BE 9B AF  ;                 ~
+66D6:                 3F A1 51 18 48 C2 2E 60 43 16 9B 85 10 D0 F4 59  ;                 ~
+66E6:                 91 7A FF F9                                      ;                 ~
+66EA:               1C 05                                              ;               set_VAR(object) object=05(GreenDoorC)
+66EC:               0E 03                                              ;               while_fail: size=0003
+66EE:                 15 02                                            ;                 check_VAR(bits) bits=02(......O.)
+66F0:                 29                                               ;                 print_open_VAR()
+66F1:               1C 06                                              ;               set_VAR(object) object=06(GreedDoorD)
+66F3:               0E 04                                              ;               while_fail: size=0004
+66F5:                 14                                               ;                 execute_and_reverse_status:
+66F6:                 15 02                                            ;                 check_VAR(bits) bits=02(......O.)
+66F8:                 29                                               ;                 print_open_VAR()
+66F9:               2C 13                                              ;               set_ACTIVE(object) object=13(PLAYER)
+66FB:               17 3A 13                                           ;               move_to(object,room) object=3A(Object3A) room=13(Room_13)
+66FE:               19 88                                              ;               move_ACTIVE(room) room=88(Small square room)
+6700:   0B 01                                                          ;   0B COMMAND HANDLING IF GIVEN COMMAND
+6702:     9A                                                           ;     9A(??CommandResponse)
+6703:   09 02                                                          ;   HIT POINTS
+6705:   46 46                                                          ;   maxHitPoints=46 currentHitPoints=46
+;
+; Object_2F "Walls"
+6707: 25 0C                                                            ; word=25 size=000C
+6709: FF 00 80                                                         ; room=FF scorePoints=00 bits=80
+670C:   07 01                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
+670E:     A4                                                           ;     A4(PrintPicassoDoor)
+670F:   02 04                                                          ;   02 SHORT_NAME
+6711:     0E D0 0B 8E                                                  ;     WALLS
+;
+; Object_30 "Room"
+6715: 2A 0B                                                            ; word=2A size=000B
+6717: FF 00 80                                                         ; room=FF scorePoints=00 bits=80
+671A:   07 01                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
+671C:     A4                                                           ;     A4(PrintPicassoDoor)
+671D:   02 03                                                          ;   02 SHORT_NAME
+671F:     01 B3 4D                                                     ;     ROOM
+;
+; Object_31 "Floor"
+6722: 2B 09                                                            ; word=2B size=0009
+6724: FF 00 80                                                         ; room=FF scorePoints=00 bits=80
+6727:   02 04                                                          ;   02 SHORT_NAME
+6729:     89 67 A3 A0                                                  ;     FLOOR
+;
+; Object_32 "Exit"
+672D: 2C 08                                                            ; word=2C size=0008
+672F: FF 00 80                                                         ; room=FF scorePoints=00 bits=80
+6732:   02 03                                                          ;   02 SHORT_NAME
+6734:     23 63 54                                                     ;     EXIT
+;
+; Object_33 "Corner"
+6737: 30 0C                                                            ; word=30 size=000C
+6739: FF 00 80                                                         ; room=FF scorePoints=00 bits=80
+673C:   07 01                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
+673E:     A4                                                           ;     A4(PrintPicassoDoor)
+673F:   02 04                                                          ;   02 SHORT_NAME
+6741:     44 55 74 98                                                  ;     CORNER
+;
+; Object_34 "Hallway"
+6745: 33 0D                                                            ; word=33 size=000D
+6747: FF 00 80                                                         ; room=FF scorePoints=00 bits=80
+674A:   07 01                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
+674C:     A4                                                           ;     A4(PrintPicassoDoor)
+674D:   02 05                                                          ;   02 SHORT_NAME
+674F:     4E 72 B3 8E 59                                               ;     HALLWAY
+;
+; Object_35 "Entrance"
+6754: 36 0B                                                            ; word=36 size=000B
+6756: FF 00 80                                                         ; room=FF scorePoints=00 bits=80
+6759:   02 06                                                          ;   02 SHORT_NAME
+675B:     9E 61 D0 B0 9B 53                                            ;     ENTRANCE
+;
+; Object_36 "Ceiling"
+6761: 3B 0A                                                            ; word=3B size=000A
+6763: FF 00 80                                                         ; room=FF scorePoints=00 bits=80
+6766:   02 05                                                          ;   02 SHORT_NAME
+6768:     AB 53 90 8C 47                                               ;     CEILING
+;
+; Object_37 "Hands"
+676D: 1F 09                                                            ; word=1F size=0009
+676F: 13 00 C0                                                         ; room=13 scorePoints=00 bits=C0
+6772:   02 04                                                          ;   02 SHORT_NAME
+6774:     50 72 0B 5C                                                  ;     HANDS
+;
+; Object_38 "SYSTEM"
+6778: 20 03                                                            ; word=20 size=0003
+677A: 00 00 80                                                         ; room=00 scorePoints=00 bits=80
+;
+; Object_39 "BluePillB"
+677D: 17 32                                                            ; word=17 size=0032
+677F: 82 00 A0                                                         ; room=82 scorePoints=00 bits=A0
+6782:   03 01                                                          ;   03 DESCRIPTION
+6784:     9D                                                           ;     9D(PrintBluePill)
+6785:   07 22                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
+6787:     0D 20                                                        ;     while_pass: size=0020
+6789:       0A 15                                                      ;       compare_input_to(phrase) phrase="15: EAT u....... * *"
+678B:       04 1C                                                      ;       print(msg) size=001C
+678D:         2E 6F AB A2 37 6E C6 B5 80 A1 9B 15 31 B1 47 18          ;         GULP! GOES DOWN HARD! YECCH, TASTES AWFU
+679D:         5A 53 16 EE 66 49 4B 62 F8 49 31 C5                      ;         L!
+67A9:   02 06                                                          ;   02 SHORT_NAME
+67AB:     8F 4E 52 5E 46 7A                                            ;     BLUE PILL
+;
+; Object_3A "Object3A"
+67B1: 3C 03                                                            ; word=3C size=0003
+67B3: 00 00 00                                                         ; room=00 scorePoints=00 bits=00
+;
+; Object_3B "RedKeyB"
+67B6: 16 80 85                                                         ; word=16 size=0085
+67B9: 82 00 80                                                         ; room=82 scorePoints=00 bits=80
+67BC:   02 05                                                          ;   02 SHORT_NAME
+67BE:     66 B1 17 16 59                                               ;     RED KEY
+67C3:   01 01                                                          ;   01 ADJECTIVES
+67C5:   13                                                             ;   TODO WORD
+67C6:   07 76                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
+67C8:     0E 74                                                        ;     while_fail: size=0074
+67CA:       0D 30                                                      ;       while_pass: size=0030
+67CC:         0A 43                                                    ;         compare_input_to(phrase) phrase="43: GET ..C..... WITH ..C....."
+67CE:         09 16                                                    ;         compare_to_second_noun(object) object=16(WindowHook)
+67D0:         03 82 3B                                                 ;         is_located(room,object) room=82(Dispensary) object=3B(RedKeyB)
+67D3:         03 00 14                                                 ;         is_located(room,object) room=00(Room_00) object=14(RedKeyA)
+67D6:         17 3B 00                                                 ;         move_to(object,room) object=3B(RedKeyB) room=00(Room_00)
+67D9:         17 14 13                                                 ;         move_to(object,room) object=14(RedKeyA) room=13(Room_13)
+67DC:         04 1E                                                    ;         print(msg) size=001E
+67DE:           C7 DE 77 15 16 BC DB 72 BB 85 FB 17 53 BE 5F BE        ;           YOU GET THE KEY WITH THE HOOK. RED KEY T
+67EE:           A9 15 AF 9F 2F 17 0D 58 3B 63 4D BD A7 61              ;           AKEN.
+67FC:       0D 24                                                      ;       while_pass: size=0024
+67FE:         0A 05                                                    ;         compare_input_to(phrase) phrase="05: GET ..C..... * *"
+6800:         04 20                                                    ;         print(msg) size=0020
+6802:           C7 DE D3 14 90 96 F3 A0 85 A6 44 B8 FB 8E 63 B1        ;           YOU CAN NOT POSSIBLY REACH INTO THAT TIN
+6812:           13 54 9E 7A D6 9C 56 72 83 17 7B 9B 7E 74 EB 5D        ;           Y HOLE!
+6822:       0D 1A                                                      ;       while_pass: size=001A
+6824:         0A 43                                                    ;         compare_input_to(phrase) phrase="43: GET ..C..... WITH ..C....."
+6826:         04 14                                                    ;         print(msg) size=0014
+6828:           C7 DE D3 14 E6 96 77 15 16 BC DB 72 66 B1 17 16        ;           YOU CAN'T GET THE RED KEY WITH
+6838:           59 DB 82 7B                                            ;           ~
+683C:         A9                                                       ;         A9(PrintTheSecondNoun)
+683D:         8B                                                       ;         8B(PrintPeriod)
+;
+; Object_3C "DeadDog"
+683E: 08 20                                                            ; word=08 size=0020
+6840: 00 00 A0                                                         ; room=00 scorePoints=00 bits=A0
+6843:   02 06                                                          ;   02 SHORT_NAME
+6845:     E3 59 06 58 EB 9E                                            ;     DEAD DOG
+684B:   03 13                                                          ;   03 DESCRIPTION
+684D:     04 11                                                        ;     print(msg) size=0011
+684F:       5F BE 5B B1 4B 7B 46 45 86 5F 09 15 CA 6A 2F 62            ;       THERE IS A DEAD DOG HERE.
+685F:       2E                                                         ;       ~
+;
+; Object_3D "SecretDoor"
+6860: 0B 42                                                            ; word=0B size=0042
+6862: 00 00 8A                                                         ; room=00 scorePoints=00 bits=8A
+6865:   07 30                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
+6867:     0D 2E                                                        ;     while_pass: size=002E
+6869:       0A 11                                                      ;       compare_input_to(phrase) phrase="11: OPEN ......O. * *"
+686B:       04 2A                                                      ;       print(msg) size=002A
+686D:         5F BE 57 17 AF 55 06 BC 44 A0 D5 15 66 17 DD C3          ;         THE SECRET DOOR IS STUCK. YOU ARE NOT ST
+687D:         5B F4 1B A1 2F 49 99 16 15 BC F9 BF AB 98 99 61          ;         RONG ENOUGH TO OPEN IT.
+688D:         7A C4 89 17 C2 16 83 61 97 7B                            ;         ~
+6897:   02 08                                                          ;   02 SHORT_NAME
+6899:     A5 B7 76 B1 09 15 A3 A0                                      ;     SECRET DOOR
+68A1:   01 01                                                          ;   01 ADJECTIVES
+68A3:   3D                                                             ;   TODO WORD
+;
+; Object_3E "PaintedDoorA"
+68A4: 0B 76                                                            ; word=0B size=0076
+68A6: 00 00 8A                                                         ; room=00 scorePoints=00 bits=8A
+68A9:   02 08                                                          ;   02 SHORT_NAME
+68AB:     4B A4 BF 9A 06 58 44 A0                                      ;     PAINTED DOOR
+68B3:   03 24                                                          ;   03 DESCRIPTION
+68B5:     04 22                                                        ;     print(msg) size=0022
+68B7:       03 A0 5F BE 99 16 C2 B3 F3 17 F3 8C 4B 7B 0F A0            ;       ON THE NORTH WALL IS ONE OF PICASSO'S PA
+68C7:       B8 16 E3 16 15 53 2D B9 D2 B5 D0 47 E6 BD 09 15            ;       INTED DOORS
+68D7:       BD A0                                                      ;       ~
+68D9:   07 3E                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
+68DB:     0D 3C                                                        ;     while_pass: size=003C
+68DD:       0E 0A                                                      ;       while_fail: size=000A
+68DF:         0A 11                                                    ;         compare_input_to(phrase) phrase="11: OPEN ......O. * *"
+68E1:         0A 3A                                                    ;         compare_input_to(phrase) phrase="3A: OPEN ......O. WITH u......."
+68E3:         0A 41                                                    ;         compare_input_to(phrase) phrase="41: LOCK ....A... WITH u......."
+68E5:         0A 42                                                    ;         compare_input_to(phrase) phrase="42: UNLOCK .......L WITH u......."
+68E7:         0A 40                                                    ;         compare_input_to(phrase) phrase="40: CLOSE ....A... * *"
+68E9:       04 2D                                                      ;       print(msg) size=002D
+68EB:         5F BE DB 16 9E 7A F3 5F 81 5B 91 AF F0 A4 D6 B5          ;         THE PAINTED DOOR OPENS TO REVEAL AN ESCA
+68FB:         D4 9C CF 62 33 48 83 48 55 62 DF 48 39 17 7F C6          ;         PE ROUTE! YOU HAVE ESCAPED!
+690B:         DB 06 1B A1 58 72 47 5E 53 B7 E6 A4 21                   ;         ~
+6918:       24                                                         ;       endless_loop()
+6919:   01 01                                                          ;   01 ADJECTIVES
+691B:   3E                                                             ;   TODO WORD
+;
+; Object_3F "PaintedDoorB"
+691C: 0B 3E                                                            ; word=0B size=003E
+691E: 00 00 80                                                         ; room=00 scorePoints=00 bits=80
+6921:   02 08                                                          ;   02 SHORT_NAME
+6923:     4B A4 BF 9A 06 58 44 A0                                      ;     PAINTED DOOR
+692B:   07 2C                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
+692D:     0D 2A                                                        ;     while_pass: size=002A
+692F:       0E 0A                                                      ;       while_fail: size=000A
+6931:         0A 11                                                    ;         compare_input_to(phrase) phrase="11: OPEN ......O. * *"
+6933:         0A 3A                                                    ;         compare_input_to(phrase) phrase="3A: OPEN ......O. WITH u......."
+6935:         0A 40                                                    ;         compare_input_to(phrase) phrase="40: CLOSE ....A... * *"
+6937:         0A 41                                                    ;         compare_input_to(phrase) phrase="41: LOCK ....A... WITH u......."
+6939:         0A 42                                                    ;         compare_input_to(phrase) phrase="42: UNLOCK .......L WITH u......."
+693B:       04 1C                                                      ;       print(msg) size=001C
+693D:         2F 49 51 18 45 C2 DC B0 C3 DA 73 7B 4B 7B F5 81          ;         ARE YOU CRAZY? IT IS JUST A PAINTED DOOR
+694D:         03 BC DB 16 9E 7A F3 5F 81 5B 2B AF                      ;         !
+6959:   01 01                                                          ;   01 ADJECTIVES
+695B:   3E                                                             ;   TODO WORD
+;
+; Object_40 "GreenDoorI"
+695C: 0B 12                                                            ; word=0B size=0012
+695E: 99 00 8B                                                         ; room=99 scorePoints=00 bits=8B
+6961:   03 01                                                          ;   03 DESCRIPTION
+6963:     86                                                           ;     86(PrintNorthWallGreedDoor)
+6964:   01 01                                                          ;   01 ADJECTIVES
+6966:   14                                                             ;   TODO WORD
+6967:   02 07                                                          ;   02 SHORT_NAME
+6969:     AF 6E 83 61 81 5B 52                                         ;     GREEN DOOR
+;
+; Object_41 "GreenKeyB"
+6970: 16 80 89                                                         ; word=16 size=0089
+6973: 8C 00 80                                                         ; room=8C scorePoints=00 bits=80
+6976:   02 06                                                          ;   02 SHORT_NAME
+6978:     AF 6E 83 61 BB 85                                            ;     GREEN KEY
+697E:   01 01                                                          ;   01 ADJECTIVES
+6980:   14                                                             ;   TODO WORD
+6981:   07 79                                                          ;   07 COMMAND HANDLING IF FIRST NOUN
+6983:     0E 77                                                        ;     while_fail: size=0077
+6985:       0D 32                                                      ;       while_pass: size=0032
+6987:         0A 43                                                    ;         compare_input_to(phrase) phrase="43: GET ..C..... WITH ..C....."
+6989:         09 16                                                    ;         compare_to_second_noun(object) object=16(WindowHook)
+698B:         03 8C 41                                                 ;         is_located(room,object) room=8C(East end east-west hall) object=41(GreenKeyB)
+698E:         03 8E 1B                                                 ;         is_located(room,object) room=8E(Electroshock room) object=1B(GreenKeyA)
+6991:         17 41 00                                                 ;         move_to(object,room) object=41(GreenKeyB) room=00(Room_00)
+6994:         17 1B 13                                                 ;         move_to(object,room) object=1B(GreenKeyA) room=13(Room_13)
+6997:         04 20                                                    ;         print(msg) size=0020
+6999:           C7 DE 77 15 16 BC DB 72 BB 85 FB 17 53 BE 5F BE        ;           YOU GET THE KEY WITH THE HOOK. GREEN KEY
+69A9:           A9 15 AF 9F 84 15 30 60 17 16 56 DB 17 48 1B 9C        ;           TAKEN.
+69B9:       0D 23                                                      ;       while_pass: size=0023
+69BB:         0A 05                                                    ;         compare_input_to(phrase) phrase="05: GET ..C..... * *"
+69BD:         04 1F                                                    ;         print(msg) size=001F
+69BF:           C7 DE D3 14 90 96 F3 A0 63 B1 13 54 5F BE 84 15        ;           YOU CAN NOT REACH THE GREEN KEY FROM OUT
+69CF:           30 60 17 16 48 DB FF B2 C7 16 0A BC 2F 62 2E           ;           HERE.
+69DE:       0D 1C                                                      ;       while_pass: size=001C
+69E0:         0A 43                                                    ;         compare_input_to(phrase) phrase="43: GET ..C..... WITH ..C....."
+69E2:         04 16                                                    ;         print(msg) size=0016
+69E4:           C7 DE D3 14 E6 96 77 15 16 BC DB 72 AF 6E 83 61        ;           YOU CAN'T GET THE GREEN KEY WITH
+69F4:           BB 85 FB 17 53 BE                                      ;           ~
+69FA:         A9                                                       ;         A9(PrintTheSecondNoun)
+69FB:         8B                                                       ;         8B(PrintPeriod)
+;
+; Object_42 "Object42"
+69FC: 42 03                                                            ; word=42 size=0003
+69FE: 18 00 00                                                         ; room=18 scorePoints=00 bits=00
 ```
 
 # Room Descriptions

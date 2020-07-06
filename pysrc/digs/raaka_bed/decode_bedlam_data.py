@@ -223,25 +223,31 @@ trs80 = Decoder(INFO_TRS80,OBJECT_SHORT_NAMES,ROOM_SHORT_NAMES,HELPER_SHORT_NAME
 plat = trs80
 out = []
 plat.print_general_commands(out)
+#plat.merge_into(out)
 
-"""
-plat.merge_into(out)
 out = []
 plat.print_helper_commands(out)
-plat.merge_into(out)
+#plat.merge_into(out)
+
 out = []
 plat.print_room_descriptions(out)
-plat.merge_into(out)
+#plat.merge_into(out)
+
 out = []
 plat.print_object_data(out)
+for o in out:
+    print(o)
 plat.merge_into(out)
+
 out = []
 plat.print_words(out)
 plat.merge_into(out)
+
 out = []
 plat.print_phrases(out)
 plat.merge_into(out)
 
+"""
 plat.fix_command_names()
 
 with open('rooms_raaka_trs80.json','w') as f:
