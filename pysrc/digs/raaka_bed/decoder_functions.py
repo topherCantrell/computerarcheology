@@ -3,6 +3,7 @@ decode_room_name = None # Set me
 decode_helper_name = None # Set me
 decode_noun = None # Set me
 decode_phrase = None # Set me
+decode_is_bedlam = None # Set me
 
 def decode_object_bits(n,collapse_zero=True):
     if collapse_zero and n==0:

@@ -36,6 +36,12 @@ class Decoder:
         self._helper_commands_data = config['helper_commands_data']
         self._room_descriptions_data = config['room_descriptions_data']
         self._command_table = config['command_table']
+        
+        FUN.decode_room_name = self.decode_room_name
+        FUN.decode_helper_name = self.decode_helper_name
+        FUN.decode_phrase = self.decode_phrase
+        FUN.decode_noun = self.decode_noun
+        FUN.decode_is_bedlam = self.decode_is_bedlam
                 
         with open(self._file,'rb') as f:
             self._binary = bytes([0]*self._origin)+f.read()
@@ -46,12 +52,12 @@ class Decoder:
         self._general_commands = self.load_general_script()
         self._helper_commands = self.load_helper_commands()
         self._room_descriptions = self.load_room_descriptions()
-        self._objects = self.load_object_data()    
-        
-        FUN.decode_room_name = self.decode_room_name
-        FUN.decode_helper_name = self.decode_helper_name
-        FUN.decode_phrase = self.decode_phrase
-        FUN.decode_noun = self.decode_noun
+        self._objects = self.load_object_data()            
+    
+    def decode_is_bedlam(self):
+        if 'edlam' in self._codefile:
+            return True
+        return False
             
     def _parse_words_bin(self,pos):
         ret = []

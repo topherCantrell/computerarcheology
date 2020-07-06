@@ -1,4 +1,5 @@
 from digs.raaka_bed import unpacker
+from digs.raaka_bed import decoder_functions as FUN
 import digs.raaka_bed.commands as RTC
 import util.util as U
 
@@ -53,30 +54,63 @@ class ShortName:
     
     def tojson(self,parent):
         parent['short_name'] = self._text 
- 
+    
 class Description:
+    
+    # Two different versions of this. In RaakaTu, it is just a packed string (like short-name)
+    # In Bedlam, it is a command script
     
     command_value = 3
     command_name = '03 DESCRIPTION'
      
     def parse_binary(self,data):        
-        self._raw_data = data
-        self._text = unpacker.decode_message(data)
-        #print(Description.command_name,self._text)
+        if FUN.decode_is_bedlam():
+            self._raw_data = data
+            self._command = RTC.decode_script(data)
+        else:
+            self._raw_data = data
+            self._text = unpacker.decode_message(data)
+            #print(Description.command_name,self._text)
         
     def get_assembly(self): 
-        return bytes([self.command_value])+RTC.BaseCommand.make_length_bytes(len(self._raw_data))+self._raw_data
+        if FUN.decode_is_bedlam():
+            data = b''
+            for com in self._command:
+                data = data + com.get_assembly()
+            return bytes([self.command_value])+RTC.BaseCommand.make_length_bytes(len(data))+data
+        else:
+            return bytes([self.command_value])+RTC.BaseCommand.make_length_bytes(len(self._raw_data))+self._raw_data
     
     def print_assembly(self,pos,ident,out):
-        pre = bytes([self.command_value]) + RTC.BaseCommand.make_length_bytes(len(self._raw_data))
-        s = U.hex4(pos)+': '+U.dump_bytes(pre)+' ; '+self.command_name
-        out.append(U.indent_code(s,ident))
-        pos += len(pre)
-        pos = RTC.PrintMessage.print_assembly_text(pos,ident+1,self._raw_data,self._text,out)             
-        return pos
+        if FUN.decode_is_bedlam():
+            data = b''
+            for com in self._command:
+                data = data + com.get_assembly()            
+            pre = bytes([self.command_value]) + RTC.BaseCommand.make_length_bytes(len(data))
+            s = U.hex4(pos)+': '+U.dump_bytes(pre)+' ; '+self.command_name
+            out.append(U.indent_code(s,ident))  
+            pos += len(pre)
+            
+            for com in self._command:
+                pos = com.print_assembly(pos,ident+1,out)
+            
+            return pos
+        else:
+            pre = bytes([self.command_value]) + RTC.BaseCommand.make_length_bytes(len(self._raw_data))
+            s = U.hex4(pos)+': '+U.dump_bytes(pre)+' ; '+self.command_name
+            out.append(U.indent_code(s,ident))
+            pos += len(pre)
+            pos = RTC.PrintMessage.print_assembly_text(pos,ident+1,self._raw_data,self._text,out)             
+            return pos
     
     def tojson(self,parent):
-        parent['description'] = self._text
+        if FUN.decode_is_bedlam():
+            script = []
+            parent['description'] = script
+            for com in self._command:
+                script.append(com.tojson())
+        else:
+            parent['description'] = self._text
     
 class CommandScript:
     
