@@ -2,6 +2,34 @@ from digs.raaka_bed import unpacker
 import digs.raaka_bed.commands as RTC
 import util.util as U
 
+class Adjectives:
+    
+    command_value = 1
+    command_name = '01 ADJECTIVES'
+    
+    def parse_binary(self,data):
+        #print(ShortName.command_name)
+        self._raw_data = data
+        if len(data)!=1:
+            raise Exception('OOPS ... expected only one adjective')       
+        self._adjective = data[0] 
+        
+    def get_assembly(self): 
+        return bytes([self.command_value])+RTC.BaseCommand.make_length_bytes(len(self._raw_data))+self._raw_data    
+    
+    def print_assembly(self,pos,ident,out):
+        pre = bytes([self.command_value]) + RTC.BaseCommand.make_length_bytes(len(self._raw_data))
+        s = U.hex4(pos)+': '+U.dump_bytes(pre)+' ; '+self.command_name
+        out.append(U.indent_code(s,ident))
+        pos += len(pre)
+        s = U.hex4(pos)+': '+U.hex2(self._adjective)+' ; TODO WORD'
+        out.append(U.indent_code(s,ident))          
+        return pos+1   
+    
+    def tojson(self,parent):
+        raise "Stop"
+        parent['short_name'] = self._text 
+    
 class ShortName:
     
     command_value = 2
@@ -86,7 +114,44 @@ class CommandScript:
         parent['user_input_handler'] = script
         for com in self._command:
             script.append(com.tojson())
-   
+
+class HandlerGivenCommand:
+    command_value = 0x0B
+    command_name = '0B COMMAND HANDLING IF GIVEN COMMAND'
+    
+    def parse_binary(self,data):
+        #print(HandlerAsSecondNoun.command_name)
+        self._raw_data = data
+        self._script = RTC.decode_script(data)
+        
+    def get_assembly(self): 
+        data = b''
+        for com in self._script:
+            data = data + com.get_assembly()
+        return bytes([self.command_value])+RTC.BaseCommand.make_length_bytes(len(data))+data
+    
+    def print_assembly(self,pos,ident,out):
+        
+        data = b''
+        for com in self._script:
+            data = data + com.get_assembly()            
+        pre = bytes([self.command_value]) + RTC.BaseCommand.make_length_bytes(len(data))
+        s = U.hex4(pos)+': '+U.dump_bytes(pre)+' ; '+self.command_name
+        out.append(U.indent_code(s,ident)) 
+        pos += len(pre)
+        
+        for com in self._script:
+            pos = com.print_assembly(pos,ident+1,out)
+        
+        return pos
+    
+    def tojson(self,parent):
+        
+        script = []
+        parent['handler_if_given_command'] = script
+        for com in self._script:
+            script.append(com.tojson())
+       
 class HandlerAsSecondNoun:
     
     command_value = 6
@@ -265,12 +330,15 @@ class HitPoints:
         parent['current_points'] = self._current      
 
 OBJ_ATTRIBUTES = {
-    ShortName.command_value : ShortName,
-    Description.command_value : Description,
-    HandlerAsSecondNoun.command_value : HandlerAsSecondNoun,
-    HandlerAsFirstNoun.command_value : HandlerAsFirstNoun,
-    HandlerTurn.command_value : HandlerTurn,
-    HitPoints.command_value : HitPoints,
-    HandlerDeath.command_value : HandlerDeath,
-    CommandScript.command_value : CommandScript,      
+    Adjectives.command_value : Adjectives, # 01
+    ShortName.command_value : ShortName, # 02
+    Description.command_value : Description, # 03
+    CommandScript.command_value : CommandScript, # 04
+    # 05 ?
+    HandlerAsSecondNoun.command_value : HandlerAsSecondNoun, #06
+    HandlerAsFirstNoun.command_value : HandlerAsFirstNoun, #07
+    HandlerTurn.command_value : HandlerTurn, #08
+    HitPoints.command_value : HitPoints, # 09
+    HandlerDeath.command_value : HandlerDeath, # 0A    
+    HandlerGivenCommand.command_value : HandlerGivenCommand, # 0B
 }

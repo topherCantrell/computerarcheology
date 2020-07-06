@@ -705,7 +705,7 @@ GetInputLine:
 
 ```code
 GetKey:
-0B6C: BD 13 19            JSR     $1319                     ; {Com2B_GenerateRandomNumber} Get random number every key
+0B6C: BD 13 19            JSR     $1319                     ; {Com_2B_GenerateRandomNumber} Get random number every key
 0B6F: AD 9F A0 00         JSR     [$A000]                   ; {hard:POLCAT} Get key from user
 0B73: 4D                  TSTA                              ; Anything pressed?
 0B74: 27 F6               BEQ     $B6C                      ; {GetKey} No ... keep waiting
@@ -859,7 +859,7 @@ ProcessCommand:
 0C65: 48                  ASLA                              ; Jump to ...
 0C66: 6E B6               JMP     [A,Y]                     ; ... command
 
-Com0D_ExecutePassingList:
+Com_0D_ExecutePassingList:
 ; Execute a list of commands as long as they pass. Either way end pointing one
 ; past end.
 ; Data: LENGTH + list of command
@@ -876,7 +876,7 @@ Com0D_ExecutePassingList:
 0C7E: 4F                  CLRA                              ; Z=1 ... success
 0C7F: 39                  RTS                               ; Done
 
-Com0E_ExecuteFailingList:
+Com_0E_ExecuteFailingList:
 0C80: BD 0A 85            JSR     $0A85                     ; {LoadEnd} Load the end
 0C83: BD 0A 99            JSR     $0A99                     ; {CompareXY} Reached end of list?
 0C86: 24 0C               BCC     $C94                      ; Yes ... error
@@ -891,7 +891,7 @@ Com0E_ExecuteFailingList:
 0C96: 8A 01               ORA     #$01                      ; Return fail
 0C98: 39                  RTS                               ; Done
 
-Com0B_Switch:
+Com_0B_Switch:
 0C99: BD 0A 85            JSR     $0A85                     ; {LoadEnd} Get size of switch list
 0C9C: E6 80               LDB     ,X+                       ; Get function to call
 0C9E: BD 0A 99            JSR     $0A99                     ; {CompareXY} End of options?
@@ -911,15 +911,15 @@ Com0B_Switch:
 0CBF: 35 10               PULS    X                         ; Restore script
 0CC1: 39                  RTS                               ; Done
 
-Com00_MoveActiveObjectToRoomAndLook:
-0CC2: BD 0C CE            JSR     $0CCE                     ; {Com19_MoveActiveObjectToRoom} Move active object to new room
+Com_00_MoveActiveObjectToRoomAndLook:
+0CC2: BD 0C CE            JSR     $0CCE                     ; {Com_19_MoveActiveObjectToRoom} Move active object to new room
 0CC5: 34 10               PSHS    X                         ; Hold script
 0CC7: BD 0D 8B            JSR     $0D8B                     ; Print room description and objects
 0CCA: 35 10               PULS    X                         ; Restore script
 0CCC: 4F                  CLRA                              ; OK
 0CCD: 39                  RTS                               ; Done
 
-Com19_MoveActiveObjectToRoom:
+Com_19_MoveActiveObjectToRoom:
 0CCE: A6 80               LDA     ,X+                       ; New room number
 0CD0: 34 10               PSHS    X                         ; Hold script
 0CD2: B7 01 D5            STA     $01D5                     ; {ram:CUR_ROOM} Store new actvie room number
@@ -935,7 +935,7 @@ Com19_MoveActiveObjectToRoom:
 0CED: 4F                  CLRA                              ; OK
 0CEE: 39                  RTS                               ; Done
 
-Com1A_SetVarObjectTo1stNoun:
+Com_1A_SetVarObjectTo1stNoun:
 0CEF: FE 01 C6            LDU     $01C6                     ; {ram:FIRST_NOUN_DATA} Copy 1st noun ...
 0CF2: FF 01 C0            STU     $01C0                     ; {ram:VAR_OBJ_DATA} ... data pointer
 0CF5: B6 01 C3            LDA     $01C3                     ; {ram:FIRST_NOUN_NUM} Copy 1st noun ...
@@ -943,7 +943,7 @@ Com1A_SetVarObjectTo1stNoun:
 0CFB: 4F                  CLRA                              ; Z=1 for OK
 0CFC: 39                  RTS                               ; Done
 
-Com1B_SetVarObjectTo2ndNoun:
+Com_1B_SetVarObjectTo2ndNoun:
 0CFD: FE 01 CC            LDU     $01CC                     ; {ram:SECOND_NOUN_DATA} Copy 2nd noun ...
 0D00: FF 01 C0            STU     $01C0                     ; {ram:VAR_OBJ_DATA} ... data pointer
 0D03: B6 01 C9            LDA     $01C9                     ; {ram:SECOND_NOUN_NUM} Copy 2nd noun ...
@@ -951,7 +951,7 @@ Com1B_SetVarObjectTo2ndNoun:
 0D09: 4F                  CLRA                              ; Z=1 for OK
 0D0A: 39                  RTS                               ; Done
 
-Com1C_SetVarObject:
+Com_1C_SetVarObject:
 0D0B: E6 80               LDB     ,X+                       ; Get object number from script
 0D0D: 34 10               PSHS    X                         ; Hold script pointer
 0D0F: F7 01 BF            STB     $01BF                     ; {ram:VAR_OBJ_NUMBER} Store target object number
@@ -962,7 +962,7 @@ Com1C_SetVarObject:
 0D1C: 4F                  CLRA                              ; Return OK
 0D1D: 39                  RTS                               ; Done
 
-Com21_RunGeneralWithTempPhrase:
+Com_21_RunGeneralWithTempPhrase:
 0D1E: FE 01 C6            LDU     $01C6                     ; {ram:FIRST_NOUN_DATA} 1st noun data ...
 0D21: 34 40               PSHS    U                         ; ... on stack
 0D23: FE 01 CC            LDU     $01CC                     ; {ram:SECOND_NOUN_DATA} 2nd noun data ...
@@ -1082,7 +1082,7 @@ Com21_RunGeneralWithTempPhrase:
 0E22: 8B  ; ".  "
 0E23: 8C  ; "THIS IS" or "YOU ARE IN"
 
-Com01_IsObjectInPackOrRoom:
+Com_01_IsObjectInPackOrRoom:
 0E24: E6 80               LDB     ,X+                       ; Get object number from script
 0E26: 34 10               PSHS    X                         ; Hold script pointer
 0E28: BD 11 7D            JSR     $117D                     ; Get object data
@@ -1090,12 +1090,12 @@ Com01_IsObjectInPackOrRoom:
 0E2E: 35 10               PULS    X                         ; Restore script
 0E30: 39                  RTS                               ; Out
 
-Com20_CheckActiveObject:
+Com_20_CheckActiveObject:
 0E31: B6 01 D2            LDA     $01D2                     ; {ram:ACTIVE_OBJ_NUM} Active object
 0E34: A1 80               CMPA    ,X+                       ; Matches target?
 0E36: 39                  RTS                               ; Done
 
-Com2C_SetActiveObject:
+Com_2C_SetActiveObject:
 0E37: E6 80               LDB     ,X+                       ; Get number from script
 0E39: 34 10               PSHS    X                         ; Hold script
 0E3B: F7 01 D2            STB     $01D2                     ; {ram:ACTIVE_OBJ_NUM} Set active object number
@@ -1105,11 +1105,11 @@ Com2C_SetActiveObject:
 0E46: 4F                  CLRA                              ; Return OK
 0E47: 39                  RTS                               ; Done
 
-Com02_CheckObjectIsOwnedByActive:
+Com_02_CheckObjectIsOwnedByActive:
 0E48: E6 80               LDB     ,X+                       ; Get object number from script
 0E4A: 7E 10 4A            JMP     $104A                     ; Make sure this object is owned by active object
 
-Com03_IsObjectYAtX:
+Com_03_IsObjectYAtX:
 ; Check to see if an object is at a target location.
 0E4D: EC 81               LDD     ,X++                      ; Room and object
 0E4F: 34 10               PSHS    X                         ; Hold script
@@ -1121,18 +1121,18 @@ Com03_IsObjectYAtX:
 0E5F: 35 10               PULS    X                         ; Restore script
 0E61: 39                  RTS                               ; Out
 
-Com0C_FAIL:
+Com_0C_FAIL:
 ; Always fail
 0E62: 8A 01               ORA     #$01                      ; Set the fail flag
 0E64: 39                  RTS                               ; Done
 
-Com04_PrintSYSTEMOrPlayerMessage:
+Com_04_PrintSYSTEMOrPlayerMessage:
 0E65: B6 01 D2            LDA     $01D2                     ; {ram:ACTIVE_OBJ_NUM} Active object
 0E68: 81 38               CMPA    #$38                      ; Is this the SYSTEM?
 0E6A: 27 19               BEQ     $E85                      ; Yes ... do print
 0E6C: 81 13               CMPA    #$13                      ; Is this the Player?
 0E6E: 26 0E               BNE     $E7E                      ; No ... skip printing
-Com1F_PrintMessage:
+Com_1F_PrintMessage:
 0E70: C6 13               LDB     #$13                      ; Player number
 0E72: 34 10               PSHS    X                         ; Hold script
 0E74: BD 11 7D            JSR     $117D                     ; Look up Player
@@ -1146,12 +1146,12 @@ Com1F_PrintMessage:
 0E88: 4F                  CLRA                              ; OK
 0E89: 39                  RTS                               ; Done
 
-Com07_Look:
+Com_07_Look:
 0E8A: BD 0D 8B            JSR     $0D8B                     ; Print room description
 0E8D: 4F                  CLRA                              ; OK
 0E8E: 39                  RTS                               ; Done
 
-Com06_Inventory:
+Com_06_Inventory:
 0E8F: 34 10               PSHS    X                         ; Hold script pointer
 0E91: 86 0D               LDA     #$0D                      ; Print ...
 0E93: BD 11 D5            JSR     $11D5                     ; {PrintCharacterAutoWrap} ... CR
@@ -1183,7 +1183,7 @@ Com06_Inventory:
 0ECC: 35 10               PULS    X                         ; Restore script pointer
 0ECE: 39                  RTS                               ; Done
 
-Com08_CompareObjectToFirstNoun:
+Com_08_CompareObjectToFirstNoun:
 0ECF: FE 01 C6            LDU     $01C6                     ; {ram:FIRST_NOUN_DATA} 1st noun data
 0ED2: B6 01 C3            LDA     $01C3                     ; {ram:FIRST_NOUN_NUM} 1st noun number
 ;
@@ -1200,22 +1200,22 @@ Com08_CompareObjectToFirstNoun:
 0EEB: 5D                  TSTB                              ; B can't be 0 ... Z=0 error
 0EEC: 39                  RTS                               ; Done
 
-Com09_CompareObjectToSecondNoun:
+Com_09_CompareObjectToSecondNoun:
 0EED: FE 01 CC            LDU     $01CC                     ; {ram:SECOND_NOUN_DATA} 2nd noun data
 0EF0: B6 01 C9            LDA     $01C9                     ; {ram:SECOND_NOUN_NUM} 2nd noun number
 0EF3: 20 E0               BRA     $ED5                      ; Do compare
         
-Com2D_CompareObjectToVarNoun:
+Com_2D_CompareObjectToVarNoun:
 0EF5: FE 01 C0            LDU     $01C0                     ; {ram:VAR_OBJ_DATA} Var noun data
 0EF8: B6 01 BF            LDA     $01BF                     ; {ram:VAR_OBJ_NUMBER} Var noun number
 0EFB: 7E 0E D5            JMP     $0ED5                     ; Do compare
 
-Com0A_CompareToPhraseForm:
+Com_0A_CompareToPhraseForm:
 0EFE: E6 80               LDB     ,X+                       ; Compare from script ...
 0F00: F1 01 D1            CMPB    $01D1                     ; {ram:PHRASE_FORM} ... to phrase form
 0F03: 39                  RTS                               ; Done
 
-Com0F_PickUpObject:
+Com_0F_PickUpObject:
 ; Move noun object to pack.
 0F04: 34 10               PSHS    X                         ; Hold script
 0F06: BE 01 C0            LDX     $01C0                     ; {ram:VAR_OBJ_DATA} Pointer to noun object
@@ -1226,7 +1226,7 @@ Com0F_PickUpObject:
 0F12: 35 10               PULS    X                         ; Restore script
 0F14: 39                  RTS                               ; Done
 
-Com10_DropObject:
+Com_10_DropObject:
 ; Move noun object to current room.
 0F15: 34 10               PSHS    X                         ; Hold script
 0F17: BE 01 C0            LDX     $01C0                     ; {ram:VAR_OBJ_DATA} Pointer to noun object
@@ -1237,7 +1237,7 @@ Com10_DropObject:
 0F24: 4F                  CLRA                              ; Done
 0F25: 39                  RTS                               ; Out
 
-Com13_PhraseWithRoom1st2nd:
+Com_13_PhraseWithRoom1st2nd:
 0F26: 34 10               PSHS    X                         ; Save script
 0F28: BE 01 D6            LDX     $01D6                     ; {ram:CUR_ROOM_DATA} Current room script
 0F2B: BD 0A 83            JSR     $0A83                     ; {SkipIDLoadEnd} Skip id and length
@@ -1275,13 +1275,13 @@ Com13_PhraseWithRoom1st2nd:
 0F7A: 35 10               PULS    X                         ; Restore script pointer
 0F7C: 39                  RTS                               ; Done
 
-Com16_PrintVarShortName:
+Com_16_PrintVarShortName:
 0F7D: 34 10               PSHS    X                         ; Save script pointer
 0F7F: BE 01 C0            LDX     $01C0                     ; {ram:VAR_OBJ_DATA} Var noun data
 0F82: B6 01 BF            LDA     $01BF                     ; {ram:VAR_OBJ_NUMBER} Var noun index
 0F85: 20 08               BRA     $F8F                      ; Print short name
 
-Com11_Print1stNounShortName:
+Com_11_Print1stNounShortName:
 0F87: 34 10               PSHS    X                         ; Save script pointer
 0F89: BE 01 C6            LDX     $01C6                     ; {ram:FIRST_NOUN_DATA} 1st noun data
 0F8C: B6 01 C3            LDA     $01C3                     ; {ram:FIRST_NOUN_NUM} 1st noun index
@@ -1304,13 +1304,13 @@ Com11_Print1stNounShortName:
 0FB2: 4F                  CLRA                              ; Return ...
 0FB3: 39                  RTS                               ; ... OK
 
-Com12_Print2ndNounShortName:
+Com_12_Print2ndNounShortName:
 0FB4: 34 10               PSHS    X                         ; Save script pointer
 0FB6: BE 01 CC            LDX     $01CC                     ; {ram:SECOND_NOUN_DATA} 2nd noun data
 0FB9: B6 01 C9            LDA     $01C9                     ; {ram:SECOND_NOUN_NUM} 2nd noun index
 0FBC: 20 D1               BRA     $F8F                      ; Print short name
 
-Com15_CheckObjBits:
+Com_15_CheckObjBits:
 ; Check target bits in an object.
 0FBE: 34 10               PSHS    X                         ; Hold script pointer
 0FC0: BE 01 C0            LDX     $01C0                     ; {ram:VAR_OBJ_DATA} Input object pointer
@@ -1329,7 +1329,7 @@ Com15_CheckObjBits:
 0FDA: 8A 01               ORA     #$01                      ; Set error
 0FDC: 39                  RTS                               ; Return
 
-Com29_ToggleOpenClosed:
+Com_29_ToggleOpenClosed:
 ; Toggle open/closed bit on object.
 0FDD: 34 10               PSHS    X                         ; Hold script pointer
 0FDF: BE 01 C0            LDX     $01C0                     ; {ram:VAR_OBJ_DATA} Input object pointer
@@ -1344,7 +1344,7 @@ Com29_ToggleOpenClosed:
 0FF6: 4F                  CLRA                              ; OK
 0FF7: 39                  RTS                               ; Done
 
-Com2A_ToggleLockedUnlocked:
+Com_2A_ToggleLockedUnlocked:
 ; Toggle locked/unlocked bit on object.
 0FF8: 34 10               PSHS    X                         ; Hold script pointer
 0FFA: BE 01 C0            LDX     $01C0                     ; {ram:VAR_OBJ_DATA} Input object pointer
@@ -1359,7 +1359,7 @@ Com2A_ToggleLockedUnlocked:
 1011: 4F                  CLRA                              ; OK
 1012: 39                  RTS                               ; Done
 
-Com14_ExecuteCommandAndReverseReturn:
+Com_14_ExecuteCommandAndReverseReturn:
 1013: BD 0C 44            JSR     $0C44                     ; {ProcessCommand} Execute command
 1016: 26 03               BNE     $101B                     ; Command returned a non-zero ... return zero
 1018: 8A 01               ORA     #$01                      ; Command returned a zero ... return non-zerio
@@ -1367,7 +1367,7 @@ Com14_ExecuteCommandAndReverseReturn:
 101B: 4F                  CLRA                              ; Zero
 101C: 39                  RTS                               ; Done
 
-Com17_MoveObjectXToLocationY:
+Com_17_MoveObjectXToLocationY:
 101D: E6 80               LDB     ,X+                       ; Get object number
 101F: 34 10               PSHS    X                         ; Hold script
 1021: BD 11 7D            JSR     $117D                     ; Find object
@@ -1379,7 +1379,7 @@ Com17_MoveObjectXToLocationY:
 102F: 4F                  CLRA                              ; OK
 1030: 39                  RTS                               ; Done
 
-Com18_CheckVarOwnedByActiveObject:
+Com_18_CheckVarOwnedByActiveObject:
 1031: 34 10               PSHS    X                         ; Save script pointer
 1033: BE 01 C0            LDX     $01C0                     ; {ram:VAR_OBJ_DATA} Var object data
 1036: BD 0A 83            JSR     $0A83                     ; {SkipIDLoadEnd} Skip length
@@ -1420,7 +1420,7 @@ EveryTurn:
 1079: 24 39               BCC     $10B4                     ; Nothing to do ... next object
 107B: BD 0A 83            JSR     $0A83                     ; {SkipIDLoadEnd} Skip length
 107E: 34 10               PSHS    X                         ; Hold pointer
-1080: BD 13 19            JSR     $1319                     ; {Com2B_GenerateRandomNumber} Generate random number
+1080: BD 13 19            JSR     $1319                     ; {Com_2B_GenerateRandomNumber} Generate random number
 1083: F6 01 D0            LDB     $01D0                     ; {ram:tmp1DO} Current object number ...
 1086: F7 01 D2            STB     $01D2                     ; {ram:ACTIVE_OBJ_NUM} ... is now the active object
 1089: BD 11 7D            JSR     $117D                     ; Get its data pointer
@@ -1444,7 +1444,7 @@ EveryTurn:
 10B6: 35 20               PULS    Y                         ; Restore
 10B8: 20 A0               BRA     $105A                     ; Next object
 
-Com05_IsRandomLessOrEqual:
+Com_05_IsRandomLessOrEqual:
 10BA: B6 13 B8            LDA     $13B8                     ; Random value
 10BD: A1 80               CMPA    ,X+                       ; Compare random value to script
 10BF: 25 05               BCS     $10C6                     ; If less than ... OK
@@ -1454,7 +1454,7 @@ Com05_IsRandomLessOrEqual:
 10C6: 4F                  CLRA                              ; Less than or equal ... OK
 10C7: 39                  RTS                               ; Done
 
-Com1D_AttackObject:
+Com_1D_AttackObject:
 10C8: A6 80               LDA     ,X+                       ; Get attack value
 10CA: B7 01 AB            STA     $01AB                     ; {ram:tmp1AB} Hold attack value
 10CD: 34 10               PSHS    X                         ; Hold script
@@ -1493,7 +1493,7 @@ Com1D_AttackObject:
 110D: 35 10               PULS    X                         ; ... stack
 110F: 20 E7               BRA     $10F8                     ; Return OK
 
-Com1E_SwapObjects:
+Com_1E_SwapObjects:
 1111: E6 80               LDB     ,X+                       ; 1st object number
 1113: A6 80               LDA     ,X+                       ; 2nd object
 1115: B7 01 AB            STA     $01AB                     ; {ram:tmp1AB} Hold second object
@@ -1516,7 +1516,7 @@ Com1E_SwapObjects:
 1139: 4F                  CLRA                              ; Z=1 OK
 113A: 39                  RTS                               ; Done
 
-Com23_HealVarObject:
+Com_23_HealVarObject:
 113B: A6 80               LDA     ,X+                       ; Get healing value
 113D: B7 01 AB            STA     $01AB                     ; {ram:tmp1AB} Hold it
 1140: 34 10               PSHS    X                         ; Hold script
@@ -1537,7 +1537,7 @@ Com23_HealVarObject:
 1166: E7 84               STB     ,X                        ; ... new health
 1168: 20 CD               BRA     $1137                     ; OK out
 
-Com22_25_26_27_28_PrintCR:
+Com_22_25_26_27_28_PrintCR:
 116A: B6 01 D2            LDA     $01D2                     ; {ram:ACTIVE_OBJ_NUM} Active object
 116D: 81 13               CMPA    #$13                      ; Is this the Player?
 116F: 26 08               BNE     $1179                     ; No ... ignore
@@ -1547,8 +1547,8 @@ Com22_25_26_27_28_PrintCR:
 1179: 4F                  CLRA                              ; OK
 117A: 39                  RTS                               ; Done
 
-Com24_EndlessLoop:
-117B: 20 FE               BRA     $117B                     ; {Com24_EndlessLoop} Endless loop
+Com_24_EndlessLoop:
+117B: 20 FE               BRA     $117B                     ; {Com_24_EndlessLoop} Endless loop
 
 ; Find object index in B
 117D: 8E 1B 42            LDX     #$1B42                    ; Start of objects
@@ -1746,7 +1746,7 @@ UnpackBytes:
 
 1312: 00 00 00 00 00 00 00 ; Temporaries for decompression algorithm above
    
-Com2B_GenerateRandomNumber:
+Com_2B_GenerateRandomNumber:
 1319: 34 14               PSHS    X,B                       ; Random number generator. Uses seed at 13B8.
 131B: 8E 13 B8            LDX     #$13B8                    ;
 131E: C6 17               LDB     #$17                      ;

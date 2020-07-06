@@ -575,9 +575,7 @@ class Decoder:
             #print(FORM.shex4(p))
             
         # First, fix the names in the table itself
-        
-        if coco:
-            mx-=2
+                
         org = FORM.shex4(self._command_table)+':'
         for pos in range(len(code)):
             if code[pos].startswith(org):                
