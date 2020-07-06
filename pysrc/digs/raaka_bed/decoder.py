@@ -644,6 +644,7 @@ class Decoder:
                 break
             
         epos = pos    
+        #print(endstr)
         while True:
             epos += 1
             if code[epos].startswith(endstr):
