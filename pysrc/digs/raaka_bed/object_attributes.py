@@ -3,6 +3,32 @@ from digs.raaka_bed import decoder_functions as FUN
 import digs.raaka_bed.commands as RTC
 import util.util as U
 
+class HitPoints:
+    
+    command_value = 9
+    command_name = '09 HIT POINTS'
+    
+    def parse_binary(self,data):
+        #print(HitPoints.command_name)
+        self._raw_data = data
+        self._max = data[0]
+        self._current = data[1]
+    
+    def get_assembly(self): 
+        return bytes([self.command_value])+RTC.BaseCommand.make_length_bytes(len(self._raw_data))+bytes([self._max,self._current])   
+    
+    def print_assembly(self,pos,ident,out):
+        s = U.hex4(pos)+': '+U.hex2(self.command_value)+' 02 ; HIT POINTS'
+        out.append(U.indent_code(s,ident)) 
+        pos+=2
+        s = U.hex4(pos)+': '+U.hex2(self._max)+' '+U.hex2(self._current)+' ; maxHitPoints='+U.hex2(self._max)+' currentHitPoints='+U.hex2(self._current)
+        out.append(U.indent_code(s,ident)) 
+        return pos+2
+    
+    def tojson(self,parent,include_scripts=True):
+        parent['max_points'] = self._max
+        parent['current_points'] = self._current      
+        
 class Adjectives:
     
     command_value = 1
@@ -27,9 +53,8 @@ class Adjectives:
         out.append(U.indent_code(s,ident))          
         return pos+1   
     
-    def tojson(self,parent):
-        raise "Stop"
-        parent['short_name'] = self._text 
+    def tojson(self,parent,include_scripts=True):
+        parent['adjectives'] = self._adjective 
     
 class ShortName:
     
@@ -52,7 +77,7 @@ class ShortName:
         pos = RTC.PrintMessage.print_assembly_text(pos,ident+1,self._raw_data,self._text,out)             
         return pos   
     
-    def tojson(self,parent):
+    def tojson(self,parent,include_scripts=True):
         parent['short_name'] = self._text 
     
 class Description:
@@ -103,7 +128,7 @@ class Description:
             pos = RTC.PrintMessage.print_assembly_text(pos,ident+1,self._raw_data,self._text,out)             
             return pos
     
-    def tojson(self,parent):
+    def tojson(self,parent,include_scripts=True):
         if FUN.decode_is_bedlam():
             script = []
             parent['description'] = script
@@ -143,11 +168,12 @@ class CommandScript:
         
         return pos
     
-    def tojson(self,parent):
+    def tojson(self,parent,include_scripts=True):
         script = []
         parent['user_input_handler'] = script
-        for com in self._command:
-            script.append(com.tojson())
+        if include_scripts:
+            for com in self._command:
+                script.append(com.tojson())
 
 class HandlerGivenCommand:
     command_value = 0x0B
@@ -179,12 +205,13 @@ class HandlerGivenCommand:
         
         return pos
     
-    def tojson(self,parent):
+    def tojson(self,parent,include_scripts=True):
         
         script = []
         parent['handler_if_given_command'] = script
-        for com in self._script:
-            script.append(com.tojson())
+        if include_scripts:
+            for com in self._script:
+                script.append(com.tojson())
        
 class HandlerAsSecondNoun:
     
@@ -217,12 +244,13 @@ class HandlerAsSecondNoun:
         
         return pos
     
-    def tojson(self,parent):
+    def tojson(self,parent,include_scripts=True):
         
         script = []
         parent['handler_if_second_noun'] = script
-        for com in self._script:
-            script.append(com.tojson())
+        if include_scripts:
+            for com in self._script:
+                script.append(com.tojson())
         
    
 class HandlerAsFirstNoun:
@@ -256,11 +284,12 @@ class HandlerAsFirstNoun:
         
         return pos
     
-    def tojson(self,parent):
+    def tojson(self,parent,include_scripts=True):
         script = []
         parent['handler_if_first_noun'] = script
-        for com in self._script:
-            script.append(com.tojson())
+        if include_scripts:
+            for com in self._script:
+                script.append(com.tojson())
         
   
 class HandlerTurn:
@@ -294,11 +323,12 @@ class HandlerTurn:
         
         return pos
     
-    def tojson(self,parent):
+    def tojson(self,parent,include_scripts=True):
         script = []
         parent['handler_every_turn'] = script
-        for com in self._script:
-            script.append(com.tojson())        
+        if include_scripts:
+            for com in self._script:
+                script.append(com.tojson())        
     
 class HandlerDeath:
     
@@ -331,37 +361,12 @@ class HandlerDeath:
         
         return pos
     
-    def tojson(self,parent):
+    def tojson(self,parent,include_scripts=True):
         script = []
         parent['on_death_handler'] = script
-        for com in self._script:
-            script.append(com.tojson())        
-            
-class HitPoints:
-    
-    command_value = 9
-    command_name = '09 HIT POINTS'
-    
-    def parse_binary(self,data):
-        #print(HitPoints.command_name)
-        self._raw_data = data
-        self._max = data[0]
-        self._current = data[1]
-    
-    def get_assembly(self): 
-        return bytes([self.command_value])+RTC.BaseCommand.make_length_bytes(len(self._raw_data))+bytes([self._max,self._current])   
-    
-    def print_assembly(self,pos,ident,out):
-        s = U.hex4(pos)+': '+U.hex2(self.command_value)+' 02 ; HIT POINTS'
-        out.append(U.indent_code(s,ident)) 
-        pos+=2
-        s = U.hex4(pos)+': '+U.hex2(self._max)+' '+U.hex2(self._current)+' ; maxHitPoints='+U.hex2(self._max)+' currentHitPoints='+U.hex2(self._current)
-        out.append(U.indent_code(s,ident)) 
-        return pos+2
-    
-    def tojson(self,parent):
-        parent['max_points'] = self._max
-        parent['current_points'] = self._current      
+        if include_scripts:
+            for com in self._script:
+                script.append(com.tojson())       
 
 OBJ_ATTRIBUTES = {
     Adjectives.command_value : Adjectives, # 01

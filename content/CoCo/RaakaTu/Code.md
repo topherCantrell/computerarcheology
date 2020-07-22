@@ -1856,6 +1856,29 @@ FeedbackPrompts:
 
 ## Phrase List
 
+```
+In CoCo but not TRS80
+"0B: LOOK * OVER u......."
+
+Interesting. Is 0A/0B a typo? TODO which makes more sense?
+
+In TRS80 but not CoCo
+"0A: LOOK * OVER u......."
+"19: DIAGNO * * *"
+"1D: LOOK * OUT *"
+"1E: YES * * *"
+"1F: NO * * *"
+"2A: USE u....... * *"
+"31: FIND u....... * *"
+"35: JUMP * ON u......."
+"34: STEP * OVER u......."
+"36: STEP * IN u......."
+"37: STEP * OUT u......."
+"35: STEP * ON u......."
+"3E: LOAD * * *"
+"3F: SAVE * * *"
+```
+
 ```code
 PhraseList: 
 ; The noun values are bits that must be set in the target noun. The value for a noun in this table must be 
@@ -2767,6 +2790,15 @@ RoomDescriptions:
 ```
 
 ## Object Data
+
+```
+In CoCo but not TRS80
+{'name': 'BOTTLE', 'location': 'Room_00', 'score': 0, 'bits': '........'}
+{'name': 'AMBIENT SOUNDS', 'location': 'Room_1D', 'score': 0, 'bits': 'u.......'}
+In TRS80 but not CoCo
+{'name': 'BOTTLE', 'location': 'Small room granite walls', 'score': 0, 'bits': 'u.C.....', 'description': 'THERE IS A SMALL BOTTLE SITTING ON THE FLOOR.', 'short_name': 'SMALL BOTTLE', 'handler_if_first_noun': []}
+{'name': 'AMBIENT SOUNDS', 'location': 'Room_1D', 'score': 0, 'bits': 'u.......', 'handler_every_turn': []}
+```
 
 ```code
 ; 20FF - 3239
@@ -4697,6 +4729,34 @@ HelperCommands:
 ```
 
 # Input Word tables
+
+```
+In TRS80 but not CoCo
+04 DESTRO
+09 CARRY
+0E DESCRI
+11 IGNITE
+15 ASCEND
+15 DESCEN
+17 DIAGNO
+1A FIND
+1D STEP
+21 LEFT
+21 RIGHT
+25 DRINK
+26 USE
+27 SAY
+29 POUR
+2A FILL
+2F YES
+30 NO
+36 LOAD
+37 SAVE
+01 BOTTLE
+3B ROOF
+05 INSIDE
+06 OUTSID
+```
 
 ```code
 InputWordTables:

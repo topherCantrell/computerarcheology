@@ -1910,6 +1910,27 @@ FeedbackPrompts:
 
 # Phrase List
 
+In TRS80 but not COCO (TRS80 has everything):
+
+```
+"0C: LOOK * UNDER u......."
+"1A: ?? * * *"
+"1B: LOOK * AROUND u......."
+"1C: LOOK * BEHIND u......."
+"1D: LOOK * OUT *"
+"36: CLIMB * IN *"
+"36: GO * IN u......."
+"36: CLIMB * IN u......."
+"36: JUMP * IN u......."
+"37: CLIMB * OUT *"
+"37: CLIMB * OUT u......."
+"37: GO * OUT u......."
+"37: JUMP * OUT u......."
+"38: CLIMB * UNDER u......."
+"38: GO * UNDER u......."
+"39: THROW u....... IN u......."
+```    
+
 ```code
 PhraseList: 
 13E3: 05 00 00 00 01  ; 01: NORTH   *         *       *         
@@ -4860,6 +4881,8 @@ HelperCommands:
 ```
 
 # Input Word Tables
+
+Tables are the same in COCO and TRS80.
 
 ```code
 InputWordTables:

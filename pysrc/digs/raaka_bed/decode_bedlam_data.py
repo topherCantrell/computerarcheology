@@ -1,6 +1,8 @@
 import json
 from digs.raaka_bed.decoder import Decoder
 
+from tools import format as FORM
+
 # Nothing in the code ... best we can do is make lists here
 
 OBJECT_SHORT_NAMES = {
@@ -189,14 +191,18 @@ INFO_COCO = {
     'origin' : 0x0600,
     'word_data' : 0x3BD5,
     'phrase_data' : 0x13E3,
+    'command_table': 0x1357,
+    
     'object_data' : 0x1B42,
     'general_commands_data' : 0x2F24,
-    'helper_commands_data' : 0x339C,
-    'room_descriptions_data' : 0x15A1,
-    'command_table': 0x1357,
+    'helper_commands_data' : 0x339C,    
+    'room_descriptions_data' : 0x15A1, # same for coco/trs80        
 }
 
 coco = Decoder(INFO_COCO,OBJECT_SHORT_NAMES,ROOM_SHORT_NAMES,HELPER_SHORT_NAMES)
+trs80 = Decoder(INFO_TRS80,OBJECT_SHORT_NAMES,ROOM_SHORT_NAMES,HELPER_SHORT_NAMES)
+
+"""
 plat = coco
 out = []
 plat.print_general_commands(out)
@@ -219,7 +225,6 @@ plat.merge_into(out)
 
 plat.fix_command_names()
 
-trs80 = Decoder(INFO_TRS80,OBJECT_SHORT_NAMES,ROOM_SHORT_NAMES,HELPER_SHORT_NAMES)
 plat = trs80
 out = []
 plat.print_general_commands(out)
@@ -242,6 +247,7 @@ plat.merge_into(out)
 
 
 plat.fix_command_names()
+"""
 
 """
 with open('rooms_raaka_trs80.json','w') as f:
@@ -269,3 +275,47 @@ with open('phrases_raaka_trs80.json','w') as f:
     js = json.dumps(js,indent=2)
     f.write(js)
 """
+
+"""
+in_trs80 = []
+for t in trs80._words:
+    for w in trs80._words[t]:
+        in_trs80.append(FORM.shex2(w['num'])+' '+w['text'])
+        
+in_coco = []
+for t in coco._words:
+    for w in coco._words[t]:
+        in_coco.append(FORM.shex2(w['num'])+' '+w['text'])
+"""
+
+"""
+in_trs80 = []
+for ph in trs80._phrases:
+    in_trs80.append(trs80.phrase_to_string(ph,True))
+    
+in_coco = []
+for ph in coco._phrases:
+    in_coco.append(coco.phrase_to_string(ph,True))    
+"""
+
+in_coco=[]
+obs = coco.tojson_objects(False)
+for o in obs:
+    in_coco.append(str(o))
+    
+in_trs80=[]
+obs = trs80.tojson_objects(False)
+for o in obs:
+    in_trs80.append(str(o))
+    
+
+
+print('In CoCo but not TRS80')
+for i in in_coco:
+    if not i in in_trs80:
+        print(i)
+        
+print('In TRS80 but not CoCo')
+for i in in_trs80:
+    if not i in in_coco:
+        print(i)

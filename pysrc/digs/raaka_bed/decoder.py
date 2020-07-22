@@ -153,6 +153,27 @@ class Decoder:
                 return w
         return None
     
+    def phrase_to_string(self,phr,full):
+        wr = self.find_word('verbs',phr[0])
+        if wr:
+            wrt = wr['text']
+        else:
+            wrt = '??'
+            
+        if phr[1]:
+            w2 = self.find_word('prepositions',phr[1])['text']
+        else:
+            w2 = '*'
+            
+        na = FUN.decode_object_bits(phr[2])
+        nb = FUN.decode_object_bits(phr[3])
+                                               
+        if full:                               
+            # return '"'+U.hex2(phr[-1])+': '+wrt.ljust(8)+na.ljust(10)+w2.ljust(8)+nb.ljust(10)+'"'
+            return '"'+U.hex2(phr[-1])+': '+ wrt+' '+na+' '+w2+' '+nb+'"'
+        else:
+            return wrt+' '+na+' '+w2+' '+nb
+    
     def decode_phrase(self,number, full=True):
         for phr in self._phrases:
             if phr[-1] == number:
@@ -479,8 +500,8 @@ class Decoder:
             pos += len(pre)+1
             for att in room['attributes']:
                 pos = att.print_assembly(pos,1,out)                      
-    
-    def tojson_objects(self):
+            
+    def tojson_objects(self,include_scripts=True):
         ret = []
         
         num = 1
@@ -491,7 +512,7 @@ class Decoder:
             ret.append(r)
             
             for att in obj['attributes']:
-                att.tojson(r)
+                att.tojson(r,include_scripts)
             
         return ret
                 

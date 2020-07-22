@@ -1,10 +1,13 @@
+from tools import format as FORM
 
-source = ('../../content/TRS80/Bedlam/BEDLAM.bin',0x0600)
-target = ('../../content/CoCo/Bedlam/Bedlam.bin',0x4300)
-#source_start = 0x3C2A
-#source_len = 10
+source = ('../../content/CoCo/RaakaTu/RaakaTu.bin',0x0600)
+target = ('../../content/TRS80/RaakaTu/RAAKA.bin',0x4300)
+source_start = 0x1523
 
-source_start = 0x13E3
+#source = ('../../content/CoCo/Bedlam/BEDLAM.bin',0x0600)
+#target = ('../../content/TRS80/Bedlam/Bedlam.bin',0x4300)
+#source_start = 0x2F24
+
 source_len = 20
 
 with open(source[0],'rb') as f:
@@ -18,6 +21,8 @@ sp = source_start-source[1]
 dat = source_data[sp:sp+source_len]
 
 i = target_data.index(dat)
+
+print(FORM.shex4(i+0x4300))
 
 while source_data[sp] == target_data[i]:
     sp -= 1

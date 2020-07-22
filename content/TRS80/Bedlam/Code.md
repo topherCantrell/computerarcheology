@@ -2105,6 +2105,8 @@ CommandJumpTable:
 
 # Input Word Tables
 
+Tables are the same in COCO and TRS80.
+
 ```code
 InputWordTables:
 
