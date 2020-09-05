@@ -76,7 +76,7 @@ class Decoder:
                 })
                             
             pos = pos + n + 1
-                    
+            
     def decode_noun(self,index): 
         # Number is the INDEX, not the word number        
         if index in self._object_short_names:
@@ -151,7 +151,8 @@ class Decoder:
         for w in self._words[wtype]:
             if w['num'] == word_num:
                 return w
-        return None
+        #print('OOPS '+wtype+' '+str(word_num))
+        return {'text':'??'+wtype+'_'+str(word_num)}
     
     def phrase_to_string(self,phr,full):
         wr = self.find_word('verbs',phr[0])
@@ -506,7 +507,7 @@ class Decoder:
         
         num = 1
         for obj in self._objects:
-            r = {'name' : self.decode_noun(num),'location' : self.decode_room_name(obj['location']), 'score':obj['score'], 'bits':FUN.decode_object_bits(obj['bits'],False)}
+            r = {'name' : self.decode_noun(num),'word': self.find_word('nouns',obj['word'])['text'], 'location' : self.decode_room_name(obj['location']), 'score':obj['score'], 'bits':FUN.decode_object_bits(obj['bits'],False)}
             num += 1
             
             ret.append(r)

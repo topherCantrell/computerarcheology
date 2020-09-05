@@ -6,16 +6,83 @@ from tools import format as FORM
 # Nothing in the code ... best we can do is make lists here
 
 OBJECT_SHORT_NAMES = {
-    0x00 : 'nowhere',
-    0x01 : 'BOTTLE', # Word is not in CoCo version
+        
+    0x01 : 'BOTTLE', # Word is not in CoCo version    
+    0x02 : 'POTION',
+    0x03 : 'RUG',
+    0x04 : 'DOOR_RUG',
+    0x05 : 'FOOD',
+    0x06 : 'STATUE_FACING_EAST',
+    0x07 : 'STATUE_FACING_WEST',
+    0x08 : 'RING',
+    0x09 : 'SWORD',
+    0x0A : 'GARGOYLE_STONE',
+    0x0B : 'ALTAR_STAINED',
+    0x0C : 'IDOL',
+    0x0D : 'GATE',
+    0x0E : 'LEVER_UNPULLED',
+    0x0F : 'LEVER_PULLED',
+    
+    0x10 : 'PLAQUE_LEVER',
+    0x11 : 'CANDLE_UNLIT',
+    0x12 : 'CANDLE_LIT',
+    0x13 : 'PLAQUE_TUNNEL',
+    0x14 : 'LAMP_LIT',
+    0x15 : 'SERPENT_LIVE',
+    0x16 : 'SERPENT_DEAD',
+    0x17 : 'HANDS',
+    0x18 : 'COIN',
+    0x19 : 'SLOT',
+    0x1A : 'PLAQUE_SLOT',
+    0x1B : 'DOOR_CLOSED',
+    0x1C : 'DOOR_OPEN',
     0x1D : 'PLAYER',
-    0x24 : 'GUARD REPORTER',
+    0x1E : 'GARGOYLE_LIVE',
+    0x1F : 'GARGOYLE_DEAD',
+    
+    0x20 : 'WALL',
+    0x21 : 'VINE',
+    0x22 : 'CHOPSTICK',
+    0x23 : 'GUARD',
+    0x24 : 'GUARD_REPORTER',
+    0x25 : 'GEM_MOVER',
+    0x26 : 'GEM_TREASURE',
+    0x27 : 'ROOM',
+    0x28 : 'LAMP_UNLIT',
+    0x29 : 'FLOOR',
+    0x2A : 'EXIT',
+    0x2B : 'PASSAGE',
+    0x2C : 'HOLE',
+    0x2D : 'CORRIDOR',
     0x2E : 'CORNER',
-    0x3C : 'AMBIENT SOUNDS',
-    0xFF : 'everywhere',
+    0x2F : 'BOW',
+    
+    0x30 : 'ARROW',
+    0x31 : 'HALLWAY',
+    0x32 : 'CHAMBER',
+    0x33 : 'VAULT',
+    0x34 : 'ENTRANCE',
+    0x35 : 'TUNNEL',
+    0x36 : 'JUNGLE',
+    0x37 : 'TEMPLE',
+    0x38 : 'SERPENTS',
+    0x39 : 'PIT',
+    0x3A : 'CEILING',
+    0x3B : 'ALTAR_UNDER',
+    0x3C : 'AMBIENT_SOUNDS',    
+    
+    0xFF : '??255',
 }
 
+chkr = []
+for k in OBJECT_SHORT_NAMES:
+    if OBJECT_SHORT_NAMES[k] in chkr:
+        raise Exception('DUPLICATE '+OBJECT_SHORT_NAMES[k])
+    chkr.append(OBJECT_SHORT_NAMES[k])
+
 ROOM_SHORT_NAMES = {
+    0x00 : 'NOWHERE',
+    0xFF : 'EVERYWHERE',
     0x81 : 'Small room granite walls',
     0x82 : 'Oriental rug',
     0x83 : 'Dark passage',
@@ -113,6 +180,34 @@ INFO_COCO = {
 coco = Decoder(INFO_COCO,OBJECT_SHORT_NAMES,ROOM_SHORT_NAMES,HELPER_SHORT_NAMES)
 trs80 = Decoder(INFO_TRS80,OBJECT_SHORT_NAMES,ROOM_SHORT_NAMES,HELPER_SHORT_NAMES)
 
+def make_original_json(plat,name_tag):
+    with open('rooms_raaka_'+name_tag+'.json','w') as f:
+        js = plat.tojson_room_descriptions()
+        js = json.dumps(js,indent=2)
+        f.write(js)
+    with open('objects_raaka_'+name_tag+'.json','w') as f:
+        js = plat.tojson_objects()
+        js = json.dumps(js,indent=2)
+        f.write(js)    
+    with open('general_raaka_'+name_tag+'.json','w') as f:
+        js = plat.tojson_general()
+        js = json.dumps(js,indent=2)
+        f.write(js)    
+    with open('helper_raakas_'+name_tag+'.json','w') as f:
+        js = plat.tojson_helpers()
+        js = json.dumps(js,indent=2)
+        f.write(js)    
+    with open('words_raaka_'+name_tag+'.json','w') as f:
+        js = plat.tojson_words()
+        js = json.dumps(js,indent=2)
+        f.write(js)
+    with open('phrases_raaka_'+name_tag+'.json','w') as f:
+        js = plat.tojson_phrases()
+        js = json.dumps(js,indent=2)
+        f.write(js)
+        
+make_original_json(trs80,'trs80')
+
 """
 plat = coco
 out = []
@@ -206,6 +301,7 @@ for ph in coco._phrases:
     in_coco.append(coco.phrase_to_string(ph,True))    
 """
 
+"""
 in_coco=[]
 obs = coco.tojson_objects(False)
 for o in obs:
@@ -226,3 +322,4 @@ print('In TRS80 but not CoCo')
 for i in in_trs80:
     if not i in in_coco:
         print(i)
+"""

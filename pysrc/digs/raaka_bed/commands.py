@@ -903,7 +903,7 @@ class MoveObject(BaseCommand):
         return pos+3
     
     def tojson(self):
-        return [self.command_name,FUN.decode_room_name(self._room)]
+        return [self.command_name,FUN.decode_noun(self._object),FUN.decode_room_name(self._room)]
     
 class Heal(BaseCommand):
     

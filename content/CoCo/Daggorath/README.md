@@ -35,6 +35,8 @@ some POKE tweaks, and then EXEC 49152. Burn a new ROM.
 
 ## Overview
 
+http://dod.projects.l-w.ca/hg/index.cgi/shortlog/0fb9772b77fc
+
 I like to beat the game in a long-and-drawn-out session that spans several days:
 
 ## Level 1: (15 or 20 minutes) 

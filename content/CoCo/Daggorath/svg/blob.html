@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<svg width="256" height="192">
+
+<!-- Objects -->
+
+<symbol id="obj-shield">
+  <path d="M 172,134 L 192,128 L 186,122 L 168,128 l -4,6 l 8,0"/>
+</symbol>
+
+<symbol id="obj-torch">
+  <path d="M 60,118 l 14,-2 l -2,-2 l -12,4" stroke="black"/>
+</symbol>
+
+<symbol id="obj-sword">
+  <path d="M 80 114 L 100,124 M 82,118 L 86,114" stroke="black"/>
+</symbol>
+
+<symbol id="obj-flask">
+  <path d="M 162,110 l 2,10 l -4,0 l 2,-10" stroke="black"/>
+</symbol>
+
+<symbol id="obj-ring">
+  <path d="M 60,122 l 2,2 l -2,2 l -2,-2 l 2,-2" stroke="black"/>
+</symbol>
+
+<symbol id="obj-scroll">
+  <path d="M 194,118 l -2,2 l 8,6 l 2,-2 l -8,-6"/>
+</symbol>
+
+<!-- Walls -->
+
+<symbol id="left-wall">
+  <path d="M 27,16 L 64,38 L 64,114 L 27,136"/>
+</symbol>
+
+<symbol id="right-wall">
+  <path d="M 229,16 L 192,38 L 192,114 L 229,136"/>
+</symbol>
+
+<symbol id="front-wall">
+  <path d="M 64,38 L 192,38 M 64,114 L 192,114"/>
+</symbol>
+
+<symbol id="ceiling">
+  <path d="M 50,30 L 206,30"/>
+</symbol>
+
+<symbol id="left-wall-open">
+  <path d="M 29,38 L 64,38 L 64,114 L 27,114 M 27,16 L 64,38 "/>
+</symbol>
+
+<symbol id="right-wall-open">
+  <path d="M 229,38 L 192,38 L 192,114 L 229,114 M 229,16 L 192,38 "/>
+</symbol>
+
+<symbol id="left-wall-door">
+  <path d="M 40,128 L 40,65 L 56,68 L 56,119 M 48,92 L 52,93 M 27,16 L 64,38 L 64,114 L 27,136"/>
+</symbol>
+
+<symbol id="right-wall-door">
+  <path d="M 216,128 L 216,65 L 200,68 L 200,119 M 208,92 L 204,93 M 229,16 L 192,38 L 192,114 L 229,136"/>
+</symbol>
+
+<symbol id="front-wall-door">
+  <path d="M 108,114 L 108,67 L 148,67 L 148,114 M 126,94 L 130,94 M 64,38 L 192,38 M 64,114 L 192,114"/>
+</symbol>
+
+<symbol id="left-magic-door">
+  <path d="M 40,128 L 50,66 L 58,117"/>
+</symbol>
+
+<symbol id="right-magic-door">
+  <path d="M 216,128 L 206,66 L 198,117 "/>
+</symbol>
+
+<symbol id="front-magic-door">
+  <path d="M 108,113 L 128,67 L 148,114 "/>
+</symbol>
+
+<symbol id="left-creature">
+  <path d="M 28,100 l 8,8 l -4,4 l 4,8 l -8,8 "/>
+</symbol>
+
+<symbol id="right-creature">
+  <path d=" M 228,100 l -8,8 l 4,4 l -4,8 l 8,8 "/>
+</symbol>
+
+<!-- Holes and Ladders -->
+
+<symbol id="ladder-ceiling">
+  <path d="M 116,24 L 116,128 M 140,24 L 140,128 M 116,28 L 140,28 M 116,40 L 140,40 M 116,52 L 140,52 M 116,64 L 140,64 M 116,76 L 140,76 M 116,88 L 140,88 M 116,100 L 140,100 M 116,112 L 140,112 M 116,123 L 140,123 M 100,34 L 92,24 L 164,24 L 156,34 L 100,34 L 100,24 M 156,34 L 156,24 M 47,28 L 96,28 M 161,28 L 210,28 "/>
+</symbol>
+
+<symbol id="ladder-floor">
+  <path d="M 116,24 L 116,128 M 140,24 L 140,128 M 116,28 L 140,28 M 116,40 L 140,40 M 116,52 L 140,52 M 116,64 L 140,64 M 116,76 L 140,76 M 116,88 L 140,88 M 116,100 L 140,100 M 116,112 L 140,112 M 116,123 L 140,123 M 100,118 L 92,128 L 164,128 L 156,118 L 100,118 L 100,128 M 156,118 L 156,128 M 47,28 L 210,28 "/>
+</symbol>
+
+<symbol id="hole-ceiling">
+  <path d="M 100,34 L 92,24 L 164,24 L 156,34 L 100,34 L 100,24 M 156,34 L 156,24 M 47,28 L 96,28 M 161,28 L 210,28"/>
+</symbol>
+
+<symbol id="hole-floor">
+  <path d="M 100,118 L 92,128 L 164,128 L 156,118 L 100,118 L 100,128 M 156,118 L 156,128 M 47,28 L 210,28"/>
+</symbol>
+
+<!-- Creatures -->
+
+<symbol id="giant-club">
+  <path d="M 98,104 l 14,-6 l 8,-6 l 8,2 l 4,2 l 0,6 l -6,2 l -6,0 l -6,-2 l -14,4 L 132,102 l 4,0 l 12,10 l 12,10 l 14,2 l -4,-4 l 4,0 l -12,-4 l -10,-10 l -10,-10 l -12,-4 l -12,-4 M 92,78 l 4,-8 l 2,10 l -4,6 l -2,-8 l -8,-2 l 4,8 l 6,2 M 90,106 l -4,2 l 2,2 l 6,-2 l 4,12 l -14,6 l 4,-4 l -8,0 l 8,-4 l -12,-16 l 4,-4 M 84,86 l 8,10 l 10,12 l -4,4 l -12,-8 l -12,-10 l 2,-12 l 8,-6 l -4,-4 l 4,2 l 4,-6 l 6,2 l 2,-4 l 0,4 l 12,-2 l 8,4 l 4,14 l -16,10 l -4,-4 l 10,-8 l -4,-10 "/>
+</symbol>
+
+<symbol id="giant-hatchet">
+  <path d="M 98,104 L 124,94 L 126,96 L 100,106 M 132,102 L 114,92 L 118,102 L 114,110 L 132,102 l 4,0 l 12,10 l 12,10 l 14,2 l -4,-4 l 4,0 l -12,-4 l -10,-10 l -10,-10 l -12,-4 l -12,-4 M 92,78 l 4,-8 l 2,10 l -4,6 l -2,-8 l -8,-2 l 4,8 l 6,2 M 90,106 l -4,2 l 2,2 l 6,-2 l 4,12 l -14,6 l 4,-4 l -8,0 l 8,-4 l -12,-16 l 4,-4 M 84,86 l 8,10 l 10,12 l -4,4 l -12,-8 l -12,-10 l 2,-12 l 8,-6 l -4,-4 l 4,2 l 4,-6 l 6,2 l 2,-4 l 0,4 l 12,-2 l 8,4 l 4,14 l -16,10 l -4,-4 l 10,-8 l -4,-10 "/>
+</symbol>
+
+<symbol id="galdrog">
+  <path d="M 124,80 L 114,94 L 120,110 L 112,132 L 78,104 L 48,132 L 72,68 L 32,84 L 88,22 L 114,52 L 128,92 L 142,52 L 168,22 L 224,88 L 184,68 L 208,132 L 178,112 L 144,132 L 136,110 L 142,94 L 132,80 M 112,132 l 10,-8 l 4,-14 l -4,-10 l 6,-8 l 6,8 l -4,10 l 4,14 l 10,8 M 122,82 l -16,14 l -14,-4 l -6,-16 l -8,-4 l 6,6 l -8,0 l 8,4 l 4,14 l 14,8 l 14,-4 M 168,22 l -6,4 l 4,-8 l -6,6 l 0,6 l -10,8 l -10,8 l -6,-4 l 4,-10 l -6,-14 l 2,14 l -6,6 l -6,-6 l 2,-14 l -6,14 l 4,10 l 6,12 l 6,-12 l -6,4 l -6,-4 l -6,4 l -10,-8 l -10,-8 l 0,-6 l -6,-6 l 4,8 l -6,-4 "/>
+</symbol>
+
+<symbol id="wraith">
+  <path d="M 68,62 L 88,68 L 100,56 M 90,74 L 74,70 l 6,6 l 10,-2 l 10,-2 l 2,-8 l -12,10 l 4,12 l -4,0 M 80,100 l 6,-10 l 14,2 l 8,6 l -10,-4 l -12,0 l -6,6 "/>
+</symbol>
+
+<symbol id="spider">
+  <path d="M 160,124 l 4,-8 l 4,4 l 8,-4 l 8,4 l -8,4 l -8,-4 l 8,0 l 8,0 l 4,-4 l 4,8 M 168,124 l 2,-8 l 2,4 l 4,2 l 4,-2 l 2,-4 l 2,8"/>
+</symbol>
+
+<symbol id="scorpion">
+  <path d="M 74,112 l 0,-4 l -4,-4 l -8,4 l 4,8 l 8,2 l 8,2 l 0,4 l -8,0 l -8,-8 l 4,4 l -8,0 l 4,4 M 90,124 l 0,-4 l -8,0 l -8,4 l 0,4 l 8,0"/>
+</symbol>
+
+<symbol id="blob">   
+   <path d="M 130,82 l -16,4 l -6,14 l -2,10 l 0,10 l -10,10 l 10,-2 l -2,4 l 10,-6 l 14,2 l 14,2 l 6,-2 l 4,4 l 2,-4 l 8,2 l -6,-6 l -2,-16 l -6,-16 l -10,-6 l -8,-4
+            M 130,86 l 6,6 l 2,6 l -10,2 l 2,-14 l -10,6 l -2,10 l 10,-2
+            M 116,108 L 118,114 L 144,120"/>
+</symbol>
+
+<symbol id="knight">
+  <path d="M 124,34 l 8,0 l -2,2 l -4,0 l -2,-2 M 142,80 L 136,64 L 146,46 L 156,64 L 140,82 L 136,76 L 146,64 L 140,58 M 140,80 L 152,128 L 160,132 L 144,132 L 144,126 L 130,84 M 126,84 L 110,126 L 110,132 L 92,132 L 102,128 L 116,80 M 140,80 l -12,6 l -14,-6 l 6,-16 l -4,-6 l -6,-12 l 12,-4 l 2,-12 l 4,-4 l 4,4 l 2,12 l 12,4 l -12,-4 l 0,4 l -6,6 l -6,-6 l 0,-4 M 128,52 L 128,20 l -4,0 l 2,4 l 4,0 l 2,-4 l -4,0 M 102,74 l 0,-4 l 4,0 l 0,-6 l -16,0 l 0,6 l 4,0 l 0,4 l 2,0 l 0,6 l 4,0 l 0,-6 l 2,0 l 14,-16 M 110,46 L 102,64 L 100,64 L 102,30 L 98,20 L 94,30 L 96,64 L 98,64 L 98,20 "/>
+</symbol>
+
+<symbol id="knight-shield">
+  <path d="M 126,30 l 0,10 l -2,0 l 0,-4 M 150,44 L 166,52 L 164,76 L 150,92 L 136,76 L 134,52 L 150,44 M 140,80 L 152,128 L 160,132 L 144,132 L 144,126 L 130,84 M 126,84 L 110,126 L 110,132 L 92,132 L 102,128 L 116,80 M 140,80 l -12,6 l -14,-6 l 6,-16 l -4,-6 l -6,-12 l 12,-4 l 2,-12 l 4,-4 l 4,4 l 2,12 l 12,4 l -12,-4 l 0,4 l -6,6 l -6,-6 l 0,-4 M 128,52 L 128,20 l -4,0 l 2,4 l 4,0 l 2,-4 l -4,0 M 102,74 l 0,-4 l 4,0 l 0,-6 l -16,0 l 0,6 l 4,0 l 0,4 l 2,0 l 0,6 l 4,0 l 0,-6 l 2,0 l 14,-16 M 110,46 L 102,64 L 100,64 L 102,30 L 98,20 L 94,30 L 96,64 L 98,64 L 98,20 "/>
+</symbol>
+
+<symbol id="wizard-moon">
+  <path d="M 98,46 l 2,4 l -2,4 l -6,4 l -6,-2 l -4,-8 l 4,-8 l 4,-2 l 4,2 l -2,0 l -4,2 l -2,6 l 2,4 l 4,2 l 6,-4 l 0,-4 M 154,104 l 2,4 l -2,4 l -6,4 l -6,-2 l -4,-8 l 4,-8 l 4,-2 l 4,2 l -2,0 l -4,2 l -2,6 l 4,4 l 4,2 l 4,-4 l 0,-4 M 124,64 l -4,8 l 0,-8 l -10,14 l -8,-14 l 8,-6 l 8,-4 l 2,-4 l 2,-4 l -6,-6 l -8,2 l 12,-14 l 6,0 M 130,28 l 6,0 l 10,8 l 2,14 l -12,-6 l -4,2 l 2,2 l 2,-4 M 134,48 L 142,54 L 164,116 L 132,132 L 118,130 L 94,120 L 110,90 L 132,132 L 106,72 M 102,64 l -2,2 l -6,-10 l 2,-2 l 6,10 M 102,66 l -4,2 l 4,6 l 2,2 l 6,14 M 112,88 L 120,72 M 132,62 L 128,20 L 122,52 L 122,64 L 124,60 L 128,114 L 130,80 L 130,68 L 132,62 M 130,40 l -2,-2 l -4,2 l 2,2 l 4,-2 l -2,6 l 0,4 l -2,0 l 0,-8 l -2,-2 l 2,6 "/>
+</symbol>
+
+<symbol id="wizard-star">
+  <path d="M 86,40 L 92,64 L 100,42 L 82,54 L 104,56 L 86,40 M 140,66 l 0,14 l -6,-12 l 10,6 l -10,2 l 6,-10 M 146,96 L 148,120 L 136,100 L 154,106 L 138,116 L 146,96 M 116,80 l 6,10 l -8,-4 l 8,-4 l -6,8 l 0,-10 M 124,64 l -4,8 l 0,-8 l -10,14 l -8,-14 l 8,-6 l 8,-4 l 2,-4 l 2,-4 l -6,-6 l -8,2 l 12,-14 l 6,0 M 130,28 l 6,0 l 10,8 l 2,14 l -12,-6 l -4,2 l 2,2 l 2,-4 M 134,48 L 142,54 L 164,116 L 132,132 L 118,130 L 94,120 L 110,90 L 132,132 L 106,72 M 102,64 l -2,2 l -6,-10 l 2,-2 l 6,10 M 102,66 l -4,2 l 4,6 l 2,2 l 6,14 M 112,88 L 120,72 M 132,62 L 128,20 L 122,52 L 122,64 L 124,60 L 128,114 L 130,80 L 130,68 L 132,62 M 130,40 l -2,-2 l -4,2 l 2,2 l 4,-2 l -2,6 l 0,4 l -2,0 l 0,-8 l -2,-2 l 2,6 "/>
+</symbol>
+
+<symbol id="demon">
+  <path d="M 124,64 l -4,8 l 0,-8 l -10,14 l -8,-14 l 8,-6 l 8,-4 l 2,-4 l 2,-4 l -6,-6 l -8,2 l 12,-14 l 6,0 M 130,28 l 6,0 l 10,8 l 2,14 l -12,-6 l -4,2 l 2,2 l 2,-4 M 134,48 L 142,54 L 164,116 L 132,132 L 118,130 L 94,120 L 110,90 L 132,132 L 106,72 M 102,64 l -2,2 l -6,-10 l 2,-2 l 6,10 M 102,66 l -4,2 l 4,6 l 2,2 l 6,14 M 112,88 L 120,72 M 132,62 L 128,20 L 122,52 L 122,64 L 124,60 L 128,114 L 130,80 L 130,68 L 132,62 M 130,40 l -2,-2 l -4,2 l 2,2 l 4,-2 l -2,6 l 0,4 l -2,0 l 0,-8 l -2,-2 l 2,6 "/>
+</symbol>
+
+<symbol id="snake">
+  <path d="M 130,132 L 122,112 L 124,92 L 126,94 L 130,94 L 132,92 L 130,112 L 140,128 L 136,132 L 114,132 L 108,120 L 118,106 L 112,120 L 116,124 L 126,124 M 120,100 l 0,-4 l 4,-4 l -4,-4 l 0,-4 l 2,-2 l 4,4 l -4,-4 l 12,0 l -4,4 l 4,-4 l 2,2 l 0,4 l -4,4 l 4,4 l 0,4 "/>
+</symbol>
+
+<!-- Display -->
+
+<path d="M 0,0 l 250,0 l 0,151 l -250,0 l 0,-151" stroke="black" stroke-width="1" stroke-dasharray="1,0" fill="none"/>
+
+<use xlink:href="#left-wall-door" x="0" y=0" stroke="black" stroke-width="1" fill="none"/>
+<use xlink:href="#ceiling" x="0" y="0" stroke="black" stroke-width="1" fill="none"/>
+<use xlink:href="#right-wall-door" x="0" y="0" stroke="black" stroke-width="1" fill="none"/>
+
+<use xlink:href="#left-wall" x="0" y="0" transform="translate(47,28) scale(0.634) " stroke="black" stroke-width="1" fill="none"/>
+<use xlink:href="#right-wall" x="0" y="0" transform="translate(47,28) scale(0.634) " stroke="black" stroke-width="1" fill="none"/>
+<use xlink:href="#ladder-ceiling" x="0" y="0" transform="translate(47,28) scale(0.634) " stroke="black" stroke-width="1" fill="none"/>
+
+<use xlink:href="#galdrog" x="0" y="0" transform="translate(47,28) scale(0.634) " stroke="black" stroke-width="1" fill="none"/>
+
+<use xlink:href="#left-wall-door" x="0" y="0" transform="translate(77,46) scale(0.40) " stroke="black" stroke-width="1" fill="none"/>
+<use xlink:href="#ceiling" x="0" y="0" transform="translate(77,46) scale(0.40) " stroke="black" stroke-width="1" fill="none"/>
+<use xlink:href="#right-wall-door" x="0" y="0" transform="translate(77,46) scale(0.40) " stroke="black" stroke-width="1" fill="none"/>
+
+<use xlink:href="#left-wall" x="0" y="0" transform="translate(96,57) scale(0.255) " stroke="black" stroke-width="1" fill="none"/>
+<use xlink:href="#ceiling" x="0" y="0" transform="translate(96,57) scale(0.255) " stroke="black" stroke-width="1" fill="none"/>
+<use xlink:href="#right-wall" x="0" y="0" transform="translate(96,57) scale(0.255) " stroke="black" stroke-width="1" fill="none"/>
+<use xlink:href="#wraith" x="0" y="0" transform="translate(96,57) scale(0.255) " stroke="black" stroke-width="1" fill="none"/>
+
+<use xlink:href="#left-wall-door" x="0" y="0" transform="translate(108.4,64.5) scale(0.158) " stroke="black" stroke-width="1" fill="none"/>
+<use xlink:href="#front-wall-door" x="0" y="0" transform="translate(108.4,64.5) scale(0.158) " stroke="black" stroke-width="1" fill="none"/>
+<use xlink:href="#ceiling" x="0" y="0" transform="translate(108.4,64.5) scale(0.158) " stroke="black" stroke-width="1" fill="none"/>
+<use xlink:href="#right-wall-door" x="0" y="0" transform="translate(108.4,64.5) scale(0.158) " stroke="black" stroke-width="1" fill="none"/>
+<use xlink:href="#blob" x="0" y="0" transform="translate(108.4,64.5) scale(0.158) " stroke="black" stroke-width="1" fill="none"/>
+
+</svg>
+
+</body>
+</html>
