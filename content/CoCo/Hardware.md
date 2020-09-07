@@ -1,4 +1,3 @@
-
 ![CoCo Hardware](CoCoTech.jpg)
 
 # CoCo Hardware

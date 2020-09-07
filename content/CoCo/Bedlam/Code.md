@@ -1,4 +1,4 @@
-p![Code](Bedlam.jpg)
+![Code](Bedlam.jpg)
 
 # Bedlam Code
 
