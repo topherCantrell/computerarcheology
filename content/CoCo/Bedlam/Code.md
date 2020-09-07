@@ -1,4 +1,4 @@
-![Code](Bedlam.jpg)
+p![Code](Bedlam.jpg)
 
 # Bedlam Code
 
@@ -5034,4 +5034,32 @@ InputWordTables:
 3F02: FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
 3F10: DF FF DF FF 80 40 0D 00 03 4B 89 2C 00 87 55 00 
 3F20: 00
+```
+
+There is a disk version of the program here:
+
+https://colorcomputerarchive.com/repo/Disks/Games/
+
+The disk loads to memory at a different starting address and includes a small snippet of code on the end
+to relocate it. Here is that relocation:
+
+```
+RelocateFromDisk:
+3F21: 4F            CLRA                       ; Turn the ...
+3F22: B7 FF 40      STA   $FF40                ; ... disk drive off
+3F25: 86 34         LDA   #$0D                 ; Disable ...
+3F27: B7 FF 03      STA   $FF03                ; .. interrupts
+3F2A: 8E 04 00      LDX   #$0400               ; Clear ...
+3F2D: 86 80         LDA   #$80                 ; ... the ...
+3F2F: A7 80         STA   ,X+                  ; ... entire ...
+3F31: 8C 06 00      CMPX  #$0600               ; ... text ...
+3F34: 2D f9         BLT   $3F2F                ; ... screen
+3F36: 8E 26 00      LDX   #$2600               ; Start of program loaded from disk
+3F39: 10 8E 06 00   LDY   #$0600               ; This is where the program originally lived
+3F3D: A6 80         LDA   ,X+                  ; Copy the ...
+3F3F: A7 A0         STA   ,Y+                  ; ... program to ...
+3F41: 8C 5F 20      CMPX  #$5F21               ; ... its original ...
+3F44: 2D F7         BLT   $3F3D                ; ... location
+3F46: 0F 71         CLR   <$71                 ; Clear the "warm restart flag" (reset will now perform a cold boot)
+3F48: 7E 06 00      JMP   $0600                ; Run the program at its original location
 ```
