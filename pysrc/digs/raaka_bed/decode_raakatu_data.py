@@ -1,10 +1,10 @@
 import json
-from digs.raaka_bed.decoder import Decoder
 
+from digs.raaka_bed.decoder import Decoder
 from tools import format as FORM
 
-# Nothing in the code ... best we can do is make lists here
 
+# Nothing in the code ... best we can do is make lists here
 OBJECT_SHORT_NAMES = {
         
     0x01 : 'BOTTLE', # Word is not in CoCo version    

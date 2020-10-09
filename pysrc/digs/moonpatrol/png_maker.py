@@ -1,7 +1,6 @@
 from _sqlite3 import Row
 
 import png
-
 import tools.binary
 
 

@@ -1,5 +1,7 @@
 import os
+
 from more_itertools.more import last
+
 
 deploy = '../../deploy'
 last_deploy = '../../lastDeploy'

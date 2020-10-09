@@ -14,7 +14,6 @@ import code.markdown_utils
 #MD_FILE = '../../content/Arcade/moonpatrol/GFX1.md'
 #MD_FILE = '../../content/Arcade/moonpatrol/GFX2.md'
 #data = binary.get_binary(MD_FILE, 0)
-
 #MD_FILE = '../../content/Arcade/moonpatrol/SoundCode.md'
 MD_FILE = '../../content/Arcade/moonpatrol/Code.md'
 data = code.markdown_utils.get_binary(MD_FILE)

@@ -1,5 +1,6 @@
 from tools import format as FORM
 
+
 source = ('../../content/CoCo/RaakaTu/RaakaTu.bin',0x0600)
 target = ('../../content/TRS80/RaakaTu/RAAKA.bin',0x4300)
 source_start = 0x1523

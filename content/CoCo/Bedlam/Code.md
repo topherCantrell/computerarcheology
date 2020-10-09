@@ -25,18 +25,24 @@ Start:
 060C: EF 81               STU     ,X++                      ; Clear ...
 060E: 4A                  DECA                              ; ... text ...
 060F: 26 FB               BNE     $60C                      ; ... screen
+;
 0611: 10 CE 03 FF         LDS     #$03FF                    ; Stack starts just below screen
+;
 0615: 86 13               LDA     #$13                      ; Player object ...
 0617: B7 01 D2            STA     $01D2                     ; {ram:ACTIVE_OBJ_NUM} ... is the active object number
+;
 061A: 8E 05 E0            LDX     #$05E0                    ; Set cursor to ...
 061D: 9F 88               STX     <$88                      ; {ram:printCursor} ... bottom row of screen
-061F: 8E 13 55            LDX     #$1355                    ; Init the game with ...
-0622: BD 0C 44            JSR     $0C44                     ; {ProcessCommand} ... random solution
+;
+061F: 8E 13 55            LDX     #$1355                    ; Splash message ...
+0622: BD 0C 44            JSR     $0C44                     ; {ProcessCommand} ... "you feel as though"
+;
 0625: 86 0D               LDA     #$0D                      ; Print ...
 0627: BD 11 D5            JSR     $11D5                     ; {PrintCharacterAutoWrap} .. CR
 062A: BD 0B 6C            JSR     $0B6C                     ; {GetKey} Get a key
-062D: 8E 13 54            LDX     #$1354                    ; Splash message and ...
-0630: BD 0C 44            JSR     $0C44                     ; {ProcessCommand} ... place player object
+;
+062D: 8E 13 54            LDX     #$1354                    ; Init random game, place player object, ...
+0630: BD 0C 44            JSR     $0C44                     ; {ProcessCommand} ... and look
 0633: 86 0D               LDA     #$0D                      ; Print ...
 0635: BD 11 D5            JSR     $11D5                     ; {PrintCharacterAutoWrap} ... CR
 ```
@@ -73,6 +79,7 @@ MainLoop:
 067B: 8E 15 A1            LDX     #$15A1                    ; Room scripts
 067E: BD 0A 60            JSR     $0A60                     ; {FindSublist} Find sublist ... script for current room
 0681: BF 01 D6            STX     $01D6                     ; {ram:CUR_ROOM_DATA} Script for current room
+;
 0684: 8E 01 E4            LDX     #$01E4                    ; Input token list area
 0687: BF 01 D8            STX     $01D8                     ; {ram:nextToken} Where decoder fills in
 068A: 6F 84               CLR     ,X                        ; Empty token ... clear the list

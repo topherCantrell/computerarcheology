@@ -2,11 +2,11 @@
 import code.block_line
 import code.code_line
 import code.directive_line
+import code.header_line
 import code.list_line
 import code.markdown_line
 import code.paragraph_line
 import code.table_line
-import code.header_line
 
 
 def process_markdown(text):

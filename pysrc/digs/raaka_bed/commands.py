@@ -1,6 +1,7 @@
+from digs.raaka_bed import decoder_functions as FUN
 from digs.raaka_bed import unpacker
 import util.util as U
-from digs.raaka_bed import decoder_functions as FUN
+
 
 class CommonCommand:
     

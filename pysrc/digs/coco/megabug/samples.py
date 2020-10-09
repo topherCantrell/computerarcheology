@@ -1,5 +1,6 @@
 import code.markdown_utils
 
+
 binary = code.markdown_utils.get_binary('../../../../content/CoCo/MegaBug/Code.md')
 
 addr = 0xC003

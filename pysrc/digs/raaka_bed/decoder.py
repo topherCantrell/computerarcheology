@@ -1,10 +1,10 @@
+from digs.raaka_bed import commands as RTC
+from digs.raaka_bed import decoder_functions as FUN
+from digs.raaka_bed import object_attributes as OBJ
 from tools import binary
 from tools import format as FORM
-
 import util.util as U
-from digs.raaka_bed import commands as RTC
-from digs.raaka_bed import object_attributes as OBJ
-from digs.raaka_bed import decoder_functions as FUN
+
 
 class Decoder:    
        

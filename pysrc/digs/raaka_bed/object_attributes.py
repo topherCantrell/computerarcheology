@@ -1,7 +1,8 @@
-from digs.raaka_bed import unpacker
 from digs.raaka_bed import decoder_functions as FUN
+from digs.raaka_bed import unpacker
 import digs.raaka_bed.commands as RTC
 import util.util as U
+
 
 class HitPoints:
     

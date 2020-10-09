@@ -1,5 +1,6 @@
 from tools import binary
 
+
 src_file = "../../../content/arcade/timepilot/soundcode.mark"
 bin_file = "../../../content/arcade/timepilot/roms/TM7"
 mame_rom = "d:/mame/roms/timeplt/TM7"

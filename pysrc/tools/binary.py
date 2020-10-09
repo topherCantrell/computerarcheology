@@ -1,5 +1,6 @@
 import tools.format as FORM
 
+
 def line_to_data(line):
 
     if ';' in line:

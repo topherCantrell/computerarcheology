@@ -506,9 +506,8 @@ POSTS = [
 
 import cpu.cpu_common
 
+
 # TODO: LDA $FF00,PC ; PC relative
-
-
 class CPU_6809(cpu.cpu_common.CPU):
 
     def __init__(self):

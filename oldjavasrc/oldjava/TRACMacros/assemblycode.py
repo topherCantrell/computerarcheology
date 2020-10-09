@@ -1,6 +1,7 @@
 
 from trac.wiki.macros import WikiMacroBase
 
+
 class AssemblyCodeMacro(WikiMacroBase):
     
     def expand_macro(self, formatter, name, text):

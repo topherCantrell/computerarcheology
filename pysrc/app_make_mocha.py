@@ -2,6 +2,7 @@
 
 import code.markdown_utils
 
+
 binary = code.markdown_utils.get_binary('../content/CoCo/megabug/Code.md')
 
 with open('../mocha.bin','wb') as f:

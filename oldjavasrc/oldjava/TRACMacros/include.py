@@ -1,8 +1,8 @@
 
+from trac.wiki.api import WikiSystem, parse_args
 from trac.wiki.macros import WikiMacroBase
 from trac.wiki.model import WikiPage
 
-from trac.wiki.api import WikiSystem, parse_args
 
 class IncludeMacro(WikiMacroBase):
     

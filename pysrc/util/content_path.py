@@ -1,5 +1,6 @@
 import os
 
+
 def get_content_path(name):
     # We assume that "content" is somewhere back up the directory structure
     

@@ -4,6 +4,7 @@ from MC6809.components.cpu6809 import CPU
 from MC6809.components.memory import Memory
 from MC6809.core.configs import BaseConfig
 
+
 CFG_DICT = {
     "verbosity":None,
     "trace":None,

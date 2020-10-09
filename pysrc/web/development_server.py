@@ -1,9 +1,9 @@
 import os
+import sys
 
 import tornado.ioloop
 import tornado.web
 
-import sys
 
 if sys.platform == 'win32':
     import asyncio

@@ -1,5 +1,6 @@
 from tools import binary
 
+
 src = '../../content/CoCo/MegaBug/Code.md'
 bin = '../../content/CoCo/MegaBug/MegaBug.bin'
 org = 0xC000
