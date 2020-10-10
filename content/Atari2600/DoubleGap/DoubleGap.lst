@@ -375,7 +375,7 @@ F01F: 85 2A            STA      HMOVE            ; Tell hardware to move all gam
 F021: A9 00            LDA      #0               ; D1 bit OFF
 F023: 85 00            STA      VSYNC            ; Release the vertical sync signal
 F025: A9 2B            LDA      #43              ; Set timer to 43*64 = 2752 machine ...
-F027: 8D 96 02         STA      >TIM64T          ; ... cycles 2752/(228/3) = 36 scanlines
+F027: 8D 96 02         STA      TIM64T           ; ... cycles 2752/(228/3) = 36 scanlines
                   
                   ;  ***** LENGTHY GAME LOGIC PROCESSING BEGINS HERE *****
                   
@@ -404,7 +404,7 @@ F042: 20 43 F2         JSR      GOMODE           ; Game-over processing
                   ;  ***** LENGTHY GAME LOGIC PROCESSING ENDS HERE *****
                   
                   DrawFrame:
-F045: AD 84 02         LDA      >INTIM           ; Wait for ...
+F045: AD 84 02         LDA      INTIM            ; Wait for ...
 F048: C9 00            CMP      #0               ; ... the visible area ...
 F04A: D0 F9            BNE      DrawFrame        ; ... of the screen
                   
@@ -661,11 +661,11 @@ F196: 20 17 F2         JSR      INIT_GOMODE     ; Go to Game-Over mode
 F199: 60               RTS                      ; Done
                   
                   NoHit:
-F19A: AD 80 02         LDA      >SWCHA          ; Joystick
+F19A: AD 80 02         LDA      SWCHA           ; Joystick
 F19D: 29 80            AND      #128            ; Player 0 ...
 F19F: C9 00            CMP      #0              ; ... moving left?
 F1A1: F0 13            BEQ      MoveP0Left      ; Yes ... move left
-F1A3: AD 80 02         LDA      >SWCHA          ; Joystick
+F1A3: AD 80 02         LDA      SWCHA           ; Joystick
 F1A6: 29 40            AND      #64             ; Player 0 ...
 F1A8: C9 00            CMP      #0              ; ... moving right?
 F1AA: F0 05            BEQ      MoveP0Right     ; Yes ... move right
@@ -679,11 +679,11 @@ F1B6: A9 F0            LDA      #240            ; -1
                   SetMoveP0:
 F1B8: 85 20            STA      HMP0            ; New movement value P0
                   
-F1BA: AD 80 02         LDA      >SWCHA          ; Joystick
+F1BA: AD 80 02         LDA      SWCHA           ; Joystick
 F1BD: 29 08            AND      #8              ; Player 1 ...
 F1BF: C9 00            CMP      #0              ; ... moving left?
 F1C1: F0 13            BEQ      MoveP1Left      ; Yes ... move left
-F1C3: AD 80 02         LDA      >SWCHA          ; Joystick
+F1C3: AD 80 02         LDA      SWCHA           ; Joystick
 F1C6: 29 04            AND      #4              ; Player 0 ...
 F1C8: C9 00            CMP      #0              ; ... moving right?
 F1CA: F0 05            BEQ      MoveP1Right     ; Yes ... move right
@@ -885,10 +885,10 @@ F2BD: 0A               ASL      A                ; ... by 8 ...
 F2BE: 0A               ASL      A                ; ... to find picture
 F2BF: A8               TAY                       ; 10's picture in Y
                   
-F2C0: B9 44 F5         LDA      >DIGITS,Y         ; Get the 10's digit
+F2C0: B9 44 F5         LDA      DIGITS,Y         ; Get the 10's digit
 F2C3: 29 F0            AND      #0xF0            ; Upper nibble
 F2C5: 85 97            STA      SCORE_PF1        ; Store left side
-F2C7: BD 44 F5         LDA      >DIGITS,X         ; Get the 1's digit
+F2C7: BD 44 F5         LDA      DIGITS,X         ; Get the 1's digit
 F2CA: 29 0F            AND      #0x0F            ; Lower nibble
 F2CC: 05 97            ORA      SCORE_PF1        ; Put left and right half together
 F2CE: 85 97            STA      SCORE_PF1        ; And store image
@@ -896,34 +896,34 @@ F2CE: 85 97            STA      SCORE_PF1        ; And store image
                   ; We have plenty of code space. Time and registers are at a premium.
                   ; So copy/past the code for each row
                   
-F2D0: B9 45 F5         LDA      >DIGITS+1,Y       ; Repeat for 2nd line of picture ...
+F2D0: B9 45 F5         LDA      DIGITS+1,Y       ; Repeat for 2nd line of picture ...
 F2D3: 29 F0            AND      #0xF0            ; ...
 F2D5: 85 98            STA      SCORE_PF1+1      ; ...
-F2D7: BD 45 F5         LDA      >DIGITS+1,X       ; ...
+F2D7: BD 45 F5         LDA      DIGITS+1,X       ; ...
 F2DA: 29 0F            AND      #15              ; ...
 F2DC: 05 98            ORA      SCORE_PF1+1      ; ...
 F2DE: 85 98            STA      SCORE_PF1+1      ; ...
                   
-F2E0: B9 46 F5         LDA      >DIGITS+2,Y       ; Repeat for 3nd line of picture
+F2E0: B9 46 F5         LDA      DIGITS+2,Y       ; Repeat for 3nd line of picture
 F2E3: 29 F0            AND      #0xF0            ; ...
 F2E5: 85 99            STA      SCORE_PF1+2      ; ...
-F2E7: BD 46 F5         LDA      >DIGITS+2,X       ; ...
+F2E7: BD 46 F5         LDA      DIGITS+2,X       ; ...
 F2EA: 29 0F            AND      #0x0F            ; ...
 F2EC: 05 99            ORA      SCORE_PF1+2      ; ...
 F2EE: 85 99            STA      SCORE_PF1+2      ; ...
                   
-F2F0: B9 47 F5         LDA      >DIGITS+3,Y       ; Repeat for 4th line of picture
+F2F0: B9 47 F5         LDA      DIGITS+3,Y       ; Repeat for 4th line of picture
 F2F3: 29 F0            AND      #0xF0            ; ...
 F2F5: 85 9A            STA      SCORE_PF1+3      ; ...
-F2F7: BD 47 F5         LDA      >DIGITS+3,X       ; ...
+F2F7: BD 47 F5         LDA      DIGITS+3,X       ; ...
 F2FA: 29 0F            AND      #0x0F            ; ...
 F2FC: 05 9A            ORA      SCORE_PF1+3      ; ...
 F2FE: 85 9A            STA      SCORE_PF1+3      ; ...
                   
-F300: B9 48 F5         LDA      >DIGITS+4,Y       ; Repeat for 5th line of picture
+F300: B9 48 F5         LDA      DIGITS+4,Y       ; Repeat for 5th line of picture
 F303: 29 F0            AND      #0xF0            ; ...
 F305: 85 9B            STA      SCORE_PF1+4      ; ...
-F307: BD 48 F5         LDA      >DIGITS+4,X       ; ...
+F307: BD 48 F5         LDA      DIGITS+4,X       ; ...
 F30A: 29 0F            AND      #0x0F            ; ...
 F30C: 05 9B            ORA      SCORE_PF1+4      ; ...
 F30E: 85 9B            STA      SCORE_PF1+4      ; ...
@@ -943,7 +943,7 @@ F31C: 60               RTS                       ; Done
                   ;  position of their respective pro/novice switches. The player 1
                   ;  position is NOT changed if the mode is a single-player game.
                   
-F31D: AD 82 02         LDA      >SWCHB            ; Check P0 ...
+F31D: AD 82 02         LDA      SWCHB            ; Check P0 ...
 F320: 29 40            AND      #0x40            ; ... pro/novice settings
 F322: C9 00            CMP      #0               ; Amateur?
 F324: F0 05            BEQ      ExpP0Ama         ; Yes ... near the bottom of screen
@@ -958,7 +958,7 @@ F32D: 85 83            STA      PLAYR0Y          ; Player 0 Y coordinate
 F32F: A6 84            LDX      PLAYR1Y          ; Is P1 on ...
 F331: E0 FF            CPX      #255             ; ... the screen?
 F333: F0 12            BEQ      ExpNoP1          ; No ... skip all this
-F335: AD 82 02         LDA      >SWCHB            ; Check P1 ...
+F335: AD 82 02         LDA      SWCHB            ; Check P1 ...
 F338: 29 80            AND      #0x80            ; ... pro/novice settings
 F33A: C9 00            CMP      #0               ; Amateur?
 F33C: F0 05            BEQ      ExpP1Ama         ; Yes ... near the bottom of the screen
@@ -980,7 +980,7 @@ F347: 60               RTS                       ; Done
 F348: A2 00            LDX      #0               ; Starting at index 0
                   
                   AdjNextRow:
-F34A: BD F9 F4         LDA      >SKILL_VALUES,X   ; Get the score match
+F34A: BD F9 F4         LDA      SKILL_VALUES,X   ; Get the score match
 F34D: C9 FF            CMP      #255             ; At the end of the table?
 F34F: D0 01            BNE      AdjCheckTable    ; No ... check this row
 F351: 60               RTS                       ; End of the table ... leave it alone
@@ -988,20 +988,20 @@ F351: 60               RTS                       ; End of the table ... leave it
 F352: C5 8A            CMP      WALLCNT          ; Is this our row?
 F354: D0 27            BNE      AdjBump          ; No ... bump to next
 F356: E8               INX                       ; Copy ...
-F357: BD F9 F4         LDA      >SKILL_VALUES,X   ; ... new ...
+F357: BD F9 F4         LDA      SKILL_VALUES,X   ; ... new ...
 F35A: 85 89            STA      WALL_INC         ; ... wall increment
 F35C: E8               INX                       ; Copy ...
-F35D: BD F9 F4         LDA      >SKILL_VALUES,X   ; ... new ...
+F35D: BD F9 F4         LDA      SKILL_VALUES,X   ; ... new ...
 F360: 85 8B            STA      WALLDELY         ; ... wall ...
 F362: 85 8C            STA      WALLDELYR        ; ... delay
 F364: E8               INX                       ; Copy ...
-F365: BD F9 F4         LDA      >SKILL_VALUES,X   ; ... new ...
+F365: BD F9 F4         LDA      SKILL_VALUES,X   ; ... new ...
 F368: 85 96            STA      GAPBITS          ; ... gap pattern
 F36A: E8               INX                       ; Copy ...
-F36B: BD F9 F4         LDA      >SKILL_VALUES,X   ; ... new ...
+F36B: BD F9 F4         LDA      SKILL_VALUES,X   ; ... new ...
 F36E: 85 A4            STA      MUSAIND          ; ... MusicA index
 F370: E8               INX                       ; Copy ...
-F371: BD F9 F4         LDA      >SKILL_VALUES,X   ; ... new ...
+F371: BD F9 F4         LDA      SKILL_VALUES,X   ; ... new ...
 F374: 85 A7            STA      MUSBIND          ; ... MusicB index
 F376: A9 01            LDA      #1               ; Force ...
 F378: 85 A3            STA      MUSADEL          ; ... music to ...
@@ -1024,7 +1024,7 @@ F383: 4C 4A F3         JMP      AdjNextRow       ; Try next row
                   ;  xxxxxxSR (Select, Reset)
                   
 F386: A6 90            LDX      DEBOUNCE         ; Get the last value
-F388: AD 82 02         LDA      >SWCHB            ; New value
+F388: AD 82 02         LDA      SWCHB            ; New value
 F38B: 29 03            AND      #3               ; Only need bottom 2 bits
 F38D: C5 90            CMP      DEBOUNCE         ; Same as before?
 F38F: F0 07            BEQ      SelDebounce      ; Yes ... return nothing changed
@@ -1070,7 +1070,7 @@ F3BA: D0 58            BNE      MusDoB           ; No ... let it play
                   
                   MusChanA:
 F3BC: A6 A4            LDX      MUSAIND          ; Voice-A index
-F3BE: BD A0 F4         LDA      >MUSICA,X         ; Get the next music command
+F3BE: BD A0 F4         LDA      MUSICA,X         ; Get the next music command
 F3C1: C9 00            CMP      #0               ; Jump?
 F3C3: F0 22            BEQ      MusCmdJumpA      ; Yes ... handle it
 F3C5: C9 01            CMP      #1               ; Control?
@@ -1079,7 +1079,7 @@ F3C9: C9 02            CMP      #2               ; Volume?
 F3CB: D0 28            BNE      MusCmdToneA      ; No ... must be a note
 F3CD: E8               INX                       ; Point to volume value
 F3CE: E6 A4            INC      MUSAIND          ; Bump the music pointer
-F3D0: BD A0 F4         LDA      >MUSICA,X         ; Get the volume value
+F3D0: BD A0 F4         LDA      MUSICA,X         ; Get the volume value
 F3D3: E6 A4            INC      MUSAIND          ; Bump the music pointer
 F3D5: 85 A5            STA      MUSAVOL          ; Store the new volume value
 F3D7: 4C BC F3         JMP      MusChanA         ; Keep processing through a tone
@@ -1087,7 +1087,7 @@ F3D7: 4C BC F3         JMP      MusChanA         ; Keep processing through a ton
                   MusCmdCtrlA:
 F3DA: E8               INX                       ; Point to the control value
 F3DB: E6 A4            INC      MUSAIND          ; Bump the music pointer
-F3DD: BD A0 F4         LDA      >MUSICA,X         ; Get the control value
+F3DD: BD A0 F4         LDA      MUSICA,X         ; Get the control value
 F3E0: E6 A4            INC      MUSAIND          ; Bump the music pointer
 F3E2: 85 15            STA      AUDC0            ; Store the new control value
 F3E4: 4C BC F3         JMP      MusChanA         ; Keep processing through a tone
@@ -1099,7 +1099,7 @@ F3E9: A8               TAY                       ; ... Y (pointer to jump value)
 F3EA: E8               INX                       ; Point one past jump value
 F3EB: 8A               TXA                       ; Into A so we can subtract
 F3EC: 38               SEC                       ; New ...
-F3ED: F9 A0 F4         SBC      >MUSICA,Y         ; ... index
+F3ED: F9 A0 F4         SBC      MUSICA,Y         ; ... index
 F3F0: 85 A4            STA      MUSAIND          ; Store it
 F3F2: 4C BC F3         JMP      MusChanA         ; Keep processing through a tone
                   
@@ -1112,7 +1112,7 @@ F3FD: A0 00            LDY      #0               ; Frequency of 31 flags silence
                   MusNoteA:
 F3FF: 85 17            STA      AUDF0            ; Store the frequency
 F401: 84 19            STY      AUDV0            ; Store the volume
-F403: BD A0 F4         LDA      >MUSICA,X         ; Get the note value again
+F403: BD A0 F4         LDA      MUSICA,X         ; Get the note value again
 F406: E6 A4            INC      MUSAIND          ; Bump to the next command
 F408: 6A               ROR      A                ; The upper ...
 F409: 6A               ROR      A                ; ... three ...
@@ -1132,7 +1132,7 @@ F416: D0 58            BNE      MusDoDone
                   
                   MusChanB:
 F418: A6 A7            LDX      MUSBIND
-F41A: BD CD F4         LDA      >MUSICB,X
+F41A: BD CD F4         LDA      MUSICB,X
 F41D: C9 00            CMP      #0
 F41F: F0 22            BEQ      MusCmdJumpB
 F421: C9 01            CMP      #1
@@ -1141,7 +1141,7 @@ F425: C9 02            CMP      #2
 F427: D0 28            BNE      MusCmdToneB
 F429: E8               INX
 F42A: E6 A7            INC      MUSBIND
-F42C: BD CD F4         LDA      >MUSICB,X
+F42C: BD CD F4         LDA      MUSICB,X
 F42F: E6 A7            INC      MUSBIND
 F431: 85 A8            STA      MUSBVOL
 F433: 4C 18 F4         JMP      MusChanB
@@ -1149,7 +1149,7 @@ F433: 4C 18 F4         JMP      MusChanB
                   MusCmdCtrlB:
 F436: E8               INX
 F437: E6 A7            INC      MUSBIND
-F439: BD CD F4         LDA      >MUSICB,X
+F439: BD CD F4         LDA      MUSICB,X
 F43C: E6 A7            INC      MUSBIND
 F43E: 85 16            STA      AUDC1
 F440: 4C 18 F4         JMP      MusChanB
@@ -1161,7 +1161,7 @@ F445: A8               TAY
 F446: E8               INX
 F447: 8A               TXA
 F448: 38               SEC
-F449: F9 CD F4         SBC      >MUSICB,Y
+F449: F9 CD F4         SBC      MUSICB,Y
 F44C: 85 A7            STA      MUSBIND
 F44E: 4C 18 F4         JMP      MusChanB
                   
@@ -1174,7 +1174,7 @@ F459: A0 00            LDY      #0
                   MusNoteB:
 F45B: 85 18            STA      AUDF1
 F45D: 84 1A            STY      AUDV1
-F45F: BD CD F4         LDA      >MUSICB,X
+F45F: BD CD F4         LDA      MUSICB,X
 F462: E6 A7            INC      MUSBIND
 F464: 6A               ROR      A
 F465: 6A               ROR      A

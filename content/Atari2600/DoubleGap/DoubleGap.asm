@@ -63,7 +63,7 @@ VIDEO_KERNEL:
     LDA      #0               ; D1 bit OFF
     STA      VSYNC            ; Release the vertical sync signal
     LDA      #43              ; Set timer to 43*64 = 2752 machine ...
-    STA      >TIM64T          ; ... cycles 2752/(228/3) = 36 scanlines
+    STA      TIM64T           ; ... cycles 2752/(228/3) = 36 scanlines
 
     ;  ***** LENGTHY GAME LOGIC PROCESSING BEGINS HERE *****
 
@@ -92,7 +92,7 @@ DoGameOverMode:
     ;  ***** LENGTHY GAME LOGIC PROCESSING ENDS HERE *****
 
 DrawFrame:
-    LDA      >INTIM           ; Wait for ...
+    LDA      INTIM            ; Wait for ...
     CMP      #0               ; ... the visible area ...
     BNE      DrawFrame        ; ... of the screen
 
@@ -349,11 +349,11 @@ NoFirst:
      RTS                      ; Done
 
 NoHit:
-     LDA      >SWCHA          ; Joystick
+     LDA      SWCHA           ; Joystick
      AND      #128            ; Player 0 ...
      CMP      #0              ; ... moving left?
      BEQ      MoveP0Left      ; Yes ... move left
-     LDA      >SWCHA          ; Joystick
+     LDA      SWCHA           ; Joystick
      AND      #64             ; Player 0 ...
      CMP      #0              ; ... moving right?
      BEQ      MoveP0Right     ; Yes ... move right
@@ -367,11 +367,11 @@ MoveP0Left:
 SetMoveP0:
      STA      HMP0            ; New movement value P0
 
-     LDA      >SWCHA          ; Joystick
+     LDA      SWCHA           ; Joystick
      AND      #8              ; Player 1 ...
      CMP      #0              ; ... moving left?
      BEQ      MoveP1Left      ; Yes ... move left
-     LDA      >SWCHA          ; Joystick
+     LDA      SWCHA           ; Joystick
      AND      #4              ; Player 0 ...
      CMP      #0              ; ... moving right?
      BEQ      MoveP1Right     ; Yes ... move right
@@ -573,10 +573,10 @@ CountDone:
      ASL      A                ; ... to find picture
      TAY                       ; 10's picture in Y
 
-     LDA      >DIGITS,Y         ; Get the 10's digit
+     LDA      DIGITS,Y         ; Get the 10's digit
      AND      #0xF0            ; Upper nibble
      STA      SCORE_PF1        ; Store left side
-     LDA      >DIGITS,X         ; Get the 1's digit
+     LDA      DIGITS,X         ; Get the 1's digit
      AND      #0x0F            ; Lower nibble
      ORA      SCORE_PF1        ; Put left and right half together
      STA      SCORE_PF1        ; And store image
@@ -584,34 +584,34 @@ CountDone:
      ; We have plenty of code space. Time and registers are at a premium.
      ; So copy/past the code for each row
 
-     LDA      >DIGITS+1,Y       ; Repeat for 2nd line of picture ...
+     LDA      DIGITS+1,Y       ; Repeat for 2nd line of picture ...
      AND      #0xF0            ; ...
      STA      SCORE_PF1+1      ; ...
-     LDA      >DIGITS+1,X       ; ...
+     LDA      DIGITS+1,X       ; ...
      AND      #15              ; ...
      ORA      SCORE_PF1+1      ; ...
      STA      SCORE_PF1+1      ; ...
 
-     LDA      >DIGITS+2,Y       ; Repeat for 3nd line of picture
+     LDA      DIGITS+2,Y       ; Repeat for 3nd line of picture
      AND      #0xF0            ; ...
      STA      SCORE_PF1+2      ; ...
-     LDA      >DIGITS+2,X       ; ...
+     LDA      DIGITS+2,X       ; ...
      AND      #0x0F            ; ...
      ORA      SCORE_PF1+2      ; ...
      STA      SCORE_PF1+2      ; ...
 
-     LDA      >DIGITS+3,Y       ; Repeat for 4th line of picture
+     LDA      DIGITS+3,Y       ; Repeat for 4th line of picture
      AND      #0xF0            ; ...
      STA      SCORE_PF1+3      ; ...
-     LDA      >DIGITS+3,X       ; ...
+     LDA      DIGITS+3,X       ; ...
      AND      #0x0F            ; ...
      ORA      SCORE_PF1+3      ; ...
      STA      SCORE_PF1+3      ; ...
 
-     LDA      >DIGITS+4,Y       ; Repeat for 5th line of picture
+     LDA      DIGITS+4,Y       ; Repeat for 5th line of picture
      AND      #0xF0            ; ...
      STA      SCORE_PF1+4      ; ...
-     LDA      >DIGITS+4,X       ; ...
+     LDA      DIGITS+4,X       ; ...
      AND      #0x0F            ; ...
      ORA      SCORE_PF1+4      ; ...
      STA      SCORE_PF1+4      ; ...
@@ -631,7 +631,7 @@ EXPERTISE:
      ;  position of their respective pro/novice switches. The player 1
      ;  position is NOT changed if the mode is a single-player game.
                                            
-     LDA      >SWCHB            ; Check P0 ...
+     LDA      SWCHB            ; Check P0 ...
      AND      #0x40            ; ... pro/novice settings
      CMP      #0               ; Amateur?
      BEQ      ExpP0Ama         ; Yes ... near the bottom of screen
@@ -646,7 +646,7 @@ ExpP1:
      LDX      PLAYR1Y          ; Is P1 on ...
      CPX      #255             ; ... the screen?
      BEQ      ExpNoP1          ; No ... skip all this
-     LDA      >SWCHB            ; Check P1 ...
+     LDA      SWCHB            ; Check P1 ...
      AND      #0x80            ; ... pro/novice settings
      CMP      #0               ; Amateur?
      BEQ      ExpP1Ama         ; Yes ... near the bottom of the screen
@@ -668,7 +668,7 @@ ADJUST_DIF:
      LDX      #0               ; Starting at index 0
                                            
 AdjNextRow:
-     LDA      >SKILL_VALUES,X   ; Get the score match
+     LDA      SKILL_VALUES,X   ; Get the score match
      CMP      #255             ; At the end of the table?
      BNE      AdjCheckTable    ; No ... check this row
      RTS                       ; End of the table ... leave it alone
@@ -676,20 +676,20 @@ AdjCheckTable:
      CMP      WALLCNT          ; Is this our row?
      BNE      AdjBump          ; No ... bump to next
      INX                       ; Copy ...
-     LDA      >SKILL_VALUES,X   ; ... new ...
+     LDA      SKILL_VALUES,X   ; ... new ...
      STA      WALL_INC         ; ... wall increment
      INX                       ; Copy ...
-     LDA      >SKILL_VALUES,X   ; ... new ...
+     LDA      SKILL_VALUES,X   ; ... new ...
      STA      WALLDELY         ; ... wall ...
      STA      WALLDELYR        ; ... delay
      INX                       ; Copy ...
-     LDA      >SKILL_VALUES,X   ; ... new ...
+     LDA      SKILL_VALUES,X   ; ... new ...
      STA      GAPBITS          ; ... gap pattern
      INX                       ; Copy ...
-     LDA      >SKILL_VALUES,X   ; ... new ...
+     LDA      SKILL_VALUES,X   ; ... new ...
      STA      MUSAIND          ; ... MusicA index
      INX                       ; Copy ...
-     LDA      >SKILL_VALUES,X   ; ... new ...
+     LDA      SKILL_VALUES,X   ; ... new ...
      STA      MUSBIND          ; ... MusicB index
      LDA      #1               ; Force ...
      STA      MUSADEL          ; ... music to ...
@@ -712,7 +712,7 @@ SEL_RESET_CHK:
      ;  xxxxxxSR (Select, Reset)
                                            
      LDX      DEBOUNCE         ; Get the last value
-     LDA      >SWCHB            ; New value
+     LDA      SWCHB            ; New value
      AND      #3               ; Only need bottom 2 bits
      CMP      DEBOUNCE         ; Same as before?
      BEQ      SelDebounce      ; Yes ... return nothing changed
@@ -758,7 +758,7 @@ PROCESS_MUSIC:
                                            
 MusChanA:
      LDX      MUSAIND          ; Voice-A index
-     LDA      >MUSICA,X         ; Get the next music command
+     LDA      MUSICA,X         ; Get the next music command
      CMP      #0               ; Jump?
      BEQ      MusCmdJumpA      ; Yes ... handle it
      CMP      #1               ; Control?
@@ -767,7 +767,7 @@ MusChanA:
      BNE      MusCmdToneA      ; No ... must be a note
      INX                       ; Point to volume value
      INC      MUSAIND          ; Bump the music pointer
-     LDA      >MUSICA,X         ; Get the volume value
+     LDA      MUSICA,X         ; Get the volume value
      INC      MUSAIND          ; Bump the music pointer
      STA      MUSAVOL          ; Store the new volume value
      JMP      MusChanA         ; Keep processing through a tone
@@ -775,7 +775,7 @@ MusChanA:
 MusCmdCtrlA:
      INX                       ; Point to the control value
      INC      MUSAIND          ; Bump the music pointer
-     LDA      >MUSICA,X         ; Get the control value
+     LDA      MUSICA,X         ; Get the control value
      INC      MUSAIND          ; Bump the music pointer
      STA      AUDC0            ; Store the new control value
      JMP      MusChanA         ; Keep processing through a tone
@@ -787,7 +787,7 @@ MusCmdJumpA:
      INX                       ; Point one past jump value
      TXA                       ; Into A so we can subtract
      SEC                       ; New ...
-     SBC      >MUSICA,Y         ; ... index
+     SBC      MUSICA,Y         ; ... index
      STA      MUSAIND          ; Store it
      JMP      MusChanA         ; Keep processing through a tone
 
@@ -800,7 +800,7 @@ MusCmdToneA:
 MusNoteA:
      STA      AUDF0            ; Store the frequency
      STY      AUDV0            ; Store the volume
-     LDA      >MUSICA,X         ; Get the note value again
+     LDA      MUSICA,X         ; Get the note value again
      INC      MUSAIND          ; Bump to the next command
      ROR      A                ; The upper ...
      ROR      A                ; ... three ...
@@ -820,7 +820,7 @@ MusDoB:
                                            
 MusChanB:
      LDX      MUSBIND
-     LDA      >MUSICB,X
+     LDA      MUSICB,X
      CMP      #0
      BEQ      MusCmdJumpB
      CMP      #1
@@ -829,7 +829,7 @@ MusChanB:
      BNE      MusCmdToneB
      INX
      INC      MUSBIND
-     LDA      >MUSICB,X
+     LDA      MUSICB,X
      INC      MUSBIND
      STA      MUSBVOL
      JMP      MusChanB
@@ -837,7 +837,7 @@ MusChanB:
 MusCmdCtrlB:
      INX
      INC      MUSBIND
-     LDA      >MUSICB,X
+     LDA      MUSICB,X
      INC      MUSBIND
      STA      AUDC1
      JMP      MusChanB
@@ -849,7 +849,7 @@ MusCmdJumpB:
      INX
      TXA
      SEC
-     SBC      >MUSICB,Y
+     SBC      MUSICB,Y
      STA      MUSBIND
      JMP      MusChanB
 
@@ -862,7 +862,7 @@ MusCmdToneB:
 MusNoteB:
      STA      AUDF1
      STY      AUDV1
-     LDA      >MUSICB,X
+     LDA      MUSICB,X
      INC      MUSBIND
      ROR      A
      ROR      A
