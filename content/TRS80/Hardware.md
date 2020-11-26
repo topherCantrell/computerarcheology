@@ -6,7 +6,7 @@
  * 0000-2FFF Level 2 ROM
  * 3000-37DF Unused
  * 37E0-37FF Memory Mapped I/O
- * 3800-28FF Keyboard map
+ * 3800-38FF Keyboard map
  * 3900-3BFF (Keyboard map shadow)
  * 3C00-3FFF 1KB Video RAM
  * 4000-41FF RAM used by the ROM routines
