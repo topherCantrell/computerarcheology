@@ -624,6 +624,7 @@ GetInputLine:
 0AC8: BD 0A DB            JSR     $0ADB                     ; Back off cursor character
 0ACB: 39                  RTS                               ; Done
 ;
+; Clear the bottom row and get input
 0ACC: 8E 05 E0            LDX     #$05E0                    ; Start of bottom row
 0ACF: C6 20               LDB     #$20                      ; 32 characters on the row
 0AD1: 86 60               LDA     #$60                      ; SPACE character
