@@ -516,23 +516,25 @@
 | 0636 | 0636 | |
 | 0637 | 0637 | |
 | 064E | 064E | |
-| 0656 | 0656 | |
-| 0657 | 0657 | |
-| 0658 | 0658 | |
-| 0659 | 0659 | |
-| 065A | 065A | |
-| 065B | 065B | |
-| 065D | 065D | |
-| 065E | 065E | |
-| 0660 | 0660 | |
-| 0661 | 0661 | |
-| 0662 | 0662 | |
-| 0663 | 0663 | |
-| 0664 | 0664 | |
-| 0665 | 0665 | |
+| 0656 | 0656 | Current Item assigned to "B" button (0 = boomerang, 1 = bombs, 2 = bow/arrow, etc.) |
+| 0657 | 0657 | Sword type (0 = none, 1 = wood, 2 = white, 3 = Master) |
+| 0658 | 0658 | Bombs |
+| 0659 | 0659 | Arrow Type (0 = Haven't bought Arrow, 1 = Wood arrow, 2 = Silver arrow) |
+| 065A | 065A | Bow (0 = No, 1 = Yes) |
+| 065B | 065B | Candle (0 = No candle, 1 = Blue, 2 = Red) |
+| 065B | 065B | Flute (0 = No, 1 = Yes) |
+| 065D | 065D | Bait (0 = No, 1 = Yes) |
+| 065E | 065E | Potion (0 = No potion, 1 = Blue, 2 = Red) |
+| 065F | 065F | Wand (0 = No, 1 = Yes) |
+| 0660 | 0660 | Raft (0 = No, 1 = Yes) |
+| 0661 | 0661 | Magic Book (0 = No, 1 = Yes) |
+| 0662 | 0662 | Ring (0 = No Ring, 1 = Blue Ring, 2 = Red Ring) |
+| 0663 | 0663 | Ladder (0 = No, 1 = Yes) |
+| 0664 | 0664 | Magic Key (0 = No, 1 = Yes) |
+| 0665 | 0665 | Power Bracelet (0 = No, 1 = Yes) |
 | 0666 | 0666 | |
 | 066C | 066C | |
-| 066D | 066D | |
+| 066D | 066D | Rupees (0 to 255) |
 | 066E | 066E | |
 | 066F | 066F | |
 | 0670 | 0670 | |
