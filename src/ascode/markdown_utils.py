@@ -1,12 +1,12 @@
 
-import code.block_line
-import code.code_line
-import code.directive_line
-import code.header_line
-import code.list_line
-import code.markdown_line
-import code.paragraph_line
-import code.table_line
+import ascode.block_line
+import ascode.code_line
+import ascode.directive_line
+import ascode.header_line
+import ascode.list_line
+import ascode.markdown_line
+import ascode.paragraph_line
+import ascode.table_line
 
 
 def process_markdown(text):
@@ -56,7 +56,7 @@ def get_deploy(lines):
 
     for g in lines:
         if found:
-            if type(g) is code.directive_line.Directive:
+            if type(g) is ascode.directive_line.Directive:
                 g = g.directive
                 if '<br>' in g:
                     g = g[0:g.index('<br>')].strip()
@@ -80,7 +80,7 @@ def get_deploy(lines):
             else:
                 return ret
         else:
-            if type(g) is code.directive_line.Directive:
+            if type(g) is ascode.directive_line.Directive:
                 found = True
 
     return ret
@@ -144,7 +144,7 @@ def load_file(filename):
             if line.endswith('\n'):  # Strip off the text feed
                 line = line[0:-1]
             # Collect all the lines
-            md = code.markdown_line.MarkdownLine(
+            md = ascode.markdown_line.MarkdownLine(
                 line, filename, len(lines))
             lines.append(md)
             as_is_lines.append(md)
@@ -161,7 +161,7 @@ def load_file(filename):
             else:
                 # Parse the block types while we are here
                 if block.get_type() == 'code':
-                    cod = code.code_line.CodeLine(md)
+                    cod = ascode.code_line.CodeLine(md)
                     code_only.append(cod) 
                     block.add_line(cod)
                 else:
@@ -169,7 +169,7 @@ def load_file(filename):
         else:
             if md.text.strip().startswith('```'):
                 in_block = True
-                block = code.block_line.Block(md)
+                block = ascode.block_line.Block(md)
                 block.add_line(md)
                 lines_n.append(block)
             else:
@@ -181,9 +181,9 @@ def load_file(filename):
     while i > 0:
         i -= 1
         md = lines[i]
-        if type(md) is code.markdown_line.MarkdownLine and md.text.strip().startswith('|'):
-            table = code.table_line.Table()
-            while type(md) is code.markdown_line.MarkdownLine and md.text.strip().startswith('|'):
+        if type(md) is ascode.markdown_line.MarkdownLine and md.text.strip().startswith('|'):
+            table = ascode.table_line.Table()
+            while type(md) is ascode.markdown_line.MarkdownLine and md.text.strip().startswith('|'):
                 table.push_line(md)
                 del lines[i]
                 i -= 1
@@ -195,9 +195,9 @@ def load_file(filename):
     while i > 0:
         i -= 1
         md = lines[i]
-        if type(md) is code.markdown_line.MarkdownLine and is_text_a_list_item(md.text):
-            lst = code.list_line.ListLine()
-            while type(md) is code.markdown_line.MarkdownLine and is_text_a_list_item(md.text):
+        if type(md) is ascode.markdown_line.MarkdownLine and is_text_a_list_item(md.text):
+            lst = ascode.list_line.ListLine()
+            while type(md) is ascode.markdown_line.MarkdownLine and is_text_a_list_item(md.text):
                 lst.push_line(md)
                 del lines[i]
                 i -= 1
@@ -209,27 +209,27 @@ def load_file(filename):
     while i > 0:
         i -= 1
         md = lines[i]
-        if type(md) is code.markdown_line.MarkdownLine:
+        if type(md) is ascode.markdown_line.MarkdownLine:
             if md.text.strip().startswith('>>>'):
-                lines[i] = code.directive_line.Directive(md)
+                lines[i] = ascode.directive_line.Directive(md)
 
     # Parse headers
     i = len(lines)
     while i > 0:
         i -= 1
         md = lines[i]
-        if type(md) is code.markdown_line.MarkdownLine:
+        if type(md) is ascode.markdown_line.MarkdownLine:
             if md.text.strip().startswith('#'):
-                lines[i] = code.header_line.HeaderLine(md)
+                lines[i] = ascode.header_line.HeaderLine(md)
 
     # Everything else is a paragraph
     i = len(lines)
     while i > 0:
         i -= 1
         md = lines[i]
-        if type(md) is code.markdown_line.MarkdownLine:
-            text = code.paragraph_line.Paragraph()
-            while type(md) is code.markdown_line.MarkdownLine and md.text.strip() != '':
+        if type(md) is ascode.markdown_line.MarkdownLine:
+            text = ascode.paragraph_line.Paragraph()
+            while type(md) is ascode.markdown_line.MarkdownLine and md.text.strip() != '':
                 text.push_line(md)
                 del lines[i]
                 i -= 1
@@ -243,7 +243,7 @@ def load_file(filename):
     while i > 0:
         i -= 1
         md = lines[i]
-        if type(md) is code.paragraph_line.Paragraph:
+        if type(md) is ascode.paragraph_line.Paragraph:
             pc = 0
             for m in md.get_lines():
                 if m.text.strip() != '':
@@ -254,9 +254,9 @@ def load_file(filename):
     # Mark memory tables as such
     for i in range(len(lines)):
         md = lines[i]
-        if type(md) is code.directive_line.Directive and md.directive == 'memory':
+        if type(md) is ascode.directive_line.Directive and md.directive == 'memory':
             for m in lines[i + 1:]:
-                if type(m) is code.table_line.Table:
+                if type(m) is ascode.table_line.Table:
                     m.is_memory = True
                     break
 

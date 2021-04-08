@@ -3,15 +3,15 @@ import os
 import shutil
 import sys
 
-from code.block_line import Block
-from code.directive_line import Directive
-from code.header_line import HeaderLine
-from code.list_line import ListLine
-import code.markdown_line
-import code.markdown_utils
-from code.memory_table import MemoryTable
-from code.paragraph_line import Paragraph
-from code.table_line import Table
+from ascode.block_line import Block
+from ascode.directive_line import Directive
+from ascode.header_line import HeaderLine
+from ascode.list_line import ListLine
+import ascode.markdown_line
+import ascode.markdown_utils
+from ascode.memory_table import MemoryTable
+from ascode.paragraph_line import Paragraph
+from ascode.table_line import Table
 import web.ENVIRONMENT as ENV
 from web.id_mgr import IDMgr
 from web.nav_tree import NavTree
@@ -261,7 +261,7 @@ def deploy_directory(current_node):
             elif not src.endswith('.md'):
                 shutil.copy(src, dst)
             else:
-                md, _, _ = code.markdown_utils.load_file(src)
+                md, _, _ = ascode.markdown_utils.load_file(src)
                 cont = process_markdown(md, dep, fp_content)
                 f = open(os.path.join(ENV.CONTENT_DIR, 'master.template'), 'r')
                 lines = f.readlines()
@@ -290,9 +290,9 @@ def load_site_directory(dev_mode=False):
 
     def _load_site_directory_rec(level, tree, current_node, dev_mode):
         src = os.path.join(ENV.CONTENT_DIR, current_node.get_full_path())
-        lines, _, _ = code.markdown_utils.load_file(
+        lines, _, _ = ascode.markdown_utils.load_file(
             os.path.join(src, 'README.md'))
-        info = code.markdown_utils.get_deploy(lines)
+        info = ascode.markdown_utils.get_deploy(lines)
 
         for directory, title in info:
 

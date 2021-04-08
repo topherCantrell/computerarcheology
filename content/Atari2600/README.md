@@ -14,6 +14,7 @@
 >>>   DoubleGap:Double Gap<br>
 >>>   Entombed:Entombed 1%<br>
 >>>   ET:ET 1%<br>
+>>>   BurgerTime:Burger Time 1%<br>
 >>>   MissileCommand:Missile Command 1%<br>
 >>>   SpaceInvaders:Space Invaders 1%<br>
 

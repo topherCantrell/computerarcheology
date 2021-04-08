@@ -1,4 +1,4 @@
-import code.markdown_utils
+import ascode.markdown_utils
 
 
 class Paragraph:
@@ -19,7 +19,7 @@ class Paragraph:
             return ''
         ret = '<p>\n'
         for md in self._lines:
-            ret += code.markdown_utils.process_markdown(md.text) + '\n'
+            ret += ascode.markdown_utils.process_markdown(md.text) + '\n'
         ret += '</p>\n'
 
         return ret

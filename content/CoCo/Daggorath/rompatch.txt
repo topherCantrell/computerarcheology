@@ -1,0 +1,65 @@
+
+daggorath.bin dagpatch.bin C000
+
+#### Labels
+ALLRAM           = 0xC1A7
+AR_1             = 0xC1AE
+Copy1            = 0xC19C
+StartObjs        = 0xC1C0
+
+#### Defines
+SAM_ALL_RAM      = 0xFFDE
+_CPU             = 6809
+
+                  ._CPU = 6809
+                  
+                  .SAM_ALL_RAM = 0xFFDE
+                  
+                  ; Tape access (ZSAVE, ZLOAD) from C192 - C1F4
+                  
+                  0xC12E:
+C12E: CE C1 C0         LDU     #StartObjs
+                  
+                  0xC192: ; Doesn't matter ... it is relocatable
+                  
+C192: 8E C1 A7         LDX     #ALLRAM           ; ALLRAM routine
+C195: CE 04 00         LDU     #0x400            ; Start of screen memory
+C198: 10 8E 00 19      LDY     #StartObjs-ALLRAM ; Number of bytes to copy
+                  Copy1:
+C19C: A6 80            LDA     ,X+            ; Copy the ...
+C19E: A7 C0            STA     ,U+            ; ... ALLRAM ...
+C1A0: 31 3F            LEAY    -1,Y           ; ... to ...
+C1A2: 26 F8            BNE     Copy1          ; ... RAM (on the screen)
+C1A4: 7E 04 00         JMP     0x400          ; Execute the ALLRAM and return
+                  
+                  ALLRAM:
+C1A7: 34 01            PSHS    CC             ; Save interrupt status
+C1A9: 1A 50            ORCC    #0x50          ; Turn off interrupts
+C1AB: 8E 80 00         LDX     #0x8000        ; Start of ROM
+                  AR_1:
+C1AE: B7 FF DE         STA     SAM_ALL_RAM    ; Switch ROM bank ON
+C1B1: A6 84            LDA     ,X             ; Get value from ROM
+C1B3: B7 FF DF         STA     SAM_ALL_RAM+1  ; Switch ROM bank OFF
+C1B6: A7 80            STA     ,X+            ; Store value to RAM under ROM bank
+C1B8: 8C FF 00         CMPX    #0xFF00        ; Reached the end of ROM?
+C1BB: 26 F1            BNE     AR_1           ; No ... go back for more
+C1BD: 35 01            PULS    CC             ; Restore interrupts
+C1BF: 39               RTS
+                  
+                  ; Start with a variety of objects. Use them for fun or drop them for the "real" experience.
+                  
+                  StartObjs:
+                  
+C1C0: 11               .byte 0x11 ; Wooden sword
+C1C1: 0F               .byte 0x0F ; Pine torch
+                  ;
+C1C2: 02               .byte 0x02 ; Elvish sword
+C1C3: 03               .byte 0x03 ; Mithril shield
+C1C4: 04               .byte 0x04 ; Seer scroll
+C1C5: 05               .byte 0x05 ; Thews flask
+C1C6: 05               .byte 0x05 ; Thews flask
+C1C7: 05               .byte 0x05 ; Thews flask
+C1C8: 05               .byte 0x05 ; Thews flask
+C1C9: 0A               .byte 0x0A ; Solar torch
+                  ;
+C1CA: FF               .byte 0xFF

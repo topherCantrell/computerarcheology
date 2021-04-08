@@ -69,9 +69,9 @@ class Block:
         return ret
 
     def _make_content_code(self, code_info, lines):
-        import code.process_code
+        import ascode.process_code
         if not 'processed_code' in code_info:
-            code.process_code.process_code(lines, code_info)
+            ascode.process_code.process_code(lines, code_info)
 
         ret = '<pre class="codePreStyle">'
 

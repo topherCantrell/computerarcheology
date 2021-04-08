@@ -1,5 +1,5 @@
-import code.markdown_utils
-import code.paragraph_line
+import ascode.markdown_utils
+import ascode.paragraph_line
 
 
 class Table:
@@ -27,7 +27,7 @@ class Table:
         cols = self._lines[0].text.split('|')[1:-1]
         ret += '<tr>'
         for c in cols:
-            ret += '<th>' + code.markdown_utils.process_markdown(c) + '</th>'
+            ret += '<th>' + ascode.markdown_utils.process_markdown(c) + '</th>'
         ret += '</tr>\n'
         ret += '</thead>\n'
 
@@ -43,7 +43,7 @@ class Table:
             ret += '<tr>'
             for c in cols:
                 ret += '<td>' + \
-                    code.markdown_utils.process_markdown(c) + '</td>'
+                    ascode.markdown_utils.process_markdown(c) + '</td>'
             ret += '</tr>\n'
         ret += '</tbody>\n'
 

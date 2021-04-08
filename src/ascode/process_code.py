@@ -1,5 +1,5 @@
 
-import code.code_line
+import ascode.code_line
 
 
 def is_hex_digit(d):
@@ -31,7 +31,7 @@ def process_code(lines, code_info, skip_no_label_jumps=False):
     for md in lines:
         if str(type(md)) == "<class 'code.block_line.Block'>":
             for m in md.get_lines():
-                if type(m) is code.code_line.CodeLine:
+                if type(m) is ascode.code_line.CodeLine:
                     cod.append(m)
 
     # For all lines with mnemonics: find the opcode for each

@@ -1,6 +1,6 @@
-import code.markdown_line
-import code.markdown_utils
-import code.table_line
+import ascode.markdown_line
+import ascode.markdown_utils
+import ascode.table_line
 
 
 class MemoryTable:
@@ -9,7 +9,7 @@ class MemoryTable:
 
         # print(":"+filename+":")
 
-        lines, _, _ = code.markdown_utils.load_file(filename)
+        lines, _, _ = ascode.markdown_utils.load_file(filename)
 
         self.entries = []
 
@@ -29,7 +29,7 @@ class MemoryTable:
         self.filename = filename
 
         for md in lines:
-            if type(md) is code.table_line.Table and md.is_memory:
+            if type(md) is ascode.table_line.Table and md.is_memory:
                 for m in md.get_lines()[2:]:
                     cols = m.text.split('|')[1:-1]
                     addr = cols[0].strip()

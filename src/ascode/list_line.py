@@ -1,4 +1,4 @@
-import code.markdown_utils
+import ascode.markdown_utils
 
 
 class ListLine:
@@ -26,6 +26,6 @@ class ListLine:
             line_strip = md.text.strip()
             line_strip = line_strip[1:].strip()
             ret += '<li>' + \
-                code.markdown_utils.process_markdown(line_strip) + '</li>\n'
+                ascode.markdown_utils.process_markdown(line_strip) + '</li>\n'
         ret += '</ul>\n'
         return ret

@@ -19,7 +19,7 @@
 
 It might take a few seconds for the ROM to load, but play Atari2600 ET here:
 
-[http://javatari.org&ROM=ET](http://javatari.org?ROM=https://github.com/topherCantrell/computerarcheology/blob/master/content/Atari2600/ET/ET.bin?raw=true`playMe`)
+[http://javatari.org&ROM=ET](http://javatari.org?ROM=https://github.com/topherCantrell/computerarcheology/blob/master/content/Atari2600/ET/ET.bin?raw=true)
 
 >>> }
 
