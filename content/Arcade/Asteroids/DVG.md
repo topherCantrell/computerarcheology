@@ -249,7 +249,7 @@ Example:
 FF70    ; 1111 1111 0111 0000
         ; - Ss This is added to the global scale
         ; - BBBB is the brightness: 0 .. 15
-        ; - s is 1 for negative and 0 for positive for the X and Y
+        ; - m is 1 for negative and 0 for positive for the X and Y
         ; - (x,y) is the coordinate change for the vector   
    
 SVEC scale=01(/256)  bri=07  x=0       y=-3     (0.00, -0.01)

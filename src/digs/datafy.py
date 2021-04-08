@@ -1,9 +1,9 @@
-fname = 'btBank0.bin'
+fname = 'd:/git/computerarcheology/content/atari2600/burgertime/btBank7.bin'
 
-origin = 0xF000
+origin = 0xF800
 
-start = 0xF36C
-end = 0xF800
+start = 0xFA00
+end = 0xFCCE
 
 with open(fname, 'rb') as f:
     data = f.read()

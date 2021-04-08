@@ -89,10 +89,10 @@ def compare_source_to_binary(file_name_src, file_name_bin, origin):
     for i in range(mx):
         if srcdata[i]!=bindata[i]:
             fd = i
-            print('here')
+            #print('here')
             break
         
-    if fd>0:
+    if fd>=0:
         print('First difference:',FORM.shex4(origin+fd))
     
     return False
