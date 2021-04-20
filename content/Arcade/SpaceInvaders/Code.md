@@ -4,6 +4,8 @@
 
 >>> cpu Z80
 
+>>> binary 0000:invaders.h + invaders.g + invaders.f.diag + invaders.e
+
 >>> memoryTable hard 
 [Hardware Info](Hardware.md)
 
@@ -4013,7 +4015,7 @@ RemoveShip:
 
 # Data From Here Down   
 
-```
+```code
 1A93: 00 00       
 
 ; Splash screen animation structure 1

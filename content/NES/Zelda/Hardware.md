@@ -38,7 +38,7 @@
 | 4013  |    S_DMC_D      |             |  cccccccc Length of DMA data (shl 4) |
 | 4014  |    P_SPR_DMA    |             | |
 | 4015  |    S_Status     |             | i_q_+_d_ntba i=IRQ(ro) status,q=DMC status, d=DMC, ntba=noise/triangle/square2/square1 |
-| 4016  | 4016 | |
+| 4016  | 4016 | | |
 | 4017  |    S_FrameCntr   |            | d_s_++++++ d=divider rate, s=frame counter status |
 
 # Mapper 1: MMC1

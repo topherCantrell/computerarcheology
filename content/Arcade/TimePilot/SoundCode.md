@@ -4,6 +4,8 @@
 
 >>> cpu Z80
 
+>>> binary 0000:roms/TM7
+
 >>> memoryTable hard 
 [Hardware Info](SoundHardware.md)
 

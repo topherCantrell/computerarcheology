@@ -4,6 +4,8 @@
 
 >>> cpu 6502
 
+>>> binary B000:ET.bin
+
 >>> memoryTable hard 
 [Hardware Info](../Stella.md)
 
@@ -2249,6 +2251,8 @@ BFFA: 7F BC  ; NMI vector to BC7F
 BFFC: 7F BC  ; Reset vector to BC7F (Only vector that is used in the Atari2600)
 BFFE: 7F BC  ; IRQ/BRK vector to BC7F
 ```
+
+>>> originGap C000
 
 # ROM Bank 1
 
@@ -4963,15 +4967,12 @@ FFF6: 00         BRK                 ;
 FFF7: 00         BRK                 ; 
 FFF8: 00         BRK                 ; 
 FFF9: 00         BRK                 ; 
-FFFA: 00         BRK                 ; 
 ```
 
 # Vectors (Bank 1)
 
 ```code
-; Interesting. These appear to be backwards (the 6502 is little-endian)
-; F000 would be the correct jump (switches to Bank 0 and starts up)
-FFFB: F0 00      ; NMI vector to 00F0
-FFFD: F0 00      ; Reset vector to 00F0 (Only vector that is used in the Atari2600)
-FFFF: F0 FF      ; IRQ/BRK vector to FF00
+FFFA: 00 F0  ; NMI vector to F000
+FFFC: 00 F0  ; Reset vector to F000 (Only vector that is used in the Atari2600)
+FFFE: 00 F0  ; IRQ/BRK vector to FF00
 ```

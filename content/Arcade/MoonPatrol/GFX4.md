@@ -1,5 +1,7 @@
 ![Hills](MoonPatrol.jpg)
 
+>>> binary roms/mpe-2.3k
+
 # Hills (near background) 
 
 | ROM      | Size | Content  | Ofs  | CRC      | SHA1                                     |
@@ -19,12 +21,13 @@ Screen: aA_bB_cC_dD
 
 The actual pixel colors come from the table in PROM2 in a jumbled mapping.
 From experimenting, the pixel colors are:
+
 ```
 ;             00    01     10     11
 ; Hills:      --    20     00     70
 ; Mountains:  --    C0     00     A0
 ; City:       --    00     77     70
-}}} 
+```
 
 ```html
 <script src="/js/BinaryData.js"></script>
@@ -47,7 +50,7 @@ From experimenting, the pixel colors are:
 </canvas>
 ```
 
-```plainCode
+```code
 ; For instance, first colored pixel at 008F:
 ; C0    1100_0000 -> 01 01 00 00  Dark Green
 
@@ -307,5 +310,6 @@ From experimenting, the pixel colors are:
 0FC0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
 0FD0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
 0FE0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
-0FF0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
+0FF0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 ```
+

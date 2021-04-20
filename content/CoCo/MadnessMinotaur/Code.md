@@ -4,6 +4,8 @@
 
 >>> cpu 6809
 
+>>> binary 0300:madness.bin
+
 >>> memoryTable ram 
 [RAM Usage](RAMUse.md)
 
@@ -6500,7 +6502,7 @@ these actions are assigned to passages other than up/down. In these passages the
 I've noted these "never run" actions in the table below with an asterisk before the letter. They are
 left out by the save-game-viewer. Why were these no-op actions placed in the table?
 
-``code         
+```code         
 BetweenRoomHandler:
 3B4A: 4A 04 1A FB ; EAST   74<->75   *A  If excess physical condition is less than random 40-BF then a climb-up fails.
 3B4E: 53 04 1A FB ; EAST   83<->84   *A  see above

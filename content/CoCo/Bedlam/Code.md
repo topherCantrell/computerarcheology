@@ -4,6 +4,8 @@
 
 >>> cpu 6809
 
+>>> binary 0600:Bedlam.bin
+
 >>> memoryTable ram 
 [RAM Usage](RAMUse.md)
 

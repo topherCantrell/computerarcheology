@@ -4,6 +4,8 @@
 
 >>> cpu Z80
 
+>>> binary 4300:RAAKA.bin
+
 >>> memoryTable ram 
 [RAM Usage](RAMUse.md)
 

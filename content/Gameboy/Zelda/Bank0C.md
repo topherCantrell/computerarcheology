@@ -4,6 +4,8 @@
 
 >>> cpu Z80GB
 
+>>> binary 4000:zelda.gb[30000:34000]
+
 >>> memoryTable ram 
 [RAM Usage](RAMUse.md)
 
@@ -30,6 +32,7 @@
   data-colors='["#E8E8E8","#A0A0A0","#585858","#101010"]'>
 </canvas>
 ```
+
 ```html
  <canvas width="900" height="130"
      data-labelColor="#00C0FF"

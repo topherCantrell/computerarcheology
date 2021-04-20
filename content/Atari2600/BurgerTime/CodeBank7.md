@@ -4,6 +4,8 @@
 
 >>> cpu 6502
 
+>>> binary F800:btBank7.bin
+
 >>> memoryTable hard 
 [Hardware Info](../Stella.md)
 

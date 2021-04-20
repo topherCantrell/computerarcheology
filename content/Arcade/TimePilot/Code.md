@@ -4,6 +4,8 @@
 
 >>> cpu Z80
 
+>>> binary 0000:roms/TM1 + roms/TM2 + roms/TM3
+
 >>> memoryTable hard 
 [Hardware Info](Hardware.md)
 
@@ -15074,5 +15076,5 @@
 5FFC: FF             RST     0X38            
 5FFD: 00             NOP                     
 5FFE: 00             NOP                     
-5FFF: 01 00 00       LD      BC,$0000        
+5FFF: 01      
 ```

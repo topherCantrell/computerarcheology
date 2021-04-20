@@ -4,6 +4,8 @@
 
 >>> cpu 6502
 
+>>> binary F000:MISSCOMM.BIN
+
 >>> memoryTable hard 
 [Hardware Info](../Stella.md)
 
@@ -2259,15 +2261,12 @@ FFF5: 10 00         BPL   $FFF7               ;
 FFF7: 00            BRK                       
 FFF8: 00            BRK                       
 FFF9: 00            BRK                       
-FFFA: 00            BRK                       
 ```
 
 # Vectors 
 
-Same as ET ... the vector bytes look swapped here
-
 ```code
-FFFB: F0 00         BEQ   $FFFD               ;
-FFFD: F0 00         BEQ   $FFFF               ;
-FFFF: F0 FF         BEQ   $10000              ;
+FFFA: 00 F0
+FFFC: 00 F0
+FFFE: 00 F0
 ```

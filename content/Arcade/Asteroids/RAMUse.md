@@ -173,7 +173,6 @@
 | 02EE      | vposlSaucer        | Saucer |
 | 02EF:02F0 | vposlSaucerShots   | Saucer Shots 2-1 |
 | 02F1:02F4 | vposlShipShots     | Ship Shots 4-1 |
-
 | 02F5      | asteroidsPerWave   | Starting Asteroids Per Wave |
 | 02F6      | curAsteroidCount   | Current Amount Of Asteroids |
 | 02F7      | saucerTimer        | Countdown Timer For Saucer, At 0, Saucer Appears. Also Used For Time Between Saucer Shots While Saucer Is Alive |

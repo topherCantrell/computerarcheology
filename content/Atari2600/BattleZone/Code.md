@@ -4,6 +4,8 @@
 
 >>> cpu 6502
 
+>>> binary D000:Batlzone.bin
+
 >>> memoryTable hard 
 [Hardware Info](../Stella.md)
 
@@ -2612,6 +2614,8 @@ DFFA: 12 A5     ; NMI vector to A512 (no interrupts on 2600)
 DFFC: 00 D0     ; Reset vector to D000
 DFFE: F6 7C     ; IRQ/BRK to 7CF6 (no interrupts on 2600)
 ```
+
+>>> originGap E000
 
 # Bank 1
 

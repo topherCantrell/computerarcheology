@@ -4,6 +4,8 @@
 
 >>> cpu Z80
 
+>>> binary 0000:roms/omega.m7 + roms/omega.l7 + roms/omega.k7 + roms/omega.j7 
+
 >>> memoryTable hard 
 [Hardware Info](Hardware.md)
 
@@ -296,7 +298,7 @@ DiagString:
 0295: 74              LD      (HL),H              
 0296: FF              RST     $38                 
 0297: 06 
-0297: 00 D0
+0298: 00 D0
                   
 029A: 43              LD      B,E                 
 029B: 4F              LD      C,A                 
@@ -566,13 +568,13 @@ DiagString:
 0434: 80              ADD     A,B                 
 0435: 00              NOP                         
 0436: 00              NOP                         
-
+0437: FD
 0438: 83              ADD     A,E                 
 0439: FF              RST     $38                 
 043A: C3 FD 87        JP      $87FD               ; 
-
+043D: FD
 043E: C3 FF 87        JP      $87FF               ; 
-
+0441: FD
 0442: C7              RST     $00                 
 0443: FF              RST     $38                 
 0444: 83              ADD     A,E                 
@@ -1097,7 +1099,7 @@ DogAndDVG:
 07DA: 08              EX      AF,AF'              ; Restore A
 07DB: FD E9           JP      (IY)                ; Continue routine
 
-;07DD: D9              EXX                         
+07DD: D9              
 07DE: DB 11           IN      A,($11)             ;
 07E0: 5F              LD      E,A                 
 07E1: A2              AND     D                   
@@ -5790,7 +5792,7 @@ PrintString:
 2F3F: 43              LD      B,E                 
 2F40: 95              SUB     L                   
 2F41: 2F              CPL                         
-
+2F42: DD
 2F43: 45              LD      B,L                 
 2F44: 64              LD      H,H                 
 2F45: 43              LD      B,E                 
@@ -5813,7 +5815,7 @@ PrintString:
 2F56: 00              NOP                         
 2F57: F5              PUSH    AF                  
 2F58: 80              ADD     A,B                 
-
+2F59: ED
 2F5A: 30 00           JR      NC,$2F5C            ; 
 2F5C: 00              NOP                         
 2F5D: 00              NOP                         
@@ -6124,7 +6126,7 @@ PrintString:
 30D8: 0E 
 
 ; Copied 48 bytes to 4601 at startup
-30D9: D8           LD      C,$D8               
+30D9: D8             
 30DA: E0              RET     PO                  
 30DB: FF              RST     $38                 
 30DC: FF              RST     $38                 
@@ -7691,7 +7693,7 @@ PrintString:
 386E: 00              NOP                         
 386F: 00              NOP                         
 3870: 84              ADD     A,H                 
-
+3871: DD
 3872: 43              LD      B,E                 
 3873: 20 20           JR      NZ,$3895            ; 
 3875: C3 DE 43        JP      $43DE               ; 
@@ -9005,7 +9007,7 @@ VTableChars:
 3F2F: D5              PUSH    DE                  
 3F30: 37              SCF                         
 3F31: EE 37           XOR     $37                 
-
+3F33: FD
 3F34: 38 88           JR      C,$3EBE             ; 
 3F36: 3A 95 3B        LD      A,($3B95)           ; 
 3F39: AD              XOR     L                   

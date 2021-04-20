@@ -8,8 +8,8 @@
 >>>    +css<br>
 >>>    +js<br>
 >>>    +img<br>
->>>    *Contact<br>
->>>    *Journal<br>
+>>>    Contact:<br>
+>>>    Journal:<br>
 >>>    #Amiga<br>
 >>>    #Arcade<br>
 >>>    #Atari2600<br>

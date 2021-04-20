@@ -4,6 +4,8 @@
 
 >>> cpu 6809
 
+>>> binary C000:daggorath.bin
+
 >>> memoryTable ram 
 [RAM Usage](RAMUse.md)
 
@@ -544,34 +546,34 @@ TODO Immediate data and address links
 | SWI  | Immediate Data | Address | Function |
 | ---- | ----           | ----    | ----     |
 | 00   | | | Set light level |
-| 01   | | | Draw picture X on screen | |
-| 02   | | | Uncompress message m and display | |
-| 03   | | | Display uncompressed message X | |
-| 04   | | | Display a single character A | |
-| 05   | | | Uncompress message X to buffer | |
-| 06   | | | Uncompress message X to buffer U | |
-| 07   | | | Get random number | |
-| 08   | | | Clear display screen | |
-| 09   | | | Clear secondary screen | |
-| 0A   | | | Clear hand descriptor | |
-| 0B   | | | Clear play field | |
-| 0C   | | | Update heart rate | |
-| 0D   | | | Print hands | |
-| 0E   | | | Display playing screen | |
-| 0F   | | | Ready command prompt | |
-| 10   | | | Pause for 1.35 seconds | |
-| 11   | | | Fill X to U with 0s | |
-| 12   | | | Fill X to U with FFs | |
-| 13   | | | Beam on picture X | |
-| 14   | | | Beam subroutine | |
-| 15   | | | Beam subroutine | |
-| 16   | | | Print PREPARE | |
-| 17   | | | Create object structure | |
-| 18   | | | Change object to proper | |
-| 19   | | | Bring up normal display | |
-| 1A   | | | Build level | |
-| 1B   | | | Play sound i at full volume | |
-| 1C   | | | Play sound A at volume B | |
+| 01   | | | Draw picture X on screen |
+| 02   | | | Uncompress message m and display | 
+| 03   | | | Display uncompressed message X | 
+| 04   | | | Display a single character A | 
+| 05   | | | Uncompress message X to buffer | 
+| 06   | | | Uncompress message X to buffer U | 
+| 07   | | | Get random number | 
+| 08   | | | Clear display screen | 
+| 09   | | | Clear secondary screen | 
+| 0A   | | | Clear hand descriptor | 
+| 0B   | | | Clear play field | 
+| 0C   | | | Update heart rate | 
+| 0D   | | | Print hands | 
+| 0E   | | | Display playing screen | 
+| 0F   | | | Ready command prompt | 
+| 10   | | | Pause for 1.35 seconds | 
+| 11   | | | Fill X to U with 0s | 
+| 12   | | | Fill X to U with FFs | 
+| 13   | | | Beam on picture X | 
+| 14   | | | Beam subroutine | 
+| 15   | | | Beam subroutine |
+| 16   | | | Print PREPARE | 
+| 17   | | | Create object structure | 
+| 18   | | | Change object to proper | 
+| 19   | | | Bring up normal display | 
+| 1A   | | | Build level | 
+| 1B   | | | Play sound i at full volume | 
+| 1C   | | | Play sound A at volume B | 
 
 ```code
 SWIHandler:
@@ -4639,7 +4641,7 @@ TODO put these tables side-by-side
 | GALDROG | BRONZE SHIELD |
 | GALDROG | LUNAR TORCH |
 |  | |
-| WRAITH | PINE TORCH
+| WRAITH | PINE TORCH |
 | WRAITH | |
 | WRAITH | |
 | WRAITH | |

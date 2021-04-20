@@ -4,6 +4,8 @@
 
 >>> cpu 6502
 
+>>> binary D000:ASTEROID.BIN
+
 >>> memoryTable hard 
 [Hardware Info](../Stella.md)
 
@@ -2035,7 +2037,7 @@ DF3F: 00 ; ........
 
 # Asteroid Explosions
 
-```
+```code
 AsteroidExplosions:
 ; 16 rows each
 DF40: A0 ; *.*.....
@@ -2097,7 +2099,7 @@ DF73: 20 ; ..*.....
 
 # Ship Images
 
-```
+```code
 ShipImages:
 ; 5 rows each. Each image ends with an FF terminator.
 
@@ -2176,7 +2178,7 @@ DFA9: FF ; ********
 
 # Ship Explosions
 
-```
+```code
 ShipExplosions:
 DFAA: 10 ; ...*....
 DFAB: 02 ; ......*.
@@ -2297,6 +2299,8 @@ DFFC: 91 D5       ; Reset vector to D591
 DFFE: 91 D5       ; IRQ/BRK vector to D591
 ```
 # Bank 1
+
+>>> originGap E000
 
 ```code
 ;----------------------------------------------------------------------------------------------

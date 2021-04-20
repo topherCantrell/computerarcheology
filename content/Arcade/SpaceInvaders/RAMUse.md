@@ -216,25 +216,25 @@
 |20CF|aShotReloadRate|Based on the MSB of the player's score ... how fast the aliens reload their shots|
 |20D0| |; This is where the alien-sprite-carying-the-Y ...|
 |20D1| |; ... lives in ROM|
-|20D2| | | |
-|20D3| | | |
-|20D4| | | |
-|20D5| | | |
-|20D6| | | |
-|20D7| | | |
-|20D8| | | |
-|20D9| | | |
-|20DA| | | |
-|20DB| | | |
-|20DC| | | |
-|20DD| | | |
-|20DE| | | |
-|20DF| | | |
-|20E0| | | |
-|20E1| | | |
-|20E2| | | |
-|20E3| | | |
-|20E4| | | |
+|20D2| | |
+|20D3| | |
+|20D4| | |
+|20D5| | |
+|20D6| | |
+|20D7| | | 
+|20D8| | | 
+|20D9| | | 
+|20DA| | | 
+|20DB| | | 
+|20DC| | | 
+|20DD| | | 
+|20DE| | | 
+|20DF| | | 
+|20E0| | | 
+|20E1| | | 
+|20E2| | | 
+|20E3| | | 
+|20E4| | | 
 |20E5|player1Ex|Extra ship has been awarded = 0|
 |20E6|player2Ex|Extra ship has been awarded = 0|
 |20E7|player1Alive|1 if player is alive, 0 if dead (after last man)|
@@ -246,7 +246,7 @@
 |20ED|demoCmdPtrLSB|pointer to demo commands LSB 1663|
 |20EE|demoCmdPtrMSB|pointer to demo commands MSB|
 |20EF|gameMode|1=game running, 0=demo or splash screens|
-|20F0| | | |
+|20F0| | |
 |20F1|adjustScore|Set to 1 if score needs adjusting|
 |20F2|scoreDeltaLSB|Score adjustment (LSB)|
 |20F3|scoreDeltaMSB|Score adjustment (MSB)|

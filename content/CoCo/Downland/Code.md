@@ -4,6 +4,8 @@
 
 >>> cpu 6809
 
+>>> binary C000:downland1_1.bin
+
 >>> memoryTable ram 
 [RAM Usage](RAMUse.md)
 

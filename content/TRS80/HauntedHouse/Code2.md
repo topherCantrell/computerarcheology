@@ -4,6 +4,8 @@
 
 >>> cpu Z80
 
+>>> binary 435E:Code2.bin
+
 >>> memoryTable ram 
 [RAM Usage](RAMUse2.md)
 

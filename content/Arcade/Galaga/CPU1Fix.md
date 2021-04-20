@@ -4,6 +4,8 @@
 
 >>> cpu Z80
 
+>>> binary 0000:roms/CPU1FIX.bin
+
 ```code
 ; 3N + 3M + 3L + 3K
 

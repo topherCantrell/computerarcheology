@@ -4,6 +4,8 @@
 
 >>> cpu Z80
 
+>>> binary 0000:roms/3200a.bin + roms/3300b.bin + roms/3400c.bin + roms/3500d.bin
+
 ```code
 ; 3N + 3M + 3L + 3K
 

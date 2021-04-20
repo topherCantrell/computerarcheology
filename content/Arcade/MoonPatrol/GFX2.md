@@ -1,5 +1,7 @@
 ![Sprite Tiles](MoonPatrol.jpg)
 
+>>> binary roms/mpb-2.3m + roms/mpb-1.3n
+
 # Sprite Tiles
 
 | ROM      | Size | Content  | Ofs  | CRC      | SHA1                                     |
@@ -366,7 +368,7 @@ appear on the screen as follows:
 
 These individual pixes map to bits in the data as follow for Image 0
 
-```plainCode
+```code
 ; Image 0 (bit plane 0 ... see 1000 for bit plane 1)
 ;                    First byte: (MSB) Aa7_Aa6_Aa5_Aa4_Aa3_Aa3_Aa1_Aa0 (LSB)
 0000: 00 00 00 00 00 00 00 00  ; Aa* Ab* Ac* Ad* Ae* Af* Ag* Ah* 

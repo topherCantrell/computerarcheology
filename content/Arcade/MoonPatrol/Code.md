@@ -4,6 +4,8 @@
 
 >>> cpu Z80
 
+>>> binary 0000:roms/mpa-1.3m + roms/mpa-2.3l + roms/mpa-3.3k + roms/mpa-4.3j
+
 | ROM      | Size | Content  | Ofs  | CRC      | SHA1                                     |
 | -------- | ---- | -------- | ---- | -------- | ---------------------------------------- |
 | mpa-1.3m | 4096 | maincpu  |    0 | 5873a860 | 8c03726d6e049c3edbc277440184e31679f78258 |
@@ -7475,3 +7477,4 @@ ServiceBEAM:
 3FF0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 ;
 3FFF: 03 ; Bring ROM chip 3 check value to FF
+```

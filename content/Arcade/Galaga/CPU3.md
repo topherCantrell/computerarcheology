@@ -4,6 +4,8 @@
 
 >>> cpu Z80
 
+>>> binary 0000:roms/3700g.bin
+
 ```code
 ; Sound processor
 

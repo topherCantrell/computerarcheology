@@ -1,5 +1,7 @@
 ![City](MoonPatrol.jpg)
 
+>>> binary roms/mpe-3.3h
+
 # City (far background) 
 
 | ROM      | Size | Content  | Ofs  | CRC      | SHA1                                     |
@@ -46,7 +48,7 @@ From experimenting, the pixel colors are:
 </canvas>
 ```
 
-```plainCode
+```code
 ; For instance, first colored pixel at 0003:
 ; 40    1000_1000 -> 11 00 00 00  Light green
 ; 02    0000_0010 -> 00 00 10 00  Yellow

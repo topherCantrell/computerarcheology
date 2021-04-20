@@ -4,6 +4,8 @@
 
 >>> cpu Z80
 
+>>> binary 0000:frogger.608*swap(0,1) + frogger.609 + frogger.610
+
 >>> memoryTable hard 
 [Hardware Info](SoundHardware.md)
 
@@ -3438,8 +3440,8 @@ SongTable:
 ; Or was SC06 supposed to be something else?
 ;
 ; 110_1  1001
-;1134: DF       ; SC06:Volume off and end song
-1134: C2       ; Noticable sour note  (Change to this so that voice continues)
+1134: DF       ; SC06:Volume off and end song
+;1134: C2       ; Noticable sour note  (Change to this so that voice continues)
 ;
 1135: C0       ; REST for 2^6
 1136: D2       ; NOTE 4C for 2^6

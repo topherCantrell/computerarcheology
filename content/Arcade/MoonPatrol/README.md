@@ -36,7 +36,7 @@
 * [GFX3 Mountains Background](GFX3.md)
 * [GFX4 Hills Background](GFX4.md)
 * [GFX5 City Background](GFX5.md)
-* [Text Color Sets](TextColor.mds)
+* [Text Color Sets](TextColors.md)
 * [Image Background Colors](ImageBackgroundColors.md)
 * [Sprite Colors](SpriteColors.md)
 * [Sprite Color Sets](SpriteColorSets.md)

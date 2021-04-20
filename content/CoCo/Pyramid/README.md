@@ -64,9 +64,8 @@ These two commands (and their strings) were removed from the CoCo version.
 untouched by the passage of time, impervious to the elements, still settled in
 quiet repose. There must be treasures. If even half of the stories about the Lost
 Pyramid are true, ... But why dwell on that now -- you are here, and adventure
-awaits just a step away." 
-
-> From the game manual introduction
+awaits just a step away."<br>
+- From the game manual introduction
 
 >>> tourGuide {
 

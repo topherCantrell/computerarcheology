@@ -4,6 +4,8 @@
 
 >>> cpu Z80
 
+>>> binary 42E9:Code1.bin
+
 >>> memoryTable ram 
 [RAM Usage](RAMUse1.md)
 

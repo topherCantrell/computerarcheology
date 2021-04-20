@@ -4,6 +4,8 @@
 
 >>> cpu 6502
 
+>>> binary B000:Entombed.bin
+
 >>> memoryTable hard 
 [Hardware Info](../Stella.md)
 

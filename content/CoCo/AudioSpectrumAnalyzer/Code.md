@@ -4,6 +4,8 @@
 
 >>> cpu 6809
 
+>>> binary C000:Analyzer.rom
+
 >>> memoryTable ram 
 [RAM Usage](RAMUse.md)
 
@@ -478,7 +480,7 @@ C3E3: 02                 ; 2 columns
 C3E4: 32 30 30 30 00     ; 2000
 C3E9: 01                 ; 1 column
 C3EA: 32 35 30 30 00     ; 2500
-C2EF: 01                 ; 1 column
+C3EF: 01                 ; 1 column
 C3F0: 33 31 35 30 00     ; 3150
 C3F5: 01                 ; 1 column
 C3F6: 34 30 30 30 00     ; 4000

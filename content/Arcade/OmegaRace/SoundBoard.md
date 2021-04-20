@@ -4,6 +4,8 @@
 
 >>> cpu Z80
 
+>>> binary roms/sound.k5
+
 >>> memoryTable hard 
 [Hardware Info](SoundHardware.md)
 
@@ -725,7 +727,7 @@
 0435: F3          DI                       
 0436: F2 0A 00    JP    P,$000A            ; 
 0439: 96          SUB   (HL)               
-
+043A: FD
 043B: F1          POP   AF                 
 043C: 03          INC   BC                 
 043D: F3          DI                       
@@ -745,7 +747,7 @@
 0450: F2 02 00    JP    P,$0002            ; 
 0453: 57          LD    D,A                
 0454: 10 77       DJNZ  $4CD               ; 
-
+0456: FD
 0457: 99          SBC   C                  
 0458: FF          RST   0X38               
 0459: F1          POP   AF                 
@@ -770,7 +772,7 @@
 0470: F2 07 00    JP    P,$0007            ; 
 0473: F2 06 00    JP    P,$0006            ; 
 0476: 67          LD    H,A                
-
+0477: FD
 0478: A2          AND   D                  
 0479: F0          RET   P                  
 047A: FF          RST   0X38               
@@ -798,7 +800,7 @@
 0496: F2 07 00    JP    P,$0007            ; 
 0499: F2 06 00    JP    P,$0006            ; 
 049C: 67          LD    H,A                
-
+049D: FD
 049E: A2          AND   D                  
 049F: F0          RET   P                  
 04A0: FF          RST   0X38               
@@ -922,7 +924,7 @@
 0549: F5          PUSH  AF                 
 054A: 14          INC   D                  
 054B: 67          LD    H,A                
-
+054C: FD
 054D: 67          LD    H,A                
 054E: FB          EI                       
 054F: 77          LD    (HL),A             

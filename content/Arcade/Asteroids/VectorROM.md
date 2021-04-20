@@ -4,6 +4,8 @@
 
 >>> cpu DVG
 
+>>> binary 0800:035127.02
+
 ```html
 <script src="/Arcade/Asteroids/VectorROM.js"></script>
 <script src="/js/BinaryData.js"></script>

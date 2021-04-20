@@ -1,5 +1,7 @@
 ![Mountains](MoonPatrol.jpg)
 
+>>> binary roms/mpe-1.3l
+
 # Far Background (Mountains) 
 
 | ROM      | Size | Content  | Ofs  | CRC      | SHA1                                     |
@@ -51,7 +53,7 @@ of transparent. The background is black, and you can't tell the difference.
 </canvas>
 ```
 
-```plainCode
+```code
 ; For instance, first colored pixel at 0004:
 ; 40    0100_0000 -> 00 01 00 00  Dark Blue
 
