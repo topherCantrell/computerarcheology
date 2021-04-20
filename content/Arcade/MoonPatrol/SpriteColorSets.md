@@ -1,5 +1,7 @@
 ![Sprite Color Sets](MoonPatrol.jpg)
 
+>>> binary 0000:roms/mpc-2.2h
+
 # Sprite Color Sets
 
 | ROM      | Size | Content  | Ofs  | CRC      | SHA1                                     |
@@ -20,7 +22,7 @@ in the table below describe the 4 colors for color-set-0: 0, 1, 2, 3. Looking th
 PROM3 yields color values 00 (transparent), 01 (near black), C6 (red/violet), and 
 37 (turquoise). Color-set-1 is made of colors values from PROM3 at addresses 0, 4, 2, and 5.
 
-```plainCode
+```code
 ;                  Pixel value:  00   01   10   11 
 0000: 00 01 02 03 00 00 00 00 ; ---- <FONT style="BACKGROUND-COLOR:#00001A">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C100AE">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#00AEC8">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> Color set 0 
 0008: 00 04 02 05 00 00 00 00 ; ---- <FONT style="BACKGROUND-COLOR:#84C800">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C100AE">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C10000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> 1

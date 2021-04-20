@@ -1,12 +1,14 @@
 ![Text Colors](MoonPatrol.jpg)
 
+>>> binary 0000:roms/mpc-4.2a
+
 # Text Colors
 
 | ROM      | Size | Content  | Ofs  | CRC      | SHA1                                     |
 | -------- | ---- | -------- | ---- | -------- | ---------------------------------------- |
 | mpc-4.2a |  512 | tx_pal   |    0 | 07f99284 | dfc52958f2520e1ce4446dd4c84c91413bbacf76 |
 
-```plainCode
+```code
 ; Colors used in color sets:
 ;       R  G  B
 ; 01    21 00 00 <FONT style="BACKGROUND-COLOR:#210000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT>

@@ -1,5 +1,7 @@
 ![Sprite Colors](MoonPatrol.jpg)
 
+>>> binary 0000:roms/mpc-1.1f
+
 # Sprite Colors
 
 | ROM      | Size | Content  | Ofs  | CRC      | SHA1                                     |
@@ -18,7 +20,7 @@ near-black, red/violet, and turquoise.
 
 The color 0C (purple) is not referenced by any color set.
 
-```plainCode
+```code
 ;          R  G  B
 0000: 00 ;           ---- transparent
 0001: 01 ; 00 00 1A  <FONT style="BACKGROUND-COLOR:#00001A">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> near black
