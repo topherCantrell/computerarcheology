@@ -4,7 +4,7 @@
 
 >>> cpu 6809
 
->>> binary 0600:rom/pyramid.bin
+>>> binary 0600:roms/pyramid.bin
 
 >>> memoryTable ram 
 [RAM Usage](RAMUse.md)

@@ -4,7 +4,7 @@
 
 >>> cpu 6809
 
->>> binary 0300:madness.bin
+>>> binary 0300:roms/madness.bin
 
 >>> memoryTable ram 
 [RAM Usage](RAMUse.md)

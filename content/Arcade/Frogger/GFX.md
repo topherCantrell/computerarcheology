@@ -1,5 +1,7 @@
 ![Frogger Graphics ROM](Frogger.jpg)
 
+>>> binary 0000:roms/frogger.607 + roms/frogger.606*swap(0,1)
+
 # Frogger Graphics ROM
 
 Tiles are 8x8 pixels. Each pixel is 2-bits (4 colors) chosen from a palette.
@@ -727,7 +729,7 @@ This is the order of all the tiles above in the ROM.
 
 TODO show the character "1" completely decoded and rotated.
 
-```plainCode
+```code
 0000: 38 7C C2 82 86 7C 38 00 02 02 FE FE 42 02 00 00
 0010: 62 F2 BA 9A 9E CE 46 00 8C DE F2 B2 92 86 04 00
 0020: 08 FE FE C8 68 38 18 00 1C BE A2 A2 A2 E6 E4 00

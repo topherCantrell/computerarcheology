@@ -4,7 +4,7 @@
 
 >>> cpu Z80
 
->>> binary 0000:frogger.608*swap(0,1) + frogger.609 + frogger.610
+>>> binary 0000:roms/frogger.608*swap(0,1) + roms/frogger.609 + roms/frogger.610
 
 >>> memoryTable hard 
 [Hardware Info](SoundHardware.md)

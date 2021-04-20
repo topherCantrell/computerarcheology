@@ -4,7 +4,7 @@
 
 >>> cpu 6809
 
->>> binary 0600:RaakaTu.bin
+>>> binary 0600:roms/RaakaTu.bin
 
 >>> memoryTable ram 
 [RAM Usage](RAMUse.md)

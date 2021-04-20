@@ -4,7 +4,7 @@
 
 >>> cpu Z80
 
->>> binary 0000:invaders.h + invaders.g + invaders.f.diag + invaders.e
+>>> binary 0000:roms/invaders.h + roms/invaders.g + roms/invaders.f.diag + roms/invaders.e
 
 >>> memoryTable hard 
 [Hardware Info](Hardware.md)

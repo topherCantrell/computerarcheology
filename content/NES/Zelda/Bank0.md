@@ -4,7 +4,7 @@
 
 >>> cpu 6502
 
->>> binary 8000:Zelda.nes[0010:4010]
+>>> binary 8000:roms/Zelda.nes[0010:4010]
 
 >>> memoryTable ram 
 [RAM Usage](RAMUse.md)

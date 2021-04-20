@@ -4,7 +4,7 @@
 
 >>> cpu 6809
 
->>> binary C000:Analyzer.rom
+>>> binary C000:roms/Analyzer.rom
 
 >>> memoryTable ram 
 [RAM Usage](RAMUse.md)

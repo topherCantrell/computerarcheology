@@ -4,7 +4,7 @@
 
 >>> cpu 6809
 
->>> binary C000:daggorath.bin
+>>> binary C000:roms/daggorath.bin
 
 >>> memoryTable ram 
 [RAM Usage](RAMUse.md)

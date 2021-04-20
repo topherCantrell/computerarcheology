@@ -4,7 +4,7 @@
 
 >>> cpu DVG
 
->>> binary 0800:035127.02
+>>> binary 0800:roms/035127.02
 
 ```html
 <script src="/Arcade/Asteroids/VectorROM.js"></script>

@@ -4,7 +4,7 @@
 
 >>> cpu 6502
 
->>> binary 6800:035145.02 + 035144.02 + 035143.02 
+>>> binary 6800:roms/035145.02 + roms/035144.02 + roms/035143.02 
 
 >>> memoryTable ram 
 [RAM Usage](RAMUse.md)

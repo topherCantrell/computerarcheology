@@ -4,7 +4,7 @@
 
 >>> cpu Z80
 
->>> binary 0000:frogger.26 + frogger.27 + frsm3.7
+>>> binary 0000:roms/frogger.26 + roms/frogger.27 + roms/frsm3.7
 
 >>> memoryTable hard 
 [Hardware Info](Hardware.md)

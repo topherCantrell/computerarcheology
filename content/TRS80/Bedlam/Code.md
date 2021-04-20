@@ -4,7 +4,7 @@
 
 >>> cpu Z80
 
->>> binary 4300:BEDLAM.bin
+>>> binary 4300:roms/BEDLAM.bin
 
 >>> memoryTable ram 
 [RAM Usage](RAMUse.md)

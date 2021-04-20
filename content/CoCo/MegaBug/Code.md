@@ -4,7 +4,7 @@
 
 >>> cpu 6809
 
->>> binary C000:MegaBug.bin
+>>> binary C000:roms/MegaBug.bin
 
 >>> memoryTable ram 
 [RAM Usage](RAMUse.md)

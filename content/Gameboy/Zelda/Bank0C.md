@@ -4,7 +4,7 @@
 
 >>> cpu Z80GB
 
->>> binary 4000:zelda.gb[30000:34000]
+>>> binary 4000:roms/zelda.gb[30000:34000]
 
 >>> memoryTable ram 
 [RAM Usage](RAMUse.md)

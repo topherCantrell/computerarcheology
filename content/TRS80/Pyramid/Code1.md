@@ -4,7 +4,7 @@
 
 >>> cpu Z80
 
->>> binary 4200:rom/Pyramid1.bin
+>>> binary 4200:roms/Pyramid1.bin
 
 >>> memoryTable ram 
 [RAM Usage](RAMUse1.md)
