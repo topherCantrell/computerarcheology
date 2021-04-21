@@ -10,6 +10,18 @@ def load_raw_lines(fname):
     return ret
 
 
+def write_markdown_file(fname, md):
+    with open(fname, 'w') as f:
+        for para in md:
+            para_type = para[0]
+            if para_type in ['TEXT', 'HEADER', 'META', 'LIST', 'TABLE', 'BLOCK']:
+                for p in para[1:]:
+                    f.write(p + '\n')
+                f.write('\n')
+            else:
+                raise Exception('Unknown markdown paragraph type: ' + para_type)
+
+
 def _add_through(ret, data, pos, st):
     endpos = len(data)
     ret[-1].append(data[pos])
@@ -25,7 +37,7 @@ def _add_through(ret, data, pos, st):
 
 
 def _read_block(ret, data, pos):
-    #print('START BLOCK LINE ' + str(pos + 1))
+    # print('START BLOCK LINE ' + str(pos + 1))
     start = pos
     ret.append(['BLOCK', data[pos]])
     pos += 1

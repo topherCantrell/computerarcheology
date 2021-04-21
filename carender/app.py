@@ -46,7 +46,7 @@ def deploy_directory(current_node):
                 shutil.copy(src, dst)
             else:
                 
-                names_in_code.update_names_in_code(src, fp_content)
+                names_in_code.update_names_in_code(fp_content, da)
                 
                 paras = markdown.read_markdown_paragraphs(src)
                 

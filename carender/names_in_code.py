@@ -15,6 +15,8 @@ Tags of the form "{-}" tell the code to override the "is a name opcode".
   LDB  $4000     ; {-}
 '''
 
+import os
+
 import opcodetools.cpu.cpu_manager
 
 import cacode
@@ -22,14 +24,10 @@ import cainfo
 import markdown
 
 
-def update_names_in_code(filename, directory):
-
-    # if 'Gameboy' in directory:
-    #    # TODO lots of work
-    #    return
+def update_names_in_code(directory, filename):
 
     # Load the markdown file
-    md = markdown.read_markdown_paragraphs(filename)
+    md = markdown.read_markdown_paragraphs(os.path.join(directory, filename))
 
     # Get the code info
 
@@ -60,30 +58,53 @@ def update_names_in_code(filename, directory):
             raise Exception('First binary difference at ' + hex(i) + ' ' + hex(binary_md[i]) + ' ' + hex(binary_org[i]))
 
     # Find the opcodes for all the disassembly lines
-
+        
     line_details = []
     for line in lines:
-        parts = cacode.split_disassembly_line(line)
+        parts = cacode.split_disassembly_line(line)        
         opcode = None
         if parts['opcode']:
+            a = parts['opcode']
+            i = a.find(' ')
+            if i >= 0:
+                a = a[0:i]           
             opcode = cpu.find_opcodes_for_binary(parts['data'], True)
             if not opcode:
                 raise Exception('No opcode found: ' + line)
-            # if len(opcode) > 1:
-            #    for o in opcode:
-            #        print(o.mnemonic)
-            #    raise Exception('Multiple opcodes found: ' + line)
+            if len(opcode) > 1:                
+                mop = None
+                for o in opcode:
+                    if o.mnemonic.startswith(a):
+                        mop = o
+                        break
+                if not mop:                       
+                    raise Exception('Multiple opcode matches found: ' + line)
+                opcode = [mop]
+            
             opcode = opcode[0]
+            
+            # A sanity check to make sure we aren't mangling things
             
             a = opcode.mnemonic.split()
             b = parts['opcode'].split()
             if a[0] != b[0]:
-                # TODO
-                if b[0] != 'BCS' and b[0] != 'ASLB' and b[0] != 'BCC' and b[0] != 'LBCC' and b[0] != 'LBCS' and b[0] != 'LSLA' and b[0] != 'LSLB' and b[0] != 'LSL'  and b[0] != 'ASL':
-                    raise Exception('Check on opcode: ' + str(parts) + ' ' + str(opcode.mnemonic))
+                raise Exception('Check on opcode: ' + str(parts) + ' ' + str(opcode.mnemonic))            
             
         line_details.append([line, parts, opcode])
+        spacing = cpu.get_field_spacing()
+        
+    # TODO Time for the magic
+    
+    # Build a map of address->modifiedLine and then at the end when we are writing
+    # out the md, use the map to replace lines in code blocks
+    
+    # TODO markdown module needs a "write" function
+    
+    # for line in line_details:
+    #    print(line[0])
+    
+    markdown.write_markdown_file('../content/arcade/spaceinvaders/test.md', md)
 
 
 if __name__ == '__main__':
-    update_names_in_code('../content/arcade/spaceinvaders/code.md', '../content/arcade/spaceinvaders')
+    update_names_in_code('../content/arcade/spaceinvaders', 'code.md')
