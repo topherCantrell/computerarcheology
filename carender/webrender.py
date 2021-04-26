@@ -274,9 +274,6 @@ def _render_code_line(line, code_anchors, tables):
 
     # Now to process special comments in the second part.
     
-    if 'BACKGROUND-COLOR' in second_part:
-        print('here')
-
     new_second = ''
     while second_part:
         i = second_part.find('`')
