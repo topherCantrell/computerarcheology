@@ -22,11 +22,15 @@ in the July 1983 issue of TRS-80 Microcomputer News.
 
 No. That is not me on the cover.
 
+```html
+<p>
 <img src="CoverTRS80News.jpg" height="500"></img>
-
+</p><p>
 <img src="BullsEye1.jpg" height="500"></img>
-
+</p><p>
 <img src="BullsEye2.jpg" height="500"></img>
+</p>
+```
 
 # Animal House
 
@@ -36,23 +40,27 @@ rewritten.
 
 No, that is not me on the cover.
 
+```html
+<p>
 <img src="Cover80Micro.jpg" height="500"></img>
-
+</p><p>
 <img src="Animal1.jpg" height="500"></img>
-
+</p><p>
 <img src="Animal2.jpg" height="500"></img>
-
+</p><p>
 <img src="Animal3.jpg" height="500"></img>
-
+</p>
+```
 
 # DOS Commander
 
 In June of 1986 80 Micro purchased my article/code "DOS Commander" for $50. But the magazine dropped
 coverage of the Color Computer shortly after. My article never made it to print.
 
+```html
+<p>
 <img src="DOS1.jpg" height="500"></img>
-
+</p><p>
 <img src="DOS2.jpg" height="500"></img>
-
-
-
+</p>
+```

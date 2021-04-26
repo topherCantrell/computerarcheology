@@ -1,6 +1,7 @@
 ![Sound Code](MoonPatrol.jpg)
 
 # Sound Code
+
 >>> cpu 6803
 
 >>> binary F000:roms/mp-s1.1a
@@ -10,9 +11,11 @@
 | mp-s1.1a | 4096 | sound    | 7000 | 561d3108 | 4998c68a9e9a8002251fa8f07aa1082444a9dc80 |
 
 >>> memoryTable hard 
+
 [Hardware Info](SoundHardware.md)
 
 >>> memoryTable ram 
+
 [RAM Usage](SoundRAMUse.md)
 
 # DAC Explosion Samples
@@ -746,17 +749,17 @@ FAE7: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 START: 
 ;  IRQ2, SWI, and RESET
 ; 
-FB00: 0F          SEI                             ;  Turn interrupts off
-FB01: 8E 00 FF    LDS     #$00FF                  ;  Set stack pointer
-FB04: BD FC 98    JSR     $FC98                   ;  Clear memory and configure internal ports
-FB07: 86 BF       LDA     #$BF                    ;  10_111_111 (no tones, no noise)
-FB09: C6 07       LDB     #$07                    ;  Configure I/O and all sound off
-FB0B: BD FC D8    JSR     $FCD8                   ;  Write value A to AY register B (no delay during write)
-FB0E: 86 13       LDA     #$13                    ;  0001_0011 (Chip status)
-FB10: C6 0F       LDB     #$0F                    ;  Ouput port
-FB12: BD FC D8    JSR     $FCD8                   ;  Write value A to AY register B (no delay during write)
-FB15: BD FC AD    JSR     $FCAD                   ;  Reset all sounds/scripts
-FB18: 7F 90 00    CLR     $9000                   ;{-2_WATCHDOG}  ??watchdog??
+FB00: 0F              SEI                         ; Turn interrupts off
+FB01: 8E 00 FF        LDS     #$00FF              ; Set stack pointer
+FB04: BD FC 98        JSR     $FC98               ; {} Clear memory and configure internal ports
+FB07: 86 BF           LDA     #$BF                ; 10_111_111 (no tones, no noise)
+FB09: C6 07           LDB     #$07                ; Configure I/O and all sound off
+FB0B: BD FC D8        JSR     $FCD8               ; {} Write value A to AY register B (no delay during write)
+FB0E: 86 13           LDA     #$13                ; 0001_0011 (Chip status)
+FB10: C6 0F           LDB     #$0F                ; Ouput port
+FB12: BD FC D8        JSR     $FCD8               ; {} Write value A to AY register B (no delay during write)
+FB15: BD FC AD        JSR     $FCAD               ; {} Reset all sounds/scripts
+FB18: 7F 90 00        CLR     $9000               ; {hard.IRQ_ACK}  ??watchdog??
 ```
 
 # Sound Loop
@@ -765,101 +768,101 @@ FB18: 7F 90 00    CLR     $9000                   ;{-2_WATCHDOG}  ??watchdog??
 SoundLoop: 
 ;  * Main sound loop
 ; 
-FB1B: 0F          SEI                             ;  Turn interrupts off
-FB1C: BD FC 48    JSR     $FC48                   ;  Count down script times and volumes
-FB1F: 96 BC       LDA     $BC                     ;{-1_sndCmd}  Sound command read by IRQ1
-FB21: 2B 07       BMI     $FB2A                   ;  Nothing to do ... skip
+FB1B: 0F              SEI                         ; Turn interrupts off
+FB1C: BD FC 48        JSR     $FC48               ; {} Count down script times and volumes
+FB1F: 96 BC           LDA     $BC                 ; {ram.sndCmd}  Sound command read by IRQ1
+FB21: 2B 07           BMI     $FB2A               ; {} Nothing to do ... skip
 
-FB23: BD FE E1    JSR     $FEE1                   ;  Handle sound command from main program
-FB26: 86 FF       LDA     #$FF                    ;  Command ...
-FB28: 97 BC       STA     $BC                     ;{-1_sndCmd}  ... processed
+FB23: BD FE E1        JSR     $FEE1               ; {} Handle sound command from main program
+FB26: 86 FF           LDA     #$FF                ; Command ...
+FB28: 97 BC           STA     $BC                 ; {ram.sndCmd}  ... processed
 
-FB2A: 0E          CLI                             ;  Turn interrupts on
+FB2A: 0E              CLI                         ; Turn interrupts on
 
-FB2B: CE 00 00    LDX     #$0000                  ;  Voice number 0
-FB2E: DF D1       STX     $D1                     ;{-1_curVoice}  Start with voice 0
-FB30: 96 80       LDA     $80                     ;{-1_seqV0}  Time for voice 0?
-FB32: 26 0B       BNE     $FB3F                   ;  No ... move on
-FB34: DE 84       LDX     $84                     ;{-1_seqPtr1}  Get sequence 0 pointer
-FB36: D6 8C       LDB     $8C                     ;{-1_seq1CmdType}  Command type running on sequencer 0
-FB38: BD FD DC    JSR     $FDDC                   ;  Process sequence 0
-FB3B: DF 84       STX     $84                     ;{-1_seqPtr1}  Store new sequence pointer
-FB3D: 97 80       STA     $80                     ;{-1_seqV0}  Store new countdown timer
+FB2B: CE 00 00        LDX     #$0000              ; Voice number 0
+FB2E: DF D1           STX     $D1                 ; {ram.curVoice}  Start with voice 0
+FB30: 96 80           LDA     $80                 ; {ram.seqV0}  Time for voice 0?
+FB32: 26 0B           BNE     $FB3F               ; {} No ... move on
+FB34: DE 84           LDX     $84                 ; {ram.seqPtr1}  Get sequence 0 pointer
+FB36: D6 8C           LDB     $8C                 ; {ram.seq1CmdType}  Command type running on sequencer 0
+FB38: BD FD DC        JSR     $FDDC               ; {} Process sequence 0
+FB3B: DF 84           STX     $84                 ; {ram.seqPtr1}  Store new sequence pointer
+FB3D: 97 80           STA     $80                 ; {ram.seqV0}  Store new countdown timer
 
-FB3F: 7C 00 D2    INC     $00D2                   ;{-1_curVoice}  For Voice 1
-FB42: 96 81       LDA     $81                     ;{-1_seqV0}
-FB44: 26 0B       BNE     $FB51                   ;
-FB46: DE 86       LDX     $86                     ;{-1_seqPtr2}
-FB48: D6 8D       LDB     $8D                     ;{-1_seq2CmdType}
-FB4A: BD FD DC    JSR     $FDDC                   ;
-FB4D: DF 86       STX     $86                     ;{-1_seqPtr2}
-FB4F: 97 81       STA     $81                     ;{-1_seqV0}
+FB3F: 7C 00 D2        INC     $00D2               ; {ram.curVoice+1} For Voice 1
+FB42: 96 81           LDA     $81                 ; {ram.seqV0}
+FB44: 26 0B           BNE     $FB51               ; {}
+FB46: DE 86           LDX     $86                 ; {ram.seqPtr2}
+FB48: D6 8D           LDB     $8D                 ; {ram.seq2CmdType}
+FB4A: BD FD DC        JSR     $FDDC               ; {}
+FB4D: DF 86           STX     $86                 ; {ram.seqPtr2}
+FB4F: 97 81           STA     $81                 ; {ram.seqV0}
 
-FB51: 7C 00 D2    INC     $00D2                   ;{-1_curVoice}  For Voice 2
-FB54: 96 82       LDA     $82                     ;{-1_seqV0}
-FB56: 26 0B       BNE     $FB63                   ;
-FB58: DE 88       LDX     $88                     ;{-1_seqPtr3}
-FB5A: D6 8E       LDB     $8E                     ;{-1_seq3CmdType}
-FB5C: BD FD DC    JSR     $FDDC                   ;
-FB5F: DF 88       STX     $88                     ;{-1_seqPtr3}
-FB61: 97 82       STA     $82                     ;{-1_seqV0}
+FB51: 7C 00 D2        INC     $00D2               ; {ram.curVoice+1} For Voice 2
+FB54: 96 82           LDA     $82                 ; {ram.seqV0}
+FB56: 26 0B           BNE     $FB63               ; {}
+FB58: DE 88           LDX     $88                 ; {ram.seqPtr3}
+FB5A: D6 8E           LDB     $8E                 ; {ram.seq3CmdType}
+FB5C: BD FD DC        JSR     $FDDC               ; {}
+FB5F: DF 88           STX     $88                 ; {ram.seqPtr3}
+FB61: 97 82           STA     $82                 ; {ram.seqV0}
 
-FB63: 7C 00 D2    INC     $00D2                   ;{-1_curVoice}  For Voice 3
-FB66: 96 83       LDA     $83                     ;{-1_seqV0}
-FB68: 26 0B       BNE     $FB75                   ;
-FB6A: DE 8A       LDX     $8A                     ;{-1_seqPtr4}
-FB6C: D6 8F       LDB     $8F                     ;{-1_seq4CmdType}
-FB6E: BD FD DC    JSR     $FDDC                   ;
-FB71: DF 8A       STX     $8A                     ;{-1_seqPtr4}
-FB73: 97 83       STA     $83                     ;{-1_seqV0}
+FB63: 7C 00 D2        INC     $00D2               ; {ram.curVoice+1} For Voice 3
+FB66: 96 83           LDA     $83                 ; {ram.seqV0}
+FB68: 26 0B           BNE     $FB75               ; {}
+FB6A: DE 8A           LDX     $8A                 ; {ram.seqPtr4}
+FB6C: D6 8F           LDB     $8F                 ; {ram.seq4CmdType}
+FB6E: BD FD DC        JSR     $FDDC               ; {}
+FB71: DF 8A           STX     $8A                 ; {ram.seqPtr4}
+FB73: 97 83           STA     $83                 ; {ram.seqV0}
 
-FB75: 96 A8       LDA     $A8                     ;{-1_volDec00}  Decrement volume 0-0 command
-FB77: 27 08       BEQ     $FB81                   ;  Nothing ... skip
-FB79: 7F 00 A8    CLR     $00A8                   ;{-1_volDec00}  Command taken
-FB7C: C6 08       LDB     #$08                    ;  Decrement volume register 1-0
-FB7E: BD FD 3A    JSR     $FD3A                   ;  Do it
-FB81: 96 A9       LDA     $A9                     ;{-1_volDec01}  Decrement volume 0-1 command
-FB83: 27 08       BEQ     $FB8D                   ;
-FB85: 7F 00 A9    CLR     $00A9                   ;{-1_volDec01}
-FB88: C6 09       LDB     #$09                    ;
-FB8A: BD FD 3A    JSR     $FD3A                   ;
-FB8D: 96 AA       LDA     $AA                     ;{-1_volDec02}  Decrement volume 0-2 command
-FB8F: 27 08       BEQ     $FB99                   ;
-FB91: 7F 00 AA    CLR     $00AA                   ;{-1_volDec02}
-FB94: C6 0A       LDB     #$0A                    ;
-FB96: BD FD 3A    JSR     $FD3A                   ;
-FB99: 96 AB       LDA     $AB                     ;{-1_volDec10}  Decrement volume 1-0 command
-FB9B: 27 08       BEQ     $FBA5                   ;
-FB9D: 7F 00 AB    CLR     $00AB                   ;{-1_volDec10}
-FBA0: C6 18       LDB     #$18                    ;
-FBA2: BD FD 53    JSR     $FD53                   ;
-FBA5: 96 AC       LDA     $AC                     ;{-1_volDec11}  Decrement volume 1-1 command
-FBA7: 27 08       BEQ     $FBB1                   ;
-FBA9: 7F 00 AC    CLR     $00AC                   ;{-1_volDec11}
-FBAC: C6 19       LDB     #$19                    ;
-FBAE: BD FD 53    JSR     $FD53                   ;
-FBB1: 96 AD       LDA     $AD                     ;{-1_volDec12}  Decrement volume 1-2 command
-FBB3: 27 08       BEQ     $FBBD                   ;
-FBB5: 7F 00 AD    CLR     $00AD                   ;{-1_volDec12}
-FBB8: C6 1A       LDB     #$1A                    ;
-FBBA: BD FD 53    JSR     $FD53                   ;
+FB75: 96 A8           LDA     $A8                 ; {ram.volDec00}  Decrement volume 0-0 command
+FB77: 27 08           BEQ     $FB81               ; {} Nothing ... skip
+FB79: 7F 00 A8        CLR     $00A8               ; {ram.volDec00}  Command taken
+FB7C: C6 08           LDB     #$08                ; Decrement volume register 1-0
+FB7E: BD FD 3A        JSR     $FD3A               ; {} Do it
+FB81: 96 A9           LDA     $A9                 ; {ram.volDec01}  Decrement volume 0-1 command
+FB83: 27 08           BEQ     $FB8D               ; {}
+FB85: 7F 00 A9        CLR     $00A9               ; {ram.volDec01}
+FB88: C6 09           LDB     #$09                ; 
+FB8A: BD FD 3A        JSR     $FD3A               ; {}
+FB8D: 96 AA           LDA     $AA                 ; {ram.volDec02}  Decrement volume 0-2 command
+FB8F: 27 08           BEQ     $FB99               ; {}
+FB91: 7F 00 AA        CLR     $00AA               ; {ram.volDec02}
+FB94: C6 0A           LDB     #$0A                ; 
+FB96: BD FD 3A        JSR     $FD3A               ; {}
+FB99: 96 AB           LDA     $AB                 ; {ram.volDec10}  Decrement volume 1-0 command
+FB9B: 27 08           BEQ     $FBA5               ; {}
+FB9D: 7F 00 AB        CLR     $00AB               ; {ram.volDec10}
+FBA0: C6 18           LDB     #$18                ; 
+FBA2: BD FD 53        JSR     $FD53               ; {}
+FBA5: 96 AC           LDA     $AC                 ; {ram.volDec11}  Decrement volume 1-1 command
+FBA7: 27 08           BEQ     $FBB1               ; {}
+FBA9: 7F 00 AC        CLR     $00AC               ; {ram.volDec11}
+FBAC: C6 19           LDB     #$19                ; 
+FBAE: BD FD 53        JSR     $FD53               ; {}
+FBB1: 96 AD           LDA     $AD                 ; {ram.volDec12}  Decrement volume 1-2 command
+FBB3: 27 08           BEQ     $FBBD               ; {}
+FBB5: 7F 00 AD        CLR     $00AD               ; {ram.volDec12}
+FBB8: C6 1A           LDB     #$1A                ; 
+FBBA: BD FD 53        JSR     $FD53               ; {}
 
-FBBD: 96 BE       LDA     $BE                     ;{-1_strmStatus}  Status of samplers
-FBBF: 16          TAB                             ;  Hold it
-FBC0: 9A D8       ORA     $D8                     ;{-1_brdStatus}  OR into board status
-FBC2: 0F          SEI                             ;  Disable interrupts
-FBC3: 97 D8       STA     $D8                     ;{-1_brdStatus}  New chip status
-FBC5: 54          LSRB                            ;  Is sampler 801 done?
-FBC6: 24 09       BCC     $FBD1                   ;  No ... let it run
-FBC8: D6 CB       LDB     $CB                     ;{-1_lastCmd}  Last sound command
-FBCA: C1 02       CMPB    #$02                    ;  Did we finish sound #2 ?
-FBCC: 26 03       BNE     $FBD1                   ;  No ... carry on
-FBCE: 5C          INCB                            ;  Fall into ...
-FBCF: D7 BC       STB     $BC                     ;{-1_sndCmd}  ... Sound command = 3
+FBBD: 96 BE           LDA     $BE                 ; {ram.strmStatus}  Status of samplers
+FBBF: 16              TAB                         ; Hold it
+FBC0: 9A D8           ORA     $D8                 ; {ram.brdStatus}  OR into board status
+FBC2: 0F              SEI                         ; Disable interrupts
+FBC3: 97 D8           STA     $D8                 ; {ram.brdStatus}  New chip status
+FBC5: 54              LSRB                        ; Is sampler 801 done?
+FBC6: 24 09           BCC     $FBD1               ; {} No ... let it run
+FBC8: D6 CB           LDB     $CB                 ; {ram.lastCmd}  Last sound command
+FBCA: C1 02           CMPB    #$02                ; Did we finish sound #2 ?
+FBCC: 26 03           BNE     $FBD1               ; {} No ... carry on
+FBCE: 5C              INCB                        ; Fall into ...
+FBCF: D7 BC           STB     $BC                 ; {ram.sndCmd}  ... Sound command = 3
 
-FBD1: C6 0F       LDB     #$0F                    ;  AY0 Output B
-FBD3: BD FC DE    JSR     $FCDE                   ;  Send back board status
-FBD6: 7E FB 1B    JMP     $FB1B                   ;{SoundLoop}  Back to top of music loop
+FBD1: C6 0F           LDB     #$0F                ; AY0 Output B
+FBD3: BD FC DE        JSR     $FCDE               ; {} Send back board status
+FBD6: 7E FB 1B        JMP     $FB1B               ; {code.SoundLoop}  Back to top of music loop
 ```
 
 # NMI Timer
@@ -871,117 +874,117 @@ NMITimer:
 ; This clock is driven by the MSM5205 chip requesting data. The MSM5205 is wired
 ; to pull samples at 4000Hz. This NMI handler runs at 4000Hz.
 ; 
-FBD9: 96 C1       LDA     $C1                     ;{-1_curSamp801}  Current value for 801
-FBDB: B7 08 01    STA     $0801                   ;{-2_SAMP_1}  4-bit sample
-FBDE: 96 C2       LDA     $C2                     ;{-1_curSamp802}  Current value for 802
-FBE0: B7 08 02    STA     $0802                   ;{-2_SAMP_2}  4-bit sample
-FBE3: 7C 00 BD    INC     $00BD                   ;{-1_nmiTick}  NMI counter
-FBE6: 96 BF       LDA     $BF                     ;{-1_nmiTick2}
-FBE8: 4C          INCA                            ;  Why not "INC BF" then "LDA BF" ? ...
-FBE9: 97 BF       STA     $BF                     ;{-1_nmiTick2}  ... Same number of bytes!
-FBEB: 44          LSRA                            ;  Odd or even?
-FBEC: 24 32       BCC     $FC20                   ;  Do this on even ticks
+FBD9: 96 C1           LDA     $C1                 ; {ram.curSamp801}  Current value for 801
+FBDB: B7 08 01        STA     $0801               ; {hard.SAMP_1}  4-bit sample
+FBDE: 96 C2           LDA     $C2                 ; {ram.curSamp802}  Current value for 802
+FBE0: B7 08 02        STA     $0802               ; {hard.SAMP_2}  4-bit sample
+FBE3: 7C 00 BD        INC     $00BD               ; {ram.nmiTick}  NMI counter
+FBE6: 96 BF           LDA     $BF                 ; {ram.nmiTick2}
+FBE8: 4C              INCA                        ; Why not "INC BF" then "LDA BF" ? ...
+FBE9: 97 BF           STA     $BF                 ; {ram.nmiTick2}  ... Same number of bytes!
+FBEB: 44              LSRA                        ; Odd or even?
+FBEC: 24 32           BCC     $FC20               ; {} Do this on even ticks
 
 ;  Odd NMI ticks
-FBEE: DE C3       LDX     $C3                     ;{-1_byteCnt801}  Decrement ...
-FBF0: 09          DEX                             ;  ... 801 counter
-FBF1: 27 1E       BEQ     $FC11                   ;  All done ... set bit 0 of BE and continue
-FBF3: DF C3       STX     $C3                     ;{-1_byteCnt801}  New counter
-FBF5: DE C7       LDX     $C7                     ;{-1_ptr801}  Pointer to bytes
-FBF7: A6 00       LDA     $00,X                   ;  Get next byte
-FBF9: 44          LSRA                            ;  Upper 4 bits
-FBFA: 44          LSRA                            ;
-FBFB: 44          LSRA                            ;
-FBFC: 44          LSRA                            ;
-FBFD: 97 C1       STA     $C1                     ;{-1_curSamp801}  Next value for 801
+FBEE: DE C3           LDX     $C3                 ; {ram.byteCnt801}  Decrement ...
+FBF0: 09              DEX                         ; ... 801 counter
+FBF1: 27 1E           BEQ     $FC11               ; {} All done ... set bit 0 of BE and continue
+FBF3: DF C3           STX     $C3                 ; {ram.byteCnt801}  New counter
+FBF5: DE C7           LDX     $C7                 ; {ram.ptr801}  Pointer to bytes
+FBF7: A6 00           LDA     $00,X               ; Get next byte
+FBF9: 44              LSRA                        ; Upper 4 bits
+FBFA: 44              LSRA                        ; 
+FBFB: 44              LSRA                        ; 
+FBFC: 44              LSRA                        ; 
+FBFD: 97 C1           STA     $C1                 ; {ram.curSamp801}  Next value for 801
 
-FBFF: DE C5       LDX     $C5                     ;{-1_byteCnt802}  Decrement ...
-FC01: 09          DEX                             ;  802 counter
-FC02: 27 15       BEQ     $FC19                   ;  All done ... set bit 1 of BE and out
-FC04: DF C5       STX     $C5                     ;{-1_byteCnt802}  New counter
-FC06: DE C9       LDX     $C9                     ;{-1_ptr802}  Pointer to bytes
-FC08: A6 00       LDA     $00,X                   ;  Get next byte
-FC0A: 44          LSRA                            ;  Upper 4 bits
-FC0B: 44          LSRA                            ;
-FC0C: 44          LSRA                            ;
-FC0D: 44          LSRA                            ;
-FC0E: 97 C2       STA     $C2                     ;{-1_curSamp802}  Next value for 802
-FC10: 3B          RTI                             
+FBFF: DE C5           LDX     $C5                 ; {ram.byteCnt802}  Decrement ...
+FC01: 09              DEX                         ; 802 counter
+FC02: 27 15           BEQ     $FC19               ; {} All done ... set bit 1 of BE and out
+FC04: DF C5           STX     $C5                 ; {ram.byteCnt802}  New counter
+FC06: DE C9           LDX     $C9                 ; {ram.ptr802}  Pointer to bytes
+FC08: A6 00           LDA     $00,X               ; Get next byte
+FC0A: 44              LSRA                        ; Upper 4 bits
+FC0B: 44              LSRA                        ; 
+FC0C: 44              LSRA                        ; 
+FC0D: 44              LSRA                        ; 
+FC0E: 97 C2           STA     $C2                 ; {ram.curSamp802}  Next value for 802
+FC10: 3B              RTI                         
 
-FC11: 86 01       LDA     #$01                    ;  Set bit 0 ...
-FC13: 9A BE       ORA     $BE                     ;{-1_strmStatus}  ... of ...
-FC15: 97 BE       STA     $BE                     ;{-1_strmStatus}  ... BE
-FC17: 20 E6       BRA     $FBFF                   ;  Continue with bit 1
+FC11: 86 01           LDA     #$01                ; Set bit 0 ...
+FC13: 9A BE           ORA     $BE                 ; {ram.strmStatus}  ... of ...
+FC15: 97 BE           STA     $BE                 ; {ram.strmStatus}  ... BE
+FC17: 20 E6           BRA     $FBFF               ; {} Continue with bit 1
 
-FC19: 86 02       LDA     #$02                    ;  Set bit 1 ...
-FC1B: 9A BE       ORA     $BE                     ;{-1_strmStatus}  ... of ...
-FC1D: 97 BE       STA     $BE                     ;{-1_strmStatus}  ... BE
-FC1F: 3B          RTI                             ;  NMI out
+FC19: 86 02           LDA     #$02                ; Set bit 1 ...
+FC1B: 9A BE           ORA     $BE                 ; {ram.strmStatus}  ... of ...
+FC1D: 97 BE           STA     $BE                 ; {ram.strmStatus}  ... BE
+FC1F: 3B              RTI                         ; NMI out
 
 ;  Even NMI ticks
-FC20: 96 C7       LDA     $C7                     ;{-1_ptr801}  801 pointer
-FC22: 81 A0       CMPA    #$A0                    ;  Pointer less than A0xx? (Hardware supports up to 24K ROM)
-FC24: 25 09       BCS     $FC2F                   ;  Yes ... hold last value (Invalid pointer)
-FC26: DE C7       LDX     $C7                     ;{-1_ptr801}  801 pointer
-FC28: A6 00       LDA     $00,X                   ;  Get value
-FC2A: 97 C1       STA     $C1                     ;{-1_curSamp801}  Next value for 801 (lower 4 bits)
-FC2C: 08          INX                             ;  Next sample
-FC2D: DF C7       STX     $C7                     ;{-1_ptr801}  Save pointer
+FC20: 96 C7           LDA     $C7                 ; {ram.ptr801}  801 pointer
+FC22: 81 A0           CMPA    #$A0                ; Pointer less than A0xx? (Hardware supports up to 24K ROM)
+FC24: 25 09           BCS     $FC2F               ; {} Yes ... hold last value (Invalid pointer)
+FC26: DE C7           LDX     $C7                 ; {ram.ptr801}  801 pointer
+FC28: A6 00           LDA     $00,X               ; Get value
+FC2A: 97 C1           STA     $C1                 ; {ram.curSamp801}  Next value for 801 (lower 4 bits)
+FC2C: 08              INX                         ; Next sample
+FC2D: DF C7           STX     $C7                 ; {ram.ptr801}  Save pointer
 
-FC2F: 96 C9       LDA     $C9                     ;{-1_ptr802}  802 pointer
-FC31: 81 A0       CMPA    #$A0                    ;  Pointer less than A0xx?
-FC33: 25 09       BCS     $FC3E                   ;  Yes ... hold last value
-FC35: DE C9       LDX     $C9                     ;{-1_ptr802}  802 pointer
-FC37: A6 00       LDA     $00,X                   ;  Get value
-FC39: 97 C2       STA     $C2                     ;{-1_curSamp802}  Next value for 802
-FC3B: 08          INX                             ;  Next sample
-FC3C: DF C9       STX     $C9                     ;{-1_ptr802}  Save pointer
+FC2F: 96 C9           LDA     $C9                 ; {ram.ptr802}  802 pointer
+FC31: 81 A0           CMPA    #$A0                ; Pointer less than A0xx?
+FC33: 25 09           BCS     $FC3E               ; {} Yes ... hold last value
+FC35: DE C9           LDX     $C9                 ; {ram.ptr802}  802 pointer
+FC37: A6 00           LDA     $00,X               ; Get value
+FC39: 97 C2           STA     $C2                 ; {ram.curSamp802}  Next value for 802
+FC3B: 08              INX                         ; Next sample
+FC3C: DF C9           STX     $C9                 ; {ram.ptr802}  Save pointer
 
-FC3E: 96 BF       LDA     $BF                     ;{-1_nmiTick2}  On tick zzzz0000 ...
-FC40: 84 0E       ANDA    #$0E                    ;  ... process AY sound
-FC42: 26 CC       BNE     $FC10                   ;  ...
-FC44: 7C 00 C0    INC     $00C0                   ;{-1_sndProcTmr}  ...
-FC47: 3B          RTI                             ;  NMI out
+FC3E: 96 BF           LDA     $BF                 ; {ram.nmiTick2}  On tick zzzz0000 ...
+FC40: 84 0E           ANDA    #$0E                ; ... process AY sound
+FC42: 26 CC           BNE     $FC10               ; {} ...
+FC44: 7C 00 C0        INC     $00C0               ; {ram.sndProcTmr}  ...
+FC47: 3B              RTI                         ; NMI out
 
 
 ; The C0 flag gets set by the NMI handler at 4000/16 = 250Hz
 ;  * If processing sequence scripts, DECrement counters on each voice sequence
 ;    and lower the volume on the voices as requested.
 ; 
-FC48: 96 C0       LDA     $C0                     ;{-1_sndProcTmr}  Time for scripts?
-FC4A: 27 3E       BEQ     $FC8A                   ;  No ... skip
-FC4C: 7A 00 C0    DEC     $00C0                   ;{-1_sndProcTmr}  Script pass made
-FC4F: 96 80       LDA     $80                     ;{-1_seqV0}  Decrement 80 (voice 0 sequence counter) if active
-FC51: 27 06       BEQ     $FC59                   ;  0 ...
-FC53: 4C          INCA                            ;  ... or FF ...
-FC54: 27 03       BEQ     $FC59                   ;  ... don't DECrement
-FC56: 7A 00 80    DEC     $0080                   ;{-1_seqV0}
-FC59: 96 81       LDA     $81                     ;{-1_seqV0}  Decrement 81 (voice 1 sequence counter) if active
-FC5B: 27 06       BEQ     $FC63                   ;
-FC5D: 4C          INCA                            ;
-FC5E: 27 03       BEQ     $FC63                   ;
-FC60: 7A 00 81    DEC     $0081                   ;{-1_seqV0}
-FC63: 96 82       LDA     $82                     ;{-1_seqV0}  Decrement 82 (voice 2 sequence counter) if active
-FC65: 27 06       BEQ     $FC6D                   ;
-FC67: 4C          INCA                            ;
-FC68: 27 03       BEQ     $FC6D                   ;
-FC6A: 7A 00 82    DEC     $0082                   ;{-1_seqV0}
-FC6D: 96 83       LDA     $83                     ;{-1_seqV0}  Decrement 83 (voice 3 sequence counter) if active
-FC6F: 27 06       BEQ     $FC77                   ;
-FC71: 4C          INCA                            ;
-FC72: 27 03       BEQ     $FC77                   ;
-FC74: 7A 00 83    DEC     $0083                   ;{-1_seqV0}
-FC77: CE 00 06    LDX     #$0006                  ;  6 voices
-FC7A: A6 AD       LDA     $AD,X                   ;  Countdown timer for volume DECrease
-FC7C: 27 09       BEQ     $FC87                   ;  Not active ... skip
-FC7E: 4A          DECA                            ;  Time to DECrease volume?
-FC7F: 26 04       BNE     $FC85                   ;  No ... skip
-FC81: 6C A7       INC     $A7,X                   ;  Flag DECrement volume for voice
-FC83: A6 B3       LDA     $B3,X                   ;  Restore volume counter
-FC85: A7 AD       STA     $AD,X                   ;  Current counter
-FC87: 09          DEX                             ;  All voices?
-FC88: 26 F0       BNE     $FC7A                   ;  No ... do all
-FC8A: 39          RTS                             ;  Done
+FC48: 96 C0           LDA     $C0                 ; {ram.sndProcTmr}  Time for scripts?
+FC4A: 27 3E           BEQ     $FC8A               ; {} No ... skip
+FC4C: 7A 00 C0        DEC     $00C0               ; {ram.sndProcTmr}  Script pass made
+FC4F: 96 80           LDA     $80                 ; {ram.seqV0}  Decrement 80 (voice 0 sequence counter) if active
+FC51: 27 06           BEQ     $FC59               ; {} 0 ...
+FC53: 4C              INCA                        ; ... or FF ...
+FC54: 27 03           BEQ     $FC59               ; {} ... don't DECrement
+FC56: 7A 00 80        DEC     $0080               ; {ram.seqV0}
+FC59: 96 81           LDA     $81                 ; {ram.seqV0}  Decrement 81 (voice 1 sequence counter) if active
+FC5B: 27 06           BEQ     $FC63               ; {}
+FC5D: 4C              INCA                        ; 
+FC5E: 27 03           BEQ     $FC63               ; {}
+FC60: 7A 00 81        DEC     $0081               ; {ram.seqV0}
+FC63: 96 82           LDA     $82                 ; {ram.seqV0}  Decrement 82 (voice 2 sequence counter) if active
+FC65: 27 06           BEQ     $FC6D               ; {}
+FC67: 4C              INCA                        ; 
+FC68: 27 03           BEQ     $FC6D               ; {}
+FC6A: 7A 00 82        DEC     $0082               ; {ram.seqV0}
+FC6D: 96 83           LDA     $83                 ; {ram.seqV0}  Decrement 83 (voice 3 sequence counter) if active
+FC6F: 27 06           BEQ     $FC77               ; {}
+FC71: 4C              INCA                        ; 
+FC72: 27 03           BEQ     $FC77               ; {}
+FC74: 7A 00 83        DEC     $0083               ; {ram.seqV0}
+FC77: CE 00 06        LDX     #$0006              ; 6 voices
+FC7A: A6 AD           LDA     $AD,X               ; Countdown timer for volume DECrease
+FC7C: 27 09           BEQ     $FC87               ; {} Not active ... skip
+FC7E: 4A              DECA                        ; Time to DECrease volume?
+FC7F: 26 04           BNE     $FC85               ; {} No ... skip
+FC81: 6C A7           INC     $A7,X               ; Flag DECrement volume for voice
+FC83: A6 B3           LDA     $B3,X               ; Restore volume counter
+FC85: A7 AD           STA     $AD,X               ; Current counter
+FC87: 09              DEX                         ; All voices?
+FC88: 26 F0           BNE     $FC7A               ; {} No ... do all
+FC8A: 39              RTS                         ; Done
 ```
 
 # IRQ1 Command Request
@@ -995,149 +998,149 @@ IRQ1CommandRequest:
 ; memory $9xxx.
 ;  IRQ1
 ; 
-FC8B: B7 90 00    STA     $9000                   ;{-2_IRQ_ACK}  Release the IRQ line so it can fire again
-FC8E: C6 0E       LDB     #$0E                    ;  Read from ...
-FC90: BD FD 20    JSR     $FD20                   ;  ... I/O port A on AY chip 0
-FC93: 84 1F       ANDA    #$1F                    ;  Only lower 5 bits
-FC95: 97 BC       STA     $BC                     ;{-1_sndCmd}  Store sound command
-FC97: 3B          RTI                             
+FC8B: B7 90 00        STA     $9000               ; {hard.IRQ_ACK}  Release the IRQ line so it can fire again
+FC8E: C6 0E           LDB     #$0E                ; Read from ...
+FC90: BD FD 20        JSR     $FD20               ; {} ... I/O port A on AY chip 0
+FC93: 84 1F           ANDA    #$1F                ; Only lower 5 bits
+FC95: 97 BC           STA     $BC                 ; {ram.sndCmd}  Store sound command
+FC97: 3B              RTI                         
 
-FC98: CE FF FF    LDX     #$FFFF                  ;  Set DDR ...
-FC9B: DF 00       STX     $00                     ;{-2_DDR1}  ... ports 1 and 2 (outputs)
-FC9D: C6 4F       LDB     #$4F                    ;  4F bytes
-FC9F: 08          INX                             ;  0
-FCA0: 86 00       LDA     #$00                    ;  clear value
-FCA2: A7 80       STA     $80,X                   ;  Write byte to memory
-FCA4: 08          INX                             ;  Next in memory
-FCA5: 5A          DECB                            ;  All bytes
-FCA6: 26 FA       BNE     $FCA2                   ;  Do all bytes
-FCA8: 86 13       LDA     #$13                    ;  Initial chip status ...
-FCAA: 97 D8       STA     $D8                     ;{-1_brdStatus}  ... for return from command
-FCAC: 39          RTS                             ;  Done
+FC98: CE FF FF        LDX     #$FFFF              ; Set DDR ...
+FC9B: DF 00           STX     $00                 ; {hard.DDR1}  ... ports 1 and 2 (outputs)
+FC9D: C6 4F           LDB     #$4F                ; 4F bytes
+FC9F: 08              INX                         ; 0
+FCA0: 86 00           LDA     #$00                ; clear value
+FCA2: A7 80           STA     $80,X               ; Write byte to memory
+FCA4: 08              INX                         ; Next in memory
+FCA5: 5A              DECB                        ; All bytes
+FCA6: 26 FA           BNE     $FCA2               ; {} Do all bytes
+FCA8: 86 13           LDA     #$13                ; Initial chip status ...
+FCAA: 97 D8           STA     $D8                 ; {ram.brdStatus}  ... for return from command
+FCAC: 39              RTS                         ; Done
 
 ;  * Disable all sounds
 ; 
-FCAD: BD FC C3    JSR     $FCC3                   ;  All sounds on AY0
-FCB0: 86 BF       LDA     #$BF                    ;  10_111_111
-FCB2: 97 BB       STA     $BB                     ;{-1_curMix1}  Mixer ... all sounds turned off
-FCB4: C6 FF       LDB     #$FF                    ;  FF
+FCAD: BD FC C3        JSR     $FCC3               ; {} All sounds on AY0
+FCB0: 86 BF           LDA     #$BF                ; 10_111_111
+FCB2: 97 BB           STA     $BB                 ; {ram.curMix1}  Mixer ... all sounds turned off
+FCB4: C6 FF           LDB     #$FF                ; FF
 ;BUG3 {*BUG3}
 ; What about seqnecer 3? It is tied to AY1 too.
-FCB6: D7 82       STB     $82                     ;{-1_seqV0}  Voice sequence 2 off
-FCB8: D7 B1       STB     $B1                     ;{-1_volCnt10}  Volume DEC counter AY1-0
-FCBA: D7 B2       STB     $B2                     ;{-1_volCnt11}  Volume DEC counter AY1-1
-FCBC: D7 B3       STB     $B3                     ;{-1_volCnt12}  Volume DEC counter AY1-2
-FCBE: C6 17       LDB     #$17                    ;  10_111_111
-FCC0: 7E FC DE    JMP     $FCDE                   ;  Write value A to AY register B
+FCB6: D7 82           STB     $82                 ; {ram.seqV0}  Voice sequence 2 off
+FCB8: D7 B1           STB     $B1                 ; {ram.volCnt10}  Volume DEC counter AY1-0
+FCBA: D7 B2           STB     $B2                 ; {ram.volCnt11}  Volume DEC counter AY1-1
+FCBC: D7 B3           STB     $B3                 ; {ram.volCnt12}  Volume DEC counter AY1-2
+FCBE: C6 17           LDB     #$17                ; 10_111_111
+FCC0: 7E FC DE        JMP     $FCDE               ; {} Write value A to AY register B
 ; 
-FCC3: 86 BF       LDA     #$BF                    ;  10_111_111
-FCC5: 97 BA       STA     $BA                     ;{-1_curMix0}  Mixer ... all sounds turned off
-FCC7: C6 FF       LDB     #$FF                    ;  FF
-FCC9: D7 80       STB     $80                     ;{-1_seqV0}  Voice sequence 0 off
-FCCB: D7 81       STB     $81                     ;{-1_seqV0}  Voice sequence 1 off
-FCCD: D7 AE       STB     $AE                     ;{-1_volCnt00}  Volume DEC counter AY0-0
-FCCF: D7 AF       STB     $AF                     ;{-1_volCnt01}  Volume DEC counter AY0-1
-FCD1: D7 B0       STB     $B0                     ;{-1_volCnt02}  Volume DEC counter AY0-2
-FCD3: C6 07       LDB     #$07                    ;  10_111_111 (all channels off)
-FCD5: 7E FC DE    JMP     $FCDE                   ;  Write value A to AY register B and return
+FCC3: 86 BF           LDA     #$BF                ; 10_111_111
+FCC5: 97 BA           STA     $BA                 ; {ram.curMix0}  Mixer ... all sounds turned off
+FCC7: C6 FF           LDB     #$FF                ; FF
+FCC9: D7 80           STB     $80                 ; {ram.seqV0}  Voice sequence 0 off
+FCCB: D7 81           STB     $81                 ; {ram.seqV0}  Voice sequence 1 off
+FCCD: D7 AE           STB     $AE                 ; {ram.volCnt00}  Volume DEC counter AY0-0
+FCCF: D7 AF           STB     $AF                 ; {ram.volCnt01}  Volume DEC counter AY0-1
+FCD1: D7 B0           STB     $B0                 ; {ram.volCnt02}  Volume DEC counter AY0-2
+FCD3: C6 07           LDB     #$07                ; 10_111_111 (all channels off)
+FCD5: 7E FC DE        JMP     $FCDE               ; {} Write value A to AY register B and return
 
 ;  * Write value A to AY register B (no delay during write)
 ; 
-FCD8: 7C 00 BD    INC     $00BD                   ;{-1_nmiTick}  Set NMI counter (bypass waiting)
-FCDB: 20 04       BRA     $FCE1                   ;  Continue with write
+FCD8: 7C 00 BD        INC     $00BD               ; {ram.nmiTick}  Set NMI counter (bypass waiting)
+FCDB: 20 04           BRA     $FCE1               ; {} Continue with write
 
 ; * Write value A to AY register B (turn off interrupts)
 ; 
-FCDD: 0F          SEI                             ;  Disable interrupts
+FCDD: 0F              SEI                         ; Disable interrupts
 
 ; * Write value A to AY register B
 ; 
-FCDE: 7F 00 BD    CLR     $00BD                   ;{-1_nmiTick}  Clear NMI counter
-FCE1: 37          PSHB                            ;  Save B ... (address)
-FCE2: 36          PSHA                            ;  ... and A  (value)
-FCE3: C1 10       CMPB    #$10                    ;  2nd chip?
-FCE5: 2A 19       BPL     $FD00                   ;  Yes ... go
-FCE7: 86 0D       LDA     #$0D                    ;  0000_1011
-FCE9: 97 03       STA     $03                     ;{-2_PORT2}  Control lines
-FCEB: D7 02       STB     $02                     ;{-2_PORT1}  Address
-FCED: C6 08       LDB     #$08                    ;  0000_1000
-FCEF: D7 03       STB     $03                     ;{-2_PORT2}  Control lines
-FCF1: 5C          INCB                            ;  Bit 0 on
-FCF2: 32          PULA                            ;  Value
-FCF3: 97 02       STA     $02                     ;{-2_PORT1}  Write value
-FCF5: 96 BD       LDA     $BD                     ;{-1_nmiTick}  Wait ...
-FCF7: 27 FC       BEQ     $FCF5                   ;  ... for NMI counter
-FCF9: D7 03       STB     $03                     ;{-2_PORT2}  Store control
-FCFB: 5A          DECB                            ;  Clear bit 0
-FCFC: D7 03       STB     $03                     ;{-2_PORT2}  Store control
-FCFE: 33          PULB                            ;  Restore B
-FCFF: 39          RTS                             ;  Done
-FD00: 86 15       LDA     #$15                    ;  0001_0101
-FD02: 97 03       STA     $03                     ;{-2_PORT2}  Control lines
-FD04: C4 0F       ANDB    #$0F                    ;  Address 0-15
-FD06: D7 02       STB     $02                     ;{-2_PORT1}  Store address
-FD08: C6 10       LDB     #$10                    ;  0001_0000
-FD0A: 20 E3       BRA     $FCEF                   ;  Write value
-FD0C: 37          PSHB                            ;  Chip already selected
-FD0D: 20 E4       BRA     $FCF3                   ;  Wrie value to selected chip
-FD0F: 37          PSHB                            ;  Save B
-FD10: 86 15       LDA     #$15                    ;  0001_0101
-FD12: 97 03       STA     $03                     ;{-2_PORT2}  Chip 2 control lines
-FD14: C4 0F       ANDB    #$0F                    ;  Address 0-15
-FD16: D7 02       STB     $02                     ;{-2_PORT1}  Store address
-FD18: C6 14       LDB     #$14                    ;  0001_0100
-FD1A: 20 0D       BRA     $FD29                   ;  Continue read
+FCDE: 7F 00 BD        CLR     $00BD               ; {ram.nmiTick}  Clear NMI counter
+FCE1: 37              PSHB                        ; Save B ... (address)
+FCE2: 36              PSHA                        ; ... and A  (value)
+FCE3: C1 10           CMPB    #$10                ; 2nd chip?
+FCE5: 2A 19           BPL     $FD00               ; {} Yes ... go
+FCE7: 86 0D           LDA     #$0D                ; 0000_1011
+FCE9: 97 03           STA     $03                 ; {hard.PORT2}  Control lines
+FCEB: D7 02           STB     $02                 ; {hard.PORT1}  Address
+FCED: C6 08           LDB     #$08                ; 0000_1000
+FCEF: D7 03           STB     $03                 ; {hard.PORT2}  Control lines
+FCF1: 5C              INCB                        ; Bit 0 on
+FCF2: 32              PULA                        ; Value
+FCF3: 97 02           STA     $02                 ; {hard.PORT1}  Write value
+FCF5: 96 BD           LDA     $BD                 ; {ram.nmiTick}  Wait ...
+FCF7: 27 FC           BEQ     $FCF5               ; {} ... for NMI counter
+FCF9: D7 03           STB     $03                 ; {hard.PORT2}  Store control
+FCFB: 5A              DECB                        ; Clear bit 0
+FCFC: D7 03           STB     $03                 ; {hard.PORT2}  Store control
+FCFE: 33              PULB                        ; Restore B
+FCFF: 39              RTS                         ; Done
+FD00: 86 15           LDA     #$15                ; 0001_0101
+FD02: 97 03           STA     $03                 ; {hard.PORT2}  Control lines
+FD04: C4 0F           ANDB    #$0F                ; Address 0-15
+FD06: D7 02           STB     $02                 ; {hard.PORT1}  Store address
+FD08: C6 10           LDB     #$10                ; 0001_0000
+FD0A: 20 E3           BRA     $FCEF               ; {} Write value
+FD0C: 37              PSHB                        ; Chip already selected
+FD0D: 20 E4           BRA     $FCF3               ; {} Wrie value to selected chip
+FD0F: 37              PSHB                        ; Save B
+FD10: 86 15           LDA     #$15                ; 0001_0101
+FD12: 97 03           STA     $03                 ; {hard.PORT2}  Chip 2 control lines
+FD14: C4 0F           ANDB    #$0F                ; Address 0-15
+FD16: D7 02           STB     $02                 ; {hard.PORT1}  Store address
+FD18: C6 14           LDB     #$14                ; 0001_0100
+FD1A: 20 0D           BRA     $FD29               ; {} Continue read
 
 ; * Read AY register B into A
 ; 
-FD1C: C1 10       CMPB    #$10                    ;  Second chip?
-FD1E: 2A EF       BPL     $FD0F                   ;  Yes ... go handle
-FD20: 37          PSHB                            ;  Save B
-FD21: 86 0D       LDA     #$0D                    ;  0000_1011
-FD23: 97 03       STA     $03                     ;{-2_PORT2}  Chip 1 control lines
-FD25: D7 02       STB     $02                     ;{-2_PORT1}  Store address
-FD27: C6 0C       LDB     #$0C                    ;  0000_1010
-FD29: 4F          CLRA                            ;  0
-FD2A: 97 03       STA     $03                     ;{-2_PORT2}  Control lines
-FD2C: 97 00       STA     $00                     ;{-2_DDR1}  Port 2 now INPUTS
-FD2E: D7 03       STB     $03                     ;{-2_PORT2}  Control lines
-FD30: 96 02       LDA     $02                     ;{-2_PORT1}  Read from register
-FD32: 5F          CLRB                            ;  0
-FD33: D7 03       STB     $03                     ;{-2_PORT2}  Control lines
-FD35: 5A          DECB                            ;  FF
-FD36: D7 00       STB     $00                     ;{-2_DDR1}  Port 2 now OUTPUTS
-FD38: 33          PULB                            ;  Restore B
-FD39: 39          RTS                             ;  Done
+FD1C: C1 10           CMPB    #$10                ; Second chip?
+FD1E: 2A EF           BPL     $FD0F               ; {} Yes ... go handle
+FD20: 37              PSHB                        ; Save B
+FD21: 86 0D           LDA     #$0D                ; 0000_1011
+FD23: 97 03           STA     $03                 ; {hard.PORT2}  Chip 1 control lines
+FD25: D7 02           STB     $02                 ; {hard.PORT1}  Store address
+FD27: C6 0C           LDB     #$0C                ; 0000_1010
+FD29: 4F              CLRA                        ; 0
+FD2A: 97 03           STA     $03                 ; {hard.PORT2}  Control lines
+FD2C: 97 00           STA     $00                 ; {hard.DDR1}  Port 2 now INPUTS
+FD2E: D7 03           STB     $03                 ; {hard.PORT2}  Control lines
+FD30: 96 02           LDA     $02                 ; {hard.PORT1}  Read from register
+FD32: 5F              CLRB                        ; 0
+FD33: D7 03           STB     $03                 ; {hard.PORT2}  Control lines
+FD35: 5A              DECB                        ; FF
+FD36: D7 00           STB     $00                 ; {hard.DDR1}  Port 2 now OUTPUTS
+FD38: 33              PULB                        ; Restore B
+FD39: 39              RTS                         ; Done
 
 ; * Decrement AY chip 0 volume register B
 ; 
-FD3A: 0F          SEI                             ;  Disable interrupts
-FD3B: BD FD 20    JSR     $FD20                   ;  Read from port
-FD3E: C6 09       LDB     #$09                    ;  0000_1001 control
-FD40: 7F 00 BD    CLR     $00BD                   ;{-1_nmiTick}  Clear NMI counter
-FD43: 84 1F       ANDA    #$1F                    ;  Only 5 bits used in volume register
-FD45: 81 10       CMPA    #$10                    ;  M bit set? Auto-volume?
-FD47: 2A 08       BPL     $FD51                   ;  Yes ... ignore this request
-FD49: 4A          DECA                            ;  Decrement the volume
-FD4A: 81 07       CMPA    #$07                    ;  Less than 7?
-FD4C: 2B 03       BMI     $FD51                   ;  Yes ... low as we get. Ignore
-FD4E: BD FD 0C    JSR     $FD0C                   ;  Write the new volume value
-FD51: 0E          CLI                             ;  Enable interrupts
-FD52: 39          RTS                             ;  Done
+FD3A: 0F              SEI                         ; Disable interrupts
+FD3B: BD FD 20        JSR     $FD20               ; {} Read from port
+FD3E: C6 09           LDB     #$09                ; 0000_1001 control
+FD40: 7F 00 BD        CLR     $00BD               ; {ram.nmiTick}  Clear NMI counter
+FD43: 84 1F           ANDA    #$1F                ; Only 5 bits used in volume register
+FD45: 81 10           CMPA    #$10                ; M bit set? Auto-volume?
+FD47: 2A 08           BPL     $FD51               ; {} Yes ... ignore this request
+FD49: 4A              DECA                        ; Decrement the volume
+FD4A: 81 07           CMPA    #$07                ; Less than 7?
+FD4C: 2B 03           BMI     $FD51               ; {} Yes ... low as we get. Ignore
+FD4E: BD FD 0C        JSR     $FD0C               ; {} Write the new volume value
+FD51: 0E              CLI                         ; Enable interrupts
+FD52: 39              RTS                         ; Done
 
 ; * Decrement AY chip 1 volue register B
 ; 
-FD53: 0F          SEI                             ;  Disable interrupts
-FD54: BD FD 0F    JSR     $FD0F                   ;  Read Reg(B)->A
-FD57: C6 11       LDB     #$11                    ;  0001_0001 control
-FD59: 20 E5       BRA     $FD40                   ;  Continue with write volume value
+FD53: 0F              SEI                         ; Disable interrupts
+FD54: BD FD 0F        JSR     $FD0F               ; {} Read Reg(B)->A
+FD57: C6 11           LDB     #$11                ; 0001_0001 control
+FD59: 20 E5           BRA     $FD40               ; {} Continue with write volume value
 
 
 ;  Script command C0 - EF ( 5 or 6 bytes)
-FD5B: 17          TBA                             ;  Check lower ...
-FD5C: 84 0F       ANDA    #$0F                    ;  ... nibble
-FD5E: 81 08       CMPA    #$08                    ;  Greater or equal to 8?
-FD60: 2A 08       BPL     $FD6A                   ;{C_SWEEP_VOICE_PAIR}  Yes ... go sweep register-pair
+FD5B: 17              TBA                         ; Check lower ...
+FD5C: 84 0F           ANDA    #$0F                ; ... nibble
+FD5E: 81 08           CMPA    #$08                ; Greater or equal to 8?
+FD60: 2A 08           BPL     $FD6A               ; {code.C_SWEEP_VOICE_PAIR}  Yes ... go sweep register-pair
 ```
 
 # C_SWEEP_VOICE_REGISTER
@@ -1146,10 +1149,10 @@ FD60: 2A 08       BPL     $FD6A                   ;{C_SWEEP_VOICE_PAIR}  Yes ...
 C_SWEEP_VOICE_REGISTER: 
 ;  Add delta (I98) to current value (I94) and set-register
 ;  C0 - EF   110_r_0rrr CNT I94 I98 RVAL   
-FD62: A6 94       LDA     $94,X                   ;  Get current tone value
-FD64: AB 98       ADDA    $98,X                   ;  Add delta
-FD66: A7 94       STA     $94,X                   ;  Store current
-FD68: 20 67       BRA     $FDD1                   ;  Write current to register B (0-6) and return 4,x
+FD62: A6 94           LDA     $94,X               ; Get current tone value
+FD64: AB 98           ADDA    $98,X               ; Add delta
+FD66: A7 94           STA     $94,X               ; Store current
+FD68: 20 67           BRA     $FDD1               ; {} Write current to register B (0-6) and return 4,x
 ```
 
 # C_SWEEP_VOICE_PAIR
@@ -1159,17 +1162,17 @@ C_SWEEP_VOICE_PAIR:
 ; (Bug in code ... this function is never used)
 ;  Add delta (DELTA) to fine/coarse pair r0rrr and r0rrr+1. 
 ;  C0 - EF   110_r_1rrr CNT I94 I98 RVAL DELTA
-FD6A: CB 38       ADDB    #$38                    ;  Confusing way of getting rid of bit 3 in register value
-FD6C: DE CD       LDX     $CD                     ;{-1_curSeqPtr}  Script pointer
-FD6E: A6 05       LDA     $05,X                   ;  Delta value from script
-FD70: 36          PSHA                            ;  Hold delta (sign-check shortly)
-FD71: DE D1       LDX     $D1                     ;{-1_curVoice}  Voice number
-FD73: AB 94       ADDA    $94,X                   ;  Adjust ...
-FD75: A7 94       STA     $94,X                   ;  ... fine tone value
-FD77: 32          PULA                            ;  Original delta
-FD78: 2B 0C       BMI     $FD86                   ;  Handle decrementing
-FD7A: 24 02       BCC     $FD7E                   ;{BUG1}  No carry
-FD7C: 6C 98       INC     $98,X                   ;  Increment coarse tone
+FD6A: CB 38           ADDB    #$38                ; Confusing way of getting rid of bit 3 in register value
+FD6C: DE CD           LDX     $CD                 ; {ram.curSeqPtr}  Script pointer
+FD6E: A6 05           LDA     $05,X               ; Delta value from script
+FD70: 36              PSHA                        ; Hold delta (sign-check shortly)
+FD71: DE D1           LDX     $D1                 ; {ram.curVoice}  Voice number
+FD73: AB 94           ADDA    $94,X               ; Adjust ...
+FD75: A7 94           STA     $94,X               ; ... fine tone value
+FD77: 32              PULA                        ; Original delta
+FD78: 2B 0C           BMI     $FD86               ; {} Handle decrementing
+FD7A: 24 02           BCC     $FD7E               ; {code.BUG1}  No carry
+FD7C: 6C 98           INC     $98,X               ; Increment coarse tone
 ```
 
 # BUG 1
@@ -1182,42 +1185,42 @@ BUG1:
 ; to the fine register ... the DELTA value is always the FINE value.
 ; Good thing this command was never used!
 ;
-FD7E: BD FC DD    JSR     $FCDD                   ;  Write fine value to register B
-FD81: 5C          INCB                            ;  To coarse register
-FD82: A6 94       LDA     $94,X                   ;  Coarse value (SHOULD BE $98)
-FD84: 20 4B       BRA     $FDD1                   ;  Write coarse value to register B and return 4,x
+FD7E: BD FC DD        JSR     $FCDD               ; {} Write fine value to register B
+FD81: 5C              INCB                        ; To coarse register
+FD82: A6 94           LDA     $94,X               ; Coarse value (SHOULD BE $98)
+FD84: 20 4B           BRA     $FDD1               ; {} Write coarse value to register B and return 4,x
 
-FD86: 25 F6       BCS     $FD7E                   ;{BUG1}  Yes carry (we should get a carry until underflow)
-FD88: 6A 98       DEC     $98,X                   ;  Decrement coarse value
-FD8A: 20 F2       BRA     $FD7E                   ;{BUG1}  Do it
+FD86: 25 F6           BCS     $FD7E               ; {code.BUG1}  Yes carry (we should get a carry until underflow)
+FD88: 6A 98           DEC     $98,X               ; Decrement coarse value
+FD8A: 20 F2           BRA     $FD7E               ; {code.BUG1}  Do it
 
 ;  Skip over data of current series command and switch to command 0
-FD8C: 6F 8C       CLR     $8C,X                   ;  Script command 0
-FD8E: DE CD       LDX     $CD                     ;{-1_curSeqPtr}  Get the current sequence pointer
-FD90: C1 A0       CMPB    #$A0                    ;
-FD92: 2B 02       BMI     $FD96                   ;
-FD94: 08          INX                             ;  IF B>=A0 ... X=X+2
-FD95: 08          INX                             ;
-FD96: 08          INX                             ;  X=X+3
-FD97: 08          INX                             ;
-FD98: 08          INX                             ;
-FD99: C1 C0       CMPB    #$C0                    ;
-FD9B: 2B 08       BMI     $FDA5                   ;  IF B>=C0 && (A&0F>=8) ... X=X+1
-FD9D: 17          TBA                             ;
-FD9E: 84 0F       ANDA    #$0F                    ;
-FDA0: 81 08       CMPA    #$08                    ;
-FDA2: 2B 01       BMI     $FDA5                   ;
-FDA4: 08          INX                             ;
-FDA5: 86 01       LDA     #$01                    ;  Process again on next sequencer tick
-FDA7: 39          RTS                             ;  Done
+FD8C: 6F 8C           CLR     $8C,X               ; Script command 0
+FD8E: DE CD           LDX     $CD                 ; {ram.curSeqPtr}  Get the current sequence pointer
+FD90: C1 A0           CMPB    #$A0                ; 
+FD92: 2B 02           BMI     $FD96               ; {}
+FD94: 08              INX                         ; IF B>=A0 ... X=X+2
+FD95: 08              INX                         ; 
+FD96: 08              INX                         ; X=X+3
+FD97: 08              INX                         ; 
+FD98: 08              INX                         ; 
+FD99: C1 C0           CMPB    #$C0                ; 
+FD9B: 2B 08           BMI     $FDA5               ; {} IF B>=C0 && (A&0F>=8) ... X=X+1
+FD9D: 17              TBA                         ; 
+FD9E: 84 0F           ANDA    #$0F                ; 
+FDA0: 81 08           CMPA    #$08                ; 
+FDA2: 2B 01           BMI     $FDA5               ; {}
+FDA4: 08              INX                         ; 
+FDA5: 86 01           LDA     #$01                ; Process again on next sequencer tick
+FDA7: 39              RTS                         ; Done
 
 ;  Counted series commands
-FDA8: DF CD       STX     $CD                     ;{-1_curSeqPtr}  Hold the pointer
-FDAA: DE D1       LDX     $D1                     ;{-1_curVoice}  Get the voice number
-FDAC: 6A 90       DEC     $90,X                   ;  All done with this type of command?
-FDAE: 27 DC       BEQ     $FD8C                   ;  Yes ... move to next
-FDB0: C1 A0       CMPB    #$A0                    ;  Go if ...
-FDB2: 2A 10       BPL     $FDC4                   ;  ... A0 or above
+FDA8: DF CD           STX     $CD                 ; {ram.curSeqPtr}  Hold the pointer
+FDAA: DE D1           LDX     $D1                 ; {ram.curVoice}  Get the voice number
+FDAC: 6A 90           DEC     $90,X               ; All done with this type of command?
+FDAE: 27 DC           BEQ     $FD8C               ; {} Yes ... move to next
+FDB0: C1 A0           CMPB    #$A0                ; Go if ...
+FDB2: 2A 10           BPL     $FDC4               ; {} ... A0 or above
 ```
 
 # C_REGISTER_SAMPLES
@@ -1227,19 +1230,19 @@ C_REGISTER_SAMPLES:
 ;  Set the value of rrrrr to sI at regular intervals. CNT is the number of samples.
 ;  Always return RVAL.
 ;  80 - 9F   100_r_rrrr CNT RVAL s0 s1 s2 ... sN
-FDB4: C4 1F       ANDB    #$1F                    ;  Mask off register number
-FDB6: A6 94       LDA     $94,X                   ;  Get return value (time till next process)
-FDB8: 36          PSHA                            ;  Hold return
-FDB9: DE CD       LDX     $CD                     ;{-1_curSeqPtr}  Get back the pointer
-FDBB: A6 03       LDA     $03,X                   ;  Get value to write
-FDBD: BD FC DD    JSR     $FCDD                   ;  Write value A to AY register B (turn off interrupts)
-FDC0: 0E          CLI                             ;  Interrupts back on
-FDC1: 32          PULA                            ;  Restore A
-FDC2: 08          INX                             ;  Next in sample list
-FDC3: 39          RTS                             ;  Out
+FDB4: C4 1F           ANDB    #$1F                ; Mask off register number
+FDB6: A6 94           LDA     $94,X               ; Get return value (time till next process)
+FDB8: 36              PSHA                        ; Hold return
+FDB9: DE CD           LDX     $CD                 ; {ram.curSeqPtr}  Get back the pointer
+FDBB: A6 03           LDA     $03,X               ; Get value to write
+FDBD: BD FC DD        JSR     $FCDD               ; {} Write value A to AY register B (turn off interrupts)
+FDC0: 0E              CLI                         ; Interrupts back on
+FDC1: 32              PULA                        ; Restore A
+FDC2: 08              INX                         ; Next in sample list
+FDC3: 39              RTS                         ; Out
 
-FDC4: C1 C0       CMPB    #$C0                    ;  Go if ...
-FDC6: 2A 93       BPL     $FD5B                   ;  ... C0 or above
+FDC4: C1 C0           CMPB    #$C0                ; Go if ...
+FDC6: 2A 93           BPL     $FD5B               ; {} ... C0 or above
 ```
 
 # C_TOGGLE_REGISTER
@@ -1250,27 +1253,27 @@ C_TOGGLE_REGISTER:
 ;  Alternate writing I94 and I98.
 ;  Always return RVAL;
 ;  A0 - BF   101_r_rrrr CNT I94 I98 RVAL
-FDC8: A6 90       LDA     $90,X                   ;  Current count of commands
-FDCA: 44          LSRA                            ;  Lowest bit
-FDCB: A6 94       LDA     $94,X                   ;  Value
-FDCD: 25 02       BCS     $FDD1                   ;  Odd ... use value from 94
-FDCF: A6 98       LDA     $98,X                   ;  Even ... use value from 98
-FDD1: C4 1F       ANDB    #$1F                    ;  Mask off register number
-FDD3: BD FC DD    JSR     $FCDD                   ;  Write value A to AY register B (turn off interrupts)
-FDD6: 0E          CLI                             ;  Enable interrupts
-FDD7: DE CD       LDX     $CD                     ;{-1_curSeqPtr}  Restore X
-FDD9: A6 04       LDA     $04,X                   ;  Return value (count to next process)
-FDDB: 39          RTS                             ;  Out
+FDC8: A6 90           LDA     $90,X               ; Current count of commands
+FDCA: 44              LSRA                        ; Lowest bit
+FDCB: A6 94           LDA     $94,X               ; Value
+FDCD: 25 02           BCS     $FDD1               ; {} Odd ... use value from 94
+FDCF: A6 98           LDA     $98,X               ; Even ... use value from 98
+FDD1: C4 1F           ANDB    #$1F                ; Mask off register number
+FDD3: BD FC DD        JSR     $FCDD               ; {} Write value A to AY register B (turn off interrupts)
+FDD6: 0E              CLI                         ; Enable interrupts
+FDD7: DE CD           LDX     $CD                 ; {ram.curSeqPtr}  Restore X
+FDD9: A6 04           LDA     $04,X               ; Return value (count to next process)
+FDDB: 39              RTS                         ; Out
 ; 
 ;  * Process voice sequence. X=script pointer. B is ??process type??
 ;    Return X=new script pointer, A=count till next process
 ; 
-FDDC: 26 CA       BNE     $FDA8                   ;  Not script command zero
+FDDC: 26 CA           BNE     $FDA8               ; {} Not script command zero
 
-FDDE: DF CD       STX     $CD                     ;{-1_curSeqPtr}  Store new sequence pointer
-FDE0: E6 00       LDB     $00,X                   ;  Register number
-FDE2: 2A 03       BPL     $FDE7                   ;{SimpleCommands}  Go handle ...
-FDE4: 7E FE 93    JMP     $FE93                   ;  ... COMPLEX, STOP, CALL, RETURN
+FDDE: DF CD           STX     $CD                 ; {ram.curSeqPtr}  Store new sequence pointer
+FDE0: E6 00           LDB     $00,X               ; Register number
+FDE2: 2A 03           BPL     $FDE7               ; {code.SimpleCommands}  Go handle ...
+FDE4: 7E FE 93        JMP     $FE93               ; {} ... COMPLEX, STOP, CALL, RETURN
 ```
 
 # Simple Commands
@@ -1294,131 +1297,131 @@ SimpleCommands:
 ;
 ; VOLUME_DECAY_SPEED
 ;   0m1c_11vv NN     *RV    Set volume counter to reload value NN
-FDE7: C4 3F       ANDB    #$3F                    ;  Mask off the "multi" bit
-FDE9: C1 20       CMPB    #$20                    ;  Is it a single register command?
-FDEB: 2A 11       BPL     $FDFE                   ;  No ... go handle 3-voice command
+FDE7: C4 3F           ANDB    #$3F                ; Mask off the "multi" bit
+FDE9: C1 20           CMPB    #$20                ; Is it a single register command?
+FDEB: 2A 11           BPL     $FDFE               ; {} No ... go handle 3-voice command
 
-FDED: A6 01       LDA     $01,X                   ;  Get value
-FDEF: BD FC DD    JSR     $FCDD                   ;  Write value A to AY register B (turn off interrupts)
-FDF2: 0E          CLI                             ;  Interrupts on
-FDF3: E6 00       LDB     $00,X                   ;  Restore register value
-FDF5: 08          INX                             ;  Skip ...
-FDF6: 08          INX                             ;  ... two byte command
-FDF7: 58          ASLB                            ;  Repeat bit set?
-FDF8: 2B E4       BMI     $FDDE                   ;  Yes ... do another
-FDFA: A6 00       LDA     $00,X                   ;  Get return value
-FDFC: 08          INX                             ;  Point to next command
-FDFD: 39          RTS                             ;  Out
+FDED: A6 01           LDA     $01,X               ; Get value
+FDEF: BD FC DD        JSR     $FCDD               ; {} Write value A to AY register B (turn off interrupts)
+FDF2: 0E              CLI                         ; Interrupts on
+FDF3: E6 00           LDB     $00,X               ; Restore register value
+FDF5: 08              INX                         ; Skip ...
+FDF6: 08              INX                         ; ... two byte command
+FDF7: 58              ASLB                        ; Repeat bit set?
+FDF8: 2B E4           BMI     $FDDE               ; {} Yes ... do another
+FDFA: A6 00           LDA     $00,X               ; Get return value
+FDFC: 08              INX                         ; Point to next command
+FDFD: 39              RTS                         ; Out
 
-FDFE: C4 1F       ANDB    #$1F                    ;  Register value (0,16 or mixer)
-FE00: 17          TBA                             ;  To A
-FE01: 84 0F       ANDA    #$0F                    ;  Is it a valid chip register 0 (0 or 16)
-FE03: 26 31       BNE     $FE36                   ;  No ... MIXER or VOLUME
+FDFE: C4 1F           ANDB    #$1F                ; Register value (0,16 or mixer)
+FE00: 17              TBA                         ; To A
+FE01: 84 0F           ANDA    #$0F                ; Is it a valid chip register 0 (0 or 16)
+FE03: 26 31           BNE     $FE36               ; {} No ... MIXER or VOLUME
 ;  3-tone note
-FE05: A6 01       LDA     $01,X                   ;  Get the fine tone
-FE07: 97 CE       STA     $CE                     ;{-1_curSeqPtr}  Store it
-FE09: A6 02       LDA     $02,X                   ;  Get the coarse tone
-FE0B: 97 CD       STA     $CD                     ;{-1_curSeqPtr}  Store it
-FE0D: BD FE D4    JSR     $FED4                   ;  Write channel A tone
-FE10: DC CD       LDD     $CD                     ;{-1_curSeqPtr}  CE,CD ...
-FE12: 04          LSRD                            ;  ... divided by ...
-FE13: DD CD       STD     $CD                     ;{-1_curSeqPtr}  ... 2
-FE15: E6 00       LDB     $00,X                   ;  Original ...
-FE17: C4 1F       ANDB    #$1F                    ;  ... register
-FE19: 5C          INCB                            ;  Next ...
-FE1A: 5C          INCB                            ;  ... pair
-FE1B: BD FE D4    JSR     $FED4                   ;  Write channel B tone
-FE1E: 7C 00 CE    INC     $00CE                   ;{-1_curSeqPtr}  Increment ...
-FE21: 26 03       BNE     $FE26                   ;  ... word in ...
-FE23: 7C 00 CD    INC     $00CD                   ;{-1_curSeqPtr}  ... CE, CD
-FE26: BD FE D4    JSR     $FED4                   ;  Write channel C tone
-FE29: CB 07       ADDB    #$07                    ;  Envelope shape register
-FE2B: 86 09       LDA     #$09                    ;  Envelope shape cycle (CONT+HOLD)
-FE2D: BD FC DE    JSR     $FCDE                   ;  Write envelope shape
-FE30: 0E          CLI                             ;  Interrupts on
-FE31: E6 00       LDB     $00,X                   ;  Restore command (for repeats)
-FE33: 08          INX                             ;  Skip extra byte
-FE34: 20 BF       BRA     $FDF5                   ;  Skip 2 bytes and done
+FE05: A6 01           LDA     $01,X               ; Get the fine tone
+FE07: 97 CE           STA     $CE                 ; {ram.curSeqPtr+1} Store it
+FE09: A6 02           LDA     $02,X               ; Get the coarse tone
+FE0B: 97 CD           STA     $CD                 ; {ram.curSeqPtr}  Store it
+FE0D: BD FE D4        JSR     $FED4               ; {} Write channel A tone
+FE10: DC CD           LDD     $CD                 ; {ram.curSeqPtr}  CE,CD ...
+FE12: 04              LSRD                        ; ... divided by ...
+FE13: DD CD           STD     $CD                 ; {ram.curSeqPtr}  ... 2
+FE15: E6 00           LDB     $00,X               ; Original ...
+FE17: C4 1F           ANDB    #$1F                ; ... register
+FE19: 5C              INCB                        ; Next ...
+FE1A: 5C              INCB                        ; ... pair
+FE1B: BD FE D4        JSR     $FED4               ; {} Write channel B tone
+FE1E: 7C 00 CE        INC     $00CE               ; {ram.curSeqPtr+1} Increment ...
+FE21: 26 03           BNE     $FE26               ; {} ... word in ...
+FE23: 7C 00 CD        INC     $00CD               ; {ram.curSeqPtr}  ... CE, CD
+FE26: BD FE D4        JSR     $FED4               ; {} Write channel C tone
+FE29: CB 07           ADDB    #$07                ; Envelope shape register
+FE2B: 86 09           LDA     #$09                ; Envelope shape cycle (CONT+HOLD)
+FE2D: BD FC DE        JSR     $FCDE               ; {} Write envelope shape
+FE30: 0E              CLI                         ; Interrupts on
+FE31: E6 00           LDB     $00,X               ; Restore command (for repeats)
+FE33: 08              INX                         ; Skip extra byte
+FE34: 20 BF           BRA     $FDF5               ; {} Skip 2 bytes and done
 
-FE36: 80 08       SUBA    #$08                    ;  <8
-FE38: 2B 29       BMI     $FE63                   ;  Yes ... go to mixer command
+FE36: 80 08           SUBA    #$08                ; <8
+FE38: 2B 29           BMI     $FE63               ; {} Yes ... go to mixer command
 ;  Volume control
-FE3A: DD CF       STD     $CF                     ;{-1_tmpFreq}  Hold n&1F and (n&0F-8)
-FE3C: 84 03       ANDA    #$03                    ;  Complex encoding ...
-FE3E: C1 30       CMPB    #$30                    ;  ... for ...
-FE40: 2B 02       BMI     $FE44                   ;  ... sequencer ...
-FE42: 8B 03       ADDA    #$03                    ;  ... number
-FE44: 16          TAB                             ;  Sequencer number to B
-FE45: A6 01       LDA     $01,X                   ;  Get value
-FE47: CE 00 00    LDX     #$0000                  ;  Sequence number ...
-FE4A: 3A          ABX                             ;  ... to X
-FE4B: D6 CF       LDB     $CF                     ;{-1_tmpFreq}  Original A (remember already-8)
-FE4D: C1 04       CMPB    #$04                    ;  Set counter?
-FE4F: 2A 0B       BPL     $FE5C                   ;  Yes ... go set counter
+FE3A: DD CF           STD     $CF                 ; {ram.tmpFreq}  Hold n&1F and (n&0F-8)
+FE3C: 84 03           ANDA    #$03                ; Complex encoding ...
+FE3E: C1 30           CMPB    #$30                ; ... for ...
+FE40: 2B 02           BMI     $FE44               ; {} ... sequencer ...
+FE42: 8B 03           ADDA    #$03                ; ... number
+FE44: 16              TAB                         ; Sequencer number to B
+FE45: A6 01           LDA     $01,X               ; Get value
+FE47: CE 00 00        LDX     #$0000              ; Sequence number ...
+FE4A: 3A              ABX                         ; ... to X
+FE4B: D6 CF           LDB     $CF                 ; {ram.tmpFreq}  Original A (remember already-8)
+FE4D: C1 04           CMPB    #$04                ; Set counter?
+FE4F: 2A 0B           BPL     $FE5C               ; {} Yes ... go set counter
 ;  Reset volume dec counter and actual volume volume
-FE51: A6 B4       LDA     $B4,X                   ;  Get counter reload for volume on voice
-FE53: A7 AE       STA     $AE,X                   ;  Reset volume DEC counter
-FE55: DE CD       LDX     $CD                     ;{-1_curSeqPtr}  Restore script pointer
-FE57: D6 D0       LDB     $D0                     ;{-1_tmpFreq}  Original B (register)
-FE59: 7E FD ED    JMP     $FDED                   ;  Write from script to register and continue script
+FE51: A6 B4           LDA     $B4,X               ; Get counter reload for volume on voice
+FE53: A7 AE           STA     $AE,X               ; Reset volume DEC counter
+FE55: DE CD           LDX     $CD                 ; {ram.curSeqPtr}  Restore script pointer
+FE57: D6 D0           LDB     $D0                 ; {ram.tmpFreq+1} Original B (register)
+FE59: 7E FD ED        JMP     $FDED               ; {} Write from script to register and continue script
 ;  Set countreload for volume
-FE5C: A7 B4       STA     $B4,X                   ;  Counter reload for volume DEC on voice
-FE5E: DE CD       LDX     $CD                     ;{-1_curSeqPtr}  Restore script pointer
-FE60: 7E FD F3    JMP     $FDF3                   ;  Continue script
+FE5C: A7 B4           STA     $B4,X               ; Counter reload for volume DEC on voice
+FE5E: DE CD           LDX     $CD                 ; {ram.curSeqPtr}  Restore script pointer
+FE60: 7E FD F3        JMP     $FDF3               ; {} Continue script
 
 ;  Mixer control (AND or OR)
-FE63: 4C          INCA                            ;  FF = OR bits in mixer value
-FE64: 27 17       BEQ     $FE7D                   ;  Go OR
-FE66: 5C          INCB                            ;  6 becomes 7 ... mixer register
-FE67: C1 10       CMPB    #$10                    ;  AY1 chip?
-FE69: 2A 09       BPL     $FE74                   ;  Yes ... go
-FE6B: 96 BA       LDA     $BA                     ;{-1_curMix0}  Mixer value for AY0
-FE6D: A4 01       ANDA    $01,X                   ;  Turn bits off
-FE6F: 97 BA       STA     $BA                     ;{-1_curMix0}  New value
-FE71: 7E FD EF    JMP     $FDEF                   ;  Write mixer and continue script
+FE63: 4C              INCA                        ; FF = OR bits in mixer value
+FE64: 27 17           BEQ     $FE7D               ; {} Go OR
+FE66: 5C              INCB                        ; 6 becomes 7 ... mixer register
+FE67: C1 10           CMPB    #$10                ; AY1 chip?
+FE69: 2A 09           BPL     $FE74               ; {} Yes ... go
+FE6B: 96 BA           LDA     $BA                 ; {ram.curMix0}  Mixer value for AY0
+FE6D: A4 01           ANDA    $01,X               ; Turn bits off
+FE6F: 97 BA           STA     $BA                 ; {ram.curMix0}  New value
+FE71: 7E FD EF        JMP     $FDEF               ; {} Write mixer and continue script
 ; 
-FE74: 96 BB       LDA     $BB                     ;{-1_curMix1}  Mixer value for AY1
-FE76: A4 01       ANDA    $01,X                   ;  Turn bits off
-FE78: 97 BB       STA     $BB                     ;{-1_curMix1}  New value
-FE7A: 7E FD EF    JMP     $FDEF                   ;  Write mixer and continue script
+FE74: 96 BB           LDA     $BB                 ; {ram.curMix1}  Mixer value for AY1
+FE76: A4 01           ANDA    $01,X               ; Turn bits off
+FE78: 97 BB           STA     $BB                 ; {ram.curMix1}  New value
+FE7A: 7E FD EF        JMP     $FDEF               ; {} Write mixer and continue script
 ; 
-FE7D: C1 10       CMPB    #$10                    ;  AY1 chip?
-FE7F: 2A 09       BPL     $FE8A                   ;  Yes ... go
-FE81: 96 BA       LDA     $BA                     ;{-1_curMix0}  Mixer value for AY0
-FE83: AA 01       ORA     $01,X                   ;  Turn bits on
-FE85: 97 BA       STA     $BA                     ;{-1_curMix0}  New value
-FE87: 7E FD EF    JMP     $FDEF                   ;  Write mixer and continue script
+FE7D: C1 10           CMPB    #$10                ; AY1 chip?
+FE7F: 2A 09           BPL     $FE8A               ; {} Yes ... go
+FE81: 96 BA           LDA     $BA                 ; {ram.curMix0}  Mixer value for AY0
+FE83: AA 01           ORA     $01,X               ; Turn bits on
+FE85: 97 BA           STA     $BA                 ; {ram.curMix0}  New value
+FE87: 7E FD EF        JMP     $FDEF               ; {} Write mixer and continue script
 ; 
-FE8A: 96 BB       LDA     $BB                     ;{-1_curMix1}  Mixer value for AY1
-FE8C: AA 01       ORA     $01,X                   ;  Turn bits on
-FE8E: 97 BB       STA     $BB                     ;{-1_curMix1}  New value
-FE90: 7E FD EF    JMP     $FDEF                   ;  Write mixer and continue script
+FE8A: 96 BB           LDA     $BB                 ; {ram.curMix1}  Mixer value for AY1
+FE8C: AA 01           ORA     $01,X               ; Turn bits on
+FE8E: 97 BB           STA     $BB                 ; {ram.curMix1}  New value
+FE90: 7E FD EF        JMP     $FDEF               ; {} Write mixer and continue script
 
-FE93: C1 F0       CMPB    #$F0                    ;  STOP or CALL or RETURN ?
-FE95: 2A 17       BPL     $FEAE                   ;  Yes ... go handle
+FE93: C1 F0           CMPB    #$F0                ; STOP or CALL or RETURN ?
+FE95: 2A 17           BPL     $FEAE               ; {} Yes ... go handle
 
 ;  Start new series of commands
 ;  1ccccccc AA BB CC  c->commandType    (AA+1)->seriesCount    94,X<-BB     98,X<-CC
-FE97: A6 01       LDA     $01,X                   ;  Get ...
-FE99: EE 02       LDX     $02,X                   ;  ... params for series
-FE9B: 3C          PSHX                            ;  Hold
-FE9C: DE D1       LDX     $D1                     ;{-1_curVoice}  Current sequencer
-FE9E: E7 8C       STB     $8C,X                   ;  Store series type
-FEA0: 4C          INCA                            ;  Series count (always +1)
-FEA1: A7 90       STA     $90,X                   ;
-FEA3: 32          PULA                            ;  Store ...
-FEA4: A7 94       STA     $94,X                   ;  ... series ...
-FEA6: 32          PULA                            ;  ... parameters
-FEA7: A7 98       STA     $98,X                   ;
-FEA9: DE CD       LDX     $CD                     ;{-1_curSeqPtr}  Restore script pointer
-FEAB: 86 01       LDA     #$01                    ;  Process again next tick
-FEAD: 39          RTS                             ;  Done
+FE97: A6 01           LDA     $01,X               ; Get ...
+FE99: EE 02           LDX     $02,X               ; ... params for series
+FE9B: 3C              PSHX                        ; Hold
+FE9C: DE D1           LDX     $D1                 ; {ram.curVoice}  Current sequencer
+FE9E: E7 8C           STB     $8C,X               ; Store series type
+FEA0: 4C              INCA                        ; Series count (always +1)
+FEA1: A7 90           STA     $90,X               ; 
+FEA3: 32              PULA                        ; Store ...
+FEA4: A7 94           STA     $94,X               ; ... series ...
+FEA6: 32              PULA                        ; ... parameters
+FEA7: A7 98           STA     $98,X               ; 
+FEA9: DE CD           LDX     $CD                 ; {ram.curSeqPtr}  Restore script pointer
+FEAB: 86 01           LDA     #$01                ; Process again next tick
+FEAD: 39              RTS                         ; Done
 
-FEAE: 5C          INCB                            ;  FF=STOP?
-FEAF: 27 12       BEQ     $FEC3                   ;{STOP}  Yes ... return FF.
-FEB1: DE D1       LDX     $D1                     ;{-1_curVoice}  Voice number
-FEB3: 5C          INCB                            ;  FE=CALL?
-FEB4: 26 10       BNE     $FEC6                   ;{RETURN}  No ... process return
+FEAE: 5C              INCB                        ; FF=STOP?
+FEAF: 27 12           BEQ     $FEC3               ; {code.STOP}  Yes ... return FF.
+FEB1: DE D1           LDX     $D1                 ; {ram.curVoice}  Voice number
+FEB3: 5C              INCB                        ; FE=CALL?
+FEB4: 26 10           BNE     $FEC6               ; {code.RETURN}  No ... process return
 ```
 
 # CALL
@@ -1426,13 +1429,13 @@ FEB4: 26 10       BNE     $FEC6                   ;{RETURN}  No ... process retu
 ```code
 CALL: 
 ;  FE MM LL  - CALL MMLL 
-FEB6: DC CD       LDD     $CD                     ;{-1_curSeqPtr}  Sequence pointer
-FEB8: A7 9C       STA     $9C,X                   ;  Store ...
-FEBA: E7 A0       STB     $A0,X                   ;  ... return LSB and MSB
-FEBC: DE CD       LDX     $CD                     ;{-1_curSeqPtr}  Sequence pointer
-FEBE: EE 01       LDX     $01,X                   ;  Get jump address
-FEC0: 86 01       LDA     #$01                    ;  Return 1 (processes again next step)
-FEC2: 39          RTS                             ;  Done
+FEB6: DC CD           LDD     $CD                 ; {ram.curSeqPtr}  Sequence pointer
+FEB8: A7 9C           STA     $9C,X               ; Store ...
+FEBA: E7 A0           STB     $A0,X               ; ... return LSB and MSB
+FEBC: DE CD           LDX     $CD                 ; {ram.curSeqPtr}  Sequence pointer
+FEBE: EE 01           LDX     $01,X               ; Get jump address
+FEC0: 86 01           LDA     #$01                ; Return 1 (processes again next step)
+FEC2: 39              RTS                         ; Done
 ```
 
 # STOP
@@ -1440,8 +1443,8 @@ FEC2: 39          RTS                             ;  Done
 ```code
 STOP: 
 ;  FF        - STOP  
-FEC3: 86 FF       LDA     #$FF                    ;  END OF SEQUENCE
-FEC5: 39          RTS                             ;  Done
+FEC3: 86 FF           LDA     #$FF                ; END OF SEQUENCE
+FEC5: 39              RTS                         ; Done
 ```
 
 # RETURN
@@ -1449,31 +1452,31 @@ FEC5: 39          RTS                             ;  Done
 ```code
 RETURN: 
 ;  F0-FD     - RETURN
-FEC6: A6 9C       LDA     $9C,X                   ;  Restore ..
-FEC8: E6 A0       LDB     $A0,X                   ;  ... sequence ...
-FECA: DD CD       STD     $CD                     ;{-1_curSeqPtr}  ... pointer
-FECC: DE CD       LDX     $CD                     ;{-1_curSeqPtr}  Sequence pointer
-FECE: 08          INX                             ;  Skip over ...
-FECF: 08          INX                             ;  ... CALL ...
-FED0: 08          INX                             ;  ... command
-FED1: 86 01       LDA     #$01                    ;  Return 1 (processes again next step)
-FED3: 39          RTS                             ;  Done
+FEC6: A6 9C           LDA     $9C,X               ; Restore ..
+FEC8: E6 A0           LDB     $A0,X               ; ... sequence ...
+FECA: DD CD           STD     $CD                 ; {ram.curSeqPtr}  ... pointer
+FECC: DE CD           LDX     $CD                 ; {ram.curSeqPtr}  Sequence pointer
+FECE: 08              INX                         ; Skip over ...
+FECF: 08              INX                         ; ... CALL ...
+FED0: 08              INX                         ; ... command
+FED1: 86 01           LDA     #$01                ; Return 1 (processes again next step)
+FED3: 39              RTS                         ; Done
 
 ;  Write CE to consecutive registers pointed to by B
 ;  Leave with B pointing to next register.
 ; 
-FED4: 96 CE       LDA     $CE                     ;{-1_curSeqPtr}  Fine value
-FED6: BD FC DD    JSR     $FCDD                   ;  Write value A to AY register B (turn off interrupts)
-FED9: 5C          INCB                            ;  Coarse register
-FEDA: 96 CD       LDA     $CD                     ;{-1_curSeqPtr}  Coarse value
-FEDC: BD FC DE    JSR     $FCDE                   ;  Write value A to AY register B
-FEDF: 5C          INCB                            ;  Next register
-FEE0: 39          RTS                             ;  Done
+FED4: 96 CE           LDA     $CE                 ; {ram.curSeqPtr+1} Fine value
+FED6: BD FC DD        JSR     $FCDD               ; {} Write value A to AY register B (turn off interrupts)
+FED9: 5C              INCB                        ; Coarse register
+FEDA: 96 CD           LDA     $CD                 ; {ram.curSeqPtr}  Coarse value
+FEDC: BD FC DE        JSR     $FCDE               ; {} Write value A to AY register B
+FEDF: 5C              INCB                        ; Next register
+FEE0: 39              RTS                         ; Done
 
 
 ; ALL sound command start here
 ; 
-FEE1: 26 06       BNE     $FEE9                   ;  Zero means ...
+FEE1: 26 06           BNE     $FEE9               ; {} Zero means ...
 ```
 
 # Process Command 0
@@ -1482,12 +1485,12 @@ FEE1: 26 06       BNE     $FEE9                   ;  Zero means ...
 ProcessCommand0: 
 ; Sound command $00
 ; Reinitialize RAM and disable all sounds
-FEE3: BD FC 98    JSR     $FC98                   ;  ... reinit RAM and hardware
-FEE6: 7E FC AD    JMP     $FCAD                   ;  Disable all scripts/sounds and return
+FEE3: BD FC 98        JSR     $FC98               ; {} ... reinit RAM and hardware
+FEE6: 7E FC AD        JMP     $FCAD               ; {} Disable all scripts/sounds and return
 
-FEE9: 81 10       CMPA    #$10                    ;  Vector to ...
-FEEB: 2B 03       BMI     $FEF0                   ;{ProcessCommands01-0F}  ... 01-0F or ...
-FEED: 7E FF 25    JMP     $FF25                   ;  ... 10-1F
+FEE9: 81 10           CMPA    #$10                ; Vector to ...
+FEEB: 2B 03           BMI     $FEF0               ; {code.ProcessCommands01-0F}  ... 01-0F or ...
+FEED: 7E FF 25        JMP     $FF25               ; {} ... 10-1F
 ```
 
 # Process Commands 01 - 0F
@@ -1495,43 +1498,43 @@ FEED: 7E FF 25    JMP     $FF25                   ;  ... 10-1F
 ```code
 ProcessCommands01-0F: 
 ; Sound commands $01 - $0F (samplers played out 801)
-FEF0: 97 CB       STA     $CB                     ;{-1_lastCmd}  Hold command
-FEF2: 96 D8       LDA     $D8                     ;{-1_brdStatus}  Get chip status
-FEF4: 8A 01       ORA     #$01                    ;  Set bit 0 in A
-FEF6: 16          TAB                             ;  To B
-FEF7: C4 FE       ANDB    #$FE                    ;  Clear bit 0 in B
-FEF9: D7 D8       STB     $D8                     ;{-1_brdStatus}  Store value back with bit 0 clear
-FEFB: C6 0F       LDB     #$0F                    ;  AY I/O register chip 0 B
-FEFD: BD FC DE    JSR     $FCDE                   ;  Write value D8 with bit 0 set to output port
-FF00: 86 05       LDA     #$05                    ;  Wait for 5 NMI counts
-FF02: 7F 00 BD    CLR     $00BD                   ;{-1_nmiTick}  Clear NMI counter
-FF05: D6 BD       LDB     $BD                     ;{-1_nmiTick}  Wait on ...
-FF07: 27 FC       BEQ     $FF05                   ;  ... NMI counter ...
-FF09: 4A          DECA                            ;  Wait for ...
-FF0A: 26 F6       BNE     $FF02                   ;  ... specified time
-FF0C: D6 CB       LDB     $CB                     ;{-1_lastCmd}  Command ...
-FF0E: 58          ASLB                            ;  ... times ...
-FF0F: 58          ASLB                            ;  .... 4
-FF10: CE F4 00    LDX     #$F400                  ;  Sample table
-FF13: 3A          ABX                             ;  Offset in table
-FF14: 3C          PSHX                            ;  Remember the offset
-FF15: EE 00       LDX     $00,X                   ;  Wouldn't it be great to have a Y register?
-FF17: DF C7       STX     $C7                     ;{-1_ptr801}  Sample pointer
-FF19: 38          PULX                            ;  Descriptor
-FF1A: EE 02       LDX     $02,X                   ;  Get ...
-FF1C: DF C3       STX     $C3                     ;{-1_byteCnt801}  ... number of samples
-FF1E: 96 BE       LDA     $BE                     ;{-1_strmStatus}  Enable sample ...
-FF20: 84 02       ANDA    #$02                    ;  ... player ...
-FF22: 97 BE       STA     $BE                     ;{-1_strmStatus}  ... on 801
-FF24: 39          RTS                             ;  Done
+FEF0: 97 CB           STA     $CB                 ; {ram.lastCmd}  Hold command
+FEF2: 96 D8           LDA     $D8                 ; {ram.brdStatus}  Get chip status
+FEF4: 8A 01           ORA     #$01                ; Set bit 0 in A
+FEF6: 16              TAB                         ; To B
+FEF7: C4 FE           ANDB    #$FE                ; Clear bit 0 in B
+FEF9: D7 D8           STB     $D8                 ; {ram.brdStatus}  Store value back with bit 0 clear
+FEFB: C6 0F           LDB     #$0F                ; AY I/O register chip 0 B
+FEFD: BD FC DE        JSR     $FCDE               ; {} Write value D8 with bit 0 set to output port
+FF00: 86 05           LDA     #$05                ; Wait for 5 NMI counts
+FF02: 7F 00 BD        CLR     $00BD               ; {ram.nmiTick}  Clear NMI counter
+FF05: D6 BD           LDB     $BD                 ; {ram.nmiTick}  Wait on ...
+FF07: 27 FC           BEQ     $FF05               ; {} ... NMI counter ...
+FF09: 4A              DECA                        ; Wait for ...
+FF0A: 26 F6           BNE     $FF02               ; {} ... specified time
+FF0C: D6 CB           LDB     $CB                 ; {ram.lastCmd}  Command ...
+FF0E: 58              ASLB                        ; ... times ...
+FF0F: 58              ASLB                        ; .... 4
+FF10: CE F4 00        LDX     #$F400              ; Sample table
+FF13: 3A              ABX                         ; Offset in table
+FF14: 3C              PSHX                        ; Remember the offset
+FF15: EE 00           LDX     $00,X               ; Wouldn't it be great to have a Y register?
+FF17: DF C7           STX     $C7                 ; {ram.ptr801}  Sample pointer
+FF19: 38              PULX                        ; Descriptor
+FF1A: EE 02           LDX     $02,X               ; Get ...
+FF1C: DF C3           STX     $C3                 ; {ram.byteCnt801}  ... number of samples
+FF1E: 96 BE           LDA     $BE                 ; {ram.strmStatus}  Enable sample ...
+FF20: 84 02           ANDA    #$02                ; ... player ...
+FF22: 97 BE           STA     $BE                 ; {ram.strmStatus}  ... on 801
+FF24: 39              RTS                         ; Done
 
-FF25: 16          TAB                             ;  Script number
-FF26: 58          ASLB                            ;  *2
-FF27: CE F4 24    LDX     #$F424                  ;  Script pointer table ($10 -> $F444)
-FF2A: 3A          ABX                             ;  Offset to start of script
-FF2B: EE 00       LDX     $00,X                   ;  Script start
-FF2D: 81 14       CMPA    #$14                    ;  $10 - $14
-FF2F: 2A 1C       BPL     $FF4D                   ;  $14 or above ... go
+FF25: 16              TAB                         ; Script number
+FF26: 58              ASLB                        ; *2
+FF27: CE F4 24        LDX     #$F424              ; Script pointer table ($10 -> $F444)
+FF2A: 3A              ABX                         ; Offset to start of script
+FF2B: EE 00           LDX     $00,X               ; Script start
+FF2D: 81 14           CMPA    #$14                ; $10 - $14
+FF2F: 2A 1C           BPL     $FF4D               ; {} $14 or above ... go
 ```
 
 # Process Commands 10 - 13
@@ -1540,22 +1543,22 @@ FF2F: 2A 1C       BPL     $FF4D                   ;  $14 or above ... go
 ProcessCommands10-13: 
 ; Commands $10, $11, $12, $13
 ; Start script in mode 0 on sequencer 2 if available
-FF31: D6 82       LDB     $82                     ;{-1_seqV0}  Is sequencer 2 ...
-FF33: 5C          INCB                            ;  ... available?
-FF34: 27 06       BEQ     $FF3C                   ;  Yes ... use sequencer 2
-FF36: 91 A6       CMPA    $A6                     ;{-1_cmdSeq3}  Already running on sequencer 2?
-FF38: 27 02       BEQ     $FF3C                   ;  Yes ... restart sequencer 2
-FF3A: 2A 10       BPL     $FF4C                   ;  Higher priority command running (lower number)? Ignore.
-FF3C: 97 A6       STA     $A6                     ;{-1_cmdSeq3}  Sound command for sequence 2
-FF3E: DF 88       STX     $88                     ;{-1_seqPtr3}  Script pointer for sequence 2
-FF40: 7F 00 82    CLR     $0082                   ;{-1_seqV0}  Process seqence 2 next tick
-FF43: 7F 00 8E    CLR     $008E                   ;{-1_seq3CmdType}  Mode 0 for sequencer 2
-FF46: C6 89       LDB     #$89                    ;  10_001_001
-FF48: DA BB       ORB     $BB                     ;{-1_curMix1}  Sequencer tied to voice A ...
-FF4A: D7 BB       STB     $BB                     ;{-1_curMix1}  ... turn it off (for now)
-FF4C: 39          RTS                             
+FF31: D6 82           LDB     $82                 ; {ram.seqV0}  Is sequencer 2 ...
+FF33: 5C              INCB                        ; ... available?
+FF34: 27 06           BEQ     $FF3C               ; {} Yes ... use sequencer 2
+FF36: 91 A6           CMPA    $A6                 ; {ram.cmdSeq3}  Already running on sequencer 2?
+FF38: 27 02           BEQ     $FF3C               ; {} Yes ... restart sequencer 2
+FF3A: 2A 10           BPL     $FF4C               ; {} Higher priority command running (lower number)? Ignore.
+FF3C: 97 A6           STA     $A6                 ; {ram.cmdSeq3}  Sound command for sequence 2
+FF3E: DF 88           STX     $88                 ; {ram.seqPtr3}  Script pointer for sequence 2
+FF40: 7F 00 82        CLR     $0082               ; {ram.seqV0}  Process seqence 2 next tick
+FF43: 7F 00 8E        CLR     $008E               ; {ram.seq3CmdType}  Mode 0 for sequencer 2
+FF46: C6 89           LDB     #$89                ; 10_001_001
+FF48: DA BB           ORB     $BB                 ; {ram.curMix1}  Sequencer tied to voice A ...
+FF4A: D7 BB           STB     $BB                 ; {ram.curMix1}  ... turn it off (for now)
+FF4C: 39              RTS                         
 
-FF4D: 26 11       BNE     $FF60                   ;  Go if not exactly $14
+FF4D: 26 11           BNE     $FF60               ; {} Go if not exactly $14
 ```
 
 # Process Command 14
@@ -1564,17 +1567,17 @@ FF4D: 26 11       BNE     $FF60                   ;  Go if not exactly $14
 ProcessCommand14: 
 ; Command $14
 ; Force script in mode 0 on seqencer 3 no matter what
-FF4F: DF 8A       STX     $8A                     ;{-1_seqPtr4}  Script pointer for sequence 3
-FF51: 97 A7       STA     $A7                     ;{-1_cmdSeq4}  Sound command for sequencer 3
-FF53: 7F 00 83    CLR     $0083                   ;{-1_seqV0}  Process sequence 3 next tick
-FF56: 7F 00 8F    CLR     $008F                   ;{-1_seq4CmdType}  Mode 0 for sequencer 3
-FF59: 86 B6       LDA     #$B6                    ;  10_110_110
-FF5B: 9A BB       ORA     $BB                     ;{-1_curMix1}  Sequencer 3 tied to voice BC ...
-FF5D: 97 BB       STA     $BB                     ;{-1_curMix1}  ... turn them off (for now)
-FF5F: 39          RTS                             
+FF4F: DF 8A           STX     $8A                 ; {ram.seqPtr4}  Script pointer for sequence 3
+FF51: 97 A7           STA     $A7                 ; {ram.cmdSeq4}  Sound command for sequencer 3
+FF53: 7F 00 83        CLR     $0083               ; {ram.seqV0}  Process sequence 3 next tick
+FF56: 7F 00 8F        CLR     $008F               ; {ram.seq4CmdType}  Mode 0 for sequencer 3
+FF59: 86 B6           LDA     #$B6                ; 10_110_110
+FF5B: 9A BB           ORA     $BB                 ; {ram.curMix1}  Sequencer 3 tied to voice BC ...
+FF5D: 97 BB           STA     $BB                 ; {ram.curMix1}  ... turn them off (for now)
+FF5F: 39              RTS                         
 
-FF60: 81 18       CMPA    #$18                    ;  $18 or above?
-FF62: 2A 0B       BPL     $FF6F                   ;{ProcessCommands18-1F}  Yes ...
+FF60: 81 18           CMPA    #$18                ; $18 or above?
+FF62: 2A 0B           BPL     $FF6F               ; {code.ProcessCommands18-1F}  Yes ...
 ```
 
 # Process Commands 15 - 17
@@ -1583,11 +1586,11 @@ FF62: 2A 0B       BPL     $FF6F                   ;{ProcessCommands18-1F}  Yes .
 ProcessCommands15-17: 
 ; Command $15, $16, $17
 ; For script in mode 0 on sequencer 1 no matter what
-FF64: DF 86       STX     $86                     ;{-1_seqPtr2}  Script pointer for sequencer 1
-FF66: 97 A5       STA     $A5                     ;{-1_cmdSeq2}  Sound command for sequencer 1
-FF68: 7F 00 81    CLR     $0081                   ;{-1_seqV0}  Process sequence 1 next tick
-FF6B: 7F 00 8D    CLR     $008D                   ;{-1_seq2CmdType}  Mode 0 for sequencer 1
-FF6E: 39          RTS                             ;  Done
+FF64: DF 86           STX     $86                 ; {ram.seqPtr2}  Script pointer for sequencer 1
+FF66: 97 A5           STA     $A5                 ; {ram.cmdSeq2}  Sound command for sequencer 1
+FF68: 7F 00 81        CLR     $0081               ; {ram.seqV0}  Process sequence 1 next tick
+FF6B: 7F 00 8D        CLR     $008D               ; {ram.seq2CmdType}  Mode 0 for sequencer 1
+FF6E: 39              RTS                         ; Done
 ```
 
 # Process Commands 18 - 1F
@@ -1596,17 +1599,17 @@ FF6E: 39          RTS                             ;  Done
 ProcessCommands18-1F: 
 ; Command $18, 19, 1A, 1B, 1C, 1D, 1E, 1F
 ; Turn off all sounds and start command/script A/X on sequencer 0
-FF6F: 3C          PSHX                            ;  Hold script pointer
-FF70: 36          PSHA                            ;  Hold sound command
-FF71: BD FC 98    JSR     $FC98                   ;  Initialize RAM and hardware
-FF74: BD FC AD    JSR     $FCAD                   ;  Stop all sounds
-FF77: 32          PULA                            ;  Restore sound command
-FF78: 38          PULX                            ;  Restore script pointer
-FF79: DF 84       STX     $84                     ;{-1_seqPtr1}  Script pointer for sequencer 0
-FF7B: 97 A4       STA     $A4                     ;{-1_cmdSeq1}  Sound command for sequencer 0
-FF7D: 7F 00 80    CLR     $0080                   ;{-1_seqV0}  Process sequence 0 next tick
-FF80: 7F 00 8C    CLR     $008C                   ;{-1_seq1CmdType}  Force 0 sequencer 0
-FF83: 86 BE       LDA     #$BE                    ;  10_111_110
+FF6F: 3C              PSHX                        ; Hold script pointer
+FF70: 36              PSHA                        ; Hold sound command
+FF71: BD FC 98        JSR     $FC98               ; {} Initialize RAM and hardware
+FF74: BD FC AD        JSR     $FCAD               ; {} Stop all sounds
+FF77: 32              PULA                        ; Restore sound command
+FF78: 38              PULX                        ; Restore script pointer
+FF79: DF 84           STX     $84                 ; {ram.seqPtr1}  Script pointer for sequencer 0
+FF7B: 97 A4           STA     $A4                 ; {ram.cmdSeq1}  Sound command for sequencer 0
+FF7D: 7F 00 80        CLR     $0080               ; {ram.seqV0}  Process sequence 0 next tick
+FF80: 7F 00 8C        CLR     $008C               ; {ram.seq1CmdType}  Force 0 sequencer 0
+FF83: 86 BE           LDA     #$BE                ; 10_111_110
 ```
 
 # BUG 2
@@ -1614,9 +1617,9 @@ FF83: 86 BE       LDA     #$BE                    ;  10_111_110
 ```code
 BUG2: 
 ; The initialization at FCAD sets BA to 10_111_111. The OR here with a 0 is pointless.
-FF85: 9A BA       ORA     $BA                     ;{-1_curMix0}  Flag off all but ...
-FF87: 97 BA       STA     $BA                     ;{-1_curMix0}  ... AY0 tone A (THIS DOESN'T REALLY DO ANYTHING)
-FF89: 39          RTS                             ;  Done
+FF85: 9A BA           ORA     $BA                 ; {ram.curMix0}  Flag off all but ...
+FF87: 97 BA           STA     $BA                 ; {ram.curMix0}  ... AY0 tone A (THIS DOESN'T REALLY DO ANYTHING)
+FF89: 39              RTS                         ; Done
 
 FF8A: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 FFAA: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
@@ -1638,3 +1641,4 @@ FFFA: FB 00                            ;  SWI vector
 FFFC: FB D9                            ;  Non-maskable (NMI) vector
 FFFE: FB 00                            ;  RESET vector
 ```
+

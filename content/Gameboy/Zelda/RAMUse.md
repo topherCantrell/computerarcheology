@@ -7,7 +7,7 @@ There are two on-board RAM areas. The cartridge has a RAM space (often battery b
  * D000:DFFF  Internal RAM bank 1-7 (switchable on CGB only)
  * FF80:FFFE  High RAM (HRAM)
 
->>>memory
+>>> memory
 
 | | | |
 | --- | --- | --- |

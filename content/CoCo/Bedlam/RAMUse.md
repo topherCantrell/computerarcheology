@@ -2,7 +2,7 @@
 
 # Bedlam RAM Use
 
->>>memory
+>>> memory
 
 | | | |
 | --- | --- | --- |

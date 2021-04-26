@@ -65,12 +65,14 @@ def load_binary_files(spec, directory):
     return {'origin':origin, 'data':ret}
 
 
-def split_disassembly_line(txt):
+def split_disassembly_line(line):
     comment = None
     data = None
     opcode = None
     address = None
     label = None
+    
+    txt = line.text
     
     if txt.endswith('\n'):
         txt = txt[:-1]
@@ -112,12 +114,17 @@ def split_disassembly_line(txt):
 
 
 def parse_binary(lines, origin_gaps=[]):
+    
+    # TODO this is easier from the split code
 
     origin = -1
     addr = -1
     ret = []
+    
+    # TODO use the split-into-parts
 
     for line in lines:
+        line = line.text.strip()
         i = line.find(';')
         if i >= 0:
             line = line[0:i]

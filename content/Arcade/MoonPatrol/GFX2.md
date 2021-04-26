@@ -81,6 +81,7 @@ color sets for each object as used in the game.
 ```
 
 # Moon Buggy and 2 Wheel Sizes (2 pictures each) 
+
 ```html
 <canvas width="900" 
         height="275"
@@ -90,6 +91,7 @@ color sets for each object as used in the game.
 ```
 
 # Moon Buggy Crashing 
+
 ```html
 <canvas width="900" 
         height="275"
@@ -99,6 +101,7 @@ color sets for each object as used in the game.
 ```
 
 # Moon Buggy Explosion  
+
 ```html
 <canvas width="1200" 
         height="275"
@@ -112,6 +115,7 @@ color sets for each object as used in the game.
 ```
 
 # Player Forward Shot  
+
 ```html
 <canvas width="900" 
         height="150"         
@@ -120,6 +124,7 @@ color sets for each object as used in the game.
 ```
 
 # Rocks  
+
 ```html
 <canvas width="900" 
         height="150"
@@ -129,6 +134,7 @@ color sets for each object as used in the game.
 ```
 
 # Boulders 
+
 ```html
 <canvas width="900" 
         height="150" 
@@ -138,6 +144,7 @@ color sets for each object as used in the game.
 ```
 
 # Tank-Shot and Tank  
+
 ```html
 <canvas width="150" 
         height="150"    
@@ -152,6 +159,7 @@ color sets for each object as used in the game.
 ```
 
 # Alien Speeder (and 2 thrust patterns) 
+
 ```html
 <canvas width="900" 
         height="150"
@@ -160,6 +168,7 @@ color sets for each object as used in the game.
 ```
 
 # ?? Unknown 
+
 ```html
 <canvas width="150" 
         height="150"
@@ -169,6 +178,7 @@ color sets for each object as used in the game.
 ```
 
 # Ground Mine 
+
 ```html
 <canvas width="150" 
         height="150"
@@ -178,6 +188,7 @@ color sets for each object as used in the game.
 ```
 
 # Exploding Rocks/Boulders  
+
 ```html
 <canvas width="900" 
         height="150"
@@ -187,6 +198,7 @@ color sets for each object as used in the game.
 ```
 
 # Alien Ships (3 kinds with rotations)  
+
 ```html
 <canvas width="900" 
         height="150"
@@ -196,6 +208,7 @@ color sets for each object as used in the game.
 ```
 
 # Alien Ship Explosion  
+
 ```html
 <canvas width="900" 
         height="150"
@@ -205,6 +218,7 @@ color sets for each object as used in the game.
 ```
 
 # Alien Ship Shot (bubble alien)  
+
 ```html
 <canvas width="900" 
         height="150"
@@ -214,6 +228,7 @@ color sets for each object as used in the game.
 ```
 
 # Alien Ship Shots (fin alien and saucer alien, 3 rotations)  
+
 ```html
 <canvas width="900" 
         height="150"
@@ -223,6 +238,7 @@ color sets for each object as used in the game.
 ```
 
 # Crater-Opening Ground Explosion  
+
 ```html
 <canvas width="1200" 
         height="375"
@@ -232,6 +248,7 @@ color sets for each object as used in the game.
 ```
 
 # Alien Shot Hitting Ground  
+
 ```html
 <canvas width="1000" 
         height="275"    
@@ -241,6 +258,7 @@ color sets for each object as used in the game.
 ```
 
 # ?? Rubble  
+
 ```html
 <canvas width="900" 
         height="275"
@@ -250,6 +268,7 @@ color sets for each object as used in the game.
 ```
 
 # Space Plant (3 bases and 4 leaves)  
+
 ```html
 <canvas width="265" 
         height="150"    
@@ -269,6 +288,7 @@ color sets for each object as used in the game.
 ```
 
 # Shot Hitting Shot  
+
 ```html
 <canvas width="500" 
         height="150"
@@ -278,10 +298,10 @@ color sets for each object as used in the game.
 ```
 
 # Score Indicators 
- 
+
  Changing color sets changes value. Very clever.[[br]]
  Shown here will all pixels visible.
- 
+
 ```html
 <canvas width="500" 
         height="150"
@@ -291,6 +311,7 @@ color sets for each object as used in the game.
 ```
 
 # Score Indicators (Color Set 0E)  
+
 ```html
 <canvas width="500" 
         height="150"
@@ -300,6 +321,7 @@ color sets for each object as used in the game.
 ```
 
 # Score Indicators (Color Set 0F)  
+
 ```html
 <canvas width="500" 
         height="150"
@@ -337,6 +359,7 @@ Remember: this is all in hardware, and the lookups are very fast.
 Color bits ... bB : "b" from lower bank (0xxx) and "B" from upper bank (1xxx)
 
 Using color-set-0 as an example, bB:
+
 ```
  00 PROM3:0000 (00) transparent
  01 PROM3:0001 (01) black
@@ -346,6 +369,7 @@ Using color-set-0 as an example, bB:
 
 To describe the data layout, I am numbering the pixels as they
 appear on the screen as follows:
+
 ```
  Aa7 Aa6 Aa5 Aa4 Aa3 Aa2 Aa1 Aa0   Ca7 Ca6 Ca5 Ca4 Ca3 Ca2 Ca1 Ca0
  Ab7 Ab6 Ab5 Ab4 Ab3 Ab2 Ab1 Ab0   Cb7 Cb6 Cb5 Cb4 Cb3 Cb2 Cb1 Cb0
@@ -1410,3 +1434,4 @@ These individual pixes map to bits in the data as follow for Image 0
 1FF0: 00 00 00 00 00 00 00 00 ; 
 1FF8: 00 00 00 00 00 00 00 00 ; 
 ```
+

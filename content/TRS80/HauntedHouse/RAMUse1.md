@@ -2,7 +2,7 @@
 
 # RAM Use 1 (First Floor Code)
 
->>>memory
+>>> memory
 
 | | | |
 | --- | --- | --- |

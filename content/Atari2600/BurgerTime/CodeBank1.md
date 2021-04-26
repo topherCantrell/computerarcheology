@@ -7,9 +7,11 @@
 >>> binary F000:btBank1.bin
 
 >>> memoryTable hard 
+
 [Hardware Info](../Stella.md)
 
 >>> memoryTable ram 
+
 [RAM Usage](RAMUse.md)
 
 Bank 1 and 3 have the same data.
@@ -21,402 +23,402 @@ F020: 22 F7 08 05 00 FB F8 FB 00 05 08 00 02 02 03 03
 F030: 04 04 04 04
 
 F034: 60              RTS                         
-F035: A5 DE           LDA     $DE                   
-F037: 29 03           AND     #$03                  
+F035: A5 DE           LDA     $DE                 ; {ram.mDE}
+F037: 29 03           AND     #$03                
 F039: AA              TAX                         
-F03A: AD 40 F9        LDA     $F940                   
-F03D: 3D 00 F0        AND     $F000,X                 
-F040: D0 F2           BNE     $F034                   
-F042: AD 36 F9        LDA     $F936                   
-F045: 3D 00 F0        AND     $F000,X                 
-F048: D0 EA           BNE     $F034                   
-F04A: 86 C7           STX     $C7                   
-F04C: AD 55 F9        LDA     $F955                   
+F03A: AD 40 F9        LDA     $F940               
+F03D: 3D 00 F0        AND     $F000,X             ; {}
+F040: D0 F2           BNE     $F034               ; {}
+F042: AD 36 F9        LDA     $F936               
+F045: 3D 00 F0        AND     $F000,X             ; {}
+F048: D0 EA           BNE     $F034               ; {}
+F04A: 86 C7           STX     $C7                 ; {ram.mC7}
+F04C: AD 55 F9        LDA     $F955               
 F04F: 0A              ASL     A                   
 F050: AA              TAX                         
-F051: 86 CB           STX     $CB                   
-F053: BD 0E F0        LDA     $F00E,X                 
-F056: 85 CD           STA     $CD                   
-F058: BD 0F F0        LDA     $F00F,X                 
-F05B: 85 CE           STA     $CE                   
-F05D: BD 18 F0        LDA     $F018,X                 
-F060: 85 CF           STA     $CF                   
-F062: BD 19 F0        LDA     $F019,X                 
-F065: 85 D0           STA     $D0                   
-F067: A6 C7           LDX     $C7                   
-F069: B5 BE           LDA     $BE,X                 
-F06B: BC 51 F9        LDY     $F951,X                 
-F06E: D1 CD           CMP     ($CD),Y               
-F070: D0 4C           BNE     $F0BE                   
-F072: B5 C3           LDA     $C3,X                 
-F074: D1 CF           CMP     ($CF),Y               
-F076: D0 46           BNE     $F0BE                   
-F078: A6 CB           LDX     $CB                   
-F07A: BD 04 F0        LDA     $F004,X                 
-F07D: 85 CD           STA     $CD                   
-F07F: BD 05 F0        LDA     $F005,X                 
-F082: 85 CE           STA     $CE                   
-F084: A6 C7           LDX     $C7                   
-F086: 84 C9           STY     $C9                   
+F051: 86 CB           STX     $CB                 ; {ram.mCB}
+F053: BD 0E F0        LDA     $F00E,X             ; {}
+F056: 85 CD           STA     $CD                 ; {ram.mCD}
+F058: BD 0F F0        LDA     $F00F,X             ; {}
+F05B: 85 CE           STA     $CE                 ; {ram.mCE}
+F05D: BD 18 F0        LDA     $F018,X             ; {}
+F060: 85 CF           STA     $CF                 ; {ram.mCF}
+F062: BD 19 F0        LDA     $F019,X             ; {}
+F065: 85 D0           STA     $D0                 ; {ram.mD0}
+F067: A6 C7           LDX     $C7                 ; {ram.mC7}
+F069: B5 BE           LDA     $BE,X               ; {ram.mBE}
+F06B: BC 51 F9        LDY     $F951,X             
+F06E: D1 CD           CMP     ($CD),Y             ; {ram.mCD}
+F070: D0 4C           BNE     $F0BE               ; {}
+F072: B5 C3           LDA     $C3,X               ; {ram.mC3}
+F074: D1 CF           CMP     ($CF),Y             ; {ram.mCF}
+F076: D0 46           BNE     $F0BE               ; {}
+F078: A6 CB           LDX     $CB                 ; {ram.mCB}
+F07A: BD 04 F0        LDA     $F004,X             ; {}
+F07D: 85 CD           STA     $CD                 ; {ram.mCD}
+F07F: BD 05 F0        LDA     $F005,X             ; {}
+F082: 85 CE           STA     $CE                 ; {ram.mCE}
+F084: A6 C7           LDX     $C7                 ; {ram.mC7}
+F086: 84 C9           STY     $C9                 ; {ram.mC9}
 F088: 98              TYA                         
 F089: 0A              ASL     A                   
 F08A: 0A              ASL     A                   
-F08B: 85 CA           STA     $CA                   
-F08D: AD 87 F9        LDA     $F987                   
-F090: 3D 00 F0        AND     $F000,X                 
-F093: F0 06           BEQ     $F09B                   
-F095: 20 32 F1        JSR     $F132                   
-F098: 4C BE F0        JMP     $F0BE                   
-F09B: 20 E1 F1        JSR     $F1E1                   
-F09E: 29 03           AND     #$03                  
+F08B: 85 CA           STA     $CA                 ; {ram.mCA}
+F08D: AD 87 F9        LDA     $F987               
+F090: 3D 00 F0        AND     $F000,X             ; {}
+F093: F0 06           BEQ     $F09B               ; {}
+F095: 20 32 F1        JSR     $F132               ; {}
+F098: 4C BE F0        JMP     $F0BE               ; {}
+F09B: 20 E1 F1        JSR     $F1E1               ; {}
+F09E: 29 03           AND     #$03                
 F0A0: 18              CLC                         
-F0A1: 65 CA           ADC     $CA                   
+F0A1: 65 CA           ADC     $CA                 ; {ram.mCA}
 F0A3: A8              TAY                         
-F0A4: B1 CD           LDA     ($CD),Y               
-F0A6: C9 FF           CMP     #$FF                  
-F0A8: F0 10           BEQ     $F0BA                   
-F0AA: A6 C7           LDX     $C7                   
-F0AC: 9D 51 F8        STA     $F851,X                 
-F0AF: AD 4A F9        LDA     $F94A                   
-F0B2: 29 03           AND     #$03                  
+F0A4: B1 CD           LDA     ($CD),Y             ; {ram.mCD}
+F0A6: C9 FF           CMP     #$FF                
+F0A8: F0 10           BEQ     $F0BA               ; {}
+F0AA: A6 C7           LDX     $C7                 ; {ram.mC7}
+F0AC: 9D 51 F8        STA     $F851,X             
+F0AF: AD 4A F9        LDA     $F94A               
+F0B2: 29 03           AND     #$03                
 F0B4: 0A              ASL     A                   
-F0B5: 95 B9           STA     $B9,X                 
-F0B7: 4C BE F0        JMP     $F0BE                   
-F0BA: A9 FF           LDA     #$FF                  
-F0BC: 95 B9           STA     $B9,X                 
-F0BE: A6 C7           LDX     $C7                   
-F0C0: B4 B9           LDY     $B9,X                 
-F0C2: C0 FF           CPY     #$FF                  
-F0C4: F0 5A           BEQ     $F120                   
-F0C6: B9 22 F0        LDA     $F022,Y                 
-F0C9: F0 11           BEQ     $F0DC                   
-F0CB: 10 09           BPL     $F0D6                   
-F0CD: A9 00           LDA     #$00                  
+F0B5: 95 B9           STA     $B9,X               ; {ram.mB9}
+F0B7: 4C BE F0        JMP     $F0BE               ; {}
+F0BA: A9 FF           LDA     #$FF                
+F0BC: 95 B9           STA     $B9,X               ; {ram.mB9}
+F0BE: A6 C7           LDX     $C7                 ; {ram.mC7}
+F0C0: B4 B9           LDY     $B9,X               ; {ram.mB9}
+F0C2: C0 FF           CPY     #$FF                
+F0C4: F0 5A           BEQ     $F120               ; {}
+F0C6: B9 22 F0        LDA     $F022,Y             ; {}
+F0C9: F0 11           BEQ     $F0DC               ; {}
+F0CB: 10 09           BPL     $F0D6               ; {}
+F0CD: A9 00           LDA     #$00                
 F0CF: 38              SEC                         
-F0D0: ED 88 F9        SBC     $F988                   
-F0D3: 4C D9 F0        JMP     $F0D9                   
-F0D6: AD 88 F9        LDA     $F988                   
-F0D9: 20 04 F2        JSR     $F204                   
+F0D0: ED 88 F9        SBC     $F988               
+F0D3: 4C D9 F0        JMP     $F0D9               ; {}
+F0D6: AD 88 F9        LDA     $F988               
+F0D9: 20 04 F2        JSR     $F204               ; {}
 F0DC: 18              CLC                         
-F0DD: 75 BE           ADC     $BE,X                 
-F0DF: 95 BE           STA     $BE,X                 
-F0E1: 84 CA           STY     $CA                   
+F0DD: 75 BE           ADC     $BE,X               ; {ram.mBE}
+F0DF: 95 BE           STA     $BE,X               ; {ram.mBE}
+F0E1: 84 CA           STY     $CA                 ; {ram.mCA}
 F0E3: A8              TAY                         
-F0E4: E0 00           CPX     #$00                  
-F0E6: F0 0D           BEQ     $F0F5                   
-F0E8: 85 CB           STA     $CB                   
-F0EA: BD 4D F9        LDA     $F94D,X                 
+F0E4: E0 00           CPX     #$00                
+F0E6: F0 0D           BEQ     $F0F5               ; {}
+F0E8: 85 CB           STA     $CB                 ; {ram.mCB}
+F0EA: BD 4D F9        LDA     $F94D,X             
 F0ED: A8              TAY                         
-F0EE: B9 2C F0        LDA     $F02C,Y                 
+F0EE: B9 2C F0        LDA     $F02C,Y             ; {}
 F0F1: 18              CLC                         
-F0F2: 65 CB           ADC     $CB                   
+F0F2: 65 CB           ADC     $CB                 ; {ram.mCB}
 F0F4: A8              TAY                         
 F0F5: 8A              TXA                         
 F0F6: 18              CLC                         
-F0F7: 69 B5           ADC     #$B5                  
+F0F7: 69 B5           ADC     #$B5                
 F0F9: AA              TAX                         
 F0FA: 98              TYA                         
-F0FB: 20 1C F2        JSR     $F21C                   
-F0FE: A6 C7           LDX     $C7                   
-F100: B4 B9           LDY     $B9,X                 
-F102: C0 FF           CPY     #$FF                  
-F104: F0 1A           BEQ     $F120                   
-F106: B9 24 F0        LDA     $F024,Y                 
-F109: F0 15           BEQ     $F120                   
-F10B: 10 08           BPL     $F115                   
-F10D: A9 00           LDA     #$00                  
+F0FB: 20 1C F2        JSR     $F21C               ; {}
+F0FE: A6 C7           LDX     $C7                 ; {ram.mC7}
+F100: B4 B9           LDY     $B9,X               ; {ram.mB9}
+F102: C0 FF           CPY     #$FF                
+F104: F0 1A           BEQ     $F120               ; {}
+F106: B9 24 F0        LDA     $F024,Y             ; {}
+F109: F0 15           BEQ     $F120               ; {}
+F10B: 10 08           BPL     $F115               ; {}
+F10D: A9 00           LDA     #$00                
 F10F: 38              SEC                         
-F110: ED 89 F9        SBC     $F989                   
-F113: D0 03           BNE     $F118                   
-F115: AD 89 F9        LDA     $F989                   
-F118: 20 04 F2        JSR     $F204                   
+F110: ED 89 F9        SBC     $F989               
+F113: D0 03           BNE     $F118               ; {}
+F115: AD 89 F9        LDA     $F989               
+F118: 20 04 F2        JSR     $F204               ; {}
 F11B: 18              CLC                         
-F11C: 75 C3           ADC     $C3,X                 
-F11E: 95 C3           STA     $C3,X                 
-F120: A5 DE           LDA     $DE                   
-F122: 29 0F           AND     #$0F                  
+F11C: 75 C3           ADC     $C3,X               ; {ram.mC3}
+F11E: 95 C3           STA     $C3,X               ; {ram.mC3}
+F120: A5 DE           LDA     $DE                 ; {ram.mDE}
+F122: 29 0F           AND     #$0F                
 F124: 4A              LSR     A                   
 F125: 18              CLC                         
-F126: 65 C7           ADC     $C7                   
-F128: 29 07           AND     #$07                  
-F12A: 9D 4D F8        STA     $F84D,X                 
+F126: 65 C7           ADC     $C7                 ; {ram.mC7}
+F128: 29 07           AND     #$07                
+F12A: 9D 4D F8        STA     $F84D,X             
 F12D: 60              RTS                         
 
 F12E: 80  40                         
 
-F130: 20 10 A5        JSR     $A510                   
-F133: BD 38 F5        LDA     $F538,X                 
-F136: BE 85 CB        LDX     $CB85,Y                 
-F139: 10 05           BPL     $F140                   
-F13B: A9 00           LDA     #$00                  
+F130: 20 10 A5        JSR     $A510               
+F133: BD 38 F5        LDA     $F538,X             ; {}
+F136: BE 85 CB        LDX     $CB85,Y             
+F139: 10 05           BPL     $F140               ; {}
+F13B: A9 00           LDA     #$00                
 F13D: 38              SEC                         
-F13E: E5 CB           SBC     $CB                   
-F140: 85 CF           STA     $CF                   
-F142: A5 C2           LDA     $C2                   
+F13E: E5 CB           SBC     $CB                 ; {ram.mCB}
+F140: 85 CF           STA     $CF                 ; {ram.mCF}
+F142: A5 C2           LDA     $C2                 ; {ram.mC2}
 F144: 38              SEC                         
-F145: F5 C3           SBC     $C3,X                 
-F147: 85 CC           STA     $CC                   
-F149: 10 05           BPL     $F150                   
-F14B: A9 00           LDA     #$00                  
+F145: F5 C3           SBC     $C3,X               ; {ram.mC3}
+F147: 85 CC           STA     $CC                 ; {ram.mCC}
+F149: 10 05           BPL     $F150               ; {}
+F14B: A9 00           LDA     #$00                
 F14D: 38              SEC                         
-F14E: E5 CC           SBC     $CC                   
-F150: 85 D0           STA     $D0                   
-F152: AD 87 F9        LDA     $F987                   
-F155: 3D 2E F1        AND     $F12E,X                 
-F158: F0 2A           BEQ     $F184                   
-F15A: B5 B9           LDA     $B9,X                 
-F15C: F0 15           BEQ     $F173                   
-F15E: C9 04           CMP     #$04                  
-F160: F0 11           BEQ     $F173                   
-F162: 20 C5 F1        JSR     $F1C5                   
-F165: 85 D6           STA     $D6                   
-F167: 84 D7           STY     $D7                   
-F169: 20 D3 F1        JSR     $F1D3                   
-F16C: 85 D8           STA     $D8                   
-F16E: 84 D9           STY     $D9                   
-F170: 4C A9 F1        JMP     $F1A9                   
-F173: 20 D3 F1        JSR     $F1D3                   
-F176: 85 D6           STA     $D6                   
-F178: 84 D7           STY     $D7                   
-F17A: 20 C5 F1        JSR     $F1C5                   
-F17D: 85 D8           STA     $D8                   
-F17F: 84 D9           STY     $D9                   
-F181: 4C A9 F1        JMP     $F1A9                   
-F184: A5 D0           LDA     $D0                   
-F186: C5 CF           CMP     $CF                   
-F188: 90 11           BCC     $F19B                   
-F18A: 20 D3 F1        JSR     $F1D3                   
-F18D: 85 D6           STA     $D6                   
-F18F: 84 D9           STY     $D9                   
-F191: 20 C5 F1        JSR     $F1C5                   
-F194: 85 D7           STA     $D7                   
-F196: 84 D8           STY     $D8                   
-F198: 4C A9 F1        JMP     $F1A9                   
-F19B: 20 C5 F1        JSR     $F1C5                   
-F19E: 85 D6           STA     $D6                   
-F1A0: 84 D9           STY     $D9                   
-F1A2: 20 D3 F1        JSR     $F1D3                   
-F1A5: 85 D7           STA     $D7                   
-F1A7: 84 D8           STY     $D8                   
-F1A9: A2 FF           LDX     #$FF                  
+F14E: E5 CC           SBC     $CC                 ; {ram.mCC}
+F150: 85 D0           STA     $D0                 ; {ram.mD0}
+F152: AD 87 F9        LDA     $F987               
+F155: 3D 2E F1        AND     $F12E,X             ; {}
+F158: F0 2A           BEQ     $F184               ; {}
+F15A: B5 B9           LDA     $B9,X               ; {ram.mB9}
+F15C: F0 15           BEQ     $F173               ; {}
+F15E: C9 04           CMP     #$04                
+F160: F0 11           BEQ     $F173               ; {}
+F162: 20 C5 F1        JSR     $F1C5               ; {}
+F165: 85 D6           STA     $D6                 ; {ram.mD6}
+F167: 84 D7           STY     $D7                 ; {ram.mD7}
+F169: 20 D3 F1        JSR     $F1D3               ; {}
+F16C: 85 D8           STA     $D8                 ; {ram.mD8}
+F16E: 84 D9           STY     $D9                 ; {ram.mD9}
+F170: 4C A9 F1        JMP     $F1A9               ; {}
+F173: 20 D3 F1        JSR     $F1D3               ; {}
+F176: 85 D6           STA     $D6                 ; {ram.mD6}
+F178: 84 D7           STY     $D7                 ; {ram.mD7}
+F17A: 20 C5 F1        JSR     $F1C5               ; {}
+F17D: 85 D8           STA     $D8                 ; {ram.mD8}
+F17F: 84 D9           STY     $D9                 ; {ram.mD9}
+F181: 4C A9 F1        JMP     $F1A9               ; {}
+F184: A5 D0           LDA     $D0                 ; {ram.mD0}
+F186: C5 CF           CMP     $CF                 ; {ram.mCF}
+F188: 90 11           BCC     $F19B               ; {}
+F18A: 20 D3 F1        JSR     $F1D3               ; {}
+F18D: 85 D6           STA     $D6                 ; {ram.mD6}
+F18F: 84 D9           STY     $D9                 ; {ram.mD9}
+F191: 20 C5 F1        JSR     $F1C5               ; {}
+F194: 85 D7           STA     $D7                 ; {ram.mD7}
+F196: 84 D8           STY     $D8                 ; {ram.mD8}
+F198: 4C A9 F1        JMP     $F1A9               ; {}
+F19B: 20 C5 F1        JSR     $F1C5               ; {}
+F19E: 85 D6           STA     $D6                 ; {ram.mD6}
+F1A0: 84 D9           STY     $D9                 ; {ram.mD9}
+F1A2: 20 D3 F1        JSR     $F1D3               ; {}
+F1A5: 85 D7           STA     $D7                 ; {ram.mD7}
+F1A7: 84 D8           STY     $D8                 ; {ram.mD8}
+F1A9: A2 FF           LDX     #$FF                
 F1AB: E8              INX                         
-F1AC: B5 D6           LDA     $D6,X                 
-F1AE: 85 CC           STA     $CC                   
+F1AC: B5 D6           LDA     $D6,X               ; {ram.mD6}
+F1AE: 85 CC           STA     $CC                 ; {ram.mCC}
 F1B0: 18              CLC                         
-F1B1: 65 CA           ADC     $CA                   
+F1B1: 65 CA           ADC     $CA                 ; {ram.mCA}
 F1B3: A8              TAY                         
-F1B4: B1 CD           LDA     ($CD),Y               
-F1B6: C9 FF           CMP     #$FF                  
-F1B8: F0 F1           BEQ     $F1AB                   
-F1BA: A6 C7           LDX     $C7                   
-F1BC: 9D 51 F8        STA     $F851,X                 
-F1BF: A5 CC           LDA     $CC                   
+F1B4: B1 CD           LDA     ($CD),Y             ; {ram.mCD}
+F1B6: C9 FF           CMP     #$FF                
+F1B8: F0 F1           BEQ     $F1AB               ; {}
+F1BA: A6 C7           LDX     $C7                 ; {ram.mC7}
+F1BC: 9D 51 F8        STA     $F851,X             
+F1BF: A5 CC           LDA     $CC                 ; {ram.mCC}
 F1C1: 0A              ASL     A                   
-F1C2: 95 B9           STA     $B9,X                 
+F1C2: 95 B9           STA     $B9,X               ; {ram.mB9}
 F1C4: 60              RTS                         
-F1C5: A5 CB           LDA     $CB                   
-F1C7: 30 05           BMI     $F1CE                   
-F1C9: A9 00           LDA     #$00                  
-F1CB: A0 02           LDY     #$02                  
+F1C5: A5 CB           LDA     $CB                 ; {ram.mCB}
+F1C7: 30 05           BMI     $F1CE               ; {}
+F1C9: A9 00           LDA     #$00                
+F1CB: A0 02           LDY     #$02                
 F1CD: 60              RTS                         
-F1CE: A9 02           LDA     #$02                  
-F1D0: A0 00           LDY     #$00                  
+F1CE: A9 02           LDA     #$02                
+F1D0: A0 00           LDY     #$00                
 F1D2: 60              RTS                         
-F1D3: A5 CC           LDA     $CC                   
-F1D5: 30 05           BMI     $F1DC                   
-F1D7: A9 03           LDA     #$03                  
-F1D9: A0 01           LDY     #$01                  
+F1D3: A5 CC           LDA     $CC                 ; {ram.mCC}
+F1D5: 30 05           BMI     $F1DC               ; {}
+F1D7: A9 03           LDA     #$03                
+F1D9: A0 01           LDY     #$01                
 F1DB: 60              RTS                         
-F1DC: A9 01           LDA     #$01                  
-F1DE: A0 03           LDY     #$03                  
+F1DC: A9 01           LDA     #$01                
+F1DE: A0 03           LDY     #$03                
 F1E0: 60              RTS                         
-F1E1: AD 4A F9        LDA     $F94A                   
+F1E1: AD 4A F9        LDA     $F94A               
 F1E4: 0A              ASL     A                   
 F1E5: 0A              ASL     A                   
 F1E6: 0A              ASL     A                   
 F1E7: 0A              ASL     A                   
 F1E8: 18              CLC                         
-F1E9: 6D 4A F9        ADC     $F94A                   
+F1E9: 6D 4A F9        ADC     $F94A               
 F1EC: 0A              ASL     A                   
 F1ED: 0A              ASL     A                   
 F1EE: 0A              ASL     A                   
 F1EF: 18              CLC                         
-F1F0: 6D 4A F9        ADC     $F94A                   
+F1F0: 6D 4A F9        ADC     $F94A               
 F1F3: 18              CLC                         
-F1F4: 69 95           ADC     #$95                  
-F1F6: 8D 4A F8        STA     $F84A                   
+F1F4: 69 95           ADC     #$95                
+F1F6: 8D 4A F8        STA     $F84A               
 F1F9: 60              RTS                         
-F1FA: A5 B3           LDA     $B3                   
+F1FA: A5 B3           LDA     $B3                 ; {ram.mB3}
 F1FC: 18              CLC                         
-F1FD: 69 17           ADC     #$17                  
-F1FF: 29 1F           AND     #$1F                  
-F201: 85 B3           STA     $B3                   
+F1FD: 69 17           ADC     #$17                
+F1FF: 29 1F           AND     #$1F                
+F201: 85 B3           STA     $B3                 ; {ram.mB3}
 F203: 60              RTS                         
 F204: 18              CLC                         
-F205: 65 B3           ADC     $B3                   
+F205: 65 B3           ADC     $B3                 ; {ram.mB3}
 F207: 4A              LSR     A                   
 F208: 4A              LSR     A                   
 F209: 4A              LSR     A                   
 F20A: 4A              LSR     A                   
 F20B: 4A              LSR     A                   
-F20C: 49 04           EOR     #$04                  
+F20C: 49 04           EOR     #$04                
 F20E: 38              SEC                         
-F20F: E9 04           SBC     #$04                  
-F211: 30 03           BMI     $F216                   
-F213: 29 01           AND     #$01                  
+F20F: E9 04           SBC     #$04                
+F211: 30 03           BMI     $F216               ; {}
+F213: 29 01           AND     #$01                
 F215: 60              RTS                         
-F216: A9 FF           LDA     #$FF                  
+F216: A9 FF           LDA     #$FF                
 F218: 60              RTS                         
 F219: 38              SEC                         
-F21A: E9 03           SBC     #$03                  
+F21A: E9 03           SBC     #$03                
 F21C: 48              PHA                         
-F21D: 29 0F           AND     #$0F                  
-F21F: 85 CC           STA     $CC                   
+F21D: 29 0F           AND     #$0F                
+F21F: 85 CC           STA     $CC                 ; {ram.mCC}
 F221: 68              PLA                         
 F222: 4A              LSR     A                   
 F223: 4A              LSR     A                   
 F224: 4A              LSR     A                   
 F225: 4A              LSR     A                   
-F226: 85 CD           STA     $CD                   
+F226: 85 CD           STA     $CD                 ; {ram.mCD}
 F228: 18              CLC                         
-F229: 65 CC           ADC     $CC                   
-F22B: C9 0F           CMP     #$0F                  
-F22D: 90 04           BCC     $F233                   
-F22F: E9 0F           SBC     #$0F                  
-F231: E6 CD           INC     $CD                   
-F233: 49 07           EOR     #$07                  
+F229: 65 CC           ADC     $CC                 ; {ram.mCC}
+F22B: C9 0F           CMP     #$0F                
+F22D: 90 04           BCC     $F233               ; {}
+F22F: E9 0F           SBC     #$0F                
+F231: E6 CD           INC     $CD                 ; {ram.mCD}
+F233: 49 07           EOR     #$07                
 F235: 0A              ASL     A                   
 F236: 0A              ASL     A                   
 F237: 0A              ASL     A                   
 F238: 0A              ASL     A                   
-F239: 05 CD           ORA     $CD                   
-F23B: 95 00           STA     $00,X                 
+F239: 05 CD           ORA     $CD                 ; {ram.mCD}
+F23B: 95 00           STA     $00,X               ; {hard.VSYNC}
 F23D: 60              RTS                         
-F23E: A2 04           LDX     #$04                  
-F240: 85 02           STA     $02                   
-F242: B5 B4           LDA     $B4,X                 
-F244: 95 20           STA     $20,X                 
-F246: 29 0F           AND     #$0F                  
+F23E: A2 04           LDX     #$04                
+F240: 85 02           STA     $02                 ; {hard.WSYNC}
+F242: B5 B4           LDA     $B4,X               ; {ram.mB4}
+F244: 95 20           STA     $20,X               ; {hard.HMP0}
+F246: 29 0F           AND     #$0F                
 F248: A8              TAY                         
-F249: A5 80           LDA     $80                   
+F249: A5 80           LDA     $80                 ; {ram.m80}
 F24B: 88              DEY                         
-F24C: 10 FD           BPL     $F24B                   
-F24E: 95 10           STA     $10,X                 
-F250: 85 02           STA     $02                   
+F24C: 10 FD           BPL     $F24B               ; {}
+F24E: 95 10           STA     $10,X               ; {hard.RESP0}
+F250: 85 02           STA     $02                 ; {hard.WSYNC}
 F252: CA              DEX                         
-F253: 10 EB           BPL     $F240                   
-F255: 85 02           STA     $02                   
-F257: 85 2A           STA     $2A                   
+F253: 10 EB           BPL     $F240               ; {}
+F255: 85 02           STA     $02                 ; {hard.WSYNC}
+F257: 85 2A           STA     $2A                 ; {hard.HMOVE}
 F259: 60              RTS                         
 F25A: 18              CLC                         
 F25B: 60              RTS                         
-F25C: AD 36 F9        LDA     $F936                   
-F25F: F0 F9           BEQ     $F25A                   
-F261: AD 55 F9        LDA     $F955                   
+F25C: AD 36 F9        LDA     $F936               
+F25F: F0 F9           BEQ     $F25A               ; {}
+F261: AD 55 F9        LDA     $F955               
 F264: 0A              ASL     A                   
 F265: AA              TAX                         
-F266: BD 0E F0        LDA     $F00E,X                 
-F269: 85 CD           STA     $CD                   
-F26B: BD 0F F0        LDA     $F00F,X                 
-F26E: 85 CE           STA     $CE                   
-F270: BD 18 F0        LDA     $F018,X                 
-F273: 85 CF           STA     $CF                   
-F275: BD 19 F0        LDA     $F019,X                 
-F278: 85 D0           STA     $D0                   
-F27A: BD 04 F0        LDA     $F004,X                 
-F27D: 85 DA           STA     $DA                   
-F27F: BD 05 F0        LDA     $F005,X                 
-F282: 85 DB           STA     $DB                   
-F284: A2 04           LDX     #$04                  
+F266: BD 0E F0        LDA     $F00E,X             ; {}
+F269: 85 CD           STA     $CD                 ; {ram.mCD}
+F26B: BD 0F F0        LDA     $F00F,X             ; {}
+F26E: 85 CE           STA     $CE                 ; {ram.mCE}
+F270: BD 18 F0        LDA     $F018,X             ; {}
+F273: 85 CF           STA     $CF                 ; {ram.mCF}
+F275: BD 19 F0        LDA     $F019,X             ; {}
+F278: 85 D0           STA     $D0                 ; {ram.mD0}
+F27A: BD 04 F0        LDA     $F004,X             ; {}
+F27D: 85 DA           STA     $DA                 ; {ram.mDA}
+F27F: BD 05 F0        LDA     $F005,X             ; {}
+F282: 85 DB           STA     $DB                 ; {ram.mDB}
+F284: A2 04           LDX     #$04                
 F286: CA              DEX                         
-F287: 30 D2           BMI     $F25B                   
-F289: AD 36 F9        LDA     $F936                   
-F28C: 3D 00 F0        AND     $F000,X                 
-F28F: F0 F5           BEQ     $F286                   
-F291: AD 16 F9        LDA     $F916                   
-F294: 3D 00 F0        AND     $F000,X                 
-F297: D0 ED           BNE     $F286                   
-F299: AD 17 F9        LDA     $F917                   
-F29C: 3D 00 F0        AND     $F000,X                 
-F29F: D0 E5           BNE     $F286                   
-F2A1: AD 18 F9        LDA     $F918                   
-F2A4: 3D 00 F0        AND     $F000,X                 
-F2A7: D0 DD           BNE     $F286                   
-F2A9: AD 19 F9        LDA     $F919                   
-F2AC: 3D 00 F0        AND     $F000,X                 
-F2AF: D0 D5           BNE     $F286                   
-F2B1: BD 00 F0        LDA     $F000,X                 
-F2B4: 49 FF           EOR     #$FF                  
-F2B6: 85 CC           STA     $CC                   
-F2B8: 2D 36 F9        AND     $F936                   
-F2BB: 8D 36 F8        STA     $F836                   
-F2BE: A5 CC           LDA     $CC                   
-F2C0: 2D 40 F9        AND     $F940                   
-F2C3: 8D 40 F8        STA     $F840                   
-F2C6: 86 D1           STX     $D1                   
-F2C8: A2 03           LDX     #$03                  
-F2CA: A5 CC           LDA     $CC                   
-F2CC: 3D 16 F9        AND     $F916,X                 
-F2CF: 9D 16 F8        STA     $F816,X                 
+F287: 30 D2           BMI     $F25B               ; {}
+F289: AD 36 F9        LDA     $F936               
+F28C: 3D 00 F0        AND     $F000,X             ; {}
+F28F: F0 F5           BEQ     $F286               ; {}
+F291: AD 16 F9        LDA     $F916               
+F294: 3D 00 F0        AND     $F000,X             ; {}
+F297: D0 ED           BNE     $F286               ; {}
+F299: AD 17 F9        LDA     $F917               
+F29C: 3D 00 F0        AND     $F000,X             ; {}
+F29F: D0 E5           BNE     $F286               ; {}
+F2A1: AD 18 F9        LDA     $F918               
+F2A4: 3D 00 F0        AND     $F000,X             ; {}
+F2A7: D0 DD           BNE     $F286               ; {}
+F2A9: AD 19 F9        LDA     $F919               
+F2AC: 3D 00 F0        AND     $F000,X             ; {}
+F2AF: D0 D5           BNE     $F286               ; {}
+F2B1: BD 00 F0        LDA     $F000,X             ; {}
+F2B4: 49 FF           EOR     #$FF                
+F2B6: 85 CC           STA     $CC                 ; {ram.mCC}
+F2B8: 2D 36 F9        AND     $F936               
+F2BB: 8D 36 F8        STA     $F836               
+F2BE: A5 CC           LDA     $CC                 ; {ram.mCC}
+F2C0: 2D 40 F9        AND     $F940               
+F2C3: 8D 40 F8        STA     $F840               
+F2C6: 86 D1           STX     $D1                 ; {ram.mD1}
+F2C8: A2 03           LDX     #$03                
+F2CA: A5 CC           LDA     $CC                 ; {ram.mCC}
+F2CC: 3D 16 F9        AND     $F916,X             
+F2CF: 9D 16 F8        STA     $F816,X             
 F2D2: CA              DEX                         
-F2D3: 10 F5           BPL     $F2CA                   
-F2D5: A6 D1           LDX     $D1                   
-F2D7: AD 38 F9        LDA     $F938                   
+F2D3: 10 F5           BPL     $F2CA               ; {}
+F2D5: A6 D1           LDX     $D1                 ; {ram.mD1}
+F2D7: AD 38 F9        LDA     $F938               
 F2DA: 18              CLC                         
-F2DB: 69 01           ADC     #$01                  
-F2DD: C9 04           CMP     #$04                  
-F2DF: D0 02           BNE     $F2E3                   
-F2E1: A9 00           LDA     #$00                  
-F2E3: 8D 38 F8        STA     $F838                   
-F2E6: AD 55 F9        LDA     $F955                   
+F2DB: 69 01           ADC     #$01                
+F2DD: C9 04           CMP     #$04                
+F2DF: D0 02           BNE     $F2E3               ; {}
+F2E1: A9 00           LDA     #$00                
+F2E3: 8D 38 F8        STA     $F838               
+F2E6: AD 55 F9        LDA     $F955               
 F2E9: 0A              ASL     A                   
 F2EA: 0A              ASL     A                   
 F2EB: 18              CLC                         
-F2EC: 6D 38 F9        ADC     $F938                   
+F2EC: 6D 38 F9        ADC     $F938               
 F2EF: A8              TAY                         
-F2F0: B9 34 F3        LDA     $F334,Y                 
+F2F0: B9 34 F3        LDA     $F334,Y             ; {}
 F2F3: A8              TAY                         
-F2F4: B1 CD           LDA     ($CD),Y               
-F2F6: 95 BE           STA     $BE,X                 
-F2F8: B1 CF           LDA     ($CF),Y               
-F2FA: 95 C3           STA     $C3,X                 
-F2FC: AD 38 F9        LDA     $F938                   
+F2F4: B1 CD           LDA     ($CD),Y             ; {ram.mCD}
+F2F6: 95 BE           STA     $BE,X               ; {ram.mBE}
+F2F8: B1 CF           LDA     ($CF),Y             ; {ram.mCF}
+F2FA: 95 C3           STA     $C3,X               ; {ram.mC3}
+F2FC: AD 38 F9        LDA     $F938               
 F2FF: 0A              ASL     A                   
-F300: 9D B9 00        STA     $00B9,X                 
+F300: 9D B9 00        STA     $00B9,X             ; {ram.mB9}
 F303: 98              TYA                         
 F304: 0A              ASL     A                   
 F305: 0A              ASL     A                   
 F306: 18              CLC                         
-F307: 6D 38 F9        ADC     $F938                   
+F307: 6D 38 F9        ADC     $F938               
 F30A: A8              TAY                         
-F30B: B1 DA           LDA     ($DA),Y               
-F30D: 9D 51 F8        STA     $F851,X                 
-F310: 4C 86 F2        JMP     $F286                   
-F313: AE 55 F9        LDX     $F955                   
-F316: BD 2A F3        LDA     $F32A,X                 
-F319: 85 BD           STA     $BD                   
-F31B: BD 2F F3        LDA     $F32F,X                 
-F31E: 85 C2           STA     $C2                   
-F320: BD 48 F3        LDA     $F348,X                 
-F323: 8D 0F F8        STA     $F80F                   
-F326: 8D 10 F8        STA     $F810                   
+F30B: B1 DA           LDA     ($DA),Y             ; {ram.mDA}
+F30D: 9D 51 F8        STA     $F851,X             
+F310: 4C 86 F2        JMP     $F286               ; {}
+F313: AE 55 F9        LDX     $F955               
+F316: BD 2A F3        LDA     $F32A,X             ; {}
+F319: 85 BD           STA     $BD                 ; {ram.mBD}
+F31B: BD 2F F3        LDA     $F32F,X             ; {}
+F31E: 85 C2           STA     $C2                 ; {ram.mC2}
+F320: BD 48 F3        LDA     $F348,X             ; {}
+F323: 8D 0F F8        STA     $F80F               
+F326: 8D 10 F8        STA     $F810               
 F329: 60              RTS                         
 
 F32A: 4D 41 4D 4D 4C 69 69 5A 69 69 01 19 21 09 00 2C
 F33A: 31 05 1A 18 1D 03 00 1D 20 05 00 1B 1F 05 00 00
 F34A: 0F 00 00               
 
-F34D: A9 0F           LDA     #$0F                  
-F34F: 8D 40 F8        STA     $F840                   
-F352: A9 00           LDA     #$00                  
-F354: 8D 16 F8        STA     $F816                   
-F357: 8D 17 F8        STA     $F817                   
-F35A: 8D 18 F8        STA     $F818                   
-F35D: 8D 19 F8        STA     $F819                   
-F360: A9 0F           LDA     #$0F                  
-F362: 8D 36 F8        STA     $F836                   
-F365: 20 5C F2        JSR     $F25C                   
-F368: 20 13 F3        JSR     $F313                   
+F34D: A9 0F           LDA     #$0F                
+F34F: 8D 40 F8        STA     $F840               
+F352: A9 00           LDA     #$00                
+F354: 8D 16 F8        STA     $F816               
+F357: 8D 17 F8        STA     $F817               
+F35A: 8D 18 F8        STA     $F818               
+F35D: 8D 19 F8        STA     $F819               
+F360: A9 0F           LDA     #$0F                
+F362: 8D 36 F8        STA     $F836               
+F365: 20 5C F2        JSR     $F25C               ; {}
+F368: 20 13 F3        JSR     $F313               ; {}
 F36B: 60              RTS                         
 
 F36C: 4D 08 1D 2C 3C 4D 5D 6D 7D 91 08 1D 2C 3C 4D 5D
@@ -494,3 +496,4 @@ F7DC: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 F7EC: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 F7FC: 00 00 00 00
 ```
+

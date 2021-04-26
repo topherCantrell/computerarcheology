@@ -194,6 +194,7 @@ are after the swap as the system would see them.
 ```
 
 # Base (at top) 
+
 ```html
  <canvas width="330" height="200"
      data-getTileDataFunction="Frogger.get8x8Data"
@@ -282,6 +283,7 @@ are after the swap as the system would see them.
 ```
 
 # Player frog 
+
 ```html
  <canvas width="135" height="135"
      data-getTileDataFunction="Frogger.get8x8Data"
@@ -988,3 +990,4 @@ TODO show the character "1" completely decoded and rotated.
 0FE0: 01 03 61 90 97 7F 39 38 E0 F9 FB FF FE FF FC E4
 0FF0: 38 39 7F 97 90 61 03 01 E4 E4 FF FE FF FB F9 E0
 ```
+

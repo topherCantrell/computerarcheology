@@ -31,7 +31,7 @@ TODO describe formats, windows, etc
 
 FF80-FFFE is an area of RAM called High RAM -- HRAM.
 
->>>memory
+>>> memory
 
 | | | |
 | --- | --- | --- |

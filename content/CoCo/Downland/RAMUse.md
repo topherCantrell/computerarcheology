@@ -2,7 +2,7 @@
 
 # Downland RAM Use
 
->>>memory
+>>> memory
 | | | |
 | --- | --- | --- |
 | 0014      | m0014                | Incremented in IRQ |

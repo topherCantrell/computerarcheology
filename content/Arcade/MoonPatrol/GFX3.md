@@ -21,6 +21,7 @@ Screen: aA_bB_cC_dD
 
 The actual pixel colors come from the table in PROM2 in a jumbled mapping.
 From experimenting, the pixel colors are:
+
 ```
 ;             00    01     10     11
 ; Hills:      --    20     00     70
@@ -30,7 +31,6 @@ From experimenting, the pixel colors are:
 
 Notice the black area near the top between the mountain peaks. These pixels are solid black instead
 of transparent. The background is black, and you can't tell the difference.
-
 
 ```html
 <script src="/js/BinaryData.js"></script>
@@ -315,3 +315,4 @@ of transparent. The background is black, and you can't tell the difference.
 0FE0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
 0FF0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
 ```
+

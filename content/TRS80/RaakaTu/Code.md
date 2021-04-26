@@ -7,276 +7,278 @@
 >>> binary 4300:roms/RAAKA.bin
 
 >>> memoryTable ram 
+
 [RAM Usage](RAMUse.md)
 
 >>> memoryTable hard 
+
 [Hardware Info](../Hardware.md)
 
 # Start
 
 ```code
 Start:
-4300: 31 FF 7F       LD      SP,$7FFF                       ; Stack starts at the end of RAM
-4303: 21 80 3F       LD      HL,$3F80        ; Initial screen start
-4306: 22 20 40       LD      ($4020),HL                     ; {ram:screenPtr} 
-4309: 3E 1D          LD      A,$1D                          ; Player object ...
-430B: 32 20 50       LD      ($5020),A                      ; {ram:ACTIVE_OBJ_NUM} ... is the active object number
-430E: 3E 96          LD      A,$96                          ; Starting ...
-4310: 47             LD      B,A                            ; ...
-4311: 32 23 50       LD      ($5023),A                      ; {ram:CUR_ROOM} ... room
-4314: 21 1F 68       LD      HL,$681F                       ; {!+RoomDescriptions} 
-4317: CD ED 46       CALL    $46ED                          ; {FindSublist} 
-431A: 22 24 50       LD      ($5024),HL                     ; {ram:CUR_ROOM_DATA} 
-431D: CD D0 49       CALL    $49D0                          ; {PrintRoomDescription} Print room description
+4300: 31 FF 7F        LD      SP,$7FFF            ; Stack starts at the end of RAM
+4303: 21 80 3F        LD      HL,$3F80            ; Initial screen start
+4306: 22 20 40        LD      ($4020),HL          ; {ram.screenPtr}
+4309: 3E 1D           LD      A,$1D               ; Player object ...
+430B: 32 20 50        LD      ($5020),A           ; {ram.ACTIVE_OBJ_NUM} ... is the active object number
+430E: 3E 96           LD      A,$96               ; Starting ...
+4310: 47              LD      B,A                 ; ...
+4311: 32 23 50        LD      ($5023),A           ; {ram.CUR_ROOM} ... room
+4314: 21 1F 68        LD      HL,$681F            ; {+code.RoomDescriptions}
+4317: CD ED 46        CALL    $46ED               ; {code.FindSublist}
+431A: 22 24 50        LD      ($5024),HL          ; {ram.CUR_ROOM_DATA}
+431D: CD D0 49        CALL    $49D0               ; {code.PrintRoomDescription} Print room description
 ```
 
 # Main Loop
 
 ```code
 MainLoop: 
-4320: 31 FF 7F       LD      SP,$7FFF                       ; Reset stack to end of RAM
-4323: CD 8F 47       CALL    $478F                          ; Get user input
+4320: 31 FF 7F        LD      SP,$7FFF            ; Reset stack to end of RAM
+4323: CD 8F 47        CALL    $478F               ; {} Get user input
 
-4326: 97             SUB     A                              ; Make a zero
-4327: 32 05 50       LD      ($5005),A                      ; {ram:adjWord} Clear ...
-432A: 32 08 50       LD      ($5008),A                      ; {ram:lsbAdj1} ...
-432D: 32 0A 50       LD      ($500A),A                      ; {ram:lsbCursor} ...
-4330: 32 00 50       LD      ($5000),A                      ; {ram:tmp1B2} ...
-4333: 32 01 50       LD      ($5001),A                      ; {ram:verbWord} ...
-4336: 32 07 50       LD      ($5007),A                      ; {ram:not1B9} ...
-4339: 32 06 50       LD      ($5006),A                      ; {ram:commandTarg} ...
-433C: 32 02 50       LD      ($5002),A                      ; {ram:perpWord} ...
-433F: 32 03 50       LD      ($5003),A                      ; {ram:prepGiven} ...
-4342: 32 0D 50       LD      ($500D),A                      ; {ram:VAR_OBJ_NUMBER} ...
-4345: 32 11 50       LD      ($5011),A                      ; {ram:FIRST_NOUN_NUM} ...
-4348: 32 17 50       LD      ($5017),A                      ; {ram:SECOND_NOUN_NUM} ... game state
+4326: 97              SUB     A                   ; Make a zero
+4327: 32 05 50        LD      ($5005),A           ; {ram.adjWord} Clear ...
+432A: 32 08 50        LD      ($5008),A           ; {ram.lsbAdj1} ...
+432D: 32 0A 50        LD      ($500A),A           ; {ram.lsbCursor} ...
+4330: 32 00 50        LD      ($5000),A           ; {ram.tmp1B2} ...
+4333: 32 01 50        LD      ($5001),A           ; {ram.verbWord} ...
+4336: 32 07 50        LD      ($5007),A           ; {ram.not1B9} ...
+4339: 32 06 50        LD      ($5006),A           ; {ram.commandTarg} ...
+433C: 32 02 50        LD      ($5002),A           ; {ram.perpWord} ...
+433F: 32 03 50        LD      ($5003),A           ; {ram.prepGiven} ...
+4342: 32 0D 50        LD      ($500D),A           ; {ram.VAR_OBJ_NUMBER} ...
+4345: 32 11 50        LD      ($5011),A           ; {ram.FIRST_NOUN_NUM} ...
+4348: 32 17 50        LD      ($5017),A           ; {ram.SECOND_NOUN_NUM} ... game state
 
-434B: 3E 1D          LD      A,$1D                          ; Player object ...
-434D: 32 20 50       LD      ($5020),A                      ; {ram:ACTIVE_OBJ_NUM} ... is the active object number
-4350: 47             LD      B,A             
-4351: CD 83 4E       CALL    $4E83                          ; 
-4354: 22 21 50       LD      ($5021),HL                     ; {ram:ACTIVE_OBJ_DATA} 
-4357: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-435A: 7E             LD      A,(HL)          
-435B: 32 23 50       LD      ($5023),A                      ; {ram:CUR_ROOM} 
-435E: 47             LD      B,A             
-435F: 21 1F 68       LD      HL,$681F                       ; {!+RoomDescriptions} 
-4362: CD ED 46       CALL    $46ED                          ; {FindSublist} 
-4365: 22 24 50       LD      ($5024),HL                     ; {ram:CUR_ROOM_DATA} 
-4368: 21 47 50       LD      HL,$5047        
-436B: 22 26 50       LD      ($5026),HL                     ; {ram:nextToken} 
-436E: 36 00          LD      (HL),$00        
-4370: 21 C0 3F       LD      HL,$3FC0        
-4373: CD E2 47       CALL    $47E2                          ; 
-4376: CA 89 43       JP      Z,$4389                        ; 
-4379: 7E             LD      A,(HL)          
-437A: FE 20          CP      $20             
-437C: CA 73 43       JP      Z,$4373                        ; 
-437F: 7D             LD      A,L             
-4380: FE FF          CP      $FF             
-4382: CA 89 43       JP      Z,$4389                        ; 
-4385: 23             INC     HL              
-4386: C3 79 43       JP      $4379                          ; 
-4389: 7D             LD      A,L             
-438A: FE FF          CP      $FF             
-438C: C2 73 43       JP      NZ,$4373                       ; 
-438F: 2A 26 50       LD      HL,($5026)                     ; {ram:nextToken} 
-4392: 36 00          LD      (HL),$00        
-4394: 21 47 50       LD      HL,$5047        
-4397: 7E             LD      A,(HL)          
-4398: A7             AND     A               
-4399: CA 39 44       JP      Z,$4439                        ; 
-439C: FE 02          CP      $02             
-439E: C2 AF 43       JP      NZ,$43AF                       ; 
-43A1: 23             INC     HL              
-43A2: 7E             LD      A,(HL)          
-43A3: 2B             DEC     HL              
-43A4: FE 06          CP      $06             
-43A6: D2 AF 43       JP      NC,$43AF                       ; 
-43A9: 32 06 50       LD      ($5006),A                      ; {ram:commandTarg} 
-43AC: 23             INC     HL              
-43AD: 23             INC     HL              
-43AE: 23             INC     HL              
-43AF: 7E             LD      A,(HL)          
-43B0: 23             INC     HL              
-43B1: A7             AND     A               
-43B2: CA 39 44       JP      Z,$4439                        ; 
-43B5: 46             LD      B,(HL)          
-43B6: 23             INC     HL              
-43B7: 4E             LD      C,(HL)          
-43B8: 23             INC     HL              
-43B9: E5             PUSH    HL              
+434B: 3E 1D           LD      A,$1D               ; Player object ...
+434D: 32 20 50        LD      ($5020),A           ; {ram.ACTIVE_OBJ_NUM} ... is the active object number
+4350: 47              LD      B,A                 
+4351: CD 83 4E        CALL    $4E83               ; {}
+4354: 22 21 50        LD      ($5021),HL          ; {ram.ACTIVE_OBJ_DATA}
+4357: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+435A: 7E              LD      A,(HL)              
+435B: 32 23 50        LD      ($5023),A           ; {ram.CUR_ROOM}
+435E: 47              LD      B,A                 
+435F: 21 1F 68        LD      HL,$681F            ; {+code.RoomDescriptions}
+4362: CD ED 46        CALL    $46ED               ; {code.FindSublist}
+4365: 22 24 50        LD      ($5024),HL          ; {ram.CUR_ROOM_DATA}
+4368: 21 47 50        LD      HL,$5047            
+436B: 22 26 50        LD      ($5026),HL          ; {ram.nextToken}
+436E: 36 00           LD      (HL),$00            
+4370: 21 C0 3F        LD      HL,$3FC0            
+4373: CD E2 47        CALL    $47E2               ; {}
+4376: CA 89 43        JP      Z,$4389             ; {}
+4379: 7E              LD      A,(HL)              
+437A: FE 20           CP      $20                 
+437C: CA 73 43        JP      Z,$4373             ; {}
+437F: 7D              LD      A,L                 
+4380: FE FF           CP      $FF                 
+4382: CA 89 43        JP      Z,$4389             ; {}
+4385: 23              INC     HL                  
+4386: C3 79 43        JP      $4379               ; {}
+4389: 7D              LD      A,L                 
+438A: FE FF           CP      $FF                 
+438C: C2 73 43        JP      NZ,$4373            ; {}
+438F: 2A 26 50        LD      HL,($5026)          ; {ram.nextToken}
+4392: 36 00           LD      (HL),$00            
+4394: 21 47 50        LD      HL,$5047            
+4397: 7E              LD      A,(HL)              
+4398: A7              AND     A                   
+4399: CA 39 44        JP      Z,$4439             ; {}
+439C: FE 02           CP      $02                 
+439E: C2 AF 43        JP      NZ,$43AF            ; {}
+43A1: 23              INC     HL                  
+43A2: 7E              LD      A,(HL)              
+43A3: 2B              DEC     HL                  
+43A4: FE 06           CP      $06                 
+43A6: D2 AF 43        JP      NC,$43AF            ; {}
+43A9: 32 06 50        LD      ($5006),A           ; {ram.commandTarg}
+43AC: 23              INC     HL                  
+43AD: 23              INC     HL                  
+43AE: 23              INC     HL                  
+43AF: 7E              LD      A,(HL)              
+43B0: 23              INC     HL                  
+43B1: A7              AND     A                   
+43B2: CA 39 44        JP      Z,$4439             ; {}
+43B5: 46              LD      B,(HL)              
+43B6: 23              INC     HL                  
+43B7: 4E              LD      C,(HL)              
+43B8: 23              INC     HL                  
+43B9: E5              PUSH    HL                  
 
-43BA: 3D             DEC     A                              ; List 1? Verbs?
-43BB: C2 E2 43       JP      NZ,$43E2                       ; No ... continue
-43BE: 21 B7 50       LD      HL,$50B7                       ; Multi verb translation list (empty)
-43C1: CD ED 46       CALL    $46ED                          ; {FindSublist} Look for an entry for the given verb
-43C4: D2 DB 43       JP      NC,$43DB                       ; No entry ... use the word as-is
-43C7: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} Skip length of entry
-43CA: CD 19 47       CALL    $4719                          ; {CompareXY} End of list?
-43CD: D2 DB 43       JP      NC,$43DB                       ; Yes ... this input is the verb
-43D0: 3A 01 50       LD      A,($5001)                      ; {ram:verbWord} Does the current verb match ...
-43D3: BE             CP      (HL)                           ; ... this entry?
-43D4: 23             INC     HL                             ; Bump to next
-43D5: 7E             LD      A,(HL)                         ; Get replacement
-43D6: 23             INC     HL                             ; Bump to next
-43D7: C2 CA 43       JP      NZ,$43CA                       ; It does not match ... keep looking
-43DA: 47             LD      B,A                            ; This entry from the table is the new word
+43BA: 3D              DEC     A                   ; List 1? Verbs?
+43BB: C2 E2 43        JP      NZ,$43E2            ; {} No ... continue
+43BE: 21 B7 50        LD      HL,$50B7            ; Multi verb translation list (empty)
+43C1: CD ED 46        CALL    $46ED               ; {code.FindSublist} Look for an entry for the given verb
+43C4: D2 DB 43        JP      NC,$43DB            ; {} No entry ... use the word as-is
+43C7: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd} Skip length of entry
+43CA: CD 19 47        CALL    $4719               ; {code.CompareXY} End of list?
+43CD: D2 DB 43        JP      NC,$43DB            ; {} Yes ... this input is the verb
+43D0: 3A 01 50        LD      A,($5001)           ; {ram.verbWord} Does the current verb match ...
+43D3: BE              CP      (HL)                ; ... this entry?
+43D4: 23              INC     HL                  ; Bump to next
+43D5: 7E              LD      A,(HL)              ; Get replacement
+43D6: 23              INC     HL                  ; Bump to next
+43D7: C2 CA 43        JP      NZ,$43CA            ; {} It does not match ... keep looking
+43DA: 47              LD      B,A                 ; This entry from the table is the new word
 ;
-43DB: 78             LD      A,B                            ; Store the ...
-43DC: 32 01 50       LD      ($5001),A                      ; {ram:verbWord} ... new verb
-43DF: C3 35 44       JP      $4435                          ; Continue with next word
+43DB: 78              LD      A,B                 ; Store the ...
+43DC: 32 01 50        LD      ($5001),A           ; {ram.verbWord} ... new verb
+43DF: C3 35 44        JP      $4435               ; {} Continue with next word
 
-43E2: 3D             DEC     A                              ;List 2? Nouns?
-43E3: C2 1F 44       JP      NZ,$441F                       ; 
-43E6: 3A 03 50       LD      A,($5003)                      ; {ram:prepGiven} 
-43E9: A7             AND     A               
-43EA: CA 0D 44       JP      Z,$440D                        ; 
-43ED: 21 17 50       LD      HL,$5017        
-43F0: 70             LD      (HL),B          
-43F1: 23             INC     HL              
-43F2: 3A 05 50       LD      A,($5005)                      ; {ram:adjWord} 
-43F5: 77             LD      (HL),A          
-43F6: 23             INC     HL              
-43F7: 3A 08 50       LD      A,($5008)                      ; {ram:lsbAdj1} 
-43FA: 77             LD      (HL),A          
-43FB: A7             AND     A               
-43FC: C2 00 44       JP      NZ,$4400                       ; 
-43FF: 71             LD      (HL),C          
-4400: 97             SUB     A               
-4401: 32 05 50       LD      ($5005),A                      ; {ram:adjWord} 
-4404: 32 03 50       LD      ($5003),A                      ; {ram:prepGiven} 
-4407: 32 08 50       LD      ($5008),A                      ; {ram:lsbAdj1} 
-440A: C3 35 44       JP      $4435                          ; 
-440D: 2A 11 50       LD      HL,($5011)                     ; {ram:FIRST_NOUN_NUM} 
-4410: 22 17 50       LD      ($5017),HL                     ; {ram:SECOND_NOUN_NUM} 
-4413: 3A 13 50       LD      A,($5013)                      ; {ram:firstNounLSB} 
-4416: 32 19 50       LD      ($5019),A                      ; {ram:secondNounLSB} 
-4419: 21 11 50       LD      HL,$5011        
-441C: C3 F0 43       JP      $43F0                          ; 
+43E2: 3D              DEC     A                   ; List 2? Nouns?
+43E3: C2 1F 44        JP      NZ,$441F            ; {}
+43E6: 3A 03 50        LD      A,($5003)           ; {ram.prepGiven}
+43E9: A7              AND     A                   
+43EA: CA 0D 44        JP      Z,$440D             ; {}
+43ED: 21 17 50        LD      HL,$5017            
+43F0: 70              LD      (HL),B              
+43F1: 23              INC     HL                  
+43F2: 3A 05 50        LD      A,($5005)           ; {ram.adjWord}
+43F5: 77              LD      (HL),A              
+43F6: 23              INC     HL                  
+43F7: 3A 08 50        LD      A,($5008)           ; {ram.lsbAdj1}
+43FA: 77              LD      (HL),A              
+43FB: A7              AND     A                   
+43FC: C2 00 44        JP      NZ,$4400            ; {}
+43FF: 71              LD      (HL),C              
+4400: 97              SUB     A                   
+4401: 32 05 50        LD      ($5005),A           ; {ram.adjWord}
+4404: 32 03 50        LD      ($5003),A           ; {ram.prepGiven}
+4407: 32 08 50        LD      ($5008),A           ; {ram.lsbAdj1}
+440A: C3 35 44        JP      $4435               ; {}
+440D: 2A 11 50        LD      HL,($5011)          ; {ram.FIRST_NOUN_NUM}
+4410: 22 17 50        LD      ($5017),HL          ; {ram.SECOND_NOUN_NUM}
+4413: 3A 13 50        LD      A,($5013)           ; {ram.firstNounLSB}
+4416: 32 19 50        LD      ($5019),A           ; {ram.secondNounLSB}
+4419: 21 11 50        LD      HL,$5011            
+441C: C3 F0 43        JP      $43F0               ; {}
 
-441F: 3D             DEC     A                              ; List 3? Adjectives?
-4420: C2 2E 44       JP      NZ,$442E                       ; 
-4423: 78             LD      A,B             
-4424: 32 05 50       LD      ($5005),A                      ; {ram:adjWord} 
-4427: 79             LD      A,C             
-4428: 32 08 50       LD      ($5008),A                      ; {ram:lsbAdj1} 
-442B: C3 35 44       JP      $4435                          ; 
+441F: 3D              DEC     A                   ; List 3? Adjectives?
+4420: C2 2E 44        JP      NZ,$442E            ; {}
+4423: 78              LD      A,B                 
+4424: 32 05 50        LD      ($5005),A           ; {ram.adjWord}
+4427: 79              LD      A,C                 
+4428: 32 08 50        LD      ($5008),A           ; {ram.lsbAdj1}
+442B: C3 35 44        JP      $4435               ; {}
 
-442E: 78             LD      A,B                            ; Must be a preposition
-442F: 32 02 50       LD      ($5002),A                      ; {ram:perpWord} 
-4432: 32 03 50       LD      ($5003),A                      ; {ram:prepGiven} 
-4435: E1             POP     HL              
-4436: C3 AF 43       JP      $43AF                          ; 
+442E: 78              LD      A,B                 ; Must be a preposition
+442F: 32 02 50        LD      ($5002),A           ; {ram.perpWord}
+4432: 32 03 50        LD      ($5003),A           ; {ram.prepGiven}
+4435: E1              POP     HL                  
+4436: C3 AF 43        JP      $43AF               ; {}
 
-4439: 3A 01 50       LD      A,($5001)                      ; {ram:verbWord} Verb ...
-443C: A7             AND     A                              ; ... given?
-443D: CA 85 46       JP      Z,$4685                        ; No ... ?VERB? error
-4440: 21 17 50       LD      HL,$5017        
-4443: CD 2A 45       CALL    $452A                          ; 
-4446: 22 1A 50       LD      ($501A),HL                     ; {ram:SECOND_NOUN_DATA} 
-4449: 21 11 50       LD      HL,$5011        
-444C: CD 2A 45       CALL    $452A                          ; 
-444F: 22 14 50       LD      ($5014),HL                     ; {ram:FIRST_NOUN_DATA} 
-4452: 97             SUB     A               
-4453: 32 03 50       LD      ($5003),A                      ; {ram:prepGiven} 
-4456: 2A 14 50       LD      HL,($5014)                     ; {ram:FIRST_NOUN_DATA} 
-4459: 3A 11 50       LD      A,($5011)                      ; {ram:FIRST_NOUN_NUM} 
-445C: A7             AND     A               
-445D: CA 66 44       JP      Z,$4466                        ; 
-4460: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4463: 23             INC     HL              
-4464: 23             INC     HL              
-4465: 7E             LD      A,(HL)          
-4466: 32 16 50       LD      ($5016),A                      ; {ram:firstNounParams} 
-4469: 2A 1A 50       LD      HL,($501A)                     ; {ram:SECOND_NOUN_DATA} 
-446C: 3A 17 50       LD      A,($5017)                      ; {ram:SECOND_NOUN_NUM} 
-446F: A7             AND     A               
-4470: CA 79 44       JP      Z,$4479                        ; 
-4473: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4476: 23             INC     HL              
-4477: 23             INC     HL              
-4478: 7E             LD      A,(HL)          
-4479: 32 1C 50       LD      ($501C),A                      ; {ram:secondNounParams} 
-447C: 21 B9 50       LD      HL,$50B9        
-447F: 7E             LD      A,(HL)          
-4480: A7             AND     A               
-4481: CA 3B 46       JP      Z,$463B                        ; 
-4484: 3A 01 50       LD      A,($5001)                      ; {ram:verbWord} 
-4487: BE             CP      (HL)            
-4488: 23             INC     HL              
-4489: C2 EB 44       JP      NZ,$44EB                       ; 
-448C: 7E             LD      A,(HL)          
-448D: 32 04 50       LD      ($5004),A                      ; {ram:phrasePrep} 
-4490: 3A 02 50       LD      A,($5002)                      ; {ram:perpWord} 
-4493: A7             AND     A               
-4494: CA 9B 44       JP      Z,$449B                        ; 
-4497: BE             CP      (HL)            
-4498: C2 EB 44       JP      NZ,$44EB                       ; 
-449B: 23             INC     HL              
-449C: 7E             LD      A,(HL)          
-449D: A7             AND     A               
-449E: CA B7 44       JP      Z,$44B7                        ; 
-44A1: 3A 11 50       LD      A,($5011)                      ; {ram:FIRST_NOUN_NUM} 
-44A4: A7             AND     A               
-44A5: C2 BE 44       JP      NZ,$44BE                       ; 
-44A8: 3A 0A 50       LD      A,($500A)                      ; {ram:lsbCursor} 
-44AB: 32 0B 50       LD      ($500B),A                      ; {ram:lsbError} 
-44AE: 11 11 50       LD      DE,$5011        
-44B1: CD CB 45       CALL    $45CB                          ; 
-44B4: C3 BE 44       JP      $44BE                          ; 
-44B7: 3A 11 50       LD      A,($5011)                      ; {ram:FIRST_NOUN_NUM} 
-44BA: A7             AND     A               
-44BB: C2 3B 46       JP      NZ,$463B                       ; 
-44BE: 23             INC     HL              
-44BF: 7E             LD      A,(HL)          
-44C0: A7             AND     A               
-44C1: CA DF 44       JP      Z,$44DF                        ; 
-44C4: 3A 17 50       LD      A,($5017)                      ; {ram:SECOND_NOUN_NUM} 
-44C7: A7             AND     A               
-44C8: C2 E6 44       JP      NZ,$44E6                       ; 
-44CB: 3A 09 50       LD      A,($5009)                      ; {ram:lsbVerb} 
-44CE: 32 0B 50       LD      ($500B),A                      ; {ram:lsbError} 
-44D1: 3E 01          LD      A,$01           
-44D3: 32 03 50       LD      ($5003),A                      ; {ram:prepGiven} 
-44D6: 11 17 50       LD      DE,$5017        
-44D9: CD CB 45       CALL    $45CB                          ; 
-44DC: C3 E6 44       JP      $44E6                          ; 
-44DF: 3A 17 50       LD      A,($5017)                      ; {ram:SECOND_NOUN_NUM} 
-44E2: A7             AND     A               
-44E3: C2 3B 46       JP      NZ,$463B                       ; 
-44E6: 23             INC     HL              
-44E7: 7E             LD      A,(HL)          
-44E8: C3 F2 44       JP      $44F2                          ; 
-44EB: 23             INC     HL              
-44EC: 23             INC     HL              
-44ED: 23             INC     HL              
-44EE: 23             INC     HL              
-44EF: C3 7F 44       JP      $447F                          ; 
+4439: 3A 01 50        LD      A,($5001)           ; {ram.verbWord} Verb ...
+443C: A7              AND     A                   ; ... given?
+443D: CA 85 46        JP      Z,$4685             ; {} No ... ?VERB? error
+4440: 21 17 50        LD      HL,$5017            
+4443: CD 2A 45        CALL    $452A               ; {}
+4446: 22 1A 50        LD      ($501A),HL          ; {ram.SECOND_NOUN_DATA}
+4449: 21 11 50        LD      HL,$5011            
+444C: CD 2A 45        CALL    $452A               ; {}
+444F: 22 14 50        LD      ($5014),HL          ; {ram.FIRST_NOUN_DATA}
+4452: 97              SUB     A                   
+4453: 32 03 50        LD      ($5003),A           ; {ram.prepGiven}
+4456: 2A 14 50        LD      HL,($5014)          ; {ram.FIRST_NOUN_DATA}
+4459: 3A 11 50        LD      A,($5011)           ; {ram.FIRST_NOUN_NUM}
+445C: A7              AND     A                   
+445D: CA 66 44        JP      Z,$4466             ; {}
+4460: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4463: 23              INC     HL                  
+4464: 23              INC     HL                  
+4465: 7E              LD      A,(HL)              
+4466: 32 16 50        LD      ($5016),A           ; {ram.firstNounParams}
+4469: 2A 1A 50        LD      HL,($501A)          ; {ram.SECOND_NOUN_DATA}
+446C: 3A 17 50        LD      A,($5017)           ; {ram.SECOND_NOUN_NUM}
+446F: A7              AND     A                   
+4470: CA 79 44        JP      Z,$4479             ; {}
+4473: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4476: 23              INC     HL                  
+4477: 23              INC     HL                  
+4478: 7E              LD      A,(HL)              
+4479: 32 1C 50        LD      ($501C),A           ; {ram.secondNounParams}
+447C: 21 B9 50        LD      HL,$50B9            
+447F: 7E              LD      A,(HL)              
+4480: A7              AND     A                   
+4481: CA 3B 46        JP      Z,$463B             ; {}
+4484: 3A 01 50        LD      A,($5001)           ; {ram.verbWord}
+4487: BE              CP      (HL)                
+4488: 23              INC     HL                  
+4489: C2 EB 44        JP      NZ,$44EB            ; {}
+448C: 7E              LD      A,(HL)              
+448D: 32 04 50        LD      ($5004),A           ; {ram.phrasePrep}
+4490: 3A 02 50        LD      A,($5002)           ; {ram.perpWord}
+4493: A7              AND     A                   
+4494: CA 9B 44        JP      Z,$449B             ; {}
+4497: BE              CP      (HL)                
+4498: C2 EB 44        JP      NZ,$44EB            ; {}
+449B: 23              INC     HL                  
+449C: 7E              LD      A,(HL)              
+449D: A7              AND     A                   
+449E: CA B7 44        JP      Z,$44B7             ; {}
+44A1: 3A 11 50        LD      A,($5011)           ; {ram.FIRST_NOUN_NUM}
+44A4: A7              AND     A                   
+44A5: C2 BE 44        JP      NZ,$44BE            ; {}
+44A8: 3A 0A 50        LD      A,($500A)           ; {ram.lsbCursor}
+44AB: 32 0B 50        LD      ($500B),A           ; {ram.lsbError}
+44AE: 11 11 50        LD      DE,$5011            
+44B1: CD CB 45        CALL    $45CB               ; {}
+44B4: C3 BE 44        JP      $44BE               ; {}
+44B7: 3A 11 50        LD      A,($5011)           ; {ram.FIRST_NOUN_NUM}
+44BA: A7              AND     A                   
+44BB: C2 3B 46        JP      NZ,$463B            ; {}
+44BE: 23              INC     HL                  
+44BF: 7E              LD      A,(HL)              
+44C0: A7              AND     A                   
+44C1: CA DF 44        JP      Z,$44DF             ; {}
+44C4: 3A 17 50        LD      A,($5017)           ; {ram.SECOND_NOUN_NUM}
+44C7: A7              AND     A                   
+44C8: C2 E6 44        JP      NZ,$44E6            ; {}
+44CB: 3A 09 50        LD      A,($5009)           ; {ram.lsbVerb}
+44CE: 32 0B 50        LD      ($500B),A           ; {ram.lsbError}
+44D1: 3E 01           LD      A,$01               
+44D3: 32 03 50        LD      ($5003),A           ; {ram.prepGiven}
+44D6: 11 17 50        LD      DE,$5017            
+44D9: CD CB 45        CALL    $45CB               ; {}
+44DC: C3 E6 44        JP      $44E6               ; {}
+44DF: 3A 17 50        LD      A,($5017)           ; {ram.SECOND_NOUN_NUM}
+44E2: A7              AND     A                   
+44E3: C2 3B 46        JP      NZ,$463B            ; {}
+44E6: 23              INC     HL                  
+44E7: 7E              LD      A,(HL)              
+44E8: C3 F2 44        JP      $44F2               ; {}
+44EB: 23              INC     HL                  
+44EC: 23              INC     HL                  
+44ED: 23              INC     HL                  
+44EE: 23              INC     HL                  
+44EF: C3 7F 44        JP      $447F               ; {}
 
 ; Unlike BEDLAM, there is no giving a command to something else. Just
 ; ignore any commanded object and give the phrase to the user.
 
-44F2: 32 1F 50       LD      ($501F),A                      ; {ram:PHRASE_FORM} 
-44F5: 21 FF 3F       LD      HL,$3FFF        
-44F8: 22 20 40       LD      ($4020),HL                     ; {ram:screenPtr} 
-44FB: 3E 0D          LD      A,$0D           
-44FD: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
-4500: 3A 11 50       LD      A,($5011)                      ; {ram:FIRST_NOUN_NUM} 
-4503: A7             AND     A               
-4504: C2 13 45       JP      NZ,$4513                       ; 
-4507: 2A 1A 50       LD      HL,($501A)                     ; {ram:SECOND_NOUN_DATA} 
-450A: 22 14 50       LD      ($5014),HL                     ; {ram:FIRST_NOUN_DATA} 
-450D: 3A 17 50       LD      A,($5017)                      ; {ram:SECOND_NOUN_NUM} 
-4510: 32 11 50       LD      ($5011),A                      ; {ram:FIRST_NOUN_NUM} 
-4513: 21 FB 73       LD      HL,$73FB        
-4516: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4519: CD 94 48       CALL    $4894                          ; 
-451C: CD D5 4B       CALL    $4BD5                          ; 
-451F: 3E 0D          LD      A,$0D           
-4521: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
-4524: 3A 1F 50       LD      A,($501F)                      ; {ram:PHRASE_FORM} 
-4527: C3 20 43       JP      $4320                          ; {MainLoop} Top of game loop
+44F2: 32 1F 50        LD      ($501F),A           ; {ram.PHRASE_FORM}
+44F5: 21 FF 3F        LD      HL,$3FFF            
+44F8: 22 20 40        LD      ($4020),HL          ; {ram.screenPtr}
+44FB: 3E 0D           LD      A,$0D               
+44FD: CD 0D 4F        CALL    $4F0D               ; {code.PrintCharacterAutoWrap}
+4500: 3A 11 50        LD      A,($5011)           ; {ram.FIRST_NOUN_NUM}
+4503: A7              AND     A                   
+4504: C2 13 45        JP      NZ,$4513            ; {}
+4507: 2A 1A 50        LD      HL,($501A)          ; {ram.SECOND_NOUN_DATA}
+450A: 22 14 50        LD      ($5014),HL          ; {ram.FIRST_NOUN_DATA}
+450D: 3A 17 50        LD      A,($5017)           ; {ram.SECOND_NOUN_NUM}
+4510: 32 11 50        LD      ($5011),A           ; {ram.FIRST_NOUN_NUM}
+4513: 21 FB 73        LD      HL,$73FB            
+4516: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4519: CD 94 48        CALL    $4894               ; {}
+451C: CD D5 4B        CALL    $4BD5               ; {}
+451F: 3E 0D           LD      A,$0D               
+4521: CD 0D 4F        CALL    $4F0D               ; {code.PrintCharacterAutoWrap}
+4524: 3A 1F 50        LD      A,($501F)           ; {ram.PHRASE_FORM}
+4527: C3 20 43        JP      $4320               ; {code.MainLoop} Top of game loop
 
 ; This function decodes the NOUN descriptor pointed to by X. The AJECTIVE-NOUN
 ; pair is compared to all objects in the room (and pack). If no adjective
@@ -289,65 +291,65 @@ MainLoop:
 ; @return A index of target object
 ; @return HL pointer to target object data
 
-452A: 97             SUB     A               
-452B: 32 0D 50       LD      ($500D),A                      ; {ram:VAR_OBJ_NUMBER} 
-452E: 7E             LD      A,(HL)          
-452F: 32 00 50       LD      ($5000),A                      ; {ram:tmp1B2} 
-4532: 47             LD      B,A             
-4533: A7             AND     A               
-4534: C8             RET     Z               
-4535: 23             INC     HL              
-4536: 7E             LD      A,(HL)          
-4537: 32 05 50       LD      ($5005),A                      ; {ram:adjWord} 
-453A: 23             INC     HL              
-453B: 7E             LD      A,(HL)          
-453C: 32 1D 50       LD      ($501D),A                      ; {ram:tmp1CF} 
-453F: 21 51 56       LD      HL,$5651                       ; {!+ObjectData} 
-4542: CD ED 46       CALL    $46ED                          ; {FindSublist} 
-4545: D2 97 45       JP      NC,$4597                       ; 
-4548: D5             PUSH    DE              
-4549: E5             PUSH    HL              
-454A: CD A6 45       CALL    $45A6                          ; 
-454D: C2 A2 45       JP      NZ,$45A2                       ; 
-4550: 3A 05 50       LD      A,($5005)                      ; {ram:adjWord} 
-4553: A7             AND     A               
-4554: CA 79 45       JP      Z,$4579                        ; 
-4557: E1             POP     HL              
-4558: E5             PUSH    HL              
-4559: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-455C: 01 03 00       LD      BC,$0003        
-455F: 09             ADD     HL,BC           
-4560: 06 01          LD      B,$01           
-4562: CD F1 46       CALL    $46F1                          ; 
-4565: D2 79 45       JP      NC,$4579                       ; 
-4568: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-456B: CD 19 47       CALL    $4719                          ; {CompareXY} 
-456E: D2 A2 45       JP      NC,$45A2                       ; 
-4571: 3A 05 50       LD      A,($5005)                      ; {ram:adjWord} 
-4574: BE             CP      (HL)            
-4575: 23             INC     HL              
-4576: C2 6B 45       JP      NZ,$456B                       ; 
-4579: E1             POP     HL              
-457A: 3A 0D 50       LD      A,($500D)                      ; {ram:VAR_OBJ_NUMBER} 
-457D: A7             AND     A               
-457E: C2 7C 46       JP      NZ,$467C                       ; 
-4581: 7E             LD      A,(HL)          
-4582: 32 0D 50       LD      ($500D),A                      ; {ram:VAR_OBJ_NUMBER} 
-4585: 22 0E 50       LD      ($500E),HL                     ; {ram:VAR_OBJ_DATA} 
-4588: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-458B: EB             EX      DE,HL           
-458C: D1             POP     DE              
-458D: 3A 00 50       LD      A,($5000)                      ; {ram:tmp1B2} 
-4590: 47             LD      B,A             
-4591: CD F1 46       CALL    $46F1                          ; 
-4594: DA 48 45       JP      C,$4548                        ; 
-4597: 3A 0D 50       LD      A,($500D)                      ; {ram:VAR_OBJ_NUMBER} 
-459A: 2A 0E 50       LD      HL,($500E)                     ; {ram:VAR_OBJ_DATA} 
-459D: A7             AND     A               
-459E: C0             RET     NZ              
-459F: C3 32 46       JP      $4632                          ; 
-45A2: E1             POP     HL              
-45A3: C3 88 45       JP      $4588                          ; 
+452A: 97              SUB     A                   
+452B: 32 0D 50        LD      ($500D),A           ; {ram.VAR_OBJ_NUMBER}
+452E: 7E              LD      A,(HL)              
+452F: 32 00 50        LD      ($5000),A           ; {ram.tmp1B2}
+4532: 47              LD      B,A                 
+4533: A7              AND     A                   
+4534: C8              RET     Z                   
+4535: 23              INC     HL                  
+4536: 7E              LD      A,(HL)              
+4537: 32 05 50        LD      ($5005),A           ; {ram.adjWord}
+453A: 23              INC     HL                  
+453B: 7E              LD      A,(HL)              
+453C: 32 1D 50        LD      ($501D),A           ; {ram.tmp1CF}
+453F: 21 51 56        LD      HL,$5651            ; {+code.ObjectData}
+4542: CD ED 46        CALL    $46ED               ; {code.FindSublist}
+4545: D2 97 45        JP      NC,$4597            ; {}
+4548: D5              PUSH    DE                  
+4549: E5              PUSH    HL                  
+454A: CD A6 45        CALL    $45A6               ; {}
+454D: C2 A2 45        JP      NZ,$45A2            ; {}
+4550: 3A 05 50        LD      A,($5005)           ; {ram.adjWord}
+4553: A7              AND     A                   
+4554: CA 79 45        JP      Z,$4579             ; {}
+4557: E1              POP     HL                  
+4558: E5              PUSH    HL                  
+4559: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+455C: 01 03 00        LD      BC,$0003            
+455F: 09              ADD     HL,BC               
+4560: 06 01           LD      B,$01               
+4562: CD F1 46        CALL    $46F1               ; {}
+4565: D2 79 45        JP      NC,$4579            ; {}
+4568: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+456B: CD 19 47        CALL    $4719               ; {code.CompareXY}
+456E: D2 A2 45        JP      NC,$45A2            ; {}
+4571: 3A 05 50        LD      A,($5005)           ; {ram.adjWord}
+4574: BE              CP      (HL)                
+4575: 23              INC     HL                  
+4576: C2 6B 45        JP      NZ,$456B            ; {}
+4579: E1              POP     HL                  
+457A: 3A 0D 50        LD      A,($500D)           ; {ram.VAR_OBJ_NUMBER}
+457D: A7              AND     A                   
+457E: C2 7C 46        JP      NZ,$467C            ; {}
+4581: 7E              LD      A,(HL)              
+4582: 32 0D 50        LD      ($500D),A           ; {ram.VAR_OBJ_NUMBER}
+4585: 22 0E 50        LD      ($500E),HL          ; {ram.VAR_OBJ_DATA}
+4588: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+458B: EB              EX      DE,HL               
+458C: D1              POP     DE                  
+458D: 3A 00 50        LD      A,($5000)           ; {ram.tmp1B2}
+4590: 47              LD      B,A                 
+4591: CD F1 46        CALL    $46F1               ; {}
+4594: DA 48 45        JP      C,$4548             ; {}
+4597: 3A 0D 50        LD      A,($500D)           ; {ram.VAR_OBJ_NUMBER}
+459A: 2A 0E 50        LD      HL,($500E)          ; {ram.VAR_OBJ_DATA}
+459D: A7              AND     A                   
+459E: C0              RET     NZ                  
+459F: C3 32 46        JP      $4632               ; {}
+45A2: E1              POP     HL                  
+45A3: C3 88 45        JP      $4588               ; {}
 
 ; This function checks if the target object is in the current room or being
 ; held by the active object.
@@ -355,26 +357,26 @@ MainLoop:
 ; @param X pointer to target object
 ; @return Z=1 for yes or Z=0 for no
 
-45A6: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-45A9: 3A 23 50       LD      A,($5023)                      ; {ram:CUR_ROOM} 
-45AC: BE             CP      (HL)            
-45AD: C8             RET     Z               
-45AE: 7E             LD      A,(HL)          
-45AF: A7             AND     A               
-45B0: CA C8 45       JP      Z,$45C8                        ; 
-45B3: 3C             INC     A               
-45B4: C8             RET     Z               
-45B5: 3D             DEC     A               
-45B6: FA C8 45       JP      M,$45C8                        ; 
-45B9: 46             LD      B,(HL)          
-45BA: 3A 20 50       LD      A,($5020)                      ; {ram:ACTIVE_OBJ_NUM} 
-45BD: B8             CP      B               
-45BE: C8             RET     Z               
-45BF: 21 51 56       LD      HL,$5651                       ; {!+ObjectData} 
-45C2: CD ED 46       CALL    $46ED                          ; {FindSublist} 
-45C5: DA A6 45       JP      C,$45A6                        ; 
-45C8: F6 01          OR      $01             
-45CA: C9             RET                     
+45A6: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+45A9: 3A 23 50        LD      A,($5023)           ; {ram.CUR_ROOM}
+45AC: BE              CP      (HL)                
+45AD: C8              RET     Z                   
+45AE: 7E              LD      A,(HL)              
+45AF: A7              AND     A                   
+45B0: CA C8 45        JP      Z,$45C8             ; {}
+45B3: 3C              INC     A                   
+45B4: C8              RET     Z                   
+45B5: 3D              DEC     A                   
+45B6: FA C8 45        JP      M,$45C8             ; {}
+45B9: 46              LD      B,(HL)              
+45BA: 3A 20 50        LD      A,($5020)           ; {ram.ACTIVE_OBJ_NUM}
+45BD: B8              CP      B                   
+45BE: C8              RET     Z                   
+45BF: 21 51 56        LD      HL,$5651            ; {+code.ObjectData}
+45C2: CD ED 46        CALL    $46ED               ; {code.FindSublist}
+45C5: DA A6 45        JP      C,$45A6             ; {}
+45C8: F6 01           OR      $01                 
+45CA: C9              RET                         
 
 ; This function fills the noun descriptor pointed to by Y with the object
 ; in current room or on user that matches the parameter value from the
@@ -386,159 +388,159 @@ MainLoop:
 ; @param HL pointer to phrase data
 ; @return descriptor filled out with object
 
-45CB: E5             PUSH    HL              
-45CC: 97             SUB     A               
-45CD: 32 00 50       LD      ($5000),A                      ; {ram:tmp1B2} 
-45D0: D5             PUSH    DE              
-45D1: 4E             LD      C,(HL)          
-45D2: 21 51 56       LD      HL,$5651                       ; {!+ObjectData} 
-45D5: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-45D8: CD 19 47       CALL    $4719                          ; {CompareXY} 
-45DB: D2 16 46       JP      NC,$4616                       ; 
-45DE: D5             PUSH    DE              
-45DF: E5             PUSH    HL              
-45E0: CD A6 45       CALL    $45A6                          ; 
-45E3: E1             POP     HL              
-45E4: C2 10 46       JP      NZ,$4610                       ; 
-45E7: 46             LD      B,(HL)          
-45E8: 22 26 50       LD      ($5026),HL                     ; {ram:nextToken} 
-45EB: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-45EE: 23             INC     HL              
-45EF: 23             INC     HL              
-45F0: 7E             LD      A,(HL)          
-45F1: A1             AND     C               
-45F2: B9             CP      C               
-45F3: C2 0B 46       JP      NZ,$460B                       ; 
-45F6: 3A 00 50       LD      A,($5000)                      ; {ram:tmp1B2} 
-45F9: A7             AND     A               
-45FA: C2 44 46       JP      NZ,$4644                       ; 
-45FD: 78             LD      A,B             
-45FE: 32 00 50       LD      ($5000),A                      ; {ram:tmp1B2} 
-4601: 7E             LD      A,(HL)          
-4602: 32 05 50       LD      ($5005),A                      ; {ram:adjWord} 
-4605: 2A 26 50       LD      HL,($5026)                     ; {ram:nextToken} 
-4608: 22 47 50       LD      ($5047),HL                     ; 
-460B: EB             EX      DE,HL           
-460C: D1             POP     DE              
-460D: C3 D8 45       JP      $45D8                          ; 
-4610: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4613: C3 0B 46       JP      $460B                          ; 
-4616: 3A 00 50       LD      A,($5000)                      ; {ram:tmp1B2} 
-4619: A7             AND     A               
-461A: CA 44 46       JP      Z,$4644                        ; 
-461D: D1             POP     DE              
-461E: 2A 47 50       LD      HL,($5047)                     ; 
-4621: 12             LD      (DE),A          
-4622: 13             INC     DE              
-4623: 13             INC     DE              
-4624: 13             INC     DE              
-4625: 7D             LD      A,L             
-4626: 12             LD      (DE),A          
-4627: 13             INC     DE              
-4628: 7C             LD      A,H             
-4629: 12             LD      (DE),A          
-462A: 13             INC     DE              
-462B: 3A 05 50       LD      A,($5005)                      ; {ram:adjWord} 
-462E: 12             LD      (DE),A          
-462F: E1             POP     HL              
-4630: 97             SUB     A               
-4631: C9             RET                     
-4632: 11 2F 50       LD      DE,$502F        
-4635: 3A 1D 50       LD      A,($501D)                      ; {ram:tmp1CF} 
-4638: C3 8A 46       JP      $468A                          ; 
-463B: 11 3E 50       LD      DE,$503E        
-463E: 3A 09 50       LD      A,($5009)                      ; {ram:lsbVerb} 
-4641: C3 8A 46       JP      $468A                          ; 
-4644: 3A 03 50       LD      A,($5003)                      ; {ram:prepGiven} 
-4647: A7             AND     A               
-4648: CA 73 46       JP      Z,$4673                        ; 
-464B: 3A 02 50       LD      A,($5002)                      ; {ram:perpWord} 
-464E: A7             AND     A               
-464F: C2 73 46       JP      NZ,$4673                       ; 
-4652: 16 00          LD      D,$00           
-4654: 21 F8 55       LD      HL,$55F8        
-4657: 7E             LD      A,(HL)          
-4658: A7             AND     A               
-4659: CA 73 46       JP      Z,$4673                        ; 
-465C: E5             PUSH    HL              
-465D: 5E             LD      E,(HL)          
-465E: 23             INC     HL              
-465F: 19             ADD     HL,DE           
-4660: 3A 04 50       LD      A,($5004)                      ; {ram:phrasePrep} 
-4663: BE             CP      (HL)            
-4664: CA 6C 46       JP      Z,$466C                        ; 
-4667: 23             INC     HL              
-4668: C1             POP     BC              
-4669: C3 57 46       JP      $4657                          ; 
-466C: D1             POP     DE              
-466D: 3A 0B 50       LD      A,($500B)                      ; {ram:lsbError} 
-4670: CD C6 46       CALL    $46C6                          ; 
-4673: 11 2F 50       LD      DE,$502F        
-4676: 3A 0B 50       LD      A,($500B)                      ; {ram:lsbError} 
-4679: C3 8A 46       JP      $468A                          ; 
-467C: 11 36 50       LD      DE,$5036        
-467F: 3A 1D 50       LD      A,($501D)                      ; {ram:tmp1CF} 
-4682: C3 8A 46       JP      $468A                          ; 
-4685: 11 28 50       LD      DE,$5028        
-4688: 3E C0          LD      A,$C0           
-468A: 31 FF 7F       LD      SP,$7FFF        
-468D: 21 C0 3F       LD      HL,$3FC0        
-4690: CD C6 46       CALL    $46C6                          ; 
-4693: 1A             LD      A,(DE)          
-4694: 4F             LD      C,A             
-4695: E5             PUSH    HL              
-4696: 36 20          LD      (HL),$20        
-4698: 23             INC     HL              
-4699: 0D             DEC     C               
-469A: C2 96 46       JP      NZ,$4696                       ; 
-469D: CD BB 46       CALL    $46BB                          ; 
-46A0: E1             POP     HL              
-46A1: 05             DEC     B               
-46A2: C2 B5 46       JP      NZ,$46B5                       ; 
-46A5: 1A             LD      A,(DE)          
-46A6: 3C             INC     A               
-46A7: 4F             LD      C,A             
-46A8: CD 9E 47       CALL    $479E                          ; 
-46AB: 0D             DEC     C               
-46AC: C2 A8 46       JP      NZ,$46A8                       ; 
-46AF: CD 22 47       CALL    $4722                          ; 
-46B2: C3 26 43       JP      $4326                          ; 
-46B5: CD D5 46       CALL    $46D5                          ; 
-46B8: C3 93 46       JP      $4693                          ; 
-46BB: 3E 32          LD      A,$32           
-46BD: 0D             DEC     C               
-46BE: C2 BD 46       JP      NZ,$46BD                       ; 
-46C1: 3D             DEC     A               
-46C2: C2 BD 46       JP      NZ,$46BD                       ; 
-46C5: C9             RET                     
-46C6: 6F             LD      L,A             
-46C7: 1A             LD      A,(DE)          
-46C8: 3C             INC     A               
-46C9: 4F             LD      C,A             
-46CA: D5             PUSH    DE              
-46CB: CD B5 47       CALL    $47B5                          ; 
-46CE: 0D             DEC     C               
-46CF: C2 CB 46       JP      NZ,$46CB                       ; 
-46D2: D1             POP     DE              
-46D3: 06 08          LD      B,$08           
-46D5: 1A             LD      A,(DE)          
-46D6: 4F             LD      C,A             
-46D7: D5             PUSH    DE              
-46D8: E5             PUSH    HL              
-46D9: 13             INC     DE              
-46DA: 1A             LD      A,(DE)          
-46DB: 77             LD      (HL),A          
-46DC: 23             INC     HL              
-46DD: 13             INC     DE              
-46DE: 0D             DEC     C               
-46DF: C2 DA 46       JP      NZ,$46DA                       ; 
-46E2: 2C             INC     L               
-46E3: 7D             LD      A,L             
-46E4: 32 0B 50       LD      ($500B),A                      ; {ram:lsbError} 
-46E7: CD BB 46       CALL    $46BB                          ; 
-46EA: E1             POP     HL              
-46EB: D1             POP     DE              
-46EC: C9             RET               
+45CB: E5              PUSH    HL                  
+45CC: 97              SUB     A                   
+45CD: 32 00 50        LD      ($5000),A           ; {ram.tmp1B2}
+45D0: D5              PUSH    DE                  
+45D1: 4E              LD      C,(HL)              
+45D2: 21 51 56        LD      HL,$5651            ; {+code.ObjectData}
+45D5: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+45D8: CD 19 47        CALL    $4719               ; {code.CompareXY}
+45DB: D2 16 46        JP      NC,$4616            ; {}
+45DE: D5              PUSH    DE                  
+45DF: E5              PUSH    HL                  
+45E0: CD A6 45        CALL    $45A6               ; {}
+45E3: E1              POP     HL                  
+45E4: C2 10 46        JP      NZ,$4610            ; {}
+45E7: 46              LD      B,(HL)              
+45E8: 22 26 50        LD      ($5026),HL          ; {ram.nextToken}
+45EB: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+45EE: 23              INC     HL                  
+45EF: 23              INC     HL                  
+45F0: 7E              LD      A,(HL)              
+45F1: A1              AND     C                   
+45F2: B9              CP      C                   
+45F3: C2 0B 46        JP      NZ,$460B            ; {}
+45F6: 3A 00 50        LD      A,($5000)           ; {ram.tmp1B2}
+45F9: A7              AND     A                   
+45FA: C2 44 46        JP      NZ,$4644            ; {}
+45FD: 78              LD      A,B                 
+45FE: 32 00 50        LD      ($5000),A           ; {ram.tmp1B2}
+4601: 7E              LD      A,(HL)              
+4602: 32 05 50        LD      ($5005),A           ; {ram.adjWord}
+4605: 2A 26 50        LD      HL,($5026)          ; {ram.nextToken}
+4608: 22 47 50        LD      ($5047),HL          ; {}
+460B: EB              EX      DE,HL               
+460C: D1              POP     DE                  
+460D: C3 D8 45        JP      $45D8               ; {}
+4610: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4613: C3 0B 46        JP      $460B               ; {}
+4616: 3A 00 50        LD      A,($5000)           ; {ram.tmp1B2}
+4619: A7              AND     A                   
+461A: CA 44 46        JP      Z,$4644             ; {}
+461D: D1              POP     DE                  
+461E: 2A 47 50        LD      HL,($5047)          ; {}
+4621: 12              LD      (DE),A              
+4622: 13              INC     DE                  
+4623: 13              INC     DE                  
+4624: 13              INC     DE                  
+4625: 7D              LD      A,L                 
+4626: 12              LD      (DE),A              
+4627: 13              INC     DE                  
+4628: 7C              LD      A,H                 
+4629: 12              LD      (DE),A              
+462A: 13              INC     DE                  
+462B: 3A 05 50        LD      A,($5005)           ; {ram.adjWord}
+462E: 12              LD      (DE),A              
+462F: E1              POP     HL                  
+4630: 97              SUB     A                   
+4631: C9              RET                         
+4632: 11 2F 50        LD      DE,$502F            
+4635: 3A 1D 50        LD      A,($501D)           ; {ram.tmp1CF}
+4638: C3 8A 46        JP      $468A               ; {}
+463B: 11 3E 50        LD      DE,$503E            
+463E: 3A 09 50        LD      A,($5009)           ; {ram.lsbVerb}
+4641: C3 8A 46        JP      $468A               ; {}
+4644: 3A 03 50        LD      A,($5003)           ; {ram.prepGiven}
+4647: A7              AND     A                   
+4648: CA 73 46        JP      Z,$4673             ; {}
+464B: 3A 02 50        LD      A,($5002)           ; {ram.perpWord}
+464E: A7              AND     A                   
+464F: C2 73 46        JP      NZ,$4673            ; {}
+4652: 16 00           LD      D,$00               
+4654: 21 F8 55        LD      HL,$55F8            
+4657: 7E              LD      A,(HL)              
+4658: A7              AND     A                   
+4659: CA 73 46        JP      Z,$4673             ; {}
+465C: E5              PUSH    HL                  
+465D: 5E              LD      E,(HL)              
+465E: 23              INC     HL                  
+465F: 19              ADD     HL,DE               
+4660: 3A 04 50        LD      A,($5004)           ; {ram.phrasePrep}
+4663: BE              CP      (HL)                
+4664: CA 6C 46        JP      Z,$466C             ; {}
+4667: 23              INC     HL                  
+4668: C1              POP     BC                  
+4669: C3 57 46        JP      $4657               ; {}
+466C: D1              POP     DE                  
+466D: 3A 0B 50        LD      A,($500B)           ; {ram.lsbError}
+4670: CD C6 46        CALL    $46C6               ; {}
+4673: 11 2F 50        LD      DE,$502F            
+4676: 3A 0B 50        LD      A,($500B)           ; {ram.lsbError}
+4679: C3 8A 46        JP      $468A               ; {}
+467C: 11 36 50        LD      DE,$5036            
+467F: 3A 1D 50        LD      A,($501D)           ; {ram.tmp1CF}
+4682: C3 8A 46        JP      $468A               ; {}
+4685: 11 28 50        LD      DE,$5028            
+4688: 3E C0           LD      A,$C0               
+468A: 31 FF 7F        LD      SP,$7FFF            
+468D: 21 C0 3F        LD      HL,$3FC0            
+4690: CD C6 46        CALL    $46C6               ; {}
+4693: 1A              LD      A,(DE)              
+4694: 4F              LD      C,A                 
+4695: E5              PUSH    HL                  
+4696: 36 20           LD      (HL),$20            
+4698: 23              INC     HL                  
+4699: 0D              DEC     C                   
+469A: C2 96 46        JP      NZ,$4696            ; {}
+469D: CD BB 46        CALL    $46BB               ; {}
+46A0: E1              POP     HL                  
+46A1: 05              DEC     B                   
+46A2: C2 B5 46        JP      NZ,$46B5            ; {}
+46A5: 1A              LD      A,(DE)              
+46A6: 3C              INC     A                   
+46A7: 4F              LD      C,A                 
+46A8: CD 9E 47        CALL    $479E               ; {}
+46AB: 0D              DEC     C                   
+46AC: C2 A8 46        JP      NZ,$46A8            ; {}
+46AF: CD 22 47        CALL    $4722               ; {}
+46B2: C3 26 43        JP      $4326               ; {}
+46B5: CD D5 46        CALL    $46D5               ; {}
+46B8: C3 93 46        JP      $4693               ; {}
+46BB: 3E 32           LD      A,$32               
+46BD: 0D              DEC     C                   
+46BE: C2 BD 46        JP      NZ,$46BD            ; {}
+46C1: 3D              DEC     A                   
+46C2: C2 BD 46        JP      NZ,$46BD            ; {}
+46C5: C9              RET                         
+46C6: 6F              LD      L,A                 
+46C7: 1A              LD      A,(DE)              
+46C8: 3C              INC     A                   
+46C9: 4F              LD      C,A                 
+46CA: D5              PUSH    DE                  
+46CB: CD B5 47        CALL    $47B5               ; {}
+46CE: 0D              DEC     C                   
+46CF: C2 CB 46        JP      NZ,$46CB            ; {}
+46D2: D1              POP     DE                  
+46D3: 06 08           LD      B,$08               
+46D5: 1A              LD      A,(DE)              
+46D6: 4F              LD      C,A                 
+46D7: D5              PUSH    DE                  
+46D8: E5              PUSH    HL                  
+46D9: 13              INC     DE                  
+46DA: 1A              LD      A,(DE)              
+46DB: 77              LD      (HL),A              
+46DC: 23              INC     HL                  
+46DD: 13              INC     DE                  
+46DE: 0D              DEC     C                   
+46DF: C2 DA 46        JP      NZ,$46DA            ; {}
+46E2: 2C              INC     L                   
+46E3: 7D              LD      A,L                 
+46E4: 32 0B 50        LD      ($500B),A           ; {ram.lsbError}
+46E7: CD BB 46        CALL    $46BB               ; {}
+46EA: E1              POP     HL                  
+46EB: D1              POP     DE                  
+46EC: C9              RET                         
 ```
 
 # Find Sublist
@@ -550,166 +552,166 @@ FindSublist:
 ; B=sublist ID
 ; Return sublist pointer in X
 ; Return C=0 if not found, C=1 if found      
-46ED: 23             INC     HL              
-46EE: CD 06 47       CALL    $4706                          ; {LoadEnd} 
-46F1: CD 19 47       CALL    $4719                          ; {CompareXY} 
-46F4: D0             RET     NC              
-46F5: 78             LD      A,B             
-46F6: BE             CP      (HL)            
-46F7: CA 03 47       JP      Z,$4703                        ; 
-46FA: D5             PUSH    DE              
-46FB: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-46FE: EB             EX      DE,HL           
-46FF: D1             POP     DE              
-4700: C3 F1 46       JP      $46F1                          ; 
+46ED: 23              INC     HL                  
+46EE: CD 06 47        CALL    $4706               ; {code.LoadEnd}
+46F1: CD 19 47        CALL    $4719               ; {code.CompareXY}
+46F4: D0              RET     NC                  
+46F5: 78              LD      A,B                 
+46F6: BE              CP      (HL)                
+46F7: CA 03 47        JP      Z,$4703             ; {}
+46FA: D5              PUSH    DE                  
+46FB: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+46FE: EB              EX      DE,HL               
+46FF: D1              POP     DE                  
+4700: C3 F1 46        JP      $46F1               ; {}
 ;
-4703: 37             SCF                     
-4704: C9             RET                     
+4703: 37              SCF                         
+4704: C9              RET                         
 
 SkipIDLoadEnd:
 ; Skip the ID byte and load the end of the list in Y.
-4705: 23             INC     HL              
+4705: 23              INC     HL                  
 ;
 LoadEnd:
 ; Load the end of the list in Y.
-4706: 16 00          LD      D,$00           
-4708: 7E             LD      A,(HL)          
-4709: E6 80          AND     $80             
-470B: CA 13 47       JP      Z,$4713                        ; 
-470E: 7E             LD      A,(HL)          
-470F: E6 7F          AND     $7F             
-4711: 57             LD      D,A             
-4712: 23             INC     HL              
-4713: 5E             LD      E,(HL)          
-4714: 23             INC     HL              
-4715: EB             EX      DE,HL           
-4716: 19             ADD     HL,DE           
-4717: EB             EX      DE,HL           
-4718: C9             RET                     
+4706: 16 00           LD      D,$00               
+4708: 7E              LD      A,(HL)              
+4709: E6 80           AND     $80                 
+470B: CA 13 47        JP      Z,$4713             ; {}
+470E: 7E              LD      A,(HL)              
+470F: E6 7F           AND     $7F                 
+4711: 57              LD      D,A                 
+4712: 23              INC     HL                  
+4713: 5E              LD      E,(HL)              
+4714: 23              INC     HL                  
+4715: EB              EX      DE,HL               
+4716: 19              ADD     HL,DE               
+4717: EB              EX      DE,HL               
+4718: C9              RET                         
 
 CompareXY:
 ; Compare X to Y (flags = X - Y)
-4719: 7C             LD      A,H             
-471A: BA             CP      D               
-471B: C0             RET     NZ              
-471C: 7D             LD      A,L             
-471D: BB             CP      E               
-471E: C9             RET                     
+4719: 7C              LD      A,H                 
+471A: BA              CP      D                   
+471B: C0              RET     NZ                  
+471C: 7D              LD      A,L                 
+471D: BB              CP      E                   
+471E: C9              RET                         
 ```
 
 # Get Input Line
 
 ```code
 GetInputLine:
-471F: 21 C0 3F       LD      HL,$3FC0        
-4722: CD D0 47       CALL    $47D0                          ; 
-4725: CD D6 47       CALL    $47D6                          ; 
-4728: FE 18          CP      $18             
-472A: CA 56 47       JP      Z,$4756                        ; 
-472D: FE 19          CP      $19             
-472F: CA 66 47       JP      Z,$4766                        ; 
-4732: FE 09          CP      $09             
-4734: CA 76 47       JP      Z,$4776                        ; 
-4737: FE 0D          CP      $0D             
-4739: CA 8B 47       JP      Z,$478B                        ; 
-473C: FE 1F          CP      $1F             
-473E: CA 8F 47       JP      Z,$478F                        ; 
-4741: FE 08          CP      $08             
-4743: CA 7E 47       JP      Z,$477E                        ; 
-4746: 47             LD      B,A             
-4747: 7D             LD      A,L             
-4748: FE FF          CP      $FF             
-474A: CA 25 47       JP      Z,$4725                        ; 
-474D: 78             LD      A,B             
-474E: CD B5 47       CALL    $47B5                          ; 
-4751: 77             LD      (HL),A          
-4752: 23             INC     HL              
-4753: C3 25 47       JP      $4725                          ; 
-4756: 7D             LD      A,L             
-4757: FE C0          CP      $C0             
-4759: CA 25 47       JP      Z,$4725                        ; 
-475C: 2B             DEC     HL              
-475D: 7E             LD      A,(HL)          
-475E: 23             INC     HL              
-475F: 77             LD      (HL),A          
-4760: 2B             DEC     HL              
-4761: 36 8F          LD      (HL),$8F        
-4763: C3 25 47       JP      $4725                          ; 
-4766: 7D             LD      A,L             
-4767: FE FF          CP      $FF             
-4769: CA 25 47       JP      Z,$4725                        ; 
-476C: 23             INC     HL              
-476D: 7E             LD      A,(HL)          
-476E: 2B             DEC     HL              
-476F: 77             LD      (HL),A          
-4770: 23             INC     HL              
-4771: 36 8F          LD      (HL),$8F        
-4773: C3 25 47       JP      $4725                          ; 
-4776: CD 9E 47       CALL    $479E                          ; 
-4779: 36 8F          LD      (HL),$8F        
-477B: C3 25 47       JP      $4725                          ; 
-477E: 7D             LD      A,L             
-477F: FE C0          CP      $C0             
-4781: CA 25 47       JP      Z,$4725                        ; 
-4784: 2B             DEC     HL              
-4785: CD 9E 47       CALL    $479E                          ; 
-4788: C3 25 47       JP      $4725                          ; 
-478B: CD 9E 47       CALL    $479E                          ; 
-478E: C9             RET                     
+471F: 21 C0 3F        LD      HL,$3FC0            
+4722: CD D0 47        CALL    $47D0               ; {}
+4725: CD D6 47        CALL    $47D6               ; {code.GetKey}
+4728: FE 18           CP      $18                 
+472A: CA 56 47        JP      Z,$4756             ; {}
+472D: FE 19           CP      $19                 
+472F: CA 66 47        JP      Z,$4766             ; {}
+4732: FE 09           CP      $09                 
+4734: CA 76 47        JP      Z,$4776             ; {}
+4737: FE 0D           CP      $0D                 
+4739: CA 8B 47        JP      Z,$478B             ; {}
+473C: FE 1F           CP      $1F                 
+473E: CA 8F 47        JP      Z,$478F             ; {}
+4741: FE 08           CP      $08                 
+4743: CA 7E 47        JP      Z,$477E             ; {}
+4746: 47              LD      B,A                 
+4747: 7D              LD      A,L                 
+4748: FE FF           CP      $FF                 
+474A: CA 25 47        JP      Z,$4725             ; {}
+474D: 78              LD      A,B                 
+474E: CD B5 47        CALL    $47B5               ; {}
+4751: 77              LD      (HL),A              
+4752: 23              INC     HL                  
+4753: C3 25 47        JP      $4725               ; {}
+4756: 7D              LD      A,L                 
+4757: FE C0           CP      $C0                 
+4759: CA 25 47        JP      Z,$4725             ; {}
+475C: 2B              DEC     HL                  
+475D: 7E              LD      A,(HL)              
+475E: 23              INC     HL                  
+475F: 77              LD      (HL),A              
+4760: 2B              DEC     HL                  
+4761: 36 8F           LD      (HL),$8F            
+4763: C3 25 47        JP      $4725               ; {}
+4766: 7D              LD      A,L                 
+4767: FE FF           CP      $FF                 
+4769: CA 25 47        JP      Z,$4725             ; {}
+476C: 23              INC     HL                  
+476D: 7E              LD      A,(HL)              
+476E: 2B              DEC     HL                  
+476F: 77              LD      (HL),A              
+4770: 23              INC     HL                  
+4771: 36 8F           LD      (HL),$8F            
+4773: C3 25 47        JP      $4725               ; {}
+4776: CD 9E 47        CALL    $479E               ; {}
+4779: 36 8F           LD      (HL),$8F            
+477B: C3 25 47        JP      $4725               ; {}
+477E: 7D              LD      A,L                 
+477F: FE C0           CP      $C0                 
+4781: CA 25 47        JP      Z,$4725             ; {}
+4784: 2B              DEC     HL                  
+4785: CD 9E 47        CALL    $479E               ; {}
+4788: C3 25 47        JP      $4725               ; {}
+478B: CD 9E 47        CALL    $479E               ; {}
+478E: C9              RET                         
 ;
-478F: 21 C0 3F       LD      HL,$3FC0        ; Start of bottom row
-4792: 06 40          LD      B,$40           ; 64 characters on the row
-4794: 36 20          LD      (HL),$20        ; Clear ...
-4796: 23             INC     HL              ; ... the ...
-4797: 05             DEC     B               ; ... bottom ...
-4798: C2 94 47       JP      NZ,$4794                       ; ... row 
-479B: C3 1F 47       JP      $471F                          ; {GetInputLine} Go get another key
-479E: 54             LD      D,H             
-479F: 5D             LD      E,L             
-47A0: 45             LD      B,L             
-47A1: 36 20          LD      (HL),$20        
-47A3: 13             INC     DE              
-47A4: 7B             LD      A,E             
-47A5: A7             AND     A               
-47A6: C8             RET     Z               
-47A7: FE 01          CP      $01             
-47A9: C8             RET     Z               
-47AA: 1A             LD      A,(DE)          
-47AB: 77             LD      (HL),A          
-47AC: 2C             INC     L               
-47AD: 1C             INC     E               
-47AE: C2 AA 47       JP      NZ,$47AA                       ; 
-47B1: 36 20          LD      (HL),$20        
-47B3: 68             LD      L,B             
-47B4: C9             RET                     
-47B5: F5             PUSH    AF              
-47B6: 7D             LD      A,L             
-47B7: FE FF          CP      $FF             
-47B9: CA CE 47       JP      Z,$47CE                        ; 
-47BC: 45             LD      B,L             
-47BD: 21 FF 3F       LD      HL,$3FFF        
-47C0: 11 FE 3F       LD      DE,$3FFE        
-47C3: 1A             LD      A,(DE)          
-47C4: 77             LD      (HL),A          
-47C5: 2B             DEC     HL              
-47C6: 1B             DEC     DE              
-47C7: 7D             LD      A,L             
-47C8: B8             CP      B               
-47C9: C2 C3 47       JP      NZ,$47C3                       ; 
-47CC: 36 20          LD      (HL),$20        
-47CE: F1             POP     AF              
-47CF: C9             RET                     
+478F: 21 C0 3F        LD      HL,$3FC0            ; Start of bottom row
+4792: 06 40           LD      B,$40               ; 64 characters on the row
+4794: 36 20           LD      (HL),$20            ; Clear ...
+4796: 23              INC     HL                  ; ... the ...
+4797: 05              DEC     B                   ; ... bottom ...
+4798: C2 94 47        JP      NZ,$4794            ; {} ... row
+479B: C3 1F 47        JP      $471F               ; {code.GetInputLine} Go get another key
+479E: 54              LD      D,H                 
+479F: 5D              LD      E,L                 
+47A0: 45              LD      B,L                 
+47A1: 36 20           LD      (HL),$20            
+47A3: 13              INC     DE                  
+47A4: 7B              LD      A,E                 
+47A5: A7              AND     A                   
+47A6: C8              RET     Z                   
+47A7: FE 01           CP      $01                 
+47A9: C8              RET     Z                   
+47AA: 1A              LD      A,(DE)              
+47AB: 77              LD      (HL),A              
+47AC: 2C              INC     L                   
+47AD: 1C              INC     E                   
+47AE: C2 AA 47        JP      NZ,$47AA            ; {}
+47B1: 36 20           LD      (HL),$20            
+47B3: 68              LD      L,B                 
+47B4: C9              RET                         
+47B5: F5              PUSH    AF                  
+47B6: 7D              LD      A,L                 
+47B7: FE FF           CP      $FF                 
+47B9: CA CE 47        JP      Z,$47CE             ; {}
+47BC: 45              LD      B,L                 
+47BD: 21 FF 3F        LD      HL,$3FFF            
+47C0: 11 FE 3F        LD      DE,$3FFE            
+47C3: 1A              LD      A,(DE)              
+47C4: 77              LD      (HL),A              
+47C5: 2B              DEC     HL                  
+47C6: 1B              DEC     DE                  
+47C7: 7D              LD      A,L                 
+47C8: B8              CP      B                   
+47C9: C2 C3 47        JP      NZ,$47C3            ; {}
+47CC: 36 20           LD      (HL),$20            
+47CE: F1              POP     AF                  
+47CF: C9              RET                         
 ;
-47D0: CD B5 47       CALL    $47B5                          ; Slide row over from cursor
-47D3: 36 8F          LD      (HL),$8F        ; Cursor character
-47D5: C9             RET                     ; Done
+47D0: CD B5 47        CALL    $47B5               ; {} Slide row over from cursor
+47D3: 36 8F           LD      (HL),$8F            ; Cursor character
+47D5: C9              RET                         ; Done
 
 GetKey:
-47D6: CD D3 4F       CALL    $4FD3                          ; {GetRandom}  Get random number ever key stroke
-47D9: CD 2B 00       CALL    $002B           ; Read the keyboard
-47DC: A7             AND     A               ; Did we get one?
-47DD: CA D6 47       JP      Z,$47D6                        ; No ... keep waiting
-47E0: C9             RET                     ; Return the key
+47D6: CD D3 4F        CALL    $4FD3               ; {code.GetRandom}  Get random number ever key stroke
+47D9: CD 2B 00        CALL    $002B               ; Read the keyboard
+47DC: A7              AND     A                   ; Did we get one?
+47DD: CA D6 47        JP      Z,$47D6             ; {code.GetKey} No ... keep waiting
+47E0: C9              RET                         ; Return the key
 ```
 
 # Decode Buffer
@@ -726,1220 +728,1220 @@ DecodeBuffer:
 ;     WW = word number
 ;     PP = LSB of word on screen
 ;
-47E1: 23             INC     HL              
-47E2: 7D             LD      A,L             
-47E3: 32 1D 50       LD      ($501D),A                      ; {ram:tmp1CF} 
-47E6: FE FF          CP      $FF             
-47E8: C8             RET     Z               
-47E9: 7E             LD      A,(HL)          
-47EA: FE 20          CP      $20             
-47EC: CA E1 47       JP      Z,$47E1                        ; {DecodeBuffer} 
-47EF: FE 41          CP      $41             
-47F1: DA E1 47       JP      C,$47E1                        ; {DecodeBuffer} 
-47F4: 11 C2 52       LD      DE,$52C2        
-47F7: CD 2E 48       CALL    $482E                          ; 
-47FA: CA E2 47       JP      Z,$47E2                        ; 
-47FD: 06 01          LD      B,$01           
-47FF: 13             INC     DE              
-4800: CD 2E 48       CALL    $482E                          ; 
-4803: CA 0F 48       JP      Z,$480F                        ; 
-4806: 04             INC     B               
-4807: 78             LD      A,B             
-4808: FE 05          CP      $05             
-480A: C2 FF 47       JP      NZ,$47FF                       ; 
-480D: A7             AND     A               
-480E: C9             RET                     
-480F: EB             EX      DE,HL           
-4810: 2A 26 50       LD      HL,($5026)                     ; {ram:nextToken} 
-4813: 70             LD      (HL),B          
-4814: 23             INC     HL              
-4815: 77             LD      (HL),A          
-4816: 23             INC     HL              
-4817: 3A 1D 50       LD      A,($501D)                      ; {ram:tmp1CF} 
-481A: 77             LD      (HL),A          
-481B: 23             INC     HL              
-481C: 22 26 50       LD      ($5026),HL                     ; {ram:nextToken} 
-481F: EB             EX      DE,HL           
-4820: 78             LD      A,B             
-4821: FE 01          CP      $01             
-4823: C2 2C 48       JP      NZ,$482C                       ; 
-4826: 3A 09 50       LD      A,($5009)                      ; {ram:lsbVerb} 
-4829: 32 0A 50       LD      ($500A),A                      ; {ram:lsbCursor} 
-482C: 97             SUB     A               
-482D: C9             RET                     
-482E: 1A             LD      A,(DE)          
-482F: A7             AND     A               
-4830: C2 36 48       JP      NZ,$4836                       ; 
-4833: F6 01          OR      $01             
-4835: C9             RET                     
-4836: 4F             LD      C,A             
-4837: 32 1E 50       LD      ($501E),A                      ; {ram:tmp1DO} 
-483A: E5             PUSH    HL              
-483B: 13             INC     DE              
-483C: 7E             LD      A,(HL)          
-483D: FE 20          CP      $20             
-483F: CA 8A 48       JP      Z,$488A                        ; 
-4842: 7D             LD      A,L             
-4843: A7             AND     A               
-4844: CA 8A 48       JP      Z,$488A                        ; 
-4847: 7E             LD      A,(HL)          
-4848: FE 41          CP      $41             
-484A: D2 51 48       JP      NC,$4851                       ; 
-484D: 23             INC     HL              
-484E: C3 3C 48       JP      $483C                          ; 
-4851: 1A             LD      A,(DE)          
-4852: BE             CP      (HL)            
-4853: C2 8A 48       JP      NZ,$488A                       ; 
-4856: 13             INC     DE              
-4857: 23             INC     HL              
-4858: 0D             DEC     C               
-4859: C2 3C 48       JP      NZ,$483C                       ; 
-485C: 3A 1E 50       LD      A,($501E)                      ; {ram:tmp1DO} 
-485F: FE 06          CP      $06             
-4861: CA 6F 48       JP      Z,$486F                        ; 
-4864: 7E             LD      A,(HL)          
-4865: FE 41          CP      $41             
-4867: DA 6F 48       JP      C,$486F                        ; 
-486A: FE 20          CP      $20             
-486C: C2 8F 48       JP      NZ,$488F                       ; 
-486F: 1A             LD      A,(DE)          
-4870: D1             POP     DE              
-4871: 4F             LD      C,A             
-4872: 7E             LD      A,(HL)          
-4873: FE 20          CP      $20             
-4875: CA 82 48       JP      Z,$4882                        ; 
-4878: 7D             LD      A,L             
-4879: FE FF          CP      $FF             
-487B: CA 84 48       JP      Z,$4884                        ; 
-487E: 23             INC     HL              
-487F: C3 72 48       JP      $4872                          ; 
-4882: 7D             LD      A,L             
-4883: 3C             INC     A               
-4884: 32 09 50       LD      ($5009),A                      ; {ram:lsbVerb} 
-4887: 97             SUB     A               
-4888: 79             LD      A,C             
-4889: C9             RET                     
-488A: 13             INC     DE              
-488B: 0D             DEC     C               
-488C: C2 8A 48       JP      NZ,$488A                       ; 
-488F: E1             POP     HL              
-4890: 13             INC     DE              
-4891: C3 2E 48       JP      $482E                          ; 
-4894: 7E             LD      A,(HL)          
-4895: 47             LD      B,A             
-4896: 23             INC     HL              
-4897: E6 80          AND     $80             
-4899: CA B0 48       JP      Z,$48B0                        ; 
-489C: E5             PUSH    HL              
-489D: D5             PUSH    DE              
-489E: 21 CD 7B       LD      HL,$7BCD        
-48A1: CD ED 46       CALL    $46ED                          ; {FindSublist} 
-48A4: D2 AD 48       JP      NC,$48AD                       ; 
-48A7: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-48AA: CD 94 48       CALL    $4894                          ; 
-48AD: D1             POP     DE              
-48AE: E1             POP     HL              
-48AF: C9             RET                     
-48B0: 78             LD      A,B             
-48B1: 11 66 50       LD      DE,$5066                       ; Command jump table
-48B4: 07             RLCA                    
-48B5: 83             ADD     A,E             
-48B6: 5F             LD      E,A             
-48B7: 7A             LD      A,D             
-48B8: CE 00          ADC     $00             
-48BA: 57             LD      D,A             
-48BB: 1A             LD      A,(DE)          
-48BC: 32 C5 48       LD      ($48C5),A                      ; 
-48BF: 13             INC     DE              
-48C0: 1A             LD      A,(DE)          
-48C1: 32 C6 48       LD      ($48C6),A                      ; 
-48C4: C3 C4 48       JP      $48C4                          ; 
+47E1: 23              INC     HL                  
+47E2: 7D              LD      A,L                 
+47E3: 32 1D 50        LD      ($501D),A           ; {ram.tmp1CF}
+47E6: FE FF           CP      $FF                 
+47E8: C8              RET     Z                   
+47E9: 7E              LD      A,(HL)              
+47EA: FE 20           CP      $20                 
+47EC: CA E1 47        JP      Z,$47E1             ; {code.DecodeBuffer}
+47EF: FE 41           CP      $41                 
+47F1: DA E1 47        JP      C,$47E1             ; {code.DecodeBuffer}
+47F4: 11 C2 52        LD      DE,$52C2            
+47F7: CD 2E 48        CALL    $482E               ; {}
+47FA: CA E2 47        JP      Z,$47E2             ; {}
+47FD: 06 01           LD      B,$01               
+47FF: 13              INC     DE                  
+4800: CD 2E 48        CALL    $482E               ; {}
+4803: CA 0F 48        JP      Z,$480F             ; {}
+4806: 04              INC     B                   
+4807: 78              LD      A,B                 
+4808: FE 05           CP      $05                 
+480A: C2 FF 47        JP      NZ,$47FF            ; {}
+480D: A7              AND     A                   
+480E: C9              RET                         
+480F: EB              EX      DE,HL               
+4810: 2A 26 50        LD      HL,($5026)          ; {ram.nextToken}
+4813: 70              LD      (HL),B              
+4814: 23              INC     HL                  
+4815: 77              LD      (HL),A              
+4816: 23              INC     HL                  
+4817: 3A 1D 50        LD      A,($501D)           ; {ram.tmp1CF}
+481A: 77              LD      (HL),A              
+481B: 23              INC     HL                  
+481C: 22 26 50        LD      ($5026),HL          ; {ram.nextToken}
+481F: EB              EX      DE,HL               
+4820: 78              LD      A,B                 
+4821: FE 01           CP      $01                 
+4823: C2 2C 48        JP      NZ,$482C            ; {}
+4826: 3A 09 50        LD      A,($5009)           ; {ram.lsbVerb}
+4829: 32 0A 50        LD      ($500A),A           ; {ram.lsbCursor}
+482C: 97              SUB     A                   
+482D: C9              RET                         
+482E: 1A              LD      A,(DE)              
+482F: A7              AND     A                   
+4830: C2 36 48        JP      NZ,$4836            ; {}
+4833: F6 01           OR      $01                 
+4835: C9              RET                         
+4836: 4F              LD      C,A                 
+4837: 32 1E 50        LD      ($501E),A           ; {ram.tmp1DO}
+483A: E5              PUSH    HL                  
+483B: 13              INC     DE                  
+483C: 7E              LD      A,(HL)              
+483D: FE 20           CP      $20                 
+483F: CA 8A 48        JP      Z,$488A             ; {}
+4842: 7D              LD      A,L                 
+4843: A7              AND     A                   
+4844: CA 8A 48        JP      Z,$488A             ; {}
+4847: 7E              LD      A,(HL)              
+4848: FE 41           CP      $41                 
+484A: D2 51 48        JP      NC,$4851            ; {}
+484D: 23              INC     HL                  
+484E: C3 3C 48        JP      $483C               ; {}
+4851: 1A              LD      A,(DE)              
+4852: BE              CP      (HL)                
+4853: C2 8A 48        JP      NZ,$488A            ; {}
+4856: 13              INC     DE                  
+4857: 23              INC     HL                  
+4858: 0D              DEC     C                   
+4859: C2 3C 48        JP      NZ,$483C            ; {}
+485C: 3A 1E 50        LD      A,($501E)           ; {ram.tmp1DO}
+485F: FE 06           CP      $06                 
+4861: CA 6F 48        JP      Z,$486F             ; {}
+4864: 7E              LD      A,(HL)              
+4865: FE 41           CP      $41                 
+4867: DA 6F 48        JP      C,$486F             ; {}
+486A: FE 20           CP      $20                 
+486C: C2 8F 48        JP      NZ,$488F            ; {}
+486F: 1A              LD      A,(DE)              
+4870: D1              POP     DE                  
+4871: 4F              LD      C,A                 
+4872: 7E              LD      A,(HL)              
+4873: FE 20           CP      $20                 
+4875: CA 82 48        JP      Z,$4882             ; {}
+4878: 7D              LD      A,L                 
+4879: FE FF           CP      $FF                 
+487B: CA 84 48        JP      Z,$4884             ; {}
+487E: 23              INC     HL                  
+487F: C3 72 48        JP      $4872               ; {}
+4882: 7D              LD      A,L                 
+4883: 3C              INC     A                   
+4884: 32 09 50        LD      ($5009),A           ; {ram.lsbVerb}
+4887: 97              SUB     A                   
+4888: 79              LD      A,C                 
+4889: C9              RET                         
+488A: 13              INC     DE                  
+488B: 0D              DEC     C                   
+488C: C2 8A 48        JP      NZ,$488A            ; {}
+488F: E1              POP     HL                  
+4890: 13              INC     DE                  
+4891: C3 2E 48        JP      $482E               ; {}
+4894: 7E              LD      A,(HL)              
+4895: 47              LD      B,A                 
+4896: 23              INC     HL                  
+4897: E6 80           AND     $80                 
+4899: CA B0 48        JP      Z,$48B0             ; {}
+489C: E5              PUSH    HL                  
+489D: D5              PUSH    DE                  
+489E: 21 CD 7B        LD      HL,$7BCD            
+48A1: CD ED 46        CALL    $46ED               ; {code.FindSublist}
+48A4: D2 AD 48        JP      NC,$48AD            ; {}
+48A7: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+48AA: CD 94 48        CALL    $4894               ; {}
+48AD: D1              POP     DE                  
+48AE: E1              POP     HL                  
+48AF: C9              RET                         
+48B0: 78              LD      A,B                 
+48B1: 11 66 50        LD      DE,$5066            ; Command jump table
+48B4: 07              RLCA                        
+48B5: 83              ADD     A,E                 
+48B6: 5F              LD      E,A                 
+48B7: 7A              LD      A,D                 
+48B8: CE 00           ADC     $00                 
+48BA: 57              LD      D,A                 
+48BB: 1A              LD      A,(DE)              
+48BC: 32 C5 48        LD      ($48C5),A           ; {}
+48BF: 13              INC     DE                  
+48C0: 1A              LD      A,(DE)              
+48C1: 32 C6 48        LD      ($48C6),A           ; {}
+48C4: C3 C4 48        JP      $48C4               ; {}
 
 Com_0D_while_pass:
 ; while_pass:
-48C7: CD 06 47       CALL    $4706                          ; {LoadEnd} 
-48CA: CD 19 47       CALL    $4719                          ; {CompareXY} 
-48CD: D2 DA 48       JP      NC,$48DA                       ; 
-48D0: D5             PUSH    DE              
-48D1: CD 94 48       CALL    $4894                          ; 
-48D4: D1             POP     DE              
-48D5: CA CA 48       JP      Z,$48CA                        ; 
-48D8: EB             EX      DE,HL           
-48D9: C9             RET                     
-48DA: EB             EX      DE,HL           
-48DB: 97             SUB     A               
-48DC: C9             RET                     
+48C7: CD 06 47        CALL    $4706               ; {code.LoadEnd}
+48CA: CD 19 47        CALL    $4719               ; {code.CompareXY}
+48CD: D2 DA 48        JP      NC,$48DA            ; {}
+48D0: D5              PUSH    DE                  
+48D1: CD 94 48        CALL    $4894               ; {}
+48D4: D1              POP     DE                  
+48D5: CA CA 48        JP      Z,$48CA             ; {}
+48D8: EB              EX      DE,HL               
+48D9: C9              RET                         
+48DA: EB              EX      DE,HL               
+48DB: 97              SUB     A                   
+48DC: C9              RET                         
 
 Com_0E_while_fail:
 ; while_fail:
-48DD: CD 06 47       CALL    $4706                          ; {LoadEnd} 
-48E0: CD 19 47       CALL    $4719                          ; {CompareXY} 
-48E3: D2 F0 48       JP      NC,$48F0                       ; 
-48E6: D5             PUSH    DE              
-48E7: CD 94 48       CALL    $4894                          ; 
-48EA: D1             POP     DE              
-48EB: C2 E0 48       JP      NZ,$48E0                       ; 
-48EE: EB             EX      DE,HL           
-48EF: C9             RET                     
-48F0: EB             EX      DE,HL           
-48F1: F6 01          OR      $01             
-48F3: C9             RET                     
+48DD: CD 06 47        CALL    $4706               ; {code.LoadEnd}
+48E0: CD 19 47        CALL    $4719               ; {code.CompareXY}
+48E3: D2 F0 48        JP      NC,$48F0            ; {}
+48E6: D5              PUSH    DE                  
+48E7: CD 94 48        CALL    $4894               ; {}
+48EA: D1              POP     DE                  
+48EB: C2 E0 48        JP      NZ,$48E0            ; {}
+48EE: EB              EX      DE,HL               
+48EF: C9              RET                         
+48F0: EB              EX      DE,HL               
+48F1: F6 01           OR      $01                 
+48F3: C9              RET                         
 
 Com_0B_switch:
 ; switch:
-48F4: CD 06 47       CALL    $4706                          ; {LoadEnd} 
-48F7: 46             LD      B,(HL)          
-48F8: 23             INC     HL              
-48F9: CD 19 47       CALL    $4719                          ; {CompareXY} 
-48FC: D2 F0 48       JP      NC,$48F0                       ; 
-48FF: D5             PUSH    DE              
-4900: C5             PUSH    BC              
-4901: 78             LD      A,B             
-4902: CD B1 48       CALL    $48B1                          ; 
-4905: C1             POP     BC              
-4906: CA 11 49       JP      Z,$4911                        ; 
-4909: CD 06 47       CALL    $4706                          ; {LoadEnd} 
-490C: EB             EX      DE,HL           
-490D: D1             POP     DE              
-490E: C3 F9 48       JP      $48F9                          ; 
-4911: CD 06 47       CALL    $4706                          ; {LoadEnd} 
-4914: CD 94 48       CALL    $4894                          ; 
-4917: E1             POP     HL              
-4918: C9             RET                     
+48F4: CD 06 47        CALL    $4706               ; {code.LoadEnd}
+48F7: 46              LD      B,(HL)              
+48F8: 23              INC     HL                  
+48F9: CD 19 47        CALL    $4719               ; {code.CompareXY}
+48FC: D2 F0 48        JP      NC,$48F0            ; {}
+48FF: D5              PUSH    DE                  
+4900: C5              PUSH    BC                  
+4901: 78              LD      A,B                 
+4902: CD B1 48        CALL    $48B1               ; {}
+4905: C1              POP     BC                  
+4906: CA 11 49        JP      Z,$4911             ; {}
+4909: CD 06 47        CALL    $4706               ; {code.LoadEnd}
+490C: EB              EX      DE,HL               
+490D: D1              POP     DE                  
+490E: C3 F9 48        JP      $48F9               ; {}
+4911: CD 06 47        CALL    $4706               ; {code.LoadEnd}
+4914: CD 94 48        CALL    $4894               ; {}
+4917: E1              POP     HL                  
+4918: C9              RET                         
 
 Com_00_move_ACTIVE_and_look:
 ; move_ACTIVE_and_look(room)
-4919: CD 23 49       CALL    $4923                          ; {Com_19_move_ACTIVE} 
-491C: E5             PUSH    HL              
-491D: CD D0 49       CALL    $49D0                          ; {PrintRoomDescription} 
-4920: E1             POP     HL              
-4921: 97             SUB     A               
-4922: C9             RET                     
+4919: CD 23 49        CALL    $4923               ; {code.Com_19_move_ACTIVE}
+491C: E5              PUSH    HL                  
+491D: CD D0 49        CALL    $49D0               ; {code.PrintRoomDescription}
+4920: E1              POP     HL                  
+4921: 97              SUB     A                   
+4922: C9              RET                         
 
 Com_19_move_ACTIVE:
 ; move_ACTIVE(room)
-4923: 7E             LD      A,(HL)          
-4924: 23             INC     HL              
-4925: E5             PUSH    HL              
-4926: 32 23 50       LD      ($5023),A                      ; {ram:CUR_ROOM} 
-4929: 47             LD      B,A             
-492A: 21 1F 68       LD      HL,$681F                       ; {!+RoomDescriptions} 
-492D: CD ED 46       CALL    $46ED                          ; {FindSublist} 
-4930: 22 24 50       LD      ($5024),HL                     ; {ram:CUR_ROOM_DATA} 
-4933: 2A 21 50       LD      HL,($5021)                     ; {ram:ACTIVE_OBJ_DATA} 
-4936: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4939: 3A 23 50       LD      A,($5023)                      ; {ram:CUR_ROOM} 
-493C: 77             LD      (HL),A          
-493D: E1             POP     HL              
-493E: 97             SUB     A               
-493F: C9             RET                     
+4923: 7E              LD      A,(HL)              
+4924: 23              INC     HL                  
+4925: E5              PUSH    HL                  
+4926: 32 23 50        LD      ($5023),A           ; {ram.CUR_ROOM}
+4929: 47              LD      B,A                 
+492A: 21 1F 68        LD      HL,$681F            ; {+code.RoomDescriptions}
+492D: CD ED 46        CALL    $46ED               ; {code.FindSublist}
+4930: 22 24 50        LD      ($5024),HL          ; {ram.CUR_ROOM_DATA}
+4933: 2A 21 50        LD      HL,($5021)          ; {ram.ACTIVE_OBJ_DATA}
+4936: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4939: 3A 23 50        LD      A,($5023)           ; {ram.CUR_ROOM}
+493C: 77              LD      (HL),A              
+493D: E1              POP     HL                  
+493E: 97              SUB     A                   
+493F: C9              RET                         
 
 Com_1A_set_VAR_to_first_noun:
 ; set_VAR_to_first_noun()
-4940: E5             PUSH    HL              
-4941: 2A 14 50       LD      HL,($5014)                     ; {ram:FIRST_NOUN_DATA} 
-4944: 22 0E 50       LD      ($500E),HL                     ; {ram:VAR_OBJ_DATA} 
-4947: 3A 11 50       LD      A,($5011)                      ; {ram:FIRST_NOUN_NUM} 
-494A: 32 0D 50       LD      ($500D),A                      ; {ram:VAR_OBJ_NUMBER} 
-494D: E1             POP     HL              
-494E: 97             SUB     A               
-494F: C9             RET                     
+4940: E5              PUSH    HL                  
+4941: 2A 14 50        LD      HL,($5014)          ; {ram.FIRST_NOUN_DATA}
+4944: 22 0E 50        LD      ($500E),HL          ; {ram.VAR_OBJ_DATA}
+4947: 3A 11 50        LD      A,($5011)           ; {ram.FIRST_NOUN_NUM}
+494A: 32 0D 50        LD      ($500D),A           ; {ram.VAR_OBJ_NUMBER}
+494D: E1              POP     HL                  
+494E: 97              SUB     A                   
+494F: C9              RET                         
 
 Com_1B_set_VAR_to_second_noun:
 ; set_VAR_to_second_noun()
-4950: E5             PUSH    HL              
-4951: 2A 1A 50       LD      HL,($501A)                     ; {ram:SECOND_NOUN_DATA} 
-4954: 22 0E 50       LD      ($500E),HL                     ; {ram:VAR_OBJ_DATA} 
-4957: 3A 17 50       LD      A,($5017)                      ; {ram:SECOND_NOUN_NUM} 
-495A: 32 0D 50       LD      ($500D),A                      ; {ram:VAR_OBJ_NUMBER} 
-495D: E1             POP     HL              
-495E: 97             SUB     A               
-495F: C9             RET                     
+4950: E5              PUSH    HL                  
+4951: 2A 1A 50        LD      HL,($501A)          ; {ram.SECOND_NOUN_DATA}
+4954: 22 0E 50        LD      ($500E),HL          ; {ram.VAR_OBJ_DATA}
+4957: 3A 17 50        LD      A,($5017)           ; {ram.SECOND_NOUN_NUM}
+495A: 32 0D 50        LD      ($500D),A           ; {ram.VAR_OBJ_NUMBER}
+495D: E1              POP     HL                  
+495E: 97              SUB     A                   
+495F: C9              RET                         
 
 Com_1C_set_VAR:
 ; set_VAR(object)
-4960: 46             LD      B,(HL)          
-4961: 23             INC     HL              
-4962: E5             PUSH    HL              
-4963: 78             LD      A,B             
-4964: 32 0D 50       LD      ($500D),A                      ; {ram:VAR_OBJ_NUMBER} 
-4967: CD 83 4E       CALL    $4E83                          ; 
-496A: 22 0E 50       LD      ($500E),HL                     ; {ram:VAR_OBJ_DATA} 
-496D: E1             POP     HL              
-496E: 97             SUB     A               
-496F: C9             RET                     
+4960: 46              LD      B,(HL)              
+4961: 23              INC     HL                  
+4962: E5              PUSH    HL                  
+4963: 78              LD      A,B                 
+4964: 32 0D 50        LD      ($500D),A           ; {ram.VAR_OBJ_NUMBER}
+4967: CD 83 4E        CALL    $4E83               ; {}
+496A: 22 0E 50        LD      ($500E),HL          ; {ram.VAR_OBJ_DATA}
+496D: E1              POP     HL                  
+496E: 97              SUB     A                   
+496F: C9              RET                         
 
 Com_21_execute_phrase:
 ; execute_phrase(phrase,first_noun,second_noun)
-4970: EB             EX      DE,HL           
-4971: 2A 14 50       LD      HL,($5014)                     ; {ram:FIRST_NOUN_DATA} 
-4974: E5             PUSH    HL              
-4975: 2A 1A 50       LD      HL,($501A)                     ; {ram:SECOND_NOUN_DATA} 
-4978: E5             PUSH    HL              
-4979: 3A 11 50       LD      A,($5011)                      ; {ram:FIRST_NOUN_NUM} 
-497C: 47             LD      B,A             
-497D: 3A 17 50       LD      A,($5017)                      ; {ram:SECOND_NOUN_NUM} 
-4980: 4F             LD      C,A             
-4981: C5             PUSH    BC              
-4982: 3A 0A 00       LD      A,($000A)       
-4985: 47             LD      B,A             
-4986: C5             PUSH    BC              
-4987: EB             EX      DE,HL           
-4988: 7E             LD      A,(HL)          
-4989: 32 0A 00       LD      ($000A),A       
-498C: 23             INC     HL              
-498D: 46             LD      B,(HL)          
-498E: 23             INC     HL              
-498F: 4E             LD      C,(HL)          
-4990: 23             INC     HL              
-4991: E5             PUSH    HL              
-4992: 78             LD      A,B             
-4993: 32 11 50       LD      ($5011),A                      ; {ram:FIRST_NOUN_NUM} 
-4996: A7             AND     A               
-4997: CA A0 49       JP      Z,$49A0                        ; 
-499A: CD 83 4E       CALL    $4E83                          ; 
-499D: 22 14 50       LD      ($5014),HL                     ; {ram:FIRST_NOUN_DATA} 
-49A0: 79             LD      A,C             
-49A1: 32 17 50       LD      ($5017),A                      ; {ram:SECOND_NOUN_NUM} 
-49A4: A7             AND     A               
-49A5: CA AE 49       JP      Z,$49AE                        ; 
-49A8: CD 83 4E       CALL    $4E83                          ; 
-49AB: 22 1A 50       LD      ($501A),HL                     ; {ram:SECOND_NOUN_DATA} 
-49AE: 21 FB 73       LD      HL,$73FB        
-49B1: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-49B4: CD 94 48       CALL    $4894                          ; 
-49B7: D1             POP     DE              
-49B8: C1             POP     BC              
-49B9: 78             LD      A,B             
-49BA: 32 0A 00       LD      ($000A),A       
-49BD: C1             POP     BC              
-49BE: 78             LD      A,B             
-49BF: 32 11 50       LD      ($5011),A                      ; {ram:FIRST_NOUN_NUM} 
-49C2: 79             LD      A,C             
-49C3: 32 17 50       LD      ($5017),A                      ; {ram:SECOND_NOUN_NUM} 
-49C6: E1             POP     HL              
-49C7: 22 1A 50       LD      ($501A),HL                     ; {ram:SECOND_NOUN_DATA} 
-49CA: E1             POP     HL              
-49CB: 22 14 50       LD      ($5014),HL                     ; {ram:FIRST_NOUN_DATA} 
-49CE: EB             EX      DE,HL           
-49CF: C9             RET                     
+4970: EB              EX      DE,HL               
+4971: 2A 14 50        LD      HL,($5014)          ; {ram.FIRST_NOUN_DATA}
+4974: E5              PUSH    HL                  
+4975: 2A 1A 50        LD      HL,($501A)          ; {ram.SECOND_NOUN_DATA}
+4978: E5              PUSH    HL                  
+4979: 3A 11 50        LD      A,($5011)           ; {ram.FIRST_NOUN_NUM}
+497C: 47              LD      B,A                 
+497D: 3A 17 50        LD      A,($5017)           ; {ram.SECOND_NOUN_NUM}
+4980: 4F              LD      C,A                 
+4981: C5              PUSH    BC                  
+4982: 3A 0A 00        LD      A,($000A)           
+4985: 47              LD      B,A                 
+4986: C5              PUSH    BC                  
+4987: EB              EX      DE,HL               
+4988: 7E              LD      A,(HL)              
+4989: 32 0A 00        LD      ($000A),A           
+498C: 23              INC     HL                  
+498D: 46              LD      B,(HL)              
+498E: 23              INC     HL                  
+498F: 4E              LD      C,(HL)              
+4990: 23              INC     HL                  
+4991: E5              PUSH    HL                  
+4992: 78              LD      A,B                 
+4993: 32 11 50        LD      ($5011),A           ; {ram.FIRST_NOUN_NUM}
+4996: A7              AND     A                   
+4997: CA A0 49        JP      Z,$49A0             ; {}
+499A: CD 83 4E        CALL    $4E83               ; {}
+499D: 22 14 50        LD      ($5014),HL          ; {ram.FIRST_NOUN_DATA}
+49A0: 79              LD      A,C                 
+49A1: 32 17 50        LD      ($5017),A           ; {ram.SECOND_NOUN_NUM}
+49A4: A7              AND     A                   
+49A5: CA AE 49        JP      Z,$49AE             ; {}
+49A8: CD 83 4E        CALL    $4E83               ; {}
+49AB: 22 1A 50        LD      ($501A),HL          ; {ram.SECOND_NOUN_DATA}
+49AE: 21 FB 73        LD      HL,$73FB            
+49B1: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+49B4: CD 94 48        CALL    $4894               ; {}
+49B7: D1              POP     DE                  
+49B8: C1              POP     BC                  
+49B9: 78              LD      A,B                 
+49BA: 32 0A 00        LD      ($000A),A           
+49BD: C1              POP     BC                  
+49BE: 78              LD      A,B                 
+49BF: 32 11 50        LD      ($5011),A           ; {ram.FIRST_NOUN_NUM}
+49C2: 79              LD      A,C                 
+49C3: 32 17 50        LD      ($5017),A           ; {ram.SECOND_NOUN_NUM}
+49C6: E1              POP     HL                  
+49C7: 22 1A 50        LD      ($501A),HL          ; {ram.SECOND_NOUN_DATA}
+49CA: E1              POP     HL                  
+49CB: 22 14 50        LD      ($5014),HL          ; {ram.FIRST_NOUN_DATA}
+49CE: EB              EX      DE,HL               
+49CF: C9              RET                         
 
 ; Print room description
 PrintRoomDescription:
-49D0: 3A 20 50       LD      A,($5020)                      ; {ram:ACTIVE_OBJ_NUM} 
-49D3: FE 1D          CP      $1D             
-49D5: C0             RET     NZ              
-49D6: 2A 24 50       LD      HL,($5024)                     ; {ram:CUR_ROOM_DATA} 
-49D9: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-49DC: 23             INC     HL              
-49DD: 06 03          LD      B,$03           
-49DF: CD F1 46       CALL    $46F1                          ; 
-49E2: D2 E9 49       JP      NC,$49E9                       ; 
-49E5: 23             INC     HL              
-49E6: CD 9B 4E       CALL    $4E9B                          ; 
+49D0: 3A 20 50        LD      A,($5020)           ; {ram.ACTIVE_OBJ_NUM}
+49D3: FE 1D           CP      $1D                 
+49D5: C0              RET     NZ                  
+49D6: 2A 24 50        LD      HL,($5024)          ; {ram.CUR_ROOM_DATA}
+49D9: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+49DC: 23              INC     HL                  
+49DD: 06 03           LD      B,$03               
+49DF: CD F1 46        CALL    $46F1               ; {}
+49E2: D2 E9 49        JP      NC,$49E9            ; {}
+49E5: 23              INC     HL                  
+49E6: CD 9B 4E        CALL    $4E9B               ; {}
 ;
 ; Print object descriptions
 ;
-49E9: 21 51 56       LD      HL,$5651                       ; {!+ObjectData} 
-49EC: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-49EF: D5             PUSH    DE              
-49F0: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-49F3: 3A 23 50       LD      A,($5023)                      ; {ram:CUR_ROOM} 
-49F6: BE             CP      (HL)            
-49F7: C2 0B 4A       JP      NZ,$4A0B                       ; 
-49FA: 23             INC     HL              
-49FB: 23             INC     HL              
-49FC: 23             INC     HL              
-49FD: 06 03          LD      B,$03           
-49FF: CD F1 46       CALL    $46F1                          ; 
-4A02: D2 0B 4A       JP      NC,$4A0B                       ; 
-4A05: 23             INC     HL              
-4A06: D5             PUSH    DE              
-4A07: CD 9B 4E       CALL    $4E9B                          ; 
-4A0A: D1             POP     DE              
-4A0B: EB             EX      DE,HL           
-4A0C: D1             POP     DE              
-4A0D: CD 19 47       CALL    $4719                          ; {CompareXY} 
-4A10: DA EF 49       JP      C,$49EF                        ; 
-4A13: C9             RET                     
+49E9: 21 51 56        LD      HL,$5651            ; {+code.ObjectData}
+49EC: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+49EF: D5              PUSH    DE                  
+49F0: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+49F3: 3A 23 50        LD      A,($5023)           ; {ram.CUR_ROOM}
+49F6: BE              CP      (HL)                
+49F7: C2 0B 4A        JP      NZ,$4A0B            ; {}
+49FA: 23              INC     HL                  
+49FB: 23              INC     HL                  
+49FC: 23              INC     HL                  
+49FD: 06 03           LD      B,$03               
+49FF: CD F1 46        CALL    $46F1               ; {}
+4A02: D2 0B 4A        JP      NC,$4A0B            ; {}
+4A05: 23              INC     HL                  
+4A06: D5              PUSH    DE                  
+4A07: CD 9B 4E        CALL    $4E9B               ; {}
+4A0A: D1              POP     DE                  
+4A0B: EB              EX      DE,HL               
+4A0C: D1              POP     DE                  
+4A0D: CD 19 47        CALL    $4719               ; {code.CompareXY}
+4A10: DA EF 49        JP      C,$49EF             ; {}
+4A13: C9              RET                         
 
 Com_01_is_in_pack_or_current_room:
 ; is_in_pack_or_current_room(object)
-4A14: 46             LD      B,(HL)          
-4A15: 23             INC     HL              
-4A16: E5             PUSH    HL              
-4A17: CD 83 4E       CALL    $4E83                          ; 
-4A1A: CD A6 45       CALL    $45A6                          ; 
-4A1D: E1             POP     HL              
-4A1E: C9             RET                     
+4A14: 46              LD      B,(HL)              
+4A15: 23              INC     HL                  
+4A16: E5              PUSH    HL                  
+4A17: CD 83 4E        CALL    $4E83               ; {}
+4A1A: CD A6 45        CALL    $45A6               ; {}
+4A1D: E1              POP     HL                  
+4A1E: C9              RET                         
 
 Com_20_is_ACTIVE_this:
 ; is_ACTIVE_this(object)
-4A1F: 3A 20 50       LD      A,($5020)                      ; {ram:ACTIVE_OBJ_NUM} 
-4A22: BE             CP      (HL)            
-4A23: 23             INC     HL              
-4A24: C9             RET                     
+4A1F: 3A 20 50        LD      A,($5020)           ; {ram.ACTIVE_OBJ_NUM}
+4A22: BE              CP      (HL)                
+4A23: 23              INC     HL                  
+4A24: C9              RET                         
 
 Com_02_is_owned_by_ACTIVE:
 ; is_owned_by_ACTIVE(object)
-4A25: 46             LD      B,(HL)          
-4A26: 23             INC     HL              
-4A27: C3 CE 4B       JP      $4BCE                          ; 
+4A25: 46              LD      B,(HL)              
+4A26: 23              INC     HL                  
+4A27: C3 CE 4B        JP      $4BCE               ; {}
 
 Com_03_is_located:
 ; is_located(room,object)
-4A2A: 4E             LD      C,(HL)          
-4A2B: 23             INC     HL              
-4A2C: 46             LD      B,(HL)          
-4A2D: 23             INC     HL              
-4A2E: E5             PUSH    HL              
-4A2F: CD 83 4E       CALL    $4E83                          ; 
-4A32: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4A35: 5E             LD      E,(HL)          
-4A36: 23             INC     HL              
-4A37: 7E             LD      A,(HL)          
-4A38: E1             POP     HL              
-4A39: 7B             LD      A,E             
-4A3A: B9             CP      C               
-4A3B: C9             RET                     
+4A2A: 4E              LD      C,(HL)              
+4A2B: 23              INC     HL                  
+4A2C: 46              LD      B,(HL)              
+4A2D: 23              INC     HL                  
+4A2E: E5              PUSH    HL                  
+4A2F: CD 83 4E        CALL    $4E83               ; {}
+4A32: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4A35: 5E              LD      E,(HL)              
+4A36: 23              INC     HL                  
+4A37: 7E              LD      A,(HL)              
+4A38: E1              POP     HL                  
+4A39: 7B              LD      A,E                 
+4A3A: B9              CP      C                   
+4A3B: C9              RET                         
 
 Com_0C_fail:
 ; fail()
-4A3C: F6 01          OR      $01             
-4A3E: C9             RET                     
+4A3C: F6 01           OR      $01                 
+4A3E: C9              RET                         
 
 Com_04_print:
 ; print(msg)
-4A3F: 3A 20 50       LD      A,($5020)                      ; {ram:ACTIVE_OBJ_NUM} 
-4A42: FE 1D          CP      $1D             
-4A44: C2 54 4A       JP      NZ,$4A54                       ; 
+4A3F: 3A 20 50        LD      A,($5020)           ; {ram.ACTIVE_OBJ_NUM}
+4A42: FE 1D           CP      $1D                 
+4A44: C2 54 4A        JP      NZ,$4A54            ; {}
 
 Com_1F_print2:
 ; print2(msg)
-4A47: 06 1D          LD      B,$1D           
-4A49: E5             PUSH    HL              
-4A4A: CD 83 4E       CALL    $4E83                          ; 
-4A4D: CD A6 45       CALL    $45A6                          ; 
-4A50: E1             POP     HL              
-4A51: CA 5B 4A       JP      Z,$4A5B                        ; 
-4A54: CD 06 47       CALL    $4706                          ; {LoadEnd} 
-4A57: EB             EX      DE,HL           
-4A58: C3 5E 4A       JP      $4A5E                          ; 
-4A5B: CD 9B 4E       CALL    $4E9B                          ; 
-4A5E: 97             SUB     A               
-4A5F: C9             RET                     
+4A47: 06 1D           LD      B,$1D               
+4A49: E5              PUSH    HL                  
+4A4A: CD 83 4E        CALL    $4E83               ; {}
+4A4D: CD A6 45        CALL    $45A6               ; {}
+4A50: E1              POP     HL                  
+4A51: CA 5B 4A        JP      Z,$4A5B             ; {}
+4A54: CD 06 47        CALL    $4706               ; {code.LoadEnd}
+4A57: EB              EX      DE,HL               
+4A58: C3 5E 4A        JP      $4A5E               ; {}
+4A5B: CD 9B 4E        CALL    $4E9B               ; {}
+4A5E: 97              SUB     A                   
+4A5F: C9              RET                         
 
 Com_07_print_room_description:
 ; print_room_description()
-4A60: CD D0 49       CALL    $49D0                          ; {PrintRoomDescription} 
-4A63: 97             SUB     A               
-4A64: C9             RET                     
+4A60: CD D0 49        CALL    $49D0               ; {code.PrintRoomDescription}
+4A63: 97              SUB     A                   
+4A64: C9              RET                         
 
 Com_06_print_inventory:
 ; print_inventory()
-4A65: E5             PUSH    HL              
-4A66: 3E 0D          LD      A,$0D           
-4A68: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
-4A6B: 21 51 56       LD      HL,$5651                       ; {!+ObjectData} 
-4A6E: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4A71: CD 19 47       CALL    $4719                          ; {CompareXY} 
-4A74: D2 99 4A       JP      NC,$4A99                       ; 
-4A77: D5             PUSH    DE              
-4A78: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4A7B: 46             LD      B,(HL)          
-4A7C: 3A 20 50       LD      A,($5020)                      ; {ram:ACTIVE_OBJ_NUM} 
-4A7F: B8             CP      B               
-4A80: C2 94 4A       JP      NZ,$4A94                       ; 
-4A83: 23             INC     HL              
-4A84: 23             INC     HL              
-4A85: 23             INC     HL              
-4A86: 06 02          LD      B,$02           
-4A88: CD F1 46       CALL    $46F1                          ; 
-4A8B: D2 94 4A       JP      NC,$4A94                       ; 
-4A8E: 23             INC     HL              
-4A8F: D5             PUSH    DE              
-4A90: CD 92 4E       CALL    $4E92                          ; 
-4A93: D1             POP     DE              
-4A94: EB             EX      DE,HL           
-4A95: D1             POP     DE              
-4A96: C3 71 4A       JP      $4A71                          ; 
-4A99: 97             SUB     A               
-4A9A: E1             POP     HL              
-4A9B: C9             RET                     
+4A65: E5              PUSH    HL                  
+4A66: 3E 0D           LD      A,$0D               
+4A68: CD 0D 4F        CALL    $4F0D               ; {code.PrintCharacterAutoWrap}
+4A6B: 21 51 56        LD      HL,$5651            ; {+code.ObjectData}
+4A6E: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4A71: CD 19 47        CALL    $4719               ; {code.CompareXY}
+4A74: D2 99 4A        JP      NC,$4A99            ; {}
+4A77: D5              PUSH    DE                  
+4A78: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4A7B: 46              LD      B,(HL)              
+4A7C: 3A 20 50        LD      A,($5020)           ; {ram.ACTIVE_OBJ_NUM}
+4A7F: B8              CP      B                   
+4A80: C2 94 4A        JP      NZ,$4A94            ; {}
+4A83: 23              INC     HL                  
+4A84: 23              INC     HL                  
+4A85: 23              INC     HL                  
+4A86: 06 02           LD      B,$02               
+4A88: CD F1 46        CALL    $46F1               ; {}
+4A8B: D2 94 4A        JP      NC,$4A94            ; {}
+4A8E: 23              INC     HL                  
+4A8F: D5              PUSH    DE                  
+4A90: CD 92 4E        CALL    $4E92               ; {}
+4A93: D1              POP     DE                  
+4A94: EB              EX      DE,HL               
+4A95: D1              POP     DE                  
+4A96: C3 71 4A        JP      $4A71               ; {}
+4A99: 97              SUB     A                   
+4A9A: E1              POP     HL                  
+4A9B: C9              RET                         
 
 Com_08_is_first_noun:
 ; is_first_noun(object)
-4A9C: E5             PUSH    HL              
-4A9D: 2A 14 50       LD      HL,($5014)                     ; {ram:FIRST_NOUN_DATA} 
-4AA0: 3A 11 50       LD      A,($5011)                      ; {ram:FIRST_NOUN_NUM} 
-4AA3: 22 26 50       LD      ($5026),HL                     ; {ram:nextToken} 
-4AA6: E1             POP     HL              
-4AA7: A7             AND     A               
-4AA8: CA BD 4A       JP      Z,$4ABD                        ; 
-4AAB: 46             LD      B,(HL)          
-4AAC: 23             INC     HL              
-4AAD: E5             PUSH    HL              
-4AAE: CD 83 4E       CALL    $4E83                          ; 
-4AB1: EB             EX      DE,HL           
-4AB2: E1             POP     HL              
-4AB3: 3A 26 50       LD      A,($5026)                      ; {ram:nextToken} 
-4AB6: BB             CP      E               
-4AB7: C0             RET     NZ              
-4AB8: 3A 27 50       LD      A,($5027)                      ; {ram:nextToken} 
-4ABB: BA             CP      D               
-4ABC: C9             RET                     
-4ABD: B8             CP      B               
-4ABE: C9             RET                     
+4A9C: E5              PUSH    HL                  
+4A9D: 2A 14 50        LD      HL,($5014)          ; {ram.FIRST_NOUN_DATA}
+4AA0: 3A 11 50        LD      A,($5011)           ; {ram.FIRST_NOUN_NUM}
+4AA3: 22 26 50        LD      ($5026),HL          ; {ram.nextToken}
+4AA6: E1              POP     HL                  
+4AA7: A7              AND     A                   
+4AA8: CA BD 4A        JP      Z,$4ABD             ; {}
+4AAB: 46              LD      B,(HL)              
+4AAC: 23              INC     HL                  
+4AAD: E5              PUSH    HL                  
+4AAE: CD 83 4E        CALL    $4E83               ; {}
+4AB1: EB              EX      DE,HL               
+4AB2: E1              POP     HL                  
+4AB3: 3A 26 50        LD      A,($5026)           ; {ram.nextToken}
+4AB6: BB              CP      E                   
+4AB7: C0              RET     NZ                  
+4AB8: 3A 27 50        LD      A,($5027)           ; {ram.nextToken+1}
+4ABB: BA              CP      D                   
+4ABC: C9              RET                         
+4ABD: B8              CP      B                   
+4ABE: C9              RET                         
 
 Com_09_compare_to_second_noun:
 ; compare_to_second_noun(object)
-4ABF: E5             PUSH    HL              
-4AC0: 2A 1A 50       LD      HL,($501A)                     ; {ram:SECOND_NOUN_DATA} 
-4AC3: 3A 17 50       LD      A,($5017)                      ; {ram:SECOND_NOUN_NUM} 
-4AC6: C3 A3 4A       JP      $4AA3                          ; 
+4ABF: E5              PUSH    HL                  
+4AC0: 2A 1A 50        LD      HL,($501A)          ; {ram.SECOND_NOUN_DATA}
+4AC3: 3A 17 50        LD      A,($5017)           ; {ram.SECOND_NOUN_NUM}
+4AC6: C3 A3 4A        JP      $4AA3               ; {}
 
 Com_0A_compare_input_to:
 ; compare_input_to(phrase)
-4AC9: 46             LD      B,(HL)          
-4ACA: 23             INC     HL              
-4ACB: 3A 1F 50       LD      A,($501F)                      ; {ram:PHRASE_FORM} 
-4ACE: B8             CP      B               
-4ACF: C9             RET                     
+4AC9: 46              LD      B,(HL)              
+4ACA: 23              INC     HL                  
+4ACB: 3A 1F 50        LD      A,($501F)           ; {ram.PHRASE_FORM}
+4ACE: B8              CP      B                   
+4ACF: C9              RET                         
 
 Com_0F_pick_up_VAR:
 ; pick_up_VAR()
-4AD0: E5             PUSH    HL              
-4AD1: 2A 0E 50       LD      HL,($500E)                     ; {ram:VAR_OBJ_DATA} 
-4AD4: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4AD7: 3A 20 50       LD      A,($5020)                      ; {ram:ACTIVE_OBJ_NUM} 
-4ADA: 77             LD      (HL),A          
-4ADB: 97             SUB     A               
-4ADC: E1             POP     HL              
-4ADD: C9             RET                     
+4AD0: E5              PUSH    HL                  
+4AD1: 2A 0E 50        LD      HL,($500E)          ; {ram.VAR_OBJ_DATA}
+4AD4: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4AD7: 3A 20 50        LD      A,($5020)           ; {ram.ACTIVE_OBJ_NUM}
+4ADA: 77              LD      (HL),A              
+4ADB: 97              SUB     A                   
+4ADC: E1              POP     HL                  
+4ADD: C9              RET                         
 
 Com_10_drop_VAR:
 ; drop_VAR()
-4ADE: E5             PUSH    HL              
-4ADF: 2A 0E 50       LD      HL,($500E)                     ; {ram:VAR_OBJ_DATA} 
-4AE2: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4AE5: 3A 23 50       LD      A,($5023)                      ; {ram:CUR_ROOM} 
-4AE8: 77             LD      (HL),A          
-4AE9: 97             SUB     A               
-4AEA: E1             POP     HL              
-4AEB: C9             RET                     
+4ADE: E5              PUSH    HL                  
+4ADF: 2A 0E 50        LD      HL,($500E)          ; {ram.VAR_OBJ_DATA}
+4AE2: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4AE5: 3A 23 50        LD      A,($5023)           ; {ram.CUR_ROOM}
+4AE8: 77              LD      (HL),A              
+4AE9: 97              SUB     A                   
+4AEA: E1              POP     HL                  
+4AEB: C9              RET                         
 
 Com_13_process_phrase_by_room_first_second:
 ; process_phrase_by_room_first_second()
-4AEC: E5             PUSH    HL              
-4AED: 2A 24 50       LD      HL,($5024)                     ; {ram:CUR_ROOM_DATA} 
-4AF0: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4AF3: 23             INC     HL              
-4AF4: 06 04          LD      B,$04           
-4AF6: CD F1 46       CALL    $46F1                          ; 
-4AF9: D2 05 4B       JP      NC,$4B05                       ; 
-4AFC: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4AFF: CD 94 48       CALL    $4894                          ; 
-4B02: CA 48 4B       JP      Z,$4B48                        ; 
-4B05: 3A 17 50       LD      A,($5017)                      ; {ram:SECOND_NOUN_NUM} 
-4B08: A7             AND     A               
-4B09: CA 26 4B       JP      Z,$4B26                        ; 
-4B0C: 2A 1A 50       LD      HL,($501A)                     ; {ram:SECOND_NOUN_DATA} 
-4B0F: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4B12: 23             INC     HL              
-4B13: 23             INC     HL              
-4B14: 23             INC     HL              
-4B15: 06 06          LD      B,$06           
-4B17: CD F1 46       CALL    $46F1                          ; 
-4B1A: D2 26 4B       JP      NC,$4B26                       ; 
-4B1D: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4B20: CD 94 48       CALL    $4894                          ; 
-4B23: CA 48 4B       JP      Z,$4B48                        ; 
-4B26: 3A 11 50       LD      A,($5011)                      ; {ram:FIRST_NOUN_NUM} 
-4B29: A7             AND     A               
-4B2A: C2 31 4B       JP      NZ,$4B31                       ; 
-4B2D: E1             POP     HL              
-4B2E: F6 01          OR      $01             
-4B30: C9             RET                     
-4B31: 2A 14 50       LD      HL,($5014)                     ; {ram:FIRST_NOUN_DATA} 
-4B34: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4B37: 23             INC     HL              
-4B38: 23             INC     HL              
-4B39: 23             INC     HL              
-4B3A: 06 07          LD      B,$07           
-4B3C: CD F1 46       CALL    $46F1                          ; 
-4B3F: D2 2D 4B       JP      NC,$4B2D                       ; 
-4B42: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4B45: CD 94 48       CALL    $4894                          ; 
-4B48: E1             POP     HL              
-4B49: C9             RET                     
+4AEC: E5              PUSH    HL                  
+4AED: 2A 24 50        LD      HL,($5024)          ; {ram.CUR_ROOM_DATA}
+4AF0: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4AF3: 23              INC     HL                  
+4AF4: 06 04           LD      B,$04               
+4AF6: CD F1 46        CALL    $46F1               ; {}
+4AF9: D2 05 4B        JP      NC,$4B05            ; {}
+4AFC: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4AFF: CD 94 48        CALL    $4894               ; {}
+4B02: CA 48 4B        JP      Z,$4B48             ; {}
+4B05: 3A 17 50        LD      A,($5017)           ; {ram.SECOND_NOUN_NUM}
+4B08: A7              AND     A                   
+4B09: CA 26 4B        JP      Z,$4B26             ; {}
+4B0C: 2A 1A 50        LD      HL,($501A)          ; {ram.SECOND_NOUN_DATA}
+4B0F: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4B12: 23              INC     HL                  
+4B13: 23              INC     HL                  
+4B14: 23              INC     HL                  
+4B15: 06 06           LD      B,$06               
+4B17: CD F1 46        CALL    $46F1               ; {}
+4B1A: D2 26 4B        JP      NC,$4B26            ; {}
+4B1D: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4B20: CD 94 48        CALL    $4894               ; {}
+4B23: CA 48 4B        JP      Z,$4B48             ; {}
+4B26: 3A 11 50        LD      A,($5011)           ; {ram.FIRST_NOUN_NUM}
+4B29: A7              AND     A                   
+4B2A: C2 31 4B        JP      NZ,$4B31            ; {}
+4B2D: E1              POP     HL                  
+4B2E: F6 01           OR      $01                 
+4B30: C9              RET                         
+4B31: 2A 14 50        LD      HL,($5014)          ; {ram.FIRST_NOUN_DATA}
+4B34: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4B37: 23              INC     HL                  
+4B38: 23              INC     HL                  
+4B39: 23              INC     HL                  
+4B3A: 06 07           LD      B,$07               
+4B3C: CD F1 46        CALL    $46F1               ; {}
+4B3F: D2 2D 4B        JP      NC,$4B2D            ; {}
+4B42: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4B45: CD 94 48        CALL    $4894               ; {}
+4B48: E1              POP     HL                  
+4B49: C9              RET                         
 
 Com_16_print_VAR:
 ; print_VAR()
-4B4A: E5             PUSH    HL              
-4B4B: 2A 0E 50       LD      HL,($500E)                     ; {ram:VAR_OBJ_DATA} 
-4B4E: 3A 0D 50       LD      A,($500D)                      ; {ram:VAR_OBJ_NUMBER} 
-4B51: C3 5B 4B       JP      $4B5B                          ; 
+4B4A: E5              PUSH    HL                  
+4B4B: 2A 0E 50        LD      HL,($500E)          ; {ram.VAR_OBJ_DATA}
+4B4E: 3A 0D 50        LD      A,($500D)           ; {ram.VAR_OBJ_NUMBER}
+4B51: C3 5B 4B        JP      $4B5B               ; {}
 
 Com_11_print_first_noun:
 ; print_first_noun()
-4B54: E5             PUSH    HL              
-4B55: 2A 14 50       LD      HL,($5014)                     ; {ram:FIRST_NOUN_DATA} 
-4B58: 3A 11 50       LD      A,($5011)                      ; {ram:FIRST_NOUN_NUM} 
-4B5B: A7             AND     A               
-4B5C: CA 48 4B       JP      Z,$4B48                        ; 
-4B5F: 3A 20 50       LD      A,($5020)                      ; {ram:ACTIVE_OBJ_NUM} 
-4B62: FE 1D          CP      $1D             
-4B64: C2 79 4B       JP      NZ,$4B79                       ; 
-4B67: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4B6A: 23             INC     HL              
-4B6B: 23             INC     HL              
-4B6C: 23             INC     HL              
-4B6D: 06 02          LD      B,$02           
-4B6F: CD F1 46       CALL    $46F1                          ; 
-4B72: D2 79 4B       JP      NC,$4B79                       ; 
-4B75: 23             INC     HL              
-4B76: CD 9B 4E       CALL    $4E9B                          ; 
-4B79: E1             POP     HL              
-4B7A: 97             SUB     A               
-4B7B: C9             RET                     
+4B54: E5              PUSH    HL                  
+4B55: 2A 14 50        LD      HL,($5014)          ; {ram.FIRST_NOUN_DATA}
+4B58: 3A 11 50        LD      A,($5011)           ; {ram.FIRST_NOUN_NUM}
+4B5B: A7              AND     A                   
+4B5C: CA 48 4B        JP      Z,$4B48             ; {}
+4B5F: 3A 20 50        LD      A,($5020)           ; {ram.ACTIVE_OBJ_NUM}
+4B62: FE 1D           CP      $1D                 
+4B64: C2 79 4B        JP      NZ,$4B79            ; {}
+4B67: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4B6A: 23              INC     HL                  
+4B6B: 23              INC     HL                  
+4B6C: 23              INC     HL                  
+4B6D: 06 02           LD      B,$02               
+4B6F: CD F1 46        CALL    $46F1               ; {}
+4B72: D2 79 4B        JP      NC,$4B79            ; {}
+4B75: 23              INC     HL                  
+4B76: CD 9B 4E        CALL    $4E9B               ; {}
+4B79: E1              POP     HL                  
+4B7A: 97              SUB     A                   
+4B7B: C9              RET                         
 
 Com_12_print_second_noun:
 ; print_second_noun()
-4B7C: E5             PUSH    HL              
-4B7D: 3A 17 50       LD      A,($5017)                      ; {ram:SECOND_NOUN_NUM} 
-4B80: 2A 1A 50       LD      HL,($501A)                     ; {ram:SECOND_NOUN_DATA} 
-4B83: C3 5B 4B       JP      $4B5B                          ; 
+4B7C: E5              PUSH    HL                  
+4B7D: 3A 17 50        LD      A,($5017)           ; {ram.SECOND_NOUN_NUM}
+4B80: 2A 1A 50        LD      HL,($501A)          ; {ram.SECOND_NOUN_DATA}
+4B83: C3 5B 4B        JP      $4B5B               ; {}
 
 Com_15_check_VAR:
 ; check_VAR(bits)
-4B86: E5             PUSH    HL              
-4B87: 2A 0E 50       LD      HL,($500E)                     ; {ram:VAR_OBJ_DATA} 
-4B8A: 3A 0D 50       LD      A,($500D)                      ; {ram:VAR_OBJ_NUMBER} 
-4B8D: A7             AND     A               
-4B8E: CA 2D 4B       JP      Z,$4B2D                        ; 
-4B91: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4B94: 23             INC     HL              
-4B95: 23             INC     HL              
-4B96: 7E             LD      A,(HL)          
-4B97: E1             POP     HL              
-4B98: A6             AND     (HL)            
-4B99: AE             XOR     (HL)            
-4B9A: 23             INC     HL              
-4B9B: C9             RET                     
+4B86: E5              PUSH    HL                  
+4B87: 2A 0E 50        LD      HL,($500E)          ; {ram.VAR_OBJ_DATA}
+4B8A: 3A 0D 50        LD      A,($500D)           ; {ram.VAR_OBJ_NUMBER}
+4B8D: A7              AND     A                   
+4B8E: CA 2D 4B        JP      Z,$4B2D             ; {}
+4B91: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4B94: 23              INC     HL                  
+4B95: 23              INC     HL                  
+4B96: 7E              LD      A,(HL)              
+4B97: E1              POP     HL                  
+4B98: A6              AND     (HL)                
+4B99: AE              XOR     (HL)                
+4B9A: 23              INC     HL                  
+4B9B: C9              RET                         
 
 Com_14_execute_and_reverse_status:
 ; execute_and_reverse_status:
-4B9C: CD 94 48       CALL    $4894                          ; 
-4B9F: C2 A5 4B       JP      NZ,$4BA5                       ; 
-4BA2: F6 01          OR      $01             
-4BA4: C9             RET                     
-4BA5: 97             SUB     A               
-4BA6: C9             RET                     
+4B9C: CD 94 48        CALL    $4894               ; {}
+4B9F: C2 A5 4B        JP      NZ,$4BA5            ; {}
+4BA2: F6 01           OR      $01                 
+4BA4: C9              RET                         
+4BA5: 97              SUB     A                   
+4BA6: C9              RET                         
 
 Com_17_move_to:
 ; move_to(object,room)
-4BA7: 46             LD      B,(HL)          
-4BA8: 23             INC     HL              
-4BA9: E5             PUSH    HL              
-4BAA: CD 83 4E       CALL    $4E83                          ; 
-4BAD: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4BB0: D1             POP     DE              
-4BB1: 1A             LD      A,(DE)          
-4BB2: 77             LD      (HL),A          
-4BB3: EB             EX      DE,HL           
-4BB4: 23             INC     HL              
-4BB5: 97             SUB     A               
-4BB6: C9             RET                     
+4BA7: 46              LD      B,(HL)              
+4BA8: 23              INC     HL                  
+4BA9: E5              PUSH    HL                  
+4BAA: CD 83 4E        CALL    $4E83               ; {}
+4BAD: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4BB0: D1              POP     DE                  
+4BB1: 1A              LD      A,(DE)              
+4BB2: 77              LD      (HL),A              
+4BB3: EB              EX      DE,HL               
+4BB4: 23              INC     HL                  
+4BB5: 97              SUB     A                   
+4BB6: C9              RET                         
 
 Com_18_is_VAR_owned_by_ACTIVE:
 ; is_VAR_owned_by_ACTIVE()
-4BB7: E5             PUSH    HL              
-4BB8: 2A 0E 50       LD      HL,($500E)                     ; {ram:VAR_OBJ_DATA} 
-4BBB: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4BBE: 46             LD      B,(HL)          
-4BBF: 78             LD      A,B             
-4BC0: A7             AND     A               
-4BC1: E1             POP     HL              
-4BC2: CA C8 45       JP      Z,$45C8                        ; 
-4BC5: 3A 20 50       LD      A,($5020)                      ; {ram:ACTIVE_OBJ_NUM} 
-4BC8: B8             CP      B               
-4BC9: C8             RET     Z               
-4BCA: 78             LD      A,B             
-4BCB: E6 80          AND     $80             
-4BCD: C0             RET     NZ              
+4BB7: E5              PUSH    HL                  
+4BB8: 2A 0E 50        LD      HL,($500E)          ; {ram.VAR_OBJ_DATA}
+4BBB: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4BBE: 46              LD      B,(HL)              
+4BBF: 78              LD      A,B                 
+4BC0: A7              AND     A                   
+4BC1: E1              POP     HL                  
+4BC2: CA C8 45        JP      Z,$45C8             ; {}
+4BC5: 3A 20 50        LD      A,($5020)           ; {ram.ACTIVE_OBJ_NUM}
+4BC8: B8              CP      B                   
+4BC9: C8              RET     Z                   
+4BCA: 78              LD      A,B                 
+4BCB: E6 80           AND     $80                 
+4BCD: C0              RET     NZ                  
 
-4BCE: E5             PUSH    HL              
-4BCF: CD 83 4E       CALL    $4E83                          ; 
-4BD2: C3 BB 4B       JP      $4BBB                          ; 
+4BCE: E5              PUSH    HL                  
+4BCF: CD 83 4E        CALL    $4E83               ; {}
+4BD2: C3 BB 4B        JP      $4BBB               ; {}
 
-4BD5: 21 51 56       LD      HL,$5651                       ; {!+ObjectData} 
-4BD8: 97             SUB     A               
-4BD9: 32 1E 50       LD      ($501E),A                      ; {ram:tmp1DO} 
-4BDC: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4BDF: CD 19 47       CALL    $4719                          ; {CompareXY} 
-4BE2: D0             RET     NC              
-4BE3: 3A 1E 50       LD      A,($501E)                      ; {ram:tmp1DO} 
-4BE6: 3C             INC     A               
-4BE7: 32 1E 50       LD      ($501E),A                      ; {ram:tmp1DO} 
-4BEA: D5             PUSH    DE              
-4BEB: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4BEE: 4E             LD      C,(HL)          
-4BEF: D5             PUSH    DE              
-4BF0: 7E             LD      A,(HL)          
-4BF1: A7             AND     A               
-4BF2: CA 3A 4C       JP      Z,$4C3A                        ; 
-4BF5: 23             INC     HL              
-4BF6: 23             INC     HL              
-4BF7: 23             INC     HL              
-4BF8: 06 08          LD      B,$08           
-4BFA: CD F1 46       CALL    $46F1                          ; 
-4BFD: D2 3A 4C       JP      NC,$4C3A                       ; 
-4C00: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4C03: E5             PUSH    HL              
-4C04: CD D3 4F       CALL    $4FD3                          ; {GetRandom} 
-4C07: 3A 1E 50       LD      A,($501E)                      ; {ram:tmp1DO} 
-4C0A: 32 20 50       LD      ($5020),A                      ; {ram:ACTIVE_OBJ_NUM} 
-4C0D: 47             LD      B,A             
-4C0E: CD 83 4E       CALL    $4E83                          ; 
-4C11: 22 21 50       LD      ($5021),HL                     ; {ram:ACTIVE_OBJ_DATA} 
-4C14: 79             LD      A,C             
-4C15: A7             AND     A               
-4C16: FA 29 4C       JP      M,$4C29                        ; 
-4C19: 47             LD      B,A             
-4C1A: CD 83 4E       CALL    $4E83                          ; 
-4C1D: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4C20: 7E             LD      A,(HL)          
-4C21: A7             AND     A               
-4C22: C2 15 4C       JP      NZ,$4C15                       ; 
-4C25: E1             POP     HL              
-4C26: C3 3A 4C       JP      $4C3A                          ; 
-4C29: 32 23 50       LD      ($5023),A                      ; {ram:CUR_ROOM} 
-4C2C: 21 1F 68       LD      HL,$681F                       ; {!+RoomDescriptions} 
-4C2F: 47             LD      B,A             
-4C30: CD ED 46       CALL    $46ED                          ; {FindSublist} 
-4C33: 22 24 50       LD      ($5024),HL                     ; {ram:CUR_ROOM_DATA} 
-4C36: E1             POP     HL              
-4C37: CD 94 48       CALL    $4894                          ; 
-4C3A: E1             POP     HL              
-4C3B: D1             POP     DE              
-4C3C: C3 DF 4B       JP      $4BDF                          ; 
+4BD5: 21 51 56        LD      HL,$5651            ; {+code.ObjectData}
+4BD8: 97              SUB     A                   
+4BD9: 32 1E 50        LD      ($501E),A           ; {ram.tmp1DO}
+4BDC: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4BDF: CD 19 47        CALL    $4719               ; {code.CompareXY}
+4BE2: D0              RET     NC                  
+4BE3: 3A 1E 50        LD      A,($501E)           ; {ram.tmp1DO}
+4BE6: 3C              INC     A                   
+4BE7: 32 1E 50        LD      ($501E),A           ; {ram.tmp1DO}
+4BEA: D5              PUSH    DE                  
+4BEB: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4BEE: 4E              LD      C,(HL)              
+4BEF: D5              PUSH    DE                  
+4BF0: 7E              LD      A,(HL)              
+4BF1: A7              AND     A                   
+4BF2: CA 3A 4C        JP      Z,$4C3A             ; {}
+4BF5: 23              INC     HL                  
+4BF6: 23              INC     HL                  
+4BF7: 23              INC     HL                  
+4BF8: 06 08           LD      B,$08               
+4BFA: CD F1 46        CALL    $46F1               ; {}
+4BFD: D2 3A 4C        JP      NC,$4C3A            ; {}
+4C00: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4C03: E5              PUSH    HL                  
+4C04: CD D3 4F        CALL    $4FD3               ; {code.GetRandom}
+4C07: 3A 1E 50        LD      A,($501E)           ; {ram.tmp1DO}
+4C0A: 32 20 50        LD      ($5020),A           ; {ram.ACTIVE_OBJ_NUM}
+4C0D: 47              LD      B,A                 
+4C0E: CD 83 4E        CALL    $4E83               ; {}
+4C11: 22 21 50        LD      ($5021),HL          ; {ram.ACTIVE_OBJ_DATA}
+4C14: 79              LD      A,C                 
+4C15: A7              AND     A                   
+4C16: FA 29 4C        JP      M,$4C29             ; {}
+4C19: 47              LD      B,A                 
+4C1A: CD 83 4E        CALL    $4E83               ; {}
+4C1D: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4C20: 7E              LD      A,(HL)              
+4C21: A7              AND     A                   
+4C22: C2 15 4C        JP      NZ,$4C15            ; {}
+4C25: E1              POP     HL                  
+4C26: C3 3A 4C        JP      $4C3A               ; {}
+4C29: 32 23 50        LD      ($5023),A           ; {ram.CUR_ROOM}
+4C2C: 21 1F 68        LD      HL,$681F            ; {+code.RoomDescriptions}
+4C2F: 47              LD      B,A                 
+4C30: CD ED 46        CALL    $46ED               ; {code.FindSublist}
+4C33: 22 24 50        LD      ($5024),HL          ; {ram.CUR_ROOM_DATA}
+4C36: E1              POP     HL                  
+4C37: CD 94 48        CALL    $4894               ; {}
+4C3A: E1              POP     HL                  
+4C3B: D1              POP     DE                  
+4C3C: C3 DF 4B        JP      $4BDF               ; {}
 
 Com_05_is_less_equal_last_random:
 ; is_less_equal_last_random(value)
-4C3F: 3A F9 4F       LD      A,($4FF9)                      ; {ram:tmp1AB} 
-4C42: BE             CP      (HL)            
-4C43: 23             INC     HL              
-4C44: DA 4D 4C       JP      C,$4C4D                        ; 
-4C47: CA 4D 4C       JP      Z,$4C4D                        ; 
-4C4A: F6 01          OR      $01             
-4C4C: C9             RET                     
-4C4D: 97             SUB     A               
-4C4E: C9             RET                     
+4C3F: 3A F9 4F        LD      A,($4FF9)           ; {ram.tmp1AB}
+4C42: BE              CP      (HL)                
+4C43: 23              INC     HL                  
+4C44: DA 4D 4C        JP      C,$4C4D             ; {}
+4C47: CA 4D 4C        JP      Z,$4C4D             ; {}
+4C4A: F6 01           OR      $01                 
+4C4C: C9              RET                         
+4C4D: 97              SUB     A                   
+4C4E: C9              RET                         
 
 Com_1D_attack_VAR:
 ; attack_VAR(points)
-4C4F: 4E             LD      C,(HL)          
-4C50: 23             INC     HL              
-4C51: E5             PUSH    HL              
-4C52: 2A 0E 50       LD      HL,($500E)                     ; {ram:VAR_OBJ_DATA} 
-4C55: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4C58: 23             INC     HL              
-4C59: 23             INC     HL              
-4C5A: 23             INC     HL              
-4C5B: E5             PUSH    HL              
-4C5C: D5             PUSH    DE              
-4C5D: 06 09          LD      B,$09           
-4C5F: CD F1 46       CALL    $46F1                          ; 
-4C62: D2 8A 4C       JP      NC,$4C8A                       ; 
-4C65: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4C68: 23             INC     HL              
-4C69: 7E             LD      A,(HL)          
-4C6A: 91             SUB     C               
-4C6B: D2 6F 4C       JP      NC,$4C6F                       ; 
-4C6E: 97             SUB     A               
-4C6F: 77             LD      (HL),A          
-4C70: D1             POP     DE              
-4C71: E1             POP     HL              
-4C72: A7             AND     A               
-4C73: CA 79 4C       JP      Z,$4C79                        ; 
-4C76: 97             SUB     A               
-4C77: E1             POP     HL              
-4C78: C9             RET                     
-4C79: 06 0A          LD      B,$0A           
-4C7B: CD F1 46       CALL    $46F1                          ; 
-4C7E: D2 76 4C       JP      NC,$4C76                       ; 
-4C81: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4C84: CD 94 48       CALL    $4894                          ; 
-4C87: C3 76 4C       JP      $4C76                          ; 
-4C8A: D1             POP     DE              
-4C8B: E1             POP     HL              
-4C8C: C3 76 4C       JP      $4C76                          ; 
+4C4F: 4E              LD      C,(HL)              
+4C50: 23              INC     HL                  
+4C51: E5              PUSH    HL                  
+4C52: 2A 0E 50        LD      HL,($500E)          ; {ram.VAR_OBJ_DATA}
+4C55: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4C58: 23              INC     HL                  
+4C59: 23              INC     HL                  
+4C5A: 23              INC     HL                  
+4C5B: E5              PUSH    HL                  
+4C5C: D5              PUSH    DE                  
+4C5D: 06 09           LD      B,$09               
+4C5F: CD F1 46        CALL    $46F1               ; {}
+4C62: D2 8A 4C        JP      NC,$4C8A            ; {}
+4C65: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4C68: 23              INC     HL                  
+4C69: 7E              LD      A,(HL)              
+4C6A: 91              SUB     C                   
+4C6B: D2 6F 4C        JP      NC,$4C6F            ; {}
+4C6E: 97              SUB     A                   
+4C6F: 77              LD      (HL),A              
+4C70: D1              POP     DE                  
+4C71: E1              POP     HL                  
+4C72: A7              AND     A                   
+4C73: CA 79 4C        JP      Z,$4C79             ; {}
+4C76: 97              SUB     A                   
+4C77: E1              POP     HL                  
+4C78: C9              RET                         
+4C79: 06 0A           LD      B,$0A               
+4C7B: CD F1 46        CALL    $46F1               ; {}
+4C7E: D2 76 4C        JP      NC,$4C76            ; {}
+4C81: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4C84: CD 94 48        CALL    $4894               ; {}
+4C87: C3 76 4C        JP      $4C76               ; {}
+4C8A: D1              POP     DE                  
+4C8B: E1              POP     HL                  
+4C8C: C3 76 4C        JP      $4C76               ; {}
 
 Com_1E_swap:
 ; swap(object_a,object_b)
-4C8F: 46             LD      B,(HL)          
-4C90: 23             INC     HL              
-4C91: 4E             LD      C,(HL)          
-4C92: 23             INC     HL              
-4C93: E5             PUSH    HL              
-4C94: CD 83 4E       CALL    $4E83                          ; 
-4C97: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4C9A: 5E             LD      E,(HL)          
-4C9B: 41             LD      B,C             
-4C9C: E5             PUSH    HL              
-4C9D: D5             PUSH    DE              
-4C9E: CD 83 4E       CALL    $4E83                          ; 
-4CA1: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4CA4: D1             POP     DE              
-4CA5: 7E             LD      A,(HL)          
-4CA6: 73             LD      (HL),E          
-4CA7: E1             POP     HL              
-4CA8: 77             LD      (HL),A          
-4CA9: E1             POP     HL              
-4CAA: 97             SUB     A               
-4CAB: C9             RET                     
+4C8F: 46              LD      B,(HL)              
+4C90: 23              INC     HL                  
+4C91: 4E              LD      C,(HL)              
+4C92: 23              INC     HL                  
+4C93: E5              PUSH    HL                  
+4C94: CD 83 4E        CALL    $4E83               ; {}
+4C97: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4C9A: 5E              LD      E,(HL)              
+4C9B: 41              LD      B,C                 
+4C9C: E5              PUSH    HL                  
+4C9D: D5              PUSH    DE                  
+4C9E: CD 83 4E        CALL    $4E83               ; {}
+4CA1: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4CA4: D1              POP     DE                  
+4CA5: 7E              LD      A,(HL)              
+4CA6: 73              LD      (HL),E              
+4CA7: E1              POP     HL                  
+4CA8: 77              LD      (HL),A              
+4CA9: E1              POP     HL                  
+4CAA: 97              SUB     A                   
+4CAB: C9              RET                         
 
 Com_22_is_less_equal_health:
 ; is_less_equal_health(points)
-4CAC: 4E             LD      C,(HL)          
-4CAD: 23             INC     HL              
-4CAE: E5             PUSH    HL              
-4CAF: 2A 0E 50       LD      HL,($500E)                     ; {ram:VAR_OBJ_DATA} 
-4CB2: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4CB5: 23             INC     HL              
-4CB6: 23             INC     HL              
-4CB7: 23             INC     HL              
-4CB8: 06 09          LD      B,$09           
-4CBA: CD F1 46       CALL    $46F1                          ; 
-4CBD: D2 CC 4C       JP      NC,$4CCC                       ; 
-4CC0: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4CC3: 23             INC     HL              
-4CC4: 7E             LD      A,(HL)          
-4CC5: B9             CP      C               
-4CC6: DA D0 4C       JP      C,$4CD0                        ; 
-4CC9: CA D0 4C       JP      Z,$4CD0                        ; 
-4CCC: E1             POP     HL              
-4CCD: F6 01          OR      $01             
-4CCF: C9             RET                     
-4CD0: 97             SUB     A               
-4CD1: E1             POP     HL              
-4CD2: C9             RET                     
+4CAC: 4E              LD      C,(HL)              
+4CAD: 23              INC     HL                  
+4CAE: E5              PUSH    HL                  
+4CAF: 2A 0E 50        LD      HL,($500E)          ; {ram.VAR_OBJ_DATA}
+4CB2: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4CB5: 23              INC     HL                  
+4CB6: 23              INC     HL                  
+4CB7: 23              INC     HL                  
+4CB8: 06 09           LD      B,$09               
+4CBA: CD F1 46        CALL    $46F1               ; {}
+4CBD: D2 CC 4C        JP      NC,$4CCC            ; {}
+4CC0: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4CC3: 23              INC     HL                  
+4CC4: 7E              LD      A,(HL)              
+4CC5: B9              CP      C                   
+4CC6: DA D0 4C        JP      C,$4CD0             ; {}
+4CC9: CA D0 4C        JP      Z,$4CD0             ; {}
+4CCC: E1              POP     HL                  
+4CCD: F6 01           OR      $01                 
+4CCF: C9              RET                         
+4CD0: 97              SUB     A                   
+4CD1: E1              POP     HL                  
+4CD2: C9              RET                         
 
 Com_23_heal_VAR:
 ; heal_VAR(points)
-4CD3: 4E             LD      C,(HL)          
-4CD4: 23             INC     HL              
-4CD5: E5             PUSH    HL              
-4CD6: 2A 0E 50       LD      HL,($500E)                     ; {ram:VAR_OBJ_DATA} 
-4CD9: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4CDC: 23             INC     HL              
-4CDD: 23             INC     HL              
-4CDE: 23             INC     HL              
-4CDF: 06 09          LD      B,$09           
-4CE1: CD F1 46       CALL    $46F1                          ; 
-4CE4: D2 D0 4C       JP      NC,$4CD0                       ; 
-4CE7: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4CEA: 56             LD      D,(HL)          
-4CEB: 23             INC     HL              
-4CEC: 7E             LD      A,(HL)          
-4CED: 81             ADD     A,C             
-4CEE: BA             CP      D               
-4CEF: DA F3 4C       JP      C,$4CF3                        ; 
-4CF2: 7A             LD      A,D             
-4CF3: 77             LD      (HL),A          
-4CF4: C3 D0 4C       JP      $4CD0                          ; 
+4CD3: 4E              LD      C,(HL)              
+4CD4: 23              INC     HL                  
+4CD5: E5              PUSH    HL                  
+4CD6: 2A 0E 50        LD      HL,($500E)          ; {ram.VAR_OBJ_DATA}
+4CD9: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4CDC: 23              INC     HL                  
+4CDD: 23              INC     HL                  
+4CDE: 23              INC     HL                  
+4CDF: 06 09           LD      B,$09               
+4CE1: CD F1 46        CALL    $46F1               ; {}
+4CE4: D2 D0 4C        JP      NC,$4CD0            ; {}
+4CE7: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4CEA: 56              LD      D,(HL)              
+4CEB: 23              INC     HL                  
+4CEC: 7E              LD      A,(HL)              
+4CED: 81              ADD     A,C                 
+4CEE: BA              CP      D                   
+4CEF: DA F3 4C        JP      C,$4CF3             ; {}
+4CF2: 7A              LD      A,D                 
+4CF3: 77              LD      (HL),A              
+4CF4: C3 D0 4C        JP      $4CD0               ; {}
 
 Com_25_restart_game:
 ; restart_game()
-4CF7: 3E 0D          LD      A,$0D           
-4CF9: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
-4CFC: 3E 0D          LD      A,$0D           
-4CFE: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
-4D01: C3 00 43       JP      $4300                          ; {Start} 
+4CF7: 3E 0D           LD      A,$0D               
+4CF9: CD 0D 4F        CALL    $4F0D               ; {code.PrintCharacterAutoWrap}
+4CFC: 3E 0D           LD      A,$0D               
+4CFE: CD 0D 4F        CALL    $4F0D               ; {code.PrintCharacterAutoWrap}
+4D01: C3 00 43        JP      $4300               ; {code.Start}
 
 Com_24_endless_loop:
 ; endless_loop()
-4D04: C3 04 4D       JP      $4D04                          ; {Com_24_endless_loop} 
+4D04: C3 04 4D        JP      $4D04               ; {code.Com_24_endless_loop}
 
 Com_27_load_game:
 ; load_game()
-4D07: E5             PUSH    HL              
-4D08: 11 9E 4D       LD      DE,$4D9E        
-4D0B: CD AF 4D       CALL    $4DAF                          ; 
-4D0E: CD D6 47       CALL    $47D6                          ; 
-4D11: FE 08          CP      $08             
-4D13: CA D0 4C       JP      Z,$4CD0                        ; 
-4D16: FE 0D          CP      $0D             
-4D18: C2 0E 4D       JP      NZ,$4D0E                       ; 
-4D1B: 97             SUB     A               
-4D1C: CD 12 02       CALL    $0212           
-4D1F: CD 96 02       CALL    $0296           
-4D22: 21 51 56       LD      HL,$5651                       ; {!+ObjectData} 
-4D25: 01 CE 11       LD      BC,$11CE        
-4D28: 04             INC     B               
-4D29: 0E 00          LD      C,$00           
-4D2B: 59             LD      E,C             
-4D2C: 3A 3F 3C       LD      A,($3C3F)       
-4D2F: EE 0A          XOR     $0A             
-4D31: 32 3F 3C       LD      ($3C3F),A       
-4D34: E5             PUSH    HL              
-4D35: C5             PUSH    BC              
-4D36: D5             PUSH    DE              
-4D37: CD 35 02       CALL    $0235           
-4D3A: D1             POP     DE              
-4D3B: C1             POP     BC              
-4D3C: E1             POP     HL              
-4D3D: 77             LD      (HL),A          
-4D3E: 83             ADD     A,E             
-4D3F: 5F             LD      E,A             
-4D40: 23             INC     HL              
-4D41: 0D             DEC     C               
-4D42: C2 34 4D       JP      NZ,$4D34                       ; 
-4D45: E5             PUSH    HL              
-4D46: D5             PUSH    DE              
-4D47: C5             PUSH    BC              
-4D48: CD 35 02       CALL    $0235           
-4D4B: C1             POP     BC              
-4D4C: D1             POP     DE              
-4D4D: E1             POP     HL              
-4D4E: BB             CP      E               
-4D4F: C2 89 4D       JP      NZ,$4D89                       ; 
-4D52: 05             DEC     B               
-4D53: C2 29 4D       JP      NZ,$4D29                       ; 
-4D56: CD F8 01       CALL    $01F8           
-4D59: 31 FF 7F       LD      SP,$7FFF        
-4D5C: 3E 1D          LD      A,$1D           
-4D5E: 32 20 50       LD      ($5020),A                      ; {ram:ACTIVE_OBJ_NUM} 
-4D61: 47             LD      B,A             
-4D62: CD 83 4E       CALL    $4E83                          ; 
-4D65: 22 21 50       LD      ($5021),HL                     ; {ram:ACTIVE_OBJ_DATA} 
-4D68: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4D6B: 7E             LD      A,(HL)          
-4D6C: 32 23 50       LD      ($5023),A                      ; {ram:CUR_ROOM} 
-4D6F: 47             LD      B,A             
-4D70: 21 1F 68       LD      HL,$681F                       ; {!+RoomDescriptions} 
-4D73: CD ED 46       CALL    $46ED                          ; {FindSublist} 
-4D76: 22 24 50       LD      ($5024),HL                     ; {ram:CUR_ROOM_DATA} 
-4D79: 3E 0D          LD      A,$0D           
-4D7B: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
-4D7E: CD D0 49       CALL    $49D0                          ; {PrintRoomDescription} 
-4D81: 3E 0D          LD      A,$0D           
-4D83: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
-4D86: C3 23 43       JP      $4323                          ; 
-4D89: CD F8 01       CALL    $01F8           
-4D8C: 11 95 4D       LD      DE,$4D95        
-4D8F: CD AF 4D       CALL    $4DAF                          ; 
-4D92: C3 0E 4D       JP      $4D0E                          ; 
-4D95: 0D             DEC     C               
-4D96: 43             LD      B,E             
-4D97: 48             LD      C,B             
-4D98: 45             LD      B,L             
-4D99: 43             LD      B,E             
-4D9A: 4B             LD      C,E             
-4D9B: 53             LD      D,E             
-4D9C: 55             LD      D,L             
-4D9D: 4D             LD      C,L             
-4D9E: 0D             DEC     C               
-4D9F: 52             LD      D,D             
-4DA0: 45             LD      B,L             
-4DA1: 41             LD      B,C             
-4DA2: 44             LD      B,H             
-4DA3: 59             LD      E,C             
-4DA4: 20 43          JR      NZ,$4DE9                       ; 
-4DA6: 41             LD      B,C             
-4DA7: 53             LD      D,E             
-4DA8: 53             LD      D,E             
-4DA9: 45             LD      B,L             
-4DAA: 54             LD      D,H             
-4DAB: 54             LD      D,H             
-4DAC: 45             LD      B,L             
-4DAD: 0D             DEC     C               
-4DAE: 00             NOP                     
-4DAF: 1A             LD      A,(DE)          
-4DB0: A7             AND     A               
-4DB1: C8             RET     Z               
-4DB2: D5             PUSH    DE              
-4DB3: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
-4DB6: D1             POP     DE              
-4DB7: 13             INC     DE              
-4DB8: C3 AF 4D       JP      $4DAF                          ; 
+4D07: E5              PUSH    HL                  
+4D08: 11 9E 4D        LD      DE,$4D9E            
+4D0B: CD AF 4D        CALL    $4DAF               ; {}
+4D0E: CD D6 47        CALL    $47D6               ; {code.GetKey}
+4D11: FE 08           CP      $08                 
+4D13: CA D0 4C        JP      Z,$4CD0             ; {}
+4D16: FE 0D           CP      $0D                 
+4D18: C2 0E 4D        JP      NZ,$4D0E            ; {}
+4D1B: 97              SUB     A                   
+4D1C: CD 12 02        CALL    $0212               
+4D1F: CD 96 02        CALL    $0296               
+4D22: 21 51 56        LD      HL,$5651            ; {+code.ObjectData}
+4D25: 01 CE 11        LD      BC,$11CE            
+4D28: 04              INC     B                   
+4D29: 0E 00           LD      C,$00               
+4D2B: 59              LD      E,C                 
+4D2C: 3A 3F 3C        LD      A,($3C3F)           
+4D2F: EE 0A           XOR     $0A                 
+4D31: 32 3F 3C        LD      ($3C3F),A           
+4D34: E5              PUSH    HL                  
+4D35: C5              PUSH    BC                  
+4D36: D5              PUSH    DE                  
+4D37: CD 35 02        CALL    $0235               
+4D3A: D1              POP     DE                  
+4D3B: C1              POP     BC                  
+4D3C: E1              POP     HL                  
+4D3D: 77              LD      (HL),A              
+4D3E: 83              ADD     A,E                 
+4D3F: 5F              LD      E,A                 
+4D40: 23              INC     HL                  
+4D41: 0D              DEC     C                   
+4D42: C2 34 4D        JP      NZ,$4D34            ; {}
+4D45: E5              PUSH    HL                  
+4D46: D5              PUSH    DE                  
+4D47: C5              PUSH    BC                  
+4D48: CD 35 02        CALL    $0235               
+4D4B: C1              POP     BC                  
+4D4C: D1              POP     DE                  
+4D4D: E1              POP     HL                  
+4D4E: BB              CP      E                   
+4D4F: C2 89 4D        JP      NZ,$4D89            ; {}
+4D52: 05              DEC     B                   
+4D53: C2 29 4D        JP      NZ,$4D29            ; {}
+4D56: CD F8 01        CALL    $01F8               
+4D59: 31 FF 7F        LD      SP,$7FFF            
+4D5C: 3E 1D           LD      A,$1D               
+4D5E: 32 20 50        LD      ($5020),A           ; {ram.ACTIVE_OBJ_NUM}
+4D61: 47              LD      B,A                 
+4D62: CD 83 4E        CALL    $4E83               ; {}
+4D65: 22 21 50        LD      ($5021),HL          ; {ram.ACTIVE_OBJ_DATA}
+4D68: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4D6B: 7E              LD      A,(HL)              
+4D6C: 32 23 50        LD      ($5023),A           ; {ram.CUR_ROOM}
+4D6F: 47              LD      B,A                 
+4D70: 21 1F 68        LD      HL,$681F            ; {+code.RoomDescriptions}
+4D73: CD ED 46        CALL    $46ED               ; {code.FindSublist}
+4D76: 22 24 50        LD      ($5024),HL          ; {ram.CUR_ROOM_DATA}
+4D79: 3E 0D           LD      A,$0D               
+4D7B: CD 0D 4F        CALL    $4F0D               ; {code.PrintCharacterAutoWrap}
+4D7E: CD D0 49        CALL    $49D0               ; {code.PrintRoomDescription}
+4D81: 3E 0D           LD      A,$0D               
+4D83: CD 0D 4F        CALL    $4F0D               ; {code.PrintCharacterAutoWrap}
+4D86: C3 23 43        JP      $4323               ; {}
+4D89: CD F8 01        CALL    $01F8               
+4D8C: 11 95 4D        LD      DE,$4D95            
+4D8F: CD AF 4D        CALL    $4DAF               ; {}
+4D92: C3 0E 4D        JP      $4D0E               ; {}
+4D95: 0D              DEC     C                   
+4D96: 43              LD      B,E                 
+4D97: 48              LD      C,B                 
+4D98: 45              LD      B,L                 
+4D99: 43              LD      B,E                 
+4D9A: 4B              LD      C,E                 
+4D9B: 53              LD      D,E                 
+4D9C: 55              LD      D,L                 
+4D9D: 4D              LD      C,L                 
+4D9E: 0D              DEC     C                   
+4D9F: 52              LD      D,D                 
+4DA0: 45              LD      B,L                 
+4DA1: 41              LD      B,C                 
+4DA2: 44              LD      B,H                 
+4DA3: 59              LD      E,C                 
+4DA4: 20 43           JR      NZ,$4DE9            ; {}
+4DA6: 41              LD      B,C                 
+4DA7: 53              LD      D,E                 
+4DA8: 53              LD      D,E                 
+4DA9: 45              LD      B,L                 
+4DAA: 54              LD      D,H                 
+4DAB: 54              LD      D,H                 
+4DAC: 45              LD      B,L                 
+4DAD: 0D              DEC     C                   
+4DAE: 00              NOP                         
+4DAF: 1A              LD      A,(DE)              
+4DB0: A7              AND     A                   
+4DB1: C8              RET     Z                   
+4DB2: D5              PUSH    DE                  
+4DB3: CD 0D 4F        CALL    $4F0D               ; {code.PrintCharacterAutoWrap}
+4DB6: D1              POP     DE                  
+4DB7: 13              INC     DE                  
+4DB8: C3 AF 4D        JP      $4DAF               ; {}
 
 Com_28_save_game:
 ; save_game()
-4DBB: E5             PUSH    HL              
-4DBC: 11 9E 4D       LD      DE,$4D9E        
-4DBF: CD AF 4D       CALL    $4DAF                          ; 
-4DC2: CD D6 47       CALL    $47D6                          ; 
-4DC5: FE 08          CP      $08             
-4DC7: CA D0 4C       JP      Z,$4CD0                        ; 
-4DCA: FE 0D          CP      $0D             
-4DCC: C2 C2 4D       JP      NZ,$4DC2                       ; 
-4DCF: 97             SUB     A               
-4DD0: CD 12 02       CALL    $0212           
-4DD3: CD 87 02       CALL    $0287           
-4DD6: 21 51 56       LD      HL,$5651                       ; {!+ObjectData} 
-4DD9: 01 CE 11       LD      BC,$11CE        
-4DDC: 04             INC     B               
-4DDD: 0E 00          LD      C,$00           
-4DDF: 59             LD      E,C             
-4DE0: E5             PUSH    HL              
-4DE1: C5             PUSH    BC              
-4DE2: 7E             LD      A,(HL)          
-4DE3: 83             ADD     A,E             
-4DE4: 5F             LD      E,A             
-4DE5: D5             PUSH    DE              
-4DE6: 7E             LD      A,(HL)          
-4DE7: CD 64 02       CALL    $0264           
-4DEA: D1             POP     DE              
-4DEB: C1             POP     BC              
-4DEC: E1             POP     HL              
-4DED: 23             INC     HL              
-4DEE: 0D             DEC     C               
-4DEF: C2 E0 4D       JP      NZ,$4DE0                       ; 
-4DF2: 7B             LD      A,E             
-4DF3: E5             PUSH    HL              
-4DF4: D5             PUSH    DE              
-4DF5: C5             PUSH    BC              
-4DF6: CD 64 02       CALL    $0264           
-4DF9: C1             POP     BC              
-4DFA: D1             POP     DE              
-4DFB: E1             POP     HL              
-4DFC: 05             DEC     B               
-4DFD: C2 DD 4D       JP      NZ,$4DDD                       ; 
-4E00: CD F8 01       CALL    $01F8           
-4E03: C3 D0 4C       JP      $4CD0                          ; 
+4DBB: E5              PUSH    HL                  
+4DBC: 11 9E 4D        LD      DE,$4D9E            
+4DBF: CD AF 4D        CALL    $4DAF               ; {}
+4DC2: CD D6 47        CALL    $47D6               ; {code.GetKey}
+4DC5: FE 08           CP      $08                 
+4DC7: CA D0 4C        JP      Z,$4CD0             ; {}
+4DCA: FE 0D           CP      $0D                 
+4DCC: C2 C2 4D        JP      NZ,$4DC2            ; {}
+4DCF: 97              SUB     A                   
+4DD0: CD 12 02        CALL    $0212               
+4DD3: CD 87 02        CALL    $0287               
+4DD6: 21 51 56        LD      HL,$5651            ; {+code.ObjectData}
+4DD9: 01 CE 11        LD      BC,$11CE            
+4DDC: 04              INC     B                   
+4DDD: 0E 00           LD      C,$00               
+4DDF: 59              LD      E,C                 
+4DE0: E5              PUSH    HL                  
+4DE1: C5              PUSH    BC                  
+4DE2: 7E              LD      A,(HL)              
+4DE3: 83              ADD     A,E                 
+4DE4: 5F              LD      E,A                 
+4DE5: D5              PUSH    DE                  
+4DE6: 7E              LD      A,(HL)              
+4DE7: CD 64 02        CALL    $0264               
+4DEA: D1              POP     DE                  
+4DEB: C1              POP     BC                  
+4DEC: E1              POP     HL                  
+4DED: 23              INC     HL                  
+4DEE: 0D              DEC     C                   
+4DEF: C2 E0 4D        JP      NZ,$4DE0            ; {}
+4DF2: 7B              LD      A,E                 
+4DF3: E5              PUSH    HL                  
+4DF4: D5              PUSH    DE                  
+4DF5: C5              PUSH    BC                  
+4DF6: CD 64 02        CALL    $0264               
+4DF9: C1              POP     BC                  
+4DFA: D1              POP     DE                  
+4DFB: E1              POP     HL                  
+4DFC: 05              DEC     B                   
+4DFD: C2 DD 4D        JP      NZ,$4DDD            ; {}
+4E00: CD F8 01        CALL    $01F8               
+4E03: C3 D0 4C        JP      $4CD0               ; {}
 
 Com_26_print_score:
 ; print_score()
-4E06: E5             PUSH    HL              
-4E07: 97             SUB     A               
-4E08: 32 FD 4F       LD      ($4FFD),A                      ; {ram:not1AF} 
-4E0B: 32 FE 4F       LD      ($4FFE),A                      ; {ram:not1B0} 
-4E0E: 3A 23 50       LD      A,($5023)                      ; {ram:CUR_ROOM} 
-4E11: FE 96          CP      $96             
-4E13: C2 1B 4E       JP      NZ,$4E1B                       ; 
-4E16: 3E 01          LD      A,$01           
-4E18: 32 FE 4F       LD      ($4FFE),A                      ; {ram:not1B0} 
-4E1B: 21 51 56       LD      HL,$5651                       ; {!+ObjectData} 
-4E1E: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4E21: CD 19 47       CALL    $4719                          ; {CompareXY} 
-4E24: D2 5A 4E       JP      NC,$4E5A                       ; 
-4E27: D5             PUSH    DE              
-4E28: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4E2B: 7E             LD      A,(HL)          
-4E2C: 47             LD      B,A             
-4E2D: FE 96          CP      $96             
-4E2F: CA 37 4E       JP      Z,$4E37                        ; 
-4E32: FE 1D          CP      $1D             
-4E34: C2 55 4E       JP      NZ,$4E55                       ; 
-4E37: 23             INC     HL              
-4E38: 3A FD 4F       LD      A,($4FFD)                      ; {ram:not1AF} 
-4E3B: 86             ADD     A,(HL)          
-4E3C: 27             DAA                     
-4E3D: 32 FD 4F       LD      ($4FFD),A                      ; {ram:not1AF} 
-4E40: 78             LD      A,B             
-4E41: FE 96          CP      $96             
-4E43: CA 4D 4E       JP      Z,$4E4D                        ; 
-4E46: 3A FE 4F       LD      A,($4FFE)                      ; {ram:not1B0} 
-4E49: A7             AND     A               
-4E4A: CA 55 4E       JP      Z,$4E55                        ; 
-4E4D: 3A FD 4F       LD      A,($4FFD)                      ; {ram:not1AF} 
-4E50: 86             ADD     A,(HL)          
-4E51: 27             DAA                     
-4E52: 32 FD 4F       LD      ($4FFD),A                      ; {ram:not1AF} 
-4E55: EB             EX      DE,HL           
-4E56: D1             POP     DE              
-4E57: C3 21 4E       JP      $4E21                          ; 
-4E5A: 3A FD 4F       LD      A,($4FFD)                      ; {ram:not1AF} 
-4E5D: 0F             RRCA                    
-4E5E: 0F             RRCA                    
-4E5F: 0F             RRCA                    
-4E60: 0F             RRCA                    
-4E61: E6 0F          AND     $0F             
-4E63: C6 30          ADD     $30             
-4E65: 47             LD      B,A             
-4E66: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
-4E69: 3A FD 4F       LD      A,($4FFD)                      ; {ram:not1AF} 
-4E6C: E6 0F          AND     $0F             
-4E6E: C6 30          ADD     $30             
-4E70: 47             LD      B,A             
-4E71: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
-4E74: 3E 2E          LD      A,$2E           
-4E76: 47             LD      B,A             
-4E77: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
-4E7A: 3E 20          LD      A,$20           
-4E7C: 47             LD      B,A             
-4E7D: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
-4E80: E1             POP     HL              
-4E81: 97             SUB     A               
-4E82: C9             RET                     
-4E83: 21 51 56       LD      HL,$5651                       ; {!+ObjectData} 
-4E86: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4E89: 05             DEC     B               
-4E8A: C8             RET     Z               
-4E8B: CD 05 47       CALL    $4705                          ; {SkipIDLoadEnd} 
-4E8E: EB             EX      DE,HL           
-4E8F: C3 89 4E       JP      $4E89                          ; 
-4E92: CD 9B 4E       CALL    $4E9B                          ; 
-4E95: 3E 0D          LD      A,$0D           
-4E97: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
-4E9A: C9             RET                     
-4E9B: 01 00 00       LD      BC,$0000        
-4E9E: 7E             LD      A,(HL)          
-4E9F: E6 80          AND     $80             
-4EA1: CA A9 4E       JP      Z,$4EA9                        ; 
-4EA4: 7E             LD      A,(HL)          
-4EA5: E6 7F          AND     $7F             
-4EA7: 47             LD      B,A             
-4EA8: 23             INC     HL              
-4EA9: 4E             LD      C,(HL)          
-4EAA: 23             INC     HL              
-4EAB: 78             LD      A,B             
-4EAC: A7             AND     A               
-4EAD: C2 B6 4E       JP      NZ,$4EB6                       ; 
-4EB0: 79             LD      A,C             
-4EB1: FE 02          CP      $02             
-4EB3: DA F9 4E       JP      C,$4EF9                        ; 
-4EB6: CD 3D 4F       CALL    $4F3D                          ; 
-4EB9: 0B             DEC     BC              
-4EBA: 0B             DEC     BC              
-4EBB: 3A 20 40       LD      A,($4020)                      ; {ram:screenPtr} 
-4EBE: FE FB          CP      $FB             
-4EC0: DA AB 4E       JP      C,$4EAB                        ; 
-4EC3: E5             PUSH    HL              
-4EC4: 2A 20 40       LD      HL,($4020)                     ; {ram:screenPtr} 
-4EC7: 11 BF FF       LD      DE,$FFBF        
-4ECA: 19             ADD     HL,DE           
-4ECB: 3E 0D          LD      A,$0D           
-4ECD: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
-4ED0: 3E 20          LD      A,$20           
-4ED2: 32 0C 50       LD      ($500C),A                      ; {ram:lastChar} 
-4ED5: 7E             LD      A,(HL)          
-4ED6: FE 20          CP      $20             
-4ED8: CA DF 4E       JP      Z,$4EDF                        ; 
-4EDB: 2B             DEC     HL              
-4EDC: C3 D5 4E       JP      $4ED5                          ; 
-4EDF: 23             INC     HL              
-4EE0: 7E             LD      A,(HL)          
-4EE1: FE 20          CP      $20             
-4EE3: CA F5 4E       JP      Z,$4EF5                        ; 
-4EE6: 36 20          LD      (HL),$20        
-4EE8: FE 1B          CP      $1B             
-4EEA: D2 EF 4E       JP      NC,$4EEF                       ; 
-4EED: C6 40          ADD     $40             
-4EEF: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
-4EF2: C3 DF 4E       JP      $4EDF                          ; 
-4EF5: E1             POP     HL              
-4EF6: C3 AB 4E       JP      $4EAB                          ; 
-4EF9: 79             LD      A,C             
-4EFA: A7             AND     A               
-4EFB: CA 07 4F       JP      Z,$4F07                        ; 
-4EFE: 7E             LD      A,(HL)          
-4EFF: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
-4F02: 23             INC     HL              
-4F03: 0D             DEC     C               
-4F04: C3 F9 4E       JP      $4EF9                          ; 
-4F07: 3E 20          LD      A,$20           
-4F09: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
-4F0C: C9             RET                     
+4E06: E5              PUSH    HL                  
+4E07: 97              SUB     A                   
+4E08: 32 FD 4F        LD      ($4FFD),A           ; {ram.not1AF}
+4E0B: 32 FE 4F        LD      ($4FFE),A           ; {ram.not1B0}
+4E0E: 3A 23 50        LD      A,($5023)           ; {ram.CUR_ROOM}
+4E11: FE 96           CP      $96                 
+4E13: C2 1B 4E        JP      NZ,$4E1B            ; {}
+4E16: 3E 01           LD      A,$01               
+4E18: 32 FE 4F        LD      ($4FFE),A           ; {ram.not1B0}
+4E1B: 21 51 56        LD      HL,$5651            ; {+code.ObjectData}
+4E1E: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4E21: CD 19 47        CALL    $4719               ; {code.CompareXY}
+4E24: D2 5A 4E        JP      NC,$4E5A            ; {}
+4E27: D5              PUSH    DE                  
+4E28: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4E2B: 7E              LD      A,(HL)              
+4E2C: 47              LD      B,A                 
+4E2D: FE 96           CP      $96                 
+4E2F: CA 37 4E        JP      Z,$4E37             ; {}
+4E32: FE 1D           CP      $1D                 
+4E34: C2 55 4E        JP      NZ,$4E55            ; {}
+4E37: 23              INC     HL                  
+4E38: 3A FD 4F        LD      A,($4FFD)           ; {ram.not1AF}
+4E3B: 86              ADD     A,(HL)              
+4E3C: 27              DAA                         
+4E3D: 32 FD 4F        LD      ($4FFD),A           ; {ram.not1AF}
+4E40: 78              LD      A,B                 
+4E41: FE 96           CP      $96                 
+4E43: CA 4D 4E        JP      Z,$4E4D             ; {}
+4E46: 3A FE 4F        LD      A,($4FFE)           ; {ram.not1B0}
+4E49: A7              AND     A                   
+4E4A: CA 55 4E        JP      Z,$4E55             ; {}
+4E4D: 3A FD 4F        LD      A,($4FFD)           ; {ram.not1AF}
+4E50: 86              ADD     A,(HL)              
+4E51: 27              DAA                         
+4E52: 32 FD 4F        LD      ($4FFD),A           ; {ram.not1AF}
+4E55: EB              EX      DE,HL               
+4E56: D1              POP     DE                  
+4E57: C3 21 4E        JP      $4E21               ; {}
+4E5A: 3A FD 4F        LD      A,($4FFD)           ; {ram.not1AF}
+4E5D: 0F              RRCA                        
+4E5E: 0F              RRCA                        
+4E5F: 0F              RRCA                        
+4E60: 0F              RRCA                        
+4E61: E6 0F           AND     $0F                 
+4E63: C6 30           ADD     $30                 
+4E65: 47              LD      B,A                 
+4E66: CD 0D 4F        CALL    $4F0D               ; {code.PrintCharacterAutoWrap}
+4E69: 3A FD 4F        LD      A,($4FFD)           ; {ram.not1AF}
+4E6C: E6 0F           AND     $0F                 
+4E6E: C6 30           ADD     $30                 
+4E70: 47              LD      B,A                 
+4E71: CD 0D 4F        CALL    $4F0D               ; {code.PrintCharacterAutoWrap}
+4E74: 3E 2E           LD      A,$2E               
+4E76: 47              LD      B,A                 
+4E77: CD 0D 4F        CALL    $4F0D               ; {code.PrintCharacterAutoWrap}
+4E7A: 3E 20           LD      A,$20               
+4E7C: 47              LD      B,A                 
+4E7D: CD 0D 4F        CALL    $4F0D               ; {code.PrintCharacterAutoWrap}
+4E80: E1              POP     HL                  
+4E81: 97              SUB     A                   
+4E82: C9              RET                         
+4E83: 21 51 56        LD      HL,$5651            ; {+code.ObjectData}
+4E86: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4E89: 05              DEC     B                   
+4E8A: C8              RET     Z                   
+4E8B: CD 05 47        CALL    $4705               ; {code.SkipIDLoadEnd}
+4E8E: EB              EX      DE,HL               
+4E8F: C3 89 4E        JP      $4E89               ; {}
+4E92: CD 9B 4E        CALL    $4E9B               ; {}
+4E95: 3E 0D           LD      A,$0D               
+4E97: CD 0D 4F        CALL    $4F0D               ; {code.PrintCharacterAutoWrap}
+4E9A: C9              RET                         
+4E9B: 01 00 00        LD      BC,$0000            
+4E9E: 7E              LD      A,(HL)              
+4E9F: E6 80           AND     $80                 
+4EA1: CA A9 4E        JP      Z,$4EA9             ; {}
+4EA4: 7E              LD      A,(HL)              
+4EA5: E6 7F           AND     $7F                 
+4EA7: 47              LD      B,A                 
+4EA8: 23              INC     HL                  
+4EA9: 4E              LD      C,(HL)              
+4EAA: 23              INC     HL                  
+4EAB: 78              LD      A,B                 
+4EAC: A7              AND     A                   
+4EAD: C2 B6 4E        JP      NZ,$4EB6            ; {}
+4EB0: 79              LD      A,C                 
+4EB1: FE 02           CP      $02                 
+4EB3: DA F9 4E        JP      C,$4EF9             ; {}
+4EB6: CD 3D 4F        CALL    $4F3D               ; {}
+4EB9: 0B              DEC     BC                  
+4EBA: 0B              DEC     BC                  
+4EBB: 3A 20 40        LD      A,($4020)           ; {ram.screenPtr}
+4EBE: FE FB           CP      $FB                 
+4EC0: DA AB 4E        JP      C,$4EAB             ; {}
+4EC3: E5              PUSH    HL                  
+4EC4: 2A 20 40        LD      HL,($4020)          ; {ram.screenPtr}
+4EC7: 11 BF FF        LD      DE,$FFBF            
+4ECA: 19              ADD     HL,DE               
+4ECB: 3E 0D           LD      A,$0D               
+4ECD: CD 0D 4F        CALL    $4F0D               ; {code.PrintCharacterAutoWrap}
+4ED0: 3E 20           LD      A,$20               
+4ED2: 32 0C 50        LD      ($500C),A           ; {ram.lastChar}
+4ED5: 7E              LD      A,(HL)              
+4ED6: FE 20           CP      $20                 
+4ED8: CA DF 4E        JP      Z,$4EDF             ; {}
+4EDB: 2B              DEC     HL                  
+4EDC: C3 D5 4E        JP      $4ED5               ; {}
+4EDF: 23              INC     HL                  
+4EE0: 7E              LD      A,(HL)              
+4EE1: FE 20           CP      $20                 
+4EE3: CA F5 4E        JP      Z,$4EF5             ; {}
+4EE6: 36 20           LD      (HL),$20            
+4EE8: FE 1B           CP      $1B                 
+4EEA: D2 EF 4E        JP      NC,$4EEF            ; {}
+4EED: C6 40           ADD     $40                 
+4EEF: CD 0D 4F        CALL    $4F0D               ; {code.PrintCharacterAutoWrap}
+4EF2: C3 DF 4E        JP      $4EDF               ; {}
+4EF5: E1              POP     HL                  
+4EF6: C3 AB 4E        JP      $4EAB               ; {}
+4EF9: 79              LD      A,C                 
+4EFA: A7              AND     A                   
+4EFB: CA 07 4F        JP      Z,$4F07             ; {}
+4EFE: 7E              LD      A,(HL)              
+4EFF: CD 0D 4F        CALL    $4F0D               ; {code.PrintCharacterAutoWrap}
+4F02: 23              INC     HL                  
+4F03: 0D              DEC     C                   
+4F04: C3 F9 4E        JP      $4EF9               ; {}
+4F07: 3E 20           LD      A,$20               
+4F09: CD 0D 4F        CALL    $4F0D               ; {code.PrintCharacterAutoWrap}
+4F0C: C9              RET                         
 
 PrintCharacterAutoWrap:
 ; Print character in A to screen. This handles auto word-wrapping and
 ; auto MORE prompting.
 ;
-4F0D: F5             PUSH    AF                             ; Hold A
-4F0E: 3A 0C 50       LD      A,($500C)                      ; {ram:lastChar} Was the last character printed ...
-4F11: FE 20          CP      $20                            ; ... a space?
-4F13: C2 35 4F       JP      NZ,$4F35                       ; No ... print this
-4F16: F1             POP     AF                             ; Restore
-4F17: FE 20          CP      $20                            ; Space now?
-4F19: C8             RET     Z                              ; Yes ... just ignore
-4F1A: FE 2E          CP      $2E                            ; A '.' ?
-4F1C: CA 29 4F       JP      Z,$4F29                        ; Yes. Ignore leading space.
-4F1F: FE 3F          CP      $3F                            ; A '?' ?
-4F21: CA 29 4F       JP      Z,$4F29                        ; Yes. Ignore leading space.
-4F24: FE 21          CP      $21                            ; A '!' ?
-4F26: C2 36 4F       JP      NZ,$4F36                       ; Yes. Ignore leading space.
-4F29: E5             PUSH    HL                             ; Back screen ...
-4F2A: 2A 20 40       LD      HL,($4020)                     ; {ram:screenPtr} ... pointer ...
-4F2D: 2B             DEC     HL                             ; ... up over ...
-4F2E: 22 20 40       LD      ($4020),HL                     ; {ram:screenPtr} ... ignored ...
-4F31: E1             POP     HL                             ; ... space
-4F32: C3 36 4F       JP      $4F36                          ; Store and print
+4F0D: F5              PUSH    AF                  ; Hold A
+4F0E: 3A 0C 50        LD      A,($500C)           ; {ram.lastChar} Was the last character printed ...
+4F11: FE 20           CP      $20                 ; ... a space?
+4F13: C2 35 4F        JP      NZ,$4F35            ; {} No ... print this
+4F16: F1              POP     AF                  ; Restore
+4F17: FE 20           CP      $20                 ; Space now?
+4F19: C8              RET     Z                   ; Yes ... just ignore
+4F1A: FE 2E           CP      $2E                 ; A '.' ?
+4F1C: CA 29 4F        JP      Z,$4F29             ; {} Yes. Ignore leading space.
+4F1F: FE 3F           CP      $3F                 ; A '?' ?
+4F21: CA 29 4F        JP      Z,$4F29             ; {} Yes. Ignore leading space.
+4F24: FE 21           CP      $21                 ; A '!' ?
+4F26: C2 36 4F        JP      NZ,$4F36            ; {} Yes. Ignore leading space.
+4F29: E5              PUSH    HL                  ; Back screen ...
+4F2A: 2A 20 40        LD      HL,($4020)          ; {ram.screenPtr} ... pointer ...
+4F2D: 2B              DEC     HL                  ; ... up over ...
+4F2E: 22 20 40        LD      ($4020),HL          ; {ram.screenPtr} ... ignored ...
+4F31: E1              POP     HL                  ; ... space
+4F32: C3 36 4F        JP      $4F36               ; {} Store and print
 ;
-4F35: F1             POP     AF                             ; Restore char to print
-4F36: 32 0C 50       LD      ($500C),A                      ; {ram:lastChar} Last printed character
-4F39: CD 33 00       CALL    $0033                          ; {hard:PrintChar} TRS80 print character
-4F3C: C9             RET                                    ; Done
+4F35: F1              POP     AF                  ; Restore char to print
+4F36: 32 0C 50        LD      ($500C),A           ; {ram.lastChar} Last printed character
+4F39: CD 33 00        CALL    $0033               ; {hard.PrintChar} TRS80 print character
+4F3C: C9              RET                         ; Done
 
-4F3D: 11 CF 4F       LD      DE,$4FCF        
-4F40: C5             PUSH    BC              
-4F41: 06 03          LD      B,$03           
-4F43: 7E             LD      A,(HL)          
-4F44: 23             INC     HL              
-4F45: 4E             LD      C,(HL)          
-4F46: 23             INC     HL              
-4F47: E5             PUSH    HL              
-4F48: 61             LD      H,C             
-4F49: 6F             LD      L,A             
-4F4A: 13             INC     DE              
-4F4B: 13             INC     DE              
-4F4C: EB             EX      DE,HL           
-4F4D: E5             PUSH    HL              
-4F4E: C5             PUSH    BC              
-4F4F: 21 28 00       LD      HL,$0028        
-4F52: 22 CD 4F       LD      ($4FCD),HL                     ; 
-4F55: 21 85 4F       LD      HL,$4F85        
-4F58: 36 11          LD      (HL),$11        
-4F5A: 01 00 00       LD      BC,$0000        
-4F5D: C5             PUSH    BC              
-4F5E: 7B             LD      A,E             
-4F5F: 17             RLA                     
-4F60: 5F             LD      E,A             
-4F61: 7A             LD      A,D             
-4F62: 17             RLA                     
-4F63: 57             LD      D,A             
-4F64: 35             DEC     (HL)            
-4F65: E1             POP     HL              
-4F66: CA 86 4F       JP      Z,$4F86                        ; 
-4F69: 3E 00          LD      A,$00           
-4F6B: CE 00          ADC     $00             
-4F6D: 29             ADD     HL,HL           
-4F6E: 44             LD      B,H             
-4F6F: 85             ADD     A,L             
-4F70: 2A CD 4F       LD      HL,($4FCD)                     ; 
-4F73: 95             SUB     L               
-4F74: 4F             LD      C,A             
-4F75: 78             LD      A,B             
-4F76: 9C             SBC     H               
-4F77: 47             LD      B,A             
-4F78: C5             PUSH    BC              
-4F79: D2 7E 4F       JP      NC,$4F7E                       ; 
-4F7C: 09             ADD     HL,BC           
-4F7D: E3             EX      (SP),HL         
-4F7E: 21 85 4F       LD      HL,$4F85        
-4F81: 3F             CCF                     
-4F82: C3 5E 4F       JP      $4F5E                          ; 
-4F85: 00             NOP                     
-4F86: 01 A4 4F       LD      BC,$4FA4        
-4F89: 09             ADD     HL,BC           
-4F8A: 7E             LD      A,(HL)          
-4F8B: C1             POP     BC              
-4F8C: E1             POP     HL              
-4F8D: 77             LD      (HL),A          
-4F8E: 2B             DEC     HL              
-4F8F: 05             DEC     B               
-4F90: C2 4D 4F       JP      NZ,$4F4D                       ; 
-4F93: 21 CF 4F       LD      HL,$4FCF        
-4F96: 06 03          LD      B,$03           
-4F98: 7E             LD      A,(HL)          
-4F99: CD 0D 4F       CALL    $4F0D                          ; {PrintCharacterAutoWrap} 
-4F9C: 23             INC     HL              
-4F9D: 05             DEC     B               
-4F9E: C2 98 4F       JP      NZ,$4F98                       ; 
-4FA1: E1             POP     HL              
-4FA2: C1             POP     BC              
-4FA3: C9             RET                     
+4F3D: 11 CF 4F        LD      DE,$4FCF            
+4F40: C5              PUSH    BC                  
+4F41: 06 03           LD      B,$03               
+4F43: 7E              LD      A,(HL)              
+4F44: 23              INC     HL                  
+4F45: 4E              LD      C,(HL)              
+4F46: 23              INC     HL                  
+4F47: E5              PUSH    HL                  
+4F48: 61              LD      H,C                 
+4F49: 6F              LD      L,A                 
+4F4A: 13              INC     DE                  
+4F4B: 13              INC     DE                  
+4F4C: EB              EX      DE,HL               
+4F4D: E5              PUSH    HL                  
+4F4E: C5              PUSH    BC                  
+4F4F: 21 28 00        LD      HL,$0028            
+4F52: 22 CD 4F        LD      ($4FCD),HL          ; {}
+4F55: 21 85 4F        LD      HL,$4F85            
+4F58: 36 11           LD      (HL),$11            
+4F5A: 01 00 00        LD      BC,$0000            
+4F5D: C5              PUSH    BC                  
+4F5E: 7B              LD      A,E                 
+4F5F: 17              RLA                         
+4F60: 5F              LD      E,A                 
+4F61: 7A              LD      A,D                 
+4F62: 17              RLA                         
+4F63: 57              LD      D,A                 
+4F64: 35              DEC     (HL)                
+4F65: E1              POP     HL                  
+4F66: CA 86 4F        JP      Z,$4F86             ; {}
+4F69: 3E 00           LD      A,$00               
+4F6B: CE 00           ADC     $00                 
+4F6D: 29              ADD     HL,HL               
+4F6E: 44              LD      B,H                 
+4F6F: 85              ADD     A,L                 
+4F70: 2A CD 4F        LD      HL,($4FCD)          ; {}
+4F73: 95              SUB     L                   
+4F74: 4F              LD      C,A                 
+4F75: 78              LD      A,B                 
+4F76: 9C              SBC     H                   
+4F77: 47              LD      B,A                 
+4F78: C5              PUSH    BC                  
+4F79: D2 7E 4F        JP      NC,$4F7E            ; {}
+4F7C: 09              ADD     HL,BC               
+4F7D: E3              EX      (SP),HL             
+4F7E: 21 85 4F        LD      HL,$4F85            
+4F81: 3F              CCF                         
+4F82: C3 5E 4F        JP      $4F5E               ; {}
+4F85: 00              NOP                         
+4F86: 01 A4 4F        LD      BC,$4FA4            
+4F89: 09              ADD     HL,BC               
+4F8A: 7E              LD      A,(HL)              
+4F8B: C1              POP     BC                  
+4F8C: E1              POP     HL                  
+4F8D: 77              LD      (HL),A              
+4F8E: 2B              DEC     HL                  
+4F8F: 05              DEC     B                   
+4F90: C2 4D 4F        JP      NZ,$4F4D            ; {}
+4F93: 21 CF 4F        LD      HL,$4FCF            
+4F96: 06 03           LD      B,$03               
+4F98: 7E              LD      A,(HL)              
+4F99: CD 0D 4F        CALL    $4F0D               ; {code.PrintCharacterAutoWrap}
+4F9C: 23              INC     HL                  
+4F9D: 05              DEC     B                   
+4F9E: C2 98 4F        JP      NZ,$4F98            ; {}
+4FA1: E1              POP     HL                  
+4FA2: C1              POP     BC                  
+4FA3: C9              RET                         
 
 ; Character translation table
 ;     ?  !  2  _  "  '  <  >  /  0  3  A  B  C  D  E
@@ -1954,29 +1956,29 @@ PrintCharacterAutoWrap:
   
 ; Generate random number               
 GetRandom:
-4FD3: C5             PUSH    BC              
-4FD4: E5             PUSH    HL              
-4FD5: 2A F9 4F       LD      HL,($4FF9)                     ; {ram:tmp1AB} 
-4FD8: 06 17          LD      B,$17           
-4FDA: 7D             LD      A,L             
-4FDB: E6 06          AND     $06             
-4FDD: 37             SCF                     
-4FDE: EA E2 4F       JP      PE,$4FE2                       ; 
-4FE1: 3F             CCF                     
-4FE2: 7C             LD      A,H             
-4FE3: 1F             RRA                     
-4FE4: 67             LD      H,A             
-4FE5: 7D             LD      A,L             
-4FE6: 1F             RRA                     
-4FE7: E6 FE          AND     $FE             
-4FE9: 6F             LD      L,A             
-4FEA: 05             DEC     B               
-4FEB: C2 DB 4F       JP      NZ,$4FDB                       ; 
-4FEE: 22 F9 4F       LD      ($4FF9),HL                     ; {ram:tmp1AB} 
-4FF1: 7C             LD      A,H             
-4FF2: E1             POP     HL              
-4FF3: C1             POP     BC              
-4FF4: C9             RET                     
+4FD3: C5              PUSH    BC                  
+4FD4: E5              PUSH    HL                  
+4FD5: 2A F9 4F        LD      HL,($4FF9)          ; {ram.tmp1AB}
+4FD8: 06 17           LD      B,$17               
+4FDA: 7D              LD      A,L                 
+4FDB: E6 06           AND     $06                 
+4FDD: 37              SCF                         
+4FDE: EA E2 4F        JP      PE,$4FE2            ; {}
+4FE1: 3F              CCF                         
+4FE2: 7C              LD      A,H                 
+4FE3: 1F              RRA                         
+4FE4: 67              LD      H,A                 
+4FE5: 7D              LD      A,L                 
+4FE6: 1F              RRA                         
+4FE7: E6 FE           AND     $FE                 
+4FE9: 6F              LD      L,A                 
+4FEA: 05              DEC     B                   
+4FEB: C2 DB 4F        JP      NZ,$4FDB            ; {}
+4FEE: 22 F9 4F        LD      ($4FF9),HL          ; {ram.tmp1AB}
+4FF1: 7C              LD      A,H                 
+4FF2: E1              POP     HL                  
+4FF3: C1              POP     BC                  
+4FF4: C9              RET                         
 
 ; Random number seed
 4FF5: 12 23 44 1D            
@@ -2025,7 +2027,7 @@ GetRandom:
 5024: 22 68 48       
 5027: 50               
 ```
-       
+
 ## Feedback Prompts
 
 ```code
@@ -2044,35 +2046,35 @@ FeedbackPrompts:
 ```
 
 ```code                 
-5047: D4 00 00       CALL    NC,$0000        
-504A: 00             NOP                     
-504B: 00             NOP                     
-504C: 00             NOP                     
-504D: 00             NOP                     
-504E: 00             NOP                     
-504F: 00             NOP                     
-5050: 00             NOP                     
-5051: 00             NOP                     
-5052: 00             NOP                     
-5053: 00             NOP                     
-5054: 00             NOP                     
-5055: 00             NOP                     
-5056: 00             NOP                     
-5057: 00             NOP                     
-5058: 00             NOP                     
-5059: 00             NOP                     
-505A: 00             NOP                     
-505B: 00             NOP                     
-505C: 00             NOP                     
-505D: 00             NOP                     
-505E: 00             NOP                     
-505F: 00             NOP                     
-5060: 00             NOP                     
-5061: 00             NOP                     
-5062: 00             NOP                     
-5063: 00             NOP                     
-5064: 00             NOP                     
-5065: 00             NOP    
+5047: D4 00 00        CALL    NC,$0000            
+504A: 00              NOP                         
+504B: 00              NOP                         
+504C: 00              NOP                         
+504D: 00              NOP                         
+504E: 00              NOP                         
+504F: 00              NOP                         
+5050: 00              NOP                         
+5051: 00              NOP                         
+5052: 00              NOP                         
+5053: 00              NOP                         
+5054: 00              NOP                         
+5055: 00              NOP                         
+5056: 00              NOP                         
+5057: 00              NOP                         
+5058: 00              NOP                         
+5059: 00              NOP                         
+505A: 00              NOP                         
+505B: 00              NOP                         
+505C: 00              NOP                         
+505D: 00              NOP                         
+505E: 00              NOP                         
+505F: 00              NOP                         
+5060: 00              NOP                         
+5061: 00              NOP                         
+5062: 00              NOP                         
+5063: 00              NOP                         
+5064: 00              NOP                         
+5065: 00              NOP                         
 ```
 
 ## Command Jump Table
@@ -5205,3 +5207,4 @@ RoomDescriptions:
 7FEF: 00 FF 00 FF 00 FF 00 FF 00 FF 00 FF 00 FF 00 FF     
 7FFF: 00               
 ```
+

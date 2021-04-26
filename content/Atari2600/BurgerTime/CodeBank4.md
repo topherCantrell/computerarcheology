@@ -7,9 +7,11 @@
 >>> binary F000:btBank4.bin
 
 >>> memoryTable hard 
+
 [Hardware Info](../Stella.md)
 
 >>> memoryTable ram 
+
 [RAM Usage](RAMUse.md)
 
 ```code
@@ -116,159 +118,159 @@ F630: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 F640: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 F650: 00 00 00 00 00 00 00 00 00 00 00 5A 9C
 
-F65D: AD 56 F9        LDA     $F956                   
-F660: 29 01           AND     #$01                  
-F662: D0 0F           BNE     $F673                   
+F65D: AD 56 F9        LDA     $F956               
+F660: 29 01           AND     #$01                
+F662: D0 0F           BNE     $F673               ; {}
 F664: 18              CLC                         
-F665: AD 0C F9        LDA     $F90C                   
-F668: 65 C2           ADC     $C2                   
-F66A: 85 E4           STA     $E4                   
-F66C: AD 0D F9        LDA     $F90D                   
-F66F: 69 00           ADC     #$00                  
-F671: 85 E5           STA     $E5                   
-F673: 85 02           STA     $02                   
-F675: AD 35 F9        LDA     $F935                   
-F678: D0 1C           BNE     $F696                   
-F67A: AD 6F F9        LDA     $F96F                   
-F67D: 85 F2           STA     $F2                   
-F67F: AD 70 F9        LDA     $F970                   
-F682: 85 F3           STA     $F3                   
-F684: AD 71 F9        LDA     $F971                   
-F687: 85 F4           STA     $F4                   
-F689: AE 08 F9        LDX     $F908                   
-F68C: BD 5B F6        LDA     $F65B,X                 
-F68F: 85 06           STA     $06                   
-F691: 85 07           STA     $07                   
-F693: 4C B1 F6        JMP     $F6B1                   
+F665: AD 0C F9        LDA     $F90C               
+F668: 65 C2           ADC     $C2                 ; {ram.mC2}
+F66A: 85 E4           STA     $E4                 ; {ram.mE4}
+F66C: AD 0D F9        LDA     $F90D               
+F66F: 69 00           ADC     #$00                
+F671: 85 E5           STA     $E5                 ; {ram.mE5}
+F673: 85 02           STA     $02                 ; {hard.WSYNC}
+F675: AD 35 F9        LDA     $F935               
+F678: D0 1C           BNE     $F696               ; {}
+F67A: AD 6F F9        LDA     $F96F               
+F67D: 85 F2           STA     $F2                 ; {ram.mF2}
+F67F: AD 70 F9        LDA     $F970               
+F682: 85 F3           STA     $F3                 ; {ram.mF3}
+F684: AD 71 F9        LDA     $F971               
+F687: 85 F4           STA     $F4                 ; {ram.mF4}
+F689: AE 08 F9        LDX     $F908               
+F68C: BD 5B F6        LDA     $F65B,X             ; {}
+F68F: 85 06           STA     $06                 ; {hard.COLUP0}
+F691: 85 07           STA     $07                 ; {hard.COLUP1}
+F693: 4C B1 F6        JMP     $F6B1               ; {}
 F696: 38              SEC                         
-F697: E9 01           SBC     #$01                  
-F699: 8D 35 F8        STA     $F835                   
-F69C: AD 32 F9        LDA     $F932                   
-F69F: 85 F2           STA     $F2                   
-F6A1: AD 33 F9        LDA     $F933                   
-F6A4: 85 F3           STA     $F3                   
-F6A6: AD 34 F9        LDA     $F934                   
-F6A9: 85 F4           STA     $F4                   
-F6AB: A9 2F           LDA     #$2F                  
-F6AD: 85 06           STA     $06                   
-F6AF: 85 07           STA     $07                   
-F6B1: A2 05           LDX     #$05                  
-F6B3: 20 96 F7        JSR     $F796                   
-F6B6: 20 DD F7        JSR     $F7DD                   
-F6B9: A9 1A           LDA     #$1A                  
-F6BB: 85 08           STA     $08                   
-F6BD: A9 00           LDA     #$00                  
-F6BF: 85 89           STA     $89                   
-F6C1: 85 8A           STA     $8A                   
-F6C3: 85 8B           STA     $8B                   
-F6C5: 85 8C           STA     $8C                   
-F6C7: 85 81           STA     $81                   
-F6C9: 85 82           STA     $82                   
-F6CB: 85 83           STA     $83                   
-F6CD: 85 84           STA     $84                   
-F6CF: 85 1D           STA     $1D                   
-F6D1: 85 1E           STA     $1E                   
-F6D3: 85 1F           STA     $1F                   
+F697: E9 01           SBC     #$01                
+F699: 8D 35 F8        STA     $F835               
+F69C: AD 32 F9        LDA     $F932               
+F69F: 85 F2           STA     $F2                 ; {ram.mF2}
+F6A1: AD 33 F9        LDA     $F933               
+F6A4: 85 F3           STA     $F3                 ; {ram.mF3}
+F6A6: AD 34 F9        LDA     $F934               
+F6A9: 85 F4           STA     $F4                 ; {ram.mF4}
+F6AB: A9 2F           LDA     #$2F                
+F6AD: 85 06           STA     $06                 ; {hard.COLUP0}
+F6AF: 85 07           STA     $07                 ; {hard.COLUP1}
+F6B1: A2 05           LDX     #$05                
+F6B3: 20 96 F7        JSR     $F796               ; {}
+F6B6: 20 DD F7        JSR     $F7DD               ; {}
+F6B9: A9 1A           LDA     #$1A                
+F6BB: 85 08           STA     $08                 ; {hard.COLUPF}
+F6BD: A9 00           LDA     #$00                
+F6BF: 85 89           STA     $89                 ; {ram.m89}
+F6C1: 85 8A           STA     $8A                 ; {ram.m8A}
+F6C3: 85 8B           STA     $8B                 ; {ram.m8B}
+F6C5: 85 8C           STA     $8C                 ; {ram.m8C}
+F6C7: 85 81           STA     $81                 ; {ram.m81}
+F6C9: 85 82           STA     $82                 ; {ram.m82}
+F6CB: 85 83           STA     $83                 ; {ram.m83}
+F6CD: 85 84           STA     $84                 ; {ram.m84}
+F6CF: 85 1D           STA     $1D                 ; {hard.ENAM0}
+F6D1: 85 1E           STA     $1E                 ; {hard.ENAM1}
+F6D3: 85 1F           STA     $1F                 ; {hard.ENABL}
 F6D5: 60              RTS                         
 
 F6D6: 02 
 
-F6D7: A9 00           LDA     #$00                  
-F6D9: A0 00           LDY     #$00                  
-F6DB: A2 00           LDX     #$00                  
-F6DD: 85 02           STA     $02                   
-F6DF: 85 09           STA     $09                   
-F6E1: 85 09           STA     $09                   
-F6E3: 84 0A           STY     $0A                   
-F6E5: A9 10           LDA     #$10                  
-F6E7: 85 20           STA     $20                   
-F6E9: A9 20           LDA     #$20                  
-F6EB: 85 21           STA     $21                   
-F6ED: AC D6 F6        LDY     $F6D6                   
+F6D7: A9 00           LDA     #$00                
+F6D9: A0 00           LDY     #$00                
+F6DB: A2 00           LDX     #$00                
+F6DD: 85 02           STA     $02                 ; {hard.WSYNC}
+F6DF: 85 09           STA     $09                 ; {hard.COLUBK}
+F6E1: 85 09           STA     $09                 ; {hard.COLUBK}
+F6E3: 84 0A           STY     $0A                 ; {hard.CTRLPF}
+F6E5: A9 10           LDA     #$10                
+F6E7: 85 20           STA     $20                 ; {hard.HMP0}
+F6E9: A9 20           LDA     #$20                
+F6EB: 85 21           STA     $21                 ; {hard.HMP1}
+F6ED: AC D6 F6        LDY     $F6D6               ; {}
 F6F0: EA              NOP                         
 F6F1: 88              DEY                         
-F6F2: D0 FC           BNE     $F6F0                   
-F6F4: 85 10           STA     $10                   
-F6F6: 85 11           STA     $11                   
-F6F8: 85 02           STA     $02                   
-F6FA: 85 2A           STA     $2A                   
-F6FC: A9 01           LDA     #$01                  
-F6FE: 85 25           STA     $25                   
-F700: 85 26           STA     $26                   
-F702: A9 00           LDA     #$00                  
-F704: 85 02           STA     $02                   
-F706: 85 01           STA     $01                   
-F708: 85 1B           STA     $1B                   
-F70A: 85 1C           STA     $1C                   
-F70C: 85 1B           STA     $1B                   
-F70E: 85 0B           STA     $0B                   
-F710: 85 0C           STA     $0C                   
-F712: A0 05           LDY     #$05                  
-F714: A9 03           LDA     #$03                  
-F716: 85 04           STA     $04                   
-F718: 85 05           STA     $05                   
-F71A: 85 2B           STA     $2B                   
-F71C: B1 DC           LDA     ($DC),Y               
+F6F2: D0 FC           BNE     $F6F0               ; {}
+F6F4: 85 10           STA     $10                 ; {hard.RESP0}
+F6F6: 85 11           STA     $11                 ; {hard.RESP1}
+F6F8: 85 02           STA     $02                 ; {hard.WSYNC}
+F6FA: 85 2A           STA     $2A                 ; {hard.HMOVE}
+F6FC: A9 01           LDA     #$01                
+F6FE: 85 25           STA     $25                 ; {hard.VDELP0}
+F700: 85 26           STA     $26                 ; {hard.VDELP1}
+F702: A9 00           LDA     #$00                
+F704: 85 02           STA     $02                 ; {hard.WSYNC}
+F706: 85 01           STA     $01                 ; {hard.VBLANK}
+F708: 85 1B           STA     $1B                 ; {hard.GRP0}
+F70A: 85 1C           STA     $1C                 ; {hard.GRP1}
+F70C: 85 1B           STA     $1B                 ; {hard.GRP0}
+F70E: 85 0B           STA     $0B                 ; {hard.REFP0}
+F710: 85 0C           STA     $0C                 ; {hard.PEFP1}
+F712: A0 05           LDY     #$05                
+F714: A9 03           LDA     #$03                
+F716: 85 04           STA     $04                 ; {hard.NUSIZ0}
+F718: 85 05           STA     $05                 ; {hard.NUSIZ1}
+F71A: 85 2B           STA     $2B                 ; {hard.HMCLR}
+F71C: B1 DC           LDA     ($DC),Y             ; {ram.mDC}
 F71E: AA              TAX                         
-F71F: B1 D2           LDA     ($D2),Y               
-F721: 85 02           STA     $02                   
-F723: 84 C7           STY     $C7                   
-F725: 84 C7           STY     $C7                   
-F727: 85 1B           STA     $1B                   
-F729: B1 D4           LDA     ($D4),Y               
-F72B: 85 1C           STA     $1C                   
-F72D: B1 D6           LDA     ($D6),Y               
-F72F: 85 1B           STA     $1B                   
-F731: B1 D8           LDA     ($D8),Y               
-F733: 85 C8           STA     $C8                   
-F735: B1 DA           LDA     ($DA),Y               
-F737: A4 C8           LDY     $C8                   
-F739: 84 1C           STY     $1C                   
-F73B: 85 1B           STA     $1B                   
-F73D: 86 1C           STX     $1C                   
-F73F: 86 1B           STX     $1B                   
-F741: A4 C7           LDY     $C7                   
+F71F: B1 D2           LDA     ($D2),Y             ; {ram.mD2}
+F721: 85 02           STA     $02                 ; {hard.WSYNC}
+F723: 84 C7           STY     $C7                 ; {ram.mC7}
+F725: 84 C7           STY     $C7                 ; {ram.mC7}
+F727: 85 1B           STA     $1B                 ; {hard.GRP0}
+F729: B1 D4           LDA     ($D4),Y             ; {ram.mD4}
+F72B: 85 1C           STA     $1C                 ; {hard.GRP1}
+F72D: B1 D6           LDA     ($D6),Y             ; {ram.mD6}
+F72F: 85 1B           STA     $1B                 ; {hard.GRP0}
+F731: B1 D8           LDA     ($D8),Y             ; {ram.mD8}
+F733: 85 C8           STA     $C8                 ; {ram.mC8}
+F735: B1 DA           LDA     ($DA),Y             ; {ram.mDA}
+F737: A4 C8           LDY     $C8                 ; {ram.mC8}
+F739: 84 1C           STY     $1C                 ; {hard.GRP1}
+F73B: 85 1B           STA     $1B                 ; {hard.GRP0}
+F73D: 86 1C           STX     $1C                 ; {hard.GRP1}
+F73F: 86 1B           STX     $1B                 ; {hard.GRP0}
+F741: A4 C7           LDY     $C7                 ; {ram.mC7}
 F743: 88              DEY                         
-F744: 10 D6           BPL     $F71C                   
-F746: A9 00           LDA     #$00                  
-F748: 85 1B           STA     $1B                   
-F74A: 85 1C           STA     $1C                   
-F74C: 85 1B           STA     $1B                   
+F744: 10 D6           BPL     $F71C               ; {}
+F746: A9 00           LDA     #$00                
+F748: 85 1B           STA     $1B                 ; {hard.GRP0}
+F74A: 85 1C           STA     $1C                 ; {hard.GRP1}
+F74C: 85 1B           STA     $1B                 ; {hard.GRP0}
 F74E: 60              RTS                         
-F74F: B1 D8           LDA     ($D8),Y               
+F74F: B1 D8           LDA     ($D8),Y             ; {ram.mD8}
 F751: AA              TAX                         
-F752: B1 D2           LDA     ($D2),Y               
-F754: 85 02           STA     $02                   
-F756: 84 C7           STY     $C7                   
-F758: 84 C7           STY     $C7                   
-F75A: 85 1B           STA     $1B                   
-F75C: B1 D4           LDA     ($D4),Y               
-F75E: 85 1C           STA     $1C                   
-F760: A9 00           LDA     #$00                  
-F762: 85 1B           STA     $1B                   
-F764: 85 C8           STA     $C8                   
-F766: 85 C8           STA     $C8                   
-F768: 85 C8           STA     $C8                   
+F752: B1 D2           LDA     ($D2),Y             ; {ram.mD2}
+F754: 85 02           STA     $02                 ; {hard.WSYNC}
+F756: 84 C7           STY     $C7                 ; {ram.mC7}
+F758: 84 C7           STY     $C7                 ; {ram.mC7}
+F75A: 85 1B           STA     $1B                 ; {hard.GRP0}
+F75C: B1 D4           LDA     ($D4),Y             ; {ram.mD4}
+F75E: 85 1C           STA     $1C                 ; {hard.GRP1}
+F760: A9 00           LDA     #$00                
+F762: 85 1B           STA     $1B                 ; {hard.GRP0}
+F764: 85 C8           STA     $C8                 ; {ram.mC8}
+F766: 85 C8           STA     $C8                 ; {ram.mC8}
+F768: 85 C8           STA     $C8                 ; {ram.mC8}
 F76A: EA              NOP                         
-F76B: B1 D6           LDA     ($D6),Y               
-F76D: A4 C8           LDY     $C8                   
-F76F: 84 1C           STY     $1C                   
-F771: 85 1B           STA     $1B                   
-F773: 86 1C           STX     $1C                   
-F775: 86 1B           STX     $1B                   
-F777: A4 C7           LDY     $C7                   
+F76B: B1 D6           LDA     ($D6),Y             ; {ram.mD6}
+F76D: A4 C8           LDY     $C8                 ; {ram.mC8}
+F76F: 84 1C           STY     $1C                 ; {hard.GRP1}
+F771: 85 1B           STA     $1B                 ; {hard.GRP0}
+F773: 86 1C           STX     $1C                 ; {hard.GRP1}
+F775: 86 1B           STX     $1B                 ; {hard.GRP0}
+F777: A4 C7           LDY     $C7                 ; {ram.mC7}
 F779: 88              DEY                         
-F77A: 10 D3           BPL     $F74F                   
-F77C: A9 00           LDA     #$00                  
-F77E: 85 25           STA     $25                   
-F780: 85 26           STA     $26                   
-F782: 85 1B           STA     $1B                   
-F784: 85 1C           STA     $1C                   
-F786: A2 01           LDX     #$01                  
-F788: B5 F0           LDA     $F0,X                 
-F78A: 95 04           STA     $04,X                 
+F77A: 10 D3           BPL     $F74F               ; {}
+F77C: A9 00           LDA     #$00                
+F77E: 85 25           STA     $25                 ; {hard.VDELP0}
+F780: 85 26           STA     $26                 ; {hard.VDELP1}
+F782: 85 1B           STA     $1B                 ; {hard.GRP0}
+F784: 85 1C           STA     $1C                 ; {hard.GRP1}
+F786: A2 01           LDX     #$01                
+F788: B5 F0           LDA     $F0,X               ; {ram.mF0}
+F78A: 95 04           STA     $04,X               ; {hard.NUSIZ0}
 F78C: CA              DEX                         
-F78D: 10 F9           BPL     $F788                   
+F78D: 10 F9           BPL     $F788               ; {}
 F78F: 60              RTS                         
 
 F790: F0 0F F0 0F F0 0F                 
@@ -276,35 +278,35 @@ F790: F0 0F F0 0F F0 0F
 F796: 8A              TXA                         
 F797: 4A              LSR     A                   
 F798: A8              TAY                         
-F799: B9 F2 00        LDA     $00F2,Y                 
-F79C: 3D 90 F7        AND     $F790,X                 
-F79F: E0 03           CPX     #$03                  
-F7A1: F0 0C           BEQ     $F7AF                   
-F7A3: E0 01           CPX     #$01                  
-F7A5: F0 08           BEQ     $F7AF                   
-F7A7: E0 05           CPX     #$05                  
-F7A9: F0 04           BEQ     $F7AF                   
+F799: B9 F2 00        LDA     $00F2,Y             ; {ram.mF2}
+F79C: 3D 90 F7        AND     $F790,X             ; {}
+F79F: E0 03           CPX     #$03                
+F7A1: F0 0C           BEQ     $F7AF               ; {}
+F7A3: E0 01           CPX     #$01                
+F7A5: F0 08           BEQ     $F7AF               ; {}
+F7A7: E0 05           CPX     #$05                
+F7A9: F0 04           BEQ     $F7AF               ; {}
 F7AB: 4A              LSR     A                   
 F7AC: 4A              LSR     A                   
 F7AD: 4A              LSR     A                   
 F7AE: 4A              LSR     A                   
 F7AF: A8              TAY                         
 F7B0: 18              CLC                         
-F7B1: A9 80           LDA     #$80                  
-F7B3: 79 CF F7        ADC     $F7CF,Y                 
-F7B6: 85 C7           STA     $C7                   
-F7B8: A9 FC           LDA     #$FC                  
-F7BA: 69 00           ADC     #$00                  
-F7BC: 85 C8           STA     $C8                   
+F7B1: A9 80           LDA     #$80                
+F7B3: 79 CF F7        ADC     $F7CF,Y             ; {}
+F7B6: 85 C7           STA     $C7                 ; {ram.mC7}
+F7B8: A9 FC           LDA     #$FC                
+F7BA: 69 00           ADC     #$00                
+F7BC: 85 C8           STA     $C8                 ; {ram.mC8}
 F7BE: 8A              TXA                         
 F7BF: 0A              ASL     A                   
 F7C0: A8              TAY                         
-F7C1: A5 C7           LDA     $C7                   
-F7C3: 99 D2 00        STA     $00D2,Y                 
-F7C6: A5 C8           LDA     $C8                   
-F7C8: 99 D3 00        STA     $00D3,Y                 
+F7C1: A5 C7           LDA     $C7                 ; {ram.mC7}
+F7C3: 99 D2 00        STA     $00D2,Y             ; {ram.mD2}
+F7C6: A5 C8           LDA     $C8                 ; {ram.mC8}
+F7C8: 99 D3 00        STA     $00D3,Y             ; {ram.mD3}
 F7CB: CA              DEX                         
-F7CC: 10 C8           BPL     $F796                   
+F7CC: 10 C8           BPL     $F796               ; {}
 F7CE: 60              RTS                         
 
 F7CF: 00 06 0C 12 18 1E 24 2A 30 36 3C 42 48 4E AD 58
@@ -312,3 +314,4 @@ F7DF: F9 85 C7 AD 57 F9 85 D1 60 1F D7 34 1F 18 3C 3C
 F7EF: 3C 00 3C 3C 3C 3C 00 2C 1C 38 2C 00 3C 3C 3C 18
 F7FF: 00                     
 ```
+

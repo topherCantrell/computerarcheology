@@ -7,9 +7,11 @@
 >>> binary 8000:roms/Zelda.nes[0010:4010]
 
 >>> memoryTable ram 
+
 [RAM Usage](RAMUse.md)
 
 >>> memoryTable hard 
+
 [Hardware Info](Hardware.md)
 
 ```code
@@ -747,30 +749,30 @@
 
 ```code
 SoundProcessing: 
-9825: A5 E0         LDA   <$E0                ; 
-9827: F0 0C         BEQ   $9835               ; 
-9829: A9 00         LDA   #$00                ; Disable all ...
-982B: 8D 15 40      STA   $4015               ; ... channels
-982E: A9 0F         LDA   #$0F                ; Enable Square1, Square2, ...
-9830: 8D 15 40      STA   $4015               ; ... Triangle, and Noise (everything but DMC).
-9833: D0 11         BNE   $9846               ; Has to be NE so this is a jump to process sound effects
+9825: A5 E0           LDA     <$E0                ; {ram.??SND_E0??}
+9827: F0 0C           BEQ     $9835               ; {hard.MMC1_0+1835}
+9829: A9 00           LDA     #$00                ; Disable all ...
+982B: 8D 15 40        STA     $4015               ; {hard.S_Status} ... channels
+982E: A9 0F           LDA     #$0F                ; Enable Square1, Square2, ...
+9830: 8D 15 40        STA     $4015               ; {hard.S_Status} ... Triangle, and Noise (everything but DMC).
+9833: D0 11           BNE     $9846               ; {hard.MMC1_0+1846} Has to be NE so this is a jump to process sound effects
 ;
-9835: A9 FF         LDA   #$FF                ; Set bit 1 (and others)
-9837: 8D 17 40      STA   $4017               ; ?? Sync frame-count to sound procesor ??
-983A: 20 D5 9A      JSR   $9AD5               ; Process any music effect or music request on square-2
-983D: 20 A0 99      JSR   $99A0               ; ?? Process any noise effect or noise request
-9840: 20 85 9B      JSR   $9B85               ; Process any delta-modulation effect or delta-modulation request
-9843: 20 6B 9C      JSR   $9C6B               ; Process any music
+9835: A9 FF           LDA     #$FF                ; Set bit 1 (and others)
+9837: 8D 17 40        STA     $4017               ; {hard.S_FrameCntr} ?? Sync frame-count to sound procesor ??
+983A: 20 D5 9A        JSR     $9AD5               ; {code.MusEffect} Process any music effect or music request on square-2
+983D: 20 A0 99        JSR     $99A0               ; {hard.MMC1_0+19A0} ?? Process any noise effect or noise request
+9840: 20 85 9B        JSR     $9B85               ; {code.DModEffect} Process any delta-modulation effect or delta-modulation request
+9843: 20 6B 9C        JSR     $9C6B               ; {code.PlayMusic} Process any music
 ;
-9846: 20 CC 98      JSR   $98CC               ; Process any sound effect or sound-effect request on square-1
+9846: 20 CC 98        JSR     $98CC               ; {code.SndEffect} Process any sound effect or sound-effect request on square-1
 ;
-9849: A9 00         LDA   #$00                ; Clear ...
-984B: 8D 04 06      STA   $0604               ; ... the sound-effect request
-984E: 8D 03 06      STA   $0603               ; 
-9851: 8D 02 06      STA   $0602               ; Clear the music-effect request
-9854: 8D 01 06      STA   $0601               ; Clear the delta-modulation request
-9857: 8D 00 06      STA   $0600               ; 
-985A: 60            RTS                       ;
+9849: A9 00           LDA     #$00                ; Clear ...
+984B: 8D 04 06        STA     $0604               ; {ram.SND_Request} ... the sound-effect request
+984E: 8D 03 06        STA     $0603               ; {ram.??SND_603??}
+9851: 8D 02 06        STA     $0602               ; {ram.SND_ReqMusEff} Clear the music-effect request
+9854: 8D 01 06        STA     $0601               ; {ram.??SND_601??} Clear the delta-modulation request
+9857: 8D 00 06        STA     $0600               ; {ram.SND_ReqMusic}
+985A: 60              RTS                         ; 
 ```
 
 # Misc Sounds
@@ -822,198 +824,198 @@ MiscSounds:
 ; can't interrupt any playing effect (this beeping is a continual effect that will play 
 ; in the background).
 ;
-98C9: 4C 46 9D      JMP   $9D46               ; Jump over large data area (area too big for a relative jump)
+98C9: 4C 46 9D        JMP     $9D46               ; {hard.MMC1_0+1D46} Jump over large data area (area too big for a relative jump)
 ```
 
 # Sound Effect
 
 ```code
 SndEffect: 
-98CC: AD 04 06      LDA   $0604               ; Sound request
-98CF: 30 F8         BMI   $98C9               ; Sounds suspended .... out
-98D1: F0 09         BEQ   $98DC               ; No request ... keep playing the current
-98D3: C9 40         CMP   #$40                ; Near death beeping?
-98D5: D0 0B         BNE   $98E2               ; No ... start this effect
-98D7: AE 05 06      LDX   $0605               ; Is there any effect playing?
-98DA: F0 06         BEQ   $98E2               ; No ... heart sound can play
-98DC: AD 05 06      LDA   $0605               ; Is there a sound effect playing?
-98DF: D0 10         BNE   $98F1               ; Yes ... go process the tones
-98E1: 60            RTS                       ; Done
+98CC: AD 04 06        LDA     $0604               ; {ram.SND_Request} Sound request
+98CF: 30 F8           BMI     $98C9               ; {hard.MMC1_0+18C9} Sounds suspended .... out
+98D1: F0 09           BEQ     $98DC               ; {hard.MMC1_0+18DC} No request ... keep playing the current
+98D3: C9 40           CMP     #$40                ; Near death beeping?
+98D5: D0 0B           BNE     $98E2               ; {hard.MMC1_0+18E2} No ... start this effect
+98D7: AE 05 06        LDX     $0605               ; {ram.SND_CurEffect} Is there any effect playing?
+98DA: F0 06           BEQ     $98E2               ; {hard.MMC1_0+18E2} No ... heart sound can play
+98DC: AD 05 06        LDA     $0605               ; {ram.SND_CurEffect} Is there a sound effect playing?
+98DF: D0 10           BNE     $98F1               ; {hard.MMC1_0+18F1} Yes ... go process the tones
+98E1: 60              RTS                         ; Done
 
-98E2: 8D 05 06      STA   $0605               ; Current sound effect
-98E5: A0 00         LDY   #$00                ; Bit number ...
-98E7: C8            INY                       ; ... in A ...
-98E8: 4A            LSR   A                   ; ... to ...
-98E9: 90 FC         BCC   $98E7               ; ... Y (sound priority from left to right if multiple are given)
-98EB: B9 5A 98      LDA   $985A,Y             ; Lookup sound effect script
-98EE: 8D 0E 06      STA   $060E               ; Save script for sound effect
+98E2: 8D 05 06        STA     $0605               ; {ram.SND_CurEffect} Current sound effect
+98E5: A0 00           LDY     #$00                ; Bit number ...
+98E7: C8              INY                         ; ... in A ...
+98E8: 4A              LSR     A                   ; ... to ...
+98E9: 90 FC           BCC     $98E7               ; {hard.MMC1_0+18E7} ... Y (sound priority from left to right if multiple are given)
+98EB: B9 5A 98        LDA     $985A,Y             ; {hard.MMC1_0+185A} Lookup sound effect script
+98EE: 8D 0E 06        STA     $060E               ; {ram.060E} Save script for sound effect
 ;
-98F1: AC 0E 06      LDY   $060E               ; Script pointer to Y
-98F4: EE 0E 06      INC   $060E               ; Bump script pointer
-98F7: B9 5B 98      LDA   $985B,Y             ; Get command
-98FA: 30 15         BMI   $9911               ; Upper bit set ... this is control and next is note
-98FC: D0 1F         BNE   $991D               ; If it is just a note, go play it (0 ends script)
+98F1: AC 0E 06        LDY     $060E               ; {ram.060E} Script pointer to Y
+98F4: EE 0E 06        INC     $060E               ; {ram.060E} Bump script pointer
+98F7: B9 5B 98        LDA     $985B,Y             ; {hard.MMC1_0+185B} Get command
+98FA: 30 15           BMI     $9911               ; {hard.MMC1_0+1911} Upper bit set ... this is control and next is note
+98FC: D0 1F           BNE     $991D               ; {hard.MMC1_0+191D} If it is just a note, go play it (0 ends script)
 ;
-98FE: A2 90         LDX   #$90                ; Disable decay, no looping, duty cycle to 8+/8-
-9900: 8E 00 40      STX   $4000               ; Reset square 1 [NES] Audio -> Square 1 Control
-9903: A2 18         LDX   #$18                ; Wavelength = 0, length counter = 6
-9905: 8E 03 40      STX   $4003               ; Reset square 1 [NES] Audio -> Square 1 Coarse tune
-9908: A2 00         LDX   #$00                ; Clear fine ...
-990A: 8E 02 40      STX   $4002               ; ... tune [NES] Audio -> Square 1 Fine tune
-990D: 8E 05 06      STX   $0605               ; Clear the sound-effect-playing flag
-9910: 60            RTS                       ; Done
+98FE: A2 90           LDX     #$90                ; Disable decay, no looping, duty cycle to 8+/8-
+9900: 8E 00 40        STX     $4000               ; {hard.S_SQR1_A} Reset square 1 [NES] Audio -> Square 1 Control
+9903: A2 18           LDX     #$18                ; Wavelength = 0, length counter = 6
+9905: 8E 03 40        STX     $4003               ; {hard.S_SQR1_D} Reset square 1 [NES] Audio -> Square 1 Coarse tune
+9908: A2 00           LDX     #$00                ; Clear fine ...
+990A: 8E 02 40        STX     $4002               ; {hard.S_SQR1_C} ... tune [NES] Audio -> Square 1 Fine tune
+990D: 8E 05 06        STX     $0605               ; {ram.SND_CurEffect} Clear the sound-effect-playing flag
+9910: 60              RTS                         ; Done
 
-9911: 8D 00 40      STA   $4000               ; Store sq1 control value [NES] Audio -> Square 1 Control
-9914: AC 0E 06      LDY   $060E               ; Get script pointer
-9917: EE 0E 06      INC   $060E               ; Bump pointer
-991A: B9 5B 98      LDA   $985B,Y             ; Get note value
+9911: 8D 00 40        STA     $4000               ; {hard.S_SQR1_A} Store sq1 control value [NES] Audio -> Square 1 Control
+9914: AC 0E 06        LDY     $060E               ; {ram.060E} Get script pointer
+9917: EE 0E 06        INC     $060E               ; {ram.060E} Bump pointer
+991A: B9 5B 98        LDA     $985B,Y             ; {hard.MMC1_0+185B} Get note value
 ;
-991D: 20 0D 9C      JSR   $9C0D               ; Play the note on square 1
-9920: A9 7F         LDA   #$7F                ; Bit 7=0 ...
-9922: 8D 01 40      STA   $4001               ; ... disable sweep [NES] Audio -> Square 1 Ramp control
-9925: 60            RTS                       ; Done
+991D: 20 0D 9C        JSR     $9C0D               ; {hard.MMC1_0+1C0D} Play the note on square 1
+9920: A9 7F           LDA     #$7F                ; Bit 7=0 ...
+9922: 8D 01 40        STA     $4001               ; {hard.S_SQR1_B} ... disable sweep [NES] Audio -> Square 1 Ramp control
+9925: 60              RTS                         ; Done
 
 
 
-9926: A9 0F         LDA   #$0F                ; Enable Pulse1, Pulse2, ...
-9928: 8D 15 40      STA   $4015               ; ... Triangle, and Noise. [NES] IRQ status / Sound enable
-992B: A9 00         LDA   #$00                ;
-992D: 8D 08 06      STA   $0608               ; 
-9930: 8D 07 06      STA   $0607               ; 
-9933: 8D 1A 06      STA   $061A               ; 
-9936: 8D F6 05      STA   $05F6               ; 
-9939: 60            RTS                       ;
+9926: A9 0F           LDA     #$0F                ; Enable Pulse1, Pulse2, ...
+9928: 8D 15 40        STA     $4015               ; {hard.S_Status} ... Triangle, and Noise. [NES] IRQ status / Sound enable
+992B: A9 00           LDA     #$00                ; 
+992D: 8D 08 06        STA     $0608               ; {ram.SND_DMod1}
+9930: 8D 07 06        STA     $0607               ; {ram.SND_CurMusEff}
+9933: 8D 1A 06        STA     $061A               ; {ram.061A}
+9936: 8D F6 05        STA     $05F6               ; {ram.05F6}
+9939: 60              RTS                         ; 
 
-993A: 8C 06 06      STY   $0606               ; 
-993D: A9 05         LDA   #$05                ;
-993F: 85 69         STA   <$69                ; 
-9941: AD 04 06      LDA   $0604               ; If anything is requested alongside ...
-9944: 29 EF         AND   #$EF                ; ... "letters popping up" then ...
-9946: D0 03         BNE   $994B               ; ... drop request for ...
-9948: 8D 04 06      STA   $0604               ; ... "letters popping up"
-994B: A4 69         LDY   <$69                ; 
-994D: B9 BB 9F      LDA   $9FBB,Y             ;
-9950: D0 1C         BNE   $996E               ; 
-9952: 8C 06 06      STY   $0606               ; 
-9955: A9 38         LDA   #$38                ;
-9957: 85 69         STA   <$69                ; 
-9959: A9 0D         LDA   #$0D                ; Initialize ...
-995B: 85 68         STA   <$68                ; ... count
-995D: C6 68         DEC   <$68                ; Drop the count
-995F: A4 68         LDY   <$68                ; End of sample table?
-9961: F0 F6         BEQ   $9959               ; Yes ... go reset
-9963: C0 07         CPY   #$07                ;
-9965: 90 04         BCC   $996B               ; 
-9967: A9 10         LDA   #$10                ;
-9969: D0 10         BNE   $997B               ; 
+993A: 8C 06 06        STY     $0606               ; {ram.0606}
+993D: A9 05           LDA     #$05                ; 
+993F: 85 69           STA     <$69                ; {ram.0069}
+9941: AD 04 06        LDA     $0604               ; {ram.SND_Request} If anything is requested alongside ...
+9944: 29 EF           AND     #$EF                ; ... "letters popping up" then ...
+9946: D0 03           BNE     $994B               ; {hard.MMC1_0+194B} ... drop request for ...
+9948: 8D 04 06        STA     $0604               ; {ram.SND_Request} ... "letters popping up"
+994B: A4 69           LDY     <$69                ; {ram.0069}
+994D: B9 BB 9F        LDA     $9FBB,Y             ; {hard.MMC1_0+1FBB}
+9950: D0 1C           BNE     $996E               ; {hard.MMC1_0+196E}
+9952: 8C 06 06        STY     $0606               ; {ram.0606}
+9955: A9 38           LDA     #$38                ; 
+9957: 85 69           STA     <$69                ; {ram.0069}
+9959: A9 0D           LDA     #$0D                ; Initialize ...
+995B: 85 68           STA     <$68                ; {ram.0068} ... count
+995D: C6 68           DEC     <$68                ; {ram.0068} Drop the count
+995F: A4 68           LDY     <$68                ; {ram.0068} End of sample table?
+9961: F0 F6           BEQ     $9959               ; {hard.MMC1_0+1959} Yes ... go reset
+9963: C0 07           CPY     #$07                ; 
+9965: 90 04           BCC     $996B               ; {hard.MMC1_0+196B}
+9967: A9 10           LDA     #$10                ; 
+9969: D0 10           BNE     $997B               ; {hard.MMC1_0+197B}
 
-996B: B9 F8 9E      LDA   $9EF8,Y             ;
+996B: B9 F8 9E        LDA     $9EF8,Y             ; {hard.MMC1_0+1EF8}
 
-996E: AA            TAX                       ; Hold value
-996F: 29 0F         AND   #$0F                ; Lower 4 bits ...
-9971: 8D 0E 40      STA   $400E               ; ... to sample rate [NES] Audio -> Noise Frequency reg #1
-9974: 8A            TXA                       ; Restore value
-9975: 4A            LSR   A                   ; Get ...
-9976: 4A            LSR   A                   ; ... upper ...
-9977: 4A            LSR   A                   ; ... four ...
-9978: 4A            LSR   A                   ; ... bits
-9979: 09 10         ORA   #$10                ; Disable envelope decay
-997B: 8D 0C 40      STA   $400C               ; Set noise volume [NES] Audio -> Noise control reg
-997E: A9 08         LDA   #$08                ; Set length counter reload ...
-9980: 8D 0F 40      STA   $400F               ; ... to 00001 [NES] Audio -> Noise Frequency reg #2
-9983: C6 69         DEC   <$69                ; 
-9985: D0 0A         BNE   $9991               ; 
-9987: A9 F0         LDA   #$F0                ; Volume ...
-9989: 8D 0C 40      STA   $400C               ; ... zero [NES] Audio -> Noise control reg
-998C: A9 00         LDA   #$00                ;
-998E: 8D 06 06      STA   $0606               ; 
-9991: 60            RTS                       ;
+996E: AA              TAX                         ; Hold value
+996F: 29 0F           AND     #$0F                ; Lower 4 bits ...
+9971: 8D 0E 40        STA     $400E               ; {hard.S_NOI_C} ... to sample rate [NES] Audio -> Noise Frequency reg #1
+9974: 8A              TXA                         ; Restore value
+9975: 4A              LSR     A                   ; Get ...
+9976: 4A              LSR     A                   ; ... upper ...
+9977: 4A              LSR     A                   ; ... four ...
+9978: 4A              LSR     A                   ; ... bits
+9979: 09 10           ORA     #$10                ; Disable envelope decay
+997B: 8D 0C 40        STA     $400C               ; {hard.S_NOI_A} Set noise volume [NES] Audio -> Noise control reg
+997E: A9 08           LDA     #$08                ; Set length counter reload ...
+9980: 8D 0F 40        STA     $400F               ; {hard.S_NOI_D} ... to 00001 [NES] Audio -> Noise Frequency reg #2
+9983: C6 69           DEC     <$69                ; {ram.0069}
+9985: D0 0A           BNE     $9991               ; {hard.MMC1_0+1991}
+9987: A9 F0           LDA     #$F0                ; Volume ...
+9989: 8D 0C 40        STA     $400C               ; {hard.S_NOI_A} ... zero [NES] Audio -> Noise control reg
+998C: A9 00           LDA     #$00                ; 
+998E: 8D 06 06        STA     $0606               ; {ram.0606}
+9991: 60              RTS                         ; 
 
-9992: 8C 06 06      STY   $0606               ; 
-9995: A9 0A         LDA   #$0A                ;
-9997: 85 69         STA   <$69                ; 
-9999: A4 69         LDY   <$69                ; 
-999B: B9 B1 9F      LDA   $9FB1,Y             ;
-999E: D0 CE         BNE   $996E               ; 
+9992: 8C 06 06        STY     $0606               ; {ram.0606}
+9995: A9 0A           LDA     #$0A                ; 
+9997: 85 69           STA     <$69                ; {ram.0069}
+9999: A4 69           LDY     <$69                ; {ram.0069}
+999B: B9 B1 9F        LDA     $9FB1,Y             ; {hard.MMC1_0+1FB1}
+999E: D0 CE           BNE     $996E               ; {hard.MMC1_0+196E}
 ;
-99A0: AC 03 06      LDY   $0603               ; 
-99A3: 30 81         BMI   $9926               ; 
-99A5: AD 06 06      LDA   $0606               ; 
-99A8: 4E 03 06      LSR   $0603               ; 
-99AB: B0 E5         BCS   $9992               ; 
-99AD: 4A            LSR   A                   ;
-99AE: B0 E9         BCS   $9999               ; 
-99B0: 4E 03 06      LSR   $0603               ; 
-99B3: B0 85         BCS   $993A               ; 
-99B5: 4A            LSR   A                   ;
-99B6: B0 93         BCS   $994B               ; 
-99B8: 4E 03 06      LSR   $0603               ; 
-99BB: B0 2A         BCS   $99E7               ; 
-99BD: 4A            LSR   A                   ;
-99BE: B0 2E         BCS   $99EE               ; 
-99C0: 4E 03 06      LSR   $0603               ; 
-99C3: B0 8D         BCS   $9952               ; 
-99C5: 4A            LSR   A                   ;
-99C6: B0 95         BCS   $995D               ; 
-99C8: 4E 03 06      LSR   $0603               ; 
-99CB: B0 0C         BCS   $99D9               ; 
-99CD: 4A            LSR   A                   ;
-99CE: B0 10         BCS   $99E0               ; 
-99D0: 4A            LSR   A                   ;
-99D1: B0 36         BCS   $9A09               ; 
-99D3: 4E 03 06      LSR   $0603               ; 
-99D6: B0 25         BCS   $99FD               ; 
-99D8: 60            RTS                       ;
+99A0: AC 03 06        LDY     $0603               ; {ram.??SND_603??}
+99A3: 30 81           BMI     $9926               ; {hard.MMC1_0+1926}
+99A5: AD 06 06        LDA     $0606               ; {ram.0606}
+99A8: 4E 03 06        LSR     $0603               ; {ram.??SND_603??}
+99AB: B0 E5           BCS     $9992               ; {hard.MMC1_0+1992}
+99AD: 4A              LSR     A                   ; 
+99AE: B0 E9           BCS     $9999               ; {hard.MMC1_0+1999}
+99B0: 4E 03 06        LSR     $0603               ; {ram.??SND_603??}
+99B3: B0 85           BCS     $993A               ; {hard.MMC1_0+193A}
+99B5: 4A              LSR     A                   ; 
+99B6: B0 93           BCS     $994B               ; {hard.MMC1_0+194B}
+99B8: 4E 03 06        LSR     $0603               ; {ram.??SND_603??}
+99BB: B0 2A           BCS     $99E7               ; {hard.MMC1_0+19E7}
+99BD: 4A              LSR     A                   ; 
+99BE: B0 2E           BCS     $99EE               ; {hard.MMC1_0+19EE}
+99C0: 4E 03 06        LSR     $0603               ; {ram.??SND_603??}
+99C3: B0 8D           BCS     $9952               ; {hard.MMC1_0+1952}
+99C5: 4A              LSR     A                   ; 
+99C6: B0 95           BCS     $995D               ; {hard.MMC1_0+195D}
+99C8: 4E 03 06        LSR     $0603               ; {ram.??SND_603??}
+99CB: B0 0C           BCS     $99D9               ; {hard.MMC1_0+19D9}
+99CD: 4A              LSR     A                   ; 
+99CE: B0 10           BCS     $99E0               ; {hard.MMC1_0+19E0}
+99D0: 4A              LSR     A                   ; 
+99D1: B0 36           BCS     $9A09               ; {hard.MMC1_0+1A09}
+99D3: 4E 03 06        LSR     $0603               ; {ram.??SND_603??}
+99D6: B0 25           BCS     $99FD               ; {hard.MMC1_0+19FD}
+99D8: 60              RTS                         ; 
 
 
-99D9: 8C 06 06      STY   $0606               ; 
-99DC: A9 18         LDA   #$18                ;
-99DE: 85 69         STA   <$69                ; 
+99D9: 8C 06 06        STY     $0606               ; {ram.0606}
+99DC: A9 18           LDA     #$18                ; 
+99DE: 85 69           STA     <$69                ; {ram.0069}
 
-99E0: A4 69         LDY   <$69                ; 
-99E2: B9 3C 9A      LDA   $9A3C,Y             ;
-99E5: D0 87         BNE   $996E               ; 
-99E7: 8C 06 06      STY   $0606               ; 
-99EA: A9 20         LDA   #$20                ;
-99EC: 85 69         STA   <$69                ; 
-99EE: A5 69         LDA   <$69                ; 
-99F0: 4A            LSR   A                   ;
-99F1: A8            TAY                       ;
-99F2: A2 0E         LDX   #$0E                ; Coversion to 11 bits as ...
-99F4: 8E 0E 40      STX   $400E               ; ... note E6 [NES] Audio -> Noise Frequency reg #1
-99F7: B9 C0 9F      LDA   $9FC0,Y             ;
-99FA: 4C 7B 99      JMP   $997B               ; 
+99E0: A4 69           LDY     <$69                ; {ram.0069}
+99E2: B9 3C 9A        LDA     $9A3C,Y             ; {hard.MMC1_0+1A3C}
+99E5: D0 87           BNE     $996E               ; {hard.MMC1_0+196E}
+99E7: 8C 06 06        STY     $0606               ; {ram.0606}
+99EA: A9 20           LDA     #$20                ; 
+99EC: 85 69           STA     <$69                ; {ram.0069}
+99EE: A5 69           LDA     <$69                ; {ram.0069}
+99F0: 4A              LSR     A                   ; 
+99F1: A8              TAY                         ; 
+99F2: A2 0E           LDX     #$0E                ; Coversion to 11 bits as ...
+99F4: 8E 0E 40        STX     $400E               ; {hard.S_NOI_C} ... note E6 [NES] Audio -> Noise Frequency reg #1
+99F7: B9 C0 9F        LDA     $9FC0,Y             ; {hard.MMC1_0+1FC0}
+99FA: 4C 7B 99        JMP     $997B               ; {hard.MMC1_0+197B}
 
-99FD: 8C 06 06      STY   $0606               ; 
-9A00: A9 D0         LDA   #$D0                ;
-9A02: 8D F3 05      STA   $05F3               ; 
-9A05: A9 10         LDA   #$10                ; Volume all ...
-9A07: 85 68         STA   <$68                ; ... the way down
-9A09: AD F3 05      LDA   $05F3               ; 
-9A0C: C9 BF         CMP   #$BF                ;
-9A0E: 90 04         BCC   $9A14               ; 
-9A10: E6 68         INC   <$68                ; Increase the volume
-9A12: D0 14         BNE   $9A28               ; Didn't overflow ... use it
-9A14: AD F3 05      LDA   $05F3               ; 
-9A17: 4A            LSR   A                   ;
-9A18: 90 0E         BCC   $9A28               ; 
-9A1A: 4A            LSR   A                   ;
-9A1B: 90 0B         BCC   $9A28               ; 
-9A1D: 4A            LSR   A                   ;
-9A1E: 90 08         BCC   $9A28               ; 
+99FD: 8C 06 06        STY     $0606               ; {ram.0606}
+9A00: A9 D0           LDA     #$D0                ; 
+9A02: 8D F3 05        STA     $05F3               ; {ram.05F3}
+9A05: A9 10           LDA     #$10                ; Volume all ...
+9A07: 85 68           STA     <$68                ; {ram.0068} ... the way down
+9A09: AD F3 05        LDA     $05F3               ; {ram.05F3}
+9A0C: C9 BF           CMP     #$BF                ; 
+9A0E: 90 04           BCC     $9A14               ; {hard.MMC1_0+1A14}
+9A10: E6 68           INC     <$68                ; {ram.0068} Increase the volume
+9A12: D0 14           BNE     $9A28               ; {hard.MMC1_0+1A28} Didn't overflow ... use it
+9A14: AD F3 05        LDA     $05F3               ; {ram.05F3}
+9A17: 4A              LSR     A                   ; 
+9A18: 90 0E           BCC     $9A28               ; {hard.MMC1_0+1A28}
+9A1A: 4A              LSR     A                   ; 
+9A1B: 90 0B           BCC     $9A28               ; {hard.MMC1_0+1A28}
+9A1D: 4A              LSR     A                   ; 
+9A1E: 90 08           BCC     $9A28               ; {hard.MMC1_0+1A28}
 
-9A20: A5 68         LDA   <$68                ; Current noise volume
-9A22: C9 10         CMP   #$10                ; At its lowest?
-9A24: F0 02         BEQ   $9A28               ; Yes ... leave it there
-9A26: C6 68         DEC   <$68                ; Drop the volume
-9A28: A5 68         LDA   <$68                ; New volume value
-9A2A: 8D 0C 40      STA   $400C               ; Set new volume [NES] Audio -> Noise control reg
-9A2D: A2 03         LDX   #$03                ; 4 bit conversion ...
-9A2F: 8E 0E 40      STX   $400E               ; ... to note  A12 [NES] Audio -> Noise Frequency reg #1
-9A32: A9 08         LDA   #$08                ; Length counter load ...
-9A34: 8D 0F 40      STA   $400F               ; ... to 00001 [NES] Audio -> Noise Frequency reg #2
-9A37: CE F3 05      DEC   $05F3               ; 
-9A3A: 4C 85 99      JMP   $9985               ; 
+9A20: A5 68           LDA     <$68                ; {ram.0068} Current noise volume
+9A22: C9 10           CMP     #$10                ; At its lowest?
+9A24: F0 02           BEQ     $9A28               ; {hard.MMC1_0+1A28} Yes ... leave it there
+9A26: C6 68           DEC     <$68                ; {ram.0068} Drop the volume
+9A28: A5 68           LDA     <$68                ; {ram.0068} New volume value
+9A2A: 8D 0C 40        STA     $400C               ; {hard.S_NOI_A} Set new volume [NES] Audio -> Noise control reg
+9A2D: A2 03           LDX     #$03                ; 4 bit conversion ...
+9A2F: 8E 0E 40        STX     $400E               ; {hard.S_NOI_C} ... to note  A12 [NES] Audio -> Noise Frequency reg #1
+9A32: A9 08           LDA     #$08                ; Length counter load ...
+9A34: 8D 0F 40        STA     $400F               ; {hard.S_NOI_D} ... to 00001 [NES] Audio -> Noise Frequency reg #2
+9A37: CE F3 05        DEC     $05F3               ; {ram.05F3}
+9A3A: 4C 85 99        JMP     $9985               ; {hard.MMC1_0+1985}
 
 9A3D: 1F 2F 2E 3F 3F 4C 4E 5F 6F 6F 7E 8F 9E AF BE CF DE EF FE FD FE FF FF FE  
 ```
@@ -1051,76 +1053,76 @@ MiscMusic:
 
 ```code
 MusEffect: 
-9AD5: AD 02 06      LDA   $0602               ; Get music effect request
-9AD8: 30 08         BMI   $9AE2               ; 
-9ADA: D0 0B         BNE   $9AE7               ; Requested sound ... do it
-9ADC: AD 07 06      LDA   $0607               ; Is any sound playing?
-9ADF: D0 19         BNE   $9AFA               ; Yes ... process it
-9AE1: 60            RTS                       ; Out
+9AD5: AD 02 06        LDA     $0602               ; {ram.SND_ReqMusEff} Get music effect request
+9AD8: 30 08           BMI     $9AE2               ; {hard.MMC1_0+1AE2}
+9ADA: D0 0B           BNE     $9AE7               ; {hard.MMC1_0+1AE7} Requested sound ... do it
+9ADC: AD 07 06        LDA     $0607               ; {ram.SND_CurMusEff} Is any sound playing?
+9ADF: D0 19           BNE     $9AFA               ; {hard.MMC1_0+1AFA} Yes ... process it
+9AE1: 60              RTS                         ; Out
 
-9AE2: 20 46 9D      JSR   $9D46               ; 
-9AE5: A9 80         LDA   #$80                ; Effect #8 ?? spiraling down
+9AE2: 20 46 9D        JSR     $9D46               ; {hard.MMC1_0+1D46}
+9AE5: A9 80           LDA     #$80                ; Effect #8 ?? spiraling down
 
-9AE7: 8D 07 06      STA   $0607               ; Store effect
-9AEA: A0 00         LDY   #$00                ; Count 1st ...
-9AEC: C8            INY                       ; ... bit ...
-9AED: 4A            LSR   A                   ; ... number ...
-9AEE: 90 FC         BCC   $9AEC               ; ... from right
-9AF0: B9 54 9A      LDA   $9A54,Y             ; Get offset to script
-9AF3: 8D 18 06      STA   $0618               ; Store new script offset
-9AF6: A9 01         LDA   #$01                ; Script starts ...
-9AF8: 85 6F         STA   <$6F                ; ... now (no delay)
+9AE7: 8D 07 06        STA     $0607               ; {ram.SND_CurMusEff} Store effect
+9AEA: A0 00           LDY     #$00                ; Count 1st ...
+9AEC: C8              INY                         ; ... bit ...
+9AED: 4A              LSR     A                   ; ... number ...
+9AEE: 90 FC           BCC     $9AEC               ; {hard.MMC1_0+1AEC} ... from right
+9AF0: B9 54 9A        LDA     $9A54,Y             ; {hard.MMC1_0+1A54} Get offset to script
+9AF3: 8D 18 06        STA     $0618               ; {ram.SND_MusEffDel} Store new script offset
+9AF6: A9 01           LDA     #$01                ; Script starts ...
+9AF8: 85 6F           STA     <$6F                ; {ram.SND_MusEffCnt} ... now (no delay)
 ;
-9AFA: C6 6F         DEC   <$6F                ; Decrement delay
-9AFC: D0 49         BNE   $9B47               ; Not time ... warble or hold note
-9AFE: AC 18 06      LDY   $0618               ; Get script pointer
-9B01: EE 18 06      INC   $0618               ; Bump script pointer
-9B04: B9 55 9A      LDA   $9A55,Y             ; Get command
-9B07: 30 1C         BMI   $9B25               ; Delay+note ... go store delay first
-9B09: D0 27         BNE   $9B32               ; Not end of script ... go do note
+9AFA: C6 6F           DEC     <$6F                ; {ram.SND_MusEffCnt} Decrement delay
+9AFC: D0 49           BNE     $9B47               ; {hard.MMC1_0+1B47} Not time ... warble or hold note
+9AFE: AC 18 06        LDY     $0618               ; {ram.SND_MusEffDel} Get script pointer
+9B01: EE 18 06        INC     $0618               ; {ram.SND_MusEffDel} Bump script pointer
+9B04: B9 55 9A        LDA     $9A55,Y             ; {hard.MMC1_0+1A55} Get command
+9B07: 30 1C           BMI     $9B25               ; {hard.MMC1_0+1B25} Delay+note ... go store delay first
+9B09: D0 27           BNE     $9B32               ; {hard.MMC1_0+1B32} Not end of script ... go do note
 ;
-9B0B: AD 07 06      LDA   $0607               ; Ending ...
-9B0E: C9 40         CMP   #$40                ; ... the long music ?
-9B10: F0 D5         BEQ   $9AE7               ; Yes ... start it over
+9B0B: AD 07 06        LDA     $0607               ; {ram.SND_CurMusEff} Ending ...
+9B0E: C9 40           CMP     #$40                ; ... the long music ?
+9B10: F0 D5           BEQ     $9AE7               ; {hard.MMC1_0+1AE7} Yes ... start it over
 ;
-9B12: A2 90         LDX   #$90                ; Volume all ...
-9B14: 8E 04 40      STX   $4004               ; ... the way down [NES] Audio -> Square 2 Control
-9B17: A2 18         LDX   #$18                ; Wavelength = 0, length counter = 6
-9B19: 8E 07 40      STX   $4007               ; Reset square 2 [NES] Audio -> Square 2 Coarse tune
-9B1C: A2 00         LDX   #$00                ; Clear ...
-9B1E: 8E 07 06      STX   $0607               ; ... current playing music effect
-9B21: 8E 06 40      STX   $4006               ; Clear wavelength [NES] Audio -> Square 2 Fine tune
-9B24: 60            RTS                       ; Done
+9B12: A2 90           LDX     #$90                ; Volume all ...
+9B14: 8E 04 40        STX     $4004               ; {hard.S_SQR2_A} ... the way down [NES] Audio -> Square 2 Control
+9B17: A2 18           LDX     #$18                ; Wavelength = 0, length counter = 6
+9B19: 8E 07 40        STX     $4007               ; {hard.S_SQR2_D} Reset square 2 [NES] Audio -> Square 2 Coarse tune
+9B1C: A2 00           LDX     #$00                ; Clear ...
+9B1E: 8E 07 06        STX     $0607               ; {ram.SND_CurMusEff} ... current playing music effect
+9B21: 8E 06 40        STX     $4006               ; {hard.S_SQR2_C} Clear wavelength [NES] Audio -> Square 2 Fine tune
+9B24: 60              RTS                         ; Done
 ;
-9B25: 29 7F         AND   #$7F                ; Mask off upper bit
-9B27: 85 6E         STA   <$6E                ; Store new delay reload
-9B29: AC 18 06      LDY   $0618               ; Get pointer to next in script
-9B2C: EE 18 06      INC   $0618               ; Bump script pointer
-9B2F: B9 55 9A      LDA   $9A55,Y             ; Get note value
+9B25: 29 7F           AND     #$7F                ; Mask off upper bit
+9B27: 85 6E           STA     <$6E                ; {ram.SND_MusEffRel} Store new delay reload
+9B29: AC 18 06        LDY     $0618               ; {ram.SND_MusEffDel} Get pointer to next in script
+9B2C: EE 18 06        INC     $0618               ; {ram.SND_MusEffDel} Bump script pointer
+9B2F: B9 55 9A        LDA     $9A55,Y             ; {hard.MMC1_0+1A55} Get note value
 ;
-9B32: 20 2B 9C      JSR   $9C2B               ; Note on square 2 (fine value goes to 6B)
-9B35: A9 7F         LDA   #$7F                ; Bit 7=0 ...
-9B37: 8D 05 40      STA   $4005               ; ... disable [NES] Audio -> Square 2 Ramp control
-9B3A: A9 86         LDA   #$86                ; Set envelope decay rate ...
-9B3C: 8D 04 40      STA   $4004               ; ... to 6 [NES] Audio -> Square 2 Control
-9B3F: A5 6E         LDA   <$6E                ; Get last delay reload
-9B41: 85 6F         STA   <$6F                ; Reset reload
-9B43: A9 1F         LDA   #$1F                ; Reset ...
-9B45: 85 6D         STA   <$6D                ; ... bell-curve envelope
+9B32: 20 2B 9C        JSR     $9C2B               ; {hard.MMC1_0+1C2B} Note on square 2 (fine value goes to 6B)
+9B35: A9 7F           LDA     #$7F                ; Bit 7=0 ...
+9B37: 8D 05 40        STA     $4005               ; {hard.S_SQR2_B} ... disable [NES] Audio -> Square 2 Ramp control
+9B3A: A9 86           LDA     #$86                ; Set envelope decay rate ...
+9B3C: 8D 04 40        STA     $4004               ; {hard.S_SQR2_A} ... to 6 [NES] Audio -> Square 2 Control
+9B3F: A5 6E           LDA     <$6E                ; {ram.SND_MusEffRel} Get last delay reload
+9B41: 85 6F           STA     <$6F                ; {ram.SND_MusEffCnt} Reset reload
+9B43: A9 1F           LDA     #$1F                ; Reset ...
+9B45: 85 6D           STA     <$6D                ; {ram.SND_MusEffBell} ... bell-curve envelope
 ;
-9B47: AD 07 06      LDA   $0607               ; Current music effect
-9B4A: 29 90         AND   #$90                ; Is this effect 1 or 8?
-9B4C: F0 16         BEQ   $9B64               ; No ... just let the note play as is
-9B4E: A4 6D         LDY   <$6D                ; Bell curve envelope counter
-9B50: F0 02         BEQ   $9B54               ; Reached the bottom ... hold that value
-9B52: C6 6D         DEC   <$6D                ; Decrement the envelope counter
-9B54: B9 65 9B      LDA   $9B65,Y             ; Get the volume value
-9B57: 8D 04 40      STA   $4004               ; Set volume as per the bell curve [NES] Audio -> Square 2 Control
-9B5A: A5 6F         LDA   <$6F                ; Warble count (use current delay count)
-9B5C: A6 6B         LDX   <$6B                ; Current frequency
-9B5E: 20 54 9C      JSR   $9C54               ; Do the warble
-9B61: 8E 06 40      STX   $4006               ; Play the note on square 2 [NES] Audio -> Square 2 Fine tune
-9B64: 60            RTS                       ; Done
+9B47: AD 07 06        LDA     $0607               ; {ram.SND_CurMusEff} Current music effect
+9B4A: 29 90           AND     #$90                ; Is this effect 1 or 8?
+9B4C: F0 16           BEQ     $9B64               ; {hard.MMC1_0+1B64} No ... just let the note play as is
+9B4E: A4 6D           LDY     <$6D                ; {ram.SND_MusEffBell} Bell curve envelope counter
+9B50: F0 02           BEQ     $9B54               ; {hard.MMC1_0+1B54} Reached the bottom ... hold that value
+9B52: C6 6D           DEC     <$6D                ; {ram.SND_MusEffBell} Decrement the envelope counter
+9B54: B9 65 9B        LDA     $9B65,Y             ; {hard.MMC1_0+1B65} Get the volume value
+9B57: 8D 04 40        STA     $4004               ; {hard.S_SQR2_A} Set volume as per the bell curve [NES] Audio -> Square 2 Control
+9B5A: A5 6F           LDA     <$6F                ; {ram.SND_MusEffCnt} Warble count (use current delay count)
+9B5C: A6 6B           LDX     <$6B                ; {ram.SND_Sq2Fine} Current frequency
+9B5E: 20 54 9C        JSR     $9C54               ; {code.Warble} Do the warble
+9B61: 8E 06 40        STX     $4006               ; {hard.S_SQR2_C} Play the note on square 2 [NES] Audio -> Square 2 Fine tune
+9B64: 60              RTS                         ; Done
 
 ; This table contains volumes for notes played on sq2 over 32 consecutive intervals.
 ; These basically form a bell curve that rises quickly, holds, then decays quickly.
@@ -1139,56 +1141,56 @@ DModEffect:
 ; If either 05F6 or 0608 holds a non-zero value then an effect is in progress and continues. The 05F6
 ; only gets cleared at 9926. 
 ;
-9B85: AD 01 06      LDA   $0601               ; Delta-modulation effect request
-9B88: 30 29         BMI   $9BB3               ; Upper bit set ... initialize with D/A = 7F
-9B8A: D0 23         BNE   $9BAF               ; Anything else ... initialize with D/A = 00
+9B85: AD 01 06        LDA     $0601               ; {ram.??SND_601??} Delta-modulation effect request
+9B88: 30 29           BMI     $9BB3               ; {hard.MMC1_0+1BB3} Upper bit set ... initialize with D/A = 7F
+9B8A: D0 23           BNE     $9BAF               ; {hard.MMC1_0+1BAF} Anything else ... initialize with D/A = 00
 ;
-9B8C: AD 08 06      LDA   $0608               ; 
-9B8F: F0 18         BEQ   $9BA9               ; 
-9B91: CE F2 05      DEC   $05F2               ; 
-9B94: D0 18         BNE   $9BAE               ; 
-9B96: AD 08 06      LDA   $0608               ; 
-9B99: 30 18         BMI   $9BB3               ; 
-9B9B: 29 70         AND   #$70                ;
-9B9D: D0 10         BNE   $9BAF               ; 
-9B9F: A9 00         LDA   #$00                ;
-9BA1: 8D 08 06      STA   $0608               ; 
-9BA4: A9 0F         LDA   #$0F                ; Enable Pulse1, Pulse2, (NOTE NO DeltaMod) ...
-9BA6: 8D 15 40      STA   $4015               ; ... Triangle, and Noise. [NES] IRQ status / Sound enable
-9BA9: AD F6 05      LDA   $05F6               ; 
-9BAC: D0 09         BNE   $9BB7               ; 
-9BAE: 60            RTS                       ; Done
+9B8C: AD 08 06        LDA     $0608               ; {ram.SND_DMod1}
+9B8F: F0 18           BEQ     $9BA9               ; {hard.MMC1_0+1BA9}
+9B91: CE F2 05        DEC     $05F2               ; {ram.05F2}
+9B94: D0 18           BNE     $9BAE               ; {hard.MMC1_0+1BAE}
+9B96: AD 08 06        LDA     $0608               ; {ram.SND_DMod1}
+9B99: 30 18           BMI     $9BB3               ; {hard.MMC1_0+1BB3}
+9B9B: 29 70           AND     #$70                ; 
+9B9D: D0 10           BNE     $9BAF               ; {hard.MMC1_0+1BAF}
+9B9F: A9 00           LDA     #$00                ; 
+9BA1: 8D 08 06        STA     $0608               ; {ram.SND_DMod1}
+9BA4: A9 0F           LDA     #$0F                ; Enable Pulse1, Pulse2, (NOTE NO DeltaMod) ...
+9BA6: 8D 15 40        STA     $4015               ; {hard.S_Status} ... Triangle, and Noise. [NES] IRQ status / Sound enable
+9BA9: AD F6 05        LDA     $05F6               ; {ram.05F6}
+9BAC: D0 09           BNE     $9BB7               ; {hard.MMC1_0+1BB7}
+9BAE: 60              RTS                         ; Done
 ;
-9BAF: A2 00         LDX   #$00                ; D/A to ...
-9BB1: F0 04         BEQ   $9BB7               ; ... (BRA) full-off
+9BAF: A2 00           LDX     #$00                ; D/A to ...
+9BB1: F0 04           BEQ     $9BB7               ; {hard.MMC1_0+1BB7} ... (BRA) full-off
 ;
-9BB3: A2 7F         LDX   #$7F                ; D/A to full-on
-9BB5: 29 F0         AND   #$F0                ;
+9BB3: A2 7F           LDX     #$7F                ; D/A to full-on
+9BB5: 29 F0           AND     #$F0                ; 
 ;
-9BB7: 8E 11 40      STX   $4011               ; [NES] Audio -> DPCM D/A data
-9BBA: 8D 08 06      STA   $0608               ; 
-9BBD: AA            TAX                       ;
-9BBE: 29 F0         AND   #$F0                ;
-9BC0: F0 03         BEQ   $9BC5               ; 
-9BC2: 8D F6 05      STA   $05F6               ; 
-9BC5: 8A            TXA                       ;
-9BC6: A0 00         LDY   #$00                ; Count ...
-9BC8: C8            INY                       ; ... first bit ...
-9BC9: 4A            LSR   A                   ; ... from ...
-9BCA: 90 FC         BCC   $9BC8               ; ... right (must be 1 to 7)
-9BCC: B9 FB 9B      LDA   $9BFB,Y             ; Lookup ...
-9BCF: 8D 10 40      STA   $4010               ; ... control value [NES] Audio -> DPCM control
-9BD2: B9 ED 9B      LDA   $9BED,Y             ; Lookup ...
-9BD5: 8D 12 40      STA   $4012               ; ... address value [NES] Audio -> DPCM address
-9BD8: B9 F4 9B      LDA   $9BF4,Y             ; Lookup ...
-9BDB: 8D 13 40      STA   $4013               ; ... data length value [NES] Audio -> DPCM data length
-9BDE: A9 A0         LDA   #$A0                ; Reset a timer ...
-9BE0: 8D F2 05      STA   $05F2               ; ... in the effect
-9BE3: A9 0F         LDA   #$0F                ; Enable Pulse1, Pulse2, ...
-9BE5: 8D 15 40      STA   $4015               ; ... Triangle, and Noise. [NES] IRQ status / Sound enable
-9BE8: A9 1F         LDA   #$1F                ; Enable DeltaModulation, Pulse1, Pulse2, ...
-9BEA: 8D 15 40      STA   $4015               ; ... Triangle, and Noise. [NES] IRQ status / Sound enable
-9BED: 60            RTS                       ; Done
+9BB7: 8E 11 40        STX     $4011               ; {hard.S_DMC_B} [NES] Audio -> DPCM D/A data
+9BBA: 8D 08 06        STA     $0608               ; {ram.SND_DMod1}
+9BBD: AA              TAX                         ; 
+9BBE: 29 F0           AND     #$F0                ; 
+9BC0: F0 03           BEQ     $9BC5               ; {hard.MMC1_0+1BC5}
+9BC2: 8D F6 05        STA     $05F6               ; {ram.05F6}
+9BC5: 8A              TXA                         ; 
+9BC6: A0 00           LDY     #$00                ; Count ...
+9BC8: C8              INY                         ; ... first bit ...
+9BC9: 4A              LSR     A                   ; ... from ...
+9BCA: 90 FC           BCC     $9BC8               ; {hard.MMC1_0+1BC8} ... right (must be 1 to 7)
+9BCC: B9 FB 9B        LDA     $9BFB,Y             ; {hard.MMC1_0+1BFB} Lookup ...
+9BCF: 8D 10 40        STA     $4010               ; {hard.S_DMC_A} ... control value [NES] Audio -> DPCM control
+9BD2: B9 ED 9B        LDA     $9BED,Y             ; {hard.MMC1_0+1BED} Lookup ...
+9BD5: 8D 12 40        STA     $4012               ; {hard.S_DMC_C} ... address value [NES] Audio -> DPCM address
+9BD8: B9 F4 9B        LDA     $9BF4,Y             ; {hard.MMC1_0+1BF4} Lookup ...
+9BDB: 8D 13 40        STA     $4013               ; {hard.S_DMC_D} ... data length value [NES] Audio -> DPCM data length
+9BDE: A9 A0           LDA     #$A0                ; Reset a timer ...
+9BE0: 8D F2 05        STA     $05F2               ; {ram.05F2} ... in the effect
+9BE3: A9 0F           LDA     #$0F                ; Enable Pulse1, Pulse2, ...
+9BE5: 8D 15 40        STA     $4015               ; {hard.S_Status} ... Triangle, and Noise. [NES] IRQ status / Sound enable
+9BE8: A9 1F           LDA     #$1F                ; Enable DeltaModulation, Pulse1, Pulse2, ...
+9BEA: 8D 15 40        STA     $4015               ; {hard.S_Status} ... Triangle, and Noise. [NES] IRQ status / Sound enable
+9BED: 60              RTS                         ; Done
 ;
 ; Table of DPCM addresses
 9BEE: 00 4C 80 1D 20 28 4C
@@ -1201,48 +1203,48 @@ DModEffect:
 
 
 
-9C03: 8C 01 40      STY   $4001               ; Set control [NES] Audio -> Square 1 Ramp control
-9C06: 8E 00 40      STX   $4000               ; Set ramp [NES] Audio -> Square 1 Control
-9C09: 60            RTS                       ; Done
+9C03: 8C 01 40        STY     $4001               ; {hard.S_SQR1_B} Set control [NES] Audio -> Square 1 Ramp control
+9C06: 8E 00 40        STX     $4000               ; {hard.S_SQR1_A} Set ramp [NES] Audio -> Square 1 Control
+9C09: 60              RTS                         ; Done
 ;
 NoteOnSq1: 
-9C0A: 20 03 9C      JSR   $9C03               ; Store X and Y to Square 1 Control/Ramp
-9C0D: A8            TAY                       ; Note number to Y
-9C0E: B9 01 9F      LDA   $9F01,Y             ; Fine note frequency
-9C11: F0 0D         BEQ   $9C20               ; Fine is 0 for silence
-9C13: 85 6A         STA   <$6A                ; Remember fine value (for warbling)
-9C15: 8D 02 40      STA   $4002               ; Set fine value [NES] Audio -> Square 1 Fine tune
-9C18: B9 00 9F      LDA   $9F00,Y             ; Coarse note frequency
-9C1B: 09 08         ORA   #$08                ; Base value
-9C1D: 8D 03 40      STA   $4003               ; Set coarse value [NES] Audio -> Square 1 Coarse tune
-9C20: 60            RTS                       ; Done
+9C0A: 20 03 9C        JSR     $9C03               ; {hard.MMC1_0+1C03} Store X and Y to Square 1 Control/Ramp
+9C0D: A8              TAY                         ; Note number to Y
+9C0E: B9 01 9F        LDA     $9F01,Y             ; {hard.MMC1_0+1F01} Fine note frequency
+9C11: F0 0D           BEQ     $9C20               ; {hard.MMC1_0+1C20} Fine is 0 for silence
+9C13: 85 6A           STA     <$6A                ; {ram.SND_Sq1Fine} Remember fine value (for warbling)
+9C15: 8D 02 40        STA     $4002               ; {hard.S_SQR1_C} Set fine value [NES] Audio -> Square 1 Fine tune
+9C18: B9 00 9F        LDA     $9F00,Y             ; {hard.MMC1_0+1F00} Coarse note frequency
+9C1B: 09 08           ORA     #$08                ; Base value
+9C1D: 8D 03 40        STA     $4003               ; {hard.S_SQR1_D} Set coarse value [NES] Audio -> Square 1 Coarse tune
+9C20: 60              RTS                         ; Done
 
-9C21: 8E 04 40      STX   $4004               ; Set control [NES] Audio -> Square 2 Control
-9C24: 8C 05 40      STY   $4005               ; Set ramp [NES] Audio -> Square 2 Ramp control
-9C27: 60            RTS                       ; Done
+9C21: 8E 04 40        STX     $4004               ; {hard.S_SQR2_A} Set control [NES] Audio -> Square 2 Control
+9C24: 8C 05 40        STY     $4005               ; {hard.S_SQR2_B} Set ramp [NES] Audio -> Square 2 Ramp control
+9C27: 60              RTS                         ; Done
 ;
 NoteOnSq2: 
-9C28: 20 21 9C      JSR   $9C21               ; Store X and Y to Square 2 Control/Ramp
-9C2B: A8            TAY                       ; Note number to Y
-9C2C: B9 01 9F      LDA   $9F01,Y             ; Fine note frequency
-9C2F: F0 EF         BEQ   $9C20               ; Fine is 0 for silence
-9C31: 85 6B         STA   <$6B                ; Remember fine value (for warbling)
-9C33: 8D 06 40      STA   $4006               ; Set fine value [NES] Audio -> Square 2 Fine tune
-9C36: B9 00 9F      LDA   $9F00,Y             ; Coarse note frequency
-9C39: 09 08         ORA   #$08                ; Length counter load = 00001
-9C3B: 8D 07 40      STA   $4007               ; Set coarse value [NES] Audio -> Square 2 Coarse tune
-9C3E: 60            RTS                       ; Done
+9C28: 20 21 9C        JSR     $9C21               ; {hard.MMC1_0+1C21} Store X and Y to Square 2 Control/Ramp
+9C2B: A8              TAY                         ; Note number to Y
+9C2C: B9 01 9F        LDA     $9F01,Y             ; {hard.MMC1_0+1F01} Fine note frequency
+9C2F: F0 EF           BEQ     $9C20               ; {hard.MMC1_0+1C20} Fine is 0 for silence
+9C31: 85 6B           STA     <$6B                ; {ram.SND_Sq2Fine} Remember fine value (for warbling)
+9C33: 8D 06 40        STA     $4006               ; {hard.S_SQR2_C} Set fine value [NES] Audio -> Square 2 Fine tune
+9C36: B9 00 9F        LDA     $9F00,Y             ; {hard.MMC1_0+1F00} Coarse note frequency
+9C39: 09 08           ORA     #$08                ; Length counter load = 00001
+9C3B: 8D 07 40        STA     $4007               ; {hard.S_SQR2_D} Set coarse value [NES] Audio -> Square 2 Coarse tune
+9C3E: 60              RTS                         ; Done
 
 NoteOnTri: 
-9C3F: A8            TAY                       ; Note number to Y
-9C40: B9 01 9F      LDA   $9F01,Y             ; Fine note frequency
-9C43: F0 DB         BEQ   $9C20               ; Fine is 0 for silence
-9C45: 8D F0 05      STA   $05F0               ; Remember fine value (for warbling)
-9C48: 8D 0A 40      STA   $400A               ; Set fine value [NES] Audio -> Triangle Frequency reg1
-9C4B: B9 00 9F      LDA   $9F00,Y             ; Coarse note frequency
-9C4E: 09 08         ORA   #$08                ; Length counter load = 00001
-9C50: 8D 0B 40      STA   $400B               ; Set coarse value [NES] Audio -> Triangle Frequency reg2
-9C53: 60            RTS                       ; Done
+9C3F: A8              TAY                         ; Note number to Y
+9C40: B9 01 9F        LDA     $9F01,Y             ; {hard.MMC1_0+1F01} Fine note frequency
+9C43: F0 DB           BEQ     $9C20               ; {hard.MMC1_0+1C20} Fine is 0 for silence
+9C45: 8D F0 05        STA     $05F0               ; {ram.SND_TriFine} Remember fine value (for warbling)
+9C48: 8D 0A 40        STA     $400A               ; {hard.S_TRI_C} Set fine value [NES] Audio -> Triangle Frequency reg1
+9C4B: B9 00 9F        LDA     $9F00,Y             ; {hard.MMC1_0+1F00} Coarse note frequency
+9C4E: 09 08           ORA     #$08                ; Length counter load = 00001
+9C50: 8D 0B 40        STA     $400B               ; {hard.S_TRI_D} Set coarse value [NES] Audio -> Triangle Frequency reg2
+9C53: 60              RTS                         ; Done
 ```
 
 # Warble
@@ -1262,313 +1264,313 @@ Warble:
 ; ELSE
 ;   X=X+1 then A=X
 ;
-9C54: C9 10         CMP   #$10                ; If warble count is less than 10 ...
-9C56: 90 0F         BCC   $9C67               ; ... keep the original frequency
-9C58: 4A            LSR   A                   ; Check ...
-9C59: 4A            LSR   A                   ; ... bit ...
-9C5A: 4A            LSR   A                   ; ... 3
-9C5B: B0 05         BCS   $9C62               ; Bit is set ...
-9C5D: 8A            TXA                       ; ... go decrement
-9C5E: 69 01         ADC   #$01                ; Bit is clear ... increment
-9C60: D0 04         BNE   $9C66               ; No overflow ... use result
-9C62: 8A            TXA                       ; Decrement ...
-9C63: 18            CLC                       ; ... by ...
-9C64: 69 FF         ADC   #$FF                ; ... adding -1
-9C66: AA            TAX                       ; Result back to X
-9C67: 60            RTS                       ; Done
+9C54: C9 10           CMP     #$10                ; If warble count is less than 10 ...
+9C56: 90 0F           BCC     $9C67               ; {hard.MMC1_0+1C67} ... keep the original frequency
+9C58: 4A              LSR     A                   ; Check ...
+9C59: 4A              LSR     A                   ; ... bit ...
+9C5A: 4A              LSR     A                   ; ... 3
+9C5B: B0 05           BCS     $9C62               ; {hard.MMC1_0+1C62} Bit is set ...
+9C5D: 8A              TXA                         ; ... go decrement
+9C5E: 69 01           ADC     #$01                ; Bit is clear ... increment
+9C60: D0 04           BNE     $9C66               ; {hard.MMC1_0+1C66} No overflow ... use result
+9C62: 8A              TXA                         ; Decrement ...
+9C63: 18              CLC                         ; ... by ...
+9C64: 69 FF           ADC     #$FF                ; ... adding -1
+9C66: AA              TAX                         ; Result back to X
+9C67: 60              RTS                         ; Done
 
 
-9C68: 4C 2C 9D      JMP   $9D2C               ; Jump to processing music
+9C68: 4C 2C 9D        JMP     $9D2C               ; {hard.MMC1_0+1D2C} Jump to processing music
 ```
 
 # Play Music
 
 ```code
 PlayMusic: 
-9C6B: AD 00 06      LDA   $0600               ; Get any music request
-9C6E: D0 06         BNE   $9C76               ; There is one ... go start it
-9C70: AD 09 06      LDA   $0609               ; Currently playing music
-9C73: D0 F3         BNE   $9C68               ; There is a song playing ... keep it going
-9C75: 60            RTS                       ; Done
+9C6B: AD 00 06        LDA     $0600               ; {ram.SND_ReqMusic} Get any music request
+9C6E: D0 06           BNE     $9C76               ; {hard.MMC1_0+1C76} There is one ... go start it
+9C70: AD 09 06        LDA     $0609               ; {ram.SND_CurSong} Currently playing music
+9C73: D0 F3           BNE     $9C68               ; {hard.MMC1_0+1C68} There is a song playing ... keep it going
+9C75: 60              RTS                         ; Done
 
 ; Initialize a new song
-9C76: 8D 09 06      STA   $0609               ; Newly requested music
-9C79: 30 18         BMI   $9C93               ; 
-9C7B: C9 06         CMP   #$06                ;
-9C7D: D0 04         BNE   $9C83               ; 
-9C7F: A0 24         LDY   #$24                ;
-9C81: D0 62         BNE   $9CE5               ; 
-9C83: C9 01         CMP   #$01                ;
-9C85: F0 14         BEQ   $9C9B               ; 
-9C87: C9 40         CMP   #$40                ;
-9C89: F0 0C         BEQ   $9C97               ; 
-9C8B: C9 10         CMP   #$10                ;
-9C8D: D0 10         BNE   $9C9F               ; 
-9C8F: A0 11         LDY   #$11                ;
-9C91: D0 0A         BNE   $9C9D               ; 
+9C76: 8D 09 06        STA     $0609               ; {ram.SND_CurSong} Newly requested music
+9C79: 30 18           BMI     $9C93               ; {hard.MMC1_0+1C93}
+9C7B: C9 06           CMP     #$06                ; 
+9C7D: D0 04           BNE     $9C83               ; {hard.MMC1_0+1C83}
+9C7F: A0 24           LDY     #$24                ; 
+9C81: D0 62           BNE     $9CE5               ; {hard.MMC1_0+1CE5}
+9C83: C9 01           CMP     #$01                ; 
+9C85: F0 14           BEQ     $9C9B               ; {hard.MMC1_0+1C9B}
+9C87: C9 40           CMP     #$40                ; 
+9C89: F0 0C           BEQ     $9C97               ; {hard.MMC1_0+1C97}
+9C8B: C9 10           CMP     #$10                ; 
+9C8D: D0 10           BNE     $9C9F               ; {hard.MMC1_0+1C9F}
+9C8F: A0 11           LDY     #$11                ; 
+9C91: D0 0A           BNE     $9C9D               ; {hard.MMC1_0+1C9D}
 ;
-9C93: A0 19         LDY   #$19                ;
-9C95: D0 06         BNE   $9C9D               ; 
-9C97: A0 0F         LDY   #$0F                ;
-9C99: D0 02         BNE   $9C9D               ; 
-9C9B: A0 08         LDY   #$08                ;
-9C9D: 84 6C         STY   <$6C                ; 
+9C93: A0 19           LDY     #$19                ; 
+9C95: D0 06           BNE     $9C9D               ; {hard.MMC1_0+1C9D}
+9C97: A0 0F           LDY     #$0F                ; 
+9C99: D0 02           BNE     $9C9D               ; {hard.MMC1_0+1C9D}
+9C9B: A0 08           LDY     #$08                ; 
+9C9D: 84 6C           STY     <$6C                ; {ram.006C}
 ;
-9C9F: AA            TAX                       ;
-9CA0: 30 30         BMI   $9CD2               ; 
-9CA2: C9 01         CMP   #$01                ;
-9CA4: F0 20         BEQ   $9CC6               ; 
-9CA6: C9 40         CMP   #$40                ;
-9CA8: F0 10         BEQ   $9CBA               ; 
-9CAA: C9 10         CMP   #$10                ;
-9CAC: D0 30         BNE   $9CDE               ; 
+9C9F: AA              TAX                         ; 
+9CA0: 30 30           BMI     $9CD2               ; {hard.MMC1_0+1CD2}
+9CA2: C9 01           CMP     #$01                ; 
+9CA4: F0 20           BEQ     $9CC6               ; {hard.MMC1_0+1CC6}
+9CA6: C9 40           CMP     #$40                ; 
+9CA8: F0 10           BEQ     $9CBA               ; {hard.MMC1_0+1CBA}
+9CAA: C9 10           CMP     #$10                ; 
+9CAC: D0 30           BNE     $9CDE               ; {hard.MMC1_0+1CDE}
 
 ; Song fragments 14..19 (loop)
-9CAE: E6 6C         INC   <$6C                ; 
-9CB0: A4 6C         LDY   <$6C                ; 
-9CB2: C0 1A         CPY   #$1A                ;
-9CB4: D0 2F         BNE   $9CE5               ; 
-9CB6: A0 14         LDY   #$14                ;
-9CB8: D0 E3         BNE   $9C9D               ; 
+9CAE: E6 6C           INC     <$6C                ; {ram.006C}
+9CB0: A4 6C           LDY     <$6C                ; {ram.006C}
+9CB2: C0 1A           CPY     #$1A                ; 
+9CB4: D0 2F           BNE     $9CE5               ; {hard.MMC1_0+1CE5}
+9CB6: A0 14           LDY     #$14                ; 
+9CB8: D0 E3           BNE     $9C9D               ; {hard.MMC1_0+1C9D}
 
 ; Song fragments 0F..11 (loop)
-9CBA: E6 6C         INC   <$6C                ; 
-9CBC: A4 6C         LDY   <$6C                ; 
-9CBE: C0 12         CPY   #$12                ;
-9CC0: D0 23         BNE   $9CE5               ; 
-9CC2: A0 0F         LDY   #$0F                ;
-9CC4: D0 D7         BNE   $9C9D               ; 
+9CBA: E6 6C           INC     <$6C                ; {ram.006C}
+9CBC: A4 6C           LDY     <$6C                ; {ram.006C}
+9CBE: C0 12           CPY     #$12                ; 
+9CC0: D0 23           BNE     $9CE5               ; {hard.MMC1_0+1CE5}
+9CC2: A0 0F           LDY     #$0F                ; 
+9CC4: D0 D7           BNE     $9C9D               ; {hard.MMC1_0+1C9D}
 
 ; Song fragments 09..0F (loop) Main background music
-9CC6: E6 6C         INC   <$6C                ; 
-9CC8: A4 6C         LDY   <$6C                ; 
-9CCA: C0 10         CPY   #$10                ;
-9CCC: D0 17         BNE   $9CE5               ; 
-9CCE: A0 09         LDY   #$09                ;
-9CD0: D0 CB         BNE   $9C9D               ; 
+9CC6: E6 6C           INC     <$6C                ; {ram.006C}
+9CC8: A4 6C           LDY     <$6C                ; {ram.006C}
+9CCA: C0 10           CPY     #$10                ; 
+9CCC: D0 17           BNE     $9CE5               ; {hard.MMC1_0+1CE5}
+9CCE: A0 09           LDY     #$09                ; 
+9CD0: D0 CB           BNE     $9C9D               ; {hard.MMC1_0+1C9D}
 ;
 ; Song fragments 19..23 (loop) Splash screen music
-9CD2: E6 6C         INC   <$6C                ; Next song number
-9CD4: A4 6C         LDY   <$6C                ; Have we reached ...
-9CD6: C0 24         CPY   #$24                ; ... the end?
-9CD8: D0 0B         BNE   $9CE5               ; No ... use it
-9CDA: A0 19         LDY   #$19                ; Restart ...
-9CDC: D0 BF         BNE   $9C9D               ; ... at 19
+9CD2: E6 6C           INC     <$6C                ; {ram.006C} Next song number
+9CD4: A4 6C           LDY     <$6C                ; {ram.006C} Have we reached ...
+9CD6: C0 24           CPY     #$24                ; ... the end?
+9CD8: D0 0B           BNE     $9CE5               ; {hard.MMC1_0+1CE5} No ... use it
+9CDA: A0 19           LDY     #$19                ; Restart ...
+9CDC: D0 BF           BNE     $9C9D               ; {hard.MMC1_0+1C9D} ... at 19
 ;
-9CDE: 8A            TXA                       ; Song number
-9CDF: A0 00         LDY   #$00                ; Find ...
-9CE1: C8            INY                       ; .. first ...
-9CE2: 4A            LSR   A                   ; ... bit from ...
-9CE3: 90 FC         BCC   $9CE1               ; ... right
+9CDE: 8A              TXA                         ; Song number
+9CDF: A0 00           LDY     #$00                ; Find ...
+9CE1: C8              INY                         ; .. first ...
+9CE2: 4A              LSR     A                   ; ... bit from ...
+9CE3: 90 FC           BCC     $9CE1               ; {hard.MMC1_0+1CE1} ... right
 
-9CE5: B9 5F 8D      LDA   $8D5F,Y             ; Set ...
-9CE8: A8            TAY                       ; ... note ...
-9CE9: B9 60 8D      LDA   $8D60,Y             ; ... duration ...
-9CEC: 8D F4 05      STA   $05F4               ; ... list
-9CEF: B9 61 8D      LDA   $8D61,Y             ; Set ...
-9CF2: 85 66         STA   <$66                ; ... pointer ...
-9CF4: B9 62 8D      LDA   $8D62,Y             ; ... to ...
-9CF7: 85 67         STA   <$67                ; ... music
-9CF9: B9 63 8D      LDA   $8D63,Y             ; Set offset for ...
-9CFC: 8D 0C 06      STA   $060C               ; ... voice C
-9CFF: B9 64 8D      LDA   $8D64,Y             ; Set offset for ...
-9D02: 8D 0B 06      STA   $060B               ; ... voice B
-9D05: B9 65 8D      LDA   $8D65,Y             ; Set offset for ...
-9D08: 8D 0D 06      STA   $060D               ; ... voice D
-9D0B: 8D F5 05      STA   $05F5               ; ?? Copy of D for reload
-9D0E: B9 66 8D      LDA   $8D66,Y             ;
-9D11: 8D 19 06      STA   $0619               ; 
-9D14: B9 67 8D      LDA   $8D67,Y             ;
-9D17: 8D F1 05      STA   $05F1               ; 
-9D1A: A9 01         LDA   #$01                ; Music begins on ...
-9D1C: 8D 11 06      STA   $0611               ; ... next tick
-9D1F: 8D 13 06      STA   $0613               ; 
-9D22: 8D 16 06      STA   $0616               ; 
-9D25: 8D 17 06      STA   $0617               ; 
-9D28: 4A            LSR   A                   ; Music program counter for voice A ...
-9D29: 8D 0A 06      STA   $060A               ; ... to zero (start of song)
+9CE5: B9 5F 8D        LDA     $8D5F,Y             ; {hard.MMC1_0+D5F} Set ...
+9CE8: A8              TAY                         ; ... note ...
+9CE9: B9 60 8D        LDA     $8D60,Y             ; {hard.MMC1_0+D60} ... duration ...
+9CEC: 8D F4 05        STA     $05F4               ; {ram.05F4} ... list
+9CEF: B9 61 8D        LDA     $8D61,Y             ; {hard.MMC1_0+D61} Set ...
+9CF2: 85 66           STA     <$66                ; {ram.SND_PtrA} ... pointer ...
+9CF4: B9 62 8D        LDA     $8D62,Y             ; {hard.MMC1_0+D62} ... to ...
+9CF7: 85 67           STA     <$67                ; {ram.SND_PtrB} ... music
+9CF9: B9 63 8D        LDA     $8D63,Y             ; {hard.MMC1_0+D63} Set offset for ...
+9CFC: 8D 0C 06        STA     $060C               ; {ram.SND_SongPC_C} ... voice C
+9CFF: B9 64 8D        LDA     $8D64,Y             ; {hard.MMC1_0+D64} Set offset for ...
+9D02: 8D 0B 06        STA     $060B               ; {ram.SND_SongPC_B} ... voice B
+9D05: B9 65 8D        LDA     $8D65,Y             ; {hard.MMC1_0+D65} Set offset for ...
+9D08: 8D 0D 06        STA     $060D               ; {ram.SND_SongPC_D} ... voice D
+9D0B: 8D F5 05        STA     $05F5               ; {ram.SND_DrumRep} ?? Copy of D for reload
+9D0E: B9 66 8D        LDA     $8D66,Y             ; {hard.MMC1_0+D66}
+9D11: 8D 19 06        STA     $0619               ; {ram.0619}
+9D14: B9 67 8D        LDA     $8D67,Y             ; {hard.MMC1_0+D67}
+9D17: 8D F1 05        STA     $05F1               ; {ram.05F1}
+9D1A: A9 01           LDA     #$01                ; Music begins on ...
+9D1C: 8D 11 06        STA     $0611               ; {ram.SND_Timer} ... next tick
+9D1F: 8D 13 06        STA     $0613               ; {ram.0613}
+9D22: 8D 16 06        STA     $0616               ; {ram.0616}
+9D25: 8D 17 06        STA     $0617               ; {ram.0617}
+9D28: 4A              LSR     A                   ; Music program counter for voice A ...
+9D29: 8D 0A 06        STA     $060A               ; {ram.SND_SongPC_A} ... to zero (start of song)
 
-9D2C: CE 11 06      DEC   $0611               ; Decrement event timer
-9D2F: D0 52         BNE   $9D83               ; Not time for a new event ... skip on
-9D31: AC 0A 06      LDY   $060A               ; Get music program counter
-9D34: EE 0A 06      INC   $060A               ; Bump counter
-9D37: B1 66         LDA   ($66),Y             ; Get next music byte
-9D39: F0 04         BEQ   $9D3F               ; 0 means end of song
-9D3B: 10 28         BPL   $9D65               ; Upper bit clear ... regular note event
-9D3D: D0 18         BNE   $9D57               ; (BRA) Upper bit set ... set duration
+9D2C: CE 11 06        DEC     $0611               ; {ram.SND_Timer} Decrement event timer
+9D2F: D0 52           BNE     $9D83               ; {hard.MMC1_0+1D83} Not time for a new event ... skip on
+9D31: AC 0A 06        LDY     $060A               ; {ram.SND_SongPC_A} Get music program counter
+9D34: EE 0A 06        INC     $060A               ; {ram.SND_SongPC_A} Bump counter
+9D37: B1 66           LDA     ($66),Y             ; {ram.SND_PtrA} Get next music byte
+9D39: F0 04           BEQ     $9D3F               ; {hard.MMC1_0+1D3F} 0 means end of song
+9D3B: 10 28           BPL     $9D65               ; {hard.MMC1_0+1D65} Upper bit clear ... regular note event
+9D3D: D0 18           BNE     $9D57               ; {hard.MMC1_0+1D57} (BRA) Upper bit set ... set duration
 ;
-9D3F: AD 09 06      LDA   $0609               ; Current song playing
-9D42: 29 F1         AND   #$F1                ; 1111_0001 Part of a sequence of song fragments?
-9D44: D0 0E         BNE   $9D54               ; Yes ... go back and play next fragment (9C9F)
+9D3F: AD 09 06        LDA     $0609               ; {ram.SND_CurSong} Current song playing
+9D42: 29 F1           AND     #$F1                ; 1111_0001 Part of a sequence of song fragments?
+9D44: D0 0E           BNE     $9D54               ; {hard.MMC1_0+1D54} Yes ... go back and play next fragment (9C9F)
 ;
-9D46: A9 00         LDA   #$00                ; Stop ...
-9D48: 8D 09 06      STA   $0609               ; ... current song
-9D4B: 8D 15 40      STA   $4015               ; all sounds. [NES] IRQ status / Sound enable
-9D4E: A9 0F         LDA   #$0F                ; Enable Pulse1, Pulse2, ...
-9D50: 8D 15 40      STA   $4015               ; ... Triangle, and Noise. [NES] IRQ status / Sound enable
-9D53: 60            RTS                       ; Done
-9D54: 4C 9F 9C      JMP   $9C9F               ; Long BNE from 9D44
+9D46: A9 00           LDA     #$00                ; Stop ...
+9D48: 8D 09 06        STA     $0609               ; {ram.SND_CurSong} ... current song
+9D4B: 8D 15 40        STA     $4015               ; {hard.S_Status} all sounds. [NES] IRQ status / Sound enable
+9D4E: A9 0F           LDA     #$0F                ; Enable Pulse1, Pulse2, ...
+9D50: 8D 15 40        STA     $4015               ; {hard.S_Status} ... Triangle, and Noise. [NES] IRQ status / Sound enable
+9D53: 60              RTS                         ; Done
+9D54: 4C 9F 9C        JMP     $9C9F               ; {hard.MMC1_0+1C9F} Long BNE from 9D44
 ;
-9D57: 20 E6 9E      JSR   $9EE6               ; Look up note duration based on song's note set
-9D5A: 8D 10 06      STA   $0610               ; New event timer reload
-9D5D: AC 0A 06      LDY   $060A               ; Get music program counter
-9D60: EE 0A 06      INC   $060A               ; Bump counter
-9D63: B1 66         LDA   ($66),Y             ;S Get next music byte
+9D57: 20 E6 9E        JSR     $9EE6               ; {code.GetNoteLen} Look up note duration based on song's note set
+9D5A: 8D 10 06        STA     $0610               ; {ram.SND_LenReload} New event timer reload
+9D5D: AC 0A 06        LDY     $060A               ; {ram.SND_SongPC_A} Get music program counter
+9D60: EE 0A 06        INC     $060A               ; {ram.SND_SongPC_A} Bump counter
+9D63: B1 66           LDA     ($66),Y             ; {ram.SND_PtrA} S Get next music byte
 ;
-9D65: AE 07 06      LDX   $0607               ; Is there a music effect playing?
-9D68: D0 13         BNE   $9D7D               ; Yes ... let it have this voice
-9D6A: 20 2B 9C      JSR   $9C2B               ; Note on square 2
-9D6D: F0 03         BEQ   $9D72               ; If it was silence, skip next
-9D6F: 20 72 9F      JSR   $9F72               ; 
-9D72: 8D 12 06      STA   $0612               ; 
-9D75: 20 21 9C      JSR   $9C21               ; Set sq2 ramp
-9D78: A9 00         LDA   #$00                ;
-9D7A: 8D 1B 06      STA   $061B               ; 
+9D65: AE 07 06        LDX     $0607               ; {ram.SND_CurMusEff} Is there a music effect playing?
+9D68: D0 13           BNE     $9D7D               ; {hard.MMC1_0+1D7D} Yes ... let it have this voice
+9D6A: 20 2B 9C        JSR     $9C2B               ; {hard.MMC1_0+1C2B} Note on square 2
+9D6D: F0 03           BEQ     $9D72               ; {hard.MMC1_0+1D72} If it was silence, skip next
+9D6F: 20 72 9F        JSR     $9F72               ; {hard.MMC1_0+1F72}
+9D72: 8D 12 06        STA     $0612               ; {ram.0612}
+9D75: 20 21 9C        JSR     $9C21               ; {hard.MMC1_0+1C21} Set sq2 ramp
+9D78: A9 00           LDA     #$00                ; 
+9D7A: 8D 1B 06        STA     $061B               ; {ram.061B}
 ;
-9D7D: AD 10 06      LDA   $0610               ; Reset event timer ...
-9D80: 8D 11 06      STA   $0611               ; ... to current default
+9D7D: AD 10 06        LDA     $0610               ; {ram.SND_LenReload} Reset event timer ...
+9D80: 8D 11 06        STA     $0611               ; {ram.SND_Timer} ... to current default
 
-9D83: AC 07 06      LDY   $0607               ; Is there a music effect playing?
-9D86: D0 26         BNE   $9DAE               ; Yes ... let it have this voice
-9D88: EE 1B 06      INC   $061B               ; 
-9D8B: AC 12 06      LDY   $0612               ; 
-9D8E: F0 03         BEQ   $9D93               ; 
-9D90: CE 12 06      DEC   $0612               ; 
-9D93: 20 7C 9F      JSR   $9F7C               ; 
-9D96: 8D 04 40      STA   $4004               ; [NES] Audio -> Square 2 Control
-9D99: A2 7F         LDX   #$7F                ;
-9D9B: 8E 05 40      STX   $4005               ; [NES] Audio -> Square 2 Ramp control
-9D9E: AD 09 06      LDA   $0609               ; 
-9DA1: 10 0B         BPL   $9DAE               ; 
-9DA3: AD 1B 06      LDA   $061B               ; 
-9DA6: A6 6B         LDX   <$6B                ; 
-9DA8: 20 54 9C      JSR   $9C54               ; 
-9DAB: 8E 06 40      STX   $4006               ; [NES] Audio -> Square 2 Fine tune
+9D83: AC 07 06        LDY     $0607               ; {ram.SND_CurMusEff} Is there a music effect playing?
+9D86: D0 26           BNE     $9DAE               ; {hard.MMC1_0+1DAE} Yes ... let it have this voice
+9D88: EE 1B 06        INC     $061B               ; {ram.061B}
+9D8B: AC 12 06        LDY     $0612               ; {ram.0612}
+9D8E: F0 03           BEQ     $9D93               ; {hard.MMC1_0+1D93}
+9D90: CE 12 06        DEC     $0612               ; {ram.0612}
+9D93: 20 7C 9F        JSR     $9F7C               ; {hard.MMC1_0+1F7C}
+9D96: 8D 04 40        STA     $4004               ; {hard.S_SQR2_A} [NES] Audio -> Square 2 Control
+9D99: A2 7F           LDX     #$7F                ; 
+9D9B: 8E 05 40        STX     $4005               ; {hard.S_SQR2_B} [NES] Audio -> Square 2 Ramp control
+9D9E: AD 09 06        LDA     $0609               ; {ram.SND_CurSong}
+9DA1: 10 0B           BPL     $9DAE               ; {hard.MMC1_0+1DAE}
+9DA3: AD 1B 06        LDA     $061B               ; {ram.061B}
+9DA6: A6 6B           LDX     <$6B                ; {ram.SND_Sq2Fine}
+9DA8: 20 54 9C        JSR     $9C54               ; {code.Warble}
+9DAB: 8E 06 40        STX     $4006               ; {hard.S_SQR2_C} [NES] Audio -> Square 2 Fine tune
 
-9DAE: AC 0B 06      LDY   $060B               ; 
-9DB1: F0 66         BEQ   $9E19               ; 
-9DB3: CE 13 06      DEC   $0613               ; 
-9DB6: D0 36         BNE   $9DEE               ; 
-9DB8: AC 0B 06      LDY   $060B               ; S
-9DBB: EE 0B 06      INC   $060B               ; 
-9DBE: B1 66         LDA   ($66),Y             ;
-9DC0: 10 0E         BPL   $9DD0               ; 
-9DC2: 20 E6 9E      JSR   $9EE6               ; 
-9DC5: 8D 0F 06      STA   $060F               ; 
-9DC8: AC 0B 06      LDY   $060B               ; 
-9DCB: EE 0B 06      INC   $060B               ; 
-9DCE: B1 66         LDA   ($66),Y             ;
-9DD0: AE 05 06      LDX   $0605               ; Is there a sound effect playing?
-9DD3: D0 13         BNE   $9DE8               ; Yes ... skip this
-9DD5: 20 0D 9C      JSR   $9C0D               ; Note on square 2
-9DD8: F0 03         BEQ   $9DDD               ; 
-9DDA: 20 72 9F      JSR   $9F72               ; 
-9DDD: 8D 14 06      STA   $0614               ; 
-9DE0: 20 03 9C      JSR   $9C03               ; 
-9DE3: A9 00         LDA   #$00                ;
-9DE5: 8D 1C 06      STA   $061C               ; 
+9DAE: AC 0B 06        LDY     $060B               ; {ram.SND_SongPC_B}
+9DB1: F0 66           BEQ     $9E19               ; {hard.MMC1_0+1E19}
+9DB3: CE 13 06        DEC     $0613               ; {ram.0613}
+9DB6: D0 36           BNE     $9DEE               ; {hard.MMC1_0+1DEE}
+9DB8: AC 0B 06        LDY     $060B               ; {ram.SND_SongPC_B} S
+9DBB: EE 0B 06        INC     $060B               ; {ram.SND_SongPC_B}
+9DBE: B1 66           LDA     ($66),Y             ; {ram.SND_PtrA}
+9DC0: 10 0E           BPL     $9DD0               ; {hard.MMC1_0+1DD0}
+9DC2: 20 E6 9E        JSR     $9EE6               ; {code.GetNoteLen}
+9DC5: 8D 0F 06        STA     $060F               ; {ram.060F}
+9DC8: AC 0B 06        LDY     $060B               ; {ram.SND_SongPC_B}
+9DCB: EE 0B 06        INC     $060B               ; {ram.SND_SongPC_B}
+9DCE: B1 66           LDA     ($66),Y             ; {ram.SND_PtrA}
+9DD0: AE 05 06        LDX     $0605               ; {ram.SND_CurEffect} Is there a sound effect playing?
+9DD3: D0 13           BNE     $9DE8               ; {hard.MMC1_0+1DE8} Yes ... skip this
+9DD5: 20 0D 9C        JSR     $9C0D               ; {hard.MMC1_0+1C0D} Note on square 2
+9DD8: F0 03           BEQ     $9DDD               ; {hard.MMC1_0+1DDD}
+9DDA: 20 72 9F        JSR     $9F72               ; {hard.MMC1_0+1F72}
+9DDD: 8D 14 06        STA     $0614               ; {ram.0614}
+9DE0: 20 03 9C        JSR     $9C03               ; {hard.MMC1_0+1C03}
+9DE3: A9 00           LDA     #$00                ; 
+9DE5: 8D 1C 06        STA     $061C               ; {ram.061C}
 ;
-9DE8: AD 0F 06      LDA   $060F               ; 
-9DEB: 8D 13 06      STA   $0613               ; 
-9DEE: AE 05 06      LDX   $0605               ; Is there a sound effect playing?
-9DF1: D0 26         BNE   $9E19               ; 
-9DF3: EE 1C 06      INC   $061C               ; 
-9DF6: AC 14 06      LDY   $0614               ; 
-9DF9: F0 03         BEQ   $9DFE               ; 
-9DFB: CE 14 06      DEC   $0614               ; 
-9DFE: 20 7C 9F      JSR   $9F7C               ; 
-9E01: 8D 00 40      STA   $4000               ; [NES] Audio -> Square 1 Control
-9E04: AD 09 06      LDA   $0609               ; 
-9E07: 10 0B         BPL   $9E14               ; 
-9E09: AD 1C 06      LDA   $061C               ; 
-9E0C: A6 6A         LDX   <$6A                ; 
-9E0E: 20 54 9C      JSR   $9C54               ; 
-9E11: 8E 02 40      STX   $4002               ; [NES] Audio -> Square 1 Fine tune
-9E14: A9 7F         LDA   #$7F                ;
-9E16: 8D 01 40      STA   $4001               ; [NES] Audio -> Square 1 Ramp control
+9DE8: AD 0F 06        LDA     $060F               ; {ram.060F}
+9DEB: 8D 13 06        STA     $0613               ; {ram.0613}
+9DEE: AE 05 06        LDX     $0605               ; {ram.SND_CurEffect} Is there a sound effect playing?
+9DF1: D0 26           BNE     $9E19               ; {hard.MMC1_0+1E19}
+9DF3: EE 1C 06        INC     $061C               ; {ram.061C}
+9DF6: AC 14 06        LDY     $0614               ; {ram.0614}
+9DF9: F0 03           BEQ     $9DFE               ; {hard.MMC1_0+1DFE}
+9DFB: CE 14 06        DEC     $0614               ; {ram.0614}
+9DFE: 20 7C 9F        JSR     $9F7C               ; {hard.MMC1_0+1F7C}
+9E01: 8D 00 40        STA     $4000               ; {hard.S_SQR1_A} [NES] Audio -> Square 1 Control
+9E04: AD 09 06        LDA     $0609               ; {ram.SND_CurSong}
+9E07: 10 0B           BPL     $9E14               ; {hard.MMC1_0+1E14}
+9E09: AD 1C 06        LDA     $061C               ; {ram.061C}
+9E0C: A6 6A           LDX     <$6A                ; {ram.SND_Sq1Fine}
+9E0E: 20 54 9C        JSR     $9C54               ; {code.Warble}
+9E11: 8E 02 40        STX     $4002               ; {hard.S_SQR1_C} [NES] Audio -> Square 1 Fine tune
+9E14: A9 7F           LDA     #$7F                ; 
+9E16: 8D 01 40        STA     $4001               ; {hard.S_SQR1_B} [NES] Audio -> Square 1 Ramp control
 
-9E19: AD 0C 06      LDA   $060C               ; 
-9E1C: D0 03         BNE   $9E21               ; 
-9E1E: 4C 95 9E      JMP   $9E95               ; 
+9E19: AD 0C 06        LDA     $060C               ; {ram.SND_SongPC_C}
+9E1C: D0 03           BNE     $9E21               ; {hard.MMC1_0+1E21}
+9E1E: 4C 95 9E        JMP     $9E95               ; {hard.MMC1_0+1E95}
 
-9E21: CE 16 06      DEC   $0616               ; 
-9E24: D0 52         BNE   $9E78               ; 
-9E26: AC 0C 06      LDY   $060C               ; 
-9E29: EE 0C 06      INC   $060C               ; 
-9E2C: B1 66         LDA   ($66),Y             ;
-9E2E: F0 62         BEQ   $9E92               ; 
-9E30: 10 38         BPL   $9E6A               ; 
-9E32: C9 F0         CMP   #$F0                ;
-9E34: F0 11         BEQ   $9E47               ; 
-9E36: 90 1D         BCC   $9E55               ; 
-9E38: 38            SEC                       ;
-9E39: E9 F0         SBC   #$F0                ;
-9E3B: 8D 1E 06      STA   $061E               ; 
-9E3E: AD 0C 06      LDA   $060C               ; 
-9E41: 8D 1F 06      STA   $061F               ; 
-9E44: 4C 26 9E      JMP   $9E26               ; 
-9E47: CE 1E 06      DEC   $061E               ; 
-9E4A: F0 06         BEQ   $9E52               ; 
-9E4C: AD 1F 06      LDA   $061F               ; 
-9E4F: 8D 0C 06      STA   $060C               ; 
-9E52: 4C 26 9E      JMP   $9E26               ; 
-9E55: 20 E6 9E      JSR   $9EE6               ; 
-9E58: 8D 15 06      STA   $0615               ; 
-9E5B: A9 1F         LDA   #$1F                ;
-9E5D: 8D 08 40      STA   $4008               ; [NES] Audio -> Triangle Control
-9E60: AC 0C 06      LDY   $060C               ; 
-9E63: EE 0C 06      INC   $060C               ; 
-9E66: B1 66         LDA   ($66),Y             ;
-9E68: F0 28         BEQ   $9E92               ; 
-9E6A: 20 3F 9C      JSR   $9C3F               ; 
-9E6D: A9 00         LDA   #$00                ;
-9E6F: 8D 1D 06      STA   $061D               ; 
-9E72: AE 15 06      LDX   $0615               ; 
-9E75: 8E 16 06      STX   $0616               ; 
+9E21: CE 16 06        DEC     $0616               ; {ram.0616}
+9E24: D0 52           BNE     $9E78               ; {hard.MMC1_0+1E78}
+9E26: AC 0C 06        LDY     $060C               ; {ram.SND_SongPC_C}
+9E29: EE 0C 06        INC     $060C               ; {ram.SND_SongPC_C}
+9E2C: B1 66           LDA     ($66),Y             ; {ram.SND_PtrA}
+9E2E: F0 62           BEQ     $9E92               ; {hard.MMC1_0+1E92}
+9E30: 10 38           BPL     $9E6A               ; {hard.MMC1_0+1E6A}
+9E32: C9 F0           CMP     #$F0                ; 
+9E34: F0 11           BEQ     $9E47               ; {hard.MMC1_0+1E47}
+9E36: 90 1D           BCC     $9E55               ; {hard.MMC1_0+1E55}
+9E38: 38              SEC                         ; 
+9E39: E9 F0           SBC     #$F0                ; 
+9E3B: 8D 1E 06        STA     $061E               ; {ram.061E}
+9E3E: AD 0C 06        LDA     $060C               ; {ram.SND_SongPC_C}
+9E41: 8D 1F 06        STA     $061F               ; {ram.061F}
+9E44: 4C 26 9E        JMP     $9E26               ; {hard.MMC1_0+1E26}
+9E47: CE 1E 06        DEC     $061E               ; {ram.061E}
+9E4A: F0 06           BEQ     $9E52               ; {hard.MMC1_0+1E52}
+9E4C: AD 1F 06        LDA     $061F               ; {ram.061F}
+9E4F: 8D 0C 06        STA     $060C               ; {ram.SND_SongPC_C}
+9E52: 4C 26 9E        JMP     $9E26               ; {hard.MMC1_0+1E26}
+9E55: 20 E6 9E        JSR     $9EE6               ; {code.GetNoteLen}
+9E58: 8D 15 06        STA     $0615               ; {ram.0615}
+9E5B: A9 1F           LDA     #$1F                ; 
+9E5D: 8D 08 40        STA     $4008               ; {hard.S_TRI_A} [NES] Audio -> Triangle Control
+9E60: AC 0C 06        LDY     $060C               ; {ram.SND_SongPC_C}
+9E63: EE 0C 06        INC     $060C               ; {ram.SND_SongPC_C}
+9E66: B1 66           LDA     ($66),Y             ; {ram.SND_PtrA}
+9E68: F0 28           BEQ     $9E92               ; {hard.MMC1_0+1E92}
+9E6A: 20 3F 9C        JSR     $9C3F               ; {code.NoteOnTri}
+9E6D: A9 00           LDA     #$00                ; 
+9E6F: 8D 1D 06        STA     $061D               ; {ram.061D}
+9E72: AE 15 06        LDX     $0615               ; {ram.0615}
+9E75: 8E 16 06        STX     $0616               ; {ram.0616}
 ;
-9E78: EE 1D 06      INC   $061D               ; Bump warble
-9E7B: AD 1D 06      LDA   $061D               ; Get the warble count ...
-9E7E: AE F0 05      LDX   $05F0               ; .. and the current note frequency
-9E81: 20 54 9C      JSR   $9C54               ; Warble the note frequency in X
-9E84: 8E 0A 40      STX   $400A               ; Play the note on triangle voice [NES] Audio -> Triangle Frequence reg1
-9E87: AD F1 05      LDA   $05F1               ; 
-9E8A: 10 04         BPL   $9E90               ; 
-9E8C: A9 1F         LDA   #$1F                ;
-9E8E: D0 02         BNE   $9E92               ; 
-9E90: A9 FF         LDA   #$FF                ;
-9E92: 8D 08 40      STA   $4008               ; ?? intro music voice [NES] Audio -> Triangle Control
+9E78: EE 1D 06        INC     $061D               ; {ram.061D} Bump warble
+9E7B: AD 1D 06        LDA     $061D               ; {ram.061D} Get the warble count ...
+9E7E: AE F0 05        LDX     $05F0               ; {ram.SND_TriFine} .. and the current note frequency
+9E81: 20 54 9C        JSR     $9C54               ; {code.Warble} Warble the note frequency in X
+9E84: 8E 0A 40        STX     $400A               ; {hard.S_TRI_C} Play the note on triangle voice [NES] Audio -> Triangle Frequence reg1
+9E87: AD F1 05        LDA     $05F1               ; {ram.05F1}
+9E8A: 10 04           BPL     $9E90               ; {hard.MMC1_0+1E90}
+9E8C: A9 1F           LDA     #$1F                ; 
+9E8E: D0 02           BNE     $9E92               ; {hard.MMC1_0+1E92}
+9E90: A9 FF           LDA     #$FF                ; 
+9E92: 8D 08 40        STA     $4008               ; {hard.S_TRI_A} ?? intro music voice [NES] Audio -> Triangle Control
 ;
-9E95: AD 09 06      LDA   $0609               ; Current song number
-9E98: 29 91         AND   #$91                ; 1001_0001 Does song have drums in it?
-9E9A: F0 37         BEQ   $9ED3               ; No ... skip drums
-9E9C: CE 17 06      DEC   $0617               ; 
-9E9F: D0 32         BNE   $9ED3               ; 
-9EA1: AC 0D 06      LDY   $060D               ; 
-9EA4: EE 0D 06      INC   $060D               ; 
-9EA7: B1 66         LDA   ($66),Y             ;
-9EA9: D0 08         BNE   $9EB3               ; 
-9EAB: AD F5 05      LDA   $05F5               ; 
-9EAE: 8D 0D 06      STA   $060D               ; 
-9EB1: D0 EE         BNE   $9EA1               ; 
+9E95: AD 09 06        LDA     $0609               ; {ram.SND_CurSong} Current song number
+9E98: 29 91           AND     #$91                ; 1001_0001 Does song have drums in it?
+9E9A: F0 37           BEQ     $9ED3               ; {hard.MMC1_0+1ED3} No ... skip drums
+9E9C: CE 17 06        DEC     $0617               ; {ram.0617}
+9E9F: D0 32           BNE     $9ED3               ; {hard.MMC1_0+1ED3}
+9EA1: AC 0D 06        LDY     $060D               ; {ram.SND_SongPC_D}
+9EA4: EE 0D 06        INC     $060D               ; {ram.SND_SongPC_D}
+9EA7: B1 66           LDA     ($66),Y             ; {ram.SND_PtrA}
+9EA9: D0 08           BNE     $9EB3               ; {hard.MMC1_0+1EB3}
+9EAB: AD F5 05        LDA     $05F5               ; {ram.SND_DrumRep}
+9EAE: 8D 0D 06        STA     $060D               ; {ram.SND_SongPC_D}
+9EB1: D0 EE           BNE     $9EA1               ; {hard.MMC1_0+1EA1}
 
 ; Music drums
 
-9EB3: 20 E0 9E      JSR   $9EE0               ; 
-9EB6: 8D 17 06      STA   $0617               ; 
-9EB9: 8A            TXA                       ;
-9EBA: 29 3E         AND   #$3E                ; 00111110
-9EBC: 4A            LSR   A                   ; 00000011
-9EBD: 4A            LSR   A                   ;
-9EBE: 4A            LSR   A                   ;
-9EBF: 4A            LSR   A                   ;
-9EC0: A8            TAY                       ;
-9EC1: B9 D4 9E      LDA   $9ED4,Y             ;
-9EC4: 8D 0C 40      STA   $400C               ; 
-9EC7: B9 D8 9E      LDA   $9ED8,Y             ;
-9ECA: 8D 0E 40      STA   $400E               ; 
-9ECD: B9 DC 9E      LDA   $9EDC,Y             ;
-9ED0: 8D 0F 40      STA   $400F               ; 
-9ED3: 60            RTS                       ;
+9EB3: 20 E0 9E        JSR     $9EE0               ; {hard.MMC1_0+1EE0}
+9EB6: 8D 17 06        STA     $0617               ; {ram.0617}
+9EB9: 8A              TXA                         ; 
+9EBA: 29 3E           AND     #$3E                ; 00111110
+9EBC: 4A              LSR     A                   ; 00000011
+9EBD: 4A              LSR     A                   ; 
+9EBE: 4A              LSR     A                   ; 
+9EBF: 4A              LSR     A                   ; 
+9EC0: A8              TAY                         ; 
+9EC1: B9 D4 9E        LDA     $9ED4,Y             ; {hard.MMC1_0+1ED4}
+9EC4: 8D 0C 40        STA     $400C               ; {hard.S_NOI_A}
+9EC7: B9 D8 9E        LDA     $9ED8,Y             ; {hard.MMC1_0+1ED8}
+9ECA: 8D 0E 40        STA     $400E               ; {hard.S_NOI_C}
+9ECD: B9 DC 9E        LDA     $9EDC,Y             ; {hard.MMC1_0+1EDC}
+9ED0: 8D 0F 40        STA     $400F               ; {hard.S_NOI_D}
+9ED3: 60              RTS                         ; 
 
 ; Four different drum notes. ?? seems to be the durration of the noise 
 ; all at the same frequency. ?? First note is "off"
@@ -1582,30 +1584,30 @@ PlayMusic:
 ; cdefgga
 ; defggab
 
-9EE0: AA            TAX                       ;
-9EE1: 6A            ROR   A                   ;
-9EE2: 8A            TXA                       ;
-9EE3: 2A            ROL   A                   ;
-9EE4: 2A            ROL   A                   ;
-9EE5: 2A            ROL   A                   ;
+9EE0: AA              TAX                         ; 
+9EE1: 6A              ROR     A                   ; 
+9EE2: 8A              TXA                         ; 
+9EE3: 2A              ROL     A                   ; 
+9EE4: 2A              ROL     A                   ; 
+9EE5: 2A              ROL     A                   ; 
 ;
 GetNoteLen: 
 ; Get the note duration indexed within the current song's
 ; set of durations.
-9EE6: 29 07         AND   #$07                ; Each duration-set has 8 entries
-9EE8: 18            CLC                       ; Index into ...
-9EE9: 6D F4 05      ADC   $05F4               ; ... set defined for song
-9EEC: A8            TAY                       ; Get ...
-9EED: B9 D1 9F      LDA   $9FD1,Y             ; ... note duration
-9EF0: 60            RTS                       ; Done
+9EE6: 29 07           AND     #$07                ; Each duration-set has 8 entries
+9EE8: 18              CLC                         ; Index into ...
+9EE9: 6D F4 05        ADC     $05F4               ; {ram.05F4} ... set defined for song
+9EEC: A8              TAY                         ; Get ...
+9EED: B9 D1 9F        LDA     $9FD1,Y             ; {hard.MMC1_0+1FD1} ... note duration
+9EF0: 60              RTS                         ; Done
 
 Get0NoteLen: 
 ; Get the note duration indexed within the first
 ; set of durations.
-9EF1: 29 07         AND   #$07                ; Within set 0
-9EF3: A8            TAY                       ; Get ...
-9EF4: B9 D1 9F      LDA   $9FD1,Y             ; ... note duration
-9EF7: 60            RTS                       ; Done
+9EF1: 29 07           AND     #$07                ; Within set 0
+9EF3: A8              TAY                         ; Get ...
+9EF4: B9 D1 9F        LDA     $9FD1,Y             ; {hard.MMC1_0+1FD1} ... note duration
+9EF7: 60              RTS                         ; Done
 
 9EF8: CB 0E 0E 4C 6D 8C CD FF  
 ```
@@ -1678,24 +1680,24 @@ NoteTable:
 9F6E: 03 89 ; 123.4     B2
 9F70: 03 57 ; 130.6     C3
 
-9F72: AD 19 06      LDA   $0619               ; 
-9F75: A9 20         LDA   #$20                ;
-9F77: A2 82         LDX   #$82                ;
-9F79: A0 7F         LDY   #$7F                ;
-9F7B: 60            RTS                       ;
+9F72: AD 19 06        LDA     $0619               ; {ram.0619}
+9F75: A9 20           LDA     #$20                ; 
+9F77: A2 82           LDX     #$82                ; 
+9F79: A0 7F           LDY     #$7F                ; 
+9F7B: 60              RTS                         ; 
 
-9F7C: AD 19 06      LDA   $0619               ; 
-9F7F: 10 07         BPL   $9F88               ; 
-9F81: B9 92 9F      LDA   $9F92,Y             ;
-9F84: 29 0F         AND   #$0F                ;
-9F86: D0 07         BNE   $9F8F               ; 
-9F88: B9 92 9F      LDA   $9F92,Y             ;
-9F8B: 4A            LSR   A                   ;
-9F8C: 4A            LSR   A                   ;
-9F8D: 4A            LSR   A                   ;
-9F8E: 4A            LSR   A                   ;
-9F8F: 09 90         ORA   #$90                ;
-9F91: 60            RTS                       ;
+9F7C: AD 19 06        LDA     $0619               ; {ram.0619}
+9F7F: 10 07           BPL     $9F88               ; {hard.MMC1_0+1F88}
+9F81: B9 92 9F        LDA     $9F92,Y             ; {hard.MMC1_0+1F92}
+9F84: 29 0F           AND     #$0F                ; 
+9F86: D0 07           BNE     $9F8F               ; {hard.MMC1_0+1F8F}
+9F88: B9 92 9F        LDA     $9F92,Y             ; {hard.MMC1_0+1F92}
+9F8B: 4A              LSR     A                   ; 
+9F8C: 4A              LSR     A                   ; 
+9F8D: 4A              LSR     A                   ; 
+9F8E: 4A              LSR     A                   ; 
+9F8F: 09 90           ORA     #$90                ; 
+9F91: 60              RTS                         ; 
 
 ; ?? Control values for square-voice (controlls durration -- short values create short notes) 
 9F92: 04 24 24 34 34 35 35 35 45 45 46 46 46 46 46 46 
@@ -1988,38 +1990,38 @@ RESET:
 ;
 ; Configure the MMC1 and jump to E440 (Bank 7) for startup.
 ;
-BF50: 78            SEI                       ; Disable interrupts
-BF51: D8            CLD                       ; Clear decimal flag
-BF52: A9 00         LDA   #$00                ; Clear the PPU control register ...
-BF54: 8D 00 20      STA   $2000               ; ... truns off NMIs
-BF57: A2 FF         LDX   #$FF                ; Stack to ...
-BF59: 9A            TXS                       ; ... 01FF
-BF5A: AD 02 20      LDA   $2002               ; Wait ...
-BF5D: 29 80         AND   #$80                ; ... for ...
-BF5F: F0 F9         BEQ   $BF5A               ; ... VBLANK
-BF61: AD 02 20      LDA   $2002               ; Wait ...
-BF64: 29 80         AND   #$80                ; ... for another ...
-BF66: F0 F9         BEQ   $BF61               ; ... VBLANK (1st might have been a leftover flag)
-BF68: 09 FF         ORA   #$FF                ; Reset ...
-BF6A: 8D 00 80      STA   $8000               ; ... ...
-BF6D: 8D 00 A0      STA   $A000               ; ... all ...
-BF70: 8D 00 C0      STA   $C000               ; ... four ...
-BF73: 8D 00 E0      STA   $E000               ; ... MMC1 registers
-BF76: A9 0F         LDA   #$0F                ; Set MMC control to 8K CHR ROM, fixed/bank 16K PRG pages, ...
-BF78: 20 98 BF      JSR   $BF98               ; ... and horizontal mirroring (vertical scrolling)
-BF7B: A9 00         LDA   #$00                ; Set MMC reg1 VROM bank
-BF7D: 8D 00 A0      STA   $A000               ; The cartridge doesn't ...
-BF80: 4A            LSR   A                   ; ... swap VROM pages. ...
-BF81: 8D 00 A0      STA   $A000               ; ... Just ...
-BF84: 4A            LSR   A                   ; ... set ...
-BF85: 8D 00 A0      STA   $A000               ; ... to ...
-BF88: 4A            LSR   A                   ; ...
-BF89: 8D 00 A0      STA   $A000               ; ...
-BF8C: 4A            LSR   A                   ; ...
-BF8D: 8D 00 A0      STA   $A000               ; ... --00000
-BF90: A9 07         LDA   #$07                ; Interesting! Put bank 7 ...
-BF92: 20 AC BF      JSR   $BFAC               ; ... in the low ROM bank
-BF95: 4C 40 E4      JMP   $E440               ; Start of game
+BF50: 78              SEI                         ; Disable interrupts
+BF51: D8              CLD                         ; Clear decimal flag
+BF52: A9 00           LDA     #$00                ; Clear the PPU control register ...
+BF54: 8D 00 20        STA     $2000               ; {hard.P_CNTRL_1} ... truns off NMIs
+BF57: A2 FF           LDX     #$FF                ; Stack to ...
+BF59: 9A              TXS                         ; ... 01FF
+BF5A: AD 02 20        LDA     $2002               ; {hard.P_STATUS} Wait ...
+BF5D: 29 80           AND     #$80                ; ... for ...
+BF5F: F0 F9           BEQ     $BF5A               ; {hard.MMC1_1+1F5A} ... VBLANK
+BF61: AD 02 20        LDA     $2002               ; {hard.P_STATUS} Wait ...
+BF64: 29 80           AND     #$80                ; ... for another ...
+BF66: F0 F9           BEQ     $BF61               ; {hard.MMC1_1+1F61} ... VBLANK (1st might have been a leftover flag)
+BF68: 09 FF           ORA     #$FF                ; Reset ...
+BF6A: 8D 00 80        STA     $8000               ; {hard.MMC1_0} ... ...
+BF6D: 8D 00 A0        STA     $A000               ; {hard.MMC1_1} ... all ...
+BF70: 8D 00 C0        STA     $C000               ; {hard.MMC1_2} ... four ...
+BF73: 8D 00 E0        STA     $E000               ; {hard.MMC1_2+2000} ... MMC1 registers
+BF76: A9 0F           LDA     #$0F                ; Set MMC control to 8K CHR ROM, fixed/bank 16K PRG pages, ...
+BF78: 20 98 BF        JSR     $BF98               ; {code.MMC_Control} ... and horizontal mirroring (vertical scrolling)
+BF7B: A9 00           LDA     #$00                ; Set MMC reg1 VROM bank
+BF7D: 8D 00 A0        STA     $A000               ; {hard.MMC1_1} The cartridge doesn't ...
+BF80: 4A              LSR     A                   ; ... swap VROM pages. ...
+BF81: 8D 00 A0        STA     $A000               ; {hard.MMC1_1} ... Just ...
+BF84: 4A              LSR     A                   ; ... set ...
+BF85: 8D 00 A0        STA     $A000               ; {hard.MMC1_1} ... to ...
+BF88: 4A              LSR     A                   ; ...
+BF89: 8D 00 A0        STA     $A000               ; {hard.MMC1_1} ...
+BF8C: 4A              LSR     A                   ; ...
+BF8D: 8D 00 A0        STA     $A000               ; {hard.MMC1_1} ... --00000
+BF90: A9 07           LDA     #$07                ; Interesting! Put bank 7 ...
+BF92: 20 AC BF        JSR     $BFAC               ; {code.MMC_Bank} ... in the low ROM bank
+BF95: 4C 40 E4        JMP     $E440               ; {hard.MMC1_2+2440} Start of game
 
 ; MMC1 Info
 ; R0 - Control ***CPPMM
@@ -2040,16 +2042,16 @@ BF95: 4C 40 E4      JMP   $E440               ; Start of game
 ```code
 MMC_Control: 
 ; Set the MMC Control register (0) to value in A
-BF98: 8D 00 80      STA   $8000               ; MMC Register 0 (control): --edcba ...
-BF9B: 4A            LSR   A                   ;  ... mirroring 
-BF9C: 8D 00 80      STA   $8000               ;  ... mirroring 
-BF9F: 4A            LSR   A                   ;  ... switch: c=0 high ROM, C=1 low ROM
-BFA0: 8D 00 80      STA   $8000               ;  ... size: d=0 32K (full), D=1 16K (half)
-BFA3: 4A            LSR   A                   ;  ... chrrom mode: e=0 8K banks, B=1 4K banks
-BFA4: 8D 00 80      STA   $8000               ; The MMC is write-trigger (write to ROM ...
-BFA7: 4A            LSR   A                   ; .. has no affect anyway).
-BFA8: 8D 00 80      STA   $8000               ; Bits are written from LSB to MSB ...
-BFAB: 60            RTS                       ; ... only 5 bits
+BF98: 8D 00 80        STA     $8000               ; {hard.MMC1_0} MMC Register 0 (control): --edcba ...
+BF9B: 4A              LSR     A                   ; ... mirroring
+BF9C: 8D 00 80        STA     $8000               ; {hard.MMC1_0} ... mirroring
+BF9F: 4A              LSR     A                   ; ... switch: c=0 high ROM, C=1 low ROM
+BFA0: 8D 00 80        STA     $8000               ; {hard.MMC1_0} ... size: d=0 32K (full), D=1 16K (half)
+BFA3: 4A              LSR     A                   ; ... chrrom mode: e=0 8K banks, B=1 4K banks
+BFA4: 8D 00 80        STA     $8000               ; {hard.MMC1_0} The MMC is write-trigger (write to ROM ...
+BFA7: 4A              LSR     A                   ; .. has no affect anyway).
+BFA8: 8D 00 80        STA     $8000               ; {hard.MMC1_0} Bits are written from LSB to MSB ...
+BFAB: 60              RTS                         ; ... only 5 bits
 ```
 
 # MMC Bank
@@ -2057,16 +2059,16 @@ BFAB: 60            RTS                       ; ... only 5 bits
 ```code
 MMC_Bank: 
 ; Set the MMC Bank register (3) to value in A
-BFAC: 8D 00 E0      STA   $E000               ; MMC Register 3 (ROM page switching): --edcba ...
-BFAF: 4A            LSR   A                   ; ...
-BFB0: 8D 00 E0      STA   $E000               ; ... Write the ...
-BFB3: 4A            LSR   A                   ; ... switching ...
-BFB4: 8D 00 E0      STA   $E000               ; ... page ...
-BFB7: 4A            LSR   A                   ; ... number
-BFB8: 8D 00 E0      STA   $E000               ; The MMC is write-trigger (write to ROM ...
-BFBB: 4A            LSR   A                   ; .. has no affect anyway).
-BFBC: 8D 00 E0      STA   $E000               ; Bits are written from LSB to MSB ...
-BFBF: 60            RTS                       ; ... only 5 bits
+BFAC: 8D 00 E0        STA     $E000               ; {hard.MMC1_2+2000} MMC Register 3 (ROM page switching): --edcba ...
+BFAF: 4A              LSR     A                   ; ...
+BFB0: 8D 00 E0        STA     $E000               ; {hard.MMC1_2+2000} ... Write the ...
+BFB3: 4A              LSR     A                   ; ... switching ...
+BFB4: 8D 00 E0        STA     $E000               ; {hard.MMC1_2+2000} ... page ...
+BFB7: 4A              LSR     A                   ; ... number
+BFB8: 8D 00 E0        STA     $E000               ; {hard.MMC1_2+2000} The MMC is write-trigger (write to ROM ...
+BFBB: 4A              LSR     A                   ; .. has no affect anyway).
+BFBC: 8D 00 E0        STA     $E000               ; {hard.MMC1_2+2000} Bits are written from LSB to MSB ...
+BFBF: 60              RTS                         ; ... only 5 bits
 
 BFC0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 BFD0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
@@ -2081,3 +2083,4 @@ BFFA: 84 E4       ; NMI to E484
 BFFC: 50 BF       ; RESET to BF50
 BFFE: F0 BF       ; IRQ to BFF0 (this bank should never be at end)
 ```
+

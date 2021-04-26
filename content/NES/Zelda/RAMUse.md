@@ -2,7 +2,7 @@
 
 # RAM
 
->>>memory
+>>> memory
 
 | | | |
 | --- | --- | --- |
@@ -555,7 +555,7 @@
 # Battery-Backed RAM 
 6530-7FFF cleared on startup if BBR is not valid
 
->>>memory
+>>> memory
 
 | | | |
 | --- | --- | --- |

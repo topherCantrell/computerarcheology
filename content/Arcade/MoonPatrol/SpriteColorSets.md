@@ -11,7 +11,7 @@
 The lower 6 bits of the 2nd byte of the sprite structure contains a color-set value.
 Thus there could be 64 color-set's (00..3F). The Moon Patrol hardware appears to
 mask off the upper bit making 32 color-sets (00..1F) with set 0x20 masking to 0x00.
- 
+
 This PROM describes what color values goes in what color sets. There are 8 bytes per color
 set, but only the first 4 colors are used (sprite pixels are 2-bits ... 4 colors).
 
@@ -24,22 +24,22 @@ PROM3 yields color values 00 (transparent), 01 (near black), C6 (red/violet), an
 
 ```code
 ;                  Pixel value:  00   01   10   11 
-0000: 00 01 02 03 00 00 00 00 ; ---- <FONT style="BACKGROUND-COLOR:#00001A">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C100AE">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#00AEC8">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> Color set 0 
-0008: 00 04 02 05 00 00 00 00 ; ---- <FONT style="BACKGROUND-COLOR:#84C800">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C100AE">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C10000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> 1
-0010: 00 05 06 07 00 00 00 00 ; ---- <FONT style="BACKGROUND-COLOR:#C10000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#00C800">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#840000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> 2
-0018: 00 07 08 09 00 00 00 00 ; ---- <FONT style="BACKGROUND-COLOR:#840000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C1C8C8">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C1C800">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> 3
-0020: 00 0A 00 0B 00 00 00 00 ; ---- <FONT style="BACKGROUND-COLOR:#845100">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> ---- <FONT style="BACKGROUND-COLOR:#3E3700">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> 4
+0000: 00 01 02 03 00 00 00 00 ; ---- `<FONT style="BACKGROUND-COLOR:#00001A">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C100AE">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#00AEC8">&nbsp;&nbsp;&nbsp;&nbsp;</FONT>` Color set 0 
+0008: 00 04 02 05 00 00 00 00 ; ---- `<FONT style="BACKGROUND-COLOR:#84C800">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C100AE">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C10000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT>` 1
+0010: 00 05 06 07 00 00 00 00 ; ---- `<FONT style="BACKGROUND-COLOR:#C10000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#00C800">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#840000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT>` 2
+0018: 00 07 08 09 00 00 00 00 ; ---- `<FONT style="BACKGROUND-COLOR:#840000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C1C8C8">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C1C800">&nbsp;&nbsp;&nbsp;&nbsp;</FONT>` 3
+0020: 00 0A 00 0B 00 00 00 00 ; ---- `<FONT style="BACKGROUND-COLOR:#845100">&nbsp;&nbsp;&nbsp;&nbsp;</FONT>` ---- `<FONT style="BACKGROUND-COLOR:#3E3700">&nbsp;&nbsp;&nbsp;&nbsp;</FONT>` 4
 0028: 00 00 00 00 00 00 00 00 ; ---- ---- ---- ---- 5
 0030: 00 00 00 00 00 00 00 00 ; ---- ---- ---- ---- 6
-0038: 00 09 0E 05 00 00 00 00 ; ---- <FONT style="BACKGROUND-COLOR:#C1C800">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#6290C8">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C10000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> 7
-0040: 00 05 03 0F 00 00 00 00 ; ---- <FONT style="BACKGROUND-COLOR:#C10000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#00AEC8">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#005100">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> 8
-0048: 00 09 01 05 00 00 00 00 ; ---- <FONT style="BACKGROUND-COLOR:#C1C800">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#00001A">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C10000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> 9
-0050: 00 01 08 00 00 00 00 00 ; ---- <FONT style="BACKGROUND-COLOR:#00001A">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C1C8C8">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> ---- A
-0058: 00 01 05 00 00 00 00 00 ; ---- <FONT style="BACKGROUND-COLOR:#00001A">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C10000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> ---- B
-0060: 00 01 05 03 00 00 00 00 ; ---- <FONT style="BACKGROUND-COLOR:#00001A">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C10000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#00AEC8">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> C
-0068: 00 04 0D 05 00 00 00 00 ; ---- <FONT style="BACKGROUND-COLOR:#84C800">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C19000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C10000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> D
-0070: 00 05 00 05 00 00 00 00 ; ---- <FONT style="BACKGROUND-COLOR:#C10000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> ---- <FONT style="BACKGROUND-COLOR:#C10000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> E
-0078: 00 00 05 05 00 00 00 00 ; ---- ---- <FONT style="BACKGROUND-COLOR:#C10000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C10000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> F
+0038: 00 09 0E 05 00 00 00 00 ; ---- `<FONT style="BACKGROUND-COLOR:#C1C800">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#6290C8">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C10000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT>` 7
+0040: 00 05 03 0F 00 00 00 00 ; ---- `<FONT style="BACKGROUND-COLOR:#C10000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#00AEC8">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#005100">&nbsp;&nbsp;&nbsp;&nbsp;</FONT>` 8
+0048: 00 09 01 05 00 00 00 00 ; ---- `<FONT style="BACKGROUND-COLOR:#C1C800">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#00001A">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C10000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT>` 9
+0050: 00 01 08 00 00 00 00 00 ; ---- `<FONT style="BACKGROUND-COLOR:#00001A">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C1C8C8">&nbsp;&nbsp;&nbsp;&nbsp;</FONT>` ---- A
+0058: 00 01 05 00 00 00 00 00 ; ---- `<FONT style="BACKGROUND-COLOR:#00001A">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C10000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT>` ---- B
+0060: 00 01 05 03 00 00 00 00 ; ---- `<FONT style="BACKGROUND-COLOR:#00001A">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C10000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#00AEC8">&nbsp;&nbsp;&nbsp;&nbsp;</FONT>` C
+0068: 00 04 0D 05 00 00 00 00 ; ---- `<FONT style="BACKGROUND-COLOR:#84C800">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C19000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C10000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT>` D
+0070: 00 05 00 05 00 00 00 00 ; ---- `<FONT style="BACKGROUND-COLOR:#C10000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT>` ---- `<FONT style="BACKGROUND-COLOR:#C10000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT>` E
+0078: 00 00 05 05 00 00 00 00 ; ---- ---- `<FONT style="BACKGROUND-COLOR:#C10000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT> <FONT style="BACKGROUND-COLOR:#C10000">&nbsp;&nbsp;&nbsp;&nbsp;</FONT>` F
 ;
 ; Transparent (not used) here down
 ;
@@ -60,3 +60,4 @@ PROM3 yields color values 00 (transparent), 01 (near black), C6 (red/violet), an
 00F0: 00 00 00 00 00 00 00 00 ; 1E
 00F8: 00 00 00 00 00 00 00 00 ; 1F
 ```
+

@@ -19,6 +19,13 @@
 >>>   ----<br>
 >>>   Journal.md<br>
 
+# Aldo Nunez
+
+Aldo Nunez has published his complete disassembly of Zelda on github. Here
+is his amazing work:
+
+[https://github.com/aldonunez/zelda1-disassembly](https://github.com/aldonunez/zelda1-disassembly)
+
 # Code
 
 * [Hardware](Hardware.md)

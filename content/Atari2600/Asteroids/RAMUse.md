@@ -2,7 +2,7 @@
 
 # RAM Use
 
->>>memory
+>>> memory
 
 | | | |
 | --- | --- | --- |

@@ -19,7 +19,7 @@ in RAM.
 
 # TIA (read)
 
->>>memory
+>>> memory
 
 | | | |
 | --- | --- | --- |
@@ -40,7 +40,7 @@ in RAM.
 
 # TIA (write)
 
->>>memory
+>>> memory
 
 | | | |
 | --- | --- | --- |
@@ -95,7 +95,7 @@ in RAM.
 These are the same registers as above but accessed with a ghost address to allow
 for different names.
 
->>>memory
+>>> memory
 
 | | | |
 | --- | --- | --- |
@@ -125,7 +125,7 @@ The TIA RAM is selected if (address&1280 == 0080).
 
 The PIA chip uses the lower 7 address lines A0-A6. Thus the 007F mask below.
 
->>>memory
+>>> memory
 
 | | | |
 | --- | --- | --- |
@@ -144,7 +144,7 @@ D1 : game select (0=pressed)
 D0 : game reset (0=pressed)
 ```
 
->>>memory
+>>> memory
 
 | | | |
 | --- | --- | --- |

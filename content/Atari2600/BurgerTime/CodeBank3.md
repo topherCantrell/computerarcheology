@@ -7,9 +7,11 @@
 >>> binary F000:btBank3.bin
 
 >>> memoryTable hard 
+
 [Hardware Info](../Stella.md)
 
 >>> memoryTable ram 
+
 [RAM Usage](RAMUse.md)
 
 Bank 1 and 3 have the same data. See bank 1 for code.
@@ -144,3 +146,4 @@ F7D0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 F7E0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 F7F0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 ```
+

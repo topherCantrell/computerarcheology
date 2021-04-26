@@ -4,7 +4,7 @@
 
 # Registers 
 
->>>memory
+>>> memory
 
 | | | | |
 | --- | --- | --- | --- |
@@ -43,7 +43,7 @@
 
 # Mapper 1: MMC1
 
->>>memory
+>>> memory
 
 | | | |
 | --- | --- | --- |

@@ -68,7 +68,7 @@
 | E0F7      | mE0F7                |  |
 | E0F9      | champColors          | If zero then use "beginner" colors. Else use "champ" colors. |
 
->>>memory
+>>> memory
 
 | | | |
 | --- | --- | --- |

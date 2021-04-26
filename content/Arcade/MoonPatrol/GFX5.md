@@ -13,6 +13,7 @@ This background is a giant 256x64 pixel image. Each pixel is one of 4 colors.
 
 Each byte holds 4 pixels. The upper four bits are the first bit-plane and the
 second 4 bits are the second bit plane. Thus the screen mapping looks like this:
+
 ```
 ; ROM: abcd_ABCD
 ; Screen: aA_bB_cC_dD
@@ -20,6 +21,7 @@ second 4 bits are the second bit plane. Thus the screen mapping looks like this:
 
 The actual pixel colors come from the table in PROM2 in a jumbled mapping.
 From experimenting, the pixel colors are:
+
 ```
 ;             00    01     10     11
 ; Hills:      --    20     00     70
@@ -311,3 +313,4 @@ From experimenting, the pixel colors are:
 0FE0: FF FF FF CF 0F 0F 00 00 FF FF FF FF FF FF FF FF 
 0FF0: FF EF 0F 0C 00 FF FF FF FF FF FF FF FF 0F 0F 00 
 ```
+

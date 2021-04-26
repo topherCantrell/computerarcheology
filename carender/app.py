@@ -46,20 +46,21 @@ def deploy_directory(current_node):
                 shutil.copy(src, dst)
             else:
                 
-                names_in_code.update_names_in_code(fp_content, da)
+                md = names_in_code.update_names_in_code(fp_content, da)
                 
-                paras = markdown.read_markdown_paragraphs(src)
+                # md = markdown.read_markdown_paragraphs(src)
                 
                 title = ''
                 image = ''
                 
-                if paras[0][0] == 'TEXT' and paras[0][1].startswith('!['):
-                    i = paras[0][1].find('](')
-                    title = paras[0][1][2:i]
-                    image = paras[0][1][i + 2:-1]
-                    paras = paras[1:]
+                if md[0].group_type == 'TEXT' and md[0].lines[0].text.strip().startswith('!['):
+                    txt = md[0].lines[0].text.strip()
+                    i = txt.find('](')
+                    title = txt[2:i]
+                    image = txt[i + 2:-1]
+                    md = md[1:]
                                     
-                content, page_nav = webrender.render_content(paras)
+                content, page_nav = webrender.render_content(md, fp_content)
                                 
                 info = {
                     'TITLE': title,

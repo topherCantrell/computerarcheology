@@ -7,11 +7,12 @@
 >>> binary 4000:roms/zelda.gb[30000:34000]
 
 >>> memoryTable ram 
+
 [RAM Usage](RAMUse.md)
 
 >>> memoryTable hard 
-[Hardware Info](../Hardware.md)
 
+[Hardware Info](../Hardware.md)
 
 ```html
 <script src="/Gameboy/Zelda/zeldaGB.js"></script>
@@ -21,7 +22,6 @@
 ```
 
 # Person  
-
 
 ```html
 <canvas 
@@ -9279,3 +9279,4 @@ Digits:
 7FFC: 9C E0     ; 311222..
 7FFE: E0 80     ; 322.....       
 ```
+

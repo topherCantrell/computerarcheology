@@ -32,6 +32,17 @@ rmcferron@hotmail.com
 Frank
 sspiel17@yahoo.com
 
+Aldo Nunez
+aldonunez1@gmail.com
+
+# Asteroids
+
+Matt Fisher
+mapifisher@gmail.com
+
+Nicholas Mikstas
+nmikstas@alumni.scu.edu
+
 # Pyramid
 
 leekaiwen@yahoo.com

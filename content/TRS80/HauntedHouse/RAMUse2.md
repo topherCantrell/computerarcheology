@@ -2,7 +2,7 @@
 
 # RAM Use 2 (Second Floor Code)
 
->>>memory
+>>> memory
 
 | | | |
 | --- | --- | --- |
