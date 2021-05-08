@@ -7,3 +7,10 @@
 |    |     |     |
 | -------- | ------- | ----------------- |
 | 00        |  $00               |             |
+
+
+CPU1 initializes stack to 9A00
+
+CPU2 initializes stack to 9A80
+
+CPU3 initializes stack to 8B80

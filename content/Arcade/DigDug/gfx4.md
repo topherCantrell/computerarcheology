@@ -2,6 +2,8 @@
 
 # DigDug GFX4 Data
 
+Playfield graphics
+
 >>> binary 0000:roms/dd1.10b
 
 ```code

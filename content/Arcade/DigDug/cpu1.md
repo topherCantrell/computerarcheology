@@ -15,24 +15,29 @@
 [Hardware Info](Hardware.md)
 
 ```code
-0000: F3              DI                          
-0001: ED 56           IM      1                   
-0003: C3 E6 00        JP      $00E6               ; {}
-0006: FD ; ????
-0007: 00              NOP                         
-0008: 87              ADD     A,A                 
-0009: 30 05           JR      NC,$123B            ; {}
-000B: 24              INC     H                   
-000C: C3 10 00        JP      $0010               ; {}
-000F: 00              NOP                         
-0010: 85              ADD     A,L                 
-0011: 6F              LD      L,A                 
-0012: D0              RET     NC                  
-0013: 24              INC     H                   
-0014: C9              RET                         
-0015: 00              NOP                         
-0016: 00              NOP                         
-0017: 00              NOP                         
+init:
+0000: F3              DI                          ; Disable interrupts
+0001: ED 56           IM      1                   ; Interrupt mode 1 (everything comes to $38)
+0003: C3 E6 00        JP      $00E6               ; {code.startup} Continue startup
+0006: FD 00 ; Padding before next vector
+
+twoByteTable:
+; Double A and add it to HL
+0008: 87              ADD     A,A                 ; Double the lower byte
+0009: 30 05           JR      NC,$10              ; {code.addAtoHL} No carry ... move on
+000B: 24              INC     H                   ; Carry into the upper
+000C: C3 10 00        JP      $0010               ; {code.addAtoHL} Continue
+000F: 00 ; Padding before next vector    
+
+addAtoHL:
+; Add the value in A to HL
+0010: 85              ADD     A,L                 ; Add the value
+0011: 6F              LD      L,A                 ; To L
+0012: D0              RET     NC                  ; No carry ... done
+0013: 24              INC     H                   ; Carry into H
+0014: C9              RET                         ; Done
+0015: 00 00 00 ; Padding before next vector
+       
 0018: 00              NOP                         
 0019: 00              NOP                         
 001A: 00              NOP                         
@@ -65,7 +70,11 @@
 0035: 00              NOP                         
 0036: 00              NOP                         
 0037: 00              NOP                         
-0038: C3 80 02        JP      $0280               ; {}
+
+isr:
+; Interrupt comes here
+0038: C3 80 02        JP      $0280               ; {code.interrupt} Handle interrupt
+
 003B: 00              NOP                         
 003C: 00              NOP                         
 003D: 00              NOP                         
@@ -102,7 +111,7 @@
 0060: 2B              DEC     HL                  
 0061: 7D              LD      A,L                 
 0062: B4              OR      H                   
-0063: 20 F8           JR      NZ,$122E            ; {}
+0063: 20 F8           JR      NZ,$5D              ; {}
 0065: C9              RET                         
 0066: D9              EXX                         
 0067: ED A0           LDI                         
@@ -147,7 +156,7 @@
 00A2: F3              DI                          
 00A3: 3A 00 71        LD      A,($7100)           
 00A6: E6 E0           AND     $E0                 
-00A8: 20 07           JR      NZ,$123D            ; {}
+00A8: 20 07           JR      NZ,$B1              ; {}
 00AA: 08              EX      AF,AF'              
 00AB: D9              EXX                         
 00AC: 32 00 71        LD      ($7100),A           
@@ -181,7 +190,7 @@
 00D1: 77              LD      (HL),A              
 00D2: 3A 00 71        LD      A,($7100)           
 00D5: FE 10           CP      $10                 
-00D7: 28 03           JR      Z,$1239             ; {}
+00D7: 28 03           JR      Z,$DC               ; {}
 00D9: E1              POP     HL                  
 00DA: FB              EI                          
 00DB: C9              RET                         
@@ -190,12 +199,14 @@
 00DF: 22 02 89        LD      ($8902),HL          
 00E2: E1              POP     HL                  
 00E3: C3 AA 00        JP      $00AA               ; {}
+
+startup:
 00E6: 3E 10           LD      A,$10               
 00E8: 32 00 71        LD      ($7100),A           
 00EB: 32 00 70        LD      ($7000),A           
 00EE: 21 20 68        LD      HL,$6820            
 00F1: 77              LD      (HL),A              
-00F2: 23              INC     HL                  
+00F2: 23              INC     HL                  ; 6821
 00F3: 77              LD      (HL),A              
 00F4: 23              INC     HL                  
 00F5: 36 01           LD      (HL),$01            
@@ -216,14 +227,14 @@
 010A: 06 0B           LD      B,$0B               
 010C: 77              LD      (HL),A              
 010D: 23              INC     HL                  
-010E: 10 FC           DJNZ    $1232               ; {}
+010E: 10 FC           DJNZ    $10C                ; {}
 0110: 21 EF 89        LD      HL,$89EF            
 0113: 06 04           LD      B,$04               
 0115: 77              LD      (HL),A              
 0116: 23              INC     HL                  
-0117: 10 FC           DJNZ    $1232               ; {}
+0117: 10 FC           DJNZ    $115                ; {}
 0119: C3 76 38        JP      $3876               ; {}
-011C: F3              DI                          
+011C: F3              DI                          ; Disable interrupts
 011D: AF              XOR     A                   
 011E: 32 20 68        LD      ($6820),A           
 0121: 21 07 A0        LD      HL,$A007            
@@ -236,14 +247,14 @@
 0131: 32 30 68        LD      ($6830),A           
 0134: 23              INC     HL                  
 0135: BC              CP      H                   
-0136: 20 F7           JR      NZ,$122D            ; {}
+0136: 20 F7           JR      NZ,$12F             ; {}
 0138: 3E 94           LD      A,$94               
 013A: 21 00 90        LD      HL,$9000            
 013D: 36 00           LD      (HL),$00            
 013F: 32 30 68        LD      ($6830),A           
 0142: 23              INC     HL                  
 0143: BC              CP      H                   
-0144: 20 F7           JR      NZ,$122D            ; {}
+0144: 20 F7           JR      NZ,$13D             ; {}
 0146: 21 33 9B        LD      HL,$9B33            
 0149: 36 00           LD      (HL),$00            
 014B: 21 80 9A        LD      HL,$9A80            
@@ -251,7 +262,7 @@
 0150: 36 00           LD      (HL),$00            
 0152: 32 30 68        LD      ($6830),A           
 0155: 23              INC     HL                  
-0156: 10 F8           DJNZ    $122E               ; {}
+0156: 10 F8           DJNZ    $150                ; {}
 0158: 21 00 98        LD      HL,$9800            
 015B: 01 80 01        LD      BC,$0180            
 015E: 32 30 68        LD      ($6830),A           
@@ -260,14 +271,14 @@
 0164: 0B              DEC     BC                  
 0165: 78              LD      A,B                 
 0166: B1              OR      C                   
-0167: 20 F5           JR      NZ,$122B            ; {}
+0167: 20 F5           JR      NZ,$15E             ; {}
 0169: 3E 01           LD      A,$01               
 016B: 32 23 68        LD      ($6823),A           
 016E: 3A D0 89        LD      A,($89D0)           
 0171: FE 00           CP      $00                 
-0173: CA 00 00        JP      Z,$0000             ; {ram.$00}
+0173: CA 00 00        JP      Z,$0000             ; {code.init}
 0176: FE FF           CP      $FF                 
-0178: 20 08           JR      NZ,$123E            ; {}
+0178: 20 08           JR      NZ,$182             ; {}
 017A: 3E 00           LD      A,$00               
 017C: 32 C0 87        LD      ($87C0),A           
 017F: C3 B4 01        JP      $01B4               ; {}
@@ -278,7 +289,7 @@
 018A: 77              LD      (HL),A              
 018B: 3A D1 89        LD      A,($89D1)           
 018E: FE FF           CP      $FF                 
-0190: 20 08           JR      NZ,$123E            ; {}
+0190: 20 08           JR      NZ,$19A             ; {}
 0192: 3E 01           LD      A,$01               
 0194: 32 C0 87        LD      ($87C0),A           
 0197: C3 B4 01        JP      $01B4               ; {}
@@ -291,9 +302,9 @@
 01A4: 78              LD      A,B                 
 01A5: E6 F0           AND     $F0                 
 01A7: FE 10           CP      $10                 
-01A9: 20 04           JR      NZ,$123A            ; {}
+01A9: 20 04           JR      NZ,$1AF             ; {}
 01AB: 3E 02           LD      A,$02               
-01AD: 18 02           JR      $1238               ; {}
+01AD: 18 02           JR      $1B1                ; {}
 01AF: 3E 03           LD      A,$03               
 01B1: 32 C0 87        LD      ($87C0),A           
 01B4: 31 00 9A        LD      SP,$9A00            
@@ -306,13 +317,13 @@
 01C7: 06 04           LD      B,$04               
 01C9: 36 00           LD      (HL),$00            
 01CB: 23              INC     HL                  
-01CC: 10 FB           DJNZ    $1231               ; {}
+01CC: 10 FB           DJNZ    $1C9                ; {}
 01CE: CD 5A 00        CALL    $005A               ; {}
 01D1: 21 04 89        LD      HL,$8904            
 01D4: 06 04           LD      B,$04               
 01D6: 36 02           LD      (HL),$02            
 01D8: 23              INC     HL                  
-01D9: 10 FB           DJNZ    $1231               ; {}
+01D9: 10 FB           DJNZ    $1D6                ; {}
 01DB: 21 04 89        LD      HL,$8904            
 01DE: 11 00 70        LD      DE,$7000            
 01E1: 01 04 00        LD      BC,$0004            
@@ -324,7 +335,7 @@
 01F1: 36 7F           LD      (HL),$7F            
 01F3: 23              INC     HL                  
 01F4: 32 30 68        LD      ($6830),A           
-01F7: 10 F8           DJNZ    $122E               ; {}
+01F7: 10 F8           DJNZ    $1F1                ; {}
 01F9: 21 ED 83        LD      HL,$83ED            
 01FC: 11 09 00        LD      DE,$0009            
 01FF: 06 02           LD      B,$02               
@@ -333,7 +344,7 @@
 0204: 23              INC     HL                  
 0205: 77              LD      (HL),A              
 0206: 19              ADD     HL,DE               
-0207: 10 FA           DJNZ    $1230               ; {}
+0207: 10 FA           DJNZ    $203                ; {}
 0209: CD A1 19        CALL    $19A1               ; {}
 020C: CD 4D 14        CALL    $144D               ; {}
 020F: CD 30 14        CALL    $1430               ; {}
@@ -346,7 +357,7 @@
 0220: 77              LD      (HL),A              
 0221: 23              INC     HL                  
 0222: 1B              DEC     DE                  
-0223: 10 FA           DJNZ    $1230               ; {}
+0223: 10 FA           DJNZ    $21F                ; {}
 0225: CD DC 14        CALL    $14DC               ; {}
 0228: 3E 01           LD      A,$01               
 022A: 21 A9 87        LD      HL,$87A9            
@@ -361,18 +372,18 @@
 0239: 31 00 9A        LD      SP,$9A00            
 023C: 21 00 84        LD      HL,$8400            
 023F: CB 4E           BIT     1,(HL)              
-0241: 20 08           JR      NZ,$123E            ; {}
+0241: 20 08           JR      NZ,$24B             ; {}
 0243: 21 14 84        LD      HL,$8414            
 0246: 3A 0D 84        LD      A,($840D)           
-0249: 18 06           JR      $123C               ; {}
+0249: 18 06           JR      $251                ; {}
 024B: 21 17 84        LD      HL,$8417            
 024E: 3A 0E 84        LD      A,($840E)           
 0251: 47              LD      B,A                 
 0252: 3A CC 87        LD      A,($87CC)           
 0255: CB 4F           BIT     1,A                 
-0257: 28 19           JR      Z,$124F             ; {}
+0257: 28 19           JR      Z,$272              ; {}
 0259: CB 57           BIT     2,A                 
-025B: 20 15           JR      NZ,$124B            ; {}
+025B: 20 15           JR      NZ,$272             ; {}
 025D: 78              LD      A,B                 
 025E: E5              PUSH    HL                  
 025F: F5              PUSH    AF                  
@@ -386,10 +397,13 @@
 0270: CB 8E           RES     1,(HL)              
 0272: 21 CC 87        LD      HL,$87CC            
 0275: CB 46           BIT     0,(HL)              
-0277: 28 05           JR      Z,$123B             ; {}
+0277: 28 05           JR      Z,$27E              ; {}
 0279: CB 86           RES     0,(HL)              
 027B: CD DB 35        CALL    $35DB               ; {}
-027E: 18 B8           JR      $11EE               ; {}
+027E: 18 B8           JR      $238                ; {}
+
+interrupt:
+; Interrupt ends up here
 0280: DD E5           PUSH    IX                  
 0282: FD E5           PUSH    IY                  
 0284: E5              PUSH    HL                  
@@ -401,7 +415,7 @@
 028C: 32 30 68        LD      ($6830),A           
 028F: 3A 9A 87        LD      A,($879A)           
 0292: A7              AND     A                   
-0293: 20 2B           JR      NZ,$1261            ; {}
+0293: 20 2B           JR      NZ,$2C0             ; {}
 0295: 21 00 98        LD      HL,$9800            
 0298: 11 80 8B        LD      DE,$8B80            
 029B: 01 80 00        LD      BC,$0080            
@@ -426,7 +440,7 @@
 02C4: 22 23 84        LD      ($8423),HL          
 02C7: 3A 9A 87        LD      A,($879A)           
 02CA: A7              AND     A                   
-02CB: 20 06           JR      NZ,$123C            ; {}
+02CB: 20 06           JR      NZ,$2D3             ; {}
 02CD: 3A A5 85        LD      A,($85A5)           
 02D0: 32 A6 85        LD      ($85A6),A           
 02D3: 21 00 70        LD      HL,$7000            
@@ -439,7 +453,7 @@
 02E5: C2 27 0A        JP      NZ,$0A27            ; {}
 02E8: 21 A7 87        LD      HL,$87A7            
 02EB: CB 46           BIT     0,(HL)              
-02ED: 28 26           JR      Z,$125C             ; {}
+02ED: 28 26           JR      Z,$315              ; {}
 02EF: CB 86           RES     0,(HL)              
 02F1: 21 11 84        LD      HL,$8411            
 02F4: AF              XOR     A                   
@@ -453,29 +467,29 @@
 02FE: CD C0 2F        CALL    $2FC0               ; {}
 0301: 3A 57 86        LD      A,($8657)           
 0304: CB 4F           BIT     1,A                 
-0306: 20 0D           JR      NZ,$1243            ; {}
+0306: 20 0D           JR      NZ,$315             ; {}
 0308: CD 69 14        CALL    $1469               ; {}
 030B: 3A 00 84        LD      A,($8400)           
 030E: CB 5F           BIT     3,A                 
-0310: 20 03           JR      NZ,$1239            ; {}
+0310: 20 03           JR      NZ,$315             ; {}
 0312: CD DF 0B        CALL    $0BDF               ; {}
 0315: 21 00 84        LD      HL,$8400            
 0318: CB 4E           BIT     1,(HL)              
-031A: 20 14           JR      NZ,$124A            ; {}
+031A: 20 14           JR      NZ,$330             ; {}
 031C: 3A A8 85        LD      A,($85A8)           
 031F: 47              LD      B,A                 
 0320: E6 0F           AND     $0F                 
 0322: FE 09           CP      $09                 
-0324: 38 02           JR      C,$1238             ; {}
+0324: 38 02           JR      C,$328              ; {}
 0326: CB 98           RES     3,B                 
 0328: 78              LD      A,B                 
 0329: CB 87           RES     0,A                 
 032B: 32 B0 85        LD      ($85B0),A           
-032E: 18 0C           JR      $1242               ; {}
+032E: 18 0C           JR      $33C                ; {}
 0330: CB 56           BIT     2,(HL)              
-0332: 28 E8           JR      Z,$121E             ; {}
+0332: 28 E8           JR      Z,$31C              ; {}
 0334: 3A A9 85        LD      A,($85A9)           
-0337: 18 E6           JR      $121C               ; {}
+0337: 18 E6           JR      $31F                ; {}
 0339: 32 B0 85        LD      ($85B0),A           
 033C: 21 24 86        LD      HL,$8624            
 033F: 11 B0 85        LD      DE,$85B0            
@@ -493,44 +507,44 @@
 0359: D2 76 38        JP      NC,$3876            ; {}
 035C: 7E              LD      A,(HL)              
 035D: A7              AND     A                   
-035E: 20 0E           JR      NZ,$1244            ; {}
+035E: 20 0E           JR      NZ,$36E             ; {}
 0360: 1A              LD      A,(DE)              
 0361: A7              AND     A                   
-0362: 20 0A           JR      NZ,$1240            ; {}
+0362: 20 0A           JR      NZ,$36E             ; {}
 0364: 3A 00 84        LD      A,($8400)           
 0367: CB 77           BIT     6,A                 
 0369: CA 80 0A        JP      Z,$0A80             ; {}
-036C: 18 5A           JR      $1290               ; {}
+036C: 18 5A           JR      $3C8                ; {}
 036E: 3A CC 87        LD      A,($87CC)           
 0371: CB 4F           BIT     1,A                 
-0373: 20 16           JR      NZ,$124C            ; {}
+0373: 20 16           JR      NZ,$38B             ; {}
 0375: CB 47           BIT     0,A                 
-0377: 20 12           JR      NZ,$1248            ; {}
+0377: 20 12           JR      NZ,$38B             ; {}
 0379: 1A              LD      A,(DE)              
 037A: 47              LD      B,A                 
 037B: 7E              LD      A,(HL)              
 037C: FE 90           CP      $90                 
-037E: 30 0B           JR      NC,$1241            ; {}
+037E: 30 0B           JR      NC,$38B             ; {}
 0380: 90              SUB     B                   
 0381: 27              DAA                         
 0382: 4F              LD      C,A                 
-0383: 38 06           JR      C,$123C             ; {}
-0385: 28 04           JR      Z,$123A             ; {}
+0383: 38 06           JR      C,$38B              ; {}
+0385: 28 04           JR      Z,$38B              ; {}
 0387: 79              LD      A,C                 
 0388: 32 33 9B        LD      ($9B33),A           
 038B: 7E              LD      A,(HL)              
 038C: EB              EX      DE,HL               
 038D: BE              CP      (HL)                
-038E: 30 30           JR      NC,$1266            ; {}
+038E: 30 30           JR      NC,$3C0             ; {}
 0390: 1A              LD      A,(DE)              
 0391: FE 99           CP      $99                 
-0393: 28 0A           JR      Z,$1240             ; {}
+0393: 28 0A           JR      Z,$39F              ; {}
 0395: FE 9F           CP      $9F                 
-0397: 28 06           JR      Z,$123C             ; {}
+0397: 28 06           JR      Z,$39F              ; {}
 0399: C6 01           ADD     $01                 
 039B: 27              DAA                         
 039C: BE              CP      (HL)                
-039D: 20 14           JR      NZ,$124A            ; {}
+039D: 20 14           JR      NZ,$3B3             ; {}
 039F: 21 00 84        LD      HL,$8400            
 03A2: CB 86           RES     0,(HL)              
 03A4: CB 8E           RES     1,(HL)              
@@ -544,7 +558,7 @@
 03B8: CB 8E           RES     1,(HL)              
 03BA: CB F6           SET     6,(HL)              
 03BC: 3E 02           LD      A,$02               
-03BE: 18 EA           JR      $1220               ; {}
+03BE: 18 EA           JR      $3AA                ; {}
 03C0: 21 00 84        LD      HL,$8400            
 03C3: CB 76           BIT     6,(HL)              
 03C5: CA 03 0B        JP      Z,$0B03             ; {}
@@ -570,16 +584,16 @@
 03F7: CD 5A 00        CALL    $005A               ; {}
 03FA: 3A B0 85        LD      A,($85B0)           
 03FD: CB 6F           BIT     5,A                 
-03FF: 28 05           JR      Z,$123B             ; {}
+03FF: 28 05           JR      Z,$406              ; {}
 0401: 21 87 87        LD      HL,$8787            
 0404: 36 FF           LD      (HL),$FF            
 0406: CD 22 0C        CALL    $0C22               ; {}
 0409: 3A CF 87        LD      A,($87CF)           
 040C: CB 5F           BIT     3,A                 
-040E: 20 19           JR      NZ,$124F            ; {}
+040E: 20 19           JR      NZ,$429             ; {}
 0410: 3A 87 87        LD      A,($8787)           
 0413: CB 4F           BIT     1,A                 
-0415: 20 12           JR      NZ,$1248            ; {}
+0415: 20 12           JR      NZ,$429             ; {}
 0417: 3A 0E 84        LD      A,($840E)           
 041A: 6F              LD      L,A                 
 041B: 67              LD      H,A                 
@@ -587,7 +601,7 @@
 041F: 22 27 86        LD      ($8627),HL          
 0422: 21 85 87        LD      HL,$8785            
 0425: 36 00           LD      (HL),$00            
-0427: 18 10           JR      $1246               ; {}
+0427: 18 10           JR      $439                ; {}
 0429: 3E 01           LD      A,$01               
 042B: 32 0F 84        LD      ($840F),A           
 042E: 21 01 01        LD      HL,$0101            
@@ -599,7 +613,7 @@
 043F: CD 51 0C        CALL    $0C51               ; {}
 0442: C3 27 0A        JP      $0A27               ; {}
 0445: CB 7E           BIT     7,(HL)              
-0447: 20 47           JR      NZ,$127D            ; {}
+0447: 20 47           JR      NZ,$490             ; {}
 0449: CB FE           SET     7,(HL)              
 044B: CD AC 17        CALL    $17AC               ; {}
 044E: CD 15 0C        CALL    $0C15               ; {}
@@ -607,11 +621,11 @@
 0454: 21 00 00        LD      HL,$0000            
 0457: 3A 00 84        LD      A,($8400)           
 045A: CB 4F           BIT     1,A                 
-045C: 20 09           JR      NZ,$123F            ; {}
+045C: 20 09           JR      NZ,$467             ; {}
 045E: AF              XOR     A                   
 045F: 32 DA 87        LD      ($87DA),A           
 0462: 22 D4 87        LD      ($87D4),HL          
-0465: 18 07           JR      $123D               ; {}
+0465: 18 07           JR      $46E                ; {}
 0467: AF              XOR     A                   
 0468: 32 D8 87        LD      ($87D8),A           
 046B: 22 D2 87        LD      ($87D2),HL          
@@ -630,14 +644,14 @@
 048D: C3 27 0A        JP      $0A27               ; {}
 0490: 21 00 84        LD      HL,$8400            
 0493: CB 66           BIT     4,(HL)              
-0495: 20 33           JR      NZ,$1269            ; {}
+0495: 20 33           JR      NZ,$4CA             ; {}
 0497: CB E6           SET     4,(HL)              
 0499: CD F5 19        CALL    $19F5               ; {}
 049C: 3A 27 86        LD      A,($8627)           
 049F: 3D              DEC     A                   
 04A0: 4F              LD      C,A                 
 04A1: D6 0C           SUB     $0C                 
-04A3: 30 FB           JR      NC,$1231            ; {}
+04A3: 30 FB           JR      NC,$4A0             ; {}
 04A5: 79              LD      A,C                 
 04A6: 1F              RRA                         
 04A7: 1F              RRA                         
@@ -658,7 +672,7 @@
 04CA: E5              PUSH    HL                  
 04CB: 3A 57 86        LD      A,($8657)           
 04CE: CB 4F           BIT     1,A                 
-04D0: 20 06           JR      NZ,$123C            ; {}
+04D0: 20 06           JR      NZ,$4D8             ; {}
 04D2: CD 81 0C        CALL    $0C81               ; {}
 04D5: CD 69 14        CALL    $1469               ; {}
 04D8: E1              POP     HL                  
@@ -677,20 +691,20 @@
 04F8: 0E 02           LD      C,$02               
 04FA: 3A 57 86        LD      A,($8657)           
 04FD: CB 47           BIT     0,A                 
-04FF: 20 11           JR      NZ,$1247            ; {}
+04FF: 20 11           JR      NZ,$512             ; {}
 0501: 3A 27 86        LD      A,($8627)           
 0504: FE 14           CP      $14                 
-0506: 38 0A           JR      C,$1240             ; {}
+0506: 38 0A           JR      C,$512              ; {}
 0508: FE 20           CP      $20                 
-050A: 30 04           JR      NC,$123A            ; {}
+050A: 30 04           JR      NC,$510             ; {}
 050C: 0E 01           LD      C,$01               
-050E: 18 02           JR      $1238               ; {}
+050E: 18 02           JR      $512                ; {}
 0510: 0E 00           LD      C,$00               
 0512: 3E 02           LD      A,$02               
 0514: 77              LD      (HL),A              
 0515: 23              INC     HL                  
 0516: 91              SUB     C                   
-0517: 10 FB           DJNZ    $1231               ; {}
+0517: 10 FB           DJNZ    $514                ; {}
 0519: CD EA 11        CALL    $11EA               ; {}
 051C: CD DE 11        CALL    $11DE               ; {}
 051F: 21 A1 83        LD      HL,$83A1            
@@ -723,19 +737,19 @@
 0558: 0E 00           LD      C,$00               
 055A: 06 08           LD      B,$08               
 055C: CB 7E           BIT     7,(HL)              
-055E: 28 01           JR      Z,$1237             ; {}
+055E: 28 01           JR      Z,$561              ; {}
 0560: 0C              INC     C                   
 0561: 19              ADD     HL,DE               
-0562: 10 F8           DJNZ    $122E               ; {}
+0562: 10 F8           DJNZ    $55C                ; {}
 0564: 79              LD      A,C                 
 0565: FE 08           CP      $08                 
-0567: 20 0F           JR      NZ,$1245            ; {}
+0567: 20 0F           JR      NZ,$578             ; {}
 0569: CD 7B 1B        CALL    $1B7B               ; {}
 056C: 21 6C 89        LD      HL,$896C            
 056F: CB DE           SET     3,(HL)              
 0571: 21 01 84        LD      HL,$8401            
 0574: CB EE           SET     5,(HL)              
-0576: 18 0E           JR      $1244               ; {}
+0576: 18 0E           JR      $586                ; {}
 0578: CD 2C 1B        CALL    $1B2C               ; {}
 057B: CD 7B 1B        CALL    $1B7B               ; {}
 057E: CD 43 18        CALL    $1843               ; {}
@@ -759,7 +773,7 @@
 05AF: 22 F4 85        LD      ($85F4),HL          
 05B2: 3A 57 86        LD      A,($8657)           
 05B5: CB 4F           BIT     1,A                 
-05B7: 28 05           JR      Z,$123B             ; {}
+05B7: 28 05           JR      Z,$5BE              ; {}
 05B9: 3E 80           LD      A,$80               
 05BB: 32 76 86        LD      ($8676),A           
 05BE: CD A6 0B        CALL    $0BA6               ; {}
@@ -767,10 +781,10 @@
 05C4: C3 27 0A        JP      $0A27               ; {}
 05C7: 3A 6C 89        LD      A,($896C)           
 05CA: CB 5F           BIT     3,A                 
-05CC: 20 61           JR      NZ,$1297            ; {}
+05CC: 20 61           JR      NZ,$62F             ; {}
 05CE: 21 01 84        LD      HL,$8401            
 05D1: CB 6E           BIT     5,(HL)              
-05D3: 20 30           JR      NZ,$1266            ; {}
+05D3: 20 30           JR      NZ,$605             ; {}
 05D5: E5              PUSH    HL                  
 05D6: CD 92 1C        CALL    $1C92               ; {}
 05D9: 3E 78           LD      A,$78               
@@ -780,7 +794,7 @@
 05E1: 21 85 87        LD      HL,$8785            
 05E4: 3A 00 84        LD      A,($8400)           
 05E7: CB 4F           BIT     1,A                 
-05E9: 20 0D           JR      NZ,$1243            ; {}
+05E9: 20 0D           JR      NZ,$5F8             ; {}
 05EB: CB 46           BIT     0,(HL)              
 05ED: C2 27 0A        JP      NZ,$0A27            ; {}
 05F0: 3E 01           LD      A,$01               
@@ -797,7 +811,7 @@
 060A: C2 27 0A        JP      NZ,$0A27            ; {}
 060D: 3A D5 85        LD      A,($85D5)           
 0610: A7              AND     A                   
-0611: 28 0C           JR      Z,$1242             ; {}
+0611: 28 0C           JR      Z,$61F              ; {}
 0613: FE 01           CP      $01                 
 0615: CC D1 1C        CALL    Z,$1CD1             ; {}
 0618: 21 D5 85        LD      HL,$85D5            
@@ -806,15 +820,15 @@
 061F: 21 85 87        LD      HL,$8785            
 0622: 3A 00 84        LD      A,($8400)           
 0625: CB 4F           BIT     1,A                 
-0627: 20 04           JR      NZ,$123A            ; {}
+0627: 20 04           JR      NZ,$62D             ; {}
 0629: CB C6           SET     0,(HL)              
-062B: 18 02           JR      $1238               ; {}
+062B: 18 02           JR      $62F                ; {}
 062D: CB CE           SET     1,(HL)              
 062F: 21 6C 89        LD      HL,$896C            
 0632: CB DE           SET     3,(HL)              
 0634: 3A 46 86        LD      A,($8646)           
 0637: CB 4F           BIT     1,A                 
-0639: 28 19           JR      Z,$124F             ; {}
+0639: 28 19           JR      Z,$654              ; {}
 063B: 21 86 9A        LD      HL,$9A86            
 063E: 3E 00           LD      A,$00               
 0640: 77              LD      (HL),A              
@@ -823,14 +837,14 @@
 0645: 21 47 86        LD      HL,$8647            
 0648: 7E              LD      A,(HL)              
 0649: A7              AND     A                   
-064A: 20 07           JR      NZ,$123D            ; {}
+064A: 20 07           JR      NZ,$653             ; {}
 064C: 21 01 84        LD      HL,$8401            
 064F: CB FE           SET     7,(HL)              
-0651: 18 01           JR      $1237               ; {}
+0651: 18 01           JR      $654                ; {}
 0653: 35              DEC     (HL)                
 0654: 21 6F 89        LD      HL,$896F            
 0657: CB 46           BIT     0,(HL)              
-0659: 20 15           JR      NZ,$124B            ; {}
+0659: 20 15           JR      NZ,$670             ; {}
 065B: CB C6           SET     0,(HL)              
 065D: 21 00 00        LD      HL,$0000            
 0660: 22 23 84        LD      ($8423),HL          
@@ -859,7 +873,7 @@
 0691: C2 F7 06        JP      NZ,$06F7            ; {}
 0694: 21 46 86        LD      HL,$8646            
 0697: CB 4E           BIT     1,(HL)              
-0699: 28 02           JR      Z,$1238             ; {}
+0699: 28 02           JR      Z,$69D              ; {}
 069B: 36 80           LD      (HL),$80            
 069D: 21 32 85        LD      HL,$8532            
 06A0: 06 08           LD      B,$08               
@@ -867,7 +881,7 @@
 06A5: 36 00           LD      (HL),$00            
 06A7: 19              ADD     HL,DE               
 06A8: 32 30 68        LD      ($6830),A           
-06AB: 10 F8           DJNZ    $122E               ; {}
+06AB: 10 F8           DJNZ    $6A5                ; {}
 06AD: 21 9E 98        LD      HL,$989E            
 06B0: 36 00           LD      (HL),$00            
 06B2: 23              INC     HL                  
@@ -881,14 +895,14 @@
 06C1: CB B6           RES     6,(HL)              
 06C3: 19              ADD     HL,DE               
 06C4: 32 30 68        LD      ($6830),A           
-06C7: 10 F4           DJNZ    $122A               ; {}
+06C7: 10 F4           DJNZ    $6BD                ; {}
 06C9: 21 2B 85        LD      HL,$852B            
 06CC: 11 10 00        LD      DE,$0010            
 06CF: 06 08           LD      B,$08               
 06D1: 36 32           LD      (HL),$32            
 06D3: 19              ADD     HL,DE               
 06D4: 32 30 68        LD      ($6830),A           
-06D7: 10 F8           DJNZ    $122E               ; {}
+06D7: 10 F8           DJNZ    $6D1                ; {}
 06D9: 21 4A 86        LD      HL,$864A            
 06DC: 36 00           LD      (HL),$00            
 06DE: CD 4F 15        CALL    $154F               ; {}
@@ -900,7 +914,7 @@
 06EE: 06 0C           LD      B,$0C               
 06F0: 77              LD      (HL),A              
 06F1: 23              INC     HL                  
-06F2: 10 FC           DJNZ    $1232               ; {}
+06F2: 10 FC           DJNZ    $6F0                ; {}
 06F4: C3 27 0A        JP      $0A27               ; {}
 06F7: FE 50           CP      $50                 
 06F9: C2 1B 07        JP      NZ,$071B            ; {}
@@ -910,37 +924,37 @@
 0704: 36 14           LD      (HL),$14            
 0706: 21 46 86        LD      HL,$8646            
 0709: CB 7E           BIT     7,(HL)              
-070B: 28 09           JR      Z,$123F             ; {}
+070B: 28 09           JR      Z,$716              ; {}
 070D: CB BE           RES     7,(HL)              
 070F: 21 1C 86        LD      HL,$861C            
 0712: 36 22           LD      (HL),$22            
-0714: 18 66           JR      $129C               ; {}
+0714: 18 66           JR      $77C                ; {}
 0716: CD D8 11        CALL    $11D8               ; {}
-0719: 18 61           JR      $1297               ; {}
+0719: 18 61           JR      $77C                ; {}
 071B: FE 34           CP      $34                 
-071D: 20 1A           JR      NZ,$1250            ; {}
+071D: 20 1A           JR      NZ,$739             ; {}
 071F: 21 22 98        LD      HL,$9822            
 0722: 36 15           LD      (HL),$15            
 0724: 21 DA 87        LD      HL,$87DA            
 0727: 3A 00 84        LD      A,($8400)           
 072A: CB 4F           BIT     1,A                 
-072C: 28 03           JR      Z,$1239             ; {}
+072C: 28 03           JR      Z,$731              ; {}
 072E: 21 D8 87        LD      HL,$87D8            
 0731: 7E              LD      A,(HL)              
 0732: FE 02           CP      $02                 
-0734: 20 46           JR      NZ,$127C            ; {}
+0734: 20 46           JR      NZ,$77C             ; {}
 0736: 34              INC     (HL)                
-0737: 18 43           JR      $1279               ; {}
+0737: 18 43           JR      $77C                ; {}
 0739: FE 20           CP      $20                 
-073B: 20 07           JR      NZ,$123D            ; {}
+073B: 20 07           JR      NZ,$744             ; {}
 073D: 21 22 98        LD      HL,$9822            
 0740: 36 16           LD      (HL),$16            
-0742: 18 38           JR      $126E               ; {}
+0742: 18 38           JR      $77C                ; {}
 0744: FE 14           CP      $14                 
-0746: 20 07           JR      NZ,$123D            ; {}
+0746: 20 07           JR      NZ,$74F             ; {}
 0748: 21 22 98        LD      HL,$9822            
 074B: 36 17           LD      (HL),$17            
-074D: 18 2D           JR      $1263               ; {}
+074D: 18 2D           JR      $77C                ; {}
 074F: A7              AND     A                   
 0750: C2 27 0A        JP      NZ,$0A27            ; {}
 0753: 3A 57 86        LD      A,($8657)           
@@ -971,33 +985,33 @@
 078E: 06 0C           LD      B,$0C               
 0790: 36 00           LD      (HL),$00            
 0792: 23              INC     HL                  
-0793: 10 FB           DJNZ    $1231               ; {}
+0793: 10 FB           DJNZ    $790                ; {}
 0795: C3 27 0A        JP      $0A27               ; {}
 0798: 21 1C 86        LD      HL,$861C            
 079B: 7E              LD      A,(HL)              
 079C: A7              AND     A                   
-079D: 28 04           JR      Z,$123A             ; {}
+079D: 28 04           JR      Z,$7A3              ; {}
 079F: 35              DEC     (HL)                
 07A0: C3 27 0A        JP      $0A27               ; {}
 07A3: 21 00 84        LD      HL,$8400            
 07A6: CB 4E           BIT     1,(HL)              
-07A8: 20 0C           JR      NZ,$1242            ; {}
+07A8: 20 0C           JR      NZ,$7B6             ; {}
 07AA: 3A 0A 84        LD      A,($840A)           
 07AD: A7              AND     A                   
-07AE: 20 13           JR      NZ,$1249            ; {}
+07AE: 20 13           JR      NZ,$7C3             ; {}
 07B0: 23              INC     HL                  
 07B1: 23              INC     HL                  
 07B2: CB CE           SET     1,(HL)              
-07B4: 18 69           JR      $129F               ; {}
+07B4: 18 69           JR      $81F                ; {}
 07B6: 3A 0B 84        LD      A,($840B)           
 07B9: A7              AND     A                   
-07BA: 20 51           JR      NZ,$1287            ; {}
+07BA: 20 51           JR      NZ,$80D             ; {}
 07BC: 23              INC     HL                  
 07BD: 23              INC     HL                  
 07BE: CB D6           SET     2,(HL)              
 07C0: C3 66 08        JP      $0866               ; {}
 07C3: CB 46           BIT     0,(HL)              
-07C5: 20 21           JR      NZ,$1257            ; {}
+07C5: 20 21           JR      NZ,$7E8             ; {}
 07C7: 21 00 84        LD      HL,$8400            
 07CA: CB AE           RES     5,(HL)              
 07CC: CB A6           RES     4,(HL)              
@@ -1020,11 +1034,11 @@
 07E8: 23              INC     HL                  
 07E9: 23              INC     HL                  
 07EA: CB 56           BIT     2,(HL)              
-07EC: 20 D9           JR      NZ,$120F            ; {}
+07EC: 20 D9           JR      NZ,$7C7             ; {}
 07EE: 21 00 84        LD      HL,$8400            
 07F1: 32 30 68        LD      ($6830),A           
 07F4: CB 56           BIT     2,(HL)              
-07F6: 28 05           JR      Z,$123B             ; {}
+07F6: 28 05           JR      Z,$7FD              ; {}
 07F8: 21 07 A0        LD      HL,$A007            
 07FB: 36 01           LD      (HL),$01            
 07FD: 21 00 84        LD      HL,$8400            
@@ -1032,16 +1046,16 @@
 0802: CD 95 12        CALL    $1295               ; {}
 0805: CD A2 12        CALL    $12A2               ; {}
 0808: CD AF 12        CALL    $12AF               ; {}
-080B: 18 BA           JR      $11F0               ; {}
+080B: 18 BA           JR      $7C7                ; {}
 080D: 21 02 84        LD      HL,$8402            
 0810: CB 4E           BIT     1,(HL)              
-0812: 20 B3           JR      NZ,$11E9            ; {}
+0812: 20 B3           JR      NZ,$7C7             ; {}
 0814: 2B              DEC     HL                  
 0815: 2B              DEC     HL                  
 0816: CB 8E           RES     1,(HL)              
 0818: 21 07 A0        LD      HL,$A007            
 081B: 36 00           LD      (HL),$00            
-081D: 18 E3           JR      $1219               ; {}
+081D: 18 E3           JR      $802                ; {}
 081F: 21 00 84        LD      HL,$8400            
 0822: CB 46           BIT     0,(HL)              
 0824: CA B0 08        JP      Z,$08B0             ; {}
@@ -1051,7 +1065,7 @@
 082B: C2 B0 08        JP      NZ,$08B0            ; {}
 082E: 21 02 84        LD      HL,$8402            
 0831: CB 5E           BIT     3,(HL)              
-0833: 20 17           JR      NZ,$124D            ; {}
+0833: 20 17           JR      NZ,$84C             ; {}
 0835: 21 1D 86        LD      HL,$861D            
 0838: 36 78           LD      (HL),$78            
 083A: CD C7 12        CALL    $12C7               ; {}
@@ -1064,7 +1078,7 @@
 084C: 21 1D 86        LD      HL,$861D            
 084F: 7E              LD      A,(HL)              
 0850: A7              AND     A                   
-0851: 28 04           JR      Z,$123A             ; {}
+0851: 28 04           JR      Z,$857              ; {}
 0853: 35              DEC     (HL)                
 0854: C3 27 0A        JP      $0A27               ; {}
 0857: 21 CC 87        LD      HL,$87CC            
@@ -1072,13 +1086,13 @@
 085C: CB 4E           BIT     1,(HL)              
 085E: C2 27 0A        JP      NZ,$0A27            ; {}
 0861: CD 49 13        CALL    $1349               ; {}
-0864: 18 88           JR      $11BE               ; {}
+0864: 18 88           JR      $7EE                ; {}
 0866: 21 02 84        LD      HL,$8402            
 0869: CB 4E           BIT     1,(HL)              
-086B: 20 43           JR      NZ,$1279            ; {}
+086B: 20 43           JR      NZ,$8B0             ; {}
 086D: 21 02 84        LD      HL,$8402            
 0870: CB 5E           BIT     3,(HL)              
-0872: 20 17           JR      NZ,$124D            ; {}
+0872: 20 17           JR      NZ,$88B             ; {}
 0874: 21 1D 86        LD      HL,$861D            
 0877: 36 78           LD      (HL),$78            
 0879: CD D1 12        CALL    $12D1               ; {}
@@ -1091,7 +1105,7 @@
 088B: 21 1D 86        LD      HL,$861D            
 088E: 7E              LD      A,(HL)              
 088F: A7              AND     A                   
-0890: 28 04           JR      Z,$123A             ; {}
+0890: 28 04           JR      Z,$896              ; {}
 0892: 35              DEC     (HL)                
 0893: C3 27 0A        JP      $0A27               ; {}
 0896: 21 CC 87        LD      HL,$87CC            
@@ -1106,7 +1120,7 @@
 08AD: C3 02 08        JP      $0802               ; {}
 08B0: 21 02 84        LD      HL,$8402            
 08B3: CB 66           BIT     4,(HL)              
-08B5: 20 1D           JR      NZ,$1253            ; {}
+08B5: 20 1D           JR      NZ,$8D4             ; {}
 08B7: CB E6           SET     4,(HL)              
 08B9: 21 83 9A        LD      HL,$9A83            
 08BC: CB C6           SET     0,(HL)              
@@ -1122,9 +1136,9 @@
 08D4: 21 1E 86        LD      HL,$861E            
 08D7: 7E              LD      A,(HL)              
 08D8: A7              AND     A                   
-08D9: 28 1D           JR      Z,$1253             ; {}
+08D9: 28 1D           JR      Z,$8F8              ; {}
 08DB: FE 38           CP      $38                 
-08DD: 20 0A           JR      NZ,$1240            ; {}
+08DD: 20 0A           JR      NZ,$8E9             ; {}
 08DF: E5              PUSH    HL                  
 08E0: 21 83 9A        LD      HL,$9A83            
 08E3: 7E              LD      A,(HL)              
@@ -1151,7 +1165,7 @@
 090D: 06 06           LD      B,$06               
 090F: 36 00           LD      (HL),$00            
 0911: 23              INC     HL                  
-0912: 10 FB           DJNZ    $1231               ; {}
+0912: 10 FB           DJNZ    $90F                ; {}
 0914: 3E 90           LD      A,$90               
 0916: 32 76 86        LD      ($8676),A           
 0919: 21 46 86        LD      HL,$8646            
@@ -1162,7 +1176,7 @@
 0927: 06 04           LD      B,$04               
 0929: 36 02           LD      (HL),$02            
 092B: 23              INC     HL                  
-092C: 10 FB           DJNZ    $1231               ; {}
+092C: 10 FB           DJNZ    $929                ; {}
 092E: 21 04 89        LD      HL,$8904            
 0931: 11 00 70        LD      DE,$7000            
 0934: 01 04 00        LD      BC,$0004            
@@ -1193,29 +1207,29 @@
 0972: C2 E6 09        JP      NZ,$09E6            ; {}
 0975: 3A 57 86        LD      A,($8657)           
 0978: CB 4F           BIT     1,A                 
-097A: 20 14           JR      NZ,$124A            ; {}
+097A: 20 14           JR      NZ,$990             ; {}
 097C: 21 2B 85        LD      HL,$852B            
 097F: 06 08           LD      B,$08               
 0981: 11 10 00        LD      DE,$0010            
 0984: 7E              LD      A,(HL)              
 0985: FE 82           CP      $82                 
-0987: 28 5D           JR      Z,$1293             ; {}
+0987: 28 5D           JR      Z,$9E6              ; {}
 0989: FE 85           CP      $85                 
-098B: 28 59           JR      Z,$128F             ; {}
+098B: 28 59           JR      Z,$9E6              ; {}
 098D: 19              ADD     HL,DE               
-098E: 10 F4           DJNZ    $122A               ; {}
+098E: 10 F4           DJNZ    $984                ; {}
 0990: 21 28 85        LD      HL,$8528            
 0993: 06 08           LD      B,$08               
 0995: 11 10 00        LD      DE,$0010            
 0998: CB 7E           BIT     7,(HL)              
-099A: 28 4A           JR      Z,$1280             ; {}
+099A: 28 4A           JR      Z,$9E6              ; {}
 099C: CB B6           RES     6,(HL)              
 099E: 19              ADD     HL,DE               
 099F: 32 30 68        LD      ($6830),A           
-09A2: 10 F4           DJNZ    $122A               ; {}
+09A2: 10 F4           DJNZ    $998                ; {}
 09A4: 3A 46 86        LD      A,($8646)           
 09A7: CB 47           BIT     0,A                 
-09A9: 20 3B           JR      NZ,$1271            ; {}
+09A9: 20 3B           JR      NZ,$9E6             ; {}
 09AB: CD 8A 12        CALL    $128A               ; {}
 09AE: AF              XOR     A                   
 09AF: 32 A0 98        LD      ($98A0),A           
@@ -1234,7 +1248,7 @@
 09CC: CB 9E           RES     3,(HL)              
 09CE: 2B              DEC     HL                  
 09CF: CB 4E           BIT     1,(HL)              
-09D1: 20 0C           JR      NZ,$1242            ; {}
+09D1: 20 0C           JR      NZ,$9DF             ; {}
 09D3: 21 0A 84        LD      HL,$840A            
 09D6: 34              INC     (HL)                
 09D7: 21 4A 86        LD      HL,$864A            
@@ -1251,22 +1265,22 @@
 09F3: CD 30 14        CALL    $1430               ; {}
 09F6: 3A 57 86        LD      A,($8657)           
 09F9: CB 4F           BIT     1,A                 
-09FB: 20 06           JR      NZ,$123C            ; {}
+09FB: 20 06           JR      NZ,$A03             ; {}
 09FD: 3A 0D 84        LD      A,($840D)           
 0A00: 32 05 9A        LD      ($9A05),A           
 0A03: CD FE 1E        CALL    $1EFE               ; {}
 0A06: CD 23 14        CALL    $1423               ; {}
 0A09: 3A 46 86        LD      A,($8646)           
 0A0C: CB 47           BIT     0,A                 
-0A0E: 28 05           JR      Z,$123B             ; {}
+0A0E: 28 05           JR      Z,$A15              ; {}
 0A10: CD 87 0F        CALL    $0F87               ; {}
-0A13: 18 08           JR      $123E               ; {}
+0A13: 18 08           JR      $A1D                ; {}
 0A15: CD A2 0D        CALL    $0DA2               ; {}
 0A18: 3E FF           LD      A,$FF               
 0A1A: 32 23 68        LD      ($6823),A           
 0A1D: 3A 46 86        LD      A,($8646)           
 0A20: CB 47           BIT     0,A                 
-0A22: 20 03           JR      NZ,$1239            ; {}
+0A22: 20 03           JR      NZ,$A27             ; {}
 0A24: CD 4C 13        CALL    $134C               ; {}
 0A27: 21 00 70        LD      HL,$7000            
 0A2A: 11 CE 87        LD      DE,$87CE            
@@ -1279,11 +1293,11 @@
 0A3C: C2 71 0A        JP      NZ,$0A71            ; {}
 0A3F: 3A 57 86        LD      A,($8657)           
 0A42: CB 47           BIT     0,A                 
-0A44: 28 09           JR      Z,$123F             ; {}
+0A44: 28 09           JR      Z,$A4F              ; {}
 0A46: 3A 58 86        LD      A,($8658)           
 0A49: E6 0F           AND     $0F                 
 0A4B: FE 07           CP      $07                 
-0A4D: 20 22           JR      NZ,$1258            ; {}
+0A4D: 20 22           JR      NZ,$A71             ; {}
 0A4F: CD 0B 1D        CALL    $1D0B               ; {}
 0A52: 21 25 98        LD      HL,$9825            
 0A55: 06 0C           LD      B,$0C               
@@ -1291,7 +1305,7 @@
 0A59: 23              INC     HL                  
 0A5A: 23              INC     HL                  
 0A5B: 32 30 68        LD      ($6830),A           
-0A5E: 10 F7           DJNZ    $122D               ; {}
+0A5E: 10 F7           DJNZ    $A57                ; {}
 0A60: 3A CC 87        LD      A,($87CC)           
 0A63: CB 4F           BIT     1,A                 
 0A65: C2 71 0A        JP      NZ,$0A71            ; {}
@@ -1311,10 +1325,10 @@
 0A80: 21 87 87        LD      HL,$8787            
 0A83: 3A 57 86        LD      A,($8657)           
 0A86: CB 47           BIT     0,A                 
-0A88: 20 0C           JR      NZ,$1242            ; {}
+0A88: 20 0C           JR      NZ,$A96             ; {}
 0A8A: 3A CF 87        LD      A,($87CF)           
 0A8D: CB 5F           BIT     3,A                 
-0A8F: 20 05           JR      NZ,$123B            ; {}
+0A8F: 20 05           JR      NZ,$A96             ; {}
 0A91: CB 4E           BIT     1,(HL)              
 0A93: CA EA 1D        JP      Z,$1DEA             ; {}
 0A96: 36 FF           LD      (HL),$FF            
@@ -1352,11 +1366,11 @@
 0AE9: 06 3F           LD      B,$3F               
 0AEB: 7E              LD      A,(HL)              
 0AEC: FE 0C           CP      $0C                 
-0AEE: 20 02           JR      NZ,$1238            ; {}
+0AEE: 20 02           JR      NZ,$AF2             ; {}
 0AF0: 36 8C           LD      (HL),$8C            
 0AF2: 32 30 68        LD      ($6830),A           
 0AF5: 23              INC     HL                  
-0AF6: 10 F3           DJNZ    $1229               ; {}
+0AF6: 10 F3           DJNZ    $AEB                ; {}
 0AF8: C3 E0 04        JP      $04E0               ; {}
 0AFB: FE 80           CP      $80                 
 0AFD: CA 54 06        JP      Z,$0654             ; {}
@@ -1364,7 +1378,7 @@
 0B03: 21 87 87        LD      HL,$8787            
 0B06: 3A CF 87        LD      A,($87CF)           
 0B09: CB 5F           BIT     3,A                 
-0B0B: 20 05           JR      NZ,$123B            ; {}
+0B0B: 20 05           JR      NZ,$B12             ; {}
 0B0D: CB 4E           BIT     1,(HL)              
 0B0F: CA EA 1D        JP      Z,$1DEA             ; {}
 0B12: 36 FF           LD      (HL),$FF            
@@ -1396,7 +1410,7 @@
 0B4D: 23              INC     HL                  
 0B4E: 36 00           LD      (HL),$00            
 0B50: 23              INC     HL                  
-0B51: 10 FB           DJNZ    $1231               ; {}
+0B51: 10 FB           DJNZ    $B4E                ; {}
 0B53: CD 04 16        CALL    $1604               ; {}
 0B56: CD D9 15        CALL    $15D9               ; {}
 0B59: CD 8E 16        CALL    $168E               ; {}
@@ -1415,7 +1429,7 @@
 0B7C: DD 23           INC     IX                  
 0B7E: 13              INC     DE                  
 0B7F: 23              INC     HL                  
-0B80: 10 EE           DJNZ    $1224               ; {}
+0B80: 10 EE           DJNZ    $B70                ; {}
 0B82: 3E FE           LD      A,$FE               
 0B84: 32 23 84        LD      ($8423),A           
 0B87: CD 69 14        CALL    $1469               ; {}
@@ -1433,14 +1447,14 @@
 0BA9: 06 04           LD      B,$04               
 0BAB: 36 00           LD      (HL),$00            
 0BAD: 23              INC     HL                  
-0BAE: 10 FB           DJNZ    $1231               ; {}
+0BAE: 10 FB           DJNZ    $BAB                ; {}
 0BB0: C9              RET                         
 0BB1: 11 07 A0        LD      DE,$A007            
 0BB4: 21 00 84        LD      HL,$8400            
 0BB7: CB 4E           BIT     1,(HL)              
-0BB9: 28 08           JR      Z,$123E             ; {}
+0BB9: 28 08           JR      Z,$BC3              ; {}
 0BBB: CB 56           BIT     2,(HL)              
-0BBD: 28 04           JR      Z,$123A             ; {}
+0BBD: 28 04           JR      Z,$BC3              ; {}
 0BBF: EB              EX      DE,HL               
 0BC0: 36 01           LD      (HL),$01            
 0BC2: C9              RET                         
@@ -1460,11 +1474,11 @@
 0BE2: 06 3F           LD      B,$3F               
 0BE4: 7E              LD      A,(HL)              
 0BE5: FE 8C           CP      $8C                 
-0BE7: 20 02           JR      NZ,$1238            ; {}
+0BE7: 20 02           JR      NZ,$BEB             ; {}
 0BE9: 36 0C           LD      (HL),$0C            
 0BEB: 32 30 68        LD      ($6830),A           
 0BEE: 23              INC     HL                  
-0BEF: 10 F3           DJNZ    $1229               ; {}
+0BEF: 10 F3           DJNZ    $BE4                ; {}
 0BF1: C9              RET                         
 0BF2: 21 00 98        LD      HL,$9800            
 0BF5: 11 80 98        LD      DE,$9880            
@@ -1475,7 +1489,7 @@
 0BFF: 12              LD      (DE),A              
 0C00: 23              INC     HL                  
 0C01: 13              INC     DE                  
-0C02: 10 F6           DJNZ    $122C               ; {}
+0C02: 10 F6           DJNZ    $BFA                ; {}
 0C04: C9              RET                         
 0C05: CD 37 1A        CALL    $1A37               ; {}
 0C08: CD 92 1A        CALL    $1A92               ; {}
@@ -1529,9 +1543,9 @@
 0C80: C9              RET                         
 0C81: 3A 00 84        LD      A,($8400)           
 0C84: CB 4F           BIT     1,A                 
-0C86: 20 05           JR      NZ,$123B            ; {}
+0C86: 20 05           JR      NZ,$C8D             ; {}
 0C88: 21 16 84        LD      HL,$8416            
-0C8B: 18 03           JR      $1239               ; {}
+0C8B: 18 03           JR      $C90                ; {}
 0C8D: 21 19 84        LD      HL,$8419            
 0C90: 7E              LD      A,(HL)              
 0C91: FE 90           CP      $90                 
@@ -1544,7 +1558,7 @@
 0C9E: C8              RET     Z                   
 0C9F: 21 00 84        LD      HL,$8400            
 0CA2: CB 4E           BIT     1,(HL)              
-0CA4: 20 1A           JR      NZ,$1250            ; {}
+0CA4: 20 1A           JR      NZ,$CC0             ; {}
 0CA6: 21 14 84        LD      HL,$8414            
 0CA9: 11 11 84        LD      DE,$8411            
 0CAC: CD 54 0D        CALL    $0D54               ; {}
@@ -1553,7 +1567,7 @@
 0CB5: CD 54 0D        CALL    $0D54               ; {}
 0CB8: 21 02 84        LD      HL,$8402            
 0CBB: 22 F6 85        LD      ($85F6),HL          
-0CBE: 18 18           JR      $124E               ; {}
+0CBE: 18 18           JR      $CD8                ; {}
 0CC0: 21 17 84        LD      HL,$8417            
 0CC3: 11 11 84        LD      DE,$8411            
 0CC6: CD 54 0D        CALL    $0D54               ; {}
@@ -1563,7 +1577,7 @@
 0CD2: 21 03 84        LD      HL,$8403            
 0CD5: 22 F6 85        LD      ($85F6),HL          
 0CD8: CB 7E           BIT     7,(HL)              
-0CDA: 20 20           JR      NZ,$1256            ; {}
+0CDA: 20 20           JR      NZ,$CFC             ; {}
 0CDC: 21 11 84        LD      HL,$8411            
 0CDF: 11 2A 86        LD      DE,$862A            
 0CE2: CD 60 0D        CALL    $0D60               ; {}
@@ -1580,11 +1594,11 @@
 0CFC: 21 11 84        LD      HL,$8411            
 0CFF: 3A 00 84        LD      A,($8400)           
 0D02: CB 4F           BIT     1,A                 
-0D04: 20 08           JR      NZ,$123E            ; {}
+0D04: 20 08           JR      NZ,$D0E             ; {}
 0D06: 3A BF 87        LD      A,($87BF)           
 0D09: CB 47           BIT     0,A                 
 0D0B: C0              RET     NZ                  
-0D0C: 18 06           JR      $123C               ; {}
+0D0C: 18 06           JR      $D14                ; {}
 0D0E: 3A BF 87        LD      A,($87BF)           
 0D11: CB 4F           BIT     1,A                 
 0D13: C0              RET     NZ                  
@@ -1610,7 +1624,7 @@
 0D44: 21 BF 87        LD      HL,$87BF            
 0D47: 3A 00 84        LD      A,($8400)           
 0D4A: CB 4F           BIT     1,A                 
-0D4C: 20 03           JR      NZ,$1239            ; {}
+0D4C: 20 03           JR      NZ,$D51             ; {}
 0D4E: CB C6           SET     0,(HL)              
 0D50: C9              RET                         
 0D51: CB CE           SET     1,(HL)              
@@ -1621,7 +1635,7 @@
 0D58: 23              INC     HL                  
 0D59: 13              INC     DE                  
 0D5A: 32 30 68        LD      ($6830),A           
-0D5D: 10 F7           DJNZ    $122D               ; {}
+0D5D: 10 F7           DJNZ    $D56                ; {}
 0D5F: C9              RET                         
 0D60: 06 03           LD      B,$03               
 0D62: EB              EX      DE,HL               
@@ -1630,14 +1644,14 @@
 0D65: 9E              SBC     (HL)                
 0D66: 23              INC     HL                  
 0D67: 13              INC     DE                  
-0D68: 10 FA           DJNZ    $1230               ; {}
+0D68: 10 FA           DJNZ    $D64                ; {}
 0D6A: EB              EX      DE,HL               
 0D6B: C9              RET                         
 0D6C: 21 00 84        LD      HL,$8400            
 0D6F: CB 4E           BIT     1,(HL)              
-0D71: 20 05           JR      NZ,$123B            ; {}
+0D71: 20 05           JR      NZ,$D78             ; {}
 0D73: 21 0A 84        LD      HL,$840A            
-0D76: 18 03           JR      $1239               ; {}
+0D76: 18 03           JR      $D7B                ; {}
 0D78: 21 0B 84        LD      HL,$840B            
 0D7B: 34              INC     (HL)                
 0D7C: 7E              LD      A,(HL)              
@@ -1646,9 +1660,9 @@
 0D83: C9              RET                         
 0D84: 21 00 84        LD      HL,$8400            
 0D87: CB 4E           BIT     1,(HL)              
-0D89: 20 05           JR      NZ,$123B            ; {}
+0D89: 20 05           JR      NZ,$D90             ; {}
 0D8B: 21 2D 86        LD      HL,$862D            
-0D8E: 18 03           JR      $1239               ; {}
+0D8E: 18 03           JR      $D93                ; {}
 0D90: 21 30 86        LD      HL,$8630            
 0D93: 11 33 86        LD      DE,$8633            
 0D96: 06 03           LD      B,$03               
@@ -1659,22 +1673,22 @@
 0D9C: 77              LD      (HL),A              
 0D9D: 13              INC     DE                  
 0D9E: 23              INC     HL                  
-0D9F: 10 F8           DJNZ    $122E               ; {}
+0D9F: 10 F8           DJNZ    $D99                ; {}
 0DA1: C9              RET                         
 0DA2: 3A 01 84        LD      A,($8401)           
 0DA5: CB 7F           BIT     7,A                 
-0DA7: 20 51           JR      NZ,$1287            ; {}
+0DA7: 20 51           JR      NZ,$DFA             ; {}
 0DA9: 3A 03 84        LD      A,($8403)           
 0DAC: CB 57           BIT     2,A                 
 0DAE: C2 34 0E        JP      NZ,$0E34            ; {}
 0DB1: 21 01 84        LD      HL,$8401            
 0DB4: CB 5E           BIT     3,(HL)              
-0DB6: 20 36           JR      NZ,$126C            ; {}
+0DB6: 20 36           JR      NZ,$DEE             ; {}
 0DB8: 3A 57 86        LD      A,($8657)           
 0DBB: CB 4F           BIT     1,A                 
-0DBD: 28 05           JR      Z,$123B             ; {}
+0DBD: 28 05           JR      Z,$DC4              ; {}
 0DBF: 3A 70 89        LD      A,($8970)           
-0DC2: 18 03           JR      $1239               ; {}
+0DC2: 18 03           JR      $DC7                ; {}
 0DC4: 3A B0 85        LD      A,($85B0)           
 0DC7: CB 67           BIT     4,A                 
 0DC9: C0              RET     NZ                  
@@ -1682,9 +1696,9 @@
 0DCD: CB DE           SET     3,(HL)              
 0DCF: 3A 57 86        LD      A,($8657)           
 0DD2: CB 4F           BIT     1,A                 
-0DD4: 20 04           JR      NZ,$123A            ; {}
+0DD4: 20 04           JR      NZ,$DDA             ; {}
 0DD6: 3E 32           LD      A,$32               
-0DD8: 18 02           JR      $1238               ; {}
+0DD8: 18 02           JR      $DDC                ; {}
 0DDA: 3E 36           LD      A,$36               
 0DDC: 32 3E 86        LD      ($863E),A           
 0DDF: CD 95 0F        CALL    $0F95               ; {}
@@ -1698,9 +1712,9 @@
 0DEE: 21 3E 86        LD      HL,$863E            
 0DF1: 7E              LD      A,(HL)              
 0DF2: FE 33           CP      $33                 
-0DF4: 30 F6           JR      NC,$122C            ; {}
+0DF4: 30 F6           JR      NC,$DEC             ; {}
 0DF6: FE 06           CP      $06                 
-0DF8: 30 0E           JR      NC,$1244            ; {}
+0DF8: 30 0E           JR      NC,$E08             ; {}
 0DFA: CD 87 0F        CALL    $0F87               ; {}
 0DFD: 21 01 84        LD      HL,$8401            
 0E00: CB 9E           RES     3,(HL)              
@@ -1710,7 +1724,7 @@
 0E08: 22 42 86        LD      ($8642),HL          
 0E0B: 3A 87 98        LD      A,($9887)           
 0E0E: FE 08           CP      $08                 
-0E10: 38 E8           JR      C,$121E             ; {}
+0E10: 38 E8           JR      C,$DFA              ; {}
 0E12: 5F              LD      E,A                 
 0E13: 3A 86 98        LD      A,($9886)           
 0E16: 57              LD      D,A                 
@@ -1718,30 +1732,30 @@
 0E1A: CD 39 10        CALL    $1039               ; {}
 0E1D: 79              LD      A,C                 
 0E1E: A7              AND     A                   
-0E1F: 28 D9           JR      Z,$120F             ; {}
+0E1F: 28 D9           JR      Z,$DFA              ; {}
 0E21: 21 04 84        LD      HL,$8404            
 0E24: CB B6           RES     6,(HL)              
 0E26: CD 07 12        CALL    $1207               ; {}
 0E29: 3A 87 98        LD      A,($9887)           
 0E2C: FE F2           CP      $F2                 
-0E2E: 30 CA           JR      NC,$1200            ; {}
+0E2E: 30 CA           JR      NC,$DFA             ; {}
 0E30: CD DE 10        CALL    $10DE               ; {}
 0E33: C9              RET                         
 0E34: 21 04 84        LD      HL,$8404            
 0E37: CB 76           BIT     6,(HL)              
 0E39: C0              RET     NZ                  
 0E3A: CB 56           BIT     2,(HL)              
-0E3C: 20 1E           JR      NZ,$1254            ; {}
+0E3C: 20 1E           JR      NZ,$E5C             ; {}
 0E3E: 2B              DEC     HL                  
 0E3F: CB 9E           RES     3,(HL)              
 0E41: 3A 57 86        LD      A,($8657)           
 0E44: CB 4F           BIT     1,A                 
-0E46: 28 05           JR      Z,$123B             ; {}
+0E46: 28 05           JR      Z,$E4D              ; {}
 0E48: 3A 70 89        LD      A,($8970)           
-0E4B: 18 03           JR      $1239               ; {}
+0E4B: 18 03           JR      $E50                ; {}
 0E4D: 3A B0 85        LD      A,($85B0)           
 0E50: CB 6F           BIT     5,A                 
-0E52: 20 03           JR      NZ,$1239            ; {}
+0E52: 20 03           JR      NZ,$E57             ; {}
 0E54: 23              INC     HL                  
 0E55: CB D6           SET     2,(HL)              
 0E57: AF              XOR     A                   
@@ -1752,23 +1766,23 @@
 0E60: 7E              LD      A,(HL)              
 0E61: E6 1F           AND     $1F                 
 0E63: FE 09           CP      $09                 
-0E65: 30 06           JR      NC,$123C            ; {}
+0E65: 30 06           JR      NC,$E6D             ; {}
 0E67: 21 03 84        LD      HL,$8403            
 0E6A: CB 9E           RES     3,(HL)              
 0E6C: C9              RET                         
-0E6D: 28 2B           JR      Z,$1261             ; {}
+0E6D: 28 2B           JR      Z,$E9A              ; {}
 0E6F: FE 12           CP      $12                 
-0E71: 28 21           JR      Z,$1257             ; {}
+0E71: 28 21           JR      Z,$E94              ; {}
 0E73: D8              RET     C                   
 0E74: FE 1F           CP      $1F                 
-0E76: 20 04           JR      NZ,$123A            ; {}
+0E76: 20 04           JR      NZ,$E7C             ; {}
 0E78: AF              XOR     A                   
 0E79: 32 41 86        LD      ($8641),A           
 0E7C: 3A 57 86        LD      A,($8657)           
 0E7F: CB 4F           BIT     1,A                 
-0E81: 28 05           JR      Z,$123B             ; {}
+0E81: 28 05           JR      Z,$E88              ; {}
 0E83: 3A 70 89        LD      A,($8970)           
-0E86: 18 03           JR      $1239               ; {}
+0E86: 18 03           JR      $E8B                ; {}
 0E88: 3A B0 85        LD      A,($85B0)           
 0E8B: CB 6F           BIT     5,A                 
 0E8D: C8              RET     Z                   
@@ -1802,11 +1816,11 @@
 0EC3: 2B              DEC     HL                  
 0EC4: 7E              LD      A,(HL)              
 0EC5: E6 1C           AND     $1C                 
-0EC7: 20 03           JR      NZ,$1239            ; {}
+0EC7: 20 03           JR      NZ,$ECC             ; {}
 0EC9: CB D6           SET     2,(HL)              
 0ECB: C9              RET                         
 0ECC: CB 56           BIT     2,(HL)              
-0ECE: 28 09           JR      Z,$123F             ; {}
+0ECE: 28 09           JR      Z,$ED9              ; {}
 0ED0: CB 96           RES     2,(HL)              
 0ED2: CB DE           SET     3,(HL)              
 0ED4: 23              INC     HL                  
@@ -1814,7 +1828,7 @@
 0ED6: CB E6           SET     4,(HL)              
 0ED8: C9              RET                         
 0ED9: CB 5E           BIT     3,(HL)              
-0EDB: 28 09           JR      Z,$123F             ; {}
+0EDB: 28 09           JR      Z,$EE6              ; {}
 0EDD: CB 9E           RES     3,(HL)              
 0EDF: CB E6           SET     4,(HL)              
 0EE1: 23              INC     HL                  
@@ -1852,7 +1866,7 @@
 0F1B: F1              POP     AF                  
 0F1C: CD 4F 12        CALL    $124F               ; {}
 0F1F: A7              AND     A                   
-0F20: 20 0F           JR      NZ,$1245            ; {}
+0F20: 20 0F           JR      NZ,$F31             ; {}
 0F22: 36 39           LD      (HL),$39            
 0F24: 3E 0A           LD      A,$0A               
 0F26: 12              LD      (DE),A              
@@ -1861,18 +1875,18 @@
 0F2E: 36 01           LD      (HL),$01            
 0F30: C9              RET                         
 0F31: 3D              DEC     A                   
-0F32: 20 05           JR      NZ,$123B            ; {}
+0F32: 20 05           JR      NZ,$F39             ; {}
 0F34: 36 3A           LD      (HL),$3A            
 0F36: C3 24 0F        JP      $0F24               ; {}
 0F39: 3D              DEC     A                   
-0F3A: 20 05           JR      NZ,$123B            ; {}
+0F3A: 20 05           JR      NZ,$F41             ; {}
 0F3C: 36 3B           LD      (HL),$3B            
 0F3E: C3 24 0F        JP      $0F24               ; {}
 0F41: 36 3C           LD      (HL),$3C            
 0F43: C3 24 0F        JP      $0F24               ; {}
 0F46: 3A 10 84        LD      A,($8410)           
 0F49: FE 0A           CP      $0A                 
-0F4B: 30 04           JR      NC,$123A            ; {}
+0F4B: 30 04           JR      NC,$F51             ; {}
 0F4D: 3C              INC     A                   
 0F4E: 32 10 84        LD      ($8410),A           
 0F51: 3A AE 85        LD      A,($85AE)           
@@ -1889,15 +1903,15 @@
 0F66: F1              POP     AF                  
 0F67: CD 4F 12        CALL    $124F               ; {}
 0F6A: A7              AND     A                   
-0F6B: 20 05           JR      NZ,$123B            ; {}
+0F6B: 20 05           JR      NZ,$F72             ; {}
 0F6D: 36 3B           LD      (HL),$3B            
 0F6F: C3 24 0F        JP      $0F24               ; {}
 0F72: 3D              DEC     A                   
-0F73: 20 05           JR      NZ,$123B            ; {}
+0F73: 20 05           JR      NZ,$F7A             ; {}
 0F75: 36 3D           LD      (HL),$3D            
 0F77: C3 24 0F        JP      $0F24               ; {}
 0F7A: 3D              DEC     A                   
-0F7B: 20 05           JR      NZ,$123B            ; {}
+0F7B: 20 05           JR      NZ,$F82             ; {}
 0F7D: 36 3E           LD      (HL),$3E            
 0F7F: C3 24 0F        JP      $0F24               ; {}
 0F82: 36 3F           LD      (HL),$3F            
@@ -1907,7 +1921,7 @@
 0F8C: 36 00           LD      (HL),$00            
 0F8E: 23              INC     HL                  
 0F8F: 32 30 68        LD      ($6830),A           
-0F92: 10 F8           DJNZ    $122E               ; {}
+0F92: 10 F8           DJNZ    $F8C                ; {}
 0F94: C9              RET                         
 0F95: 21 08 84        LD      HL,$8408            
 0F98: CB C6           SET     0,(HL)              
@@ -1918,10 +1932,10 @@
 0FA8: 3A AE 85        LD      A,($85AE)           
 0FAB: 32 E4 87        LD      ($87E4),A           
 0FAE: CB 4F           BIT     1,A                 
-0FB0: 28 17           JR      Z,$124D             ; {}
+0FB0: 28 17           JR      Z,$FC9              ; {}
 0FB2: 21 B9 0F        LD      HL,$0FB9            
 0FB5: ED B0           LDIR                        
-0FB7: 18 15           JR      $124B               ; {}
+0FB7: 18 15           JR      $FCE                ; {}
 0FB9: 37              SCF                         
 0FBA: 08              EX      AF,AF'              
 0FBB: 37              SCF                         
@@ -1946,7 +1960,7 @@
 0FD6: 77              LD      (HL),A              
 0FD7: 23              INC     HL                  
 0FD8: 23              INC     HL                  
-0FD9: 10 FB           DJNZ    $1231               ; {}
+0FD9: 10 FB           DJNZ    $FD6                ; {}
 0FDB: FD E5           PUSH    IY                  
 0FDD: E1              POP     HL                  
 0FDE: 3A A2 98        LD      A,($98A2)           
@@ -1957,14 +1971,14 @@
 0FE8: 23              INC     HL                  
 0FE9: 77              LD      (HL),A              
 0FEA: 23              INC     HL                  
-0FEB: 10 FA           DJNZ    $1230               ; {}
+0FEB: 10 FA           DJNZ    $FE7                ; {}
 0FED: C9              RET                         
 0FEE: 21 82 98        LD      HL,$9882            
 0FF1: FD 21 83 98     LD      IY,$9883            
-0FF5: 18 10           JR      $1246               ; {}
+0FF5: 18 10           JR      $1007               ; {}
 0FF7: 21 84 98        LD      HL,$9884            
 0FFA: FD 21 85 98     LD      IY,$9885            
-0FFE: 18 07           JR      $123D               ; {}
+0FFE: 18 07           JR      $1007               ; {}
 1000: 21 86 98        LD      HL,$9886            
 1003: FD 21 87 98     LD      IY,$9887            
 1007: 3A 06 98        LD      A,($9806)           
@@ -1972,12 +1986,12 @@
 100C: CA 18 10        JP      Z,$1018             ; {}
 100F: 3A 06 99        LD      A,($9906)           
 1012: E6 02           AND     $02                 
-1014: 28 17           JR      Z,$124D             ; {}
-1016: 18 09           JR      $123F               ; {}
+1014: 28 17           JR      Z,$102D             ; {}
+1016: 18 09           JR      $1021               ; {}
 1018: 3A 06 99        LD      A,($9906)           
 101B: E6 01           AND     $01                 
-101D: 28 11           JR      Z,$1247             ; {}
-101F: 18 03           JR      $1239               ; {}
+101D: 28 11           JR      Z,$1030             ; {}
+101F: 18 03           JR      $1024               ; {}
 1021: 35              DEC     (HL)                
 1022: 35              DEC     (HL)                
 1023: C9              RET                         
@@ -1996,28 +2010,28 @@
 1038: C9              RET                         
 1039: 3A E4 87        LD      A,($87E4)           
 103C: E6 07           AND     $07                 
-103E: 28 11           JR      Z,$1247             ; {}
+103E: 28 11           JR      Z,$1051             ; {}
 1040: FE 02           CP      $02                 
-1042: 28 16           JR      Z,$124C             ; {}
+1042: 28 16           JR      Z,$105A             ; {}
 1044: FE 04           CP      $04                 
-1046: 28 1B           JR      Z,$1251             ; {}
+1046: 28 1B           JR      Z,$1063             ; {}
 1048: 2A 02 86        LD      HL,($8602)          
 104B: ED 5B 06 86     LD      DE,($8606)          
-104F: 18 5C           JR      $1292               ; {}
+104F: 18 5C           JR      $10AD               ; {}
 1051: 2A 02 86        LD      HL,($8602)          
 1054: ED 5B 04 86     LD      DE,($8604)          
-1058: 18 10           JR      $1246               ; {}
+1058: 18 10           JR      $106A               ; {}
 105A: 2A 04 86        LD      HL,($8604)          
 105D: ED 5B 08 86     LD      DE,($8608)          
-1061: 18 4A           JR      $1280               ; {}
+1061: 18 4A           JR      $10AD               ; {}
 1063: 2A 06 86        LD      HL,($8606)          
 1066: ED 5B 08 86     LD      DE,($8608)          
 106A: 3A 3E 86        LD      A,($863E)           
 106D: FE 2C           CP      $2C                 
-106F: 38 08           JR      C,$123E             ; {}
+106F: 38 08           JR      C,$1079             ; {}
 1071: 7E              LD      A,(HL)              
 1072: FE 7F           CP      $7F                 
-1074: 20 0A           JR      NZ,$1240            ; {}
+1074: 20 0A           JR      NZ,$1080            ; {}
 1076: 0E 00           LD      C,$00               
 1078: C9              RET                         
 1079: CD 90 10        CALL    $1090               ; {}
@@ -2027,34 +2041,34 @@
 1080: EB              EX      DE,HL               
 1081: 3A 3E 86        LD      A,($863E)           
 1084: FE 2C           CP      $2C                 
-1086: 38 08           JR      C,$123E             ; {}
+1086: 38 08           JR      C,$1090             ; {}
 1088: 7E              LD      A,(HL)              
 1089: FE 7F           CP      $7F                 
-108B: 20 1D           JR      NZ,$1253            ; {}
+108B: 20 1D           JR      NZ,$10AA            ; {}
 108D: 0E 00           LD      C,$00               
 108F: C9              RET                         
 1090: 7E              LD      A,(HL)              
 1091: FE 02           CP      $02                 
-1093: 28 15           JR      Z,$124B             ; {}
+1093: 28 15           JR      Z,$10AA             ; {}
 1095: FE 03           CP      $03                 
-1097: 28 11           JR      Z,$1247             ; {}
+1097: 28 11           JR      Z,$10AA             ; {}
 1099: FE 8D           CP      $8D                 
-109B: 28 0D           JR      Z,$1243             ; {}
+109B: 28 0D           JR      Z,$10AA             ; {}
 109D: FE 7E           CP      $7E                 
-109F: 28 09           JR      Z,$123F             ; {}
+109F: 28 09           JR      Z,$10AA             ; {}
 10A1: CB BF           RES     7,A                 
 10A3: FE 0C           CP      $0C                 
-10A5: 28 03           JR      Z,$1239             ; {}
+10A5: 28 03           JR      Z,$10AA             ; {}
 10A7: 0E 00           LD      C,$00               
 10A9: C9              RET                         
 10AA: 0E 01           LD      C,$01               
 10AC: C9              RET                         
 10AD: 3A 3E 86        LD      A,($863E)           
 10B0: FE 2C           CP      $2C                 
-10B2: 38 08           JR      C,$123E             ; {}
+10B2: 38 08           JR      C,$10BC             ; {}
 10B4: 7E              LD      A,(HL)              
 10B5: FE 7F           CP      $7F                 
-10B7: 20 0A           JR      NZ,$1240            ; {}
+10B7: 20 0A           JR      NZ,$10C3            ; {}
 10B9: 0E 00           LD      C,$00               
 10BB: C9              RET                         
 10BC: CD D3 10        CALL    $10D3               ; {}
@@ -2064,18 +2078,18 @@
 10C3: EB              EX      DE,HL               
 10C4: 3A 3E 86        LD      A,($863E)           
 10C7: FE 2C           CP      $2C                 
-10C9: 38 08           JR      C,$123E             ; {}
+10C9: 38 08           JR      C,$10D3             ; {}
 10CB: 7E              LD      A,(HL)              
 10CC: FE 7F           CP      $7F                 
-10CE: 20 DA           JR      NZ,$1210            ; {}
+10CE: 20 DA           JR      NZ,$10AA            ; {}
 10D0: 0E 00           LD      C,$00               
 10D2: C9              RET                         
 10D3: 7E              LD      A,(HL)              
 10D4: FE 08           CP      $08                 
-10D6: 28 D2           JR      Z,$1208             ; {}
+10D6: 28 D2           JR      Z,$10AA             ; {}
 10D8: FE 09           CP      $09                 
-10DA: 28 CE           JR      Z,$1204             ; {}
-10DC: 18 BB           JR      $11F1               ; {}
+10DA: 28 CE           JR      Z,$10AA             ; {}
+10DC: 18 BB           JR      $1099               ; {}
 10DE: 21 25 85        LD      HL,$8525            
 10E1: 22 F6 85        LD      ($85F6),HL          
 10E4: 06 08           LD      B,$08               
@@ -2083,22 +2097,22 @@
 10E9: 4F              LD      C,A                 
 10EA: DD 2A F6 85     LD      IX,($85F6)          
 10EE: DD CB 00 7E     BIT     7,(IX+$00)          
-10F2: 20 32           JR      NZ,$1268            ; {}
+10F2: 20 32           JR      NZ,$1126            ; {}
 10F4: DD CB 03 7E     BIT     7,(IX+$03)          
-10F8: 20 2C           JR      NZ,$1262            ; {}
+10F8: 20 2C           JR      NZ,$1126            ; {}
 10FA: 2A 86 98        LD      HL,($9886)          
 10FD: DD 5E 04        LD      E,(IX+$04)          
 1100: DD 56 05        LD      D,(IX+$05)          
 1103: DD 7E 06        LD      A,(IX+$06)          
 1106: FE 40           CP      $40                 
-1108: 30 07           JR      NC,$123D            ; {}
+1108: 30 07           JR      NC,$1111            ; {}
 110A: CD 75 11        CALL    $1175               ; {}
-110D: 30 17           JR      NC,$124D            ; {}
-110F: 18 22           JR      $1258               ; {}
+110D: 30 17           JR      NC,$1126            ; {}
+110F: 18 22           JR      $1133               ; {}
 1111: 3A 00 84        LD      A,($8400)           
 1114: 2F              CPL                         
 1115: E6 06           AND     $06                 
-1117: 20 08           JR      NZ,$123E            ; {}
+1117: 20 08           JR      NZ,$1121            ; {}
 1119: 3E 10           LD      A,$10               
 111B: 85              ADD     A,L                 
 111C: 6F              LD      L,A                 
@@ -2106,12 +2120,12 @@
 111F: 84              ADD     A,H                 
 1120: 67              LD      H,A                 
 1121: CD 9F 11        CALL    $119F               ; {}
-1124: 38 0D           JR      C,$1243             ; {}
+1124: 38 0D           JR      C,$1133             ; {}
 1126: 2A F6 85        LD      HL,($85F6)          
 1129: 11 10 00        LD      DE,$0010            
 112C: 19              ADD     HL,DE               
 112D: 22 F6 85        LD      ($85F6),HL          
-1130: 10 B8           DJNZ    $11EE               ; {}
+1130: 10 B8           DJNZ    $10EA               ; {}
 1132: C9              RET                         
 1133: 78              LD      A,B                 
 1134: 32 9E 87        LD      ($879E),A           
@@ -2143,7 +2157,7 @@
 1171: CD 07 12        CALL    $1207               ; {}
 1174: C9              RET                         
 1175: CB 49           BIT     1,C                 
-1177: 20 13           JR      NZ,$1249            ; {}
+1177: 20 13           JR      NZ,$118C            ; {}
 1179: 7D              LD      A,L                 
 117A: 93              SUB     E                   
 117B: C6 08           ADD     $08                 
@@ -2152,7 +2166,7 @@
 1180: 7C              LD      A,H                 
 1181: 92              SUB     D                   
 1182: CB 51           BIT     2,C                 
-1184: 28 01           JR      Z,$1237             ; {}
+1184: 28 01           JR      Z,$1187             ; {}
 1186: 2F              CPL                         
 1187: D6 02           SUB     $02                 
 1189: FE 0C           CP      $0C                 
@@ -2165,13 +2179,13 @@
 1193: 7D              LD      A,L                 
 1194: 93              SUB     E                   
 1195: CB 51           BIT     2,C                 
-1197: 20 01           JR      NZ,$1237            ; {}
+1197: 20 01           JR      NZ,$119A            ; {}
 1199: 2F              CPL                         
 119A: D6 02           SUB     $02                 
 119C: FE 0C           CP      $0C                 
 119E: C9              RET                         
 119F: CB 49           BIT     1,C                 
-11A1: 20 14           JR      NZ,$124A            ; {}
+11A1: 20 14           JR      NZ,$11B7            ; {}
 11A3: 7D              LD      A,L                 
 11A4: 93              SUB     E                   
 11A5: C6 03           ADD     $03                 
@@ -2180,7 +2194,7 @@
 11AA: 7C              LD      A,H                 
 11AB: 92              SUB     D                   
 11AC: CB 51           BIT     2,C                 
-11AE: 28 02           JR      Z,$1238             ; {}
+11AE: 28 02           JR      Z,$11B2             ; {}
 11B0: C6 10           ADD     $10                 
 11B2: D6 03           SUB     $03                 
 11B4: FE 12           CP      $12                 
@@ -2193,7 +2207,7 @@
 11BE: 7D              LD      A,L                 
 11BF: 93              SUB     E                   
 11C0: CB 51           BIT     2,C                 
-11C2: 20 02           JR      NZ,$1238            ; {}
+11C2: 20 02           JR      NZ,$11C6            ; {}
 11C4: C6 10           ADD     $10                 
 11C6: D6 07           SUB     $07                 
 11C8: FE 12           CP      $12                 
@@ -2214,11 +2228,11 @@
 11E3: 36 32           LD      (HL),$32            
 11E5: 23              INC     HL                  
 11E6: 23              INC     HL                  
-11E7: 10 FA           DJNZ    $1230               ; {}
+11E7: 10 FA           DJNZ    $11E3               ; {}
 11E9: C9              RET                         
 11EA: 21 00 84        LD      HL,$8400            
 11ED: CB 4E           BIT     1,(HL)              
-11EF: 20 0B           JR      NZ,$1241            ; {}
+11EF: 20 0B           JR      NZ,$11FC            ; {}
 11F1: 21 0D 84        LD      HL,$840D            
 11F4: 7E              LD      A,(HL)              
 11F5: 23              INC     HL                  
@@ -2226,7 +2240,7 @@
 11F7: 77              LD      (HL),A              
 11F8: 23              INC     HL                  
 11F9: 77              LD      (HL),A              
-11FA: 18 08           JR      $123E               ; {}
+11FA: 18 08           JR      $1204               ; {}
 11FC: 21 0E 84        LD      HL,$840E            
 11FF: 7E              LD      A,(HL)              
 1200: 23              INC     HL                  
@@ -2263,9 +2277,9 @@
 1230: F5              PUSH    AF                  
 1231: 3A 00 84        LD      A,($8400)           
 1234: CB 4F           BIT     1,A                 
-1236: 28 14           JR      Z,$124A             ; {}
+1236: 28 14           JR      Z,$124C             ; {}
 1238: CB 57           BIT     2,A                 
-123A: 28 10           JR      Z,$1246             ; {}
+123A: 28 10           JR      Z,$124C             ; {}
 123C: 2A F6 85        LD      HL,($85F6)          
 123F: 11 04 00        LD      DE,$0004            
 1242: 19              ADD     HL,DE               
@@ -2293,15 +2307,15 @@
 126D: 19              ADD     HL,DE               
 126E: 3A 00 84        LD      A,($8400)           
 1271: CB 4F           BIT     1,A                 
-1273: 28 09           JR      Z,$123F             ; {}
+1273: 28 09           JR      Z,$127E             ; {}
 1275: CB 57           BIT     2,A                 
-1277: 28 05           JR      Z,$123B             ; {}
+1277: 28 05           JR      Z,$127E             ; {}
 1279: 7E              LD      A,(HL)              
 127A: D6 10           SUB     $10                 
-127C: 18 01           JR      $1237               ; {}
+127C: 18 01           JR      $127F               ; {}
 127E: 7E              LD      A,(HL)              
 127F: FE 20           CP      $20                 
-1281: 38 02           JR      C,$1238             ; {}
+1281: 38 02           JR      C,$1285             ; {}
 1283: D6 08           SUB     $08                 
 1285: 07              RLCA                        
 1286: 07              RLCA                        
@@ -2311,7 +2325,7 @@
 128D: 06 20           LD      B,$20               
 128F: 36 00           LD      (HL),$00            
 1291: 23              INC     HL                  
-1292: 10 FB           DJNZ    $1231               ; {}
+1292: 10 FB           DJNZ    $128F               ; {}
 1294: C9              RET                         
 1295: 21 25 85        LD      HL,$8525            
 1298: 11 A5 84        LD      DE,$84A5            
@@ -2335,7 +2349,7 @@
 12C1: 23              INC     HL                  
 12C2: 79              LD      A,C                 
 12C3: B0              OR      B                   
-12C4: 20 F6           JR      NZ,$122C            ; {}
+12C4: 20 F6           JR      NZ,$12BC            ; {}
 12C6: C9              RET                         
 12C7: CD 17 13        CALL    $1317               ; {}
 12CA: CD 31 13        CALL    $1331               ; {}
@@ -2358,7 +2372,7 @@
 12F4: 36 00           LD      (HL),$00            
 12F6: 23              INC     HL                  
 12F7: 23              INC     HL                  
-12F8: 10 FA           DJNZ    $1230               ; {}
+12F8: 10 FA           DJNZ    $12F4               ; {}
 12FA: C9              RET                         
 12FB: 68              LD      L,B                 
 12FC: 0C              INC     C                   
@@ -2398,7 +2412,7 @@
 1327: 11 7A 98        LD      DE,$987A            
 132A: ED B0           LDIR                        
 132C: 21 78 99        LD      HL,$9978            
-132F: 18 C1           JR      $11F7               ; {}
+132F: 18 C1           JR      $12F2               ; {}
 1331: 21 78 98        LD      HL,$9878            
 1334: 36 6A           LD      (HL),$6A            
 1336: 23              INC     HL                  
@@ -2410,7 +2424,7 @@
 1341: C9              RET                         
 1342: 21 78 98        LD      HL,$9878            
 1345: 36 6B           LD      (HL),$6B            
-1347: 18 ED           JR      $1223               ; {}
+1347: 18 ED           JR      $1336               ; {}
 1349: C3 D1 1C        JP      $1CD1               ; {}
 134C: 21 29 85        LD      HL,$8529            
 134F: 11 10 00        LD      DE,$0010            
@@ -2421,7 +2435,7 @@
 135B: B9              CP      C                   
 135C: DA 62 13        JP      C,$1362             ; {}
 135F: 91              SUB     C                   
-1360: 18 05           JR      $123B               ; {}
+1360: 18 05           JR      $1367               ; {}
 1362: D5              PUSH    DE                  
 1363: 57              LD      D,A                 
 1364: 79              LD      A,C                 
@@ -2435,7 +2449,7 @@
 1372: B9              CP      C                   
 1373: DA 79 13        JP      C,$1379             ; {}
 1376: 91              SUB     C                   
-1377: 18 05           JR      $123B               ; {}
+1377: 18 05           JR      $137E               ; {}
 1379: D5              PUSH    DE                  
 137A: 57              LD      D,A                 
 137B: 79              LD      A,C                 
@@ -2471,7 +2485,7 @@
 13AE: CB 86           RES     0,(HL)              
 13B0: 21 4A 86        LD      HL,$864A            
 13B3: CB 46           BIT     0,(HL)              
-13B5: 20 1F           JR      NZ,$1255            ; {}
+13B5: 20 1F           JR      NZ,$13D6            ; {}
 13B7: 2A F6 85        LD      HL,($85F6)          
 13BA: 2B              DEC     HL                  
 13BB: 2B              DEC     HL                  
@@ -2483,11 +2497,11 @@
 13C3: 11 06 00        LD      DE,$0006            
 13C6: 19              ADD     HL,DE               
 13C7: F1              POP     AF                  
-13C8: 20 07           JR      NZ,$123D            ; {}
+13C8: 20 07           JR      NZ,$13D1            ; {}
 13CA: 36 20           LD      (HL),$20            
 13CC: 23              INC     HL                  
 13CD: 36 01           LD      (HL),$01            
-13CF: 18 05           JR      $123B               ; {}
+13CF: 18 05           JR      $13D6               ; {}
 13D1: 36 24           LD      (HL),$24            
 13D3: 23              INC     HL                  
 13D4: 36 02           LD      (HL),$02            
@@ -2503,7 +2517,7 @@
 13ED: 21 22 98        LD      HL,$9822            
 13F0: 3A AE 85        LD      A,($85AE)           
 13F3: CB 4F           BIT     1,A                 
-13F5: 28 03           JR      Z,$1239             ; {}
+13F5: 28 03           JR      Z,$13FA             ; {}
 13F7: 36 4D           LD      (HL),$4D            
 13F9: C9              RET                         
 13FA: 36 4C           LD      (HL),$4C            
@@ -2516,7 +2530,7 @@
 1408: C9              RET                         
 1409: 21 00 84        LD      HL,$8400            
 140C: CB 4E           BIT     1,(HL)              
-140E: 20 07           JR      NZ,$123D            ; {}
+140E: 20 07           JR      NZ,$1417            ; {}
 1410: 3A 0A 84        LD      A,($840A)           
 1413: 32 0C 84        LD      ($840C),A           
 1416: C9              RET                         
@@ -2528,7 +2542,7 @@
 1422: C9              RET                         
 1423: 3A 46 86        LD      A,($8646)           
 1426: CB 47           BIT     0,A                 
-1428: 20 F4           JR      NZ,$122A            ; {}
+1428: 20 F4           JR      NZ,$141E            ; {}
 142A: 3E 01           LD      A,$01               
 142C: 32 92 9A        LD      ($9A92),A           
 142F: C9              RET                         
@@ -2539,7 +2553,7 @@
 143C: 77              LD      (HL),A              
 143D: 2B              DEC     HL                  
 143E: DD 23           INC     IX                  
-1440: 10 F7           DJNZ    $122D               ; {}
+1440: 10 F7           DJNZ    $1439               ; {}
 1442: C9              RET                         
 1443: A1              AND     C                   
 1444: A2              AND     D                   
@@ -2644,12 +2658,12 @@
 1510: 77              LD      (HL),A              
 1511: 23              INC     HL                  
 1512: 13              INC     DE                  
-1513: 10 ED           DJNZ    $1223               ; {}
+1513: 10 ED           DJNZ    $1502               ; {}
 1515: 21 22 84        LD      HL,$8422            
 1518: 06 04           LD      B,$04               
 151A: 7E              LD      A,(HL)              
 151B: A7              AND     A                   
-151C: 20 18           JR      NZ,$124E            ; {}
+151C: 20 18           JR      NZ,$1536            ; {}
 151E: 3A CC 87        LD      A,($87CC)           
 1521: CB 4F           BIT     1,A                 
 1523: CA 30 15        JP      Z,$1530             ; {}
@@ -2660,19 +2674,19 @@
 1530: 3E 8C           LD      A,$8C               
 1532: 77              LD      (HL),A              
 1533: 2B              DEC     HL                  
-1534: 10 E4           DJNZ    $121A               ; {}
+1534: 10 E4           DJNZ    $151A               ; {}
 1536: 21 22 84        LD      HL,$8422            
 1539: 06 06           LD      B,$06               
 153B: 7E              LD      A,(HL)              
 153C: FE 8C           CP      $8C                 
-153E: 28 06           JR      Z,$123C             ; {}
+153E: 28 06           JR      Z,$1546             ; {}
 1540: FE 0C           CP      $0C                 
-1542: 28 02           JR      Z,$1238             ; {}
+1542: 28 02           JR      Z,$1546             ; {}
 1544: C6 10           ADD     $10                 
 1546: DD 77 00        LD      (IX+$00),A          
 1549: 2B              DEC     HL                  
 154A: DD 2B           DEC     IX                  
-154C: 10 ED           DJNZ    $1223               ; {}
+154C: 10 ED           DJNZ    $153B               ; {}
 154E: C9              RET                         
 154F: 21 A4 98        LD      HL,$98A4            
 1552: 06 0C           LD      B,$0C               
@@ -2680,14 +2694,14 @@
 1556: 23              INC     HL                  
 1557: 36 50           LD      (HL),$50            
 1559: 23              INC     HL                  
-155A: 10 F8           DJNZ    $122E               ; {}
+155A: 10 F8           DJNZ    $1554               ; {}
 155C: C9              RET                         
 155D: DD 4E 00        LD      C,(IX+$00)          
 1560: 3A A2 98        LD      A,($98A2)           
 1563: B9              CP      C                   
 1564: DA 6A 15        JP      C,$156A             ; {}
 1567: 91              SUB     C                   
-1568: 18 03           JR      $1239               ; {}
+1568: 18 03           JR      $156D               ; {}
 156A: 57              LD      D,A                 
 156B: 79              LD      A,C                 
 156C: 92              SUB     D                   
@@ -2698,7 +2712,7 @@
 1576: B9              CP      C                   
 1577: DA 7D 15        JP      C,$157D             ; {}
 157A: 91              SUB     C                   
-157B: 18 03           JR      $1239               ; {}
+157B: 18 03           JR      $1580               ; {}
 157D: 57              LD      D,A                 
 157E: 79              LD      A,C                 
 157F: 92              SUB     D                   
@@ -2727,7 +2741,7 @@
 15B3: 36 7F           LD      (HL),$7F            
 15B5: 32 30 68        LD      ($6830),A           
 15B8: 23              INC     HL                  
-15B9: 10 F8           DJNZ    $122E               ; {}
+15B9: 10 F8           DJNZ    $15B3               ; {}
 15BB: F1              POP     AF                  
 15BC: C9              RET                         
 15BD: 36 7F           LD      (HL),$7F            
@@ -2736,7 +2750,7 @@
 15C3: 0B              DEC     BC                  
 15C4: 79              LD      A,C                 
 15C5: B0              OR      B                   
-15C6: 20 F5           JR      NZ,$122B            ; {}
+15C6: 20 F5           JR      NZ,$15BD            ; {}
 15C8: C9              RET                         
 15C9: F5              PUSH    AF                  
 15CA: 11 20 00        LD      DE,$0020            
@@ -2746,7 +2760,7 @@
 15D3: 19              ADD     HL,DE               
 15D4: F1              POP     AF                  
 15D5: 3D              DEC     A                   
-15D6: 20 F1           JR      NZ,$1227            ; {}
+15D6: 20 F1           JR      NZ,$15C9            ; {}
 15D8: C9              RET                         
 15D9: F5              PUSH    AF                  
 15DA: 21 5A 30        LD      HL,$305A            
@@ -2764,9 +2778,9 @@
 15F3: 0F              RRCA                        
 15F4: 0F              RRCA                        
 15F5: E6 0F           AND     $0F                 
-15F7: 28 04           JR      Z,$123A             ; {}
+15F7: 28 04           JR      Z,$15FD             ; {}
 15F9: C6 10           ADD     $10                 
-15FB: 18 02           JR      $1238               ; {}
+15FB: 18 02           JR      $15FF               ; {}
 15FD: 3E 7F           LD      A,$7F               
 15FF: 32 14 80        LD      ($8014),A           
 1602: F1              POP     AF                  
@@ -2775,14 +2789,14 @@
 1607: 11 20 00        LD      DE,$0020            
 160A: 3A A5 85        LD      A,($85A5)           
 160D: FE 01           CP      $01                 
-160F: 20 0A           JR      NZ,$1240            ; {}
+160F: 20 0A           JR      NZ,$161B            ; {}
 1611: DD 21 67 30     LD      IX,$3067            
 1615: 3E 0D           LD      A,$0D               
 1617: CD C9 15        CALL    $15C9               ; {}
 161A: C9              RET                         
 161B: DD 21 74 30     LD      IX,$3074            
 161F: 3E 0E           LD      A,$0E               
-1621: 18 F4           JR      $122A               ; {}
+1621: 18 F4           JR      $1617               ; {}
 1623: F5              PUSH    AF                  
 1624: 21 FA 80        LD      HL,$80FA            
 1627: 11 20 00        LD      DE,$0020            
@@ -2792,7 +2806,7 @@
 1633: 21 9C 81        LD      HL,$819C            
 1636: DD 21 93 30     LD      IX,$3093            
 163A: 3E 08           LD      A,$08               
-163C: 18 4B           JR      $1281               ; {}
+163C: 18 4B           JR      $1689               ; {}
 163E: F5              PUSH    AF                  
 163F: 21 EA 80        LD      HL,$80EA            
 1642: 11 20 00        LD      DE,$0020            
@@ -2801,7 +2815,7 @@
 164B: CD C9 15        CALL    $15C9               ; {}
 164E: 3A C0 87        LD      A,($87C0)           
 1651: A7              AND     A                   
-1652: 20 02           JR      NZ,$1238            ; {}
+1652: 20 02           JR      NZ,$1656            ; {}
 1654: F1              POP     AF                  
 1655: C9              RET                         
 1656: 21 B1 80        LD      HL,$80B1            
@@ -2810,7 +2824,7 @@
 165F: CD C9 15        CALL    $15C9               ; {}
 1662: 3A C0 87        LD      A,($87C0)           
 1665: FE 01           CP      $01                 
-1667: 20 02           JR      NZ,$1238            ; {}
+1667: 20 02           JR      NZ,$166B            ; {}
 1669: F1              POP     AF                  
 166A: C9              RET                         
 166B: 21 B4 80        LD      HL,$80B4            
@@ -2819,7 +2833,7 @@
 1674: CD C9 15        CALL    $15C9               ; {}
 1677: 3A C0 87        LD      A,($87C0)           
 167A: FE 02           CP      $02                 
-167C: 20 02           JR      NZ,$1238            ; {}
+167C: 20 02           JR      NZ,$1680            ; {}
 167E: F1              POP     AF                  
 167F: C9              RET                         
 1680: 21 B7 80        LD      HL,$80B7            
@@ -2831,7 +2845,7 @@
 168E: F5              PUSH    AF                  
 168F: 3A C0 87        LD      A,($87C0)           
 1692: A7              AND     A                   
-1693: 20 02           JR      NZ,$1238            ; {}
+1693: 20 02           JR      NZ,$1697            ; {}
 1695: F1              POP     AF                  
 1696: C9              RET                         
 1697: 11 20 00        LD      DE,$0020            
@@ -2844,21 +2858,21 @@
 16A5: 19              ADD     HL,DE               
 16A6: 0A              LD      A,(BC)              
 16A7: A7              AND     A                   
-16A8: 28 05           JR      Z,$123B             ; {}
+16A8: 28 05           JR      Z,$16AF             ; {}
 16AA: C6 50           ADD     $50                 
 16AC: 77              LD      (HL),A              
-16AD: 18 02           JR      $1238               ; {}
+16AD: 18 02           JR      $16B1               ; {}
 16AF: 36 7F           LD      (HL),$7F            
 16B1: 3A C0 87        LD      A,($87C0)           
 16B4: FE 01           CP      $01                 
-16B6: 20 02           JR      NZ,$1238            ; {}
+16B6: 20 02           JR      NZ,$16BA            ; {}
 16B8: F1              POP     AF                  
 16B9: C9              RET                         
 16BA: 21 B4 81        LD      HL,$81B4            
 16BD: CD D1 16        CALL    $16D1               ; {}
 16C0: 3A C0 87        LD      A,($87C0)           
 16C3: FE 02           CP      $02                 
-16C5: 20 02           JR      NZ,$1238            ; {}
+16C5: 20 02           JR      NZ,$16C9            ; {}
 16C7: F1              POP     AF                  
 16C8: C9              RET                         
 16C9: 21 B7 81        LD      HL,$81B7            
@@ -2887,13 +2901,13 @@
 16F0: 11 10 00        LD      DE,$0010            
 16F3: 19              ADD     HL,DE               
 16F4: D1              POP     DE                  
-16F5: 10 F4           DJNZ    $122A               ; {}
+16F5: 10 F4           DJNZ    $16EB               ; {}
 16F7: C9              RET                         
 16F8: 3A 00 84        LD      A,($8400)           
 16FB: CB 4F           BIT     1,A                 
-16FD: 20 05           JR      NZ,$123B            ; {}
+16FD: 20 05           JR      NZ,$1704            ; {}
 16FF: 21 0D 84        LD      HL,$840D            
-1702: 18 03           JR      $1239               ; {}
+1702: 18 03           JR      $1707               ; {}
 1704: 21 0E 84        LD      HL,$840E            
 1707: 7E              LD      A,(HL)              
 1708: 21 E8 87        LD      HL,$87E8            
@@ -2932,16 +2946,16 @@
 173C: 08              EX      AF,AF'              
 173D: 5F              LD      E,A                 
 173E: 55              LD      D,L                 
-173F: 10 10           DJNZ    $1246               ; {}
+173F: 10 10           DJNZ    $1751               ; {}
 1741: 60              LD      H,B                 
 1742: 55              LD      D,L                 
-1743: 10 10           DJNZ    $1246               ; {}
+1743: 10 10           DJNZ    $1755               ; {}
 1745: 60              LD      H,B                 
 1746: 56              LD      D,(HL)              
-1747: 10 20           DJNZ    $1256               ; {}
+1747: 10 20           DJNZ    $1769               ; {}
 1749: 4E              LD      C,(HL)              
 174A: 56              LD      D,(HL)              
-174B: 10 20           DJNZ    $1256               ; {}
+174B: 10 20           DJNZ    $176D               ; {}
 174D: 4E              LD      C,(HL)              
 174E: 57              LD      D,A                 
 174F: 11 30 4F        LD      DE,$4F30            
@@ -2992,21 +3006,21 @@
 1788: 32 30 68        LD      ($6830),A           
 178B: 7D              LD      A,L                 
 178C: FE 80           CP      $80                 
-178E: 20 ED           JR      NZ,$1223            ; {}
+178E: 20 ED           JR      NZ,$177D            ; {}
 1790: 7C              LD      A,H                 
 1791: FE 93           CP      $93                 
-1793: 20 E8           JR      NZ,$121E            ; {}
+1793: 20 E8           JR      NZ,$177D            ; {}
 1795: 3E 8F           LD      A,$8F               
 1797: 32 01 90        LD      ($9001),A           
 179A: 3E 8E           LD      A,$8E               
 179C: 32 61 93        LD      ($9361),A           
 179F: C9              RET                         
 17A0: FE 01           CP      $01                 
-17A2: 20 04           JR      NZ,$123A            ; {}
+17A2: 20 04           JR      NZ,$17A8            ; {}
 17A4: 36 8D           LD      (HL),$8D            
-17A6: 18 DF           JR      $1215               ; {}
+17A6: 18 DF           JR      $1787               ; {}
 17A8: 36 7E           LD      (HL),$7E            
-17AA: 18 DB           JR      $1211               ; {}
+17AA: 18 DB           JR      $1787               ; {}
 17AC: 21 40 80        LD      HL,$8040            
 17AF: 7D              LD      A,L                 
 17B0: E6 1F           AND     $1F                 
@@ -3017,10 +3031,10 @@
 17BA: 32 30 68        LD      ($6830),A           
 17BD: 7D              LD      A,L                 
 17BE: FE C0           CP      $C0                 
-17C0: 20 ED           JR      NZ,$1223            ; {}
+17C0: 20 ED           JR      NZ,$17AF            ; {}
 17C2: 7C              LD      A,H                 
 17C3: FE 83           CP      $83                 
-17C5: 20 E8           JR      NZ,$121E            ; {}
+17C5: 20 E8           JR      NZ,$17AF            ; {}
 17C7: 3E 8F           LD      A,$8F               
 17C9: 32 41 80        LD      ($8041),A           
 17CC: 36 8E           LD      (HL),$8E            
@@ -3030,47 +3044,47 @@
 17D6: 32 30 68        LD      ($6830),A           
 17D9: 36 0C           LD      (HL),$0C            
 17DB: 23              INC     HL                  
-17DC: 10 F8           DJNZ    $122E               ; {}
+17DC: 10 F8           DJNZ    $17D6               ; {}
 17DE: C9              RET                         
 17DF: FE 01           CP      $01                 
-17E1: 20 04           JR      NZ,$123A            ; {}
+17E1: 20 04           JR      NZ,$17E7            ; {}
 17E3: 36 8D           LD      (HL),$8D            
-17E5: 18 D2           JR      $1208               ; {}
+17E5: 18 D2           JR      $17B9               ; {}
 17E7: 36 7E           LD      (HL),$7E            
-17E9: 18 CE           JR      $1204               ; {}
+17E9: 18 CE           JR      $17B9               ; {}
 17EB: 21 11 84        LD      HL,$8411            
 17EE: 06 09           LD      B,$09               
 17F0: 36 00           LD      (HL),$00            
 17F2: 23              INC     HL                  
-17F3: 10 FB           DJNZ    $1231               ; {}
+17F3: 10 FB           DJNZ    $17F0               ; {}
 17F5: C9              RET                         
 17F6: 3A CF 87        LD      A,($87CF)           
 17F9: CB 5F           BIT     3,A                 
-17FB: 20 1F           JR      NZ,$1255            ; {}
+17FB: 20 1F           JR      NZ,$181C            ; {}
 17FD: 3A 87 87        LD      A,($8787)           
 1800: CB 4F           BIT     1,A                 
-1802: 20 18           JR      NZ,$124E            ; {}
+1802: 20 18           JR      NZ,$181C            ; {}
 1804: 21 0D 84        LD      HL,$840D            
 1807: 7E              LD      A,(HL)              
 1808: FE 00           CP      $00                 
-180A: 28 01           JR      Z,$1237             ; {}
+180A: 28 01           JR      Z,$180D             ; {}
 180C: 35              DEC     (HL)                
 180D: 4E              LD      C,(HL)              
 180E: 23              INC     HL                  
 180F: 7E              LD      A,(HL)              
 1810: FE 00           CP      $00                 
-1812: 20 02           JR      NZ,$1238            ; {}
+1812: 20 02           JR      NZ,$1816            ; {}
 1814: 36 01           LD      (HL),$01            
 1816: 23              INC     HL                  
 1817: 71              LD      (HL),C              
 1818: 23              INC     HL                  
 1819: 71              LD      (HL),C              
-181A: 18 0F           JR      $1245               ; {}
+181A: 18 0F           JR      $182B               ; {}
 181C: 21 0D 84        LD      HL,$840D            
 181F: 06 04           LD      B,$04               
 1821: 36 00           LD      (HL),$00            
 1823: 23              INC     HL                  
-1824: 10 FB           DJNZ    $1231               ; {}
+1824: 10 FB           DJNZ    $1821               ; {}
 1826: 3E 01           LD      A,$01               
 1828: 32 0E 84        LD      ($840E),A           
 182B: 3A 57 86        LD      A,($8657)           
@@ -3080,7 +3094,7 @@
 1833: 21 0D 84        LD      HL,$840D            
 1836: 36 02           LD      (HL),$02            
 1838: 23              INC     HL                  
-1839: 10 FB           DJNZ    $1231               ; {}
+1839: 10 FB           DJNZ    $1836               ; {}
 183B: C9              RET                         
 183C: 21 09 84        LD      HL,$8409            
 183F: 7E              LD      A,(HL)              
@@ -3094,12 +3108,12 @@
 1851: 12              LD      (DE),A              
 1852: 23              INC     HL                  
 1853: 13              INC     DE                  
-1854: 10 F5           DJNZ    $122B               ; {}
+1854: 10 F5           DJNZ    $184B               ; {}
 1856: 3A 0C 84        LD      A,($840C)           
 1859: FE 00           CP      $00                 
 185B: C8              RET     Z                   
 185C: FE 0A           CP      $0A                 
-185E: 38 02           JR      C,$1238             ; {}
+185E: 38 02           JR      C,$1862             ; {}
 1860: 3E 09           LD      A,$09               
 1862: 47              LD      B,A                 
 1863: 21 1D 80        LD      HL,$801D            
@@ -3108,7 +3122,7 @@
 186A: E1              POP     HL                  
 186B: 2B              DEC     HL                  
 186C: 2B              DEC     HL                  
-186D: 10 F7           DJNZ    $122D               ; {}
+186D: 10 F7           DJNZ    $1866               ; {}
 186F: C9              RET                         
 1870: 11 20 00        LD      DE,$0020            
 1873: 3E 7F           LD      A,$7F               
@@ -3125,10 +3139,10 @@
 1882: 36 00           LD      (HL),$00            
 1884: 23              INC     HL                  
 1885: 32 30 68        LD      ($6830),A           
-1888: 10 F8           DJNZ    $122E               ; {}
+1888: 10 F8           DJNZ    $1882               ; {}
 188A: C9              RET                         
 188B: 21 25 85        LD      HL,$8525            
-188E: 18 F0           JR      $1226               ; {}
+188E: 18 F0           JR      $1880               ; {}
 1890: 21 25 84        LD      HL,$8425            
 1893: 06 08           LD      B,$08               
 1895: 3E 00           LD      A,$00               
@@ -3138,10 +3152,10 @@
 189B: CD 62 19        CALL    $1962               ; {}
 189E: CD 62 19        CALL    $1962               ; {}
 18A1: 23              INC     HL                  
-18A2: 10 F1           DJNZ    $1227               ; {}
+18A2: 10 F1           DJNZ    $1895               ; {}
 18A4: C9              RET                         
 18A5: 21 65 84        LD      HL,$8465            
-18A8: 18 E9           JR      $121F               ; {}
+18A8: 18 E9           JR      $1893               ; {}
 18AA: 21 60 31        LD      HL,$3160            
 18AD: CD DC 1B        CALL    $1BDC               ; {}
 18B0: 4F              LD      C,A                 
@@ -3159,14 +3173,14 @@
 18BE: 56              LD      D,(HL)              
 18BF: 7A              LD      A,D                 
 18C0: A7              AND     A                   
-18C1: 28 04           JR      Z,$123A             ; {}
+18C1: 28 04           JR      Z,$18C7             ; {}
 18C3: EB              EX      DE,HL               
 18C4: CD 26 19        CALL    $1926               ; {}
 18C7: E1              POP     HL                  
 18C8: 23              INC     HL                  
 18C9: 23              INC     HL                  
 18CA: 32 30 68        LD      ($6830),A           
-18CD: 10 EC           DJNZ    $1222               ; {}
+18CD: 10 EC           DJNZ    $18BB               ; {}
 18CF: 21 D0 81        LD      HL,$81D0            
 18D2: 3E 02           LD      A,$02               
 18D4: 4F              LD      C,A                 
@@ -3174,14 +3188,14 @@
 18D6: CD 26 19        CALL    $1926               ; {}
 18D9: 3A 57 86        LD      A,($8657)           
 18DC: CB 4F           BIT     1,A                 
-18DE: 20 12           JR      NZ,$1248            ; {}
+18DE: 20 12           JR      NZ,$18F2            ; {}
 18E0: 21 85 87        LD      HL,$8785            
 18E3: 3A 00 84        LD      A,($8400)           
 18E6: CB 4F           BIT     1,A                 
-18E8: 20 05           JR      NZ,$123B            ; {}
+18E8: 20 05           JR      NZ,$18EF            ; {}
 18EA: CB 46           BIT     0,(HL)              
 18EC: C8              RET     Z                   
-18ED: 18 03           JR      $1239               ; {}
+18ED: 18 03           JR      $18F2               ; {}
 18EF: CB 4E           BIT     1,(HL)              
 18F1: C8              RET     Z                   
 18F2: 21 08 19        LD      HL,$1908            
@@ -3234,7 +3248,7 @@
 1932: CD 62 19        CALL    $1962               ; {}
 1935: 79              LD      A,C                 
 1936: FE 00           CP      $00                 
-1938: 20 05           JR      NZ,$123B            ; {}
+1938: 20 05           JR      NZ,$193F            ; {}
 193A: 3E 02           LD      A,$02               
 193C: CD 60 19        CALL    $1960               ; {}
 193F: 23              INC     HL                  
@@ -3249,7 +3263,7 @@
 194E: CD 60 19        CALL    $1960               ; {}
 1951: 79              LD      A,C                 
 1952: FE 00           CP      $00                 
-1954: 20 05           JR      NZ,$123B            ; {}
+1954: 20 05           JR      NZ,$195B            ; {}
 1956: 3E 03           LD      A,$03               
 1958: CD 60 19        CALL    $1960               ; {}
 195B: 23              INC     HL                  
@@ -3272,7 +3286,7 @@
 1971: 2B              DEC     HL                  
 1972: 79              LD      A,C                 
 1973: FE 00           CP      $00                 
-1975: 20 06           JR      NZ,$123C            ; {}
+1975: 20 06           JR      NZ,$197D            ; {}
 1977: CD 91 19        CALL    $1991               ; {}
 197A: CD 91 19        CALL    $1991               ; {}
 197D: CD 91 19        CALL    $1991               ; {}
@@ -3295,10 +3309,10 @@
 199C: 7E              LD      A,(HL)              
 199D: 23              INC     HL                  
 199E: 77              LD      (HL),A              
-199F: 18 22           JR      $1258               ; {}
+199F: 18 22           JR      $19C3               ; {}
 19A1: 21 00 84        LD      HL,$8400            
 19A4: CB 4E           BIT     1,(HL)              
-19A6: 20 0C           JR      NZ,$1242            ; {}
+19A6: 20 0C           JR      NZ,$19B4            ; {}
 19A8: 21 0D 84        LD      HL,$840D            
 19AB: 34              INC     (HL)                
 19AC: 7E              LD      A,(HL)              
@@ -3307,14 +3321,14 @@
 19AF: 77              LD      (HL),A              
 19B0: 23              INC     HL                  
 19B1: 77              LD      (HL),A              
-19B2: 18 07           JR      $123D               ; {}
+19B2: 18 07           JR      $19BB               ; {}
 19B4: 21 0E 84        LD      HL,$840E            
 19B7: 34              INC     (HL)                
 19B8: 7E              LD      A,(HL)              
-19B9: 18 F3           JR      $1229               ; {}
+19B9: 18 F3           JR      $19AE               ; {}
 19BB: 3A 57 86        LD      A,($8657)           
 19BE: CB 4F           BIT     1,A                 
-19C0: 20 D7           JR      NZ,$120D            ; {}
+19C0: 20 D7           JR      NZ,$1999            ; {}
 19C2: 2B              DEC     HL                  
 19C3: CD 1F 1A        CALL    $1A1F               ; {}
 19C6: 7E              LD      A,(HL)              
@@ -3327,10 +3341,10 @@
 19D1: 0F              RRCA                        
 19D2: 0F              RRCA                        
 19D3: E6 0F           AND     $0F                 
-19D5: 28 07           JR      Z,$123D             ; {}
+19D5: 28 07           JR      Z,$19DE             ; {}
 19D7: C6 10           ADD     $10                 
 19D9: 32 24 80        LD      ($8024),A           
-19DC: 18 05           JR      $123B               ; {}
+19DC: 18 05           JR      $19E3               ; {}
 19DE: 3E 7F           LD      A,$7F               
 19E0: 32 24 80        LD      ($8024),A           
 19E3: 21 08 80        LD      HL,$8008            
@@ -3340,10 +3354,10 @@
 19EF: 77              LD      (HL),A              
 19F0: 2B              DEC     HL                  
 19F1: DD 23           INC     IX                  
-19F3: 10 F7           DJNZ    $122D               ; {}
+19F3: 10 F7           DJNZ    $19EC               ; {}
 19F5: 21 00 84        LD      HL,$8400            
 19F8: CB 4E           BIT     1,(HL)              
-19FA: 20 0B           JR      NZ,$1241            ; {}
+19FA: 20 0B           JR      NZ,$1A07            ; {}
 19FC: 21 0D 84        LD      HL,$840D            
 19FF: 7E              LD      A,(HL)              
 1A00: 23              INC     HL                  
@@ -3351,7 +3365,7 @@
 1A02: 77              LD      (HL),A              
 1A03: 23              INC     HL                  
 1A04: 77              LD      (HL),A              
-1A05: 18 08           JR      $123E               ; {}
+1A05: 18 08           JR      $1A0F               ; {}
 1A07: 21 0E 84        LD      HL,$840E            
 1A0A: 7E              LD      A,(HL)              
 1A0B: 23              INC     HL                  
@@ -3371,10 +3385,10 @@
 1A1F: 11 01 00        LD      DE,$0001            
 1A22: 7E              LD      A,(HL)              
 1A23: A7              AND     A                   
-1A24: 28 0F           JR      Z,$1245             ; {}
+1A24: 28 0F           JR      Z,$1A35             ; {}
 1A26: 1F              RRA                         
 1A27: 47              LD      B,A                 
-1A28: 30 04           JR      NC,$123A            ; {}
+1A28: 30 04           JR      NC,$1A2E            ; {}
 1A2A: 7A              LD      A,D                 
 1A2B: 83              ADD     A,E                 
 1A2C: 27              DAA                         
@@ -3384,7 +3398,7 @@
 1A30: 27              DAA                         
 1A31: 5F              LD      E,A                 
 1A32: 78              LD      A,B                 
-1A33: 18 EE           JR      $1224               ; {}
+1A33: 18 EE           JR      $1A23               ; {}
 1A35: 72              LD      (HL),D              
 1A36: C9              RET                         
 1A37: 21 50 32        LD      HL,$3250            
@@ -3404,7 +3418,7 @@
 1A50: DD 7E 00        LD      A,(IX+$00)          
 1A53: 4F              LD      C,A                 
 1A54: A7              AND     A                   
-1A55: 28 10           JR      Z,$1246             ; {}
+1A55: 28 10           JR      Z,$1A67             ; {}
 1A57: 79              LD      A,C                 
 1A58: 87              ADD     A,A                 
 1A59: 87              ADD     A,A                 
@@ -3417,20 +3431,20 @@
 1A60: DD 23           INC     IX                  
 1A62: E6 F0           AND     $F0                 
 1A64: 77              LD      (HL),A              
-1A65: 18 05           JR      $123B               ; {}
+1A65: 18 05           JR      $1A6C               ; {}
 1A67: DD 23           INC     IX                  
 1A69: 2B              DEC     HL                  
 1A6A: CB FE           SET     7,(HL)              
 1A6C: E1              POP     HL                  
 1A6D: 19              ADD     HL,DE               
-1A6E: 10 DF           DJNZ    $1215               ; {}
+1A6E: 10 DF           DJNZ    $1A4F               ; {}
 1A70: C9              RET                         
 1A71: 11 10 00        LD      DE,$0010            
 1A74: 21 28 85        LD      HL,$8528            
 1A77: 06 08           LD      B,$08               
 1A79: E5              PUSH    HL                  
 1A7A: CB 7E           BIT     7,(HL)              
-1A7C: 28 06           JR      Z,$123C             ; {}
+1A7C: 28 06           JR      Z,$1A84             ; {}
 1A7E: 23              INC     HL                  
 1A7F: 36 00           LD      (HL),$00            
 1A81: 23              INC     HL                  
@@ -3445,7 +3459,7 @@
 1A8C: 77              LD      (HL),A              
 1A8D: E1              POP     HL                  
 1A8E: 19              ADD     HL,DE               
-1A8F: 10 E8           DJNZ    $121E               ; {}
+1A8F: 10 E8           DJNZ    $1A79               ; {}
 1A91: C9              RET                         
 1A92: 21 2B 85        LD      HL,$852B            
 1A95: 11 10 00        LD      DE,$0010            
@@ -3453,11 +3467,11 @@
 1A9A: E5              PUSH    HL                  
 1A9B: 78              LD      A,B                 
 1A9C: FE 05           CP      $05                 
-1A9E: 38 07           JR      C,$123D             ; {}
+1A9E: 38 07           JR      C,$1AA7             ; {}
 1AA0: 36 20           LD      (HL),$20            
 1AA2: 23              INC     HL                  
 1AA3: 36 01           LD      (HL),$01            
-1AA5: 18 15           JR      $124B               ; {}
+1AA5: 18 15           JR      $1ABC               ; {}
 1AA7: 22 F6 85        LD      ($85F6),HL          
 1AAA: E1              POP     HL                  
 1AAB: E5              PUSH    HL                  
@@ -3476,7 +3490,7 @@
 1ABD: 36 00           LD      (HL),$00            
 1ABF: E1              POP     HL                  
 1AC0: 19              ADD     HL,DE               
-1AC1: 10 D7           DJNZ    $120D               ; {}
+1AC1: 10 D7           DJNZ    $1A9A               ; {}
 1AC3: C9              RET                         
 1AC4: 21 E8 30        LD      HL,$30E8            
 1AC7: CD DC 1B        CALL    $1BDC               ; {}
@@ -3494,16 +3508,16 @@
 1ADC: FD 21 65 84     LD      IY,$8465            
 1AE0: FD E5           PUSH    IY                  
 1AE2: CB 46           BIT     0,(HL)              
-1AE4: 28 10           JR      Z,$1246             ; {}
+1AE4: 28 10           JR      Z,$1AF6             ; {}
 1AE6: 36 FF           LD      (HL),$FF            
 1AE8: FD 36 00 00     LD      (IY+$00),$00        
 1AEC: FD 23           INC     IY                  
 1AEE: FD 36 00 60     LD      (IY+$00),$60        
 1AF2: DD 23           INC     IX                  
-1AF4: 18 1A           JR      $1250               ; {}
+1AF4: 18 1A           JR      $1B10               ; {}
 1AF6: DD 7E 00        LD      A,(IX+$00)          
 1AF9: A7              AND     A                   
-1AFA: 28 EA           JR      Z,$1220             ; {}
+1AFA: 28 EA           JR      Z,$1AE6             ; {}
 1AFC: 87              ADD     A,A                 
 1AFD: 87              ADD     A,A                 
 1AFE: 87              ADD     A,A                 
@@ -3518,7 +3532,7 @@
 1B10: FD E1           POP     IY                  
 1B12: FD 19           ADD     IY,DE               
 1B14: 19              ADD     HL,DE               
-1B15: 10 C9           DJNZ    $11FF               ; {}
+1B15: 10 C9           DJNZ    $1AE0               ; {}
 1B17: 21 3C 98        LD      HL,$983C            
 1B1A: 11 3C 99        LD      DE,$993C            
 1B1D: 06 08           LD      B,$08               
@@ -3530,7 +3544,7 @@
 1B26: 12              LD      (DE),A              
 1B27: 13              INC     DE                  
 1B28: 13              INC     DE                  
-1B29: 10 F4           DJNZ    $122A               ; {}
+1B29: 10 F4           DJNZ    $1B1F               ; {}
 1B2B: C9              RET                         
 1B2C: 3E 02           LD      A,$02               
 1B2E: 32 22 98        LD      ($9822),A           
@@ -3544,16 +3558,16 @@
 1B42: 32 01 98        LD      ($9801),A           
 1B45: 3A 57 86        LD      A,($8657)           
 1B48: CB 4F           BIT     1,A                 
-1B4A: 20 1F           JR      NZ,$1255            ; {}
+1B4A: 20 1F           JR      NZ,$1B6B            ; {}
 1B4C: 21 85 87        LD      HL,$8785            
 1B4F: 3A 00 84        LD      A,($8400)           
 1B52: CB 4F           BIT     1,A                 
-1B54: 20 06           JR      NZ,$123C            ; {}
+1B54: 20 06           JR      NZ,$1B5C            ; {}
 1B56: CB 46           BIT     0,(HL)              
-1B58: 20 11           JR      NZ,$1247            ; {}
-1B5A: 18 04           JR      $123A               ; {}
+1B58: 20 11           JR      NZ,$1B6B            ; {}
+1B5A: 18 04           JR      $1B60               ; {}
 1B5C: CB 4E           BIT     1,(HL)              
-1B5E: 20 0B           JR      NZ,$1241            ; {}
+1B5E: 20 0B           JR      NZ,$1B6B            ; {}
 1B60: 3E 08           LD      A,$08               
 1B62: 32 A3 98        LD      ($98A3),A           
 1B65: 3E B1           LD      A,$B1               
@@ -3568,9 +3582,9 @@
 1B7A: C9              RET                         
 1B7B: 21 00 84        LD      HL,$8400            
 1B7E: CB 4E           BIT     1,(HL)              
-1B80: 20 05           JR      NZ,$123B            ; {}
+1B80: 20 05           JR      NZ,$1B87            ; {}
 1B82: 21 0A 84        LD      HL,$840A            
-1B85: 18 03           JR      $1239               ; {}
+1B85: 18 03           JR      $1B8A               ; {}
 1B87: 21 0B 84        LD      HL,$840B            
 1B8A: 35              DEC     (HL)                
 1B8B: 7E              LD      A,(HL)              
@@ -3588,7 +3602,7 @@
 1BA4: DD 77 00        LD      (IX+$00),A          
 1BA7: DD 23           INC     IX                  
 1BA9: 19              ADD     HL,DE               
-1BAA: 10 F0           DJNZ    $1226               ; {}
+1BAA: 10 F0           DJNZ    $1B9C               ; {}
 1BAC: C9              RET                         
 1BAD: 21 29 85        LD      HL,$8529            
 1BB0: 06 08           LD      B,$08               
@@ -3611,11 +3625,11 @@
 1BD3: DD 77 00        LD      (IX+$00),A          
 1BD6: DD 23           INC     IX                  
 1BD8: 19              ADD     HL,DE               
-1BD9: 10 E2           DJNZ    $1218               ; {}
+1BD9: 10 E2           DJNZ    $1BBD               ; {}
 1BDB: C9              RET                         
 1BDC: 3A 27 86        LD      A,($8627)           
 1BDF: FE 10           CP      $10                 
-1BE1: 38 04           JR      C,$123A             ; {}
+1BE1: 38 04           JR      C,$1BE7             ; {}
 1BE3: E6 03           AND     $03                 
 1BE5: C6 0C           ADD     $0C                 
 1BE7: 3D              DEC     A                   
@@ -3637,16 +3651,16 @@
 1C0B: CB E6           SET     4,(HL)              
 1C0D: C9              RET                         
 1C0E: DD 21 FA 85     LD      IX,$85FA            
-1C12: 18 23           JR      $1259               ; {}
+1C12: 18 23           JR      $1C37               ; {}
 1C14: DD 21 02 86     LD      IX,$8602            
-1C18: 18 1D           JR      $1253               ; {}
+1C18: 18 1D           JR      $1C37               ; {}
 1C1A: DD 21 0A 86     LD      IX,$860A            
-1C1E: 18 17           JR      $124D               ; {}
+1C1E: 18 17           JR      $1C37               ; {}
 1C20: 3A AE 85        LD      A,($85AE)           
 1C23: E6 0F           AND     $0F                 
-1C25: 28 0C           JR      Z,$1242             ; {}
+1C25: 28 0C           JR      Z,$1C33             ; {}
 1C27: FE 06           CP      $06                 
-1C29: 28 08           JR      Z,$123E             ; {}
+1C29: 28 08           JR      Z,$1C33             ; {}
 1C2B: 3E 06           LD      A,$06               
 1C2D: 82              ADD     A,D                 
 1C2E: 57              LD      D,A                 
@@ -3709,9 +3723,9 @@
 1C92: CD 17 13        CALL    $1317               ; {}
 1C95: 3A 00 84        LD      A,($8400)           
 1C98: CB 4F           BIT     1,A                 
-1C9A: 20 05           JR      NZ,$123B            ; {}
+1C9A: 20 05           JR      NZ,$1CA1            ; {}
 1C9C: CD 31 13        CALL    $1331               ; {}
-1C9F: 18 03           JR      $1239               ; {}
+1C9F: 18 03           JR      $1CA4               ; {}
 1CA1: CD 42 13        CALL    $1342               ; {}
 1CA4: 21 C5 1C        LD      HL,$1CC5            
 1CA7: 11 DE 98        LD      DE,$98DE            
@@ -3727,7 +3741,7 @@
 1CBE: 36 00           LD      (HL),$00            
 1CC0: 23              INC     HL                  
 1CC1: 23              INC     HL                  
-1CC2: 10 FA           DJNZ    $1230               ; {}
+1CC2: 10 FA           DJNZ    $1CBE               ; {}
 1CC4: C9              RET                         
 1CC5: 81              ADD     A,C                 
 1CC6: 98              SBC     B                   
@@ -3745,12 +3759,12 @@
 1CD4: 06 10           LD      B,$10               
 1CD6: 36 00           LD      (HL),$00            
 1CD8: 23              INC     HL                  
-1CD9: 10 FB           DJNZ    $1231               ; {}
+1CD9: 10 FB           DJNZ    $1CD6               ; {}
 1CDB: 21 70 98        LD      HL,$9870            
 1CDE: 06 10           LD      B,$10               
 1CE0: 36 00           LD      (HL),$00            
 1CE2: 23              INC     HL                  
-1CE3: 10 FB           DJNZ    $1231               ; {}
+1CE3: 10 FB           DJNZ    $1CE0               ; {}
 1CE5: 21 5E 98        LD      HL,$985E            
 1CE8: 11 DE 98        LD      DE,$98DE            
 1CEB: 06 06           LD      B,$06               
@@ -3759,7 +3773,7 @@
 1CF0: 12              LD      (DE),A              
 1CF1: 23              INC     HL                  
 1CF2: 13              INC     DE                  
-1CF3: 10 F8           DJNZ    $122E               ; {}
+1CF3: 10 F8           DJNZ    $1CED               ; {}
 1CF5: C9              RET                         
 1CF6: E5              PUSH    HL                  
 1CF7: D5              PUSH    DE                  
@@ -3783,18 +3797,18 @@
 1D12: F5              PUSH    AF                  
 1D13: 21 56 86        LD      HL,$8656            
 1D16: CB 56           BIT     2,(HL)              
-1D18: 28 1C           JR      Z,$1252             ; {}
+1D18: 28 1C           JR      Z,$1D36             ; {}
 1D1A: CB 96           RES     2,(HL)              
 1D1C: 21 48 86        LD      HL,$8648            
 1D1F: 3A A3 98        LD      A,($98A3)           
 1D22: FE 18           CP      $18                 
 1D24: D2 2B 1D        JP      NC,$1D2B            ; {}
 1D27: 36 00           LD      (HL),$00            
-1D29: 18 0B           JR      $1241               ; {}
+1D29: 18 0B           JR      $1D36               ; {}
 1D2B: 34              INC     (HL)                
 1D2C: 7E              LD      A,(HL)              
 1D2D: FE 02           CP      $02                 
-1D2F: 20 05           JR      NZ,$123B            ; {}
+1D2F: 20 05           JR      NZ,$1D36            ; {}
 1D31: 36 00           LD      (HL),$00            
 1D33: CD AB 2F        CALL    $2FAB               ; {}
 1D36: F1              POP     AF                  
@@ -3811,7 +3825,7 @@
 1D47: 3A AF 85        LD      A,($85AF)           
 1D4A: C3 23 1C        JP      $1C23               ; {}
 1D4D: 27              DAA                         
-1D4E: 28 2D           JR      Z,$1263             ; {}
+1D4E: 28 2D           JR      Z,$1D7D             ; {}
 1D50: 2D              DEC     L                   
 1D51: 2E 1B           LD      L,$1B               
 1D53: 0C              INC     C                   
@@ -3821,7 +3835,7 @@
 1D58: 0C              INC     C                   
 1D59: 1D              DEC     E                   
 1D5A: 25              DEC     H                   
-1D5B: 28 21           JR      Z,$1257             ; {}
+1D5B: 28 21           JR      Z,$1D7E             ; {}
 1D5D: 0C              INC     C                   
 1D5E: 1D              DEC     E                   
 1D5F: 27              DAA                         
@@ -3834,7 +3848,7 @@
 1D68: 62              LD      H,D                 
 1D69: 6D              LD      L,L                 
 1D6A: 35              DEC     (HL)                
-1D6B: 10 0C           DJNZ    $1242               ; {}
+1D6B: 10 0C           DJNZ    $1D79               ; {}
 1D6D: 2C              INC     L                   
 1D6E: 2B              DEC     HL                  
 1D6F: 1E 2D           LD      E,$2D               
@@ -3847,7 +3861,7 @@
 1D79: 0C              INC     C                   
 1D7A: 1E 26           LD      E,$26               
 1D7C: 22 2D 27        LD      ($272D),HL          ; {}
-1D7F: 28 2D           JR      Z,$1263             ; {}
+1D7F: 28 2D           JR      Z,$1DAE             ; {}
 1D81: 2D              DEC     L                   
 1D82: 2E 1B           LD      L,$1B               
 1D84: 0C              INC     C                   
@@ -3864,7 +3878,7 @@
 1D91: 1E 21           LD      E,$21               
 1D93: 2D              DEC     L                   
 1D94: 1E 2B           LD      E,$2B               
-1D96: 28 1F           JR      Z,$1255             ; {}
+1D96: 28 1F           JR      Z,$1DB7             ; {}
 1D98: 1E 1B           LD      E,$1B               
 1D9A: 0C              INC     C                   
 1D9B: 9E              SBC     (HL)                
@@ -3962,17 +3976,17 @@
 1E1B: 2C              INC     L                   
 1E1C: 7D              LD      A,L                 
 1E1D: FE 3C           CP      $3C                 
-1E1F: 20 2D           JR      NZ,$1263            ; {}
+1E1F: 20 2D           JR      NZ,$1E4E            ; {}
 1E21: 2E 00           LD      L,$00               
 1E23: A7              AND     A                   
 1E24: 25              DEC     H                   
 1E25: 7C              LD      A,H                 
 1E26: FE 0F           CP      $0F                 
-1E28: 20 02           JR      NZ,$1238            ; {}
+1E28: 20 02           JR      NZ,$1E2C            ; {}
 1E2A: 26 09           LD      H,$09               
 1E2C: 7C              LD      A,H                 
 1E2D: FE 40           CP      $40                 
-1E2F: 38 08           JR      C,$123E             ; {}
+1E2F: 38 08           JR      C,$1E39             ; {}
 1E31: 21 87 87        LD      HL,$8787            
 1E34: CB CE           SET     1,(HL)              
 1E36: C3 71 0A        JP      $0A71               ; {}
@@ -4010,20 +4024,20 @@
 1E8D: 2A 89 87        LD      HL,($8789)          
 1E90: 7D              LD      A,L                 
 1E91: FE 1E           CP      $1E                 
-1E93: 30 06           JR      NC,$123C            ; {}
+1E93: 30 06           JR      NC,$1E9B            ; {}
 1E95: DD 21 AD 1D     LD      IX,$1DAD            
-1E99: 18 04           JR      $123A               ; {}
+1E99: 18 04           JR      $1E9F               ; {}
 1E9B: DD 21 9A 1D     LD      IX,$1D9A            
 1E9F: 21 E6 80        LD      HL,$80E6            
 1EA2: 3E 13           LD      A,$13               
 1EA4: CD C9 15        CALL    $15C9               ; {}
 1EA7: 3A A5 85        LD      A,($85A5)           
 1EAA: FE 00           CP      $00                 
-1EAC: 20 06           JR      NZ,$123C            ; {}
+1EAC: 20 06           JR      NZ,$1EB4            ; {}
 1EAE: CD CA 1E        CALL    $1ECA               ; {}
 1EB1: C3 71 0A        JP      $0A71               ; {}
 1EB4: FE 01           CP      $01                 
-1EB6: 20 09           JR      NZ,$123F            ; {}
+1EB6: 20 09           JR      NZ,$1EC1            ; {}
 1EB8: CD CA 1E        CALL    $1ECA               ; {}
 1EBB: CD D7 1E        CALL    $1ED7               ; {}
 1EBE: C3 71 0A        JP      $0A71               ; {}
@@ -4054,29 +4068,29 @@
 1F01: 7D              LD      A,L                 
 1F02: E6 03           AND     $03                 
 1F04: FE 03           CP      $03                 
-1F06: 28 10           JR      Z,$1246             ; {}
+1F06: 28 10           JR      Z,$1F18             ; {}
 1F08: FE 02           CP      $02                 
-1F0A: 28 1A           JR      Z,$1250             ; {}
+1F0A: 28 1A           JR      Z,$1F26             ; {}
 1F0C: FE 01           CP      $01                 
-1F0E: 28 24           JR      Z,$125A             ; {}
+1F0E: 28 24           JR      Z,$1F34             ; {}
 1F10: 21 6D 84        LD      HL,$846D            
 1F13: CD 73 1F        CALL    $1F73               ; {}
-1F16: 18 24           JR      $125A               ; {}
+1F16: 18 24           JR      $1F3C               ; {}
 1F18: 21 75 84        LD      HL,$8475            
 1F1B: CD 73 1F        CALL    $1F73               ; {}
 1F1E: 21 7D 84        LD      HL,$847D            
 1F21: CD 73 1F        CALL    $1F73               ; {}
-1F24: 18 1B           JR      $1251               ; {}
+1F24: 18 1B           JR      $1F41               ; {}
 1F26: 21 85 84        LD      HL,$8485            
 1F29: CD 73 1F        CALL    $1F73               ; {}
 1F2C: 21 8D 84        LD      HL,$848D            
 1F2F: CD 73 1F        CALL    $1F73               ; {}
-1F32: 18 08           JR      $123E               ; {}
+1F32: 18 08           JR      $1F3C               ; {}
 1F34: 21 95 84        LD      HL,$8495            
 1F37: CD 73 1F        CALL    $1F73               ; {}
-1F3A: 18 05           JR      $123B               ; {}
+1F3A: 18 05           JR      $1F41               ; {}
 1F3C: 21 25 85        LD      HL,$8525            
-1F3F: 18 03           JR      $1239               ; {}
+1F3F: 18 03           JR      $1F44               ; {}
 1F41: 21 65 85        LD      HL,$8565            
 1F44: 11 10 00        LD      DE,$0010            
 1F47: 06 04           LD      B,$04               
@@ -4105,16 +4119,16 @@
 1F6D: D1              POP     DE                  
 1F6E: C1              POP     BC                  
 1F6F: 19              ADD     HL,DE               
-1F70: 10 D7           DJNZ    $120D               ; {}
+1F70: 10 D7           DJNZ    $1F49               ; {}
 1F72: C9              RET                         
 1F73: E5              PUSH    HL                  
 1F74: 23              INC     HL                  
 1F75: 23              INC     HL                  
 1F76: CB 66           BIT     4,(HL)              
-1F78: 20 07           JR      NZ,$123D            ; {}
+1F78: 20 07           JR      NZ,$1F81            ; {}
 1F7A: CB 7E           BIT     7,(HL)              
 1F7C: C2 B5 21        JP      NZ,$21B5            ; {}
-1F7F: 18 02           JR      $1238               ; {}
+1F7F: 18 02           JR      $1F83               ; {}
 1F81: E1              POP     HL                  
 1F82: C9              RET                         
 1F83: E1              POP     HL                  
@@ -4122,56 +4136,56 @@
 1F85: 56              LD      D,(HL)              
 1F86: 7A              LD      A,D                 
 1F87: A7              AND     A                   
-1F88: 28 54           JR      Z,$128A             ; {}
+1F88: 28 54           JR      Z,$1FDE             ; {}
 1F8A: 23              INC     HL                  
 1F8B: 5E              LD      E,(HL)              
 1F8C: 7B              LD      A,E                 
 1F8D: FE F0           CP      $F0                 
-1F8F: 30 4D           JR      NC,$1283            ; {}
+1F8F: 30 4D           JR      NC,$1FDE            ; {}
 1F91: CD C4 22        CALL    $22C4               ; {}
 1F94: 2A EA 85        LD      HL,($85EA)          
 1F97: 7E              LD      A,(HL)              
 1F98: FE 09           CP      $09                 
-1F9A: 28 1E           JR      Z,$1254             ; {}
+1F9A: 28 1E           JR      Z,$1FBA             ; {}
 1F9C: FE 08           CP      $08                 
-1F9E: 28 1A           JR      Z,$1250             ; {}
+1F9E: 28 1A           JR      Z,$1FBA             ; {}
 1FA0: FE 0C           CP      $0C                 
-1FA2: 28 16           JR      Z,$124C             ; {}
+1FA2: 28 16           JR      Z,$1FBA             ; {}
 1FA4: FE 03           CP      $03                 
-1FA6: 28 12           JR      Z,$1248             ; {}
+1FA6: 28 12           JR      Z,$1FBA             ; {}
 1FA8: FE 01           CP      $01                 
-1FAA: 28 0E           JR      Z,$1244             ; {}
+1FAA: 28 0E           JR      Z,$1FBA             ; {}
 1FAC: FE 05           CP      $05                 
-1FAE: 28 0A           JR      Z,$1240             ; {}
+1FAE: 28 0A           JR      Z,$1FBA             ; {}
 1FB0: FE 06           CP      $06                 
-1FB2: 28 06           JR      Z,$123C             ; {}
+1FB2: 28 06           JR      Z,$1FBA             ; {}
 1FB4: FE 07           CP      $07                 
-1FB6: 28 02           JR      Z,$1238             ; {}
-1FB8: 20 24           JR      NZ,$125A            ; {}
+1FB6: 28 02           JR      Z,$1FBA             ; {}
+1FB8: 20 24           JR      NZ,$1FDE            ; {}
 1FBA: 2A EC 85        LD      HL,($85EC)          
 1FBD: 7E              LD      A,(HL)              
 1FBE: FE 09           CP      $09                 
-1FC0: 28 24           JR      Z,$125A             ; {}
+1FC0: 28 24           JR      Z,$1FE6             ; {}
 1FC2: FE 08           CP      $08                 
-1FC4: 28 20           JR      Z,$1256             ; {}
+1FC4: 28 20           JR      Z,$1FE6             ; {}
 1FC6: FE 0C           CP      $0C                 
-1FC8: 28 1C           JR      Z,$1252             ; {}
+1FC8: 28 1C           JR      Z,$1FE6             ; {}
 1FCA: FE 02           CP      $02                 
-1FCC: 28 18           JR      Z,$124E             ; {}
+1FCC: 28 18           JR      Z,$1FE6             ; {}
 1FCE: FE 00           CP      $00                 
-1FD0: 28 14           JR      Z,$124A             ; {}
+1FD0: 28 14           JR      Z,$1FE6             ; {}
 1FD2: FE 04           CP      $04                 
-1FD4: 28 10           JR      Z,$1246             ; {}
+1FD4: 28 10           JR      Z,$1FE6             ; {}
 1FD6: FE 0A           CP      $0A                 
-1FD8: 28 0C           JR      Z,$1242             ; {}
+1FD8: 28 0C           JR      Z,$1FE6             ; {}
 1FDA: FE 0B           CP      $0B                 
-1FDC: 28 08           JR      Z,$123E             ; {}
+1FDC: 28 08           JR      Z,$1FE6             ; {}
 1FDE: E1              POP     HL                  
 1FDF: E5              PUSH    HL                  
 1FE0: 23              INC     HL                  
 1FE1: 23              INC     HL                  
 1FE2: CB 8E           RES     1,(HL)              
-1FE4: 18 0D           JR      $1243               ; {}
+1FE4: 18 0D           JR      $1FF3               ; {}
 1FE6: 21 F0 87        LD      HL,$87F0            
 1FE9: CB CE           SET     1,(HL)              
 1FEB: E1              POP     HL                  
@@ -4181,13 +4195,13 @@
 1FEF: CB C6           SET     0,(HL)              
 1FF1: CB CE           SET     1,(HL)              
 1FF3: CB 46           BIT     0,(HL)              
-1FF5: 20 02           JR      NZ,$1238            ; {}
+1FF5: 20 02           JR      NZ,$1FF9            ; {}
 1FF7: E1              POP     HL                  
 1FF8: C9              RET                         
 1FF9: CB 4E           BIT     1,(HL)              
 1FFB: CA B5 21        JP      Z,$21B5             ; {}
 1FFE: CB 56           BIT     2,(HL)              
-2000: 20 0A           JR      NZ,$1240            ; {}
+2000: 20 0A           JR      NZ,$200C            ; {}
 2002: 23              INC     HL                  
 2003: 23              INC     HL                  
 2004: 36 0C           LD      (HL),$0C            
@@ -4200,16 +4214,16 @@
 200D: 23              INC     HL                  
 200E: 7E              LD      A,(HL)              
 200F: FE 0C           CP      $0C                 
-2011: 28 2B           JR      Z,$1261             ; {}
+2011: 28 2B           JR      Z,$203E             ; {}
 2013: FE 09           CP      $09                 
-2015: 28 32           JR      Z,$1268             ; {}
+2015: 28 32           JR      Z,$2049             ; {}
 2017: FE 06           CP      $06                 
-2019: 28 23           JR      Z,$1259             ; {}
+2019: 28 23           JR      Z,$203E             ; {}
 201B: FE 03           CP      $03                 
-201D: 28 2A           JR      Z,$1260             ; {}
+201D: 28 2A           JR      Z,$2049             ; {}
 201F: FE 0A           CP      $0A                 
-2021: 38 02           JR      C,$1238             ; {}
-2023: 18 2D           JR      $1263               ; {}
+2021: 38 02           JR      C,$2025             ; {}
+2023: 18 2D           JR      $2052               ; {}
 2025: F5              PUSH    AF                  
 2026: E5              PUSH    HL                  
 2027: 21 33 85        LD      HL,$8533            
@@ -4217,21 +4231,21 @@
 202C: 11 10 00        LD      DE,$0010            
 202F: 7E              LD      A,(HL)              
 2030: E6 07           AND     $07                 
-2032: 20 03           JR      NZ,$1239            ; {}
+2032: 20 03           JR      NZ,$2037            ; {}
 2034: C6 04           ADD     $04                 
 2036: 77              LD      (HL),A              
 2037: 19              ADD     HL,DE               
-2038: 10 F5           DJNZ    $122B               ; {}
+2038: 10 F5           DJNZ    $202F               ; {}
 203A: E1              POP     HL                  
 203B: F1              POP     AF                  
-203C: 18 14           JR      $124A               ; {}
+203C: 18 14           JR      $2052               ; {}
 203E: E5              PUSH    HL                  
 203F: F5              PUSH    AF                  
 2040: CD 05 29        CALL    $2905               ; {}
 2043: 36 1F           LD      (HL),$1F            
 2045: F1              POP     AF                  
 2046: E1              POP     HL                  
-2047: 18 09           JR      $123F               ; {}
+2047: 18 09           JR      $2052               ; {}
 2049: E5              PUSH    HL                  
 204A: F5              PUSH    AF                  
 204B: CD 05 29        CALL    $2905               ; {}
@@ -4239,9 +4253,9 @@
 2050: F1              POP     AF                  
 2051: E1              POP     HL                  
 2052: A7              AND     A                   
-2053: 28 0C           JR      Z,$1242             ; {}
+2053: 28 0C           JR      Z,$2061             ; {}
 2055: FE 01           CP      $01                 
-2057: 20 05           JR      NZ,$123B            ; {}
+2057: 20 05           JR      NZ,$205E            ; {}
 2059: 3E 01           LD      A,$01               
 205B: 32 8D 9A        LD      ($9A8D),A           
 205E: 35              DEC     (HL)                
@@ -4255,11 +4269,11 @@
 206D: 21 A2 98        LD      HL,$98A2            
 2070: DD 7E 00        LD      A,(IX+$00)          
 2073: BE              CP      (HL)                
-2074: 30 05           JR      NC,$123B            ; {}
+2074: 30 05           JR      NC,$207B            ; {}
 2076: 4F              LD      C,A                 
 2077: 7E              LD      A,(HL)              
 2078: 91              SUB     C                   
-2079: 18 01           JR      $1237               ; {}
+2079: 18 01           JR      $207C               ; {}
 207B: 96              SUB     (HL)                
 207C: FE 07           CP      $07                 
 207E: D2 B4 20        JP      NC,$20B4            ; {}
@@ -4268,7 +4282,7 @@
 2085: 7E              LD      A,(HL)              
 2086: 91              SUB     C                   
 2087: FE 12           CP      $12                 
-2089: 30 29           JR      NC,$125F            ; {}
+2089: 30 29           JR      NC,$20B4            ; {}
 208B: AF              XOR     A                   
 208C: 32 22 99        LD      ($9922),A           
 208F: 21 46 86        LD      HL,$8646            
@@ -4279,13 +4293,13 @@
 209D: 3A A3 98        LD      A,($98A3)           
 20A0: D6 02           SUB     $02                 
 20A2: 32 A3 98        LD      ($98A3),A           
-20A5: 18 0D           JR      $1243               ; {}
+20A5: 18 0D           JR      $20B4               ; {}
 20A7: 21 A3 98        LD      HL,$98A3            
 20AA: 7E              LD      A,(HL)              
 20AB: C6 08           ADD     $08                 
 20AD: 77              LD      (HL),A              
 20AE: FE EE           CP      $EE                 
-20B0: 38 02           JR      C,$1238             ; {}
+20B0: 38 02           JR      C,$20B4             ; {}
 20B2: 36 EE           LD      (HL),$EE            
 20B4: 21 25 85        LD      HL,$8525            
 20B7: 22 F6 85        LD      ($85F6),HL          
@@ -4303,27 +4317,27 @@
 20D3: D1              POP     DE                  
 20D4: 7E              LD      A,(HL)              
 20D5: FE 3F           CP      $3F                 
-20D7: 38 49           JR      C,$127F             ; {}
+20D7: 38 49           JR      C,$2122             ; {}
 20D9: 2A 1A 86        LD      HL,($861A)          
 20DC: 3A 00 84        LD      A,($8400)           
 20DF: CB 4F           BIT     1,A                 
-20E1: 28 04           JR      Z,$123A             ; {}
+20E1: 28 04           JR      Z,$20E7             ; {}
 20E3: CB 57           BIT     2,A                 
-20E5: 20 03           JR      NZ,$1239            ; {}
+20E5: 20 03           JR      NZ,$20EA            ; {}
 20E7: 7E              LD      A,(HL)              
-20E8: 18 03           JR      $1239               ; {}
+20E8: 18 03           JR      $20ED               ; {}
 20EA: 7E              LD      A,(HL)              
 20EB: D6 10           SUB     $10                 
 20ED: 4F              LD      C,A                 
 20EE: DD 7E 00        LD      A,(IX+$00)          
 20F1: B9              CP      C                   
-20F2: 30 0C           JR      NC,$1242            ; {}
+20F2: 30 0C           JR      NC,$2100            ; {}
 20F4: 79              LD      A,C                 
 20F5: DD 4E 00        LD      C,(IX+$00)          
 20F8: 91              SUB     C                   
 20F9: FE 09           CP      $09                 
 20FB: D2 9C 21        JP      NC,$219C            ; {}
-20FE: 18 06           JR      $123C               ; {}
+20FE: 18 06           JR      $2106               ; {}
 2100: 91              SUB     C                   
 2101: FE 19           CP      $19                 
 2103: D2 9C 21        JP      NC,$219C            ; {}
@@ -4331,35 +4345,35 @@
 2107: DD 4E 01        LD      C,(IX+$01)          
 210A: 3A 00 84        LD      A,($8400)           
 210D: CB 4F           BIT     1,A                 
-210F: 28 04           JR      Z,$123A             ; {}
+210F: 28 04           JR      Z,$2115             ; {}
 2111: CB 57           BIT     2,A                 
-2113: 20 03           JR      NZ,$1239            ; {}
+2113: 20 03           JR      NZ,$2118            ; {}
 2115: 7E              LD      A,(HL)              
-2116: 18 03           JR      $1239               ; {}
+2116: 18 03           JR      $211B               ; {}
 2118: 7E              LD      A,(HL)              
 2119: D6 10           SUB     $10                 
 211B: 91              SUB     C                   
 211C: FE 0C           CP      $0C                 
-211E: 30 7C           JR      NC,$12B2            ; {}
-2120: 18 1F           JR      $1255               ; {}
+211E: 30 7C           JR      NC,$219C            ; {}
+2120: 18 1F           JR      $2141               ; {}
 2122: 2A 1A 86        LD      HL,($861A)          
 2125: DD 7E 00        LD      A,(IX+$00)          
 2128: BE              CP      (HL)                
-2129: 30 05           JR      NC,$123B            ; {}
+2129: 30 05           JR      NC,$2130            ; {}
 212B: 4F              LD      C,A                 
 212C: 7E              LD      A,(HL)              
 212D: 91              SUB     C                   
-212E: 18 01           JR      $1237               ; {}
+212E: 18 01           JR      $2131               ; {}
 2130: 96              SUB     (HL)                
 2131: FE 0C           CP      $0C                 
-2133: 30 67           JR      NC,$129D            ; {}
+2133: 30 67           JR      NC,$219C            ; {}
 2135: 23              INC     HL                  
 2136: DD 4E 01        LD      C,(IX+$01)          
 2139: 7E              LD      A,(HL)              
 213A: 91              SUB     C                   
 213B: FE 0C           CP      $0C                 
-213D: 30 5D           JR      NC,$1293            ; {}
-213F: 18 28           JR      $125E               ; {}
+213D: 30 5D           JR      NC,$219C            ; {}
+213F: 18 28           JR      $2169               ; {}
 2141: DD 7E 01        LD      A,(IX+$01)          
 2144: C6 08           ADD     $08                 
 2146: 2A 1A 86        LD      HL,($861A)          
@@ -4368,13 +4382,13 @@
 214B: 2B              DEC     HL                  
 214C: 3A 00 84        LD      A,($8400)           
 214F: CB 4F           BIT     1,A                 
-2151: 28 0A           JR      Z,$1240             ; {}
+2151: 28 0A           JR      Z,$215D             ; {}
 2153: CB 57           BIT     2,A                 
-2155: 28 06           JR      Z,$123C             ; {}
+2155: 28 06           JR      Z,$215D             ; {}
 2157: 7E              LD      A,(HL)              
 2158: D6 08           SUB     $08                 
 215A: 77              LD      (HL),A              
-215B: 18 04           JR      $123A               ; {}
+215B: 18 04           JR      $2161               ; {}
 215D: 7E              LD      A,(HL)              
 215E: C6 08           ADD     $08                 
 2160: 77              LD      (HL),A              
@@ -4403,7 +4417,7 @@
 218E: 7E              LD      A,(HL)              
 218F: D6 02           SUB     $02                 
 2191: 77              LD      (HL),A              
-2192: 18 08           JR      $123E               ; {}
+2192: 18 08           JR      $219C               ; {}
 2194: 2A 1A 86        LD      HL,($861A)          
 2197: 23              INC     HL                  
 2198: 7E              LD      A,(HL)              
@@ -4434,12 +4448,12 @@
 21C3: 11 03 00        LD      DE,$0003            
 21C6: 19              ADD     HL,DE               
 21C7: CB 46           BIT     0,(HL)              
-21C9: 28 0D           JR      Z,$1243             ; {}
+21C9: 28 0D           JR      Z,$21D8             ; {}
 21CB: 2B              DEC     HL                  
 21CC: 2B              DEC     HL                  
 21CD: 3A 46 86        LD      A,($8646)           
 21D0: CB 47           BIT     0,A                 
-21D2: 20 04           JR      NZ,$123A            ; {}
+21D2: 20 04           JR      NZ,$21D8            ; {}
 21D4: 7E              LD      A,(HL)              
 21D5: D6 08           SUB     $08                 
 21D7: 77              LD      (HL),A              
@@ -4454,7 +4468,7 @@
 21EB: 06 08           LD      B,$08               
 21ED: 22 F6 85        LD      ($85F6),HL          
 21F0: CB 7E           BIT     7,(HL)              
-21F2: 28 0E           JR      Z,$1244             ; {}
+21F2: 28 0E           JR      Z,$2202             ; {}
 21F4: 0C              INC     C                   
 21F5: 36 00           LD      (HL),$00            
 21F7: 23              INC     HL                  
@@ -4468,14 +4482,14 @@
 2202: 2A F6 85        LD      HL,($85F6)          
 2205: 19              ADD     HL,DE               
 2206: 22 F6 85        LD      ($85F6),HL          
-2209: 10 E2           DJNZ    $1218               ; {}
+2209: 10 E2           DJNZ    $21ED               ; {}
 220B: 21 47 86        LD      HL,$8647            
 220E: 36 3C           LD      (HL),$3C            
 2210: 21 1C 86        LD      HL,$861C            
 2213: 36 C8           LD      (HL),$C8            
 2215: 21 46 86        LD      HL,$8646            
 2218: CB 46           BIT     0,(HL)              
-221A: 28 02           JR      Z,$1238             ; {}
+221A: 28 02           JR      Z,$221E             ; {}
 221C: CB CE           SET     1,(HL)              
 221E: 79              LD      A,C                 
 221F: A7              AND     A                   
@@ -4519,24 +4533,24 @@
 2265: 23              INC     HL                  
 2266: 7E              LD      A,(HL)              
 2267: A7              AND     A                   
-2268: 28 35           JR      Z,$126B             ; {}
+2268: 28 35           JR      Z,$229F             ; {}
 226A: 35              DEC     (HL)                
 226B: FE 04           CP      $04                 
 226D: CA DE 21        JP      Z,$21DE             ; {}
 2270: E5              PUSH    HL                  
 2271: 21 C5 87        LD      HL,$87C5            
 2274: CB 46           BIT     0,(HL)              
-2276: 28 03           JR      Z,$1239             ; {}
+2276: 28 03           JR      Z,$227B             ; {}
 2278: E1              POP     HL                  
 2279: E1              POP     HL                  
 227A: C9              RET                         
 227B: E1              POP     HL                  
 227C: FE 12           CP      $12                 
-227E: 28 0A           JR      Z,$1240             ; {}
+227E: 28 0A           JR      Z,$228A             ; {}
 2280: FE 09           CP      $09                 
-2282: 28 0D           JR      Z,$1243             ; {}
+2282: 28 0D           JR      Z,$2291             ; {}
 2284: FE 05           CP      $05                 
-2286: 28 10           JR      Z,$1246             ; {}
+2286: 28 10           JR      Z,$2298             ; {}
 2288: E1              POP     HL                  
 2289: C9              RET                         
 228A: CD 05 29        CALL    $2905               ; {}
@@ -4583,11 +4597,11 @@
 22D8: 2A EA 85        LD      HL,($85EA)          
 22DB: 7E              LD      A,(HL)              
 22DC: FE 7F           CP      $7F                 
-22DE: 28 14           JR      Z,$124A             ; {}
+22DE: 28 14           JR      Z,$22F4             ; {}
 22E0: 2A EC 85        LD      HL,($85EC)          
 22E3: 7E              LD      A,(HL)              
 22E4: FE 7F           CP      $7F                 
-22E6: 28 0C           JR      Z,$1242             ; {}
+22E6: 28 0C           JR      Z,$22F4             ; {}
 22E8: 2A FE 85        LD      HL,($85FE)          
 22EB: CD F8 22        CALL    $22F8               ; {}
 22EE: 2A 00 86        LD      HL,($8600)          
@@ -4600,33 +4614,33 @@
 22F9: 2B              DEC     HL                  
 22FA: 7E              LD      A,(HL)              
 22FB: FE 7F           CP      $7F                 
-22FD: 20 02           JR      NZ,$1238            ; {}
+22FD: 20 02           JR      NZ,$2301            ; {}
 22FF: E1              POP     HL                  
 2300: C9              RET                         
 2301: 23              INC     HL                  
 2302: 7E              LD      A,(HL)              
 2303: FE 00           CP      $00                 
-2305: 28 1F           JR      Z,$1255             ; {}
+2305: 28 1F           JR      Z,$2326             ; {}
 2307: 3D              DEC     A                   
-2308: 28 20           JR      Z,$1256             ; {}
+2308: 28 20           JR      Z,$232A             ; {}
 230A: 3D              DEC     A                   
 230B: 3D              DEC     A                   
 230C: 3D              DEC     A                   
-230D: 28 17           JR      Z,$124D             ; {}
+230D: 28 17           JR      Z,$2326             ; {}
 230F: 3D              DEC     A                   
-2310: 28 18           JR      Z,$124E             ; {}
+2310: 28 18           JR      Z,$232A             ; {}
 2312: 3D              DEC     A                   
-2313: 28 15           JR      Z,$124B             ; {}
+2313: 28 15           JR      Z,$232A             ; {}
 2315: 3D              DEC     A                   
-2316: 28 12           JR      Z,$1248             ; {}
+2316: 28 12           JR      Z,$232A             ; {}
 2318: 3D              DEC     A                   
-2319: 28 13           JR      Z,$1249             ; {}
+2319: 28 13           JR      Z,$232E             ; {}
 231B: 3D              DEC     A                   
-231C: 28 10           JR      Z,$1246             ; {}
+231C: 28 10           JR      Z,$232E             ; {}
 231E: 3D              DEC     A                   
-231F: 28 05           JR      Z,$123B             ; {}
+231F: 28 05           JR      Z,$2326             ; {}
 2321: 3D              DEC     A                   
-2322: 28 02           JR      Z,$1238             ; {}
+2322: 28 02           JR      Z,$2326             ; {}
 2324: E1              POP     HL                  
 2325: C9              RET                         
 2326: 36 02           LD      (HL),$02            
@@ -4657,9 +4671,9 @@
 2353: 19              ADD     HL,DE               
 2354: 7E              LD      A,(HL)              
 2355: A7              AND     A                   
-2356: 28 0E           JR      Z,$1244             ; {}
+2356: 28 0E           JR      Z,$2366             ; {}
 2358: FE 01           CP      $01                 
-235A: 20 09           JR      NZ,$123F            ; {}
+235A: 20 09           JR      NZ,$2365            ; {}
 235C: ED 5B F6 85     LD      DE,($85F6)          
 2360: EB              EX      DE,HL               
 2361: 23              INC     HL                  
@@ -4671,7 +4685,7 @@
 236A: 23              INC     HL                  
 236B: 23              INC     HL                  
 236C: CB 7E           BIT     7,(HL)              
-236E: 28 02           JR      Z,$1238             ; {}
+236E: 28 02           JR      Z,$2372             ; {}
 2370: E1              POP     HL                  
 2371: C9              RET                         
 2372: 3A BD 87        LD      A,($87BD)           
@@ -4682,7 +4696,7 @@
 237D: 7E              LD      A,(HL)              
 237E: 90              SUB     B                   
 237F: 77              LD      (HL),A              
-2380: 38 02           JR      C,$1238             ; {}
+2380: 38 02           JR      C,$2384             ; {}
 2382: E1              POP     HL                  
 2383: C9              RET                         
 2384: 2A F6 85        LD      HL,($85F6)          
@@ -4690,7 +4704,7 @@
 238A: 19              ADD     HL,DE               
 238B: 7E              LD      A,(HL)              
 238C: FE 01           CP      $01                 
-238E: 20 05           JR      NZ,$123B            ; {}
+238E: 20 05           JR      NZ,$2395            ; {}
 2390: 2B              DEC     HL                  
 2391: CB FE           SET     7,(HL)              
 2393: E1              POP     HL                  
@@ -4718,7 +4732,7 @@
 23BC: B8              CP      B                   
 23BD: DA C3 23        JP      C,$23C3             ; {}
 23C0: 90              SUB     B                   
-23C1: 18 06           JR      $123C               ; {}
+23C1: 18 06           JR      $23C9               ; {}
 23C3: 3A A2 98        LD      A,($98A2)           
 23C6: 57              LD      D,A                 
 23C7: 78              LD      A,B                 
@@ -4729,7 +4743,7 @@
 23D1: B9              CP      C                   
 23D2: DA D8 23        JP      C,$23D8             ; {}
 23D5: 91              SUB     C                   
-23D6: 18 06           JR      $123C               ; {}
+23D6: 18 06           JR      $23DE               ; {}
 23D8: 3A A3 98        LD      A,($98A3)           
 23DB: 57              LD      D,A                 
 23DC: 79              LD      A,C                 
@@ -4751,25 +4765,25 @@
 23F9: CB F6           SET     6,(HL)              
 23FB: 3A F4 85        LD      A,($85F4)           
 23FE: CB 4F           BIT     1,A                 
-2400: 28 4A           JR      Z,$1280             ; {}
+2400: 28 4A           JR      Z,$244C             ; {}
 2402: 2A F6 85        LD      HL,($85F6)          
 2405: 23              INC     HL                  
 2406: 23              INC     HL                  
 2407: 23              INC     HL                  
 2408: CB 76           BIT     6,(HL)              
-240A: 28 0E           JR      Z,$1244             ; {}
+240A: 28 0E           JR      Z,$241A             ; {}
 240C: 3A F0 87        LD      A,($87F0)           
 240F: CB 47           BIT     0,A                 
-2411: 20 07           JR      NZ,$123D            ; {}
+2411: 20 07           JR      NZ,$241A            ; {}
 2413: 11 0C 00        LD      DE,$000C            
 2416: 19              ADD     HL,DE               
 2417: 7E              LD      A,(HL)              
-2418: 18 0E           JR      $1244               ; {}
+2418: 18 0E           JR      $2428               ; {}
 241A: 3A F0 87        LD      A,($87F0)           
 241D: CB 47           BIT     0,A                 
-241F: 28 04           JR      Z,$123A             ; {}
+241F: 28 04           JR      Z,$2425             ; {}
 2421: 3E 08           LD      A,$08               
-2423: 18 03           JR      $1239               ; {}
+2423: 18 03           JR      $2428               ; {}
 2425: 3A A3 98        LD      A,($98A3)           
 2428: B9              CP      C                   
 2429: DA 43 24        JP      C,$2443             ; {}
@@ -4795,29 +4809,29 @@
 2450: 23              INC     HL                  
 2451: 23              INC     HL                  
 2452: CB 76           BIT     6,(HL)              
-2454: 28 0E           JR      Z,$1244             ; {}
+2454: 28 0E           JR      Z,$2464             ; {}
 2456: 3A F0 87        LD      A,($87F0)           
 2459: CB 47           BIT     0,A                 
-245B: 20 07           JR      NZ,$123D            ; {}
+245B: 20 07           JR      NZ,$2464            ; {}
 245D: 11 0B 00        LD      DE,$000B            
 2460: 19              ADD     HL,DE               
 2461: 7E              LD      A,(HL)              
-2462: 18 0E           JR      $1244               ; {}
+2462: 18 0E           JR      $2472               ; {}
 2464: 3A F0 87        LD      A,($87F0)           
 2467: CB 47           BIT     0,A                 
-2469: 28 04           JR      Z,$123A             ; {}
+2469: 28 04           JR      Z,$246F             ; {}
 246B: 3E 21           LD      A,$21               
-246D: 18 03           JR      $1239               ; {}
+246D: 18 03           JR      $2472               ; {}
 246F: 3A A2 98        LD      A,($98A2)           
 2472: B8              CP      B                   
 2473: DA 81 24        JP      C,$2481             ; {}
 2476: CA 89 24        JP      Z,$2489             ; {}
 2479: 2A F6 85        LD      HL,($85F6)          
 247C: 11 04 00        LD      DE,$0004            
-247F: 18 B1           JR      $11E7               ; {}
+247F: 18 B1           JR      $2432               ; {}
 2481: 2A F6 85        LD      HL,($85F6)          
 2484: 11 04 00        LD      DE,$0004            
-2487: 18 BD           JR      $11F3               ; {}
+2487: 18 BD           JR      $2446               ; {}
 2489: 21 4A 86        LD      HL,$864A            
 248C: CB F6           SET     6,(HL)              
 248E: 2A F6 85        LD      HL,($85F6)          
@@ -4839,7 +4853,7 @@
 24B5: CB 8E           RES     1,(HL)              
 24B7: 23              INC     HL                  
 24B8: CB 4E           BIT     1,(HL)              
-24BA: 20 28           JR      NZ,$125E            ; {}
+24BA: 20 28           JR      NZ,$24E4            ; {}
 24BC: 23              INC     HL                  
 24BD: 23              INC     HL                  
 24BE: 23              INC     HL                  
@@ -4862,7 +4876,7 @@
 24DE: E1              POP     HL                  
 24DF: C9              RET                         
 24E0: 0E 00           LD      C,$00               
-24E2: 18 F5           JR      $122B               ; {}
+24E2: 18 F5           JR      $24D9               ; {}
 24E4: 23              INC     HL                  
 24E5: 23              INC     HL                  
 24E6: 23              INC     HL                  
@@ -4881,12 +4895,12 @@
 24FC: 77              LD      (HL),A              
 24FD: 21 4A 86        LD      HL,$864A            
 2500: CB 76           BIT     6,(HL)              
-2502: 28 14           JR      Z,$124A             ; {}
+2502: 28 14           JR      Z,$2518             ; {}
 2504: CB B6           RES     6,(HL)              
 2506: 2A F6 85        LD      HL,($85F6)          
 2509: 23              INC     HL                  
 250A: CB 4E           BIT     1,(HL)              
-250C: 28 05           JR      Z,$123B             ; {}
+250C: 28 05           JR      Z,$2513             ; {}
 250E: CB 8E           RES     1,(HL)              
 2510: C3 8E 24        JP      $248E               ; {}
 2513: CB CE           SET     1,(HL)              
@@ -4939,7 +4953,7 @@
 2574: D6 09           SUB     $09                 
 2576: 32 FF 98        LD      ($98FF),A           
 2579: 32 F7 98        LD      ($98F7),A           
-257C: 18 13           JR      $1249               ; {}
+257C: 18 13           JR      $2591               ; {}
 257E: 7E              LD      A,(HL)              
 257F: 32 F6 98        LD      ($98F6),A           
 2582: C6 10           ADD     $10                 
@@ -4992,13 +5006,13 @@
 25D9: 77              LD      (HL),A              
 25DA: 2A F6 85        LD      HL,($85F6)          
 25DD: CB 56           BIT     2,(HL)              
-25DF: 28 1B           JR      Z,$1251             ; {}
+25DF: 28 1B           JR      Z,$25FC             ; {}
 25E1: CB 96           RES     2,(HL)              
 25E3: CB B6           RES     6,(HL)              
 25E5: 21 9E 87        LD      HL,$879E            
 25E8: 3A 9D 87        LD      A,($879D)           
 25EB: BE              CP      (HL)                
-25EC: 20 0C           JR      NZ,$1242            ; {}
+25EC: 20 0C           JR      NZ,$25FA            ; {}
 25EE: CD 87 0F        CALL    $0F87               ; {}
 25F1: 21 03 84        LD      HL,$8403            
 25F4: CB 96           RES     2,(HL)              
@@ -5008,12 +5022,12 @@
 25FA: E1              POP     HL                  
 25FB: C9              RET                         
 25FC: CB 5E           BIT     3,(HL)              
-25FE: 28 06           JR      Z,$123C             ; {}
+25FE: 28 06           JR      Z,$2606             ; {}
 2600: CB 9E           RES     3,(HL)              
 2602: CB D6           SET     2,(HL)              
-2604: 18 08           JR      $123E               ; {}
+2604: 18 08           JR      $260E               ; {}
 2606: CB 66           BIT     4,(HL)              
-2608: 28 0A           JR      Z,$1240             ; {}
+2608: 28 0A           JR      Z,$2614             ; {}
 260A: CB A6           RES     4,(HL)              
 260C: CB DE           SET     3,(HL)              
 260E: 23              INC     HL                  
@@ -5022,7 +5036,7 @@
 2612: E1              POP     HL                  
 2613: C9              RET                         
 2614: CB 6E           BIT     5,(HL)              
-2616: 20 02           JR      NZ,$1238            ; {}
+2616: 20 02           JR      NZ,$261A            ; {}
 2618: E1              POP     HL                  
 2619: C9              RET                         
 261A: CB AE           RES     5,(HL)              
@@ -5039,24 +5053,24 @@
 2633: E5              PUSH    HL                  
 2634: C5              PUSH    BC                  
 2635: 3D              DEC     A                   
-2636: 28 10           JR      Z,$1246             ; {}
+2636: 28 10           JR      Z,$2648             ; {}
 2638: 3D              DEC     A                   
-2639: 28 12           JR      Z,$1248             ; {}
+2639: 28 12           JR      Z,$264D             ; {}
 263B: 3D              DEC     A                   
-263C: 20 05           JR      NZ,$123B            ; {}
+263C: 20 05           JR      NZ,$2643            ; {}
 263E: 21 A4 98        LD      HL,$98A4            
-2641: 18 0D           JR      $1243               ; {}
+2641: 18 0D           JR      $2650               ; {}
 2643: 21 B6 98        LD      HL,$98B6            
-2646: 18 08           JR      $123E               ; {}
+2646: 18 08           JR      $2650               ; {}
 2648: 21 AA 98        LD      HL,$98AA            
-264B: 18 03           JR      $1239               ; {}
+264B: 18 03           JR      $2650               ; {}
 264D: 21 B0 98        LD      HL,$98B0            
 2650: 06 03           LD      B,$03               
 2652: 36 00           LD      (HL),$00            
 2654: 23              INC     HL                  
 2655: 36 50           LD      (HL),$50            
 2657: 23              INC     HL                  
-2658: 10 F8           DJNZ    $122E               ; {}
+2658: 10 F8           DJNZ    $2652               ; {}
 265A: C1              POP     BC                  
 265B: E1              POP     HL                  
 265C: C3 3F 25        JP      $253F               ; {}
@@ -5113,12 +5127,12 @@
 26BE: E1              POP     HL                  
 26BF: C9              RET                         
 26C0: CB 7F           BIT     7,A                 
-26C2: 28 3C           JR      Z,$1272             ; {}
+26C2: 28 3C           JR      Z,$2700             ; {}
 26C4: 3A 9E 87        LD      A,($879E)           
 26C7: 57              LD      D,A                 
 26C8: 3A 9D 87        LD      A,($879D)           
 26CB: BA              CP      D                   
-26CC: 20 13           JR      NZ,$1249            ; {}
+26CC: 20 13           JR      NZ,$26E1            ; {}
 26CE: E5              PUSH    HL                  
 26CF: CD 87 0F        CALL    $0F87               ; {}
 26D2: 21 01 84        LD      HL,$8401            
@@ -5167,7 +5181,7 @@
 271F: C2 DD 27        JP      NZ,$27DD            ; {}
 2722: DD 36 00 01     LD      (IX+$00),$01        
 2726: CB 56           BIT     2,(HL)              
-2728: 28 21           JR      Z,$1257             ; {}
+2728: 28 21           JR      Z,$274B             ; {}
 272A: FD 36 00 23     LD      (IY+$00),$23        
 272E: 23              INC     HL                  
 272F: 23              INC     HL                  
@@ -5186,7 +5200,7 @@
 2749: E1              POP     HL                  
 274A: C9              RET                         
 274B: CB 5E           BIT     3,(HL)              
-274D: 28 70           JR      Z,$12A6             ; {}
+274D: 28 70           JR      Z,$27BF             ; {}
 274F: FD 36 00 80     LD      (IY+$00),$80        
 2753: 23              INC     HL                  
 2754: 23              INC     HL                  
@@ -5253,7 +5267,7 @@
 27BD: E1              POP     HL                  
 27BE: C9              RET                         
 27BF: CB 66           BIT     4,(HL)              
-27C1: 28 0D           JR      Z,$1243             ; {}
+27C1: 28 0D           JR      Z,$27D0             ; {}
 27C3: FD 36 00 81     LD      (IY+$00),$81        
 27C7: 23              INC     HL                  
 27C8: 23              INC     HL                  
@@ -5262,14 +5276,14 @@
 27CE: E1              POP     HL                  
 27CF: C9              RET                         
 27D0: CB 6E           BIT     5,(HL)              
-27D2: 28 07           JR      Z,$123D             ; {}
+27D2: 28 07           JR      Z,$27DB             ; {}
 27D4: FD 36 00 82     LD      (IY+$00),$82        
 27D8: CD 87 0F        CALL    $0F87               ; {}
 27DB: E1              POP     HL                  
 27DC: C9              RET                         
 27DD: DD 36 00 02     LD      (IX+$00),$02        
 27E1: CB 56           BIT     2,(HL)              
-27E3: 28 0D           JR      Z,$1243             ; {}
+27E3: 28 0D           JR      Z,$27F2             ; {}
 27E5: FD 36 00 27     LD      (IY+$00),$27        
 27E9: 23              INC     HL                  
 27EA: 23              INC     HL                  
@@ -5278,7 +5292,7 @@
 27F0: E1              POP     HL                  
 27F1: C9              RET                         
 27F2: CB 5E           BIT     3,(HL)              
-27F4: 28 12           JR      Z,$1248             ; {}
+27F4: 28 12           JR      Z,$2808             ; {}
 27F6: FD 36 00 83     LD      (IY+$00),$83        
 27FA: 23              INC     HL                  
 27FB: 23              INC     HL                  
@@ -5289,7 +5303,7 @@
 2806: E1              POP     HL                  
 2807: C9              RET                         
 2808: CB 66           BIT     4,(HL)              
-280A: 28 0D           JR      Z,$1243             ; {}
+280A: 28 0D           JR      Z,$2819             ; {}
 280C: FD 36 00 84     LD      (IY+$00),$84        
 2810: 23              INC     HL                  
 2811: 23              INC     HL                  
@@ -5298,14 +5312,14 @@
 2817: E1              POP     HL                  
 2818: C9              RET                         
 2819: CB 6E           BIT     5,(HL)              
-281B: 28 07           JR      Z,$123D             ; {}
+281B: 28 07           JR      Z,$2824             ; {}
 281D: FD 36 00 85     LD      (IY+$00),$85        
 2821: CD 87 0F        CALL    $0F87               ; {}
 2824: E1              POP     HL                  
 2825: C9              RET                         
 2826: 3A 01 84        LD      A,($8401)           
 2829: CB 7F           BIT     7,A                 
-282B: 28 02           JR      Z,$1238             ; {}
+282B: 28 02           JR      Z,$282F             ; {}
 282D: E1              POP     HL                  
 282E: C9              RET                         
 282F: 11 0E 00        LD      DE,$000E            
@@ -5313,18 +5327,18 @@
 2833: 7E              LD      A,(HL)              
 2834: E6 07           AND     $07                 
 2836: FE 02           CP      $02                 
-2838: 28 09           JR      Z,$123F             ; {}
+2838: 28 09           JR      Z,$2843             ; {}
 283A: FE 06           CP      $06                 
-283C: 20 08           JR      NZ,$123E            ; {}
+283C: 20 08           JR      NZ,$2846            ; {}
 283E: 2B              DEC     HL                  
 283F: 36 02           LD      (HL),$02            
-2841: 18 03           JR      $1239               ; {}
+2841: 18 03           JR      $2846               ; {}
 2843: 2B              DEC     HL                  
 2844: 36 00           LD      (HL),$00            
 2846: E1              POP     HL                  
 2847: E5              PUSH    HL                  
 2848: CB 46           BIT     0,(HL)              
-284A: 20 1C           JR      NZ,$1252            ; {}
+284A: 20 1C           JR      NZ,$2868            ; {}
 284C: 11 06 00        LD      DE,$0006            
 284F: CD 8D 28        CALL    $288D               ; {}
 2852: FE 04           CP      $04                 
@@ -5337,10 +5351,10 @@
 2860: C9              RET                         
 2861: 2A F6 85        LD      HL,($85F6)          
 2864: 36 20           LD      (HL),$20            
-2866: 18 F4           JR      $122A               ; {}
+2866: 18 F4           JR      $285C               ; {}
 2868: 23              INC     HL                  
 2869: CB 76           BIT     6,(HL)              
-286B: 28 02           JR      Z,$1238             ; {}
+286B: 28 02           JR      Z,$286F             ; {}
 286D: E1              POP     HL                  
 286E: C9              RET                         
 286F: 11 05 00        LD      DE,$0005            
@@ -5356,7 +5370,7 @@
 2885: C9              RET                         
 2886: 2A F6 85        LD      HL,($85F6)          
 2889: 36 24           LD      (HL),$24            
-288B: 18 F4           JR      $122A               ; {}
+288B: 18 F4           JR      $2881               ; {}
 288D: 19              ADD     HL,DE               
 288E: 22 F6 85        LD      ($85F6),HL          
 2891: 11 04 00        LD      DE,$0004            
@@ -5373,7 +5387,7 @@
 289F: 7E              LD      A,(HL)              
 28A0: E6 0F           AND     $0F                 
 28A2: FE 01           CP      $01                 
-28A4: 28 05           JR      Z,$123B             ; {}
+28A4: 28 05           JR      Z,$28AB             ; {}
 28A6: CB 80           RES     0,B                 
 28A8: F1              POP     AF                  
 28A9: E1              POP     HL                  
@@ -5403,7 +5417,7 @@
 28CA: C9              RET                         
 28CB: 7A              LD      A,D                 
 28CC: A7              AND     A                   
-28CD: 20 F7           JR      NZ,$122D            ; {}
+28CD: 20 F7           JR      NZ,$28C6            ; {}
 28CF: CB C0           SET     0,B                 
 28D1: F1              POP     AF                  
 28D2: E1              POP     HL                  
@@ -5426,7 +5440,7 @@
 28F8: CD 1A 25        CALL    $251A               ; {}
 28FB: 79              LD      A,C                 
 28FC: A7              AND     A                   
-28FD: 28 03           JR      Z,$1239             ; {}
+28FD: 28 03           JR      Z,$2902             ; {}
 28FF: CB 80           RES     0,B                 
 2901: C9              RET                         
 2902: CB C0           SET     0,B                 
@@ -5446,7 +5460,7 @@
 291B: 47              LD      B,A                 
 291C: 2A F6 85        LD      HL,($85F6)          
 291F: CB 46           BIT     0,(HL)              
-2921: 28 04           JR      Z,$123A             ; {}
+2921: 28 04           JR      Z,$2927             ; {}
 2923: 3E 0A           LD      A,$0A               
 2925: 80              ADD     A,B                 
 2926: 47              LD      B,A                 
@@ -5472,7 +5486,7 @@
 294C: 23              INC     HL                  
 294D: CB B6           RES     6,(HL)              
 294F: CB 7E           BIT     7,(HL)              
-2951: 28 02           JR      Z,$1238             ; {}
+2951: 28 02           JR      Z,$2955             ; {}
 2953: E1              POP     HL                  
 2954: C9              RET                         
 2955: 2A F6 85        LD      HL,($85F6)          
@@ -5483,29 +5497,29 @@
 295F: CA 18 29        JP      Z,$2918             ; {}
 2962: 3A 46 86        LD      A,($8646)           
 2965: CB 5F           BIT     3,A                 
-2967: 28 11           JR      Z,$1247             ; {}
+2967: 28 11           JR      Z,$297A             ; {}
 2969: 2A F6 85        LD      HL,($85F6)          
 296C: CB 46           BIT     0,(HL)              
-296E: 28 05           JR      Z,$123B             ; {}
+296E: 28 05           JR      Z,$2975             ; {}
 2970: 21 A5 87        LD      HL,$87A5            
-2973: 18 2C           JR      $1262               ; {}
+2973: 18 2C           JR      $29A1               ; {}
 2975: 21 A2 87        LD      HL,$87A2            
-2978: 18 27           JR      $125D               ; {}
+2978: 18 27           JR      $29A1               ; {}
 297A: 3A 53 86        LD      A,($8653)           
 297D: CB 4F           BIT     1,A                 
-297F: 28 11           JR      Z,$1247             ; {}
+297F: 28 11           JR      Z,$2992             ; {}
 2981: 2A F6 85        LD      HL,($85F6)          
 2984: CB 46           BIT     0,(HL)              
-2986: 28 05           JR      Z,$123B             ; {}
+2986: 28 05           JR      Z,$298D             ; {}
 2988: 21 A4 87        LD      HL,$87A4            
-298B: 18 14           JR      $124A               ; {}
+298B: 18 14           JR      $29A1               ; {}
 298D: 21 A1 87        LD      HL,$87A1            
-2990: 18 0F           JR      $1245               ; {}
+2990: 18 0F           JR      $29A1               ; {}
 2992: 2A F6 85        LD      HL,($85F6)          
 2995: CB 46           BIT     0,(HL)              
-2997: 28 05           JR      Z,$123B             ; {}
+2997: 28 05           JR      Z,$299E             ; {}
 2999: 21 A3 87        LD      HL,$87A3            
-299C: 18 03           JR      $1239               ; {}
+299C: 18 03           JR      $29A1               ; {}
 299E: 21 A0 87        LD      HL,$87A0            
 29A1: 00              NOP                         
 29A2: 46              LD      B,(HL)              
@@ -5515,18 +5529,18 @@
 29AA: 7E              LD      A,(HL)              
 29AB: E6 07           AND     $07                 
 29AD: FE 04           CP      $04                 
-29AF: 20 19           JR      NZ,$124F            ; {}
+29AF: 20 19           JR      NZ,$29CA            ; {}
 29B1: 3A 57 86        LD      A,($8657)           
 29B4: CB 4F           BIT     1,A                 
-29B6: 20 07           JR      NZ,$123D            ; {}
+29B6: 20 07           JR      NZ,$29BF            ; {}
 29B8: 3A 0F 84        LD      A,($840F)           
 29BB: FE 04           CP      $04                 
-29BD: 38 0B           JR      C,$1241             ; {}
+29BD: 38 0B           JR      C,$29CA             ; {}
 29BF: 3A E6 32        LD      A,($32E6)           ; {}
 29C2: 80              ADD     A,B                 
 29C3: 47              LD      B,A                 
 29C4: FE 28           CP      $28                 
-29C6: 30 02           JR      NC,$1238            ; {}
+29C6: 30 02           JR      NC,$29CA            ; {}
 29C8: 06 FF           LD      B,$FF               
 29CA: 2A F6 85        LD      HL,($85F6)          
 29CD: 11 09 00        LD      DE,$0009            
@@ -5534,14 +5548,14 @@
 29D1: 7E              LD      A,(HL)              
 29D2: 90              SUB     B                   
 29D3: 77              LD      (HL),A              
-29D4: 38 02           JR      C,$1238             ; {}
+29D4: 38 02           JR      C,$29D8             ; {}
 29D6: E1              POP     HL                  
 29D7: C9              RET                         
 29D8: 2A F6 85        LD      HL,($85F6)          
 29DB: 23              INC     HL                  
 29DC: CD 9A 28        CALL    $289A               ; {}
 29DF: CB 40           BIT     0,B                 
-29E1: 20 0B           JR      NZ,$1241            ; {}
+29E1: 20 0B           JR      NZ,$29EE            ; {}
 29E3: CD B0 28        CALL    $28B0               ; {}
 29E6: CB 40           BIT     0,B                 
 29E8: CA 69 2C        JP      Z,$2C69             ; {}
@@ -5602,25 +5616,25 @@
 2A5E: 19              ADD     HL,DE               
 2A5F: 3A A2 98        LD      A,($98A2)           
 2A62: BE              CP      (HL)                
-2A63: 38 03           JR      C,$1239             ; {}
+2A63: 38 03           JR      C,$2A68             ; {}
 2A65: 96              SUB     (HL)                
-2A66: 18 03           JR      $1239               ; {}
+2A66: 18 03           JR      $2A6B               ; {}
 2A68: 4F              LD      C,A                 
 2A69: 7E              LD      A,(HL)              
 2A6A: 91              SUB     C                   
 2A6B: FE 3C           CP      $3C                 
-2A6D: 30 15           JR      NC,$124B            ; {}
+2A6D: 30 15           JR      NC,$2A84            ; {}
 2A6F: 3A A3 98        LD      A,($98A3)           
 2A72: 23              INC     HL                  
 2A73: BE              CP      (HL)                
-2A74: 38 03           JR      C,$1239             ; {}
+2A74: 38 03           JR      C,$2A79             ; {}
 2A76: 96              SUB     (HL)                
-2A77: 18 03           JR      $1239               ; {}
+2A77: 18 03           JR      $2A7C               ; {}
 2A79: 4F              LD      C,A                 
 2A7A: 7E              LD      A,(HL)              
 2A7B: 91              SUB     C                   
 2A7C: FE 3C           CP      $3C                 
-2A7E: 30 04           JR      NC,$123A            ; {}
+2A7E: 30 04           JR      NC,$2A84            ; {}
 2A80: 78              LD      A,B                 
 2A81: 87              ADD     A,A                 
 2A82: 87              ADD     A,A                 
@@ -5643,15 +5657,15 @@
 2AA7: 01 24 99        LD      BC,$9924            
 2AAA: 3A 29 86        LD      A,($8629)           
 2AAD: FE 01           CP      $01                 
-2AAF: 28 12           JR      Z,$1248             ; {}
+2AAF: 28 12           JR      Z,$2AC3             ; {}
 2AB1: FE 02           CP      $02                 
-2AB3: 28 09           JR      Z,$123F             ; {}
+2AB3: 28 09           JR      Z,$2ABE             ; {}
 2AB5: FE 03           CP      $03                 
-2AB7: 28 19           JR      Z,$124F             ; {}
+2AB7: 28 19           JR      Z,$2AD2             ; {}
 2AB9: 11 12 00        LD      DE,$0012            
-2ABC: 18 08           JR      $123E               ; {}
+2ABC: 18 08           JR      $2AC6               ; {}
 2ABE: 11 0C 00        LD      DE,$000C            
-2AC1: 18 03           JR      $1239               ; {}
+2AC1: 18 03           JR      $2AC6               ; {}
 2AC3: 11 06 00        LD      DE,$0006            
 2AC6: 19              ADD     HL,DE               
 2AC7: E5              PUSH    HL                  
@@ -5674,7 +5688,7 @@
 2ADE: 23              INC     HL                  
 2ADF: E6 07           AND     $07                 
 2AE1: FE 02           CP      $02                 
-2AE3: 28 1C           JR      Z,$1252             ; {}
+2AE3: 28 1C           JR      Z,$2B01             ; {}
 2AE5: 7E              LD      A,(HL)              
 2AE6: D6 10           SUB     $10                 
 2AE8: DD 77 00        LD      (IX+$00),A          
@@ -5687,7 +5701,7 @@
 2AF8: D6 10           SUB     $10                 
 2AFA: DD 77 00        LD      (IX+$00),A          
 2AFD: 3E 02           LD      A,$02               
-2AFF: 18 19           JR      $124F               ; {}
+2AFF: 18 19           JR      $2B1A               ; {}
 2B01: 7E              LD      A,(HL)              
 2B02: C6 10           ADD     $10                 
 2B04: DD 77 00        LD      (IX+$00),A          
@@ -5727,10 +5741,10 @@
 2B47: 19              ADD     HL,DE               
 2B48: 7E              LD      A,(HL)              
 2B49: A7              AND     A                   
-2B4A: 20 28           JR      NZ,$125E            ; {}
+2B4A: 20 28           JR      NZ,$2B74            ; {}
 2B4C: 79              LD      A,C                 
 2B4D: A7              AND     A                   
-2B4E: 28 5D           JR      Z,$1293             ; {}
+2B4E: 28 5D           JR      Z,$2BAD             ; {}
 2B50: 3D              DEC     A                   
 2B51: CA 0B 2C        JP      Z,$2C0B             ; {}
 2B54: 3D              DEC     A                   
@@ -5738,49 +5752,49 @@
 2B58: 3D              DEC     A                   
 2B59: CA F0 2B        JP      Z,$2BF0             ; {}
 2B5C: 3D              DEC     A                   
-2B5D: 28 68           JR      Z,$129E             ; {}
+2B5D: 28 68           JR      Z,$2BC7             ; {}
 2B5F: 3D              DEC     A                   
-2B60: 28 3D           JR      Z,$1273             ; {}
+2B60: 28 3D           JR      Z,$2B9F             ; {}
 2B62: 3D              DEC     A                   
 2B63: 3D              DEC     A                   
-2B64: 28 2E           JR      Z,$1264             ; {}
+2B64: 28 2E           JR      Z,$2B94             ; {}
 2B66: 3D              DEC     A                   
 2B67: 3D              DEC     A                   
-2B68: 28 35           JR      Z,$126B             ; {}
+2B68: 28 35           JR      Z,$2B9F             ; {}
 2B6A: 3D              DEC     A                   
 2B6B: 3D              DEC     A                   
-2B6C: 28 26           JR      Z,$125C             ; {}
+2B6C: 28 26           JR      Z,$2B94             ; {}
 2B6E: 3D              DEC     A                   
 2B6F: 3D              DEC     A                   
-2B70: 28 2D           JR      Z,$1263             ; {}
+2B70: 28 2D           JR      Z,$2B9F             ; {}
 2B72: E1              POP     HL                  
 2B73: C9              RET                         
 2B74: FE 01           CP      $01                 
-2B76: 20 0F           JR      NZ,$1245            ; {}
+2B76: 20 0F           JR      NZ,$2B87            ; {}
 2B78: 79              LD      A,C                 
 2B79: 3D              DEC     A                   
-2B7A: 28 31           JR      Z,$1267             ; {}
+2B7A: 28 31           JR      Z,$2BAD             ; {}
 2B7C: 3D              DEC     A                   
-2B7D: 28 71           JR      Z,$12A7             ; {}
+2B7D: 28 71           JR      Z,$2BF0             ; {}
 2B7F: 3D              DEC     A                   
-2B80: 28 6E           JR      Z,$12A4             ; {}
+2B80: 28 6E           JR      Z,$2BF0             ; {}
 2B82: 3D              DEC     A                   
-2B83: 28 42           JR      Z,$1278             ; {}
-2B85: 18 D8           JR      $120E               ; {}
+2B83: 28 42           JR      Z,$2BC7             ; {}
+2B85: 18 D8           JR      $2B5F               ; {}
 2B87: 79              LD      A,C                 
 2B88: 3D              DEC     A                   
 2B89: 3D              DEC     A                   
-2B8A: 28 21           JR      Z,$1257             ; {}
+2B8A: 28 21           JR      Z,$2BAD             ; {}
 2B8C: 3D              DEC     A                   
-2B8D: 28 38           JR      Z,$126E             ; {}
+2B8D: 28 38           JR      Z,$2BC7             ; {}
 2B8F: 3D              DEC     A                   
-2B90: 28 35           JR      Z,$126B             ; {}
-2B92: 18 CB           JR      $1201               ; {}
+2B90: 28 35           JR      Z,$2BC7             ; {}
+2B92: 18 CB           JR      $2B5F               ; {}
 2B94: 2A F6 85        LD      HL,($85F6)          
 2B97: 11 07 00        LD      DE,$0007            
 2B9A: 19              ADD     HL,DE               
 2B9B: 36 02           LD      (HL),$02            
-2B9D: 18 09           JR      $123F               ; {}
+2B9D: 18 09           JR      $2BA8               ; {}
 2B9F: 2A F6 85        LD      HL,($85F6)          
 2BA2: 11 07 00        LD      DE,$0007            
 2BA5: 19              ADD     HL,DE               
@@ -5841,7 +5855,7 @@
 2C03: DD 2B           DEC     IX                  
 2C05: FD 2B           DEC     IY                  
 2C07: FD 2B           DEC     IY                  
-2C09: 18 B7           JR      $11ED               ; {}
+2C09: 18 B7           JR      $2BC2               ; {}
 2C0B: 2A 27 86        LD      HL,($8627)          
 2C0E: 3E 05           LD      A,$05               
 2C10: 36 2F           LD      (HL),$2F            
@@ -5855,18 +5869,18 @@
 2C1A: 36 31           LD      (HL),$31            
 2C1C: 23              INC     HL                  
 2C1D: 77              LD      (HL),A              
-2C1E: 18 A2           JR      $11D8               ; {}
+2C1E: 18 A2           JR      $2BC2               ; {}
 2C20: CD F6 1C        CALL    $1CF6               ; {}
 2C23: 3A F4 85        LD      A,($85F4)           
 2C26: CB 47           BIT     0,A                 
-2C28: 20 12           JR      NZ,$1248            ; {}
+2C28: 20 12           JR      NZ,$2C3C            ; {}
 2C2A: CD 32 2D        CALL    $2D32               ; {}
 2C2D: CB 41           BIT     0,C                 
 2C2F: C2 C6 2C        JP      NZ,$2CC6            ; {}
 2C32: CD 5F 2D        CALL    $2D5F               ; {}
 2C35: CB 41           BIT     0,C                 
 2C37: C2 C6 2C        JP      NZ,$2CC6            ; {}
-2C3A: 18 10           JR      $1246               ; {}
+2C3A: 18 10           JR      $2C4C               ; {}
 2C3C: CD 5F 2D        CALL    $2D5F               ; {}
 2C3F: CB 41           BIT     0,C                 
 2C41: C2 C6 2C        JP      NZ,$2CC6            ; {}
@@ -5885,8 +5899,8 @@
 2C5E: 3A F4 85        LD      A,($85F4)           
 2C61: E6 0F           AND     $0F                 
 2C63: FE 0A           CP      $0A                 
-2C65: 38 1E           JR      C,$1254             ; {}
-2C67: 18 44           JR      $127A               ; {}
+2C65: 38 1E           JR      C,$2C85             ; {}
+2C67: 18 44           JR      $2CAD               ; {}
 2C69: 2A F6 85        LD      HL,($85F6)          
 2C6C: CB CE           SET     1,(HL)              
 2C6E: 23              INC     HL                  
@@ -5917,7 +5931,7 @@
 2C93: F5              PUSH    AF                  
 2C94: C4 8A 2F        CALL    NZ,$2F8A            ; {}
 2C97: F1              POP     AF                  
-2C98: 20 2C           JR      NZ,$1262            ; {}
+2C98: 20 2C           JR      NZ,$2CC6            ; {}
 2C9A: 2A 1A 86        LD      HL,($861A)          
 2C9D: 34              INC     (HL)                
 2C9E: 34              INC     (HL)                
@@ -5928,7 +5942,7 @@
 2CA6: F5              PUSH    AF                  
 2CA7: C4 90 2F        CALL    NZ,$2F90            ; {}
 2CAA: F1              POP     AF                  
-2CAB: 20 19           JR      NZ,$124F            ; {}
+2CAB: 20 19           JR      NZ,$2CC6            ; {}
 2CAD: 2A 1A 86        LD      HL,($861A)          
 2CB0: 2B              DEC     HL                  
 2CB1: 7E              LD      A,(HL)              
@@ -5943,14 +5957,14 @@
 2CBD: F5              PUSH    AF                  
 2CBE: C4 90 2F        CALL    NZ,$2F90            ; {}
 2CC1: F1              POP     AF                  
-2CC2: 20 02           JR      NZ,$1238            ; {}
-2CC4: 18 A3           JR      $11D9               ; {}
+2CC2: 20 02           JR      NZ,$2CC6            ; {}
+2CC4: 18 A3           JR      $2C69               ; {}
 2CC6: CD 72 2F        CALL    $2F72               ; {}
 2CC9: 7E              LD      A,(HL)              
 2CCA: FE 06           CP      $06                 
-2CCC: 38 04           JR      C,$123A             ; {}
+2CCC: 38 04           JR      C,$2CD2             ; {}
 2CCE: FE C0           CP      $C0                 
-2CD0: 38 97           JR      C,$11CD             ; {}
+2CD0: 38 97           JR      C,$2C69             ; {}
 2CD2: 2A 1A 86        LD      HL,($861A)          
 2CD5: 7E              LD      A,(HL)              
 2CD6: E6 07           AND     $07                 
@@ -5961,23 +5975,23 @@
 2CE0: 19              ADD     HL,DE               
 2CE1: 7E              LD      A,(HL)              
 2CE2: FE 08           CP      $08                 
-2CE4: 20 0F           JR      NZ,$1245            ; {}
+2CE4: 20 0F           JR      NZ,$2CF5            ; {}
 2CE6: 3A F0 87        LD      A,($87F0)           
 2CE9: CB 47           BIT     0,A                 
-2CEB: 28 08           JR      Z,$123E             ; {}
+2CEB: 28 08           JR      Z,$2CF5             ; {}
 2CED: 2A 1A 86        LD      HL,($861A)          
 2CF0: 2B              DEC     HL                  
 2CF1: 36 06           LD      (HL),$06            
-2CF3: 18 11           JR      $1247               ; {}
+2CF3: 18 11           JR      $2D06               ; {}
 2CF5: 2A 1A 86        LD      HL,($861A)          
 2CF8: 2B              DEC     HL                  
 2CF9: 7E              LD      A,(HL)              
 2CFA: E6 07           AND     $07                 
-2CFC: 28 1E           JR      Z,$1254             ; {}
+2CFC: 28 1E           JR      Z,$2D1C             ; {}
 2CFE: FE 02           CP      $02                 
-2D00: 28 0F           JR      Z,$1245             ; {}
+2D00: 28 0F           JR      Z,$2D11             ; {}
 2D02: FE 04           CP      $04                 
-2D04: 28 1B           JR      Z,$1251             ; {}
+2D04: 28 1B           JR      Z,$2D21             ; {}
 2D06: 11 04 00        LD      DE,$0004            
 2D09: 2A F6 85        LD      HL,($85F6)          
 2D0C: 19              ADD     HL,DE               
@@ -5993,14 +6007,14 @@
 2D1A: E1              POP     HL                  
 2D1B: C9              RET                         
 2D1C: 11 05 00        LD      DE,$0005            
-2D1F: 18 E8           JR      $121E               ; {}
+2D1F: 18 E8           JR      $2D09               ; {}
 2D21: 2A F6 85        LD      HL,($85F6)          
 2D24: 11 05 00        LD      DE,$0005            
 2D27: 19              ADD     HL,DE               
 2D28: 3A F0 87        LD      A,($87F0)           
 2D2B: CB 47           BIT     0,A                 
 2D2D: C2 69 2C        JP      NZ,$2C69            ; {}
-2D30: 18 E6           JR      $121C               ; {}
+2D30: 18 E6           JR      $2D18               ; {}
 2D32: 2A F6 85        LD      HL,($85F6)          
 2D35: CB 46           BIT     0,(HL)              
 2D37: C2 4D 2F        JP      NZ,$2F4D            ; {}
@@ -6047,7 +6061,7 @@
 2D92: C6 04           ADD     $04                 
 2D94: E6 07           AND     $07                 
 2D96: B8              CP      B                   
-2D97: 20 03           JR      NZ,$1239            ; {}
+2D97: 20 03           JR      NZ,$2D9C            ; {}
 2D99: 0E 00           LD      C,$00               
 2D9B: C9              RET                         
 2D9C: CD A0 2D        CALL    $2DA0               ; {}
@@ -6055,11 +6069,11 @@
 2DA0: 2A 1A 86        LD      HL,($861A)          
 2DA3: 7E              LD      A,(HL)              
 2DA4: E6 07           AND     $07                 
-2DA6: 28 22           JR      Z,$1258             ; {}
+2DA6: 28 22           JR      Z,$2DCA             ; {}
 2DA8: FE 02           CP      $02                 
-2DAA: 28 35           JR      Z,$126B             ; {}
+2DAA: 28 35           JR      Z,$2DE1             ; {}
 2DAC: FE 04           CP      $04                 
-2DAE: 28 4B           JR      Z,$1281             ; {}
+2DAE: 28 4B           JR      Z,$2DFB             ; {}
 2DB0: 2A 02 86        LD      HL,($8602)          
 2DB3: 22 12 86        LD      ($8612),HL          
 2DB6: 11 20 00        LD      DE,$0020            
@@ -6099,7 +6113,7 @@
 2E0C: 22 18 86        LD      ($8618),HL          
 2E0F: 3A F0 87        LD      A,($87F0)           
 2E12: CB 47           BIT     0,A                 
-2E14: 28 03           JR      Z,$1239             ; {}
+2E14: 28 03           JR      Z,$2E19             ; {}
 2E16: 0E 00           LD      C,$00               
 2E18: C9              RET                         
 2E19: 2A 12 86        LD      HL,($8612)          
@@ -6120,18 +6134,18 @@
 2E37: 2A 18 86        LD      HL,($8618)          
 2E3A: 7E              LD      A,(HL)              
 2E3B: FE 02           CP      $02                 
-2E3D: 28 19           JR      Z,$124F             ; {}
+2E3D: 28 19           JR      Z,$2E58             ; {}
 2E3F: FE 03           CP      $03                 
-2E41: 28 15           JR      Z,$124B             ; {}
+2E41: 28 15           JR      Z,$2E58             ; {}
 2E43: FE 7E           CP      $7E                 
-2E45: 28 11           JR      Z,$1247             ; {}
+2E45: 28 11           JR      Z,$2E58             ; {}
 2E47: FE 8E           CP      $8E                 
-2E49: 28 0D           JR      Z,$1243             ; {}
+2E49: 28 0D           JR      Z,$2E58             ; {}
 2E4B: FE 8F           CP      $8F                 
-2E4D: 28 09           JR      Z,$123F             ; {}
+2E4D: 28 09           JR      Z,$2E58             ; {}
 2E4F: CB BF           RES     7,A                 
 2E51: FE 0C           CP      $0C                 
-2E53: 28 03           JR      Z,$1239             ; {}
+2E53: 28 03           JR      Z,$2E58             ; {}
 2E55: 0E 00           LD      C,$00               
 2E57: C9              RET                         
 2E58: 0E 01           LD      C,$01               
@@ -6205,7 +6219,7 @@
 2EE5: 22 36 86        LD      ($8636),HL          
 2EE8: 2A 06 86        LD      HL,($8606)          
 2EEB: 22 38 86        LD      ($8638),HL          
-2EEE: 18 0C           JR      $1242               ; {}
+2EEE: 18 0C           JR      $2EFC               ; {}
 2EF0: 2A 04 86        LD      HL,($8604)          
 2EF3: 22 36 86        LD      ($8636),HL          
 2EF6: 2A 08 86        LD      HL,($8608)          
@@ -6231,7 +6245,7 @@
 2F20: 22 38 86        LD      ($8638),HL          
 2F23: C3 2B 2F        JP      $2F2B               ; {}
 2F26: 11 40 00        LD      DE,$0040            
-2F29: 18 EA           JR      $1220               ; {}
+2F29: 18 EA           JR      $2F15               ; {}
 2F2B: 2A 36 86        LD      HL,($8636)          
 2F2E: CD 9E 2E        CALL    $2E9E               ; {}
 2F31: CB 47           BIT     0,A                 
@@ -6240,7 +6254,7 @@
 2F39: CD 9E 2E        CALL    $2E9E               ; {}
 2F3C: CB 47           BIT     0,A                 
 2F3E: CA 43 2F        JP      Z,$2F43             ; {}
-2F41: 10 BB           DJNZ    $11F1               ; {}
+2F41: 10 BB           DJNZ    $2EFE               ; {}
 2F43: 2A F6 85        LD      HL,($85F6)          
 2F46: 11 08 00        LD      DE,$0008            
 2F49: 19              ADD     HL,DE               
@@ -6324,16 +6338,16 @@
 2FD8: 77              LD      (HL),A              
 2FD9: 23              INC     HL                  
 2FDA: 13              INC     DE                  
-2FDB: 10 F8           DJNZ    $122E               ; {}
+2FDB: 10 F8           DJNZ    $2FD5               ; {}
 2FDD: 3E 00           LD      A,$00               
 2FDF: 8E              ADC     A,(HL)              
 2FE0: 27              DAA                         
 2FE1: 77              LD      (HL),A              
 2FE2: 3A 00 84        LD      A,($8400)           
 2FE5: CB 4F           BIT     1,A                 
-2FE7: 20 05           JR      NZ,$123B            ; {}
+2FE7: 20 05           JR      NZ,$2FEE            ; {}
 2FE9: 11 14 84        LD      DE,$8414            
-2FEC: 18 03           JR      $1239               ; {}
+2FEC: 18 03           JR      $2FF1               ; {}
 2FEE: 11 17 84        LD      DE,$8417            
 2FF1: 21 11 84        LD      HL,$8411            
 2FF4: A7              AND     A                   
@@ -6344,7 +6358,7 @@
 2FFA: 12              LD      (DE),A              
 2FFB: 13              INC     DE                  
 2FFC: 23              INC     HL                  
-2FFD: 10 F8           DJNZ    $122E               ; {}
+2FFD: 10 F8           DJNZ    $2FF7               ; {}
 2FFF: 1B              DEC     DE                  
 3000: EB              EX      DE,HL               
 3001: 22 27 86        LD      ($8627),HL          
@@ -6352,10 +6366,10 @@
 3007: 06 03           LD      B,$03               
 3009: 1A              LD      A,(DE)              
 300A: BE              CP      (HL)                
-300B: 20 05           JR      NZ,$123B            ; {}
+300B: 20 05           JR      NZ,$3012            ; {}
 300D: 2B              DEC     HL                  
 300E: 1B              DEC     DE                  
-300F: 10 F8           DJNZ    $122E               ; {}
+300F: 10 F8           DJNZ    $3009               ; {}
 3011: C9              RET                         
 3012: D0              RET     NC                  
 3013: 21 29 89        LD      HL,$8929            
@@ -6365,9 +6379,9 @@
 301D: 77              LD      (HL),A              
 301E: 2B              DEC     HL                  
 301F: 1B              DEC     DE                  
-3020: 10 FA           DJNZ    $1230               ; {}
+3020: 10 FA           DJNZ    $301C               ; {}
 3022: C9              RET                         
-3023: 10 00           DJNZ    $1236               ; {}
+3023: 10 00           DJNZ    $3025               ; {}
 3025: 00              NOP                         
 3026: 00              NOP                         
 3027: 02              LD      (BC),A              
@@ -6390,7 +6404,7 @@
 3039: 08              EX      AF,AF'              
 303A: 00              NOP                         
 303B: 00              NOP                         
-303C: 10 00           DJNZ    $1236               ; {}
+303C: 10 00           DJNZ    $303E               ; {}
 303E: 00              NOP                         
 303F: 25              DEC     H                   
 3040: 00              NOP                         
@@ -6416,12 +6430,12 @@
 305F: 1C              INC     E                   
 3060: 7F              LD      A,A                 
 3061: 2B              DEC     HL                  
-3062: 28 2E           JR      Z,$1264             ; {}
+3062: 28 2E           JR      Z,$3092             ; {}
 3064: 27              DAA                         
 3065: 1D              DEC     E                   
 3066: 7F              LD      A,A                 
 3067: 32 25 27        LD      ($2725),A           ; {}
-306A: 28 7F           JR      Z,$12B5             ; {}
+306A: 28 7F           JR      Z,$30EB             ; {}
 306C: 2B              DEC     HL                  
 306D: 1E 32           LD      E,$32               
 306F: 1A              LD      A,(DE)              
@@ -6439,19 +6453,19 @@
 307C: 52              LD      D,D                 
 307D: 7F              LD      A,A                 
 307E: 2B              DEC     HL                  
-307F: 28 7F           JR      Z,$12B5             ; {}
+307F: 28 7F           JR      Z,$3100             ; {}
 3081: 51              LD      D,C                 
 3082: 35              DEC     (HL)                
 3083: 1D              DEC     E                   
 3084: 2D              DEC     L                   
 3085: 25              DEC     H                   
 3086: 7F              LD      A,A                 
-3087: 28 1C           JR      Z,$1252             ; {}
+3087: 28 1C           JR      Z,$30A5             ; {}
 3089: 26 1A           LD      H,$1A               
 308B: 27              DAA                         
 308C: 7F              LD      A,A                 
 308D: 12              LD      (DE),A              
-308E: 18 19           JR      $124F               ; {}
+308E: 18 19           JR      $30A9               ; {}
 3090: 11 7F 38        LD      DE,$387F            
 3093: BF              CP      A                   
 3094: BE              CP      (HL)                
@@ -6462,7 +6476,7 @@
 3099: B9              CP      C                   
 309A: 7F              LD      A,A                 
 309B: 27              DAA                         
-309C: 28 2D           JR      Z,$1263             ; {}
+309C: 28 2D           JR      Z,$30CB             ; {}
 309E: 2D              DEC     L                   
 309F: 2E 1B           LD      L,$1B               
 30A1: 7F              LD      A,A                 
@@ -6487,7 +6501,7 @@
 30B6: 7F              LD      A,A                 
 30B7: 2C              INC     L                   
 30B8: 2E 27           LD      L,$27               
-30BA: 28 1B           JR      Z,$1251             ; {}
+30BA: 28 1B           JR      Z,$30D7             ; {}
 30BC: 7F              LD      A,A                 
 30BD: 2D              DEC     L                   
 30BE: 2C              INC     L                   
@@ -6503,7 +6517,7 @@
 30CA: 7F              LD      A,A                 
 30CB: 2C              INC     L                   
 30CC: 2E 27           LD      L,$27               
-30CE: 28 1B           JR      Z,$1251             ; {}
+30CE: 28 1B           JR      Z,$30EB             ; {}
 30D0: 7F              LD      A,A                 
 30D1: 1D              DEC     E                   
 30D2: 27              DAA                         
@@ -6528,7 +6542,7 @@
 30E8: 00              NOP                         
 30E9: 45              LD      B,L                 
 30EA: AB              XOR     E                   
-30EB: C4 00 00        CALL    NZ,$0000            ; {ram.$00}
+30EB: C4 00 00        CALL    NZ,$0000            ; {code.init}
 30EE: 00              NOP                         
 30EF: 00              NOP                         
 30F0: 00              NOP                         
@@ -6543,7 +6557,7 @@
 30F9: 33              INC     SP                  
 30FA: 7C              LD      A,H                 
 30FB: A4              AND     H                   
-30FC: CD 00 00        CALL    $0000               ; {ram.$00}
+30FC: CD 00 00        CALL    $0000               ; {code.init}
 30FF: 00              NOP                         
 3100: 00              NOP                         
 3101: 53              LD      D,E                 
@@ -6560,8 +6574,8 @@
 310F: 00              NOP                         
 3110: 00              NOP                         
 3111: A7              AND     A                   
-3112: 38 7B           JR      C,$12B1             ; {}
-3114: C3 00 00        JP      $0000               ; {ram.$00}
+3112: 38 7B           JR      C,$318F             ; {}
+3114: C3 00 00        JP      $0000               ; {code.init}
 3117: 00              NOP                         
 3118: 00              NOP                         
 3119: 39              ADD     HL,SP               
@@ -6581,7 +6595,7 @@
 3127: 00              NOP                         
 3128: 00              NOP                         
 3129: 4C              LD      C,H                 
-312A: 38 8A           JR      C,$11C0             ; {}
+312A: 38 8A           JR      C,$30B6             ; {}
 312C: 82              ADD     A,D                 
 312D: C6 00           ADD     $00                 
 312F: 00              NOP                         
@@ -6597,13 +6611,13 @@
 3139: 43              LD      B,E                 
 313A: 4B              LD      C,E                 
 313B: B6              OR      (HL)                
-313C: CC 00 00        CALL    Z,$0000             ; {ram.$00}
+313C: CC 00 00        CALL    Z,$0000             ; {code.init}
 313F: 00              NOP                         
 3140: 00              NOP                         
 3141: 49              LD      C,C                 
 3142: 92              SUB     D                   
 3143: 8B              ADC     A,E                 
-3144: DA 00 00        JP      C,$0000             ; {ram.$00}
+3144: DA 00 00        JP      C,$0000             ; {code.init}
 3147: 00              NOP                         
 3148: 00              NOP                         
 3149: 42              LD      B,D                 
@@ -6723,7 +6737,7 @@
 31C7: 00              NOP                         
 31C8: C8              RET     Z                   
 31C9: 80              ADD     A,B                 
-31CA: 18 81           JR      $11B7               ; {}
+31CA: 18 81           JR      $314D               ; {}
 31CC: 94              SUB     H                   
 31CD: 82              ADD     A,D                 
 31CE: 00              NOP                         
@@ -6796,7 +6810,7 @@
 3218: D6 80           SUB     $80                 
 321A: 4C              LD      C,H                 
 321B: 81              ADD     A,C                 
-321C: 18 82           JR      $11B8               ; {}
+321C: 18 82           JR      $31A0               ; {}
 321E: 8A              ADC     A,D                 
 321F: 82              ADD     A,D                 
 3220: CE 80           ADC     $80                 
@@ -6952,8 +6966,8 @@
 32D6: 14              INC     D                   
 32D7: 24              INC     H                   
 32D8: 24              INC     H                   
-32D9: 20 20           JR      NZ,$1256            ; {}
-32DB: 20 20           JR      NZ,$1256            ; {}
+32D9: 20 20           JR      NZ,$32FB            ; {}
+32DB: 20 20           JR      NZ,$32FD            ; {}
 32DD: 1C              INC     E                   
 32DE: 1C              INC     E                   
 32DF: 1C              INC     E                   
@@ -6961,7 +6975,7 @@
 32E1: 1A              LD      A,(DE)              
 32E2: 1A              LD      A,(DE)              
 32E3: 1A              LD      A,(DE)              
-32E4: 18 18           JR      $124E               ; {}
+32E4: 18 18           JR      $32FE               ; {}
 32E6: 1E 10           LD      E,$10               
 32E8: ED 73 85 89     LD      ($8985),SP          
 32EC: 32 88 89        LD      ($8988),A           
@@ -6973,41 +6987,41 @@
 32FB: 23              INC     HL                  
 32FC: 12              LD      (DE),A              
 32FD: 1B              DEC     DE                  
-32FE: 10 FA           DJNZ    $1230               ; {}
+32FE: 10 FA           DJNZ    $32FA               ; {}
 3300: 3E 01           LD      A,$01               
 3302: 32 3D 9B        LD      ($9B3D),A           
 3305: 3A 3D 9B        LD      A,($9B3D)           
 3308: A7              AND     A                   
-3309: 20 FA           JR      NZ,$1230            ; {}
+3309: 20 FA           JR      NZ,$3305            ; {}
 330B: 21 A0 89        LD      HL,$89A0            
 330E: 06 05           LD      B,$05               
 3310: 11 80 89        LD      DE,$8980            
 3313: 0E 03           LD      C,$03               
 3315: 1A              LD      A,(DE)              
 3316: 96              SUB     (HL)                
-3317: 38 14           JR      C,$124A             ; {}
-3319: 20 07           JR      NZ,$123D            ; {}
+3317: 38 14           JR      C,$332D             ; {}
+3319: 20 07           JR      NZ,$3322            ; {}
 331B: 23              INC     HL                  
 331C: 13              INC     DE                  
 331D: 0D              DEC     C                   
-331E: 20 F5           JR      NZ,$122B            ; {}
-3320: 18 0B           JR      $1241               ; {}
+331E: 20 F5           JR      NZ,$3315            ; {}
+3320: 18 0B           JR      $332D               ; {}
 3322: 23              INC     HL                  
 3323: 0D              DEC     C                   
-3324: 20 FC           JR      NZ,$1232            ; {}
-3326: 10 E8           DJNZ    $121E               ; {}
+3324: 20 FC           JR      NZ,$3322            ; {}
+3326: 10 E8           DJNZ    $3310               ; {}
 3328: CD 33 35        CALL    $3533               ; {}
 332B: 06 00           LD      B,$00               
 332D: 04              INC     B                   
 332E: 78              LD      A,B                 
 332F: 32 C5 89        LD      ($89C5),A           
 3332: FE 06           CP      $06                 
-3334: 20 05           JR      NZ,$123B            ; {}
+3334: 20 05           JR      NZ,$333B            ; {}
 3336: ED 7B 85 89     LD      SP,($8985)          
 333A: C9              RET                         
 333B: 3E 05           LD      A,$05               
 333D: 90              SUB     B                   
-333E: 28 1F           JR      Z,$1255             ; {}
+333E: 28 1F           JR      Z,$335F             ; {}
 3340: 4F              LD      C,A                 
 3341: 06 00           LD      B,$00               
 3343: 21 C1 89        LD      HL,$89C1            
@@ -7037,7 +7051,7 @@
 3373: 06 03           LD      B,$03               
 3375: 36 37           LD      (HL),$37            
 3377: 23              INC     HL                  
-3378: 10 FB           DJNZ    $1231               ; {}
+3378: 10 FB           DJNZ    $3375               ; {}
 337A: 3A C5 89        LD      A,($89C5)           
 337D: D6 05           SUB     $05                 
 337F: ED 44           NEG                         
@@ -7050,7 +7064,7 @@
 338D: 3A 00 84        LD      A,($8400)           
 3390: F6 F9           OR      $F9                 
 3392: 3C              INC     A                   
-3393: 20 01           JR      NZ,$1237            ; {}
+3393: 20 01           JR      NZ,$3396            ; {}
 3395: 23              INC     HL                  
 3396: 22 C7 89        LD      ($89C7),HL          
 3399: CD 21 3E        CALL    $3E21               ; {}
@@ -7064,7 +7078,7 @@
 33B1: CD BE 36        CALL    $36BE               ; {}
 33B4: 06 05           LD      B,$05               
 33B6: CD E1 36        CALL    $36E1               ; {}
-33B9: 10 FB           DJNZ    $1231               ; {}
+33B9: 10 FB           DJNZ    $33B6               ; {}
 33BB: 3A 88 89        LD      A,($8988)           
 33BE: 0E 10           LD      C,$10               
 33C0: CD 59 36        CALL    $3659               ; {}
@@ -7085,7 +7099,7 @@
 33E7: CD E6 34        CALL    $34E6               ; {}
 33EA: 3A 23 84        LD      A,($8423)           
 33ED: B9              CP      C                   
-33EE: 28 F7           JR      Z,$122D             ; {}
+33EE: 28 F7           JR      Z,$33E7             ; {}
 33F0: E6 0F           AND     $0F                 
 33F2: CC 11 35        CALL    Z,$3511             ; {}
 33F5: 2A C7 89        LD      HL,($89C7)          
@@ -7097,28 +7111,28 @@
 3403: 21 84 89        LD      HL,$8984            
 3406: BE              CP      (HL)                
 3407: 77              LD      (HL),A              
-3408: 28 1A           JR      Z,$1250             ; {}
+3408: 28 1A           JR      Z,$3424             ; {}
 340A: FE 02           CP      $02                 
-340C: 28 0F           JR      Z,$1245             ; {}
+340C: 28 0F           JR      Z,$341D             ; {}
 340E: FE 0C           CP      $0C                 
-3410: 28 0B           JR      Z,$1241             ; {}
+3410: 28 0B           JR      Z,$341D             ; {}
 3412: FE 06           CP      $06                 
-3414: 20 CD           JR      NZ,$1203            ; {}
+3414: 20 CD           JR      NZ,$33E3            ; {}
 3416: 3E FD           LD      A,$FD               
 3418: 32 CB 89        LD      ($89CB),A           
-341B: 18 3A           JR      $1270               ; {}
+341B: 18 3A           JR      $3457               ; {}
 341D: 3E FD           LD      A,$FD               
 341F: 32 CC 89        LD      ($89CC),A           
-3422: 18 0C           JR      $1242               ; {}
+3422: 18 0C           JR      $3430               ; {}
 3424: FE 06           CP      $06                 
-3426: 28 2F           JR      Z,$1265             ; {}
+3426: 28 2F           JR      Z,$3457             ; {}
 3428: FE 0C           CP      $0C                 
-342A: 28 04           JR      Z,$123A             ; {}
+342A: 28 04           JR      Z,$3430             ; {}
 342C: FE 02           CP      $02                 
-342E: 20 B3           JR      NZ,$11E9            ; {}
+342E: 20 B3           JR      NZ,$33E3            ; {}
 3430: 21 CC 89        LD      HL,$89CC            
 3433: 34              INC     (HL)                
-3434: 20 AD           JR      NZ,$11E3            ; {}
+3434: 20 AD           JR      NZ,$33E3            ; {}
 3436: 36 F0           LD      (HL),$F0            
 3438: 3E 28           LD      A,$28               
 343A: 32 CD 89        LD      ($89CD),A           
@@ -7127,17 +7141,17 @@
 3441: 7E              LD      A,(HL)              
 3442: E6 3F           AND     $3F                 
 3444: FE 34           CP      $34                 
-3446: 38 05           JR      C,$123B             ; {}
+3446: 38 05           JR      C,$344D             ; {}
 3448: FE 38           CP      $38                 
-344A: 30 07           JR      NC,$123D            ; {}
+344A: 30 07           JR      NC,$3453            ; {}
 344C: 34              INC     (HL)                
 344D: CD DF 35        CALL    $35DF               ; {}
 3450: C3 E3 33        JP      $33E3               ; {}
 3453: 36 1A           LD      (HL),$1A            
-3455: 18 F6           JR      $122C               ; {}
+3455: 18 F6           JR      $344D               ; {}
 3457: 21 CB 89        LD      HL,$89CB            
 345A: 34              INC     (HL)                
-345B: 20 F3           JR      NZ,$1229            ; {}
+345B: 20 F3           JR      NZ,$3450            ; {}
 345D: 36 F0           LD      (HL),$F0            
 345F: 3E 28           LD      A,$28               
 3461: 32 CD 89        LD      ($89CD),A           
@@ -7146,13 +7160,13 @@
 3468: 7E              LD      A,(HL)              
 3469: E6 3F           AND     $3F                 
 346B: FE 19           CP      $19                 
-346D: 28 07           JR      Z,$123D             ; {}
+346D: 28 07           JR      Z,$3476             ; {}
 346F: FE 34           CP      $34                 
-3471: 38 DA           JR      C,$1210             ; {}
+3471: 38 DA           JR      C,$344D             ; {}
 3473: 35              DEC     (HL)                
-3474: 18 D7           JR      $120D               ; {}
+3474: 18 D7           JR      $344D               ; {}
 3476: 36 37           LD      (HL),$37            
-3478: 18 D3           JR      $1209               ; {}
+3478: 18 D3           JR      $344D               ; {}
 347A: 2A C9 89        LD      HL,($89C9)          
 347D: CB BE           RES     7,(HL)              
 347F: 4E              LD      C,(HL)              
@@ -7188,21 +7202,21 @@
 34BC: CD D5 34        CALL    $34D5               ; {}
 34BF: 3A 94 9A        LD      A,($9A94)           
 34C2: A7              AND     A                   
-34C3: 20 FA           JR      NZ,$1230            ; {}
+34C3: 20 FA           JR      NZ,$34BF            ; {}
 34C5: 3E 02           LD      A,$02               
 34C7: 32 3D 9B        LD      ($9B3D),A           
 34CA: 3A 3D 9B        LD      A,($9B3D)           
 34CD: A7              AND     A                   
-34CE: 20 FA           JR      NZ,$1230            ; {}
+34CE: 20 FA           JR      NZ,$34CA            ; {}
 34D0: ED 7B 85 89     LD      SP,($8985)          
 34D4: C9              RET                         
 34D5: 3A 23 84        LD      A,($8423)           
 34D8: E6 3F           AND     $3F                 
-34DA: 20 F9           JR      NZ,$122F            ; {}
+34DA: 20 F9           JR      NZ,$34D5            ; {}
 34DC: 3A 23 84        LD      A,($8423)           
 34DF: E6 3F           AND     $3F                 
-34E1: 28 F9           JR      Z,$122F             ; {}
-34E3: 10 F0           DJNZ    $1226               ; {}
+34E1: 28 F9           JR      Z,$34DC             ; {}
+34E3: 10 F0           DJNZ    $34D5               ; {}
 34E5: C9              RET                         
 34E6: 3A A7 85        LD      A,($85A7)           
 34E9: 5F              LD      E,A                 
@@ -7210,7 +7224,7 @@
 34ED: BB              CP      E                   
 34EE: C8              RET     Z                   
 34EF: CD 7A 34        CALL    $347A               ; {}
-34F2: 18 FB           JR      $1231               ; {}
+34F2: 18 FB           JR      $34EF               ; {}
 34F4: 3A A7 85        LD      A,($85A7)           
 34F7: 5F              LD      E,A                 
 34F8: 3A 87 89        LD      A,($8987)           
@@ -7218,13 +7232,13 @@
 34FC: C8              RET     Z                   
 34FD: 3A 94 9A        LD      A,($9A94)           
 3500: A7              AND     A                   
-3501: 28 C2           JR      Z,$11F8             ; {}
+3501: 28 C2           JR      Z,$34C5             ; {}
 3503: 3E 01           LD      A,$01               
 3505: 32 94 9A        LD      ($9A94),A           
 3508: 3A 94 9A        LD      A,($9A94)           
 350B: A7              AND     A                   
-350C: 28 FA           JR      Z,$1230             ; {}
-350E: 18 B5           JR      $11EB               ; {}
+350C: 28 FA           JR      Z,$3508             ; {}
+350E: 18 B5           JR      $34C5               ; {}
 3510: C9              RET                         
 3511: 2A C9 89        LD      HL,($89C9)          
 3514: 7E              LD      A,(HL)              
@@ -7235,10 +7249,10 @@
 351D: C0              RET     NZ                  
 351E: 21 CD 89        LD      HL,$89CD            
 3521: 35              DEC     (HL)                
-3522: 28 CB           JR      Z,$1201             ; {}
+3522: 28 CB           JR      Z,$34EF             ; {}
 3524: 23              INC     HL                  
 3525: 35              DEC     (HL)                
-3526: 28 C7           JR      Z,$11FD             ; {}
+3526: 28 C7           JR      Z,$34EF             ; {}
 3528: C9              RET                         
 3529: BC              CP      H                   
 352A: 89              ADC     A,C                 
@@ -7265,14 +7279,14 @@
 3554: CC C1 35        CALL    Z,$35C1             ; {}
 3557: 3A 82 9A        LD      A,($9A82)           
 355A: A7              AND     A                   
-355B: 20 ED           JR      NZ,$1223            ; {}
+355B: 20 ED           JR      NZ,$354A            ; {}
 355D: CD 6D 35        CALL    $356D               ; {}
 3560: 3A 23 84        LD      A,($8423)           
 3563: C6 3C           ADD     $3C                 
 3565: 4F              LD      C,A                 
 3566: 3A 23 84        LD      A,($8423)           
 3569: B9              CP      C                   
-356A: 20 FA           JR      NZ,$1230            ; {}
+356A: 20 FA           JR      NZ,$3566            ; {}
 356C: C9              RET                         
 356D: 21 80 89        LD      HL,$8980            
 3570: 11 6D 83        LD      DE,$836D            
@@ -7288,15 +7302,15 @@
 3581: 7E              LD      A,(HL)              
 3582: CD 8B 35        CALL    $358B               ; {}
 3585: 23              INC     HL                  
-3586: 10 F1           DJNZ    $1227               ; {}
+3586: 10 F1           DJNZ    $3579               ; {}
 3588: 3E 01           LD      A,$01               
 358A: C9              RET                         
 358B: E6 0F           AND     $0F                 
-358D: 20 0E           JR      NZ,$1244            ; {}
+358D: 20 0E           JR      NZ,$359D            ; {}
 358F: 3A 83 89        LD      A,($8983)           
 3592: A7              AND     A                   
 3593: 3E 00           LD      A,$00               
-3595: 20 06           JR      NZ,$123C            ; {}
+3595: 20 06           JR      NZ,$359D            ; {}
 3597: CD E1 36        CALL    $36E1               ; {}
 359A: C3 E1 36        JP      $36E1               ; {}
 359D: E5              PUSH    HL                  
@@ -7315,7 +7329,7 @@
 35B1: ED A0           LDI                         
 35B3: D1              POP     DE                  
 35B4: CD E1 36        CALL    $36E1               ; {}
-35B7: 10 F1           DJNZ    $1227               ; {}
+35B7: 10 F1           DJNZ    $35AA               ; {}
 35B9: C1              POP     BC                  
 35BA: E1              POP     HL                  
 35BB: 3E 01           LD      A,$01               
@@ -7330,7 +7344,7 @@
 35D0: 3E 40           LD      A,$40               
 35D2: 12              LD      (DE),A              
 35D3: CD E1 36        CALL    $36E1               ; {}
-35D6: 10 F8           DJNZ    $122E               ; {}
+35D6: 10 F8           DJNZ    $35D0               ; {}
 35D8: D1              POP     DE                  
 35D9: 13              INC     DE                  
 35DA: C9              RET                         
@@ -7341,12 +7355,12 @@
 35E5: 11 5D 83        LD      DE,$835D            
 35E8: 06 05           LD      B,$05               
 35EA: CD F0 35        CALL    $35F0               ; {}
-35ED: 10 FB           DJNZ    $1231               ; {}
+35ED: 10 FB           DJNZ    $35EA               ; {}
 35EF: C9              RET                         
 35F0: 0E 00           LD      C,$00               
 35F2: 3A C5 89        LD      A,($89C5)           
 35F5: B8              CP      B                   
-35F6: 20 02           JR      NZ,$1238            ; {}
+35F6: 20 02           JR      NZ,$35FA            ; {}
 35F8: 0E 40           LD      C,$40               
 35FA: 78              LD      A,B                 
 35FB: 21 85 36        LD      HL,$3685            
@@ -7363,13 +7377,13 @@
 3609: 12              LD      (DE),A              
 360A: 23              INC     HL                  
 360B: CD E1 36        CALL    $36E1               ; {}
-360E: 10 F7           DJNZ    $122D               ; {}
+360E: 10 F7           DJNZ    $3607               ; {}
 3610: CD E1 36        CALL    $36E1               ; {}
 3613: CD E1 36        CALL    $36E1               ; {}
 3616: CD 3D 36        CALL    $363D               ; {}
 3619: 06 04           LD      B,$04               
 361B: CD E1 36        CALL    $36E1               ; {}
-361E: 10 FB           DJNZ    $1231               ; {}
+361E: 10 FB           DJNZ    $361B               ; {}
 3620: CD 5C 36        CALL    $365C               ; {}
 3623: CD E1 36        CALL    $36E1               ; {}
 3626: CD E1 36        CALL    $36E1               ; {}
@@ -7383,7 +7397,7 @@
 3631: 12              LD      (DE),A              
 3632: CD E1 36        CALL    $36E1               ; {}
 3635: 23              INC     HL                  
-3636: 10 F7           DJNZ    $122D               ; {}
+3636: 10 F7           DJNZ    $362F               ; {}
 3638: C1              POP     BC                  
 3639: D1              POP     DE                  
 363A: 1B              DEC     DE                  
@@ -7405,12 +7419,12 @@
 364F: B1              OR      C                   
 3650: 12              LD      (DE),A              
 3651: CD E1 36        CALL    $36E1               ; {}
-3654: 10 F8           DJNZ    $122E               ; {}
+3654: 10 F8           DJNZ    $364E               ; {}
 3656: E1              POP     HL                  
 3657: 23              INC     HL                  
 3658: C9              RET                         
 3659: E5              PUSH    HL                  
-365A: 18 06           JR      $123C               ; {}
+365A: 18 06           JR      $3662               ; {}
 365C: 7E              LD      A,(HL)              
 365D: 23              INC     HL                  
 365E: E5              PUSH    HL                  
@@ -7419,9 +7433,9 @@
 3661: 7E              LD      A,(HL)              
 3662: 06 00           LD      B,$00               
 3664: D6 0A           SUB     $0A                 
-3666: 38 03           JR      C,$1239             ; {}
+3666: 38 03           JR      C,$366B             ; {}
 3668: 04              INC     B                   
-3669: 18 F9           JR      $122F               ; {}
+3669: 18 F9           JR      $3664               ; {}
 366B: F5              PUSH    AF                  
 366C: 78              LD      A,B                 
 366D: CD 79 36        CALL    $3679               ; {}
@@ -7432,7 +7446,7 @@
 3677: 23              INC     HL                  
 3678: C9              RET                         
 3679: E6 0F           AND     $0F                 
-367B: 20 02           JR      NZ,$1238            ; {}
+367B: 20 02           JR      NZ,$367F            ; {}
 367D: 3E 27           LD      A,$27               
 367F: C6 10           ADD     $10                 
 3681: B1              OR      C                   
@@ -7482,7 +7496,7 @@
 36BE: 7E              LD      A,(HL)              
 36BF: CD C6 36        CALL    $36C6               ; {}
 36C2: 23              INC     HL                  
-36C3: 10 F9           DJNZ    $122F               ; {}
+36C3: 10 F9           DJNZ    $36BE               ; {}
 36C5: C9              RET                         
 36C6: F5              PUSH    AF                  
 36C7: 1F              RRA                         
@@ -7491,11 +7505,11 @@
 36CA: 1F              RRA                         
 36CB: CD D4 36        CALL    $36D4               ; {}
 36CE: F1              POP     AF                  
-36CF: 10 02           DJNZ    $1238               ; {}
+36CF: 10 02           DJNZ    $36D3               ; {}
 36D1: 0E FF           LD      C,$FF               
 36D3: 04              INC     B                   
 36D4: E6 0F           AND     $0F                 
-36D6: 28 02           JR      Z,$1238             ; {}
+36D6: 28 02           JR      Z,$36DA             ; {}
 36D8: 0E FF           LD      C,$FF               
 36DA: F6 10           OR      $10                 
 36DC: A1              AND     C                   
@@ -7520,12 +7534,12 @@
 36F3: 7E              LD      A,(HL)              
 36F4: CD 04 37        CALL    $3704               ; {}
 36F7: FE FF           CP      $FF                 
-36F9: 28 05           JR      Z,$123B             ; {}
+36F9: 28 05           JR      Z,$3700             ; {}
 36FB: 81              ADD     A,C                 
 36FC: 12              LD      (DE),A              
 36FD: CD E1 36        CALL    $36E1               ; {}
 3700: 23              INC     HL                  
-3701: 10 F0           DJNZ    $1226               ; {}
+3701: 10 F0           DJNZ    $36F3               ; {}
 3703: C9              RET                         
 3704: D6 30           SUB     $30                 
 3706: FE 0A           CP      $0A                 
@@ -7554,11 +7568,11 @@
 372B: 54              LD      D,H                 
 372C: 45              LD      B,L                 
 372D: 52              LD      D,D                 
-372E: 20 59           JR      NZ,$128F            ; {}
+372E: 20 59           JR      NZ,$3789            ; {}
 3730: 4F              LD      C,A                 
 3731: 55              LD      D,L                 
 3732: 52              LD      D,D                 
-3733: 20 49           JR      NZ,$127F            ; {}
+3733: 20 49           JR      NZ,$377E            ; {}
 3735: 4E              LD      C,(HL)              
 3736: 49              LD      C,C                 
 3737: 54              LD      D,H                 
@@ -7566,7 +7580,7 @@
 3739: 41              LD      B,C                 
 373A: 4C              LD      C,H                 
 373B: 53              LD      D,E                 
-373C: 20 21           JR      NZ,$1257            ; {}
+373C: 20 21           JR      NZ,$375F            ; {}
 373E: 50              LD      D,B                 
 373F: 12              LD      (DE),A              
 3740: 0D              DEC     C                   
@@ -7576,24 +7590,24 @@
 3744: 4F              LD      C,A                 
 3745: 52              LD      D,D                 
 3746: 45              LD      B,L                 
-3747: 20 20           JR      NZ,$1256            ; {}
+3747: 20 20           JR      NZ,$3769            ; {}
 3749: 52              LD      D,D                 
 374A: 4F              LD      C,A                 
 374B: 55              LD      D,L                 
 374C: 4E              LD      C,(HL)              
 374D: 44              LD      B,H                 
-374E: 20 20           JR      NZ,$1256            ; {}
+374E: 20 20           JR      NZ,$3770            ; {}
 3750: 4E              LD      C,(HL)              
 3751: 41              LD      B,C                 
 3752: 4D              LD      C,L                 
 3753: 45              LD      B,L                 
-3754: 10 03           DJNZ    $1239               ; {}
+3754: 10 03           DJNZ    $3759               ; {}
 3756: 2F              CPL                         
 3757: 81              ADD     A,C                 
 3758: 41              LD      B,C                 
 3759: 41              LD      B,C                 
 375A: 41              LD      B,C                 
-375B: 10 10           DJNZ    $1246               ; {}
+375B: 10 10           DJNZ    $376D               ; {}
 375D: 93              SUB     E                   
 375E: 82              ADD     A,D                 
 375F: 53              LD      D,E                 
@@ -7601,12 +7615,12 @@
 3761: 4F              LD      C,A                 
 3762: 52              LD      D,D                 
 3763: 45              LD      B,L                 
-3764: 20 52           JR      NZ,$1288            ; {}
+3764: 20 52           JR      NZ,$37B8            ; {}
 3766: 4F              LD      C,A                 
 3767: 55              LD      D,L                 
 3768: 4E              LD      C,(HL)              
 3769: 44              LD      B,H                 
-376A: 20 4E           JR      NZ,$1284            ; {}
+376A: 20 4E           JR      NZ,$37BA            ; {}
 376C: 41              LD      B,C                 
 376D: 4D              LD      C,L                 
 376E: 45              LD      B,L                 
@@ -7629,55 +7643,55 @@
 377F: 4F              LD      C,A                 
 3780: 4E              LD      C,(HL)              
 3781: 53              LD      D,E                 
-3782: 20 21           JR      NZ,$1257            ; {}
+3782: 20 21           JR      NZ,$37A5            ; {}
 3784: 21 50 15        LD      HL,$1550            
 3787: 27              DAA                         
 3788: 83              ADD     A,E                 
-3789: 20 20           JR      NZ,$1256            ; {}
-378B: 20 48           JR      NZ,$127E            ; {}
+3789: 20 20           JR      NZ,$37AB            ; {}
+378B: 20 48           JR      NZ,$37D5            ; {}
 378D: 49              LD      C,C                 
 378E: 47              LD      B,A                 
 378F: 48              LD      C,B                 
 3790: 45              LD      B,L                 
 3791: 53              LD      D,E                 
 3792: 54              LD      D,H                 
-3793: 20 53           JR      NZ,$1289            ; {}
+3793: 20 53           JR      NZ,$37E8            ; {}
 3795: 43              LD      B,E                 
 3796: 4F              LD      C,A                 
 3797: 52              LD      D,D                 
 3798: 45              LD      B,L                 
-3799: 20 20           JR      NZ,$1256            ; {}
-379B: 20 20           JR      NZ,$1256            ; {}
-379D: 20 10           JR      NZ,$1246            ; {}
+3799: 20 20           JR      NZ,$37BB            ; {}
+379B: 20 20           JR      NZ,$37BD            ; {}
+379D: 20 10           JR      NZ,$37AF            ; {}
 379F: 17              RLA                         
 37A0: 54              LD      D,H                 
 37A1: 83              ADD     A,E                 
 37A2: 47              LD      B,A                 
 37A3: 4F              LD      C,A                 
-37A4: 20 46           JR      NZ,$127C            ; {}
+37A4: 20 46           JR      NZ,$37EC            ; {}
 37A6: 4F              LD      C,A                 
 37A7: 52              LD      D,D                 
-37A8: 20 54           JR      NZ,$128A            ; {}
+37A8: 20 54           JR      NZ,$37FE            ; {}
 37AA: 48              LD      C,B                 
 37AB: 45              LD      B,L                 
-37AC: 20 57           JR      NZ,$128D            ; {}
+37AC: 20 57           JR      NZ,$3805            ; {}
 37AE: 4F              LD      C,A                 
 37AF: 52              LD      D,D                 
 37B0: 4C              LD      C,H                 
 37B1: 44              LD      B,H                 
-37B2: 20 52           JR      NZ,$1288            ; {}
+37B2: 20 52           JR      NZ,$3806            ; {}
 37B4: 45              LD      B,L                 
 37B5: 43              LD      B,E                 
 37B6: 4F              LD      C,A                 
 37B7: 52              LD      D,D                 
 37B8: 44              LD      B,H                 
-37B9: 10 05           DJNZ    $123B               ; {}
+37B9: 10 05           DJNZ    $37C0               ; {}
 37BB: 56              LD      D,(HL)              
 37BC: 82              ADD     A,D                 
 37BD: 4E              LD      C,(HL)              
 37BE: 4F              LD      C,A                 
 37BF: 57              LD      D,A                 
-37C0: 20 21           JR      NZ,$1257            ; {}
+37C0: 20 21           JR      NZ,$37E3            ; {}
 37C2: D6 37           SUB     $37                 
 37C4: E6 37           AND     $37                 
 37C6: F6 37           OR      $37                 
@@ -7686,9 +7700,9 @@
 37CC: 26 38           LD      H,$38               
 37CE: 36 38           LD      (HL),$38            
 37D0: 46              LD      B,(HL)              
-37D1: 38 56           JR      C,$128C             ; {}
-37D3: 38 66           JR      C,$129C             ; {}
-37D5: 38 40           JR      C,$1276             ; {}
+37D1: 38 56           JR      C,$3829             ; {}
+37D3: 38 66           JR      C,$383B             ; {}
+37D5: 38 40           JR      C,$3817             ; {}
 37D7: 48              LD      C,B                 
 37D8: 4F              LD      C,A                 
 37D9: 40              LD      B,B                 
@@ -7883,8 +7897,8 @@
 38AC: 23              INC     HL                  
 38AD: 32 30 68        LD      ($6830),A           
 38B0: 0D              DEC     C                   
-38B1: 20 EE           JR      NZ,$1224            ; {}
-38B3: 10 EC           DJNZ    $1222               ; {}
+38B1: 20 EE           JR      NZ,$38A1            ; {}
+38B3: 10 EC           DJNZ    $38A1               ; {}
 38B5: 06 04           LD      B,$04               
 38B7: 62              LD      H,D                 
 38B8: 6B              LD      L,E                 
@@ -7905,18 +7919,18 @@
 38CA: 23              INC     HL                  
 38CB: 32 30 68        LD      ($6830),A           
 38CE: 0D              DEC     C                   
-38CF: 20 EB           JR      NZ,$1221            ; {}
-38D1: 10 E9           DJNZ    $121F               ; {}
+38CF: 20 EB           JR      NZ,$38BC            ; {}
+38D1: 10 E9           DJNZ    $38BC               ; {}
 38D3: EB              EX      DE,HL               
 38D4: D9              EXX                         
-38D5: 10 BD           DJNZ    $11F3               ; {}
+38D5: 10 BD           DJNZ    $3894               ; {}
 38D7: D9              EXX                         
 38D8: 01 00 04        LD      BC,$0400            
 38DB: 36 00           LD      (HL),$00            
 38DD: 23              INC     HL                  
 38DE: 0D              DEC     C                   
-38DF: 20 FA           JR      NZ,$1230            ; {}
-38E1: 10 F8           DJNZ    $122E               ; {}
+38DF: 20 FA           JR      NZ,$38DB            ; {}
+38E1: 10 F8           DJNZ    $38DB               ; {}
 38E3: 31 00 84        LD      SP,$8400            
 38E6: 21 E0 89        LD      HL,$89E0            
 38E9: 11 00 80        LD      DE,$8000            
@@ -7960,8 +7974,8 @@
 3951: 32 30 68        LD      ($6830),A           
 3954: 23              INC     HL                  
 3955: 0D              DEC     C                   
-3956: 20 F8           JR      NZ,$122E            ; {}
-3958: 10 F6           DJNZ    $122C               ; {}
+3956: 20 F8           JR      NZ,$3950            ; {}
+3958: 10 F6           DJNZ    $3950               ; {}
 395A: EB              EX      DE,HL               
 395B: BE              CP      (HL)                
 395C: C2 53 3E        JP      NZ,$3E53            ; {}
@@ -7970,17 +7984,17 @@
 3962: 13              INC     DE                  
 3963: 7C              LD      A,H                 
 3964: FE 40           CP      $40                 
-3966: 20 E7           JR      NZ,$121D            ; {}
+3966: 20 E7           JR      NZ,$394F            ; {}
 3968: 32 30 68        LD      ($6830),A           
 396B: 3A 00 8A        LD      A,($8A00)           
 396E: A7              AND     A                   
-396F: 28 FA           JR      Z,$1230             ; {}
+396F: 28 FA           JR      Z,$396B             ; {}
 3971: 3C              INC     A                   
 3972: C2 58 3E        JP      NZ,$3E58            ; {}
 3975: 32 30 68        LD      ($6830),A           
 3978: 3A 01 8A        LD      A,($8A01)           
 397B: A7              AND     A                   
-397C: 28 FA           JR      Z,$1230             ; {}
+397C: 28 FA           JR      Z,$3978             ; {}
 397E: 3C              INC     A                   
 397F: C2 58 3E        JP      NZ,$3E58            ; {}
 3982: 21 8D 3E        LD      HL,$3E8D            
@@ -7991,8 +8005,8 @@
 398F: 06 10           LD      B,$10               
 3991: 32 30 68        LD      ($6830),A           
 3994: 0D              DEC     C                   
-3995: 20 FA           JR      NZ,$1230            ; {}
-3997: 10 F8           DJNZ    $122E               ; {}
+3995: 20 FA           JR      NZ,$3991            ; {}
+3997: 10 F8           DJNZ    $3991               ; {}
 3999: 21 C1 3F        LD      HL,$3FC1            
 399C: 11 00 70        LD      DE,$7000            
 399F: 01 03 00        LD      BC,$0003            
@@ -8001,7 +8015,7 @@
 39A5: 32 00 71        LD      ($7100),A           
 39A8: 3A 00 71        LD      A,($7100)           
 39AB: FE 10           CP      $10                 
-39AD: 20 F9           JR      NZ,$122F            ; {}
+39AD: 20 F9           JR      NZ,$39A8            ; {}
 39AF: 21 C8 3F        LD      HL,$3FC8            
 39B2: 11 18 8A        LD      DE,$8A18            
 39B5: 01 09 00        LD      BC,$0009            
@@ -8017,12 +8031,12 @@
 39CA: 4F              LD      C,A                 
 39CB: 3A 23 84        LD      A,($8423)           
 39CE: B9              CP      C                   
-39CF: 20 FA           JR      NZ,$1230            ; {}
+39CF: 20 FA           JR      NZ,$39CB            ; {}
 39D1: 3A 23 84        LD      A,($8423)           
 39D4: 4F              LD      C,A                 
 39D5: 3A 23 84        LD      A,($8423)           
 39D8: B9              CP      C                   
-39D9: 28 FA           JR      Z,$1230             ; {}
+39D9: 28 FA           JR      Z,$39D5             ; {}
 39DB: CD B0 3A        CALL    $3AB0               ; {}
 39DE: CD 7D 3A        CALL    $3A7D               ; {}
 39E1: CD DF 3A        CALL    $3ADF               ; {}
@@ -8035,37 +8049,37 @@
 39F6: CD A1 3C        CALL    $3CA1               ; {}
 39F9: 3A A7 85        LD      A,($85A7)           
 39FC: 87              ADD     A,A                 
-39FD: 30 D2           JR      NC,$1208            ; {}
+39FD: 30 D2           JR      NC,$39D1            ; {}
 39FF: CD 73 3E        CALL    $3E73               ; {}
 3A02: 3A 23 84        LD      A,($8423)           
 3A05: C6 64           ADD     $64                 
 3A07: 4F              LD      C,A                 
 3A08: 3A 23 84        LD      A,($8423)           
 3A0B: B9              CP      C                   
-3A0C: 20 FA           JR      NZ,$1230            ; {}
+3A0C: 20 FA           JR      NZ,$3A08            ; {}
 3A0E: 3A A7 85        LD      A,($85A7)           
 3A11: 87              ADD     A,A                 
-3A12: 30 FA           JR      NC,$1230            ; {}
+3A12: 30 FA           JR      NC,$3A0E            ; {}
 3A14: 3E 04           LD      A,$04               
 3A16: 32 3D 9B        LD      ($9B3D),A           
 3A19: 3A 3D 9B        LD      A,($9B3D)           
 3A1C: A7              AND     A                   
-3A1D: 20 FA           JR      NZ,$1230            ; {}
+3A1D: 20 FA           JR      NZ,$3A19            ; {}
 3A1F: 3E 01           LD      A,$01               
 3A21: 32 3D 9B        LD      ($9B3D),A           
 3A24: 3A 3D 9B        LD      A,($9B3D)           
 3A27: A7              AND     A                   
-3A28: 20 FA           JR      NZ,$1230            ; {}
+3A28: 20 FA           JR      NZ,$3A24            ; {}
 3A2A: F3              DI                          
 3A2B: 32 30 68        LD      ($6830),A           
 3A2E: 3A 00 71        LD      A,($7100)           
 3A31: FE 10           CP      $10                 
-3A33: 20 F6           JR      NZ,$122C            ; {}
+3A33: 20 F6           JR      NZ,$3A2B            ; {}
 3A35: 01 00 08        LD      BC,$0800            
 3A38: 32 30 68        LD      ($6830),A           
 3A3B: 0D              DEC     C                   
-3A3C: 20 FA           JR      NZ,$1230            ; {}
-3A3E: 10 F8           DJNZ    $122E               ; {}
+3A3C: 20 FA           JR      NZ,$3A38            ; {}
+3A3E: 10 F8           DJNZ    $3A38               ; {}
 3A40: 21 18 8A        LD      HL,$8A18            
 3A43: 11 00 70        LD      DE,$7000            
 3A46: 01 09 00        LD      BC,$0009            
@@ -8076,7 +8090,7 @@
 3A50: 32 00 71        LD      ($7100),A           
 3A53: 3A 00 71        LD      A,($7100)           
 3A56: FE 10           CP      $10                 
-3A58: 20 F9           JR      NZ,$122F            ; {}
+3A58: 20 F9           JR      NZ,$3A53            ; {}
 3A5A: 21 00 70        LD      HL,$7000            
 3A5D: 11 10 8A        LD      DE,$8A10            
 3A60: 01 03 00        LD      BC,$0003            
@@ -8085,12 +8099,12 @@
 3A66: 32 00 71        LD      ($7100),A           
 3A69: 3A 00 71        LD      A,($7100)           
 3A6C: FE 10           CP      $10                 
-3A6E: 20 F9           JR      NZ,$122F            ; {}
+3A6E: 20 F9           JR      NZ,$3A69            ; {}
 3A70: 3A 10 8A        LD      A,($8A10)           
 3A73: A7              AND     A                   
-3A74: 20 CA           JR      NZ,$1200            ; {}
+3A74: 20 CA           JR      NZ,$3A40            ; {}
 3A76: FE A0           CP      $A0                 
-3A78: 20 00           JR      NZ,$1236            ; {}
+3A78: 20 00           JR      NZ,$3A7A            ; {}
 3A7A: C3 1C 01        JP      $011C               ; {}
 3A7D: 21 CE 87        LD      HL,$87CE            
 3A80: 11 8A 89        LD      DE,$898A            
@@ -8150,13 +8164,13 @@
 3ACA: 77              LD      (HL),A              
 3ACB: 57              LD      D,A                 
 3ACC: 3A A7 85        LD      A,($85A7)           
-3ACF: 10 EF           DJNZ    $1225               ; {}
+3ACF: 10 EF           DJNZ    $3AC0               ; {}
 3AD1: EB              EX      DE,HL               
 3AD2: 29              ADD     HL,HL               
 3AD3: 06 0F           LD      B,$0F               
 3AD5: 29              ADD     HL,HL               
-3AD6: 38 02           JR      C,$1238             ; {}
-3AD8: 10 FB           DJNZ    $1231               ; {}
+3AD6: 38 02           JR      C,$3ADA             ; {}
+3AD8: 10 FB           DJNZ    $3AD5               ; {}
 3ADA: 78              LD      A,B                 
 3ADB: 32 88 89        LD      ($8988),A           
 3ADE: C9              RET                         
@@ -8186,7 +8200,7 @@
 3B12: C5              PUSH    BC                  
 3B13: D6 11           SUB     $11                 
 3B15: 3E 2C           LD      A,$2C               
-3B17: 20 02           JR      NZ,$1238            ; {}
+3B17: 20 02           JR      NZ,$3B1B            ; {}
 3B19: 3E 37           LD      A,$37               
 3B1B: 01 40 FF        LD      BC,$FF40            
 3B1E: 09              ADD     HL,BC               
@@ -8203,14 +8217,14 @@
 3B2C: 02              LD      (BC),A              
 3B2D: D6 11           SUB     $11                 
 3B2F: 3E 2C           LD      A,$2C               
-3B31: 20 02           JR      NZ,$1238            ; {}
+3B31: 20 02           JR      NZ,$3B35            ; {}
 3B33: 3E 37           LD      A,$37               
 3B35: 25              DEC     H                   
 3B36: 77              LD      (HL),A              
 3B37: C9              RET                         
 3B38: 3A 8B 89        LD      A,($898B)           
 3B3B: A7              AND     A                   
-3B3C: 20 0F           JR      NZ,$1245            ; {}
+3B3C: 20 0F           JR      NZ,$3B4D            ; {}
 3B3E: 21 FF FF        LD      HL,$FFFF            
 3B41: 22 D0 89        LD      ($89D0),HL          
 3B44: 21 5D 3F        LD      HL,$3F5D            
@@ -8220,7 +8234,7 @@
 3B50: 4F              LD      C,A                 
 3B51: 3A 8C 89        LD      A,($898C)           
 3B54: A7              AND     A                   
-3B55: 20 03           JR      NZ,$1239            ; {}
+3B55: 20 03           JR      NZ,$3B5A            ; {}
 3B57: 21 9C 3F        LD      HL,$3F9C            
 3B5A: 06 00           LD      B,$00               
 3B5C: 09              ADD     HL,BC               
@@ -8236,7 +8250,7 @@
 3B70: 7E              LD      A,(HL)              
 3B71: 32 D1 89        LD      ($89D1),A           
 3B74: FE FF           CP      $FF                 
-3B76: 28 22           JR      Z,$1258             ; {}
+3B76: 28 22           JR      Z,$3B9A             ; {}
 3B78: F5              PUSH    AF                  
 3B79: E6 1F           AND     $1F                 
 3B7B: 32 94 81        LD      ($8194),A           
@@ -8245,7 +8259,7 @@
 3B84: CD EB 36        CALL    $36EB               ; {}
 3B87: F1              POP     AF                  
 3B88: CB 7F           BIT     7,A                 
-3B8A: 28 14           JR      Z,$124A             ; {}
+3B8A: 28 14           JR      Z,$3BA0             ; {}
 3B8C: E6 1F           AND     $1F                 
 3B8E: 32 96 81        LD      ($8196),A           
 3B91: 21 0F 3F        LD      HL,$3F0F            
@@ -8258,17 +8272,17 @@
 3BA6: 06 18           LD      B,$18               
 3BA8: 36 37           LD      (HL),$37            
 3BAA: 19              ADD     HL,DE               
-3BAB: 10 FB           DJNZ    $1231               ; {}
+3BAB: 10 FB           DJNZ    $3BA8               ; {}
 3BAD: C9              RET                         
 3BAE: 3A 8C 89        LD      A,($898C)           
 3BB1: A7              AND     A                   
-3BB2: 20 02           JR      NZ,$1238            ; {}
+3BB2: 20 02           JR      NZ,$3BB6            ; {}
 3BB4: 3E 05           LD      A,$05               
 3BB6: C6 10           ADD     $10                 
 3BB8: 32 6C 82        LD      ($826C),A           
 3BBB: D6 11           SUB     $11                 
 3BBD: 3E 37           LD      A,$37               
-3BBF: 20 02           JR      NZ,$1238            ; {}
+3BBF: 20 02           JR      NZ,$3BC3            ; {}
 3BC1: 3E 37           LD      A,$37               
 3BC3: 32 4C 82        LD      ($824C),A           
 3BC6: 21 2C 3F        LD      HL,$3F2C            
@@ -8287,10 +8301,10 @@
 3BEA: 3A 89 89        LD      A,($8989)           
 3BED: 0E 00           LD      C,$00               
 3BEF: FE 0A           CP      $0A                 
-3BF1: 38 05           JR      C,$123B             ; {}
+3BF1: 38 05           JR      C,$3BF8             ; {}
 3BF3: D6 0A           SUB     $0A                 
 3BF5: 0C              INC     C                   
-3BF6: 18 F7           JR      $122D               ; {}
+3BF6: 18 F7           JR      $3BEF               ; {}
 3BF8: C6 10           ADD     $10                 
 3BFA: 32 70 82        LD      ($8270),A           
 3BFD: 79              LD      A,C                 
@@ -8306,14 +8320,14 @@
 3C15: 3A 89 89        LD      A,($8989)           
 3C18: 3C              INC     A                   
 3C19: FE 15           CP      $15                 
-3C1B: 38 01           JR      C,$1237             ; {}
+3C1B: 38 01           JR      C,$3C1E             ; {}
 3C1D: AF              XOR     A                   
 3C1E: 32 89 89        LD      ($8989),A           
 3C21: 21 80 9A        LD      HL,$9A80            
 3C24: 06 2C           LD      B,$2C               
 3C26: 36 00           LD      (HL),$00            
 3C28: 23              INC     HL                  
-3C29: 10 FB           DJNZ    $1231               ; {}
+3C29: 10 FB           DJNZ    $3C26               ; {}
 3C2B: 21 80 9A        LD      HL,$9A80            
 3C2E: 4F              LD      C,A                 
 3C2F: 06 00           LD      B,$00               
@@ -8323,13 +8337,13 @@
 3C35: 2A 91 89        LD      HL,($8991)          
 3C38: 7C              LD      A,H                 
 3C39: B5              OR      L                   
-3C3A: 28 05           JR      Z,$123B             ; {}
+3C3A: 28 05           JR      Z,$3C41             ; {}
 3C3C: 2B              DEC     HL                  
 3C3D: 22 91 89        LD      ($8991),HL          
 3C40: C9              RET                         
 3C41: 3A 88 89        LD      A,($8988)           
 3C44: FE 0F           CP      $0F                 
-3C46: 28 0C           JR      Z,$1242             ; {}
+3C46: 28 0C           JR      Z,$3C54             ; {}
 3C48: 21 5A 83        LD      HL,$835A            
 3C4B: C3 A3 3B        JP      $3BA3               ; {}
 3C4E: 3E 03           LD      A,$03               
@@ -8337,7 +8351,7 @@
 3C53: C9              RET                         
 3C54: 3A A7 85        LD      A,($85A7)           
 3C57: E6 01           AND     $01                 
-3C59: 28 F3           JR      Z,$1229             ; {}
+3C59: 28 F3           JR      Z,$3C4E             ; {}
 3C5B: 21 B0 04        LD      HL,$04B0            
 3C5E: 22 91 89        LD      ($8991),HL          
 3C61: 21 E0 89        LD      HL,$89E0            
@@ -8354,7 +8368,7 @@
 3C7D: 23              INC     HL                  
 3C7E: CD 85 3C        CALL    $3C85               ; {}
 3C81: 23              INC     HL                  
-3C82: 10 FA           DJNZ    $1230               ; {}
+3C82: 10 FA           DJNZ    $3C7E               ; {}
 3C84: C9              RET                         
 3C85: 7E              LD      A,(HL)              
 3C86: 1F              RRA                         
@@ -8376,13 +8390,13 @@
 3C9E: C3 E1 36        JP      $36E1               ; {}
 3CA1: 3A A7 85        LD      A,($85A7)           
 3CA4: E6 03           AND     $03                 
-3CA6: 28 02           JR      Z,$1238             ; {}
+3CA6: 28 02           JR      Z,$3CAA             ; {}
 3CA8: 3E 01           LD      A,$01               
 3CAA: 3C              INC     A                   
 3CAB: 32 07 A0        LD      ($A007),A           
 3CAE: 3A A7 85        LD      A,($85A7)           
 3CB1: E6 01           AND     $01                 
-3CB3: 28 05           JR      Z,$123B             ; {}
+3CB3: 28 05           JR      Z,$3CBA             ; {}
 3CB5: AF              XOR     A                   
 3CB6: 32 90 89        LD      ($8990),A           
 3CB9: C9              RET                         
@@ -8401,7 +8415,7 @@
 3CD0: 19              ADD     HL,DE               
 3CD1: 7E              LD      A,(HL)              
 3CD2: 3C              INC     A                   
-3CD3: 28 07           JR      Z,$123D             ; {}
+3CD3: 28 07           JR      Z,$3CDC             ; {}
 3CD5: B9              CP      C                   
 3CD6: C8              RET     Z                   
 3CD7: AF              XOR     A                   
@@ -8412,24 +8426,24 @@
 3CE2: 21 42 80        LD      HL,$8042            
 3CE5: 06 1C           LD      B,$1C               
 3CE7: CD F5 3C        CALL    $3CF5               ; {}
-3CEA: 10 FB           DJNZ    $1231               ; {}
+3CEA: 10 FB           DJNZ    $3CE7               ; {}
 3CEC: 3A A7 85        LD      A,($85A7)           
 3CEF: 87              ADD     A,A                 
-3CF0: 30 FA           JR      NC,$1230            ; {}
+3CF0: 30 FA           JR      NC,$3CEC            ; {}
 3CF2: C3 FF 39        JP      $39FF               ; {}
 3CF5: CD 03 3D        CALL    $3D03               ; {}
 3CF8: CD 03 3D        CALL    $3D03               ; {}
 3CFB: CD 03 3D        CALL    $3D03               ; {}
 3CFE: 3E 05           LD      A,$05               
-3D00: C3 10 00        JP      $0010               ; {}
+3D00: C3 10 00        JP      $0010               ; {code.addAtoHL}
 3D03: 1A              LD      A,(DE)              
 3D04: 0E 08           LD      C,$08               
 3D06: 87              ADD     A,A                 
-3D07: 30 02           JR      NC,$1238            ; {}
+3D07: 30 02           JR      NC,$3D0B            ; {}
 3D09: 36 18           LD      (HL),$18            
 3D0B: 23              INC     HL                  
 3D0C: 0D              DEC     C                   
-3D0D: 20 F7           JR      NZ,$122D            ; {}
+3D0D: 20 F7           JR      NZ,$3D06            ; {}
 3D0F: 13              INC     DE                  
 3D10: 23              INC     HL                  
 3D11: C9              RET                         
@@ -8462,9 +8476,9 @@
 3D33: 3E 7F           LD      A,$7F               
 3D35: 41              LD      B,C                 
 3D36: 49              LD      C,C                 
-3D37: 20 7F           JR      NZ,$12B5            ; {}
+3D37: 20 7F           JR      NZ,$3DB8            ; {}
 3D39: 49              LD      C,C                 
-3D3A: 18 00           JR      $1236               ; {}
+3D3A: 18 00           JR      $3D3C               ; {}
 3D3C: 32 20 40        LD      ($4020),A           
 3D3F: 00              NOP                         
 3D40: 7F              LD      A,A                 
@@ -8488,23 +8502,23 @@
 3D5E: 08              EX      AF,AF'              
 3D5F: 00              NOP                         
 3D60: 42              LD      B,D                 
-3D61: 10 00           DJNZ    $1236               ; {}
+3D61: 10 00           DJNZ    $3D63               ; {}
 3D63: 3C              INC     A                   
 3D64: 7F              LD      A,A                 
 3D65: 00              NOP                         
 3D66: E6 0F           AND     $0F                 
 3D68: 1E 21           LD      E,$21               
-3D6A: 28 02           JR      Z,$1238             ; {}
+3D6A: 28 02           JR      Z,$3D6E             ; {}
 3D6C: 1E 25           LD      E,$25               
 3D6E: 7C              LD      A,H                 
 3D6F: 1F              RRA                         
 3D70: 1F              RRA                         
 3D71: E6 07           AND     $07                 
 3D73: FE 03           CP      $03                 
-3D75: 38 06           JR      C,$123C             ; {}
+3D75: 38 06           JR      C,$3D7D             ; {}
 3D77: 3D              DEC     A                   
 3D78: FE 03           CP      $03                 
-3D7A: 28 01           JR      Z,$1237             ; {}
+3D7A: 28 01           JR      Z,$3D7D             ; {}
 3D7C: 3D              DEC     A                   
 3D7D: 21 00 80        LD      HL,$8000            
 3D80: 01 00 04        LD      BC,$0400            
@@ -8512,23 +8526,23 @@
 3D85: 32 30 68        LD      ($6830),A           
 3D88: 23              INC     HL                  
 3D89: 0D              DEC     C                   
-3D8A: 20 F7           JR      NZ,$122D            ; {}
-3D8C: 10 F5           DJNZ    $122B               ; {}
+3D8A: 20 F7           JR      NZ,$3D83            ; {}
+3D8C: 10 F5           DJNZ    $3D83               ; {}
 3D8E: 21 80 8B        LD      HL,$8B80            
 3D91: 01 80 00        LD      BC,$0080            
 3D94: 36 00           LD      (HL),$00            
 3D96: 23              INC     HL                  
-3D97: 10 FB           DJNZ    $1231               ; {}
+3D97: 10 FB           DJNZ    $3D94               ; {}
 3D99: 21 80 93        LD      HL,$9380            
 3D9C: 01 80 00        LD      BC,$0080            
 3D9F: 36 00           LD      (HL),$00            
 3DA1: 23              INC     HL                  
-3DA2: 10 FB           DJNZ    $1231               ; {}
+3DA2: 10 FB           DJNZ    $3D9F               ; {}
 3DA4: 21 80 9B        LD      HL,$9B80            
 3DA7: 01 80 00        LD      BC,$0080            
 3DAA: 36 00           LD      (HL),$00            
 3DAC: 23              INC     HL                  
-3DAD: 10 FB           DJNZ    $1231               ; {}
+3DAD: 10 FB           DJNZ    $3DAA               ; {}
 3DAF: C6 10           ADD     $10                 
 3DB1: 32 C2 82        LD      ($82C2),A           
 3DB4: 7B              LD      A,E                 
@@ -8542,7 +8556,7 @@
 3DC7: 3E 01           LD      A,$01               
 3DC9: 32 03 A0        LD      ($A003),A           
 3DCC: 32 30 68        LD      ($6830),A           
-3DCF: 18 FE           JR      $1234               ; {}
+3DCF: 18 FE           JR      $3DCF               ; {}
 3DD1: D9              EXX                         
 3DD2: 06 10           LD      B,$10               
 3DD4: D9              EXX                         
@@ -8566,8 +8580,8 @@
 3DE9: 23              INC     HL                  
 3DEA: 32 30 68        LD      ($6830),A           
 3DED: 0D              DEC     C                   
-3DEE: 20 EE           JR      NZ,$1224            ; {}
-3DF0: 10 EC           DJNZ    $1222               ; {}
+3DEE: 20 EE           JR      NZ,$3DDE            ; {}
+3DF0: 10 EC           DJNZ    $3DDE               ; {}
 3DF2: 06 04           LD      B,$04               
 3DF4: 62              LD      H,D                 
 3DF5: 6B              LD      L,E                 
@@ -8588,29 +8602,29 @@
 3E07: 23              INC     HL                  
 3E08: 32 30 68        LD      ($6830),A           
 3E0B: 0D              DEC     C                   
-3E0C: 20 EB           JR      NZ,$1221            ; {}
-3E0E: 10 E9           DJNZ    $121F               ; {}
+3E0C: 20 EB           JR      NZ,$3DF9            ; {}
+3E0E: 10 E9           DJNZ    $3DF9               ; {}
 3E10: EB              EX      DE,HL               
 3E11: D9              EXX                         
-3E12: 10 C0           DJNZ    $11F6               ; {}
+3E12: 10 C0           DJNZ    $3DD4               ; {}
 3E14: D9              EXX                         
 3E15: 01 00 04        LD      BC,$0400            
 3E18: 36 00           LD      (HL),$00            
 3E1A: 23              INC     HL                  
 3E1B: 0D              DEC     C                   
-3E1C: 20 FA           JR      NZ,$1230            ; {}
-3E1E: 10 F8           DJNZ    $122E               ; {}
+3E1C: 20 FA           JR      NZ,$3E18            ; {}
+3E1E: 10 F8           DJNZ    $3E18               ; {}
 3E20: C9              RET                         
 3E21: 21 40 80        LD      HL,$8040            
 3E24: 01 C0 04        LD      BC,$04C0            
-3E27: 18 06           JR      $123C               ; {}
+3E27: 18 06           JR      $3E2F               ; {}
 3E29: 21 00 80        LD      HL,$8000            
 3E2C: 01 00 04        LD      BC,$0400            
 3E2F: 36 37           LD      (HL),$37            
 3E31: 23              INC     HL                  
 3E32: 0D              DEC     C                   
-3E33: 20 FA           JR      NZ,$1230            ; {}
-3E35: 10 F8           DJNZ    $122E               ; {}
+3E33: 20 FA           JR      NZ,$3E2F            ; {}
+3E35: 10 F8           DJNZ    $3E2F               ; {}
 3E37: 3E 01           LD      A,$01               
 3E39: 32 03 A0        LD      ($A003),A           
 3E3C: 21 80 8B        LD      HL,$8B80            
@@ -8622,7 +8636,7 @@
 3E4D: AF              XOR     A                   
 3E4E: 77              LD      (HL),A              
 3E4F: 23              INC     HL                  
-3E50: 10 FC           DJNZ    $1232               ; {}
+3E50: 10 FC           DJNZ    $3E4E               ; {}
 3E52: C9              RET                         
 3E53: 7A              LD      A,D                 
 3E54: 1F              RRA                         
@@ -8639,68 +8653,68 @@
 3E69: 3E 26           LD      A,$26               
 3E6B: 32 04 83        LD      ($8304),A           
 3E6E: 32 30 68        LD      ($6830),A           
-3E71: 18 FB           JR      $1231               ; {}
+3E71: 18 FB           JR      $3E6E               ; {}
 3E73: CD 29 3E        CALL    $3E29               ; {}
 3E76: 21 00 A0        LD      HL,$A000            
 3E79: 36 01           LD      (HL),$01            
 3E7B: 06 03           LD      B,$03               
 3E7D: 23              INC     HL                  
 3E7E: 36 00           LD      (HL),$00            
-3E80: 10 FB           DJNZ    $1231               ; {}
+3E80: 10 FB           DJNZ    $3E7D               ; {}
 3E82: C9              RET                         
-3E83: 10 06           DJNZ    $123C               ; {}
+3E83: 10 06           DJNZ    $3E8B               ; {}
 3E85: 42              LD      B,D                 
 3E86: 83              ADD     A,E                 
 3E87: 52              LD      D,D                 
 3E88: 41              LD      B,C                 
 3E89: 4D              LD      C,L                 
-3E8A: 20 4F           JR      NZ,$1285            ; {}
+3E8A: 20 4F           JR      NZ,$3EDB            ; {}
 3E8C: 4B              LD      C,E                 
-3E8D: 10 06           DJNZ    $123C               ; {}
+3E8D: 10 06           DJNZ    $3E95               ; {}
 3E8F: 44              LD      B,H                 
 3E90: 83              ADD     A,E                 
 3E91: 52              LD      D,D                 
 3E92: 4F              LD      C,A                 
 3E93: 4D              LD      C,L                 
-3E94: 20 4F           JR      NZ,$1285            ; {}
+3E94: 20 4F           JR      NZ,$3EE5            ; {}
 3E96: 4B              LD      C,E                 
-3E97: 10 12           DJNZ    $1248               ; {}
+3E97: 10 12           DJNZ    $3EAB               ; {}
 3E99: 48              LD      C,B                 
 3E9A: 83              ADD     A,E                 
 3E9B: 46              LD      B,(HL)              
 3E9C: 52              LD      D,D                 
 3E9D: 45              LD      B,L                 
 3E9E: 45              LD      B,L                 
-3E9F: 20 50           JR      NZ,$1286            ; {}
+3E9F: 20 50           JR      NZ,$3EF1            ; {}
 3EA1: 4C              LD      C,H                 
 3EA2: 41              LD      B,C                 
 3EA3: 59              LD      E,C                 
-3EA4: 20 20           JR      NZ,$1256            ; {}
-3EA6: 20 20           JR      NZ,$1256            ; {}
-3EA8: 20 20           JR      NZ,$1256            ; {}
-3EAA: 20 20           JR      NZ,$1256            ; {}
-3EAC: 20 10           JR      NZ,$1246            ; {}
+3EA4: 20 20           JR      NZ,$3EC6            ; {}
+3EA6: 20 20           JR      NZ,$3EC8            ; {}
+3EA8: 20 20           JR      NZ,$3ECA            ; {}
+3EAA: 20 20           JR      NZ,$3ECC            ; {}
+3EAC: 20 10           JR      NZ,$3EBE            ; {}
 3EAE: 05              DEC     B                   
-3EAF: 28 83           JR      Z,$11B9             ; {}
-3EB1: 20 43           JR      NZ,$1279            ; {}
+3EAF: 28 83           JR      Z,$3E34             ; {}
+3EB1: 20 43           JR      NZ,$3EF6            ; {}
 3EB3: 4F              LD      C,A                 
 3EB4: 49              LD      C,C                 
 3EB5: 4E              LD      C,(HL)              
-3EB6: 10 07           DJNZ    $123D               ; {}
-3EB8: 28 82           JR      Z,$11B8             ; {}
-3EBA: 20 43           JR      NZ,$1279            ; {}
+3EB6: 10 07           DJNZ    $3EBF               ; {}
+3EB8: 28 82           JR      Z,$3E3C             ; {}
+3EBA: 20 43           JR      NZ,$3EFF            ; {}
 3EBC: 52              LD      D,D                 
 3EBD: 45              LD      B,L                 
 3EBE: 44              LD      B,H                 
 3EBF: 49              LD      C,C                 
 3EC0: 54              LD      D,H                 
-3EC1: 10 05           DJNZ    $123B               ; {}
+3EC1: 10 05           DJNZ    $3EC8               ; {}
 3EC3: 2A 83 20        LD      HL,($2083)          ; {}
 3EC6: 43              LD      B,E                 
 3EC7: 4F              LD      C,A                 
 3EC8: 49              LD      C,C                 
 3EC9: 4E              LD      C,(HL)              
-3ECA: 10 07           DJNZ    $123D               ; {}
+3ECA: 10 07           DJNZ    $3ED3               ; {}
 3ECC: 2A 82 20        LD      HL,($2082)          ; {}
 3ECF: 43              LD      B,E                 
 3ED0: 52              LD      D,D                 
@@ -8708,69 +8722,69 @@
 3ED2: 44              LD      B,H                 
 3ED3: 49              LD      C,C                 
 3ED4: 54              LD      D,H                 
-3ED5: 10 0D           DJNZ    $1243               ; {}
+3ED5: 10 0D           DJNZ    $3EE4               ; {}
 3ED7: 52              LD      D,D                 
 3ED8: 83              ADD     A,E                 
 3ED9: 31 53 54        LD      SP,$5453            
-3EDC: 20 42           JR      NZ,$1278            ; {}
+3EDC: 20 42           JR      NZ,$3F20            ; {}
 3EDE: 4F              LD      C,A                 
 3EDF: 4E              LD      C,(HL)              
 3EE0: 55              LD      D,L                 
 3EE1: 53              LD      D,E                 
-3EE2: 20 46           JR      NZ,$127C            ; {}
+3EE2: 20 46           JR      NZ,$3F2A            ; {}
 3EE4: 4F              LD      C,A                 
 3EE5: 52              LD      D,D                 
-3EE6: 10 08           DJNZ    $123E               ; {}
+3EE6: 10 08           DJNZ    $3EF0               ; {}
 3EE8: 72              LD      (HL),D              
 3EE9: 81              ADD     A,C                 
-3EEA: 30 30           JR      NC,$1266            ; {}
-3EEC: 30 30           JR      NC,$1266            ; {}
-3EEE: 20 50           JR      NZ,$1286            ; {}
+3EEA: 30 30           JR      NC,$3F1C            ; {}
+3EEC: 30 30           JR      NC,$3F1E            ; {}
+3EEE: 20 50           JR      NZ,$3F40            ; {}
 3EF0: 54              LD      D,H                 
 3EF1: 53              LD      D,E                 
-3EF2: 10 0D           DJNZ    $1243               ; {}
+3EF2: 10 0D           DJNZ    $3F01               ; {}
 3EF4: 54              LD      D,H                 
 3EF5: 83              ADD     A,E                 
 3EF6: 32 4E 44        LD      ($444E),A           
-3EF9: 20 42           JR      NZ,$1278            ; {}
+3EF9: 20 42           JR      NZ,$3F3D            ; {}
 3EFB: 4F              LD      C,A                 
 3EFC: 4E              LD      C,(HL)              
 3EFD: 55              LD      D,L                 
 3EFE: 53              LD      D,E                 
-3EFF: 20 46           JR      NZ,$127C            ; {}
+3EFF: 20 46           JR      NZ,$3F47            ; {}
 3F01: 4F              LD      C,A                 
 3F02: 52              LD      D,D                 
-3F03: 10 08           DJNZ    $123E               ; {}
+3F03: 10 08           DJNZ    $3F0D               ; {}
 3F05: 74              LD      (HL),H              
 3F06: 81              ADD     A,C                 
-3F07: 30 30           JR      NC,$1266            ; {}
-3F09: 30 30           JR      NC,$1266            ; {}
-3F0B: 20 50           JR      NZ,$1286            ; {}
+3F07: 30 30           JR      NC,$3F39            ; {}
+3F09: 30 30           JR      NC,$3F3B            ; {}
+3F0B: 20 50           JR      NZ,$3F5D            ; {}
 3F0D: 54              LD      D,H                 
 3F0E: 53              LD      D,E                 
-3F0F: 10 0D           DJNZ    $1243               ; {}
+3F0F: 10 0D           DJNZ    $3F1E               ; {}
 3F11: 56              LD      D,(HL)              
 3F12: 83              ADD     A,E                 
 3F13: 41              LD      B,C                 
 3F14: 4E              LD      C,(HL)              
 3F15: 44              LD      B,H                 
-3F16: 20 46           JR      NZ,$127C            ; {}
+3F16: 20 46           JR      NZ,$3F5E            ; {}
 3F18: 4F              LD      C,A                 
 3F19: 52              LD      D,D                 
-3F1A: 20 45           JR      NZ,$127B            ; {}
+3F1A: 20 45           JR      NZ,$3F61            ; {}
 3F1C: 56              LD      D,(HL)              
 3F1D: 45              LD      B,L                 
 3F1E: 52              LD      D,D                 
 3F1F: 59              LD      E,C                 
-3F20: 10 08           DJNZ    $123E               ; {}
+3F20: 10 08           DJNZ    $3F2A               ; {}
 3F22: 76              HALT                        
 3F23: 81              ADD     A,C                 
-3F24: 30 30           JR      NC,$1266            ; {}
-3F26: 30 30           JR      NC,$1266            ; {}
-3F28: 20 50           JR      NZ,$1286            ; {}
+3F24: 30 30           JR      NC,$3F56            ; {}
+3F26: 30 30           JR      NC,$3F58            ; {}
+3F28: 20 50           JR      NZ,$3F7A            ; {}
 3F2A: 54              LD      D,H                 
 3F2B: 53              LD      D,E                 
-3F2C: 10 06           DJNZ    $123C               ; {}
+3F2C: 10 06           DJNZ    $3F34               ; {}
 3F2E: 4C              LD      C,H                 
 3F2F: 83              ADD     A,E                 
 3F30: 44              LD      B,H                 
@@ -8779,14 +8793,14 @@
 3F33: 44              LD      B,H                 
 3F34: 55              LD      D,L                 
 3F35: 47              LD      B,A                 
-3F36: 10 04           DJNZ    $123A               ; {}
+3F36: 10 04           DJNZ    $3F3C               ; {}
 3F38: 4E              LD      C,(HL)              
 3F39: 83              ADD     A,E                 
 3F3A: 52              LD      D,D                 
 3F3B: 41              LD      B,C                 
 3F3C: 4E              LD      C,(HL)              
 3F3D: 4B              LD      C,E                 
-3F3E: 10 07           DJNZ    $123D               ; {}
+3F3E: 10 07           DJNZ    $3F47               ; {}
 3F40: 46              LD      B,(HL)              
 3F41: 83              ADD     A,E                 
 3F42: 54              LD      D,H                 
@@ -8794,8 +8808,8 @@
 3F44: 42              LD      B,D                 
 3F45: 4C              LD      C,H                 
 3F46: 45              LD      B,L                 
-3F47: 20 20           JR      NZ,$1256            ; {}
-3F49: 10 07           DJNZ    $123D               ; {}
+3F47: 20 20           JR      NZ,$3F69            ; {}
+3F49: 10 07           DJNZ    $3F52               ; {}
 3F4B: 46              LD      B,(HL)              
 3F4C: 83              ADD     A,E                 
 3F4D: 55              LD      D,L                 
@@ -8805,7 +8819,7 @@
 3F51: 47              LD      B,A                 
 3F52: 48              LD      C,B                 
 3F53: 54              LD      D,H                 
-3F54: 10 05           DJNZ    $123B               ; {}
+3F54: 10 05           DJNZ    $3F5B               ; {}
 3F56: 50              LD      D,B                 
 3F57: 83              ADD     A,E                 
 3F58: 53              LD      D,E                 
@@ -8813,7 +8827,7 @@
 3F5A: 55              LD      D,L                 
 3F5B: 4E              LD      C,(HL)              
 3F5C: 44              LD      B,H                 
-3F5D: 10 17           DJNZ    $124D               ; {}
+3F5D: 10 17           DJNZ    $3F76               ; {}
 3F5F: 52              LD      D,D                 
 3F60: 83              ADD     A,E                 
 3F61: 42              LD      B,D                 
@@ -8821,18 +8835,18 @@
 3F63: 4E              LD      C,(HL)              
 3F64: 55              LD      D,L                 
 3F65: 53              LD      D,E                 
-3F66: 20 4E           JR      NZ,$1284            ; {}
+3F66: 20 4E           JR      NZ,$3FB6            ; {}
 3F68: 4F              LD      C,A                 
 3F69: 54              LD      D,H                 
 3F6A: 48              LD      C,B                 
 3F6B: 49              LD      C,C                 
 3F6C: 4E              LD      C,(HL)              
 3F6D: 47              LD      B,A                 
-3F6E: 20 20           JR      NZ,$1256            ; {}
-3F70: 20 20           JR      NZ,$1256            ; {}
-3F72: 20 20           JR      NZ,$1256            ; {}
-3F74: 20 20           JR      NZ,$1256            ; {}
-3F76: 20 20           JR      NZ,$1256            ; {}
+3F6E: 20 20           JR      NZ,$3F90            ; {}
+3F70: 20 20           JR      NZ,$3F92            ; {}
+3F72: 20 20           JR      NZ,$3F94            ; {}
+3F74: 20 20           JR      NZ,$3F96            ; {}
+3F76: 20 20           JR      NZ,$3F98            ; {}
 3F78: 11 11 12        LD      DE,$1211            
 3F7B: 11 11 12        LD      DE,$1211            
 3F7E: 12              LD      (DE),A              
@@ -8939,6 +8953,6 @@
 3FFB: AE              XOR     (HL)                
 3FFC: 4B              LD      C,E                 
 3FFD: 88              ADC     A,B                 
-3FFE: 10 AA           DJNZ    $11E0               ; {}
+3FFE: 10 AA           DJNZ    $3FAA               ; {}
 ```
 
