@@ -1,4 +1,6 @@
-; CPU: Z80
+
+```code
+; CPU: 8080 (as Z80)
 ; ORIGIN: 0x0
 ; FILES: seawolf.bin
 
@@ -2753,3 +2755,4 @@
 0FFD: FF              RST     0X38                
 0FFE: FF              RST     0X38                
 0FFF: FF              RST     0X38                
+```
