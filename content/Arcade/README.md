@@ -14,6 +14,7 @@
 >>>    SpaceInvaders:Space Invaders<br>
 >>>    TimePilot:Time Pilot (Sound)<br>
 >>>    DigDug:Dig Dug<br>
+>>>    SeaWolf:Sea Wolf<br>
 
 [https://en.wikipedia.org/wiki/Arcade_game](https://en.wikipedia.org/wiki/Arcade_game)
 
@@ -30,3 +31,4 @@
   * [Omega Race](OmegaRace)
   * [Space Invaders](SpaceInvaders)
   * [Time Pilot](TimePilot)
+  * [Sea Wolf](SeaWolf)
