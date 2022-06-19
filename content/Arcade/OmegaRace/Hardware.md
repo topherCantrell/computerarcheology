@@ -66,20 +66,20 @@ Memory Map:
         0 = Coin 1
 
     12 I
-        7 = 1P1CR
-        6 = 1P2CR
+        7 = 1P2CR
+        6 = 1P1CR
 
-        3 = 2P2CR -+
-        2 = 2P1CR  |
-        1 = P2Fire |
-        0 = P2Thr -+ cocktail only
+        3 = 2P2CR
+        2 = 2P1CR
+        1 = P2Fire -+
+        0 = P2Thr  -+ cocktail only
 
     13 O
         7 =
         6 = screen reverse
         5 = 2 player 2 credit start LED
         4 = 2 player 1 credit start LED
-        3 = 1 player 1 credit start LED
+        3 = 1 player 2 credit start LED
         2 = 1 player 1 credit start LED
         1 = coin meter 2
         0 = coin meter 1
