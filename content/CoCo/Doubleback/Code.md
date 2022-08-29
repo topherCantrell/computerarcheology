@@ -284,13 +284,13 @@ C28C: 33 8D 08 6A     LEAU    $CAFA,PC            ; Apple graphic
 C290: 17 04 CA        LBSR    $04CA               ; Draw apple    
 C293: 16 00 F0        LBRA    $C386               ; Next object
 ;
-C296: 5A              DECB                        ; 2=??
-C297: 26 0A           BNE     $C2A3                   ; No ... check other types
-C299: 33 8D 08 6D     LEAU    $CB0A,PC                
-C29D: 17 04 BD        LBSR    $04BD                   
-C2A0: 16 00 E3        LBRA    $C386                   
+C296: 5A              DECB                        ; 2=CHERRY
+C297: 26 0A           BNE     $C2A3               ; No ... check other types
+C299: 33 8D 08 6D     LEAU    $CB0A,PC            ; Cherry graphic    
+C29D: 17 04 BD        LBSR    $04BD               ; Draw cherry    
+C2A0: 16 00 E3        LBRA    $C386               ; Next object    
 ;
-C2A3: 5A              DECB                        ; 3=??
+C2A3: 5A              DECB                        ; 3=MAGNET
 C2A4: 26 17           BNE     $C2BD                   ; No ... check other types
 C2A6: 33 8D 08 70     LEAU    $CB1A,PC                
 C2AA: 17 05 AE        LBSR    $05AE                   
@@ -300,7 +300,7 @@ C2B3: 33 8D 08 63     LEAU    $CB1A,PC
 C2B7: 17 04 A3        LBSR    $04A3                   
 C2BA: 16 00 C9        LBRA    $C386                   
 
-C2BD: 5A              DECB                        ; 4=??
+C2BD: 5A              DECB                        ; 4=SKATE
 C2BE: 26 24           BNE     $C2E4                   ; No ... check other types
 C2C0: 8D 13           BSR     $C2D5                   
 C2C2: 17 05 96        LBSR    $0596                   
@@ -312,14 +312,14 @@ C2CD: 8D 06           BSR     $C2D5
 C2CF: 17 04 8B        LBSR    $048B                   
 C2D2: 16 00 B1        LBRA    $C386                   
 ;
-C2D5: 33 8D 08 51     LEAU    $CB2A,PC                
+C2D5: 33 8D 08 51     LEAU    $CB2A,PC                ; Skate graphic 1
 C2D9: E6 07           LDB     7,X                 
 C2DB: C4 01           ANDB    #$01                  
 C2DD: 26 04           BNE     $C2E3                   
-C2DF: 33 8D 08 57     LEAU    $CB3A,PC                
-C2E3: 39              RTS                         
+C2DF: 33 8D 08 57     LEAU    $CB3A,PC                ; Skate graphic 2
+C2E3: 39              RTS                         ; Done
 
-C2E4: 5A              DECB                        ; 5=?? 
+C2E4: 5A              DECB                        ; 5=YoYo 
 C2E5: 26 3C           BNE     $C323               ; No ... check other types
 C2E7: 33 8D 08 9F     LEAU    $CB8A,PC            ; 
 C2EB: 17 05 6D        LBSR    $056D                   
@@ -343,13 +343,13 @@ C30A: 04 6C           LSR     $6C
 C30C: 07 C6           ASR     $C6                   
 C30E: 42 ; ????
 C30F: E7 02           STB     2,X                 
-C311: 33 8D 08 35     LEAU    $CB4A,PC                
-C315: C4 03           ANDB    #$03                  
-C317: 58              LSRB
-C318: 58              LSRB
-C319: 58              LSRB
-C31A: 58              LSRB
-C31B: 33 C5           LEAU    B,U                 
+C311: 33 8D 08 35     LEAU    $CB4A,PC                ; YoYo images
+C315: C4 03           ANDB    #$03                    ; 4 of them
+C317: 58              LSRB                            ; 16 ...
+C318: 58              LSRB                            ; ... bytes ...
+C319: 58              LSRB                            ; ... each ...
+C31A: 58              LSRB                            ; ... image
+C31B: 33 C5           LEAU    B,U                     ; Point to current image
 C31D: 17 04 3D        LBSR    $043D                   
 C320: 16 00 63        LBRA    $C386                   
 
