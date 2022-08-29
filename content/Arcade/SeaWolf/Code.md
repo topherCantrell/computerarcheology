@@ -601,31 +601,33 @@
 03C0: C6 0A           ADD     $0A                 
 03C2: FE 1E           CP      $1E                 
 03C4: C2 C8 03        JP      NZ,$03C8            ; {}
-03C7: AF              XOR     A                   
+03C7: AF              XOR     A                   ; Now 0
 03C8: 02              LD      (BC),A              
 03C9: 03              INC     BC                  
 03CA: 5F              LD      E,A                 
 03CB: 16 00           LD      D,$00               
-03CD: 21 F3 0B        LD      HL,$0BF3            
+03CD: 21 F3 0B        LD      HL,$0BF3            ; Letters and other graphics (10 bytes each)
 03D0: 19              ADD     HL,DE               
 03D1: EB              EX      DE,HL               
 03D2: 0A              LD      A,(BC)              
 03D3: 3C              INC     A                   
 03D4: E6 1F           AND     $1F                 
 03D6: 02              LD      (BC),A              
-03D7: 21 E0 27        LD      HL,$27E0            
+03D7: 21 E0 27        LD      HL,$27E0            ; ?? screen
 03DA: 85              ADD     A,L                 
 03DB: 6F              LD      L,A                 
-03DC: 01 20 00        LD      BC,$0020            
-03DF: 1A              LD      A,(DE)              
-03E0: 13              INC     DE                  
-03E1: 77              LD      (HL),A              
-03E2: 09              ADD     HL,BC               
+03DC: 01 20 00        LD      BC,$0020            ; 32 bytes per row
+;
+03DF: 1A              LD      A,(DE)              ; From ...
+03E0: 13              INC     DE                  ; ... data ...
+03E1: 77              LD      (HL),A              ; ... to screen
+03E2: 09              ADD     HL,BC               ; Next row
 03E3: 7D              LD      A,L                 
 03E4: E6 E0           AND     $E0                 
 03E6: FE 60           CP      $60                 
 03E8: C2 DF 03        JP      NZ,$03DF            ; {}
 03EB: C9              RET                         
+
 03EC: 21 00 00        LD      HL,$0000            
 03EF: 11 00 00        LD      DE,$0000            
 03F2: 0E 02           LD      C,$02               
@@ -1762,12 +1764,12 @@ Startup:
 0B29: CD DC 0A        CALL    $0ADC               ; {}
 0B2C: 22 00 20        LD      ($2000),HL          
 0B2F: E1              POP     HL                  
-
-0B30: F5              PUSH    AF                  
-0B31: 7E              LD      A,(HL)              
-0B32: 23              INC     HL                  
-0B33: D6 30           SUB     $30                 
-0B35: F2 49 0B        JP      P,$0B49             ; {}
+;
+0B30: F5              PUSH    AF                  ; Hold the character count
+0B31: 7E              LD      A,(HL)              ; Get the next value
+0B32: 23              INC     HL                  ; Point to next value
+0B33: D6 30           SUB     $30                 ; Greater or equal to $30? 
+0B35: F2 49 0B        JP      P,$0B49             ; {} Yes. Handle print a number
 0B38: 47              LD      B,A                 
 0B39: 1C              INC     E                   
 0B3A: 7B              LD      A,E                 
@@ -1778,32 +1780,33 @@ Startup:
 0B42: 04              INC     B                   
 0B43: C2 39 0B        JP      NZ,$0B39            ; {}
 0B46: C3 31 0B        JP      $0B31               ; {}
-0B49: E5              PUSH    HL                  
-0B4A: D5              PUSH    DE                  
-0B4B: 21 8F 0B        LD      HL,$0B8F            
-0B4E: CA 59 0B        JP      Z,$0B59             ; {}
-0B51: 01 0A 00        LD      BC,$000A            
-0B54: 09              ADD     HL,BC               
-0B55: 3D              DEC     A                   
-0B56: C2 54 0B        JP      NZ,$0B54            ; {}
-0B59: EB              EX      DE,HL               
-0B5A: 01 20 00        LD      BC,$0020            
-0B5D: 3E 0A           LD      A,$0A               
-0B5F: F5              PUSH    AF                  
-0B60: 1A              LD      A,(DE)              
-0B61: 13              INC     DE                  
-0B62: 77              LD      (HL),A              
-0B63: 09              ADD     HL,BC               
-0B64: F1              POP     AF                  
-0B65: 3D              DEC     A                   
-0B66: C2 5F 0B        JP      NZ,$0B5F            ; {}
-0B69: D1              POP     DE                  
-0B6A: E1              POP     HL                  
-0B6B: 13              INC     DE                  
-0B6C: F1              POP     AF                  
-0B6D: 3D              DEC     A                   
-0B6E: C2 30 0B        JP      NZ,$0B30            ; {}
-0B71: C9              RET                         
+;
+0B49: E5              PUSH    HL                  ; Hold the digit data pointer
+0B4A: D5              PUSH    DE                  ; Hold the screen pointer
+0B4B: 21 8F 0B        LD      HL,$0B8F            ; Digit "0" graphics
+0B4E: CA 59 0B        JP      Z,$0B59             ; {} Zero ... no need to multiply by 10
+0B51: 01 0A 00        LD      BC,$000A            ; 10 bytes per digit
+0B54: 09              ADD     HL,BC               ; Skip ...
+0B55: 3D              DEC     A                   ; ... to ...
+0B56: C2 54 0B        JP      NZ,$0B54            ; {} ... digit picture
+0B59: EB              EX      DE,HL               ; DE now the data, HL now the destination
+0B5A: 01 20 00        LD      BC,$0020            ; Row offset (32 bytes per screen row)
+0B5D: 3E 0A           LD      A,$0A               ; 10 bytes per digit
+0B5F: F5              PUSH    AF                  ; Hold the counter
+0B60: 1A              LD      A,(DE)              ; Copy ...
+0B61: 13              INC     DE                  ; ... byte ...
+0B62: 77              LD      (HL),A              ; ... to screen
+0B63: 09              ADD     HL,BC               ; Next row on the screen
+0B64: F1              POP     AF                  ; Restore the counter
+0B65: 3D              DEC     A                   ; Have we done all 10?
+0B66: C2 5F 0B        JP      NZ,$0B5F            ; {} No ... keep going
+0B69: D1              POP     DE                  ; Restore the screen pointer
+0B6A: E1              POP     HL                  ; Restore the digit data pointer
+0B6B: 13              INC     DE                  ; Next column on the screen
+0B6C: F1              POP     AF                  ; Restore the digit count
+0B6D: 3D              DEC     A                   ; Done all digits?
+0B6E: C2 30 0B        JP      NZ,$0B30            ; {} No ... go back for more
+0B71: C9              RET                         ; Done
 
 0B72: EB              EX      DE,HL               
 0B73: 7E              LD      A,(HL)              
