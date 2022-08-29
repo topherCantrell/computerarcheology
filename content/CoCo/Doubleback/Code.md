@@ -1389,6 +1389,8 @@ CAF9: 39              RTS
 ; .X RED
 ; X. BLUE
 ; XX WHITE
+
+; APPLE
 ; .. .. .. .. X. .. .. ..
 ; .. .X .X X. .X .X .. ..
 ; .X .X .X .X .X .X .X ..
@@ -1396,9 +1398,8 @@ CAF9: 39              RTS
 ; .X .X .X .X XX .X .X ..
 ; .. .X .X .X .X .X .. ..
 ; .. .. .X .X .X .. .. ..
-; .. .. .. .. .. .. .. ..
- 
-
+; .. .. .. .. .. .. .. .. 
+;
 CAFA: 00 80           NEG     $80                   
 CAFC: 16 50 55        LBRA    $11B54                   
 CAFF: 54              LSRB                        
@@ -1410,6 +1411,16 @@ CB06: 05 ; ????
 CB07: 40              NEGA                        
 CB08: 00 00           NEG     $00              
 
+; CHERRY
+; 00 20 ........ ..X.....
+; 00 80 ........ X.......
+; 02 20 ......X. ..X.....
+; 08 14 ....X... ...X.X..
+; 14 5D ...X.X.. .X.X.X.X
+; 5D 55 .X.XXX.X .X.X.X.X
+; 55 14 .X.X.X.X ...X.X..
+; 14 00 ...X.X.. ........
+;
 CB0A: 00 20           NEG     $20                   
 CB0C: 00 80           NEG     $80                   
 CB0E: 02 ; ????
@@ -1422,14 +1433,37 @@ CB15: 55 ; ????
 CB16: 55 ; ????
 CB17: 14 ; ????
 CB18: 14 ; ????
-CB19: 00 0A           NEG     $0A                   
+CB19: 00 
+
+; MAGNET
+; 0A A0 ....X.X. X.X.....
+; 2A A8 ..X.X.X. X.X.X...
+; A8 2A X.X.X... ..X.X.X.
+; A0 0A X.X..... ....X.X.
+; A0 0A X.X..... ....X.X.
+; A0 0A X.X..... ....X.X.
+; 28 28 ..X.X... ..X.X...
+; 28 28 ..X.X... ..X.X...
+;
+CB1A: 0A           NEG     $0A                   
 CB1B: A0 2A           SUBA    10,Y                
 CB1D: A8 A8 2A        EORA    $2A,Y                 
 CB20: A0 0A           SUBA    10,X                
 CB22: A0 0A           SUBA    10,X                
 CB24: A0 0A           SUBA    10,X                
 CB26: 28 28           BVC     $CB50                   
-CB28: 28 28           BVC     $CB52                   
+CB28: 28 28           BVC     $CB52    
+
+; SKATE (2 images)
+; FC 00 XXXXXX.. ........
+; F7 00 XXXX.XXX ........
+; FF 74 XXXXXXXX .XXX.X..
+; FF FF XXXXXXXX XXXXXXXX
+; 55 55 .X.X.X.X .X.X.X.X
+; 10 04 ...X.... .....X..
+; 54 15 .X.X.X.. ...X.X.X
+; 10 04 ...X.... .....X..
+;
 CB2A: FC 00 F7        LDD     $00F7                   
 CB2D: 00 FF           NEG     $FF                   
 CB2F: 74 FF FF        LSR     $FFFF                   
@@ -1439,7 +1473,18 @@ CB34: 10 ; ????
 CB35: 04 54           LSR     $54                   
 CB37: 15 ; ????
 CB38: 10 ; ????
-CB39: 04 FC           LSR     $FC                   
+CB39: 04 
+;
+; FC 00 XXXXXX.. ........
+; F7 00 XXXX.XXX ........
+; FF 74 XXXXXXXX .XXX.X..
+; FF FF XXXXXXXX XXXXXXXX
+; 55 55 .X.X.X.X .X.X.X.X
+; 44 11 .X...X.. ...X...X
+; 10 04 ...X.... .....X..
+; 44 11 .X...X.. ...X...X
+;
+CB3A: FC           LSR     $FC                   
 CB3B: 00 F7           NEG     $F7                   
 CB3D: 00 FF           NEG     $FF                   
 CB3F: 74 FF FF        LSR     $FFFF                   
@@ -1450,6 +1495,17 @@ CB45: 11 ; ????
 CB46: 10 ; ????
 CB47: 04 44           LSR     $44                   
 CB49: 11 ; ????
+
+; YO YO (3 images)
+; 00 10 ........ ...X....
+; 0A 90 ....X.X. X..X....
+; 2A A0 ..X.X.X. X.X.....
+; AA A8 X.X.X.X. X.X.X...
+; FF FC XXXXXXXX XXXXXX..
+; AA A8 X.X.X.X. X.X.X...
+; 2A A0 ..X.X.X. X.X.....
+; 0A 80 ....X.X. X.......
+;
 CB4A: 00 10           NEG     $10                   
 CB4C: 0A 90           DEC     $90                   
 CB4E: 2A A0           BPL     $CAF0                   
@@ -1457,6 +1513,16 @@ CB50: AA A8 FF        ORA     $FF,Y
 CB53: FC AA A8        LDD     $AAA8                   
 CB56: 2A A0           BPL     $CAF8                   
 CB58: 0A 80           DEC     $80                   
+;
+; 00 10 ........ ...X....
+; 0A 90 ....X.X. X..X....
+; 2A B0 ..X.X.X. X.XX....
+; AA E8 X.X.X.X. XXX.X...
+; AB A8 X.X.X.XX X.X.X...
+; AE A8 X.X.XXX. X.X.X...
+; 3A A0 ..XXX.X. X.X.....
+; 0A 80 ....X.X. X.......
+;
 CB5A: 00 10           NEG     $10                   
 CB5C: 0A 90           DEC     $90                   
 CB5E: 2A B0           BPL     $CB10                   
@@ -1464,7 +1530,18 @@ CB60: AA E8 AB        ORA     $AB,S
 CB63: A8 ; ????
 CB64: AE A8 3A        LDX     $3A,Y                 
 CB67: A0 0A           SUBA    10,X                
-CB69: 80 00           SUBA    #$00                  
+CB69: 80 
+;
+; 00 10 ........ ...X....
+; 0B 90 ....X.XX X..X....
+; 2B A0 ..X.X.XX X.X.....
+; AB A8 X.X.X.XX X.X.X...
+; AB A8 X.X.X.XX X.X.X...
+; AB A8 X.X.X.XX X.X.X...
+; 2B A0 ..X.X.XX X.X.....
+; 0B 80 ....X.XX X.......
+;
+CB6A: 00           SUBA    #$00                  
 CB6B: 10 ; ????
 CB6C: 0B ; ????
 CB6D: 90 2B           SUBA    $2B                   
@@ -1473,7 +1550,18 @@ CB71: A8 AB           EORA    D,Y
 CB73: A8 AB           EORA    D,Y                 
 CB75: A8 2B           EORA    11,Y                
 CB77: A0 0B           SUBA    11,X                
-CB79: 80 00           SUBA    #$00                  
+CB79: 80 
+;
+; 00 10
+; 0A 90
+; 3A A0
+; AE A8
+; AB A8
+; AA E8
+; 2A B0
+; 0A 80
+;
+CB7A: 00           SUBA    #$00                  
 CB7B: 10 ; ????
 CB7C: 0A 90           DEC     $90                   
 CB7E: 3A              ABX                         
@@ -1481,7 +1569,18 @@ CB7F: A0 ; ????
 CB80: AE A8 AB        LDX     $AB,Y                 
 CB83: A8 ; ????
 CB84: AA E8 2A        ORA     $2A,S                 
-CB87: B0 0A 80        SUBA    $0A80                   
+CB87: B0 0A 80        SUBA    $0A80        
+
+;
+; 00 00 ........ ........
+; 0A 80 ....X.X. X.......
+; 2A A0 ..X.X.X. X.X.....
+; AA A8 X.X.X.X. X.X.X...
+; AA A8 X.X.X.X. X.X.X...
+; AA A8 X.X.X.X. X.X.X...
+; 2A A0 ..X.X.X. X.X.....
+; A0 80 X.X..... X.......
+;
 CB8A: 00 00           NEG     $00                   
 CB8C: 0A 80           DEC     $80                   
 CB8E: 2A A0           BPL     $CB30                   
@@ -1489,7 +1588,19 @@ CB90: AA A8 AA        ORA     $AA,Y
 CB93: A8 ; ????
 CB94: AA A8 2A        ORA     $2A,Y                 
 CB97: A0 0A           SUBA    10,X                
-CB99: 80 00           SUBA    #$00                  
+CB99: 80 
+
+;
+; 00 30 ........ ..XX....
+; 00 30 ........ ..XX....
+; 00 30 ........ ..XX....
+; 00 30 ........ ..XX....
+; 00 30 ........ ..XX....
+; 00 30 ........ ..XX....
+; 00 30 ........ ..XX....
+; 0F C0 ....XXXX XX......
+; 
+CB9A: 00           SUBA    #$00                  
 CB9B: 30 00           LEAX    0,X                 
 CB9D: 30 00           LEAX    0,X                 
 CB9F: 30 00           LEAX    0,X                 
@@ -1498,7 +1609,9 @@ CBA3: 30 00           LEAX    0,X
 CBA5: 30 00           LEAX    0,X                 
 CBA7: 30 00           LEAX    0,X                 
 CBA9: 30 0F           LEAX    15,X                
-CBAB: C0 3F           SUBB    #$3F                  
+CBAB: C0 
+
+CBAB: 3F           SUBB    #$3F                  
 CBAD: F0 37 70        SUBB    $3770                   
 CBB0: 3F              SWI                         
 CBB1: F0 0F C0        SUBB    $0FC0                   
