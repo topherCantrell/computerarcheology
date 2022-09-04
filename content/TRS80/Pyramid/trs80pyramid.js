@@ -1,12 +1,37 @@
+function makeBinaryDataPyramid() {
+    
+    var dataOrigin = 0x4300;    
+           
+    var datab = Binary.readBinary('Code.md.bin')
+    var data = []    
+    for(var i=0;i<datab.length;i++) {
+        data.push(datab[i])
+    }
+        
+    var my = {};
+    
+    // Simple read/write
+    my.read = function(addr) {
+        return data[addr-dataOrigin];
+    };
+    my.write = function(addr,value) {
+       data[addr-dataOrigin] = value;
+    };
+            
+    return my;
+    
+};
+
 function startTRS80Pyramid(consoleElement,tapeElement) {
 	
 	var TRS80Text = makeTRS80Text(consoleElement,tapeElement);
-	var BinaryData = makeBinaryDataTRS80Pyramid();
+	// The game code
+	var binData = makeBinaryDataPyramid();
 	
 	function write(addr,value) {
 		// From the loaded game RAM
 		if(addr>=0x4300 && addr<0x8000) {
-           BinaryData.write(addr,value);
+			binData.write(addr,value);
            return true;
         }
 		
@@ -34,7 +59,7 @@ function startTRS80Pyramid(consoleElement,tapeElement) {
 		
 		// From the loaded game RAM
 		if(addr>=0x4300 && addr<0x8000) {
-            return BinaryData.read(addr);
+            return binData.read(addr);
         }
 		
 		return undefined;
@@ -47,16 +72,14 @@ function startTRS80Pyramid(consoleElement,tapeElement) {
     function iowrite(addr,value) {
         return undefined;
     }
-	
-	BinaryData.loadDataCacheFromURL("/TRS80/Pyramid/Code.html",function() {		
-		TRS80Text.init(
-		        read,
-		        write,
-		        ioread, 
-		        iowrite,
-		        function() {TRS80Text.runUntilWaitKey();}, 
-		        0x4300);
-		TRS80Text.runUntilWaitKey();    
-	});	
-	
+		
+	TRS80Text.init(
+			read,
+			write,
+			ioread, 
+			iowrite,
+			function() {TRS80Text.runUntilWaitKey();}, 
+			0x4300);
+	TRS80Text.runUntilWaitKey();    
+		
 };

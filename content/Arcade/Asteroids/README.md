@@ -5,16 +5,14 @@
 >>> deploy:<br>
 >>>   +Asteroids.jpg<br>
 >>>   +DVG.jpg<br>
->>>   +VectorROM.js<br>
 >>>   Hardware.md<br>
 >>>   RAMUse.md<br>
 >>>   Code.md<br>
 >>>   ----<br>
 >>>   DVG.md<br>
->>>   VectorROM.md<br>
+>>>   %VectorROM.md<br>
 >>>   ----<br>
 >>>   Journal.md<br>
-
 
 * [Hardware Info](Hardware.md)
 * [RAM Usage](RAMUse.md)

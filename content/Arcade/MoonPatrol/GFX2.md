@@ -37,34 +37,6 @@ color sets for each object as used in the game.
 # Blank Tile 
 
 ```html
-<script src="/js/BinaryData.js"></script>
-<script src="/Arcade/MoonPatrol/MoonPatrol.js"></script>
-<script src="/js/TileEngine.js"></script>
-<script src="/js/CANVAS.js"></script>
-
-<script>
-  TileEngine.setColorMap(
-    {
-        'CS0' : ['#808080','#00001A','#C100AE','#00AEC8'],
-        'CS1' : ["#808080","#84C800","#C100AE","#C10000"], 
-        'CS2' : ["#808080","#C10000","#00C800","#840000"],
-        'CS3' : ["#808080","#840000","#C1C8C8","#C1C800"],       
-        'CS4' : ["#808080","#845100","#808080","#3E3700"],
-        'CS5' : [],
-        'CS6' : [],
-        'CS7' : ["#808080","#C1C800","#6290C8","#C10000"],	
-        'CS8' : ["#808080","#C10000","#00AEC8","#005100"],
-        'CS9' : ["#808080","#C1C800","#00001A","#C10000"],
-        'CSA' : ["#808080","#00001A","#C1C8C8","#808080"],
-        'CSB' : [],
-        'CSC' : [],
-        'CSD' : [],
-        'CSE' : ["#808080","#C10000","#808080","#C10000"],        
-        'CSF' : ["#808080","#808080","#C10000","#C10000"],        
-    }
-  )
-</script>
-
 <canvas width="150" 
         data-canvasFunction="TileEngine.handleTileCanvas"
         data-getTileDataFunction="MoonPatrol.getSprite16x16Data"
@@ -1433,5 +1405,41 @@ These individual pixes map to bits in the data as follow for Image 0
 1FE8: 00 00 00 00 00 00 00 00 ; 
 1FF0: 00 00 00 00 00 00 00 00 ; 
 1FF8: 00 00 00 00 00 00 00 00 ; 
+```
+
+```html
+<script src="MoonPatrol.js"></script>
+<script src="/js/Binary.js"></script>
+<script src="/js/TileEngine.js"></script>
+<script src="/js/Canvas.js"></script>
+<script>
+  TileEngine.setColorMap(
+    {
+        'CS0' : ['#808080','#00001A','#C100AE','#00AEC8'],
+        'CS1' : ["#808080","#84C800","#C100AE","#C10000"], 
+        'CS2' : ["#808080","#C10000","#00C800","#840000"],
+        'CS3' : ["#808080","#840000","#C1C8C8","#C1C800"],       
+        'CS4' : ["#808080","#845100","#808080","#3E3700"],
+        'CS5' : [],
+        'CS6' : [],
+        'CS7' : ["#808080","#C1C800","#6290C8","#C10000"],	
+        'CS8' : ["#808080","#C10000","#00AEC8","#005100"],
+        'CS9' : ["#808080","#C1C800","#00001A","#C10000"],
+        'CSA' : ["#808080","#00001A","#C1C8C8","#808080"],
+        'CSB' : [],
+        'CSC' : [],
+        'CSD' : [],
+        'CSE' : ["#808080","#C10000","#808080","#C10000"],        
+        'CSF' : ["#808080","#808080","#C10000","#C10000"],        
+    }
+  )
+</script>
+<script>    
+    window.onload = function() {  
+        MoonPatrol.data = Binary.readBinary('GFX2.md.bin')        
+        MoonPatrol.origin = 0
+        Canvas.redrawGraphics() 
+    }
+</script>
 ```
 

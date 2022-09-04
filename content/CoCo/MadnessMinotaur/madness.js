@@ -1,3 +1,27 @@
+function makeBinaryDataMadness() {
+    
+    var dataOrigin = 0x0300;    
+           
+    var datab = Binary.readBinary('Code.md.bin')
+    var data = []    
+    for(var i=0;i<datab.length;i++) {
+        data.push(datab[i])
+    }
+        
+    var my = {};
+    
+    // Simple read/write
+    my.read = function(addr) {
+        return data[addr-dataOrigin];
+    };
+    my.write = function(addr,value) {
+       data[addr-dataOrigin] = value;
+    };
+            
+    return my;
+    
+};
+
 // "splashElement", "madnessConsole",""
 function startMadness() {
 	
@@ -13,7 +37,8 @@ function startMadness() {
 	
 	// It is easier to have the RAM and program data in one array.
 	// Pull the binary into RAM.
-	var binData = makeBinaryDataMadness();
+	var binData = Binary.readBinary('Code.md.bin')
+	var origin = 0x300
 	var ram = Array(0x5000);
 	var x;
 	var screen=1;
@@ -21,7 +46,7 @@ function startMadness() {
 		ram[x] = 0;
 	}
 	for(x=0x300;x<0x3EB8;++x) {
-		ram[x] = binData.read(x);
+		ram[x] = binData[x-origin];
 	}
 	for(x=0x3EB8;x<0x5000;++x) {
 		ram[x]=0;

@@ -1,15 +1,38 @@
+function makeBinaryDataRaakaTu() {
+    
+    var dataOrigin = 0x0600;    
+           
+    var datab = Binary.readBinary('Code.md.bin')
+    var data = []    
+    for(var i=0;i<datab.length;i++) {
+        data.push(datab[i])
+    }
+        
+    var my = {};
+    
+    // Simple read/write
+    my.read = function(addr) {
+        return data[addr-dataOrigin];
+    };
+    my.write = function(addr,value) {
+       data[addr-dataOrigin] = value;
+    };
+            
+    return my;
+    
+};
 
 function startRaakaTu(consoleElement) {
 	
 	// The CoCo emulator
 	var CoCoText = makeCoCoText(consoleElement);
 	// The game code
-	var BinaryData = makeBinaryDataRaakaTu();
+	var binData = makeBinaryDataRaakaTu();
 	
     function write(addr,value) {        
     	if(addr>=0x0600 && addr<0x3F18) {
     		// RAM where the game is loaded
-        	BinaryData.write(addr,value);
+        	binData.write(addr,value);
         	return true;
         }    	
     }
@@ -49,16 +72,14 @@ function startRaakaTu(consoleElement) {
     	
         if(addr>=0x0600 && addr<0x3F18) {
         	// RAM where the game is loaded
-            return BinaryData.read(addr); 
+            return binData.read(addr); 
         }        
         
         return undefined;
         
     }
       
-    BinaryData.loadDataCacheFromURL("/CoCo/RaakaTu/Code.html",function() { 
-    	CoCoText.init(read,write,function() {CoCoText.runUntilWaitKey();}, 0x0600);
-    	CoCoText.runUntilWaitKey();    	  
-    });    
+    CoCoText.init(read,write,function() {CoCoText.runUntilWaitKey();}, 0x0600);
+    CoCoText.runUntilWaitKey();    	          
     
 };

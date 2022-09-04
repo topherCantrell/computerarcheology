@@ -2,6 +2,9 @@ var ZeldaGB = (function() {
     
     var my = {};
 
+	my.data = null
+	my.origin = 0
+
     function mergePixels(data) {
     	var ret = [];
     	for(var x=0;x<16;x=x+2) {
@@ -19,7 +22,7 @@ var ZeldaGB = (function() {
     
     my.getGBTile = function(tile,address) {
     	
-    	var dat = BinaryData.getData(address+tile*16,16);
+    	var dat = my.data.slice(address+tile*16-my.origin,address+tile*16-my.origin+16);
     	
     	return mergePixels(dat);
     	

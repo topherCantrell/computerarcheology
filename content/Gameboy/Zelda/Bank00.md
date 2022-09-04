@@ -18,7 +18,7 @@
 ; TODO:
 ; Problems in disassembly. Fix and write REDIS program.
 ; - CB instructions are jacked. CB87 should be RES 0,A and does something else
-; - ": F0" should be LDFF00 -- not LD
+; - ": F0" should be LD -- not LD
 ;
 ; Proper way to document a function
 ; Document RAM addresses correctly
@@ -67,8 +67,8 @@
 0080: 01 30 00        LD      BC,$0030            ; 48 bytes (3 tile maps) to copy
 0083: CD C5 28        CALL    $28C5               ; {code.CopyHLtoDE} Copy HL to DE
 0086: AF              XOR     A                   ; 0 ...
-0087: E0 90           LDFF00  ($90),A             ; ?In high ram
-0089: E0 92           LDFF00  ($92),A             ; 
+0087: E0 90           LD      ($FF00+$90),A       ; ?In high ram
+0089: E0 92           LD      ($FF00+$92),A       ; 
 008B: 3E 0C           LD      A,$0C               ; Bank switch to ...
 008D: EA 00 21        LD      ($2100),A           ; {} ... Bank 0C
 0090: C9              RET                         ; Done
@@ -110,9 +110,9 @@ Startup:
 0150: CD 81 28        CALL    $2881               ; {code.LCDOff} Turn off LCD
 0153: 31 FF DF        LD      SP,$DFFF            ; Stack in internal RAM ?DF00-DFFF
 0156: AF              XOR     A                   ; Clear out ...
-0157: E0 47           LDFF00  ($47),A             ; ... Background palette ...
-0159: E0 48           LDFF00  ($48),A             ; ... Sprite palette #0 ...
-015B: E0 49           LDFF00  ($49),A             ; ... Sprite palette #1
+0157: E0 47           LD      ($FF00+$47),A       ; ... Background palette ...
+0159: E0 48           LD      ($FF00+$48),A       ; ... Sprite palette #0 ...
+015B: E0 49           LD      ($FF00+$49),A       ; ... Sprite palette #1
 015D: 21 00 80        LD      HL,$8000            ; Clear ...
 0160: 01 00 18        LD      BC,$1800            ; ... 8000-97FF ...
 0163: CD 99 29        CALL    $2999               ; {code.ClearRAMHL} ... Tile Pattern Tables
@@ -125,13 +125,13 @@ Startup:
 0177: CD CE 40        CALL    $40CE               ; ?window and lcd
 017A: CD 6B 2B        CALL    $2B6B               ; {} ?lots of tile pattern work
 017D: 3E 44           LD      A,$44               ; 0100 0100
-017F: E0 41           LDFF00  ($41),A             ; LCDSTAT= ?Horiz blanking impulse, interrupt on coincidence
+017F: E0 41           LD      ($FF00+$41),A       ; LCDSTAT= ?Horiz blanking impulse, interrupt on coincidence
 0181: 3E 4F           LD      A,$4F               ; Scanline 79
-0183: E0 45           LDFF00  ($45),A             ; Scanline compare = 79
+0183: E0 45           LD      ($FF00+$45),A       ; Scanline compare = 79
 0185: 3E 01           LD      A,$01               ; Currently in ...
 0187: EA AF DB        LD      ($DBAF),A           ; {ram.curBank} ... bank 01
 018A: 3E 01           LD      A,$01               ; Enable ...
-018C: E0 FF           LDFF00  ($FF),A             ; ... vertical blanking impulse
+018C: E0 FF           LD      ($FF00+$FF),A       ; ... vertical blanking impulse
 018E: 3E 01           LD      A,$01               ; Switch in ...
 0190: EA 00 21        LD      ($2100),A           ; {} ... bank 01
 0193: CD 0F 46        CALL    $460F               
@@ -139,32 +139,32 @@ Startup:
 0198: EA 00 21        LD      ($2100),A           ; {} ... bank 1F
 019B: CD 00 40        CALL    $4000               
 019E: 3E 18           LD      A,$18               
-01A0: E0 B5           LDFF00  ($B5),A             
+01A0: E0 B5           LD      ($FF00+$B5),A       
 01A2: FB              EI                          ; Enable interrupts
 01A3: C3 BD 03        JP      $03BD               ; {}
 
 01A6: 3E 01           LD      A,$01               
-01A8: E0 FD           LDFF00  ($FD),A             
+01A8: E0 FD           LD      ($FF00+$FD),A       
 01AA: FA 00 C5        LD      A,($C500)           
 01AD: A7              AND     A                   
 01AE: 28 0E           JR      Z,$1BE              ; {}
 01B0: FA 95 DB        LD      A,($DB95)           
 01B3: FE 0B           CP      $0B                 
 01B5: 20 07           JR      NZ,$1BE             ; {}
-01B7: F0 E7           LD      A,($E7)             ; {}
+01B7: F0 E7           LD      A,($E7)             ; 
 01B9: 0F              RRCA                        
 01BA: E6 80           AND     $80                 
 01BC: 18 06           JR      $1C4                ; {}
 01BE: 21 56 C1        LD      HL,$C156            
-01C1: F0 97           LD      A,($97)             ; {}
+01C1: F0 97           LD      A,($97)             ; 
 01C3: 86              ADD     A,(HL)              
-01C4: E0 42           LDFF00  ($42),A             
-01C6: F0 96           LD      A,($96)             ; {}
+01C4: E0 42           LD      ($FF00+$42),A       
+01C6: F0 96           LD      A,($96)             ; 
 01C8: 21 55 C1        LD      HL,$C155            
 01CB: 86              ADD     A,(HL)              
 01CC: 21 BF C1        LD      HL,$C1BF            
 01CF: 86              ADD     A,(HL)              
-01D0: E0 43           LDFF00  ($43),A             
+01D0: E0 43           LD      ($FF00+$43),A       
 01D2: FA FE D6        LD      A,($D6FE)           
 01D5: A7              AND     A                   
 01D6: 20 07           JR      NZ,$1DF             ; {}
@@ -192,10 +192,10 @@ Startup:
 0209: FA FD D6        LD      A,($D6FD)           
 020C: E6 7F           AND     $7F                 
 020E: 5F              LD      E,A                 
-020F: F0 40           LD      A,($40)             ; {}
+020F: F0 40           LD      A,($40)             ; 
 0211: E6 80           AND     $80                 
 0213: B3              OR      E                   
-0214: E0 40           LDFF00  ($40),A             
+0214: E0 40           LD      ($FF00+$40),A       
 0216: 21 E7 FF        LD      HL,$FFE7            
 0219: 34              INC     (HL)                
 021A: FA 95 DB        LD      A,($DB95)           
@@ -245,7 +245,7 @@ Startup:
 027D: EA CA C3        LD      ($C3CA),A           
 0280: FA CA C3        LD      A,($C3CA)           
 0283: 5F              LD      E,A                 
-0284: F0 E7           LD      A,($E7)             ; {}
+0284: F0 E7           LD      A,($E7)             ; 
 0286: E6 03           AND     $03                 
 0288: 83              ADD     A,E                 
 0289: 5F              LD      E,A                 
@@ -275,7 +275,7 @@ Startup:
 02BB: F1              POP     AF                  
 02BC: CB 3F           SRL     A                   
 02BE: CB 3F           SRL     A                   
-02C0: E0 D7           LDFF00  ($D7),A             
+02C0: E0 D7           LD      ($FF00+$D7),A       
 02C2: FA 80 C1        LD      A,($C180)           
 02C5: 00              NOP                         
 02C6: E6 E0           AND     $E0                 
@@ -287,13 +287,13 @@ Startup:
 02D1: EE E0           XOR     $E0                 
 02D3: 5F              LD      E,A                 
 02D4: 7B              LD      A,E                 
-02D5: E0 D8           LDFF00  ($D8),A             
+02D5: E0 D8           LD      ($FF00+$D8),A       
 02D7: 21 7C C1        LD      HL,$C17C            
 02DA: AF              XOR     A                   
 02DB: 22              LD      (HLI),A             
 02DC: 22              LD      (HLI),A             
 02DD: 22              LD      (HLI),A             
-02DE: F0 41           LD      A,($41)             ; {}
+02DE: F0 41           LD      A,($41)             ; 
 02E0: E6 03           AND     $03                 
 02E2: 20 FA           JR      NZ,$2DE             ; {}
 02E4: 16 00           LD      D,$00               
@@ -317,7 +317,7 @@ Startup:
 0310: 28 01           JR      Z,$313              ; {}
 0312: 0C              INC     C                   
 0313: 21 7C C1        LD      HL,$C17C            
-0316: F0 D7           LD      A,($D7)             ; {}
+0316: F0 D7           LD      A,($D7)             ; 
 0318: 86              ADD     A,(HL)              
 0319: E6 1F           AND     $1F                 
 031B: 21 D8 FF        LD      HL,$FFD8            
@@ -334,31 +334,31 @@ Startup:
 032D: F5              PUSH    AF                  
 032E: 21 96 FF        LD      HL,$FF96            
 0331: 86              ADD     A,(HL)              
-0332: E0 43           LDFF00  ($43),A             
+0332: E0 43           LD      ($FF00+$43),A       
 0334: F1              POP     AF                  
 0335: 21 97 FF        LD      HL,$FF97            
 0338: 86              ADD     A,(HL)              
-0339: E0 42           LDFF00  ($42),A             
+0339: E0 42           LD      ($FF00+$42),A       
 033B: C3 DE 02        JP      $02DE               ; {}
 033E: CD 44 08        CALL    $0844               ; {}
 0341: FA 97 DB        LD      A,($DB97)           
-0344: E0 47           LDFF00  ($47),A             
+0344: E0 47           LD      ($FF00+$47),A       
 0346: FA 98 DB        LD      A,($DB98)           
-0349: E0 48           LDFF00  ($48),A             
+0349: E0 48           LD      ($FF00+$48),A       
 034B: FA 99 DB        LD      A,($DB99)           
-034E: E0 49           LDFF00  ($49),A             
+034E: E0 49           LD      ($FF00+$49),A       
 0350: 18 6B           JR      $3BD                ; {}
 0352: FA 9A DB        LD      A,($DB9A)           
-0355: E0 4A           LDFF00  ($4A),A             
+0355: E0 4A           LD      ($FF00+$4A),A       
 0357: FA 97 DB        LD      A,($DB97)           
-035A: E0 47           LDFF00  ($47),A             
+035A: E0 47           LD      ($FF00+$47),A       
 035C: FA 98 DB        LD      A,($DB98)           
-035F: E0 48           LDFF00  ($48),A             
+035F: E0 48           LD      ($FF00+$48),A       
 0361: FA 99 DB        LD      A,($DB99)           
-0364: E0 49           LDFF00  ($49),A             
+0364: E0 49           LD      ($FF00+$49),A       
 0366: CD 44 08        CALL    $0844               ; {}
 0369: CD FE 27        CALL    $27FE               ; {}
-036C: F0 90           LD      A,($90)             ; {}
+036C: F0 90           LD      A,($90)             ; 
 036E: 21 91 FF        LD      HL,$FF91            
 0371: B6              OR      (HL)                
 0372: 21 0E C1        LD      HL,$C10E            
@@ -370,10 +370,10 @@ Startup:
 037E: FA FC D6        LD      A,($D6FC)           
 0381: A7              AND     A                   
 0382: 20 06           JR      NZ,$38A             ; {}
-0384: F0 CB           LD      A,($CB)             ; {}
+0384: F0 CB           LD      A,($CB)             ; 
 0386: E6 0F           AND     $0F                 
 0388: 28 1A           JR      Z,$3A4              ; {}
-038A: F0 CC           LD      A,($CC)             ; {}
+038A: F0 CC           LD      A,($CC)             ; 
 038C: E6 40           AND     $40                 
 038E: 28 14           JR      Z,$3A4              ; {}
 0390: FA FC D6        LD      A,($D6FC)           
@@ -400,13 +400,13 @@ Startup:
 03C5: 3E 0C           LD      A,$0C               
 03C7: EA 00 21        LD      ($2100),A           ; {}
 03CA: AF              XOR     A                   
-03CB: E0 FD           LDFF00  ($FD),A             
+03CB: E0 FD           LD      ($FF00+$FD),A       
 03CD: 76              HALT                        
-03CE: F0 D1           LD      A,($D1)             ; {}
+03CE: F0 D1           LD      A,($D1)             ; 
 03D0: A7              AND     A                   
 03D1: 28 FB           JR      Z,$3CE              ; {}
 03D3: AF              XOR     A                   
-03D4: E0 D1           LDFF00  ($D1),A             
+03D4: E0 D1           LD      ($FF00+$D1),A       
 03D6: C3 A6 01        JP      $01A6               ; {}
 03D9: 20 30           JR      NZ,$40B             ; {}
 03DB: 40              LD      B,B                 
@@ -427,8 +427,8 @@ Startup:
 03F2: 20 05           JR      NZ,$3F9             ; {}
 03F4: FA 00 D0        LD      A,($D000)           
 03F7: 18 02           JR      $3FB                ; {}
-03F9: F0 97           LD      A,($97)             ; {}
-03FB: E0 42           LDFF00  ($42),A             
+03F9: F0 97           LD      A,($97)             ; 
+03FB: E0 42           LD      ($FF00+$42),A       
 03FD: C3 52 04        JP      $0452               ; {}
 0400: FE 00           CP      $00                 
 0402: 20 4B           JR      NZ,$44F             ; {}
@@ -440,14 +440,14 @@ Startup:
 040E: 7E              LD      A,(HL)              
 040F: 21 96 FF        LD      HL,$FF96            
 0412: 86              ADD     A,(HL)              
-0413: E0 43           LDFF00  ($43),A             
+0413: E0 43           LD      ($FF00+$43),A       
 0415: FA 96 DB        LD      A,($DB96)           
 0418: FE 06           CP      $06                 
 041A: 38 10           JR      C,$42C              ; {}
 041C: 21 DE 03        LD      HL,$03DE            
 041F: 19              ADD     HL,DE               
 0420: 7E              LD      A,(HL)              
-0421: E0 45           LDFF00  ($45),A             
+0421: E0 45           LD      ($FF00+$45),A       
 0423: 7B              LD      A,E                 
 0424: 3C              INC     A                   
 0425: E6 03           AND     $03                 
@@ -456,7 +456,7 @@ Startup:
 042C: 21 D9 03        LD      HL,$03D9            
 042F: 19              ADD     HL,DE               
 0430: 7E              LD      A,(HL)              
-0431: E0 45           LDFF00  ($45),A             
+0431: E0 45           LD      ($FF00+$45),A       
 0433: 7B              LD      A,E                 
 0434: 3C              INC     A                   
 0435: FE 05           CP      $05                 
@@ -467,14 +467,14 @@ Startup:
 043E: FE 04           CP      $04                 
 0440: 20 0B           JR      NZ,$44D             ; {}
 0442: FA 06 C1        LD      A,($C106)           
-0445: E0 42           LDFF00  ($42),A             
+0445: E0 42           LD      ($FF00+$42),A       
 0447: 2F              CPL                         
 0448: 3C              INC     A                   
 0449: C6 60           ADD     $60                 
-044B: E0 45           LDFF00  ($45),A             
+044B: E0 45           LD      ($FF00+$45),A       
 044D: 18 03           JR      $452                ; {}
 044F: AF              XOR     A                   
-0450: E0 43           LDFF00  ($43),A             
+0450: E0 43           LD      ($FF00+$43),A       
 0452: D1              POP     DE                  
 0453: E1              POP     HL                  
 0454: F1              POP     AF                  
@@ -519,7 +519,7 @@ Startup:
 047E: 56              LD      D,(HL)              
 047F: 81              ADD     A,C                 
 0480: 6E              LD      L,(HL)              
-0481: 10 53           STOP    $53                 
+0481: 10 53           ;;STOP    $53                 
 0483: 65              LD      H,L                 
 0484: 63              LD      H,E                 
 0485: CE 66           ADC     $66                 
@@ -580,7 +580,7 @@ Startup:
 04CF: 98              SBC     B                   
 04D0: 28 C2           JR      Z,$494              ; {}
 04D2: 2C              INC     L                   
-04D3: F0 2C           LD      A,($2C)             ; {}
+04D3: F0 2C           LD      A,($2C)             ; 
 04D5: 28 2D           JR      Z,$504              ; {}
 04D7: 56              LD      D,(HL)              
 04D8: 2D              DEC     L                   
@@ -629,7 +629,7 @@ Startup:
 0517: EA FF D6        LD      ($D6FF),A           
 051A: EA FE D6        LD      ($D6FE),A           
 051D: FA FD D6        LD      A,($D6FD)           
-0520: E0 40           LDFF00  ($40),A             
+0520: E0 40           LD      ($FF00+$40),A       
 0522: C9              RET                         
 0523: 07              RLCA                        
 0524: 09              ADD     HL,BC               
@@ -638,7 +638,7 @@ Startup:
 0527: D5              PUSH    DE                  
 0528: E5              PUSH    HL                  
 0529: F3              DI                          
-052A: F0 FD           LD      A,($FD)             ; {}
+052A: F0 FD           LD      A,($FD)             ; 
 052C: A7              AND     A                   
 052D: C2 B6 05        JP      NZ,$05B6            ; {}
 0530: FA 9F C1        LD      A,($C19F)           
@@ -669,25 +669,25 @@ Startup:
 0566: FA FE D6        LD      A,($D6FE)           
 0569: A7              AND     A                   
 056A: 20 4A           JR      NZ,$5B6             ; {}
-056C: F0 90           LD      A,($90)             ; {}
-056E: E0 E8           LDFF00  ($E8),A             
+056C: F0 90           LD      A,($90)             ; 
+056E: E0 E8           LD      ($FF00+$E8),A       
 0570: 21 91 FF        LD      HL,$FF91            
 0573: B6              OR      (HL)                
 0574: 21 0E C1        LD      HL,$C10E            
 0577: B6              OR      (HL)                
 0578: 28 11           JR      Z,$58B              ; {}
 057A: CD C0 05        CALL    $05C0               ; {}
-057D: F0 E8           LD      A,($E8)             ; {}
+057D: F0 E8           LD      A,($E8)             ; 
 057F: FE 08           CP      $08                 
 0581: 30 03           JR      NC,$586             ; {}
 0583: CD CC 1C        CALL    $1CCC               ; {}
 0586: CD C0 FF        CALL    $FFC0               
 0589: 18 2B           JR      $5B6                ; {}
-058B: F0 BB           LD      A,($BB)             ; {}
+058B: F0 BB           LD      A,($BB)             ; 
 058D: A7              AND     A                   
 058E: 28 13           JR      Z,$5A3              ; {}
 0590: 3D              DEC     A                   
-0591: E0 BB           LDFF00  ($BB),A             
+0591: E0 BB           LD      ($FF00+$BB),A       
 0593: 5F              LD      E,A                 
 0594: 16 00           LD      D,$00               
 0596: 21 23 05        LD      HL,$0523            
@@ -708,10 +708,10 @@ Startup:
 05B8: D1              POP     DE                  
 05B9: C1              POP     BC                  
 05BA: 3E 01           LD      A,$01               
-05BC: E0 D1           LDFF00  ($D1),A             
+05BC: E0 D1           LD      ($FF00+$D1),A       
 05BE: F1              POP     AF                  
 05BF: D9              RETI                        
-05C0: F0 90           LD      A,($90)             ; {}
+05C0: F0 90           LD      A,($90)             ; 
 05C2: A7              AND     A                   
 05C3: CA 88 06        JP      Z,$0688             ; {}
 05C6: FE 07           CP      $07                 
@@ -729,12 +729,12 @@ Startup:
 05E4: FA A5 DB        LD      A,($DBA5)           
 05E7: A7              AND     A                   
 05E8: 28 59           JR      Z,$643              ; {}
-05EA: F0 90           LD      A,($90)             ; {}
+05EA: F0 90           LD      A,($90)             ; 
 05EC: FE 02           CP      $02                 
 05EE: CA C9 07        JP      Z,$07C9             ; {}
 05F1: 3E 0D           LD      A,$0D               
 05F3: EA 00 21        LD      ($2100),A           ; {}
-05F6: F0 92           LD      A,($92)             ; {}
+05F6: F0 92           LD      A,($92)             ; 
 05F8: 4F              LD      C,A                 
 05F9: 06 00           LD      B,$00               
 05FB: CB 21           SLA     C                   
@@ -754,31 +754,31 @@ Startup:
 0617: E5              PUSH    HL                  
 0618: D1              POP     DE                  
 0619: 21 00 50        LD      HL,$5000            
-061C: F0 94           LD      A,($94)             ; {}
+061C: F0 94           LD      A,($94)             ; 
 061E: C6 50           ADD     $50                 
 0620: 67              LD      H,A                 
 0621: 09              ADD     HL,BC               
-0622: F0 BB           LD      A,($BB)             ; {}
+0622: F0 BB           LD      A,($BB)             ; 
 0624: A7              AND     A                   
 0625: 28 07           JR      Z,$62E              ; {}
-0627: F0 92           LD      A,($92)             ; {}
+0627: F0 92           LD      A,($92)             ; 
 0629: 3D              DEC     A                   
 062A: FE 02           CP      $02                 
 062C: 38 06           JR      C,$634              ; {}
 062E: 01 40 00        LD      BC,$0040            
 0631: CD C5 28        CALL    $28C5               ; {code.CopyHLtoDE}
-0634: F0 92           LD      A,($92)             ; {}
+0634: F0 92           LD      A,($92)             ; 
 0636: 3C              INC     A                   
-0637: E0 92           LDFF00  ($92),A             
+0637: E0 92           LD      ($FF00+$92),A       
 0639: FE 04           CP      $04                 
 063B: 20 05           JR      NZ,$642             ; {}
 063D: AF              XOR     A                   
-063E: E0 90           LDFF00  ($90),A             
-0640: E0 92           LDFF00  ($92),A             
+063E: E0 90           LD      ($FF00+$90),A       
+0640: E0 92           LD      ($FF00+$92),A       
 0642: C9              RET                         
 0643: 21 00 21        LD      HL,$2100            
 0646: 36 0F           LD      (HL),$0F            
-0648: F0 92           LD      A,($92)             ; {}
+0648: F0 92           LD      A,($92)             ; 
 064A: 4F              LD      C,A                 
 064B: 06 00           LD      B,$00               
 064D: CB 21           SLA     C                   
@@ -797,23 +797,23 @@ Startup:
 0668: 09              ADD     HL,BC               
 0669: E5              PUSH    HL                  
 066A: D1              POP     DE                  
-066B: F0 94           LD      A,($94)             ; {}
+066B: F0 94           LD      A,($94)             ; 
 066D: C6 40           ADD     $40                 
 066F: 67              LD      H,A                 
 0670: 2E 00           LD      L,$00               
 0672: 09              ADD     HL,BC               
 0673: 01 40 00        LD      BC,$0040            
 0676: CD C5 28        CALL    $28C5               ; {code.CopyHLtoDE}
-0679: F0 92           LD      A,($92)             ; {}
+0679: F0 92           LD      A,($92)             ; 
 067B: 3C              INC     A                   
-067C: E0 92           LDFF00  ($92),A             
+067C: E0 92           LD      ($FF00+$92),A       
 067E: FE 08           CP      $08                 
 0680: 20 05           JR      NZ,$687             ; {}
 0682: AF              XOR     A                   
-0683: E0 90           LDFF00  ($90),A             
-0685: E0 92           LDFF00  ($92),A             
+0683: E0 90           LD      ($FF00+$90),A       
+0685: E0 92           LD      ($FF00+$92),A       
 0687: C9              RET                         
-0688: F0 91           LD      A,($91)             ; {}
+0688: F0 91           LD      A,($91)             ; 
 068A: A7              AND     A                   
 068B: 28 67           JR      Z,$6F4              ; {}
 068D: FA 97 C1        LD      A,($C197)           
@@ -837,7 +837,7 @@ Startup:
 06AB: 09              ADD     HL,BC               
 06AC: 7E              LD      A,(HL)              
 06AD: EA 00 21        LD      ($2100),A           ; {}
-06B0: F0 93           LD      A,($93)             ; {}
+06B0: F0 93           LD      A,($93)             ; 
 06B2: 4F              LD      C,A                 
 06B3: 06 00           LD      B,$00               
 06B5: CB 21           SLA     C                   
@@ -866,14 +866,14 @@ Startup:
 06DE: E1              POP     HL                  
 06DF: 01 40 00        LD      BC,$0040            
 06E2: CD C5 28        CALL    $28C5               ; {code.CopyHLtoDE}
-06E5: F0 93           LD      A,($93)             ; {}
+06E5: F0 93           LD      A,($93)             ; 
 06E7: 3C              INC     A                   
-06E8: E0 93           LDFF00  ($93),A             
+06E8: E0 93           LD      ($FF00+$93),A       
 06EA: FE 04           CP      $04                 
 06EC: 20 05           JR      NZ,$6F3             ; {}
 06EE: AF              XOR     A                   
-06EF: E0 91           LDFF00  ($91),A             
-06F1: E0 93           LDFF00  ($93),A             
+06EF: E0 91           LD      ($FF00+$91),A       
+06F1: E0 93           LD      ($FF00+$93),A       
 06F3: C9              RET                         
 06F4: FA 0D C1        LD      A,($C10D)           
 06F7: 5F              LD      E,A                 
@@ -982,17 +982,17 @@ Startup:
 079C: EA 00 21        LD      ($2100),A           ; {}
 079F: 01 40 00        LD      BC,$0040            
 07A2: CD C5 28        CALL    $28C5               ; {code.CopyHLtoDE}
-07A5: F0 90           LD      A,($90)             ; {}
+07A5: F0 90           LD      A,($90)             ; 
 07A7: FE 0A           CP      $0A                 
 07A9: 28 0A           JR      Z,$7B5              ; {}
 07AB: FE 0D           CP      $0D                 
 07AD: 28 06           JR      Z,$7B5              ; {}
-07AF: F0 90           LD      A,($90)             ; {}
+07AF: F0 90           LD      A,($90)             ; 
 07B1: 3C              INC     A                   
-07B2: E0 90           LDFF00  ($90),A             
+07B2: E0 90           LD      ($FF00+$90),A       
 07B4: C9              RET                         
 07B5: AF              XOR     A                   
-07B6: E0 90           LDFF00  ($90),A             
+07B6: E0 90           LD      ($FF00+$90),A       
 07B8: C9              RET                         
 
 ; Switch to bank A (remember bank number)
@@ -1010,7 +1010,7 @@ SwitchBankSave:
      
 07C9: 3E 12           LD      A,$12               
 07CB: EA 00 21        LD      ($2100),A           ; {}
-07CE: F0 92           LD      A,($92)             ; {}
+07CE: F0 92           LD      A,($92)             ; 
 07D0: FE 08           CP      $08                 
 07D2: 38 3F           JR      C,$813              ; {}
 07D4: 20 0D           JR      NZ,$7E3             ; {}
@@ -1040,8 +1040,8 @@ SwitchBankSave:
 0807: EA 00 21        LD      ($2100),A           ; {}
 080A: CD 46 6B        CALL    $6B46               
 080D: AF              XOR     A                   
-080E: E0 90           LDFF00  ($90),A             
-0810: E0 92           LDFF00  ($92),A             
+080E: E0 90           LD      ($FF00+$90),A       
+0810: E0 92           LD      ($FF00+$92),A       
 0812: C9              RET                         
 0813: 4F              LD      C,A                 
 0814: 06 00           LD      B,$00               
@@ -1065,14 +1065,14 @@ SwitchBankSave:
 0837: 09              ADD     HL,BC               
 0838: 01 40 00        LD      BC,$0040            
 083B: CD C5 28        CALL    $28C5               ; {code.CopyHLtoDE}
-083E: F0 92           LD      A,($92)             ; {}
+083E: F0 92           LD      A,($92)             ; 
 0840: 3C              INC     A                   
-0841: E0 92           LDFF00  ($92),A             
+0841: E0 92           LD      ($FF00+$92),A       
 0843: C9              RET                         
 0844: 3E 1F           LD      A,$1F               
 0846: EA 00 21        LD      ($2100),A           ; {}
 0849: CD 06 40        CALL    $4006               
-084C: F0 F3           LD      A,($F3)             ; {}
+084C: F0 F3           LD      A,($F3)             ; 
 084E: A7              AND     A                   
 084F: 20 25           JR      NZ,$876             ; {}
 0851: FA 0B C1        LD      A,($C10B)           
@@ -1080,7 +1080,7 @@ SwitchBankSave:
 0855: 28 0F           JR      Z,$866              ; {}
 0857: FE 02           CP      $02                 
 0859: 20 08           JR      NZ,$863             ; {}
-085B: F0 E7           LD      A,($E7)             ; {}
+085B: F0 E7           LD      A,($E7)             ; 
 085D: E6 01           AND     $01                 
 085F: 20 15           JR      NZ,$876             ; {}
 0861: 18 03           JR      $866                ; {}
@@ -1112,17 +1112,17 @@ SwitchBankSave:
 0897: C9              RET                         
 0898: 3E AF           LD      A,$AF               
 089A: CD 01 3C        CALL    $3C01               ; {}
-089D: F0 98           LD      A,($98)             ; {}
+089D: F0 98           LD      A,($98)             ; 
 089F: 21 00 C2        LD      HL,$C200            
 08A2: 19              ADD     HL,DE               
 08A3: 77              LD      (HL),A              
-08A4: F0 99           LD      A,($99)             ; {}
+08A4: F0 99           LD      A,($99)             ; 
 08A6: 21 10 C2        LD      HL,$C210            
 08A9: 19              ADD     HL,DE               
 08AA: 77              LD      (HL),A              
 08AB: C9              RET                         
 08AC: 3E 1D           LD      A,$1D               
-08AE: E0 F2           LDFF00  ($F2),A             
+08AE: E0 F2           LD      ($FF00+$F2),A       
 08B0: C9              RET                         
 08B1: 21 E1 45        LD      HL,$45E1            
 08B4: 18 03           JR      $8B9                ; {}
@@ -1165,14 +1165,14 @@ SwitchBankSave:
 0900: A7              AND     A                   
 0901: 20 04           JR      NZ,$907             ; {}
 0903: 3E 02           LD      A,$02               
-0905: E0 F2           LDFF00  ($F2),A             
+0905: E0 F2           LD      ($FF00+$F2),A       
 0907: F1              POP     AF                  
 0908: C9              RET                         
 0909: 3E 30           LD      A,$30               
-090B: E0 A8           LDFF00  ($A8),A             
+090B: E0 A8           LD      ($FF00+$A8),A       
 090D: 18 17           JR      $926                ; {}
 090F: 3E 30           LD      A,$30               
-0911: E0 A8           LDFF00  ($A8),A             
+0911: E0 A8           LD      ($FF00+$A8),A       
 0913: 18 15           JR      $92A                ; {}
 0915: FA 01 D4        LD      A,($D401)           
 0918: FE 01           CP      $01                 
@@ -1181,9 +1181,9 @@ SwitchBankSave:
 091F: A7              AND     A                   
 0920: 28 E7           JR      Z,$909              ; {}
 0922: 3E 01           LD      A,$01               
-0924: E0 BC           LDFF00  ($BC),A             
+0924: E0 BC           LD      ($FF00+$BC),A       
 0926: 3E 06           LD      A,$06               
-0928: E0 F4           LDFF00  ($F4),A             
+0928: E0 F4           LD      ($FF00+$F4),A       
 092A: 3E 03           LD      A,$03               
 092C: EA 1C C1        LD      ($C11C),A           
 092F: AF              XOR     A                   
@@ -1199,10 +1199,10 @@ SwitchBankSave:
 0943: EA 4B C1        LD      ($C14B),A           
 0946: EA 4A C1        LD      ($C14A),A           
 0949: C9              RET                         
-094A: F0 9F           LD      A,($9F)             ; {}
-094C: E0 98           LDFF00  ($98),A             
-094E: F0 A0           LD      A,($A0)             ; {}
-0950: E0 99           LDFF00  ($99),A             
+094A: F0 9F           LD      A,($9F)             ; 
+094C: E0 98           LD      ($FF00+$98),A       
+094E: F0 A0           LD      A,($A0)             ; 
+0950: E0 99           LD      ($FF00+$99),A       
 0952: C9              RET                         
 0953: F5              PUSH    AF                  
 0954: 1E 0F           LD      E,$0F               
@@ -1229,11 +1229,11 @@ SwitchBankSave:
 0979: 21 10 C5        LD      HL,$C510            
 097C: 19              ADD     HL,DE               
 097D: 77              LD      (HL),A              
-097E: F0 D8           LD      A,($D8)             ; {}
+097E: F0 D8           LD      A,($D8)             ; 
 0980: 21 40 C5        LD      HL,$C540            
 0983: 19              ADD     HL,DE               
 0984: 77              LD      (HL),A              
-0985: F0 D7           LD      A,($D7)             ; {}
+0985: F0 D7           LD      A,($D7)             ; 
 0987: 21 30 C5        LD      HL,$C530            
 098A: 19              ADD     HL,DE               
 098B: 77              LD      (HL),A              
@@ -1243,12 +1243,12 @@ SwitchBankSave:
 0992: C9              RET                         
 0993: FA 40 C1        LD      A,($C140)           
 0996: D6 08           SUB     $08                 
-0998: E0 D7           LDFF00  ($D7),A             
+0998: E0 D7           LD      ($FF00+$D7),A       
 099A: FA 42 C1        LD      A,($C142)           
 099D: D6 08           SUB     $08                 
-099F: E0 D8           LDFF00  ($D8),A             
+099F: E0 D8           LD      ($FF00+$D8),A       
 09A1: 3E 07           LD      A,$07               
-09A3: E0 F2           LDFF00  ($F2),A             
+09A3: E0 F2           LD      ($FF00+$F2),A       
 09A5: 3E 05           LD      A,$05               
 09A7: C3 53 09        JP      $0953               ; {}
 09AA: 3E 08           LD      A,$08               
@@ -1256,29 +1256,29 @@ SwitchBankSave:
 09AF: FA A5 DB        LD      A,($DBA5)           
 09B2: A7              AND     A                   
 09B3: 28 27           JR      Z,$9DC              ; {}
-09B5: F0 F6           LD      A,($F6)             ; {}
+09B5: F0 F6           LD      A,($F6)             ; 
 09B7: 5F              LD      E,A                 
 09B8: 16 00           LD      D,$00               
 09BA: 21 40 40        LD      HL,$4040            
-09BD: F0 F7           LD      A,($F7)             ; {}
+09BD: F0 F7           LD      A,($F7)             ; 
 09BF: FE 1A           CP      $1A                 
 09C1: 30 05           JR      NC,$9C8             ; {}
 09C3: FE 06           CP      $06                 
 09C5: 38 01           JR      C,$9C8              ; {}
 09C7: 24              INC     H                   
 09C8: 19              ADD     HL,DE               
-09C9: F0 94           LD      A,($94)             ; {}
+09C9: F0 94           LD      A,($94)             ; 
 09CB: 5F              LD      E,A                 
 09CC: 7E              LD      A,(HL)              
 09CD: BB              CP      E                   
 09CE: 28 0A           JR      Z,$9DA              ; {}
-09D0: E0 94           LDFF00  ($94),A             
+09D0: E0 94           LD      ($FF00+$94),A       
 09D2: FE FF           CP      $FF                 
 09D4: 28 04           JR      Z,$9DA              ; {}
 09D6: 3E 01           LD      A,$01               
-09D8: E0 90           LDFF00  ($90),A             
+09D8: E0 90           LD      ($FF00+$90),A       
 09DA: 18 2D           JR      $A09                ; {}
-09DC: F0 F6           LD      A,($F6)             ; {}
+09DC: F0 F6           LD      A,($F6)             ; 
 09DE: FE 07           CP      $07                 
 09E0: 20 01           JR      NZ,$9E3             ; {}
 09E2: 3C              INC     A                   
@@ -1295,25 +1295,25 @@ SwitchBankSave:
 09F2: 16 00           LD      D,$00               
 09F4: 21 00 40        LD      HL,$4000            
 09F7: 19              ADD     HL,DE               
-09F8: F0 94           LD      A,($94)             ; {}
+09F8: F0 94           LD      A,($94)             ; 
 09FA: 5F              LD      E,A                 
 09FB: 7E              LD      A,(HL)              
 09FC: BB              CP      E                   
 09FD: 28 0A           JR      Z,$A09              ; {}
 09FF: FE 0F           CP      $0F                 
 0A01: 28 06           JR      Z,$A09              ; {}
-0A03: E0 94           LDFF00  ($94),A             
+0A03: E0 94           LD      ($FF00+$94),A       
 0A05: 3E 01           LD      A,$01               
-0A07: E0 90           LDFF00  ($90),A             
+0A07: E0 90           LD      ($FF00+$90),A       
 0A09: AF              XOR     A                   
-0A0A: E0 D7           LDFF00  ($D7),A             
-0A0C: F0 F6           LD      A,($F6)             ; {}
+0A0A: E0 D7           LD      ($FF00+$D7),A       
+0A0C: F0 F6           LD      A,($F6)             ; 
 0A0E: 5F              LD      E,A                 
 0A0F: 16 00           LD      D,$00               
 0A11: 21 40 42        LD      HL,$4240            
 0A14: FA A5 DB        LD      A,($DBA5)           
 0A17: 57              LD      D,A                 
-0A18: F0 F7           LD      A,($F7)             ; {}
+0A18: F0 F7           LD      A,($F7)             ; 
 0A1A: FE 1A           CP      $1A                 
 0A1C: 30 05           JR      NC,$A23             ; {}
 0A1E: FE 06           CP      $06                 
@@ -1359,7 +1359,7 @@ SwitchBankSave:
 0A65: FE FF           CP      $FF                 
 0A67: 28 1C           JR      Z,$A85              ; {}
 0A69: 02              LD      (BC),A              
-0A6A: F0 D7           LD      A,($D7)             ; {}
+0A6A: F0 D7           LD      A,($D7)             ; 
 0A6C: A7              AND     A                   
 0A6D: 28 0B           JR      Z,$A7A              ; {}
 0A6F: 7A              LD      A,D                 
@@ -1368,11 +1368,11 @@ SwitchBankSave:
 0A75: EA 0E C1        LD      ($C10E),A           
 0A78: 18 0B           JR      $A85                ; {}
 0A7A: 3C              INC     A                   
-0A7B: E0 D7           LDFF00  ($D7),A             
+0A7B: E0 D7           LD      ($FF00+$D7),A       
 0A7D: 7A              LD      A,D                 
 0A7E: EA 97 C1        LD      ($C197),A           
 0A81: 3E 01           LD      A,$01               
-0A83: E0 91           LDFF00  ($91),A             
+0A83: E0 91           LD      ($FF00+$91),A       
 0A85: 23              INC     HL                  
 0A86: 03              INC     BC                  
 0A87: 14              INC     D                   
@@ -1397,7 +1397,7 @@ SwitchBankSave:
 0AB0: 21 24 C1        LD      HL,$C124            
 0AB3: B6              OR      (HL)                
 0AB4: 20 18           JR      NZ,$ACE             ; {}
-0AB6: F0 CB           LD      A,($CB)             ; {}
+0AB6: F0 CB           LD      A,($CB)             ; 
 0AB8: FE F0           CP      $F0                 
 0ABA: 20 12           JR      NZ,$ACE             ; {}
 0ABC: AF              XOR     A                   
@@ -1423,7 +1423,7 @@ SwitchBankSave:
 0ADF: 0B              DEC     BC                  
 0AE0: FC                              
 0AE1: 0A              LD      A,(BC)              
-0AE2: F0 0A           LD      A,($0A)             ; {}
+0AE2: F0 0A           LD      A,($0A)             ; 
 0AE4: F6 0A           OR      $0A                 
 0AE6: EA 0A 40        LD      ($400A),A           
 0AE9: 0B              DEC     BC                  
@@ -1505,13 +1505,13 @@ SwitchBankSave:
 0B9E: A7              AND     A                   
 0B9F: 28 01           JR      Z,$BA2              ; {}
 0BA1: 35              DEC     (HL)                
-0BA2: F0 98           LD      A,($98)             ; {}
-0BA4: E0 9F           LDFF00  ($9F),A             
-0BA6: F0 99           LD      A,($99)             ; {}
-0BA8: E0 A0           LDFF00  ($A0),A             
+0BA2: F0 98           LD      A,($98)             ; 
+0BA4: E0 9F           LD      ($FF00+$9F),A       
+0BA6: F0 99           LD      A,($99)             ; 
+0BA8: E0 A0           LD      ($FF00+$A0),A       
 0BAA: 21 A2 FF        LD      HL,$FFA2            
 0BAD: 96              SUB     (HL)                
-0BAE: E0 B3           LDFF00  ($B3),A             
+0BAE: E0 B3           LD      ($FF00+$B3),A       
 0BB0: CD D5 5D        CALL    $5DD5               
 0BB3: AF              XOR     A                   
 0BB4: EA 40 C1        LD      ($C140),A           
@@ -1547,7 +1547,7 @@ SwitchBankSave:
 0C02: CD B9 07        CALL    $07B9               ; {code.SwitchBank}
 0C05: CD 9A 52        CALL    $529A               
 0C08: 21 01 D6        LD      HL,$D601            
-0C0B: F0 E7           LD      A,($E7)             ; {}
+0C0B: F0 E7           LD      A,($E7)             ; 
 0C0D: E6 03           AND     $03                 
 0C0F: B6              OR      (HL)                
 0C10: 20 18           JR      NZ,$C2A             ; {}
@@ -1557,7 +1557,7 @@ SwitchBankSave:
 0C19: 0E 01           LD      C,$01               
 0C1B: 06 00           LD      B,$00               
 0C1D: 1E 00           LD      E,$00               
-0C1F: F0 E7           LD      A,($E7)             ; {}
+0C1F: F0 E7           LD      A,($E7)             ; 
 0C21: E6 04           AND     $04                 
 0C23: 28 02           JR      Z,$C27              ; {}
 0C25: 0D              DEC     C                   
@@ -1572,7 +1572,7 @@ SwitchBankSave:
 0C3A: C9              RET                         
 0C3B: 08 0E 99        LD      ($990E),SP          
 0C3E: 28 EC           JR      Z,$C2C              ; {}
-0C40: F0 99           LD      A,($99)             ; {}
+0C40: F0 99           LD      A,($99)             ; 
 0C42: 21 A2 FF        LD      HL,$FFA2            
 0C45: 96              SUB     (HL)                
 0C46: EA 45 C1        LD      ($C145),A           
@@ -1613,10 +1613,10 @@ SwitchBankSave:
 0C88: 23              INC     HL                  
 0C89: 50              LD      D,B                 
 0C8A: 18 50           JR      $CDC                ; {}
-0C8C: F0 CB           LD      A,($CB)             ; {}
+0C8C: F0 CB           LD      A,($CB)             ; 
 0C8E: E6 B0           AND     $B0                 
 0C90: 20 4C           JR      NZ,$CDE             ; {}
-0C92: F0 CB           LD      A,($CB)             ; {}
+0C92: F0 CB           LD      A,($CB)             ; 
 0C94: E6 40           AND     $40                 
 0C96: 28 46           JR      Z,$CDE              ; {}
 0C98: FA 5F D4        LD      A,($D45F)           
@@ -1624,10 +1624,10 @@ SwitchBankSave:
 0C9C: EA 5F D4        LD      ($D45F),A           
 0C9F: FE 04           CP      $04                 
 0CA1: 38 3F           JR      C,$CE2              ; {}
-0CA3: F0 A1           LD      A,($A1)             ; {}
+0CA3: F0 A1           LD      A,($A1)             ; 
 0CA5: FE 02           CP      $02                 
 0CA7: 28 35           JR      Z,$CDE              ; {}
-0CA9: F0 9D           LD      A,($9D)             ; {}
+0CA9: F0 9D           LD      A,($9D)             ; 
 0CAB: FE FF           CP      $FF                 
 0CAD: 28 2F           JR      Z,$CDE              ; {}
 0CAF: FA 1C C1        LD      A,($C11C)           
@@ -1652,16 +1652,16 @@ SwitchBankSave:
 0CDD: C9              RET                         
 0CDE: AF              XOR     A                   
 0CDF: EA 5F D4        LD      ($D45F),A           
-0CE2: F0 B7           LD      A,($B7)             ; {}
+0CE2: F0 B7           LD      A,($B7)             ; 
 0CE4: A7              AND     A                   
 0CE5: 28 03           JR      Z,$CEA              ; {}
 0CE7: 3D              DEC     A                   
-0CE8: E0 B7           LDFF00  ($B7),A             
-0CEA: F0 B6           LD      A,($B6)             ; {}
+0CE8: E0 B7           LD      ($FF00+$B7),A       
+0CEA: F0 B6           LD      A,($B6)             ; 
 0CEC: A7              AND     A                   
 0CED: 28 03           JR      Z,$CF2              ; {}
 0CEF: 3D              DEC     A                   
-0CF0: E0 B6           LDFF00  ($B6),A             
+0CF0: E0 B6           LD      ($FF00+$B6),A       
 0CF2: FA 9F C1        LD      A,($C19F)           
 0CF5: A7              AND     A                   
 0CF6: C2 9B 14        JP      NZ,$149B            ; {}
@@ -1680,15 +1680,15 @@ SwitchBankSave:
 0D14: 3E 07           LD      A,$07               
 0D16: EA 1C C1        LD      ($C11C),A           
 0D19: 3E BF           LD      A,$BF               
-0D1B: E0 B7           LDFF00  ($B7),A             
+0D1B: E0 B7           LD      ($FF00+$B7),A       
 0D1D: 3E 10           LD      A,$10               
 0D1F: EA CC C3        LD      ($C3CC),A           
 0D22: AF              XOR     A                   
 0D23: EA C7 DB        LD      ($DBC7),A           
-0D26: E0 9C           LDFF00  ($9C),A             
+0D26: E0 9C           LD      ($FF00+$9C),A       
 0D28: CD D2 27        CALL    $27D2               ; {}
 0D2B: 3E 08           LD      A,$08               
-0D2D: E0 F3           LDFF00  ($F3),A             
+0D2D: E0 F3           LD      ($FF00+$F3),A       
 0D2F: FA 1C C1        LD      A,($C11C)           
 0D32: C7              RST     0X00                
 0D33: 5F              LD      E,A                 
@@ -1771,13 +1771,13 @@ SwitchBankSave:
 0DCC: FA 38 C1        LD      A,($C138)           
 0DCF: FE 03           CP      $03                 
 0DD1: 30 06           JR      NC,$DD9             ; {}
-0DD3: F0 A1           LD      A,($A1)             ; {}
+0DD3: F0 A1           LD      A,($A1)             ; 
 0DD5: A7              AND     A                   
 0DD6: C2 D0 0E        JP      NZ,$0ED0            ; {}
 0DD9: FA 00 DB        LD      A,($DB00)           
 0DDC: FE 08           CP      $08                 
 0DDE: 20 0F           JR      NZ,$DEF             ; {}
-0DE0: F0 CB           LD      A,($CB)             ; {}
+0DE0: F0 CB           LD      A,($CB)             ; 
 0DE2: E6 20           AND     $20                 
 0DE4: 28 05           JR      Z,$DEB              ; {}
 0DE6: CD 0C 14        CALL    $140C               ; {}
@@ -1787,7 +1787,7 @@ SwitchBankSave:
 0DEF: FA 01 DB        LD      A,($DB01)           
 0DF2: FE 08           CP      $08                 
 0DF4: 20 0F           JR      NZ,$E05             ; {}
-0DF6: F0 CB           LD      A,($CB)             ; {}
+0DF6: F0 CB           LD      A,($CB)             ; 
 0DF8: E6 10           AND     $10                 
 0DFA: 28 05           JR      Z,$E01              ; {}
 0DFC: CD 0C 14        CALL    $140C               ; {}
@@ -1799,7 +1799,7 @@ SwitchBankSave:
 0E0A: 20 1A           JR      NZ,$E26             ; {}
 0E0C: FA 44 DB        LD      A,($DB44)           
 0E0F: EA 5A C1        LD      ($C15A),A           
-0E12: F0 CB           LD      A,($CB)             ; {}
+0E12: F0 CB           LD      A,($CB)             ; 
 0E14: E6 10           AND     $10                 
 0E16: 28 0E           JR      Z,$E26              ; {}
 0E18: FA AD C1        LD      A,($C1AD)           
@@ -1813,11 +1813,11 @@ SwitchBankSave:
 0E2B: 20 0F           JR      NZ,$E3C             ; {}
 0E2D: FA 44 DB        LD      A,($DB44)           
 0E30: EA 5A C1        LD      ($C15A),A           
-0E33: F0 CB           LD      A,($CB)             ; {}
+0E33: F0 CB           LD      A,($CB)             ; 
 0E35: E6 20           AND     $20                 
 0E37: 28 03           JR      Z,$E3C              ; {}
 0E39: CD 34 0F        CALL    $0F34               ; {}
-0E3C: F0 CC           LD      A,($CC)             ; {}
+0E3C: F0 CC           LD      A,($CC)             ; 
 0E3E: E6 20           AND     $20                 
 0E40: 28 0D           JR      Z,$E4F              ; {}
 0E42: FA AD C1        LD      A,($C1AD)           
@@ -1825,7 +1825,7 @@ SwitchBankSave:
 0E47: 28 06           JR      Z,$E4F              ; {}
 0E49: FA 00 DB        LD      A,($DB00)           
 0E4C: CD 7F 0E        CALL    $0E7F               ; {}
-0E4F: F0 CC           LD      A,($CC)             ; {}
+0E4F: F0 CC           LD      A,($CC)             ; 
 0E51: E6 10           AND     $10                 
 0E53: 28 11           JR      Z,$E66              ; {}
 0E55: FA AD C1        LD      A,($C1AD)           
@@ -1835,12 +1835,12 @@ SwitchBankSave:
 0E5E: 28 06           JR      Z,$E66              ; {}
 0E60: FA 01 DB        LD      A,($DB01)           
 0E63: CD 7F 0E        CALL    $0E7F               ; {}
-0E66: F0 CB           LD      A,($CB)             ; {}
+0E66: F0 CB           LD      A,($CB)             ; 
 0E68: E6 20           AND     $20                 
 0E6A: 28 06           JR      Z,$E72              ; {}
 0E6C: FA 00 DB        LD      A,($DB00)           
 0E6F: CD 05 0F        CALL    $0F05               ; {}
-0E72: F0 CB           LD      A,($CB)             ; {}
+0E72: F0 CB           LD      A,($CB)             ; 
 0E74: E6 10           AND     $10                 
 0E76: 28 06           JR      Z,$E7E              ; {}
 0E78: FA 01 DB        LD      A,($DB01)           
@@ -1885,7 +1885,7 @@ SwitchBankSave:
 0ED4: A7              AND     A                   
 0ED5: C0              RET     NZ                  
 0ED6: 3E 16           LD      A,$16               
-0ED8: E0 F4           LDFF00  ($F4),A             
+0ED8: E0 F4           LD      ($FF00+$F4),A       
 0EDA: C9              RET                         
 0EDB: FA C7 C1        LD      A,($C1C7)           
 0EDE: 21 46 C1        LD      HL,$C146            
@@ -1894,10 +1894,10 @@ SwitchBankSave:
 0EE3: CD 35 4C        CALL    $4C35               
 0EE6: 30 06           JR      NC,$EEE             ; {}
 0EE8: 3E 07           LD      A,$07               
-0EEA: E0 F2           LDFF00  ($F2),A             
+0EEA: E0 F2           LD      ($FF00+$F2),A       
 0EEC: 18 04           JR      $EF2                ; {}
 0EEE: 3E 0E           LD      A,$0E               
-0EF0: E0 F4           LDFF00  ($F4),A             
+0EF0: E0 F4           LD      ($FF00+$F4),A       
 0EF2: 3E 01           LD      A,$01               
 0EF4: EA C7 C1        LD      ($C1C7),A           
 0EF7: AF              XOR     A                   
@@ -1924,7 +1924,7 @@ SwitchBankSave:
 0F1D: EA 37 C1        LD      ($C137),A           
 0F20: EA B0 C5        LD      ($C5B0),A           
 0F23: C9              RET                         
-0F24: 10 00           STOP    $00                 
+0F24: 10 00           ;;STOP    $00                 
 0F26: 08 08 03        LD      ($0308),SP          ; {}
 0F29: 03              INC     BC                  
 0F2A: 08 08 08        LD      ($0808),SP          ; {}
@@ -1935,12 +1935,12 @@ SwitchBankSave:
 0F36: EA 5B C1        LD      ($C15B),A           
 0F39: FA 44 DB        LD      A,($DB44)           
 0F3C: EA 5A C1        LD      ($C15A),A           
-0F3F: F0 9E           LD      A,($9E)             ; {}
+0F3F: F0 9E           LD      A,($9E)             ; 
 0F41: 5F              LD      E,A                 
 0F42: 16 00           LD      D,$00               
 0F44: 21 24 0F        LD      HL,$0F24            
 0F47: 19              ADD     HL,DE               
-0F48: F0 98           LD      A,($98)             ; {}
+0F48: F0 98           LD      A,($98)             ; 
 0F4A: 86              ADD     A,(HL)              
 0F4B: EA 40 C1        LD      ($C140),A           
 0F4E: 21 28 0F        LD      HL,$0F28            
@@ -2007,11 +2007,11 @@ SwitchBankSave:
 0FC5: 21 80 C4        LD      HL,$C480            
 0FC8: 19              ADD     HL,DE               
 0FC9: 36 03           LD      (HL),$03            
-0FCB: F0 F9           LD      A,($F9)             ; {}
+0FCB: F0 F9           LD      A,($F9)             ; 
 0FCD: A7              AND     A                   
 0FCE: 20 06           JR      NZ,$FD6             ; {}
 0FD0: 3E 09           LD      A,$09               
-0FD2: E0 F2           LDFF00  ($F2),A             
+0FD2: E0 F2           LD      ($FF00+$F2),A       
 0FD4: 18 05           JR      $FDB                ; {}
 0FD6: 21 10 C3        LD      HL,$C310            
 0FD9: 19              ADD     HL,DE               
@@ -2025,19 +2025,19 @@ SwitchBankSave:
 0FE5: 21 20 C3        LD      HL,$C320            
 0FE8: 19              ADD     HL,DE               
 0FE9: 72              LD      (HL),D              
-0FEA: F0 9E           LD      A,($9E)             ; {}
+0FEA: F0 9E           LD      A,($9E)             ; 
 0FEC: 4F              LD      C,A                 
 0FED: 42              LD      B,D                 
 0FEE: 21 6E 0F        LD      HL,$0F6E            
 0FF1: 09              ADD     HL,BC               
-0FF2: F0 98           LD      A,($98)             ; {}
+0FF2: F0 98           LD      A,($98)             ; 
 0FF4: 86              ADD     A,(HL)              
 0FF5: 21 00 C2        LD      HL,$C200            
 0FF8: 19              ADD     HL,DE               
 0FF9: 77              LD      (HL),A              
 0FFA: 21 72 0F        LD      HL,$0F72            
 0FFD: 09              ADD     HL,BC               
-0FFE: F0 99           LD      A,($99)             ; {}
+0FFE: F0 99           LD      A,($99)             ; 
 1000: 86              ADD     A,(HL)              
 1001: 21 10 C2        LD      HL,$C210            
 1004: 19              ADD     HL,DE               
@@ -2059,7 +2059,7 @@ SwitchBankSave:
 101D: 36 28           LD      (HL),$28            
 101F: 0E 04           LD      C,$04               
 1021: 06 00           LD      B,$00               
-1023: F0 CB           LD      A,($CB)             ; {}
+1023: F0 CB           LD      A,($CB)             ; 
 1025: CB 3F           SRL     A                   
 1027: 30 01           JR      NC,$102A            ; {}
 1029: 04              INC     B                   
@@ -2068,7 +2068,7 @@ SwitchBankSave:
 102D: 78              LD      A,B                 
 102E: FE 02           CP      $02                 
 1030: 38 26           JR      C,$1058             ; {}
-1032: F0 CB           LD      A,($CB)             ; {}
+1032: F0 CB           LD      A,($CB)             ; 
 1034: E6 03           AND     $03                 
 1036: 4F              LD      C,A                 
 1037: 06 00           LD      B,$00               
@@ -2078,7 +2078,7 @@ SwitchBankSave:
 103E: 21 40 C2        LD      HL,$C240            
 1041: 19              ADD     HL,DE               
 1042: 77              LD      (HL),A              
-1043: F0 CB           LD      A,($CB)             ; {}
+1043: F0 CB           LD      A,($CB)             ; 
 1045: CB 3F           SRL     A                   
 1047: CB 3F           SRL     A                   
 1049: E6 03           AND     $03                 
@@ -2104,7 +2104,7 @@ SwitchBankSave:
 1064: 00              NOP                         
 1065: 00              NOP                         
 1066: 00              NOP                         
-1067: E0 20           LDFF00  ($20),A             
+1067: E0 20           LD      ($FF00+$20),A       
 1069: 30 D0           JR      NC,$103B            ; {}
 106B: 00              NOP                         
 106C: 00              NOP                         
@@ -2154,10 +2154,10 @@ SwitchBankSave:
 10BA: AF              XOR     A                   
 10BB: 18 06           JR      $10C3               ; {}
 10BD: 3E 0A           LD      A,$0A               
-10BF: E0 F4           LDFF00  ($F4),A             
+10BF: E0 F4           LD      ($FF00+$F4),A       
 10C1: 3E 06           LD      A,$06               
 10C3: EA C0 C1        LD      ($C1C0),A           
-10C6: F0 9E           LD      A,($9E)             ; {}
+10C6: F0 9E           LD      A,($9E)             ; 
 10C8: 4F              LD      C,A                 
 10C9: 06 00           LD      B,$00               
 10CB: FA 7C D4        LD      A,($D47C)           
@@ -2184,24 +2184,24 @@ SwitchBankSave:
 10EF: 3E 0C           LD      A,$0C               
 10F1: EA 9B C1        LD      ($C19B),A           
 10F4: C5              PUSH    BC                  
-10F5: F0 9E           LD      A,($9E)             ; {}
+10F5: F0 9E           LD      A,($9E)             ; 
 10F7: 4F              LD      C,A                 
 10F8: 06 00           LD      B,$00               
 10FA: 21 59 10        LD      HL,$1059            
 10FD: 09              ADD     HL,BC               
-10FE: F0 98           LD      A,($98)             ; {}
+10FE: F0 98           LD      A,($98)             ; 
 1100: 86              ADD     A,(HL)              
 1101: 21 00 C2        LD      HL,$C200            
 1104: 19              ADD     HL,DE               
 1105: 77              LD      (HL),A              
 1106: 21 5D 10        LD      HL,$105D            
 1109: 09              ADD     HL,BC               
-110A: F0 99           LD      A,($99)             ; {}
+110A: F0 99           LD      A,($99)             ; 
 110C: 86              ADD     A,(HL)              
 110D: 21 10 C2        LD      HL,$C210            
 1110: 19              ADD     HL,DE               
 1111: 77              LD      (HL),A              
-1112: F0 A2           LD      A,($A2)             ; {}
+1112: F0 A2           LD      A,($A2)             ; 
 1114: 3C              INC     A                   
 1115: 21 10 C3        LD      HL,$C310            
 1118: 19              ADD     HL,DE               
@@ -2218,7 +2218,7 @@ SwitchBankSave:
 1129: 21 50 C2        LD      HL,$C250            
 112C: 19              ADD     HL,DE               
 112D: 77              LD      (HL),A              
-112E: F0 9E           LD      A,($9E)             ; {}
+112E: F0 9E           LD      A,($9E)             ; 
 1130: 21 B0 C3        LD      HL,$C3B0            
 1133: 19              ADD     HL,DE               
 1134: 77              LD      (HL),A              
@@ -2248,7 +2248,7 @@ SwitchBankSave:
 1156: FA 4B DB        LD      A,($DB4B)           
 1159: A7              AND     A                   
 115A: 28 0F           JR      Z,$116B             ; {}
-115C: F0 A2           LD      A,($A2)             ; {}
+115C: F0 A2           LD      A,($A2)             ; 
 115E: A7              AND     A                   
 115F: C0              RET     NZ                  
 1160: 3E 02           LD      A,$02               
@@ -2263,7 +2263,7 @@ SwitchBankSave:
 1174: CD 01 3C        CALL    $3C01               ; {}
 1177: D8              RET     C                   
 1178: 3E 05           LD      A,$05               
-117A: E0 F2           LDFF00  ($F2),A             
+117A: E0 F2           LD      ($FF00+$F2),A       
 117C: 3E 0E           LD      A,$0E               
 117E: EA 9B C1        LD      ($C19B),A           
 1181: FA 4C DB        LD      A,($DB4C)           
@@ -2282,23 +2282,23 @@ SwitchBankSave:
 119A: 20 02           JR      NZ,$119E            ; {}
 119C: 36 00           LD      (HL),$00            
 119E: C5              PUSH    BC                  
-119F: F0 9E           LD      A,($9E)             ; {}
+119F: F0 9E           LD      A,($9E)             ; 
 11A1: 4F              LD      C,A                 
 11A2: 21 49 11        LD      HL,$1149            
 11A5: 09              ADD     HL,BC               
-11A6: F0 98           LD      A,($98)             ; {}
+11A6: F0 98           LD      A,($98)             ; 
 11A8: 86              ADD     A,(HL)              
 11A9: 21 00 C2        LD      HL,$C200            
 11AC: 19              ADD     HL,DE               
 11AD: 77              LD      (HL),A              
 11AE: 21 4D 11        LD      HL,$114D            
 11B1: 09              ADD     HL,BC               
-11B2: F0 99           LD      A,($99)             ; {}
+11B2: F0 99           LD      A,($99)             ; 
 11B4: 86              ADD     A,(HL)              
 11B5: 21 10 C2        LD      HL,$C210            
 11B8: 19              ADD     HL,DE               
 11B9: 77              LD      (HL),A              
-11BA: F0 A2           LD      A,($A2)             ; {}
+11BA: F0 A2           LD      A,($A2)             ; 
 11BC: 21 10 C3        LD      HL,$C310            
 11BF: 19              ADD     HL,DE               
 11C0: 77              LD      (HL),A              
@@ -2327,40 +2327,40 @@ SwitchBankSave:
 11E2: EA 52 C1        LD      ($C152),A           
 11E5: EA 53 C1        LD      ($C153),A           
 11E8: 3E 0D           LD      A,$0D               
-11EA: E0 F2           LDFF00  ($F2),A             
-11EC: F0 F9           LD      A,($F9)             ; {}
+11EA: E0 F2           LD      ($FF00+$F2),A       
+11EC: F0 F9           LD      A,($F9)             ; 
 11EE: A7              AND     A                   
 11EF: 28 1E           JR      Z,$120F             ; {}
 11F1: CD 0F 12        CALL    $120F               ; {}
-11F4: F0 CB           LD      A,($CB)             ; {}
+11F4: F0 CB           LD      A,($CB)             ; 
 11F6: E6 03           AND     $03                 
 11F8: 3E EA           LD      A,$EA               
 11FA: 28 02           JR      Z,$11FE             ; {}
 11FC: 3E E8           LD      A,$E8               
-11FE: E0 9B           LDFF00  ($9B),A             
+11FE: E0 9B           LD      ($FF00+$9B),A       
 1200: AF              XOR     A                   
-1201: E0 A3           LDFF00  ($A3),A             
+1201: E0 A3           LD      ($FF00+$A3),A       
 1203: CD D6 20        CALL    $20D6               ; {}
 1206: 3E 02           LD      A,$02               
 1208: CD B9 07        CALL    $07B9               ; {code.SwitchBank}
 120B: CD B1 6F        CALL    $6FB1               
 120E: C9              RET                         
 120F: 3E 20           LD      A,$20               
-1211: E0 A3           LDFF00  ($A3),A             
+1211: E0 A3           LD      ($FF00+$A3),A       
 1213: FA 4A C1        LD      A,($C14A)           
 1216: A7              AND     A                   
 1217: C8              RET     Z                   
-1218: F0 9E           LD      A,($9E)             ; {}
+1218: F0 9E           LD      A,($9E)             ; 
 121A: 5F              LD      E,A                 
 121B: 50              LD      D,B                 
 121C: 21 C9 11        LD      HL,$11C9            
 121F: 19              ADD     HL,DE               
 1220: 7E              LD      A,(HL)              
-1221: E0 9A           LDFF00  ($9A),A             
+1221: E0 9A           LD      ($FF00+$9A),A       
 1223: 21 CD 11        LD      HL,$11CD            
 1226: 19              ADD     HL,DE               
 1227: 7E              LD      A,(HL)              
-1228: E0 9B           LDFF00  ($9B),A             
+1228: E0 9B           LD      ($FF00+$9B),A       
 122A: C9              RET                         
 122B: 02              LD      (BC),A              
 122C: 14              INC     D                   
@@ -2386,7 +2386,7 @@ SwitchBankSave:
 1253: 21 2B 12        LD      HL,$122B            
 1256: 19              ADD     HL,DE               
 1257: 7E              LD      A,(HL)              
-1258: E0 F4           LDFF00  ($F4),A             
+1258: E0 F4           LD      ($FF00+$F4),A       
 125A: CD 83 12        CALL    $1283               ; {}
 125D: FA 46 C1        LD      A,($C146)           
 1260: A7              AND     A                   
@@ -2407,7 +2407,7 @@ SwitchBankSave:
 127E: AF              XOR     A                   
 127F: EA 9B C1        LD      ($C19B),A           
 1282: C9              RET                         
-1283: F0 CB           LD      A,($CB)             ; {}
+1283: F0 CB           LD      A,($CB)             ; 
 1285: E6 0F           AND     $0F                 
 1287: 5F              LD      E,A                 
 1288: 16 00           LD      D,$00               
@@ -2416,7 +2416,7 @@ SwitchBankSave:
 128E: 7E              LD      A,(HL)              
 128F: FE 0F           CP      $0F                 
 1291: 28 02           JR      Z,$1295             ; {}
-1293: E0 9E           LDFF00  ($9E),A             
+1293: E0 9E           LD      ($FF00+$9E),A       
 1295: C9              RET                         
 1296: 16 FA           LD      D,$FA               
 1298: 08 08 16        LD      ($1608),SP          ; {}
@@ -2445,25 +2445,25 @@ SwitchBankSave:
 12CD: FA 36 C1        LD      A,($C136)           
 12D0: C6 04           ADD     $04                 
 12D2: 18 02           JR      $12D6               ; {}
-12D4: F0 9E           LD      A,($9E)             ; {}
+12D4: F0 9E           LD      A,($9E)             ; 
 12D6: 5F              LD      E,A                 
 12D7: 16 00           LD      D,$00               
 12D9: 21 96 12        LD      HL,$1296            
 12DC: 19              ADD     HL,DE               
-12DD: F0 98           LD      A,($98)             ; {}
+12DD: F0 98           LD      A,($98)             ; 
 12DF: 86              ADD     A,(HL)              
 12E0: D6 08           SUB     $08                 
 12E2: E6 F0           AND     $F0                 
-12E4: E0 CE           LDFF00  ($CE),A             
+12E4: E0 CE           LD      ($FF00+$CE),A       
 12E6: CB 37           SWAP    A                   
 12E8: 4F              LD      C,A                 
 12E9: 21 A2 12        LD      HL,$12A2            
 12EC: 19              ADD     HL,DE               
-12ED: F0 99           LD      A,($99)             ; {}
+12ED: F0 99           LD      A,($99)             ; 
 12EF: 86              ADD     A,(HL)              
 12F0: D6 10           SUB     $10                 
 12F2: E6 F0           AND     $F0                 
-12F4: E0 CD           LDFF00  ($CD),A             
+12F4: E0 CD           LD      ($FF00+$CD),A       
 12F6: B1              OR      C                   
 12F7: 5F              LD      E,A                 
 12F8: 21 11 D7        LD      HL,$D711            
@@ -2473,7 +2473,7 @@ SwitchBankSave:
 12FF: C0              RET     NZ                  
 1300: D5              PUSH    DE                  
 1301: 7E              LD      A,(HL)              
-1302: E0 AF           LDFF00  ($AF),A             
+1302: E0 AF           LD      ($FF00+$AF),A       
 1304: 5F              LD      E,A                 
 1305: FA A5 DB        LD      A,($DBA5)           
 1308: 57              LD      D,A                 
@@ -2490,7 +2490,7 @@ SwitchBankSave:
 1321: 0E 00           LD      C,$00               
 1323: FA A5 DB        LD      A,($DBA5)           
 1326: A7              AND     A                   
-1327: F0 AF           LD      A,($AF)             ; {}
+1327: F0 AF           LD      A,($AF)             ; 
 1329: 28 05           JR      Z,$1330             ; {}
 132B: FE DD           CP      $DD                 
 132D: 28 0F           JR      Z,$133E             ; {}
@@ -2504,7 +2504,7 @@ SwitchBankSave:
 133B: C0              RET     NZ                  
 133C: 0E FF           LD      C,$FF               
 133E: 79              LD      A,C                 
-133F: E0 F1           LDFF00  ($F1),A             
+133F: E0 F1           LD      ($FF00+$F1),A       
 1341: CD A6 20        CALL    $20A6               ; {}
 1344: FA 4A C1        LD      A,($C14A)           
 1347: A7              AND     A                   
@@ -2523,17 +2523,17 @@ SwitchBankSave:
 1362: EA 9B C1        LD      ($C19B),A           
 1365: 21 00 C2        LD      HL,$C200            
 1368: 19              ADD     HL,DE               
-1369: F0 CE           LD      A,($CE)             ; {}
+1369: F0 CE           LD      A,($CE)             ; 
 136B: C6 08           ADD     $08                 
 136D: 77              LD      (HL),A              
 136E: 21 10 C2        LD      HL,$C210            
 1371: 19              ADD     HL,DE               
-1372: F0 CD           LD      A,($CD)             ; {}
+1372: F0 CD           LD      A,($CD)             ; 
 1374: C6 10           ADD     $10                 
 1376: 77              LD      (HL),A              
 1377: 21 B0 C3        LD      HL,$C3B0            
 137A: 19              ADD     HL,DE               
-137B: F0 F1           LD      A,($F1)             ; {}
+137B: F0 F1           LD      A,($F1)             ; 
 137D: 77              LD      (HL),A              
 137E: D5              PUSH    DE                  
 137F: C1              POP     BC                  
@@ -2541,7 +2541,7 @@ SwitchBankSave:
 1383: CD ED 27        CALL    $27ED               ; {}
 1386: E6 07           AND     $07                 
 1388: C0              RET     NZ                  
-1389: F0 AF           LD      A,($AF)             ; {}
+1389: F0 AF           LD      A,($AF)             ; 
 138B: FE D3           CP      $D3                 
 138D: C8              RET     Z                   
 138E: CD ED 27        CALL    $27ED               ; {}
@@ -2553,12 +2553,12 @@ SwitchBankSave:
 139B: D8              RET     C                   
 139C: 21 00 C2        LD      HL,$C200            
 139F: 19              ADD     HL,DE               
-13A0: F0 CE           LD      A,($CE)             ; {}
+13A0: F0 CE           LD      A,($CE)             ; 
 13A2: C6 08           ADD     $08                 
 13A4: 77              LD      (HL),A              
 13A5: 21 10 C2        LD      HL,$C210            
 13A8: 19              ADD     HL,DE               
-13A9: F0 CD           LD      A,($CD)             ; {}
+13A9: F0 CD           LD      A,($CD)             ; 
 13AB: C6 10           ADD     $10                 
 13AD: 77              LD      (HL),A              
 13AE: 21 50 C4        LD      HL,$C450            
@@ -2581,19 +2581,19 @@ SwitchBankSave:
 13CA: FA 6D C1        LD      A,($C16D)           
 13CD: A7              AND     A                   
 13CE: C8              RET     Z                   
-13CF: F0 9E           LD      A,($9E)             ; {}
+13CF: F0 9E           LD      A,($9E)             ; 
 13D1: 5F              LD      E,A                 
 13D2: 16 00           LD      D,$00               
 13D4: 21 C1 13        LD      HL,$13C1            
 13D7: 19              ADD     HL,DE               
-13D8: F0 98           LD      A,($98)             ; {}
+13D8: F0 98           LD      A,($98)             ; 
 13DA: 86              ADD     A,(HL)              
-13DB: E0 D7           LDFF00  ($D7),A             
+13DB: E0 D7           LD      ($FF00+$D7),A       
 13DD: 21 C5 13        LD      HL,$13C5            
 13E0: 19              ADD     HL,DE               
-13E1: F0 99           LD      A,($99)             ; {}
+13E1: F0 99           LD      A,($99)             ; 
 13E3: 86              ADD     A,(HL)              
-13E4: E0 D8           LDFF00  ($D8),A             
+13E4: E0 D8           LD      ($FF00+$D8),A       
 13E6: 3E 04           LD      A,$04               
 13E8: EA 02 C5        LD      ($C502),A           
 13EB: CD A1 09        CALL    $09A1               ; {}
@@ -2604,30 +2604,30 @@ SwitchBankSave:
 13F6: FE 90           CP      $90                 
 13F8: 28 05           JR      Z,$13FF             ; {}
 13FA: 3E 07           LD      A,$07               
-13FC: E0 F2           LDFF00  ($F2),A             
+13FC: E0 F2           LD      ($FF00+$F2),A       
 13FE: C9              RET                         
 13FF: 3E 17           LD      A,$17               
-1401: E0 F4           LDFF00  ($F4),A             
+1401: E0 F4           LD      ($FF00+$F4),A       
 1403: C9              RET                         
 1404: 20 E0           JR      NZ,$13E6            ; {}
 1406: 00              NOP                         
 1407: 00              NOP                         
 1408: 00              NOP                         
 1409: 00              NOP                         
-140A: E0 20           LDFF00  ($20),A             
-140C: F0 F9           LD      A,($F9)             ; {}
+140A: E0 20           LD      ($FF00+$20),A       
+140C: F0 F9           LD      A,($F9)             ; 
 140E: A7              AND     A                   
 140F: 28 09           JR      Z,$141A             ; {}
-1411: F0 9C           LD      A,($9C)             ; {}
+1411: F0 9C           LD      A,($9C)             ; 
 1413: A7              AND     A                   
 1414: C0              RET     NZ                  
-1415: F0 9E           LD      A,($9E)             ; {}
+1415: F0 9E           LD      A,($9E)             ; 
 1417: E6 02           AND     $02                 
 1419: C0              RET     NZ                  
 141A: FA 4A C1        LD      A,($C14A)           
 141D: A7              AND     A                   
 141E: C0              RET     NZ                  
-141F: F0 A2           LD      A,($A2)             ; {}
+141F: F0 A2           LD      A,($A2)             ; 
 1421: 21 46 C1        LD      HL,$C146            
 1424: B6              OR      (HL)                
 1425: C0              RET     NZ                  
@@ -2644,21 +2644,21 @@ SwitchBankSave:
 143E: AF              XOR     A                   
 143F: EA 21 C1        LD      ($C121),A           
 1442: EA 22 C1        LD      ($C122),A           
-1445: F0 9E           LD      A,($9E)             ; {}
+1445: F0 9E           LD      A,($9E)             ; 
 1447: 5F              LD      E,A                 
 1448: 16 00           LD      D,$00               
 144A: 21 04 14        LD      HL,$1404            
 144D: 19              ADD     HL,DE               
 144E: 7E              LD      A,(HL)              
-144F: E0 9A           LDFF00  ($9A),A             
+144F: E0 9A           LD      ($FF00+$9A),A       
 1451: 21 08 14        LD      HL,$1408            
 1454: 19              ADD     HL,DE               
 1455: 7E              LD      A,(HL)              
-1456: E0 9B           LDFF00  ($9B),A             
+1456: E0 9B           LD      ($FF00+$9B),A       
 1458: AF              XOR     A                   
 1459: EA AC C1        LD      ($C1AC),A           
 145C: C9              RET                         
-145D: F0 E7           LD      A,($E7)             ; {}
+145D: F0 E7           LD      A,($E7)             ; 
 145F: E6 07           AND     $07                 
 1461: 21 A2 FF        LD      HL,$FFA2            
 1464: B6              OR      (HL)                
@@ -2667,27 +2667,27 @@ SwitchBankSave:
 1469: 21 46 C1        LD      HL,$C146            
 146C: B6              OR      (HL)                
 146D: C0              RET     NZ                  
-146E: F0 98           LD      A,($98)             ; {}
-1470: E0 D7           LDFF00  ($D7),A             
+146E: F0 98           LD      A,($98)             ; 
+1470: E0 D7           LD      ($FF00+$D7),A       
 1472: FA 81 C1        LD      A,($C181)           
 1475: FE 05           CP      $05                 
 1477: 28 0F           JR      Z,$1488             ; {}
 1479: 3E 07           LD      A,$07               
-147B: E0 F4           LDFF00  ($F4),A             
-147D: F0 99           LD      A,($99)             ; {}
+147B: E0 F4           LD      ($FF00+$F4),A       
+147D: F0 99           LD      A,($99)             ; 
 147F: C6 06           ADD     $06                 
-1481: E0 D8           LDFF00  ($D8),A             
+1481: E0 D8           LD      ($FF00+$D8),A       
 1483: 3E 0B           LD      A,$0B               
 1485: C3 53 09        JP      $0953               ; {}
-1488: F0 99           LD      A,($99)             ; {}
-148A: E0 D8           LDFF00  ($D8),A             
+1488: F0 99           LD      A,($99)             ; 
+148A: E0 D8           LD      ($FF00+$D8),A       
 148C: 3E 0E           LD      A,$0E               
-148E: E0 F2           LDFF00  ($F2),A             
+148E: E0 F2           LD      ($FF00+$F2),A       
 1490: 3E 0C           LD      A,$0C               
 1492: C3 53 09        JP      $0953               ; {}
 1495: AF              XOR     A                   
-1496: E0 9A           LDFF00  ($9A),A             
-1498: E0 9B           LDFF00  ($9B),A             
+1496: E0 9A           LD      ($FF00+$9A),A       
+1498: E0 9B           LD      ($FF00+$9B),A       
 149A: C9              RET                         
 149B: CD FA 77        CALL    $77FA               
 149E: FA 1C C1        LD      A,($C11C)           
@@ -2700,15 +2700,15 @@ SwitchBankSave:
 14AD: FA 45 C1        LD      A,($C145)           
 14B0: 21 3B C1        LD      HL,$C13B            
 14B3: 86              ADD     A,(HL)              
-14B4: E0 D7           LDFF00  ($D7),A             
-14B6: F0 98           LD      A,($98)             ; {}
-14B8: E0 D8           LDFF00  ($D8),A             
+14B4: E0 D7           LD      ($FF00+$D7),A       
+14B6: F0 98           LD      A,($98)             ; 
+14B8: E0 D8           LD      ($FF00+$D8),A       
 14BA: 21 DA FF        LD      HL,$FFDA            
 14BD: 36 00           LD      (HL),$00            
 14BF: FA 22 C1        LD      A,($C122)           
 14C2: FE 28           CP      $28                 
 14C4: 38 07           JR      C,$14CD             ; {}
-14C6: F0 E7           LD      A,($E7)             ; {}
+14C6: F0 E7           LD      A,($E7)             ; 
 14C8: 17              RLA                         
 14C9: 17              RLA                         
 14CA: E6 10           AND     $10                 
@@ -2718,8 +2718,8 @@ SwitchBankSave:
 14D1: FA 3A C1        LD      A,($C13A)           
 14D4: 6F              LD      L,A                 
 14D5: FA 36 C1        LD      A,($C136)           
-14D8: E0 D9           LDFF00  ($D9),A             
-14DA: F0 99           LD      A,($99)             ; {}
+14D8: E0 D9           LD      ($FF00+$D9),A       
+14DA: F0 99           LD      A,($99)             ; 
 14DC: FE 88           CP      $88                 
 14DE: D0              RET     NC                  
 14DF: C3 40 15        JP      $1540               ; {}
@@ -2743,7 +2743,7 @@ SwitchBankSave:
 150A: CD EB 10        CALL    $10EB               ; {}
 150D: 38 0C           JR      C,$151B             ; {}
 150F: 3E 0D           LD      A,$0D               
-1511: E0 F4           LDFF00  ($F4),A             
+1511: E0 F4           LD      ($FF00+$F4),A       
 1513: 3E 02           LD      A,$02               
 1515: CD B9 07        CALL    $07B9               ; {code.SwitchBank}
 1518: CD C6 51        CALL    $51C6               
@@ -2778,16 +2778,16 @@ SwitchBankSave:
 153D: 40              LD      B,B                 
 153E: 20 20           JR      NZ,$1560            ; {}
 1540: E5              PUSH    HL                  
-1541: F0 D7           LD      A,($D7)             ; {}
+1541: F0 D7           LD      A,($D7)             ; 
 1543: 84              ADD     A,H                 
 1544: 02              LD      (BC),A              
 1545: 03              INC     BC                  
-1546: F0 D8           LD      A,($D8)             ; {}
+1546: F0 D8           LD      A,($D8)             ; 
 1548: 85              ADD     A,L                 
 1549: 02              LD      (BC),A              
 154A: 03              INC     BC                  
 154B: 21 20 15        LD      HL,$1520            
-154E: F0 D9           LD      A,($D9)             ; {}
+154E: F0 D9           LD      A,($D9)             ; 
 1550: CB 27           SLA     A                   
 1552: 5F              LD      E,A                 
 1553: 16 00           LD      D,$00               
@@ -2809,11 +2809,11 @@ SwitchBankSave:
 156B: 02              LD      (BC),A              
 156C: 03              INC     BC                  
 156D: E1              POP     HL                  
-156E: F0 D7           LD      A,($D7)             ; {}
+156E: F0 D7           LD      A,($D7)             ; 
 1570: 84              ADD     A,H                 
 1571: 02              LD      (BC),A              
 1572: 03              INC     BC                  
-1573: F0 D8           LD      A,($D8)             ; {}
+1573: F0 D8           LD      A,($D8)             ; 
 1575: 85              ADD     A,L                 
 1576: C6 08           ADD     $08                 
 1578: 02              LD      (BC),A              
@@ -2830,21 +2830,21 @@ SwitchBankSave:
 1589: B6              OR      (HL)                
 158A: 02              LD      (BC),A              
 158B: C9              RET                         
-158C: 10 F0           STOP    $F0                 
+158C: 10 F0           ;;STOP    $F0                 
 158E: 08 08 0C        LD      ($0C08),SP          ; {}
 1591: 0C              INC     C                   
-1592: F0 10           LD      A,($10)             ; {}
-1594: F0 9E           LD      A,($9E)             ; {}
+1592: F0 10           LD      A,($10)             ; 
+1594: F0 9E           LD      A,($9E)             ; 
 1596: 5F              LD      E,A                 
 1597: 16 00           LD      D,$00               
 1599: 21 8C 15        LD      HL,$158C            
 159C: 19              ADD     HL,DE               
-159D: F0 98           LD      A,($98)             ; {}
+159D: F0 98           LD      A,($98)             ; 
 159F: 86              ADD     A,(HL)              
 15A0: EA 79 C1        LD      ($C179),A           
 15A3: 21 90 15        LD      HL,$1590            
 15A6: 19              ADD     HL,DE               
-15A7: F0 99           LD      A,($99)             ; {}
+15A7: F0 99           LD      A,($99)             ; 
 15A9: 86              ADD     A,(HL)              
 15AA: EA 7A C1        LD      ($C17A),A           
 15AD: 3E 02           LD      A,$02               
@@ -2866,9 +2866,9 @@ SwitchBankSave:
 15D1: FE 04           CP      $04                 
 15D3: C2 2D 17        JP      NZ,$172D            ; {}
 15D6: AF              XOR     A                   
-15D7: E0 96           LDFF00  ($96),A             
-15D9: E0 97           LDFF00  ($97),A             
-15DB: E0 B4           LDFF00  ($B4),A             
+15D7: E0 96           LD      ($FF00+$96),A       
+15D9: E0 97           LD      ($FF00+$97),A       
+15DB: E0 B4           LD      ($FF00+$B4),A       
 15DD: 1E 10           LD      E,$10               
 15DF: 21 80 C2        LD      HL,$C280            
 15E2: 22              LD      (HLI),A             
@@ -2889,27 +2889,27 @@ SwitchBankSave:
 15FE: 3E 01           LD      A,$01               
 1600: EA 7E D4        LD      ($D47E),A           
 1603: AF              XOR     A                   
-1604: E0 9D           LDFF00  ($9D),A             
-1606: F0 F9           LD      A,($F9)             ; {}
-1608: E0 E4           LDFF00  ($E4),A             
+1604: E0 9D           LD      ($FF00+$9D),A       
+1606: F0 F9           LD      A,($F9)             ; 
+1608: E0 E4           LD      ($FF00+$E4),A       
 160A: 3E 0B           LD      A,$0B               
 160C: EA 95 DB        LD      ($DB95),A           
 160F: AF              XOR     A                   
 1610: EA 96 DB        LD      ($DB96),A           
 1613: EA CB C3        LD      ($C3CB),A           
-1616: E0 F9           LDFF00  ($F9),A             
+1616: E0 F9           LD      ($FF00+$F9),A       
 1618: 21 01 D4        LD      HL,$D401            
 161B: FA A5 DB        LD      A,($DBA5)           
-161E: E0 E6           LDFF00  ($E6),A             
+161E: E0 E6           LD      ($FF00+$E6),A       
 1620: A7              AND     A                   
 1621: 20 2A           JR      NZ,$164D            ; {}
 1623: 21 16 D4        LD      HL,$D416            
 1626: 0E 00           LD      C,$00               
-1628: F0 98           LD      A,($98)             ; {}
+1628: F0 98           LD      A,($98)             ; 
 162A: CB 37           SWAP    A                   
 162C: E6 0F           AND     $0F                 
 162E: 5F              LD      E,A                 
-162F: F0 99           LD      A,($99)             ; {}
+162F: F0 99           LD      A,($99)             ; 
 1631: D6 08           SUB     $08                 
 1633: E6 F0           AND     $F0                 
 1635: B3              OR      E                   
@@ -2933,19 +2933,19 @@ SwitchBankSave:
 164F: EA A5 DB        LD      ($DBA5),A           
 1652: FE 02           CP      $02                 
 1654: 20 0A           JR      NZ,$1660            ; {}
-1656: E0 F9           LDFF00  ($F9),A             
+1656: E0 F9           LD      ($FF00+$F9),A       
 1658: 3D              DEC     A                   
 1659: EA A5 DB        LD      ($DBA5),A           
 165C: 3E 01           LD      A,$01               
-165E: E0 9C           LDFF00  ($9C),A             
+165E: E0 9C           LD      ($FF00+$9C),A       
 1660: 2A              LD      A,(HLI)             
-1661: E0 F7           LDFF00  ($F7),A             
+1661: E0 F7           LD      ($FF00+$F7),A       
 1663: FA A5 DB        LD      A,($DBA5)           
 1666: A7              AND     A                   
 1667: 2A              LD      A,(HLI)             
-1668: E0 F6           LDFF00  ($F6),A             
+1668: E0 F6           LD      ($FF00+$F6),A       
 166A: 20 0B           JR      NZ,$1677            ; {}
-166C: F0 E6           LD      A,($E6)             ; {}
+166C: F0 E6           LD      A,($E6)             ; 
 166E: A7              AND     A                   
 166F: 28 04           JR      Z,$1675             ; {}
 1671: AF              XOR     A                   
@@ -2955,7 +2955,7 @@ SwitchBankSave:
 1678: 3E 14           LD      A,$14               
 167A: CD B9 07        CALL    $07B9               ; {code.SwitchBank}
 167D: E5              PUSH    HL                  
-167E: F0 F7           LD      A,($F7)             ; {}
+167E: F0 F7           LD      A,($F7)             ; 
 1680: CB 37           SWAP    A                   
 1682: 5F              LD      E,A                 
 1683: 16 00           LD      D,$00               
@@ -2965,7 +2965,7 @@ SwitchBankSave:
 168B: CB 12           RL      D                   
 168D: 21 00 42        LD      HL,$4200            
 1690: 19              ADD     HL,DE               
-1691: F0 F7           LD      A,($F7)             ; {}
+1691: F0 F7           LD      A,($F7)             ; 
 1693: FE 06           CP      $06                 
 1695: 20 0A           JR      NZ,$16A1            ; {}
 1697: FA 6B DB        LD      A,($DB6B)           
@@ -2982,19 +2982,19 @@ SwitchBankSave:
 16AB: 20 F6           JR      NZ,$16A3            ; {}
 16AD: 7B              LD      A,E                 
 16AE: EA AE DB        LD      ($DBAE),A           
-16B1: F0 E6           LD      A,($E6)             ; {}
+16B1: F0 E6           LD      A,($E6)             ; 
 16B3: A7              AND     A                   
 16B4: 20 1D           JR      NZ,$16D3            ; {}
 16B6: AF              XOR     A                   
 16B7: EA 7C D4        LD      ($D47C),A           
-16BA: F0 F7           LD      A,($F7)             ; {}
+16BA: F0 F7           LD      A,($F7)             ; 
 16BC: FE 0A           CP      $0A                 
 16BE: 30 13           JR      NC,$16D3            ; {}
 16C0: 3E 02           LD      A,$02               
 16C2: CD B9 07        CALL    $07B9               ; {code.SwitchBank}
 16C5: CD 9B 6A        CALL    $6A9B               
 16C8: 3E 30           LD      A,$30               
-16CA: E0 B4           LDFF00  ($B4),A             
+16CA: E0 B4           LD      ($FF00+$B4),A       
 16CC: AF              XOR     A                   
 16CD: EA FB D6        LD      ($D6FB),A           
 16D0: EA F8 D6        LD      ($D6F8),A           
@@ -3004,16 +3004,16 @@ SwitchBankSave:
 16D8: 7E              LD      A,(HL)              
 16D9: EA 9E DB        LD      ($DB9E),A           
 16DC: E1              POP     HL                  
-16DD: F0 F9           LD      A,($F9)             ; {}
+16DD: F0 F9           LD      A,($F9)             ; 
 16DF: A7              AND     A                   
 16E0: 20 4C           JR      NZ,$172E            ; {}
-16E2: F0 E4           LD      A,($E4)             ; {}
+16E2: F0 E4           LD      A,($E4)             ; 
 16E4: A7              AND     A                   
 16E5: 20 46           JR      NZ,$172D            ; {}
 16E7: FA A5 DB        LD      A,($DBA5)           
 16EA: A7              AND     A                   
 16EB: 28 29           JR      Z,$1716             ; {}
-16ED: F0 F7           LD      A,($F7)             ; {}
+16ED: F0 F7           LD      A,($F7)             ; 
 16EF: FE 0A           CP      $0A                 
 16F1: 30 23           JR      NC,$1716            ; {}
 16F3: 5F              LD      E,A                 
@@ -3028,7 +3028,7 @@ SwitchBankSave:
 1702: EA 00 21        LD      ($2100),A           ; {}
 1705: CD 16 17        CALL    $1716               ; {}
 1708: D5              PUSH    DE                  
-1709: F0 F7           LD      A,($F7)             ; {}
+1709: F0 F7           LD      A,($F7)             ; 
 170B: 5F              LD      E,A                 
 170C: 16 00           LD      D,$00               
 170E: 21 12 54        LD      HL,$5412            
@@ -3038,21 +3038,21 @@ SwitchBankSave:
 1714: 12              LD      (DE),A              
 1715: C9              RET                         
 1716: 3E 00           LD      A,$00               
-1718: E0 D7           LDFF00  ($D7),A             
+1718: E0 D7           LD      ($FF00+$D7),A       
 171A: 11 5F DB        LD      DE,$DB5F            
 171D: 2A              LD      A,(HLI)             
 171E: 12              LD      (DE),A              
 171F: 13              INC     DE                  
-1720: F0 D7           LD      A,($D7)             ; {}
+1720: F0 D7           LD      A,($D7)             ; 
 1722: 3C              INC     A                   
-1723: E0 D7           LDFF00  ($D7),A             
+1723: E0 D7           LD      ($FF00+$D7),A       
 1725: FE 05           CP      $05                 
 1727: 20 F4           JR      NZ,$171D            ; {}
 1729: FA AE DB        LD      A,($DBAE)           
 172C: 12              LD      (DE),A              
 172D: C9              RET                         
 172E: AF              XOR     A                   
-172F: E0 9E           LDFF00  ($9E),A             
+172F: E0 9E           LD      ($FF00+$9E),A       
 1731: C9              RET                         
 1732: CD 0F 78        CALL    $780F               
 1735: FA 74 D4        LD      A,($D474)           
@@ -3095,8 +3095,8 @@ SwitchBankSave:
 1787: 28 2D           JR      Z,$17B6             ; {}
 1789: 34              INC     (HL)                
 178A: AF              XOR     A                   
-178B: E0 D7           LDFF00  ($D7),A             
-178D: F0 D7           LD      A,($D7)             ; {}
+178B: E0 D7           LD      ($FF00+$D7),A       
+178D: F0 D7           LD      A,($D7)             ; 
 178F: FE 03           CP      $03                 
 1791: 28 23           JR      Z,$17B6             ; {}
 1793: 21 97 DB        LD      HL,$DB97            
@@ -3139,8 +3139,8 @@ SwitchBankSave:
 17D3: FE 04           CP      $04                 
 17D5: 28 DF           JR      Z,$17B6             ; {}
 17D7: AF              XOR     A                   
-17D8: E0 D7           LDFF00  ($D7),A             
-17DA: F0 D7           LD      A,($D7)             ; {}
+17D8: E0 D7           LD      ($FF00+$D7),A       
+17DA: F0 D7           LD      A,($D7)             ; 
 17DC: FE 03           CP      $03                 
 17DE: 28 32           JR      Z,$1812             ; {}
 17E0: 21 97 DB        LD      HL,$DB97            
@@ -3151,7 +3151,7 @@ SwitchBankSave:
 17E8: E5              PUSH    HL                  
 17E9: 4F              LD      C,A                 
 17EA: 06 00           LD      B,$00               
-17EC: F0 D7           LD      A,($D7)             ; {}
+17EC: F0 D7           LD      A,($D7)             ; 
 17EE: CB 27           SLA     A                   
 17F0: CB 27           SLA     A                   
 17F2: B0              OR      B                   
@@ -3180,7 +3180,7 @@ SwitchBankSave:
 1814: 02              LD      (BC),A              
 1815: 02              LD      (BC),A              
 1816: 00              NOP                         
-1817: 10 02           STOP    $02                 
+1817: 10 02           ;;STOP    $02                 
 1819: 12              LD      (DE),A              
 181A: 00              NOP                         
 181B: 04              INC     B                   
@@ -3308,8 +3308,8 @@ SwitchBankSave:
 18B7: F2                              
 18B8: F4                              
 18B9: F6 F6           OR      $F6                 
-18BB: F8 FA           LDHL    SP,$FA              
-18BD: E0 E2           LDFF00  ($E2),A             
+18BB: F8 FA           LD      HL,SP+$FA           
+18BD: E0 E2           LD      ($FF00+$E2),A       
 18BF: E4                              
 18C0: E6 E8           AND     $E8                 
 18C2: E8 10           ADD     SP,$10              
@@ -3318,7 +3318,7 @@ SwitchBankSave:
 18C6: 16 18           LD      D,$18               
 18C8: 1C              INC     E                   
 18C9: 12              LD      (DE),A              
-18CA: 10 16           STOP    $16                 
+18CA: 10 16           ;;STOP    $16                 
 18CC: 14              INC     D                   
 18CD: 1C              INC     E                   
 18CE: 18 66           JR      $1936               ; {}
@@ -3559,7 +3559,7 @@ SwitchBankSave:
 19F6: CB 2F           SRA     A                   
 19F8: E6 01           AND     $01                 
 19FA: 57              LD      D,A                 
-19FB: F0 9E           LD      A,($9E)             ; {}
+19FB: F0 9E           LD      A,($9E)             ; 
 19FD: CB 27           SLA     A                   
 19FF: B2              OR      D                   
 1A00: 4F              LD      C,A                 
@@ -3568,15 +3568,15 @@ SwitchBankSave:
 1A06: FA 1C C1        LD      A,($C11C)           
 1A09: FE 01           CP      $01                 
 1A0B: 20 0A           JR      NZ,$1A17            ; {}
-1A0D: F0 9C           LD      A,($9C)             ; {}
+1A0D: F0 9C           LD      A,($9C)             ; 
 1A0F: A7              AND     A                   
 1A10: 28 03           JR      Z,$1A15             ; {}
 1A12: 21 FE 48        LD      HL,$48FE            
 1A15: 18 4F           JR      $1A66               ; {}
-1A17: F0 F9           LD      A,($F9)             ; {}
+1A17: F0 F9           LD      A,($F9)             ; 
 1A19: A7              AND     A                   
 1A1A: 28 0B           JR      Z,$1A27             ; {}
-1A1C: F0 9C           LD      A,($9C)             ; {}
+1A1C: F0 9C           LD      A,($9C)             ; 
 1A1E: FE 02           CP      $02                 
 1A20: 20 05           JR      NZ,$1A27            ; {}
 1A22: 21 06 49        LD      HL,$4906            
@@ -3584,7 +3584,7 @@ SwitchBankSave:
 1A27: FA 5C C1        LD      A,($C15C)           
 1A2A: FE 01           CP      $01                 
 1A2C: 28 35           JR      Z,$1A63             ; {}
-1A2E: F0 B2           LD      A,($B2)             ; {}
+1A2E: F0 B2           LD      A,($B2)             ; 
 1A30: A7              AND     A                   
 1A31: 20 06           JR      NZ,$1A39            ; {}
 1A33: FA 44 C1        LD      A,($C144)           
@@ -3614,7 +3614,7 @@ SwitchBankSave:
 1A63: 21 EE 48        LD      HL,$48EE            
 1A66: 09              ADD     HL,BC               
 1A67: 7E              LD      A,(HL)              
-1A68: E0 9D           LDFF00  ($9D),A             
+1A68: E0 9D           LD      ($FF00+$9D),A       
 1A6A: C9              RET                         
 1A6B: FA 01 D6        LD      A,($D601)           
 1A6E: A7              AND     A                   
@@ -3623,14 +3623,14 @@ SwitchBankSave:
 1A72: EA 00 21        LD      ($2100),A           ; {}
 1A75: 21 00 65        LD      HL,$6500            
 1A78: 11 00 95        LD      DE,$9500            
-1A7B: F0 E7           LD      A,($E7)             ; {}
+1A7B: F0 E7           LD      A,($E7)             ; 
 1A7D: E6 0F           AND     $0F                 
 1A7F: 28 06           JR      Z,$1A87             ; {}
 1A81: FE 08           CP      $08                 
 1A83: C0              RET     NZ                  
 1A84: 2E 40           LD      L,$40               
 1A86: 5D              LD      E,L                 
-1A87: F0 E7           LD      A,($E7)             ; {}
+1A87: F0 E7           LD      A,($E7)             ; 
 1A89: E6 30           AND     $30                 
 1A8B: 4F              LD      C,A                 
 1A8C: 06 00           LD      B,$00               
@@ -3645,8 +3645,8 @@ SwitchBankSave:
 1A9E: C3 C5 28        JP      $28C5               ; {code.CopyHLtoDE}
 1AA1: 20 60           JR      NZ,$1B03            ; {}
 1AA3: A0              AND     B                   
-1AA4: E0 E0           LDFF00  ($E0),A             
-1AA6: E0 A0           LDFF00  ($A0),A             
+1AA4: E0 E0           LD      ($FF00+$E0),A       
+1AA6: E0 A0           LD      ($FF00+$A0),A       
 1AA8: 60              LD      H,B                 
 1AA9: FA 95 DB        LD      A,($DB95)           
 1AAC: FE 09           CP      $09                 
@@ -3656,7 +3656,7 @@ SwitchBankSave:
 1AB4: FA 01 D6        LD      A,($D601)           
 1AB7: A7              AND     A                   
 1AB8: C2 DE 1A        JP      NZ,$1ADE            ; {}
-1ABB: F0 E7           LD      A,($E7)             ; {}
+1ABB: F0 E7           LD      A,($E7)             ; 
 1ABD: E6 0F           AND     $0F                 
 1ABF: FE 04           CP      $04                 
 1AC1: 38 1B           JR      C,$1ADE             ; {}
@@ -3676,7 +3676,7 @@ SwitchBankSave:
 1ADF: FA 95 DB        LD      A,($DB95)           
 1AE2: FE 01           CP      $01                 
 1AE4: 20 06           JR      NZ,$1AEC            ; {}
-1AE6: F0 A5           LD      A,($A5)             ; {}
+1AE6: F0 A5           LD      A,($A5)             ; 
 1AE8: A7              AND     A                   
 1AE9: 20 30           JR      NZ,$1B1B            ; {}
 1AEB: C9              RET                         
@@ -3697,7 +3697,7 @@ SwitchBankSave:
 1B0E: 28 06           JR      Z,$1B16             ; {}
 1B10: CD EE 1D        CALL    $1DEE               ; {}
 1B13: C3 CC 1C        JP      $1CCC               ; {}
-1B16: F0 A5           LD      A,($A5)             ; {}
+1B16: F0 A5           LD      A,($A5)             ; 
 1B18: A7              AND     A                   
 1B19: 28 4B           JR      Z,$1B66             ; {}
 1B1B: FE 01           CP      $01                 
@@ -3730,10 +3730,10 @@ SwitchBankSave:
 1B5E: 3E 17           LD      A,$17               
 1B60: EA 00 21        LD      ($2100),A           ; {}
 1B63: C3 60 40        JP      $4060               
-1B66: F0 A6           LD      A,($A6)             ; {}
+1B66: F0 A6           LD      A,($A6)             ; 
 1B68: 3C              INC     A                   
-1B69: E0 A6           LDFF00  ($A6),A             
-1B6B: F0 A4           LD      A,($A4)             ; {}
+1B69: E0 A6           LD      ($FF00+$A6),A       
+1B6B: F0 A4           LD      A,($A4)             ; 
 1B6D: C7              RST     0X00                
 1B6E: 5A              LD      E,D                 
 1B6F: 1C              INC     E                   
@@ -3747,7 +3747,7 @@ SwitchBankSave:
 1B79: 1B              DEC     DE                  
 1B7A: F5              PUSH    AF                  
 1B7B: 1B              DEC     DE                  
-1B7C: 10 1C           STOP    $1C                 
+1B7C: 10 1C           ;;STOP    $1C                 
 1B7E: 21 1C 30        LD      HL,$301C            
 1B81: 1C              INC     E                   
 1B82: 3F              CCF                         
@@ -3764,7 +3764,7 @@ SwitchBankSave:
 1B8D: 1C              INC     E                   
 1B8E: 52              LD      D,D                 
 1B8F: 1C              INC     E                   
-1B90: F0 A6           LD      A,($A6)             ; {}
+1B90: F0 A6           LD      A,($A6)             ; 
 1B92: E6 07           AND     $07                 
 1B94: C2 5A 1C        JP      NZ,$1C5A            ; {}
 1B97: 3E 01           LD      A,$01               
@@ -3782,7 +3782,7 @@ SwitchBankSave:
 1BB2: 26 73           LD      H,$73               
 1BB4: 18 02           JR      $1BB8               ; {}
 1BB6: 26 6A           LD      H,$6A               
-1BB8: F0 A6           LD      A,($A6)             ; {}
+1BB8: F0 A6           LD      A,($A6)             ; 
 1BBA: E6 0F           AND     $0F                 
 1BBC: C2 5A 1C        JP      NZ,$1C5A            ; {}
 1BBF: CD 43 1C        CALL    $1C43               ; {}
@@ -3795,10 +3795,10 @@ SwitchBankSave:
 1BCA: C0              RET     NZ                  
 1BCB: 80              ADD     A,B                 
 1BCC: 40              LD      B,B                 
-1BCD: F0 A6           LD      A,($A6)             ; {}
+1BCD: F0 A6           LD      A,($A6)             ; 
 1BCF: E6 07           AND     $07                 
 1BD1: C2 5A 1C        JP      NZ,$1C5A            ; {}
-1BD4: F0 A6           LD      A,($A6)             ; {}
+1BD4: F0 A6           LD      A,($A6)             ; 
 1BD6: 1F              RRA                         
 1BD7: 1F              RRA                         
 1BD8: 1F              RRA                         
@@ -3815,10 +3815,10 @@ SwitchBankSave:
 1BEE: C3 CC 1C        JP      $1CCC               ; {}
 1BF1: 26 6E           LD      H,$6E               
 1BF3: 18 C3           JR      $1BB8               ; {}
-1BF5: F0 A6           LD      A,($A6)             ; {}
+1BF5: F0 A6           LD      A,($A6)             ; 
 1BF7: E6 07           AND     $07                 
 1BF9: C2 5A 1C        JP      NZ,$1C5A            ; {}
-1BFC: F0 A6           LD      A,($A6)             ; {}
+1BFC: F0 A6           LD      A,($A6)             ; 
 1BFE: 1F              RRA                         
 1BFF: 1F              RRA                         
 1C00: 1F              RRA                         
@@ -3830,7 +3830,7 @@ SwitchBankSave:
 1C0A: 6E              LD      L,(HL)              
 1C0B: 26 6F           LD      H,$6F               
 1C0D: C3 E5 1B        JP      $1BE5               ; {}
-1C10: F0 A6           LD      A,($A6)             ; {}
+1C10: F0 A6           LD      A,($A6)             ; 
 1C12: 3C              INC     A                   
 1C13: E6 03           AND     $03                 
 1C15: C2 CD 1B        JP      NZ,$1BCD            ; {}
@@ -3838,22 +3838,22 @@ SwitchBankSave:
 1C1B: 11 C0 90        LD      DE,$90C0            
 1C1E: C3 E8 1B        JP      $1BE8               ; {}
 1C21: 26 70           LD      H,$70               
-1C23: F0 A6           LD      A,($A6)             ; {}
+1C23: F0 A6           LD      A,($A6)             ; 
 1C25: E6 07           AND     $07                 
 1C27: C2 5A 1C        JP      NZ,$1C5A            ; {}
 1C2A: CD 43 1C        CALL    $1C43               ; {}
 1C2D: C3 A7 1B        JP      $1BA7               ; {}
 1C30: 26 71           LD      H,$71               
-1C32: F0 A6           LD      A,($A6)             ; {}
+1C32: F0 A6           LD      A,($A6)             ; 
 1C34: E6 03           AND     $03                 
 1C36: C2 5A 1C        JP      NZ,$1C5A            ; {}
 1C39: CD 43 1C        CALL    $1C43               ; {}
 1C3C: C3 A7 1B        JP      $1BA7               ; {}
 1C3F: 26 72           LD      H,$72               
 1C41: 18 EF           JR      $1C32               ; {}
-1C43: F0 A7           LD      A,($A7)             ; {}
+1C43: F0 A7           LD      A,($A7)             ; 
 1C45: C6 40           ADD     $40                 
-1C47: E0 A7           LDFF00  ($A7),A             
+1C47: E0 A7           LD      ($FF00+$A7),A       
 1C49: C9              RET                         
 1C4A: 26 75           LD      H,$75               
 1C4C: 18 E4           JR      $1C32               ; {}
@@ -3863,7 +3863,7 @@ SwitchBankSave:
 1C54: 18 CD           JR      $1C23               ; {}
 1C56: 26 76           LD      H,$76               
 1C58: 18 C9           JR      $1C23               ; {}
-1C5A: F0 9D           LD      A,($9D)             ; {}
+1C5A: F0 9D           LD      A,($9D)             ; 
 1C5C: FE FF           CP      $FF                 
 1C5E: CA CC 1C        JP      Z,$1CCC             ; {}
 1C61: 21 13 18        LD      HL,$1813            
@@ -3927,7 +3927,7 @@ SwitchBankSave:
 1CC8: 22              LD      (HLI),A             
 1CC9: 15              DEC     D                   
 1CCA: 20 FA           JR      NZ,$1CC6            ; {}
-1CCC: F0 9D           LD      A,($9D)             ; {}
+1CCC: F0 9D           LD      A,($9D)             ; 
 1CCE: 3C              INC     A                   
 1CCF: 28 43           JR      Z,$1D14             ; {}
 1CD1: FA C7 DB        LD      A,($DBC7)           
@@ -3946,7 +3946,7 @@ SwitchBankSave:
 1CEB: 22              LD      (HLI),A             
 1CEC: FA 3C C1        LD      A,($C13C)           
 1CEF: 4F              LD      C,A                 
-1CF0: F0 98           LD      A,($98)             ; {}
+1CF0: F0 98           LD      A,($98)             ; 
 1CF2: 81              ADD     A,C                 
 1CF3: 22              LD      (HLI),A             
 1CF4: 3E 00           LD      A,$00               
@@ -3958,7 +3958,7 @@ SwitchBankSave:
 1CFF: 22              LD      (HLI),A             
 1D00: F1              POP     AF                  
 1D01: 22              LD      (HLI),A             
-1D02: F0 98           LD      A,($98)             ; {}
+1D02: F0 98           LD      A,($98)             ; 
 1D04: 81              ADD     A,C                 
 1D05: C6 08           ADD     $08                 
 1D07: 22              LD      (HLI),A             
@@ -4019,7 +4019,7 @@ SwitchBankSave:
 1D7D: 01 40 00        LD      BC,$0040            
 1D80: CD C5 28        CALL    $28C5               ; {code.CopyHLtoDE}
 1D83: AF              XOR     A                   
-1D84: E0 A5           LDFF00  ($A5),A             
+1D84: E0 A5           LD      ($FF00+$A5),A       
 1D86: 3E 0C           LD      A,$0C               
 1D88: EA 00 21        LD      ($2100),A           ; {}
 1D8B: C9              RET                         
@@ -4115,7 +4115,7 @@ SwitchBankSave:
 1E4A: 01 40 00        LD      BC,$0040            
 1E4D: CD C5 28        CALL    $28C5               ; {code.CopyHLtoDE}
 1E50: AF              XOR     A                   
-1E51: E0 A5           LDFF00  ($A5),A             
+1E51: E0 A5           LD      ($FF00+$A5),A       
 1E53: 3E 0C           LD      A,$0C               
 1E55: EA 00 21        LD      ($2100),A           ; {}
 1E58: C3 CC 1C        JP      $1CCC               ; {}
@@ -4124,7 +4124,7 @@ SwitchBankSave:
 1E5D: 08 08 0A        LD      ($0A08),SP          ; {}
 1E60: 0A              LD      A,(BC)              
 1E61: 05              DEC     B                   
-1E62: 10 36           STOP    $36                 
+1E62: 10 36           ;;STOP    $36                 
 1E64: 38 3A           JR      C,$1EA0             ; {}
 1E66: 3C              INC     A                   
 1E67: 02              LD      (BC),A              
@@ -4148,44 +4148,44 @@ SwitchBankSave:
 1E86: 21 1C C1        LD      HL,$C11C            
 1E89: B6              OR      (HL)                
 1E8A: C2 A5 20        JP      NZ,$20A5            ; {}
-1E8D: F0 9E           LD      A,($9E)             ; {}
+1E8D: F0 9E           LD      A,($9E)             ; 
 1E8F: 5F              LD      E,A                 
 1E90: 16 00           LD      D,$00               
 1E92: 21 5B 1E        LD      HL,$1E5B            
 1E95: 19              ADD     HL,DE               
-1E96: F0 98           LD      A,($98)             ; {}
+1E96: F0 98           LD      A,($98)             ; 
 1E98: 86              ADD     A,(HL)              
 1E99: D6 08           SUB     $08                 
 1E9B: E6 F0           AND     $F0                 
-1E9D: E0 CE           LDFF00  ($CE),A             
+1E9D: E0 CE           LD      ($FF00+$CE),A       
 1E9F: CB 37           SWAP    A                   
 1EA1: 4F              LD      C,A                 
 1EA2: 21 5F 1E        LD      HL,$1E5F            
 1EA5: 19              ADD     HL,DE               
-1EA6: F0 99           LD      A,($99)             ; {}
+1EA6: F0 99           LD      A,($99)             ; 
 1EA8: 86              ADD     A,(HL)              
 1EA9: D6 10           SUB     $10                 
 1EAB: E6 F0           AND     $F0                 
-1EAD: E0 CD           LDFF00  ($CD),A             
+1EAD: E0 CD           LD      ($FF00+$CD),A       
 1EAF: B1              OR      C                   
 1EB0: 5F              LD      E,A                 
-1EB1: E0 D8           LDFF00  ($D8),A             
+1EB1: E0 D8           LD      ($FF00+$D8),A       
 1EB3: 21 11 D7        LD      HL,$D711            
 1EB6: 19              ADD     HL,DE               
 1EB7: 7C              LD      A,H                 
 1EB8: FE D7           CP      $D7                 
 1EBA: C2 7C 20        JP      NZ,$207C            ; {}
 1EBD: 7E              LD      A,(HL)              
-1EBE: E0 D7           LDFF00  ($D7),A             
+1EBE: E0 D7           LD      ($FF00+$D7),A       
 1EC0: 5F              LD      E,A                 
 1EC1: FA A5 DB        LD      A,($DBA5)           
 1EC4: 57              LD      D,A                 
 1EC5: CD DB 29        CALL    $29DB               ; {}
-1EC8: E0 DC           LDFF00  ($DC),A             
-1ECA: F0 D7           LD      A,($D7)             ; {}
+1EC8: E0 DC           LD      ($FF00+$DC),A       
+1ECA: F0 D7           LD      A,($D7)             ; 
 1ECC: FE 9A           CP      $9A                 
 1ECE: 28 40           JR      Z,$1F10             ; {}
-1ED0: F0 DC           LD      A,($DC)             ; {}
+1ED0: F0 DC           LD      A,($DC)             ; 
 1ED2: FE 00           CP      $00                 
 1ED4: CA 7C 20        JP      Z,$207C             ; {}
 1ED7: FE 01           CP      $01                 
@@ -4202,7 +4202,7 @@ SwitchBankSave:
 1EF1: 30 05           JR      NC,$1EF8            ; {}
 1EF3: FE 7C           CP      $7C                 
 1EF5: D2 7C 20        JP      NC,$207C            ; {}
-1EF8: F0 D7           LD      A,($D7)             ; {}
+1EF8: F0 D7           LD      A,($D7)             ; 
 1EFA: 5F              LD      E,A                 
 1EFB: FE 6F           CP      $6F                 
 1EFD: 28 09           JR      Z,$1F08             ; {}
@@ -4215,12 +4215,12 @@ SwitchBankSave:
 1F0C: 7B              LD      A,E                 
 1F0D: C2 A1 1F        JP      NZ,$1FA1            ; {}
 1F10: 5F              LD      E,A                 
-1F11: F0 9E           LD      A,($9E)             ; {}
+1F11: F0 9E           LD      A,($9E)             ; 
 1F13: FE 02           CP      $02                 
 1F15: C2 FD 1F        JP      NZ,$1FFD            ; {}
 1F18: 3E 02           LD      A,$02               
 1F1A: EA AD C1        LD      ($C1AD),A           
-1F1D: F0 CC           LD      A,($CC)             ; {}
+1F1D: F0 CC           LD      A,($CC)             ; 
 1F1F: E6 30           AND     $30                 
 1F21: CA FD 1F        JP      Z,$1FFD             ; {}
 1F24: 7B              LD      A,E                 
@@ -4240,7 +4240,7 @@ SwitchBankSave:
 1F3F: C3 FD 1F        JP      $1FFD               ; {}
 1F42: FA 4E DB        LD      A,($DB4E)           
 1F45: A7              AND     A                   
-1F46: F0 F6           LD      A,($F6)             ; {}
+1F46: F0 F6           LD      A,($F6)             ; 
 1F48: 20 06           JR      NZ,$1F50            ; {}
 1F4A: 1E FF           LD      E,$FF               
 1F4C: FE A3           CP      $A3                 
@@ -4251,7 +4251,7 @@ SwitchBankSave:
 1F56: 1E FD           LD      E,$FD               
 1F58: 7B              LD      A,E                 
 1F59: 18 41           JR      $1F9C               ; {}
-1F5B: F0 F6           LD      A,($F6)             ; {}
+1F5B: F0 F6           LD      A,($F6)             ; 
 1F5D: 5F              LD      E,A                 
 1F5E: 16 00           LD      D,$00               
 1F60: 3E 14           LD      A,$14               
@@ -4270,11 +4270,11 @@ SwitchBankSave:
 1F7A: 20 16           JR      NZ,$1F92            ; {}
 1F7C: CB 43           BIT     0,E                 
 1F7E: 20 12           JR      NZ,$1F92            ; {}
-1F80: F0 CE           LD      A,($CE)             ; {}
+1F80: F0 CE           LD      A,($CE)             ; 
 1F82: CB 37           SWAP    A                   
 1F84: E6 0F           AND     $0F                 
 1F86: 5F              LD      E,A                 
-1F87: F0 CD           LD      A,($CD)             ; {}
+1F87: F0 CD           LD      A,($CD)             ; 
 1F89: E6 F0           AND     $F0                 
 1F8B: B3              OR      E                   
 1F8C: EA 73 D4        LD      ($D473),A           
@@ -4291,26 +4291,26 @@ SwitchBankSave:
 1FA8: E6 1F           AND     $1F                 
 1FAA: FE 0D           CP      $0D                 
 1FAC: 28 4F           JR      Z,$1FFD             ; {}
-1FAE: F0 9E           LD      A,($9E)             ; {}
+1FAE: F0 9E           LD      A,($9E)             ; 
 1FB0: FE 02           CP      $02                 
 1FB2: 20 49           JR      NZ,$1FFD            ; {}
 1FB4: EA AD C1        LD      ($C1AD),A           
-1FB7: F0 CC           LD      A,($CC)             ; {}
+1FB7: F0 CC           LD      A,($CC)             ; 
 1FB9: E6 30           AND     $30                 
 1FBB: 28 40           JR      Z,$1FFD             ; {}
-1FBD: F0 F9           LD      A,($F9)             ; {}
+1FBD: F0 F9           LD      A,($F9)             ; 
 1FBF: A7              AND     A                   
 1FC0: 20 06           JR      NZ,$1FC8            ; {}
-1FC2: F0 9E           LD      A,($9E)             ; {}
+1FC2: F0 9E           LD      A,($9E)             ; 
 1FC4: FE 02           CP      $02                 
 1FC6: 20 35           JR      NZ,$1FFD            ; {}
 1FC8: 3E 14           LD      A,$14               
 1FCA: EA 00 21        LD      ($2100),A           ; {}
-1FCD: F0 F6           LD      A,($F6)             ; {}
+1FCD: F0 F6           LD      A,($F6)             ; 
 1FCF: 5F              LD      E,A                 
 1FD0: FA A5 DB        LD      A,($DBA5)           
 1FD3: 57              LD      D,A                 
-1FD4: F0 F7           LD      A,($F7)             ; {}
+1FD4: F0 F7           LD      A,($F7)             ; 
 1FD6: FE 1A           CP      $1A                 
 1FD8: 30 05           JR      NC,$1FDF            ; {}
 1FDA: FE 06           CP      $06                 
@@ -4326,38 +4326,38 @@ SwitchBankSave:
 1FED: 3E 20           LD      A,$20               
 1FEF: 38 02           JR      C,$1FF3             ; {}
 1FF1: 3E 1C           LD      A,$1C               
-1FF3: E0 DF           LDFF00  ($DF),A             
+1FF3: E0 DF           LD      ($FF00+$DF),A       
 1FF5: 3E 02           LD      A,$02               
 1FF7: EA 00 21        LD      ($2100),A           ; {}
 1FFA: CD BA 41        CALL    $41BA               
 1FFD: FA 00 DB        LD      A,($DB00)           
 2000: FE 03           CP      $03                 
 2002: 20 07           JR      NZ,$200B            ; {}
-2004: F0 CB           LD      A,($CB)             ; {}
+2004: F0 CB           LD      A,($CB)             ; 
 2006: E6 20           AND     $20                 
 2008: 20 10           JR      NZ,$201A            ; {}
 200A: C9              RET                         
 200B: FA 01 DB        LD      A,($DB01)           
 200E: FE 03           CP      $03                 
 2010: C2 A5 20        JP      NZ,$20A5            ; {}
-2013: F0 CB           LD      A,($CB)             ; {}
+2013: F0 CB           LD      A,($CB)             ; 
 2015: E6 10           AND     $10                 
 2017: CA A5 20        JP      Z,$20A5             ; {}
 201A: 3E 02           LD      A,$02               
 201C: EA 00 21        LD      ($2100),A           ; {}
 201F: CD 5E 48        CALL    $485E               
 2022: 3E 01           LD      A,$01               
-2024: E0 A1           LDFF00  ($A1),A             
-2026: F0 9E           LD      A,($9E)             ; {}
+2024: E0 A1           LD      ($FF00+$A1),A       
+2026: F0 9E           LD      A,($9E)             ; 
 2028: 5F              LD      E,A                 
 2029: 16 00           LD      D,$00               
 202B: 21 63 1E        LD      HL,$1E63            
 202E: 19              ADD     HL,DE               
 202F: 7E              LD      A,(HL)              
-2030: E0 9D           LDFF00  ($9D),A             
+2030: E0 9D           LD      ($FF00+$9D),A       
 2032: 21 67 1E        LD      HL,$1E67            
 2035: 19              ADD     HL,DE               
-2036: F0 CB           LD      A,($CB)             ; {}
+2036: F0 CB           LD      A,($CB)             ; 
 2038: A6              AND     (HL)                
 2039: 28 41           JR      Z,$207C             ; {}
 203B: 21 6B 1E        LD      HL,$1E6B            
@@ -4381,8 +4381,8 @@ SwitchBankSave:
 205F: BB              CP      E                   
 2060: 38 19           JR      C,$207B             ; {}
 2062: AF              XOR     A                   
-2063: E0 E5           LDFF00  ($E5),A             
-2065: F0 D7           LD      A,($D7)             ; {}
+2063: E0 E5           LD      ($FF00+$E5),A       
+2065: F0 D7           LD      A,($D7)             ; 
 2067: FE 8E           CP      $8E                 
 2069: 28 16           JR      Z,$2081             ; {}
 206B: FE 20           CP      $20                 
@@ -4390,7 +4390,7 @@ SwitchBankSave:
 206F: FA A5 DB        LD      A,($DBA5)           
 2072: A7              AND     A                   
 2073: 20 06           JR      NZ,$207B            ; {}
-2075: F0 D7           LD      A,($D7)             ; {}
+2075: F0 D7           LD      A,($D7)             ; 
 2077: FE 5C           CP      $5C                 
 2079: 28 14           JR      Z,$208F             ; {}
 207B: C9              RET                         
@@ -4403,13 +4403,13 @@ SwitchBankSave:
 2089: CD AA 55        CALL    $55AA               
 208C: C3 C0 07        JP      $07C0               ; {code.SwitchBankSave}
 208F: 3E 01           LD      A,$01               
-2091: E0 E5           LDFF00  ($E5),A             
-2093: F0 D8           LD      A,($D8)             ; {}
+2091: E0 E5           LD      ($FF00+$E5),A       
+2093: F0 D8           LD      A,($D8)             ; 
 2095: 5F              LD      E,A                 
-2096: F0 D7           LD      A,($D7)             ; {}
-2098: E0 AF           LDFF00  ($AF),A             
+2096: F0 D7           LD      A,($D7)             ; 
+2098: E0 AF           LD      ($FF00+$AF),A       
 209A: CD A6 20        CALL    $20A6               ; {}
-209D: F0 9E           LD      A,($9E)             ; {}
+209D: F0 9E           LD      A,($9E)             ; 
 209F: EA 5D C1        LD      ($C15D),A           
 20A2: CD B1 20        CALL    $20B1               ; {}
 20A5: C9              RET                         
@@ -4421,13 +4421,13 @@ SwitchBankSave:
 20B3: CD EB 10        CALL    $10EB               ; {}
 20B6: 38 1D           JR      C,$20D5             ; {}
 20B8: 3E 02           LD      A,$02               
-20BA: E0 F3           LDFF00  ($F3),A             
+20BA: E0 F3           LD      ($FF00+$F3),A       
 20BC: 21 80 C2        LD      HL,$C280            
 20BF: 19              ADD     HL,DE               
 20C0: 36 07           LD      (HL),$07            
 20C2: 21 B0 C3        LD      HL,$C3B0            
 20C5: 19              ADD     HL,DE               
-20C6: F0 E5           LD      A,($E5)             ; {}
+20C6: F0 E5           LD      A,($E5)             ; 
 20C8: 77              LD      (HL),A              
 20C9: D5              PUSH    DE                  
 20CA: C1              POP     BC                  
@@ -4442,7 +4442,7 @@ SwitchBankSave:
 20DB: 0E 01           LD      C,$01               
 20DD: CD E4 20        CALL    $20E4               ; {}
 20E0: 0E 00           LD      C,$00               
-20E2: E0 D7           LDFF00  ($D7),A             
+20E2: E0 D7           LD      ($FF00+$D7),A       
 20E4: 06 00           LD      B,$00               
 20E6: 21 9A FF        LD      HL,$FF9A            
 20E9: 09              ADD     HL,BC               
@@ -4469,7 +4469,7 @@ SwitchBankSave:
 210C: 8E              ADC     A,(HL)              
 210D: 77              LD      (HL),A              
 210E: C9              RET                         
-210F: F0 A3           LD      A,($A3)             ; {}
+210F: F0 A3           LD      A,($A3)             ; 
 2111: F5              PUSH    AF                  
 2112: CB 37           SWAP    A                   
 2114: E6 F0           AND     $F0                 
@@ -4499,7 +4499,7 @@ SwitchBankSave:
 213E: 3E 7E           LD      A,$7E               
 2140: 20 02           JR      NZ,$2144            ; {}
 2142: 3E 7F           LD      A,$7F               
-2144: E0 E8           LDFF00  ($E8),A             
+2144: E0 E8           LD      ($FF00+$E8),A       
 2146: FA 64 C1        LD      A,($C164)           
 2149: A7              AND     A                   
 214A: FA 70 C1        LD      A,($C170)           
@@ -4556,7 +4556,7 @@ SwitchBankSave:
 21AD: EA 12 C1        LD      ($C112),A           
 21B0: 3E 0F           LD      A,$0F               
 21B2: EA AB C5        LD      ($C5AB),A           
-21B5: F0 99           LD      A,($99)             ; {}
+21B5: F0 99           LD      A,($99)             ; 
 21B7: FE 48           CP      $48                 
 21B9: 1F              RRA                         
 21BA: E6 80           AND     $80                 
@@ -4606,13 +4606,13 @@ SwitchBankSave:
 21FF: FA 2F C1        LD      A,($C12F)           
 2202: 86              ADD     A,(HL)              
 2203: 6F              LD      L,A                 
-2204: E0 D7           LDFF00  ($D7),A             
+2204: E0 D7           LD      ($FF00+$D7),A       
 2206: 21 D1 21        LD      HL,$21D1            
 2209: 19              ADD     HL,DE               
 220A: FA 2E C1        LD      A,($C12E)           
 220D: 86              ADD     A,(HL)              
 220E: 67              LD      H,A                 
-220F: F0 D7           LD      A,($D7)             ; {}
+220F: F0 D7           LD      A,($D7)             ; 
 2211: 6F              LD      L,A                 
 2212: AF              XOR     A                   
 2213: 5F              LD      E,A                 
@@ -4634,9 +4634,9 @@ SwitchBankSave:
 2228: FE 12           CP      $12                 
 222A: 20 E9           JR      NZ,$2215            ; {}
 222C: 1E 00           LD      E,$00               
-222E: F0 D7           LD      A,($D7)             ; {}
+222E: F0 D7           LD      A,($D7)             ; 
 2230: C6 20           ADD     $20                 
-2232: E0 D7           LDFF00  ($D7),A             
+2232: E0 D7           LD      ($FF00+$D7),A       
 2234: 30 01           JR      NC,$2237            ; {}
 2236: 24              INC     H                   
 2237: 6F              LD      L,A                 
@@ -4691,7 +4691,7 @@ SwitchBankSave:
 2282: 22              LD      (HLI),A             
 2283: 3E 51           LD      A,$51               
 2285: 22              LD      (HLI),A             
-2286: F0 E8           LD      A,($E8)             ; {}
+2286: F0 E8           LD      A,($E8)             ; 
 2288: 22              LD      (HLI),A             
 2289: 36 00           LD      (HL),$00            
 228B: 21 6F C1        LD      HL,$C16F            
@@ -4703,7 +4703,7 @@ SwitchBankSave:
 2295: FA AB C1        LD      A,($C1AB)           
 2298: A7              AND     A                   
 2299: 20 14           JR      NZ,$22AF            ; {}
-229B: F0 CC           LD      A,($CC)             ; {}
+229B: F0 CC           LD      A,($CC)             ; 
 229D: E6 30           AND     $30                 
 229F: 28 0E           JR      Z,$22AF             ; {}
 22A1: AF              XOR     A                   
@@ -4928,7 +4928,7 @@ SwitchBankSave:
 240F: EA C3 C3        LD      ($C3C3),A           
 2412: CD C0 07        CALL    $07C0               ; {code.SwitchBankSave}
 2415: 7B              LD      A,E                 
-2416: E0 D7           LDFF00  ($D7),A             
+2416: E0 D7           LD      ($FF00+$D7),A       
 2418: FE FE           CP      $FE                 
 241A: 20 14           JR      NZ,$2430            ; {}
 241C: E1              POP     HL                  
@@ -4939,7 +4939,7 @@ SwitchBankSave:
 2426: F6 0D           OR      $0D                 
 2428: EA 9F C1        LD      ($C19F),A           
 242B: 3E 15           LD      A,$15               
-242D: E0 F2           LDFF00  ($F2),A             
+242D: E0 F2           LD      ($FF00+$F2),A       
 242F: C9              RET                         
 2430: FE FF           CP      $FF                 
 2432: 20 15           JR      NZ,$2449            ; {}
@@ -4973,7 +4973,7 @@ SwitchBankSave:
 2465: A3              AND     E                   
 2466: 20 03           JR      NZ,$246B            ; {}
 2468: 7A              LD      A,D                 
-2469: E0 F3           LDFF00  ($F3),A             
+2469: E0 F3           LD      ($FF00+$F3),A       
 246B: F1              POP     AF                  
 246C: 16 00           LD      D,$00               
 246E: FE 23           CP      $23                 
@@ -4996,7 +4996,7 @@ SwitchBankSave:
 248E: FE FF           CP      $FF                 
 2490: 20 02           JR      NZ,$2494            ; {}
 2492: 3E 20           LD      A,$20               
-2494: E0 D8           LDFF00  ($D8),A             
+2494: E0 D8           LD      ($FF00+$D8),A       
 2496: 5F              LD      E,A                 
 2497: 3E 1C           LD      A,$1C               
 2499: EA 00 21        LD      ($2100),A           ; {}
@@ -5028,7 +5028,7 @@ SwitchBankSave:
 24C7: E5              PUSH    HL                  
 24C8: 3E 1C           LD      A,$1C               
 24CA: EA 00 21        LD      ($2100),A           ; {}
-24CD: F0 D8           LD      A,($D8)             ; {}
+24CD: F0 D8           LD      A,($D8)             ; 
 24CF: 5F              LD      E,A                 
 24D0: 16 00           LD      D,$00               
 24D2: AF              XOR     A                   
@@ -5087,7 +5087,7 @@ SwitchBankSave:
 253C: EA CC C1        LD      ($C1CC),A           
 253F: CD 2B 24        CALL    $242B               ; {}
 2542: CD 4D 26        CALL    $264D               ; {}
-2545: F0 CC           LD      A,($CC)             ; {}
+2545: F0 CC           LD      A,($CC)             ; 
 2547: CB 67           BIT     4,A                 
 2549: 20 22           JR      NZ,$256D            ; {}
 254B: CB 6F           BIT     5,A                 
@@ -5123,7 +5123,7 @@ SwitchBankSave:
 258C: EA 02 D6        LD      ($D602),A           
 258F: 3E 4F           LD      A,$4F               
 2591: EA 03 D6        LD      ($D603),A           
-2594: F0 E8           LD      A,($E8)             ; {}
+2594: F0 E8           LD      A,($E8)             ; 
 2596: EA 04 D6        LD      ($D604),A           
 2599: AF              XOR     A                   
 259A: EA 05 D6        LD      ($D605),A           
@@ -5168,7 +5168,7 @@ SwitchBankSave:
 25D7: 7D              LD      A,L                 
 25D8: C6 20           ADD     $20                 
 25DA: 6F              LD      L,A                 
-25DB: F0 E8           LD      A,($E8)             ; {}
+25DB: F0 E8           LD      A,($E8)             ; 
 25DD: 77              LD      (HL),A              
 25DE: C1              POP     BC                  
 25DF: 03              INC     BC                  
@@ -5205,12 +5205,12 @@ SwitchBankSave:
 2617: 3E 02           LD      A,$02               
 2619: EA 77 C1        LD      ($C177),A           
 261C: C3 A1 22        JP      $22A1               ; {}
-261F: F0 CC           LD      A,($CC)             ; {}
+261F: F0 CC           LD      A,($CC)             ; 
 2621: CB 6F           BIT     5,A                 
 2623: 20 F2           JR      NZ,$2617            ; {}
 2625: E6 10           AND     $10                 
 2627: C2 49 26        JP      NZ,$2649            ; {}
-262A: F0 CC           LD      A,($CC)             ; {}
+262A: F0 CC           LD      A,($CC)             ; 
 262C: E6 43           AND     $43                 
 262E: 28 0C           JR      Z,$263C             ; {}
 2630: 21 77 C1        LD      HL,$C177            
@@ -5219,8 +5219,8 @@ SwitchBankSave:
 2635: E6 01           AND     $01                 
 2637: 77              LD      (HL),A              
 2638: 3E 0A           LD      A,$0A               
-263A: E0 F2           LDFF00  ($F2),A             
-263C: F0 E7           LD      A,($E7)             ; {}
+263A: E0 F2           LD      ($FF00+$F2),A       
+263C: F0 E7           LD      A,($E7)             ; 
 263E: E6 10           AND     $10                 
 2640: C8              RET     Z                   
 2641: 3E 17           LD      A,$17               
@@ -5240,11 +5240,11 @@ SwitchBankSave:
 2663: 93              SUB     E                   
 2664: 13              INC     DE                  
 2665: 13              INC     DE                  
-2666: 10 10           STOP    $10                 
+2666: 10 10           ;;STOP    $10                 
 2668: 01 01 08        LD      BC,$0801            
 266B: 08 0A 0A        LD      ($0A0A),SP          ; {}
 266E: 01 FF F0        LD      BC,$F0FF            
-2671: 10 00           STOP    $00                 
+2671: 10 00           ;;STOP    $00                 
 2673: 00              NOP                         
 2674: 03              INC     BC                  
 2675: 00              NOP                         
@@ -5268,7 +5268,7 @@ SwitchBankSave:
 2698: 3E 01           LD      A,$01               
 269A: EA 2B C1        LD      ($C12B),A           
 269D: FA 2A C1        LD      A,($C12A)           
-26A0: E0 D9           LDFF00  ($D9),A             
+26A0: E0 D9           LD      ($FF00+$D9),A       
 26A2: 21 5E 26        LD      HL,$265E            
 26A5: 09              ADD     HL,BC               
 26A6: FA 27 C1        LD      A,($C127)           
@@ -5304,7 +5304,7 @@ SwitchBankSave:
 26F1: 1E 1B           LD      E,$1B               
 26F3: C5              PUSH    BC                  
 26F4: D5              PUSH    DE                  
-26F5: F0 D9           LD      A,($D9)             ; {}
+26F5: F0 D9           LD      A,($D9)             ; 
 26F7: 4F              LD      C,A                 
 26F8: 06 00           LD      B,$00               
 26FA: 21 11 D7        LD      HL,$D711            
@@ -5357,9 +5357,9 @@ SwitchBankSave:
 273E: 06 00           LD      B,$00               
 2740: 21 66 26        LD      HL,$2666            
 2743: 09              ADD     HL,BC               
-2744: F0 D9           LD      A,($D9)             ; {}
+2744: F0 D9           LD      A,($D9)             ; 
 2746: 86              ADD     A,(HL)              
-2747: E0 D9           LDFF00  ($D9),A             
+2747: E0 D9           LD      ($FF00+$D9),A       
 2749: C1              POP     BC                  
 274A: FA 28 C1        LD      A,($C128)           
 274D: 3D              DEC     A                   
@@ -5411,11 +5411,11 @@ SwitchBankSave:
 27A6: FF              RST     0X38                
 27A7: FF              RST     0X38                
 27A8: EA 68 D3        LD      ($D368),A           
-27AB: E0 BF           LDFF00  ($BF),A             
+27AB: E0 BF           LD      ($FF00+$BF),A       
 27AD: 3E 38           LD      A,$38               
-27AF: E0 AB           LDFF00  ($AB),A             
+27AF: E0 AB           LD      ($FF00+$AB),A       
 27B1: AF              XOR     A                   
-27B2: E0 A8           LDFF00  ($A8),A             
+27B2: E0 A8           LD      ($FF00+$A8),A       
 27B4: C9              RET                         
 27B5: E5              PUSH    HL                  
 27B6: 21 00 00        LD      HL,$0000            
@@ -5429,11 +5429,11 @@ SwitchBankSave:
 27C6: C1              POP     BC                  
 27C7: C3 C0 07        JP      $07C0               ; {code.SwitchBankSave}
 27CA: 3E 38           LD      A,$38               
-27CC: E0 A8           LDFF00  ($A8),A             
+27CC: E0 A8           LD      ($FF00+$A8),A       
 27CE: AF              XOR     A                   
-27CF: E0 AB           LDFF00  ($AB),A             
+27CF: E0 AB           LD      ($FF00+$AB),A       
 27D1: C9              RET                         
-27D2: F0 BC           LD      A,($BC)             ; {}
+27D2: F0 BC           LD      A,($BC)             ; 
 27D4: A7              AND     A                   
 27D5: 20 08           JR      NZ,$27DF            ; {}
 27D7: 3E 1F           LD      A,$1F               
@@ -5445,7 +5445,7 @@ SwitchBankSave:
 27E7: CD CF 5B        CALL    $5BCF               
 27EA: C3 C0 07        JP      $07C0               ; {code.SwitchBankSave}
 27ED: E5              PUSH    HL                  
-27EE: F0 E7           LD      A,($E7)             ; {}
+27EE: F0 E7           LD      A,($E7)             ; 
 27F0: 21 3D C1        LD      HL,$C13D            
 27F3: 86              ADD     A,(HL)              
 27F4: 21 44 FF        LD      HL,$FF44            
@@ -5458,38 +5458,38 @@ SwitchBankSave:
 2801: A7              AND     A                   
 2802: 20 34           JR      NZ,$2838            ; {}
 2804: 3E 20           LD      A,$20               
-2806: E0 00           LDFF00  ($00),A             
-2808: F0 00           LD      A,($00)             ; {}
-280A: F0 00           LD      A,($00)             ; {}
+2806: E0 00           LD      ($FF00+$00),A       
+2808: F0 00           LD      A,($00)             ; 
+280A: F0 00           LD      A,($00)             ; 
 280C: 2F              CPL                         
 280D: E6 0F           AND     $0F                 
 280F: 47              LD      B,A                 
 2810: 3E 10           LD      A,$10               
-2812: E0 00           LDFF00  ($00),A             
-2814: F0 00           LD      A,($00)             ; {}
-2816: F0 00           LD      A,($00)             ; {}
-2818: F0 00           LD      A,($00)             ; {}
-281A: F0 00           LD      A,($00)             ; {}
-281C: F0 00           LD      A,($00)             ; {}
-281E: F0 00           LD      A,($00)             ; {}
-2820: F0 00           LD      A,($00)             ; {}
-2822: F0 00           LD      A,($00)             ; {}
+2812: E0 00           LD      ($FF00+$00),A       
+2814: F0 00           LD      A,($00)             ; 
+2816: F0 00           LD      A,($00)             ; 
+2818: F0 00           LD      A,($00)             ; 
+281A: F0 00           LD      A,($00)             ; 
+281C: F0 00           LD      A,($00)             ; 
+281E: F0 00           LD      A,($00)             ; 
+2820: F0 00           LD      A,($00)             ; 
+2822: F0 00           LD      A,($00)             ; 
 2824: CB 37           SWAP    A                   
 2826: 2F              CPL                         
 2827: E6 F0           AND     $F0                 
 2829: B0              OR      B                   
 282A: 4F              LD      C,A                 
-282B: F0 CB           LD      A,($CB)             ; {}
+282B: F0 CB           LD      A,($CB)             ; 
 282D: A9              XOR     C                   
 282E: A1              AND     C                   
-282F: E0 CC           LDFF00  ($CC),A             
+282F: E0 CC           LD      ($FF00+$CC),A       
 2831: 79              LD      A,C                 
-2832: E0 CB           LDFF00  ($CB),A             
+2832: E0 CB           LD      ($FF00+$CB),A       
 2834: 3E 30           LD      A,$30               
-2836: E0 00           LDFF00  ($00),A             
+2836: E0 00           LD      ($FF00+$00),A       
 2838: C9              RET                         
 2839: C5              PUSH    BC                  
-283A: F0 CD           LD      A,($CD)             ; {}
+283A: F0 CD           LD      A,($CD)             ; 
 283C: 21 97 FF        LD      HL,$FF97            
 283F: 86              ADD     A,(HL)              
 2840: E6 F8           AND     $F8                 
@@ -5504,7 +5504,7 @@ SwitchBankSave:
 2852: 05              DEC     B                   
 2853: 20 FC           JR      NZ,$2851            ; {}
 2855: E5              PUSH    HL                  
-2856: F0 CE           LD      A,($CE)             ; {}
+2856: F0 CE           LD      A,($CE)             ; 
 2858: 21 96 FF        LD      HL,$FF96            
 285B: 86              ADD     A,(HL)              
 285C: E1              POP     HL                  
@@ -5516,9 +5516,9 @@ SwitchBankSave:
 2868: 5F              LD      E,A                 
 2869: 19              ADD     HL,DE               
 286A: 7C              LD      A,H                 
-286B: E0 CF           LDFF00  ($CF),A             
+286B: E0 CF           LD      ($FF00+$CF),A       
 286D: 7D              LD      A,L                 
-286E: E0 D0           LDFF00  ($D0),A             
+286E: E0 D0           LD      ($FF00+$D0),A       
 2870: C1              POP     BC                  
 2871: C9              RET                         
 
@@ -5543,17 +5543,17 @@ TableJump:
 
 ; Turn off LCD at next vertical blanking
 LCDOff:
-2881: F0 FF           LD      A,($FF)             ; {} Current interrupt register
-2883: E0 D2           LDFF00  ($D2),A             ; Hold it in RAM
+2881: F0 FF           LD      A,($FF)             ; Current interrupt register
+2883: E0 D2           LD      ($FF00+$D2),A       ; Hold it in RAM
 2885: CB 87           RES     0,A                 ; ??
-2887: F0 44           LD      A,($44)             ; {} Wait for ...
+2887: F0 44           LD      A,($44)             ; Wait for ...
 2889: FE 91           CP      $91                 ; ... line 145 ...
 288B: 20 FA           JR      NZ,$2887            ; {} ... Vertical Blanking
-288D: F0 40           LD      A,($40)             ; {} LCD control
+288D: F0 40           LD      A,($40)             ; LCD control
 288F: E6 7F           AND     $7F                 ; Turn ...
-2891: E0 40           LDFF00  ($40),A             ; ... LCD off
-2893: F0 D2           LD      A,($D2)             ; {} Old interrupt value
-2895: E0 FF           LDFF00  ($FF),A             ; Restore interrupts
+2891: E0 40           LD      ($FF00+$40),A       ; ... LCD off
+2893: F0 D2           LD      A,($D2)             ; Old interrupt value
+2895: E0 FF           LD      ($FF00+$FF),A       ; Restore interrupts
 2897: C9              RET                         ; Done
 
 2898: 3E 01           LD      A,$01               
@@ -5762,7 +5762,7 @@ ClearRAMHL:
 29C8: A7              AND     A                   
 29C9: 20 04           JR      NZ,$29CF            ; {}
 29CB: 3E 2D           LD      A,$2D               
-29CD: E0 F4           LDFF00  ($F4),A             
+29CD: E0 F4           LD      ($FF00+$F4),A       
 29CF: C9              RET                         
 29D0: 3E 01           LD      A,$01               
 29D2: EA 00 21        LD      ($2100),A           ; {}
@@ -5893,7 +5893,7 @@ ClearRAMHL:
 2B26: 3E 14           LD      A,$14               
 2B28: EA 00 21        LD      ($2100),A           ; {}
 2B2B: 21 00 42        LD      HL,$4200            
-2B2E: F0 F7           LD      A,($F7)             ; {}
+2B2E: F0 F7           LD      A,($F7)             ; 
 2B30: FE 0B           CP      $0B                 
 2B32: 30 32           JR      NC,$2B66            ; {}
 2B34: CB 37           SWAP    A                   
@@ -5904,7 +5904,7 @@ ClearRAMHL:
 2B3D: CB 21           SLA     C                   
 2B3F: CB 10           RL      B                   
 2B41: 09              ADD     HL,BC               
-2B42: F0 F7           LD      A,($F7)             ; {}
+2B42: F0 F7           LD      A,($F7)             ; 
 2B44: FE 06           CP      $06                 
 2B46: 20 0A           JR      NZ,$2B52            ; {}
 2B48: FA 6B DB        LD      A,($DB6B)           
@@ -5915,7 +5915,7 @@ ClearRAMHL:
 2B53: 7E              LD      A,(HL)              
 2B54: 5F              LD      E,A                 
 2B55: 16 00           LD      D,$00               
-2B57: F0 F7           LD      A,($F7)             ; {}
+2B57: F0 F7           LD      A,($F7)             ; 
 2B59: FE 1A           CP      $1A                 
 2B5B: 30 05           JR      NC,$2B62            ; {}
 2B5D: FE 06           CP      $06                 
@@ -5966,7 +5966,7 @@ ClearRAMHL:
 2BC1: C3 C5 28        JP      $28C5               ; {code.CopyHLtoDE}
 2BC4: 3E 01           LD      A,$01               
 2BC6: CD B9 07        CALL    $07B9               ; {code.SwitchBank}
-2BC9: F0 F7           LD      A,($F7)             ; {}
+2BC9: F0 F7           LD      A,($F7)             ; 
 2BCB: 5F              LD      E,A                 
 2BCC: 16 00           LD      D,$00               
 2BCE: D5              PUSH    DE                  
@@ -6015,7 +6015,7 @@ ClearRAMHL:
 2C33: 01 00 01        LD      BC,$0100            
 2C36: CD C5 28        CALL    $28C5               ; {code.CopyHLtoDE}
 2C39: 21 00 7D        LD      HL,$7D00            
-2C3C: F0 F7           LD      A,($F7)             ; {}
+2C3C: F0 F7           LD      A,($F7)             ; 
 2C3E: FE 0A           CP      $0A                 
 2C40: 38 08           JR      C,$2C4A             ; {}
 2C42: 3E 0C           LD      A,$0C               
@@ -6031,7 +6031,7 @@ ClearRAMHL:
 2C5C: FA A5 DB        LD      A,($DBA5)           
 2C5F: A7              AND     A                   
 2C60: 28 06           JR      Z,$2C68             ; {}
-2C62: F0 F7           LD      A,($F7)             ; {}
+2C62: F0 F7           LD      A,($F7)             ; 
 2C64: FE 0A           CP      $0A                 
 2C66: 38 0A           JR      C,$2C72             ; {}
 2C68: FA 15 DB        LD      A,($DB15)           
@@ -6042,7 +6042,7 @@ ClearRAMHL:
 2C75: FE 02           CP      $02                 
 2C77: 38 04           JR      C,$2C7D             ; {}
 2C79: 3E 0D           LD      A,$0D               
-2C7B: E0 A5           LDFF00  ($A5),A             
+2C7B: E0 A5           LD      ($FF00+$A5),A       
 2C7D: C9              RET                         
 2C7E: 3E 0C           LD      A,$0C               
 2C80: CD B9 07        CALL    $07B9               ; {code.SwitchBank}
@@ -6057,8 +6057,8 @@ ClearRAMHL:
 2C9B: CD A1 2C        CALL    $2CA1               ; {}
 2C9E: C3 53 2C        JP      $2C53               ; {}
 2CA1: AF              XOR     A                   
-2CA2: E0 A6           LDFF00  ($A6),A             
-2CA4: E0 A7           LDFF00  ($A7),A             
+2CA2: E0 A6           LD      ($FF00+$A6),A       
+2CA4: E0 A7           LD      ($FF00+$A7),A       
 2CA6: CD 6B 1B        CALL    $1B6B               ; {}
 2CA9: 21 00 48        LD      HL,$4800            
 2CAC: 11 00 88        LD      DE,$8800            
@@ -6140,7 +6140,7 @@ ClearRAMHL:
 2D84: 00              NOP                         
 2D85: 11 0E 12        LD      DE,$120E            
 2D88: AF              XOR     A                   
-2D89: E0 D7           LDFF00  ($D7),A             
+2D89: E0 D7           LD      ($FF00+$D7),A       
 2D8B: 21 93 C1        LD      HL,$C193            
 2D8E: 5F              LD      E,A                 
 2D8F: 16 00           LD      D,$00               
@@ -6150,15 +6150,15 @@ ClearRAMHL:
 2D95: FA A5 DB        LD      A,($DBA5)           
 2D98: A7              AND     A                   
 2D99: 28 19           JR      Z,$2DB4             ; {}
-2D9B: F0 F9           LD      A,($F9)             ; {}
+2D9B: F0 F9           LD      A,($F9)             ; 
 2D9D: A7              AND     A                   
 2D9E: 20 37           JR      NZ,$2DD7            ; {}
-2DA0: F0 F7           LD      A,($F7)             ; {}
+2DA0: F0 F7           LD      A,($F7)             ; 
 2DA2: FE 14           CP      $14                 
 2DA4: 28 31           JR      Z,$2DD7             ; {}
 2DA6: FE 0A           CP      $0A                 
 2DA8: 38 2D           JR      C,$2DD7             ; {}
-2DAA: F0 F6           LD      A,($F6)             ; {}
+2DAA: F0 F6           LD      A,($F6)             ; 
 2DAC: FE FD           CP      $FD                 
 2DAE: 28 27           JR      Z,$2DD7             ; {}
 2DB0: FE B1           CP      $B1                 
@@ -6196,7 +6196,7 @@ ClearRAMHL:
 2DEB: 19              ADD     HL,DE               
 2DEC: 7E              LD      A,(HL)              
 2DED: EA 00 21        LD      ($2100),A           ; {}
-2DF0: F0 D7           LD      A,($D7)             ; {}
+2DF0: F0 D7           LD      A,($D7)             ; 
 2DF2: 57              LD      D,A                 
 2DF3: 1E 00           LD      E,$00               
 2DF5: 21 00 84        LD      HL,$8400            
@@ -6207,7 +6207,7 @@ ClearRAMHL:
 2DFE: 09              ADD     HL,BC               
 2DFF: 01 00 01        LD      BC,$0100            
 2E02: CD C5 28        CALL    $28C5               ; {code.CopyHLtoDE}
-2E05: F0 D7           LD      A,($D7)             ; {}
+2E05: F0 D7           LD      A,($D7)             ; 
 2E07: 3C              INC     A                   
 2E08: FE 04           CP      $04                 
 2E0A: C2 89 2D        JP      NZ,$2D89            ; {}
@@ -6217,18 +6217,18 @@ ClearRAMHL:
 2E14: 28 3F           JR      Z,$2E55             ; {}
 2E16: 3E 0D           LD      A,$0D               
 2E18: EA 00 21        LD      ($2100),A           ; {}
-2E1B: F0 F9           LD      A,($F9)             ; {}
+2E1B: F0 F9           LD      A,($F9)             ; 
 2E1D: A7              AND     A                   
 2E1E: 28 22           JR      Z,$2E42             ; {}
 2E20: 21 00 70        LD      HL,$7000            
-2E23: F0 F7           LD      A,($F7)             ; {}
+2E23: F0 F7           LD      A,($F7)             ; 
 2E25: FE 06           CP      $06                 
 2E27: 28 0F           JR      Z,$2E38             ; {}
 2E29: FE 0A           CP      $0A                 
 2E2B: 30 05           JR      NC,$2E32            ; {}
 2E2D: 21 00 78        LD      HL,$7800            
 2E30: 18 06           JR      $2E38               ; {}
-2E32: F0 F6           LD      A,($F6)             ; {}
+2E32: F0 F6           LD      A,($F6)             ; 
 2E34: FE E9           CP      $E9                 
 2E36: 28 F5           JR      Z,$2E2D             ; {}
 2E38: 11 00 90        LD      DE,$9000            
@@ -6236,7 +6236,7 @@ ClearRAMHL:
 2E3E: CD C5 28        CALL    $28C5               ; {code.CopyHLtoDE}
 2E41: C9              RET                         
 2E42: 21 00 50        LD      HL,$5000            
-2E45: F0 94           LD      A,($94)             ; {}
+2E45: F0 94           LD      A,($94)             ; 
 2E47: FE FF           CP      $FF                 
 2E49: 28 09           JR      Z,$2E54             ; {}
 2E4B: C6 50           ADD     $50                 
@@ -6246,7 +6246,7 @@ ClearRAMHL:
 2E54: C9              RET                         
 2E55: 3E 0F           LD      A,$0F               
 2E57: EA 00 21        LD      ($2100),A           ; {}
-2E5A: F0 94           LD      A,($94)             ; {}
+2E5A: F0 94           LD      A,($94)             ; 
 2E5C: FE 0F           CP      $0F                 
 2E5E: 28 0B           JR      Z,$2E6B             ; {}
 2E60: C6 40           ADD     $40                 
@@ -6323,13 +6323,13 @@ ClearRAMHL:
 2ED1: EA 00 21        LD      ($2100),A           ; {}
 2ED4: C3 C1 7D        JP      $7DC1               
 2ED7: 3E 01           LD      A,$01               
-2ED9: E0 FF           LDFF00  ($FF),A             
+2ED9: E0 FF           LD      ($FF00+$FF),A       
 2EDB: 21 7F D4        LD      HL,$D47F            
 2EDE: 34              INC     (HL)                
 2EDF: 3E 09           LD      A,$09               
 2EE1: EA 00 21        LD      ($2100),A           ; {}
 2EE4: AF              XOR     A                   
-2EE5: E0 E6           LDFF00  ($E6),A             
+2EE5: E0 E6           LD      ($FF00+$E6),A       
 2EE7: EA 9C C1        LD      ($C19C),A           
 2EEA: EA 04 C5        LD      ($C504),A           
 2EED: EA C8 DB        LD      ($DBC8),A           
@@ -6338,7 +6338,7 @@ ClearRAMHL:
 2EF6: EA C6 C1        LD      ($C1C6),A           
 2EF9: EA FA D6        LD      ($D6FA),A           
 2EFC: EA 0A C5        LD      ($C50A),A           
-2EFF: E0 AC           LDFF00  ($AC),A             
+2EFF: E0 AC           LD      ($FF00+$AC),A       
 2F01: EA 13 C1        LD      ($C113),A           
 2F04: EA 60 D4        LD      ($D460),A           
 2F07: EA BE C1        LD      ($C1BE),A           
@@ -6355,8 +6355,8 @@ ClearRAMHL:
 2F25: 28 69           JR      Z,$2F90             ; {}
 2F27: 3E 14           LD      A,$14               
 2F29: EA 00 21        LD      ($2100),A           ; {}
-2F2C: E0 E8           LDFF00  ($E8),A             
-2F2E: F0 F7           LD      A,($F7)             ; {}
+2F2C: E0 E8           LD      ($FF00+$E8),A       
+2F2E: F0 F7           LD      A,($F7)             ; 
 2F30: FE 0B           CP      $0B                 
 2F32: 30 2B           JR      NC,$2F5F            ; {}
 2F34: 21 00 42        LD      HL,$4200            
@@ -6368,7 +6368,7 @@ ClearRAMHL:
 2F40: CB 23           SLA     E                   
 2F42: CB 12           RL      D                   
 2F44: 19              ADD     HL,DE               
-2F45: F0 F7           LD      A,($F7)             ; {}
+2F45: F0 F7           LD      A,($F7)             ; 
 2F47: FE 06           CP      $06                 
 2F49: 20 0A           JR      NZ,$2F55            ; {}
 2F4B: FA 6B DB        LD      A,($DB6B)           
@@ -6380,11 +6380,11 @@ ClearRAMHL:
 2F59: 16 00           LD      D,$00               
 2F5B: 19              ADD     HL,DE               
 2F5C: 7E              LD      A,(HL)              
-2F5D: E0 F6           LDFF00  ($F6),A             
-2F5F: F0 F6           LD      A,($F6)             ; {}
+2F5D: E0 F6           LD      ($FF00+$F6),A       
+2F5F: F0 F6           LD      A,($F6)             ; 
 2F61: 4F              LD      C,A                 
 2F62: 06 00           LD      B,$00               
-2F64: F0 F7           LD      A,($F7)             ; {}
+2F64: F0 F7           LD      A,($F7)             ; 
 2F66: FE 1A           CP      $1A                 
 2F68: 30 05           JR      NC,$2F6F            ; {}
 2F6A: FE 06           CP      $06                 
@@ -6407,7 +6407,7 @@ ClearRAMHL:
 2F8B: 7B              LD      A,E                 
 2F8C: FE 11           CP      $11                 
 2F8E: 20 F8           JR      NZ,$2F88            ; {}
-2F90: F0 F6           LD      A,($F6)             ; {}
+2F90: F0 F6           LD      A,($F6)             ; 
 2F92: 5F              LD      E,A                 
 2F93: 16 00           LD      D,$00               
 2F95: 21 00 D8        LD      HL,$D800            
@@ -6415,21 +6415,21 @@ ClearRAMHL:
 2F9B: A7              AND     A                   
 2F9C: 28 10           JR      Z,$2FAE             ; {}
 2F9E: 21 00 D9        LD      HL,$D900            
-2FA1: F0 F7           LD      A,($F7)             ; {}
+2FA1: F0 F7           LD      A,($F7)             ; 
 2FA3: FE 1A           CP      $1A                 
 2FA5: 30 07           JR      NC,$2FAE            ; {}
 2FA7: FE 06           CP      $06                 
 2FA9: 38 03           JR      C,$2FAE             ; {}
 2FAB: 21 00 DA        LD      HL,$DA00            
 2FAE: 19              ADD     HL,DE               
-2FAF: F0 F9           LD      A,($F9)             ; {}
+2FAF: F0 F9           LD      A,($F9)             ; 
 2FB1: A7              AND     A                   
 2FB2: 7E              LD      A,(HL)              
 2FB3: 20 03           JR      NZ,$2FB8            ; {}
 2FB5: F6 80           OR      $80                 
 2FB7: 77              LD      (HL),A              
-2FB8: E0 F8           LDFF00  ($F8),A             
-2FBA: F0 F6           LD      A,($F6)             ; {}
+2FB8: E0 F8           LD      ($FF00+$F8),A       
+2FBA: F0 F6           LD      A,($F6)             ; 
 2FBC: 4F              LD      C,A                 
 2FBD: 06 00           LD      B,$00               
 2FBF: CB 21           SLA     C                   
@@ -6439,11 +6439,11 @@ ClearRAMHL:
 2FC7: 28 39           JR      Z,$3002             ; {}
 2FC9: 3E 0A           LD      A,$0A               
 2FCB: EA 00 21        LD      ($2100),A           ; {}
-2FCE: E0 E8           LDFF00  ($E8),A             
-2FD0: F0 F7           LD      A,($F7)             ; {}
+2FCE: E0 E8           LD      ($FF00+$E8),A       
+2FD0: F0 F7           LD      A,($F7)             ; 
 2FD2: FE 1F           CP      $1F                 
 2FD4: 20 13           JR      NZ,$2FE9            ; {}
-2FD6: F0 F6           LD      A,($F6)             ; {}
+2FD6: F0 F6           LD      A,($F6)             ; 
 2FD8: FE F5           CP      $F5                 
 2FDA: 20 0D           JR      NZ,$2FE9            ; {}
 2FDC: FA 0E DB        LD      A,($DB0E)           
@@ -6452,17 +6452,17 @@ ClearRAMHL:
 2FE3: 01 53 78        LD      BC,$7853            
 2FE6: C3 7D 30        JP      $307D               ; {}
 2FE9: 21 00 40        LD      HL,$4000            
-2FEC: F0 F7           LD      A,($F7)             ; {}
+2FEC: F0 F7           LD      A,($F7)             ; 
 2FEE: FE 1A           CP      $1A                 
 2FF0: 30 75           JR      NC,$3067            ; {}
 2FF2: FE 06           CP      $06                 
 2FF4: 38 71           JR      C,$3067             ; {}
 2FF6: 3E 0B           LD      A,$0B               
 2FF8: EA 00 21        LD      ($2100),A           ; {}
-2FFB: E0 E8           LDFF00  ($E8),A             
+2FFB: E0 E8           LD      ($FF00+$E8),A       
 2FFD: 21 00 40        LD      HL,$4000            
 3000: 18 65           JR      $3067               ; {}
-3002: F0 F6           LD      A,($F6)             ; {}
+3002: F0 F6           LD      A,($F6)             ; 
 3004: FE 0E           CP      $0E                 
 3006: 20 0C           JR      NZ,$3014            ; {}
 3008: FA 0E D8        LD      A,($D80E)           
@@ -6514,7 +6514,7 @@ ClearRAMHL:
 306C: FA A5 DB        LD      A,($DBA5)           
 306F: A7              AND     A                   
 3070: 20 0B           JR      NZ,$307D            ; {}
-3072: F0 F6           LD      A,($F6)             ; {}
+3072: F0 F6           LD      A,($F6)             ; 
 3074: FE 80           CP      $80                 
 3076: 38 05           JR      C,$307D             ; {}
 3078: 3E 1A           LD      A,$1A               
@@ -6522,7 +6522,7 @@ ClearRAMHL:
 307D: 0A              LD      A,(BC)              
 307E: FE FE           CP      $FE                 
 3080: 28 4F           JR      Z,$30D1             ; {}
-3082: E0 A4           LDFF00  ($A4),A             
+3082: E0 A4           LD      ($FF00+$A4),A       
 3084: 03              INC     BC                  
 3085: FA A5 DB        LD      A,($DBA5)           
 3088: A7              AND     A                   
@@ -6542,7 +6542,7 @@ ClearRAMHL:
 30A1: E6 FC           AND     $FC                 
 30A3: FE E0           CP      $E0                 
 30A5: 20 20           JR      NZ,$30C7            ; {}
-30A7: F0 E6           LD      A,($E6)             ; {}
+30A7: F0 E6           LD      A,($E6)             ; 
 30A9: 5F              LD      E,A                 
 30AA: 16 00           LD      D,$00               
 30AC: 21 01 D4        LD      HL,$D401            
@@ -6564,7 +6564,7 @@ ClearRAMHL:
 30BF: 22              LD      (HLI),A             
 30C0: 7B              LD      A,E                 
 30C1: C6 05           ADD     $05                 
-30C3: E0 E6           LDFF00  ($E6),A             
+30C3: E0 E6           LD      ($FF00+$E6),A       
 30C5: 18 D8           JR      $309F               ; {}
 30C7: 0A              LD      A,(BC)              
 30C8: FE FE           CP      $FE                 
@@ -6576,16 +6576,16 @@ ClearRAMHL:
 30D6: CD DE 7C        CALL    $7CDE               
 30D9: C3 C0 07        JP      $07C0               ; {code.SwitchBankSave}
 30DC: AF              XOR     A                   
-30DD: E0 D7           LDFF00  ($D7),A             
+30DD: E0 D7           LD      ($FF00+$D7),A       
 30DF: 0A              LD      A,(BC)              
 30E0: CB 7F           BIT     7,A                 
 30E2: 28 07           JR      Z,$30EB             ; {}
 30E4: CB 67           BIT     4,A                 
 30E6: 20 03           JR      NZ,$30EB            ; {}
-30E8: E0 D7           LDFF00  ($D7),A             
+30E8: E0 D7           LD      ($FF00+$D7),A       
 30EA: 03              INC     BC                  
 30EB: 03              INC     BC                  
-30EC: F0 F8           LD      A,($F8)             ; {}
+30EC: F0 F8           LD      A,($F8)             ; 
 30EE: 5F              LD      E,A                 
 30EF: FA A5 DB        LD      A,($DBA5)           
 30F2: A7              AND     A                   
@@ -6697,7 +6697,7 @@ ClearRAMHL:
 3198: 20 1B           JR      NZ,$31B5            ; {}
 319A: CB 63           BIT     4,E                 
 319C: 28 17           JR      Z,$31B5             ; {}
-319E: F0 F6           LD      A,($F6)             ; {}
+319E: F0 F6           LD      A,($F6)             ; 
 31A0: FE 75           CP      $75                 
 31A2: 28 0C           JR      Z,$31B0             ; {}
 31A4: FE 07           CP      $07                 
@@ -6711,7 +6711,7 @@ ClearRAMHL:
 31B3: 57              LD      D,A                 
 31B4: F5              PUSH    AF                  
 31B5: 7A              LD      A,D                 
-31B6: E0 E0           LDFF00  ($E0),A             
+31B6: E0 E0           LD      ($FF00+$E0),A       
 31B8: FE C2           CP      $C2                 
 31BA: 28 20           JR      Z,$31DC             ; {}
 31BC: FE E1           CP      $E1                 
@@ -6741,14 +6741,14 @@ ClearRAMHL:
 31EB: 0A              LD      A,(BC)              
 31EC: 77              LD      (HL),A              
 31ED: 03              INC     BC                  
-31EE: F0 E0           LD      A,($E0)             ; {}
+31EE: F0 E0           LD      A,($E0)             ; 
 31F0: FE C5           CP      $C5                 
 31F2: CA AA 32        JP      Z,$32AA             ; {}
 31F5: FE C6           CP      $C6                 
 31F7: CA AA 32        JP      Z,$32AA             ; {}
 31FA: C3 FB 32        JP      $32FB               ; {}
 31FD: C6 EC           ADD     $EC                 
-31FF: E0 E0           LDFF00  ($E0),A             
+31FF: E0 E0           LD      ($FF00+$E0),A       
 3201: F5              PUSH    AF                  
 3202: FE CF           CP      $CF                 
 3204: 38 08           JR      C,$320E             ; {}
@@ -6760,9 +6760,9 @@ ClearRAMHL:
 3210: 20 22           JR      NZ,$3234            ; {}
 3212: AF              XOR     A                   
 3213: EA CB C3        LD      ($C3CB),A           
-3216: F0 F6           LD      A,($F6)             ; {}
+3216: F0 F6           LD      A,($F6)             ; 
 3218: FE C4           CP      $C4                 
-321A: F0 E0           LD      A,($E0)             ; {}
+321A: F0 E0           LD      A,($E0)             ; 
 321C: 28 16           JR      Z,$3234             ; {}
 321E: 21 C9 DB        LD      HL,$DBC9            
 3221: 34              INC     (HL)                
@@ -6822,7 +6822,7 @@ ClearRAMHL:
 328C: CB 63           BIT     4,E                 
 328E: 20 04           JR      NZ,$3294            ; {}
 3290: F1              POP     AF                  
-3291: F0 E9           LD      A,($E9)             ; {}
+3291: F0 E9           LD      A,($E9)             ; 
 3293: F5              PUSH    AF                  
 3294: FE BF           CP      $BF                 
 3296: 20 06           JR      NZ,$329E            ; {}
@@ -6838,16 +6838,16 @@ ClearRAMHL:
 32A8: 20 19           JR      NZ,$32C3            ; {}
 32AA: 0B              DEC     BC                  
 32AB: 3E 01           LD      A,$01               
-32AD: E0 AC           LDFF00  ($AC),A             
+32AD: E0 AC           LD      ($FF00+$AC),A       
 32AF: 0A              LD      A,(BC)              
 32B0: E6 F0           AND     $F0                 
 32B2: C6 10           ADD     $10                 
-32B4: E0 AE           LDFF00  ($AE),A             
+32B4: E0 AE           LD      ($FF00+$AE),A       
 32B6: 0A              LD      A,(BC)              
 32B7: CB 37           SWAP    A                   
 32B9: E6 F0           AND     $F0                 
 32BB: C6 08           ADD     $08                 
-32BD: E0 AD           LDFF00  ($AD),A             
+32BD: E0 AD           LD      ($FF00+$AD),A       
 32BF: 03              INC     BC                  
 32C0: C3 FB 32        JP      $32FB               ; {}
 32C3: FE D6           CP      $D6                 
@@ -6868,9 +6868,9 @@ ClearRAMHL:
 32DF: F1              POP     AF                  
 32E0: 3E 22           LD      A,$22               
 32E2: F5              PUSH    AF                  
-32E3: F0 F7           LD      A,($F7)             ; {}
+32E3: F0 F7           LD      A,($F7)             ; 
 32E5: FE 0A           CP      $0A                 
-32E7: F0 E0           LD      A,($E0)             ; {}
+32E7: F0 E0           LD      A,($E0)             ; 
 32E9: 38 04           JR      C,$32EF             ; {}
 32EB: FE A9           CP      $A9                 
 32ED: 28 04           JR      Z,$32F3             ; {}
@@ -6889,7 +6889,7 @@ ClearRAMHL:
 3304: 3E A1           LD      A,$A1               
 3306: F5              PUSH    AF                  
 3307: 16 00           LD      D,$00               
-3309: F0 D7           LD      A,($D7)             ; {}
+3309: F0 D7           LD      A,($D7)             ; 
 330B: A7              AND     A                   
 330C: 28 1F           JR      Z,$332D             ; {}
 330E: 0B              DEC     BC                  
@@ -6897,14 +6897,14 @@ ClearRAMHL:
 3310: 5F              LD      E,A                 
 3311: 21 11 D7        LD      HL,$D711            
 3314: 19              ADD     HL,DE               
-3315: F0 D7           LD      A,($D7)             ; {}
+3315: F0 D7           LD      A,($D7)             ; 
 3317: E6 0F           AND     $0F                 
 3319: 5F              LD      E,A                 
 331A: F1              POP     AF                  
 331B: 57              LD      D,A                 
 331C: 7A              LD      A,D                 
 331D: 22              LD      (HLI),A             
-331E: F0 D7           LD      A,($D7)             ; {}
+331E: F0 D7           LD      A,($D7)             ; 
 3320: E6 40           AND     $40                 
 3322: 28 04           JR      Z,$3328             ; {}
 3324: 7D              LD      A,L                 
@@ -6935,14 +6935,14 @@ ClearRAMHL:
 3345: 16 00           LD      D,$00               
 3347: 21 00 D7        LD      HL,$D700            
 334A: 19              ADD     HL,DE               
-334B: F0 D7           LD      A,($D7)             ; {}
+334B: F0 D7           LD      A,($D7)             ; 
 334D: A7              AND     A                   
 334E: 28 19           JR      Z,$3369             ; {}
 3350: E6 0F           AND     $0F                 
 3352: 5F              LD      E,A                 
 3353: CD 69 33        CALL    $3369               ; {}
 3356: 0B              DEC     BC                  
-3357: F0 D7           LD      A,($D7)             ; {}
+3357: F0 D7           LD      A,($D7)             ; 
 3359: E6 40           AND     $40                 
 335B: 16 F1           LD      D,$F1               
 335D: 28 02           JR      Z,$3361             ; {}
@@ -7057,7 +7057,7 @@ ClearRAMHL:
 3406: 00              NOP                         
 3407: 01 02 03        LD      BC,$0302            
 340A: 04              INC     B                   
-340B: 10 11           STOP    $11                 
+340B: 10 11           ;;STOP    $11                 
 340D: 12              LD      (DE),A              
 340E: 13              INC     DE                  
 340F: 14              INC     D                   
@@ -7077,9 +7077,9 @@ ClearRAMHL:
 341E: 59              LD      E,C                 
 341F: 58              LD      E,B                 
 3420: 5B              LD      E,E                 
-3421: E2              LDFF00  (C),A               
+3421: E2              LD      (C),A               
 3422: 5B              LD      E,E                 
-3423: E2              LDFF00  (C),A               
+3423: E2              LD      (C),A               
 3424: 5B              LD      E,E                 
 3425: C5              PUSH    BC                  
 3426: CD FC 33        CALL    $33FC               ; {}
@@ -7097,7 +7097,7 @@ ClearRAMHL:
 3440: 59              LD      E,C                 
 3441: 58              LD      E,B                 
 3442: 5B              LD      E,E                 
-3443: E2              LDFF00  (C),A               
+3443: E2              LD      (C),A               
 3444: 5B              LD      E,E                 
 3445: C5              PUSH    BC                  
 3446: CD FC 33        CALL    $33FC               ; {}
@@ -7133,7 +7133,7 @@ ClearRAMHL:
 347A: CD FC 33        CALL    $33FC               ; {}
 347D: 01 6C 34        LD      BC,$346C            
 3480: 11 71 34        LD      DE,$3471            
-3483: F0 F8           LD      A,($F8)             ; {}
+3483: F0 F8           LD      A,($F8)             ; 
 3485: E6 04           AND     $04                 
 3487: 28 03           JR      Z,$348C             ; {}
 3489: 11 75 34        LD      DE,$3475            
@@ -7182,7 +7182,7 @@ ClearRAMHL:
 34D7: 52              LD      D,D                 
 34D8: 52              LD      D,D                 
 34D9: 5B              LD      E,E                 
-34DA: E2              LDFF00  (C),A               
+34DA: E2              LD      (C),A               
 34DB: 5B              LD      E,E                 
 34DC: C5              PUSH    BC                  
 34DD: CD FC 33        CALL    $33FC               ; {}
@@ -7193,7 +7193,7 @@ ClearRAMHL:
 34EA: 2E 1E           LD      L,$1E               
 34EC: 00              NOP                         
 34ED: CD 27 36        CALL    $3627               ; {}
-34F0: F0 F8           LD      A,($F8)             ; {}
+34F0: F0 F8           LD      A,($F8)             ; 
 34F2: E6 04           AND     $04                 
 34F4: C2 A3 35        JP      NZ,$35A3            ; {}
 34F7: C5              PUSH    BC                  
@@ -7205,7 +7205,7 @@ ClearRAMHL:
 3505: 30 1E           JR      NC,$3525            ; {}
 3507: 01 CD 27        LD      BC,$27CD            
 350A: 36 F0           LD      (HL),$F0            
-350C: F8 E6           LDHL    SP,$E6              
+350C: F8 E6           LD      HL,SP+$E6           
 350E: 08 C2 D2        LD      ($D2C2),SP          
 3511: 35              DEC     (HL)                
 3512: C5              PUSH    BC                  
@@ -7216,7 +7216,7 @@ ClearRAMHL:
 351F: 31 32 1E        LD      SP,$1E32            
 3522: 02              LD      (BC),A              
 3523: CD 27 36        CALL    $3627               ; {}
-3526: F0 F8           LD      A,($F8)             ; {}
+3526: F0 F8           LD      A,($F8)             ; 
 3528: E6 02           AND     $02                 
 352A: C2 E6 35        JP      NZ,$35E6            ; {}
 352D: C5              PUSH    BC                  
@@ -7228,7 +7228,7 @@ ClearRAMHL:
 353B: 34              INC     (HL)                
 353C: 1E 03           LD      E,$03               
 353E: CD 27 36        CALL    $3627               ; {}
-3541: F0 F8           LD      A,($F8)             ; {}
+3541: F0 F8           LD      A,($F8)             ; 
 3543: E6 01           AND     $01                 
 3545: C2 FA 35        JP      NZ,$35FA            ; {}
 3548: C5              PUSH    BC                  
@@ -7274,10 +7274,10 @@ ClearRAMHL:
 35AF: 11 A1 35        LD      DE,$35A1            
 35B2: C3 A7 33        JP      $33A7               ; {}
 35B5: F5              PUSH    AF                  
-35B6: F0 F6           LD      A,($F6)             ; {}
+35B6: F0 F6           LD      A,($F6)             ; 
 35B8: 5F              LD      E,A                 
 35B9: 16 00           LD      D,$00               
-35BB: F0 F7           LD      A,($F7)             ; {}
+35BB: F0 F7           LD      A,($F7)             ; 
 35BD: FE 1A           CP      $1A                 
 35BF: 30 05           JR      NC,$35C6            ; {}
 35C1: FE 06           CP      $06                 
@@ -7288,7 +7288,7 @@ ClearRAMHL:
 35CA: F1              POP     AF                  
 35CB: B6              OR      (HL)                
 35CC: 77              LD      (HL),A              
-35CD: E0 F8           LDFF00  ($F8),A             
+35CD: E0 F8           LD      ($FF00+$F8),A       
 35CF: C9              RET                         
 35D0: 8C              ADC     A,H                 
 35D1: 08 3E 08        LD      ($083E),SP          ; {}
@@ -7320,7 +7320,7 @@ ClearRAMHL:
 360D: A5              AND     L                   
 360E: 1E 08           LD      E,$08               
 3610: CD 27 36        CALL    $3627               ; {}
-3613: F0 F8           LD      A,($F8)             ; {}
+3613: F0 F8           LD      A,($F8)             ; 
 3615: E6 04           AND     $04                 
 3617: C2 A3 35        JP      NZ,$35A3            ; {}
 361A: C5              PUSH    BC                  
@@ -7370,7 +7370,7 @@ ClearRAMHL:
 366E: C3 A7 33        JP      $33A7               ; {}
 3671: 00              NOP                         
 3672: 01 02 03        LD      BC,$0302            
-3675: 10 11           STOP    $11                 
+3675: 10 11           ;;STOP    $11                 
 3677: 12              LD      (DE),A              
 3678: 13              INC     DE                  
 3679: 20 21           JR      NZ,$369C            ; {}
@@ -7402,7 +7402,7 @@ ClearRAMHL:
 36A2: 30 13           JR      NC,$36B7            ; {}
 36A4: FE 06           CP      $06                 
 36A6: 38 0F           JR      C,$36B7             ; {}
-36A8: F0 F6           LD      A,($F6)             ; {}
+36A8: F0 F6           LD      A,($F6)             ; 
 36AA: FE D3           CP      $D3                 
 36AC: 20 09           JR      NZ,$36B7            ; {}
 36AE: FA 46 DB        LD      A,($DB46)           
@@ -7418,8 +7418,8 @@ ClearRAMHL:
 36C6: C3 A7 33        JP      $33A7               ; {}
 36C9: 00              NOP                         
 36CA: 01 FF 00        LD      BC,$00FF            
-36CD: 10 FF           STOP    $FF                 
-36CF: E0 E9           LDFF00  ($E9),A             
+36CD: 10 FF           ;;STOP    $FF                 
+36CF: E0 E9           LD      ($FF00+$E9),A       
 36D1: 16 80           LD      D,$80               
 36D3: 21 11 D7        LD      HL,$D711            
 36D6: 5F              LD      E,A                 
@@ -7439,8 +7439,8 @@ ClearRAMHL:
 36EE: 3E 16           LD      A,$16               
 36F0: EA 00 21        LD      ($2100),A           ; {}
 36F3: AF              XOR     A                   
-36F4: E0 E4           LDFF00  ($E4),A             
-36F6: F0 F6           LD      A,($F6)             ; {}
+36F4: E0 E4           LD      ($FF00+$E4),A       
+36F6: F0 F6           LD      A,($F6)             ; 
 36F8: 4F              LD      C,A                 
 36F9: 06 00           LD      B,$00               
 36FB: CB 21           SLA     C                   
@@ -7449,7 +7449,7 @@ ClearRAMHL:
 3702: FA A5 DB        LD      A,($DBA5)           
 3705: A7              AND     A                   
 3706: 28 3F           JR      Z,$3747             ; {}
-3708: F0 F7           LD      A,($F7)             ; {}
+3708: F0 F7           LD      A,($F7)             ; 
 370A: FE 06           CP      $06                 
 370C: 20 2A           JR      NZ,$3738            ; {}
 370E: FA 6F DB        LD      A,($DB6F)           
@@ -7471,9 +7471,9 @@ ClearRAMHL:
 3732: 19              ADD     HL,DE               
 3733: 36 FF           LD      (HL),$FF            
 3735: AF              XOR     A                   
-3736: E0 E4           LDFF00  ($E4),A             
+3736: E0 E4           LD      ($FF00+$E4),A       
 3738: 21 00 42        LD      HL,$4200            
-373B: F0 F7           LD      A,($F7)             ; {}
+373B: F0 F7           LD      A,($F7)             ; 
 373D: FE 1A           CP      $1A                 
 373F: 30 06           JR      NC,$3747            ; {}
 3741: FE 06           CP      $06                 
@@ -7496,14 +7496,14 @@ ClearRAMHL:
 375D: 08 10 20        LD      ($2010),SP          ; {}
 3760: 40              LD      B,B                 
 3761: 80              ADD     A,B                 
-3762: F0 E4           LD      A,($E4)             ; {}
+3762: F0 E4           LD      A,($E4)             ; 
 3764: FE 08           CP      $08                 
 3766: 30 12           JR      NC,$377A            ; {}
 3768: 5F              LD      E,A                 
 3769: 16 00           LD      D,$00               
 376B: 21 5A 37        LD      HL,$375A            
 376E: 19              ADD     HL,DE               
-376F: F0 F6           LD      A,($F6)             ; {}
+376F: F0 F6           LD      A,($F6)             ; 
 3771: 5F              LD      E,A                 
 3772: 7E              LD      A,(HL)              
 3773: 21 00 CF        LD      HL,$CF00            
@@ -7562,7 +7562,7 @@ ClearRAMHL:
 37D0: C5              PUSH    BC                  
 37D1: CD 00 50        CALL    $5000               
 37D4: C1              POP     BC                  
-37D5: F0 E8           LD      A,($E8)             ; {}
+37D5: F0 E8           LD      A,($E8)             ; 
 37D7: EA 00 21        LD      ($2100),A           ; {}
 37DA: C9              RET                         
 37DB: 3E 01           LD      A,$01               
@@ -7616,7 +7616,7 @@ ClearRAMHL:
 384A: 35              DEC     (HL)                
 384B: 20 04           JR      NZ,$3851            ; {}
 384D: 3E 10           LD      A,$10               
-384F: E0 F3           LDFF00  ($F3),A             
+384F: E0 F3           LD      ($FF00+$F3),A       
 3851: FA 9F C1        LD      A,($C19F)           
 3854: A7              AND     A                   
 3855: 20 0D           JR      NZ,$3864            ; {}
@@ -7631,9 +7631,9 @@ ClearRAMHL:
 3869: C8              RET     Z                   
 386A: AF              XOR     A                   
 386B: EA C1 C3        LD      ($C3C1),A           
-386E: F0 F7           LD      A,($F7)             ; {}
+386E: F0 F7           LD      A,($F7)             ; 
 3870: FE 0A           CP      $0A                 
-3872: F0 E7           LD      A,($E7)             ; {}
+3872: F0 E7           LD      A,($E7)             ; 
 3874: 38 01           JR      C,$3877             ; {}
 3876: AF              XOR     A                   
 3877: E6 03           AND     $03                 
@@ -7648,7 +7648,7 @@ ClearRAMHL:
 388A: AF              XOR     A                   
 388B: EA A0 C5        LD      ($C5A0),A           
 388E: EA 0C C1        LD      ($C10C),A           
-3891: E0 B2           LDFF00  ($B2),A             
+3891: E0 B2           LD      ($FF00+$B2),A       
 3893: EA 17 C1        LD      ($C117),A           
 3896: EA 9D C1        LD      ($C19D),A           
 3899: EA 47 C1        LD      ($C147),A           
@@ -7670,7 +7670,7 @@ ClearRAMHL:
 38BF: 7E              LD      A,(HL)              
 38C0: A7              AND     A                   
 38C1: 28 05           JR      Z,$38C8             ; {}
-38C3: E0 EA           LDFF00  ($EA),A             
+38C3: E0 EA           LD      ($FF00+$EA),A       
 38C5: CD DD 38        CALL    $38DD               ; {}
 38C8: 0D              DEC     C                   
 38C9: 79              LD      A,C                 
@@ -7686,24 +7686,24 @@ ClearRAMHL:
 38DD: 21 A0 C3        LD      HL,$C3A0            
 38E0: 09              ADD     HL,BC               
 38E1: 7E              LD      A,(HL)              
-38E2: E0 EB           LDFF00  ($EB),A             
+38E2: E0 EB           LD      ($FF00+$EB),A       
 38E4: 21 90 C2        LD      HL,$C290            
 38E7: 09              ADD     HL,BC               
 38E8: 7E              LD      A,(HL)              
-38E9: E0 F0           LDFF00  ($F0),A             
+38E9: E0 F0           LD      ($FF00+$F0),A       
 38EB: 21 B0 C3        LD      HL,$C3B0            
 38EE: 09              ADD     HL,BC               
 38EF: 7E              LD      A,(HL)              
-38F0: E0 F1           LDFF00  ($F1),A             
+38F0: E0 F1           LD      ($FF00+$F1),A       
 38F2: 3E 19           LD      A,$19               
 38F4: CD B9 07        CALL    $07B9               ; {code.SwitchBank}
-38F7: F0 EB           LD      A,($EB)             ; {}
+38F7: F0 EB           LD      A,($EB)             ; 
 38F9: FE 6A           CP      $6A                 
 38FB: 20 05           JR      NZ,$3902            ; {}
-38FD: F0 B2           LD      A,($B2)             ; {}
+38FD: F0 B2           LD      A,($B2)             ; 
 38FF: A7              AND     A                   
 3900: 20 06           JR      NZ,$3908            ; {}
-3902: F0 EA           LD      A,($EA)             ; {}
+3902: F0 EA           LD      A,($EA)             ; 
 3904: FE 07           CP      $07                 
 3906: 20 08           JR      NZ,$3910            ; {}
 3908: CD 5F 75        CALL    $755F               
@@ -7716,7 +7716,7 @@ ClearRAMHL:
 391B: CD 88 53        CALL    $5388               
 391E: 3E 03           LD      A,$03               
 3920: CD B9 07        CALL    $07B9               ; {code.SwitchBank}
-3923: F0 EA           LD      A,($EA)             ; {}
+3923: F0 EA           LD      A,($EA)             ; 
 3925: FE 05           CP      $05                 
 3927: CA 45 39        JP      Z,$3945             ; {}
 392A: C7              RST     0X00                
@@ -7739,7 +7739,7 @@ ClearRAMHL:
 393D: CD 45 39        CALL    $3945               ; {}
 3940: 3E 03           LD      A,$03               
 3942: C3 B9 07        JP      $07B9               ; {code.SwitchBank}
-3945: F0 EB           LD      A,($EB)             ; {}
+3945: F0 EB           LD      A,($EB)             ; 
 3947: 5F              LD      E,A                 
 3948: 50              LD      D,B                 
 3949: 21 00 40        LD      HL,$4000            
@@ -8196,7 +8196,7 @@ ClearRAMHL:
 3B4E: 07              RLCA                        
 3B4F: FC                              
 3B50: 04              INC     B                   
-3B51: 10 10           STOP    $10                 
+3B51: 10 10           ;;STOP    $10                 
 3B53: 0C              INC     C                   
 3B54: 12              LD      (DE),A              
 3B55: 08 08 02        LD      ($0208),SP          ; {}
@@ -8302,7 +8302,7 @@ ClearRAMHL:
 3C33: 36 03           LD      (HL),$03            
 3C35: CD 17 7E        CALL    $7E17               
 3C38: C3 C0 07        JP      $07C0               ; {code.SwitchBankSave}
-3C3B: F0 F1           LD      A,($F1)             ; {}
+3C3B: F0 F1           LD      A,($F1)             ; 
 3C3D: 3C              INC     A                   
 3C3E: C8              RET     Z                   
 3C3F: CD 87 3D        CALL    $3D87               ; {}
@@ -8314,12 +8314,12 @@ ClearRAMHL:
 3C4B: 19              ADD     HL,DE               
 3C4C: E5              PUSH    HL                  
 3C4D: D1              POP     DE                  
-3C4E: F0 EC           LD      A,($EC)             ; {}
+3C4E: F0 EC           LD      A,($EC)             ; 
 3C50: 12              LD      (DE),A              
 3C51: 13              INC     DE                  
 3C52: FA 55 C1        LD      A,($C155)           
 3C55: 4F              LD      C,A                 
-3C56: F0 ED           LD      A,($ED)             ; {}
+3C56: F0 ED           LD      A,($ED)             ; 
 3C58: E6 20           AND     $20                 
 3C5A: 1F              RRA                         
 3C5B: 1F              RRA                         
@@ -8328,7 +8328,7 @@ ClearRAMHL:
 3C60: 91              SUB     C                   
 3C61: 12              LD      (DE),A              
 3C62: 13              INC     DE                  
-3C63: F0 F1           LD      A,($F1)             ; {}
+3C63: F0 F1           LD      A,($F1)             ; 
 3C65: 4F              LD      C,A                 
 3C66: 06 00           LD      B,$00               
 3C68: CB 21           SLA     C                   
@@ -8337,7 +8337,7 @@ ClearRAMHL:
 3C6E: CB 10           RL      B                   
 3C70: E1              POP     HL                  
 3C71: 09              ADD     HL,BC               
-3C72: F0 F5           LD      A,($F5)             ; {}
+3C72: F0 F5           LD      A,($F5)             ; 
 3C74: 4F              LD      C,A                 
 3C75: 2A              LD      A,(HLI)             
 3C76: 81              ADD     A,C                 
@@ -8356,12 +8356,12 @@ ClearRAMHL:
 3C89: AE              XOR     (HL)                
 3C8A: 12              LD      (DE),A              
 3C8B: 13              INC     DE                  
-3C8C: F0 EC           LD      A,($EC)             ; {}
+3C8C: F0 EC           LD      A,($EC)             ; 
 3C8E: 12              LD      (DE),A              
 3C8F: 13              INC     DE                  
 3C90: FA 55 C1        LD      A,($C155)           
 3C93: 4F              LD      C,A                 
-3C94: F0 ED           LD      A,($ED)             ; {}
+3C94: F0 ED           LD      A,($ED)             ; 
 3C96: E6 20           AND     $20                 
 3C98: EE 20           XOR     $20                 
 3C9A: 1F              RRA                         
@@ -8372,7 +8372,7 @@ ClearRAMHL:
 3CA1: 12              LD      (DE),A              
 3CA2: 13              INC     DE                  
 3CA3: E1              POP     HL                  
-3CA4: F0 F5           LD      A,($F5)             ; {}
+3CA4: F0 F5           LD      A,($F5)             ; 
 3CA6: 4F              LD      C,A                 
 3CA7: 2A              LD      A,(HLI)             
 3CA8: 81              ADD     A,C                 
@@ -8397,7 +8397,7 @@ ClearRAMHL:
 3CC7: CD 6D 79        CALL    $796D               
 3CCA: CD A5 79        CALL    $79A5               
 3CCD: C3 C0 07        JP      $07C0               ; {code.SwitchBankSave}
-3CD0: F0 F1           LD      A,($F1)             ; {}
+3CD0: F0 F1           LD      A,($F1)             ; 
 3CD2: 3C              INC     A                   
 3CD3: C8              RET     Z                   
 3CD4: CD 87 3D        CALL    $3D87               ; {}
@@ -8412,22 +8412,22 @@ ClearRAMHL:
 3CE4: FA 23 C1        LD      A,($C123)           
 3CE7: 4F              LD      C,A                 
 3CE8: 06 00           LD      B,$00               
-3CEA: F0 F9           LD      A,($F9)             ; {}
+3CEA: F0 F9           LD      A,($F9)             ; 
 3CEC: A7              AND     A                   
-3CED: F0 EC           LD      A,($EC)             ; {}
+3CED: F0 EC           LD      A,($EC)             ; 
 3CEF: 28 04           JR      Z,$3CF5             ; {}
 3CF1: D6 04           SUB     $04                 
-3CF3: E0 EC           LDFF00  ($EC),A             
+3CF3: E0 EC           LD      ($FF00+$EC),A       
 3CF5: 12              LD      (DE),A              
 3CF6: 13              INC     DE                  
 3CF7: FA 55 C1        LD      A,($C155)           
 3CFA: 67              LD      H,A                 
-3CFB: F0 EE           LD      A,($EE)             ; {}
+3CFB: F0 EE           LD      A,($EE)             ; 
 3CFD: C6 04           ADD     $04                 
 3CFF: 94              SUB     H                   
 3D00: 12              LD      (DE),A              
 3D01: 13              INC     DE                  
-3D02: F0 F1           LD      A,($F1)             ; {}
+3D02: F0 F1           LD      A,($F1)             ; 
 3D04: 4F              LD      C,A                 
 3D05: 06 00           LD      B,$00               
 3D07: CB 21           SLA     C                   
@@ -8449,7 +8449,7 @@ ClearRAMHL:
 3D20: E5              PUSH    HL                  
 3D21: 21 00 C0        LD      HL,$C000            
 3D24: 18 10           JR      $3D36               ; {}
-3D26: F0 F1           LD      A,($F1)             ; {}
+3D26: F0 F1           LD      A,($F1)             ; 
 3D28: 3C              INC     A                   
 3D29: 28 57           JR      Z,$3D82             ; {}
 3D2B: E5              PUSH    HL                  
@@ -8462,13 +8462,13 @@ ClearRAMHL:
 3D37: D1              POP     DE                  
 3D38: E1              POP     HL                  
 3D39: 79              LD      A,C                 
-3D3A: E0 D7           LDFF00  ($D7),A             
+3D3A: E0 D7           LD      ($FF00+$D7),A       
 3D3C: FA 23 C1        LD      A,($C123)           
 3D3F: 4F              LD      C,A                 
 3D40: CD 87 3D        CALL    $3D87               ; {}
-3D43: F0 D7           LD      A,($D7)             ; {}
+3D43: F0 D7           LD      A,($D7)             ; 
 3D45: 4F              LD      C,A                 
-3D46: F0 EC           LD      A,($EC)             ; {}
+3D46: F0 EC           LD      A,($EC)             ; 
 3D48: 86              ADD     A,(HL)              
 3D49: 12              LD      (DE),A              
 3D4A: 23              INC     HL                  
@@ -8476,13 +8476,13 @@ ClearRAMHL:
 3D4C: C5              PUSH    BC                  
 3D4D: FA 55 C1        LD      A,($C155)           
 3D50: 4F              LD      C,A                 
-3D51: F0 EE           LD      A,($EE)             ; {}
+3D51: F0 EE           LD      A,($EE)             ; 
 3D53: 86              ADD     A,(HL)              
 3D54: 91              SUB     C                   
 3D55: 12              LD      (DE),A              
 3D56: 23              INC     HL                  
 3D57: 13              INC     DE                  
-3D58: F0 F5           LD      A,($F5)             ; {}
+3D58: F0 F5           LD      A,($F5)             ; 
 3D5A: 4F              LD      C,A                 
 3D5B: 2A              LD      A,(HLI)             
 3D5C: F5              PUSH    AF                  
@@ -8497,7 +8497,7 @@ ClearRAMHL:
 3D67: 13              INC     DE                  
 3D68: C1              POP     BC                  
 3D69: 13              INC     DE                  
-3D6A: F0 ED           LD      A,($ED)             ; {}
+3D6A: F0 ED           LD      A,($ED)             ; 
 3D6C: AE              XOR     (HL)                
 3D6D: 23              INC     HL                  
 3D6E: 12              LD      (DE),A              
@@ -8517,11 +8517,11 @@ ClearRAMHL:
 3D88: FA 24 C1        LD      A,($C124)           
 3D8B: A7              AND     A                   
 3D8C: 28 1F           JR      Z,$3DAD             ; {}
-3D8E: F0 EE           LD      A,($EE)             ; {}
+3D8E: F0 EE           LD      A,($EE)             ; 
 3D90: 3D              DEC     A                   
 3D91: FE C0           CP      $C0                 
 3D93: 30 17           JR      NC,$3DAC            ; {}
-3D95: F0 EC           LD      A,($EC)             ; {}
+3D95: F0 EC           LD      A,($EC)             ; 
 3D97: 3D              DEC     A                   
 3D98: FE 88           CP      $88                 
 3D9A: 30 10           JR      NC,$3DAC            ; {}
@@ -8548,15 +8548,15 @@ ClearRAMHL:
 3DBA: 21 00 C2        LD      HL,$C200            
 3DBD: 09              ADD     HL,BC               
 3DBE: 7E              LD      A,(HL)              
-3DBF: E0 EE           LDFF00  ($EE),A             
+3DBF: E0 EE           LD      ($FF00+$EE),A       
 3DC1: 21 10 C2        LD      HL,$C210            
 3DC4: 09              ADD     HL,BC               
 3DC5: 7E              LD      A,(HL)              
-3DC6: E0 EF           LDFF00  ($EF),A             
+3DC6: E0 EF           LD      ($FF00+$EF),A       
 3DC8: 21 10 C3        LD      HL,$C310            
 3DCB: 09              ADD     HL,BC               
 3DCC: 96              SUB     (HL)                
-3DCD: E0 EC           LDFF00  ($EC),A             
+3DCD: E0 EC           LD      ($FF00+$EC),A       
 3DCF: C9              RET                         
 3DD0: 21 00 21        LD      HL,$2100            
 3DD3: 36 15           LD      (HL),$15            
@@ -8652,14 +8652,14 @@ ClearRAMHL:
 3EBC: 7E              LD      A,(HL)              
 3EBD: A7              AND     A                   
 3EBE: C8              RET     Z                   
-3EBF: F0 E7           LD      A,($E7)             ; {}
+3EBF: F0 E7           LD      A,($E7)             ; 
 3EC1: A9              XOR     C                   
 3EC2: E6 03           AND     $03                 
 3EC4: C0              RET     NZ                  
-3EC5: F0 EE           LD      A,($EE)             ; {}
-3EC7: E0 D7           LDFF00  ($D7),A             
-3EC9: F0 EC           LD      A,($EC)             ; {}
-3ECB: E0 D8           LDFF00  ($D8),A             
+3EC5: F0 EE           LD      A,($EE)             ; 
+3EC7: E0 D7           LD      ($FF00+$D7),A       
+3EC9: F0 EC           LD      A,($EC)             ; 
+3ECB: E0 D8           LD      ($FF00+$D8),A       
 3ECD: 3E 08           LD      A,$08               
 3ECF: CD 53 09        CALL    $0953               ; {}
 3ED2: 21 20 C5        LD      HL,$C520            
@@ -8673,7 +8673,7 @@ ClearRAMHL:
 3EE0: 28 02           JR      Z,$3EE4             ; {}
 3EE2: 2F              CPL                         
 3EE3: 3C              INC     A                   
-3EE4: E0 D7           LDFF00  ($D7),A             
+3EE4: E0 D7           LD      ($FF00+$D7),A       
 3EE6: 21 00 C4        LD      HL,$C400            
 3EE9: 09              ADD     HL,BC               
 3EEA: 7E              LD      A,(HL)              
@@ -8727,11 +8727,11 @@ ClearRAMHL:
 3F37: 28 02           JR      Z,$3F3B             ; {}
 3F39: 3E 50           LD      A,$50               
 3F3B: EA 68 D3        LD      ($D368),A           
-3F3E: E0 BD           LDFF00  ($BD),A             
+3F3E: E0 BD           LD      ($FF00+$BD),A       
 3F40: FA 6B C1        LD      A,($C16B)           
 3F43: FE 04           CP      $04                 
 3F45: C0              RET     NZ                  
-3F46: F0 EB           LD      A,($EB)             ; {}
+3F46: F0 EB           LD      A,($EB)             ; 
 3F48: FE 87           CP      $87                 
 3F4A: 20 04           JR      NZ,$3F50            ; {}
 3F4C: 3E DA           LD      A,$DA               
@@ -8745,7 +8745,7 @@ ClearRAMHL:
 3F5C: 7E              LD      A,(HL)              
 3F5D: E6 04           AND     $04                 
 3F5F: 20 10           JR      NZ,$3F71            ; {}
-3F61: F0 F7           LD      A,($F7)             ; {}
+3F61: F0 F7           LD      A,($F7)             ; 
 3F63: FE 05           CP      $05                 
 3F65: 28 0A           JR      Z,$3F71             ; {}
 3F67: 5F              LD      E,A                 
@@ -8786,7 +8786,7 @@ ClearRAMHL:
 3FA7: 50              LD      D,B                 
 3FA8: 21 72 3F        LD      HL,$3F72            
 3FAB: 19              ADD     HL,DE               
-3FAC: F0 F6           LD      A,($F6)             ; {}
+3FAC: F0 F6           LD      A,($F6)             ; 
 3FAE: 5F              LD      E,A                 
 3FAF: 50              LD      D,B                 
 3FB0: 7E              LD      A,(HL)              
@@ -8817,7 +8817,7 @@ ClearRAMHL:
 3FEA: 01 10 00        LD      BC,$0010            
 3FED: CD C5 28        CALL    $28C5               ; {code.CopyHLtoDE}
 3FF0: AF              XOR     A                   
-3FF1: E0 A5           LDFF00  ($A5),A             
+3FF1: E0 A5           LD      ($FF00+$A5),A       
 3FF3: 3E 0C           LD      A,$0C               
 3FF5: EA 00 21        LD      ($2100),A           ; {}
 3FF8: C3 CC 1C        JP      $1CCC               ; {}

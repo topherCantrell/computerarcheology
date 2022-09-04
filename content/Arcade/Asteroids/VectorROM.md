@@ -6,13 +6,6 @@
 
 >>> binary 0800:roms/035127.02
 
-```html
-<script src="/Arcade/Asteroids/VectorROM.js"></script>
-<script src="/js/BinaryData.js"></script>
-<script src="/js/DVG.js"></script>
-<script src="/js/CANVAS.js"></script>
-```
-
 OriginalBinary 035127.02 (Rev 2)
 
 # Corrections 
@@ -1186,5 +1179,17 @@ ThrustDir64:
 
 ; Extra space
 0FFA: 00 00 00 00 00 00
+```
+
+```html
+<script src="/js/Binary.js"></script>
+<script src="/js/DVG.js"></script>
+<script src="/js/Canvas.js"></script>
+<script>
+    window.onload = function() {   
+        DVG.data = Binary.readBinary('VectorROM.md.bin')     
+        Canvas.redrawGraphics()       
+    }    
+</script>
 ```
 

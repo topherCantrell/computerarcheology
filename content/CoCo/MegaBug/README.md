@@ -5,11 +5,10 @@
 >>> deploy:<br>
 >>>   +megabug.jpg<br>
 >>>   +megabug.js<br>
->>>   +BinaryDataMegabug.js<br>
 >>>   +bug.jpg<br>
 >>>   +lowram.jpg<br>
 >>>   RAMUse.md<br>
->>>   Code.md<br>
+>>>   %Code.md<br>
 >>>   ----<br>
 >>>   Journal.md<br>
 

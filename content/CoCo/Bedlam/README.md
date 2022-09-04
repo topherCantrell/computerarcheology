@@ -5,20 +5,10 @@
 >>> deploy:<br>
 >>>   +bedlam.js<br>
 >>>   +Bedlam.jpg<br>
->>>   +BinaryDataBedlam.js<br>
 >>>   RAMUse.md<br>
->>>   Code.md<br>
+>>>   %Code.md<br>
 >>>   ----<br>
 >>>   Journal.md<br>
-
-
-```html
-<script src="/CoCo/Bedlam/BinaryDataBedlam.js"></script>
-<script src="/js/6809.js"></script>
-<script src="/CoCo/CoCoText.js"></script>
-<script src="/CoCo/Bedlam/bedlam.js"></script>
-<script>window.onload = function() {startBedlam("bedlamConsole");}</script>
-```
 
 >>> playMe {
 
@@ -208,3 +198,15 @@ If you manage to get into the electro-shock room with 3A in your pack, and that 
 let the 3A random-movement take you back out of the room (hopefully -- it may take a few tries). Since the player object (13) 
 executes before the nurse object (2D) the random movement will fire before the nurse's script can shock you. You then use 
 the PLUGH command to take 3A out of your pack. The PLUGH command goes all the way back to Colossal Cave Adventure.
+
+```html
+<script src="/js/Binary.js"></script>
+<script src="/js/6809.js"></script>
+<script src="/CoCo/CoCoText.js"></script>
+<script src="bedlam.js"></script>
+<script>
+    window.onload = function() {        
+        startBedlam("bedlamConsole");        
+    }
+</script>
+```

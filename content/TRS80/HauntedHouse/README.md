@@ -3,23 +3,14 @@
 # Haunted House
 
 >>> deploy:<br>
->>>   +BinaryDataHauntedHouse.js<br>
 >>>   +HauntedHouse.jpg<br>
 >>>   +hauntedhouse.js<br>
 >>>   RAMUse1.md<br>
->>>   Code1.md<br>
+>>>   %Code1.md<br>
 >>>   RAMUse2.md<br>
->>>   Code2.md<br>
+>>>   %Code2.md<br>
 >>>   ----<br>
 >>>   Journal.md<br>
-
-```html
-<script src="/TRS80/HauntedHouse/BinaryDataHauntedHouse.js"></script>
-<script src="/js/Z80.js"></script>
-<script src="/TRS80/TRS80Text.js"></script>
-<script src="/TRS80/HauntedHouse/hauntedhouse.js"></script>
-<script>window.onload = function() {startHauntedHouse("hauntedConsole");}</script>
-```
 
 >>> playMe {
 
@@ -89,3 +80,15 @@ If you seek specific game information, solutions, and online emulators then chec
 
 Joe Peterson has recreated the original Haunted house in Java and Python. The Java version makes a nice Android app you can play
 on your phone. Check it out on [The "Explore" Adventure Games website](http://www.wildlava.com/explore/).
+
+```html
+<script src="/js/Z80.js"></script>
+<script src="/js/Binary.js"></script>
+<script src="../TRS80Text.js"></script>
+<script src="hauntedhouse.js"></script>
+<script>
+    window.onload = function() {
+        startHauntedHouse("hauntedConsole");
+    }
+</script>
+```

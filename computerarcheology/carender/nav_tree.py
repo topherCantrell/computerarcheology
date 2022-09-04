@@ -6,7 +6,7 @@ class NavNode:
 
     next_uid = 0
 
-    def __init__(self, parent, level, text, anchor, display_class):
+    def __init__(self, parent, level, text, anchor, display_class,special=None):
         text = text.strip()
         self.uid = NavNode.next_uid
         NavNode.next_uid += 1
@@ -22,6 +22,7 @@ class NavNode:
         # True if this item is in the path of the currently showing item
         self.active_item_path = False
         self.display_type = display_class
+        self.special = special
 
     def print_s(self, recurse=True):
         if self.parent:
@@ -58,7 +59,7 @@ class NavTree:
         # A root node to hold the first levels
         self.root = NavNode(None, 0, '', '', None)
 
-    def add_page_nav(self, level, text, anchor, display_class=''):
+    def add_page_nav(self, level, text, anchor, display_class='',special=None):
         # Find the parent level
         node = self.root
         while node.level != (level - 1):
@@ -67,7 +68,7 @@ class NavTree:
             node = node.children[-1]  # Last child
 
         # Add the new node to the children
-        n = NavNode(node, level, text, anchor, display_class)
+        n = NavNode(node, level, text, anchor, display_class,special)
         node.children.append(n)
 
         return n

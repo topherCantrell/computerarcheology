@@ -32,9 +32,9 @@ var Combat = (function() {
 		
 		var ret = [];
 		
-		var data0 = BinaryData.getData(addrPF0,12);
-		var data1 = BinaryData.getData(addrPF1,12);
-		var data2 = BinaryData.getData(addrPF2,12);
+		var data0 = Stella.data.slice(addrPF0-Stella.origin,addrPF0-Stella.origin+12);
+		var data1 = Stella.data.slice(addrPF1-Stella.origin,addrPF1-Stella.origin+12);
+		var data2 = Stella.data.slice(addrPF2-Stella.origin,addrPF2-Stella.origin+12);
 		
 		for (var x=0;x<12;++x) {
 			var a = data0[x].toString(2);
@@ -86,9 +86,9 @@ var Combat = (function() {
 		
 		var ret = [];
 		
-		var data0 = BinaryData.getData(addrPF0,15);
-		var data1 = BinaryData.getData(addrPF1,15);
-		var data2 = BinaryData.getData(addrPF2,15);
+		var data0 = Stella.data.slice(addrPF0-Stella.origin,addrPF0-Stella.origin+15);
+		var data1 = Stella.data.slice(addrPF1-Stella.origin,addrPF1-Stella.origin+15);
+		var data2 = Stella.data.slice(addrPF2-Stella.origin,addrPF2-Stella.origin+15);
 		
 		for (var x=0;x<15;++x) {
 			var a = data0[x].toString(2);

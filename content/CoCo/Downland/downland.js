@@ -1,6 +1,9 @@
 var Downland = (function() { 
     
     var my = {};
+
+	my.data = null
+	my.origin = 0
         
     function padBinaryTo8Bits(value) {
     	var ret = value.toString(2);
@@ -10,7 +13,7 @@ var Downland = (function() {
     
     my.get8x7 = function(tile,address) {
     	var ret = [];
-    	var dat = BinaryData.getData(address+tile*7,7);
+    	var dat = my.data.slice(address+tile*7-my.origin,address+tile*7-my.origin+7);
     	
     	for(var y=0;y<7;++y) {
     		var comb = padBinaryTo8Bits(dat[y]);

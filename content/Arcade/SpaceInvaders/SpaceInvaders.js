@@ -1,13 +1,15 @@
-// requires BinaryData.js
+// requires Binary.js
 
 var SpaceInvaders = (function() { 
     
     var my = {};
 
+	my.data = null
+
     my.get8x8Data = function(tile,address) {
     
     	var ret = [];
-    	var dat = BinaryData.getData(address+tile*8,8);    	
+    	var dat = my.data.slice(address+tile*8,address+tile*8+8);    	
     	for(var x=0;x<8;++x) {
     		var a = dat[x].toString(2);
     		while(a.length<8) a="0"+a;
@@ -26,7 +28,7 @@ var SpaceInvaders = (function() {
     	var ret = [];
     	var x;
     	
-    	var dat = BinaryData.getData(0x1E00+tile*8,8);
+    	var dat = my.data.slice(0x1E00+tile*8,0x1E00+tile*8+8);
     		
     	for(x=0;x<8;++x) {
     		var a = dat[x].toString(2);
@@ -44,7 +46,7 @@ var SpaceInvaders = (function() {
     my.get8x3Data = function(tile,address) {
     	var ret =[];
     	
-    	var dat = BinaryData.getData(address+tile*3,3);
+    	var dat = my.data.slice(address+tile*3,address+tile*3+3);
     	    	
     	for(var x=0;x<3;++x) {
     		var a = dat[x].toString(2);
@@ -62,7 +64,7 @@ var SpaceInvaders = (function() {
     	
     	var ret = [];
     	
-    	var dat = BinaryData.getData(address+tile,1);
+    	var dat = my.data.slice(address+tile,address+tile+1);
     	for(var x=0;x<1;++x) {
     		var a = dat[x].toString(2);
     		while(a.length<8) a="0"+a;
@@ -79,7 +81,7 @@ var SpaceInvaders = (function() {
     	
     	var ret = [];
     	
-    	var dat = BinaryData.getData(address+tile,6);
+    	var dat = my.data.slice(address+tile,address+tile+6);
     	for(var x=0;x<6;++x) {
     		var a = dat[x].toString(2);
     		while(a.length<8) a="0"+a;
@@ -95,7 +97,7 @@ var SpaceInvaders = (function() {
     my.get8x16Data = function(tile,address) {
         var ret = [];
     	
-        var dat = BinaryData.getData(address+tile*16,16);
+        var dat = my.data.slice(address+tile*16,address+tile*16+16);
     	for(var x=0;x<16;++x) {
     		var a = dat[x].toString(2);
     		while(a.length<8) a="0"+a;
@@ -111,7 +113,7 @@ var SpaceInvaders = (function() {
     my.get8x24Data = function(tile,address) {
         var ret = [];
     	
-        var dat = BinaryData.getData(address+tile*24,24);
+        var dat = my.data.slice(address+tile*24,address+tile*24+24);
     	for(var x=0;x<24;++x) {
     		var a = dat[x].toString(2);
     		while(a.length<8) a="0"+a;
@@ -131,7 +133,7 @@ var SpaceInvaders = (function() {
     	var x,y;
     	var ming;
     	
-    	dat = BinaryData.getData(address,44);    	
+    	dat = my.data.slice(address,address+44);    	
     	
     	for(x=0;x<22;++x) {
     		var a = dat[x*2].toString(2);

@@ -32,6 +32,9 @@ def deploy_directory(current_node):
 
     for dep in current_node.children:
         da = dep.anchor
+        genbin = False
+        if dep.special == '%':            
+            genbin = True
         src = os.path.join(fp_content, da)
         dst = os.path.join(fp_deploy, da)
         if os.path.isdir(src):
@@ -42,11 +45,17 @@ def deploy_directory(current_node):
                 # Divider
                 continue
             print(src)
+            
             if not src.endswith('.md'):
                 shutil.copy(src, dst)
-            else:
+            else:                
                 
-                md = names_in_code.update_names_in_code(fp_content, da)
+                md,bindata = names_in_code.update_names_in_code(fp_content, da,extract_binary=genbin)
+
+                if genbin:                    
+                    print('Making binary '+dst+'.bin')
+                    with open(dst+'.bin','wb') as f:
+                        f.write(bindata)                    
                 
                 # md = markdown.read_markdown_paragraphs(src)
                 

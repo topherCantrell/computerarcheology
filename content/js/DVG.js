@@ -4,6 +4,8 @@ var DVG = (function() {
     
     var my = {};
 
+	my.data = null
+
     var x=0;
     var y=0;
     var baseScale=0;
@@ -62,9 +64,9 @@ var DVG = (function() {
     			var i = 0;
     			var s = 0;
     			while(true) {
-    				var a = BinaryData.read(dataCursor);
+    				var a = DVG.data[dataCursor-origin];
     				dataCursor = dataCursor + 1;
-    				var b = BinaryData.read(dataCursor);
+    				var b = DVG.data[dataCursor-origin];
     				dataCursor = dataCursor + 1;
     				var op = b>>4;
     				if(op<10) { // VCTR
@@ -72,9 +74,9 @@ var DVG = (function() {
     					context.beginPath();
     					context.moveTo(x*screenScale,y*screenScale);
     					
-    					c = BinaryData.read(dataCursor);
+    					c = DVG.data[dataCursor-origin];
     					dataCursor = dataCursor + 1;
-    					d = BinaryData.read(dataCursor);
+    					d = DVG.data[dataCursor-origin];
     					dataCursor = dataCursor + 1;
     					s = 1 << (9-(op+baseScale)); // Scale (divisor)
     					//s=s/baseScale;
@@ -97,9 +99,9 @@ var DVG = (function() {
     					} 
     					
     				} else if(op==10) { // LABS
-    					c = BinaryData.read(dataCursor);
+    					c = DVG.data[dataCursor-origin];
     					dataCursor = dataCursor + 1;
-    					d = BinaryData.read(dataCursor);
+    					d = DVG.data[dataCursor-origin];
     					dataCursor = dataCursor + 1;
     					
     					y = 1024 - (((b&15)<<8)+a);

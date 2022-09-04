@@ -5,13 +5,13 @@
 >>>   +MoonPatrol.js<br>
 >>>   Hardware.md<br>
 >>>   RAMUse.md<br>
->>>   Code.md<br>
+>>>   %Code.md<br>
 >>>   ----<br>
->>>   GFX1.md:GFX1 (Text)<br>
->>>   GFX2.md:GFX2 (Sprites)<br>
->>>   GFX3.md:GFX3 (Mountains)<br>
->>>   GFX4.md:GFX4 (Hills)<br>
->>>   GFX5.md:GFX5 (City)<br>
+>>>   %GFX1.md:GFX1 (Text)<br>
+>>>   %GFX2.md:GFX2 (Sprites)<br>
+>>>   %GFX3.md:GFX3 (Mountains)<br>
+>>>   %GFX4.md:GFX4 (Hills)<br>
+>>>   %GFX5.md:GFX5 (City)<br>
 >>>   ImageBackgroundColors.md<br>
 >>>   SpriteColors.md<br>
 >>>   SpriteColorSets.md<br>

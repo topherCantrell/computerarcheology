@@ -14,6 +14,8 @@ var TileEngine = (function() {
 	var labColor = "#FFFFFF";
 	var colorMap = {};
 	var getTileDataFunction = null;
+	var background = null;
+	var margin = 0;
 	
 	/**
 	 * This function processes the attributes and drawing for a single canvas. The
@@ -29,12 +31,11 @@ var TileEngine = (function() {
 	 *   data-gap                   gap between pixels in a tile drawing
 	 *   data-labelColor            color of the tile label ("" for no label)
 	 *   data-address               disassembly address for the data for this canvas
-	 *   data-gridPad               gap between tiles in a matrix of tiles
-	 *   data-file                  name of disassembly file to load from the server
+	 *   data-gridPad               gap between tiles in a matrix of tiles	 
 	 *   data-showBorder            true to show the border around the canvas (for sizing)
 	 *   data-getTileDataFunction   name of the function used to get data for the tile commands
 	 *   
-	 *   data-command               list of tile commands separated with a ","
+	 *   data-command     list of tile commands separated with a ","
 	 *     VH20               draw tile 20 with vertical and horizontal mirroring (V and H are optional)
 	 *                        the next tile is drawn to the right of this one unless changed (see below)
 	 *     :2x3:1,2,3,4,5,6   draw a 2x3 (2 across, 3 down) matrix of tiles given
@@ -51,7 +52,7 @@ var TileEngine = (function() {
 	
 	    var att = can.getAttribute("data-address");
 	    if(att) {
-	        my.address = parseInt(att,16);
+	        address = parseInt(att,16);
 	    }
 		att = can.getAttribute("data-pixWidth");	
 		if(att) {
@@ -94,10 +95,7 @@ var TileEngine = (function() {
 		if(att || att==="") {
 			labColor = att;
 		}
-		att = can.getAttribute("data-address");
-		if(att) {
-			address = parseInt(att,16);
-		}
+		
 		att = can.getAttribute("data-gridPad");
 		if(att) {
 			gridPad = parseFloat(att);
@@ -105,19 +103,15 @@ var TileEngine = (function() {
 		att = can.getAttribute("data-colorsName");
 		if(att) {
 			colorMap[att] = colors;
-		}
-		att = can.getAttribute("data-file");
+		}		
+		att = can.getAttribute("data-background")
 		if(att) {
-			if(att == "*") {
-				htmlUpper = document.body.innerHTML.toUpperCase();
-			} else {
-				var client = new XMLHttpRequest();
-				client.open("GET",att,false);
-				client.send(null);
-				var test = client.responseText;
-				BinaryData.loadDataCache(test);
-			}
-		}
+			background = att
+		}	
+		att = can.getAttribute("data-margin")
+		if(att) {
+			margin = parseFloat(att)
+		}	
 	
 		att = can.getAttribute("data-command");
 		if(!att) return;
@@ -127,7 +121,12 @@ var TileEngine = (function() {
 		var command = can.getAttribute("data-command").split(",");
 	
 		var context = can.getContext("2d");
-		context.clearRect(0,0,can.width,can.height);
+		if(background) {
+			context.fillStyle = background;
+			context.fillRect(0,0,can.width,can.height);
+		} else {
+			context.clearRect(0,0,can.width,can.height);
+		}
 	
 		var xo = 0;
 		var yo = 0;
@@ -275,12 +274,12 @@ var TileEngine = (function() {
                     yy = yo+y*pixHeight;
                 }
                            
-                context.fillRect(xx,yy,pixWidth-gap,pixWidth-gap);
+                context.fillRect(xx+margin,yy+margin,pixWidth-gap,pixWidth-gap);
             }
         }       
         if(label!==null && labColor!==null && labColor!=="") {
             context.fillStyle = labColor;   
-            context.fillText(label,xo+pixWidth, yo+pixHeight*2);
+            context.fillText(label,xo+pixWidth+margin, yo+pixHeight*2+margin);
         }   
     }
 	

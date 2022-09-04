@@ -16,10 +16,6 @@ The D1 and D0 data lines are swapped on the second ROM bank (0800-0FFF). The val
 are after the swap as the system would see them.
 
 ```html
-<script src="Frogger.js"></script>
-<script src="/js/TileEngine.js"></script>
-<script src="/js/BinaryData.js"></script>
-<script src="/js/CANVAS.js"></script>
 <!-- Cache some commonly-used values -->
 <canvas width="0" height="0"
         data-canvasFunction="TileEngine.handleTileCanvas"
@@ -989,5 +985,19 @@ TODO show the character "1" completely decoded and rotated.
 0FD0: FF FF FF FF 00 00 00 00 FE FE FE FE 02 00 00 00
 0FE0: 01 03 61 90 97 7F 39 38 E0 F9 FB FF FE FF FC E4
 0FF0: 38 39 7F 97 90 61 03 01 E4 E4 FF FE FF FB F9 E0
+```
+
+```html
+<script src="Frogger.js"></script>
+<script src="/js/TileEngine.js"></script>
+<script src="/js/Binary.js"></script>
+<script src="/js/Canvas.js"></script>
+<script>
+    window.onload = function() {   
+        Frogger.data = Binary.readBinary('GFX.md.bin')        
+        Frogger.origin = 0   
+        Canvas.redrawGraphics()    
+    }    
+</script>
 ```
 

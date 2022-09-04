@@ -1,5 +1,19 @@
 # Computer Archeology
 
+The markdown files in this repo are parsed by a toolchain to generate the HTML files
+for [Computer Archeology](http://computerarcheology.com).
+
+Even pure disassembly code benefits from markdown discussion sections. Everything the
+toolchain processes is thus markdown.
+
+The markdown is also standard github flavor allowing files to be viewed there without the
+fancy HTML linking.
+
+```
+py -m computerarcheology.carender.app
+py -m counpterarcheology.carender.development_server
+```
+
 
 
 ## OLD (refactoring)

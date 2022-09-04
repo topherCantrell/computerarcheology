@@ -14,13 +14,6 @@
 
 [Hardware Info](Hardware.md)
 
-```html
-<script src="/NES/Zelda/zelda.js"></script>
-<script src="/js/BinaryData.js"></script>
-<script src="/js/TileEngine.js"></script>
-<script src="/js/CANVAS.js"></script>
-```
-
 # String Table
 
 ```code
@@ -6355,5 +6348,19 @@ BFF0: FF FF FF FF FF FF FF FF FF FF
 BFFA: 84 E4       ; NMI to E484
 BFFC: 50 BF       ; RESET to BF50
 BFFE: F0 BF       ; IRQ to BFF0 (this bank should never be at end)
+```
+
+```html
+<script src="zelda.js"></script>
+<script src="/js/Binary.js"></script>
+<script src="/js/TileEngine.js"></script>
+<script src="/js/Canvas.js"></script>
+<script>
+    window.onload = function() {   
+        Zelda.data = Binary.readBinary('Bank1.md.bin')    
+        Zelda.origin = 0x8000 
+        Canvas.redrawGraphics()       
+    }    
+</script>
 ```
 

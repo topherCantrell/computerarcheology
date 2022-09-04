@@ -18,7 +18,7 @@
 >>>   Bank09.md<br>
 >>>   Bank0A.md<br>
 >>>   Bank0B.md<br>
->>>   Bank0C.md<br>
+>>>   %Bank0C.md<br>
 >>>   Bank0D.md<br>
 >>>   Bank0E.md<br>
 >>>   Bank0F.md<br>

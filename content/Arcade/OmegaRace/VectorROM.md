@@ -6,13 +6,6 @@
 
 >>> binary 9000:roms/omega.e1 + roms/omega.f1
 
-```html
-<script src="/Arcade/OmegaRace/VectorROM.js"></script>
-<script src="/js/BinaryData.js"></script>
-<script src="/js/DVG.js"></script>
-<script src="/js/CANVAS.js"></script>
-```
-
 For info about the vector generator hardware and opcodes:<br>
 [DVG Information](../Asteroids/DVG.html)
 
@@ -34,7 +27,7 @@ ShipsA:
 <canvas width="1225" height="100"
   data-canvasFunction="DVG.handleDVGCanvas"
   data-colors='["#FFFFFF","#FFE55C","#FFE55C","#FFE55C","#FFE55C","#635629","#FFE55C","#FFE55C","#FFE55C","#FFE55C","#FFE55C","#FFE55C","#FFE55C","#FFE55C","#FFE55C","#FFE55C"]'
-  data-origin="8000"
+  data-origin="9000"
   data-command="baseScale=1,x=50,y=50,900E,9000,x=125,y=50,904E,x=200,y=50,9090,x=275,y=50,90D2,x=350,y=50,9116,x=425,y=50,9156,x=500,y=50,9192,x=575,y=50,91D2,x=650,y=50,9212,x=725,y=50,9250,x=800,y=50,9290,x=875,y=50,92D0,x=950,y=50,930C,x=1025,y=50,934C,x=1100,y=50,9390,x=1175,y=50,93D2">
 </canvas>
 ```
@@ -1616,5 +1609,17 @@ ShipsB:
 
 ; ?? not used
 9FFE: FB FF           SVEC    scale=3(/16) x=200  y=-200 i=15  ( 32.00 , -32.00 )
+```
+
+```html
+<script src="/js/Binary.js"></script>
+<script src="/js/DVG.js"></script>
+<script src="/js/Canvas.js"></script>
+<script>
+    window.onload = function() {   
+        DVG.data = Binary.readBinary('VectorROM.md.bin')     
+        Canvas.redrawGraphics()       
+    }    
+</script>
 ```
 

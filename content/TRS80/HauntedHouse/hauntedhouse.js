@@ -1,24 +1,70 @@
+function makeBinaryDataHauntedHouse1() {
+    
+    var dataOrigin = 0x42E9;    
+           
+    var datab = Binary.readBinary('Code1.md.bin')
+    var data = []    
+    for(var i=0;i<datab.length;i++) {
+        data.push(datab[i])
+    }
+        
+    var my = {};
+    
+    // Simple read/write
+    my.read = function(addr) {
+        return data[addr-dataOrigin];
+    };
+    my.write = function(addr,value) {
+       data[addr-dataOrigin] = value;
+    };
+            
+    return my;
+    
+};
+
+function makeBinaryDataHauntedHouse2() {
+    
+    var dataOrigin = 0x435E;    
+           
+    var datab = Binary.readBinary('Code2.md.bin')
+    var data = []    
+    for(var i=0;i<datab.length;i++) {
+        data.push(datab[i])
+    }
+        
+    var my = {};
+    
+    // Simple read/write
+    my.read = function(addr) {
+        return data[addr-dataOrigin];
+    };
+    my.write = function(addr,value) {
+       data[addr-dataOrigin] = value;
+    };
+            
+    return my;
+    
+};
+
 function startHauntedHouse(consoleElement) {
 	
 	var TRS80Text = makeTRS80Text(consoleElement);
-	var BinaryData = makeBinaryDataHauntedHouse();
+	var binData = makeBinaryDataHauntedHouse1();
 	
-    document.getElementById("floorOne").onclick = function() {
-		BinaryData.loadDataCacheFromURL("/TRS80/HauntedHouse/Code1.html",function() {
-			floor=1;
-			TRS80Text.changeResetVector(0x42E9);
-			TRS80Text.reset();
-			TRS80Text.runUntilWaitKey();  
-		});
+    document.getElementById("floorOne").onclick = function() {		
+		binData = makeBinaryDataHauntedHouse1();
+		floor=1;
+		TRS80Text.changeResetVector(0x42E9);
+		TRS80Text.reset();
+		TRS80Text.runUntilWaitKey();  		
 	};
 	
 	document.getElementById("floorTwo").onclick = function() {	
-		BinaryData.loadDataCacheFromURL("/TRS80/HauntedHouse/Code2.html",function() {
-			floor=2;
-			TRS80Text.changeResetVector(0x435E);
-			TRS80Text.reset();
-			TRS80Text.runUntilWaitKey();  
-		});
+		binData = makeBinaryDataHauntedHouse2();
+		floor=2;
+		TRS80Text.changeResetVector(0x435E);
+		TRS80Text.reset();
+		TRS80Text.runUntilWaitKey();  
 	};
 	
 	var floor=1;
@@ -26,7 +72,7 @@ function startHauntedHouse(consoleElement) {
 	function write(addr,value) {
 		// From the loaded game RAM
 		if(addr>=0x42E9 &&addr<0x5000) {
-			BinaryData.write(addr,value);
+			binData.write(addr,value);
 			return true;
 		}
 		
@@ -56,19 +102,18 @@ function startHauntedHouse(consoleElement) {
 						
 		// Tape operation (loading 2nd floor)
         if(addr===0x0293) {
-            BinaryData.loadDataCacheFromURL("/TRS80/HauntedHouse/Code2.html",function() {
-                floor = 2;
-                TRS80Text.changeResetVector(0x435E);
-                TRS80Text.reset();
-                TRS80Text.runUntilWaitKey();  
-            });
+            binData = makeBinaryDataHauntedHouse2();
+			floor = 2;
+			TRS80Text.changeResetVector(0x435E);
+			TRS80Text.reset();
+			TRS80Text.runUntilWaitKey();  
             TRS80Text.pause();
             return 0;
         }               
 		
 		// From the loaded game RAM
 		if(addr>=0x42E9 &&addr<0x5000) {
-			return BinaryData.read(addr);
+			return binData.read(addr);
 		}
 		
 		return undefined;
@@ -82,15 +127,14 @@ function startHauntedHouse(consoleElement) {
 	    return undefined;
 	}
 	
-	BinaryData.loadDataCacheFromURL("/TRS80/HauntedHouse/Code1.html",function() {		
-		TRS80Text.init(
-		        read,
-		        write,
-		        function() {return undefined;}, 
-                function() {return undefined;},
-		        function() {TRS80Text.runUntilWaitKey();}, 
-		        0x42E9);
-		TRS80Text.runUntilWaitKey();    
-	});	
+		
+	TRS80Text.init(
+			read,
+			write,
+			function() {return undefined;}, 
+			function() {return undefined;},
+			function() {TRS80Text.runUntilWaitKey();}, 
+			0x42E9);
+	TRS80Text.runUntilWaitKey();    		
 	
 };

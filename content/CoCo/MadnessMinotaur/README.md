@@ -7,26 +7,15 @@
 >>>   +splash.jpg<br>
 >>>   +madness.js<br>
 >>>   +savegame.js<br>
->>>   +BinaryDataMadness.js<br>
 >>>   +flute.wav<br>
 >>>   +inst.cas<br>
 >>>   walkthrough:Walk Through<br>
 >>>   RAMUse.md<br>
->>>   Code.md<br>
+>>>   %Code.md<br>
 >>>   ----<br>
 >>>   SaveGameViewer.md<br>
 >>>   ----<br>
 >>>   Journal.md<br>
-
-```html
-<script src="BinaryDataMadness.js"></script>
-<script src="/js/6809.js"></script>
-<script src="/CoCo/CoCoText.js"></script>
-<script src="madness.js"></script>
-<script>
-window.onload = function() {startMadness();}
-</script>
-```
 
 >>> playMe {
 
@@ -966,3 +955,15 @@ Then you make 6 pokes to tie the system to the game's commands. As shown in the 
 ```
 
 Here is the virtual COCO tape that contains the debug system: [inst.cas](inst.cas).
+
+```html
+<script src="/js/6809.js"></script>
+<script src="/js/Binary.js"></script>
+<script src="/CoCo/CoCoText.js"></script>
+<script src="madness.js"></script>
+<script>
+    window.onload = function() {
+        startMadness();
+    }
+</script>
+```

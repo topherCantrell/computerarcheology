@@ -30,10 +30,6 @@ From experimenting, the pixel colors are:
 ```
 
 ```html
-<script src="/js/BinaryData.js"></script>
-<script src="/Arcade/MoonPatrol/MoonPatrol.js"></script>
-<script src="/js/TileEngine.js"></script>
-<script src="/js/CANVAS.js"></script>
 <canvas width="2304" height="576"
         data-canvasFunction="TileEngine.handleTileCanvas"
         data-getTileDataFunction="MoonPatrol.getBackgroundImage"
@@ -312,5 +308,19 @@ From experimenting, the pixel colors are:
 0FD0: 00 00 FF FF FF FF FF FF FF FF FF FF FF CF 00 00 
 0FE0: FF FF FF CF 0F 0F 00 00 FF FF FF FF FF FF FF FF 
 0FF0: FF EF 0F 0C 00 FF FF FF FF FF FF FF FF 0F 0F 00 
+```
+
+```html
+<script src="MoonPatrol.js"></script>
+<script src="/js/Binary.js"></script>
+<script src="/js/TileEngine.js"></script>
+<script src="/js/Canvas.js"></script>
+<script>    
+    window.onload = function() {  
+        MoonPatrol.data = Binary.readBinary('GFX5.md.bin')        
+        MoonPatrol.origin = 0
+        Canvas.redrawGraphics() 
+    }
+</script>
 ```
 

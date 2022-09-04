@@ -14,13 +14,6 @@
 
 [Hardware Info](../Hardware.md)
 
-```html
-<script src="/Gameboy/Zelda/zeldaGB.js"></script>
-<script src="/js/BinaryData.js"></script>
-<script src="/js/TileEngine.js"></script>
-<script src="/js/CANVAS.js"></script>
-```
-
 # Person  
 
 ```html
@@ -9278,5 +9271,19 @@ Digits:
 7FFA: 82 BC     ; 3.11112.
 7FFC: 9C E0     ; 311222..
 7FFE: E0 80     ; 322.....       
+```
+
+```html
+<script src="zeldaGB.js"></script>
+<script src="/js/Binary.js"></script>
+<script src="/js/TileEngine.js"></script>
+<script src="/js/Canvas.js"></script>
+<script>
+    window.onload = function() {        
+        ZeldaGB.data = Binary.readBinary('Bank0C.md.bin')
+        ZeldaGB.origin = 0x4000       
+        Canvas.redrawGraphics()
+    }
+</script>
 ```
 

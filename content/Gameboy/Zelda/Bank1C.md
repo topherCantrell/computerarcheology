@@ -262,13 +262,13 @@
 411A: 58              LD      E,B                 
 411B: 9A              SBC     D                   
 411C: 58              LD      E,B                 
-411D: F8 58           LDHL    SP,$58              
+411D: F8 58           LD      HL,SP+$58           
 411F: 36 59           LD      (HL),$59            
 4121: 57              LD      D,A                 
 4122: 59              LD      E,C                 
 4123: 9F              SBC     A                   
 4124: 59              LD      E,C                 
-4125: E0 59           LDFF00  ($59),A             
+4125: E0 59           LD      ($FF00+$59),A       
 4127: A1              AND     C                   
 4128: 5A              LD      E,D                 
 4129: E9              JP      (HL)                
@@ -594,7 +594,7 @@
 4288: 60              LD      H,B                 
 4289: 22              LD      (HLI),A             
 428A: 61              LD      H,C                 
-428B: 10 62           STOP    $62                 
+428B: 10 62           ;;STOP    $62                 
 428D: 8E              ADC     A,(HL)              
 428E: 62              LD      H,D                 
 428F: 26 63           LD      H,$63               
@@ -661,7 +661,7 @@
 42D4: 6F              LD      L,A                 
 42D5: B3              OR      E                   
 42D6: 6F              LD      L,A                 
-42D7: E2              LDFF00  (C),A               
+42D7: E2              LD      (C),A               
 42D8: 6F              LD      L,A                 
 42D9: 70              LD      (HL),B              
 42DA: 70              LD      (HL),B              
@@ -1165,7 +1165,7 @@
 44FD: 99              SBC     C                   
 44FE: 7E              LD      A,(HL)              
 44FF: C3 7E 00        JP      $007E               
-4502: 10 20           STOP    $20                 
+4502: 10 20           ;;STOP    $20                 
 4504: 30 40           JR      NC,$4546            ; {}
 4506: 50              LD      D,B                 
 4507: 60              LD      H,B                 
@@ -1176,9 +1176,9 @@
 450C: B0              OR      B                   
 450D: C0              RET     NZ                  
 450E: D0              RET     NC                  
-450F: E0 F0           LDFF00  ($F0),A             
+450F: E0 F0           LD      ($FF00+$F0),A       
 4511: 00              NOP                         
-4512: 10 20           STOP    $20                 
+4512: 10 20           ;;STOP    $20                 
 4514: 30 40           JR      NC,$4556            ; {}
 4516: 50              LD      D,B                 
 4517: 60              LD      H,B                 
@@ -1189,7 +1189,7 @@
 451C: B0              OR      B                   
 451D: C0              RET     NZ                  
 451E: D0              RET     NC                  
-451F: E0 F0           LDFF00  ($F0),A             
+451F: E0 F0           LD      ($FF00+$F0),A       
 4521: 8D              ADC     A,L                 
 4522: 8D              ADC     A,L                 
 4523: 8D              ADC     A,L                 
@@ -1232,8 +1232,8 @@
 454B: DA DB DC        JP      C,$DCDB             
 454E: DD                              
 454F: DE DF           SBC     $DF                 
-4551: E0 E1           LDFF00  ($E1),A             
-4553: E2              LDFF00  (C),A               
+4551: E0 E1           LD      ($FF00+$E1),A       
+4553: E2              LD      (C),A               
 4554: E3                              
 4555: E4                              
 4556: E5              PUSH    HL                  
@@ -1445,7 +1445,7 @@
 462E: 0C              INC     C                   
 462F: 0D              DEC     C                   
 4630: 0E 0F           LD      C,$0F               
-4632: 10 11           STOP    $11                 
+4632: 10 11           ;;STOP    $11                 
 4634: 12              LD      (DE),A              
 4635: 13              INC     DE                  
 4636: 14              INC     D                   

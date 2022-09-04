@@ -4,22 +4,13 @@
 >>> deploy:<br>
 >>>   +TRS80Pyramid.jpg<br>
 >>>   +trs80pyramid.js<br>
->>>   +BinaryDataTRS80Pyramid.js
 >>>   RAMUse.md<br>
->>>   Code.md<br>
+>>>   %Code.md<br>
 >>>   ----<br>
 >>>   RAMUse1.md<br>
 >>>   Code1.md<br>
 >>>   ----<br>
 >>>   Journal.md<br>
-
-```html
-<script src="/TRS80/Pyramid/BinaryDataTRS80Pyramid.js"></script>
-<script src="/js/Z80.js"></script>
-<script src="/TRS80/TRS80Text.js"></script>
-<script src="/TRS80/Pyramid/trs80pyramid.js"></script>
-<script>window.onload = function() {startTRS80Pyramid("trs80PyramidConsole","trs80PyramidTape");}</script>
-```
 
 >>> playMe {
 
@@ -85,3 +76,15 @@ strings are hand-formatted to the TRS80 64-column monitor.
 # References 
 
 If you seek specific game information, solutions, and online emulators then check out [Sean Murphy's wonderful site](http://www.figmentfly.com).
+
+```html
+<script src="/js/Z80.js"></script>
+<script src="/js/Binary.js"></script>
+<script src="../TRS80Text.js"></script>
+<script src="trs80pyramid.js"></script>
+<script>
+    window.onload = function() {
+        startTRS80Pyramid("trs80PyramidConsole","trs80PyramidTape");
+    }
+</script>
+```

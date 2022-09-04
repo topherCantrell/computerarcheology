@@ -1,14 +1,15 @@
-// requires BinaryData.js
-
 var Stella = (function() { 
     
     var my = {};
+
+	my.data = null
+	my.origin = 0
 
     my.get8x5Data = function(tile,address) {
     
     	var ret = [];
     	
-    	var dat = BinaryData.getData(address+tile*5,5);  
+    	var dat = my.data.slice(address+tile*5-my.origin,address+tile*5-my.origin+5);  
     	for(var x=0;x<5;++x) {
     		var a = dat[x].toString(2);
     		while(a.length<8) a="0"+a;
@@ -26,7 +27,7 @@ var Stella = (function() {
         
     	var ret = [];
     	
-    	var dat = BinaryData.getData(address+tile*8,8);  
+    	var dat = my.data.slice(address+tile*8-my.origin,address+tile*8-my.origin+8);  
     	for(var x=0;x<8;++x) {
     		var a = dat[x].toString(2);
     		while(a.length<8) a="0"+a;

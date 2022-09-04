@@ -2,7 +2,6 @@
 
 >>> deploy:<br>
 >>>   +ORace.jpg<br>
->>>   +VectorROM.js<br>
 >>>   Hardware.md<br>
 >>>   RAMUse.md<br>
 >>>   MainBoard.md<br>
@@ -12,7 +11,7 @@
 >>>   SoundBoard.md<br>
 >>>   ----<br>
 >>>  DVGPROM.md<br>
->>>  VectorROM.md<br>
+>>>  %VectorROM.md<br>
 >>>  ----<br>
 >>>  Journal.md<br>
 

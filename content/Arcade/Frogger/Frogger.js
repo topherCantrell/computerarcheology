@@ -1,15 +1,16 @@
-// requires BinaryData.js
-
 var Frogger = (function() { 
     
-    var my = {};
+    var my = {}
 
+	my.data = null
+	my.origin = 0
+    
     my.get8x8Data = function(tileAddress) {
     
-    	var ret = [];
-		
-		var dataA = BinaryData.getData(tileAddress*8,8);
-		var dataB = BinaryData.getData(tileAddress*8+2048,8);	
+    	var ret = [];	
+
+		var dataA = my.data.slice(tileAddress*8 - my.origin,tileAddress*8 - my.origin + 8);
+		var dataB = my.data.slice(tileAddress*8+2048 - my.origin,tileAddress*8+2048 - my.origin + 8);
 		
 		for(var x=0;x<8;++x) {
 			var a = dataA[x].toString(2);

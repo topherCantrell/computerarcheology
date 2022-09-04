@@ -5,20 +5,10 @@
 >>> deploy:<br>
 >>>   +Pyramid.jpg<br>
 >>>   +pyramid.js<br>
->>>   +BinaryDataPyramid.js<br>
 >>>   RAMUse.md<br>
->>>   Code.md<br>
+>>>   %Code.md<br>
 >>>   ----<br>
 >>>   Journal.md<br>
-
-
-```html
-<script src="/CoCo/Pyramid/BinaryDataPyramid.js"></script>
-<script src="/js/6809.js"></script>
-<script src="/CoCo/CoCoText.js"></script>
-<script src="/CoCo/Pyramid/pyramid.js"></script>
-<script>window.onload = function() {startPyramid("pyramidConsole","pyramidTape");}</script>
-```
 
 >>> playMe {
 
@@ -407,3 +397,15 @@ the NORTH, SOUTH, EAST, and WEST directions by a random offset! You type NORTH b
 
 I had originally said that Arnstein's code was a descendant of Platt's ADV550. Kai Wen Lee points out that it has none of Platt's extensions
 and is more like a subset of the original WOOD0350.
+
+```html
+<script src="/js/Binary.js"></script>
+<script src="/js/6809.js"></script>
+<script src="/CoCo/CoCoText.js"></script>
+<script src="pyramid.js"></script>
+<script>
+    window.onload = function() {
+        startPyramid("pyramidConsole","pyramidTape");
+    }
+</script>
+```

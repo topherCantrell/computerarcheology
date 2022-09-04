@@ -1,8 +1,10 @@
-// requires BinaryData
 
 var Megabug = (function() {
 	
 	var my = {}
+
+	my.data = null
+	my.origin = 0
 	
 	function padBinaryTo8Bits(value) {
     	var ret = value.toString(2);
@@ -11,7 +13,7 @@ var Megabug = (function() {
     }
 	
 	my.getPlayer = function(number, address) {
-		var dat = BinaryData.getData(address+number*6,6)
+		var dat = my.data.slice(address+number*6-my.origin,address+number*6-my.origin+6)
 		
 		ret = []
 		for(var y=0;y<6;++y) {
@@ -27,7 +29,7 @@ var Megabug = (function() {
 	
 	my.getCharacter = function(number, address) {
 		
-		var dat = BinaryData.getData(address+number*9,9)
+		var dat = my.data.slice(address+number*9-my.origin,address+number*9-my.origin+9)
 		
 		ret = []
 		for(var y=0;y<9;++y) {
@@ -42,7 +44,7 @@ var Megabug = (function() {
 	
 	my.getSmallBug = function(number, address) {
 		
-		var dat = BinaryData.getData(address+number*18,18)
+		var dat = my.data.slice(address+number*18-my.origin,address+number*18-my.origin+18)
 		
 		ret = []
 		
@@ -62,7 +64,7 @@ var Megabug = (function() {
 			
 	my.getGraphicsLargeBug = function(bugAddress) {	
 		
-		var dat = BinaryData.getData(bugAddress,5*32)
+		var dat = my.data.slice(bugAddress-my.origin,bugAddress-my.origin+5*32)
 		
 		var ret = []
 		
@@ -175,8 +177,6 @@ function drawMaze() {
 	ctx.stroke()
 }
 
-var binData = makeBinaryDataMegabug();
-
 var state = "uninitialized"
 var CPU6809
 	
@@ -271,7 +271,7 @@ function initMazeGen() {
 		// Specific ROM addresses for graphics
 		
 		if(addr<0xE000 && addr>=0xC000) {
-			return binData.read(addr)
+			return Megabug.data[addr-0xC000]
 		}
 		
 		throw "Read of "+addr+" from "+CPU6809.status()['pc'];

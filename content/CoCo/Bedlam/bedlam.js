@@ -1,15 +1,61 @@
+function makeBinaryDataBedlam() {
+    
+    var dataOrigin = 0x0600;    
+           
+    var datab = Binary.readBinary('Code.md.bin')
+    var data = []    
+    for(var i=0;i<datab.length;i++) {
+        data.push(datab[i])
+    }
+    // Drop the bootloader at the end of the disassembly
+    data = data.slice(0,0x3F02-dataOrigin)    
+    
+    // Change the JSR at 0B6C to jump to the patch
+    data[0x0B6D-dataOrigin] = 0x3F;
+    data[0x0B6E-dataOrigin] = 0x02;
+    
+    // Here is the patch
+    data = data.concat([0x34,0x04,0xC6,0x01,0xBD,0x13,0x19,0x5A,0x26,0xFA,0x35,0x04,0x39]);
+    /* Call the random generator a number of times  
+    ;
+    ; Write random number to 3F05 each time 0B6C is hit
+    0B6C: BD 3F 02
+    ;      
+    3F02: 34 04     PSHS  B
+    3F04: C6 00     LDB   #??    ; Write a random number here first
+    loop:
+    3F06: BD 13 19  JSR   $1319
+    3F09: 5A        DECB
+    3F0A: 26 FA     BNE   loop
+    3F0C: 35 04     PULS  B
+    3F0E: 39        RTS     
+    */
+    
+    var my = {};
+    
+    // Simple read/write
+    my.read = function(addr) {
+        return data[addr-dataOrigin];
+    };
+    my.write = function(addr,value) {
+       data[addr-dataOrigin] = value;
+    };
+        
+    return my;
+    
+};
 
 function startBedlam(consoleElement) {
 	
 	// The CoCo emulator
 	var CoCoText = makeCoCoText(consoleElement);
 	// The game code
-	var BinaryData = makeBinaryDataBedlam();
+	var binData = makeBinaryDataBedlam();
 	
     function write(addr,value) {        
     	if(addr>=0x0600 && addr<0x3F10) {
     		// RAM where the game is loaded
-        	BinaryData.write(addr,value);
+        	binData.write(addr,value);
         	return true;
         }    	
     }
@@ -50,16 +96,14 @@ function startBedlam(consoleElement) {
         
         if(addr>=0x0600 && addr<0x3F10) {
             // RAM where the game is loaded
-            return BinaryData.read(addr); 
+            return binData.read(addr); 
         }        
         
         return undefined;
         
     }
-      
-    BinaryData.loadDataCacheFromURL("/CoCo/Bedlam/Code.html",function() { 
-    	CoCoText.init(read,write,function() {CoCoText.runUntilWaitKey();}, 0x0600);
-    	CoCoText.runUntilWaitKey();    	  
-    });    
+
+    CoCoText.init(read,write,function() {CoCoText.runUntilWaitKey();}, 0x0600);
+    CoCoText.runUntilWaitKey();  
     
 };

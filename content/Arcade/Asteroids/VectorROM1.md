@@ -2,14 +2,6 @@
 
 # Asteroids DVG Vector ROM
 
-```{html
-<script src="/Arcade/Asteroids/VectorROM.js"></script>
-
-<script src="/js/BinaryData.js"></script>
-<script src="/js/DVG.js"></script>
-<script src="/js/CANVAS.js"></script>
-```
-
 ```
 ; OriginalBinary 035127.01 (Rev 1)
 
@@ -1133,4 +1125,16 @@ ThrustDir64:
 
 ; Extra space
 0FFC: 00 00 00 00
+```
+
+```html
+<script src="/js/Binary.js"></script>
+<script src="/js/DVG.js"></script>
+<script src="/js/Canvas.js"></script>
+<script>
+    window.onload = function() {   
+        DVG.data = Binary.readBinary('VectorROM1.md.bin')     
+        Canvas.redrawGraphics()       
+    }    
+</script>
 ```

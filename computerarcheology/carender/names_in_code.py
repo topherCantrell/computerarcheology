@@ -85,8 +85,13 @@ def _rebuild_text(line, parts, spacing, cpu_name):
 
     line.text = address_text + ': ' + data_text + opcode_text + comment
 
+def extract_data(lines):
+    
+    for line in lines:
+        print(dir(line))
+        print(line.data)
 
-def update_names_in_code(directory, filename, check_binary=True):
+def update_names_in_code(directory, filename, check_binary=True,extract_binary=False):
 
     # Load the markdown file
 
@@ -97,7 +102,13 @@ def update_names_in_code(directory, filename, check_binary=True):
     lines = cainfo.read_code_text_lines(md)
     if not lines:
         # No code in this file -- nothing to do
-        return md
+        return md,None
+
+    bindata = None
+    if extract_binary:
+        gaps = cainfo.read_origin_gaps(md)        
+        origin_md, binary_md = cacode.parse_binary(lines, gaps)
+        bindata = bytes(binary_md)
 
     # Get the CPU (if any -- might be data-only with no opcodes)
 
@@ -115,7 +126,7 @@ def update_names_in_code(directory, filename, check_binary=True):
 
     # Make sure code binary matches binary file (if requested)
 
-    check_binary = False
+    #check_binary = False
     if check_binary:
         gaps = cainfo.read_origin_gaps(md)
         binary_file = cainfo.read_binary_file_name(md)
@@ -152,7 +163,7 @@ def update_names_in_code(directory, filename, check_binary=True):
                 a = a[0:i]
             opcode = cpu.find_opcodes_for_binary(parts['data'], True)
             if not opcode:
-                raise Exception('No opcode found: ' + line)
+                raise Exception('No opcode found: ' + line.text)
             if len(opcode) > 1:
                 mop = None
                 for o in opcode:
@@ -160,6 +171,7 @@ def update_names_in_code(directory, filename, check_binary=True):
                         mop = o
                         break
                 if not mop:
+                    print('>',o.mnemonic,opcode,a,line)
                     raise Exception('Multiple opcode matches found: ' + line)
                 opcode = [mop]
 
@@ -320,7 +332,7 @@ def update_names_in_code(directory, filename, check_binary=True):
 
     markdown.write_markdown_file(os.path.join(directory, filename), md)
 
-    return md
+    return md,bindata
 
 
 if __name__ == '__main__':

@@ -5,24 +5,23 @@
  * first canvas on the page needs to specify a function used by all.
  */
 
-function redrawGraphics() {
-			
-	// data-canvasFunction
-	var handleCanvasFunction = null;
+ var Canvas = (function() {	
 	
-	var cans = $("canvas");
-	
-	for(var x=0;x<cans.length;++x) {
-		var att = cans[x].getAttribute("data-canvasFunction");	
-		if(att) {
-			handleCanvasFunction = eval(att);
+	var my = {}
+
+	my.handleCanvasFunction = null
+
+	my.redrawGraphics = function() {
+		var cans = $("canvas")	
+		for(var x=0;x<cans.length;++x) {
+			var att = cans[x].getAttribute("data-canvasFunction")
+			if(att) {
+				my.handleCanvasFunction = eval(att)
+			}
+			my.handleCanvasFunction(cans[x])			
 		}
-		handleCanvasFunction(cans[x]);			
 	}
-}
 
-$(function() {	
-	
-	redrawGraphics();
+	return my;
 
-});
+}());

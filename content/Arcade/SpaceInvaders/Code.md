@@ -15,10 +15,6 @@
 [RAM Usage](RAMUse.md)
 
 ```html
-<script src="/Arcade/SpaceInvaders/SpaceInvaders.js"></script>
-<script src="/js/TileEngine.js"></script>
-<script src="/js/BinaryData.js"></script>
-<script src="/js/CANVAS.js"></script>
 <!-- Cache some commonly-used values -->
 <canvas width="0" height="0"
         data-canvasFunction="TileEngine.handleTileCanvas"
@@ -4942,5 +4938,18 @@ MessagePush:
 1FF3: 0F 14 12 07 26             ; "PUSH " (with space on the end)                                 
 
 1FF8: 00 08 08 08 08 08 00 00               ; 3F:"-"
+```
+
+```html
+<script src="SpaceInvaders.js"></script>
+<script src="/js/TileEngine.js"></script>
+<script src="/js/Binary.js"></script>
+<script src="/js/Canvas.js"></script>
+<script>
+    window.onload = function() {   
+        SpaceInvaders.data = Binary.readBinary('Code.md.bin')       
+        Canvas.redrawGraphics()       
+    }    
+</script>
 ```
 

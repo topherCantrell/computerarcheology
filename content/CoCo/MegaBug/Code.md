@@ -14,15 +14,6 @@
 
 [Hardware Info](../Hardware.md)
 
-```html
-<script src="/js/6809.js"></script>
-<script src="/CoCo/Megabug/BinaryDataMegabug.js"></script>
-<script src="/CoCo/Megabug/megabug.js"></script>
-<script src="/js/TileEngine.js"></script>
-<script src="/js/BinaryData.js"></script>
-<script src="/js/CANVAS.js"></script>
-```
-
 ```code
 C000: 7E CF DE        JMP     $CFDE               ; {code.Start} Skip over data section
 ```
@@ -3896,5 +3887,20 @@ DFF2: 39              RTS                         ; Done
 ```code
 ; Unused at end
 DFF3: FF FF FF FF FF FF FF FF FF FF FF FF FF 
+```
+
+```html
+<script src="/js/6809.js"></script>
+<script src="megabug.js"></script>
+<script src="/js/TileEngine.js"></script>
+<script src="/js/Binary.js"></script>
+<script src="/js/Canvas.js"></script>
+<script>
+    window.onload = function() {   
+        Megabug.data = Binary.readBinary('Code.md.bin')     
+        Megabug.origin = 0xC000
+        Canvas.redrawGraphics()       
+    }    
+</script>
 ```
 

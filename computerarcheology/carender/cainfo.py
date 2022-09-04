@@ -24,7 +24,7 @@ def load_site_directory(dev_mode=False):
         for entry in deploy:
 
             special = None
-            if entry[0] in '#+':
+            if entry[0] in '#+%':
                 special = entry[0]
                 entry = entry[1:]
             i = entry.find(':')
@@ -35,7 +35,7 @@ def load_site_directory(dev_mode=False):
                 title = entry
                 directory = entry
                 if title.endswith('.md'):
-                    title = title[0:-3]
+                    title = title[0:-3]                        
 
             if dev_mode and special == '#':
                 # In dev mode, we are building a specific set of things and ignoring others
@@ -52,8 +52,8 @@ def load_site_directory(dev_mode=False):
             else:
                 # This is a file
                 # if directory.endswith('.md'):
-                #    paras = markdown.read_markdown_paragraphs(os.path.join(src, directory))
-                tree.add_page_nav(level, title, directory, None)
+                #    paras = markdown.read_markdown_paragraphs(os.path.join(src, directory))                
+                tree.add_page_nav(level, title, directory, special=special)
 
     tree = NavTree()
     level = 1

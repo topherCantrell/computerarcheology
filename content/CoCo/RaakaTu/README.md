@@ -4,20 +4,11 @@
 
 >>> deploy:<br>
 >>>   +RaakaTu.jpg<br>
->>>   +BinaryDataRaakaTu.js<br>
 >>>   +raakatu.js<br>
 >>>   RAMUse.md<br>
->>>   Code.md<br>
+>>>   %Code.md<br>
 >>>   ----<br>
 >>>   Journal.md<br>
-
-```html
-<script src="/CoCo/RaakaTu/BinaryDataRaakaTu.js"></script>
-<script src="/js/6809.js"></script>
-<script src="/CoCo/CoCoText.js"></script>
-<script src="/CoCo/RaakaTu/raakatu.js"></script>
-<script>window.onload = function() {startRaakaTu("raakatuConsole");}</script>
-```
 
 >>> playMe {
 
@@ -399,3 +390,14 @@ else if the player is in 99 then print EXIT TO LEFT" and so on for each room on 
 2FCB:         9F 23                                             ;         Command_03_IS_OBJECT_AT_LOCATION object=23(Guards) location=9F
 ```
 
+```html
+<script src="/js/Binary.js"></script>
+<script src="/js/6809.js"></script>
+<script src="/CoCo/CoCoText.js"></script>
+<script src="raakatu.js"></script>
+<script>
+    window.onload = function() {
+        startRaakaTu("raakatuConsole");
+    }
+</script>
+```

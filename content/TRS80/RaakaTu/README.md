@@ -5,7 +5,7 @@
 >>> deploy:<br>
 >>>   +trs80raakatu.jpg<br>
 >>>   RAMUse.md<br>
->>>   Code.md<br>
+>>>   %Code.md<br>
 >>>   ----<br>
 >>>   Journal.md<br>
 

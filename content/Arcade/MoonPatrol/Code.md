@@ -5640,16 +5640,7 @@ ISROBJRun_21:
 2D1C: 55 44 43 33 43 33 21 31 00 9A 51 98 8D 5F B6 30 
 2D2C: D2 06 E3 E3 EF C7 F7 B0 FC 9E 00 8E 03 82 06 77 
 2D3C: 07 6E 08 66 09 5F 0A 59 
-```
 
-```html
-<script src="/js/BinaryData.js"></script>
-<script src="MoonPatrol.js"></script>
-<script src="/js/TileEngine.js"></script>
-<script src="/js/CANVAS.js"></script>
-```
-
-```code
 Splash:
 ; Text printing for MOON PATROL on the splash
 ```
@@ -7479,5 +7470,19 @@ ServiceBEAM:
 3FF0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 ;
 3FFF: 03 ; Bring ROM chip 3 check value to FF
+```
+
+```html
+<script src="MoonPatrol.js"></script>
+<script src="/js/Binary.js"></script>
+<script src="/js/TileEngine.js"></script>
+<script src="/js/Canvas.js"></script>
+<script>
+    window.onload = function() {     
+        MoonPatrol.data = Binary.readBinary('GFX1.md.bin')        
+        MoonPatrol.origin = 0
+        Canvas.redrawGraphics() 
+    }
+</script>
 ```
 

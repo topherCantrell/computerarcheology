@@ -17,12 +17,6 @@
 This is the NTSC version of the code.
 
 ```html
-<script src="../Stella.js"></script>
-<script src="/js/TileEngine.js"></script>
-<script src="/js/BinaryData.js"></script>
-<script src="/js/CANVAS.js"></script>
-<script src="Combat.js"></script>
-
 <!-- Cache some commonly-used values -->
 <canvas width="0" height="0"
         data-canvasFunction="TileEngine.handleTileCanvas"
@@ -1439,5 +1433,20 @@ F7F4: 00 00 00 00 00 00
 F7FA: 00 00        ; NMI Vector (not used)
 F7FC: 00 F0        ; Reset vector to F000
 F7FE: 0F 11        ; IRQ/vector to 110F (maybe debug hardware?)
+```
+
+```html
+<script src="Combat.js"></script>
+<script src="../Stella.js"></script>
+<script src="/js/Binary.js"></script>
+<script>
+    window.onload = function() {   
+        Stella.data = Binary.readBinary('Code.md.bin') 
+	Stella.origin = 0xF000 
+        Canvas.redrawGraphics()       
+    }            
+</script>
+<script src="/js/TileEngine.js"></script>
+<script src="/js/Canvas.js"></script>
 ```
 

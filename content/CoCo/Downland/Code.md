@@ -15,11 +15,6 @@
 [Hardware Info](../Hardware.md)
 
 ```html
-<script src="downland.js"></script>
-<script src="/js/TileEngine.js"></script>
-<script src="/js/BinaryData.js"></script>
-<script src="/js/CANVAS.js"></script>
-
 <!-- Cache some commonly-used values -->
 <canvas width="0" height="0"
         data-canvasFunction="TileEngine.handleTileCanvas"
@@ -4310,5 +4305,19 @@ DFF8: 00 FE           NEG     <$FE
 DFFA: 00 FE           NEG     <$FE                
 DFFC: 01                                  
 DFFD: FF F7 FF        STU     $F7FF               
+```
+
+```html
+<script src="downland.js"></script>
+<script src="/js/TileEngine.js"></script>
+<script src="/js/Binary.js"></script>
+<script src="/js/Canvas.js"></script>
+<script>
+    window.onload = function() {   
+        Downland.data = Binary.readBinary('Code.md.bin')     
+        Downland.origin = 0xC000
+        Canvas.redrawGraphics()       
+    }    
+</script>
 ```
 

@@ -4,8 +4,8 @@
 >>>   +A2600Combat.jpg<br>
 >>>   +Combat.js
 >>>   RAMUse.md<br>
->>>   Code.md<br>
->>>   CodePAL.md
+>>>   %Code.md<br>
+>>>   %CodePAL.md
 >>>   ----<br>
 >>>   Journal.md<br>
 

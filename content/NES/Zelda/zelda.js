@@ -2,6 +2,9 @@ var Zelda = (function() {
     
     var my = {};
 
+	my.data = null
+	my.origin = 0
+
     function mergePixels(data) {
     	var ret = [];
     	for(var x=0;x<8;++x) {
@@ -19,7 +22,7 @@ var Zelda = (function() {
     
     my.getMergedData = function(tile,address) {
     	
-    	var dat = BinaryData.getData(address+tile*16,16);
+    	var dat = my.data.slice(address+tile*16-my.origin,address+tile*16-my.origin+16);
     	
     	return mergePixels(dat);
     	

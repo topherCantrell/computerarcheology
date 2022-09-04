@@ -1,5 +1,5 @@
 
-binaryData = makeBinaryDataMadness();
+binData = makeBinaryDataMadness();
 
 var ROOM_DESC = [
 'STONE TOWER', 'EMPTY ROOM', 'GUARD ROOM', 'PILE OF BONES', 'CLEAN ROOM', 'TROPHY ROOM', 'EMPTY CLOSET', 'SLOPING SHAFT',
@@ -106,7 +106,7 @@ function readBinaryData(addr) {
 
 
 function getRoomDoors(rn) {
-	var d = binaryData.read(0x3DB8+rn);
+	var d = binData.read(0x3DB8+rn);
 	//--UDNEWS
 	ret = '--';
 	if((d&32) != 0) ret=ret+'U';
@@ -162,11 +162,11 @@ var OPPOSITE_DIR = {'U':'D', 'D':'U', 'N':'S', 'E':'W', 'W':'E', 'S':'N'};
 function getBetweenRoomAction(rn,dir) {
 	var p = 0x3B4A;
 	while(true) {		
-		var a = binaryData.read(p);
-		var b = binaryData.read(p+1);
+		var a = binData.read(p);
+		var b = binData.read(p+1);
 		if(b==0) break;
 		b = DIRS[b];
-		var c = binaryData.read(p+2)*256 + binaryData.read(p+3);
+		var c = binData.read(p+2)*256 + binData.read(p+3);
 		p += 4;	
 		if((rn==a) && (dir==b)) {		
 			a = BETWEEN_ROOM_ACTIONS[c];
@@ -183,11 +183,11 @@ function getBetweenRoomAction(rn,dir) {
 	// Just like the code ... run the list in the opposite travel direction
 	var p = 0x3B4A;
 	while(true) {
-		var a = binaryData.read(p);
-		var b = binaryData.read(p+1);
+		var a = binData.read(p);
+		var b = binData.read(p+1);
 		if(b==0) break;
 		b = DIRS[b];
-		var c = binaryData.read(p+2)*256 + binaryData.read(p+3);
+		var c = binData.read(p+2)*256 + binData.read(p+3);
 		p += 4;	
 		a = getNeighborRoomNumber(a,b);
 		b = OPPOSITE_DIR[b];

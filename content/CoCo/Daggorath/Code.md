@@ -23,11 +23,6 @@ TODO: what areas are mirrored? how does the flip happen? are graphics/text areas
 TODO: make a HTML table of links to the SWI routines. Figure out what they all do.
 
 ```html
-<script src="/CoCo/Daggorath/daggorath.js"></script>
-<script src="/js/TileEngine.js"></script>
-<script src="/js/BinaryData.js"></script>
-<script src="/js/CANVAS.js"></script>
-
 <!-- Cache some commonly-used values -->
 <canvas width="0" height="0"
         data-canvasFunction="TileEngine.handleTileCanvas"
@@ -6113,5 +6108,19 @@ DFFB: 00            ;     End of short lines
 DFFC: FE            ; End of image
 
 DFFD: 4B 53 4B ; "KSK" Initials of Keith S. Kiyohara, co-creator of the game
+```
+
+```html
+<script src="daggorath.js"></script>
+<script src="/js/TileEngine.js"></script>
+<script src="/js/Binary.js"></script>
+<script src="/js/Canvas.js"></script>
+<script>
+    window.onload = function() {   
+        Daggorath.data = Binary.readBinary('Code.md.bin') 
+	      Daggorath.origin = 0xC000 
+        Canvas.redrawGraphics()       
+    }            
+</script>
 ```
 

@@ -14,7 +14,7 @@
 >>>   RAMUse.md<br>
 >>>   Code.md<br>
 >>>   ----<br>
->>>   GFX.md<br>
+>>>   %GFX.md<br>
 >>>   ----<br>
 >>>   Journal.md<br>
 

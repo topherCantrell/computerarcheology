@@ -1307,7 +1307,7 @@ Startup:
 088D: 01 00 00        LD      BC,$0000            ; 16 bit 0
 0890: 11 00 00        LD      DE,$0000            ; Counter for number of clears
 0893: 3E 10           LD      A,$10               ; We want to clear 10 words (32 bytes)
-0895: 31 10 40        LD      SP,$4010            ; ?? Clearing out 32 bytes from 
+0895: 31 10 40        LD      SP,$4010            ; ?? Clearing out 32 bytes from
 0898: C5              PUSH    BC                  ; Decrement the SP and clear the word
 0899: 13              INC     DE                  ; Bump the counter
 089A: BA              CP      D                   ; Have we cleared all?
@@ -1768,7 +1768,7 @@ Startup:
 0B30: F5              PUSH    AF                  ; Hold the character count
 0B31: 7E              LD      A,(HL)              ; Get the next value
 0B32: 23              INC     HL                  ; Point to next value
-0B33: D6 30           SUB     $30                 ; Greater or equal to $30? 
+0B33: D6 30           SUB     $30                 ; Greater or equal to $30?
 0B35: F2 49 0B        JP      P,$0B49             ; {} Yes. Handle print a number
 0B38: 47              LD      B,A                 
 0B39: 1C              INC     E                   

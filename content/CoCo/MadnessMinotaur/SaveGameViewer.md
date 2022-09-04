@@ -17,18 +17,6 @@ The map is SVG -- you can scroll in and out.
 <button id="parseData">Show</button>
 </p>
 
-<script src="BinaryDataMadness.js"></script>
-<script src="savegame.js"></script>
-<script>
-$(function() {
-
-$('#parseData').on('click',function() {
-	viewSaveFile($('#cocoTape').val());
-});
-
-});
-</script>
-
 <svg id="svg" width="1400" height="5600">
 </svg>
 
@@ -500,4 +488,16 @@ $('#parseData').on('click',function() {
 
 ```html
 </div>
+
+<script src="/js/Binary.js"></script>
+<script src="madness.js"></script>
+<script src="savegame.js"></script>
+<script>
+window.onload = function() {
+	$('#parseData').on('click',function() {
+		viewSaveFile($('#cocoTape').val());
+	});
+};
+</script>
+
 ```

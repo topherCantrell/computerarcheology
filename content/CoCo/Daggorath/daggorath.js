@@ -1,6 +1,9 @@
 var Daggorath = (function() { 
     
     var my = {};
+
+	var data = null
+	var origin = 0
     
     var x = 0;
     var y = 0;
@@ -21,7 +24,7 @@ var Daggorath = (function() {
     	
     	var ret = [];
     	
-    	var dat = BinaryData.getData(address+tile*5,5);
+    	var dat = my.data.slice(address+tile*5-my.origin,address+tile*5-my.origin+5);
     	
     	//getLineOfData(address+tile*5,dat);
     	
@@ -39,7 +42,7 @@ var Daggorath = (function() {
     
     my.get8x7 = function(tile,address) {
     	var ret = [];
-    	var dat = BinaryData.getData(address+tile*7,7);
+    	var dat = my.data.slice(address+tile*7-my.origin,address+tile*7-my.origin+7);
     	
     	for(var y=0;y<7;++y) {
     		var comb = padBinaryTo8Bits(dat[y]);
@@ -57,20 +60,20 @@ var Daggorath = (function() {
     	var com,nx,ny;
     	while(true) {
     		
-    		com = BinaryData.read(cursor++);
+    		com = my.data[cursor - my.origin];cursor=cursor+1
     		switch(com) {
     		case 0xFA: // Return from graphics subroutine			
     			return;
     		case 0xFB: // Jump to graphics subroutine
     			var tpa = cursor;
-    			nx = BinaryData.read(cursor++);
-    			ny = BinaryData.read(cursor++);
+    			nx = my.data[cursor - my.origin];cursor=cursor+1
+    			ny = my.data[cursor - my.origin];cursor=cursor+1
     			processScript(context,nx<<8 | ny);
     			cursor = tpa;
     			break;
     		case 0xFC: // Multiple short segments
     			while(true) {
-    				com = BinaryData.read(cursor++);
+    				com = my.data[cursor - my.origin];cursor=cursor+1
     				if(com===0) break;
     				ny = com >> 4;
     				if(ny>=8) ny=ny | 0xF0;
@@ -92,8 +95,8 @@ var Daggorath = (function() {
     			break;
     		case 0xFD: // Jump to XXXX
     			startSegment = true;
-    			nx = BinaryData.read(cursor++);
-    			ny = BinaryData.read(cursor++);
+    			nx = my.data[cursor - my.origin];cursor=cursor+1
+    			ny = my.data[cursor - my.origin];cursor=cursor+1
     			cursor = nx<<8 | ny;
     			break;
     		case 0xFE: // Exit
@@ -104,11 +107,11 @@ var Daggorath = (function() {
     		default: // Regular line
     			if(startSegment) {
     				y = com*scale;
-    				x = BinaryData.read(cursor++)*scale;
+    				x = my.data[cursor - my.origin]*scale;cursor=cursor+1
     				context.moveTo(xoffs+x,yoffs+y);
     				startSegment = false;				
     			} else {
-    				nx = BinaryData.read(cursor++);
+    				nx = my.data[cursor - my.origin];cursor=cursor+1
     				context.lineTo(xoffs+nx*scale,yoffs+com*scale);
     				y = com*scale;
     				x = nx*scale;

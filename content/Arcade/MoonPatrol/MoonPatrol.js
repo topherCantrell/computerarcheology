@@ -1,15 +1,16 @@
-// requires BinaryData
-
 var MoonPatrol = (function() {
 	
 	var my = {};
+
+	my.data = null
+	my.origin = 0
 	
 	function getSpriteQuadrantData(tileAddress) {
 		
 		var ret = [];
 		
-		var plane1 = BinaryData.getData(tileAddress,8); 
-		var plane2 = BinaryData.getData(tileAddress+0x1000,8);
+		var plane1 = my.data.slice(tileAddress-my.origin,tileAddress-my.origin+8); 
+		var plane2 = my.data.slice(tileAddress-my.origin+0x1000,tileAddress-my.origin+0x1000+8);
 		
 		for(var x=0;x<8;++x) {
 			var a = plane1[x].toString(2);
@@ -65,8 +66,8 @@ var MoonPatrol = (function() {
 		
 		var ret = [];
 		
-		var dataA = BinaryData.getData(tileAddress*8,8);
-		var dataB = BinaryData.getData(tileAddress*8+4096,8);	
+		var dataA = my.data.slice(tileAddress*8-my.origin,tileAddress*8-my.origin+8);
+		var dataB = my.data.slice(tileAddress*8+4096-my.origin,tileAddress*8+4096-my.origin+8);	
 		
 		for(var x=0;x<8;++x) {
 			var a = dataA[x].toString(2);
@@ -89,7 +90,7 @@ var MoonPatrol = (function() {
 	
 	my.getBackgroundImage = function() {
 		
-		var data = BinaryData.getData(0,4096);
+		var data = my.data.slice(0-my.origin,0-my.origin+4096);
 		var ret = [];
 		for(var x=0;x<4096;++x) {
 			var a = data[x].toString(2);

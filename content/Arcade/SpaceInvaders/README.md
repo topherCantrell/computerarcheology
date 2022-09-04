@@ -5,7 +5,7 @@
 >>>   +SpaceInvaders.js<br>
 >>>   Hardware.md<br>
 >>>   RAMUse.md<br>
->>>   Code.md<br>
+>>>   %Code.md<br>
 >>>   ----<br>
 >>>   Journal.md
 
