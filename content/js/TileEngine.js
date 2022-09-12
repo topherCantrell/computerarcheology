@@ -41,6 +41,7 @@ var TileEngine = (function() {
 	 *     :2x3:1,2,3,4,5,6   draw a 2x3 (2 across, 3 down) matrix of tiles given
 	 *     :2x3:1,2           automatic increment to get 3,4,5, and 6
 	 *     :2x3:1,2,,4,,6     empty tile values are left empty on the screen
+	 *     :2x3:1,@C000,0     change the data address on the fly
 	 *     #NewSet            change the color set to a predefined color set
 	 *     +x                 skip a pixel to the right (for spacing)
 	 *     +y                 skip a pixel down (for spacing)
@@ -162,6 +163,10 @@ var TileEngine = (function() {
 				for(var yy=0;yy<height;++yy) {
 					for(var xx=0;xx<width;++xx) {
 						if(x<command.length) {
+							if(command[x].charAt(0)=='@') {
+								address = parseInt(command[x].substring(1),16);
+								x = x + 1
+							}
 							if(command[x].charAt(0)=='#') {
 								colors = colorMap[command[x].substring(1)];
 								cs = command[x++].substring(1)

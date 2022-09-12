@@ -62,63 +62,65 @@ C02F: 35 04           PULS    B                   ; remove stack temporary
 NewGame:
 C031: 17 0A 1E        LBSR    $CA52               ; {code.ClearScreen} Clear the screen
 C034: 17 0A 98        LBSR    $CACF               ; {code.SetVideoMode} Set the graphics mode
-C037: CC 1C 46        LDD     #$1C46              
-C03A: 33 8D 0D 33     LEAU    $CD71,PC            ; {code.StrCopyright1}
-C03E: 17 09 02        LBSR    $C943               ; {code.PrintChars}
-C041: CC 14 4E        LDD     #$144E              
-C044: 33 8D 0D 3A     LEAU    $CD82,PC            ; {code.StrCopyright2}
-C048: 17 08 F8        LBSR    $C943               ; {code.PrintChars}
-C04B: CC 14 56        LDD     #$1456              
-C04E: 33 8D 0D D1     LEAU    $CE23,PC            ; {code.StrCopyright3}
-C052: 17 08 EE        LBSR    $C943               ; {code.PrintChars}
-C055: 8E 00 E4        LDX     #$00E4              
-C058: 86 1F           LDA     #$1F                
-C05A: A7 84           STA     ,X                  
-C05C: 86 18           LDA     #$18                
-C05E: A7 02           STA     2,X                 
-C060: 33 8D 0E 5F     LEAU    $CEC3,PC            ; {}
-C064: 34 04           PSHS    B                   
-C066: C6 05           LDB     #$05                
-C068: E7 E4           STB     ,S                  
-C06A: EC C1           LDD     ,U++                
-C06C: 27 42           BEQ     $C0B0               ; {}
-C06E: 34 06           PSHS    B,A                 
-C070: C4 07           ANDB    #$07                
-C072: 58              ASLB                        
-C073: 31 8D 0E B6     LEAY    $CF2D,PC            ; {}
-C077: EC A5           LDD     B,Y                 
-C079: AB 84           ADDA    ,X                  
-C07B: EB 02           ADDB    2,X                 
-C07D: A7 84           STA     ,X                  
-C07F: E7 02           STB     2,X                 
-C081: 40              NEGA                        
-C082: 8B 80           ADDA    #$80                
-C084: A7 01           STA     1,X                 
-C086: 50              NEGB                        
-C087: CB 3C           ADDB    #$3C                
-C089: E7 03           STB     3,X                 
-C08B: 34 50           PSHS    U,X                 
-C08D: 17 08 CF        LBSR    $C95F               ; {}
-C090: 30 01           LEAX    1,X                 
-C092: 17 08 CA        LBSR    $C95F               ; {}
-C095: E6 84           LDB     ,X                  
-C097: C4 01           ANDB    #$01                
-C099: 26 03           BNE     $C09E               ; {}
-C09B: 17 0A 51        LBSR    $CAEF               ; {code.WaitVBlank}
-C09E: 35 50           PULS    X,U                 
-C0A0: 35 06           PULS    A,B                 
-C0A2: 6A E4           DEC     ,S                  
-C0A4: 27 C0           BEQ     $C066               ; {}
-C0A6: 44              LSRA                        
-C0A7: 56              RORB                        
-C0A8: 44              LSRA                        
-C0A9: 56              RORB                        
-C0AA: 44              LSRA                        
-C0AB: 56              RORB                        
-C0AC: 34 06           PSHS    B,A                 
-C0AE: 20 C0           BRA     $C070               ; {}
-
-C0B0: 35 04           PULS    B                   
+C037: CC 1C 46        LDD     #$1C46              ; Screen coordinates
+C03A: 33 8D 0D 33     LEAU    $CD71,PC            ; {code.StrCopyright1} Print ...
+C03E: 17 09 02        LBSR    $C943               ; {code.PrintChars} ... copyright line 1
+C041: CC 14 4E        LDD     #$144E              ; Screen coordinates
+C044: 33 8D 0D 3A     LEAU    $CD82,PC            ; {code.StrCopyright2} Print ...
+C048: 17 08 F8        LBSR    $C943               ; {code.PrintChars} ... copyright line 2
+C04B: CC 14 56        LDD     #$1456              ; Screen coordinates
+C04E: 33 8D 0D D1     LEAU    $CE23,PC            ; {code.StrCopyright3} Print ...
+C052: 17 08 EE        LBSR    $C943               ; {code.PrintChars} ... copyright line 3
+;
+; Cursive "doubleback"
+C055: 8E 00 E4        LDX     #$00E4              ; Utility object structure
+C058: 86 1F           LDA     #$1F                ; Set ...
+C05A: A7 84           STA     ,X                  ; ... X coordinate
+C05C: 86 18           LDA     #$18                ; Set ...
+C05E: A7 02           STA     2,X                 ; ... Y coordinate
+C060: 33 8D 0E 5F     LEAU    $CEC3,PC            ; {} Cursive "doubleback" data
+C064: 34 04           PSHS    B                   ; Space on stack for counter
+C066: C6 05           LDB     #$05                ; Each word has 3*5 = 15 data points
+C068: E7 E4           STB     ,S                  ; Store the count
+C06A: EC C1           LDD     ,U++                ; Get the next 5 data points
+C06C: 27 42           BEQ     $C0B0               ; {} No more ... we are done
+C06E: 34 06           PSHS    B,A                 ; Hold the data points
+C070: C4 07           ANDB    #$07                ; Lower 3 bits
+C072: 58              ASLB                        ; 2 bytes per
+C073: 31 8D 0E B6     LEAY    $CF2D,PC            ; {code.DirTable} Offset table
+C077: EC A5           LDD     B,Y                 ; Get X and Y offsets
+C079: AB 84           ADDA    ,X                  ; Add X offset
+C07B: EB 02           ADDB    2,X                 ; Add Y offset
+C07D: A7 84           STA     ,X                  ; Nex X position
+C07F: E7 02           STB     2,X                 ; New Y position
+C081: 40              NEGA                        ; Mirror ...
+C082: 8B 80           ADDA    #$80                ; ... X ...
+C084: A7 01           STA     1,X                 ; ... coordinate
+C086: 50              NEGB                        ; Mirror ...
+C087: CB 3C           ADDB    #$3C                ; ... Y ...
+C089: E7 03           STB     3,X                 ; ... coordinate
+C08B: 34 50           PSHS    U,X                 ; Hold data pointer and screen pointer
+C08D: 17 08 CF        LBSR    $C95F               ; {code.SetPixel} Draw top pixel
+C090: 30 01           LEAX    1,X                 ; Skip over to 2nd screen pointer
+C092: 17 08 CA        LBSR    $C95F               ; {code.SetPixel} Draw bottom (reflected) pixel
+C095: E6 84           LDB     ,X                  ; Is the X ...
+C097: C4 01           ANDB    #$01                ; ... coordinate odd?
+C099: 26 03           BNE     $C09E               ; {} No ... skip the pause
+C09B: 17 0A 51        LBSR    $CAEF               ; {code.WaitVBlank} Yes ... slight pause
+C09E: 35 50           PULS    X,U                 ; Restore the data pointer and the screen pointer
+C0A0: 35 06           PULS    A,B                 ; Pop the data points
+C0A2: 6A E4           DEC     ,S                  ; All 5 datapoints done?
+C0A4: 27 C0           BEQ     $C066               ; {} Yes ... reload next five
+C0A6: 44              LSRA                        ; No ...
+C0A7: 56              RORB                        ; ... shift ...
+C0A8: 44              LSRA                        ; ... over ...
+C0A9: 56              RORB                        ; ... next ...
+C0AA: 44              LSRA                        ; ... data ...
+C0AB: 56              RORB                        ; ... point
+C0AC: 34 06           PSHS    B,A                 ; Hold current data
+C0AE: 20 C0           BRA     $C070               ; {} Do next point
+;
+C0B0: 35 04           PULS    B                   ; Remove the stack counter
 
 C0B2: CC 28 3A        LDD     #$283A              ; Print coordinates
 C0B5: 33 8D 0C 57     LEAU    $CD10,PC            ; {code.Str1or2Players} Print ...
@@ -166,9 +168,9 @@ C109: 10 93 BB        CMPD    $BB                 ; {ram.HighScore} Beat the hig
 C10C: 23 02           BLS     $C110               ; {} No ... move on
 C10E: DD BB           STD     $BB                 ; {ram.HighScore} Change the high score
 ;
-C110: DC BB           LDD     $BB                 ; {ram.HighScore}
-C112: CE 04 EE        LDU     #$04EE              
-C115: 17 05 13        LBSR    $C62B               ; {code.DrawNumber}
+C110: DC BB           LDD     $BB                 ; {ram.HighScore} Print ...
+C112: CE 04 EE        LDU     #$04EE              ; ... high score at top ...
+C115: 17 05 13        LBSR    $C62B               ; {code.DrawNumber} ... of screen
 C118: CC 2C 28        LDD     #$2C28              ; Print coordinates
 C11B: 33 8D 0B A0     LEAU    $CCBF,PC            ; {code.StrGameOver} Print ...
 C11F: 17 08 21        LBSR    $C943               ; {code.PrintChars} ... "Game Over"
@@ -181,76 +183,80 @@ C12C: 16 FF 02        LBRA    $C031               ; {code.NewGame} Start a new g
 PlayRound:
 C12F: C6 FF           LDB     #$FF                ; Fill screen ...
 C131: 17 09 1F        LBSR    $CA53               ; {code.FillScreen} ... with white {}
-C134: 0F BE           CLR     $BE                 ; {ram.BE}
+C134: 0F BE           CLR     $BE                 ; {ram.EndOfPlayer} Offset in player's line buffer (0x200)
 C136: 0F D1           CLR     $D1                 ; {ram.D1}
 C138: 0F CE           CLR     $CE                 ; {ram.CE}
 C13A: 0F D0           CLR     $D0                 ; {ram.D0}
-C13C: 0F C7           CLR     $C7                 ; {ram.C7}
-C13E: 0F D6           CLR     $D6                 ; {ram.D6}
-C140: 0F CF           CLR     $CF                 ; {ram.CF}
-C142: C6 28           LDB     #$28                
-C144: D7 D5           STB     $D5                 ; {ram.D5}
-C146: CC 2C 28        LDD     #$2C28              
-C149: 33 8D 0A FF     LEAU    $CC4C,PC            ; {code.StrPlayer}
-C14D: 17 07 F3        LBSR    $C943               ; {code.PrintChars}
-C150: CC 44 28        LDD     #$4428              
-C153: 33 8D 0B 26     LEAU    $CC7D,PC            ; {code.StrOne}
+C13C: 0F C7           CLR     $C7                 ; {ram.HasLoopScore} Not showing a loop score
+C13E: 0F D6           CLR     $D6                 ; {ram.FlashType} Flash player "word" is off
+C140: 0F CF           CLR     $CF                 ; {ram.SkullCount}
+C142: C6 28           LDB     #$28                ; Reload counter for ...
+C144: D7 D5           STB     $D5                 ; {ram.FlashCount} ... flashing player "word"
+;
+C146: CC 2C 28        LDD     #$2C28              ; Screen coordinates
+C149: 33 8D 0A FF     LEAU    $CC4C,PC            ; {code.StrPlayer} Graphics for "Player"
+C14D: 17 07 F3        LBSR    $C943               ; {code.PrintChars} Print "player"
+C150: CC 44 28        LDD     #$4428              ; Screen coordinates
+C153: 33 8D 0B 26     LEAU    $CC7D,PC            ; {code.StrOne} Graphics for "one"
 C157: 0D B6           TST     $B6                 ; {ram.Player} Player 0 or 1?
-C159: 27 06           BEQ     $C161               ; {} Player 0 ???
-C15B: 86 46           LDA     #$46                
-C15D: 33 8D 0B 3D     LEAU    $CC9E,PC            ; {code.StrTwo}
-C161: 17 07 DF        LBSR    $C943               ; {code.PrintChars}
-C164: D6 B5           LDB     $B5                 ; {ram.NumLives}
-C166: 33 8D 0E 1B     LEAU    $CF85,PC            ; {}
-C16A: 5A              DECB                        
-C16B: 27 0B           BEQ     $C178               ; {}
-C16D: 33 8D 0D F0     LEAU    $CF61,PC            ; {}
-C171: 5A              DECB                        
-C172: 27 04           BEQ     $C178               ; {}
-C174: 33 8D 0D C5     LEAU    $CF3D,PC            ; {}
-C178: 17 09 03        LBSR    $CA7E               ; {}
+C159: 27 06           BEQ     $C161               ; {} Player 0 ... keep the "one"
+C15B: 86 46           LDA     #$46                ; Move "two" over a hair
+C15D: 33 8D 0B 3D     LEAU    $CC9E,PC            ; {code.StrTwo} Graphics for "two"
+C161: 17 07 DF        LBSR    $C943               ; {code.PrintChars} Print the player (one or two)
+;
+C164: D6 B5           LDB     $B5                 ; {ram.NumLives} What life-number are we on?
+C166: 33 8D 0E 1B     LEAU    $CF85,PC            ; {code.MusicThirdLife} Song for "3rd life"
+C16A: 5A              DECB                        ; Is this the last life?
+C16B: 27 0B           BEQ     $C178               ; {} Yes ... play this song
+C16D: 33 8D 0D F0     LEAU    $CF61,PC            ; {code.MusicSecondLife} Song for "2nd life"
+C171: 5A              DECB                        ; Is this the second life?
+C172: 27 04           BEQ     $C178               ; {} Yes ... play this song
+C174: 33 8D 0D C5     LEAU    $CF3D,PC            ; {code.MusicFirstLife} Song for 1st life
+C178: 17 09 03        LBSR    $CA7E               ; {code.PlaySong} Play the song
+;
 C17B: 17 08 E5        LBSR    $CA63               ; {code.DrawPlayfiled}
-C17E: C6 02           LDB     #$02                
-C180: 34 04           PSHS    B                   
-C182: 8E 00 E4        LDX     #$00E4              
-C185: C1 56           CMPB    #$56                
-C187: 2E 12           BGT     $C19B               ; {}
-C189: E7 02           STB     2,X                 
-C18B: C6 02           LDB     #$02                
-C18D: E7 84           STB     ,X                  
-C18F: 17 07 CD        LBSR    $C95F               ; {}
-C192: C6 7E           LDB     #$7E                
-C194: E7 84           STB     ,X                  
-C196: 17 07 C6        LBSR    $C95F               ; {}
-C199: E6 02           LDB     2,X                 
-C19B: E7 84           STB     ,X                  
-C19D: C6 02           LDB     #$02                
-C19F: E7 02           STB     2,X                 
-C1A1: 17 07 BB        LBSR    $C95F               ; {}
-C1A4: C6 56           LDB     #$56                
-C1A6: E7 02           STB     2,X                 
-C1A8: 17 07 B4        LBSR    $C95F               ; {}
-C1AB: 6C E4           INC     ,S                  
-C1AD: E6 E4           LDB     ,S                  
-C1AF: C1 7E           CMPB    #$7E                
-C1B1: 23 CF           BLS     $C182               ; {}
-C1B3: 35 04           PULS    B                   
-C1B5: 4F              CLRA                        
-C1B6: C6 58           LDB     #$58                
-C1B8: 33 8D 0A 90     LEAU    $CC4C,PC            ; {code.StrPlayer}
-C1BC: 17 07 84        LBSR    $C943               ; {code.PrintChars}
-C1BF: CC 18 58        LDD     #$1858              
-C1C2: 33 8D 0A B7     LEAU    $CC7D,PC            ; {code.StrOne}
-C1C6: 17 07 7A        LBSR    $C943               ; {code.PrintChars}
-C1C9: 0D B4           TST     $B4                 ; {ram.NumPlayers}
-C1CB: 27 0A           BEQ     $C1D7               ; {}
-C1CD: CC 52 58        LDD     #$5258              
-C1D0: 33 8D 0A CA     LEAU    $CC9E,PC            ; {code.StrTwo}
-C1D4: 17 07 6C        LBSR    $C943               ; {code.PrintChars}
-C1D7: 17 04 36        LBSR    $C610               ; {}
-
-C1DA: 8E 00 E4        LDX     #$00E4              
-C1DD: 6F 02           CLR     2,X                 
+C17E: C6 02           LDB     #$02                ; X/Y coordinate ...
+C180: 34 04           PSHS    B                   ; ... temporary
+C182: 8E 00 E4        LDX     #$00E4              ; Utility object to draw border
+C185: C1 56           CMPB    #$56                ; Left/Right side is shorter
+C187: 2E 12           BGT     $C19B               ; {} Beyond the bounds of up/down ... skip up/down lines
+C189: E7 02           STB     2,X                 ; Set the Y coordinate
+C18B: C6 02           LDB     #$02                ; X coordinate ...
+C18D: E7 84           STB     ,X                  ; ... is 2
+C18F: 17 07 CD        LBSR    $C95F               ; {code.SetPixel} Draw the line down left side
+C192: C6 7E           LDB     #$7E                ; X cooridante ...
+C194: E7 84           STB     ,X                  ; ... is right side
+C196: 17 07 C6        LBSR    $C95F               ; {code.SetPixel} Draw the line down right side
+C199: E6 02           LDB     2,X                 ; Counter now ...
+C19B: E7 84           STB     ,X                  ; ... in the X coordinate
+C19D: C6 02           LDB     #$02                ; Top Y ...
+C19F: E7 02           STB     2,X                 ; coordinate
+C1A1: 17 07 BB        LBSR    $C95F               ; {code.SetPixel} Draw the line across the top
+C1A4: C6 56           LDB     #$56                ; Bottom ...
+C1A6: E7 02           STB     2,X                 ; ... Y coordinate
+C1A8: 17 07 B4        LBSR    $C95F               ; {code.SetPixel} Draw the line across the bottom
+C1AB: 6C E4           INC     ,S                  ; Increment the counter
+C1AD: E6 E4           LDB     ,S                  ; New counter value
+C1AF: C1 7E           CMPB    #$7E                ; All edge pixels drawn?
+C1B1: 23 CF           BLS     $C182               ; {} No ... go do them all
+C1B3: 35 04           PULS    B                   ; Pop the counter
+;
+C1B5: 4F              CLRA                        ; X coordinate
+C1B6: C6 58           LDB     #$58                ; Y coordinate
+C1B8: 33 8D 0A 90     LEAU    $CC4C,PC            ; {code.StrPlayer} Print "player" at bottom ...
+C1BC: 17 07 84        LBSR    $C943               ; {code.PrintChars} ... of screen
+C1BF: CC 18 58        LDD     #$1858              ; Coordinates for "one"
+C1C2: 33 8D 0A B7     LEAU    $CC7D,PC            ; {code.StrOne} Graphics for "one"
+C1C6: 17 07 7A        LBSR    $C943               ; {code.PrintChars} Print "one" after "player"
+C1C9: 0D B4           TST     $B4                 ; {ram.NumPlayers} One are two players?
+C1CB: 27 0A           BEQ     $C1D7               ; {} Just one ... skip the "two"
+C1CD: CC 52 58        LDD     #$5258              ; Coordinates for "two"
+C1D0: 33 8D 0A CA     LEAU    $CC9E,PC            ; {code.StrTwo} Print "two" farther ...
+C1D4: 17 07 6C        LBSR    $C943               ; {code.PrintChars} ... farther right
+C1D7: 17 04 36        LBSR    $C610               ; {code.PrintScores} Print the player scores (both if two player)
+;
+C1DA: 8E 00 E4        LDX     #$00E4              ; Utility object
+C1DD: 6F 02           CLR     2,X                 ; Y = 0
 C1DF: C6 33           LDB     #$33                ; 1st slot X ...
 C1E1: E7 84           STB     ,X                  ; ... coordinate
 ;
@@ -260,7 +266,7 @@ C1E7: D6 B5           LDB     $B5                 ; {ram.NumLives} Number of liv
 C1E9: C1 03           CMPB    #$03                ; All 3?
 C1EB: 27 04           BEQ     $C1F1               ; {} Yes ... 1st bar is CURRENT
 C1ED: 33 8D 0A 19     LEAU    $CC0A,PC            ; {code.LifeIndicator} Life indicator INACTIVE
-C1F1: 17 05 69        LBSR    $C75D               ; {code.Draw16x8} Draw the indicator
+C1F1: 17 05 69        LBSR    $C75D               ; {code.Draw8x8} Draw the indicator
 C1F4: C6 3D           LDB     #$3D                ; 2nd slot X ...
 C1F6: E7 84           STB     ,X                  ; ... cooridinate
 ;
@@ -270,7 +276,7 @@ C1FC: D6 B5           LDB     $B5                 ; {ram.NumLives} Number of liv
 C1FE: C1 02           CMPB    #$02                ; 2 remaining?
 C200: 27 04           BEQ     $C206               ; {} Yes ... 2nd bar is CURRENT
 C202: 33 8D 0A 04     LEAU    $CC0A,PC            ; {code.LifeIndicator} Life indicator INACTIVE
-C206: 17 05 54        LBSR    $C75D               ; {code.Draw16x8} Draw the indicator
+C206: 17 05 54        LBSR    $C75D               ; {code.Draw8x8} Draw the indicator
 C209: C6 47           LDB     #$47                ; 3rd slot X ...
 C20B: E7 84           STB     ,X                  ; ... coordinate
 ;
@@ -280,218 +286,236 @@ C211: D6 B5           LDB     $B5                 ; {ram.NumLives} Number of liv
 C213: C1 01           CMPB    #$01                ; 1 remaining?
 C215: 27 04           BEQ     $C21B               ; {} Yes ... 3rd bar is CURRENT
 C217: 33 8D 09 EF     LEAU    $CC0A,PC            ; {code.LifeIndicator} Life indicator INACTIVE
-C21B: 17 05 3F        LBSR    $C75D               ; {code.Draw16x8} Draw the indicator
+C21B: 17 05 3F        LBSR    $C75D               ; {code.Draw8x8} Draw the indicator
 ; 
-C21E: 8E 00 D8        LDX     #$00D8              
-C221: 86 40           LDA     #$40                
-C223: A7 84           STA     ,X                  
-C225: A7 02           STA     2,X                 
-C227: 8E 02 00        LDX     #$0200              
-C22A: 5F              CLRB                        
-C22B: A7 80           STA     ,X+                 
-C22D: 5A              DECB                        
-C22E: 26 FB           BNE     $C22B               ; {}
-C230: 8E 01 60        LDX     #$0160              
-C233: C6 A0           LDB     #$A0                
-C235: 6F 80           CLR     ,X+                 
-C237: 5A              DECB                        
-C238: 26 FB           BNE     $C235               ; {}
-C23A: 0F BD           CLR     $BD                 ; {ram.BD}
-C23C: 17 00 16        LBSR    $C255               ; {}
-C23F: 0D BD           TST     $BD                 ; {ram.BD}
-C241: 27 F9           BEQ     $C23C               ; {}
+C21E: 8E 00 D8        LDX     #$00D8              ; Player-point object
+C221: 86 40           LDA     #$40                ; Set X ...
+C223: A7 84           STA     ,X                  ; ... to 64 ...
+C225: A7 02           STA     2,X                 ; ... and Y to 64
+C227: 8E 02 00        LDX     #$0200              ; Clear ...
+C22A: 5F              CLRB                        ; ... the ...
+C22B: A7 80           STA     ,X+                 ; ... player ...
+C22D: 5A              DECB                        ; ... line
+C22E: 26 FB           BNE     $C22B               ; {} ... points
+C230: 8E 01 60        LDX     #$0160              ; Start of game objects
+C233: C6 A0           LDB     #$A0                ; 160 / 8 = 20 possible objects
+C235: 6F 80           CLR     ,X+                 ; Clear ...
+C237: 5A              DECB                        ; ... all ...
+C238: 26 FB           BNE     $C235               ; {} ... game objects
+C23A: 0F BD           CLR     $BD                 ; {ram.Collision} Clear the collision flag
+C23C: 17 00 16        LBSR    $C255               ; {code.OneCycle} Move the player and the objects
+C23F: 0D BD           TST     $BD                 ; {ram.Collision} Was there a collision?
+C241: 27 F9           BEQ     $C23C               ; {} No ... keep playing
+;
+; End of life (and return)
 C243: C6 F0           LDB     #$F0                ; Dull screen ...
 C245: F7 FF 22        STB     $FF22               ; {hard.PIA1_DB} ... color mode
-C248: 33 8D 0D 59     LEAU    $CFA5,PC            ; {}
-C24C: 17 08 2F        LBSR    $CA7E               ; {}
+C248: 33 8D 0D 59     LEAU    $CFA5,PC            ; {code.MusicEndOfLife} Play the ...
+C24C: 17 08 2F        LBSR    $CA7E               ; {code.PlaySong} ... end of life song
 C24F: C6 F8           LDB     #$F8                ; Bright screen ...
 C251: F7 FF 22        STB     $FF22               ; {hard.PIA1_DB} ... color mode
 C254: 39              RTS                         ; Done
 
+OneCycle:
 C255: 17 08 68        LBSR    $CAC0               ; {code.CheckForBreak} Check for BREAK (reset if so)
-C258: 8E 02 00        LDX     #$0200              
-C25B: D6 BE           LDB     $BE                 ; {ram.BE} ?? Player number? Unlikely
-C25D: 3A              ABX                         
-C25E: EC 84           LDD     ,X                  
-C260: 8E 00 DE        LDX     #$00DE              
-C263: A7 84           STA     ,X                  
-C265: E7 02           STB     2,X                 
-C267: 17 07 48        LBSR    $C9B2               ; {code.GetScreenAndShift}
-C26A: 17 07 29        LBSR    $C996               ; {}
-C26D: 0C D4           INC     $D4                 ; {ram.D4} ?? odd/even page numbers for double buffering?
+C258: 8E 02 00        LDX     #$0200              ; Player's drawn coordinates
+C25B: D6 BE           LDB     $BE                 ; {ram.EndOfPlayer} End of the list
+C25D: 3A              ABX                         ; Offset to last point
+C25E: EC 84           LDD     ,X                  ; X,Y of last point
+C260: 8E 00 DE        LDX     #$00DE              ; Descriptor for erasing points
+C263: A7 84           STA     ,X                  ; Set X ...
+C265: E7 02           STB     2,X                 ; ... and Y coordinate
+C267: 17 07 48        LBSR    $C9B2               ; {code.GetScreenAndShift} Pointer and pixel number
+C26A: 17 07 29        LBSR    $C996               ; {code.ErasePixel} Erase the tail of the player
+C26D: 0C D4           INC     $D4                 ; {ram.CycleCount} Cycle count used to pace the objects
 
 C26F: 8E 01 60        LDX     #$0160              ; List of objects
 
+; Object structure
+;
+; 00 X coordinate
+; 01 X residue
+; 02 Y coordinate
+; 03 Y residue
+; 04 delta X (if used)
+; 05 delta Y (if used)
+; 06 Object type (0 means end of list)
+; 07 image number if used (for flipping images)
+
 ObjectLoop:
-C272: 6D 06           TST     6,X                 ; Object type 0?
+C272: 6D 06           TST     6,X                 ; Object type 0 (end of list)?
 C274: 10 27 01 17     LBEQ    $C38F               ; {} Yes ... done with list
-C278: 30 08           LEAX    8,X                 
-C27A: 1F 10           TFR     X,D                 
-C27C: 54              LSRB                        
-C27D: 54              LSRB                        ; Maybe a delay?
-C27E: 54              LSRB                        
-C27F: DB D4           ADDB    $D4                 ; {ram.D4}
-C281: C4 07           ANDB    #$07                
-C283: 26 ED           BNE     $C272               ; {code.ObjectLoop} Skip this object
+C278: 30 08           LEAX    8,X                 ; Next slot
+C27A: 1F 10           TFR     X,D                 ; 8 bytes per slot ...
+C27C: 54              LSRB                        ; ... get the ...
+C27D: 54              LSRB                        ; ... slot number ...
+C27E: 54              LSRB                        ; ... to B
+C27F: DB D4           ADDB    $D4                 ; {ram.CycleCount} Add in cycle count
+C281: C4 07           ANDB    #$07                ; Time for this slot to update?
+C283: 26 ED           BNE     $C272               ; {code.ObjectLoop} No ... skip this object
 C285: 30 18           LEAX    -8,X                ; Back up to start of this object
+;
 C287: E6 06           LDB     6,X                 ; Object type
 C289: 5A              DECB                        ; 1=APPLE?
 C28A: 26 0A           BNE     $C296               ; {} No ... check other types
 C28C: 33 8D 08 6A     LEAU    $CAFA,PC            ; {code.ImageApple} Apple graphic
-C290: 17 04 CA        LBSR    $C75D               ; {code.Draw16x8} Draw apple
+C290: 17 04 CA        LBSR    $C75D               ; {code.Draw8x8} Draw apple
 C293: 16 00 F0        LBRA    $C386               ; {code.NextObject} Next object
 ;
 C296: 5A              DECB                        ; 2=CHERRY
 C297: 26 0A           BNE     $C2A3               ; {} No ... check other types
 C299: 33 8D 08 6D     LEAU    $CB0A,PC            ; {code.ImageCherry} Cherry graphic
-C29D: 17 04 BD        LBSR    $C75D               ; {code.Draw16x8} Draw cherry
+C29D: 17 04 BD        LBSR    $C75D               ; {code.Draw8x8} Draw cherry
 C2A0: 16 00 E3        LBRA    $C386               ; {code.NextObject} Next object
 ;
 C2A3: 5A              DECB                        ; 3=MAGNET
 C2A4: 26 17           BNE     $C2BD               ; {} No ... check other types
-C2A6: 33 8D 08 70     LEAU    $CB1A,PC            ; {code.ImageMagnet}
-C2AA: 17 05 AE        LBSR    $C85B               ; {}
-C2AD: CC 10 10        LDD     #$1010              
-C2B0: 17 07 4C        LBSR    $C9FF               ; {}
-C2B3: 33 8D 08 63     LEAU    $CB1A,PC            ; {code.ImageMagnet}
-C2B7: 17 04 A3        LBSR    $C75D               ; {code.Draw16x8}
+C2A6: 33 8D 08 70     LEAU    $CB1A,PC            ; {code.ImageMagnet} Erase current ...
+C2AA: 17 05 AE        LBSR    $C85B               ; {code.Erase8x8} ... magnet
+C2AD: CC 10 10        LDD     #$1010              ; DeltaX,DeltaY = 16,16
+C2B0: 17 07 4C        LBSR    $C9FF               ; {code.FollowPlayer}
+C2B3: 33 8D 08 63     LEAU    $CB1A,PC            ; {code.ImageMagnet} Draw the ...
+C2B7: 17 04 A3        LBSR    $C75D               ; {code.Draw8x8} ... magnet
 C2BA: 16 00 C9        LBRA    $C386               ; {code.NextObject} Next object
 ;
 C2BD: 5A              DECB                        ; 4=SKATE
 C2BE: 26 24           BNE     $C2E4               ; {} No ... check other types
-C2C0: 8D 13           BSR     $C2D5               ; {}
-C2C2: 17 05 96        LBSR    $C85B               ; {}
-C2C5: 6C 07           INC     7,X                 
-C2C7: 86 10           LDA     #$10                
-C2C9: 5F              CLRB                        
-C2CA: 17 07 32        LBSR    $C9FF               ; {}
-C2CD: 8D 06           BSR     $C2D5               ; {}
-C2CF: 17 04 8B        LBSR    $C75D               ; {code.Draw16x8}
+C2C0: 8D 13           BSR     $C2D5               ; {} Get skate image
+C2C2: 17 05 96        LBSR    $C85B               ; {code.Erase8x8} Erase the current skate
+C2C5: 6C 07           INC     7,X                 ; Next skate image
+C2C7: 86 10           LDA     #$10                ; DeltaX,DeltaY = ...
+C2C9: 5F              CLRB                        ; ... 16,0
+C2CA: 17 07 32        LBSR    $C9FF               ; {code.FollowPlayer}
+C2CD: 8D 06           BSR     $C2D5               ; {} Get the skate image
+C2CF: 17 04 8B        LBSR    $C75D               ; {code.Draw8x8} Draw the skate
 C2D2: 16 00 B1        LBRA    $C386               ; {code.NextObject} Next object
 ;
 C2D5: 33 8D 08 51     LEAU    $CB2A,PC            ; {code.ImageSkate} Skate graphic 1
-C2D9: E6 07           LDB     7,X                 
-C2DB: C4 01           ANDB    #$01                
-C2DD: 26 04           BNE     $C2E3               ; {}
-C2DF: 33 8D 08 57     LEAU    $CB3A,PC            ; {} Skate graphic 2
+C2D9: E6 07           LDB     7,X                 ; Image number
+C2DB: C4 01           ANDB    #$01                ; Either 0 or 1
+C2DD: 26 04           BNE     $C2E3               ; {} Not 1 ... use this graphic
+C2DF: 33 8D 08 57     LEAU    $CB3A,PC            ; {} Use skate graphic 2
 C2E3: 39              RTS                         ; Done
 ;
 C2E4: 5A              DECB                        ; 5=YOYO
 C2E5: 26 3C           BNE     $C323               ; {} No ... check other types
-C2E7: 33 8D 08 9F     LEAU    $CB8A,PC            ; {}
-C2EB: 17 05 6D        LBSR    $C85B               ; {}
-C2EE: 4F              CLRA                        
-C2EF: A7 04           STA     4,X                 
-C2F1: C6 20           LDB     #$20                
-C2F3: 6D 07           TST     7,X                 
-C2F5: 27 01           BEQ     $C2F8               ; {}
-C2F7: 50              NEGB                        
-C2F8: E7 05           STB     5,X                 
-C2FA: 17 06 CB        LBSR    $C9C8               ; {}
-C2FD: E6 02           LDB     2,X                 
-C2FF: C1 0C           CMPB    #$0C                
-C301: 24 04           BHS     $C307               ; {}
-C303: 6F 07           CLR     7,X                 
-C305: C6 0C           LDB     #$0C                
-C307: C1 42           CMPB    #$42                
-C309: 25 04           BLO     $C30F               ; {}
-C30B: 6C 07           INC     7,X                 
-C30D: C6 42           LDB     #$42                
-C30F: E7 02           STB     2,X                 
+C2E7: 33 8D 08 9F     LEAU    $CB8A,PC            ; {} Erase the current yoyo but ...
+C2EB: 17 05 6D        LBSR    $C85B               ; {code.Erase8x8} ... leave the string piece of the image
+C2EE: 4F              CLRA                        ; Set deltaX ...
+C2EF: A7 04           STA     4,X                 ; ... to zero
+C2F1: C6 20           LDB     #$20                ; Downward deltaY
+C2F3: 6D 07           TST     7,X                 ; Moving down?
+C2F5: 27 01           BEQ     $C2F8               ; {} Yes ... keep this
+C2F7: 50              NEGB                        ; No ... moving UP. Negate it
+C2F8: E7 05           STB     5,X                 ; Store deltaY
+C2FA: 17 06 CB        LBSR    $C9C8               ; {code.MoveObject}
+C2FD: E6 02           LDB     2,X                 ; Y coordinate
+C2FF: C1 0C           CMPB    #$0C                ; At the top-most allowed?
+C301: 24 04           BHS     $C307               ; {} No ... keep moving in current direction
+C303: 6F 07           CLR     7,X                 ; Yes ... now moving down
+C305: C6 0C           LDB     #$0C                ; Set to the top-most allowed
+C307: C1 42           CMPB    #$42                ; At the bottom-most allowed?
+C309: 25 04           BLO     $C30F               ; {} No ... keep moving in current direction
+C30B: 6C 07           INC     7,X                 ; Yes ... now moving up
+C30D: C6 42           LDB     #$42                ; Set to the bottom-most allowed
+C30F: E7 02           STB     2,X                 ; New Y coordinate
 C311: 33 8D 08 35     LEAU    $CB4A,PC            ; {code.ImageYoYo} YoYo images
-C315: C4 03           ANDB    #$03                ; 4 of them
+C315: C4 03           ANDB    #$03                ; 4 of them based on Y coordinate
 C317: 58              ASLB                        ; 16 ...
 C318: 58              ASLB                        ; ... bytes ...
 C319: 58              ASLB                        ; ... each ...
 C31A: 58              ASLB                        ; ... image
 C31B: 33 C5           LEAU    B,U                 ; Point to current image
-C31D: 17 04 3D        LBSR    $C75D               ; {code.Draw16x8}
+C31D: 17 04 3D        LBSR    $C75D               ; {code.Draw8x8}
 C320: 16 00 63        LBRA    $C386               ; {code.NextObject} Next object
 ;
 C323: 5A              DECB                        ; 6=PEAR
 C324: 26 09           BNE     $C32F               ; {} No ... check other types
 C326: 33 8D 08 90     LEAU    $CBBA,PC            ; {code.ImagePear}
-C32A: 17 04 30        LBSR    $C75D               ; {code.Draw16x8}
+C32A: 17 04 30        LBSR    $C75D               ; {code.Draw8x8}
 C32D: 20 57           BRA     $C386               ; {code.NextObject} Next object
 ;
 C32F: 5A              DECB                        ; 7=SPIDER
 C330: 26 21           BNE     $C353               ; {} No ... check other types
-C332: 8D 10           BSR     $C344               ; {}
-C334: 17 05 24        LBSR    $C85B               ; {}
-C337: CC 30 30        LDD     #$3030              
-C33A: 17 06 C2        LBSR    $C9FF               ; {}
-C33D: 8D 05           BSR     $C344               ; {}
-C33F: 17 04 1B        LBSR    $C75D               ; {code.Draw16x8}
+C332: 8D 10           BSR     $C344               ; {} Get spider image
+C334: 17 05 24        LBSR    $C85B               ; {code.Erase8x8} Erase current spider image
+C337: CC 30 30        LDD     #$3030              ; DeltaX,DeltaY = 48,48
+C33A: 17 06 C2        LBSR    $C9FF               ; {code.FollowPlayer} Move towards player
+C33D: 8D 05           BSR     $C344               ; {} Get spider image
+C33F: 17 04 1B        LBSR    $C75D               ; {code.Draw8x8} Draw the spider
 C342: 20 42           BRA     $C386               ; {code.NextObject} Next object
 ;
-C344: 33 8D 08 82     LEAU    $CBCA,PC            ; {code.ImageSpider}
-C348: E6 02           LDB     2,X                 
-C34A: C4 01           ANDB    #$01                
-C34C: 26 04           BNE     $C352               ; {}
-C34E: 33 8D 08 88     LEAU    $CBDA,PC            ; {}
-C352: 39              RTS                         
+C344: 33 8D 08 82     LEAU    $CBCA,PC            ; {code.ImageSpider} First spider image
+C348: E6 02           LDB     2,X                 ; Y coordinate
+C34A: C4 01           ANDB    #$01                ; Is the Y coordinate odd?
+C34C: 26 04           BNE     $C352               ; {} Yes ... use first image
+C34E: 33 8D 08 88     LEAU    $CBDA,PC            ; {} No ... use 2nd image
+C352: 39              RTS                         ; Done
 ;
 C353: 5A              DECB                        ; 8=SKULL
 C354: 26 09           BNE     $C35F               ; {} No ... check other types
 C356: 33 8D 08 50     LEAU    $CBAA,PC            ; {code.ImageSkull}
-C35A: 17 04 00        LBSR    $C75D               ; {code.Draw16x8}
+C35A: 17 04 00        LBSR    $C75D               ; {code.Draw8x8}
 C35D: 20 27           BRA     $C386               ; {code.NextObject} Next object
 
 C35F: 5A              DECB                        ; 9=X
 C360: 26 24           BNE     $C386               ; {code.NextObject} No. Anything but 0-9 ... skip.
 C362: 8D 13           BSR     $C377               ; {} Get the current image
-C364: 17 04 F4        LBSR    $C85B               ; {}
-C367: 6C 07           INC     7,X                 
-C369: CC 7F 7F        LDD     #$7F7F              
-C36C: 17 06 90        LBSR    $C9FF               ; {}
-C36F: 8D 06           BSR     $C377               ; {}
-C371: 17 03 E9        LBSR    $C75D               ; {code.Draw16x8}
+C364: 17 04 F4        LBSR    $C85B               ; {code.Erase8x8} Erase the current image
+C367: 6C 07           INC     7,X                 ; Next image index
+C369: CC 7F 7F        LDD     #$7F7F              ; DeltaX,DeltaY = 127,127 ! Very fast!
+C36C: 17 06 90        LBSR    $C9FF               ; {code.FollowPlayer} Move towards player
+C36F: 8D 06           BSR     $C377               ; {} Get the image
+C371: 17 03 E9        LBSR    $C75D               ; {code.Draw8x8} Draw the image
 C374: 16 00 0F        LBRA    $C386               ; {code.NextObject} Next object
 ;
 C377: 33 8D 08 6F     LEAU    $CBEA,PC            ; {code.ImageX} X picture small
-C37B: E6 07           LDB     7,X                 
-C37D: C4 01           ANDB    #$01                
-C37F: 26 04           BNE     $C385               ; {}
-C381: 33 8D 08 75     LEAU    $CBFA,PC            ; {} X picture large
-C385: 39              RTS                         
+C37B: E6 07           LDB     7,X                 ; The image number
+C37D: C4 01           ANDB    #$01                ; Is image number odd?
+C37F: 26 04           BNE     $C385               ; {} Yes ... keep small picture
+C381: 33 8D 08 75     LEAU    $CBFA,PC            ; {} No ... use large picture
+C385: 39              RTS                         ; Done
 
 NextObject:
-C386: 6F 04           CLR     4,X                 
-C388: 6F 05           CLR     5,X                 
-C38A: 30 08           LEAX    8,X                 
-C38C: 16 FE E3        LBRA    $C272               ; {code.ObjectLoop}
+C386: 6F 04           CLR     4,X                 ; Clear any ...
+C388: 6F 05           CLR     5,X                 ; ... deltas
+C38A: 30 08           LEAX    8,X                 ; Next object
+C38C: 16 FE E3        LBRA    $C272               ; {code.ObjectLoop} continue with next
 
-C38F: 9F D2           STX     $D2                 ; {ram.D2}
+C38F: 9F D2           STX     $D2                 ; {ram.NextFreeObj}
 C391: AD 9F A0 0A     JSR     [$A00A]             ; {hard.JOYIN} JOYIN reads all 4 joysticks (15A,15B,15C,15D)
-C395: 8E 00 D8        LDX     #$00D8              
-C398: 10 8E 01 5A     LDY     #$015A              
+C395: 8E 00 D8        LDX     #$00D8              ; Object for drawing player point
+C398: 10 8E 01 5A     LDY     #$015A              ; Memory for analog inputs
 C39C: D6 B6           LDB     $B6                 ; {ram.Player} Player number
 C39E: 58              ASLB                        ; 2 axis per joystick
 C39F: 31 A5           LEAY    B,Y                 ; Point to 15A, 15B (player 0) or 15C, 15D (player 1)
-C3A1: E6 A4           LDB     ,Y                  
+C3A1: E6 A4           LDB     ,Y                  ; Get the X stick value
 C3A3: A6 A4           LDA     ,Y                  ; Add in ...
 C3A5: 9B D7           ADDA    $D7                 ; {ram.Random} ... some ...
-C3A7: 97 D7           STA     $D7                 ; {ram.Random} ... randomness
-C3A9: C0 20           SUBB    #$20                
-C3AB: E7 04           STB     4,X                 
+C3A7: 97 D7           STA     $D7                 ; {ram.Random} ... randomness to RNG
+C3A9: C0 20           SUBB    #$20                ; Less sensitive
+C3AB: E7 04           STB     4,X                 ; Hold as delta X
+;
 C3AD: E6 21           LDB     1,Y                 ; Next axis
-C3AF: C0 20           SUBB    #$20                
-C3B1: E7 05           STB     5,X                 
-C3B3: 17 06 12        LBSR    $C9C8               ; {}
-C3B6: 17 03 66        LBSR    $C71F               ; {}
-C3B9: 8E 00 D8        LDX     #$00D8              
-C3BC: 17 05 A0        LBSR    $C95F               ; {}
-C3BF: D7 BF           STB     $BF                 ; {ram.BF}
-C3C1: 17 03 4F        LBSR    $C713               ; {}
+C3AF: C0 20           SUBB    #$20                ; Less sensitive
+C3B1: E7 05           STB     5,X                 ; Hold as delta Y
+C3B3: 17 06 12        LBSR    $C9C8               ; {code.MoveObject} Move ...
+C3B6: 17 03 66        LBSR    $C71F               ; {code.EraseLoopScore} ... player's dot
+;
+C3B9: 8E 00 D8        LDX     #$00D8              ; Player point structure
+C3BC: 17 05 A0        LBSR    $C95F               ; {code.SetPixel} Draw the new player dot
+C3BF: D7 BF           STB     $BF                 ; {ram.OrigPixel} Hold the original pixel (for collision detection)
+C3C1: 17 03 4F        LBSR    $C713               ; {code.DrawLoopScore} Erase any last-drawn score
 C3C4: 0F C3           CLR     $C3                 ; {ram.C3}
-C3C6: D6 BE           LDB     $BE                 ; {ram.BE}
+C3C6: D6 BE           LDB     $BE                 ; {ram.EndOfPlayer}
 C3C8: D7 C0           STB     $C0                 ; {ram.C0}
 C3CA: D6 C0           LDB     $C0                 ; {ram.C0}
 C3CC: C0 02           SUBB    #$02                
 C3CE: D7 C0           STB     $C0                 ; {ram.C0}
-C3D0: D1 BE           CMPB    $BE                 ; {ram.BE}
+C3D0: D1 BE           CMPB    $BE                 ; {ram.EndOfPlayer}
 C3D2: 10 27 01 24     LBEQ    $C4FA               ; {}
-C3D6: 8E 02 00        LDX     #$0200              
+;
+C3D6: 8E 02 00        LDX     #$0200              ; Player's points
 C3D9: 3A              ABX                         
 C3DA: EC 84           LDD     ,X                  
 C3DC: 8E 00 D8        LDX     #$00D8              
@@ -507,28 +531,29 @@ C3ED: 0C C3           INC     $C3                 ; {ram.C3}
 C3EF: 20 D9           BRA     $C3CA               ; {}
 C3F1: 10 83 01 01     CMPD    #$0101              
 C3F5: 26 02           BNE     $C3F9               ; {}
-C3F7: 0F BF           CLR     $BF                 ; {ram.BF}
+C3F7: 0F BF           CLR     $BF                 ; {ram.OrigPixel}
 C3F9: 0D C3           TST     $C3                 ; {ram.C3}
 C3FB: 27 CD           BEQ     $C3CA               ; {}
-C3FD: 0F BF           CLR     $BF                 ; {ram.BF}
+C3FD: 0F BF           CLR     $BF                 ; {ram.OrigPixel}
 C3FF: D6 C0           LDB     $C0                 ; {ram.C0}
 C401: D7 C1           STB     $C1                 ; {ram.C1}
-C403: D6 BE           LDB     $BE                 ; {ram.BE}
+C403: D6 BE           LDB     $BE                 ; {ram.EndOfPlayer}
 C405: D7 C0           STB     $C0                 ; {ram.C0}
 C407: D6 C0           LDB     $C0                 ; {ram.C0}
 C409: C0 02           SUBB    #$02                
 C40B: D7 C0           STB     $C0                 ; {ram.C0}
-C40D: 8E 02 00        LDX     #$0200              
+C40D: 8E 02 00        LDX     #$0200              ; Player line points
 C410: 3A              ABX                         
 C411: EC 84           LDD     ,X                  
 C413: C0 03           SUBB    #$03                
 C415: D7 C2           STB     $C2                 ; {ram.C2}
 C417: 80 03           SUBA    #$03                
-C419: 8E 01 60        LDX     #$0160              
-C41C: 6D 06           TST     6,X                 
-C41E: 27 15           BEQ     $C435               ; {}
+;
+C419: 8E 01 60        LDX     #$0160              ; Start of objects
+C41C: 6D 06           TST     6,X                 ; Reached the end of the list?
+C41E: 27 15           BEQ     $C435               ; {} yes ... done
 C420: D6 C2           LDB     $C2                 ; {ram.C2}
-C422: E0 02           SUBB    2,X                 
+C422: E0 02           SUBB    2,X                 ; Y coordinate
 C424: 54              LSRB                        
 C425: 26 0A           BNE     $C431               ; {}
 C427: A1 84           CMPA    ,X                  
@@ -536,113 +561,120 @@ C429: 22 04           BHI     $C42F               ; {}
 C42B: 6C 04           INC     4,X                 
 C42D: 20 02           BRA     $C431               ; {}
 C42F: 6C 05           INC     5,X                 
-C431: 30 08           LEAX    8,X                 
-C433: 20 E7           BRA     $C41C               ; {}
+C431: 30 08           LEAX    8,X                 ; Check all ...
+C433: 20 E7           BRA     $C41C               ; {} ... objects
+;
 C435: D6 C0           LDB     $C0                 ; {ram.C0}
 C437: D1 C1           CMPB    $C1                 ; {ram.C1}
 C439: 26 CC           BNE     $C407               ; {}
 C43B: 8E 01 60        LDX     #$0160              
-C43E: 0F C4           CLR     $C4                 ; {ram.C4}
-C440: 0F C8           CLR     $C8                 ; {ram.C8}
-C442: 0F C9           CLR     $C9                 ; {ram.C9}
-C444: E6 06           LDB     6,X                 
-C446: 27 5D           BEQ     $C4A5               ; {}
+C43E: 0F C4           CLR     $C4                 ; {ram.NumLooped} Number of objects looped
+C440: 0F C8           CLR     $C8                 ; {ram.LoopScoreTmp} Sum of ...
+C442: 0F C9           CLR     $C9                 ; {ram.LoopScoreTmp+1} ... looped objects score
+;
+C444: E6 06           LDB     6,X                 ; End of the object list?
+C446: 27 5D           BEQ     $C4A5               ; {} Yes ... done
 C448: 6D 04           TST     4,X                 
 C44A: 27 55           BEQ     $C4A1               ; {}
 C44C: 6D 05           TST     5,X                 
 C44E: 27 51           BEQ     $C4A1               ; {}
-C450: C1 08           CMPB    #$08                
-C452: 27 4D           BEQ     $C4A1               ; {}
-C454: 0C C4           INC     $C4                 ; {ram.C4}
+C450: C1 08           CMPB    #$08                ; This object a skull?
+C452: 27 4D           BEQ     $C4A1               ; {} Yes ... it doesn't count ... next object
+C454: 0C C4           INC     $C4                 ; {ram.NumLooped} ?? number of objects looped?
 C456: 0C D0           INC     $D0                 ; {ram.D0}
 C458: 0A CE           DEC     $CE                 ; {ram.CE}
-C45A: 33 8D 0B 4B     LEAU    $CFA9,PC            ; {} Copyright info
-C45E: E6 C5           LDB     B,U                 
-C460: 1D              SEX                         
-C461: D3 C8           ADDD    $C8                 ; {ram.C8}
-C463: DD C8           STD     $C8                 ; {ram.C8}
-C465: CE 00 EA        LDU     #$00EA              
-C468: E6 84           LDB     ,X                  
-C46A: E7 C4           STB     ,U                  
-C46C: E6 02           LDB     2,X                 
-C46E: E7 42           STB     2,U                 
-C470: 33 8D 07 B7     LEAU    $CC2B,PC            ; {code.StrWhiteBlock}
-C474: 17 03 E4        LBSR    $C85B               ; {}
-C477: E6 06           LDB     6,X                 
-C479: C1 05           CMPB    #$05                
-C47B: 26 11           BNE     $C48E               ; {}
-C47D: 33 8D 07 19     LEAU    $CB9A,PC            ; {}
-C481: 17 03 D7        LBSR    $C85B               ; {}
-C484: E6 02           LDB     2,X                 
-C486: C0 04           SUBB    #$04                
-C488: E7 02           STB     2,X                 
-C48A: C1 03           CMPB    #$03                
-C48C: 2E F3           BGT     $C481               ; {}
-C48E: 1F 13           TFR     X,U                 
-C490: C6 08           LDB     #$08                
-C492: DF D2           STU     $D2                 ; {ram.D2}
-C494: A6 48           LDA     8,U                 
-C496: A7 C0           STA     ,U+                 
-C498: 5A              DECB                        
-C499: 26 F9           BNE     $C494               ; {}
-C49B: 6D 46           TST     6,U                 
-C49D: 26 F1           BNE     $C490               ; {}
-C49F: 20 A3           BRA     $C444               ; {}
-C4A1: 30 08           LEAX    8,X                 
-C4A3: 20 9F           BRA     $C444               ; {}
-C4A5: 0D C4           TST     $C4                 ; {ram.C4}
-C4A7: 27 51           BEQ     $C4FA               ; {}
-C4A9: 17 02 73        LBSR    $C71F               ; {}
-C4AC: 4F              CLRA                        
-C4AD: 5F              CLRB                        
-C4AE: D3 C8           ADDD    $C8                 ; {ram.C8}
-C4B0: 0A C4           DEC     $C4                 ; {ram.C4}
-C4B2: 26 FA           BNE     $C4AE               ; {}
-C4B4: DD CA           STD     $CA                 ; {ram.CA}
+C45A: 33 8D 0B 4B     LEAU    $CFA9,PC            ; {code.ScoreTable} The table of object scores
+C45E: E6 C5           LDB     B,U                 ; Get the score for this object
+C460: 1D              SEX                         ; No score is greater than 127 ... this is a quick way to clear A
+C461: D3 C8           ADDD    $C8                 ; {ram.LoopScoreTmp} Add the score ...
+C463: DD C8           STD     $C8                 ; {ram.LoopScoreTmp} ... to the accumulated loop score
+C465: CE 00 EA        LDU     #$00EA              ; Descriptor for erasing
+C468: E6 84           LDB     ,X                  ; Copy ...
+C46A: E7 C4           STB     ,U                  ; ... X coordinate
+C46C: E6 02           LDB     2,X                 ; Copy ...
+C46E: E7 42           STB     2,U                 ; ... Y coordinate
+C470: 33 8D 07 B7     LEAU    $CC2B,PC            ; {code.GenericEraser} Erase the ...
+C474: 17 03 E4        LBSR    $C85B               ; {code.Erase8x8} ... object
+C477: E6 06           LDB     6,X                 ; Is this ...
+C479: C1 05           CMPB    #$05                ; ... a yoyo?
+C47B: 26 11           BNE     $C48E               ; {} No ... skip the string
+C47D: 33 8D 07 19     LEAU    $CB9A,PC            ; {code.StringEraser} Line erase graphic
+C481: 17 03 D7        LBSR    $C85B               ; {code.Erase8x8} Erase the string
+C484: E6 02           LDB     2,X                 ; Move ...
+C486: C0 04           SUBB    #$04                ; ... up by ...
+C488: E7 02           STB     2,X                 ; ... 4 pixels
+C48A: C1 03           CMPB    #$03                ; At the top of the screen?
+C48C: 2E F3           BGT     $C481               ; {} No ... keep erasing possible string
+C48E: 1F 13           TFR     X,U                 ; For memory copy
+C490: C6 08           LDB     #$08                ; 8 bytes per object
+C492: DF D2           STU     $D2                 ; {ram.NextFreeObj} ?? end of object list?
+C494: A6 48           LDA     8,U                 ; Close ...
+C496: A7 C0           STA     ,U+                 ; ... up ...
+C498: 5A              DECB                        ; ... list ...
+C499: 26 F9           BNE     $C494               ; {} ... over ...
+C49B: 6D 46           TST     6,U                 ; ... removed ...
+C49D: 26 F1           BNE     $C490               ; {} ... object
+C49F: 20 A3           BRA     $C444               ; {} Next object
+;
+C4A1: 30 08           LEAX    8,X                 ; Next object
+C4A3: 20 9F           BRA     $C444               ; {} Continue checking
+
+C4A5: 0D C4           TST     $C4                 ; {ram.NumLooped} Were any objects looped?
+C4A7: 27 51           BEQ     $C4FA               ; {} No ... skip score update
+C4A9: 17 02 73        LBSR    $C71F               ; {code.EraseLoopScore} Erase any loop score being shown
+C4AC: 4F              CLRA                        ; Score for all ...
+C4AD: 5F              CLRB                        ; Looped ...
+C4AE: D3 C8           ADDD    $C8                 ; {ram.LoopScoreTmp} Sum of looped objects score
+C4B0: 0A C4           DEC     $C4                 ; {ram.NumLooped} Multiply score of summed by ...
+C4B2: 26 FA           BNE     $C4AE               ; {} ... number of objects looped
+C4B4: DD CA           STD     $CA                 ; {ram.LoopScoreShown} The value of the loop score to show
 C4B6: 0D B6           TST     $B6                 ; {ram.Player} Player 0 or 1
-C4B8: 26 06           BNE     $C4C0               ; {} ... player 1 ???
-C4BA: D3 B7           ADDD    $B7                 ; {ram.P1Score} Player 0 score???
-C4BC: DD B7           STD     $B7                 ; {ram.P1Score}
-C4BE: 20 04           BRA     $C4C4               ; {}
-C4C0: D3 B9           ADDD    $B9                 ; {ram.P2Score} Player 1 score???
-C4C2: DD B9           STD     $B9                 ; {ram.P2Score}
-C4C4: C6 3C           LDB     #$3C                
-C4C6: D7 C6           STB     $C6                 ; {ram.C6}
-C4C8: 8E 00 EA        LDX     #$00EA              
-C4CB: E6 84           LDB     ,X                  
-C4CD: C1 60           CMPB    #$60                
-C4CF: 2F 02           BLE     $C4D3               ; {}
-C4D1: C6 60           LDB     #$60                
-C4D3: E7 84           STB     ,X                  
-C4D5: 17 04 DA        LBSR    $C9B2               ; {code.GetScreenAndShift}
-C4D8: DF CC           STU     $CC                 ; {ram.CC}
-C4DA: 0C C7           INC     $C7                 ; {ram.C7}
-C4DC: 17 01 31        LBSR    $C610               ; {}
-C4DF: 7F FF 20        CLR     $FF20               ; {hard.PIA1_DA}
-C4E2: BD A9 76        JSR     $A976               
-C4E5: C6 80           LDB     #$80                
-C4E7: 1F 98           TFR     B,A                 
-C4E9: 4A              DECA                        
-C4EA: 26 FD           BNE     $C4E9               ; {}
-C4EC: F7 FF 20        STB     $FF20               ; {hard.PIA1_DA}
-C4EF: 1F 98           TFR     B,A                 
-C4F1: 4A              DECA                        
-C4F2: 26 FD           BNE     $C4F1               ; {}
-C4F4: 7F FF 20        CLR     $FF20               ; {hard.PIA1_DA}
-C4F7: 5A              DECB                        
-C4F8: 26 ED           BNE     $C4E7               ; {}
+C4B8: 26 06           BNE     $C4C0               ; {} ... player 1
+C4BA: D3 B7           ADDD    $B7                 ; {ram.P1Score} Player 1 score
+C4BC: DD B7           STD     $B7                 ; {ram.P1Score} Update player 1 score
+C4BE: 20 04           BRA     $C4C4               ; {} Continue
+C4C0: D3 B9           ADDD    $B9                 ; {ram.P2Score} Player 2 score
+C4C2: DD B9           STD     $B9                 ; {ram.P2Score} Update player 2 score
+C4C4: C6 3C           LDB     #$3C                ; Counter for showing ...
+C4C6: D7 C6           STB     $C6                 ; {ram.C6} ... loop score
+C4C8: 8E 00 EA        LDX     #$00EA              ; Current game object
+C4CB: E6 84           LDB     ,X                  ; X coordinate
+C4CD: C1 60           CMPB    #$60                ; Too far to the right to print score?
+C4CF: 2F 02           BLE     $C4D3               ; {} No ... keep it
+C4D1: C6 60           LDB     #$60                ; Keep loop score on the screen
+C4D3: E7 84           STB     ,X                  ; Constrained X coordinate
+C4D5: 17 04 DA        LBSR    $C9B2               ; {code.GetScreenAndShift} Store the screen ...
+C4D8: DF CC           STU     $CC                 ; {ram.LoopScoreLoc} ... location of the loop score
+C4DA: 0C C7           INC     $C7                 ; {ram.HasLoopScore} We now have a loop score to show
+C4DC: 17 01 31        LBSR    $C610               ; {code.PrintScores} Print the scores (both if 2 player)
+;
+; Make popping sound after scoring object
+C4DF: 7F FF 20        CLR     $FF20               ; {hard.PIA1_DA} DAC to zero
+C4E2: BD A9 76        JSR     $A976               ; Enable the sound
+C4E5: C6 80           LDB     #$80                ; Outer loop
+C4E7: 1F 98           TFR     B,A                 ; Outter to inner
+C4E9: 4A              DECA                        ; Slight ...
+C4EA: 26 FD           BNE     $C4E9               ; {} ... delay
+C4EC: F7 FF 20        STB     $FF20               ; {hard.PIA1_DA} Store samples
+C4EF: 1F 98           TFR     B,A                 ; Another ...
+C4F1: 4A              DECA                        ; ... slight ...
+C4F2: 26 FD           BNE     $C4F1               ; {} ... delay
+C4F4: 7F FF 20        CLR     $FF20               ; {hard.PIA1_DA} DAC to 0
+C4F7: 5A              DECB                        ; All loops made?
+C4F8: 26 ED           BNE     $C4E7               ; {} No ... continue popping sound
+;
 C4FA: 8E 02 00        LDX     #$0200              
-C4FD: D6 BE           LDB     $BE                 ; {ram.BE}
+C4FD: D6 BE           LDB     $BE                 ; {ram.EndOfPlayer}
 C4FF: 3A              ABX                         
 C500: CE 00 D8        LDU     #$00D8              
 C503: A6 C4           LDA     ,U                  
 C505: E6 42           LDB     2,U                 
 C507: ED 84           STD     ,X                  
-C509: D6 BF           LDB     $BF                 ; {ram.BF}
-C50B: DB BD           ADDB    $BD                 ; {ram.BD}
-C50D: D7 BD           STB     $BD                 ; {ram.BD}
-C50F: 0C BE           INC     $BE                 ; {ram.BE}
-C511: 0C BE           INC     $BE                 ; {ram.BE}
+C509: D6 BF           LDB     $BF                 ; {ram.OrigPixel} The pixel the player over-drew
+C50B: DB BD           ADDB    $BD                 ; {ram.Collision} Mark ...
+C50D: D7 BD           STB     $BD                 ; {ram.Collision} ... collision
+C50F: 0C BE           INC     $BE                 ; {ram.EndOfPlayer} Next point ...
+C511: 0C BE           INC     $BE                 ; {ram.EndOfPlayer} ... slot in player line
 C513: 0C D1           INC     $D1                 ; {ram.D1}
 C515: 10 26 00 B3     LBNE    $C5CC               ; {}
 C519: D6 CE           LDB     $CE                 ; {ram.CE}
@@ -650,7 +682,7 @@ C51B: C1 13           CMPB    #$13
 C51D: 10 2C 00 AB     LBGE    $C5CC               ; {}
 C521: 0C CE           INC     $CE                 ; {ram.CE}
 C523: 33 8D 0A 7A     LEAU    $CFA1,PC            ; {}
-C527: 17 05 54        LBSR    $CA7E               ; {}
+C527: 17 05 54        LBSR    $CA7E               ; {code.PlaySong} ?? Is this the touch an object sound?
 C52A: 96 D0           LDA     $D0                 ; {ram.D0}
 C52C: 48              ASLA                        
 C52D: 48              ASLA                        
@@ -664,16 +696,16 @@ C53A: A6 85           LDA     B,X
 C53C: 8B 04           ADDA    #$04                
 C53E: D6 D7           LDB     $D7                 ; {ram.Random}
 C540: 3D              MUL                         
-C541: 84 07           ANDA    #$07                
-C543: 4C              INCA                        
-C544: 81 08           CMPA    #$08                
-C546: 26 09           BNE     $C551               ; {}
-C548: 0C CF           INC     $CF                 ; {ram.CF}
-C54A: D6 CF           LDB     $CF                 ; {ram.CF}
-C54C: C1 0A           CMPB    #$0A                
-C54E: 23 01           BLS     $C551               ; {}
-C550: 4C              INCA                        
-C551: 9E D2           LDX     $D2                 ; {ram.D2}
+C541: 84 07           ANDA    #$07                ; Random object type ...
+C543: 4C              INCA                        ; ... from 1 to 8
+C544: 81 08           CMPA    #$08                ; Is this a skull?
+C546: 26 09           BNE     $C551               ; {} No ... keep whatever it is
+C548: 0C CF           INC     $CF                 ; {ram.SkullCount} Bump the skull count
+C54A: D6 CF           LDB     $CF                 ; {ram.SkullCount} Do we have ...
+C54C: C1 0A           CMPB    #$0A                ; ... 10 skulls on the screen?
+C54E: 23 01           BLS     $C551               ; {} No ... this is a new skull
+C550: 4C              INCA                        ; Yes ... promote this to a moving "X"
+C551: 9E D2           LDX     $D2                 ; {ram.NextFreeObj}
 C553: A7 06           STA     6,X                 
 C555: 6F 07           CLR     7,X                 
 C557: 96 D7           LDA     $D7                 ; {ram.Random}
@@ -738,131 +770,156 @@ C5C4: 2D 02           BLT     $C5C8               ; {}
 C5C6: C0 44           SUBB    #$44                
 C5C8: E7 02           STB     2,X                 
 C5CA: 20 CA           BRA     $C596               ; {}
-C5CC: 17 05 20        LBSR    $CAEF               ; {code.WaitVBlank}
-C5CF: 0D C7           TST     $C7                 ; {ram.C7}
-C5D1: 27 09           BEQ     $C5DC               ; {}
-C5D3: 0A C6           DEC     $C6                 ; {ram.C6}
-C5D5: 26 05           BNE     $C5DC               ; {}
-C5D7: 17 01 45        LBSR    $C71F               ; {}
-C5DA: 0F C7           CLR     $C7                 ; {ram.C7}
-C5DC: 0A D5           DEC     $D5                 ; {ram.D5}
-C5DE: 26 2F           BNE     $C60F               ; {}
-C5E0: C6 28           LDB     #$28                
-C5E2: D7 D5           STB     $D5                 ; {ram.D5}
-C5E4: C6 58           LDB     #$58                
-C5E6: 0D B6           TST     $B6                 ; {ram.Player}
-C5E8: 26 12           BNE     $C5FC               ; {}
-C5EA: 86 18           LDA     #$18                
-C5EC: 03 D6           COM     $D6                 ; {ram.D6}
-C5EE: 26 06           BNE     $C5F6               ; {}
-C5F0: 33 8D 06 89     LEAU    $CC7D,PC            ; {code.StrOne}
-C5F4: 20 16           BRA     $C60C               ; {}
-C5F6: 33 8D 06 31     LEAU    $CC2B,PC            ; {code.StrWhiteBlock}
-C5FA: 20 10           BRA     $C60C               ; {}
-C5FC: 86 52           LDA     #$52                
-C5FE: 03 D6           COM     $D6                 ; {ram.D6}
-C600: 26 06           BNE     $C608               ; {}
-C602: 33 8D 06 98     LEAU    $CC9E,PC            ; {code.StrTwo}
-C606: 20 04           BRA     $C60C               ; {}
-C608: 33 8D 06 1F     LEAU    $CC2B,PC            ; {code.StrWhiteBlock}
-C60C: 17 03 34        LBSR    $C943               ; {code.PrintChars}
-C60F: 39              RTS                         
-C610: C6 FF           LDB     #$FF                
-C612: D7 C5           STB     $C5                 ; {ram.C5}
-C614: DC B7           LDD     $B7                 ; {ram.P1Score}
-C616: CE 0F 2B        LDU     #$0F2B              
-C619: 17 00 0F        LBSR    $C62B               ; {code.DrawNumber}
-C61C: 0D B4           TST     $B4                 ; {ram.NumPlayers}
-C61E: 27 08           BEQ     $C628               ; {}
-C620: DC B9           LDD     $B9                 ; {ram.P2Score}
-C622: CE 0F 3A        LDU     #$0F3A              
-C625: 17 00 03        LBSR    $C62B               ; {code.DrawNumber}
-C628: 0F C5           CLR     $C5                 ; {ram.C5}
-C62A: 39              RTS                         
+C5CC: 17 05 20        LBSR    $CAEF               ; {code.WaitVBlank} Sync the gameloop to VBLANK
+;
+C5CF: 0D C7           TST     $C7                 ; {ram.HasLoopScore} Is there a loop score showing?
+C5D1: 27 09           BEQ     $C5DC               ; {} No ... skip timing it out
+C5D3: 0A C6           DEC     $C6                 ; {ram.C6} Time to erase it?
+C5D5: 26 05           BNE     $C5DC               ; {} No ... leave it alone
+C5D7: 17 01 45        LBSR    $C71F               ; {code.EraseLoopScore} Erase the loop score
+C5DA: 0F C7           CLR     $C7                 ; {ram.HasLoopScore} No longer showing the loop score
+C5DC: 0A D5           DEC     $D5                 ; {ram.FlashCount} Time to flash the player word?
+;
+C5DE: 26 2F           BNE     $C60F               ; {} No ... skip it
+C5E0: C6 28           LDB     #$28                ; Reload the ...
+C5E2: D7 D5           STB     $D5                 ; {ram.FlashCount} ... player word flash counter
+C5E4: C6 58           LDB     #$58                ; Y coordinate of player word
+C5E6: 0D B6           TST     $B6                 ; {ram.Player} Player one?
+C5E8: 26 12           BNE     $C5FC               ; {} No ... go to player one
+C5EA: 86 18           LDA     #$18                ; X coordinate of player "one"
+C5EC: 03 D6           COM     $D6                 ; {ram.FlashType} Value was zero?
+C5EE: 26 06           BNE     $C5F6               ; {} Yes ... erase the word
+C5F0: 33 8D 06 89     LEAU    $CC7D,PC            ; {code.StrOne} No ... print the word
+C5F4: 20 16           BRA     $C60C               ; {} Go print and out
+C5F6: 33 8D 06 31     LEAU    $CC2B,PC            ; {code.GenericEraser} Erase the word
+C5FA: 20 10           BRA     $C60C               ; {} Go erase and out
+;
+C5FC: 86 52           LDA     #$52                ; X coordinate for "two"
+C5FE: 03 D6           COM     $D6                 ; {ram.FlashType} Value was zero?
+C600: 26 06           BNE     $C608               ; {} Yes ... erase the word
+C602: 33 8D 06 98     LEAU    $CC9E,PC            ; {code.StrTwo} No ... print the word
+C606: 20 04           BRA     $C60C               ; {} Go print and out
+C608: 33 8D 06 1F     LEAU    $CC2B,PC            ; {code.GenericEraser} Erase graphics
+C60C: 17 03 34        LBSR    $C943               ; {code.PrintChars} Draw whatever graphics
+C60F: 39              RTS                         ; Done
+
+PrintScores:
+C610: C6 FF           LDB     #$FF                ; White background chars ...
+C612: D7 C5           STB     $C5                 ; {ram.DigitColor} ... for score digits
+C614: DC B7           LDD     $B7                 ; {ram.P1Score} Player one score
+C616: CE 0F 2B        LDU     #$0F2B              ; Location of player one score on screen
+C619: 17 00 0F        LBSR    $C62B               ; {code.DrawNumber} Print player one score
+C61C: 0D B4           TST     $B4                 ; {ram.NumPlayers} Is there a second player?
+C61E: 27 08           BEQ     $C628               ; {} No ... skip player two score
+C620: DC B9           LDD     $B9                 ; {ram.P2Score} Player two score
+C622: CE 0F 3A        LDU     #$0F3A              ; Location of player two score on screen
+C625: 17 00 03        LBSR    $C62B               ; {code.DrawNumber} Print the player two score
+C628: 0F C5           CLR     $C5                 ; {ram.DigitColor} Default back to black background chars
+C62A: 39              RTS                         ; Done
 
 DrawNumber:
 ; Numbers are kept in words ... max value 65_536. Max 5 digits.
+; An extra "0" is always added to the end of the number (multiply by 10)
 C62B: 10 83 27 10     CMPD    #$2710              ; Decimal 10_000
-C62F: 24 14           BHS     $C645               ; {}
+C62F: 24 14           BHS     $C645               ; {} Handle digits
 C631: 10 83 03 E8     CMPD    #$03E8              ; Decimal 1_000
-C635: 24 13           BHS     $C64A               ; {}
+C635: 24 13           BHS     $C64A               ; {} Handle 4 digits
 C637: 10 83 00 64     CMPD    #$0064              ; Decimal 100
-C63B: 24 12           BHS     $C64F               ; {}
+C63B: 24 12           BHS     $C64F               ; {} Handle 3 digits
 C63D: 10 83 00 0A     CMPD    #$000A              ; Decimal 10
-C641: 24 11           BHS     $C654               ; {}
-C643: 20 14           BRA     $C659               ; {}
+C641: 24 11           BHS     $C654               ; {} Handle 2 digit
+C643: 20 14           BRA     $C659               ; {} Just one digit
 ;
-C645: 8E 27 10        LDX     #$2710              
-C648: 8D 19           BSR     $C663               ; {}
-C64A: 8E 03 E8        LDX     #$03E8              
-C64D: 8D 14           BSR     $C663               ; {}
-C64F: 8E 00 64        LDX     #$0064              
-C652: 8D 0F           BSR     $C663               ; {}
-C654: 8E 00 0A        LDX     #$000A              
-C657: 8D 0A           BSR     $C663               ; {}
+C645: 8E 27 10        LDX     #$2710              ; Base amount 10000
+C648: 8D 19           BSR     $C663               ; {} Draw digit picture
+C64A: 8E 03 E8        LDX     #$03E8              ; Base amount 1000
+C64D: 8D 14           BSR     $C663               ; {} Draw digit picture
+C64F: 8E 00 64        LDX     #$0064              ; Base amount 100
+C652: 8D 0F           BSR     $C663               ; {} Draw digit picture
+C654: 8E 00 0A        LDX     #$000A              ; Base amount 10
+C657: 8D 0A           BSR     $C663               ; {} Draw digit picture
+C659: 8E 00 01        LDX     #$0001              ; Base amount 1
+C65C: 8D 05           BSR     $C663               ; {} Draw digit picture
+C65E: 4F              CLRA                        ; Add a ...
+C65F: 5F              CLRB                        ; ... zero to everything
+C660: 8D 01           BSR     $C663               ; {} Print 0
+C662: 39              RTS                         ; Done
 ;
-C659: 8E 00 01        LDX     #$0001              
-C65C: 8D 05           BSR     $C663               ; {}
-C65E: 4F              CLRA                        
-C65F: 5F              CLRB                        
-C660: 8D 01           BSR     $C663               ; {}
-C662: 39              RTS                         
-;
-C663: 34 10           PSHS    X                   
+C663: 34 10           PSHS    X                   ; Hold the value
 C665: 30 8D 00 78     LEAX    $C6E1,PC            ; {code.Digit0} Graphics for "0"
-C669: A3 E4           SUBD    ,S                  
-C66B: 25 46           BLO     $C6B3               ; {}
+C669: A3 E4           SUBD    ,S                  ; Subtract off base amount
+C66B: 25 46           BLO     $C6B3               ; {} This is the digit
 C66D: 30 8D 00 75     LEAX    $C6E6,PC            ; {code.Digit1} Graphics for "1"
-C671: A3 E4           SUBD    ,S                  
-C673: 25 3E           BLO     $C6B3               ; {}
-C675: 30 8D 00 72     LEAX    $C6EB,PC            ; {code.Digit2}
-C679: A3 E4           SUBD    ,S                  
-C67B: 25 36           BLO     $C6B3               ; {}
-C67D: 30 8D 00 6F     LEAX    $C6F0,PC            ; {code.Digit3}
-C681: A3 E4           SUBD    ,S                  
-C683: 25 2E           BLO     $C6B3               ; {}
-C685: 30 8D 00 6C     LEAX    $C6F5,PC            ; {code.Digit4}
-C689: A3 E4           SUBD    ,S                  
-C68B: 25 26           BLO     $C6B3               ; {}
-C68D: 30 8D 00 69     LEAX    $C6FA,PC            ; {code.Digit5}
-C691: A3 E4           SUBD    ,S                  
-C693: 25 1E           BLO     $C6B3               ; {}
-C695: 30 8D 00 66     LEAX    $C6FF,PC            ; {code.Digit6}
-C699: A3 E4           SUBD    ,S                  
-C69B: 25 16           BLO     $C6B3               ; {}
-C69D: 30 8D 00 63     LEAX    $C704,PC            ; {code.Digit7}
-C6A1: A3 E4           SUBD    ,S                  
-C6A3: 25 0E           BLO     $C6B3               ; {}
-C6A5: 30 8D 00 60     LEAX    $C709,PC            ; {code.Digit8}
-C6A9: A3 E4           SUBD    ,S                  
-C6AB: 25 06           BLO     $C6B3               ; {}
-C6AD: 30 8D 00 5D     LEAX    $C70E,PC            ; {code.Digit9}
-C6B1: A3 E4           SUBD    ,S                  
-C6B3: E3 E4           ADDD    ,S                  
-C6B5: 34 06           PSHS    B,A                 
-C6B7: E6 84           LDB     ,X                  
-C6B9: 54              LSRB                        
-C6BA: D8 C5           EORB    $C5                 ; {ram.C5}
-C6BC: E7 C0           STB     ,U+                 
-C6BE: E6 01           LDB     1,X                 
-C6C0: 54              LSRB                        
-C6C1: D8 C5           EORB    $C5                 ; {ram.C5}
-C6C3: E7 C8 1F        STB     $1F,U               
-C6C6: E6 02           LDB     2,X                 
-C6C8: 54              LSRB                        
-C6C9: D8 C5           EORB    $C5                 ; {ram.C5}
-C6CB: E7 C8 3F        STB     $3F,U               
-C6CE: E6 03           LDB     3,X                 
-C6D0: 54              LSRB                        
-C6D1: D8 C5           EORB    $C5                 ; {ram.C5}
-C6D3: E7 C8 5F        STB     $5F,U               
-C6D6: E6 04           LDB     4,X                 
-C6D8: 54              LSRB                        
-C6D9: D8 C5           EORB    $C5                 ; {ram.C5}
-C6DB: E7 C8 7F        STB     $7F,U               
-C6DE: 35 16           PULS    A,B,X               
-C6E0: 39              RTS                         
+C671: A3 E4           SUBD    ,S                  ; Subtract off base amount
+C673: 25 3E           BLO     $C6B3               ; {} This is the digit
+C675: 30 8D 00 72     LEAX    $C6EB,PC            ; {code.Digit2} Graphics for "2"
+C679: A3 E4           SUBD    ,S                  ; Subtract off base amount
+C67B: 25 36           BLO     $C6B3               ; {} This is the digit
+C67D: 30 8D 00 6F     LEAX    $C6F0,PC            ; {code.Digit3} Graphics for "3"
+C681: A3 E4           SUBD    ,S                  ; Subtract off base amount
+C683: 25 2E           BLO     $C6B3               ; {} This is the digit
+C685: 30 8D 00 6C     LEAX    $C6F5,PC            ; {code.Digit4} Graphics for "4"
+C689: A3 E4           SUBD    ,S                  ; Subtract off base amount
+C68B: 25 26           BLO     $C6B3               ; {} This is the digit
+C68D: 30 8D 00 69     LEAX    $C6FA,PC            ; {code.Digit5} Graphics for "5"
+C691: A3 E4           SUBD    ,S                  ; Subtract off base amount
+C693: 25 1E           BLO     $C6B3               ; {} This is the digit
+C695: 30 8D 00 66     LEAX    $C6FF,PC            ; {code.Digit6} Graphics for "6"
+C699: A3 E4           SUBD    ,S                  ; Subtract off base amount
+C69B: 25 16           BLO     $C6B3               ; {} This is the digit
+C69D: 30 8D 00 63     LEAX    $C704,PC            ; {code.Digit7} Graphics for "7"
+C6A1: A3 E4           SUBD    ,S                  ; Subtract off base amount
+C6A3: 25 0E           BLO     $C6B3               ; {} This is the digit
+C6A5: 30 8D 00 60     LEAX    $C709,PC            ; {code.Digit8} Graphics for "8"
+C6A9: A3 E4           SUBD    ,S                  ; Subtract off base amount
+C6AB: 25 06           BLO     $C6B3               ; {} This is the digit
+C6AD: 30 8D 00 5D     LEAX    $C70E,PC            ; {code.Digit9} Graphics for "9"
+C6B1: A3 E4           SUBD    ,S                  ; Subtract off base amount
+C6B3: E3 E4           ADDD    ,S                  ; Add one base amount back (we overshot above)
+C6B5: 34 06           PSHS    B,A                 ; Hold the value
+C6B7: E6 84           LDB     ,X                  ; Get first row data
+C6B9: 54              LSRB                        ; Everything draw in color "01" (not sure why it wasn't defined that way to begin with)
+C6BA: D8 C5           EORB    $C5                 ; {ram.DigitColor} Flip the color if needed
+C6BC: E7 C0           STB     ,U+                 ; Store to screen
+C6BE: E6 01           LDB     1,X                 ; Repeat ...
+C6C0: 54              LSRB                        ; ... with ...
+C6C1: D8 C5           EORB    $C5                 ; {ram.DigitColor} ... next ...
+C6C3: E7 C8 1F        STB     $1F,U               ; ... row
+C6C6: E6 02           LDB     2,X                 ; Repeat ...
+C6C8: 54              LSRB                        ; ... with ...
+C6C9: D8 C5           EORB    $C5                 ; {ram.DigitColor} ... next ...
+C6CB: E7 C8 3F        STB     $3F,U               ; ... row
+C6CE: E6 03           LDB     3,X                 ; Repeat ...
+C6D0: 54              LSRB                        ; ... with ...
+C6D1: D8 C5           EORB    $C5                 ; {ram.DigitColor} ... next ...
+C6D3: E7 C8 5F        STB     $5F,U               ; ... row
+C6D6: E6 04           LDB     4,X                 ; Repeat ...
+C6D8: 54              LSRB                        ; ... with ...
+C6D9: D8 C5           EORB    $C5                 ; {ram.DigitColor} ... next ...
+C6DB: E7 C8 7F        STB     $7F,U               ; ... row
+C6DE: 35 16           PULS    A,B,X               ; Restore
+C6E0: 39              RTS                         ; Done
+```
 
+```html
+<canvas width="754" height="96"
+  data-canvasFunction="TileEngine.handleTileCanvas"
+  data-getTileDataFunction="Doubleback.get8x5Tile"
+  data-gridX="4"
+  data-gridY="5"
+  data-colors='["#000000","#FF0000","#0000FF","#FFFFFF"]'  
+  data-address="C6E1"
+  data-labelColor=""
+  data-pixWidth="15"
+  data-pixHeight="15"
+  data-gap="1"
+  data-background="#808080"
+  data-margin="10"
+  data-command="0,+x,1,+x,2,+x,3,+x,4,+x,5,+x,6,+x,7,+x,8,+x,9">
+</canvas>
+```
+
+```code
 Digit0:
 ; ..#.....
 ; #...#...
@@ -880,42 +937,83 @@ Digit1:
 C6E6: 20 A0 20 20 A8
 
 Digit2:
+; ..#.....
+; #...#...
+; ....#...
+; ..#.....
+; #.#.#...
 C6EB: 20 88 08 20 A8 
 
 Digit3:
+; #.#.#...
+; ....#...
+; ..#.#...
+; ....#...
+; #.#.#...
 C6F0: A8 08 28 08 A8 
 
 Digit4:
+; #.......
+; #...#...
+; #...#...
+; #.#.#...
+; ....#...
 C6F5: 80 88 88 A8 08            
 
 Digit5:
+; #.#.#...
+; #.......
+; ..#.....
+; ....#...
+; #.#.....
 C6FA: A8 80 20 08 A0 
 
 Digit6:
+; #.#.#...
+; #.......
+; #.#.#...
+; #...#...
+; #.#.#...
 C6FF: A8 80 A8 88 A8 
 
 Digit7:
+; #.#.#...
+; ....#...
+; ....#...
+; ..#.....
+; ..#.....
 C704: A8 08 08 20 20 
 
 Digit8:
+; #.#.#...
+; #...#...
+; #.#.#...
+; #...#...
+; #.#.#...
 C709: A8 88 A8 88 A8 
 
 Digit9:
+; ..#.....
+; #...#...
+; ..#.#...
+; ....#...
+; #.#.....
 C70E: 20 88 28 08 A0 
 
-; Draws CA ??? Might be score of the object
-C713: 0D C7           TST     $C7                 ; {ram.C7}
-C715: 27 07           BEQ     $C71E               ; {}
-C717: DE CC           LDU     $CC                 ; {ram.CC} Screen coordinate
-C719: DC CA           LDD     $CA                 ; {ram.CA} Value
+DrawLoopScore:
+; If there is a loop score, draw it
+C713: 0D C7           TST     $C7                 ; {ram.HasLoopScore} Is there a value?
+C715: 27 07           BEQ     $C71E               ; {} No ... skip drawing it
+C717: DE CC           LDU     $CC                 ; {ram.LoopScoreLoc} Screen coordinate
+C719: DC CA           LDD     $CA                 ; {ram.LoopScoreShown} Value
 C71B: 17 FF 0D        LBSR    $C62B               ; {code.DrawNumber} Draw number
-C71E: 39              RTS                         
+C71E: 39              RTS                         ; Done
 
-; Erase CA ??? Might be the score of the object
-C71F: 0D C7           TST     $C7                 ; {ram.C7}
-C721: 27 2A           BEQ     $C74D               ; {}
-C723: DE CC           LDU     $CC                 ; {ram.CC} Screen coordinate
-C725: DC CA           LDD     $CA                 ; {ram.CA} Value
+EraseLoopScore:
+C71F: 0D C7           TST     $C7                 ; {ram.HasLoopScore} Is there a value?
+C721: 27 2A           BEQ     $C74D               ; {} No ... skip erasing it
+C723: DE CC           LDU     $CC                 ; {ram.LoopScoreLoc} Screen coordinate
+C725: DC CA           LDD     $CA                 ; {ram.LoopScoreShown} Value
 C727: 10 83 27 10     CMPD    #$2710              ; Decimal 10_000
 C72B: 24 14           BHS     $C741               ; {} Erase 6 digits
 C72D: 10 83 03 E8     CMPD    #$03E8              ; Decimal 1_000
@@ -944,131 +1042,135 @@ C756: 6F C8 5F        CLR     $5F,U               ; Erase 4th line
 C759: 6F C8 7F        CLR     $7F,U               ; Erase 5th line
 C75C: 39              RTS                         ; Done
 
-Draw16x8:
+Draw8x8:
+; X = object pointer (has X,Y coordinate)
+; U = pointer to data (8x8 pixels = 16 bytes)
 C75D: C6 08           LDB     #$08                ; 8 Rows
-C75F: 34 54           PSHS    U,X,B               
-C761: 17 02 4E        LBSR    $C9B2               ; {code.GetScreenAndShift}
+C75F: 34 54           PSHS    U,X,B               ; Hold these
+C761: 17 02 4E        LBSR    $C9B2               ; {code.GetScreenAndShift} Get pointer to screen memory
 C764: 10 8E 03 80     LDY     #$0380              ; Mask table
 C768: AE 63           LDX     3,S                 ; Incoming U (data pointer) to X
 C76A: 5D              TSTB                        ; 0 means ...
 C76B: 10 27 00 CA     LBEQ    $C839               ; {} ... draw with no shift
 C76F: 5A              DECB                        ; 1 means ...
-C770: 10 27 00 88     LBEQ    $C7FC               ; {} ... one shift right
+C770: 10 27 00 88     LBEQ    $C7FC               ; {} ... one pixel shift right
 C774: 5A              DECB                        ; 2 means ...
-C775: 10 27 00 3E     LBEQ    $C7B7               ; {} ... four shift right ???
+C775: 10 27 00 3E     LBEQ    $C7B7               ; {} ... two pixel shift right
 ;
-C779: E6 80           LDB     ,X+                 ; Two shift left
-C77B: 4F              CLRA                        
-C77C: 58              ASLB                        
-C77D: 49              ROLA                        
-C77E: 58              ASLB                        
-C77F: 49              ROLA                        
-C780: 34 06           PSHS    B,A                 
-C782: E6 80           LDB     ,X+                 
-C784: 4F              CLRA                        
-C785: 58              ASLB                        
-C786: 49              ROLA                        
-C787: 58              ASLB                        
-C788: 49              ROLA                        
-C789: AB 61           ADDA    1,S                 
-C78B: A7 61           STA     1,S                 
-C78D: 34 04           PSHS    B                   
-C78F: A6 A5           LDA     B,Y                 
-C791: A4 42           ANDA    2,U                 
-C793: AB E4           ADDA    ,S                  
-C795: A7 42           STA     2,U                 
-C797: E6 62           LDB     2,S                 
-C799: A6 A5           LDA     B,Y                 
-C79B: A4 41           ANDA    1,U                 
-C79D: AB 62           ADDA    2,S                 
-C79F: A7 41           STA     1,U                 
-C7A1: E6 61           LDB     1,S                 
-C7A3: A6 A5           LDA     B,Y                 
-C7A5: A4 C4           ANDA    ,U                  
-C7A7: AB 61           ADDA    1,S                 
-C7A9: A7 C4           STA     ,U                  
-C7AB: 32 63           LEAS    3,S                 
-C7AD: 33 C8 20        LEAU    $20,U               
-C7B0: 6A E4           DEC     ,S                  
-C7B2: 26 C5           BNE     $C779               ; {}
-C7B4: 16 00 A1        LBRA    $C858               ; {}
+; One pixel shift left (three pixel shift right)
+C779: E6 80           LDB     ,X+                 ; First byte of pixel data
+C77B: 4F              CLRA                        ; Make it a word with leading 0s
+C77C: 58              ASLB                        ; Shift ...
+C77D: 49              ROLA                        ; ... left ...
+C77E: 58              ASLB                        ; ... one ...
+C77F: 49              ROLA                        ; ... pixel
+C780: 34 06           PSHS    B,A                 ; Hold this
+C782: E6 80           LDB     ,X+                 ; Second byte of pixel data
+C784: 4F              CLRA                        ; Make it a word with leading 0s
+C785: 58              ASLB                        ; Shift ...
+C786: 49              ROLA                        ; ... left ...
+C787: 58              ASLB                        ; ... one ...
+C788: 49              ROLA                        ; ... pixel
+C789: AB 61           ADDA    1,S                 ; Combine pixels ...
+C78B: A7 61           STA     1,S                 ; ... in middle byte
+C78D: 34 04           PSHS    B                   ; Third byte
+C78F: A6 A5           LDA     B,Y                 ; Mask ...
+C791: A4 42           ANDA    2,U                 ; ... screen ...
+C793: AB E4           ADDA    ,S                  ; ... add pixels ...
+C795: A7 42           STA     2,U                 ; ... to screen
+C797: E6 62           LDB     2,S                 ; 2nd byte
+C799: A6 A5           LDA     B,Y                 ; Mask ...
+C79B: A4 41           ANDA    1,U                 ; ... screen ...
+C79D: AB 62           ADDA    2,S                 ; ... add pixels ...
+C79F: A7 41           STA     1,U                 ; ... to screen
+C7A1: E6 61           LDB     1,S                 ; First byte
+C7A3: A6 A5           LDA     B,Y                 ; Mask ...
+C7A5: A4 C4           ANDA    ,U                  ; ... screen ...
+C7A7: AB 61           ADDA    1,S                 ; ... add pixels ...
+C7A9: A7 C4           STA     ,U                  ; ... to screen
+C7AB: 32 63           LEAS    3,S                 ; Pull the 3-byte temporary
+C7AD: 33 C8 20        LEAU    $20,U               ; Next row
+C7B0: 6A E4           DEC     ,S                  ; All rows done?
+C7B2: 26 C5           BNE     $C779               ; {} No ... keep going
+C7B4: 16 00 A1        LBRA    $C858               ; {} Yes ... done
 ;
-C7B7: E6 80           LDB     ,X+                 
-C7B9: 4F              CLRA                        
-C7BA: 54              LSRB                        
-C7BB: 46              RORA                        
-C7BC: 54              LSRB                        
-C7BD: 46              RORA                        
-C7BE: 54              LSRB                        
-C7BF: 46              RORA                        
-C7C0: 54              LSRB                        
-C7C1: 46              RORA                        
-C7C2: 34 06           PSHS    B,A                 
-C7C4: E6 80           LDB     ,X+                 
-C7C6: 4F              CLRA                        
-C7C7: 54              LSRB                        
-C7C8: 46              RORA                        
-C7C9: 54              LSRB                        
-C7CA: 46              RORA                        
-C7CB: 54              LSRB                        
-C7CC: 46              RORA                        
-C7CD: 54              LSRB                        
-C7CE: 46              RORA                        
-C7CF: EB E4           ADDB    ,S                  
-C7D1: E7 E4           STB     ,S                  
-C7D3: 34 02           PSHS    A                   
-C7D5: A6 A6           LDA     A,Y                 
-C7D7: A4 42           ANDA    2,U                 
-C7D9: AB E4           ADDA    ,S                  
-C7DB: A7 42           STA     2,U                 
-C7DD: E6 61           LDB     1,S                 
-C7DF: A6 A5           LDA     B,Y                 
-C7E1: A4 41           ANDA    1,U                 
-C7E3: AB 61           ADDA    1,S                 
-C7E5: A7 41           STA     1,U                 
-C7E7: E6 62           LDB     2,S                 
-C7E9: A6 A5           LDA     B,Y                 
-C7EB: A4 C4           ANDA    ,U                  
-C7ED: AB 62           ADDA    2,S                 
-C7EF: A7 C4           STA     ,U                  
-C7F1: 32 63           LEAS    3,S                 
-C7F3: 33 C8 20        LEAU    $20,U               
-C7F6: 6A E4           DEC     ,S                  
-C7F8: 26 BD           BNE     $C7B7               ; {}
-C7FA: 20 5C           BRA     $C858               ; {}
+; Two pixel shift right
+C7B7: E6 80           LDB     ,X+                 ; First byte of pixel data
+C7B9: 4F              CLRA                        ; Make it a word with leading 0s
+C7BA: 54              LSRB                        ; Shift ...
+C7BB: 46              RORA                        ; ... right ...
+C7BC: 54              LSRB                        ; ... two ...
+C7BD: 46              RORA                        ; ...
+C7BE: 54              LSRB                        ; ...
+C7BF: 46              RORA                        ; ...
+C7C0: 54              LSRB                        ; ...
+C7C1: 46              RORA                        ; ... pixels
+C7C2: 34 06           PSHS    B,A                 ; Hold this
+C7C4: E6 80           LDB     ,X+                 ; Second byte of pixel data
+C7C6: 4F              CLRA                        ; Make it a word with leading 0s
+C7C7: 54              LSRB                        ; Shift ...
+C7C8: 46              RORA                        ; ... right ...
+C7C9: 54              LSRB                        ; ... two ...
+C7CA: 46              RORA                        ; ...
+C7CB: 54              LSRB                        ; ...
+C7CC: 46              RORA                        ; ...
+C7CD: 54              LSRB                        ; ...
+C7CE: 46              RORA                        ; ... pixels
+C7CF: EB E4           ADDB    ,S                  ; Combine pixels ...
+C7D1: E7 E4           STB     ,S                  ; ... in middle byte
+C7D3: 34 02           PSHS    A                   ; Third byte
+C7D5: A6 A6           LDA     A,Y                 ; Mask ...
+C7D7: A4 42           ANDA    2,U                 ; ... screen ...
+C7D9: AB E4           ADDA    ,S                  ; ... add pixels ...
+C7DB: A7 42           STA     2,U                 ; ... to screen
+C7DD: E6 61           LDB     1,S                 ; 2nd byte
+C7DF: A6 A5           LDA     B,Y                 ; Mask ...
+C7E1: A4 41           ANDA    1,U                 ; ... screen ...
+C7E3: AB 61           ADDA    1,S                 ; ... add pixels ...
+C7E5: A7 41           STA     1,U                 ; ... to screen
+C7E7: E6 62           LDB     2,S                 ; 3rd byte
+C7E9: A6 A5           LDA     B,Y                 ; Mask ...
+C7EB: A4 C4           ANDA    ,U                  ; ... screen ...
+C7ED: AB 62           ADDA    2,S                 ; ... add pixels ...
+C7EF: A7 C4           STA     ,U                  ; ... to screen
+C7F1: 32 63           LEAS    3,S                 ; Pull the 3-byte temporary
+C7F3: 33 C8 20        LEAU    $20,U               ; Next row
+C7F6: 6A E4           DEC     ,S                  ; All rows done?
+C7F8: 26 BD           BNE     $C7B7               ; {} No ... keep going
+C7FA: 20 5C           BRA     $C858               ; {} Yes ... done
 ;
-; One shift right
-C7FC: E6 80           LDB     ,X+                 
-C7FE: 4F              CLRA                        
-C7FF: 54              LSRB                        
-C800: 46              RORA                        
-C801: 54              LSRB                        
-C802: 46              RORA                        
-C803: 34 06           PSHS    B,A                 
-C805: E6 80           LDB     ,X+                 
-C807: 4F              CLRA                        
-C808: 54              LSRB                        
-C809: 46              RORA                        
-C80A: 54              LSRB                        
-C80B: 46              RORA                        
-C80C: EB E4           ADDB    ,S                  
-C80E: E7 E4           STB     ,S                  
-C810: 34 02           PSHS    A                   
-C812: A6 A6           LDA     A,Y                 
-C814: A4 42           ANDA    2,U                 
-C816: AB E4           ADDA    ,S                  
-C818: A7 42           STA     2,U                 
-C81A: E6 61           LDB     1,S                 
-C81C: A6 A5           LDA     B,Y                 
-C81E: A4 41           ANDA    1,U                 
-C820: AB 61           ADDA    1,S                 
-C822: A7 41           STA     1,U                 
-C824: E6 62           LDB     2,S                 
-C826: A6 A5           LDA     B,Y                 
-C828: A4 C4           ANDA    ,U                  
-C82A: AB 62           ADDA    2,S                 
-C82C: A7 C4           STA     ,U                  
-C82E: 32 63           LEAS    3,S                 
+; One pixel shift right
+C7FC: E6 80           LDB     ,X+                 ; First byte of pixel data
+C7FE: 4F              CLRA                        ; Make it a word with leading 0s
+C7FF: 54              LSRB                        ; Shift ...
+C800: 46              RORA                        ; ... right ...
+C801: 54              LSRB                        ; ... one ...
+C802: 46              RORA                        ; ... pixel
+C803: 34 06           PSHS    B,A                 ; Hold this
+C805: E6 80           LDB     ,X+                 ; Second byte of pixel data
+C807: 4F              CLRA                        ; Make it a word with leading 0s
+C808: 54              LSRB                        ; Shift ...
+C809: 46              RORA                        ; ... right ...
+C80A: 54              LSRB                        ; ... one ...
+C80B: 46              RORA                        ; ... pixel
+C80C: EB E4           ADDB    ,S                  ; Combine pixels ...
+C80E: E7 E4           STB     ,S                  ; ... in middle byte
+C810: 34 02           PSHS    A                   ; Third byte
+C812: A6 A6           LDA     A,Y                 ; Mask ...
+C814: A4 42           ANDA    2,U                 ; ... screen ...
+C816: AB E4           ADDA    ,S                  ; ... add pixels ...
+C818: A7 42           STA     2,U                 ; ... to screen
+C81A: E6 61           LDB     1,S                 ; 2nd byte
+C81C: A6 A5           LDA     B,Y                 ; Mask ...
+C81E: A4 41           ANDA    1,U                 ; ... screen ...
+C820: AB 61           ADDA    1,S                 ; ... add pixels ...
+C822: A7 41           STA     1,U                 ; ... to screen
+C824: E6 62           LDB     2,S                 ; 3rd byte
+C826: A6 A5           LDA     B,Y                 ; Mask ...
+C828: A4 C4           ANDA    ,U                  ; ... screen ...
+C82A: AB 62           ADDA    2,S                 ; ... add pixels ...
+C82C: A7 C4           STA     ,U                  ; ... to screen
+C82E: 32 63           LEAS    3,S                 ; Pull the 3-byte temporary
 C830: 33 C8 20        LEAU    $20,U               ; Next row
 C833: 6A E4           DEC     ,S                  ; All rows done?
 C835: 26 C5           BNE     $C7FC               ; {} No ... keep going
@@ -1093,144 +1195,158 @@ C856: 26 E1           BNE     $C839               ; {} No ... keep going
 C858: 35 54           PULS    B,X,U               ; Restore
 C85A: 39              RTS                         ; Done
 
-C85B: C6 08           LDB     #$08                
-C85D: 34 54           PSHS    U,X,B               
-C85F: 17 01 50        LBSR    $C9B2               ; {code.GetScreenAndShift}
-C862: 10 8E 03 80     LDY     #$0380              
-C866: AE 63           LDX     3,S                 
-C868: 5D              TSTB                        
-C869: 10 27 00 B8     LBEQ    $C925               ; {}
-C86D: 5A              DECB                        
-C86E: 10 27 00 7C     LBEQ    $C8EE               ; {}
-C872: 5A              DECB                        
-C873: 10 27 00 38     LBEQ    $C8AF               ; {}
-C877: E6 80           LDB     ,X+                 
-C879: 4F              CLRA                        
-C87A: 58              ASLB                        
-C87B: 49              ROLA                        
-C87C: 58              ASLB                        
-C87D: 49              ROLA                        
-C87E: 34 06           PSHS    B,A                 
-C880: E6 80           LDB     ,X+                 
-C882: 4F              CLRA                        
-C883: 58              ASLB                        
-C884: 49              ROLA                        
-C885: 58              ASLB                        
-C886: 49              ROLA                        
-C887: AB 61           ADDA    1,S                 
-C889: A7 61           STA     1,S                 
-C88B: 34 04           PSHS    B                   
-C88D: A6 A5           LDA     B,Y                 
-C88F: A4 42           ANDA    2,U                 
-C891: A7 42           STA     2,U                 
-C893: E6 62           LDB     2,S                 
-C895: A6 A5           LDA     B,Y                 
-C897: A4 41           ANDA    1,U                 
-C899: A7 41           STA     1,U                 
-C89B: E6 61           LDB     1,S                 
-C89D: A6 A5           LDA     B,Y                 
-C89F: A4 C4           ANDA    ,U                  
-C8A1: A7 C4           STA     ,U                  
-C8A3: 32 63           LEAS    3,S                 
-C8A5: 33 C8 20        LEAU    $20,U               
-C8A8: 6A E4           DEC     ,S                  
-C8AA: 26 CB           BNE     $C877               ; {}
-C8AC: 16 00 91        LBRA    $C940               ; {}
-C8AF: E6 80           LDB     ,X+                 
-C8B1: 4F              CLRA                        
-C8B2: 54              LSRB                        
-C8B3: 46              RORA                        
-C8B4: 54              LSRB                        
-C8B5: 46              RORA                        
-C8B6: 54              LSRB                        
-C8B7: 46              RORA                        
-C8B8: 54              LSRB                        
-C8B9: 46              RORA                        
-C8BA: 34 06           PSHS    B,A                 
-C8BC: E6 80           LDB     ,X+                 
-C8BE: 4F              CLRA                        
-C8BF: 54              LSRB                        
-C8C0: 46              RORA                        
-C8C1: 54              LSRB                        
-C8C2: 46              RORA                        
-C8C3: 54              LSRB                        
-C8C4: 46              RORA                        
-C8C5: 54              LSRB                        
-C8C6: 46              RORA                        
-C8C7: EB E4           ADDB    ,S                  
-C8C9: E7 E4           STB     ,S                  
-C8CB: 34 02           PSHS    A                   
-C8CD: A6 A6           LDA     A,Y                 
-C8CF: A4 42           ANDA    2,U                 
-C8D1: A7 42           STA     2,U                 
-C8D3: E6 61           LDB     1,S                 
-C8D5: A6 A5           LDA     B,Y                 
-C8D7: A4 41           ANDA    1,U                 
-C8D9: A7 41           STA     1,U                 
-C8DB: E6 62           LDB     2,S                 
-C8DD: A6 A5           LDA     B,Y                 
-C8DF: A4 C4           ANDA    ,U                  
-C8E1: A7 C4           STA     ,U                  
-C8E3: 32 63           LEAS    3,S                 
-C8E5: 33 C8 20        LEAU    $20,U               
-C8E8: 6A E4           DEC     ,S                  
-C8EA: 26 C3           BNE     $C8AF               ; {}
-C8EC: 20 52           BRA     $C940               ; {}
-C8EE: E6 80           LDB     ,X+                 
-C8F0: 4F              CLRA                        
-C8F1: 54              LSRB                        
-C8F2: 46              RORA                        
-C8F3: 54              LSRB                        
-C8F4: 46              RORA                        
-C8F5: 34 06           PSHS    B,A                 
-C8F7: E6 80           LDB     ,X+                 
-C8F9: 4F              CLRA                        
-C8FA: 54              LSRB                        
-C8FB: 46              RORA                        
-C8FC: 54              LSRB                        
-C8FD: 46              RORA                        
-C8FE: EB E4           ADDB    ,S                  
-C900: E7 E4           STB     ,S                  
-C902: 34 02           PSHS    A                   
-C904: A6 A6           LDA     A,Y                 
-C906: A4 42           ANDA    2,U                 
-C908: A7 42           STA     2,U                 
-C90A: E6 61           LDB     1,S                 
-C90C: A6 A5           LDA     B,Y                 
-C90E: A4 41           ANDA    1,U                 
-C910: A7 41           STA     1,U                 
-C912: E6 62           LDB     2,S                 
-C914: A6 A5           LDA     B,Y                 
-C916: A4 C4           ANDA    ,U                  
-C918: A7 C4           STA     ,U                  
-C91A: 32 63           LEAS    3,S                 
-C91C: 33 C8 20        LEAU    $20,U               
-C91F: 6A E4           DEC     ,S                  
-C921: 26 CB           BNE     $C8EE               ; {}
-C923: 20 1B           BRA     $C940               ; {}
-C925: EC 81           LDD     ,X++                
-C927: 34 06           PSHS    B,A                 
-C929: A6 A6           LDA     A,Y                 
-C92B: A4 C4           ANDA    ,U                  
-C92D: A7 C4           STA     ,U                  
-C92F: E6 61           LDB     1,S                 
-C931: A6 A5           LDA     B,Y                 
-C933: A4 41           ANDA    1,U                 
-C935: A7 41           STA     1,U                 
-C937: 32 62           LEAS    2,S                 
-C939: 33 C8 20        LEAU    $20,U               
-C93C: 6A E4           DEC     ,S                  
-C93E: 26 E5           BNE     $C925               ; {}
-C940: 35 54           PULS    B,X,U               
-C942: 39              RTS                         
+Erase8x8:
+; X = object pointer (has X,Y coordinate)
+; U = pointer to data (8x8 pixels = 16 bytes)
+C85B: C6 08           LDB     #$08                ; 8 rows
+C85D: 34 54           PSHS    U,X,B               ; Hold these
+C85F: 17 01 50        LBSR    $C9B2               ; {code.GetScreenAndShift} Get pointer to screen memory
+C862: 10 8E 03 80     LDY     #$0380              ; Mask table
+C866: AE 63           LDX     3,S                 ; Incoming U (data pointer) to X
+C868: 5D              TSTB                        ; 0 means ...
+C869: 10 27 00 B8     LBEQ    $C925               ; {} ... erase with no shift
+C86D: 5A              DECB                        ; 1 means ...
+C86E: 10 27 00 7C     LBEQ    $C8EE               ; {} ... one pixel shift right
+C872: 5A              DECB                        ; 2 means ...
+C873: 10 27 00 38     LBEQ    $C8AF               ; {} ... two pixel shift right
+;
+; One pixel shift left (three pixel shift right)
+C877: E6 80           LDB     ,X+                 ; First byte of pixel data
+C879: 4F              CLRA                        ; Make it a word with leading 0s
+C87A: 58              ASLB                        ; Shift ...
+C87B: 49              ROLA                        ; ... left ...
+C87C: 58              ASLB                        ; ... one ...
+C87D: 49              ROLA                        ; ... pixel
+C87E: 34 06           PSHS    B,A                 ; Hold this
+C880: E6 80           LDB     ,X+                 ; Second byte of pixel data
+C882: 4F              CLRA                        ; Make it a word with leading 0s
+C883: 58              ASLB                        ; Shift ...
+C884: 49              ROLA                        ; ... left ...
+C885: 58              ASLB                        ; ... one ...
+C886: 49              ROLA                        ; ... pixel
+C887: AB 61           ADDA    1,S                 ; Combine pixels ...
+C889: A7 61           STA     1,S                 ; ... in middle byte
+C88B: 34 04           PSHS    B                   ; Third byte
+C88D: A6 A5           LDA     B,Y                 ; Mask ...
+C88F: A4 42           ANDA    2,U                 ; ... screen ...
+C891: A7 42           STA     2,U                 ; ... to screen
+C893: E6 62           LDB     2,S                 ; 2nd byte
+C895: A6 A5           LDA     B,Y                 ; Mask ...
+C897: A4 41           ANDA    1,U                 ; ... screen ...
+C899: A7 41           STA     1,U                 ; ... to screen
+C89B: E6 61           LDB     1,S                 ; 3rd byte
+C89D: A6 A5           LDA     B,Y                 ; Mask ...
+C89F: A4 C4           ANDA    ,U                  ; ... screen ...
+C8A1: A7 C4           STA     ,U                  ; ... to screen
+C8A3: 32 63           LEAS    3,S                 ; Pull the 3-byte temporary
+C8A5: 33 C8 20        LEAU    $20,U               ; Next row
+C8A8: 6A E4           DEC     ,S                  ; All rows done?
+C8AA: 26 CB           BNE     $C877               ; {} No ... keep going
+C8AC: 16 00 91        LBRA    $C940               ; {} yest ... done
+;
+; Two pixel shift right
+C8AF: E6 80           LDB     ,X+                 ; First byte of pixel data
+C8B1: 4F              CLRA                        ; Make it a word with leading 0s
+C8B2: 54              LSRB                        ; Shift ...
+C8B3: 46              RORA                        ; ... right ...
+C8B4: 54              LSRB                        ; ... two ...
+C8B5: 46              RORA                        ; ...
+C8B6: 54              LSRB                        ; ...
+C8B7: 46              RORA                        ; ...
+C8B8: 54              LSRB                        ; ...
+C8B9: 46              RORA                        ; ... pixels
+C8BA: 34 06           PSHS    B,A                 ; Hold this
+C8BC: E6 80           LDB     ,X+                 ; Second byte of pixel data
+C8BE: 4F              CLRA                        ; Shift ...
+C8BF: 54              LSRB                        ; ... right ...
+C8C0: 46              RORA                        ; ... two
+C8C1: 54              LSRB                        ; ...
+C8C2: 46              RORA                        ; ...
+C8C3: 54              LSRB                        ; ...
+C8C4: 46              RORA                        ; ...
+C8C5: 54              LSRB                        ; ...
+C8C6: 46              RORA                        ; ... pixels
+C8C7: EB E4           ADDB    ,S                  ; Combine pixels ...
+C8C9: E7 E4           STB     ,S                  ; ... in middle byte
+C8CB: 34 02           PSHS    A                   ; Third byte
+C8CD: A6 A6           LDA     A,Y                 ; Mask ...
+C8CF: A4 42           ANDA    2,U                 ; ... screen ...
+C8D1: A7 42           STA     2,U                 ; ... to screen
+C8D3: E6 61           LDB     1,S                 ; Second byte
+C8D5: A6 A5           LDA     B,Y                 ; Mask ...
+C8D7: A4 41           ANDA    1,U                 ; ... screen ...
+C8D9: A7 41           STA     1,U                 ; ... to screen
+C8DB: E6 62           LDB     2,S                 ; Third byte
+C8DD: A6 A5           LDA     B,Y                 ; Mask ...
+C8DF: A4 C4           ANDA    ,U                  ; ... screen ...
+C8E1: A7 C4           STA     ,U                  ; ... to screen
+C8E3: 32 63           LEAS    3,S                 ; Pull the 3-byte temporary
+C8E5: 33 C8 20        LEAU    $20,U               ; Next row
+C8E8: 6A E4           DEC     ,S                  ; All rows done?
+C8EA: 26 C3           BNE     $C8AF               ; {} No ... keep going
+C8EC: 20 52           BRA     $C940               ; {} Yes ... done
+;
+; One pixel shift right
+C8EE: E6 80           LDB     ,X+                 ; First byte of pixel data
+C8F0: 4F              CLRA                        ; Make it a word with leading 0s
+C8F1: 54              LSRB                        ; Shift ...
+C8F2: 46              RORA                        ; ... right ...
+C8F3: 54              LSRB                        ; ... one ...
+C8F4: 46              RORA                        ; ... pixel
+C8F5: 34 06           PSHS    B,A                 ; Hold this
+C8F7: E6 80           LDB     ,X+                 ; Second byte of pixel data
+C8F9: 4F              CLRA                        ; Make it a word with leading 0s
+C8FA: 54              LSRB                        ; Shift ...
+C8FB: 46              RORA                        ; ... right ...
+C8FC: 54              LSRB                        ; ... one ...
+C8FD: 46              RORA                        ; ... pixel
+C8FE: EB E4           ADDB    ,S                  ; Combine pixels ...
+C900: E7 E4           STB     ,S                  ; ... in middle byte
+C902: 34 02           PSHS    A                   ; Third byte
+C904: A6 A6           LDA     A,Y                 ; Mask ...
+C906: A4 42           ANDA    2,U                 ; ... screen ...
+C908: A7 42           STA     2,U                 ; ... to screen
+C90A: E6 61           LDB     1,S                 ; 2nd byte
+C90C: A6 A5           LDA     B,Y                 ; Mask ...
+C90E: A4 41           ANDA    1,U                 ; ... screen ...
+C910: A7 41           STA     1,U                 ; ... to screen
+C912: E6 62           LDB     2,S                 ; Third byte
+C914: A6 A5           LDA     B,Y                 ; Mask ...
+C916: A4 C4           ANDA    ,U                  ; ... screen ...
+C918: A7 C4           STA     ,U                  ; ... to screen
+C91A: 32 63           LEAS    3,S                 ; Pull the 3 byte temporary
+C91C: 33 C8 20        LEAU    $20,U               ; Next row
+C91F: 6A E4           DEC     ,S                  ; All rows done?
+C921: 26 CB           BNE     $C8EE               ; {} No ... keep going
+C923: 20 1B           BRA     $C940               ; {} All done
+;
+; Erase with no shift
+C925: EC 81           LDD     ,X++                ; Pixel data
+C927: 34 06           PSHS    B,A                 ; Hold it
+C929: A6 A6           LDA     A,Y                 ; Look up mask for value
+C92B: A4 C4           ANDA    ,U                  ; Mask screen
+C92D: A7 C4           STA     ,U                  ; Back to screen
+C92F: E6 61           LDB     1,S                 ; 2nd byte
+C931: A6 A5           LDA     B,Y                 ; Look up mask for value
+C933: A4 41           ANDA    1,U                 ; Mas screen
+C935: A7 41           STA     1,U                 ; Back to screen
+C937: 32 62           LEAS    2,S                 ; Pop the temporaries
+C939: 33 C8 20        LEAU    $20,U               ; Next row
+C93C: 6A E4           DEC     ,S                  ; All rows done?
+C93E: 26 E5           BNE     $C925               ; {} No ... keep going
+C940: 35 54           PULS    B,X,U               ; Restore
+C942: 39              RTS                         ; Done
 
 PrintChars:
-C943: 8E 00 E4        LDX     #$00E4              
-C946: A7 84           STA     ,X                  
-C948: E7 02           STB     2,X                 
+; A = X coordinate
+; B = Y coordinate
+; U = text string
+C943: 8E 00 E4        LDX     #$00E4              ; Utility descriptor
+C946: A7 84           STA     ,X                  ; Set the X coordinate
+C948: E7 02           STB     2,X                 ; Set the Y coordinate
 C94A: E6 5F           LDB     -1,U                ; Characters ...
 C94C: E7 04           STB     4,X                 ; ... to print
-C94E: 17 FE 0C        LBSR    $C75D               ; {code.Draw16x8}
+C94E: 17 FE 0C        LBSR    $C75D               ; {code.Draw8x8}
 C951: 33 C8 10        LEAU    $10,U               ; Next image
 C954: A6 84           LDA     ,X                  ; X coordinate
 C956: 8B 08           ADDA    #$08                ; Next character ...
@@ -1239,149 +1355,169 @@ C95A: 6A 04           DEC     4,X                 ; All done?
 C95C: 26 F0           BNE     $C94E               ; {} No ... do all
 C95E: 39              RTS                         ; Done
 
+SetPixel:
 C95F: 17 00 50        LBSR    $C9B2               ; {code.GetScreenAndShift}
-C962: A6 C4           LDA     ,U                  
-C964: 5D              TSTB                        
-C965: 26 0A           BNE     $C971               ; {}
-C967: 84 3F           ANDA    #$3F                
-C969: 1F 89           TFR     A,B                 
-C96B: E0 C4           SUBB    ,U                  
-C96D: 8A 80           ORA     #$80                
-C96F: 20 22           BRA     $C993               ; {}
-C971: 5A              DECB                        
-C972: 26 0A           BNE     $C97E               ; {}
-C974: 84 CF           ANDA    #$CF                
-C976: 1F 89           TFR     A,B                 
-C978: E0 C4           SUBB    ,U                  
-C97A: 8A 20           ORA     #$20                
-C97C: 20 15           BRA     $C993               ; {}
-C97E: 5A              DECB                        
-C97F: 26 0A           BNE     $C98B               ; {}
-C981: 84 F3           ANDA    #$F3                
-C983: 1F 89           TFR     A,B                 
-C985: E0 C4           SUBB    ,U                  
-C987: 8A 08           ORA     #$08                
-C989: 20 08           BRA     $C993               ; {}
-C98B: 84 FC           ANDA    #$FC                
-C98D: 1F 89           TFR     A,B                 
-C98F: E0 C4           SUBB    ,U                  
-C991: 8A 02           ORA     #$02                
-C993: A7 C4           STA     ,U                  
-C995: 39              RTS                         
-C996: A6 C4           LDA     ,U                  
-C998: 5D              TSTB                        
-C999: 26 04           BNE     $C99F               ; {}
-C99B: 84 3F           ANDA    #$3F                
-C99D: 20 10           BRA     $C9AF               ; {}
-C99F: 5A              DECB                        
-C9A0: 26 04           BNE     $C9A6               ; {}
-C9A2: 84 CF           ANDA    #$CF                
-C9A4: 20 09           BRA     $C9AF               ; {}
-C9A6: 5A              DECB                        
-C9A7: 26 04           BNE     $C9AD               ; {}
-C9A9: 84 F3           ANDA    #$F3                
-C9AB: 20 02           BRA     $C9AF               ; {}
-C9AD: 84 FC           ANDA    #$FC                
-C9AF: A7 C4           STA     ,U                  
-C9B1: 39              RTS                         
+C962: A6 C4           LDA     ,U                  ; Value from screen
+C964: 5D              TSTB                        ; Shift 0 means ...
+C965: 26 0A           BNE     $C971               ; {} ... upper pixel
+C967: 84 3F           ANDA    #$3F                ; Mask off upper pixel ..111111
+C969: 1F 89           TFR     A,B                 ; Return the bits ... ?? used by the caller at C3BF
+C96B: E0 C4           SUBB    ,U                  ; ... we removed
+C96D: 8A 80           ORA     #$80                ; OR in the upper pixel
+C96F: 20 22           BRA     $C993               ; {} Set and done
+;
+C971: 5A              DECB                        ; Shift 1 means ...
+C972: 26 0A           BNE     $C97E               ; {} ... 2nd pixel
+C974: 84 CF           ANDA    #$CF                ; Mask off the 2nd pixel 11..1111
+C976: 1F 89           TFR     A,B                 ; Return the bits ...
+C978: E0 C4           SUBB    ,U                  ; ... we removed
+C97A: 8A 20           ORA     #$20                ; OR in the 2nd pixel
+C97C: 20 15           BRA     $C993               ; {} Set and done
+;
+C97E: 5A              DECB                        ; Shift 2 means ...
+C97F: 26 0A           BNE     $C98B               ; {} ... 3rd pixel
+C981: 84 F3           ANDA    #$F3                ; Mask off the 3rd pixel 1111..11
+C983: 1F 89           TFR     A,B                 ; Return the bits ...
+C985: E0 C4           SUBB    ,U                  ; ... we removed
+C987: 8A 08           ORA     #$08                ; OR in the 3rd pixel
+C989: 20 08           BRA     $C993               ; {} Set and done
+;
+C98B: 84 FC           ANDA    #$FC                ; Mask off the last pixel 111111..
+C98D: 1F 89           TFR     A,B                 ; Return the bits ...
+C98F: E0 C4           SUBB    ,U                  ; ... we removed
+C991: 8A 02           ORA     #$02                ; OR in the last pixel
+;
+C993: A7 C4           STA     ,U                  ; Store pixel to screen
+C995: 39              RTS                         ; Done
+
+ErasePixel:
+; U = pointer to screen memory
+C996: A6 C4           LDA     ,U                  ; Value from the screen
+C998: 5D              TSTB                        ; Pixel shift value
+C999: 26 04           BNE     $C99F               ; {} Not 0 (left most pixel) ... try others
+C99B: 84 3F           ANDA    #$3F                ; Mask off the left most pixel ..111111
+C99D: 20 10           BRA     $C9AF               ; {} Clear the pixel
+C99F: 5A              DECB                        ; Is this the 2nd pixel?
+C9A0: 26 04           BNE     $C9A6               ; {} No ... try the 3rd
+C9A2: 84 CF           ANDA    #$CF                ; Mask off the 2nd pixel 11..1111
+C9A4: 20 09           BRA     $C9AF               ; {} Clear the pixel
+C9A6: 5A              DECB                        ; Is this the 3rd pixel?
+C9A7: 26 04           BNE     $C9AD               ; {} No ... must be the 4th
+C9A9: 84 F3           ANDA    #$F3                ; Mask off the 3rd pixel 1111..11
+C9AB: 20 02           BRA     $C9AF               ; {} Clear the pixel
+C9AD: 84 FC           ANDA    #$FC                ; Mask off the 4th pixel 111111..
+C9AF: A7 C4           STA     ,U                  ; Clear the pixel on the screen
+C9B1: 39              RTS                         ; Done
    
 GetScreenAndShift:
+; Ultimately, the equation for screen pointer is: Y*32 + X/4.
+; This code cleverly does:
+;     (Y*256 + X*2) / 8 = 
+;     (Y*128 + X) / 4 = 
+;     Y*32 + X/4
 ; Input: X pointer to object structure
 ; Mangle: A, Y
 ; Return: U screen pointer
 ; Return: B shift amount
-C9B2: E6 84           LDB     ,X                  ; ?? Something to do with screen coords X coordinate?
-C9B4: A6 02           LDA     2,X                 ; ?? Y coordinate?
-C9B6: 58              ASLB                        ; ?? X times 2
-C9B7: 47              ASRA                        ; Divide by ...
-C9B8: 56              RORB                        ; ?? 8
-C9B9: 47              ASRA                        
-C9BA: 56              RORB                        
-C9BB: 47              ASRA                        
-C9BC: 56              RORB                        
+C9B2: E6 84           LDB     ,X                  ; The object's X coordinate
+C9B4: A6 02           LDA     2,X                 ; The object's Y coordinate
+C9B6: 58              ASLB                        ; D = Y*256 + X*2
+C9B7: 47              ASRA                        ; Divide ...
+C9B8: 56              RORB                        ; ...
+C9B9: 47              ASRA                        ; ...
+C9BA: 56              RORB                        ; ...
+C9BB: 47              ASRA                        ; ...
+C9BC: 56              RORB                        ; ... eight
 C9BD: 10 8E 04 00     LDY     #$0400              ; Start of screen memory
-C9C1: 33 AB           LEAU    D,Y                 ; Point to screen memory
+C9C1: 33 AB           LEAU    D,Y                 ; Point into screen memory
 C9C3: E6 84           LDB     ,X                  ; X coordinate
 C9C5: C4 03           ANDB    #$03                ; 4 pixels per byte ... 4 possible shifts
-C9C7: 39              RTS                         
+C9C7: 39              RTS                         ; Done
 
-C9C8: E6 04           LDB     4,X                 
-C9CA: 1D              SEX                         
-C9CB: 58              ASLB                        
-C9CC: 49              ROLA                        
-C9CD: 58              ASLB                        
-C9CE: 49              ROLA                        
-C9CF: 58              ASLB                        
-C9D0: 49              ROLA                        
-C9D1: E3 84           ADDD    ,X                  
-C9D3: 80 03           SUBA    #$03                
-C9D5: 81 7B           CMPA    #$7B                
-C9D7: 25 07           BLO     $C9E0               ; {}
-C9D9: 86 7A           LDA     #$7A                
-C9DB: 6D 04           TST     4,X                 
-C9DD: 2A 01           BPL     $C9E0               ; {}
-C9DF: 4F              CLRA                        
-C9E0: 8B 03           ADDA    #$03                
-C9E2: ED 84           STD     ,X                  
-C9E4: E6 05           LDB     5,X                 
-C9E6: 1D              SEX                         
-C9E7: 58              ASLB                        
-C9E8: 58              ASLB                        
-C9E9: 58              ASLB                        
-C9EA: 49              ROLA                        
-C9EB: E3 02           ADDD    2,X                 
-C9ED: 80 03           SUBA    #$03                
-C9EF: 81 53           CMPA    #$53                
-C9F1: 25 07           BLO     $C9FA               ; {}
-C9F3: 86 52           LDA     #$52                
-C9F5: 6D 05           TST     5,X                 
-C9F7: 2A 01           BPL     $C9FA               ; {}
-C9F9: 4F              CLRA                        
-C9FA: 8B 03           ADDA    #$03                
-C9FC: ED 02           STD     2,X                 
-C9FE: 39              RTS                         
-C9FF: A7 04           STA     4,X                 
-CA01: E7 05           STB     5,X                 
-CA03: CE 00 D8        LDU     #$00D8              
-CA06: A6 84           LDA     ,X                  
-CA08: 8B 04           ADDA    #$04                
-CA0A: A7 84           STA     ,X                  
-CA0C: A0 C4           SUBA    ,U                  
-CA0E: 2B 07           BMI     $CA17               ; {}
-CA10: 60 04           NEG     4,X                 
-CA12: 4D              TSTA                        
-CA13: 26 02           BNE     $CA17               ; {}
-CA15: 6F 04           CLR     4,X                 
-CA17: E6 04           LDB     4,X                 
-CA19: A6 02           LDA     2,X                 
-CA1B: 8B 04           ADDA    #$04                
-CA1D: A7 02           STA     2,X                 
-CA1F: A0 42           SUBA    2,U                 
-CA21: 2B 07           BMI     $CA2A               ; {}
-CA23: 60 05           NEG     5,X                 
-CA25: 4D              TSTA                        
-CA26: 26 02           BNE     $CA2A               ; {}
-CA28: 6F 05           CLR     5,X                 
-CA2A: 17 FF 9B        LBSR    $C9C8               ; {}
-CA2D: A6 84           LDA     ,X                  
-CA2F: 80 04           SUBA    #$04                
-CA31: 81 03           CMPA    #$03                
-CA33: 2C 02           BGE     $CA37               ; {}
-CA35: 86 03           LDA     #$03                
-CA37: 81 76           CMPA    #$76                
-CA39: 2F 02           BLE     $CA3D               ; {}
-CA3B: 86 76           LDA     #$76                
-CA3D: A7 84           STA     ,X                  
-CA3F: A6 02           LDA     2,X                 
-CA41: 80 04           SUBA    #$04                
-CA43: 81 03           CMPA    #$03                
-CA45: 2C 02           BGE     $CA49               ; {}
-CA47: 86 03           LDA     #$03                
-CA49: 81 4E           CMPA    #$4E                
-CA4B: 2F 02           BLE     $CA4F               ; {}
-CA4D: 86 4E           LDA     #$4E                
-CA4F: A7 02           STA     2,X                 
-CA51: 39              RTS                         
+MoveObject:
+; coordinates = coordinates + 8 * delta (with limits)
+C9C8: E6 04           LDB     4,X                 ; Word ...
+C9CA: 1D              SEX                         ; ... deltaX
+C9CB: 58              ASLB                        ; Multiply ...
+C9CC: 49              ROLA                        ; ...
+C9CD: 58              ASLB                        ; ...
+C9CE: 49              ROLA                        ; ... deltaX ...
+C9CF: 58              ASLB                        ; ...
+C9D0: 49              ROLA                        ; ... by 8
+C9D1: E3 84           ADDD    ,X                  ; Add to the 2-byte X coordiante
+C9D3: 80 03           SUBA    #$03                ; Temporarily translate for contraining
+C9D5: 81 7B           CMPA    #$7B                ; X coordinate too high?
+C9D7: 25 07           BLO     $C9E0               ; {} No ... keep it
+C9D9: 86 7A           LDA     #$7A                ; Yes ... constrain it
+C9DB: 6D 04           TST     4,X                 ; X coordinate too low?
+C9DD: 2A 01           BPL     $C9E0               ; {} No ... keep it
+C9DF: 4F              CLRA                        ; Yes ... constrain it
+C9E0: 8B 03           ADDA    #$03                ; Translate back to the right
+C9E2: ED 84           STD     ,X                  ; Store X coordinate (integer and fractional)
+C9E4: E6 05           LDB     5,X                 ; Word ...
+C9E6: 1D              SEX                         ; ... deltaY
+C9E7: 58              ASLB                        ; Multiply ...
+C9E8: 58              ASLB                        ; ...
+C9E9: 58              ASLB                        ; ... ?? why no ROLA
+C9EA: 49              ROLA                        ; ... by 8
+C9EB: E3 02           ADDD    2,X                 ; Add to the 2-byte Y coordinate
+C9ED: 80 03           SUBA    #$03                ; Temporarily translate for constraining
+C9EF: 81 53           CMPA    #$53                ; Y coordinate too high?
+C9F1: 25 07           BLO     $C9FA               ; {} No ... keep it
+C9F3: 86 52           LDA     #$52                ; Yes ... constrain it
+C9F5: 6D 05           TST     5,X                 ; Y coordinate too low?
+C9F7: 2A 01           BPL     $C9FA               ; {} No ... keep it
+C9F9: 4F              CLRA                        ; Yes ... constrain it
+C9FA: 8B 03           ADDA    #$03                ; Translate back down
+C9FC: ED 02           STD     2,X                 ; Store Y coordinate (integer and fractional)
+C9FE: 39              RTS                         ; Done
+
+FollowPlayer:
+; X = object to move
+C9FF: A7 04           STA     4,X                 ; Store the deltaX ...
+CA01: E7 05           STB     5,X                 ; ... and deltaY
+CA03: CE 00 D8        LDU     #$00D8              ; Player object to U
+CA06: A6 84           LDA     ,X                  ; Objects are 8 pixels wide. Get ...
+CA08: 8B 04           ADDA    #$04                ; ... the center X of the object
+CA0A: A7 84           STA     ,X                  ; Update coordinate
+CA0C: A0 C4           SUBA    ,U                  ; Compare object X to player X
+CA0E: 2B 07           BMI     $CA17               ; {} Object X is less ... keep deltaX
+CA10: 60 04           NEG     4,X                 ; Reverse direction on deltaX
+CA12: 4D              TSTA                        ; Are the coordinates the same?
+CA13: 26 02           BNE     $CA17               ; {} No ... keep this
+CA15: 6F 04           CLR     4,X                 ; Yes ... no movement on X axis
+;
+CA17: E6 04           LDB     4,X                 ; DeltaX to B
+CA19: A6 02           LDA     2,X                 ; Objects are 8 pixels tall. Get ...
+CA1B: 8B 04           ADDA    #$04                ; ... the center Y of the object
+CA1D: A7 02           STA     2,X                 ; Update coordinate
+CA1F: A0 42           SUBA    2,U                 ; Compare object Y to player Y
+CA21: 2B 07           BMI     $CA2A               ; {} Object Y is less ... keep deltaY
+CA23: 60 05           NEG     5,X                 ; Reverse direction on deltaY
+CA25: 4D              TSTA                        ; Are the coordinates the same?
+CA26: 26 02           BNE     $CA2A               ; {} No ... keep this
+CA28: 6F 05           CLR     5,X                 ; Yes ... no movement on Y axis
+;
+CA2A: 17 FF 9B        LBSR    $C9C8               ; {code.MoveObject} Move the object towards the player
+CA2D: A6 84           LDA     ,X                  ; X coordinate
+CA2F: 80 04           SUBA    #$04                ; Translate back to upper left corner
+CA31: 81 03           CMPA    #$03                ; Is coordinate too small?
+CA33: 2C 02           BGE     $CA37               ; {} No ... keep it.
+CA35: 86 03           LDA     #$03                ; Yes ... constrain to X>=3
+CA37: 81 76           CMPA    #$76                ; Is coordinate too big?
+CA39: 2F 02           BLE     $CA3D               ; {} No ... keep it
+CA3B: 86 76           LDA     #$76                ; Yes ... constrain to X<=118
+CA3D: A7 84           STA     ,X                  ; Update the object's X coordiante
+CA3F: A6 02           LDA     2,X                 ; Get the Y coordinate
+CA41: 80 04           SUBA    #$04                ; Translate back to the upper left corner
+CA43: 81 03           CMPA    #$03                ; Is coordinate too small?
+CA45: 2C 02           BGE     $CA49               ; {} No ... keep it.
+CA47: 86 03           LDA     #$03                ; Yes ... constrain to Y>=3
+CA49: 81 4E           CMPA    #$4E                ; Is coordinate too big?
+CA4B: 2F 02           BLE     $CA4F               ; {} No ... keep it
+CA4D: 86 4E           LDA     #$4E                ; Yes ... constrain to Y<=78
+CA4F: A7 02           STA     2,X                 ; Update the object's Y coordinate
+CA51: 39              RTS                         ; Done
 
 ClearScreen:
 CA52: 5F              CLRB                        ; Clear value is black
@@ -1409,39 +1545,40 @@ CA7A: 4A              DECA                        ; Do ...
 CA7B: 26 EE           BNE     $CA6B               ; {} ... all rows
 CA7D: 39              RTS                         ; Done
 
-CA7E: 7F FF 20        CLR     $FF20               ; {hard.PIA1_DA}
-CA81: BD A9 76        JSR     $A976               
+PlaySong:
+CA7E: 7F FF 20        CLR     $FF20               ; {hard.PIA1_DA} D/A to 0
+CA81: BD A9 76        JSR     $A976               ; Enable analog mux
 CA84: 17 00 39        LBSR    $CAC0               ; {code.CheckForBreak}
-CA87: EC C1           LDD     ,U++                
-CA89: 27 34           BEQ     $CABF               ; {}
-CA8B: 34 06           PSHS    B,A                 
+CA87: EC C1           LDD     ,U++                ; Get next data
+CA89: 27 34           BEQ     $CABF               ; {} No more ... done
+CA8B: 34 06           PSHS    B,A                 ; 
 CA8D: 1F 98           TFR     B,A                 
-CA8F: 4A              DECA                        
-CA90: 1E 11           EXG     X,X                 
-CA92: 1E 11           EXG     X,X                 
-CA94: 1E 11           EXG     X,X                 
-CA96: 1E 11           EXG     X,X                 
-CA98: 26 F5           BNE     $CA8F               ; {}
-CA9A: 86 3C           LDA     #$3C                
-CA9C: B7 FF 20        STA     $FF20               ; {hard.PIA1_DA}
+CA8F: 4A              DECA                        ; Delay amount
+CA90: 1E 11           EXG     X,X                 ; Small ...
+CA92: 1E 11           EXG     X,X                 ; ...
+CA94: 1E 11           EXG     X,X                 ; ...
+CA96: 1E 11           EXG     X,X                 ; ... delay
+CA98: 26 F5           BNE     $CA8F               ; {} Finish the delay
+CA9A: 86 3C           LDA     #$3C                ; 6 bit D/A to ...
+CA9C: B7 FF 20        STA     $FF20               ; {hard.PIA1_DA} ... 111100
 CA9F: 1F 98           TFR     B,A                 
 CAA1: A0 61           SUBA    1,S                 
 CAA3: 43              COMA                        
-CAA4: 4A              DECA                        
-CAA5: 1E 11           EXG     X,X                 
-CAA7: 1E 11           EXG     X,X                 
-CAA9: 1E 11           EXG     X,X                 
-CAAB: 1E 11           EXG     X,X                 
-CAAD: 26 F5           BNE     $CAA4               ; {}
-CAAF: 7F FF 20        CLR     $FF20               ; {hard.PIA1_DA}
+CAA4: 4A              DECA                        ; Delay amount
+CAA5: 1E 11           EXG     X,X                 ; Small ...
+CAA7: 1E 11           EXG     X,X                 ; ...
+CAA9: 1E 11           EXG     X,X                 ; ...
+CAAB: 1E 11           EXG     X,X                 ; ... delay
+CAAD: 26 F5           BNE     $CAA4               ; {} Finish the delay
+CAAF: 7F FF 20        CLR     $FF20               ; {hard.PIA1_DA} D/A to 0
 CAB2: 5A              DECB                        
 CAB3: 26 02           BNE     $CAB7               ; {}
 CAB5: E6 61           LDB     1,S                 
 CAB7: 6A E4           DEC     ,S                  
 CAB9: 26 D2           BNE     $CA8D               ; {}
 CABB: 35 06           PULS    A,B                 
-CABD: 20 BF           BRA     $CA7E               ; {}
-CABF: 39              RTS                         
+CABD: 20 BF           BRA     $CA7E               ; {code.PlaySong} Play until end
+CABF: 39              RTS                         ; Done
 
 CheckForBreak:
 CAC0: C6 FB           LDB     #$FB                ; All high but ...
@@ -1487,6 +1624,8 @@ ImageApple:
 <canvas width="138" height="138"
   data-canvasFunction="TileEngine.handleTileCanvas"
   data-getTileDataFunction="Doubleback.get8x8Tile"
+  data-gridY="8"
+  data-gridX="8"
   data-colors='["#000000","#FF0000","#0000FF","#FFFFFF"]'
   data-address="CAFA"
   data-labelColor=""
@@ -1641,7 +1780,7 @@ CB94: AA A8 ; 2222222.
 CB96: 2A A0 ; .22222..
 CB98: 0A 80 ; ..222...
 
-; ???
+StringEraser:
 CB9A: 00 30 ; .....3..
 CB9C: 00 30 ; .....3..
 CB9E: 00 30 ; .....3..
@@ -1786,7 +1925,7 @@ CC26: 00 00 ; ........
 CC28: 00 00 ; ........
 
 CC2A: 02 ; 2 tiles
-StrWhiteBlock:
+GenericEraser:
 ; 3333333333333333
 ; 3333333333333333
 ; 3333333333333333
@@ -1860,7 +1999,16 @@ CC74: 40 10 ; 1....1..
 CC76: 14 10 ; .11..1..
 CC78: 00 00 ; ........
 CC7A: 00 00 ; ........
+```
 
+```html
+<canvas width="260" height="140"
+  data-address="CC7D"
+  data-command="0,1">
+</canvas>
+```
+
+```code
 CC7C: 02 ; 2 tiles
 StrOne:
 ; ................
@@ -1889,7 +2037,16 @@ CC95: 04 40 ; ..1.1...
 CC97: 04 14 ; ..1..11.
 CC99: 00 00 ; ........
 CC9B: 00 00 ; ........
+```
 
+```html
+<canvas width="260" height="140"
+  data-address="CC9E"
+  data-command="0,1">
+</canvas>
+```
+
+```code
 CC9D: 02 ; 2 tiles
 StrTwo:
 ; ................
@@ -1918,7 +2075,16 @@ CCB6: 44 10 ; 1.1..1..
 CCB8: 41 40 ; 1..11...
 CCBA: 00 00 ; ........
 CCBC: 00 00 ; ........
+```
 
+```html
+<canvas width="620" height="140"
+  data-address="CCBF"
+  data-command="0,1,2,3,4">
+</canvas>
+```
+
+```code
 CCBE: 05 ; 5 tiles
 StrGameOver:
 ; ..33333333333333333333333333333333333...
@@ -1974,8 +2140,17 @@ CD07: FF BC ; 3333233.
 CD09: AF BC ; 2233233.
 CD0B: FF F0 ; 333333..
 CD0D: FF C0 ; 33333...
+```
 
-CD0F: 06 
+```html
+<canvas width="740" height="140"
+  data-address="CD10"
+  data-command="0,1,2,3,4,5">
+</canvas>
+```
+
+```code
+CD0F: 06 ; Six tiles
 Str1or2Players:
 ;. 3...........33.........1.......................
 ; 33..111.11..3..3...111..1.......................
@@ -2039,6 +2214,16 @@ CD68: 40 14 ; 1....11.
 CD6A: 40 50 ; 1...11..
 CD6C: 00 00 ; ........
 CD6E: 00 00 ; ........
+```
+
+```html
+<canvas width="1217" height="380"
+  data-address="CD71"
+  data-command=":10x3:,0,,,,,,,,,@CD82,0,1,2,3,4,5,6,7,8,9,@CE23,0,1,2,3,4,5,6,7,8,9">
+</canvas>
+```
+
+```code
 
 ; Copyright message in 3 lines of tiles
 ;         ........
@@ -2278,160 +2463,159 @@ CEBB: A0 00 ; 22......
 CEBD: 88 00 ; 2.2.....
 CEBF: 88 00 ; 2.2.....
 CEC1: A0 00 ; 22......
+```
 
-CEC3: 6D B6           TST     [A,Y]               
-CEC5: 27 6D           BEQ     $CF34               ; {}
-CEC7: 12              NOP                         
-CEC8: 52 ; ????
-CEC9: 12              NOP                         
-CECA: 49              ROLA                        
-CECB: 5A              DECB                        
-CECC: 49              ROLA                        
-CECD: 5B ; ????
-CECE: 6D 29           TST     9,Y                 
-CED0: 25 12           BLO     $CEE4               ; {}
-CED2: 4A              DECA                        
-CED3: 5D              TSTB                        
-CED4: 92 24           SBCA    $24                 
-CED6: E5 30           BITB    -16,Y               
-CED8: 09 52           ROL     $52                 
-CEDA: 53              COMB                        
-CEDB: 24 E5           BHS     $CEC2               ; {}
-CEDD: 52 ; ????
-CEDE: 49              ROLA                        
-CEDF: 24 ED           BHS     $CECE               ; {}
-CEE1: 12              NOP                         
-CEE2: 52 ; ????
-CEE3: 10 ; ????
-CEE4: 49              ROLA                        
-CEE5: 5C              INCB                        
-CEE6: 00 4B           NEG     $4B                 
-CEE8: 2D 39           BLT     $CF23               ; {}
-CEEA: 25 70           BLO     $CF5C               ; {}
-CEEC: 52 ; ????
-CEED: 24 93           BHS     $CE82               ; {}
-CEEF: 02 ; ????
-CEF0: 49              ROLA                        
-CEF1: 60 01           NEG     1,X                 
-CEF3: 59              ROLB                        
-CEF4: 6D 49           TST     9,U                 
-CEF6: 2C 24           BGE     $CF1C               ; {}
-CEF8: 93 02           SUBD    $02                 
-CEFA: 4A              DECA                        
-CEFB: 49              ROLA                        
-CEFC: 76 24 93        ROR     $2493               
-CEFF: 12              NOP                         
-CF00: 92 02           SBCA    $02                 
-CF02: 49              ROLA                        
-CF03: 60 01           NEG     1,X                 
-CF05: 59              ROLB                        
-CF06: 6D 49           TST     9,U                 
-CF08: 2C 02           BGE     $CF0C               ; {}
-CF0A: 93 14           SUBD    $14                 
-CF0C: 9F 64           STX     $64                 
-CF0E: 8A 39           ORA     #$39                
-CF10: 6E 40           JMP     0,U                 
-CF12: 4A              DECA                        
-CF13: 14 ; ????
-CF14: 9D 24           JSR     $24                 
-CF16: 49              ROLA                        
-CF17: 6D ; ????
-CF18: DA 39           ORB     $39                 
-CF1A: 2E 24           BGT     $CF40               ; {}
-CF1C: 92 12           SBCA    $12                 
-CF1E: 49              ROLA                        
-CF1F: 00 41           NEG     $41                 
-CF21: 5B ; ????
-CF22: 70 4B 2C        NEG     $4B2C               
-CF25: 24 4C           BHS     $CF73               ; {}
-CF27: 37 AB           PULU    CC,A,DP,Y,PC        
-CF29: 12              NOP                         
-CF2A: 52 ; ????
-CF2B: 00 00           NEG     $00                 
-CF2D: 00 FF           NEG     $FF                 
-CF2F: 01 ; ????
-CF30: FF 01 00        STU     $0100               
-CF33: 01 ; ????
-CF34: 01 ; ????
-CF35: 00 01           NEG     $01                 
-CF37: FF 01 FF        STU     $01FF               
-CF3A: 00 FF           NEG     $FF                 
-CF3C: FF 28 80        STU     $2880               
-CF3F: 40              NEGA                        
-CF40: 40              NEGA                        
-CF41: 28 80           BVC     $CEC3               ; {}
-CF43: 40              NEGA                        
-CF44: 40              NEGA                        
-CF45: 28 80           BVC     $CEC7               ; {}
-CF47: 40              NEGA                        
-CF48: 40              NEGA                        
-CF49: 28 80           BVC     $CECB               ; {}
-CF4B: 40              NEGA                        
-CF4C: 40              NEGA                        
-CF4D: 19              DAA                         
-CF4E: 5F              CLRB                        
-CF4F: 19              DAA                         
-CF50: 64 19           LSR     -7,X                
-CF52: 5F              CLRB                        
-CF53: 1A 55           ORCC    #$55                
-CF55: 1C 4B           ANDCC   #$4B                
-CF57: 1C 55           ANDCC   #$55                
-CF59: 1C 4B           ANDCC   #$4B                
-CF5B: 1C 43           ANDCC   #$43                
-CF5D: 40              NEGA                        
-CF5E: 40              NEGA                        
-CF5F: 00 00           NEG     $00                 
-CF61: 28 80           BVC     $CEE3               ; {}
-CF63: 40              NEGA                        
-CF64: 40              NEGA                        
-CF65: 40              NEGA                        
-CF66: 43              COMA                        
-CF67: 40              NEGA                        
-CF68: 40              NEGA                        
-CF69: 37 5F           PULU    CC,A,B,DP,X,S       
-CF6B: 37 4B           PULU    CC,A,DP,S           
-CF6D: 37 55           PULU    CC,B,X,S            
-CF6F: 37 4B           PULU    CC,A,DP,S           
-CF71: 19              DAA                         
-CF72: 5F              CLRB                        
-CF73: 19              DAA                         
-CF74: 64 19           LSR     -7,X                
-CF76: 5F              CLRB                        
-CF77: 1A 55           ORCC    #$55                
-CF79: 1C 4B           ANDCC   #$4B                
-CF7B: 1C 55           ANDCC   #$55                
-CF7D: 1C 4B           ANDCC   #$4B                
-CF7F: 1C 43           ANDCC   #$43                
-CF81: 40              NEGA                        
-CF82: 40              NEGA                        
-CF83: 00 00           NEG     $00                 
-CF85: 28 80           BVC     $CF07               ; {}
-CF87: 40              NEGA                        
-CF88: 40              NEGA                        
-CF89: 40              NEGA                        
-CF8A: 43              COMA                        
-CF8B: 3C 4B           CWAI    $4B                 
-CF8D: 39              RTS                         
-CF8E: 55 ; ????
-CF8F: 37 5F           PULU    CC,A,B,DP,X,S       
-CF91: 37 64           PULU    B,Y,S               
-CF93: 37 5F           PULU    CC,A,B,DP,X,S       
-CF95: 39              RTS                         
-CF96: 55 ; ????
-CF97: 3C 4B           CWAI    $4B                 
-CF99: 40              NEGA                        
-CF9A: 43              COMA                        
-CF9B: 39              RTS                         
-CF9C: 55 ; ????
-CF9D: 40              NEGA                        
-CF9E: 40              NEGA                        
-CF9F: 00 00           NEG     $00                 
-CFA1: 14 ; ????
-CFA2: 1E 00           EXG     D,D                 
-CFA4: 00 FF           NEG     $FF                 
-CFA6: FF 00 00        STU     $0000               
+```html
+<canvas id="cursiveArea" width="640" height="304" style="border: 1px solid black">
+</canvas><br>
+<button class="btn btn-primary" style="margin-top:8px" onclick="Doubleback.slowCursive()">Slow</button>
+<button class="btn btn-primary" style="margin-top:8px" onclick="Doubleback.stepCursive()">Step</button>
+```
 
-CFA9: 00 07 0A 0F 14 19 1E 32 00 64                  
+```code
+; Cursive "doubleback" data. Each 2 bytes holds 5 directional data points.
+; The upper bit is unused.
+CEC3: 6D B6   ; 0 110 110 110 110 110    W  W  W  W  W
+CEC5: 27 6D   ; 0 010 011 101 101 101   SW SW SW SE  E
+CEC7: 12 52   ; 0 001 001 001 010 010    E  E NE NE NE
+CEC9: 12 49   ; 0 001 001 001 001 001   NE NE NE NE NE
+CECB: 5A 49   ; 0 101 101 001 001 001   NE NE NE SW SW
+CECD: 5B 6D   ; 0 101 101 101 101 101   SW SW SW SW SW
+CECF: 29 25   ; 0 010 100 100 100 101   SW  S  S  S  E
+CED1: 12 4A   ; 0 001 001 001 001 010    E NE NE NE NE
+CED3: 5D 92   ; 0 101 110 110 010 010    E  E  W  W SW
+CED5: 24 E5   ; 0 010 010 011 100 101   SW  S SE  E  E
+CED7: 30 09   ; 0 011 000 000 001 001   NE NE  N  N SE
+CED9: 52 53   ; 0 101 001 001 010 011   SE  E NE NE SW
+CEDB: 24 E5   ; 0 010 010 011 100 101   SW  S SE  E  E
+CEDD: 52 49   ; 0 101 001 001 001 001   NE NE NE NE SW
+CEDF: 24 ED   ; 0 010 010 011 101 101   SW SW SE  E  E
+CEE1: 12 52   ; 0 001 001 001 010 010    E  E NE NE NE
+CEE3: 10 49   ; 0 001 000 001 001 001   NE NE NE  N NE
+CEE5: 5C 00   ; 0 101 110 000 000 000    N  N  N  W SW
+CEE7: 4B 2D   ; 0 100 101 100 101 101   SW SW  S SW  S
+CEE9: 39 25   ; 0 011 100 100 100 101   SW  S  S  S SE
+CEEB: 70 52   ; 0 111 000 001 010 010    E  E NE  N NW
+CEED: 24 93   ; 0 010 010 010 010 011   SE  E  E  E  E
+CEEF: 02 49   ; 0 000 001 001 001 001   NE NE NE NE  N
+CEF1: 60 01   ; 0 110 000 000 000 001   NE  N  N  N  W
+CEF3: 59 6D   ; 0 101 100 101 101 101   SW SW SW  S SW
+CEF5: 49 2C   ; 0 100 100 100 101 100    S SW  S  S  S
+CEF7: 24 93   ; 0 010 010 010 010 011   SE  E  E  E  E
+CEF9: 02 4A   ; 0 000 001 001 001 010    E NE NE NE  N
+CEFB: 49 76   ; 0 100 100 101 110 110    W  W SW  S  S
+CEFD: 24 93   ; 0 010 010 010 010 011   SE  E  E  E  E
+CEFF: 12 92   ; 0 001 001 010 010 010    E  E  E NE NE
+CF01: 02 49   ; 0 000 001 001 001 001   NE NE NE NE  N
+CF03: 60 01   ; 0 110 000 000 000 001   NE  N  N  N  W
+CF05: 59 6D   ; 0 101 100 101 101 101   SW SW SW  S SW
+CF07: 49 2C   ; 0 100 100 100 101 100    S SW  S  S  S
+CF09: 02 93   ; 0 000 001 010 010 011   SE  E  E NE  N
+CF0B: 14 9F   ; 0 001 010 010 011 111   NW SE  E  E NE
+CF0D: 64 8A   ; 0 110 010 010 001 010    E NE  E  E  W
+CF0F: 39 6E   ; 0 011 100 101 101 110    W SW SW  S SE
+CF11: 40 4A   ; 0 100 000 001 001 010    E NE NE  N  S
+CF13: 14 9D   ; 0 001 010 010 011 101   SW SE  E  E NE
+CF15: 24 49   ; 0 010 010 001 001 001   NE NE NE  E  E
+CF17: 6D DA   ; 0 110 110 111 011 010    E SE NW  W  W
+CF19: 39 2E   ; 0 011 100 100 101 110    W SW  S  S SE
+CF1B: 24 92   ; 0 010 010 010 010 010    E  E  E  E  E
+CF1D: 12 49   ; 0 001 001 001 001 001   NE NE NE NE NE
+CF1F: 00 41   ; 0 000 000 001 000 001   NE  N NE  N  N
+CF21: 5B 70   ; 0 101 101 101 110 000    N  W SW SW SW
+CF23: 4B 2C   ; 0 100 101 100 101 100    S SW  S SW  S
+CF25: 24 4C   ; 0 010 010 001 001 100    S NE NE  E  E
+CF27: 37 AB   ; 0 011 011 110 101 011   SE SW  W SE SE
+CF29: 12 52   ; 0 001 001 001 010 010    E  E NE NE NE
+CF2B: 00 00   ; END       
+
+DirTable:
+; These are X/Y offsets for each 8 directions
+CF2D: 00 FF  ; 0 N
+CF2F: 01 FF  ; 1 NE
+CF31: 01 00  ; 2 E
+CF33: 01 01  ; 3 SE
+CF35: 00 01  ; 4 S
+CF37: FF 01  ; 5 SW
+CF39: FF 00  ; 6 W
+CF3B: FF FF  ; 7 NW
+
+MusicFirstLife:
+CF3D: 28 80                
+CF3F: 40 40                              
+CF41: 28 80          
+CF43: 40 40                                  
+CF45: 28 80          
+CF47: 40 40                               
+CF49: 28 80          
+CF4B: 40 40                                   
+CF4D: 19 5F                                 
+CF4F: 19 64 
+CF51: 19 5F                                  
+CF53: 1A 55                        
+CF55: 1C 4B                        
+CF57: 1C 55                         
+CF59: 1C 4B                        
+CF5B: 1C 43                       
+CF5D: 40 40                                 
+CF5F: 00 00          
+
+MusicSecondLife:
+CF61: 28 80 
+CF63: 40 40   
+CF65: 40 43
+CF67: 40 40
+CF69: 37 5F
+CF6B: 37 4B
+CF6D: 37 55
+CF6F: 37 4B
+CF71: 19 5F
+CF73: 19 64
+CF75: 19 5F
+CF77: 1A 55
+CF79: 1C 4B
+CF7B: 1C 55
+CF7D: 1C 4B
+CF7F: 1C 43
+CF81: 40 40
+CF83: 00 00
+
+MusicThirdLife:
+CF85: 28 80
+CF87: 40 40
+CF89: 40 43
+CF8B: 3C 4B
+CF8D: 39 55
+CF8F: 37 5F
+CF91: 37 64
+CF93: 37 5F
+CF95: 39 55
+CF97: 3C 4B
+CF99: 40 43
+CF9B: 39 55
+CF9D: 40 40
+CF9F: 00 00
+
+CFA1: 14 1E
+CFA3: 00 00 
+
+MusicEndOfLife:
+; Just one long note
+CFA5: FF FF 
+CFA7: 00 00              
+
+ScoreTable:
+; A zero is added to the end of all scores
+CFA9: 00     ; End marker
+CFAA: 07     ; Type 1: Apple     70
+CFAB: 0A     ; Type 2: Cherry   100
+CFAC: 0F     ; Type 3: Magnet   150
+CFAD: 14     ; Type 4: Skate    200
+CFAE: 19     ; Type 5: YoYo     250
+CFAF: 1E     ; Type 6: Pear     300
+CFB0: 32     ; Type 7: Spider   500
+CFB1: 00     ; Type 8: Skull   (no score)
+CFB2: 64     ; Type 9: X       1000       
 
 ; "COPYRIGHT 1982 DALE A. LEAR ALL RIGHTS RESERVED LICENSED TO TANDY COPRPORATION"
 CFB3: 43 4F 50 59 52 49 47 48 54 20 31 39 38 32 20 44 41 4C 45 20 41 2E 20 4C 45 41 52 20 41 4C 4C 20 
@@ -2447,6 +2631,8 @@ CFF3: 59 20 43 4F 52 50 4F 52 41 54 49 4F 4E
 <script>
     window.onload = function() {   
         Doubleback.data = Binary.readBinary('Code.md.bin')     
+        Doubleback.origin = 0xC000
+        Doubleback.loadCursiveData()
         Doubleback.origin = 0xC000
         Canvas.redrawGraphics()       
     }    
