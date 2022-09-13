@@ -555,7 +555,7 @@ C417: 80 03           SUBA    #$03                ; Translate the left side of o
 C419: 8E 01 60        LDX     #$0160              ; Start of objects
 ```
 
-How does the code check to see if an object has been looped?
+>> How does the code check to see if an object has been looped?
 
 # Looped Detection
 
