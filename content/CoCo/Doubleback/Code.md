@@ -555,7 +555,21 @@ C417: 80 03           SUBA    #$03                ; Translate the left side of o
 C419: 8E 01 60        LDX     #$0160              ; Start of objects
 ```
 
->> How does the code check to see if an object has been looped?
+>> player 1: How does the code check to see if an object has been looped?
+
+The greater-greater identifies a question anchor. These can be referenced from other files with a special syntax (see below)
+
+Information before the colon is optional. The first token is a category. Several questions may have the same category. The second
+token is a unique id within the category. The id is optional.
+
+References to questions take the form:
+
+>> questions Code player 1
+
+Where "Code" is the name of the file in the directory. Where "player" is a category. Where "1" is an id.
+
+If the category is ommitted, all questions from the file are linked. Otherwise if the id is ommitted, then all
+questions matching the category are linked. Otherwise, just the one targeted question is linked.
 
 # Looped Detection
 
