@@ -753,6 +753,10 @@ C538: 97 D1           STA     $D1                 ; {ram.nextObjTime} Timer for 
 ; The type of the next object is random but based on the player's score. The higher the score, the
 ; more advanced the object can be.
 ; (SCORE[0]+4) * random(256) / 256
+; For a score of 0: 4*255/256 = 0,1,2,3 (apple, cherry, magnet, skate)
+; Upper digit of 4 is 4*256 = 1024. Add the extra zero (all scores have it): 10,000 is where skulls start.
+; TODO break them all down
+; For a score of (4+4)*255/256 = 0,1,2,3,4,5,6,7 (everything ... skulls begin)
 C53A: A6 85           LDA     B,X                 ; Upper byte of score
 C53C: 8B 04           ADDA    #$04                ; Add 4 (even with no score you can get an object)
 C53E: D6 D7           LDB     $D7                 ; {ram.random} Multiply ...
@@ -769,69 +773,74 @@ C550: 4C              INCA                        ; Yes ... promote this to a mo
 C551: 9E D2           LDX     $D2                 ; {ram.nextFreeObj} Next object slot
 C553: A7 06           STA     6,X                 ; New object's type
 C555: 6F 07           CLR     7,X                 ; Any image flipping starts at 0
-C557: 96 D7           LDA     $D7                 ; {ram.random}
-C559: 1F 89           TFR     A,B                 
-C55B: 54              LSRB                        
-C55C: 46              RORA                        
-C55D: 54              LSRB                        
-C55E: 46              RORA                        
-C55F: 97 D7           STA     $D7                 ; {ram.random}
-C561: 54              LSRB                        
-C562: 46              RORA                        
-C563: 54              LSRB                        
-C564: 46              RORA                        
-C565: C6 44           LDB     #$44                
-C567: 3D              MUL                         
-C568: 8B 08           ADDA    #$08                
-C56A: A7 02           STA     2,X                 ; Y coordinate
-C56C: 96 D7           LDA     $D7                 ; {ram.random}
-C56E: C6 60           LDB     #$60                
-C570: 3D              MUL                         
-C571: 84 FC           ANDA    #$FC                
-C573: 8B 0C           ADDA    #$0C                
-C575: 8B 04           ADDA    #$04                
-C577: 81 6C           CMPA    #$6C                
-C579: 24 FA           BHS     $C575               ; {}
-C57B: 81 10           CMPA    #$10                
-C57D: 23 F6           BLS     $C575               ; {}
+;
+C557: 96 D7           LDA     $D7                 ; {ram.random} Mix ...
+C559: 1F 89           TFR     A,B                 ; ... up ...
+C55B: 54              LSRB                        ; ... the ...
+C55C: 46              RORA                        ; ...
+C55D: 54              LSRB                        ; ...
+C55E: 46              RORA                        ; ...
+C55F: 97 D7           STA     $D7                 ; {ram.random} ... random a bit
+C561: 54              LSRB                        ; Mix ...
+C562: 46              RORA                        ; ...
+C563: 54              LSRB                        ; ...
+C564: 46              RORA                        ; ... even more
+C565: C6 44           LDB     #$44                ; Y coordinate = ...
+C567: 3D              MUL                         ; ... random(68) ...
+C568: 8B 08           ADDA    #$08                ; ... + 8
+C56A: A7 02           STA     2,X                 ; New random Y coordinate
+C56C: 96 D7           LDA     $D7                 ; {ram.random} Random value
+C56E: C6 60           LDB     #$60                ; X coordinate = ...
+C570: 3D              MUL                         ; ... random(96)
+; TODO simulate this algorithm and see what's going on exactly
+C571: 84 FC           ANDA    #$FC                ; Drop lower 2 bits
+C573: 8B 0C           ADDA    #$0C                ; Now between 12 and 119
+C575: 8B 04           ADDA    #$04                ; Move right 4 bits
+C577: 81 6C           CMPA    #$6C                ; Too close to the right side (X=108)?
+C579: 24 FA           BHS     $C575               ; {} Yes ... keep moving right 4 (and wrap)
+C57B: 81 10           CMPA    #$10                ; Too close to the left sice (X=16)?
+C57D: 23 F6           BLS     $C575               ; {} Yes ... keep moving right 4 (and wrap)
 C57F: A7 84           STA     ,X                  ; X coordinate
-C581: E6 02           LDB     2,X                 
-C583: CE 00 D8        LDU     #$00D8              
-C586: E0 42           SUBB    2,U                 
-C588: CB 14           ADDB    #$14                
-C58A: C1 28           CMPB    #$28                
-C58C: 24 0C           BHS     $C59A               ; {}
-C58E: A0 C4           SUBA    ,U                  
-C590: 8B 14           ADDA    #$14                
-C592: 81 28           CMPA    #$28                
-C594: 24 04           BHS     $C59A               ; {}
-C596: A6 84           LDA     ,X                  
-C598: 20 DB           BRA     $C575               ; {} Don't appear too close to the player
+C581: E6 02           LDB     2,X                 ; Y coordinate
+C583: CE 00 D8        LDU     #$00D8              ; Player's X,y
+C586: E0 42           SUBB    2,U                 ; Are we far ...
+C588: CB 14           ADDB    #$14                ; ... enough from ...
+C58A: C1 28           CMPB    #$28                ; ... the player?
+C58C: 24 0C           BHS     $C59A               ; {} Yes ... keep this location
+C58E: A0 C4           SUBA    ,U                  ; No ... compare X too
+C590: 8B 14           ADDA    #$14                ; Are we far ...
+C592: 81 28           CMPA    #$28                ; ... enough from the player?
+C594: 24 04           BHS     $C59A               ; {} Yes ... keep this location
+C596: A6 84           LDA     ,X                  ; No ... go back for ...
+C598: 20 DB           BRA     $C575               ; {} ... another random X coordinate
 ;
 C59A: 1F 13           TFR     X,U                 ; Is this the ...
 C59C: 11 83 01 60     CMPU    #$0160              ; ... first slot?
-C5A0: 27 2A           BEQ     $C5CC               ; {}
-C5A2: 33 58           LEAU    -8,U                
-C5A4: E6 46           LDB     6,U                 
-C5A6: E1 06           CMPB    6,X                 
-C5A8: 26 F2           BNE     $C59C               ; {}
-C5AA: E6 84           LDB     ,X                  ; X coordinate
-C5AC: E0 C4           SUBB    ,U                  
-C5AE: CB 08           ADDB    #$08                
-C5B0: C1 10           CMPB    #$10                
-C5B2: 22 E8           BHI     $C59C               ; {}
-C5B4: E6 02           LDB     2,X                 ; Y coordinate
-C5B6: E0 42           SUBB    2,U                 
-C5B8: CB 08           ADDB    #$08                
-C5BA: C1 10           CMPB    #$10                
-C5BC: 22 DE           BHI     $C59C               ; {}
+C5A0: 27 2A           BEQ     $C5CC               ; {} Yes ... good to go
+C5A2: 33 58           LEAU    -8,U                ; Is one of this ...
+C5A4: E6 46           LDB     6,U                 ; ... new object ...
+C5A6: E1 06           CMPB    6,X                 ; ... alread on the screen?
+C5A8: 26 F2           BNE     $C59C               ; {} Keep checking
+C5AA: E6 84           LDB     ,X                  ; Compare ...
+C5AC: E0 C4           SUBB    ,U                  ; ... X coordinate
+C5AE: CB 08           ADDB    #$08                ; +8
+C5B0: C1 10           CMPB    #$10                ; Are these close in X?
+C5B2: 22 E8           BHI     $C59C               ; {} No ... keep checking
+C5B4: E6 02           LDB     2,X                 ; Compare ...
+C5B6: E0 42           SUBB    2,U                 ; ... Y coordinate
+C5B8: CB 08           ADDB    #$08                ; +8
+C5BA: C1 10           CMPB    #$10                ; Are these close in Y?
+C5BC: 22 DE           BHI     $C59C               ; {}  No ... keep checking
+;
+; Don't let 2 objects of the same type be too close together
 C5BE: E6 02           LDB     2,X                 ; Y coordinate
-C5C0: CB 15           ADDB    #$15                
-C5C2: C1 4C           CMPB    #$4C                
-C5C4: 2D 02           BLT     $C5C8               ; {}
-C5C6: C0 44           SUBB    #$44                
-C5C8: E7 02           STB     2,X                 ; Y coordinate
-C5CA: 20 CA           BRA     $C596               ; {}
+C5C0: CB 15           ADDB    #$15                ; Move Y coordinate down 21
+C5C2: C1 4C           CMPB    #$4C                ; too close to the bottom?
+C5C4: 2D 02           BLT     $C5C8               ; {} No keep it
+C5C6: C0 44           SUBB    #$44                ; Yes ... back it up to the top
+C5C8: E7 02           STB     2,X                 ; New Y coordinate
+C5CA: 20 CA           BRA     $C596               ; {} Go all the way back for another random X coordinate
+;
 C5CC: 17 05 20        LBSR    $CAEF               ; {code.WaitVBlank} Sync the gameloop to VBLANK
 ;
 C5CF: 0D C7           TST     $C7                 ; {ram.hasLoopScore} Is there a loop score showing?
@@ -1613,8 +1622,8 @@ CA81: BD A9 76        JSR     $A976               ; Enable analog mux
 CA84: 17 00 39        LBSR    $CAC0               ; {code.CheckForBreak}
 CA87: EC C1           LDD     ,U++                ; Get next data
 CA89: 27 34           BEQ     $CABF               ; {} No more ... done
-CA8B: 34 06           PSHS    B,A                 ; 
-CA8D: 1F 98           TFR     B,A                 
+CA8B: 34 06           PSHS    B,A                 ; Audio timing magic
+CA8D: 1F 98           TFR     B,A                 ; Audio timing magic
 CA8F: 4A              DECA                        ; Delay amount
 CA90: 1E 11           EXG     X,X                 ; Small ...
 CA92: 1E 11           EXG     X,X                 ; ...
@@ -1623,9 +1632,9 @@ CA96: 1E 11           EXG     X,X                 ; ... delay
 CA98: 26 F5           BNE     $CA8F               ; {} Finish the delay
 CA9A: 86 3C           LDA     #$3C                ; 6 bit D/A to ...
 CA9C: B7 FF 20        STA     $FF20               ; {hard.PIA1_DA} ... 111100
-CA9F: 1F 98           TFR     B,A                 
-CAA1: A0 61           SUBA    1,S                 
-CAA3: 43              COMA                        
+CA9F: 1F 98           TFR     B,A                 ; Audio timing magic
+CAA1: A0 61           SUBA    1,S                 ; Audio timing magic
+CAA3: 43              COMA                        ; Audio timing magic
 CAA4: 4A              DECA                        ; Delay amount
 CAA5: 1E 11           EXG     X,X                 ; Small ...
 CAA7: 1E 11           EXG     X,X                 ; ...
@@ -1633,12 +1642,12 @@ CAA9: 1E 11           EXG     X,X                 ; ...
 CAAB: 1E 11           EXG     X,X                 ; ... delay
 CAAD: 26 F5           BNE     $CAA4               ; {} Finish the delay
 CAAF: 7F FF 20        CLR     $FF20               ; {hard.PIA1_DA} D/A to 0
-CAB2: 5A              DECB                        
-CAB3: 26 02           BNE     $CAB7               ; {}
-CAB5: E6 61           LDB     1,S                 
-CAB7: 6A E4           DEC     ,S                  
-CAB9: 26 D2           BNE     $CA8D               ; {}
-CABB: 35 06           PULS    A,B                 
+CAB2: 5A              DECB                        ; Audio timing magic
+CAB3: 26 02           BNE     $CAB7               ; {} Audio timing magic
+CAB5: E6 61           LDB     1,S                 ; Audio timing magic
+CAB7: 6A E4           DEC     ,S                  ; Audio timing magic
+CAB9: 26 D2           BNE     $CA8D               ; {} Audio timing magic
+CABB: 35 06           PULS    A,B                 ; Audio timing magic
 CABD: 20 BF           BRA     $CA7E               ; {code.PlaySong} Play until end
 CABF: 39              RTS                         ; Done
 
