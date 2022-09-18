@@ -170,3 +170,11 @@ html,
 .sg_value {
 	color: red;
 }
+
+.caanchor {
+    opacity:0;
+	margin-left:8px;
+}
+.cahead:hover > a {
+	opacity:1;    
+}

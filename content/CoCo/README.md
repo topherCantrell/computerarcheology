@@ -23,7 +23,7 @@
 >>>   Daggorath:Daggorath 40%<br>
 >>>   Downland:Downland 5%<br>
 >>>   AudioSpectrumAnalyzer:Audio Analyzer 5%<br>
->>>   Doubleback:Doubleback 95%<br>
+>>>   Doubleback:Doubleback<br>
 
 # Disassemblies
 

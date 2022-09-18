@@ -19,26 +19,35 @@ C000: 0F BB           CLR     $BB                 ; {ram.highScore} First RESET 
 C002: 0F BC           CLR     $BC                 ; {ram.highScore+1} ... high-score
 ;
 Reset:
+; After the first boot, the RESET handler is modified to come here. This is also
+; where the BREAK key jumps to. (Maybe BREAK should skip rebuilding the mask table
+; and jump to C031).
 C004: 12              NOP                         ; Required by BASIC ROM RESET handler
 C005: 1A 50           ORCC    #$50                ; Disable IRQ
 C007: 10 CE 01 50     LDS     #$0150              ; Stack
 C00B: 30 8C F6        LEAX    $C004,PC            ; {code.Reset} RESET button ...
 C00E: 9F 72           STX     $72                 ; ... now comes to C004
-;
-; There are 4 pixels per memory byte: aa_bb_cc_dd
-; The value 00 is considered transparent. When an image is blitted to the screen,
-; any pixels with value 00 are left unchanged at the destination.
-; In order to set the non-zero bits, a mask is needed to zero-out the pixels at
-; the destination. The pixel mask value is 11 for pixel value 00 and 00 for any
-; other pixel value.
-;
-; For instance: 00_01_10_00 has two visible pixels in the middle and two transparents on the ends
-; The mask:     11_00_00_11 this would AND out any 1s at the destination allowing the new value
-;                           to be ORed into the destination
-;
-; Building the mask on the fly is tedious (costly in time). Instead, the code builds a 256-value
-; lookup table to get the mask from the pixel pattern. TABLE[$18] = $C3 for the example above.
-;
+```
+
+# The Mask Table
+
+There are 4 pixels per memory byte: aa_bb_cc_dd
+
+The value 00 is considered transparent. When an image is blitted to the screen,
+any pixels with value 00 are left unchanged at the destination.
+In order to set the non-zero bits, a mask is needed to zero-out the pixels at
+the destination. The pixel mask value is 11 for pixel value 00 and 00 for any
+other pixel value.
+
+For instance: 00_01_10_00 has two visible pixels in the middle and two transparents on the ends
+
+The mask: 11_00_00_11 this would AND out any 1s at the destination allowing the new value
+to be ORed into the destination
+
+Building the mask on the fly is tedious (costly in time). Instead, the code builds a 256-value
+lookup table to get the mask from the pixel pattern. TABLE[$18] = $C3 for the example above.
+
+```code
 ; Build the bit mask table from 0380 to 0390
 C010: 8E 03 80        LDX     #$0380              ; Start of mask table
 C013: 5F              CLRB                        ; Start with ...
@@ -58,8 +67,8 @@ C029: E7 86           STB     A,X                 ; Store the entry
 C02B: 6C E4           INC     ,S                  ; Do all ...
 C02D: 26 E7           BNE     $C016               ; {} ... 256 entries
 C02F: 35 04           PULS    B                   ; remove stack temporary
-;          
-NewGame:
+         
+SplashScreen:
 C031: 17 0A 1E        LBSR    $CA52               ; {code.ClearScreen} Clear the screen
 C034: 17 0A 98        LBSR    $CACF               ; {code.SetVideoMode} Set the graphics mode
 C037: CC 1C 46        LDD     #$1C46              ; Screen coordinates
@@ -71,7 +80,22 @@ C048: 17 08 F8        LBSR    $C943               ; {code.PrintChars} ... copyri
 C04B: CC 14 56        LDD     #$1456              ; Screen coordinates
 C04E: 33 8D 0D D1     LEAU    $CE23,PC            ; {code.StrCopyright3} Print ...
 C052: 17 08 EE        LBSR    $C943               ; {code.PrintChars} ... copyright line 3
-;
+```
+
+# Cursive Doubleback
+
+>> How is the cursive "doubleback" drawn on the screen?
+
+The start screen has the word "doubleback" written in large cursive letters across the screen. 
+The code also draws a reflected version (left/right and up/down) below the first.
+
+The forward drawing begins at corrdinate (1F,18). The code uses a table of directions at CEC3
+to move the drawing from pixel to pixel. Each entry in the table is a 3 bits specifying one
+of 8 directions (N,S,E,W,NE,SE,NW,SW).
+
+There is an interactive demonstration of the cursive drawing below at CEC3.
+
+```code
 ; Cursive "doubleback"
 C055: 8E 00 E4        LDX     #$00E4              ; Utility object structure
 C058: 86 1F           LDA     #$1F                ; Set ...
@@ -119,13 +143,12 @@ C0AA: 44              LSRA                        ; ... data ...
 C0AB: 56              RORB                        ; ... point
 C0AC: 34 06           PSHS    B,A                 ; Hold current data
 C0AE: 20 C0           BRA     $C070               ; {} Do next point
-;
 C0B0: 35 04           PULS    B                   ; Remove the stack counter
 
+; Select 1 or 2 players
 C0B2: CC 28 3A        LDD     #$283A              ; Print coordinates
 C0B5: 33 8D 0C 57     LEAU    $CD10,PC            ; {code.Str1or2Players} Print ...
 C0B9: 17 08 87        LBSR    $C943               ; {code.PrintChars} ... "1 or 2 Players"
-;
 C0BC: AD 9F A0 0A     JSR     [$A00A]             ; {hard.JOYIN} Read the joysticks
 C0C0: 0F B4           CLR     $B4                 ; {ram.numPlayers} Number of players = 1
 C0C2: CE 0C 2A        LDU     #$0C2A              ; Screen coordinate for the underline for 1 or 2
@@ -141,14 +164,24 @@ C0D6: 17 0A 16        LBSR    $CAEF               ; {code.WaitVBlank} Wait for V
 C0D9: F6 FF 00        LDB     $FF00               ; {hard.PIA0_DA} Button ...
 C0DC: C4 01           ANDB    #$01                ; ... pressed?
 C0DE: 26 DC           BNE     $C0BC               ; {} No ... keep waiting
-;
+
+; Clear the scores and get ready for three rounds
 C0E0: 0F B7           CLR     $B7                 ; {ram.p1Score} Clear player ...
 C0E2: 0F B8           CLR     $B8                 ; {ram.p1Score+1} ... one score
 C0E4: 0F B9           CLR     $B9                 ; {ram.p2Score} Clear player ...
 C0E6: 0F BA           CLR     $BA                 ; {ram.p2Score+1} ... two score
 C0E8: C6 03           LDB     #$03                ; Start with ...
 C0EA: D7 B5           STB     $B5                 ; {ram.numLives} ... three lives
-;
+```
+
+# Game Loop
+
+This is the game's main loop. This code calls on the main game loop 3 times for each player. 
+Once the game is over, this code updates the high score if needed. Finally, it prints
+"Game Over" and waits for a button before restarting way up at the splash screen code.
+
+```code
+; All lives -- both players
 C0EC: 0F B6           CLR     $B6                 ; {ram.player} Player 0
 C0EE: 17 00 3E        LBSR    $C12F               ; {code.PlayRound} Play one round for player 0
 C0F1: 0D B4           TST     $B4                 ; {ram.numPlayers} Two player game?
@@ -158,19 +191,20 @@ C0F7: 17 00 35        LBSR    $C12F               ; {code.PlayRound} Play one ro
 C0FA: 0A B5           DEC     $B5                 ; {ram.numLives} Subtract one from lives
 C0FC: 26 EE           BNE     $C0EC               ; {} Go back for all lives
 ;
+; Update high scores
 C0FE: DC B7           LDD     $B7                 ; {ram.p1Score} Player 1 score
 C100: 10 93 BB        CMPD    $BB                 ; {ram.highScore} Beat the high score?
 C103: 23 02           BLS     $C107               ; {} No ... move on
 C105: DD BB           STD     $BB                 ; {ram.highScore} Change the high score
-;
 C107: DC B9           LDD     $B9                 ; {ram.p2Score} Player 2 score
 C109: 10 93 BB        CMPD    $BB                 ; {ram.highScore} Beat the high score?
 C10C: 23 02           BLS     $C110               ; {} No ... move on
 C10E: DD BB           STD     $BB                 ; {ram.highScore} Change the high score
-;
 C110: DC BB           LDD     $BB                 ; {ram.highScore} Print ...
 C112: CE 04 EE        LDU     #$04EE              ; ... high score at top ...
 C115: 17 05 13        LBSR    $C62B               ; {code.DrawNumber} ... of screen
+;
+; Print "Game Over" and wait for a button
 C118: CC 2C 28        LDD     #$2C28              ; Print coordinates
 C11B: 33 8D 0B A0     LEAU    $CCBF,PC            ; {code.StrGameOver} Print ...
 C11F: 17 08 21        LBSR    $C943               ; {code.PrintChars} ... "Game Over"
@@ -178,9 +212,18 @@ C122: 17 09 9B        LBSR    $CAC0               ; {code.CheckForBreak} Check f
 C125: F6 FF 00        LDB     $FF00               ; {hard.PIA0_DA} Wait for ...
 C128: C4 01           ANDB    #$01                ; ... button ...
 C12A: 26 F6           BNE     $C122               ; {} ... press ...
-C12C: 16 FF 02        LBRA    $C031               ; {code.NewGame} Start a new game
+C12C: 16 FF 02        LBRA    $C031               ; {code.SplashScreen} Start a new game
+```
 
+# Play One Round
+
+This code plays one round for either of the players. The round ends when the player runs into
+a game object.
+
+```code
 PlayRound:
+;
+; Clear the screen and init the round variables
 C12F: C6 FF           LDB     #$FF                ; Fill screen ...
 C131: 17 09 1F        LBSR    $CA53               ; {code.FillScreen} ... with white {}
 C134: 0F BE           CLR     $BE                 ; {ram.endOfPlayer} Offset in player's line buffer (0x200)
@@ -193,6 +236,7 @@ C140: 0F CF           CLR     $CF                 ; {ram.skullCount}
 C142: C6 28           LDB     #$28                ; Reload counter for ...
 C144: D7 D5           STB     $D5                 ; {ram.flashCount} ... flashing player "word"
 ;
+; Print the player number so they both know whose turn it is
 C146: CC 2C 28        LDD     #$2C28              ; Screen coordinates
 C149: 33 8D 0A FF     LEAU    $CC4C,PC            ; {code.StrPlayer} Graphics for "Player"
 C14D: 17 07 F3        LBSR    $C943               ; {code.PrintChars} Print "player"
@@ -204,6 +248,7 @@ C15B: 86 46           LDA     #$46                ; Move "two" over a hair
 C15D: 33 8D 0B 3D     LEAU    $CC9E,PC            ; {code.StrTwo} Graphics for "two"
 C161: 17 07 DF        LBSR    $C943               ; {code.PrintChars} Print the player (one or two)
 ;
+; Play the song that goes with the life number (1, 2, or 3)
 C164: D6 B5           LDB     $B5                 ; {ram.numLives} What life-number are we on?
 C166: 33 8D 0E 1B     LEAU    $CF85,PC            ; {code.MusicThirdLife} Song for "3rd life"
 C16A: 5A              DECB                        ; Is this the last life?
@@ -214,6 +259,7 @@ C172: 27 04           BEQ     $C178               ; {} Yes ... play this song
 C174: 33 8D 0D C5     LEAU    $CF3D,PC            ; {code.MusicFirstLife} Song for 1st life
 C178: 17 09 03        LBSR    $CA7E               ; {code.PlaySong} Play the song
 ;
+; Now that the song is done, clear the playfied and draw its border
 C17B: 17 08 E5        LBSR    $CA63               ; {code.DrawPlayfiled}
 C17E: C6 02           LDB     #$02                ; X/Y coordinate ...
 C180: 34 04           PSHS    B                   ; ... temporary
@@ -241,6 +287,7 @@ C1AF: C1 7E           CMPB    #$7E                ; All edge pixels drawn?
 C1B1: 23 CF           BLS     $C182               ; {} No ... go do them all
 C1B3: 35 04           PULS    B                   ; Pop the counter
 ;
+; Print the player scores below the playfield
 C1B5: 4F              CLRA                        ; X coordinate
 C1B6: C6 58           LDB     #$58                ; Y coordinate
 C1B8: 33 8D 0A 90     LEAU    $CC4C,PC            ; {code.StrPlayer} Print "player" at bottom ...
@@ -255,11 +302,11 @@ C1D0: 33 8D 0A CA     LEAU    $CC9E,PC            ; {code.StrTwo} Print "two" fa
 C1D4: 17 07 6C        LBSR    $C943               ; {code.PrintChars} ... farther right
 C1D7: 17 04 36        LBSR    $C610               ; {code.PrintScores} Print the player scores (both if two player)
 ;
+; Show the life number indicators (3 bars -- the current life is active)
 C1DA: 8E 00 E4        LDX     #$00E4              ; Utility object
 C1DD: 6F 02           CLR     2,X                 ; Y = 0
 C1DF: C6 33           LDB     #$33                ; 1st slot X ...
 C1E1: E7 84           STB     ,X                  ; ... coordinate
-;
 ; First slot (active if 3 lives)
 C1E3: 33 8D 0A 33     LEAU    $CC1A,PC            ; {} Life inidcator ACTIVE
 C1E7: D6 B5           LDB     $B5                 ; {ram.numLives} Number of lives
@@ -269,7 +316,6 @@ C1ED: 33 8D 0A 19     LEAU    $CC0A,PC            ; {code.LifeIndicator} Life in
 C1F1: 17 05 69        LBSR    $C75D               ; {code.Draw8x8} Draw the indicator
 C1F4: C6 3D           LDB     #$3D                ; 2nd slot X ...
 C1F6: E7 84           STB     ,X                  ; ... cooridinate
-;
 ; Second slot (active if 2 lives)
 C1F8: 33 8D 0A 1E     LEAU    $CC1A,PC            ; {} Life inidcator ACTIVE
 C1FC: D6 B5           LDB     $B5                 ; {ram.numLives} Number of lives
@@ -279,7 +325,6 @@ C202: 33 8D 0A 04     LEAU    $CC0A,PC            ; {code.LifeIndicator} Life in
 C206: 17 05 54        LBSR    $C75D               ; {code.Draw8x8} Draw the indicator
 C209: C6 47           LDB     #$47                ; 3rd slot X ...
 C20B: E7 84           STB     ,X                  ; ... coordinate
-;
 ; Third slot (active if 1 life)
 C20D: 33 8D 0A 09     LEAU    $CC1A,PC            ; {} Life inidcator ACTIVE
 C211: D6 B5           LDB     $B5                 ; {ram.numLives} Number of lives
@@ -288,6 +333,7 @@ C215: 27 04           BEQ     $C21B               ; {} Yes ... 3rd bar is CURREN
 C217: 33 8D 09 EF     LEAU    $CC0A,PC            ; {code.LifeIndicator} Life indicator INACTIVE
 C21B: 17 05 3F        LBSR    $C75D               ; {code.Draw8x8} Draw the indicator
 ; 
+; Clear the player's line (all points to 64,64)
 C21E: 8E 00 D8        LDX     #$00D8              ; Player-point object
 C221: 86 40           LDA     #$40                ; Set X ...
 C223: A7 84           STA     ,X                  ; ... to 64 ...
@@ -297,17 +343,21 @@ C22A: 5F              CLRB                        ; ... the ...
 C22B: A7 80           STA     ,X+                 ; ... player ...
 C22D: 5A              DECB                        ; ... line
 C22E: 26 FB           BNE     $C22B               ; {} ... points
+;
+; Clear all game objects
 C230: 8E 01 60        LDX     #$0160              ; Start of game objects
 C233: C6 A0           LDB     #$A0                ; 160 / 8 = 20 possible objects
 C235: 6F 80           CLR     ,X+                 ; Clear ...
 C237: 5A              DECB                        ; ... all ...
 C238: 26 FB           BNE     $C235               ; {} ... game objects
 C23A: 0F BD           CLR     $BD                 ; {ram.collision} Clear the collision flag
+;
+; Loop through one cycle of play -- over and over until done
 C23C: 17 00 16        LBSR    $C255               ; {code.OneCycle} Move the player and the objects
 C23F: 0D BD           TST     $BD                 ; {ram.collision} Was there a collision?
 C241: 27 F9           BEQ     $C23C               ; {} No ... keep playing
 ;
-; End of life (and return)
+; Dull the screen, play the tone, and return from the round
 C243: C6 F0           LDB     #$F0                ; Dull screen ...
 C245: F7 FF 22        STB     $FF22               ; {hard.PIA1_DB} ... color mode
 C248: 33 8D 0D 59     LEAU    $CFA5,PC            ; {code.MusicEndOfLife} Play the ...
@@ -315,7 +365,23 @@ C24C: 17 08 2F        LBSR    $CA7E               ; {code.PlaySong} ... end of l
 C24F: C6 F8           LDB     #$F8                ; Bright screen ...
 C251: F7 FF 22        STB     $FF22               ; {hard.PIA1_DB} ... color mode
 C254: 39              RTS                         ; Done
+```
 
+# One Cycle
+
+This code is one pass through the game loop. It ends way down at C60F. There is a wait on VBLANK at
+the end of this loop.
+   - Check for break and restart the program if pressed
+   - Erase the tail of the player
+   - Handle a small set game objects (not every object is processed every cycle)
+   - Read sticks and move player's head
+   - Check for looped objects (score and remove them)
+   - Create a new object if it is time
+   - Wait for the next VBLANK
+   - Time down and remove any showing "loop score"
+   - Flash the player word "one" or "two"
+
+```code
 OneCycle:
 C255: 17 08 68        LBSR    $CAC0               ; {code.CheckForBreak} Check for BREAK (reset if so)
 C258: 8E 02 00        LDX     #$0200              ; Player's drawn coordinates
@@ -328,20 +394,40 @@ C265: E7 02           STB     2,X                 ; ... and Y coordinate
 C267: 17 07 48        LBSR    $C9B2               ; {code.GetScreenAndShift} Pointer and pixel number
 C26A: 17 07 29        LBSR    $C996               ; {code.ErasePixel} Erase the tail of the player
 C26D: 0C D4           INC     $D4                 ; {ram.cycleCount} Cycle count used to pace the objects
+```
 
+## Move Game Objects
+
+The game manages a list of 8-byte objects in memory at 0160. The array has 20
+slots, but there is always a null slot (object type = 0) at the end to mark the end.
+Thus there can be only 19 objects on the screen at once.
+
+Object structure (offset in the 8 bytes):
+
+  * 00 X coordinate
+  * 01 X residue (if used)
+  * 02 Y coordinate
+  * 03 Y residue (if used)
+  * 04 delta X (if used) and looped flag
+  * 05 delta Y (if used) and looped flag
+  * 06 object type (0 means end of list)
+  * 07 image number (if used) for flipping images
+
+Every object has an object-type (1-9), and X coordinate, and a Y coordinate. 
+
+Animated objects us an "image number" value they can use to flip images, though some of the
+objects use the X coordinate odd/even instead.
+
+Animated objects use a delta-X and delta-Y value to make their movements. The move-routine
+extends the X coordinate and Y coordinate to two-bytes each (the residue values in the structure).
+This allows for finer-grain movement speeds.
+
+The delta-X and delta-Y fields are also used during the process of figuring out if an object has
+been looped or not. More on that with the looping-detection algorithm below.
+
+```code
 C26F: 8E 01 60        LDX     #$0160              ; List of objects
-
-; Object structure
 ;
-; 00 X coordinate
-; 01 X residue
-; 02 Y coordinate
-; 03 Y residue
-; 04 delta X (if used)
-; 05 delta Y (if used)
-; 06 Object type (0 means end of list)
-; 07 image number if used (for flipping images)
-
 ObjectLoop:
 C272: 6D 06           TST     6,X                 ; Object type 0 (end of list)?
 C274: 10 27 01 17     LBEQ    $C38F               ; {} Yes ... done with list
@@ -354,21 +440,21 @@ C27F: DB D4           ADDB    $D4                 ; {ram.cycleCount} Add in cycl
 C281: C4 07           ANDB    #$07                ; Time for this slot to update?
 C283: 26 ED           BNE     $C272               ; {code.ObjectLoop} No ... skip this object
 C285: 30 18           LEAX    -8,X                ; Back up to start of this object
-;
+
 C287: E6 06           LDB     6,X                 ; Object type
-C289: 5A              DECB                        ; 1=APPLE?
+C289: 5A              DECB                        ; 1=APPLE (fixed position)
 C28A: 26 0A           BNE     $C296               ; {} No ... check other types
 C28C: 33 8D 08 6A     LEAU    $CAFA,PC            ; {code.ImageApple} Apple graphic
 C290: 17 04 CA        LBSR    $C75D               ; {code.Draw8x8} Draw apple
 C293: 16 00 F0        LBRA    $C386               ; {code.NextObject} Next object
-;
-C296: 5A              DECB                        ; 2=CHERRY
+
+C296: 5A              DECB                        ; 2=CHERRY (fixed position)
 C297: 26 0A           BNE     $C2A3               ; {} No ... check other types
 C299: 33 8D 08 6D     LEAU    $CB0A,PC            ; {code.ImageCherry} Cherry graphic
 C29D: 17 04 BD        LBSR    $C75D               ; {code.Draw8x8} Draw cherry
 C2A0: 16 00 E3        LBRA    $C386               ; {code.NextObject} Next object
-;
-C2A3: 5A              DECB                        ; 3=MAGNET
+
+C2A3: 5A              DECB                        ; 3=MAGNET (slow moving X/Y)
 C2A4: 26 17           BNE     $C2BD               ; {} No ... check other types
 C2A6: 33 8D 08 70     LEAU    $CB1A,PC            ; {code.ImageMagnet} Erase current ...
 C2AA: 17 05 AE        LBSR    $C85B               ; {code.Erase8x8} ... magnet
@@ -377,8 +463,8 @@ C2B0: 17 07 4C        LBSR    $C9FF               ; {code.FollowPlayer}
 C2B3: 33 8D 08 63     LEAU    $CB1A,PC            ; {code.ImageMagnet} Draw the ...
 C2B7: 17 04 A3        LBSR    $C75D               ; {code.Draw8x8} ... magnet
 C2BA: 16 00 C9        LBRA    $C386               ; {code.NextObject} Next object
-;
-C2BD: 5A              DECB                        ; 4=SKATE
+
+C2BD: 5A              DECB                        ; 4=SKATE (moves along X only)
 C2BE: 26 24           BNE     $C2E4               ; {} No ... check other types
 C2C0: 8D 13           BSR     $C2D5               ; {} Get skate image
 C2C2: 17 05 96        LBSR    $C85B               ; {code.Erase8x8} Erase the current skate
@@ -396,8 +482,8 @@ C2DB: C4 01           ANDB    #$01                ; Either 0 or 1
 C2DD: 26 04           BNE     $C2E3               ; {} Not 1 ... use this graphic
 C2DF: 33 8D 08 57     LEAU    $CB3A,PC            ; {} Use skate graphic 2
 C2E3: 39              RTS                         ; Done
-;
-C2E4: 5A              DECB                        ; 5=YOYO
+
+C2E4: 5A              DECB                        ; 5=YOYO (moves up and down and leaves a string)
 C2E5: 26 3C           BNE     $C323               ; {} No ... check other types
 C2E7: 33 8D 08 9F     LEAU    $CB8A,PC            ; {} Erase the current yoyo but ...
 C2EB: 17 05 6D        LBSR    $C85B               ; {code.Erase8x8} ... leave the string piece of the image
@@ -428,14 +514,14 @@ C31A: 58              ASLB                        ; ... image
 C31B: 33 C5           LEAU    B,U                 ; Point to current image
 C31D: 17 04 3D        LBSR    $C75D               ; {code.Draw8x8}
 C320: 16 00 63        LBRA    $C386               ; {code.NextObject} Next object
-;
-C323: 5A              DECB                        ; 6=PEAR
+
+C323: 5A              DECB                        ; 6=PEAR (fixed position)
 C324: 26 09           BNE     $C32F               ; {} No ... check other types
 C326: 33 8D 08 90     LEAU    $CBBA,PC            ; {code.ImagePear}
 C32A: 17 04 30        LBSR    $C75D               ; {code.Draw8x8}
 C32D: 20 57           BRA     $C386               ; {code.NextObject} Next object
-;
-C32F: 5A              DECB                        ; 7=SPIDER
+
+C32F: 5A              DECB                        ; 7=SPIDER (fast moving X/Y)
 C330: 26 21           BNE     $C353               ; {} No ... check other types
 C332: 8D 10           BSR     $C344               ; {} Get spider image
 C334: 17 05 24        LBSR    $C85B               ; {code.Erase8x8} Erase current spider image
@@ -451,14 +537,14 @@ C34A: C4 01           ANDB    #$01                ; Is the Y coordinate odd?
 C34C: 26 04           BNE     $C352               ; {} Yes ... use first image
 C34E: 33 8D 08 88     LEAU    $CBDA,PC            ; {} No ... use 2nd image
 C352: 39              RTS                         ; Done
-;
-C353: 5A              DECB                        ; 8=SKULL
+
+C353: 5A              DECB                        ; 8=SKULL (fixed position)
 C354: 26 09           BNE     $C35F               ; {} No ... check other types
 C356: 33 8D 08 50     LEAU    $CBAA,PC            ; {code.ImageSkull}
 C35A: 17 04 00        LBSR    $C75D               ; {code.Draw8x8}
 C35D: 20 27           BRA     $C386               ; {code.NextObject} Next object
 
-C35F: 5A              DECB                        ; 9=X
+C35F: 5A              DECB                        ; 9=X (very fast moving X/Y)
 C360: 26 24           BNE     $C386               ; {code.NextObject} No. Anything but 0-9 ... skip.
 C362: 8D 13           BSR     $C377               ; {} Get the current image
 C364: 17 04 F4        LBSR    $C85B               ; {code.Erase8x8} Erase the current image
@@ -478,10 +564,21 @@ C385: 39              RTS                         ; Done
 
 NextObject:
 C386: 6F 04           CLR     4,X                 ; Clear any ...
-C388: 6F 05           CLR     5,X                 ; ... deltas
+C388: 6F 05           CLR     5,X                 ; ... deltas (used as flags later)
 C38A: 30 08           LEAX    8,X                 ; Next object
 C38C: 16 FE E3        LBRA    $C272               ; {code.ObjectLoop} continue with next
+```
 
+## Read the Player's Input
+
+Any "loop score" that is showing is erased before the player is drawn. Collision detection is noted as the player is drawn.
+Then any "loop score" is immediately drawn back.
+
+Joystick axises are read as 6-bit values from 0 (left/up) to 63 (right/down). The code subtracts 32 to make
+6-bit signed values for the delta-X and delta-Y.
+
+```code
+; Read the player's input 
 C38F: 9F D2           STX     $D2                 ; {ram.nextFreeObj}
 C391: AD 9F A0 0A     JSR     [$A00A]             ; {hard.JOYIN} JOYIN reads all 4 joysticks (15A,15B,15C,15D)
 C395: 8E 00 D8        LDX     #$00D8              ; Object for drawing player point
@@ -493,21 +590,22 @@ C3A1: E6 A4           LDB     ,Y                  ; Get the X stick value
 C3A3: A6 A4           LDA     ,Y                  ; Add in ...
 C3A5: 9B D7           ADDA    $D7                 ; {ram.random} ... some ...
 C3A7: 97 D7           STA     $D7                 ; {ram.random} ... randomness to RNG
-C3A9: C0 20           SUBB    #$20                ; Less sensitive
+C3A9: C0 20           SUBB    #$20                ; 0 to 64 now -32 to 32
 C3AB: E7 04           STB     4,X                 ; Hold as delta X
-;
 C3AD: E6 21           LDB     1,Y                 ; Next axis
-C3AF: C0 20           SUBB    #$20                ; Less sensitive
+C3AF: C0 20           SUBB    #$20                ; 0 to 64 now -32 to 32
 C3B1: E7 05           STB     5,X                 ; Hold as delta Y
 C3B3: 17 06 12        LBSR    $C9C8               ; {code.MoveObject} Move ...
 C3B6: 17 03 66        LBSR    $C71F               ; {code.EraseLoopScore} ... player's dot
 ;
+; Draw the new player head
 C3B9: 8E 00 D8        LDX     #$00D8              ; Player point structure
 C3BC: 17 05 A0        LBSR    $C95F               ; {code.SetPixel} Draw the new player dot
 C3BF: D7 BF           STB     $BF                 ; {ram.origPixel} Hold the original pixel (for collision detection)
-C3C1: 17 03 4F        LBSR    $C713               ; {code.DrawLoopScore} Erase any last-drawn score
+C3C1: 17 03 4F        LBSR    $C713               ; {code.DrawLoopScore} Redraw the loop score (after we drew the head and checked collision)
 ;
-C3C4: 0F C3           CLR     $C3                 ; {ram.nontouch}
+; Check for a loop
+C3C4: 0F C3           CLR     $C3                 ; {ram.nontouch} So far, no non-touching point
 C3C6: D6 BE           LDB     $BE                 ; {ram.endOfPlayer} End of the player ...
 C3C8: D7 C0           STB     $C0                 ; {ram.objCounter} ... line (ring buffer)
 ;
@@ -555,52 +653,38 @@ C417: 80 03           SUBA    #$03                ; Translate the left side of o
 C419: 8E 01 60        LDX     #$0160              ; Start of objects
 ```
 
->> player 1: How does the code check to see if an object has been looped?
+## Looped Object Detection
 
-The greater-greater identifies a question anchor. These can be referenced from other files with a special syntax (see below)
+We look at all points in the player's loop. For each point, we run the list of objects. If the Y 
+coordinate of the player point matches the object's center Y coordinate (or one beyond) then we note 
+the object as having a point on either the left or right side by comparing the X coordinates. These 
+notes are kept in the object structure at OBJ[4] for left side or OBJ[5] for right side.
 
-Information before the colon is optional. The first token is a category. Several questions may have the same category. The second
-token is a unique id within the category. The id is optional.
+After we have run all points, we look at the notes. If an object has a point noted on the left AND on 
+the right side, we consider it looped.
 
-References to questions take the form:
+Most of the time, this is a good (and fast) check. But you can "loop" and object by making a "U" around
+it either up or down without actually going around it. In fact, the sides of the U can be half the
+height of the object.
 
->> questions Code player 1
+For instance, this object "O" is considered looped by the player line "*":
 
-Where "Code" is the name of the file in the directory. Where "player" is a category. Where "1" is an id.
-
-If the category is ommitted, all questions from the file are linked. Otherwise if the id is ommitted, then all
-questions matching the category are linked. Otherwise, just the one targeted question is linked.
-
-# Looped Detection
+```
+******************
+*                *
+* ************** *
+* *            * *
+* *  OOOOOOOO  * *
+* *  OOOOOOOO  * *
+* *  OOOOOOOO  * *
+***  OOOOOOOO  ***
+     OOOOOOOO
+     OOOOOOOO
+     OOOOOOOO
+     OOOOOOOO
+```
 
 ```code
-; We look at all points in the player's loop. For each point, we run the list of objects. If the Y 
-; coordinate of the player point matches the object's center Y coordinate (or one beyond) then we note 
-; the object as having a point on either the left or right side by comparing the X coordinates. These 
-; notes are kept in the object structure at OBJ[4] for left side or OBJ[5] for right side.
-;
-; After we have run all points, we look at the notes. If an object has a point noted on the left AND on 
-; the right side, we consider it looped.
-;
-; Most of the time, this is a good (and fast) check. But you can "loop" and object by making a "U" around
-; it either up or down without actually going around it. In fact, the sides of the U can be half the
-; height of the object.
-;
-; For instance, this object "O" is considered looped by the player line "*":
-;
-; ******************
-; *                *
-; * ************** *
-; * *            * *
-; * *  OOOOOOOO  * *
-; * *  OOOOOOOO  * *
-; * *  OOOOOOOO  * *
-; ***  OOOOOOOO  ***
-;      OOOOOOOO
-;      OOOOOOOO
-;      OOOOOOOO
-;      OOOOOOOO
-;
 C41C: 6D 06           TST     6,X                 ; Reached the end of the list?
 C41E: 27 15           BEQ     $C435               ; {} yes ... done
 C420: D6 C2           LDB     $C2                 ; {ram.transY} The Y coordinate
@@ -635,6 +719,8 @@ C452: 27 4D           BEQ     $C4A1               ; {} Yes ... it doesn't count 
 C454: 0C C4           INC     $C4                 ; {ram.numLooped} number of objects looped
 C456: 0C D0           INC     $D0                 ; {ram.totalLoops}
 C458: 0A CE           DEC     $CE                 ; {ram.liveObjCnt}
+;
+; Score the looped object
 C45A: 33 8D 0B 4B     LEAU    $CFA9,PC            ; {code.ScoreTable} The table of object scores
 C45E: E6 C5           LDB     B,U                 ; Get the score for this object
 C460: 1D              SEX                         ; No score is greater than 127 ... this is a quick way to clear A
@@ -714,21 +800,39 @@ C4F2: 26 FD           BNE     $C4F1               ; {} ... delay
 C4F4: 7F FF 20        CLR     $FF20               ; {hard.PIA1_DA} DAC to 0
 C4F7: 5A              DECB                        ; All loops made?
 C4F8: 26 ED           BNE     $C4E7               ; {} No ... continue popping sound
-;
+```
+
+## Update the Player's Line
+
+The new "head" coordinate overwrites the tail coordinate, and the dividing line moves
+around the ring.
+
+```code
 C4FA: 8E 02 00        LDX     #$0200              ; The player's line points
 C4FD: D6 BE           LDB     $BE                 ; {ram.endOfPlayer} the end of the player line
-C4FF: 3A              ABX                         ; Point to the point to erase
+C4FF: 3A              ABX                         ; The tail and head separator
 C500: CE 00 D8        LDU     #$00D8              ; Player's head
 C503: A6 C4           LDA     ,U                  ; Player's head ...
 C505: E6 42           LDB     2,U                 ; ... X and Y
 C507: ED 84           STD     ,X                  ; Add it to the start of the list (will be start after we increment below)
 ;
-; What keeps us from colliding with the score indicator ??
 C509: D6 BF           LDB     $BF                 ; {ram.origPixel} The pixel the player over-drew
 C50B: DB BD           ADDB    $BD                 ; {ram.collision} Mark ...
 C50D: D7 BD           STB     $BD                 ; {ram.collision} ... collision
 C50F: 0C BE           INC     $BE                 ; {ram.endOfPlayer} Next point ...
 C511: 0C BE           INC     $BE                 ; {ram.endOfPlayer} ... slot in player line
+```
+
+## Make new Game Object
+
+We only allow 19 game object on the screen at once. The type of the object made depends on the player's
+score and the number of completed loops the player has made. Higher values result in more advanced
+objects.
+
+When the code tries to make a new skull, it looks to see if there are already 10 skulls on the screen.
+If there are, the new object becomes the fast moving "X" shape instead.
+
+```code
 C513: 0C D1           INC     $D1                 ; {ram.nextObjTime} Time to make a new object?
 C515: 10 26 00 B3     LBNE    $C5CC               ; {} No ... skip making one
 C519: D6 CE           LDB     $CE                 ; {ram.liveObjCnt} Do we already have ...
@@ -738,6 +842,7 @@ C521: 0C CE           INC     $CE                 ; {ram.liveObjCnt} Bump the ob
 C523: 33 8D 0A 7A     LEAU    $CFA1,PC            ; {} Make the popping sound ...
 C527: 17 05 54        LBSR    $CA7E               ; {code.PlaySong} ... of a new object appearing
 ;
+; We are making a new object now, but we'll make the timer until the next one.
 ; Next object's appearence is based on the total number of loops made so far and the player's
 ; score. The more loops and the higher the score, the sooner the next object can appear.
 C52A: 96 D0           LDA     $D0                 ; {ram.totalLoops} Total number of loops made
@@ -765,6 +870,13 @@ C541: 84 07           ANDA    #$07                ; Divide by 256 and random obj
 C543: 4C              INCA                        ; ... from 1 to 8
 C544: 81 08           CMPA    #$08                ; Is this a skull?
 C546: 26 09           BNE     $C551               ; {} No ... keep whatever it is
+```
+
+# The Unexpected
+
+This is the code that creates the fast-moving "X" after 10 skulls.
+
+```code
 C548: 0C CF           INC     $CF                 ; {ram.skullCount} Bump the skull count
 C54A: D6 CF           LDB     $CF                 ; {ram.skullCount} Do we have ...
 C54C: C1 0A           CMPB    #$0A                ; ... 10 skulls on the screen?
@@ -774,6 +886,7 @@ C551: 9E D2           LDX     $D2                 ; {ram.nextFreeObj} Next objec
 C553: A7 06           STA     6,X                 ; New object's type
 C555: 6F 07           CLR     7,X                 ; Any image flipping starts at 0
 ;
+; Pick a candidate X,Y coordinate (we'll check it later)
 C557: 96 D7           LDA     $D7                 ; {ram.random} Mix ...
 C559: 1F 89           TFR     A,B                 ; ... up ...
 C55B: 54              LSRB                        ; ... the ...
@@ -801,6 +914,8 @@ C579: 24 FA           BHS     $C575               ; {} Yes ... keep moving right
 C57B: 81 10           CMPA    #$10                ; Too close to the left sice (X=16)?
 C57D: 23 F6           BLS     $C575               ; {} Yes ... keep moving right 4 (and wrap)
 C57F: A7 84           STA     ,X                  ; X coordinate
+;
+; Don't drop a new object near the player
 C581: E6 02           LDB     2,X                 ; Y coordinate
 C583: CE 00 D8        LDU     #$00D8              ; Player's X,y
 C586: E0 42           SUBB    2,U                 ; Are we far ...
@@ -814,6 +929,7 @@ C594: 24 04           BHS     $C59A               ; {} Yes ... keep this locatio
 C596: A6 84           LDA     ,X                  ; No ... go back for ...
 C598: 20 DB           BRA     $C575               ; {} ... another random X coordinate
 ;
+; Try not to drop similar objects near each other
 C59A: 1F 13           TFR     X,U                 ; Is this the ...
 C59C: 11 83 01 60     CMPU    #$0160              ; ... first slot?
 C5A0: 27 2A           BEQ     $C5CC               ; {} Yes ... good to go
@@ -831,8 +947,6 @@ C5B6: E0 42           SUBB    2,U                 ; ... Y coordinate
 C5B8: CB 08           ADDB    #$08                ; +8
 C5BA: C1 10           CMPB    #$10                ; Are these close in Y?
 C5BC: 22 DE           BHI     $C59C               ; {}  No ... keep checking
-;
-; Don't let 2 objects of the same type be too close together
 C5BE: E6 02           LDB     2,X                 ; Y coordinate
 C5C0: CB 15           ADDB    #$15                ; Move Y coordinate down 21
 C5C2: C1 4C           CMPB    #$4C                ; too close to the bottom?
@@ -841,8 +955,10 @@ C5C6: C0 44           SUBB    #$44                ; Yes ... back it up to the to
 C5C8: E7 02           STB     2,X                 ; New Y coordinate
 C5CA: 20 CA           BRA     $C596               ; {} Go all the way back for another random X coordinate
 ;
+; Sync up to VBLANK for timing and tearing
 C5CC: 17 05 20        LBSR    $CAEF               ; {code.WaitVBlank} Sync the gameloop to VBLANK
 ;
+; Time down and remove loop score indicator
 C5CF: 0D C7           TST     $C7                 ; {ram.hasLoopScore} Is there a loop score showing?
 C5D1: 27 09           BEQ     $C5DC               ; {} No ... skip timing it out
 C5D3: 0A C6           DEC     $C6                 ; {ram.loopScoreCnt} Time to erase it?
@@ -851,6 +967,7 @@ C5D7: 17 01 45        LBSR    $C71F               ; {code.EraseLoopScore} Erase 
 C5DA: 0F C7           CLR     $C7                 ; {ram.hasLoopScore} No longer showing the loop score
 C5DC: 0A D5           DEC     $D5                 ; {ram.flashCount} Time to flash the player word?
 ;
+; Flash the player's word on and off with a counter
 C5DE: 26 2F           BNE     $C60F               ; {} No ... skip it
 C5E0: C6 28           LDB     #$28                ; Reload the ...
 C5E2: D7 D5           STB     $D5                 ; {ram.flashCount} ... player word flash counter
@@ -873,7 +990,16 @@ C606: 20 04           BRA     $C60C               ; {} Go print and out
 C608: 33 8D 06 1F     LEAU    $CC2B,PC            ; {code.GenericEraser} Erase graphics
 C60C: 17 03 34        LBSR    $C943               ; {code.PrintChars} Draw whatever graphics
 C60F: 39              RTS                         ; Done
+```
 
+# Print Scores
+
+Number are drawn with 4x5 pixel patterns (see the images below). The right most column is always 
+blank for spacing.
+
+Both scores are printed at the same time (or just one for 1-player game).
+
+```code
 PrintScores:
 C610: C6 FF           LDB     #$FF                ; White background chars ...
 C612: D7 C5           STB     $C5                 ; {ram.digitColor} ... for score digits
@@ -887,7 +1013,20 @@ C622: CE 0F 3A        LDU     #$0F3A              ; Location of player two score
 C625: 17 00 03        LBSR    $C62B               ; {code.DrawNumber} Print the player two score
 C628: 0F C5           CLR     $C5                 ; {ram.digitColor} Default back to black background chars
 C62A: 39              RTS                         ; Done
+```
 
+# Draw Number
+
+This code breaks a 2-byte word into 5 printed digits. Much of the work is brute-force. Numbers
+are always drawn with a trailing 0; every value is shown multiplied by 10. Space invaders did
+this too to make the scores look bigger.
+
+The maximum printed number is thus 655360 with the trailing zero.
+
+The code drops leading 0s at it prints. The code does not preserve the screen bits around
+the digits.
+
+```code
 DrawNumber:
 ; Numbers are kept in words ... max value 65_536. Max 5 digits.
 ; An extra "0" is always added to the end of the number (multiply by 10)
@@ -949,7 +1088,7 @@ C6B1: A3 E4           SUBD    ,S                  ; Subtract off base amount
 C6B3: E3 E4           ADDD    ,S                  ; Add one base amount back (we overshot above)
 C6B5: 34 06           PSHS    B,A                 ; Hold the value
 C6B7: E6 84           LDB     ,X                  ; Get first row data
-C6B9: 54              LSRB                        ; Everything draw in color "01" (not sure why it wasn't defined that way to begin with)
+C6B9: 54              LSRB                        ; Everything drawn in color "01" (not sure why it wasn't defined that way to begin with)
 C6BA: D8 C5           EORB    $C5                 ; {ram.digitColor} Flip the color if needed
 C6BC: E7 C0           STB     ,U+                 ; Store to screen
 C6BE: E6 01           LDB     1,X                 ; Repeat ...
@@ -971,6 +1110,8 @@ C6DB: E7 C8 7F        STB     $7F,U               ; ... row
 C6DE: 35 16           PULS    A,B,X               ; Restore
 C6E0: 39              RTS                         ; Done
 ```
+
+# Digit Graphics `visual`
 
 ```html
 <canvas width="754" height="96"
@@ -1070,7 +1211,13 @@ Digit9:
 ; ....#...
 ; #.#.....
 C70E: 20 88 28 08 A0 
+```
 
+# Draw and Erase the Loop Score
+
+This code checks to see if there is a loop-score showing before taking action.
+
+```code
 DrawLoopScore:
 ; If there is a loop score, draw it
 C713: 0D C7           TST     $C7                 ; {ram.hasLoopScore} Is there a value?
@@ -1094,7 +1241,16 @@ C737: 24 0C           BHS     $C745               ; {} Erase 4 digits
 C739: 10 83 00 0A     CMPD    #$000A              ; Decimal 10
 C73D: 24 08           BHS     $C747               ; {} Erase 3 digits
 C73F: 20 08           BRA     $C749               ; {} Erase 2 digits
-;
+```
+
+# Erase a Number
+
+This is very similar brute-force logic as drawing a number, except here the screen area is erased.
+
+Note this is only ever called when erasing the loop score. The only other numbers on the screen
+are the scores, and they are just overwritten without being erased first.
+
+```code
 ; Erase number of digits
 C741: 8D 0B           BSR     $C74E               ; {code.EraseDigit} Erase 1 digit and advance
 C743: 8D 09           BSR     $C74E               ; {code.EraseDigit} Erase 1 digit and advance
@@ -1112,7 +1268,16 @@ C753: 6F C8 3F        CLR     $3F,U               ; Erase 3rd line
 C756: 6F C8 5F        CLR     $5F,U               ; Erase 4th line
 C759: 6F C8 7F        CLR     $7F,U               ; Erase 5th line
 C75C: 39              RTS                         ; Done
+```
 
+# Draw and Erase an 8x8 Pixel Object
+
+This code ORs an 8x8 pixel object onto the screen. A pixel value of 00 in the object
+is considered transparent, and the existing screen pixels are left alone.
+
+There is a lot of screen-math and shifting here since there are 4 pixels per byte. 
+
+```code
 Draw8x8:
 ; X = object pointer (has X,Y coordinate)
 ; U = pointer to data (8x8 pixels = 16 bytes)
@@ -1407,7 +1572,15 @@ C93C: 6A E4           DEC     ,S                  ; All rows done?
 C93E: 26 E5           BNE     $C925               ; {} No ... keep going
 C940: 35 54           PULS    B,X,U               ; Restore
 C942: 39              RTS                         ; Done
+```
 
+# Print a Sequence of Characters
+
+Characters here are 8x8 tiles that form images on the screen. This is only ever used for
+printing text areas, but there are no patterns for individual letters. See the actual
+graphics patterns decoded below.
+
+```code
 PrintChars:
 ; A = X coordinate
 ; B = Y coordinate
@@ -1425,14 +1598,25 @@ C958: A7 84           STA     ,X                  ; ... over
 C95A: 6A 04           DEC     4,X                 ; All done?
 C95C: 26 F0           BNE     $C94E               ; {} No ... do all
 C95E: 39              RTS                         ; Done
+```
 
+# Set and Clear Pixel
+
+These functions manipulate individual pixels by X,Y coordinate. This is used to draw
+the cursive "doubleback" on the splash screen. And it is used to draw the player's
+head pixel. 
+
+This code captures the pixel value from the screen before overwriting it. This value is
+used for collision detection for the player.
+
+```code
 SetPixel:
 C95F: 17 00 50        LBSR    $C9B2               ; {code.GetScreenAndShift}
 C962: A6 C4           LDA     ,U                  ; Value from screen
 C964: 5D              TSTB                        ; Shift 0 means ...
 C965: 26 0A           BNE     $C971               ; {} ... upper pixel
 C967: 84 3F           ANDA    #$3F                ; Mask off upper pixel ..111111
-C969: 1F 89           TFR     A,B                 ; Return the bits ... ?? used by the caller at C3BF
+C969: 1F 89           TFR     A,B                 ; Return the bits ... (used by collision detection))
 C96B: E0 C4           SUBB    ,U                  ; ... we removed
 C96D: 8A 80           ORA     #$80                ; OR in the upper pixel
 C96F: 20 22           BRA     $C993               ; {} Set and done
@@ -1479,7 +1663,14 @@ C9AB: 20 02           BRA     $C9AF               ; {} Clear the pixel
 C9AD: 84 FC           ANDA    #$FC                ; Mask off the 4th pixel 111111..
 C9AF: A7 C4           STA     ,U                  ; Clear the pixel on the screen
 C9B1: 39              RTS                         ; Done
-   
+```
+
+# Get Screen Pointer and Pixel Number
+
+This decodes an X,Y coordinate to a pointer to screen memory. Since each byte of memory
+holds 4 pixels, this routine also returns the pixel number within that byte.
+
+```code
 GetScreenAndShift:
 ; Ultimately, the equation for screen pointer is: Y*32 + X/4.
 ; This code cleverly does:
@@ -1504,7 +1695,15 @@ C9C1: 33 AB           LEAU    D,Y                 ; Point into screen memory
 C9C3: E6 84           LDB     ,X                  ; X coordinate
 C9C5: C4 03           ANDB    #$03                ; 4 pixels per byte ... 4 possible shifts
 C9C7: 39              RTS                         ; Done
+```
 
+# Move an Object by its DeltaX and DeltaY
+
+This function works on the bytes within a single object structure. The X and Y
+coordinate are considered to be words in the object structure, but the deltas
+are single bytes.
+
+```code
 MoveObject:
 ; coordinates = coordinates + 8 * delta (with limits)
 C9C8: E6 04           LDB     4,X                 ; Word ...
@@ -1542,7 +1741,14 @@ C9F9: 4F              CLRA                        ; Yes ... constrain it
 C9FA: 8B 03           ADDA    #$03                ; Translate back down
 C9FC: ED 02           STD     2,X                 ; Store Y coordinate (integer and fractional)
 C9FE: 39              RTS                         ; Done
+```
 
+# Follow the Player
+
+This code moves the given object towards the player's head point. The absolute delta
+speeds are given in A and B. The code changes the sign as needed.
+
+```code
 FollowPlayer:
 ; X = object to move
 C9FF: A7 04           STA     4,X                 ; Store the deltaX ...
@@ -1615,7 +1821,11 @@ CA78: E7 C0           STB     ,U+                 ; ... are white
 CA7A: 4A              DECA                        ; Do ...
 CA7B: 26 EE           BNE     $CA6B               ; {} ... all rows
 CA7D: 39              RTS                         ; Done
+```
 
+# Play Song
+
+```code
 PlaySong:
 CA7E: 7F FF 20        CLR     $FF20               ; {hard.PIA1_DA} D/A to 0
 CA81: BD A9 76        JSR     $A976               ; Enable analog mux
@@ -1685,9 +1895,13 @@ CAF2: 0C D7           INC     $D7                 ; {ram.random} ?? randomness?
 CAF4: 7D FF 03        TST     $FF03               ; {hard.PIA0_CB} Wait for ...
 CAF7: 2A F9           BPL     $CAF2               ; {} ... vertical blank
 CAF9: 39              RTS                         ; Cone
+```
 
-; Data from here down
+# Data From Here Down
 
+## Game Objects `visual`
+
+```code
 ImageApple:
 ```
 
@@ -2024,6 +2238,8 @@ CC45: FF FF ; 33333333
 CC47: FF FF ; 33333333
 CC49: FF FF ; 33333333
 ```
+
+## Text Areas `visual`
 
 ```html
 <canvas width="380" height="140"
@@ -2536,6 +2752,8 @@ CEBF: 88 00 ; 2.2.....
 CEC1: A0 00 ; 22......
 ```
 
+## The Cursive Doubleback Text `visual`
+
 ```html
 <canvas id="cursiveArea" width="640" height="304" style="border: 1px solid black">
 </canvas><br>
@@ -2610,7 +2828,11 @@ CF35: 00 01  ; 4 S
 CF37: FF 01  ; 5 SW
 CF39: FF 00  ; 6 W
 CF3B: FF FF  ; 7 NW
+```
 
+# Songs
+
+```code
 MusicFirstLife:
 CF3D: 28 80                
 CF3F: 40 40                              
@@ -2687,6 +2909,8 @@ CFAF: 1E     ; Type 6: Pear     300
 CFB0: 32     ; Type 7: Spider   500
 CFB1: 00     ; Type 8: Skull   (no score)
 CFB2: 64     ; Type 9: X       1000       
+
+; ASCII version of the copyright (never used by the code)
 
 ; "COPYRIGHT 1982 DALE A. LEAR ALL RIGHTS RESERVED LICENSED TO TANDY COPRPORATION"
 CFB3: 43 4F 50 59 52 49 47 48 54 20 31 39 38 32 20 44 41 4C 45 20 41 2E 20 4C 45 41 52 20 41 4C 4C 20 
