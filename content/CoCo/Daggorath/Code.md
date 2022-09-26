@@ -20,8 +20,6 @@ Good info on the math here: [http://archive.li/mJKIz](http://archive.li/mJKIz)
 
 TODO: what areas are mirrored? how does the flip happen? are graphics/text areas ended differently?
 
-TODO: make a HTML table of links to the SWI routines. Figure out what they all do.
-
 ```html
 <!-- Cache some commonly-used values -->
 <canvas width="0" height="0"
@@ -41,11 +39,13 @@ TODO: make a HTML table of links to the SWI routines. Figure out what they all d
 # Start
 
 ```code
+Start:
 C000: CE C0 D1        LDU     #$C0D1              ; Play demo game code
-C003: 20 03           BRA     $C008               ; {} Do Demo
+C003: 20 03           BRA     $C008               ; {code.PlayGame} Do Demo
 ;
 C005: CE C1 24        LDU     #$C124              ; Play normal game code
 ;
+PlayGame:
 C008: 10 CE 10 00     LDS     #$1000              ; Stacks builds to lower from $1000
 C00C: 8E FF 00        LDX     #$FF00              ; PIA0
 C00F: CC 34 FA        LDD     #$34FA              ; A=34, B=FA
@@ -91,13 +91,13 @@ C05A: 6F 80           CLR     ,X+                 ;
 C05C: 8C 02 AD        CMPX    #$02AD              ; 
 C05F: 25 F9           BCS     $C05A               ; {}
 C061: 8E 09 FD        LDX     #$09FD              ; First game-task slot
-C064: 9F B9           STX     <$B9                ; Clear the task list
+C064: 9F B9           STX     <$B9                ; {ram.nextTask} Clear the task list
 C066: 6F 80           CLR     ,X+                 ; Zero out  ...
 C068: 8C 0B 07        CMPX    #$0B07              ; ... game-tasks ... (Not the last task. It is initialized at startup.)
 C06B: 25 F9           BCS     $C066               ; {} ... slots
 ;
 C06D: 10 8E D7 DC     LDY     #$D7DC              ; Initial task routines
-C071: 0A BB           DEC     <$BB                ; 
+C071: 0A BB           DEC     <$BB                ; {ram.m02BB}
 C073: CC 00 0C        LDD     #$000C              ; 
 C076: AE A1           LDX     ,Y++                ; Get next task entry
 C078: 27 0A           BEQ     $C084               ; {} All tasks made ... out
@@ -113,65 +113,63 @@ C088: CE DA 91        LDU     #$DA91              ; Object distribution table
 C08B: 4F              CLRA                        ; First object in table is type 0 (SUPREME RING)
 C08C: E6 C4           LDB     ,U                  ; Get the info
 C08E: C4 0F           ANDB    #$0F                ; Hold ...
-C090: D7 8C           STB     <$8C                ; ... number of objects
+C090: D7 8C           STB     <$8C                ; {ram.numObjs} ... number of objects
 C092: E6 C0           LDB     ,U+                 ; Get the info
 C094: 54              LSRB                        ; Hold ...
 C095: 54              LSRB                        ; ... ...
 C096: 54              LSRB                        ; ... ...
 C097: 54              LSRB                        ; ... ...
-C098: D7 8D           STB     <$8D                ; ... first appear on level
+C098: D7 8D           STB     <$8D                ; {ram.m028D} ... first appear on level
 C09A: 3F              SWI                         ; Make an instance of the object
-C09B: 17                  ; 17: [Create object structure](#SWI_17) 
+C09B: 17                                          ; 17: [Create object structure](#SWI_17) 
 C09C: 6A 05           DEC     5,X                 ; Object isn't in any list (room, player, monster)
 C09E: 5C              INCB                        ; Next object on next level
 C09F: C1 05           CMPB    #$05                ; Past level 4?
 C0A1: 2F 02           BLE     $C0A5               ; {} No ... use next level
-C0A3: D6 8D           LDB     <$8D                ; use
-C0A5: 0A 8C           DEC     <$8C                ; Decrement number of objects
+C0A3: D6 8D           LDB     <$8D                ; {ram.m028D} use
+C0A5: 0A 8C           DEC     <$8C                ; {ram.numObjs} Decrement number of objects
 C0A7: 26 F1           BNE     $C09A               ; {} Go back to create more of this type
 C0A9: 4C              INCA                        ; Next object type
 C0AA: 11 83 DA A3     CMPU    #$DAA3              ; All object types done?
 C0AE: 25 DC           BCS     $C08C               ; {} Not end of table ... go back
 ;
 C0B0: CE 03 88        LDU     #$0388              ; 
-C0B3: 0A B7           DEC     <$B7                ; Printing goes to desired descriptor
+C0B3: 0A B7           DEC     <$B7                ; {ram.whereToPrint} Printing goes to desired descriptor
 C0B5: 3F              SWI                         
-C0B6: 0A                  ; 0A: [Clear hand descriptor](#SWI_A)
+C0B6: 0A                                          ; 0A: [Clear hand descriptor](#SWI_A)
 C0B7: 3F              SWI                         
-C0B8: 02                  ; 02: [Uncompress message m and display](#SWI_2)
-;
-; "COPYRIGHT  DYNA MICRO  MCMLXXXII"
-C0B9: F8 DF 0C C9 27 45 00 02 65 C1 03 52 39 3C 00 68 DA CC 63 09 48 
+C0B8: 02                                          ; 02: [Uncompress message m and display](#SWI_2)
+C0B9: F8 DF 0C C9 27 45 00 02 65 C1 03 52 39      ; "COPYRIGHT  DYNA MICRO  MCMLXXXII"
+C0C6: 3C 00 68 DA CC 63 09 48 
 ;           
-C0CE: 0F B7           CLR     <$B7                ; Printing goes to command area
+C0CE: 0F B7           CLR     <$B7                ; {ram.whereToPrint} Printing goes to command area
 C0D0: 39              RTS                         ; Done
 
 PlayDemo:
-C0D1: 0A 77           DEC     <$77                ; Demo mode flag
+C0D1: 0A 77           DEC     <$77                ; {ram.gameMode} Demo mode flag
 C0D3: 8D 3F           BSR     $C114               ; {code.EndOfTapeAccess} Configure interrupts
 C0D5: 8E DF 10        LDX     #$DF10              ; Wizard picture
-C0D8: 0A 9E           DEC     <$9E                ; ??
+C0D8: 0A 9E           DEC     <$9E                ; {ram.m029E} ??
 C0DA: 3F              SWI                         ; Beam on the wizard
-C0DB: 14                                           ; SWI_14:[Beam subroutine](#addr_SWI_14):
+C0DB: 14                                          ; SWI_14:[Beam subroutine](#SWI_14):
 C0DC: 3F              SWI                         ; Print the first part of the message
-C0DD: 02                                           ; SWI_2:[Uncompress message m and display](#addr_SWI_2):
-;
-C0DE: 9F D2 02 06 45 06 4A 02 BA 85 97 BD EF 80 ; "_1F_I DARE YE ENTER..._1F_"
+C0DD: 02                                          ; SWI_2:[Uncompress message m and display](#SWI_2):
+C0DE: 9F D2 02 06 45 06 4A 02 BA 85 97 BD EF 80   ; "_1F_I DARE YE ENTER..._1F_"
 ;
 C0EC: 3F              SWI                         ; Print the second part of the message
-C0ED: 02                                           ; SWI_2:[Uncompress message m and display](#addr_SWI_2):
-;
-C0EE: F7 BD EA 20 A0 25 5C 72 BD D3 03 CC 02 04 E7 7C 83 44 6F 7B ; "...THE DUNGEONS OF DAGGORATH!!!"
+C0ED: 02                                          ; SWI_2:[Uncompress message m and display](#SWI_2):
+C0EE: F7 BD EA 20 A0 25 5C 72 BD D3 03 CC 02 04   ; "...THE DUNGEONS OF DAGGORATH!!!"
+C0FC: E7 7C 83 44 6F 7B                           ;
 ;
 C102: 3F              SWI                         ; Wait 1.35 seconds
-C103: 10                                           ; SWI_10:[Pause for 1.35 seconds](#addr_SWI_10):
+C103: 10                                          ; SWI_10:[Pause for 1.35 seconds](#SWI_10):
 C104: 3F              SWI                         ; Another 1.35 seconds
-C105: 10                                           ; SWI_10:[Pause for 1.35 seconds](#addr_SWI_10):
+C105: 10                                          ; SWI_10:[Pause for 1.35 seconds](#SWI_10):
 C106: 3F              SWI                         ; Beam off the wizard
-C107: 15                                           ; SWI_15:[Beam subroutine](#addr_SWI_15):
+C107: 15                                          ; SWI_15:[Beam subroutine](#SWI_15):
 C108: 3F              SWI                         ; Wait 1.35 seconds
-C109: 09                                           ; SWI_9:[Clear secondary screen](#addr_SWI_9):
-C10A: 0A B4           DEC     <$B4                ; ??
+C109: 09                                          ; SWI_9:[Clear secondary screen](#SWI_9):
+C10A: 0A B4           DEC     <$B4                ; {ram.flipScreens} ??
 C10C: 13              SYNC                        ; Wait for draw
 C10D: 86 02           LDA     #$02                ; Initial light level (means what ??)
 C10F: CE D7 D5        LDU     #$D7D5              ; Demo objects
@@ -189,50 +187,50 @@ C123: 39              RTS                         ; Done
 PlayGame:
 C124: 8D EE           BSR     $C114               ; {code.EndOfTapeAccess} Configure interrupts and sound
 C126: CC 10 0B        LDD     #$100B              ; Starting cell (Y=16, X=0B)
-C129: DD 13           STD     <$13                ; 
-C12B: 0F 17           CLR     <$17                ; MSB of strength (start out weak)
+C129: DD 13           STD     <$13                ; {ram.playerY}
+C12B: 0F 17           CLR     <$17                ; {ram.pStrength} MSB of strength (start out weak)
 C12D: 4F              CLRA                        ; Initial light level (none)
 C12E: CE D7 D9        LDU     #$D7D9              ; List of game objects (not demo objects)
 ;
 C131: 3F              SWI                         ; Print "PREPARE!"
-C132: 16                                           ; SWI_16:[Print PREPARE](#addr_SWI_16):
+C132: 16                                          ; SWI_16:[Print PREPARE](#SWI_16):
 C133: 3F              SWI                         ; Clear light level
-C134: 1A                                           ; SWI_1A:[Set up level](#addr_SWI_1A):
+C134: 1A                                          ; SWI_1A:[Set up level](#SWI_1A):
 C135: 10 8E 02 29     LDY     #$0229              ; Pointer to 1st game object in Y
 C139: A6 C0           LDA     ,U+                 ; From the list of objects to make
 C13B: 2B 12           BMI     $C14F               ; {} All done ... start the game
 C13D: 3F              SWI                         ; Create the game object (type in A)
-C13E: 17                                           ; SWI_17:[Create object structure](#addr_SWI_17):
+C13E: 17                                          ; SWI_17:[Create object structure](#SWI_17):
 C13F: 6C 05           INC     5,X                 ; Object starts out in pack
 C141: 1E 13           EXG     X,U                 ; X->U (SWI 18 needs it in U)
 C143: 3F              SWI                         ; Initial objects start off revealed
-C144: 18                                           ; SWI_18:[Change object to proper name and data](#addr_SWI_18):
+C144: 18                                          ; SWI_18:[Change object to proper name and data](#SWI_18):
 C145: 1E 13           EXG     X,U                 ; Restore X and U
 C147: 6F 0B           CLR     11,X                ; Already revealed
 C149: AF A4           STX     ,Y                  ; Link this object to last
 C14B: 1F 12           TFR     X,Y                 ; This is now last
 C14D: 20 EA           BRA     $C139               ; {} Do all game objects
 ;       
-C14F: 0D 77           TST     <$77                ; ?? are we in play-game mode (not demo) ??
+C14F: 0D 77           TST     <$77                ; {ram.gameMode} ?? are we in play-game mode (not demo) ??
 C151: 27 13           BEQ     $C166               ; {} Yes ... don't start with the map
-C153: 0A 9B           DEC     <$9B                ; ??
+C153: 0A 9B           DEC     <$9B                ; {ram.m029B} ??
 C155: 8E CD B2        LDX     #$CDB2              ; The routine for drawing ...
-C158: 9F B2           STX     <$B2                ; ... the scroll (seer and vision)
-C15A: 0A 94           DEC     <$94                ; This is a SEER scroll
+C158: 9F B2           STX     <$B2                ; {ram.displayFunction} ... the scroll (seer and vision)
+C15A: 0A 94           DEC     <$94                ; {ram.scrollType} This is a SEER scroll
 C15C: 3F              SWI                         ; Redraw the display
-C15D: 0E                                           ; SWI_E:[Display playing screen](#addr_SWI_E):
+C15D: 0E                                          ; SWI_E:[Display playing screen](#SWI_E):
 C15E: 3F              SWI                         ; Wait for 1.35 seconds
-C15F: 10                                           ; SWI_10:[Pause for 1.35 seconds](#addr_SWI_10):
+C15F: 10                                          ; SWI_10:[Pause for 1.35 seconds](#SWI_10):
 C160: 3F              SWI                         ; Another 1.35. Total: 1.35*2 = 2.7 seconds
-C161: 10                                           ; SWI_10:[Pause for 1.35 seconds](#addr_SWI_10):
-C162: 0F 9B           CLR     <$9B                ; 
+C161: 10                                          ; SWI_10:[Pause for 1.35 seconds](#SWI_10):
+C162: 0F 9B           CLR     <$9B                ; {ram.m029B}
 C164: 13              SYNC                        ; Wait for two ...
 C165: 13              SYNC                        ; ... interrupts (??letting the sound get started??)
 ;
 C166: 3F              SWI                         ; Draw the screen
-C167: 19                                           ; SWI_19:[Bring up normal display](#addr_SWI_19):
+C167: 19                                          ; SWI_19:[Bring up normal display](#SWI_19):
 C168: 3F              SWI                         ; Show the command prompt
-C169: 0F                                           ; SWI_F:[Ready command prompt](#addr_SWI_F):
+C169: 0F                                          ; SWI_F:[Ready command prompt](#SWI_F):
 C16A: 7E C1 F5        JMP     $C1F5               ; {code.GameLoop} Back to top of the game loop
 
 ReadCheckError:
@@ -240,7 +238,7 @@ ReadCheckError:
 ; X points to the buffer to fill. Block type returned in B.   
 C16D: BF 00 7E        STX     $007E               ; {ram.CASSPTR} Read buffer
 C170: 10 3F           SWI2                        ; Read a block ...
-C172: 06                  ; A006: BLKIN            ; ... from tape
+C172: 06                                          ; ... (A006: BLKIN) from tape
 C173: 4D              TSTA                        ; Error?
 C174: 10 26 DE AF     LBNE    $A027               ; Yes ... restart the CoCo
 C178: F6 00 7C        LDB     $007C               ; {ram.CASSBLKTYPE} Return block type
@@ -255,7 +253,7 @@ C187: F7 FF 21        STB     $FF21               ; {hard.PIA1_CA} Disable RS-23
 C18A: 39              RTS                         ; Done
                  
 QuarterSecDelay:
-C18B: 9E 00           LDX     <$00                ; 
+C18B: 9E 00           LDX     <$00                ; {ram.CONST_00}
 C18D: 30 1F           LEAX    -1,X                ; Long ...
 C18F: 26 FC           BNE     $C18D               ; {} ... delay loop
 C191: 39              RTS                         ; Done
@@ -265,31 +263,31 @@ C192: 8D E8           BSR     $C17C               ; {code.StartOfTapeAccess} Tap
 C194: 8D F5           BSR     $C18B               ; {code.QuarterSecDelay} Wait
 C196: 8D F3           BSR     $C18B               ; {code.QuarterSecDelay} Wait (1/2 second total)
 C198: 10 3F           SWI2                        ; Write the tape header
-C19A: 0C                  ; A00C: WRTLDR
+C19A: 0C                                          ; A00C: WRTLDR
 C19B: 10 3F           SWI2                        ; Write the filename (we setup this block at D7C9)
-C19D: 08                  ; A008: BLKOUT        
+C19D: 08                                          ; A008: BLKOUT        
 C19E: 8D EB           BSR     $C18B               ; {code.QuarterSecDelay} Wait
 C1A0: 10 3F           SWI2                        ; Write the tape header again
-C1A2: 0C                  ; A00C: WRTLDR
+C1A2: 0C                                          ; A00C: WRTLDR
 C1A3: 8E 02 00        LDX     #$0200              ; Start of variables (the direct page)
 C1A6: CC 01 80        LDD     #$0180              ; Block type = 1 (data) ...
 C1A9: FD 00 7C        STD     $007C               ; {ram.CASSBLKTYPE} ... block size = 128 bytes
 C1AC: BF 00 7E        STX     $007E               ; {ram.CASSPTR} Store for BASIC
 C1AF: 10 3F           SWI2                        ; Write the block
-C1B1: 08                  ; A008: BLKOUT
+C1B1: 08                                          ; A008: BLKOUT
 C1B2: 8C 0F 05        CMPX    #$0F05              ; Written all of our memory?
 C1B5: 25 EF           BCS     $C1A6               ; {} No ... back for more
 C1B7: FF 00 7C        STU     $007C               ; {ram.CASSBLKTYPE} U was last set at C17C. Clever. Block type = FF (end of file), length = 0
 C1BA: 10 3F           SWI2                        ; Write an end block
-C1BC: 08                  ; A008: BLKOUT
+C1BC: 08                                          ; A008: BLKOUT
 C1BD: 8D CC           BSR     $C18B               ; {code.QuarterSecDelay} Delay
 C1BF: 20 2B           BRA     $C1EC               ; {} Turn off motor and fall into game loop
 
 LoadFromTape:      
 C1C1: 8D B9           BSR     $C17C               ; {code.StartOfTapeAccess} Start tape access
 C1C3: 10 3F           SWI2                        ; Tape on and start reading
-C1C5: 04                  ; A004: CRSDON           
-C1C6: DE 0B           LDU     <$0B                ; ?? Off screen buffer to use for scratch ??
+C1C5: 04                                          ; A004: CRSDON           
+C1C6: DE 0B           LDU     <$0B                ; {ram.backScreen} ?? Off screen buffer to use for scratch ??
 C1C8: AE C4           LDX     ,U                  ; 
 C1CA: 8D A1           BSR     $C16D               ; {code.ReadCheckError} Read block
 C1CC: 26 F8           BNE     $C1C6               ; {} Is this a header? No ... keep looking
@@ -302,18 +300,18 @@ C1D9: 26 E6           BNE     $C1C1               ; {code.LoadFromTape} No ... f
 C1DB: 5A              DECB                        ; Check 8 byte ...
 C1DC: 26 F7           BNE     $C1D5               ; {} ... filename
 C1DE: 10 3F           SWI2                        ; Tape on and start reading
-C1E0: 04                  ; A004: CRSDON
+C1E0: 04                                          ; A004: CRSDON
 C1E1: 8E 02 00        LDX     #$0200              ; Start of variables to load (direct page)
 C1E4: 8D 87           BSR     $C16D               ; {code.ReadCheckError} Read a block
 C1E6: 2A FC           BPL     $C1E4               ; {} Keep reading if block type was not FF (end of file)
 C1E8: 10 CE 10 00     LDS     #$1000              ; Reset stack
 ;    
 C1EC: BD C1 14        JSR     $C114               ; {code.EndOfTapeAccess} Turn off tape and reenable interrupts
-C1EF: 0F B8           CLR     <$B8                ; Tape operation complete
+C1EF: 0F B8           CLR     <$B8                ; {ram.tapeTrigger} Tape operation complete
 C1F1: 3F              SWI                         ; Draw normal display
-C1F2: 19                                           ; SWI_19:[Bring up normal display](#addr_SWI_19):
+C1F2: 19                                          ; SWI_19:[Bring up normal display](#SWI_19):
 C1F3: 3F              SWI                         ; Draw ready prompt
-C1F4: 0F                                           ; SWI_F:[Ready command prompt](#addr_SWI_F):
+C1F4: 0F                                          ; SWI_F:[Ready command prompt](#SWI_F):
 ; Fall into game loop
 
 ```
@@ -323,9 +321,9 @@ C1F4: 0F                                           ; SWI_F:[Ready command prompt
 ```code
 GameLoop: 
 C1F5: CE 02 AB        LDU     #$02AB              
-C1F8: 0F BB           CLR     <$BB                ; 
+C1F8: 0F BB           CLR     <$BB                ; {ram.m02BB}
 C1FA: 1F 32           TFR     U,Y                 
-C1FC: 0D B8           TST     <$B8                ; ZSAVE or ZLOAD requested?
+C1FC: 0D B8           TST     <$B8                ; {ram.tapeTrigger} ZSAVE or ZLOAD requested?
 C1FE: 2E 92           BGT     $C192               ; {code.SaveToTape} ZSAVE ... go do it
 C200: 2B BF           BMI     $C1C1               ; {code.LoadFromTape} ZLOAD ... go do it
 C202: EE C4           LDU     ,U                  
@@ -335,7 +333,7 @@ C206: 34 60           PSHS    U,Y                 ; Hold registers
 C208: AD D8 03        JSR     [$03,U]             ; Execute game task
 C20B: 35 60           PULS    Y,U                 ; Restore
 ;
-C20D: 0D BB           TST     <$BB                ; 
+C20D: 0D BB           TST     <$BB                ; {ram.m02BB}
 C20F: 26 E4           BNE     $C1F5               ; {code.GameLoop}
 C211: C1 0C           CMPB    #$0C                
 C213: 27 E5           BEQ     $C1FA               ; {}
@@ -366,7 +364,7 @@ C23E: AF A4           STX     ,Y
 C240: 35 91           PULS    CC,X,PC             
    
 C242: 34 74           PSHS    U,Y,X,B             
-C244: 0D 9B           TST     <$9B                ; 
+C244: 0D 9B           TST     <$9B                ; {ram.m029B}
 C246: 26 12           BNE     $C25A               ; {}
 C248: 1F 32           TFR     U,Y                 
 C24A: EE C4           LDU     ,U                  
@@ -383,9 +381,9 @@ ReserveTask:
 ; Move the next-task-pointer to the next seven-byte slot.
 ; Return reserved slot pointer in U.
 C25C: 34 10           PSHS    X                   ; Hold X
-C25E: DE B9           LDU     <$B9                ; Get the slot pointer
+C25E: DE B9           LDU     <$B9                ; {ram.nextTask} Get the slot pointer
 C260: 30 47           LEAX    7,U                 ; Point to next
-C262: 9F B9           STX     <$B9                ; New slot pointer
+C262: 9F B9           STX     <$B9                ; {ram.nextTask} New slot pointer
 C264: 35 90           PULS    X,PC                ; Out
 
 WriteToSAM:
@@ -424,41 +422,41 @@ C280: A6 88 E3        LDA     -$1D,X              ; FF03 ... 16.67MS (60Hz) inte
 C283: 10 2A 00 99     LBPL    $C320               ; {} Upper bit 0 ... must have been the horizontal ... ignore
 C287: 86 02           LDA     #$02                ; Set DP to ...
 C289: 1F 8B           TFR     A,DP                ; ... base 02xx (in case we are interrupting a BASIC routine)
-C28B: 0D B4           TST     <$B4                ; Time to flip screens?
+C28B: 0D B4           TST     <$B4                ; {ram.flipScreens} Time to flip screens?
 C28D: 27 0E           BEQ     $C29D               ; {} No ... keep what we have
-C28F: DC 09           LDD     <$09                ; Get the current visible
-C291: DE 0B           LDU     <$0B                ; Get the current drawing
-C293: DD 0B           STD     <$0B                ; Flip the ...
-C295: DF 09           STU     <$09                ; ... visible and drawing screens
+C28F: DC 09           LDD     <$09                ; {ram.activeScreen} Get the current visible
+C291: DE 0B           LDU     <$0B                ; {ram.backScreen} Get the current drawing
+C293: DD 0B           STD     <$0B                ; {ram.backScreen} Flip the ...
+C295: DF 09           STU     <$09                ; {ram.activeScreen} ... visible and drawing screens
 C297: EC 44           LDD     4,U                 ; Get the SAM settings for the new visible screen
 C299: 8D CB           BSR     $C266               ; {code.WriteToSAM} Set the SAM registers to flip the screen
-C29B: 0F B4           CLR     <$B4                ; Acknowledge the flip
+C29B: 0F B4           CLR     <$B4                ; {ram.flipScreens} Acknowledge the flip
 ;
-C29D: 0D 9C           TST     <$9C                ; Is the wizard beaming in or out (cut scenes)?
+C29D: 0D 9C           TST     <$9C                ; {ram.beamSound} Is the wizard beaming in or out (cut scenes)?
 C29F: 27 08           BEQ     $C2A9               ; {} No ... skip it
-C2A1: 03 9D           COM     <$9D                ; Toggle the wizard sound square wave
-C2A3: 96 9D           LDA     <$9D                ; Get sound value
+C2A1: 03 9D           COM     <$9D                ; {ram.beamSoundVal} Toggle the wizard sound square wave
+C2A3: 96 9D           LDA     <$9D                ; {ram.beamSoundVal} Get sound value
 C2A5: 48              ASLA                        ; 8 bit to ...
 C2A6: 48              ASLA                        ; ... 6 bit value (divide by 4)
 C2A7: A7 84           STA     ,X                  ; Store to FF20 (6 bit sound)
 ;
-C2A9: 0D B1           TST     <$B1                ; Are we between rounds?
+C2A9: 0D B1           TST     <$B1                ; {ram.hearHeart} Are we between rounds?
 C2AB: 27 2F           BEQ     $C2DC               ; {} Yes .. no heart
-C2AD: 0A AE           DEC     <$AE                ; Time to change heart pattern?
+C2AD: 0A AE           DEC     <$AE                ; {ram.heartCounter} Time to change heart pattern?
 C2AF: 26 2B           BNE     $C2DC               ; {} No ... skip it
-C2B1: 96 AF           LDA     <$AF                ; Reload the ...
-C2B3: 97 AE           STA     <$AE                ; ... heart counter
+C2B1: 96 AF           LDA     <$AF                ; {ram.heartCounterRel} Reload the ...
+C2B3: 97 AE           STA     <$AE                ; {ram.heartCounter} ... heart counter
 C2B5: E6 02           LDB     2,X                 ; FF22 ... current single-bit sound
 C2B7: C8 02           EORB    #$02                ; Toggle the single-bit ...
 C2B9: E7 02           STB     2,X                 ; ... sound (makes a pop)
-C2BB: 0D AD           TST     <$AD                ; Scroll showing?
+C2BB: 0D AD           TST     <$AD                ; {ram.scrollShowing} Scroll showing?
 C2BD: 27 1D           BEQ     $C2DC               ; {} Yes ... skip drawing the heart
 C2BF: CE 03 88        LDU     #$0388              ; Hand line area ?active or inactive?
 C2C2: AE 44           LDX     4,U                 ; Hold onto current cursor (we might be printing)
 C2C4: CC 00 0F        LDD     #$000F              ; New cursor ...
 C2C7: ED 44           STD     4,U                 ; ... middle of the line
 C2C9: 86 20           LDA     #$20                ; 20, 21 ... small-heart characters
-C2CB: 03 B0           COM     <$B0                ; Toggle heart picture tracking
+C2CB: 03 B0           COM     <$B0                ; {ram.heartPicture} Toggle heart picture tracking
 C2CD: 27 02           BEQ     $C2D1               ; {} Zero now? Draw the small heart
 C2CF: 86 22           LDA     #$22                ; 22, 23 ... large-heart characters
 C2D1: BD CA 17        JSR     $CA17               ; {code.PrintRegChar} Draw the first heart character
@@ -482,9 +480,9 @@ C2F8: 33 42           LEAU    2,U
 C2FA: BD C2 42        JSR     $C242               ; {}
 C2FD: 20 EA           BRA     $C2E9               ; {}
 ;
-C2FF: 0D 28           TST     <$28                ; Are we fainting?
+C2FF: 0D 28           TST     <$28                ; {ram.fainting} Are we fainting?
 C301: 26 1D           BNE     $C320               ; {} Yes .. ??
-C303: 0D 77           TST     <$77                ; Are we in a live game?
+C303: 0D 77           TST     <$77                ; {ram.gameMode} Are we in a live game?
 C305: 27 11           BEQ     $C318               ; {} Yes ... don't restart the game on a key
 C307: 7F FF 02        CLR     $FF02               ; {hard.PIA0_DB} Activate all keyboard columns
 C30A: B6 FF 00        LDA     $FF00               ; {hard.PIA0_DA} Check all rows
@@ -494,7 +492,7 @@ C311: 27 0D           BEQ     $C320               ; {} No ... skip processing th
 C313: 8E C0 05        LDX     #$C005              ; Any key was pressed ... start a new game
 C316: AF 6A           STX     10,S                ; Return address
 C318: 10 3F           SWI2                        ; BASIC function ...
-C31A: 00                                           ; ... POLCAT
+C31A: 00                                          ; ... POLCAT
 C31B: 4D              TSTA                        ; Was it a valid key (not, say, SHIFT)
 C31C: 27 02           BEQ     $C320               ; {} No ... don't store it (but we are still starting a new game)
 C31E: 8D 20           BSR     $C340               ; {code.CharToBuf} Store character in ring buffer
@@ -510,13 +508,13 @@ C329: 34 15           PSHS    X,B,CC              ; Save
 C32B: 1A 10           ORCC    #$10                ; Turn OFF the IRQ interrupt
 C32D: 4F              CLRA                        ; Initial return ... no key in buffer
 C32E: 8E 02 D1        LDX     #$02D1              ; 32-byte input ring buffer
-C331: D6 BC           LDB     <$BC                ; The ring-buffer head
-C333: D1 BD           CMPB    <$BD                ; Same as the ring-buffer tail?
+C331: D6 BC           LDB     <$BC                ; {ram.inputHead} The ring-buffer head
+C333: D1 BD           CMPB    <$BD                ; {ram.inputTail} Same as the ring-buffer tail?
 C335: 27 07           BEQ     $C33E               ; {} Yes ... return 0 (no input)
 C337: A6 85           LDA     B,X                 ; Get the next character from the head
 C339: 5C              INCB                        ; Advance the head ...
 C33A: C4 1F           ANDB    #$1F                ; ... and wrap ...
-C33C: D7 BC           STB     <$BC                ; ... if needed
+C33C: D7 BC           STB     <$BC                ; {ram.inputHead} ... if needed
 C33E: 35 95           PULS    CC,B,X,PC           ; Done
 
 CharToBuf:
@@ -524,11 +522,11 @@ CharToBuf:
 C340: 34 15           PSHS    X,B,CC              ; Save all
 C342: 1A 10           ORCC    #$10                ; Turn OFF the IRQ interrupt
 C344: 8E 02 D1        LDX     #$02D1              ; 32-byte ring buffer
-C347: D6 BD           LDB     <$BD                ; Get tail index
+C347: D6 BD           LDB     <$BD                ; {ram.inputTail} Get tail index
 C349: A7 85           STA     B,X                 ; Store the character to the tail
 C34B: 5C              INCB                        ; Advance the tail ...
 C34C: C4 1F           ANDB    #$1F                ; ... and wrap ...
-C34E: D7 BD           STB     <$BD                ; ... if needed
+C34E: D7 BD           STB     <$BD                ; {ram.inputTail} ... if needed
 C350: 35 95           PULS    CC,B,X,PC           ; Done
 ```
 
@@ -613,29 +611,29 @@ C383: 3B              RTI                         ; Return to caller
 
 SWI_0:
 ; Light level
-C384: 96 6E           LDA     <$6E                ; 
-C386: 0D 75           TST     <$75                ; 
+C384: 96 6E           LDA     <$6E                ; {ram.m026E}
+C386: 0D 75           TST     <$75                ; {ram.m0275}
 C388: 27 04           BEQ     $C38E               ; {}
-C38A: 96 6F           LDA     <$6F                ; 
-C38C: 0F 75           CLR     <$75                ; 
+C38A: 96 6F           LDA     <$6F                ; {ram.m026F}
+C38C: 0F 75           CLR     <$75                ; {ram.m0275}
 C38E: 5F              CLRB                        
 C38F: 80 07           SUBA    #$07                
-C391: 90 8B           SUBA    <$8B                ; 
+C391: 90 8B           SUBA    <$8B                ; {ram.m028B}
 C393: 2C 0A           BGE     $C39F               ; {}
 C395: 5A              DECB                        
 C396: 81 F9           CMPA    #$F9                
 C398: 2F 05           BLE     $C39F               ; {}
 C39A: 8E CB 96        LDX     #$CB96              
 C39D: E6 86           LDB     A,X                 
-C39F: D7 2D           STB     <$2D                ; New dot frequency
+C39F: D7 2D           STB     <$2D                ; {ram.dotFrequency} New dot frequency
 C3A1: 39              RTS                         
 
 SWI_1: 
 ; Draw picture X on screen
 ;  X: points to picture script
 ;
-C3A2: 0F 51           CLR     <$51                ; Starting new line segment
-C3A4: 96 2D           LDA     <$2D                ; Dot Frequency
+C3A2: 0F 51           CLR     <$51                ; {ram.m0251} Starting new line segment
+C3A4: 96 2D           LDA     <$2D                ; {ram.dotFrequency} Dot Frequency
 C3A6: 4C              INCA                        ; Anything to draw?
 C3A7: 27 4D           BEQ     $C3F6               ; {} No, out
 ;
@@ -667,14 +665,14 @@ C3C6: AE 84           LDX     ,X                  ; Jump address from X
 C3C8: 8C                  ; CMPX  opcode to skip next instruction 
 C3C9: AE E1           LDX     ,S++                ; Jump address from stack
 ; Command FF: Start a new segment
-C3CB: 0F 51           CLR     <$51                ; New segment
+C3CB: 0F 51           CLR     <$51                ; {ram.m0251} New segment
 C3CD: 20 DA           BRA     $C3A9               ; {} Continue
 ;
 ; Regular line command
-C3CF: 0D 51           TST     <$51                ; Already have start point?
+C3CF: 0D 51           TST     <$51                ; {ram.m0251} Already have start point?
 C3D1: 26 06           BNE     $C3D9               ; {} Yes, skip this
 C3D3: 8D 0D           BSR     $C3E2               ; {} Get coordinates
-C3D5: 0A 51           DEC     <$51                ; Flag now have a start
+C3D5: 0A 51           DEC     <$51                ; {ram.m0251} Flag now have a start
 C3D7: 20 D0           BRA     $C3A9               ; {} Continue
 ;
 C3D9: 8D 05           BSR     $C3E0               ; {} Set up new segment
@@ -683,30 +681,30 @@ C3DE: 20 C9           BRA     $C3A9               ; {} Back for more
 ;
 C3E0: 8D 15           BSR     $C3F7               ; {} Move old end to new start
 C3E2: E6 80           LDB     ,X+                 ; Y coordinate
-C3E4: D7 54           STB     <$54                ; Hold on to it
+C3E4: D7 54           STB     <$54                ; {ram.m0254} Hold on to it
 C3E6: 8D 18           BSR     $C400               ; {}
-C3E8: D3 07           ADDD    <$07                ; Y center of screen
-C3EA: DD 33           STD     <$33                ; Store new end Y
+C3E8: D3 07           ADDD    <$07                ; {ram.m0207} Y center of screen
+C3EA: DD 33           STD     <$33                ; {ram.m0233} Store new end Y
 C3EC: E6 80           LDB     ,X+                 ; X coordinate
-C3EE: D7 52           STB     <$52                ; Hold on to it
+C3EE: D7 52           STB     <$52                ; {ram.m0252} Hold on to it
 C3F0: 8D 14           BSR     $C406               ; {}
-C3F2: D3 05           ADDD    <$05                ; X center of screen
-C3F4: DD 35           STD     <$35                ; Store new end X
+C3F2: D3 05           ADDD    <$05                ; {ram.m0205} X center of screen
+C3F4: DD 35           STD     <$35                ; {ram.m0235} Store new end X
 ; Command FE: Exit
 C3F6: 39              RTS                         ; Done
 ;
-C3F7: DC 33           LDD     <$33                ; Move old Y...
-C3F9: DD 2F           STD     <$2F                ; ... to new Y
-C3FB: DC 35           LDD     <$35                ; Move old X
-C3FD: DD 31           STD     <$31                ; ... to new X
+C3F7: DC 33           LDD     <$33                ; {ram.m0233} Move old Y...
+C3F9: DD 2F           STD     <$2F                ; {ram.m022F} ... to new Y
+C3FB: DC 35           LDD     <$35                ; {ram.m0235} Move old X
+C3FD: DD 31           STD     <$31                ; {ram.m0231} ... to new X
 C3FF: 39              RTS                         ; Done
 ;
-C400: 96 50           LDA     <$50                ; Y Scale factor
-C402: D0 08           SUBB    <$08                ; Y byte center of screen
+C400: 96 50           LDA     <$50                ; {ram.m0250} Y Scale factor
+C402: D0 08           SUBB    <$08                ; {ram.m0207+1} Y byte center of screen
 C404: 20 04           BRA     $C40A               ; {} Handle signed multiply
 ;
-C406: 96 4F           LDA     <$4F                ; X scale factor
-C408: D0 06           SUBB    <$06                ; X byte center of screen
+C406: 96 4F           LDA     <$4F                ; {ram.m024F} X scale factor
+C408: D0 06           SUBB    <$06                ; {ram.m0205+1} X byte center of screen
 ;
 C40A: 25 03           BCS     $C40F               ; {} Handle signed multiply
 C40C: 3D              MUL                         ; Do multiplication
@@ -726,22 +724,22 @@ C420: 57              ASRB                        ; ... 4 bits ...
 C421: 57              ASRB                        ; ... ...
 C422: 57              ASRB                        ; ... ...
 C423: 58              ASLB                        ; ... *2
-C424: DB 54           ADDB    <$54                ; Add to old Y
-C426: D7 54           STB     <$54                ; New Y
+C424: DB 54           ADDB    <$54                ; {ram.m0254} Add to old Y
+C426: D7 54           STB     <$54                ; {ram.m0254} New Y
 C428: 8D D6           BSR     $C400               ; {} Do multiply and prepare
-C42A: D3 07           ADDD    <$07                ; Offset center of screen
-C42C: DD 33           STD     <$33                ; Save new Y
+C42A: D3 07           ADDD    <$07                ; {ram.m0207} Offset center of screen
+C42C: DD 33           STD     <$33                ; {ram.m0233} Save new Y
 C42E: E6 1F           LDB     -1,X                ; Descriptor
 C430: C4 0F           ANDB    #$0F                ; Lower four bits
 C432: C5 08           BITB    #$08                ; Is this negative?
 C434: 27 02           BEQ     $C438               ; {} No,
 C436: CA F0           ORB     #$F0                ; Else make it negative
 C438: 58              ASLB                        ; *2
-C439: DB 52           ADDB    <$52                ; Offset X coordinate
-C43B: D7 52           STB     <$52                ; Store New
+C439: DB 52           ADDB    <$52                ; {ram.m0252} Offset X coordinate
+C43B: D7 52           STB     <$52                ; {ram.m0252} Store New
 C43D: 8D C7           BSR     $C406               ; {} Scale it
-C43F: D3 05           ADDD    <$05                ; Add offset to center
-C441: DD 35           STD     <$35                ; Absolute coordinate
+C43F: D3 05           ADDD    <$05                ; {ram.m0205} Add offset to center
+C441: DD 35           STD     <$35                ; {ram.m0235} Absolute coordinate
 C443: BD CA B7        JSR     $CAB7               ; {} Draw line segment
 C446: 20 CF           BRA     $C417               ; {} Continue multiple segments
 
@@ -752,12 +750,12 @@ SWI_2:
 ;
 C448: AE 6C           LDX     12,S                ; PC from stack
 C44A: 3F              SWI                         ; Decompress the message
-C44B: 05                                           ; SWI_5:[Uncompress message X to buffer](#addr_SWI_5):
+C44B: 05                                          ; SWI_5:[Uncompress message X to buffer](#SWI_5):
 C44C: AF 6C           STX     12,S                ; Update the PC to skip message
 C44E: 8E 03 35        LDX     #$0335              ; Temporary buffer
 C451: 8C                  ; CMPX  opcode to skip next instruction  
 C452: 3F              SWI                         ; Print character in A
-C453: 04                                           ; SWI_4:[Display a single character in A](#addr_SWI_4):
+C453: 04                                          ; SWI_4:[Display a single character in A](#SWI_4):
 
 SWI_3:
 ; Display uncompressed message pointed to by X
@@ -770,7 +768,7 @@ SWI_4:
 ; Display a single character in A
 ;  A: the character
 ;  U: the area descriptor (ignored if <$B7!=0)
-C459: 0D B7           TST     <$B7                ; Put text in command window?
+C459: 0D B7           TST     <$B7                ; {ram.whereToPrint} Put text in command window?
 C45B: 26 03           BNE     $C460               ; {} No ... use the requested descriptor
 C45D: CE 03 90        LDU     #$0390              ; Yes ... print on the upper half of the screen
 C460: AE 44           LDX     4,U                 ; Current cursor
@@ -879,7 +877,7 @@ C4CF: 8E 00 08        LDX     #$0008              ; 8 rolls
 ;
 C4D2: 5F              CLRB                        ; Count of 1's
 C4D3: 10 8E 00 08     LDY     #$0008              ; Counting 8 bits in the byte
-C4D7: 96 6D           LDA     <$6D                ; Upper most seed
+C4D7: 96 6D           LDA     <$6D                ; {ram.rndSeedC} Upper most seed
 C4D9: 84 E1           ANDA    #$E1                ; 1110_0001
 C4DB: 48              ASLA                        ; Count ...
 C4DC: 24 01           BCC     $C4DF               ; {} ... the ...
@@ -888,27 +886,27 @@ C4DF: 31 3F           LEAY    -1,Y                ; ... in the ...
 C4E1: 26 F8           BNE     $C4DB               ; {} ... value in A
 ;      
 C4E3: 54              LSRB                        ; 1 to carry if number of 1's was odd
-C4E4: 09 6B           ROL     <$6B                ; Three ...
-C4E6: 09 6C           ROL     <$6C                ; ... byte ...
-C4E8: 09 6D           ROL     <$6D                ; ... roll ...
+C4E4: 09 6B           ROL     <$6B                ; {ram.rndSeedA} Three ...
+C4E6: 09 6C           ROL     <$6C                ; {ram.rndSeedB} ... byte ...
+C4E8: 09 6D           ROL     <$6D                ; {ram.rndSeedC} ... roll ...
 C4EA: 30 1F           LEAX    -1,X                ; ... with B going ...
 C4EC: 26 E4           BNE     $C4D2               ; {} ... far right ...
 ;
-C4EE: 96 6B           LDA     <$6B                ; 
+C4EE: 96 6B           LDA     <$6B                ; {ram.rndSeedA}
 C4F0: A7 63           STA     3,S                 ; Return the value in A
 C4F2: 39              RTS                         ; Done
 
 SWI_8:
 ; Clear display screen
 ;
-C4F3: DE 09           LDU     <$09                ; U = Visible screen descriptor
+C4F3: DE 09           LDU     <$09                ; {ram.activeScreen} U = Visible screen descriptor
 C4F5: 8C                  ; CMPX  opcode to skip next instruction
 ;
 SWI_9:
 ; Clear secondary screen
 ;  
-C4F6: DE 0B           LDU     <$0B                ; Drawing screen descriptor
-C4F8: D6 2C           LDB     <$2C                ; Background color (00 or FF)
+C4F6: DE 0B           LDU     <$0B                ; {ram.backScreen} Drawing screen descriptor
+C4F8: D6 2C           LDB     <$2C                ; {ram.backgroundColor} Background color (00 or FF)
 C4FA: 8D 1B           BSR     $C517               ; {} Clear the area
 C4FC: EF 6A           STU     10,S                ; Return pointer to the descriptor
 C4FE: 39              RTS                         ; Done
@@ -944,93 +942,93 @@ C527: 35 F6           PULS    A,B,X,Y,U,PC        ; Out
 
 SWI_C:
 ; Update heart rate
-C529: 0F C1           CLR     <$C1                ; 
-C52B: DC 17           LDD     <$17                ; Strength
-C52D: DD C2           STD     <$C2                ; 
+C529: 0F C1           CLR     <$C1                ; {ram.holdHole}
+C52B: DC 17           LDD     <$17                ; {ram.pStrength} Strength
+C52D: DD C2           STD     <$C2                ; {ram.m02C2}
 C52F: 86 06           LDA     #$06                
-C531: 08 C3           LSL     <$C3                ; 
-C533: 09 C2           ROL     <$C2                ; 
-C535: 09 C1           ROL     <$C1                ; 
+C531: 08 C3           LSL     <$C3                ; {ram.m02C3}
+C533: 09 C2           ROL     <$C2                ; {ram.m02C2}
+C535: 09 C1           ROL     <$C1                ; {ram.holdHole}
 C537: 4A              DECA                        
 C538: 26 F7           BNE     $C531               ; {}
-C53A: 0F C4           CLR     <$C4                ; 
-C53C: DC 21           LDD     <$21                ; 
-C53E: DD C5           STD     <$C5                ; 
-C540: 08 C6           LSL     <$C6                ; 
-C542: 09 C5           ROL     <$C5                ; 
-C544: 09 C4           ROL     <$C4                ; 
-C546: DC 17           LDD     <$17                ; 
-C548: D3 C5           ADDD    <$C5                ; 
-C54A: DD C5           STD     <$C5                ; 
-C54C: D6 C4           LDB     <$C4                ; 
+C53A: 0F C4           CLR     <$C4                ; {ram.m02C4}
+C53C: DC 21           LDD     <$21                ; {ram.m0221}
+C53E: DD C5           STD     <$C5                ; {ram.m02C5}
+C540: 08 C6           LSL     <$C6                ; {ram.m02C6}
+C542: 09 C5           ROL     <$C5                ; {ram.m02C5}
+C544: 09 C4           ROL     <$C4                ; {ram.m02C4}
+C546: DC 17           LDD     <$17                ; {ram.pStrength}
+C548: D3 C5           ADDD    <$C5                ; {ram.m02C5}
+C54A: DD C5           STD     <$C5                ; {ram.m02C5}
+C54C: D6 C4           LDB     <$C4                ; {ram.m02C4}
 C54E: C9 00           ADCB    #$00                
-C550: D7 C4           STB     <$C4                ; 
-C552: 0F C7           CLR     <$C7                ; 
-C554: DC C2           LDD     <$C2                ; 
-C556: 93 C5           SUBD    <$C5                ; 
-C558: DD C2           STD     <$C2                ; 
-C55A: 96 C1           LDA     <$C1                ; 
-C55C: 92 C4           SBCA    <$C4                ; 
-C55E: 97 C1           STA     <$C1                ; 
-C560: 0C C7           INC     <$C7                ; 
+C550: D7 C4           STB     <$C4                ; {ram.m02C4}
+C552: 0F C7           CLR     <$C7                ; {ram.m02C7}
+C554: DC C2           LDD     <$C2                ; {ram.m02C2}
+C556: 93 C5           SUBD    <$C5                ; {ram.m02C5}
+C558: DD C2           STD     <$C2                ; {ram.m02C2}
+C55A: 96 C1           LDA     <$C1                ; {ram.holdHole}
+C55C: 92 C4           SBCA    <$C4                ; {ram.m02C4}
+C55E: 97 C1           STA     <$C1                ; {ram.holdHole}
+C560: 0C C7           INC     <$C7                ; {ram.m02C7}
 C562: 24 F0           BCC     $C554               ; {}
-C564: 96 C7           LDA     <$C7                ; 
+C564: 96 C7           LDA     <$C7                ; {ram.m02C7}
 C566: 80 13           SUBA    #$13                
-C568: 97 AF           STA     <$AF                ; 
-C56A: 0D 28           TST     <$28                ; Are we fainting?
+C568: 97 AF           STA     <$AF                ; {ram.heartCounterRel}
+C56A: 0D 28           TST     <$28                ; {ram.fainting} Are we fainting?
 C56C: 26 27           BNE     $C595               ; {} Yes ... ??
 C56E: 81 03           CMPA    #$03                
 C570: 2E 3C           BGT     $C5AE               ; {}
 C572: 3F              SWI                         
-C573: 0B                                           ; SWI_B:[Clear play field](#addr_SWI_B):
-C574: 96 6E           LDA     <$6E                ; 
-C576: 97 70           STA     <$70                ; 
-C578: 0A 6F           DEC     <$6F                ; 
+C573: 0B                                          ; SWI_B:[Clear play field](#SWI_B):
+C574: 96 6E           LDA     <$6E                ; {ram.m026E}
+C576: 97 70           STA     <$70                ; {ram.m0270}
+C578: 0A 6F           DEC     <$6F                ; {ram.m026F}
 C57A: AD 9F 02 B2     JSR     [$02B2]             ; {ram.displayFunction} Display playing screen
-C57E: 0A B4           DEC     <$B4                ; 
+C57E: 0A B4           DEC     <$B4                ; {ram.flipScreens}
 C580: 13              SYNC                        ; Wait for display
-C581: 0A 6E           DEC     <$6E                ; Light level down
-C583: 96 6E           LDA     <$6E                ; Down
+C581: 0A 6E           DEC     <$6E                ; {ram.m026E} Light level down
+C583: 96 6E           LDA     <$6E                ; {ram.m026E} Down
 C585: 81 F8           CMPA    #$F8                ; All fainted out?
 C587: 2E EF           BGT     $C578               ; {} No, keep going
 C589: 3F              SWI                         ; Clear screen
-C58A: 09                                           ; SWI_9:[Clear secondary screen](#addr_SWI_9):
-C58B: 0A B4           DEC     <$B4                ; 
-C58D: 0A 28           DEC     <$28                ; Decrement the faint counter
-C58F: 0F BC           CLR     <$BC                ; 
-C591: 0F BD           CLR     <$BD                ; 
+C58A: 09                                          ; SWI_9:[Clear secondary screen](#SWI_9):
+C58B: 0A B4           DEC     <$B4                ; {ram.flipScreens}
+C58D: 0A 28           DEC     <$28                ; {ram.fainting} Decrement the faint counter
+C58F: 0F BC           CLR     <$BC                ; {ram.inputHead}
+C591: 0F BD           CLR     <$BD                ; {ram.inputTail}
 C593: 20 19           BRA     $C5AE               ; {}
 C595: 81 04           CMPA    #$04                
 C597: 2F 15           BLE     $C5AE               ; {}
 C599: AD 9F 02 B2     JSR     [$02B2]             ; {ram.displayFunction} Display playing screen
-C59D: 0A B4           DEC     <$B4                ; 
+C59D: 0A B4           DEC     <$B4                ; {ram.flipScreens}
 C59F: 13              SYNC                        ; Wait a display
-C5A0: 0C 6F           INC     <$6F                ; 
-C5A2: 0C 6E           INC     <$6E                ; 
-C5A4: 96 6E           LDA     <$6E                ; 
-C5A6: 91 70           CMPA    <$70                ; 
+C5A0: 0C 6F           INC     <$6F                ; {ram.m026F}
+C5A2: 0C 6E           INC     <$6E                ; {ram.m026E}
+C5A4: 96 6E           LDA     <$6E                ; {ram.m026E}
+C5A6: 91 70           CMPA    <$70                ; {ram.m0270}
 C5A8: 2F EF           BLE     $C599               ; {}
-C5AA: 0F 28           CLR     <$28                ; No longer fainting
+C5AA: 0F 28           CLR     <$28                ; {ram.fainting} No longer fainting
 C5AC: 3F              SWI                         ; Display playing screen
-C5AD: 0F                                           ; SWI_F:[Ready command prompt](#addr_SWI_F):
-C5AE: 9E 17           LDX     <$17                ; Strength
-C5B0: 9C 21           CMPX    <$21                ; Heart level
+C5AD: 0F                                          ; SWI_F:[Ready command prompt](#SWI_F):
+C5AE: 9E 17           LDX     <$17                ; {ram.pStrength} Strength
+C5B0: 9C 21           CMPX    <$21                ; {ram.m0221} Heart level
 C5B2: 25 01           BCS     $C5B5               ; {} Can not support it, die
 C5B4: 39              RTS                         
 
 ; Player is dead!
 
 C5B5: 8E DF 10        LDX     #$DF10              ; Beam on Moon Wizard (not Star Wizard)
-C5B8: 0A 9E           DEC     <$9E                ; 
+C5B8: 0A 9E           DEC     <$9E                ; {ram.m029E}
 C5BA: 3F              SWI                         
-C5BB: 13                                           ; SWI_13:[Beam on picture pointed to by X](#addr_SWI_13):
+C5BB: 13                                          ; SWI_13:[Beam on picture pointed to by X](#SWI_13):
 C5BC: 3F              SWI                         ; Print "Yet Another Does Not Return"
-C5BD: 02                                           ; SWI_2:[Uncompress message m and display](#addr_SWI_2):
-;
-C5BE: FF C1 92 D0 01 73 E8 82 C8 04 79 66 07 3E 80 91 69 59 3B DE F0 ; "_1F_ YET ANOTHER DOES NOT RETURN..."
+C5BD: 02                                          ; SWI_2:[Uncompress message m and display](#SWI_2):
+C5BE: FF C1 92 D0 01 73 E8 82 C8 04 79 66 07 3E   ; "_1F_ YET ANOTHER DOES NOT RETURN..."
+C5CC: 80 91 69 59 3B DE F0
  ;      
-C5D3: 0F 28           CLR     <$28                ; No longer fainting
-C5D5: 0A 77           DEC     <$77                ; 
+C5D3: 0F 28           CLR     <$28                ; {ram.fainting} No longer fainting
+C5D5: 0A 77           DEC     <$77                ; {ram.gameMode}
 ;   
 C5D7: 20 FE           BRA     $C5D7               ; {} Endless loop
 
@@ -1038,21 +1036,21 @@ SWI_D:
 ; Print contents of hands on status line
 
 C5D9: CE 03 88        LDU     #$0388              ; Hand line descriptor
-C5DC: 0A B7           DEC     <$B7                ; Force print to desired descriptor
-C5DE: 96 2C           LDA     <$2C                ; Base color
+C5DC: 0A B7           DEC     <$B7                ; {ram.whereToPrint} Force print to desired descriptor
+C5DE: 96 2C           LDA     <$2C                ; {ram.backgroundColor} Base color
 C5E0: 43              COMA                        ; Hands are reverse color
 C5E1: A7 46           STA     6,U                 ; New color
 C5E3: 4F              CLRA                        ; Coordinates...
 C5E4: 5F              CLRB                        ; ...far left
 C5E5: 8D 22           BSR     $C609               ; {} Blank left hand slot
 C5E7: ED 44           STD     4,U                 ; Reposition cursor
-C5E9: 9E 1D           LDX     <$1D                ; Left hand object
+C5E9: 9E 1D           LDX     <$1D                ; {ram.leftHand} Left hand object
 C5EB: 8D 2A           BSR     $C617               ; {code.GetObjDscrpt} Create string
 C5ED: 3F              SWI                         ; And print
-C5EE: 03                                           ; SWI_3:[Display uncompressed message pointed to by X](#addr_SWI_3):
+C5EE: 03                                          ; SWI_3:[Display uncompressed message pointed to by X](#SWI_3):
 C5EF: CC 00 11        LDD     #$0011              ; Start of right hand space
 C5F2: 8D 15           BSR     $C609               ; {} Blank right hand area
-C5F4: 9E 1F           LDX     <$1F                ; Right hand object
+C5F4: 9E 1F           LDX     <$1F                ; {ram.rightHand} Right hand object
 C5F6: 8D 1F           BSR     $C617               ; {code.GetObjDscrpt} Decode it
 C5F8: 1F 12           TFR     X,Y                 ; Over to Y
 C5FA: CC 00 21        LDD     #$0021              ; Far right coordinates
@@ -1061,15 +1059,15 @@ C5FE: 6D A0           TST     ,Y+                 ; All accounted for?
 C600: 2A FB           BPL     $C5FD               ; {} No, keep counting from right
 C602: ED 44           STD     4,U                 ; Coordinates for right hand
 C604: 3F              SWI                         ; Print right hand contents
-C605: 03                                           ; SWI_3:[Display uncompressed message pointed to by X](#addr_SWI_3):
-C606: 0F B7           CLR     <$B7                ; Printing goes to command line area now
+C605: 03                                          ; SWI_3:[Display uncompressed message pointed to by X](#SWI_3):
+C606: 0F B7           CLR     <$B7                ; {ram.whereToPrint} Printing goes to command line area now
 C608: 39              RTS                         ; Done
 ;
 C609: 34 06           PSHS    B,A                 ; Hold these
 C60B: ED 44           STD     4,U                 ; Coordinates
 C60D: CC 00 0F        LDD     #$000F              ; 15
 C610: 3F              SWI                         ; Print a space
-C611: 04                                           ; SWI_4:[Display a single character in A](#addr_SWI_4):
+C611: 04                                          ; SWI_4:[Display a single character in A](#SWI_4):
 C612: 5A              DECB                        ; All blanked?
 C613: 26 FB           BNE     $C610               ; {} No, blank all
 C615: 35 86           PULS    A,B,PC              ; Done
@@ -1098,7 +1096,7 @@ C63C: 35 E6           PULS    A,B,Y,U,PC          ; Done
 ;
 C63E: 34 12           PSHS    X,A                 ; Hold these
 C640: 3F              SWI                         ; Uncompress message
-C641: 05                                           ; SWI_5:[Uncompress message X to buffer](#addr_SWI_5):
+C641: 05                                          ; SWI_5:[Uncompress message X to buffer](#SWI_5):
 C642: 4A              DECA                        ; Found proper one?
 C643: 2A FB           BPL     $C640               ; {} No, keep going
 C645: 8E 03 36        LDX     #$0336              ; Uncompress buffer
@@ -1113,20 +1111,20 @@ C655: FF                  ; END
 SWI_E:
 ; Display playing screen
 
-C656: 0D 28           TST     <$28                ; Fainting?
+C656: 0D 28           TST     <$28                ; {ram.fainting} Fainting?
 C658: 26 05           BNE     $C65F               ; {} Yes, skip this
 C65A: 8D 04           BSR     $C660               ; {} Refresh display
-C65C: 0A B4           DEC     <$B4                ; 
+C65C: 0A B4           DEC     <$B4                ; {ram.flipScreens}
 C65E: 13              SYNC                        ; Wait on display
 C65F: 39              RTS                         ; Out
 ;
 C660: 34 76           PSHS    U,Y,X,B,A           ; Hold these
-C662: DC 26           LDD     <$26                ; Ambient light level
-C664: DE 24           LDU     <$24                ; Torch pointer
+C662: DC 26           LDD     <$26                ; {ram.m0226} Ambient light level
+C664: DE 24           LDU     <$24                ; {ram.torchPtr} Torch pointer
 C666: 27 04           BEQ     $C66C               ; {} No torch lit, go with ambient level
 C668: AB 47           ADDA    7,U                 ; Add ambient...
 C66A: EB 48           ADDB    8,U                 ; ... to torch's power
-C66C: DD 6E           STD     <$6E                ; Light level to display things with
+C66C: DD 6E           STD     <$6E                ; {ram.m026E} Light level to display things with
 C66E: AD 9F 02 B2     JSR     [$02B2]             ; {ram.displayFunction} Refresh screen
 C672: 35 F6           PULS    A,B,X,Y,U,PC        ; Done
 
@@ -1134,7 +1132,7 @@ SWI_F:
 ; Ready command prompt
 C674: 8E C6 7A        LDX     #$C67A              ; Prompt CR and cursor
 C677: 3F              SWI                         ; Print the prompt and back up over cursor
-C678: 03                                           ; SWI_3:[Display uncompressed message pointed to by X](#addr_SWI_3):
+C678: 03                                          ; SWI_3:[Display uncompressed message pointed to by X](#SWI_3):
 C679: 39              RTS                         ; Done
 
 C67A: 1F 1E 1C 24 FF     ; CR "." "_" BACK END 
@@ -1175,53 +1173,53 @@ C6A3: 39              RTS                         ; Done
 
 SWI_13:
 ; Beam on picture pointed to by X
-C6A4: 0F B1           CLR     <$B1                ; 
+C6A4: 0F B1           CLR     <$B1                ; {ram.hearHeart}
 C6A6: 3F              SWI                         
-C6A7: 0A                                           ; SWI_A:[Clear hand descriptor](#addr_SWI_A):
+C6A7: 0A                                          ; SWI_A:[Clear hand descriptor](#SWI_A):
 
 SWI_14:
 ; Beam subroutine
 C6A8: 3F              SWI                         
-C6A9: 0B                                           ; SWI_B:[Clear play field](#addr_SWI_B):
+C6A9: 0B                                          ; SWI_B:[Clear play field](#SWI_B):
 C6AA: CC 80 80        LDD     #$8080              
-C6AD: DD 4F           STD     <$4F                ; 
-C6AF: D6 9E           LDB     <$9E                ; 
+C6AD: DD 4F           STD     <$4F                ; {ram.m024F}
+C6AF: D6 9E           LDB     <$9E                ; {ram.m029E}
 C6B1: 27 04           BEQ     $C6B7               ; {}
 C6B3: C6 20           LDB     #$20                
-C6B5: 0A 9C           DEC     <$9C                ; 
+C6B5: 0A 9C           DEC     <$9C                ; {ram.beamSound}
 C6B7: 8D 1E           BSR     $C6D7               ; {}
 C6B9: 5A              DECB                        
 C6BA: 5A              DECB                        
 C6BB: 2A FA           BPL     $C6B7               ; {}
-C6BD: 0F 9C           CLR     <$9C                ; 
-C6BF: 0F 9E           CLR     <$9E                ; 
+C6BD: 0F 9C           CLR     <$9C                ; {ram.beamSound}
+C6BF: 0F 9E           CLR     <$9E                ; {ram.m029E}
 C6C1: 3F              SWI                         
-C6C2: 1B                                           ; SWI_1B:[Play sound i at full volume](#addr_SWI_1B):
-C6C3: 16                                           ; Sound 16 = Wizard strike
+C6C2: 1B                                          ; SWI_1B:[Play sound i at full volume](#SWI_1B):
+C6C3: 16                                          ; Sound 16 = Wizard strike
 C6C4: 39              RTS                         
 
 SWI_15:
 ; Beam subroutine
 C6C5: 3F              SWI                         
-C6C6: 0B                                           ; SWI_B:[Clear play field](#addr_SWI_B):
+C6C6: 0B                                          ; SWI_B:[Clear play field](#SWI_B):
 C6C7: 8D F8           BSR     $C6C1               ; {}
 C6C9: 5F              CLRB                        
-C6CA: 0A 9C           DEC     <$9C                ; 
+C6CA: 0A 9C           DEC     <$9C                ; {ram.beamSound}
 C6CC: 8D 09           BSR     $C6D7               ; {}
 C6CE: 5C              INCB                        
 C6CF: 5C              INCB                        
 C6D0: C1 20           CMPB    #$20                
 C6D2: 26 F8           BNE     $C6CC               ; {}
-C6D4: 0F 9C           CLR     <$9C                ; 
+C6D4: 0F 9C           CLR     <$9C                ; {ram.beamSound}
 C6D6: 39              RTS                         
 C6D7: 34 50           PSHS    U,X                 
-C6D9: D7 2D           STB     <$2D                ; 
-C6DB: D7 9D           STB     <$9D                ; 
+C6D9: D7 2D           STB     <$2D                ; {ram.dotFrequency}
+C6DB: D7 9D           STB     <$9D                ; {ram.beamSoundVal}
 C6DD: 3F              SWI                         
-C6DE: 09                                           ; SWI_9:[Clear secondary screen](#addr_SWI_9):
+C6DE: 09                                          ; SWI_9:[Clear secondary screen](#SWI_9):
 C6DF: 3F              SWI                         
-C6E0: 01                                           ; SWI_1:[Draw picture X on screen](#addr_SWI_1):
-C6E1: 0A B4           DEC     <$B4                ; 
+C6E0: 01                                          ; SWI_1:[Draw picture X on screen](#SWI_1):
+C6E1: 0A B4           DEC     <$B4                ; {ram.flipScreens}
 C6E3: 13              SYNC                        
 C6E4: 35 D0           PULS    X,U,PC              
 
@@ -1231,12 +1229,11 @@ C6E6: BD D4 89        JSR     $D489               ; {code.SetForExamine}
 C6E9: CC 01 2C        LDD     #$012C              
 C6EC: ED 44           STD     4,U                 
 C6EE: 3F              SWI                         
-C6EF: 02                                           ; SWI_2:[Uncompress message m and display](#addr_SWI_2):
+C6EF: 02                                          ; SWI_2:[Uncompress message m and display](#SWI_2):
+C6F0: 3C 24 58 06 45 D8                           ; "PREPARE!"
 ;
-C6F0: 3C 24 58 06 45 D8 ; "PREPARE!"
-;
-C6F6: 0F B7           CLR     <$B7                ; Printing goes to command area now
-C6F8: 0A B4           DEC     <$B4                ; 
+C6F6: 0F B7           CLR     <$B7                ; {ram.whereToPrint} Printing goes to command area now
+C6F8: 0A B4           DEC     <$B4                ; {ram.flipScreens}
 C6FA: 39              RTS                         
 
 SWI_17:
@@ -1251,21 +1248,21 @@ SWI_17:
 ; B = maze level
 ; Return X = pointer to object
 ;
-C6FB: DE 0F           LDU     <$0F                ; Current object pointer
+C6FB: DE 0F           LDU     <$0F                ; {ram.nextObjSlot} Current object pointer
 C6FD: EF 66           STU     6,S                 ; Return this
 C6FF: 30 4E           LEAX    14,U                ; Point to ...
-C701: 9F 0F           STX     <$0F                ; ... next object
+C701: 9F 0F           STX     <$0F                ; {ram.nextObjSlot} ... next object
 C703: A7 49           STA     9,U                 ; Object type
 C705: E7 44           STB     4,U                 ; Maze level
 C707: 3F              SWI                         ; Fill out object ...
-C708: 18                                           ; SWI_18:[Change object to proper name and data](#addr_SWI_18):
+C708: 18                                          ; SWI_18:[Change object to proper name and data](#SWI_18):
 C709: E6 4A           LDB     10,U                ; Object class
 C70B: 8E C7 19        LDX     #$C719              ; Base type table
 C70E: A6 85           LDA     B,X                 ; Get the basic model for this class
 C710: 2B 06           BMI     $C718               ; {} There is no basic ... skip
 C712: E6 4B           LDB     11,U                ; Preserve needed-to-reveal
 C714: 3F              SWI                         ; Copy over the basic ...
-C715: 18                                           ; SWI_18:[Change object to proper name and data](#addr_SWI_18):
+C715: 18                                          ; SWI_18:[Change object to proper name and data](#SWI_18):
 C716: E7 4B           STB     11,U                ; Preserve the needed-to-reveal
 C718: 39              RTS                         ; Done
 
@@ -1304,16 +1301,16 @@ C742: 39              RTS                         ; Done
 SWI_19:
 ; Bring up normal display
 C743: 3F              SWI                         
-C744: 0A                                           ; SWI_A:[Clear hand descriptor](#addr_SWI_A):
+C744: 0A                                          ; SWI_A:[Clear hand descriptor](#SWI_A):
 C745: 3F              SWI                         
-C746: 0B                                           ; SWI_B:[Clear play field](#addr_SWI_B):
+C746: 0B                                          ; SWI_B:[Clear play field](#SWI_B):
 C747: 3F              SWI                         
-C748: 0C                                           ; SWI_C:[Update heart rate](#addr_SWI_C):
-C749: 0C AE           INC     <$AE                ; 
-C74B: 0A AD           DEC     <$AD                ; Scroll is NOT showing
-C74D: 0A B1           DEC     <$B1                ; 
+C748: 0C                                          ; SWI_C:[Update heart rate](#SWI_C):
+C749: 0C AE           INC     <$AE                ; {ram.heartCounter}
+C74B: 0A AD           DEC     <$AD                ; {ram.scrollShowing} Scroll is NOT showing
+C74D: 0A B1           DEC     <$B1                ; {ram.hearHeart}
 C74F: 3F              SWI                         
-C750: 0D                                           ; SWI_D:[Print contents of hands on status line](#addr_SWI_D):
+C750: 0D                                          ; SWI_D:[Print contents of hands on status line](#SWI_D):
 ; Fall into LOOK
 ```
 
@@ -1322,23 +1319,23 @@ C750: 0D                                           ; SWI_D:[Print contents of ha
 ```code
 CmdLOOK:
 C751: 8E CE 66        LDX     #$CE66              ; The routine for drawing ...
-C754: 9F B2           STX     <$B2                ; ... then normal game screen
+C754: 9F B2           STX     <$B2                ; {ram.displayFunction} ... then normal game screen
 C756: 3F              SWI                         ; Redraw the screen
-C757: 0E                                           ; SWI_E:[Display playing screen](#addr_SWI_E):
+C757: 0E                                          ; SWI_E:[Display playing screen](#SWI_E):
 C758: 39              RTS                         ; Done
 
 SWI_1A:
 ; Set up level
 ;
-C759: 97 81           STA     <$81                ; Current level
+C759: 97 81           STA     <$81                ; {ram.currentLevel} Current level
 C75B: C6 0C           LDB     #$0C                ; 12 bytes each (one byte to count each type of creature)
 C75D: 3D              MUL                         ; Pointer to ...
 C75E: C3 03 98        ADDD    #$0398              ; ... creature count on level
-C761: DD 82           STD     <$82                ; Hold pointer to creature count
+C761: DD 82           STD     <$82                ; {ram.m0282} Hold pointer to creature count
 ;
-C763: D6 81           LDB     <$81                ; Current level
+C763: D6 81           LDB     <$81                ; {ram.currentLevel} Current level
 C765: 8E CF FD        LDX     #$CFFD              ; Table of holes and ladders
-C768: 9F 86           STX     <$86                ; 
+C768: 9F 86           STX     <$86                ; {ram.currentHoles}
 C76A: A6 80           LDA     ,X+                 
 C76C: 2A FC           BPL     $C76A               ; {}
 C76E: 5A              DECB                        
@@ -1346,11 +1343,11 @@ C76F: 2A F7           BPL     $C768               ; {}
 C771: 8E 03 D4        LDX     #$03D4              
 C774: CE 05 F4        LDU     #$05F4              
 C777: 3F              SWI                         
-C778: 11                                           ; SWI_11:[Fill X to U with 0s](#addr_SWI_11):
+C778: 11                                          ; SWI_11:[Fill X to U with 0s](#SWI_11):
 C779: BD C0 53        JSR     $C053               ; {code.InitTasks}
 C77C: BD CC 9C        JSR     $CC9C               ; {code.MakeMazeLevel}
 ;
-C77F: DE 82           LDU     <$82                ; Pointer to creature counts
+C77F: DE 82           LDU     <$82                ; {ram.m0282} Pointer to creature counts
 C781: 86 0B           LDA     #$0B                ; Start with most powerful
 C783: E6 C6           LDB     A,U                 ; Get count of creature type in A
 C785: 27 06           BEQ     $C78D               ; {} None to make ... skip
@@ -1361,7 +1358,7 @@ C78D: 4A              DECA                        ; Next creature type
 C78E: 2A F3           BPL     $C783               ; {} Do all creature types
 ;  
 C790: CE 03 C3        LDU     #$03C3              ; (03D4 - 11) Start of monsters on this level
-C793: 0F 91           CLR     <$91                ; Scan from start of objects
+C793: 0F 91           CLR     <$91                ; {ram.restartFind} Scan from start of objects
 C795: BD CF 63        JSR     $CF63               ; {code.GetNextOject} Find next object on this level
 C798: 27 1C           BEQ     $C7B6               ; {} No objects ... done
 C79A: 6D 05           TST     5,X                 ; Somebody already holding this object?
@@ -1378,10 +1375,10 @@ C7B2: ED 84           STD     ,X                  ; ... to monster
 C7B4: 20 DF           BRA     $C795               ; {} Keep going
 ;
 ; Set the colors of the screen areas
-C7B6: 96 81           LDA     <$81                ; 
+C7B6: 96 81           LDA     <$81                ; {ram.currentLevel}
 C7B8: 84 01           ANDA    #$01                ; Just the lower bit
 C7BA: 40              NEGA                        ; 0->00000000, 1->11111111
-C7BB: 97 2C           STA     <$2C                ; ? color
+C7BB: 97 2C           STA     <$2C                ; {ram.backgroundColor} ? color
 C7BD: B7 03 96        STA     $0396               ; {ram.comColor}
 C7C0: B7 03 86        STA     $0386               ; {ram.examineColor}
 C7C3: 43              COMA                        ; Toggle color for hands
@@ -1399,7 +1396,7 @@ C7CE: C6 FF           LDB     #$FF                ; Full volume
 SWI_1C:
 ; Play sound A at volume B
 ;
-C7D0: D7 61           STB     <$61                ; Store the volume
+C7D0: D7 61           STB     <$61                ; {ram.m0261} Store the volume
 C7D2: 8E C7 DC        LDX     #$C7DC              ; Effect table
 C7D5: 48              ASLA                        ; Sound number to offset
 C7D6: AD 96           JSR     [A,X]               ; Execute the sound routine
@@ -1443,9 +1440,9 @@ C80F: 20 05           BRA     $C816               ; {}
 SoundRing:
 C811: CE C8 1F        LDU     #$C81F              
 C814: 86 0A           LDA     #$0A                
-C816: 97 5F           STA     <$5F                ; 
+C816: 97 5F           STA     <$5F                ; {ram.m025F}
 C818: AD C4           JSR     ,U                  ; 
-C81A: 0A 5F           DEC     <$5F                ; 
+C81A: 0A 5F           DEC     <$5F                ; {ram.m025F}
 C81C: 26 FA           BNE     $C818               ; {}
 C81E: 39              RTS                         
                  
@@ -1488,14 +1485,14 @@ C84F: 8C                  ; CMPX  opcode to skip next instruction
 
 SoundSnake:
 C850: 86 0A           LDA     #$0A                
-C852: 97 62           STA     <$62                ; 
+C852: 97 62           STA     <$62                ; {ram.m0262}
 C854: 10 8E 00 C0     LDY     #$00C0              
 C858: 8D 74           BSR     $C8CE               ; {}
 C85A: 8D 69           BSR     $C8C5               ; {}
 C85C: 31 3F           LEAY    -1,Y                
 C85E: 26 F8           BNE     $C858               ; {}
 C860: 8D 58           BSR     $C8BA               ; {}
-C862: 0A 62           DEC     <$62                ; 
+C862: 0A 62           DEC     <$62                ; {ram.m0262}
 C864: 26 EE           BNE     $C854               ; {}
 C866: 39              RTS                         
 C867: 8D 65           BSR     $C8CE               ; {}
@@ -1513,7 +1510,7 @@ C875: 20 1C           BRA     $C893               ; {}
 SoundWizard:
 SoundDemon:       
 C877: 86 08           LDA     #$08                
-C879: 97 5F           STA     <$5F                ; 
+C879: 97 5F           STA     <$5F                ; {ram.m025F}
 C87B: 8D 51           BSR     $C8CE               ; {}
 C87D: 4F              CLRA                        
 C87E: 54              LSRB                        
@@ -1521,7 +1518,7 @@ C87F: 26 01           BNE     $C882               ; {}
 C881: 5C              INCB                        
 C882: 1F 01           TFR     D,X                 
 C884: 8D A8           BSR     $C82E               ; {}
-C886: 0A 5F           DEC     <$5F                ; 
+C886: 0A 5F           DEC     <$5F                ; {ram.m025F}
 C888: 26 F1           BNE     $C87B               ; {}
 
 SoundWizStrike:  
@@ -1559,20 +1556,20 @@ C8BF: 30 1F           LEAX    -1,X
 C8C1: 26 FC           BNE     $C8BF               ; {}
 C8C3: 35 90           PULS    X,PC                
 
-C8C5: D6 61           LDB     <$61                ; 
+C8C5: D6 61           LDB     <$61                ; {ram.m0261}
 C8C7: 3D              MUL                         
 C8C8: 84 FC           ANDA    #$FC                
 C8CA: B7 FF 20        STA     $FF20               ; {hard.PIA1_DA}
 C8CD: 39              RTS                         
 
-C8CE: DC 56           LDD     <$56                ; 
+C8CE: DC 56           LDD     <$56                ; {ram.m0256}
 C8D0: 58              ASLB                        
 C8D1: 49              ROLA                        
 C8D2: 58              ASLB                        
 C8D3: 49              ROLA                        
-C8D4: D3 56           ADDD    <$56                ; 
+C8D4: D3 56           ADDD    <$56                ; {ram.m0256}
 C8D6: 5C              INCB                        
-C8D7: DD 56           STD     <$56                ; 
+C8D7: DD 56           STD     <$56                ; {ram.m0256}
 C8D9: 39              RTS                         
 
 SoundShield:
@@ -1593,33 +1590,33 @@ C8E8: 19 09 ; Consumed by routine. Returns to the one who called this.
 
 C8EA: 8D 42           BSR     $C92E               ; {}
 C8EC: 60    ; Consumed by routine
-C8ED: 9E 63           LDX     <$63                
-C8EF: 10 9E 65        LDY     <$65                
+C8ED: 9E 63           LDX     <$63                ; {ram.m0263}
+C8EF: 10 9E 65        LDY     <$65                ; {ram.m0265}
 C8F2: 4F              CLRA                        
 C8F3: 30 1F           LEAX    -1,X                
 C8F5: 26 06           BNE     $C8FD               ; {}
-C8F7: 9E 63           LDX     <$63                ; 
+C8F7: 9E 63           LDX     <$63                ; {ram.m0263}
 C8F9: 88 7F           EORA    #$7F                
 C8FB: 8D 0D           BSR     $C90A               ; {}
 C8FD: 31 3F           LEAY    -1,Y                
 C8FF: 26 F2           BNE     $C8F3               ; {}
-C901: 10 9E 65        LDY     <$65                ; 
+C901: 10 9E 65        LDY     <$65                ; {ram.m0265}
 C904: 88 80           EORA    #$80                
 C906: 8D 02           BSR     $C90A               ; {}
 C908: 20 E9           BRA     $C8F3               ; {}
-C90A: 97 59           STA     <$59                ; 
+C90A: 97 59           STA     <$59                ; {ram.m0259}
 C90C: 8D 70           BSR     $C97E               ; {}
 C90E: 23 B3           BLS     $C8C3               ; {}
 C910: 8D B3           BSR     $C8C5               ; {}
-C912: 96 59           LDA     <$59                ; 
+C912: 96 59           LDA     <$59                ; {ram.m0259}
 C914: 39              RTS                         
                  
 C915: AE E1           LDX     ,S++                ; Pull return from the stack (returning up a frame)
 C917: E6 80           LDB     ,X+                 ; Get the immediate byte
 C919: 4F              CLRA                        
-C91A: DD 63           STD     <$63                ; 
+C91A: DD 63           STD     <$63                ; {ram.m0263}
 C91C: E6 80           LDB     ,X+                 ; Get the next byte
-C91E: DD 65           STD     <$65                ; 
+C91E: DD 65           STD     <$65                ; {ram.m0265}
 C920: 20 C8           BRA     $C8EA               ; {}
 
 C922: 8D AA           BSR     $C8CE               ; {}
@@ -1629,14 +1626,14 @@ C928: 8D 54           BSR     $C97E               ; {}
 C92A: 23 97           BLS     $C8C3               ; {}
 C92C: 20 97           BRA     $C8C5               ; {}
    
-C92E: 9E 03           LDX     <$03                ; 
+C92E: 9E 03           LDX     <$03                ; {ram.CONST_FF}
 C930: 10                  ;LDY opcode to skip next instruction
-C931: 9E 00           LDX     <$00                ; 
-C933: 9F 5B           STX     <$5B                ; 
+C931: 9E 00           LDX     <$00                ; {ram.CONST_00}
+C933: 9F 5B           STX     <$5B                ; {ram.m025B}
 C935: AE E4           LDX     ,S                  ; Return location
 C937: E6 80           LDB     ,X+                 ; Get the immediate byte
 C939: 4F              CLRA                        
-C93A: DD 5D           STD     <$5D                ; 
+C93A: DD 5D           STD     <$5D                ; {ram.m025D}
 C93C: AF E4           STX     ,S                  ; Corrected return address
 C93E: 39              RTS                         ; Done
 
@@ -1661,10 +1658,10 @@ C958: 10                  ;CMPY skip next instruction
 
 SoundGaldrog:
 C959: 8E 01 00        LDX     #$0100              
-C95C: 9F 5D           STX     <$5D                ; 
+C95C: 9F 5D           STX     <$5D                ; {ram.m025D}
 C95E: 4F              CLRA                        
 C95F: 5F              CLRB                        
-C960: DD 5B           STD     <$5B                ; 
+C960: DD 5B           STD     <$5B                ; {ram.m025B}
 C962: 8D BE           BSR     $C922               ; {}
 C964: 25 0B           BCS     $C971               ; {}
 C966: BD C8 C5        JSR     $C8C5               ; {}
@@ -1678,86 +1675,54 @@ C976: 8E 00 60        LDX     #$0060
 C979: BD C8 BD        JSR     $C8BD               ; {}
 C97C: 20 F6           BRA     $C974               ; {}
 C97E: 34 02           PSHS    A                   
-C980: DC 5B           LDD     <$5B                ; 
-C982: 93 5D           SUBD    <$5D                ; 
+C980: DC 5B           LDD     <$5B                ; {ram.m025B}
+C982: 93 5D           SUBD    <$5D                ; {ram.m025D}
 C984: 34 01           PSHS    CC                  
-C986: DD 5B           STD     <$5B                ; 
+C986: DD 5B           STD     <$5B                ; {ram.m025B}
 C988: E6 61           LDB     1,S                 
 C98A: 3D              MUL                         
 C98B: 35 85           PULS    CC,B,PC             
 C98D: 34 02           PSHS    A                   
-C98F: DC 5B           LDD     <$5B                ; 
-C991: D3 5D           ADDD    <$5D                ; 
+C98F: DC 5B           LDD     <$5B                ; {ram.m025B}
+C991: D3 5D           ADDD    <$5D                ; {ram.m025D}
 C993: 20 EF           BRA     $C984               ; {}
 ```
 
 # SWI Function Table
 
-| SWI | Address | Function |
-| --- | --- | --- |
-| SWI | Address | Function |
-| 00   | C384    | Light level |
-| 01   | C3A2    | Draw picture X on screen |
-| 02   | C448    | Uncompress message m and display |
-| 03   | C454    | Display uncompressed message pointed to by X |
-| 04   | C459    | Display a single character in A |
-| 05   | C46F    | Uncompress message X to buffer |
-| 06   | C472    | Uncompress message X to given buffer U |
-| 07   | C4CF    | Get random number |
-| 08   | C4F3    | Clear display screen |
-| 09   | C4F6    | Clear secondary screen |
-| 0A   | C4FF    | Clear hand descriptor |
-| 0B   | C507    | Clear play field |
-| 0C   | C529    | Update heart rate |
-| 0D   | C5D9    | Print contents of hands on status line |
-| 0E   | C656    | Display playing screen |
-| 0F   | C674    | Ready command prompt |
-| 10   | C67F    | Pause for 1.35 seconds |
-| 11   | C686    | Fill X to U with 0s |
-| 12   | C688    | Fill X to U with FFs |
-| 13   | C6A4    | Beam on picture pointed to by X |
-| 14   | C6A8    | Beam subroutine |
-| 15   | C6C5    | Beam subroutine |
-| 16   | C6E6    | Print PREPARE |
-| 17   | C6FB    | Create object structure |
-| 18   | C71F    | Change object to proper name and data |
-| 19   | C743    | Bring up normal display |
-| 1A   | C759    | Set up level |
-| 1B   | C7C8    | Play sound i at full volume |
-| 1C   | C7D0    | Play sound A at volume B  |
-
 ```code
 SWIOffsetTable:
 ;
-C995: 00 ;  0: C384 SWI_0:[Light level](#addr_SWI_0):
-C996: 1E ;  1: C3A2 SWI_1:[Draw picture X on screen](#addr_SWI_1):
-C997: A6 ;  2: C448 SWI_2:[Uncompress message m and display](#addr_SWI_2):
-C998: 0C ;  3: C454 SWI_3:[Display uncompressed message pointed to by X](#addr_SWI_3):
-C999: 05 ;  4: C459 SWI_4:[Display a single character in A](#addr_SWI_4):
-C99A: 16 ;  5: C46F SWI_5:[Uncompress message X to buffer](#addr_SWI_5):
-C99B: 03 ;  6: C472 SWI_6:[Uncompress message X to given buffer U](#addr_SWI_6):
-C99C: 5D ;  7: C4CF SWI_7:[Get random number](#addr_SWI_7):
-C99D: 24 ;  8: C4F3 SWI_8:[Clear display screen](#addr_SWI_8):
-C99E: 03 ;  9: C4F6 SWI_9:[Clear secondary screen](#addr_SWI_9):
-C99F: 09 ;  A: C4FF SWI_A:[Clear hand descriptor](#addr_SWI_A):
-C9A0: 08 ;  B: C507 SWI_B:[Clear play field](#addr_SWI_B):
-C9A1: 22 ;  C: C529 SWI_C:[Update heart rate](#addr_SWI_C):
-C9A2: B0 ;  D: C5D9 SWI_D:[Print contents of hands on status line](#addr_SWI_D):
-C9A3: 7D ;  E: C656 SWI_E:[Display playing screen](#addr_SWI_E):
-C9A4: 1E ;  F: C674 SWI_F:[Ready command prompt](#addr_SWI_F):
-C9A5: 0B ; 10: C67F SWI_10:[Pause for 1.35 seconds](#addr_SWI_10):
-C9A6: 07 ; 11: C686 SWI_11:[Fill X to U with 0s](#addr_SWI_11):
-C9A7: 02 ; 12: C688 SWI_12:[Fill X to U with FFs](#addr_SWI_12):
-C9A8: 1C ; 13: C6A4 SWI_13:[Beam on picture pointed to by X](#addr_SWI_13):
-C9A9: 04 ; 14: C6A8 SWI_14:[Beam subroutine](#addr_SWI_14):
-C9AA: 1D ; 15: C6C5 SWI_15:[Beam subroutine](#addr_SWI_15):
-C9AB: 21 ; 16: C6E6 SWI_16:[Print PREPARE](#addr_SWI_16):
-C9AC: 15 ; 17: C6FB SWI_17:[Create object structure](#addr_SWI_17):
-C9AD: 24 ; 18: C71F SWI_18:[Change object to proper name and data](#addr_SWI_18):
-C9AE: 24 ; 19: C743 SWI_19:[Bring up normal display](#addr_SWI_19):
-C9AF: 16 ; 1A: C759 SWI_1A:[Set up level](#addr_SWI_1A):
-C9B0: 6F ; 1B: C7C8 SWI_1B:[Play sound i at full volume](#addr_SWI_1B):
-C9B1: 08 ; 1C: C7D0 SWI_1C:[Play sound A at volume B](#addr_SWI_1C): 
+;            Address   Description
+C995: 00 ;   C384      SWI_0:  [Light level](#SWI_0)
+C996: 1E ;   C3A2      SWI_1:  [Draw picture X on screen](#SWI_1)
+C997: A6 ;   C448      SWI_2:  [Uncompress message m and display](#SWI_2)
+C998: 0C ;   C454      SWI_3:  [Display uncompressed message pointed to by X](#SWI_3)
+C999: 05 ;   C459      SWI_4:  [Display a single character in A](#SWI_4)
+C99A: 16 ;   C46F      SWI_5:  [Uncompress message X to buffer](#SWI_5)
+C99B: 03 ;   C472      SWI_6:  [Uncompress message X to given buffer U](#SWI_6)
+C99C: 5D ;   C4CF      SWI_7:  [Get random number](#SWI_7)
+C99D: 24 ;   C4F3      SWI_8:  [Clear display screen](#SWI_8)
+C99E: 03 ;   C4F6      SWI_9:  [Clear secondary screen](#SWI_9)
+C99F: 09 ;   C4FF      SWI_A:  [Clear hand descriptor](#SWI_A)
+C9A0: 08 ;   C507      SWI_B:  [Clear play field](#SWI_B)
+C9A1: 22 ;   C529      SWI_C:  [Update heart rate](#SWI_C)
+C9A2: B0 ;   C5D9      SWI_D:  [Print contents of hands on status line](#SWI_D)
+C9A3: 7D ;   C656      SWI_E:  [Display playing screen](#SWI_E)
+C9A4: 1E ;   C674      SWI_F:  [Ready command prompt](#SWI_F)
+C9A5: 0B ;   C67F      SWI_10: [Pause for 1.35 seconds](#SWI_10)
+C9A6: 07 ;   C686      SWI_11: [Fill X to U with 0s](#SWI_11)
+C9A7: 02 ;   C688      SWI_12: [Fill X to U with FFs](#SWI_12)
+C9A8: 1C ;   C6A4      SWI_13: [Beam on picture pointed to by X](#SWI_13)
+C9A9: 04 ;   C6A8      SWI_14: [Beam subroutine](#SWI_14)
+C9AA: 1D ;   C6C5      SWI_15: [Beam subroutine](#SWI_15)
+C9AB: 21 ;   C6E6      SWI_16: [Print PREPARE](#SWI_16)
+C9AC: 15 ;   C6FB      SWI_17: [Create object structure](#SWI_17)
+C9AD: 24 ;   C71F      SWI_18: [Change object to proper name and data](#SWI_18)
+C9AE: 24 ;   C743      SWI_19: [Bring up normal display](#SWI_19)
+C9AF: 16 ;   C759      SWI_1A: [Set up level](#SWI_1A)
+C9B0: 6F ;   C7C8      SWI_1B: [Play sound i at full volume](#SWI_1B)
+C9B1: 08 ;   C7D0      SWI_1C: [Play sound A at volume B](#SWI_1C) 
 
 PrintCharCRBS:
 ; Print character ... handle backspace and carriage return
@@ -1779,7 +1744,7 @@ C9BE: 39              RTS                         ; Done
 ;       
 ; Backspace (wrap to end of area)
 C9BF: 30 1F           LEAX    -1,X                ; Back cursor up one space
-C9C1: 9C 03           CMPX    <$03                ; Did we underflow?
+C9C1: 9C 03           CMPX    <$03                ; {ram.CONST_FF} Did we underflow?
 C9C3: 26 04           BNE     $C9C9               ; {} No ... keep it
 C9C5: AE 42           LDX     2,U                 ; Yes ... wrap ...
 C9C7: 30 1F           LEAX    -1,X                ; ... to end of area
@@ -1857,7 +1822,7 @@ CA2C: C3 DB 1B        ADDD    #$DB1B              ; Offset into character image 
 CA2F: 1F 01           TFR     D,X                 ; To X
 CA31: CE 03 57        LDU     #$0357              ; Expansion buffer
 CA34: 3F              SWI                         ; Decompress the pattern
-CA35: 06                                           ; SWI_6:[Uncompress message X to given buffer U](#addr_SWI_6):
+CA35: 06                                          ; SWI_6:[Uncompress message X to given buffer U](#SWI_6):
 CA36: 8E 03 5E        LDX     #$035E              ; Shift ...
 CA39: 68 82           ASL     ,-X                 ; ... image two times to ...
 CA3B: 68 84           ASL     ,X                  ; ... middle of ...
@@ -1887,23 +1852,23 @@ CA65: 35 F6           PULS    A,B,X,Y,U,PC        ; Done
 CA67: 34 16           PSHS    X,B,A               
 CA69: 6F E4           CLR     ,S                  
 CA6B: 6F 61           CLR     1,S                 
-CA6D: 0F C1           CLR     <$C1                ; 
-CA6F: DD C2           STD     <$C2                ; 
+CA6D: 0F C1           CLR     <$C1                ; {ram.holdHole}
+CA6F: DD C2           STD     <$C2                ; {ram.m02C2}
 CA71: 27 24           BEQ     $CA97               ; {}
 CA73: 10 A3 62        CMPD    2,S                 
 CA76: 26 04           BNE     $CA7C               ; {}
 CA78: 6C E4           INC     ,S                  
 CA7A: 20 1B           BRA     $CA97               ; {}
 CA7C: 8E 00 10        LDX     #$0010              
-CA7F: 08 C3           LSL     <$C3                ; 
-CA81: 09 C2           ROL     <$C2                ; 
-CA83: 09 C1           ROL     <$C1                ; 
+CA7F: 08 C3           LSL     <$C3                ; {ram.m02C3}
+CA81: 09 C2           ROL     <$C2                ; {ram.m02C2}
+CA83: 09 C1           ROL     <$C1                ; {ram.holdHole}
 CA85: 68 61           ASL     1,S                 
 CA87: 69 E4           ROL     ,S                  
-CA89: DC C1           LDD     <$C1                ; 
+CA89: DC C1           LDD     <$C1                ; {ram.holdHole}
 CA8B: A3 62           SUBD    2,S                 
 CA8D: 25 04           BCS     $CA93               ; {}
-CA8F: DD C1           STD     <$C1                ; 
+CA8F: DD C1           STD     <$C1                ; {ram.holdHole}
 CA91: 6C 61           INC     1,S                 
 CA93: 30 1F           LEAX    -1,X                
 CA95: 26 E8           BNE     $CA7F               ; {}
@@ -1915,7 +1880,7 @@ CA9B: C3 00 01        ADDD    #$0001
 CA9E: 39              RTS                         
 
 CA9F: 34 16           PSHS    X,B,A               
-CAA1: 9E 43           LDX     <$43                ; 
+CAA1: 9E 43           LDX     <$43                ; {ram.m0243}
 CAA3: EC E4           LDD     ,S                  ; 
 CAA5: 2A 07           BPL     $CAAE               ; {}
 CAA7: 8D F0           BSR     $CA99               ; {}
@@ -1929,112 +1894,112 @@ CAB2: 35 96           PULS    A,B,X,PC
 CAB4: 7E CB 8A        JMP     $CB8A               ; {}
 
 CAB7: 34 76           PSHS    U,Y,X,B,A           
-CAB9: 0C 2D           INC     <$2D                ; 
+CAB9: 0C 2D           INC     <$2D                ; {ram.dotFrequency}
 CABB: 27 F7           BEQ     $CAB4               ; {}
-CABD: 96 2D           LDA     <$2D                ; 
-CABF: 97 2E           STA     <$2E                ; 
-CAC1: DC 35           LDD     <$35                ; 
-CAC3: 93 31           SUBD    <$31                ; 
-CAC5: DD 3E           STD     <$3E                ; 
+CABD: 96 2D           LDA     <$2D                ; {ram.dotFrequency}
+CABF: 97 2E           STA     <$2E                ; {ram.m022E}
+CAC1: DC 35           LDD     <$35                ; {ram.m0235}
+CAC3: 93 31           SUBD    <$31                ; {ram.m0231}
+CAC5: DD 3E           STD     <$3E                ; {ram.m023E}
 CAC7: 2A 02           BPL     $CACB               ; {}
 CAC9: 8D CE           BSR     $CA99               ; {}
-CACB: DD 43           STD     <$43                ; 
-CACD: DC 33           LDD     <$33                ; 
-CACF: 93 2F           SUBD    <$2F                ; 
-CAD1: DD 41           STD     <$41                ; 
+CACB: DD 43           STD     <$43                ; {ram.m0243}
+CACD: DC 33           LDD     <$33                ; {ram.m0233}
+CACF: 93 2F           SUBD    <$2F                ; {ram.m022F}
+CAD1: DD 41           STD     <$41                ; {ram.m0241}
 CAD3: 2A 02           BPL     $CAD7               ; {}
 CAD5: 8D C2           BSR     $CA99               ; {}
-CAD7: 10 93 43        CMPD    <$43                ; 
+CAD7: 10 93 43        CMPD    <$43                ; {ram.m0243}
 CADA: 2D 04           BLT     $CAE0               ; {}
-CADC: DD 43           STD     <$43                ; 
+CADC: DD 43           STD     <$43                ; {ram.m0243}
 CADE: 27 D4           BEQ     $CAB4               ; {}
-CAE0: DC 3E           LDD     <$3E                ; 
+CAE0: DC 3E           LDD     <$3E                ; {ram.m023E}
 CAE2: 8D BB           BSR     $CA9F               ; {}
-CAE4: DD 3E           STD     <$3E                ; 
+CAE4: DD 3E           STD     <$3E                ; {ram.m023E}
 CAE6: 1F 89           TFR     A,B                 
 CAE8: 1D              SEX                         
 CAE9: C6 01           LDB     #$01                
-CAEB: 97 3D           STA     <$3D                ; 
+CAEB: 97 3D           STA     <$3D                ; {ram.m023D}
 CAED: 2A 01           BPL     $CAF0               ; {}
 CAEF: 50              NEGB                        
-CAF0: D7 45           STB     <$45                ; 
-CAF2: DC 41           LDD     <$41                ; 
+CAF0: D7 45           STB     <$45                ; {ram.m0245}
+CAF2: DC 41           LDD     <$41                ; {ram.m0241}
 CAF4: 8D A9           BSR     $CA9F               ; {}
-CAF6: DD 41           STD     <$41                ; 
+CAF6: DD 41           STD     <$41                ; {ram.m0241}
 CAF8: 1F 89           TFR     A,B                 
 CAFA: 1D              SEX                         
 CAFB: C6 20           LDB     #$20                
-CAFD: 97 40           STA     <$40                ; 
+CAFD: 97 40           STA     <$40                ; {ram.m0240}
 CAFF: 2A 01           BPL     $CB02               ; {}
 CB01: 50              NEGB                        
-CB02: D7 46           STB     <$46                ; 
-CB04: DC 31           LDD     <$31                ; 
-CB06: DD 37           STD     <$37                ; 
-CB08: DC 2F           LDD     <$2F                ; 
-CB0A: DD 3A           STD     <$3A                ; 
+CB02: D7 46           STB     <$46                ; {ram.m0246}
+CB04: DC 31           LDD     <$31                ; {ram.m0231}
+CB06: DD 37           STD     <$37                ; {ram.m0237}
+CB08: DC 2F           LDD     <$2F                ; {ram.m022F}
+CB0A: DD 3A           STD     <$3A                ; {ram.m023A}
 CB0C: 86 80           LDA     #$80                
-CB0E: 97 39           STA     <$39                ; 
-CB10: 97 3C           STA     <$3C                ; 
+CB0E: 97 39           STA     <$39                ; {ram.m0239}
+CB10: 97 3C           STA     <$3C                ; {ram.m023C}
 CB12: AE 42           LDX     2,U                 
-CB14: 9F 49           STX     <$49                ; 
+CB14: 9F 49           STX     <$49                ; {ram.m0249}
 CB16: AE C4           LDX     ,U                  
-CB18: 9F 47           STX     <$47                ; 
-CB1A: DC 3A           LDD     <$3A                ; 
+CB18: 9F 47           STX     <$47                ; {ram.m0247}
+CB1A: DC 3A           LDD     <$3A                ; {ram.m023A}
 CB1C: BD CA 0C        JSR     $CA0C               ; {code.Dleft5}
 CB1F: 30 8B           LEAX    D,X                 
-CB21: DC 37           LDD     <$37                ; 
+CB21: DC 37           LDD     <$37                ; {ram.m0237}
 CB23: BD D3 7F        JSR     $D37F               ; {code.DRight3}
 CB26: 30 8B           LEAX    D,X                 
 CB28: CE CB 8E        LDU     #$CB8E              ; Bit table (80,40,20,10,08,04,02,01)
-CB2B: 10 9E 43        LDY     <$43                ; 
-CB2E: 0A 2E           DEC     <$2E                ; 
+CB2B: 10 9E 43        LDY     <$43                ; {ram.m0243}
+CB2E: 0A 2E           DEC     <$2E                ; {ram.m022E}
 CB30: 26 22           BNE     $CB54               ; {}
-CB32: 96 2D           LDA     <$2D                ; 
-CB34: 97 2E           STA     <$2E                ; 
-CB36: 0D 37           TST     <$37                ; 
+CB32: 96 2D           LDA     <$2D                ; {ram.dotFrequency}
+CB34: 97 2E           STA     <$2E                ; {ram.m022E}
+CB36: 0D 37           TST     <$37                ; {ram.m0237}
 CB38: 26 1A           BNE     $CB54               ; {}
-CB3A: 9C 47           CMPX    <$47                ; 
+CB3A: 9C 47           CMPX    <$47                ; {ram.m0247}
 CB3C: 25 16           BCS     $CB54               ; {}
-CB3E: 9C 49           CMPX    <$49                ; 
+CB3E: 9C 49           CMPX    <$49                ; {ram.m0249}
 CB40: 24 12           BCC     $CB54               ; {}
-CB42: D6 38           LDB     <$38                ; 
+CB42: D6 38           LDB     <$38                ; {ram.m0238}
 CB44: C4 07           ANDB    #$07                
 CB46: A6 C5           LDA     B,U                 ; A = 2^b
-CB48: 0D 2C           TST     <$2C                ; 
+CB48: 0D 2C           TST     <$2C                ; {ram.backgroundColor}
 CB4A: 27 04           BEQ     $CB50               ; {}
 CB4C: 43              COMA                        
 CB4D: A4 84           ANDA    ,X                  
 CB4F: 8C                  ; CMPX  opcode to skip next instruction 
 CB50: AA 84           ORA     ,X                  
 CB52: A7 84           STA     ,X                  
-CB54: 96 38           LDA     <$38                ; 
+CB54: 96 38           LDA     <$38                ; {ram.m0238}
 CB56: 84 F8           ANDA    #$F8                
-CB58: 97 C1           STA     <$C1                ; 
-CB5A: DC 38           LDD     <$38                ; 
-CB5C: D3 3E           ADDD    <$3E                ; 
-CB5E: DD 38           STD     <$38                ; 
-CB60: D6 37           LDB     <$37                ; 
-CB62: D9 3D           ADCB    <$3D                ; 
-CB64: D7 37           STB     <$37                ; 
+CB58: 97 C1           STA     <$C1                ; {ram.holdHole}
+CB5A: DC 38           LDD     <$38                ; {ram.m0238}
+CB5C: D3 3E           ADDD    <$3E                ; {ram.m023E}
+CB5E: DD 38           STD     <$38                ; {ram.m0238}
+CB60: D6 37           LDB     <$37                ; {ram.m0237}
+CB62: D9 3D           ADCB    <$3D                ; {ram.m023D}
+CB64: D7 37           STB     <$37                ; {ram.m0237}
 CB66: 84 F8           ANDA    #$F8                
-CB68: 91 C1           CMPA    <$C1                ; 
+CB68: 91 C1           CMPA    <$C1                ; {ram.holdHole}
 CB6A: 27 04           BEQ     $CB70               ; {}
-CB6C: D6 45           LDB     <$45                ; 
+CB6C: D6 45           LDB     <$45                ; {ram.m0245}
 CB6E: 30 85           LEAX    B,X                 
-CB70: DC 3B           LDD     <$3B                ; 
-CB72: 97 C1           STA     <$C1                ; 
-CB74: D3 41           ADDD    <$41                ; 
-CB76: DD 3B           STD     <$3B                ; 
-CB78: D6 3A           LDB     <$3A                ; 
-CB7A: D9 40           ADCB    <$40                ; 
-CB7C: D7 3A           STB     <$3A                ; 
-CB7E: 91 C1           CMPA    <$C1                ; 
+CB70: DC 3B           LDD     <$3B                ; {ram.m023B}
+CB72: 97 C1           STA     <$C1                ; {ram.holdHole}
+CB74: D3 41           ADDD    <$41                ; {ram.m0241}
+CB76: DD 3B           STD     <$3B                ; {ram.m023B}
+CB78: D6 3A           LDB     <$3A                ; {ram.m023A}
+CB7A: D9 40           ADCB    <$40                ; {ram.m0240}
+CB7C: D7 3A           STB     <$3A                ; {ram.m023A}
+CB7E: 91 C1           CMPA    <$C1                ; {ram.holdHole}
 CB80: 27 04           BEQ     $CB86               ; {}
-CB82: D6 46           LDB     <$46                ; 
+CB82: D6 46           LDB     <$46                ; {ram.m0246}
 CB84: 30 85           LEAX    B,X                 
 CB86: 31 3F           LEAY    -1,Y                
 CB88: 26 A4           BNE     $CB2E               ; {}
-CB8A: 0A 2D           DEC     <$2D                ; 
+CB8A: 0A 2D           DEC     <$2D                ; {ram.dotFrequency}
 CB8C: 35 F6           PULS    A,B,X,Y,U,PC        
 
 BitNumbers:
@@ -2043,7 +2008,7 @@ CB8E: 80 40 20 10 08 04 02 01
         
 GetNextWord:               
 CB96: 34 52           PSHS    U,X,A               ; Hold these
-CB98: 9E 11           LDX     <$11                ; Unparsed user input
+CB98: 9E 11           LDX     <$11                ; {ram.m0211} Unparsed user input
 CB9A: CE 03 13        LDU     #$0313              ; Decode buffer
 CB9D: A6 80           LDA     ,X+                 ; Next character
 CB9F: 27 FC           BEQ     $CB9D               ; {} Skip to ...
@@ -2055,33 +2020,33 @@ CBA9: 11 83 03 33     CMPU    #$0333              ; Only 32 characters input ...
 CBAD: 25 F4           BCS     $CBA3               ; {} ... allowed
 CBAF: 86 FF           LDA     #$FF                ; Mark the end ...
 CBB1: A7 C0           STA     ,U+                 ; ... of the input
-CBB3: 9F 11           STX     <$11                ; 
+CBB3: 9F 11           STX     <$11                ; {ram.m0211}
 CBB5: 7D 03 13        TST     $0313               ; {ram.tmpBuffer1} Is there anything?
 CBB8: 35 D2           PULS    A,X,U,PC            ; Done
     
-CBBA: 0F 90           CLR     <$90                ; 
+CBBA: 0F 90           CLR     <$90                ; {ram.m0290}
 CBBC: 8E D9 6A        LDX     #$D96A              ; Class names
 CBBF: 8D 2B           BSR     $CBEC               ; {code.DecodeInput}
 CBC1: 2B 05           BMI     $CBC8               ; {}
 CBC3: 27 1A           BEQ     $CBDF               ; {}
-CBC5: DD 8E           STD     <$8E                ; 
+CBC5: DD 8E           STD     <$8E                ; {ram.holdIncantWord}
 CBC7: 39              RTS                         
 ;
-CBC8: 0A 90           DEC     <$90                ; 
+CBC8: 0A 90           DEC     <$90                ; {ram.m0290}
 CBCA: 8E D8 F3        LDX     #$D8F3              ; Proper names
 CBCD: 8D 18           BSR     $CBE7               ; {}
 CBCF: 2F 0E           BLE     $CBDF               ; {}
-CBD1: DD 8E           STD     <$8E                ; 
+CBD1: DD 8E           STD     <$8E                ; {ram.holdIncantWord}
 CBD3: 8E D9 6A        LDX     #$D96A              ; Class names
 CBD6: 8D 14           BSR     $CBEC               ; {code.DecodeInput}
 CBD8: 2F 05           BLE     $CBDF               ; {}
-CBDA: D1 8F           CMPB    <$8F                ; 
+CBDA: D1 8F           CMPB    <$8F                ; {ram.holdIncantLen}
 CBDC: 26 01           BNE     $CBDF               ; {}
 CBDE: 39              RTS                         
 CBDF: 32 62           LEAS    2,S                 ; Skip a stack frame to return error
 CBE1: 3F              SWI                         ; Print "???"
-CBE2: 02                                           ; SWI_2:[Uncompress message m and display](#addr_SWI_2):
-CBE3: 17 7B D0 ; "???"    
+CBE2: 02                                          ; SWI_2:[Uncompress message m and display](#SWI_2):
+CBE3: 17 7B D0                                    ; "???"    
 CBE6: 39              RTS                         ; Done
 
 CBE7: 34 76           PSHS    U,Y,X,B,A           
@@ -2103,13 +2068,13 @@ CBEE: 4F              CLRA                        ; Word number to return
 CBEF: 5F              CLRB                        ; Command word length
 CBF0: 8D A4           BSR     $CB96               ; {code.GetNextWord} Get the next user input word
 CBF2: 2B 39           BMI     $CC2D               ; {} Nothing on the input. Return nothing.
-CBF4: 0F 78           CLR     <$78                ; Found-a-match flag
-CBF6: 0F 7B           CLR     <$7B                ; Perfect input match
+CBF4: 0F 78           CLR     <$78                ; {ram.foundMatch} Found-a-match flag
+CBF6: 0F 7B           CLR     <$7B                ; {ram.perfectMatch} Perfect input match
 CBF8: E6 80           LDB     ,X+                 ; Get the number ...
-CBFA: D7 79           STB     <$79                ; ... of words in table
+CBFA: D7 79           STB     <$79                ; {ram.numWords} ... of words in table
 CBFC: CE 03 13        LDU     #$0313              ; Start of typed word
 CBFF: 3F              SWI                         ; Uncompress the command word
-CC00: 05                                           ; SWI_5:[Uncompress message X to buffer](#addr_SWI_5):
+CC00: 05                                          ; SWI_5:[Uncompress message X to buffer](#SWI_5):
 CC01: 10 8E 03 36     LDY     #$0336              ; 335 is the length, 336 starts the text
 CC05: E6 C0           LDB     ,U+                 ; Char from uncompressed
 CC07: 2B 0E           BMI     $CC17               ; {} We reached the end of the word ... a match
@@ -2119,18 +2084,18 @@ CC0D: 6D A4           TST     ,Y                  ; More in the user buffer?
 CC0F: 2A F4           BPL     $CC05               ; {} Yes ... keep checking against the command word
 CC11: 6D C4           TST     ,U                  ; No more. Did we check all of the command word?
 CC13: 2A 0D           BPL     $CC22               ; {} Yes ... we have a match
-CC15: 0A 7B           DEC     <$7B                ; FF means there was an exact match
-CC17: 0D 78           TST     <$78                ; Do we already have a match?
+CC15: 0A 7B           DEC     <$7B                ; {ram.perfectMatch} FF means there was an exact match
+CC17: 0D 78           TST     <$78                ; {ram.foundMatch} Do we already have a match?
 CC19: 26 10           BNE     $CC2B               ; {} Error ... this could match multiple words
-CC1B: 0C 78           INC     <$78                ; Now we have a match
+CC1B: 0C 78           INC     <$78                ; {ram.foundMatch} Now we have a match
 CC1D: F6 03 35        LDB     $0335               ; {ram.tmpBuffer2} Length of command word
 CC20: ED E4           STD     ,S                  ; Store potential match on the stack to return
 CC22: 4C              INCA                        ; Word number for next test word
-CC23: 0A 79           DEC     <$79                ; Tried all words?
+CC23: 0A 79           DEC     <$79                ; {ram.numWords} Tried all words?
 CC25: 26 D5           BNE     $CBFC               ; {} No ... keep looking
-CC27: 0D 78           TST     <$78                ; Did we find a match?
+CC27: 0D 78           TST     <$78                ; {ram.foundMatch} Did we find a match?
 CC29: 26 04           BNE     $CC2F               ; {} Yes ... leave it as it on the stack
-CC2B: DC 03           LDD     <$03                ; 
+CC2B: DC 03           LDD     <$03                ; {ram.CONST_FF}
 CC2D: ED E4           STD     ,S                  ; No matches ... store error to return in D
 CC2F: 35 F6           PULS    A,B,X,Y,U,PC        ; Done
 
@@ -2197,11 +2162,11 @@ GetRandomCell:
 ; Return X: Pointer to cell in memory
 ;
 CC71: 3F              SWI                         ; Get random number in A
-CC72: 07                                           ; SWI_7:[Get random number](#addr_SWI_7):
+CC72: 07                                          ; SWI_7:[Get random number](#SWI_7):
 CC73: 84 1F           ANDA    #$1F                ; 0-31 ... X coordinate
 CC75: 1F 89           TFR     A,B                 ; Coordinate to B
 CC77: 3F              SWI                         ; Get random number in A
-CC78: 07                                           ; SWI_7:[Get random number](#addr_SWI_7):
+CC78: 07                                          ; SWI_7:[Get random number](#SWI_7):
 CC79: 84 1F           ANDA    #$1F                ; 0-31 ... Y coordinate
 ;
 GetCellPointer:
@@ -2275,40 +2240,40 @@ MakeMazeLevel:
 CC9C: 8E 05 F4        LDX     #$05F4              ; Start of level
 CC9F: CE 09 F4        LDU     #$09F4              ; One past end of level (32*32=1024 byte)
 CCA2: 3F              SWI                         ; Fill the buffer with FFs
-CCA3: 12                                           ; SWI_12:[Fill X to U with FFs](#addr_SWI_12):
+CCA3: 12                                          ; SWI_12:[Fill X to U with FFs](#SWI_12):
 CCA4: 8E CD 9F        LDX     #$CD9F              ; Random number seeds
-CCA7: D6 81           LDB     <$81                ; Offset into seeds ...
+CCA7: D6 81           LDB     <$81                ; {ram.currentLevel} Offset into seeds ...
 CCA9: 3A              ABX                         ; ... for this level
 CCAA: EC 81           LDD     ,X++                ; Copy the ...
-CCAC: DD 6B           STD     <$6B                ; ... 3 byte ...
+CCAC: DD 6B           STD     <$6B                ; {ram.rndSeedA} ... 3 byte ...
 CCAE: A6 84           LDA     ,X                  ; ... seed to ...
-CCB0: 97 6D           STA     <$6D                ; ... current seed
+CCB0: 97 6D           STA     <$6D                ; {ram.rndSeedC} ... current seed
 CCB2: 10 8E 01 F4     LDY     #$01F4              ; Make 500 cells in the "run" process
 CCB6: BD CC 71        JSR     $CC71               ; {code.GetRandomCell} Get a random coordinate
-CCB9: DD 7C           STD     <$7C                ; {ram.CASSBLKTYPE} Hold the starting point
+CCB9: DD 7C           STD     <$7C                ; {ram.drwMazeY} Hold the starting point
 ;
 ; Start a new maze "run" of cells
 CCBB: 3F              SWI                         ; Get a random number
-CCBC: 07                                           ; SWI_7:[Get random number](#addr_SWI_7):
+CCBC: 07                                          ; SWI_7:[Get random number](#SWI_7):
 CCBD: 84 03           ANDA    #$03                ; Now a random direction (0-3)
-CCBF: 97 8A           STA     <$8A                ; Hold current direction
+CCBF: 97 8A           STA     <$8A                ; {ram.drwMazeDir} Hold current direction
 CCC1: 3F              SWI                         ; Get a random number
-CCC2: 07                                           ; SWI_7:[Get random number](#addr_SWI_7):
+CCC2: 07                                          ; SWI_7:[Get random number](#SWI_7):
 CCC3: 84 07           ANDA    #$07                ; Random 0..7
 CCC5: 4C              INCA                        ; Random 1..8
-CCC6: 97 7E           STA     <$7E                ; {ram.CASSPTR} Store number of crossings
+CCC6: 97 7E           STA     <$7E                ; {ram.drwMazeCross} Store number of crossings
 CCC8: 20 08           BRA     $CCD2               ; {} Start this run with a step
 
-CCCA: DC 88           LDD     <$88                ; Get the potential new coordinate
-CCCC: DD 7C           STD     <$7C                ; {ram.CASSBLKTYPE} Make it the new cell
-CCCE: 0A 7E           DEC     <$7E                ; {ram.CASSPTR} All crossings in this run placed?
+CCCA: DC 88           LDD     <$88                ; {ram.drwMazeTmp} Get the potential new coordinate
+CCCC: DD 7C           STD     <$7C                ; {ram.drwMazeY} Make it the new cell
+CCCE: 0A 7E           DEC     <$7E                ; {ram.drwMazeCross} All crossings in this run placed?
 CCD0: 27 E9           BEQ     $CCBB               ; {} Yes ... start a new run (done with this one)
 ;
-CCD2: DC 7C           LDD     <$7C                ; {ram.CASSBLKTYPE} Get the current cell pointer
+CCD2: DC 7C           LDD     <$7C                ; {ram.drwMazeY} Get the current cell pointer
 CCD4: BD D1 1B        JSR     $D11B               ; {code.StepInDirection} Move in the random direction
 CCD7: 8D B5           BSR     $CC8E               ; {code.IsValidCell} Is this cell out of bounds?
 CCD9: 26 E0           BNE     $CCBB               ; {} Yes ... start a new run
-CCDB: DD 88           STD     <$88                ; Hold the new coordinates
+CCDB: DD 88           STD     <$88                ; {ram.drwMazeTmp} Hold the new coordinates
 CCDD: 6D 84           TST     ,X                  ; Already an open cell there?
 CCDF: 27 E9           BEQ     $CCCA               ; {} Yes ... count it and keep going (no need to check it)
 CCE1: CE 09 F4        LDU     #$09F4              ; Buffer to hold cell values
@@ -2341,14 +2306,14 @@ CD09: 31 3F           LEAY    -1,Y                ; All 500 cells done?
 CD0B: 26 BD           BNE     $CCCA               ; {} No ... use this and keep going
 ;
 ; This loops over the cells and sets the "solid wall" bits for directions that are blocked.
-CD0D: 0F 7C           CLR     <$7C                ; {ram.CASSBLKTYPE} Start with ...
-CD0F: 0F 7D           CLR     <$7D                ; ... Y,X = 0,0
-CD11: DC 7C           LDD     <$7C                ; {ram.CASSBLKTYPE} Get the current coordinate
+CD0D: 0F 7C           CLR     <$7C                ; {ram.drwMazeY} Start with ...
+CD0F: 0F 7D           CLR     <$7D                ; {ram.drwMazeX} ... Y,X = 0,0
+CD11: DC 7C           LDD     <$7C                ; {ram.drwMazeY} Get the current coordinate
 CD13: BD CC 7B        JSR     $CC7B               ; {code.GetCellPointer} Get the cell pointer
 CD16: A6 84           LDA     ,X                  ; Get the cell value
 CD18: 4C              INCA                        ; Is this a solid?
 CD19: 27 26           BEQ     $CD41               ; {} Yes ... skip it
-CD1B: DC 7C           LDD     <$7C                ; {ram.CASSBLKTYPE} Coordinates again
+CD1B: DC 7C           LDD     <$7C                ; {ram.drwMazeY} Coordinates again
 CD1D: CE 09 F4        LDU     #$09F4              ; Status buffer
 CD20: BD CC 49        JSR     $CC49               ; {code.GetNeighborCells} Get the status of the neighbors
 CD23: A6 84           LDA     ,X                  ; Get the value of the cell
@@ -2369,12 +2334,12 @@ CD3F: A7 84           STA     ,X                  ; Set solid walls on the edge 
 ;
 ; Add walls next to solid cells
 CD41: C6 20           LDB     #$20                ; 32 for compare
-CD43: 0C 7D           INC     <$7D                ; Bump the X coordinate
-CD45: D1 7D           CMPB    <$7D                ; Reached end of row?
+CD43: 0C 7D           INC     <$7D                ; {ram.drwMazeX} Bump the X coordinate
+CD45: D1 7D           CMPB    <$7D                ; {ram.drwMazeX} Reached end of row?
 CD47: 26 C8           BNE     $CD11               ; {} No ... keep going
-CD49: 0F 7D           CLR     <$7D                ; Back to X=0
-CD4B: 0C 7C           INC     <$7C                ; {ram.CASSBLKTYPE} Bump the Y coordinate
-CD4D: D1 7C           CMPB    <$7C                ; {ram.CASSBLKTYPE} End of maze?
+CD49: 0F 7D           CLR     <$7D                ; {ram.drwMazeX} Back to X=0
+CD4B: 0C 7C           INC     <$7C                ; {ram.drwMazeY} Bump the Y coordinate
+CD4D: D1 7C           CMPB    <$7C                ; {ram.drwMazeY} End of maze?
 CD4F: 26 C0           BNE     $CD11               ; {} No ... keep going
 ;
 ; Add 70 regular doors
@@ -2391,9 +2356,9 @@ CD60: 8D 0B           BSR     $CD6D               ; {} Make a random magic door
 CD62: 5A              DECB                        ; All done?
 CD63: 26 FB           BNE     $CD60               ; {} No ... do all
 ;
-CD65: D6 97           LDB     <$97                ; ?? A randomizer count? 0?
+CD65: D6 97           LDB     <$97                ; {ram.m0297} ?? A randomizer count? 0?
 CD67: 3F              SWI                         ; Get next ...
-CD68: 07                                           ; SWI_7:[Get random number](#addr_SWI_7):
+CD68: 07                                          ; SWI_7:[Get random number](#SWI_7):
 CD69: 5A              DECB                        ; Randomized the full count?
 CD6A: 26 FB           BNE     $CD67               ; {} No ... do all
 CD6C: 39              RTS                         ; Out
@@ -2402,21 +2367,21 @@ CD6C: 39              RTS                         ; Out
 CD6D: 34 76           PSHS    U,Y,X,B,A           ; Preserve registers
 CD6F: 10 8E CD A6     LDY     #$CDA6              ; Bit patterns for solid walls in each direction
 CD73: BD CC 71        JSR     $CC71               ; {code.GetRandomCell} Get random cell
-CD76: DD 88           STD     <$88                ; Hold coordinates
+CD76: DD 88           STD     <$88                ; {ram.drwMazeTmp} Hold coordinates
 CD78: E6 84           LDB     ,X                  ; Get cell value
 CD7A: C1 FF           CMPB    #$FF                ; Is it solid?
 CD7C: 27 F5           BEQ     $CD73               ; {} Yes ... find an open cell
 CD7E: 3F              SWI                         ; Get a random number
-CD7F: 07                                           ; SWI_7:[Get random number](#addr_SWI_7):
+CD7F: 07                                          ; SWI_7:[Get random number](#SWI_7):
 CD80: 84 03           ANDA    #$03                ; Make it a direction
-CD82: 97 8A           STA     <$8A                ; Store the direction
+CD82: 97 8A           STA     <$8A                ; {ram.drwMazeDir} Store the direction
 CD84: E5 A6           BITB    A,Y                 ; Is that direction open (no solid and no existing door)?
 CD86: 26 EB           BNE     $CD73               ; {} No ... find another
 CD88: EA C6           ORB     A,U                 ; Or in the pattern for the door (magic or regular)
 CD8A: E7 84           STB     ,X                  ; Set the new pattern
-CD8C: DC 88           LDD     <$88                ; Get coordinates
+CD8C: DC 88           LDD     <$88                ; {ram.drwMazeTmp} Get coordinates
 CD8E: BD D1 1B        JSR     $D11B               ; {code.StepInDirection} Step in that direction
-CD91: D6 8A           LDB     <$8A                ; Get the direction we came in
+CD91: D6 8A           LDB     <$8A                ; {ram.drwMazeDir} Get the direction we came in
 CD93: CB 02           ADDB    #$02                ; Flip it ...
 CD95: C4 03           ANDB    #$03                ; ... around
 CD97: A6 84           LDA     ,X                  ; Get value
@@ -2447,12 +2412,12 @@ CDAE: 02 08 20 80
 
 ShowMap:
 ; This is the draw-screen function for the scroll
-CDB2: DE 0B           LDU     <$0B                ; Drawing screen descriptor
+CDB2: DE 0B           LDU     <$0B                ; {ram.backScreen} Drawing screen descriptor
 CDB4: CC 1F 1F        LDD     #$1F1F              ; 32x32
-CDB7: DD 7C           STD     <$7C                ; {ram.CASSBLKTYPE} Store the count
+CDB7: DD 7C           STD     <$7C                ; {ram.drwMazeY} Store the count
 ;
 ; First draw the open/closed states of all cells in the maze;
-CDB9: DC 7C           LDD     <$7C                ; {ram.CASSBLKTYPE} Get the current map coordinate
+CDB9: DC 7C           LDD     <$7C                ; {ram.drwMazeY} Get the current map coordinate
 CDBB: 8D 54           BSR     $CE11               ; {code.GetMapCellMem} Get a screen pointer to the cell in Y
 CDBD: BD CC 7B        JSR     $CC7B               ; {code.GetCellPointer} Get a pointer to the maze memory
 CDC0: 5F              CLRB                        ; Initial cell state (open)
@@ -2465,18 +2430,18 @@ CDC9: E7 A4           STB     ,Y                  ; Draw ...
 CDCB: 31 A8 20        LEAY    $20,Y               ; ... six ...
 CDCE: 4A              DECA                        ; ... row ...
 CDCF: 26 F8           BNE     $CDC9               ; {} ... block
-CDD1: 0A 7D           DEC     <$7D                ; Move left one cell
+CDD1: 0A 7D           DEC     <$7D                ; {ram.drwMazeX} Move left one cell
 CDD3: 2A E4           BPL     $CDB9               ; {} Do all of the row
 CDD5: 86 1F           LDA     #$1F                ; Restart row at ...
-CDD7: 97 7D           STA     <$7D                ; ... far right
-CDD9: 0A 7C           DEC     <$7C                ; {ram.CASSBLKTYPE} Move up a row
+CDD7: 97 7D           STA     <$7D                ; {ram.drwMazeX} ... far right
+CDD9: 0A 7C           DEC     <$7C                ; {ram.drwMazeY} Move up a row
 CDDB: 2A DC           BPL     $CDB9               ; {} Do all rows
 ;
-CDDD: 0D 94           TST     <$94                ; Is this a "seer" scroll?
+CDDD: 0D 94           TST     <$94                ; {ram.scrollType} Is this a "seer" scroll?
 CDDF: 27 4A           BEQ     $CE2B               ; {} No ... skip drawing monsters and objects
 ;
 ; Show objects on floor (Seer Scroll)
-CDE1: 0F 91           CLR     <$91                ; Start at top of list
+CDE1: 0F 91           CLR     <$91                ; {ram.restartFind} Start at top of list
 CDE3: BD CF 63        JSR     $CF63               ; {code.GetNextOject} Get next object on floor
 CDE6: 27 0F           BEQ     $CDF7               ; {} All done ... do monsters
 CDE8: 6D 05           TST     5,X                 ; Is this on the floor?
@@ -2530,14 +2495,14 @@ CE26: A7 A9 00 80     STA     $0080,Y             ; Bottom row pattern (A)
 CE2A: 39              RTS                         ; Done
 
 ; Draws holes and player on map (both scroll types)
-CE2B: DC 13           LDD     <$13                ; Player Y,X coordinate
+CE2B: DC 13           LDD     <$13                ; {ram.playerY} Player Y,X coordinate
 CE2D: 8D E2           BSR     $CE11               ; {code.GetMapCellMem} Player's cell on map screen
 CE2F: CC 24 18        LDD     #$2418              ; 4 byte pattern (X) for player
 CE32: 8D E9           BSR     $CE1D               ; {code.DrawMapSymbol} Draw player on the map
 ;
 ; Two passes here. 1st draw the holes in the current ceiling. Then draw the holes
 ; in the current floor.
-CE34: 9E 86           LDX     <$86                ; Pointer to ceiling holes/ladders for current level
+CE34: 9E 86           LDX     <$86                ; {ram.currentHoles} Pointer to ceiling holes/ladders for current level
 CE36: 8D 00           BSR     $CE38               ; {} Draw the holes in this floor's ceiling (fall through to show floor holes)
 CE38: A6 80           LDA     ,X+                 ; Get hole type
 CE3A: 2B EE           BMI     $CE2A               ; {} End of list? Yes ... out
@@ -2549,27 +2514,27 @@ CE45: 20 F1           BRA     $CE38               ; {} Keep going
 
 CE47: 34 12           PSHS    X,A                 
 CE49: 8E CF 48        LDX     #$CF48              
-CE4C: 0D 73           TST     <$73                ; 
+CE4C: 0D 73           TST     <$73                ; {ram.m0273}
 CE4E: 26 0C           BNE     $CE5C               ; {}
 CE50: 30 89 00 01     LEAX    $0001,X             
-CE54: 0D 74           TST     <$74                ; 
+CE54: 0D 74           TST     <$74                ; {ram.m0274}
 CE56: 26 04           BNE     $CE5C               ; {}
 CE58: 30 89 FF F5     LEAX    -$000B,X            
-CE5C: 96 8B           LDA     <$8B                ; 
+CE5C: 96 8B           LDA     <$8B                ; {ram.m028B}
 CE5E: A6 86           LDA     A,X                 
-CE60: 97 4F           STA     <$4F                ; 
-CE62: 97 50           STA     <$50                ; 
+CE60: 97 4F           STA     <$4F                ; {ram.m024F}
+CE62: 97 50           STA     <$50                ; {ram.m0250}
 CE64: 35 92           PULS    A,X,PC              
 
 NormalDisplay:
 ; This is the routine called to draw the normal game display
 CE66: 3F              SWI                         
-CE67: 09                                           ; SWI_9:[Clear secondary screen](#addr_SWI_9):
-CE68: 0F 8B           CLR     <$8B                ; 
-CE6A: DC 13           LDD     <$13                ; 
-CE6C: DD 7C           STD     <$7C                ; {ram.CASSBLKTYPE}
+CE67: 09                                          ; SWI_9:[Clear secondary screen](#SWI_9):
+CE68: 0F 8B           CLR     <$8B                ; {ram.m028B}
+CE6A: DC 13           LDD     <$13                ; {ram.playerY}
+CE6C: DD 7C           STD     <$7C                ; {ram.drwMazeY}
 CE6E: 8D D7           BSR     $CE47               ; {}
-CE70: DC 7C           LDD     <$7C                ; {ram.CASSBLKTYPE}
+CE70: DC 7C           LDD     <$7C                ; {ram.drwMazeY}
 CE72: BD CC 7B        JSR     $CC7B               ; {code.GetCellPointer}
 CE75: A6 84           LDA     ,X                  
 CE77: CE 09 F4        LDU     #$09F4              
@@ -2582,7 +2547,7 @@ CE85: 44              LSRA
 CE86: 44              LSRA                        
 CE87: 30 1F           LEAX    -1,X                
 CE89: 26 F2           BNE     $CE7D               ; {}
-CE8B: D6 23           LDB     <$23                ; 
+CE8B: D6 23           LDB     <$23                ; {ram.playerDir}
 CE8D: CE 09 F4        LDU     #$09F4              
 CE90: 33 C5           LEAU    B,U                 
 CE92: 10 8E DB DE     LDY     #$DBDE              ; Wall pictures
@@ -2593,7 +2558,7 @@ CE9C: 58              ASLB
 CE9D: C1 04           CMPB    #$04                
 CE9F: 26 08           BNE     $CEA9               ; {}
 CEA1: AE A5           LDX     B,Y                 
-CEA3: 0A 75           DEC     <$75                ; 
+CEA3: 0A 75           DEC     <$75                ; {ram.m0275}
 CEA5: 8D 27           BSR     $CECE               ; {}
 CEA7: C6 06           LDB     #$06                
 CEA9: AE A5           LDX     B,Y                 
@@ -2604,25 +2569,25 @@ CEB1: 39              RTS
 CEB2: 1F 12           TFR     X,Y                 
 CEB4: 6D C5           TST     B,U                 
 CEB6: 26 F9           BNE     $CEB1               ; {}
-CEB8: DB 23           ADDB    <$23                ; 
-CEBA: D7 8A           STB     <$8A                ; 
-CEBC: DC 7C           LDD     <$7C                ; {ram.CASSBLKTYPE}
+CEB8: DB 23           ADDB    <$23                ; {ram.playerDir}
+CEBA: D7 8A           STB     <$8A                ; {ram.drwMazeDir}
+CEBC: DC 7C           LDD     <$7C                ; {ram.drwMazeY}
 CEBE: BD D1 1B        JSR     $D11B               ; {code.StepInDirection}
 CEC1: BD CF 82        JSR     $CF82               ; {code.GetCreatureAt}
 CEC4: 27 EB           BEQ     $CEB1               ; {}
 CEC6: 1E 12           EXG     X,Y                 
 CEC8: 6D 22           TST     2,Y                 
 CECA: 27 02           BEQ     $CECE               ; {}
-CECC: 0A 75           DEC     <$75                ; 
+CECC: 0A 75           DEC     <$75                ; {ram.m0275}
 CECE: 34 40           PSHS    U                   
 CED0: 3F              SWI                         
-CED1: 00                                           ; SWI_0:[Light level](#addr_SWI_0):
-CED2: DE 0B           LDU     <$0B                ; 
+CED1: 00                                          ; SWI_0:[Light level](#SWI_0):
+CED2: DE 0B           LDU     <$0B                ; {ram.backScreen}
 CED4: 3F              SWI                         
-CED5: 01                                           ; SWI_1:[Draw picture X on screen](#addr_SWI_1):
+CED5: 01                                          ; SWI_1:[Draw picture X on screen](#SWI_1):
 CED6: 35 C0           PULS    U,PC                
 
-CED8: DC 7C           LDD     <$7C                ; {ram.CASSBLKTYPE}
+CED8: DC 7C           LDD     <$7C                ; {ram.drwMazeY}
 CEDA: BD CF 82        JSR     $CF82               ; {code.GetCreatureAt}
 CEDD: 27 0C           BEQ     $CEEB               ; {}
 CEDF: 1F 12           TFR     X,Y                 
@@ -2638,34 +2603,34 @@ CEF2: C6 01           LDB     #$01
 CEF4: 8E DC B9        LDX     #$DCB9              ; Draw creature coming ...
 CEF7: 8D B9           BSR     $CEB2               ; {} ... from right
 CEF9: 8E DD 3C        LDX     #$DD3C              ; ?? Part of the hole-in-floor
-CEFC: DC 7C           LDD     <$7C                ; {ram.CASSBLKTYPE}
+CEFC: DC 7C           LDD     <$7C                ; {ram.drwMazeY}
 CEFE: BD CF E1        JSR     $CFE1               ; {code.ScanForHole}
 CF01: 2B 06           BMI     $CF09               ; {}
 CF03: 8E DC C2        LDX     #$DCC2              ; Holes and ladders pictures
 CF06: 48              ASLA                        
 CF07: AE 86           LDX     A,X                 
 CF09: 8D C3           BSR     $CECE               ; {}
-CF0B: 0F 91           CLR     <$91                ; 
-CF0D: DC 7C           LDD     <$7C                ; {ram.CASSBLKTYPE}
+CF0B: 0F 91           CLR     <$91                ; {ram.restartFind}
+CF0D: DC 7C           LDD     <$7C                ; {ram.drwMazeY}
 CF0F: BD CF 53        JSR     $CF53               ; {code.GetObjectAtCoor}
 CF12: 27 10           BEQ     $CF24               ; {}
 CF14: A6 0A           LDA     10,X                
 CF16: 48              ASLA                        
 CF17: 8E D9 EE        LDX     #$D9EE              ; Object pictures (by class)
 CF1A: AE 86           LDX     A,X                 
-CF1C: 0A 75           DEC     <$75                ; 
+CF1C: 0A 75           DEC     <$75                ; {ram.m0275}
 CF1E: 8D AE           BSR     $CECE               ; {}
 CF20: 8D AC           BSR     $CECE               ; {}
 CF22: 20 E9           BRA     $CF0D               ; {}
 CF24: 6D C4           TST     ,U                  
 CF26: 26 15           BNE     $CF3D               ; {}
-CF28: 96 23           LDA     <$23                ; 
-CF2A: 97 8A           STA     <$8A                ; 
-CF2C: DC 7C           LDD     <$7C                ; {ram.CASSBLKTYPE}
+CF28: 96 23           LDA     <$23                ; {ram.playerDir}
+CF2A: 97 8A           STA     <$8A                ; {ram.drwMazeDir}
+CF2C: DC 7C           LDD     <$7C                ; {ram.drwMazeY}
 CF2E: BD D1 1B        JSR     $D11B               ; {code.StepInDirection}
-CF31: DD 7C           STD     <$7C                ; {ram.CASSBLKTYPE}
-CF33: 0C 8B           INC     <$8B                ; 
-CF35: 96 8B           LDA     <$8B                ; 
+CF31: DD 7C           STD     <$7C                ; {ram.drwMazeY}
+CF33: 0C 8B           INC     <$8B                ; {ram.m028B}
+CF35: 96 8B           LDA     <$8B                ; {ram.m028B}
 CF37: 81 09           CMPA    #$09                
 CF39: 10 2F FF 31     LBLE    $CE6E               ; {}
 CF3D: 39              RTS                         
@@ -2705,15 +2670,15 @@ GetNextOject:
 ; Return Z=1 if no more, Z=0 if next is in X
 ;
 CF63: 34 02           PSHS    A                   ; Preserve A
-CF65: 96 81           LDA     <$81                ; Get current level number
-CF67: 9E 92           LDX     <$92                ; Get current object pointer
-CF69: 0D 91           TST     <$91                ; Start at top of list?
+CF65: 96 81           LDA     <$81                ; {ram.currentLevel} Get current level number
+CF67: 9E 92           LDX     <$92                ; {ram.objIterator} Get current object pointer
+CF69: 0D 91           TST     <$91                ; {ram.restartFind} Start at top of list?
 CF6B: 26 05           BNE     $CF72               ; {} No ... continue from last time
 CF6D: 8E 0B 07        LDX     #$0B07              ; Start of list (-14 ... one slot before)
-CF70: 0A 91           DEC     <$91                ; Next time through we won't restart
+CF70: 0A 91           DEC     <$91                ; {ram.restartFind} Next time through we won't restart
 CF72: 30 0E           LEAX    14,X                ; Get pointer to next object
-CF74: 9F 92           STX     <$92                ; Remember it
-CF76: 9C 0F           CMPX    <$0F                ; Have we reached the end of the list?
+CF74: 9F 92           STX     <$92                ; {ram.objIterator} Remember it
+CF76: 9C 0F           CMPX    <$0F                ; {ram.nextObjSlot} Have we reached the end of the list?
 CF78: 27 06           BEQ     $CF80               ; {} Yes ... out with nothing found
 CF7A: A1 04           CMPA    4,X                 ; Level the same as what we want?
 CF7C: 26 F4           BNE     $CF72               ; {} No ... next object
@@ -2790,7 +2755,7 @@ ScanForHole:
 ; Return Negative if not found, positive if found
 ;
 CFE1: 34 56           PSHS    U,X,B,A             ; Preserve registers
-CFE3: DE 86           LDU     <$86                ; Holes in ceiling of current level
+CFE3: DE 86           LDU     <$86                ; {ram.currentHoles} Holes in ceiling of current level
 CFE5: 8D 0B           BSR     $CFF2               ; {} Check for a hole in the ceiling
 CFE7: 4D              TSTA                        ; Is there one?
 CFE8: 2A 04           BPL     $CFEE               ; {} Yes ... keep the data and skip the floor
@@ -2843,7 +2808,7 @@ D025: 80
 D026: 80
 
 ; ?? Task 4 ??
-D027: 9E 82           LDX     <$82                ; 
+D027: 9E 82           LDX     <$82                ; {ram.m0282}
 D029: C6 0B           LDB     #$0B                
 D02B: 4F              CLRA                        
 D02C: AB 85           ADDA    B,X                 
@@ -2852,7 +2817,7 @@ D02F: 2A FB           BPL     $D02C               ; {}
 D031: 81 20           CMPA    #$20                
 D033: 24 08           BCC     $D03D               ; {}
 D035: 3F              SWI                         
-D036: 07                                           ; SWI_7:[Get random number](#addr_SWI_7):
+D036: 07                                          ; SWI_7:[Get random number](#SWI_7):
 D037: 84 07           ANDA    #$07                
 D039: 8B 02           ADDA    #$02                
 D03B: 6C 86           INC     A,X                 
@@ -2861,7 +2826,7 @@ D040: 39              RTS
 
 ; ?? Task ?
 D041: 10 AE 45        LDY     5,U                 ; Get pointer to creature
-D044: 0D 2B           TST     <$2B                ; Is the wizard dead?
+D044: 0D 2B           TST     <$2B                ; {ram.wizardDead} Is the wizard dead?
 D046: 26 22           BNE     $D06A               ; {} Yes ... skip all actions
 D048: E6 2C           LDB     12,Y                ; Is this creature alive?
 D04A: 26 01           BNE     $D04D               ; {} Yes ... let it move
@@ -2873,7 +2838,7 @@ D051: 27 1A           BEQ     $D06D               ; {} Yes ... they don't pick u
 D053: 81 0A           CMPA    #$0A                ; DEMON or WIZARD?
 D055: 2C 16           BGE     $D06D               ; {} Yes ... they don't pick up things
 D057: EC 2F           LDD     15,Y                ; Monster's coordinates
-D059: 0F 91           CLR     <$91                ; Reset find cursor to 1st object
+D059: 0F 91           CLR     <$91                ; {ram.restartFind} Reset find cursor to 1st object
 D05B: BD CF 53        JSR     $CF53               ; {code.GetObjectAtCoor} Get an object on the floor here
 D05E: 27 0D           BEQ     $D06D               ; {} Nothing to pick up
 D060: EC 28           LDD     8,Y                 ; This monster's list of held items
@@ -2881,34 +2846,34 @@ D062: AF 28           STX     8,Y                 ; Push this object to ...
 D064: ED 84           STD     ,X                  ; ... the top of the list
 D066: 6A 05           DEC     5,X                 ; ??
 D068: 3F              SWI                         ; Update the screen (stuff was picked up)
-D069: 0E                                           ; SWI_E:[Display playing screen](#addr_SWI_E):
+D069: 0E                                          ; SWI_E:[Display playing screen](#SWI_E):
 ;
 D06A: 7E D1 03        JMP     $D103               ; {} Skip all action
 ;       
 D06D: EC 2F           LDD     15,Y                ; Monster's coordinates
-D06F: 10 93 13        CMPD    <$13                ; Same as the players?
+D06F: 10 93 13        CMPD    <$13                ; {ram.playerY} Same as the players?
 D072: 26 3E           BNE     $D0B2               ; {} No ... no attack
 D074: A6 2D           LDA     13,Y                ; Play creature ...
 D076: C6 FF           LDB     #$FF                ; ... sound ...
 D078: 3F              SWI                         ; ... at full volume
-D079: 1C                                           ; SWI_1C:[Play sound A at volume B](#addr_SWI_1C):
+D079: 1C                                          ; SWI_1C:[Play sound A at volume B](#SWI_1C):
 D07A: CC 80 80        LDD     #$8080              
-D07D: 9E 1D           LDX     <$1D                ; 
+D07D: 9E 1D           LDX     <$1D                ; {ram.leftHand}
 D07F: 8D 1D           BSR     $D09E               ; {}
-D081: 9E 1F           LDX     <$1F                ; 
+D081: 9E 1F           LDX     <$1F                ; {ram.rightHand}
 D083: 8D 19           BSR     $D09E               ; {}
-D085: 97 1A           STA     <$1A                ; 
-D087: D7 1C           STB     <$1C                ; 
+D085: 97 1A           STA     <$1A                ; {ram.m021A}
+D087: D7 1C           STB     <$1C                ; {ram.m021C}
 D089: 1F 21           TFR     Y,X                 
 D08B: CE 02 17        LDU     #$0217              
 D08E: BD D3 D7        JSR     $D3D7               ; {}
 D091: 2B 06           BMI     $D099               ; {}
 D093: 3F              SWI                         ; Play player hit sound at full volume
-D094: 1B                                           ; SWI_1B:[Play sound i at full volume](#addr_SWI_1B):
+D094: 1B                                          ; SWI_1B:[Play sound i at full volume](#SWI_1B):
 D095: 13                                           ; 13 = Player hit                
 D096: BD D4 0C        JSR     $D40C               ; {} ??
 D099: 3F              SWI                         ; Update the heart rate
-D09A: 0C                                           ; SWI_C:[Update heart rate](#addr_SWI_C):
+D09A: 0C                                          ; SWI_C:[Update heart rate](#SWI_C):
 D09B: 7E D1 0F        JMP     $D10F               ; {}
 ;    
 D09E: 34 16           PSHS    X,B,A               
@@ -2923,34 +2888,34 @@ D0AE: AF E4           STX     ,S
 D0B0: 35 96           PULS    A,B,X,PC            
 
 ; We can see the player
-D0B2: 91 13           CMPA    <$13                ; 
+D0B2: 91 13           CMPA    <$13                ; {ram.playerY}
 D0B4: 26 0D           BNE     $D0C3               ; {}
 D0B6: A6 A8 10        LDA     $10,Y               
 D0B9: C6 01           LDB     #$01                
-D0BB: 90 14           SUBA    <$14                ; 
+D0BB: 90 14           SUBA    <$14                ; {ram.playerX}
 D0BD: 2B 11           BMI     $D0D0               ; {}
 D0BF: C6 03           LDB     #$03                
 D0C1: 20 0D           BRA     $D0D0               ; {}
 D0C3: EC 2F           LDD     15,Y                
-D0C5: D1 14           CMPB    <$14                ; 
+D0C5: D1 14           CMPB    <$14                ; {ram.playerX}
 D0C7: 26 1B           BNE     $D0E4               ; {}
 D0C9: C6 02           LDB     #$02                
-D0CB: 90 13           SUBA    <$13                ; 
+D0CB: 90 13           SUBA    <$13                ; {ram.playerY}
 D0CD: 2B 01           BMI     $D0D0               ; {}
 D0CF: 5F              CLRB                        
-D0D0: D7 8A           STB     <$8A                ; 
+D0D0: D7 8A           STB     <$8A                ; {ram.drwMazeDir}
 D0D2: EC 2F           LDD     15,Y                
 D0D4: 8D 60           BSR     $D136               ; {}
 D0D6: 26 0C           BNE     $D0E4               ; {}
-D0D8: 10 93 13        CMPD    <$13                ; 
+D0D8: 10 93 13        CMPD    <$13                ; {ram.playerY}
 D0DB: 26 F7           BNE     $D0D4               ; {}
-D0DD: D6 8A           LDB     <$8A                ; 
+D0DD: D6 8A           LDB     <$8A                ; {ram.drwMazeDir}
 D0DF: E7 2E           STB     14,Y                
 D0E1: 5F              CLRB                        
 D0E2: 20 1D           BRA     $D101               ; {}
 D0E4: 8E D1 14        LDX     #$D114              
 D0E7: 3F              SWI                         
-D0E8: 07                                           ; SWI_7:[Get random number](#addr_SWI_7):
+D0E8: 07                                          ; SWI_7:[Get random number](#SWI_7):
 D0E9: 4D              TSTA                        
 D0EA: 2B 02           BMI     $D0EE               ; {}
 D0EC: 30 03           LEAX    3,X                 
@@ -2971,11 +2936,11 @@ D101: 8D 4C           BSR     $D14F               ; {}
 ;
 D103: A6 26           LDA     6,Y                 ; Normal task speed reload
 D105: AE 2F           LDX     15,Y                ; Is the creature with ...
-D107: 9C 13           CMPX    <$13                ; ... the player?
+D107: 9C 13           CMPX    <$13                ; {ram.playerY} ... the player?
 D109: 26 06           BNE     $D111               ; {} No ... use the normal rate
 D10B: 3F              SWI                         ; Update the screen
-D10C: 0E                                           ; SWI_E:[Display playing screen](#addr_SWI_E):
-D10D: 0F B5           CLR     <$B5                ; 
+D10C: 0E                                          ; SWI_E:[Display playing screen](#SWI_E):
+D10D: 0F B5           CLR     <$B5                ; {ram.m02B5}
 D10F: A6 27           LDA     7,Y                 
 D111: C6 04           LDB     #$04                
 D113: 39              RTS                         
@@ -2991,7 +2956,7 @@ StepInDirection:
 ; Return X: Pointer to the new cell
 ;
 D11B: 34 06           PSHS    B,A                 ; Hold coordinates
-D11D: D6 8A           LDB     <$8A                ; Get direction
+D11D: D6 8A           LDB     <$8A                ; {ram.drwMazeDir} Get direction
 D11F: C4 03           ANDB    #$03                ; Only four
 D121: 58              ASLB                        ; 2 bytes for each table entry
 D122: 8E D1 2E        LDX     #$D12E              ; Table of X,Y offsets for direction
@@ -3024,48 +2989,48 @@ D14D: 35 F6           PULS    A,B,X,Y,U,PC
 D14F: 34 16           PSHS    X,B,A               
 D151: EB 2E           ADDB    14,Y                
 D153: C4 03           ANDB    #$03                
-D155: D7 8A           STB     <$8A                ; 
+D155: D7 8A           STB     <$8A                ; {ram.drwMazeDir}
 D157: EC 2F           LDD     15,Y                
 D159: 8D DB           BSR     $D136               ; {}
 D15B: 26 3C           BNE     $D199               ; {}
 D15D: BD CF 82        JSR     $CF82               ; {code.GetCreatureAt}
 D160: 26 37           BNE     $D199               ; {}
 D162: ED 2F           STD     15,Y                
-D164: D6 8A           LDB     <$8A                ; 
+D164: D6 8A           LDB     <$8A                ; {ram.drwMazeDir}
 D166: E7 2E           STB     14,Y                
 D168: EC 2F           LDD     15,Y                
-D16A: 90 13           SUBA    <$13                ; 
+D16A: 90 13           SUBA    <$13                ; {ram.playerY}
 D16C: 2A 01           BPL     $D16F               ; {}
 D16E: 40              NEGA                        
-D16F: D0 14           SUBB    <$14                ; 
+D16F: D0 14           SUBB    <$14                ; {ram.playerX}
 D171: 2A 01           BPL     $D174               ; {}
 D173: 50              NEGB                        
-D174: D7 C1           STB     <$C1                ; 
-D176: 91 C1           CMPA    <$C1                ; 
+D174: D7 C1           STB     <$C1                ; {ram.holdHole}
+D176: 91 C1           CMPA    <$C1                ; {ram.holdHole}
 D178: 2C 02           BGE     $D17C               ; {}
 D17A: 1E 89           EXG     A,B                 
-D17C: 97 C1           STA     <$C1                ; 
+D17C: 97 C1           STA     <$C1                ; {ram.holdHole}
 D17E: 81 08           CMPA    #$08                
 D180: 2E 16           BGT     $D198               ; {}
 D182: C1 02           CMPB    #$02                
 D184: 2E 12           BGT     $D198               ; {}
 D186: 3F              SWI                         
-D187: 07                                           ; SWI_7:[Get random number](#addr_SWI_7):
+D187: 07                                          ; SWI_7:[Get random number](#SWI_7):
 D188: 85 01           BITA    #$01                
 D18A: 27 0A           BEQ     $D196               ; {}
-D18C: 96 C1           LDA     <$C1                ; 
+D18C: 96 C1           LDA     <$C1                ; {ram.holdHole}
 D18E: C6 1F           LDB     #$1F                
 D190: 3D              MUL                         
 D191: 53              COMB                        
 D192: A6 2D           LDA     13,Y                
 D194: 3F              SWI                         
-D195: 1C                                           ; SWI_1C:[Play sound A at volume B](#addr_SWI_1C):
-D196: 0A B5           DEC     <$B5                ; 
+D195: 1C                                          ; SWI_1C:[Play sound A at volume B](#SWI_1C):
+D196: 0A B5           DEC     <$B5                ; {ram.m02B5}
 D198: 4F              CLRA                        
 D199: 35 96           PULS    A,B,X,PC            
 
 ; ?? Task 3 ??    
-D19B: DE 24           LDU     <$24                ; 
+D19B: DE 24           LDU     <$24                ; {ram.torchPtr}
 D19D: 27 1D           BEQ     $D1BC               ; {}
 D19F: A6 46           LDA     6,U                 
 D1A1: 27 19           BEQ     $D1BC               ; {}
@@ -3082,46 +3047,46 @@ D1B4: A7 47           STA     7,U
 D1B6: A1 48           CMPA    8,U                 
 D1B8: 2C 02           BGE     $D1BC               ; {}
 D1BA: A7 48           STA     8,U                 
-D1BC: 0A B5           DEC     <$B5                ; 
+D1BC: 0A B5           DEC     <$B5                ; {ram.m02B5}
 D1BE: CC 01 08        LDD     #$0108              
 D1C1: 39              RTS                         
 
 ; ?? Task 1 ??                 
-D1C2: 0D B5           TST     <$B5                ; 
+D1C2: 0D B5           TST     <$B5                ; {ram.m02B5}
 D1C4: 26 07           BNE     $D1CD               ; {}
 D1C6: 8E CD B2        LDX     #$CDB2              ; Are we showing the ...
-D1C9: 9C B2           CMPX    <$B2                ; ... map display?
+D1C9: 9C B2           CMPX    <$B2                ; {ram.displayFunction} ... map display?
 D1CB: 26 04           BNE     $D1D1               ; {}
-D1CD: 0F B5           CLR     <$B5                ; 
+D1CD: 0F B5           CLR     <$B5                ; {ram.m02B5}
 D1CF: 3F              SWI                         
-D1D0: 0E                                           ; SWI_E:[Display playing screen](#addr_SWI_E):
+D1D0: 0E                                          ; SWI_E:[Display playing screen](#SWI_E):
 D1D1: CC 03 04        LDD     #$0304              
 D1D4: 39              RTS                         
 
 ; ?? Task 2 ??                 
 D1D5: 4F              CLRA                        
 D1D6: 5F              CLRB                        
-D1D7: 93 21           SUBD    <$21                ; 
+D1D7: 93 21           SUBD    <$21                ; {ram.m0221}
 D1D9: BD D3 79        JSR     $D379               ; {code.DRight6}
-D1DC: D3 21           ADDD    <$21                ; 
+D1DC: D3 21           ADDD    <$21                ; {ram.m0221}
 D1DE: 2E 02           BGT     $D1E2               ; {}
 D1E0: 4F              CLRA                        
 D1E1: 5F              CLRB                        
-D1E2: DD 21           STD     <$21                ; 
+D1E2: DD 21           STD     <$21                ; {ram.m0221}
 D1E4: 3F              SWI                         
-D1E5: 0C                                           ; SWI_C:[Update heart rate](#addr_SWI_C):
-D1E6: 96 AF           LDA     <$AF                ; 
+D1E5: 0C                                          ; SWI_C:[Update heart rate](#SWI_C):
+D1E6: 96 AF           LDA     <$AF                ; {ram.heartCounterRel}
 D1E8: C6 02           LDB     #$02                
 D1EA: 39              RTS                         
 
 ; ?? Task 0 ??                 
-D1EB: 0D 77           TST     <$77                ; Are we in a demo?
+D1EB: 0D 77           TST     <$77                ; {ram.gameMode} Are we in a demo?
 D1ED: 26 2C           BNE     $D21B               ; {} Yes ... handle demo commands
 ;     
 D1EF: BD C3 29        JSR     $C329               ; {code.CharFromBuf}
 D1F2: 4D              TSTA                        
 D1F3: 27 53           BEQ     $D248               ; {}
-D1F5: 0D 28           TST     <$28                ; Fainting?
+D1F5: 0D 28           TST     <$28                ; {ram.fainting} Fainting?
 D1F7: 26 F6           BNE     $D1EF               ; {} Yes ... drop all characters from the buffer
 D1F9: 81 20           CMPA    #$20                
 D1FB: 27 18           BEQ     $D215               ; {}
@@ -3142,22 +3107,22 @@ D215: 84 1F           ANDA    #$1F
 D217: 8D 33           BSR     $D24C               ; {}
 D219: 20 D4           BRA     $D1EF               ; {}
 
-D21B: 10 9E 0D        LDY     <$0D                ; 
+D21B: 10 9E 0D        LDY     <$0D                ; {ram.nextDemoCommand}
 D21E: E6 A0           LDB     ,Y+                 
 D220: 2A 07           BPL     $D229               ; {}
 D222: 3F              SWI                         ; Wait for 1.35 seconds
-D223: 10                                           ; SWI_10:[Pause for 1.35 seconds](#addr_SWI_10):
+D223: 10                                          ; SWI_10:[Pause for 1.35 seconds](#SWI_10):
 D224: 3F              SWI                         ; Another 1.35 seconds (total 2.7 seconds)
-D225: 10                                           ; SWI_10:[Pause for 1.35 seconds](#addr_SWI_10):
-D226: 7E C0 00        JMP     $C000               ; {} Restart
+D225: 10                                          ; SWI_10:[Pause for 1.35 seconds](#SWI_10):
+D226: 7E C0 00        JMP     $C000               ; {code.Start} Restart
 
 D229: AE A1           LDX     ,Y++                
 D22B: CE 03 61        LDU     #$0361              
 D22E: 3F              SWI                         
-D22F: 06                                           ; SWI_6:[Uncompress message X to given buffer U](#addr_SWI_6):
+D22F: 06                                          ; SWI_6:[Uncompress message X to given buffer U](#SWI_6):
 D230: 33 41           LEAU    1,U                 
 D232: 3F              SWI                         ; Wait for 1.35 seconds
-D233: 10                                           ; SWI_10:[Pause for 1.35 seconds](#addr_SWI_10):
+D233: 10                                          ; SWI_10:[Pause for 1.35 seconds](#SWI_10):
 D234: 8C                  ; CMPX  opcode to skip next instruction
 D235: 8D 15                     
 D237: A6 C0           LDA     ,U+                 
@@ -3168,37 +3133,37 @@ D23E: 5A              DECB
 D23F: 26 E8           BNE     $D229               ; {}
 D241: 86 1F           LDA     #$1F                
 D243: 8D 07           BSR     $D24C               ; {}
-D245: 10 9F 0D        STY     <$0D                ; 
+D245: 10 9F 0D        STY     <$0D                ; {ram.nextDemoCommand}
 D248: CC 01 02        LDD     #$0102              
 D24B: 39              RTS                         
                  
 D24C: 34 76           PSHS    U,Y,X,B,A           ; Hold these
-D24E: 0D AD           TST     <$AD                ; Is a scroll showing?
+D24E: 0D AD           TST     <$AD                ; {ram.scrollShowing} Is a scroll showing?
 D250: 26 04           BNE     $D256               ; {} No ... skip closing the scroll
 D252: 3F              SWI                         ; Bring up normal display
-D253: 19                                           ; SWI_19:[Bring up normal display](#addr_SWI_19):
+D253: 19                                          ; SWI_19:[Bring up normal display](#SWI_19):
 D254: 3F              SWI                         ; Show the command prompt
-D255: 0F                                           ; SWI_F:[Ready command prompt](#addr_SWI_F):
-D256: DE 11           LDU     <$11                ; 
+D255: 0F                                          ; SWI_F:[Ready command prompt](#SWI_F):
+D256: DE 11           LDU     <$11                ; {ram.m0211}
 D258: 81 1F           CMPA    #$1F                ; User press ENTER?
 D25A: 27 13           BEQ     $D26F               ; {} Yes ... go process the input
 D25C: 81 24           CMPA    #$24                ; A backspace?
 D25E: 27 1D           BEQ     $D27D               ; {} Yes ... handle it
 D260: 3F              SWI                         
-D261: 04                                           ; SWI_4:[Display a single character in A](#addr_SWI_4):
+D261: 04                                          ; SWI_4:[Display a single character in A](#SWI_4):
 D262: A7 C0           STA     ,U+                 ; Put this character in the buffer
 D264: 8E C6 7C        LDX     #$C67C              ; Cursor data
 D267: 3F              SWI                         ; Print cursor
-D268: 03                                           ; SWI_3:[Display uncompressed message pointed to by X](#addr_SWI_3):
+D268: 03                                          ; SWI_3:[Display uncompressed message pointed to by X](#SWI_3):
 D269: 11 83 03 11     CMPU    #$0311              ; Have we reached the 32 char limit?
 D26D: 26 45           BNE     $D2B4               ; {} No ... keep waiting for ENTER
 D26F: 4F              CLRA                        ; Print a ...
 D270: 3F              SWI                         ; ... space on the end of the line
-D271: 04                                           ; SWI_4:[Display a single character in A](#addr_SWI_4):
-D272: DC 03           LDD     <$03                ; 
+D271: 04                                          ; SWI_4:[Display a single character in A](#SWI_4):
+D272: DC 03           LDD     <$03                ; {ram.CONST_FF}
 D274: ED C1           STD     ,U++                ; End mark on the end of the buffer
 D276: CE 02 F1        LDU     #$02F1              ; Reset input parse ...
-D279: DF 11           STU     <$11                ; ... pointer to the beginning of the input
+D279: DF 11           STU     <$11                ; {ram.m0211} ... pointer to the beginning of the input
 D27B: 20 15           BRA     $D292               ; {} Execute the command
 ;
 ; Backspace
@@ -3207,7 +3172,7 @@ D281: 27 31           BEQ     $D2B4               ; {} Yes ... ignore it
 D283: 33 5F           LEAU    -1,U                ; No ... back up one
 D285: 8E D2 8C        LDX     #$D28C              ; Back cursor ...
 D288: 3F              SWI                         ; ... up one spot
-D289: 03                                           ; SWI_3:[Display uncompressed message pointed to by X](#addr_SWI_3):
+D289: 03                                          ; SWI_3:[Display uncompressed message pointed to by X](#SWI_3):
 D28A: 20 28           BRA     $D2B4               ; {} Out
 
 D28C: 00 24 24 1C 24 FF   ; BACK BACK "_" BACK END
@@ -3224,13 +3189,13 @@ D2A1: 48              ASLA                        ; 2 bytes per pointer
 D2A2: 8E D9 D0        LDX     #$D9D0              ; Pointer to command functions
 D2A5: AD 96           JSR     [A,X]               ; Execute the command
 D2A7: CE 02 F1        LDU     #$02F1              ; Start of input buffer
-D2AA: 0D AD           TST     <$AD                ; Is a scroll showing?
+D2AA: 0D AD           TST     <$AD                ; {ram.scrollShowing} Is a scroll showing?
 D2AC: 27 06           BEQ     $D2B4               ; {} Yes ... skip the command prompt
-D2AE: 0D 28           TST     <$28                ; Are we fainting?
+D2AE: 0D 28           TST     <$28                ; {ram.fainting} Are we fainting?
 D2B0: 26 02           BNE     $D2B4               ; {} Yes ... skip the prompt
 D2B2: 3F              SWI                         ; Print the command prompt
-D2B3: 0F                                           ; SWI_F:[Ready command prompt](#addr_SWI_F):
-D2B4: DF 11           STU     <$11                ; New start of command
+D2B3: 0F                                          ; SWI_F:[Ready command prompt](#SWI_F):
+D2B4: DF 11           STU     <$11                ; {ram.m0211} New start of command
 D2B6: 35 F6           PULS    A,B,X,Y,U,PC        ; Done
 ```
 
@@ -3244,22 +3209,22 @@ D2BD: 26 03           BNE     $D2C2               ; {}
 D2BF: CE 0B 07        LDU     #$0B07              
 D2C2: 1F 32           TFR     U,Y                 
 D2C4: A6 4C           LDA     12,U                
-D2C6: 97 19           STA     <$19                ; 
+D2C6: 97 19           STA     <$19                ; {ram.m0219}
 D2C8: A6 4D           LDA     13,U                
-D2CA: 97 1B           STA     <$1B                ; 
-D2CC: 9B 19           ADDA    <$19                ; 
+D2CA: 97 1B           STA     <$1B                ; {ram.m021B}
+D2CC: 9B 19           ADDA    <$19                ; {ram.m0219}
 D2CE: 46              RORA                        
 D2CF: 44              LSRA                        
 D2D0: 44              LSRA                        
-D2D1: 9E 17           LDX     <$17                ; Strength
+D2D1: 9E 17           LDX     <$17                ; {ram.pStrength} Strength
 D2D3: BD D4 36        JSR     $D436               ; {}
-D2D6: D3 21           ADDD    <$21                ; 
-D2D8: DD 21           STD     <$21                ; 
+D2D6: D3 21           ADDD    <$21                ; {ram.m0221}
+D2D8: DD 21           STD     <$21                ; {ram.m0221}
 D2DA: A6 4A           LDA     10,U                ; Object class
 D2DC: 8B 0C           ADDA    #$0C                ; Sound table offset
 D2DE: C6 FF           LDB     #$FF                ; Full volume
 D2E0: 3F              SWI                         ; Play sound of object
-D2E1: 1C                                           ; SWI_1C:[Play sound A at volume B](#addr_SWI_1C):
+D2E1: 1C                                          ; SWI_1C:[Play sound A at volume B](#SWI_1C):
 D2E2: A6 49           LDA     9,U                 ; Proper name
 D2E4: 81 13           CMPA    #$13                ; Ring range?
 D2E6: 2D 0F           BLT     $D2F7               ; {} Too low
@@ -3270,7 +3235,7 @@ D2EE: 26 07           BNE     $D2F7               ; {} Still good, go on
 D2F0: 86 16           LDA     #$16                ; GOLD token
 D2F2: A7 49           STA     9,U                 ; Now a gold ring
 D2F4: BD D6 38        JSR     $D638               ; {} Change object
-D2F7: DC 13           LDD     <$13                ; Our coordinates
+D2F7: DC 13           LDD     <$13                ; {ram.playerY} Our coordinates
 D2F9: BD CF 82        JSR     $CF82               ; {code.GetCreatureAt} Find creature
 D2FC: 27 77           BEQ     $D375               ; {} None found ignore attack
 D2FE: CE 02 17        LDU     #$0217              
@@ -3280,22 +3245,21 @@ D305: 81 01           CMPA    #$01                ; Is it a ring?
 D307: 27 16           BEQ     $D31F               ; {} Yes-- can't miss
 D309: BD D3 D7        JSR     $D3D7               ; {} Otherwise get calculate hit chance
 D30C: 2B 67           BMI     $D375               ; {} Oops, missed
-D30E: 10 9E 24        LDY     <$24                ; Torch pointer
+D30E: 10 9E 24        LDY     <$24                ; {ram.torchPtr} Torch pointer
 D311: 27 06           BEQ     $D319               ; {} Oh, no, no torch...
 D313: A6 29           LDA     9,Y                 ; Proper name of torch
 D315: 81 18           CMPA    #$18                ; Well, it is dead!
 D317: 26 06           BNE     $D31F               ; {} No, go on
 D319: 3F              SWI                         ; Random number
-D31A: 07                                           ; SWI_7:[Get random number](#addr_SWI_7):
+D31A: 07                                          ; SWI_7:[Get random number](#SWI_7):
 D31B: 84 03           ANDA    #$03                ; Between 0 and 3
 D31D: 26 56           BNE     $D375               ; {} Only one in three will hit
 D31F: 3F              SWI                         ; Sound a hit
-D320: 1B                                           ; SWI_1B:[Play sound i at full volume](#addr_SWI_1B):
+D320: 1B                                          ; SWI_1B:[Play sound i at full volume](#SWI_1B):
 D321: 12                                           ; 12 = Player hit                
 D322: 3F              SWI                         ; Print !!!
-D323: 02                                           ; SWI_2:[Uncompress message m and display](#addr_SWI_2):
-;
-D324: 16 F7 B0 ; "!!!"
+D323: 02                                          ; SWI_2:[Uncompress message m and display](#SWI_2):
+D324: 16 F7 B0                                    ; "!!!"
 ;
 D327: BD D4 0C        JSR     $D40C               ; {}
 D32A: 22 49           BHI     $D375               ; {}
@@ -3306,40 +3270,40 @@ D332: 6F 05           CLR     5,X                 ; Drop on floor
 D334: EC 4F           LDD     15,U                ; Coordinate from monster
 D336: ED 02           STD     2,X                 ; Now to object
 D338: 20 F4           BRA     $D32E               ; {} Keep going for all
-D33A: 9E 82           LDX     <$82                ; 
+D33A: 9E 82           LDX     <$82                ; {ram.m0282}
 D33C: E6 4D           LDB     13,U                
 D33E: 6A 85           DEC     B,X                 
 D340: 6F 4C           CLR     12,U                ; Monster dead
 D342: 3F              SWI                         
-D343: 0E                                           ; SWI_E:[Display playing screen](#addr_SWI_E):
+D343: 0E                                          ; SWI_E:[Display playing screen](#SWI_E):
 D344: 3F              SWI                         ; Sound monster dead
-D345: 1B                                           ; SWI_1B:[Play sound i at full volume](#addr_SWI_1B):
-D346: 15                                           ; 15 = Creature dying
+D345: 1B                                          ; SWI_1B:[Play sound i at full volume](#SWI_1B):
+D346: 15                                          ; 15 = Creature dying
 D347: EC C4           LDD     ,U                  ; Monster strength ...
 D349: 8D 34           BSR     $D37F               ; {code.DRight3} ... divided by 8
-D34B: D3 17           ADDD    <$17                ; Add to our strength
+D34B: D3 17           ADDD    <$17                ; {ram.pStrength} Add to our strength
 D34D: 2A 02           BPL     $D351               ; {} No overflow
 D34F: 86 7F           LDA     #$7F                ; Maximum positive value
-D351: DD 17           STD     <$17                ; New strength
+D351: DD 17           STD     <$17                ; {ram.pStrength} New strength
 D353: A6 4D           LDA     13,U                ; What did we just kill?
 D355: 81 0A           CMPA    #$0A                ; Demon...
 D357: 27 2D           BEQ     $D386               ; {} ...go to level 4
 D359: 81 0B           CMPA    #$0B                ; Killed the Wizard?
 D35B: 26 18           BNE     $D375               ; {} No. It was a normal creature. Done.
-D35D: 0A 2B           DEC     <$2B                ; Wizard is dead (creatures don't move)
+D35D: 0A 2B           DEC     <$2B                ; {ram.wizardDead} Wizard is dead (creatures don't move)
 D35F: CC 07 13        LDD     #$0713              ; Light level
-D362: DD 26           STD     <$26                ; Ambient light
+D362: DD 26           STD     <$26                ; {ram.m0226} Ambient light
 D364: 8E 0B 23        LDX     #$0B23              ; Drop all but ...
-D367: 9F 0F           STX     <$0F                ; ... first object (the Supreme Ring)
-D369: DC 00           LDD     <$00                ; Zero constant
-D36B: DD 29           STD     <$29                ; Nothing in pack
-D36D: DD 24           STD     <$24                ; No torch
-D36F: DD 1F           STD     <$1F                ; Left hand empty
-D371: DD 1D           STD     <$1D                ; Right hand empty
+D367: 9F 0F           STX     <$0F                ; {ram.nextObjSlot} ... first object (the Supreme Ring)
+D369: DC 00           LDD     <$00                ; {ram.CONST_00} Zero constant
+D36B: DD 29           STD     <$29                ; {ram.firstPackObject} Nothing in pack
+D36D: DD 24           STD     <$24                ; {ram.torchPtr} No torch
+D36F: DD 1F           STD     <$1F                ; {ram.rightHand} Left hand empty
+D371: DD 1D           STD     <$1D                ; {ram.leftHand} Right hand empty
 D373: 3F              SWI                         ; Draw the display
-D374: 19                                           ; SWI_19:[Bring up normal display](#addr_SWI_19):
+D374: 19                                          ; SWI_19:[Bring up normal display](#SWI_19):
 D375: 3F              SWI                         ; Update the heart rate (might have died)
-D376: 0C                                           ; SWI_C:[Update heart rate](#addr_SWI_C):
+D376: 0C                                          ; SWI_C:[Update heart rate](#SWI_C):
     
 ; Shift D right routine entries
 DRight7:
@@ -3369,49 +3333,49 @@ D385: 39              RTS                         ; Done
 
 D386: 8E DF 10        LDX     #$DF10              ; Wizard picture
 D389: 3F              SWI                         ; Beam him onto the screen
-D38A: 13                                           ; SWI_13:[Beam on picture pointed to by X](#addr_SWI_13):
+D38A: 13                                          ; SWI_13:[Beam on picture pointed to by X](#SWI_13):
 D38B: 3F              SWI                         ; Print first part of message
-D38C: 02                                           ; SWI_2:[Uncompress message m and display](#addr_SWI_2):
-;
-D38D: FF C0 57 3E A7 46 C0 90 51 32 28 1E 60 51 09 98 20 C0 E7 DE F0 ; "_1F_ ENOUGH! I TIRE OF THIS PLAY..."
+D38C: 02                                          ; SWI_2:[Uncompress message m and display](#SWI_2):
+D38D: FF C0 57 3E A7 46 C0 90 51 32 28 1E 60 51   ; "_1F_ ENOUGH! I TIRE OF THIS PLAY..."
+D39B: 09 98 20 C0 E7 DE F0
 ;
 D3A2: 3F              SWI                         ; Print second part of message
-D3A3: 02                                           ; SWI_2:[Uncompress message m and display](#addr_SWI_2):
-;
-D3A4: E8 00 08 48 B0 0C 8A 0A 3C 0D 29 68 0A 23 20 23 DE DD EF 60 ; "   PREPARE TO MEET THY DOOM!!!"
+D3A3: 02                                          ; SWI_2:[Uncompress message m and display](#SWI_2):
+D3A4: E8 00 08 48 B0 0C 8A 0A 3C 0D 29 68 0A 23   ; "   PREPARE TO MEET THY DOOM!!!"
+D3B2: 20 23 DE DD EF 60
 ;
 D3B8: 3F              SWI                         ; Pause for 1.35 seconds
-D3B9: 10                                           ; SWI_10:[Pause for 1.35 seconds](#addr_SWI_10):
-D3BA: DE 24           LDU     <$24                ; Keep only the ...
-D3BC: DF 29           STU     <$29                ; ... torch in the pack
+D3B9: 10                                          ; SWI_10:[Pause for 1.35 seconds](#SWI_10):
+D3BA: DE 24           LDU     <$24                ; {ram.torchPtr} Keep only the ...
+D3BC: DF 29           STU     <$29                ; {ram.firstPackObject} ... torch in the pack
 D3BE: 27 04           BEQ     $D3C4               ; {} There was no torch ... no need to unlink it
 D3C0: 4F              CLRA                        ; Clear any ...
 D3C1: 5F              CLRB                        ; ... object chained ...
 D3C2: ED C4           STD     ,U                  ; ... after torch in pack
 D3C4: CC 00 C8        LDD     #$00C8              ; Drop a big ...
-D3C7: DD 15           STD     <$15                ; ... strain on the user
+D3C7: DD 15           STD     <$15                ; {ram.playerWeight} ... strain on the user
 D3C9: 86 03           LDA     #$03                ; Level 4
 D3CB: 3F              SWI                         ; Prepare level
-D3CC: 1A                                           ; SWI_1A:[Set up level](#addr_SWI_1A):
+D3CC: 1A                                          ; SWI_1A:[Set up level](#SWI_1A):
 D3CD: BD CF 97        JSR     $CF97               ; {code.GetRandCell} Get random coordinates
-D3D0: DD 13           STD     <$13                ; New coordinates
+D3D0: DD 13           STD     <$13                ; {ram.playerY} New coordinates
 D3D2: 3F              SWI                         ; Beam off the wizard
-D3D3: 15                                           ; SWI_15:[Beam subroutine](#addr_SWI_15):
+D3D3: 15                                          ; SWI_15:[Beam subroutine](#SWI_15):
 D3D4: 3F              SWI                         ; Beam on the wizard
-D3D5: 19                                           ; SWI_19:[Bring up normal display](#addr_SWI_19):
+D3D5: 19                                          ; SWI_19:[Bring up normal display](#SWI_19):
 D3D6: 39              RTS                         ; Done
 
 D3D7: 34 56           PSHS    U,X,B,A             
 D3D9: 86 0F           LDA     #$0F                
-D3DB: 97 C1           STA     <$C1                ; 
+D3DB: 97 C1           STA     <$C1                ; {ram.holdHole}
 D3DD: EC C4           LDD     ,U                  
 D3DF: A3 4A           SUBD    10,U                
 D3E1: BD CA 12        JSR     $CA12               ; {code.Dleft2}
 D3E4: A3 84           SUBD    ,X                  
 D3E6: 25 04           BCS     $D3EC               ; {}
-D3E8: 0A C1           DEC     <$C1                ; 
+D3E8: 0A C1           DEC     <$C1                ; {ram.holdHole}
 D3EA: 26 F8           BNE     $D3E4               ; {}
-D3EC: D6 C1           LDB     <$C1                ; 
+D3EC: D6 C1           LDB     <$C1                ; {ram.holdHole}
 D3EE: C0 03           SUBB    #$03                
 D3F0: 2A 09           BPL     $D3FB               ; {}
 D3F2: 50              NEGB                        
@@ -3423,7 +3387,7 @@ D3FB: 86 0A           LDA     #$0A
 D3FD: 3D              MUL                         
 D3FE: ED E3           STD     ,--S                
 D400: 3F              SWI                         
-D401: 07                                           ; SWI_7:[Get random number](#addr_SWI_7):
+D401: 07                                          ; SWI_7:[Get random number](#SWI_7):
 D402: 1F 89           TFR     A,B                 
 D404: 4F              CLRA                        
 D405: E3 E1           ADDD    ,S++                
@@ -3451,15 +3415,15 @@ D430: AE C4           LDX     ,U
 D432: AC 4A           CMPX    10,U                
 D434: 35 F6           PULS    A,B,X,Y,U,PC        
 D436: 34 16           PSHS    X,B,A               
-D438: 0F C1           CLR     <$C1                ; 
+D438: 0F C1           CLR     <$C1                ; {ram.holdHole}
 D43A: E6 63           LDB     3,S                 
 D43C: 3D              MUL                         
-D43D: DD C2           STD     <$C2                ; 
+D43D: DD C2           STD     <$C2                ; {ram.m02C2}
 D43F: A6 E4           LDA     ,S                  
 D441: E6 62           LDB     2,S                 
 D443: 3D              MUL                         
-D444: D3 C1           ADDD    <$C1                ; 
-D446: 08 C3           LSL     <$C3                ; 
+D444: D3 C1           ADDD    <$C1                ; {ram.holdHole}
+D446: 08 C3           LSL     <$C3                ; {ram.m02C3}
 D448: 59              ROLB                        
 D449: 49              ROLA                        
 D44A: ED E4           STD     ,S                  
@@ -3470,14 +3434,14 @@ D44C: 35 96           PULS    A,B,X,PC
 
 ```code
 CmdCLIMB:
-D44E: DC 13           LDD     <$13                ; Player's coordinates
+D44E: DC 13           LDD     <$13                ; {ram.playerY} Player's coordinates
 D450: BD CF E1        JSR     $CFE1               ; {code.ScanForHole} Is there a hole here?
 D453: 2B 1A           BMI     $D46F               ; {} No ... error
-D455: 97 C1           STA     <$C1                ; Hold this for a bit
+D455: 97 C1           STA     <$C1                ; {ram.holdHole} Hold this for a bit
 D457: 8E D8 D9        LDX     #$D8D9              ; Second words
 D45A: BD CB EC        JSR     $CBEC               ; {code.DecodeInput} Are we going up or down?
 D45D: 2F 10           BLE     $D46F               ; {} Syntax error on second word ... error
-D45F: D6 C1           LDB     <$C1                ; The hole in this room
+D45F: D6 C1           LDB     <$C1                ; {ram.holdHole} The hole in this room
 D461: 81 04           CMPA    #$04                ; Word is "UP" ?
 D463: 27 0D           BEQ     $D472               ; {} Yes ... try that
 D465: 81 05           CMPA    #$05                ; Word is "DOWN" ?
@@ -3494,12 +3458,12 @@ D476: 26 F7           BNE     $D46F               ; {} No ... error
 ;
 ; Change the level
 D478: 3F              SWI                         ; Print "PREPARE"
-D479: 16                                           ; SWI_16:[Print PREPARE](#addr_SWI_16):
-D47A: 9B 81           ADDA    <$81                ; Change level (up or down)
+D479: 16                                          ; SWI_16:[Print PREPARE](#SWI_16):
+D47A: 9B 81           ADDA    <$81                ; {ram.currentLevel} Change level (up or down)
 D47C: 3F              SWI                         ; Setup the level
-D47D: 1A                                           ; SWI_1A:[Set up level](#addr_SWI_1A):
+D47D: 1A                                          ; SWI_1A:[Set up level](#SWI_1A):
 D47E: 3F              SWI                         ; Normal display
-D47F: 19                                           ; SWI_19:[Bring up normal display](#addr_SWI_19):
+D47F: 19                                          ; SWI_19:[Bring up normal display](#SWI_19):
 D480: 39              RTS                         ; Back to command processing
 ```
 
@@ -3508,92 +3472,89 @@ D480: 39              RTS                         ; Back to command processing
 ```code
 CmdEXAMINE:             
 D481: 8E D4 95        LDX     #$D495              ; Set the display function ...
-D484: 9F B2           STX     <$B2                ; ... to draw the inventory
+D484: 9F B2           STX     <$B2                ; {ram.displayFunction} ... to draw the inventory
 D486: 3F              SWI                         ; Redraw the screen
-D487: 0E                                           ; SWI_E:[Display playing screen](#addr_SWI_E):
+D487: 0E                                          ; SWI_E:[Display playing screen](#SWI_E):
 D488: 39              RTS                         ; Done
 
 SetForExamine:
 ; Clear the scratch screen, set the physical screen, set the "print to desired area" flag.
 ; Return the examine descriptor (#$0380).
 D489: 3F              SWI                         ; Clear the scratch screen, return pointer to descriptor
-D48A: 09                                           ; SWI_9:[Clear secondary screen](#addr_SWI_9):
+D48A: 09                                          ; SWI_9:[Clear secondary screen](#SWI_9):
 D48B: AE C4           LDX     ,U                  ; This is the physical start of the scratch screen
 D48D: CE 03 80        LDU     #$0380              ; Descriptor for the "EXAMINE" screen area
 D490: AF C4           STX     ,U                  ; Point to the off-screen area
-D492: 0A B7           DEC     <$B7                ; Printing goes to desired descriptor
+D492: 0A B7           DEC     <$B7                ; {ram.whereToPrint} Printing goes to desired descriptor
 D494: 39              RTS                         
 
 DrawInventory:
 ; Function for drawing the inventory screen             
 D495: 8D F2           BSR     $D489               ; {code.SetForExamine} Activate the "examine" area
-D497: 0F B6           CLR     <$B6                ; We are at the start of a line
+D497: 0F B6           CLR     <$B6                ; {ram.tabOrCR} We are at the start of a line
 D499: CC 00 0A        LDD     #$000A              ; Start "IN THIS ROOM" ...
 D49C: ED 44           STD     4,U                 ; ... indented 10 spaces
 D49E: 3F              SWI                         ; Print "IN THIS ROOM"
-D49F: 02                                           ; SWI_2:[Uncompress message m and display](#addr_SWI_2):
+D49F: 02                                          ; SWI_2:[Uncompress message m and display](#SWI_2):
+D4A0: 62 5C 0A 21 33 04 9E F6 FC                  ; "IN THIS ROOM_1F_"
 ;
-D4A0: 62 5C 0A 21 33 04 9E F6 FC ; "IN THIS ROOM_1F_"
-;
-D4A9: DC 13           LDD     <$13                ; Player's coordinates
+D4A9: DC 13           LDD     <$13                ; {ram.playerY} Player's coordinates
 D4AB: BD CF 82        JSR     $CF82               ; {code.GetCreatureAt} Is there a creature here?
 D4AE: 27 10           BEQ     $D4C0               ; {} No ... skip indicator
 D4B0: AE 44           LDX     4,U                 ; Set the cursor to ...
 D4B2: 30 0B           LEAX    11,X                ; ... center "!CREATURE!" ...
 D4B4: AF 44           STX     4,U                 ; ... on the line
 D4B6: 3F              SWI                         ; Print "!CREATURE!"
-D4B7: 02                                           ; SWI_2:[Uncompress message m and display](#addr_SWI_2):
+D4B7: 02                                          ; SWI_2:[Uncompress message m and display](#SWI_2):
+D4B8: 56 C7 22 86 95 91 77 F0                     ; "!CREATURE!_1F_"
 ;
-D4B8: 56 C7 22 86 95 91 77 F0 ; "!CREATURE!_1F_"
-;
-D4C0: 0F 91           CLR     <$91                ; 
-D4C2: DC 13           LDD     <$13                ; Player's coordinates
+D4C0: 0F 91           CLR     <$91                ; {ram.restartFind}
+D4C2: DC 13           LDD     <$13                ; {ram.playerY} Player's coordinates
 D4C4: BD CF 53        JSR     $CF53               ; {code.GetObjectAtCoor} Find object on floor
 D4C7: 27 04           BEQ     $D4CD               ; {} No more on floor ... move to the pack
 D4C9: 8D 3A           BSR     $D505               ; {} Print object description
 D4CB: 20 F5           BRA     $D4C2               ; {} Keep going
 ;      
-D4CD: 0D B6           TST     <$B6                ; At the start of the line?
+D4CD: 0D B6           TST     <$B6                ; {ram.tabOrCR} At the start of the line?
 D4CF: 27 02           BEQ     $D4D3               ; {} Yes ... no need for a CR
 D4D1: 8D 2B           BSR     $D4FE               ; {} No ... print a CR
 D4D3: CC 1B 20        LDD     #$1B20              ; A = character "!", B = count 32
 D4D6: 3F              SWI                         ; Print "!"
-D4D7: 04                                           ; SWI_4:[Display a single character in A](#addr_SWI_4):
+D4D7: 04                                          ; SWI_4:[Display a single character in A](#SWI_4):
 D4D8: 5A              DECB                        ; Print line ...
 D4D9: 26 FB           BNE     $D4D6               ; {} ... of "!"
 D4DB: AE 44           LDX     4,U                 ; Skip cursor to ...
 D4DD: 30 0C           LEAX    12,X                ; ... center ...
 D4DF: AF 44           STX     4,U                 ; ... "BACKPACK"
 D4E1: 3F              SWI                         ; Print "BACKPACK"
-D4E2: 02                                           ; SWI_2:[Uncompress message m and display](#addr_SWI_2):
-;
-D4E3: 40 82 35 C0 23 5F C0 ; "BACKPACK_1F_"
+D4E2: 02                                          ; SWI_2:[Uncompress message m and display](#SWI_2):
+D4E3: 40 82 35 C0 23 5F C0                        ; "BACKPACK_1F_"
 ;
 D4EA: 8E 02 29        LDX     #$0229              ; Head of object list
 D4ED: AE 84           LDX     ,X                  ; Get next object
 D4EF: 27 0A           BEQ     $D4FB               ; {} All done
-D4F1: 9C 24           CMPX    <$24                ; Is this the lit torch?
+D4F1: 9C 24           CMPX    <$24                ; {ram.torchPtr} Is this the lit torch?
 D4F3: 26 02           BNE     $D4F7               ; {} No ... leave it
 D4F5: 63 46           COM     6,U                 ; Flip the color to show the torch is lit (we change this back every loop)
 D4F7: 8D 0C           BSR     $D505               ; {} Print object description
 D4F9: 20 F2           BRA     $D4ED               ; {} Next object
 ;
-D4FB: 0F B7           CLR     <$B7                ; Printing goes to command line area
+D4FB: 0F B7           CLR     <$B7                ; {ram.whereToPrint} Printing goes to command line area
 D4FD: 39              RTS                         ; Done
 ;
 D4FE: 86 1F           LDA     #$1F                ; Print a ...
 D500: 3F              SWI                         ; ... line feed
-D501: 04                                           ; SWI_4:[Display a single character in A](#addr_SWI_4):
-D502: 0F B6           CLR     <$B6                ; Next print a tab (note this was already 0)
+D501: 04                                          ; SWI_4:[Display a single character in A](#SWI_4):
+D502: 0F B6           CLR     <$B6                ; {ram.tabOrCR} Next print a tab (note this was already 0)
 D504: 39              RTS                         ; Done
 
 D505: 34 16           PSHS    X,B,A               ; Hold these
 D507: BD C6 17        JSR     $C617               ; {code.GetObjDscrpt} Unpack the text to make this object description (X points to buffer)
 D50A: 3F              SWI                         ; Print the object description
-D50B: 03                                           ; SWI_3:[Display uncompressed message pointed to by X](#addr_SWI_3):
-D50C: 96 2C           LDA     <$2C                ; Set the background ...
+D50B: 03                                          ; SWI_3:[Display uncompressed message pointed to by X](#SWI_3):
+D50C: 96 2C           LDA     <$2C                ; {ram.backgroundColor} Set the background ...
 D50E: A7 46           STA     6,U                 ; ... color (we may have flipped it printing the torch)
-D510: 03 B6           COM     <$B6                ; Whether to print a tab or CR
+D510: 03 B6           COM     <$B6                ; {ram.tabOrCR} Whether to print a tab or CR
 D512: 27 0A           BEQ     $D51E               ; {} 0 = Print the CR
 D514: EC 44           LDD     4,U                 ; Cursor
 D516: C3 00 10        ADDD    #$0010              ; FF = Skip to ...
@@ -3611,18 +3572,18 @@ CmdGET:
 D522: 8D 52           BSR     $D576               ; {} Pointer for requested hand
 D524: 26 4D           BNE     $D573               ; {} Hand isn't empty ... error
 D526: BD CB BA        JSR     $CBBA               ; {} ??
-D529: 0F 91           CLR     <$91                ; Reset the iterator to the first object
+D529: 0F 91           CLR     <$91                ; {ram.restartFind} Reset the iterator to the first object
 ;   
-D52B: DC 13           LDD     <$13                ; Players coordinates
+D52B: DC 13           LDD     <$13                ; {ram.playerY} Players coordinates
 D52D: BD CF 53        JSR     $CF53               ; {code.GetObjectAtCoor} Get the next object on this level at this coordinate
 D530: 27 41           BEQ     $D573               ; {} End of list ... no match
-D532: 0D 90           TST     <$90                ; 
+D532: 0D 90           TST     <$90                ; {ram.m0290}
 D534: 26 06           BNE     $D53C               ; {} Do proper match
 D536: A6 0A           LDA     10,X                ; Class match
-D538: 91 8F           CMPA    <$8F                ; 
+D538: 91 8F           CMPA    <$8F                ; {ram.holdIncantLen}
 D53A: 20 04           BRA     $D540               ; {} Skip proper match
 D53C: A6 09           LDA     9,X                 ; Proper match
-D53E: 91 8E           CMPA    <$8E                ; 
+D53E: 91 8E           CMPA    <$8E                ; {ram.holdIncantWord}
 D540: 26 E9           BNE     $D52B               ; {} Try next object
 D542: AF C4           STX     ,U                  ; Object now in hand
 D544: 6C 05           INC     5,X                 ; 1 means carried
@@ -3643,9 +3604,9 @@ D554: 4F              CLRA                        ; Hand ...
 D555: 5F              CLRB                        ; ... is now ...
 D556: ED C4           STD     ,U                  ; ... empty
 D558: 6F 05           CLR     5,X                 ; 0 = on floor
-D55A: DC 13           LDD     <$13                ; Drop at ...
+D55A: DC 13           LDD     <$13                ; {ram.playerY} Drop at ...
 D55C: ED 02           STD     2,X                 ; ... player's position ...
-D55E: 96 81           LDA     <$81                ; Object on ...
+D55E: 96 81           LDA     <$81                ; {ram.currentLevel} Object on ...
 D560: A7 04           STA     4,X                 ; ... player's level
 D562: E6 0A           LDB     10,X                ; Object class
 D564: 8E D9 FA        LDX     #$D9FA              ; Weight table
@@ -3653,10 +3614,10 @@ D567: E6 85           LDB     B,X                 ; Get the weight of the object
 D569: 50              NEGB                        ; Negative (removing the weight)
 D56A: 1D              SEX                         ; Two byte value
 ;
-D56B: D3 15           ADDD    <$15                ; Update ...
-D56D: DD 15           STD     <$15                ; ... carried weight
+D56B: D3 15           ADDD    <$15                ; {ram.playerWeight} Update ...
+D56D: DD 15           STD     <$15                ; {ram.playerWeight} ... carried weight
 D56F: 3F              SWI                         ; Update the heart after the change in load
-D570: 0C                                           ; SWI_C:[Update heart rate](#addr_SWI_C):
+D570: 0C                                          ; SWI_C:[Update heart rate](#SWI_C):
 D571: 20 44           BRA     $D5B7               ; {} Update hands and screen and done
 ;  
 D573: 7E CB E1        JMP     $CBE1               ; {} Print "???" error
@@ -3670,9 +3631,9 @@ D576: 7E CC 31        JMP     $CC31               ; {code.GetUserHand} Get user-
 CmdSTOW:  
 D579: 8D FB           BSR     $D576               ; {} Get the left or right hand object
 D57B: 27 F6           BEQ     $D573               ; {} Nothing in that hand ... error
-D57D: DC 29           LDD     <$29                ; Move this ...
+D57D: DC 29           LDD     <$29                ; {ram.firstPackObject} Move this ...
 D57F: ED 84           STD     ,X                  ; ... object to ...
-D581: 9F 29           STX     <$29                ; ... beginning of list
+D581: 9F 29           STX     <$29                ; {ram.firstPackObject} ... beginning of list
 D583: 4F              CLRA                        ; Now ...
 D584: 5F              CLRB                        ; ... empty ...
 D585: ED C4           STD     ,U                  ; ... hand
@@ -3690,28 +3651,28 @@ D590: 8E 02 29        LDX     #$0229              ; First pack object
 D593: 1F 12           TFR     X,Y                 ; 
 D595: AE 84           LDX     ,X                  ; 
 D597: 27 DA           BEQ     $D573               ; {} End of list ... object not found ... error
-D599: 0D 90           TST     <$90                ; ?? two words given?
+D599: 0D 90           TST     <$90                ; {ram.m0290} ?? two words given?
 D59B: 26 06           BNE     $D5A3               ; {}
 D59D: A6 0A           LDA     10,X                ; Class type
-D59F: 91 8F           CMPA    <$8F                ; 
+D59F: 91 8F           CMPA    <$8F                ; {ram.holdIncantLen}
 D5A1: 20 04           BRA     $D5A7               ; {} Only check the class type
 ;
 D5A3: A6 09           LDA     9,X                 ; Proper type
-D5A5: 91 8E           CMPA    <$8E                ; 
+D5A5: 91 8E           CMPA    <$8E                ; {ram.holdIncantWord}
 D5A7: 26 EA           BNE     $D593               ; {} Not a match ... keep looking
 D5A9: EC 84           LDD     ,X                  ; Pointer to next object
 D5AB: ED A4           STD     ,Y                  ; Pull the current object out of the object chain
 D5AD: AF C4           STX     ,U                  ; Object now in hand
 D5AF: 4F              CLRA                        ; We might use this to ...
 D5B0: 5F              CLRB                        ; ... extinguish the torch
-D5B1: 9C 24           CMPX    <$24                ; Did we just pull the lit torch?
+D5B1: 9C 24           CMPX    <$24                ; {ram.torchPtr} Did we just pull the lit torch?
 D5B3: 26 02           BNE     $D5B7               ; {} No ... move on
-D5B5: DD 24           STD     <$24                ; Clear the lit-torch pointer
+D5B5: DD 24           STD     <$24                ; {ram.torchPtr} Clear the lit-torch pointer
 ;   
 D5B7: 3F              SWI                         ; Update the hands
-D5B8: 0D                                           ; SWI_D:[Print contents of hands on status line](#addr_SWI_D):
+D5B8: 0D                                          ; SWI_D:[Print contents of hands on status line](#SWI_D):
 D5B9: 3F              SWI                         ; Redraw the screen
-D5BA: 0E                                           ; SWI_E:[Display playing screen](#addr_SWI_E):
+D5BA: 0E                                          ; SWI_E:[Display playing screen](#SWI_E):
 D5BB: 39              RTS                         ; Done
 ```
 
@@ -3722,12 +3683,12 @@ CmdINCANT:
 D5BC: 8E D8 F3        LDX     #$D8F3              ; Proper names
 D5BF: BD CB EC        JSR     $CBEC               ; {code.DecodeInput} Decode the input word
 D5C2: 2F 2B           BLE     $D5EF               ; {} Word not found ... fail silently
-D5C4: 0D 7B           TST     <$7B                ; 
+D5C4: 0D 7B           TST     <$7B                ; {ram.perfectMatch}
 D5C6: 27 27           BEQ     $D5EF               ; {} Not an exact word match ... fail silently
-D5C8: DD 8E           STD     <$8E                ; Hold this for a second
-D5CA: DE 1D           LDU     <$1D                ; Try object ...
+D5C8: DD 8E           STD     <$8E                ; {ram.holdIncantWord} Hold this for a second
+D5CA: DE 1D           LDU     <$1D                ; {ram.leftHand} Try object ...
 D5CC: 8D 02           BSR     $D5D0               ; {} ... in left hand
-D5CE: DE 1F           LDU     <$1F                ; Now try object in right
+D5CE: DE 1F           LDU     <$1F                ; {ram.rightHand} Now try object in right
 ;       
 D5D0: 27 1D           BEQ     $D5EF               ; {} No object in this hand ... skip
 D5D2: A6 4A           LDA     10,U                ; Is this a ...
@@ -3735,16 +3696,16 @@ D5D4: 81 01           CMPA    #$01                ; ... ring?
 D5D6: 26 17           BNE     $D5EF               ; {} No ... skip
 D5D8: A6 47           LDA     7,U                 ; Already revealed?
 D5DA: 27 13           BEQ     $D5EF               ; {} Yes ... fail silently
-D5DC: 91 8E           CMPA    <$8E                ; Input word matches this ring?
+D5DC: 91 8E           CMPA    <$8E                ; {ram.holdIncantWord} Input word matches this ring?
 D5DE: 26 0F           BNE     $D5EF               ; {} No ... skip
 D5E0: A7 49           STA     9,U                 ; Yes ... this is the new proper name
 D5E2: 3F              SWI                         ; Change the ring to the powerful one
-D5E3: 18                                           ; SWI_18:[Change object to proper name and data](#addr_SWI_18):
+D5E3: 18                                          ; SWI_18:[Change object to proper name and data](#SWI_18):
 D5E4: 3F              SWI                         ; Play the ring sound
-D5E5: 1B                                           ; SWI_1B:[Play sound i at full volume](#addr_SWI_1B):
+D5E5: 1B                                          ; SWI_1B:[Play sound i at full volume](#SWI_1B):
 D5E6: 0D                                           ; 0D = Ring
 D5E7: 3F              SWI                         ; Update the hand display
-D5E8: 0D                                           ; SWI_D:[Print contents of hands on status line](#addr_SWI_D):
+D5E8: 0D                                          ; SWI_D:[Print contents of hands on status line](#SWI_D):
 D5E9: 6F 47           CLR     7,U                 ; Mark as revealed
 D5EB: 81 12           CMPA    #$12                ; Did we just incant the "FINAL" ring?
 D5ED: 27 01           BEQ     $D5F0               ; {code.PlayerWins} Yes ... player wins the game
@@ -3752,18 +3713,18 @@ D5EF: 39              RTS                         ; Done
 
 PlayerWins:
 D5F0: 8E DF 39        LDX     #$DF39              ; Star Wizard picture
-D5F3: 0A 9E           DEC     <$9E                ; 
+D5F3: 0A 9E           DEC     <$9E                ; {ram.m029E}
 D5F5: 3F              SWI                         ; Beam on the Star Wizard
-D5F6: 13                                           ; SWI_13:[Beam on picture pointed to by X](#addr_SWI_13):
+D5F6: 13                                          ; SWI_13:[Beam on picture pointed to by X](#SWI_13):
 D5F7: 3F              SWI                         ; Print the final message
-D5F8: 02                                           ; SWI_2:[Uncompress message m and display](#addr_SWI_2):
-;
-D5F9: FF C4 54 3D 84 D8 08 59 D1 2E C8 03 70 A6 93 05 10 50 20 2E 20 ; "_1F_BEHOLD! DESTINY AWAITS THE HAND"
+D5F8: 02                                          ; SWI_2:[Uncompress message m and display](#SWI_2):
+D5F9: FF C4 54 3D 84 D8 08 59 D1 2E C8 03 70 A6   ; "_1F_BEHOLD! DESTINY AWAITS THE HAND"
+D607: 93 05 10 50 20 2E 20
 ;
 D60E: 3F              SWI                         ; More final message
-D60F: 02                                           ; SWI_2:[Uncompress message m and display](#addr_SWI_2):
-;
-D610: C8 00 00 00 00 03 CC 00 81 C5 B8 2E 9D 06 44 F7 BC ; "        OF A NEW WIZARD..."
+D60F: 02                                          ; SWI_2:[Uncompress message m and display](#SWI_2):
+D610: C8 00 00 00 00 03 CC 00 81 C5 B8 2E 9D 06   ; "        OF A NEW WIZARD..."
+D61E: 44 F7 BC 
 ;
 D621: 20 FE           BRA     $D621               ; {} Infinite loop
 ```
@@ -3779,14 +3740,14 @@ D62A: A6 4B           LDA     11,U                ; Already revealed?
 D62C: 27 10           BEQ     $D63E               ; {} Yes, skip it now
 D62E: C6 19           LDB     #$19                ; Base multiplier
 D630: 3D              MUL                         ; Multiply
-D631: 10 93 17        CMPD    <$17                ; Are we strong enough?
+D631: 10 93 17        CMPD    <$17                ; {ram.pStrength} Are we strong enough?
 D634: 2E 08           BGT     $D63E               ; {} No, leave it unrevealed
 D636: A6 49           LDA     9,U                 ; Get proper name
 D638: 3F              SWI                         ; Change object types
-D639: 18                                           ; SWI_18:[Change object to proper name and data](#addr_SWI_18):
+D639: 18                                          ; SWI_18:[Change object to proper name and data](#SWI_18):
 D63A: 6F 4B           CLR     11,U                ; Revealed
 D63C: 3F              SWI                         ; Update the hands line
-D63D: 0D                                           ; SWI_D:[Print contents of hands on status line](#addr_SWI_D):
+D63D: 0D                                          ; SWI_D:[Print contents of hands on status line](#SWI_D):
 D63E: 39              RTS                         ; Done
 ```
 
@@ -3797,7 +3758,7 @@ CmdTURN:
 D63F: 8E D8 D9        LDX     #$D8D9              ; Second words
 D642: BD CB EC        JSR     $CBEC               ; {code.DecodeInput} Decode the user input
 D645: 2F 4C           BLE     $D693               ; {} Not found ... syntax error
-D647: D6 23           LDB     <$23                ; Current direction
+D647: D6 23           LDB     <$23                ; {ram.playerDir} Current direction
 D649: 81 00           CMPA    #$00                ; Turning LEFT?
 D64B: 26 07           BNE     $D654               ; {} No ... try right
 D64D: 5A              DECB                        ; Decrease direction ... turning CCW
@@ -3817,12 +3778,12 @@ D661: CB 02           ADDB    #$02                ; Flip direction
 D663: 8D 08           BSR     $D66D               ; {} Wrap direction and draw the screen
 D665: 8D 1D           BSR     $D684               ; {} Turn right
 D667: 8D 1B           BSR     $D684               ; {} Turn right
-D669: 0A B4           DEC     <$B4                ; 
+D669: 0A B4           DEC     <$B4                ; {ram.flipScreens}
 D66B: 13              SYNC                        ; Wait for the refresh
 D66C: 39              RTS                         ; Done
 ;
 D66D: C4 03           ANDB    #$03                ; Limit direction (wrap around)
-D66F: D7 23           STB     <$23                ; New direction
+D66F: D7 23           STB     <$23                ; {ram.playerDir} New direction
 D671: 7E C6 60        JMP     $C660               ; {} Draw the screen
 ;  
 ; Turning left (line moves right)     
@@ -3846,32 +3807,32 @@ D692: 39              RTS                         ; Done
 ;
 D693: 7E CB E1        JMP     $CBE1               ; {} Print "???" syntax error
 
-D696: DE B2           LDU     <$B2                ; Are we showing ...
+D696: DE B2           LDU     <$B2                ; {ram.displayFunction} Are we showing ...
 D698: 11 83 CE 66     CMPU    #$CE66              ; ... the normal game screen?
 D69C: 26 1B           BNE     $D6B9               ; {} No, then out. Nothing to display in EXAMINE mode.
 D69E: 8E 80 80        LDX     #$8080              ; ?? Zoom ?
-D6A1: 9F 4F           STX     <$4F                ; ?? Zoom ?
-D6A3: 0F 8B           CLR     <$8B                ; 
+D6A1: 9F 4F           STX     <$4F                ; {ram.m024F} ?? Zoom ?
+D6A3: 0F 8B           CLR     <$8B                ; {ram.m028B}
 D6A5: 3F              SWI                         ; Set the light level to animate turning
-D6A6: 00                                           ; SWI_0:[Light level](#addr_SWI_0):
+D6A6: 00                                          ; SWI_0:[Light level](#SWI_0):
 D6A7: 3F              SWI                         ; Clear the screen
-D6A8: 08                                           ; SWI_8:[Clear display screen](#addr_SWI_8):
+D6A8: 08                                          ; SWI_8:[Clear display screen](#SWI_8):
 D6A9: 8E D6 C6        LDX     #$D6C6              ; Top and bottom lines shown while moving
 D6AC: 3F              SWI                         ; Draw the two horizontal lines
-D6AD: 01                                           ; SWI_1:[Draw picture X on screen](#addr_SWI_1):
+D6AD: 01                                          ; SWI_1:[Draw picture X on screen](#SWI_1):
 D6AE: 8E 00 11        LDX     #$0011              ; Top Y coordinate ... 17 (line + 1)
-D6B1: 9F 2F           STX     <$2F                ; First Y coordinate
+D6B1: 9F 2F           STX     <$2F                ; {ram.m022F} First Y coordinate
 D6B3: 8E 00 87        LDX     #$0087              ; Bottom Y coordinate ... 135 (line -1)
-D6B6: 9F 33           STX     <$33                ; Second Y coordinate
+D6B6: 9F 33           STX     <$33                ; {ram.m0233} Second Y coordinate
 D6B8: 4F              CLRA                        ; Return that we ARE going to draw something
 D6B9: 39              RTS                         ; Done
      
 DrawTurningLine:            
-D6BA: DD 31           STD     <$31                ; First X coordinate
-D6BC: DD 35           STD     <$35                ; Second X coordinate
+D6BA: DD 31           STD     <$31                ; {ram.m0231} First X coordinate
+D6BC: DD 35           STD     <$35                ; {ram.m0235} Second X coordinate
 D6BE: 8D 00           BSR     $D6C0               ; {} ?? drawing then erasing? Two different screens?
 D6C0: BD CA B7        JSR     $CAB7               ; {} Draw the vertical line
-D6C3: 03 2C           COM     <$2C                ; ?? two passes ... we set it back
+D6C3: 03 2C           COM     <$2C                ; {ram.backgroundColor} ?? two passes ... we set it back
 D6C5: 39              RTS                         ; Done
 
 ; Top and bottom horizontal lines while turning
@@ -3891,20 +3852,20 @@ D6D0: 8E D8 D9        LDX     #$D8D9              ; @@
 D6D3: BD CB EC        JSR     $CBEC               ; {code.DecodeInput} Decode the input word
 D6D6: 2D BB           BLT     $D693               ; {} Bad input ... error
 D6D8: 2E 09           BGT     $D6E3               ; {} Requested direction ... go do it
-D6DA: 0A 73           DEC     <$73                ; ?? Draw half step magnification?
+D6DA: 0A 73           DEC     <$73                ; {ram.m0273} ?? Draw half step magnification?
 D6DC: 3F              SWI                         
-D6DD: 0E                                           ; SWI_E:[Display playing screen](#addr_SWI_E):
+D6DD: 0E                                          ; SWI_E:[Display playing screen](#SWI_E):
 D6DE: 5F              CLRB                        ; Moving direction 0 (forward)
-D6DF: 0F 73           CLR     <$73                ; ?? Clear half-step flag
+D6DF: 0F 73           CLR     <$73                ; {ram.m0273} ?? Clear half-step flag
 D6E1: 20 0C           BRA     $D6EF               ; {} Make the move
 ;
 D6E3: 81 02           CMPA    #$02                ; Word is "BACK" ?
 D6E5: 26 0C           BNE     $D6F3               ; {} No ... try others
-D6E7: 0A 74           DEC     <$74                ; ?? back half step mag?
+D6E7: 0A 74           DEC     <$74                ; {ram.m0274} ?? back half step mag?
 D6E9: 3F              SWI                         
-D6EA: 0E                                           ; SWI_E:[Display playing screen](#addr_SWI_E):
+D6EA: 0E                                          ; SWI_E:[Display playing screen](#SWI_E):
 D6EB: C6 02           LDB     #$02                ; Moving direction 2 (backwards)
-D6ED: 0F 74           CLR     <$74                ; ?? CLear half-step flag?
+D6ED: 0F 74           CLR     <$74                ; {ram.m0274} ?? CLear half-step flag?
 D6EF: 8D 2F           BSR     $D720               ; {}
 D6F1: 20 1B           BRA     $D70E               ; {}
 ;
@@ -3922,32 +3883,32 @@ D705: C6 03           LDB     #$03                ; Moving direction 3 (left)
 D707: 8D 17           BSR     $D720               ; {}
 D709: 26 03           BNE     $D70E               ; {}
 D70B: BD D6 74        JSR     $D674               ; {} Line moving right (player moving left)
-D70E: DC 15           LDD     <$15                ; Player's weight ...
+D70E: DC 15           LDD     <$15                ; {ram.playerWeight} Player's weight ...
 D710: BD D3 7F        JSR     $D37F               ; {code.DRight3} ... divided by 8 ...
 D713: C3 00 03        ADDD    #$0003              ; ... plus 3
-D716: D3 21           ADDD    <$21                ; Add ...
-D718: DD 21           STD     <$21                ; ... exertion
+D716: D3 21           ADDD    <$21                ; {ram.m0221} Add ...
+D718: DD 21           STD     <$21                ; {ram.m0221} ... exertion
 D71A: 3F              SWI                         ; Update the heart rate
-D71B: 0C                                           ; SWI_C:[Update heart rate](#addr_SWI_C):
-D71C: 0A B4           DEC     <$B4                ; 
+D71B: 0C                                          ; SWI_C:[Update heart rate](#SWI_C):
+D71C: 0A B4           DEC     <$B4                ; {ram.flipScreens}
 D71E: 13              SYNC                        ; Wait for heart rate change
 D71F: 39              RTS                         ; Out
 
 D720: 34 06           PSHS    B,A                 ; Hold
 D722: 6F E2           CLR     ,-S                 
-D724: DB 23           ADDB    <$23                ; 
+D724: DB 23           ADDB    <$23                ; {ram.playerDir}
 D726: C4 03           ANDB    #$03                
-D728: D7 8A           STB     <$8A                ; 
-D72A: DC 13           LDD     <$13                ; 
+D728: D7 8A           STB     <$8A                ; {ram.drwMazeDir}
+D72A: DC 13           LDD     <$13                ; {ram.playerY}
 D72C: BD D1 36        JSR     $D136               ; {}
 D72F: 27 07           BEQ     $D738               ; {}
 D731: 3F              SWI                         
-D732: 1B                                           ; SWI_1B:[Play sound i at full volume](#addr_SWI_1B):
-D733: 14                                           ; 14 = Wall hit
+D732: 1B                                          ; SWI_1B:[Play sound i at full volume](#SWI_1B):
+D733: 14                                          ; 14 = Wall hit
 D734: 6A E4           DEC     ,S                  
-D736: DC 13           LDD     <$13                ; 
+D736: DC 13           LDD     <$13                ; {ram.playerY}
 ;     
-D738: DD 13           STD     <$13                ; 
+D738: DD 13           STD     <$13                ; {ram.playerY}
 D73A: BD C6 60        JSR     $C660               ; {}
 D73D: 6D E0           TST     ,S+                 
 D73F: 35 86           PULS    A,B,PC              
@@ -3962,13 +3923,13 @@ D744: 27 21           BEQ     $D767               ; {} Nothing in the hand ... f
 D746: EC 09           LDD     9,X                 ; Get the object data
 D748: C1 05           CMPB    #$05                ; Class is TORCH?
 D74A: 26 0B           BNE     $D757               ; {} No ... try others
-D74C: 9F 24           STX     <$24                ; This is our new torch
+D74C: 9F 24           STX     <$24                ; {ram.torchPtr} This is our new torch
 D74E: BD D5 7D        JSR     $D57D               ; {} Automatically stow it
 D751: 3F              SWI                         ; Play TORCH sound
-D752: 1B                                           ; SWI_1B:[Play sound i at full volume](#addr_SWI_1B):
-D753: 11                                           ; 11 = Torch
+D752: 1B                                          ; SWI_1B:[Play sound i at full volume](#SWI_1B):
+D753: 11                                          ; 11 = Torch
 D754: 3F              SWI                         ; Update the display
-D755: 0E                                           ; SWI_E:[Display playing screen](#addr_SWI_E):
+D755: 0E                                          ; SWI_E:[Display playing screen](#SWI_E):
 D756: 39              RTS                         ; Done
 ;        
 D757: 1F 13           TFR     X,U                 ; Object pointer now to U
@@ -4000,8 +3961,8 @@ D778: D7 A0       ; Routine address
  
 UseTHEWS:
 D77A: CC 03 E8        LDD     #$03E8              ; Big increase in strength
-D77D: D3 17           ADDD    <$17                ; Update ...
-D77F: DD 17           STD     <$17                ; ... player strength
+D77D: D3 17           ADDD    <$17                ; {ram.pStrength} Update ...
+D77F: DD 17           STD     <$17                ; {ram.pStrength} ... player strength
 D781: 20 0F           BRA     $D792               ; {} Make the FLASK sound
 
 UseHALE:
@@ -4010,21 +3971,21 @@ D784: 5F              CLRB                        ; ... exertion
 D785: 20 09           BRA     $D790               ; {} Update and make the FLASK sound
 
 UseABYE:       
-D787: 9E 17           LDX     <$17                ; Strength ...
+D787: 9E 17           LDX     <$17                ; {ram.pStrength} Strength ...
 D789: 86 66           LDA     #$66                ; ... times $66 ...
 D78B: BD D4 36        JSR     $D436               ; {} ... is new ...
-D78E: D3 21           ADDD    <$21                ; ... exertion
-D790: DD 21           STD     <$21                ; Store new exertion
+D78E: D3 21           ADDD    <$21                ; {ram.m0221} ... exertion
+D790: DD 21           STD     <$21                ; {ram.m0221} Store new exertion
 D792: C6 17           LDB     #$17                ; Now an EMPTY ...
 D794: E7 49           STB     9,U                 ; ... FLASK
 D796: 6F 4B           CLR     11,U                ; We revealed it by drinking it
 D798: 3F              SWI                         ; Play the FLASH sound
-D799: 1B                                           ; SWI_1B:[Play sound i at full volume](#addr_SWI_1B):
-D79A: 0C                                           ; 0C = Flask
+D799: 1B                                          ; SWI_1B:[Play sound i at full volume](#SWI_1B):
+D79A: 0C                                          ; 0C = Flask
 D79B: 3F              SWI                         ; Update the hands
-D79C: 0D                                           ; SWI_D:[Print contents of hands on status line](#addr_SWI_D):
+D79C: 0D                                          ; SWI_D:[Print contents of hands on status line](#SWI_D):
 D79D: 3F              SWI                         ; Update the heart rate
-D79E: 0C                                           ; SWI_C:[Update heart rate](#addr_SWI_C):
+D79E: 0C                                          ; SWI_C:[Update heart rate](#SWI_C):
 D79F: 39              RTS                         ; Done
 
 UseVISION:
@@ -4032,17 +3993,17 @@ D7A0: 4F              CLRA                        ; 0 means VISION scroll
 D7A1: 8C                  ; CMPX  opcode to skip next instruction
 UseSEER:  
 D7A2: 86 FF           LDA     #$FF                ; FF means SEER scroll
-D7A4: 97 94           STA     <$94                ; set the scroll type
+D7A4: 97 94           STA     <$94                ; {ram.scrollType} set the scroll type
 D7A6: 6D 4B           TST     11,U                ; Has this been revealed?
 D7A8: 26 0C           BNE     $D7B6               ; {} No ... fail silently
 D7AA: 3F              SWI                         ; Play open-scroll sound
-D7AB: 1B                                           ; SWI_1B:[Play sound i at full volume](#addr_SWI_1B):
-D7AC: 0E                                           ; 0E = Scroll 
-D7AD: 0F AD           CLR     <$AD                ; 0 means scroll is showing
+D7AB: 1B                                          ; SWI_1B:[Play sound i at full volume](#SWI_1B):
+D7AC: 0E                                          ; 0E = Scroll 
+D7AD: 0F AD           CLR     <$AD                ; {ram.scrollShowing} 0 means scroll is showing
 D7AF: 8E CD B2        LDX     #$CDB2              ; Set display to ...
-D7B2: 9F B2           STX     <$B2                ; ... the map display
+D7B2: 9F B2           STX     <$B2                ; {ram.displayFunction} ... the map display
 D7B4: 3F              SWI                         ; Redraw the screen
-D7B5: 0E                                           ; SWI_E:[Display playing screen](#addr_SWI_E):
+D7B5: 0E                                          ; SWI_E:[Display playing screen](#SWI_E):
 D7B6: 39              RTS                         ; Done
 ```
 
@@ -4051,13 +4012,13 @@ D7B6: 39              RTS                         ; Done
 ```code
 CmdZLOAD:
 D7B7: 8D 03           BSR     $D7BC               ; {} Parse the next word
-D7B9: 0A B8           DEC     <$B8                ; Trigger ZLOAD
+D7B9: 0A B8           DEC     <$B8                ; {ram.tapeTrigger} Trigger ZLOAD
 D7BB: 39              RTS                         ; Done
 
 D7BC: 8E 03 13        LDX     #$0313              ; Start of scratch buffer
 D7BF: 33 88 20        LEAU    $20,X               ; End is 16 bytes later
 D7C2: 3F              SWI                         ; Fill scratch buffer with FFs
-D7C3: 12                                           ; SWI_12:[Fill X to U with FFs](#addr_SWI_12):
+D7C3: 12                                          ; SWI_12:[Fill X to U with FFs](#SWI_12):
 D7C4: 7E CB 96        JMP     $CB96               ; {code.GetNextWord} Parse the next word and return
 ```
 
@@ -4069,7 +4030,7 @@ D7C7: 8D F3           BSR     $D7BC               ; {} Parse the next word into 
 D7C9: BF 00 7E        STX     $007E               ; {ram.CASSPTR} This will be the name of the file
 D7CC: CC 00 0F        LDD     #$000F              ; Block type 0 (header) length = 16
 D7CF: FD 00 7C        STD     $007C               ; {ram.CASSBLKTYPE} Prepare for first BLKOUT
-D7D2: 0C B8           INC     <$B8                ; Trigger ZSAVE
+D7D2: 0C B8           INC     <$B8                ; {ram.tapeTrigger} Trigger ZSAVE
 D7D4: 39              RTS                         ; Done
 
 ; ############################################### Data from here down ##########################################################

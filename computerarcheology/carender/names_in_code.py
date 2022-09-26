@@ -97,6 +97,14 @@ def update_names_in_code(directory, filename, check_binary=True,extract_binary=F
 
     md = markdown.read_markdown_paragraphs(os.path.join(directory, filename))
 
+    bp_offset = 0
+    # TODO we should allow the DP to change through the code ... not just once at the top
+    for m in md:
+        if m.group_type=='META':
+            if 'directPage' in m.lines[0].text:
+                i = m.lines[0].text.find('directPage')
+                bp_offset = int(m.lines[0].text[i+11:],16)
+
     # Get all the code from the markdown (or return if there are no code lines)
 
     lines = cainfo.read_code_text_lines(md)
@@ -268,7 +276,7 @@ def update_names_in_code(directory, filename, check_binary=True,extract_binary=F
         if 'data' not in use and 'code' not in use and 'port' not in use:
             # Nothing for us to do
             _rebuild_text(line, parts, spacing, cpu_name)
-            continue
+            continue        
 
         # Get the numeric constant
 
@@ -276,6 +284,11 @@ def update_names_in_code(directory, filename, check_binary=True,extract_binary=F
             raise Exception('Expected to find "$" constant')
 
         c = extract_constant(line.text)
+        
+        if 'bp' in use:
+            c = c + bp_offset
+            #print(c,line)
+            #raise 'oops'
 
         # The search order depends on the type of access
 

@@ -1,10 +1,25 @@
 import copy
 import os
 import shutil
+import sys
 
 from computerarcheology.carender import markdown, cainfo, webrender, nav_tree, names_in_code
 import computerarcheology.carender.ENVIRONMENT as ENV
 
+# For development, you can pass command line arguments to this script to control which
+# markdowns are processed. All other non-md are always processed.
+#
+# The following things are always generated no matter what work-limit given.
+
+NO_WORK_LIMIT = [
+    'content/js',
+    'content/css',
+    'content/img',
+    'content/Contact',        
+    'content/Journal',
+    'content/misc',
+    'content/Tools',
+]
 
 def deploy_directory(current_node):
     ''' Recursively deploy a directory
@@ -30,7 +45,8 @@ def deploy_directory(current_node):
         else:
             shutil.copy(src, dst)
 
-    for dep in current_node.children:
+    for dep in current_node.children:       
+        
         da = dep.anchor
         genbin = False
         if dep.special == '%':            
@@ -50,6 +66,20 @@ def deploy_directory(current_node):
                 shutil.copy(src, dst)
             else:                
                 
+                skip_work = False
+                if not src.endswith('README.md') and work_limit:
+                    skip_work = True
+                    lim = fp_content[2:].replace('\\','/')                           
+                    # Limit the work on md files                    
+                    for l in NO_WORK_LIMIT+[work_limit]:                        
+                        if l in lim:
+                            skip_work = False
+                            break
+
+                if skip_work:
+                    print('## Work limit. Skipping '+src)
+                    continue
+
                 md,bindata = names_in_code.update_names_in_code(fp_content, da,extract_binary=genbin)
 
                 if genbin:                    
@@ -141,6 +171,19 @@ def deploy_directory(current_node):
                 with open(os.path.join(ENV.DEPLOY_DIR, dep.get_full_path()), 'w') as f:
                     f.write(txt)
 
+"""
+Examples:
+
+py -m computerarcheology.carender.app
+py -m computerarcheology.carender.app CoCo/Daggorath
+
+py -m computerarcheology.carender.development_server
+
+"""
+
+work_limit = None
+if len(sys.argv)>1:
+    work_limit = sys.argv[1]
 
 # Remove and recreate the deployment directory (clean)
 if os.path.isdir(ENV.DEPLOY_DIR):
