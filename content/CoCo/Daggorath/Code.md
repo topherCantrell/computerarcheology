@@ -86,24 +86,24 @@ C052: 39              RTS                         ; Out
 InitTasks:
 C053: 34 77           PSHS    U,Y,X,B,A,CC        ; Save all registers
 C055: 1A 10           ORCC    #$10                ; Turn OFF the IRQ interrupt
-C057: 8E 02 9F        LDX     #$029F              ; 
-C05A: 6F 80           CLR     ,X+                 ; 
-C05C: 8C 02 AD        CMPX    #$02AD              ; 
-C05F: 25 F9           BCS     $C05A               ; {}
-C061: 8E 09 FD        LDX     #$09FD              ; First game-task slot
-C064: 9F B9           STX     <$B9                ; {ram.nextTask} Clear the task list
+C057: 8E 02 9F        LDX     #$029F              ; Clear the ...
+C05A: 6F 80           CLR     ,X+                 ; ... linked list ...
+C05C: 8C 02 AD        CMPX    #$02AD              ; ... of ...
+C05F: 25 F9           BCS     $C05A               ; {} ... task pointers
+C061: 8E 09 FD        LDX     #$09FD              ; First game-task structure
+C064: 9F B9           STX     <$B9                ; {ram.nextTask} Next available task
 C066: 6F 80           CLR     ,X+                 ; Zero out  ...
-C068: 8C 0B 07        CMPX    #$0B07              ; ... game-tasks ... (Not the last task. It is initialized at startup.)
+C068: 8C 0B 07        CMPX    #$0B07              ; ... game-task structures ... (??Not the last task. It is initialized at startup.)
 C06B: 25 F9           BCS     $C066               ; {} ... slots
 ;
 C06D: 10 8E D7 DC     LDY     #$D7DC              ; Initial task routines
-C071: 0A BB           DEC     <$BB                ; {ram.m02BB}
-C073: CC 00 0C        LDD     #$000C              ; 
+C071: 0A BB           DEC     <$BB                ; {ram.taskListsRebuilt}
+C073: CC 00 0C        LDD     #$000C              ; Offset to last index in the task linked list (tasks are going on the end)
 C076: AE A1           LDX     ,Y++                ; Get next task entry
-C078: 27 0A           BEQ     $C084               ; {} All tasks made ... out
-C07A: BD C2 5C        JSR     $C25C               ; {code.ReserveTask} Reserve a task slot (pointer in U)
+C078: 27 0A           BEQ     $C084               ; {} All tasks have been made ... out
+C07A: BD C2 5C        JSR     $C25C               ; {code.ReserveTask} Reserve a task structure (pointer returned in U)
 C07D: AF 43           STX     3,U                 ; Save code pointer in structure
-C07F: BD C2 1D        JSR     $C21D               ; {} ?? Add task pointer to chain ??
+C07F: BD C2 1D        JSR     $C21D               ; {code.ChainTaskToEnd} Chain the task to the end of the list and set counter to 0
 C082: 20 F2           BRA     $C076               ; {} Do all tasks
 C084: 35 F7           PULS    CC,A,B,X,Y,U,PC     ; Done
 
@@ -213,7 +213,7 @@ C14D: 20 EA           BRA     $C139               ; {} Do all game objects
 ;       
 C14F: 0D 77           TST     <$77                ; {ram.gameMode} ?? are we in play-game mode (not demo) ??
 C151: 27 13           BEQ     $C166               ; {} Yes ... don't start with the map
-C153: 0A 9B           DEC     <$9B                ; {ram.m029B} ??
+C153: 0A 9B           DEC     <$9B                ; {ram.suspendTaskTime} ??
 C155: 8E CD B2        LDX     #$CDB2              ; The routine for drawing ...
 C158: 9F B2           STX     <$B2                ; {ram.displayFunction} ... the scroll (seer and vision)
 C15A: 0A 94           DEC     <$94                ; {ram.scrollType} This is a SEER scroll
@@ -223,7 +223,7 @@ C15E: 3F              SWI                         ; Wait for 1.35 seconds
 C15F: 10                                          ; SWI_10:[Pause for 1.35 seconds](#SWI_10):
 C160: 3F              SWI                         ; Another 1.35. Total: 1.35*2 = 2.7 seconds
 C161: 10                                          ; SWI_10:[Pause for 1.35 seconds](#SWI_10):
-C162: 0F 9B           CLR     <$9B                ; {ram.m029B}
+C162: 0F 9B           CLR     <$9B                ; {ram.suspendTaskTime}
 C164: 13              SYNC                        ; Wait for two ...
 C165: 13              SYNC                        ; ... interrupts (??letting the sound get started??)
 ;
@@ -318,72 +318,94 @@ C1F4: 0F                                          ; SWI_F:[Ready command prompt]
 
 # Game Loop
 
+This is the game loop. The interrupt service routine times all the game tasks and moves them
+to the "ready-to-run" list when they are ready to go. This loop runs the tasks that are ready
+to run.
+
+This code also handles the tape save/loads.
+
+The game tasks themselves can re-initialize all the task lists. This happens when the game
+switches level. When that happens, the game loop needs to restart at the top of the list instead
+of continuing to the next task. The flag at $BB tells the loop to restart.
+
 ```code
 GameLoop: 
-C1F5: CE 02 AB        LDU     #$02AB              
-C1F8: 0F BB           CLR     <$BB                ; {ram.m02BB}
-C1FA: 1F 32           TFR     U,Y                 
+C1F5: CE 02 AB        LDU     #$02AB              ; Start of ready-to-run tasks
+C1F8: 0F BB           CLR     <$BB                ; {ram.taskListsRebuilt} We are starting at the top of the task list
+C1FA: 1F 32           TFR     U,Y                 ; Hold start of list
 C1FC: 0D B8           TST     <$B8                ; {ram.tapeTrigger} ZSAVE or ZLOAD requested?
 C1FE: 2E 92           BGT     $C192               ; {code.SaveToTape} ZSAVE ... go do it
 C200: 2B BF           BMI     $C1C1               ; {code.LoadFromTape} ZLOAD ... go do it
-C202: EE C4           LDU     ,U                  
-C204: 27 EF           BEQ     $C1F5               ; {code.GameLoop}
+C202: EE C4           LDU     ,U                  ; Next runable task
+C204: 27 EF           BEQ     $C1F5               ; {code.GameLoop} No more tasks to run ... back to top
 ;
 C206: 34 60           PSHS    U,Y                 ; Hold registers
-C208: AD D8 03        JSR     [$03,U]             ; Execute game task
+C208: AD D8 03        JSR     [$03,U]             ; Execute game task (return reload in A, list number in B)
 C20B: 35 60           PULS    Y,U                 ; Restore
 ;
-C20D: 0D BB           TST     <$BB                ; {ram.m02BB}
-C20F: 26 E4           BNE     $C1F5               ; {code.GameLoop}
-C211: C1 0C           CMPB    #$0C                
-C213: 27 E5           BEQ     $C1FA               ; {}
-C215: 8D 21           BSR     $C238               ; {}
-C217: 8D 04           BSR     $C21D               ; {}
-C219: 1F 23           TFR     Y,U                 
-C21B: 20 DF           BRA     $C1FC               ; {}
+C20D: 0D BB           TST     <$BB                ; {ram.taskListsRebuilt} Task list was rebuilt (as in change of level)?
+C20F: 26 E4           BNE     $C1F5               ; {code.GameLoop} Yes ... restart the task-run from the first
+C211: C1 0C           CMPB    #$0C                ; Task needs running again?
+C213: 27 E5           BEQ     $C1FA               ; {} Yes ... keep running it
+C215: 8D 21           BSR     $C238               ; {code.UnchainTask} Remove the task from its current list
+C217: 8D 04           BSR     $C21D               ; {code.ChainTaskToEnd} Add it to the end of its target list
+C219: 1F 23           TFR     Y,U                 ; Next task
+C21B: 20 DF           BRA     $C1FC               ; {} Do all tasks
 
-C21D: 34 17           PSHS    X,B,A,CC            
+ChainTaskToEnd:
+; Add the task U to the end of a linked task list
+; U is task to add
+; A is countdown timer reload
+; B is offset to the target list -- the index in the list of lists
+C21D: 34 17           PSHS    X,B,A,CC            ; Preserve
 C21F: 1A 10           ORCC    #$10                ; Turn OFF the IRQ interrupt
-C221: A7 42           STA     2,U                 
-C223: 8E 02 9F        LDX     #$029F              
-C226: 3A              ABX                         
-C227: 4F              CLRA                        
-C228: 5F              CLRB                        
-C229: ED C4           STD     ,U                  
-C22B: 10 A3 84        CMPD    ,X                  
-C22E: 27 04           BEQ     $C234               ; {}
-C230: AE 84           LDX     ,X                  
-C232: 20 F7           BRA     $C22B               ; {}
-C234: EF 84           STU     ,X                  
-C236: 35 97           PULS    CC,A,B,X,PC         
- 
-C238: 34 11           PSHS    X,CC                
+C221: A7 42           STA     2,U                 ; Reload the countdown timer
+C223: 8E 02 9F        LDX     #$029F              ; Start of task slots
+C226: 3A              ABX                         ; Where to insert in the list
+C227: 4F              CLRA                        ; This target task is ...
+C228: 5F              CLRB                        ; ... now ...
+C229: ED C4           STD     ,U                  ; ... the end of the list
+C22B: 10 A3 84        CMPD    ,X                  ; Are we at the previous ...
+C22E: 27 04           BEQ     $C234               ; {} ... end of list?
+C230: AE 84           LDX     ,X                  ; No ... move to next task and ...
+C232: 20 F7           BRA     $C22B               ; {} ... keep looking for end
+C234: EF 84           STU     ,X                  ; Chain the target task to the end
+C236: 35 97           PULS    CC,A,B,X,PC         ; Restore
+
+UnchainTask:
+; Remove a task from its linked list of tasks
+; U points to target task to remove
+; Y points to parent of target task
+C238: 34 11           PSHS    X,CC                ; Preserve
 C23A: 1A 10           ORCC    #$10                ; Turn OFF the IRQ interrupt
-C23C: AE C4           LDX     ,U                  
-C23E: AF A4           STX     ,Y                  
-C240: 35 91           PULS    CC,X,PC             
-   
-C242: 34 74           PSHS    U,Y,X,B             
-C244: 0D 9B           TST     <$9B                ; {ram.m029B}
-C246: 26 12           BNE     $C25A               ; {}
-C248: 1F 32           TFR     U,Y                 
-C24A: EE C4           LDU     ,U                  
-C24C: 27 0C           BEQ     $C25A               ; {}
-C24E: 6A 42           DEC     2,U                 
-C250: 26 F6           BNE     $C248               ; {}
-C252: 8D E4           BSR     $C238               ; {}
-C254: C6 0C           LDB     #$0C                
-C256: 8D C5           BSR     $C21D               ; {}
-C258: 20 EE           BRA     $C248               ; {}
-C25A: 35 F4           PULS    B,X,Y,U,PC          
+C23C: AE C4           LDX     ,U                  ; Get pointer to next task (or end marker)
+C23E: AF A4           STX     ,Y                  ; Change parent to point to next
+C240: 35 91           PULS    CC,X,PC             ; Restore
+
+TimeDownTasks:
+; Decrement the counters on all tasks of a single list. When they reach zero, move
+; the tasks to the ready-to-run list
+C242: 34 74           PSHS    U,Y,X,B             ; Preserve
+C244: 0D 9B           TST     <$9B                ; {ram.suspendTaskTime} ?? main loop showing demo scroll
+C246: 26 12           BNE     $C25A               ; {} Skip task timing
+C248: 1F 32           TFR     U,Y                 ; Y=Parent of task
+C24A: EE C4           LDU     ,U                  ; U=Current task
+C24C: 27 0C           BEQ     $C25A               ; {} End of list ... we are done
+C24E: 6A 42           DEC     2,U                 ; Time for this task to run?
+C250: 26 F6           BNE     $C248               ; {} No ... leave it be
+C252: 8D E4           BSR     $C238               ; {code.UnchainTask} Pull the task from its list
+C254: C6 0C           LDB     #$0C                ; Move the task ...
+C256: 8D C5           BSR     $C21D               ; {code.ChainTaskToEnd} ... to the ready to run list
+C258: 20 EE           BRA     $C248               ; {} Keep timing down all tasks
+C25A: 35 F4           PULS    B,X,Y,U,PC          ; Restore
 
 ReserveTask:
 ; Move the next-task-pointer to the next seven-byte slot.
 ; Return reserved slot pointer in U.
 C25C: 34 10           PSHS    X                   ; Hold X
-C25E: DE B9           LDU     <$B9                ; {ram.nextTask} Get the slot pointer
-C260: 30 47           LEAX    7,U                 ; Point to next
-C262: 9F B9           STX     <$B9                ; {ram.nextTask} New slot pointer
+C25E: DE B9           LDU     <$B9                ; {ram.nextTask} Get the next-free structure pointer
+C260: 30 47           LEAX    7,U                 ; Point to next structure
+C262: 9F B9           STX     <$B9                ; {ram.nextTask} New next-free structure pointer
 C264: 35 90           PULS    X,PC                ; Out
 
 WriteToSAM:
@@ -465,20 +487,21 @@ C2D6: 4C              INCA                        ; Second heart picture
 C2D7: BD CA 17        JSR     $CA17               ; {code.PrintRegChar} Draw the second heart character
 C2DA: AF 44           STX     4,U                 ; Restore the text cursor
 ;
-C2DC: CE 02 A1        LDU     #$02A1              
-C2DF: BD C2 42        JSR     $C242               ; {}
-C2E2: 8E 02 95        LDX     #$0295              
-C2E5: 10 8E C3 24     LDY     #$C324              
-C2E9: 6C 84           INC     ,X                  
-C2EB: 8C 02 9A        CMPX    #$029A              
-C2EE: 27 0F           BEQ     $C2FF               ; {}
-C2F0: A6 84           LDA     ,X                  
-C2F2: A1 A0           CMPA    ,Y+                 
-C2F4: 2D 09           BLT     $C2FF               ; {}
-C2F6: 6F 80           CLR     ,X+                 
-C2F8: 33 42           LEAU    2,U                 
-C2FA: BD C2 42        JSR     $C242               ; {}
-C2FD: 20 EA           BRA     $C2E9               ; {}
+C2DC: CE 02 A1        LDU     #$02A1              ; Run quick tasks ...
+C2DF: BD C2 42        JSR     $C242               ; {code.TimeDownTasks} ... once every interrupt
+;
+C2E2: 8E 02 95        LDX     #$0295              ; Start of counters for tasks
+C2E5: 10 8E C3 24     LDY     #$C324              ; Counter end points
+C2E9: 6C 84           INC     ,X                  ; Bump this counter
+C2EB: 8C 02 9A        CMPX    #$029A              ; All counters done? (did we just bump days)
+C2EE: 27 0F           BEQ     $C2FF               ; {} Yes ... done (nothing runs on the day bump)
+C2F0: A6 84           LDA     ,X                  ; Get the counter value
+C2F2: A1 A0           CMPA    ,Y+                 ; Overflowed?
+C2F4: 2D 09           BLT     $C2FF               ; {} No ... not time to do anything
+C2F6: 6F 80           CLR     ,X+                 ; Restart the counter
+C2F8: 33 42           LEAU    2,U                 ; Pointer to list
+C2FA: BD C2 42        JSR     $C242               ; {code.TimeDownTasks} Time down the list of tasks and queue any that are ready to run
+C2FD: 20 EA           BRA     $C2E9               ; {} Carry over into next timed task
 ;
 C2FF: 0D 28           TST     <$28                ; {ram.fainting} Are we fainting?
 C301: 26 1D           BNE     $C320               ; {} Yes .. ??
@@ -499,7 +522,12 @@ C31E: 8D 20           BSR     $C340               ; {code.CharToBuf} Store chara
 C320: B6 FF 02        LDA     $FF02               ; {hard.PIA0_DB} Acknowledge the interrupt so it can fire again
 C323: 3B              RTI                         ; Return from interrupt
 
-C324: 06 0A 3C 3C 18 ; ? Counters for task levels ?
+; ?? counters for task timings
+C324: 06 ; Every 6 interrupts ... once every 0.1 seconds
+C325: 0A ; Every 10 ... once every second
+C326: 3C ; Every 60 ... once every minute
+C327: 3C ; Every 60 ... once every hour
+C328: 18 ; Every 24 ... once every day
 
 CharFromBuf:
 ; Read character A from input ring buffer and advance the tail. Return 0
@@ -2356,7 +2384,7 @@ CD60: 8D 0B           BSR     $CD6D               ; {} Make a random magic door
 CD62: 5A              DECB                        ; All done?
 CD63: 26 FB           BNE     $CD60               ; {} No ... do all
 ;
-CD65: D6 97           LDB     <$97                ; {ram.m0297} ?? A randomizer count? 0?
+CD65: D6 97           LDB     <$97                ; {ram.counterSeconds} ?? A randomizer count? 0?
 CD67: 3F              SWI                         ; Get next ...
 CD68: 07                                          ; SWI_7:[Get random number](#SWI_7):
 CD69: 5A              DECB                        ; Randomized the full count?
@@ -2736,15 +2764,15 @@ CFC4: 8D D1           BSR     $CF97               ; {code.GetRandCell} Get a ran
 CFC6: 8D BA           BSR     $CF82               ; {code.GetCreatureAt} Is there already a creature there?
 CFC8: 26 FA           BNE     $CFC4               ; {} Yes ... keep looking
 CFCA: ED 4F           STD     15,U                ; Put the creature in the random cell
-CFCC: 1F 31           TFR     U,X                 
-CFCE: BD C2 5C        JSR     $C25C               ; {code.ReserveTask}
-CFD1: AF 45           STX     5,U                 
-CFD3: CC D0 41        LDD     #$D041              ; task pointer
-CFD6: ED 43           STD     3,U                 
-CFD8: A6 06           LDA     6,X                 
-CFDA: C6 04           LDB     #$04                
-CFDC: BD C2 1D        JSR     $C21D               ; {}
-CFDF: 35 F6           PULS    A,B,X,Y,U,PC        
+CFCC: 1F 31           TFR     U,X                 ; Hold the monster structure
+CFCE: BD C2 5C        JSR     $C25C               ; {code.ReserveTask} Get a new task
+CFD1: AF 45           STX     5,U                 ; Link the task to the monster structure
+CFD3: CC D0 41        LDD     #$D041              ; Set the task ...
+CFD6: ED 43           STD     3,U                 ; ... handler entry
+CFD8: A6 06           LDA     6,X                 ; Task reload rate (speed of task)
+CFDA: C6 04           LDB     #$04                ; ?? List index 2
+CFDC: BD C2 1D        JSR     $C21D               ; {code.ChainTaskToEnd} Add the task to the list
+CFDF: 35 F6           PULS    A,B,X,Y,U,PC        ; Restore
 
 ScanForHole:
 ; There can only be one hole in the current cell. This scans for a hole in the current
@@ -2807,25 +2835,25 @@ D025: 80
 ; Holes between levels 5 and 6 (none ... no level 6)
 D026: 80
 
-; ?? Task 4 ??
+T4_MakeCreature:
 D027: 9E 82           LDX     <$82                ; {ram.m0282}
-D029: C6 0B           LDB     #$0B                
-D02B: 4F              CLRA                        
-D02C: AB 85           ADDA    B,X                 
-D02E: 5A              DECB                        
-D02F: 2A FB           BPL     $D02C               ; {}
-D031: 81 20           CMPA    #$20                
-D033: 24 08           BCC     $D03D               ; {}
-D035: 3F              SWI                         
+D029: C6 0B           LDB     #$0B                ; Last creature type (wizard)
+D02B: 4F              CLRA                        ; Count of creatures on level
+D02C: AB 85           ADDA    B,X                 ; Add up ...
+D02E: 5A              DECB                        ; ... total ...
+D02F: 2A FB           BPL     $D02C               ; {} ... creatures on level
+D031: 81 20           CMPA    #$20                ; Already at a max of 32?
+D033: 24 08           BCC     $D03D               ; {} Yes ... skip
+D035: 3F              SWI                         ; Get a random creature number
 D036: 07                                          ; SWI_7:[Get random number](#SWI_7):
-D037: 84 07           ANDA    #$07                
-D039: 8B 02           ADDA    #$02                
-D03B: 6C 86           INC     A,X                 
-D03D: CC 05 08        LDD     #$0508              ; ?? reloads
-D040: 39              RTS                         
+D037: 84 07           ANDA    #$07                ; From ... 0 through 7
+D039: 8B 02           ADDA    #$02                ; From ... 2 through 9 (not spider, snake, demon, or wizard)
+D03B: 6C 86           INC     A,X                 ; Creature is created next time we init the level
+D03D: CC 05 08        LDD     #$0508              ; ?? reloads every 5 minutes list 4
+D040: 39              RTS                         ; Done
 
 ; ?? Task ?
-D041: 10 AE 45        LDY     5,U                 ; Get pointer to creature
+D041: 10 AE 45        LDY     5,U                 ; Get pointer to creature from task structure
 D044: 0D 2B           TST     <$2B                ; {ram.wizardDead} Is the wizard dead?
 D046: 26 22           BNE     $D06A               ; {} Yes ... skip all actions
 D048: E6 2C           LDB     12,Y                ; Is this creature alive?
@@ -3029,7 +3057,7 @@ D196: 0A B5           DEC     <$B5                ; {ram.m02B5}
 D198: 4F              CLRA                        
 D199: 35 96           PULS    A,B,X,PC            
 
-; ?? Task 3 ??    
+T3_TimeTorch: 
 D19B: DE 24           LDU     <$24                ; {ram.torchPtr}
 D19D: 27 1D           BEQ     $D1BC               ; {}
 D19F: A6 46           LDA     6,U                 
@@ -3051,7 +3079,7 @@ D1BC: 0A B5           DEC     <$B5                ; {ram.m02B5}
 D1BE: CC 01 08        LDD     #$0108              
 D1C1: 39              RTS                         
 
-; ?? Task 1 ??                 
+T1_Draw3DScreen:               
 D1C2: 0D B5           TST     <$B5                ; {ram.m02B5}
 D1C4: 26 07           BNE     $D1CD               ; {}
 D1C6: 8E CD B2        LDX     #$CDB2              ; Are we showing the ...
@@ -3063,7 +3091,7 @@ D1D0: 0E                                          ; SWI_E:[Display playing scree
 D1D1: CC 03 04        LDD     #$0304              
 D1D4: 39              RTS                         
 
-; ?? Task 2 ??                 
+T2_UpdateHeart:               
 D1D5: 4F              CLRA                        
 D1D6: 5F              CLRB                        
 D1D7: 93 21           SUBD    <$21                ; {ram.m0221}
@@ -3079,7 +3107,7 @@ D1E6: 96 AF           LDA     <$AF                ; {ram.heartCounterRel}
 D1E8: C6 02           LDB     #$02                
 D1EA: 39              RTS                         
 
-; ?? Task 0 ??                 
+T0_PlayerInput:               
 D1EB: 0D 77           TST     <$77                ; {ram.gameMode} Are we in a demo?
 D1ED: 26 2C           BNE     $D21B               ; {} Yes ... handle demo commands
 ;     
@@ -3134,7 +3162,7 @@ D23F: 26 E8           BNE     $D229               ; {}
 D241: 86 1F           LDA     #$1F                
 D243: 8D 07           BSR     $D24C               ; {}
 D245: 10 9F 0D        STY     <$0D                ; {ram.nextDemoCommand}
-D248: CC 01 02        LDD     #$0102              
+D248: CC 01 02        LDD     #$0102              ; Every 60Hz (as fast as possible)
 D24B: 39              RTS                         
                  
 D24C: 34 76           PSHS    U,Y,X,B,A           ; Hold these
@@ -4052,12 +4080,12 @@ D7D9: 11 ; Wooden sword
 D7DA: 0F ; Pine torch
 D7DB: FF ; End of list
 
-; ??Game Task List??
-D7DC: D1 EB ;        
-D7DE: D1 C2 ;
-D7E0: D1 D5 ;
-D7E2: D1 9B ;
-D7E4: D0 27 ;
+GameTasks:
+D7DC: D1 EB ; T0_PlayerInput
+D7DE: D1 C2 ; T1_Draw3DScreen
+D7E0: D1 D5 ; T2_UpdateHeart
+D7E2: D1 9B ; T3_TimeTorch
+D7E4: D0 27 ; T4_MakeCreature
 D7E6: 00 00 ; End of task list
 
 InitCopyTable:
@@ -4081,7 +4109,7 @@ D809: 02 F1    ; 211 Next input to parse
 D80B: 0C 16    ; 213:214 Player starting point (for demo)         
 D80D: 00 23    ; 215:216 Player weight                
 D80F: 17 A0    ; 217:218 Player strength
-      
+;
 ; Text descriptors   ??                    
 D811: 54 03 80 ; Copy 54 bytes to 380
 D814: 10 00    ; Starts at $1000               

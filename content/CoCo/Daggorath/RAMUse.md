@@ -161,30 +161,23 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 | 0291      | restartFind          | 1 to restart "FindNextObject" at top of list, 0 to continue find |
 | 0292:0293 | objIterator          | Pointer to last object found |
 | 0294      | scrollType           | 0 means "vision", not-0 means "seer" |
-| 0295      | m0295                | ?tasks?|
-| 0296      | m0296                | ?tasks?|
-| 0297      | m0297                | Used at CD65 to advance random number |
-| 0298      | m0298                | ?tasks?|
-| 0299      | m0299                | ?tasks?|
-| 029A      | m029A                | ?tasks maybe unused?|
-| 029B      | m029B                | ?main loop showing demo scroll? |
+| 0295      | counter60Hz          | ?tasks?|
+| 0296      | counterTenths        | ?tasks?|
+| 0297      | counterSeconds       | Used at CD65 to advance random number |
+| 0298      | counterMinutes       | ?tasks?|
+| 0299      | counterHours         | ?tasks?|
+| 029A      | counterDays          | ?tasks maybe unused?|
+| 029B      | suspendTaskTime      | Not-0 to suspend timing down the tasks |
 | 029C      | beamSound            | Not-0 if wizard-beam sound |
 | 029D      | beamSoundVal         | wizard sound value |
 | 029E      | m029E                | ?beaming in demo?|
-| 029F      | m029F                | ?tasks?|
-| 02A0      | m02A0                | ?tasks?|
-| 02A1      | m02A1                | ?tasks?|
-| 02A2      | m02A2                | ?tasks?|
-| 02A3      | m02A3                | ?tasks?|
-| 02A4      | m02A4                | ?tasks?|
-| 02A5      | m02A5                | ?tasks?|
-| 02A6      | m02A6                | ?tasks?|
-| 02A7      | m02A7                | ?tasks?|
-| 02A8      | m02A8                | ?tasks?|
-| 02A9      | m02A9                | ?tasks?|
-| 02AA      | m02AA                | ?tasks?|
-| 02AB      | m02AB                | ?tasks?|
-| 02AC      | m02AC                | ?tasks?|
+| 029F:02A0 | taskListInst         | 0: For "instant" tasks, but not implemented |
+| 02A1:02A2 | taskList60Hz         | 2: Tasks every interrupt ... 60 times a second (user input every tick, update heart on this tick) |
+| 02A3:02A4 | taskListTenths       | 4: Tasks every 0.1 seconds (move monsters at their rate tick, update the screen every 3 ticks) |
+| 02A5:02A6 | taskListSeconds      | 6: Tasks every second |
+| 02A7:02A8 | taskListMinutes      | 8: Tasks every minute (Create random monster every 5 ticks, update torch every 1 tick) |
+| 02A9:02AA | taskListHours        | A: Tasks every hour |
+| 02AB:02AC | taskListReadyRun     | C: Ready to run tasks (executed by the game loop) |
 | 02AD      | scrollShowing        | Not 0 if a scroll is showing |
 | 02AE      | heartCounter         | Redraw when it reaches zero |
 | 02AF      | heartCounterRel      | Heart counter reload value |
@@ -199,7 +192,7 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 | 02B8      | tapeTrigger          | 01=ZSAVE, FF=ZLOAD |
 | 02B9      | nextTask             | Next available game-task slot |
 | 02BA      | unused02BA           | |
-| 02BB      | m02BB                | ?tasks?|
+| 02BB      | taskListsRebuilt     | Not-0 if task list has been rebuilt |
 | 02BC      | inputHead            | head index (next read) of the 32 byte input ring buffer at 2D1  |
 | 02BD      | inputTail            | tail index (next write) of the 32 byte input ring buffer at 2D1 |
 | 02BE      | unused02BE           | |
@@ -293,7 +286,7 @@ For graphics, the "end" is the end+1 address.
    03
    04
    05
-   06
+   06 ?? task speed
    07
    08
    09
@@ -346,10 +339,8 @@ Each monster structure has a pointer to the first object in a chain of objects i
  
 ```
  Tasks are 7 byte structures as follows:
-   00
-   01
-   02
-   03:04 MSB Handler code entry
-   05
-   06
+   00:01 Next task in list (0 means this is the end)
+   02    Countdown to run (runs/reloads when this reaches 0)
+   03:04 Handler code ... the code to execute
+   05:06 Pointer to monster structure (if this is a monster task)
 ```
