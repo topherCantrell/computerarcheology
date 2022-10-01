@@ -13,7 +13,8 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 * 03D4-05F4 Creature objects (32 creatures, 17 bytes each). See description below.
 * 05F4-09F3 Current level maze, one byte per room (32*32 bytes)
 * 09F4-09FC ?? Used in maze drawing ??
-* 09FD-0B14 ?? Game tasks ??
+* 09FD-0B06 ?? Game tasks (7 bytes each) 38 structures. 
+* 0B07-0B14 ?? initialized to xx xx xx xx xx xx xxxx xx xx 04 00 00 05 ?? Might be the player object itself?
 * 0B15-???? Game objects (14 bytes each).  020F points to 1-entry-past-last game object. See description below.
 
 * ????-0FFF Stack space (grows downwards towards 0000 from 1000)
@@ -38,8 +39,8 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 | 0200:0201 | CONST_00             | '0000' Double constant ('0001' from 0201) |
 | 0202      | CONST_01             | '01'   LSB of double constant '0001'      |
 | 0203:0204 | CONST_FF             | 'FFFF' Double constant |
-| 0205:0206 | m0205                | '0080'  ?drawing? Center of game 3D screen X  |
-| 0207:0208 | m0207                | '004C'  ?drawing? Center of game 3D screen Y  |
+| 0205:0206 | m0205                | '0080'  Center of game 3D screen X  |
+| 0207:0208 | m0207                | '004C'  Center of game 3D screen Y  |
 | 0209:020A | activeScreen         | 'D870' Pointer to visible screen descriptor |
 | 020B:020C | backScreen           | 'D876' Pointer to drawing screen descriptor |
 | 020D:020E | nextDemoCommand      | 'D988' Next demo command |
@@ -65,16 +66,12 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 | 0229:022A | firstPackObject      | Pointer to first object in linked list of objects in pack |
 | 022B      | wizardDead           | FF means wizard is dead (creatures don't move) |
 | 022C      | backgroundColor      | Color for the whole screen: FF for white or 00 for black |
-| 022D      | dotFrequency         | Based on light-level. Frequency of drawn dots in a line. |
+| 022D      | dotFrequency         | Based on light-level. Frequency of drawn dots in a line. FF means no-draw.|
 | 022E      | m022E                | ?? |
-| 022F      | m022F                | ?? |
-| 0230      | x0230                | ?? |
-| 0231      | m0231                | ?? |
-| 0232      | x0232                | ?? |
-| 0233      | m0233                | ?? |
-| 0234      | x0234                | ?? |
-| 0235      | m0235                | ?? |
-| 0236      | m0236                | ?used in sound? |
+| 022F:0230 | newPointY            | ?? |
+| 0231:0232 | newPointX            | ?? |
+| 0233:0234 | oldPointY            | ?? |
+| 0235:0236 | oldPointX            | ?? |
 | 0237      | m0237                | ?? |
 | 0238      | m0238                | ?? |
 | 0239      | m0239                | ?? |
@@ -94,9 +91,9 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 | 0247      | m0247                | ?? |
 | 0248      | x0248                | ?? |
 | 0249      | m0249                | ?? |
-| 024F      | m024F                | ?? |
-| 0250      | m0250                | ?? |
-| 0251      | m0251                | ?? |
+| 024F      | xScaleFactor         | Draw scaling factor on the X axis. This is a fractional value and 128 is "1". |
+| 0250      | yScaleFactor         | Draw scaling factor on the Y axis. This is a fractional value and 128 is "1". |
+| 0251      | continueLine         | Not 0 if last-line-point has been set |
 | 0252      | m0252                | ?? |
 | 0253      | x0253                | ?? |
 | 0254      | m0254                | ?? |
@@ -145,7 +142,7 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 | 027F      | unused027F           | |
 | 0280      | unused0280           | |
 | 0281      | currentLevel         | Current maze level number (0-4) |
-| 0282:0283 | m0282                | ?temp creature count|
+| 0282:0283 | creatureCounts       | Count of creatures (by type) on current level |
 | 0284      | unused0284           | |
 | 0285      | unused0285           | |
 | 0286:0287 | currentHoles         | Pointer to ceiling hole/ladder table for current level |
@@ -170,7 +167,7 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 | 029B      | suspendTaskTime      | Not-0 to suspend timing down the tasks |
 | 029C      | beamSound            | Not-0 if wizard-beam sound |
 | 029D      | beamSoundVal         | wizard sound value |
-| 029E      | m029E                | ?beaming in demo?|
+| 029E      | initBeamIn           | FF to initialize the wizard beam in (this appears to ALWAYS be the case) |
 | 029F:02A0 | taskListInst         | 0: For "instant" tasks, but not implemented |
 | 02A1:02A2 | taskList60Hz         | 2: Tasks every interrupt ... 60 times a second (user input every tick, update heart on this tick) |
 | 02A3:02A4 | taskListTenths       | 4: Tasks every 0.1 seconds (move monsters at their rate tick, update the screen every 3 ticks) |
@@ -188,7 +185,7 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 | 02B4      | flipScreens          | Not-0 to flip screens then ack to 0 |
 | 02B5      | m02B5                | ?processing creatures |
 | 02B6      | tabOrCR              | Used to make 2 columns in the EXAMINE display. 0=at start of line |
-| 02B7      | whereToPrint         | Controls text printing. If |
+| 02B7      | whereToPrint         | Controls text printing. If 0, the command-area is used. If not 0, the descriptor is given. |
 | 02B8      | tapeTrigger          | 01=ZSAVE, FF=ZLOAD |
 | 02B9      | nextTask             | Next available game-task slot |
 | 02BA      | unused02BA           | |
@@ -198,7 +195,7 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 | 02BE      | unused02BE           | |
 | 02BF      | unused02BF           | |
 | 02C0      | unused02C0           | |
-| 02C1      | holdHole             | hold the hole in this room |
+| 02C1      | temp1                | general temporary variable |
 | 02C2      | m02C2                | ?? |
 | 02C3      | m02C3                | ?? |
 | 02C4      | m02C4                | ?? |
@@ -237,22 +234,22 @@ For graphics, the "end" is the end+1 address.
 >>> memory
 | | | |
 | --- | --- | --- |
-| 380:381   | examineStart            | Starting address of this area |
-| 382:383   | examineEnd              | End+1 address of area |
-| 384:385   | examineTextCur          | Text cursor position in this area |
-| 0386      | examineColor            | Color (black or white) of this area |
-| 0387      | examine???              | Something to do with this area ? duplicate images to +1800 |
+| 380:381   | examineStart        | Starting address of this area |
+| 382:383   | examineSize         | Number of characters |
+| 384:385   | examineTextCur      | Text cursor position in this area |
+| 0386      | examineColor        | Color (black or white) of this area |
+| 0387      | examineSkipMirror   | 0 means to mirror writes to +1800 (the "other" screen buffer) |
 
 ## Hand line descriptor
 
 >>> memory
 | | | |
 | --- | --- | --- |
-| 388:389   | hndStart             | Starting address of this area |
-| 38A:38B   | hndEnd               | Number of characters in this area ?? end + 1 ??|
-| 38C:38D   | hndTextCur           | Text cursor position in this area |
-| 038E      | hndColor             | Color (black or white) of this area |
-| 038F      | hnd???               | Something to do with this area ? duplicate images to +1800 |
+| 388:389   | hndStart            | Starting address of this area |
+| 38A:38B   | hndSize             | Number of characters |
+| 38C:38D   | hndTextCur          | Text cursor position in this area |
+| 038E      | hndColor            | Color (black or white) of this area |
+| 038F      | hndSkipMirror       | 0 means to mirror writes to +1800 (the "other" screen buffer) |
 
 ## Command area descriptor
 
@@ -260,20 +257,22 @@ For graphics, the "end" is the end+1 address.
 | | | |
 | --- | --- | --- |
 | 390:391   | comStart            | Starting address of this area |
-| 392:393   | comEnd              | End+1 address of area |
+| 392:393   | comSize             | Number of characters |
 | 394:395   | comTextCur          | Text cursor position in this area |
 | 0396      | comColor            | Color (black or white) of this area |
-| 0397      | com???              | Something to do with this area ? duplicate images to +1800 |
+| 0397      | comSkipMirror       | 0 means to mirror writes to +1800 (the "other" screen buffer) |
 
 # Structures
 
 ## Screen Descriptor
  
 ```
- aabb ccdd eeff
- aabb : Start memory of area
- ccdd : End memory (+1) of area
- eeff : SAM settings for screen 
+Descriptions of screen areas
+ 00:01 Memory pointer to start of area
+ 01:03 Character size
+ 04:05 Cursor pointer within area
+ 06    Color of this area (black or white)
+ 07    Mirroring: 0 means to mirror writes to +1800 (the "other" screen buffer)
 ```
 
 ## Creatures 
@@ -286,10 +285,9 @@ For graphics, the "end" is the end+1 address.
    03
    04
    05
-   06 ?? task speed
-   07
-   08
-   09
+   06 task speed when not with player (tenth of seconds)
+   07 task speed when in same room with player (tenth of seconds)
+   08:09 First object held by creature (linked list)
    0A
    0B
    0C 0 if inactive, FF if alive
@@ -325,7 +323,7 @@ Each monster structure has a pointer to the first object in a chain of objects i
 | 02    |  Y coordinate (if on floor)            | Set when dropped                 | |
 | 03    |  X coordinate (if on floor)            | Set when dropped                 | |
 | 04    |  Maze level (if on floor)              | Set when dropped                 | |
-| 05    |  Location: 0=floor, 1=pack, ??=monster | Set at creation and when changed | |
+| 05    |  Location: 0=floor, 1=pack, FF=monster | Set at creation and when changed | |
 | 06    |  Special data 1                        | Copied from entry in DA64        | Ring: attacks,  Shield: magic,    Torch: minutes | 
 | 07    |  Special data 2                        | Copied from entry in DA64        | Ring: proper,   Shield: physical, Torch: phys light |
 | 08    |  Special data 3                        | Copied from entry in DA64        | Ring: not used, Shield: not used, Torch: magic light |

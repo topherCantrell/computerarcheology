@@ -268,10 +268,13 @@ def _render_code_line(line, code_anchors, tables):
 
                 if html_name.endswith('.md'):
                     html_name = html_name[:-3] + '.html'
-                rep_html = f'<a class="addr_{table_name}" href="{html_name}#{rep}"{target}>{rep_org}</a>'
+                hover = first_part[i:j]
+                rep_html = f'<a title="{hover}" class="addr_{table_name}" href="{html_name}#{rep}"{target}>{rep_org}</a>'
                 vis_length = vis_length - (j - i)  # Removing the constant
-                vis_length = vis_length + len(rep_org)  # Adding the link text
+                vis_length = vis_length + len(rep_org)  # Adding the link text                
                 first_part = first_part[0:i] + rep_html + first_part[j:]
+
+                
 
     # Now to process special comments in the second part.
     
