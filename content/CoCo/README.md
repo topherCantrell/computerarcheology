@@ -20,7 +20,7 @@
 >>>   Bedlam:Bedlam<br>
 >>>   MadnessMinotaur:Madness & Minotaur<br>
 >>>   Megabug:Mega-Bug<br>
->>>   Daggorath:Daggorath 40%<br>
+>>>   Daggorath:Daggorath<br>
 >>>   Downland:Downland 5%<br>
 >>>   AudioSpectrumAnalyzer:Audio Analyzer 5%<br>
 >>>   Doubleback:Doubleback<br>
