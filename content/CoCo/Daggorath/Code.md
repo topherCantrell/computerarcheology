@@ -653,7 +653,7 @@ C38A: 96 6F           LDA     <$6F                ; {ram.m026F}
 C38C: 0F 75           CLR     <$75                ; {ram.m0275}
 C38E: 5F              CLRB                        
 C38F: 80 07           SUBA    #$07                
-C391: 90 8B           SUBA    <$8B                ; {ram.m028B}
+C391: 90 8B           SUBA    <$8B                ; {ram.drwMazeCellNum}
 C393: 2C 0A           BGE     $C39F               ; {}
 C395: 5A              DECB                        
 C396: 81 F9           CMPA    #$F9                
@@ -1040,9 +1040,10 @@ C589: 3F              SWI                         ; Clear screen
 C58A: 09                                          ; SWI_9:[Clear secondary screen](#SWI_9):
 C58B: 0A B4           DEC     <$B4                ; {ram.flipScreens}
 C58D: 0A 28           DEC     <$28                ; {ram.fainting} Decrement the faint counter
-C58F: 0F BC           CLR     <$BC                ; {ram.inputHead}
-C591: 0F BD           CLR     <$BD                ; {ram.inputTail}
+C58F: 0F BC           CLR     <$BC                ; {ram.inputHead} Drop ...
+C591: 0F BD           CLR     <$BD                ; {ram.inputTail} ... input keys
 C593: 20 19           BRA     $C5AE               ; {}
+;
 C595: 81 04           CMPA    #$04                
 C597: 2F 15           BLE     $C5AE               ; {}
 C599: AD 9F 02 B2     JSR     [$02B2]             ; {ram.displayFunction} Display playing screen
@@ -1056,6 +1057,7 @@ C5A8: 2F EF           BLE     $C599               ; {}
 C5AA: 0F 28           CLR     <$28                ; {ram.fainting} No longer fainting
 C5AC: 3F              SWI                         ; Display playing screen
 C5AD: 0F                                          ; SWI_F:[Ready command prompt](#SWI_F):
+;
 C5AE: 9E 17           LDX     <$17                ; {ram.pStrength} Strength
 C5B0: 9C 21           CMPX    <$21                ; {ram.m0221} Heart level
 C5B2: 25 01           BCS     $C5B5               ; {} Can not support it, die
@@ -1218,7 +1220,7 @@ C6A3: 39              RTS                         ; Done
 
 SWI_13:
 ; Beam in picture pointed to by X (demon, wizard, star-wizard)
-C6A4: 0F B1           CLR     <$B1                ; {ram.hearHeart} ?? disable heart beat
+C6A4: 0F B1           CLR     <$B1                ; {ram.hearHeart} Disable heart beat
 C6A6: 3F              SWI                         ; Clear the hand line
 C6A7: 0A                                          ; SWI_A:[Clear hand descriptor](#SWI_A):
 
@@ -1226,8 +1228,8 @@ SWI_14:
 ; Beam wizard in
 C6A8: 3F              SWI                         ; Clear the play field
 C6A9: 0B                                          ; SWI_B:[Clear play field](#SWI_B):
-C6AA: CC 80 80        LDD     #$8080              ; Center of screen ??
-C6AD: DD 4F           STD     <$4F                ; {ram.xScaleFactor}
+C6AA: CC 80 80        LDD     #$8080              ; X and Y scaling factors to ...
+C6AD: DD 4F           STD     <$4F                ; {ram.xScaleFactor} ... one
 C6AF: D6 9E           LDB     <$9E                ; {ram.initBeamIn} Init the beam in?
 C6B1: 27 04           BEQ     $C6B7               ; {} No ... continue where we were (I don't think this is ever used)
 C6B3: C6 20           LDB     #$20                ; Start with 32 for dot spacing as we beam on
@@ -2568,80 +2570,84 @@ CE40: CC 3C 24        LDD     #$3C24              ; 4 byte pattern (open circle)
 CE43: 8D D8           BSR     $CE1D               ; {code.DrawMapSymbol} Draw the hole
 CE45: 20 F1           BRA     $CE38               ; {} Keep going
 
-CE47: 34 12           PSHS    X,A                 
-CE49: 8E CF 48        LDX     #$CF48              
-CE4C: 0D 73           TST     <$73                ; {ram.m0273}
-CE4E: 26 0C           BNE     $CE5C               ; {}
-CE50: 30 89 00 01     LEAX    $0001,X             
-CE54: 0D 74           TST     <$74                ; {ram.m0274}
-CE56: 26 04           BNE     $CE5C               ; {}
-CE58: 30 89 FF F5     LEAX    -$000B,X            
-CE5C: 96 8B           LDA     <$8B                ; {ram.m028B}
-CE5E: A6 86           LDA     A,X                 
-CE60: 97 4F           STA     <$4F                ; {ram.xScaleFactor}
-CE62: 97 50           STA     <$50                ; {ram.yScaleFactor}
-CE64: 35 92           PULS    A,X,PC              
+SetCellScaleFactor:
+CE47: 34 12           PSHS    X,A                 ; Preserve
+CE49: 8E CF 48        LDX     #$CF48              ; Scale factor table
+CE4C: 0D 73           TST     <$73                ; {ram.halfStepForward} Are we drawing the maze stepped forward half step?
+CE4E: 26 0C           BNE     $CE5C               ; {} Yes ... keep this "no draw" entry
+CE50: 30 89 00 01     LEAX    $0001,X             ; No ... keep the half-step entry
+CE54: 0D 74           TST     <$74                ; {ram.halfStepBack} Are we drawing the maze stepped backward half step?
+CE56: 26 04           BNE     $CE5C               ; {} Yes ... keep this entry
+CE58: 30 89 FF F5     LEAX    -$000B,X            ; No ... use the regular factors
+CE5C: 96 8B           LDA     <$8B                ; {ram.drwMazeCellNum} Get the room offset
+CE5E: A6 86           LDA     A,X                 ; Set ...
+CE60: 97 4F           STA     <$4F                ; {ram.xScaleFactor} ... the cells ...
+CE62: 97 50           STA     <$50                ; {ram.yScaleFactor} ... scaling factor
+CE64: 35 92           PULS    A,X,PC              ; Restore
 
 NormalDisplay:
 ; This is the routine called to draw the normal game display
-CE66: 3F              SWI                         
+CE66: 3F              SWI                         ; Clear the back buffer
 CE67: 09                                          ; SWI_9:[Clear secondary screen](#SWI_9):
-CE68: 0F 8B           CLR     <$8B                ; {ram.m028B}
-CE6A: DC 13           LDD     <$13                ; {ram.playerY}
-CE6C: DD 7C           STD     <$7C                ; {ram.drwMazeY}
-CE6E: 8D D7           BSR     $CE47               ; {}
-CE70: DC 7C           LDD     <$7C                ; {ram.drwMazeY}
-CE72: BD CC 7B        JSR     $CC7B               ; {code.GetCellPointer}
-CE75: A6 84           LDA     ,X                  
-CE77: CE 09 F4        LDU     #$09F4              
-CE7A: 8E 00 04        LDX     #$0004              
-CE7D: 1F 89           TFR     A,B                 
-CE7F: C4 03           ANDB    #$03                
-CE81: E7 44           STB     4,U                 
-CE83: E7 C0           STB     ,U+                 
-CE85: 44              LSRA                        
-CE86: 44              LSRA                        
-CE87: 30 1F           LEAX    -1,X                
-CE89: 26 F2           BNE     $CE7D               ; {}
-CE8B: D6 23           LDB     <$23                ; {ram.playerDir}
-CE8D: CE 09 F4        LDU     #$09F4              
-CE90: 33 C5           LEAU    B,U                 
+CE68: 0F 8B           CLR     <$8B                ; {ram.drwMazeCellNum} Start with room 0 in the line of rooms (player's room)
+CE6A: DC 13           LDD     <$13                ; {ram.playerY} Get the player's ...
+CE6C: DD 7C           STD     <$7C                ; {ram.drwMazeY} ... X and Y coordinate
+CE6E: 8D D7           BSR     $CE47               ; {code.SetCellScaleFactor} Set the scaling factor to draw the room
+CE70: DC 7C           LDD     <$7C                ; {ram.drwMazeY} Currently drawing room coordinate
+CE72: BD CC 7B        JSR     $CC7B               ; {code.GetCellPointer} Get the info ...
+CE75: A6 84           LDA     ,X                  ; ... about this cell
+CE77: CE 09 F4        LDU     #$09F4              ; A temporary decode buffer for wall status
+CE7A: 8E 00 04        LDX     #$0004              ; 4 wall values
+CE7D: 1F 89           TFR     A,B                 ; Status ...
+CE7F: C4 03           ANDB    #$03                ; ... of one door
+CE81: E7 44           STB     4,U                 ; Hold ...
+CE83: E7 C0           STB     ,U+                 ; ... the status
+CE85: 44              LSRA                        ; Shift ...
+CE86: 44              LSRA                        ; ... to next ...
+CE87: 30 1F           LEAX    -1,X                ; ... door in the info
+CE89: 26 F2           BNE     $CE7D               ; {} Do all 4 directions
+CE8B: D6 23           LDB     <$23                ; {ram.playerDir} Player's direction
+CE8D: CE 09 F4        LDU     #$09F4              ; Decoded wall status
+CE90: 33 C5           LEAU    B,U                 ; Get the status of the wall the player is facing
 CE92: 10 8E DB DE     LDY     #$DBDE              ; Wall pictures
-CE96: A6 A0           LDA     ,Y+                 
-CE98: 2B 3E           BMI     $CED8               ; {}
-CE9A: E6 C6           LDB     A,U                 
-CE9C: 58              ASLB                        
-CE9D: C1 04           CMPB    #$04                
-CE9F: 26 08           BNE     $CEA9               ; {}
-CEA1: AE A5           LDX     B,Y                 
-CEA3: 0A 75           DEC     <$75                ; {ram.m0275}
-CEA5: 8D 27           BSR     $CECE               ; {}
-CEA7: C6 06           LDB     #$06                
-CEA9: AE A5           LDX     B,Y                 
-CEAB: 8D 21           BSR     $CECE               ; {}
-CEAD: 31 28           LEAY    8,Y                 
-CEAF: 20 E5           BRA     $CE96               ; {}
-CEB1: 39              RTS                         
+;
+CE96: A6 A0           LDA     ,Y+                 ; Wall status offset (from the wall table)
+CE98: 2B 3E           BMI     $CED8               ; {} End of wall table ... done
+CE9A: E6 C6           LDB     A,U                 ; Offset into wall table
+CE9C: 58              ASLB                        ; Two bytes each
+CE9D: C1 04           CMPB    #$04                ; Magic door?
+CE9F: 26 08           BNE     $CEA9               ; {} No ... draw the one image door
+CEA1: AE A5           LDX     B,Y                 ; Yes ... we draw two images. Get the magic triangle picture
+CEA3: 0A 75           DEC     <$75                ; {ram.m0275} ?? stop drawing down the hall? Hit a wall?
+CEA5: 8D 27           BSR     $CECE               ; {} Draw the wall
+CEA7: C6 06           LDB     #$06                ; Solid wall
+CEA9: AE A5           LDX     B,Y                 ; Draw the ...
+CEAB: 8D 21           BSR     $CECE               ; {} ... specific wall image
+CEAD: 31 28           LEAY    8,Y                 ; Next wall
+CEAF: 20 E5           BRA     $CE96               ; {} Do all 3 walls
+
+CEB1: 39              RTS                         ; Done
+
 CEB2: 1F 12           TFR     X,Y                 
 CEB4: 6D C5           TST     B,U                 
-CEB6: 26 F9           BNE     $CEB1               ; {}
+CEB6: 26 F9           BNE     $CEB1               ; {} Done
 CEB8: DB 23           ADDB    <$23                ; {ram.playerDir}
 CEBA: D7 8A           STB     <$8A                ; {ram.drwMazeDir}
 CEBC: DC 7C           LDD     <$7C                ; {ram.drwMazeY}
 CEBE: BD D1 1B        JSR     $D11B               ; {code.StepInDirection}
-CEC1: BD CF 82        JSR     $CF82               ; {code.GetCreatureAt}
-CEC4: 27 EB           BEQ     $CEB1               ; {}
+CEC1: BD CF 82        JSR     $CF82               ; {code.GetCreatureAt} Is there a creature in this cell?
+CEC4: 27 EB           BEQ     $CEB1               ; {} No ... skip drawing it
 CEC6: 1E 12           EXG     X,Y                 
 CEC8: 6D 22           TST     2,Y                 
 CECA: 27 02           BEQ     $CECE               ; {}
 CECC: 0A 75           DEC     <$75                ; {ram.m0275}
-CECE: 34 40           PSHS    U                   
-CED0: 3F              SWI                         
+CECE: 34 40           PSHS    U                   ; Preserve
+CED0: 3F              SWI                         ; Set the light level for the room
 CED1: 00                                          ; SWI_0:[Light level](#SWI_0):
-CED2: DE 0B           LDU     <$0B                ; {ram.backScreen}
-CED4: 3F              SWI                         
+CED2: DE 0B           LDU     <$0B                ; {ram.backScreen} Back screen buffer
+CED4: 3F              SWI                         ; Draw the picture on the back screen
 CED5: 01                                          ; SWI_1:[Draw picture X on screen](#SWI_1):
-CED6: 35 C0           PULS    U,PC                
+CED6: 35 C0           PULS    U,PC                ; Done
 
 CED8: DC 7C           LDD     <$7C                ; {ram.drwMazeY}
 CEDA: BD CF 82        JSR     $CF82               ; {code.GetCreatureAt}
@@ -2685,24 +2691,17 @@ CF2A: 97 8A           STA     <$8A                ; {ram.drwMazeDir}
 CF2C: DC 7C           LDD     <$7C                ; {ram.drwMazeY}
 CF2E: BD D1 1B        JSR     $D11B               ; {code.StepInDirection}
 CF31: DD 7C           STD     <$7C                ; {ram.drwMazeY}
-CF33: 0C 8B           INC     <$8B                ; {ram.m028B}
-CF35: 96 8B           LDA     <$8B                ; {ram.m028B}
+CF33: 0C 8B           INC     <$8B                ; {ram.drwMazeCellNum}
+CF35: 96 8B           LDA     <$8B                ; {ram.drwMazeCellNum}
 CF37: 81 09           CMPA    #$09                
 CF39: 10 2F FF 31     LBLE    $CE6E               ; {}
 CF3D: 39              RTS                         
 
-; This table is referenced from code at CE49. ?? It might have to do with starting points for cells at different zoom levels?
-CF3E: C8 80                  
-CF40: 50 32 
-CF42: 1F 14                       
-CF44: 0C 08                    
-CF46: 04 02                   
-CF48: FF                        
-CF49: 9C 64              
-CF4B: 41 28 
-CF4D: 1A 10 
-CF4F: 0A 06 
-CF51: 03 01                        
+CellZoomFactors:
+; Used to draw the 3D rooms of the maze
+CF3E: C8 80 50 32 1F 14 0C 08 04 02 ; Full step zooms (10 rooms ... current room drawn larger)
+CF48: FF                            ; For step forward, first cell is NOT drawn
+CF49: 9C 64 41 28 1A 10 0A 06 03 01 ; Half step zooms (10 rooms ... current room drawn larger)
 
 GetObjectAtCoor:
 ; Get the next object on this level at the given coordinates
@@ -3829,7 +3828,7 @@ D649: 81 00           CMPA    #$00                ; Turning LEFT?
 D64B: 26 07           BNE     $D654               ; {} No ... try right
 D64D: 5A              DECB                        ; Decrease direction ... turning CCW
 D64E: 8D 1D           BSR     $D66D               ; {} Wrap direction and draw the screen
-D650: 8D 22           BSR     $D674               ; {} Turn left
+D650: 8D 22           BSR     $D674               ; {code.LineMovesRight} Turn left
 D652: 20 15           BRA     $D669               ; {} Continue
 ;
 D654: 81 01           CMPA    #$01                ; Turning RIGHT?
@@ -3842,8 +3841,8 @@ D65D: 81 03           CMPA    #$03                ; Turning AROUND?
 D65F: 26 32           BNE     $D693               ; {} No ... syntax error
 D661: CB 02           ADDB    #$02                ; Flip direction
 D663: 8D 08           BSR     $D66D               ; {} Wrap direction and draw the screen
-D665: 8D 1D           BSR     $D684               ; {} Turn right
-D667: 8D 1B           BSR     $D684               ; {} Turn right
+D665: 8D 1D           BSR     $D684               ; {code.LineMovesLeft} Turn right
+D667: 8D 1B           BSR     $D684               ; {code.LineMovesLeft} Turn right
 D669: 0A B4           DEC     <$B4                ; {ram.flipScreens}
 D66B: 13              SYNC                        ; Wait for the refresh
 D66C: 39              RTS                         ; Done
@@ -3851,8 +3850,9 @@ D66C: 39              RTS                         ; Done
 D66D: C4 03           ANDB    #$03                ; Limit direction (wrap around)
 D66F: D7 23           STB     <$23                ; {ram.playerDir} New direction
 D671: 7E C6 60        JMP     $C660               ; {} Draw the screen
-;  
-; Turning left (line moves right)     
+;    
+LineMovesRight:
+; For moving/turning left
 D674: 8D 20           BSR     $D696               ; {} Prepare the display and draw the horizontal lines to frame the turn
 D676: 26 0B           BNE     $D683               ; {} Nothing to display ... abort
 D678: CC 00 08        LDD     #$0008              ; Y=0, X=8
@@ -3862,7 +3862,8 @@ D680: 4D              TSTA                        ; Keep going till ...
 D681: 27 F8           BEQ     $D67B               ; {} ... we flow off the right side
 D683: 39              RTS                         ; Done
 ;
-; Turning right (line moves left)
+LineMovesLeft:
+; For moving/turning right
 D684: 8D 10           BSR     $D696               ; {} Prepare the display and draw the horizontal lines to frame the turn
 D686: 26 0A           BNE     $D692               ; {} Nothing to display ... abort
 D688: CC 00 F8        LDD     #$00F8              ; Y=0, X=F8
@@ -3878,7 +3879,7 @@ D698: 11 83 CE 66     CMPU    #$CE66              ; ... the normal game screen?
 D69C: 26 1B           BNE     $D6B9               ; {} No, then out. Nothing to display in EXAMINE mode.
 D69E: 8E 80 80        LDX     #$8080              ; ?? Zoom ?
 D6A1: 9F 4F           STX     <$4F                ; {ram.xScaleFactor} ?? Zoom ?
-D6A3: 0F 8B           CLR     <$8B                ; {ram.m028B}
+D6A3: 0F 8B           CLR     <$8B                ; {ram.drwMazeCellNum}
 D6A5: 3F              SWI                         ; Set the light level to animate turning
 D6A6: 00                                          ; SWI_0:[Light level](#SWI_0):
 D6A7: 3F              SWI                         ; Clear the screen
@@ -3914,41 +3915,43 @@ D6CF: FE             ; End
 
 ```code
 CmdMOVE:
-D6D0: 8E D8 D9        LDX     #$D8D9              ; @@
+D6D0: 8E D8 D9        LDX     #$D8D9              ; Second words
 D6D3: BD CB EC        JSR     $CBEC               ; {code.DecodeInput} Decode the input word
 D6D6: 2D BB           BLT     $D693               ; {} Bad input ... error
 D6D8: 2E 09           BGT     $D6E3               ; {} Requested direction ... go do it
-D6DA: 0A 73           DEC     <$73                ; {ram.m0273} ?? Draw half step magnification?
-D6DC: 3F              SWI                         
+D6DA: 0A 73           DEC     <$73                ; {ram.halfStepForward} No direction ... half step forward
+D6DC: 3F              SWI                         ; Draw maze half step moving forward
 D6DD: 0E                                          ; SWI_E:[Display playing screen](#SWI_E):
 D6DE: 5F              CLRB                        ; Moving direction 0 (forward)
-D6DF: 0F 73           CLR     <$73                ; {ram.m0273} ?? Clear half-step flag
-D6E1: 20 0C           BRA     $D6EF               ; {} Make the move
+D6DF: 0F 73           CLR     <$73                ; {ram.halfStepForward} Draw maze regularly now
+D6E1: 20 0C           BRA     $D6EF               ; {} Make the move and add the stress of moving
 ;
 D6E3: 81 02           CMPA    #$02                ; Word is "BACK" ?
 D6E5: 26 0C           BNE     $D6F3               ; {} No ... try others
-D6E7: 0A 74           DEC     <$74                ; {ram.m0274} ?? back half step mag?
-D6E9: 3F              SWI                         
+D6E7: 0A 74           DEC     <$74                ; {ram.halfStepBack} Half step backward
+D6E9: 3F              SWI                         ; Draw maze half step backards
 D6EA: 0E                                          ; SWI_E:[Display playing screen](#SWI_E):
 D6EB: C6 02           LDB     #$02                ; Moving direction 2 (backwards)
-D6ED: 0F 74           CLR     <$74                ; {ram.m0274} ?? CLear half-step flag?
-D6EF: 8D 2F           BSR     $D720               ; {}
-D6F1: 20 1B           BRA     $D70E               ; {}
+D6ED: 0F 74           CLR     <$74                ; {ram.halfStepBack} Clear half-step flag
+D6EF: 8D 2F           BSR     $D720               ; {code.MoveCheckWall} Try the move
+D6F1: 20 1B           BRA     $D70E               ; {} Add the stress of moving
 ;
 D6F3: 81 01           CMPA    #$01                ; Word is "RIGHT" ?
 D6F5: 26 0A           BNE     $D701               ; {} No ... try others
 D6F7: C6 01           LDB     #$01                ; Moving direction 1 (right)
-D6F9: 8D 25           BSR     $D720               ; {}
-D6FB: 26 11           BNE     $D70E               ; {}
-D6FD: 8D 85           BSR     $D684               ; {} Line moving left (player moving right)
-D6FF: 20 0D           BRA     $D70E               ; {}
+D6F9: 8D 25           BSR     $D720               ; {code.MoveCheckWall} Try the move
+D6FB: 26 11           BNE     $D70E               ; {} Add the stress of moving
+D6FD: 8D 85           BSR     $D684               ; {code.LineMovesLeft} Line moving left (player moving right)
+D6FF: 20 0D           BRA     $D70E               ; {} Add the stress of moving
 
 D701: 81 00           CMPA    #$00                ; Word is "LEFT" ?
 D703: 26 8E           BNE     $D693               ; {} No ... error and out
 D705: C6 03           LDB     #$03                ; Moving direction 3 (left)
-D707: 8D 17           BSR     $D720               ; {}
-D709: 26 03           BNE     $D70E               ; {}
-D70B: BD D6 74        JSR     $D674               ; {} Line moving right (player moving left)
+D707: 8D 17           BSR     $D720               ; {code.MoveCheckWall} Try the move
+D709: 26 03           BNE     $D70E               ; {} Add the stress of moving
+D70B: BD D6 74        JSR     $D674               ; {code.LineMovesRight} Line moving right (player moving left)
+;
+; Stress from moving
 D70E: DC 15           LDD     <$15                ; {ram.playerWeight} Player's weight ...
 D710: BD D3 7F        JSR     $D37F               ; {code.DRight3} ... divided by 8 ...
 D713: C3 00 03        ADDD    #$0003              ; ... plus 3
@@ -3960,24 +3963,25 @@ D71C: 0A B4           DEC     <$B4                ; {ram.flipScreens}
 D71E: 13              SYNC                        ; Wait for heart rate change
 D71F: 39              RTS                         ; Out
 
+MoveCheckWall:
 D720: 34 06           PSHS    B,A                 ; Hold
-D722: 6F E2           CLR     ,-S                 
-D724: DB 23           ADDB    <$23                ; {ram.playerDir}
-D726: C4 03           ANDB    #$03                
-D728: D7 8A           STB     <$8A                ; {ram.drwMazeDir}
-D72A: DC 13           LDD     <$13                ; {ram.playerY}
-D72C: BD D1 36        JSR     $D136               ; {}
-D72F: 27 07           BEQ     $D738               ; {}
-D731: 3F              SWI                         
+D722: 6F E2           CLR     ,-S                 ; Temporary on stack for return boolean (init to OK)
+D724: DB 23           ADDB    <$23                ; {ram.playerDir} Get the player's direction
+D726: C4 03           ANDB    #$03                ; Mask it (only 4 directions)
+D728: D7 8A           STB     <$8A                ; {ram.drwMazeDir} Movement direction
+D72A: DC 13           LDD     <$13                ; {ram.playerY} Player's coordinates
+D72C: BD D1 36        JSR     $D136               ; {} Try to step in direction
+D72F: 27 07           BEQ     $D738               ; {} Step made ... no wall hit
+D731: 3F              SWI                         ; Play sound of hitting wall
 D732: 1B                                          ; SWI_1B:[Play sound i at full volume](#SWI_1B):
 D733: 14                                          ; 14 = Wall hit
-D734: 6A E4           DEC     ,S                  
-D736: DC 13           LDD     <$13                ; {ram.playerY}
+D734: 6A E4           DEC     ,S                  ; Return not-0 ... did not move
+D736: DC 13           LDD     <$13                ; {ram.playerY} Coordinates did not change
 ;     
-D738: DD 13           STD     <$13                ; {ram.playerY}
-D73A: BD C6 60        JSR     $C660               ; {}
-D73D: 6D E0           TST     ,S+                 
-D73F: 35 86           PULS    A,B,PC              
+D738: DD 13           STD     <$13                ; {ram.playerY} Set new (if OK) coordinates
+D73A: BD C6 60        JSR     $C660               ; {} Redraw the maze
+D73D: 6D E0           TST     ,S+                 ; Return not-zero if hit wall
+D73F: 35 86           PULS    A,B,PC              ; Restore
 ```
 
 # USE command

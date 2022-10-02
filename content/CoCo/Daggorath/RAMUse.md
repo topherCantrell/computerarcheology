@@ -127,8 +127,8 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 | 0270      | m0270                | ?fainting? |
 | 0271      | unused0271           | |
 | 0272      | unused0272           | |
-| 0273      | m0273                | ? drawing something?|
-| 0274      | m0274                | ? drawing something?|
+| 0273      | halfStepForward      | not 0 to draw maze half-step forward |
+| 0274      | halfStepBack         | not 0 to draw maze half-step backward |
 | 0275      | m0275                | ?light?|
 | 0276      | unused0276           | |
 | 0277      | gameMode             | What is happening now: FF=demo, 00=live |
@@ -149,7 +149,7 @@ The last 12K of RAM (1000-3FFF) of a 16K minimum requirements is used for two sc
 | 0288      | drwMazeTmp           | Temporary for maze drawing |
 | 0289      | unused0289           | |
 | 028A      | drwMazeDir           | Maze drawing ... current direction |
-| 028B      | m028B                | ?light?|
+| 028B      | drwMazeCellNum       | Counts forward when drawing the 10 cells of the 3D maze |
 | 028C      | numObjs              | Number of objects to create |
 | 028D      | m028D                | ?temp making objects on level?|
 | 028E      | holdIncantWord       | |
