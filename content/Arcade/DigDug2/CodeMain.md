@@ -1240,9 +1240,9 @@
 8AF9: B6 17 00        LDA     $1700                 ; Upper most 2 digits
 8AFC: 89 00           ADCA    #$00                  ; Any carry from the last addition
 8AFE: 19              DAA                           ; Correct binary math to BCD result
-8AFF: B7 17 00        STA     $1700                 ; Update the upper digit
-8B02: 84 F0           ANDA    #$F0                  ; Did anything carry into the upper digit?
-8B04: 27 22           BEQ     $8B28                 ; Upper digit is 0 ... ??
+8AFF: B7 17 00        STA     $1700                 ; Update the upper 2 digits
+8B02: 84 F0           ANDA    #$F0                  ; Did anything carry into the upper most digit?
+8B04: 27 22           BEQ     $8B28                 ; Upper digit is 0 ... continue normally.
 8B06: B7 17 26        STA     $1726                 ; Upper digit is not 0. Note the overflow.
 8B09: 7F 17 01        CLR     $1701                 ; Set middle digits to 00
 8B0C: 7F 17 02        CLR     $1702                 ; Set lower digits to 00
