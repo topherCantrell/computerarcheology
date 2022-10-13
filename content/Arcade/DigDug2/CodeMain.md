@@ -583,12 +583,18 @@
 85B7: 7A 10 09        DEC     $1009                   
 85BA: 26 F7           BNE     $85B3                   
 85BC: 39              RTS                         
-85BD: F7 10 09        STB     $1009                   
-85C0: 30 01           LEAX    1,X                 
-85C2: A7 82           STA     ,-X                 
-85C4: 7A 10 09        DEC     $1009                   
-85C7: 26 F9           BNE     $85C2                   
-85C9: 39              RTS                         
+
+FillMemory:
+; B = number of bytes to fill (0 means 256)
+; A = fill value
+; X = last byte of memory to fill
+85BD: F7 10 09        STB     $1009               ; Temporary counter
+85C0: 30 01           LEAX    1,X                 ; Pre increment the memory pointer (there is no ",X-")
+85C2: A7 82           STA     ,-X                 ; Back up one and store the value
+85C4: 7A 10 09        DEC     $1009               ; All filled?
+85C7: 26 F9           BNE     $85C2               ; No ... keep filling
+85C9: 39              RTS                         ; Done
+
 85CA: 8E 0B 17        LDX     #$0B17                  
 85CD: 86 00           LDA     #$00                  
 85CF: C6 16           LDB     #$16                  
