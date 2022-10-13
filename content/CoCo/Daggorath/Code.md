@@ -322,6 +322,103 @@ C1F4: 0F                                          ; SWI_F:[Ready command prompt]
 
 ```
 
+# Tasks
+
+The code runs as a sequence of timed tasks that are re-queued/removed as needed.
+
+A task structure is 7 bytes as follows:
+```
+  00:01  Next task in the list or 0 if the last task in the list.
+  02     Countdown to run. When this reaches 0, the task is moved to the ready-to-run list.
+  03:04  Handler entry point. This is the task's code.
+  05:06  Pointer to the monster structure (only for monster tasks)
+```
+
+## Task pool
+
+There is a pool of task structures from 09FD through 0B05 (38 total structures). The word at
+02B9 points to the next-available task structure. Tasks are created by advancing this pointer
+to remove a structure from the pool. 
+
+All tasks are removed and recreated as part of setting up the level. No task survives between levels.
+
+## Task timers
+
+Tasks can appear on seven different timed lists. The timer interval is how often the task's counter
+is decremented. When the counter reaches zero, the task is moved to the "ready-to-run" list.
+
+There are seven different lists that a task can be placed on:
+- Instant tasks. A list is reserved for this, but the use is not implemented.
+- ISR count tasks. These tasks are timed directly by the ISR (60Hz).
+- Tenths of a second tasks. These are timed down every 6 ISRs (10 times a second).
+- Seconds tasks. These are timed down once a second.
+- Minutes tasks. Timed down once a minute.
+- Hours tasks. Timed down once an hour.
+- Ready to run. Tasks are moved here to be run by the game loop and then moved back to the other lists.
+
+There are five game tasks that run manage game play the level. And each monster gets a "handler task". There
+are 32 maximum monsters on a level (usually less) plus the 5 game tasks means a max of 37 task structures.
+The pool has room for 38. It is nicely sized.
+
+The list at D7DC contains the game tasks:
+- D1EB T0_PlayerInput
+- D1C2 T1_Draw3DScreen
+- D1D5 T2_UpdateHeart
+- D19B T3_UpdateTorch
+- D7E4 T4_MakeCreature
+
+Each creature gets a copy of the handler task:
+- D041 T5_MoveCreature
+
+### T0: Player Input Task
+
+This tasks processes input from the user (or demo commands). It runs every single ISR tick (60Hz).
+
+### T1: Draw 3D Screen
+
+This task redraws the 3D maze. It does NOT redraw the inventory screen or the map display. It runs
+on the tenths-of-a-second list with a countdown of 3 (every 3 tenths of a second).
+
+### T2: Update Heart Rate
+
+This task updates the heart rate and handles fainting/recovery. It runs on the ISR tick, but the
+countdown depends on the heartrate itself.
+
+### T3: Update Torch
+
+Torches burn down over time. This task manages the timing on the one-minute tick list -- one bump 
+every minute.
+
+### T4: Make Creature
+
+This task runs on the minute list -- once every 5 minutes. Every time it runs, the task creates
+a random creature that will appear on the CURRENT level when/if the user returns to this level.
+This is your punishment for climbing up to previous levels. The longer you hang out on a level,
+the more creatures will be waiting for you next time you come.
+
+The task creates a random creature (but not: Wizard, Demon, Spider, Snake). There is a max of 32
+creatures on any level. This task could refill all 32 creatures in 32*5 minutes ... just over two
+and a half hours. 
+
+### T5: Handle Creature
+
+Every monster gets a handler task. The task structure includes a pointer to the monster's data.
+Among other things, this structure contains the task reload rate for the tenth-of-a-second list.
+Faster creatures have lower reload rates.
+
+TODO
+
+- ReserveTask C25C
+- InitTasks C053
+- UnchainTask C238
+- TimeDownTasks C242
+- Task timers by ISR (counter ends at C324)
+- Ready-to-run task list
+- Task runners in main loop
+- Running/reinitialize a task
+- CreateCreature makes task CFA5
+
+
 # Game Loop
 
 This is the game loop. The interrupt service routine times all the game tasks and moves them
@@ -1394,8 +1491,8 @@ C771: 8E 03 D4        LDX     #$03D4
 C774: CE 05 F4        LDU     #$05F4              
 C777: 3F              SWI                         
 C778: 11                                          ; SWI_11:[Fill X to U with 0s](#SWI_11):
-C779: BD C0 53        JSR     $C053               ; {code.InitTasks}
-C77C: BD CC 9C        JSR     $CC9C               ; {code.MakeMazeLevel}
+C779: BD C0 53        JSR     $C053               ; {code.InitTasks} Re-create the game tasks
+C77C: BD CC 9C        JSR     $CC9C               ; {code.MakeMazeLevel} Create the maze level
 ;
 C77F: DE 82           LDU     <$82                ; {ram.creatureCounts} Pointer to creature counts
 C781: 86 0B           LDA     #$0B                ; Start with most powerful
@@ -3085,7 +3182,7 @@ D194: 3F              SWI
 D195: 1C                                          ; SWI_1C:[Play sound A at volume B](#SWI_1C):
 D196: 0A B5           DEC     <$B5                ; {ram.m02B5}
 D198: 4F              CLRA                        
-D199: 35 96           PULS    A,B,X,PC            
+D199: 35 96           PULS    A,B,X,PC         
 
 T3_TimeTorch: 
 D19B: DE 24           LDU     <$24                ; {ram.torchPtr} Currently lit torch
@@ -4126,7 +4223,7 @@ GameTasks:
 D7DC: D1 EB ; T0_PlayerInput
 D7DE: D1 C2 ; T1_Draw3DScreen
 D7E0: D1 D5 ; T2_UpdateHeart
-D7E2: D1 9B ; T3_TimeTorch
+D7E2: D1 9B ; T3_UpdateTorch
 D7E4: D0 27 ; T4_MakeCreature
 D7E6: 00 00 ; End of task list
 
@@ -4736,7 +4833,7 @@ DAB7: DF 65 ; Demon
 DAB9: DF 10 ; Wizard   
 
 MonsterData:
-;     To-kill  See  MShield  Damage  PShield  ?task-speed?
+;     To-kill  See  MShield  Damage  PShield  task-speed (tenths of seconds)
 DABB: 00 20    00   FF       80      FF       17 0B ; Spider
 DAC3: 00 38    00   FF       50      80       0F 07 ; Snake
 DACB: 00 C8    00   FF       34      C0       1D 17 ; Giant
