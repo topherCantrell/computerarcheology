@@ -2,6 +2,7 @@
 ; ORIGIN: 0x8000
 ; FILES: d:/git/computerarcheology/content/arcade/digdug2/roms/main.bin
 
+```code
 8000: B7 50 02        STA     $5002                   
 8003: B6 80 00        LDA     $8000                   
 8006: B6 10 06        LDA     $1006                   
@@ -1212,7 +1213,11 @@
 8ADB: 7D 10 10        TST     $1010                   
 8ADE: 27 01           BEQ     $8AE1                   
 8AE0: 39              RTS                         
+```
 
+# Score Adjust with Clamping
+
+```code
 ;
 ; Add a 4-digit BCD value to the 6-digit BCD score
 ; Amount to add in D (D is 4-digit BCD number)
@@ -14859,3 +14864,4 @@ FFF8: 80 00 ; IRQ (to reset)
 FFFA: E5 BA ; SWI (to reset)
 FFFC: E5 BA ; NMI (to reset)
 FFFE: E5 BA ; RESET (to reset)
+```
