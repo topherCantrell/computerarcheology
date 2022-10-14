@@ -96,7 +96,7 @@ MainLoop:
 06AA: A6 84           LDA     ,X                  ; Get word number
 06AC: 30 1F           LEAX    -1,X                ; Back to list number
 06AE: 81 06           CMPA    #$06                ; Living things (people, dogs, etc) are <6
-06B0: 24 05           BCC     $6B7                ; {} Not a living thing
+06B0: 24 05           BHS     $6B7                ; {} Not a living thing
 06B2: B7 01 B8        STA     $01B8               ; {ram.commandTarg} Remember living thing. We are giving them a command so process normally
 06B5: 30 03           LEAX    3,X                 ; Next word
 

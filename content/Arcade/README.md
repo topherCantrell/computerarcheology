@@ -14,6 +14,7 @@
 >>>    SpaceInvaders:Space Invaders<br>
 >>>    TimePilot:Time Pilot (Sound)<br>
 >>>    DigDug:Dig Dug<br>
+>>>    DigDug2:Dig Dug 2<br>
 >>>    SeaWolf:Sea Wolf<br>
 
 [https://en.wikipedia.org/wiki/Arcade_game](https://en.wikipedia.org/wiki/Arcade_game)

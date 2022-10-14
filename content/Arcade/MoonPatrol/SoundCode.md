@@ -1307,7 +1307,7 @@ FDF2: 0E              CLI                         ; Interrupts on
 FDF3: E6 00           LDB     $00,X               ; Restore register value
 FDF5: 08              INX                         ; Skip ...
 FDF6: 08              INX                         ; ... two byte command
-FDF7: 58              ASLB                        ; Repeat bit set?
+FDF7: 58              LSLB                        ; Repeat bit set?
 FDF8: 2B E4           BMI     $FDDE               ; {} Yes ... do another
 FDFA: A6 00           LDA     $00,X               ; Get return value
 FDFC: 08              INX                         ; Point to next command
@@ -1513,8 +1513,8 @@ FF07: 27 FC           BEQ     $FF05               ; {} ... NMI counter ...
 FF09: 4A              DECA                        ; Wait for ...
 FF0A: 26 F6           BNE     $FF02               ; {} ... specified time
 FF0C: D6 CB           LDB     $CB                 ; {ram.lastCmd}  Command ...
-FF0E: 58              ASLB                        ; ... times ...
-FF0F: 58              ASLB                        ; .... 4
+FF0E: 58              LSLB                        ; ... times ...
+FF0F: 58              LSLB                        ; .... 4
 FF10: CE F4 00        LDX     #$F400              ; Sample table
 FF13: 3A              ABX                         ; Offset in table
 FF14: 3C              PSHX                        ; Remember the offset
@@ -1529,7 +1529,7 @@ FF22: 97 BE           STA     $BE                 ; {ram.strmStatus}  ... on 801
 FF24: 39              RTS                         ; Done
 
 FF25: 16              TAB                         ; Script number
-FF26: 58              ASLB                        ; *2
+FF26: 58              LSLB                        ; *2
 FF27: CE F4 24        LDX     #$F424              ; Script pointer table ($10 -> $F444)
 FF2A: 3A              ABX                         ; Offset to start of script
 FF2B: EE 00           LDX     $00,X               ; Script start

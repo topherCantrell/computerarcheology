@@ -1,5 +1,6 @@
+![DigDug 2 Main Board Hardware](digdug2.jpg)
 
-# ROMS
+# Main Board Hardware
 
 Runs on the "Mappy" hardware: https://github.com/mamedev/mame/blob/1829045147a24593930fd8727ee1688214f0b881/src/mame/namco/mappy.cpp
 
@@ -13,3 +14,4 @@ GFX2 32K: d21_6.3m+d21_7.3n
 Palette PROM 1K: d21-5.5b
 Char PROM 1K:    d21-6.4c
 Sprite 1K:       d21-7.5k
+

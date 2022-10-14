@@ -168,11 +168,11 @@ def update_names_in_code(directory, filename, check_binary=True,extract_binary=F
             a = parts['opcode']
             i = a.find(' ')
             if i >= 0:
-                a = a[0:i]
-            opcode = cpu.find_opcodes_for_binary(parts['data'], True)
+                a = a[0:i]            
+            opcode = cpu.find_opcodes_for_binary(parts['data'], exact=True, hint=parts['opcode'])
             if not opcode:
                 raise Exception('No opcode found: ' + line.text)
-            if len(opcode) > 1:
+            if len(opcode) > 1:                
                 mop = None
                 for o in opcode:
                     if o.mnemonic.startswith(a):

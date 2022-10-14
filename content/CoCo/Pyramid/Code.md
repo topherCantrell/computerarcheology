@@ -122,7 +122,7 @@ TwoTableOffset:
 067C: 1F 89           TFR     A,B                 ; A extended ...
 067E: 4F              CLRA                        ; .. to D
 067F: 5A              DECB                        ; Object table is 1 based
-0680: 58              ASLB                        ; D = D ...
+0680: 58              LSLB                        ; D = D ...
 0681: 49              ROLA                        ; ... * 2
 0682: 30 8B           LEAX    D,X                 ; Add D to X
 0684: 39              RTS                         ; Done
@@ -133,9 +133,9 @@ FourTableOffset:
 0685: 1F 89           TFR     A,B                 ; A extended ...
 0687: 4F              CLRA                        ; ... to D
 0688: 5A              DECB                        ; Room table is 1 based
-0689: 58              ASLB                        ; D = D ...
+0689: 58              LSLB                        ; D = D ...
 068A: 49              ROLA                        ; ... * 2
-068B: 58              ASLB                        ; D = D ...
+068B: 58              LSLB                        ; D = D ...
 068C: 49              ROLA                        ; ... * 2
 068D: 30 8B           LEAX    D,X                 ; Add D to X
 068F: 39              RTS                         ; Done
@@ -328,7 +328,7 @@ GetInputAndParse:
 071B: C4 03           ANDB    #$03                ; Roll around over 4 messages
 071D: F7 01 EA        STB     $01EA               ; {ram.m01EA} For next time
 0720: 8E 0F 24        LDX     #$0F24              ; Table of general error messages
-0723: 58              ASLB                        ; Index to offset
+0723: 58              LSLB                        ; Index to offset
 0724: 3A              ABX                         ; Point to error message
 0725: AE 84           LDX     ,X                  ; Get address of general error message
 0727: BD 08 FC        JSR     $08FC               ; {code.PrintUnpacked} Print the error
@@ -1031,7 +1031,7 @@ PrintObjectsInRoom:
 0C11: B6 18 E5        LDA     $18E5               ; {ram.curRoom} Current room
 0C14: B7 01 BC        STA     $01BC               ; {ram.m01BC} For find routine
 0C17: C1 2C           CMPB    #$2C                ; Done all objects?
-0C19: 24 E5           BCC     $0C00               ; {} Yes ... out
+0C19: 24 E5           BHS     $0C00               ; {} Yes ... out
 0C1B: 34 04           PSHS    B                   ; Remember count
 0C1D: 1F 98           TFR     B,A                 ; Object number
 0C1F: BD 06 66        JSR     $0666               ; {code.GetObjectInfo} Get object location
@@ -1299,7 +1299,7 @@ PrintInventory:
 0D67: 5C              INCB                        ; Next object
 0D68: 1F 98           TFR     B,A                 ; To A
 0D6A: 81 2D           CMPA    #$2D                ; Have we checked every object?
-0D6C: 24 DC           BCC     $0D4A               ; {} Yes ... out
+0D6C: 24 DC           BHS     $0D4A               ; {} Yes ... out
 0D6E: 34 04           PSHS    B                   ; Hold it
 0D70: BD 06 66        JSR     $0666               ; {code.GetObjectInfo} Find the objet
 0D73: 35 04           PULS    B                   ; Restore it
@@ -1708,7 +1708,7 @@ UnpackMessage:
 10B2: B6 01 FF        LDA     $01FF               ; {ram.m01FF}
 10B5: B2 01 C3        SBCA    $01C3               ; {ram.m01C3}
 10B8: B7 02 01        STA     $0201               ; {ram.m0201}
-10BB: 24 0B           BCC     $10C8               ; {}
+10BB: 24 0B           BHS     $10C8               ; {}
 10BD: FC 02 01        LDD     $0201               ; {ram.m0201}
 10C0: F3 01 C3        ADDD    $01C3               ; {ram.m01C3}
 10C3: FD 01 FF        STD     $01FF               ; {ram.m01FF}

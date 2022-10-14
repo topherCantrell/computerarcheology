@@ -327,6 +327,7 @@ C1F4: 0F                                          ; SWI_F:[Ready command prompt]
 The code runs as a sequence of timed tasks that are re-queued/removed as needed.
 
 A task structure is 7 bytes as follows:
+
 ```
   00:01  Next task in the list or 0 if the last task in the list.
   02     Countdown to run. When this reaches 0, the task is moved to the ready-to-run list.
@@ -417,7 +418,6 @@ TODO
 - Task runners in main loop
 - Running/reinitialize a task
 - CreateCreature makes task CFA5
-
 
 # Game Loop
 
@@ -3182,7 +3182,7 @@ D194: 3F              SWI
 D195: 1C                                          ; SWI_1C:[Play sound A at volume B](#SWI_1C):
 D196: 0A B5           DEC     <$B5                ; {ram.m02B5}
 D198: 4F              CLRA                        
-D199: 35 96           PULS    A,B,X,PC         
+D199: 35 96           PULS    A,B,X,PC            
 
 T3_TimeTorch: 
 D19B: DE 24           LDU     <$24                ; {ram.torchPtr} Currently lit torch
