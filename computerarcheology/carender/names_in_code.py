@@ -95,7 +95,7 @@ def update_names_in_code(directory, filename, check_binary=True,extract_binary=F
 
     # Load the markdown file
 
-    md = markdown.read_markdown_paragraphs(os.path.join(directory, filename))
+    md = markdown.read_markdown_paragraphs(os.path.join(directory, filename))    
 
     bp_offset = 0
     # TODO we should allow the DP to change through the code ... not just once at the top
@@ -107,13 +107,13 @@ def update_names_in_code(directory, filename, check_binary=True,extract_binary=F
 
     # Get all the code from the markdown (or return if there are no code lines)
 
-    lines = cainfo.read_code_text_lines(md)
-    if not lines:
+    lines = cainfo.read_code_text_lines(md)    
+    if not lines:        
         # No code in this file -- nothing to do
         return md,None
 
     bindata = None
-    if extract_binary:
+    if extract_binary:        
         gaps = cainfo.read_origin_gaps(md)        
         origin_md, binary_md = cacode.parse_binary(lines, gaps)
         bindata = bytes(binary_md)

@@ -6,6 +6,11 @@ import sys
 from computerarcheology.carender import markdown, cainfo, webrender, nav_tree, names_in_code
 import computerarcheology.carender.ENVIRONMENT as ENV
 
+# D:\git\computerarcheology> py -m computerarcheology.carender.app 
+
+# Make sure "opcodetools" is in your path. I put this one-line "opcodetools.pth" file in python11/Lib/site-packages:
+# d:/git/opcodetools
+
 # For development, you can pass command line arguments to this script to control which
 # markdowns are processed. All other non-md are always processed.
 #

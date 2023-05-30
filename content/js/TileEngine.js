@@ -119,7 +119,10 @@ var TileEngine = (function() {
 		
 		// Handle drawing commands
 	
-		var command = can.getAttribute("data-command").split(",");
+		var command = can.getAttribute("data-command")
+		command = command.replace(/\s/g, '')
+		command = command.replace(/(\r\n|\n|\r)/gm, "")
+		command = command.split(",");
 	
 		var context = can.getContext("2d");
 		if(background) {
@@ -132,7 +135,7 @@ var TileEngine = (function() {
 		var xo = 0;
 		var yo = 0;
 		var lastHeight = 8;
-		var showCS = false
+		var showCS = true
 		var cs = ''
 	
 		for(var x=0;x<command.length;++x) {		
@@ -145,6 +148,10 @@ var TileEngine = (function() {
 					colors = colorMap[command[x].substring(1)];
 					cs = command[x].substring(1)
 				}
+			} else if(command[x]=="showCS") {
+				showCS = true
+			} else if(command[x]=="hideCS") {
+				showCS = false
 			} else if(command[x]=="*") {
 				xo = 0;
 				yo = yo + lastHeight*pixHeight;
@@ -163,6 +170,14 @@ var TileEngine = (function() {
 				for(var yy=0;yy<height;++yy) {
 					for(var xx=0;xx<width;++xx) {
 						if(x<command.length) {
+							if(command[x]=='showCS') {
+								showCS = true
+								x=x+1
+							}
+							if(command[x]=='hideCS') {
+								showCS = false
+								x=x+1
+							}
 							if(command[x].charAt(0)=='@') {
 								address = parseInt(command[x].substring(1),16);
 								x = x + 1
@@ -176,7 +191,7 @@ var TileEngine = (function() {
 							var val = parseInt(lastCommand,16)+1;
 							lastCommand = val.toString(16);						
 						}
-						singleTileCommand(context,xo+xx*pixWidth*gridX+xx*gridPad,yo+yy*pixHeight*gridY+yy*gridPad,gridX,gridY,lastCommand,cs);
+						singleTileCommand(context,xo+xx*pixWidth*gridX+xx*gridPad,yo+yy*pixHeight*gridY+yy*gridPad,gridX,gridY,lastCommand,cs, showCS);
 					}
 				}			
 				--x;
@@ -211,7 +226,7 @@ var TileEngine = (function() {
      * @param gridY    number of pixels down
      * @param com      the tile command
      */
-    function singleTileCommand(context,xo,yo,gridX,gridY,com,cs='') {
+    function singleTileCommand(context,xo,yo,gridX,gridY,com,cs='',showCS=true) {
         
         var hmirror = false;
         var vmirror = false;
@@ -219,7 +234,7 @@ var TileEngine = (function() {
         com = com.toString();
         var ocom = com.trim();
         
-        if(cs!='') {
+        if(showCS && cs!='') {
         	ocom = ocom+' ('+cs+')'
         }
     

@@ -4236,10 +4236,10 @@ D7F4: 7E C2 7D   ; FIRQ Vector: JMP $C27D
 ;
 ; Initialize a few local variables
 D7F7: 17 02 02 ; Copy 17 bytes to 202           
-D7FA: 01       ; 202     Constant 1 (two bytes from 201)              
+D7FA: 01       ; 202     Constant 1             
 D7FB: FF FF    ; 203:204 Constant FFFF                   
-D7FD: 00 80    ; 205:206 ??                   
-D7FF: 00 4C    ; 207:208 ??                    
+D7FD: 00 80    ; 205:206 X Center of screen                 
+D7FF: 00 4C    ; 207:208 Y Center of screen                  
 D801: D8 70    ; 209:20A Pointer to visible screen descriptor                    
 D803: D8 76    ; 20B:20C Pointer to drawing screen descriptor
 D805: D9 88    ; 20D:20E Pointer to demo commands                
